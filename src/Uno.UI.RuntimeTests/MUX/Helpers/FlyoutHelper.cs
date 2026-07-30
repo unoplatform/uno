@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -26,7 +27,9 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			return child as FrameworkElement;
 		}
 
-		public static async Task HideFlyout<T>(T flyoutControl)
+		public static async Task HideFlyout<
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicEvents | DynamicallyAccessedMemberTypes.NonPublicEvents)] T
+		>(T flyoutControl)
 			where T : FlyoutBase
 		{
 #if WINAPPSDK
@@ -46,7 +49,9 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 #endif
 		}
 
-		internal static async Task OpenFlyout<T>(T flyoutControl, FrameworkElement target, FlyoutOpenMethod openMethod)
+		internal static async Task OpenFlyout<
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicEvents | DynamicallyAccessedMemberTypes.NonPublicEvents)] T
+		>(T flyoutControl, FrameworkElement target, FlyoutOpenMethod openMethod)
 			where T : FlyoutBase
 		{
 #if WINAPPSDK

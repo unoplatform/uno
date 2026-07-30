@@ -3,237 +3,237 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Capture
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class AppCaptureAlternateShortcutKeys
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal AppCaptureAlternateShortcutKeys()
 		{
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.VirtualKey SaveHistoricalVideoKey
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey AppCaptureAlternateShortcutKeys.SaveHistoricalVideoKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20AppCaptureAlternateShortcutKeys.SaveHistoricalVideoKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "SaveHistoricalVideoKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.SaveHistoricalVideoKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "SaveHistoricalVideoKey");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.VirtualKeyModifiers SaveHistoricalVideoKeyModifiers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers AppCaptureAlternateShortcutKeys.SaveHistoricalVideoKeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyModifiers%20AppCaptureAlternateShortcutKeys.SaveHistoricalVideoKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "SaveHistoricalVideoKeyModifiers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.SaveHistoricalVideoKeyModifiers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "SaveHistoricalVideoKeyModifiers");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.VirtualKey TakeScreenshotKey
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey AppCaptureAlternateShortcutKeys.TakeScreenshotKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20AppCaptureAlternateShortcutKeys.TakeScreenshotKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "TakeScreenshotKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.TakeScreenshotKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "TakeScreenshotKey");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.VirtualKeyModifiers TakeScreenshotKeyModifiers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers AppCaptureAlternateShortcutKeys.TakeScreenshotKeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyModifiers%20AppCaptureAlternateShortcutKeys.TakeScreenshotKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "TakeScreenshotKeyModifiers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.TakeScreenshotKeyModifiers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "TakeScreenshotKeyModifiers");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.VirtualKey ToggleBroadcastKey
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey AppCaptureAlternateShortcutKeys.ToggleBroadcastKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20AppCaptureAlternateShortcutKeys.ToggleBroadcastKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleBroadcastKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleBroadcastKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleBroadcastKey");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.VirtualKeyModifiers ToggleBroadcastKeyModifiers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleBroadcastKeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyModifiers%20AppCaptureAlternateShortcutKeys.ToggleBroadcastKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleBroadcastKeyModifiers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleBroadcastKeyModifiers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleBroadcastKeyModifiers");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.VirtualKey ToggleCameraCaptureKey
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey AppCaptureAlternateShortcutKeys.ToggleCameraCaptureKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20AppCaptureAlternateShortcutKeys.ToggleCameraCaptureKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleCameraCaptureKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleCameraCaptureKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleCameraCaptureKey");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.VirtualKeyModifiers ToggleCameraCaptureKeyModifiers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleCameraCaptureKeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyModifiers%20AppCaptureAlternateShortcutKeys.ToggleCameraCaptureKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleCameraCaptureKeyModifiers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleCameraCaptureKeyModifiers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleCameraCaptureKeyModifiers");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.VirtualKey ToggleGameBarKey
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey AppCaptureAlternateShortcutKeys.ToggleGameBarKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20AppCaptureAlternateShortcutKeys.ToggleGameBarKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleGameBarKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleGameBarKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleGameBarKey");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.VirtualKeyModifiers ToggleGameBarKeyModifiers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleGameBarKeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyModifiers%20AppCaptureAlternateShortcutKeys.ToggleGameBarKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleGameBarKeyModifiers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleGameBarKeyModifiers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleGameBarKeyModifiers");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.VirtualKey ToggleMicrophoneCaptureKey
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey AppCaptureAlternateShortcutKeys.ToggleMicrophoneCaptureKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20AppCaptureAlternateShortcutKeys.ToggleMicrophoneCaptureKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleMicrophoneCaptureKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleMicrophoneCaptureKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleMicrophoneCaptureKey");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.VirtualKeyModifiers ToggleMicrophoneCaptureKeyModifiers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleMicrophoneCaptureKeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyModifiers%20AppCaptureAlternateShortcutKeys.ToggleMicrophoneCaptureKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleMicrophoneCaptureKeyModifiers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleMicrophoneCaptureKeyModifiers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleMicrophoneCaptureKeyModifiers");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.VirtualKey ToggleRecordingIndicatorKey
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey AppCaptureAlternateShortcutKeys.ToggleRecordingIndicatorKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20AppCaptureAlternateShortcutKeys.ToggleRecordingIndicatorKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleRecordingIndicatorKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleRecordingIndicatorKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleRecordingIndicatorKey");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.VirtualKeyModifiers ToggleRecordingIndicatorKeyModifiers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleRecordingIndicatorKeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyModifiers%20AppCaptureAlternateShortcutKeys.ToggleRecordingIndicatorKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleRecordingIndicatorKeyModifiers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleRecordingIndicatorKeyModifiers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleRecordingIndicatorKeyModifiers");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.VirtualKey ToggleRecordingKey
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKey AppCaptureAlternateShortcutKeys.ToggleRecordingKey is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKey%20AppCaptureAlternateShortcutKeys.ToggleRecordingKey");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleRecordingKey");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKey AppCaptureAlternateShortcutKeys.ToggleRecordingKey");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleRecordingKey");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.System.VirtualKeyModifiers ToggleRecordingKeyModifiers
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleRecordingKeyModifiers is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyModifiers%20AppCaptureAlternateShortcutKeys.ToggleRecordingKeyModifiers");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleRecordingKeyModifiers");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "VirtualKeyModifiers AppCaptureAlternateShortcutKeys.ToggleRecordingKeyModifiers");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.AppCaptureAlternateShortcutKeys", "ToggleRecordingKeyModifiers");
 			}
 		}
 #endif

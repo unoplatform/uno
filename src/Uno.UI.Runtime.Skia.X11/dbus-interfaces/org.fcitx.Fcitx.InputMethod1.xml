@@ -1,0 +1,11 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+ <interface name="org.fcitx.Fcitx.InputMethod1">
+  <method name="CreateInputContext">
+   <arg type="a(ss)" direction="in"/>
+   <arg type="o" direction="out"/>
+   <arg type="ay" direction="out"/>
+  </method>
+ </interface>
+</node>

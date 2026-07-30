@@ -47,24 +47,27 @@ public partial class CompositionShape
 	{
 		var offset = Offset;
 		var transform = CombinedTransformMatrix;
+		var hasOffset = offset != Vector2.Zero;
+		var hasTransform = !transform.IsIdentity;
 
-		if (offset != Vector2.Zero || transform is not { IsIdentity: true })
+		if (hasOffset || hasTransform)
 		{
 			session.Canvas.Save();
 
-			if (offset != Vector2.Zero)
+			if (hasOffset)
 			{
 				session.Canvas.Translate(offset.X, offset.Y);
 			}
 
-			// Intentionally not applying transform here.
-			// Derived classes should be responsible to call GetTransform and use it appropriately.
-			// For example, CompositionSpriteShape shouldn't "scale" the stroke thickness.
+			if (hasTransform)
+			{
+				session.Canvas.Concat(transform.ToSKMatrix());
+			}
 		}
 
 		Paint(in session);
 
-		if (offset != Vector2.Zero || transform is not { IsIdentity: true })
+		if (hasOffset || hasTransform)
 		{
 			session.Canvas.Restore();
 		}

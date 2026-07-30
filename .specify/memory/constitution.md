@@ -184,10 +184,10 @@ respected in all contributions:
 3. Runtime tests via headless Skia for UI changes.
 4. SamplesApp verification for visual changes.
 
-**SamplesApp Registration** (CRITICAL for new samples):
-- All XAML samples MUST be registered in
-  `src/SamplesApp/UITests.Shared/UITests.Shared.projitems`.
-- Both the XAML page and code-behind MUST be added.
+**SamplesApp Samples**:
+- Drop XAML samples and their code-behind anywhere under
+  `src/SamplesApp/SamplesApp.Samples/`. Files are auto-discovered by glob;
+  no project registration is required.
 - The `[Sample]` attribute MUST be applied to the code-behind class.
 
 **Conventional Commits** (MANDATORY):

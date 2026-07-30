@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
@@ -9,6 +10,8 @@ namespace Uno.UI.Samples.Controls
 	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
 	public class SampleAttribute : Attribute
 	{
+		private const DynamicallyAccessedMemberTypes ViewModelTypeRequirements = DynamicallyAccessedMemberTypes.PublicConstructors;
+
 		/// <summary>
 		/// Marks a class as a sample test control that can be browsed by the SampleChooserControl
 		/// and which can be used by automated tests.
@@ -61,6 +64,7 @@ namespace Uno.UI.Samples.Controls
 		/// <summary>
 		/// An optional ViewModel type that will be instantiated and set as DataContext of the sample control
 		/// </summary>
+		[DynamicallyAccessedMembers(ViewModelTypeRequirements)]
 		public Type ViewModelType { get; set; }
 
 		/// <summary>

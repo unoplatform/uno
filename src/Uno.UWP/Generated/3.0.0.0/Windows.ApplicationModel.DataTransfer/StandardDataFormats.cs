@@ -3,101 +3,20 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer
 {
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-	[global::Uno.NotImplemented("IS_UNIT_TESTS")]
+#if false || false || false || false || false || false
+	[global::Uno.NotImplemented]
 #endif
 	public static partial class StandardDataFormats
 	{
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string ApplicationLink
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.ApplicationLink is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.ApplicationLink");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string Bitmap
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.Bitmap is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.Bitmap");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string Html
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.Html is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.Html");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string Rtf
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.Rtf is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.Rtf");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string StorageItems
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.StorageItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.StorageItems");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string Text
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.Text");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string Uri
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.Uri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.Uri");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string UserActivityJsonArray
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.UserActivityJsonArray is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.UserActivityJsonArray");
-			}
-		}
-#endif
-#if false || false || false || IS_UNIT_TESTS || false || false || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public static string WebLink
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string StandardDataFormats.WebLink is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20StandardDataFormats.WebLink");
-			}
-		}
-#endif
+		// Skipping already declared property ApplicationLink
+		// Skipping already declared property Bitmap
+		// Skipping already declared property Html
+		// Skipping already declared property Rtf
+		// Skipping already declared property StorageItems
+		// Skipping already declared property Text
+		// Skipping already declared property Uri
+		// Skipping already declared property UserActivityJsonArray
+		// Skipping already declared property WebLink
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.ApplicationLink.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Bitmap.get
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.StandardDataFormats.Html.get

@@ -149,6 +149,11 @@ namespace Microsoft.UI.Xaml.Controls
 				UpdateDOMProperties();
 			}
 #endif
+
+#if __SKIA__
+			// Notify UIA clients that IsEnabled (and potentially IsKeyboardFocusable) may have changed.
+			CachedAutomationPeer?.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+#endif
 		}
 		#endregion
 
@@ -666,6 +671,32 @@ namespace Microsoft.UI.Xaml.Controls
 					14.0,
 					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue)
+				)
+			);
+
+		#endregion
+
+		#region IsTextScaleFactorEnabled
+
+		public bool IsTextScaleFactorEnabled
+		{
+			get => (bool)GetValue(IsTextScaleFactorEnabledProperty);
+			set => SetValue(IsTextScaleFactorEnabledProperty, value);
+		}
+
+		public static DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsTextScaleFactorEnabled),
+				typeof(bool),
+				typeof(Control),
+				new FrameworkPropertyMetadata(
+					true,
+#if __SKIA__ || __WASM__
+					// AffectsMeasure only needed where Uno's own measure path calls GetScaledFontSize().
+					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
+#else
+					FrameworkPropertyMetadataOptions.Inherits
+#endif
 				)
 			);
 

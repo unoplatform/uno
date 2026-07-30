@@ -39,9 +39,6 @@ To enable `WebView` on the `-desktop` target, add the `WebView` Uno Feature in y
 </UnoFeatures>
 ```
 
-> [!IMPORTANT]
-> If your project's desktop builder in `Platforms/Desktop/Program.cs` uses `.UseWindows()`, you'll also need to add the `<UnoUseWebView2WPF>true</UnoUseWebView2WPF>` property for the integration to work. However, it is recommended to [migrate to `.UseWin32()`](xref:Uno.Development.MigratingToUno6) for better performance and reliability.
-
 ## WebAssembly support
 
 In case of WebAssembly, the control is supported via a native `<iframe>` element. This means all `<iframe>` browser security considerations and limitations also apply to `WebView`:
@@ -150,23 +147,63 @@ The web files can reference each other in a relative path fashion, for example, 
 
 Is referencing a `site.js` file inside the `js` subfolder.
 
-## iOS specifics
+## Enabling native developer tools
 
-From macOS, inspecting applications using `WebView2` controls using the Safari Developer Tools is possible. [Here's](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios) a detailed guide on how to do it. To make this work, enable this feature in your app by adding the following capabilities in your `App.Xaml.cs`:
+Set `Uno.UI.FeatureConfiguration.WebView2.EnableDevTools` during application startup, before any `WebView2` is materialized, to enable the platform-native developer tools for the underlying web engine:
 
 ```csharp
 public App()
 {
+    Uno.UI.FeatureConfiguration.WebView2.EnableDevTools = true;
     this.InitializeComponent();
-#if __IOS__
-    Uno.UI.FeatureConfiguration.WebView2.IsInspectable = true;
-#endif
 }
 ```
 
+The flag defaults to `true` in `DEBUG` builds and `false` in `RELEASE` builds.
+
+| Platform | What it enables | How to open |
+| ---------- | ----------------- | ------------- |
+| **Windows / Linux (Skia)** | Chromium DevTools | Right-click inside the WebView and choose **Inspect**, or press <kbd>F12</kbd>. |
+| **iOS / Mac Catalyst / macOS** | Safari Web Inspector against the `WKWebView` (iOS 16.4+, macOS 13.3+) | In Safari, enable the **Develop** menu, then pick the device → page. See Apple's [Inspecting iOS](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios) guide. |
+| **Android** | Chrome DevTools remote debugging | Open `chrome://inspect` in desktop Chrome with the device connected. |
+| **WebAssembly** | N/A | Use the host browser's developer tools (<kbd>F12</kbd>). |
+
 > [!IMPORTANT]
+> On Apple platforms the OS gates inspection to apps signed with the get-task-allow entitlement (DEBUG / development builds). Setting the flag in a RELEASE build has no visible effect.
 >
-> This feature will only work for security reasons when the application runs in Debug mode.
+> [!NOTE]
+> The legacy iOS-only `Uno.UI.FeatureConfiguration.WebView2.IsInspectable` property is now an obsolete alias for `EnableDevTools`.
+
+## Customizing the WebView2 environment (Windows)
+
+On Windows (Skia Desktop) the `WebView2` is backed by the Microsoft Edge WebView2 runtime. A couple of environment-level options can be configured through `Uno.UI.FeatureConfiguration.WebView2` during application startup, before any `WebView2` is materialized. These are Windows-only and have no effect on other targets or on the Windows App SDK target (use `CoreWebView2EnvironmentOptions` directly there).
+
+### Single sign-on with the OS primary account
+
+Set `AllowSingleSignOnUsingOSPrimaryAccount` to `true` to let the `WebView2` use the OS primary account (for example, the Microsoft Entra ID / Azure AD account the user is signed into Windows with) for single sign-on against supporting resources:
+
+```csharp
+public App()
+{
+    Uno.UI.FeatureConfiguration.WebView2.AllowSingleSignOnUsingOSPrimaryAccount = true;
+    this.InitializeComponent();
+}
+```
+
+> [!NOTE]
+> In a heavily managed environment the flag is necessary but may not be sufficient: device-registration state and administrator policy can still gate Entra ID SSO. Confirm with the environment's administrators that WebView2 AAD SSO is permitted.
+
+### Additional browser arguments
+
+Set `AdditionalBrowserArguments` to pass extra command-line switches (such as proxy configuration or Chromium feature flags) to the underlying browser process, which is often required in locked-down environments:
+
+```csharp
+public App()
+{
+    Uno.UI.FeatureConfiguration.WebView2.AdditionalBrowserArguments = "--proxy-server=http://proxy.example:8080";
+    this.InitializeComponent();
+}
+```
 
 ## Linux specifics
 
@@ -242,7 +279,7 @@ The `AddWebResourceRequestedFilter` method accepts three parameters:
 > `WebResourceRequested` has significant platform-specific limitations. Review the table below to understand what is supported on each platform.
 
 | Platform | Support Level | Header Read | Header Modify | Custom Response | Notes |
-|----------|--------------|-------------|---------------|-----------------|-------|
+| ---------- | -------------- | ------------- | --------------- | ----------------- | ------- |
 | **Windows (Win32/WinAppSDK)** | ✅ Full | ✅ | ✅ | ✅ | Full WebView2 support |
 | **Android** | ⚠️ Partial | ✅ | ⚠️ | ✅ | Header modification requires re-fetching the resource with HttpClient (only safe for GET/HEAD requests). Session cookies are automatically synchronized. POST request bodies cannot be reliably re-fetched and are not reissued by the implementation, so header changes for POST requests are unsupported. |
 | **iOS** | ⚠️ Limited | ✅ | ⚠️ | ❌ | Navigation request headers cannot be modified. However, JavaScript-initiated requests (`fetch`/`XMLHttpRequest`) support custom header injection. Only fires for main document navigation, not sub-resources. |
@@ -302,7 +339,7 @@ var nativeControl = presenter.Content;
 The type of `nativeControl` varies per platform:
 
 | Platform | Native Control Type | Notes |
-|----------|-------------------|-------|
+| ---------- | ------------------- | ------- |
 | **Android** | `Android.Webkit.WebView` | Standard Android WebView |
 | **iOS** | `WebKit.WKWebView` | Via `UnoWKWebView`, which extends `WKWebView` |
 | **macOS (Skia)** | `MacOSNativeWebView` | Internal wrapper using native WebKit via P/Invoke |
@@ -353,3 +390,30 @@ When using the WebView2 and running on WinAppSDK, make sure to create an `x64` o
 - In the Visual Studio configuration manager, create an `x64` or `ARM64` solution configuration
 - Assign it to the Uno Platform project
 - Debug your application using the configuration relevant to your current environment
+
+## Windows Specifics
+
+Starting with Uno 7, WebView2 has two separate backends on Windows:
+
+- Microsoft.Web.WebView2
+- WebView2Aot
+
+The WebView2Aot backend is required in order to use WebView2 with [Native AOT](xref:Uno.Features.NativeAOT) on Windows.
+
+The WebView2Aot backend is the default when `net10.0-desktop` or later is the target framework.
+
+If you encounter issues with the WebView2 control on Windows when targeting .NET 10 or later, please file an issue. The previous Microsoft.Web.WebView2 backend can be used by setting the `UNO_WEBVIEW2_BACKEND` environment variable to `microsoft.web.webview2`, for example within `Main()`:
+
+```csharp
+public partial class Program
+{
+    [STAThread]
+    public static void Main(string[] args)
+    {
+        Environment.SetEnvironmentVariable("UNO_WEBVIEW2_BACKEND", "microsoft.web.webview2");
+        var host = UnoPlatformHostBuilder.Create()
+            // …
+            ;
+    }
+}
+```

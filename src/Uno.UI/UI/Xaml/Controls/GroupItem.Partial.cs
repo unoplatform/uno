@@ -1,10 +1,14 @@
 #nullable enable
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class GroupItem
 	{
+		protected override AutomationPeer OnCreateAutomationPeer()
+			=> new GroupItemAutomationPeer(this);
+
 		/// <summary>
 		/// Minimal compatibility shim used by automation peers to retrieve the templated ItemsControl inside a GroupItem.
 		/// Returns null when not available.

@@ -1,0 +1,37 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Test accent brush to verify resource inheritance -->
+    <SolidColorBrush x:Key="TestAccentBrush" Color="#FF6B4CE0"/>
+
+    <!-- Test styles for verification -->
+    <Style x:Key="TestTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource TestAccentBrush}"/>
+        <Setter Property="FontSize" Value="16"/>
+    </Style>
+
+    <!--
+        ALC-specific resource for testing that ResourceDictionary.Source resolves to the correct
+        dictionary when loaded from a secondary AssemblyLoadContext. This resource should only be
+        accessible from the AlcApp's context, not from the primary ALC.
+    -->
+    <SolidColorBrush x:Key="AlcAppSpecificBrush" Color="#FF00AA55"/>
+    <x:String x:Key="AlcAppIdentifier">Uno.UI.RuntimeTests.AlcApp</x:String>
+
+    <!--
+        Fixture for the secondary-ALC fallback in ResourceResolver.TryTopLevelRetrieval.
+        AlcAppOnlyColor is intentionally defined ONLY here (in the secondary ALC's
+        Application.Resources). It must not be reachable from the host's
+        Application.Current.Resources, so a lookup originating from a default-ALC
+        parse context can only succeed via the secondary-app fallback.
+
+        AlcAppLazyBrush mirrors the real-world bug scenario (Uno.Themes.WinUI's
+        SharedColors.xaml has SolidColorBrushes whose Color="{StaticResource X}"
+        references colors defined elsewhere): when this brush is materialized
+        lazily after a theme switch, the {StaticResource AlcAppOnlyColor} lookup
+        must reach the secondary ALC.
+    -->
+    <Color x:Key="AlcAppOnlyColor">#FF112233</Color>
+    <SolidColorBrush x:Key="AlcAppLazyBrush" Color="{StaticResource AlcAppOnlyColor}"/>
+</ResourceDictionary>

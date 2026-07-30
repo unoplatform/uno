@@ -7,7 +7,6 @@ parameters:
   xCodeRootTest: ''
   xCodeRootBuild: ''
   poolName: ''
-  UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
 
 jobs:
@@ -21,10 +20,9 @@ jobs:
     vmImage: ${{ parameters.vmMacImage }}
 
   variables:
-    SamplesAppArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
+    SamplesAppArtifactName: samplesapp-desktop-skia
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
-    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
@@ -35,15 +33,26 @@ jobs:
       artifact: $(SamplesAppArtifactName)
       path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
-  - task: DownloadBuildArtifacts@0
+  - task: DownloadPipelineArtifact@2
     condition: gt(variables['System.JobAttempt'], 1)
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
-        artifactName: uitests-failure-results
-        downloadPath: '$(build.sourcesdirectory)/build'
+      artifact: runtime-tests-desktop-skia-macos-failures
+      path: '$(build.sourcesdirectory)/build/uitests-failure-results'
 
   - template: ../templates/dotnet-install.yml
+
+  - script: |
+      # Build source generators for hot reload runtime tests
+      # Used to build the hot reload test secondary app during runtime tests
+      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.Tasks
+      dotnet build -c Debug
+      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.SourceGenerators
+      dotnet build -c Debug
+      cd $(build.sourcesdirectory)/src/Uno.UI.RemoteControl.Host
+      dotnet build -c Debug
+    displayName: Build HR dependencies
 
   - script: |
       chmod +x build/test-scripts/macos-skia-runtime-tests.sh
@@ -68,5 +77,5 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
-      ArtifactName: uitests-failure-results
+      ArtifactName: runtime-tests-desktop-skia-macos-failures
       ArtifactType: Container

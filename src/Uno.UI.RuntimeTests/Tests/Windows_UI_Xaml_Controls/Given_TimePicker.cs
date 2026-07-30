@@ -323,6 +323,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if __APPLE_UIKIT__
 		[TestMethod]
+		[RequiresFullWindow]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15263")]
 		public async Task When_App_Theme_Dark_Native_Flyout_Theme()
 		{

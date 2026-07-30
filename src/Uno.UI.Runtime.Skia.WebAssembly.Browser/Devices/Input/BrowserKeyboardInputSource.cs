@@ -16,6 +16,8 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
 
+	internal static bool LastTabWasForward { get; private set; } = true;
+
 	[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserKeyboardInputSource.initialize")]
 	private static partial void Initialize([JSMarshalAs<JSType.Any>] object inputSource);
 
@@ -55,6 +57,11 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 			},
 
 			unicodeKey: GetUnicodeKey(key));
+
+		if (down && string.Equals(key, "Tab", StringComparison.Ordinal))
+		{
+			LastTabWasForward = !shift;
+		}
 
 		if (down)
 		{

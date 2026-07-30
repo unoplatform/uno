@@ -58,7 +58,7 @@ Learn the principles of cross-platform development with Uno.
 
 #### Uno Platform Studio
 
-**Uno Platform Studio** is a set of productivity tools designed to enhance developer productivity.
+**Uno Platform Studio** is an AI-native suite of productivity tools, including the Studio App and Studio Agent, for building cross-platform .NET apps faster.
 
 </div>
 </a>

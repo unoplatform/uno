@@ -51,10 +51,18 @@ namespace Windows.System
 				UIKeyboardHidUsage.KeyboardY => VirtualKey.Y,
 				UIKeyboardHidUsage.KeyboardZ => VirtualKey.Z,
 
-				UIKeyboardHidUsage.KeyboardPeriod => VirtualKey.Decimal,
-				UIKeyboardHidUsage.KeyboardEqualSign => (VirtualKey)187,
-				UIKeyboardHidUsage.KeyboardSlash => VirtualKey.Divide,
-				UIKeyboardHidUsage.KeyboardHyphen => VirtualKey.Subtract,
+				UIKeyboardHidUsage.KeyboardPeriod => OemPeriod,
+				UIKeyboardHidUsage.KeyboardEqualSign => OemPlus,
+				UIKeyboardHidUsage.KeyboardSlash => Oem2,
+				UIKeyboardHidUsage.KeyboardHyphen => OemMinus,
+				UIKeyboardHidUsage.KeyboardComma => OemComma,
+				UIKeyboardHidUsage.KeyboardSemicolon => Oem1,
+				UIKeyboardHidUsage.KeyboardQuote => Oem7,
+				UIKeyboardHidUsage.KeyboardOpenBracket => Oem4,
+				UIKeyboardHidUsage.KeyboardCloseBracket => Oem6,
+				UIKeyboardHidUsage.KeyboardBackslash => Oem5,
+				UIKeyboardHidUsage.KeyboardGraveAccentAndTilde => Oem3,
+				UIKeyboardHidUsage.KeyboardNonUSBackslash => Oem102,
 
 				// [Key|Number] Pad
 				UIKeyboardHidUsage.Keypad0 => VirtualKey.NumberPad0,

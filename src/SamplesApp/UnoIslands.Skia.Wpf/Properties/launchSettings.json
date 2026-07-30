@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "UnoIslands.Skia.Wpf": {
-      "commandName": "Project",
-      "commandLineArgs": ""
-    }
-  }
-}

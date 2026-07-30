@@ -7,6 +7,7 @@ using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.DataBinding;
@@ -45,6 +46,9 @@ internal partial class PopupPanel : Panel
 		Visibility = Visibility.Collapsed;
 		PointerPressed += OnPointerPressed;
 	}
+
+	protected override AutomationPeer OnCreateAutomationPeer()
+		=> Popup?.GetAutomationPeer() ?? base.OnCreateAutomationPeer();
 
 	protected Size _lastMeasuredSize;
 

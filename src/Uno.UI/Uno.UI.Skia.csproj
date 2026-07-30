@@ -23,7 +23,7 @@
 		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
 		<UnoXamlResourcesUpriTrimming>true</UnoXamlResourcesUpriTrimming>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
+		<PackageId>Uno.WinUI</PackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -46,6 +46,11 @@
 	<ItemGroup>
 		<EmbeddedResource Include="$(PlatformItemsBasePath)UI\Xaml\Controls\ProgressRing\*.json" />
 		<PRIResource Include="$(PlatformItemsBasePath)**\*.resw" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="LinkerSubstitution.Skia.xml" />
+		<UnoLinkerSubstitution Include="LinkerSubstitution.Skia.xml" />
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />

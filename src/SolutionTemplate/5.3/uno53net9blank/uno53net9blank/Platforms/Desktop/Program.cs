@@ -14,7 +14,7 @@ public class Program
             .UseX11()
             .UseLinuxFrameBuffer()
             .UseMacOS()
-            .UseWindows()
+            .UseWin32()
             .Build();
 
         host.Run();

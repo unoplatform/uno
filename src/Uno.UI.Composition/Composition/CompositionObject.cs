@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Numerics;
@@ -50,7 +51,7 @@ namespace Microsoft.UI.Composition
 				return @this;
 			}
 
-			return new CompositionPropertySet(Compositor);
+			return new CompositionPropertySet(Compositor) { Owner = this };
 		}
 
 		// Overrides are based on:
@@ -128,11 +129,34 @@ namespace Microsoft.UI.Composition
 				return;
 			}
 
-			foreach (var (key, value) in _animations)
+			// Snapshot keys before iterating: SetAnimatableProperty downstream can mutate
+			// _animations (e.g. when an AnimationController completes and removes the entry,
+			// or when an expression starts a new animation reentrantly), so iterating directly
+			// throws "Collection was modified". Rent the snapshot buffer to avoid a per-frame
+			// allocation; reentrant calls each rent their own.
+			var count = _animations.Count;
+			if (count == 0)
 			{
-				if (value == animation)
+				return;
+			}
+
+			var keys = ArrayPool<string>.Shared.Rent(count);
+			try
+			{
+				var i = 0;
+				foreach (var key in _animations.Keys)
 				{
-					var propertyName = key;
+					keys[i++] = key;
+				}
+
+				for (i = 0; i < count; i++)
+				{
+					if (_animations is null || !_animations.TryGetValue(keys[i], out var value) || value != animation)
+					{
+						continue;
+					}
+
+					var propertyName = keys[i];
 					ReadOnlySpan<char> firstPropertyName;
 					ReadOnlySpan<char> subPropertyName;
 					var firstDotIndex = propertyName.IndexOf('.');
@@ -150,6 +174,10 @@ namespace Microsoft.UI.Composition
 					this.SetAnimatableProperty(firstPropertyName, subPropertyName, animation.Evaluate());
 				}
 			}
+			finally
+			{
+				ArrayPool<string>.Shared.Return(keys, clearArray: true);
+			}
 		}
 
 		private void ReEvaluateAnimation(KeyFrameAnimation animation, float progress)
@@ -159,11 +187,30 @@ namespace Microsoft.UI.Composition
 				return;
 			}
 
-			foreach (var (key, value) in _animations)
+			// Snapshot keys before iterating: see the no-progress overload above for details.
+			var count = _animations.Count;
+			if (count == 0)
 			{
-				if (value == animation)
+				return;
+			}
+
+			var keys = ArrayPool<string>.Shared.Rent(count);
+			try
+			{
+				var i = 0;
+				foreach (var key in _animations.Keys)
 				{
-					var propertyName = key;
+					keys[i++] = key;
+				}
+
+				for (i = 0; i < count; i++)
+				{
+					if (_animations is null || !_animations.TryGetValue(keys[i], out var value) || value != animation)
+					{
+						continue;
+					}
+
+					var propertyName = keys[i];
 					ReadOnlySpan<char> firstPropertyName;
 					ReadOnlySpan<char> subPropertyName;
 					var firstDotIndex = propertyName.IndexOf('.');
@@ -180,6 +227,10 @@ namespace Microsoft.UI.Composition
 
 					this.SetAnimatableProperty(firstPropertyName, subPropertyName, animation.Evaluate(progress));
 				}
+			}
+			finally
+			{
+				ArrayPool<string>.Shared.Return(keys, clearArray: true);
 			}
 		}
 
@@ -228,6 +279,10 @@ namespace Microsoft.UI.Composition
 		internal void ResumeAnimation(KeyFrameAnimation animation)
 		{
 			animation.Resume();
+			// Subscribe exactly once: StartAnimation already subscribes ReEvaluateAnimation, so a
+			// Resume() on a running (never-paused) animation would otherwise double-subscribe and
+			// re-evaluate the property twice per frame. Removing first is a no-op when not subscribed.
+			animation.AnimationFrame -= ReEvaluateAnimation;
 			animation.AnimationFrame += ReEvaluateAnimation;
 		}
 

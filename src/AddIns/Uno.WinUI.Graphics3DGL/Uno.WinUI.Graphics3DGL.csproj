@@ -1,7 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
-		<TargetFrameworks Condition="'$(BuildGraphics3DGLForWindows)' != ''">$(TargetFrameworks);$(NetUWPOrWinUI)</TargetFrameworks>
+		<!-- Skia + mobile by default; the Windows samples head (BuildGraphics3DGLForWindows) builds
+		     Skia + WinUI only, since that CI agent has no Android/Apple mobile workloads. -->
+		<TargetFrameworks Condition="'$(BuildGraphics3DGLForWindows)' == ''">$(TargetFrameworks);$(NetAndroidPreviousAndCurrent);$(NetPreviousNetCoreApple)</TargetFrameworks>
+		<TargetFrameworks Condition="'$(BuildGraphics3DGLForWindows)' != ''">$(TargetFrameworks);$(NetUWPOrWinUI);$(NetCurrentUWPOrWinUI)</TargetFrameworks>
 
 		<RootNamespace>Uno.WinUI.Graphics3DGL</RootNamespace>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
@@ -24,6 +27,11 @@
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" PrivateAssets="all" />
 	</ItemGroup>
 
+	<!-- Windows-only sources (used only by the WinAppSDK target). -->
+	<ItemGroup>
+		<Compile Remove="Windows\**\*.cs" />
+	</ItemGroup>
+
 	<Choose>
 		<!-- Android -->
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'">
@@ -42,33 +50,29 @@
 			<PropertyGroup>
 				<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
 
-				<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);WINDOWS_UWP</DefineConstants>
-				<DefineConstants Condition="'$(UNO_UWP_BUILD)'=='true'">$(DefineConstants);WINAPPSDK</DefineConstants>
 				<DefineConstants>$(DefineConstants);WINAPPSDK</DefineConstants>
 				<UseRidGraph>true</UseRidGraph>
 				<WindowsPackageType>None</WindowsPackageType>
 			</PropertyGroup>
 			<ItemGroup>
-				<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240227000" Condition="'$(UNO_UWP_BUILD)'!='true'" />
-				<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+				<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240227000" />
+				<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" PrivateAssets="all" />
 				<PackageReference Include="Uno.Core.Extensions.Disposables" />
 
-				<Compile Include="..\..\Uno.UI.Runtime.Skia.Wpf\Rendering\WindowsRenderingNativeMethods.cs" />
-				<Compile Include="..\..\Uno.UI.Runtime.Skia.Wpf\Extensions\WpfNativeOpenGLWrapper.cs" />
+				<Compile Include="Windows\WindowsRenderingNativeMethods.cs" />
+				<Compile Include="Windows\WinUINativeOpenGLWrapper.cs" />
 				<Compile Include="..\..\Uno.UI\Graphics\INativeOpenGLWrapper.cs" />
 			</ItemGroup>
 		</When>
 	</Choose>
 
 	<PropertyGroup>
-		<DefineConstants Condition="$(UNO_UWP_BUILD) == true">$(DefineConstants);UNO_UWP_BUILD</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup>
 		<DefaultItemExcludes>$(DefaultItemExcludes);angle/**</DefaultItemExcludes>
 	</PropertyGroup>
 
-	<Target Name="GetAngle" BeforeTargets="Build">
+	<Target Name="GetAngle"
+			Condition=" '$(TargetFramework)' == '$(NetUWPOrWinUI)' "
+			BeforeTargets="Build">
 		<DownloadFile
 			Condition="!exists('$(MSBuildThisFileDirectory)angle_binaries/osx/libEGL.dylib')"
 			SourceUrl="https://github.com/dotnet/Silk.NET/raw/a9c75a61528ee7b4e55442f5141cb132f10d72ff/src/Native/Silk.NET.OpenGLES.ANGLE.Native/runtimes/osx/native/libEGL.dylib"

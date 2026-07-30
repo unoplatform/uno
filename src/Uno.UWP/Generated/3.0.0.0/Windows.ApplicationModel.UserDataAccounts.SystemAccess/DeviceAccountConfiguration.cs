@@ -3,638 +3,638 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class DeviceAccountConfiguration
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountIconId AccountIconId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccountIconId DeviceAccountConfiguration.AccountIconId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountIconId%20DeviceAccountConfiguration.AccountIconId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AccountIconId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountIconId DeviceAccountConfiguration.AccountIconId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AccountIconId");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string AccountName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.AccountName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.AccountName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AccountName");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.AccountName");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AccountName");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool AlwaysDownloadFullMessage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.AlwaysDownloadFullMessage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.AlwaysDownloadFullMessage");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AlwaysDownloadFullMessage");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.AlwaysDownloadFullMessage");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AlwaysDownloadFullMessage");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string AuthenticationCertificateId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.AuthenticationCertificateId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.AuthenticationCertificateId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AuthenticationCertificateId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.AuthenticationCertificateId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AuthenticationCertificateId");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountAuthenticationType AuthenticationType
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccountAuthenticationType DeviceAccountConfiguration.AuthenticationType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountAuthenticationType%20DeviceAccountConfiguration.AuthenticationType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AuthenticationType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountAuthenticationType DeviceAccountConfiguration.AuthenticationType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AuthenticationType");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool AutoSelectAuthenticationCertificate
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.AutoSelectAuthenticationCertificate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.AutoSelectAuthenticationCertificate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AutoSelectAuthenticationCertificate");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.AutoSelectAuthenticationCertificate");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "AutoSelectAuthenticationCertificate");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool CalDavRequiresSsl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.CalDavRequiresSsl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.CalDavRequiresSsl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CalDavRequiresSsl");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.CalDavRequiresSsl");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CalDavRequiresSsl");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Uri CalDavServerUrl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri DeviceAccountConfiguration.CalDavServerUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20DeviceAccountConfiguration.CalDavServerUrl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CalDavServerUrl");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "Uri DeviceAccountConfiguration.CalDavServerUrl");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CalDavServerUrl");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountSyncScheduleKind CalDavSyncScheduleKind
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccountSyncScheduleKind DeviceAccountConfiguration.CalDavSyncScheduleKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountSyncScheduleKind%20DeviceAccountConfiguration.CalDavSyncScheduleKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CalDavSyncScheduleKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountSyncScheduleKind DeviceAccountConfiguration.CalDavSyncScheduleKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CalDavSyncScheduleKind");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool CalendarSyncEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.CalendarSyncEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.CalendarSyncEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CalendarSyncEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.CalendarSyncEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CalendarSyncEnabled");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool CardDavRequiresSsl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.CardDavRequiresSsl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.CardDavRequiresSsl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CardDavRequiresSsl");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.CardDavRequiresSsl");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CardDavRequiresSsl");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Uri CardDavServerUrl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri DeviceAccountConfiguration.CardDavServerUrl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20DeviceAccountConfiguration.CardDavServerUrl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CardDavServerUrl");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "Uri DeviceAccountConfiguration.CardDavServerUrl");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CardDavServerUrl");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountSyncScheduleKind CardDavSyncScheduleKind
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccountSyncScheduleKind DeviceAccountConfiguration.CardDavSyncScheduleKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountSyncScheduleKind%20DeviceAccountConfiguration.CardDavSyncScheduleKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CardDavSyncScheduleKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountSyncScheduleKind DeviceAccountConfiguration.CardDavSyncScheduleKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "CardDavSyncScheduleKind");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ContactsSyncEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.ContactsSyncEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.ContactsSyncEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "ContactsSyncEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.ContactsSyncEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "ContactsSyncEnabled");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DeviceAccountTypeId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.DeviceAccountTypeId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.DeviceAccountTypeId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountTypeId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.DeviceAccountTypeId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountTypeId");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool DoesPolicyAllowMailSync
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.DoesPolicyAllowMailSync is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.DoesPolicyAllowMailSync");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DoesPolicyAllowMailSync");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string Domain
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.Domain is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.Domain");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "Domain");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.Domain");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "Domain");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string EmailAddress
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.EmailAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.EmailAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "EmailAddress");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.EmailAddress");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "EmailAddress");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool EmailSyncEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.EmailSyncEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.EmailSyncEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "EmailSyncEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.EmailSyncEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "EmailSyncEnabled");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string IncomingServerAddress
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.IncomingServerAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.IncomingServerAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerAddress");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.IncomingServerAddress");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerAddress");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string IncomingServerCertificateHash
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.IncomingServerCertificateHash is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.IncomingServerCertificateHash");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerCertificateHash");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.IncomingServerCertificateHash");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerCertificateHash");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Credentials.PasswordCredential IncomingServerCredential
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential DeviceAccountConfiguration.IncomingServerCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20DeviceAccountConfiguration.IncomingServerCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "PasswordCredential DeviceAccountConfiguration.IncomingServerCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerCredential");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int IncomingServerPort
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int DeviceAccountConfiguration.IncomingServerPort is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20DeviceAccountConfiguration.IncomingServerPort");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerPort");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "int DeviceAccountConfiguration.IncomingServerPort");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerPort");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IncomingServerRequiresSsl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IncomingServerRequiresSsl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.IncomingServerRequiresSsl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerRequiresSsl");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IncomingServerRequiresSsl");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerRequiresSsl");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string IncomingServerUsername
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.IncomingServerUsername is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.IncomingServerUsername");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerUsername");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.IncomingServerUsername");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IncomingServerUsername");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsClientAuthenticationCertificateRequired
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsClientAuthenticationCertificateRequired");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsClientAuthenticationCertificateRequired");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsClientAuthenticationCertificateRequired");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsExternallyManaged
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsExternallyManaged is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.IsExternallyManaged");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsExternallyManaged");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsExternallyManaged");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsExternallyManaged");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsOutgoingServerAuthenticationEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsOutgoingServerAuthenticationEnabled");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationEnabled");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsOutgoingServerAuthenticationEnabled");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsOutgoingServerAuthenticationRequired
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsOutgoingServerAuthenticationRequired");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsOutgoingServerAuthenticationRequired");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsOutgoingServerAuthenticationRequired");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsSsoAuthenticationSupported
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsSsoAuthenticationSupported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.IsSsoAuthenticationSupported");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsSsoAuthenticationSupported");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsSyncScheduleManagedBySystem
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.IsSyncScheduleManagedBySystem is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.IsSyncScheduleManagedBySystem");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsSyncScheduleManagedBySystem");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.IsSyncScheduleManagedBySystem");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "IsSyncScheduleManagedBySystem");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountMailAgeFilter MailAgeFilter
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccountMailAgeFilter DeviceAccountConfiguration.MailAgeFilter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountMailAgeFilter%20DeviceAccountConfiguration.MailAgeFilter");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "MailAgeFilter");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountMailAgeFilter DeviceAccountConfiguration.MailAgeFilter");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "MailAgeFilter");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string OAuthRefreshToken
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OAuthRefreshToken is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.OAuthRefreshToken");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OAuthRefreshToken");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OAuthRefreshToken");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OAuthRefreshToken");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string OutgoingServerAddress
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OutgoingServerAddress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.OutgoingServerAddress");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerAddress");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OutgoingServerAddress");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerAddress");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string OutgoingServerCertificateHash
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OutgoingServerCertificateHash is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.OutgoingServerCertificateHash");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerCertificateHash");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OutgoingServerCertificateHash");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerCertificateHash");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.Credentials.PasswordCredential OutgoingServerCredential
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PasswordCredential DeviceAccountConfiguration.OutgoingServerCredential is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PasswordCredential%20DeviceAccountConfiguration.OutgoingServerCredential");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerCredential");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "PasswordCredential DeviceAccountConfiguration.OutgoingServerCredential");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerCredential");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int OutgoingServerPort
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int DeviceAccountConfiguration.OutgoingServerPort is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20DeviceAccountConfiguration.OutgoingServerPort");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerPort");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "int DeviceAccountConfiguration.OutgoingServerPort");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerPort");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool OutgoingServerRequiresSsl
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.OutgoingServerRequiresSsl is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.OutgoingServerRequiresSsl");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerRequiresSsl");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.OutgoingServerRequiresSsl");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerRequiresSsl");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string OutgoingServerUsername
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.OutgoingServerUsername is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.OutgoingServerUsername");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerUsername");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.OutgoingServerUsername");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "OutgoingServerUsername");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountServerType ServerType
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccountServerType DeviceAccountConfiguration.ServerType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountServerType%20DeviceAccountConfiguration.ServerType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "ServerType");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountServerType DeviceAccountConfiguration.ServerType");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "ServerType");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string SsoAccountId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string DeviceAccountConfiguration.SsoAccountId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceAccountConfiguration.SsoAccountId");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "SsoAccountId");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "string DeviceAccountConfiguration.SsoAccountId");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "SsoAccountId");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountSyncScheduleKind SyncScheduleKind
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DeviceAccountSyncScheduleKind DeviceAccountConfiguration.SyncScheduleKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceAccountSyncScheduleKind%20DeviceAccountConfiguration.SyncScheduleKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "SyncScheduleKind");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountSyncScheduleKind DeviceAccountConfiguration.SyncScheduleKind");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "SyncScheduleKind");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool WasIncomingServerCertificateHashConfirmed
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.WasIncomingServerCertificateHashConfirmed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.WasIncomingServerCertificateHashConfirmed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "WasIncomingServerCertificateHashConfirmed");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.WasIncomingServerCertificateHashConfirmed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "WasIncomingServerCertificateHashConfirmed");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool WasModifiedByUser
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.WasModifiedByUser is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.WasModifiedByUser");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "WasModifiedByUser");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.WasModifiedByUser");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "WasModifiedByUser");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool WasOutgoingServerCertificateHashConfirmed
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "WasOutgoingServerCertificateHashConfirmed");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "bool DeviceAccountConfiguration.WasOutgoingServerCertificateHashConfirmed");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "WasOutgoingServerCertificateHashConfirmed");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DeviceAccountConfiguration()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountConfiguration.DeviceAccountConfiguration()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration", "DeviceAccountConfiguration()");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountConfiguration.DeviceAccountConfiguration()

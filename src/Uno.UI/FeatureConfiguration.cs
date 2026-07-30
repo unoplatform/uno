@@ -17,6 +17,21 @@ namespace Uno.UI
 {
 	public static class FeatureConfiguration
 	{
+		/// <summary>
+		/// Configuration for collectible AssemblyLoadContext (secondary-app) teardown.
+		/// </summary>
+		public static class Alc
+		{
+			/// <summary>
+			/// When true, a failure to read an <see cref="System.Runtime.Loader.AssemblyLoadContext"/>'s
+			/// unload state (e.g. a future runtime renaming the private state field) throws instead of
+			/// silently falling back. The fallback keeps teardown leak-safe, but it would also let a
+			/// broken read silently degrade every ALC cleanup scenario — enable this in tests/CI so such
+			/// a regression fails loudly rather than going unnoticed. Defaults to false.
+			/// </summary>
+			public static bool ThrowOnUnloadStateReadFailure { get; set; }
+		}
+
 		public static class ApiInformation
 		{
 			/// <summary>
@@ -224,12 +239,30 @@ namespace Uno.UI
 			/// </summary>
 			public static bool IgnoreTextScaleFactor { get; set; }
 
-#if __ANDROID__ || __APPLE_UIKIT__
 			/// <summary>
 			/// Allows the user to limit the scale factor without having to ignore it.
 			/// </summary>
 			public static float? MaximumTextScaleFactor { get; set; }
-#endif
+
+			/// <summary>
+			/// Overrides the font fallback mechanism used to resolve typefaces for codepoints
+			/// that the requested font family cannot render. When <c>null</c> (the default),
+			/// the platform-registered service is used.
+			/// </summary>
+			/// <remarks>
+			/// Customers wanting to keep the built-in coverage but change how font bytes are obtained
+			/// (e.g. to avoid CORS restrictions on WebAssembly) typically supply a
+			/// <see cref="Microsoft.UI.Xaml.Documents.TextFormatting.CoverageTableFontFallbackService"/>
+			/// constructed with their own coverage table and stream provider.
+			/// </remarks>
+			public static Microsoft.UI.Xaml.Documents.TextFormatting.IFontFallbackService FallbackService { get; set; }
+
+			/// <summary>
+			/// Overrides the OS-reported text scale factor with a manual value.
+			/// When set, this value takes precedence over the OS-reported scale factor.
+			/// Useful for platforms without OS text scaling support (macOS, WASM, Linux FrameBuffer) or for testing.
+			/// </summary>
+			public static double? TextScaleFactor { get; set; }
 		}
 
 		public static class FrameworkElement
@@ -593,6 +626,18 @@ namespace Uno.UI
 			/// </summary>
 			public static List<(Stream dictionary, Stream affixes)> CustomSpellCheckDictionaries { get; set; }
 
+			/// <summary>
+			/// When set to <see langword="true"/>, disables the floating number pad popover that iOS 26
+			/// introduced for <c>UITextField</c> when a numeric keyboard is used on iPad (by setting
+			/// <c>UITextField.allowsNumberPadPopover</c> to <see langword="false"/>).
+			/// Defaults to <see langword="false"/> (native iOS 26 behavior is preserved).
+			/// </summary>
+			/// <remarks>
+			/// This is currently an iOS Skia-only feature and has no effect on other platforms or
+			/// on iOS versions prior to 26.
+			/// </remarks>
+			public static bool DisableNumberPadPopover { get; set; }
+
 #if __ANDROID__
 			/// <summary>
 			/// The legacy <see cref="Microsoft.UI.Xaml.Controls.TextBox.InputScope"/> prevents invalid input on hardware keyboard.
@@ -778,6 +823,55 @@ namespace Uno.UI
 
 		public static class WebView2
 		{
+			/// <summary>
+			/// Enables the platform-native developer tools for the <see cref="WebView2"/> control.
+			/// </summary>
+			/// <remarks>
+			/// <para>Defaults to <c>true</c> in DEBUG builds and <c>false</c> in RELEASE builds.</para>
+			/// <para>Per-platform behavior:</para>
+			/// <list type="bullet">
+			///   <item><description>Windows / Linux (Skia): toggles Chromium DevTools (right-click "Inspect" / F12).</description></item>
+			///   <item><description>iOS / Mac Catalyst / macOS: enables Safari Web Inspector against the <c>WKWebView</c> (requires iOS 16.4+, macOS 13.3+).</description></item>
+			///   <item><description>Android: enables Chrome DevTools remote debugging at <c>chrome://inspect</c>.</description></item>
+			///   <item><description>WebAssembly: no-op; use the host browser's developer tools.</description></item>
+			/// </list>
+			/// <para>Set this once during application startup before any <c>WebView2</c> is materialized.</para>
+			/// </remarks>
+			public static bool EnableDevTools { get; set; }
+#if DEBUG
+				= true;
+#endif
+
+			/// <summary>
+			/// Enables single sign-on using the OS primary account (for example the Microsoft Entra ID / Azure AD
+			/// account the user is signed into Windows with) when the <see cref="Microsoft.UI.Xaml.Controls.WebView2"/> authenticates against
+			/// supporting resources.
+			/// </summary>
+			/// <remarks>
+			/// <para><b>Windows (Skia Desktop) only.</b> The value is passed to the underlying CoreWebView2 environment
+			/// options when the environment is first created. It is a no-op on every other target, and on the Windows
+			/// App SDK (WinUI) target where SSO is configured through <c>CoreWebView2EnvironmentOptions</c> directly.</para>
+			/// <para>Must be set once during application startup, before any <c>WebView2</c> is materialized. The
+			/// CoreWebView2 environment is shared process-wide per user-data folder, so changing this after the first
+			/// <c>WebView2</c> is created has no effect (and creating a second environment with different options throws).</para>
+			/// <para>Defaults to <c>false</c>, matching the WebView2 default.</para>
+			/// </remarks>
+			public static bool AllowSingleSignOnUsingOSPrimaryAccount { get; set; }
+
+			/// <summary>
+			/// Additional command-line switches passed to the browser process backing the <see cref="Microsoft.UI.Xaml.Controls.WebView2"/>
+			/// (for example proxy configuration or Chromium feature flags), useful in locked-down or managed environments.
+			/// </summary>
+			/// <remarks>
+			/// <para><b>Windows (Skia Desktop) only.</b> The value is applied to the underlying CoreWebView2 environment
+			/// options when the environment is first created. It is a no-op on every other target, and on the Windows
+			/// App SDK (WinUI) target where <c>CoreWebView2EnvironmentOptions.AdditionalBrowserArguments</c> is used directly.</para>
+			/// <para>Must be set once during application startup, before any <c>WebView2</c> is materialized (see
+			/// <see cref="AllowSingleSignOnUsingOSPrimaryAccount"/> for why). Refer to the WebView2 documentation for the
+			/// list of supported switches.</para>
+			/// </remarks>
+			public static string AdditionalBrowserArguments { get; set; }
+
 #if __IOS__ || UNO_REFERENCE_API
 			/// <summary>
 			/// Sets whether the <see cref="WebView2"/> object is inspectable or not.
@@ -786,7 +880,12 @@ namespace Uno.UI
 			/// On iOS and Catalyst this means that developers can use the Safari Web Developers tools to debug apps with <see cref="WebView2"/>
 			/// Important: It will only work when the app runs in Debug mode.
 			/// </remarks>
-			public static bool IsInspectable { get; set; }
+			[System.Obsolete("Use " + nameof(EnableDevTools) + " instead. This cross-platform flag controls the same behavior on all targets.")]
+			public static bool IsInspectable
+			{
+				get => EnableDevTools;
+				set => EnableDevTools = value;
+			}
 #endif
 		}
 
@@ -1003,6 +1102,45 @@ namespace Uno.UI
 			/// If null (default) use Metal if available, otherwise fallback to Software rendering.
 			/// </summary>
 			public static bool? UseMetalOnMacOS { get; set; }
+
+			/// <summary>
+			/// When true, painting of the visual tree is skipped entirely, producing frames with no
+			/// visual output. Frame scheduling, rendering events, composition animations and
+			/// <see cref="Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"/> keep working as usual.
+			/// Intended for scenarios where the visual output is of no interest (e.g. automated tests)
+			/// to save CPU/GPU. This flag is only effective on skia targets.
+			/// </summary>
+			public static bool SkipVisualTreePainting
+			{
+#if __SKIA__
+				get => Compositor.SkipVisualTreePainting;
+				set => Compositor.SkipVisualTreePainting = value;
+#else
+				get => false;
+				set { }
+#endif
+			}
+
+			/// <summary>
+			/// When damage-region rendering is active, visually highlights the regions being
+			/// repainted each frame, for tuning and debugging. This is a diagnostic aid only.
+			/// </summary>
+			public static bool DamageRegionOverlay { get; set; }
+		}
+
+		public static class ElementRefHandle
+		{
+			/// <summary>
+			/// Accessing the element ref handle registry must only happen on the UI thread.
+			/// By default, attempting to access it from a non-UI thread throws an
+			/// <see cref="InvalidOperationException"/>.
+			/// <para>
+			/// Setting this to <see langword="true"/> suppresses that exception.
+			/// This is intended only for unit-test environments where a real UI thread is not
+			/// available. Do not set this in production code.
+			/// </para>
+			/// </summary>
+			public static bool DisableThreadingCheck { get; internal set; }
 		}
 
 		public static class DependencyProperty

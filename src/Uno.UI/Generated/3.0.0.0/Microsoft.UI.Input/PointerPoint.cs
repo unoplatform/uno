@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class PointerPoint
@@ -15,11 +15,18 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property Position
 		// Skipping already declared property Properties
 		// Skipping already declared property Timestamp
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Input.PointerPoint GetCurrentPoint(uint pointerId)
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.PointerPoint", "GetCurrentPoint(uint pointerId)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Input.PointerPoint GetTransformedPoint(global::Microsoft.UI.Input.IPointerPointTransform transform)
 		{
-			throw new global::System.NotImplementedException("The member PointerPoint PointerPoint.GetTransformedPoint(IPointerPointTransform transform) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointerPoint%20PointerPoint.GetTransformedPoint%28IPointerPointTransform%20transform%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.PointerPoint", "GetTransformedPoint(IPointerPointTransform transform)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.PointerPoint.FrameId.get

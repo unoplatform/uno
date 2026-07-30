@@ -5,6 +5,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using SkiaSharp;
+using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
@@ -22,7 +23,7 @@ using Window = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCorePointerInputSource
+internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCorePointerInputSource, IAccessibilityOwner
 {
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly MacOSWindowNative _nativeWindow;
@@ -32,10 +33,13 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private readonly GRContext? _context;
 	private SKBitmap? _bitmap;
 	private SKSurface? _surface;
+	private readonly RetainedLayer _retainedLayer = new();
 	private int _rowBytes;
 	private bool _initializationCompleted;
 	private string? _lastSvgClipPath;
 	private Size _nativeWindowSize;
+	private MacOSAccessibility? _accessibility;
+	private bool _accessibilityBuildQueued;
 
 	public MacOSWindowHost(MacOSWindowNative nativeWindow, Window winUIWindow, XamlRoot xamlRoot)
 	{
@@ -100,15 +104,15 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		// we can't cache anything since the texture will be different on next calls
-		GRBackendRenderTarget? target = null;
-		SKSurface? surface = null;
-		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(null, size =>
+		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(
+			_retainedLayer.Surface?.Canvas,
+			size => _retainedLayer.EnsureSurface(_context!, (int)size.Width, (int)size.Height, SKColors.Transparent).Canvas);
+
+		using (var target = new GRBackendRenderTarget((int)nativeWidth, (int)nativeHeight, new GRMtlTextureInfo(texture)))
+		using (var swapchainSurface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888))
 		{
-			target = new GRBackendRenderTarget((int)size.Width, (int)size.Height, new GRMtlTextureInfo(texture));
-			surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
-			return surface.Canvas;
-		});
+			_retainedLayer.Present(swapchainSurface);
+		}
 
 		var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
 		if (clip != _lastSvgClipPath)
@@ -122,8 +126,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		}
 
 		_context?.Flush();
-		target?.Dispose();
-		surface?.Dispose();
 	}
 
 	private unsafe void SoftDraw(double nativeWidth, double nativeHeight, nint* data, int* rowBytes, int* size)
@@ -147,7 +149,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(null, size =>
+		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 		{
 			_bitmap?.Dispose();
 			_surface?.Dispose();
@@ -196,11 +198,92 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		NativeUno.uno_set_window_close_callbacks(&WindowShouldClose, &WindowClose);
 
+		NativeUno.uno_set_ime_callbacks(&OnImeInsertText, &OnImeSetMarkedText, &OnImeUnmarkText, &OnImeGetCaretRect);
+
 		NativeUno.uno_set_window_screen_change_callbacks(&ScreenChanged, &ScreenParametersChanged);
 		ApiExtensibility.Register(typeof(IDisplayInformationExtension), o => new MacOSDisplayInformationExtension(o));
 	}
 
 	public UIElement? RootElement => _winUIWindow.RootElement;
+
+	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
+
+	internal nint NativeWindowHandle => _nativeWindow.Handle;
+
+	internal void InitializeAccessibility()
+	{
+		if (_accessibility is not null || _nativeWindow.Handle == nint.Zero)
+		{
+			return;
+		}
+
+		_accessibility = new MacOSAccessibility(_nativeWindow.Handle);
+
+		if (_winUIWindow.RootElement is { } rootElement)
+		{
+			QueueTreeBuild(rootElement);
+		}
+		else
+		{
+			// Defer the tree build until the window is activated and has content.
+			_winUIWindow.Activated += OnWinUIWindowActivatedForAccessibility;
+		}
+	}
+
+	private void OnWinUIWindowActivatedForAccessibility(object sender, Microsoft.UI.Xaml.WindowActivatedEventArgs args)
+	{
+		// Sticky active-owner tracking (FR-007, research Decision 3): update on
+		// Activated (WA_ACTIVE / NSWindowDidBecomeMainNotification analog), never
+		// clear on Deactivated.
+		if (args.WindowActivationState != Windows.UI.Core.CoreWindowActivationState.Deactivated &&
+			_accessibility is not null)
+		{
+			AccessibilityRouter.SetActive(this);
+		}
+
+		if (_accessibility is not { IsAccessibilityEnabled: true })
+		{
+			return;
+		}
+
+		if (_winUIWindow.RootElement is { } rootElement)
+		{
+			QueueTreeBuild(rootElement);
+		}
+	}
+
+	private void QueueTreeBuild(UIElement rootElement)
+	{
+		if (_accessibilityBuildQueued)
+		{
+			return;
+		}
+		_accessibilityBuildQueued = true;
+
+		_ = rootElement.Dispatcher.RunAsync(
+			Windows.UI.Core.CoreDispatcherPriority.Low,
+			() =>
+			{
+				_accessibilityBuildQueued = false;
+				if (_accessibility is { IsAccessibilityEnabled: true })
+				{
+					_accessibility.BuildTree(rootElement);
+				}
+			});
+	}
+
+	internal void DisposeAccessibility()
+	{
+		if (_accessibility is not { } accessibility)
+		{
+			return;
+		}
+
+		_accessibility = null;
+		_winUIWindow.Activated -= OnWinUIWindowActivatedForAccessibility;
+		accessibility.Dispose();
+		AccessibilityRouter.NotifyDisposed(this);
+	}
 
 	void IXamlRootHost.InvalidateRender() => NativeUno.uno_window_invalidate(_nativeWindow.Handle);
 
@@ -213,6 +296,28 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	}
 
 	private static void Unregister(nint handle) => _windows.Remove(handle);
+
+	/// <summary>
+	/// Returns the native window handle for the given XamlRoot, or 0 if not found.
+	/// Used by IME extension to activate/deactivate native IME routing.
+	/// </summary>
+	internal static nint GetNativeHandleForXamlRoot(XamlRoot? xamlRoot)
+	{
+		if (xamlRoot is null)
+		{
+			return 0;
+		}
+
+		foreach (var (handle, weak) in _windows)
+		{
+			if (weak.TryGetTarget(out var host) && host._xamlRoot == xamlRoot)
+			{
+				return handle;
+			}
+		}
+
+		return 0;
+	}
 
 	private static MacOSWindowHost? GetWindowHost(nint handle)
 	{
@@ -227,15 +332,31 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void MetalDraw(nint handle, double width, double height, nint texture)
 	{
-		var window = GetWindowHost(handle);
-		window?.MetalDraw(width, height, texture);
+		// This runs directly from a native callback, so an escaping managed exception would
+		// fail-fast the process. Route it through the recoverable handler like the other hosts.
+		try
+		{
+			var window = GetWindowHost(handle);
+			window?.MetalDraw(width, height, texture);
+		}
+		catch (Exception e)
+		{
+			ApplicationExtensions.RaiseRecoverableUnhandledExceptionOrLog(Application.Current, e, typeof(MacOSWindowHost));
+		}
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static unsafe void SoftDraw(nint handle, double width, double height, nint* data, int* rowBytes, int* size)
 	{
-		var window = GetWindowHost(handle);
-		window?.SoftDraw(width, height, data, rowBytes, size);
+		try
+		{
+			var window = GetWindowHost(handle);
+			window?.SoftDraw(width, height, data, rowBytes, size);
+		}
+		catch (Exception e)
+		{
+			ApplicationExtensions.RaiseRecoverableUnhandledExceptionOrLog(Application.Current, e, typeof(MacOSWindowHost));
+		}
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
@@ -339,6 +460,79 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		{
 			Application.Current.RaiseRecoverableUnhandledException(e);
 			return 0;
+		}
+	}
+
+	// IME (Input Method Editor) callbacks for NSTextInputClient composition support
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static unsafe void OnImeInsertText(nint handle, ushort* textPtr, int length)
+	{
+		try
+		{
+			var text = new string((char*)textPtr, 0, length);
+			if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Trace))
+			{
+				typeof(MacOSWindowHost).Log().Trace($"OnImeInsertText: '{text}'");
+			}
+			MacOSImeTextBoxExtension.Instance.OnInsertText(text);
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static unsafe void OnImeSetMarkedText(nint handle, ushort* textPtr, int length, int selectedStart, int selectedLength)
+	{
+		try
+		{
+			var text = length > 0 ? new string((char*)textPtr, 0, length) : string.Empty;
+			if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Trace))
+			{
+				typeof(MacOSWindowHost).Log().Trace($"OnImeSetMarkedText: '{text}' selected: [{selectedStart}..{selectedStart + selectedLength}]");
+			}
+			MacOSImeTextBoxExtension.Instance.OnSetMarkedText(text, selectedStart, selectedLength);
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnImeUnmarkText(nint handle)
+	{
+		try
+		{
+			if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Trace))
+			{
+				typeof(MacOSWindowHost).Log().Trace("OnImeUnmarkText");
+			}
+			MacOSImeTextBoxExtension.Instance.OnUnmarkText();
+		}
+		catch (Exception e)
+		{
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static unsafe void OnImeGetCaretRect(nint handle, double* x, double* y, double* width, double* height)
+	{
+		try
+		{
+			var rect = MacOSImeTextBoxExtension.Instance.GetCaretRect();
+			*x = rect.X;
+			*y = rect.Y;
+			*width = rect.Width;
+			*height = rect.Height;
+		}
+		catch (Exception e)
+		{
+			*x = *y = *width = *height = 0;
+			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
 

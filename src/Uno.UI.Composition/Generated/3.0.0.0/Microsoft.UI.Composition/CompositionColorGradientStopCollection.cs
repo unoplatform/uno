@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CompositionColorGradientStopCollection : global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.CompositionColorGradientStop>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IList<global::Microsoft.UI.Composition.CompositionColorGradientStop>, global::System.Collections.Generic.ICollection<global::Microsoft.UI.Composition.CompositionColorGradientStop>

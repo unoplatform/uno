@@ -21,6 +21,16 @@ public partial class HyperlinkButtonAutomationPeer : ButtonBaseAutomationPeer, P
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Hyperlink;
 
+	protected override object GetPatternCore(PatternInterface patternInterface)
+	{
+		if (patternInterface == PatternInterface.Invoke)
+		{
+			return this;
+		}
+
+		return base.GetPatternCore(patternInterface);
+	}
+
 	public void Invoke()
 	{
 		if (!IsEnabled())

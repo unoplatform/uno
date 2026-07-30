@@ -9,12 +9,11 @@ Migrating from .NET 9 to .NET 10 is a generally straightforward process. Below a
 To upgrade to .NET 10:
 
 - First, read [What's New in .NET 10](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-10/overview).
-- Use **[.NET 10 RC1](https://devblogs.microsoft.com/dotnet/dotnet-10-rc-1/)** along with:
-  - **Visual Studio** - the latest version of [Visual Studio 2026 Insiders](https://visualstudio.microsoft.com/insiders/), as recommended by Microsoft in their [announcement](https://devblogs.microsoft.com/dotnet/dotnet-10-rc-1/#🚀-get-started).
-    Use version **18.0.0 [11104.47]** or later to ensure compatibility with the [latest stable Uno Platform extension](https://aka.platform.uno/vs-extension-marketplace).
-  - **Visual Studio Code** - the latest version of [Visual Studio Code](https://code.visualstudio.com/Download) and the [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) extension, also recommended by Microsoft in the same [announcement](https://devblogs.microsoft.com/dotnet/dotnet-10-rc-1/#🚀-get-started).
+- Install the **.NET 10 SDK** and ensure your IDE is up to date:
+  - **Visual Studio** - the latest stable version of [Visual Studio 2026](https://visualstudio.microsoft.com/), which includes native .NET 10 support.
+  - **Visual Studio Code** - the latest version of [Visual Studio Code](https://code.visualstudio.com/Download) and the [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) extension.
   - **Rider** - the latest stable version, as .NET 10 support has been available since [Rider 2025.1](https://www.jetbrains.com/rider/whatsnew/2025-1/).
-- Run the latest stable version of [uno.check](xref:UnoCheck.UsingUnoCheck) with the [`--pre-major` parameter](https://aka.platform.uno/uno-check-pre-major) to install .NET 10.
+- Run the latest stable version of [uno.check](xref:UnoCheck.UsingUnoCheck) to install the required .NET 10 workloads.
 - Uno Platform provides an updated [Visual Studio extension](https://aka.platform.uno/vs-extension-marketplace) in the store that supports Visual Studio 2026 and the new `.slnx` solution format.
 - Change all your target framework (TFM) references from `net9.0` to `net10.0`, and from `net9.0-*` to `net10.0-*`.
 - Clean your project by deleting the `bin` and `obj` folders.

@@ -113,12 +113,9 @@ public partial class BindingTests
 
 		using (ThemeHelper.UseDarkTheme())
 		{
-#if WINAPPSDK
+			// A {ThemeResource} FallbackValue now re-resolves against the owner element's effective theme on
+			// theme change, matching WinUI — even with no DataContext (the binding applies its FallbackValue).
 			Assert.AreEqual(Microsoft.UI.Colors.Green, ((SolidColorBrush)myBtn.Foreground).Color);
-#else
-			// WRONG behavior!
-			Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
-#endif
 		}
 
 		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);

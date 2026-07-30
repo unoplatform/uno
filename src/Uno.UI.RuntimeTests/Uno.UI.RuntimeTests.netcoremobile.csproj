@@ -19,12 +19,13 @@
 		-->
 		<NoWarn>$(NoWarn);NU1703;CS0105</NoWarn>
 
-		<!--
-		Ignore duplicate namespace that may after the WinUI conversion
-		-->
-		<NoWarn Condition="'$(UNO_UWP_BUILD)'=='false'">$(NoWarn);CS0105</NoWarn>
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 		<NoWarn>$(NoWarn);CS1998</NoWarn>
+		<!--
+		error IL2111: Method 'MUXControlsTestApp.UtilitiesTemp.ControlStateViewer.ControlType.set' with parameters or return value with `DynamicallyAccessedMembersAttribute` is accessed via reflection. Trimmer can't guarantee availability of the requirements of the method.
+		  (within a generated `__PreserveProperties(new ControlStateViewer {…})` invocation; doesn't make sense!)
+		  -->
+		<NoWarn>$(NoWarn);IL2111</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup Label="GlobalUsings">
@@ -97,13 +98,13 @@
 		<EmbeddedResource Include="Assets\UnoA4_Protected.png" />
 	</ItemGroup>
 
-	<!-- Multiwindowing is only supported on Uno.WinUI -->
-	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
-		<Compile Remove="$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\Controls\Multiwindow\**\*.xaml.cs" />
+	<!-- The Skia/WASM accessibility semantic-DOM tests use composition APIs (UIElement.Visual) that
+	     don't exist on native mobile, so they don't compile there and aren't applicable (native
+	     surfaces accessibility through native views). Exclude them from the native mobile head. -->
+	<ItemGroup>
+		<Compile Remove="Tests\Windows_UI_Xaml_Automation\Given_Accessible*.cs" />
+		<Compile Remove="Tests\Windows_UI_Xaml_Automation\WasmSemanticDomHelper.cs" />
 	</ItemGroup>
-	<PropertyGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
-		<PageExclusions>$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\Controls\Multiwindow\**\*.xaml</PageExclusions>
-	</PropertyGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />

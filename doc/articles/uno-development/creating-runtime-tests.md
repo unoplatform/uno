@@ -69,12 +69,12 @@ public void When_Test_Not_Supported_On_Mobile()
 The `RuntimeTestPlatforms` enum includes the following platforms:
 
 - **Native platforms**: `NativeWinUI`, `NativeWasm`, `NativeAndroid`, `NativeIOS`, `NativeMacCatalyst`, `NativeTvOS`
-- **Skia platforms**: `SkiaWpf`, `SkiaWin32`, `SkiaX11`, `SkiaMacOS`, `SkiaIslands`, `SkiaWasm`, `SkiaAndroid`, `SkiaIOS`, `SkiaMacCatalyst`, `SkiaTvOS`, `SkiaFrameBuffer`
+- **Skia platforms**: `SkiaWin32`, `SkiaX11`, `SkiaMacOS`, `SkiaIslands`, `SkiaWasm`, `SkiaAndroid`, `SkiaIOS`, `SkiaMacCatalyst`, `SkiaTvOS`, `SkiaFrameBuffer`
 - **Combined platforms**:
   - `NativeUIKit` (NativeIOS | NativeTvOS | NativeMacCatalyst)
   - `SkiaUIKit` (SkiaIOS | SkiaTvOS | SkiaMacCatalyst)
   - `SkiaMobile` (SkiaAndroid | SkiaUIKit)
-  - `SkiaDesktop` (SkiaWpf | SkiaWin32 | SkiaX11 | SkiaMacOS | SkiaIslands | SkiaFrameBuffer)
+  - `SkiaDesktop` (SkiaWin32 | SkiaX11 | SkiaMacOS | SkiaIslands | SkiaFrameBuffer)
   - `Skia` (SkiaDesktop | SkiaWasm | SkiaMobile)
   - `Native` (NativeWasm | NativeAndroid | NativeIOS | NativeMacCatalyst | NativeTvOS | NativeWinUI)
   - `Wasm` (NativeWasm | SkiaWasm)

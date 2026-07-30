@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml
 		/// Represents a key for the source dictionary
 		/// </summary>
 		[DebuggerDisplay("Key={Key}")]
-		public readonly struct ResourceKey
+		public readonly struct ResourceKey : IEquatable<ResourceKey>
 		{
 			public readonly string Key;
 			public readonly Type TypeKey;
@@ -104,6 +104,15 @@ namespace Microsoft.UI.Xaml
 			public bool Equals(in ResourceKey other)
 				=> TypeKey == other.TypeKey && Key == other.Key;
 
+			// IEquatable + GetHashCode/Equals(object) overrides so ResourceKey is compared without the
+			// reflection-based ValueType fallback (and boxing) when used as a key — directly, or as part of
+			// a composite ValueTuple key such as ThemeWalkResourceCache's (ResourceDictionary, Theme,
+			// ResourceKey) dictionary, which relies on the default EqualityComparer.
+			public bool Equals(ResourceKey other) => Equals(in other);
+
+			public override bool Equals(object obj) => obj is ResourceKey other && Equals(in other);
+
+			public override int GetHashCode() => (int)HashCode;
 
 			public static implicit operator ResourceKey(string key)
 				=> new ResourceKey(key);

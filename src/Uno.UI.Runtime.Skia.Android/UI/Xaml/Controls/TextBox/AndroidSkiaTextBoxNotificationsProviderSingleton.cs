@@ -23,7 +23,10 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 	{
 		if (ApplicationActivity.RenderView?.TextInputPlugin is { } textInputPlugin)
 		{
-			textInputPlugin.ShowTextInput(textBox);
+			if (CouldRequireKeyboard(textBox))
+			{
+				textInputPlugin.ShowTextInput(textBox);
+			}
 			textInputPlugin.NotifyViewEntered(textBox, textBox.GetHashCode());
 		}
 	}
@@ -90,9 +93,11 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 
 	private static bool CouldRequireKeyboard(FrameworkElement? element)
 	{
-		return element
-			is TextBox
-			or AutoSuggestBox
-			or NumberBox;
+		return element switch
+		{
+			TextBox textBox => !textBox.IsReadOnly,
+			AutoSuggestBox or NumberBox => true,
+			_ => false,
+		};
 	}
 }

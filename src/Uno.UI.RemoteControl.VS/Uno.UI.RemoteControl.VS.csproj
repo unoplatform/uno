@@ -30,6 +30,9 @@
 
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem.Managed" Version="2.0.6142705" />
 		<PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.4.33103.184" ExcludeAssets="runtime" />
+		<!-- Roslyn workspace access for the batched hot-reload readiness wait (spec 052).
+		     Compile-time only: the assemblies are provided by Visual Studio at runtime. -->
+		<PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="4.4.0" ExcludeAssets="runtime" />
 		
 		<!--
 		Uno Studio.Extension is relying on this package:
@@ -46,10 +49,9 @@
 		<PackageReference Include="Microsoft.Bcl.TimeProvider" Version="9.0.9" />
 
 		<PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.7.2196" />
-		<PackageReference Include="Newtonsoft.Json" />
 		<PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="17.0.1313-pre" />
-		<PackageReference Include="MessagePack" Version="3.1.4" />
+		<PackageReference Include="MessagePack" Version="3.1.7" />
 		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
 		<PackageReference Include="PolySharp" Version="1.14.1">
 			<PrivateAssets>all</PrivateAssets>
@@ -66,8 +68,7 @@
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
-			<_OverridePackageId>uno.ui</_OverridePackageId>
-			<_OverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">uno.winui</_OverridePackageId>
+			<_OverridePackageId>uno.winui</_OverridePackageId>
 			<_UnoOverrideTargetVSVersion>16.0</_UnoOverrideTargetVSVersion>
 			<_UnoOverrideTargetVSVersion Condition="'$(TargetFramework)'=='net48'">17.0</_UnoOverrideTargetVSVersion>
 			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_OverridePackageId).devServer\$(UnoNugetOverrideVersion)\tools\rc\$(_UnoOverrideTargetVSVersion)</_TargetNugetFolder>

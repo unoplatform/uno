@@ -9,7 +9,9 @@
 
 	<Page.Resources>
 		<DataTemplate x:Key="MyDataTemplate" x:DataType="local:MainPage">
-			<Button Content="Hello" />
+			<Border>
+				<Button x:Name="HelloButton" Content="Hello" />
+			</Border>
 		</DataTemplate>
 	</Page.Resources>
 

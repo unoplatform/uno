@@ -1,6 +1,7 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
+using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
@@ -25,7 +26,7 @@ public partial class ProgressBarAutomationPeer : RangeBaseAutomationPeer, IRange
 		return base.GetPatternCore(patternInterface);
 	}
 
-	protected override string GetClassNameCore() => nameof(ProgressBar);
+	protected override string GetClassNameCore() => typeof(ProgressBar).FullName!;
 
 	protected override string GetNameCore()
 	{
@@ -35,15 +36,15 @@ public partial class ProgressBarAutomationPeer : RangeBaseAutomationPeer, IRange
 		{
 			if (progressBar.ShowError)
 			{
-				return "Error" + name;
+				return ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ProgressBarErrorStatus) + name;
 			}
 			else if (progressBar.ShowPaused)
 			{
-				return "Busy" + name;
+				return ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ProgressBarPausedStatus) + name;
 			}
 			else if (progressBar.IsIndeterminate)
 			{
-				return "Paused" + name;
+				return ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ProgressBarIndeterminateStatus) + name;
 			}
 		}
 		return name;
@@ -65,5 +66,5 @@ public partial class ProgressBarAutomationPeer : RangeBaseAutomationPeer, IRange
 
 	double IRangeValueProvider.Maximum => GetImpl().Maximum;
 
-	void IRangeValueProvider.SetValue(double value) => GetImpl().Value = value;
+	void IRangeValueProvider.SetValue(double value) => throw new ElementNotEnabledException();
 }

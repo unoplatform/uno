@@ -1,6 +1,5 @@
 parameters:
   vmLinuxPool: ''
-  UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
 
 jobs:
@@ -15,7 +14,6 @@ jobs:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
 
-    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
     # Disable analyzers for eligible projects in samples to improve performance
@@ -48,7 +46,8 @@ jobs:
       flattenFolders: false
 
   - pwsh: |
-      $artifactName = "uitests-android-coreclr-skia-build-$env:XAML_FLAVOR_BUILD-attempt$env:SYSTEM_JOBATTEMPT"
+      $artifactName = "samplesapp-android-skia-coreclr"
+      if ([int]$env:SYSTEM_JOBATTEMPT -gt 1) { $artifactName += "-attempt$env:SYSTEM_JOBATTEMPT" }
       Write-Host "Publishing Android CoreCLR artifact: $artifactName"
       Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName]$artifactName"
       Write-Host "##vso[task.setvariable variable=SamplesAppArtifactName;isOutput=true]$artifactName"
@@ -67,5 +66,5 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)/logs
-      ArtifactName: skia-samples-app-binlog
+      ArtifactName: samplesapp-android-skia-coreclr-logs
       ArtifactType: Container

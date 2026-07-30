@@ -7,7 +7,7 @@ parameters:
 jobs:
 
 - job: Dotnet_Template_Tests_NetCoreMobile_windows
-  displayName: 'Windows Tests'
+  displayName: 'Windows' ## Name is concatenated with the matrix group name
   timeoutInMinutes: 120
   cancelTimeoutInMinutes: 0
 
@@ -15,13 +15,13 @@ jobs:
 
   strategy:
     matrix:
-      group_1:
+      'Tests 1':
         TestGroup: '1'
-      group_2:
+      'Tests 2':
         TestGroup: '2'
-      group_3:
+      'Tests 3':
         TestGroup: '3'
-      group_4:
+      'Tests 4':
         TestGroup: '4'
 
   variables:
@@ -31,7 +31,7 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: 'Nuget_Packages'
+      artifactName: 'nuget-packages'
 
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-mobile-install-windows.yml
@@ -42,7 +42,7 @@ jobs:
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
     inputs:
-      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      SourceFolder: '$(System.ArtifactsDirectory)/nuget-packages/vslatest'
       Contents: '*.nupkg'
       TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
       OverWrite: true
@@ -63,11 +63,11 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
-      ArtifactName: template-tests-binlogs-windows
+      ArtifactName: template-tests-windows-logs
       ArtifactType: Container
 
 - job: Dotnet_Template_Tests_NetCoreMobile_macos
-  displayName: 'macOS Tests'
+  displayName: 'macOS' ## Name is concatenated with the matrix group name
   timeoutInMinutes: 120
   cancelTimeoutInMinutes: 0
 
@@ -76,13 +76,13 @@ jobs:
 
   strategy:
     matrix:
-      group_1:
+      'Tests 1':
         TestGroup: '1'
-      group_2:
+      'Tests 2':
         TestGroup: '2'
-      group_3:
+      'Tests 3':
         TestGroup: '3'
-      group_4:
+      'Tests 4':
         TestGroup: '4'
 
   variables:
@@ -92,7 +92,7 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: 'Nuget_Packages'
+      artifactName: 'nuget-packages'
 
   # Install android 35 as we're running on macos-15
   - bash: |
@@ -111,16 +111,16 @@ jobs:
 
   # Required to run netprevious tests
   - task: UseDotNet@2
-    displayName: Install .NET 9 SDK
+    displayName: Install .NET 10 SDK
     inputs:
       packageType: 'sdk'
-      version: '9.0.300'
+      version: '10.0.105'
       installationPath: $(DOTNET_INSTALL_DIR)
 
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
     inputs:
-      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      SourceFolder: '$(System.ArtifactsDirectory)/nuget-packages/vslatest'
       Contents: '*.nupkg'
       TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
       OverWrite: true
@@ -140,23 +140,23 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
-      ArtifactName: template-tests-binlogs-macos
+      ArtifactName: template-tests-macos-logs
       ArtifactType: Container
 
 - job: Dotnet_Template_Tests_net7_Linux
-  displayName: 'Linux Tests'
+  displayName: 'Linux' ## Name is concatenated with the matrix group name
 
   pool: ${{ parameters.vmPoolLinux }}
 
   strategy:
     matrix:
-      group_0:
+      'Tests 0':
         TestGroup: '0'
-      group_1:
+      'Tests 1':
         TestGroup: '1'
-      group_2:
+      'Tests 2':
         TestGroup: '2'
-      group_3:
+      'Tests 3':
         TestGroup: '3'
 
   variables:
@@ -166,7 +166,7 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: 'Nuget_Packages'
+      artifactName: 'nuget-packages'
 
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-mobile-install-linux.yml
@@ -177,16 +177,16 @@ jobs:
 
   # Required to run netprevious tests
   - task: UseDotNet@2
-    displayName: Install .NET 9 SDK
+    displayName: Install .NET 10 SDK
     inputs:
       packageType: 'sdk'
-      version: '9.0.300'
+      version: '10.0.105'
       installationPath: $(DOTNET_INSTALL_DIR)
 
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
     inputs:
-      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      SourceFolder: '$(System.ArtifactsDirectory)/nuget-packages/vslatest'
       Contents: '*.nupkg'
       TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
       OverWrite: true
@@ -237,7 +237,7 @@ jobs:
     condition: always()
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
-      ArtifactName: template-tests-binlogs-net7-linux
+      ArtifactName: template-tests-linux-logs
       ArtifactType: Container
 
 
@@ -252,13 +252,13 @@ jobs:
 
   strategy:
     matrix:
-      hosted_ubuntu:
+      Linux:
         poolName: '${{ parameters.vmPoolLinux }}'
         vmImage:
-      hosted_windows:
+      Windows:
         poolName: '${{ parameters.poolName }}'
         vmImage:
-      macos:
+      macOS:
         vmImage: 'macOS-15' # explicit because of parsing issues with matrix and parameters
         poolName:
 
@@ -269,7 +269,7 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: 'Nuget_Packages'
+      artifactName: 'nuget-packages'
 
   # Install the .NET 10 SDK in the default system location so 
   # the devserver tests can find them.
@@ -286,7 +286,7 @@ jobs:
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
     inputs:
-      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      SourceFolder: '$(System.ArtifactsDirectory)/nuget-packages/vslatest'
       Contents: '*.nupkg'
       TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
       OverWrite: true
@@ -331,13 +331,13 @@ jobs:
 
   strategy:
     matrix:
-      hosted_ubuntu:
+      Linux:
         poolName: '${{ parameters.vmPoolLinux }}'
         vmImage:
-      hosted_windows:
+      Windows:
         poolName: '${{ parameters.poolName }}'
         vmImage:
-      macos:
+      macOS:
         vmImage: 'macOS-15'
         poolName:
 
@@ -347,7 +347,7 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: 'Nuget_Packages'
+      artifactName: 'nuget-packages'
 
   - task: UseDotNet@2
     displayName: Install .NET 10 SDK
@@ -362,7 +362,7 @@ jobs:
   - task: CopyFiles@2
     displayName: Copy Artifacts to PackageCache
     inputs:
-      SourceFolder: '$(System.ArtifactsDirectory)/Nuget_Packages/vslatest'
+      SourceFolder: '$(System.ArtifactsDirectory)/nuget-packages/vslatest'
       Contents: '*.nupkg'
       TargetFolder: '$(Build.SourcesDirectory)/src/PackageCache'
       OverWrite: true

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewHelper.h, commit 2ec9b1c
+// MUX reference NavigationViewHelper.h, commit bac7a9c33
 
 using Microsoft.UI.Xaml;
 
@@ -31,7 +31,6 @@ internal enum NavigationViewPropagateTarget
 	All
 }
 
-// TODO:
 internal class NavigationViewItemHelper
 {
 	internal const string c_OnLeftNavigationReveal = "OnLeftNavigationReveal";
@@ -62,4 +61,4 @@ internal class NavigationViewItemHelper<T>
 	private UIElement m_selectionIndicator;
 
 	private const string c_selectionIndicatorName = "SelectionIndicator";
-};
+}

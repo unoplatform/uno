@@ -22,7 +22,8 @@ public partial class TextBlockAutomationPeer : FrameworkElementAutomationPeer
 
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
-		if (patternInterface == PatternInterface.Text)
+		if (patternInterface == PatternInterface.Text
+			|| patternInterface == PatternInterface.Text2)
 		{
 			if (m_textPattern == null)
 			{

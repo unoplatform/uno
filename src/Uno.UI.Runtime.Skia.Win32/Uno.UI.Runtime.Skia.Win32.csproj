@@ -10,7 +10,7 @@
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<Description>This package provides the platform support for Skia in Uno Platform projects.</Description>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Win32</PackageId>
+		<PackageId>Uno.WinUI.Runtime.Skia.Win32</PackageId>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 
@@ -30,6 +30,15 @@
 		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
 		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="Uno.icu-win" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net10.0'))">
+		<PackageReference Include="WebView2Aot" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" PrivateAssets="All" />
+		<AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.txt" />
 	</ItemGroup>
 
 	<ItemGroup>

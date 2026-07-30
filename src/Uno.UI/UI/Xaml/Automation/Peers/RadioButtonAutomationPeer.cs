@@ -20,13 +20,16 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 		protected override object GetPatternCore(PatternInterface patternInterface)
 		{
+			// MUX Reference: RadioButtonAutomationPeer_Partial.cpp GetPatternCore.
+			// RadioButton exposes ONLY SelectionItem — it does NOT inherit Toggle
+			// from ToggleButtonAutomationPeer. Returning null for non-SelectionItem
+			// patterns prevents Toggle/etc from leaking through the base chain.
 			if (patternInterface == PatternInterface.SelectionItem)
 			{
 				return this;
 			}
 
-			// Must call base to preserve Toggle pattern from ToggleButtonAutomationPeer
-			return base.GetPatternCore(patternInterface);
+			return null;
 		}
 
 		protected override string GetClassNameCore() => "RadioButton";

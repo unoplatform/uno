@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Collections;
+using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
@@ -32,6 +33,12 @@ namespace Microsoft.UI.Xaml
 		// Ensures peer identity is stable across calls so that reference
 		// comparisons (e.g. HasKeyboardFocusImpl, SetFocusHelper) work correctly.
 		private AutomationPeer? _uiElementAutomationPeer;
+
+		/// <summary>
+		/// Returns the cached automation peer without creating one. Used for raising
+		/// property change notifications only on elements that already have peers.
+		/// </summary>
+		internal AutomationPeer? CachedAutomationPeer => _uiElementAutomationPeer;
 
 		/// <summary>
 		/// Set to True when the imminent Focus(FocusState) call needs to use an animation if bringing the focused
@@ -149,10 +156,21 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		//UNO TODO: Implement GetClickablePointRasterizedClient on UIElement
 		internal Point GetClickablePointRasterizedClient()
 		{
-			return new Point();
+#if __SKIA__
+			var bounds = GetGlobalBoundsWithOptions(
+				ignoreClipping: false,
+				ignoreClippingOnScrollContentPresenters: false,
+				useTargetInformation: false,
+				skipPostPaintingClipping: false);
+
+			return bounds.Width > 0 && bounds.Height > 0
+				? new Point(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2)
+				: default;
+#else
+			return default;
+#endif
 		}
 
 		//TODO:MZ: Implement all these in appropriate places :-)
@@ -820,13 +838,92 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		//UNO TODO: Implement GetGlobalBoundsWithOptions on UIElement
+#if __SKIA__
+		// Reused per-thread so the automation/IsOffscreen path doesn't allocate a native SKPath per call.
+		// GetTotalClipPath rewinds it at the root, so no explicit reset is needed here.
+		[ThreadStatic]
+		private static SkiaSharp.SKPath? _globalBoundsClipScratch;
+#endif
+
 		internal Rect GetGlobalBoundsWithOptions(bool ignoreClipping, bool ignoreClippingOnScrollContentPresenters, bool useTargetInformation)
+			=> GetGlobalBoundsWithOptions(
+				ignoreClipping,
+				ignoreClippingOnScrollContentPresenters,
+				useTargetInformation,
+				skipPostPaintingClipping: true);
+
+		private Rect GetGlobalBoundsWithOptions(
+			bool ignoreClipping,
+			bool ignoreClippingOnScrollContentPresenters,
+			bool useTargetInformation,
+			bool skipPostPaintingClipping)
 		{
-			return new Rect();
+#if __SKIA__
+			if (!IsInLiveTree)
+			{
+				return default;
+			}
+
+			var size = Visual.Size;
+			if (size.X <= 0 || size.Y <= 0)
+			{
+				return default;
+			}
+
+			var transform = GetTransform(from: this, to: null);
+			var localRect = new Rect(0, 0, size.X, size.Y);
+			var globalBounds = transform.Transform(localRect);
+
+			if (!ignoreClipping)
+			{
+				// Intersect with the effective clip applied by ancestors (e.g. a ScrollViewer's viewport).
+				// Without this, an element scrolled out of view still reports non-empty bounds and is
+				// wrongly considered on-screen (IsOffscreen == false).
+				// TODO: ignoreClippingOnScrollContentPresenters is not yet honored separately. Every caller
+				// currently passes false, so the full ancestor clip (including ScrollContentPresenters) applies.
+				var clipPath = _globalBoundsClipScratch ??= new SkiaSharp.SKPath();
+				Visual.GetTotalClipPath(clipPath, skipPostPaintingClipping);
+				var clip = clipPath.Bounds;
+
+				var left = Math.Max(globalBounds.Left, clip.Left);
+				var top = Math.Max(globalBounds.Top, clip.Top);
+				var right = Math.Min(globalBounds.Right, clip.Right);
+				var bottom = Math.Min(globalBounds.Bottom, clip.Bottom);
+
+				// Clip to the window viewport too: the composition tree roots at an infinite clip,
+				// so off-window content (e.g. a Popup/Flyout) is otherwise reported as on-screen.
+				if (XamlRoot?.Size is { Width: > 0, Height: > 0 } viewport)
+				{
+					left = Math.Max(left, 0);
+					top = Math.Max(top, 0);
+					right = Math.Min(right, viewport.Width);
+					bottom = Math.Min(bottom, viewport.Height);
+				}
+
+				return right > left && bottom > top
+					? new Rect(left, top, right - left, bottom - top)
+					: default;
+			}
+
+			return globalBounds;
+#else
+			return default;
+#endif
 		}
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
+		// WinUI stores fIsProcessingEnterLeave (bit 15) in a DependencyObjectBitFields uint on
+		// CDependencyObject (corep.h:224-348; CDependencyObject.h:298). The per-object theme (m_theme) and
+		// the theme-walk bit (fIsProcessingThemeWalk, bit 16) now live on DependencyObjectStore, since WinUI
+		// carries them on every CDependencyObject — not just elements. See DependencyObjectStore.Theming.cs.
+		[Flags]
+		private enum UIElementFlag : uint
+		{
+			IsProcessingEnterLeave = 1 << 15, // WinUI CDependencyObject bit 15
+		}
+
+		private UIElementFlag _uiElementFlags;
+
 		// NOTE: This should actually be on DependencyObject, not UIElement.
 		// We'll be able to do it once DependencyObject is a class instead of an interface.
 		internal void Enter(EnterParams @params, int depth)
@@ -1002,121 +1099,44 @@ namespace Microsoft.UI.Xaml
 
 		}
 
-		private void DependencyObject_EnterImpl(EnterParams @params)
+		// MUX Reference: CDependencyObject ActivateImpl/DeactivateImpl — the UIElement side of
+		// m_bitFields.fLive, dispatched from DependencyObjectStore (DependencyObjectStore.mux.cs).
+		// The Depth reset on deactivation is Uno-specific bookkeeping for the enhanced lifecycle.
+		internal void ActivateImpl()
 		{
-			if (@params.IsLive)
+			IsActiveInVisualTree = true;
+		}
+
+		internal void DeactivateImpl()
+		{
+			Depth = int.MinValue;
+			IsActiveInVisualTree = false;
+		}
+
+		// MUX Reference: CUIElement::NotifyThemeChangedCore — uielement.cpp:14483-14508
+		internal virtual void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
+		{
+			// TODO Uno: NOT PORTED — "Set opacity dirty to ensure it is correct when having
+			// HighContrastAdjustment opacity overrides." (CUIElement::NWSetOpacityDirty,
+			// uielement.cpp:14486) — HighContrastAdjustment rendering is not implemented.
+
+			// Notify element's properties that theme has changed
+			((IDependencyObjectStoreProvider)this).Store.NotifyThemeChangedCoreImpl(theme, forceRefresh);
+
+			// Recursively notify element subtree that theme has changed
+			// (indexed with Count re-read each iteration so the walk stays resilient if a child's
+			// NotifyThemeChanged mutates the collection)
+			for (var i = 0; i < _children.Count; i++)
 			{
-				if (!IsActiveInVisualTree)
+				// Uno-specific: an x:Load placeholder materializes its real element itself; walking it
+				// would force-touch deferred content. The materialized element is themed at Enter.
+				if (_children[i] is ElementStub)
 				{
-					IsActiveInVisualTree = true;
+					continue;
 				}
 
-				//m_checkForResourceOverrides = @params.fCheckForResourceOverrides;
+				_children[i].NotifyThemeChanged(theme, forceRefresh);
 			}
-
-			//if (!@params.SkipNameRegistration)
-			//{
-			//	if (!IsTemplateNamescopeMember())
-			//	{
-			//		RegisterName(pNamescopeOwner);
-			//		RegisterDeferredStandardNameScopeEntries(pNamescopeOwner);
-			//	}
-			//}
-
-			//if (HasDeferred())
-			//{
-			//	CDeferredMapping.NotifyEnter(
-			//		pNamescopeOwner,
-			//		this,
-			//		@params.fSkipNameRegistration);
-			//}
-
-			// Nothing else to do for value types and control/data templates.
-			//var pClassInfo = this.GetType();
-
-			//if (pClassInfo.IsValueType
-			//	|| pClassInfo == typeof(ControlTemplate)
-			//	|| pClassInfo == typeof(DataTemplate))
-			//{
-			//	return ;
-			//}
-
-			// Enumerate all the field-backed properties and enter/invoke as needed.
-			//EnterDependencyProperty pNullEnterProperty = MetadataAPI.GetNullEnterProperty();
-			//for (EnterDependencyProperty pEnterProperty = pClassInfo.GetFirstEnterProperty(); pEnterProperty != pNullEnterProperty; pEnterProperty = pEnterProperty.GetNextProperty())
-			//{
-			//	if (!pEnterProperty.DoNotEnterLeave())
-			//	{
-			//		if (pEnterProperty->IsObjectProperty())
-			//		{
-			//			DependencyObject pDO = MapPropertyAndGroupOffsetToDO(pEnterProperty->m_nOffset, pEnterProperty->m_nGroupOffset);
-			//			if (pDO != null)
-			//			{
-			//				EnterObjectProperty(pDO, pNamescopeOwner, @params);
-			//			}
-			//		}
-			//	}
-			//	if (pEnterProperty.NeedsInvoke())
-			//	{
-			//		Invoke(MetadataAPI.GetDependencyPropertyByIndex(pEnterProperty->m_nPropertyIndex), pNamescopeOwner, @params.IsLive);
-			//	}
-			//}
-
-			//EnterSparseProperties(pNamescopeOwner, @params);
-
-			// ----------------------- UNO-specific END -----------------------
-			// The way this works on WinUI is that when an element enters the visual tree, all values
-			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
-			// are entered as well.
-			// The property we currently know it has an effect is Resources
-			// In WinUI, it happens in CDependencyObject::EnterImpl (the call to EnterSparseProperties)
-			if (this is FrameworkElement fe && fe.TryGetResources() is { } resources)
-			{
-				// Using ValuesInternal to avoid Enumerator boxing
-				foreach (var resource in resources.ValuesInternal)
-				{
-					if (resource is FrameworkElement resourceAsUIElement)
-					{
-						resourceAsUIElement.XamlRoot = XamlRoot;
-						resourceAsUIElement.EnterImpl(@params, int.MinValue);
-					}
-				}
-			}
-			// ----------------------- UNO-specific END -----------------------
-
-			//if (@params.IsLive && m_bitFields.fWantsInheritanceContextChanged)
-			//{
-			//	// We only raise this InheritanceContextChanged if we're entering the live tree because the
-			//	// event also acts like a DO.Loaded event for BindingExpression.  This keeps us from adding
-			//	// a new internal event
-			//	NotifyInheritanceContextChanged();
-			//}
-
-			//if (IsActiveInVisualTree)
-			//{
-			//	// If our theme is different from the parent, make sure we walk the subtree.
-			//	DependencyObject? pParent = null;
-
-			//	if (this is FrameworkElement thisAsFe)
-			//	{
-			//		// Get logical parent so popups and flyouts inherit theme changes
-			//		pParent = GetInheritanceParentInternal(true /* fLogicalParent */);
-			//	}
-			//	else
-			//	{
-			//		pParent = GetParentInternal(false /* public */);
-			//	}
-
-			//	if (pParent is not null && pParent.GetTheme() != Theme.None && pParent.GetTheme() != m_theme)
-			//	{
-			//		NotifyThemeChanged(pParent.GetTheme());
-			//	}
-			//	else
-			//	{
-			//		// Update theme references to account for new ancestor theme dictionaries.
-			//		UpdateAllThemeReferences();
-			//	}
-			//}
 		}
 
 		internal virtual void EnterImpl(EnterParams @params, int depth)
@@ -1217,7 +1237,9 @@ namespace Microsoft.UI.Xaml
 			//}
 
 			// Pass updated params to children.
-			DependencyObject_EnterImpl(@params);
+			// MUX Reference: uielement.cpp:1356 — CUIElement::EnterImpl calls CDependencyObject::EnterImpl
+			// here. The CDependencyObject layer lives on DependencyObjectStore (DependencyObjectStore.mux.cs).
+			((IDependencyObjectStoreProvider)this).Store.EnterImpl(null, @params);
 
 			// Extends EnterImpl to the ContextFlyout.
 			// In WinUI, EnterSparseProperties calls EnterEffectiveValue for IsVisualTreeProperty values,
@@ -1325,10 +1347,10 @@ namespace Microsoft.UI.Xaml
 				//bool propViewport = GetIsViewportDirtyOrOnViewportDirtyPath();
 				//bool propContributesToViewport = GetWantsViewportOrContributesToViewport();
 
-				//if (CanBeScrollAnchor)
-				//{
-				//	UpdateAnchorCandidateOnParentScrollProvider(true /* add */);
-				//}
+				if (CanBeScrollAnchor)
+				{
+					UpdateAnchorCandidateOnParentScrollProvider(add: true);
+				}
 
 				//if (EventEnabledElementAddedInfo())
 				//{
@@ -1590,94 +1612,6 @@ namespace Microsoft.UI.Xaml
 		// would do similar cleanup on their final leave. This enables appropriate sharing.
 		// Hence an element should not cleanup resources for its
 		// child/property in its leave.
-		private void DependencyObject_LeaveImpl(LeaveParams @params)
-		{
-			// Raise InheritanceContextChanged for the live leave.  We need to do this before m_bitFields.fLive is updated.
-			// params.fIsLive cannot be used because it is updated before we get here.
-			//if (IsActiveInVisualTree && m_bitFields.fWantsInheritanceContextChanged)
-			//{
-			//	NotifyInheritanceContextChanged();
-			//}
-
-			// Mark the object as out of tree if the intention of this walk is to notify
-			// the element that it is leaving the live tree (as indicated by the bLive parameter.)
-			if (@params.IsLive)
-			{
-				//	m_checkForResourceOverrides = @params.CheckForResourceOverrides;
-				Depth = int.MinValue;
-				IsActiveInVisualTree = false;
-			}
-
-			//// Enumerate all the properties in its class
-
-			//if (!@params.SkipNameRegistration &&
-			//	!IsTemplateNamescopeMember())
-			//{
-			//	UnregisterName(pNamescopeOwner);
-			//	UnregisterDeferredStandardNameScopeEntries(pNamescopeOwner);
-			//}
-
-			//var pClassInfo = this.GetType();
-
-			//// Nothing else to do for value types and control/data templates.
-			//if (pClassInfo.IsValueType
-			//	|| pClassInfo == typeof(ControlTemplate)
-			//	|| pClassInfo == typeof(DataTemplate))
-			//{
-			//	return;
-			//}
-
-			//// Enumerate all the field-backed properties and leave as needed.
-			//EnterDependencyProperty pNullEnterProperty = MetadataAPI.GetNullEnterProperty();
-			//for (EnterDependencyProperty pEnterProperty = pClassInfo.GetFirstEnterProperty(); pEnterProperty != pNullEnterProperty; pEnterProperty = pEnterProperty.GetNextProperty())
-			//{
-			//	if (pEnterProperty.DoNotEnterLeave())
-			//	{
-			//		continue;
-			//	}
-
-			//	if (pEnterProperty.IsObjectProperty())
-			//	{
-			//		DependencyObject pDO = MapPropertyAndGroupOffsetToDO(pEnterProperty.m_nOffset, pEnterProperty.m_nGroupOffset);
-			//		if (pDO != null)
-			//		{
-			//			LeaveObjectProperty(pDO, pNamescopeOwner, @params);
-			//		}
-			//	}
-			//}
-
-			//LeaveSparseProperties(pNamescopeOwner, @params);
-
-			//if (@params.IsLive)
-			//{
-			//	// If we're currently the focused element, remove ourselves from being focused
-			//	var contentRoot = VisualTree.GetContentRootForElement(this, VisualTree.LookupOptions.NoFallback);
-			//	if (contentRoot != null)
-			//	{
-			//		FocusManager pFocusManager = contentRoot.GetFocusManagerNoRef();
-
-			//		if (pFocusManager is not null && pFocusManager.GetFocusedElementNoRef() == this)
-			//		{
-			//			pFocusManager.ClearFocus();
-			//		}
-
-			//		var akExport = contentRoot.GetAKExport();
-
-			//		if (akExport.IsActive())
-			//		{
-			//			akExport.RemoveElementFromAKMode(this);
-			//		}
-			//	}
-			//}
-
-			//InputServices inputServices = this.GetContext().GetInputServices();
-
-			//if (inputServices != null)
-			//{
-			//	inputServices->ObjectLeavingTree(this);
-			//}
-		}
-
 		internal virtual void LeaveImpl(LeaveParams @params)
 		{
 			// Ensure VisualTree is propagated through the Leave walk.
@@ -1887,7 +1821,9 @@ namespace Microsoft.UI.Xaml
 			//	}
 			//}
 
-			DependencyObject_LeaveImpl(@params);
+			// MUX Reference: CUIElement::LeaveImpl calls CDependencyObject::LeaveImpl here. The
+			// CDependencyObject layer lives on DependencyObjectStore (DependencyObjectStore.mux.cs).
+			((IDependencyObjectStoreProvider)this).Store.LeaveImpl(null, @params);
 
 			// Extends LeaveImpl to the ContextFlyout.
 			// In WinUI, LeaveSparseProperties calls LeaveEffectiveValue for IsVisualTreeProperty values,
@@ -1974,10 +1910,10 @@ namespace Microsoft.UI.Xaml
 				//// Discard the potential rejection viewports within this leaving element's subtree
 				//DiscardRejectionViewportsInSubTree();
 
-				//if (CanBeScrollAnchor)
-				//{
-				//	UpdateAnchorCandidateOnParentScrollProvider(false /* add */);
-				//}
+				if (CanBeScrollAnchor)
+				{
+					UpdateAnchorCandidateOnParentScrollProvider(add: false);
+				}
 			}
 
 		}
@@ -1987,5 +1923,83 @@ namespace Microsoft.UI.Xaml
 			=> true;
 
 		internal bool IsNonClippingSubtree { get; set; }
+
+		// Identifies the CanBeScrollAnchor dependency property. Moved out of the generated
+		// UIElement.cs (which had a [Uno.NotImplemented] stub) so we can attach a PropertyChangedCallback
+		// that mirrors WinUI's CUIElement::OnPropertyChanged dispatch for UIElement_CanBeScrollAnchor
+		// (uielement.cpp:861) and auto-registers the element with the nearest IScrollAnchorProvider.
+		public static DependencyProperty CanBeScrollAnchorProperty { get; } =
+			DependencyProperty.Register(
+				nameof(CanBeScrollAnchor),
+				typeof(bool),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(
+					defaultValue: false,
+					propertyChangedCallback: OnCanBeScrollAnchorChangedStatic));
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether the UIElement can be a candidate for scroll
+		/// anchoring. The framework auto-registers / unregisters this element with the nearest
+		/// ancestor IScrollAnchorProvider when this value changes.
+		/// </summary>
+		public bool CanBeScrollAnchor
+		{
+			get => (bool)GetValue(CanBeScrollAnchorProperty);
+			set => SetValue(CanBeScrollAnchorProperty, value);
+		}
+
+		// Tracks the last IScrollAnchorProvider this element registered with, so we can unregister
+		// from the same provider on Leave even if the visual tree has been reshuffled in the meantime.
+		private global::Microsoft.UI.Xaml.Controls.IScrollAnchorProvider? _registeredScrollAnchorProvider;
+
+		private static void OnCanBeScrollAnchorChangedStatic(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			((UIElement)d).UpdateAnchorCandidateOnParentScrollProvider(add: (bool)e.NewValue);
+		}
+
+		// Walks up the parent chain to the nearest IScrollAnchorProvider and registers/unregisters
+		// this element as an anchor candidate. Mirrors CUIElement::UpdateAnchorCandidateOnParentScrollProvider
+		// (uielement.cpp:934). Called on enter/leave (when CanBeScrollAnchor is already true) and
+		// from the property-changed callback when CanBeScrollAnchor flips.
+		private void UpdateAnchorCandidateOnParentScrollProvider(bool add)
+		{
+			if (add)
+			{
+				var provider = FindNearestScrollAnchorProvider();
+				if (provider is null)
+				{
+					return;
+				}
+				provider.RegisterAnchorCandidate(this);
+				_registeredScrollAnchorProvider = provider;
+			}
+			else
+			{
+				// Unregister from the provider we registered with, even if the tree has changed.
+				// Falls back to walking up if we never tracked one (e.g. registered before this
+				// hook was wired and only now leaving).
+				var provider = _registeredScrollAnchorProvider ?? FindNearestScrollAnchorProvider();
+				if (provider is null)
+				{
+					return;
+				}
+				provider.UnregisterAnchorCandidate(this);
+				_registeredScrollAnchorProvider = null;
+			}
+		}
+
+		private global::Microsoft.UI.Xaml.Controls.IScrollAnchorProvider? FindNearestScrollAnchorProvider()
+		{
+			DependencyObject? current = global::Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(this);
+			while (current is not null)
+			{
+				if (current is global::Microsoft.UI.Xaml.Controls.IScrollAnchorProvider provider)
+				{
+					return provider;
+				}
+				current = global::Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(current);
+			}
+			return null;
+		}
 	}
 }

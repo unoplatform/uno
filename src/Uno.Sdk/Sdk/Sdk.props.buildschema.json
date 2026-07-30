@@ -95,6 +95,10 @@
 			"description": "Disables the extra targets from being loaded which implicitly add NuGet packages.",
 			"type": "bool"
 		},
+		"DisableImplicitUnoWinAppSdkPackages": {
+			"description": "When set to true on a library, prevents the Uno.Sdk from implicitly adding the base Uno.* package references (Uno.WinUI, Uno.Resizetizer, Uno.Sdk.Extras, Uno.Settings.DevServer) on the Windows App SDK (net*-windows10*) target framework. UnoFeatures-driven packages (Toolkit, Material, Extensions, ...) still flow as usual. Use for WinUI libraries cross-targeted to Uno that want to avoid leaking Uno.WinUI as a transitive dependency to WinAppSdk consumers or to compile to a strong-named assembly on Windows.",
+			"type": "bool"
+		},
 		"DisableImplicitUnoNamespaces": {
 			"description": "Disables implicit namespaces that come specifically from the Uno.Sdk.",
 			"type": "bool"
@@ -254,6 +258,14 @@
 			"description": "Provides an explicit override for the version of the Microsoft.Windows.SDK.BuildTools to use.",
 			"type": "nuget-version"
 		},
+		"WinAppSdkBuildToolsWinAppVersion": {
+			"description": "Provides an explicit override for the version of the Microsoft.Windows.SDK.BuildTools.WinApp package. This package enables `dotnet run` to launch the packaged WinAppSDK app with package identity.",
+			"type": "nuget-version"
+		},
+		"UnoDisableWinAppRunSupport": {
+			"description": "When set to true, the Uno.Sdk will not implicitly reference Microsoft.Windows.SDK.BuildTools.WinApp for WinAppSDK executables. Set EnableWinAppRunSupport=false instead to keep the reference but disable the `dotnet run` interception.",
+			"type": "bool"
+		},
 		"UnoCoreLoggingSingletonVersion": {
 			"description": "Provides an explicit override for the version of Uno.Core.Logging.Singleton to use.",
 			"type": "nuget-version"
@@ -280,6 +292,22 @@
 		},
 		"AndroidXCollectionVersion": {
 			"description": "Provides an explicit override for the version of AndroidX.Collection to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXLeanbackVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Leanback to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXCarAppVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Car.App to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXWearVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Wear to use.",
+			"type": "nuget-version"
+		},
+		"AndroidXWearTilesVersion": {
+			"description": "Provides an explicit override for the version of AndroidX.Wear.Tiles to use.",
 			"type": "nuget-version"
 		},
 		"MicrosoftIdentityClientVersion": {
@@ -584,6 +612,18 @@
 				},
 				"SpellChecking": {
 					"description": "Adds support for spell checking."
+				},
+				"AndroidTV": {
+					"description": "Configures the Android head for Android TV (adds Xamarin.AndroidX.Leanback). Pair with template-stamped manifest entries for Leanback launcher, banner, and focus highlight overrides.",
+					"helpUrl": "https://aka.platform.uno/feature-android-tv"
+				},
+				"AndroidAuto": {
+					"description": "Configures the Android head for Android Auto / Automotive OS (adds Xamarin.AndroidX.Car.App.App).",
+					"helpUrl": "https://aka.platform.uno/feature-android-auto"
+				},
+				"AndroidWear": {
+					"description": "Adds Wear OS support to the Android head (adds Xamarin.AndroidX.Wear and Xamarin.AndroidX.Wear.Tiles). Single APK targets both phone and watch.",
+					"helpUrl": "https://aka.platform.uno/feature-android-wear"
 				}
 			}
 		}

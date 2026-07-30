@@ -9,7 +9,10 @@
 !.specify/
 !.claude/
 .claude/*
+!.claude/agents/
 !.claude/commands/
+!.claude/review-panel-cheatsheet.md
+!.claude/rules/
 !.claude/skills/
 
 # operating system junk files
@@ -264,6 +267,9 @@ src/AddIns/Uno.UI.MSAL/WasmScripts/*.d.ts
 
 # external docs
 doc/articles/external
+
+# imported at build time from unoplatform/hd-docs (see doc/import_external_docs.ps1)
+doc/articles/studio/Hot Design/
 
 mergedstyles.xaml
 

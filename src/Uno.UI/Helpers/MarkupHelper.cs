@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Uno.Collections;
 using System.ComponentModel;
@@ -80,10 +81,10 @@ namespace Uno.UI.Helpers
 			target.FromLegacyTemplate = TemplatedParentScope.GetCurrentTemplate() is { IsLegacyTemplate: true };
 		}
 
-		public static IXamlServiceProvider CreateParserContext(object? target, Type propertyDeclaringType, string propertyName, Type propertyType)
+		public static IXamlServiceProvider CreateParserContext(object? target, Type propertyDeclaringType, string propertyName, [DynamicallyAccessedMembers(ProvideValueTargetProperty.TypeRequirements)] Type propertyType)
 			=> CreateParserContext(target, propertyDeclaringType, propertyName, propertyType, null);
 
-		public static IXamlServiceProvider CreateParserContext(object? target, Type propertyDeclaringType, string propertyName, Type propertyType, object? rootObject)
+		public static IXamlServiceProvider CreateParserContext(object? target, Type propertyDeclaringType, string propertyName, [DynamicallyAccessedMembers(ProvideValueTargetProperty.TypeRequirements)] Type propertyType, object? rootObject)
 			=> new XamlServiceProviderContext
 			{
 				TargetObject = target,

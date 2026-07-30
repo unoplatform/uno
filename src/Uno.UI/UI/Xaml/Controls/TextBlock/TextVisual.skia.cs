@@ -27,14 +27,18 @@ namespace Microsoft.UI.Composition
 			_owner = new WeakReference<TextBlock>(owner);
 		}
 
-		internal override void Paint(in PaintingSession session)
+		internal override SKPath? Paint(in PaintingSession session)
 		{
 			if (_owner.TryGetTarget(out var owner))
 			{
 				owner.Draw(in session);
 			}
+
+			return null;
 		}
 
 		internal override bool CanPaint() => true;
+
+		internal override bool PaintsWithinOwnSize => true;
 	}
 }

@@ -13,6 +13,11 @@ system_theme_change_fn_ptr uno_get_system_theme_change_callback(void);
 void uno_set_system_theme_change_callback(system_theme_change_fn_ptr p);
 uint32 uno_get_system_theme(void);
 
+typedef void (*text_scale_factor_change_fn_ptr)(void);
+text_scale_factor_change_fn_ptr uno_get_text_scale_factor_change_callback(void);
+void uno_set_text_scale_factor_change_callback(text_scale_factor_change_fn_ptr p);
+double uno_get_text_scale_factor(void);
+
 bool uno_app_initialize(bool *supportsMetal);
 NSWindow* uno_app_get_main_window(void);
 
@@ -29,6 +34,11 @@ application_start_fn_ptr uno_get_application_start_callback(void);
 typedef bool (*application_can_exit_fn_ptr)(void);
 application_can_exit_fn_ptr uno_get_application_can_exit_callback(void);
 void uno_set_application_can_exit_callback(application_can_exit_fn_ptr p);
+
+typedef bool (*application_should_terminate_after_last_window_closed_fn_ptr)(void);
+application_should_terminate_after_last_window_closed_fn_ptr uno_get_application_should_terminate_after_last_window_closed_callback(void);
+void uno_set_application_should_terminate_after_last_window_closed_callback(application_should_terminate_after_last_window_closed_fn_ptr p);
+
 void uno_application_quit(void);
 
 @interface UNOApplicationDelegate : NSObject <NSApplicationDelegate>
@@ -37,6 +47,7 @@ void uno_application_quit(void);
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender;
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender;
 - (void)observeValueForKeyPath:(nullable NSString *)keyPath ofObject:(nullable id)object change:(nullable NSDictionary<NSKeyValueChangeKey, id> *)change context:(nullable void *)context;
+- (void)textScalePreferenceChanged:(NSNotification *)notification;
 
 @end
 

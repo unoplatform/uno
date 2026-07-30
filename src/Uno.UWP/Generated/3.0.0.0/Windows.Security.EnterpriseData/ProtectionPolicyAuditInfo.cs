@@ -3,80 +3,80 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.EnterpriseData
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ProtectionPolicyAuditInfo
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Security.EnterpriseData.ProtectionPolicyAuditAction Action
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProtectionPolicyAuditAction ProtectionPolicyAuditInfo.Action is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProtectionPolicyAuditAction%20ProtectionPolicyAuditInfo.Action");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "Action");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "ProtectionPolicyAuditAction ProtectionPolicyAuditInfo.Action");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "Action");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string DataDescription
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProtectionPolicyAuditInfo.DataDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProtectionPolicyAuditInfo.DataDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "DataDescription");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "string ProtectionPolicyAuditInfo.DataDescription");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "DataDescription");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string SourceDescription
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProtectionPolicyAuditInfo.SourceDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProtectionPolicyAuditInfo.SourceDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "SourceDescription");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "string ProtectionPolicyAuditInfo.SourceDescription");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "SourceDescription");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string TargetDescription
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProtectionPolicyAuditInfo.TargetDescription is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProtectionPolicyAuditInfo.TargetDescription");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "TargetDescription");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "string ProtectionPolicyAuditInfo.TargetDescription");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "TargetDescription");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ProtectionPolicyAuditInfo(global::Windows.Security.EnterpriseData.ProtectionPolicyAuditAction action, string dataDescription, string sourceDescription, string targetDescription)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "ProtectionPolicyAuditInfo.ProtectionPolicyAuditInfo(ProtectionPolicyAuditAction action, string dataDescription, string sourceDescription, string targetDescription)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "ProtectionPolicyAuditInfo(ProtectionPolicyAuditAction action, string dataDescription, string sourceDescription, string targetDescription)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo.ProtectionPolicyAuditInfo(Windows.Security.EnterpriseData.ProtectionPolicyAuditAction, string, string, string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public ProtectionPolicyAuditInfo(global::Windows.Security.EnterpriseData.ProtectionPolicyAuditAction action, string dataDescription)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "ProtectionPolicyAuditInfo.ProtectionPolicyAuditInfo(ProtectionPolicyAuditAction action, string dataDescription)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo", "ProtectionPolicyAuditInfo(ProtectionPolicyAuditAction action, string dataDescription)");
 		}
 #endif
 		// Forced skipping of method Windows.Security.EnterpriseData.ProtectionPolicyAuditInfo.ProtectionPolicyAuditInfo(Windows.Security.EnterpriseData.ProtectionPolicyAuditAction, string)

@@ -3,15 +3,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ItemCollectionTransitionProgress
 	{
 		// Skipping already declared property Element
 		// Skipping already declared property Transition
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProgress.Transition.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProgress.Element.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProgress.Complete()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProgress.Element.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProgress.Transition.get
 	}
 }

@@ -20,4 +20,25 @@ public static class UIElementGeneratedProxy
 
 	internal static bool TryGetImplementedRoutedEvents(Type type, out RoutedEventFlag routedEventFlags) =>
 		_implementedRoutedEvents.TryGetValue(type, out routedEventFlags);
+
+	internal static void ClearCachesForNonDefaultAlc()
+	{
+		lock (_implementedRoutedEvents)
+		{
+			var keysToRemove = new List<Type>();
+			foreach (var key in _implementedRoutedEvents.Keys)
+			{
+				var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Assembly);
+				if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
+				{
+					keysToRemove.Add(key);
+				}
+			}
+
+			foreach (var key in keysToRemove)
+			{
+				_implementedRoutedEvents.Remove(key);
+			}
+		}
+	}
 }

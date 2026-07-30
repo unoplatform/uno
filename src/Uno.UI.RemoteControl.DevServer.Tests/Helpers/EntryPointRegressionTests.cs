@@ -58,4 +58,25 @@ public class EntryPointRegressionTests
 		// V3 constructor signature: (DTE2, string, AsyncPackage, string vsixChannelHandle)
 		source.Should().Contain("string vsixChannelHandle)");
 	}
+
+	[TestMethod]
+	[Description("EnsureServerAsync must consult DevServerHostDiscovery before spawning a host. " +
+		"Without this call, the legacy in-process spawn races with the CLI-driven launch flow " +
+		"(uno.studio VS extension, future VS Code / Rider plugins) and the user ends up with two " +
+		"phantom DevServer hosts on different ports for the same solution.")]
+	public void EntryPoint_EnsureServerAsync_ConsultsDevServerHostDiscoveryBeforeSpawn()
+	{
+		var source = ReadEntryPointSource();
+
+		// The probe must be wired in before the spawn (the `var pipeGuid = Guid.NewGuid();` line).
+		source.Should().Contain("DevServerHostDiscovery");
+		source.Should().Contain("TryFindHostAsync");
+
+		// Cheap structural pin: the probe call comes before the spawn argument string.
+		var probeIndex = source.IndexOf("TryFindHostAsync", StringComparison.Ordinal);
+		var spawnIndex = source.IndexOf("Uno.UI.RemoteControl.Host.dll", StringComparison.Ordinal);
+		probeIndex.Should().BeGreaterThan(0, "the discovery probe must be present");
+		spawnIndex.Should().BeGreaterThan(0, "the legacy spawn line must still exist");
+		probeIndex.Should().BeLessThan(spawnIndex, "the probe must run before the spawn so we can short-circuit");
+	}
 }

@@ -2,6 +2,7 @@
 
 using Windows.Foundation;
 using Microsoft.UI.Composition;
+using SkiaSharp;
 using System.Numerics;
 
 namespace Microsoft.UI.Xaml.Shapes
@@ -41,9 +42,14 @@ namespace Microsoft.UI.Xaml.Shapes
 			}
 
 			_geometry.Path = new CompositionPath(path);
-			_shape.Scale = scaleX != null && scaleY != null
-				? new Vector2((float)scaleX.Value, (float)scaleY.Value)
-				: Vector2.One;
+			// Stretch goes through the geometry-only transform channel so it doesn't scale the
+			// stroke (matching WinUI Path/Rectangle, where StrokeThickness stays constant
+			// regardless of Stretch). The public CompositionShape.Scale stays at identity here
+			// — it's reserved for true Composition-API transforms (used by AnimatedVisualSource
+			// generated code), which DO scale strokes via the canvas.
+			_shape.SetGeometryTransform(scaleX != null && scaleY != null
+				? SKMatrix.CreateScale((float)scaleX.Value, (float)scaleY.Value)
+				: SKMatrix.CreateIdentity());
 			_shape.Offset = LayoutRound(new Vector2((float)(renderOriginX ?? 0), (float)(renderOriginY ?? 0)));
 
 			UpdateRender();

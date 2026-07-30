@@ -711,6 +711,15 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 						ExpandNode(resetNode);
 					}
 
+					if (IsContentMode)
+					{
+						// Uno-specific: a Reset (e.g. ItemsSource collection Clear) removes the nodes but
+						// left their item -> node mappings behind, retaining every cleared item (and, when
+						// items come from a collectible AssemblyLoadContext, pinning that ALC) for the
+						// TreeView's lifetime. Drop mappings whose node is no longer attached to the origin.
+						PruneDetachedNodesFromItemMap();
+					}
+
 					break;
 				}
 
@@ -802,6 +811,62 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 					break;
 				}
 		}
+	}
+
+	/// <summary>
+	/// Uno-specific: removes <see cref="m_itemToNodeMap"/> entries whose node is no longer attached to
+	/// the origin node. The WinUI-derived collection-change handling only removes mappings on
+	/// <c>ItemRemoved</c> with an expanded parent; a <c>Reset</c> (collection Clear) or a removal under a
+	/// collapsed parent leaks the mapping — and with it the item — for the TreeView's lifetime.
+	/// </summary>
+	private void PruneDetachedNodesFromItemMap()
+	{
+		List<object> keysToRemove = null;
+		foreach (var pair in m_itemToNodeMap)
+		{
+			if (IsDetachedFromOrigin(pair.Value))
+			{
+				(keysToRemove ??= new List<object>()).Add(pair.Key);
+			}
+		}
+
+		if (keysToRemove is not null)
+		{
+			foreach (var key in keysToRemove)
+			{
+				m_itemToNodeMap.Remove(key);
+			}
+		}
+
+		// The selection vectors are a second retention path with the same defect: a selected node
+		// removed via Reset stays in m_selectedNodes / m_selectedItems indefinitely, keeping the node
+		// and its item alive. Prune detached selected nodes the same way the ItemRemoved/Reset cases
+		// above do — via SelectedTreeNodeVector.RemoveAtCore, which keeps m_selectedItems in sync and
+		// records the unselect (TrackItemUnselected). Removing from m_selectedItems directly would
+		// bypass that tracking (RemoveAtCore then can't correlate the already-removed item), so
+		// SelectionChanged would not be raised in multi-select mode. Batch the removals inside
+		// Begin/EndSelectionChanges so a single aggregate SelectionChanged is raised.
+		BeginSelectionChanges();
+		for (var i = m_selectedNodes.Count - 1; i >= 0; i--)
+		{
+			var selectNode = m_selectedNodes[i];
+			if (IsDetachedFromOrigin(selectNode))
+			{
+				m_selectedNodes.RemoveAtCore(i);
+				selectNode.ChildrenChanged -= SelectedNodeChildrenChanged;
+			}
+		}
+		EndSelectionChanges();
+	}
+
+	private bool IsDetachedFromOrigin(TreeViewNode node)
+	{
+		while (node.Parent is { } parent)
+		{
+			node = parent;
+		}
+
+		return node != m_originNode;
 	}
 
 	private void SelectedNodeChildrenChanged(TreeViewNode sender, object args)

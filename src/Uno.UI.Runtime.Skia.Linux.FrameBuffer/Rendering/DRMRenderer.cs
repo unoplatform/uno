@@ -32,6 +32,7 @@ namespace Uno.UI.Runtime.Skia
 		private readonly int _stencil;
 
 		private GRBackendRenderTarget? _renderTarget;
+		private SKSurface? _glFbSurface;
 		private readonly IntPtr _gbmTargetSurface;
 		private readonly int _card;
 		private IntPtr _currentBo;
@@ -40,6 +41,11 @@ namespace Uno.UI.Runtime.Skia
 		private bool _waitingForPageFlip;
 		private bool _invalidateRenderCalledWhileWaitingForPageFlip;
 		private readonly GCHandle _selfHandle;
+
+		private LibDrm.drmModeCrtc _savedCrtc;
+		private uint _savedConnectorId;
+		private volatile bool _disposed;
+		private bool _crtcRestored;
 
 		public readonly record struct DRMInitOptions(string? CardPath, FramebufferHostBuilder.DRMConnectorChooserDelegate? DRMConnectorChooser, FramebufferHostBuilder.DRMFourCCColorFormat GBMSurfaceColorFormat);
 
@@ -218,6 +224,16 @@ namespace Uno.UI.Runtime.Skia
 			var connectorId = connector.Id;
 			var mode = modeInfo.Mode;
 
+			// Save the current CRTC state so we can restore it on exit, which allows
+			// the kernel fbcon to reattach and the CLI prompt to reappear.
+			var savedCrtc = LibDrm.drmModeGetCrtc(_card, _crtc);
+			if (savedCrtc != null)
+			{
+				_savedCrtc = *savedCrtc;
+				_savedConnectorId = connectorId;
+				LibDrm.drmModeFreeCrtc(savedCrtc);
+			}
+
 			var res = LibDrm.drmModeSetCrtc(_card, _crtc, fbId, 0, 0, &connectorId, 1, &mode);
 			if (res != 0)
 			{
@@ -269,6 +285,11 @@ namespace Uno.UI.Runtime.Skia
 
 		public override unsafe void InvalidateRender()
 		{
+			if (_disposed)
+			{
+				return;
+			}
+
 			Volatile.Write(ref _invalidateRenderCalledWhileWaitingForPageFlip, true);
 			if (Interlocked.Exchange(ref _waitingForPageFlip, true))
 			{
@@ -358,6 +379,10 @@ namespace Uno.UI.Runtime.Skia
 		{
 			var handle = GCHandle.FromIntPtr((IntPtr)user_data);
 			var @this = (DRMRenderer)handle.Target!;
+			if (@this._disposed)
+			{
+				return;
+			}
 			Volatile.Write(ref @this._invalidateRenderCalledWhileWaitingForPageFlip, false);
 			@this.Render();
 			Volatile.Write(ref @this._waitingForPageFlip, false);
@@ -369,14 +394,26 @@ namespace Uno.UI.Runtime.Skia
 
 		protected override SKSurface UpdateSize(int width, int height)
 		{
+			_glFbSurface?.Dispose();
 			_renderTarget?.Dispose();
 
 			var grSurfaceOrigin = GRSurfaceOrigin.BottomLeft; // to match OpenGL's origin
-
 			var glInfo = new GRGlFramebufferInfo(DefaultFramebuffer, SKColorType.Rgb888x.ToGlSizedFormat());
-
 			_renderTarget = new GRBackendRenderTarget(width, height, _samples, _stencil, glInfo);
-			return SKSurface.Create(_grContext, _renderTarget, grSurfaceOrigin, SKColorType.Rgb888x);
+			_glFbSurface = SKSurface.Create(_grContext, _renderTarget, grSurfaceOrigin, SKColorType.Rgb888x);
+
+			return SKSurface.Create(_grContext, budgeted: true, new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul))
+				?? throw new InvalidOperationException("Failed to create the DRM retained composition surface.");
+		}
+
+		protected override void PresentToOutput(int degrees, int transX, int transY)
+		{
+			if (_surface is { } composition && _glFbSurface is { } glFb)
+			{
+				composition.Draw(glFb.Canvas, 0, 0, null);
+				DrawCursor(glFb.Canvas, degrees, transX, transY);
+				glFb.Canvas.Flush();
+			}
 		}
 
 		private uint CreateFbForBo(IntPtr bo)
@@ -411,6 +448,48 @@ namespace Uno.UI.Runtime.Skia
 		}
 
 		private void OnBoFree(IntPtr bo, IntPtr fbHandle) => LibDrm.drmModeRmFB(_card, fbHandle.ToInt32());
+
+		public override unsafe void Dispose()
+		{
+			if (_disposed)
+			{
+				return;
+			}
+			_disposed = true;
+
+			if (_crtcRestored)
+			{
+				return;
+			}
+			_crtcRestored = true;
+
+			try
+			{
+				var connectorId = _savedConnectorId;
+				int restoreRes;
+				if (_savedCrtc.mode_valid != 0 && connectorId != 0)
+				{
+					fixed (LibDrm.drmModeModeInfo* modePtr = &_savedCrtc.mode)
+					{
+						restoreRes = LibDrm.drmModeSetCrtc(_card, _crtc, _savedCrtc.buffer_id, _savedCrtc.x, _savedCrtc.y, &connectorId, 1, modePtr);
+					}
+				}
+				else
+				{
+					// Nothing was driving the CRTC before us: disable it so the driver releases it.
+					restoreRes = LibDrm.drmModeSetCrtc(_card, _crtc, 0, 0, 0, null, 0, null);
+				}
+
+				if (restoreRes != 0)
+				{
+					this.LogDebug()?.Debug($"{nameof(LibDrm.drmModeSetCrtc)} returned {restoreRes} while restoring the original CRTC state on exit.");
+				}
+			}
+			catch (Exception e)
+			{
+				this.LogDebug()?.Debug($"Failed to restore the original CRTC state on exit: {e.Message}");
+			}
+		}
 
 		[GeneratedRegex("card[0-9]+")]
 		private static partial Regex DRMCardPathRegex();

@@ -52,12 +52,9 @@ public partial class FlyoutPresenterAutomationPeer : FrameworkElementAutomationP
 	private FlyoutPresenter? FlyoutPresenterOwner => Owner as FlyoutPresenter;
 
 	private FlyoutBase? TryGetOwningFlyout()
-	{
-		if (FlyoutPresenterOwner?.TemplatedParent is FlyoutBase flyout)
-		{
-			return flyout;
-		}
-
-		return null;
-	}
+		// FlyoutPresenter is created via `new FlyoutPresenter()` (not from a
+		// ControlTemplate), so TemplatedParent isn't reliable. Use the explicit
+		// back-reference set by FlyoutBase.EnsurePopupCreated instead — mirrors
+		// WinUI's FlyoutPresenter::GetOwnerFlyout / m_wrFlyout pattern.
+		=> FlyoutPresenterOwner?.GetOwnerFlyout();
 }

@@ -20,8 +20,7 @@ public partial class RadioButtonsAutomationPeer : FrameworkElementAutomationPeer
 	}
 
 	protected override string GetClassNameCore()
-		=> nameof(RadioButtons);
-
+			=> typeof(RadioButtons).FullName!;
 	protected override string GetNameCore()
 	{
 		var name = base.GetNameCore();

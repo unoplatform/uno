@@ -12,7 +12,7 @@ namespace Uno.UI.RemoteControl.Server.AppLaunch;
 /// - Uses a value-type composite key (no string concatenations) to minimize allocations. 
 /// - Automatically handles timeouts using internal Task-based scheduling.
 /// </summary>
-public sealed class ApplicationLaunchMonitor : IDisposable
+public sealed class ApplicationLaunchMonitor : IApplicationLaunchMonitor, IDisposable
 {
 	internal const string DefaultPlatform = "Unspecified";
 

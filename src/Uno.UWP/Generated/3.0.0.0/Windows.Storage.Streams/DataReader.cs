@@ -3,33 +3,33 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class DataReader : global::Windows.Storage.Streams.IDataReader, global::System.IDisposable
 	{
 		// Skipping already declared property ByteOrder
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.InputStreamOptions InputStreamOptions
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InputStreamOptions DataReader.InputStreamOptions is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InputStreamOptions%20DataReader.InputStreamOptions");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReader", "InputStreamOptions");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReader", "InputStreamOptions DataReader.InputStreamOptions");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReader", "InputStreamOptions");
 			}
 		}
 #endif
 		// Skipping already declared property UnconsumedBufferLength
 		// Skipping already declared property UnicodeEncoding
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public DataReader(global::Windows.Storage.Streams.IInputStream inputStream)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReader", "DataReader.DataReader(IInputStream inputStream)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReader", "DataReader(IInputStream inputStream)");
 		}
 #endif
 		// Forced skipping of method Windows.Storage.Streams.DataReader.DataReader(Windows.Storage.Streams.IInputStream)
@@ -50,19 +50,19 @@ namespace Windows.Storage.Streams
 		// Skipping already declared method Windows.Storage.Streams.DataReader.ReadString(uint)
 		// Skipping already declared method Windows.Storage.Streams.DataReader.ReadDateTime()
 		// Skipping already declared method Windows.Storage.Streams.DataReader.ReadTimeSpan()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.DataReaderLoadOperation LoadAsync(uint count)
 		{
-			throw new global::System.NotImplementedException("The member DataReaderLoadOperation DataReader.LoadAsync(uint count) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataReaderLoadOperation%20DataReader.LoadAsync%28uint%20count%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReader", "LoadAsync(uint count)");
 		}
 #endif
 		// Skipping already declared method Windows.Storage.Streams.DataReader.DetachBuffer()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Storage.Streams.IInputStream DetachStream()
 		{
-			throw new global::System.NotImplementedException("The member IInputStream DataReader.DetachStream() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IInputStream%20DataReader.DetachStream%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Streams.DataReader", "DetachStream()");
 		}
 #endif
 		// Skipping already declared method Windows.Storage.Streams.DataReader.Dispose()

@@ -2,7 +2,7 @@
 
 namespace Microsoft.UI.Xaml.Documents.TextFormatting;
 
-public static class FallbackFontMaps
+internal static class FallbackFontMaps
 {
 	public static readonly IReadOnlyList<(int start, int end, List<string> fonts)> CodepointsToFontFamilies = new List<(int, int, List<string>)>
 	{

@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 		protected override string GetClassNameCore()
 		{
-			return nameof(ToggleSplitButton);
+			return typeof(ToggleSplitButton).FullName!;
 		}
 
 		protected override AutomationControlType GetAutomationControlTypeCore()

@@ -426,8 +426,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(flipView);
 
 			flipView.SelectedIndex = 2;
-			await WindowHelper.WaitForIdle();
-			await Task.Delay(300);
+
+			// Selecting a page scrolls the inner ScrollViewer, and the FlipView re-derives SelectedIndex
+			// from the settled offset via OnScrollViewerViewChanged. With a decimal Width the offset settles
+			// across several asynchronous layout/scroll passes, which can take longer than a fixed delay on
+			// slower hosts. Poll until the final offset->index mapping lands on the requested page.
+			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 2, timeoutMS: 2000, "FlipView did not settle on the selected index");
 
 			Assert.AreEqual(2, flipView.SelectedIndex);
 		}
@@ -596,22 +600,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			const int FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS = 200 + 50; // 50ms margin to reduce flakiness
 			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
 			mouse.WheelDown();
-			Assert.AreEqual(1, flipView.SelectedIndex);
+			// SelectedIndex updates asynchronously once the wheel delta is processed; wait for the
+			// expected value rather than asserting synchronously (which raced on slower runtimes, e.g. WASM).
+			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 1, timeoutMS: 5000, message: "WheelDown should advance SelectedIndex to 1");
 			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
 			mouse.WheelDown();
-			Assert.AreEqual(2, flipView.SelectedIndex);
+			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 2, timeoutMS: 5000, message: "WheelDown should advance SelectedIndex to 2");
 			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
 			mouse.WheelDown();
-			Assert.AreEqual(2, flipView.SelectedIndex);
+			await UITestHelper.WaitForIdle();
+			Assert.AreEqual(2, flipView.SelectedIndex, "SelectedIndex should not advance past the last item");
 			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
 			mouse.WheelUp();
-			Assert.AreEqual(1, flipView.SelectedIndex);
+			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 1, timeoutMS: 5000, message: "WheelUp should move SelectedIndex to 1");
 			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
 			mouse.WheelUp();
-			Assert.AreEqual(0, flipView.SelectedIndex);
+			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 0, timeoutMS: 5000, message: "WheelUp should move SelectedIndex to 0");
 			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
 			mouse.WheelUp();
-			Assert.AreEqual(0, flipView.SelectedIndex);
+			await UITestHelper.WaitForIdle();
+			Assert.AreEqual(0, flipView.SelectedIndex, "SelectedIndex should not move before the first item");
 		}
 
 		[TestMethod]
@@ -728,6 +736,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		// The injected touch flick relies on the ScrollContentPresenter velocity-based snap, which is not
+		// reproducible on Skia-WASM (the flick never advances the page there). The matching native-Wasm head
+		// already documents that injection-driven scrolling is unsupported, and the deterministic
+		// When_TouchMoveMoreThanHalfItem_Then_FlipOneItem counterpart is likewise disabled on Skia.
+		// See https://github.com/unoplatform/uno/issues/9080.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_TouchFlick_Then_FlipOneItem()
 		{
 			var flipView = new FlipView()

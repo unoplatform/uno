@@ -3,50 +3,50 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Protection.PlayReady
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class NDLicenseFetchDescriptor : global::Windows.Media.Protection.PlayReady.INDLicenseFetchDescriptor
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public byte[] ContentID
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member byte[] NDLicenseFetchDescriptor.ContentID is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20NDLicenseFetchDescriptor.ContentID");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor", "ContentID");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Protection.PlayReady.NDContentIDType ContentIDType
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member NDContentIDType NDLicenseFetchDescriptor.ContentIDType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NDContentIDType%20NDLicenseFetchDescriptor.ContentIDType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor", "ContentIDType");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Protection.PlayReady.INDCustomData LicenseFetchChallengeCustomData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member INDCustomData NDLicenseFetchDescriptor.LicenseFetchChallengeCustomData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=INDCustomData%20NDLicenseFetchDescriptor.LicenseFetchChallengeCustomData");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor", "LicenseFetchChallengeCustomData");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor", "INDCustomData NDLicenseFetchDescriptor.LicenseFetchChallengeCustomData");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor", "LicenseFetchChallengeCustomData");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public NDLicenseFetchDescriptor(global::Windows.Media.Protection.PlayReady.NDContentIDType contentIDType, byte[] contentIDBytes, global::Windows.Media.Protection.PlayReady.INDCustomData licenseFetchChallengeCustomData)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor", "NDLicenseFetchDescriptor.NDLicenseFetchDescriptor(NDContentIDType contentIDType, byte[] contentIDBytes, INDCustomData licenseFetchChallengeCustomData)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor", "NDLicenseFetchDescriptor(NDContentIDType contentIDType, byte[] contentIDBytes, INDCustomData licenseFetchChallengeCustomData)");
 		}
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor.NDLicenseFetchDescriptor(Windows.Media.Protection.PlayReady.NDContentIDType, byte[], Windows.Media.Protection.PlayReady.INDCustomData)

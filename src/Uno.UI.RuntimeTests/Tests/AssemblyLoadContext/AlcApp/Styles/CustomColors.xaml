@@ -1,0 +1,9 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Subdirectory resource for testing ALC-aware resource resolution
+         when a ResourceDictionary.Source references a file in a subdirectory. -->
+    <SolidColorBrush x:Key="SubdirCustomBrush" Color="#FF3399FF"/>
+    <x:String x:Key="SubdirResourceIdentifier">AlcApp.Styles.CustomColors</x:String>
+</ResourceDictionary>

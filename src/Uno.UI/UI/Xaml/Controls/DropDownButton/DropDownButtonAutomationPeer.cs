@@ -31,8 +31,7 @@ public partial class DropDownButtonAutomationPeer : ButtonAutomationPeer, IExpan
 	}
 
 	protected override string GetClassNameCore()
-		=> nameof(DropDownButton);
-
+			=> typeof(DropDownButton).FullName!;
 	private DropDownButton? GetImpl() => Owner as DropDownButton;
 
 	// IExpandCollapseProvider

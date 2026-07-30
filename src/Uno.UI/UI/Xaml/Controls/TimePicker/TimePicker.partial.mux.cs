@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Globalization;
@@ -1552,18 +1553,12 @@ partial class TimePicker
 			string strMsgFormat = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_NAME_TIMEPICKER);
 			if (!string.IsNullOrEmpty(strMsgFormat))
 			{
-				// TODO:MZ: adjust to work with string.Format
-				string pszMsgFormat = strMsgFormat;
-				string cchBuffer = string.Empty;
+				// The resource uses Win32 FormatMessage-style placeholders (%1, %2),
+				// not .NET indexed placeholders ({0}, {1}). Use FormatMsg accordingly.
 				var selectedTime = SelectedTime;
-				if (selectedTime.HasValue)
-				{
-					cchBuffer = string.Format(CultureInfo.InvariantCulture, pszMsgFormat, pszParent, pszSelectedValue);
-				}
-				else
-				{
-					cchBuffer = string.Format(CultureInfo.InvariantCulture, pszMsgFormat, pszParent, "");
-				}
+				string cchBuffer = selectedTime.HasValue
+					? StringUtil.FormatMsg(strMsgFormat, pszParent, pszSelectedValue)
+					: StringUtil.FormatMsg(strMsgFormat, pszParent, "");
 
 				// no charater wrote, szBuffer is blank don't update NameProperty
 				if (!string.IsNullOrEmpty(cchBuffer))

@@ -184,6 +184,50 @@ public class Given_AppWindow
 		}
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21745")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public async Task When_Maximized_With_Extended_TitleBar_Client_Is_Inset_From_Window()
+	{
+		AssertPositioningAndSizingSupport();
+
+		var newWindow = new Window();
+		newWindow.ExtendsContentIntoTitleBar = true;
+		var appWindow = newWindow.AppWindow;
+		var overlapped = (OverlappedPresenter)appWindow.Presenter;
+		var activated = false;
+		try
+		{
+			newWindow.Activated += (s, e) => activated = true;
+			newWindow.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated);
+
+			overlapped.Maximize();
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(() => overlapped.State == OverlappedPresenterState.Maximized);
+
+			var size = appWindow.Size;             // outer window rect: overhangs the monitor when maximized
+			var clientSize = appWindow.ClientSize; // client rect: must be inset back onto the visible work area
+
+			// The maximized window rect overhangs the monitor by the resize frame on every edge. With the native
+			// overhang correction the client is inset back inside the window, so it must be strictly smaller than
+			// the window on both axes. Before the fix the client equalled the window (no inset), i.e. the chrome
+			// bled off-screen and these would have been equal.
+			clientSize.Width.Should().BeLessThan(size.Width);
+			clientSize.Height.Should().BeLessThan(size.Height);
+
+			// The inset equals the resize-frame thickness per side (a handful of DPI-scaled px), never the whole
+			// window - guard against a degenerate or grossly over-large inset.
+			(size.Width - clientSize.Width).Should().BeInRange(1, 120);
+			(size.Height - clientSize.Height).Should().BeInRange(1, 120);
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.RunOnUIThread(() => newWindow.Close());
+		}
+	}
+
 	private void AssertPositioningAndSizingSupport()
 	{
 		if (!OperatingSystem.IsLinux() &&

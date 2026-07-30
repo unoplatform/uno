@@ -245,47 +245,76 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 
+		/// <summary>
+		/// True when at least one binding uses a {ThemeResource} for its TargetNullValue or FallbackValue,
+		/// i.e. needs re-resolution on a theme change. Lets the theme walk skip the (allocating) scope setup
+		/// for the common case of bindings that carry no theme-resolved value.
+		/// </summary>
+		internal bool HasThemeResourceBindingExpressions
+		{
+			get
+			{
+				var bindings = _bindings.Data;
+				for (int i = 0; i < bindings.Length; i++)
+				{
+					var parent = bindings[i].ParentBinding;
+					if (parent.TargetNullValueThemeResource is not null || parent.FallbackValueThemeResource is not null)
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
+		}
+
 		internal void UpdateBindingExpressions()
 		{
 			foreach (var binding in _bindings)
 			{
-				UpdateBindingPropertiesFromThemeResources(binding.ParentBinding);
+				if (UpdateBindingPropertiesFromThemeResources(binding.ParentBinding))
+				{
+					// The binding's theme-resolved TargetNullValue / FallbackValue changed. Re-apply the
+					// binding so the new value takes effect: a failing/null binding (e.g. null DataContext)
+					// applies its Fallback/TargetNull at activation, which can occur before the theme-resolved
+					// value is available, leaving a stale value on the target. Reapply re-runs the full binding
+					// (including the null-DataContext fallback path that RefreshTarget skips).
+					binding.Reapply();
+				}
 			}
 		}
 
-		private static void UpdateBindingPropertiesFromThemeResources(Binding binding)
+		// Resolve a binding's TargetNullValue / FallbackValue {ThemeResource} against the binding-target
+		// element's effective theme: the caller (DependencyObjectStore.UpdateResourceBindings) scopes it
+		// onto the core requested-theme-for-subtree slot, which the dictionary leaf reads to select the
+		// Light/Dark sub-dictionary (EnsureActiveThemeDictionary, Resources.cpp:764-768) — matching
+		// WinUI's per-owner {ThemeResource} resolution.
+		// Returns true when a resolved value actually changed (so the caller can refresh the target).
+		private static bool UpdateBindingPropertiesFromThemeResources(Binding binding)
 		{
+			var changed = false;
+
 			if (binding.TargetNullValueThemeResource is { } targetNullValueThemeResourceKey)
 			{
-				binding.TargetNullValue = (object)ResourceResolverSingleton.Instance.ResolveResourceStatic(targetNullValueThemeResourceKey, typeof(object), context: binding.ParseContext);
+				ResourceResolver.ResolveResourceStatic(targetNullValueThemeResourceKey, out var value, context: binding.ParseContext);
+				if (!ReferenceEquals(binding.TargetNullValue, value))
+				{
+					binding.TargetNullValue = value;
+					changed = true;
+				}
 			}
 
 			if (binding.FallbackValueThemeResource is { } fallbackValueThemeResourceKey)
 			{
-				binding.FallbackValue = (object)ResourceResolverSingleton.Instance.ResolveResourceStatic(fallbackValueThemeResourceKey, typeof(object), context: binding.ParseContext);
+				ResourceResolver.ResolveResourceStatic(fallbackValueThemeResourceKey, out var value, context: binding.ParseContext);
+				if (!ReferenceEquals(binding.FallbackValue, value))
+				{
+					binding.FallbackValue = value;
+					changed = true;
+				}
 			}
-		}
 
-		internal void OnThemeChanged()
-		{
-			foreach (var binding in _bindings)
-			{
-				RefreshBindingValueIfNecessary(binding);
-			}
-		}
-
-		private void RefreshBindingValueIfNecessary(BindingExpression binding)
-		{
-			if (binding.ParentBinding.TargetNullValueThemeResource is not null ||
-				binding.ParentBinding.FallbackValueThemeResource is not null)
-			{
-				// Note: This may refresh the binding more than really necessary.
-				// For example, if TargetNullValue is set to a theme resource, but the binding is not null
-				// In this case, a change to TargetNullValue should probably not refresh the binding.
-				// Another case is when the ThemeResource evaluates the same between light/dark themes.
-				// For now, it's not necessary.
-				binding.RefreshTarget();
-			}
+			return changed;
 		}
 	}
 }

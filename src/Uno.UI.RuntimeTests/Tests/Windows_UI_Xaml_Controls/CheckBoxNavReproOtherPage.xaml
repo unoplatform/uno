@@ -1,0 +1,6 @@
+﻿<Page x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.CheckBoxNavReproOtherPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<!-- The "other tab": navigating here forces the checkbox page to fully unload before we navigate back. -->
+	<TextBlock Text="Other" />
+</Page>

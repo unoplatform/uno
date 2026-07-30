@@ -10,7 +10,6 @@
 
     <Style x:Key="DefaultRadioButtonsStyle" TargetType="local:RadioButtons">
         <Setter Property="IsTabStop" Value="False" />
-        <Setter Property="AutomationProperties.AccessibilityView" Value="Raw"/>
         <contract5Present:Setter Property="TabNavigation" Value="Once" />
         <Setter Property="Template">
             <Setter.Value>

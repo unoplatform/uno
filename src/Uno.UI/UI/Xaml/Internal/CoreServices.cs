@@ -10,16 +10,27 @@ using System.Threading;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI;
 using Uno.UI.Dispatching;
+using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Xaml.Core
 {
-	internal class CoreServices
+	internal partial class CoreServices
 	{
+		/// <summary>
+		/// Whether the singleton has been created — guards ambient-theme reads from
+		/// contexts where core UI services may not exist yet (early resource loads, unit tests).
+		/// </summary>
+		internal static bool HasInstance => _instance.IsValueCreated;
+
 		private static Lazy<CoreServices> _instance = new Lazy<CoreServices>(() => new CoreServices());
 
 		private VisualTree? _mainVisualTree;
+		private double _fontScale = 1.0;
+		private double _lastEffectiveFontScale;
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 
@@ -31,6 +42,7 @@ namespace Uno.UI.Xaml.Core
 		public CoreServices()
 		{
 			ContentRootCoordinator = new ContentRootCoordinator(this);
+			_lastEffectiveFontScale = FontScale;
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			EventManager = EventManager.Create();
 #endif
@@ -118,6 +130,21 @@ namespace Uno.UI.Xaml.Core
 		// TODO Uno: This will not be a singleton when multi-window setups are supported.
 		public static CoreServices Instance => _instance.Value;
 
+		private FrameworkTheming? _theming;
+
+		/// <summary>
+		/// The app/system theme state machine. Analog of CCoreServices::m_spTheming (corep.h:2205-2206),
+		/// created with a SystemThemingInterop and a callback to CCoreServices::NotifyThemeChange
+		/// (xcpcore.cpp:1202-1205); accessor analog: CCoreServices::GetFrameworkTheming (corep.h:1414-1417).
+		/// </summary>
+		internal FrameworkTheming Theming => _theming ??= new FrameworkTheming(new SystemThemingInterop(), NotifyThemeChange);
+
+		/// <summary>
+		/// Per-walk theme resource lookup cache. Analog of CCoreServices::m_themeWalkResourceCache
+		/// (activated around theme walks via BeginCachingThemeResources, xcpcore.cpp:8015).
+		/// </summary>
+		internal Microsoft.UI.Xaml.ThemeWalkResourceCache ThemeWalkResourceCache { get; } = new();
+
 		/// <summary>
 		/// Provides the content root coordinator.
 		/// </summary>
@@ -179,5 +206,90 @@ namespace Uno.UI.Xaml.Core
 			EventManager.RequestRaiseLoadedEventOnNextTick();
 		}
 #endif
+
+		/// <summary>
+		/// Gets the current text scale factor, with FeatureConfiguration overrides applied.
+		/// </summary>
+		// MUX Reference xcpcore.cpp, tag winui3/release/1.8.1
+		internal double FontScale => TextScaleHelper.GetEffectiveFontScale(_fontScale);
+
+		/// <summary>
+		/// Updates the global font scale factor from the OS setting.
+		/// If changed, fires UISettings.TextScaleFactorChanged and invalidates text elements.
+		/// </summary>
+		// MUX Reference xcpcore.cpp, tag winui3/release/1.8.1, line 11076
+		internal void UpdateFontScale(double newScale)
+		{
+			_fontScale = newScale;
+			var effectiveNew = FontScale;
+
+			if (_lastEffectiveFontScale != effectiveNew)
+			{
+				_lastEffectiveFontScale = effectiveNew;
+				UISettings.OnTextScaleFactorChanged();
+				RecursiveInvalidateTextScale();
+			}
+		}
+
+		/// <summary>
+		/// Walks all visual trees and invalidates measure on text-rendering elements.
+		/// </summary>
+		// MUX Reference uielement.cpp, tag winui3/release/1.8.1, line 3498
+		private void RecursiveInvalidateTextScale()
+		{
+			foreach (var window in ApplicationHelper.WindowsInternal)
+			{
+				if (window.RootElement is { } root)
+				{
+					InvalidateTextScaleRecursive(root);
+				}
+			}
+		}
+
+		private static void InvalidateTextScaleRecursive(UIElement element)
+		{
+			if (element is TextBlock or RichTextBlock)
+			{
+				element.InvalidateMeasure();
+			}
+#if __SKIA__ || __WASM__
+			// ContentPresenter only needs Uno-level measure invalidation on Skia/WASM where
+			// GetScaledFontSize() is called during the Uno measure pass. On iOS/Android, native
+			// font APIs already handle text scaling, and invalidating ContentPresenter there
+			// causes spurious layout passes that can break the TextBox auto-grow mechanism.
+			else if (element is ContentPresenter)
+			{
+				element.InvalidateMeasure();
+			}
+#endif
+
+#if __SKIA__
+			// Invalidate cached font info on Inlines
+			if (element is TextBlock textBlock)
+			{
+				foreach (var inline in textBlock.Inlines)
+				{
+					foreach (var descendant in InlineExtensions.Enumerate(inline))
+					{
+						descendant.InvalidateTextScaleFontInfo();
+					}
+				}
+			}
+#elif __WASM__
+			if (element is TextBlock wasmTextBlock)
+			{
+				wasmTextBlock.InvalidateForTextScaleChange();
+			}
+#endif
+
+			var count = VisualTreeHelper.GetChildrenCount(element);
+			for (var i = 0; i < count; i++)
+			{
+				if (VisualTreeHelper.GetChild(element, i) is UIElement child)
+				{
+					InvalidateTextScaleRecursive(child);
+				}
+			}
+		}
 	}
 }

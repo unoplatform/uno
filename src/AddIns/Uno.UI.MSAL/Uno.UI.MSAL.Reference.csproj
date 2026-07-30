@@ -22,8 +22,7 @@
 	<PropertyGroup>
 		<Description>This package provides the extensions to MSAL (Microsoft.Identity.Client) for an Uno Platform application.</Description>
 
-		<PackageId>Uno.UI.MSAL</PackageId>
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.MSAL</PackageId>
+		<PackageId>Uno.WinUI.MSAL</PackageId>
 
 		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
 	</PropertyGroup>

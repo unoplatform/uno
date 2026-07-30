@@ -7,6 +7,8 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 
 internal class X11CoreApplicationExtension : ICoreApplicationExtension
 {
+	private volatile bool _exitRequested;
+
 	public X11CoreApplicationExtension()
 	{
 	}
@@ -15,6 +17,8 @@ internal class X11CoreApplicationExtension : ICoreApplicationExtension
 
 	public void Exit()
 	{
+		_exitRequested = true;
+
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
 			this.Log().Debug($"Application has requested an exit");
@@ -22,4 +26,6 @@ internal class X11CoreApplicationExtension : ICoreApplicationExtension
 
 		X11XamlRootHost.CloseAllWindows();
 	}
+
+	internal bool ExitRequested => _exitRequested;
 }

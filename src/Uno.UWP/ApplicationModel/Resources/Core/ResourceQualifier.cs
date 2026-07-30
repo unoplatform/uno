@@ -56,7 +56,7 @@ public partial class ResourceQualifier
 			str = $"language-{str}";
 		}
 
-		if (str.Contains("-"))
+		if (str.Contains('-'))
 		{
 			var qualifierParts = str.Split(_dashArray, 2);
 			var name = qualifierParts[0].ToLowerInvariant();

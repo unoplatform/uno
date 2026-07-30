@@ -59,12 +59,65 @@ internal static class MonitorDecisions
 	}
 
 	/// <summary>
+	/// Determines whether the monitor should attempt an AmbientRegistry fallback
+	/// after a readiness probe failure. Returns <c>true</c> when the probe result
+	/// is <see cref="ReadinessProbeResult.ProcessExited"/> and a candidate server
+	/// exists on a different port.
+	/// </summary>
+	internal static bool ShouldAttemptAmbientFallback(
+		ReadinessProbeResult probeResult,
+		string? solution,
+		int? existingPort,
+		int currentPort)
+		=> probeResult == ReadinessProbeResult.ProcessExited
+			&& !string.IsNullOrWhiteSpace(solution)
+			&& existingPort is not null
+			&& existingPort.Value != currentPort;
+
+	/// <summary>
+	/// Determines whether the readiness result allows the monitor to proceed
+	/// to the ServerStarted event (connect the MCP proxy).
+	/// <c>ServerRespondedNoMcp</c> is handled explicitly in the caller
+	/// (kill-and-retry for adopted servers, fail-fast for self-spawned)
+	/// and must NOT reach this gate.
+	/// </summary>
+	internal static bool IsReadinessAcceptable(ReadinessProbeResult probeResult)
+		=> probeResult == ReadinessProbeResult.Ready;
+
+	/// <summary>
 	/// Returns <c>true</c> when the server process has already exited, allowing
 	/// <see cref="DevServerMonitor"/> to short-circuit the readiness probe loop
 	/// instead of waiting the full timeout (~30 s).
 	/// </summary>
 	internal static bool ShouldShortCircuitReadiness(Process? serverProcess)
 		=> serverProcess is { HasExited: true };
+
+	/// <summary>
+	/// Result of a readiness probe performed by <see cref="DevServerMonitor"/>.
+	/// </summary>
+	internal enum ReadinessProbeResult
+	{
+		/// <summary>The <c>/mcp</c> endpoint responded successfully.</summary>
+		Ready,
+
+		/// <summary>
+		/// The server process exited during the probe. The caller should check
+		/// <see cref="AmbientRegistry"/> for an active server that may have been
+		/// reused by the controller (exit code 0 scenario) before treating this
+		/// as a hard failure.
+		/// </summary>
+		ProcessExited,
+
+		/// <summary>
+		/// The server responded to HTTP requests, but the <c>/mcp</c> endpoint
+		/// returned 404 or 400 on every attempt. Indicates a pre-MCP host or a
+		/// host where MCP transport failed to register.
+		/// </summary>
+		ServerRespondedNoMcp,
+
+		/// <summary>No HTTP response was received within the timeout budget.</summary>
+		TimedOut,
+	}
 
 	/// <summary>
 	/// Determines whether the MCP client supports roots. Checks for the presence of

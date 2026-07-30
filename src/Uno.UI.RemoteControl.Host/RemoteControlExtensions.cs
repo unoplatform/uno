@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.Server.AppLaunch;
 using Uno.UI.RemoteControl.Server.Telemetry;
+using Uno.UI.RemoteControl.ServerCore.Configuration;
+using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Services;
 using Uno.UI.RemoteControl.VS.Helpers;
 
@@ -97,18 +98,35 @@ namespace Uno.UI.RemoteControl.Host
 				app.Log().LogInformation("Accepted connection from {ConnectionRemoteIpAddress}", context.Connection.RemoteIpAddress);
 			}
 
+			ConnectionContext? connectionContext = null;
+			ITelemetry? telemetry = null;
+			await using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateAsyncScope();
+			var services = scope.ServiceProvider;
 			try
 			{
-				if (context.RequestServices.GetService<IConfiguration>() is { } configuration)
+				var configuration = services.GetService<IRemoteControlConfiguration>();
+				var launchMonitor = services.GetService<IApplicationLaunchMonitor>();
+				var ideChannel = services.GetService<IIdeChannel>();
+
+				if (configuration is not null && launchMonitor is not null && ideChannel is not null)
 				{
+					if (app.Log().IsEnabled(LogLevel.Trace))
+					{
+						app.Log().LogTrace(
+							"Resolved devserver services: {ConfigurationType}, {LaunchMonitorType}, {IdeChannelType}",
+							configuration.GetType().FullName,
+							launchMonitor.GetType().FullName,
+							ideChannel.GetType().FullName);
+					}
+
 					// Populate the scoped ConnectionContext with connection metadata
-					var connectionContext = context.RequestServices.GetService<ConnectionContext>();
+					connectionContext = services.GetService<ConnectionContext>();
+					telemetry = services.GetService<ITelemetry>();
 					if (connectionContext != null)
 					{
 						connectionContext.ConnectedAt = DateTimeOffset.UtcNow;
 
 						// Track client connection in telemetry
-						var telemetry = context.RequestServices.GetService<ITelemetry>();
 						if (telemetry != null)
 						{
 							var properties = new Dictionary<string, string>
@@ -125,29 +143,22 @@ namespace Uno.UI.RemoteControl.Host
 						}
 					}
 
-					// Use context.RequestServices directly - it already contains both global and scoped services
-					// The global service provider was injected as Singleton in Program.cs, so it's accessible here
-					using var server = new RemoteControlServer(
-						configuration,
-						context.RequestServices.GetService<IIdeChannel>() ??
-						throw new InvalidOperationException("IIdeChannel is required"),
-						context.RequestServices);
+					using var transport = new WebSocketFrameTransport(await context.WebSockets.AcceptWebSocketAsync());
+					var connectionHandler = services.GetRequiredService<IRemoteControlServerConnection>();
 
-					await server.RunAsync(await context.WebSockets.AcceptWebSocketAsync(), context.RequestAborted);
+					await connectionHandler.HandleConnectionAsync(transport, context.RequestAborted);
 				}
 				else
 				{
 					if (app.Log().IsEnabled(LogLevel.Error))
 					{
-						app.Log().LogError($"Unable to find configuration service");
+						app.Log().LogError("Unable to resolve required devserver services (configuration, IDE channel, or application launch monitor).");
 					}
 				}
 			}
 			finally
 			{
 				// Track client disconnection in telemetry
-				var connectionContext = context.RequestServices.GetService<ConnectionContext>();
-				var telemetry = context.RequestServices.GetService<ITelemetry>();
 				if (telemetry != null && connectionContext != null)
 				{
 					var connectionDuration = DateTimeOffset.UtcNow - connectionContext.ConnectedAt;
@@ -181,7 +192,7 @@ namespace Uno.UI.RemoteControl.Host
 			string? ide,
 			string? plugin)
 		{
-			var monitor = context.RequestServices.GetRequiredService<ApplicationLaunchMonitor>();
+			var monitor = context.RequestServices.GetRequiredService<IApplicationLaunchMonitor>();
 			monitor.RegisterLaunch(mvid, platform, isDebug ?? false, ide ?? "Unknown", plugin ?? "Unknown");
 
 			context.Response.StatusCode = StatusCodes.Status200OK;
@@ -216,7 +227,7 @@ namespace Uno.UI.RemoteControl.Host
 				// Read MVID and TargetPlatform without loading the assembly
 				var (mvid, platform) = AssemblyInfoReader.Read(assemblyPath);
 
-				var monitor = context.RequestServices.GetRequiredService<ApplicationLaunchMonitor>();
+				var monitor = context.RequestServices.GetRequiredService<IApplicationLaunchMonitor>();
 				monitor.RegisterLaunch(mvid, platform, isDebug ?? false, ide, plugin);
 
 				context.Response.StatusCode = StatusCodes.Status200OK;

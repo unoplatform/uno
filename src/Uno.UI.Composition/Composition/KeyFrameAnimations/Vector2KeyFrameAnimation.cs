@@ -24,6 +24,9 @@ public partial class Vector2KeyFrameAnimation : KeyFrameAnimation
 	public void InsertKeyFrame(float normalizedProgressKey, Vector2 value)
 		=> InsertKeyFrame(normalizedProgressKey, value, Compositor.GetDefaultEasingFunction());
 
+	private protected override void InsertExpressionKeyFrameCore(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)
+		=> _keyFrames[normalizedProgressKey] = new() { Value = Vector2.Zero, EasingFunction = easingFunction, ParsedExpression = new ExpressionAnimationParser(value).Parse() };
+
 	internal override object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
 		base.Start(propertyName, subPropertyName, compositionObject);
@@ -41,11 +44,25 @@ public partial class Vector2KeyFrameAnimation : KeyFrameAnimation
 			finalValue = _keyFrames.Values.LastOrDefault(startValue);
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		static Vector2 Lerp(AnimationKeyFrame<Vector2> value1, AnimationKeyFrame<Vector2> value2, float amount)
-			=> Vector2.Lerp(value1.Value, value2.Value, value2.EasingFunction.Ease(amount));
+		// Pass 'this' (the parent animation) so expression keyframes can resolve reference parameters.
+		Vector2 Resolve(AnimationKeyFrame<Vector2> frame) => ResolveVector2KeyFrameValue(this, frame);
 
-		_keyframeEvaluator = new KeyFrameEvaluator<Vector2>(startValue, finalValue, Duration, _keyFrames, Lerp, IterationCount, IterationBehavior, Compositor);
-		return startValue.Value;
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		Vector2 Lerp(AnimationKeyFrame<Vector2> value1, AnimationKeyFrame<Vector2> value2, float amount)
+			=> Vector2.Lerp(Resolve(value1), Resolve(value2), value2.EasingFunction.Ease(amount));
+
+		_keyframeEvaluator = new KeyFrameEvaluator<Vector2>(startValue, finalValue, Duration, _keyFrames, Lerp, IterationCount, IterationBehavior, Compositor, Resolve);
+		return Resolve(startValue);
+	}
+
+	private static Vector2 ResolveVector2KeyFrameValue(KeyFrameAnimation animation, AnimationKeyFrame<Vector2> frame)
+	{
+		if (frame.ParsedExpression is null)
+		{
+			return frame.Value;
+		}
+
+		var evaluation = frame.ParsedExpression.Evaluate(animation);
+		return SubPropertyHelpers.ValidateValue<Vector2>(evaluation);
 	}
 }

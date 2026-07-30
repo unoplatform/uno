@@ -234,6 +234,29 @@ namespace Uno.UI.Runtime.Skia
 			_fd = 0;
 		}
 
+		/// <summary>
+		/// Zeroes the mapped framebuffer region so fbcon's text (e.g. the CLI prompt)
+		/// is visible again after the process has drawn over it.
+		/// </summary>
+		public void Clear()
+		{
+			if (_fd <= 0 || _mappedAddress == IntPtr.Zero || _mappedAddress == new IntPtr(-1))
+			{
+				return;
+			}
+
+			var length = _mappedLength.ToInt64();
+			var remaining = length;
+			var dst = (byte*)_mappedAddress;
+			while (remaining > 0)
+			{
+				var chunk = (int)Math.Min(remaining, int.MaxValue);
+				new Span<byte>(dst, chunk).Clear();
+				dst += chunk;
+				remaining -= chunk;
+			}
+		}
+
 		public void VSync()
 		{
 			if (_fd <= 0)

@@ -3,14 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ItemCollectionTransitionCompletedEventArgs
 	{
 		// Skipping already declared property Element
 		// Skipping already declared property Transition
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.Transition.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.Element.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransitionCompletedEventArgs.Transition.get
 	}
 }

@@ -42,4 +42,6 @@ internal interface IInvisibleTextBoxView
 	nint GetOffsetFromPosition(UITextPosition fromPosition, UITextPosition toPosition);
 
 	TextBoxView? Owner { get; }
+
+	bool IsComposing { get; }
 }

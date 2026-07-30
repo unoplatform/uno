@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Windows.Foundation;
@@ -11,7 +11,11 @@ internal class X11KeyboardInputSource : IUnoKeyboardInputSource
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
 
-	private X11XamlRootHost _host;
+	private readonly X11XamlRootHost _host;
+
+	// D-Bus IME backend, set once from the detector's result that X11ApplicationHost
+	// awaited during InitializeAsync. Null if no IBus/Fcitx daemon is reachable.
+	private readonly IX11InputMethod? _dbusIme;
 
 	public X11KeyboardInputSource(IXamlRootHost host)
 	{
@@ -22,56 +26,176 @@ internal class X11KeyboardInputSource : IUnoKeyboardInputSource
 
 		_host = (X11XamlRootHost)host;
 		_host.SetKeyboardSource(this);
+
+		_dbusIme = X11InputMethodDetector.DetectedInputMethod;
+		if (_dbusIme is not null)
+		{
+			_dbusIme.Commit += OnDBusImeCommit;
+			_dbusIme.ForwardKey += OnDBusImeForwardKey;
+			_dbusIme.PreeditChanged += OnDBusImePreeditChanged;
+		}
 	}
 
-	internal void ProcessKeyboardEvent(XKeyEvent keyEvent, bool pressed)
+	internal IX11InputMethod? GetDBusIme() => _dbusIme;
+
+	private void OnDBusImeCommit(string text)
 	{
-		unsafe
+		var imeExtension = X11ImeTextBoxExtension.Instance;
+		X11XamlRootHost.QueueAction(_host, () => imeExtension.OnCommittedText(text));
+	}
+
+	private void OnDBusImeForwardKey(uint keyVal, uint keyCode, uint state)
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			// unicode is at most 4 bytes
-			var buffer = stackalloc byte[4];
-			// TODO: Composing inputs https://wiki.debian.org/XCompose
-			int nbytes = XLib.XLookupString(ref keyEvent, buffer, 4, out var keySym, IntPtr.Zero);
+			this.Log().Trace($"D-Bus IME ForwardKey: keyval=0x{keyVal:X} keycode={keyCode} state=0x{state:X}");
+		}
 
-			if (this.Log().IsEnabled(LogLevel.Trace))
+		// IBus ReleaseMask is bit 30
+		bool isRelease = (state & (1u << 30)) != 0;
+		// Clear the release mask for virtual key mapping
+		var cleanState = state & ~(1u << 30);
+
+		var keySym = (nint)keyVal;
+		var vk = X11KeyTransform.VirtualKeyFromKeySym(keySym);
+		var modifiers = X11XamlRootHost.XModifierMaskToVirtualKeyModifiers((XModifierMask)cleanState);
+
+		var args = new KeyEventArgs(
+			"keyboard",
+			vk,
+			modifiers,
+			new CorePhysicalKeyStatus
 			{
-				this.Log().Trace($"ProcessKeyboardEvent pressed={pressed}: {keyEvent.keycode} -> {X11KeyTransform.VirtualKeyFromKeySym(keySym)}");
-			}
+				ScanCode = keyCode,
+				RepeatCount = 1,
+			},
+			unicodeKey: null);
 
-			// we make a call to libc's setlocale during startup, so buffer should be utf8
-			var symbols = System.Text.Encoding.UTF8.GetString(buffer, nbytes);
-			if (string.IsNullOrEmpty(symbols) || (symbols != "\r" && char.IsControl(symbols[0])))
+		X11XamlRootHost.QueueAction(_host, () =>
+		{
+			if (!isRelease)
 			{
-				symbols = null;
+				KeyDown?.Invoke(this, args);
 			}
-
-			if (this.Log().IsEnabled(LogLevel.Trace))
+			else
 			{
-				this.Log().Trace($"ProcessKeyboardEvent pressed={pressed}: {keyEvent.keycode} -> {X11KeyTransform.VirtualKeyFromKeySym(keySym)} utf8:{symbols?[0]}");
+				KeyUp?.Invoke(this, args);
 			}
+		});
+	}
 
-			var args = new KeyEventArgs(
-				"keyboard",
-				X11KeyTransform.VirtualKeyFromKeySym(keySym),
-				X11XamlRootHost.XModifierMaskToVirtualKeyModifiers(keyEvent.state),
-				new CorePhysicalKeyStatus
+	private void OnDBusImePreeditChanged(string? preeditText, int cursorPos)
+	{
+		var imeExtension = X11ImeTextBoxExtension.Instance;
+		X11XamlRootHost.QueueAction(_host, () =>
+		{
+			if (string.IsNullOrEmpty(preeditText))
+			{
+				// Preedit cleared — end composition if composing
+				if (imeExtension.IsComposing)
 				{
-					ScanCode = (uint)keyEvent.keycode,
-					RepeatCount = 1,
-				},
-				unicodeKey: symbols?[0]);
-
-			X11XamlRootHost.QueueAction(_host, () =>
+					imeExtension.OnPreeditChanged(null, 0);
+				}
+			}
+			else
 			{
-				if (pressed)
+				imeExtension.OnPreeditChanged(preeditText, cursorPos);
+			}
+		});
+	}
+
+	internal unsafe void ProcessKeyboardEvent(XKeyEvent keyEvent, bool pressed)
+	{
+		var buffer = stackalloc byte[4];
+		int nbytes = XLib.XLookupString(ref keyEvent, buffer, 4, out nint keySym, IntPtr.Zero);
+		var text = nbytes > 0 ? System.Text.Encoding.UTF8.GetString(buffer, nbytes) : null;
+
+		if (_dbusIme?.IsEnabled == true)
+		{
+			uint keyVal = (uint)(ulong)keySym;
+			uint keyCode = (uint)keyEvent.keycode;
+			uint state = (uint)keyEvent.state;
+
+			bool handled;
+			try
+			{
+				var task = _dbusIme.HandleKeyEventAsync(keyVal, keyCode, state, !pressed);
+				// Use a timeout to prevent stalling the UI/input thread if the IME service is slow.
+				if (!task.Wait(TimeSpan.FromMilliseconds(100)))
 				{
-					KeyDown?.Invoke(this, args);
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn("D-Bus IME HandleKeyEvent timed out, treating as unhandled.");
+					}
+					handled = false;
 				}
 				else
 				{
-					KeyUp?.Invoke(this, args);
+					handled = task.Result;
 				}
-			});
+			}
+			catch (Exception ex)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"D-Bus IME HandleKeyEvent failed: {ex.Message}", ex);
+				}
+				handled = false;
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"D-Bus IME key: keyval=0x{keyVal:X} keycode={keyCode} state=0x{state:X} pressed={pressed} → handled={handled}");
+			}
+
+			if (handled)
+			{
+				// IME consumed the event — do not dispatch KeyDown/KeyUp
+				return;
+			}
 		}
+		else if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"ProcessKeyboardEvent pressed={pressed}: keycode={keyEvent.keycode} keySym={keySym} vk={X11KeyTransform.VirtualKeyFromKeySym(keySym)} text='{text}' nbytes={nbytes}");
+		}
+
+		string? symbols = null;
+		if (!string.IsNullOrEmpty(text) && (text == "\r" || !char.IsControl(text[0])))
+		{
+			symbols = text;
+		}
+
+		DispatchKeyEvent(keyEvent, pressed, keySym, symbols);
+	}
+
+	private void DispatchKeyEvent(XKeyEvent keyEvent, bool pressed, nint keySym, string? symbols)
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"Dispatching {(pressed ? "KeyDown" : "KeyUp")}: vk={X11KeyTransform.VirtualKeyFromKeySym(keySym)} unicodeKey={(symbols?.Length > 0 ? symbols[0].ToString() : "null")}");
+		}
+
+		var args = new KeyEventArgs(
+			"keyboard",
+			X11KeyTransform.VirtualKeyFromKeySym(keySym),
+			X11XamlRootHost.XModifierMaskToVirtualKeyModifiers(keyEvent.state),
+			new CorePhysicalKeyStatus
+			{
+				ScanCode = (uint)keyEvent.keycode,
+				RepeatCount = 1,
+			},
+			unicodeKey: symbols?.Length > 0 ? symbols[0] : null);
+
+		X11XamlRootHost.QueueAction(_host, () =>
+		{
+			if (pressed)
+			{
+				KeyDown?.Invoke(this, args);
+			}
+			else
+			{
+				KeyUp?.Invoke(this, args);
+			}
+		});
 	}
 }

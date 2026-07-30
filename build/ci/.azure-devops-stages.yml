@@ -11,6 +11,7 @@ stages:
     steps:
     - checkout: self
       clean: true
+      persistCredentials: true
       sparseCheckoutPatterns: |
         # root files are needed for versioning and build scripts
         /*
@@ -18,9 +19,11 @@ stages:
         README.md
         README/**
         build/**
+        src/Uno.Sdk/packages.json
 
     - template: templates/gitversion-run.yml
     - template: setup/.azure-devops-setup-commitsar.yml
+    - template: setup/.azure-devops-setup-validate-packages.yml
     - template: setup/.azure-devops-setup-doc-validations.yml
 
   - job: DetermineScope
@@ -33,6 +36,7 @@ stages:
     steps:
     - checkout: self
       clean: false
+      persistCredentials: true
       fetchDepth: 0
 
     - task: PowerShell@2
@@ -58,7 +62,6 @@ stages:
   jobs:
   - template: build/.azure-devops-build-native.yml
     parameters:
-      UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
       macOSImageName: '$(macOSVMImage)'
  
@@ -72,7 +75,6 @@ stages:
   - template: build/.azure-devops-build-managed.yml
     parameters:
       poolName: '$(windowsScaledPool)'
-      UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
 
 - stage: packages_tests
@@ -102,9 +104,20 @@ stages:
     parameters:
       poolName: '$(windowsScaledPool)'
 
+- stage: addin_version_alignment
+  displayName: Tests - Add-in Version Alignment
+  dependsOn: []
+
+  jobs:
+
+  - template: tests/.azure-devops-tests-devserver-linux.yml
+    parameters:
+      poolName: '$(linuxScaledPool)'
+
 - stage: wasm_tests
   displayName: Tests - WebAssembly Native
-  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeWasm'], 'true')))
+  # Native targets are maintenance-only: native runtime tests run on branch builds (master/feature) only, never on PRs.
+  condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'PullRequest'))
   dependsOn:
     - Setup
 
@@ -124,12 +137,12 @@ stages:
     poolName: '$(windowsScaledPool)'
     xCodeRootBuild: '$(xCodeRoot)'
     xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
-    UNO_UWP_BUILD: false
     XAML_FLAVOR_BUILD: WinUI
 
 - stage: android_tests
   displayName: Tests - Android Native
-  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeAndroid'], 'true')))
+  # Native targets are maintenance-only: native runtime tests run on branch builds (master/feature) only, never on PRs.
+  condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'PullRequest'))
   dependsOn:
     - Setup
 
@@ -144,7 +157,8 @@ stages:
 
 - stage: ios_tests
   displayName: Tests - iOS Native
-  condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.RequireNativeIos'], 'true')))
+  # Disabled: native targets are maintenance-only. Always-false condition skips the stage.
+  condition: false
   dependsOn:
     - Setup
 
@@ -164,7 +178,7 @@ stages:
   jobs:
   - template: tests/.azure-devops-tests-winappsdk.yml
     parameters:
-      poolName: '$(windows2022HostedVMImage)'
+      poolName: '$(windowsScaledPool)'
 
 - stage: test_finalization
   displayName: Tests - Screenshots
@@ -187,7 +201,7 @@ stages:
       poolName: '$(windowsScaledPool)'
 
 - stage: ios_testflight
-  displayName: Publish - iOS Testflight
+  displayName: Publish - iOS TestFlight
   dependsOn:
     - Setup
 

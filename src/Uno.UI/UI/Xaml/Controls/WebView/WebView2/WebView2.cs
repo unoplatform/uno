@@ -115,4 +115,7 @@ public partial class WebView2 : Control, IWebView
 		Source = Uri.TryCreate(sender.Source, UriKind.Absolute, out var uri) ? uri : CoreWebView2.BlankUri;
 		_sourceChangeFromCore = false;
 	}
+
+	protected override Automation.Peers.AutomationPeer OnCreateAutomationPeer()
+		=> new Automation.Peers.WebView2AutomationPeer(this);
 }

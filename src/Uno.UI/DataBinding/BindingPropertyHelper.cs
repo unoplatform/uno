@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 #if !NETFX_CORE
 using System;
@@ -75,6 +75,54 @@ namespace Uno.UI.DataBinding
 			_getSubstituteValueGetter.Clear();
 			_getValueUnsetter.Clear();
 			_getPropertyType.Clear();
+
+			// The pooled lookup key retains the last-queried Type past the dictionary clears.
+			// Swap rather than mutate: an in-flight GetPropertyType call may hold the old
+			// instance, and Clone() relies on non-null fields.
+			_getPropertyTypeKey = new GetPropertyTypeKey();
+		}
+
+		/// <summary>
+		/// Clears all binding caches. Called during ALC teardown to release Type references
+		/// from non-default ALCs. The caches rebuild transparently on next access.
+		/// </summary>
+		[System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup")]
+		internal static void ClearCachesForNonDefaultAlc()
+		{
+			ClearCaches();
+
+			// Clear _knownMissingTypes from the BindableMetadataProvider to remove ALC types.
+			// The provider may be from the host, but it accumulates Type references from ALC
+			// lookups in its _knownMissingTypes HashSet.
+			if (BindableMetadataProvider is { } provider)
+			{
+				var providerAlc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(provider.GetType().Assembly);
+				if (providerAlc is not null && providerAlc != System.Runtime.Loader.AssemblyLoadContext.Default)
+				{
+					// Provider is from ALC — replace entirely
+					BindableMetadataProvider = null;
+				}
+				else
+				{
+					// Provider is from host — clear _knownMissingTypes of ALC types
+					try
+					{
+						var field = provider.GetType().GetField("_knownMissingTypes",
+							System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+						if (field?.GetValue(provider) is System.Collections.IList list)
+						{
+							list.Clear();
+						}
+						else if (field?.GetValue(provider) is System.Collections.IEnumerable)
+						{
+							// HashSet<Type> — use reflection to call Clear()
+							var clearMethod = field.FieldType.GetMethod("Clear");
+							clearMethod?.Invoke(field.GetValue(provider), null);
+						}
+					}
+					catch { }
+				}
+			}
 		}
 
 		private static Func<object, object?[], object?> DefaultInvokerBuilder(MethodInfo method)
@@ -95,13 +143,17 @@ namespace Uno.UI.DataBinding
 
 		public static Type? GetPropertyType(Type type, string property, bool allowPrivateMembers)
 		{
-			_getPropertyTypeKey.Update(type, property, allowPrivateMembers);
+			// Capture the pooled key into a local: ClearCaches() swaps the static field, and a
+			// single lookup must never mix the old and the new instance (Update on one, Clone on
+			// the other would insert a stale or seeded key into the freshly cleared table).
+			var key = _getPropertyTypeKey;
+			key.Update(type, property, allowPrivateMembers);
 
 			object? result;
 
-			if (!_getPropertyType.TryGetValue(_getPropertyTypeKey, out result))
+			if (!_getPropertyType.TryGetValue(key, out result))
 			{
-				_getPropertyType.Add(_getPropertyTypeKey.Clone(), result = InternalGetPropertyType(type, property, allowPrivateMembers));
+				_getPropertyType.Add(key.Clone(), result = InternalGetPropertyType(type, property, allowPrivateMembers));
 			}
 
 			return Unsafe.As<Type>(result);
@@ -236,7 +288,10 @@ namespace Uno.UI.DataBinding
 						}
 						else
 						{
-							_log.ErrorFormat("The [{0}] property does not exist on type [{1}]", property, type);
+							if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+							{
+								_log.DebugFormat("The [{0}] property does not exist on type [{1}]", property, type);
+							}
 							return null;
 						}
 					}
@@ -277,7 +332,10 @@ namespace Uno.UI.DataBinding
 						}
 						else
 						{
-							_log.ErrorFormat("The Indexer property getter does not exist on type [{0}]", type);
+							if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+							{
+								_log.DebugFormat("The Indexer property getter does not exist on type [{0}]", type);
+							}
 							return null;
 						}
 					}
@@ -315,7 +373,10 @@ namespace Uno.UI.DataBinding
 						return type;
 					}
 
-					_log.ErrorFormat("The [{0}] property getter does not exist on type [{1}]", property, type);
+					if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					{
+						_log.DebugFormat("The [{0}] property getter does not exist on type [{1}]", property, type);
+					}
 					return null;
 				}
 			}
@@ -528,14 +589,20 @@ namespace Uno.UI.DataBinding
 							}
 							else
 							{
-								_log.ErrorFormat($"The index [{0}] was outside of the bounds of the [{1}]", index, type);
+								if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+								{
+									_log.DebugFormat($"The index [{0}] was outside of the bounds of the [{1}]", index, type);
+								}
 								return DependencyProperty.UnsetValue;
 							}
 						};
 					}
 					else
 					{
-						_log.ErrorFormat("The property [{0}] is not valid for [{1}]", property, type);
+						if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+						{
+							_log.DebugFormat("The property [{0}] is not valid for [{1}]", property, type);
+						}
 					}
 				}
 				else if (type.Is<IList>())
@@ -552,14 +619,20 @@ namespace Uno.UI.DataBinding
 							}
 							else
 							{
-								_log.ErrorFormat($"The index [{0}] was outside of the bounds of the [{1}]", index, type);
+								if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+								{
+									_log.DebugFormat($"The index [{0}] was outside of the bounds of the [{1}]", index, type);
+								}
 								return DependencyProperty.UnsetValue;
 							}
 						};
 					}
 					else
 					{
-						_log.ErrorFormat("The property [{0}] is not valid for [{1}]", property, type);
+						if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+						{
+							_log.DebugFormat("The property [{0}] is not valid for [{1}]", property, type);
+						}
 					}
 				}
 
@@ -613,7 +686,10 @@ namespace Uno.UI.DataBinding
 						{
 							var empty = Funcs.CreateMemoized<object>(() =>
 							{
-								_log.ErrorFormat("The Indexer Getter does not exist on [{0}]", type);
+								if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+								{
+									_log.DebugFormat("The Indexer Getter does not exist on [{0}]", type);
+								}
 								return DependencyProperty.UnsetValue;
 							});
 
@@ -635,7 +711,10 @@ namespace Uno.UI.DataBinding
 					{
 						var empty = Funcs.CreateMemoized<object>(() =>
 						{
-							_log.ErrorFormat("The Indexer property getter does not exist on type [{0}]", type);
+							if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+							{
+								_log.DebugFormat("The Indexer property getter does not exist on type [{0}]", type);
+							}
 							return DependencyProperty.UnsetValue;
 						});
 
@@ -697,7 +776,10 @@ namespace Uno.UI.DataBinding
 					{
 						var emptyProperty = Funcs.CreateMemoized<object>(() =>
 						{
-							_log.ErrorFormat("The Property [{0}] Getter does not exist on [{1}]", property, type);
+							if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+							{
+								_log.DebugFormat("The Property [{0}] Getter does not exist on [{1}]", property, type);
+							}
 							return DependencyProperty.UnsetValue;
 						});
 
@@ -803,7 +885,10 @@ namespace Uno.UI.DataBinding
 				// No getter has been found
 				var empty = Funcs.CreateMemoized<object>(() =>
 				{
-					_log.ErrorFormat("The [{0}] property getter does not exist on type [{1}]", property, type);
+					if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					{
+						_log.DebugFormat("The [{0}] property getter does not exist on type [{1}]", property, type);
+					}
 					return DependencyProperty.UnsetValue;
 				});
 
@@ -900,7 +985,13 @@ namespace Uno.UI.DataBinding
 							else
 							{
 								var once = Actions.CreateOnce(
-									() => _log.ErrorFormat("The Indexer property setter does not exist on type [{0}]", type)
+									() =>
+									{
+										if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+										{
+											_log.DebugFormat("The Indexer property setter does not exist on type [{0}]", type);
+										}
+									}
 								);
 
 								return delegate { once(); };
@@ -938,7 +1029,13 @@ namespace Uno.UI.DataBinding
 						else
 						{
 							var once = Actions.CreateOnce(
-								() => _log.ErrorFormat("The Indexer Setter does not exist on [{0}]", type)
+								() =>
+								{
+									if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+									{
+										_log.DebugFormat("The Indexer Setter does not exist on [{0}]", type);
+									}
+								}
 							);
 
 							return delegate { once(); };
@@ -947,7 +1044,13 @@ namespace Uno.UI.DataBinding
 					else
 					{
 						var once = Actions.CreateOnce(
-							() => _log.ErrorFormat("The Indexer property setter does not exist on type [{0}]", type)
+							() =>
+							{
+								if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+								{
+									_log.DebugFormat("The Indexer property setter does not exist on type [{0}]", type);
+								}
+							}
 						);
 
 						return delegate { once(); };
@@ -982,7 +1085,13 @@ namespace Uno.UI.DataBinding
 						}
 
 						var once = Actions.CreateOnce(
-							() => _log.ErrorFormat("The property setter for [{0}] does not exist on [{1}]", property, type)
+							() =>
+							{
+								if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+								{
+									_log.DebugFormat("The property setter for [{0}] does not exist on [{1}]", property, type);
+								}
+							}
 						);
 
 						return delegate { once(); };
@@ -1064,7 +1173,13 @@ namespace Uno.UI.DataBinding
 				}
 
 				var once = Actions.CreateOnce(
-					() => _log.ErrorFormat("The property setter for [{0}] does not exist on [{1}]", property, type)
+					() =>
+					{
+						if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+						{
+							_log.DebugFormat("The property setter for [{0}] does not exist on [{1}]", property, type);
+						}
+					}
 				);
 
 				return delegate { once(); };
@@ -1091,7 +1206,10 @@ namespace Uno.UI.DataBinding
 				// No getter has been found
 				var empty = Funcs.CreateMemoized<object>(() =>
 				{
-					_log.ErrorFormat("The [{0}] substitute property getter does not exist on type [{1}]", property, type);
+					if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					{
+						_log.DebugFormat("The [{0}] substitute property getter does not exist on type [{1}]", property, type);
+					}
 					return DependencyProperty.UnsetValue;
 				});
 
@@ -1116,7 +1234,13 @@ namespace Uno.UI.DataBinding
 			}
 
 			var once = Actions.CreateOnce(
-				() => _log.ErrorFormat("The property unsetter for [{0}] does not exist on [{1}]", property, type)
+				() =>
+				{
+					if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					{
+						_log.DebugFormat("The property unsetter for [{0}] does not exist on [{1}]", property, type);
+					}
+				}
 			);
 
 			return delegate { once(); };

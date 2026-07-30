@@ -18,6 +18,7 @@ public class Given_DefinitionsLoader
 			"cursor",
 			"windsurf",
 			"kiro",
+			"kimi-code",
 			"gemini-antigravity",
 			"gemini-cli",
 			"junie-rider",
@@ -135,13 +136,39 @@ public class Given_DefinitionsLoader
 	}
 
 	[TestMethod]
-	public void Load_EmbeddedResources_JunieRiderUsesIdeaConfigFile()
+	public void Load_EmbeddedResources_JunieRiderUsesJunieConfigFile()
 	{
 		var defs = DefinitionsLoader.Load();
 		var profile = defs.Ides["junie-rider"];
 
-		profile.ConfigPaths.Should().Contain("{workspace}/.idea/mcpServers.json");
-		profile.WriteTarget.Should().Be("{workspace}/.idea/mcpServers.json");
+		profile.ConfigPaths.Should().Contain("{workspace}/.junie/mcp/mcp.json");
+		profile.ConfigPaths.Should().Contain("{home}/.junie/mcp/mcp.json");
+		profile.WriteTarget.Should().Be("{workspace}/.junie/mcp/mcp.json");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_KimiCodeUsesKimiCodeConfigFile()
+	{
+		var defs = DefinitionsLoader.Load();
+		var profile = defs.Ides["kimi-code"];
+
+		profile.ConfigPaths.Should().Contain("{workspace}/.kimi-code/mcp.json");
+		profile.ConfigPaths.Should().Contain("{home}/.kimi-code/mcp.json");
+		profile.WriteTarget.Should().Be("{workspace}/.kimi-code/mcp.json");
+		profile.JsonRootKey.Should().Be("mcpServers");
+	}
+
+	[TestMethod]
+	public void Load_EmbeddedResources_NoProfileEncodesLegacyForceRootsFallbackExtraArg()
+	{
+		var defs = DefinitionsLoader.Load();
+
+		foreach (var (name, profile) in defs.Ides)
+		{
+			(profile.ExtraArgs ?? []).Should().NotContain(
+				"--force-roots-fallback",
+				$"profile '{name}' should not hardcode --force-roots-fallback; the DevServer auto-detects roots capability at runtime and the flag is a legacy explicit override");
+		}
 	}
 
 	[TestMethod]

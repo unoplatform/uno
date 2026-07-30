@@ -22,6 +22,19 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.GooglePlay" ProjectSystem="true" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(UnoFeatures.Contains(';androidtv;'))">
+		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Leanback" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoFeatures.Contains(';androidauto;'))">
+		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Car.App.App" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoFeatures.Contains(';androidwear;'))">
+		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Wear" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Wear.Tiles" ProjectSystem="true" />
+	</ItemGroup>
+
 
 	<ItemGroup Condition=" $(_IsExecutable) == 'true' AND $(UnoFeatures.Contains(';skiarenderer;')) ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.Android" ProjectSystem="true" />

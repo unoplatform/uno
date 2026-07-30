@@ -23,12 +23,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using Uno.Xaml.Schema;
 
 namespace System.Windows.Markup
 {
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types manipulated here have been marked earlier")]
 	[MarkupExtensionReturnType (typeof (object))]
 	[TypeConverter (typeof (StaticExtensionConverter))]
 	// [System.Runtime.CompilerServices.TypeForwardedFrom (Consts.AssemblyPresentationFramework_3_5)]

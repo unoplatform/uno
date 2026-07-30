@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+  <interface name="org.freedesktop.IBus.Portal">
+    <method name='CreateInputContext'>
+      <arg direction='in'  type='s' name='client_name' />
+      <arg direction='out' type='o' name='object_path' />
+    </method>
+  </interface>
+
+  <interface name='org.freedesktop.IBus.InputContext'>
+    <method name='ProcessKeyEvent'>
+      <arg direction='in'  type='u' name='keyval' />
+      <arg direction='in'  type='u' name='keycode' />
+      <arg direction='in'  type='u' name='state' />
+      <arg direction='out' type='b' name='handled' />
+    </method>
+    <method name='SetCursorLocation'>
+      <arg direction='in' type='i' name='x' />
+      <arg direction='in' type='i' name='y' />
+      <arg direction='in' type='i' name='w' />
+      <arg direction='in' type='i' name='h' />
+    </method>
+    <method name='SetCursorLocationRelative'>
+      <arg direction='in' type='i' name='x' />
+      <arg direction='in' type='i' name='y' />
+      <arg direction='in' type='i' name='w' />
+      <arg direction='in' type='i' name='h' />
+    </method>
+    <method name='FocusIn' />
+    <method name='FocusOut' />
+    <method name='Reset' />
+    <method name='SetCapabilities'>
+      <arg direction='in' type='u' name='caps' />
+    </method>
+    <method name='SetSurroundingText'>
+      <arg direction='in' type='v' name='text' />
+      <arg direction='in' type='u' name='cursor_pos' />
+      <arg direction='in' type='u' name='anchor_pos' />
+    </method>
+
+    <signal name='CommitText'>
+      <arg type='v' name='text' />
+    </signal>
+    <signal name='ForwardKeyEvent'>
+      <arg type='u' name='keyval' />
+      <arg type='u' name='keycode' />
+      <arg type='u' name='state' />
+    </signal>
+    <signal name='UpdatePreeditText'>
+      <arg type='v' name='text' />
+      <arg type='u' name='cursor_pos' />
+      <arg type='b' name='visible' />
+    </signal>
+    <signal name='ShowPreeditText'/>
+    <signal name='HidePreeditText'/>
+  </interface>
+
+  <interface name='org.freedesktop.IBus.Service'>
+    <method name='Destroy' />
+  </interface>
+</node>

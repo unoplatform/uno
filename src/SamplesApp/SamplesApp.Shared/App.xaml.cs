@@ -415,17 +415,21 @@ namespace SamplesApp
 
 			Console.WriteLine($"HandleLaunchArguments: {args}");
 
+			// Check the "sample=" deep link before the System.CommandLine-based handlers: on
+			// platforms where Console.ResetColor throws (Android, WebAssembly), System.CommandLine's
+			// parse-error path throws PlatformNotSupportedException and would abort argument handling
+			// before the deep link is ever evaluated.
+			if (TryNavigateToLaunchSample(args))
+			{
+				return;
+			}
+
 			if (HandleAutoScreenshots(args))
 			{
 				return;
 			}
 
 			if (await HandleRuntimeTests(args))
-			{
-				return;
-			}
-
-			if (TryNavigateToLaunchSample(args))
 			{
 				return;
 			}
@@ -618,13 +622,16 @@ namespace SamplesApp
 
 			var availableFlags = new Dictionary<string, PropertyInfo>();
 
+#pragma warning disable IL2075
+			// This works as intended in local testing
 			foreach (var featureClass in typeof(FeatureConfiguration).GetNestedTypes(BindingFlags.Public | BindingFlags.Static))
 			{
-				foreach (var featureProperty in featureClass.GetProperties(BindingFlags.Public | BindingFlags.Static))
+				foreach (var featureProperty in GetPublicStaticProperties(featureClass))
 				{
 					availableFlags[$"{featureClass.Name}.{featureProperty.Name}"] = featureProperty;
 				}
 			}
+#pragma warning restore IL2075
 
 #pragma warning disable SYSLIB1045
 			var regex = new Regex(@"^--FeatureConfiguration\.(\w+\.\w+)=(.+)$");
@@ -665,6 +672,11 @@ namespace SamplesApp
 					Console.WriteLine($"Ignored the CLI argument {arg} for the purposes of FeatureConfiguration.");
 				}
 			}
+
+			[UnconditionalSuppressMessage("Trimming", "IL2065", Justification = "This works as intended in local testing.")]
+			[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "This works as intended in local testing.")]
+			static PropertyInfo[] GetPublicStaticProperties(Type type) =>
+				type.GetProperties(BindingFlags.Public | BindingFlags.Static);
 #endif
 		}
 

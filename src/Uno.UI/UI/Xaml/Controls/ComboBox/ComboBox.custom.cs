@@ -38,6 +38,8 @@ public partial class ComboBox : Selector
 	private IPopup? _popup;
 	private Popup? m_tpPopupPart;
 	private Border? _popupBorder;
+
+	internal Popup? GetPopup() => m_tpPopupPart;
 	private ContentPresenter? _contentPresenter;
 	private TextBlock? _placeholderTextBlock;
 	private ContentPresenter? m_tpHeaderContentPresenterPart;
@@ -52,6 +54,8 @@ public partial class ComboBox : Selector
 	private ManagedWeakReference? _selectionParentInDropdown;
 
 	internal ContentPresenter? GetContentPresenterPart() => m_tpContentPresenterPart;
+
+	internal TextBox? GetEditableTextPart() => m_tpEditableTextPart;
 
 	public ComboBox()
 	{

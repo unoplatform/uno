@@ -3,14 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 #endif
 	public partial class ItemsWrapGrid : global::Microsoft.UI.Xaml.Controls.Panel
 	{
 		// Skipping already declared property AreStickyGroupHeadersEnabledProperty
-#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty CacheLengthProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(CacheLength), typeof(double),
@@ -24,8 +24,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property MaximumRowsOrColumnsProperty
 		// Skipping already declared property OrientationProperty
 		// Skipping already declared property AreStickyGroupHeadersEnabled
-#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double CacheLength
 		{
 			get
@@ -38,23 +38,23 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int FirstCacheIndex
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsWrapGrid.FirstCacheIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ItemsWrapGrid.FirstCacheIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "FirstCacheIndex");
 			}
 		}
 #endif
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int FirstVisibleIndex
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsWrapGrid.FirstVisibleIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ItemsWrapGrid.FirstVisibleIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "FirstVisibleIndex");
 			}
 		}
 #endif
@@ -62,35 +62,35 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property GroupPadding
 		// Skipping already declared property ItemHeight
 		// Skipping already declared property ItemWidth
-#if false || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int LastCacheIndex
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsWrapGrid.LastCacheIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ItemsWrapGrid.LastCacheIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "LastCacheIndex");
 			}
 		}
 #endif
-#if false || false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int LastVisibleIndex
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int ItemsWrapGrid.LastVisibleIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ItemsWrapGrid.LastVisibleIndex");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "LastVisibleIndex");
 			}
 		}
 #endif
 		// Skipping already declared property MaximumRowsOrColumns
 		// Skipping already declared property Orientation
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Controls.PanelScrollingDirection ScrollingDirection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PanelScrollingDirection ItemsWrapGrid.ScrollingDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PanelScrollingDirection%20ItemsWrapGrid.ScrollingDirection");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "ScrollingDirection");
 			}
 		}
 #endif

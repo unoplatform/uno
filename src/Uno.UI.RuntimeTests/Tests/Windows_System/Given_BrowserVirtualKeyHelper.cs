@@ -109,6 +109,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 			var result = BrowserVirtualKeyHelper.FromCode("UnknownKey123");
 			Assert.AreEqual(VirtualKey.None, result, "Unknown key codes should map to VirtualKey.None");
 		}
+
+		// W3C event.code values for the OEM-row physical keys map to the raw Win32
+		// VK_OEM_* values. Mapping is shift-independent because event.code identifies
+		// the physical key location, not the produced character.
+		[TestMethod]
+		[DataRow("Semicolon", 0xBA)]     // VK_OEM_1
+		[DataRow("Equal", 0xBB)]         // VK_OEM_PLUS
+		[DataRow("Comma", 0xBC)]         // VK_OEM_COMMA
+		[DataRow("Minus", 0xBD)]         // VK_OEM_MINUS
+		[DataRow("Period", 0xBE)]        // VK_OEM_PERIOD
+		[DataRow("Slash", 0xBF)]         // VK_OEM_2
+		[DataRow("Backquote", 0xC0)]     // VK_OEM_3
+		[DataRow("BracketLeft", 0xDB)]   // VK_OEM_4
+		[DataRow("Backslash", 0xDC)]     // VK_OEM_5
+		[DataRow("BracketRight", 0xDD)]  // VK_OEM_6
+		[DataRow("Quote", 0xDE)]         // VK_OEM_7
+		[DataRow("IntlBackslash", 0xE2)] // VK_OEM_102
+		[RunsOnUIThread]
+		public void When_FromCode_OemRowCode_Returns_OemVirtualKey(string code, int expectedVirtualKey)
+		{
+			var result = BrowserVirtualKeyHelper.FromCode(code);
+			Assert.AreEqual(expectedVirtualKey, (int)result, $"{code} should map to VirtualKey 0x{expectedVirtualKey:X2}");
+		}
 	}
 }
 #endif

@@ -13,6 +13,7 @@ namespace Uno.UI.Samples.Tests;
 
 internal record UnitTestMethodInfo
 {
+	private const StringComparison StrComp = StringComparison.InvariantCultureIgnoreCase;
 	private readonly List<object?[]> _casesParameters;
 	private readonly IList<PointerDeviceType> _injectedPointerTypes;
 
@@ -65,6 +66,19 @@ internal record UnitTestMethodInfo
 	public bool RunsOnUIThread { get; }
 
 	public bool PassFiltersAsFirstParameter { get; }
+
+	public bool MatchesFilter(string[]? filters)
+	{
+		if (!(filters?.Any() ?? false))
+		{
+			return true;
+		}
+
+		var fullName = GetFullName();
+		return filters.Any(filter =>
+			Name.Contains(filter, StrComp)
+			|| fullName.Contains(filter, StrComp));
+	}
 
 	private bool HasCustomAttribute<T>(MemberInfo? testMethod)
 		=> testMethod?.GetCustomAttribute(typeof(T)) != null;
@@ -126,4 +140,30 @@ internal record UnitTestMethodInfo
 
 		return cases;
 	}
+
+	public IEnumerable<TestCase> GetMatchingCases(string[]? filters)
+	{
+		var cases = GetCases().ToArray();
+		if (!(filters?.Any() ?? false) || MatchesFilter(filters))
+		{
+			return cases;
+		}
+
+		return cases.Where(testCase => MatchesCaseFilter(testCase, filters));
+	}
+
+	private bool MatchesCaseFilter(TestCase testCase, string[] filters)
+	{
+		var caseName = testCase.ToString();
+		var fullCaseName = GetFullName() + caseName;
+
+		return filters.Any(filter =>
+			caseName.Contains(filter, StrComp)
+			|| fullCaseName.Contains(filter, StrComp));
+	}
+
+	private string GetFullName()
+		=> Method.DeclaringType?.FullName is { } declaringTypeName
+			? $"{declaringTypeName}.{Name}"
+			: Name;
 }

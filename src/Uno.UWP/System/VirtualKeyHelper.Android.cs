@@ -63,9 +63,16 @@ internal static partial class VirtualKeyHelper
 			case Keycode.Y: return VirtualKey.Y;
 			case Keycode.Z: return VirtualKey.Z;
 
-			case Keycode.Comma: return (VirtualKey)188;
-			case Keycode.Period: return (VirtualKey)190;
-			case Keycode.Equals or Keycode.NumpadEquals: return (VirtualKey)187;
+			case Keycode.Comma: return OemComma;
+			case Keycode.Period: return OemPeriod;
+			case Keycode.Equals or Keycode.NumpadEquals: return OemPlus;
+			case Keycode.Minus: return OemMinus;
+			case Keycode.Apostrophe: return Oem7;
+			case Keycode.LeftBracket: return Oem4;
+			case Keycode.RightBracket: return Oem6;
+			case Keycode.Backslash: return Oem5;
+			case Keycode.Grave: return Oem3;
+			case Keycode.Slash: return Oem2;
 			case Keycode.NumpadDot or Keycode.NumpadComma: return VirtualKey.Decimal;
 			case Keycode.NumpadDivide: return VirtualKey.Divide;
 			case Keycode.NumpadSubtract: return VirtualKey.Subtract;
@@ -99,7 +106,7 @@ internal static partial class VirtualKeyHelper
 			case Keycode.F11: return VirtualKey.F11;
 			case Keycode.F12: return VirtualKey.F12;
 
-			case Keycode.Semicolon: return (VirtualKey)186;
+			case Keycode.Semicolon: return Oem1;
 
 			// Navigation
 			case Keycode.Help: return VirtualKey.Help;

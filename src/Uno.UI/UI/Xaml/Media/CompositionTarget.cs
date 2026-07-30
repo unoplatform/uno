@@ -5,6 +5,8 @@ using Microsoft.UI.Composition.Interactions;
 using Uno.UI.Composition;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Input;
+using Uno.UI.Dispatching;
+using Uno.UI.Hosting;
 
 namespace Microsoft.UI.Xaml.Media;
 
@@ -18,6 +20,18 @@ public partial class CompositionTarget : ICompositionTarget
 	{
 		ContentRoot = contentRoot;
 #if __SKIA__
+		_fpsHelper.RequestRedraw = () =>
+		{
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				var root = ContentRoot.VisualTree.RootElement?.XamlRoot;
+				if (root != null)
+				{
+					XamlRootMap.GetHostForRoot(root)?.InvalidateRender();
+				}
+			});
+		};
+
 		_targets.Add(this, null);
 		var xamlRoot = ContentRoot.GetOrCreateXamlRoot();
 		xamlRoot.Changed += (_, _) => UpdateXamlRootBounds();

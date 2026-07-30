@@ -122,4 +122,13 @@ public enum UnoFeature
 
 	[UnoArea(UnoArea.Core)]
 	SpellChecking,
+
+	[UnoArea(UnoArea.Core)]
+	AndroidTV,
+
+	[UnoArea(UnoArea.Core)]
+	AndroidAuto,
+
+	[UnoArea(UnoArea.Core)]
+	AndroidWear,
 }

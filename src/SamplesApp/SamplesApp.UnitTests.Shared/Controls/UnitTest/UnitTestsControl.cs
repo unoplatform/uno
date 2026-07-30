@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -703,7 +704,11 @@ namespace Uno.UI.Samples.Tests
 			}
 		}
 
-		public async Task RunTestsForInstance(object testClassInstance)
+		private const DynamicallyAccessedMemberTypes RunTestsForInstanceRequirements =
+			  DynamicallyAccessedMemberTypes.PublicParameterlessConstructor
+			| DynamicallyAccessedMemberTypes.PublicMethods;
+
+		public async Task RunTestsForInstance<[DynamicallyAccessedMembers(RunTestsForInstanceRequirements)] T>(T testClassInstance)
 		{
 			Interlocked.Exchange(ref _cts, new CancellationTokenSource())?.Cancel(); // cancel any previous CTS
 
@@ -713,7 +718,7 @@ namespace Uno.UI.Samples.Tests
 			{
 				try
 				{
-					var testTypeInfo = BuildType(testClassInstance.GetType());
+					var testTypeInfo = BuildType(typeof(T));
 					var engineConfig = BuildConfig();
 
 					await ExecuteTestsForInstance(_cts.Token, testClassInstance, testTypeInfo, engineConfig);
@@ -791,16 +796,10 @@ namespace Uno.UI.Samples.Tests
 			await GenerateTestResults();
 		}
 
-		private IEnumerable<MethodInfo> FilterTests(UnitTestClassInfo testClassInfo, string[] filters)
-		{
-			var testClassNameContainsFilters = filters?.Any(f => testClassInfo.Type.FullName.Contains(f, StrComp)) ?? false;
-			return testClassInfo.Tests
-				.Where(t => !(filters?.Any() ?? false)
-					|| testClassNameContainsFilters
-					|| filters.Any(f => t.DeclaringType.FullName.Contains(f, StrComp))
-					|| filters.Any(f => t.Name.Contains(f, StrComp))
-					|| filters.Any(f => $"{t.DeclaringType.FullName}.{t.Name}".Contains(f, StrComp)));
-		}
+		private IEnumerable<UnitTestMethodInfo> FilterTests(IEnumerable<UnitTestMethodInfo> tests, string[] filters)
+			=> tests.Where(test => !(filters?.Any() ?? false)
+				|| test.MatchesFilter(filters)
+				|| test.GetMatchingCases(filters).Any());
 
 		private async Task ExecuteTestsForInstance(
 			CancellationToken ct,
@@ -812,8 +811,9 @@ namespace Uno.UI.Samples.Tests
 				? ConsoleOutputRecorder.Start()
 				: default;
 
-			var tests = FilterTests(testClassInfo, config.Filters)
-				.Select(method => new UnitTestMethodInfo(instance, method))
+			var tests = FilterTests(
+				testClassInfo.Tests.Select(method => new UnitTestMethodInfo(instance, method)),
+				config.Filters)
 				.ToArray();
 			if (!tests.Any())
 			{
@@ -849,7 +849,7 @@ namespace Uno.UI.Samples.Tests
 					}
 				}
 
-				foreach (var testCase in test.GetCases())
+				foreach (var testCase in test.GetMatchingCases(config.Filters))
 				{
 					if (ct.IsCancellationRequested)
 					{
@@ -1116,6 +1116,15 @@ namespace Uno.UI.Samples.Tests
 				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
 					ResetLastInputDeviceType();
+
+					// KeyboardStateTracker is process-wide static state. Tests that raise
+					// synthetic KeyDown events without matching KeyUp (crashes, unbalanced
+					// sequences, or deliberate-but-incomplete modifier exercises) leave
+					// modifier keys stuck in the Down state, causing subsequent tests that
+					// rely on Input_GetKeyboardModifiers (notably keyboard-accelerator
+					// matching) to see phantom modifiers and fail intermittently.
+					// Reset before each test for a clean slate.
+					Uno.UI.Core.KeyboardStateTracker.Reset();
 				});
 #else
 				await Task.CompletedTask;
@@ -1331,6 +1340,7 @@ namespace Uno.UI.Samples.Tests
 					? TimeSpan.FromMilliseconds(methodAttribute.Timeout)
 					: null;
 
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Appears to work on CI!")]
 		private IEnumerable<UnitTestClassInfo> InitializeTests()
 		{
 			var testAssembliesTypes =
@@ -1389,6 +1399,8 @@ namespace Uno.UI.Samples.Tests
 			return groupedList.ToArray();
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Appears to work on CI!")]
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Appears to work on CI!")]
 		private IEnumerable<UnitTestClassInfo> GetFilteredTests(IEnumerable<Type> types, int groupCount, int activeGroup)
 		{
 			var testClasses =
@@ -1396,7 +1408,7 @@ namespace Uno.UI.Samples.Tests
 				where type.GetTypeInfo().GetCustomAttribute(typeof(TestClassAttribute)) != null
 				orderby type.Name
 				select type;
-
+#pragma warning disable IL2072
 			var groupedList =
 				from type in testClasses
 				from test in GetMethodsWithAttribute(type, typeof(Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute)).OrderBy(m => m.Name)
@@ -1404,6 +1416,7 @@ namespace Uno.UI.Samples.Tests
 				group test by type into g
 				where g.Count() != 0
 				select BuildTestClassInfo(g.Key, g.ToArray());
+#pragma warning restore IL2072
 			return groupedList;
 		}
 
@@ -1418,7 +1431,7 @@ namespace Uno.UI.Samples.Tests
 			return BitConverter.ToUInt64(hash, 0);
 		}
 
-		private static UnitTestClassInfo BuildTestClassInfo(Type type, MethodInfo[] tests)
+		private static UnitTestClassInfo BuildTestClassInfo([DynamicallyAccessedMembers(RunTestsForInstanceRequirements)] Type type, MethodInfo[] tests)
 		{
 			try
 			{
@@ -1435,7 +1448,7 @@ namespace Uno.UI.Samples.Tests
 			}
 		}
 
-		private static UnitTestClassInfo BuildType(Type type)
+		private static UnitTestClassInfo BuildType([DynamicallyAccessedMembers(RunTestsForInstanceRequirements)] Type type)
 		{
 			try
 			{
@@ -1452,7 +1465,7 @@ namespace Uno.UI.Samples.Tests
 			}
 		}
 
-		private static MethodInfo[] GetMethodsWithAttribute(Type type, Type attributeType)
+		private static MethodInfo[] GetMethodsWithAttribute([DynamicallyAccessedMembers(RunTestsForInstanceRequirements)] Type type, Type attributeType)
 			=> (
 				from method in type.GetMethods()
 				where method.GetCustomAttribute(attributeType) != null

@@ -21,14 +21,19 @@ namespace Microsoft.UI.Xaml.Media
 			// Translate(TranslateX, TranslateY)
 			// https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.media.compositetransform.aspx
 
-			var centerX = absoluteOrigin.X + CenterX;
-			var centerY = absoluteOrigin.Y + CenterY;
+			// All sub-transforms must share the same combined center (RenderTransformOrigin
+			// expressed in absolute coordinates by the caller, plus this transform's own
+			// CenterX/CenterY). Otherwise Skew/Rotate would pivot on a different point than
+			// Scale and the composite would no longer match WinUI when RenderTransformOrigin
+			// is non-zero.
+			var combinedCenterX = absoluteOrigin.X + CenterX;
+			var combinedCenterY = absoluteOrigin.Y + CenterY;
 
 			var matrix = Matrix3x2.Identity;
 
-			matrix *= ScaleTransform.GetMatrix(centerX, centerY, ScaleX, ScaleY);
-			matrix *= SkewTransform.GetMatrix(CenterX, CenterY, SkewX, SkewY);
-			matrix *= RotateTransform.GetMatrix(CenterX, CenterY, Rotation);
+			matrix *= ScaleTransform.GetMatrix(combinedCenterX, combinedCenterY, ScaleX, ScaleY);
+			matrix *= SkewTransform.GetMatrix(combinedCenterX, combinedCenterY, SkewX, SkewY);
+			matrix *= RotateTransform.GetMatrix(combinedCenterX, combinedCenterY, Rotation);
 			matrix *= TranslateTransform.GetMatrix(TranslateX, TranslateY);
 
 			return matrix;

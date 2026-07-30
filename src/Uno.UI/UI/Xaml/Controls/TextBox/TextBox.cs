@@ -1549,6 +1549,11 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public void CopySelectionToClipboard()
 		{
+			if (this is PasswordBox)
+			{
+				return;
+			}
+
 			if (SelectionLength > 0)
 			{
 				var text = SelectedText;
@@ -1563,7 +1568,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public void CutSelectionToClipboard()
 		{
-			if (IsReadOnly)
+			if (IsReadOnly || this is PasswordBox)
 			{
 				return;
 			}

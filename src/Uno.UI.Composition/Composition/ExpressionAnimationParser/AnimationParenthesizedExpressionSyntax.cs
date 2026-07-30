@@ -9,6 +9,6 @@ internal class AnimationParenthesizedExpressionSyntax : AnimationExpressionSynta
 		_expression = expression;
 	}
 
-	public override object Evaluate(ExpressionAnimation expressionAnimation)
+	public override object Evaluate(CompositionAnimation expressionAnimation)
 		=> _expression.Evaluate(expressionAnimation);
 }

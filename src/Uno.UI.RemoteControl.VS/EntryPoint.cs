@@ -74,6 +74,7 @@ public partial class EntryPoint : IDisposable
 	private VsAppLaunchIdeBridge? _appLaunchIdeBridge;
 	private VsAppLaunchStateConsumer? _appLaunchStateConsumer;
 	private readonly CompositeCommandHandler _commands;
+	private readonly VisualStudioFileUpdater _fileUpdater;
 
 	// Legacy API v2
 	public EntryPoint(
@@ -88,6 +89,7 @@ public partial class EntryPoint : IDisposable
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
 		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser), ("Dev Server", new DevServerCommandHandler(this)));
+		_fileUpdater = new VisualStudioFileUpdater(_dte, _dte2, asyncPackage, () => _ideChannelClient, msg => _debugAction?.Invoke(msg), _ct.Token);
 
 		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
 		{
@@ -110,6 +112,7 @@ public partial class EntryPoint : IDisposable
 		_toolsPath = toolsPath;
 		_asyncPackage = asyncPackage;
 		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser), ("Dev Server", new DevServerCommandHandler(this)));
+		_fileUpdater = new VisualStudioFileUpdater(_dte, _dte2, asyncPackage, () => _ideChannelClient, msg => _debugAction?.Invoke(msg), _ct.Token);
 
 		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
 		{
@@ -459,6 +462,49 @@ public partial class EntryPoint : IDisposable
 				return;
 			}
 
+			// External-host detection: another launcher (the CLI-driven flow in the uno.studio
+			// VS extension, or — once they ship — the VS Code / Rider plugins) may have already
+			// spawned a DevServer host for this solution under the same devenv. Without this
+			// probe, EnsureServerAsync would unconditionally spawn a second host, leaving the
+			// user with two phantom processes serving the same solution on different ports.
+			//
+			// This is "Phase 1": detect-and-skip. Full adoption (connecting our IdeChannelClient
+			// to the existing host's pipe) is gated on the disco payload exposing `ideChannelId`
+			// reliably for active servers — currently it's null in the field. When that lands,
+			// this branch can also wire `_ideChannelClient` and keep IDE-channel features
+			// (UDEI status, command routing) working through the adopted host.
+			var solutionPath = _dte.Solution?.FullName;
+			if (!string.IsNullOrEmpty(solutionPath))
+			{
+				var discovery = new Helpers.DevServerHostDiscovery();
+				var existing = await discovery.TryFindHostAsync(
+					solutionPath!,
+					System.Diagnostics.Process.GetCurrentProcess().Id,
+					_ct.Token).ConfigureAwait(true);
+
+				if (existing is not null)
+				{
+					_debugAction?.Invoke(
+						$"Skipping in-process DevServer spawn: an external host (PID {existing.ProcessId}) " +
+						$"is already serving '{solutionPath}' on port {existing.Port}. " +
+						$"IDE-channel features wired by this EntryPoint will be inactive until disco surfaces ideChannelId (Phase 2).");
+
+					// Adopt the external host's port so build events don't keep proposing the
+					// previously-persisted (or freshly-picked) port. This avoids a port flip on
+					// every project rebuild while an external host owns the slot.
+					if (port != existing.Port)
+					{
+						await _dte.SetProjectUserSettingsAsync(
+							_asyncPackage,
+							RemoteControlServerPortProperty,
+							existing.Port.ToString(CultureInfo.InvariantCulture),
+							persistenceFilter).ConfigureAwait(true);
+					}
+
+					return;
+				}
+			}
+
 			// Safety: Cancel previous services! (Should have already been cancelled by the exit handler);
 			_devServer?.attachedServices.Cancel();
 
@@ -485,7 +531,7 @@ public partial class EntryPoint : IDisposable
 			var pipeGuid = Guid.NewGuid();
 
 			var hostBinPath = Path.Combine(_toolsPath, "host", $"net{version}.0", "Uno.UI.RemoteControl.Host.dll");
-			var arguments = $"\"{hostBinPath}\" --httpPort {port} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id} --ideChannel \"{pipeGuid}\" --solution \"{_dte.Solution.FullName}\"";
+			var arguments = $"\"{hostBinPath}\" --httpPort {port} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id} --ideChannel \"{pipeGuid}\" --solution \"{_dte.Solution!.FullName}\"";
 			var pi = new ProcessStartInfo("dotnet", arguments)
 			{
 				UseShellExecute = false,
@@ -646,6 +692,9 @@ public partial class EntryPoint : IDisposable
 				case UpdateFileIdeMessage ufm:
 					await OnUpdateFileRequestedAsync(ufm);
 					break;
+				case UpdateFileRequestIdeMessage ufsm:
+					await _fileUpdater.ProcessAsync(ufsm);
+					break;
 				case NotificationRequestIdeMessage nr:
 					await OnNotificationRequestedAsync(sender, nr);
 					break;
@@ -769,70 +818,11 @@ public partial class EntryPoint : IDisposable
 			{
 				var filePath = Path.GetFullPath(request.FileFullName);
 
-				// Determine the appropriate encoding for the file
-				var currentEncoding = EncodingHelpers.DetectFileEncoding(filePath);
-				var targetEncoding = EncodingHelpers.GetCompatibleEncoding(currentEncoding, fileContent);
-
-				// Check if document is already open in IDE
-				var document = _dte2
-					.Documents
-					.OfType<Document>()
-					.FirstOrDefault(d => d.FullName.Equals(filePath, StringComparison.OrdinalIgnoreCase));
-
-				var shouldReopenDocument = false;
-
-				// If document is open but encoding needs to be changed, we close it
-				if (document is not null && currentEncoding != targetEncoding)
+				// Single-file (non-batched) path: apply and persist immediately by running the
+				// returned step inline (the batched path defers the same step to finalization instead).
+				if (await _fileUpdater.ApplyFileContentAsync(filePath, fileContent, forceSaveOnDisk: request.ForceSaveOnDisk) is { } persist)
 				{
-					// Document is open but does not have the current encoding, save it, then close it to change encoding
-					_debugAction?.Invoke($"Document {Path.GetFileName(filePath)} is open, saving and closing to change encoding from {currentEncoding.EncodingName} to {targetEncoding.EncodingName} with BOM");
-
-					try
-					{
-						document.Save();
-					}
-					catch
-					{
-						// Ignore save errors
-					}
-
-					document.Close(vsSaveChanges.vsSaveChangesNo);
-					shouldReopenDocument = true;
-					await Task.Delay(250); // Small delay to ensure file system is ready
-				}
-
-				// If the file is open and encoding compatible, we update its content in-memory
-				// TODO: We should NOT assume the `fileContent` to contains the full document content!
-				if (!shouldReopenDocument && document?.Object("TextDocument") as TextDocument is { } textDocument && currentEncoding == targetEncoding)
-				{
-					_debugAction?.Invoke($"Updating {Path.GetFileName(filePath)} (in memory).");
-
-					// Flags: 0b0000_0011 = vsEPReplaceTextOptions.vsEPReplaceTextKeepMarkers | vsEPReplaceTextOptions.vsEPReplaceTextNormalizeNewLines
-					// https://learn.microsoft.com/en-us/dotnet/api/envdte.vsepreplacetextoptions?view=visualstudiosdk-2022#fields
-					const int flags = 0b0000_0011;
-					textDocument
-						.StartPoint
-						.CreateEditPoint()
-						.ReplaceText(textDocument.EndPoint, fileContent, flags);
-
-					if (request.ForceSaveOnDisk)
-					{
-						// Save the document.
-						document.Save();
-					}
-				}
-				else
-				{
-					_debugAction?.Invoke($"Updating {Path.GetFileName(filePath)} (on disk).");
-
-					File.WriteAllText(filePath, fileContent, targetEncoding);
-
-					if (document is not null)
-					{
-						// Re-open the document to reflect changes in IDE
-						await Task.Delay(250); // Small delay to ensure file system is ready
-						_dte2.Documents.Open(filePath);
-					}
+					await persist();
 				}
 
 				// Send a message back to indicate that the request has been received and acted upon.

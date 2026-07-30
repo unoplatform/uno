@@ -38,6 +38,7 @@ internal partial class NativeWebViewWrapper : INativeWebView
 
 		_webView.Settings.JavaScriptEnabled = true;
 		_webView.Settings.DomStorageEnabled = true;
+		Android.Webkit.WebView.SetWebContentsDebuggingEnabled(FeatureConfiguration.WebView2.EnableDevTools);
 		_webView.Settings.BuiltInZoomControls = true;
 		_webView.Settings.DisplayZoomControls = false;
 		_webView.Settings.SetSupportZoom(true);

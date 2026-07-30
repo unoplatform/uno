@@ -3,26 +3,26 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Payments
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class PaymentCanMakePaymentResult
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.ApplicationModel.Payments.PaymentCanMakePaymentResultStatus Status
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PaymentCanMakePaymentResultStatus PaymentCanMakePaymentResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PaymentCanMakePaymentResultStatus%20PaymentCanMakePaymentResult.Status");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult", "Status");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PaymentCanMakePaymentResult(global::Windows.ApplicationModel.Payments.PaymentCanMakePaymentResultStatus value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult", "PaymentCanMakePaymentResult.PaymentCanMakePaymentResult(PaymentCanMakePaymentResultStatus value)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult", "PaymentCanMakePaymentResult(PaymentCanMakePaymentResultStatus value)");
 		}
 #endif
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult.PaymentCanMakePaymentResult(Windows.ApplicationModel.Payments.PaymentCanMakePaymentResultStatus)

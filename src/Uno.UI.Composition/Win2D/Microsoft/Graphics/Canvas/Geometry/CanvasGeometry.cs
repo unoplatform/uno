@@ -62,6 +62,30 @@ internal class CanvasGeometry : IDisposable, IGeometrySource2D, IGeometrySource2
 
 	public static CanvasGeometry CreateRoundedRectangle(ICanvasResourceCreator resourceCreator, float x, float y, float w, float h, float radiusX, float radiusY) => new(new CanvasRoundedRectangleGeometry(new() { Rect = new(x, y, w, h), RadiusX = radiusX, RadiusY = radiusY }));
 
+	// Combine multiple geometries into a single one — used by Lottie sources whose path is split
+	// across several sub-geometries (e.g. AnimatedSettingsVisualSource's gear teeth). Implemented
+	// as a flat concatenation of the underlying composition path commands.
+	public static CanvasGeometry CreateGroup(ICanvasResourceCreator resourceCreator, CanvasGeometry[] geometries)
+		=> CreateGroup(resourceCreator, geometries, CanvasFilledRegionDetermination.Alternate);
+
+	public static CanvasGeometry CreateGroup(ICanvasResourceCreator resourceCreator, CanvasGeometry[] geometries, CanvasFilledRegionDetermination filledRegionDetermination)
+	{
+		var combinedCommands = new List<CompositionPathCommand>
+		{
+			CompositionPathCommand.Create((D2D1FillMode)filledRegionDetermination)
+		};
+
+		foreach (var geometry in geometries)
+		{
+			if (((IGeometrySource2DInterop)geometry).GetGeometry() is ICompositionPathCommandsProvider provider)
+			{
+				combinedCommands.AddRange(provider.Commands);
+			}
+		}
+
+		return new CanvasGeometry(new CanvasPathGeometry(combinedCommands));
+	}
+
 	private class CanvasPathGeometry : ID2D1PathGeometry, ICompositionPathCommandsProvider
 	{
 		private List<CompositionPathCommand> _commands;

@@ -79,10 +79,10 @@ public
 			}
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		if (UIDevice.CurrentDevice.CheckSystemVersion(16, 4))
 		{
-			Inspectable = Uno.UI.FeatureConfiguration.WebView2.IsInspectable;
+			Inspectable = Uno.UI.FeatureConfiguration.WebView2.EnableDevTools;
 		}
 #endif
 

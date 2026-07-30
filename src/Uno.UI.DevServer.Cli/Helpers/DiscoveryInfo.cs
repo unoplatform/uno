@@ -115,6 +115,16 @@ public sealed class DiscoveryInfo
 	public string? HostPath { get; init; }
 
 	/// <summary>
+	/// True when <see cref="HostPath"/> was selected via one-major TFM fallback
+	/// (the package did not ship a host for the current <see cref="DotNetTfm"/>,
+	/// so the resolver picked the previous major instead). Callers that actually
+	/// spawn the host must then set <c>DOTNET_ROLL_FORWARD=Major</c> on the child
+	/// process environment — see
+	/// <c>DevServerProcessHelper.CreateDotnetProcessStartInfo(enableMajorRollForward)</c>.
+	/// </summary>
+	public bool HostRequiresMajorRollForward { get; init; }
+
+	/// <summary>
 	/// Gets the resolved Settings application (Studio / Licensing) path.
 	/// </summary>
 	public string? SettingsPath { get; init; }
@@ -172,7 +182,7 @@ public sealed class ActiveServerInfo
 	public DateTime StartTime { get; init; }
 	public string? IdeChannelId { get; init; }
 	public string? SolutionPath { get; init; }
-	public IReadOnlyList<ProcessChainEntry> ProcessChain { get; init; } = Array.Empty<ProcessChainEntry>();
+	public IReadOnlyList<ProcessChainEntry> ProcessChain { get; init; } = [];
 
 	/// <summary>
 	/// True when this server's solution matches one of the working directory's

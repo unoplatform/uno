@@ -1,5 +1,6 @@
 ﻿using System;
 using Windows.Foundation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -16,6 +17,9 @@ namespace Microsoft.UI.Xaml.Controls
 	[TemplatePart(Name = LayoutRootName, Type = typeof(Grid))]
 	public partial class MediaPlayerElement
 	{
+		protected override AutomationPeer OnCreateAutomationPeer()
+			=> new MediaPlayerElementAutomationPeer(this);
+
 		private const string PosterImageName = "PosterImage";
 		private const string TransportControlsPresenterName = "TransportControlsPresenter";
 		private const string MediaPlayerPresenterName = "MediaPlayerPresenter";

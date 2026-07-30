@@ -11,6 +11,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 	[TestClass]
 	public class Given_StorageFile_Native : Given_StorageFile_Native_Base
 	{
+		// Security-scoped URLs still resolve to a real filesystem path.
+		protected override bool HasFileSystemBackedPath => true;
+
 		protected override Task<StorageFolder> GetRootFolderAsync()
 		{
 			var path = ApplicationData.Current.LocalCacheFolder.Path;

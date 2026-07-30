@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ContainerContentChangingEventArgs
@@ -13,30 +13,30 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Item
 		// Skipping already declared property ItemContainer
 		// Skipping already declared property ItemIndex
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint Phase
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint ContainerContentChangingEventArgs.Phase is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ContainerContentChangingEventArgs.Phase");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs", "Phase");
 			}
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.ContainerContentChangingEventArgs()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.ContainerContentChangingEventArgs()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RegisterUpdateCallback(global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ListViewBase, global::Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs> callback)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs", "void ContainerContentChangingEventArgs.RegisterUpdateCallback(TypedEventHandler<ListViewBase, ContainerContentChangingEventArgs> callback)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs", "RegisterUpdateCallback(TypedEventHandler<ListViewBase, ContainerContentChangingEventArgs> callback)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void RegisterUpdateCallback(uint callbackPhase, global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ListViewBase, global::Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs> callback)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs", "void ContainerContentChangingEventArgs.RegisterUpdateCallback(uint callbackPhase, TypedEventHandler<ListViewBase, ContainerContentChangingEventArgs> callback)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs", "RegisterUpdateCallback(uint callbackPhase, TypedEventHandler<ListViewBase, ContainerContentChangingEventArgs> callback)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.Handled.get

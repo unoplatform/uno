@@ -37,12 +37,15 @@ namespace Microsoft.UI.Xaml.Controls;
 
 using SelectionDetails = (int start, int length, bool selectionEndsAtTheStart);
 
-public partial class TextBox
+public partial class TextBox : ITextSelectionGripperHost
 {
 	private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
-	private CaretWithStemAndThumb _selectionStartThumbfulCaret;
-	private CaretWithStemAndThumb _selectionEndThumbfulCaret;
+	private TextSelectionGripperPresenter _gripperPresenter;
+
+	// Test hook: the pair of touch-selection grippers when they are currently showing, otherwise null.
+	internal (CaretWithStemAndThumb start, CaretWithStemAndThumb end)? VisibleGrippersForTesting => _gripperPresenter?.VisibleGrippersForTesting;
+
 	private TextBoxView _textBoxView;
 	private static ITextBoxNotificationsProviderSingleton _textBoxNotificationsSingleton;
 	private SerialDisposable _clipboardChangeSubscription = new SerialDisposable();
@@ -86,6 +89,8 @@ public partial class TextBox
 	static TextBox()
 	{
 		_platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
+		_ = ApiExtensibility.CreateInstance(null, out _textBoxNotificationsSingleton);
+		InitializeIme();
 	}
 
 	internal CaretDisplayMode CaretMode
@@ -113,6 +118,15 @@ public partial class TextBox
 			}
 		}
 	}
+
+	// Settable so runtime tests can force a mobile convention on Skia Desktop, where
+	// OperatingSystem.IsAndroid()/IsIOS() are both false and the OS-derived default is Desktop.
+	internal TouchTextSelectionConvention TouchSelectionConvention { get; set; } = GetDefaultTouchTextSelectionConvention();
+
+	private static TouchTextSelectionConvention GetDefaultTouchTextSelectionConvention()
+		=> OperatingSystem.IsAndroid() ? TouchTextSelectionConvention.Android
+			: Uno.UI.Helpers.DeviceTargetHelper.IsUIKit() ? TouchTextSelectionConvention.iOS
+			: TouchTextSelectionConvention.Desktop;
 
 	public static DependencyProperty CanUndoProperty { get; } = DependencyProperty.Register(
 		nameof(CanUndo),
@@ -331,8 +345,7 @@ public partial class TextBox
 	{
 		_forceFocusedVisualState = false;
 		_timer.Stop();
-		_selectionStartThumbfulCaret?.Hide();
-		_selectionEndThumbfulCaret?.Hide();
+		_gripperPresenter?.Hide();
 		CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 		_clipboardChangeSubscription.Disposable = null;
 	}
@@ -406,71 +419,14 @@ public partial class TextBox
 
 				if (_isSkiaTextBox)
 				{
-					_selectionStartThumbfulCaret = new();
-					_selectionEndThumbfulCaret = new();
-
-					foreach (var caret in (ReadOnlySpan<CaretWithStemAndThumb>)[_selectionStartThumbfulCaret, _selectionEndThumbfulCaret])
-					{
-						caret.PointerPressed += CaretOnPointerPressed;
-						caret.PointerReleased += CaretOnPointerReleased;
-						caret.PointerMoved += CaretOnPointerMoved;
-						caret.PointerCanceled += ClearCaretPointerState;
-						caret.PointerCaptureLost += ClearCaretPointerState;
-					}
-
-					displayBlock.DrawingFinished += () =>
-					{
-						// Only invalidate the carets after drawing is complete
-						// to avoid modifying the children visuals while they are being enumerated.
-						NativeDispatcher.Main.Enqueue(() =>
-						{
-							UpdateFlyoutPosition();
-						}, NativeDispatcherPriority.Normal);
-					};
+					// The presenter owns the touch-selection gripper visuals and their drag/positioning
+					// logic (shared with selectable TextBlock). It subscribes to DisplayBlock.DrawingFinished
+					// to keep the grippers glued to the selection ends as the text is (re)drawn.
+					_gripperPresenter ??= new TextSelectionGripperPresenter(this);
 				}
 			}
 
 			TextBoxView.SetTextNative(Text);
-		}
-	}
-
-	private void UpdateFlyoutPosition()
-	{
-		if (CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing)
-		{
-			var (selectionStart, selectionEnd) = IsBackwardSelection ? (SelectionStart + SelectionLength, SelectionLength) : (SelectionStart, SelectionStart + SelectionLength);
-			foreach (var (index, caret) in (ReadOnlySpan<(int, CaretWithStemAndThumb)>)[(selectionStart, _selectionStartThumbfulCaret), (selectionEnd, _selectionEndThumbfulCaret)])
-			{
-				var rect = _textBoxView.DisplayBlock.ParsedText.GetRectForIndex(index);
-				rect.Width = TextBlock.CaretThickness;
-				caret.Height = rect.Height + 16;
-				var transform = TextBoxView.DisplayBlock.TransformToVisual(null);
-				if (transform.TransformBounds(rect).IntersectWith(this.GetAbsoluteBoundsRect()) is not null)
-				{
-					var matrixTransform = (MatrixTransform)transform;
-
-					var textBoxMatrix = matrixTransform.Matrix.ToMatrix3x2();
-
-					// Calculate the center point of the caret in local coordinates
-					var localCenterX = rect.GetMidX() - caret.Width / 2;
-					var localPoint = new Point(localCenterX, rect.Top);
-
-					// Create translation matrix based on the target point
-					var translationMatrix = Matrix3x2.CreateTranslation((float)localPoint.X, (float)localPoint.Y);
-					var totalMatrix = Matrix3x2.Multiply(translationMatrix, textBoxMatrix);
-					caret.ShowAt(XamlRoot, totalMatrix);
-				}
-			}
-			if (CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing)
-			{
-				_selectionStartThumbfulCaret.Hide();
-				_selectionEndThumbfulCaret.SetStemVisible(SelectionLength == 0);
-			}
-		}
-		else
-		{
-			_selectionStartThumbfulCaret?.Hide();
-			_selectionEndThumbfulCaret?.Hide();
 		}
 	}
 
@@ -485,6 +441,7 @@ public partial class TextBox
 			{
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
 				_textBoxNotificationsSingleton?.OnFocused(this);
+				StartImeSession();
 				UpdateCanPasteClipboardContent();
 				Clipboard.ContentChanged += OnClipboardContentChanged;
 				_clipboardChangeSubscription.Disposable = Disposable.Create(() => Clipboard.ContentChanged -= OnClipboardContentChanged);
@@ -507,6 +464,7 @@ public partial class TextBox
 
 			if (focusState == FocusState.Unfocused && !_forceFocusedVisualState)
 			{
+				EndImeSession();
 				TrySetCurrentlyTyping(false);
 				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 				if (SelectionFlyout?.IsOpen == true)
@@ -1104,8 +1062,26 @@ public partial class TextBox
 				}
 				break;
 			default:
+				// During IME composition, skip normal character insertion.
+				// The IME extension handles text updates via OnImeCompositionUpdated → ProcessTextInput.
+				// On platforms where the platform applies text directly (e.g., Android),
+				// key events are independent of composition events and should not be swallowed.
+				if (ShouldSwallowKeyDuringComposition)
+				{
+					return;
+				}
 				var isEnterKey = args.UnicodeKey is '\r' or '\n' || args.Key == VirtualKey.Enter;
-				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
+				// Don't insert characters when shortcut modifier keys are held down.
+				// On non-Apple platforms, AltGr (Ctrl+Alt together) produces valid characters (like @, €),
+				// so we must not suppress those. On Apple, Option (Menu/Alt) produces special characters.
+				var altHeld = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
+				var ctrlHeld = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control);
+				var isAltGr = !DeviceTargetHelper.UsesAppleKeyboardLayout && ctrlHeld && altHeld;
+				var hasShortcutModifier = !isAltGr && (
+					ctrlHeld ||
+					args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Windows) ||
+					(!DeviceTargetHelper.UsesAppleKeyboardLayout && altHeld));
+				if (!IsReadOnly && !HasPointerCapture && !hasShortcutModifier && args.UnicodeKey is { } key && (!isEnterKey || AcceptsReturn))
 				{
 					TrySetCurrentlyTyping(true);
 					var start = Math.Min(selectionStart, selectionStart + selectionLength);
@@ -1263,6 +1239,19 @@ public partial class TextBox
 
 	private void KeyDownLeftArrow(KeyRoutedEventArgs args, string text, bool shift, bool ctrl, ref int selectionStart, ref int selectionLength)
 	{
+		// on Apple platforms it is:
+		// * `command` + `left` that moves to the start of the line
+		// * `option` + `left` that moves to the previous word
+		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
+		{
+			if (ctrl)
+			{
+				KeyDownHome(args, text, ctrl: false, shift, ref selectionStart, ref selectionLength);
+				return;
+			}
+			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
+		}
+
 		if (HasPointerCapture)
 		{
 			return;
@@ -1310,10 +1299,16 @@ public partial class TextBox
 	private void KeyDownRightArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		// on Apple platforms it is:
+		// * `command` + `right` that moves to the end of the line
 		// * `option` + `right` that moves to the next word
 		// * `shift` + `option` + `right` that select the next word
 		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
 		{
+			if (ctrl)
+			{
+				KeyDownEnd(args, text, ctrl: false, shift, ref selectionStart, ref selectionLength);
+				return;
+			}
 			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
 		}
 
@@ -1621,15 +1616,12 @@ public partial class TextBox
 		return index == -1 ? Text.Length - 1 : index;
 	}
 
-	partial void InitializePartial()
-	{
-		_ = ApiExtensibility.CreateInstance(null, out _textBoxNotificationsSingleton);
-	}
-
 	partial void OnTextChangedPartial()
 	{
 		if (_isSkiaTextBox)
 		{
+			CancelCompositionOnExternalChange();
+
 			// Ported from: TextBoxBase.cpp TxNotify EN_CHANGE (line 3113)
 			// Close the selection flyout when text changes.
 			TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
@@ -1842,6 +1834,17 @@ public partial class TextBox
 		CaretWithThumbsBothEndsShowing
 	}
 
+	// Which platform's native touch text-selection conventions the Skia TextBox follows.
+	// Defaults to the running OS; runtime tests override it to exercise the mobile behavior on
+	// Skia Desktop, where OperatingSystem.IsAndroid()/IsIOS() are both false.
+	internal enum TouchTextSelectionConvention
+	{
+		// Desktop convention (Windows, macOS and Linux): the OS-derived default for every non-mobile target.
+		Desktop,
+		Android,
+		iOS
+	}
+
 	private record struct HistoryRecord(TextBoxAction Action, int SelectionStart, int SelectionLength, bool SelectionEndsAtTheStart);
 
 	private abstract record TextBoxAction;
@@ -1880,114 +1883,70 @@ public partial class TextBox
 #pragma warning restore 67 // An event was declared but never used in the class in which it was declared.
 	}
 
-	private class CaretWithStemAndThumb : Grid
+	#region ITextSelectionGripperHost
+	// The touch-selection grippers are driven by the shared TextSelectionGripperPresenter. The presenter
+	// owns the visuals/drag mechanics; these members expose just enough of TextBox's selection model and
+	// text surface for it to do its job.
+
+	TextBlock ITextSelectionGripperHost.GripperTextSurface => TextBoxView.DisplayBlock;
+
+	Rect ITextSelectionGripperHost.GripperClipBounds => this.GetAbsoluteBoundsRect();
+
+	GripperMode ITextSelectionGripperHost.GripperMode => _caretMode switch
 	{
-		// This is equal to the default system accent color on Windows.
-		// This is, however, a constant color that doesn't depend on the
-		// current system accent color. Changing the accent color does NOT
-		// change the thumb color on WinUI, only the selection color.
-		private static readonly Color ThumbFillColor = Colors.FromARGB("FF0078D7");
+		CaretDisplayMode.CaretWithThumbsOnlyEndShowing => GripperMode.EndOnly,
+		CaretDisplayMode.CaretWithThumbsBothEndsShowing => GripperMode.Both,
+		_ => GripperMode.Hidden,
+	};
 
-		private readonly Ellipse _thumb;
-		private readonly Ellipse _thumbRing;
-		private readonly Rectangle _stem;
-		private Popup _popup;
+	int ITextSelectionGripperHost.SelectionLowerIndex => SelectionStart;
 
-		public PointerPoint LastPointerDown { get; set; }
+	int ITextSelectionGripperHost.SelectionUpperIndex => SelectionStart + SelectionLength;
 
-		public CaretWithStemAndThumb()
+	void ITextSelectionGripperHost.SetGripperSelection(int start, int end) => SelectInternal(start, end - start);
+
+	void ITextSelectionGripperHost.MoveGripperCaret(int index) => Select(index, 0);
+
+	void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper) => UpdateScrolling(isEndGripper);
+
+	void ITextSelectionGripperHost.OnGripperPressed() => DismissSelectionFlyoutForPointerPress();
+
+	// Dismiss the selection flyout (the floating copy/paste bar) when a touch interaction begins, so it
+	// doesn't linger next to a context menu opened on the same gesture.
+	internal void DismissSelectionFlyoutForPointerPress() => TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
+
+	void ITextSelectionGripperHost.RequestGripperContextMenu(PointerRoutedEventArgs args)
+	{
+		// Ported from TextBoxBase.cpp OnGripperHeld: a held gripper opens the context flyout.
+		var contextArgs = new ContextRequestedEventArgs();
+		contextArgs.SetGlobalPoint(args.GetCurrentPoint(null).Position);
+		OnContextRequested(this, contextArgs);
+	}
+
+	void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args)
+		=> QueueUpdateSelectionFlyoutVisibility(args.Pointer.PointerDeviceType, args.GetCurrentPoint(this).Position);
+
+	void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, PointerRoutedEventArgs args)
+	{
+		// The insertion handle (EndOnly gripper) sits over the character it points at, so the second tap of
+		// a double-tap lands on the handle instead of the text. Fold it into the same multi-tap counter as
+		// OnPointerReleasedPartial (press-to-press) so the double-tap still selects the word.
+		var repeatedPresses = _lastPointerDown.point is { } previous && IsTouchMultiTap(previous, press)
+			? _lastPointerDown.repeatedPresses + 1
+			: 0;
+		_lastPointerDown = (press, repeatedPresses);
+
+		var displayBlockPoint = args.GetCurrentPoint(TextBoxView.DisplayBlock).Position;
+		if (TouchSelectionConvention != TouchTextSelectionConvention.Desktop && repeatedPresses >= 1)
 		{
-			// Numbers and colors below are partially measured by hand from WinUI and partially made up to be reasonable.
-
-			Background = new SolidColorBrush(Colors.Transparent); // to hit-test positively everywhere in the grid
-
-			Width = 16;
-
-			RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-			RowDefinitions.Add(new RowDefinition { Height = new GridLength(16, GridUnitType.Pixel) });
-
-			_thumb = new Ellipse
-			{
-				Fill = new SolidColorBrush(Colors.White),
-				Width = 16,
-				Height = 16
-			};
-
-			_thumbRing = new Ellipse
-			{
-				Stroke = new SolidColorBrush(ThumbFillColor),
-				StrokeThickness = 2,
-				Width = 14,
-				Height = 14,
-				Margin = new Thickness(1)
-			};
-
-			_stem = new Rectangle
-			{
-				Visibility = Visibility.Collapsed,
-				IsHitTestVisible = false,
-				HorizontalAlignment = HorizontalAlignment.Center,
-				Stroke = new SolidColorBrush(ThumbFillColor),
-				Width = 2
-			};
-
-			Grid.SetRow(_stem, 0);
-			Grid.SetRow(_thumb, 1);
-			Grid.SetRow(_thumbRing, 1);
-
-			Children.Add(_stem);
-			Children.Add(_thumb);
-			Children.Add(_thumbRing);
+			TouchSelectWord(displayBlockPoint);
 		}
-
-		public void SetStemVisible(bool visible) => _stem.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
-
-		public void ShowAt(XamlRoot xamlRoot, Matrix3x2 transform)
+		else
 		{
-			_popup ??= new Popup
-			{
-				Child = this,
-				IsLightDismissEnabled = false,
-				XamlRoot = xamlRoot
-			};
-			_popup.PopupPanel.Visual.ZIndex = VisualTree.TextBoxTouchKnobPopupZIndex;
-
-			if (this.RenderTransform is not MatrixTransform matrixTransform)
-			{
-				matrixTransform = new MatrixTransform();
-				this.RenderTransform = matrixTransform;
-			}
-			matrixTransform.Matrix = new Matrix(transform);
-			if (!_popup.IsOpen)
-			{
-				_popup.IsOpen = true;
-				((CompositionTarget)Visual.CompositionTarget)!.FrameRendered += OnFrameRendered;
-			}
-		}
-
-		private void OnFrameRendered()
-		{
-			NativeDispatcher.Main.Enqueue(() =>
-			{
-				if (FocusManager.GetFocusedElement(XamlRoot!) is TextBox textBox)
-				{
-					textBox.UpdateFlyoutPosition();
-				}
-			}, NativeDispatcherPriority.Idle);
-		}
-
-		public void Hide()
-		{
-			if (Visual.CompositionTarget is CompositionTarget target)
-			{
-				target.FrameRendered -= OnFrameRendered;
-			}
-			if (_popup is not null)
-			{
-				_popup.IsOpen = false;
-			}
+			TouchTap(displayBlockPoint, true);
 		}
 	}
+	#endregion
 
 	/// <summary>
 	/// Fires the ContextMenuOpening event synchronously and returns whether it was handled.

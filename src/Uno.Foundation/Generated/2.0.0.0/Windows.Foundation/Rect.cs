@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct Rect
@@ -44,19 +44,19 @@ namespace Windows.Foundation
 		// Skipping already declared method Windows.Foundation.Rect.Contains(Windows.Foundation.Point)
 		// Skipping already declared method Windows.Foundation.Rect.Intersect(Windows.Foundation.Rect)
 		// Skipping already declared method Windows.Foundation.Rect.Union(Windows.Foundation.Rect)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Union(global::Windows.Foundation.Point point)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Rect", "void Rect.Union(Point point)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Rect", "Union(Point point)");
 		}
 #endif
 		// Skipping already declared method Windows.Foundation.Rect.ToString()
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string ToString(global::System.IFormatProvider provider)
 		{
-			throw new global::System.NotImplementedException("The member string Rect.ToString(IFormatProvider provider) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Rect.ToString%28IFormatProvider%20provider%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Foundation.Rect", "ToString(IFormatProvider provider)");
 		}
 #endif
 		// Forced skipping of method Windows.Foundation.Rect.System.IFormattable.ToString(string, System.IFormatProvider)

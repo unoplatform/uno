@@ -3,73 +3,73 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Control
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class GlobalSystemMediaTransportControlsSessionPlaybackInfo
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		internal GlobalSystemMediaTransportControlsSessionPlaybackInfo()
 		{
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaPlaybackAutoRepeatMode? AutoRepeatMode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackAutoRepeatMode? GlobalSystemMediaTransportControlsSessionPlaybackInfo.AutoRepeatMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackAutoRepeatMode%3F%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.AutoRepeatMode");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "AutoRepeatMode");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackControls Controls
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GlobalSystemMediaTransportControlsSessionPlaybackControls GlobalSystemMediaTransportControlsSessionPlaybackInfo.Controls is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GlobalSystemMediaTransportControlsSessionPlaybackControls%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.Controls");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "Controls");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool? IsShuffleActive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool? GlobalSystemMediaTransportControlsSessionPlaybackInfo.IsShuffleActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%3F%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.IsShuffleActive");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "IsShuffleActive");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public double? PlaybackRate
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%3F%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackRate");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "PlaybackRate");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackStatus PlaybackStatus
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GlobalSystemMediaTransportControlsSessionPlaybackStatus GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GlobalSystemMediaTransportControlsSessionPlaybackStatus%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackStatus");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "PlaybackStatus");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Media.MediaPlaybackType? PlaybackType
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackType? GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackType%3F%20GlobalSystemMediaTransportControlsSessionPlaybackInfo.PlaybackType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Control.GlobalSystemMediaTransportControlsSessionPlaybackInfo", "PlaybackType");
 			}
 		}
 #endif

@@ -55,7 +55,7 @@ public class Given_StartCommandHandler_Integration
 			NullLogger.Instance,
 			new EmptyLookup(),
 			(_, _) => Task.FromResult(true),
-			_ => Task.FromResult(0));
+			_ => Task.FromResult(DirectSpawnResult.Ready));
 
 		var parsed = StartCommandHandler.ParseStartArgs(originalArgs);
 		var newArgs = handler.BuildDirectLaunchArgs(hostPath, parsed, addins, "/Users/dev/myapp");
@@ -100,7 +100,7 @@ public class Given_StartCommandHandler_Integration
 			psi =>
 			{
 				capturedStartInfo = psi;
-				return Task.FromResult(0);
+				return Task.FromResult(DirectSpawnResult.Ready);
 			});
 
 		var exitCode = await handler.RunAsync(
@@ -145,7 +145,7 @@ public class Given_StartCommandHandler_Integration
 			NullLogger.Instance,
 			new EmptyLookup(),
 			(_, _) => Task.FromResult(true),
-			_ => Task.FromResult(0));
+			_ => Task.FromResult(DirectSpawnResult.Ready));
 
 		foreach (var verb in new[] { "list", "stop", "cleanup" })
 		{
@@ -180,7 +180,7 @@ public class Given_StartCommandHandler_Integration
 
 	private sealed class EmptyLookup : IDevServerLookup
 	{
-		public (int ProcessId, int Port, string? SolutionPath)? FindBySolution(string solution) => null;
-		public (int ProcessId, int Port, string? SolutionPath)? FindByPort(int port) => null;
+		public (int ProcessId, int Port, string? SolutionPath, int ParentProcessId)? FindBySolution(string solution) => null;
+		public (int ProcessId, int Port, string? SolutionPath, int ParentProcessId)? FindByPort(int port) => null;
 	}
 }

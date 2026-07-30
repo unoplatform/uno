@@ -6,5 +6,8 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class RichTextBlockOverflow
 	{
 		internal override bool CanHaveChildren() => true;
+
+		protected override Automation.Peers.AutomationPeer OnCreateAutomationPeer()
+			=> new Automation.Peers.RichTextBlockOverflowAutomationPeer(this);
 	}
 }

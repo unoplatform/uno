@@ -51,6 +51,19 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 				return false;
 			}
 
+			// During IME composition, allow text changes through without
+			// MaxLength interference — the composition system manages length.
+			if (textBoxView.IsComposing)
+			{
+				return true;
+			}
+
+			// Suppress the iOS autocorrect autospace fired when the caret leaves a word (see IsNoOpAutocorrectReplacement).
+			if (InvisibleTextBoxAutocorrect.IsNoOpAutocorrectReplacement(textView.Text, range, replacementString))
+			{
+				return false;
+			}
+
 			// TODO:MZ:
 			//if (textBox.OnKey(text.FirstOrDefault()))
 			//{

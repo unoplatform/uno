@@ -1,0 +1,327 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.NumberBox_KeyboardPlacement"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="800"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel
+            Padding="20"
+            Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+            Spacing="16">
+
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontSize="20"
+                FontWeight="Bold"
+                Text="Numeric Input Fields" />
+
+            <TextBlock
+                HorizontalAlignment="Center"
+                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                Text="On iPad, pinch the keyboard to make it float, then tap any numeric field. The floating keyboard should appear near the focused control."
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+
+            <!--  Top spacer to force scrolling so a NumberBox can be positioned near the top of the viewport. Repro for keypad popup showing at (0,0) covering the NumberBox when it is too close to the top of the page.  -->
+            <Border
+                Height="800"
+                Background="{ThemeResource SystemControlBackgroundListLowBrush}"
+                CornerRadius="8">
+                <TextBlock
+                    Margin="16"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                    Text="Scroll down, then tap a NumberBox while it sits near the top of the viewport to reproduce the keypad-popup placement issue."
+                    TextAlignment="Center"
+                    TextWrapping="Wrap" />
+            </Border>
+
+            <!--  Decimal Pad section  -->
+            <StackPanel
+                Padding="16"
+                Background="{ThemeResource SystemControlBackgroundListLowBrush}"
+                CornerRadius="8"
+                Spacing="12">
+
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Text="Decimal Pad (NumberBox)" />
+
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="200" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Grid.Row="0"
+                        VerticalAlignment="Center"
+                        Text="Amount" />
+                    <controls:NumberBox
+                        x:Name="AmountNumberBox"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        AutomationProperties.Name="AmountNumberBox"
+                        PlaceholderText="0.00"
+                        Value="0" />
+
+                    <TextBlock
+                        Grid.Row="1"
+                        VerticalAlignment="Center"
+                        Text="Price" />
+                    <controls:NumberBox
+                        x:Name="PriceNumberBox"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        AutomationProperties.Name="PriceNumberBox"
+                        PlaceholderText="0.00"
+                        Value="0" />
+
+                    <TextBlock
+                        Grid.Row="2"
+                        VerticalAlignment="Center"
+                        Text="Tax %" />
+                    <controls:NumberBox
+                        x:Name="TaxNumberBox"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        AutomationProperties.Name="TaxNumberBox"
+                        PlaceholderText="0.0"
+                        Value="0" />
+
+                    <TextBlock
+                        Grid.Row="3"
+                        VerticalAlignment="Center"
+                        Text="Discount %" />
+                    <controls:NumberBox
+                        x:Name="DiscountNumberBox"
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        AutomationProperties.Name="DiscountNumberBox"
+                        PlaceholderText="0.0"
+                        Value="0" />
+                </Grid>
+            </StackPanel>
+
+            <!--  Number Pad section  -->
+            <StackPanel
+                Padding="16"
+                Background="{ThemeResource SystemControlBackgroundListLowBrush}"
+                CornerRadius="8"
+                Spacing="12">
+
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Text="Number Pad (NumberBox)" />
+
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="200" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Grid.Row="0"
+                        VerticalAlignment="Center"
+                        Text="Quantity" />
+                    <controls:NumberBox
+                        x:Name="QuantityNumberBox"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        AutomationProperties.Name="QuantityNumberBox"
+                        PlaceholderText="0"
+                        Value="0" />
+
+                    <TextBlock
+                        Grid.Row="1"
+                        VerticalAlignment="Center"
+                        Text="ZIP Code" />
+                    <controls:NumberBox
+                        x:Name="ZipCodeNumberBox"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        AutomationProperties.Name="ZipCodeNumberBox"
+                        PlaceholderText="00000"
+                        Value="0" />
+
+                    <TextBlock
+                        Grid.Row="2"
+                        VerticalAlignment="Center"
+                        Text="PIN" />
+                    <controls:NumberBox
+                        x:Name="PinNumberBox"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        AutomationProperties.Name="PinNumberBox"
+                        PlaceholderText="0000"
+                        Value="0" />
+                </Grid>
+            </StackPanel>
+
+            <!--  TextBox with numeric InputScope  -->
+            <StackPanel
+                Padding="16"
+                Background="{ThemeResource SystemControlBackgroundListLowBrush}"
+                CornerRadius="8"
+                Spacing="12">
+
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Text="TextBox with Numeric InputScope" />
+
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="200" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Grid.Row="0"
+                        VerticalAlignment="Center"
+                        Text="Phone" />
+                    <TextBox
+                        x:Name="PhoneTextBox"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        AutomationProperties.Name="PhoneTextBox"
+                        InputScope="TelephoneNumber"
+                        PlaceholderText="+1 (555) 000-0000" />
+
+                    <TextBlock
+                        Grid.Row="1"
+                        VerticalAlignment="Center"
+                        Text="Amount" />
+                    <TextBox
+                        x:Name="AmountTextBox"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        AutomationProperties.Name="AmountTextBox"
+                        InputScope="Number"
+                        PlaceholderText="Enter amount" />
+                </Grid>
+            </StackPanel>
+
+            <!--  Inline spin buttons  -->
+            <StackPanel
+                Padding="16"
+                Background="{ThemeResource SystemControlBackgroundListLowBrush}"
+                CornerRadius="8"
+                Spacing="12">
+
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Text="Inline Spin Buttons" />
+
+                <Grid ColumnSpacing="12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="200" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Grid.Row="0"
+                        VerticalAlignment="Center"
+                        Text="Counter" />
+                    <controls:NumberBox
+                        x:Name="CounterNumberBox"
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        AutomationProperties.Name="CounterNumberBox"
+                        SmallChange="1"
+                        SpinButtonPlacementMode="Inline"
+                        Value="0" />
+
+                    <TextBlock
+                        Grid.Row="1"
+                        VerticalAlignment="Center"
+                        Text="Rating" />
+                    <controls:NumberBox
+                        x:Name="RatingNumberBox"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        AutomationProperties.Name="RatingNumberBox"
+                        Maximum="5"
+                        Minimum="0"
+                        SmallChange="1"
+                        SpinButtonPlacementMode="Inline"
+                        Value="3" />
+                </Grid>
+            </StackPanel>
+
+            <!--  Left-aligned, unlabeled NumberBoxes with 6px padding. Repro for the native number pad flyout being positioned on top of the NumberBox, covering its visible area.  -->
+            <StackPanel
+                Padding="16"
+                Background="{ThemeResource SystemControlBackgroundListLowBrush}"
+                CornerRadius="8"
+                Spacing="12">
+
+                <TextBlock
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Text="Left-Aligned NumberBoxes (Padding 15)" />
+
+                <controls:NumberBox
+                    x:Name="LeftAlignedNumberBox1"
+                    Padding="15"
+                    HorizontalAlignment="Left"
+                    AutomationProperties.Name="LeftAlignedNumberBox1"
+                    PlaceholderText="0"
+                    Value="0" />
+
+                <controls:NumberBox
+                    x:Name="LeftAlignedNumberBox2"
+                    Padding="15"
+                    HorizontalAlignment="Left"
+                    AutomationProperties.Name="LeftAlignedNumberBox2"
+                    PlaceholderText="0"
+                    Value="0" />
+
+                <controls:NumberBox
+                    x:Name="LeftAlignedNumberBox3"
+                    Padding="15"
+                    HorizontalAlignment="Left"
+                    AutomationProperties.Name="LeftAlignedNumberBox3"
+                    PlaceholderText="0"
+                    Value="0" />
+            </StackPanel>
+
+            <!--  Bottom spacer so any NumberBox above can be scrolled up to the top of the viewport.  -->
+            <Border
+                Height="800"
+                Background="{ThemeResource SystemControlBackgroundListLowBrush}"
+                CornerRadius="8" />
+
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>

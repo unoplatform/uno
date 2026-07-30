@@ -25,7 +25,7 @@ pr:
       - '**/*.md'
 
 variables:
-  windowsScaledPool: 'Windows2022-20250720-1'
+  windowsScaledPool: 'Windows2025-20260406-1'
   linuxVMImage: 'ubuntu-22.04'
 
   enable_dotnet_cache: true

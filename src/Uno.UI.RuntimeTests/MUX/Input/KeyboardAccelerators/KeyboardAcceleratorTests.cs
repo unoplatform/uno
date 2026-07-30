@@ -390,7 +390,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			Log.Comment("Press accelerator sequence: Ctrl + A");
 			//Key up order should not affect accelerators
 			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
-			await keyboardAcceleratorInvoked.Wait();
+			await keyboardAcceleratorInvoked.WaitWithDiagnosticsAsync(
+				button,
+				ctrlAAccelerator,
+				context: $"{nameof(ValidateKeyboardAcceleratorEventInvoked)}: waiting for KeyboardAccelerator.Invoked (Ctrl+A)");
 			Log.Comment("Validating button automation action invoked.");
 			await buttonClickTester.Wait();
 		}
@@ -520,7 +523,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			Log.Comment("Press accelerator sequence: Ctrl + =");
 			//Key up order should not affect accelerators
 			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_equal#$u$_ctrlscan#$u$_equal");
-			await keyboardAcceleratorInvoked.Wait();
+			await keyboardAcceleratorInvoked.WaitWithDiagnosticsAsync(
+				button,
+				ctrlEqualAccelerator,
+				context: $"{nameof(ValidateEqualsKeyCanBeAKeyboardAccelerator)}: waiting for KeyboardAccelerator.Invoked (Ctrl+=)");
 			Log.Comment("Validating button automation action invoked.");
 			await buttonClickTester.Wait();
 		}
@@ -739,7 +745,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			Log.Comment("Press accelerator sequence: Ctrl + Tab");
 			//Key up order should not affect accelerators
 			await TestServices.KeyboardHelper.CtrlTab();
-			await keyboardAcceleratorInvoked.Wait();
+			await keyboardAcceleratorInvoked.WaitWithDiagnosticsAsync(
+				button,
+				ctrlTabAccelerator,
+				context: $"{nameof(ValidateKeyboardAcceleratorEventInvokedForCtrlTab)}: waiting for KeyboardAccelerator.Invoked (Ctrl+Tab)");
 			Log.Comment("Validating button automation action invoked.");
 			await buttonClickTester.Wait();
 		}
@@ -1167,7 +1176,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
 			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
-			await keyboardAcceleratorInvoked.Wait();
+			await keyboardAcceleratorInvoked.WaitWithDiagnosticsAsync(
+				button,
+				ctrlAAccelerator,
+				context: $"{nameof(ValidateKeyboardAcceleratorEventOrderingOnUIElement)}: waiting for KeyboardAccelerator.Invoked (Ctrl+A) on StackPanel while button has focus");
 			await rootPanelKeyUp.Wait();
 			await rootPanelProcessKeyboardAccelerators.Wait();
 
@@ -1366,7 +1378,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
 			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_a#$u$_ctrlscan");
-			await keyboardAcceleratorInvoked.Wait();
+			await keyboardAcceleratorInvoked.WaitWithDiagnosticsAsync(
+				button,
+				ctrlAAccelerator,
+				context: $"{nameof(ValidateHandlingKeyboardAcceleratorsCanPreventAutomationAction)}: waiting for KeyboardAccelerator.Invoked (Ctrl+A)");
 			Log.Comment("Validating button automation action invoked.");
 			await buttonClickTester.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 			await TestServices.WindowHelper.WaitForIdle();
@@ -1431,7 +1446,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			{
 				Log.Comment("Press accelerator sequence: Ctrl + Q");
 				await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
-				await keyboardAcceleratorInvoked.Wait();
+				await keyboardAcceleratorInvoked.WaitWithDiagnosticsAsync(
+					button2,
+					ctrlQAccelerator,
+					context: $"{nameof(ValidateKeyboardAcceleratorsAreGlobalByDefault)}: waiting for KeyboardAccelerator.Invoked (Ctrl+Q) while focus is on button2");
 				await buttonClickTester.Wait();
 
 			}
@@ -2846,7 +2864,10 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
 			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_a#$u$_ctrlscan");
-			await keyboardAccelerator1Invoked.Wait();
+			await keyboardAccelerator1Invoked.WaitWithDiagnosticsAsync(
+				button,
+				ctrlAAccelerator1,
+				context: $"{nameof(VerifyParentOfDisabledControlCanBeInvoked)}: waiting for parentPanel KeyboardAccelerator.Invoked (Ctrl+A) while button (disabled) has focus");
 			await keyboardAccelerator2Invoked.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 			Verify.IsFalse(keyboardAccelerator2Invoked.HasFired);
 		}

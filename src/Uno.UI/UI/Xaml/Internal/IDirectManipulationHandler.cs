@@ -28,6 +28,20 @@ internal interface IDirectManipulationHandler
 	ManipulationModes OnStarting(GestureRecognizer recognizer, ManipulationStartingEventArgs args);
 
 	/// <summary>
+	/// Side-effect-free preview of the modes this handler would currently claim if a manipulation
+	/// were to start right now. Used by <see cref="InputManager.PointerManager.CancelDirectManipulations"/>
+	/// to decide whether a descendant's cancel request actually conflicts with this handler
+	/// (e.g. a <see cref="ManipulationModes.TranslateX"/>-only descendant must not cancel a
+	/// <see cref="ManipulationModes.TranslateY"/>-only ancestor scroller).
+	/// </summary>
+	/// <remarks>
+	/// Returning <see cref="ManipulationModes.All"/> (the default) preserves the legacy "cancel everything"
+	/// behavior for handlers that don't expose their effective modes.
+	/// </remarks>
+	ManipulationModes GetCurrentlyAcceptedModes()
+		=> ManipulationModes.All;
+
+	/// <summary>
 	/// Determines if a pointer point is in handler's bounds, so a new pointer can be added to the current direct-manipulation.
 	/// </summary>
 	bool CanAddPointerAt(in Point absoluteLocation)

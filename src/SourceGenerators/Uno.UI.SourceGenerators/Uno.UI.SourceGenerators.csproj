@@ -14,7 +14,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.1.1" />
+		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.3.3" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -64,7 +64,7 @@
 		</Compile>
 	</ItemGroup>
 
-	<Import Project="..\SourceGeneratorHelpers\SourceGeneratorHelpers.projitems" Label="Shared" />
+	<Import Project="..\SourceGeneratorHelpers\SourceGeneratorHelpers.props" />
 
 	<ItemGroup>
 		<None Include="Content\Uno.UI.SourceGenerators.props" />
@@ -72,7 +72,7 @@
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.Tests" />
-		<InternalsVisibleTo Include="Uno.UI.Unit.Tests" />
+		<InternalsVisibleTo Include="Uno.UI.UnitTests" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -86,8 +86,7 @@
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
-			<_OverridePackageId>uno.ui</_OverridePackageId>
-			<_OverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">uno.winui</_OverridePackageId>
+			<_OverridePackageId>uno.winui</_OverridePackageId>
 
 			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_OverridePackageId)\$(UnoNugetOverrideVersion)\analyzers\dotnet\cs</_TargetNugetFolder>
 		</PropertyGroup>

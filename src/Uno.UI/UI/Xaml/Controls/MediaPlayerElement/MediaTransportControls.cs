@@ -10,6 +10,7 @@ using Windows.Foundation.Metadata;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -32,6 +33,9 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class MediaTransportControls : Control
 	{
+		protected override AutomationPeer OnCreateAutomationPeer()
+			=> new MediaTransportControlsAutomationPeer(this);
+
 		private MediaPlayerElement? _mpe;
 		private readonly SerialDisposable _subscriptions = new();
 		private bool _isMeasureCommandBarRunning;

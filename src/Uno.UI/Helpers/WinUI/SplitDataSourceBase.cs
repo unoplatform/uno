@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+// MUX Reference SplitDataSourceBase.h, commit bac7a9c33
+
 //
-// This file is a C# translation of the SplitDataSourceBase.cpp file from WinUI controls.
+// This file is a C# translation of the SplitDataSourceBase.h file from WinUI controls.
 //
 
 using System;
@@ -203,6 +205,18 @@ internal abstract class SplitDataSourceBase<T, TVectorId, AttachedDataType>
 		m_flags.RemoveAt(index);
 		m_attachedData.RemoveAt(index);
 	}
+
+#pragma warning disable IDE0051 // Unused upstream as well, kept for 1:1 parity with SplitDataSourceBase.h
+	void OnReplace(int index)
+	{
+		var splitVector = GetVectorForItem(index);
+		if (splitVector != null)
+		{
+			var value = GetAt(index);
+			splitVector.Replace(index, value);
+		}
+	}
+#pragma warning restore IDE0051
 
 	void OnInsertAt(int index)
 	{

@@ -29,7 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 #if !HAS_UNO || __ANDROID__ || __IOS__ || __SKIA__
 [RunsOnUIThread]
 [TestClass]
-[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWpf | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.SkiaFrameBuffer)]
+[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.SkiaFrameBuffer)]
 public class Given_WebView2
 {
 	[TestMethod]
@@ -311,6 +311,7 @@ public class Given_WebView2
 	[Ignore("Crashes")]
 #endif
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit)] // Flaky on UIKit - #9080
 	public async Task When_LocalFolder_File()
 	{
 		async Task Do()
@@ -353,6 +354,34 @@ public class Given_WebView2
 		}
 
 		await TestHelper.RetryAssert(Do, 3);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23641")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_DocumentTitle_Before_Navigation()
+	{
+		var border = new Border();
+		var webView = new WebView2();
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		try
+		{
+			await TestServices.WindowHelper.WaitForLoaded(border);
+			await webView.EnsureCoreWebView2Async();
+
+			// A freshly created native web view has no title yet. Reading it must return ""
+			// rather than crashing the native accessor (macOS strdup(NULL) on a nil title).
+			var title = webView.CoreWebView2.DocumentTitle;
+
+			Assert.AreEqual("", title);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]
@@ -564,7 +593,7 @@ public class Given_WebView2
 #if !WINAPPSDK && !__ANDROID__
 	[TestMethod]
 	[CombinatorialData]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)] // Flaky on iOS Skia https://github.com/unoplatform/uno/issues/9080
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeUIKit)] // Flaky on iOS Skia / Native UIKit https://github.com/unoplatform/uno/issues/9080
 	public async Task When_Navigate_Unsupported_Scheme(bool handled)
 	{
 		var border = new Border();

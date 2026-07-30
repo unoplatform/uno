@@ -64,6 +64,38 @@ internal struct NativeClipboardData
 };
 #pragma warning restore 0649
 
+// keep in sync with UNODragDrop.h (struct DragDropData)
+[StructLayout(LayoutKind.Sequential)]
+internal unsafe struct NativeDragDropData
+{
+	public double X;
+	public double Y;
+	public VirtualKeyModifiers Modifiers;
+	public uint AllowedOperations; // bit flags matching DataPackageOperation
+	public byte* TextContent;
+	public byte* HtmlContent;
+	public byte* RtfContent;
+	public byte* Uri;
+	public byte** FileUrls;
+	public uint FileCount;
+	public byte* BitmapPath;
+}
+
+// keep in sync with UNODragDrop.h (struct DragSourceData)
+[StructLayout(LayoutKind.Sequential)]
+internal unsafe struct NativeDragSourceData
+{
+	public uint AllowedOperations; // bit flags matching DataPackageOperation
+	public byte* TextContent;
+	public byte* HtmlContent;
+	public byte* RtfContent;
+	public byte* Uri;
+	public byte** FileUrls;
+	public uint FileCount;
+	public byte* BitmapData;
+	public uint BitmapSize;
+}
+
 [CustomMarshaller(typeof(NativeClipboardData), MarshalMode.Default, typeof(ClipboardDataMarshaller))]
 internal static unsafe class ClipboardDataMarshaller
 {
@@ -201,10 +233,30 @@ internal static partial class NativeUno
 	internal static partial uint uno_get_system_theme();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_text_scale_factor_change_callback(delegate* unmanaged[Cdecl]<void> callback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial double uno_get_text_scale_factor();
+
+	// IME (Input Method Editor) callbacks
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_ime_callbacks(
+		delegate* unmanaged[Cdecl]<nint, ushort*, int, void> insertTextCallback,
+		delegate* unmanaged[Cdecl]<nint, ushort*, int, int, int, void> setMarkedTextCallback,
+		delegate* unmanaged[Cdecl]<nint, void> unmarkTextCallback,
+		delegate* unmanaged[Cdecl]<nint, double*, double*, double*, double*, void> getCaretRectCallback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_set_ime_active(nint windowHandle, [MarshalAs(UnmanagedType.U1)] bool active);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_application_start_callback(delegate* unmanaged[Cdecl]<void> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_application_can_exit_callback(delegate* unmanaged[Cdecl]<int> callback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_application_should_terminate_after_last_window_closed_callback(delegate* unmanaged[Cdecl]<int> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_application_quit();
@@ -315,6 +367,9 @@ internal static partial class NativeUno
 	internal static partial IntPtr /* const char* _Nullable * _Nullable */ uno_pick_multiple_files(string? prompt, string? identifier, int suggestedStartLocation,
 		string[] filters, int filterSize);
 
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_free_string_array(IntPtr array);
+
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial string? /* const char* _Nullable */ uno_pick_save_file(string? prompt, string? identifier, string? suggestedFileName, int suggestedStartLocation,
 		string[] filters, int filtersSize);
@@ -337,6 +392,24 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_clipboard_set_content_changed_callback(delegate* unmanaged[Cdecl]<void> callback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_drag_drop_set_callbacks(
+		delegate* unmanaged[Cdecl]<nint, NativeDragDropData*, uint> entered,
+		delegate* unmanaged[Cdecl]<nint, NativeDragDropData*, uint> updated,
+		delegate* unmanaged[Cdecl]<nint, NativeDragDropData*, uint> exited,
+		delegate* unmanaged[Cdecl]<nint, NativeDragDropData*, uint> performed);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_drag_drop_set_session_ended_callback(
+		delegate* unmanaged[Cdecl]<nint, uint, void> endedCallback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static unsafe partial bool uno_drag_start(nint window, NativeDragSourceData* data);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_register_for_drag_drop(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_cursor_hide();
@@ -446,6 +519,9 @@ internal static partial class NativeUno
 	internal static partial void uno_webview_set_scrolling_enabled(nint webview, [MarshalAs(UnmanagedType.I1)] bool enabled);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_set_inspectable(nint webview, [MarshalAs(UnmanagedType.I1)] bool inspectable);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_mediaplayer_set_callbacks(
 		delegate* unmanaged[Cdecl]<IntPtr, double, void> periodicPositionUpdate,
 		delegate* unmanaged[Cdecl]<IntPtr, double, void> onRateChanged,
@@ -514,10 +590,39 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial nint uno_mediaplayer_set_view(nint media, nint view, nint window);
 
-	// Accessibility
+	// Speech recognition
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_accessibility_init(nint window);
+	internal static unsafe partial void uno_speech_set_callbacks(
+		delegate* unmanaged[Cdecl]<nint, byte*, void> hypothesis,
+		delegate* unmanaged[Cdecl]<nint, int, void> state,
+		delegate* unmanaged[Cdecl]<nint, byte*, byte*, void> result,
+		delegate* unmanaged[Cdecl]<nint, byte*, void> error);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial nint uno_speech_recognizer_create(string locale);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_speech_recognizer_destroy(nint recognizer);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_speech_recognizer_start(nint recognizer);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_speech_recognizer_stop(nint recognizer);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_speech_recognizer_is_available(nint recognizer);
+
+	// Accessibility — per-window context lifecycle
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_init_context(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_accessibility_destroy_context(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_accessibility_set_callbacks(
@@ -539,6 +644,7 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial void uno_accessibility_add_element(
+		nint window,
 		nint parentHandle, nint handle, int index,
 		float width, float height, float x, float y,
 		string? role, string? label,
@@ -546,7 +652,7 @@ internal static partial class NativeUno
 		[MarshalAs(UnmanagedType.I1)] bool visible);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_accessibility_remove_element(nint parentHandle, nint handle);
+	internal static partial void uno_accessibility_remove_element(nint window, nint parentHandle, nint handle);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial void uno_accessibility_update_label(nint handle, string? label);
@@ -618,13 +724,13 @@ internal static partial class NativeUno
 	internal static partial void uno_accessibility_set_focused(nint handle);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial void uno_accessibility_announce(string text, [MarshalAs(UnmanagedType.I1)] bool assertive);
+	internal static partial void uno_accessibility_announce(nint window, string text, [MarshalAs(UnmanagedType.I1)] bool assertive);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_accessibility_post_layout_changed();
+	internal static partial void uno_accessibility_post_layout_changed(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_accessibility_post_children_changed();
+	internal static partial void uno_accessibility_post_children_changed(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_accessibility_post_live_region_created(nint handle);

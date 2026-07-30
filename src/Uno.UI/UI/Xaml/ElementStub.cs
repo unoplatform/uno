@@ -47,6 +47,11 @@ namespace Microsoft.UI.Xaml
 		private View _content;
 #endif
 
+		// Captures the resource scope at parse time so {StaticResource} lookups inside the
+		// lazily-created subtree can walk the same ancestor chain they would have seen if the
+		// element had been created eagerly (mirrors what FrameworkTemplate does).
+		private readonly XamlScope _xamlScope;
+
 		/// <summary>
 		/// Ensures that materialization handles reentrancy properly.
 		/// This scenario can happen on android specifically because the Parent
@@ -103,6 +108,14 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public bool IsMaterialized => _content != null;
 
+		public ElementStub()
+		{
+			// Capture the resource scope at construction time (during XAML parsing) so that
+			// {StaticResource} lookups in the lazily-materialised subtree can resolve against
+			// the same ancestor resource chain they would see during eager parsing.
+			_xamlScope = ResourceResolver.CurrentScope;
+		}
+
 		public ElementStub(Func<View> contentBuilder) : this()
 		{
 #if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
@@ -123,10 +136,6 @@ namespace Microsoft.UI.Xaml
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 			_fromLegacyTemplate = TemplatedParentScope.GetCurrentTemplate() is { IsLegacyTemplate: true };
 #endif
-		}
-
-		public ElementStub()
-		{
 		}
 
 		private static void OnLoadChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -199,6 +208,7 @@ namespace Microsoft.UI.Xaml
 				try
 				{
 					_isMaterializing = true;
+					ResourceResolver.PushNewScope(_xamlScope);
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 					TemplatedParentScope.PushScope(GetTemplatedParent(), _fromLegacyTemplate);
 #endif
@@ -212,6 +222,7 @@ namespace Microsoft.UI.Xaml
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 					TemplatedParentScope.PopScope();
 #endif
+					ResourceResolver.PopScope();
 					_isMaterializing = false;
 				}
 			}

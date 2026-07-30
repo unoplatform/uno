@@ -165,6 +165,19 @@ char** uno_pick_multiple_files(const char* _Nullable prompt, const char* _Nullab
     return nil;
 }
 
+// Frees an array previously returned by uno_pick_multiple_files: each strdup'd
+// entry up to the trailing NULL sentinel, then the malloc'd outer array itself.
+void uno_free_string_array(char** array)
+{
+    if (!array) {
+        return;
+    }
+    for (char** p = array; *p != NULL; p++) {
+        free(*p);
+    }
+    free(array);
+}
+
 char* uno_pick_save_file(const char* _Nullable prompt, const char* _Nullable identifier, const char* _Nullable suggestedFileName, PickerLocationId suggestedStartLocation, char* filters[], int filterSize)
 {
     NSSavePanel *panel = [NSSavePanel savePanel];

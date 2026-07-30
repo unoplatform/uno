@@ -175,7 +175,7 @@ static class AppHost
 		writer.WriteLine();
 		writer.WriteLine("namespace Microsoft.UI.Xaml.Documents.TextFormatting;");
 		writer.WriteLine();
-		writer.WriteLine("public static class FallbackFontMaps");
+		writer.WriteLine("internal static class FallbackFontMaps");
 		writer.WriteLine("{");
 		writer.WriteLine("\tpublic static readonly IReadOnlyList<(int start, int end, List<string> fonts)> CodepointsToFontFamilies = new List<(int, int, List<string>)>");
 		writer.WriteLine("\t{");

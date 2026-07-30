@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using Uno;
 using Uno.Extensions;
+using Uno.UI.Helpers;
 using Uno.Xaml;
 using Windows.UI;
 using Windows.Foundation;
@@ -429,9 +430,11 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				// As a partial name using the non-qualified name
 				() => Type.GetType(originalName.Split(':').ElementAtOrDefault(1) ?? ""),
 					
-				// Look for the type in all loaded assemblies
-				() => AppDomain.CurrentDomain
-					.GetAssemblies()
+				// Look for the type in all relevant loaded assemblies. When EnterContextualReflection
+				// is active for a non-default ALC, this enumerates only that ALC's assemblies +
+				// the default ALC's — avoiding stale per-app ALCs that AppDomain.GetAssemblies
+				// would otherwise still expose. Falls back to AppDomain.GetAssemblies otherwise.
+				() => ContextualAssemblyResolver.GetRelevantAssemblies()
 					.Select(
 
 						[UnconditionalSuppressMessage("Trimming","IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]

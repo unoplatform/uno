@@ -3,96 +3,96 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.SmartCards
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class SmartCardCryptogramMaterialCharacteristics
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.SmartCards.SmartCardCryptogramAlgorithm> AllowedAlgorithms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<SmartCardCryptogramAlgorithm> SmartCardCryptogramMaterialCharacteristics.AllowedAlgorithms is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CSmartCardCryptogramAlgorithm%3E%20SmartCardCryptogramMaterialCharacteristics.AllowedAlgorithms");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "AllowedAlgorithms");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.SmartCards.SmartCardCryptogramMaterialPackageConfirmationResponseFormat> AllowedProofOfPossessionAlgorithms
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<SmartCardCryptogramMaterialPackageConfirmationResponseFormat> SmartCardCryptogramMaterialCharacteristics.AllowedProofOfPossessionAlgorithms is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CSmartCardCryptogramMaterialPackageConfirmationResponseFormat%3E%20SmartCardCryptogramMaterialCharacteristics.AllowedProofOfPossessionAlgorithms");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "AllowedProofOfPossessionAlgorithms");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.SmartCards.SmartCardCryptogramAlgorithm> AllowedValidations
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<SmartCardCryptogramAlgorithm> SmartCardCryptogramMaterialCharacteristics.AllowedValidations is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CSmartCardCryptogramAlgorithm%3E%20SmartCardCryptogramMaterialCharacteristics.AllowedValidations");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "AllowedValidations");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int MaterialLength
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SmartCardCryptogramMaterialCharacteristics.MaterialLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmartCardCryptogramMaterialCharacteristics.MaterialLength");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "MaterialLength");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string MaterialName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string SmartCardCryptogramMaterialCharacteristics.MaterialName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmartCardCryptogramMaterialCharacteristics.MaterialName");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "MaterialName");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.SmartCards.SmartCardCryptogramMaterialType MaterialType
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardCryptogramMaterialType SmartCardCryptogramMaterialCharacteristics.MaterialType is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardCryptogramMaterialType%20SmartCardCryptogramMaterialCharacteristics.MaterialType");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "MaterialType");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Devices.SmartCards.SmartCardCryptogramMaterialProtectionMethod ProtectionMethod
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SmartCardCryptogramMaterialProtectionMethod SmartCardCryptogramMaterialCharacteristics.ProtectionMethod is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmartCardCryptogramMaterialProtectionMethod%20SmartCardCryptogramMaterialCharacteristics.ProtectionMethod");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "ProtectionMethod");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int ProtectionVersion
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int SmartCardCryptogramMaterialCharacteristics.ProtectionVersion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20SmartCardCryptogramMaterialCharacteristics.ProtectionVersion");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "ProtectionVersion");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public SmartCardCryptogramMaterialCharacteristics()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "SmartCardCryptogramMaterialCharacteristics.SmartCardCryptogramMaterialCharacteristics()");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics", "SmartCardCryptogramMaterialCharacteristics()");
 		}
 #endif
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardCryptogramMaterialCharacteristics.SmartCardCryptogramMaterialCharacteristics()

@@ -3,22 +3,22 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2NavigationStartingEventArgs
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public string AdditionalAllowedFrameAncestors
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CoreWebView2NavigationStartingEventArgs.AdditionalAllowedFrameAncestors is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2NavigationStartingEventArgs.AdditionalAllowedFrameAncestors");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "AdditionalAllowedFrameAncestors");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "string CoreWebView2NavigationStartingEventArgs.AdditionalAllowedFrameAncestors");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "AdditionalAllowedFrameAncestors");
 			}
 		}
 #endif
@@ -26,23 +26,23 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared property IsRedirected
 		// Skipping already declared property IsUserInitiated
 		// Skipping already declared property NavigationId
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2NavigationKind NavigationKind
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2NavigationKind CoreWebView2NavigationStartingEventArgs.NavigationKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2NavigationKind%20CoreWebView2NavigationStartingEventArgs.NavigationKind");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "NavigationKind");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders RequestHeaders
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2HttpRequestHeaders CoreWebView2NavigationStartingEventArgs.RequestHeaders is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2HttpRequestHeaders%20CoreWebView2NavigationStartingEventArgs.RequestHeaders");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs", "RequestHeaders");
 			}
 		}
 #endif

@@ -46,15 +46,11 @@ internal class MacOSWindowNative
 
 		MacOSWindowHost.Register(Handle, xamlRoot, Host);
 
-		// Initialize accessibility only for the main/initial window.
-		// MacOSAccessibility is a singleton that manages one accessibility tree.
-		// Calling Initialize for every secondary window resets the singleton's
-		// window handle and native element dictionary, which causes stale pointer
-		// dereferences and segfaults when rapidly creating/closing secondary windows.
-		if (MacSkiaHost.Current.InitialWindow == this)
-		{
-			MacOSAccessibility.Instance.Initialize(Handle);
-		}
+		// Per-window accessibility is initialized inside MacOSWindowHost via
+		// UNOAccessibilityContext attached to this NSWindow. Each window owns
+		// its own context and element dictionary, so rapid create/close of
+		// secondary windows no longer collides with the primary window's tree.
+		Host.InitializeAccessibility();
 
 		// call resize as late as possible (after the host creation)
 		NativeUno.uno_window_resize(Handle, initialWidth, initialHeight);
@@ -74,13 +70,20 @@ internal class MacOSWindowNative
 
 	internal void Destroyed()
 	{
+		// Dispose the per-window accessibility instance BEFORE clearing the
+		// handle so the native UNOAccessibilityContext can be torn down with
+		// a still-valid NSWindow pointer. AccessibilityRouter.NotifyDisposed
+		// then picks a new active owner if this window was the active one.
+		Host.DisposeAccessibility();
 		Handle = nint.Zero;
 	}
 
 	// FIXME: should be shared with GTK and X11 hosts with a delegate to set the icon from a filename
 	private void UpdateWindowPropertiesFromPackage()
 	{
-		if (Windows.ApplicationModel.Package.Current.Logo is { } uri)
+		// Only set the icon when unbundled (e.g. dev runs); a bundle already carries
+		// its own appearance-aware icon that setApplicationIconImage: would clobber.
+		if (!NativeUno.uno_application_is_bundled() && Windows.ApplicationModel.Package.Current.Logo is { } uri)
 		{
 			var basePath = uri.OriginalString.Replace('\\', IOPath.DirectorySeparatorChar);
 			var iconPath = IOPath.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, basePath);

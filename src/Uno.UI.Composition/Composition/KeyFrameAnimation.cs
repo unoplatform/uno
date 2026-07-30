@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using Uno;
+using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Composition
 {
@@ -65,6 +66,28 @@ namespace Microsoft.UI.Composition
 		internal void Pause()
 		{
 			_keyframeEvaluator!.Pause();
+		}
+
+		// These match WinUI's non-virtual KeyFrameAnimation API surface; per-type behaviour is provided
+		// by InsertExpressionKeyFrameCore. A virtual modifier here would diverge from WinUI and make the
+		// sync generator emit a conflicting NotImplemented stub.
+		public void InsertExpressionKeyFrame(float normalizedProgressKey, string value)
+			=> InsertExpressionKeyFrame(normalizedProgressKey, value, Compositor.GetDefaultEasingFunction());
+
+		public void InsertExpressionKeyFrame(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)
+			=> InsertExpressionKeyFrameCore(normalizedProgressKey, value, easingFunction);
+
+		// Concrete keyframe animations override this to parse and evaluate the expression. This base
+		// fallback warns rather than silently ignoring the keyframe for any type that doesn't.
+		private protected virtual void InsertExpressionKeyFrameCore(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)
+			=> WarnExpressionKeyFrameNotSupported();
+
+		private void WarnExpressionKeyFrameNotSupported()
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"Expression keyframes are not supported for '{GetType().Name}'; the keyframe will be ignored.");
+			}
 		}
 
 		internal void Resume()

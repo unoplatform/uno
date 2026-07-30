@@ -191,12 +191,8 @@ namespace Microsoft.UI.Xaml.Controls
 			DefinitionCollectionBase definitions,
 			bool treatStarAsAuto)
 		{
-			//for (auto & cdo : definitions)
-			var itemsEnumerator = definitions.GetItems().GetEnumerator();
-
-			while (itemsEnumerator.MoveNext())
+			foreach (var def in definitions.GetItems())
 			{
-				var def = itemsEnumerator.Current;
 
 				bool useLayoutRounding = GetUseLayoutRounding();
 				var userSize = double.PositiveInfinity;
@@ -1073,12 +1069,8 @@ namespace Microsoft.UI.Xaml.Controls
 				var children = (GetChildren());
 				if (children is { })
 				{
-					// This block is a manual enumeration to avoid the foreach pattern
-					// See https://github.com/dotnet/runtime/issues/56309 for details
-					var childrenEnumerator = children.GetEnumerator();
-					while (childrenEnumerator.MoveNext())
+					foreach (var currentChild in children)
 					{
-						var currentChild = childrenEnumerator.Current;
 						ASSERT(currentChild is { });
 
 						//currentChild.Measure(innerAvailableSize);
@@ -1368,12 +1360,8 @@ namespace Microsoft.UI.Xaml.Controls
 				var children = GetChildren();
 				if (children is { })
 				{
-					// This block is a manual enumeration to avoid the foreach pattern
-					// See https://github.com/dotnet/runtime/issues/56309 for details
-					var childrenEnumerator = children.GetEnumerator();
-					while (childrenEnumerator.MoveNext())
+					foreach (var currentChild in children)
 					{
-						var currentChild = childrenEnumerator.Current;
 #if __APPLE_UIKIT__ // Uno specific: On iOS an additional non-UIElement is added the the parent of a focused TextBox control, we need to skip it.
 						if (currentChild is null)
 						{

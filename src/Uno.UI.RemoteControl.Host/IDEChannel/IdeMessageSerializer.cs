@@ -1,5 +1,6 @@
 ﻿using System;
-using Newtonsoft.Json;
+using System.Text.Json;
+using Uno.UI.RemoteControl.Messaging;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 
 namespace Uno.UI.RemoteControl.Host.IdeChannel;
@@ -10,7 +11,7 @@ internal static class IdeMessageSerializer
 	{
 		if (Type.GetType(envelope.MessageType) is { } messageType)
 		{
-			if (JsonConvert.DeserializeObject(envelope.MessageBody, messageType) is IdeMessage instance)
+			if (JsonSerializer.Deserialize(envelope.MessageBody, messageType, RemoteControlJsonOptions.Default) is IdeMessage instance)
 			{
 				return instance;
 			}
@@ -26,5 +27,5 @@ internal static class IdeMessageSerializer
 	}
 
 	public static IdeMessageEnvelope Serialize(IdeMessage message)
-		=> new(message.GetType().AssemblyQualifiedName!, JsonConvert.SerializeObject(message));
+		=> new(message.GetType().AssemblyQualifiedName!, JsonSerializer.Serialize(message, message.GetType(), RemoteControlJsonOptions.Default));
 }

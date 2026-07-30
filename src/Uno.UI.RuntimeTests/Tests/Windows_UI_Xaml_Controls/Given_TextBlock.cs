@@ -12,7 +12,6 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
-using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using System.Collections.Generic;
@@ -127,6 +126,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var different = await UITestHelper.ScreenShot(differentTBContainer);
 			await ImageAssert.AreEqualAsync(actual, expected);
 			await ImageAssert.AreNotEqualAsync(actual, different);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23510")]
+		public void When_InlineUIContainer_Added_To_TextBlock_Throws()
+		{
+			var SUT = new TextBlock();
+			SUT.Inlines.Add(new Run { Text = "Before " });
+
+			// WinUI throws ArgumentException; Uno used to silently drop the container.
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Inlines.Add(new InlineUIContainer { Child = new Border() }));
+
+			// Same when inserted or assigned through the indexer.
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Inlines.Insert(0, new InlineUIContainer()));
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Inlines[0] = new InlineUIContainer());
+
+			// Nested inside a Span that already lives in the TextBlock must also throw.
+			var span = new Span();
+			SUT.Inlines.Add(span);
+			Assert.ThrowsExactly<ArgumentException>(() => span.Inlines.Add(new InlineUIContainer()));
+
+			// A Span already holding an InlineUIContainer must throw when added to the TextBlock.
+			var preBuilt = new Span();
+			preBuilt.Inlines.Add(new InlineUIContainer());
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Inlines.Add(preBuilt));
+
+			// The valid inlines remain untouched after the rejected additions.
+			Assert.AreEqual(2, SUT.Inlines.Count);
+			Assert.IsInstanceOfType(SUT.Inlines[0], typeof(Run));
+			Assert.IsInstanceOfType(SUT.Inlines[1], typeof(Span));
 		}
 
 #if __SKIA__
@@ -391,6 +420,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(height, SUT.ActualHeight);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Multiline_Wrapping_Word_Then_Space_Then_LongWord()
+		{
+			// Regression: "<short> <very long word>" with TextWrapping=Wrap must wrap inside
+			// the long word, not lay it out on a single overflowing line. Mirrors the
+			// Animated_View_With_Transformed_Ancestor sample.
+			var withoutPrefix = new TextBlock
+			{
+				Width = 100,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "loooooooooooooooooooooooooooooooooooong"
+			};
+			WindowHelper.WindowContent = withoutPrefix;
+			await WindowHelper.WaitForLoaded(withoutPrefix);
+			await WindowHelper.WaitForIdle();
+			var heightWithoutPrefix = withoutPrefix.ActualHeight;
+
+			var withPrefix = new TextBlock
+			{
+				Width = 100,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "a loooooooooooooooooooooooooooooooooooong"
+			};
+			WindowHelper.WindowContent = withPrefix;
+			await WindowHelper.WaitForLoaded(withPrefix);
+			await WindowHelper.WaitForIdle();
+			var heightWithPrefix = withPrefix.ActualHeight;
+
+			// Both layouts must split the long word; the prefixed one has one extra line for "a".
+			// Pre-fix bug: prefixed layout was 2 lines ("a " + overflowing long word) — strictly less.
+			Assert.IsTrue(
+				heightWithPrefix > heightWithoutPrefix,
+				$"Long word must wrap regardless of preceding short word. " +
+				$"with-prefix={heightWithPrefix}, without-prefix={heightWithoutPrefix}");
 		}
 
 		[TestMethod]
@@ -1171,6 +1237,74 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Hyperlink_Hovered_Then_HandCursor_Wins_Over_Selection()
+		{
+			// The TextBlock's ProtectedCursor resolves to Hand while hovering a hyperlink,
+			// I-beam while selection is enabled but not hovering a hyperlink, mirroring WinUI's
+			// innermost-element-wins cursor resolution.
+			var hyperlink = new Hyperlink();
+			hyperlink.Inlines.Add(new Run { Text = "click me" });
+			var SUT = new TextBlock { IsTextSelectionEnabled = true };
+			SUT.Inlines.Add(hyperlink);
+
+			await UITestHelper.Load(SUT);
+
+			// Selection enabled, pointer not over the TextBlock yet.
+			Assert.AreEqual(Microsoft.UI.Input.InputSystemCursorShape.IBeam, SUT.CalculatedFinalCursor);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// Over the hyperlink: Hand takes precedence over the selection I-beam.
+			Assert.AreEqual(Microsoft.UI.Input.InputSystemCursorShape.Hand, SUT.CalculatedFinalCursor);
+
+			// Move off the TextBlock: no longer hovering a hyperlink, but still selectable.
+			mouse.MoveTo(new Point(bounds.Right + 50, bounds.Bottom + 50));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(Microsoft.UI.Input.InputSystemCursorShape.IBeam, SUT.CalculatedFinalCursor);
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Hyperlink_Hovered_Without_Selection_Then_Hand_Else_Null()
+		{
+			var hyperlink = new Hyperlink();
+			hyperlink.Inlines.Add(new Run { Text = "click me" });
+			var SUT = new TextBlock();
+			SUT.Inlines.Add(hyperlink);
+
+			await UITestHelper.Load(SUT);
+
+			// Not selectable and not hovering a hyperlink: no cursor override.
+			// ProtectedCursor is null, which resolves to the inherited/default Arrow.
+			Assert.AreEqual(Microsoft.UI.Input.InputSystemCursorShape.Arrow, SUT.CalculatedFinalCursor);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(Microsoft.UI.Input.InputSystemCursorShape.Hand, SUT.CalculatedFinalCursor);
+
+			mouse.MoveTo(new Point(bounds.Right + 50, bounds.Bottom + 50));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(Microsoft.UI.Input.InputSystemCursorShape.Arrow, SUT.CalculatedFinalCursor);
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #elif !HAS_RENDER_TARGET_BITMAP
 		[Ignore("Cannot take screenshot on this platform.")]
 #endif
@@ -1246,12 +1380,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
+#if !__SKIA__
+		[Ignore("This test is only valid for skia targets.")]
 #endif
-		public async Task When_IsTextSelectionEnabled_TappedFinger_Then_ClearSelection()
+		public async Task When_IsTextSelectionEnabled_TappedFinger_Then_SelectsWord()
 		{
 			var sut = new TextBlock
 			{
@@ -1264,13 +1396,90 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
 
-			sut.SelectAll();
-			Assert.AreEqual(sut.Text, sut.SelectedText);
-
-			finger.Press(bounds.GetCenter());
+			// Unlike a mouse click (which clears the selection), a touch tap selects the tapped word
+			// and shows the selection grippers, because a TextBlock has no caret to place.
+			// (GetWordAt includes the trailing whitespace, so the selection is "hello ".)
+			finger.Press(new Point(bounds.X + bounds.Width / 4, bounds.GetCenter().Y));
 			finger.Release();
+			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("", sut.SelectedText);
+			Assert.AreEqual("hello", sut.SelectedText.TrimEnd());
+#if __SKIA__
+			Assert.IsNotNull(sut.SelectionGrippersForTesting);
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_Finger_DragGripper_ExtendsSelection()
+		{
+#if !__SKIA__
+			Assert.Inconclusive("Touch selection grippers are only implemented on Skia.");
+#else
+			var sut = new TextBlock
+			{
+				Text = "hello uno",
+				IsTextSelectionEnabled = true,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Tap the first word to select it and show the grippers.
+			finger.Press(new Point(bounds.X + bounds.Width / 4, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", sut.SelectedText.TrimEnd());
+			var grippers = sut.SelectionGrippersForTesting;
+			Assert.IsNotNull(grippers);
+
+			// Drag the end gripper far to the right to extend the selection to the end of the text.
+			var endThumb = grippers.Value.end.GetAbsoluteBounds().GetCenter();
+			finger.Press(endThumb);
+			finger.MoveBy(bounds.Width, 0, stepOffsetInMilliseconds: 20);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello uno", sut.SelectedText);
+#endif
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_Disabled_Hides_Grippers()
+		{
+#if !__SKIA__
+			Assert.Inconclusive("Touch selection grippers are only implemented on Skia.");
+#else
+			var sut = new TextBlock
+			{
+				Text = "hello uno",
+				IsTextSelectionEnabled = true,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(new Point(bounds.X + bounds.Width / 4, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(sut.SelectionGrippersForTesting);
+
+			sut.IsTextSelectionEnabled = false;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(sut.SelectionGrippersForTesting);
+#endif
 		}
 
 		[TestMethod]
@@ -1459,7 +1668,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual("Hello ", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual("Hello ", await ClipboardHelper.WaitForTextAsync("Hello "));
 		}
 
 #if !HAS_INPUT_INJECTOR
@@ -1506,7 +1715,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual("FirstLine", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual("FirstLine", await ClipboardHelper.WaitForTextAsync("FirstLine"));
 
 			// move to the center of the second line
 			mouse.MoveTo(SUT.GetAbsoluteBounds().Location + new Point(SUT.ActualWidth / 2, 25));
@@ -1521,7 +1730,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual("Second", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual("Second", await ClipboardHelper.WaitForTextAsync("Second"));
 
 			// move to the start of the second line
 			mouse.MoveTo(SUT.GetAbsoluteBounds().Location + new Point(0, 25));
@@ -1536,7 +1745,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(" ", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual(" ", await ClipboardHelper.WaitForTextAsync(" "));
 		}
 
 		[TestMethod]
@@ -1634,10 +1843,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, mod));
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(SUT.Text, await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual(SUT.Text, await ClipboardHelper.WaitForTextAsync(SUT.Text));
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.Native)] // Very flaky on all targets #9080
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #elif !HAS_RENDER_TARGET_BITMAP
@@ -1668,6 +1878,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
+
+			// The "Select All" command, the context-menu dismissal and the focus
+			// transition that drives the selection highlight all complete asynchronously.
+			// Wait for the selection to actually be applied (and the highlight to be
+			// rendered) before screen-shotting, otherwise the assert below can run before
+			// the highlight has been painted (observed flaky on Linux/Skia).
+			await UITestHelper.WaitFor(
+				() => SUT.Selection.start != SUT.Selection.end,
+				message: "Timed out waiting for the context-menu 'Select All' to apply the selection.");
+			await UITestHelper.WaitForRender();
 
 			var bitmap = await UITestHelper.ScreenShot(SUT);
 
@@ -1725,7 +1945,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("world", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual("world", await ClipboardHelper.WaitForTextAsync("world"));
 		}
 
 		[TestMethod]

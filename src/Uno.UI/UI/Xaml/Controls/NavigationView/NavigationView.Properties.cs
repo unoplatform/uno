@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationView.properties.cpp, commit 2ec9b1c
+// MUX reference NavigationView.properties.cpp, commit bac7a9c33
 
 using System.Collections.Generic;
 using Windows.Foundation;
@@ -118,7 +118,12 @@ public partial class NavigationView
 	public double ExpandedModeThresholdWidth
 	{
 		get => (double)GetValue(ExpandedModeThresholdWidthProperty);
-		set => SetValue(ExpandedModeThresholdWidthProperty, value);
+		set
+		{
+			var coercedValue = value;
+			CoerceToGreaterThanZero(ref coercedValue);
+			SetValue(ExpandedModeThresholdWidthProperty, coercedValue);
+		}
 	}
 
 	/// <summary>
@@ -545,7 +550,7 @@ public partial class NavigationView
 	public object SettingsItem
 	{
 		get => (object)GetValue(SettingsItemProperty);
-		set => SetValue(SettingsItemProperty, value);
+		private set => SetValue(SettingsItemProperty, value);
 	}
 
 	/// <summary>
@@ -599,7 +604,8 @@ public partial class NavigationView
 		var value = (double)args.NewValue;
 		var coercedValue = value;
 		owner.CoerceToGreaterThanZero(ref coercedValue);
-		if (Math.Abs(coercedValue - value) > 0.1)
+		// MUX compares with memcmp for a bit-exact check that also sidesteps NaN; DoubleToInt64Bits mirrors it.
+		if (global::System.BitConverter.DoubleToInt64Bits(coercedValue) != global::System.BitConverter.DoubleToInt64Bits(value))
 		{
 			sender.SetValue(args.Property, coercedValue);
 			return;
@@ -617,7 +623,8 @@ public partial class NavigationView
 		var value = (double)args.NewValue;
 		var coercedValue = value;
 		owner.CoerceToGreaterThanZero(ref coercedValue);
-		if (Math.Abs(coercedValue - value) > 0.1)
+		// MUX compares with memcmp for a bit-exact check that also sidesteps NaN; DoubleToInt64Bits mirrors it.
+		if (global::System.BitConverter.DoubleToInt64Bits(coercedValue) != global::System.BitConverter.DoubleToInt64Bits(value))
 		{
 			sender.SetValue(args.Property, coercedValue);
 			return;
@@ -635,7 +642,8 @@ public partial class NavigationView
 		var value = (double)args.NewValue;
 		var coercedValue = value;
 		owner.CoerceToGreaterThanZero(ref coercedValue);
-		if (Math.Abs(coercedValue - value) > 0.1)
+		// MUX compares with memcmp for a bit-exact check that also sidesteps NaN; DoubleToInt64Bits mirrors it.
+		if (global::System.BitConverter.DoubleToInt64Bits(coercedValue) != global::System.BitConverter.DoubleToInt64Bits(value))
 		{
 			sender.SetValue(args.Property, coercedValue);
 			return;
@@ -653,7 +661,8 @@ public partial class NavigationView
 		var value = (double)args.NewValue;
 		var coercedValue = value;
 		owner.CoerceToGreaterThanZero(ref coercedValue);
-		if (Math.Abs(coercedValue - value) > 0.1)
+		// MUX compares with memcmp for a bit-exact check that also sidesteps NaN; DoubleToInt64Bits mirrors it.
+		if (global::System.BitConverter.DoubleToInt64Bits(coercedValue) != global::System.BitConverter.DoubleToInt64Bits(value))
 		{
 			sender.SetValue(args.Property, coercedValue);
 			return;

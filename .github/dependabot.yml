@@ -1,5 +1,16 @@
 version: 2
 updates:
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: weekly
+    time: "01:00"
+  open-pull-requests-limit: 10
+  labels:
+  - kind/dependency
+  commit-message:
+    prefix: chore
+    include: scope
 - package-ecosystem: nuget
   directory: "/"
   schedule:

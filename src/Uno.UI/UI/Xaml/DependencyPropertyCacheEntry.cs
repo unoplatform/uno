@@ -17,6 +17,11 @@ namespace Microsoft.UI.Xaml
 		private string Name;
 		private int CachedHashCode;
 
+		/// <summary>
+		/// Gets the cached Type for ALC cleanup purposes.
+		/// </summary>
+		internal Type CachedType => Type;
+
 		public PropertyCacheEntry()
 			=> Update(typeof(object), "");
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
@@ -11,6 +12,7 @@ using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
 using Uno.UI.Runtime.Skia;
+using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
@@ -26,7 +28,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// T067: Verifies that a list exposes item count via automation.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_List_Focused_Then_ItemCount_Announced()
 		{
@@ -51,7 +52,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// T068: Verifies that list item position is reported via automation.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Arrow_Pressed_Then_Position_Announced()
 		{
@@ -78,7 +78,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// T069: Verifies that pressing Space selects a list item.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_Space_Pressed_Then_Item_Selected()
 		{
@@ -104,7 +103,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that ListView automation peer has correct control type.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - not yet validated")]
 		[RunsOnUIThread]
 		public async Task When_ListView_Created_Then_Has_List_ControlType()
 		{
@@ -128,7 +126,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// Verifies that AriaMapper correctly identifies ListView semantic element type.
 		/// </summary>
 		[TestMethod]
-		[Ignore("Temporarily disabled - AriaMapper not fully implemented yet")]
 		[RunsOnUIThread]
 		public async Task When_ListView_Mapped_Then_SemanticElementType_Is_ListBox()
 		{
@@ -147,5 +144,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual(SemanticElementType.ListBox, elementType);
 		}
 #endif
+#if __SKIA__
+
+		/// <summary>
+		/// T067/FR-016 (WASM DOM): a ListView emits a composite container with role="listbox". Under the roving
+		/// tab model the container is not itself a tab stop (tabindex must not be "0").
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_ListView_Then_Dom_Role_Is_Listbox_And_Not_A_Tab_Stop()
+		{
+			var listView = new ListView
+			{
+				ItemsSource = new List<string> { "Item 1", "Item 2", "Item 3" }
+			};
+
+			await UITestHelper.Load(listView);
+			listView.GetOrCreateAutomationPeer();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(listView), timeoutMS: 5000, message: "Timed out waiting for the listbox container semantic element to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("listbox", GetSemanticAttribute(listView, "role"), "A ListView must emit role=listbox on its container.");
+			Assert.AreNotEqual("0", GetSemanticAttribute(listView, "tabindex"), "A composite listbox container must not be a tab stop (tabindex must not be \"0\"); the roving stop lives on the active item.");
+		}
+
+
+
+
+
+#endif
+
 	}
 }

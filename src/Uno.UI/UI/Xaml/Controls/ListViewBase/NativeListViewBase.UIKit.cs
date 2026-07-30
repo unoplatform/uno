@@ -328,6 +328,36 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		public override void MoveItem(NSIndexPath indexPath, NSIndexPath newIndexPath)
+		{
+			if (TryApplyCollectionChange())
+			{
+				using (EnableOrDisableAnimations())
+				{
+					NativeLayout?.NotifyCollectionChange(new CollectionChangedOperation(
+						indexPath.ToIndexPath(),
+						newIndexPath.ToIndexPath(),
+						1,
+						NotifyCollectionChangedAction.Move,
+						CollectionChangedOperation.Element.Item
+					));
+
+					try
+					{
+						base.MoveItem(indexPath, newIndexPath);
+					}
+					catch (Exception e)
+					{
+						this.Log().Error("Error when updating collection", e);
+					}
+				}
+			}
+			else
+			{
+				NativeLayout?.NeedsRelayout();
+			}
+		}
+
 		/// <summary>
 		/// Check if in-place collection modification can be performed. If not, retrigger a refresh instead.
 		/// </summary>

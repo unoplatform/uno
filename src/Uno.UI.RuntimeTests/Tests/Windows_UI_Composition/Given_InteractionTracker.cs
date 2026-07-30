@@ -121,7 +121,7 @@ public partial class Given_InteractionTracker
 #if !HAS_COMPOSITION_API
 	[Ignore("Composition APIs are not supported on this platform.")]
 #endif
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaIOS)] // Flaky on Skia iOS #9080
 	public async Task When_TryUpdatePositionWithAdditionalVelocity_TwoCalls()
 	{
 		var border = new Border()

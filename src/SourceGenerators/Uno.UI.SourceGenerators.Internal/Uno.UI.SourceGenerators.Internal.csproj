@@ -11,7 +11,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0-2.final" ExcludeAssets="runtime" />
 	</ItemGroup>
 
-	<Import Project="..\SourceGeneratorHelpers\SourceGeneratorHelpers.projitems" Label="Shared" />
+	<Import Project="..\SourceGeneratorHelpers\SourceGeneratorHelpers.props" />
 
 	<ItemGroup>
 		<Compile Include="..\..\Uno.Foundation.Runtime.WebAssembly\Interop\TSInteropMessageAttribute.wasm.cs" Link="TSBindings\TSInteropMessageAttribute.cs" />

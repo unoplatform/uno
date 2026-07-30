@@ -13,8 +13,7 @@
 		<Description>Do not use this package directly. It is intended for Uno Platform code contributors during development.</Description>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 
-		<!-- Generate the nupkg only for WinUI, we do not support Uno.SDK for UWP -->
-		<GeneratePackageOnBuild Condition=" '$(UNO_UWP_BUILD)' != 'true' ">true</GeneratePackageOnBuild>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 

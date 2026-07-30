@@ -142,6 +142,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string[] _includeXamlNamespaces;
 
 		private readonly bool _disableBindableTypeProvidersGeneration;
+		private readonly bool _enableAlcAppSupport;
 
 		private readonly bool _enableImplicitXamlNamespaces;
 		private readonly string[] _globalClrNamespaces;
@@ -226,6 +227,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isLazyVisualStateManagerEnabled,
 			bool enableFuzzyMatching,
 			bool disableBindableTypeProvidersGeneration,
+			bool enableAlcAppSupport,
 			GeneratorExecutionContext generatorContext,
 			bool xamlResourcesTrimming,
 			IDictionary<INamedTypeSymbol, XamlType> xamlTypeToXamlTypeBaseMap,
@@ -256,6 +258,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_xamlTypeToXamlTypeBaseMap = xamlTypeToXamlTypeBaseMap;
 			_includeXamlNamespaces = includeXamlNamespaces;
 			_disableBindableTypeProvidersGeneration = disableBindableTypeProvidersGeneration;
+			_enableAlcAppSupport = enableAlcAppSupport;
 			_enableImplicitXamlNamespaces = enableImplicitXamlNamespaces;
 			_globalClrNamespaces = globalClrNamespaces ?? Array.Empty<string>();
 			_allXmlnsDefinitions = allXmlnsDefinitions;
@@ -508,48 +511,115 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			writer.AppendLineIndented($"var __that = this;");
 
-			TryAnnotateWithGeneratorSource(writer);
 			InitializeRemoteControlClient(writer);
-			GenerateApiExtensionRegistrations(writer);
 
-			GenerateResourceLoader(writer);
-			writer.AppendLine();
-			ApplyLiteralProperties();
-			writer.AppendLine();
-
-			writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
-			writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.RegisterResourceDictionariesBySourceLocal();");
-
-			if (!_isDesignTimeBuild && !_disableBindableTypeProvidersGeneration)
+			if (_enableAlcAppSupport)
 			{
-				writer.AppendLineIndented($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
-			}
+				writer.AppendLineIndented($"var __currentAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(typeof(global::{_defaultNamespace}.GlobalStaticResources).Assembly);");
+				writer.AppendLineIndented($"var __isDefaultAlc = __currentAlc == global::System.Runtime.Loader.AssemblyLoadContext.Default;");
 
-			if (_isWasm
-				// Only applicable when building for Wasm DOM support
-				&& _metadataHelper.FindTypeByFullName("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute") is not null)
-			{
-				writer.AppendLineIndented($"// Workaround for https://github.com/dotnet/runtime/issues/44269");
-				writer.AppendLineIndented($"typeof(global::Uno.UI.Runtime.WebAssembly.HtmlElementAttribute).GetHashCode();");
-			}
-
-			RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
-			Safely(() => BuildProperties(writer, topLevelControl, isInline: false));
-
-			ApplyFontsOverride(writer);
-
-			if (_isUiAutomationMappingEnabled)
-			{
-				writer.AppendLineIndented("global::Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled = true;");
-
-				if (_isWasm)
+				using (writer.BlockInvariant($"if (__isDefaultAlc)"))
 				{
-					// When automation mapping is enabled, remove the element ID from the ToString so test screenshots stay the same.
-					writer.AppendLineIndented("global::Uno.UI.FeatureConfiguration.UIElement.RenderToStringWithId = false;");
+					GenerateDefaultAlcInitialization(writer);
+				}
+				using (writer.BlockInvariant($"else"))
+				{
+					ApplyAppGlobalResources();
+
+					if (!_isDesignTimeBuild && !_disableBindableTypeProvidersGeneration)
+					{
+						// In secondary AssemblyLoadContext (ALC), BindableMetadata.Provider is set to null to prevent
+						// sharing bindable type metadata across ALC boundaries. This avoids issues with type resolution
+						// and ensures that data binding metadata is only available in the default ALC. As a result,
+						// reflection-based data binding may not function in secondary ALCs (e.g., plugin or hot-reload scenarios).
+						writer.AppendLineIndented($"global::Uno.UI.DataBinding.BindableMetadata.Provider = null;");
+					}
+				}
+			}
+			else
+			{
+				// No ALC support - generate default initialization directly
+				GenerateDefaultAlcInitialization(writer);
+			}
+
+			if (_enableAlcAppSupport)
+			{
+				// Wrap resource building with the ambient ALC context so that any
+				// ResourceDictionary.Source setter or fallback RetrieveDictionaryForSource call
+				// during initialization can find resources in the correct ALC-scoped registry.
+				using (writer.BlockInvariant($"using (global::Uno.UI.ResourceResolver.SetResolutionContext(__currentAlc))"))
+				{
+					RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
+					Safely(() => BuildProperties(writer, topLevelControl, isInline: false));
+				}
+			}
+			else
+			{
+				RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
+				Safely(() => BuildProperties(writer, topLevelControl, isInline: false));
+			}
+
+			if (_enableAlcAppSupport)
+			{
+				using (writer.BlockInvariant($"if (__isDefaultAlc)"))
+				{
+					GenerateDefaultAlcPostInitialization(writer);
+				}
+			}
+			else
+			{
+				GenerateDefaultAlcPostInitialization(writer);
+			}
+
+			void GenerateDefaultAlcInitialization(IIndentedStringBuilder w)
+			{
+				TryAnnotateWithGeneratorSource(w);
+				GenerateApiExtensionRegistrations(w);
+
+				GenerateResourceLoader(w);
+				w.AppendLine();
+				ApplyLiteralProperties();
+				w.AppendLine();
+
+				ApplyAppGlobalResources();
+
+				if (!_isDesignTimeBuild && !_disableBindableTypeProvidersGeneration)
+				{
+					w.AppendLineIndented($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
+				}
+
+				if (_isWasm
+					// Only applicable when building for Wasm DOM support
+					&& _metadataHelper.FindTypeByFullName("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute") is not null)
+				{
+					w.AppendLineIndented($"// Workaround for https://github.com/dotnet/runtime/issues/44269");
+					w.AppendLineIndented($"typeof(global::Uno.UI.Runtime.WebAssembly.HtmlElementAttribute).GetHashCode();");
 				}
 			}
 
-			AttachUnhandledExceptionHandler();
+			void GenerateDefaultAlcPostInitialization(IIndentedStringBuilder w)
+			{
+				ApplyFontsOverride(w);
+
+				if (_isUiAutomationMappingEnabled)
+				{
+					w.AppendLineIndented("global::Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled = true;");
+
+					if (_isWasm)
+					{
+						// When automation mapping is enabled, remove the element ID from the ToString so test screenshots stay the same.
+						w.AppendLineIndented("global::Uno.UI.FeatureConfiguration.UIElement.RenderToStringWithId = false;");
+					}
+				}
+
+				AttachUnhandledExceptionHandler();
+			}
+
+			void ApplyAppGlobalResources()
+			{
+				writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
+				writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.RegisterResourceDictionariesBySourceLocal();");
+			}
 
 			void ApplyLiteralProperties()
 			{
@@ -754,6 +824,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildGenericControlInitializerBody(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
 		{
 			TryAnnotateWithGeneratorSource(writer);
+
+			if (FindMember(topLevelControl, "Load") is { } xLoadMember)
+			{
+				AddError("x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary, and can only be used on elements of type UIElement or FlyoutBase", xLoadMember);
+			}
+
 			// OnInitializeCompleted() seems to be used by some older code as a substitute for the constructor for UserControls, which are optimized out of the visual tree.
 			RegisterPartial("void OnInitializeCompleted()");
 
@@ -1468,12 +1544,43 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									using (writer.BlockInvariant("if (_{0}_ResourceDictionary == null)", _fileUniqueId))
 									{
-										writer.AppendLineInvariantIndented("_{0}_ResourceDictionary = ", _fileUniqueId);
-										InitializeAndBuildResourceDictionary(writer, topLevelControl, setIsParsing: true, initializers);
-										writer.AppendLineIndented(";");
+										var implicitContentMember = FindImplicitContentMember(topLevelControl);
+										var mergedDictionariesMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries");
+										var themeDictionariesMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
+										var resourceCount = implicitContentMember?.Objects?.Count ?? 0;
+										var dictVarId = $"_{_fileUniqueId}_ResourceDictionary";
 										var url = _globalStaticResourcesMap.GetSourceLink(_fileDefinition);
-										writer.AppendLineInvariantIndented("_{0}_ResourceDictionary.Source = new global::System.Uri(\"{1}{2}\");", _fileUniqueId, XamlFilePathHelper.LocalResourcePrefix, url);
-										writer.AppendLineInvariantIndented("_{0}_ResourceDictionary.CreationComplete();", _fileUniqueId);
+
+										// The CreateWithCapacity fast path always instantiates the base ResourceDictionary type,
+										// so it must not be used when the top-level element is a typed ResourceDictionary subclass —
+										// those still need to go through InitializeAndBuildResourceDictionary -> BuildTypedResourceDictionary
+										// to instantiate the correct derived type and apply its literal properties.
+										if (resourceCount > 0 && !IsResourceDictionarySubclass(topLevelControl.Type))
+										{
+											// Use the factory method to pre-size the backing dictionary, avoiding resize operations
+											// as the item count is statically known at code generation time.
+											writer.AppendLineInvariantIndented("{0} = global::Microsoft.UI.Xaml.ResourceDictionary.CreateWithCapacity({1});", dictVarId, resourceCount);
+											if (HasIsParsing(FindType(topLevelControl.Type)))
+											{
+												writer.AppendLineInvariantIndented("{0}.IsParsing = true;", dictVarId);
+											}
+											if (_isUnoAssembly)
+											{
+												writer.AppendLineInvariantIndented("{0}.IsSystemDictionary = true;", dictVarId);
+											}
+											BuildMergedDictionaries(writer, mergedDictionariesMember, isInInitializer: false, dictIdentifier: dictVarId);
+											BuildThemeDictionaries(writer, themeDictionariesMember, isInInitializer: false, dictIdentifier: dictVarId);
+											BuildResourceDictionary(writer, implicitContentMember, isInInitializer: false, dictIdentifier: dictVarId, initializers: initializers);
+										}
+										else
+										{
+											writer.AppendLineInvariantIndented("{0} = ", dictVarId);
+											InitializeAndBuildResourceDictionary(writer, topLevelControl, setIsParsing: true, initializers);
+											writer.AppendLineIndented(";");
+										}
+
+										writer.AppendLineInvariantIndented("{0}.Source = new global::System.Uri(\"{1}{2}\");", dictVarId, XamlFilePathHelper.LocalResourcePrefix, url);
+										writer.AppendLineInvariantIndented("{0}.CreationComplete();", dictVarId);
 									}
 
 									writer.AppendLineInvariantIndented("return _{0}_ResourceDictionary;", _fileUniqueId);
@@ -1758,19 +1865,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var type = GetType(topLevelControl.Type);
 
-			if (type.GetFullyQualifiedTypeExcludingGlobal().Equals("Microsoft.UI.Xaml.Controls.XamlControlsResources", StringComparison.Ordinal))
+			using (writer.BlockInvariant("new /* typed resource dictionary */ {0}()", type.GetFullyQualifiedTypeIncludingGlobal()))
 			{
-				using (writer.BlockInvariant($"new global::Microsoft.UI.Xaml.Controls.XamlControlsResourcesV2()"))
-				{
-					BuildLiteralProperties(writer, topLevelControl);
-				}
-			}
-			else
-			{
-				using (writer.BlockInvariant("new /* typed resource dictionary */ {0}()", type.GetFullyQualifiedTypeIncludingGlobal()))
-				{
-					BuildLiteralProperties(writer, topLevelControl);
-				}
+				BuildLiteralProperties(writer, topLevelControl);
 			}
 		}
 
@@ -1921,8 +2018,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private bool HasMarkupExtension(XamlMemberDefinition? valueNode)
 		{
-			// Return false if the Owner is a custom markup extension
-			if (valueNode == null || IsCustomMarkupExtensionType(valueNode.Owner?.Type))
+			// Return false if the Owner is a custom markup extension. The owner is an element, so the
+			// "Extension" suffix must not apply here — otherwise a control with a companion
+			// "<Name>Extension" markup extension in the same namespace is misdetected as one and its
+			// bindings are dropped (https://github.com/unoplatform/uno/issues/21992).
+			if (valueNode == null || IsCustomMarkupExtensionType(valueNode.Owner?.Type, allowExtensionSuffix: false))
 			{
 				return false;
 			}
@@ -2026,8 +2126,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return false;
 		}
 
+		// Pass allowExtensionSuffix: false when resolving an element type (e.g. the owner of a member);
+		// the "Extension" suffix fallback is only valid for markup-extension usages (`{local:Foo}`).
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private INamedTypeSymbol? GetMarkupExtensionType(XamlType? xamlType)
+		private INamedTypeSymbol? GetMarkupExtensionType(XamlType? xamlType, bool allowExtensionSuffix = true)
 		{
 			if (xamlType == null)
 			{
@@ -2043,8 +2145,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// In this case, we go through this code path as it's much more efficient than FindType.
 				var baseTypeString = $"{ns}.{xamlType.Name}";
 
-				// Try finding the type with "Extension" suffix first, then without
-				return FindMarkupExtensionType(baseTypeString + "Extension") ?? FindMarkupExtensionType(baseTypeString);
+				if (allowExtensionSuffix)
+				{
+					// Try finding the type with "Extension" suffix first, then without
+					return FindMarkupExtensionType(baseTypeString + "Extension") ?? FindMarkupExtensionType(baseTypeString);
+				}
+
+				return FindMarkupExtensionType(baseTypeString);
 			}
 
 			// When implicit XAML namespaces are enabled, mirror the element-type resolution
@@ -2059,7 +2166,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (_globalClrNamespaces.Length > 0
 					&& (trimmedNamespace == XamlConstants.PresentationXamlXmlNamespace || string.IsNullOrEmpty(trimmedNamespace)))
 				{
-					if (FindMarkupExtensionTypeInNamespacesWithAmbiguityCheck(xamlType.Name, _globalClrNamespaces) is INamedTypeSymbol globalResult)
+					if (FindMarkupExtensionTypeInNamespacesWithAmbiguityCheck(xamlType.Name, _globalClrNamespaces, allowExtensionSuffix) is INamedTypeSymbol globalResult)
 					{
 						return globalResult;
 					}
@@ -2070,7 +2177,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (_allXmlnsDefinitions != null
 					&& !_knownNamespaces.ContainsKey(trimmedNamespace)
 					&& _allXmlnsDefinitions.TryGetValue(trimmedNamespace, out var xmlnsDefNamespaces)
-					&& FindMarkupExtensionTypeInNamespaces(xamlType.Name, xmlnsDefNamespaces) is INamedTypeSymbol xmlnsDefResult)
+					&& FindMarkupExtensionTypeInNamespaces(xamlType.Name, xmlnsDefNamespaces, allowExtensionSuffix) is INamedTypeSymbol xmlnsDefResult)
 				{
 					return xmlnsDefResult;
 				}
@@ -2086,11 +2193,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return _metadataHelper.FindTypeByFullName(fullTypeName) is INamedTypeSymbol type && type.Is(Generation.MarkupExtensionSymbol.Value) ? type : null;
 		}
 
-		private INamedTypeSymbol? FindMarkupExtensionTypeInNamespaces(string name, string[] namespaces)
+		private INamedTypeSymbol? FindMarkupExtensionTypeInNamespaces(string name, string[] namespaces, bool allowExtensionSuffix = true)
 		{
 			foreach (var @namespace in namespaces)
 			{
-				if (FindMarkupExtensionType($"{@namespace}.{name}Extension") is INamedTypeSymbol withSuffix)
+				if (allowExtensionSuffix && FindMarkupExtensionType($"{@namespace}.{name}Extension") is INamedTypeSymbol withSuffix)
 				{
 					return withSuffix;
 				}
@@ -2104,7 +2211,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return null;
 		}
 
-		private INamedTypeSymbol? FindMarkupExtensionTypeInNamespacesWithAmbiguityCheck(string name, string[] namespaces)
+		private INamedTypeSymbol? FindMarkupExtensionTypeInNamespacesWithAmbiguityCheck(string name, string[] namespaces, bool allowExtensionSuffix = true)
 		{
 			INamedTypeSymbol? firstMatch = null;
 			string? firstNamespace = null;
@@ -2112,7 +2219,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var @namespace in namespaces)
 			{
-				var match = FindMarkupExtensionType($"{@namespace}.{name}Extension")
+				var match = (allowExtensionSuffix ? FindMarkupExtensionType($"{@namespace}.{name}Extension") : null)
 					?? FindMarkupExtensionType($"{@namespace}.{name}");
 
 				if (match is not null)
@@ -2148,9 +2255,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return firstMatch;
 		}
 
-		private bool IsCustomMarkupExtensionType(XamlType? xamlType) =>
+		private bool IsCustomMarkupExtensionType(XamlType? xamlType, bool allowExtensionSuffix = true) =>
 			// Determine if the type is a custom markup extension
-			GetMarkupExtensionType(xamlType) != null;
+			GetMarkupExtensionType(xamlType, allowExtensionSuffix) != null;
 
 		private bool IsXamlTypeConverter(INamedTypeSymbol? symbol)
 		{
@@ -2364,7 +2471,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 						}
 					}
-					else if (IsPage(topLevelControlSymbol))
+					else if (IsNativePage(topLevelControlSymbol))
 					{
 						if (implicitContentChild.Objects.Count > 0)
 						{
@@ -2590,7 +2697,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				);
 		}
 
-		private bool IsPage(INamedTypeSymbol? symbol) => IsType(symbol, Generation.NativePageSymbol.Value);
+		private bool IsNativePage(INamedTypeSymbol? symbol) => IsType(symbol, Generation.NativePageSymbol.Value);
 
 		private bool IsWindow(INamedTypeSymbol? symbol) => IsType(symbol, Generation.WindowSymbol.Value);
 
@@ -4815,6 +4922,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private (bool isInside, XamlObjectDefinition? xamlObject) IsMemberInsideResourceDictionary(XamlObjectDefinition xamlObject, int? maxDepth = 1)
 			=> IsMemberInside(xamlObject, "ResourceDictionary", maxDepth: maxDepth);
 
+		/// <summary>
+		/// Returns true when <paramref name="definition"/> is a direct child of a ResourceDictionary,
+		/// either an explicit &lt;ResourceDictionary&gt; parent or an implicit one exposed via a typed
+		/// property (e.g. &lt;Page.Resources&gt;).
+		/// </summary>
+		private bool IsDirectChildOfResourceDictionary(XamlObjectDefinition definition)
+		{
+			if (definition.Owner?.Type?.Name is "ResourceDictionary")
+			{
+				return true;
+			}
+
+			// Implicit ResourceDictionary: the definition lives inside a member whose property type
+			// is ResourceDictionary (e.g. FrameworkElement.Resources, Application.Resources).
+			// We check the XAML member type name first; if unresolved in the schema context, fall
+			// back to checking the well-known "Resources" property name which is always ResourceDictionary.
+			return definition.Owner?.Members.Any(m =>
+				m.Objects.Contains(definition) &&
+				(m.Member.Type?.Name is "ResourceDictionary" || m.Member.Name == "Resources")
+			) is true;
+		}
+
 		private static (bool isInside, XamlObjectDefinition? xamlObject) IsMemberInside(XamlObjectDefinition? xamlObject, string typeName, int? maxDepth = null)
 		{
 			if (xamlObject == null)
@@ -6320,7 +6449,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					else if (HasInitializer(xamlObjectDefinition))
 					{
 						BuildInitializer(writer, xamlObjectDefinition, owner);
-						BuildLiteralProperties(writer, xamlObjectDefinition);
+						Safely(() => BuildLiteralProperties(writer, xamlObjectDefinition));
 					}
 					// TODO: Remove this else if in Uno 6 as a breaking change.
 					else if (fullTypeName == XamlConstants.Types.Setter && CurrentStyleTargetType is { } currentStyleTargetType && IsLegacySetter(xamlObjectDefinition, out var propertyName))
@@ -6338,7 +6467,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					else if (fullTypeName == XamlConstants.Types.ResourceDictionary)
 					{
 						InitializeAndBuildResourceDictionary(writer, xamlObjectDefinition, setIsParsing: true);
-						BuildExtendedProperties(writer, xamlObjectDefinition);
+						Safely(() => BuildExtendedProperties(writer, xamlObjectDefinition));
 					}
 					else
 					{
@@ -6375,9 +6504,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									TrySetParsing(writer, knownType, isInitializer: true);
 									RegisterAndBuildResources(writer, xamlObjectDefinition, isInInitializer: true);
-									BuildLiteralProperties(writer, xamlObjectDefinition);
+									Safely(() => BuildLiteralProperties(writer, xamlObjectDefinition));
 									Safely(() => BuildProperties(writer, xamlObjectDefinition));
-									BuildInlineLocalizedProperties(writer, xamlObjectDefinition, knownType);
+									Safely(() => BuildInlineLocalizedProperties(writer, xamlObjectDefinition, knownType));
 								}
 
 								if (fullTypeName == XamlConstants.Types.Setter && FindMember(xamlObjectDefinition, "Value") is { } valueNode &&
@@ -6408,7 +6537,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									}
 								}
 
-								BuildExtendedProperties(writer, xamlObjectDefinition);
+								Safely(() => BuildExtendedProperties(writer, xamlObjectDefinition));
 							}
 
 							if (isStyle)
@@ -6648,6 +6777,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var nameMember = FindMember(definition, "Name");
 				var nameField = nameMember is { Value: string name } ? SanitizeResourceName(name) : null;
+
+				if (loadMember != null && nameMember == null)
+				{
+					// XamlCompiler error WMC0907: Element must have x:Name attribute specified since it uses x:Load.
+					AddError("Element must have x:Name attribute specified since it uses x:Load.", loadMember);
+					return null;
+				}
+
+
+				if (loadMember != null && (
+					definition.Owner?.Type?.Name is "DataTemplate" ||
+					IsDirectChildOfResourceDictionary(definition)
+				))
+				{
+					// XamlCompiler error WMC0913: x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary,
+					// and can only be used on elements of type UIElement or FlyoutBase
+					AddError("x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary, and can only be used on elements of type UIElement or FlyoutBase", loadMember);
+					return null;
+				}
 
 				var elementStubBaseType = Generation.ElementStubSymbol.Value.BaseType;
 				if (!(targetType?.Is(elementStubBaseType) ?? false))

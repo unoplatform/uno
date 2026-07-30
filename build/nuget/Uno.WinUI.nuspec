@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
 	<metadata minClientVersion="5.0">
-		<id>Uno.UI</id>
+		<id>Uno.WinUI</id>
 		<version>2.7.1000</version>
-		<title>Uno.UI</title>
+		<title>Uno.WinUI</title>
 		<authors>Uno Platform</authors>
 		<owners>unoplatform</owners>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -240,12 +240,6 @@
 				<reference file="Uno.UI.Toolkit.dll" />
 			</group>
 
-			<!--
-			This group must not be present for nuget to fallback on net7.0 target when running on Skia+Wpf.
-			The references list is adjusted only when WinAppSDK is detected.
-			<group targetFramework="net7.0-windows10.0.19041.0">
-			</group>
-			-->
 		</references>
 	</metadata>
 	<files>

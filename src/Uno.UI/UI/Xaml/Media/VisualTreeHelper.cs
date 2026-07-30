@@ -439,7 +439,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static (UIElement? element, Branch? stale) HitTest(
 			Point position,
-			XamlRoot? xamlRoot,
+			UIElement? root,
 			GetHitTestability? getTestability,
 			StalePredicate? isStale,
 			string tracingEntryPoint,
@@ -451,9 +451,9 @@ namespace Microsoft.UI.Xaml.Media
 			TRACE($"HIT_TEST [{tracingEntryPoint!.ToUpperInvariant()}@{tracingEntryLine}{(tracingReason is null ? "" : "--" + tracingReason)}] @{position.ToDebugString()}");
 #endif
 
-			if (xamlRoot?.VisualTree.RootElement is UIElement root)
+			if (root is not null)
 			{
-				return SearchDownForTopMostElementAt(position, root, getTestability ?? DefaultGetTestability, isStale);
+				return SearchDownForTopMostElementAt(root, position, root, getTestability ?? DefaultGetTestability, isStale);
 			}
 
 			return default;
@@ -461,7 +461,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static (UIElement? element, Branch? stale) HitTest(
 			Point position,
-			XamlRoot? xamlRoot,
+			UIElement? root,
 			GetHitTestability? getTestability = null,
 			StalePredicate? isStale = null
 #if TRACE_HIT_TESTING
@@ -473,19 +473,29 @@ namespace Microsoft.UI.Xaml.Media
 			)
 		{
 #endif
-			if (xamlRoot?.VisualTree.RootElement is UIElement root)
+			if (root is not null)
 			{
-				return SearchDownForTopMostElementAt(position, root, getTestability ?? DefaultGetTestability, isStale);
+				return SearchDownForTopMostElementAt(root, position, root, getTestability ?? DefaultGetTestability, isStale);
 			}
 
 			return default;
 		}
 
+		/// <param name="root">
+		/// Root element for coordinate transforms. All <see cref="UIElement.GetTransform"/>
+		/// calls use this as the target so that <paramref name="position"/> is correctly
+		/// interpreted in the root's coordinate space. When equal to the visual tree root,
+		/// hit-testing works in window-absolute coordinates (standard path). When set to a
+		/// subtree element, hit-testing is scoped to that subtree with coordinates relative
+		/// to it (used by the scoped <see cref="Windows.UI.Input.Preview.Injection.InputInjector"/>
+		/// to bypass design-time overlays — spec 045).
+		/// </param>
 		/// <param name="position">
-		/// On skia: The absolute position relative to the window origin.
+		/// On skia: The position relative to <paramref name="root"/>.
 		/// Everywhere else: The position relative to the parent (i.e. the position in parent coordinates).
 		/// </param>
 		internal static (UIElement? element, Branch? stale) SearchDownForTopMostElementAt(
+			UIElement root,
 			Point position,
 			UIElement element,
 			GetHitTestability getVisibility,
@@ -523,7 +533,7 @@ namespace Microsoft.UI.Xaml.Media
 				TRACE($"- renderTransform: {tr.ToMatrix(element.RenderTransformOrigin, element.ActualSize.ToSize())}");
 
 #if __SKIA__
-			var elementToRoot = UIElement.GetTransform(element, null);
+			var elementToRoot = UIElement.GetTransform(element, root);
 
 			// The maximum region where the current element and its children might draw themselves
 			// This is expressed in the window (absolute) coordinate space.
@@ -625,7 +635,7 @@ namespace Microsoft.UI.Xaml.Media
 
 			while (child.MoveNext())
 			{
-				var childResult = SearchDownForTopMostElementAt(testPosition, child.Current!, getVisibility, isChildStale);
+				var childResult = SearchDownForTopMostElementAt(root, testPosition, child.Current!, getVisibility, isChildStale);
 
 				// If we found a stale element in child sub-tree, keep it and stop looking for stale elements
 				if (childResult.stale is not null)

@@ -1,0 +1,23 @@
+﻿<ResourceDictionary x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.CheckBoxReproOverrides"
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<!--
+		An application-level override of the stock Fluent CheckBox*Checked brushes via StaticResource
+		INDIRECTION to a palette brush, inside ThemeDictionaries "Light" + "Default". Light => Blue,
+		Default => Red, so a test can observe which theme dictionary actually resolved.
+	-->
+	<ResourceDictionary.ThemeDictionaries>
+		<ResourceDictionary x:Key="Light">
+			<SolidColorBrush x:Key="ReproPaletteBrush" Color="Blue" />
+			<StaticResource x:Key="CheckBoxCheckBackgroundFillChecked" ResourceKey="ReproPaletteBrush" />
+			<StaticResource x:Key="CheckBoxCheckBackgroundStrokeChecked" ResourceKey="ReproPaletteBrush" />
+			<StaticResource x:Key="CheckBoxCheckGlyphForegroundChecked" ResourceKey="ReproPaletteBrush" />
+		</ResourceDictionary>
+		<ResourceDictionary x:Key="Default">
+			<SolidColorBrush x:Key="ReproPaletteBrush" Color="Red" />
+			<StaticResource x:Key="CheckBoxCheckBackgroundFillChecked" ResourceKey="ReproPaletteBrush" />
+			<StaticResource x:Key="CheckBoxCheckBackgroundStrokeChecked" ResourceKey="ReproPaletteBrush" />
+			<StaticResource x:Key="CheckBoxCheckGlyphForegroundChecked" ResourceKey="ReproPaletteBrush" />
+		</ResourceDictionary>
+	</ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

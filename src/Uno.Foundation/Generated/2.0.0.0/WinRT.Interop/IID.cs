@@ -3,88 +3,88 @@
 #pragma warning disable 114 // new keyword hiding
 namespace WinRT.Interop
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public static partial class IID
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Guid IID_IUnknown
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ref readonly Guid IID.IID_IUnknown is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ref%20readonly%20Guid%20IID.IID_IUnknown");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "IID_IUnknown");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Guid IID_IInspectable
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ref readonly Guid IID.IID_IInspectable is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ref%20readonly%20Guid%20IID.IID_IInspectable");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "IID_IInspectable");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Guid IID_IActivationFactory
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ref readonly Guid IID.IID_IActivationFactory is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ref%20readonly%20Guid%20IID.IID_IActivationFactory");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "IID_IActivationFactory");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Guid IID_IAgileObject
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ref readonly Guid IID.IID_IAgileObject is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ref%20readonly%20Guid%20IID.IID_IAgileObject");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "IID_IAgileObject");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Guid IID_IMarshal
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ref readonly Guid IID.IID_IMarshal is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ref%20readonly%20Guid%20IID.IID_IMarshal");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "IID_IMarshal");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Guid IID_IBuffer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ref readonly Guid IID.IID_IBuffer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ref%20readonly%20Guid%20IID.IID_IBuffer");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "IID_IBuffer");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Guid IID_IBufferByteAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ref readonly Guid IID.IID_IBufferByteAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ref%20readonly%20Guid%20IID.IID_IBufferByteAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "IID_IBufferByteAccess");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Guid IID_IMemoryBufferByteAccess
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ref readonly Guid IID.IID_IMemoryBufferByteAccess is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ref%20readonly%20Guid%20IID.IID_IMemoryBufferByteAccess");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "IID_IMemoryBufferByteAccess");
 			}
 		}
 #endif

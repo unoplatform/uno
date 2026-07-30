@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Shapes
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class Shape : global::Microsoft.UI.Xaml.FrameworkElement
@@ -20,13 +20,13 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Skipping already declared property StrokeStartLineCapProperty
 		// Skipping already declared property StrokeThicknessProperty
 		// Skipping already declared property Fill
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Transform GeometryTransform
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Transform Shape.GeometryTransform is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Transform%20Shape.GeometryTransform");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Shapes.Shape", "GeometryTransform");
 			}
 		}
 #endif
@@ -53,11 +53,11 @@ namespace Microsoft.UI.Xaml.Shapes
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeStartLineCapProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.StrokeThicknessProperty.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Composition.CompositionBrush GetAlphaMask()
 		{
-			throw new global::System.NotImplementedException("The member CompositionBrush Shape.GetAlphaMask() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBrush%20Shape.GetAlphaMask%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Shapes.Shape", "GetAlphaMask()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Shapes.Shape.Fill.get

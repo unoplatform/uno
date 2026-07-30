@@ -18,6 +18,7 @@ using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
+using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Win32.UI.Xaml.Window;
 using Uno.UI.Xaml.Controls;
 using Windows.Devices.Input;
@@ -36,7 +37,7 @@ using Point = System.Drawing.Point;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
-internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHost
+internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHost, IAccessibilityOwner
 {
 	private const string WindowClassName = "UnoPlatformRegularWindow";
 
@@ -103,7 +104,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Win32Host.RegisterWindow(_hwnd);
 
-		_framePacer = CreateFramePacer();
 		_renderer = FeatureConfiguration.Rendering.UseVulkanOnWin32
 			? (IRenderer?)VulkanRenderer.TryCreateVulkanRenderer(_hwnd)
 				?? (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
@@ -112,6 +112,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			: FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
 				? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
 				: new SoftwareRenderer(_hwnd);
+
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = _renderer.IsSoftware();
+
+		InitializeRenderThread();
 
 		RegisterForBackgroundColor();
 
@@ -213,15 +217,23 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
 	private static LRESULT WndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
-		if (_wrapperForNextCreateWindow is { } wrapper)
+		try
 		{
-			_hwndToWrapper[hwnd] = _wrapperForNextCreateWindow;
+			if (_wrapperForNextCreateWindow is { } wrapper)
+			{
+				_hwndToWrapper[hwnd] = _wrapperForNextCreateWindow;
+			}
+			else if (!_hwndToWrapper.TryGetValue(hwnd, out wrapper))
+			{
+				throw new Exception($"{nameof(WndProc)} was fired on a {nameof(HWND)} before it was added to, or after it was removed from, {nameof(_hwndToWrapper)}.");
+			}
+			return wrapper.WndProcInner(hwnd, msg, wParam, lParam);
 		}
-		else if (!_hwndToWrapper.TryGetValue(hwnd, out wrapper))
+		catch (Exception e)
 		{
-			throw new Exception($"{nameof(WndProc)} was fired on a {nameof(HWND)} before it was added to, or after it was removed from, {nameof(_hwndToWrapper)}.");
+			typeof(Win32WindowWrapper).LogError()?.Error($"An unhandled exception was thrown while processing win32 message 0x{msg:X4}.", e);
+			return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 		}
-		return wrapper.WndProcInner(hwnd, msg, wParam, lParam);
 	}
 
 	private unsafe LRESULT WndProcInner(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
@@ -249,7 +261,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				}
 				break;
 			case PInvoke.WM_ACTIVATE:
-				OnWmActivate(wParam);
+				OnWmActivate(wParam, lParam);
 				return new LRESULT(0);
 			case PInvoke.WM_CLOSE:
 				if (OnWmClose())
@@ -273,13 +285,14 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
-				// This call is necessary when part of the window is outside the bounds of the screen and is then moved inside.
-				// In that case, the part that was outside the screen will remain unpainted until the next Render call, probably
-				// since Windows discards that part of the framebuffer thinking that that part will be drawn again during the
-				// WM_PAINT message that follows the movement of the window. However, we ignore WM_PAINT and depend on InvalidateRender
-				// and our render timer.
-				SynchronousRenderAndDraw(false);
+				// No present here: the DWM backing surface survives the move, and the OS
+				// invalidates any region needing repaint via WM_PAINT.
 				return new LRESULT(0);
+			case PInvoke.WM_PAINT:
+				// Signal the render thread to re-blit the current frame; DefWindowProc
+				// validates the update region via BeginPaint/EndPaint.
+				_renderThread?.SignalNewFrame();
+				break;
 			case PInvoke.WM_GETMINMAXINFO:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_GETMINMAXINFO)} message.");
 				if (Window?.AppWindow?.Presenter is OverlappedPresenter overlappedPresenter)
@@ -299,19 +312,26 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				if (_forcePaintOnNextEraseBkgndOrNcPaint)
 				{
 					_forcePaintOnNextEraseBkgndOrNcPaint = false;
-					// This call is necessary to avoid an initial blank frame during window startup.
-					// This follows from the SynchronousRenderAndDraw call in ShowCore
-					// The render timer might already be running. This is fine. The CompositionTarget
-					// contract allows calling OnNativePlatformFrameRequested multiple times.
-					Render();
+					// Signal the render thread to re-blit. The first frame was already painted
+					// by ShowCore (which waited for present), so the framebuffer has content.
+					_renderThread?.SignalNewFrame();
 					return new LRESULT(1);
 				}
 				else
 				{
-					// Paiting on WM_ERASEBKGND causes severe flickering in hosted native windows so we
+					// Painting on WM_ERASEBKGND causes severe flickering in hosted native windows so we
 					// only do it the first time when we really need to
 					return new LRESULT(0);
 				}
+			case PInvoke.WM_IME_STARTCOMPOSITION:
+				Win32ImeTextBoxExtension.Instance.OnWmImeStartComposition();
+				return new LRESULT(0);
+			case PInvoke.WM_IME_COMPOSITION:
+				Win32ImeTextBoxExtension.Instance.OnWmImeComposition(lParam);
+				return new LRESULT(0);
+			case PInvoke.WM_IME_ENDCOMPOSITION:
+				Win32ImeTextBoxExtension.Instance.OnWmImeEndComposition();
+				return new LRESULT(0);
 			case PInvoke.WM_KEYDOWN:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_KEYDOWN)} message.");
 				OnKey(wParam, lParam, true);
@@ -341,6 +361,15 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				break;
 			case PInvoke.WM_POINTERDOWN or PInvoke.WM_POINTERUP or PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL
 				or PInvoke.WM_POINTERENTER or PInvoke.WM_POINTERLEAVE or PInvoke.WM_POINTERUPDATE:
+				if (msg == PInvoke.WM_POINTERDOWN)
+				{
+					// Reclaim Win32 keyboard focus from any hosted native child (e.g. WebView2).
+					// Clicking a Skia-rendered element does not automatically transfer Win32 focus
+					// away from a cross-process child HWND; without this call, keyboard input keeps
+					// going to WebView2's renderer even after Uno's logical focus has moved.
+					// SetFocus is a no-op when _hwnd already has focus.
+					PInvoke.SetFocus(_hwnd);
+				}
 				OnPointer(msg, wParam, _hwnd);
 				return new LRESULT(0);
 			case PInvoke.WM_POINTERCAPTURECHANGED:
@@ -359,6 +388,19 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			case PInvoke.WM_NCCALCSIZE:
 				if (wParam.Value == 1 && (!_hasBorder || !_hasTitleBar))
 				{
+					// Custom-chrome windows remove the system frame so content fills the whole window. When such
+					// a window is maximized, Windows still positions it so the resize frame overhangs the monitor
+					// on every edge; left uncorrected, content and the caption buttons would spill off-screen and
+					// the reported client size would exceed the visible area. Inset the proposed client rect back
+					// to the monitor work area so the chrome fills exactly the visible screen, matching WinUI.
+					// FullScreenPresenter is excluded: it also reports a maximized window but must own the whole
+					// monitor. IsZoomed reflects the live maximized state even before WM_SIZE arrives.
+					if (Window?.AppWindow?.Presenter is OverlappedPresenter && PInvoke.IsZoomed(hwnd))
+					{
+						// rgrc[0] is the first field of NCCALCSIZE_PARAMS, so lParam can be read as its RECT.
+						ref var client = ref *(RECT*)lParam.Value;
+						ApplyMaximizedClientInset(ref client);
+					}
 					return new LRESULT(IntPtr.Zero);
 				}
 				break;
@@ -374,8 +416,18 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
 			XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
 		}
-		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity(); // force an early render
-		Render();
+		// Force an early SKPicture record so the render thread has fresh content to present.
+		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
+		// Signal the render thread and wait briefly for the present to land.
+		// Bounded so an unresponsive GPU does not stall WM_SIZE / WM_MOVE / ShowCore.
+		_renderThread?.SignalNewFrame();
+		var presentCompleted = _renderThread?.WaitForNextPresent(TimeSpan.FromMilliseconds(100));
+		if (presentCompleted == false)
+		{
+			this.LogWarn()?.Warn(
+				"Timed out waiting for the next present during synchronous render; " +
+				"the window may be shown before the first frame is displayed.");
+		}
 	}
 
 	private static System.Drawing.Point PointFromLParam(LPARAM lParam)
@@ -405,6 +457,17 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				}
 				break;
 			case PInvoke.WM_NCPOINTERUPDATE:
+				// Redirect pointer moves over the whole title bar (caption drag area + caption buttons) into XAML,
+				// not just over the buttons. Caption-button hover (PointerOver) is driven by these redirected
+				// moves; without redirecting caption moves, sliding off a button sideways into the drag area
+				// delivers no move at the new position, so the button stays stuck in the hovered state.
+				if (!handled
+					&& IsOverTitleBar(NonClientAreaHitTest(hWnd, wParam, lParam)))
+				{
+					OnPointer(msg, wParam, hWnd);
+					handled = true;
+				}
+				break;
 			case PInvoke.WM_NCPOINTERDOWN:
 			case PInvoke.WM_NCPOINTERUP:
 				if (!handled
@@ -442,8 +505,29 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	{
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DESTROY)} message.");
 		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
+
+		// Dispose the accessibility instance BEFORE unregistering from XamlRootMap
+		// and before releasing the HWND. UIA clients must see a well-formed
+		// disconnect rather than a dangling HWND. After disposal notify the router
+		// so source-less announcement fallback picks a new active owner if this
+		// window was the active one.
+		if (_accessibility is { } accessibility)
+		{
+			accessibility.Dispose();
+			AccessibilityRouter.NotifyDisposed(this);
+			_accessibility = null;
+		}
+
 		Win32Host.UnregisterWindow(_hwnd);
-		_framePacer.Dispose();
+		// Stop and join the render thread before touching its resources: once Dispose returns, the
+		// thread — the sole user of the renderer/surface — has exited, so freeing them here cannot
+		// race an in-flight present.
+		_renderThread?.Dispose();
+		_renderThread = null;
+		// Dispose the cached SKSurface before the renderer: on Vulkan it references GPU resources
+		// owned by _renderer (see Win32WindowWrapper.Rendering.Vulkan.cs).
+		_surface?.Dispose();
+		_surface = null;
 		_renderer.Dispose();
 		_rendererDisposed = true;
 		_backgroundDisposable?.Dispose();
@@ -478,19 +562,28 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		return false;
 	}
 
-	private void OnWmActivate(WPARAM wParam)
+	private void OnWmActivate(WPARAM wParam, LPARAM lParam)
 	{
 		switch ((uint)Win32Helper.LOWORD(wParam))
 		{
 			case PInvoke.WA_ACTIVE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_ACTIVE)}");
 				ActivationState = CoreWindowActivationState.CodeActivated;
+				AccessibilityRouter.SetActive(this);
 				break;
 			case PInvoke.WA_CLICKACTIVE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_CLICKACTIVE)}");
 				ActivationState = CoreWindowActivationState.PointerActivated;
+				AccessibilityRouter.SetActive(this);
 				break;
 			case PInvoke.WA_INACTIVE:
+				// lParam is the HWND being activated. If it's a descendant of our own window
+				// (e.g. a hosted WebView2 child), the app hasn't truly lost focus to another app.
+				var activatedHwnd = new HWND(lParam.Value);
+				if (activatedHwnd != HWND.Null && PInvoke.IsChild(_hwnd, activatedHwnd))
+				{
+					break;
+				}
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_INACTIVE)}");
 				ActivationState = CoreWindowActivationState.Deactivated;
 				break;
@@ -760,13 +853,15 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	private void InitializeAccessibility()
 	{
-		_accessibility = Win32Accessibility.Instance;
+		// Router owns the framework's single-slot registrations; per-window
+		// Win32Accessibility instances fan out via the router.
+		AccessibilityRouter.EnsureInitialized();
 
-		// Defer tree initialization until the root element is available.
+		// Defer instance creation until the root element is available.
 		// The root element may not be set yet at construction time.
 		if (Window?.RootElement is { } rootElement)
 		{
-			_accessibility.Initialize(_hwnd.Value, rootElement);
+			CreateAccessibilityInstance(rootElement);
 		}
 		else if (Window is not null)
 		{
@@ -780,12 +875,24 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		if (Window is not null)
 		{
 			Window.Activated -= OnWindowActivatedForAccessibility;
-			if (Window.RootElement is { } rootElement)
+			if (_accessibility is null && Window.RootElement is { } rootElement)
 			{
-				_accessibility?.Initialize(_hwnd.Value, rootElement);
+				CreateAccessibilityInstance(rootElement);
 			}
 		}
 	}
+
+	private void CreateAccessibilityInstance(UIElement rootElement)
+	{
+		if (_accessibility is not null)
+		{
+			return;
+		}
+
+		_accessibility = new Win32Accessibility(_hwnd.Value, rootElement, rootElement.DispatcherQueue);
+	}
+
+	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
 
@@ -829,5 +936,57 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			_ = PInvoke.ReleaseDC(HWND.Null, hdc);
 			return dpi / (float)PInvoke.USER_DEFAULT_SCREEN_DPI;
 		}
+	}
+
+	public override unsafe void SetSystemBackdrop(Microsoft.UI.Xaml.Media.SystemBackdrop? backdrop)
+	{
+		if (!OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22621))
+		{
+			if (backdrop is not null)
+			{
+				this.LogWarn()?.Warn($"System backdrops on Win32 currently require Windows 11 build 22621 or later. '{backdrop.GetType().Name}' was ignored.");
+			}
+
+			return;
+		}
+
+		if (backdrop is not null and not (Microsoft.UI.Xaml.Media.MicaBackdrop or Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop))
+		{
+			// Leave any currently applied backdrop untouched rather than clearing it with DWMSBT_NONE.
+			this.LogWarn()?.Warn($"Only {nameof(Microsoft.UI.Xaml.Media.MicaBackdrop)} and {nameof(Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop)} are currently supported on Win32. '{backdrop.GetType().Name}' was ignored.");
+			return;
+		}
+
+		DWM_SYSTEMBACKDROP_TYPE backdropType = backdrop switch
+		{
+			null
+				=> DWM_SYSTEMBACKDROP_TYPE.DWMSBT_NONE,
+			Microsoft.UI.Xaml.Media.MicaBackdrop { Kind: Microsoft.UI.Composition.SystemBackdrops.MicaKind.BaseAlt }
+				=> DWM_SYSTEMBACKDROP_TYPE.DWMSBT_TABBEDWINDOW,
+			Microsoft.UI.Xaml.Media.MicaBackdrop
+				=> DWM_SYSTEMBACKDROP_TYPE.DWMSBT_MAINWINDOW,
+			Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop
+				=> DWM_SYSTEMBACKDROP_TYPE.DWMSBT_TRANSIENTWINDOW,
+			_ => DWM_SYSTEMBACKDROP_TYPE.DWMSBT_NONE,
+		};
+
+		var hResult = PInvoke.DwmSetWindowAttribute(
+			_hwnd,
+			DWMWINDOWATTRIBUTE.DWMWA_SYSTEMBACKDROP_TYPE,
+			&backdropType,
+			(uint)sizeof(DWM_SYSTEMBACKDROP_TYPE));
+
+		if (hResult.Failed)
+		{
+			this.LogError()?.Error($"Failed to set system backdrop: {Win32Helper.GetErrorMessage(hResult)}");
+		}
+
+		// DWMWA_SYSTEMBACKDROP_TYPE only makes Mica/Acrylic appear under the non-client area unless the
+		// DWM frame is also extended into the client area. Let the presenter recompute the extension:
+		// when a backdrop is active its ApplyFrameExtension extends the frame across the whole client
+		// area ("sheet of glass" MARGINS {-1,-1,-1,-1}) so the transparent client pixels reveal the
+		// material instead of black; otherwise it restores the title-bar/border configuration. Keeping
+		// this in the presenter avoids fighting it over the frame margins and corner preference.
+		UpdateClientAreaExtension();
 	}
 }

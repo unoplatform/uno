@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <DiffIgnore>
   <IgnoreSets>
 	<IgnoreSet baseVersion="4.0.13">
@@ -429,7 +429,6 @@
 			<!-- BEGIN WebView -->
 			<Member fullName="Microsoft.UI.Xaml.Controls.INativeWebView" reason="Should not be public" />
 			<Member fullName="Uno.UI.Runtime.Skia.GtkApplicationExtension" reason="Not needed anymore" />
-			<Member fullName="Uno.UI.Runtime.Skia.Wpf.WpfApplicationExtension" reason="Not needed anymore" />
 			<!-- END WebView -->
 			
 			<Member fullName="Windows.UI.Core.ICoreWindowEvents" reason="Should not be public" />
@@ -641,10 +640,8 @@
 			<Member fullName="Uno.UI.Runtime.Skia.GTK.UI.Text.FontWeightExtensions" reason="Made internal with renamed namespace to Gtk instead of GTK" />
 			<Member fullName="Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.CssProviderExtensions" reason="Made internal with renamed namespace to Gtk instead of GTK" />
 			<Member fullName="Uno.UI.Runtime.Skia.GtkHost" reason="Renamed to Uno.UI.Runtime.Skia.Gtk.GtkHost" />
-			<Member fullName="Uno.UI.Skia.Platform.WpfHost" reason="Renamed to Uno.UI.Runtime.Skia.Wpf.WpfHost" />
 			<Member fullName="Uno.UI.Runtime.Skia.FrameBufferHost" reason="Renamed to Uno.UI.Runtime.Skia.Linux.FrameBuffer.FrameBufferHost" />
 			<Member fullName="Uno.UI.Runtime.Skia.RenderSurfaceType" reason="Renamed to Uno.UI.Runtime.Skia.Gtk.RenderSurfaceType" />
-			<Member fullName="Uno.UI.Skia.RenderSurfaceType" reason="Renamed to Uno.UI.Runtime.Skia.Wpf.RenderSurfaceType" />
 
 			<Member fullName="Uno.UI.Extensions.KeycodeExtensions" reason="Does not exist in WinAppSDK" />
 			<Member fullName="Uno.UI.Controls.ImageEx" reason="Empty class not present in WinAppSdk" />
@@ -882,20 +879,6 @@
 			<Member fullName="Uno.UI.Web.WebErrorStatus Microsoft.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs::WebErrorStatus()" reason="Incorrect type" />
 			<Member fullName="Uno.UI.Web.WebErrorStatus Microsoft.UI.Xaml.Controls.WebViewNavigationFailedEventArgs::WebErrorStatus()" reason="Incorrect type" />
 			<!-- END WebView -->
-
-			<!-- BEGIN Skia Adjustments -->
-			<Member fullName="SkiaSharp.SKSize Uno.UI.Skia.Platform.WpfHost::CanvasSize()" reason="Incorrect type" />
-			<!-- END Skia Adjustments -->
-			
-			<!-- BEGIN Skia lifecycle -->
-			<Member fullName="System.Boolean Uno.UI.Skia.Platform.WpfHost::IsIsland()" reason="Not needed" />
-			<Member fullName="Microsoft.UI.Xaml.UIElement Uno.UI.Skia.Platform.WpfHost::RootElement()" reason="Not needed" />
-			<Member fullName="Uno.UI.Skia.Platform.WpfHost Uno.UI.Skia.Platform.WpfHost::Current()" reason="Not needed" />
-			<Member fullName="System.Boolean Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::IsIsland()" reason="Not needed" />
-			<Member fullName="Microsoft.UI.Xaml.UIElement Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::RootElement()" reason="Not needed" />			
-			<!-- End Skia lifecycle -->
-
-			<Member fullName="System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::RenderSurfaceType()" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
 
 			<!-- BEGIN PopupRoot alignment -->
 			<Member fullName="UIKit.UIView Microsoft.UI.Xaml.Controls.Primitives.Popup::MainWindow()" reason="Not available in WinUI" />
@@ -1588,8 +1571,6 @@
 			<!-- BEGIN Skia Adjustments -->
 			<Member fullName="System.Void Uno.UI.Runtime.Skia.GtkHost..ctor(System.Func`1&lt;Microsoft.UI.Xaml.Application&gt; appBuilder, System.String[] args)" reason="API Alignment" />
 			<Member fullName="System.Void Uno.UI.Runtime.Skia.FrameBufferHost..ctor(System.Func`1&lt;Microsoft.UI.Xaml.Application&gt; appBuilder, System.String[] args)" reason="API Alignment" />
-			<Member fullName="System.Void Uno.UI.Skia.Platform.WpfHost..ctor(System.Windows.Threading.Dispatcher dispatcher, System.Func`1&lt;Microsoft.UI.Xaml.Application&gt; appBuilder, System.String[] args)" reason="API Alignment" />
-			<Member fullName="SkiaSharp.SKSize Uno.UI.Skia.Platform.WpfHost.get_CanvasSize()" reason="API Alignment" />
 			<!-- End Skia Adjustments -->
 
 			<!-- BEGIN Pointers update -->
@@ -1610,14 +1591,6 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Application.OnWindowCreated(Microsoft.UI.Xaml.WindowCreatedEventArgs args)" reason="Does not exist in WinAppSDK" />
 			<!-- END OnWindowCreated -->
 
-			<!-- BEGIN Skia lifecycle -->
-			<Member fullName="System.Boolean Uno.UI.Skia.Platform.WpfHost.get_IsIsland()" reason="Not needed" />
-			<Member fullName="Microsoft.UI.Xaml.UIElement Uno.UI.Skia.Platform.WpfHost.get_RootElement()" reason="Not needed" />
-			<Member fullName="Uno.UI.Skia.Platform.WpfHost Uno.UI.Skia.Platform.WpfHost.get_Current()" reason="Not needed" />
-			<Member fullName="System.Boolean Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.get_IsIsland()" reason="Not needed" />
-			<Member fullName="Microsoft.UI.Xaml.UIElement Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.get_RootElement()" reason="Not needed" />
-			<Member fullName="Uno.UI.Skia.Platform.WpfHost Uno.UI.Skia.Platform.WpfHost.get_Current()" reason="Not needed" />	
-			<!-- End Skia lifecycle -->
 			
 			<!-- BEGIN Align ref members -->
 			<Member fullName="System.Threading.Tasks.Task`1&lt;Windows.Security.Authentication.Web.WebAuthenticationResult&gt; Uno.AuthenticationBroker.WebAuthenticationBrokerProvider::AuthenticateAsyncCore(Windows.Security.Authentication.Web.WebAuthenticationOptions,System.Uri,System.Uri,System.Threading.CancellationToken)" reason="Does not exist in WinAppSDK" />
@@ -1646,9 +1619,6 @@
 			<Member fullName=".*\.add_KeyDown\(.*" isRegex="true" reason="KeyDown should be defined on UIElement only" />
 			<Member fullName=".*\.remove_KeyDown\(.*" isRegex="true" reason="KeyDown should be defined on UIElement only" />
 			<!-- END Android TV -->
-
-			<Member fullName="System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.get_RenderSurfaceType()" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
-			<Member fullName="System.Void Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.set_RenderSurfaceType(System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; value)" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
 
 			<Member fullName=".+?\.\.ctor\(\)" isRegex="true" reason="Matching constructors visibility with Windows" />
 			
@@ -2291,6 +2261,7 @@
 		  <Member fullName="Windows.UI.WindowManagement.WindowServices" reason="WinUI sync: preview window-services type removed by WinAppSDK 1.8" />
 
 		  <!-- END WinUI sync: Windows.* legacy / preview namespaces removed -->
+
 	  </Types>
 
 	  <Fields>
@@ -2526,6 +2497,8 @@
 		  <Member fullName="Windows.UI.ViewManagement.StatusBarProgressIndicator Windows.UI.ViewManagement.StatusBar::ProgressIndicator()" reason="WinUI sync: StatusBar.ProgressIndicator getter removed by WinAppSDK 1.8" />
 
 		  <!-- END WinUI sync (Category C): independent property removals -->
+
+
 	  </Properties>
 
 	  <Methods>
@@ -2543,6 +2516,13 @@
 		  <!-- END AutomationPeer API alignment -->
 
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Layout.InvalidateMeasure()" reason="protected to protected internal" />
+
+		  <!-- Replaced generic App<TApplication>(Func<TApplication>) with non-generic App(Func<Application>)
+		       to prevent CoreCLR shared-generic policy from placing Func<TApp> instantiations in the default
+		       ALC's LoaderAllocator, which otherwise creates a permanent cross-LA reference into the inner
+		       app's MethodTable and prevents collectible AssemblyLoadContext unload.
+		       Callers using .App<App>(...) need to drop the explicit type argument to resolve to the new
+		       non-generic overload. UnoPlatformHostBuilderExtensions is source-rebuilt per consuming app. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem.SetSubMenuDirection(System.Boolean isSubMenuDirectionUp)" reason="Moved to explicit ISubMenuOwner interface implementation" />
 
 		  <!-- BEGIN WinUI sync: WinRT IVector.get_Size replaced by ICollection.Count -->
@@ -2859,6 +2839,9 @@
 		  <Member fullName="Windows.UI.ViewManagement.StatusBarProgressIndicator Windows.UI.ViewManagement.StatusBar.get_ProgressIndicator()" reason="WinUI sync: StatusBar.ProgressIndicator getter removed by WinAppSDK 1.8" />
 
 		  <!-- END WinUI sync (Category C): independent method removals -->
+
+
+
 	  </Methods>
 
 	  <Events>
@@ -2899,6 +2882,43 @@
 
 		  <!-- END WinUI sync (Category B): shadow event removals -->
 	  </Events>
+	</IgnoreSet>
+
+	<IgnoreSet baseVersion="6.6">
+	  <Types>
+		  <!-- WinUI sync (WinAppSDK 1.8): ElementAnimator/ItemsRepeater animation surface removed. Migrated to the 6.6 base after 6.6 went stable. -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.AnimationContext" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimationCompleted" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator" reason="WinUI sync: ElementAnimator surface removed by WinAppSDK 1.8 (replaced by ItemCollectionTransitionProvider)" />
+	  </Types>
+	  <Properties>
+		  <!-- StackLayout.DisableVirtualization is a plain CLR property in WinUI (backed by internal IsVirtualizationEnabledProperty); the DisableVirtualizationProperty DP is not part of the WinUI surface. -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator Microsoft.UI.Xaml.Controls.ItemsRepeater::Animator()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ItemsRepeater::AnimatorProperty()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
+	  </Properties>
+	  <Methods>
+		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout.get_DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
+		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_MenuItems(System.Collections.Generic.IList`1&lt;System.Object&gt; value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.set_OpenPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs..ctor()" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator Microsoft.UI.Xaml.Controls.ItemsRepeater.get_Animator()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ItemCollectionTransitionProvider Microsoft.UI.Xaml.Controls.Layout.CreateDefaultItemTransitionProvider()" reason="WinUI sync: Layout.CreateDefaultItemTransitionProvider is protected virtual in WinAppSDK 1.8 (was public in baseline); narrowed to protected internal virtual in Uno for WinUI parity" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ItemsRepeater.get_AnimatorProperty()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.DatePickerFlyoutPresenterAutomationPeer..ctor()" reason="AP reorganization - constructor signature alignment (now requires owner)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ItemsRepeater.set_Animator(Microsoft.UI.Xaml.Controls.ElementAnimator value)" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
+		  <Member fullName="Uno.UI.Hosting.IUnoPlatformHostBuilder Uno.UI.Hosting.UnoPlatformHostBuilderExtensions.App(Uno.UI.Hosting.IUnoPlatformHostBuilder builder, System.Func`1&lt;TApplication&gt; appBuilder)" reason="Replaced by non-generic App(Func&lt;Application&gt;) to allow collectible ALC collection on CoreCLR" />
+		  <!-- AnimatedIcon rework: the Uno-specific legacy IAnimatedVisualSource hooks
+		       (Load/Unload/Update/Play/Pause/Resume/Stop/SetProgress/Measure) are no-ops
+		       that never existed in WinUI. They are now explicit interface implementations
+		       on the generated Animated*VisualSource sources, so they drop off the concrete
+		       type's public surface; they remain callable via the public IAnimatedVisualSource. -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.AnimatedVisuals\.Animated.+VisualSource\.(Load|Unload|Pause|Resume|Stop|Play|SetProgress|Update|Measure)\(.*\)" reason="AnimatedIcon rework: Uno-specific legacy IAnimatedVisualSource no-op hooks moved to explicit interface implementations (not in WinUI; still callable via the interface)" isRegex="true" />
+	  </Methods>
 	</IgnoreSet>
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 

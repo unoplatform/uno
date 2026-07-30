@@ -3,6 +3,7 @@ using System.Linq;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Windows.Foundation.Collections;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
@@ -42,6 +43,9 @@ namespace Microsoft.UI.Xaml.Controls
 			Unloaded += (s, e) => UnregisterHeaderEvents();
 			Items.VectorChanged += OnItemsVectorChanged;
 		}
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+			=> new PivotAutomationPeer(this);
 
 		protected override void OnApplyTemplate()
 		{

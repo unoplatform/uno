@@ -50,6 +50,10 @@ The rendering backend for the Skia renderer can be configured per platform. On d
 
 For details, see [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
 
+## Skipping visual tree painting (Skia)
+
+Set `Uno.UI.FeatureConfiguration.Rendering.SkipVisualTreePainting` to `true` to skip painting of the visual tree entirely, producing frames with no visual output. Frame scheduling, rendering events, composition animations and `RenderTargetBitmap` keep working as usual. This is intended for scenarios where the visual output is of no interest (e.g. automated tests) to save CPU/GPU. Default: `false`.
+
 ## ComboBox
 
 ### Default preferred placement
@@ -106,6 +110,18 @@ When `ContentDialog` version is used, it uses the default `ContentDialog` style.
 WinRTFeatureConfiguration.MessageDialog.StyleOverride = "CustomMessageDialogStyle";
 ```
 
+## TextBox
+
+### Disable the iPadOS 26 floating number pad popover (iOS)
+
+On iPadOS 26, `UITextField` displays the numeric keyboard as a floating popover instead of a docked keyboard. Setting `Uno.UI.FeatureConfiguration.TextBox.DisableNumberPadPopover` to `true` opts out of this behavior and restores the docked keyboard:
+
+```csharp
+Uno.UI.FeatureConfiguration.TextBox.DisableNumberPadPopover = true;
+```
+
+The flag only takes effect on iOS Skia, on iOS 26 or later, and only affects `TextBox` instances configured for a numeric keyboard on iPad. It has no effect on other platforms, on iOS versions prior to 26, or on non-numeric keyboards. Defaults to `false`.
+
 ## ToolTips
 
 By default, `ToolTips` are disabled on all platforms except for WebAssembly and Skia (see [#10791](https://github.com/unoplatform/uno/issues/10791)). To enable them on a specific platform, set the `UseToolTips` configuration flag to `true`. You can add the following in the end of the `App` constructor:
@@ -118,23 +134,49 @@ It is also possible to adjust the delay in milliseconds (`Uno.UI.FeatureConfigur
 
 ## WebView2
 
-### Inspectable (iOS)
+### EnableDevTools
 
-To enable inspecting applications using `WebView2` controls from macOS with the Safari Developer Tools, set the `IsInspectable` configuration flag to `true` in your `App.Xaml.cs`:
+Toggles the platform-native developer tools for the underlying web engine of `WebView2` (Chromium DevTools on Windows / Linux Skia, Chrome DevTools remote debugging on Android, Safari Web Inspector on iOS / Mac Catalyst / macOS). Defaults to `true` in `DEBUG` builds and `false` in `RELEASE` builds. Set it during application startup before any `WebView2` is materialized:
 
 ```csharp
 public App()
 {
+    Uno.UI.FeatureConfiguration.WebView2.EnableDevTools = true;
     this.InitializeComponent();
-#if __IOS__
-    Uno.UI.FeatureConfiguration.WebView2.IsInspectable = true;
-#endif
 }
 ```
 
+See [WebView2 → Enabling native developer tools](xref:Uno.Controls.WebView2#enabling-native-developer-tools) for the per-platform inspection workflow.
+
 > [!IMPORTANT]
->
-> This feature will only work for security reasons when the application runs in Debug mode.
+> On Apple platforms the OS only honors this flag for development-signed apps (DEBUG builds). The legacy iOS-only `IsInspectable` property is now an obsolete alias for `EnableDevTools`.
+
+### AllowSingleSignOnUsingOSPrimaryAccount
+
+Enables single sign-on using the OS primary account (for example, the Microsoft Entra ID / Azure AD account the user is signed into Windows with) when `WebView2` authenticates against supporting resources. This is **Windows (Skia Desktop) only**; it is a no-op on other targets and on the Windows App SDK target (configure SSO through `CoreWebView2EnvironmentOptions` there). Defaults to `false`. Set it during application startup, before any `WebView2` is materialized:
+
+```csharp
+public App()
+{
+    Uno.UI.FeatureConfiguration.WebView2.AllowSingleSignOnUsingOSPrimaryAccount = true;
+    this.InitializeComponent();
+}
+```
+
+> [!NOTE]
+> The CoreWebView2 environment is shared process-wide per user-data folder, so this must be set before the first `WebView2` is created. In a managed tenant the flag may be necessary but not sufficient: device-registration state and administrator policy can still gate Entra ID SSO.
+
+### AdditionalBrowserArguments
+
+Additional command-line switches passed to the browser process backing `WebView2` (for example proxy configuration or Chromium feature flags), useful in locked-down or managed environments. **Windows (Skia Desktop) only**, applied when the environment is first created; a no-op elsewhere. Set it during application startup, before any `WebView2` is materialized:
+
+```csharp
+public App()
+{
+    Uno.UI.FeatureConfiguration.WebView2.AdditionalBrowserArguments = "--proxy-server=http://proxy.example:8080";
+    this.InitializeComponent();
+}
+```
 
 ## `ApplicationData`
 

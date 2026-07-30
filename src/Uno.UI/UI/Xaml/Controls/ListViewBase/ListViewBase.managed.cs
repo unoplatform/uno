@@ -57,6 +57,18 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private void MoveItems(int oldFirstItem, int newFirstItem, int count, int section)
+		{
+			if (VirtualizingPanel != null)
+			{
+				VirtualizingPanel.GetLayouter().MoveItems(oldFirstItem, newFirstItem, count, section);
+			}
+			else
+			{
+				Refresh();
+			}
+		}
+
 		private void AddGroup(int groupIndexInView)
 		{
 			Refresh();

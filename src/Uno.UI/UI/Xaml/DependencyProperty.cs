@@ -51,6 +51,22 @@ namespace Microsoft.UI.Xaml
 
 		private readonly static FrameworkPropertiesForTypeDictionary _getInheritedPropertiesForType = new FrameworkPropertiesForTypeDictionary();
 
+		/// <summary>
+		/// Removes all entries from DependencyProperty-related static caches whose Type keys
+		/// belong to non-default (collectible) AssemblyLoadContexts.
+		/// Called during ALC teardown so the GC can collect the ALC and its types.
+		/// </summary>
+		internal static void ClearCachesForNonDefaultAlc()
+		{
+			_registry.RemoveNonDefaultAlcEntries();
+			_getInheritedPropertiesForType.RemoveNonDefaultAlcEntries();
+			_getPropertyCache.RemoveNonDefaultAlcEntries();
+			_isTypeNullableDictionary.RemoveNonDefaultAlcEntries();
+
+			// The pooled lookup key retains the last-queried Type past the cache prunes.
+			_searchPropertyCacheEntry.Update(typeof(object), "");
+		}
+
 		private readonly PropertyMetadata _ownerTypeMetadata; // For perf consideration, we keep direct ref the metadata for the owner type
 
 		private readonly Flags _flags;
@@ -523,15 +539,18 @@ namespace Microsoft.UI.Xaml
 				return value;
 			}
 
-			if (this == FrameworkElement.FocusVisualPrimaryBrushProperty &&
-				ResourceResolver.TryStaticRetrieval("SystemControlFocusVisualPrimaryBrush", null, out var primaryBrush))
+			// MUX Reference: DependencyProperty.cpp GetDefaultFocusVisualBrush — WinUI resolves
+			// the focus visual brush against `targetObject->GetTheme()` so an element with
+			// an explicit RequestedTheme (different from the app's) still gets brushes from
+			// its own theme dictionary. Mirror that here by pushing the element's effective
+			// theme onto the resource resolution stack.
+			if (this == FrameworkElement.FocusVisualPrimaryBrushProperty)
 			{
-				return primaryBrush;
+				return ResolveFocusVisualBrushDefault(referenceObject, "SystemControlFocusVisualPrimaryBrush");
 			}
-			else if (this == FrameworkElement.FocusVisualSecondaryBrushProperty &&
-				ResourceResolver.TryStaticRetrieval("SystemControlFocusVisualSecondaryBrush", null, out var secondaryBrush))
+			else if (this == FrameworkElement.FocusVisualSecondaryBrushProperty)
 			{
-				return secondaryBrush;
+				return ResolveFocusVisualBrushDefault(referenceObject, "SystemControlFocusVisualSecondaryBrush");
 			}
 
 			if (this == UIElement.IsTabStopProperty)
@@ -615,6 +634,29 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return _ownerTypeMetadata.DefaultValue;
+		}
+
+		// MUX Reference: microsoft-ui-xaml2/src/dxaml/xcp/core/core/elements/DependencyProperty.cpp
+		// lines 131-150 (GetDefaultFocusVisualBrush) and 309-345. WinUI passes
+		// `targetObject->GetTheme()` to the resource lookup so an element with
+		// an explicit RequestedTheme picks brushes from its own theme dictionary
+		// rather than the app's active theme.
+		private static object ResolveFocusVisualBrushDefault(DependencyObject referenceObject, string resourceKey)
+		{
+			// The lookup runs with the element's theme scoped onto the core requested-theme-for-subtree
+			// slot, like WinUI's LookupThemeResource(theme, key) (xcpcore.cpp:2371-2394); the resolution
+			// leaf reads the slot (EnsureActiveThemeDictionary, Resources.cpp:764-768), so the
+			// {StaticResource} alias (SystemControlFocusVisualPrimaryBrush → FocusStrokeColorOuterBrush)
+			// also resolves into the matching theme sub-dictionary and the resolved brush carries the
+			// element theme's color.
+			var ownerTheme = ThemeResolution.ResolveOwnerTheme(referenceObject);
+			using var themeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerTheme);
+			if (ResourceResolver.TryStaticRetrieval(resourceKey, null, out var brush))
+			{
+				return brush;
+			}
+
+			return null;
 		}
 
 		public override int GetHashCode() => CachedHashCode;

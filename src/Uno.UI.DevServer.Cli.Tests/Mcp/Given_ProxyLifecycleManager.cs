@@ -130,8 +130,8 @@ public class Given_ProxyLifecycleManager
 
 		try
 		{
-			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "StudioLive.slnx", "6.6.0-dev.1");
-			var solutionPath = Path.Combine(workspaceDirectory, "StudioLive.slnx");
+			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "MyApp.slnx", "6.6.0-dev.1");
+			var solutionPath = Path.Combine(workspaceDirectory, "MyApp.slnx");
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
 			var workspaceResolution = await resolver.ResolveAsync(root);
 
@@ -176,8 +176,8 @@ public class Given_ProxyLifecycleManager
 
 		try
 		{
-			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "StudioLive.slnx", "6.6.0-dev.1");
-			var solutionPath = Path.Combine(workspaceDirectory, "StudioLive.slnx");
+			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "MyApp.slnx", "6.6.0-dev.1");
+			var solutionPath = Path.Combine(workspaceDirectory, "MyApp.slnx");
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
 			var workspaceResolution = await resolver.ResolveAsync(root);
 
@@ -268,8 +268,8 @@ public class Given_ProxyLifecycleManager
 
 		try
 		{
-			var workspaceDirectory = await CreateNonUnoWorkspaceAsync(root, "src", "StudioLive.slnx");
-			var solutionPath = Path.Combine(workspaceDirectory, "StudioLive.slnx");
+			var workspaceDirectory = await CreateNonUnoWorkspaceAsync(root, "src", "MyApp.slnx");
+			var solutionPath = Path.Combine(workspaceDirectory, "MyApp.slnx");
 			var unresolvedWorkspace = new WorkspaceResolution
 			{
 				RequestedWorkingDirectory = root,
@@ -306,7 +306,7 @@ public class Given_ProxyLifecycleManager
 
 		try
 		{
-			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "StudioLive.slnx", "6.6.0-dev.1");
+			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "MyApp.slnx", "6.6.0-dev.1");
 			var externalWorkspace = await CreateUnoWorkspaceAsync(externalRoot, "other", "Other.slnx", "6.6.0-dev.2");
 			var externalSolution = Path.Combine(externalWorkspace, "Other.slnx");
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
@@ -389,7 +389,7 @@ public class Given_ProxyLifecycleManager
 			var workspaceDirectory = Path.Combine(root, "src");
 			Directory.CreateDirectory(workspaceDirectory);
 			await File.WriteAllTextAsync(Path.Combine(workspaceDirectory, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
-			await File.WriteAllTextAsync(Path.Combine(workspaceDirectory, "StudioLive.slnx"), string.Empty);
+			await File.WriteAllTextAsync(Path.Combine(workspaceDirectory, "MyApp.slnx"), string.Empty);
 
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
 			var workspaceResolution = await resolver.ResolveAsync(root);
@@ -434,7 +434,7 @@ public class Given_ProxyLifecycleManager
 			var workspaceDirectory = Path.Combine(root, "src");
 			Directory.CreateDirectory(workspaceDirectory);
 			await File.WriteAllTextAsync(Path.Combine(workspaceDirectory, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
-			await File.WriteAllTextAsync(Path.Combine(workspaceDirectory, "StudioLive.slnx"), string.Empty);
+			await File.WriteAllTextAsync(Path.Combine(workspaceDirectory, "MyApp.slnx"), string.Empty);
 
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
 			var workspaceResolution = await resolver.ResolveAsync(root);
@@ -1196,7 +1196,7 @@ public class Given_ProxyLifecycleManager
 
 		try
 		{
-			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "StudioLive.slnx", "6.6.0-dev.1");
+			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "MyApp.slnx", "6.6.0-dev.1");
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
 			var workspaceResolution = await resolver.ResolveAsync(root);
 
@@ -1268,8 +1268,8 @@ public class Given_ProxyLifecycleManager
 
 		try
 		{
-			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "StudioLive.slnx", "6.6.0-dev.1");
-			var solutionPath = Path.Combine(workspaceDirectory, "StudioLive.slnx");
+			var workspaceDirectory = await CreateUnoWorkspaceAsync(root, "src", "MyApp.slnx", "6.6.0-dev.1");
+			var solutionPath = Path.Combine(workspaceDirectory, "MyApp.slnx");
 			var alteredCaseSolutionPath = AlterPathCase(solutionPath);
 			var resolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance);
 			var workspaceResolution = await resolver.ResolveAsync(root);

@@ -1,0 +1,174 @@
+﻿<Page
+    x:Class="SamplesApp.Windows_UI_Xaml_Media.Geometry.Geometry_Transforms_Showcase"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <Style x:Key="CellBorderStyle" TargetType="Border">
+            <Setter Property="Width" Value="220" />
+            <Setter Property="Height" Value="180" />
+            <Setter Property="BorderBrush" Value="{ThemeResource SystemBaseLowColor}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Margin" Value="4" />
+        </Style>
+        <Style x:Key="CellLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+            <Setter Property="Margin" Value="0,2" />
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer Padding="16">
+        <StackPanel Spacing="12">
+            <TextBlock
+                FontSize="16"
+                FontWeight="SemiBold"
+                Text="Geometry transforms" />
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="No transform" />
+                        <Path
+                            Fill="LightSeaGreen"
+                            Stroke="DarkSlateGray"
+                            StrokeThickness="2">
+                            <Path.Data>
+                                <RectangleGeometry Rect="60,60,100,80" />
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="TranslateTransform 30,20" />
+                        <Path
+                            Fill="LightSeaGreen"
+                            Stroke="DarkSlateGray"
+                            StrokeThickness="2">
+                            <Path.Data>
+                                <RectangleGeometry Rect="60,60,100,80">
+                                    <RectangleGeometry.Transform>
+                                        <TranslateTransform X="30" Y="20" />
+                                    </RectangleGeometry.Transform>
+                                </RectangleGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="ScaleTransform 0.5x" />
+                        <Path
+                            Fill="LightSeaGreen"
+                            Stroke="DarkSlateGray"
+                            StrokeThickness="2">
+                            <Path.Data>
+                                <RectangleGeometry Rect="60,60,100,80">
+                                    <RectangleGeometry.Transform>
+                                        <ScaleTransform CenterX="110" CenterY="100" ScaleX="0.5" ScaleY="0.5" />
+                                    </RectangleGeometry.Transform>
+                                </RectangleGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="RotateTransform 30deg" />
+                        <Path
+                            Fill="LightSeaGreen"
+                            Stroke="DarkSlateGray"
+                            StrokeThickness="2">
+                            <Path.Data>
+                                <RectangleGeometry Rect="60,60,100,80">
+                                    <RectangleGeometry.Transform>
+                                        <RotateTransform Angle="30" CenterX="110" CenterY="100" />
+                                    </RectangleGeometry.Transform>
+                                </RectangleGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="SkewTransform 20,0" />
+                        <Path
+                            Fill="LightSeaGreen"
+                            Stroke="DarkSlateGray"
+                            StrokeThickness="2">
+                            <Path.Data>
+                                <RectangleGeometry Rect="60,60,100,80">
+                                    <RectangleGeometry.Transform>
+                                        <SkewTransform AngleX="20" AngleY="0" CenterX="110" CenterY="100" />
+                                    </RectangleGeometry.Transform>
+                                </RectangleGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Style="{StaticResource CellBorderStyle}">
+                    <Grid>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="CompositeTransform" />
+                        <Path
+                            Fill="LightSeaGreen"
+                            Stroke="DarkSlateGray"
+                            StrokeThickness="2">
+                            <Path.Data>
+                                <RectangleGeometry Rect="60,60,100,80">
+                                    <RectangleGeometry.Transform>
+                                        <CompositeTransform
+                                            CenterX="110"
+                                            CenterY="100"
+                                            Rotation="20"
+                                            ScaleX="0.8"
+                                            ScaleY="0.8"
+                                            TranslateX="10"
+                                            TranslateY="-10" />
+                                    </RectangleGeometry.Transform>
+                                </RectangleGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

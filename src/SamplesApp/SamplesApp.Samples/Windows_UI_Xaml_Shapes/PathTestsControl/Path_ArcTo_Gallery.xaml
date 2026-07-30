@@ -1,0 +1,614 @@
+﻿<UserControl
+    x:Class="SamplesApp.Windows_UI_Xaml_Shapes.PathTestsControl.Path_ArcTo_Gallery"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <!--  Per-cell layout: bordered box, label on top, path below in fixed-size canvas.  -->
+        <Style x:Key="CellStyle" TargetType="Border">
+            <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="6" />
+            <Setter Property="Margin" Value="4" />
+            <Setter Property="Width" Value="220" />
+        </Style>
+        <Style x:Key="CellLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontFamily" Value="Consolas" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+        </Style>
+        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="8,16,8,4" />
+        </Style>
+        <Style x:Key="SectionDescriptionStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Margin" Value="8,0,8,8" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseMediumBrush}" />
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel Padding="12">
+
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="Path ArcTo Gallery — visual parity check (#2228)" />
+            <TextBlock Style="{StaticResource SectionDescriptionStyle}" Text="Each cell renders a Path.Data SVG string. Compare side-by-side with native WinUI to confirm visual parity. The Stroke is dark/light theme-aware." />
+
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="1. Issue #2228 repro — non-uniform radii" />
+            <TextBlock Style="{StaticResource SectionDescriptionStyle}" Text="The path string from issue #2228 (rx=1.375, ry=1.3125), pre-translated to origin (the original used coords ~(820, 42); both forms are mathematically equivalent). Pre-fix, this threw NotImplementedException." />
+            <StackPanel Orientation="Horizontal">
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Repro (filled, scaled via Viewbox)" />
+                        <Viewbox Width="180" Height="180">
+                            <Canvas Width="3" Height="3">
+                                <Path
+                                    Data="M 2.75,1.3125 a 1.375,1.3125 0 0 1 -1.375,1.3125 1.375,1.3125 0 0 1 -1.375,-1.3125 1.375,1.3125 0 0 1 1.375,-1.3125 1.375,1.3125 0 0 1 1.375,1.3125 z"
+                                    Fill="DodgerBlue"
+                                    Stroke="Black"
+                                    StrokeThickness="0.05" />
+                            </Canvas>
+                        </Viewbox>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Repro (stroke only)" />
+                        <Viewbox Width="180" Height="180">
+                            <Canvas Width="3" Height="3">
+                                <Path
+                                    Data="M 2.75,1.3125 a 1.375,1.3125 0 0 1 -1.375,1.3125 1.375,1.3125 0 0 1 -1.375,-1.3125 1.375,1.3125 0 0 1 1.375,-1.3125 1.375,1.3125 0 0 1 1.375,1.3125 z"
+                                    Stroke="Crimson"
+                                    StrokeThickness="0.05" />
+                            </Canvas>
+                        </Viewbox>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="2. Circular arcs (rx == ry)" />
+            <TextBlock Style="{StaticResource SectionDescriptionStyle}" Text="Baseline: equal radii. These exercise the same rendering path that worked before the fix — should remain unchanged." />
+            <StackPanel Orientation="Horizontal">
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="M40,20 A30,30 0 0,0 70,70 (small)" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M40,20 A30,30 0 0,0 70,70"
+                            Stretch="None"
+                            Stroke="Goldenrod"
+                            StrokeThickness="2" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="M40,20 A60,60 0 0,0 70,70 (large radius)" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M40,20 A60,60 0 0,0 70,70"
+                            Stretch="None"
+                            Stroke="ForestGreen"
+                            StrokeThickness="2" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Half-circle: M30,90 A60,60 0 0,1 150,90" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M30,90 A60,60 0 0,1 150,90"
+                            Stretch="None"
+                            Stroke="MediumBlue"
+                            StrokeThickness="3" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Full circle (two 180° arcs)" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M30,90 A60,60 0 0,1 150,90 60,60 0 0,1 30,90 Z"
+                            Fill="Lavender"
+                            Stretch="None"
+                            Stroke="Purple"
+                            StrokeThickness="2" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="3. Elliptical arcs (rx ≠ ry)" />
+            <TextBlock Style="{StaticResource SectionDescriptionStyle}" Text="The case the fix targets: non-uniform radii without rotation." />
+            <StackPanel Orientation="Horizontal">
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="rx=80, ry=40 (wide)" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M30,90 A80,40 0 0,1 170,90"
+                            Stretch="None"
+                            Stroke="Teal"
+                            StrokeThickness="2" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="rx=40, ry=80 (tall)" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M90,30 A40,80 0 0,1 90,170"
+                            Stretch="None"
+                            Stroke="Tomato"
+                            StrokeThickness="2" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Closed ellipse (two halves)" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M30,90 A80,40 0 0,1 170,90 80,40 0 0,1 30,90 Z"
+                            Fill="LightPink"
+                            Stretch="None"
+                            Stroke="DeepPink"
+                            StrokeThickness="2" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Closed tall ellipse" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M90,30 A40,80 0 0,1 90,170 40,80 0 0,1 90,30 Z"
+                            Fill="LightSkyBlue"
+                            Stretch="None"
+                            Stroke="DodgerBlue"
+                            StrokeThickness="2" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="4. LargeArc / Sweep flag combinations" />
+            <TextBlock Style="{StaticResource SectionDescriptionStyle}" Text="Same start/end points + radii, all four flag combinations. Stacked overlapping in one cell so the four arcs are visible." />
+            <StackPanel Orientation="Horizontal">
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Circle r=30: 4 flag combos overlaid" />
+                        <Grid Width="180" Height="180">
+                            <Path
+                                Data="M40,30 A30,30 0 0,0 90,80"
+                                Stroke="#cccc00"
+                                StrokeThickness="2" />
+                            <Path
+                                Data="M40,30 A30,30 0 1,0 90,80"
+                                Stroke="#ff0000"
+                                StrokeThickness="2" />
+                            <Path
+                                Data="M40,30 A30,30 0 1,1 90,80"
+                                Stroke="#00aa00"
+                                StrokeThickness="2" />
+                            <Path
+                                Data="M40,30 A30,30 0 0,1 90,80"
+                                Stroke="#0000ff"
+                                StrokeThickness="2" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Ellipse rx=60,ry=30: 4 flag combos" />
+                        <Grid Width="180" Height="180">
+                            <Path
+                                Data="M40,30 A60,30 0 0,0 90,80"
+                                Stroke="#cccc00"
+                                StrokeThickness="2" />
+                            <Path
+                                Data="M40,30 A60,30 0 1,0 90,80"
+                                Stroke="#ff0000"
+                                StrokeThickness="2" />
+                            <Path
+                                Data="M40,30 A60,30 0 1,1 90,80"
+                                Stroke="#00aa00"
+                                StrokeThickness="2" />
+                            <Path
+                                Data="M40,30 A60,30 0 0,1 90,80"
+                                Stroke="#0000ff"
+                                StrokeThickness="2" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="5. Rotation angle (xAxisRotate)" />
+            <TextBlock Style="{StaticResource SectionDescriptionStyle}" Text="Same elliptical arc rotated by 0°, 30°, 45°, 90°, 135°. Closed shape so the rotation is visible." />
+            <StackPanel Orientation="Horizontal">
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="rotation=0°" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M90,60 A60,30 0 0,1 90,120 60,30 0 0,1 90,60 Z"
+                            Fill="#80FFA500"
+                            Stretch="None"
+                            Stroke="DarkOrange"
+                            StrokeThickness="2" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="rotation=30°" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M90,60 A60,30 30 0,1 90,120 60,30 30 0,1 90,60 Z"
+                            Fill="#80FFA500"
+                            Stretch="None"
+                            Stroke="DarkOrange"
+                            StrokeThickness="2" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="rotation=45°" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M90,60 A60,30 45 0,1 90,120 60,30 45 0,1 90,60 Z"
+                            Fill="#80FFA500"
+                            Stretch="None"
+                            Stroke="DarkOrange"
+                            StrokeThickness="2" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="rotation=90°" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M90,60 A60,30 90 0,1 90,120 60,30 90 0,1 90,60 Z"
+                            Fill="#80FFA500"
+                            Stretch="None"
+                            Stroke="DarkOrange"
+                            StrokeThickness="2" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="rotation=135°" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M90,60 A60,30 135 0,1 90,120 60,30 135 0,1 90,60 Z"
+                            Fill="#80FFA500"
+                            Stretch="None"
+                            Stroke="DarkOrange"
+                            StrokeThickness="2" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="6. Absolute (A) vs relative (a) commands" />
+            <TextBlock Style="{StaticResource SectionDescriptionStyle}" Text="Same shape expressed in both forms — should render identically." />
+            <StackPanel Orientation="Horizontal">
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Absolute: M30,90 A40,60 0 0,1 150,90" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M30,90 A40,60 0 0,1 150,90"
+                            Stretch="None"
+                            Stroke="MediumSeaGreen"
+                            StrokeThickness="3" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Relative: m30,90 a40,60 0 0,1 120,0" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="m30,90 a40,60 0 0,1 120,0"
+                            Stretch="None"
+                            Stroke="MediumSeaGreen"
+                            StrokeThickness="3" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="7. Edge cases" />
+            <TextBlock Style="{StaticResource SectionDescriptionStyle}" Text="Degenerate input where the algorithm is supposed to no-op or fall back to a straight line." />
+            <StackPanel Orientation="Horizontal">
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Degenerate (start == end) — should render only the moveTo dot" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M90,90 A30,30 0 0,1 90,90 L150,150"
+                            Stretch="None"
+                            Stroke="Black"
+                            StrokeThickness="3" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Radii too small (rx=ry=1, chord=120) — falls back to LineTo" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M30,90 A1,1 0 0,1 150,90"
+                            Stretch="None"
+                            Stroke="Red"
+                            StrokeThickness="3" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Radii smaller than chord/2 — implementations auto-scale (W3C spec)" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M30,90 A30,30 0 0,1 150,90"
+                            Stretch="None"
+                            Stroke="Indigo"
+                            StrokeThickness="3" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Negative sweep direction (counter-clockwise)" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M30,90 A50,30 0 0,0 150,90"
+                            Stretch="None"
+                            Stroke="DarkCyan"
+                            StrokeThickness="3" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="8. Composed shapes (multiple ArcSegments)" />
+            <TextBlock Style="{StaticResource SectionDescriptionStyle}" Text="Real-world shapes that string several arcs together." />
+            <StackPanel Orientation="Horizontal">
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Pacman (270° arc)" />
+                        <!--
+                            Wedge endpoints (132.43, 47.57)/(132.43, 132.43) sit exactly on the radius-60
+                            circle around (90, 90) at ±45°, so the closing arc is a true 270° opening.
+                        -->
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M90,90 L132.43,47.57 A60,60 0 1,1 132.43,132.43 Z"
+                            Fill="Gold"
+                            Stretch="None"
+                            Stroke="DarkGoldenrod"
+                            StrokeThickness="2" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Smiley (face + 2 eyes + smile)" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M30,90 A60,60 0 1,1 150,90 A60,60 0 1,1 30,90 Z M70,75 A5,7 0 1,1 70.01,75 Z M110,75 A5,7 0 1,1 110.01,75 Z M60,105 A30,20 0 0,0 120,105"
+                            Fill="Yellow"
+                            Stretch="None"
+                            Stroke="Black"
+                            StrokeThickness="1.5" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Heart (two ellipse arcs + V)" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M90,150 A35,30 0 1,1 90,75 A35,30 0 1,1 90,150 Z"
+                            Fill="Crimson"
+                            Stretch="None"
+                            Stroke="DarkRed"
+                            StrokeThickness="2" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Rounded rect (4 elliptical corners)" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M40,40 H140 A20,15 0 0,1 160,55 V125 A20,15 0 0,1 140,140 H40 A20,15 0 0,1 20,125 V55 A20,15 0 0,1 40,40 Z"
+                            Fill="LightSteelBlue"
+                            Stretch="None"
+                            Stroke="SteelBlue"
+                            StrokeThickness="2" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="9. Rotated ellipse arcs (combined: rotation + non-uniform radii)" />
+            <TextBlock Style="{StaticResource SectionDescriptionStyle}" Text="Hardest case — non-uniform radii AND rotation. WinUI's ArcToBezier is the reference; Skia uses its native ArcTo." />
+            <StackPanel Orientation="Horizontal">
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="rx=70,ry=20, rot=45° — closed" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M50,50 A70,20 45 0,1 130,130 70,20 45 0,1 50,50 Z"
+                            Fill="#80FF6347"
+                            Stretch="None"
+                            Stroke="Tomato"
+                            StrokeThickness="2" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="rx=70,ry=20, rot=-30° — closed" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M50,90 A70,20 -30 0,1 130,90 70,20 -30 0,1 50,90 Z"
+                            Fill="#8000CED1"
+                            Stretch="None"
+                            Stroke="DarkCyan"
+                            StrokeThickness="2" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Petals — 4 rotated ellipses" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Data="M90,90 m-50,0 A50,15 0 1,1 50,0.001 Z M90,90 m0,-50 A15,50 0 1,1 0.001,-50 Z M90,90 m50,0 A50,15 0 1,1 -50,0.001 Z M90,90 m0,50 A15,50 0 1,1 0.001,50 Z"
+                            Fill="#80FF69B4"
+                            Stretch="None"
+                            Stroke="HotPink"
+                            StrokeThickness="1" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!--  ============================================================  -->
+            <TextBlock Style="{StaticResource SectionHeaderStyle}" Text="10. ArcSegment via PathGeometry (not SVG string)" />
+            <TextBlock Style="{StaticResource SectionDescriptionStyle}" Text="Same shapes via &lt;PathGeometry&gt;/&lt;ArcSegment&gt; — on Skia this routes through PathGeometry.skia.cs (native SKPath.ArcTo); on UIKit/Android through PathStreamGeometryContext (the bezier port). Should match section 3." />
+            <StackPanel Orientation="Horizontal">
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Wide ellipse via ArcSegment" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Stretch="None"
+                            Stroke="Teal"
+                            StrokeThickness="2">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathGeometry.Figures>
+                                        <PathFigure StartPoint="30,90">
+                                            <ArcSegment
+                                                IsLargeArc="False"
+                                                Point="170,90"
+                                                RotationAngle="0"
+                                                Size="80,40"
+                                                SweepDirection="Clockwise" />
+                                        </PathFigure>
+                                    </PathGeometry.Figures>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Issue #2228 via ArcSegment (closed)" />
+                        <Viewbox Width="180" Height="180">
+                            <Canvas Width="3" Height="3">
+                                <Path
+                                    Canvas.Left="-820"
+                                    Canvas.Top="-42"
+                                    Fill="DodgerBlue"
+                                    Stroke="Black"
+                                    StrokeThickness="0.05">
+                                    <Path.Data>
+                                        <PathGeometry>
+                                            <PathGeometry.Figures>
+                                                <PathFigure IsClosed="True" StartPoint="822.6875,43.4375">
+                                                    <ArcSegment
+                                                        IsLargeArc="False"
+                                                        Point="821.3125,44.75"
+                                                        Size="1.375,1.3125"
+                                                        SweepDirection="Clockwise" />
+                                                    <ArcSegment
+                                                        IsLargeArc="False"
+                                                        Point="819.9375,43.4375"
+                                                        Size="1.375,1.3125"
+                                                        SweepDirection="Clockwise" />
+                                                    <ArcSegment
+                                                        IsLargeArc="False"
+                                                        Point="821.3125,42.125"
+                                                        Size="1.375,1.3125"
+                                                        SweepDirection="Clockwise" />
+                                                    <ArcSegment
+                                                        IsLargeArc="False"
+                                                        Point="822.6875,43.4375"
+                                                        Size="1.375,1.3125"
+                                                        SweepDirection="Clockwise" />
+                                                </PathFigure>
+                                            </PathGeometry.Figures>
+                                        </PathGeometry>
+                                    </Path.Data>
+                                </Path>
+                            </Canvas>
+                        </Viewbox>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource CellStyle}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource CellLabelStyle}" Text="Rotated ellipse via ArcSegment" />
+                        <Path
+                            Width="180"
+                            Height="180"
+                            Fill="#80FF6347"
+                            Stretch="None"
+                            Stroke="Tomato"
+                            StrokeThickness="2">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathGeometry.Figures>
+                                        <PathFigure IsClosed="True" StartPoint="50,50">
+                                            <ArcSegment
+                                                IsLargeArc="False"
+                                                Point="130,130"
+                                                RotationAngle="45"
+                                                Size="70,20"
+                                                SweepDirection="Clockwise" />
+                                            <ArcSegment
+                                                IsLargeArc="False"
+                                                Point="50,50"
+                                                RotationAngle="45"
+                                                Size="70,20"
+                                                SweepDirection="Clockwise" />
+                                        </PathFigure>
+                                    </PathGeometry.Figures>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+
+</UserControl>

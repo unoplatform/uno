@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.UI.Xaml.Automation.Peers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -25,5 +26,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			return new ListViewHeaderItem() { IsGeneratedContainer = true };
 		}
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+			=> new ListViewAutomationPeer(this);
 	}
 }

@@ -115,7 +115,11 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 			uRow = 2;
 		}
 
-		var titleBarHeightForDraggingRects = _hasTitleBar ? borderThickness.top : 0;
+		// Region rects are in physical client coordinates; map them to screen space using the actual client
+		// origin. When maximized, the client rect is inset from the window rect (see WM_NCCALCSIZE), so the
+		// window origin no longer coincides with the client origin and must not be used for this mapping.
+		var clientOrigin = default(System.Drawing.Point);
+		PInvoke.ClientToScreen(hWnd, ref clientOrigin);
 
 		bool hasCustomDragRects = false;
 		if (!onResizeBorder)
@@ -131,8 +135,8 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 				foreach (var rect in region.Value)
 				{
 					var adjustedRect = new RectInt32(
-						rect.X + windowRectangle.left,
-						titleBarHeightForDraggingRects + rect.Y + windowRectangle.top,
+						rect.X + clientOrigin.X,
+						rect.Y + clientOrigin.Y,
 						rect.Width,
 						rect.Height);
 					if (adjustedRect.Contains(new PointInt32(ptMouse.X, ptMouse.Y)))
@@ -174,16 +178,20 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 		_ => Win32NonClientHitTestKind.HTCLIENT
 	};
 
-	private bool ShouldRedirectNonClientInput(HWND hWnd, WPARAM wParam, IntPtr lParam)
-	{
-		var hitTestResult = NonClientAreaHitTest(hWnd, wParam, lParam);
-
-		return hitTestResult
+	// A caption button (min/max/close/...) whose pointer input is redirected into the matching XAML button.
+	private static bool IsCaptionButton(Win32NonClientHitTestKind hitTest)
+		=> hitTest
 			is Win32NonClientHitTestKind.HTMINBUTTON
 			or Win32NonClientHitTestKind.HTMAXBUTTON
 			or Win32NonClientHitTestKind.HTCLOSE
 			or Win32NonClientHitTestKind.HTHELP
 			or Win32NonClientHitTestKind.HTMENU
 			or Win32NonClientHitTestKind.HTSYSMENU;
-	}
+
+	// The whole title bar: the caption buttons plus the caption/drag area to their left.
+	private static bool IsOverTitleBar(Win32NonClientHitTestKind hitTest)
+		=> IsCaptionButton(hitTest) || hitTest is Win32NonClientHitTestKind.HTCAPTION;
+
+	private bool ShouldRedirectNonClientInput(HWND hWnd, WPARAM wParam, IntPtr lParam)
+		=> IsCaptionButton(NonClientAreaHitTest(hWnd, wParam, lParam));
 }

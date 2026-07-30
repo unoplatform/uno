@@ -8,6 +8,6 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.Foundation")]
 [assembly: InternalsVisibleTo("Uno.UI.Wasm")]
 [assembly: InternalsVisibleTo("Uno.Wasm")]
-[assembly: InternalsVisibleTo("Uno.UI.Tests")]
+[assembly: InternalsVisibleTo("Uno.UI.UnitTests")]
 [assembly: InternalsVisibleTo("Uno.UI.Wasm.Tests")]
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]

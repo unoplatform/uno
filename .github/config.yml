@@ -16,8 +16,12 @@
 
 # Comment to be posted to on pull requests merged by a first time user
 firstPRMergeComment: >
-  Congrats on your first pull-request! We ❤ the people who are involved in this project, and we’d love to pay it forward by [sending you some swag](https://aka.platform.uno/new-contrib-swag). If you have any feedback (or ideas how to improve Uno as a open-source project) please [open a feedback issue](https://github.com/unoplatform/uno/issues/new?labels=kind%2Ffeedback%2C+triage%2Funtriaged&template=feedback.md).
-  <br>
+  🎉 Congratulations on getting your very first pull request merged into Uno Platform! This is a huge milestone — you are now officially part of the community of contributors helping shape the future of cross-platform .NET development, and your code will reach developers and apps all over the world. 🌍
+  <br><br>
+  We are genuinely grateful for the time and care you put into this contribution. Every PR — big or small — makes Uno Platform better for everyone, and we hope this is the first of many. We cannot wait to see what you build next! 🚀
+  <br><br>
+  As a small thank-you, we would love to [send you some swag](https://aka.platform.uno/new-contrib-swag) so you can wear your contributor status with pride. And if you have any feedback or ideas on how we can make contributing to Uno Platform even better, please [open a feedback issue](https://github.com/unoplatform/uno/issues/new?labels=kind%2Ffeedback%2C+triage%2Funtriaged&template=feedback.md) — we truly value your perspective.
+  <br><br>
   ![giphy](https://user-images.githubusercontent.com/127353/66220548-37ae4d00-e69b-11e9-8a16-f08f87b3b27c.gif)
   <br>
-  Merci beaucoup 👋
+  Welcome to the family, and merci beaucoup! 👋❤️

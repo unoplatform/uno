@@ -42,9 +42,6 @@
 
 		<None Include="**\*.Xamarin.cs" Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsApple)" />
 		<Compile Remove="**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsApple)" />
-
-		<None Include="**\*.unittests.cs" Exclude="bin\**\*.unittests.cs;obj\**\*.unittests.cs" Condition="!$(_IsUnitTests)" />
-		<Compile Remove="**\*.unittests.cs" Condition="!$(_IsUnitTests)" />
 	</ItemGroup>
 
 	<!--
@@ -88,10 +85,6 @@
 		<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(_IsUnitTests)">
-		<DefineConstants>$(DefineConstants);IS_UNIT_TESTS</DefineConstants>
-	</PropertyGroup>
-
 	<PropertyGroup Condition="$(IsIOS)">
 		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE;HAS_RENDER_TARGET_BITMAP</DefineConstants>
 	</PropertyGroup>
@@ -115,8 +108,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.19041' and $(TargetFramework.EndsWith('-windows10.0.19041.0')) != 'true' and '$(TargetPlatformIdentifier)' != 'UAP'">
-		<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
-		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_UNO;HAS_UNO_WINUI</DefineConstants>
 
 		<!-- Hint the VS's XAML parser -->
 		<!-- https://github.com/unoplatform/uno/issues/15517 -->
@@ -154,7 +146,7 @@
 
 			<_overridePackageId>$(CommonOverridePackageId.ToLowerInvariant())</_overridePackageId>
 			<_overridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName.ToLowerInvariant())</_overridePackageId>
-			<_overridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(_overridePackageId.Replace('uno.ui','uno.winui'))</_overridePackageId>
+			<_overridePackageId>$(_overridePackageId.Replace('uno.ui','uno.winui'))</_overridePackageId>
 			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_overridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 			<_TargetNugetRefFolder>$(NuGetPackageRoot)\$(_overridePackageId)\$(UnoNugetOverrideVersion)\ref\$(_OverrideTargetFramework)</_TargetNugetRefFolder>
 			<!-- Track ownership so cleanup only touches files produced by this project/TFM. -->
@@ -220,7 +212,7 @@
 
 			<CommonOverridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</CommonOverridePackageId>
 			<CommonOverridePackageId>$(CommonOverridePackageId.ToLowerInvariant())</CommonOverridePackageId>
-			<CommonOverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(CommonOverridePackageId.Replace('uno.ui','uno.winui'))</CommonOverridePackageId>
+			<CommonOverridePackageId>$(CommonOverridePackageId.Replace('uno.ui','uno.winui'))</CommonOverridePackageId>
 			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
 			<!-- Track ownership so shared package folders are cleaned safely. -->

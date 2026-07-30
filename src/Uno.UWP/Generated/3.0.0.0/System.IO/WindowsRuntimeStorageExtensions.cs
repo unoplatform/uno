@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace System.IO
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public static partial class WindowsRuntimeStorageExtensions
@@ -12,25 +12,25 @@ namespace System.IO
 		// Skipping already declared method System.IO.WindowsRuntimeStorageExtensions.OpenStreamForWriteAsync(Windows.Storage.IStorageFile)
 		// Skipping already declared method System.IO.WindowsRuntimeStorageExtensions.OpenStreamForReadAsync(Windows.Storage.IStorageFolder, string)
 		// Skipping already declared method System.IO.WindowsRuntimeStorageExtensions.OpenStreamForWriteAsync(Windows.Storage.IStorageFolder, string, Windows.Storage.CreationCollisionOption)
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.Win32.SafeHandles.SafeFileHandle CreateSafeFileHandle(global::Windows.Storage.IStorageFile windowsRuntimeFile, global::System.IO.FileAccess access, global::System.IO.FileShare share, global::System.IO.FileOptions options)
 		{
-			throw new global::System.NotImplementedException("The member SafeFileHandle WindowsRuntimeStorageExtensions.CreateSafeFileHandle(IStorageFile windowsRuntimeFile, FileAccess access = FileAccess.ReadWrite, FileShare share = FileShare.Read, FileOptions options = FileOptions.None) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SafeFileHandle%20WindowsRuntimeStorageExtensions.CreateSafeFileHandle%28IStorageFile%20windowsRuntimeFile%2C%20FileAccess%20access%20%3D%20FileAccess.ReadWrite%2C%20FileShare%20share%20%3D%20FileShare.Read%2C%20FileOptions%20options%20%3D%20FileOptions.None%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.IO.WindowsRuntimeStorageExtensions", "CreateSafeFileHandle(IStorageFile windowsRuntimeFile, FileAccess access = ReadWrite, FileShare share = Read, FileOptions options = None)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.Win32.SafeHandles.SafeFileHandle CreateSafeFileHandle(global::Windows.Storage.IStorageFolder rootDirectory, string relativePath, global::System.IO.FileMode mode)
 		{
-			throw new global::System.NotImplementedException("The member SafeFileHandle WindowsRuntimeStorageExtensions.CreateSafeFileHandle(IStorageFolder rootDirectory, string relativePath, FileMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SafeFileHandle%20WindowsRuntimeStorageExtensions.CreateSafeFileHandle%28IStorageFolder%20rootDirectory%2C%20string%20relativePath%2C%20FileMode%20mode%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.IO.WindowsRuntimeStorageExtensions", "CreateSafeFileHandle(IStorageFolder rootDirectory, string relativePath, FileMode mode)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.Win32.SafeHandles.SafeFileHandle CreateSafeFileHandle(global::Windows.Storage.IStorageFolder rootDirectory, string relativePath, global::System.IO.FileMode mode, global::System.IO.FileAccess access, global::System.IO.FileShare share, global::System.IO.FileOptions options)
 		{
-			throw new global::System.NotImplementedException("The member SafeFileHandle WindowsRuntimeStorageExtensions.CreateSafeFileHandle(IStorageFolder rootDirectory, string relativePath, FileMode mode, FileAccess access, FileShare share = FileShare.Read, FileOptions options = FileOptions.None) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SafeFileHandle%20WindowsRuntimeStorageExtensions.CreateSafeFileHandle%28IStorageFolder%20rootDirectory%2C%20string%20relativePath%2C%20FileMode%20mode%2C%20FileAccess%20access%2C%20FileShare%20share%20%3D%20FileShare.Read%2C%20FileOptions%20options%20%3D%20FileOptions.None%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("System.IO.WindowsRuntimeStorageExtensions", "CreateSafeFileHandle(IStorageFolder rootDirectory, string relativePath, FileMode mode, FileAccess access, FileShare share = Read, FileOptions options = None)");
 		}
 #endif
 	}

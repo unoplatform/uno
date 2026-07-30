@@ -3,19 +3,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class PointerPointProperties
 	{
 		// Skipping already declared property ContactRect
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Windows.Foundation.Rect ContactRectRaw
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect PointerPointProperties.ContactRectRaw is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20PointerPointProperties.ContactRectRaw");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPointProperties", "ContactRectRaw");
 			}
 		}
 #endif
@@ -39,28 +39,28 @@ namespace Windows.UI.Input
 		// Skipping already declared property Twist
 		// Skipping already declared property XTilt
 		// Skipping already declared property YTilt
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float? ZDistance
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float? PointerPointProperties.ZDistance is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%3F%20PointerPointProperties.ZDistance");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPointProperties", "ZDistance");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool HasUsage(uint usagePage, uint usageId)
 		{
-			throw new global::System.NotImplementedException("The member bool PointerPointProperties.HasUsage(uint usagePage, uint usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PointerPointProperties.HasUsage%28uint%20usagePage%2C%20uint%20usageId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPointProperties", "HasUsage(uint usagePage, uint usageId)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public int GetUsageValue(uint usagePage, uint usageId)
 		{
-			throw new global::System.NotImplementedException("The member int PointerPointProperties.GetUsageValue(uint usagePage, uint usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20PointerPointProperties.GetUsageValue%28uint%20usagePage%2C%20uint%20usageId%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPointProperties", "GetUsageValue(uint usagePage, uint usageId)");
 		}
 #endif
 		// Forced skipping of method Windows.UI.Input.PointerPointProperties.ContactRect.get

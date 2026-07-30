@@ -52,6 +52,7 @@ POINTER_MESSAGE_FLAG_INRANGE
 POINTER_MESSAGE_FLAG_PRIMARY
 POINTER_MESSAGE_FLAG_SECONDBUTTON
 POINTER_MESSAGE_FLAG_THIRDBUTTON
+MA_ACTIVATE
 RDH_RECTANGLES
 S_OK
 SC_CLOSE
@@ -75,6 +76,7 @@ WM_KEYDOWN
 WM_KEYUP
 WM_SYSKEYDOWN
 WM_SYSKEYUP
+WM_MOUSEACTIVATE
 WM_MOVE
 WM_NCCALCSIZE
 WM_DWMCOMPOSITIONCHANGED
@@ -99,6 +101,9 @@ WM_SETCURSOR
 WM_SETICON
 WM_SIZE
 WM_SYSCOMMAND
+WM_IME_STARTCOMPOSITION
+WM_IME_ENDCOMPOSITION
+WM_IME_COMPOSITION
 
 // Structs
 BITMAP
@@ -126,13 +131,18 @@ STGC
 BI_COMPRESSION
 DI_FLAGS
 DWM_WINDOW_CORNER_PREFERENCE
+IME_COMPOSITION_STRING
+NOTIFY_IME_ACTION
+NOTIFY_IME_INDEX
 
 // Functions
 // IMM32 (Input Method Manager) APIs for IME/emoji picker positioning
+ImmGetCompositionString
 ImmGetContext
-ImmSetCompositionWindow
-ImmSetCandidateWindow
+ImmNotifyIME
 ImmReleaseContext
+ImmSetCandidateWindow
+ImmSetCompositionWindow
 // System Caret APIs for OS caret position awareness
 CreateCaret
 SetCaretPos
@@ -142,6 +152,7 @@ AdjustWindowRectEx
 AdjustWindowRectExForDpi
 AddClipboardFormatListener
 BeginPaint
+ClientToScreen
 BitBlt
 ChoosePixelFormat
 CloseClipboard
@@ -165,6 +176,8 @@ DwmIsCompositionEnabled
 DwmExtendFrameIntoClientArea
 DwmSetWindowAttribute
 DwmDefWindowProc
+DWM_SYSTEMBACKDROP_TYPE
+DwmFlush
 EmptyClipboard
 EnableMouseInPointer
 EndPaint
@@ -218,12 +231,15 @@ GlobalSize
 GlobalUnlock
 InternetGetConnectedState
 InvalidateRect
+IsChild
+IsZoomed
 LoadCursor
 LoadRegTypeLib
 LocalFree
 MapWindowPoints
 MonitorFromWindow
 MonitorFromPoint
+MonitorFromRect
 OleInitialize
 OpenClipboard
 PeekMessage
@@ -245,6 +261,8 @@ SelectObject
 SendMessage
 SetActiveWindow
 SetCapture
+SetFocus
+SetForegroundWindow
 SetClipboardData
 SetCursor
 SetLayeredWindowAttributes

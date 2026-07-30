@@ -85,7 +85,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		else
 		{
-			typeof(UnicodeText).LogInfo()?.Info($"No implementation of {nameof(ISpellCheckingService)} was found. Spell checking will be disabled. To enable spell checking, add the '{{nameof(SpellChecking)}}' UnoFeature.");
+			typeof(UnicodeText).LogWarn()?.Warn($"No implementation of {nameof(ISpellCheckingService)} was found. Spell checking will be disabled. To enable spell checking, add the 'SpellChecking' UnoFeature.");
 			return null;
 		}
 	});
@@ -94,6 +94,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static readonly Brush _blackBrush = new SolidColorBrush(Colors.Black);
 	private static readonly SKPaint _spareDrawPaint = new() { IsStroke = false, IsAntialias = true };
 	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true };
+	private static readonly SKPaint _spareCompositionUnderlinePaint = new() { Style = SKPaintStyle.Stroke, StrokeWidth = 1, IsAntialias = true };
 	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
 	private static readonly Dictionary<string, HashSet<IFontCacheUpdateListener>> _fontFamilyToListeners = new();
 	private readonly string _text;
@@ -359,14 +360,24 @@ internal readonly partial struct UnicodeText : IParsedText
 						maxHeightFontDetailsInChunkUnderTest = currentClusterBreak.Value.fontDetails;
 					}
 
-					if (currentLineEnd == -1 && textWrapping is TextWrapping.Wrap && lineWidth + chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth > availableSize.Width)
+					if (textWrapping is TextWrapping.Wrap && chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth > availableSize.Width)
 					{
+						// The chunk being built can't fit on an empty line on its own — we have to break mid-chunk.
+						// If it can fit on a line, then it will be moved as a whole to the next line during the
+						// line breaking opportunity check below.
+						if (currentLineEnd != -1)
+						{
+							// If anything is already committed on the current line, flush it first so the chunk starts on a fresh line.
+							var (currentLineH, currentLineB) = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine!, lines.Count == 0, false);
+							lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast!, lineWidth, lineWidthWithoutTrailingSpaces, currentLineH, currentLineB));
+						}
+
 						float width;
 						float widthWithoutTrailingSpaces;
 						FontDetails fontDetails;
 						int end;
 						LinkedListNode<Cluster> clusterLast;
-						if (oldValues.maxHeightFontDetailsInChunkUnderTest is null) // this cluster is the only cluster in the line
+						if (oldValues.maxHeightFontDetailsInChunkUnderTest is null) // this cluster is the only cluster in the chunk
 						{
 							width = chunkUnderTestWidth;
 							widthWithoutTrailingSpaces = chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth;
@@ -803,7 +814,8 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	public void Draw(in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret, // null to skip drawing a caret
-		IEnumerable<TextHighlighter> highlighters)
+		IEnumerable<TextHighlighter> highlighters,
+		(int startIndex, int length)? compositionRange)
 	{
 		var highlighterSlicer = new RangeSlicer<(CompositionBrush? background, Brush foreground)>(0, _text.Length);
 		foreach (var highlighter in highlighters)
@@ -823,6 +835,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		Dictionary<SKColor, Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>> _colorToFontToGlyphs = new();
 		List<(SKPath path, float strokeThickness)> spellCheckUnderlines = new();
+		List<(float x1, float x2, float y, SKColor color)> compositionUnderlines = new();
 
 		SKRect? caretRect = default;
 
@@ -928,6 +941,20 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 			}
 
+			if (compositionRange is var (compStart, compLen) && compLen > 0)
+			{
+				var compEnd = compStart + compLen;
+				if (cluster.Value.start < compEnd && cluster.Value.end > compStart)
+				{
+					// Place the underline just below the baseline
+					var underlineY = y + line.baselineOffset + fontDetails.SKFontSize / 6.0f;
+					var underlineLeftX = unalignedX + alignmentOffset;
+					var underlineRightX = underlineLeftX + cluster.Value.width;
+					var foreColor = BrushToColor(_runBreaks[runBreakIndex].foreground, session.Opacity);
+					compositionUnderlines.Add((underlineLeftX, underlineRightX, underlineY, foreColor));
+				}
+			}
+
 			if (caret is var (caretIndex, _, caretThickness))
 			{
 				if (caretIndex >= cluster.Value.start && caretIndex < cluster.Value.end)
@@ -961,6 +988,12 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			_spareSpellCheckPaint.StrokeWidth = strokeThickness;
 			session.Canvas.DrawPath(path, _spareSpellCheckPaint);
+		}
+
+		foreach (var (x1, x2, underlineY, color) in compositionUnderlines)
+		{
+			_spareCompositionUnderlinePaint.Color = color;
+			session.Canvas.DrawLine(x1, underlineY, x2, underlineY, _spareCompositionUnderlinePaint);
 		}
 
 		if (caretRect is null && caret?.index == _text.Length) // ending new line or empty text
@@ -1213,17 +1246,13 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		else if (index == _text.Length)
 		{
-			if (right)
-			{
-				return (_text.Length, 0);
-			}
-			else if (_wordBoundaries.Count == 1)
+			if (_wordBoundaries.Count == 1)
 			{
 				return (0, _text.Length);
 			}
 			else
 			{
-				return (_wordBoundaries[^2], _text.Length);
+				return (_wordBoundaries[^2], _text.Length - _wordBoundaries[^2]);
 			}
 		}
 		else
@@ -1237,8 +1266,8 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 				prevBoundary = boundary;
 			}
+			throw new UnreachableException();
 		}
-		throw new UnreachableException();
 	}
 
 	public (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index)

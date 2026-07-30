@@ -24,6 +24,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			(_glInterface, _grContext) = CreateGRGLContext();
 		}
 
+		protected override bool UsesRetainedLayer => true;
+		protected override GRContext? GpuContext => _grContext;
+
 		public override void Dispose()
 		{
 			using var lockDisposable = X11Helper.XLock(_x11Window.Display);
@@ -36,6 +39,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				}
 			}, _x11Window);
 
+			DisposeRetainedLayer();
 			_grContext.Dispose();
 			_glInterface.Dispose();
 		}

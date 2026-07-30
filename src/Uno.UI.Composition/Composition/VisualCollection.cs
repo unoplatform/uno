@@ -79,7 +79,14 @@ namespace Microsoft.UI.Composition
 
 		public void RemoveAll()
 		{
-			var resetItems = CollectionChanged != null ? _visuals.ToArray() : null;
+			// Snapshot the removed items so subscribers (e.g. ContainerVisual.skia.cs) that need
+			// to react to detach can still see them. NotifyCollectionChangedAction.Reset must not
+			// carry changedItems per BCL contract, so we report each removal individually.
+			Visual[] removed = null;
+			if (CollectionChanged is not null && _visuals.Count > 0)
+			{
+				removed = _visuals.ToArray();
+			}
 
 			foreach (var child in _visuals)
 			{
@@ -88,7 +95,18 @@ namespace Microsoft.UI.Composition
 			_visuals.Clear();
 			RemoveAllPartial();
 
-			CollectionChanged?.Invoke(this, new(NotifyCollectionChangedAction.Reset, resetItems));
+			if (CollectionChanged is { } handler)
+			{
+				if (removed is not null)
+				{
+					foreach (var item in removed)
+					{
+						handler(this, new(NotifyCollectionChangedAction.Remove, (object)item));
+					}
+				}
+
+				handler(this, new(NotifyCollectionChangedAction.Reset));
+			}
 		}
 		partial void RemoveAllPartial();
 

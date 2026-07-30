@@ -443,42 +443,25 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 		#region DataItem Support
 
+		// MUX Reference: LoopingSelectorAutomationPeer_Partial.cpp GetDataAutomationPeerForItem (lines 510-544).
+		// Returns the cached data peer for the item, creating a new one if one does not exist yet.
 		public void GetDataAutomationPeerForItem(
 			DependencyObject pItem,
 			out LoopingSelectorItemDataAutomationPeer ppPeer)
 		{
-			//PeerMap.iterator peerIter;
-
-			//peerIter = _peerMap.find(pItem);
-			if (!_peerMap.TryGetValue(pItem, out var peerIter))
+			if (_peerMap.TryGetValue(pItem, out var existing))
 			{
-				ppPeer = default;
+				ppPeer = existing;
 				return;
 			}
 
-			if (peerIter == _peerMap.LastOrDefault().Value)
-			{
-				LoopingSelectorItemDataAutomationPeer spDataPeer;
-				//(wrl.MakeAndInitialize<LoopingSelectorItemDataAutomationPeer>(
-				//	&spDataPeer,
-				//	pItem,
-				//	(LoopingSelectorAutomationPeer)this));
-				spDataPeer = new LoopingSelectorItemDataAutomationPeer(pItem, this);
-
-				// PeerMap keeps a pointer to this automation peer.
-				// The peers lifetime is owned by this map and is released
-				// when LoopingSelectorAP dies or when the items collection
-				// changes.
-				_peerMap[pItem] = spDataPeer;
-				//spDataPeer.AddRef();
-				//spDataPeer.CopyTo(ppPeer);
-				ppPeer = spDataPeer;
-			}
-			else
-			{
-				ppPeer = peerIter;
-				//ppPeer.AddRef();
-			}
+			// PeerMap keeps a pointer to this automation peer.
+			// The peers lifetime is owned by this map and is released
+			// when LoopingSelectorAP dies or when the items collection
+			// changes.
+			var spDataPeer = new LoopingSelectorItemDataAutomationPeer(pItem, this);
+			_peerMap[pItem] = spDataPeer;
+			ppPeer = spDataPeer;
 		}
 
 		internal void GetContainerAutomationPeerForItem(

@@ -74,6 +74,7 @@ internal class HealthService(
 				? upstreamTask.Exception?.InnerException?.Message ?? "Unknown error"
 				: null,
 			forceRootsFallback: ForceRootsFallback,
-			rootsProvided: RootsProvided);
+			rootsProvided: RootsProvided,
+			hostRespondedNoMcp: devServerMonitor.HostRespondedNoMcp);
 	}
 }

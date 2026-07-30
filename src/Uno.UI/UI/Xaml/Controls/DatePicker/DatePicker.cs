@@ -32,6 +32,8 @@ namespace Microsoft.UI.Xaml.Controls
 		const int DATEPICKER_SENTINELTIME_SECOND = 0;
 		const int DATEPICKER_WRAP_AROUND_MONTHS_FIRST_INDEX = 1;
 
+		private const string UIA_NAME_DATEPICKER = nameof(UIA_NAME_DATEPICKER);
+
 		// Reference to a Button for invoking the DatePickerFlyout in the form factor APISet
 		ButtonBase m_tpFlyoutButton;
 
@@ -2182,33 +2184,10 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateOrderAndLayout();
 		}
 
-		// Create DatePickerAutomationPeer to represent the
-		//override void OnCreateAutomationPeer(out xaml_automation_peers.IAutomationPeer** ppAutomationPeer)
-		//{
-		//	HRESULT hr = S_OK;
-		//	xaml_automation_peers.IDatePickerAutomationPeer spDatePickerAutomationPeer;
-		//	xaml_automation_peers.IDatePickerAutomationPeerFactory spDatePickerAPFactory;
-		//	IActivationFactory spActivationFactory;
-		//	DependencyObject spInner;
+		protected override Automation.Peers.AutomationPeer OnCreateAutomationPeer()
+			=> new Automation.Peers.DatePickerAutomationPeer(this);
 
-		//	IFCPTR(ppAutomationPeer);
-		//	*ppAutomationPeer = null;
-
-		//	spActivationFactory.Attach(ctl.ActivationFactoryCreator<DirectUI.DatePickerAutomationPeerFactory>.CreateActivationFactory());
-		//	(spActivationFactory.As(&spDatePickerAPFactory));
-
-		//	(spDatePickerAPFactory as DatePickerAutomationPeerFactory.CreateInstanceWithOwner(this,
-		//		null,
-		//		&spInner,
-		//		&spDatePickerAutomationPeer));
-		//	(spDatePickerAutomationPeer.CopyTo(ppAutomationPeer));
-
-		//Cleanup:
-		//	RRETURN(hr);
-		//}
-
-#if false
-		void GetSelectedDateAsString(out string strPlainText)
+		string GetSelectedDateAsString()
 		{
 			DateTimeFormatter spFormatter;
 			string strCalendarIdentifier;
@@ -2218,46 +2197,40 @@ namespace Microsoft.UI.Xaml.Controls
 
 			strCalendarIdentifier = CalendarIdentifier;
 			CreateNewFormatter("day month.full year", strCalendarIdentifier, out spFormatter);
-			strPlainText = spFormatter.Format(date.Value);
+			return spFormatter.Format(date.Value);
 		}
-#endif
 
 		void RefreshFlyoutButtonAutomationName()
 		{
-			// UNO TODO
-			//if (m_tpFlyoutButton != null)
-			//{
-			//	string strParentAutomationName;
-			//	strParentAutomationName = AutomationProperties.GetName(this);
-			//	if (string.IsNullOrEmpty(strParentAutomationName))
-			//	{
-			//		var spHeaderAsInspectable = Header;
-			//		if (spHeaderAsInspectable != null)
-			//		{
-			//			(FrameworkElement.GetStringFromObject(spHeaderAsInspectable, strParentAutomationName));
-			//		}
-			//	}
-			//	string pszParent = strParentAutomationName;
+			if (m_tpFlyoutButton is null)
+			{
+				return;
+			}
 
+			string strParentAutomationName = AutomationProperties.GetName(this);
+			if (string.IsNullOrEmpty(strParentAutomationName))
+			{
+				var spHeaderAsInspectable = Header;
+				if (spHeaderAsInspectable is not null)
+				{
+					strParentAutomationName = FrameworkElement.GetStringFromObject(spHeaderAsInspectable);
+				}
+			}
 
-			//	string strSelectedValue;
-			//	GetSelectedDateAsString(out strSelectedValue);
-			//	string pszSelectedValue = strSelectedValue;
+			string strSelectedValue = SelectedDate.HasValue ? GetSelectedDateAsString() : string.Empty;
 
-			//	string strMsgFormat;
-			//	DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_NAME_DATEPICKER, strMsgFormat.GetAddressOf()));
-			//	string pszMsgFormat = strMsgFormat.GetRawBuffer(null);
+			string strMsgFormat = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_NAME_DATEPICKER);
+			if (!string.IsNullOrEmpty(strMsgFormat))
+			{
+				// The resource uses Win32 FormatMessage-style placeholders (%1, %2),
+				// not .NET indexed placeholders ({0}, {1}). Use FormatMsg accordingly.
+				string cchBuffer = StringUtil.FormatMsg(strMsgFormat, strParentAutomationName, strSelectedValue);
 
-			//	char szBuffer[MAX_PATH];
-			//	int cchBuffer = 0;
-			//	cchBuffer = FormatMsg(szBuffer, pszMsgFormat, pszParent, pszSelectedValue);
-
-			//	// no charater wrote, szBuffer is blank don't update NameProperty
-			//	if (cchBuffer > 0)
-			//	{
-			//		(DirectUI.AutomationProperties.SetNameStatic(m_tpFlyoutButton as Button, stringReference(szBuffer)));
-			//	}
-			//}
+				if (!string.IsNullOrEmpty(cchBuffer))
+				{
+					AutomationProperties.SetName(m_tpFlyoutButton, cchBuffer);
+				}
+			}
 		}
 
 		/* static */

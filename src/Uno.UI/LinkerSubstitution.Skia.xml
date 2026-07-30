@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<linker>
+	<assembly fullname="Uno.UI">
+		<type fullname="Microsoft.UI.Xaml.Application">
+			<method signature="System.Boolean get_HasSecondaryApps()"
+					feature="UnoEnableAlcAppSupport"
+					body="stub"
+					value="false"
+					featurevalue="false" />
+		</type>
+	</assembly>
+</linker>

@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
+using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
@@ -243,6 +244,220 @@ public class Given_ElementTheme
 		Assert.IsGreaterThanOrEqualTo(1, themeChangedCount, "ActualThemeChanged should fire when RequestedTheme changes");
 	}
 
+	[TestMethod]
+	public async Task When_ActualThemeChanged_Fires_ActualTheme_Returns_New_Value()
+	{
+		// Validates that ActualTheme already reflects the new theme when
+		// ActualThemeChanged fires, matching WinUI behavior (framework.cpp:
+		// CUIElement::NotifyThemeChangedCore sets theme before
+		// RaiseActiveThemeChangedEventIfChanging raises the event).
+		var parent = new Border { Width = 100, Height = 100, RequestedTheme = ElementTheme.Light };
+		var child = new Border { Width = 50, Height = 50 };
+		parent.Child = child;
+
+		WindowHelper.WindowContent = parent;
+		await WindowHelper.WaitForLoaded(parent);
+
+		Assert.AreEqual(ElementTheme.Light, parent.ActualTheme, "Parent should start as Light");
+		Assert.AreEqual(ElementTheme.Light, child.ActualTheme, "Child should start as Light");
+
+		ElementTheme? parentThemeDuringEvent = null;
+		ElementTheme? childThemeDuringEvent = null;
+		ElementTheme? parentThemeSeenByChild = null;
+
+		parent.ActualThemeChanged += (s, e) =>
+		{
+			parentThemeDuringEvent = ((FrameworkElement)s).ActualTheme;
+		};
+
+		child.ActualThemeChanged += (s, e) =>
+		{
+			childThemeDuringEvent = ((FrameworkElement)s).ActualTheme;
+			// The child's handler should also see the parent's
+			// updated ActualTheme (not a stale value).
+			parentThemeSeenByChild = parent.ActualTheme;
+		};
+
+		parent.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(ElementTheme.Dark, parentThemeDuringEvent,
+			"Parent's ActualTheme should be Dark inside ActualThemeChanged handler");
+		Assert.AreEqual(ElementTheme.Dark, childThemeDuringEvent,
+			"Child's ActualTheme should be Dark inside ActualThemeChanged handler");
+		Assert.AreEqual(ElementTheme.Dark, parentThemeSeenByChild,
+			"Parent's ActualTheme should be Dark when observed from child's ActualThemeChanged handler");
+	}
+
+#if HAS_UNO
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_AppTheme_Changes_ActualTheme_Returns_New_Value_In_Handler()
+	{
+		// Same as above but via application-level theme change (ThemeHelper),
+		// which exercises the root→child propagation path that caused
+		// ActualTheme to return stale values before the fix.
+
+		// Ensure we start in Light. Keep the scope alive until after the
+		// Dark switch so the transition is always Light→Dark regardless
+		// of the runner's initial theme.
+		using var lightScope = ThemeHelper.UseApplicationLightTheme();
+		await WindowHelper.WaitForIdle();
+
+		var element = new Border { Width = 100, Height = 100 };
+
+		WindowHelper.WindowContent = element;
+		await WindowHelper.WaitForLoaded(element);
+
+		Assert.AreEqual(ElementTheme.Light, element.ActualTheme, "Element should start as Light");
+
+		ElementTheme? themeDuringEvent = null;
+
+		element.ActualThemeChanged += (s, e) =>
+		{
+			themeDuringEvent = ((FrameworkElement)s).ActualTheme;
+		};
+
+		using (ThemeHelper.UseApplicationDarkTheme())
+		{
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ElementTheme.Dark, themeDuringEvent,
+				"ActualTheme should be Dark inside ActualThemeChanged handler during app theme change");
+			Assert.AreEqual(ElementTheme.Dark, element.ActualTheme,
+				"ActualTheme should remain Dark after event");
+		}
+	}
+#endif
+
+	[TestMethod]
+	public async Task When_ThemeResource_Resolved_During_ActualThemeChanged_Returns_New_Value()
+	{
+		// Mirrors the csharpmarkup ThemeBindingProvider pattern: use
+		// ActualTheme inside the ActualThemeChanged handler to pick the
+		// correct theme dictionary and resolve a resource from it.
+		// Before the fix, ActualTheme was stale during the event, so the
+		// handler would select the wrong dictionary and return the old
+		// theme's value.
+		var border = new Border { Width = 100, Height = 100, RequestedTheme = ElementTheme.Light };
+
+		// Local theme dictionaries with distinct sentinel colors per theme
+		var lightDict = new ResourceDictionary();
+		lightDict["TestColor"] = Colors.White;
+		var darkDict = new ResourceDictionary();
+		darkDict["TestColor"] = Colors.Black;
+		border.Resources.ThemeDictionaries["Light"] = lightDict;
+		border.Resources.ThemeDictionaries["Dark"] = darkDict;
+
+		WindowHelper.WindowContent = border;
+		await WindowHelper.WaitForLoaded(border);
+
+		Assert.AreEqual(ElementTheme.Light, border.ActualTheme, "Border should start as Light");
+
+		Windows.UI.Color? colorDuringEvent = null;
+		ElementTheme? themeDuringEvent = null;
+
+		border.ActualThemeChanged += (s, e) =>
+		{
+			var fe = (FrameworkElement)s;
+			themeDuringEvent = fe.ActualTheme;
+
+			// Use ActualTheme to pick the theme dictionary — this is the
+			// exact pattern ThemeBindingProvider uses. If ActualTheme is
+			// stale, we read from the wrong dictionary.
+			var themeKey = fe.ActualTheme == ElementTheme.Dark ? "Dark" : "Light";
+			if (fe.Resources.ThemeDictionaries.TryGetValue(themeKey, out var dict)
+				&& dict is ResourceDictionary rd
+				&& rd.TryGetValue("TestColor", out var val))
+			{
+				colorDuringEvent = (Windows.UI.Color)val;
+			}
+		};
+
+		border.RequestedTheme = ElementTheme.Dark;
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(ElementTheme.Dark, themeDuringEvent,
+			"ActualTheme should be Dark inside handler");
+
+		Assert.IsNotNull(colorDuringEvent);
+		Assert.AreEqual(Colors.Black, (Windows.UI.Color)colorDuringEvent,
+			$"Handler should have resolved the Dark dictionary (Black), " +
+			$"but got {colorDuringEvent}. " +
+			$"If White, ActualTheme was stale and the wrong dictionary was used.");
+	}
+
+#if HAS_UNO
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_AppTheme_Changes_ThemeResource_Resolved_During_Event_Returns_New_Value()
+	{
+		// Exact CSharpMarkup ThemeBindingProvider scenario:
+		// 1. App-level theme changes (not local RequestedTheme)
+		// 2. ActualThemeChanged fires on element
+		// 3. Handler reads element.ActualTheme to pick theme dictionary
+		// 4. Resolves resource from the chosen dictionary
+		//
+		// Before the fix (SetTheme after RaiseActualThemeChanged), step 3
+		// returned the OLD theme, causing step 4 to select the wrong
+		// dictionary and produce stale colors.
+		//
+		// MUX Reference: framework.cpp CUIElement::NotifyThemeChangedCore
+		// sets theme BEFORE raising the event.
+
+		using var lightScope = ThemeHelper.UseApplicationLightTheme();
+		await WindowHelper.WaitForIdle();
+
+		var element = new Border { Width = 100, Height = 100 };
+
+		// Set up theme dictionaries with distinct sentinel values
+		var lightDict = new ResourceDictionary();
+		lightDict["SentinelColor"] = Colors.White;
+		var darkDict = new ResourceDictionary();
+		darkDict["SentinelColor"] = Colors.Black;
+		element.Resources.ThemeDictionaries["Light"] = lightDict;
+		element.Resources.ThemeDictionaries["Dark"] = darkDict;
+
+		WindowHelper.WindowContent = element;
+		await WindowHelper.WaitForLoaded(element);
+
+		Assert.AreEqual(ElementTheme.Light, element.ActualTheme, "Should start Light");
+
+		ElementTheme? themeDuringEvent = null;
+		Windows.UI.Color? colorDuringAppThemeEvent = null;
+
+		element.ActualThemeChanged += (s, e) =>
+		{
+			var fe = (FrameworkElement)s;
+			themeDuringEvent = fe.ActualTheme;
+
+			// This is what CSharpMarkup's ThemeBindingProvider does:
+			// read ActualTheme, pick the matching dictionary, resolve resource.
+			var themeKey = fe.ActualTheme == ElementTheme.Dark ? "Dark" : "Light";
+			if (fe.Resources.ThemeDictionaries.TryGetValue(themeKey, out var dict)
+				&& dict is ResourceDictionary rd
+				&& rd.TryGetValue("SentinelColor", out var val))
+			{
+				colorDuringAppThemeEvent = (Windows.UI.Color)val;
+			}
+		};
+
+		using (ThemeHelper.UseApplicationDarkTheme())
+		{
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(ElementTheme.Dark, themeDuringEvent,
+				"ActualTheme should be Dark inside handler during app-level theme change");
+			Assert.IsNotNull(colorDuringAppThemeEvent,
+				"Resource should have been resolved during the event");
+			Assert.AreEqual(Colors.Black, (Windows.UI.Color)colorDuringAppThemeEvent,
+				$"Handler should resolve from Dark dictionary (Black), " +
+				$"but got {colorDuringAppThemeEvent}. " +
+				$"If White, ActualTheme was stale (CSharpMarkup canary scenario).");
+		}
+	}
+#endif
+
 	#endregion
 
 	#region Theme Resources
@@ -414,8 +629,12 @@ public class Given_ElementTheme
 
 #if HAS_UNO
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_No_RequestedTheme_Uses_App_Theme()
 	{
+		// Pin the app to Light (RequiresFullWindow lets it reach the content) so this app-theme
+		// assertion is deterministic regardless of the developer's OS theme.
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		var element = new Border() { Width = 100, Height = 100 };
 
 		WindowHelper.WindowContent = element;
@@ -1390,8 +1609,10 @@ public class Given_ElementTheme
 	/// even when a sibling element has a different RequestedTheme.
 	/// </summary>
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_Sibling_Has_Different_Theme_TextBlock_Foreground_Matches_App_Theme()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		var root = (StackPanel)XamlReader.Load(
 			"""
 			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -1788,6 +2009,10 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	// Native WinUI's runtime-test harness crashes (access violation, 0xC0000005) when a flyout/popup is
+	// open and the theme is changed at runtime — a native popup-teardown instability, not a Uno parity gap.
+	// First-open flyout/popup theme IS confirmed on WinUI via Given_Theme_Materialization T4/T5.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Popup_Owner_Theme_Changes_At_Runtime_Popup_Content_Updates()
 	{
 		// When a parent's RequestedTheme changes, open popup content should update.
@@ -1851,6 +2076,9 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	// Native WinUI harness crash (0xC0000005) on open-popup + runtime theme change — see the note on
+	// When_Popup_Owner_Theme_Changes_At_Runtime_Popup_Content_Updates. Native instability, not a parity gap.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ComboBox_Theme_Changes_At_Runtime_Dropdown_Updates()
 	{
 		// Simulates ThemeHelper.UseDarkTheme() scenario: root content theme changes
@@ -1912,6 +2140,9 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	// Native WinUI harness crash (0xC0000005, confirmed) on open-flyout + runtime theme change — see the
+	// note on When_Popup_Owner_Theme_Changes_At_Runtime_Popup_Content_Updates. Native instability, not a gap.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Flyout_Target_Theme_Changes_Flyout_Updates()
 	{
 		// MUX Reference: FlyoutBase hooks ActualThemeChanged on placement target
@@ -2285,8 +2516,10 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_Theme_Changes_Button_Normal_Foreground_Updates()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Basic test: does a Button's normal (non-hovered) Foreground update
 		// when its parent's theme changes?
 		var root = new StackPanel { Width = 200, Height = 200 };
@@ -2313,8 +2546,10 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_Grandparent_RequestedTheme_Changes_Button_Foreground_Updates()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Matches BasicThemeResources scenario: Page sets RequestedTheme,
 		// buttons are nested several levels deep.
 		var outerPanel = new StackPanel { Width = 300, Height = 300 };
@@ -2355,8 +2590,10 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_XamlParsed_Buttons_Theme_Change_Foreground_Updates()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Test XAML-parsed buttons (matching BasicThemeResources scenario)
 		// where buttons are created via XAML parsing, not programmatically.
 		var xaml = """
@@ -2402,8 +2639,11 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_Theme_Changes_TextBlock_Foreground_Updates()
 	{
+		// Pin the app to Light so this Light->Dark difference test is deterministic on any OS theme.
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Basic test: does a TextBlock's Foreground update when parent theme changes?
 		var root = new StackPanel { Width = 200, Height = 200 };
 		var textBlock = new TextBlock { Text = "Hello" };
@@ -2426,8 +2666,10 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_Theme_Default_To_Dark_Button_PointerOver_Updates()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Matches SamplesApp behavior: page starts with Default theme (Light app theme),
 		// then user switches to Dark. The button in PointerOver should update.
 		var root = new StackPanel { Width = 200, Height = 200 }; // No explicit RequestedTheme (= Default)
@@ -2509,6 +2751,9 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	// Native WinUI harness crash (0xC0000005) on open-menuflyout + runtime theme change — see the note on
+	// When_Popup_Owner_Theme_Changes_At_Runtime_Popup_Content_Updates. Native instability, not a parity gap.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_MenuFlyout_Open_During_Theme_Change_PointerOver_Updates()
 	{
 		// When a MenuFlyout is open and theme changes, items in PointerOver state
@@ -2623,8 +2868,11 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresFullWindow]
 	public async Task When_Root_Theme_Cycles_Dark_Default_TextBlock_Foreground_Restores()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Repro: SamplesApp three-dots Dark → Default → navigate to page → TextBlock white instead of black
 		// Root cause: EnsureThemeForeground sets Inheritance-precedence foreground on all children
 		// during Dark push, but when root switches back to Default, only root's _themeForeground
@@ -2662,8 +2910,11 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresFullWindow]
 	public async Task When_Root_Theme_Cycles_New_Content_Has_Correct_Foreground()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Tests that NEW content loaded after Dark→Default cycle gets correct foreground
 		var root = new StackPanel { Width = 200, Height = 200 };
 
@@ -2693,8 +2944,11 @@ public class Given_ElementTheme
 	#region Root Theme Cycle Then Element Theme Change (Issue Repro)
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[RequiresFullWindow]
 	public async Task When_RootTheme_Cycles_Then_Element_RequestedTheme_Dark_Button_Foreground_Updates()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Exact SamplesApp repro:
 		// 1. Three-dots button → root.RequestedTheme = Dark → root.RequestedTheme = Default
 		// 2. Navigate to BasicThemeResources page (loads fresh content)
@@ -3185,6 +3439,9 @@ public class Given_ElementTheme
 #endif
 
 	[TestMethod]
+	// Native WinUI harness crash (0xC0000005, confirmed) on open-flyout + runtime theme change — see the
+	// note on When_Popup_Owner_Theme_Changes_At_Runtime_Popup_Content_Updates. Native instability, not a gap.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Flyout_PlacementTarget_Theme_Changes_Flyout_Updates()
 	{
 		// Gap: Open flyout, change placement target's ancestor theme,
@@ -3230,6 +3487,7 @@ public class Given_ElementTheme
 
 #if HAS_UNO
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_App_Theme_Changes_Explicit_Element_Keeps_Own_Resources()
 	{
 		// Element with RequestedTheme=Light should keep Light resources
@@ -3280,8 +3538,10 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_Element_Theme_None_Does_Not_Force_Dark()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		// Element enters tree with no explicit theme and no parent theme
 		// Should use app theme (Light), not default to Dark
 		var element = new Border { Width = 100, Height = 100 };
@@ -3295,6 +3555,7 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_UseApplicationDarkTheme_Disposed_IsThemeSetExplicitly_Restored()
 	{
 		// Verify IsThemeSetExplicitly is restored to false after dispose
@@ -3385,8 +3646,10 @@ public class Given_ElementTheme
 	///   After Local Default:  col0=black,      col1=white,      col2=black  (col1 keeps Dark)
 	/// </summary>
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_ParentThemeChanges_BasicThemeResources_FullRepro()
 	{
+		using var _ = ThemeHelper.UseApplicationLightTheme();
 		var page = new Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.BasicThemeResources_Test();
 
 		WindowHelper.WindowContent = page;
@@ -3643,4 +3906,690 @@ public class Given_ElementTheme
 	}
 
 	#endregion
+
+	#region Code-behind Style with ThemeResource (issue #455)
+
+	[TestMethod]
+	public async Task When_Style_Set_From_CodeBehind_ThemeResource_Foreground_Resolves_Correctly()
+	{
+		// Regression test: setting Style from code-behind should resolve
+		// ThemeResource values in the Style's setters using the correct theme.
+		// Issue: after element-level theming changes, ThemeResource values in
+		// code-behind-applied Styles could resolve with the wrong theme context.
+
+		var style = new Style(typeof(TextBox));
+		style.Setters.Add(new Setter(Control.ForegroundProperty, new SolidColorBrush(Colors.Red)));
+
+		var textBox = new TextBox { Text = "Hello", Width = 200 };
+		var container = new Border { Child = textBox, Width = 200, Height = 50 };
+
+		WindowHelper.WindowContent = container;
+		await WindowHelper.WaitForLoaded(textBox);
+		await WindowHelper.WaitForIdle();
+
+		// Apply style from code-behind AFTER the element is loaded
+		textBox.Style = style;
+		await WindowHelper.WaitForIdle();
+
+		var fg = textBox.Foreground as SolidColorBrush;
+		Assert.IsNotNull(fg, "Foreground should be a SolidColorBrush");
+		Assert.AreEqual(Colors.Red, fg.Color, "Foreground should match the style setter value");
+	}
+
+	[TestMethod]
+	public async Task When_Style_With_ThemeResource_Set_From_CodeBehind_Uses_Correct_Theme()
+	{
+		// This test uses a style with ThemeResource-based Foreground and verifies
+		// it resolves to the correct theme variant when applied from code-behind.
+		// The app theme determines which brush to expect.
+
+		var appTheme = Application.Current.RequestedTheme;
+
+		// Create a style via XamlReader to get real ThemeResource resolution
+		var xaml = """
+			<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			       TargetType="TextBox">
+				<Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
+			</Style>
+			""";
+		var style = (Style)XamlReader.Load(xaml);
+
+		var textBox = new TextBox { Text = "Hello", Width = 200 };
+		var container = new Border { Child = textBox, Width = 200, Height = 50 };
+
+		WindowHelper.WindowContent = container;
+		await WindowHelper.WaitForLoaded(textBox);
+		await WindowHelper.WaitForIdle();
+
+		// Apply style from code-behind
+		textBox.Style = style;
+		await WindowHelper.WaitForIdle();
+
+		var fg = textBox.Foreground as SolidColorBrush;
+		Assert.IsNotNull(fg, "Foreground should be a SolidColorBrush after code-behind style");
+
+		// Also create a TextBox with the style set in XAML for comparison
+		var xaml2 = """
+			<TextBox xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			         Text="Reference"
+			         Width="200"
+			         Style="{StaticResource DefaultTextBoxStyle}">
+			</TextBox>
+			""";
+		var refTextBox = (TextBox)XamlReader.Load(xaml2);
+		var refContainer = new StackPanel();
+		refContainer.Children.Add(refTextBox);
+
+		WindowHelper.WindowContent = refContainer;
+		await WindowHelper.WaitForLoaded(refTextBox);
+		await WindowHelper.WaitForIdle();
+
+		var refFg = refTextBox.Foreground as SolidColorBrush;
+		Assert.IsNotNull(refFg, "Reference Foreground should be a SolidColorBrush");
+
+		// The code-behind-applied ThemeResource should resolve to the same color
+		// as a normally-styled TextBox
+		Assert.AreEqual(refFg.Color, fg.Color,
+			$"Code-behind style ThemeResource Foreground ({fg.Color}) should match " +
+			$"XAML-applied style Foreground ({refFg.Color}) for theme {appTheme}");
+	}
+
+	[TestMethod]
+	public async Task When_Style_With_Template_Set_From_CodeBehind_VisualState_ThemeResources_Correct()
+	{
+		// Reproduces the core issue: a TextBox gets a custom Style (with Template)
+		// from code-behind. After the template is applied, visual state transitions
+		// should use correctly-resolved ThemeResource values.
+
+		// Create a custom style with a simplified template that has visual states
+		var xaml = """
+			<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			       TargetType="TextBox">
+				<Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
+				<Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
+				<Setter Property="BorderBrush" Value="{ThemeResource TextControlBorderBrush}" />
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="TextBox">
+							<Grid>
+								<VisualStateManager.VisualStateGroups>
+									<VisualStateGroup x:Name="CommonStates">
+										<VisualState x:Name="Normal" />
+										<VisualState x:Name="PointerOver">
+											<VisualState.Setters>
+												<Setter Target="BorderElement.Background"
+												        Value="{ThemeResource TextControlBackgroundPointerOver}" />
+												<Setter Target="ContentElement.Foreground"
+												        Value="{ThemeResource TextControlForegroundPointerOver}" />
+											</VisualState.Setters>
+										</VisualState>
+										<VisualState x:Name="Focused">
+											<VisualState.Setters>
+												<Setter Target="BorderElement.Background"
+												        Value="{ThemeResource TextControlBackgroundFocused}" />
+												<Setter Target="ContentElement.Foreground"
+												        Value="{ThemeResource TextControlForegroundFocused}" />
+											</VisualState.Setters>
+										</VisualState>
+									</VisualStateGroup>
+								</VisualStateManager.VisualStateGroups>
+								<Border x:Name="BorderElement"
+								        Background="{TemplateBinding Background}"
+								        BorderBrush="{TemplateBinding BorderBrush}"
+								        BorderThickness="{TemplateBinding BorderThickness}">
+									<ScrollViewer x:Name="ContentElement"
+									              Foreground="{TemplateBinding Foreground}"
+									              HorizontalScrollMode="Auto"
+									              VerticalScrollMode="Auto" />
+								</Border>
+							</Grid>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			""";
+		var style = (Style)XamlReader.Load(xaml);
+
+		var textBox = new TextBox { Text = "Test text", Width = 200 };
+		var container = new StackPanel();
+		container.Children.Add(textBox);
+
+		WindowHelper.WindowContent = container;
+		await WindowHelper.WaitForLoaded(textBox);
+		await WindowHelper.WaitForIdle();
+
+		// Apply custom style from code-behind
+		textBox.Style = style;
+		await WindowHelper.WaitForIdle();
+
+		// Check that Foreground resolved correctly after code-behind style
+		var afterStyleFg = textBox.Foreground as SolidColorBrush;
+		Assert.IsNotNull(afterStyleFg);
+
+		// The foreground should match the element's actual theme, not the app-level theme.
+		// Use ActualTheme (element-level) since ancestors may override RequestedTheme.
+		var elementTheme = textBox.ActualTheme;
+		if (elementTheme == ElementTheme.Dark)
+		{
+			var avg = (afterStyleFg.Color.R + afterStyleFg.Color.G + afterStyleFg.Color.B) / 3;
+			Assert.IsTrue(avg > 150,
+				$"In Dark element theme, Foreground should be light, but was {afterStyleFg.Color} (avg={avg})");
+		}
+		else
+		{
+			var avg = (afterStyleFg.Color.R + afterStyleFg.Color.G + afterStyleFg.Color.B) / 3;
+			Assert.IsTrue(avg < 100,
+				$"In Light element theme, Foreground should be dark, but was {afterStyleFg.Color} (avg={avg})");
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Style_Set_From_CodeBehind_In_Opposite_Theme_Subtree()
+	{
+		// Most specific repro: element is in a subtree with a different theme
+		// than the application. Code-behind style should resolve ThemeResource
+		// to the SUBTREE's theme, not the application theme.
+
+		var appTheme = Application.Current.RequestedTheme;
+		var oppositeTheme = appTheme == ApplicationTheme.Dark
+			? ElementTheme.Light : ElementTheme.Dark;
+
+		var xaml = """
+			<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			       TargetType="TextBox">
+				<Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
+			</Style>
+			""";
+		var style = (Style)XamlReader.Load(xaml);
+
+		// Create a container with opposite theme
+		var container = new Border
+		{
+			Width = 200,
+			Height = 50,
+			RequestedTheme = oppositeTheme
+		};
+		var textBox = new TextBox { Text = "Test", Width = 200 };
+		container.Child = textBox;
+
+		WindowHelper.WindowContent = container;
+		await WindowHelper.WaitForLoaded(textBox);
+		await WindowHelper.WaitForIdle();
+
+		// Apply style from code-behind
+		textBox.Style = style;
+		await WindowHelper.WaitForIdle();
+
+		var fg = textBox.Foreground as SolidColorBrush;
+		Assert.IsNotNull(fg);
+
+		// TextBox is in the OPPOSITE theme subtree
+		if (oppositeTheme == ElementTheme.Dark)
+		{
+			// In dark subtree, foreground should be light
+			var avg = (fg.Color.R + fg.Color.G + fg.Color.B) / 3;
+			Assert.IsTrue(avg > 150,
+				$"In Dark subtree, TextBox Foreground should be light after code-behind style, " +
+				$"but was {fg.Color} (avg={avg})");
+		}
+		else
+		{
+			// In light subtree, foreground should be dark
+			var avg = (fg.Color.R + fg.Color.G + fg.Color.B) / 3;
+			Assert.IsTrue(avg < 100,
+				$"In Light subtree, TextBox Foreground should be dark after code-behind style, " +
+				$"but was {fg.Color} (avg={avg})");
+		}
+	}
+
+#if HAS_UNO
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_Style_With_Template_Applied_CodeBehind_In_Light_Subtree_Under_Dark_App()
+	{
+		// Regression test: app is in Dark theme, but the root
+		// FrameworkElement has RequestedTheme="Light" (common in apps that
+		// default to light UI). Applying a Style with a custom template
+		// containing ThemeResource-backed visual state animations from
+		// code-behind must resolve ThemeResources from the Light dictionary,
+		// not the Dark app-level dictionary.
+
+		// Force the application theme to Dark so the Light Border below truly
+		// represents a divergent subtree theme; otherwise, in environments where
+		// the app is already Light the scenario degenerates to same-theme and
+		// the regression isn't exercised.
+		using (ThemeHelper.UseApplicationDarkTheme())
+		{
+			await WindowHelper.WaitForIdle();
+
+			var styleXaml = """
+				<Style xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				       TargetType="TextBox">
+					<Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate TargetType="TextBox">
+								<Grid>
+									<ScrollViewer x:Name="ContentElement"
+									              Foreground="{TemplateBinding Foreground}"
+									              IsTabStop="False"
+									              ZoomMode="Disabled" />
+									<TextBlock x:Name="PlaceholderTextContentPresenter"
+									           Foreground="{ThemeResource TextControlPlaceholderForeground}"
+									           IsHitTestVisible="False"
+									           Text="{TemplateBinding PlaceholderText}" />
+									<VisualStateManager.VisualStateGroups>
+										<VisualStateGroup x:Name="CommonStates">
+											<VisualState x:Name="Normal" />
+											<VisualState x:Name="Focused">
+												<Storyboard>
+													<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
+														<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundFocused}" />
+													</ObjectAnimationUsingKeyFrames>
+												</Storyboard>
+											</VisualState>
+										</VisualStateGroup>
+									</VisualStateManager.VisualStateGroups>
+								</Grid>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+				""";
+			var style = (Style)XamlReader.Load(styleXaml);
+
+			var container = new Border
+			{
+				Width = 300,
+				Height = 50,
+				RequestedTheme = ElementTheme.Light
+			};
+			var textBox = new TextBox { Text = "Hello", Width = 200 };
+			container.Child = textBox;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(textBox);
+			await WindowHelper.WaitForIdle();
+
+			// Apply the style from code-behind
+			textBox.Style = style;
+			await WindowHelper.WaitForIdle();
+
+			// Foreground should come from the Light theme dictionary (dark color)
+			var fg = textBox.Foreground as SolidColorBrush;
+			Assert.IsNotNull(fg, "Foreground brush should not be null");
+			var avgBrightness = (fg.Color.R + fg.Color.G + fg.Color.B) / 3;
+
+			// In a Light theme subtree, TextControlForeground is dark (low brightness)
+			Assert.IsTrue(avgBrightness < 100,
+				$"TextBox in Light subtree: Foreground should be dark (from Light theme), " +
+				$"but was {fg.Color} (avg brightness={avgBrightness}). " +
+				$"If bright, ThemeResource resolved from the wrong (Dark/app-level) dictionary.");
+
+			// Also verify the reference TextBox (with default style) matches
+			var refTextBox = new TextBox { Text = "Reference", Width = 200 };
+			container.Child = refTextBox;
+			await WindowHelper.WaitForLoaded(refTextBox);
+			await WindowHelper.WaitForIdle();
+
+			var refFg = refTextBox.Foreground as SolidColorBrush;
+			Assert.IsNotNull(refFg, "Reference Foreground should not be null");
+
+			// Both should resolve to the same theme's TextControlForeground
+			Assert.AreEqual(refFg.Color, fg.Color,
+				$"Code-behind styled TextBox Foreground ({fg.Color}) should match " +
+				$"default-styled TextBox Foreground ({refFg.Color}) in same Light subtree.");
+		}
+	}
+#endif
+
+	#endregion
+
+	#region Application Theme Change - ThemeResource Resolution
+
+#if HAS_UNO
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_AppTheme_Changes_ThemeResource_Values_Update()
+	{
+		// Regression test for https://github.com/unoplatform/uno/issues/23177
+		// When switching app theme from Light to Dark, elements that haven't
+		// been through a prior theme walk (stored theme == Theme.None) should
+		// still get their ThemeResource bindings updated.
+
+		// Ensure we start in Light theme regardless of CI environment
+		using var _ = ThemeHelper.UseApplicationLightTheme();
+		await WindowHelper.WaitForIdle();
+
+		var root = (Grid)XamlReader.Load(
+			"""
+			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<Grid.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="TestBrush" Color="Green" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Dark">
+								<SolidColorBrush x:Key="TestBrush" Color="Red" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+					</ResourceDictionary>
+				</Grid.Resources>
+				<Border x:Name="border" Width="50" Height="50" Background="{ThemeResource TestBrush}" />
+			</Grid>
+			""");
+
+		var border = (Border)root.FindName("border");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		// Verify initial Light theme value
+		var initialBrush = border.Background as SolidColorBrush;
+		Assert.IsNotNull(initialBrush, "Background should be a SolidColorBrush");
+		Assert.AreEqual(Colors.Green, initialBrush.Color,
+			$"Initial color should be Green (Light theme). Got {initialBrush.Color}");
+
+		// Switch to Dark theme at application level
+		using (ThemeHelper.UseApplicationDarkTheme())
+		{
+			await WindowHelper.WaitForIdle();
+
+			var darkBrush = border.Background as SolidColorBrush;
+			Assert.IsNotNull(darkBrush, "Background should be a SolidColorBrush after theme switch");
+			Assert.AreEqual(Colors.Red, darkBrush.Color,
+				$"After switching to Dark, ThemeResource should resolve to Red. Got {darkBrush.Color}");
+		}
+
+		// Verify switching back to Light works
+		await WindowHelper.WaitForIdle();
+		var restoredBrush = border.Background as SolidColorBrush;
+		Assert.IsNotNull(restoredBrush, "Background should be a SolidColorBrush after restoring theme");
+		Assert.AreEqual(Colors.Green, restoredBrush.Color,
+			$"After restoring Light, ThemeResource should resolve to Green. Got {restoredBrush.Color}");
+	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_AppTheme_Changes_Nested_Elements_ThemeResources_Update()
+	{
+		// Verify that nested elements (children, grandchildren) all get their
+		// ThemeResource bindings updated when the app theme changes.
+
+		// Ensure we start in Light theme regardless of CI environment
+		using var _ = ThemeHelper.UseApplicationLightTheme();
+		await WindowHelper.WaitForIdle();
+
+		var root = (StackPanel)XamlReader.Load(
+			"""
+			<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<StackPanel.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="NestedBrush" Color="Blue" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Dark">
+								<SolidColorBrush x:Key="NestedBrush" Color="Orange" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+					</ResourceDictionary>
+				</StackPanel.Resources>
+				<Border x:Name="child" Width="50" Height="50" Background="{ThemeResource NestedBrush}" />
+				<StackPanel>
+					<Border x:Name="grandchild" Width="50" Height="50" Background="{ThemeResource NestedBrush}" />
+				</StackPanel>
+			</StackPanel>
+			""");
+
+		var child = (Border)root.FindName("child");
+		var grandchild = (Border)root.FindName("grandchild");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		// Sanity-check: initial Light theme values should be Blue
+		var initialChildBrush = child.Background as SolidColorBrush;
+		var initialGrandchildBrush = grandchild.Background as SolidColorBrush;
+		Assert.IsNotNull(initialChildBrush);
+		Assert.IsNotNull(initialGrandchildBrush);
+		Assert.AreEqual(Colors.Blue, initialChildBrush.Color,
+			$"Child should start with Light resource (Blue). Got {initialChildBrush.Color}");
+		Assert.AreEqual(Colors.Blue, initialGrandchildBrush.Color,
+			$"Grandchild should start with Light resource (Blue). Got {initialGrandchildBrush.Color}");
+
+		// Switch to Dark
+		using (ThemeHelper.UseApplicationDarkTheme())
+		{
+			await WindowHelper.WaitForIdle();
+
+			var childBrush = child.Background as SolidColorBrush;
+			var grandchildBrush = grandchild.Background as SolidColorBrush;
+
+			Assert.IsNotNull(childBrush);
+			Assert.IsNotNull(grandchildBrush);
+
+			Assert.AreEqual(Colors.Orange, childBrush.Color,
+				$"Child should use Dark resource (Orange). Got {childBrush.Color}");
+			Assert.AreEqual(Colors.Orange, grandchildBrush.Color,
+				$"Grandchild should use Dark resource (Orange). Got {grandchildBrush.Color}");
+		}
+	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_DataTemplate_LoadContent_Inside_Light_Subtree_Resolves_Light()
+	{
+		// Sharpest repro: while a Light subtree is loaded and on the theme stack,
+		// call FrameworkTemplate.LoadContent manually (mimicking what a virtualizing
+		// panel does during a row realization). The {ThemeResource} inside the
+		// template must resolve to Light, not the app's Dark theme.
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+		await WindowHelper.WaitForIdle();
+
+		var root = (Border)XamlReader.Load(
+			"""
+			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			        RequestedTheme="Light">
+				<Border.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="K475ManualBrush" Color="Green" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Default">
+								<SolidColorBrush x:Key="K475ManualBrush" Color="Red" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+						<DataTemplate x:Key="ManualTemplate">
+							<Border x:Name="materialized"
+							        Width="50"
+							        Height="50"
+							        Background="{ThemeResource K475ManualBrush}" />
+						</DataTemplate>
+					</ResourceDictionary>
+				</Border.Resources>
+				<ContentControl x:Name="anchor" />
+			</Border>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		// Materialize the template with the Light-themed ContentControl as templated parent, then attach it
+		// to the live tree — exactly what a virtualizing panel does when it realizes a row. The {ThemeResource}
+		// resolves to Light (Green) because the realized content's theme is established from its (logical)
+		// inheritance parent — the Light templated parent — when it enters the tree.
+		// MUX: WinUI establishes template-content theme at Enter (CDependencyObject::EnterImpl,
+		// depends.cpp:1023-1048), not at LoadContent; a pre-attach read would observe the app theme on WinUI
+		// too, so this repro attaches the realized content as the real virtualization path does.
+		var anchor = (ContentControl)root.FindName("anchor");
+		var template = (DataTemplate)root.Resources["ManualTemplate"];
+
+		var materializedRoot = (Border)template.LoadContent(anchor);
+		Assert.IsNotNull(materializedRoot);
+
+		anchor.Content = materializedRoot;
+		await WindowHelper.WaitForLoaded(materializedRoot);
+		await WindowHelper.WaitForIdle();
+
+		var brush = materializedRoot.Background as SolidColorBrush;
+		Assert.IsNotNull(brush, "Background should be a SolidColorBrush");
+		Assert.AreEqual(Colors.Green, brush.Color,
+			$"Template realized for a Light-themed templated parent should resolve " +
+			$"{{ThemeResource}} to Green even though the app theme is Dark, got {brush.Color}. " +
+			$"This matches the scenario where a DataGrid row's template is realized while " +
+			$"the surrounding subtree is in Light mode but the application and OS are in Dark mode.");
+	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_ContentTemplate_Materialized_In_Themed_Subtree_Uses_Subtree_Theme()
+	{
+		// Application is in Dark mode (OS dark), but a subtree overrides
+		// RequestedTheme=Light. A template materialized inside that subtree
+		// (e.g. DataTemplate row, ContentTemplate) must resolve {ThemeResource}
+		// against the *subtree's* Light theme, not the application's Dark theme.
+
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+		await WindowHelper.WaitForIdle();
+
+		var root = (Border)XamlReader.Load(
+			"""
+			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			        RequestedTheme="Light">
+				<Border.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="K475TestBrush" Color="Green" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Default">
+								<SolidColorBrush x:Key="K475TestBrush" Color="Red" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+					</ResourceDictionary>
+				</Border.Resources>
+				<ContentControl x:Name="cc">
+					<ContentControl.ContentTemplate>
+						<DataTemplate>
+							<Border x:Name="materialized"
+							        Width="50"
+							        Height="50"
+							        Background="{ThemeResource K475TestBrush}" />
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
+			</Border>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		var cc = (ContentControl)root.FindName("cc");
+		var materialized = cc.FindFirstDescendant<Border>("materialized");
+		Assert.IsNotNull(materialized, "Materialized template Border should exist");
+
+		var brush = materialized.Background as SolidColorBrush;
+		Assert.IsNotNull(brush, "Background should be a SolidColorBrush");
+		Assert.AreEqual(Colors.Green, brush.Color,
+			$"Materialized template inside a Light subtree should resolve {{ThemeResource}} " +
+			$"against Light (Green) even when the app theme is Dark, got {brush.Color}");
+	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	public async Task When_ThemeResource_On_NonFE_DependencyObject_Inside_Themed_Subtree_Resolves_Correctly()
+	{
+		// Closer repro of the real-world scenario: the affected element is a
+		// Behavior (a non-FrameworkElement DependencyObject) whose DPs are
+		// bound via {ThemeResource} inside a DataTemplate. Behaviors don't go
+		// through FrameworkElement.OnLoadingPartial themselves, so the initial
+		// resolution captured by the template must already use the subtree's
+		// theme — otherwise the captured value is wrong and the behavior
+		// installs the wrong brush onto its AssociatedObject.
+
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+		await WindowHelper.WaitForIdle();
+
+		var root = (Border)XamlReader.Load(
+			$$"""
+			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			        xmlns:local="using:{{typeof(Issue475ThemedDO).Namespace}}"
+			        RequestedTheme="Light">
+				<Border.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<SolidColorBrush x:Key="K475DOBrush" Color="Green" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Default">
+								<SolidColorBrush x:Key="K475DOBrush" Color="Red" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+					</ResourceDictionary>
+				</Border.Resources>
+				<ContentControl x:Name="cc">
+					<ContentControl.ContentTemplate>
+						<DataTemplate>
+							<TextBlock x:Name="materialized">
+								<TextBlock.Tag>
+									<local:Issue475ThemedDO ForegroundBrush="{ThemeResource K475DOBrush}" />
+								</TextBlock.Tag>
+							</TextBlock>
+						</DataTemplate>
+					</ContentControl.ContentTemplate>
+				</ContentControl>
+			</Border>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		var cc = (ContentControl)root.FindName("cc");
+		var textBlock = cc.FindFirstDescendant<TextBlock>("materialized");
+		Assert.IsNotNull(textBlock, "Materialized TextBlock should exist");
+
+		var themedDO = textBlock.Tag as Issue475ThemedDO;
+		Assert.IsNotNull(themedDO, "ThemedDO should be attached as Tag");
+
+		var brush = themedDO.ForegroundBrush as SolidColorBrush;
+		Assert.IsNotNull(brush, "ForegroundBrush should be a SolidColorBrush");
+		Assert.AreEqual(Colors.Green, brush.Color,
+			$"ThemedDO inside Light subtree should resolve {{ThemeResource}} to Green, got {brush.Color}");
+	}
+#endif
+
+	#endregion
+}
+
+public partial class Issue475ThemedDO : DependencyObject
+{
+	public static readonly DependencyProperty ForegroundBrushProperty = DependencyProperty.Register(
+		nameof(ForegroundBrush),
+		typeof(Brush),
+		typeof(Issue475ThemedDO),
+		new PropertyMetadata(null));
+
+	public Brush ForegroundBrush
+	{
+		get => (Brush)GetValue(ForegroundBrushProperty);
+		set => SetValue(ForegroundBrushProperty, value);
+	}
 }

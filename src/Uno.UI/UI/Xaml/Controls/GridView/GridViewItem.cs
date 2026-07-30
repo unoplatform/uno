@@ -17,5 +17,8 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void Initialize();
 
 		public GridViewItemTemplateSettings TemplateSettings { get; } = new();
+
+		protected override Automation.Peers.AutomationPeer OnCreateAutomationPeer()
+			=> new Automation.Peers.GridViewItemAutomationPeer(this);
 	}
 }

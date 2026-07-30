@@ -102,7 +102,24 @@ namespace Microsoft.UI.Xaml.Automation
 
 			if (obj is ICustomPropertyProvider icpp)
 			{
-				return icpp.GetStringRepresentation();
+				try
+				{
+					return icpp.GetStringRepresentation();
+				}
+				catch
+				{
+					// GetStringRepresentation may be [NotImplemented] (e.g., DatePickerFlyoutItem).
+					// Fall through to ToString() below.
+				}
+			}
+
+			// Fallback: use ToString() for types like DatePickerFlyoutItem that have
+			// a meaningful override but don't implement IStringable.
+			var text = obj.ToString();
+			var typeName = obj.GetType().ToString();
+			if (!string.IsNullOrEmpty(text) && text != typeName)
+			{
+				return text;
 			}
 
 			return null;

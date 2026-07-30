@@ -61,7 +61,12 @@ namespace Uno.Media
 		private StreamGeometryContext _geometryContext;
 		private Point _currentPoint;
 		private Point? _beginFigurePoint;
-		private Point? _previousControlPoint;
+		// Per SVG spec, smooth-curve reflection is only valid when the previous segment was of
+		// the matching curve family. _previousCubicControl is set by C/c and S/s only; it is the
+		// last cubic control point that S/s reflects. _previousQuadraticControl is set by Q/q and
+		// T/t only and is the value T/t reflects. Both are cleared by non-matching commands.
+		private Point? _previousCubicControl;
+		private Point? _previousQuadraticControl;
 		private bool _isOpen;
 		private bool _isDisposed;
 
@@ -258,7 +263,8 @@ namespace Uno.Media
 				}
 			}
 
-			_previousControlPoint = null;
+			_previousCubicControl = null;
+			_previousQuadraticControl = null;
 
 			_isOpen = false;
 		}
@@ -272,6 +278,9 @@ namespace Uno.Media
 			_currentPoint = currentPoint;
 
 			CreateFigure();
+
+			_previousCubicControl = null;
+			_previousQuadraticControl = null;
 
 			while (PeekArgument(span))
 			{
@@ -293,6 +302,9 @@ namespace Uno.Media
 
 			// Uno specific: Extra arguments.
 			_geometryContext.LineTo(_currentPoint, true, false);
+
+			_previousCubicControl = null;
+			_previousQuadraticControl = null;
 		}
 
 		private void AddHorizontalLine(ref ReadOnlySpan<char> span, bool relative)
@@ -308,6 +320,9 @@ namespace Uno.Media
 
 			// Uno specific: Extra arguments.
 			_geometryContext.LineTo(_currentPoint, true, false);
+
+			_previousCubicControl = null;
+			_previousQuadraticControl = null;
 		}
 
 		private void AddVerticalLine(ref ReadOnlySpan<char> span, bool relative)
@@ -323,6 +338,9 @@ namespace Uno.Media
 
 			// Uno specific: Extra arguments.
 			_geometryContext.LineTo(_currentPoint, true, false);
+
+			_previousCubicControl = null;
+			_previousQuadraticControl = null;
 		}
 
 		private void AddCubicBezierCurve(ref ReadOnlySpan<char> span, bool relative)
@@ -336,8 +354,6 @@ namespace Uno.Media
 			var point2 = relative
 					? ReadRelativePoint(ref span, _currentPoint)
 					: ReadPoint(ref span);
-
-			_previousControlPoint = point2;
 
 			span = ReadSeparator(span);
 
@@ -354,6 +370,8 @@ namespace Uno.Media
 			_geometryContext.BezierTo(point1, point2, point3, true, false); // Uno specific: Extra arguments.
 
 			_currentPoint = point3;
+			_previousCubicControl = point2;
+			_previousQuadraticControl = null;
 		}
 
 		private void AddQuadraticBezierCurve(ref ReadOnlySpan<char> span, bool relative)
@@ -361,8 +379,6 @@ namespace Uno.Media
 			var start = relative
 					? ReadRelativePoint(ref span, _currentPoint)
 					: ReadPoint(ref span);
-
-			_previousControlPoint = start;
 
 			span = ReadSeparator(span);
 
@@ -378,6 +394,8 @@ namespace Uno.Media
 			_geometryContext.QuadraticBezierTo(start, end, true, false); // Uno specific: Extra arguments.
 
 			_currentPoint = end;
+			_previousQuadraticControl = start;
+			_previousCubicControl = null;
 		}
 
 		private void AddSmoothCubicBezierCurve(ref ReadOnlySpan<char> span, bool relative)
@@ -392,10 +410,12 @@ namespace Uno.Media
 					? ReadRelativePoint(ref span, _currentPoint)
 					: ReadPoint(ref span);
 
-			if (_previousControlPoint != null)
-			{
-				_previousControlPoint = MirrorControlPoint((Point)_previousControlPoint, _currentPoint);
-			}
+			// Per SVG: implicit first control point is the reflection of the previous cubic
+			// control point around the current point — but only if the previous segment was a
+			// cubic (C/c/S/s). Otherwise it coincides with the current point.
+			var implicitControl = _previousCubicControl is { } prev
+				? MirrorControlPoint(prev, _currentPoint)
+				: _currentPoint;
 
 			if (!_isOpen)
 			{
@@ -403,9 +423,10 @@ namespace Uno.Media
 			}
 
 			// Uno specific: CubicBezierTo → BezierTo
-			_geometryContext.BezierTo(_previousControlPoint ?? _currentPoint, point2, end, true, false); // Uno specific: Extra arguments.
+			_geometryContext.BezierTo(implicitControl, point2, end, true, false); // Uno specific: Extra arguments.
 
-			_previousControlPoint = point2;
+			_previousCubicControl = point2;
+			_previousQuadraticControl = null;
 
 			_currentPoint = end;
 		}
@@ -416,17 +437,22 @@ namespace Uno.Media
 					? ReadRelativePoint(ref span, _currentPoint)
 					: ReadPoint(ref span);
 
-			if (_previousControlPoint != null)
-			{
-				_previousControlPoint = MirrorControlPoint((Point)_previousControlPoint, _currentPoint);
-			}
+			// Per SVG: implicit control point is the reflection of the previous quadratic
+			// control point around the current point — but only if the previous segment was a
+			// quadratic (Q/q/T/t). Otherwise it coincides with the current point.
+			var implicitControl = _previousQuadraticControl is { } prev
+				? MirrorControlPoint(prev, _currentPoint)
+				: _currentPoint;
 
 			if (!_isOpen)
 			{
 				CreateFigure();
 			}
 
-			_geometryContext.QuadraticBezierTo(_previousControlPoint ?? _currentPoint, end, true, false); // Uno specific: Extra arguments.
+			_geometryContext.QuadraticBezierTo(implicitControl, end, true, false); // Uno specific: Extra arguments.
+
+			_previousQuadraticControl = implicitControl;
+			_previousCubicControl = null;
 
 			_currentPoint = end;
 		}
@@ -461,7 +487,8 @@ namespace Uno.Media
 
 			_currentPoint = end;
 
-			_previousControlPoint = null;
+			_previousCubicControl = null;
+			_previousQuadraticControl = null;
 		}
 
 		private static bool PeekArgument(ReadOnlySpan<char> span)

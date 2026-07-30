@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.Marshalling;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Media.Playback;
+using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -29,7 +30,33 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 {
 	[ThreadStatic] private static bool _isDispatcherThread;
-	private readonly EventLoop _eventLoop;
+	private readonly EventLoop? _eventLoop;
+
+	private static readonly X11CoreApplicationExtension _coreApplicationExtension = new();
+
+	// Kick off D-Bus IME detection as early as possible (this initializer runs before
+	// the static ctor body) so it can overlap with the rest of startup. InitializeAsync
+	// blocks on the task's result.
+	private static readonly Task<IX11InputMethod?> _imeDetectionTask = X11InputMethodDetector.DetectAsync();
+
+	// Must be a static field to prevent GC collection while the native callback is active.
+	private static readonly XErrorHandler s_x11ErrorHandler = OnX11Error;
+
+	private static int OnX11Error(IntPtr display, ref XErrorEvent error_event)
+	{
+		if (typeof(X11ApplicationHost).Log().IsEnabled(LogLevel.Warning))
+		{
+			typeof(X11ApplicationHost).Log().LogWarning(
+				$"X11 protocol error — " +
+				$"ErrorCode: {error_event.error_code}, " +
+				$"RequestCode: {error_event.request_code}, " +
+				$"MinorCode: {error_event.minor_code}, " +
+				$"ResourceId: 0x{error_event.resourceid:X}, " +
+				$"Serial: {error_event.serial}");
+		}
+
+		return 0;
+	}
 
 	private readonly Func<Application> _appBuilder;
 
@@ -39,20 +66,28 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		// We therefore wrap every x11 call with XLockDisplay and XUnlockDisplay
 		_ = X11Helper.XInitThreads();
 
+		// Install a custom error handler so X11 protocol errors (e.g. BadWindow from a secondary
+		// app loaded via ALC) are logged and ignored instead of calling exit().
+		XLib.XSetErrorHandler(s_x11ErrorHandler);
+
 		// keyboard input fails without this, not sure why this works but Avalonia and xev make similar calls, cf. https://stackoverflow.com/a/18288346
-		// This disables IME, cf. https://tedyin.com/posts/a-brief-intro-to-linux-input-method-framework/
+		// Use "" to enable the system's default input method (from XMODIFIERS env var)
 		setlocale(/* LC_ALL */ 6, "");
-		if (XLib.XSetLocaleModifiers("@im=none") == IntPtr.Zero)
+		if (XLib.XSetLocaleModifiers("") == IntPtr.Zero)
 		{
 			setlocale(/* LC_ALL */ 6, "en_US.UTF-8");
-			if (XLib.XSetLocaleModifiers("@im=none") == IntPtr.Zero)
+			if (XLib.XSetLocaleModifiers("") == IntPtr.Zero)
 			{
 				setlocale(/* LC_ALL */ 6, "C.UTF-8");
-				XLib.XSetLocaleModifiers("@im=none");
+				XLib.XSetLocaleModifiers("");
 			}
 		}
 
-		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), _ => new X11CoreApplicationExtension());
+		// Register ALC window cleanup callback so CloseAlcWindows() can
+		// remove entries from X11XamlRootHost._windowToHost.
+		Window.AlcWindowCleanupCallback = X11XamlRootHost.RemoveSecondaryAlcWindowEntries;
+
+		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), _ => _coreApplicationExtension);
 		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new X11ApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => new X11DisplayInformationExtension(o));
 
@@ -65,6 +100,9 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 		ApiExtensibility.Register(typeof(IClipboardExtension), _ => X11ClipboardExtension.Instance);
 
+		ApiExtensibility.Register(typeof(Uno.UI.Xaml.Controls.Extensions.IImeTextBoxExtension), _ => X11ImeTextBoxExtension.Instance);
+		ApiExtensibility.Register(typeof(Uno.UI.Xaml.Controls.Extensions.ITextBoxNotificationsProviderSingleton), _ => X11TextBoxNotificationsProviderSingleton.Instance);
+
 		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new LinuxFilePickerExtension(o));
 		ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new LinuxFilePickerExtension(o));
 		ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new LinuxFileSaverExtension(o));
@@ -76,6 +114,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register<XamlRoot>(typeof(Uno.Graphics.INativeOpenGLWrapper), xamlRoot => new X11NativeOpenGLWrapper(xamlRoot));
 
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => LinuxSystemThemeHelper.Instance);
+		ApiExtensibility.Register(typeof(ITextScaleFactorExtension), _ => X11TextScaleFactorExtension.Instance);
 
 		if (Type.GetType("Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerPresenterExtension, Uno.UI.MediaPlayer.Skia.X11") is { } mediaPresenterExtensionType
 			&& Type.GetType("Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension, Uno.UI.MediaPlayer.Skia.X11") is { } mediaExtensionType)
@@ -179,15 +218,27 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		}
 		RenderFrameRate = renderFrameRate;
 
-		_eventLoop = new EventLoop();
-		_eventLoop.Schedule(() => { Thread.CurrentThread.Name = "Uno Event Loop"; });
-
-		_eventLoop.Schedule(() =>
+		if (CoreDispatcher.DispatchOverride is null)
 		{
-			_isDispatcherThread = true;
-		});
-		CoreDispatcher.DispatchOverride = (a, p) => _eventLoop.Schedule(a);
-		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+			// First host initialization — create the event loop and set up dispatch.
+			_eventLoop = new EventLoop();
+			_eventLoop.Schedule(() => { Thread.CurrentThread.Name = "Uno Event Loop"; });
+
+			_eventLoop.Schedule(() =>
+			{
+				_isDispatcherThread = true;
+			});
+			CoreDispatcher.DispatchOverride = (a, p) => _eventLoop.Schedule(a);
+			CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+		}
+		else
+		{
+			// A dispatcher is already running (secondary ALC app reusing the host's UI thread).
+			// Schedule work on the existing dispatcher instead of creating a new event loop.
+			CoreDispatcher.DispatchOverride(
+				() => _isDispatcherThread = true,
+				Uno.UI.Dispatching.NativeDispatcherPriority.Normal);
+		}
 	}
 
 	internal static int RenderFrameRate { get; private set; }
@@ -198,9 +249,18 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 	protected override Task RunLoop()
 	{
 		Thread.CurrentThread.Name = "Main Thread (keep-alive)";
-		_eventLoop.Schedule(StartApp);
 
-		while (!X11XamlRootHost.AllWindowsDone())
+		if (_eventLoop is not null)
+		{
+			_eventLoop.Schedule(StartApp);
+		}
+		else
+		{
+			// Secondary ALC app — schedule on the existing host dispatcher.
+			CoreDispatcher.DispatchOverride(StartApp, Uno.UI.Dispatching.NativeDispatcherPriority.Normal);
+		}
+
+		while (!ShouldExit())
 		{
 			Thread.Sleep(100);
 		}
@@ -213,12 +273,25 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		return Task.CompletedTask;
 	}
 
+	private bool ShouldExit()
+	{
+		if (_coreApplicationExtension.ExitRequested)
+		{
+			return true;
+		}
+
+		return Application.Current?.DispatcherShutdownMode == DispatcherShutdownMode.OnLastWindowClose
+			&& X11XamlRootHost.AllWindowsDone();
+	}
+
 	private void StartApp()
 	{
-		void CreateApp(ApplicationInitializationCallbackParams _)
+		Application CreateApp(ApplicationInitializationCallbackParams _)
 		{
 			var app = _appBuilder();
 			app.Host = this;
+
+			return app;
 		}
 
 		Application.Start(CreateApp);
@@ -226,6 +299,11 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 	protected override void Initialize()
 	{
+		// Block until D-Bus IME detection completes, then publish the result. We return
+		// Task.CompletedTask so UnoPlatformHost.Run can finish RunCore synchronously —
+		// RunAsync triggers Win32 OleInitialize / STA breakage so we can't rely on real
+		// awaits here.
+		X11InputMethodDetector.DetectedInputMethod = _imeDetectionTask.Result;
 	}
 
 	public void Dispose()

@@ -34,7 +34,7 @@ APIs for non-UI features, for example [`Windows.System.Power`](../features/windo
 
 ### Generated `NotImplemented` stubs
 
-WinUI has a very large API surface area, and not all features in it have been implemented by Uno Platform. We want pre-existing WinUI apps and libraries that reference these features to still be able to at least compile on Uno Platform. To support this, an [internal automated tool](https://github.com/unoplatform/uno/tree/master/src/Uno.UWPSyncGenerator) inspects the WinUI framework, compares it to authored code in Uno Platform, and generates stubs for all types and type members that exist in WinUI but are not implemented on Uno. For example:
+WinUI has a very large API surface area, and not all features in it have been implemented by Uno Platform. We want pre-existing WinUI apps and libraries that reference these features to still be able to at least compile on Uno Platform. To support this, an [internal automated tool](https://github.com/unoplatform/uno/tree/master/src/Uno.WinAppSDKSyncGenerator) inspects the WinUI framework, compares it to authored code in Uno Platform, and generates stubs for all types and type members that exist in WinUI but are not implemented on Uno. For example:
 
 ```csharp
 #if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__

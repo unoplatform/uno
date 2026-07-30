@@ -42,7 +42,7 @@
 
 		<PageExclusions>Themes\WinUI\Resources\**\*.xaml</PageExclusions>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI</PackageId>
+		<PackageId>Uno.WinUI</PackageId>
 	</PropertyGroup>
 
 	<ItemGroup>

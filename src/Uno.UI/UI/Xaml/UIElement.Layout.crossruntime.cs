@@ -190,6 +190,25 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		/// <remarks>
+		/// Isolates the try/finally into its own method so the hot measure path in <c>DoMeasure</c>
+		/// stays free of exception handling (an EH-containing method can't be inlined and is slower
+		/// on WebAssembly — see https://github.com/dotnet/runtime/issues/56309). The finally is
+		/// mandatory: if MeasuringSelf is left set, InvalidateMeasure() permanently no-ops and the
+		/// subtree's layout freezes.
+		/// </remarks>
+		private void MeasureCoreClearingMeasuringSelf(Size availableSize)
+		{
+			try
+			{
+				MeasureCore(availableSize);
+			}
+			finally
+			{
+				ClearLayoutFlags(LayoutFlag.MeasuringSelf);
+			}
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void DoMeasure(Size availableSize)
 		{
@@ -249,8 +268,7 @@ namespace Microsoft.UI.Xaml
 						}
 
 						SetLayoutFlags(LayoutFlag.MeasuringSelf);
-						MeasureCore(availableSize);
-						ClearLayoutFlags(LayoutFlag.MeasuringSelf);
+						MeasureCoreClearingMeasuringSelf(availableSize);
 						InvalidateArrange();
 					}
 #if DEBUG
@@ -284,12 +302,9 @@ namespace Microsoft.UI.Xaml
 				// it will bypass the current element's MeasureOverride()
 				// since it shouldn't produce a different result and it's
 				// just a waste of precious CPU time to call it.
-				var children = GetChildren().GetEnumerator();
-
-				//foreach (var child in children)
-				while (children.MoveNext())
+				foreach (var child in GetChildren())
 				{
-					if (children.Current is { IsMeasureDirtyOrMeasureDirtyPath: true } child)
+					if (child is { IsMeasureDirtyOrMeasureDirtyPath: true })
 					{
 						// If the child is dirty (or is a path to a dirty descendant child),
 						// We're remeasuring it.
@@ -304,8 +319,6 @@ namespace Microsoft.UI.Xaml
 						}
 					}
 				}
-
-				children.Dispose(); // no "using" operator here to prevent an implicit try-catch on Wasm
 
 				if (isDirty)
 				{
@@ -439,12 +452,8 @@ namespace Microsoft.UI.Xaml
 				{
 					ClearLayoutFlags(LayoutFlag.ArrangeDirtyPath);
 
-					var children = GetChildren().GetEnumerator();
-
-					while (children.MoveNext())
+					foreach (var child in GetChildren())
 					{
-						var child = children.Current;
-
 						if (child is { IsArrangeDirtyOrArrangeDirtyPath: true })
 						{
 							var previousRenderSize = child.RenderSize;
@@ -457,8 +466,6 @@ namespace Microsoft.UI.Xaml
 							}
 						}
 					}
-
-					children.Dispose(); // no "using" operator here to prevent an implicit try-catch on Wasm
 
 					if (!isDirty)
 					{

@@ -156,6 +156,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			ImageAssert.HasColorAt(result, 5, 5, nonOpaqueColor, tolerance: 1);
 		}
 
+		[TestMethod]
+#if __WASM__
+		[Ignore("Not implemented yet.")]
+#endif
+		public async Task When_Render_Asymmetric_Content_Then_Not_Flipped()
+		{
+			// Guards against vertically-flipped output when rendering through a GPU
+			// backend whose window surface has a bottom-left origin (e.g. OpenGL).
+			var grid = new Grid
+			{
+				Width = 20,
+				Height = 40,
+				RowDefinitions =
+				{
+					new RowDefinition(),
+					new RowDefinition(),
+				},
+			};
+			var top = new Border { Background = new SolidColorBrush(Colors.Red) };
+			var bottom = new Border { Background = new SolidColorBrush(Colors.Blue) };
+			Grid.SetRow(bottom, 1);
+			grid.Children.Add(top);
+			grid.Children.Add(bottom);
+
+			await UITestHelper.Load(grid);
+
+			// Note: We do not use the UITestHelper.ScreenShot to ensure usage of the RenderTargetBitmap!
+			var sut = new RenderTargetBitmap();
+			await sut.RenderAsync(grid);
+			var result = await RawBitmap.From(sut, grid);
+
+			ImageAssert.HasColorAt(result, 10, 10, Colors.Red, tolerance: 1);
+			ImageAssert.HasColorAt(result, 10, 30, Colors.Blue, tolerance: 1);
+		}
+
 #if HAS_UNO
 		[TestMethod]
 #if !__SKIA__

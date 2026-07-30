@@ -33,6 +33,52 @@ internal static class DiagnosticViewRegistry
 
 		Added?.Invoke(null, _registrations);
 	}
+
+	/// <summary>
+	/// Removes registrations whose <see cref="IDiagnosticView"/> implementation type
+	/// is from a non-default (collectible) <see cref="System.Runtime.Loader.AssemblyLoadContext"/>.
+	/// Called during ALC teardown to release delegates that pin the ALC's LoaderAllocator.
+	/// </summary>
+	internal static void ClearNonDefaultAlcRegistrations()
+	{
+		var defaultAlc = System.Runtime.Loader.AssemblyLoadContext.Default;
+		ImmutableInterlocked.Update(
+			ref _registrations,
+			static (regs, defAlc) => regs.RemoveAll(r => IsFromNonDefaultAlc(r.View.GetType(), defAlc)),
+			defaultAlc);
+
+		// Notify listeners (e.g. DiagnosticsOverlay) that the registration set changed so they reconcile
+		// their materialized views and drop the ones just removed. Without this the overlay's add-only refresh
+		// keeps a now-unregistered collectible-ALC view materialized, pinning its LoaderAllocator (uno #23614).
+		Added?.Invoke(null, _registrations);
+	}
+
+	private static bool IsFromNonDefaultAlc(Type type, System.Runtime.Loader.AssemblyLoadContext defaultAlc)
+	{
+		// Check the type itself
+		var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(type.Assembly);
+		if (alc is not null && alc != defaultAlc)
+		{
+			return true;
+		}
+
+		// For generic types like DiagnosticView<HotReloadStatusView, Status>,
+		// the open generic is in the default ALC but the type arguments may be
+		// from a collectible ALC. Check each generic argument.
+		if (type.IsGenericType)
+		{
+			foreach (var arg in type.GetGenericArguments())
+			{
+				var argAlc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(arg.Assembly);
+				if (argAlc is not null && argAlc != defaultAlc)
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
 }
 
 internal sealed record DiagnosticViewRegistration(

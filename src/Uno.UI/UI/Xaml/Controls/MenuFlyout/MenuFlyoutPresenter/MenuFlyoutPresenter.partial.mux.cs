@@ -598,7 +598,7 @@ partial class MenuFlyoutPresenter : IMenuPresenter
 	{
 		string automationName = null;
 
-		var ownerFlyout = m_wrParentMenuFlyout.Target as DependencyObject;
+		var ownerFlyout = m_wrParentMenuFlyout?.Target as DependencyObject;
 
 		if (ownerFlyout != null)
 		{

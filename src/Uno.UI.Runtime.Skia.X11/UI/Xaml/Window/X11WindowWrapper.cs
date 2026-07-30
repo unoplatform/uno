@@ -136,6 +136,11 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	public override void Move(PointInt32 position)
 	{
+		if (_host.Closed.IsCompleted)
+		{
+			return;
+		}
+
 		var display = _host.RootX11Window.Display;
 		var window = _host.RootX11Window.Window;
 		using var lockDiposable = X11Helper.XLock(display);
@@ -146,6 +151,11 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	public override void Resize(SizeInt32 size)
 	{
+		if (_host.Closed.IsCompleted)
+		{
+			return;
+		}
+
 		var display = _host.RootX11Window.Display;
 		var window = _host.RootX11Window.Window;
 		using var lockDiposable = X11Helper.XLock(display);
@@ -166,6 +176,11 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	private void UpdatePositionAndSize()
 	{
+		if (_host.Closed.IsCompleted)
+		{
+			return;
+		}
+
 		var display = _host.RootX11Window.Display;
 		var window = _host.RootX11Window.Window;
 		using var xLock = X11Helper.XLock(display);

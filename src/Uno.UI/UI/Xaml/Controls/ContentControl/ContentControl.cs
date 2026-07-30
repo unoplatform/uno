@@ -469,7 +469,9 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Gets whether the default style for the given type sets a non-null Template.
 		/// </summary>
-		private static Func<Type, bool> HasDefaultTemplate =
+		private static Func<Type, bool> HasDefaultTemplate = CreateHasDefaultTemplateMemo();
+
+		private static Func<Type, bool> CreateHasDefaultTemplateMemo() =>
 			Funcs.CreateMemoized((Type type) =>
 				Style.GetDefaultStyleForType(type) is Style defaultStyle
 					&& defaultStyle
@@ -478,6 +480,13 @@ namespace Microsoft.UI.Xaml.Controls
 						.OfType<Setter>()
 						.Any(s => s.Property == TemplateProperty && s.Value != null)
 			);
+
+		/// <summary>
+		/// Drops the memoized per-Type default-template lookups. The memoization dictionary keys
+		/// are DefaultStyleKey types — for controls from a collectible AssemblyLoadContext those
+		/// keys pin the ALC after unload. Called from ALC teardown cleanup.
+		/// </summary>
+		internal static void ClearHasDefaultTemplateCache() => HasDefaultTemplate = CreateHasDefaultTemplateMemo();
 
 		/// <summary>
 		/// Creates a ContentControl which can be measured without being added to the visual tree (eg as container in virtualized lists).

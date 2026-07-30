@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace Uno.UI.RuntimeTests.Helpers;
@@ -29,29 +30,58 @@ public class TimeZoneModifier : IDisposable
 	private static TimeZoneInfo GetLocalTimeZone()
 	{
 		var cachedData = GetCachedData();
-		var localProperty = cachedData.GetType().GetProperty("Local");
+		var localProperty = GetLocalProperty(cachedData);
 		if (localProperty is null)
 		{
-			// At the time of writing, the property is found here:
-			// https://github.com/dotnet/runtime/blob/91ee24a97d907e213e181a855b8469524cd376b5/src/libraries/System.Private.CoreLib/src/System/TimeZoneInfo.cs#L101
 			throw new Exception("Local property wasn't found");
 		}
 
 		return (TimeZoneInfo)localProperty.GetValue(cachedData);
+
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "`t.GetProperty()` path should be impossible, and trimmer behavior ensures `GetType(TimeZoneInfo_CachedData_TypeName).GetProperty(string constant)` works.")]
+		static PropertyInfo GetLocalProperty(object data)
+		{
+			if (data.GetType() is var t && t != TimeZoneInfoCachedDataType)
+			{
+				return t.GetProperty("Local");
+			}
+			else
+			{
+				// https://github.com/dotnet/runtime/blob/91ee24a97d907e213e181a855b8469524cd376b5/src/libraries/System.Private.CoreLib/src/System/TimeZoneInfo.cs#L101
+				return Type.GetType(TimeZoneInfo_CachedData_TypeName, throwOnError: true).GetProperty("Local");
+			}
+		}
 	}
+
+	private const string TimeZoneInfo_CachedData_TypeName = "System.TimeZoneInfo+CachedData, System.Runtime";
+
+	private static Type TimeZoneInfoCachedDataType = Type.GetType(TimeZoneInfo_CachedData_TypeName, throwOnError: false);
 
 	private static void SetLocalTimeZone(TimeZoneInfo timeZoneInfo)
 	{
 		var cachedData = GetCachedData();
-		var localTimeZoneField = cachedData.GetType().GetField("_localTimeZone", BindingFlags.Instance | BindingFlags.NonPublic);
+		var localTimeZoneField = GetLocalField(cachedData);
 		if (localTimeZoneField is null)
 		{
 			// At the time of writing, the field is found here:
-			// https://github.com/dotnet/runtime/blob/91ee24a97d907e213e181a855b8469524cd376b5/src/libraries/System.Private.CoreLib/src/System/TimeZoneInfo.cs#L71
 			throw new Exception("_localTimeZone field wasn't found");
 		}
 
 		localTimeZoneField.SetValue(cachedData, timeZoneInfo);
+
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "`t.GetField()` path should be impossible, and trimmer behavior ensures `typeof(TimeZoneInfo).GetField(string constant)` works.")]
+		static FieldInfo GetLocalField(object data)
+		{
+			if (data.GetType() is var t && t != TimeZoneInfoCachedDataType)
+			{
+				return t.GetField("_localTimeZone", BindingFlags.Instance | BindingFlags.NonPublic);
+			}
+			else
+			{
+				// https://github.com/dotnet/runtime/blob/91ee24a97d907e213e181a855b8469524cd376b5/src/libraries/System.Private.CoreLib/src/System/TimeZoneInfo.cs#L71
+				return Type.GetType(TimeZoneInfo_CachedData_TypeName, throwOnError: true).GetField("_localTimeZone", BindingFlags.Instance | BindingFlags.NonPublic);
+			}
+		}
 	}
 
 	public void Dispose()

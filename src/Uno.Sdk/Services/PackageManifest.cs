@@ -147,6 +147,7 @@ internal class PackageManifest
 		public const string SvgSkia = nameof(SvgSkia);
 		public const string WinAppSdk = nameof(WinAppSdk);
 		public const string WinAppSdkBuildTools = nameof(WinAppSdkBuildTools);
+		public const string WinAppSdkBuildToolsWinApp = nameof(WinAppSdkBuildToolsWinApp);
 		public const string MicrosoftLoggingConsole = nameof(MicrosoftLoggingConsole);
 		public const string WindowsCompatibility = nameof(WindowsCompatibility);
 		public const string MsalClient = nameof(MsalClient);
@@ -163,6 +164,10 @@ internal class PackageManifest
 		public const string AndroidXSwipeRefreshLayout = nameof(AndroidXSwipeRefreshLayout);
 		public const string AndroidXNavigation = nameof(AndroidXNavigation);
 		public const string AndroidXCollection = nameof(AndroidXCollection);
+		public const string AndroidXLeanback = nameof(AndroidXLeanback);
+		public const string AndroidXCarApp = nameof(AndroidXCarApp);
+		public const string AndroidXWear = nameof(AndroidXWear);
+		public const string AndroidXWearTiles = nameof(AndroidXWearTiles);
 		public const string Maui = nameof(Maui);
 	}
 }

@@ -95,7 +95,7 @@ dotnet_diagnostic.CA1844.severity = none
 dotnet_diagnostic.CA1846.severity = none
 
 # CA1847: Use char literal for a single character lookup
-dotnet_diagnostic.CA1847.severity = none
+dotnet_diagnostic.CA1847.severity = warning
 
 # CA1848: Use the LoggerMessage delegates
 dotnet_diagnostic.CA1848.severity = none

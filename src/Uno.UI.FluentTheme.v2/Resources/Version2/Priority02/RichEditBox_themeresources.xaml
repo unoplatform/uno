@@ -153,7 +153,8 @@
                             Text="{TemplateBinding PlaceholderText}"
                             TextAlignment="{TemplateBinding TextAlignment}"
                             TextWrapping="{TemplateBinding TextWrapping}"
-                            IsHitTestVisible="False" />
+                            IsHitTestVisible="False"
+                            AutomationProperties.AccessibilityView="Raw" />
                         <contract7Present:ContentPresenter x:Name="DescriptionPresenter"
                             Grid.Row="2"
                             Content="{TemplateBinding Description}"

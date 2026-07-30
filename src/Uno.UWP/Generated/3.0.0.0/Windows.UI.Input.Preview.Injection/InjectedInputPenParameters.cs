@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Preview.Injection
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	public enum InjectedInputPenParameters : uint
 	{
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPenParameters.None

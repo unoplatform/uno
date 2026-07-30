@@ -208,7 +208,9 @@ namespace Uno.Xaml
 			}
 		}
 
-		protected internal XamlValueConverter<TConverterBase> GetValueConverter<TConverterBase> (Type converterType, XamlType targetType)
+		protected internal XamlValueConverter<TConverterBase> GetValueConverter<
+			[DynamicallyAccessedMembers(XamlValueConverter<TConverterBase>.TConverterBaseRequirements)] TConverterBase
+		> ([DynamicallyAccessedMembers(XamlValueConverter<TConverterBase>.TConverterBaseRequirements)] Type converterType, XamlType targetType)
 			where TConverterBase : class
 		{
 			return new XamlValueConverter<TConverterBase> (converterType, targetType);

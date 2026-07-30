@@ -6,8 +6,7 @@
     "writeTarget": "{home}/.gemini/antigravity/mcp_config.json",
     "jsonRootKey": "mcpServers",
     "includeType": true,
-    "urlKey": "serverUrl",
-    "extraArgs": ["--force-roots-fallback"]
+    "urlKey": "serverUrl"
   },
   "gemini-cli": {
     "configPaths": [
@@ -55,8 +54,7 @@
     ],
     "writeTarget": "{appdata}/Claude/claude_desktop_config.json",
     "jsonRootKey": "mcpServers",
-    "supportedTransports": ["stdio"],
-    "extraArgs": ["--force-roots-fallback"]
+    "supportedTransports": ["stdio"]
   },
   "codex-cli": {
     "configPaths": [],
@@ -94,6 +92,14 @@
     "writeTarget": "{workspace}/.kiro/settings/mcp.json",
     "jsonRootKey": "mcpServers"
   },
+  "kimi-code": {
+    "configPaths": [
+      "{workspace}/.kimi-code/mcp.json",
+      "{home}/.kimi-code/mcp.json"
+    ],
+    "writeTarget": "{workspace}/.kimi-code/mcp.json",
+    "jsonRootKey": "mcpServers"
+  },
   "jetbrains-air": {
     "configPaths": [
       "{workspace}/.air/mcp.json",
@@ -101,22 +107,20 @@
       "{appdata}/JetBrains/Air/mcp.json"
     ],
     "writeTarget": "{workspace}/.air/mcp.json",
-    "jsonRootKey": "mcpServers",
-    "extraArgs": ["--force-roots-fallback"]
+    "jsonRootKey": "mcpServers"
   },
   "junie-rider": {
     "configPaths": [
-      "{workspace}/.idea/mcpServers.json"
+      "{workspace}/.junie/mcp/mcp.json",
+      "{home}/.junie/mcp/mcp.json"
     ],
-    "writeTarget": "{workspace}/.idea/mcpServers.json",
-    "jsonRootKey": "mcpServers",
-    "extraArgs": ["--force-roots-fallback"]
+    "writeTarget": "{workspace}/.junie/mcp/mcp.json",
+    "jsonRootKey": "mcpServers"
   },
   "copilot-vscode": {
     "configPaths": [
       "{workspace}/.vscode/mcp.json",
-      "{home}/.vscode/mcp.json",
-      "{appdata}/Code/User/settings.json"
+      "{home}/.vscode/mcp.json"
     ],
     "writeTarget": "{workspace}/.vscode/mcp.json",
     "jsonRootKey": "servers",
@@ -124,7 +128,9 @@
   },
   "copilot-vs": {
     "configPaths": [
+      "{home}/.mcp.json",
       "{workspace}/.vs/mcp.json",
+      "{workspace}/.mcp.json",
       "{workspace}/.vscode/mcp.json"
     ],
     "writeTarget": "{workspace}/.vs/mcp.json",
@@ -137,8 +143,7 @@
     ],
     "writeTarget": "{home}/.codeium/windsurf/mcp_config.json",
     "jsonRootKey": "mcpServers",
-    "urlKey": "serverUrl",
-    "extraArgs": ["--force-roots-fallback"]
+    "urlKey": "serverUrl"
   },
   "opencode": {
     "configPaths": [
@@ -153,8 +158,7 @@
     "cli": {
       "executable": "opencode",
       "detect": ["--version"],
-      "list": ["mcp", "list"],
-      "remove": ["mcp", "remove", "{name}"]
+      "list": ["mcp", "list"]
     }
   },
   "unknown": {

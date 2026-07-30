@@ -29,16 +29,23 @@ internal sealed record StartCommandArgs(
 /// </summary>
 internal sealed class StartCommandHandler
 {
+	/// <summary>
+	/// <c>--addins</c> value that disables add-ins on every host version: it splits to
+	/// zero add-in paths (semicolon separator, empty entries removed) while its presence
+	/// suppresses the host's MSBuild-based add-in discovery.
+	/// </summary>
+	internal const string SafeModeAddInsValue = ";";
+
 	private readonly ILogger _logger;
 	private readonly IDevServerLookup _lookup;
 	private readonly Func<int, string, Task<bool>> _rebindIdeChannel;
-	private readonly Func<ProcessStartInfo, Task<int>> _spawnProcess;
+	private readonly Func<ProcessStartInfo, Task<DirectSpawnResult>> _spawnProcess;
 
 	public StartCommandHandler(
 		ILogger logger,
 		IDevServerLookup lookup,
 		Func<int, string, Task<bool>> rebindIdeChannel,
-		Func<ProcessStartInfo, Task<int>> spawnProcess)
+		Func<ProcessStartInfo, Task<DirectSpawnResult>> spawnProcess)
 	{
 		_logger = logger;
 		_lookup = lookup;
@@ -108,7 +115,8 @@ internal sealed class StartCommandHandler
 		string hostPath,
 		StartCommandArgs parsed,
 		string? addins,
-		string workingDirectory)
+		string workingDirectory,
+		bool enableMajorRollForward = false)
 	{
 		var args = new List<string>();
 
@@ -119,6 +127,19 @@ internal sealed class StartCommandHandler
 		{
 			args.Add("--ppid");
 			args.Add(parsed.ParentPid.ToString(CultureInfo.InvariantCulture));
+		}
+		else if (!string.IsNullOrWhiteSpace(parsed.IdeChannel))
+		{
+			// No explicit ppid was provided, but we have an IDE channel. Pass our own
+			// PID so the host's ParentProcessObserver can detect when this CLI process
+			// dies (which happens when the IDE kills its child processes on exit).
+			// The caller (RunAsync) must keep this process alive for this to work —
+			// see DevServerProcessHelper.RunDirectProcessAsync's await-host-exit path.
+			args.Add("--ppid");
+			args.Add(Environment.ProcessId.ToString(CultureInfo.InvariantCulture));
+			_logger.LogDebug(
+				"No --ppid provided; passing CLI PID {Pid} as ppid so host can self-terminate when IDE exits.",
+				Environment.ProcessId);
 		}
 
 		if (!string.IsNullOrWhiteSpace(parsed.Solution))
@@ -143,7 +164,7 @@ internal sealed class StartCommandHandler
 		args.AddRange(parsed.PassthroughArgs);
 
 		return DevServerProcessHelper.CreateDotnetProcessStartInfo(
-			hostPath, args, workingDirectory, redirectOutput: true);
+			hostPath, args, workingDirectory, redirectOutput: true, enableMajorRollForward: enableMajorRollForward);
 	}
 
 	/// <summary>
@@ -154,7 +175,8 @@ internal sealed class StartCommandHandler
 		string hostPath,
 		string[] originalArgs,
 		string workingDirectory,
-		string? addins)
+		string? addins,
+		bool enableMajorRollForward = false)
 	{
 		var command = originalArgs.Length > 0 ? originalArgs[0] : "start";
 		var args = new List<string> { $"--command={command}" };
@@ -170,7 +192,7 @@ internal sealed class StartCommandHandler
 		}
 
 		return DevServerProcessHelper.CreateDotnetProcessStartInfo(
-			hostPath, args, workingDirectory, redirectOutput: true);
+			hostPath, args, workingDirectory, redirectOutput: true, enableMajorRollForward: enableMajorRollForward);
 	}
 
 	/// <summary>
@@ -186,7 +208,8 @@ internal sealed class StartCommandHandler
 		string[] originalArgs,
 		string workingDirectory,
 		string? addins,
-		string? resolvedSolutionPath = null)
+		string? resolvedSolutionPath = null,
+		bool enableMajorRollForward = false)
 	{
 		var parsed = ParseStartArgs(originalArgs);
 
@@ -202,25 +225,35 @@ internal sealed class StartCommandHandler
 			var existing = _lookup.FindBySolution(parsed.Solution);
 			if (existing is not null)
 			{
-				if (!string.IsNullOrWhiteSpace(parsed.IdeChannel))
+				if (IsOrphanedServer(existing.Value.ParentProcessId))
 				{
 					_logger.LogInformation(
-						"DevServer already running for solution (PID {Pid}, Port {Port}). Rebinding IDE channel.",
-						existing.Value.ProcessId, existing.Value.Port);
-
-					var rebound = await _rebindIdeChannel(existing.Value.Port, parsed.IdeChannel);
-					if (rebound)
+						"Found existing DevServer (PID {Pid}, Port {Port}) but it is orphaned (ppid={Ppid}). Killing it to respawn.",
+						existing.Value.ProcessId, existing.Value.Port, existing.Value.ParentProcessId);
+					TryKillProcess(existing.Value.ProcessId);
+				}
+				else
+				{
+					if (!string.IsNullOrWhiteSpace(parsed.IdeChannel))
 					{
-						await TryUpdateCsprojUserAsync(parsed.Solution, existing.Value.Port);
+						_logger.LogInformation(
+							"DevServer already running for solution (PID {Pid}, Port {Port}). Rebinding IDE channel.",
+							existing.Value.ProcessId, existing.Value.Port);
+
+						var rebound = await _rebindIdeChannel(existing.Value.Port, parsed.IdeChannel);
+						if (rebound)
+						{
+							await TryUpdateCsprojUserAsync(parsed.Solution, existing.Value.Port);
+						}
+
+						return rebound ? 0 : 1;
 					}
 
-					return rebound ? 0 : 1;
+					_logger.LogInformation(
+						"DevServer already running for solution (PID {Pid}, Port {Port}). Reusing.",
+						existing.Value.ProcessId, existing.Value.Port);
+					return 0;
 				}
-
-				_logger.LogInformation(
-					"DevServer already running for solution (PID {Pid}, Port {Port}). Reusing.",
-					existing.Value.ProcessId, existing.Value.Port);
-				return 0;
 			}
 		}
 
@@ -230,26 +263,51 @@ internal sealed class StartCommandHandler
 			var existing = _lookup.FindByPort(parsed.HttpPort);
 			if (existing is not null)
 			{
-				if (!string.IsNullOrWhiteSpace(parsed.IdeChannel))
+				if (IsOrphanedServer(existing.Value.ParentProcessId))
 				{
 					_logger.LogInformation(
-						"DevServer already running on port {Port} (PID {Pid}). Rebinding IDE channel.",
-						parsed.HttpPort, existing.Value.ProcessId);
-
-					var rebound = await _rebindIdeChannel(parsed.HttpPort, parsed.IdeChannel);
-					if (rebound && !string.IsNullOrWhiteSpace(existing.Value.SolutionPath))
+						"Found existing DevServer on port {Port} (PID {Pid}) but it is orphaned (ppid={Ppid}). Killing it to respawn.",
+						parsed.HttpPort, existing.Value.ProcessId, existing.Value.ParentProcessId);
+					TryKillProcess(existing.Value.ProcessId);
+				}
+				else
+				{
+					if (!string.IsNullOrWhiteSpace(parsed.IdeChannel))
 					{
-						await TryUpdateCsprojUserAsync(existing.Value.SolutionPath, parsed.HttpPort);
+						_logger.LogInformation(
+							"DevServer already running on port {Port} (PID {Pid}). Rebinding IDE channel.",
+							parsed.HttpPort, existing.Value.ProcessId);
+
+						var rebound = await _rebindIdeChannel(parsed.HttpPort, parsed.IdeChannel);
+						if (rebound && !string.IsNullOrWhiteSpace(existing.Value.SolutionPath))
+						{
+							await TryUpdateCsprojUserAsync(existing.Value.SolutionPath, parsed.HttpPort);
+						}
+
+						return rebound ? 0 : 1;
 					}
 
-					return rebound ? 0 : 1;
+					_logger.LogInformation(
+						"DevServer already running on port {Port} (PID {Pid}). Reusing.",
+						parsed.HttpPort, existing.Value.ProcessId);
+					return 0;
 				}
-
-				_logger.LogInformation(
-					"DevServer already running on port {Port} (PID {Pid}). Reusing.",
-					parsed.HttpPort, existing.Value.ProcessId);
-				return 0;
 			}
+		}
+
+		// Ensure Uno.UI.RemoteControl.Host.exe has a Private+Domain inbound Allow rule
+		// on Windows.  CreateNoWindow=true on the host process suppresses the Windows
+		// Firewall dialog, so the rule is never created automatically.  The check is
+		// by rule display name (idempotent); the UAC prompt appears once per display-name
+		// lifetime.  After a package upgrade the old rule is found and no new prompt
+		// appears — the user must delete the old rule to re-trigger it.
+		// See spec-appendix-k-windows-firewall.md.
+		if (OperatingSystem.IsWindows() && hostPath.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+		{
+			// Canonicalize before passing to the firewall helper so that path traversal
+			// sequences (e.g. C:\legit\..\evil.exe) are resolved before validation.
+			var canonicalHostPath = Path.GetFullPath(hostPath);
+			await WindowsFirewallHelper.EnsureFirewallRuleAsync(canonicalHostPath, _logger, CancellationToken.None);
 		}
 
 		// Allocate port if needed
@@ -269,13 +327,58 @@ internal sealed class StartCommandHandler
 		}
 
 		// Build direct-mode args and spawn
-		var startInfo = BuildDirectLaunchArgs(hostPath, effectiveParsed, addins, workingDirectory);
+		var startInfo = BuildDirectLaunchArgs(hostPath, effectiveParsed, addins, workingDirectory, enableMajorRollForward: enableMajorRollForward);
 
 		_logger.LogInformation("Starting DevServer in direct mode: {Command} {Args}",
 			startInfo.FileName, startInfo.Arguments);
 
-		return await _spawnProcess(startInfo);
+		var result = await _spawnProcess(startInfo);
+
+		if (ShouldRetryInSafeMode(result, addins, effectiveParsed.Solution))
+		{
+			_logger.LogWarning(
+				"The DevServer host crashed during startup (exit code {HostExitCode}) before becoming ready — most often a " +
+				"broken add-in dependency. Retrying once in safe mode with add-ins disabled: Hot Reload stays available, " +
+				"but IDE add-ins (Hot Design, Uno Settings) are unavailable for this session. See the host output above for details.",
+				result.HostExitCode);
+
+			var safeModeStartInfo = BuildDirectLaunchArgs(
+				hostPath, effectiveParsed, SafeModeAddInsValue, workingDirectory, enableMajorRollForward: enableMajorRollForward);
+
+			var safeModeResult = await _spawnProcess(safeModeStartInfo);
+
+			if (safeModeResult.ExitCode == 0)
+			{
+				_logger.LogWarning(
+					"DevServer started in safe mode (add-ins disabled). Fix the add-in failure above to restore full functionality.");
+			}
+			else
+			{
+				_logger.LogError(
+					"DevServer failed to start even in safe mode, so the crash is not add-in related. See the host output above for details.");
+			}
+
+			return safeModeResult.ExitCode;
+		}
+
+		return result.ExitCode;
 	}
+
+	/// <summary>
+	/// A safe-mode retry is worthwhile only when the host process died before becoming
+	/// ready (a startup crash, not a readiness timeout) AND the launch would actually
+	/// have loaded add-ins — either pre-resolved paths or MSBuild discovery via the
+	/// solution. <see cref="SafeModeAddInsValue"/> itself yields zero paths, so a
+	/// safe-mode launch can never trigger a second retry.
+	/// </summary>
+	internal static bool ShouldRetryInSafeMode(DirectSpawnResult result, string? addins, string? solution)
+		=> result.Failure == DirectSpawnFailure.DiedBeforeReady
+			&& WouldLoadAddIns(addins, solution);
+
+	private static bool WouldLoadAddIns(string? addins, string? solution)
+		=> addins is not null
+			? addins.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).Length > 0
+			: solution is not null;
 
 	private async Task TryUpdateCsprojUserAsync(string? solution, int port)
 	{
@@ -301,5 +404,49 @@ internal sealed class StartCommandHandler
 		var port = ((IPEndPoint)tcp.LocalEndpoint).Port;
 		tcp.Stop();
 		return port;
+	}
+
+	/// <summary>
+	/// Determines whether a server is orphaned: its parent process is no longer alive.
+	/// A server with <c>ppid=0</c> has no parent monitoring at all, which means it will
+	/// never self-terminate — we treat that as orphaned so it gets killed and respawned
+	/// with proper parent tracking.
+	/// </summary>
+	private bool IsOrphanedServer(int parentProcessId)
+	{
+		if (parentProcessId <= 0)
+		{
+			// No parent tracking → always considered orphaned.
+			return true;
+		}
+
+		try
+		{
+			var parent = Process.GetProcessById(parentProcessId);
+			// Process exists and hasn't exited.
+			return parent.HasExited;
+		}
+		catch (ArgumentException)
+		{
+			// Process not found → parent is dead → orphaned.
+			return true;
+		}
+	}
+
+	private void TryKillProcess(int processId)
+	{
+		try
+		{
+			var process = Process.GetProcessById(processId);
+			if (!process.HasExited)
+			{
+				process.Kill();
+				_logger.LogDebug("Killed orphaned DevServer process {Pid}.", processId);
+			}
+		}
+		catch (Exception ex)
+		{
+			_logger.LogWarning(ex, "Failed to kill orphaned DevServer process {Pid}: {Message}", processId, ex.Message);
+		}
 	}
 }

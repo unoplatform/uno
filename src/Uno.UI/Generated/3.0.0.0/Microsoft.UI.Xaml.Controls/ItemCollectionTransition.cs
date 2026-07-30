@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ItemCollectionTransition
@@ -13,11 +13,11 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property OldBounds
 		// Skipping already declared property Operation
 		// Skipping already declared property Triggers
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.Start()
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.HasStarted.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.NewBounds.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.OldBounds.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.Operation.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.Triggers.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.OldBounds.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.NewBounds.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.HasStarted.get
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemCollectionTransition.Start()
 	}
 }

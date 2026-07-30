@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationView.h, commit 9f7c129
+// MUX reference NavigationView.h, commit bac7a9c33
 
 using System.Collections.Generic;
 using Uno.Disposables;
@@ -31,6 +31,8 @@ public partial class NavigationView
 	internal TopNavigationViewDataProvider GetTopDataProvider() { return m_topDataProvider; }
 
 	internal NavigationViewItemsFactory GetNavigationViewItemsFactory() { return m_navigationViewItemsFactory; }
+
+	private readonly List<NavigationViewItemBase> m_itemsWithRevokerObjects = new();
 
 	private bool m_InitialNonForcedModeUpdate = true;
 
@@ -190,8 +192,6 @@ public partial class NavigationView
 
 	private TopNavigationViewLayoutState m_topNavigationMode = TopNavigationViewLayoutState.Uninitialized;
 
-	private readonly List<NavigationViewItem> m_itemsWithRevokerObjects = new List<NavigationViewItem>();
-
 	// A threshold to stop recovery from overflow to normal happens immediately on resize.
 	private float m_topNavigationRecoveryGracePeriodWidth = 5.0f;
 
@@ -214,9 +214,11 @@ public partial class NavigationView
 
 	private double m_openPaneLength = 320.0;
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 	#region Uno specific
 
-	//TODO: Uno specific - remove when #4689 is fixed
+	// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle),
+	// so items are prepared early via the repeater UnoBeforeElementPrepared event tracked by these revokers.
 	private readonly SerialDisposable m_leftNavItemsRepeaterUnoBeforeElementPreparedRevoker = new();
 	private readonly SerialDisposable m_topNavItemsRepeaterUnoBeforeElementPreparedRevoker = new();
 	private readonly SerialDisposable m_leftNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker = new();
@@ -224,4 +226,5 @@ public partial class NavigationView
 	private readonly SerialDisposable m_topNavOverflowItemsRepeaterUnoBeforeElementPreparedRevoker = new();
 
 	#endregion
+#endif
 }

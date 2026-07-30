@@ -13,7 +13,6 @@ namespace Windows.ApplicationModel.DataTransfer
 		public static void Flush()
 		{
 			// Do nothing, data available automatically even after application closes.
-			// Except for Skia.WPF where you do have to Flush().
 		}
 #endif
 

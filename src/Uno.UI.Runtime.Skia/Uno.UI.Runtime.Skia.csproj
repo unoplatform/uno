@@ -10,7 +10,7 @@
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<Description>This package provides the platform support for Skia in Uno Platform projects.</Description>
 
-		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia</PackageId>
+		<PackageId>Uno.WinUI.Runtime.Skia</PackageId>
 
 		<RootNamespace>Uno.UI.Runtime.Skia</RootNamespace>
 

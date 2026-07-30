@@ -102,11 +102,8 @@ internal static class LayouterElementExtensions
 			// it will bypass the current element's .MeasureOverride()
 			// since it shouldn't produce a different result and it's
 			// just a waste of precious CPU time to call it.
-			using var children = frameworkElement.GetChildren().GetEnumerator();
-
-			while (children.MoveNext())
+			foreach (var child in frameworkElement.GetChildren())
 			{
-				var child = children.Current;
 				// If the child is dirty (or is a path to a dirty descendant child),
 				// We're remeasuring it.
 

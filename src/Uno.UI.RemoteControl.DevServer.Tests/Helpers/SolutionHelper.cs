@@ -12,7 +12,7 @@ public class SolutionHelper : IDisposable
 	private readonly string _solutionFileName;
 	private readonly string _tempFolder;
 
-	public string TempFolder => _tempFolder;
+	public string SolutionFolder => _tempFolder;
 	public string SolutionFile => Path.Combine(_tempFolder, _solutionFileName + ".sln");
 
 	private bool _isDisposed;
@@ -29,7 +29,7 @@ public class SolutionHelper : IDisposable
 		}
 	}
 
-	public async Task CreateSolutionFileAsync(
+	public async Task<string> CreateSolutionFileAsync(
 		string platforms = "wasm,desktop",
 		string? targetFramework = null)
 	{
@@ -58,6 +58,8 @@ public class SolutionHelper : IDisposable
 		{
 			throw new InvalidOperationException($"dotnet new unoapp failed with exit code {exitCode} / {output}.\n>dotnet {arguments}");
 		}
+
+		return _solutionFileName;
 	}
 
 	private static object _lock = new();

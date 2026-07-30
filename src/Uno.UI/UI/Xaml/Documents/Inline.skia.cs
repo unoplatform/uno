@@ -19,7 +19,8 @@ namespace Microsoft.UI.Xaml.Documents
 			{
 				if (_fontInfo is null)
 				{
-					var (details, task) = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
+					var scaledSize = Uno.UI.Xaml.Core.TextScaleHelper.GetScaledFontSize(FontSize, Uno.UI.Xaml.Core.CoreServices.Instance.FontScale, IsTextScaleFactorEnabled && !Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor);
+					var (details, task) = FontDetailsCache.GetFont(FontFamily?.Source, (float)scaledSize, FontWeight, FontStretch, FontStyle);
 					if (task.IsCompletedSuccessfully)
 					{
 						_fontInfo = task.Result;
@@ -80,5 +81,18 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		private void InvalidateFontInfo() => _fontInfo = null;
+
+		private protected override void OnIsTextScaleFactorEnabledChanged()
+		{
+			base.OnIsTextScaleFactorEnabledChanged();
+			InvalidateFontInfo();
+			InvalidateInlines(false);
+		}
+
+		/// <summary>
+		/// Invalidates the cached font info due to a text scale factor change.
+		/// Called from CoreServices.RecursiveInvalidateTextScale().
+		/// </summary>
+		internal virtual void InvalidateTextScaleFontInfo() => _fontInfo = null;
 	}
 }

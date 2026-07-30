@@ -41,33 +41,28 @@ internal class MacOSFolderPickerExtension : IFolderPickerExtension
 
 	public async Task<StorageFolder?> PickSingleFolderAsync(CancellationToken token)
 	{
-		string? folder;
-		if (NativeDispatcher.Main.HasThreadAccess)
+		// Always Enqueue — running NSOpenPanel.runModal reentrantly from an in-flight
+		// pointer handler crashes InputManager and corrupts return state. See
+		// MacOSFileOpenPickerExtension.PickMultipleFilesAsync for full context.
+		var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+		using var registration = token.CanBeCanceled ? token.Register(() => tcs.TrySetCanceled(token)) : default;
+		NativeDispatcher.Main.Enqueue(() =>
 		{
-			folder = NativeUno.uno_pick_single_folder(_prompt, _identifier, (int)_suggestedStartLocation);
-		}
-		else
-		{
-			var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
-			using var registration = token.CanBeCanceled ? token.Register(() => tcs.TrySetCanceled(token)) : default;
-			NativeDispatcher.Main.Enqueue(() =>
+			if (token.IsCancellationRequested)
 			{
-				if (token.IsCancellationRequested)
-				{
-					tcs.TrySetCanceled(token);
-					return;
-				}
-				try
-				{
-					tcs.TrySetResult(NativeUno.uno_pick_single_folder(_prompt, _identifier, (int)_suggestedStartLocation));
-				}
-				catch (Exception ex)
-				{
-					tcs.TrySetException(ex);
-				}
-			});
-			folder = await tcs.Task;
-		}
+				tcs.TrySetCanceled(token);
+				return;
+			}
+			try
+			{
+				tcs.TrySetResult(NativeUno.uno_pick_single_folder(_prompt, _identifier, (int)_suggestedStartLocation));
+			}
+			catch (Exception ex)
+			{
+				tcs.TrySetException(ex);
+			}
+		});
+		var folder = await tcs.Task;
 
 		return folder is null ? null : await StorageFolder.GetFolderFromPathAsync(folder);
 	}
