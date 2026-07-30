@@ -133,11 +133,28 @@ partial class ResourceLoader
 	/// then holds a strong reference to every loaded app assembly for the process lifetime, pinning
 	/// the context after unload. The parsed resources themselves are keyed by string culture/key (no
 	/// ALC pin), but the loaders' dictionaries are cleared and re-parsed from the still-registered
-	/// default-ALC assemblies so no value parsed from an unloaded assembly lingers.
+	/// default-ALC assemblies so no value parsed from an unloaded assembly lingers. Used for global
+	/// shutdown when no specific dying ALC is identifiable; when it is, prefer
+	/// <see cref="ClearAlcAssemblies"/> so sibling secondary apps' registrations survive.
 	/// </summary>
 	internal static void ClearNonDefaultAlcAssemblies()
+		=> ClearAlcAssembliesCore(IsFromNonDefaultAlc);
+
+	/// <summary>
+	/// Removes only the lookup assemblies loaded into the specified dying
+	/// <see cref="System.Runtime.Loader.AssemblyLoadContext"/>, then rebuilds the loader caches
+	/// from the remaining assemblies. Unlike <see cref="ClearNonDefaultAlcAssemblies"/> (the
+	/// global-shutdown, all-non-default sweep), registrations from OTHER live secondary ALCs
+	/// (sibling previewed apps) survive — removal is destructive (a dropped registration is never
+	/// re-added), so a whole-process sweep would break a live sibling app's resource lookups when
+	/// only one app is being torn down.
+	/// </summary>
+	internal static void ClearAlcAssemblies(global::System.Runtime.Loader.AssemblyLoadContext alc)
+		=> ClearAlcAssembliesCore(assembly => global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly) == alc);
+
+	private static void ClearAlcAssembliesCore(Predicate<Assembly> shouldRemove)
 	{
-		var removedAny = _lookupAssemblies.RemoveAll(IsFromNonDefaultAlc) > 0;
+		var removedAny = _lookupAssemblies.RemoveAll(shouldRemove) > 0;
 		if (!removedAny)
 		{
 			return;

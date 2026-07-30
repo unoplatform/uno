@@ -206,6 +206,7 @@ public partial class ClientHotReloadProcessor
 	{
 		var result = default(UpdateResult);
 		HotReloadUIPauseHandle? pauseHandle = null;
+		IDisposable? typeCorrelationScope = null;
 		var currentLocalHrId = -1;
 
 		try
@@ -254,6 +255,19 @@ public partial class ClientHotReloadProcessor
 				{
 					debug?.Debug($"{tag} '{edit.FilePath}' (from: {edit.OldText?[..100]} | to: {edit.NewText?[..100]}).");
 				}
+			}
+
+			// When a UI pause will be taken (below), the raw Type[] of each local HR operation is the
+			// pause-correlation payload: after awaiting completion we read the completed operations'
+			// Types to compute the set to drop from the pause handle. ReportCompleted normally
+			// releases that array the instant an operation turns terminal (collectible-ALC
+			// guarantee), which would always hand us an empty drop set. Enter a type-correlation
+			// scope BEFORE the update begins so terminal operations retain their Types until the
+			// sweep in the finally block releases them explicitly — the raw types are only ever
+			// retained while a scope is active, so the ALC release guarantee is preserved.
+			if (req.PauseUIPhases != HotReloadUIPhases.None)
+			{
+				typeCorrelationScope = HotReloadClientOperation.EnterTypeCorrelationScope();
 			}
 
 			// As the local HR is not really ID trackable (trigger by VS without any ID), we capture the current ID here to make sure that if HR completes locally before we get info from the server, we won't miss it.
@@ -390,7 +404,24 @@ public partial class ClientHotReloadProcessor
 		}
 		finally
 		{
+			// Dispose the pause FIRST: its drain promotes deferred operations to terminal
+			// (ReportCompleted) while the correlation scope is still active, so they too retain
+			// their Types until the sweep below.
 			pauseHandle?.Dispose();
+
+			if (typeCorrelationScope is not null)
+			{
+				// Exit the scope, then sweep-release the retained raw Type[] (and detach exception
+				// graphs) of every terminal local operation — including operations that completed
+				// while the scope was active but fell outside this update's drop window (they
+				// skipped their ReportCompleted-time release). Without this sweep such operations
+				// would pin their collectible previewed-app ALC.
+				typeCorrelationScope.Dispose();
+				if (CurrentStatus is { } status)
+				{
+					HotReloadClientOperation.ReleaseRetainedTypesForTerminalOperations(status.Local.Operations);
+				}
+			}
 		}
 	}
 

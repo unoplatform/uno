@@ -394,9 +394,12 @@ partial class Window
 		// Purge Type-keyed caches (DependencyProperty registry, Style caches, etc.)
 		// that hold references to types from the ALC being torn down. Without this,
 		// these statics prevent the GC from collecting the ALC after Unload().
+		// The dying ALC captured above scopes the destructive removals (ResourceLoader lookup
+		// assemblies, CompositionTarget.Rendering handlers) so a live sibling secondary app's
+		// state survives this window's teardown.
 		try
 		{
-			Application.CleanupNonDefaultAlcCaches();
+			Application.CleanupNonDefaultAlcCaches(dyingAlc);
 		}
 		catch (Exception ex)
 		{

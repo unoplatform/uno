@@ -96,6 +96,23 @@ namespace Microsoft.UI.Xaml
 				// later re-enabled and something is enqueued.
 				if (!FeatureConfiguration.Page.IsPoolingEnabled)
 				{
+					// Pooling disabled: drop all pooled instances so re-enabling cannot serve stale
+					// pages past TTL — with the scavenger stopped, nothing else would ever evict them.
+					// Mirrors the scavenger's own eviction above: remove the entries, then collect so
+					// the orphan instances are picked up.
+					var droppedInstancesCount = 0;
+					foreach (var list in _pooledInstances.Values)
+					{
+						droppedInstancesCount += list.Count;
+					}
+
+					_pooledInstances.Clear();
+
+					if (droppedInstancesCount > 0)
+					{
+						GC.Collect();
+					}
+
 					_scavengerStarted = false;
 					return;
 				}
@@ -135,9 +152,21 @@ namespace Microsoft.UI.Xaml
 			else
 			{
 				var position = list.Count - 1;
-				var instance = list[position].PageInstance;
+				var entry = list[position];
+
+				// Entries are appended in creation order, so the last one is the newest: if even it
+				// has outlived TimeToLive, every pooled instance for this type is stale (the
+				// scavenger may not have run yet — e.g. it is between passes, or pooling was
+				// toggled). Never serve a page past its TTL; drop the stale entries and fall back
+				// to a fresh instance.
+				if (_watch.Elapsed - entry.CreationTime > TimeToLive)
+				{
+					list.Clear();
+					return Frame.CreatePageInstance(pageType) as Page;
+				}
+
 				list.RemoveAt(position);
-				return instance;
+				return entry.PageInstance;
 			}
 		}
 

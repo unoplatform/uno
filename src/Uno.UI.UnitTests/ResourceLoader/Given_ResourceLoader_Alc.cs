@@ -57,6 +57,46 @@ public class Given_ResourceLoader_Alc
 	}
 
 	[TestMethod]
+	public void When_ClearAlcAssemblies_Scoped_Then_Other_Alc_Kept()
+	{
+		// Two live secondary apps: tearing one down must not destroy the other's registrations.
+		// Removal is destructive (a dropped registration is never re-added), so the ALC-scoped
+		// sweep — used when the dying ALC is identifiable — must only remove the dying context's
+		// lookup assemblies.
+		var defaultAlcAssembly = typeof(Given_ResourceLoader_Alc).Assembly;
+
+		var dyingAlc = new AssemblyLoadContext("Given_ResourceLoader_Alc.dying", isCollectible: true);
+		var siblingAlc = new AssemblyLoadContext("Given_ResourceLoader_Alc.sibling", isCollectible: true);
+		try
+		{
+			var dyingAssembly = dyingAlc.LoadFromAssemblyPath(defaultAlcAssembly.Location);
+			var siblingAssembly = siblingAlc.LoadFromAssemblyPath(defaultAlcAssembly.Location);
+
+			_ResourceLoader.AddLookupAssembly(dyingAssembly);
+			_ResourceLoader.AddLookupAssembly(siblingAssembly);
+
+			Assert.IsTrue(_ResourceLoader.ContainsLookupAssembly(dyingAssembly), "Pre-condition: the dying ALC's assembly must be registered.");
+			Assert.IsTrue(_ResourceLoader.ContainsLookupAssembly(siblingAssembly), "Pre-condition: the sibling ALC's assembly must be registered.");
+
+			_ResourceLoader.ClearAlcAssemblies(dyingAlc);
+
+			Assert.IsFalse(
+				_ResourceLoader.ContainsLookupAssembly(dyingAssembly),
+				"The scoped sweep must drop the dying ALC's lookup assembly; otherwise the static list pins the unloaded context.");
+			Assert.IsTrue(
+				_ResourceLoader.ContainsLookupAssembly(siblingAssembly),
+				"The scoped sweep must keep a live sibling secondary app's lookup assembly — dropping it would break the sibling's resource lookups for the rest of the process lifetime.");
+		}
+		finally
+		{
+			// Remove the sibling registration so this test does not leak state into other tests.
+			_ResourceLoader.ClearNonDefaultAlcAssemblies();
+			dyingAlc.Unload();
+			siblingAlc.Unload();
+		}
+	}
+
+	[TestMethod]
 	public void When_ClearNonDefaultAlcAssemblies_Then_Default_Resources_Still_Resolve()
 	{
 		// Regression guard: the sweep clears every loader's dictionaries (ClearResources) and then

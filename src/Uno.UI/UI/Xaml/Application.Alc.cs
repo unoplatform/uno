@@ -116,7 +116,7 @@ partial class Application
 			_applicationsByAlc.Remove(alc);
 		}
 
-		CleanupNonDefaultAlcCaches();
+		CleanupNonDefaultAlcCaches(alc);
 	}
 
 	internal static Application GetForInstance(object instance)
@@ -360,15 +360,27 @@ partial class Application
 	/// Purges Type-keyed caches of entries from non-default (collectible) ALCs.
 	/// Called from <see cref="Window.CloseAlcWindow"/> during ALC teardown.
 	/// </summary>
+	/// <param name="dyingAlc">
+	/// The <see cref="AssemblyLoadContext"/> being torn down, when the call site can identify it
+	/// (window close, app removal). Scopes the DESTRUCTIVE removals below to that ALC so that,
+	/// with two live secondary apps, closing one does not destroy the other's state. When
+	/// <see langword="null"/> (global shutdown), those removals keep their historical
+	/// all-non-default semantics.
+	/// </param>
 	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "ALC cleanup reflection")]
 	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup reflection")]
-	internal static void CleanupNonDefaultAlcCaches()
+	internal static void CleanupNonDefaultAlcCaches(AssemblyLoadContext dyingAlc = null)
 	{
 		// Remove Application instances registered for non-default ALCs from the CWT.
 		// Without this, the CWT keeps the inner app's Application subclass alive.
 		ClearNonDefaultAlcApplications();
 
-		// Type-keyed caches
+		// Type-keyed caches. These (and the FrameworkElementHelper/ResourceResolver/
+		// UIElementNativeRegistrar sweeps below) intentionally stay all-non-default even when the
+		// dying ALC is known: cache entries rebuild on demand, so over-clearing a live sibling
+		// app's entries is a perf hiccup, not state loss. The DESTRUCTIVE removals further down
+		// (ResourceLoader lookup assemblies, CompositionTarget.Rendering handlers) are ALC-scoped
+		// because a dropped registration/subscription is never re-created.
 		DependencyProperty.ClearCachesForNonDefaultAlc();
 		Style.ClearCachesForNonDefaultAlc();
 		DirectUI.MetadataAPI.ClearCachesForNonDefaultAlc();
@@ -386,7 +398,16 @@ partial class Application
 		// ResourceLoader — drop previewed-app lookup assemblies (and their parsed-resource
 		// markers). The process-lifetime _lookupAssemblies list keeps a strong reference to
 		// every app assembly registered via AddLookupAssembly, pinning the collectible ALC.
-		global::Windows.ApplicationModel.Resources.ResourceLoader.ClearNonDefaultAlcAssemblies();
+		// DESTRUCTIVE (registrations are never re-added): scope to the dying ALC when known so a
+		// live sibling secondary app keeps its resource lookups.
+		if (dyingAlc is not null)
+		{
+			global::Windows.ApplicationModel.Resources.ResourceLoader.ClearAlcAssemblies(dyingAlc);
+		}
+		else
+		{
+			global::Windows.ApplicationModel.Resources.ResourceLoader.ClearNonDefaultAlcAssemblies();
+		}
 
 #if __WASM__
 		// UIElementNativeRegistrar (WASM) — the Type→registration-id map keys on every element
@@ -396,7 +417,16 @@ partial class Application
 
 		// CompositionTarget.Rendering (WASM) — a secondary-ALC subscriber that did not detach
 		// before unload keeps its ALC pinned through the static handler list.
-		Media.CompositionTarget.ClearNonDefaultAlcHandlers();
+		// DESTRUCTIVE (a dropped handler is never re-subscribed): scope to the dying ALC when
+		// known so a live sibling secondary app keeps rendering.
+		if (dyingAlc is not null)
+		{
+			Media.CompositionTarget.ClearAlcHandlers(dyingAlc);
+		}
+		else
+		{
+			Media.CompositionTarget.ClearNonDefaultAlcHandlers();
+		}
 
 		// HtmlElementHelper (WASM) — Type→HtmlTag cache keyed by external (app) element types.
 		HtmlElementHelper.ClearNonDefaultAlcEntries();

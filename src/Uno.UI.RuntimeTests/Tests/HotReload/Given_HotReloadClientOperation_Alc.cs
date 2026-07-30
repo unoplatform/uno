@@ -79,5 +79,62 @@ public class Given_HotReloadClientOperation_Alc
 			collectibleAlc?.Unload();
 		}
 	}
+
+	[TestMethod]
+	public void When_Operation_Failed_Then_Exception_Graph_Detached()
+	{
+		// A previewed-app exception reported to an operation pins the app's collectible ALC even
+		// after the raw Type[] release: the exception's runtime type, InnerException chain, Data
+		// entries and TargetSite all reference the ALC. A terminal operation must therefore detach
+		// the graph, keeping only a default-ALC summary (type name + message + stack text).
+		var original = new InvalidOperationException("boom", new InvalidOperationException("inner"));
+
+		var op = new _Op(_Source.Manual, new[] { typeof(Given_HotReloadClientOperation_Alc) }, static () => { });
+		op.ReportError(original);
+		op.ReportCompleted();
+
+		Assert.AreEqual(1, op.Exceptions.Count, "The terminal detach must preserve the exception count.");
+
+		var detached = op.Exceptions[0];
+		Assert.IsFalse(
+			ReferenceEquals(original, detached),
+			"A terminal operation must not retain the original exception instance: its type, InnerException, Data and TargetSite all pin the previewed app's collectible ALC.");
+		Assert.IsNull(detached.InnerException, "The detached summary must not carry the original InnerException graph.");
+		StringAssert.Contains(detached.Message, "boom", "The summary message must preserve the original message text.");
+		StringAssert.Contains(detached.Message, nameof(InvalidOperationException), "The summary message must preserve the original type name.");
+		StringAssert.Contains(detached.Message, "inner", "The summary message must preserve the inner exception's text.");
+	}
+
+	[TestMethod]
+	public void When_TypeCorrelationScope_Active_Then_Types_Retained_Until_Sweep()
+	{
+		// The raw Type[] is the pause-correlation payload read by the client API AFTER awaiting
+		// completion (pauseHandle.Drop). While a type-correlation scope is active, a terminal
+		// operation must retain the array; the scope owner's explicit sweep then releases it,
+		// preserving the collectible-ALC release guarantee.
+		var op = new _Op(_Source.Manual, new[] { typeof(Given_HotReloadClientOperation_Alc) }, static () => { });
+
+		var scope = _Op.EnterTypeCorrelationScope();
+		try
+		{
+			op.ReportCompleted();
+
+			Assert.AreEqual(
+				1,
+				op.Types.Length,
+				"While a type-correlation scope is active, a terminal operation must retain its raw Type[] so the scope owner can correlate it with a UI pause.");
+		}
+		finally
+		{
+			scope.Dispose();
+		}
+
+		_Op.ReleaseRetainedTypesForTerminalOperations(new[] { op });
+
+		Assert.AreEqual(
+			0,
+			op.Types.Length,
+			"The scope owner's sweep must release the retained raw Type[]; otherwise a retained operation pins the collectible previewed-app ALC.");
+	}
 }
 #endif
