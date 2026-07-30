@@ -6602,32 +6602,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
-		public async Task When_CaretDrag_Then_Preview_Uses_SelectionHighlightColor()
+		public async Task When_CaretDrag_Beyond_Viewport_Then_Scrolls_To_Follow_Preview()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
 			FeatureConfiguration.TextBox.HideCaret = false;
 
-			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
-			SUT.SelectionHighlightColor = new SolidColorBrush(Colors.Magenta);
-			SUT.Foreground = new SolidColorBrush(Colors.Green);
-			SUT.Select(25, 0);
+			var SUT = await SetUpCaretDragTextBox(
+				"The quick brown fox jumps over the lazy dog while the caret keeps travelling right past the edge");
+			SUT.Select(0, 0);
 			await WindowHelper.WaitForIdle();
 
-			var restingBrush = SUT.TextBoxView.DisplayBlock.RenderCaret!.Value.brush;
+			var sv = (ScrollViewer)SUT.ContentElement;
+			Assert.IsGreaterThan(0, sv.ScrollableWidth, "The text must overflow for this test to mean anything.");
+			Assert.AreEqual(0, sv.HorizontalOffset);
+
+			// Drag to the far end of the text, expressed in the same text coordinates the gesture uses.
+			var parsedText = SUT.TextBoxView.DisplayBlock.ParsedText;
+			var travel = parsedText.GetRectForIndex(SUT.Text.Length).Left - parsedText.GetRectForIndex(0).Left;
 
 			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
-			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(-CaretDragStep, 0));
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(travel, 0));
 			await WindowHelper.WaitForIdle();
 
-			var dragBrush = SUT.TextBoxView.DisplayBlock.RenderCaret!.Value.brush;
-			Assert.AreNotSame(restingBrush, dragBrush, "The dragged caret should not reuse the Foreground caret brush.");
-			Assert.AreEqual(Colors.Magenta, ((Microsoft.UI.Composition.CompositionColorBrush)dragBrush).Color);
+			var previewIndex = SUT.TextBoxView.DisplayBlock.RenderCaret!.Value.index;
+			var caretRect = parsedText.GetRectForIndex(previewIndex);
+
+			// ChangeView animates, so poll on the invariant that matters: the previewed caret ends up
+			// inside the visible viewport.
+			await WindowHelper.WaitFor(
+				() => caretRect.Left >= sv.HorizontalOffset - 1
+					&& caretRect.Right <= sv.HorizontalOffset + sv.ViewportWidth + 1,
+				message: $"Caret at {caretRect.Left} never came into the viewport (width {sv.ViewportWidth})");
+
+			Assert.IsGreaterThan(0, sv.HorizontalOffset, "The viewport should have followed the previewed caret.");
 
 			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default);
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(Colors.Green, ((Microsoft.UI.Composition.CompositionColorBrush)SUT.TextBoxView.DisplayBlock.RenderCaret!.Value.brush).Color,
-				"The caret should return to the Foreground colour once the gesture ends.");
+			Assert.AreEqual(previewIndex, SUT.SelectionStart);
 		}
 
 		[TestMethod]

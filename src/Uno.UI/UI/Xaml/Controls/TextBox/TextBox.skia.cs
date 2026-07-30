@@ -593,9 +593,9 @@ public partial class TextBox : ITextSelectionGripperHost
 				// is always visible regardless of theme. Uno doesn't support DestInvert,
 				// so we use the TextBox's own Foreground (element-theme-aware via
 				// ThemeResource) with fully opaque alpha for maximum caret visibility.
+				var caretBrush = GetOpaqueCaretBrush();
 				// A caret drag previews its position without committing the selection until the
 				// gesture ends, so the preview wins while it is active. Text can shrink mid-drag.
-				var caretBrush = _caretDragPreviewIndex is not null ? GetCaretDragBrush() : GetOpaqueCaretBrush();
 				var caretIndex = _caretDragPreviewIndex is { } previewIndex
 					? Math.Clamp(previewIndex, 0, Text.Length)
 					: (IsBackwardSelection ? SelectionStart : SelectionStart + SelectionLength);
@@ -842,6 +842,13 @@ public partial class TextBox : ITextSelectionGripperHost
 
 			var (selectionStart, selectionEnd) = _selection.selectionEndsAtTheStart ? (_selection.start + _selection.length, _selection.start) : (_selection.start, _selection.start + _selection.length);
 			var index = putSelectionEndInVisibleViewport ? selectionEnd : selectionStart;
+
+			// A caret drag moves the previewed caret without committing the selection, so the
+			// viewport has to follow the preview instead.
+			if (_caretDragPreviewIndex is { } caretDragIndex)
+			{
+				index = Math.Clamp(caretDragIndex, 0, Text.Length);
+			}
 
 			var caretRect = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(index) with { Width = TextBlock.CaretThickness };
 

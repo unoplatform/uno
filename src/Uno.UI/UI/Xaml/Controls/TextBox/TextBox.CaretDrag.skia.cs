@@ -2,9 +2,6 @@
 
 using System;
 using Windows.Foundation;
-using Windows.UI;
-using Microsoft.UI.Composition;
-using Uno.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -33,32 +30,7 @@ public partial class TextBox
 	// touch platforms carries the selection thumbs — is put back when it ends.
 	private CaretDisplayMode? _caretModeBeforeCaretDrag;
 
-	private CompositionBrush? _cachedCaretDragBrush;
-	private Color _cachedCaretDragColor;
-
 	internal bool IsCaretDragActive => _caretDragAnchor is not null;
-
-	/// <summary>
-	/// Brush for the previewed caret. It follows SelectionHighlightColor rather than the Foreground
-	/// so the dragged caret reads as a transient selection affordance.
-	/// </summary>
-	private CompositionBrush GetCaretDragBrush()
-	{
-		var color = (SelectionHighlightColor ?? DefaultBrushes.SelectionHighlightColor).Color;
-		if (color.A < 255)
-		{
-			color = Color.FromArgb(255, color.R, color.G, color.B);
-		}
-
-		if (_cachedCaretDragBrush is not null && _cachedCaretDragColor == color)
-		{
-			return _cachedCaretDragBrush;
-		}
-
-		_cachedCaretDragColor = color;
-		_cachedCaretDragBrush = Compositor.GetSharedCompositor().CreateColorBrush(color);
-		return _cachedCaretDragBrush;
-	}
 
 	/// <summary>
 	/// Drives a platform caret-drag gesture, such as the iOS space-bar trackpad gesture.
@@ -137,7 +109,7 @@ public partial class TextBox
 		var textLength = Text.Length;
 
 		// Clamping to the first and last line centres keeps an over-shooting drag on the text
-		// instead of returning a miss. iOS has no autoscroll during this gesture, so neither do we.
+		// instead of returning a miss.
 		var firstLine = parsedText.GetRectForIndex(0);
 		var lastLine = parsedText.GetRectForIndex(textLength);
 		var minY = firstLine.Top + (firstLine.Height / 2);
@@ -150,6 +122,9 @@ public partial class TextBox
 		var index = Math.Max(0, parsedText.GetIndexAt(new Point(x, y), true, true));
 		_caretDragPreviewIndex = Math.Clamp(index, 0, textLength);
 
+		// Both the anchor and the hit-test work in text coordinates, which are independent of the
+		// scroll offset, so scrolling mid-gesture cannot skew the mapping.
+		UpdateScrolling();
 		UpdateDisplaySelection();
 		return true;
 	}
