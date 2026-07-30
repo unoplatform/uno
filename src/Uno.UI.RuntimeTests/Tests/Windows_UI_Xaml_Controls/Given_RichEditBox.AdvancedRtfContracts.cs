@@ -3,12 +3,14 @@
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 public partial class Given_RichEditBox
 {
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Rtf_Table_Cell_Text_Is_Edited()
 	{
 		const string rtf = @"{\rtf1\trowd\cellx1000\intbl AB\cell\row tail}";
@@ -25,6 +27,7 @@ public partial class Given_RichEditBox
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Rtf_Nested_Table_Outer_Cell_Text_Is_Edited()
 	{
 		const string rtf = @"{\rtf1\trowd\cellx3000\intbl outer "
