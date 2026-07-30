@@ -69,6 +69,94 @@ public partial class Given_RichEditBox
 	}
 
 	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Large_List_Paragraphs_Are_Locally_Edited_Layout_Stays_Incremental()
+	{
+		const int paragraphCount = 1_000;
+		const int runsPerParagraph = 10;
+		var editor = new RichEditBox
+		{
+			Width = 480,
+			Height = 120,
+			TextWrapping = TextWrapping.NoWrap,
+		};
+		try
+		{
+			var rtf = new StringBuilder(@"{\rtf1\ansi ");
+			for (var paragraphIndex = 0; paragraphIndex < paragraphCount; paragraphIndex++)
+			{
+				for (var runIndex = 0; runIndex < runsPerParagraph; runIndex++)
+				{
+					rtf.Append(runIndex % 2 == 0 ? @"\b x" : @"\b0 x");
+				}
+				rtf.Append(@"\par ");
+			}
+			rtf.Append('}');
+			editor.Document.SetText(TextSetOptions.FormatRtf, rtf.ToString());
+			var list = editor.Document.GetRange(0, editor.Document.TextLength).ParagraphFormat;
+			list.ListType = MarkerType.Arabic;
+			list.ListStyle = MarkerStyle.Period;
+			WindowHelper.WindowContent = editor;
+			await WindowHelper.WaitForLoaded(editor);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(editor.UsesBoundedRichLayout);
+			Assert.AreEqual(paragraphCount, editor.BoundedRichLayoutCachedParagraphCount);
+			var fullDiffs = editor.RenderFullDiffCount;
+			var paragraphRebuilds = editor.BoundedRichLayoutParagraphRebuildCount;
+			var runVisits = editor.BoundedRichLayoutRunVisitCount;
+			var editPosition = (runsPerParagraph + 1) * (paragraphCount / 2) + runsPerParagraph / 2;
+
+			editor.Document.GetRange(editPosition, editPosition + 1).Text = "X";
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(fullDiffs, editor.RenderFullDiffCount);
+			Assert.AreEqual(paragraphCount, editor.BoundedRichLayoutCachedParagraphCount);
+			Assert.IsLessThanOrEqualTo(
+				2,
+				editor.BoundedRichLayoutParagraphRebuildCount - paragraphRebuilds);
+			Assert.IsLessThanOrEqualTo(20, editor.BoundedRichLayoutRunVisitCount - runVisits);
+			Assert.AreEqual(MarkerType.Arabic, editor.Document.GetRange(0, 0).ParagraphFormat.ListType);
+			Assert.AreEqual("xXx", editor.Document.GetTextInRange(editPosition - 1, editPosition + 2));
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Bounded_Layout_Ends_Large_Story_Is_Released()
+	{
+		var editor = new RichEditBox
+		{
+			Width = 480,
+			Height = 120,
+			TextWrapping = TextWrapping.NoWrap,
+		};
+		try
+		{
+			editor.Document.SetText(TextSetOptions.None, new string('x', 2 * 1024 * 1024 + 1));
+			WindowHelper.WindowContent = editor;
+			await WindowHelper.WaitForLoaded(editor);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(editor.UsesBoundedRichLayout);
+			Assert.AreNotEqual(0, editor.BoundedRichLayoutCachedParagraphCount);
+
+			editor.Document.SetText(TextSetOptions.None, "small");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(editor.UsesBoundedRichLayout);
+			Assert.AreEqual(0, editor.BoundedRichLayoutCachedParagraphCount);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	public void When_Thousands_Of_Indexed_Runs_Are_Locally_Edited_Trees_Stay_Bounded()
 	{
 		const int runCount = 32_768;

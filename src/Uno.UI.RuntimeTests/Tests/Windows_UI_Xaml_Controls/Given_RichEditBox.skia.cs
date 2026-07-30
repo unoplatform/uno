@@ -32,6 +32,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public partial class Given_RichEditBox
 	{
 		[TestMethod]
+		public async Task When_TextBox_Overlay_Is_Enabled_RichEditBox_Keeps_Managed_Renderer()
+		{
+			var previous = global::Uno.UI.FeatureConfiguration.TextBox.UseOverlayOnSkia;
+			var editor = new RichEditBox();
+			try
+			{
+				global::Uno.UI.FeatureConfiguration.TextBox.UseOverlayOnSkia = true;
+				WindowHelper.WindowContent = editor;
+				await WindowHelper.WaitForLoaded(editor);
+				editor.Document.SetText(TextSetOptions.None, "managed");
+				editor.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				var displayBlock = GetDisplayBlock(editor);
+				Assert.AreEqual(1, displayBlock.Opacity);
+				Assert.AreEqual("managed", displayBlock.Text);
+			}
+			finally
+			{
+				global::Uno.UI.FeatureConfiguration.TextBox.UseOverlayOnSkia = previous;
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public void When_TextConstants_Match_WinUIEdit()
 		{
 			Assert.AreEqual(global::Windows.UI.Color.FromArgb(0, 0, 0, 1), TextConstants.AutoColor);
@@ -480,6 +505,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Native_Newline_Is_Normalized()
+		{
+			var SUT = new RichEditBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				((IImeSessionHost)SUT).UpdateTextFromNative("a\nb", 3, 0);
+
+				GetTextWithoutFinalEop(SUT.Document, out var text);
+				Assert.AreEqual("a\rb", text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Native_Paste_Replaces_Selection_And_Preserves_Rich_State()
 		{
 			var SUT = new RichEditBox();
@@ -508,6 +553,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Document.Undo();
 				GetTextWithoutFinalEop(SUT.Document, out text);
 				Assert.AreEqual("abcd", text);
+				Assert.AreEqual(1, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(3, SUT.Document.Selection.EndPosition);
+
+				SUT.Document.Redo();
+				GetTextWithoutFinalEop(SUT.Document, out text);
+				Assert.AreEqual("aXY\rZd", text);
+				Assert.AreEqual(5, SUT.Document.Selection.StartPosition);
+				Assert.AreEqual(5, SUT.Document.Selection.EndPosition);
 			}
 			finally
 			{
@@ -7463,26 +7516,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var source = new RichEditBox();
 			var target = new RichEditBox();
 			var panel = new StackPanel();
-			panel.Children.Add(source);
-			panel.Children.Add(target);
-			WindowHelper.WindowContent = panel;
-			await WindowHelper.WaitForLoaded(panel);
-
-			source.Document.SetText(TextSetOptions.None, "rich");
-			source.Document.GetRange(0, 4).CharacterFormat.Bold = FormatEffect.On;
-			source.Document.GetText(TextGetOptions.FormatRtf, out var rtf);
-			var package = new DataPackage();
-			package.SetRtf(rtf);
-			Clipboard.SetContent(package);
-			await WindowHelper.WaitForIdle();
-
-			target.PasteFromClipboard();
-			await WindowHelper.WaitFor(() =>
+			try
 			{
-				GetTextWithoutFinalEop(target.Document, out var text);
-				return text == "rich";
-			});
-			Assert.AreEqual(FormatEffect.On, target.Document.GetRange(0, 4).CharacterFormat.Bold);
+				panel.Children.Add(source);
+				panel.Children.Add(target);
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+
+				source.Document.SetText(TextSetOptions.None, "rich");
+				source.Document.GetRange(0, 4).CharacterFormat.Bold = FormatEffect.On;
+				source.Document.GetText(TextGetOptions.FormatRtf, out var rtf);
+				var package = new DataPackage();
+				package.SetRtf(rtf);
+				Clipboard.SetContent(package);
+				await WindowHelper.WaitForIdle();
+
+				target.PasteFromClipboard();
+				await WindowHelper.WaitFor(() =>
+				{
+					GetTextWithoutFinalEop(target.Document, out var text);
+					return text == "rich";
+				});
+				Assert.AreEqual(FormatEffect.On, target.Document.GetRange(0, 4).CharacterFormat.Bold);
+			}
+			finally
+			{
+				Clipboard.Clear();
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
@@ -7490,21 +7551,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_ClipboardCopyFormat_Controls_Rtf_Payload()
 		{
 			var SUT = new RichEditBox();
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
-			SUT.Document.SetText(TextSetOptions.None, "copy");
-			SUT.Document.Selection.SetRange(0, 4);
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "copy");
+				SUT.Document.Selection.SetRange(0, 4);
 
-			SUT.ClipboardCopyFormat = RichEditClipboardFormat.AllFormats;
-			SUT.Document.Selection.Copy();
-			await WindowHelper.WaitForIdle();
-			Assert.IsTrue(Clipboard.GetContent().Contains(StandardDataFormats.Rtf));
+				SUT.ClipboardCopyFormat = RichEditClipboardFormat.AllFormats;
+				SUT.Document.Selection.Copy();
+				await WindowHelper.WaitForIdle();
+				Assert.IsTrue(Clipboard.GetContent().Contains(StandardDataFormats.Rtf));
 
-			SUT.ClipboardCopyFormat = RichEditClipboardFormat.PlainText;
-			SUT.Document.Selection.Copy();
-			await WindowHelper.WaitForIdle();
-			Assert.IsFalse(Clipboard.GetContent().Contains(StandardDataFormats.Rtf));
-			Assert.IsTrue(Clipboard.GetContent().Contains(StandardDataFormats.Text));
+				SUT.ClipboardCopyFormat = RichEditClipboardFormat.PlainText;
+				SUT.Document.Selection.Copy();
+				await WindowHelper.WaitForIdle();
+				Assert.IsFalse(Clipboard.GetContent().Contains(StandardDataFormats.Rtf));
+				Assert.IsTrue(Clipboard.GetContent().Contains(StandardDataFormats.Text));
+			}
+			finally
+			{
+				Clipboard.Clear();
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
@@ -8677,6 +8746,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public bool IsComposing { get; private set; }
 			public bool EndImeSessionCalled { get; set; }
 			public int StartImeSessionCallCount { get; private set; }
+			public int StartFailuresRemaining { get; set; }
 			public ImeSessionActivation LastActivation { get; private set; }
 			public List<ImeSessionActivation> Activations { get; } = new();
 			public List<ImeSessionUpdate> Updates { get; } = new();
@@ -8695,6 +8765,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation)
 			{
 				StartImeSessionCallCount++;
+				if (StartFailuresRemaining > 0)
+				{
+					StartFailuresRemaining--;
+					throw new InvalidOperationException("Synthetic IME start failure.");
+				}
 				LastActivation = activation;
 				Activations.Add(activation);
 			}

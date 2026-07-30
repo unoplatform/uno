@@ -395,13 +395,18 @@ public partial class Given_RichEditBox
 			await WindowHelper.WaitForIdle();
 
 			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
-				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.setSelectionRange(2,2);input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'ni'}));return 'ok';})()");
+				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.value='AniB';input.setSelectionRange(2,2);input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'ni'}));return 'ok';})()");
 			await WindowHelper.WaitForIdle();
 			GetTextWithoutFinalEop(sut.Document, out var text);
 			Assert.AreEqual("AniB", text);
+			Assert.AreEqual(2, sut.Document.Selection.StartPosition);
+			Assert.AreEqual(
+				"AniB|2",
+				global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+					"(function(){const input=document.getElementById('uno-input');return `${input.value}|${input.selectionStart}`;})()"));
 
 			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
-				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionend',{data:''}));return 'ok';})()");
+				"(function(){const input=document.getElementById('uno-input');input.value='AB';input.setSelectionRange(1,1);input.dispatchEvent(new CompositionEvent('compositionend',{data:''}));return 'ok';})()");
 			await WindowHelper.WaitForIdle();
 			GetTextWithoutFinalEop(sut.Document, out text);
 			Assert.AreEqual("AB", text);
@@ -409,13 +414,107 @@ public partial class Given_RichEditBox
 			sut.Document.Selection.SetRange(1, 1);
 			await WindowHelper.WaitForIdle();
 			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
-				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.setSelectionRange(2,2);input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'hao'}));input.dispatchEvent(new CompositionEvent('compositionend',{data:'好'}));return 'ok';})()");
+				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.value='AhaoB';input.setSelectionRange(3,3);input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'hao'}));input.value='A好B';input.setSelectionRange(2,2);input.dispatchEvent(new CompositionEvent('compositionend',{data:'好'}));return 'ok';})()");
 			await WindowHelper.WaitForIdle();
 			GetTextWithoutFinalEop(sut.Document, out text);
 			Assert.AreEqual("A好B", text);
 		}
 		finally
 		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Wasm_External_Edit_Invalidates_Stale_Composition_Callbacks()
+	{
+		var sut = new RichEditBox();
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			sut.Document.SetText(TextSetOptions.None, "AB");
+			sut.Document.Selection.SetRange(1, 1);
+			sut.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.value='AniB';input.setSelectionRange(2,2);input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'ni'}));return 'ok';})()");
+			await WindowHelper.WaitForIdle();
+			sut.Document.SetText(TextSetOptions.None, "XY");
+			await WindowHelper.WaitForIdle();
+
+			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'stale'}));input.dispatchEvent(new CompositionEvent('compositionend',{data:'stale'}));return 'ok';})()");
+			await WindowHelper.WaitForIdle();
+
+			GetTextWithoutFinalEop(sut.Document, out var text);
+			Assert.AreEqual("XY", text);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Focused_Wasm_RichEditBox_Is_Retemplated_Native_Input_Is_Transferred()
+	{
+		var sut = new RichEditBox();
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			sut.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			var template = sut.Template;
+			Assert.IsNotNull(template);
+
+			sut.Template = null;
+			await WindowHelper.WaitForIdle();
+			sut.Template = template;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(
+				"1|true",
+				global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+					"(function(){const inputs=document.querySelectorAll('#uno-input');return `${inputs.length}|${document.activeElement===inputs[0]}`;})()"));
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Ime_Restart_Fails_Next_Start_Retries()
+	{
+		var fake = new FakeImeTextBoxExtension();
+		using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
+		var sut = new RichEditBox();
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			sut.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			Assert.AreSame(sut, ImeSessionCoordinator.ActiveHost);
+			fake.StartFailuresRemaining = 1;
+
+			ImeSessionCoordinator.RestartSession(sut);
+
+			Assert.IsNull(ImeSessionCoordinator.ActiveHost);
+			ImeSessionCoordinator.StartSession(
+				sut,
+				new ImeSessionActivation(FocusState.Programmatic, IsSoftwareKeyboardSuppressed: false));
+			Assert.AreSame(sut, ImeSessionCoordinator.ActiveHost);
+			Assert.AreEqual(3, fake.StartImeSessionCallCount);
+		}
+		finally
+		{
+			ImeSessionCoordinator.EndSession(sut);
 			WindowHelper.WindowContent = null;
 		}
 	}
