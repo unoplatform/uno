@@ -82,11 +82,10 @@ internal sealed class RtfPreservedMetadata
 				continue;
 			}
 
-			var validationEnd = entry.ValidationStart + entry.ValidationLength;
-			var intersects = removeLength == 0
-				? start > entry.ValidationStart && start < validationEnd
-				: start < validationEnd && end > entry.ValidationStart;
-			if (intersects)
+			if (removeLength != 0
+				&& entry.ProjectedLength != 0
+				&& start < entry.Anchor + entry.ProjectedLength
+				&& end > entry.Anchor)
 			{
 				invalidRegions.Add(entry.RegionId);
 			}
@@ -116,16 +115,27 @@ internal sealed class RtfPreservedMetadata
 				continue;
 			}
 
+			if (entry.ValidationLength == 0)
+			{
+				result.Add(entry with
+				{
+					Anchor = RebaseOpaqueAnchor(entry.Anchor),
+					ValidationStart = RebaseBoundary(entry.ValidationStart),
+				});
+				continue;
+			}
+
+			var validationStart = RebaseBoundary(entry.ValidationStart);
+			var validationEnd = RebaseBoundary(entry.ValidationStart + entry.ValidationLength);
 			result.Add(entry with
 			{
-				Anchor = entry.ValidationLength == 0
-					? RebaseAnchor(entry.Anchor)
-					: RebaseValidationStart(entry.Anchor),
-				ValidationStart = RebaseValidationStart(entry.ValidationStart),
+				Anchor = RebaseTableAnchor(entry),
+				ValidationStart = validationStart,
+				ValidationLength = Math.Max(0, validationEnd - validationStart),
 			});
 		}
 
-		if (inserted is not null)
+		if (inserted is { IsEmpty: false })
 		{
 			var nextRegionId = 1;
 			var nextSequence = 0;
@@ -135,6 +145,7 @@ internal sealed class RtfPreservedMetadata
 				nextSequence = Math.Max(nextSequence, entry.Sequence + 1);
 			}
 			var remappedRegions = new Dictionary<int, int>();
+			var insertedEntries = new List<RtfPreservedEntry>(inserted._entries.Count);
 			foreach (var entry in inserted._entries)
 			{
 				if (!remappedRegions.TryGetValue(entry.RegionId, out var regionId))
@@ -142,7 +153,7 @@ internal sealed class RtfPreservedMetadata
 					regionId = nextRegionId++;
 					remappedRegions.Add(entry.RegionId, regionId);
 				}
-				result.Add(entry with
+				insertedEntries.Add(entry with
 				{
 					Anchor = checked(start + entry.Anchor),
 					ValidationStart = checked(start + entry.ValidationStart),
@@ -155,16 +166,41 @@ internal sealed class RtfPreservedMetadata
 					Sequence = nextSequence++,
 				});
 			}
+
+			var merged = new List<RtfPreservedEntry>(result.Count + insertedEntries.Count);
+			var existingIndex = 0;
+			var insertedIndex = 0;
+			while (existingIndex < result.Count && insertedIndex < insertedEntries.Count)
+			{
+				if (Compare(result[existingIndex], insertedEntries[insertedIndex]) <= 0)
+				{
+					merged.Add(result[existingIndex++]);
+				}
+				else
+				{
+					merged.Add(insertedEntries[insertedIndex++]);
+				}
+			}
+			while (existingIndex < result.Count)
+			{
+				merged.Add(result[existingIndex++]);
+			}
+			while (insertedIndex < insertedEntries.Count)
+			{
+				merged.Add(insertedEntries[insertedIndex++]);
+			}
+			result = merged;
 		}
 
-		result.Sort(static (left, right) =>
+		return result.Count == 0 ? Empty : new RtfPreservedMetadata(result);
+
+		static int Compare(RtfPreservedEntry left, RtfPreservedEntry right)
 		{
 			var anchor = left.Anchor.CompareTo(right.Anchor);
 			return anchor != 0 ? anchor : left.Sequence.CompareTo(right.Sequence);
-		});
-		return result.Count == 0 ? Empty : new RtfPreservedMetadata(result);
+		}
 
-		int RebaseAnchor(int position)
+		int RebaseOpaqueAnchor(int position)
 		{
 			if (position < start || removeLength == 0 && position == start)
 			{
@@ -177,9 +213,32 @@ internal sealed class RtfPreservedMetadata
 			return checked(start + insertLength);
 		}
 
-		int RebaseValidationStart(int position)
+		int RebaseTableAnchor(RtfPreservedEntry entry)
 		{
-			if (position < start)
+			var position = entry.Anchor;
+			if (position < start
+				|| position == start && entry.ProjectedLength == 0)
+			{
+				return position;
+			}
+			if (removeLength == 0)
+			{
+				return checked(position + insertLength);
+			}
+			if (position >= end)
+			{
+				return checked(position + delta);
+			}
+			return checked(start + insertLength);
+		}
+
+		int RebaseBoundary(int position)
+		{
+			if (removeLength == 0)
+			{
+				return position <= start ? position : checked(position + insertLength);
+			}
+			if (position <= start)
 			{
 				return position;
 			}

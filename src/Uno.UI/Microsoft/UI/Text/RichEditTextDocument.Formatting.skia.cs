@@ -72,7 +72,7 @@ namespace Microsoft.UI.Text
 			var state = _defaultCharacterFormat.Clone();
 			if (IsMathMode)
 			{
-				state.Name = MathFontFamilyName;
+				state.Name = MathRenderingFontFamilyName;
 			}
 
 			return state;

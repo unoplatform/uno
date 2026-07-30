@@ -64,9 +64,7 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 
 	private void HandlePaste(Action baseAction)
 	{
-		var args = new TextControlPasteEventArgs();
-		TextBoxViewExtension?.Owner.Core?.RaisePaste(args);
-		if (!args.Handled)
+		if (TextBoxViewExtension?.Owner.Host is not IImeSessionHost host || !host.RaisePaste())
 		{
 			baseAction.Invoke();
 		}
@@ -116,7 +114,7 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 
 		if (_textBoxViewExtension?.GetTarget() is { } textBoxView)
 		{
-			textBoxView.ProcessNativeTextInput(Text);
+			textBoxView.ProcessNativeTextInput(this, Text);
 		}
 	}
 
@@ -166,7 +164,7 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 				NativeTextSelection.SetSelectedTextRange(this, value);
 				if (!_settingSelectionFromManaged && !textBoxView.IsCaretDragActive)
 				{
-					textBoxView.SyncSelectionToTextBox();
+					textBoxView.SyncSelectionToTextBox(this);
 				}
 			}
 		}
@@ -211,8 +209,10 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 	public override void SetMarkedText(string markedText, NSRange selectedRange)
 	{
 		markedText ??= string.Empty;
-		AppleUIKitImeTextBoxExtension.Instance.OnSetMarkedText(markedText);
 		base.SetMarkedText(markedText, selectedRange);
+		AppleUIKitImeTextBoxExtension.Instance.OnSetMarkedText(
+			markedText,
+			Math.Clamp((int)selectedRange.Location, 0, markedText.Length));
 	}
 
 	public new void InsertText(string text)

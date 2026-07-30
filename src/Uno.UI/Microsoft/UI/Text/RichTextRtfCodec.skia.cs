@@ -112,16 +112,18 @@ namespace Microsoft.UI.Text
 				}
 				else
 				{
-					if (!string.Equals(openLink, character.Link, StringComparison.Ordinal)
-						|| !string.Equals(openLinkAnchor, character.LinkAnchor, StringComparison.Ordinal))
+					var nextLink = IsSafeHyperlink(character.Link) ? character.Link : null;
+					var nextLinkAnchor = nextLink is null ? null : character.LinkAnchor;
+					if (!string.Equals(openLink, nextLink, StringComparison.Ordinal)
+						|| !string.Equals(openLinkAnchor, nextLinkAnchor, StringComparison.Ordinal))
 					{
 						if (openLink is not null)
 						{
 							builder.Append("}}");
 						}
 
-						openLink = character.Link;
-						openLinkAnchor = character.LinkAnchor;
+						openLink = nextLink;
+						openLinkAnchor = nextLinkAnchor;
 						if (openLink is not null)
 						{
 							builder.Append(@"{\field{\*\fldinst HYPERLINK ");
@@ -201,6 +203,10 @@ namespace Microsoft.UI.Text
 				{
 					var entry = preservedEntries[preservedIndex++];
 					builder.Append(entry.Rtf);
+					if (entry.Rtf.Length > 0 && char.IsLetterOrDigit(entry.Rtf[^1]))
+					{
+						builder.Append(' ');
+					}
 					replacesProjectedCharacter |= entry.ProjectedLength != 0;
 				}
 				return replacesProjectedCharacter;
@@ -265,7 +271,6 @@ namespace Microsoft.UI.Text
 				new(initialState),
 			};
 			var terminalParagraph = new ParagraphFormatState();
-			var imageCount = 0;
 			var imageBytes = 0;
 			long imagePixels = 0;
 			var groupCount = 0;
@@ -314,7 +319,6 @@ namespace Microsoft.UI.Text
 						rtf,
 						stack,
 						output,
-						ref imageCount,
 						ref imageBytes,
 						ref imagePixels,
 						budget);
@@ -1235,6 +1239,31 @@ namespace Microsoft.UI.Text
 		{
 			var start = link.Length > 0 && link[0] == '\ufddf' ? 1 : 0;
 			AppendEscapedAscii(builder, link, start);
+		}
+
+		private static bool IsSafeHyperlink(string? link)
+		{
+			if (string.IsNullOrEmpty(link))
+			{
+				return false;
+			}
+
+			var start = link[0] == '\ufddf' ? 1 : 0;
+			if (link.Length - start < 2 || link[start] != '"' || link[^1] != '"')
+			{
+				return false;
+			}
+
+			var target = link.Substring(start + 1, link.Length - start - 2);
+			if (Uri.TryCreate(target, UriKind.Absolute, out var absolute))
+			{
+				return absolute.Scheme is "http" or "https" or "mailto";
+			}
+
+			return !target.StartsWith('/')
+				&& !target.StartsWith('\\')
+				&& !target.Contains(':')
+				&& Uri.TryCreate(target, UriKind.Relative, out _);
 		}
 
 		private static void AppendQuotedInstruction(BoundedRtfBuilder builder, string value)
@@ -2311,7 +2340,6 @@ namespace Microsoft.UI.Text
 			string rtf,
 			List<ParserFrame> stack,
 			ParsedFragmentBuilder output,
-			ref int imageCount,
 			ref int imageBytes,
 			ref long imagePixels,
 			ParseBudget budget)
@@ -2369,11 +2397,6 @@ namespace Microsoft.UI.Text
 			}
 			else if (closed.Destination == ParserDestination.Picture && closed.IsPictureGroup)
 			{
-				if (++imageCount > MaxParsedImages)
-				{
-					throw new ArgumentException("The RTF contains too much image data.");
-				}
-
 				if (TryParsePicture(closed, out var picture))
 				{
 					if (stack[stack.Count - 1].PendingInlineImage is { } metadata)
@@ -2481,6 +2504,7 @@ namespace Microsoft.UI.Text
 			ParsedFragmentBuilder output,
 			ParseBudget budget)
 		{
+			budget.RecordTextObject();
 			var state = character.Clone();
 			state.InlineImage = image;
 			state.Link = null;
@@ -3740,7 +3764,60 @@ namespace Microsoft.UI.Text
 		}
 
 		private static bool IsPreservableDestination(ReadOnlySpan<char> word)
-			=> !IsUnsafePreservedDestination(word);
+		{
+			switch (word)
+			{
+				case "header":
+				case "headerl":
+				case "headerr":
+				case "headerf":
+				case "footer":
+				case "footerl":
+				case "footerr":
+				case "footerf":
+				case "footnote":
+				case "ftncn":
+				case "ftnsep":
+				case "ftnsepc":
+				case "aftncn":
+				case "aftnsep":
+				case "aftnsepc":
+				case "annotation":
+				case "atnauthor":
+				case "atndate":
+				case "atnid":
+				case "atnparent":
+				case "atnref":
+				case "atntime":
+				case "bkmkstart":
+				case "bkmkend":
+				case "title":
+				case "subject":
+				case "author":
+				case "manager":
+				case "company":
+				case "operator":
+				case "category":
+				case "keywords":
+				case "comment":
+				case "doccomm":
+				case "creatim":
+				case "revtim":
+				case "printim":
+				case "buptim":
+				case "version":
+				case "vern":
+				case "edmins":
+				case "nofpages":
+				case "nofwords":
+				case "nofchars":
+				case "nofcharsws":
+				case "generator":
+					return true;
+				default:
+					return false;
+			}
+		}
 
 		private static bool IsUnsafePreservedDestination(ReadOnlySpan<char> word)
 			=> word.SequenceEqual("object")
@@ -4270,6 +4347,7 @@ namespace Microsoft.UI.Text
 			private int _formatTransitions;
 			private int _characterRuns;
 			private int _paragraphRuns;
+			private int _textObjects;
 
 			internal ParseBudget(int maxCharacters, bool truncateAtLimit)
 			{
@@ -4309,6 +4387,14 @@ namespace Microsoft.UI.Text
 
 				WasTruncated = true;
 				return false;
+			}
+
+			internal void RecordTextObject()
+			{
+				if (++_textObjects > MaxParsedImages)
+				{
+					throw new ArgumentException("The RTF contains too many embedded text objects.");
+				}
 			}
 		}
 

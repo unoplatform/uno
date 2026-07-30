@@ -9,6 +9,20 @@ internal sealed class ParagraphListMarkerState
 	internal readonly Dictionary<int, ParagraphListMarkerCounter> Counters = new();
 	internal int PreviousLevel;
 	internal bool PreviousWasList;
+
+	internal ParagraphListMarkerState Clone()
+	{
+		var clone = new ParagraphListMarkerState
+		{
+			PreviousLevel = PreviousLevel,
+			PreviousWasList = PreviousWasList,
+		};
+		foreach (var (level, counter) in Counters)
+		{
+			clone.Counters.Add(level, counter);
+		}
+		return clone;
+	}
 }
 
 internal readonly record struct ParagraphListMarkerCounter(

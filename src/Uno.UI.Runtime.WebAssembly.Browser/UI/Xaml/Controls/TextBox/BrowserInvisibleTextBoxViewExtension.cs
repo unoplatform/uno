@@ -210,6 +210,10 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	internal static void DetachNativeInputPreservingFocus() => NativeMethods.Detach();
 
+	internal static void InvalidateComposition() => NativeMethods.InvalidateComposition();
+
+	internal static void RestartComposition() => NativeMethods.RestartComposition();
+
 	public void UpdateSize()
 	{
 		if (!IsHostFocused)
@@ -387,6 +391,12 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.replaceText")]
 		public static partial void ReplaceText(int start, int length, string replacement);
+
+		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.invalidateComposition")]
+		public static partial void InvalidateComposition();
+
+		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.restartComposition")]
+		public static partial void RestartComposition();
 
 		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.focus")]
 		public static partial bool Focus(IntPtr handle, bool isPassword, string? text, bool acceptsReturn, string inputMode, string enterKeyHint);
