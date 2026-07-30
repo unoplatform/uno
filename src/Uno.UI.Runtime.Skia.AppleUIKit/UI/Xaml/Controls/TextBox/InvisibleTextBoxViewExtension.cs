@@ -20,6 +20,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	private readonly TextBoxView _owner;
 	private UIView? _latestNativeView;
 	private IInvisibleTextBoxView? _textBoxView;
+	private bool _isStartingEntry;
 
 	public InvisibleTextBoxViewExtension(TextBoxView view)
 	{
@@ -30,7 +31,23 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public bool IsOverlayLayerInitialized(XamlRoot xamlRoot) => true;
 
+	// Taking first responder makes UIKit park the caret at the end of the document and
+	// report it through the selection delegate. That is an internal mutation, not a user
+	// intent, so it must not be synced back to the TextBox.
 	public void StartEntry()
+	{
+		try
+		{
+			_isStartingEntry = true;
+			StartEntryCore();
+		}
+		finally
+		{
+			_isStartingEntry = false;
+		}
+	}
+
+	private void StartEntryCore()
 	{
 		// StartEntry can be called twice without any EndEntry.
 		// This happens when the managed TextBox receives Focus
@@ -60,13 +77,16 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		AddViewToTextInputLayer(textBox.XamlRoot);
 
+		// Read the intended selection before taking first responder, which moves the
+		// native caret to the end of the document.
+		var start = textBox.SelectionStart;
+		var length = textBox.SelectionLength;
+
 		// change FirstResponder's View before removing the previous view to avoid flickering
 		_textBoxView.BecomeFirstResponder();
 
 		RemovePreviousViewFromTextInputLayer();
 
-		var start = textBox?.SelectionStart ?? 0;
-		var length = textBox?.SelectionLength ?? 0;
 		_textBoxView.Select(start, length);
 	}
 
@@ -253,6 +273,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	internal void OnNativeSelectionChanged()
 	{
 		if (_textBoxView is not { } textBoxView
+			|| _isStartingEntry
 			|| textBoxView.IsSettingTextFromManaged
 			|| textBoxView.IsSettingSelectionFromManaged
 			|| textBoxView.IsComposing)
