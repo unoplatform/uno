@@ -66,12 +66,6 @@ detail; this is the overview.
 | **Graphics device & selection** | `GRContext.CreateGl/CreateVulkan`, GLX/EGL/Metal surfaces; hardcoded Skia + `RenderSurfaceType`/`UseOpenGL*` knobs | **Yes** — removes those public knobs | `IGraphicsContext` + host `IGraphicsContextFactory`; `IGraphicsProvider` + `GraphicsRegistry` negotiation (§L–O) |
 | **SVG** | `Svg.Skia` / managed SVG | No | `ISvgProvider`/`ManagedSvg` → `IImage` — **done** |
 
-**Rasterization isn't a bucket.** Turning primitives into pixels (fill/AA/gradients/blend/clip) is the renderer's
-own internal job — Uno only *emits verbs* into `IDrawingSession`, and whichever `IRenderer` is plugged in decides
-how to draw them (GPU or CPU). It's not a seam we define. Skia is the only implementation of that seam today; a
-fully managed (zero-Skia-at-runtime) renderer is *another implementation behind the same interface*, not another
-abstraction — so it's implementation work, not a row here.
-
 ### Deliberately *not* abstracted
 
 - **Text layout** — bidi, script itemization, segmentation, line-breaking, justification. These are Unicode
