@@ -43,7 +43,7 @@ internal sealed class InvisibleTextBoxFloatingCursor
 		if (IsActive)
 		{
 			IsActive = false;
-			extension?.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.End, default);
+			_ = extension?.ProcessCaretDragGesture(TextBoxCore.CaretDragPhase.End, default);
 		}
 	}
 }
