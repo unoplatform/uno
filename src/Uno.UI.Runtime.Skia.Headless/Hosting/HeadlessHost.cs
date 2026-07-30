@@ -22,9 +22,6 @@ namespace Uno.UI.Runtime.Skia.Headless;
 
 public class HeadlessHost : SkiaHost, ISkiaApplicationHost, IDisposable
 {
-	[ThreadStatic]
-	private static bool _isDispatcherThread;
-
 	private readonly EventLoop _eventLoop;
 	private readonly ManualResetEvent _terminationGate = new(false);
 	private readonly CoreApplicationExtension _coreApplicationExtension;
@@ -33,6 +30,7 @@ public class HeadlessHost : SkiaHost, ISkiaApplicationHost, IDisposable
 
 	private NativeWindowFactoryExtension? _windowFactory;
 	private bool _previousSkipVisualTreePainting;
+	private int _dispatcherThreadId;
 
 	/// <summary>
 	/// Creates a host for a Uno Skia headless (offscreen) application. Use <c>UseHeadless()</c> on the
@@ -72,7 +70,9 @@ public class HeadlessHost : SkiaHost, ISkiaApplicationHost, IDisposable
 
 	private void InnerInitialize()
 	{
-		_isDispatcherThread = true;
+		// InnerInitialize runs on the EventLoop's dedicated thread — the dispatcher thread. Capture its id
+		// so HasThreadAccessOverride can answer without any thread-static state.
+		_dispatcherThreadId = Environment.CurrentManagedThreadId;
 
 		// Headless windows produce no pixel output, so skip the paint walk globally to save CPU. The
 		// render cycle still ticks (keeping scheduling/animations alive), and RenderTargetBitmap does its
@@ -96,7 +96,7 @@ public class HeadlessHost : SkiaHost, ISkiaApplicationHost, IDisposable
 		}
 
 		Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
-		Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+		Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => Environment.CurrentManagedThreadId == _dispatcherThreadId;
 
 		WUX.Application.Start(CreateApp);
 	}

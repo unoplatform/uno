@@ -95,15 +95,7 @@ internal sealed class HeadlessRenderer : IDisposable
 
 		// Wake the render thread so it can observe _disposed and exit before we dispose shared resources.
 		_renderInvalidationEvent.Set();
-		var stopped = false;
-		try
-		{
-			stopped = _renderThread.Join(TimeSpan.FromSeconds(1));
-		}
-		catch (Exception e)
-		{
-			this.LogDebug()?.Debug($"Failed to join the headless rendering thread on exit: {e.Message}");
-		}
+		var stopped = _renderThread.Join(TimeSpan.FromSeconds(1));
 
 		if (stopped)
 		{
