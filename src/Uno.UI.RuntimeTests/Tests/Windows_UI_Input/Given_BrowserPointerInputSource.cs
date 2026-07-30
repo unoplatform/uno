@@ -88,6 +88,6 @@ public class Given_BrowserPointerInputSource
 
 		Assert.IsNotNull(captured, "BrowserPointerInputSource did not raise a pointer event.");
 
-		return captured!.CurrentPoint.Properties.PointerUpdateKind;
+		return (PointerUpdateKind)captured!.CurrentPoint.Properties.PointerUpdateKind;
 	}
 }

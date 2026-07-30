@@ -2,6 +2,7 @@ using System.ComponentModel;
 using Microsoft.UI.Input;
 using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
 using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
+using KeyEventArgs = global::Windows.UI.Core.KeyEventArgs;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Microsoft.UI.Windowing;
