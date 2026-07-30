@@ -66,11 +66,28 @@ detail; this is the overview.
 | **Graphics device & selection** | `GRContext.CreateGl/CreateVulkan`, GLX/EGL/Metal surfaces; hardcoded Skia + `RenderSurfaceType`/`UseOpenGL*` knobs | **Yes** — removes those public knobs | `IGraphicsContext` + host `IGraphicsContextFactory`; `IGraphicsProvider` + `GraphicsRegistry` negotiation (§L–O) |
 | **SVG** | `Svg.Skia` / managed SVG | No | `ISvgProvider`/`ManagedSvg` → `IImage` — **done** |
 
-### Deliberately *not* abstracted
+### Text — the boundary runs through the middle
 
-- **Text layout** — bidi, script itemization, segmentation, line-breaking, justification. These are Unicode
-  algorithms, *not* Skia; one uniform framework engine is required for cross-platform consistency + WinUI parity, and
-  the variation worth having (fonts + shaping) is captured one layer down in the **Fonts** bucket. (§Q)
+Text isn't one bucket: the **font stack is abstracted, the layout engine is not.** The line is deliberate.
+
+| Stage | Owner | Abstracted? |
+|---|---|---|
+| bidi · script/language itemization · grapheme & word segmentation | text layer | **No** |
+| line-break opportunities (UAX #14) · line layout · justification · alignment · wrapping | text layer | **No** |
+| font resolution + fallback | `IFontManager` | **Yes** |
+| shaping · metrics · coverage · glyph outlines/images | `IFont` | **Yes** |
+
+**Why layout isn't abstracted:** Uno guarantees text lays out *identically on every platform and matches WinUI*.
+One framework engine delivers that; delegating to native engines (CoreText/DirectWrite/Pango) would diverge per
+platform and drift from WinUI — and layout is deeply wired into measure/arrange, caret, selection and hit-test, so
+a layout seam would be huge and leaky. It's a deliberate trade (consistency + parity over native-layout feel).
+
+**Why the font stack is abstracted:** resolution and shaping are platform/engine-specific (system fonts, native
+shapers) and font-data-dependent, yet produce *render-independent, neutral* output — so the **desirable** native
+variation lands exactly here, one layer below layout, without causing any layout divergence. Full detail in §Q.
+
+### Also not abstracted
+
 - **Raw-Skia app island** (`SKCanvasElement`/`SKCanvasVisual`) — a deliberate "draw with raw Skia" escape hatch in a
   separate package; neutralizing it would defeat its purpose.
 
