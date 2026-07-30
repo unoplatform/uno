@@ -23,7 +23,7 @@ internal sealed class InvisibleTextBoxFloatingCursor
 	public void Begin(InvisibleTextBoxViewExtension? extension, CGPoint point)
 	{
 		_origin = point;
-		IsActive = extension?.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default) == true;
+		IsActive = extension?.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default) ?? false;
 	}
 
 	public void Update(InvisibleTextBoxViewExtension? extension, CGPoint point)
@@ -35,7 +35,7 @@ internal sealed class InvisibleTextBoxFloatingCursor
 
 		// iOS points map 1:1 to WinUI DIPs — no LogicalToPhysicalPixels conversion here.
 		var offset = new Point(point.X - _origin.X, point.Y - _origin.Y);
-		IsActive = extension?.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, offset) == true;
+		IsActive = extension?.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, offset) ?? false;
 	}
 
 	public void End(InvisibleTextBoxViewExtension? extension)
