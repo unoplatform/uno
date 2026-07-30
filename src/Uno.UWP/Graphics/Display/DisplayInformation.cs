@@ -130,6 +130,19 @@ namespace Windows.Graphics.Display
 			}
 		}
 
+		/// <summary>
+		/// Whether a <see cref="DisplayInformation"/> is currently registered for the given
+		/// <see cref="WindowId"/>, without creating one. Used to verify that windows which never
+		/// get a native window (e.g. a macOS hosted-ALC window) don't register one.
+		/// </summary>
+		internal static bool IsRegisteredForWindowId(WindowId windowId)
+		{
+			lock (_windowIdMapLock)
+			{
+				return _windowIdMap.ContainsKey(windowId);
+			}
+		}
+
 		public static DisplayOrientations AutoRotationPreferences
 		{
 			get => _autoRotationPreferences;

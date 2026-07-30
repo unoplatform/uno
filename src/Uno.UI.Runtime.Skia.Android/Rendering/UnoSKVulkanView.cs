@@ -52,6 +52,8 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 
 		SetWillNotDraw(false);
 		Holder!.AddCallback(this);
+
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = false;
 	}
 
 	public void InvalidateRender()
