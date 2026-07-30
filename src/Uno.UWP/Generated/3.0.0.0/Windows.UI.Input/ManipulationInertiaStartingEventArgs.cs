@@ -3,17 +3,76 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input
 {
-#if false || false || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ManipulationInertiaStartingEventArgs
 	{
-		// Skipping already declared property ContactCount
-		// Skipping already declared property Cumulative
-		// Skipping already declared property Delta
-		// Skipping already declared property PointerDeviceType
-		// Skipping already declared property Position
-		// Skipping already declared property Velocities
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal ManipulationInertiaStartingEventArgs()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint ContactCount
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.ManipulationInertiaStartingEventArgs", "ContactCount");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Input.ManipulationDelta Cumulative
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.ManipulationInertiaStartingEventArgs", "Cumulative");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Input.ManipulationDelta Delta
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.ManipulationInertiaStartingEventArgs", "Delta");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Input.PointerDeviceType PointerDeviceType
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.ManipulationInertiaStartingEventArgs", "PointerDeviceType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Point Position
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.ManipulationInertiaStartingEventArgs", "Position");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Input.ManipulationVelocities Velocities
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.ManipulationInertiaStartingEventArgs", "Velocities");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.UI.Input.ManipulationInertiaStartingEventArgs.ContactCount.get
 		// Forced skipping of method Windows.UI.Input.ManipulationInertiaStartingEventArgs.Cumulative.get
 		// Forced skipping of method Windows.UI.Input.ManipulationInertiaStartingEventArgs.Delta.get

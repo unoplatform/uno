@@ -8,7 +8,6 @@ using Uno.Extensions;
 using Uno.UI.Core;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Input;
 using Uno.Foundation.Logging;
 using Windows.UI.ViewManagement;
 

@@ -3,15 +3,56 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input
 {
-#if false || false || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class DraggingEventArgs
 	{
-		// Skipping already declared property ContactCount
-		// Skipping already declared property DraggingState
-		// Skipping already declared property PointerDeviceType
-		// Skipping already declared property Position
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		internal DraggingEventArgs()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public uint ContactCount
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.DraggingEventArgs", "ContactCount");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.UI.Input.DraggingState DraggingState
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.DraggingEventArgs", "DraggingState");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Devices.Input.PointerDeviceType PointerDeviceType
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.DraggingEventArgs", "PointerDeviceType");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public global::Windows.Foundation.Point Position
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.DraggingEventArgs", "Position");
+			}
+		}
+#endif
 		// Forced skipping of method Windows.UI.Input.DraggingEventArgs.ContactCount.get
 		// Forced skipping of method Windows.UI.Input.DraggingEventArgs.DraggingState.get
 		// Forced skipping of method Windows.UI.Input.DraggingEventArgs.PointerDeviceType.get

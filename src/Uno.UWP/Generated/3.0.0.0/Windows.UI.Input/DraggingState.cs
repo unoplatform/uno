@@ -3,12 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input
 {
-#if false || false || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	public enum DraggingState
 	{
-		// Skipping already declared field Windows.UI.Input.DraggingState.Started
-		// Skipping already declared field Windows.UI.Input.DraggingState.Continuing
-		// Skipping already declared field Windows.UI.Input.DraggingState.Completed
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		Started = 0,
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		Continuing = 1,
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		Completed = 2,
+#endif
 	}
 #endif
 }

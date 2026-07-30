@@ -4,17 +4,22 @@
 namespace Windows.UI.Input
 {
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	public enum HoldingState
+	[global::Uno.NotImplemented]
+#endif
+	public partial interface IPointerPointTransform
 	{
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Started = 0,
+		global::Windows.UI.Input.IPointerPointTransform Inverse
+		{
+			get;
+		}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Completed = 1,
+		bool TryTransform(global::Windows.Foundation.Point inPoint, out global::Windows.Foundation.Point outPoint);
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Canceled = 2,
+		global::Windows.Foundation.Rect TransformBounds(global::Windows.Foundation.Rect rect);
 #endif
+		// Forced skipping of method Windows.UI.Input.IPointerPointTransform.Inverse.get
 	}
-#endif
 }
