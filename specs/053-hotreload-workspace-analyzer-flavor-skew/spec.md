@@ -231,45 +231,96 @@ through the same delegate. `Workspace.TryApplyChanges` was deliberately NOT used
 analyzer-reference changes through `MSBuildWorkspace` writes them into the user's
 `.csproj`.
 
-### Known issue (follow-up) — reloadable-type updates rejected under the 5.x embed
+### R5 — restore Watch's implicit `AddExplicitInterfaceImplementation` capability grant
 
 With R4 in place the generators load and ordinary hot reloads work end-to-end, but every
-ResourceDictionary/DataTemplate scenario still fails on the 5.x embed — the update is
+ResourceDictionary/DataTemplate scenario still failed on the 5.x embed — the update was
 rejected as a rude edit (`ENC0106: Updating a reloadable type … requires restarting …`,
 `CS9346: Update requires emitting explicit interface implementation …`) and every
-subsequent update of the session then times out (the server commits its EnC baseline while
+subsequent update of the session then timed out (the server commits its EnC baseline while
 the application never applied the update, and the skew cascades through the whole run).
 
-Root cause — a second Roslyn 4.x→5.x behavioral change, fully diagnosed:
+Root cause — NOT a Roslyn 4.x→5.x analysis change: the entire gate chain
+(`GrantNewTypeDefinition`, the capabilities grantor and parser, `IsReloadable`,
+`HasExplicitlyImplementedInterfaceMember`) is byte-identical between the shipped 4.14 and
+5.6 binaries. The chain of facts:
 
-- `GrantNewTypeDefinition` (identical code in 4.14 and 5.6) requires the
-  `AddExplicitInterfaceImplementation` capability when the reloadable type has an
-  explicitly-implemented interface member — a capability **no .NET runtime reports**
-  (net10 CoreCLR grants `Baseline … NewTypeDefinition … AddFieldRva`, nothing more).
-- Every XAML ResourceDictionary singleton the Uno generator emits is exactly that shape:
-  `[CreateNewOnMetadataUpdate] internal sealed class ResourceDictionarySingleton__… :
+- Since Roslyn 4.10/4.11 (dotnet/roslyn#73265, 2024) the EnC analyzer refuses to Replace a
+  reloadable type that has an explicitly-implemented interface member unless the
+  `AddExplicitInterfaceImplementation` capability is granted. The gate protects .NET
+  Framework (adding an InterfaceImpl row there can crash with an access violation); the
+  capability is reported by **no** runtime — net10 CoreCLR grants
+  `Baseline … NewTypeDefinition … AddFieldRva`, nothing more.
+- The **same PR** added the compensation for the runtimes that do support the operation:
+  `WatchHotReloadService.AddImplicitDotNetCapabilities()` grants the capability on top of
+  whatever the application reports ("available by default on runtimes supported by
+  dotnet-watch: .NET and Mono"). Every Watch-based host — dotnet-watch itself, and this
+  server's vendored shim — therefore kept replacing those types successfully on 4.x. The
+  scenario was never broken, and never runtime-unsupported, on .NET/Mono.
+- Every XAML ResourceDictionary singleton the Uno generator emits is exactly the gated
+  shape: `[CreateNewOnMetadataUpdate] internal sealed class … :
   IXamlResourceDictionaryProvider` with an explicit
   `IXamlResourceDictionaryProvider.GetResourceDictionary()` implementation
   (`XamlFileGenerator`, singleton emission).
-- 4.x analysis did not route these edits through that gate (master, on the 4.14 embed,
-  passes the same scenarios with the same generated code); 5.x does.
+- Roslyn removed `WatchHotReloadService` from `Microsoft.CodeAnalysis.Features` between
+  5.0 and 5.3 (it moved to the `ExternalAccess.HotReload` assembly compiled into
+  dotnet-watch, and the implicit grant moved with it into dotnet/sdk's `HotReloadClient`,
+  where it still lives today). The R2 bump therefore re-targeted the shim to
+  `UnitTestingHotReloadService` — which forwards the capabilities **verbatim**. The
+  implicit grant silently disappeared in the move, and the 2024 gate started firing.
 
-**Explored and NOT shipped** — augmenting the application-reported capabilities with
-`AddExplicitInterfaceImplementation` before the EnC session starts. Results: the isolated
-dictionary scenarios (`When_Change_AppResource_String`, `When_Change_DataTemplate`) then
-pass end-to-end (delta applies, UI updates, undo runs — the replace of a reloadable type
-carries its explicit implementations as plain metadata of a brand-new type definition).
-But in a **full-suite** run the runtime starts rejecting deltas at
-`MetadataUpdater.ApplyUpdate` ("The assembly update failed", first rejection within
-seconds, 105 rejections total — the first one poisons the session the same way the rude
-edit did). The trigger is sequence-dependent (repeated replaces of the same reloadable
-types); until it is understood, granting the capability trades a deterministic rude edit
-for a non-deterministic runtime rejection — worse. Follow-up options, in preference
-order: teach the generator to implement `IXamlResourceDictionaryProvider` implicitly on
-reloadable singletons (removes the gate entirely; changes generated-code snapshots →
-Windows regen), understand/fix the sequence-dependent apply rejection and then grant the
-capability, or escalate to Roslyn (a Replace semantic edit arguably should not require
-`AddExplicitInterfaceImplementation`).
+Fix — the shim now makes the grant itself: `WatchHotReloadService.AddImplicitCapabilities()`
+appends `AddExplicitInterfaceImplementation` to the application-reported capabilities
+before `StartSessionAsync`, restoring the 4.x Watch behavior and matching what dotnet-watch
+does on 5.x (permalinks to both reference implementations — Roslyn 4.x
+`AddImplicitDotNetCapabilities` and dotnet/sdk `HotReloadClient` — are in the shim's doc).
+CS9346, the 5.x emit-layer twin of the gate, reads the same session capabilities and is
+lifted by the same grant.
+
+Validation (local Skia desktop runtime tests, R5 in place): the rude edits are gone from
+full-class runs — 0×ENC0106 / 0×CS9346 (the pre-R5 red runs showed 20–60 ENC0106) — and
+reloadable-type updates now emit and apply: the DataTemplate scenario's update+undo and
+the first AppResources update all apply end-to-end. `Uno.HotReload.Tests`: 116/116,
+including the new grant test.
+
+### Known issue (follow-up) — CoreCLR rejects the 4th generation of a mixed replace sequence
+
+One failure mode remains, now precisely scoped and NOT capability-related: in a session
+that replaces the DataTemplate page twice (update+undo) and then AppResources twice, the
+**4th** delta (the AppResources undo) is rejected by the runtime —
+`MetadataUpdater.ApplyUpdate` throws "The assembly update failed" (generic
+`COR_E_INVALIDOPERATION`; the native HRESULT is not surfaced). The same AppResources
+update+undo pair applied **without** the DataTemplate generations before it succeeds
+end-to-end.
+
+Forensic evidence (all artifacts preserved, see `hr-enc-repro` bundle):
+
+- The rejected generation-4 delta is **structurally clean**: SRM-level diff of its
+  EncLog/EncMap against the accepted generation-2 delta of the isolated run shows
+  identical operation sequences and uniform aggregate renumbering (every table shifted by
+  exactly the rows the extra generations added; every `AddParameter` parent is a method
+  the delta itself adds). Its relationship to its predecessor is byte-shape-identical to
+  the accepted pair's.
+- The rejection reproduces **standalone** — a 30-line console harness
+  (`Assembly.LoadFrom` + `MetadataUpdater.ApplyUpdate`, no dev-server, no Uno hot-reload
+  machinery) replaying the four dumped deltas against the baseline assembly: generations
+  1–3 apply, generation 4 fails. This is the escalation package for dotnet/runtime (the
+  suspected defect is in CoreCLR's EnC bookkeeping for later generations of interleaved
+  type replacements; a checked runtime names the exact failing validation).
+- 4.x never hit this because the whole path was different only in volume: the Watch-based
+  4.14 embed produced the same logical sequence and CoreCLR applied it — narrowing the
+  trigger to the 5.6-emitted delta *content* interacting with runtime state is exactly
+  what the standalone repro enables.
+
+Secondary effect (ours, to harden as a follow-up): the server commits its EnC baseline at
+emit time regardless of whether the application applied the update
+(`UnitTestingHotReloadService.EmitSolutionUpdateAsync(commitUpdates: true)`, same net
+behavior as the historical Watch service). After the first runtime rejection the server
+and the application permanently disagree on the baseline, so every subsequent delta of the
+session is mis-based and rejected — one runtime rejection cascades into a fully poisoned
+session (the "105 rejections" pattern of full-suite runs). Follow-up: tie the baseline
+commit to the client's apply acknowledgment (or resync/restart the session on apply
+failure) so a single rejected update degrades one reload instead of the whole session.
 
 ## Non-goals
 
@@ -322,16 +373,22 @@ capability, or escalate to Roslyn (a Replace semantic edit arguably should not r
    `[UnableToCreateAnalyzer] … Operation is not supported`, every hot-reload compile shows
    the missing-generated-code wall; **green** with it — zero analyzer load failures, the
    generators emit, metadata updates flow.
-7. **Known-issue evidence (reloadable types)**: isolated `When_Change_AppResource_String`
-   / `When_Change_DataTemplate` runs are **red** on the 5.x embed (ENC0106/CS9346 +
-   session cascade) and turn green with the explored capability augmentation — which a
-   full-suite run then invalidates (105 `MetadataUpdater.ApplyUpdate` rejections,
-   sequence-dependent); recorded above as a follow-up, not shipped.
+7. **R5 grant**: **done** — `Uno.HotReload.Tests/Microsoft/Given_WatchHotReloadService.cs`
+   asserts the .NET 10 CoreCLR capability string gets `AddExplicitInterfaceImplementation`
+   appended (order preserved). Runtime red/green: pre-R5 full-class runs show 20–60
+   ENC0106 + CS9346 and every ResourceDictionary/DataTemplate scenario fails; with R5,
+   0×ENC0106 / 0×CS9346 and reloadable-type updates apply (DataTemplate update+undo,
+   AppResources update).
+8. **Known-issue evidence (4th-generation rejection)**: the remaining failure is isolated
+   to a standalone `MetadataUpdater.ApplyUpdate` replay (baseline + 4 dumped deltas,
+   generations 1–3 apply, 4 fails; the same AppResources pair without the DataTemplate
+   generations applies) — the dev-server is out of the loop, the delta is SRM-clean, and
+   the repro bundle is ready for a dotnet/runtime escalation.
 
 Additional coverage from the implementation pass: the retargeted EnC shim was validated
 by emitting a **real delta** (on-disk baseline, IL/metadata/PDB + updated types) against
-both 4.14.0 and 5.6.0, and the full existing `Uno.HotReload.Tests` suite (115 tests) runs
-green on the net10/Roslyn 5.6 flavor.
+both 4.14.0 and 5.6.0, and the full existing `Uno.HotReload.Tests` suite (116 tests,
+including the R5 capability-grant test) runs green on the net10/Roslyn 5.6 flavor.
 
 ## Resolved decisions
 

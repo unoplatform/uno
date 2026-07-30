@@ -19,9 +19,11 @@ namespace Uno.HotReload.Microsoft;
 /// the stable EnC session surface across the Roslyn lines we embed (identical shape from 4.14 to
 /// 5.6, verified). The historical target, <c>ExternalAccess.Watch.Api.WatchHotReloadService</c>,
 /// was removed from Microsoft.CodeAnalysis.Features between Roslyn 5.0 and 5.3; the UnitTesting
-/// twin only differs by taking the capabilities at <c>StartSessionAsync</c> (instead of the
-/// constructor) and an explicit <c>commitUpdates</c> flag on emit (Watch always committed ready
-/// updates — passing <c>true</c> preserves that behavior).
+/// twin differs by taking the capabilities at <c>StartSessionAsync</c> (instead of the
+/// constructor), by an explicit <c>commitUpdates</c> flag on emit (Watch always committed ready
+/// updates — passing <c>true</c> preserves that behavior), and by forwarding the capabilities
+/// verbatim where Watch implicitly granted runtime-supported-but-undeclared ones (restored by
+/// <see cref="AddImplicitCapabilities"/>).
 /// </summary>
 internal partial class WatchHotReloadService
 {
@@ -44,7 +46,7 @@ internal partial class WatchHotReloadService
 					// session creation, instead of surfacing as a mid-session invocation error.
 					var startSessionAsync = (Func<Solution, ImmutableArray<string>, CancellationToken, Task>)startSessionAsyncMethod
 						.CreateDelegate(typeof(Func<Solution, ImmutableArray<string>, CancellationToken, Task>), _targetInstance);
-					var capabilities = ImmutableArray<string>.Empty.AddRange(metadataUpdateCapabilities);
+					var capabilities = AddImplicitCapabilities(metadataUpdateCapabilities);
 
 					_startSessionAsync = (s, ct) => startSessionAsync(s, capabilities, ct);
 				}
@@ -109,6 +111,36 @@ internal partial class WatchHotReloadService
 			}
 		}
 	}
+
+	/// <summary>
+	/// Grants, on top of the capabilities reported by the app's runtime, the one dotnet-watch
+	/// treats as implicitly available on every runtime hot reload targets:
+	/// <c>AddExplicitInterfaceImplementation</c> is supported by .NET (CoreCLR) and Mono but
+	/// DECLARED by neither — only .NET Framework lacks it (adding an InterfaceImpl row there can
+	/// crash with an access violation), so Roslyn keeps it out of the runtimes' baseline set and
+	/// expects hosts that never target .NET Framework to grant it themselves, "rather than
+	/// servicing all of them" (dotnet-watch's own wording).
+	/// </summary>
+	/// <remarks>
+	/// Without this grant, Roslyn (4.10+) refuses ANY update of a reloadable
+	/// (<c>[CreateNewOnMetadataUpdate]</c>) type having an explicitly-implemented member — rude
+	/// edit ENC0106, plus CS9346 at emit on 5.x — which makes every generated XAML
+	/// ResourceDictionary singleton (explicit <c>IXamlResourceDictionaryProvider.GetResourceDictionary()</c>)
+	/// non-hot-reloadable. The pre-5.3 shim target, <c>ExternalAccess.Watch.Api.WatchHotReloadService</c>,
+	/// made this grant internally, so it never appeared here; <c>UnitTestingHotReloadService</c>
+	/// forwards the capabilities verbatim, so the shim now makes it — exactly like dotnet-watch
+	/// itself does since Watch's removal:
+	/// <list type="bullet">
+	/// <item><description>dotnet-watch (current):
+	/// https://github.com/dotnet/sdk/blob/2e5fa46b2d150671d77cf313930d4de322907118/src/Dotnet.Watch/HotReloadClient/HotReloadClient.cs#L44-L49</description></item>
+	/// <item><description>Roslyn 4.x <c>WatchHotReloadService.AddImplicitDotNetCapabilities</c> (the behavior restored here):
+	/// https://github.com/dotnet/roslyn/blob/f7706e3f398fcc7671351dd4d5deb5757e02a0f2/src/Features/Core/Portable/ExternalAccess/Watch/Api/WatchHotReloadService.cs#L131-L137</description></item>
+	/// </list>
+	/// A runtime that would someday report the capability itself stays harmless: the list is
+	/// parsed into flags, duplicates collapse.
+	/// </remarks>
+	internal static ImmutableArray<string> AddImplicitCapabilities(string[] metadataUpdateCapabilities)
+		=> ImmutableArray<string>.Empty.AddRange(metadataUpdateCapabilities).Add("AddExplicitInterfaceImplementation");
 
 	internal Task StartSessionAsync(Solution currentSolution, CancellationToken cancellationToken)
 	{
