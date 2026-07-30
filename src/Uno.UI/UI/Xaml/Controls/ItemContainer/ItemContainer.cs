@@ -470,11 +470,12 @@ partial class ItemContainer : Control
 		}
 
 		m_pointerInfo.ResetTrackedPointerId();
-		// Uno Doc: Snapshot before releasing the capture: on managed pointers ReleasePointerCapture
-		// synchronously raises PointerCaptureLost, which resets the touch/pen over state.
 		bool isPointerOver = m_pointerInfo.IsPointerOver();
 		// Uno Doc: WinUI doesn't track the pointer and therefore has visual states bugs due to inaccurate pointer state. c.f. https://github.com/unoplatform/private/issues/1074
-		ReleasePointerCapture(args.Pointer);
+		// The capture is released muted as it doesn't exist on WinUI: raising PointerCaptureLost would make
+		// ancestors (e.g. a ListViewItem hosting this ItemContainer) treat the interaction as canceled and
+		// skip their pending click. c.f. https://github.com/unoplatform/uno/issues/23892
+		ReleasePointerCapture(args.Pointer.UniqueId, muteEvent: true);
 
 		bool canRaiseItemInvoked = CanRaiseItemInvoked();
 		var pointerDeviceType = args.Pointer.PointerDeviceType;
@@ -519,7 +520,9 @@ partial class ItemContainer : Control
 		base.OnPointerCanceled(args);
 
 		// Uno Doc: WinUI doesn't track the pointer and therefore has visual states bugs due to inaccurate pointer state. c.f. https://github.com/unoplatform/private/issues/1074
-		ReleasePointerCapture(args.Pointer);
+		// Muted for the same reason as in OnPointerReleased: this capture doesn't exist on WinUI and
+		// ancestors already receive the PointerCanceled event itself.
+		ReleasePointerCapture(args.Pointer.UniqueId, muteEvent: true);
 		ProcessPointerCanceled(args);
 	}
 
