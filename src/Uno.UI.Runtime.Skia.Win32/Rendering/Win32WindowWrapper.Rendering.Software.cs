@@ -1,19 +1,32 @@
 using System;
 using System.Runtime.InteropServices;
-using Windows.Win32;
-using Windows.Win32.Foundation;
-using Windows.Win32.Graphics.Gdi;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.Graphics.Gdi;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper
 {
-	private class SoftwareRenderer(HWND hwnd) : IRenderer
+	private class SoftwareRenderer : IRenderer
 	{
+		private readonly HWND _hwnd;
+		private readonly Win32RenderPacer _pacer;
+
 		private HBITMAP _hBitmap;
+
+		public SoftwareRenderer(HWND hwnd)
+		{
+			_hwnd = hwnd;
+			// BitBlt returns instantly, so the loop is paced here: to the display refresh when
+			// SetFrameRateAsScreenRefreshRate is on, otherwise to the configured FrameRate.
+			_pacer = new Win32RenderPacer(
+				FeatureConfiguration.CompositionTarget.FrameRate,
+				FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate);
+		}
 
 		public void StartPaint() { }
 		public void EndPaint() { }
@@ -50,7 +63,9 @@ internal partial class Win32WindowWrapper
 
 		void IRenderer.CopyPixels(int width, int height)
 		{
-			var paintDc = PInvoke.GetDC(hwnd);
+			_pacer.OnFrameStart();
+
+			var paintDc = PInvoke.GetDC(_hwnd);
 			if (paintDc == new HDC(IntPtr.Zero))
 			{
 				this.LogError()?.Error($"{nameof(PInvoke.GetDC)} failed: {Win32Helper.GetErrorMessage()}");
@@ -60,7 +75,7 @@ internal partial class Win32WindowWrapper
 			{
 				var success = PInvoke.ReleaseDC(hwnd, lpPaint) == 1;
 				if (!success) { typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}"); }
-			}, hwnd, paintDc);
+			}, _hwnd, paintDc);
 
 			var bitmapDc = PInvoke.CreateCompatibleDC(paintDc);
 			if (bitmapDc == new HDC(IntPtr.Zero))
@@ -70,8 +85,8 @@ internal partial class Win32WindowWrapper
 			}
 			using var bitmapDcDisposable = new DisposableStruct<HDC>(static bitmapDc =>
 			{
-				var success = PInvoke.DeleteObject(new HGDIOBJ(bitmapDc.Value)) == 1;
-				if (!success) { typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}"); }
+				var success = PInvoke.DeleteDC(bitmapDc);
+				if (!success) { typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.DeleteDC)} failed: {Win32Helper.GetErrorMessage()}"); }
 			}, bitmapDc);
 
 			if (PInvoke.SelectObject(bitmapDc, _hBitmap) == 0)
@@ -82,14 +97,20 @@ internal partial class Win32WindowWrapper
 
 			var success2 = PInvoke.BitBlt(paintDc, 0, 0, width, height, bitmapDc, 0, 0, ROP_CODE.SRCCOPY);
 			if (!success2) { this.LogError()?.Error($"{nameof(PInvoke.BitBlt)} failed: {Win32Helper.GetErrorMessage()}"); }
+
+			// BitBlt returns instantly, so block until the compositor's next vsync to pace the loop.
+			_pacer.WaitForNextFrame();
 		}
 
 		bool IRenderer.IsSoftware() => true;
 
 		void IRenderer.Reinitialize() { }
 
+		void IRenderer.UpdateRefreshRate(double fps) => _pacer.UpdateTargetFps(fps);
+
 		void IDisposable.Dispose()
 		{
+			_pacer.Dispose();
 			var success = PInvoke.DeleteObject(_hBitmap) == 1;
 			if (!success) { typeof(Win32WindowWrapper).LogError()?.Error($"{nameof(PInvoke.DeleteObject)} failed: {Win32Helper.GetErrorMessage()}"); }
 		}

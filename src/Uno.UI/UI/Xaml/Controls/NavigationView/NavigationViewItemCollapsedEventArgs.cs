@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItemCollapsedEventArgs.cpp, commit 5ebf958
+// MUX reference NavigationViewItemCollapsedEventArgs.cpp, commit bac7a9c33
 
 #nullable enable
 
@@ -11,13 +11,19 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class NavigationViewItemCollapsedEventArgs
 {
-	private readonly NavigationView? m_navigationView = null;
 	private object? m_collapsedItem = null;
+	private readonly NavigationView? m_navigationView = null;
 
 	internal NavigationViewItemCollapsedEventArgs(NavigationView? navigationView)
 	{
 		m_navigationView = navigationView;
 	}
+
+	/// <summary>
+	/// Gets the container of the object that was collapsed
+	/// in the NavigationViewItem.Collapsed event.
+	/// </summary>
+	public NavigationViewItemBase? CollapsedItemContainer { get; internal set; }
 
 	/// <summary>
 	/// Gets the object that has been collapsed after
@@ -41,10 +47,4 @@ public partial class NavigationViewItemCollapsedEventArgs
 			return null;
 		}
 	}
-
-	/// <summary>
-	/// Gets the container of the object that was collapsed
-	/// in the NavigationViewItem.Collapsed event.
-	/// </summary>
-	public NavigationViewItemBase? CollapsedItemContainer { get; internal set; }
 }

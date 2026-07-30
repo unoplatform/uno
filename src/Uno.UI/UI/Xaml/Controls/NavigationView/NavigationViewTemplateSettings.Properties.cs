@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationViewTemplateSettings.properties.cpp, commit bace2c5
+// MUX Reference NavigationViewTemplateSettings.properties.cpp, commit bac7a9c33
 
 using Microsoft.UI.Xaml;
 
@@ -55,7 +55,7 @@ public partial class NavigationViewTemplateSettings : DependencyObject
 	public double OpenPaneLength
 	{
 		get => (double)GetValue(OpenPaneLengthProperty);
-		set => SetValue(OpenPaneLengthProperty, value);
+		internal set => SetValue(OpenPaneLengthProperty, value);
 	}
 
 	/// <summary>

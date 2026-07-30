@@ -33,7 +33,13 @@ namespace Microsoft.UI.Xaml.Controls
 			m_progressPropertySet = Microsoft.UI.Xaml.Window.Current.Compositor.CreatePropertySet();
 			m_progressPropertySet.InsertScalar(s_progressPropertyName, 0);
 #else
-			m_progressPropertySet = new CompositionPropertySet(null);
+			// Use the shared compositor so the property set is owned by a real compositor and
+			// animations started on it get ticked. Previously this was `new CompositionPropertySet(null)`
+			// (a workaround from when AnimatedIcon's animations weren't supported), which left
+			// PlaySegment unable to actually animate Progress and made the icon snap to the final
+			// state on every transition.
+			m_progressPropertySet = Microsoft.UI.Composition.Compositor.GetSharedCompositor().CreatePropertySet();
+			m_progressPropertySet.InsertScalar(s_progressPropertyName, 0);
 #endif
 			Loaded += OnLoaded;
 			Unloaded += OnIconUnloaded;
@@ -47,8 +53,13 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnApplyTemplate();
 
 			// Construct the visual from the Source property in on apply template so that it participates
-			// in the initial measure for the object.
-			ConstructAndInsertVisual();
+			// in the initial measure for the object. Reuse the existing animated visual if one was
+			// already constructed (e.g. on a template re-apply) so we don't lose its animation state —
+			// matches WinUI's `m_animatedVisual ? m_animatedVisual.RootVisual() : ConstructVisual()`.
+			if (m_animatedVisual is null)
+			{
+				ConstructAndInsertVisual();
+			}
 			var panel = VisualTreeHelper.GetChild(this, 0) as Panel;
 			m_rootPanel = panel;
 			m_currentState = GetState(this);
@@ -81,6 +92,16 @@ namespace Microsoft.UI.Xaml.Controls
 #if HAS_UNO
 			// Uno specific: Called to ensure OnApplyTemplate runs and Foreground is subscribed
 			EnsureInitialized();
+
+			// Attach the AnimatedIcon's element visual as the Owner of m_progressPropertySet so
+			// animations started on it (PlaySegment) get a CompositionTarget to tick against.
+			// Without this, m_progressPropertySet has no owner and Compositor.RegisterAnimation
+			// can't find a target — the keyframe animation never advances and the icon snaps to
+			// its destination state.
+			if (m_progressPropertySet?.Owner is null)
+			{
+				m_progressPropertySet!.Owner = ElementCompositionPreview.GetElementVisual(this);
+			}
 #endif
 
 			// AnimatedIcon might get added to a UI which has already set the State property on an ancestor.
@@ -320,12 +341,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void TransitionAndUpdateStates(string fromState, string toState, float playbackMultiplier = 1.0f)
 		{
-			// TODO Uno specific - adjust for multithreaded access according to MUX source code.
+			// std::call_once equivalent: ensures the cleanup body runs at most once across the
+			// PlaySegment short-branch invocation and the unconditional tail call below. WinUI's
+			// std::call_once sets the flag the first time the function runs and skips subsequent
+			// calls — without `cleanedUpFlag = true` here the flag is always false and the
+			// "cleanup" body fires every time, dequeuing the same queued state twice and
+			// advancing m_previousState/m_currentState repeatedly.
 			bool cleanedUpFlag = false;
 			Action cleanupAction = () =>
 			{
 				if (!cleanedUpFlag)
 				{
+					cleanedUpFlag = true;
 					m_previousState = fromState;
 					m_currentState = toState;
 					if (m_queuedStates.Count > 0)
@@ -486,6 +513,10 @@ namespace Microsoft.UI.Xaml.Controls
 			if (duration < TimeSpan.FromMilliseconds(20) || !SharedHelpers.IsAnimationsEnabled())
 			{
 				m_progressPropertySet.InsertScalar(s_progressPropertyName, to);
+				if (cleanupAction != null)
+				{
+					cleanupAction();
+				}
 				OnAnimationCompleted(null, null);
 			}
 			else
@@ -522,10 +553,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 				m_isPlaying = true;
 				m_progressPropertySet.StartAnimation(s_progressPropertyName, animation);
-				if (cleanupAction != null)
-				{
-					cleanupAction();
-				}
 				m_batch.End();
 			}
 		}
@@ -536,6 +563,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				SetRootPanelChildToFallbackIcon();
 			}
+			InvalidateMeasure();
 		}
 
 		private void UpdateMirrorTransform()
@@ -578,11 +606,13 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					TrySetForegroundProperty(source);
 
-					//object diagnostics{ };
 #if HAS_UNO
-					// TODO Uno - TryCreateAnimatedVisual method does not currently exist on IAnimatedVisualSource
-					IAnimatedVisual visual = null;
+					// Use the AnimatedIcon's own element compositor so the visual lives in the same
+					// compositor as the rest of the visual tree.
+					var sourceCompositor = ElementCompositionPreview.GetElementVisual(this).Compositor;
+					IAnimatedVisual visual = source.TryCreateAnimatedVisual(sourceCompositor, out _);
 #else
+					object diagnostics;
 					var visual = source.TryCreateAnimatedVisual(Window.Current.Compositor, diagnostics);
 #endif
 					m_animatedVisual = visual;
@@ -602,6 +632,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				ElementCompositionPreview.SetElementChildVisual(rootPanel, visual);
 			}
+
+			UpdateMirrorTransform();
 
 			if (visual != null)
 			{
@@ -631,9 +663,6 @@ namespace Microsoft.UI.Xaml.Controls
 				m_canDisplayPrimaryContent = false;
 				return false;
 			}
-
-			// This seems to be a bug in WinUI - this code cannot be reached.
-			// UpdateMirrorTransform();
 		}
 
 		private void OnFallbackIconSourcePropertyChanged(DependencyPropertyChangedEventArgs args)

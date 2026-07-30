@@ -9,7 +9,9 @@
 !.specify/
 !.claude/
 .claude/*
+!.claude/agents/
 !.claude/commands/
+!.claude/review-panel-cheatsheet.md
 !.claude/rules/
 !.claude/skills/
 

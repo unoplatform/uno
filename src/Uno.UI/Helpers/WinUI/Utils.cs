@@ -60,6 +60,8 @@ namespace Uno.UI.Helpers.WinUI
 
 	internal class LayoutUtils
 	{
+		public static readonly Size c_infSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
+
 		public static double MeasureAndGetDesiredWidthFor(UIElement element, Size availableSize)
 		{
 			double desiredWidth = 0;
@@ -69,6 +71,17 @@ namespace Uno.UI.Helpers.WinUI
 				desiredWidth = element.DesiredSize.Width;
 			}
 			return desiredWidth;
+		}
+
+		public static double MeasureAndGetDesiredHeightFor(UIElement element, Size availableSize)
+		{
+			double desiredHeight = 0;
+			if (element != null)
+			{
+				element.Measure(availableSize);
+				desiredHeight = element.DesiredSize.Height;
+			}
+			return desiredHeight;
 		}
 
 		public static double GetActualWidthFor(UIElement element)

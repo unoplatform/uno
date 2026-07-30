@@ -61,6 +61,17 @@ public sealed partial class DiagnosticsOverlay
 	private void HideNotification()
 	{
 		VisualStateManager.GoToState(this, NotificationCollapsedStateName, true);
+
+		// Sever the presenter's Content/ContentTemplate: a notification raised by a diagnostic view
+		// can carry a DataTemplate (or content object) defined in that view's collectible
+		// AssemblyLoadContext. Collapsing the visual state alone leaves those references on the
+		// process-lifetime presenter, pinning the ALC (its generated resources → LoaderAllocator)
+		// after the view is gone (#23614). The presenter re-populates on the next Notify.
+		if (_notificationPresenter is { } presenter)
+		{
+			presenter.Content = null;
+			presenter.ContentTemplate = null;
+		}
 	}
 }
 #endif

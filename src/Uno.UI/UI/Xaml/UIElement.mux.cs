@@ -156,10 +156,21 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		//UNO TODO: Implement GetClickablePointRasterizedClient on UIElement
 		internal Point GetClickablePointRasterizedClient()
 		{
-			return new Point();
+#if __SKIA__
+			var bounds = GetGlobalBoundsWithOptions(
+				ignoreClipping: false,
+				ignoreClippingOnScrollContentPresenters: false,
+				useTargetInformation: false,
+				skipPostPaintingClipping: false);
+
+			return bounds.Width > 0 && bounds.Height > 0
+				? new Point(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2)
+				: default;
+#else
+			return default;
+#endif
 		}
 
 		//TODO:MZ: Implement all these in appropriate places :-)
@@ -827,7 +838,25 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+#if __SKIA__
+		// Reused per-thread so the automation/IsOffscreen path doesn't allocate a native SKPath per call.
+		// GetTotalClipPath rewinds it at the root, so no explicit reset is needed here.
+		[ThreadStatic]
+		private static SkiaSharp.SKPath? _globalBoundsClipScratch;
+#endif
+
 		internal Rect GetGlobalBoundsWithOptions(bool ignoreClipping, bool ignoreClippingOnScrollContentPresenters, bool useTargetInformation)
+			=> GetGlobalBoundsWithOptions(
+				ignoreClipping,
+				ignoreClippingOnScrollContentPresenters,
+				useTargetInformation,
+				skipPostPaintingClipping: true);
+
+		private Rect GetGlobalBoundsWithOptions(
+			bool ignoreClipping,
+			bool ignoreClippingOnScrollContentPresenters,
+			bool useTargetInformation,
+			bool skipPostPaintingClipping)
 		{
 #if __SKIA__
 			if (!IsInLiveTree)
@@ -852,7 +881,9 @@ namespace Microsoft.UI.Xaml
 				// wrongly considered on-screen (IsOffscreen == false).
 				// TODO: ignoreClippingOnScrollContentPresenters is not yet honored separately. Every caller
 				// currently passes false, so the full ancestor clip (including ScrollContentPresenters) applies.
-				var clip = Visual.GetTotalClipRectInRootCoordinates();
+				var clipPath = _globalBoundsClipScratch ??= new SkiaSharp.SKPath();
+				Visual.GetTotalClipPath(clipPath, skipPostPaintingClipping);
+				var clip = clipPath.Bounds;
 
 				var left = Math.Max(globalBounds.Left, clip.Left);
 				var top = Math.Max(globalBounds.Top, clip.Top);

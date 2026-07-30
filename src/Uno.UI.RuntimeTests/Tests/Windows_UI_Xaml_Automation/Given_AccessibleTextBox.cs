@@ -241,7 +241,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			Assert.AreEqual("test", GetSemanticTextBoxValue(textBox), "Semantic textbox should mirror the existing managed value when accessibility is enabled.");
 			Assert.AreEqual("4", GetSemanticTextBoxCaret(textBox), "Semantic textbox should inherit the managed caret position when created.");
-			Assert.IsFalse(HiddenNativeTextBoxExists(), "The hidden browser textbox should be detached once the semantic textbox owns focus.");
+			// The hidden native <input> is detached asynchronously once the semantic textbox owns focus;
+			// poll for it instead of asserting synchronously, which raced on the slower WASM scheduler.
+			await UITestHelper.WaitFor(() => !HiddenNativeTextBoxExists(), timeoutMS: 5000,
+				message: "The hidden browser textbox should be detached once the semantic textbox owns focus.");
 
 			TypeTextIntoSemanticTextBox(textBox, "test");
 			await UITestHelper.WaitForIdle();

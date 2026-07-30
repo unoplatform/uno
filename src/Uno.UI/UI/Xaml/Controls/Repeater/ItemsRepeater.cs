@@ -1050,7 +1050,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Uno specific 
 
-		//TODO: Uno specific - remove when #4689 is fixed
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+
+		// Native Android/iOS only: ElementPrepared fires after the consumer's OnApplyTemplate there
+		// (no enhanced lifecycle), so this earlier event lets consumers prepare elements in time.
 		internal event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementPreparedEventArgs> UnoBeforeElementPrepared;
 
 		internal void OnUnoBeforeElementPrepared(UIElement element, int index)
@@ -1058,6 +1061,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var args = new ItemsRepeaterElementPreparedEventArgs(element, index);
 			UnoBeforeElementPrepared?.Invoke(this, args);
 		}
+#endif
 
 		#endregion
 	}

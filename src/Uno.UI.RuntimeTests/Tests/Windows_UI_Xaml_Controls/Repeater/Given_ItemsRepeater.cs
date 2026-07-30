@@ -495,6 +495,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
+		// SkiaWasm excluded: render-loop-driven ChangeView smooth-scroll stalls under the headless xvfb browser (flaky). #23524
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 #if !__SKIA__
 		[Ignore("Fails due to async native scrolling.")]
 #endif
@@ -511,14 +514,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 			sut.Scroller.ChangeView(null, 1000000, null, disableAnimation: false);
 
-			// required for the animation
-			await Task.Delay(200);
+			// Wait for the smooth-scroll to start materializing new items (progressive state), then
+			// to reach the bottom — polling the actual conditions instead of fixed delays, which were
+			// too short on slower runtimes (e.g. WASM) and left the view short of the end, flaking CI.
+			await UITestHelper.WaitFor(
+				() => sut.MaterializedItems.Except(items).Any() && sut.MaterializedItems.Count() >= 3,
+				timeoutMS: 3000,
+				message: "ChangeView should have started materializing new items");
 
 			sut.MaterializedItems.Should().NotBeEquivalentTo(items);
 			sut.MaterializedItems.Count().Should().BeGreaterThanOrEqualTo(3);
 
-			// required for the animation to complete
-			await Task.Delay(1000);
+			await UITestHelper.WaitFor(
+				() => sut.MaterializedItems.Contains(lastItem),
+				timeoutMS: 5000,
+				message: "ChangeView should have scrolled to the last item");
 			sut.MaterializedItems.Should().Contain(lastItem);
 		}
 

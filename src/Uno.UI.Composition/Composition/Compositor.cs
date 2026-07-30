@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.Graphics.Effects;
 using Windows.UI;
 
@@ -74,6 +76,9 @@ namespace Microsoft.UI.Composition
 
 		public CompositionSpriteShape CreateSpriteShape(CompositionGeometry geometry)
 			=> new CompositionSpriteShape(this, geometry);
+
+		public CompositionContainerShape CreateContainerShape()
+			=> new CompositionContainerShape(this);
 
 		public CompositionPathGeometry CreatePathGeometry()
 			=> new CompositionPathGeometry(this);
@@ -193,6 +198,9 @@ namespace Microsoft.UI.Composition
 		public ExpressionAnimation CreateExpressionAnimation()
 			=> new ExpressionAnimation(this);
 
+		public BooleanKeyFrameAnimation CreateBooleanKeyFrameAnimation()
+			=> new BooleanKeyFrameAnimation(this);
+
 		public Vector2KeyFrameAnimation CreateVector2KeyFrameAnimation()
 			=> new Vector2KeyFrameAnimation(this);
 
@@ -201,6 +209,44 @@ namespace Microsoft.UI.Composition
 
 		public Vector4KeyFrameAnimation CreateVector4KeyFrameAnimation()
 			=> new Vector4KeyFrameAnimation(this);
+
+		// Uno currently does not buffer composition commits, so RequestCommitAsync completes immediately.
+		// This still satisfies callers that schedule cleanup work after a commit fence (e.g. AnimatedVisualPlayer).
+		public IAsyncAction RequestCommitAsync()
+			=> Task.CompletedTask.AsAsyncAction();
+
+		// Tracks the active CompositionScopedBatch stack. CompositionScopedBatch hooks animations
+		// started while a batch is active so its Completed event fires when those animations
+		// actually stop (rather than synchronously when End() is called). The stack supports
+		// nested batches, though only the innermost batch tracks new animations.
+		private readonly Stack<CompositionScopedBatch> _scopedBatchStack = new();
+
+		internal void RegisterScopedBatch(CompositionScopedBatch batch) => _scopedBatchStack.Push(batch);
+
+		internal void UnregisterScopedBatch(CompositionScopedBatch batch)
+		{
+			if (_scopedBatchStack.Count > 0 && _scopedBatchStack.Peek() == batch)
+			{
+				_scopedBatchStack.Pop();
+				return;
+			}
+
+			// Defensive: if batches were ended out of order, remove this one wherever it is.
+			var preserved = new Stack<CompositionScopedBatch>();
+			while (_scopedBatchStack.Count > 0)
+			{
+				var top = _scopedBatchStack.Pop();
+				if (top == batch)
+				{
+					break;
+				}
+				preserved.Push(top);
+			}
+			while (preserved.Count > 0)
+			{
+				_scopedBatchStack.Push(preserved.Pop());
+			}
+		}
 
 		internal void InvalidateRender(Visual visual) => InvalidateRenderPartial(visual);
 		public CompositionBackdropBrush CreateBackdropBrush()

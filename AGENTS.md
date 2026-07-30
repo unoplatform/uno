@@ -19,6 +19,10 @@ Uno Platform is an open-source .NET UI cross-platform framework for building .NE
 | DevServer | `/devserver` | DevServer CLI/Host build, test, MCP proxy, add-in discovery |
 | Docs Build | `/docs-build` | Building, previewing & validating the docs website (DocFX), incl. external-doc commit bumps in `import_external_docs.ps1` |
 
+#### Pre-commit review (invoke via `/review-panel`)
+
+`/review-panel [scope]` runs an eight-lens reviewer panel (architect, contract, skeptic, performance, operability, quality, security, jerome) in parallel and synthesizes one report with a `ship` / `fix-first` / `block-merge` verdict. Run it before you commit or open a PR — pass a scope (`master..HEAD`, a `#PR`, `HEAD~1`) or omit it to auto-detect uncommitted changes / branch-vs-`master`. The panel learns from corrections recorded in `specs/lessons.md`. Lenses, scopes, and loop recipes: `.claude/review-panel-cheatsheet.md`.
+
 #### Path-scoped rules (`.claude/rules/`)
 
 These load **automatically** when you touch matching files — you don't invoke them. They hold the non-obvious, subsystem-specific conventions so this always-loaded file stays lean:

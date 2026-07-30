@@ -683,6 +683,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(item);
 				await WindowHelper.WaitForIdle();
 
+				// The popup-presented item resolves its {ThemeResource} foreground asynchronously after load;
+				// wait for the brush to resolve before asserting its color (raced on slower runtimes, e.g. WASM).
+				await UITestHelper.WaitFor(
+					() => (item.Foreground as SolidColorBrush) is not null,
+					timeoutMS: 5000,
+					message: "Menu item {ThemeResource} foreground brush should have resolved");
+
 				Assert.AreEqual(ElementTheme.Light, owner.ActualTheme, "Owner should be in the Light subtree.");
 				Assert.AreEqual(ElementTheme.Light, item.ActualTheme, "Menu item should inherit the owner's Light theme.");
 

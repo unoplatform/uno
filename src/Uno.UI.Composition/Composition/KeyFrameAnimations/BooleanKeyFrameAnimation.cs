@@ -19,6 +19,9 @@ public partial class BooleanKeyFrameAnimation : KeyFrameAnimation
 	public void InsertKeyFrame(float normalizedProgressKey, bool value)
 		=> _keyFrames[normalizedProgressKey] = new() { Value = value };
 
+	private protected override void InsertExpressionKeyFrameCore(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)
+		=> _keyFrames[normalizedProgressKey] = new() { Value = false, EasingFunction = easingFunction, ParsedExpression = new ExpressionAnimationParser(value).Parse() };
+
 	internal override object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
 		base.Start(propertyName, subPropertyName, compositionObject);
@@ -35,8 +38,23 @@ public partial class BooleanKeyFrameAnimation : KeyFrameAnimation
 			finalValue = _keyFrames.Values.LastOrDefault(startValue);
 		}
 
-		Func<AnimationKeyFrame<bool>, AnimationKeyFrame<bool>, float, bool> lerp = (value1, value2, _) => value1.Value;
-		_keyframeEvaluator = new KeyFrameEvaluator<bool>(startValue, finalValue, Duration, _keyFrames, lerp, IterationCount, IterationBehavior, Compositor);
-		return startValue.Value;
+		// Pass 'this' (the parent animation) so expression keyframes can resolve reference parameters.
+		bool Resolve(AnimationKeyFrame<bool> frame) => ResolveBooleanKeyFrameValue(this, frame);
+
+		// Boolean keyframes don't interpolate; hold the lower keyframe's value.
+		Func<AnimationKeyFrame<bool>, AnimationKeyFrame<bool>, float, bool> lerp = (value1, value2, _) => Resolve(value1);
+		_keyframeEvaluator = new KeyFrameEvaluator<bool>(startValue, finalValue, Duration, _keyFrames, lerp, IterationCount, IterationBehavior, Compositor, Resolve);
+		return Resolve(startValue);
+	}
+
+	private static bool ResolveBooleanKeyFrameValue(KeyFrameAnimation animation, AnimationKeyFrame<bool> frame)
+	{
+		if (frame.ParsedExpression is null)
+		{
+			return frame.Value;
+		}
+
+		var evaluation = frame.ParsedExpression.Evaluate(animation);
+		return SubPropertyHelpers.ValidateValue<bool>(evaluation);
 	}
 }

@@ -30,5 +30,13 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.MacOS" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.Win32" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.X11" ProjectSystem="true" />
+
+		<!--
+			The managed SkiaSharp package auto-references its Win32/macOS native assets but not the Linux one,
+			which only arrives as a transitive floor from the X11 / FrameBuffer runtime packs above. Inject it
+			so overriding SkiaSharpVersion retargets the Linux native asset too; otherwise a managed SkiaSharp
+			bumped past Uno's floor keeps the old libSkiaSharp on Linux and crashes Skia Desktop at startup.
+		-->
+		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.Linux" ProjectSystem="true" />
 	</ItemGroup>
 </Project>

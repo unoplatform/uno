@@ -3,6 +3,7 @@
 using System;
 using System.Globalization;
 using System.Numerics;
+using Uno.Foundation.Logging;
 using Windows.UI;
 
 namespace Microsoft.UI.Composition;
@@ -11,17 +12,45 @@ internal static class SubPropertyHelpers
 {
 	internal static T ValidateValue<T>(object? value)
 	{
-		if (value is not T t)
+		if (value is T t)
 		{
-			if (Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture) is T changed)
-			{
-				return changed;
-			}
-
-			throw new ArgumentException($"Cannot convert value of type '{value?.GetType()}' to {typeof(T)}");
+			return t;
 		}
 
-		return t;
+		// Only attempt Convert.ChangeType for values that implement IConvertible — vector and
+		// matrix structs explicitly do not, and feeding them to Convert.ChangeType throws an
+		// InvalidCastException that surfaces as a confusing top-level handler crash. A value that is
+		// neither already T nor cleanly convertible (typically a vector evaluation racing through a
+		// scalar property setter during a source switch) falls through to default(T) below — the
+		// setter then writes that default rather than crashing.
+		if (value is IConvertible)
+		{
+			try
+			{
+				if (Convert.ChangeType(value, typeof(T), CultureInfo.InvariantCulture) is T changed)
+				{
+					return changed;
+				}
+			}
+			catch (InvalidCastException)
+			{
+				// fall through to default
+			}
+			catch (FormatException)
+			{
+				// fall through to default
+			}
+		}
+
+		// The value is dropped and the caller's property is written with default(T) (0 / false /
+		// zero-vector), not its previous value. Log so this mismatch is diagnosable instead of
+		// silently zeroing an animated property.
+		if (typeof(SubPropertyHelpers).Log().IsEnabled(LogLevel.Warning))
+		{
+			typeof(SubPropertyHelpers).Log().Warn($"Cannot convert value '{value}' of type '{value?.GetType()}' to '{typeof(T)}'; using default('{typeof(T)}') instead.");
+		}
+
+		return default!;
 	}
 
 	internal static Color UpdateColor(ReadOnlySpan<char> subPropertyName, Color existingValue, object? propertyValue)

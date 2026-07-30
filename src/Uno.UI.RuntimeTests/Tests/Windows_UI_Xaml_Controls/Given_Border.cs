@@ -875,17 +875,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 
 			await UITestHelper.Load(stackPanel);
-			// await (await UITestHelper.ScreenShot(stackPanel)).Save("When_CornerRadius_AntiAliasing.png");
 			var screenShot = await UITestHelper.ScreenShot(stackPanel);
+			await screenShot.Populate();
 
-			var image = new Image()
+			// The circle's edge must blend between the red circle and the green background: a render
+			// without anti-aliasing contains only pure red/green pixels, whereas anti-aliasing blends
+			// ~34% of the pixels in this one-and-a-half pixel wide ring around the edge (measured on
+			// the software rasterizer; asserted at 20% to leave margin for rasterizer variance).
+			// Sampling the edge instead of comparing against a reference image keeps the test
+			// independent of which rasterizer produced the pixels.
+			var edge = 0;
+			var blended = 0;
+			for (var x = 0; x < 60; x++)
 			{
-				Height = 60,
-				Width = 60,
-				Source = "ms-appx:///Assets/When_CornerRadius_AntiAliasing.png"
-			};
-			await UITestHelper.Load(image);
-			await ImageAssert.AreEqualAsync(await UITestHelper.ScreenShot(image), screenShot);
+				for (var y = 0; y < 60; y++)
+				{
+					var distanceToCenter = Math.Sqrt(Math.Pow(x + 0.5 - 30, 2) + Math.Pow(y + 0.5 - 30, 2));
+					if (Math.Abs(distanceToCenter - 30) <= 1.5)
+					{
+						edge++;
+						var color = screenShot.GetPixel(x, y);
+						var isRed = color is { R: > 250, G: < 5 };
+						var isGreen = color is { R: < 5, G: > 100 };
+						if (!isRed && !isGreen)
+						{
+							blended++;
+						}
+					}
+				}
+			}
+
+			Assert.IsTrue(blended >= edge / 5, $"Expected anti-aliased (blended) pixels along the rounded edge, found {blended}/{edge}.");
 		}
 #endif
 

@@ -5,6 +5,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using SkiaSharp;
+using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
@@ -32,6 +33,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private readonly GRContext? _context;
 	private SKBitmap? _bitmap;
 	private SKSurface? _surface;
+	private readonly RetainedLayer _retainedLayer = new();
 	private int _rowBytes;
 	private bool _initializationCompleted;
 	private string? _lastSvgClipPath;
@@ -102,15 +104,15 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		// we can't cache anything since the texture will be different on next calls
-		GRBackendRenderTarget? target = null;
-		SKSurface? surface = null;
-		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(null, size =>
+		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(
+			_retainedLayer.Surface?.Canvas,
+			size => _retainedLayer.EnsureSurface(_context!, (int)size.Width, (int)size.Height, SKColors.Transparent).Canvas);
+
+		using (var target = new GRBackendRenderTarget((int)nativeWidth, (int)nativeHeight, new GRMtlTextureInfo(texture)))
+		using (var swapchainSurface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888))
 		{
-			target = new GRBackendRenderTarget((int)size.Width, (int)size.Height, new GRMtlTextureInfo(texture));
-			surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
-			return surface.Canvas;
-		});
+			_retainedLayer.Present(swapchainSurface);
+		}
 
 		var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
 		if (clip != _lastSvgClipPath)
@@ -124,8 +126,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		}
 
 		_context?.Flush();
-		target?.Dispose();
-		surface?.Dispose();
 	}
 
 	private unsafe void SoftDraw(double nativeWidth, double nativeHeight, nint* data, int* rowBytes, int* size)
@@ -149,7 +149,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(null, size =>
+		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 		{
 			_bitmap?.Dispose();
 			_surface?.Dispose();
@@ -332,15 +332,31 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void MetalDraw(nint handle, double width, double height, nint texture)
 	{
-		var window = GetWindowHost(handle);
-		window?.MetalDraw(width, height, texture);
+		// This runs directly from a native callback, so an escaping managed exception would
+		// fail-fast the process. Route it through the recoverable handler like the other hosts.
+		try
+		{
+			var window = GetWindowHost(handle);
+			window?.MetalDraw(width, height, texture);
+		}
+		catch (Exception e)
+		{
+			ApplicationExtensions.RaiseRecoverableUnhandledExceptionOrLog(Application.Current, e, typeof(MacOSWindowHost));
+		}
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static unsafe void SoftDraw(nint handle, double width, double height, nint* data, int* rowBytes, int* size)
 	{
-		var window = GetWindowHost(handle);
-		window?.SoftDraw(width, height, data, rowBytes, size);
+		try
+		{
+			var window = GetWindowHost(handle);
+			window?.SoftDraw(width, height, data, rowBytes, size);
+		}
+		catch (Exception e)
+		{
+			ApplicationExtensions.RaiseRecoverableUnhandledExceptionOrLog(Application.Current, e, typeof(MacOSWindowHost));
+		}
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]

@@ -1,4 +1,6 @@
-﻿// MUX reference NavigationViewAutomationPeer.cpp, commit 8f1a682
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference NavigationViewAutomationPeer.cpp, commit bac7a9c33
 
 using System;
 using Microsoft.UI.Xaml.Controls;
@@ -45,7 +47,7 @@ public partial class NavigationViewAutomationPeer : FrameworkElementAutomationPe
 		return Array.Empty<IRawElementProviderSimple>();
 	}
 
-	internal void RaiseSelectionChangedEvent(object oldSelection, object newSelecttion)
+	internal void RaiseSelectionChangedEvent(object oldSelection, object newSelection)
 	{
 		if (AutomationPeer.ListenerExists(AutomationEvents.SelectionPatternOnInvalidated))
 		{

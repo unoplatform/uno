@@ -212,7 +212,12 @@ $projects =
     @(3, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY\src\PackageCache"), @("macOS", "NetCore", "CleanNugetTemp","NoBuildClean")),
 
     # 5.6 Android/ios/Wasm+Skia
-    @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @(), @("macOS", "NetCore")),
+    # /m:1 serializes the inner per-TFM builds. Without it, `dotnet build` (no -f) compiles all 5 TFMs
+    # in parallel, so the memory-heavy WASM native relink (wasm-opt -O2 over the SkiaSharp/HarfBuzz/ICU
+    # statics) runs concurrently with the android/ios/maccatalyst builds and intermittently aborts with
+    # SIGABRT under peak memory on the macOS agent (flaky Templates stage). Serializing removes that
+    # contention so wasm-opt runs on its own. See #23528.
+    @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("/m:1"), @("macOS", "NetCore")),
 
     # 5.6 net-current runtime folder validation
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @(), @("macOS", "NetCore")),

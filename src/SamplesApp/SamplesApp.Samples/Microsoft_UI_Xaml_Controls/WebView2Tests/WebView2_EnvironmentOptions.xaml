@@ -1,0 +1,49 @@
+﻿<Page
+    x:Class="SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_EnvironmentOptions"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+    xmlns:not_win="http://uno.ui/not_win"
+    mc:Ignorable="d not_win">
+
+    <not_win:Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Padding="12" Spacing="6">
+            <TextBlock
+                FontWeight="SemiBold"
+                Text="WebView2 environment options (Skia Desktop on Windows)"
+                TextWrapping="Wrap" />
+            <TextBlock
+                Foreground="{ThemeResource SystemBaseMediumColor}"
+                Text="These options must be set during application startup, before any WebView2 is materialized. This sample reflects the current values. They are Windows-only and have no effect on other targets."
+                TextWrapping="Wrap" />
+            <TextBlock x:Name="SsoStatusText" TextWrapping="Wrap" />
+            <TextBlock x:Name="ArgsStatusText" TextWrapping="Wrap" />
+        </StackPanel>
+
+        <Border
+            Grid.Row="1"
+            Margin="12,0,12,12"
+            Padding="8"
+            Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+            CornerRadius="4">
+            <TextBlock FontFamily="Consolas" TextWrapping="Wrap">
+                <Run Text="// In App.xaml.cs constructor, BEFORE InitializeComponent:" />
+                <LineBreak />
+                <Run Text="Uno.UI.FeatureConfiguration.WebView2.AllowSingleSignOnUsingOSPrimaryAccount = true;" />
+                <LineBreak />
+                <Run Text="Uno.UI.FeatureConfiguration.WebView2.AdditionalBrowserArguments = &quot;--proxy-server=...&quot;;" />
+            </TextBlock>
+        </Border>
+
+        <mux:WebView2 Grid.Row="2" Source="https://platform.uno/" />
+    </not_win:Grid>
+</Page>

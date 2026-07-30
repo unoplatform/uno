@@ -61,6 +61,10 @@ namespace Microsoft.UI.Xaml
 			_registry.RemoveNonDefaultAlcEntries();
 			_getInheritedPropertiesForType.RemoveNonDefaultAlcEntries();
 			_getPropertyCache.RemoveNonDefaultAlcEntries();
+			_isTypeNullableDictionary.RemoveNonDefaultAlcEntries();
+
+			// The pooled lookup key retains the last-queried Type past the cache prunes.
+			_searchPropertyCacheEntry.Update(typeof(object), "");
 		}
 
 		private readonly PropertyMetadata _ownerTypeMetadata; // For perf consideration, we keep direct ref the metadata for the owner type

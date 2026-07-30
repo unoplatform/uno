@@ -61,8 +61,6 @@ namespace Windows.Storage {
 				return;
 			}
 
-			console.debug("Making persistent: " + path);
-
 			FS.mkdir(path);
 
 			FS.mount(IDBFS, {}, path);

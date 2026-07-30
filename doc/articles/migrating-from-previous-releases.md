@@ -6,6 +6,44 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 To upgrade to the latest version of Uno Platform, [follow our guide](xref:Uno.Development.UpgradeUnoNuget).
 
+## Uno Platform 6.6
+
+Uno Platform 6.6 contains a breaking change related to the removal of legacy Windows Phone namespaces, along with a few platform behavior changes to be aware of when upgrading.
+
+### Visual Studio, Visual Studio Code, and Rider
+
+When upgrading to Uno Platform 6.6, make sure to update your IDE extension or plugin to the latest stable version to ensure the Uno Platform development tooling connects properly.
+
+- [Visual Studio extension](https://aka.platform.uno/vs-extension-marketplace)
+- [Visual Studio Code extension](https://aka.platform.uno/vscode-extension-marketplace)
+- [Rider plugin](https://aka.platform.uno/rider-extension-marketplace)
+
+### Removal of legacy Windows.Phone namespaces
+
+As part of the migration of the API surface to a generated model aligned with the Windows App SDK, Uno Platform 6.6 removes the legacy `Windows.Phone` namespaces inherited from the Windows Phone API set. Only the types that were already implemented remain available.
+
+If your app references these legacy namespaces, remove or migrate those usages before upgrading.
+
+This change was introduced in [PR #22377](https://github.com/unoplatform/uno/pull/22377).
+
+### Mouse wheel direction on Linux Framebuffer
+
+On the Linux Framebuffer target, the default mouse wheel scroll direction is now inverted from the raw device values, so scrolling behaves consistently with the other targets. If your app relied on the previous direction, call `ReverseMouseWheel()` on the Framebuffer host builder to restore it.
+
+This change was introduced in [PR #22924](https://github.com/unoplatform/uno/pull/22924).
+
+### Uno.Extensions MVUX bindable generation tool
+
+Uno.Extensions 7.2 (shipped with Uno Platform 6.6) changes the default MVUX bindable generation tool from version 2 to version 3, which improves Hot Reload support. Typical MVUX code is unaffected, because navigation and bindings reference your model type rather than the generated bindable. However, the *name* of the generated bindable view model changes: version 2 generated `Bindable{ModelName}` (for example, `BindableMainModel`), while version 3 generates `{Name}ViewModel` (for example, `MainModel` generates `MainViewModel`).
+
+If your code references the generated bindable type by name directly, update those references. To keep the previous generator, pin its version at the assembly level:
+
+```csharp
+[assembly: Uno.Extensions.Reactive.Config.BindableGenerationTool(2)]
+```
+
+This change was introduced in [Uno.Extensions PR #3055](https://github.com/unoplatform/uno.extensions/pull/3055).
+
 ## Uno Platform 6.5
 
 Uno Platform 6.5 does not contain breaking changes that require attention when upgrading

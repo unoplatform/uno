@@ -14,11 +14,20 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 	private readonly TimeSpan _totalDuration;
 	private readonly SortedDictionary<float, AnimationKeyFrame<T>> _keyFrames;
 	private readonly Func<AnimationKeyFrame<T>, AnimationKeyFrame<T>, float, T> _lerp;
+	private readonly Func<AnimationKeyFrame<T>, T> _resolve;
 	private readonly Compositor _compositor;
 
 	private long? _pauseTimestamp;
 	private long _totalPause;
 
+	/// <summary>
+	/// Initializes the evaluator. The <c>resolve</c> delegate resolves a keyframe to its value,
+	/// evaluating an expression keyframe when present: the lerp path resolves its own endpoints,
+	/// while this lets the held/final/exact-hit shortcuts resolve too instead of returning an
+	/// expression keyframe's placeholder <see cref="AnimationKeyFrame{T}.Value"/>. A
+	/// <see langword="null"/> delegate uses the value as-is (animation types without
+	/// expression-keyframe support).
+	/// </summary>
 	public KeyFrameEvaluator(
 		AnimationKeyFrame<T> initialValue,
 		AnimationKeyFrame<T> finalValue,
@@ -27,7 +36,8 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 		Func<AnimationKeyFrame<T>, AnimationKeyFrame<T>, float, T> lerp,
 		int iterationCount,
 		AnimationIterationBehavior iterationBehavior,
-		Compositor compositor)
+		Compositor compositor,
+		Func<AnimationKeyFrame<T>, T> resolve = null)
 	{
 		_startTimestamp = compositor.TimestampInTicks;
 		_initialValue = initialValue;
@@ -36,15 +46,22 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 		_totalDuration = iterationBehavior == AnimationIterationBehavior.Forever ? TimeSpan.MaxValue : duration * iterationCount;
 		_keyFrames = keyFrames;
 		_lerp = lerp;
+		_resolve = resolve;
 		_compositor = compositor;
 	}
 
+	private T Resolve(AnimationKeyFrame<T> frame) => _resolve is null ? frame.Value : _resolve(frame);
+
 	public (object Value, bool ShouldStop) Evaluate()
 	{
-		var elapsed = new TimeSpan(_compositor.TimestampInTicks - _totalPause - _startTimestamp);
-		if (elapsed >= _totalDuration)
+		// While paused, freeze elapsed time at the pause point — otherwise the evaluator would
+		// keep advancing as wall-clock time passes (and report "shouldStop" once it exceeds the
+		// duration), even though the animation is being held in place by an AnimationController.
+		var nowTimestamp = _pauseTimestamp ?? _compositor.TimestampInTicks;
+		var elapsed = new TimeSpan(nowTimestamp - _totalPause - _startTimestamp);
+		if (_pauseTimestamp is null && elapsed >= _totalDuration)
 		{
-			return (_finalValue.Value, true);
+			return (Resolve(_finalValue), true);
 		}
 
 		elapsed = TimeSpan.FromTicks(elapsed.Ticks % _duration.Ticks);
@@ -56,7 +73,7 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 	{
 		if (progress >= 1.0f)
 		{
-			return (_finalValue.Value, true);
+			return Resolve(_finalValue);
 		}
 
 		return EvaluateInternal(progress).Value;
@@ -64,11 +81,30 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 
 	private (object Value, bool ShouldStop) EvaluateInternal(float currentFrame)
 	{
-		var nextKeyFrame = _keyFrames.Keys.FirstOrDefault(k => k >= currentFrame, _keyFrames.Keys.Last());
+		// No value keyframes to interpolate — e.g. an animation defined only with expression
+		// keyframes, which Vector3/Vector4/Boolean animations discard. Hold the final value
+		// instead of indexing into an empty sequence. Evaluate() still stops it once the
+		// duration elapses.
+		if (_keyFrames.Count == 0)
+		{
+			return (Resolve(_finalValue), false);
+		}
+
+		var lastKey = _keyFrames.Keys.Last();
+		// Past the final keyframe: hold the last value. Without this the math below collapses
+		// to "previousKeyFrame == nextKeyFrame", producing a divide-by-zero in the lerp ratio
+		// and returning NaN — which would make any animated property (Opacity, Scale, …) drop
+		// off into invisibility.
+		if (currentFrame >= lastKey)
+		{
+			return (Resolve(_keyFrames[lastKey]), false);
+		}
+
+		var nextKeyFrame = _keyFrames.Keys.FirstOrDefault(k => k >= currentFrame, lastKey);
 		if (nextKeyFrame == currentFrame)
 		{
 			// currentFrame is one that exists in the dictionary already.
-			return (_keyFrames[currentFrame].Value, false);
+			return (Resolve(_keyFrames[currentFrame]), false);
 		}
 
 		var previousKeyFrame = _keyFrames.Keys.LastOrDefault(k => k <= currentFrame);

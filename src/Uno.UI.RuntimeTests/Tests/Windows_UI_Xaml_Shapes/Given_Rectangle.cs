@@ -30,6 +30,11 @@ public class Given_Rectangle
 	[DataRow(Stretch.Fill, double.NaN, 30d, 10d, 20d, 50d, 50d, 10d, 30d)]
 	[DataRow(Stretch.UniformToFill, double.NaN, double.NaN, 0d, 0d, double.PositiveInfinity, double.PositiveInfinity, 0d, 0d)]
 	[DataRow(Stretch.UniformToFill, double.NaN, double.NaN, 10d, 20d, double.PositiveInfinity, double.PositiveInfinity, 10d, 20d)]
+	// UniformToFill makes the measured size square (max of the two dims, see #18265), but the public
+	// DesiredSize is clamped to the available/explicit size, so it can't show the bug on its own (the
+	// uncapped square only surfaces in arrange overflow — covered by the pixel-based Given_Ellipse and
+	// Given_Basic_Shapes_Parity tests). This row just guards that an explicit size still clamps to 120x80.
+	[DataRow(Stretch.UniformToFill, 120d, 80d, 0d, 0d, 500d, 500d, 120d, 80d)]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_RectangleMeasure(
 		Stretch stretch,

@@ -83,7 +83,7 @@ jobs:
               content: 'eyes',
             });
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ steps.pr.outputs.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}

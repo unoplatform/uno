@@ -2,13 +2,13 @@ using System;
 using System.Runtime.InteropServices;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Windowing.Native;
-using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Dwm;
+using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.WindowsAndMessaging;
 using MARGINS = Windows.Win32.UI.Controls.MARGINS;
 
@@ -18,9 +18,6 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 {
 	private OverlappedPresenterState? _pendingState;
 	private nuint _lastWindowSizeChange = 0;
-
-	private Thickness _offScreenMargins;
-	private Thickness _extendedMargins;
 
 	private bool _hasBorder;
 	private bool _hasTitleBar;
@@ -117,9 +114,6 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 			var margins = new MARGINS();
 			ApplyFrameExtension(margins);
 
-			_offScreenMargins = default;
-			_extendedMargins = default;
-
 			int cornerPreference = (int)DWM_WINDOW_CORNER_PREFERENCE.DWMWCP_DEFAULT;
 			PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_WINDOW_CORNER_PREFERENCE, &cornerPreference, sizeof(int));
 		}
@@ -167,7 +161,6 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 
 	private MARGINS UpdateClientAreaExtensionMargins()
 	{
-		RECT borderThickness = new RECT();
 		RECT borderCaptionThickness = new RECT();
 
 		var scaling = (uint)(RasterizationScale * PInvoke.USER_DEFAULT_SCREEN_DPI);
@@ -176,27 +169,17 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 		if (Environment.OSVersion.Version < new Version(10, 0, 14393))
 		{
 			PInvoke.AdjustWindowRectEx(ref borderCaptionThickness, GetStyle(), false, 0);
-			PInvoke.AdjustWindowRectEx(ref borderThickness, GetStyle() & ~WINDOW_STYLE.WS_CAPTION, false, 0);
 
 			borderCaptionThickness.top = (int)(borderCaptionThickness.top * relativeScaling);
 			borderCaptionThickness.right = (int)(borderCaptionThickness.right * relativeScaling);
 			borderCaptionThickness.left = (int)(borderCaptionThickness.left * relativeScaling);
 			borderCaptionThickness.bottom = (int)(borderCaptionThickness.bottom * relativeScaling);
-
-			borderThickness.top = (int)(borderThickness.top * relativeScaling);
-			borderThickness.right = (int)(borderThickness.right * relativeScaling);
-			borderThickness.left = (int)(borderThickness.left * relativeScaling);
-			borderThickness.bottom = (int)(borderThickness.bottom * relativeScaling);
 		}
 		else
 		{
 			PInvoke.AdjustWindowRectExForDpi(ref borderCaptionThickness, GetStyle(), false, 0, scaling);
-			PInvoke.AdjustWindowRectExForDpi(ref borderThickness, GetStyle() & ~WINDOW_STYLE.WS_CAPTION, false, 0, scaling);
 		}
 
-		borderThickness.left *= -1;
-		borderThickness.top *= -1;
-		borderCaptionThickness.left *= -1;
 		borderCaptionThickness.top *= -1;
 
 		bool hasSystemTitleBar = _hasTitleBar;
@@ -220,25 +203,6 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 
 		margins.cyTopHeight = _window!.AppWindow.TitleBar.ExtendsContentIntoTitleBar ? borderCaptionThickness.top : defaultMargin;
 
-		if (State == OverlappedPresenterState.Maximized)
-		{
-			_extendedMargins = new Thickness(
-				0,
-				(borderCaptionThickness.top - borderThickness.top) / RasterizationScale,
-				0,
-				0);
-			_offScreenMargins = new Thickness(
-				borderThickness.left / RasterizationScale,
-				borderThickness.top / RasterizationScale,
-				borderThickness.right / RasterizationScale,
-				borderThickness.bottom / RasterizationScale);
-		}
-		else
-		{
-			_extendedMargins = new(0, borderCaptionThickness.top / RasterizationScale, 0, 0);
-			_offScreenMargins = default;
-		}
-
 		return margins;
 	}
 
@@ -252,6 +216,49 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 		{
 			return (WINDOW_STYLE)PInvoke.GetWindowLong(_hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
 		}
+	}
+
+	// Insets a maximized custom-chrome window's proposed client rect back to the monitor work area. The OS
+	// positions a maximized resizable window so its resize frame overhangs the monitor on every edge; custom
+	// chrome draws into that area, so without correction the content and caption buttons spill off-screen.
+	// Clamping the proposed rect (rgrc[0], a screen-space WINDOW rect) to the work area makes the client exactly
+	// the visible, non-taskbar region - identical to a standard maximized window and to WinUI - with no
+	// frame-thickness/DPI math (which can be off by a pixel). The monitor comes from the proposed rect, so this
+	// is correct on a secondary monitor with a different DPI and during restore-from-minimized.
+	private unsafe void ApplyMaximizedClientInset(ref RECT client)
+	{
+		var monitor = PInvoke.MonitorFromRect(in client, MONITOR_FROM_FLAGS.MONITOR_DEFAULTTONEAREST);
+		if (monitor.Value == IntPtr.Zero)
+		{
+			return;
+		}
+
+		var monitorInfo = new MONITORINFO { cbSize = (uint)sizeof(MONITORINFO) };
+		if (!PInvoke.GetMonitorInfo(monitor, &monitorInfo))
+		{
+			return;
+		}
+
+		var work = monitorInfo.rcWork;
+		client.left = Math.Max(client.left, work.left);
+		client.top = Math.Max(client.top, work.top);
+		client.right = Math.Min(client.right, work.right);
+		client.bottom = Math.Min(client.bottom, work.bottom);
+
+		ReserveAutoHideTaskbarEdges(ref client, monitorInfo.rcMonitor);
+	}
+
+	// An auto-hide taskbar reserves no work area, so the work-area clamp above leaves the client flush with that
+	// monitor edge. A maximized window that fully covers the edge hosting an auto-hide taskbar is treated by
+	// Windows as a full-screen app and the bar can no longer be revealed, so keep the client 1px short of any
+	// such edge - matching the native WinUI windowing layer.
+	private void ReserveAutoHideTaskbarEdges(ref RECT client, RECT rcMonitor)
+	{
+		const int reserve = 1;
+		if (Win32AutoHideTaskbar.ExistsOnEdge(Win32AutoHideTaskbar.ABE_LEFT, rcMonitor)) { client.left += reserve; }
+		if (Win32AutoHideTaskbar.ExistsOnEdge(Win32AutoHideTaskbar.ABE_TOP, rcMonitor)) { client.top += reserve; }
+		if (Win32AutoHideTaskbar.ExistsOnEdge(Win32AutoHideTaskbar.ABE_RIGHT, rcMonitor)) { client.right -= reserve; }
+		if (Win32AutoHideTaskbar.ExistsOnEdge(Win32AutoHideTaskbar.ABE_BOTTOM, rcMonitor)) { client.bottom -= reserve; }
 	}
 
 	private void SetWindowStyle(WINDOW_STYLE style, bool on)

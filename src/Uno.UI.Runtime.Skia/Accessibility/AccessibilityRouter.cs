@@ -178,6 +178,9 @@ internal static class AccessibilityRouter
 		public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 			=> Resolve(peer)?.NotifyAutomationEvent(peer, eventId);
 
+		public void NotifyInvalidatePeer(AutomationPeer peer)
+			=> Resolve(peer)?.NotifyInvalidatePeer(peer);
+
 		public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind kind, AutomationNotificationProcessing processing, string displayString, string activityId)
 			=> Resolve(peer)?.NotifyNotificationEvent(peer, kind, processing, displayString, activityId);
 

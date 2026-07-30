@@ -67,16 +67,31 @@ YourAppNamespace.App.ConfigureFilters(); // Enable tracing of the Skia host
 
 ## Upgrading to a later version of SkiaSharp
 
-By default, Uno Platform comes with a set of **SkiaSharp** dependencies.
+By default, the [Uno.Sdk](xref:Uno.Features.Uno.Sdk) brings a tested set of **SkiaSharp** dependencies that match the native libraries it ships. To move to a different SkiaSharp version, override the `SkiaSharpVersion` MSBuild property in your project. This retargets the SkiaSharp packages the Uno.Sdk manages, including the platform native-asset packages, to the same version in one place:
 
-If you want to upgrade **SkiaSharp** to a later version, you'll need to specify all packages individually in your project as follows:
+```xml
+<PropertyGroup>
+   <SkiaSharpVersion>4.148.0</SkiaSharpVersion>
+</PropertyGroup>
+```
+
+> [!NOTE]
+> A SkiaSharp version mismatch between the managed packages and the bundled native libraries surfaces at runtime, not at build time. Prefer the `SkiaSharpVersion` property so every managed and native SkiaSharp package stays aligned. For the versions the Uno.Sdk manages, see [Using the Uno.Sdk](xref:Uno.Features.Uno.Sdk).
+
+### SkiaSharp 4
+
+SkiaSharp 4.0 reached general availability as `4.148.0`, and Uno Platform is a co-maintainer of SkiaSharp. SkiaSharp 4 support is opt-in: set `SkiaSharpVersion` to a `4.x` version as shown above. SkiaSharp 4 turns several long-deprecated APIs into compile errors (for example, text APIs that moved from `SKPaint` to `SKFont`), so a project moving from `3.x` may need small code changes before it builds.
+
+### Pinning packages individually
+
+If you need to control individual packages instead of using the `SkiaSharpVersion` property, reference every **SkiaSharp** and **HarfBuzzSharp** package, including the native-asset packages for each target you build, at the same version. Use `Update` so you retarget the references the Uno.Sdk already provides:
 
 ```xml
 <ItemGroup>
-   <PackagReference Include="SkiaSharp" Version="3.119.0" />
-   <PackagReference Include="SkiaSharp.NativeAssets.Linux" Version="3.119.0" />
-   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="3.119.0" />
-   <PackagReference Include="HarfBuzzSharp" Version="8.3.1.1" />
+   <PackageReference Update="SkiaSharp" Version="4.148.0" />
+   <PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="4.148.0" />
+   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="4.148.0" />
+   <PackageReference Update="HarfBuzzSharp" Version="8.3.1.1" />
 </ItemGroup>
 ```
 
@@ -97,20 +112,6 @@ Each platform exposes its own `RenderingBackend` enum with only the backends it 
 
 Alternatively, you can use `FeatureConfiguration.Rendering` flags for backwards compatibility. The builder API takes precedence when both are used.
 
-## Windows Specifics
-
-### RDP Hardware Acceleration
-
-The Uno Platform Skia Desktop runtime on Windows uses a WPF shell internally. By default, Uno Platform enables RDP hardware acceleration in order to get good performance, yet this feature is disabled by default in standard WPF apps with .NET 8.
-
-If you're having issues with the Windows support for Skia Desktop over RDP, add the following to your project:
-
-```xml
-<ItemGroup>
-    <RuntimeHostConfigurationOption Include="Switch.System.Windows.Media.EnableHardwareAccelerationInRdp" Value="false" />
-</ItemGroup>
-```
-
 ## X11 Specifics
 
 When running using X11 Wayland compatibility (e.g. recent Ubuntu releases), DPI scaling cannot be determined in a reliable way. In order to specify the scaling to be used by Uno Platform, set the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable. The default value is `1.0`.
@@ -120,6 +121,7 @@ The X11 support uses DBus for various interactions with the system, such as file
 ## .NET Native AOT support
 
 Building an Uno Platform Skia Desktop app with .NET (7+) Native AOT requires Uno Platform 4.7 (or later).
+[Uno Platform 6.6 improves support for .NET Native AOT](xref:Uno.Features.NativeAOT).
 
 To build an app with this feature enabled:
 
@@ -131,7 +133,7 @@ To build an app with this feature enabled:
    </PropertyGroup>
    ```
 
-1. Add the following items in your `.csproj`:
+1. When using Uno Platform before Uno Platform 6.6, add the following items in your `.csproj`:
 
    ```xml
    <ItemGroup>

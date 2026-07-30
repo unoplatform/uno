@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
@@ -14,6 +15,7 @@ using Windows.Graphics.Display;
 using Windows.System;
 using Windows.System.Profile;
 using Windows.System.Threading;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -22,7 +24,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.Controls._Tracing;
-
 using ITextSelection = Microsoft.UI.Text.ITextSelection;
 
 namespace Uno.UI.Helpers.WinUI
@@ -1038,6 +1039,21 @@ namespace Uno.UI.Helpers.WinUI
 		public static void EraseIfExists<TKey, TValue>(Dictionary<TKey, TValue> map, TKey key)
 		{
 			map.Remove(key);
+		}
+
+		internal static CoreApplicationView TryGetCurrentCoreApplicationView()
+		{
+			CoreApplicationView view = null;
+
+			// We could call winrt::CoreApplication::GetCurrentView() here, but that can throw in some cases. Even if we catch, it will still
+			// generate exception noise in the debugger.
+			// Check if we have a CoreWindow to avoid throwing and catching an exception which can be annoying during debugging.
+			if (CoreWindow.GetForCurrentThread() is not null)
+			{
+				view = CoreApplication.GetCurrentView();
+			}
+
+			return view;
 		}
 	}
 }

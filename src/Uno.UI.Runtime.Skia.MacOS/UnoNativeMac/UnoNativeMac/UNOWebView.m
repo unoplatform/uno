@@ -127,7 +127,9 @@ void uno_webview_register_message_handler(WKWebView *webview)
 
 const char* uno_webview_get_title(WKWebView *webview)
 {
-    return strdup(webview.title.UTF8String);
+    // WKWebView.title is nullable; [nil UTF8String] returns NULL and strdup(NULL) would crash.
+    NSString *title = webview.title ?: @"";
+    return strdup(title.UTF8String);
 }
 
 bool uno_webview_can_go_back(WKWebView *webview)

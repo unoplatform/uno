@@ -1,0 +1,25 @@
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Composition.DamageRegion.DamageRegion_Opacity"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Canvas>
+        <TextBlock
+            Canvas.Left="80"
+            Canvas.Top="130"
+            FontSize="24"
+            Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
+            Text="Uno Platform" />
+        <Border
+            x:Name="Fader"
+            Canvas.Left="80"
+            Canvas.Top="80"
+            Width="180"
+            Height="120"
+            Background="{ThemeResource SystemControlBackgroundAccentBrush}" />
+    </Canvas>
+</Page>

@@ -18,7 +18,6 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Color = Windows.UI.Color;
 using Microsoft.UI.Xaml.Data;
-using Combinatorial.MSTest;
 using Uno.UI.Toolkit.DevTools.Input;
 
 
@@ -35,11 +34,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public class Given_Button
 	{
 		[TestMethod]
-		[CombinatorialData]
-		public async Task When_NavigationViewButtonStyles(bool useFluent)
+		// Excluded on native WinUI: Uno mirrors the MUX controls/dev resources (bac7a9c33),
+		// which size the back button 40x36 with a margin-only Small style. Shipped WinUI overrides
+		// those in dxaml generic.xaml with Normal 40x40 / Small 32x32, and that is what native WinUI
+		// renders in every release (verified identical at 1.6.9, 1.7.3 and 1.8.2), so no WindowsAppSDK
+		// bump makes this pass at 40x36. Re-enable if WinUI promotes the controls/dev sizes to generic.xaml.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_NavigationViewButtonStyles()
 		{
-			using var _ = useFluent ? null : StyleHelper.UseUwpStyles();
-
 			var normalBtn = (Button)XamlReader.Load("""
 				<Button xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Style="{StaticResource NavigationBackButtonNormalStyle}" />
 				""");
@@ -50,10 +52,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				""");
 			var smallBtnRect = await UITestHelper.Load(smallBtn);
 
-			Assert.AreEqual(new Size(40, 40), new Size(normalBtnRect.Width, normalBtnRect.Height));
-			Assert.AreEqual(new Size(32, 32), new Size(smallBtnRect.Width, smallBtnRect.Height));
-			Assert.AreEqual(0, normalBtnRect.Left - smallBtnRect.Left);
-			Assert.AreEqual(8, normalBtnRect.Right - smallBtnRect.Right);
+			// Aligned with WinUI bac7a9c33: both styles share NavigationBackButtonWidth/Height (40x36);
+			// the Small style only differs from the Normal style by trimming the right margin.
+			// A small tolerance accounts for sub-pixel rounding in the transformed bounds.
+			Assert.AreEqual(40, normalBtnRect.Width, 0.5);
+			Assert.AreEqual(36, normalBtnRect.Height, 0.5);
+			Assert.AreEqual(40, smallBtnRect.Width, 0.5);
+			Assert.AreEqual(36, smallBtnRect.Height, 0.5);
+			Assert.AreEqual(new Thickness(4, 2, 4, 2), normalBtn.Margin);
+			Assert.AreEqual(new Thickness(4, 2, 0, 2), smallBtn.Margin);
 		}
 
 		[TestMethod]
@@ -504,6 +511,80 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(defaultButton.Padding, accentButton.Padding, "Padding should match between default and AccentButtonStyle buttons");
 			Assert.AreEqual(defaultButton.ActualHeight, accentButton.ActualHeight, "ActualHeight should match between default and AccentButtonStyle buttons");
+		}
+
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12028")]
+		public async Task When_Button_Does_Not_Stay_Pressed_During_Async_Click_Handler()
+		{
+			// A Button should return to Normal/PointerOver visual state as soon as the
+			// pointer is released, even when the Click handler starts a long-running async operation.
+			// If the button stays in "Pressed" state during the async operation, that is a visual state bug.
+
+			var asyncTaskCompleted = false;
+			var asyncTaskStarted = new TaskCompletionSource<bool>();
+			// Keeps the Click handler in flight until the test has asserted the visual state,
+			// so the assertion can't race the handler completing (no wall-clock delay to tune).
+			var asyncHandlerGate = new TaskCompletionSource<bool>();
+
+			var button = new Button { Content = "Async Button", Width = 200, Height = 50 };
+			button.Click += async (_, _) =>
+			{
+				asyncTaskStarted.TrySetResult(true);
+				await asyncHandlerGate.Task;
+				asyncTaskCompleted = true;
+			};
+
+			var buttonRect = await UITestHelper.Load(button);
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var center = new Point(buttonRect.X + buttonRect.Width / 2, buttonRect.Y + buttonRect.Height / 2);
+
+			await WindowHelper.WaitFor(() => VisualTreeHelper.GetChildrenCount(button) > 0, timeoutMS: 2000);
+			var templateRoot = VisualTreeHelper.GetChildrenCount(button) > 0
+				? VisualTreeHelper.GetChild(button, 0) as FrameworkElement
+				: null;
+			var commonStatesGroup = templateRoot is null
+				? null
+				: VisualStateManager.GetVisualStateGroups(templateRoot)?.FirstOrDefault(g => g.Name == "CommonStates");
+			Assert.IsNotNull(commonStatesGroup, "CommonStates group should exist in button template");
+
+			// Move over button (sets PointerOver state)
+			mouse.MoveTo(center);
+			await WindowHelper.WaitForIdle();
+
+			try
+			{
+				mouse.Press();
+				await WindowHelper.WaitForIdle();
+
+				// Sanity check: the visual-state logic actually engaged before we test that it disengages.
+				Assert.AreEqual("Pressed", commonStatesGroup.CurrentState?.Name, "Button should be in Pressed state while the pointer is held down");
+
+				// Release — Click fires, async handler starts and blocks on the gate.
+				mouse.Release();
+				await asyncTaskStarted.Task.WaitAsync(TimeSpan.FromSeconds(3));
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsFalse(asyncTaskCompleted, "Async handler should still be running at this point");
+
+				var currentState = commonStatesGroup.CurrentState?.Name;
+				Assert.AreNotEqual(
+					"Pressed",
+					currentState,
+					$"Button must not remain in Pressed state after pointer release (async task still running). Current state: '{currentState}'");
+			}
+			finally
+			{
+				// Always release the gate so a failed assertion can't leave the handler awaiting forever.
+				asyncHandlerGate.TrySetResult(true);
+			}
+
+			await WindowHelper.WaitFor(() => asyncTaskCompleted, timeoutMS: 2000);
 		}
 	}
 }

@@ -1553,6 +1553,63 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22007")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Flaky on Skia X11 #9080
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Shift_MouseWheel_Then_ScrollHorizontally()
+		{
+#if WINAPPSDK
+			Assert.Inconclusive("Mouse pointer helper not supported on WinAppSDK.");
+#else
+			// Shift + vertical mouse wheel must scroll horizontally: wheel-down scrolls right,
+			// wheel-up scrolls left (matching WinUI / standard desktop behavior). See #22007.
+			var sut = new ScrollViewer
+			{
+				Height = 256,
+				Width = 256,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+				HorizontalScrollMode = ScrollMode.Enabled,
+				VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
+				Content = new Border
+				{
+					Height = 256,
+					Width = 4192,
+					Background = new SolidColorBrush(Colors.DeepPink)
+				}
+			};
+
+			var sutBounds = await UITestHelper.Load(sut);
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var mouse = input.GetMouse();
+
+			sut.HorizontalOffset.Should().Be(0);
+
+			mouse.MoveTo(sutBounds.GetCenter());
+
+			// Wheel down + Shift => scroll right (increasing horizontal offset).
+			mouse.Wheel(-120, Windows.System.VirtualKeyModifiers.Shift);
+
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			sut.HorizontalOffset.Should().BeGreaterThan(0);
+			var afterWheelDown = sut.HorizontalOffset;
+
+			// Wheel up + Shift => scroll left (decreasing horizontal offset).
+			mouse.Wheel(120, Windows.System.VirtualKeyModifiers.Shift);
+
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			sut.HorizontalOffset.Should().BeLessThan(afterWheelDown);
+#endif
+		}
+
+		[TestMethod]
 #if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 		[Ignore("We're only testing managed scrollers.")]
 #endif
@@ -1816,7 +1873,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				from: center,
 				to: new(center.X, center.Y - 1000));
 
-			await Task.Delay(500); // Wait for the inertia to run
+			// Wait for the drag-induced scroll (and chaining to the parent) to settle at the end,
+			// instead of a fixed delay that was too short on slower runtimes (e.g. WASM) and flaked CI.
+			await TestServices.WindowHelper.WaitFor(
+				() => (parent.VerticalOffset, child.VerticalOffset),
+				(parentEndOffset, childEndOffset),
+				messageBuilder: actual => $"Scroll did not chain to the end: parent {actual.Item1}/{parentEndOffset}, child {actual.Item2}/{childEndOffset}",
+				comparer: (actual, end) => Math.Abs(end.Item1 - actual.Item1) < 1d && Math.Abs(end.Item2 - actual.Item2) < 1d,
+				timeoutMS: 3000);
 
 			Assert.IsLessThan(1d, Math.Abs(parentEndOffset - parent.VerticalOffset), $"parentEndOffset {parentEndOffset} minus parent.VerticalOffset {parent.VerticalOffset} is not lower than 1");
 			Assert.IsLessThan(1d, Math.Abs(childEndOffset - child.VerticalOffset), $"childEndOffset {childEndOffset} minus parent.VerticalOffset {child.VerticalOffset} is not lower than 1");

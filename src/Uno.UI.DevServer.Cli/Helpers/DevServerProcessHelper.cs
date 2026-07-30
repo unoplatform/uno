@@ -12,6 +12,27 @@ using Uno.UI.RemoteControl.Host;
 
 namespace Uno.UI.DevServer.Cli.Helpers;
 
+/// <summary>
+/// How a direct-mode host spawn failed, when it did — lets callers distinguish a
+/// startup crash (candidate for a safe-mode retry) from a readiness timeout.
+/// </summary>
+internal enum DirectSpawnFailure
+{
+	None,
+	DiedBeforeReady,
+	ReadinessTimeout,
+}
+
+/// <summary>
+/// Outcome of <see cref="DevServerProcessHelper.RunDirectProcessAsync"/>:
+/// the CLI exit code plus enough failure context (kind, host exit code) for the caller
+/// to decide on a retry. Host output is relayed live through the logger, not captured here.
+/// </summary>
+internal sealed record DirectSpawnResult(int ExitCode, DirectSpawnFailure Failure, int? HostExitCode)
+{
+	public static DirectSpawnResult Ready { get; } = new(0, DirectSpawnFailure.None, null);
+}
+
 internal static class DevServerProcessHelper
 {
 	/// <summary>
@@ -131,7 +152,7 @@ internal static class DevServerProcessHelper
 			EnableRaisingEvents = true
 		};
 
-		var (outputSb, errorSb) = ObserveOutputs(startInfo, "studio", logger, process, forwardOutputToConsole: false);
+		var (outputSb, errorSb) = CaptureOutputs(process, startInfo);
 
 		var processExited = new TaskCompletionSource();
 		process.Exited += (_, __) =>
@@ -173,50 +194,94 @@ internal static class DevServerProcessHelper
 		return (gracePeriodTask == resultTask || !process.HasExited ? null : process.ExitCode, stdOut, stdErr);
 	}
 
-	private static (StringBuilder output, StringBuilder error) ObserveOutputs(
-		ProcessStartInfo startInfo,
-		string displayName,
-		ILogger logger,
+	/// <summary>
+	/// Default levels for relaying a child process's streams through the logger. Shared by
+	/// <see cref="LogOutputs"/> and <see cref="RunConsoleProcessAsync"/> so their defaults
+	/// can never drift apart.
+	/// </summary>
+	private const LogLevel _defaultStdLevel = LogLevel.Debug;
+	private const LogLevel _defaultErrLevel = LogLevel.Error;
+
+	/// <summary>
+	/// Relays the process's stdout/stderr to <paramref name="logger"/> line by line as they
+	/// arrive — stdout at <paramref name="stdLevel"/>, stderr at <paramref name="errLevel"/>.
+	/// When <paramref name="displayName"/> is set, lines are tagged <c>[name]</c> to mark
+	/// provenance; leave it <c>null</c> to relay verbatim (needed when the child's stdout is
+	/// itself a result the caller passes through, e.g. JSON). Where those lines
+	/// surface (console, file, both) is the logger configuration's concern, not this method's:
+	/// attach a console sink to see them, and in MCP mode the logger already routes everything
+	/// to stderr so the JSON-RPC stdout stays clean. The stream events are multicast, so a
+	/// caller can also subscribe <see cref="CaptureOutputs"/> on the same process.
+	/// </summary>
+	private static void LogOutputs(
 		Process process,
-		bool forwardOutputToConsole)
+		ProcessStartInfo startInfo,
+		ILogger logger,
+		string? displayName = null,
+		LogLevel stdLevel = _defaultStdLevel,
+		LogLevel errLevel = _defaultErrLevel)
+	{
+		// e.Data is passed as a value, not folded into the template, so braces in the
+		// payload are safe; displayName (when set) is a known-safe constant tag. The
+		// stream is not tagged — the log level already distinguishes stdout from stderr.
+		void Relay(LogLevel level, string? data)
+		{
+			if (data is null || !logger.IsEnabled(level))
+			{
+				return;
+			}
+
+			if (displayName is null)
+			{
+				logger.Log(level, "{Data}", data);
+			}
+			else
+			{
+				logger.Log(level, "[{Name}] {Data}", displayName, data);
+			}
+		}
+
+		if (startInfo.RedirectStandardOutput)
+		{
+			process.OutputDataReceived += (_, e) => Relay(stdLevel, e.Data);
+		}
+
+		if (startInfo.RedirectStandardError)
+		{
+			process.ErrorDataReceived += (_, e) => Relay(errLevel, e.Data);
+		}
+	}
+
+	/// <summary>
+	/// Subscribes buffers to the process's stdout/stderr and returns them, for callers that
+	/// need the captured text after exit (e.g. to log a failure summary). Multicast events,
+	/// so this composes with <see cref="LogOutputs"/> on the same process.
+	/// </summary>
+	private static (StringBuilder output, StringBuilder error) CaptureOutputs(
+		Process process,
+		ProcessStartInfo startInfo)
 	{
 		var outputSb = new StringBuilder();
 		var errorSb = new StringBuilder();
 
 		if (startInfo.RedirectStandardOutput)
 		{
-			process.OutputDataReceived += (s, e) =>
+			process.OutputDataReceived += (_, e) =>
 			{
-				if (e.Data != null)
+				if (e.Data is not null)
 				{
 					outputSb.AppendLine(e.Data);
-					if (forwardOutputToConsole)
-					{
-						Console.Out.WriteLine(e.Data);
-					}
-					else if (logger.IsEnabled(LogLevel.Debug))
-					{
-						logger.LogDebug("[{DisplayName}:stdout] {Data}", displayName, e.Data);
-					}
 				}
 			};
 		}
 
 		if (startInfo.RedirectStandardError)
 		{
-			process.ErrorDataReceived += (s, e) =>
+			process.ErrorDataReceived += (_, e) =>
 			{
-				if (e.Data != null)
+				if (e.Data is not null)
 				{
 					errorSb.AppendLine(e.Data);
-					if (forwardOutputToConsole)
-					{
-						Console.Error.WriteLine(e.Data);
-					}
-					else if (logger.IsEnabled(LogLevel.Debug))
-					{
-						logger.LogDebug("[{DisplayName}:stderr] {Data}", displayName, e.Data);
-					}
 				}
 			};
 		}
@@ -224,10 +289,11 @@ internal static class DevServerProcessHelper
 		return (outputSb, errorSb);
 	}
 
-	public static async Task<(int ExitCode, string StdOut, string StdErr)> RunConsoleProcessAsync(
+	public static async Task<int> RunConsoleProcessAsync(
 		ProcessStartInfo startInfo,
 		ILogger logger,
-		bool forwardOutputToConsole = false)
+		LogLevel stdLevel = _defaultStdLevel,
+		LogLevel errLevel = _defaultErrLevel)
 	{
 		logger.LogDebug("Starting host process: {File} {Args}", startInfo.FileName, startInfo.Arguments);
 
@@ -237,7 +303,9 @@ internal static class DevServerProcessHelper
 			EnableRaisingEvents = true
 		};
 
-		var (outputSb, errorSb) = ObserveOutputs(startInfo, "devserver", logger, process, forwardOutputToConsole);
+		// stdout at the caller's level (Information for the passthrough commands whose output
+		// the user asked for, Debug otherwise); stderr at Error. The logger owns where it lands.
+		LogOutputs(process, startInfo, logger, stdLevel: stdLevel, errLevel: errLevel);
 
 		var processExited = new TaskCompletionSource();
 		process.Exited += (_, __) =>
@@ -271,43 +339,25 @@ internal static class DevServerProcessHelper
 		// case some std is blocking the process exit.
 		await Task.WhenAny(process.WaitForExitAsync(), processExited.Task);
 
-		var stdOut = outputSb.ToString();
-		var stdErr = errorSb.ToString();
-
 		if (process.ExitCode != 0)
 		{
 			logger.LogError("Host exited with code {ExitCode}", process.ExitCode);
-			if (!string.IsNullOrWhiteSpace(stdOut))
-			{
-				logger.LogError("Host standard output for troubleshooting:\n{Output}", stdOut);
-			}
-			if (!string.IsNullOrWhiteSpace(stdErr))
-			{
-				logger.LogError("Host error output for troubleshooting:\n{ErrorOutput}", stdErr);
-			}
 		}
 		else
 		{
 			logger.LogInformation("Command completed successfully.");
-			if (!string.IsNullOrWhiteSpace(stdOut))
-			{
-				logger.LogDebug("Host stdout:\n{Output}", stdOut);
-			}
-			if (!string.IsNullOrWhiteSpace(stdErr))
-			{
-				logger.LogDebug("Host stderr:\n{ErrorOutput}", stdErr);
-			}
 		}
 
-		return (process.ExitCode, stdOut, stdErr);
+		return process.ExitCode;
 	}
 
 	/// <summary>
 	/// Spawns the host in direct mode (no <c>--command</c>) and waits for
-	/// the HTTP port to become reachable.  Returns 0 on success, 1 on timeout
-	/// or process failure.
+	/// the HTTP port to become reachable.  The result's <c>ExitCode</c> is 0 on
+	/// success and 1 on timeout or process failure; the failure kind, host exit
+	/// code and captured stderr let the caller decide on a safe-mode retry.
 	/// </summary>
-	public static async Task<int> RunDirectProcessAsync(
+	public static async Task<DirectSpawnResult> RunDirectProcessAsync(
 		ProcessStartInfo startInfo,
 		ILogger logger,
 		int readinessTimeoutMs = 30_000)
@@ -320,7 +370,13 @@ internal static class DevServerProcessHelper
 			EnableRaisingEvents = true
 		};
 
-		var (_, errorSb) = ObserveOutputs(startInfo, "devserver", logger, process, forwardOutputToConsole: false);
+		// Relay host output through the logger so IDE launchers surface the running host
+		// logs (incl. hot reload), not just the startup banner: stdout at Information (kept
+		// visible — that is the point of direct mode), stderr at Error. Nothing is buffered,
+		// so the long-lived (ppid-guardian) session cannot accumulate memory. The logger owns
+		// the destination — in MCP mode it already routes to stderr, keeping stdout clean for
+		// JSON-RPC (and this path is start-only anyway; the MCP bridge spawns via DevServerMonitor).
+		LogOutputs(process, startInfo, logger, displayName: "devserver", stdLevel: LogLevel.Information);
 
 		process.Start();
 		logger.LogDebug("Started host process: {Pid}", process.Id);
@@ -359,13 +415,14 @@ internal static class DevServerProcessHelper
 		if (port <= 0)
 		{
 			logger.LogWarning("Unable to extract HTTP port from host arguments; skipping readiness wait.");
-			return 0;
+			return DirectSpawnResult.Ready;
 		}
 
 		var ready = await WaitForTcpReadyAsync(port, readinessTimeoutMs);
 		if (!ready)
 		{
-			if (process.HasExited)
+			var died = process.HasExited;
+			if (died)
 			{
 				logger.LogError("Host process died (exit code {ExitCode}) before becoming ready.", process.ExitCode);
 			}
@@ -380,13 +437,12 @@ internal static class DevServerProcessHelper
 				catch { }
 			}
 
-			var stdErr = errorSb.ToString();
-			if (!string.IsNullOrWhiteSpace(stdErr))
-			{
-				logger.LogError("Host stderr:\n{ErrorOutput}", stdErr);
-			}
-
-			return 1;
+			// Host stderr was already relayed live through the logger; the caller decides on a
+			// safe-mode retry from the failure kind + exit code, not from captured error text.
+			return new DirectSpawnResult(
+				1,
+				died ? DirectSpawnFailure.DiedBeforeReady : DirectSpawnFailure.ReadinessTimeout,
+				died ? process.ExitCode : null);
 		}
 
 		logger.LogInformation("DevServer is ready on port {Port}.", port);
@@ -404,10 +460,10 @@ internal static class DevServerProcessHelper
 				process.Id);
 			await process.WaitForExitAsync();
 			logger.LogDebug("Host process exited with code {ExitCode}.", process.ExitCode);
-			return process.ExitCode;
+			return new DirectSpawnResult(process.ExitCode, DirectSpawnFailure.None, process.ExitCode);
 		}
 
-		return 0;
+		return DirectSpawnResult.Ready;
 	}
 
 	/// <summary>

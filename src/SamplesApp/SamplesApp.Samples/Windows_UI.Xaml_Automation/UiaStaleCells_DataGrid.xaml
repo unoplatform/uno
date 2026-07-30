@@ -1,0 +1,65 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Automation.UiaStaleCells_DataGrid"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Automation"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="600"
+    d:DesignWidth="600"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Padding="20" Spacing="16">
+
+            <TextBlock
+                AutomationProperties.HeadingLevel="Level1"
+                Style="{ThemeResource TitleTextBlockStyle}"
+                Text="UIA Stale-Cells Repro (DataGrid pattern)" />
+
+            <TextBlock TextWrapping="WrapWholeWords">
+                Repro for: Accessibility/Automation – DataGridRow contents display empty cells after an action that
+                refreshes the data (#492). The 'MiniGrid' below replicates the WCT DataGrid automation shape with
+                minimal custom controls: a grid peer whose children are per-item virtual peers
+                (like DataGridItemAutomationPeer), each delegating its cells to the currently-realized row container
+                and calling OwningRowPeer.InvalidatePeer() — exactly as DataGridItemAutomationPeer.GetChildrenCore does.
+            </TextBlock>
+
+            <TextBlock
+                Margin="0,8,0,0"
+                AutomationProperties.HeadingLevel="Level2"
+                Style="{ThemeResource SubtitleTextBlockStyle}"
+                Text="How to verify the fix" />
+
+            <TextBlock TextWrapping="WrapWholeWords">
+                1. Open inspect.exe / Accessibility Insights and point it at 'MiniGrid' below.
+                2. Expand a row item — you should see its cell text (e.g. "Row 0 — v1").
+                3. Click "Refresh data". Each row's cells are rebuilt with new content ("… — v2", "… — v3", …).
+                4. Re-inspect the SAME row item.
+                Bug:      the row item still reports the old cells, or empty cells (the realized content is detached).
+                Expected: the row item reports the current cell text, matching what is visible on screen.
+            </TextBlock>
+
+            <Border
+                Padding="12"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="4">
+                <StackPanel Spacing="8">
+                    <Button
+                        x:Name="RefreshButton"
+                        AutomationProperties.Name="RefreshData"
+                        Content="Refresh data" />
+                    <TextBlock Style="{ThemeResource BodyStrongTextBlockStyle}" Text="MiniGrid (inspect this)" />
+                    <ContentControl
+                        x:Name="MiniGridHost"
+                        HorizontalContentAlignment="Stretch"
+                        AutomationProperties.AutomationId="MiniGrid"
+                        AutomationProperties.Name="MiniGrid" />
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

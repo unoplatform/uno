@@ -286,4 +286,147 @@ public class Given_HostAssemblyResolution
 			"loaded v{0} must not satisfy a request for v{1} — that would be a downgrade",
 			loadedVersion, higherVersion);
 	}
+
+	// ------------------------------------------------------------------ on-demand: runtime
+
+	[TestMethod]
+	[Description("When nothing with the requested simple name is loaded yet but the runtime/TPA carries it, Resolve must load it on demand — the load-order-independent path (e.g. Kiota → System.Text.Encodings.Web before anything touched it).")]
+	public void Resolve_LoadsFrameworkAssemblyOnDemand_WhenNotYetLoaded()
+	{
+		var frameworkDir = System.IO.Path.GetDirectoryName(typeof(object).Assembly.Location)!;
+
+		var alreadyLoaded = LoadedSimpleNames();
+
+		// Pick a shared-framework assembly that is on the TPA but not yet loaded
+		// in this process, so the bridge misses and the on-demand path must serve it.
+		string? pickedFile = System.IO.Directory.EnumerateFiles(frameworkDir, "System.*.dll")
+			.FirstOrDefault(path =>
+			{
+				if (alreadyLoaded.Contains(System.IO.Path.GetFileNameWithoutExtension(path)))
+				{
+					return false;
+				}
+
+				try
+				{
+					// Skip resource/native files that are not managed assemblies, candidates
+					// whose version would fail the lower-version request below, and unsigned
+					// assemblies (the request mirrors a signed AssemblyRef, so SetPublicKeyToken
+					// needs a real token).
+					var name = AssemblyName.GetAssemblyName(path);
+					return name.Version >= new Version(1, 0, 0, 0)
+						&& name.GetPublicKeyToken() is { Length: > 0 };
+				}
+				catch
+				{
+					return false;
+				}
+			});
+
+		if (pickedFile is null)
+		{
+			Assert.Inconclusive(
+				"Every System.*.dll of the shared framework is already loaded in this process; " +
+				"the on-demand runtime path cannot be exercised here.");
+			return;
+		}
+
+		var pickedName = AssemblyName.GetAssemblyName(pickedFile);
+
+		// Mirror a compiled AssemblyRef from an older package: same identity, lower version.
+		var requested = new AssemblyName(pickedName.Name!)
+		{
+			Version = new Version(1, 0, 0, 0),
+		};
+		requested.SetPublicKeyToken(pickedName.GetPublicKeyToken());
+
+		var result = HostAssemblyResolution.Resolve(AssemblyLoadContext.Default, requested);
+
+		result.Should().NotBeNull(
+			"'{0}' is available from the runtime and must be loaded on demand", pickedName.Name);
+		result!.GetName().Name.Should().Be(pickedName.Name);
+	}
+
+	// ------------------------------------------------------------------ on-demand: probing directory
+
+	[TestMethod]
+	[Description("When the assembly is neither loaded nor on the TPA but exists in a registered probing directory (add-in folder), Resolve must load it from there.")]
+	public void Resolve_LoadsFromRegisteredProbingDirectory_WhenAssemblyNotOnTpa()
+	{
+		// The staged fixture output is deliberately kept out of this test project's
+		// deps.json (ReferenceOutputAssembly=false), so its assemblies are NOT on the
+		// TPA — only a probing-directory hit can resolve them in this process.
+		var fixturesRoot = System.IO.Path.Combine(AppContext.BaseDirectory, "Fixtures");
+		if (!System.IO.Directory.Exists(fixturesRoot))
+		{
+			Assert.Inconclusive("Fixture staging directory not found; run a full project build first.");
+			return;
+		}
+
+		var alreadyLoaded = LoadedSimpleNames();
+
+		// Restrict to fixture-authored assemblies: NuGet payloads staged next to them
+		// (Microsoft.Extensions.*, …) may also exist on this process's TPA, and the
+		// on-demand runtime pass would legitimately serve those from there instead.
+		string? pickedFile = System.IO.Directory
+			.EnumerateFiles(fixturesRoot, "*.dll", System.IO.SearchOption.AllDirectories)
+			.Where(path => System.IO.Path.GetFileName(path) is { } f
+				&& (f.StartsWith("AddInWith", StringComparison.Ordinal)
+					|| f.StartsWith("Uno.Licensing.TestContracts", StringComparison.Ordinal)))
+			.FirstOrDefault(path => !alreadyLoaded.Contains(System.IO.Path.GetFileNameWithoutExtension(path)));
+
+		if (pickedFile is null)
+		{
+			Assert.Inconclusive(
+				"Every fixture assembly is already loaded in this process; " +
+				"the probing-directory path cannot be exercised here.");
+			return;
+		}
+
+		var pickedName = AssemblyName.GetAssemblyName(pickedFile);
+		HostAssemblyResolution.RegisterProbingDirectory(System.IO.Path.GetDirectoryName(pickedFile)!);
+
+		var result = HostAssemblyResolution.Resolve(
+			AssemblyLoadContext.Default, new AssemblyName(pickedName.Name!));
+
+		result.Should().NotBeNull(
+			"'{0}' exists in a registered probing directory and must be loaded from there", pickedName.Name);
+		result!.Location.Should().Be(pickedFile,
+			"the assembly is not on the TPA, so only the probing directory can have served it");
+	}
+
+	// ------------------------------------------------------------------ on-demand: guards preserved
+
+	[TestMethod]
+	[Description("The on-demand path must preserve the no-downgrade guard: a request for a version higher than anything available must return null.")]
+	public void Resolve_StillRejectsDowngrade_WhenRequestedVersionHigherThanAvailable()
+	{
+		var loaded = typeof(System.Text.Encodings.Web.JavaScriptEncoder).Assembly;
+		var loadedVersion = loaded.GetName().Version!;
+
+		var requested = new AssemblyName("System.Text.Encodings.Web")
+		{
+			Version = new Version(loadedVersion.Major + 1, 0, 0, 0),
+		};
+
+		var result = HostAssemblyResolution.Resolve(AssemblyLoadContext.Default, requested);
+
+		result.Should().BeNull(
+			"neither the bridge nor the on-demand path may serve v{0} for a v{1} request",
+			loadedVersion, requested.Version);
+	}
+
+	private static HashSet<string> LoadedSimpleNames()
+	{
+		var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+		foreach (var asm in AssemblyLoadContext.Default.Assemblies)
+		{
+			if (!asm.IsDynamic && asm.GetName().Name is { } n)
+			{
+				names.Add(n);
+			}
+		}
+
+		return names;
+	}
 }

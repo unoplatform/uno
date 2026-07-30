@@ -47,10 +47,18 @@ public partial class AnimationController
 	public void Resume()
 	{
 		_progress = null;
-		EnsureAnimation().Resume();
+		var animation = EnsureAnimation();
+		// Re-arm the compositor's frame-driven evaluation so the animation continues advancing.
+		_ownerObject?.ResumeAnimation(animation);
 	}
 
-	public void Pause() => EnsureAnimation().Pause();
+	public void Pause()
+	{
+		var animation = EnsureAnimation();
+		// Detach the compositor's frame-driven re-evaluation so it doesn't auto-stop or
+		// overwrite externally-seeked progress while the controller is in charge.
+		_ownerObject?.PauseAnimation(animation);
+	}
 
 	public float Progress
 	{

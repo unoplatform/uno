@@ -22,7 +22,7 @@ using System.Runtime.Loader;
 namespace Uno.UI
 {
 	[EditorBrowsable(EditorBrowsableState.Never)]
-	public static class ResourceResolver
+	public static partial class ResourceResolver
 	{
 		/// <summary>
 		/// The ambient ALC context for resource resolution. Set during App.xaml initialization
@@ -933,6 +933,7 @@ namespace Uno.UI
 					{
 						alcDict = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.OrdinalIgnoreCase);
 						_registeredDictionariesByUriByAlc.Add(dictAlc, alcDict);
+						ScheduleAlcScopedRegistrationCleanup(dictAlc);
 					}
 					alcDict[uri] = dictionary;
 				}
@@ -978,6 +979,9 @@ namespace Uno.UI
 		{
 			RemoveNonDefaultAlcEntries(_registeredDictionariesByUri);
 			RemoveNonDefaultAlcEntries(_registeredDictionariesByFilepath);
+			// ALC-scoped registrations are removed via the AssemblyLoadContext.Unloading subscription
+			// set up in ScheduleAlcScopedRegistrationCleanup — this cleanup runs before Unload() is
+			// initiated, so it cannot rely on unload state here.
 		}
 
 		private static void RemoveNonDefaultAlcEntries(Dictionary<string, Func<ResourceDictionary>> dictionary)
@@ -1036,6 +1040,7 @@ namespace Uno.UI
 					{
 						alcDict = new Dictionary<string, Func<ResourceDictionary>>(StringComparer.OrdinalIgnoreCase);
 						_registeredDictionariesByUriByAlc.Add(alc, alcDict);
+						ScheduleAlcScopedRegistrationCleanup(alc);
 					}
 					alcDict[uri] = dictionary;
 				}

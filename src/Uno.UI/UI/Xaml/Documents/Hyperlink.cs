@@ -130,7 +130,7 @@ namespace Microsoft.UI.Xaml.Documents
 			set => this.SetValue(UnderlineStyleProperty, value);
 		}
 
-		internal static DependencyProperty UnderlineStyleProperty { get; } =
+		public static DependencyProperty UnderlineStyleProperty { get; } =
 			DependencyProperty.Register(
 				"UnderlineStyle",
 				typeof(UnderlineStyle),

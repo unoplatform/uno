@@ -418,6 +418,20 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		}
 	}
 
+	public virtual void NotifyInvalidatePeer(AutomationPeer peer)
+	{
+		if (_isDisposed || !IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		// WinUI's CAutomationPeer::InvalidatePeer schedules RaiseAutomaticPropertyChanges,
+		// which re-evaluates IsEnabled/IsOffscreen/Name/ItemStatus and raises PropertyChanged
+		// for any that changed. Platform subclasses that maintain a provider-level children
+		// cache (Win32) additionally drop it; see Win32Accessibility.NotifyInvalidatePeer.
+		peer.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+	}
+
 	public virtual bool ListenerExistsHelper(AutomationEvents eventId)
 		=> !_isDisposed && IsAccessibilityEnabled;
 

@@ -50,6 +50,7 @@ public class Given_ProgressBar
 		public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue) =>
 			Notified = true;
 		public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId) => Notified = true;
+		public void NotifyInvalidatePeer(AutomationPeer peer) => Notified = true;
 		public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId) => Notified = true;
 	}
 #endif

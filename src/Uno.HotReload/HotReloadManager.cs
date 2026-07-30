@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Globalization;
@@ -18,28 +19,35 @@ namespace Uno.HotReload;
 
 public sealed class HotReloadManager : IDisposable
 {
+	/// <summary>
+	/// Creates a manager from a solution provider — the provider returns the solution snapshot
+	/// to operate on (typically a freshly-loaded workspace solution, possibly restricted to the
+	/// application's target framework), while the snapshot's originating
+	/// <see cref="Solution.Workspace"/> remains the services and dispose owner.
+	/// </summary>
 	public static async ValueTask<HotReloadManager> CreateAsync(
-		Func<CancellationToken, ValueTask<Workspace>> workspaceProvider,
+		Func<CancellationToken, ValueTask<Solution>> solutionProvider,
 		string[] metadataUpdateCapabilities,
 		IHotReloadHandler handler,
 		IHotReloadTracker tracker,
 		CancellationToken ct,
 		bool forceEmitCompilationOutput = false)
 		=> await CreateAsync(
-			await workspaceProvider(ct).ConfigureAwait(false),
+			await solutionProvider(ct).ConfigureAwait(false),
 			metadataUpdateCapabilities,
 			handler,
-			new ChangesDetector(new TemporaryWorkspaceAddDetector(workspaceProvider, tracker), tracker),
+			new ChangesDetector(new TemporarySolutionAddDetector(solutionProvider, tracker), tracker),
 			tracker,
 			ct,
 			forceEmitCompilationOutput);
 
 	/// <summary>
-	/// Creates a manager with the default <see cref="SolutionUpdater"/>. Use the
-	/// other overload to plug in a custom <see cref="ISolutionUpdater"/>.
+	/// Creates a manager operating on the given solution snapshot with the default
+	/// <see cref="SolutionUpdater"/>. Use the other overload to plug in a custom
+	/// <see cref="ISolutionUpdater"/>.
 	/// </summary>
 	public static ValueTask<HotReloadManager> CreateAsync(
-		Workspace workspace,
+		Solution solution,
 		string[] metadataUpdateCapabilities,
 		IHotReloadHandler handler,
 		IChangesDetector changesDetector,
@@ -47,7 +55,7 @@ public sealed class HotReloadManager : IDisposable
 		CancellationToken ct,
 		bool forceEmitCompilationOutput = false)
 		=> CreateAsync(
-			workspace,
+			solution,
 			metadataUpdateCapabilities,
 			handler,
 			changesDetector,
@@ -56,8 +64,14 @@ public sealed class HotReloadManager : IDisposable
 			ct,
 			forceEmitCompilationOutput);
 
+	/// <summary>
+	/// Creates a manager operating on the given solution snapshot. The snapshot may differ from
+	/// its workspace's <see cref="Workspace.CurrentSolution"/> (e.g. restricted to the running
+	/// application's target framework); the originating <see cref="Solution.Workspace"/> is only
+	/// used for services and ownership (disposed with the manager).
+	/// </summary>
 	public static async ValueTask<HotReloadManager> CreateAsync(
-		Workspace workspace,
+		Solution solution,
 		string[] metadataUpdateCapabilities,
 		IHotReloadHandler handler,
 		IChangesDetector changesDetector,
@@ -67,15 +81,15 @@ public sealed class HotReloadManager : IDisposable
 		bool forceEmitCompilationOutput = false)
 	{
 		if (forceEmitCompilationOutput
-			|| workspace.CurrentSolution.Projects.Any(project => !File.Exists(project.CompilationOutputInfo.AssemblyPath)))
+			|| solution.Projects.Any(project => !File.Exists(project.CompilationOutputInfo.AssemblyPath)))
 		{
-			var result = await workspace.EmitCompilationOutputAsync(ct).ConfigureAwait(false);
+			var result = await solution.EmitCompilationOutputAsync(ct).ConfigureAwait(false);
 			result.EnsureSuccess();
 		}
 
-		var watch = await WatchHotReloadService.CreateAsync(workspace, metadataUpdateCapabilities, ct).ConfigureAwait(false);
+		var watch = await WatchHotReloadService.CreateAsync(solution, metadataUpdateCapabilities, ct).ConfigureAwait(false);
 
-		return new HotReloadManager(workspace, watch, handler, changesDetector, solutionUpdater, tracker);
+		return new HotReloadManager(solution.Workspace, watch, handler, changesDetector, solutionUpdater, tracker, solution);
 	}
 
 	private readonly FastAsyncLock _solutionUpdateGate = new();
@@ -94,7 +108,8 @@ public sealed class HotReloadManager : IDisposable
 		IHotReloadHandler handler,
 		IChangesDetector changesDetector,
 		ISolutionUpdater solutionUpdater,
-		IHotReloadTracker tracker)
+		IHotReloadTracker tracker,
+		Solution? initialSolution = null)
 	{
 		_innerWorkspace = innerWorkspace;
 		_watchService = watchService;
@@ -103,7 +118,7 @@ public sealed class HotReloadManager : IDisposable
 		_changesDetector = changesDetector;
 		_solutionUpdater = solutionUpdater;
 
-		CurrentSolution = innerWorkspace.CurrentSolution;
+		CurrentSolution = initialSolution ?? innerWorkspace.CurrentSolution;
 	}
 
 	public Solution CurrentSolution { get; private set; }
@@ -214,10 +229,16 @@ public sealed class HotReloadManager : IDisposable
 					break;
 
 				// No metadata updates, but the solution does not compile: the reload is blocked, not a no-op.
+				// The audit is scoped to the projects owning this pass's changed files (spec 054): a pass must
+				// never complete Failed on errors from projects it never touched. When the change-set resolves
+				// to no project the audit yields no errors and we fall through to NoChanges below.
 				// FIXME: GetCompilationErrors side-effects into _tracker but doesn't populate `diagnostics`;
 				// consumers see Failed without the reason (asymmetric with rude edits). Needs dedup before fixing.
-				case (true, true) when GetCompilationErrors(result.Solution, ct) is { IsEmpty: false } compilationErrors:
-					_tracker.Output($"Hot reload blocked by {compilationErrors.Length} compilation error(s).");
+				case (true, true) when GetCompilationErrors(result.Solution, files, ct) is { Errors.IsEmpty: false } audit:
+					_tracker.Output(
+						$"Hot reload blocked by {audit.Errors.Length} compilation error(s) in " +
+						$"{string.Join(", ", audit.BlockingProjects)} " +
+						$"(edited: {FormatEditedFiles(files)}).");
 					outcome = HotReloadOperationResult.Failed;
 					break;
 
@@ -264,12 +285,25 @@ public sealed class HotReloadManager : IDisposable
 	/// </summary>
 	private const int MaxCompilationErrorsPerCycle = 20;
 
-	private ImmutableArray<string> GetCompilationErrors(Solution solution, CancellationToken cancellationToken)
+	private CompilationAudit GetCompilationErrors(Solution solution, ImmutableHashSet<string> files, CancellationToken cancellationToken)
 	{
+		// Scope the audit to the projects owning the pass's changed files. A file that resolves to no
+		// project contributes nothing (it was already surfaced via NotifyIgnored); when the whole
+		// change-set resolves to nothing there is no project to judge, so we return an empty audit and
+		// the caller falls through to NoChanges rather than failing the pass on foreign projects.
+		var auditedProjects = ResolveAuditProjects(solution, files);
+		if (auditedProjects.IsEmpty)
+		{
+			return new CompilationAudit([], []);
+		}
+
 		// ALC-hosted workspaces always have a single project — sequential iteration avoids
 		// Parallel.ForEach overhead (thread pool work items, partitioner, lambda closures).
-		var builder = ImmutableArray.CreateBuilder<string>();
-		foreach (var project in solution.Projects)
+		// Only the projects that actually produce an error are named in the output line (a scoped
+		// project can be clean), and the names are ordered so the blocked line is deterministic.
+		var errors = ImmutableArray.CreateBuilder<string>();
+		var blockingProjects = new SortedSet<string>(StringComparer.Ordinal);
+		foreach (var project in auditedProjects)
 		{
 			if (!project.TryGetCompilation(out var compilation))
 			{
@@ -288,22 +322,73 @@ public sealed class HotReloadManager : IDisposable
 				{
 					var diagnostic = CSharpDiagnosticFormatter.Instance.Format(item, CultureInfo.InvariantCulture);
 					_tracker.Output("\x1B[40m\x1B[31m" + diagnostic);
-					builder.Add(diagnostic);
+					errors.Add(diagnostic);
+					blockingProjects.Add(project.Name);
 
 					// On WASM, memory.grow() is irreversible — cap diagnostic formatting
 					// to avoid unbounded string allocations when code is heavily broken.
 					// On desktop, report all errors for full IDE-like diagnostics.
-					if (OperatingSystem.IsBrowser() && builder.Count >= MaxCompilationErrorsPerCycle)
+					if (OperatingSystem.IsBrowser() && errors.Count >= MaxCompilationErrorsPerCycle)
 					{
 						_tracker.Output($"... and more errors (capped at {MaxCompilationErrorsPerCycle}).");
-						return builder.ToImmutable();
+						return new CompilationAudit(errors.ToImmutable(), [.. blockingProjects]);
 					}
 				}
 			}
 		}
 
-		return builder.ToImmutable();
+		return new CompilationAudit(errors.ToImmutable(), [.. blockingProjects]);
 	}
+
+	/// <summary>
+	/// Resolves the pass's change-set to the distinct set of projects that own those files — as source
+	/// <see cref="Document"/>s or as <see cref="AdditionalDocument"/>s (XAML and other generator inputs,
+	/// whose edits can block compilation exactly like a source edit). Both document kinds are matched
+	/// through <see cref="PathComparer"/> — the same separator/case-agnostic comparison the rest of the
+	/// hot-reload pipeline uses — so a document never escapes the scope because the workspace stored its
+	/// path with a different separator or casing than the change event carried. A file belonging to no
+	/// project contributes nothing, so a change-set touching only foreign/out-of-solution files resolves
+	/// to an empty set.
+	/// </summary>
+	private static ImmutableArray<Project> ResolveAuditProjects(Solution solution, ImmutableHashSet<string> files)
+	{
+		// Index the change-set once through the pipeline's path comparer so each project's documents are
+		// matched with a single O(1) lookup instead of an O(files) scan per document.
+		var changeSet = files.ToHashSet(PathComparer.PathEqualityComparer);
+
+		return solution.Projects
+			.Where(project =>
+				project.Documents.Any(document => document.FilePath is { } path && changeSet.Contains(path))
+				|| project.AdditionalDocuments.Any(document => document.FilePath is { } path && changeSet.Contains(path)))
+			.ToImmutableArray();
+	}
+
+	/// <summary>
+	/// Formats the pass's edited file names for the blocked-compilation output line: base names only
+	/// (<see cref="Path.GetFileName(string)"/>), ordered for a deterministic message, capped to the first
+	/// 3 with a <c>+N more</c> suffix beyond.
+	/// </summary>
+	private static string FormatEditedFiles(ImmutableHashSet<string> files)
+	{
+		const int maxNamed = 3;
+		var names = files
+			.Select(Path.GetFileName)
+			.OfType<string>()
+			.OrderBy(name => name, StringComparer.Ordinal)
+			.ToArray();
+		var named = string.Join(", ", names.Take(maxNamed));
+
+		return names.Length > maxNamed
+			? $"{named} +{names.Length - maxNamed} more"
+			: named;
+	}
+
+	/// <summary>
+	/// Outcome of the change-set-scoped blocked-compilation audit: the formatted compilation errors found
+	/// in the audited projects, and the distinct, ordered names of the projects that actually produced
+	/// those errors (named in the blocked output line).
+	/// </summary>
+	private readonly record struct CompilationAudit(ImmutableArray<string> Errors, ImmutableArray<string> BlockingProjects);
 
 	/// <inheritdoc />
 	public void Dispose()

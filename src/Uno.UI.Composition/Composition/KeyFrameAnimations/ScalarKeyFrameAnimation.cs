@@ -28,6 +28,8 @@ public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 	public void InsertKeyFrame(float normalizedProgressKey, float value, CompositionEasingFunction easingFunction)
 		=> _keyFrames[normalizedProgressKey] = new() { Value = value, EasingFunction = easingFunction };
 
+	private protected override void InsertExpressionKeyFrameCore(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)
+		=> _keyFrames[normalizedProgressKey] = new() { Value = 0f, EasingFunction = easingFunction, ParsedExpression = new ExpressionAnimationParser(value).Parse() };
 
 	internal override object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
@@ -47,12 +49,26 @@ public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 			finalValue = _keyFrames.Values.LastOrDefault(startValue);
 		}
 
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		static float Lerp(AnimationKeyFrame<float> value1, AnimationKeyFrame<float> value2, float amount)
-			=> float.Lerp(value1.Value, value2.Value, value2.EasingFunction.Ease(amount));
+		// Pass 'this' (the parent animation) so expression keyframes can resolve reference parameters.
+		float Resolve(AnimationKeyFrame<float> frame) => ResolveScalarKeyFrameValue(this, frame);
 
-		_keyframeEvaluator = new KeyFrameEvaluator<float>(startValue, finalValue, Duration, _keyFrames, Lerp, IterationCount, IterationBehavior, Compositor);
-		return startValue.Value;
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		float Lerp(AnimationKeyFrame<float> value1, AnimationKeyFrame<float> value2, float amount)
+			=> float.Lerp(Resolve(value1), Resolve(value2), value2.EasingFunction.Ease(amount));
+
+		_keyframeEvaluator = new KeyFrameEvaluator<float>(startValue, finalValue, Duration, _keyFrames, Lerp, IterationCount, IterationBehavior, Compositor, Resolve);
+		return Resolve(startValue);
+	}
+
+	private static float ResolveScalarKeyFrameValue(KeyFrameAnimation animation, AnimationKeyFrame<float> frame)
+	{
+		if (frame.ParsedExpression is null)
+		{
+			return frame.Value;
+		}
+
+		var evaluation = frame.ParsedExpression.Evaluate(animation);
+		return SubPropertyHelpers.ValidateValue<float>(evaluation);
 	}
 #endif
 }

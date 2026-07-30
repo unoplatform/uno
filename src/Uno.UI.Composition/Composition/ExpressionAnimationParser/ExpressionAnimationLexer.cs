@@ -111,8 +111,10 @@ internal sealed class ExpressionAnimationLexer
 			return new ExpressionAnimationToken(ExpressionAnimationTokenKind.LessThanToken, null);
 		}
 
-		if (char.IsLetter(Current))
+		if (char.IsLetter(Current) || Current == '_')
 		{
+			// Identifiers may start with a letter or underscore. Lottie-generated expressions use
+			// '_' or '_theme' as reference parameter names.
 			int start = _position;
 			while (char.IsLetterOrDigit(Current) || Current == '_')
 			{
