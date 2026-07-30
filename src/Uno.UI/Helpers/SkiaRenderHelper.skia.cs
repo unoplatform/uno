@@ -119,7 +119,7 @@ internal static class SkiaRenderHelper
 		// The overlay's font, resolved lazily through the neutral font manager (bold, 14px) so the counter
 		// pulls in no SkiaSharp type. Lazy because the backend is registered after this type is first touched.
 		private static IFont? _font;
-		private static IFont Font => _font ??= DrawingBackend.Current.FontManager.GetDefaultFont(FontWeights.Bold, FontStretch.Normal, FontStyle.Normal, 14f);
+		private static IFont Font => _font ??= FontManager.Current.GetDefaultFont(FontWeights.Bold, FontStretch.Normal, FontStyle.Normal, 14f);
 
 		// Minimum per-column widths so the panel doesn't shrink when FPS drops from e.g. 120.0 to 15.0.
 		// Sized to fit a three-digit reference value — measured lazily on first draw.

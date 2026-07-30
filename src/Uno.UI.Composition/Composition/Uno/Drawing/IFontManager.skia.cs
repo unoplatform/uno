@@ -8,7 +8,7 @@ namespace Uno.UI.Composition.Drawing;
 /// Backend font resolver: turns a family/style request (or raw font bytes, or a codepoint) into an
 /// <see cref="IFont"/> handle. This is the one Skia-specific concern left in the text layer — the Skia
 /// implementation uses <c>SKFontManager</c>/<c>SKTypeface</c>; the managed implementation enumerates system
-/// fonts. Obtained from <see cref="IDrawingBackend.FontManager"/>. Byte loading for application/URI fonts stays
+/// fonts. Obtained from <see cref="FontManager.Current"/>. Byte loading for application/URI fonts stays
 /// with the caller (it needs the app's storage APIs); this only turns bytes into a handle.
 /// </summary>
 public interface IFontManager

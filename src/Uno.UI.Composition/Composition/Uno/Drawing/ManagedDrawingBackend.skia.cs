@@ -19,11 +19,6 @@ namespace Uno.UI.Composition.Drawing;
 /// </summary>
 public sealed class ManagedDrawingBackend : IDrawingBackend
 {
-	// This backend is SkiaSharp-free, so its default resolver is the managed one; a host may still override it.
-	private readonly ManagedFontManager _fontManager = new();
-
-	public IFontManager FontManager => DrawingBackendOptions.FontManager ?? _fontManager;
-
 	public IPathBuilder CreatePathBuilder() => new ManagedPathBuilder();
 
 	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => new ManagedPathBuilder();

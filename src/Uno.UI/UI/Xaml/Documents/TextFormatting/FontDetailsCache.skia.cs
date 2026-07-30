@@ -44,7 +44,7 @@ internal static class FontDetailsCache
 		FeatureConfiguration.Font.FallbackService
 		?? (ApiExtensibility.CreateInstance<IFontFallbackService>(typeof(FontDetailsCache), out var service) ? service : null);
 
-	private static IFontManager FontManager => DrawingBackend.Current.FontManager;
+	private static IFontManager FontManager => global::Uno.UI.Composition.Drawing.FontManager.Current;
 
 	/// <summary>
 	/// Loads the raw font bytes for an application/URI font, resolving a <c>.manifest</c> sidecar to the
