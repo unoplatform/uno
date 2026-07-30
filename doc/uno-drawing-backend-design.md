@@ -52,28 +52,28 @@ the content seams are **decoders**/**managers**.
 
 ## The buckets (what we abstract, and why)
 
-Every place the core rests on Skia (or HarfBuzz, or Unicode data), whether abstracting it breaks public API, and
-the call we're making. "Breaks public API" = removes/changes a type an app can reference today.
+The high-level map — one row per area, the Skia (or HarfBuzz / Unicode) it rests on today, whether abstracting it
+changes a type an app can reference, and the abstraction. The lettered sections **§A–R** carry the per-type
+detail; this is the overview.
 
-| Bucket | Rests on today | Breaks public API? | Abstract? | Abstraction (yes) / why not (no) |
-|---|---|---|---|---|
-| **Geometry** | `SKPath`, `SKPathBuilder`, `SKPath.Op`, `SKPathMeasure` (trim), contour iteration | No | **Yes** | `IGeometry` + `IPathBuilder`/`IPrimitiveGeometryBuilder` — neutral/introspectable; managed engine proven |
-| **Drawing verbs** | `SKCanvas` (`Save`/`Restore`/`ClipPath`/`DrawPath`/`DrawImage`/`SaveLayer`/`DrawTextBlob`) | No | **Yes** | `IDrawingSession` |
-| **Frame record/replay** | `SKPicture`, `SKPictureRecorder` | No | **Yes (optional)** | base `IRenderer` is immediate; retaining is opt-in `IRetainedRenderingSession` + `IRenderData` |
-| **Present / swapchain** | `SKSurface`, `GRBackendRenderTarget` | No | **Yes** | `IRenderTarget` (per-kind data classes) produced by the context; `IPresentSession` |
-| **Shaders** | `SKShader` (linear/radial/image gradients) | No | **Yes** | opaque `IShader` |
-| **Color filters** | `SKColorFilter` (matrix/table) | No | **Yes** | opaque `IColorFilter` |
-| **Effects** (blur/shadow/…) | `SKImageFilter`; input graph is WinUI `IGraphicsEffect`/D2D interop | No (input already public WinUI) | **Yes** | framework lowers the graph to typed `EffectNode` records → opaque `IEffectFilter` |
-| **Image decode** | `SKCodec` (+ EXIF orientation); a managed decoder already exists | No | **Yes** | `IImageDecoder` — independent seam |
-| **Image upload** | `SKImage.FromBitmap` / GPU upload | No | **Yes** | `IImageTexture` + `IDrawingFactory.CreateImageTexture` |
-| **Font resolution / fallback** | `SKFontManager`/`SKTypeface` matching (or system enumeration) | No | **Yes** | **`IFontManager`** — family / bytes / codepoint → **`IFont`**; an independent seam |
-| **Font** | HarfBuzz shaping, `SKFont` metrics + `GetPath` outlines, `SKTypeface.ContainsGlyph`, COLR/CBDT bitmap glyphs | No | **Yes** | **`IFont`** — one handle: `Shape` + metrics/coverage + `GetGlyphDrawables` (outline **or** image). Shaper is an impl detail; no raw `GetFontTable` on the seam |
-| **Text layout** (line-break, bidi, shaping orchestration) | Unicode algorithms (Uno's own, ICU-like) — *not* Skia | n/a | **No** | one uniform engine is required for cross-platform consistency + WinUI parity; the variation worth having (fonts + shaping) is captured one layer down |
-| **GPU context / device** | `GRContext.CreateGl/CreateVulkan`; GLX/EGL/`CAMetalLayer` surfaces | Host-level only, no app break | **Yes** | `IGraphicsContext` + host `IGraphicsContextFactory`; seam carries proc-loaders/handles, never `GRContext` |
-| **Renderer selection** | hardcoded Skia renderer + host `RenderSurfaceType` / `FeatureConfiguration.Rendering.UseOpenGL*` knobs | **Yes** — removes those public knobs | **Yes** | `IGraphicsProvider` + `GraphicsRegistry.Register/Activate` with requirements/preferences negotiation |
-| **SVG** | `Svg.Skia` (or the managed SVG engine) | No | **Yes (done)** | `ISvgProvider` / `ManagedSvg` → `IImage` |
-| **Raw-Skia app island** (`SKCanvasElement`/`SKCanvasVisual`) | `SKCanvas`, app-facing | n/a (app opt-in) | **No** | it's a deliberate "draw with raw Skia" escape hatch in a separate package; neutralizing it defeats its purpose |
-| **The rasterizer** (fill/AA/gradient sampling/blend/clip → pixels) | Skia's CPU/GPU rasterizer | No | **Yes, eventually** | a managed rasterizer implementing `IDrawingFactory`/`IRenderer`/`IDrawingSession` — the largest remaining piece; Skia is the only impl today |
+| Bucket | Rests on today | Breaks public API? | Abstraction |
+|---|---|---|---|
+| **Geometry** | `SKPath`, `SKPathBuilder`, `SKPath.Op`, path measure (trim) | No | `IGeometry` + path/primitive builders — neutral; managed engine proven (§B) |
+| **Paint** — shaders, color filters, effects | `SKShader`, `SKColorFilter`, `SKImageFilter` (effect input is WinUI `IGraphicsEffect`/D2D) | No | opaque `IShader`/`IColorFilter`/`IEffectFilter`; effect graph lowered to typed `EffectNode` records (§D) |
+| **Images** — decode + upload | `SKCodec` (+EXIF), `SKImage` / GPU upload | No | `IImageDecoder` (independent seam) → `IImage`; `IImageTexture` to draw (§C, §K) |
+| **Fonts** — resolution + font handle | `SKFontManager`/`SKTypeface`, HarfBuzz shaping, `SKFont` metrics/`GetPath`, COLR/CBDT glyphs | No | `IFontManager` (independent seam) → `IFont` (shape + metrics/coverage + `GetGlyphDrawables`) (§E) |
+| **Drawing & frame cycle** — verbs, record/replay, present | `SKCanvas`, `SKPicture`, `SKSurface`/`GRBackendRenderTarget` | No | `IDrawingSession` verbs; immediate `IRenderer`/`IPresentSession` + `IRenderTarget`; retaining opt-in (§F–I) |
+| **Graphics device & selection** | `GRContext.CreateGl/CreateVulkan`, GLX/EGL/Metal surfaces; hardcoded Skia + `RenderSurfaceType`/`UseOpenGL*` knobs | **Yes** — removes those public knobs | `IGraphicsContext` + host `IGraphicsContextFactory`; `IGraphicsProvider` + `GraphicsRegistry` negotiation (§L–O) |
+| **SVG** | `Svg.Skia` / managed SVG | No | `ISvgProvider`/`ManagedSvg` → `IImage` — **done** |
+| **The rasterizer** (fill/AA/gradient/blend/clip → pixels) | Skia's CPU/GPU rasterizer | No | a managed rasterizer over `IDrawingFactory`/`IRenderer`/`IDrawingSession` — the remaining long pole; Skia is the only impl today |
+
+### Deliberately *not* abstracted
+
+- **Text layout** — bidi, script itemization, segmentation, line-breaking, justification. These are Unicode
+  algorithms, *not* Skia; one uniform framework engine is required for cross-platform consistency + WinUI parity, and
+  the variation worth having (fonts + shaping) is captured one layer down in the **Fonts** bucket. (§Q)
+- **Raw-Skia app island** (`SKCanvasElement`/`SKCanvasVisual`) — a deliberate "draw with raw Skia" escape hatch in a
+  separate package; neutralizing it would defeat its purpose.
 
 ---
 
