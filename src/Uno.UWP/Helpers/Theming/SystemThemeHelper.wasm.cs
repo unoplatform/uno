@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
@@ -46,9 +47,16 @@ internal static partial class SystemThemeHelper
 	}
 
 	[JSExport]
-	public static int DispatchSystemThemeChange()
+	public static void DispatchSystemThemeChange()
 	{
 		RefreshSystemTheme();
-		return 0;
+	}
+
+	[JSExport]
+	public static Task DispatchSystemThemeChangeAsync()
+	{
+		RefreshSystemTheme();
+
+		return Task.CompletedTask;
 	}
 }

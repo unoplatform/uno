@@ -252,8 +252,7 @@ declare namespace Windows.Graphics.Display {
         private static readonly DpiCheckInterval;
         private static lastDpi;
         private static dpiWatcher;
-        private static dispatchOrientationChanged;
-        private static dispatchDpiChanged;
+        private static dispatchDisplayMetricsChanged;
         private static lockingSupported;
         static getDevicePixelRatio(): number;
         static getScreenWidth(): number;
@@ -425,7 +424,6 @@ declare namespace Uno.Storage {
 }
 declare namespace Uno.Storage {
     class NativeStorageItem {
-        private static generateGuidBinding;
         private static _guidToItemMap;
         private static _itemToGuidMap;
         static addItem(guid: string, item: FileSystemHandle | File): void;

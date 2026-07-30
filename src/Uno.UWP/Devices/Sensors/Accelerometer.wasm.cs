@@ -1,10 +1,10 @@
-﻿using Uno;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Uno.Devices.Sensors.Helpers;
-
 using System.Runtime.InteropServices.JavaScript;
+using System.Text;
+using System.Threading.Tasks;
+using Uno;
+using Uno.Devices.Sensors.Helpers;
 
 using NativeMethods = __Windows.Devices.Sensors.Accelerometer.NativeMethods;
 
@@ -49,7 +49,6 @@ namespace Windows.Devices.Sensors
 
 		private void StopShaken() => DetachDeviceMotion();
 
-
 		private void AttachDeviceMotion()
 		{
 			// If both delegates are not null,
@@ -59,7 +58,6 @@ namespace Windows.Devices.Sensors
 				NativeMethods.StartReading();
 			}
 		}
-
 
 		private void DetachDeviceMotion()
 		{
@@ -80,9 +78,8 @@ namespace Windows.Devices.Sensors
 		/// <param name="x">Accelerometer X</param>
 		/// <param name="y">Accelerometer Y</param>
 		/// <param name="z">Accelerometer Z</param>
-		/// <returns>0 - needed to bind method from WASM</returns>
 		[JSExport]
-		internal static int DispatchReading(float x, float y, float z)
+		internal static void DispatchReading(float x, float y, float z)
 		{
 			if (_instance.Value == null)
 			{
@@ -100,7 +97,14 @@ namespace Windows.Devices.Sensors
 						now));
 			}
 			_instance.Value._shakeDetector?.OnSensorChanged(x, y, z, DateTimeOffset.UtcNow);
-			return 0;
+		}
+
+		[JSExport]
+		internal static Task DispatchReadingAsync(float x, float y, float z)
+		{
+			DispatchReading(x, y, z);
+
+			return Task.CompletedTask;
 		}
 	}
 }

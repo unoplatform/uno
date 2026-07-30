@@ -31,7 +31,7 @@ partial class WinRTFeatureConfiguration
 			/// based pickers.
 			/// </summary>
 			/// <remarks>Applies to WASM only.</remarks>
-			public static WasmPickerConfiguration WasmConfiguration { get; set; } = WasmPickerConfiguration.FileSystemAccessApiWithFallback;
+			public static WasmPickerConfiguration WasmConfiguration { get; set; } = WasmPickerConfiguration.DownloadUpload;
 #endif
 		}
 	}

@@ -6,12 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.JavaScript;
-using Windows.Foundation;
-using Windows.Media.Core;
-using Windows.Media.Playback;
-using Windows.Storage;
-using Windows.Storage.Helpers;
-using Windows.Storage.Streams;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -19,6 +14,12 @@ using Uno.Helpers;
 using Uno.Media.Playback;
 using Uno.UI.DataBinding;
 using Uno.UI.NativeElementHosting;
+using Windows.Foundation;
+using Windows.Media.Core;
+using Windows.Media.Playback;
+using Windows.Storage;
+using Windows.Storage.Helpers;
+using Windows.Storage.Streams;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -296,6 +297,14 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	}
 
 	[JSExport]
+	private static Task OnPlayingAsync(string id)
+	{
+		OnPlaying(id);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	private static void OnLoadedMetadata(string id, bool isVideo)
 	{
 		if (_elementIdToMediaPlayer.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension @this)
@@ -308,12 +317,28 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	}
 
 	[JSExport]
+	private static Task OnLoadedMetadataAsync(string id, bool isVideo)
+	{
+		OnLoadedMetadata(id, isVideo);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	private static void OnStalled(string id)
 	{
 		if (_elementIdToMediaPlayer.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension @this)
 		{
 			@this._player.PlaybackSession.PlaybackState = MediaPlaybackState.Buffering;
 		}
+	}
+
+	[JSExport]
+	private static Task OnStalledAsync(string id)
+	{
+		OnStalled(id);
+
+		return Task.CompletedTask;
 	}
 
 	[JSExport]
@@ -326,12 +351,28 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	}
 
 	[JSExport]
+	private static Task OnRateChangeAsync(string id)
+	{
+		OnRateChange(id);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	private static void OnDurationChange(string id)
 	{
 		if (_elementIdToMediaPlayer.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension @this)
 		{
 			@this.Events?.NaturalDurationChanged();
 		}
+	}
+
+	[JSExport]
+	private static Task OnDurationChangeAsync(string id)
+	{
+		OnDurationChange(id);
+
+		return Task.CompletedTask;
 	}
 
 	[JSExport]
@@ -363,6 +404,14 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	}
 
 	[JSExport]
+	private static Task OnEndedAsync(string id)
+	{
+		OnEnded(id);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	private static void OnError(string id)
 	{
 		if (_elementIdToMediaPlayer.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension @this)
@@ -370,6 +419,14 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 			@this.Events?.RaiseMediaFailed(MediaPlayerError.Unknown, null, null);
 			@this._player.PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		}
+	}
+
+	[JSExport]
+	private static Task OnErrorAsync(string id)
+	{
+		OnError(id);
+
+		return Task.CompletedTask;
 	}
 
 	[JSExport]
@@ -382,12 +439,28 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	}
 
 	[JSExport]
+	private static Task OnPauseAsync(string id)
+	{
+		OnPause(id);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	private static void OnSeeked(string id)
 	{
 		if (_elementIdToMediaPlayer.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension @this)
 		{
 			@this.Events?.RaiseSeekCompleted();
 		}
+	}
+
+	[JSExport]
+	private static Task OnSeekedAsync(string id)
+	{
+		OnSeeked(id);
+
+		return Task.CompletedTask;
 	}
 
 	[JSExport]
@@ -400,6 +473,14 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	}
 
 	[JSExport]
+	private static Task OnVolumeChangeAsync(string id)
+	{
+		OnVolumeChange(id);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	private static void OnTimeUpdate(string id)
 	{
 		if (_elementIdToMediaPlayer.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerExtension @this)
@@ -408,6 +489,14 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 			@this.Events?.RaisePositionChanged();
 			@this._updatingPositionFromNative = false;
 		}
+	}
+
+	[JSExport]
+	private static Task OnTimeUpdateAsync(string id)
+	{
+		OnTimeUpdate(id);
+
+		return Task.CompletedTask;
 	}
 
 	private static partial class NativeMethods

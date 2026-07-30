@@ -71,6 +71,14 @@ public sealed partial class BrowserHtmlElement : IDisposable
 		JSObject payload)
 		=> throw new PlatformNotSupportedException();
 
+	[JSExport]
+	private static Task<bool> DispatchEventNativeElementMethodAsync(
+		[JSMarshalAs<JSType.Any>] object owner,
+		string eventName,
+		[JSMarshalAs<JSType.Any>] object eventWrapper,
+		JSObject payload)
+		=> throw new PlatformNotSupportedException();
+
 	private void RegisterHtmlEventHandlerNative(string eventName, EventHandler<JSObject> handler)
 		=> throw new PlatformNotSupportedException();
 

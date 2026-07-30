@@ -132,6 +132,14 @@ public sealed partial class BrowserHtmlElement : IDisposable
 		}
 	}
 
+	[JSExport]
+	private static Task<bool> DispatchEventNativeElementMethodAsync(
+		[JSMarshalAs<JSType.Any>] object owner,
+		string eventName,
+		[JSMarshalAs<JSType.Any>] object eventWrapper,
+		JSObject payload)
+		=> Task.FromResult(DispatchEventNativeElementMethod(owner, eventName, eventWrapper, payload));
+
 	private void RegisterHtmlEventHandlerNative(string eventName, EventHandler<JSObject> handler)
 	{
 		var wrapper = new EventWrapper(handler);

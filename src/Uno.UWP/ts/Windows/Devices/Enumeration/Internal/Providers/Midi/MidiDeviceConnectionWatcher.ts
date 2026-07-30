@@ -1,6 +1,6 @@
 ﻿namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
 	export class MidiDeviceConnectionWatcher {
-		private static dispatchStateChanged: (id: string, name: string, isInput: boolean, isConnected: boolean) => number;
+		private static dispatchStateChanged: (id: string, name: string, isInput: boolean, isConnected: boolean) => (void | Promise<void>);
 
 		public static startStateChanged() {
 			const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
@@ -14,10 +14,12 @@
 
 		public static onStateChanged(event: WebMidi.MIDIConnectionEvent) {
 			if (!MidiDeviceConnectionWatcher.dispatchStateChanged) {
-				if ((<any>globalThis).DotnetExports !== undefined) {
-					MidiDeviceConnectionWatcher.dispatchStateChanged = (<any>globalThis).DotnetExports.Uno.Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher.DispatchStateChanged;
+				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+					MidiDeviceConnectionWatcher.dispatchStateChanged =
+						(<any>globalThis).DotnetExports.Uno.Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher.DispatchStateChangedAsync;
 				} else {
-					throw `MidiDeviceConnectionWatcher: Unable to find dotnet exports`;
+					MidiDeviceConnectionWatcher.dispatchStateChanged =
+						(<any>globalThis).DotnetExports.Uno.Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher.DispatchStateChanged;
 				}
 			}
 

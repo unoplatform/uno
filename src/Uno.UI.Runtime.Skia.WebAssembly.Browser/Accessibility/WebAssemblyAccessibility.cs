@@ -838,10 +838,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// has opted in to auto-enabling accessibility (bypassing the "Enable Accessibility" button).
 	/// </summary>
 	[JSExport]
-	public static bool IsAutoEnableAccessibility()
-		=> FeatureConfiguration.AutomationPeer.AutoEnableAccessibility;
-
-	[JSExport]
 	public static Task<bool> IsAutoEnableAccessibilityAsync()
 		=> Task.FromResult(FeatureConfiguration.AutomationPeer.AutoEnableAccessibility);
 
@@ -851,71 +847,52 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	private static readonly int EnableAccessibilityRetryDelayMs = 100;
 
 	[JSExport]
-	public static void EnableAccessibility()
+	public static async Task EnableAccessibilityAsync()
 	{
 		var @this = Instance;
+
 		if (@this.Log().IsEnabled(LogLevel.Debug))
 		{
 			@this.Log().Debug("[A11y] EnableAccessibility() called");
 		}
 
-		if (@this.IsAccessibilityEnabled)
+		UIElement? rootElement;
+
+		do
 		{
-			if (@this.Log().IsEnabled(LogLevel.Warning))
+			var window = WebAssemblyWindowWrapper.Instance.Window;
+
+			rootElement = window?.RootElement;
+
+			if (rootElement != null)
 			{
-				@this.Log().Warn("[A11y] EnableAccessibility() called for the second time. Returning early.");
-			}
-
-			return;
-		}
-
-		var window = WebAssemblyWindowWrapper.Instance.Window;
-		var rootElement = window?.RootElement;
-
-		if (rootElement is null)
-		{
-			// Window not yet attached is normal during early boot; retried below.
-			if (@this.Log().IsEnabled(LogLevel.Debug))
-			{
-				@this.Log().Debug($"[A11y] EnableAccessibility deferred: Window={window?.GetType().Name ?? "null"}, RootElement=null");
-			}
-
-			if (_enableAccessibilityRetryCount < MaxEnableAccessibilityRetries)
-			{
-				_enableAccessibilityRetryCount++;
-				if (@this.Log().IsEnabled(LogLevel.Trace))
-				{
-					@this.Log().Trace($"[A11y] EnableAccessibility() will retry in {EnableAccessibilityRetryDelayMs}ms (attempt {_enableAccessibilityRetryCount}/{MaxEnableAccessibilityRetries})");
-				}
-
-				var timer = new Timer(
-					_ =>
-					{
-						if (@this.Log().IsEnabled(LogLevel.Trace))
-						{
-							@this.Log().Trace($"[A11y] EnableAccessibility() retry attempt {_enableAccessibilityRetryCount}");
-						}
-						EnableAccessibility();
-					},
-					null,
-					EnableAccessibilityRetryDelayMs,
-					Timeout.Infinite);
-
-				return;
+				break;
 			}
 			else
 			{
-				if (@this.Log().IsEnabled(LogLevel.Error))
+				// Window not yet attached, normal during early boot, retry.
+				if (_enableAccessibilityRetryCount < MaxEnableAccessibilityRetries)
 				{
-					@this.Log().Error($"[A11y] EnableAccessibility: max retries ({MaxEnableAccessibilityRetries}) exceeded; Window still not ready.");
-				}
+					_enableAccessibilityRetryCount++;
 
-				return;
+					if (@this.Log().IsEnabled(LogLevel.Trace))
+					{
+						@this.Log().Trace($"[A11y] EnableAccessibility() will retry in {EnableAccessibilityRetryDelayMs}ms (attempt {_enableAccessibilityRetryCount}/{MaxEnableAccessibilityRetries})");
+					}
+
+					await Task.Delay(EnableAccessibilityRetryDelayMs);
+				}
+				else
+				{
+					throw new TimeoutException("EnableAccessibility() timeout exceeded.");
+				}
 			}
-		}
+
+		} while (true);
 
 		// Success! Window and RootElement are now available
 		_enableAccessibilityRetryCount = 0;
+
 		if (@this.Log().IsEnabled(LogLevel.Debug))
 		{
 			@this.Log().Debug($"[A11y] EnableAccessibility() SUCCESS: rootElement={rootElement.GetType().Name}, children={rootElement.GetChildren().Count}");
@@ -973,6 +950,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	[JSExport]
+	public static Task OnScrollAsync(IntPtr handle, double horizontalOffset, double verticalOffset)
+	{
+		OnScroll(handle, horizontalOffset, verticalOffset);
+
+		return Task.CompletedTask;
+	}
+
 	/// <summary>
 	/// Called when a button element is invoked (clicked, Enter pressed, or Space pressed).
 	/// Routes to the IInvokeProvider.Invoke() method on the automation peer.
@@ -994,6 +979,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				invokeProvider.Invoke();
 			}
 		}
+	}
+
+	[JSExport]
+	public static Task OnInvokeAsync(IntPtr handle)
+	{
+		OnInvoke(handle);
+
+		return Task.CompletedTask;
 	}
 
 	/// <summary>
@@ -1019,6 +1012,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	[JSExport]
+	public static Task OnToggleAsync(IntPtr handle)
+	{
+		OnToggle(handle);
+
+		return Task.CompletedTask;
+	}
+
 	/// <summary>
 	/// Called when a slider's value changes.
 	/// Routes to the IRangeValueProvider.SetValue() method on the automation peer.
@@ -1040,6 +1041,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				rangeValueProvider.SetValue(value);
 			}
 		}
+	}
+
+	[JSExport]
+	public static Task OnRangeValueChangeAsync(IntPtr handle, double value)
+	{
+		OnRangeValueChange(handle, value);
+
+		return Task.CompletedTask;
 	}
 
 	/// <summary>
@@ -1073,6 +1082,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	[JSExport]
+	public static Task OnTextInputAsync(IntPtr handle, string value, int selectionStart, int selectionEnd)
+	{
+		OnTextInput(handle, value, selectionStart, selectionEnd);
+
+		return Task.CompletedTask;
+	}
+
 	/// <summary>
 	/// Called when a combobox or expander is expanded/collapsed.
 	/// Routes to the IExpandCollapseProvider.Expand() or Collapse() method on the automation peer.
@@ -1104,6 +1121,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	[JSExport]
+	public static Task OnExpandCollapseAsync(IntPtr handle)
+	{
+		OnExpandCollapse(handle);
+
+		return Task.CompletedTask;
+	}
+
 	/// <summary>
 	/// Called when a list item is selected.
 	/// Routes to the ISelectionItemProvider.Select() method on the automation peer.
@@ -1125,6 +1150,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				selectionItemProvider.Select();
 			}
 		}
+	}
+
+	[JSExport]
+	public static Task OnSelectionAsync(IntPtr handle)
+	{
+		OnSelection(handle);
+
+		return Task.CompletedTask;
 	}
 
 	/// <summary>
@@ -1159,6 +1192,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	[JSExport]
+	public static Task OnFocusAsync(IntPtr handle)
+	{
+		OnFocus(handle);
+
+		return Task.CompletedTask;
+	}
+
 	/// <summary>
 	/// Called when a semantic element loses focus in the browser.
 	/// Used to synchronize focus between the semantic DOM and the Uno visual tree.
@@ -1174,6 +1215,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		// Focus leaving the semantic element is handled by the browser focus system.
 		// No explicit action needed here - the Uno FocusManager handles focus transitions.
+	}
+
+	[JSExport]
+	public static Task OnBlurAsync(IntPtr handle)
+	{
+		OnBlur(handle);
+
+		return Task.CompletedTask;
 	}
 
 	[JSExport]
@@ -1216,6 +1265,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			@this._suppressDeparture = false;
 		}
+	}
+
+	[JSExport]
+	public static Task OnFocusSentinelAsync(bool isStart)
+	{
+		OnFocusSentinel(isStart);
+
+		return Task.CompletedTask;
 	}
 
 	// First/last descendant-or-self owning a focusable semantic element, skipping

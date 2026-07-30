@@ -17,9 +17,9 @@
 
     export class Geolocator {
 
-        private static dispatchAccessRequest: (serializedAccessStatus: string) => number;
-        private static dispatchGeoposition: (geopositionRequestResult: string, requestId: string) => number;
-        private static dispatchError: (geopositionRequestResult: string, requestId: string) => number;
+        private static dispatchAccessRequest: (serializedAccessStatus: string) => (void | Promise<void>);
+		private static dispatchGeoposition: (geopositionRequestResult: string, requestId: string) => (void | Promise<void>);
+		private static dispatchError: (geopositionRequestResult: string, requestId: string) => (void | Promise<void>);
 
 		private static interopInitialized: boolean = false;
 		
@@ -32,9 +32,15 @@
 				const exports: any = (<any>globalThis).DotnetExports?.Uno?.Uno?.Devices?.Geolocation?.Geolocator;
 
 				if (exports !== undefined) {
-					Geolocator.dispatchAccessRequest = exports.DispatchAccessRequest;
-					Geolocator.dispatchError = exports.DispatchError;
-					Geolocator.dispatchGeoposition = exports.DispatchGeoposition;
+					if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+						Geolocator.dispatchAccessRequest = exports.DispatchAccessRequestAsync;
+						Geolocator.dispatchError = exports.DispatchErrorAsync;
+						Geolocator.dispatchGeoposition = exports.DispatchGeopositionAsync;
+					} else {
+						Geolocator.dispatchAccessRequest = exports.DispatchAccessRequest;
+						Geolocator.dispatchError = exports.DispatchError;
+						Geolocator.dispatchGeoposition = exports.DispatchGeoposition;
+					}
 				}
 				else {
 					throw `Geolocator: Unable to find dotnet exports`;

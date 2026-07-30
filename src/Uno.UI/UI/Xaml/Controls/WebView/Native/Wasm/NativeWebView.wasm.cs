@@ -65,6 +65,10 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	}
 
 	[JSExport]
+	internal static Task<bool> DispatchNewWindowRequestedAsync(ElementId elementId, string targetUrl, string refererUrl)
+		=> Task.FromResult(DispatchNewWindowRequested(elementId, targetUrl, refererUrl));
+
+	[JSExport]
 	internal static void DispatchLoadEvent(ElementId elementId, string? absoluteUrl)
 	{
 		if (_elementIdToNativeWebView.TryGetValue(elementId, out var nativeWebView))
@@ -74,12 +78,11 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	}
 
 	[JSExport]
-	internal static void DispatchWebMessage(ElementId elementId, string message)
+	internal static Task DispatchLoadEventAsync(ElementId elementId, string? absoluteUrl)
 	{
-		if (_elementIdToNativeWebView.TryGetValue(elementId, out var nativeWebView))
-		{
-			nativeWebView._coreWebView.RaiseWebMessageReceived(message);
-		}
+		DispatchLoadEvent(elementId, absoluteUrl);
+
+		return Task.CompletedTask;
 	}
 
 	public string DocumentTitle => NativeMethods.GetDocumentTitle(_elementId) ?? "";

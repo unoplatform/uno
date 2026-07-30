@@ -110,7 +110,7 @@ internal static partial class RenderWorker
 
 			NativeMethods.GLMakeCurrent(glContextHandle);
 
-			compositionTarget.OnNativePlatformFrameRequested(_canvas, size =>
+			var currentClipPath = compositionTarget.OnNativePlatformFrameRequested(_canvas, size =>
 			{
 				var width = (int)size.Width;
 				var height = (int)size.Height;
@@ -135,6 +135,12 @@ internal static partial class RenderWorker
 			{
 				_grContext.Flush(submit: true);
 			}
+
+			var (path, fillType) = !currentClipPath.IsEmpty ?
+				(currentClipPath.ToSvgPathData(), currentClipPath.FillType is SKPathFillType.EvenOdd ? "evenodd" : "nonzero") :
+					("", "nonzero");
+
+			BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHostAsync(path, fillType);
 		}
 	}
 

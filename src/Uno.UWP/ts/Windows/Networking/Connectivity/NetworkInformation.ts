@@ -14,12 +14,14 @@
 		}
 
 		public static networkStatusChanged() {
-			if (NetworkInformation.dispatchStatusChanged == null) {
-				if ((<any>globalThis).DotnetExports !== undefined) {
-					NetworkInformation.dispatchStatusChanged = (<any>globalThis).DotnetExports.Uno.Windows.Networking.Connectivity.NetworkInformation.DispatchStatusChanged;
+			if (NetworkInformation.dispatchStatusChanged == null && (<any>globalThis).DotnetExports !== undefined) {
+				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+					NetworkInformation.dispatchStatusChanged = (<any>globalThis).DotnetExports.Uno.Windows.Networking.Connectivity.NetworkInformation.DispatchStatusChangedAsync;
 				} else {
-					throw `NetworkInformation: Unable to find dotnet exports`;
+					NetworkInformation.dispatchStatusChanged = (<any>globalThis).DotnetExports.Uno.Windows.Networking.Connectivity.NetworkInformation.DispatchStatusChanged;
 				}
+			} else {
+				throw `NetworkInformation: Unable to find dotnet exports`;
 			}
 			NetworkInformation.dispatchStatusChanged();
 		}
