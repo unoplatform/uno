@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Numerics;
@@ -25,7 +25,7 @@ public partial class Visual
 
 	internal virtual float DamageRegionSamplingMargin => 0;
 
-	private void ContributeDamageOnPaint(bool contentChanged, SKPath? damage, SKPath clip)
+	private void ContributeDamageOnPaint(bool contentChanged, SKPath? damage, SKPath clip, bool clipChanged)
 	{
 		if (damage is null)
 		{
@@ -38,11 +38,14 @@ public partial class Visual
 		var shadowSilhouetteChanged = ShadowState is not null && _subtreeChangedThisFrame;
 
 		// The accumulated clip can grow or shrink while this visual's own content and transform stay
-		// identical (e.g. an ancestor re-clipping to a new size), revealing or hiding part of it. Nothing
-		// else would report that as damage, so the newly exposed pixels would keep the previous frame's
-		// content. Compared by bounds to stay cheap on this per-visual, per-frame path.
+		// identical (e.g. an ancestor re-clipping to a new size), revealing or hiding part of it, and nothing
+		// else would report that as damage. Two independent signals, because neither covers the other:
+		// clipChanged is raised where a Clip/LayoutClip is mutated, so it catches a shape change inside
+		// unchanged bounds; the bounds fingerprint catches clips this visual never sees mutate, such as the
+		// frame's root clip. Bounds are compared rather than the path, to stay cheap on this per-visual,
+		// per-frame path.
 		var clipBounds = clip.Bounds;
-		var clipChanged = clipBounds != _lastClipBounds;
+		clipChanged |= clipBounds != _lastClipBounds;
 		_lastClipBounds = clipBounds;
 
 		if (!contentChanged && !moved && !clipChanged && !shadowSilhouetteChanged)

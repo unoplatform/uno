@@ -204,6 +204,15 @@ namespace Microsoft.UI.Composition
 					DamageLastRenderedRegion(target);
 				}
 			}
+			else if (propertyName is nameof(Clip) or LayoutClipPropertyName)
+			{
+				// The clip reveals or hides part of this subtree while descendants keep their content and
+				// transform, so they would report no damage on their own. Raise the signal Render carries down
+				// to them, and drop this visual's own cached children picture — otherwise the subtree is not
+				// walked at all, and no descendant gets the chance to report it.
+				_clipChangedSincePaint = true;
+				InvalidateParentChildrenPicture(includeSelf: true);
+			}
 
 			void RecursiveInvalidate(Visual visual)
 			{
