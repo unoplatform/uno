@@ -64,4 +64,3 @@ internal static class AccessibilitySnapshotBuilder
 	private static string? EmptyToNull(string? value)
 		=> string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }
-

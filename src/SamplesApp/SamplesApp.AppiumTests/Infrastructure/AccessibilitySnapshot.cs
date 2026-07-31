@@ -99,4 +99,3 @@ public sealed class AccessibilityElementState
 	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 	public string? LiveSetting { get; set; }
 }
-

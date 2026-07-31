@@ -24,4 +24,3 @@ public enum AccessibilitySnapshotFields
 	LiveSetting = 1 << 13,
 	Description = 1 << 14,
 }
-
