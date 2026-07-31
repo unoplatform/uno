@@ -114,6 +114,62 @@ public class Given_Compositor
 		Assert.IsTrue(Math.Abs(stamp - raw) < Period, $"expected to re-anchor near the real clock, was {Ms(stamp - raw)}ms away");
 	}
 
+	/// <summary>
+	/// The record loop can wake more than once inside a refresh interval. The grid must still only ever
+	/// move forward: a curve reads a negative elapsed time as "not started" and snaps back to its origin.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Records_Bunch_Up_Then_Frame_Clock_Never_Steps_Back()
+	{
+		var compositor = new Compositor();
+
+		var stamps = new long[80];
+		var raw = TimeSpan.TicksPerSecond;
+		for (var i = 0; i < stamps.Length; i++)
+		{
+			// A steady cadence, then a burst of records packed into a single interval.
+			raw += i < 40 ? Period : Period / 10;
+			stamps[i] = compositor.GetFrameTimestamp(raw);
+		}
+
+		var worst = Deltas(stamps).Min();
+		Assert.IsTrue(worst >= 0, $"the frame clock stepped backwards by {Ms(-worst)}ms");
+	}
+
+	/// <summary>
+	/// The pause between two motions is not a frame interval. Short bursts separated by pauses would
+	/// otherwise fill the window with those pauses, and the same interval back-dates a fling's launch —
+	/// so a skewed one starts the curve part-way down its travel.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Motion_Comes_In_Short_Bursts_Then_Frame_Interval_Is_Not_Skewed()
+	{
+		var compositor = new Compositor();
+
+		var raw = TimeSpan.TicksPerSecond;
+		for (var i = 0; i < 40; i++)
+		{
+			raw += Period;
+			compositor.GetFrameTimestamp(raw);
+		}
+
+		for (var burst = 0; burst < 40; burst++)
+		{
+			for (var i = 0; i < 2; i++)
+			{
+				raw += Period;
+				compositor.GetFrameTimestamp(raw);
+			}
+
+			raw += TimeSpan.TicksPerMillisecond * 500;
+			compositor.GetFrameTimestamp(raw);
+		}
+
+		Assert.AreEqual(Period, compositor.FrameIntervalInTicks, $"pauses skewed the interval to {Ms(compositor.FrameIntervalInTicks)}ms");
+	}
+
 	private static long[] Deltas(long[] values)
 		=> Enumerable.Range(1, values.Length - 1).Select(i => values[i] - values[i - 1]).ToArray();
 

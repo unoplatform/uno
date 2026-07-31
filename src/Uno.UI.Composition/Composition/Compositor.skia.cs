@@ -252,41 +252,40 @@ public partial class Compositor
 		var delta = raw - _lastRawFrameTimestamp;
 		_lastRawFrameTimestamp = raw;
 
-		_frameDeltas[_frameDeltaIndex] = delta;
-		_frameDeltaIndex = (_frameDeltaIndex + 1) % FrameClockWindow;
-		if (_frameDeltaCount < FrameClockWindow)
+		var period = _frameDeltaCount >= FrameClockMinSamples ? MedianFrameDelta() : 0;
+
+		// A gap far longer than a frame is the loop having been idle between motions, not an interval the
+		// display ever ran at. Admitting it would skew the median, which also sets the interval a fling
+		// back-dates its launch by — turning a timing artefact into a position error.
+		if (period <= 0 || delta < period * 4)
 		{
-			_frameDeltaCount++;
+			_frameDeltas[_frameDeltaIndex] = delta;
+			_frameDeltaIndex = (_frameDeltaIndex + 1) % FrameClockWindow;
+			if (_frameDeltaCount < FrameClockWindow)
+			{
+				_frameDeltaCount++;
+			}
 		}
 
-		if (_frameDeltaCount < FrameClockMinSamples)
-		{
-			return _frameClock = raw;
-		}
-
-		var period = MedianFrameDelta();
 		if (period <= 0)
 		{
 			return _frameClock = raw;
 		}
 
-		_frameClock += period;
-		var error = raw - _frameClock;
+		var previous = _frameClock;
 
-		if (Math.Abs(error) >= period)
-		{
-			// A whole frame or more of error is a dropped frame or an idle gap rather than phase noise,
-			// so the grid steps by whole frames to meet it and the motion covers the time it really took.
-			_frameClock += (long)Math.Round(error / (double)period, MidpointRounding.AwayFromZero) * period;
-		}
-		else
-		{
-			// Otherwise pull gently, so the grid follows the real clock's rate without any single frame
-			// carrying a visible correction. A whole period of hysteresis keeps jitter from slipping it.
-			_frameClock += error / 16;
-		}
+		// Advance by whole frames, never fewer than one, then correct the sub-period phase. Rounding
+		// unconditionally rather than branching once the error passes a threshold is what keeps a period
+		// that is a whole multiple of the record rate from flipping sides on jitter, and it re-anchors
+		// after an idle gap without a special case.
+		var frames = Math.Max(1, (long)Math.Round((raw - _frameClock) / (double)period, MidpointRounding.AwayFromZero));
+		_frameClock += frames * period;
+		_frameClock += (raw - _frameClock) / 16;
 
-		return _frameClock;
+		// Monotone by construction above, asserted here so it stays that way under any future edit: a
+		// backward step makes a fling's elapsed time negative, and the curve reads that as "not started"
+		// and snaps the content back to where the flick began.
+		return _frameClock = Math.Max(_frameClock, previous);
 	}
 
 	private long MedianFrameDelta()
