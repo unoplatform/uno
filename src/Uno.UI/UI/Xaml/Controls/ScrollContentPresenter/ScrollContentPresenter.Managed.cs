@@ -590,7 +590,11 @@ namespace Microsoft.UI.Xaml.Controls
 			StopFling();
 
 			var compositor = Visual.Compositor;
-			_flingStartTimestamp = compositor.TimestampInTicks;
+
+			// Anchored on the first frame rather than here: the finger lifts at an arbitrary point within
+			// a frame, so timing from now would make the first inertial step a random fraction of a full
+			// one — at the exact moment the motion is fastest and a stutter most visible.
+			_flingStartTimestamp = 0;
 			_flingH = ScrollFlingSimulation.Create(HorizontalOffset, -velocityXPerSecond);
 			_flingV = ScrollFlingSimulation.Create(VerticalOffset, -velocityYPerSecond);
 			_isFlingRunning = true;
@@ -614,6 +618,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnFlingFrame(long timestampInTicks)
 		{
+			if (_flingStartTimestamp == 0)
+			{
+				// One interval back, so this first frame advances by the same step the drag was producing
+				// when the finger left the glass.
+				_flingStartTimestamp = timestampInTicks - Visual.Compositor.FrameIntervalInTicks;
+			}
+
 			var elapsed = (timestampInTicks - _flingStartTimestamp) / (double)TimeSpan.TicksPerSecond;
 
 			var maxH = Scroller?.ScrollableWidth ?? Math.Max(0, ExtentWidth - ViewportWidth);
