@@ -34,8 +34,11 @@ internal sealed class SkiaRenderer : IRenderer, IDisposable
 	// framebuffer, then compose into its (borrowed, cached-across-frames) canvas. The context swaps on present.
 	private IPresentSession PresentForGL(IGLRenderTarget gl)
 	{
-		_glContext ??= GRContext.CreateGl(GRGlInterface.Create()
-				?? throw new NotSupportedException("OpenGL is not available (GRGlInterface.Create failed)."))
+		_glContext ??= GRContext.CreateGl(
+				(gl.IsGles && gl.GetProcAddress is { } loader
+					? GRGlInterface.CreateGles(name => loader(name))
+					: GRGlInterface.Create())
+				?? throw new NotSupportedException("OpenGL is not available (GRGlInterface create failed)."))
 			?? throw new NotSupportedException("Failed to create an OpenGL GRContext.");
 
 		if (_glSurface is null || gl.Width != _glWidth || gl.Height != _glHeight)
