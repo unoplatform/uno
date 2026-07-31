@@ -327,12 +327,13 @@ NSWindow* uno_window_create(double width, double height)
         v.enableSetNeedsDisplay = NO;
         v.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
 
-        // Double-buffering (2 drawables) instead of the default triple-buffering reduces present
-        // latency by one VSync, at the cost of headroom: when a frame overruns a VSync interval
-        // (GC pause, slow first frame, resize) there is no spare drawable, so nextDrawable blocks
-        // right away. Raise back to 3 if stutter under load is observed.
+        // Keep the default triple-buffering (3 drawables). Dropping to 2 saves one VSync of
+        // present latency but leaves no headroom: when a frame overruns a VSync interval (GC
+        // pause, slow first frame, resize, or a CPU-constrained CI agent) there is no spare
+        // drawable, so nextDrawable blocks for ~1s and then returns nil. Losing frames that way
+        // is far more costly than the latency it saves.
         CAMetalLayer* metalLayer = (CAMetalLayer*)v.layer;
-        metalLayer.maximumDrawableCount = 2;
+        metalLayer.maximumDrawableCount = 3;
         window.metalViewDelegate = [[UNOMetalViewDelegate alloc] initWithMetalKitView:v];
         v.delegate = window.metalViewDelegate;
         window.renderingView = v;

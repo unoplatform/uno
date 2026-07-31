@@ -163,6 +163,23 @@ bool uno_window_acquire_next_frame(NSWindow* window, void** texture, double* wid
     }
 }
 
+/// Releases the drawable acquired by uno_window_acquire_next_frame without presenting it.
+/// Used when the managed render thread fails to draw the frame: the drawable would otherwise
+/// stay retained and repeated failures would exhaust the layer's pool, making every later
+/// nextDrawable call block and then return nil.
+void uno_window_discard_frame(NSWindow* window)
+{
+    @autoreleasepool {
+        if (window == nil) return;
+
+        UNOWindow* unoWindow = (UNOWindow*)window;
+        UNOMetalViewDelegate* delegate = unoWindow.metalViewDelegate;
+        if (delegate == nil) return;
+
+        delegate.currentFrameDrawable = nil;
+    }
+}
+
 void uno_window_present_frame(NSWindow* window)
 {
     @autoreleasepool {
