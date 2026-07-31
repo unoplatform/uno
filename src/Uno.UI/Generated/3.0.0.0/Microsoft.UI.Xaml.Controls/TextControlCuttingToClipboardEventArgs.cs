@@ -8,25 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class TextControlCuttingToClipboardEventArgs
 	{
-#if false
-		internal TextControlCuttingToClipboardEventArgs()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool Handled
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs", "Handled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs", "Handled");
-			}
-		}
-#endif
+		// Skipping already declared property Handled
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs.Handled.set
 	}

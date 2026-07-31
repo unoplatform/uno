@@ -2397,6 +2397,7 @@ namespace Microsoft.UI.Text
 			}
 			else if (closed.Destination == ParserDestination.Picture && closed.IsPictureGroup)
 			{
+				budget.RecordPictureAttempt();
 				if (TryParsePicture(closed, out var picture))
 				{
 					if (stack[stack.Count - 1].PendingInlineImage is { } metadata)
@@ -4347,6 +4348,7 @@ namespace Microsoft.UI.Text
 			private int _formatTransitions;
 			private int _characterRuns;
 			private int _paragraphRuns;
+			private int _pictureAttempts;
 			private int _textObjects;
 
 			internal ParseBudget(int maxCharacters, bool truncateAtLimit)
@@ -4394,6 +4396,14 @@ namespace Microsoft.UI.Text
 				if (++_textObjects > MaxParsedImages)
 				{
 					throw new ArgumentException("The RTF contains too many embedded text objects.");
+				}
+			}
+
+			internal void RecordPictureAttempt()
+			{
+				if (++_pictureAttempts > MaxParsedImages)
+				{
+					throw new ArgumentException("The RTF contains too many embedded picture attempts.");
 				}
 			}
 		}

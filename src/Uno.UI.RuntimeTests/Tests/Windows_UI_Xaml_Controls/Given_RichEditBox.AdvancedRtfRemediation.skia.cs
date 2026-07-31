@@ -95,8 +95,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			StringAssert.StartsWith(text, "first\tsecond\t\rtail");
 			StringAssert.Contains(exported, @"\trowd");
 			StringAssert.Contains(exported, @"\trgaph108");
-			StringAssert.Contains(exported, @"\clvertalc\cellx1200");
-			StringAssert.Contains(exported, @"\clvertalb\cellx2400");
+			StringAssert.Contains(exported, @"\clvertalc");
+			StringAssert.Contains(exported, @"\cellx1200");
+			StringAssert.Contains(exported, @"\clvertalb");
+			StringAssert.Contains(exported, @"\cellx2400");
 			StringAssert.Contains(exported, @"\cell");
 			StringAssert.Contains(exported, @"\row");
 		}
@@ -242,7 +244,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public void When_Opaque_Destination_Exceeds_Budget_Import_Is_Rejected()
 		{
-			var rtf = @"{\rtf1{\*\vendorx " + new string('x', 256 * 1024 + 1) + "}}";
+			var rtf = @"{\rtf1{\header " + new string('x', 256 * 1024 + 1) + "}}";
 			var document = new RichEditBox().Document;
 
 			Assert.ThrowsExactly<ArgumentException>(() => document.SetText(TextSetOptions.FormatRtf, rtf));

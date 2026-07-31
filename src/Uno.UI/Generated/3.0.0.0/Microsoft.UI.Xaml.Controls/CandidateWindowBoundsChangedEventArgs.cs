@@ -8,21 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class CandidateWindowBoundsChangedEventArgs
 	{
-#if __SKIA__
-		internal CandidateWindowBoundsChangedEventArgs()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Windows.Foundation.Rect Bounds
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.CandidateWindowBoundsChangedEventArgs", "Bounds");
-			}
-		}
-#endif
+		// Skipping already declared property Bounds
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CandidateWindowBoundsChangedEventArgs.Bounds.get
 	}
 }

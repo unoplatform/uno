@@ -8,21 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class RichEditBoxTextChangingEventArgs
 	{
-#if false
-		internal RichEditBoxTextChangingEventArgs()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool IsContentChanging
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs", "IsContentChanging");
-			}
-		}
-#endif
+		// Skipping already declared property IsContentChanging
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs.IsContentChanging.get
 	}
 }
