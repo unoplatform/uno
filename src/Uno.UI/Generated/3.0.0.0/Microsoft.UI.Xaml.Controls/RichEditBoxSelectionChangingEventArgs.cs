@@ -8,45 +8,9 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class RichEditBoxSelectionChangingEventArgs
 	{
-#if false
-		internal RichEditBoxSelectionChangingEventArgs()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool Cancel
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs", "Cancel");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs", "Cancel");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__SKIA__")]
-		public int SelectionLength
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs", "SelectionLength");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__SKIA__")]
-		public int SelectionStart
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs", "SelectionStart");
-			}
-		}
-#endif
+		// Skipping already declared property Cancel
+		// Skipping already declared property SelectionLength
+		// Skipping already declared property SelectionStart
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.Cancel.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.SelectionLength.get
