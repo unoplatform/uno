@@ -133,16 +133,11 @@ internal static class XamlCodeBehindParser
 			return null;
 		}
 
-		// For CLR namespace-based xmlns (e.g., "using:MyApp.Controls" or "clr-namespace:MyApp.Controls"),
-		// try to resolve the full type name
-		foreach (var prefix in new[] { "using:", "clr-namespace:" })
+		// For CLR namespace-based xmlns (e.g., "using:MyApp.Controls"), try to resolve the full type name
+		var parts = rootElementNamespace.Split(new[] { "using:" }, 2, StringSplitOptions.None);
+		if (parts.Length == 2)
 		{
-			var parts = rootElementNamespace.Split(new[] { prefix }, 2, StringSplitOptions.None);
-			if (parts.Length == 2)
-			{
-				var xmlns = parts[1].Split(';')[0];
-				return $"{xmlns}.{rootElementName}";
-			}
+			return $"{parts[1].Split(';')[0]}.{rootElementName}";
 		}
 
 		// Unknown namespace URI — cannot resolve
