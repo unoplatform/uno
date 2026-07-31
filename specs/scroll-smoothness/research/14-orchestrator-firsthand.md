@@ -215,6 +215,67 @@ intermediate positions that a resampler would need.
 frames**, and frame time. SamplesApp exposes it as `ShowFpsIndicator`
 (`SampleChooserViewMode.Properties.cs:519`). This is the before/after evidence instrument.
 
+## 11. There is a *second*, unused scroll stack — and its inertia is worse
+
+Uno already carries a near-complete MUX `ScrollPresenter` port and a managed `InteractionTracker`:
+
+- `src/Uno.UI/UI/Xaml/Controls/ScrollPresenter/ScrollPresenter.cs` — **289 KB**, plus
+  `ScrollPresenterAnchoring.cs`, `InteractionTrackerAsyncOperation.h.cs`, the full
+  `ScrollController*` event-arg set (~10 k lines total).
+- `src/Uno.UI/UI/Xaml/Controls/ScrollView/ScrollView.cs` — 2717 lines, plus `ScrollBarController`.
+- `src/Uno.UI.Composition/Composition/InteractionTracker/` — 18 files, 1057 lines: `InteractionTracker`,
+  its state machine (`Idle`/`Interacting`/`Inertia`/`CustomAnimation`), and two inertia handlers.
+
+So the WinUI-parity architecture is *present*. But the parts that actually produce motion are not
+frame-driven:
+
+### `InteractionTrackerActiveInputInertiaHandler` (touch fling)
+
+`InteractionTrackerActiveInputInertiaHandler.cs:40-76`:
+
+```csharp
+private const int IntervalInMilliseconds = 17; // Ceiling of 1000/60   (:24)
+...
+_stopwatch = Stopwatch.StartNew();
+_timer = new Timer(OnTick, null, 0, IntervalInMilliseconds);           // System.Threading.Timer
+...
+private void OnTick(object? state)
+{
+    var currentElapsedInSeconds = _stopwatch!.ElapsedMilliseconds / 1000.0f;
+    ...
+    _interactionTracker.SetPosition(newPosition, _requestId);
+}
+```
+
+Three defects in eight lines:
+
+1. **`System.Threading.Timer` at a fixed 17 ms** — a threadpool timer, free-running against the
+   display refresh. A 17 ms tick against a 16.67 ms vsync beats at ~2.5 s, and against a 120 Hz
+   display it is off by 2×. This *guarantees* periodic dropped/duplicated frames.
+2. **Composition state is mutated from a threadpool thread**, not the UI thread.
+3. **`Stopwatch.ElapsedMilliseconds` is integer milliseconds**, so the sampled time is quantized to
+   1 ms and the position it produces steps rather than flows.
+
+The decay model itself (`…AxisHelper.cs:37-80`) is exponential with
+`DecayRate = 1 - PositionInertiaDecayRate` (default `0.95f`) and a `minimumVelocity` of `30.0f` — a
+reasonable model, undone by the tick source.
+
+### `InteractionTrackerPointerWheelInertiaHandler` (wheel)
+
+`InteractionTrackerPointerWheelInertiaHandler.cs:26-88`: same threadpool `Timer` at 17 ms, and the
+motion is **constant velocity for exactly 0.25 s** (`:35-36`, `:68`) — no deceleration curve at all:
+
+```csharp
+// This handler works with constant velocity for 0.25 second.
+_calculatedFinalPosition = interactionTracker.Position + InitialVelocity * 0.25f;
+```
+
+**Design consequence:** retargeting `ScrollViewer` onto `ScrollPresenter`/`InteractionTracker` would
+not, by itself, fix smoothness — the tracker's motion sources have the same class of defect as the
+legacy path, plus cross-thread mutation. Whichever stack wins, **the fix is the same: one
+frame-clock-driven, closed-form motion source**. That argues for fixing the motion layer first, and
+treating the ScrollPresenter migration as an independent (later) parity question.
+
 ## Working hypothesis going into the design
 
 Ranked by expected impact on perceived smoothness:
@@ -229,3 +290,22 @@ Ranked by expected impact on perceived smoothness:
    platform models.
 5. **Per-frame allocations** in the animation tick and the picture-collapsing thresholds (50 frames /
    100 visuals) that never engage for virtualized content.
+6. **The alternate `InteractionTracker` stack ticks on a threadpool `Timer` at a fixed 17 ms** and
+   mutates composition state off the UI thread (§11) — so "just move to ScrollPresenter" is not a
+   fix.
+
+## Cross-cutting theme
+
+Every motion source in the codebase is driven by *something other than the presented frame*:
+
+| Motion source | Tick source | Cite |
+|---|---|---|
+| Wheel scroll | 1 s `KeyFrameAnimation`, ticked during the picture record | `ScrollContentPresenter.Managed.cs:474-479` |
+| Touch drag | raw OS input events, no alignment at all | `GestureRecognizer.Manipulation.cs:231-250` |
+| Touch inertia (legacy) | `CompositionTarget.Rendering` + own `Stopwatch` | `GestureRecognizer.…InertiaProcessor.cs:333-352` |
+| Touch inertia (fallback) | `DispatcherQueueTimer` @ **30 FPS** | `…InertiaProcessor.cs:312-330` |
+| InteractionTracker inertia | `System.Threading.Timer` @ **17 ms**, threadpool | `InteractionTrackerActiveInputInertiaHandler.cs:40-48` |
+| InteractionTracker wheel | `System.Threading.Timer` @ **17 ms**, constant velocity 0.25 s | `InteractionTrackerPointerWheelInertiaHandler.cs:35-55` |
+| Drag-reorder auto-scroll | `DispatcherTimer` @ **40 FPS** | `ScrollViewer.ConstantVelocity.cs:83-89` |
+
+Six different clocks, none of them the frame clock, none of them agreeing. That is the finding.
