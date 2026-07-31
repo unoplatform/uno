@@ -153,12 +153,21 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				// never cleared (Render returns before that).
 				InvalidateParentChildrenPicture(includeSelf: false);
 
-				// Becoming suppressed leaves whatever was painted on screen, so damage it like
-				// OnIsVisibleChanged does. The reverse direction self-heals: the visual is walked again
-				// with no _lastRenderBounds, which reports it as moved.
-				if (value && CompositionTarget is { } target)
+				if (CompositionTarget is { } target)
 				{
-					DamageLastRenderedRegion(target);
+					// Becoming suppressed leaves whatever was painted on screen, so damage it like
+					// OnIsVisibleChanged does. The reverse direction self-heals: the visual is walked again
+					// with no _lastRenderBounds, which reports it as moved.
+					if (value)
+					{
+						DamageLastRenderedRegion(target);
+					}
+
+					// This is not a composition property, so nothing requests a frame on our behalf. An
+					// arrange landing on the previous offset and size (a re-parented element re-added to the
+					// same slot) changes no property at all, so without this the damage above, or the newly
+					// unsuppressed subtree, would wait for an unrelated invalidation.
+					target.RequestNewFrame();
 				}
 			}
 		}
