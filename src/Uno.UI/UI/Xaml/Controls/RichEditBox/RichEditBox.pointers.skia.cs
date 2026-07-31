@@ -277,6 +277,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var displayBlock = _textBoxView!.DisplayBlock;
 			var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(point, true, true));
+			TouchTapAtIndex(index);
+		}
+
+		private void TouchTapAtIndex(int index)
+		{
+			var displayBlock = _textBoxView!.DisplayBlock;
 			var tappedChunk = displayBlock.ParsedText.GetWordAt(index, true);
 			var tappedInsideSelection = _selection.start <= index && index < _selection.start + _selection.length;
 			if (tappedInsideSelection)
