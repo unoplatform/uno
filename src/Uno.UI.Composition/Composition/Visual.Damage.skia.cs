@@ -13,6 +13,7 @@ public partial class Visual
 	private SKRect _lastRenderBounds;
 	private Matrix4x4 _lastRenderMatrix;
 	private bool _hasLastRenderBounds;
+	private SKRect _lastClipBounds;
 
 	private bool _subtreeChangedThisFrame;
 
@@ -36,7 +37,15 @@ public partial class Visual
 
 		var shadowSilhouetteChanged = ShadowState is not null && _subtreeChangedThisFrame;
 
-		if (!contentChanged && !moved && !shadowSilhouetteChanged)
+		// The accumulated clip can grow or shrink while this visual's own content and transform stay
+		// identical (e.g. an ancestor re-clipping to a new size), revealing or hiding part of it. Nothing
+		// else would report that as damage, so the newly exposed pixels would keep the previous frame's
+		// content. Compared by bounds to stay cheap on this per-visual, per-frame path.
+		var clipBounds = clip.Bounds;
+		var clipChanged = clipBounds != _lastClipBounds;
+		_lastClipBounds = clipBounds;
+
+		if (!contentChanged && !moved && !clipChanged && !shadowSilhouetteChanged)
 		{
 			return;
 		}
