@@ -281,8 +281,13 @@ Three measurements settle the ranking empirically, in order:
 | B1 — `OnFrame` publishes the current frame's offset | **done** | same |
 | B2 — `int` wheel-delta dead zone | **done** | same |
 | Measurement harness (`ScrollSmoothnessBenchmark`) | **done** | `test(scroll): Add scroll smoothness benchmark sample` |
+| C1 — wheel: accumulating exponential decay replacing the restarted ease | **done** | `perf(scroll): Replace the wheel ease with an accumulating decay` |
+| A3 (partial) — `Compositor.FrameStarting`, one timestamp per frame, pre-record | **done** | same |
+| A5 — touch inertia ticks before the frame it affects | **done** | `perf(scroll): Tick touch inertia before the frame it affects` |
+| Android — Choreographer pacer for the Vulkan render thread | **done** | `perf(android): Pace the Vulkan render thread with Choreographer` |
+| Scroll diagnostics (opt-in, per-frame telemetry) | **done** | `chore(scroll): Add opt-in per-frame scroll diagnostics` |
 | A2 — preserve `_childrenPicture` across a pure transform change | **not started** | — |
-| A3 — one authoritative per-frame timestamp | **not started** | — |
+| A3 (rest) — thread the frame timestamp through *all* animation evaluation and `RenderingEventArgs` | **not started** | — |
 | A5 — pre-record inertia tick | **not started** | — |
 | B3–B9, Tier C | **not started** | — |
 
@@ -417,6 +422,15 @@ The panel and the input are both at ~120 Hz; frame production alternates between
    **Next experiment:** force `VK_PRESENT_MODE_FIFO_KHR` on Android and re-measure this histogram. If
    the 16 ms bucket collapses, the present mode is the cause. If it does not, the misses are
    UI-thread record cost and that is where to look instead.
+
+### F4 — Defects found while investigating, filed separately
+
+| Issue | What | Scope |
+|---|---|---|
+| [#23937](https://github.com/unoplatform/uno/issues/23937) | The Vulkan render path leaks a `VkCommandBuffer` and `VkFence` **every frame** — the drain is gated behind an `autoFree` flag that defaults false and is never passed. ~7 200/minute at 120 fps. Causes the process to abort inside the driver during `vkCmdBlitImage`. | **All Vulkan hosts** (Win32, X11, Android). Predates this branch (`a9a4027136`). |
+| not yet filed | `Visual._picture` / `_childrenPicture` are raw `IntPtr` never released on dispose — libc heap, not GPU memory, so it cannot produce the crash above. | Skia, all targets |
+| not yet filed | `VulkanContext.Dispose()` leaves resources behind on surface teardown; `VulkanDisplay.EnsureSwapchainAvailable`'s `while (true)` cannot terminate under a persistent `VK_SUBOPTIMAL_KHR`. | All Vulkan hosts |
+| not yet filed | Incremental Android builds of the SamplesApp head drop the `kotlinx-coroutines-android` AAR, so `androidx.window` throws in `onStart`. A clean build always fixes it. Reproduced ~4 times. | Android build |
 
 ## 10. Known-open questions
 
