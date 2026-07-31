@@ -62,13 +62,13 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 
 		if (ItemsControlAutomationPeer is { } parent)
 		{
-			if (parent.Owner is not ISelector selector)
+			if (parent.Owner is not Selector selector)
 			{
 				throw new Exception("Operation cannot be performed.");
 			}
 
-			var index = (selector as Selector).Items.IndexOf(Item);
-			(selector as Selector).MakeSingleSelection(index, false /*animateIfBringIntoView*/, Item, default);
+			var index = selector.Items.IndexOf(Item);
+			selector.MakeSingleSelection(index, false /*animateIfBringIntoView*/, Item, default);
 		}
 	}
 
@@ -84,13 +84,13 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 
 		if (ItemsControlAutomationPeer is { } parent)
 		{
-			if (parent.Owner is not ISelector selector)
+			if (parent.Owner is not Selector selector)
 			{
 				throw new Exception("Operation cannot be performed.");
 			}
 
-			var index = (selector as Selector).Items.IndexOf(Item);
-			(selector as Selector).AutomationPeerAddToSelection(index, Item);
+			var index = selector.Items.IndexOf(Item);
+			selector.AutomationPeerAddToSelection(index, Item);
 		}
 	}
 
@@ -106,13 +106,13 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 
 		if (ItemsControlAutomationPeer is { } parent)
 		{
-			if (parent.Owner is not ISelector selector)
+			if (parent.Owner is not Selector selector)
 			{
 				throw new Exception("Operation cannot be performed.");
 			}
 
-			var index = (selector as Selector).Items.IndexOf(Item);
-			(selector as Selector).AutomationPeerRemoveFromSelection(index, Item);
+			var index = selector.Items.IndexOf(Item);
+			selector.AutomationPeerRemoveFromSelection(index, Item);
 		}
 	}
 
@@ -130,9 +130,9 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 
 			if (ItemsControlAutomationPeer is { } parent)
 			{
-				if (parent.Owner is ISelector selector)
+				if (parent.Owner is Selector selector)
 				{
-					return (selector as Selector).AutomationPeerIsSelected(Item);
+					return selector.AutomationPeerIsSelected(Item);
 				}
 			}
 
@@ -158,9 +158,9 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 
 	internal void ScrollIntoView()
 	{
-		if (ItemsControlAutomationPeer is { } parent)
+		if (ItemsControlAutomationPeer?.Owner is Selector selector)
 		{
-			(parent.Owner as Selector).ScrollIntoViewInternal(Item, /*isHeader*/ false, /*isFooter*/ false, /*isFromPublicAPI*/ true, ScrollIntoViewAlignment.Default, default, default);
+			selector.ScrollIntoViewInternal(Item, /*isHeader*/ false, /*isFooter*/ false, /*isFromPublicAPI*/ true, ScrollIntoViewAlignment.Default, default, default);
 		}
 	}
 }

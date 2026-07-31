@@ -33,10 +33,13 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	private string? _pendingAssertiveContent;
 	private Timer? _politeDebounceTimer;
 	private Timer? _assertiveDebounceTimer;
+	private int _politeAnnouncementGeneration;
+	private int _assertiveAnnouncementGeneration;
 	private long _politeThrottleTimestamp;
 	private long _assertiveThrottleTimestamp;
 	private string? _lastAnnouncedPoliteContent;
 	private string? _lastAnnouncedAssertiveContent;
+	private Windows.System.DispatcherQueue? _dispatcherQueue;
 
 	// Focus tracking
 	private UIElement? _trackedFocusedElement;
@@ -47,8 +50,11 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	// Tracks scroll-source elements (ScrollViewer / ScrollPresenter) we are subscribed to,
 	// so descendant accessibility positions can be re-emitted when the scroll offset changes.
 	// Keyed by Visual handle so removal can find the entry without holding a strong reference.
-	private readonly System.Collections.Generic.Dictionary<nint, EventHandler<ScrollViewerViewChangedEventArgs>> _scrollViewerSubscriptions = new();
-	private readonly System.Collections.Generic.Dictionary<nint, Windows.Foundation.TypedEventHandler<ScrollPresenter, object>> _scrollPresenterSubscriptions = new();
+	private readonly System.Collections.Generic.Dictionary<nint, (ScrollViewer Source, EventHandler<ScrollViewerViewChangedEventArgs> Handler)> _scrollViewerSubscriptions = new();
+	private readonly System.Collections.Generic.Dictionary<nint, (ScrollPresenter Source, Windows.Foundation.TypedEventHandler<ScrollPresenter, object> Handler)> _scrollPresenterSubscriptions = new();
+	private readonly System.Collections.Generic.HashSet<UIElement> _pendingScrollSources = new();
+	private bool _scrollRefreshScheduled;
+	private int _scrollRefreshGeneration;
 
 	/// <summary>
 	/// Whether this instance has been disposed. Pending dispatcher callbacks
@@ -145,26 +151,36 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		if (element is ScrollViewer scrollViewer)
 		{
 			var handle = scrollViewer.Visual.Handle;
-			if (_scrollViewerSubscriptions.ContainsKey(handle))
+			if (_scrollViewerSubscriptions.TryGetValue(handle, out var existing))
 			{
-				return;
+				if (ReferenceEquals(existing.Source, scrollViewer))
+				{
+					return;
+				}
+
+				existing.Source.ViewChanged -= existing.Handler;
 			}
 
 			void Handler(object? sender, ScrollViewerViewChangedEventArgs e) => OnScrollSourceChanged(scrollViewer);
 			scrollViewer.ViewChanged += Handler;
-			_scrollViewerSubscriptions[handle] = Handler;
+			_scrollViewerSubscriptions[handle] = (scrollViewer, Handler);
 		}
 		else if (element is ScrollPresenter scrollPresenter)
 		{
 			var handle = scrollPresenter.Visual.Handle;
-			if (_scrollPresenterSubscriptions.ContainsKey(handle))
+			if (_scrollPresenterSubscriptions.TryGetValue(handle, out var existing))
 			{
-				return;
+				if (ReferenceEquals(existing.Source, scrollPresenter))
+				{
+					return;
+				}
+
+				existing.Source.ViewChanged -= existing.Handler;
 			}
 
 			void Handler(ScrollPresenter sender, object e) => OnScrollSourceChanged(scrollPresenter);
 			scrollPresenter.ViewChanged += Handler;
-			_scrollPresenterSubscriptions[handle] = Handler;
+			_scrollPresenterSubscriptions[handle] = (scrollPresenter, Handler);
 		}
 	}
 
@@ -173,19 +189,38 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		if (element is ScrollViewer scrollViewer)
 		{
 			var handle = scrollViewer.Visual.Handle;
-			if (_scrollViewerSubscriptions.Remove(handle, out var handler))
+			if (_scrollViewerSubscriptions.Remove(handle, out var subscription))
 			{
-				scrollViewer.ViewChanged -= handler;
+				subscription.Source.ViewChanged -= subscription.Handler;
 			}
 		}
 		else if (element is ScrollPresenter scrollPresenter)
 		{
 			var handle = scrollPresenter.Visual.Handle;
-			if (_scrollPresenterSubscriptions.Remove(handle, out var handler))
+			if (_scrollPresenterSubscriptions.Remove(handle, out var subscription))
 			{
-				scrollPresenter.ViewChanged -= handler;
+				subscription.Source.ViewChanged -= subscription.Handler;
 			}
 		}
+	}
+
+	protected void ResetScrollSourceSubscriptions()
+	{
+		foreach (var subscription in _scrollViewerSubscriptions.Values)
+		{
+			subscription.Source.ViewChanged -= subscription.Handler;
+		}
+		_scrollViewerSubscriptions.Clear();
+
+		foreach (var subscription in _scrollPresenterSubscriptions.Values)
+		{
+			subscription.Source.ViewChanged -= subscription.Handler;
+		}
+		_scrollPresenterSubscriptions.Clear();
+
+		_scrollRefreshGeneration++;
+		_scrollRefreshScheduled = false;
+		_pendingScrollSources.Clear();
 	}
 
 	// Walks descendants of the scrolled element and re-emits OnSizeOrOffsetChanged
@@ -198,7 +233,50 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 			return;
 		}
 
-		ReemitDescendantPositions(scrollSource);
+		_pendingScrollSources.Add(scrollSource);
+		if (_scrollRefreshScheduled)
+		{
+			return;
+		}
+
+		_scrollRefreshScheduled = true;
+		var generation = _scrollRefreshGeneration;
+
+		if (!scrollSource.DispatcherQueue.TryEnqueue(() => FlushScrollSourceChanges(generation)))
+		{
+			FlushScrollSourceChanges(generation);
+		}
+	}
+
+	private void FlushScrollSourceChanges(int generation)
+	{
+		if (_isDisposed || generation != _scrollRefreshGeneration)
+		{
+			return;
+		}
+
+		_scrollRefreshScheduled = false;
+		UIElement[] sources = [.. _pendingScrollSources];
+		_pendingScrollSources.Clear();
+
+		var sourceSet = new System.Collections.Generic.HashSet<UIElement>(sources);
+		foreach (var source in sources)
+		{
+			var hasPendingAncestor = false;
+			for (var ancestor = source.GetParent() as UIElement; ancestor is not null; ancestor = ancestor.GetParent() as UIElement)
+			{
+				if (sourceSet.Contains(ancestor))
+				{
+					hasPendingAncestor = true;
+					break;
+				}
+			}
+
+			if (!hasPendingAncestor)
+			{
+				ReemitDescendantPositions(source);
+			}
+		}
 	}
 
 	private void ReemitDescendantPositions(UIElement element)
@@ -766,33 +844,70 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	// ──────────────────────────────────────────────────────────────
 
 	public void AnnouncePolite(string text)
-	{
-		_pendingPoliteContent = text;
-		var oldTimer = _politeDebounceTimer;
-		_politeDebounceTimer = new Timer(_ => FlushPoliteAnnouncement(), null, AnnouncementDebounceMs, Timeout.Infinite);
-		oldTimer?.Dispose();
-	}
+		=> RunOnDispatcher(() => EnqueuePoliteAnnouncement(text));
 
-	public void AnnounceAssertive(string text)
-	{
-		_pendingAssertiveContent = text;
-		var oldTimer = _assertiveDebounceTimer;
-		_assertiveDebounceTimer = new Timer(_ => FlushAssertiveAnnouncement(), null, AnnouncementDebounceMs, Timeout.Infinite);
-		oldTimer?.Dispose();
-	}
-
-	private void FlushPoliteAnnouncement()
+	private void EnqueuePoliteAnnouncement(string text)
 	{
 		if (_isDisposed)
 		{
 			return;
 		}
 
-		var content = _pendingPoliteContent;
-		_pendingPoliteContent = null;
+		_pendingPoliteContent = text;
+		if (_politeDebounceTimer is null)
+		{
+			SchedulePoliteAnnouncement(AnnouncementDebounceMs);
+		}
+	}
+
+	public void AnnounceAssertive(string text)
+		=> RunOnDispatcher(() => EnqueueAssertiveAnnouncement(text));
+
+	private void EnqueueAssertiveAnnouncement(string text)
+	{
+		if (_isDisposed)
+		{
+			return;
+		}
+
+		_pendingAssertiveContent = text;
+		if (_assertiveDebounceTimer is null)
+		{
+			ScheduleAssertiveAnnouncement(AnnouncementDebounceMs);
+		}
+	}
+
+	private void SchedulePoliteAnnouncement(int delay)
+	{
+		var generation = ++_politeAnnouncementGeneration;
+		_politeDebounceTimer = new Timer(
+			_ => RunOnDispatcher(() => FlushPoliteAnnouncement(generation)),
+			null,
+			delay,
+			Timeout.Infinite);
+	}
+
+	private void ScheduleAssertiveAnnouncement(int delay)
+	{
+		var generation = ++_assertiveAnnouncementGeneration;
+		_assertiveDebounceTimer = new Timer(
+			_ => RunOnDispatcher(() => FlushAssertiveAnnouncement(generation)),
+			null,
+			delay,
+			Timeout.Infinite);
+	}
+
+	private void FlushPoliteAnnouncement(int generation)
+	{
+		if (_isDisposed || generation != _politeAnnouncementGeneration)
+		{
+			return;
+		}
+
 		_politeDebounceTimer?.Dispose();
 		_politeDebounceTimer = null;
-
+		var content = _pendingPoliteContent;
+		_pendingPoliteContent = null;
 		if (string.IsNullOrEmpty(content))
 		{
 			return;
@@ -801,36 +916,33 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		var now = Environment.TickCount64;
 		if (now - _politeThrottleTimestamp < PoliteThrottleMs)
 		{
-			var remaining = PoliteThrottleMs - (int)(now - _politeThrottleTimestamp);
 			_pendingPoliteContent = content;
-			_politeDebounceTimer = new Timer(_ => FlushPoliteAnnouncement(), null, remaining, Timeout.Infinite);
+			SchedulePoliteAnnouncement(PoliteThrottleMs - (int)(now - _politeThrottleTimestamp));
 			return;
 		}
 
 		if (string.Equals(content, _lastAnnouncedPoliteContent, StringComparison.Ordinal))
 		{
-			// Append a zero-width non-breaking space so the platform sees a
-			// different string and re-announces it.
 			content += "\uFEFF";
 		}
 
 		_politeThrottleTimestamp = now;
 		_lastAnnouncedPoliteContent = content;
+
 		AnnounceOnPlatform(content, assertive: false);
 	}
 
-	private void FlushAssertiveAnnouncement()
+	private void FlushAssertiveAnnouncement(int generation)
 	{
-		if (_isDisposed)
+		if (_isDisposed || generation != _assertiveAnnouncementGeneration)
 		{
 			return;
 		}
 
-		var content = _pendingAssertiveContent;
-		_pendingAssertiveContent = null;
 		_assertiveDebounceTimer?.Dispose();
 		_assertiveDebounceTimer = null;
-
+		var content = _pendingAssertiveContent;
+		_pendingAssertiveContent = null;
 		if (string.IsNullOrEmpty(content))
 		{
 			return;
@@ -839,9 +951,8 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		var now = Environment.TickCount64;
 		if (now - _assertiveThrottleTimestamp < AssertiveThrottleMs)
 		{
-			var remaining = AssertiveThrottleMs - (int)(now - _assertiveThrottleTimestamp);
 			_pendingAssertiveContent = content;
-			_assertiveDebounceTimer = new Timer(_ => FlushAssertiveAnnouncement(), null, remaining, Timeout.Infinite);
+			ScheduleAssertiveAnnouncement(AssertiveThrottleMs - (int)(now - _assertiveThrottleTimestamp));
 			return;
 		}
 
@@ -852,6 +963,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 		_assertiveThrottleTimestamp = now;
 		_lastAnnouncedAssertiveContent = content;
+
 		AnnounceOnPlatform(content, assertive: true);
 	}
 
@@ -860,10 +972,11 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	/// Call after modal close or other state resets.
 	/// </summary>
 	protected void ResetAnnouncementTracking()
-	{
-		_lastAnnouncedPoliteContent = null;
-		_lastAnnouncedAssertiveContent = null;
-	}
+		=> RunOnDispatcher(() =>
+		{
+			_lastAnnouncedPoliteContent = null;
+			_lastAnnouncedAssertiveContent = null;
+		});
 
 	// ──────────────────────────────────────────────────────────────
 	//  Disposal — per-window lifecycle
@@ -898,6 +1011,8 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 			}
 		}
 
+		_politeAnnouncementGeneration++;
+		_assertiveAnnouncementGeneration++;
 		_politeDebounceTimer?.Dispose();
 		_politeDebounceTimer = null;
 		_assertiveDebounceTimer?.Dispose();
@@ -905,10 +1020,35 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		_pendingPoliteContent = null;
 		_pendingAssertiveContent = null;
 
-		_scrollViewerSubscriptions.Clear();
-		_scrollPresenterSubscriptions.Clear();
+		ResetScrollSourceSubscriptions();
 
 		UntrackFocusedElement();
+	}
+
+	private void RunOnDispatcher(Action action)
+	{
+		var dispatcher = _dispatcherQueue;
+		if (dispatcher is null && Windows.System.DispatcherQueue.GetForCurrentThread() is { } currentDispatcher)
+		{
+			_dispatcherQueue = dispatcher = currentDispatcher;
+		}
+
+		if (dispatcher is null)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("[A11y] No UI DispatcherQueue is available for an accessibility callback; running it on the current thread.");
+			}
+			action();
+		}
+		else if (dispatcher.HasThreadAccess)
+		{
+			action();
+		}
+		else
+		{
+			dispatcher.TryEnqueue(() => action());
+		}
 	}
 
 	/// <summary>

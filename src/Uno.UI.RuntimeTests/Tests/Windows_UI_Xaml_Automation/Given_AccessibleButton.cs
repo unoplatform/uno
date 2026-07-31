@@ -274,6 +274,154 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreNotEqual("0", GetSemanticAttribute(button, "tabindex"), "A disabled Button must not be a tab stop (tabindex must not be \"0\").");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Button_Starts_Disabled_Then_Reenable_Restores_Its_Tab_Stop()
+		{
+			var button = new MutableEnabledButton { Content = "Initially disabled", IsEnabled = false };
+
+			await UITestHelper.Load(button);
+			var peer = button.GetOrCreateAutomationPeer();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(button), timeoutMS: 5000, message: "Timed out waiting for the initially-disabled button semantic element.");
+
+			Assert.AreEqual("true", GetSemanticAttribute(button, "aria-disabled"));
+			Assert.AreEqual("-1", GetSemanticAttribute(button, "tabindex"));
+
+			button.IsEnabled = true;
+			peer.RaisePropertyChangedEvent(AutomationElementIdentifiers.IsEnabledProperty, false, true);
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(button, "aria-disabled") == "false" && GetSemanticAttribute(button, "tabindex") == "0",
+				timeoutMS: 3000,
+				message: "Re-enabling an initially-disabled button did not restore its intended tab stop.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Automation_Invoke_Emits_Pointer_Sequence_Then_Button_Clicks_Once()
+		{
+			var button = new Button { Content = "Invoke once" };
+			var clickCount = 0;
+			button.Click += (_, _) => clickCount++;
+
+			await UITestHelper.Load(button);
+			button.GetOrCreateAutomationPeer();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(button), timeoutMS: 5000, message: "Timed out waiting for the semantic button.");
+
+			var elementId = GetSemanticElementId(button);
+			InvokeBrowserJs($"(function(){{ const element = document.getElementById('{elementId}'); const bounds = element.getBoundingClientRect(); const eventInit = {{ bubbles: true, cancelable: true, composed: true, pointerId: 1, pointerType: 'mouse', isPrimary: true, button: 0, clientX: bounds.left + bounds.width / 2, clientY: bounds.top + bounds.height / 2 }}; element.dispatchEvent(new PointerEvent('pointerdown', {{ ...eventInit, buttons: 1, pressure: 0.5 }})); element.dispatchEvent(new PointerEvent('pointerup', {{ ...eventInit, buttons: 0, pressure: 0 }})); element.click(); return 'ok'; }})()");
+
+			await UITestHelper.WaitFor(() => clickCount >= 1, timeoutMS: 3000, message: "The semantic button was not invoked.");
+			await UITestHelper.WaitForIdle();
+			Assert.AreEqual(1, clickCount, "Assistive activation pointer events must not also enter the canvas input path.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Detached_Button_Node_Reuses_A_Live_Id_Then_Old_Click_Is_Rejected()
+		{
+			var button = new Button { Content = "Target" };
+			var clickCount = 0;
+			button.Click += (_, _) => clickCount++;
+			var panel = new StackPanel { Children = { button } };
+
+			await UITestHelper.Load(panel);
+			button.GetOrCreateAutomationPeer();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(button), timeoutMS: 5000, message: "Timed out waiting for the button semantic element.");
+
+			var elementId = GetSemanticElementId(button);
+			InvokeBrowserJs($"globalThis.__unoStaleSemanticButton = document.getElementById('{elementId}'); 'ok'");
+			panel.Children.Remove(button);
+			panel.Children.Add(button);
+			await UITestHelper.WaitFor(
+				() => SemanticElementExists(button) && InvokeBrowserJs($"globalThis.__unoStaleSemanticButton === document.getElementById('{elementId}') ? '1' : '0'") == "0",
+				timeoutMS: 3000,
+				message: "The semantic button was not recreated with a distinct DOM identity.");
+
+			InvokeBrowserJs("globalThis.__unoStaleSemanticButton.click(); 'ok'");
+			await UITestHelper.WaitForIdle();
+			Assert.AreEqual(0, clickCount, "A detached superseded semantic node must not dispatch to the live recycled handle.");
+
+			InvokeBrowserJs($"document.getElementById('{elementId}').click(); delete globalThis.__unoStaleSemanticButton; 'ok'");
+			await UITestHelper.WaitFor(() => clickCount == 1, timeoutMS: 3000, message: "The current semantic node did not invoke its live owner.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Host_Node_Collides_With_Semantic_Id_Then_It_Is_Not_Removed_Or_Mutated()
+		{
+			var sibling = new Button { Content = "Existing sibling" };
+			var panel = new StackPanel { Children = { sibling } };
+			var button = new Button { Content = "Collision target" };
+			var elementId = GetSemanticElementId(button);
+
+			await UITestHelper.Load(panel);
+			sibling.GetOrCreateAutomationPeer();
+			EnableAccessibilityThroughDom();
+			InvokeBrowserJs($"(function(){{const host=document.createElement('div'); host.id='{elementId}'; host.dataset.owner='host'; document.body.insertBefore(host, document.body.firstChild); return 'ok';}})()");
+
+			try
+			{
+				panel.Children.Add(button);
+				var peer = button.GetOrCreateAutomationPeer();
+				await UITestHelper.WaitFor(
+					() => InvokeBrowserJs($"document.querySelector('#uno-semantics-root [id=\"{elementId}\"]') ? '1' : '0'") == "1",
+					timeoutMS: 5000,
+					message: "Timed out waiting for the owned semantic node with the colliding id.");
+
+				Assert.AreEqual(
+					"host",
+					InvokeBrowserJs($"document.querySelector('body > [id=\"{elementId}\"]')?.dataset.owner || ''"),
+					"Semantic creation must not remove a colliding host node outside the semantic root.");
+
+				button.IsEnabled = false;
+				peer.RaisePropertyChangedEvent(AutomationElementIdentifiers.IsEnabledProperty, true, false);
+				await UITestHelper.WaitFor(
+					() => InvokeBrowserJs($"document.querySelector('#uno-semantics-root [id=\"{elementId}\"]')?.getAttribute('aria-disabled') || ''") == "true",
+					timeoutMS: 3000,
+					message: "The owned semantic node did not receive its disabled-state update.");
+
+				Assert.AreEqual(
+					"",
+					InvokeBrowserJs($"document.querySelector('body > [id=\"{elementId}\"]')?.getAttribute('aria-disabled') || ''"),
+					"Accessibility updates must not mutate a colliding host node outside the semantic root.");
+			}
+			finally
+			{
+				InvokeBrowserJs($"document.querySelector('body > [id=\"{elementId}\"]')?.remove(); 'ok'");
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Invoke_Provider_Throws_Then_Export_Contains_It_And_Sibling_Still_Invokes()
+		{
+			var throwing = new ThrowingInvokeButton();
+			var sibling = new Button { Content = "Sibling" };
+			var siblingClicks = 0;
+			sibling.Click += (_, _) => siblingClicks++;
+			var panel = new StackPanel { Children = { throwing, sibling } };
+
+			await UITestHelper.Load(panel);
+			throwing.GetOrCreateAutomationPeer();
+			sibling.GetOrCreateAutomationPeer();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(throwing) && SemanticElementExists(sibling), timeoutMS: 5000, message: "Timed out waiting for invoke-provider semantic elements.");
+
+			var result = InvokeBrowserJs($"(function(){{ try {{ document.getElementById('{GetSemanticElementId(throwing)}').click(); return 'contained'; }} catch (e) {{ return 'escaped'; }} }})()");
+			Assert.AreEqual("contained", result, "An arbitrary provider exception must not escape the managed JS export.");
+
+			InvokeBrowserJs($"document.getElementById('{GetSemanticElementId(sibling)}').click(); 'ok'");
+			await UITestHelper.WaitFor(() => siblingClicks == 1, timeoutMS: 3000, message: "A provider failure poisoned subsequent semantic actions.");
+		}
+
 		/// <summary>
 		/// FR-016 (WASM DOM): a Button with AutomationProperties.Name exposes the name as aria-label on its
 		/// semantic element so screen readers announce it.
@@ -369,5 +517,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 #endif
 
+		private sealed partial class MutableEnabledButton : Button
+		{
+		}
+
+		private sealed partial class ThrowingInvokeButton : Button
+		{
+			public ThrowingInvokeButton() => Content = "Throwing";
+			protected override AutomationPeer OnCreateAutomationPeer() => new ThrowingInvokeButtonPeer(this);
+		}
+
+		private sealed partial class ThrowingInvokeButtonPeer : ButtonAutomationPeer, IInvokeProvider
+		{
+			public ThrowingInvokeButtonPeer(Button owner) : base(owner) { }
+			protected override object GetPatternCore(PatternInterface patternInterface)
+				=> patternInterface == PatternInterface.Invoke ? this : base.GetPatternCore(patternInterface);
+			void IInvokeProvider.Invoke() => throw new InvalidOperationException("Provider failed.");
+		}
 	}
 }

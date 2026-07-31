@@ -1,12 +1,14 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
@@ -19,9 +21,12 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
+using Uno.UI.Dispatching;
+using Windows.Foundation;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -66,7 +71,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	private UIElement? _focusSearchRoot;
 	private bool _suppressDeparture;
 	internal ModalFocusScope? ActiveModalScope { get; set; }
-	private readonly List<VirtualizedSemanticRegion> _virtualizedRegions = new();
+	private readonly Dictionary<IntPtr, VirtualizedRegionRegistration> _virtualizedRegions = new();
 	private const int PreserveTextSelectionSentinel = -1;
 
 	/// <summary>
@@ -76,14 +81,38 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// </summary>
 	private bool IsRealizedVirtualizedItem(IntPtr handle)
 	{
-		foreach (var region in _virtualizedRegions)
+		foreach (var registration in _virtualizedRegions.Values)
 		{
-			if (region.ContainsRealizedHandle(handle))
+			if (registration.Region.ContainsRealizedHandle(handle))
 			{
 				return true;
 			}
 		}
 
+		return false;
+	}
+
+	private bool TryGetVirtualizedSemanticParent(IntPtr handle, out IntPtr parentHandle)
+	{
+		foreach (var registration in _virtualizedRegions.Values)
+		{
+			if (registration.Region.ContainsRealizedHandle(handle))
+			{
+				parentHandle = registration.Region.ContainerHandle;
+				return true;
+			}
+		}
+
+		foreach (var region in _comboBoxListBoxes.Values)
+		{
+			if (region.ContainsRealizedHandle(handle))
+			{
+				parentHandle = region.ContainerHandle;
+				return true;
+			}
+		}
+
+		parentHandle = IntPtr.Zero;
 		return false;
 	}
 
@@ -107,7 +136,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// uno-semantics-{handle} DOM node created via VirtualizedSemanticRegion, tracked there rather
 		// than in _semanticParentMap. Resolve focus to the item itself so XAML focus moves DOM focus
 		// onto it instead of walking up to the container ancestor.
-		if (IsRealizedVirtualizedItem(handle))
+		if (IsRealizedVirtualizedItem(handle) || IsRealizedComboBoxItem(handle))
 		{
 			return handle;
 		}
@@ -141,6 +170,19 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		return IntPtr.Zero;
 	}
 
+	internal bool IsSemanticDescendantOf(IntPtr handle, IntPtr ancestorHandle)
+	{
+		for (var current = handle; _semanticParentMap.TryGetValue(current, out var parent); current = parent)
+		{
+			if (parent == ancestorHandle)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	/// <summary>
 	/// Checks whether a given handle is present in the semantic DOM tree.
 	/// </summary>
@@ -151,7 +193,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return true;
 		}
 
-		if (IsRealizedVirtualizedItem(handle))
+		if (IsRealizedVirtualizedItem(handle) || IsRealizedComboBoxItem(handle))
 		{
 			return true;
 		}
@@ -159,6 +201,37 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		var rootElement = WebAssemblyWindowWrapper.Instance?.Window?.RootElement;
 		return rootElement is not null && rootElement.Visual.Handle == handle;
 	}
+
+	private bool TryGetLiveSemanticOwner(IntPtr handle, [NotNullWhen(true)] out UIElement? owner)
+	{
+		owner = null;
+		if (!_isAccessibilityEnabled || handle == IntPtr.Zero || !HasSemanticElement(handle))
+		{
+			return false;
+		}
+
+		try
+		{
+			if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement candidate } &&
+				candidate.Visual.Handle == handle)
+			{
+				owner = candidate;
+				return true;
+			}
+		}
+		catch (Exception ex) when (ex is InvalidOperationException or ArgumentException)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"[A11y] Rejected invalid semantic handle {handle}: {ex.Message}");
+			}
+		}
+
+		return false;
+	}
+
+	private static bool IsAutomationActionEnabled(AutomationPeer peer)
+		=> peer.IsEnabled() && AriaMapper.GetContainingDataGridPeer(peer)?.IsEnabled() != false;
 
 	/// <summary>
 	/// Maps each child handle to its semantic parent handle.
@@ -168,6 +241,26 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// "parent handle not found in DOM" errors.
 	/// </summary>
 	private readonly Dictionary<IntPtr, IntPtr> _semanticParentMap = new();
+	private readonly Dictionary<IntPtr, (FrameworkElement Element, TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> Handler)> _dataGridRowSubscriptions = new();
+	private readonly Dictionary<IntPtr, (AutomationPeer GridPeer, object Item)> _dataGridRealizedItems = new();
+	private readonly Dictionary<IntPtr, (FrameworkElement Element, EventHandler<object> Handler)> _dataGridLayoutSubscriptions = new();
+	private readonly Dictionary<IntPtr, (UIElement Owner, AutomationPeer Peer)> _dataGridSummarySubscriptions = new();
+	private Timer? _dataGridSummaryPollTimer;
+	private int _dataGridSummaryPollGeneration;
+	private readonly Dictionary<ContentDialog, (TypedEventHandler<ContentDialog, ContentDialogOpenedEventArgs> Opened, TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs> Closed)> _modalDialogSubscriptions = new();
+	private readonly Dictionary<IntPtr, int> _dataGridProviderFingerprints = new();
+	private static readonly ConditionalWeakTable<Type, DataGridItemPeerFactory> _dataGridItemPeerFactories = new();
+	private readonly Dictionary<IntPtr, long> _dataGridLastFingerprintCheckTicks = new();
+	private readonly Dictionary<IntPtr, Timer> _dataGridFingerprintThrottleTimers = new();
+	private readonly Dictionary<IntPtr, int> _dataGridProviderSummaryFingerprints = new();
+	private readonly HashSet<IntPtr> _scheduledDataGridFingerprintChecks = new();
+	private readonly HashSet<IntPtr> _scheduledDataGridSummaryChecks = new();
+	private const int DataGridFingerprintCheckIntervalMs = 100;
+	private const int DataGridSummaryCheckIntervalMs = 2000;
+	private readonly HashSet<IntPtr> _scheduledDataGridRefreshes = new();
+	private readonly HashSet<IntPtr> _pendingFullDataGridRefreshes = new();
+	private readonly Dictionary<IntPtr, HashSet<UIElement>> _pendingDataGridRowRefreshes = new();
+	private readonly Dictionary<IntPtr, SemanticElementType> _dataGridHeaderSemanticTypes = new();
 	/// <summary>
 	/// Handles of elements pruned from the AOM because they were Visibility=Collapsed at build/add
 	/// time (T058). When such an element later becomes visible, OnSizeOrOffsetChanged re-emits it —
@@ -182,7 +275,17 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// labeller is present: at the end of CreateAOM for the initial build, and at the end of the
 	/// outermost OnChildAdded call for panels loaded after accessibility is already enabled.
 	/// </summary>
-	private readonly List<(IntPtr Handle, AutomationPeer Peer)> _pendingLabelledBy = new();
+	private readonly Dictionary<IntPtr, AutomationPeer> _pendingLabelledBy = new();
+	private readonly Dictionary<IntPtr, AutomationPeer> _pendingRelationships = new();
+	private readonly Dictionary<IntPtr, AutomationPeer> _labelledBySources = new();
+	private readonly Dictionary<IntPtr, AutomationPeer> _relationshipSources = new();
+	private readonly Dictionary<IntPtr, HashSet<IntPtr>> _flowsFromSourcesByTarget = new();
+	private readonly Dictionary<IntPtr, HashSet<IntPtr>> _inverseFlowTargetsBySource = new();
+	private bool _relationshipRefreshScheduled;
+	private bool _relationshipFullRefreshPending;
+	private int _relationshipRefreshGeneration;
+	private int _onChildRemovedDepth;
+	private bool _refreshRelationshipsAfterRemoval;
 
 	/// <summary>
 	/// Reentrancy depth of <see cref="OnChildAdded"/>. OnChildAdded recurses through a whole subtree
@@ -191,119 +294,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// following-sibling labeller resolves order-independently on the dynamic path too.
 	/// </summary>
 	private int _onChildAddedDepth;
-
-	// Debounce timer infrastructure for DOM updates (FR-012: 100ms debounce)
-	private const int DebounceDelayMs = 100;
-	private Timer? _debounceTimer;
-	private readonly Queue<AccessibilityUpdateAction> _pendingUpdates = new();
-	private readonly object _updateLock = new();
-
-	/// <summary>
-	/// Represents an action to perform during a debounced DOM update.
-	/// </summary>
-	private abstract class AccessibilityUpdateAction
-	{
-		public abstract void Execute();
-	}
-
-	/// <summary>
-	/// Update action for property changes on semantic elements.
-	/// </summary>
-	private sealed class PropertyChangeAction : AccessibilityUpdateAction
-	{
-		public IntPtr Handle { get; init; }
-		public string PropertyName { get; init; } = string.Empty;
-		public object? OldValue { get; init; }
-		public object? NewValue { get; init; }
-		public Action<IntPtr, object?> UpdateAction { get; init; } = null!;
-
-		public override void Execute()
-		{
-			UpdateAction(Handle, NewValue);
-		}
-	}
-
-	/// <summary>
-	/// Queues an update action for debounced execution.
-	/// </summary>
-	/// <param name="action">The action to queue.</param>
-	private void QueueUpdate(AccessibilityUpdateAction action)
-	{
-		lock (_updateLock)
-		{
-			_pendingUpdates.Enqueue(action);
-			ResetDebounceTimer();
-		}
-	}
-
-	/// <summary>
-	/// Resets the debounce timer to fire after the debounce delay.
-	/// </summary>
-	private void ResetDebounceTimer()
-	{
-		_debounceTimer?.Dispose();
-		_debounceTimer = new Timer(
-			_ => FlushPendingUpdates(),
-			null,
-			DebounceDelayMs,
-			Timeout.Infinite);
-	}
-
-	/// <summary>
-	/// Flushes all pending updates to the DOM.
-	/// </summary>
-	private void FlushPendingUpdates()
-	{
-		List<AccessibilityUpdateAction> actionsToExecute;
-
-		lock (_updateLock)
-		{
-			if (_pendingUpdates.Count == 0)
-			{
-				return;
-			}
-
-			actionsToExecute = new List<AccessibilityUpdateAction>(_pendingUpdates);
-			_pendingUpdates.Clear();
-			_debounceTimer?.Dispose();
-			_debounceTimer = null;
-		}
-
-		if (this.Log().IsEnabled(LogLevel.Trace))
-		{
-			this.Log().Trace($"Flushing {actionsToExecute.Count} pending accessibility updates");
-		}
-
-		foreach (var action in actionsToExecute)
-		{
-			try
-			{
-				action.Execute();
-			}
-			catch (Exception ex)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"Error executing accessibility update: {ex.Message}", ex);
-				}
-			}
-		}
-	}
-
-	/// <summary>
-	/// Immediately flushes all pending updates without waiting for debounce.
-	/// Call this when accessibility is being disabled or element is being removed.
-	/// </summary>
-	internal void FlushUpdatesImmediately()
-	{
-		lock (_updateLock)
-		{
-			_debounceTimer?.Dispose();
-			_debounceTimer = null;
-		}
-
-		FlushPendingUpdates();
-	}
 
 	/// <summary>
 	/// Calculates the cumulative visual offset from a UIElement up to (but not including)
@@ -350,6 +340,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		// Controls commonly assemble their visual subtree before attaching it to the active XAML
+		// root. Emitting those detached children would classify them without their final ancestry and
+		// orphan them under the semantic root; the later attached-tree walk would then skip them as
+		// duplicates. Wait for the owning subtree to be connected, then emit it through normal recursion.
+		if (!IsConnectedToSemanticTree(parent))
+		{
+			return;
+		}
+
 		_onChildAddedDepth++;
 		try
 		{
@@ -358,7 +357,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			// FR-032/T058: a Collapsed element (and its whole subtree) is not rendered — skip both
 			// emission and recursion so its descendants do not leak into the AT tree (WinUI: Collapsed
 			// is absent from the UIA tree). Equivalent to !child.Visual.IsVisible.
-			if (IsPrunedAsHidden(child))
+			if (IsPrunedAsHidden(child) || HasPrunedAncestor(parent))
 			{
 				_prunedHandles.Add(child.Visual.Handle);
 				return;
@@ -371,13 +370,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				this.Log().Trace($"[A11y] OnChildAdded: parent={parent.GetType().Name} handle={parent.Visual.Handle} child={child.GetType().Name} handle={child.Visual.Handle} index={index?.ToString(CultureInfo.InvariantCulture) ?? "append"}");
 			}
 
-			// Detect virtualized containers for accessibility tracking
-			TryRegisterVirtualizedContainer(child);
 			// Detect ContentDialog for focus trapping
 			TryRegisterModalDialog(child);
 			// Detect ComboBox dropdowns so their options form a proper role="listbox"
 			TryRegisterComboBox(child);
 			TryRealizeComboBoxItem(child);
+			EnsureDataGridHeaderParent(parent);
 
 			// Find the nearest semantic ancestor for this child
 			var semanticParent = FindSemanticParent(parent);
@@ -396,17 +394,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					if (AddSemanticElement(semanticParent, child, index))
 					{
 						_semanticParentMap[childHandle] = semanticParent;
+						InitializeInverseFlows(child);
+						TrackDataGridHeaderSemanticType(child);
+						TrySubscribeDataGridProviderSnapshot(child);
+						TrySubscribeDataGridRow(child);
 
-						// FR-019/FR-022: defer aria-labelledby resolution on the dynamic path too. The
-						// inline resolution inside AddSemanticElement is order-dependent — a following-
-						// sibling labeller has not registered yet when this control is added — so record
-						// it and re-resolve when the outermost OnChildAdded subtree completes (below).
-						// The HasSemanticElement gate in ResolveLabelledByIdRef still applies at drain
-						// time, so no dangling IDREF is emitted.
-						if (AutomationProperties.GetLabeledBy(child) is not null
-							&& child.GetOrCreateAutomationPeer() is { } labelledPeer)
+						if (child.GetOrCreateAutomationPeer() is { } relationshipPeer)
 						{
-							_pendingLabelledBy.Add((childHandle, labelledPeer));
+							ApplyOrDeferLabelledBy(childHandle, relationshipPeer);
+							ApplyOrDeferRelationshipAttributes(childHandle, relationshipPeer);
 						}
 					}
 					else
@@ -418,6 +414,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					}
 				}
 			}
+
+			// Register and backfill virtualized containers only after their semantic container exists.
+			// This matches the activation-time build order and prevents the ordinary factory from
+			// replacing a newly initialized listbox and its realized option subtree.
+			TryRegisterVirtualizedContainer(child);
+			TryRealizeListViewItem(child);
+			TryQueueContainingDataGridRefresh(child);
 
 			// Don't recurse into virtualized containers — their items are managed
 			// by VirtualizedSemanticRegion via ContainerContentChanging/ElementPrepared.
@@ -451,9 +454,42 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			// the CreateAOM drain, making the dynamic path order-independent (FR-019/FR-022).
 			if (--_onChildAddedDepth == 0)
 			{
-				DrainPendingLabelledBy();
+				QueueRelationshipRefresh();
 			}
 		}
+	}
+
+	private bool IsConnectedToSemanticTree(UIElement element)
+	{
+		for (var current = element; current is not null; current = current.GetParent() as UIElement)
+		{
+			var handle = current.Visual.Handle;
+			if (handle == _rootElementHandle || _semanticParentMap.ContainsKey(handle))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private bool HasPrunedAncestor(UIElement element)
+	{
+		for (var current = element; current is not null; current = current.GetParent() as UIElement)
+		{
+			if (IsPrunedAsHidden(current))
+			{
+				return true;
+			}
+
+			var handle = current.Visual.Handle;
+			if (handle == _rootElementHandle || _semanticParentMap.ContainsKey(handle))
+			{
+				return false;
+			}
+		}
+
+		return false;
 	}
 
 	protected override void OnChildRemoved(UIElement parent, UIElement child)
@@ -463,6 +499,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		_onChildRemovedDepth++;
 		try
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
@@ -472,8 +509,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			TryUnsubscribeScrollSource(child);
 			TryUnregisterVirtualizedContainer(child);
+			TryUnregisterModalDialog(child);
 			TryUnregisterComboBox(child);
 			TryUnrealizeComboBoxItem(child);
+			TryUnsubscribeDataGridRow(child);
+			TryUnsubscribeDataGridProviderSnapshot(child);
 
 			// Remove any children of this element first (they may be semantic even if parent isn't)
 			foreach (var childChild in child.GetChildren())
@@ -483,15 +523,39 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			// Only remove from DOM if this element was actually in the semantic tree
 			var childHandle = child.Visual.Handle;
+			_prunedHandles.Remove(childHandle);
 			if (_semanticParentMap.TryGetValue(childHandle, out var semanticParent))
 			{
+				AutomationPeer? containingDataGridPeer = null;
+				try
+				{
+					containingDataGridPeer = child.GetOrCreateAutomationPeer() is { } childPeer
+						? AriaMapper.GetContainingDataGridPeer(childPeer)
+						: null;
+				}
+				catch (Exception ex)
+				{
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn($"[A11y] Skipped DataGrid refresh lookup while removing {child.GetType().Name}: {ex.Message}");
+					}
+				}
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
 					this.Log().Trace($"[A11y] OnChildRemoved: REMOVING from semantic tree child={child.GetType().Name} handle={childHandle} semanticParent={semanticParent}");
 				}
 				RemoveSemanticElement(semanticParent, childHandle);
 				_semanticParentMap.Remove(childHandle);
-				_prunedHandles.Remove(childHandle);
+				_pendingRelationships.Remove(childHandle);
+				_pendingLabelledBy.Remove(childHandle);
+				_labelledBySources.Remove(childHandle);
+				_relationshipSources.Remove(childHandle);
+				_dataGridHeaderSemanticTypes.Remove(childHandle);
+				_refreshRelationshipsAfterRemoval = true;
+				if (containingDataGridPeer is not null)
+				{
+					QueueDataGridRefresh(containingDataGridPeer);
+				}
 			}
 		}
 		catch (Exception ex)
@@ -500,6 +564,75 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				this.Log().Error($"[A11y] OnChildRemoved failed for {child.GetType().Name}: {ex.Message}", ex);
 			}
+		}
+		finally
+		{
+			if (--_onChildRemovedDepth == 0)
+			{
+				try
+				{
+					DemoteEmptyDataGridHeaderParent(parent);
+					if (_refreshRelationshipsAfterRemoval)
+					{
+						_refreshRelationshipsAfterRemoval = false;
+						QueueRelationshipRefresh(refreshResolved: true);
+					}
+				}
+				catch (Exception ex)
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"[A11y] Post-removal accessibility refresh failed: {ex.Message}", ex);
+					}
+				}
+			}
+		}
+	}
+
+	private void EnsureDataGridHeaderParent(UIElement parent)
+	{
+		var handle = parent.Visual.Handle;
+		if (_semanticParentMap.ContainsKey(handle) ||
+			parent.GetOrCreateAutomationPeer() is not { } peer ||
+			AriaMapper.GetSemanticElementType(peer, parent) is not SemanticElementType.GridRow)
+		{
+			return;
+		}
+
+		var visualParent = parent.GetParent() as UIElement;
+		if (visualParent is null)
+		{
+			return;
+		}
+
+		var semanticParent = FindSemanticParent(visualParent);
+		if (AddSemanticElement(semanticParent, parent, 0))
+		{
+			_semanticParentMap[handle] = semanticParent;
+			InitializeInverseFlows(parent);
+			TrackDataGridHeaderSemanticType(parent, peer);
+			TrySubscribeDataGridProviderSnapshot(parent, peer);
+			TrySubscribeDataGridRow(parent);
+			ApplyOrDeferLabelledBy(handle, peer);
+			ApplyOrDeferRelationshipAttributes(handle, peer);
+		}
+	}
+
+	private void DemoteEmptyDataGridHeaderParent(UIElement parent)
+	{
+		var handle = parent.Visual.Handle;
+		if (_semanticParentMap.TryGetValue(handle, out var semanticParent) &&
+			AutomationProperties.GetAccessibilityView(parent) == AccessibilityView.Raw &&
+			!IsRequiredDataGridHeaderStructure(parent))
+		{
+			RemoveSemanticElement(semanticParent, handle);
+			_semanticParentMap.Remove(handle);
+			_pendingRelationships.Remove(handle);
+			_pendingLabelledBy.Remove(handle);
+			_labelledBySources.Remove(handle);
+			_relationshipSources.Remove(handle);
+			_dataGridHeaderSemanticTypes.Remove(handle);
+			_refreshRelationshipsAfterRemoval = true;
 		}
 	}
 
@@ -522,12 +655,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// and via the dynamic OnChildAdded path. Registering twice would create duplicate regions/
 		// subscriptions and double-emit items.
 		var containerHandle = element.Visual.Handle;
-		foreach (var existingRegion in _virtualizedRegions)
+		if (_virtualizedRegions.ContainsKey(containerHandle))
 		{
-			if (existingRegion.ContainerHandle == containerHandle)
-			{
-				return;
-			}
+			return;
 		}
 
 		if (element is ItemsRepeater repeater)
@@ -537,19 +667,61 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				"listbox",
 				repeater.GetOrCreateAutomationPeer()?.GetName(),
 				false);
-			_virtualizedRegions.Add(region);
-
-			repeater.ElementPrepared += (s, e) =>
+			TypedEventHandler<ItemsRepeater, ItemsRepeaterElementPreparedEventArgs> prepared = (s, e) =>
 				EmitRealizedItem(region, repeater.Visual.Handle, e.Element, e.Index, repeater.ItemsSourceView?.Count ?? 0, "option");
-
-			repeater.ElementClearing += (s, e) =>
+			TypedEventHandler<ItemsRepeater, ItemsRepeaterElementClearingEventArgs> clearing = (s, e) =>
 			{
 				var info = ItemsRepeater.GetVirtualizationInfo(e.Element);
 				if (info is not null)
 				{
-					region.OnItemUnrealized(e.Element.Visual.Handle, info.Index);
+					if (region.OnItemUnrealized(e.Element.Visual.Handle, info.Index))
+					{
+						RemoveFlowsFromTarget(e.Element.Visual.Handle);
+						RemoveRelationshipSource(e.Element.Visual.Handle);
+						QueueRelationshipRefresh(refreshResolved: true);
+					}
 				}
 			};
+			TypedEventHandler<ItemsRepeater, ItemsRepeaterElementIndexChangedEventArgs> indexChanged = (s, e) =>
+			{
+				var totalCount = repeater.ItemsSourceView?.Count ?? 0;
+				region.OnItemIndexChanged(e.Element.Visual.Handle, e.OldIndex, e.NewIndex, totalCount);
+				region.UpdateItemCount(totalCount);
+			};
+			System.Collections.Specialized.NotifyCollectionChangedEventHandler collectionChanged = (_, _) =>
+				region.UpdateItemCount(repeater.ItemsSourceView?.Count ?? 0);
+			ItemsSourceView? subscribedItemsSourceView = null;
+			void UpdateItemsSourceSubscription()
+			{
+				if (subscribedItemsSourceView is not null)
+				{
+					subscribedItemsSourceView.CollectionChanged -= collectionChanged;
+				}
+				subscribedItemsSourceView = repeater.ItemsSourceView;
+				if (subscribedItemsSourceView is not null)
+				{
+					subscribedItemsSourceView.CollectionChanged += collectionChanged;
+				}
+				region.UpdateItemCount(subscribedItemsSourceView?.Count ?? 0);
+			}
+			repeater.ElementPrepared += prepared;
+			repeater.ElementClearing += clearing;
+			repeater.ElementIndexChanged += indexChanged;
+			var itemsSourceChangedToken = repeater.RegisterPropertyChangedCallback(
+				ItemsRepeater.ItemsSourceProperty,
+				(_, _) => UpdateItemsSourceSubscription());
+			UpdateItemsSourceSubscription();
+			_virtualizedRegions.Add(containerHandle, new(region, () =>
+			{
+				repeater.ElementPrepared -= prepared;
+				repeater.ElementClearing -= clearing;
+				repeater.ElementIndexChanged -= indexChanged;
+				repeater.UnregisterPropertyChangedCallback(ItemsRepeater.ItemsSourceProperty, itemsSourceChangedToken);
+				if (subscribedItemsSourceView is not null)
+				{
+					subscribedItemsSourceView.CollectionChanged -= collectionChanged;
+				}
+			}));
 
 			// Backfill items realized before this container was registered (the AOM-build / Enable-
 			// Accessibility-after-load flow); ElementPrepared only fires for FUTURE realizations.
@@ -565,18 +737,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 		else if (element is ListViewBase listView)
 		{
-			var isGrid = element is GridView;
 			var region = new VirtualizedSemanticRegion(
 				listView.Visual.Handle,
-				isGrid ? "grid" : "listbox",
+				"listbox",
 				listView.GetOrCreateAutomationPeer()?.GetName(),
 				listView.SelectionMode == ListViewSelectionMode.Multiple ||
 				listView.SelectionMode == ListViewSelectionMode.Extended);
-			_virtualizedRegions.Add(region);
+			const string itemRole = "option";
 
-			var itemRole = isGrid ? "row" : "option";
-
-			listView.ContainerContentChanging += (s, e) =>
+			TypedEventHandler<ListViewBase, ContainerContentChangingEventArgs> contentChanging = (s, e) =>
 			{
 				if (!e.InRecycleQueue)
 				{
@@ -587,9 +756,45 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				}
 				else if (e.ItemContainer is { } itemElement)
 				{
-					region.OnItemUnrealized(itemElement.Visual.Handle, e.ItemIndex);
+					if (region.OnItemUnrealized(itemElement.Visual.Handle, e.ItemIndex))
+					{
+						RemoveFlowsFromTarget(itemElement.Visual.Handle);
+						RemoveRelationshipSource(itemElement.Visual.Handle);
+						QueueRelationshipRefresh(refreshResolved: true);
+					}
 				}
 			};
+			listView.ContainerContentChanging += contentChanging;
+			EventHandler<ListViewBase.UnoContainerClearingEventArgs> containerClearing = (_, args) =>
+			{
+				if (region.OnItemUnrealized(args.Container.Visual.Handle, args.Index))
+				{
+					RemoveFlowsFromTarget(args.Container.Visual.Handle);
+					RemoveRelationshipSource(args.Container.Visual.Handle);
+					QueueRelationshipRefresh(refreshResolved: true);
+				}
+			};
+			listView.UnoContainerClearing += containerClearing;
+			EventHandler itemsChanged = (_, _) =>
+			{
+				var count = listView.Items?.Count ?? 0;
+				region.UpdateMultiselectable(
+					listView.SelectionMode == ListViewSelectionMode.Multiple ||
+					listView.SelectionMode == ListViewSelectionMode.Extended);
+				var removedHandles = region.ResynchronizeItems(
+					listView.MaterializedContainers.OfType<UIElement>()
+						.Select(container => (container.Visual.Handle, listView.IndexFromContainer(container)))
+						.Where(item => item.Item2 >= 0),
+					count);
+				CleanupVirtualizedHandles(removedHandles);
+			};
+			listView.UnoItemsChangedForAccessibility += itemsChanged;
+			_virtualizedRegions.Add(containerHandle, new(region, () =>
+			{
+				listView.ContainerContentChanging -= contentChanging;
+				listView.UnoContainerClearing -= containerClearing;
+				listView.UnoItemsChangedForAccessibility -= itemsChanged;
+			}));
 
 			// Backfill already-materialized containers (the Enable-Accessibility-after-load flow).
 			var totalCount = listView.Items?.Count ?? 0;
@@ -621,39 +826,141 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		var label = itemElement.GetOrCreateAutomationPeer()?.GetName() ?? string.Empty;
+		var itemPeer = itemElement.GetOrCreateAutomationPeer();
+		var label = itemPeer?.GetName() ?? string.Empty;
+		var selected = itemElement is SelectorItem selectorItem
+			? selectorItem.IsSelected
+			: TryGetVirtualizedItemSelection(itemPeer);
+		var disabled = itemPeer?.IsEnabled() != true;
+		var focusable = itemPeer is not null && IsAccessibilityFocusable(itemElement, itemElement.IsFocusable);
 		var offset = GetOffsetRelativeToSemanticParent(itemElement, containerHandle);
-		region.OnItemRealized(
+		var removedHandle = region.OnItemRealized(
 			itemElement.Visual.Handle,
 			index,
 			totalCount,
 			offset.X, offset.Y,
 			itemElement.Visual.Size.X, itemElement.Visual.Size.Y,
-			role, label);
+			role, label,
+			selected, disabled, focusable);
+		CleanupVirtualizedHandle(removedHandle);
+		ApplyVirtualizedAutomationId(itemElement);
+		InitializeInverseFlows(itemElement);
+		if (itemPeer is not null)
+		{
+			ApplyOrDeferLabelledBy(itemElement.Visual.Handle, itemPeer);
+			ApplyOrDeferRelationshipAttributes(itemElement.Visual.Handle, itemPeer);
+		}
+		QueueRelationshipRefresh();
+	}
+
+	private static void ApplyVirtualizedAutomationId(UIElement itemElement)
+		=> SemanticElementFactory.SetXamlAutomationId(
+			itemElement.Visual.Handle,
+			AutomationProperties.GetAutomationId(itemElement) ?? string.Empty);
+
+	private void CleanupVirtualizedHandles(IEnumerable<IntPtr> handles)
+	{
+		var removedAny = false;
+		foreach (var handle in handles)
+		{
+			if (handle == IntPtr.Zero)
+			{
+				continue;
+			}
+
+			CleanupVirtualizedHandle(handle);
+			removedAny = true;
+		}
+
+		if (removedAny)
+		{
+			QueueRelationshipRefresh(refreshResolved: true);
+		}
+	}
+
+	private void CleanupVirtualizedHandle(IntPtr handle)
+	{
+		if (handle == IntPtr.Zero)
+		{
+			return;
+		}
+
+		RemoveFlowsFromTarget(handle);
+		RemoveRelationshipSource(handle);
+	}
+
+	private void TryRealizeListViewItem(UIElement element)
+	{
+		if (element is not SelectorItem item ||
+			ItemsControl.ItemsControlFromItemContainer(item) is not ListViewBase listView ||
+			!_virtualizedRegions.TryGetValue(listView.Visual.Handle, out var registration))
+		{
+			return;
+		}
+
+		var index = listView.IndexFromContainer(item);
+		if (index >= 0)
+		{
+			EmitRealizedItem(
+				registration.Region,
+				listView.Visual.Handle,
+				item,
+				index,
+				listView.Items?.Count ?? 0,
+				"option");
+		}
+	}
+
+	private static bool TryGetVirtualizedItemSelection(AutomationPeer? peer)
+		=> peer is not null &&
+			AriaMapper.GetPatternOrEventsSource(peer, PatternInterface.SelectionItem) is ISelectionItemProvider { IsSelected: true };
+
+	private void RemoveRelationshipSource(IntPtr handle)
+	{
+		_pendingRelationships.Remove(handle);
+		_pendingLabelledBy.Remove(handle);
+		_labelledBySources.Remove(handle);
+		_relationshipSources.Remove(handle);
 	}
 
 	private void TryUnregisterVirtualizedContainer(UIElement element)
 	{
-		if (element is ItemsRepeater or ListViewBase)
+		if (element is (ItemsRepeater or ListViewBase) &&
+			_virtualizedRegions.Remove(element.Visual.Handle, out var registration))
 		{
-			var handle = element.Visual.Handle;
-			for (int i = _virtualizedRegions.Count - 1; i >= 0; i--)
+			registration.Dispose();
+		}
+	}
+
+	private sealed class VirtualizedRegionRegistration : IDisposable
+	{
+		private Action? _unsubscribe;
+
+		public VirtualizedRegionRegistration(VirtualizedSemanticRegion region, Action unsubscribe)
+		{
+			Region = region;
+			_unsubscribe = unsubscribe;
+		}
+
+		public VirtualizedSemanticRegion Region { get; }
+
+		public void Dispose()
+		{
+			foreach (var handle in Region.GetRealizedHandles())
 			{
-				if (_virtualizedRegions[i].ContainerHandle == handle)
-				{
-					_virtualizedRegions[i].Dispose();
-					_virtualizedRegions.RemoveAt(i);
-					break;
-				}
+				Instance.RemoveRelationshipSource(handle);
 			}
+			_unsubscribe?.Invoke();
+			_unsubscribe = null;
+			Region.Dispose();
 		}
 	}
 
 	private void TryRegisterModalDialog(UIElement element)
 	{
-		if (element is ContentDialog dialog)
+		if (element is ContentDialog dialog && !_modalDialogSubscriptions.ContainsKey(dialog))
 		{
-			dialog.Opened += (s, e) =>
+			TypedEventHandler<ContentDialog, ContentDialogOpenedEventArgs> opened = (s, e) =>
 			{
 				if (!IsAccessibilityEnabled)
 				{
@@ -687,7 +994,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				}
 			};
 
-			dialog.Closed += (s, e) =>
+			TypedEventHandler<ContentDialog, ContentDialogClosedEventArgs> closed = (s, e) =>
 			{
 				if (!IsAccessibilityEnabled || ActiveModalScope is null)
 				{
@@ -707,6 +1014,18 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					}
 				}
 			};
+			dialog.Opened += opened;
+			dialog.Closed += closed;
+			_modalDialogSubscriptions.Add(dialog, (opened, closed));
+		}
+	}
+
+	private void TryUnregisterModalDialog(UIElement element)
+	{
+		if (element is ContentDialog dialog && _modalDialogSubscriptions.Remove(dialog, out var subscription))
+		{
+			dialog.Opened -= subscription.Opened;
+			dialog.Closed -= subscription.Closed;
 		}
 	}
 
@@ -750,32 +1069,39 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					var shownParent = shownElement.GetParent() as UIElement;
 					var shownParentHandle = shownParent is not null ? FindSemanticParent(shownParent) : _rootElementHandle;
 					BuildSemanticsTreeRecursive(shownParentHandle, shownElement);
+					QueueRelationshipRefresh();
 					return;
 				}
 
-				if (_semanticParentMap.TryGetValue(handle, out var semanticParentHandle)
-					&& containerVisual.Owner?.Target is UIElement element)
+				if (containerVisual.Owner?.Target is UIElement element &&
+					TryGetVirtualizedSemanticParent(handle, out var virtualizedParentHandle))
+				{
+					var offset = GetOffsetRelativeToSemanticParent(element, virtualizedParentHandle);
+					NativeMethods.UpdateSemanticElementPositioning(handle, visual.Size.X, visual.Size.Y, offset.X, offset.Y);
+				}
+				else if (_semanticParentMap.TryGetValue(handle, out var semanticParentHandle)
+					&& containerVisual.Owner?.Target is UIElement mappedElement)
 				{
 					// Use the full element-to-semantic-parent transform so that
 					// RenderTransform, Scale, etc. are reflected in the position.
-					var semanticParentElement = FindUIElementByHandle(element, semanticParentHandle);
+					var semanticParentElement = FindUIElementByHandle(mappedElement, semanticParentHandle);
 					var localRect = new Windows.Foundation.Rect(0, 0, visual.Size.X, visual.Size.Y);
 					if (semanticParentElement is not null)
 					{
-						var transform = UIElement.GetTransform(from: element, to: semanticParentElement);
+						var transform = UIElement.GetTransform(from: mappedElement, to: semanticParentElement);
 						var transformedRect = transform.Transform(localRect);
 						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
 					}
 					else
 					{
-						var transform = UIElement.GetTransform(from: element, to: null);
+						var transform = UIElement.GetTransform(from: mappedElement, to: null);
 						var transformedRect = transform.Transform(localRect);
 						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
 					}
 				}
-				else
+				else if (HasSemanticElement(handle))
 				{
-					// Root element or element not in semantic map — use full transform to root
+					// Root semantic element — use full transform to root.
 					if (containerVisual.Owner?.Target is UIElement rootElement)
 					{
 						var transform = UIElement.GetTransform(from: rootElement, to: null);
@@ -817,12 +1143,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 				var peer = scrollViewer.GetOrCreateAutomationPeer();
 
-				// Only the named+scrollable case is upgraded here. The unnamed / non-scrollable cases are
-				// already correct from the build-time gate (a bare <div> with no role), and an empty-string
-				// role would be an invalid attribute — so we never write a role in those cases.
-				if (AriaMapper.QualifiesAsNamedScrollRegion(peer, scrollViewer))
+				if (peer is not null)
 				{
-					NativeMethods.UpdateLandmarkRole(scrollViewer.Visual.Handle, "region");
+					UpdateNameDependentRole(scrollViewer, peer);
 				}
 
 				return;
@@ -842,6 +1165,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	// Retry state for EnableAccessibility if Window isn't ready
 	private static int _enableAccessibilityRetryCount;
+	private static Timer? _enableAccessibilityRetryTimer;
+	private static int _enableAccessibilityRetryGeneration;
 	private static readonly int MaxEnableAccessibilityRetries = 20; // ~2 seconds with 100ms delay
 	private static readonly int EnableAccessibilityRetryDelayMs = 100;
 
@@ -875,42 +1200,64 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				@this.Log().Debug($"[A11y] EnableAccessibility deferred: Window={window?.GetType().Name ?? "null"}, RootElement=null");
 			}
 
-			if (_enableAccessibilityRetryCount < MaxEnableAccessibilityRetries)
+			if (_enableAccessibilityRetryTimer is not null)
 			{
-				_enableAccessibilityRetryCount++;
-				if (@this.Log().IsEnabled(LogLevel.Trace))
-				{
-					@this.Log().Trace($"[A11y] EnableAccessibility() will retry in {EnableAccessibilityRetryDelayMs}ms (attempt {_enableAccessibilityRetryCount}/{MaxEnableAccessibilityRetries})");
-				}
-
-				var timer = new Timer(
-					_ =>
-					{
-						if (@this.Log().IsEnabled(LogLevel.Trace))
-						{
-							@this.Log().Trace($"[A11y] EnableAccessibility() retry attempt {_enableAccessibilityRetryCount}");
-						}
-						EnableAccessibility();
-					},
-					null,
-					EnableAccessibilityRetryDelayMs,
-					Timeout.Infinite);
-
 				return;
 			}
-			else
+
+			if (_enableAccessibilityRetryCount >= MaxEnableAccessibilityRetries)
 			{
 				if (@this.Log().IsEnabled(LogLevel.Error))
 				{
 					@this.Log().Error($"[A11y] EnableAccessibility: max retries ({MaxEnableAccessibilityRetries}) exceeded; Window still not ready.");
 				}
-
+				CancelEnableAccessibilityRetry();
+				NativeMethods.OnAccessibilityActivationFailed();
 				return;
 			}
+
+			_enableAccessibilityRetryCount++;
+			if (@this.Log().IsEnabled(LogLevel.Trace))
+			{
+				@this.Log().Trace($"[A11y] EnableAccessibility() will retry in {EnableAccessibilityRetryDelayMs}ms (attempt {_enableAccessibilityRetryCount}/{MaxEnableAccessibilityRetries})");
+			}
+
+			var retryGeneration = ++_enableAccessibilityRetryGeneration;
+			_enableAccessibilityRetryTimer = new Timer(
+				_ => NativeDispatcher.Main.Enqueue(() =>
+				{
+					if (retryGeneration != _enableAccessibilityRetryGeneration)
+					{
+						return;
+					}
+
+					_enableAccessibilityRetryTimer?.Dispose();
+					_enableAccessibilityRetryTimer = null;
+					if (@this.Log().IsEnabled(LogLevel.Trace))
+					{
+						@this.Log().Trace($"[A11y] EnableAccessibility() retry attempt {_enableAccessibilityRetryCount}");
+					}
+
+					try
+					{
+						EnableAccessibility();
+					}
+					catch (Exception ex)
+					{
+						@this.Log().Error("[A11y] EnableAccessibility retry failed.", ex);
+						CancelEnableAccessibilityRetry();
+						NativeMethods.OnAccessibilityActivationFailed();
+					}
+				}),
+				null,
+				EnableAccessibilityRetryDelayMs,
+				Timeout.Infinite);
+
+			return;
 		}
 
 		// Success! Window and RootElement are now available
-		_enableAccessibilityRetryCount = 0;
+		CancelEnableAccessibilityRetry();
 		if (@this.Log().IsEnabled(LogLevel.Debug))
 		{
 			@this.Log().Debug($"[A11y] EnableAccessibility() SUCCESS: rootElement={rootElement.GetType().Name}, children={rootElement.GetChildren().Count}");
@@ -921,40 +1268,170 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		try
 		{
 			@this.CreateAOM(rootElement);
+			@this._isCreatingAOM = false;
+			Control.OnIsFocusableChangedCallback = @this.UpdateIsFocusable;
+
+			@this._liveRegionManager = new LiveRegionManager();
+			@this._focusSynchronizer = new FocusSynchronizer(@this);
+			@this._focusSynchronizer.Initialize();
+
+			FocusManager.SuppressNativeFocus = true;
+			@this._focusSearchRoot = rootElement;
+			NativeMethods.InstallFocusSentinels();
+
+			var focusManager = global::Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(rootElement);
+			if (focusManager is not null)
+			{
+				focusManager.FocusObserver.FocusController.FocusDeparting -= @this.OnFocusDeparting;
+				focusManager.FocusObserver.FocusController.FocusDeparting += @this.OnFocusDeparting;
+			}
+
+			NativeMethods.OnAccessibilityActivationSucceeded();
+		}
+		catch (Exception ex)
+		{
+			var rollbackFailures = @this.ResetFailedAccessibilityActivation();
+			if (@this.Log().IsEnabled(LogLevel.Error))
+			{
+				@this.Log().Error($"[A11y] Accessibility activation failed and was rolled back: {ex.Message}", ex);
+				foreach (var (step, error) in rollbackFailures)
+				{
+					@this.Log().Error($"[A11y] Accessibility activation rollback step '{step}' failed.", error);
+				}
+			}
+			return;
 		}
 		finally
 		{
 			@this._isCreatingAOM = false;
 		}
-		Control.OnIsFocusableChangedCallback = @this.UpdateIsFocusable;
+	}
 
-		// Initialize subsystems
-		@this._liveRegionManager = new LiveRegionManager();
-		@this._focusSynchronizer = new FocusSynchronizer(@this);
-		@this._focusSynchronizer.Initialize();
-
-		// Suppress the duplicate FocusManager.FocusNative path.
-		// The FocusSynchronizer handles all focus sync via FocusManager.GotFocus
-		// and performs semantic tree resolution before calling into JS.
-		FocusManager.SuppressNativeFocus = true;
-
-		@this._focusSearchRoot = rootElement;
-		NativeMethods.InstallFocusSentinels();
-
-		var focusManager = global::Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(rootElement);
-		if (focusManager is not null)
+	private List<(string Step, Exception Error)> ResetFailedAccessibilityActivation()
+	{
+		var failures = new List<(string, Exception)>();
+		_isAccessibilityEnabled = false;
+		TryRollbackCleanup(failures, "cancel activation retry", CancelEnableAccessibilityRetry);
+		Control.OnIsFocusableChangedCallback = null;
+		TryRollbackCleanup(failures, "restore native focus", () => FocusManager.SuppressNativeFocus = false);
+		TryRollbackCleanup(failures, "uninitialize focus synchronizer", () => _focusSynchronizer?.Uninitialize());
+		_focusSynchronizer = null;
+		TryRollbackCleanup(failures, "clear live regions", () => _liveRegionManager?.ClearPending());
+		_liveRegionManager = null;
+		TryRollbackCleanup(failures, "unsubscribe focus departure", () =>
 		{
-			focusManager.FocusObserver.FocusController.FocusDeparting -= @this.OnFocusDeparting;
-			focusManager.FocusObserver.FocusController.FocusDeparting += @this.OnFocusDeparting;
+			if (_focusSearchRoot is { } focusSearchRoot &&
+				global::Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(focusSearchRoot) is { } focusManager)
+			{
+				focusManager.FocusObserver.FocusController.FocusDeparting -= OnFocusDeparting;
+			}
+		});
+		_focusSearchRoot = null;
+		TryRollbackCleanup(failures, "deactivate modal scope", () => ActiveModalScope?.Deactivate());
+		ActiveModalScope = null;
+
+		foreach (var registration in _virtualizedRegions.Values.ToArray())
+		{
+			TryRollbackCleanup(failures, "dispose virtualized region", registration.Dispose);
 		}
+		_virtualizedRegions.Clear();
+		TryRollbackCleanup(failures, "reset ComboBox tracking", ResetComboBoxTracking);
+		foreach (var subscription in _modalDialogSubscriptions)
+		{
+			TryRollbackCleanup(failures, "unsubscribe modal dialog", () =>
+			{
+				subscription.Key.Opened -= subscription.Value.Opened;
+				subscription.Key.Closed -= subscription.Value.Closed;
+			});
+		}
+		_modalDialogSubscriptions.Clear();
+		foreach (var subscription in _dataGridRowSubscriptions.Values)
+		{
+			TryRollbackCleanup(failures, "unsubscribe DataGrid row", () =>
+			{
+				subscription.Element.DataContextChanged -= subscription.Handler;
+				ReleaseDataGridRowBinding(subscription.Element);
+			});
+		}
+		_dataGridRowSubscriptions.Clear();
+		_dataGridRealizedItems.Clear();
+		foreach (var subscription in _dataGridLayoutSubscriptions.Values)
+		{
+			TryRollbackCleanup(
+				failures,
+				"unsubscribe DataGrid layout",
+				() => subscription.Element.LayoutUpdated -= subscription.Handler);
+		}
+		_dataGridLayoutSubscriptions.Clear();
+		TryRollbackCleanup(failures, "reset DataGrid summary tracking", ResetDataGridSummaryPolling);
+		foreach (var timer in _dataGridFingerprintThrottleTimers.Values)
+		{
+			TryRollbackCleanup(failures, "dispose DataGrid throttle timer", timer.Dispose);
+		}
+		_dataGridFingerprintThrottleTimers.Clear();
+		TryRollbackCleanup(failures, "reset scroll subscriptions", ResetScrollSourceSubscriptions);
+
+		_rootElementHandle = IntPtr.Zero;
+		_semanticParentMap.Clear();
+		_prunedHandles.Clear();
+		_pendingLabelledBy.Clear();
+		_pendingRelationships.Clear();
+		_labelledBySources.Clear();
+		_relationshipSources.Clear();
+		_flowsFromSourcesByTarget.Clear();
+		_inverseFlowTargetsBySource.Clear();
+		_relationshipRefreshScheduled = false;
+		_relationshipFullRefreshPending = false;
+		_relationshipRefreshGeneration++;
+		_dataGridHeaderSemanticTypes.Clear();
+		_dataGridProviderFingerprints.Clear();
+		_dataGridLastFingerprintCheckTicks.Clear();
+		_dataGridProviderSummaryFingerprints.Clear();
+		_scheduledDataGridFingerprintChecks.Clear();
+		_scheduledDataGridSummaryChecks.Clear();
+		_scheduledDataGridRefreshes.Clear();
+		_pendingFullDataGridRefreshes.Clear();
+		_pendingDataGridRowRefreshes.Clear();
+		TryRollbackCleanup(failures, "clear semantic tree", NativeMethods.ClearSemanticTree);
+		TryRollbackCleanup(failures, "remove focus sentinels", NativeMethods.RemoveFocusSentinels);
+		TryRollbackCleanup(failures, "notify activation failure", NativeMethods.OnAccessibilityActivationFailed);
+		return failures;
+	}
+
+	private static void TryRollbackCleanup(
+		List<(string Step, Exception Error)> failures,
+		string step,
+		Action cleanup)
+	{
+		try
+		{
+			cleanup();
+		}
+		catch (Exception ex)
+		{
+			failures.Add((step, ex));
+		}
+	}
+
+	private static void CancelEnableAccessibilityRetry()
+	{
+		_enableAccessibilityRetryGeneration++;
+		_enableAccessibilityRetryTimer?.Dispose();
+		_enableAccessibilityRetryTimer = null;
+		_enableAccessibilityRetryCount = 0;
 	}
 
 	[JSExport]
 	public static void OnScroll(IntPtr handle, double horizontalOffset, double verticalOffset)
 	{
 		var @this = Instance;
-		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
+		@this.ExecuteAutomationAction(handle, "scroll", owner =>
 		{
+			var peer = owner.GetOrCreateAutomationPeer();
+			if (peer is null || !IsAutomationActionEnabled(peer))
+			{
+				return;
+			}
 			// // TODO (DOTI): We shouldn't check individual scrollers.
 			// Instead, we should scroll using automation peers once they are implemented correctly for SCP and ScrollPresenter
 			if (owner is ScrollContentPresenter scp)
@@ -965,7 +1442,21 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				sp.ScrollTo(horizontalOffset, verticalOffset);
 			}
+		});
+	}
+
+	private void ExecuteAutomationAction(IntPtr handle, string action, Action<UIElement> execute)
+	{
+		if (!TryGetLiveSemanticOwner(handle, out var owner))
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"[A11y] Ignored stale accessibility {action} for semantic handle {handle}; its owner is no longer live.");
+			}
+			return;
 		}
+
+		execute(owner);
 	}
 
 	/// <summary>
@@ -981,14 +1472,20 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			@this.Log().Trace($"OnInvoke called for handle: {handle}");
 		}
 
-		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
+		@this.ExecuteAutomationAction(handle, "invoke", owner =>
 		{
 			var peer = owner.GetOrCreateAutomationPeer();
-			if (peer?.GetPattern(PatternInterface.Invoke) is IInvokeProvider invokeProvider)
+			if (peer is not null && IsAutomationActionEnabled(peer) &&
+				peer.GetPattern(PatternInterface.Invoke) is IInvokeProvider invokeProvider)
 			{
 				invokeProvider.Invoke();
+				if (peer.GetAutomationControlType() is AutomationControlType.HeaderItem &&
+					AriaMapper.GetContainingDataGridPeer(peer) is not null)
+				{
+					@this.QueueDataGridRefresh(peer);
+				}
 			}
-		}
+		});
 	}
 
 	/// <summary>
@@ -1004,14 +1501,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			@this.Log().Trace($"OnToggle called for handle: {handle}");
 		}
 
-		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
+		@this.ExecuteAutomationAction(handle, "toggle", owner =>
 		{
 			var peer = owner.GetOrCreateAutomationPeer();
-			if (peer?.GetPattern(PatternInterface.Toggle) is IToggleProvider toggleProvider)
+			if (peer is not null && IsAutomationActionEnabled(peer) &&
+				peer.GetPattern(PatternInterface.Toggle) is IToggleProvider toggleProvider)
 			{
 				toggleProvider.Toggle();
 			}
-		}
+		});
 	}
 
 	/// <summary>
@@ -1027,14 +1525,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			@this.Log().Trace($"OnRangeValueChange called for handle: {handle}, value: {value}");
 		}
 
-		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
+		@this.ExecuteAutomationAction(handle, "range value", owner =>
 		{
 			var peer = owner.GetOrCreateAutomationPeer();
-			if (peer?.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider rangeValueProvider)
+			if (peer is not null && IsAutomationActionEnabled(peer) &&
+				peer.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider { IsReadOnly: false } rangeValueProvider)
 			{
 				rangeValueProvider.SetValue(value);
 			}
-		}
+		});
 	}
 
 	/// <summary>
@@ -1050,8 +1549,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			@this.Log().Trace($"OnTextInput called for handle: {handle}, value length: {value?.Length ?? 0}, selection: {selectionStart}-{selectionEnd}");
 		}
 
-		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
+		@this.ExecuteAutomationAction(handle, "text input", owner =>
 		{
+			var peer = owner.GetOrCreateAutomationPeer();
+			if (peer is null || !IsAutomationActionEnabled(peer) ||
+				peer.GetPattern(PatternInterface.Value) is not IValueProvider { IsReadOnly: false } valueProvider)
+			{
+				return;
+			}
+
 			if (owner is TextBox textBox)
 			{
 				var maxLength = value?.Length ?? 0;
@@ -1060,12 +1566,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				textBox.SetPendingSelection(selectionStart, selectionEnd - selectionStart);
 			}
 
-			var peer = owner.GetOrCreateAutomationPeer();
-			if (peer?.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
-			{
-				valueProvider.SetValue(value);
-			}
-		}
+			valueProvider.SetValue(value);
+		});
 	}
 
 	/// <summary>
@@ -1081,10 +1583,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			@this.Log().Trace($"OnExpandCollapse called for handle: {handle}");
 		}
 
-		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
+		@this.ExecuteAutomationAction(handle, "expand/collapse", owner =>
 		{
 			var peer = owner.GetOrCreateAutomationPeer();
-			if (peer?.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandCollapseProvider)
+			if (peer is not null && IsAutomationActionEnabled(peer) &&
+				peer.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandCollapseProvider)
 			{
 				// Toggle the expand/collapse state
 				if (expandCollapseProvider.ExpandCollapseState == ExpandCollapseState.Collapsed)
@@ -1096,7 +1599,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					expandCollapseProvider.Collapse();
 				}
 			}
-		}
+		});
 	}
 
 	/// <summary>
@@ -1112,14 +1615,19 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			@this.Log().Trace($"OnSelection called for handle: {handle}");
 		}
 
-		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
+		@this.ExecuteAutomationAction(handle, "selection", owner =>
 		{
-			var peer = owner.GetOrCreateAutomationPeer();
-			if (peer?.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
+			var peer = owner.GetOrCreateAutomationPeer()
+				?? throw new InvalidOperationException($"Semantic option {handle} has no automation peer.");
+			if (!IsAutomationActionEnabled(peer))
 			{
-				selectionItemProvider.Select();
+				return;
 			}
-		}
+
+			var selectionItemProvider = AriaMapper.GetPatternOrEventsSource(peer, PatternInterface.SelectionItem) as ISelectionItemProvider
+				?? throw new InvalidOperationException($"Semantic option {handle} does not expose SelectionItem.");
+			selectionItemProvider.Select();
+		});
 	}
 
 	/// <summary>
@@ -1135,9 +1643,22 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			instance.Log().Trace($"OnFocus called for handle: {handle}");
 		}
 
-		// Route through FocusSynchronizer if available (handles IsSyncing guard)
-		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
+		instance.ExecuteAutomationAction(handle, "focus", owner =>
 		{
+			foreach (var registration in instance._virtualizedRegions.Values)
+			{
+				if (registration.Region.ContainsRealizedHandle(handle))
+				{
+					var removedHandle = registration.Region.PinFocusedItem(handle);
+					if (removedHandle != IntPtr.Zero)
+					{
+						instance.CleanupVirtualizedHandle(removedHandle);
+						instance.QueueRelationshipRefresh(refreshResolved: true);
+					}
+					break;
+				}
+			}
+
 			if (owner is TextBox)
 			{
 				BrowserInvisibleTextBoxViewExtension.DetachNativeInputPreservingFocus();
@@ -1151,7 +1672,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				control.Focus(FocusState.Keyboard);
 			}
-		}
+		});
 	}
 
 	/// <summary>
@@ -1171,45 +1692,56 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// No explicit action needed here - the Uno FocusManager handles focus transitions.
 	}
 
+
 	[JSExport]
 	public static void OnFocusSentinel(bool isStart)
 	{
 		var @this = Instance;
-		var root = @this._focusSearchRoot;
-		if (root is null)
-		{
-			return;
-		}
-
-		var candidate = isStart
-			? FocusManager.FindFirstFocusableElement(root)
-			: FocusManager.FindLastFocusableElement(root);
-
-		var leaf = candidate is UIElement candidateElement
-			? @this.ResolveEntrySemanticLeaf(candidateElement, isStart)
-			: null;
-
-		if (leaf is not Control { IsFocusable: true } control)
-		{
-			return;
-		}
-
-		@this._suppressDeparture = true;
 		try
 		{
-			control.Focus(FocusState.Keyboard);
-
-			// Force the DOM sync: when control was already the XAML-focused element,
-			// GotFocus does not fire and DOM focus would stay stranded on the sentinel.
-			var semanticHandle = @this.ResolveToSemanticHandle(control);
-			if (semanticHandle != IntPtr.Zero)
+			var root = @this._focusSearchRoot;
+			if (root is null)
 			{
-				NativeMethods.FocusSemanticElement(semanticHandle);
+				return;
+			}
+
+			var candidate = isStart
+				? FocusManager.FindFirstFocusableElement(root)
+				: FocusManager.FindLastFocusableElement(root);
+
+			var leaf = candidate is UIElement candidateElement
+				? @this.ResolveEntrySemanticLeaf(candidateElement, isStart)
+				: null;
+
+			if (leaf is not Control { IsFocusable: true } control)
+			{
+				return;
+			}
+
+			@this._suppressDeparture = true;
+			try
+			{
+				control.Focus(FocusState.Keyboard);
+
+				// Force the DOM sync: when control was already the XAML-focused element,
+				// GotFocus does not fire and DOM focus would stay stranded on the sentinel.
+				var semanticHandle = @this.ResolveToSemanticHandle(control);
+				if (semanticHandle != IntPtr.Zero)
+				{
+					NativeMethods.FocusSemanticElement(semanticHandle);
+				}
+			}
+			finally
+			{
+				@this._suppressDeparture = false;
 			}
 		}
-		finally
+		catch (Exception ex)
 		{
-			@this._suppressDeparture = false;
+			if (@this.Log().IsEnabled(LogLevel.Warning))
+			{
+				@this.Log().Warn($"[A11y] Ignored failed focus-sentinel action: {ex.Message}");
+			}
 		}
 	}
 
@@ -1262,6 +1794,263 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	private void UpdateRoleOverride(UIElement element, string? role)
+	{
+		if (!_isAccessibilityEnabled || !HasSemanticElement(element.Visual.Handle))
+		{
+			return;
+		}
+
+		var peer = element.GetOrCreateAutomationPeer();
+		var roleOverride = NormalizeRoleOverrideForHost(element, peer, role);
+		ApplyRoleOverride(element, peer, roleOverride);
+	}
+
+	private void ApplyRoleOverride(UIElement element, AutomationPeer? peer, string? roleOverride)
+	{
+		var effectiveRole = roleOverride ?? ResolveDefaultSemanticRole(element, peer);
+		var primaryRole = GetPrimaryRole(effectiveRole);
+		NativeMethods.UpdateRoleOverride(element.Visual.Handle, effectiveRole ?? string.Empty, roleOverride is not null);
+
+		var label = peer is not null ? AriaMapper.ResolveLabel(peer) : AutomationProperties.GetName(element);
+		var roleProhibitsNaming = RoleProhibitsNaming(primaryRole);
+		NativeMethods.UpdateAriaLabel(element.Visual.Handle, roleProhibitsNaming ? string.Empty : label ?? string.Empty);
+		if (roleProhibitsNaming)
+		{
+			_labelledBySources.Remove(element.Visual.Handle);
+			_pendingLabelledBy.Remove(element.Visual.Handle);
+			NativeMethods.UpdateAriaLabelledBy(element.Visual.Handle, string.Empty);
+		}
+		else if (peer is not null)
+		{
+			ApplyOrDeferLabelledBy(element.Visual.Handle, peer);
+		}
+		UpdateAuthoredRoleDescription(element, primaryRole, label);
+		NativeMethods.UpdateAriaLevel(element.Visual.Handle, ResolveAriaLevel(element, peer));
+		SynchronizeRoleDependentState(element, peer, effectiveRole, roleOverride is not null);
+	}
+
+	private static bool RoleProhibitsNaming(string? role)
+		=> role is "caption" or "code" or "deletion" or "emphasis" or "generic" or "insertion" or
+			"none" or "paragraph" or "presentation" or "strong" or "subscript" or "superscript";
+
+	private static bool ElementRoleProhibitsNaming(UIElement element, AutomationPeer? peer)
+	{
+		var roleOverride = NormalizeRoleOverrideForHost(element, peer, AutomationProperties.GetRoleOverride(element));
+		return RoleProhibitsNaming(GetPrimaryRole(roleOverride ?? ResolveDefaultSemanticRole(element, peer)));
+	}
+
+	private void UpdateNameDependentRole(UIElement element, AutomationPeer peer)
+	{
+		if (element is not ScrollViewer &&
+			AutomationProperties.GetLandmarkType(element) == AutomationLandmarkType.None)
+		{
+			return;
+		}
+
+		if (NormalizeRoleOverrideForHost(element, peer, AutomationProperties.GetRoleOverride(element)) is not null)
+		{
+			return;
+		}
+
+		NativeMethods.UpdateLandmarkRole(
+			element.Visual.Handle,
+			ResolveDefaultSemanticRole(element, peer) ?? string.Empty);
+	}
+
+	private static void UpdateAuthoredRoleDescription(UIElement element, string? primaryRole, string? label)
+	{
+		var roleDescription = RoleProhibitsNaming(primaryRole) || string.IsNullOrEmpty(label)
+			? null
+			: AutomationProperties.GetLandmarkType(element) != AutomationLandmarkType.None
+				? AutomationProperties.GetLocalizedLandmarkType(element)
+				: AutomationProperties.GetLocalizedControlType(element);
+		NativeMethods.UpdateAriaRoleDescription(element.Visual.Handle, roleDescription ?? string.Empty);
+	}
+
+	private static int ResolveAriaLevel(UIElement element, AutomationPeer? peer)
+	{
+		var level = AutomationProperties.GetLevel(element);
+		if (level > 0)
+		{
+			return level;
+		}
+
+		var headingLevel = peer?.GetHeadingLevel() ?? AutomationHeadingLevel.None;
+		return headingLevel == AutomationHeadingLevel.None ? 0 : (int)headingLevel;
+	}
+
+	private static string? NormalizeRoleOverrideForHost(UIElement element, AutomationPeer? peer, string? role)
+	{
+		var normalized = AriaMapper.NormalizeAriaRole(role);
+		if (normalized is null || peer is null)
+		{
+			return normalized;
+		}
+
+		var elementType = AriaMapper.GetSemanticElementType(peer, element);
+		var compatibleRoles = normalized.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+			.Where(candidate => IsRoleCompatibleWithHost(elementType, peer, candidate))
+			.ToArray();
+		return compatibleRoles.Length > 0 ? string.Join(' ', compatibleRoles) : null;
+	}
+
+	private static bool IsRoleCompatibleWithHost(SemanticElementType elementType, AutomationPeer peer, string role)
+	{
+		return elementType switch
+		{
+			SemanticElementType.Button or SemanticElementType.ToggleButton or SemanticElementType.Switch =>
+				IsButtonHostRoleCompatible(peer, role),
+			SemanticElementType.Checkbox => role is "checkbox" or "menuitemcheckbox" or "option" or "switch" or "button",
+			SemanticElementType.RadioButton => role is "radio" or "menuitemradio",
+			SemanticElementType.Slider => role == "slider",
+			SemanticElementType.TextBox => role is "textbox" or "combobox" or "searchbox" or "spinbutton",
+			SemanticElementType.TextArea => role == "textbox",
+			SemanticElementType.Password => false,
+			SemanticElementType.Heading => role is "heading" or "none" or "presentation" or "tab",
+			_ => true,
+		};
+	}
+
+	private static bool IsButtonHostRoleCompatible(AutomationPeer peer, string role)
+	{
+		if (role is not ("button" or "checkbox" or "combobox" or "gridcell" or "link" or "menuitem" or
+			"menuitemcheckbox" or "menuitemradio" or "option" or "radio" or "separator" or "slider" or
+			"switch" or "tab" or "treeitem"))
+		{
+			return false;
+		}
+
+		if (role is "checkbox" or "menuitemcheckbox" or "menuitemradio" or "radio" or "switch")
+		{
+			return peer.GetPattern(PatternInterface.Toggle) is IToggleProvider ||
+				AriaMapper.GetPatternOrEventsSource(peer, PatternInterface.SelectionItem) is ISelectionItemProvider;
+		}
+		if (role == "slider")
+		{
+			return peer.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider;
+		}
+		if (role == "combobox")
+		{
+			return peer.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider;
+		}
+
+		return true;
+	}
+
+	private static string? GetPrimaryRole(string? role)
+		=> string.IsNullOrWhiteSpace(role) ? null : role.Split(' ', StringSplitOptions.RemoveEmptyEntries)[0];
+
+	private static bool SupportsAriaSetPosition(UIElement element, AutomationPeer peer)
+		=> GetPrimaryRole(NormalizeRoleOverrideForHost(element, peer, AutomationProperties.GetRoleOverride(element)) ?? ResolveDefaultSemanticRole(element, peer))
+			is "article" or "listitem" or "menuitem" or "menuitemcheckbox" or "menuitemradio" or "option" or "radio" or "row" or "tab" or "treeitem";
+
+	private void SynchronizeRoleDependentState(UIElement element, AutomationPeer? peer, string? effectiveRole, bool isOverride)
+	{
+		if (peer is null)
+		{
+			return;
+		}
+
+		var elementType = AriaMapper.GetSemanticElementType(peer, element);
+		if (peer.GetPattern(PatternInterface.Toggle) is IToggleProvider toggleProvider)
+		{
+			var state = AriaMapper.ConvertToggleStateToAriaChecked(toggleProvider.ToggleState);
+			if (isOverride)
+			{
+				var primaryRole = GetPrimaryRole(effectiveRole);
+				var attribute = primaryRole is "checkbox" or "menuitemcheckbox" or "menuitemradio" or "option" or "radio" or "switch" or "treeitem"
+					? "aria-checked"
+					: primaryRole == "button"
+						? "aria-pressed"
+						: string.Empty;
+				NativeMethods.UpdateRoleOverrideToggleState(element.Visual.Handle, attribute, state);
+			}
+			else if (elementType == SemanticElementType.ToggleButton)
+			{
+				NativeMethods.UpdateAriaPressed(element.Visual.Handle, state);
+			}
+			else
+			{
+				NativeMethods.UpdateAriaChecked(element.Visual.Handle, state);
+			}
+		}
+
+		if (elementType == SemanticElementType.ComboBox && element is ComboBox comboBox &&
+			(!isOverride || GetPrimaryRole(effectiveRole) == "combobox"))
+		{
+			var expanded = peer.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandCollapseProvider &&
+				expandCollapseProvider.ExpandCollapseState is ExpandCollapseState.Expanded or ExpandCollapseState.PartiallyExpanded;
+			NativeMethods.UpdateExpandCollapseState(element.Visual.Handle, expanded);
+			NativeMethods.UpdateAriaHasPopup(element.Visual.Handle, "listbox");
+			NativeMethods.UpdateComboBoxValue(
+				element.Visual.Handle,
+				SemanticElementFactory.ResolveComboBoxValue(peer, comboBox) ?? string.Empty);
+		}
+	}
+
+	private static string? ResolveDefaultSemanticRole(UIElement element, AutomationPeer? peer)
+	{
+		if (peer?.IsDialog() == true)
+		{
+			return "dialog";
+		}
+
+		var landmarkType = AutomationProperties.GetLandmarkType(element);
+		if (landmarkType != AutomationLandmarkType.None)
+		{
+			var landmarkRole = AriaMapper.GetLandmarkRole(landmarkType);
+			var name = peer is not null ? AriaMapper.ResolveAuthoredLabel(peer) : AutomationProperties.GetName(element);
+			if (landmarkRole is not ("region" or "form") || !string.IsNullOrEmpty(name))
+			{
+				return landmarkRole;
+			}
+		}
+
+		if (peer is null)
+		{
+			return string.IsNullOrEmpty(AutomationProperties.GetName(element)) ? null : "group";
+		}
+
+		var semanticType = AriaMapper.GetSemanticElementType(peer, element);
+		var role = semanticType switch
+		{
+			SemanticElementType.Switch => "switch",
+			SemanticElementType.ComboBox => "combobox",
+			SemanticElementType.ListBox => "listbox",
+			SemanticElementType.ListItem => "option",
+			SemanticElementType.TabList => "tablist",
+			SemanticElementType.Tab => "tab",
+			SemanticElementType.Tree => "tree",
+			SemanticElementType.TreeItem => "treeitem",
+			SemanticElementType.Grid => "grid",
+			SemanticElementType.GridRow => "row",
+			SemanticElementType.GridCell => "gridcell",
+			SemanticElementType.ColumnHeader => "columnheader",
+			SemanticElementType.RowHeader => "rowheader",
+			SemanticElementType.Menu => "menu",
+			SemanticElementType.MenuItem => "menuitem",
+			SemanticElementType.Button or SemanticElementType.ToggleButton or SemanticElementType.Checkbox or
+				SemanticElementType.RadioButton or SemanticElementType.Slider or SemanticElementType.TextBox or
+				SemanticElementType.TextArea or SemanticElementType.Password or SemanticElementType.Link or
+				SemanticElementType.Heading or SemanticElementType.Text => null,
+			_ => AriaMapper.GetAriaRole(peer.GetAutomationControlType()),
+		};
+
+		if (role == "region" && !AriaMapper.QualifiesAsNamedScrollRegion(peer, element))
+		{
+			role = null;
+		}
+		var canUseContentDerivedGroupName =
+			element is not ScrollViewer &&
+			AutomationProperties.GetLandmarkType(element) == AutomationLandmarkType.None;
+		return role ?? (semanticType == SemanticElementType.Generic &&
+			canUseContentDerivedGroupName &&
+			!string.IsNullOrEmpty(AriaMapper.ResolveLabel(peer))
+			? "group"
+			: null);
+	}
+
 	internal void CreateAOM(UIElement rootElement)
 	{
 		Debug.Assert(IsAccessibilityEnabled);
@@ -1285,6 +2074,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// Set role="application" on the root so VoiceOver uses app interaction mode
 		// instead of document-style page navigation
 		NativeMethods.UpdateLandmarkRole(rootHandle, "application");
+		InitializeInverseFlows(rootElement);
 
 		var topLevelChildren = rootElement.GetChildren().ToList();
 		if (this.Log().IsEnabled(LogLevel.Debug))
@@ -1299,7 +2089,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// FR-019/FR-022: now that the full AOM exists, every labeller with a semantic node is
 		// registered. Re-resolve the deferred aria-labelledby IDREFs so emission is order-independent
 		// (covers labellers built after the labelled control). HasSemanticElement still gates each one.
-		DrainPendingLabelledBy();
+		RefreshRelationshipSources();
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -1325,16 +2115,328 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// and KEEP the rest. OnChildAdded fires per-element, so a following-sibling labeller may not be
 		// registered when its labelled control drains — keeping the entry lets it resolve on the
 		// labeller's own (later) drain. ResolveLabelledByIdRef's HasSemanticElement gate still applies.
-		for (var i = _pendingLabelledBy.Count - 1; i >= 0; i--)
+		foreach (var (labelledHandle, labelledPeer) in _pendingLabelledBy.ToArray())
 		{
-			var (labelledHandle, labelledPeer) = _pendingLabelledBy[i];
+			if (TryGetPeerOwner(labelledPeer, out var labelledElement) &&
+				ElementRoleProhibitsNaming(labelledElement, labelledPeer))
+			{
+				NativeMethods.UpdateAriaLabelledBy(labelledHandle, string.Empty);
+				_pendingLabelledBy.Remove(labelledHandle);
+				_labelledBySources.Remove(labelledHandle);
+				continue;
+			}
+
 			var labelledById = SemanticElementFactory.ResolveLabelledByIdRef(labelledPeer);
 			if (labelledById is not null)
 			{
 				NativeMethods.UpdateAriaLabelledBy(labelledHandle, labelledById);
-				_pendingLabelledBy.RemoveAt(i);
+				_pendingLabelledBy.Remove(labelledHandle);
 			}
 		}
+	}
+
+	private void ApplyOrDeferLabelledBy(IntPtr handle, AutomationPeer peer)
+	{
+		if (!HasSemanticElement(handle))
+		{
+			RemoveRelationshipSource(handle);
+			return;
+		}
+
+		if (TryGetPeerOwner(peer, out var element) && ElementRoleProhibitsNaming(element, peer))
+		{
+			_labelledBySources.Remove(handle);
+			_pendingLabelledBy.Remove(handle);
+			NativeMethods.UpdateAriaLabelledBy(handle, string.Empty);
+			return;
+		}
+
+		try
+		{
+			if (AriaMapper.ResolveLabelledByElement(peer) is null)
+			{
+				_labelledBySources.Remove(handle);
+				_pendingLabelledBy.Remove(handle);
+				NativeMethods.UpdateAriaLabelledBy(handle, string.Empty);
+				return;
+			}
+
+			_labelledBySources[handle] = peer;
+			var labelledById = SemanticElementFactory.ResolveLabelledByIdRef(peer);
+			NativeMethods.UpdateAriaLabelledBy(handle, labelledById ?? string.Empty);
+			_pendingLabelledBy.Remove(handle);
+			if (labelledById is null)
+			{
+				_pendingLabelledBy[handle] = peer;
+			}
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"[A11y] Failed to apply aria-labelledby for handle={handle}: {ex.Message}");
+			}
+		}
+	}
+
+	private void ApplyOrDeferRelationshipAttributes(IntPtr handle, AutomationPeer peer)
+	{
+		if (!HasSemanticElement(handle))
+		{
+			RemoveRelationshipSource(handle);
+			return;
+		}
+
+		try
+		{
+			var allResolved = SemanticElementFactory.ApplyRelationshipAttributes(peer, handle, out var hasRelationships);
+			if (!hasRelationships)
+			{
+				_relationshipSources.Remove(handle);
+				_pendingRelationships.Remove(handle);
+				return;
+			}
+
+			_relationshipSources[handle] = peer;
+			if (!allResolved)
+			{
+				_pendingRelationships[handle] = peer;
+			}
+			else if (allResolved)
+			{
+				_pendingRelationships.Remove(handle);
+			}
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"[A11y] Failed to apply relationship attributes for handle={handle}: {ex.Message}");
+			}
+		}
+	}
+
+	private void InitializeInverseFlows(UIElement element)
+	{
+		RefreshFlowsFromTarget(element);
+		ApplyInverseFlowsToForSource(element.Visual.Handle);
+	}
+
+	private void RefreshFlowsFromTarget(UIElement target)
+	{
+		var targetHandle = target.Visual.Handle;
+		if (!HasSemanticElement(targetHandle))
+		{
+			RemoveFlowsFromTarget(targetHandle);
+			return;
+		}
+
+		var newSources = new HashSet<IntPtr>();
+		if (AutomationProperties.TryGetFlowsFrom(target) is { } authoredSources)
+		{
+			foreach (var source in authoredSources.OfType<UIElement>())
+			{
+				if (source.Visual.Handle != IntPtr.Zero)
+				{
+					newSources.Add(source.Visual.Handle);
+				}
+			}
+		}
+
+		try
+		{
+			if (target.GetOrCreateAutomationPeer() is { } targetPeer)
+			{
+				foreach (var sourcePeer in targetPeer.GetFlowsFrom() ?? Enumerable.Empty<AutomationPeer>())
+				{
+					if (sourcePeer is FrameworkElementAutomationPeer { Owner: UIElement source } && source.Visual.Handle != IntPtr.Zero)
+					{
+						newSources.Add(source.Visual.Handle);
+					}
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"[A11y] Failed to resolve FlowsFrom for handle={targetHandle}: {ex.Message}");
+			}
+		}
+
+		var previousSources = _flowsFromSourcesByTarget.TryGetValue(targetHandle, out var existing)
+			? existing
+			: new HashSet<IntPtr>();
+		var affectedSources = new HashSet<IntPtr>(previousSources);
+		affectedSources.UnionWith(newSources);
+
+		foreach (var sourceHandle in previousSources.Except(newSources))
+		{
+			if (_inverseFlowTargetsBySource.TryGetValue(sourceHandle, out var targets))
+			{
+				targets.Remove(targetHandle);
+				if (targets.Count == 0)
+				{
+					_inverseFlowTargetsBySource.Remove(sourceHandle);
+				}
+			}
+		}
+
+		foreach (var sourceHandle in newSources.Except(previousSources))
+		{
+			if (!_inverseFlowTargetsBySource.TryGetValue(sourceHandle, out var targets))
+			{
+				targets = new HashSet<IntPtr>();
+				_inverseFlowTargetsBySource[sourceHandle] = targets;
+			}
+			targets.Add(targetHandle);
+		}
+
+		if (newSources.Count == 0)
+		{
+			_flowsFromSourcesByTarget.Remove(targetHandle);
+		}
+		else
+		{
+			_flowsFromSourcesByTarget[targetHandle] = newSources;
+		}
+
+		foreach (var sourceHandle in affectedSources)
+		{
+			ApplyInverseFlowsToForSource(sourceHandle);
+		}
+	}
+
+	private void RemoveFlowsFromTarget(IntPtr targetHandle)
+	{
+		if (_flowsFromSourcesByTarget.Remove(targetHandle, out var sources))
+		{
+			foreach (var sourceHandle in sources)
+			{
+				if (_inverseFlowTargetsBySource.TryGetValue(sourceHandle, out var targets))
+				{
+					targets.Remove(targetHandle);
+					if (targets.Count == 0)
+					{
+						_inverseFlowTargetsBySource.Remove(sourceHandle);
+					}
+				}
+				ApplyInverseFlowsToForSource(sourceHandle);
+			}
+		}
+
+	}
+
+	private void ApplyInverseFlowsToForSource(IntPtr sourceHandle)
+	{
+		if (!HasSemanticElement(sourceHandle))
+		{
+			return;
+		}
+
+		var idList = _inverseFlowTargetsBySource.TryGetValue(sourceHandle, out var targets)
+			? string.Join(' ', targets.Where(HasSemanticElement).Select(static handle => $"uno-semantics-{handle}"))
+			: string.Empty;
+		NativeMethods.UpdateInverseAriaFlowTo(sourceHandle, idList);
+	}
+
+	private void DrainPendingRelationships()
+	{
+		foreach (var (handle, peer) in _pendingRelationships.ToArray())
+		{
+			if (!HasSemanticElement(handle))
+			{
+				_pendingRelationships.Remove(handle);
+				continue;
+			}
+
+			try
+			{
+				var allResolved = SemanticElementFactory.ApplyRelationshipAttributes(peer, handle, out var hasRelationships);
+				if (hasRelationships)
+				{
+					_relationshipSources[handle] = peer;
+				}
+				else
+				{
+					_relationshipSources.Remove(handle);
+				}
+
+				if (allResolved || !hasRelationships)
+				{
+					_pendingRelationships.Remove(handle);
+				}
+			}
+			catch (Exception ex)
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn($"[A11y] Deferred relationship update failed for handle={handle}: {ex.Message}");
+				}
+			}
+		}
+	}
+
+	private void RefreshRelationshipSources(bool refreshResolved = true)
+	{
+		if (refreshResolved)
+		{
+			foreach (var (handle, peer) in _labelledBySources.ToArray())
+			{
+				if (HasSemanticElement(handle))
+				{
+					ApplyOrDeferLabelledBy(handle, peer);
+				}
+				else
+				{
+					_labelledBySources.Remove(handle);
+					_pendingLabelledBy.Remove(handle);
+				}
+			}
+
+			foreach (var (handle, peer) in _relationshipSources.ToArray())
+			{
+				if (HasSemanticElement(handle))
+				{
+					ApplyOrDeferRelationshipAttributes(handle, peer);
+				}
+				else
+				{
+					_relationshipSources.Remove(handle);
+					_pendingRelationships.Remove(handle);
+				}
+			}
+		}
+
+		DrainPendingLabelledBy();
+		DrainPendingRelationships();
+	}
+
+	private void QueueRelationshipRefresh(bool refreshResolved = false)
+	{
+		_relationshipFullRefreshPending |= refreshResolved;
+		if (_isCreatingAOM || _relationshipRefreshScheduled)
+		{
+			return;
+		}
+
+		_relationshipRefreshScheduled = true;
+		var generation = _relationshipRefreshGeneration;
+		NativeDispatcher.Main.Enqueue(() =>
+		{
+			if (generation != _relationshipRefreshGeneration)
+			{
+				return;
+			}
+
+			_relationshipRefreshScheduled = false;
+			var fullRefresh = _relationshipFullRefreshPending;
+			_relationshipFullRefreshPending = false;
+			if (_isAccessibilityEnabled)
+			{
+				RefreshRelationshipSources(fullRefresh);
+			}
+		});
 	}
 
 	/// <summary>
@@ -1355,9 +2457,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	private bool IsSemanticElement(UIElement element)
 	{
 		// Elements with AccessibilityView="Raw" are excluded from the accessibility tree entirely.
-		// This matches WinUI3 behavior where Raw elements are not exposed to UIA.
+		// DataGrid is the exception: Toolkit marks its header presenter/header cells Raw even though
+		// ARIA requires the presenter row and table-validated headers for a conforming grid tree.
 		var accessibilityView = AutomationProperties.GetAccessibilityView(element);
-		if (accessibilityView == AccessibilityView.Raw)
+		if (accessibilityView == AccessibilityView.Raw && !IsRequiredDataGridHeaderStructure(element))
 		{
 			return false;
 		}
@@ -1391,20 +2494,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// (Name, LandmarkType, LiveSetting, HeadingLevel).
 		if (element is TextBlock or RichTextBlock or RichTextBlockOverflow)
 		{
-			// Keep TextBlocks with explicit accessibility properties
-			if (!string.IsNullOrEmpty(AutomationProperties.GetName(element)))
-			{
-				return true;
-			}
-			if (AutomationProperties.GetLandmarkType(element) != AutomationLandmarkType.None)
-			{
-				return true;
-			}
-			if (AutomationProperties.GetLiveSetting(element) != AutomationLiveSetting.Off)
-			{
-				return true;
-			}
-			if (AutomationProperties.GetHeadingLevel(element) != AutomationHeadingLevel.None)
+			if (AriaMapper.RequiresGenericTextSemantics(element))
 			{
 				return true;
 			}
@@ -1464,6 +2554,19 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		// Everything else (Grid, Border, ContentPresenter, StackPanel, etc.) is structural
 		return false;
+	}
+
+	private static bool IsRequiredDataGridHeaderStructure(UIElement element)
+	{
+		if (element.GetOrCreateAutomationPeer() is not { } peer)
+		{
+			return false;
+		}
+
+		var semanticType = AriaMapper.GetSemanticElementType(peer, element);
+		return semanticType is SemanticElementType.ColumnHeader or SemanticElementType.RowHeader ||
+			semanticType is SemanticElementType.GridRow &&
+				peer.GetAutomationControlType() is AutomationControlType.Header;
 	}
 
 	/// <summary>
@@ -1625,7 +2728,18 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 
 		var handle = child.Visual.Handle;
-		var isSemantic = IsSemanticElement(child);
+		var isSemantic = false;
+		try
+		{
+			isSemantic = IsSemanticElement(child);
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"[A11y] Skipped unavailable peer metadata for {child.GetType().Name}: {ex.Message}");
+			}
+		}
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -1639,10 +2753,25 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		if (isSemantic && !_semanticParentMap.ContainsKey(handle))
 		{
-			var added = AddSemanticElement(parentHandle, child, null);
+			var added = false;
+			try
+			{
+				added = AddSemanticElement(parentHandle, child, null);
+			}
+			catch (Exception ex)
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn($"[A11y] Skipped semantic node {child.GetType().Name} handle={handle}: {ex.Message}");
+				}
+			}
 			if (added)
 			{
 				_semanticParentMap[handle] = parentHandle;
+				InitializeInverseFlows(child);
+				TrackDataGridHeaderSemanticType(child);
+				TrySubscribeDataGridProviderSnapshot(child);
+				TrySubscribeDataGridRow(child);
 				effectiveParent = handle; // children go under this element
 			}
 			else if (this.Log().IsEnabled(LogLevel.Warning))
@@ -1651,14 +2780,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			}
 		}
 
-		// FR-019/FR-022: defer aria-labelledby resolution. The labeller's semantic node may not be
-		// registered yet at this control's create time (a following sibling or a Header/template child
-		// registers after the labelled control), so record the control and re-resolve at the end of
-		// CreateAOM. The HasSemanticElement gate still applies there, so no dangling IDREF is emitted.
-		if (_isCreatingAOM && _semanticParentMap.ContainsKey(handle) && AutomationProperties.GetLabeledBy(child) is not null
-			&& child.GetOrCreateAutomationPeer() is { } labelledPeer)
+		if (_semanticParentMap.ContainsKey(handle) && child.GetOrCreateAutomationPeer() is { } relationshipPeer)
 		{
-			_pendingLabelledBy.Add((handle, labelledPeer));
+			ApplyOrDeferLabelledBy(handle, relationshipPeer);
+			ApplyOrDeferRelationshipAttributes(handle, relationshipPeer);
 		}
 
 		// Register virtualized containers (and backfill their already-realized items) at AOM-build
@@ -1717,6 +2842,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 
 		var automationPeer = child.GetOrCreateAutomationPeer();
+		var roleOverride = NormalizeRoleOverrideForHost(child, automationPeer, AutomationProperties.GetRoleOverride(child));
 
 		// Try to create type-specific semantic elements (button, slider, checkbox, etc.)
 		// This provides better keyboard support and screen reader compatibility
@@ -1742,6 +2868,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			if (created)
 			{
+				if (roleOverride is not null)
+				{
+					ApplyRoleOverride(child, automationPeer, roleOverride);
+				}
 				return true;
 			}
 
@@ -1754,17 +2884,19 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// The accessible name (aria-label) must come ONLY from the resolved name (ResolveLabel),
 		// never the raw GetName() or a descendant-text dump. It is also the gate for landmark/region
 		// emission (FR-014): an unlabeled landmark/region MUST NOT be emitted.
+		var requiresAuthoredName =
+			child is ScrollViewer ||
+			AutomationProperties.GetLandmarkType(child) != AutomationLandmarkType.None;
 		var resolvedName = automationPeer is not null
-			? AriaMapper.ResolveLabel(automationPeer)
+			? requiresAuthoredName
+				? AriaMapper.ResolveAuthoredLabel(automationPeer)
+				: AriaMapper.ResolveLabel(automationPeer)
 			: AutomationProperties.GetName(child);
 		var hasAccessibleName = !string.IsNullOrEmpty(resolvedName);
 
-		// Fall back to generic semantic element for unsupported control types.
-		// Prefer AriaMapper role (covers Image, Group, etc.) over FindHtmlRole.
-		var role = (automationPeer is not null
-			? AriaMapper.GetAriaRole(automationPeer.GetAutomationControlType())
-			: null)
-			?? AutomationProperties.FindHtmlRole(child);
+		// Build the intrinsic role first. An explicit override is applied transactionally after
+		// creation so clearing it can restore the native/default role and state.
+		var role = ResolveDefaultSemanticRole(child, automationPeer);
 
 		// FR-013/FR-014: a ScrollViewer (control type Pane → "region") only earns role=region when it
 		// is actually scrollable AND named. A non-scrollable or unnamed ScrollViewer must NOT become an
@@ -1779,8 +2911,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// This matches WinUI3 where named containers create UIA Group elements.
 		if (string.IsNullOrEmpty(role))
 		{
-			var automationName = AutomationProperties.GetName(child);
-			if (!string.IsNullOrEmpty(automationName))
+			if (hasAccessibleName)
 			{
 				role = "group";
 			}
@@ -1805,7 +2936,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// The accessible name (aria-label) comes ONLY from the resolved name (ResolveLabel).
 		// AutomationId is surfaced separately as the xamlautomationid attribute and
 		// must never leak into aria-label.
-		var name = resolvedName;
+		var name = role == "generic" ? null : resolvedName;
 		var xamlAutomationId = AutomationProperties.GetAutomationId(child);
 		var horizontallyScrollable = false;
 		var verticallyScrollable = false;
@@ -1833,7 +2964,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"[A11y] AddSemanticElement: generic path — control={child.GetType().Name} handle={child.Visual.Handle} role='{role}' name='{name}' automationId='{xamlAutomationId}'");
+			this.Log().Trace($"[A11y] AddSemanticElement: generic path — control={child.GetType().Name} handle={child.Visual.Handle} role='{role}' nameLength={name?.Length ?? 0} automationIdLength={xamlAutomationId?.Length ?? 0}");
 		}
 
 		var result = NativeMethods.AddSemanticElement(parentHandle, child.Visual.Handle, index, width, height, x, y, role ?? string.Empty, name ?? string.Empty, IsAccessibilityFocusable(child, child.IsFocusable), ariaChecked, child.Visual.IsVisible, horizontallyScrollable, verticallyScrollable, child.GetType().Name, xamlAutomationId);
@@ -1847,13 +2978,23 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		if (result)
 		{
 			var handle = child.Visual.Handle;
+			if (automationPeer is not null)
+			{
+				var capabilities = AriaMapper.GetPatternCapabilities(automationPeer);
+				var action = capabilities.CanInvoke ? "invoke"
+					: capabilities.CanToggle ? "toggle"
+					: capabilities.CanExpandCollapse ? "expandCollapse"
+					: capabilities.CanSelect ? "selection"
+					: string.Empty;
+				NativeMethods.ConfigureSemanticAction(handle, action);
+			}
 
 			// aria-roledescription from the AUTHORED AutomationProperties.LocalizedLandmarkType /
 			// LocalizedControlType attached properties (null when unset) — NOT the peer's
 			// GetLocalized*Type(), which DEFAULTS to the role name (e.g. "button") and would restate
 			// the role on every named control (an ARIA anti-pattern). FR-014: roledescription is also
 			// not a name substitute, so it is gated on hasAccessibleName.
-			if (hasAccessibleName)
+			if (hasAccessibleName && role != "generic")
 			{
 				var roleDescription = landmarkType != AutomationLandmarkType.None
 					? AutomationProperties.GetLocalizedLandmarkType(child)
@@ -1875,6 +3016,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				var ariaLive = childLiveSetting == AutomationLiveSetting.Assertive ? "assertive" : "polite";
 				NativeMethods.UpdateAriaLive(handle, ariaLive);
+			}
+
+			if (automationPeer?.IsDialog() == true)
+			{
+				NativeMethods.UpdateAriaModal(handle, true);
 			}
 
 			// Generic elements that still expose ExpandCollapse / shortcut keys (e.g. Expander
@@ -1906,9 +3052,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 						}
 					}
 				}
-				catch
+				catch (Exception ex)
 				{
-					// Some peers throw if queried before fully initialized. Update will arrive via property change.
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn($"[A11y] Failed to apply ExpandCollapse metadata for handle={handle}: {ex.Message}");
+					}
 				}
 
 				// aria-keyshortcuts from AcceleratorKey only; AccessKey maps to the HTML accesskey
@@ -1932,14 +3081,721 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				{
 					NativeMethods.UpdateAriaLabelledBy(handle, labelledById);
 				}
+
+				ApplyGenericFallbackAttributes(child, automationPeer, handle);
 			}
 
 			// Owner-scoped attributes sourced from AutomationProperties attached properties
 			// (aria-level, aria-busy, lang). Mirrors the factory path so both surface them.
 			SemanticElementFactory.ApplyOwnerScopedAriaAttributes(child, handle);
+			if (roleOverride is not null)
+			{
+				ApplyRoleOverride(child, automationPeer, roleOverride);
+			}
 		}
 
 		return result;
+	}
+
+	private void TrySubscribeDataGridRow(UIElement element)
+	{
+		if (element is not FrameworkElement frameworkElement ||
+			_dataGridRowSubscriptions.ContainsKey(element.Visual.Handle) ||
+			element.GetOrCreateAutomationPeer() is not { } peer ||
+			peer.GetAutomationControlType() is not AutomationControlType.DataItem ||
+			AriaMapper.GetContainingDataGridPeer(peer) is not { } gridPeer)
+		{
+			return;
+		}
+		BindRealizedDataGridItemPeer(gridPeer, frameworkElement, peer);
+
+		TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> handler = (sender, _) =>
+		{
+			try
+			{
+				if (sender.GetOrCreateAutomationPeer() is { } rowPeer &&
+					AriaMapper.GetContainingDataGridPeer(rowPeer) is { } gridPeer)
+				{
+					BindRealizedDataGridItemPeer(gridPeer, sender, rowPeer);
+					QueueDataGridRowRefresh(gridPeer, sender);
+				}
+			}
+			catch (Exception ex)
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn($"[A11y] Ignored DataGrid row recycle refresh for handle={sender.Visual.Handle}: {ex.Message}");
+				}
+			}
+		};
+
+		frameworkElement.DataContextChanged += handler;
+		_dataGridRowSubscriptions[element.Visual.Handle] = (frameworkElement, handler);
+	}
+
+	private void BindRealizedDataGridItemPeer(AutomationPeer gridPeer, FrameworkElement row, AutomationPeer rowPeer)
+	{
+		if (row.DataContext is not { } item || GetDataGridItemPeerFactory(gridPeer.GetType()) is not { Factory: { } factory } peerFactory)
+		{
+			return;
+		}
+
+		try
+		{
+			if (factory.Invoke(gridPeer, [item]) is AutomationPeer itemPeer)
+			{
+				var handle = row.Visual.Handle;
+				var hasPrevious = _dataGridRealizedItems.TryGetValue(handle, out var previous);
+				_dataGridRealizedItems[handle] = (gridPeer, item);
+				rowPeer.EventsSource = itemPeer;
+				if (hasPrevious &&
+					(!ReferenceEquals(previous.GridPeer, gridPeer) || !EqualityComparer<object>.Default.Equals(previous.Item, item)))
+				{
+					TryEvictDataGridItemPeer(previous.GridPeer, previous.Item);
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"[A11y] DataGrid realized-row peer binding failed for handle={row.Visual.Handle}: {ex.Message}");
+			}
+		}
+	}
+
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "The Toolkit DataGrid calls GetOrCreateItemPeer internally, so its implementation remains reachable in trimmed applications.")]
+	private static DataGridItemPeerFactory GetDataGridItemPeerFactory(Type peerType)
+		=> _dataGridItemPeerFactories.GetValue(peerType, static type => new(type));
+
+	private sealed class DataGridItemPeerFactory
+	{
+		public DataGridItemPeerFactory(Type peerType)
+		{
+			Factory = peerType.GetMethod(
+				"GetOrCreateItemPeer",
+				BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+				binder: null,
+				types: [typeof(object)],
+				modifiers: null);
+			ItemPeers = peerType.GetField("_itemPeers", BindingFlags.Instance | BindingFlags.NonPublic);
+			Item = Factory?.ReturnType.GetField("_item", BindingFlags.Instance | BindingFlags.NonPublic);
+		}
+
+		public MethodInfo? Factory { get; }
+		public FieldInfo? ItemPeers { get; }
+		public FieldInfo? Item { get; }
+	}
+
+	private void TryEvictDataGridItemPeer(AutomationPeer gridPeer, object item)
+	{
+		var peerFactory = GetDataGridItemPeerFactory(gridPeer.GetType());
+		if (peerFactory.ItemPeers?.GetValue(gridPeer) is not IDictionary itemPeers || !itemPeers.Contains(item))
+		{
+			return;
+		}
+
+		foreach (var realized in _dataGridRealizedItems.Values)
+		{
+			if (ReferenceEquals(realized.GridPeer, gridPeer) && EqualityComparer<object>.Default.Equals(realized.Item, item))
+			{
+				return;
+			}
+		}
+
+		try
+		{
+			if (itemPeers[item] is AutomationPeer itemPeer &&
+				AriaMapper.GetPatternOrEventsSource(itemPeer, PatternInterface.SelectionItem) is ISelectionItemProvider { IsSelected: true })
+			{
+				return;
+			}
+		}
+		catch
+		{
+			// Retain peers whose selection state is temporarily unavailable.
+			return;
+		}
+
+		itemPeers.Remove(item);
+	}
+
+	private void TryEvictUnrealizedDataGridEventPeer(AutomationPeer peer)
+	{
+		if (AriaMapper.GetContainingDataGridPeer(peer) is not { } gridPeer)
+		{
+			return;
+		}
+
+		var peerFactory = GetDataGridItemPeerFactory(gridPeer.GetType());
+		if (peerFactory.Item is { } itemField &&
+			itemField.DeclaringType?.IsInstanceOfType(peer) == true &&
+			itemField.GetValue(peer) is { } item)
+		{
+			TryEvictDataGridItemPeer(gridPeer, item);
+		}
+	}
+
+	private void ReleaseDataGridRowBinding(FrameworkElement row)
+	{
+		if (row.GetOrCreateAutomationPeer() is { } rowPeer)
+		{
+			rowPeer.EventsSource = null;
+		}
+
+		if (_dataGridRealizedItems.Remove(row.Visual.Handle, out var binding))
+		{
+			TryEvictDataGridItemPeer(binding.GridPeer, binding.Item);
+		}
+	}
+
+	private void TrySubscribeDataGridProviderSnapshot(UIElement element, AutomationPeer? peer = null)
+	{
+		var gridPeer = peer ?? element.GetOrCreateAutomationPeer();
+		if (element is not FrameworkElement frameworkElement ||
+			_dataGridLayoutSubscriptions.ContainsKey(element.Visual.Handle) ||
+			gridPeer?.GetAutomationControlType() is not AutomationControlType.DataGrid)
+		{
+			return;
+		}
+
+		EventHandler<object> handler = (_, _) => QueueThrottledDataGridProviderFingerprintCheck(frameworkElement, gridPeer);
+		frameworkElement.LayoutUpdated += handler;
+		_dataGridLayoutSubscriptions[element.Visual.Handle] = (frameworkElement, handler);
+		_dataGridSummarySubscriptions[element.Visual.Handle] = (frameworkElement, gridPeer);
+		EnsureDataGridSummaryPolling();
+		QueueDataGridProviderFingerprintCheck(frameworkElement, gridPeer);
+		QueueDataGridProviderSummaryCheck(frameworkElement, gridPeer);
+	}
+
+	private void TryUnsubscribeDataGridProviderSnapshot(UIElement element)
+	{
+		var handle = element.Visual.Handle;
+		if (_dataGridLayoutSubscriptions.Remove(handle, out var subscription))
+		{
+			subscription.Element.LayoutUpdated -= subscription.Handler;
+		}
+		_dataGridSummarySubscriptions.Remove(handle);
+		if (_dataGridSummarySubscriptions.Count == 0)
+		{
+			ResetDataGridSummaryPolling();
+		}
+		_dataGridProviderFingerprints.Remove(handle);
+		_dataGridLastFingerprintCheckTicks.Remove(handle);
+		if (_dataGridFingerprintThrottleTimers.Remove(handle, out var timer))
+		{
+			timer.Dispose();
+		}
+		_dataGridProviderSummaryFingerprints.Remove(handle);
+		_scheduledDataGridFingerprintChecks.Remove(handle);
+		_scheduledDataGridSummaryChecks.Remove(handle);
+	}
+
+	private void EnsureDataGridSummaryPolling()
+	{
+		if (_dataGridSummaryPollTimer is not null)
+		{
+			return;
+		}
+
+		var generation = _dataGridSummaryPollGeneration;
+		_dataGridSummaryPollTimer = new Timer(
+			_ => NativeDispatcher.Main.Enqueue(() =>
+			{
+				if (generation != _dataGridSummaryPollGeneration || !_isAccessibilityEnabled)
+				{
+					return;
+				}
+
+				foreach (var (handle, subscription) in _dataGridSummarySubscriptions.ToArray())
+				{
+					if (HasSemanticElement(handle))
+					{
+						QueueDataGridProviderSummaryCheck(subscription.Owner, subscription.Peer);
+					}
+				}
+			}),
+			null,
+			DataGridSummaryCheckIntervalMs,
+			DataGridSummaryCheckIntervalMs);
+	}
+
+	private void ResetDataGridSummaryPolling()
+	{
+		_dataGridSummaryPollGeneration++;
+		_dataGridSummaryPollTimer?.Dispose();
+		_dataGridSummaryPollTimer = null;
+		_dataGridSummarySubscriptions.Clear();
+	}
+
+	private void QueueDataGridProviderSummaryCheck(UIElement gridOwner, AutomationPeer gridPeer)
+	{
+		var gridHandle = gridOwner.Visual.Handle;
+		if (!_scheduledDataGridSummaryChecks.Add(gridHandle))
+		{
+			return;
+		}
+
+		NativeDispatcher.Main.Enqueue(() =>
+		{
+			_scheduledDataGridSummaryChecks.Remove(gridHandle);
+			if (!_isAccessibilityEnabled || !HasSemanticElement(gridHandle))
+			{
+				return;
+			}
+
+			try
+			{
+				var fingerprint = ComputeDataGridProviderSummaryFingerprint(gridPeer);
+				if (!_dataGridProviderSummaryFingerprints.TryGetValue(gridHandle, out var previous) || previous != fingerprint)
+				{
+					_dataGridProviderSummaryFingerprints[gridHandle] = fingerprint;
+					QueueDataGridRefresh(gridPeer);
+				}
+			}
+			catch (Exception ex)
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn($"[A11y] DataGrid provider summary failed for handle={gridHandle}: {ex.Message}");
+				}
+			}
+
+		});
+	}
+
+	private static int ComputeDataGridProviderSummaryFingerprint(AutomationPeer gridPeer)
+	{
+		var hash = new HashCode();
+		if (gridPeer.GetPattern(PatternInterface.Grid) is IGridProvider gridProvider)
+		{
+			hash.Add(gridProvider.RowCount);
+			hash.Add(gridProvider.ColumnCount);
+		}
+		if (gridPeer.GetPattern(PatternInterface.Selection) is ISelectionProvider selectionProvider)
+		{
+			hash.Add(selectionProvider.CanSelectMultiple);
+		}
+		if (gridPeer.GetPattern(PatternInterface.Table) is ITableProvider tableProvider)
+		{
+			AppendProviderSummary(tableProvider.GetColumnHeaders(), includeSort: true, ref hash);
+			AppendProviderSummary(tableProvider.GetRowHeaders(), includeSort: false, ref hash);
+		}
+		return hash.ToHashCode();
+	}
+
+	private static void AppendProviderSummary(IRawElementProviderSimple[]? providers, bool includeSort, ref HashCode hash)
+	{
+		hash.Add(providers?.Length ?? 0);
+		if (providers is null)
+		{
+			return;
+		}
+
+		foreach (var provider in providers)
+		{
+			var peer = provider?.AutomationPeer;
+			hash.Add(peer);
+			if (peer is not null)
+			{
+				hash.Add(peer.GetName());
+				hash.Add(peer.IsEnabled());
+				if (includeSort)
+				{
+					hash.Add(peer.GetItemStatus());
+					hash.Add(peer.GetHelpText());
+					hash.Add(peer.GetFullDescription());
+				}
+			}
+		}
+	}
+
+	private void QueueDataGridProviderFingerprintCheck(UIElement gridOwner, AutomationPeer gridPeer)
+	{
+		var gridHandle = gridOwner.Visual.Handle;
+		if (!_scheduledDataGridFingerprintChecks.Add(gridHandle))
+		{
+			return;
+		}
+
+		NativeDispatcher.Main.Enqueue(() =>
+		{
+			_scheduledDataGridFingerprintChecks.Remove(gridHandle);
+			if (!_isAccessibilityEnabled || !HasSemanticElement(gridHandle))
+			{
+				return;
+			}
+
+			try
+			{
+				var fingerprint = ComputeDataGridProviderFingerprint(gridOwner);
+				if (!_dataGridProviderFingerprints.TryGetValue(gridHandle, out var previous) || previous != fingerprint)
+				{
+					_dataGridProviderFingerprints[gridHandle] = fingerprint;
+					QueueDataGridRefresh(gridPeer);
+				}
+			}
+			catch (Exception ex)
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn($"[A11y] DataGrid provider fingerprint failed for handle={gridHandle}: {ex.Message}");
+				}
+			}
+
+			QueueDataGridProviderSummaryCheck(gridOwner, gridPeer);
+		});
+	}
+
+	private void QueueThrottledDataGridProviderFingerprintCheck(UIElement gridOwner, AutomationPeer gridPeer)
+	{
+		var gridHandle = gridOwner.Visual.Handle;
+		var now = Environment.TickCount64;
+		var elapsed = _dataGridLastFingerprintCheckTicks.TryGetValue(gridHandle, out var previous)
+			? now - previous
+			: DataGridFingerprintCheckIntervalMs;
+		if (elapsed >= DataGridFingerprintCheckIntervalMs)
+		{
+			_dataGridLastFingerprintCheckTicks[gridHandle] = now;
+			QueueDataGridProviderFingerprintCheck(gridOwner, gridPeer);
+			return;
+		}
+
+		if (_dataGridFingerprintThrottleTimers.ContainsKey(gridHandle))
+		{
+			return;
+		}
+
+		Timer? timer = null;
+		timer = new Timer(
+			_ => NativeDispatcher.Main.Enqueue(() =>
+			{
+				if (!_dataGridFingerprintThrottleTimers.TryGetValue(gridHandle, out var current) ||
+					!ReferenceEquals(current, timer))
+				{
+					return;
+				}
+
+				_dataGridFingerprintThrottleTimers.Remove(gridHandle);
+				current.Dispose();
+				if (!_isAccessibilityEnabled || !HasSemanticElement(gridHandle))
+				{
+					return;
+				}
+
+				_dataGridLastFingerprintCheckTicks[gridHandle] = Environment.TickCount64;
+				QueueDataGridProviderFingerprintCheck(gridOwner, gridPeer);
+			}),
+			null,
+			DataGridFingerprintCheckIntervalMs - (int)elapsed,
+			Timeout.Infinite);
+		_dataGridFingerprintThrottleTimers.Add(gridHandle, timer);
+	}
+
+	private static int ComputeDataGridProviderFingerprint(UIElement gridOwner)
+	{
+		var hash = new HashCode();
+		AppendDataGridProviderFingerprint(gridOwner, ref hash);
+		return hash.ToHashCode();
+	}
+
+	private static void AppendDataGridProviderFingerprint(UIElement element, ref HashCode hash)
+	{
+		try
+		{
+			if (element.GetOrCreateAutomationPeer() is { } peer)
+			{
+				hash.Add(element.Visual.Handle);
+				hash.Add((int)AriaMapper.GetSemanticElementType(peer, element));
+				hash.Add(peer.IsEnabled());
+				hash.Add(peer.GetName());
+
+				if (peer.GetPattern(PatternInterface.Grid) is IGridProvider gridProvider)
+				{
+					hash.Add(gridProvider.RowCount);
+					hash.Add(gridProvider.ColumnCount);
+				}
+				if (peer.GetPattern(PatternInterface.Selection) is ISelectionProvider selectionProvider)
+				{
+					hash.Add(selectionProvider.CanSelectMultiple);
+				}
+				if (peer.GetPattern(PatternInterface.Table) is ITableProvider tableProvider)
+				{
+					AppendProviderHandles(tableProvider.GetColumnHeaders(), ref hash);
+					AppendProviderHandles(tableProvider.GetRowHeaders(), ref hash);
+				}
+				if (peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider gridItemProvider)
+				{
+					hash.Add(gridItemProvider.Row);
+					hash.Add(gridItemProvider.Column);
+					hash.Add(gridItemProvider.RowSpan);
+					hash.Add(gridItemProvider.ColumnSpan);
+				}
+				if (AriaMapper.GetPatternOrEventsSource(peer, PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
+				{
+					hash.Add(selectionItemProvider.IsSelected);
+				}
+				if (peer.GetAutomationControlType() is AutomationControlType.HeaderItem)
+				{
+					hash.Add(peer.GetItemStatus());
+					hash.Add(peer.GetHelpText());
+					hash.Add(peer.GetFullDescription());
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			hash.Add(ex.GetType().FullName);
+		}
+
+		foreach (var child in element.GetChildren())
+		{
+			if (Instance._semanticParentMap.ContainsKey(child.Visual.Handle) || child.GetChildren().Count > 0)
+			{
+				AppendDataGridProviderFingerprint(child, ref hash);
+			}
+		}
+	}
+
+	private static void AppendProviderHandles(IRawElementProviderSimple[]? providers, ref HashCode hash)
+	{
+		hash.Add(providers?.Length ?? 0);
+		if (providers is not null)
+		{
+			foreach (var provider in providers)
+			{
+				hash.Add(provider?.AutomationPeer);
+			}
+		}
+	}
+
+	private void TryUnsubscribeDataGridRow(UIElement element)
+	{
+		if (_dataGridRowSubscriptions.Remove(element.Visual.Handle, out var subscription))
+		{
+			subscription.Element.DataContextChanged -= subscription.Handler;
+			ReleaseDataGridRowBinding(subscription.Element);
+		}
+	}
+
+	private void TryQueueContainingDataGridRefresh(UIElement element)
+	{
+		if (element.GetOrCreateAutomationPeer() is { } peer &&
+			AriaMapper.GetContainingDataGridPeer(peer) is { } gridPeer)
+		{
+			QueueDataGridRefresh(gridPeer);
+		}
+	}
+
+	private void QueueDataGridRefresh(AutomationPeer peer)
+		=> QueueDataGridRefreshCore(peer, row: null);
+
+	private void QueueDataGridRowRefresh(AutomationPeer peer, UIElement row)
+		=> QueueDataGridRefreshCore(peer, row);
+
+	private void QueueDataGridRefreshCore(AutomationPeer peer, UIElement? row)
+	{
+		var gridPeer = peer.GetAutomationControlType() is AutomationControlType.DataGrid
+			? peer
+			: AriaMapper.GetContainingDataGridPeer(peer);
+		if (gridPeer is not FrameworkElementAutomationPeer { Owner: { } gridOwner })
+		{
+			return;
+		}
+
+		var gridHandle = gridOwner.Visual.Handle;
+		if (row is null)
+		{
+			_pendingFullDataGridRefreshes.Add(gridHandle);
+			_pendingDataGridRowRefreshes.Remove(gridHandle);
+		}
+		else if (!_pendingFullDataGridRefreshes.Contains(gridHandle))
+		{
+			if (!_pendingDataGridRowRefreshes.TryGetValue(gridHandle, out var rows))
+			{
+				rows = new HashSet<UIElement>();
+				_pendingDataGridRowRefreshes.Add(gridHandle, rows);
+			}
+			rows.Add(row);
+		}
+
+		if (!_scheduledDataGridRefreshes.Add(gridHandle))
+		{
+			return;
+		}
+
+		NativeDispatcher.Main.Enqueue(() =>
+		{
+			try
+			{
+				_scheduledDataGridRefreshes.Remove(gridHandle);
+				var refreshFullGrid = _pendingFullDataGridRefreshes.Remove(gridHandle);
+				_pendingDataGridRowRefreshes.Remove(gridHandle, out var dirtyRows);
+				if (!_isAccessibilityEnabled || !HasSemanticElement(gridHandle))
+				{
+					return;
+				}
+
+				if (refreshFullGrid)
+				{
+					RefreshRealizedDataGrid(gridOwner);
+				}
+				else if (dirtyRows is not null)
+				{
+					foreach (var dirtyRow in dirtyRows)
+					{
+						if (_semanticParentMap.ContainsKey(dirtyRow.Visual.Handle))
+						{
+							RefreshRealizedDataGridDescendant(dirtyRow);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				_scheduledDataGridRefreshes.Remove(gridHandle);
+				_pendingFullDataGridRefreshes.Remove(gridHandle);
+				_pendingDataGridRowRefreshes.Remove(gridHandle);
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"[A11y] DataGrid refresh failed for handle={gridHandle}: {ex.Message}", ex);
+				}
+			}
+		});
+	}
+
+	private void RefreshRealizedDataGrid(UIElement gridOwner)
+	{
+		ReconcileDataGridHeaderStructure(gridOwner);
+		RefreshDataGridElement(gridOwner);
+		foreach (var child in gridOwner.GetChildren())
+		{
+			RefreshRealizedDataGridDescendant(child);
+		}
+	}
+
+	private void ReconcileDataGridHeaderStructure(UIElement gridOwner)
+	{
+		foreach (var child in gridOwner.GetChildren())
+		{
+			ReconcileDataGridHeaderDescendant(child);
+		}
+	}
+
+	private void ReconcileDataGridHeaderDescendant(UIElement element)
+	{
+		var peer = element.GetOrCreateAutomationPeer();
+		if (peer is not null)
+		{
+			var controlType = peer.GetAutomationControlType();
+			var expectedType = AriaMapper.GetSemanticElementType(peer, element);
+
+			if (controlType is AutomationControlType.Header)
+			{
+				if (expectedType is SemanticElementType.GridRow)
+				{
+					EnsureDataGridHeaderParent(element);
+				}
+				else if (AutomationProperties.GetAccessibilityView(element) == AccessibilityView.Raw &&
+					_dataGridHeaderSemanticTypes.TryGetValue(element.Visual.Handle, out var currentType) &&
+					currentType is SemanticElementType.GridRow)
+				{
+					RemoveSemanticSubtree(element);
+				}
+			}
+			else if (controlType is AutomationControlType.HeaderItem)
+			{
+				var handle = element.Visual.Handle;
+				var isRequiredHeader = expectedType is SemanticElementType.ColumnHeader or SemanticElementType.RowHeader;
+				var visualParent = element.GetParent() as UIElement;
+				var semanticParent = visualParent is null ? _rootElementHandle : FindSemanticParent(visualParent);
+				var hasCurrentType = _dataGridHeaderSemanticTypes.TryGetValue(handle, out var currentType);
+				var needsRecreation = isRequiredHeader &&
+					(!_semanticParentMap.TryGetValue(handle, out var currentParent) ||
+					 currentParent != semanticParent || !hasCurrentType || currentType != expectedType);
+
+				if (needsRecreation)
+				{
+					RemoveSemanticSubtree(element);
+					if (AddSemanticElement(semanticParent, element, null))
+					{
+						_semanticParentMap[handle] = semanticParent;
+						InitializeInverseFlows(element);
+						_dataGridHeaderSemanticTypes[handle] = expectedType;
+						ApplyOrDeferLabelledBy(handle, peer);
+						ApplyOrDeferRelationshipAttributes(handle, peer);
+					}
+				}
+				else if (!isRequiredHeader && hasCurrentType &&
+					currentType is SemanticElementType.ColumnHeader or SemanticElementType.RowHeader)
+				{
+					RemoveSemanticSubtree(element);
+				}
+			}
+		}
+
+		foreach (var child in element.GetChildren())
+		{
+			ReconcileDataGridHeaderDescendant(child);
+		}
+	}
+
+	private void RemoveSemanticSubtree(UIElement element)
+	{
+		foreach (var child in element.GetChildren())
+		{
+			RemoveSemanticSubtree(child);
+		}
+
+		var handle = element.Visual.Handle;
+		if (_semanticParentMap.Remove(handle, out var semanticParent))
+		{
+			RemoveSemanticElement(semanticParent, handle);
+		}
+		_pendingRelationships.Remove(handle);
+		_pendingLabelledBy.Remove(handle);
+		_labelledBySources.Remove(handle);
+		_relationshipSources.Remove(handle);
+		_dataGridHeaderSemanticTypes.Remove(handle);
+	}
+
+	private void TrackDataGridHeaderSemanticType(UIElement element, AutomationPeer? peer = null)
+	{
+		peer ??= element.GetOrCreateAutomationPeer();
+		if (peer?.GetAutomationControlType() is AutomationControlType.Header or AutomationControlType.HeaderItem)
+		{
+			_dataGridHeaderSemanticTypes[element.Visual.Handle] = AriaMapper.GetSemanticElementType(peer, element);
+		}
+	}
+
+	private void RefreshRealizedDataGridDescendant(UIElement element)
+	{
+		RefreshDataGridElement(element);
+		foreach (var child in element.GetChildren())
+		{
+			RefreshRealizedDataGridDescendant(child);
+		}
+	}
+
+	private void RefreshDataGridElement(UIElement element)
+	{
+		if (!_semanticParentMap.ContainsKey(element.Visual.Handle) ||
+			element.GetOrCreateAutomationPeer() is not { } peer)
+		{
+			return;
+		}
+
+		try
+		{
+			SemanticElementFactory.RefreshGridMetadata(peer, element);
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"[A11y] Failed to refresh DataGrid peer {peer.GetType().Name}: {ex.Message}");
+			}
+		}
 	}
 
 	private void RemoveSemanticElement(IntPtr parentHandle, IntPtr childHandle)
@@ -1949,6 +3805,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			this.Log().Trace($"[A11y] RemoveSemanticElement: parent={parentHandle} child={childHandle}");
 		}
 
+		RemoveFlowsFromTarget(childHandle);
 		NativeMethods.RemoveSemanticElement(parentHandle, childHandle);
 	}
 
@@ -1973,10 +3830,79 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		};
 	}
 
-	private void OnAutomationNameChanged(UIElement element, string automationId)
+	private static void ApplyGenericFallbackAttributes(UIElement element, AutomationPeer peer, IntPtr handle)
+	{
+		var attributes = AriaMapper.GetAriaAttributes(peer);
+
+		if (!string.IsNullOrEmpty(attributes.Description))
+		{
+			NativeMethods.UpdateAriaDescription(handle, attributes.Description);
+		}
+
+		if (attributes.Required)
+		{
+			NativeMethods.UpdateAriaRequired(handle, true);
+		}
+
+		if (attributes.Invalid)
+		{
+			NativeMethods.UpdateAriaInvalid(handle, true);
+		}
+
+		if (attributes.Disabled)
+		{
+			NativeMethods.UpdateDisabledState(handle, true);
+		}
+
+		if (attributes.Selected.HasValue)
+		{
+			NativeMethods.UpdateSelectionState(handle, attributes.Selected.Value);
+		}
+
+		if (attributes.PositionInSet is > 0 && attributes.SizeOfSet is > 0)
+		{
+			NativeMethods.UpdatePositionInSet(handle, SupportsAriaSetPosition(element, peer) ? attributes.PositionInSet.Value : 0, attributes.SizeOfSet.Value);
+		}
+
+		if (attributes.MultiSelectable == true)
+		{
+			NativeMethods.UpdateAriaAttribute(handle, "aria-multiselectable", "true");
+		}
+
+		ApplyGenericRangeAttributes(handle, element, attributes);
+	}
+
+	private static void ApplyGenericRangeAttributes(IntPtr handle, UIElement element, AriaAttributes attributes)
+	{
+		UpdateGenericAriaAttribute(handle, "aria-valuenow", attributes.ValueNow);
+		UpdateGenericAriaAttribute(handle, "aria-valuemin", attributes.ValueMin);
+		UpdateGenericAriaAttribute(handle, "aria-valuemax", attributes.ValueMax);
+		NativeMethods.UpdateAriaAttribute(handle, "aria-valuetext", string.IsNullOrEmpty(attributes.ValueText) ? null : attributes.ValueText);
+
+		if (element is ScrollBar scrollBar)
+		{
+			NativeMethods.UpdateAriaAttribute(handle, "aria-orientation", scrollBar.Orientation == Orientation.Vertical ? "vertical" : "horizontal");
+		}
+	}
+
+	private static void UpdateGenericAriaAttribute(IntPtr handle, string attribute, double? value)
+	{
+		NativeMethods.UpdateAriaAttribute(handle, attribute, value?.ToString(CultureInfo.InvariantCulture));
+	}
+
+	private void OnAutomationNameChanged(UIElement element, string name)
 	{
 		Debug.Assert(IsAccessibilityEnabled);
-		NativeMethods.UpdateAriaLabel(element.Visual.Handle, automationId);
+		NativeMethods.UpdateAriaLabel(
+			element.Visual.Handle,
+			ElementRoleProhibitsNaming(element, element.GetOrCreateAutomationPeer()) ? string.Empty : name);
+	}
+
+	private static void UpdateColumnHeaderSortAndDescription(AutomationPeer peer, UIElement element)
+	{
+		var metadata = SemanticElementFactory.ResolveGridSortMetadata(peer);
+		NativeMethods.UpdateColumnHeaderSort(element.Visual.Handle, metadata.Direction);
+		NativeMethods.UpdateAriaDescription(element.Visual.Handle, metadata.Description ?? string.Empty);
 	}
 
 	protected override void AnnounceOnPlatform(string text, bool assertive)
@@ -1991,21 +3917,80 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	public override void NotifyInvalidatePeer(AutomationPeer peer)
+	{
+		base.NotifyInvalidatePeer(peer);
+		if (TryGetPeerOwner(peer, out var element))
+		{
+			UpdateRoleOverride(element, AutomationProperties.GetRoleOverride(element));
+		}
+	}
+
 	// WASM overrides to unpin virtualized items on focus change.
 	public override void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"NotifyAutomationEvent: eventId={eventId}, peer={peer.GetType().Name}");
+		}
+
 		if (eventId == AutomationEvents.AutomationFocusChanged)
 		{
-			// When focus moves away from a virtualized item, unpin the previously-pinned
-			// item so it can be recycled normally. Without this, items accumulate in the
-			// semantic DOM forever once focused (memory/DOM leak).
-			foreach (var region in _virtualizedRegions)
+			var focusedHandle = IntPtr.Zero;
+			if (TryGetPeerOwner(peer, out var focusedElement) && HasSemanticElement(focusedElement.Visual.Handle))
 			{
-				if (region.IsFocusPinned)
+				focusedHandle = focusedElement.Visual.Handle;
+				_focusSynchronizer?.OnAutomationFocusChanged(focusedElement.Visual.Handle);
+			}
+
+			// When focus moves away from a virtualized item, release only prior pins. Keep
+			// the region containing the newly focused handle pinned until the next move.
+			foreach (var registration in _virtualizedRegions.Values)
+			{
+				var region = registration.Region;
+				if (region.IsFocusPinned && region.PinnedHandle != focusedHandle)
 				{
-					region.UnpinFocusedItem();
+					var removedHandle = region.UnpinFocusedItem();
+					if (removedHandle != IntPtr.Zero)
+					{
+						CleanupVirtualizedHandle(removedHandle);
+						QueueRelationshipRefresh(refreshResolved: true);
+					}
 				}
 			}
+		}
+
+		switch (eventId)
+		{
+			case AutomationEvents.LiveRegionChanged:
+				_liveRegionManager?.HandleLiveRegionChanged(peer);
+				break;
+
+			case AutomationEvents.StructureChanged:
+				if (peer.GetAutomationControlType() is AutomationControlType.DataGrid ||
+					AriaMapper.GetContainingDataGridPeer(peer) is not null)
+				{
+					QueueDataGridRefresh(peer);
+				}
+				break;
+
+			case AutomationEvents.InvokePatternOnInvoked:
+				if (peer.GetAutomationControlType() is AutomationControlType.HeaderItem &&
+					AriaMapper.GetContainingDataGridPeer(peer) is not null)
+				{
+					QueueDataGridRefresh(peer);
+				}
+				break;
+
+			case AutomationEvents.SelectionItemPatternOnElementAddedToSelection:
+			case AutomationEvents.SelectionItemPatternOnElementRemovedFromSelection:
+			case AutomationEvents.SelectionItemPatternOnElementSelected:
+				QueueDataGridRefresh(peer);
+				TryEvictUnrealizedDataGridEventPeer(peer);
+				break;
+			case AutomationEvents.SelectionPatternOnInvalidated:
+				QueueDataGridRefresh(peer);
+				break;
 		}
 
 		base.NotifyAutomationEvent(peer, eventId);
@@ -2016,6 +4001,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	// that differs from the base routing pattern.
 	protected override void NotifyPropertyChangedEventCore(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
 	{
+		peer = peer.ResolveProviderPeer(resolveEventsSource: true);
+
 		if (automationProperty == TogglePatternIdentifiers.ToggleStateProperty &&
 			TryGetPeerOwner(peer, out var element))
 		{
@@ -2027,8 +4014,19 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			// ToggleButton uses aria-pressed, ToggleSwitch uses role="switch" + aria-checked,
 			// CheckBox/RadioButton use native checked property + aria-checked
+			var roleOverride = NormalizeRoleOverrideForHost(element, peer, AutomationProperties.GetRoleOverride(element));
 			var elementType = AriaMapper.GetSemanticElementType(peer, element);
-			if (elementType == SemanticElementType.ToggleButton)
+			if (roleOverride is not null)
+			{
+				var primaryRole = GetPrimaryRole(roleOverride);
+				var attribute = primaryRole is "checkbox" or "menuitemcheckbox" or "menuitemradio" or "option" or "radio" or "switch" or "treeitem"
+					? "aria-checked"
+					: primaryRole == "button"
+						? "aria-pressed"
+						: string.Empty;
+				NativeMethods.UpdateRoleOverrideToggleState(element.Visual.Handle, attribute, ariaChecked ?? "false");
+			}
+			else if (elementType == SemanticElementType.ToggleButton)
 			{
 				NativeMethods.UpdateAriaPressed(element.Visual.Handle, ariaChecked ?? "false");
 			}
@@ -2043,14 +4041,29 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				}
 			}
 		}
+		else if (automationProperty == AutomationElementIdentifiers.AutomationIdProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			SemanticElementFactory.SetXamlAutomationId(
+				element.Visual.Handle,
+				AutomationProperties.GetAutomationId(element) ?? string.Empty);
+		}
 		else if (automationProperty == AutomationElementIdentifiers.NameProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"[A11y] PROP CHANGE: Name handle={element.Visual.Handle} element={element.GetType().Name} old='{oldValue}' new='{newValue}'");
+				this.Log().Trace($"[A11y] PROP CHANGE: Name handle={element.Visual.Handle} element={element.GetType().Name} oldLength={(oldValue as string)?.Length ?? 0} newLength={(newValue as string)?.Length ?? 0}");
 			}
 			OnAutomationNameChanged(element, (string)newValue);
+			UpdateNameDependentRole(element, peer);
+			if (element is TextBox textBox)
+			{
+				NativeMethods.UpdateTextBoxPlaceholder(element.Visual.Handle, textBox.PlaceholderText ?? string.Empty);
+			}
+			var roleOverride = NormalizeRoleOverrideForHost(element, peer, AutomationProperties.GetRoleOverride(element));
+			var effectiveRole = roleOverride ?? ResolveDefaultSemanticRole(element, peer);
+			UpdateAuthoredRoleDescription(element, GetPrimaryRole(effectiveRole), AriaMapper.ResolveLabel(peer));
 
 			// When the accessible name changes on a live region element, trigger
 			// the announcement. In WinUI3, the OS UIA framework monitors content
@@ -2060,7 +4073,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"[A11y] PROP CHANGE: Name on LiveRegion — triggering announcement liveSetting={liveSetting} content='{newValue}'");
+					this.Log().Trace($"[A11y] PROP CHANGE: Name on LiveRegion — triggering announcement liveSetting={liveSetting} contentLength={(newValue as string)?.Length ?? 0}");
 				}
 				_liveRegionManager?.HandleLiveRegionChanged(peer);
 			}
@@ -2070,23 +4083,126 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"[A11y] PROP CHANGE: HelpText handle={element.Visual.Handle} element={element.GetType().Name} new='{newValue}'");
+				this.Log().Trace($"[A11y] PROP CHANGE: HelpText handle={element.Visual.Handle} element={element.GetType().Name} contentLength={(newValue as string)?.Length ?? 0}");
 			}
-			NativeMethods.UpdateAriaDescription(element.Visual.Handle, (string)newValue);
+			if (AriaMapper.GetSemanticElementType(peer, element) is SemanticElementType.ColumnHeader &&
+				AriaMapper.GetContainingDataGridPeer(peer) is not null)
+			{
+				UpdateColumnHeaderSortAndDescription(peer, element);
+			}
+			else
+			{
+				var description = peer.GetFullDescription();
+				NativeMethods.UpdateAriaDescription(element.Visual.Handle, string.IsNullOrEmpty(description) ? peer.GetHelpText() : description);
+			}
+
+			if (element is TextBox textBox)
+			{
+				NativeMethods.UpdateTextBoxPlaceholder(element.Visual.Handle, textBox.PlaceholderText ?? string.Empty);
+			}
+		}
+		else if (automationProperty == AutomationElementIdentifiers.FullDescriptionProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			if (AriaMapper.GetSemanticElementType(peer, element) is SemanticElementType.ColumnHeader &&
+				AriaMapper.GetContainingDataGridPeer(peer) is not null)
+			{
+				UpdateColumnHeaderSortAndDescription(peer, element);
+			}
+			else
+			{
+				var description = peer.GetFullDescription();
+				NativeMethods.UpdateAriaDescription(element.Visual.Handle, string.IsNullOrEmpty(description) ? peer.GetHelpText() : description);
+			}
 		}
 		else if (automationProperty == AutomationElementIdentifiers.LandmarkTypeProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
-			// Sync landmark role for VoiceOver rotor navigation
 			var attributes = AriaMapper.GetAriaAttributes(peer);
-			if (!string.IsNullOrEmpty(attributes.LandmarkRole))
+			var role = ResolveDefaultSemanticRole(element, peer);
+			if (AutomationProperties.GetLandmarkType(element) == AutomationLandmarkType.None &&
+				AutomationProperties.GetAccessibilityView(element) == AccessibilityView.Raw)
 			{
-				NativeMethods.UpdateLandmarkRole(element.Visual.Handle, attributes.LandmarkRole);
+				role = null;
+			}
+
+			NativeMethods.UpdateLandmarkRole(element.Visual.Handle, role ?? string.Empty);
+			NativeMethods.UpdateAriaRoleDescription(element.Visual.Handle, attributes.RoleDescription ?? string.Empty);
+		}
+		else if (automationProperty == AutomationElementIdentifiers.LocalizedLandmarkTypeProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			var roleDescription = AriaMapper.GetAriaAttributes(peer).RoleDescription;
+			NativeMethods.UpdateAriaRoleDescription(element.Visual.Handle, roleDescription ?? string.Empty);
+		}
+		else if (automationProperty == AutomationElementIdentifiers.LocalizedControlTypeProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			var roleOverride = NormalizeRoleOverrideForHost(element, peer, AutomationProperties.GetRoleOverride(element));
+			var effectiveRole = roleOverride ?? ResolveDefaultSemanticRole(element, peer);
+			UpdateAuthoredRoleDescription(element, GetPrimaryRole(effectiveRole), AriaMapper.ResolveLabel(peer));
+		}
+		else if (automationProperty == AutomationElementIdentifiers.LiveSettingProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			var liveSetting = peer.GetLiveSetting();
+			var ariaLive = liveSetting == AutomationLiveSetting.Off
+				? string.Empty
+				: liveSetting == AutomationLiveSetting.Assertive ? "assertive" : "polite";
+			NativeMethods.UpdateAriaLive(element.Visual.Handle, ariaLive);
+		}
+		else if (automationProperty == AutomationElementIdentifiers.LevelProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			NativeMethods.UpdateAriaLevel(element.Visual.Handle, ResolveAriaLevel(element, peer));
+		}
+		else if (automationProperty == AutomationElementIdentifiers.CultureProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			NativeMethods.UpdateLang(element.Visual.Handle, SemanticElementFactory.ResolveLanguage(AutomationProperties.GetCulture(element)));
+		}
+		else if (automationProperty == AutomationElementIdentifiers.AcceleratorKeyProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			NativeMethods.UpdateAriaKeyShortcuts(element.Visual.Handle, peer.GetAcceleratorKey() ?? string.Empty);
+		}
+		else if (automationProperty == AutomationElementIdentifiers.AccessKeyProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			NativeMethods.SetAccessKey(element.Visual.Handle, peer.GetAccessKey() ?? string.Empty);
+		}
+		else if (automationProperty == AutomationElementIdentifiers.IsDialogProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			var roleOverride = NormalizeRoleOverrideForHost(element, peer, AutomationProperties.GetRoleOverride(element));
+			var effectiveRole = roleOverride ?? ResolveDefaultSemanticRole(element, peer);
+			NativeMethods.UpdateLandmarkRole(element.Visual.Handle, effectiveRole ?? string.Empty);
+			NativeMethods.UpdateAriaModal(element.Visual.Handle, peer.IsDialog());
+			UpdateAuthoredRoleDescription(element, GetPrimaryRole(effectiveRole), AriaMapper.ResolveLabel(peer));
+		}
+		else if (automationProperty == AutomationElementIdentifiers.ItemStatusProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			if (AriaMapper.GetSemanticElementType(peer, element) is SemanticElementType.ColumnHeader &&
+				AriaMapper.GetContainingDataGridPeer(peer) is not null)
+			{
+				UpdateColumnHeaderSortAndDescription(peer, element);
+			}
+			else
+			{
+				NativeMethods.UpdateAriaBusy(element.Visual.Handle, SemanticElementFactory.IsBusyStatus(peer.GetItemStatus()));
 			}
 		}
 		else if (automationProperty == AutomationElementIdentifiers.IsEnabledProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
+			if (element.GetOrCreateAutomationPeer()?.GetAutomationControlType() is AutomationControlType.DataGrid &&
+				peer.GetAutomationControlType() is AutomationControlType.DataItem)
+			{
+				QueueDataGridRefresh(peer);
+				return;
+			}
+
 			var isDisabled = !(bool)newValue;
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -2113,7 +4229,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				this.Log().Trace($"[A11y] PROP CHANGE: IsSelected handle={element.Visual.Handle} element={element.GetType().Name} selected={selected}");
 			}
-			if (element is RadioButton)
+			if (element.GetOrCreateAutomationPeer()?.GetAutomationControlType() is AutomationControlType.DataGrid &&
+				peer.GetAutomationControlType() is AutomationControlType.DataItem)
+			{
+				QueueDataGridRefresh(peer);
+				return;
+			}
+			else if (element is RadioButton)
 			{
 				// RadioButton is a native <input type="radio">; reflect selection as the native
 				// checked state (UpdateAriaChecked sets element.checked). aria-selected is invalid on role="radio".
@@ -2126,7 +4248,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			// Update roving tabindex: the newly selected item gets tabindex=0,
 			// other group members get tabindex=-1 (for listbox options, radio groups, tabs)
-			if (selected)
+			if (selected && AriaMapper.GetContainingDataGridPeer(peer) is null)
 			{
 				// Use groupHandle=0 to let TS infer the group from the element's context
 				NativeMethods.UpdateRovingTabindex(IntPtr.Zero, element.Visual.Handle);
@@ -2189,26 +4311,29 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			automationProperty == RangeValuePatternIdentifiers.MaximumProperty) &&
 			TryGetPeerOwner(peer, out element))
 		{
-			// Sync slider value/min/max and aria-valuetext to semantic DOM element
 			if (peer.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider rangeValueProvider)
 			{
-				// Recompute aria-valuetext so VoiceOver announces the updated value
-				string? valueText = null;
 				if (element is Slider slider)
 				{
+					// Recompute aria-valuetext so VoiceOver announces the updated value.
+					string? valueText = null;
 					var headerText = slider.Header?.ToString();
 					if (!string.IsNullOrEmpty(headerText))
 					{
 						valueText = $"{headerText}: {rangeValueProvider.Value}";
 					}
-				}
 
-				NativeMethods.UpdateSliderValue(
-					element.Visual.Handle,
-					rangeValueProvider.Value,
-					rangeValueProvider.Minimum,
-					rangeValueProvider.Maximum,
-					valueText);
+					NativeMethods.UpdateSliderValue(
+						element.Visual.Handle,
+						rangeValueProvider.Value,
+						rangeValueProvider.Minimum,
+						rangeValueProvider.Maximum,
+						valueText);
+				}
+				else
+				{
+					ApplyGenericRangeAttributes(element.Visual.Handle, element, AriaMapper.GetAriaAttributes(peer));
+				}
 			}
 		}
 		else if ((automationProperty == ScrollPatternIdentifiers.HorizontalScrollPercentProperty ||
@@ -2220,41 +4345,32 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		else if (automationProperty == AutomationElementIdentifiers.LabeledByProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
-			// Dynamic aria-labelledby: when LabeledBy changes after creation. Resolve the new
-			// labeller → its semantic id (guarded on HasSemanticElement); clear the attribute when
-			// the labeller was removed or is not semantic, so no dangling IDREF survives.
-			var labelledById = SemanticElementFactory.ResolveLabelledByIdRef(peer);
-			NativeMethods.UpdateAriaLabelledBy(element.Visual.Handle, labelledById ?? string.Empty);
+			ApplyOrDeferLabelledBy(element.Visual.Handle, peer);
+			OnAutomationNameChanged(element, AriaMapper.ResolveLabel(peer) ?? string.Empty);
+			UpdateNameDependentRole(element, peer);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.DescribedByProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
 			// Dynamic aria-describedby: when DescribedBy collection changes
-			var describedByIds = SemanticElementFactory.ResolvePeerCollectionToIdList(peer.GetDescribedBy());
-			if (describedByIds is not null)
-			{
-				NativeMethods.UpdateAriaDescribedBy(element.Visual.Handle, describedByIds);
-			}
+			ApplyOrDeferRelationshipAttributes(element.Visual.Handle, peer);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.ControlledPeersProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
 			// Dynamic aria-controls: when ControlledPeers collection changes
-			var controlledIds = SemanticElementFactory.ResolvePeerCollectionToIdList(peer.GetControlledPeers());
-			if (controlledIds is not null)
-			{
-				NativeMethods.UpdateAriaControls(element.Visual.Handle, controlledIds);
-			}
+			ApplyOrDeferRelationshipAttributes(element.Visual.Handle, peer);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.FlowsToProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
 			// Dynamic aria-flowto: when FlowsTo collection changes
-			var flowsToIds = SemanticElementFactory.ResolvePeerCollectionToIdList(peer.GetFlowsTo());
-			if (flowsToIds is not null)
-			{
-				NativeMethods.UpdateAriaFlowTo(element.Visual.Handle, flowsToIds);
-			}
+			ApplyOrDeferRelationshipAttributes(element.Visual.Handle, peer);
+		}
+		else if (automationProperty == AutomationElementIdentifiers.FlowsFromProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			RefreshFlowsFromTarget(element);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.PositionInSetProperty &&
 			TryGetPeerOwner(peer, out element))
@@ -2262,10 +4378,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			// Dynamic aria-posinset/aria-setsize: sync when position changes
 			var positionInSet = peer.GetPositionInSet();
 			var sizeOfSet = peer.GetSizeOfSet();
-			if (positionInSet > 0 && sizeOfSet > 0)
-			{
-				NativeMethods.UpdatePositionInSet(element.Visual.Handle, positionInSet, sizeOfSet);
-			}
+			NativeMethods.UpdatePositionInSet(element.Visual.Handle, SupportsAriaSetPosition(element, peer) ? positionInSet : 0, sizeOfSet);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.SizeOfSetProperty &&
 			TryGetPeerOwner(peer, out element))
@@ -2273,10 +4386,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			// Dynamic aria-setsize: sync when set size changes
 			var positionInSet = peer.GetPositionInSet();
 			var sizeOfSet = peer.GetSizeOfSet();
-			if (positionInSet > 0 && sizeOfSet > 0)
-			{
-				NativeMethods.UpdatePositionInSet(element.Visual.Handle, positionInSet, sizeOfSet);
-			}
+			NativeMethods.UpdatePositionInSet(element.Visual.Handle, SupportsAriaSetPosition(element, peer) ? positionInSet : 0, sizeOfSet);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.HeadingLevelProperty &&
 			TryGetPeerOwner(peer, out element))
@@ -2303,93 +4413,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			}
 			NativeMethods.UpdateAriaInvalid(element.Visual.Handle, invalid);
 		}
+		else if (automationProperty == AutomationElementIdentifiers.IsRequiredForFormProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			NativeMethods.UpdateAriaRequired(element.Visual.Handle, (bool)newValue);
+		}
 	}
 
 	public override void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
-	{
-		if (this.Log().IsEnabled(LogLevel.Trace))
-		{
-			this.Log().Trace($"OnAutomationEvent: eventId={eventId}, peer={peer.GetType().Name}");
-		}
-
-		switch (eventId)
-		{
-			case AutomationEvents.LiveRegionChanged:
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"[A11y] AUTOMATION EVENT: LiveRegionChanged peer={peer.GetType().Name}");
-				}
-				_liveRegionManager?.HandleLiveRegionChanged(peer);
-				break;
-
-			case AutomationEvents.TextEditTextChanged:
-			case AutomationEvents.TextPatternOnTextChanged:
-				// Sync text value changes to the semantic DOM (handles programmatic TextBox.Text updates)
-				if (TryGetPeerOwner(peer, out var textElement) &&
-					peer.GetPattern(PatternInterface.Value) is IValueProvider textValueProvider)
-				{
-					if (this.Log().IsEnabled(LogLevel.Trace))
-					{
-						this.Log().Trace($"[A11y] AUTOMATION EVENT: {eventId} handle={textElement.Visual.Handle} valueLen={textValueProvider.Value?.Length ?? 0}");
-					}
-					UpdateTextBoxValueKeepingSelection(textElement.Visual.Handle, textValueProvider.Value, textElement as TextBox);
-				}
-				break;
-
-			case AutomationEvents.AutomationFocusChanged:
-				// Route focus changes to the semantic DOM so the browser focus ring follows
-				if (TryGetPeerOwner(peer, out var focusElement))
-				{
-					if (this.Log().IsEnabled(LogLevel.Trace))
-					{
-						this.Log().Trace($"[A11y] AUTOMATION EVENT: AutomationFocusChanged handle={focusElement.Visual.Handle} element={focusElement.GetType().Name}");
-					}
-
-					if (HasSemanticElement(focusElement.Visual.Handle))
-					{
-						NativeMethods.FocusSemanticElement(focusElement.Visual.Handle);
-					}
-				}
-				break;
-
-			case AutomationEvents.StructureChanged:
-				// Structure changes (children added/removed) require the screen reader to
-				// re-scan the accessible tree. The browser handles this automatically when
-				// DOM nodes are added/removed, so no explicit notification is needed.
-				// This is here for completeness and logging.
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"[A11y] AUTOMATION EVENT: StructureChanged peer={peer.GetType().Name}");
-				}
-				break;
-
-			case AutomationEvents.InvokePatternOnInvoked:
-				// After a button invoke, screen readers may need to update state.
-				// The property change notifications handle the actual state updates;
-				// this event is logged for diagnostics.
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"[A11y] AUTOMATION EVENT: InvokePatternOnInvoked peer={peer.GetType().Name}");
-				}
-				break;
-
-			case AutomationEvents.SelectionItemPatternOnElementSelected:
-				// Selection events trigger property change notifications which handle
-				// the DOM state updates. Log for diagnostics.
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"[A11y] AUTOMATION EVENT: SelectionItemPatternOnElementSelected peer={peer.GetType().Name}");
-				}
-				break;
-
-			case AutomationEvents.SelectionPatternOnInvalidated:
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"[A11y] AUTOMATION EVENT: SelectionPatternOnInvalidated peer={peer.GetType().Name}");
-				}
-				break;
-		}
-	}
+		=> NotifyAutomationEvent(peer, eventId);
 
 	// Abstract implementations for SkiaAccessibilityBase
 	// WASM handles all property routing in the overridden NotifyPropertyChangedEventCore,
@@ -2487,7 +4519,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return false;
 		}
 
-		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: TextBox owner })
+		if (Instance.TryGetLiveSemanticOwner(handle, out var element) && element is TextBox owner)
 		{
 			textBox = owner;
 			return true;
@@ -2518,8 +4550,23 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.addRootElementToSemanticsRoot")]
 		internal static partial void AddRootElementToSemanticsRoot(IntPtr rootHandle, float width, float height, float x, float y, bool isFocusable);
 
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.clearSemanticTree")]
+		internal static partial void ClearSemanticTree();
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.removeFocusSentinels")]
+		internal static partial void RemoveFocusSentinels();
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.onAccessibilityActivationFailed")]
+		internal static partial void OnAccessibilityActivationFailed();
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.onAccessibilityActivationSucceeded")]
+		internal static partial void OnAccessibilityActivationSucceeded();
+
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.addSemanticElement")]
 		internal static partial bool AddSemanticElement(IntPtr parentHandle, IntPtr handle, int? index, float width, float height, float x, float y, string role, string automationId, bool isFocusable, string? ariaChecked, bool isVisible, bool horizontallyScrollable, bool verticallyScrollable, string temporary, string? xamlAutomationId);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.configureSemanticAction")]
+		internal static partial void ConfigureSemanticAction(IntPtr handle, string action);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.removeSemanticElement")]
 		internal static partial void RemoveSemanticElement(IntPtr parentHandle, IntPtr childHandle);
@@ -2529,6 +4576,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaChecked")]
 		internal static partial void UpdateAriaChecked(IntPtr handle, string? ariaChecked);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaAttribute")]
+		internal static partial void UpdateAriaAttribute(IntPtr handle, string attribute, string? value);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateNativeScrollOffsets")]
 		internal static partial void UpdateNativeScrollOffsets(IntPtr handle, double horizontalOffset, double verticalOffset);
@@ -2594,11 +4644,17 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateSelectionState")]
 		internal static partial void UpdateSelectionState(IntPtr handle, bool selected);
 
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateColumnHeaderSort")]
+		internal static partial void UpdateColumnHeaderSort(IntPtr handle, string? sort);
+
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateDisabledState")]
 		internal static partial void UpdateDisabledState(IntPtr handle, bool disabled);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateActiveDescendant")]
 		internal static partial void UpdateActiveDescendant(IntPtr containerHandle, IntPtr activeItemHandle);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateComboBoxValue")]
+		internal static partial void UpdateComboBoxValue(IntPtr handle, string selectedValue);
 
 		// ===== VoiceOver Enhancement Methods =====
 
@@ -2607,6 +4663,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateLandmarkRole")]
 		internal static partial void UpdateLandmarkRole(IntPtr handle, string role);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateRoleOverride")]
+		internal static partial void UpdateRoleOverride(IntPtr handle, string role, bool isOverride);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateRoleOverrideToggleState")]
+		internal static partial void UpdateRoleOverrideToggleState(IntPtr handle, string attribute, string state);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaRoleDescription")]
 		internal static partial void UpdateAriaRoleDescription(IntPtr handle, string roleDescription);
@@ -2651,6 +4713,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaLive")]
 		internal static partial void UpdateAriaLive(IntPtr handle, string ariaLive);
 
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaModal")]
+		internal static partial void UpdateAriaModal(IntPtr handle, bool modal);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaBusy")]
+		internal static partial void UpdateAriaBusy(IntPtr handle, bool busy);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateLang")]
+		internal static partial void UpdateLang(IntPtr handle, string lang);
+
 		// ===== Relationship Attributes =====
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaDescribedBy")]
@@ -2659,8 +4730,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaControls")]
 		internal static partial void UpdateAriaControls(IntPtr handle, string idList);
 
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateRuntimeAriaControls")]
+		internal static partial void UpdateRuntimeAriaControls(IntPtr handle, string idList);
+
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaFlowTo")]
 		internal static partial void UpdateAriaFlowTo(IntPtr handle, string idList);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateInverseAriaFlowTo")]
+		internal static partial void UpdateInverseAriaFlowTo(IntPtr handle, string idList);
 
 		// ===== Relationship Updates =====
 

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
@@ -27,6 +28,18 @@ internal partial class WebAssemblyAccessibility
 	// DropDownOpened (the Popup may not exist at registration time) and cleared on close.
 	private readonly Dictionary<Popup, ComboBox> _comboBoxByPopup = new();
 
+	private bool IsRealizedComboBoxItem(IntPtr handle)
+	{
+		foreach (var region in _comboBoxListBoxes.Values)
+		{
+			if (region.ContainsRealizedHandle(handle))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/// <summary>
 	/// Subscribes to a ComboBox's dropdown lifecycle so its listbox region can be torn down
 	/// when the dropdown closes. Safe to call repeatedly for the same ComboBox.
@@ -37,6 +50,7 @@ internal partial class WebAssemblyAccessibility
 		{
 			comboBox.DropDownOpened += OnComboBoxDropDownOpened;
 			comboBox.DropDownClosed += OnComboBoxDropDownClosed;
+			comboBox.SelectionChanged += OnComboBoxSelectionChanged;
 		}
 	}
 
@@ -50,12 +64,32 @@ internal partial class WebAssemblyAccessibility
 		{
 			comboBox.DropDownOpened -= OnComboBoxDropDownOpened;
 			comboBox.DropDownClosed -= OnComboBoxDropDownClosed;
+			comboBox.SelectionChanged -= OnComboBoxSelectionChanged;
+			comboBox.LayoutUpdated -= OnComboBoxLayoutUpdated;
 			if (comboBox.GetPopup() is { } popup)
 			{
 				_comboBoxByPopup.Remove(popup);
 			}
 			DisposeComboBoxListBox(comboBox);
 		}
+	}
+
+	private void ResetComboBoxTracking()
+	{
+		foreach (var comboBox in _trackedComboBoxes)
+		{
+			comboBox.DropDownOpened -= OnComboBoxDropDownOpened;
+			comboBox.DropDownClosed -= OnComboBoxDropDownClosed;
+			comboBox.SelectionChanged -= OnComboBoxSelectionChanged;
+			comboBox.LayoutUpdated -= OnComboBoxLayoutUpdated;
+		}
+		foreach (var region in _comboBoxListBoxes.Values)
+		{
+			region.Dispose();
+		}
+		_trackedComboBoxes.Clear();
+		_comboBoxListBoxes.Clear();
+		_comboBoxByPopup.Clear();
 	}
 
 	/// <summary>
@@ -91,6 +125,37 @@ internal partial class WebAssemblyAccessibility
 		if (sender is ComboBox comboBox && comboBox.GetPopup() is { } popup)
 		{
 			_comboBoxByPopup[popup] = comboBox;
+			BackfillComboBoxItems(comboBox);
+
+			// DropDownOpened can run before the popup's first layout materializes its
+			// containers. Retry once after layout so reused/pre-created items are emitted.
+			comboBox.LayoutUpdated -= OnComboBoxLayoutUpdated;
+			comboBox.LayoutUpdated += OnComboBoxLayoutUpdated;
+		}
+	}
+
+	private void OnComboBoxLayoutUpdated(object? sender, object e)
+	{
+		if (sender is ComboBox comboBox)
+		{
+			comboBox.LayoutUpdated -= OnComboBoxLayoutUpdated;
+			BackfillComboBoxItems(comboBox);
+		}
+	}
+
+	private void BackfillComboBoxItems(ComboBox comboBox)
+	{
+		if (comboBox.ItemsPanelRoot is not { } itemsHost)
+		{
+			return;
+		}
+
+		foreach (var child in itemsHost.Children)
+		{
+			if (child is ComboBoxItem item)
+			{
+				TryRealizeComboBoxItem(item);
+			}
 		}
 	}
 
@@ -98,11 +163,48 @@ internal partial class WebAssemblyAccessibility
 	{
 		if (sender is ComboBox comboBox)
 		{
+			comboBox.LayoutUpdated -= OnComboBoxLayoutUpdated;
 			if (comboBox.GetPopup() is { } popup)
 			{
 				_comboBoxByPopup.Remove(popup);
 			}
 			DisposeComboBoxListBox(comboBox);
+		}
+	}
+
+	private void OnComboBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
+	{
+		if (sender is not ComboBox comboBox)
+		{
+			return;
+		}
+
+		if (comboBox.GetOrCreateAutomationPeer() is { } peer)
+		{
+			NativeMethods.UpdateComboBoxValue(
+				comboBox.Visual.Handle,
+				SemanticElementFactory.ResolveComboBoxValue(peer, comboBox) ?? string.Empty);
+		}
+
+		if (!_comboBoxListBoxes.TryGetValue(comboBox, out var region))
+		{
+			return;
+		}
+
+		foreach (var handle in region.GetRealizedHandles())
+		{
+			NativeMethods.UpdateSelectionState(handle, false);
+		}
+
+		if (comboBox.ContainerFromIndex(comboBox.SelectedIndex) is ComboBoxItem selectedItem &&
+			region.ContainsRealizedHandle(selectedItem.Visual.Handle))
+		{
+			NativeMethods.UpdateSelectionState(selectedItem.Visual.Handle, true);
+			NativeMethods.UpdateActiveDescendant(comboBox.Visual.Handle, selectedItem.Visual.Handle);
+		}
+		else
+		{
+			NativeMethods.UpdateActiveDescendant(comboBox.Visual.Handle, IntPtr.Zero);
 		}
 	}
 
@@ -114,8 +216,9 @@ internal partial class WebAssemblyAccessibility
 			_comboBoxListBoxes.Remove(comboBox);
 
 			// Drop the head's relationships to the now-removed listbox.
-			NativeMethods.UpdateAriaControls(comboBox.Visual.Handle, string.Empty);
+			NativeMethods.UpdateRuntimeAriaControls(comboBox.Visual.Handle, string.Empty);
 			NativeMethods.UpdateActiveDescendant(comboBox.Visual.Handle, IntPtr.Zero);
+			QueueRelationshipRefresh();
 		}
 	}
 
@@ -156,16 +259,40 @@ internal partial class WebAssemblyAccessibility
 
 		var totalCount = comboBox.Items.Count;
 		var offset = GetOffsetRelativeToSemanticParent(item, region.ContainerHandle);
-		var label = item.GetOrCreateAutomationPeer()?.GetName() ?? string.Empty;
+		var itemPeer = item.GetOrCreateAutomationPeer();
+		if (itemPeer is not null &&
+			comboBox.GetOrCreateAutomationPeer() is ComboBoxAutomationPeer comboBoxPeer &&
+			comboBoxPeer.CreateItemAutomationPeer(comboBox.Items[index]) is { } itemDataPeer)
+		{
+			// ItemsControlAutomationPeer normally establishes this while building its
+			// automation children. The semantic AOM realizes options independently, so
+			// preserve WinUI's container -> data-peer event/pattern routing here.
+			itemPeer.EventsSource = itemDataPeer;
+		}
+		var label = itemPeer?.GetName() ?? string.Empty;
+		var disabled = itemPeer?.IsEnabled() != true;
+		var focusable = itemPeer is not null && IsAccessibilityFocusable(item, item.IsFocusable);
 
-		region.OnItemRealized(
+		var removedHandle = region.OnItemRealized(
 			item.Visual.Handle,
 			index,
 			totalCount,
 			offset.X, offset.Y,
 			item.Visual.Size.X, item.Visual.Size.Y,
 			"option",
-			label);
+			label,
+			item.IsSelected,
+			disabled,
+			focusable);
+		CleanupVirtualizedHandle(removedHandle);
+		ApplyVirtualizedAutomationId(item);
+		InitializeInverseFlows(item);
+		if (itemPeer is not null)
+		{
+			ApplyOrDeferLabelledBy(item.Visual.Handle, itemPeer);
+			ApplyOrDeferRelationshipAttributes(item.Visual.Handle, itemPeer);
+		}
+		QueueRelationshipRefresh();
 
 		// Point aria-activedescendant at the selected option so the combobox head
 		// announces the active item without moving DOM focus off the head.
@@ -185,7 +312,16 @@ internal partial class WebAssemblyAccessibility
 			ItemsControl.ItemsControlFromItemContainer(item) is ComboBox comboBox &&
 			_comboBoxListBoxes.TryGetValue(comboBox, out var region))
 		{
-			region.OnItemUnrealized(item.Visual.Handle, comboBox.IndexFromContainer(item));
+			if (item.IsSelected)
+			{
+				NativeMethods.UpdateActiveDescendant(comboBox.Visual.Handle, IntPtr.Zero);
+			}
+			if (region.OnItemUnrealized(item.Visual.Handle, comboBox.IndexFromContainer(item)))
+			{
+				RemoveFlowsFromTarget(item.Visual.Handle);
+				RemoveRelationshipSource(item.Visual.Handle);
+				QueueRelationshipRefresh();
+			}
 		}
 	}
 
@@ -214,17 +350,25 @@ internal partial class WebAssemblyAccessibility
 			itemsHost.Visual.Handle,
 			"listbox",
 			label,
-			multiselectable: false);
+			multiselectable: false,
+			usesActiveDescendant: true);
 		_comboBoxListBoxes[comboBox] = region;
+		var offset = GetOffsetRelativeToSemanticParent(itemsHost, _rootElementHandle);
+		NativeMethods.UpdateSemanticElementPositioning(
+			region.ContainerHandle,
+			itemsHost.Visual.Size.X,
+			itemsHost.Visual.Size.Y,
+			offset.X,
+			offset.Y);
 
 		// WAI-ARIA combobox pattern: the head owns the popup listbox via aria-controls so
 		// screen readers associate the two separate DOM subtrees and aria-activedescendant
 		// can reference options that live outside the head's own subtree.
-		NativeMethods.UpdateAriaControls(comboBox.Visual.Handle, $"uno-semantics-{region.ContainerHandle}");
+		NativeMethods.UpdateRuntimeAriaControls(comboBox.Visual.Handle, $"uno-semantics-{region.ContainerHandle}");
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().Debug($"[A11y] Created ComboBox listbox region: head={comboBox.Visual.Handle} listbox={region.ContainerHandle} label='{label}'");
+			this.Log().Debug($"[A11y] Created ComboBox listbox region: head={comboBox.Visual.Handle} listbox={region.ContainerHandle} labelLength={label?.Length ?? 0}");
 		}
 
 		return region;

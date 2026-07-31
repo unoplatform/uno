@@ -3171,6 +3171,17 @@ partial class ComboBox
 		}
 	}
 
+	internal string GetItemDisplayTextForAutomation(object? item)
+	{
+		if (item is null)
+		{
+			return string.Empty;
+		}
+
+		EnsurePropertyPathListener();
+		return TryGetStringValue(item, m_spPropertyPathListener) ?? string.Empty;
+	}
+
 	private void CreateEditableContentPresenterTextBlock()
 	{
 		if (m_tpEditableContentPresenterTextBlock is null)

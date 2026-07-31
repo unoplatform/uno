@@ -100,6 +100,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual("Option C", comboBox.SelectedItem);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_DataPeer_Selects_Item_Then_ComboBox_Selection_Changes()
+		{
+			var first = new ComboBoxItem { Content = "Option A" };
+			var second = new ComboBoxItem { Content = "Option B" };
+			var comboBox = new ComboBox { Items = { first, second }, SelectedIndex = 0 };
+
+			await UITestHelper.Load(comboBox);
+
+			var peer = comboBox.GetOrCreateAutomationPeer();
+			Assert.IsInstanceOfType<ComboBoxAutomationPeer>(peer);
+			var comboBoxPeer = (ComboBoxAutomationPeer)peer;
+			var itemPeer = comboBoxPeer.CreateItemAutomationPeer(second);
+			var pattern = itemPeer.GetPattern(PatternInterface.SelectionItem);
+			Assert.IsInstanceOfType<ISelectionItemProvider>(pattern);
+			var selectionProvider = (ISelectionItemProvider)pattern;
+
+			selectionProvider.Select();
+
+			Assert.AreEqual(1, comboBox.SelectedIndex);
+			Assert.AreSame(second, comboBox.SelectedItem);
+		}
+
 		/// <summary>
 		/// Verifies that ComboBox automation peer has correct control type.
 		/// </summary>
@@ -171,6 +195,69 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			}
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Precreated_Items_Opened_Through_Dom_Then_Options_Are_Backfilled()
+		{
+			var first = new ComboBoxItem { Content = "Option A" };
+			var second = new ComboBoxItem { Content = "Option B" };
+			var third = new ComboBoxItem { Content = "Option C" };
+			AutomationProperties.SetAutomationId(second, "SecondOption");
+			var comboBox = new ComboBox
+			{
+				Items =
+				{
+					first,
+					second,
+					third,
+				},
+				SelectedIndex = 0,
+			};
+
+			try
+			{
+				await UITestHelper.Load(comboBox);
+				comboBox.GetOrCreateAutomationPeer();
+
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(
+					() => ComboBoxHeadExists(comboBox),
+					timeoutMS: 5000,
+					message: "Timed out waiting for the semantic combobox head element to be created.");
+
+				InvokeBrowserJs($"document.getElementById('{GetSemanticElementId(comboBox)}').click(); 'clicked'");
+
+				await UITestHelper.WaitFor(
+					() => GetListBoxOptionCount(comboBox) == 3,
+					timeoutMS: 5000,
+					message: "Timed out waiting for pre-created dropdown items to be backfilled after DOM activation.");
+
+				Assert.AreEqual("true", GetSemanticAttribute(comboBox, "aria-expanded"));
+				Assert.AreEqual(
+					"ok",
+					VerifyOptionsParentedUnderListBox(comboBox),
+					"Pre-created options must be exposed under the listbox when automation opens the dropdown.");
+				Assert.AreEqual(
+					"SecondOption",
+					GetSemanticAttribute(second, "xamlautomationid"),
+					"Virtualized ComboBox options must preserve AutomationId for external automation.");
+
+				InvokeBrowserJs($"document.getElementById('{WasmSemanticDomHelper.GetSemanticElementId(second)}').click(); 'clicked'");
+				await UITestHelper.WaitFor(
+					() => comboBox.SelectedIndex == 1,
+					timeoutMS: 5000,
+					message: "Timed out waiting for DOM option activation to select the ComboBox item.");
+
+				Assert.IsFalse(comboBox.IsDropDownOpen, "Selection through ComboBoxItemDataAutomationPeer must collapse the dropdown.");
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
 		/// <summary>
 		/// Regression for the listbox-fix residuals: an open ComboBox dropdown must NOT (a) re-emit each
 		/// option's content as a standalone <p> alongside its role=option, nor (b) leave a role=dialog Popup
@@ -218,6 +305,84 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			}
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Selection_Changes_Then_ActiveDescendant_And_Controls_Compose()
+		{
+			var controlled = new Border { Width = 20, Height = 20 };
+			AutomationProperties.SetName(controlled, "Controlled panel");
+			var first = new ComboBoxItem { Content = "Option A" };
+			var second = new ComboBoxItem { Content = "Option B" };
+			var comboBox = new ComboBox { Items = { first, second }, SelectedIndex = 0 };
+			AutomationProperties.GetControlledPeers(comboBox).Add(controlled);
+			var panel = new StackPanel { Children = { comboBox, controlled } };
+
+			try
+			{
+				await UITestHelper.Load(panel);
+				comboBox.GetOrCreateAutomationPeer();
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => ComboBoxHeadExists(comboBox) && SemanticElementExists(controlled), timeoutMS: 5000,
+					message: "Timed out waiting for the combobox head and authored controlled target.");
+
+				comboBox.IsDropDownOpen = true;
+				await UITestHelper.WaitFor(() => GetListBoxOptionCount(comboBox) == 2, timeoutMS: 5000,
+					message: "Timed out waiting for the two dropdown options.");
+
+				var headId = GetSemanticElementId(comboBox);
+				var authoredId = WasmSemanticDomHelper.GetSemanticElementId(controlled);
+				Assert.AreEqual("ok", InvokeBrowserJs($"(function(){{const h=document.getElementById('{headId}');const ids=(h.getAttribute('aria-controls')||'').split(/\\s+/);const list=ids.map(id=>document.getElementById(id)).find(e=>e&&e.getAttribute('role')==='listbox');return ids.includes('{authoredId}')&&list?'ok':'bad';}})()"));
+				Assert.AreEqual(WasmSemanticDomHelper.GetSemanticElementId(first), GetSemanticAttribute(comboBox, "aria-activedescendant"));
+				Assert.AreEqual("true", GetSemanticAttribute(first, "aria-selected"));
+
+				comboBox.SelectedIndex = 1;
+				await UITestHelper.WaitFor(() => GetSemanticAttribute(comboBox, "aria-activedescendant") == WasmSemanticDomHelper.GetSemanticElementId(second), timeoutMS: 3000,
+					message: "ComboBox aria-activedescendant did not follow the live selection.");
+				Assert.AreEqual("false", GetSemanticAttribute(first, "aria-selected"));
+				Assert.AreEqual("true", GetSemanticAttribute(second, "aria-selected"));
+
+				comboBox.IsDropDownOpen = false;
+				await UITestHelper.WaitFor(() => GetSemanticAttribute(comboBox, "aria-controls") == authoredId, timeoutMS: 3000,
+					message: "Closing the dropdown did not preserve the authored aria-controls target.");
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Closed_Selection_Changes_Then_Name_And_Value_Remain_Distinct()
+		{
+			var comboBox = new ComboBox
+			{
+				Header = "Favorite fruit",
+				DisplayMemberPath = nameof(ComboBoxValue.Name),
+				Items = { new ComboBoxValue("Apple"), new ComboBoxValue("Pear") },
+				SelectedIndex = 0,
+			};
+
+			await UITestHelper.Load(comboBox);
+			comboBox.GetOrCreateAutomationPeer();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => ComboBoxHeadExists(comboBox), timeoutMS: 5000,
+				message: "Timed out waiting for the closed combobox semantic head.");
+
+			Assert.AreEqual("Favorite fruit", GetSemanticAttribute(comboBox, "aria-label"));
+			Assert.AreEqual("Apple", GetComboBoxSemanticValue(comboBox));
+			Assert.IsFalse(SemanticElementHasAttribute(comboBox, "aria-valuetext"), "aria-valuetext does not expose the combobox value in browser accessibility APIs.");
+
+			comboBox.SelectedIndex = 1;
+			await UITestHelper.WaitFor(
+				() => GetComboBoxSemanticValue(comboBox) == "Pear" && GetSemanticAttribute(comboBox, "aria-label") == "Favorite fruit",
+				timeoutMS: 3000,
+				message: "A collapsed selection change did not update the value independently from the accessible name.");
+		}
+
 		// Returns "dupP|dialogs": count of standalone <p> whose text matches an option label (duplicate
 		// emission), and count of role=dialog nodes containing any role=option (un-suppressed popup).
 		// "0|0" once both residuals are fixed.
@@ -232,6 +397,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				"})()";
 			return InvokeBrowserJs(js);
 		}
+
+		private static string GetComboBoxSemanticValue(ComboBox comboBox)
+			=> InvokeBrowserJs($"document.getElementById('{GetSemanticElementId(comboBox)}')?.textContent || ''");
 
 		private static string GetSemanticElementId(ComboBox comboBox)
 			=> "uno-semantics-" + ((long)comboBox.Visual.Handle).ToString(System.Globalization.CultureInfo.InvariantCulture);
@@ -251,9 +419,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				"(function(){" +
 				"const head = document.getElementById('" + id + "');" +
 				"if (!head) { return '-1'; }" +
-				"const controls = head.getAttribute('aria-controls');" +
-				"if (!controls) { return '-2'; }" +
-				"const listbox = document.getElementById(controls);" +
+				"const controls = (head.getAttribute('aria-controls') || '').split(/\\s+/).filter(Boolean);" +
+				"if (controls.length === 0) { return '-2'; }" +
+				"const listbox = controls.map(function(id){return document.getElementById(id);}).find(function(e){return e && e.getAttribute('role') === 'listbox';});" +
 				"if (!listbox || listbox.getAttribute('role') !== 'listbox') { return '-3'; }" +
 				"return String(listbox.querySelectorAll(':scope > [role=\"option\"]').length);" +
 				"})()";
@@ -269,8 +437,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				"(function(){" +
 				"const head = document.getElementById('" + id + "');" +
 				"if (!head) { return 'no-head'; }" +
-				"const controls = head.getAttribute('aria-controls');" +
-				"const listbox = controls ? document.getElementById(controls) : null;" +
+				"const controls = (head.getAttribute('aria-controls') || '').split(/\\s+/).filter(Boolean);" +
+				"const listbox = controls.map(function(id){return document.getElementById(id);}).find(function(e){return e && e.getAttribute('role') === 'listbox';});" +
 				"if (!listbox || listbox.getAttribute('role') !== 'listbox') { return 'no-listbox'; }" +
 				"const options = Array.from(listbox.querySelectorAll(':scope > [role=\"option\"]'));" +
 				"if (options.length === 0) { return 'no-options'; }" +
@@ -383,6 +551,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 
 #endif
+
+		private sealed class ComboBoxValue
+		{
+			public ComboBoxValue(string name) => Name = name;
+
+			public string Name { get; }
+
+			public override string ToString() => "WRONG VALUE";
+		}
 
 	}
 }
