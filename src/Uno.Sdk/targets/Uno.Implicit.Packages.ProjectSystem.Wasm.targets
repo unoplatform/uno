@@ -13,23 +13,22 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Wasm.Bootstrap.DevServer" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" $(_IsExecutable) == 'true' AND $(UnoFeatures.Contains(';skiarenderer;')) ">
+	<ItemGroup Condition=" $(_IsExecutable) == 'true' ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" $(_IsExecutable) == 'false' AND $(UnoFeatures.Contains(';skiarenderer;')) ">
+	<ItemGroup Condition=" $(_IsExecutable) == 'false' ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" PrivateAssets="all" IncludeAssets="build" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="
 			   (
-				   $(UnoFeatures.Contains(';lottie;')) 
-				   OR $(UnoFeatures.Contains(';svg;')) 
-				   OR $(UnoFeatures.Contains(';material;')) 
+				   $(UnoFeatures.Contains(';lottie;'))
+				   OR $(UnoFeatures.Contains(';svg;'))
+				   OR $(UnoFeatures.Contains(';material;'))
 				   OR $(UnoFeatures.Contains(';cupertino;'))
 				   OR $(UnoFeatures.Contains(';simpletheme;'))
-			   )
-			   AND $(UnoFeatures.Contains(';skiarenderer;'))">
+			   )">
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true"/>
 	</ItemGroup>
 
