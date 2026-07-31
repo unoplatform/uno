@@ -929,9 +929,11 @@ namespace Microsoft.UI.Xaml.Controls
 				// We can handle the inertia scrolling, configure to accept allow it by assigning the _touchInertia field.
 				_touchInertia = args.Manipulation;
 
+#if __SKIA__
 				// The inertia driver ticks from the frame hook, which only runs while frames are being
 				// produced; the finger has just lifted, so nothing else is asking for one yet.
 				Microsoft.UI.Composition.Compositor.RequestFrame(Visual);
+#endif
 
 				// Even if usually empty, make sure to apply the delta
 				var deltaX = Math.Clamp(-args.Delta.Translation.X, scrollable.Left, scrollable.Right);

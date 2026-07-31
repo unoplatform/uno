@@ -341,6 +341,7 @@ public partial class GestureRecognizer
 		/// </remarks>
 		private sealed class CompositionInertiaProcessorTimer(Action<TimeSpan> onTick) : IInertiaProcessorTimer
 		{
+#if __SKIA__
 			private Action<long>? _handler;
 			private long _startTimestamp;
 
@@ -364,6 +365,31 @@ public partial class GestureRecognizer
 					_handler = null;
 				}
 			}
+#else
+			// Non-Skia targets have no pre-record frame hook; keep the post-record behaviour there.
+			private EventHandler<object>? _renderingHandler;
+			private Stopwatch? _time;
+
+			public bool IsRunning => _renderingHandler is not null;
+
+			public void Start()
+			{
+				Stop();
+
+				_time = Stopwatch.StartNew();
+				_renderingHandler = (_, _) => onTick(_time.Elapsed);
+				CompositionTarget.Rendering += _renderingHandler;
+			}
+
+			public void Stop()
+			{
+				if (_renderingHandler is not null)
+				{
+					CompositionTarget.Rendering -= _renderingHandler;
+					_renderingHandler = null;
+				}
+			}
+#endif
 
 			~CompositionInertiaProcessorTimer() => Stop();
 		}
