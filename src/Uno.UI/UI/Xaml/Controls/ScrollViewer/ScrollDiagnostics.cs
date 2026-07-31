@@ -20,6 +20,9 @@ internal static class ScrollDiagnostics
 {
 	private const int Capacity = 4096;
 
+	// Flush well before the buffer is full so a crash mid-scroll still yields most of the capture.
+	private const int FlushThreshold = 600;
+
 	// A scroll is considered over once nothing has moved for this long, at which point the buffer is dumped.
 	private static readonly TimeSpan SettleDelay = TimeSpan.FromMilliseconds(400);
 
@@ -78,6 +81,7 @@ internal static class ScrollDiagnostics
 		}
 
 		var nowUs = _clock.Elapsed.Ticks / (TimeSpan.TicksPerMillisecond / 1000);
+		var flushNow = false;
 
 		lock (_gate)
 		{
@@ -95,11 +99,67 @@ internal static class ScrollDiagnostics
 
 			_lastActivityUs = nowUs;
 			_dumpPending = true;
+			flushNow = _count >= FlushThreshold;
+		}
+
+		if (flushNow)
+		{
+			// Flush partway rather than only on settle: the buffer lives in memory, so anything that
+			// kills the process before the scroll ends takes the whole capture with it.
+			Dump();
 		}
 	}
 
 	/// <summary>Call once per frame; dumps and clears the buffer once the scroll has settled.</summary>
 	/// <summary>Call once per frame; dumps and clears the buffer once the scroll has settled.</summary>
+	/// <summary>Writes and clears whatever is buffered, regardless of whether the scroll has settled.</summary>
+	private static void Dump()
+	{
+		Sample[] snapshot;
+		int count;
+
+		lock (_gate)
+		{
+			if (_count == 0)
+			{
+				return;
+			}
+
+			snapshot = new Sample[_count];
+			Array.Copy(_samples, snapshot, _count);
+			count = _count;
+			_count = 0;
+			_dumpPending = false;
+		}
+
+		Emit(snapshot, count);
+	}
+
+	private static void Emit(Sample[] snapshot, int count)
+	{
+		var log = typeof(ScrollDiagnostics).Log();
+		log.Error($"SCROLLDIAG BEGIN samples={count}");
+
+		var sb = new StringBuilder(1024);
+		for (var i = 0; i < count; i++)
+		{
+			var s = snapshot[i];
+			sb.Append(s.Kind == SampleKind.Frame ? 'F' : 'I')
+				.Append(' ').Append(s.Phase)
+				.Append(' ').Append(s.TimestampUs.ToString(CultureInfo.InvariantCulture))
+				.Append(' ').Append(s.Value.ToString("F3", CultureInfo.InvariantCulture))
+				.Append(';');
+
+			if (sb.Length > 900 || i == count - 1)
+			{
+				log.Error("SCROLLDIAG " + sb.ToString());
+				sb.Clear();
+			}
+		}
+
+		log.Error("SCROLLDIAG END");
+	}
+
 	internal static void TryDump()
 	{
 		if (!IsEnabled)
@@ -138,29 +198,7 @@ internal static class ScrollDiagnostics
 			_dumpPending = false;
 		}
 
-		// One log entry per batch, not one for the whole buffer: Android's logger drops entries over
-		// roughly 4 KB, which silently loses the entire dump.
-		var log = typeof(ScrollDiagnostics).Log();
-		log.Error($"SCROLLDIAG BEGIN samples={count}");
-
-		var sb = new StringBuilder(1024);
-		for (var i = 0; i < count; i++)
-		{
-			var s = snapshot[i];
-			sb.Append(s.Kind == SampleKind.Frame ? 'F' : 'I')
-				.Append(' ').Append(s.Phase)
-				.Append(' ').Append(s.TimestampUs.ToString(CultureInfo.InvariantCulture))
-				.Append(' ').Append(s.Value.ToString("F3", CultureInfo.InvariantCulture))
-				.Append(';');
-
-			if (sb.Length > 900 || i == count - 1)
-			{
-				log.Error("SCROLLDIAG " + sb.ToString());
-				sb.Clear();
-			}
-		}
-
-		log.Error("SCROLLDIAG END");
+		Emit(snapshot, count);
 	}
 
 }
