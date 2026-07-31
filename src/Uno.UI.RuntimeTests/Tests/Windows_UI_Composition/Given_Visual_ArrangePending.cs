@@ -2,53 +2,72 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.RuntimeTests.Helpers;
+using static Private.Infrastructure.TestServices;
 using Windows.Foundation;
 using Windows.UI;
-
-#if __SKIA__
-using Uno.UI.RuntimeTests.Helpers;
-#endif
+using Rectangle = System.Drawing.Rectangle;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
 [TestClass]
 public class Given_Visual_ArrangePending
 {
-	// A child its parent measured but never arranged has no layout slot, and a visual's content is not
-	// bounded by its Size, so painting it would draw at the parent's origin, unclipped — several such
-	// children stack into one another. WinUI never renders an element its parent didn't arrange.
+	// A child its parent measured but never arranged has no layout slot. Text is laid out from measure,
+	// so its ink exists independently of any arrange, and a visual's content is not bounded by its Size —
+	// several such children would stack at the parent's origin. WinUI paints nothing for an element its
+	// parent didn't arrange, so this runs on the WinUI head too and pins that parity.
+	// A TextBlock (not a Border) is required: a Border paints only inside its Size, which is 0x0 while
+	// unarranged, so it would pass whether or not the suppression works.
 	[TestMethod]
 	[RunsOnUIThread]
-#if !__SKIA__
-	[Ignore("Only Skia renders the visual tree through Uno's compositor.")]
-#endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 	public async Task When_Child_Never_Arranged_Then_It_Does_Not_Paint()
 	{
-#if __SKIA__
-		var sentinel = new Border
-		{
-			Width = 60,
-			Height = 60,
-			Background = new SolidColorBrush(Colors.Magenta),
-		};
-
-		var host = new NeverArrangesChildrenPanel
+		var suppressed = new NeverArrangesChildrenPanel
 		{
 			Background = new SolidColorBrush(Colors.White),
+			Children = { MakeInk() },
 		};
-		host.Children.Add(sentinel);
 
-		await UITestHelper.Load(host);
+		// Same content in a panel that arranges normally: proves the assertion below can fail, and that
+		// the suppression is not simply hiding everything.
+		var control = new StackPanel
+		{
+			Background = new SolidColorBrush(Colors.White),
+			Children = { MakeInk() },
+		};
 
-		var screenshot = await UITestHelper.ScreenShot(host);
+		try
+		{
+			await UITestHelper.Load(new StackPanel { Children = { suppressed, control } });
 
-		// The sentinel would paint at the panel's origin if unarranged children were rendered.
-		ImageAssert.DoesNotHaveColorAt(screenshot, 5, 5, Colors.Magenta, tolerance: 10);
-		ImageAssert.DoesNotHaveColorAt(screenshot, 30, 30, Colors.Magenta, tolerance: 10);
-#else
-		await Task.CompletedTask;
-#endif
+			var controlShot = await UITestHelper.ScreenShot(control);
+			ImageAssert.HasColorInRectangle(
+				controlShot,
+				new Rectangle(0, 0, (int)controlShot.Width, (int)controlShot.Height),
+				Colors.Black,
+				tolerance: 100);
+
+			var suppressedShot = await UITestHelper.ScreenShot(suppressed);
+			ImageAssert.DoesNotHaveColorInRectangle(
+				suppressedShot,
+				new Rectangle(0, 0, (int)suppressedShot.Width, (int)suppressedShot.Height),
+				Colors.Black,
+				tolerance: 100);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
 	}
+
+	private static TextBlock MakeInk() => new()
+	{
+		Text = "██████",
+		FontSize = 24,
+		Foreground = new SolidColorBrush(Colors.Black),
+	};
 
 	private partial class NeverArrangesChildrenPanel : Panel
 	{
@@ -59,7 +78,7 @@ public class Given_Visual_ArrangePending
 				child.Measure(availableSize);
 			}
 
-			return new Size(120, 120);
+			return new Size(200, 60);
 		}
 
 		// Deliberately arranges nothing.
