@@ -41,7 +41,6 @@ internal static class ScrollDiagnostics
 	private static int _count;
 	private static long _lastActivityUs;
 	private static bool _dumpPending;
-	private static double _lastFrameValue;
 	private static bool _announced;
 	private static global::System.Threading.Timer? _dumpTimer;
 	private static int _idleTicks;
@@ -70,27 +69,6 @@ internal static class ScrollDiagnostics
 	internal const byte PhaseDrag = 1;
 	internal const byte PhaseInertia = 2;
 	internal const byte PhaseWheel = 3;
-
-	/// <summary>
-	/// Records a frame sample only when the position actually moved. The sampler runs on every frame
-	/// (a Rendering subscription forces continuous rendering), so recording unconditionally would keep
-	/// the settle timer permanently fresh and the buffer would never be dumped.
-	/// </summary>
-	internal static void RecordFrameIfMoved(double value)
-	{
-		if (!IsEnabled)
-		{
-			return;
-		}
-
-		if (Math.Abs(value - _lastFrameValue) < 0.01)
-		{
-			return;
-		}
-
-		_lastFrameValue = value;
-		Record(SampleKind.Frame, value);
-	}
 
 	internal static void Record(SampleKind kind, double value)
 	{

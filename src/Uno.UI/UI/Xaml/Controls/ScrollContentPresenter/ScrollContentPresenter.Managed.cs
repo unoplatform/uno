@@ -168,12 +168,20 @@ namespace Microsoft.UI.Xaml.Controls
 
 #nullable enable
 		private EventHandler<object>? _diagnosticsHandler;
+		private double _lastDiagnosticsAnchor;
 
 		private void OnDiagnosticsFrame(object? sender, object args)
 		{
 			if (Content is UIElement contentElt)
 			{
-				ScrollDiagnostics.RecordFrameIfMoved(-contentElt.Visual.AnchorPoint.Y);
+				// Per presenter, not shared: several presenters are loaded at once, and a single shared
+				// "did it move" comparison alternates between them every frame and never reads as idle.
+				var anchor = -contentElt.Visual.AnchorPoint.Y;
+				if (Math.Abs(anchor - _lastDiagnosticsAnchor) > 0.01)
+				{
+					_lastDiagnosticsAnchor = anchor;
+					ScrollDiagnostics.Record(ScrollDiagnostics.SampleKind.Frame, anchor);
+				}
 			}
 
 			ScrollDiagnostics.TryDump();
