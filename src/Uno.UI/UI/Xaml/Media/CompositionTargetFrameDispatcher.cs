@@ -89,11 +89,13 @@ internal sealed class CompositionTargetFrameDispatcher
 					// handler list above and are only cleared in the finally, after this loop.
 					buffer[i]!(null!, null!);
 				}
-				catch (Exception error)
+				catch (Exception error) when (!IsFatalException(error))
 				{
 					// One throwing Rendering handler must not skip the remaining handlers nor
 					// escape through the frame-callback boundary (which would halt the frame
-					// loop for the process lifetime).
+					// loop for the process lifetime). Runtime-fatal exceptions (see
+					// IsFatalException) are deliberately NOT isolated: the process is not in a
+					// state where continuing the frame loop is meaningful.
 					if (this.Log().IsEnabled(LogLevel.Error))
 					{
 						this.Log().Error("A CompositionTarget.Rendering handler failed.", error);
@@ -114,6 +116,14 @@ internal sealed class CompositionTargetFrameDispatcher
 			Array.Clear(buffer);
 		}
 	}
+
+	/// <summary>
+	/// Whether <paramref name="exception"/> indicates an unrecoverable runtime state. Such
+	/// exceptions must propagate through the per-handler isolation in <see cref="Dispatch"/> —
+	/// swallowing them would keep pumping frames in a corrupted process.
+	/// </summary>
+	private static bool IsFatalException(Exception exception)
+		=> exception is OutOfMemoryException or StackOverflowException or AccessViolationException;
 
 	private (EventHandler<object>?[] Buffer, int Count) FillBuffer(IReadOnlyList<EventHandler<object>> handlers, bool useSharedBuffer)
 	{

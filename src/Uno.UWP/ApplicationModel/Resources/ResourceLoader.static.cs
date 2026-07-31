@@ -160,12 +160,9 @@ partial class ResourceLoader
 		// resources in the process) on the UI thread and, if a single malformed file threw, would
 		// leave every loader permanently empty.
 		HashSet<Assembly>? removed = null;
-		foreach (var assembly in _lookupAssemblies)
+		foreach (var assembly in _lookupAssemblies.Where(assembly => shouldRemove(assembly)))
 		{
-			if (shouldRemove(assembly))
-			{
-				(removed ??= new HashSet<Assembly>()).Add(assembly);
-			}
+			(removed ??= new HashSet<Assembly>()).Add(assembly);
 		}
 
 		if (removed is null)

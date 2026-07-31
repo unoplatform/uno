@@ -379,31 +379,27 @@ public partial class ClientHotReloadProcessor
 					return;
 				}
 
-				List<HotReloadClientOperation>? toRelease = null;
+				List<HotReloadClientOperation> toRelease;
 				lock (_typeCorrelationGate)
 				{
 					_activeTypeCorrelationScopes.Remove(this);
 					foreach (var operation in _retained)
 					{
-						// Release only when the LAST overlapping scope lets go, so a concurrent
-						// caller's dispose cannot empty the types this one still needs.
-						if (--operation._retainingScopes == 0)
-						{
-							(toRelease ??= new List<HotReloadClientOperation>()).Add(operation);
-						}
+						operation._retainingScopes--;
 					}
+
+					// Release only the operations whose LAST overlapping scope let go, so a concurrent
+					// caller's dispose cannot empty the types this one still needs.
+					toRelease = _retained.Where(static operation => operation._retainingScopes == 0).ToList();
 
 					_retained.Clear();
 				}
 
-				if (toRelease is not null)
+				// Outside the gate: releasing materializes CuratedTypes (user code irrelevant,
+				// but no reason to do string work under a shared lock).
+				foreach (var operation in toRelease)
 				{
-					// Outside the gate: releasing materializes CuratedTypes (user code irrelevant,
-					// but no reason to do string work under a shared lock).
-					foreach (var operation in toRelease)
-					{
-						operation.ReleaseRetainedTypes();
-					}
+					operation.ReleaseRetainedTypes();
 				}
 			}
 		}
@@ -495,16 +491,7 @@ public partial class ClientHotReloadProcessor
 
 			// Repeated sweeps walk every retained historical operation; when everything is already
 			// detached there is nothing to do — skip the unconditional ConvertAll reallocation.
-			var needsDetach = false;
-			foreach (var exception in _exceptions)
-			{
-				if (exception is not DetachedExceptionSummary)
-				{
-					needsDetach = true;
-					break;
-				}
-			}
-
+			var needsDetach = _exceptions.Any(static exception => exception is not DetachedExceptionSummary);
 			if (!needsDetach)
 			{
 				return;
