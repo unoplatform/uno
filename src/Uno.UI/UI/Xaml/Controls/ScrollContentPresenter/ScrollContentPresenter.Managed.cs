@@ -490,10 +490,14 @@ namespace Microsoft.UI.Xaml.Controls
 				double GetAnimatedHorizontalOffset() => Math.Round(-visual.AnchorPoint.X + centeringOffsetX);
 				double GetAnimatedVerticalOffset() => Math.Round(-visual.AnchorPoint.Y + centeringOffsetY);
 
-				scrollAnimation.AnimationFrame += OnFrame;
 				scrollAnimation.Stopped += OnStopped;
 
 				visual.StartAnimation(nameof(Visual.AnchorPoint), scrollAnimation);
+
+				// Subscribed after StartAnimation so it runs after the compositor's own ReEvaluateAnimation
+				// handler: AnimationFrame invokes in subscription order, so subscribing first would publish
+				// the previous frame's AnchorPoint and leave virtualization one frame behind the viewport.
+				scrollAnimation.AnimationFrame += OnFrame;
 
 				// Zoom animation (if zoom is changing)
 				if (Math.Abs(visual.Scale.X - zoom) > 0.0001f)

@@ -419,6 +419,7 @@ namespace Windows.UI.Input
 						break;
 
 					case ManipulationStatus.Started when pointerAdded:
+					case ManipulationStatus.Started when _recognizer.ReportsUnquantizedDeltas:
 					case ManipulationStatus.Started when changeSet.Delta.IsSignificant(_deltaThresholds):
 					case ManipulationStatus.Inertia: // No IsSignificant check for inertia, we prefer smooth animations!
 						CommitChanges(changeSet);
