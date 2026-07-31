@@ -27,6 +27,23 @@ public sealed class Given_WatchHotReloadService
 
 		var granted = WatchHotReloadService.AddImplicitCapabilities(reported);
 
-		CollectionAssert.AreEqual(reported.Append("AddExplicitInterfaceImplementation").ToArray(), granted.ToArray());
+		CollectionAssert.AreEqual(
+			reported.Where(c => c != "AddFieldRva").Append("AddExplicitInterfaceImplementation").ToArray(),
+			granted.ToArray());
+	}
+
+	[TestMethod]
+	[Description(
+		"AddFieldRva must be WITHDRAWN even though the runtime reports it: CoreCLR's EnC " +
+		"metadata layer loses delta-ADDED FieldRVA rows once the table's lookup hash is built " +
+		"(25-row threshold, no linear fallback, no hash maintenance on the apply path), which " +
+		"kills every update after a few generations on real apps ('The assembly update " +
+		"failed'). Without the capability Roslyn emits the historical element-wise " +
+		"array-initializer codegen — no FieldRVA rows in deltas, same semantics.")]
+	public void When_AddImplicitCapabilities_Then_WithdrawsAddFieldRva()
+	{
+		var granted = WatchHotReloadService.AddImplicitCapabilities(["Baseline", "AddFieldRva", "NewTypeDefinition"]);
+
+		CollectionAssert.AreEqual(new[] { "Baseline", "NewTypeDefinition", "AddExplicitInterfaceImplementation" }, granted.ToArray());
 	}
 }

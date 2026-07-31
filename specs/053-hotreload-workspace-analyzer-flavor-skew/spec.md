@@ -288,48 +288,61 @@ lifted by the same grant.
 Validation (local Skia desktop runtime tests, R5 in place): the rude edits are gone from
 full-class runs — 0×ENC0106 / 0×CS9346 (the pre-R5 red runs showed 20–60 ENC0106) — and
 reloadable-type updates now emit and apply: the DataTemplate scenario's update+undo and
-the first AppResources update all apply end-to-end. `Uno.HotReload.Tests`: 116/116,
+the first AppResources update all apply end-to-end. `Uno.HotReload.Tests` green,
 including the new grant test.
 
-### Known issue (follow-up) — CoreCLR rejects the 4th generation of a mixed replace sequence
+### R6 — withdraw `AddFieldRva` from the session capabilities (CoreCLR EnC defect)
 
-One failure mode remains, now precisely scoped and NOT capability-related: in a session
-that replaces the DataTemplate page twice (update+undo) and then AppResources twice, the
-**4th** delta (the AppResources undo) is rejected by the runtime —
-`MetadataUpdater.ApplyUpdate` throws "The assembly update failed" (generic
-`COR_E_INVALIDOPERATION`; the native HRESULT is not surfaced). The same AppResources
-update+undo pair applied **without** the DataTemplate generations before it succeeds
-end-to-end.
+With R5 in place a failure mode remained: on the 5.x embed, hot reload died after a
+handful of generations — `MetadataUpdater.ApplyUpdate` threw "The assembly update failed"
+(generic `COR_E_INVALIDOPERATION`) on the **4th** update of a session against the runtime
+tests' app, whatever was edited (a UserControl edited 4 times in a row, or a
+DataTemplate×2 + AppResources×2 sequence), and every subsequent update of the poisoned
+session failed the same way (the CI job then ground through per-scenario timeouts to its
+60-minute kill).
 
-Forensic evidence (artifacts preserved as a standalone repro bundle — replay harness,
-baseline assembly, dumped deltas — ready to attach to the runtime escalation):
+Root cause — a **CoreCLR EnC metadata defect** (diagnosed on .NET 10.0.10 by replaying
+captured deltas standalone, then tracing a Checked CoreCLR build; fully proven both ways):
 
-- The rejected generation-4 delta is **structurally clean**: SRM-level diff of its
-  EncLog/EncMap against the accepted generation-2 delta of the isolated run shows
-  identical operation sequences and uniform aggregate renumbering (every table shifted by
-  exactly the rows the extra generations added; every `AddParameter` parent is a method
-  the delta itself adds). Its relationship to its predecessor is byte-shape-identical to
-  the accepted pair's.
-- The rejection reproduces **standalone** — a 30-line console harness
-  (`Assembly.LoadFrom` + `MetadataUpdater.ApplyUpdate`, no dev-server, no Uno hot-reload
-  machinery) replaying the four dumped deltas against the baseline assembly: generations
-  1–3 apply, generation 4 fails. This is the escalation package for dotnet/runtime (the
-  suspected defect is in CoreCLR's EnC bookkeeping for later generations of interleaved
-  type replacements; a checked runtime names the exact failing validation).
-- 4.x never hit this because the whole path was different only in volume: the Watch-based
-  4.14 embed produced the same logical sequence and CoreCLR applied it — narrowing the
-  trigger to the 5.6-emitted delta *content* interacting with runtime state is exactly
-  what the standalone repro enables.
+- `CMiniMdRW::GenericFindWithHash` (`src/coreclr/md/enc/metamodelrw.cpp`) builds a lazy
+  lookup hash for a metadata table once it exceeds `INDEX_ROW_COUNT_THRESHOLD` (25) rows,
+  searches ONLY the hash once it exists (no linear fallback) — and the EnC delta-apply
+  path (`CMiniMdRW::ApplyDelta`/`ApplyTableDelta`) appends rows without maintaining or
+  invalidating that hash. Every row a delta adds after the hash was built is therefore
+  invisible to lookups.
+- The lookup that dies is `GetFieldRVA` during
+  `EditAndContinueModule::ApplyEditAndContinue`: Roslyn 5.x emits one `FieldRVA` row per
+  generation for method bodies containing array initializers / u8 literals (a fresh
+  `<PrivateImplementationDetails>` per generation) — a NEW emission enabled by the
+  equally-new `AddFieldRva` capability the runtime reports. The test app's baseline has
+  22 `FieldRVA` rows: generation 3 crosses the 25-row threshold and builds the hash;
+  generation 4's row is appended invisible; `GetFieldRVA` returns
+  `CLDB_E_RECORD_NOTFOUND`; the apply fails. The magic "dies at the 4th update" is
+  exactly `threshold(25) − baseline(22) + 1`.
+- Roslyn 4.x never emitted `FieldRVA` delta rows (the capability did not exist; array
+  initializers used the element-wise EnC fallback codegen), which is why the defect —
+  present in CoreCLR for years — never fired before the 5.x embed.
+- Proof both ways: (red) a 30-line standalone `MetadataUpdater.ApplyUpdate` replay of the
+  four captured deltas fails at generation 4, and a Checked CoreCLR traces the failing
+  lookup (`FindFieldRVAHelper HASH tk=04000d84 → rid=0` while the table holds 26 rows);
+  (green) invalidating the lookup hash in `ApplyTableDelta` on the same Checked build
+  makes the identical four deltas apply — that one-liner is the candidate upstream fix
+  attached to the dotnet/runtime escalation.
 
-Secondary effect (ours, to harden as a follow-up): the server commits its EnC baseline at
-emit time regardless of whether the application applied the update
-(`UnitTestingHotReloadService.EmitSolutionUpdateAsync(commitUpdates: true)`, same net
-behavior as the historical Watch service). After the first runtime rejection the server
-and the application permanently disagree on the baseline, so every subsequent delta of the
-session is mis-based and rejected — one runtime rejection cascades into a fully poisoned
-session (the "105 rejections" pattern of full-suite runs). Follow-up: tie the baseline
-commit to the client's apply acknowledgment (or resync/restart the session on apply
-failure) so a single rejected update degrades one reload instead of the whole session.
+Fix (this spec): the shim's capability adjustment **withdraws `AddFieldRva`** from the
+application-reported set (alongside the R5 grant). Without the capability, Roslyn falls
+back to the historical element-wise array-initializer EnC codegen: no `FieldRVA` rows in
+any delta, identical runtime semantics (verified: the same edits apply through 8+
+generations and the updated data is observable). To be reverted once the runtime fix
+ships.
+
+Follow-ups (unchanged in scope, now precisely motivated): file the dotnet/runtime issue
+with the repro bundle (baseline + deltas + replay harness + Checked-build trace + the
+candidate fix); and harden the server against apply-failure cascades — the server commits
+its EnC baseline at emit time (`commitUpdates: true`, the historical Watch behavior), so
+one runtime rejection permanently desynchronizes server and application baselines and
+poisons the rest of the session. Tie the commit to the client's apply acknowledgment (or
+resync on failure) so a single rejected update degrades one reload, not the session.
 
 ## Non-goals
 
@@ -388,11 +401,15 @@ failure) so a single rejected update degrades one reload instead of the whole se
    ENC0106 + CS9346 and every ResourceDictionary/DataTemplate scenario fails; with R5,
    0×ENC0106 / 0×CS9346 and reloadable-type updates apply (DataTemplate update+undo,
    AppResources update).
-8. **Known-issue evidence (4th-generation rejection)**: the remaining failure is isolated
-   to a standalone `MetadataUpdater.ApplyUpdate` replay (baseline + 4 dumped deltas,
-   generations 1–3 apply, 4 fails; the same AppResources pair without the DataTemplate
-   generations applies) — the dev-server is out of the loop, the delta is SRM-clean, and
-   the repro bundle is ready for a dotnet/runtime escalation.
+8. **R6 withdrawal**: **done** — `Given_WatchHotReloadService` asserts `AddFieldRva` is
+   withdrawn from the granted set while the R5 grant is appended. Root-cause red/green,
+   outside the repo: the standalone `MetadataUpdater.ApplyUpdate` replay of the four
+   captured deltas fails at generation 4 on the stock runtime and a Checked CoreCLR traces
+   the failing `FindFieldRVAHelper` lookup (rid=0 with 26 rows in the table); the
+   candidate one-line runtime fix (invalidate the table lookup hash in
+   `CMiniMdRW::ApplyTableDelta`) makes the identical deltas apply 4/4; and with the
+   capability withdrawn the same edits emit no `FieldRVA` rows and apply through 8+
+   generations in an emit+apply harness.
 
 R2 consequence shipped separately (own commit): `Uno.UI.SourceGenerators.Tests` is
 temporarily pinned back to the 4.14 line and its MetadataUpdate suite `Compile Remove`d —
@@ -404,8 +421,9 @@ re-enable groundwork is prepared.
 
 Additional coverage from the implementation pass: the retargeted EnC shim was validated
 by emitting a **real delta** (on-disk baseline, IL/metadata/PDB + updated types) against
-both 4.14.0 and 5.6.0, and the full existing `Uno.HotReload.Tests` suite (116 tests,
-including the R5 capability-grant test) runs green on the net10/Roslyn 5.6 flavor.
+both 4.14.0 and 5.6.0, and the full existing `Uno.HotReload.Tests` suite (118 tests,
+including the R5 grant and R6 withdrawal tests) runs green on the net10/Roslyn 5.6
+flavor.
 
 ## Resolved decisions
 

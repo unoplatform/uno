@@ -116,8 +116,9 @@ internal partial class WatchHotReloadService
 	}
 
 	/// <summary>
-	/// Grants, on top of the capabilities reported by the app's runtime, the one dotnet-watch
-	/// treats as implicitly available on every runtime hot reload targets:
+	/// Adjusts the capabilities reported by the app's runtime for the EnC session: grants the
+	/// one dotnet-watch treats as implicitly available, and removes one whose runtime-side
+	/// implementation is defective (see the remarks and the inline note below). The grant:
 	/// <c>AddExplicitInterfaceImplementation</c> is supported by .NET (CoreCLR) and Mono but
 	/// DECLARED by neither — only .NET Framework lacks it (adding an InterfaceImpl row there can
 	/// crash with an access violation), so Roslyn keeps it out of the runtimes' baseline set and
@@ -143,7 +144,27 @@ internal partial class WatchHotReloadService
 	/// parsed into flags, duplicates collapse.
 	/// </remarks>
 	internal static ImmutableArray<string> AddImplicitCapabilities(string[] metadataUpdateCapabilities)
-		=> ImmutableArray<string>.Empty.AddRange(metadataUpdateCapabilities).Add("AddExplicitInterfaceImplementation");
+		=> ImmutableArray<string>.Empty.AddRange(metadataUpdateCapabilities)
+			.Add("AddExplicitInterfaceImplementation")
+			.Remove("AddFieldRva");
+
+	// Why AddFieldRva is REMOVED even though the runtime reports it — CoreCLR (verified on
+	// .NET 10.0.10, src/coreclr/md/enc/metamodelrw.cpp) builds a lookup hash for a metadata
+	// table once it exceeds INDEX_ROW_COUNT_THRESHOLD (25) rows, `GenericFindWithHash` has no
+	// linear fallback, and the EnC delta-apply path never maintains/invalidates that hash — so
+	// any row an EnC delta ADDS after the hash was built is invisible to lookups. With the
+	// capability granted, Roslyn 5.x emits one FieldRVA row per generation for method bodies
+	// containing array initializers / u8 literals (a fresh <PrivateImplementationDetails> per
+	// generation): on a baseline with ~22+ FieldRVA rows the table crosses the threshold after
+	// a few reloads and `EditAndContinueModule::ApplyEditAndContinue` fails its GetFieldRVA
+	// lookup with CLDB_E_RECORD_NOTFOUND — surfaced as "System.InvalidOperationException: The
+	// assembly update failed", killing every subsequent update of the session. Roslyn 4.x
+	// never emitted FieldRVA deltas (the capability did not exist), which is why this never
+	// fired before the 5.x embed. Without the capability, Roslyn falls back to the historical
+	// element-wise array-initializer EnC codegen: no FieldRVA rows, correct semantics.
+	// Diagnosed with a standalone MetadataUpdater.ApplyUpdate replay of captured deltas and
+	// proven both ways on a Checked CoreCLR (failing lookup traced; hash invalidation in the
+	// apply path makes the same deltas apply). Remove this once the runtime fix ships.
 
 	internal Task StartSessionAsync(Solution currentSolution, CancellationToken cancellationToken)
 	{
