@@ -104,22 +104,24 @@ flowchart TB
   end
   FM -.->|"drives"| FR
 
-  subgraph Frame["Per frame — the visual-tree walk (calls IDrawingFactory, consumes the seams)"]
-    Ren -->|"BeginFrame(RT)"| PS["IPresentSession (an IDrawingSession)"]
-    Ctx -->|"AcquireRenderTarget()"| RT["IRenderTarget"]
+  subgraph Frame["Per frame — walk records (UI thread) → renderer replays (render thread)"]
     Tree["Visual-tree walk"] -->|"CreatePathBuilder"| GEO["IGeometry"]
     Tree -->|"shaders / color filters / effects"| PNT["IShader / IColorFilter / IEffectFilter"]
     Tree -->|"CreateImageTexture"| TEX["IImageTexture"]
-    GEO --> PS
-    PNT --> PS
-    TEX --> PS
-    Tree -->|"draw verbs"| PS
+    GEO --> REC["ICommandRecorder<br/>(an IDrawingSession)"]
+    PNT --> REC
+    TEX --> REC
+    Tree -->|"draw verbs"| REC
+    REC -->|"Finish()"| RD["IRenderData<br/>(recorded frame / subtree)"]
+    Ren -->|"BeginFrame(RT)"| PS["IPresentSession"]
+    RD -->|"Replay(renderData)"| PS
+    Ctx -->|"AcquireRenderTarget()"| RT["IRenderTarget"]
     PS -->|"Dispose = present"| Ctx
   end
 
   Fac -.->|"methods called during the walk"| Tree
   IMG -.->|"upload"| TEX
-  GL -->|"glyphs drawn"| PS
+  GL -->|"glyphs drawn"| REC
 
   classDef startup fill:#eef2ff,stroke:#6366f1,color:#26268a;
   classDef install fill:#f7f0ff,stroke:#9333ea,color:#5a1b96;
@@ -128,18 +130,22 @@ flowchart TB
   classDef fw fill:#eef1f6,stroke:#64748b,color:#334155;
   classDef mgr fill:#fff4e5,stroke:#d97706,color:#8a4b0e;
   classDef font fill:#fff4e5,stroke:#b45309,color:#7c3d09,stroke-width:2.5px;
+  classDef retained fill:#e7f0ff,stroke:#2563eb,color:#1e3a8a,stroke-width:2.5px;
   class App,Reg,Host,CF,Ctx,Prov startup;
   class GS,Fac,Ren install;
-  class Tree,PS,RT frame;
+  class Tree,REC,PS,RT frame;
+  class RD retained;
   class Dec,FM,IMG,GEO,TEX,PNT content;
   class TA,LB fw;
   class FR mgr;
   class SH,GL font;
 ```
 
-The base path is **immediate**: `BeginFrame(target)` → draw the tree straight into the `IPresentSession` → dispose
-presents. Retaining (recording a `Visual`'s subtree or a whole frame into `IRenderData` and replaying it) is the
-optional `IRetainedRenderingSession` layer, guarded with `is IRetainedRenderingSession` at the call-sites.
+The diagram shows the **retained** path: the walk records the frame into an `IRenderData` (an `SKPicture` today)
+that the renderer `Replay`s into the `IPresentSession` — the current Skia impl, and what enables caching an
+unchanged `Visual`'s subtree and splitting the UI-thread record from the render-thread present. The **base contract
+is immediate** (draw straight into `IPresentSession`, no `IRenderData`); retaining is the optional
+`IRetainedRenderingSession` layer (§G), guarded with `is IRetainedRenderingSession` at the call-sites.
 
 ---
 
