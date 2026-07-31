@@ -122,7 +122,7 @@ namespace Microsoft.UI.Composition
 		/// </summary>
 		internal void CopyPixels(int pixelWidth, int pixelHeight, ReadOnlyMemory<byte> data)
 		{
-			var frames = ImageDecoder.Current.CreateFrame(pixelWidth, pixelHeight, data.Span);
+			var frames = ImageDecoder.Current.CreateFrames(ImageDecoder.Current.CreateImage(pixelWidth, pixelHeight, data.Span));
 			SetFrameProviderAndOnFrameChanged(FrameProviderFactory.Create(frames, null), null);
 		}
 
