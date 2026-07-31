@@ -85,7 +85,7 @@ flowchart TB
     Host["Platform host"] -->|"implements"| CF["IGraphicsContextFactory"]
   end
 
-  Reg -->|"Activate: negotiate kind + requirements"| CF
+  Reg -->|"Initialize: negotiate kind + requirements"| CF
   CF -->|"create window + context pair"| Ctx["IGraphicsContext"]
   Reg -->|"pick provider, CreateGraphics(context)"| Prov["IGraphicsProvider"]
   Prov -->|"Graphics.DrawingFactory"| Fac["IDrawingFactory → DrawingFactory.Current"]
@@ -552,32 +552,32 @@ from `IGraphicsContextFactory.Create`, which makes the context itself.
 ## O. Registry + negotiation (depends on M, N)
 
 ```csharp
-public readonly record struct GraphicsActivation(IGraphicsContext Context, Graphics Graphics) : IDisposable;
+public readonly record struct GraphicsInitialization(IGraphicsContext Context, Graphics Graphics) : IDisposable;
 
 public static class GraphicsRegistry
 {
     public static void Register(IReadOnlyList<IGraphicsProvider> providersInPreferenceOrder);   // composition root
-    public static GraphicsActivation Activate(IGraphicsContextFactory source);                 // host, once it can make windows
+    public static GraphicsInitialization Initialize(IGraphicsContextFactory host);                 // host, once it can make windows
 }
 ```
 
-`Activate` is the sole negotiator and the sole caller of `source.Create`:
+`Initialize` is the sole negotiator and the sole caller of `host.Create`:
 
 ```csharp
 foreach (var provider in registered)               // preference order
   foreach (var request in provider.SupportedContexts)
-     if (source.Create(request) is { } context)   // host creates window+context for the kind, or null
+     if (host.Create(request) is { } context)   // host creates window+context for the kind, or null
      {
          var graphics = provider.CreateGraphics(context);
          DrawingFactory.Current = graphics.DrawingFactory;   // installs the globals (only place)
          CompositionTarget.Renderer = graphics.Renderer;
-         return new GraphicsActivation(context, graphics);
+         return new GraphicsInitialization(context, graphics);
      }
 throw /* enumerate what no (provider, request) could satisfy — a loud, described failure */;
 ```
 
 The kind is chosen by **intersection**: the renderer proposes an ordered set, the source vetoes what it can't
-build (null), first survivor wins. `Activate` is shared; only the `IGraphicsContextFactory` is per-host.
+build (null), first survivor wins. `Initialize` is shared; only the `IGraphicsContextFactory` is per-host.
 
 ---
 
@@ -589,7 +589,7 @@ GraphicsRegistry.Register(new IGraphicsProvider[] { new SkiaGraphicsProvider() }
 ImageDecoder.Current = new ManagedImageDecoder();                                 // or Skia / platform codec
 FontManager.Current  = new ManagedFontManager();                                  // or Skia / CoreText / DirectWrite
 ```
-**`Activate`-derived outputs (never user-assigned):**
+**`Initialize`-derived outputs (never user-assigned):**
 ```csharp
 DrawingFactory.Current           // winning session's IDrawingFactory
 CompositionTarget.Renderer  // winning session's IRenderer
@@ -631,13 +631,13 @@ fallback *policy* is framework, fallback *font lookup* is the plug (`MatchCharac
 
 ```csharp
 // once, when the host can create windows:
-var activation = GraphicsRegistry.Activate(new X11GraphicsContextFactory(display, parent, …));
-((PlatformContext)activation.Context).WireInput(...);          // host downcasts to wire input to its window
+var init = GraphicsRegistry.Initialize(new X11GraphicsContextFactory(display, parent, …));
+((PlatformContext)init.Context).WireInput(...);          // host downcasts to wire input to its window
 
 // per frame, in the host's own render method (its own thread/lock/invalidation):
-var target = activation.Context.AcquireRenderTarget();
+var target = init.Context.AcquireRenderTarget();
 var clip   = compositionTarget.OnNativePlatformFrameRequested(target);   // returns the native-element clip (IGeometry)
-activation.Context.Present();
+init.Context.Present();
 ApplyNativeElementClip(clip);                                  // platform-specific (XShapeClip / HRGN / SVG)
 ```
 
