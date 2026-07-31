@@ -23,9 +23,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		{
 			try
 			{
-				// Wrap the BGRA (premultiplied) buffer as a neutral single-frame image (copied, so the buffer is reusable).
-				var frames = ImageDecoder.Current.CreateFrame(width, height, new ReadOnlySpan<byte>(buffer.Pointer.ToPointer(), bufferLength));
-				return ImageData.FromCompositionSurface(new CompositionImageSurface(frames.Frames[0]));
+				// Wrap the BGRA (premultiplied) buffer as a neutral image (copied, so the buffer is reusable).
+				var image = ImageDecoder.Current.CreateImage(width, height, new ReadOnlySpan<byte>(buffer.Pointer.ToPointer(), bufferLength));
+				return ImageData.FromCompositionSurface(new CompositionImageSurface(image));
 			}
 			catch (Exception error)
 			{

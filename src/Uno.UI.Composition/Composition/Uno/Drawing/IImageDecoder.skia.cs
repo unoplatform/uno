@@ -20,11 +20,11 @@ public interface IImageDecoder
 	/// </summary>
 	bool TryDecode(Stream stream, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out IImageFrames? frames);
 
-	/// <summary>Wraps raw BGRA (premultiplied) pixels as a single-frame <see cref="IImageFrames"/>.</summary>
-	IImageFrames CreateFrame(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul);
+	/// <summary>Wraps raw BGRA (premultiplied) pixels as a single neutral <see cref="IImage"/> (copied, so the source buffer stays reusable).</summary>
+	IImage CreateImage(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul);
 
-	/// <summary>Wraps an already-decoded <see cref="IImage"/> as a single-frame <see cref="IImageFrames"/>, taking
-	/// ownership of the image (disposing the frames releases it).</summary>
+	/// <summary>Wraps an already-decoded <see cref="IImage"/> as a single-frame <see cref="IImageFrames"/> for the
+	/// animation/frame-provider path, taking ownership of the image (disposing the frames releases it).</summary>
 	IImageFrames CreateFrames(IImage image);
 }
 

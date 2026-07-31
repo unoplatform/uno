@@ -38,10 +38,10 @@ internal sealed class SkiaImageDecoderBackend : IImageDecoder
 		return false;
 	}
 
-	public IImageFrames CreateFrame(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
+	public IImage CreateImage(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
 	{
 		var info = new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
-		return SkiaImageFrames.FromImage(SKImage.FromPixelCopy(info, bgraPremul));
+		return new SkiaImage(SKImage.FromPixelCopy(info, bgraPremul));
 	}
 
 	public IImageFrames CreateFrames(IImage image) => SkiaImageFrames.FromImage(((SkiaImage)image).Image);
