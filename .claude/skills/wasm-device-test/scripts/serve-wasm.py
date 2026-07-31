@@ -88,7 +88,8 @@ def main():
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        pass
+        # Expected on Ctrl+C: exit cleanly without printing a traceback.
+        return 0
     return 0
 
 
