@@ -53,9 +53,11 @@ partial class Application
 			// purge all Type-keyed caches for non-default ALCs. These caches
 			// hold strong references to ALC-loaded Types that prevent GC
 			// from collecting the ALC. The caches are rebuilt on demand.
+			// Global shutdown: no single dying ALC is identifiable here, so the explicit
+			// all-secondary sweep is intentional (every secondary app is going away).
 			if (_hasSecondaryApps)
 			{
-				CleanupNonDefaultAlcCaches();
+				CleanupAllSecondaryAlcCaches();
 			}
 
 			return;
@@ -361,16 +363,42 @@ partial class Application
 	/// Called from <see cref="Window.CloseAlcWindow"/> during ALC teardown.
 	/// </summary>
 	/// <param name="dyingAlc">
-	/// The <see cref="AssemblyLoadContext"/> being torn down, when the call site can identify it
-	/// (window close, app removal). Scopes the DESTRUCTIVE removals below to that ALC so that,
-	/// with two live secondary apps, closing one does not destroy the other's state. When
-	/// <see langword="null"/> (global shutdown), those removals keep their historical
-	/// all-non-default semantics.
+	/// The <see cref="AssemblyLoadContext"/> being torn down. REQUIRED: it scopes the DESTRUCTIVE
+	/// removals below to that ALC so that, with two live secondary apps, closing one does not
+	/// destroy the other's state. Global-shutdown paths, where no single dying ALC exists, must
+	/// opt in to the wide sweep explicitly via <see cref="CleanupAllSecondaryAlcCaches"/>.
 	/// </param>
+	internal static void CleanupNonDefaultAlcCaches(AssemblyLoadContext dyingAlc)
+		=> CleanupNonDefaultAlcCachesCore(dyingAlc);
+
+	/// <summary>
+	/// Purges Type-keyed caches of entries from ALL non-default (collectible) ALCs, including the
+	/// DESTRUCTIVE removals (ResourceLoader lookup assemblies, CompositionTarget.Rendering
+	/// handlers) that <see cref="CleanupNonDefaultAlcCaches"/> scopes to a single dying ALC.
+	/// Reserved for global shutdown, where every secondary app is going away and no live sibling
+	/// can be harmed — the unscoped semantics are opt-in at the call site rather than a default.
+	/// </summary>
+	internal static void CleanupAllSecondaryAlcCaches()
+		=> CleanupNonDefaultAlcCachesCore(dyingAlc: null);
+
 	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "ALC cleanup reflection")]
 	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup reflection")]
-	internal static void CleanupNonDefaultAlcCaches(AssemblyLoadContext dyingAlc = null)
+	private static void CleanupNonDefaultAlcCachesCore(AssemblyLoadContext dyingAlc)
 	{
+		// The unscoped destructive branch drops state of EVERY non-default ALC; if it fires
+		// outside a genuine global shutdown (or a teardown that could not identify its ALC), a
+		// live secondary app silently loses never-re-created registrations (rendering
+		// subscriptions, resource lookups). Surface every unscoped run so a field report of
+		// silent partial degradation can be correlated with it.
+		if (dyingAlc is null && typeof(Application).Log().IsEnabled(LogLevel.Warning))
+		{
+			typeof(Application).Log().Warn("[ALC-CLEANUP] Running the UNSCOPED all-secondary-ALC sweep: destructive removals apply to every non-default AssemblyLoadContext.");
+		}
+		else if (dyingAlc is not null && typeof(Application).Log().IsEnabled(LogLevel.Debug))
+		{
+			typeof(Application).Log().Debug($"[ALC-CLEANUP] Sweeping caches for dying AssemblyLoadContext '{dyingAlc.Name}'.");
+		}
+
 		// Remove Application instances registered for non-default ALCs from the CWT.
 		// Without this, the CWT keeps the inner app's Application subclass alive.
 		ClearNonDefaultAlcApplications();
@@ -395,19 +423,28 @@ partial class Application
 		// ResourceResolver — remove Func delegates whose Target is from a non-default ALC
 		ResourceResolver.ClearNonDefaultAlcRegistrations();
 
+		// FeatureConfiguration.Style.UseUWPDefaultStylesOverride is USER CONFIGURATION, not a
+		// rebuildable cache: a dropped override is never re-created, so it must not ride the
+		// all-non-default cache-clear group above. DESTRUCTIVE: remove only keys owned by the
+		// dying ALC (never wholesale), so a live sibling app / session add-in keeps its overrides.
+		RunCleanupStep(nameof(Style.RemoveAlcScopedUserStyleOverrides), () => Style.RemoveAlcScopedUserStyleOverrides(dyingAlc));
+
 		// ResourceLoader — drop previewed-app lookup assemblies (and their parsed-resource
 		// markers). The process-lifetime _lookupAssemblies list keeps a strong reference to
 		// every app assembly registered via AddLookupAssembly, pinning the collectible ALC.
 		// DESTRUCTIVE (registrations are never re-added): scope to the dying ALC when known so a
 		// live sibling secondary app keeps its resource lookups.
-		if (dyingAlc is not null)
+		RunCleanupStep(nameof(global::Windows.ApplicationModel.Resources.ResourceLoader.ClearAlcAssemblies), () =>
 		{
-			global::Windows.ApplicationModel.Resources.ResourceLoader.ClearAlcAssemblies(dyingAlc);
-		}
-		else
-		{
-			global::Windows.ApplicationModel.Resources.ResourceLoader.ClearNonDefaultAlcAssemblies();
-		}
+			if (dyingAlc is not null)
+			{
+				global::Windows.ApplicationModel.Resources.ResourceLoader.ClearAlcAssemblies(dyingAlc);
+			}
+			else
+			{
+				global::Windows.ApplicationModel.Resources.ResourceLoader.ClearNonDefaultAlcAssemblies();
+			}
+		});
 
 #if __WASM__
 		// UIElementNativeRegistrar (WASM) — the Type→registration-id map keys on every element
@@ -443,8 +480,8 @@ partial class Application
 		RunCleanupStep(nameof(Controls.ContentControl.ClearHasDefaultTemplateCache), Controls.ContentControl.ClearHasDefaultTemplateCache);
 
 		// PagePool pools Page instances keyed by their (previewed-app) page Type; a pooled page from
-		// an unloaded app pins its ALC.
-		RunCleanupStep(nameof(PagePool.ClearNonDefaultAlcEntries), static () => PagePool.Instance.ClearNonDefaultAlcEntries());
+		// an unloaded app pins its ALC. Sweeps every live per-Frame pool via the weak registry.
+		RunCleanupStep(nameof(PagePool.ClearNonDefaultAlcEntries), static () => PagePool.ClearNonDefaultAlcEntries());
 
 		// Secondary-ALC code can subscribe to events on HOST visual-tree elements (e.g. a
 		// designer overlay tracking an ancestor's SizeChanged); those subscriptions are never
@@ -538,61 +575,13 @@ partial class Application
 
 	/// <summary>
 	/// Whether the type's collectibility means "owned by a dying AssemblyLoadContext". This is
-	/// the discriminator for DESTRUCTIVE prunes: <see cref="Type.IsCollectible"/> alone also
-	/// matches session-lifetime add-in ALCs (e.g. a designer host) whose live subscriptions must
-	/// survive a secondary app's teardown.
+	/// the discriminator for DESTRUCTIVE prunes. The single shared implementation lives in
+	/// <see cref="global::Uno.UI.Helpers.AlcCacheSweep.IsFromUnloadInitiatedAlc"/> (see its
+	/// remarks for the constructed-generic and dynamic-assembly rules) so every sweep applies
+	/// the same ownership rules.
 	/// </summary>
-	/// <remarks>
-	/// A collectible type whose load context resolves to the default ALC (or unknown) is only
-	/// genuinely owned by a dying context when its DEFINITION is dynamic/RunAndCollect. A
-	/// constructed generic such as <c>HostType&lt;TAddIn&gt;</c> reports <see cref="Type.IsCollectible"/>
-	/// == <see langword="true"/> merely because a generic ARGUMENT is collectible, even though the
-	/// definition lives in the non-collectible host assembly; pruning delegate fields off such a
-	/// host type would wrongly strip live host subscriptions. We therefore re-evaluate constructed
-	/// generics against their generic type DEFINITION.
-	/// </remarks>
 	private static bool IsFromUnloadInitiatedAlc(Type type)
-	{
-		if (!type.IsCollectible)
-		{
-			return false;
-		}
-
-		// For a constructed generic, collectibility can stem solely from a generic ARGUMENT while
-		// the DEFINITION is host-owned. Judge by the definition so HostType<TAddIn> is not pruned
-		// just because TAddIn is collectible. (Non-constructed types fall through to direct checks.)
-		if (type.IsConstructedGenericType)
-		{
-			var definition = type.GetGenericTypeDefinition();
-
-			// A host-defined definition (default/null ALC, non-dynamic assembly) is NOT prunable via
-			// this path: its collectibility is borrowed from the argument, not the definition itself.
-			var definitionAlc = AssemblyLoadContext.GetLoadContext(definition.Assembly);
-			if ((definitionAlc is null || definitionAlc == AssemblyLoadContext.Default)
-				&& !definition.Assembly.IsDynamic)
-			{
-				return false;
-			}
-
-			// Otherwise judge the definition's own load context like any other type.
-			type = definition;
-		}
-
-		var alc = AssemblyLoadContext.GetLoadContext(type.Assembly);
-		if (alc is null || alc == AssemblyLoadContext.Default)
-		{
-			// Default/unknown ALC is only "dying" when the assembly is a dynamic/RunAndCollect
-			// builder (which legitimately maps to a collectible context). A genuinely static
-			// host assembly that is collectible here would be a false positive, so guard on it.
-			return type.Assembly.IsDynamic;
-		}
-
-		// Conservative when the unload state can't be read: do NOT treat the ALC as dying, so this
-		// destructive prune never strips handlers off a still-live (e.g. session add-in) ALC. A
-		// runtime that breaks the state read is surfaced in dev via
-		// FeatureConfiguration.Alc.ThrowOnUnloadStateReadFailure rather than by silent over-pruning.
-		return global::Uno.UI.Xaml.Core.AlcStateHelper.IsUnloadInitiated(alc, valueIfUnknown: false);
-	}
+		=> global::Uno.UI.Helpers.AlcCacheSweep.IsFromUnloadInitiatedAlc(type);
 
 	/// <summary>
 	/// Walks every live content root's visual tree and removes, from each element's delegate

@@ -99,10 +99,10 @@ public class Given_ResourceLoader_Alc
 	[TestMethod]
 	public void When_ClearNonDefaultAlcAssemblies_Then_Default_Resources_Still_Resolve()
 	{
-		// Regression guard: the sweep clears every loader's dictionaries (ClearResources) and then
-		// rebuilds from the remaining default-ALC assemblies. If the parsed-resource markers are not
-		// also cleared, ProcessResourceFile skips the still-registered default-ALC files as "already
-		// parsed" and the loaders stay empty — so a default-ALC resource must still resolve after the
+		// Regression guard: the sweep removes only the dying assemblies' registrations and parsed
+		// markers — it must NOT disturb the surviving (default-ALC) assemblies' loaded resources
+		// (an earlier destroy-and-rebuild implementation could leave every loader permanently
+		// empty when a rebuild step failed). A default-ALC resource must still resolve after the
 		// sweep. Uses the .upri resources embedded in this (default-ALC) test assembly.
 		const string defaultLanguage = "en";
 		const string uiTestResources = "Uno.UI.UnitTests/Resources";

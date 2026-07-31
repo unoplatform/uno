@@ -15,23 +15,36 @@ namespace Microsoft.UI.Xaml
 	/// <summary>
 	/// Provides an instance pool for <see cref="Page"/>s. Pooling is enabled when <see cref="Uno.UI.FeatureConfiguration.Page.IsPoolingEnabled"/> is set to true.
 	/// </summary>
-	/// <remarks>Enabling page pooling improves performance when using <see cref="Frame"/> navigation.</remarks>
+	/// <remarks>
+	/// <para>Enabling page pooling improves performance when using <see cref="Frame"/> navigation.</para>
+	/// <para>Each <see cref="Frame"/> owns its own pool, so a pooled page is never served to a
+	/// different <see cref="Frame"/> (or a different <c>XamlRoot</c>/window). Pools register into a
+	/// process-wide WEAK registry, which lets the shared scavenger and the ALC teardown sweep reach
+	/// every live pool without rooting any of them — a pool dies with its Frame.</para>
+	/// <para>Threading: pool contents are guarded by a per-pool lock — navigation, the scavenger and
+	/// the ALC teardown sweep can each touch a pool from different call paths.</para>
+	/// </remarks>
 	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Types manipulated here have been marked earlier")]
 	[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Types manipulated here have been marked earlier")]
 	public class PagePool
 	{
-		private readonly Stopwatch _watch = new Stopwatch();
-		private readonly Dictionary<Type, List<PagePoolEntry>> _pooledInstances = new Dictionary<Type, List<PagePoolEntry>>();
-		private bool _scavengerStarted;
+		/// <summary>
+		/// Shared monotonic time base for entry ages, so TTL comparisons are consistent across pools.
+		/// </summary>
+		private static readonly Stopwatch _watch = Stopwatch.StartNew();
 
 		/// <summary>
-		/// Process-wide pool. Previously every <see cref="Frame"/> allocated its own <see cref="PagePool"/>
-		/// into a shared static field: the last Frame won, and every earlier pool was orphaned yet kept
-		/// alive forever by the 30s scavenger loop it had scheduled on the dispatcher. A single shared
-		/// instance (eagerly created at type initialization) removes that leak; the scavenger itself
-		/// remains lazy — it is scheduled at most once, and only when pooling is enabled.
+		/// Weak registry of every pool (one per <see cref="Frame"/>). Weak so the registry — and the
+		/// shared scavenger iterating it — never roots a pool past its Frame's lifetime; dead
+		/// registrations are pruned opportunistically. Guarded by <see cref="_poolsGate"/>.
 		/// </summary>
-		internal static PagePool Instance { get; } = new PagePool();
+		private static readonly List<WeakReference<PagePool>> _pools = new();
+		private static readonly object _poolsGate = new();
+		private static bool _scavengerStarted; // guarded by _poolsGate
+
+		/// <summary>Guards <see cref="_pooledInstances"/> (see the threading remarks on the class).</summary>
+		private readonly object _gate = new();
+		private readonly Dictionary<Type, List<PagePoolEntry>> _pooledInstances = new Dictionary<Type, List<PagePoolEntry>>();
 
 		/// <summary>
 		/// Determines the duration for which a pooled page stays alive.
@@ -45,46 +58,48 @@ namespace Microsoft.UI.Xaml
 
 		internal PagePool()
 		{
-			_watch.Start();
+			lock (_poolsGate)
+			{
+				// Opportunistic pruning keeps the registry proportional to LIVE pools even if
+				// Frames churn heavily between scavenger passes.
+				_pools.RemoveAll(static reference => !reference.TryGetTarget(out _));
+				_pools.Add(new WeakReference<PagePool>(this));
+			}
 		}
 
 		/// <summary>
-		/// Starts the periodic scavenger that evicts pooled pages older than <see cref="TimeToLive"/>.
-		/// The scavenger only runs while pooling is enabled — a disabled pool never enqueues anything,
-		/// so the eternal idle loop is pure overhead (and, historically, a per-orphaned-pool leak).
-		/// Idempotent: the loop is scheduled at most once.
+		/// Starts the periodic scavenger that evicts pooled pages older than <see cref="TimeToLive"/>
+		/// across every live pool. The scavenger only runs while pooling is enabled — a disabled pool
+		/// never enqueues anything, so the eternal idle loop is pure overhead. It iterates the weak
+		/// registry, so it never keeps a pool (or its Frame) alive. Idempotent: the loop is scheduled
+		/// at most once.
 		/// </summary>
-		private void EnsureScavengerStarted()
+		private static void EnsureScavengerStarted()
 		{
 #if !IS_UNIT_TESTS
-			if (_scavengerStarted || !FeatureConfiguration.Page.IsPoolingEnabled)
+			lock (_poolsGate)
 			{
-				return;
+				if (_scavengerStarted || !FeatureConfiguration.Page.IsPoolingEnabled)
+				{
+					return;
+				}
+
+				_scavengerStarted = true;
 			}
 
-			_scavengerStarted = true;
 			_ = CoreDispatcher.Main.RunIdleAsync(Scavenger);
 #endif
 		}
 
-		private async void Scavenger(IdleDispatchedHandlerArgs e)
+		private static async void Scavenger(IdleDispatchedHandlerArgs e)
 		{
 			try
 			{
-				var now = _watch.Elapsed;
-				var removedInstancesCount = 0;
-
-				foreach (var list in _pooledInstances.Values)
-				{
-					removedInstancesCount += list.RemoveAll(t => now - t.CreationTime > TimeToLive);
-				}
+				var removedInstancesCount = EvictStaleEntries();
 
 				if (removedInstancesCount > 0)
 				{
-					// Under iOS and Android, we need to force the collection for the GC
-					// to pick up the orphan instances that we've just released.
-
-					GC.Collect();
+					CollectOnMobileTargets();
 				}
 
 				await Task.Delay(TimeSpan.FromSeconds(30));
@@ -98,22 +113,17 @@ namespace Microsoft.UI.Xaml
 				{
 					// Pooling disabled: drop all pooled instances so re-enabling cannot serve stale
 					// pages past TTL — with the scavenger stopped, nothing else would ever evict them.
-					// Mirrors the scavenger's own eviction above: remove the entries, then collect so
-					// the orphan instances are picked up.
-					var droppedInstancesCount = 0;
-					foreach (var list in _pooledInstances.Values)
-					{
-						droppedInstancesCount += list.Count;
-					}
-
-					_pooledInstances.Clear();
-
+					var droppedInstancesCount = DropAllPooledInstances();
 					if (droppedInstancesCount > 0)
 					{
-						GC.Collect();
+						CollectOnMobileTargets();
 					}
 
-					_scavengerStarted = false;
+					lock (_poolsGate)
+					{
+						_scavengerStarted = false;
+					}
+
 					return;
 				}
 
@@ -124,15 +134,109 @@ namespace Microsoft.UI.Xaml
 			{
 				// async void: an unhandled exception here would crash the runtime (fatal on WASM,
 				// where this runs in a web worker). Best-effort scavenging must never do that.
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
+				if (typeof(PagePool).Log().IsEnabled(LogLevel.Warning))
 				{
-					this.Log().Warn("PagePool scavenger iteration failed", ex);
+					typeof(PagePool).Log().Warn("PagePool scavenger iteration failed", ex);
 				}
 
 				// A transient failure interrupted the loop; clear the guard so the next EnqueuePage
 				// can restart the scavenger via EnsureScavengerStarted. Leaving it set would
-				// permanently disable eviction and let the pool grow unbounded.
-				_scavengerStarted = false;
+				// permanently disable eviction and let the pools grow unbounded.
+				lock (_poolsGate)
+				{
+					_scavengerStarted = false;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Forcing a collection is only needed under iOS and Android for the GC to pick up the
+		/// orphan instances that were just released; other targets rely on natural collection.
+		/// On WASM in particular a forced blocking collect on the UI thread is a visible stall.
+		/// </summary>
+		private static void CollectOnMobileTargets()
+		{
+			if (OperatingSystem.IsAndroid() || OperatingSystem.IsIOS())
+			{
+				GC.Collect();
+			}
+		}
+
+		/// <summary>
+		/// Evicts, from every live pool, the entries older than <see cref="TimeToLive"/>.
+		/// Internal (rather than private) as a test seam: the scavenger loop itself is
+		/// dispatcher-scheduled and disabled under IS_UNIT_TESTS.
+		/// </summary>
+		/// <returns>The number of evicted page instances.</returns>
+		internal static int EvictStaleEntries()
+		{
+			var removed = 0;
+			foreach (var pool in GetLivePools())
+			{
+				removed += pool.EvictStaleEntriesCore();
+			}
+
+			return removed;
+		}
+
+		private int EvictStaleEntriesCore()
+		{
+			lock (_gate)
+			{
+				var now = _watch.Elapsed;
+				var removed = 0;
+				foreach (var list in _pooledInstances.Values)
+				{
+					removed += list.RemoveAll(t => now - t.CreationTime > TimeToLive);
+				}
+
+				return removed;
+			}
+		}
+
+		/// <summary>
+		/// Drops every pooled instance of every live pool (used when pooling gets disabled).
+		/// Internal (rather than private) as a test seam: the scavenger loop itself is
+		/// dispatcher-scheduled and disabled under IS_UNIT_TESTS.
+		/// </summary>
+		/// <returns>The number of dropped page instances.</returns>
+		internal static int DropAllPooledInstances()
+		{
+			var dropped = 0;
+			foreach (var pool in GetLivePools())
+			{
+				lock (pool._gate)
+				{
+					foreach (var list in pool._pooledInstances.Values)
+					{
+						dropped += list.Count;
+					}
+
+					pool._pooledInstances.Clear();
+				}
+			}
+
+			return dropped;
+		}
+
+		private static List<PagePool> GetLivePools()
+		{
+			lock (_poolsGate)
+			{
+				var live = new List<PagePool>(_pools.Count);
+				for (var i = _pools.Count - 1; i >= 0; i--)
+				{
+					if (_pools[i].TryGetTarget(out var pool))
+					{
+						live.Add(pool);
+					}
+					else
+					{
+						_pools.RemoveAt(i);
+					}
+				}
+
+				return live;
 			}
 		}
 
@@ -143,31 +247,30 @@ namespace Microsoft.UI.Xaml
 				return Frame.CreatePageInstance(pageType) as Page;
 			}
 
-			var list = _pooledInstances.UnoGetValueOrDefault(pageType);
-
-			if (list == null || list.Count == 0)
+			Page pooled = null;
+			lock (_gate)
 			{
-				return Frame.CreatePageInstance(pageType) as Page;
-			}
-			else
-			{
-				var position = list.Count - 1;
-				var entry = list[position];
-
-				// Entries are appended in creation order, so the last one is the newest: if even it
-				// has outlived TimeToLive, every pooled instance for this type is stale (the
-				// scavenger may not have run yet — e.g. it is between passes, or pooling was
-				// toggled). Never serve a page past its TTL; drop the stale entries and fall back
-				// to a fresh instance.
-				if (_watch.Elapsed - entry.CreationTime > TimeToLive)
+				if (_pooledInstances.TryGetValue(pageType, out var list) && list.Count > 0)
 				{
-					list.Clear();
-					return Frame.CreatePageInstance(pageType) as Page;
-				}
+					// Never serve a page past its TTL (the scavenger may not have run yet — e.g. it
+					// is between passes, or pooling was toggled). Entries are age-checked
+					// INDIVIDUALLY so only genuinely stale instances are dropped, never a
+					// still-fresh one that happens to share the list with a stale entry.
+					var now = _watch.Elapsed;
+					list.RemoveAll(t => now - t.CreationTime > TimeToLive);
 
-				list.RemoveAt(position);
-				return entry.PageInstance;
+					if (list.Count > 0)
+					{
+						// Entries are appended in creation order, so serve the newest.
+						var position = list.Count - 1;
+						pooled = list[position].PageInstance;
+						list.RemoveAt(position);
+					}
+				}
 			}
+
+			// The fallback instantiation runs app code (the page constructor) — keep it out of the lock.
+			return pooled ?? Frame.CreatePageInstance(pageType) as Page;
 		}
 
 		internal void EnqueuePage(Type pageType, Page pageInstance)
@@ -180,48 +283,37 @@ namespace Microsoft.UI.Xaml
 			// Only spin up the periodic scavenger once there is actually something to scavenge.
 			EnsureScavengerStarted();
 
-			var list = _pooledInstances.FindOrCreate(pageType, () => new List<PagePoolEntry>());
-
+			// Template-reuse propagation walks the page's subtree — keep it out of the lock.
 			FrameworkTemplatePool.PropagateOnTemplateReused(pageInstance);
 
-			list.Add(new PagePoolEntry(_watch.Elapsed, pageInstance));
+			lock (_gate)
+			{
+				var list = _pooledInstances.FindOrCreate(pageType, () => new List<PagePoolEntry>());
+				list.Add(new PagePoolEntry(_watch.Elapsed, pageInstance));
+			}
 		}
 
 		/// <summary>
-		/// Removes pooled pages whose page <see cref="Type"/> belongs to a non-default (collectible)
-		/// <see cref="AssemblyLoadContext"/>. A downstream host that loads previewed apps into their own
-		/// collectible AssemblyLoadContexts navigates the app's pages; pooled instances (and the
-		/// <see cref="Type"/> keys) then keep the app's context alive after unload. Called from the ALC
-		/// cleanup hook.
+		/// Removes, from every live pool, the pooled pages whose page <see cref="Type"/> belongs to a
+		/// non-default (collectible) <see cref="AssemblyLoadContext"/>. A downstream host that loads
+		/// previewed apps into their own collectible AssemblyLoadContexts navigates the app's pages;
+		/// pooled instances (and the <see cref="Type"/> keys) then keep the app's context alive after
+		/// unload. Called from the ALC cleanup hook.
 		/// </summary>
-		internal void ClearNonDefaultAlcEntries()
+		internal static void ClearNonDefaultAlcEntries()
 		{
-			var defaultAlc = AssemblyLoadContext.Default;
-			List<Type> keysToRemove = null;
-
-			foreach (var key in _pooledInstances.Keys)
+			var removed = 0;
+			foreach (var pool in GetLivePools())
 			{
-				if (key.IsCollectible)
+				lock (pool._gate)
 				{
-					(keysToRemove ??= new List<Type>()).Add(key);
-					continue;
-				}
-
-				var alc = AssemblyLoadContext.GetLoadContext(key.Assembly);
-				if (alc is not null && alc != defaultAlc)
-				{
-					(keysToRemove ??= new List<Type>()).Add(key);
+					removed += Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(pool._pooledInstances);
 				}
 			}
 
-			if (keysToRemove is null)
+			if (removed > 0 && typeof(PagePool).Log().IsEnabled(LogLevel.Debug))
 			{
-				return;
-			}
-
-			foreach (var key in keysToRemove)
-			{
-				_pooledInstances.Remove(key);
+				typeof(PagePool).Log().Debug($"[ALC-CLEANUP] PagePool: removed {removed} non-default-ALC page type(s) from the live pools.");
 			}
 		}
 

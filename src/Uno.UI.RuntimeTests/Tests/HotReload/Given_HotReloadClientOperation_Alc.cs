@@ -2,7 +2,6 @@
 #nullable enable
 
 using System;
-using System.Runtime.CompilerServices;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RemoteControl.HotReload;
 using _Op = Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor.HotReloadClientOperation;
@@ -27,9 +26,9 @@ public class Given_HotReloadClientOperation_Alc
 		// type. Where the platform can materialize a *genuinely collectible* type (desktop/CoreCLR: a real
 		// on-disk Assembly.Location that can be re-loaded into a collectible ALC) we use one so the
 		// previewed-app scenario is mirrored exactly. On WASM/Android assemblies are bundled with no
-		// loadable on-disk path, so we fall back to an ordinary type; the operation's release behaviour —
-		// what this test asserts — is identical. Collectible-ALC *collection* itself is covered by
-		// AlcUnloadMemoryRuntimeTests.
+		// loadable on-disk path (Assembly.Location is empty), so we fall back to an ordinary type; the
+		// operation's release behaviour — what this test asserts — is identical. Collectible-ALC
+		// *collection* itself is covered by AlcUnloadMemoryRuntimeTests.
 		global::System.Runtime.Loader.AssemblyLoadContext? collectibleAlc = null;
 		try
 		{
@@ -47,12 +46,21 @@ public class Given_HotReloadClientOperation_Alc
 
 					Assert.AreSame(collectibleAlc, global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(type.Assembly), "Pre-condition: the type must belong to the collectible ALC.");
 				}
-				catch (Exception ex) when (ex is System.IO.FileNotFoundException or System.IO.FileLoadException or BadImageFormatException or NotSupportedException or ArgumentException)
+				catch (Exception ex) when (ex is System.IO.FileNotFoundException or System.IO.FileLoadException or BadImageFormatException or NotSupportedException)
 				{
-					// The platform reported a path but cannot re-load the assembly into a separate
-					// collectible ALC (e.g. a bundled/embedded assembly). Fall back to the ordinary type.
 					collectibleAlc?.Unload();
 					collectibleAlc = null;
+
+					// On desktop/CoreCLR a non-empty Assembly.Location IS re-loadable into a
+					// collectible ALC — a failure there is a real regression of collectible-ALC
+					// loading and must not silently downgrade the test to the ordinary-type path
+					// (which would stay green forever). The silent fallback is reserved for
+					// platforms where the load is known-unsupported (browser/mobile bundles).
+					if (!OperatingSystem.IsBrowser() && !OperatingSystem.IsAndroid() && !OperatingSystem.IsIOS())
+					{
+						Assert.Fail($"Collectible-ALC load of '{assemblyLocation}' failed on a platform where it is supported: {ex}");
+					}
+
 					type = typeof(Given_HotReloadClientOperation_Alc);
 				}
 			}
@@ -106,12 +114,12 @@ public class Given_HotReloadClientOperation_Alc
 	}
 
 	[TestMethod]
-	public void When_TypeCorrelationScope_Active_Then_Types_Retained_Until_Sweep()
+	public void When_TypeCorrelationScope_Active_Then_Types_Retained_Until_Scope_Disposed()
 	{
 		// The raw Type[] is the pause-correlation payload read by the client API AFTER awaiting
 		// completion (pauseHandle.Drop). While a type-correlation scope is active, a terminal
-		// operation must retain the array; the scope owner's explicit sweep then releases it,
-		// preserving the collectible-ALC release guarantee.
+		// operation must retain the array; the operation registers with the scope, and the scope's
+		// own Dispose releases it — there is no post-dispose call for the owner to remember.
 		var op = new _Op(_Source.Manual, new[] { typeof(Given_HotReloadClientOperation_Alc) }, static () => { });
 
 		var scope = _Op.EnterTypeCorrelationScope();
@@ -129,12 +137,43 @@ public class Given_HotReloadClientOperation_Alc
 			scope.Dispose();
 		}
 
-		_Op.ReleaseRetainedTypesForTerminalOperations(new[] { op });
+		Assert.AreEqual(
+			0,
+			op.Types.Length,
+			"Disposing the scope must release the retained raw Type[]; otherwise a retained operation pins the collectible previewed-app ALC.");
+	}
+
+	[TestMethod]
+	public void When_Overlapping_TypeCorrelationScopes_Then_First_Dispose_Does_Not_Release()
+	{
+		// Two concurrent callers (e.g. TryUpdateFilesAsync awaited via Task.WhenAll) each hold a
+		// scope. An operation completing while both are active must survive the FIRST dispose —
+		// releasing there would hand the still-running caller an empty correlation payload — and
+		// be released by the LAST.
+		var op = new _Op(_Source.Manual, new[] { typeof(Given_HotReloadClientOperation_Alc) }, static () => { });
+
+		var first = _Op.EnterTypeCorrelationScope();
+		var second = _Op.EnterTypeCorrelationScope();
+		try
+		{
+			op.ReportCompleted();
+
+			first.Dispose();
+			Assert.AreEqual(
+				1,
+				op.Types.Length,
+				"A sibling scope's dispose must not release the raw Type[] while another scope that retained the operation is still active (cross-caller correlation payload).");
+		}
+		finally
+		{
+			first.Dispose();
+			second.Dispose();
+		}
 
 		Assert.AreEqual(
 			0,
 			op.Types.Length,
-			"The scope owner's sweep must release the retained raw Type[]; otherwise a retained operation pins the collectible previewed-app ALC.");
+			"The last overlapping scope's dispose must release the retained raw Type[] (double-dispose of the first scope must not double-decrement).");
 	}
 }
 #endif

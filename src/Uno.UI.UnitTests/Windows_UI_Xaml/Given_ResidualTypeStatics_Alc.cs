@@ -12,38 +12,50 @@ namespace Uno.UI.Tests.Windows_UI_Xaml;
 /// <see cref="FeatureConfiguration.Style.UseUWPDefaultStylesOverride"/> is a process-lifetime
 /// dictionary keyed by control <see cref="Type"/>. A downstream host that loads previewed apps
 /// into their own collectible AssemblyLoadContexts may see an app configure overrides for its own
-/// control types; those keys then pin the app's context after unload.
-/// <see cref="Style.ClearCachesForNonDefaultAlc"/> (called from the ALC cleanup hook) drops the
-/// non-default-ALC keys while keeping default-ALC ones.
+/// control types; those keys then pin the app's context after unload. Because the dictionary is
+/// USER CONFIGURATION (never rebuilt), the sweep
+/// (<see cref="Style.RemoveAlcScopedUserStyleOverrides"/>, called from the ALC cleanup hook) is
+/// scoped to the DYING context only: default-ALC keys and a live sibling secondary ALC's keys
+/// must both survive — a wholesale all-non-default sweep would silently delete a live app's
+/// configuration.
 /// </summary>
 [TestClass]
 public class Given_ResidualTypeStatics_Alc
 {
 	[TestMethod]
-	public void When_ClearCachesForNonDefaultAlc_Then_UseUWPDefaultStylesOverride_Swept()
+	public void When_RemoveAlcScopedUserStyleOverrides_Then_Dying_Alc_Swept_And_Siblings_Kept()
 	{
 		var overrides = FeatureConfiguration.Style.UseUWPDefaultStylesOverride;
 
 		// A default-ALC key stands in for a framework/host control type; it must survive.
 		var defaultAlcKey = typeof(Given_ResidualTypeStatics_Alc);
 
-		var collectibleAlc = new AssemblyLoadContext("Given_ResidualTypeStatics_Alc.collectible", isCollectible: true);
+		var dyingAlc = new AssemblyLoadContext("Given_ResidualTypeStatics_Alc.dying", isCollectible: true);
+		var siblingAlc = new AssemblyLoadContext("Given_ResidualTypeStatics_Alc.sibling", isCollectible: true);
+		Type? siblingKey = null;
 		try
 		{
-			var collectibleKey = collectibleAlc
+			var dyingKey = dyingAlc
+				.LoadFromAssemblyPath(defaultAlcKey.Assembly.Location)
+				.GetType(defaultAlcKey.FullName!, throwOnError: true)!;
+			siblingKey = siblingAlc
 				.LoadFromAssemblyPath(defaultAlcKey.Assembly.Location)
 				.GetType(defaultAlcKey.FullName!, throwOnError: true)!;
 
 			overrides[defaultAlcKey] = false;
-			overrides[collectibleKey] = false;
+			overrides[dyingKey] = false;
+			overrides[siblingKey] = false;
 
-			Assert.IsTrue(overrides.ContainsKey(collectibleKey), "Pre-condition: the collectible-ALC key must be present.");
+			Assert.IsTrue(overrides.ContainsKey(dyingKey), "Pre-condition: the dying ALC's key must be present.");
 
-			Style.ClearCachesForNonDefaultAlc();
+			Style.RemoveAlcScopedUserStyleOverrides(dyingAlc);
 
 			Assert.IsFalse(
-				overrides.ContainsKey(collectibleKey),
-				"The sweep must drop the collectible-ALC override key; otherwise it pins the unloaded context.");
+				overrides.ContainsKey(dyingKey),
+				"The sweep must drop the dying ALC's override key; otherwise it pins the unloaded context.");
+			Assert.IsTrue(
+				overrides.ContainsKey(siblingKey),
+				"The sweep must keep a live sibling secondary ALC's override key — user configuration is never rebuilt, so dropping it would silently change the sibling app's default-style resolution.");
 			Assert.IsTrue(
 				overrides.ContainsKey(defaultAlcKey),
 				"The sweep must keep default-ALC (framework/host) override keys.");
@@ -51,6 +63,45 @@ public class Given_ResidualTypeStatics_Alc
 		finally
 		{
 			overrides.Remove(defaultAlcKey);
+			if (siblingKey is not null)
+			{
+				overrides.Remove(siblingKey);
+			}
+
+			dyingAlc.Unload();
+			siblingAlc.Unload();
+		}
+	}
+
+	[TestMethod]
+	public void When_ClearCachesForNonDefaultAlc_Then_User_Overrides_Not_Touched()
+	{
+		// Guard: the rebuildable-cache sweep must NOT reach into the user-configuration dictionary.
+		var overrides = FeatureConfiguration.Style.UseUWPDefaultStylesOverride;
+
+		var collectibleAlc = new AssemblyLoadContext("Given_ResidualTypeStatics_Alc.cacheclear", isCollectible: true);
+		Type? collectibleKey = null;
+		try
+		{
+			collectibleKey = collectibleAlc
+				.LoadFromAssemblyPath(typeof(Given_ResidualTypeStatics_Alc).Assembly.Location)
+				.GetType(typeof(Given_ResidualTypeStatics_Alc).FullName!, throwOnError: true)!;
+
+			overrides[collectibleKey] = false;
+
+			Style.ClearCachesForNonDefaultAlc();
+
+			Assert.IsTrue(
+				overrides.ContainsKey(collectibleKey),
+				"ClearCachesForNonDefaultAlc must not sweep user configuration: overrides are removed only by the ALC-scoped RemoveAlcScopedUserStyleOverrides.");
+		}
+		finally
+		{
+			if (collectibleKey is not null)
+			{
+				overrides.Remove(collectibleKey);
+			}
+
 			collectibleAlc.Unload();
 		}
 	}

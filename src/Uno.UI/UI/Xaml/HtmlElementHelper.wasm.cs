@@ -6,13 +6,17 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using Uno.Core.Comparison;
+using Uno.Foundation.Logging;
 using Uno.Foundation.Runtime.WebAssembly.Interop;
 
 namespace Microsoft.UI.Xaml;
 
 internal static class HtmlElementHelper
 {
+	// Guarded by _cacheGate: lookups happen on the UI thread, but the ALC teardown sweep can reach
+	// this cache from other teardown paths, and Dictionary corrupts under concurrent mutation.
 	private static readonly Dictionary<Type, HtmlTag> _cache = new(FastTypeComparer.Default);
+	private static readonly object _cacheGate = new();
 	private static readonly Type _htmlElementAttribute;
 	private static readonly PropertyInfo _htmlElementAttributeTagGetter;
 	private static readonly Assembly _unoUIAssembly = typeof(UIElement).Assembly;
@@ -44,32 +48,15 @@ internal static class HtmlElementHelper
 	/// </summary>
 	internal static void ClearNonDefaultAlcEntries()
 	{
-		var defaultAlc = global::System.Runtime.Loader.AssemblyLoadContext.Default;
-		List<Type>? keysToRemove = null;
-
-		foreach (var key in _cache.Keys)
+		int removed;
+		lock (_cacheGate)
 		{
-			if (key.IsCollectible)
-			{
-				(keysToRemove ??= new List<Type>()).Add(key);
-				continue;
-			}
-
-			var alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Assembly);
-			if (alc is not null && alc != defaultAlc)
-			{
-				(keysToRemove ??= new List<Type>()).Add(key);
-			}
+			removed = Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_cache);
 		}
 
-		if (keysToRemove is null)
+		if (removed > 0 && typeof(HtmlElementHelper).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		{
-			return;
-		}
-
-		foreach (var key in keysToRemove)
-		{
-			_cache.Remove(key);
+			typeof(HtmlElementHelper).Log().Debug($"[ALC-CLEANUP] HtmlElementHelper: removed {removed} non-default-ALC tag cache entrie(s).");
 		}
 	}
 
@@ -80,19 +67,27 @@ internal static class HtmlElementHelper
 			return new HtmlTag(defaultHtmlTag, IsExternallyDefined: false);
 		}
 
-		if (_cache.TryGetValue(type, out var tag))
+		lock (_cacheGate)
 		{
-			return tag;
+			if (_cache.TryGetValue(type, out var tag))
+			{
+				return tag;
+			}
 		}
 
-		tag = type.GetCustomAttribute(_htmlElementAttribute, true) is Attribute attr
+		// The attribute reflection runs outside the lock (it can be arbitrarily expensive); a
+		// racing lookup for the same type would merely compute the same value twice.
+		var computed = type.GetCustomAttribute(_htmlElementAttribute, true) is Attribute attr
 			&& _htmlElementAttributeTagGetter.GetValue(attr, Array.Empty<object>()) is string tagName
 			? new HtmlTag(tagName, IsExternallyDefined: true)
 			: new HtmlTag(defaultHtmlTag, IsExternallyDefined: false);
 
-		_cache[type] = tag;
+		lock (_cacheGate)
+		{
+			_cache[type] = computed;
+		}
 
-		return tag;
+		return computed;
 	}
 
 	/// <summary>

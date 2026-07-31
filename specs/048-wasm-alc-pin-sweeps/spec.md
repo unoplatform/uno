@@ -35,13 +35,13 @@ it — distinct from the benign runtime dependent-handle residual.
 
 | # | Cache | Kind | Fix | Test |
 |---|-------|------|-----|------|
-| 1 | `ResourceLoader._lookupAssemblies` / `_parsedResources` | `List<Assembly>` / `HashSet<(Assembly,string)>` | `ClearNonDefaultAlcAssemblies()` in cleanup hook | `Given_ResourceLoader_Alc` |
-| 2 | `UIElementNativeRegistrar._classNames` (WASM) | `Dictionary<Type,int>` | `ClearNonDefaultAlcEntries()` in cleanup hook | ALC pin guard (WASM runtime); dedicated unit test TBD |
-| 3 | `AppWindow` / `ApplicationView` / `CoreDragDropManager` WindowId maps | `ConcurrentDictionary<WindowId,…>` | `DestroyForWindowId(WindowId)` mirrored on each; called from `CloseAlcWindow` | `Given_WindowId_Maps_Alc` |
-| 4 | `CompositionTarget._handlers` (WASM) | `List<EventHandler<object>>` | `ClearNonDefaultAlcHandlers()` in cleanup hook; per-frame snapshot reuse | `Given_CompositionTargetFrameDispatcher` (unit) + `Given_CompositionTarget` (WASM runtime) |
+| 1 | `ResourceLoader._lookupAssemblies` / `_parsedResources` | `List<Assembly>` / `HashSet<(Assembly,string)>` | `ClearAlcAssemblies(alc)` / `ClearNonDefaultAlcAssemblies()` in cleanup hook (dying-ALC-scoped marker removal, no loader rebuild) | `Given_ResourceLoader_Alc` |
+| 2 | `UIElementNativeRegistrar._classNames` (WASM) | `Dictionary<Type,int>` | `ClearNonDefaultAlcEntries()` in cleanup hook (shared `AlcCacheSweep` loop) | **No unit test** — the code is WASM-only and unreachable from the unit-test target; covered by the downstream WASM runtime ALC pin guard (CI) only |
+| 3 | `AppWindow` / `ApplicationView` / `CoreDragDropManager` WindowId maps | `ConcurrentDictionary<WindowId,…>` | `DestroyForWindowId(WindowId)` mirrored on each; called from `CloseAlcWindow` | `Given_WindowId_Maps_Alc` (incl. instance-collectibility assertion) |
+| 4 | `CompositionTarget._handlers` (WASM) | `List<EventHandler<object>>` | `ClearAlcHandlers(alc)` / `ClearNonDefaultAlcHandlers()` in cleanup hook; ownership predicate extracted to platform-neutral `CompositionTargetHandlerSweep`; per-frame snapshot reuse | `Given_CompositionTargetHandlerSweep` (unit: scoped + all-non-default paths, collectible-method-behind-default-target, static null-target) + `Given_CompositionTargetFrameDispatcher` (unit: buffer lifetime, throw resilience, reentrancy) — `Given_CompositionTarget` (WASM runtime) covers the frame loop, not the ALC sweep |
 | 6 | Hot-reload client status history `HotReloadClientOperation.Types` | `Type[]` per op, unbounded history | null `Type[]` at terminal state (curated strings retained); ring buffer (~100 ops) | `Given_HotReloadClientOperation_Alc` |
-| 7 | `PagePool` (WASM) | orphaned pool + eternal 30s scavenger; `Type`-keyed instances | lazy singleton; scavenger only when pooling enabled; ALC-sweep `Type` keys | ALC pin guard (WASM runtime); dedicated unit test TBD |
-| 8 | `HtmlElementHelper._cache` (WASM), `FeatureConfiguration.Style.UseUWPDefaultStylesOverride` | `Dictionary<Type,…>` | extend sweep with `RemoveNonDefaultAlcEntries` | `Given_ResidualTypeStatics_Alc` |
+| 7 | `PagePool` | orphaned pool + eternal 30s scavenger; `Type`-keyed instances | per-`Frame` pools registered in a process-wide WEAK registry (a pool dies with its Frame); shared scavenger only while pooling enabled; ALC-sweep `Type` keys across live pools | `Given_PagePool` (unit: TTL on dequeue, drop-on-disable/re-enable, per-pool isolation, sweep keeps default-ALC keys); collectible-key removal itself: WASM runtime ALC pin guard (CI) |
+| 8 | `HtmlElementHelper._cache` (WASM), `FeatureConfiguration.Style.UseUWPDefaultStylesOverride` | `Dictionary<Type,…>` | `HtmlElementHelper`: shared `AlcCacheSweep` loop (WASM-only, CI-covered). `UseUWPDefaultStylesOverride` is USER CONFIGURATION, not a cache: swept only for the dying ALC via `Style.RemoveAlcScopedUserStyleOverrides`, never all-non-default | `Given_ResidualTypeStatics_Alc` (dying swept, sibling + default kept; cache-clear group does not touch user config) |
 
 ### Skipped (verified not an ALC pin)
 
@@ -67,18 +67,27 @@ it — distinct from the benign runtime dependent-handle residual.
 
 ## Verification
 
-Each sweep has a red/green test asserting a collectible-ALC-keyed entry is dropped while
-default-ALC / framework entries are kept; red proven by neutering the sweep.
+Coverage is NOT uniform across the table — see the per-row Test column for what is actually
+asserted where. Rows 1, 3, 4, 6, 7 and 8 have unit tests asserting a collectible/dying-ALC-keyed
+entry is dropped while default-ALC / framework / sibling entries are kept. Row 2
+(`UIElementNativeRegistrar`) and the collectible-key removal half of row 7 (`PagePool`) have
+**no unit test** — that code is WASM-only or requires loading a `Page` type into a collectible
+ALC, which the unit-test host cannot do; they are covered only by the downstream WASM runtime
+ALC pin guard running in CI.
 
-- `Given_ResourceLoader_Alc`, `Given_WindowId_Maps_Alc`, `Given_ResidualTypeStatics_Alc`
-  (`Uno.UI.UnitTests`, reference target): built and **passing** locally; red proven for
-  finding 1 (neutered sweep → removal assertion fails) and the WindowId-map group.
+- `Given_ResourceLoader_Alc`, `Given_WindowId_Maps_Alc`, `Given_ResidualTypeStatics_Alc`,
+  `Given_CompositionTargetHandlerSweep`, `Given_CompositionTargetFrameDispatcher`,
+  `Given_PagePool` (`Uno.UI.UnitTests`, Skia target): built and **passing** locally.
 - `Given_HotReloadClientOperation_Alc` (`Uno.UI.RuntimeTests`, `HAS_UNO_WINUI`): production
-  side built clean on the reference target; the runtime test runs on CI (WinUI flavor).
+  side built clean locally; the runtime test runs on CI (WinUI flavor).
+- A green WASM CI run is a **merge precondition**, not a formality: the `#if __WASM__` cleanup
+  block (UIElement registrar, HtmlElementHelper, CompositionTarget handler sweep call sites) is
+  first type-checked and executed there.
 
 ### Build-honesty note
 
-The local environment has neither the `browserwasm` nor the `desktop`/skia workload installed
-(`NETSDK1139`), so the WASM-only sweeps (finding 2, finding 4, `HtmlElementHelper`) and the
-Skia/WASM runtime test could not be built or run locally. They are validated by CI. Everything
-compilable on the reference target (findings 1, 3, 6, 7, 8-Style) was built and tested locally.
+`Uno.UI.Skia` (net10.0), `Uno.UI.Wasm` (net10.0), `Uno.UI.RemoteControl.Skia` (net10.0) and
+`Uno.UI.UnitTests` build clean locally, so the WASM-only sweeps (finding 2, finding 4,
+`HtmlElementHelper`) are at least compile-verified here. Their runtime BEHAVIOR on WASM (and the
+collectible-key removal paths that require a real collectible-ALC-loaded app) is still validated
+only by CI — see Verification above.

@@ -297,58 +297,113 @@ public partial class ClientHotReloadProcessor
 
 		#region Type-correlation scopes
 		/// <summary>
-		/// Number of active type-correlation scopes. While it is greater than zero,
-		/// <see cref="ReportCompleted"/> skips its terminal <see cref="ReleaseRetainedTypes"/> call:
-		/// the raw <see cref="Types"/> array is the pause-correlation payload a scope owner (e.g.
-		/// <c>TryUpdateFilesAsync</c>) reads AFTER awaiting completion to compute the set of types to
-		/// drop from its UI-pause handle — releasing at completion time would always hand it an empty
-		/// set. The raw types are retained ONLY while a scope is active and are released explicitly by
-		/// the scope owner via <see cref="ReleaseRetainedTypesForTerminalOperations"/> (or lazily by
-		/// the next owner's sweep), so the collectible-ALC release guarantee is preserved.
+		/// The currently active type-correlation scopes, and the gate guarding them (plus each
+		/// operation's <see cref="_retainingScopes"/> counter and each scope's retained-operation
+		/// list). While at least one scope is active, <see cref="ReportCompleted"/> defers its
+		/// terminal <see cref="ReleaseRetainedTypes"/> call by REGISTERING the operation with every
+		/// active scope: the raw <see cref="Types"/> array is the pause-correlation payload a scope
+		/// owner (e.g. <c>TryUpdateFilesAsync</c>) reads AFTER awaiting completion to compute the set
+		/// of types to drop from its UI-pause handle — releasing at completion time would always hand
+		/// it an empty set. Each scope releases exactly the operations it retained when it is
+		/// disposed (the release happens when the LAST overlapping scope disposes, so one concurrent
+		/// caller's dispose can never empty the types another live caller still needs). There is no
+		/// post-dispose call contract for owners to honor: <see cref="TypeCorrelationScope.Dispose"/>
+		/// performs the sweep itself, preserving the collectible-ALC release guarantee.
 		/// </summary>
-		private static int _activeTypeCorrelationScopes;
+		private static readonly List<TypeCorrelationScope> _activeTypeCorrelationScopes = new();
+		private static readonly object _typeCorrelationGate = new();
+
+		/// <summary>
+		/// Number of active type-correlation scopes still holding this terminal operation's raw
+		/// <see cref="Types"/>; the operation is released when it reaches zero. Guarded by
+		/// <see cref="_typeCorrelationGate"/>.
+		/// </summary>
+		private int _retainingScopes;
 
 		/// <summary>
 		/// Enters a scope during which operations reaching a terminal state RETAIN their raw
-		/// <see cref="Types"/> array (see <see cref="_activeTypeCorrelationScopes"/>). The owner MUST,
-		/// after disposing the scope, call <see cref="ReleaseRetainedTypesForTerminalOperations"/>
-		/// over the current local operations so every operation that completed while any scope was
-		/// active still drops its collectible-ALC type references.
+		/// <see cref="Types"/> array (see <see cref="_activeTypeCorrelationScopes"/>). Disposing the
+		/// scope releases the operations it retained (once no other overlapping scope still holds
+		/// them) — no further call is required from the owner.
 		/// </summary>
 		internal static IDisposable EnterTypeCorrelationScope()
 		{
-			Interlocked.Increment(ref _activeTypeCorrelationScopes);
-			return new TypeCorrelationScope();
+			var scope = new TypeCorrelationScope();
+			lock (_typeCorrelationGate)
+			{
+				_activeTypeCorrelationScopes.Add(scope);
+			}
+
+			return scope;
 		}
 
 		/// <summary>
-		/// Sweep-release: drops the retained raw <see cref="Types"/> (and detaches the exception
-		/// graphs) of every terminal operation in <paramref name="operations"/>. Called by
-		/// type-correlation scope owners after exiting their scope; idempotent on operations that
-		/// already released.
+		/// Called when this operation turns terminal: when any type-correlation scope is active,
+		/// registers the operation with every active scope (deferring the raw-<see cref="Types"/>
+		/// release to the last of them) and returns <see langword="true"/>; otherwise returns
+		/// <see langword="false"/> so the caller releases immediately.
 		/// </summary>
-		internal static void ReleaseRetainedTypesForTerminalOperations(IEnumerable<HotReloadClientOperation> operations)
+		private bool TryDeferReleaseToTypeCorrelationScopes()
 		{
-			foreach (var operation in operations)
+			lock (_typeCorrelationGate)
 			{
-				if (operation.Result is not null)
+				if (_activeTypeCorrelationScopes.Count == 0)
 				{
-					operation.ReleaseRetainedTypes();
+					return false;
 				}
+
+				_retainingScopes = _activeTypeCorrelationScopes.Count;
+				foreach (var scope in _activeTypeCorrelationScopes)
+				{
+					scope.Retain(this);
+				}
+
+				return true;
 			}
 		}
 
 		private sealed class TypeCorrelationScope : IDisposable
 		{
+			// Operations that turned terminal while this scope was active. Guarded by _typeCorrelationGate.
+			private readonly List<HotReloadClientOperation> _retained = new();
 			private int _disposed;
+
+			internal void Retain(HotReloadClientOperation operation) => _retained.Add(operation);
 
 			public void Dispose()
 			{
-				// Idempotent: a double-dispose must not underflow the shared counter (which would
-				// permanently re-enable completion-time release while another scope is still active).
-				if (Interlocked.Exchange(ref _disposed, 1) == 0)
+				// Idempotent: a double-dispose must not double-decrement the per-operation
+				// retention counters (which would release types another live scope still needs).
+				if (Interlocked.Exchange(ref _disposed, 1) != 0)
 				{
-					Interlocked.Decrement(ref _activeTypeCorrelationScopes);
+					return;
+				}
+
+				List<HotReloadClientOperation>? toRelease = null;
+				lock (_typeCorrelationGate)
+				{
+					_activeTypeCorrelationScopes.Remove(this);
+					foreach (var operation in _retained)
+					{
+						// Release only when the LAST overlapping scope lets go, so a concurrent
+						// caller's dispose cannot empty the types this one still needs.
+						if (--operation._retainingScopes == 0)
+						{
+							(toRelease ??= new List<HotReloadClientOperation>()).Add(operation);
+						}
+					}
+
+					_retained.Clear();
+				}
+
+				if (toRelease is not null)
+				{
+					// Outside the gate: releasing materializes CuratedTypes (user code irrelevant,
+					// but no reason to do string work under a shared lock).
+					foreach (var operation in toRelease)
+					{
+						operation.ReleaseRetainedTypes();
+					}
 				}
 			}
 		}
@@ -383,6 +438,18 @@ public partial class ClientHotReloadProcessor
 
 		public HotReloadSource Source { get; }
 
+		/// <summary>
+		/// The raw hot-reloaded <see cref="Type"/> objects of this operation, while it is running.
+		/// </summary>
+		/// <remarks>
+		/// BREAKING BEHAVIOR (since the collectible-ALC release work): once the operation reaches a
+		/// terminal state (Success/Failed), this array is emptied — the raw <see cref="Type"/>
+		/// references would otherwise pin a collectible previewed-app AssemblyLoadContext after
+		/// unload (see <see cref="ReleaseRetainedTypes"/>). Consumers that need the reloaded types
+		/// AFTER completion must use <see cref="CuratedTypes"/> (the retained, display-oriented
+		/// string list) or read <see cref="Types"/> from a <c>StatusChanged</c> notification, which
+		/// is raised before the terminal release.
+		/// </remarks>
 		public Type[] Types { get; private set; }
 
 		public string[] CuratedTypes => _curatedTypes ??= GetCuratedTypes();
@@ -422,6 +489,23 @@ public partial class ClientHotReloadProcessor
 		private void DetachExceptionGraphs()
 		{
 			if (_exceptions.IsEmpty)
+			{
+				return;
+			}
+
+			// Repeated sweeps walk every retained historical operation; when everything is already
+			// detached there is nothing to do — skip the unconditional ConvertAll reallocation.
+			var needsDetach = false;
+			foreach (var exception in _exceptions)
+			{
+				if (exception is not DetachedExceptionSummary)
+				{
+					needsDetach = true;
+					break;
+				}
+			}
+
+			if (!needsDetach)
 			{
 				return;
 			}
@@ -630,10 +714,10 @@ public partial class ClientHotReloadProcessor
 			// Terminal state: the raw Type[] (only CuratedTypes strings are shown in history) and the
 			// exception graphs would pin a collectible previewed-app ALC if retained — drop them.
 			// EXCEPT while a type-correlation scope is active: the raw Type[] is the pause-correlation
-			// payload the scope owner still needs to read (pauseHandle.Drop), so the release is then
-			// deferred to the scope owner's ReleaseRetainedTypesForTerminalOperations sweep, which
-			// preserves the collectible-ALC release guarantee.
-			if (Volatile.Read(ref _activeTypeCorrelationScopes) == 0)
+			// payload the scope owner still needs to read (pauseHandle.Drop). The operation is then
+			// registered with every active scope, and the last of them releases it on Dispose — which
+			// preserves the collectible-ALC release guarantee without any post-dispose call contract.
+			if (!TryDeferReleaseToTypeCorrelationScopes())
 			{
 				ReleaseRetainedTypes();
 			}

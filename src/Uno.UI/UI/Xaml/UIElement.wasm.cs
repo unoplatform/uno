@@ -696,49 +696,45 @@ namespace Microsoft.UI.Xaml
 
 		private static class UIElementNativeRegistrar
 		{
+			// Guarded by _classNamesGate: registrations happen on the UI thread, but the ALC
+			// teardown sweep can reach this map from other teardown paths, and Dictionary corrupts
+			// under concurrent mutation.
 			private static readonly Dictionary<Type, int> _classNames = new Dictionary<Type, int>();
+			private static readonly object _classNamesGate = new();
 
 			internal static int GetForType(Type type)
 			{
-				if (!_classNames.TryGetValue(type, out var classNamesRegistrationId))
+				lock (_classNamesGate)
 				{
-					_classNames[type] = classNamesRegistrationId = WindowManagerInterop.RegisterUIElement(type.FullName, GetClassesForType(type).ToArray(), type.Is<FrameworkElement>());
+					if (_classNames.TryGetValue(type, out var classNamesRegistrationId))
+					{
+						return classNamesRegistrationId;
+					}
 				}
 
-				return classNamesRegistrationId;
+				// The JS-side registration runs outside the lock; a racing registration for the
+				// same type merely produces a duplicate (harmless) string entry on the JS side.
+				var registrationId = WindowManagerInterop.RegisterUIElement(type.FullName, GetClassesForType(type).ToArray(), type.Is<FrameworkElement>());
+
+				lock (_classNamesGate)
+				{
+					_classNames[type] = registrationId;
+				}
+
+				return registrationId;
 			}
 
 			internal static void ClearNonDefaultAlcEntries()
 			{
-				var defaultAlc = AssemblyLoadContext.Default;
-				List<Type> keysToRemove = null;
-
-				foreach (var key in _classNames.Keys)
+				int removed;
+				lock (_classNamesGate)
 				{
-					// Type.IsCollectible is the fast path — it also catches generic instantiations
-					// over collectible type arguments whose declaring assembly is a shared
-					// (default-ALC) one. Only fall back to the load-context lookup otherwise.
-					if (key.IsCollectible)
-					{
-						(keysToRemove ??= new List<Type>()).Add(key);
-						continue;
-					}
-
-					var alc = AssemblyLoadContext.GetLoadContext(key.Assembly);
-					if (alc is not null && alc != defaultAlc)
-					{
-						(keysToRemove ??= new List<Type>()).Add(key);
-					}
+					removed = Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_classNames);
 				}
 
-				if (keysToRemove is null)
+				if (removed > 0 && typeof(UIElement).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
-					return;
-				}
-
-				foreach (var key in keysToRemove)
-				{
-					_classNames.Remove(key);
+					typeof(UIElement).Log().Debug($"[ALC-CLEANUP] UIElementNativeRegistrar: removed {removed} non-default-ALC element registration(s).");
 				}
 			}
 

@@ -26,9 +26,12 @@ public partial class Frame : ContentControl
 
 	private string _navigationState;
 
-	// Process-wide page pool. Previously each Frame overwrote this static with its own new
-	// PagePool, orphaning every earlier pool while its 30s scavenger loop kept it alive forever.
-	private static readonly PagePool _pool = PagePool.Instance;
+	// Each Frame owns its own pool: a pooled page never migrates to another Frame (or another
+	// XamlRoot/window), so no residual state (parent, cache mode, bindings) can ride across
+	// content roots. The pool registers itself into PagePool's process-wide WEAK registry, which
+	// is how the shared scavenger and the ALC teardown sweep reach it without rooting it — the
+	// pool (and its pages) dies with this Frame.
+	private readonly PagePool _pool = new PagePool();
 
 	private void CtorLegacy()
 	{
@@ -317,7 +320,7 @@ public partial class Frame : ContentControl
 		return entry?.Instance;
 	}
 
-	private static Page CreatePageInstanceCached(Type sourcePageType) => _pool.DequeuePage(sourcePageType);
+	private Page CreatePageInstanceCached(Type sourcePageType) => _pool.DequeuePage(sourcePageType);
 
 	private void OnNavigationStopped(PageStackEntry entry, NavigationMode mode)
 	{

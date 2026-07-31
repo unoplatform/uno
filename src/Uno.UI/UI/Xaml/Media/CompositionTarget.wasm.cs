@@ -2,29 +2,46 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Loader;
+using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Xaml.Media;
 
 public partial class CompositionTarget
 {
+	// Guarded by _handlersGate: subscriptions normally happen on the UI thread, but the ALC
+	// teardown sweep can reach this list from other teardown paths, and List<T> corrupts under
+	// concurrent mutation. Handlers are INVOKED outside the lock (see FrameCallback).
 	private static readonly List<EventHandler<object>> _handlers = new List<EventHandler<object>>();
+	private static readonly object _handlersGate = new();
 	private static readonly CompositionTargetFrameDispatcher _frameDispatcher = new();
+
+	// True iff a JS animation-frame callback is currently pending. Maintained so that exactly one
+	// callback is in flight while handlers exist: FrameCallback clears it on entry and re-arms it
+	// after dispatch when handlers remain, so no failure mode can leave it stuck at true with no
+	// callback scheduled (which would permanently prevent a later subscription from restarting
+	// the loop).
 	private static bool _requestedFrame;
 
 	public static event EventHandler<object> Rendering
 	{
 		add
 		{
-			_handlers.Add(value);
-			if (!_requestedFrame)
+			lock (_handlersGate)
 			{
-				_requestedFrame = true;
-				RequestFrame();
+				_handlers.Add(value);
+				if (!_requestedFrame)
+				{
+					_requestedFrame = true;
+					RequestFrame();
+				}
 			}
 		}
 		remove
 		{
-			_handlers.Remove(value);
+			lock (_handlersGate)
+			{
+				_handlers.Remove(value);
+			}
 		}
 	}
 
@@ -50,60 +67,56 @@ public partial class CompositionTarget
 	internal static void ClearAlcHandlers(AssemblyLoadContext alc)
 		=> ClearAlcHandlersCore(alc);
 
+	// The ownership predicate lives in the platform-neutral CompositionTargetHandlerSweep so it is
+	// unit-testable (this file only compiles for WASM).
 	private static void ClearAlcHandlersCore(AssemblyLoadContext scope)
 	{
-		for (var i = _handlers.Count - 1; i >= 0; i--)
+		int removed;
+		lock (_handlersGate)
 		{
-			var handler = _handlers[i];
-
-			// The delegate's Target and its Method.DeclaringType are INDEPENDENT ownership sources:
-			// a closed delegate can pair a default-ALC target with a collectible-ALC method (or the
-			// reverse), so both must be checked. Coalescing them (target ?? method) would let a
-			// collectible-ALC method survive behind a non-null default-ALC target. A null assembly
-			// contributes false (an open static handler with no declaring type pins nothing).
-			var targetAssembly = handler.Target?.GetType().Assembly;
-			var methodAssembly = handler.Method.DeclaringType?.Assembly;
-
-			if (IsOwnedByAlcScope(targetAssembly, scope) || IsOwnedByAlcScope(methodAssembly, scope))
-			{
-				_handlers.RemoveAt(i);
-			}
+			removed = CompositionTargetHandlerSweep.RemoveAlcHandlers(_handlers, scope);
 		}
 
-		// scope == null keeps the historical all-non-default semantics (global teardown);
-		// otherwise only handlers owned by the specified dying ALC are removed.
-		static bool IsOwnedByAlcScope(global::System.Reflection.Assembly assembly, AssemblyLoadContext scope)
+		if (removed > 0 && typeof(CompositionTarget).Log().IsEnabled(LogLevel.Debug))
 		{
-			if (assembly is null)
-			{
-				return false;
-			}
-
-			var alc = AssemblyLoadContext.GetLoadContext(assembly);
-			if (scope is not null)
-			{
-				return alc == scope;
-			}
-
-			return alc is not null && alc != AssemblyLoadContext.Default;
+			typeof(CompositionTarget).Log().Debug($"[ALC-CLEANUP] CompositionTarget.Rendering: removed {removed} handler(s) (scope: {scope?.Name ?? "all non-default ALCs"}).");
 		}
 	}
 
 	[JSExport]
 	private static void FrameCallback()
 	{
-		// The dispatcher snapshots into a reused buffer and always clears it afterwards, so no
-		// handler (and thus no collectible-ALC object it may root) lingers in a static buffer past
-		// its dispatch — even if a handler throws or the handler list shrank since the last frame.
-		_frameDispatcher.Dispatch(_handlers);
-
-		if (_handlers.Count > 0)
-		{
-			RequestFrame();
-		}
-		else
+		// The pending callback just fired: clear the flag FIRST so the invariant "_requestedFrame
+		// == a callback is pending" holds even if anything below throws. A handler that
+		// synchronously re-enters this callback (or subscribes) re-arms it through the same
+		// invariant, at most once.
+		lock (_handlersGate)
 		{
 			_requestedFrame = false;
+		}
+
+		try
+		{
+			// The dispatcher snapshots into a reused buffer (copy phase under the gate so a
+			// concurrent add/remove/sweep cannot race the copy) and always clears it afterwards,
+			// so no handler (and thus no collectible-ALC object it may root) lingers in a static
+			// buffer past its dispatch. Individual handler exceptions are caught and logged inside
+			// Dispatch, keeping the remaining handlers (and this loop) running.
+			_frameDispatcher.Dispatch(_handlers, _handlersGate);
+		}
+		finally
+		{
+			// Keep the loop alive no matter what escaped above: while handlers remain, exactly one
+			// next-frame callback must be pending. Without this, a single failure would silently
+			// stop CompositionTarget.Rendering for the process lifetime.
+			lock (_handlersGate)
+			{
+				if (_handlers.Count > 0 && !_requestedFrame)
+				{
+					_requestedFrame = true;
+					RequestFrame();
+				}
+			}
 		}
 	}
 

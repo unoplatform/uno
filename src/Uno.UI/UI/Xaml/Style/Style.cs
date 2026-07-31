@@ -27,49 +27,40 @@ namespace Microsoft.UI.Xaml
 
 		/// <summary>
 		/// Removes entries from the style caches whose Type key belongs to a non-default ALC.
+		/// These caches rebuild on demand, so the sweep may safely cover ALL non-default contexts.
+		/// User configuration (<see cref="FeatureConfiguration.Style.UseUWPDefaultStylesOverride"/>)
+		/// is NOT part of this group — it never rebuilds; see
+		/// <see cref="RemoveAlcScopedUserStyleOverrides"/>.
 		/// </summary>
 		internal static void ClearCachesForNonDefaultAlc()
 		{
-			RemoveNonDefaultAlcEntries(_lookup);
-			RemoveNonDefaultAlcEntries(_defaultStyleCache);
-			RemoveNonDefaultAlcEntries(_nativeLookup);
-			RemoveNonDefaultAlcEntries(_nativeDefaultStyleCache);
+			var removed = Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_lookup)
+				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_defaultStyleCache)
+				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_nativeLookup)
+				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_nativeDefaultStyleCache);
 
-			// User-configured per-control native-style overrides are keyed by control Type; a
-			// previewed app configuring its own control types (e.g. SetUWPDefaultStylesOverride)
-			// would otherwise pin those types for the process lifetime.
-			RemoveNonDefaultAlcEntries(FeatureConfiguration.Style.UseUWPDefaultStylesOverride);
+			if (removed > 0 && _logger.IsEnabled(LogLevel.Debug))
+			{
+				_logger.Debug($"[ALC-CLEANUP] Style caches: removed {removed} non-default-ALC entrie(s).");
+			}
 		}
 
-		private static void RemoveNonDefaultAlcEntries<TValue>(IDictionary<Type, TValue> dictionary)
+		/// <summary>
+		/// Removes <see cref="FeatureConfiguration.Style.UseUWPDefaultStylesOverride"/> entries whose
+		/// control <see cref="Type"/> key is owned by the dying ALC. This dictionary is USER
+		/// CONFIGURATION (written via <c>SetUWPDefaultStylesOverride</c> and never rebuilt), so unlike
+		/// the rebuild-on-demand caches above it must never be swept for all non-default contexts —
+		/// that would silently delete a live sibling secondary app's (or session add-in's) override.
+		/// A previewed app configuring overrides for its own control types would otherwise pin those
+		/// types — and its collectible context — for the process lifetime.
+		/// </summary>
+		internal static void RemoveAlcScopedUserStyleOverrides(global::System.Runtime.Loader.AssemblyLoadContext? dyingAlc)
 		{
-			List<Type>? keysToRemove = null;
-			foreach (var key in dictionary.Keys)
-			{
-				// Type.IsCollectible is the fast path — it also catches generic instantiations
-				// over collectible type arguments whose declaring assembly is a shared
-				// (default-ALC) one. Only fall back to the load-context lookup otherwise.
-				if (key.IsCollectible)
-				{
-					(keysToRemove ??= new List<Type>()).Add(key);
-					continue;
-				}
+			var removed = Uno.UI.Helpers.AlcCacheSweep.RemoveUnloadScopedEntries(FeatureConfiguration.Style.UseUWPDefaultStylesOverride, dyingAlc);
 
-				var alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Assembly);
-				if (alc is not null && alc != global::System.Runtime.Loader.AssemblyLoadContext.Default)
-				{
-					(keysToRemove ??= new List<Type>()).Add(key);
-				}
-			}
-
-			if (keysToRemove is null)
+			if (removed > 0 && _logger.IsEnabled(LogLevel.Debug))
 			{
-				return;
-			}
-
-			foreach (var key in keysToRemove)
-			{
-				dictionary.Remove(key);
+				_logger.Debug($"[ALC-CLEANUP] UseUWPDefaultStylesOverride: removed {removed} entrie(s) owned by dying ALC '{dyingAlc?.Name ?? "unload-initiated"}'.");
 			}
 		}
 

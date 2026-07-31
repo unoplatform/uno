@@ -262,9 +262,10 @@ public partial class ClientHotReloadProcessor
 			// Types to compute the set to drop from the pause handle. ReportCompleted normally
 			// releases that array the instant an operation turns terminal (collectible-ALC
 			// guarantee), which would always hand us an empty drop set. Enter a type-correlation
-			// scope BEFORE the update begins so terminal operations retain their Types until the
-			// sweep in the finally block releases them explicitly — the raw types are only ever
-			// retained while a scope is active, so the ALC release guarantee is preserved.
+			// scope BEFORE the update begins: operations turning terminal while it is active are
+			// registered with it and released by its Dispose (in the finally block) — the raw types
+			// are only ever retained while a scope holds them, so the ALC release guarantee is
+			// preserved without any additional call from this method.
 			if (req.PauseUIPhases != HotReloadUIPhases.None)
 			{
 				typeCorrelationScope = HotReloadClientOperation.EnterTypeCorrelationScope();
@@ -405,23 +406,16 @@ public partial class ClientHotReloadProcessor
 		finally
 		{
 			// Dispose the pause FIRST: its drain promotes deferred operations to terminal
-			// (ReportCompleted) while the correlation scope is still active, so they too retain
-			// their Types until the sweep below.
+			// (ReportCompleted) while the correlation scope is still active, so they too get
+			// registered with the scope and released by its Dispose below.
 			pauseHandle?.Dispose();
 
-			if (typeCorrelationScope is not null)
-			{
-				// Exit the scope, then sweep-release the retained raw Type[] (and detach exception
-				// graphs) of every terminal local operation — including operations that completed
-				// while the scope was active but fell outside this update's drop window (they
-				// skipped their ReportCompleted-time release). Without this sweep such operations
-				// would pin their collectible previewed-app ALC.
-				typeCorrelationScope.Dispose();
-				if (CurrentStatus is { } status)
-				{
-					HotReloadClientOperation.ReleaseRetainedTypesForTerminalOperations(status.Local.Operations);
-				}
-			}
+			// Disposing the scope releases the raw Type[] (and detaches the exception graphs) of
+			// every operation that turned terminal while it was active — including operations that
+			// fell outside this update's drop window. The release is deferred only if another
+			// concurrent caller's scope still holds an operation; the last scope out releases it,
+			// so no operation can pin its collectible previewed-app ALC past the overlapping calls.
+			typeCorrelationScope?.Dispose();
 		}
 	}
 

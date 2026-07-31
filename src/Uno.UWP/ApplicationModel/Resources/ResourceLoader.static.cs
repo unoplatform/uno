@@ -126,54 +126,59 @@ partial class ResourceLoader
 
 	/// <summary>
 	/// Removes every previewed-app assembly registered via <see cref="AddLookupAssembly"/> whose
-	/// <see cref="System.Runtime.Loader.AssemblyLoadContext"/> is non-default (collectible), then
-	/// rebuilds the loader caches from the remaining (default-ALC) assemblies. A downstream host
-	/// that loads previewed apps into their own collectible AssemblyLoadContexts calls each of those
-	/// apps' <c>AddLookupAssembly</c>; the process-lifetime <see cref="_lookupAssemblies"/> list
-	/// then holds a strong reference to every loaded app assembly for the process lifetime, pinning
-	/// the context after unload. The parsed resources themselves are keyed by string culture/key (no
-	/// ALC pin), but the loaders' dictionaries are cleared and re-parsed from the still-registered
-	/// default-ALC assemblies so no value parsed from an unloaded assembly lingers. Used for global
-	/// shutdown when no specific dying ALC is identifiable; when it is, prefer
-	/// <see cref="ClearAlcAssemblies"/> so sibling secondary apps' registrations survive.
+	/// <see cref="System.Runtime.Loader.AssemblyLoadContext"/> is non-default (collectible),
+	/// together with those assemblies' parsed-resource markers. A downstream host that loads
+	/// previewed apps into their own collectible AssemblyLoadContexts calls each of those apps'
+	/// <c>AddLookupAssembly</c>; the process-lifetime <see cref="_lookupAssemblies"/> list then
+	/// holds a strong reference to every loaded app assembly for the process lifetime, pinning the
+	/// context after unload. Used for global shutdown when no specific dying ALC is identifiable;
+	/// when it is, prefer <see cref="ClearAlcAssemblies"/> so sibling secondary apps' registrations
+	/// survive.
 	/// </summary>
 	internal static void ClearNonDefaultAlcAssemblies()
 		=> ClearAlcAssembliesCore(IsFromNonDefaultAlc);
 
 	/// <summary>
 	/// Removes only the lookup assemblies loaded into the specified dying
-	/// <see cref="System.Runtime.Loader.AssemblyLoadContext"/>, then rebuilds the loader caches
-	/// from the remaining assemblies. Unlike <see cref="ClearNonDefaultAlcAssemblies"/> (the
-	/// global-shutdown, all-non-default sweep), registrations from OTHER live secondary ALCs
-	/// (sibling previewed apps) survive — removal is destructive (a dropped registration is never
-	/// re-added), so a whole-process sweep would break a live sibling app's resource lookups when
-	/// only one app is being torn down.
+	/// <see cref="System.Runtime.Loader.AssemblyLoadContext"/> (and their parsed-resource markers).
+	/// Unlike <see cref="ClearNonDefaultAlcAssemblies"/> (the global-shutdown, all-non-default
+	/// sweep), registrations from OTHER live secondary ALCs (sibling previewed apps) survive —
+	/// removal is destructive (a dropped registration is never re-added), so a whole-process sweep
+	/// would break a live sibling app's resource lookups when only one app is being torn down.
 	/// </summary>
 	internal static void ClearAlcAssemblies(global::System.Runtime.Loader.AssemblyLoadContext alc)
 		=> ClearAlcAssembliesCore(assembly => global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly) == alc);
 
 	private static void ClearAlcAssembliesCore(Predicate<Assembly> shouldRemove)
 	{
-		var removedAny = _lookupAssemblies.RemoveAll(shouldRemove) > 0;
-		if (!removedAny)
+		// Identify the dying assemblies first, then drop exactly their state: the list entry (the
+		// ALC pin) and their (assembly, fileName) parsed markers, so a later AddLookupAssembly of
+		// the SAME logical app (a fresh Assembly instance in a fresh ALC) re-parses its resources.
+		// Surviving assemblies' markers and every loader's parsed values stay untouched: the values
+		// are plain culture/key strings (no ALC pin), so there is nothing to destroy and rebuild —
+		// tearing the loaders down here and re-parsing every remaining .upri would be O(all
+		// resources in the process) on the UI thread and, if a single malformed file threw, would
+		// leave every loader permanently empty.
+		HashSet<Assembly>? removed = null;
+		foreach (var assembly in _lookupAssemblies)
+		{
+			if (shouldRemove(assembly))
+			{
+				(removed ??= new HashSet<Assembly>()).Add(assembly);
+			}
+		}
+
+		if (removed is null)
 		{
 			return;
 		}
 
-		// Rebuild the culture caches from the remaining (default-ALC) assemblies so no resource
-		// value parsed from an unloaded assembly lingers in a loader's dictionary. ClearResources()
-		// empties every loader's per-culture dictionaries, so the parsed-resource markers must be
-		// cleared wholesale too: ProcessResourceFile skips any (assembly, fileName) still present in
-		// _parsedResources, so leaving the remaining assemblies' markers in place would make the
-		// rebuild a no-op and leave the loaders empty until the next full reload.
-		ClearResources();
-		_parsedResources.Clear();
-		if (_loaderContext is not null)
+		_lookupAssemblies.RemoveAll(removed.Contains);
+		var removedMarkers = _parsedResources.RemoveWhere(marker => removed.Contains(marker.Assembly));
+
+		if (_log.IsEnabled(LogLevel.Debug))
 		{
-			foreach (var assembly in _lookupAssemblies)
-			{
-				ProcessAssembly(assembly, _loaderContext.LanguagePreferences);
-			}
+			_log.LogDebug($"[ALC-CLEANUP] ResourceLoader: removed {removed.Count} lookup assemblie(s) and {removedMarkers} parsed-resource marker(s).");
 		}
 	}
 
