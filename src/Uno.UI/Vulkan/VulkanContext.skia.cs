@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Runtime.InteropServices;
 using Uno.UI.Runtime.Skia.Vulkan.Interop;
@@ -31,6 +31,8 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 
 	public GRContext? GrContext => _grContext;
 	public SKSurface? CachedSkSurface => _cachedSkSurface;
+	private bool _preferVsync;
+
 	public bool IsInitialized => _grContext != null;
 
 	// IVulkanPlatformGraphicsContext implementation
@@ -47,7 +49,8 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	/// <summary>
 	/// Initialize the Vulkan context with a platform-specific surface factory and native window handle.
 	/// </summary>
-	public void Initialize(IVulkanPlatformSurfaceFactory factory, IntPtr nativeWindowHandle, int width, int height)
+	/// <param name="preferVsync">Ask the swapchain for a blocking present. Hosts that pace the render thread themselves should leave this false.</param>
+	public void Initialize(IVulkanPlatformSurfaceFactory factory, IntPtr nativeWindowHandle, int width, int height, bool preferVsync = false)
 	{
 		_factory = factory;
 		_nativeWindowHandle = nativeWindowHandle;
@@ -77,7 +80,8 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		{
 			// Create display (swapchain) via platform surface wrapper
 			var platformSurface = new DirectVulkanSurface(nativeWindowHandle, new SKSizeI(width, height), factory);
-			_display = VulkanDisplay.CreateDisplay(this, platformSurface);
+			_preferVsync = preferVsync;
+			_display = VulkanDisplay.CreateDisplay(this, platformSurface, preferVsync);
 
 			// Create intermediate render image (TransitionLayout submits commands, needs lock)
 			_renderImage = new VulkanImage(this, _display.CommandBufferPool,
@@ -146,7 +150,7 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 			_display.Dispose();
 
 			var platformSurface = new DirectVulkanSurface(_nativeWindowHandle, new SKSizeI(width, height), _factory);
-			_display = VulkanDisplay.CreateDisplay(this, platformSurface);
+			_display = VulkanDisplay.CreateDisplay(this, platformSurface, _preferVsync);
 			_renderImage = new VulkanImage(this, _display.CommandBufferPool,
 				_display.SurfaceFormat.format, new SKSizeI(width, height));
 			// _cachedSkSurface will be lazily recreated on next EnsureCachedSurface

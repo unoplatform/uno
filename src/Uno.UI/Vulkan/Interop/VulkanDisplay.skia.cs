@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 // Based on the Avalonia project (MIT License, Copyright (c) AvaloniaUI OÜ).
 // Original source: https://github.com/AvaloniaUI/Avalonia/tree/master/src/Avalonia.Vulkan
 using System;
@@ -12,6 +12,7 @@ namespace Uno.UI.Runtime.Skia.Vulkan.Interop;
 
 internal class VulkanDisplay : IDisposable
 {
+	private readonly bool _preferVsync;
 	private IVulkanPlatformGraphicsContext _context;
 	private VulkanSemaphorePair _semaphorePair;
 	private uint _nextImage;
@@ -26,8 +27,9 @@ internal class VulkanDisplay : IDisposable
 	public SKSizeI Size { get; private set; }
 
 	private VulkanDisplay(IVulkanPlatformGraphicsContext context, VulkanKhrSurface surface, VkSwapchainKHR swapchain,
-		VkExtent2D swapchainExtent, IVulkanKhrSurfacePlatformSurface platformSurface)
+		VkExtent2D swapchainExtent, IVulkanKhrSurfacePlatformSurface platformSurface, bool preferVsync)
 	{
+		_preferVsync = preferVsync;
 		_context = context;
 		_surface = surface;
 		_swapchain = swapchain;
@@ -48,7 +50,7 @@ internal class VulkanDisplay : IDisposable
 		}
 	}
 
-	private static unsafe VkSwapchainKHR CreateSwapchain(IVulkanPlatformGraphicsContext context,
+	private static unsafe VkSwapchainKHR CreateSwapchain(bool preferVsync, IVulkanPlatformGraphicsContext context,
 		VulkanKhrSurface surface, out VkExtent2D swapchainExtent, VulkanDisplay? oldDisplay = null)
 	{
 		while (!surface.CanSurfacePresent())
@@ -100,8 +102,13 @@ internal class VulkanDisplay : IDisposable
 				height = height
 			};
 		}
+		// MAILBOX presents without blocking, which needs the caller to pace the render thread itself
+		// (Win32 does this with DwmFlush). A host with no pacer must ask for FIFO instead, otherwise
+		// the thread free-runs and presentation times are uneven even when production is healthy.
 		VkPresentModeKHR presentMode;
-		if (modes.Contains(VkPresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR))
+		if (preferVsync && modes.Contains(VkPresentModeKHR.VK_PRESENT_MODE_FIFO_KHR))
+			presentMode = VkPresentModeKHR.VK_PRESENT_MODE_FIFO_KHR;
+		else if (!preferVsync && modes.Contains(VkPresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR))
 			presentMode = VkPresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR;
 		else if (modes.Contains(VkPresentModeKHR.VK_PRESENT_MODE_FIFO_KHR))
 			presentMode = VkPresentModeKHR.VK_PRESENT_MODE_FIFO_KHR;
@@ -141,11 +148,12 @@ internal class VulkanDisplay : IDisposable
 		_swapchain = default;
 	}
 
-	internal static VulkanDisplay CreateDisplay(IVulkanPlatformGraphicsContext context, IVulkanKhrSurfacePlatformSurface surface)
+	/// <param name="preferVsync">Ask for a blocking (FIFO) present. Hosts that pace the render thread themselves should leave this false.</param>
+	internal static VulkanDisplay CreateDisplay(IVulkanPlatformGraphicsContext context, IVulkanKhrSurfacePlatformSurface surface, bool preferVsync = false)
 	{
 		var khrSurface = new VulkanKhrSurface(context, surface);
-		var swapchain = CreateSwapchain(context, khrSurface, out var extent);
-		return new VulkanDisplay(context, khrSurface, swapchain, extent, surface);
+		var swapchain = CreateSwapchain(preferVsync, context, khrSurface, out var extent);
+		return new VulkanDisplay(context, khrSurface, swapchain, extent, surface, preferVsync);
 	}
 
 	private void DestroyCurrentImageViews()
@@ -202,7 +210,7 @@ internal class VulkanDisplay : IDisposable
 			return;
 		}
 		_context.DeviceApi.DeviceWaitIdle(_context.DeviceHandle);
-		_swapchain = CreateSwapchain(_context, _surface, out var extent, this);
+		_swapchain = CreateSwapchain(_preferVsync, _context, _surface, out var extent, this);
 		_swapchainExtent = extent;
 		CreateSwapchainImages();
 	}
@@ -224,7 +232,7 @@ internal class VulkanDisplay : IDisposable
 	{
 		_context.DeviceApi.DeviceWaitIdle(_context.DeviceHandle);
 		DestroyCurrentImageViews();
-		_swapchain = CreateSwapchain(_context, _surface!, out var extent, this);
+		_swapchain = CreateSwapchain(_preferVsync, _context, _surface!, out var extent, this);
 		_swapchainExtent = extent;
 		CreateSwapchainImages();
 	}
