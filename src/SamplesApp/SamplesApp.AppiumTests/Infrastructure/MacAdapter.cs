@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Mac;
@@ -22,19 +21,20 @@ public sealed class MacAdapter : IPlatformAdapter
 	private const string WrapperBundleId = "io.platform.uno.SamplesAppAppium";
 
 	private string? _wrapperBundlePath;
-	private Process? _spawnedApp;
+	private string? _startedBundleId;
+	private bool _keepWrapperBundle;
 
 	public AppiumPlatform Platform => AppiumPlatform.Mac;
 
-	public IWebDriver CreateDriver(string sampleQuery)
+	public IWebDriver CreateDriver(AppiumTestOptions options, string sampleQuery)
 	{
-		var options = new AppiumOptions
+		var appiumOptions = new AppiumOptions
 		{
 			AutomationName = "Mac2",
 			PlatformName = "Mac",
 		};
 
-		var appPath = Path.GetFullPath(AppiumPlatformResolver.RequireAppPath());
+		var appPath = Path.GetFullPath(options.AppPath);
 
 		string bundleId;
 		if (IsAppBundle(appPath))
@@ -45,33 +45,27 @@ public sealed class MacAdapter : IPlatformAdapter
 			if (!IsBundleRunning(bundleId))
 			{
 				LaunchAppBundle(appPath, sampleQuery);
+				_startedBundleId = bundleId;
 			}
 		}
 		else
 		{
 			bundleId = WrapperBundleId;
-			if (IsBundleRunning(bundleId))
+			if (!IsBundleRunning(bundleId))
 			{
-				// A previous test session (or the user) already launched the
-				// wrapper; just attach. This is the recommended flow when
-				// running from a sandboxed parent (e.g. VS Code's helper tree)
-				// where LaunchServices ignores `open` requests from the test
-				// process. Launch manually once via:
-				//   open -n /tmp/SamplesAppAppium.app
-			}
-			else
-			{
-				_wrapperBundlePath = CreateWrapperBundle(appPath, sampleQuery);
-				_spawnedApp = LaunchBundle(_wrapperBundlePath);
+				_wrapperBundlePath = CreateWrapperBundle(options.ArtifactsDirectory, appPath, sampleQuery);
+				LaunchWrapperBundle(_wrapperBundlePath);
+				_startedBundleId = WrapperBundleId;
 			}
 		}
 
-		WaitForBundleRunning(bundleId, TimeSpan.FromSeconds(15));
+		_keepWrapperBundle = options.KeepMacBundle;
+		WaitForBundleRunning(bundleId, options.Timeout);
 
-		options.AddAdditionalAppiumOption("bundleId", bundleId);
-		options.AddAdditionalAppiumOption("noReset", true);
+		appiumOptions.AddAdditionalAppiumOption("bundleId", bundleId);
+		appiumOptions.AddAdditionalAppiumOption("noReset", true);
 
-		return new MacDriver(new Uri(AppiumPlatformResolver.ServerUrl()), options);
+		return new MacDriver(options.ServerUri, appiumOptions, options.Timeout);
 	}
 
 	private static void AddIfPresent(IWebElement element, string attr, string key, Dictionary<string, string> sink)
@@ -91,78 +85,63 @@ public sealed class MacAdapter : IPlatformAdapter
 			return null;
 		}
 
-		try
-		{
-			var psi = new ProcessStartInfo("/usr/bin/defaults",
-				$"read \"{plist.Replace("\"", "\\\"")}\" CFBundleIdentifier")
-			{
-				UseShellExecute = false,
-				RedirectStandardOutput = true,
-			};
-			using var p = Process.Start(psi);
-			if (p is null) return null;
-			var output = p.StandardOutput.ReadToEnd().Trim();
-			p.WaitForExit();
-			return string.IsNullOrEmpty(output) ? null : output;
-		}
-		catch
-		{
-			return null;
-		}
+		var result = RunProcess(
+			"/usr/bin/defaults",
+			new[] { "read", plist, "CFBundleIdentifier" },
+			TimeSpan.FromSeconds(10));
+		return string.IsNullOrWhiteSpace(result.StandardOutput) ? null : result.StandardOutput;
 	}
 
 	private static void LaunchAppBundle(string bundlePath, string sampleQuery)
 	{
-		var args = string.IsNullOrEmpty(sampleQuery)
-			? new[] { "-n", "-a", bundlePath }
-			: new[] { "-n", "-a", bundlePath, "--args", sampleQuery };
-		StartProcess("/usr/bin/open", args);
-	}
-
-	private static Process LaunchBundle(string bundlePath)
-	{
-		TestContext.Progress.WriteLine($"[MacAdapter] Launching wrapper bundle at {bundlePath}");
-
-		// When invoked from a sandboxed parent (e.g. VS Code's helper tree),
-		// `Process.Start("/usr/bin/open", ...)` returns 0 but LaunchServices
-		// never registers the new app. Routing the activation through
-		// `osascript`'s AppleScript runtime forces the user-session launchd
-		// domain to handle the activation, which always succeeds.
-		var psi = new ProcessStartInfo("/usr/bin/osascript")
+		var args = new List<string> { "-n", "-a", bundlePath };
+		if (!string.IsNullOrEmpty(sampleQuery))
 		{
-			UseShellExecute = false,
-			RedirectStandardError = true,
-			RedirectStandardOutput = true,
-		};
-		psi.ArgumentList.Add("-e");
-		// `do shell script` routes through the user's login shell, escaping
-		// the sandboxed launchd domain we inherited from VS Code's helper
-		// process tree.
-		psi.ArgumentList.Add($"do shell script \"/usr/bin/open -n '{bundlePath}'\"");
-
-		var p = Process.Start(psi)
-			?? throw new InvalidOperationException("Failed to start `osascript`.");
-		p.WaitForExit(TimeSpan.FromSeconds(10));
-		var stdout = p.StandardOutput.ReadToEnd();
-		var stderr = p.StandardError.ReadToEnd();
-		TestContext.Progress.WriteLine(
-			$"[MacAdapter] osascript launch exit={p.ExitCode}, stdout='{stdout.Trim()}', stderr='{stderr.Trim()}'");
-		return p;
-	}
-
-	private static Process StartProcess(string fileName, string[] args)
-	{
-		var psi = new ProcessStartInfo
-		{
-			FileName = fileName,
-			UseShellExecute = false,
-		};
-		foreach (var a in args)
-		{
-			psi.ArgumentList.Add(a);
+			args.Add("--args");
+			args.Add(sampleQuery);
 		}
-		return Process.Start(psi)
-			?? throw new InvalidOperationException($"Failed to start {fileName}.");
+
+		RunProcess("/usr/bin/open", args, TimeSpan.FromSeconds(10));
+	}
+
+	private static void LaunchWrapperBundle(string bundlePath)
+		=> RunProcess("/usr/bin/open", new[] { "-n", bundlePath }, TimeSpan.FromSeconds(10));
+
+	private static ProcessResult RunProcess(string fileName, IEnumerable<string> arguments, TimeSpan timeout)
+	{
+		var startInfo = new ProcessStartInfo(fileName)
+		{
+			UseShellExecute = false,
+			RedirectStandardOutput = true,
+			RedirectStandardError = true,
+		};
+
+		foreach (var argument in arguments)
+		{
+			startInfo.ArgumentList.Add(argument);
+		}
+
+		using var process = Process.Start(startInfo)
+			?? throw new InvalidOperationException($"Failed to start '{fileName}'.");
+
+		if (!process.WaitForExit(timeout))
+		{
+			process.Kill(entireProcessTree: true);
+			throw new TimeoutException($"Process '{fileName}' did not exit within {timeout.TotalSeconds:F0}s.");
+		}
+
+		var result = new ProcessResult(
+			process.ExitCode,
+			process.StandardOutput.ReadToEnd().Trim(),
+			process.StandardError.ReadToEnd().Trim());
+
+		if (result.ExitCode != 0)
+		{
+			throw new InvalidOperationException(
+				$"Process '{fileName}' exited with code {result.ExitCode}. stdout='{result.StandardOutput}' stderr='{result.StandardError}'.");
+		}
+
+		return result;
 	}
 
 	private static void WaitForBundleRunning(string bundleId, TimeSpan timeout)
@@ -174,7 +153,6 @@ public sealed class MacAdapter : IPlatformAdapter
 			attempts++;
 			if (IsBundleRunning(bundleId))
 			{
-				TestContext.Progress.WriteLine($"[MacAdapter] Bundle '{bundleId}' detected as running after {attempts} attempts.");
 				// Give the runtime a moment to publish its accessibility tree.
 				Thread.Sleep(TimeSpan.FromSeconds(2));
 				return;
@@ -188,100 +166,150 @@ public sealed class MacAdapter : IPlatformAdapter
 
 	private static bool IsBundleRunning(string bundleId)
 	{
-		try
-		{
-			var psi = new ProcessStartInfo("/usr/bin/osascript",
-				$"-e 'tell application \"System Events\" to (bundle identifier of every process) contains \"{bundleId}\"'")
-			{
-				UseShellExecute = false,
-				RedirectStandardOutput = true,
-				RedirectStandardError = true,
-			};
-			using var p = Process.Start(psi);
-			if (p is null) return false;
-			var output = p.StandardOutput.ReadToEnd().Trim();
-			p.WaitForExit();
-			return string.Equals(output, "true", StringComparison.OrdinalIgnoreCase);
-		}
-		catch
-		{
-			return false;
-		}
+		var result = RunProcess(
+			"/usr/bin/osascript",
+			new[] { "-e", $"tell application \"System Events\" to (bundle identifier of every process) contains \"{bundleId}\"" },
+			TimeSpan.FromSeconds(10));
+		return string.Equals(result.StandardOutput, "true", StringComparison.OrdinalIgnoreCase);
 	}
 
 	public By ByAutomationId(string automationId)
 	{
-		// Mac2's MobileBy.AccessibilityId maps to XCUIElement.identifier, which
-		// only works for elements XCUITest has fully snapshotted into its own
-		// element store. Custom NSAccessibilityElement subclasses (like Uno's
-		// UNOAccessibilityElement) are reachable via XPath but not always via
-		// the identifier shortcut, so we filter by the underlying AXIdentifier
-		// attribute that Uno publishes from AutomationProperties.AutomationId.
-		var escaped = automationId.Replace("'", "&apos;");
-		return By.XPath($"//*[@AXIdentifier='{escaped}']");
+		var literal = ToXPathLiteral(automationId);
+		return By.XPath($"//*[@identifier={literal} or @AXIdentifier={literal}]");
+	}
+
+	public void Activate(IWebDriver driver, IWebElement element) => element.Click();
+
+	public void EnterText(IWebDriver driver, IWebElement element, string value)
+	{
+		element.Click();
+		element.SendKeys(value);
 	}
 
 	public string GetRole(IWebElement element)
-	{
-		// NSAccessibility exposes AXRole / AXSubrole.
-		var role = element.GetAttribute("AXRole");
-		return string.IsNullOrWhiteSpace(role) ? string.Empty : role.ToLowerInvariant();
-	}
+		=> GetAttributeAny(element, "AXRole", "role", "elementType") ?? element.TagName;
 
-	public string GetName(IWebElement element)
-		=> element.GetAttribute("AXTitle") ?? element.GetAttribute("AXDescription") ?? string.Empty;
+	public string GetName(IWebDriver driver, IWebElement element)
+		=> GetAttributeAny(element, "AXTitle", "title", "label", "AXDescription", "description") ?? string.Empty;
+
+	public string? GetDescription(IWebDriver driver, IWebElement element)
+		=> EmptyToNull(GetAttributeAny(element, "AXDescription", "description", "placeholderValue"));
 
 	public IReadOnlyList<IWebElement> GetAllDescendants(IWebDriver driver)
 		=> driver.FindElements(By.XPath("//*"));
 
 	public string GetAutomationId(IWebElement element)
-		=> element.GetAttribute("AXIdentifier") ?? element.GetAttribute("identifier") ?? string.Empty;
+		=> GetAttributeAny(element, "AXIdentifier", "identifier") ?? string.Empty;
 
 	public string? GetValue(IWebElement element)
 	{
-		var v = element.GetAttribute("AXValue");
+		var v = GetAttributeAny(element, "AXValue", "value");
 		if (!string.IsNullOrEmpty(v))
 		{
 			return v;
 		}
 
-		var legacy = element.GetAttribute("value");
-		return string.IsNullOrEmpty(legacy) ? null : legacy;
+		var placeholder = GetAttributeAny(element, "placeholderValue");
+		return string.IsNullOrEmpty(placeholder) ? null : placeholder;
 	}
 
 	public IReadOnlyList<string> GetSupportedPatterns(IWebElement element)
 	{
-		// NSAccessibility doesn't expose discrete pattern-availability flags
-		// the way UIA does. Infer from the role: this mirrors what Uno's
-		// MacOSAccessibility.cs already maps when populating the AX tree.
 		var patterns = new List<string>();
-		var role = GetRole(element);
+		var role = CanonicalRole.Normalize(GetRole(element), Platform, GetLevel(element), GetLandmark(element));
 		switch (role)
 		{
-			case "axbutton":
-			case "axpopupbutton":
+			case "button":
 				patterns.Add("invoke");
 				break;
-			case "axcheckbox":
-			case "axradiobutton":
+			case "checkbox":
+			case "switch":
 				patterns.Add("toggle");
 				break;
-			case "axtextfield":
-			case "axtextarea":
+			case "radio":
+				patterns.Add("selectionitem");
+				break;
+			case "textbox":
 				patterns.Add("value");
 				break;
-			case "axslider":
-			case "axprogressindicator":
+			case "slider":
 				patterns.Add("rangevalue");
 				break;
-			case "axcombobox":
+			case "combobox":
 				patterns.Add("expandcollapse");
-				patterns.Add("selectionitem");
+				patterns.Add("selection");
 				break;
 		}
 		patterns.Sort(StringComparer.Ordinal);
 		return patterns;
 	}
+
+	public bool? GetEnabled(IWebElement element)
+		=> ParseBool(GetAttributeAny(element, "AXEnabled", "enabled"));
+
+	public bool? GetKeyboardFocusable(IWebElement element)
+		=> null;
+
+	public bool? GetFocused(IWebDriver driver, IWebElement element)
+		=> ParseBool(GetAttributeAny(element, "AXFocused", "focused"));
+
+	public bool? GetOffscreen(IWebElement element)
+		=> ParseBool(GetAttributeAny(element, "AXHidden", "hidden"));
+
+	public string? GetToggleState(IWebElement element)
+	{
+		var value = GetAttributeAny(element, "AXValue", "value");
+		if (string.IsNullOrWhiteSpace(value))
+		{
+			value = GetAttributeAny(element, "AXSelected", "selected");
+		}
+
+		return NormalizeToggleState(value);
+	}
+
+	public bool? GetSelected(IWebElement element)
+	{
+		var selected = ParseBool(GetAttributeAny(element, "AXSelected", "selected"));
+		if (selected is not null)
+		{
+			return selected;
+		}
+
+		var toggleState = GetToggleState(element);
+		return toggleState is null ? null : toggleState == "on";
+	}
+
+	public bool? GetExpanded(IWebElement element)
+		=> ParseBool(GetAttributeAny(element, "AXExpanded", "expanded"));
+
+	public bool? GetRequired(IWebElement element)
+		=> ParseBool(GetAttributeAny(element, "AXRequired", "required"));
+
+	public int? GetLevel(IWebElement element)
+		=> ParseInt(GetAttributeAny(element, "AXLevel", "AXDOMHeadingLevel", "level"));
+
+	public string? GetLandmark(IWebElement element)
+	{
+		var roleDescription = NormalizeLandmark(GetAttributeAny(element, "AXSubrole", "AXRoleDescription", "roleDescription"));
+		return roleDescription;
+	}
+
+	public string? GetRoleDescription(IWebElement element)
+	{
+		var roleDescription = EmptyToNull(GetAttributeAny(element, "AXRoleDescription", "roleDescription"));
+		if (roleDescription is null)
+		{
+			return null;
+		}
+
+		return NormalizeLandmark(roleDescription) is null
+			? roleDescription
+			: null;
+	}
+
+	public string? GetLiveSetting(IWebElement element)
+		=> NormalizeLiveSetting(GetAttributeAny(element, "AXLiveRegionPoliteness", "AXARIALive", "aria-live"));
 
 	public IReadOnlyList<IWebElement> GetChildren(IWebDriver driver, IWebElement? parent)
 	{
@@ -295,62 +323,72 @@ public sealed class MacAdapter : IPlatformAdapter
 		AddIfPresent(element, "AXRole", "macos.AXRole", extras);
 		AddIfPresent(element, "AXSubrole", "macos.AXSubrole", extras);
 		AddIfPresent(element, "AXRoleDescription", "macos.AXRoleDescription", extras);
+		AddIfPresent(element, "identifier", "macos.identifier", extras);
+		AddIfPresent(element, "label", "macos.label", extras);
+		AddIfPresent(element, "title", "macos.title", extras);
 		return extras;
 	}
 
 	public void Dispose()
 	{
-		try
+		var errors = new List<Exception>();
+
+		if (_startedBundleId is not null && IsBundleRunning(_startedBundleId))
 		{
-			if (_spawnedApp is { HasExited: false })
+			try
 			{
-				_spawnedApp.Kill(entireProcessTree: true);
+				TerminateBundle(_startedBundleId);
 			}
+			catch (Exception ex)
+			{
+				errors.Add(ex);
+			}
+		}
 
-			TerminateBundle(WrapperBundleId);
-
-			if (_wrapperBundlePath is not null && Directory.Exists(_wrapperBundlePath)
-				&& Environment.GetEnvironmentVariable("UNO_APPIUM_KEEP_BUNDLE") != "1")
+		if (_wrapperBundlePath is not null
+			&& Directory.Exists(_wrapperBundlePath)
+			&& !_keepWrapperBundle)
+		{
+			try
 			{
 				Directory.Delete(_wrapperBundlePath, recursive: true);
 			}
+			catch (Exception ex)
+			{
+				errors.Add(ex);
+			}
 		}
-		catch
+
+		_startedBundleId = null;
+		_wrapperBundlePath = null;
+		_keepWrapperBundle = false;
+
+		if (errors.Count == 1)
 		{
-			// best-effort teardown
+			throw errors[0];
 		}
-		finally
+
+		if (errors.Count > 1)
 		{
-			_spawnedApp?.Dispose();
-			_spawnedApp = null;
-			_wrapperBundlePath = null;
+			throw new AggregateException("One or more macOS Appium cleanup operations failed.", errors);
 		}
 	}
 
 	private static void TerminateBundle(string bundleId)
 	{
-		try
-		{
-			var psi = new ProcessStartInfo("/usr/bin/osascript",
-				$"-e 'tell application id \"{bundleId}\" to quit'")
-			{
-				UseShellExecute = false,
-				RedirectStandardOutput = true,
-				RedirectStandardError = true,
-			};
-			using var p = Process.Start(psi);
-			p?.WaitForExit(TimeSpan.FromSeconds(3));
-		}
-		catch
-		{
-		}
+		RunProcess(
+			"/usr/bin/osascript",
+			new[] { "-e", $"tell application id \"{bundleId}\" to quit" },
+			TimeSpan.FromSeconds(10));
 	}
 
-	private static string CreateWrapperBundle(string dllPath, string sampleQuery)
+	private static string CreateWrapperBundle(string artifactsDirectory, string dllPath, string sampleQuery)
 	{
 		var dotnetPath = ResolveDotnet();
 		var slug = Path.GetFileNameWithoutExtension(Path.GetRandomFileName());
-		var bundleRoot = Path.Combine(Path.GetTempPath(),
+		var bundleRoot = Path.Combine(
+			artifactsDirectory,
+			"mac-bundles",
 			$"SamplesAppAppium-{slug}.app");
 		var contents = Path.Combine(bundleRoot, "Contents");
 		var macOS = Path.Combine(contents, "MacOS");
@@ -376,7 +414,11 @@ public sealed class MacAdapter : IPlatformAdapter
 </plist>
 ");
 
-		var script = $@"#!/bin/bash
+		var script = string.IsNullOrEmpty(sampleQuery)
+			? $@"#!/bin/bash
+exec ""{dotnetPath}"" ""{dllPath}""
+"
+			: $@"#!/bin/bash
 exec ""{dotnetPath}"" ""{dllPath}"" ""{sampleQuery}""
 ";
 		var executablePath = Path.Combine(macOS, executableName);
@@ -392,36 +434,6 @@ exec ""{dotnetPath}"" ""{dllPath}"" ""{sampleQuery}""
 	private static bool IsAppBundle(string path)
 		=> path.EndsWith(".app", StringComparison.OrdinalIgnoreCase)
 			|| path.TrimEnd('/').EndsWith(".app", StringComparison.OrdinalIgnoreCase);
-
-	private static Process SpawnDotnet(string dllPath, string sampleQuery)
-	{
-		if (!File.Exists(dllPath))
-		{
-			throw new FileNotFoundException(
-				$"SamplesApp dll not found at '{dllPath}'. " +
-				$"Set {AppiumPlatformResolver.EnvVarAppPath} to an absolute path " +
-				"or run dotnet test from the repo root.",
-				dllPath);
-		}
-
-		var dotnetPath = ResolveDotnet();
-		var psi = new ProcessStartInfo
-		{
-			FileName = dotnetPath,
-			UseShellExecute = false,
-			WorkingDirectory = Path.GetDirectoryName(dllPath)!,
-		};
-		psi.ArgumentList.Add(dllPath);
-		if (!string.IsNullOrEmpty(sampleQuery))
-		{
-			psi.ArgumentList.Add(sampleQuery);
-		}
-
-		psi.Environment["DOTNET_NOLOGO"] = "1";
-
-		return Process.Start(psi)
-			?? throw new InvalidOperationException("Failed to start dotnet process for SamplesApp.");
-	}
 
 	private static string ResolveDotnet()
 	{
@@ -448,29 +460,81 @@ exec ""{dotnetPath}"" ""{dllPath}"" ""{sampleQuery}""
 		return "dotnet";
 	}
 
-	private static void WaitForWindow(Process process)
+	private static string? GetAttributeAny(IWebElement element, params string[] names)
 	{
-		// Give the runtime time to boot and put a window on screen so the AX
-		// tree contains our elements before we open the Appium session.
-		var deadline = DateTime.UtcNow + TimeSpan.FromSeconds(20);
-		while (DateTime.UtcNow < deadline)
+		foreach (var name in names)
 		{
-			if (process.HasExited)
+			var value = element.GetAttribute(name);
+			if (!string.IsNullOrWhiteSpace(value))
 			{
-				throw new InvalidOperationException(
-					$"SamplesApp dotnet process exited with code {process.ExitCode} before reaching its main window.");
-			}
-
-			Thread.Sleep(500);
-			process.Refresh();
-			if (process.MainWindowHandle != IntPtr.Zero)
-			{
-				// On macOS this is rarely set, but if it is we can stop waiting.
-				return;
+				return value;
 			}
 		}
 
-		// Fallback to a fixed wait - Mac2 will retry if the window isn't ready.
-		Thread.Sleep(TimeSpan.FromSeconds(2));
+		return null;
 	}
+
+	private static bool? ParseBool(string? value)
+		=> value?.Trim().ToLowerInvariant() switch
+		{
+			"true" or "1" => true,
+			"false" or "0" => false,
+			_ => null,
+		};
+
+	private static int? ParseInt(string? value)
+		=> int.TryParse(value, out var parsed) ? parsed : null;
+
+	private static string? NormalizeToggleState(string? value)
+		=> value?.Trim().ToLowerInvariant() switch
+		{
+			"true" or "1" or "on" => "on",
+			"false" or "0" or "off" => "off",
+			"mixed" => "mixed",
+			_ => null,
+		};
+
+	private static string? NormalizeLandmark(string? value)
+		=> value?.Trim().ToLowerInvariant().Replace(" ", string.Empty) switch
+		{
+			"navigation" => "navigation",
+			"search" => "search",
+			"main" => "main",
+			"form" => "form",
+			"banner" => "banner",
+			"contentinfo" => "contentinfo",
+			"complementary" => "complementary",
+			"region" => "region",
+			"custom" => "custom",
+			_ => null,
+		};
+
+	private static string? NormalizeLiveSetting(string? value)
+		=> value?.Trim().ToLowerInvariant() switch
+		{
+			"polite" => "polite",
+			"assertive" => "assertive",
+			_ => null,
+		};
+
+	private static string? EmptyToNull(string? value)
+		=> string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+	private static string ToXPathLiteral(string value)
+	{
+		if (!value.Contains('\''))
+		{
+			return $"'{value}'";
+		}
+
+		if (!value.Contains('"'))
+		{
+			return $"\"{value}\"";
+		}
+
+		var parts = value.Split('\'');
+		return "concat('" + string.Join("', \"'\", '", parts) + "')";
+	}
+
+	private readonly record struct ProcessResult(int ExitCode, string StandardOutput, string StandardError);
 }

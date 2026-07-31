@@ -15,9 +15,13 @@ public interface IPlatformAdapter : IDisposable
 {
 	AppiumPlatform Platform { get; }
 
-	IWebDriver CreateDriver(string sampleQuery);
+	IWebDriver CreateDriver(AppiumTestOptions options, string sampleQuery);
 
 	By ByAutomationId(string automationId);
+
+	void Activate(IWebDriver driver, IWebElement element);
+
+	void EnterText(IWebDriver driver, IWebElement element, string value);
 
 	/// <summary>
 	/// Reads the role/role-description that the platform automation API reports
@@ -30,7 +34,9 @@ public interface IPlatformAdapter : IDisposable
 	/// Returns the readable accessible name as the platform exposes it
 	/// (UIA Name, AX title, or computed ARIA name).
 	/// </summary>
-	string GetName(IWebElement element);
+	string GetName(IWebDriver driver, IWebElement element);
+
+	string? GetDescription(IWebDriver driver, IWebElement element);
 
 	/// <summary>
 	/// Returns every reachable descendant. Used to assert that the
@@ -56,6 +62,30 @@ public interface IPlatformAdapter : IDisposable
 	/// plus platform-specific pattern-availability attributes.
 	/// </summary>
 	IReadOnlyList<string> GetSupportedPatterns(IWebElement element);
+
+	bool? GetEnabled(IWebElement element);
+
+	bool? GetKeyboardFocusable(IWebElement element);
+
+	bool? GetFocused(IWebDriver driver, IWebElement element);
+
+	bool? GetOffscreen(IWebElement element);
+
+	string? GetToggleState(IWebElement element);
+
+	bool? GetSelected(IWebElement element);
+
+	bool? GetExpanded(IWebElement element);
+
+	bool? GetRequired(IWebElement element);
+
+	int? GetLevel(IWebElement element);
+
+	string? GetLandmark(IWebElement element);
+
+	string? GetRoleDescription(IWebElement element);
+
+	string? GetLiveSetting(IWebElement element);
 
 	/// <summary>
 	/// Direct children in tree order. Returns the visible top-level

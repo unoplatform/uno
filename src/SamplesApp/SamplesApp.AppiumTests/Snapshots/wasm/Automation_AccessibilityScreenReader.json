@@ -1,0 +1,182 @@
+{
+  "schema": 2,
+  "sample": "Automation/Accessibility_ScreenReader",
+  "flavor": "wasm",
+  "elements": [
+    {
+      "id": "AccessibilityPageHeading",
+      "automationId": "AccessibilityPageHeading",
+      "role": "heading",
+      "name": "Accessibility - Screen Reader Support",
+      "patterns": [],
+      "state": {
+        "level": 1
+      }
+    },
+    {
+      "id": "CombinedTextBox",
+      "automationId": "CombinedTextBox",
+      "role": "textbox",
+      "name": "Editable field",
+      "patterns": [
+        "value"
+      ],
+      "state": {
+        "enabled": true
+      }
+    },
+    {
+      "id": "CommentsTextBox",
+      "automationId": "CommentsTextBox",
+      "role": "textbox",
+      "name": "Comments",
+      "patterns": [
+        "value"
+      ],
+      "state": {}
+    },
+    {
+      "id": "CustomLandmarkRegion",
+      "automationId": "CustomLandmarkRegion",
+      "role": "landmark",
+      "name": "Current viewers",
+      "patterns": [],
+      "state": {
+        "landmark": "region",
+        "roleDescription": "Current viewers"
+      }
+    },
+    {
+      "id": "EnableNotificationsCheckBox",
+      "automationId": "EnableNotificationsCheckBox",
+      "role": "checkbox",
+      "name": "Enable notifications",
+      "patterns": [
+        "toggle"
+      ],
+      "state": {
+        "enabled": true,
+        "toggleState": "on"
+      }
+    },
+    {
+      "id": "FavoriteColorComboBox",
+      "automationId": "FavoriteColorComboBox",
+      "role": "combobox",
+      "name": "Favorite color",
+      "value": "Red",
+      "patterns": [
+        "expandcollapse",
+        "selection"
+      ],
+      "state": {}
+    },
+    {
+      "id": "HelpTextButton",
+      "automationId": "HelpTextButton",
+      "role": "button",
+      "name": "Cancel RSS subscriptions",
+      "description": "Launch the cancellation wizard",
+      "patterns": [
+        "invoke"
+      ],
+      "state": {}
+    },
+    {
+      "id": "LiveRegionText",
+      "automationId": "LiveRegionText",
+      "role": "group",
+      "name": "Status: Ready",
+      "patterns": [],
+      "state": {
+        "liveSetting": "polite"
+      }
+    },
+    {
+      "id": "MainLandmarkRegion",
+      "automationId": "MainLandmarkRegion",
+      "role": "landmark",
+      "name": "Main article",
+      "patterns": [],
+      "state": {
+        "landmark": "main"
+      }
+    },
+    {
+      "id": "NavigationLandmarkRegion",
+      "automationId": "NavigationLandmarkRegion",
+      "role": "landmark",
+      "name": "Primary navigation",
+      "patterns": [],
+      "state": {
+        "landmark": "navigation"
+      }
+    },
+    {
+      "id": "PhotosSearchInput",
+      "automationId": "PhotosSearchInput",
+      "role": "textbox",
+      "name": "Searching Photos:",
+      "patterns": [
+        "value"
+      ],
+      "state": {}
+    },
+    {
+      "id": "PlainTextBlock",
+      "automationId": "PlainTextBlock",
+      "role": "group",
+      "name": "Static text element",
+      "patterns": [],
+      "state": {}
+    },
+    {
+      "id": "RequiredFullNameTextBox",
+      "automationId": "RequiredFullNameTextBox",
+      "role": "textbox",
+      "name": "Full name",
+      "patterns": [
+        "value"
+      ],
+      "state": {
+        "required": true
+      }
+    },
+    {
+      "id": "SizeMediumRadioButton",
+      "automationId": "SizeMediumRadioButton",
+      "role": "radio",
+      "name": "Medium",
+      "patterns": [
+        "selectionitem"
+      ],
+      "state": {
+        "selected": false
+      }
+    },
+    {
+      "id": "SizeSmallRadioButton",
+      "automationId": "SizeSmallRadioButton",
+      "role": "radio",
+      "name": "Small",
+      "patterns": [
+        "selectionitem"
+      ],
+      "state": {
+        "selected": true
+      }
+    },
+    {
+      "id": "VisibilityTargetButton",
+      "automationId": "VisibilityTargetButton",
+      "role": "button",
+      "name": "I can be hidden",
+      "patterns": [
+        "invoke"
+      ],
+      "state": {
+        "enabled": true
+      }
+    }
+  ]
+}

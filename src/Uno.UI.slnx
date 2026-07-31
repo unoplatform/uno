@@ -171,6 +171,9 @@
       <BuildDependency Project="SourceGenerators/Uno.UI.Tasks/Uno.UI.Tasks.csproj" />
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
+    <Project Path="SamplesApp/SamplesApp.AppiumTests/SamplesApp.AppiumTests.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
     <Project Path="SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Build Solution="Release_NoSamples|Any CPU" Project="false" />
