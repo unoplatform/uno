@@ -100,6 +100,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual("Option C", comboBox.SelectedItem);
 		}
 
+#if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_DataPeer_Selects_Item_Then_ComboBox_Selection_Changes()
@@ -123,6 +124,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual(1, comboBox.SelectedIndex);
 			Assert.AreSame(second, comboBox.SelectedItem);
 		}
+#endif
 
 		/// <summary>
 		/// Verifies that ComboBox automation peer has correct control type.

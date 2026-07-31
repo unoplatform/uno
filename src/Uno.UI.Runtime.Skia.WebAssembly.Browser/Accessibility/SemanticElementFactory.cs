@@ -1115,46 +1115,46 @@ internal static partial class SemanticElementFactory
 				break;
 
 			case SemanticElementType.GridRow:
-			{
-				var (selectable, selected) = GetSelectionState(peer);
-				NativeMethods.UpdateGridElementMetadata(
-					handle,
-					null,
-					ResolveGridRowIndex(peer),
-					0,
-					1,
-					1,
-					selectable,
-					selected);
-				break;
-			}
-
-			case SemanticElementType.GridCell:
-			{
-				var rowIndex = 0;
-				var colIndex = 0;
-				var rowSpan = 1;
-				var colSpan = 1;
-				if (peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider gridItemProvider)
 				{
-					rowIndex = ResolveGridItemRowIndex(peer, gridItemProvider);
-					colIndex = ResolveGridItemColumnIndex(peer, gridItemProvider);
-					rowSpan = gridItemProvider.RowSpan;
-					colSpan = gridItemProvider.ColumnSpan;
+					var (selectable, selected) = GetSelectionState(peer);
+					NativeMethods.UpdateGridElementMetadata(
+						handle,
+						null,
+						ResolveGridRowIndex(peer),
+						0,
+						1,
+						1,
+						selectable,
+						selected);
+					break;
 				}
 
-				var (selectable, selected) = GetSelectionState(peer);
-				NativeMethods.UpdateGridElementMetadata(
-					handle,
-					attributes.Label,
-					rowIndex,
-					colIndex,
-					rowSpan,
-					colSpan,
-					selectable,
-					selected);
-				break;
-			}
+			case SemanticElementType.GridCell:
+				{
+					var rowIndex = 0;
+					var colIndex = 0;
+					var rowSpan = 1;
+					var colSpan = 1;
+					if (peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider gridItemProvider)
+					{
+						rowIndex = ResolveGridItemRowIndex(peer, gridItemProvider);
+						colIndex = ResolveGridItemColumnIndex(peer, gridItemProvider);
+						rowSpan = gridItemProvider.RowSpan;
+						colSpan = gridItemProvider.ColumnSpan;
+					}
+
+					var (selectable, selected) = GetSelectionState(peer);
+					NativeMethods.UpdateGridElementMetadata(
+						handle,
+						attributes.Label,
+						rowIndex,
+						colIndex,
+						rowSpan,
+						colSpan,
+						selectable,
+						selected);
+					break;
+				}
 
 			case SemanticElementType.ColumnHeader:
 				var columnHeaderRowSpan = 1;
