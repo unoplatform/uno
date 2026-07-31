@@ -4,28 +4,28 @@ uid: Uno.Features.NativeAOT
 
 # Native AOT Support
 
-Uno Platform 6.6 introduces *experimental* support for [.NET Native AOT deployment](https://learn.microsoft.com/dotnet/core/deploying/native-aot) across Android, iOS, Linux, macOS, and Windows. Note that Native AOT support *itself* is experimental on Android.
+Uno Platform 6.6 introduces support for [.NET Native AOT deployment](https://learn.microsoft.com/dotnet/core/deploying/native-aot) across Android, iOS, Linux, macOS, and Windows.
 
-Enabling Native AOT enables faster app startup and improves performance, typically at the cost of larger app sizes:
+Enabling Native AOT enables faster app startup and improves performance, typically at the cost of larger app sizes. Consider the [Uno.Chefs sample app](xref:Uno.Chefs.Overview):
 
 | **Sample**                                            | **Environment**   | **Runtime** |          **Publish Size** |     **Startup Times (s)** |
 | ----------------------------------------------------- | ----------------- | ----------- | ------------------------: | ------------------------: |
-| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.16 -->   | Android, .NET 10  | MonoVM      |   93M                     | 0.895s |
-| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.16 -->   | Android, .NET 10  | NativeAOT   |  109M <br> (117% MonoVM)  | 0.348s <br> (39% MonoVM)  |
-| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.10 -->   | iOS, .NET 10      | MonoVM      |  138M                     | 0.940s |
-| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.10 -->   | iOS, .NET 10      | NativeAOT   |  122M <br> (88% MonoVM)   | 0.742s <br> (79% MonoVM)  |
-| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.16 -->   | Linux, .NET 10    | CoreCLR     |  541M                     | 0.87s |
-| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.16 -->   | Linux, .NET 10    | NativeAOT   |  625M <br> (118% CoreCLR) | 0.35s <br> (40% CoreCLR)  |
-| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.16 -->   | macOS, .NET 10    | CoreCLR     |  547M                     | 1.347s |
-| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.16 -->   | macOS, .NET 10    | NativeAOT   |  720M <br> (141% CoreCLR) | 0.555s <br> (41% CoreCLR) |
-| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.16 -->   | Windows, .NET 10  | CoreCLR     |  725M                     | 1.605s |
-| [Uno.Chefs][uno-chefs] <!-- with Uno.Sdk 6.6.16 -->   | Windows, .NET 10  | NativeAOT   |  970M <br> (139% CoreCLR) | 0.824s <br> (51% CoreCLR) |
+| [Uno.Chefs][chefs]     <!-- with Uno.Sdk 6.6.16 -->   | Android, .NET 10  | MonoVM      |   93M                     | 0.895s |
+| [Uno.Chefs][chefs]     <!-- with Uno.Sdk 6.6.16 -->   | Android, .NET 10  | NativeAOT   |  109M <br> (117% MonoVM)  | 0.348s <br> (39% MonoVM)  |
+| [Uno.Chefs][chefs-ios] <!-- with Uno.Sdk 6.6.10 -->   | iOS, .NET 10      | MonoVM      |  138M                     | 0.940s |
+| [Uno.Chefs][chefs-ios] <!-- with Uno.Sdk 6.6.10 -->   | iOS, .NET 10      | NativeAOT   |  122M <br> (88% MonoVM)   | 0.742s <br> (79% MonoVM)  |
+| [Uno.Chefs][chefs]     <!-- with Uno.Sdk 6.6.16 -->   | Linux, .NET 10    | CoreCLR     |  541M                     | 0.87s |
+| [Uno.Chefs][chefs]     <!-- with Uno.Sdk 6.6.16 -->   | Linux, .NET 10    | NativeAOT   |  625M <br> (118% CoreCLR) | 0.35s <br> (40% CoreCLR)  |
+| [Uno.Chefs][chefs]     <!-- with Uno.Sdk 6.6.16 -->   | macOS, .NET 10    | CoreCLR     |  547M                     | 1.347s |
+| [Uno.Chefs][chefs]     <!-- with Uno.Sdk 6.6.16 -->   | macOS, .NET 10    | NativeAOT   |  720M <br> (141% CoreCLR) | 0.555s <br> (41% CoreCLR) |
+| [Uno.Chefs][chefs]     <!-- with Uno.Sdk 6.6.16 -->   | Windows, .NET 10  | CoreCLR     |  725M                     | 1.605s |
+| [Uno.Chefs][chefs]     <!-- with Uno.Sdk 6.6.16 -->   | Windows, .NET 10  | NativeAOT   |  970M <br> (139% CoreCLR) | 0.824s <br> (51% CoreCLR) |
 
 > [!NOTE]
 > App startup times are provided for comparison purposes.  Actual startup times will vary depending on hardware.
 >
 > [!NOTE]
-> .NET support for Native AOT on Android is still experimental.
+> Native AOT on Android will emit an [XA1040 warning](https://learn.microsoft.com/dotnet/android/messages/xa1040).
 
 ## Prerequisites
 
@@ -413,4 +413,5 @@ index 764886bb..f146a16f 100644
 
 *All* use of `DependencyProperty.RegisterAttached()` is potentially suspect and should be reviewed.
 
-[uno-chefs]: https://github.com/unoplatform/uno.chefs/commit/d54bceea
+[chefs]: https://github.com/unoplatform/uno.chefs/commit/873fae67cef3d12fb55b69c6f3fcebcc0f0101f9
+[chefs-ios]: https://github.com/unoplatform/uno.chefs/commit/4bbc0569dc7ac0ddefe8b0de4be31beb3706a90b

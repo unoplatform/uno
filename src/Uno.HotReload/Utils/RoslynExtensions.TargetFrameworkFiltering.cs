@@ -100,7 +100,9 @@ public static partial class RoslynExtensions
 	/// The filter is conservative: when the head project cannot be found, when the runtime
 	/// target framework is unknown, or when no flavor matches it, the solution is returned
 	/// unchanged and the situation is reported — a degraded-but-functional workspace beats a
-	/// wrongly-emptied one.
+	/// wrongly-emptied one. Every path logs the loaded flavors, the target framework the
+	/// application reported and the flavors kept, so a mis-targeted workspace stays
+	/// diagnosable from the logs alone.
 	/// </remarks>
 	/// <param name="solution">The solution to filter (typically the freshly-opened workspace solution).</param>
 	/// <param name="headProjectPath">Full path of the head project (<c>.csproj</c>) the application runs.</param>
@@ -125,14 +127,35 @@ public static partial class RoslynExtensions
 		if (headFlavors.Count == 1)
 		{
 			// Single flavor: either the project is single-targeted or MSBuild already pinned
-			// the TargetFramework during evaluation. Nothing to filter.
+			// the TargetFramework during evaluation. Nothing to filter, but still trace what
+			// was loaded against what the application reported: a workspace pinned to the
+			// wrong flavor is otherwise invisible in the logs.
+			var resolved = headFlavors[0].TryGetTargetFramework(out var tfm);
+			var singleFlavor = resolved ? tfm! : $"<unresolved: {headFlavors[0].Name}>";
+			if (resolved && !string.IsNullOrWhiteSpace(runtimeTargetFramework) && !RuntimeTargetFrameworkMatches(runtimeTargetFramework, singleFlavor))
+			{
+				reporter.Warn(
+					$"The hot-reload workspace loaded '{headProjectPath}' for the single target framework '{singleFlavor}', " +
+					$"which does not match the application's '{runtimeTargetFramework}'. Hot reload updates will most likely " +
+					"not apply to the running application.");
+			}
+			else
+			{
+				reporter.Output(
+					$"Hot-reload workspace loaded '{headProjectPath}' for the single target framework '{singleFlavor}' " +
+					$"(application's '{(string.IsNullOrWhiteSpace(runtimeTargetFramework) ? "<not reported>" : runtimeTargetFramework)}'); nothing to filter.");
+			}
+
 			return solution;
 		}
 
 		var resolvedFlavors = headFlavors
 			.Select(p => (Project: p, TargetFramework: p.TryGetTargetFramework(out var tfm) ? tfm : null))
 			.ToList();
-		var flavorsDescription = string.Join(", ", resolvedFlavors.Select(f => f.TargetFramework ?? $"<unresolved: {f.Project.Name}>"));
+		var flavorsDescription = string.Join(", ", resolvedFlavors.Select(f => f.TargetFramework
+			?? (f.Project.IsMissingFrameworkReferences()
+				? $"<unresolved, no framework references: {f.Project.Name}>"
+				: $"<unresolved: {f.Project.Name}>")));
 
 		if (string.IsNullOrWhiteSpace(runtimeTargetFramework))
 		{
@@ -149,10 +172,15 @@ public static partial class RoslynExtensions
 
 		if (matchedFlavors.Count == 0)
 		{
+			var missingPackHint = resolvedFlavors.Any(f => f.TargetFramework is null && f.Project.IsMissingFrameworkReferences())
+				? " At least one flavor loaded without .NET framework references (missing targeting pack at design time) — " +
+					"see the preceding workspace warning for the remediation."
+				: "";
+
 			reporter.Warn(
 				$"None of the {headFlavors.Count} target frameworks loaded for '{headProjectPath}' ({flavorsDescription}) matches " +
 				$"the application's '{runtimeTargetFramework}'. Keeping all of them; hot reload may be blocked by compilation " +
-				"errors coming from the other target frameworks.");
+				$"errors coming from the other target frameworks.{missingPackHint}");
 			return solution;
 		}
 
@@ -195,7 +223,8 @@ public static partial class RoslynExtensions
 
 		reporter.Output(
 			$"Hot-reload workspace restricted to '{string.Join(", ", matchedFlavors.Select(f => f.TargetFramework))}' for the " +
-			$"application's '{runtimeTargetFramework}' ({remove.Count} project(s) from the other target frameworks removed).");
+			$"application's '{runtimeTargetFramework}' (loaded target frameworks: {flavorsDescription}; " +
+			$"{remove.Count} project(s) from the other target frameworks removed).");
 
 		return solution;
 	}

@@ -6,6 +6,14 @@ namespace Uno.HotReload.IO;
 /// <summary>
 /// Abstracts file editing operations (on disk, via IDE, etc.).
 /// </summary>
+/// <remarks>
+/// LEGACY SEAM — do not build new behavior on this interface. Its per-file granularity cannot
+/// express request-level semantics (ordering, batching, the hot-reload trigger), which is what
+/// caused the IDE to evaluate EnC on intermediate states (spec 052). New variants must
+/// implement or derive <see cref="IFileUpdater"/>/<see cref="FileUpdater"/> instead (see
+/// <c>IdeFileUpdater</c>). The only intended remaining implementation is the on-disk editor
+/// used by the base <see cref="FileUpdater"/>.
+/// </remarks>
 public interface IFileEditor
 {
 	/// <summary>

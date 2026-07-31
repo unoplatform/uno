@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -100,6 +101,101 @@ public static partial class RoslynExtensions
 		// Plain net10.0 (no platform marker, no platform-specific ref pack).
 		targetFramework = frameworkVersion;
 		return true;
+	}
+
+	/// <summary>
+	/// Determines whether the project links at least one recognised .NET ref pack (see
+	/// <see cref="TryParseRefPackPath"/>), i.e. whether its design-time build resolved the
+	/// framework references at all.
+	/// </summary>
+	public static bool HasFrameworkReferences(this Project project)
+	{
+		ArgumentNullException.ThrowIfNull(project);
+
+		return project.MetadataReferences.Any(reference =>
+			reference is PortableExecutableReference { FilePath: { Length: > 0 } path }
+			&& TryParseRefPackPath(path, out _, out _, out _));
+	}
+
+	/// <summary>
+	/// Detects the missing-targeting-pack signature (spec 049): the design-time build
+	/// resolved package references (the project is not empty) but produced no .NET framework
+	/// reference — typically because the targeting pack pinned by a workload manifest is not
+	/// installed and is only satisfied through a restore-time <c>PackageDownload</c>, which
+	/// Roslyn's <c>MSBuildWorkspace</c> never runs. The .NET SDK deliberately emits no error
+	/// for this under <c>DesignTimeBuild=true</c>, making this snapshot inspection the only
+	/// detection point.
+	/// </summary>
+	public static bool IsMissingFrameworkReferences(this Project project)
+	{
+		ArgumentNullException.ThrowIfNull(project);
+
+		return project.MetadataReferences
+				.OfType<PortableExecutableReference>()
+				.Any(r => r.FilePath is { Length: > 0 })
+			&& !project.HasFrameworkReferences();
+	}
+
+	/// <summary>
+	/// The flavors of <paramref name="headProjectPath"/> in <paramref name="solution"/>
+	/// exhibiting the missing-targeting-pack signature (see
+	/// <see cref="IsMissingFrameworkReferences"/>). Non-head projects are not scanned: a
+	/// library flavor without framework references follows its head's fate through the
+	/// reachability-based filtering.
+	/// </summary>
+	public static IReadOnlyList<Project> GetHeadFlavorsMissingFrameworkReferences(this Solution solution, string headProjectPath)
+	{
+		ArgumentNullException.ThrowIfNull(solution);
+
+		return solution.Projects
+			.Where(p => PathComparer.PathEquals(p.FilePath, headProjectPath))
+			.Where(IsMissingFrameworkReferences)
+			.ToList();
+	}
+
+	/// <summary>
+	/// Attempts to locate the dotnet root whose SDK-installed targeting packs the project
+	/// links, from the ref-pack layout <c>&lt;root&gt;/packs/&lt;Pack&gt;/&lt;ver&gt;/ref/&lt;tfm&gt;/&lt;asm&gt;.dll</c>.
+	/// Returns <see langword="false"/> when the project's ref packs come from the NuGet
+	/// cache (which carries no SDK root) or when it has none.
+	/// </summary>
+	public static bool TryGetDotnetRootFromFrameworkReferences(this Project project, [NotNullWhen(true)] out string? dotnetRoot)
+	{
+		ArgumentNullException.ThrowIfNull(project);
+
+		dotnetRoot = null;
+
+		foreach (var reference in project.MetadataReferences)
+		{
+			if (reference is not PortableExecutableReference { FilePath: { Length: > 0 } path }
+				|| !TryParseRefPackPath(path, out _, out _, out _))
+			{
+				continue;
+			}
+
+			// path = <root>/packs/<PackName>/<PackVersion>/ref/<tfm>/<asm>.dll
+			// Five parents up is the "packs" folder; its own parent is the dotnet root.
+			var packsDirectory = path;
+			for (var i = 0; i < 5 && packsDirectory is not null; i++)
+			{
+				packsDirectory = Path.GetDirectoryName(packsDirectory);
+			}
+
+			if (packsDirectory is null
+				|| !"packs".Equals(Path.GetFileName(packsDirectory), StringComparison.OrdinalIgnoreCase))
+			{
+				// NuGet-cache layout (…/.nuget/packages/…) or an unexpected shape — no SDK root.
+				continue;
+			}
+
+			if (Path.GetDirectoryName(packsDirectory) is { Length: > 0 } root)
+			{
+				dotnetRoot = root;
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/// <summary>

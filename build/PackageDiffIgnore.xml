@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <DiffIgnore>
   <IgnoreSets>
 	<IgnoreSet baseVersion="4.0.13">
@@ -2552,10 +2552,10 @@
 
 		  <!-- END WinUI sync (Category C): independent property removals -->
 
+
 		  <!-- ItemsRepeater.Animator property: paired with removed ElementAnimator type (see <Types> above). -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ItemsRepeater::AnimatorProperty()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ElementAnimator Microsoft.UI.Xaml.Controls.ItemsRepeater::Animator()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
-
 
 		  <!-- DataContext restricted to FrameworkElement. DataContext / DataContextProperty are
 		       removed from UIElement and every non-FrameworkElement DependencyObject (Brush, Transform, Setter,
@@ -2977,6 +2977,8 @@
 		  <Member fullName="Windows.UI.ViewManagement.StatusBarProgressIndicator Windows.UI.ViewManagement.StatusBar.get_ProgressIndicator()" reason="WinUI sync: StatusBar.ProgressIndicator getter removed by WinAppSDK 1.8" />
 
 		  <!-- END WinUI sync (Category C): independent method removals -->
+
+
 
 		  <!-- ItemsRepeater.Animator accessors: paired with removed ElementAnimator type (see <Types>) and ItemsRepeater::Animator property (see <Properties>). -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.ItemsRepeater.get_AnimatorProperty()" reason="WinUI sync: ItemsRepeater.Animator property removed by WinAppSDK 1.8 (paired with removed ElementAnimator)" />
