@@ -481,7 +481,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				{
 					_x11TopWindow = CreateGLXWindow(topWindowDisplay, screen, size, RootX11Window.Window);
 					_ = XLib.XSync(display, false);
-					_renderer = new X11OpenGLRenderer(this, TopX11Window);
+					_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window);
 				}
 			}
 			catch (Exception e)
@@ -497,7 +497,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 					{
 						_x11TopWindow = CreateGLXWindow(topWindowDisplay, screen, size, RootX11Window.Window);
 						_ = XLib.XSync(display, false);
-						_renderer = new X11OpenGLRenderer(this, TopX11Window);
+						_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window);
 					}
 					else
 					{

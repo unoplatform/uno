@@ -3,6 +3,7 @@
 using System;
 using Windows.UI;
 using Microsoft.UI.Xaml.Media;
+using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Hosting;
 
@@ -33,6 +34,11 @@ internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 		var (width, height) = GetWindowSize();
 		var activation = GraphicsRegistry.Initialize(new X11GraphicsNativeWindow(x11Window, width, height));
 		_context = activation.Context;
+
+		if (this.Log().IsEnabled(LogLevel.Information))
+		{
+			this.Log().Info($"Neutral graphics pipeline active: {_context.Kind} context via {activation.Renderer.GetType().Name}.");
+		}
 
 		// Route the shared render loop through the negotiated backend (whichever was registered).
 		CompositionTarget.Renderer = activation.Renderer;

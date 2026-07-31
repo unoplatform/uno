@@ -121,6 +121,10 @@ internal static class X11GraphicsContextFactory
 	public static IGraphicsContext? Create(GraphicsContextKind kind, INativeWindow window, GraphicsRequirements requirements)
 		=> kind switch
 		{
+			// OpenGL is only creatable when the host made a GLX window (visual chosen at creation); otherwise
+			// negotiation falls through to the next kind (software).
+			GraphicsContextKind.OpenGL when window is X11GraphicsNativeWindow gl && gl.X11Window.glXInfo is not null
+				=> new X11OpenGLGraphicsContext(gl.X11Window),
 			GraphicsContextKind.Software => new X11SoftwareGraphicsContext(window),
 			_ => null,
 		};
