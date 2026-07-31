@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Uno.UI.Composition.Drawing;
@@ -70,7 +71,14 @@ public static class GraphicsRegistry
 	/// <see cref="DrawingFactory.Current"/> and a <see cref="GraphicsInitialization"/> is returned. Nothing is
 	/// created speculatively. Throws if no registered backend can initialize on <paramref name="window"/>.
 	/// </summary>
-	public static GraphicsInitialization Initialize(INativeWindow window)
+	/// <param name="preferredKinds">
+	/// Optional host override of the context-kind order, expressed purely in neutral <see cref="GraphicsContextKind"/>
+	/// terms (the host names no backend type). When supplied, each backend is tried against these kinds, in this
+	/// order, intersected with the kinds the backend actually supports — letting a host with one window type steer
+	/// the outcome (e.g. <c>[Software]</c> to force the CPU path, or <c>[OpenGLES, Software]</c> to prefer GLES).
+	/// When null, each backend's own <see cref="IGraphicsProvider.PreferredContexts"/> order is used.
+	/// </param>
+	public static GraphicsInitialization Initialize(INativeWindow window, IReadOnlyList<GraphicsContextKind>? preferredKinds = null)
 	{
 		ArgumentNullException.ThrowIfNull(window);
 
@@ -95,7 +103,13 @@ public static class GraphicsRegistry
 		var attempts = new StringBuilder();
 		foreach (var backend in backends)
 		{
-			foreach (var kind in backend.PreferredContexts)
+			// Host override (if any) steers the order but can only select from what the backend supports;
+			// otherwise the backend's own preference order stands.
+			var kinds = preferredKinds is null
+				? backend.PreferredContexts
+				: preferredKinds.Where(backend.PreferredContexts.Contains).ToArray();
+
+			foreach (var kind in kinds)
 			{
 				IGraphicsContext? context = null;
 				try

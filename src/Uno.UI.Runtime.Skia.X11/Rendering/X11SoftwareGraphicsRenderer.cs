@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using Windows.UI;
 using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
@@ -22,17 +23,17 @@ internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 	private readonly IGraphicsContext _context;
 	private Color _background;
 
-	public X11SoftwareGraphicsRenderer(IXamlRootHost host, X11Window x11Window)
+	public X11SoftwareGraphicsRenderer(IXamlRootHost host, X11Window x11Window, IReadOnlyList<GraphicsContextKind>? preferredKinds = null)
 	{
 		_host = host;
 		_x11Window = x11Window;
 
-		// Uno owns context creation for the closed set of kinds; the X11 factory builds the software
-		// (CPU-framebuffer + XPutImage) context. No backend/GPU-library type is named here.
+		// Uno owns context creation for the closed set of kinds; the X11 factory builds the negotiated context
+		// (software CPU-framebuffer, GLX, or EGL/GLES). No backend/GPU-library type is named here.
 		GraphicsRegistry.ContextFactory = X11GraphicsContextFactory.Create;
 
 		var (width, height) = GetWindowSize();
-		var activation = GraphicsRegistry.Initialize(new X11GraphicsNativeWindow(x11Window, width, height));
+		var activation = GraphicsRegistry.Initialize(new X11GraphicsNativeWindow(x11Window, width, height), preferredKinds);
 		_context = activation.Context;
 
 		if (this.Log().IsEnabled(LogLevel.Information))

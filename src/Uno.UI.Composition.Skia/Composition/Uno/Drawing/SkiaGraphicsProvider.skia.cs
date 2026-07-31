@@ -7,9 +7,16 @@ namespace Uno.UI.Composition.Drawing;
 /// <summary>The registerable Skia backend pair (the built-in default choice; registered like any other backend).</summary>
 public sealed class SkiaGraphicsProvider : IGraphicsProvider
 {
-	// Skia can render on GL or the CPU framebuffer; prefer GL, letting the host's context factory veto it
-	// (return null) when it can't provide a GL window — negotiation then falls to software.
-	private static readonly GraphicsContextKind[] _preferred = { GraphicsContextKind.OpenGL, GraphicsContextKind.Software };
+	// Skia can render on GL/GLES or the CPU framebuffer; the host's context factory vetoes a kind (returns null)
+	// when it can't provide that window, so negotiation falls to the next. Default prefers desktop GL, then GLES,
+	// then software; a host can narrow/reorder this per window through GraphicsRegistry.Initialize's neutral
+	// kind-preference override (e.g. { Software } to force software, or { OpenGLES, Software } to prefer GLES).
+	private readonly GraphicsContextKind[] _preferred;
+
+	public SkiaGraphicsProvider(params GraphicsContextKind[] preferred)
+		=> _preferred = preferred.Length > 0
+			? preferred
+			: new[] { GraphicsContextKind.OpenGL, GraphicsContextKind.OpenGLES, GraphicsContextKind.Software };
 
 	public IReadOnlyList<GraphicsContextKind> PreferredContexts => _preferred;
 

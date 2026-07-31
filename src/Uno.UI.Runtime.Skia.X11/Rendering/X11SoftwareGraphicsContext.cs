@@ -125,6 +125,8 @@ internal static class X11GraphicsContextFactory
 			// negotiation falls through to the next kind (software).
 			GraphicsContextKind.OpenGL when window is X11GraphicsNativeWindow gl && gl.X11Window.glXInfo is not null
 				=> new X11OpenGLGraphicsContext(gl.X11Window),
+			// EGL/GLES works on a plain window (no GLX visual needed); returns null → falls to software if EGL is unavailable.
+			GraphicsContextKind.OpenGLES when window is X11GraphicsNativeWindow gles => new X11EGLGraphicsContext(gles.X11Window),
 			GraphicsContextKind.Software => new X11SoftwareGraphicsContext(window),
 			_ => null,
 		};

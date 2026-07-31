@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Uno.UI.Composition.Drawing;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -425,7 +426,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		if (Environment.GetEnvironmentVariable("UNO_NEUTRAL_RENDER") is "software")
 		{
 			_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-			_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window);
+			_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, new[] { GraphicsContextKind.Software });
 		}
 
 		var webgpuMode = Environment.GetEnvironmentVariable("UNO_WEBGPU");
@@ -475,7 +476,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				if (FeatureConfiguration.Rendering.PreferGLESOverGLOnX11)
 				{
 					_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-					_renderer = new X11EGLRenderer(this, TopX11Window);
+					_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, new[] { GraphicsContextKind.OpenGLES, GraphicsContextKind.Software });
 				}
 				else
 				{
@@ -504,7 +505,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 						this.Log().Info($"Attempted to create a GLX OpenGL context but failed with '{e.Message}'. Falling back to an EGL OpenGL ES context.");
 						_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
 						_ = XLib.XSync(display, false);
-						_renderer = new X11EGLRenderer(this, TopX11Window);
+						_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, new[] { GraphicsContextKind.OpenGLES, GraphicsContextKind.Software });
 					}
 				}
 				catch (Exception e2)
