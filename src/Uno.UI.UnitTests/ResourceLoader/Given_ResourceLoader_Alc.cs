@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -142,5 +143,96 @@ public class Given_ResourceLoader_Alc
 			ApplicationLanguages.PrimaryLanguageOverride = previousPlo;
 			_ResourceLoader.DefaultLanguage = previousDefault;
 		}
+	}
+
+	[TestMethod]
+	public void When_ClearAlcAssemblies_Scoped_Then_Collectible_Override_Removed_And_Host_Value_Restored()
+	{
+		// Reviewer scenario: a collectible previewed app overrides the SAME loader/culture/key as the
+		// host. While the collectible assembly is registered its value must win; after its ALC is torn
+		// down the key must resolve back to the host value — the collectible override must NOT outlive
+		// its ALC (an earlier implementation dropped only the lookup assembly + parsed markers, leaving
+		// the overriding value merged into loader._resources forever).
+		//
+		// Both ALCs load the same physical test assembly, so their embedded .upri are byte-identical
+		// and cannot naturally diverge. The differing collectible value is therefore injected via
+		// reflection at the exact merge-dictionary seam (loader._resources[culture][key]) that a
+		// collectible .upri carrying its own ApplicationName would have written (last writer wins).
+		// Everything else — the removal and the rebuild-from-survivors — exercises production code.
+		const string defaultLanguage = "en";
+		const string uiTestResources = "Uno.UI.UnitTests/Resources";
+		const string overrideValue = "Collectible-Override";
+		const string hostValue = "App70-en";
+
+		var previousCulture = CultureInfo.CurrentUICulture;
+		var previousPlo = ApplicationLanguages.PrimaryLanguageOverride;
+		var previousDefault = _ResourceLoader.DefaultLanguage;
+
+		var defaultAlcAssembly = typeof(Given_ResourceLoader_Alc).Assembly;
+		var collectibleAlc = new AssemblyLoadContext("Given_ResourceLoader_Alc.override", isCollectible: true);
+		try
+		{
+			CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+			ApplicationLanguages.PrimaryLanguageOverride = defaultLanguage;
+			_ResourceLoader.DefaultLanguage = defaultLanguage;
+
+			// Host registration establishes the baseline value and the loader context.
+			_ResourceLoader.AddLookupAssembly(defaultAlcAssembly);
+			Assert.AreEqual(
+				hostValue,
+				_ResourceLoader.GetForCurrentView(uiTestResources).GetString("ApplicationName"),
+				"Pre-condition: the host resource resolves before the collectible override.");
+
+			// A collectible previewed app registers and overrides the same key with a different value.
+			var collectibleAssembly = collectibleAlc.LoadFromAssemblyPath(defaultAlcAssembly.Location);
+			_ResourceLoader.AddLookupAssembly(collectibleAssembly);
+			OverrideMergedResource(uiTestResources, defaultLanguage, "ApplicationName", overrideValue);
+
+			Assert.AreEqual(
+				overrideValue,
+				_ResourceLoader.GetForCurrentView(uiTestResources).GetString("ApplicationName"),
+				"The collectible override must win while its assembly is registered.");
+
+			// Tear the collectible app down via the ALC-scoped sweep.
+			_ResourceLoader.ClearAlcAssemblies(collectibleAlc);
+
+			Assert.IsFalse(
+				_ResourceLoader.ContainsLookupAssembly(collectibleAssembly),
+				"The scoped sweep must drop the collectible-ALC lookup assembly.");
+			Assert.AreEqual(
+				hostValue,
+				_ResourceLoader.GetForCurrentView(uiTestResources).GetString("ApplicationName"),
+				"After the collectible ALC is torn down, the key must resolve back to the host value — the override must not outlive its ALC.");
+		}
+		finally
+		{
+			// Drop any leftover non-default registration so this test does not leak state.
+			_ResourceLoader.ClearNonDefaultAlcAssemblies();
+			collectibleAlc.Unload();
+			CultureInfo.CurrentUICulture = previousCulture;
+			ApplicationLanguages.PrimaryLanguageOverride = previousPlo;
+			_ResourceLoader.DefaultLanguage = previousDefault;
+		}
+	}
+
+	/// <summary>
+	/// Injects a merged resource value at the private per-loader dictionary seam
+	/// (<c>ResourceLoader._resources[culture][key]</c>) — the same place
+	/// <c>ProcessResourceFile</c> writes — to simulate a collectible .upri overriding an existing
+	/// key with a different value. Needed because both ALCs load the same physical assembly, so a
+	/// naturally-loaded collectible .upri cannot carry a divergent value.
+	/// </summary>
+	private static void OverrideMergedResource(string loaderName, string culture, string key, string value)
+	{
+		var loader = _ResourceLoader.GetForCurrentView(loaderName);
+		var resourcesField = typeof(_ResourceLoader).GetField("_resources", BindingFlags.Instance | BindingFlags.NonPublic)
+			?? throw new InvalidOperationException("ResourceLoader._resources field was not found.");
+		var resources = (Dictionary<string, Dictionary<string, string>>)resourcesField.GetValue(loader)!;
+		if (!resources.TryGetValue(culture, out var map))
+		{
+			resources[culture] = map = new Dictionary<string, string>();
+		}
+
+		map[key] = value;
 	}
 }
