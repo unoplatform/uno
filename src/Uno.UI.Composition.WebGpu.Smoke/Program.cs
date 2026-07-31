@@ -6,6 +6,7 @@ using System.Numerics;
 using Windows.Foundation;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Composition.WebGpu;
+using Windows.UI.Text;
 using WColor = Windows.UI.Color;
 
 int fail = 0;
@@ -110,8 +111,35 @@ for (int y = 0; y < 64; y += 4)
 }
 Check($"cross-backend: Skia vs WebGPU agree on {compared} sampled pixels", compared > 100 && disagree == 0, $"{disagree} disagreements / {compared}");
 
+// 9) TEXT — glyph run → neutral IGeometry outline (IFont.BuildGlyphRunOutline) → filled through BOTH backends.
+//    Exercises the font seam + fill rule (the 'A' counter must be a hole), end-to-end with zero Skia on the WebGPU side.
+var font = FontManager.Current.GetDefaultFont(new FontWeight(400), FontStretch.Normal, FontStyle.Normal, 48f);
+const string text = "A";
+var glyphs = new ushort[text.Length];
+var gpos = new Vector2[text.Length];
+float penX = 8;
+for (int i = 0; i < text.Length; i++) { var gi = font.GetGlyphIndex(text[i]); glyphs[i] = gi; gpos[i] = new Vector2(penX, 0); penX += font.GetGlyphAdvance(gi); }
+using var textGeom = font.BuildGlyphRunOutline(glyphs, gpos, 50f);
+
+var skText = new byte[64 * 64 * 4];
+DrawingBackend.Current.RenderOffscreen(64, 64, s => { s.DrawRect(new Rect(0, 0, 64, 64), black, false); s.DrawPath(textGeom, green, false); }).CopyPixels(skText);
+var wgText = Render(r => r.DrawPath(textGeom, green, false));
+
+int wgGreen = 0, tCompared = 0, tDisagree = 0;
+for (int i = 0; i < 64 * 64; i++)
+{
+	int b = i * 4;
+	char cs = (skText[b + 2] < 60 && skText[b + 1] > 150 && skText[b] < 60) ? 'G' : (skText[b + 2] < 40 && skText[b + 1] < 40 && skText[b] < 40) ? 'K' : '?';
+	char cw = (wgText[b] < 60 && wgText[b + 1] > 150 && wgText[b + 2] < 60) ? 'G' : (wgText[b] < 40 && wgText[b + 1] < 40 && wgText[b + 2] < 40) ? 'K' : '?';
+	if (cw == 'G') { wgGreen++; }
+	if (cs == '?' || cw == '?') { continue; }
+	tCompared++; if (cs != cw) { tDisagree++; }
+}
+Check("text: WebGPU rendered the glyph (non-empty)", wgGreen > 20, $"{wgGreen} green px");
+Check($"text: Skia vs WebGPU agree on {tCompared} glyph pixels (incl. fill-rule counter)", tCompared > 500 && tDisagree == 0, $"{tDisagree} disagreements / {tCompared}");
+
 Console.WriteLine(fail == 0
-	? "\nALL PASS — non-Skia render seam verified headless, and Skia vs WebGPU agree on the same neutral scene"
+	? "\nALL PASS — non-Skia render seam verified headless (primitives + text); Skia vs WebGPU agree on every neutral scene"
 	: $"\n{fail} CHECK(S) FAILED");
 Environment.Exit(fail == 0 ? 0 : 1);
 
