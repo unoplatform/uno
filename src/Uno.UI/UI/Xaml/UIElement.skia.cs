@@ -91,6 +91,12 @@ namespace Microsoft.UI.Xaml
 					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
 #endif
 					_visual.Owner = new WeakReference(this);
+
+					// Suppress painting until the first arrange gives this element a layout slot; see
+					// Visual.IsArrangePending. Set directly rather than through Visibility/IsVisible, which
+					// would raise property-changed and accessibility callbacks while the element is still
+					// being constructed.
+					_visual.IsArrangePending = !IsFirstArrangeDone;
 				}
 
 				return _visual;
@@ -310,6 +316,11 @@ namespace Microsoft.UI.Xaml
 		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
 			LayoutSlotWithMarginsAndAlignments = finalRect;
+
+			// This element now has a layout slot, so it may paint. Cleared before the no-change check
+			// below, which would otherwise leave a first arrange that happens to match the default rect
+			// permanently suppressed.
+			Visual.IsArrangePending = false;
 
 			var oldFinalRect = _lastFinalRect;
 			var oldClippedFrame = _lastClippedFrame;

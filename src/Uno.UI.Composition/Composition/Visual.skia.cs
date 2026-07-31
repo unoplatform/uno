@@ -118,6 +118,29 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// In the future, we should accurately set <see cref="_requiresRepaint"/> to
 	/// only be true when we really have something to paint (and that painting needs to be updated).
 	/// </summary>
+	private bool _isArrangePending;
+
+	/// <summary>
+	/// Set while the owning element has never been arranged. Such a visual has no layout slot yet
+	/// (<see cref="ArrangeOffset"/>/<see cref="Size"/> are unset) and a visual's content is not bounded by
+	/// its Size, so painting it would draw at the parent's origin, unclipped. WinUI never renders an element
+	/// its parent didn't arrange. Defaults to <see langword="false"/> so visuals created directly through the
+	/// Composition API (which are never arranged by the layout system) keep rendering.
+	/// </summary>
+	internal bool IsArrangePending
+	{
+		get => _isArrangePending;
+		set
+		{
+			if (_isArrangePending != value)
+			{
+				_isArrangePending = value;
+				// Becoming paintable has to re-collect this visual into any cached parent picture.
+				InvalidateParentChildrenPicture(includeSelf: true);
+			}
+		}
+	}
+
 	internal virtual bool CanPaint() => false;
 
 	/// <summary>
@@ -383,7 +406,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		global::System.Diagnostics.Debug.WriteLine($"{indent}{Comment} (Opacity:{parentSession.Opacity:F2}x{Opacity:F2} | IsVisible:{IsVisible})");
 #endif
 
-		if (this is { Opacity: 0 } or { IsVisible: false })
+		if (this is { Opacity: 0 } or { IsVisible: false } or { IsArrangePending: true })
 		{
 			return;
 		}
