@@ -219,28 +219,63 @@ public partial class TextBox
 			// context menu should have already been opened through UIElement-level ContextRequested handling.
 			return;
 		}
-		else if (!Text.IsNullOrEmpty()) // Touch tap
+
+		// Touch tap
+		var isMobileMultiTap = TouchSelectionConvention != TouchTextSelectionConvention.Desktop && _lastPointerDown.repeatedPresses >= 1;
+
+		if (Text.IsNullOrEmpty())
 		{
-			var displayBlockPoint = args.GetCurrentPoint(TextBoxView.DisplayBlock).Position;
-			if (TouchSelectionConvention != TouchTextSelectionConvention.Desktop && _lastPointerDown.repeatedPresses >= 1)
+			if (isMobileMultiTap)
 			{
-				// Native iOS/Android: a double-tap selects the word under the tap.
-				TouchSelectWord(displayBlockPoint);
+				HandleEmptyTextTouchGesture(args.GetCurrentPoint(this).Position);
 			}
-			else
+			else if (TouchSelectionConvention != TouchTextSelectionConvention.Desktop)
 			{
-				TouchTap(displayBlockPoint, wasFocused);
+				// A single tap in an empty field has no word to select, but must still place the caret (and Android's
+				// insertion handle) so the field shows where typing will go - and so the handle can open the flyout.
+				TouchTapAt(0);
 			}
-			// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (line 2088)
-			// OnPointerReleased - queue SelectionFlyout visibility update after pointer release
-			QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, args.GetCurrentPoint(this).Position);
+
+			return;
 		}
+
+		var displayBlockPoint = args.GetCurrentPoint(TextBoxView.DisplayBlock).Position;
+		if (isMobileMultiTap)
+		{
+			// Native iOS/Android: a double-tap selects the word under the tap.
+			TouchSelectWord(displayBlockPoint);
+		}
+		else
+		{
+			TouchTap(displayBlockPoint, wasFocused);
+		}
+		// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (line 2088)
+		// OnPointerReleased - queue SelectionFlyout visibility update after pointer release
+		QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, args.GetCurrentPoint(this).Position);
+	}
+
+	// Native iOS/Android pop the text flyout (Paste) over an empty field on a double-tap or a long-press. There is
+	// no word to select there, so place the caret and let the flyout carry the gesture.
+	private void HandleEmptyTextTouchGesture(Point textBoxPoint)
+	{
+		TouchTapAt(0);
+
+		// A TextBox always carries Select All in the touch primary bar, but a PasswordBox keeps its Select All in the
+		// overflow (and only with a password), so an empty one with an empty clipboard has no primary command at all.
+		// Opening the flyout then would only flash an empty popup before it self-hides.
+		if (SelectionFlyout is TextCommandBarFlyout flyout && !flyout.HasTouchPrimaryCommandsFor(this))
+		{
+			return;
+		}
+
+		QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, textBoxPoint, allowEmptySelection: true);
 	}
 
 	private void TouchTap(Point point, bool wasFocused)
-	{
-		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point, true, true));
+		=> TouchTapAt(Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point, true, true)));
 
+	private void TouchTapAt(int index)
+	{
 		switch (TouchSelectionConvention)
 		{
 			case TouchTextSelectionConvention.Android:
@@ -277,9 +312,11 @@ public partial class TextBox
 	}
 
 	private void TouchSelectWord(Point point)
+		=> TouchSelectWordAt(Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(point, true, true)));
+
+	private void TouchSelectWordAt(int index)
 	{
 		var displayBlock = TextBoxView.DisplayBlock;
-		var index = Math.Max(0, displayBlock.ParsedText.GetIndexAt(point, true, true));
 		var chunk = displayBlock.ParsedText.GetWordAt(index, true);
 
 		// GetWordAt bundles the trailing space into the word chunk; native iOS/Android select just the word,
@@ -301,24 +338,33 @@ public partial class TextBox
 
 	// On iOS/Android a touch-and-hold does native text selection instead of opening a context menu:
 	// Android selects the word under the press (the selection toolbar then appears via the selection
-	// flyout); iOS starts dragging the caret. Mouse/pen right-click and the Desktop convention keep
-	// the default context flyout.
+	// flyout); iOS starts dragging the caret; an empty field has neither, and just opens the flyout.
+	// Mouse/pen right-click and the Desktop convention keep the default context flyout.
 	private protected override void OnContextRequestedImpl(ContextRequestedEventArgs args)
 	{
 		if (args.IsTouchInput
 			&& TouchSelectionConvention != TouchTextSelectionConvention.Desktop
 			&& args.TryGetPosition(TextBoxView.DisplayBlock, out var displayBlockPoint))
 		{
-			switch (TouchSelectionConvention)
+			args.TryGetPosition(this, out var textBoxPoint);
+
+			if (Text.IsNullOrEmpty())
 			{
-				case TouchTextSelectionConvention.Android:
-					TouchSelectWord(displayBlockPoint);
-					args.TryGetPosition(this, out var textBoxPoint);
-					QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, textBoxPoint);
-					break;
-				case TouchTextSelectionConvention.iOS:
-					BeginTouchCaretDrag(displayBlockPoint);
-					break;
+				// Neither convention has anything to select or to drag the caret through in an empty field.
+				HandleEmptyTextTouchGesture(textBoxPoint);
+			}
+			else
+			{
+				switch (TouchSelectionConvention)
+				{
+					case TouchTextSelectionConvention.Android:
+						TouchSelectWord(displayBlockPoint);
+						QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, textBoxPoint);
+						break;
+					case TouchTextSelectionConvention.iOS:
+						BeginTouchCaretDrag(displayBlockPoint);
+						break;
+				}
 			}
 
 			// suppress the default context flyout on iOS/Android
