@@ -1,14 +1,10 @@
 using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
 using Windows.UI;
 
 #if __SKIA__
-using Private.Infrastructure;
 using Uno.UI.Helpers;
-using Uno.UI.RuntimeTests.Helpers;
 using SkiaSharp;
 #endif
 
@@ -17,7 +13,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 [TestClass]
 public class Given_Visual_Damage
 {
-#if __SKIA__
 	// Damage-region rendering only repaints the regions reported as damaged, so every change that alters
 	// what a visual contributes to the frame has to report one. Growing an ancestor's clip reveals part of
 	// a child whose own content and transform are untouched; if that isn't reported, the revealed pixels
@@ -26,13 +21,13 @@ public class Given_Visual_Damage
 	// height) hit this whenever the clip grows.
 	[TestMethod]
 	[RunsOnUIThread]
+#if !__SKIA__
+	[Ignore("Damage-region rendering is specific to the Skia compositor.")]
+#endif
 	public async Task When_Ancestor_Clip_Grows_Then_Revealed_Region_Is_Damaged()
 	{
-		// A loaded element only to obtain a live Compositor; the probed tree below is standalone.
-		var anchor = new Border { Width = 10, Height = 10 };
-		await UITestHelper.Load(anchor);
-
-		var compositor = ElementCompositionPreview.GetElementVisual(anchor).Compositor;
+#if __SKIA__
+		var compositor = Compositor.GetSharedCompositor();
 
 		var root = compositor.CreateContainerVisual();
 		root.Size = new Vector2(200, 200);
@@ -61,8 +56,18 @@ public class Given_Visual_Damage
 		Assert.IsTrue(
 			damage.Bounds.Bottom >= 98,
 			$"Damage does not cover the revealed strip down to y=100 (damage bounds: {damage.Bounds}).");
+
+		// Reporting the whole surface would satisfy the assertions above while erasing the point of
+		// partial repaint, so bound the reported region to the child plus antialiasing slack.
+		Assert.IsTrue(
+			damage.Bounds.Right <= 140,
+			$"Damage is far wider than the revealed strip, partial repaint is being defeated (damage bounds: {damage.Bounds}).");
+#else
+		await Task.CompletedTask;
+#endif
 	}
 
+#if __SKIA__
 	private static void RenderFrame(ContainerVisual root, SKPath damage)
 	{
 		var (picture, _, _) = SkiaRenderHelper.RecordPictureAndReturnPath(200, 200, root, invertPath: false, damage: damage);
