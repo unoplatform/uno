@@ -35,7 +35,7 @@ internal static class ScrollDiagnostics
 		Input = 1,
 	}
 
-	private readonly record struct Sample(long TimestampUs, double Value, SampleKind Kind, byte Phase);
+	private readonly record struct Sample(long TimestampUs, long FrameUs, double Value, SampleKind Kind, byte Phase);
 
 	private static readonly Sample[] _samples = new Sample[Capacity];
 	private static readonly Stopwatch _clock = Stopwatch.StartNew();
@@ -73,7 +73,7 @@ internal static class ScrollDiagnostics
 	internal const byte PhaseInertia = 2;
 	internal const byte PhaseWheel = 3;
 
-	internal static void Record(SampleKind kind, double value)
+	internal static void Record(SampleKind kind, double value, long frameTimestampTicks = 0)
 	{
 		if (!IsEnabled)
 		{
@@ -94,7 +94,7 @@ internal static class ScrollDiagnostics
 
 			if (_count < Capacity)
 			{
-				_samples[_count++] = new Sample(nowUs, value, kind, CurrentPhase);
+				_samples[_count++] = new Sample(nowUs, frameTimestampTicks / 10, value, kind, CurrentPhase);
 			}
 
 			_lastActivityUs = nowUs;
@@ -147,6 +147,7 @@ internal static class ScrollDiagnostics
 			sb.Append(s.Kind == SampleKind.Frame ? 'F' : 'I')
 				.Append(' ').Append(s.Phase)
 				.Append(' ').Append(s.TimestampUs.ToString(CultureInfo.InvariantCulture))
+				.Append(' ').Append(s.FrameUs.ToString(CultureInfo.InvariantCulture))
 				.Append(' ').Append(s.Value.ToString("F3", CultureInfo.InvariantCulture))
 				.Append(';');
 

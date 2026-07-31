@@ -210,6 +210,9 @@ public partial class Compositor
 
 	internal bool HasFrameStartingSubscribers => FrameStarting is not null;
 
+	/// <summary>The timestamp the current frame's drivers were evaluated against.</summary>
+	internal long CurrentFrameTimestampInTicks { get; private set; }
+
 	/// <summary>Kicks the render loop so a newly-subscribed frame driver gets its first tick.</summary>
 	internal static void RequestFrame(Visual visual) => visual.CompositionTarget?.RequestNewFrame();
 
@@ -225,6 +228,7 @@ public partial class Compositor
 			// One timestamp for the whole frame: TimestampInTicks re-reads the clock on every access, so
 			// sampling per driver would give drivers in the same frame different times.
 			var frameTimestamp = TimestampInTicks;
+			CurrentFrameTimestampInTicks = frameTimestamp;
 			try
 			{
 				frameStarting(frameTimestamp);

@@ -180,7 +180,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (Math.Abs(anchor - _lastDiagnosticsAnchor) > 0.01)
 				{
 					_lastDiagnosticsAnchor = anchor;
-					ScrollDiagnostics.Record(ScrollDiagnostics.SampleKind.Frame, anchor);
+					ScrollDiagnostics.Record(ScrollDiagnostics.SampleKind.Frame, anchor, Visual.Compositor.CurrentFrameTimestampInTicks);
 				}
 			}
 
