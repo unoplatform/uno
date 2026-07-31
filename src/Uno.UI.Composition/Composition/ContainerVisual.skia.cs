@@ -147,7 +147,7 @@ public partial class ContainerVisual : Visual
 			return baseClip;
 		}
 
-		var arrangeClip = DrawingBackend.Current.CreateRectangleGeometry(rect);
+		var arrangeClip = DrawingFactory.Current.CreateRectangleGeometry(rect);
 		return baseClip is null
 			? arrangeClip
 			: baseClip.Combine(arrangeClip, GeometryCombineMode.Intersect);

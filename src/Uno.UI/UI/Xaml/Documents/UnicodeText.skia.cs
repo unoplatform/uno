@@ -918,7 +918,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					var amplitude = 2 * scale;
 					var yOffset = 2 * scale;
 
-					var p = DrawingBackend.Current.CreatePathBuilder();
+					var p = DrawingFactory.Current.CreatePathBuilder();
 					var underlineY = y + line.baselineOffset + yOffset;
 					var underlineLeftX = unalignedX + alignmentOffset;
 					var underlineRightX = underlineLeftX + cluster.Value.width;
@@ -991,7 +991,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					font.AppendColorGlyphImages(glyphSpan, positionSpan, 0, images);
 					foreach (var g in images)
 					{
-						using var glyphTexture = global::Uno.UI.Composition.Drawing.DrawingBackend.Current.CreateImageTexture(g.Image);
+						using var glyphTexture = global::Uno.UI.Composition.Drawing.DrawingFactory.Current.CreateImageTexture(g.Image);
 						drawingSession.DrawImage(glyphTexture, g.X, g.Y, ImageSampling.Linear, antialias: true);
 					}
 				}
@@ -1438,7 +1438,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		if (FontManager.Current.MatchCharacter(codepoint, fontWeight, fontStretch, fontStyle, fontSize) is { } fallback)
+		if (FontProvider.Current.MatchCharacter(codepoint, fontWeight, fontStretch, fontStyle, fontSize) is { } fallback)
 		{
 			return FontDetails.Create(fallback, fontSize);
 		}

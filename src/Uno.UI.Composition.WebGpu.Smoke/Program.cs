@@ -32,7 +32,7 @@ var rc = At(p1, 32, 32);
 Check("rect: center red", rc.r > 200 && rc.g < 60 && rc.b < 60, rc);
 
 // 2) path fill (stencil-then-cover) consuming a MANAGED IGeometry
-var pb = new ManagedDrawingBackend().CreatePathBuilder();
+var pb = new ManagedDrawingFactory().CreatePathBuilder();
 pb.MoveTo(new Vector2(32, 4)); pb.LineTo(new Vector2(60, 60)); pb.LineTo(new Vector2(4, 60)); pb.Close();
 using var tri = pb.Build();
 var green = WColor.FromArgb(255, 0, 255, 0);
@@ -85,7 +85,7 @@ Check("save/restore: clip released → full green", sc.g > 200 && sc.r < 60, sc)
 //    through the Skia backend and the WebGPU backend, and assert both classify every unambiguous pixel the same.
 var black = WColor.FromArgb(255, 0, 0, 0);
 Uno.UI.Composition.Skia.SkiaBackend.Register();
-var skImg = DrawingBackend.Current.RenderOffscreen(64, 64, s =>
+var skImg = DrawingFactory.Current.RenderOffscreen(64, 64, s =>
 {
 	s.DrawRect(new Rect(0, 0, 64, 64), black, false);
 	s.DrawPath(tri, green, false);
@@ -113,7 +113,7 @@ Check($"cross-backend: Skia vs WebGPU agree on {compared} sampled pixels", compa
 
 // 9) TEXT — glyph run → neutral IGeometry outline (IFont.BuildGlyphRunOutline) → filled through BOTH backends.
 //    Exercises the font seam + fill rule (the 'A' counter must be a hole), end-to-end with zero Skia on the WebGPU side.
-var font = FontManager.Current.GetDefaultFont(new FontWeight(400), FontStretch.Normal, FontStyle.Normal, 48f);
+var font = FontProvider.Current.GetDefaultFont(new FontWeight(400), FontStretch.Normal, FontStyle.Normal, 48f);
 const string text = "A";
 var glyphs = new ushort[text.Length];
 var gpos = new Vector2[text.Length];
@@ -122,7 +122,7 @@ for (int i = 0; i < text.Length; i++) { var gi = font.GetGlyphIndex(text[i]); gl
 using var textGeom = font.BuildGlyphRunOutline(glyphs, gpos, 50f);
 
 var skText = new byte[64 * 64 * 4];
-DrawingBackend.Current.RenderOffscreen(64, 64, s => { s.DrawRect(new Rect(0, 0, 64, 64), black, false); s.DrawPath(textGeom, green, false); }).CopyPixels(skText);
+DrawingFactory.Current.RenderOffscreen(64, 64, s => { s.DrawRect(new Rect(0, 0, 64, 64), black, false); s.DrawPath(textGeom, green, false); }).CopyPixels(skText);
 var wgText = Render(r => r.DrawPath(textGeom, green, false));
 
 int wgGreen = 0, tCompared = 0, tDisagree = 0;

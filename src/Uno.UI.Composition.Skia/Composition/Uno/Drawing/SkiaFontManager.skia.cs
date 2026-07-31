@@ -8,11 +8,11 @@ using Windows.UI.Text;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// Default <see cref="IFontManager"/>: resolves fonts through SkiaSharp (<c>SKTypeface</c>/<c>SKFontManager</c>)
+/// Default <see cref="IFontProvider"/>: resolves fonts through SkiaSharp (<c>SKTypeface</c>/<c>SKFontManager</c>)
 /// and wraps the result in a <see cref="SkiaFont"/>. This keeps all font <em>resolution</em> Skia code in one
 /// place; the text layer above talks only to <see cref="IFont"/>.
 /// </summary>
-internal sealed class SkiaFontManager : IFontManager
+internal sealed class SkiaFontProvider : IFontProvider
 {
 	// Standard OpenType variation axes that map to the WinUI font properties.
 	private static readonly SKFourByteTag WeightAxis = SKFourByteTag.Parse("wght");

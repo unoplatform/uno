@@ -20,7 +20,7 @@ namespace Uno.Media
 		private readonly List<Point> _points = new List<Point>();
 		private readonly StreamGeometry _owner;
 #if __SKIA__
-		private readonly IPathBuilder bezierPath = DrawingBackend.Current.CreatePathBuilder();
+		private readonly IPathBuilder bezierPath = DrawingFactory.Current.CreatePathBuilder();
 #else
 		private PathBuilder bezierPath = new PathBuilder();
 #endif

@@ -43,7 +43,7 @@ internal class AlphaMaskSurface : CompositionObject, ICompositionSurface, ISkiaS
 			return;
 		}
 
-		_alphaMaskColorFilter ??= DrawingBackend.Current.CreateColorMatrixColorFilter(AlphaMaskColorMatrix);
+		_alphaMaskColorFilter ??= DrawingFactory.Current.CreateColorMatrixColorFilter(AlphaMaskColorMatrix);
 
 		// Apply the alpha mask color filter to convert all colors to white while preserving the alpha channel.
 		session.SaveLayer(_alphaMaskColorFilter!, antialias: true);

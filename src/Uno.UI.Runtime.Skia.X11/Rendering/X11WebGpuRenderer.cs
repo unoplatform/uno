@@ -16,7 +16,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 internal sealed unsafe class X11WebGpuRenderer : X11Renderer
 {
 	private readonly WebGpuDevice _device;
-	private readonly WebGpuRenderBackend _backend;
+	private readonly WebGpuRenderer _backend;
 	private WebGpuRenderSurface? _target;
 	private readonly IntPtr _gc;
 	private readonly uint _depth;
@@ -29,13 +29,13 @@ internal sealed unsafe class X11WebGpuRenderer : X11Renderer
 	public X11WebGpuRenderer(IXamlRootHost host, X11Window x11Window) : base(host, x11Window)
 	{
 		_device = new WebGpuDevice();
-		_backend = new WebGpuRenderBackend(_device);
+		_backend = new WebGpuRenderer(_device);
 
 		// Route the shared render loop through WebGPU.
-		CompositionTarget.RenderBackend = _backend;
+		CompositionTarget.Renderer = _backend;
 		// Wrap the existing factory with the device-bound WebGPU one so images become WebGpuImageTexture
 		// (consumable by the WebGPU renderer); everything else delegates to the inner factory.
-		DrawingBackend.Register(new WebGpuDrawingBackend(_device, DrawingBackend.Current));
+		DrawingFactory.Register(new WebGpuDrawingFactory(_device, DrawingFactory.Current));
 
 		using (X11Helper.XLock(_x11Window.Display))
 		{

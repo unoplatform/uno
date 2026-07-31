@@ -26,7 +26,7 @@ public partial class CompositionTarget
 	/// The active rendering backend that owns the frame record/present lifecycle. Defaults to the Skia
 	/// two-phase backend; a host/experiment can replace it before the first frame.
 	/// </summary>
-	internal static IRenderBackend RenderBackend { get; set; } = new SkiaRenderBackend();
+	internal static IRenderer Renderer { get; set; } = new SkiaRenderer();
 
 	private static readonly long _start = Stopwatch.GetTimestamp();
 	// We're using this table as a set with weakref keys. values are always null
@@ -101,7 +101,7 @@ public partial class CompositionTarget
 
 		// Phase 1 (UI thread): the backend hands us a recording session, the agnostic cycle walks the
 		// visual tree into it, then we finish recording to get the opaque frame.
-		var recording = RenderBackend.BeginFrame();
+		var recording = Renderer.BeginFrame();
 		var (path, nativeVisualsInZOrder) = SkiaRenderHelper.RecordFrame(
 			recording,
 			(float)bounds.Width,
@@ -201,7 +201,7 @@ public partial class CompositionTarget
 			}
 
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
-			using (var present = RenderBackend.BeginPresent(target))
+			using (var present = Renderer.BeginPresent(target))
 			{
 				// Scaling (DPI) is applied through the neutral session so it works for any backend.
 				present.Save();

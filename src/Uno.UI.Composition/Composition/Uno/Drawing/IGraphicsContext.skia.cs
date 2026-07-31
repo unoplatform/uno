@@ -13,7 +13,7 @@ namespace Uno.UI.Composition.Drawing;
 /// <summary>
 /// A thin init handle for a backend's GPU device/connection (instance/adapter/device/queue), produced by the
 /// context factory and passed to the matched backend pair to bind it to the device. It is not a resource
-/// factory — resource creation (textures, shaders, filters, …) lives on <see cref="IDrawingBackend"/>, and the
+/// factory — resource creation (textures, shaders, filters, …) lives on <see cref="IDrawingFactory"/>, and the
 /// frame render target is a render-side concern.
 /// </summary>
 public interface IGraphicsContext : IDisposable

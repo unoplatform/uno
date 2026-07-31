@@ -38,7 +38,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 		if (_currentBounds != bounds || _filter is null || Compositor.IsSoftwareRenderer != _currentCompMode)
 		{
 			_filter?.Dispose();
-			_filter = DrawingBackend.Current.CreateEffectFilter(
+			_filter = DrawingFactory.Current.CreateEffectFilter(
 				_effect,
 				bounds,
 				GetSourceParameter,

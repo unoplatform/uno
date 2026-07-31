@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting;
 
 // The text layer talks only to the neutral <see cref="IFont"/> handle (metrics/coverage/outlines/tables) and the
 // HarfBuzz <see cref="Font"/> (shaping); font resolution (family/style → handle) is owned by the backend's
-// <see cref="IFontManager"/>, so nothing here touches a Skia font type.
+// <see cref="IFontProvider"/>, so nothing here touches a Skia font type.
 internal record FontDetails(IFont FontHandle, float FontSize, float FontScaleX, Font Font)
 {
 	private (float textScaleX, float textScaleY)? _textScale;

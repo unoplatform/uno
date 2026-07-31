@@ -8,7 +8,7 @@ namespace Microsoft.UI.Composition;
 /// <summary>
 /// Builds the right <see cref="IFrameProvider"/> for a set of decoded <see cref="IImageFrames"/>: a still image
 /// (single frame) gets a <see cref="SingleFrameProvider"/>, an animated one an <see cref="AnimatedImageFrameProvider"/>.
-/// Decoding itself is the backend's job (<see cref="IDrawingBackend.TryDecodeImage"/>); this only picks the cadence.
+/// Decoding itself is the backend's job (<see cref="IDrawingFactory.TryDecodeImage"/>); this only picks the cadence.
 /// </summary>
 internal static class FrameProviderFactory
 {

@@ -26,7 +26,7 @@ internal static class SkiaRenderHelper
 
 	// This is used all the time, on all platforms but X11, when no native elements are present - DO NOT MODIFY
 	private static IGeometry? _emptyClipPath;
-	internal static IGeometry EmptyClipPath => _emptyClipPath ??= DrawingBackend.Current.CreatePrimitiveGeometryBuilder().Build();
+	internal static IGeometry EmptyClipPath => _emptyClipPath ??= DrawingFactory.Current.CreatePrimitiveGeometryBuilder().Build();
 
 	// This is used on X11, when no native elements are present - DO NOT MODIFY
 	private static float _invertedClipPathWidth;
@@ -57,8 +57,8 @@ internal static class SkiaRenderHelper
 	/// </summary>
 	private static (IGeometry nativeClipPath, List<Visual> nativeVisualsInZOrder) CalculateClippingPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
 	{
-		var parentClip = DrawingBackend.Current.CreateRectangleGeometry(new Rect(0, 0, width, height));
-		var seedClip = DrawingBackend.Current.CreateRectangleGeometry(new Rect(0, 0, 0, 0));
+		var parentClip = DrawingFactory.Current.CreateRectangleGeometry(new Rect(0, 0, width, height));
+		var seedClip = DrawingFactory.Current.CreateRectangleGeometry(new Rect(0, 0, 0, 0));
 
 		var nativeVisualsInZOrder = new List<Visual>();
 		var accumulated = rootVisual.GetNativeViewPathAndZOrder(parentClip, seedClip, nativeVisualsInZOrder);
@@ -81,7 +81,7 @@ internal static class SkiaRenderHelper
 		}
 		else
 		{
-			using var rect = DrawingBackend.Current.CreateRectangleGeometry(new Rect(0, 0, width, height));
+			using var rect = DrawingFactory.Current.CreateRectangleGeometry(new Rect(0, 0, width, height));
 			var result = rect.Combine(EmptyClipPath, GeometryCombineMode.Difference);
 
 			_invertedClipPathWidth = width;
@@ -119,7 +119,7 @@ internal static class SkiaRenderHelper
 		// The overlay's font, resolved lazily through the neutral font manager (bold, 14px) so the counter
 		// pulls in no SkiaSharp type. Lazy because the backend is registered after this type is first touched.
 		private static IFont? _font;
-		private static IFont Font => _font ??= FontManager.Current.GetDefaultFont(FontWeights.Bold, FontStretch.Normal, FontStyle.Normal, 14f);
+		private static IFont Font => _font ??= FontProvider.Current.GetDefaultFont(FontWeights.Bold, FontStretch.Normal, FontStyle.Normal, 14f);
 
 		// Minimum per-column widths so the panel doesn't shrink when FPS drops from e.g. 120.0 to 15.0.
 		// Sized to fit a three-digit reference value — measured lazily on first draw.
@@ -446,21 +446,21 @@ internal static class SkiaRenderHelper
 
 		private static IGeometry Ellipse(float cx, float cy, float r)
 		{
-			var builder = DrawingBackend.Current.CreatePrimitiveGeometryBuilder();
+			var builder = DrawingFactory.Current.CreatePrimitiveGeometryBuilder();
 			builder.AddEllipse(new Vector2(cx, cy), r, r);
 			return builder.Build();
 		}
 
 		private static IGeometry Rectangle(Rect rect)
 		{
-			var builder = DrawingBackend.Current.CreatePrimitiveGeometryBuilder();
+			var builder = DrawingFactory.Current.CreatePrimitiveGeometryBuilder();
 			builder.AddRectangle(rect);
 			return builder.Build();
 		}
 
 		private static IGeometry RoundedRectangle(Rect rect, float radius)
 		{
-			var builder = DrawingBackend.Current.CreatePrimitiveGeometryBuilder();
+			var builder = DrawingFactory.Current.CreatePrimitiveGeometryBuilder();
 			builder.AddRoundedRectangle(rect, radius, radius);
 			return builder.Build();
 		}

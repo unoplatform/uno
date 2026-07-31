@@ -83,7 +83,7 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 
 	private IGeometry InternalBuildPathGeometry()
 	{
-		var builder = DrawingBackend.Current.CreatePathBuilder();
+		var builder = DrawingFactory.Current.CreatePathBuilder();
 		foreach (var command in _commands)
 		{
 			switch (command.Type)

@@ -8,7 +8,7 @@ using Windows.UI.Text;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// SkiaSharp-free <see cref="IFontManager"/>: indexes the operating system's installed fonts by parsing each
+/// SkiaSharp-free <see cref="IFontProvider"/>: indexes the operating system's installed fonts by parsing each
 /// face's <c>name</c>/<c>OS-2</c>/<c>head</c> tables, matches a family/style request against that index using a
 /// CSS-style nearest-weight score, and produces <see cref="ManagedFont"/> handles. Codepoint fallback scans the
 /// indexed faces' <c>cmap</c>s for coverage. Enabled via <see cref="DrawingBackendOptions.UseManagedFonts"/>.
@@ -18,7 +18,7 @@ namespace Uno.UI.Composition.Drawing;
 /// matching, so locale-specific family aliases and the platform's precise fallback ordering aren't reproduced.
 /// The index is built lazily on first use (reads font-file headers once).
 /// </remarks>
-public sealed class ManagedFontManager : IFontManager
+public sealed class ManagedFontProvider : IFontProvider
 {
 	private sealed record FaceEntry(string Path, int TtcIndex, int Weight, int WidthClass, bool Italic);
 

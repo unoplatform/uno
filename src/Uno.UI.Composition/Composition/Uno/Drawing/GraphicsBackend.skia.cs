@@ -7,21 +7,21 @@ using System.Text;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// The result of a successful <see cref="GraphicsBackend.Activate"/>: the winning backend, the context that
+/// The result of a successful <see cref="GraphicsRegistry.Activate"/>: the winning backend, the context that
 /// was created for it, and the render backend bound to that context.
 /// </summary>
 public readonly struct GraphicsActivation
 {
-	public GraphicsActivation(IGraphicsBackend backend, IGraphicsContext context, IRenderBackend renderBackend)
+	public GraphicsActivation(IGraphicsProvider backend, IGraphicsContext context, IRenderer renderBackend)
 	{
 		Backend = backend;
 		Context = context;
-		RenderBackend = renderBackend;
+		Renderer = renderBackend;
 	}
 
-	public IGraphicsBackend Backend { get; }
+	public IGraphicsProvider Backend { get; }
 	public IGraphicsContext Context { get; }
-	public IRenderBackend RenderBackend { get; }
+	public IRenderer Renderer { get; }
 }
 
 /// <summary>
@@ -32,15 +32,15 @@ public readonly struct GraphicsActivation
 /// <summary>
 /// Creates a context of a known kind for a window, or <see langword="null"/> if that API is unavailable or
 /// the requirements can't be met (fully cleaning up so it's "as if never attempted"). The context kinds are a
-/// closed, Uno-owned set — third parties plug in <see cref="IGraphicsBackend"/>s, not new kinds — so this is a
+/// closed, Uno-owned set — third parties plug in <see cref="IGraphicsProvider"/>s, not new kinds — so this is a
 /// single concrete factory (implemented over a switch in the Uno graphics layer), not a per-kind plugin.
 /// </summary>
 public delegate IGraphicsContext? GraphicsContextFactory(GraphicsContextKind kind, INativeWindow window, GraphicsRequirements requirements);
 
-public static class GraphicsBackend
+public static class GraphicsRegistry
 {
 	private static readonly object _gate = new();
-	private static IReadOnlyList<IGraphicsBackend> _backends = Array.Empty<IGraphicsBackend>();
+	private static IReadOnlyList<IGraphicsProvider> _backends = Array.Empty<IGraphicsProvider>();
 
 	/// <summary>
 	/// The concrete context factory (set once by the Uno graphics layer). Core stays free of GPU-API libraries;
@@ -52,7 +52,7 @@ public static class GraphicsBackend
 	/// Registers the app's backend preference, most-preferred first. Uniform across every platform (there is
 	/// no fluent-builder dependency and no default backend). Replaces any previous registration.
 	/// </summary>
-	public static void Register(IReadOnlyList<IGraphicsBackend> backendsInPreferenceOrder)
+	public static void Register(IReadOnlyList<IGraphicsProvider> backendsInPreferenceOrder)
 	{
 		ArgumentNullException.ThrowIfNull(backendsInPreferenceOrder);
 		lock (_gate)
@@ -64,14 +64,14 @@ public static class GraphicsBackend
 	/// <summary>
 	/// Walks the registered backends in preference order and, for each, its preferred context kinds in order,
 	/// creating a context on demand until one succeeds. The first success wins: its factory is installed as
-	/// <see cref="DrawingBackend.Current"/> and a <see cref="GraphicsActivation"/> is returned. Nothing is
+	/// <see cref="DrawingFactory.Current"/> and a <see cref="GraphicsActivation"/> is returned. Nothing is
 	/// created speculatively. Throws if no registered backend can initialize on <paramref name="window"/>.
 	/// </summary>
 	public static GraphicsActivation Activate(INativeWindow window)
 	{
 		ArgumentNullException.ThrowIfNull(window);
 
-		IReadOnlyList<IGraphicsBackend> backends;
+		IReadOnlyList<IGraphicsProvider> backends;
 		lock (_gate)
 		{
 			backends = _backends;
@@ -80,13 +80,13 @@ public static class GraphicsBackend
 		if (backends.Count == 0)
 		{
 			throw new InvalidOperationException(
-				"No graphics backend registered. Call GraphicsBackend.Register(...) with an ordered backend " +
-				"list (e.g. new[] { new SkiaGraphicsBackend() }) during app initialization.");
+				"No graphics backend registered. Call GraphicsRegistry.Register(...) with an ordered backend " +
+				"list (e.g. new[] { new SkiaGraphicsProvider() }) during app initialization.");
 		}
 
 		var factory = ContextFactory
 			?? throw new InvalidOperationException(
-				"No GraphicsBackend.ContextFactory set. The Uno graphics layer must install the concrete " +
+				"No GraphicsRegistry.ContextFactory set. The Uno graphics layer must install the concrete " +
 				"context factory before Activate is called.");
 
 		var attempts = new StringBuilder();
@@ -114,7 +114,7 @@ public static class GraphicsBackend
 				try
 				{
 					var renderBackend = backend.CreateRenderBackend(context);
-					DrawingBackend.Register(backend.Drawing);
+					DrawingFactory.Register(backend.Drawing);
 					return new GraphicsActivation(backend, context, renderBackend);
 				}
 				catch (Exception e)

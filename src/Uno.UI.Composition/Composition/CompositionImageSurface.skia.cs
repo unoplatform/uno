@@ -58,7 +58,7 @@ namespace Microsoft.UI.Composition
 			if (!ReferenceEquals(img, _texturedImage))
 			{
 				DisposeTexture();
-				_texture = DrawingBackend.Current.CreateImageTexture(img);
+				_texture = DrawingFactory.Current.CreateImageTexture(img);
 				_texturedImage = img;
 			}
 			return _texture;
