@@ -621,6 +621,8 @@
           href: uno-toolchain-telemetry.md
         - name: Composition API
           href: composition.md
+        - name: Customizing the Application class on Android
+          href: xref:Uno.Features.CustomizingAndroidApplication
         - name: Customizing the UIApplicationDelegate on iOS
           href: xref:Uno.Features.CustomizingUIApplicationDelegate
         - name: Dialogs
