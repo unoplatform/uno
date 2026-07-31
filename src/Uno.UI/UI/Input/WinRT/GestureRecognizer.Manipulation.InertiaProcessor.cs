@@ -1,4 +1,4 @@
-// This file is included in both Uno.UWP and Uno.UI
+﻿// This file is included in both Uno.UWP and Uno.UI
 #nullable enable
 
 using System;
@@ -330,10 +330,19 @@ public partial class GestureRecognizer
 		}
 
 #if IS_UNO_UI_PROJECT
+		/// <summary>
+		/// Ticks the inertia once per frame, before that frame's picture is recorded.
+		/// </summary>
+		/// <remarks>
+		/// CompositionTarget.Rendering is raised from a dispatcher continuation *after* the record, so a
+		/// driver on it writes into the following frame — a structural frame of latency on every fling.
+		/// Compositor.FrameStarting runs before the paint walk and carries one timestamp for the whole
+		/// frame, so the position is both current and evaluated against the same clock as everything else.
+		/// </remarks>
 		private sealed class CompositionInertiaProcessorTimer(Action<TimeSpan> onTick) : IInertiaProcessorTimer
 		{
-			private EventHandler<object>? _handler;
-			private Stopwatch? _time;
+			private Action<long>? _handler;
+			private long _startTimestamp;
 
 			public bool IsRunning => _handler is not null;
 
@@ -341,21 +350,17 @@ public partial class GestureRecognizer
 			{
 				Stop();
 
-				_time = Stopwatch.StartNew();
-				_handler = (_, args) =>
-				{
-					// Note: We are not using the ((Microsoft.UI.Xaml.Media.RenderingEventArgs)args).RenderingTime as we are not able to have the value at t0
-					onTick(_time.Elapsed);
-				};
-
-				CompositionTarget.Rendering += _handler;
+				var compositor = Compositor.GetSharedCompositor();
+				_startTimestamp = compositor.TimestampInTicks;
+				_handler = timestamp => onTick(TimeSpan.FromTicks(timestamp - _startTimestamp));
+				compositor.FrameStarting += _handler;
 			}
 
 			public void Stop()
 			{
 				if (_handler is not null)
 				{
-					CompositionTarget.Rendering -= _handler;
+					Compositor.GetSharedCompositor().FrameStarting -= _handler;
 					_handler = null;
 				}
 			}
