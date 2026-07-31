@@ -63,8 +63,25 @@ var im = At(p4, 32, 32); var iout = At(p4, 2, 2);
 Check("image: center blue", im.b > 200 && im.r < 60 && im.g < 60, im);
 Check("image: outside black", iout.r < 40 && iout.g < 40 && iout.b < 40, iout);
 
+// 5) transform (Translate) — rect drawn at the origin lands in the translated region
+var p5 = Render(r => { r.Translate(16, 16); r.DrawRect(new Rect(0, 0, 16, 16), red, false); });
+var tin = At(p5, 20, 20); var tout = At(p5, 4, 4);
+Check("transform: translated rect red", tin.r > 200 && tin.g < 60, tin);
+Check("transform: origin untouched (black)", tout.r < 40 && tout.g < 40 && tout.b < 40, tout);
+
+// 6) clip (scissor) — a full-surface draw only paints inside the clip rect
+var p6 = Render(r => { r.ClipRect(new Rect(24, 24, 16, 16)); r.DrawRect(new Rect(0, 0, 64, 64), red, false); });
+var cin = At(p6, 32, 32); var cout = At(p6, 4, 4);
+Check("clip: inside clip red", cin.r > 200 && cin.g < 60, cin);
+Check("clip: outside clip black", cout.r < 40 && cout.g < 40 && cout.b < 40, cout);
+
+// 7) save / restore — restoring drops the clip, so a later full draw covers everything
+var p7 = Render(r => { r.Save(); r.ClipRect(new Rect(0, 0, 10, 10)); r.Restore(); r.DrawRect(new Rect(0, 0, 64, 64), green, false); });
+var sc = At(p7, 32, 32);
+Check("save/restore: clip released → full green", sc.g > 200 && sc.r < 60, sc);
+
 Console.WriteLine(fail == 0
-	? "\nALL PASS — non-Skia render seam (rect · path · gradient · image) verified headless"
+	? "\nALL PASS — non-Skia render seam (rect · path · gradient · image · transform · clip · save/restore) verified headless"
 	: $"\n{fail} CHECK(S) FAILED");
 Environment.Exit(fail == 0 ? 0 : 1);
 
