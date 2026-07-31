@@ -43,7 +43,7 @@ The old `*Backend` names conflated three different jobs. The abstractions are no
 | Graphics context | `IGraphicsContext` | interface | a live GPU device + swapchain + present |
 | Context factory | `IGraphicsContextFactory` | interface | host-supplied; creates the window+context pair |
 | Image decoder | `IImageDecoder` (`ImageDecoder.Current`) | interface + static | encoded bytes → neutral pixels — an independent content seam |
-| Font manager | `IFontManager` (`FontManager.Current`) | interface + static | family / bytes / codepoint → `IFont` — an independent content seam |
+| Font provider | `IFontProvider` (`FontProvider.Current`) | interface + static | family / bytes / codepoint → `IFont` — an independent content seam |
 
 So: the render/drawing "backends" become a **renderer** and a **factory**; their pluggable bundle is a **provider**;
 the content seams are **decoders**/**managers**.
@@ -64,7 +64,7 @@ font stack is abstracted, the layout engine is not.
 | **Geometry** | `SKPath`, `SKPathBuilder`, `SKPath.Op`, path measure (trim) | `SKPath` | No | **Yes** | `IGeometry` + path/primitive builders — neutral; managed engine proven (§B) |
 | **Paint** — shaders, color filters, effects | `SKPaint` config; `SKShader` (gradients), `SKColorFilter` (matrix), `SKImageFilter` (blur/shadow); effect input is WinUI `IGraphicsEffect`/D2D | `SKPaint`, `SKShader`, `SKColorFilter`, `SKImageFilter` | No | **Yes** | inline paint + opaque `IShader`/`IColorFilter`/`IEffectFilter`; effect graph lowered to typed `EffectNode` records (§D) |
 | **Images** — decode + upload | `SKCodec` (+EXIF) decode; `SKImage.FromBitmap` / GPU upload; `ReadPixels` | `SKBitmap`, `SKImage` | No | **Yes** | `IImageDecoder` (independent seam) → `IImage`; `IImageTexture` to draw (§C, §K) |
-| **Text: font resolution + fallback** | `SKFontManager.MatchFamily`/`MatchCharacter`; typeface matching | `SKFontManager`, `SKTypeface` | No | **Yes** | `IFontManager` — family / bytes / codepoint → `IFont` (§E) |
+| **Text: font resolution + fallback** | `SKFontManager.MatchFamily`/`MatchCharacter`; typeface matching | `SKFontManager`, `SKTypeface` | No | **Yes** | `IFontProvider` — family / bytes / codepoint → `IFont` (§E) |
 | **Text: the font handle** — shaping, metrics, coverage, glyphs | HarfBuzz shaping (via `SKShaper`/sfnt tables); `SKFont` metrics; `SKFont.GetPath`; `SKTypeface.ContainsGlyph`; COLR/CBDT glyphs | `SKFont`, `SKTypeface`, `SKShaper` | No | **Yes** | `IFont` — one handle: `Shape` + metrics/coverage + `GetGlyphDrawables` (outline **or** image) (§E). *Why abstracted:* resolution + shaping are platform/engine- and font-data-specific yet render-independent — the desirable native variation lands here without disturbing layout |
 | **Text: layout** — bidi, itemization, segmentation, line-break, justification | Unicode algorithms (Uno's own, ICU-like) — *not* Skia | — (none) | n/a | **No** | *Why not:* one framework engine → text pixel-identical on every platform + WinUI parity; native engines (CoreText/DirectWrite/Pango) would diverge; deeply wired into measure/arrange, caret, selection, hit-test (§Q) |
 | **Drawing & frame cycle** — verbs, record/replay, present | `SKCanvas` (`Save`/`ClipPath`/`DrawPath`/`DrawImage`/`SaveLayer`/`DrawTextBlob`); `SKPictureRecorder`/`SKPicture`; `SKSurface` | `SKCanvas`, `SKSurface`, `SKPicture` | No | **Yes** | `IDrawingSession` verbs; immediate `IRenderer`/`IPresentSession` + `IRenderTarget`; retaining opt-in (§F–I) |
@@ -81,7 +81,7 @@ flowchart TB
   subgraph Startup["Startup / composition root"]
     App["App head"] -->|"register providers"| Reg["GraphicsRegistry"]
     App -->|".UseImageDecoder(…)"| Dec["IImageDecoder"]
-    App -->|".UseFontManager(…)"| FM["IFontManager"]
+    App -->|".UseFontProvider(…)"| FM["IFontProvider"]
     Host["Platform host"] -->|"implements"| CF["IGraphicsContextFactory"]
   end
 
@@ -96,7 +96,7 @@ flowchart TB
     Dec -->|"decode"| IMG["IImage"]
     subgraph TextLane["Text (per run) — framework layout ⟷ font stack"]
       direction TB
-      TA["Bidi · itemize · segment"] --> FR["Resolve font + fallback<br/><i>IFontManager</i>"]
+      TA["Bidi · itemize · segment"] --> FR["Resolve font + fallback<br/><i>IFontProvider</i>"]
       FR --> SH["Shape + metrics<br/><i>IFont</i>"]
       SH --> LB["Line-break + layout"]
       LB --> GL["Glyph outlines / images<br/><i>IFont.GetGlyphDrawables</i>"]
@@ -347,7 +347,7 @@ public interface IFont
     float Ascent { get; } float Descent { get; } float LineGap { get; } /* underline/strikeout */
 }
 
-public interface IFontManager   // resolution + fallback; own seam (FontManager.Current), render-independent
+public interface IFontProvider   // resolution + fallback; own seam (FontProvider.Current), render-independent
 {
     IFont GetDefaultFont(FontWeight w, FontStretch s, FontStyle st, float size);
     IFont? MatchFamily(string family, FontWeight w, FontStretch s, FontStyle st, float size);
@@ -506,7 +506,7 @@ public interface IImageDecoder      // CPU-only: encoded stream → neutral pixe
     IImage CreateImage(int width, int height, ReadOnlySpan<byte> bgraPremul);                     // a SINGLE image → IImage
     IImageFrames CreateFrames(IImage image);                                                      // wrap one image as a 1-frame sequence
 }
-// + IFontManager (E) is the other content seam.  + ManagedSvg (SVG → IImage).
+// + IFontProvider (E) is the other content seam.  + ManagedSvg (SVG → IImage).
 ```
 
 Each produces neutral currency (`IImage` / `IGeometry`) consumed by any renderer. Supplied independently
@@ -620,7 +620,7 @@ build (null), first survivor wins. `Initialize` is shared; only the `IGraphicsCo
 ```csharp
 GraphicsRegistry.Register(new IGraphicsProvider[] { new SkiaGraphicsProvider() });   // renderer(s)
 ImageDecoder.Current = new ManagedImageDecoder();                                 // or Skia / platform codec
-FontManager.Current  = new ManagedFontManager();                                  // or Skia / CoreText / DirectWrite
+FontProvider.Current  = new ManagedFontProvider();                                  // or Skia / CoreText / DirectWrite
 ```
 **`Initialize`-derived outputs (never user-assigned):**
 ```csharp
@@ -641,7 +641,7 @@ manager per process (multi-window-different-providers → per-target, deferred).
 | bidi, script/language itemization, grapheme/word segmentation | text layer | **no** |
 | line-break opportunities (UAX #14) | text layer | **no** |
 | line layout, justification, alignment, wrapping | text layer | **no** |
-| font resolution + fallback | `IFontManager` | **yes** |
+| font resolution + fallback | `IFontProvider` | **yes** |
 | shaping, metrics, coverage, glyph outlines/images | `IFont` | **yes** |
 | draw (`GlyphOutline`→Fill / `GlyphImage`→DrawImage) | renderer | (separate axis) |
 
@@ -654,7 +654,7 @@ native-layout feel), not an impossibility.
 **Why the font stack is overridable:** resolution + shaping are platform/engine-specific (system fonts, native
 shapers), font-data-dependent (the framework can't do them generically), and render-independent (neutral output)
 — so the *desirable* platform variation (native shaping/fonts) is captured here **without** layout divergence.
-Resolution and shaping are one unit (`IFontManager` + its `IFont`s), because shaping is inseparable from font
+Resolution and shaping are one unit (`IFontProvider` + its `IFont`s), because shaping is inseparable from font
 data and is encapsulated (no byte leak). Line-breaking is framework-owned but *consumes* the plug's measurements;
 fallback *policy* is framework, fallback *font lookup* is the plug (`MatchCharacter`/`ContainsGlyph`).
 
