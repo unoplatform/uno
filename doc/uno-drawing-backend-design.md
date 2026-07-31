@@ -118,7 +118,6 @@ flowchart TB
   subgraph Present["Present — render thread"]
     Ctx -->|"AcquireRenderTarget()"| RT["IRenderTarget"]
     Ren -->|"BeginFrame(RT)"| PS["IPresentSession"]
-    RT -.->|"target of"| PS
     PS -->|"Dispose → flush to target"| RT
     RT -->|"IGraphicsContext.Present() → flips to window"| Win["Window / screen"]
   end
