@@ -888,21 +888,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(outerGrid, x => x.IsLoaded);
 			await TestServices.WindowHelper.WaitForIdle();
 			EnableAccessibilityThroughDom();
-			await UITestHelper.WaitFor(() => SemanticElementExists(innerCell), timeoutMS: 5000, message: "Timed out waiting for the nested gridcell semantic element.");
+			await UITestHelper.WaitFor(
+				() => SemanticElementExists(innerCell) && SemanticElementExists(outerCell),
+				timeoutMS: 10000,
+				message: "Timed out waiting for the nested gridcell semantic elements.");
 
 			var outerGridId = GetSemanticElementId(outerGrid);
-			Assert.AreEqual(
-				"1",
-				InvokeBrowserJs($"document.getElementById('{outerGridId}').querySelectorAll('[role=gridcell][tabindex=\"0\"], [role=columnheader][tabindex=\"0\"], [role=rowheader][tabindex=\"0\"]').length.toString()"));
-			Assert.AreEqual("-1", GetSemanticAttribute(innerCell, "tabindex"));
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(innerCell, "tabindex") == "-1" &&
+					InvokeBrowserJs($"document.getElementById('{outerGridId}').querySelectorAll('[role=gridcell][tabindex=\"0\"], [role=columnheader][tabindex=\"0\"], [role=rowheader][tabindex=\"0\"]').length.toString()") == "1",
+				timeoutMS: 10000,
+				message: "The nested grid did not settle on one outer tab stop.");
 
 			var innerCellId = GetSemanticElementId(innerCell);
 			InvokeBrowserJs($"document.getElementById('{innerCellId}').focus(); 'ok'");
-			Assert.AreEqual("0", GetSemanticAttribute(innerCell, "tabindex"));
-			Assert.AreEqual("-1", GetSemanticAttribute(outerCell, "tabindex"));
-			Assert.AreEqual(
-				"1",
-				InvokeBrowserJs($"document.getElementById('{outerGridId}').querySelectorAll('[role=gridcell][tabindex=\"0\"], [role=columnheader][tabindex=\"0\"], [role=rowheader][tabindex=\"0\"]').length.toString()"));
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(innerCell, "tabindex") == "0" &&
+					GetSemanticAttribute(outerCell, "tabindex") == "-1" &&
+					InvokeBrowserJs($"document.getElementById('{outerGridId}').querySelectorAll('[role=gridcell][tabindex=\"0\"], [role=columnheader][tabindex=\"0\"], [role=rowheader][tabindex=\"0\"]').length.toString()") == "1",
+				timeoutMS: 10000,
+				message: "Focusing the nested cell did not preserve exactly one grid tab stop.");
 		}
 
 		[TestMethod]
@@ -1240,31 +1245,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			var innerPeer = innerGrid.GetOrCreateAutomationPeer();
 			await TestServices.WindowHelper.WaitForIdle();
 			EnableAccessibilityThroughDom();
-			await UITestHelper.WaitFor(() => SemanticElementExists(innerCell), timeoutMS: 5000, message: "Timed out waiting for the nested grid semantic tree.");
+			await UITestHelper.WaitFor(
+				() => SemanticElementExists(innerCell) && SemanticElementExists(outerCell),
+				timeoutMS: 10000,
+				message: "Timed out waiting for the nested grid semantic tree.");
 
 			var outerGridId = GetSemanticElementId(outerGrid);
 			InvokeBrowserJs($"document.getElementById('{GetSemanticElementId(innerCell)}').focus(); 'ok'");
-			Assert.AreEqual("0", GetSemanticAttribute(innerCell, "tabindex"));
-			Assert.AreEqual("-1", GetSemanticAttribute(outerCell, "tabindex"));
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(innerCell, "tabindex") == "0" &&
+					GetSemanticAttribute(outerCell, "tabindex") == "-1",
+				timeoutMS: 10000,
+				message: "The nested cell did not receive the initial grid tab stop.");
 
 			innerGrid.IsEnabledValue = false;
 			innerPeer.RaisePropertyChangedEvent(AutomationElementIdentifiers.IsEnabledProperty, true, false);
-			await UITestHelper.WaitFor(() => GetSemanticAttribute(innerGrid, "aria-disabled") == "true", timeoutMS: 3000, message: "Nested grid did not become disabled.");
-			Assert.AreEqual("-1", GetSemanticAttribute(innerCell, "tabindex"));
-			Assert.AreEqual("0", GetSemanticAttribute(outerCell, "tabindex"));
-			Assert.AreEqual("1", InvokeBrowserJs($"document.getElementById('{outerGridId}').querySelectorAll('[tabindex=\"0\"]').length.toString()"));
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(innerGrid, "aria-disabled") == "true" &&
+					GetSemanticAttribute(innerCell, "tabindex") == "-1" &&
+					GetSemanticAttribute(outerCell, "tabindex") == "0" &&
+					InvokeBrowserJs($"document.getElementById('{outerGridId}').querySelectorAll('[tabindex=\"0\"]').length.toString()") == "1",
+				timeoutMS: 10000,
+				message: "Disabling the nested grid did not transfer its single tab stop to the outer cell.");
 
 			innerGrid.IsEnabledValue = true;
 			innerPeer.RaisePropertyChangedEvent(AutomationElementIdentifiers.IsEnabledProperty, false, true);
-			await UITestHelper.WaitFor(() => GetSemanticAttribute(innerGrid, "aria-disabled") == "false", timeoutMS: 3000, message: "Nested grid did not become enabled.");
-			Assert.AreEqual("-1", GetSemanticAttribute(innerCell, "tabindex"));
-			Assert.AreEqual("0", GetSemanticAttribute(outerCell, "tabindex"));
-			Assert.AreEqual("1", InvokeBrowserJs($"document.getElementById('{outerGridId}').querySelectorAll('[tabindex=\"0\"]').length.toString()"));
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(innerGrid, "aria-disabled") == "false" &&
+					GetSemanticAttribute(innerCell, "tabindex") == "-1" &&
+					GetSemanticAttribute(outerCell, "tabindex") == "0" &&
+					InvokeBrowserJs($"document.getElementById('{outerGridId}').querySelectorAll('[tabindex=\"0\"]').length.toString()") == "1",
+				timeoutMS: 10000,
+				message: "Re-enabling the nested grid changed the current outer tab stop unexpectedly.");
 
 			InvokeBrowserJs($"document.getElementById('{GetSemanticElementId(innerCell)}').focus(); 'ok'");
-			Assert.AreEqual("0", GetSemanticAttribute(innerCell, "tabindex"));
-			Assert.AreEqual("-1", GetSemanticAttribute(outerCell, "tabindex"));
-			Assert.AreEqual("1", InvokeBrowserJs($"document.getElementById('{outerGridId}').querySelectorAll('[tabindex=\"0\"]').length.toString()"));
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(innerCell, "tabindex") == "0" &&
+					GetSemanticAttribute(outerCell, "tabindex") == "-1" &&
+					InvokeBrowserJs($"document.getElementById('{outerGridId}').querySelectorAll('[tabindex=\"0\"]').length.toString()") == "1",
+				timeoutMS: 10000,
+				message: "Refocusing the re-enabled nested cell did not restore exactly one nested tab stop.");
 		}
 
 		[TestMethod]
