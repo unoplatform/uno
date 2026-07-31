@@ -216,6 +216,88 @@ public partial class Compositor
 	/// <summary>Kicks the render loop so a newly-subscribed frame driver gets its first tick.</summary>
 	internal static void RequestFrame(Visual visual) => visual.CompositionTarget?.RequestNewFrame();
 
+	/// <summary>Estimated interval between presented frames, for drivers that need a nominal step.</summary>
+	internal long FrameIntervalInTicks => _frameDeltaCount >= FrameClockMinSamples
+		? MedianFrameDelta()
+		: TimeSpan.TicksPerSecond / 60;
+
+	private const int FrameClockWindow = 32;
+	private const int FrameClockMinSamples = 8;
+
+	private readonly long[] _frameDeltas = new long[FrameClockWindow];
+	private int _frameDeltaIndex;
+	private int _frameDeltaCount;
+	private long _lastRawFrameTimestamp;
+	private long _frameClock;
+
+	/// <summary>
+	/// A uniform frame clock for the drivers to evaluate against.
+	/// </summary>
+	/// <remarks>
+	/// Pictures are presented one per vsync, but they are not <i>recorded</i> on a vsync: a record
+	/// carries the measure/arrange cost of the tick that produced it, so the raw clock wobbles by
+	/// milliseconds around a cadence that is otherwise exact. A driver whose position is a function of
+	/// time turns that wobble into v·Δt of position error, which at scroll speeds is a visible fraction
+	/// of a frame step — so the drivers get the grid the frames are actually shown on, recovered from
+	/// the median record interval, rather than the instant the UI thread happened to get here.
+	/// </remarks>
+	internal long GetFrameTimestamp(long raw)
+	{
+		if (_lastRawFrameTimestamp == 0)
+		{
+			_lastRawFrameTimestamp = raw;
+			return _frameClock = raw;
+		}
+
+		var delta = raw - _lastRawFrameTimestamp;
+		_lastRawFrameTimestamp = raw;
+
+		_frameDeltas[_frameDeltaIndex] = delta;
+		_frameDeltaIndex = (_frameDeltaIndex + 1) % FrameClockWindow;
+		if (_frameDeltaCount < FrameClockWindow)
+		{
+			_frameDeltaCount++;
+		}
+
+		if (_frameDeltaCount < FrameClockMinSamples)
+		{
+			return _frameClock = raw;
+		}
+
+		var period = MedianFrameDelta();
+		if (period <= 0)
+		{
+			return _frameClock = raw;
+		}
+
+		_frameClock += period;
+		var error = raw - _frameClock;
+
+		if (Math.Abs(error) >= period)
+		{
+			// A whole frame or more of error is a dropped frame or an idle gap rather than phase noise,
+			// so the grid steps by whole frames to meet it and the motion covers the time it really took.
+			_frameClock += (long)Math.Round(error / (double)period, MidpointRounding.AwayFromZero) * period;
+		}
+		else
+		{
+			// Otherwise pull gently, so the grid follows the real clock's rate without any single frame
+			// carrying a visible correction. A whole period of hysteresis keeps jitter from slipping it.
+			_frameClock += error / 16;
+		}
+
+		return _frameClock;
+	}
+
+	private long MedianFrameDelta()
+	{
+		Span<long> sorted = stackalloc long[FrameClockWindow];
+		_frameDeltas.AsSpan(0, _frameDeltaCount).CopyTo(sorted);
+		sorted = sorted[.._frameDeltaCount];
+		sorted.Sort();
+		return sorted[_frameDeltaCount / 2];
+	}
+
 	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual, DamageRegion? damage = null)
 	{
 		if (rootVisual is null)
@@ -227,7 +309,7 @@ public partial class Compositor
 		{
 			// One timestamp for the whole frame: TimestampInTicks re-reads the clock on every access, so
 			// sampling per driver would give drivers in the same frame different times.
-			var frameTimestamp = TimestampInTicks;
+			var frameTimestamp = GetFrameTimestamp(TimestampInTicks);
 			CurrentFrameTimestampInTicks = frameTimestamp;
 			try
 			{
