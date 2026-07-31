@@ -170,6 +170,11 @@ $projects =
     @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net11.0-desktop"), @("macOS", "NetCore")),
     @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net11.0-desktop", $sdkFeatures), @("macOS", "NetCore")),
 
+    # Android heads must build through `dotnet build`: the templates strip the android TFM
+    # when MSBuildRuntimeType is 'Full'.
+    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net11.0-android"), @("macOS", "NetCore")),
+    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net11.0-android", $sdkFeatures), @("macOS", "NetCore")),
+
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
     @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net11.0-windows10.0.19041"), @()),
 
@@ -195,10 +200,14 @@ $projects =
     # 5.6 net-current with XAML trimming validation - wasm
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-browserwasm", "-p:UnoXamlResourcesTrimming=true", "-p:WasmShellILLinkerEnabled=true"), @("macOS", "NetCore", "Publish")),
 
+    # 5.6 multi-platform template - covers the Android application head (Platforms/Android)
+    @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("-f", "net11.0-android"), @("macOS", "NetCore")),
+
     # Ensure that build can happen even if a RID is specified
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0"), @("macOS", "NetCore")),
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0-browserwasm"), @("macOS", "NetCore")),
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0-desktop"), @("macOS", "NetCore")),
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0-android"), @("macOS", "NetCore")),
 
     ## Note for contributors
     ##
