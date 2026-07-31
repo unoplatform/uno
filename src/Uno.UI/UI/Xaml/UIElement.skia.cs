@@ -95,8 +95,9 @@ namespace Microsoft.UI.Xaml
 					// Suppress painting until the first arrange gives this element a layout slot; see
 					// Visual.IsArrangePending. Set directly rather than through Visibility/IsVisible, which
 					// would raise property-changed and accessibility callbacks while the element is still
-					// being constructed.
-					_visual.IsArrangePending = !IsFirstArrangeDone;
+					// being constructed. Only FrameworkElements reach ArrangeVisual (UIElement.Arrange
+					// returns early otherwise), so anything else must never be suppressed.
+					_visual.IsArrangePending = _isFrameworkElement && !IsFirstArrangeDone;
 				}
 
 				return _visual;
@@ -159,6 +160,14 @@ namespace Microsoft.UI.Xaml
 
 			// Reset to original (invalidated) state
 			child.ResetLayoutFlags();
+
+			// ResetLayoutFlags clears FirstArrangeDone, so the child has no layout slot under this parent
+			// until it is arranged again — re-suppress it, otherwise it would keep painting at its stale
+			// slot (or at the new parent's origin) in the meantime.
+			if (child._isFrameworkElement)
+			{
+				child.Visual.IsArrangePending = true;
+			}
 
 			if (IsMeasureDirtyPathDisabled)
 			{
