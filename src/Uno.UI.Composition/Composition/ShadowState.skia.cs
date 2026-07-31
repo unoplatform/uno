@@ -18,5 +18,5 @@ internal record ShadowState(float Dx, float Dy, float SigmaX, float SigmaY, Colo
 	/// non-analytic fallback path.
 	/// </summary>
 	public IEffectFilter ShadowFilter =>
-		_shadowFilter ??= DrawingBackend.Current.CreateDropShadowFilter(Dx, Dy, SigmaX, SigmaY, Color);
+		_shadowFilter ??= DrawingFactory.Current.CreateDropShadowFilter(Dx, Dy, SigmaX, SigmaY, Color);
 }

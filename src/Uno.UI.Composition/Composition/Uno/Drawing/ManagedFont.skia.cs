@@ -11,7 +11,7 @@ namespace Uno.UI.Composition.Drawing;
 /// An alternative, SkiaSharp-free <see cref="IFont"/> implementation: glyph outlines are read straight from the
 /// font's sfnt tables (TrueType <c>glyf</c> — simple and composite — and CFF/Type2 <c>CFF </c>) and emitted through
 /// the neutral <see cref="IPathBuilder"/>; color glyphs (<c>COLR</c>/<c>CPAL</c>) are composited from their colored
-/// layers into an <see cref="IImage"/> via <see cref="IDrawingBackend.RenderOffscreen"/>. No Skia is used for any of
+/// layers into an <see cref="IImage"/> via <see cref="IDrawingFactory.RenderOffscreen"/>. No Skia is used for any of
 /// the outline/color work — this proves the font seam is genuinely backend-neutral, and lets the whole app render
 /// text through a non-Skia backend when toggled on (see <c>FontDetails.FontHandle</c>).
 /// </summary>
@@ -395,7 +395,7 @@ internal sealed class ManagedFont : IFont
 	public IGeometry BuildGlyphRunOutline(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY)
 	{
 		var scale = _pixelSize / _unitsPerEm;
-		var builder = DrawingBackend.Current.CreatePathBuilder();
+		var builder = DrawingFactory.Current.CreatePathBuilder();
 		for (var i = 0; i < glyphs.Length; i++)
 		{
 			if (HasColorGlyphs && _colr!.HasBaseGlyph(glyphs[i]))
@@ -443,7 +443,7 @@ internal sealed class ManagedFont : IFont
 		var bottom = float.MinValue;
 		foreach (var layer in layers)
 		{
-			var builder = DrawingBackend.Current.CreatePathBuilder();
+			var builder = DrawingFactory.Current.CreatePathBuilder();
 			EmitOutline(builder, layer.GlyphId, 0f, 0f, scale);
 			var geometry = builder.Build();
 			var b = geometry.Bounds;
@@ -473,7 +473,7 @@ internal sealed class ManagedFont : IFont
 		var shiftX = -left;
 		var shiftY = -top;
 
-		var image = DrawingBackend.Current.RenderOffscreen(width, height, session =>
+		var image = DrawingFactory.Current.RenderOffscreen(width, height, session =>
 		{
 			session.Translate(shiftX, shiftY);
 			foreach (var (geometry, color) in built)

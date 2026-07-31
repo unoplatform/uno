@@ -18,7 +18,7 @@ namespace Microsoft.UI.Composition
 
 		internal static IGeometry BuildLineGeometry(Vector2 start, Vector2 end)
 		{
-			var builder = DrawingBackend.Current.CreatePathBuilder();
+			var builder = DrawingFactory.Current.CreatePathBuilder();
 
 			builder.MoveTo(start);
 			builder.LineTo(end);
@@ -28,7 +28,7 @@ namespace Microsoft.UI.Composition
 
 		internal static IGeometry BuildRectangleGeometry(Vector2 offset, Vector2 size)
 		{
-			var builder = DrawingBackend.Current.CreatePathBuilder();
+			var builder = DrawingFactory.Current.CreatePathBuilder();
 
 			// Top left
 			builder.MoveTo(offset);
@@ -52,7 +52,7 @@ namespace Microsoft.UI.Composition
 			float bezierX = (float)((1.0 - CIRCLE_BEZIER_KAPPA) * radiusX);
 			float bezierY = (float)((1.0 - CIRCLE_BEZIER_KAPPA) * radiusY);
 
-			var builder = DrawingBackend.Current.CreatePathBuilder();
+			var builder = DrawingFactory.Current.CreatePathBuilder();
 			var lastPoint = new Vector2(offset.X + radiusX, offset.Y);
 
 			builder.MoveTo(lastPoint);
@@ -116,7 +116,7 @@ namespace Microsoft.UI.Composition
 			// - WPF starts with bottom right ellipse arc.
 			// - TODO: Verify UWP behavior
 
-			var builder = DrawingBackend.Current.CreatePathBuilder();
+			var builder = DrawingFactory.Current.CreatePathBuilder();
 
 			builder.MoveTo(new Vector2(right, top + radius.Y));
 			// Bottom-right Arc

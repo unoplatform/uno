@@ -7,7 +7,7 @@ using Windows.Foundation;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// Backend-neutral handle to an immutable 2D geometry (path), produced by an <see cref="IDrawingBackend"/>
+/// Backend-neutral handle to an immutable 2D geometry (path), produced by an <see cref="IDrawingFactory"/>
 /// and consumed by the drawing pipeline for filling, clipping, stroking and hit-testing.
 /// </summary>
 /// <remarks>

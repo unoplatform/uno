@@ -11,7 +11,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 /// <summary>
 /// Drives the shared render loop through the pluggable graphics pipeline, naming no GPU-library type. It
 /// installs the X11 context factory (Uno owns context creation), negotiates the registered backend via
-/// <see cref="GraphicsBackend.Activate"/>, and per frame acquires the context's target, records/presents the
+/// <see cref="GraphicsRegistry.Activate"/>, and per frame acquires the context's target, records/presents the
 /// frame through the neutral loop, and asks the context to present. The backend wraps the acquired target.
 /// </summary>
 internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
@@ -28,14 +28,14 @@ internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 
 		// Uno owns context creation for the closed set of kinds; the X11 factory builds the software
 		// (CPU-framebuffer + XPutImage) context. No backend/GPU-library type is named here.
-		GraphicsBackend.ContextFactory = X11GraphicsContextFactory.Create;
+		GraphicsRegistry.ContextFactory = X11GraphicsContextFactory.Create;
 
 		var (width, height) = GetWindowSize();
-		var activation = GraphicsBackend.Activate(new X11GraphicsNativeWindow(x11Window, width, height));
+		var activation = GraphicsRegistry.Activate(new X11GraphicsNativeWindow(x11Window, width, height));
 		_context = activation.Context;
 
 		// Route the shared render loop through the negotiated backend (whichever was registered).
-		CompositionTarget.RenderBackend = activation.RenderBackend;
+		CompositionTarget.Renderer = activation.Renderer;
 	}
 
 	public void SetBackgroundColor(Color color) => _background = color;

@@ -807,10 +807,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	public void Dispose() { }
 }
 
-public sealed class WebGpuRenderBackend : IRenderBackend
+public sealed class WebGpuRenderer : IRenderer
 {
 	public readonly WebGpuDevice Device;
-	public WebGpuRenderBackend(WebGpuDevice device) => Device = device;
+	public WebGpuRenderer(WebGpuDevice device) => Device = device;
 	public ICommandRecorder BeginFrame() => new WebGpuCommandRecorder();
 	public IPresentSession BeginPresent(IRenderTarget target) => new WebGpuPresentSession(Device, (WebGpuRenderSurface)target);
 }
@@ -828,7 +828,7 @@ public sealed class WebGpuGraphicsContext : IGraphicsContext
 
 	public bool IsLost => false;
 
-	// The WebGPU render path is driven by the (legacy, env-gated) X11WebGpu*Renderer today, not GraphicsBackend
+	// The WebGPU render path is driven by the (legacy, env-gated) X11WebGpu*Renderer today, not GraphicsRegistry
 	// .Activate, so this context isn't asked to acquire/present. Stubbed until the WebGPU host adopts the seam.
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 		=> throw new System.NotSupportedException("WebGpuGraphicsContext does not yet drive AcquireRenderTarget/Present.");
@@ -840,11 +840,11 @@ public sealed class WebGpuGraphicsContext : IGraphicsContext
 }
 
 /// <summary>The registerable WebGPU backend pair. Prefers a WebGPU context; needs an 8-bit stencil for path fills.</summary>
-public sealed class WebGpuGraphicsBackend : IGraphicsBackend
+public sealed class WebGpuGraphicsProvider : IGraphicsProvider
 {
 	private static readonly GraphicsContextKind[] _preferred = { GraphicsContextKind.WebGpu };
 
-	public WebGpuGraphicsBackend(IDrawingBackend drawing) => Drawing = drawing;
+	public WebGpuGraphicsProvider(IDrawingFactory drawing) => Drawing = drawing;
 
 	public IReadOnlyList<GraphicsContextKind> PreferredContexts => _preferred;
 
@@ -852,9 +852,9 @@ public sealed class WebGpuGraphicsBackend : IGraphicsBackend
 
 	// Geometry/images are neutral, so the WebGPU backend can reuse a shared managed factory. Shaders/filters/
 	// effects would need a WebGPU-owned factory — deferred; this proves the negotiation + render path.
-	public IDrawingBackend Drawing { get; }
+	public IDrawingFactory Drawing { get; }
 
-	public IRenderBackend CreateRenderBackend(IGraphicsContext context) => new WebGpuRenderBackend(((WebGpuGraphicsContext)context).Device);
+	public IRenderer CreateRenderBackend(IGraphicsContext context) => new WebGpuRenderer(((WebGpuGraphicsContext)context).Device);
 }
 
 // --- Device-bound factory (IImageTexture + eventual shaders) ---
@@ -905,12 +905,12 @@ public sealed unsafe class WebGpuImageTexture : IImageTexture
 /// factory — so a real app renders unchanged, but images become GPU-resident wgpu textures the WebGPU
 /// renderer consumes. (A future WebGpuShader would move shader creation here too.)
 /// </summary>
-public sealed class WebGpuDrawingBackend : IDrawingBackend
+public sealed class WebGpuDrawingFactory : IDrawingFactory
 {
 	private readonly WebGpuDevice _device;
-	private readonly IDrawingBackend _inner;
+	private readonly IDrawingFactory _inner;
 
-	public WebGpuDrawingBackend(WebGpuDevice device, IDrawingBackend inner) { _device = device; _inner = inner; }
+	public WebGpuDrawingFactory(WebGpuDevice device, IDrawingFactory inner) { _device = device; _inner = inner; }
 
 	public IImageTexture CreateImageTexture(IImage image) => new WebGpuImageTexture(_device, image);
 

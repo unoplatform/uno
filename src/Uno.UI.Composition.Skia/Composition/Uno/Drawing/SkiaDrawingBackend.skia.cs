@@ -9,13 +9,13 @@ using Windows.UI;
 
 namespace Uno.UI.Composition.Drawing;
 
-/// <summary>The default <see cref="IDrawingBackend"/>, backed by SkiaSharp.</summary>
-internal sealed class SkiaDrawingBackend : IDrawingBackend
+/// <summary>The default <see cref="IDrawingFactory"/>, backed by SkiaSharp.</summary>
+internal sealed class SkiaDrawingFactory : IDrawingFactory
 {
 	// Self-registers when this assembly loads, so the core never news-up a concrete backend. When the
 	// Skia backend becomes a separate assembly, this travels with it and registers on that assembly's load.
 	[ModuleInitializer]
-	internal static void Register() => DrawingBackend.Register(new SkiaDrawingBackend());
+	internal static void Register() => DrawingFactory.Register(new SkiaDrawingFactory());
 
 	// Opt-in switch to build geometry through the SkiaSharp-free ManagedGeometry engine instead of SKPath,
 	// selected via DrawingBackendOptions.UseManagedGeometry at init.

@@ -10,7 +10,7 @@ namespace Uno.UI.Composition.Drawing;
 /// Decodes encoded image streams into neutral pixels. This is a CPU-only, render-backend-independent seam:
 /// a decoder can be supplied independently of the graphics/render backend (managed decoder, Skia codec, or a
 /// platform codec), and it produces the neutral <see cref="IImage"/>/<see cref="IImageFrames"/> currency any
-/// render backend consumes (via <see cref="IDrawingBackend.CreateImageTexture"/>).
+/// render backend consumes (via <see cref="IDrawingFactory.CreateImageTexture"/>).
 /// </summary>
 public interface IImageDecoder
 {

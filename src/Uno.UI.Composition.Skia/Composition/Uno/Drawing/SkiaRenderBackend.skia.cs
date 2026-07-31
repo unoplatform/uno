@@ -4,8 +4,8 @@ using System;
 
 namespace Uno.UI.Composition.Drawing;
 
-/// <summary>The default <see cref="IRenderBackend"/>: the established Skia two-phase (SKPicture) lifecycle.</summary>
-internal sealed class SkiaRenderBackend : IRenderBackend
+/// <summary>The default <see cref="IRenderer"/>: the established Skia two-phase (SKPicture) lifecycle.</summary>
+internal sealed class SkiaRenderer : IRenderer
 {
 	public ICommandRecorder BeginFrame() => SkiaDrawingSession.StartRecording();
 

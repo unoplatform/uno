@@ -29,7 +29,7 @@ namespace Microsoft.UI.Composition
 			gradientOrigin.X += (float)bounds.Left;
 			gradientOrigin.Y += (float)bounds.Top;
 
-			shader = DrawingBackend.Current.CreateRadialGradientShader(
+			shader = DrawingFactory.Current.CreateRadialGradientShader(
 				center, gradientOrigin, radius.X, radius.Y, GetNeutralColors(opacity), ColorPositions!, NeutralTileMode, transform);
 			return true;
 		}

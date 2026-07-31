@@ -14,7 +14,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 internal sealed unsafe class X11WebGpuSwapchainRenderer : X11Renderer
 {
 	private readonly WebGpuDevice _device;
-	private readonly WebGpuRenderBackend _backend;
+	private readonly WebGpuRenderer _backend;
 	private Silk.NET.WebGPU.Surface* _surface;
 	private WebGpuRenderSurface? _target; // owns the depth/stencil; color View set per frame
 	private int _w, _h;
@@ -25,11 +25,11 @@ internal sealed unsafe class X11WebGpuSwapchainRenderer : X11Renderer
 		// Swapchain surfaces here (lavapipe/X11) expose Bgra8Unorm(Srgb), not Rgba8Unorm — so build the
 		// backend pipelines for Bgra8Unorm to match the swapchain image (avoids a color-format validation error).
 		_device = new WebGpuDevice(TextureFormat.Bgra8Unorm);
-		_backend = new WebGpuRenderBackend(_device);
-		CompositionTarget.RenderBackend = _backend;
+		_backend = new WebGpuRenderer(_device);
+		CompositionTarget.Renderer = _backend;
 		// Wrap the existing factory with the device-bound WebGPU one so images become WebGpuImageTexture
 		// (consumable by the WebGPU renderer); everything else delegates to the inner factory.
-		DrawingBackend.Register(new WebGpuDrawingBackend(_device, DrawingBackend.Current));
+		DrawingFactory.Register(new WebGpuDrawingFactory(_device, DrawingFactory.Current));
 
 		var xlib = new SurfaceDescriptorFromXlibWindow
 		{

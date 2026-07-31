@@ -27,7 +27,7 @@ namespace Microsoft.UI.Composition
 
 			var localMatrix = CreateTransformMatrix(bounds);
 
-			shader = DrawingBackend.Current.CreateLinearGradientShader(
+			shader = DrawingFactory.Current.CreateLinearGradientShader(
 				start, end, GetNeutralColors(opacity), ColorPositions!, NeutralTileMode, localMatrix);
 			return true;
 		}

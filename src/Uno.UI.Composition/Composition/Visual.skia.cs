@@ -532,7 +532,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 
 		var localMatrix = TotalMatrix.ToMatrix3x2();
-		var localClip = (GetPrePaintingClipping() ?? DrawingBackend.Current.CreateRectangleGeometry(new Rect(0, 0, Size.X, Size.Y)))
+		var localClip = (GetPrePaintingClipping() ?? DrawingFactory.Current.CreateRectangleGeometry(new Rect(0, 0, Size.X, Size.Y)))
 			.Transform(localMatrix)
 			.Combine(clipFromParent, GeometryCombineMode.Intersect);
 
@@ -565,7 +565,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// Root: seed with the unclipped (infinite) region; ancestor clips are intersected into it.
 		var dst = Parent is Visual parent
 			? parent.GetTotalClipPath(false)
-			: DrawingBackend.Current.CreateRectangleGeometry(InfiniteClipRect);
+			: DrawingFactory.Current.CreateRectangleGeometry(InfiniteClipRect);
 
 		var totalMatrix = TotalMatrix.ToMatrix3x2();
 		if (GetPrePaintingClipping() is { } pre)
@@ -706,7 +706,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		var canSkipOwnContribution = false;
 		if (visual is { PaintsWithinOwnSize: true, Size: { X: > 0, Y: > 0 } size })
 		{
-			var sizeCandidate = DrawingBackend.Current.CreateRectangleGeometry(new Rect(0, 0, size.X, size.Y)).Transform(toRoot);
+			var sizeCandidate = DrawingFactory.Current.CreateRectangleGeometry(new Rect(0, 0, size.X, size.Y)).Transform(toRoot);
 			if (effectiveClip is not null)
 			{
 				sizeCandidate = sizeCandidate.Combine(effectiveClip, GeometryCombineMode.Intersect);
@@ -798,7 +798,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal virtual IGeometry? GetPrePaintingClipping()
 		=> Clip is null
 			? null
-			: Clip.GetClipPath(this) ?? DrawingBackend.Current.CreateRectangleGeometry(new Rect(0, 0, 0, 0));
+			: Clip.GetClipPath(this) ?? DrawingFactory.Current.CreateRectangleGeometry(new Rect(0, 0, 0, 0));
 
 	/// <summary>Applies this visual's pre-painting clipping (its <see cref="Clip"/> and any layout/corner clip) to the drawing session.</summary>
 	internal virtual void ApplyPrePaintingClipping(IDrawingSession session) => Clip?.ApplyClip(this, session);

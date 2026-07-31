@@ -11,13 +11,13 @@ using Windows.UI;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// A SkiaSharp-free <see cref="IDrawingBackend"/> factory built on the managed engines (geometry via
+/// A SkiaSharp-free <see cref="IDrawingFactory"/> factory built on the managed engines (geometry via
 /// <see cref="ManagedPathBuilder"/>, decode via <see cref="ManagedImageDecoder"/>). Geometry and images are
-/// neutral, so any renderer (WebGPU, a future managed rasterizer) can reuse this as its <see cref="IGraphicsBackend.Drawing"/>.
+/// neutral, so any renderer (WebGPU, a future managed rasterizer) can reuse this as its <see cref="IGraphicsProvider.Drawing"/>.
 /// Shaders/effects/offscreen rasterization are still Skia-only and remain unimplemented here — a fully
 /// Skia-less setup needs managed equivalents (deferred).
 /// </summary>
-public sealed class ManagedDrawingBackend : IDrawingBackend
+public sealed class ManagedDrawingFactory : IDrawingFactory
 {
 	public IPathBuilder CreatePathBuilder() => new ManagedPathBuilder();
 
@@ -34,9 +34,9 @@ public sealed class ManagedDrawingBackend : IDrawingBackend
 		=> throw new NotImplementedException("Managed offscreen rasterization is not yet implemented; requires a managed rasterizer.");
 
 	// The managed factory is a CPU-resource factory (geometry/decode); GPU textures are created by the
-	// device-bound backend factory (e.g. WebGpuDrawingBackend), not here.
+	// device-bound backend factory (e.g. WebGpuDrawingFactory), not here.
 	public IImageTexture CreateImageTexture(IImage image)
-		=> throw new NotSupportedException("ManagedDrawingBackend has no GPU device; use a device-bound backend factory to create textures.");
+		=> throw new NotSupportedException("ManagedDrawingFactory has no GPU device; use a device-bound backend factory to create textures.");
 
 	public IShader CreateLinearGradientShader(Vector2 start, Vector2 end, Color[] colors, float[] colorPositions, GradientTileMode tileMode, Matrix3x2 localMatrix)
 		=> throw new NotImplementedException("Managed gradient shaders are not yet implemented.");

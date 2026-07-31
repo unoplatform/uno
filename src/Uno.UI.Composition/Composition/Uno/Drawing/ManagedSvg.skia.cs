@@ -14,7 +14,7 @@ namespace Uno.UI.Composition.Drawing;
 /// A SkiaSharp-free SVG engine: parses SVG markup and renders it through the neutral drawing abstraction
 /// (<see cref="IPathBuilder"/> geometry, <see cref="IDrawingSession"/> verbs, backend gradient shaders), so the
 /// core framework's SVG support no longer depends on Skia. Produces an <see cref="IImage"/> at a target size via
-/// <see cref="IDrawingBackend.RenderOffscreen"/>.
+/// <see cref="IDrawingFactory.RenderOffscreen"/>.
 /// </summary>
 /// <remarks>
 /// Covers the common icon/illustration subset: svg/g/path/rect/circle/ellipse/line/polyline/polygon/use, fills and
@@ -68,7 +68,7 @@ internal sealed class ManagedSvg
 
 	public IImage Render(int pixelWidth, int pixelHeight)
 	{
-		return DrawingBackend.Current.RenderOffscreen(pixelWidth, pixelHeight, session =>
+		return DrawingFactory.Current.RenderOffscreen(pixelWidth, pixelHeight, session =>
 		{
 			// Map the viewBox into the pixel target (uniform scale, centered — xMidYMid meet).
 			var sx = pixelWidth / (float)_viewBox.Width;
@@ -237,7 +237,7 @@ internal sealed class ManagedSvg
 			var cx = MapX(Frac("cx", 0.5f));
 			var cy = MapY(Frac("cy", 0.5f));
 			var r = Frac("r", 0.5f) * (objectBoundingBox ? (float)Math.Max(bounds.Width, bounds.Height) : 1f);
-			return DrawingBackend.Current.CreateRadialGradientShader(
+			return DrawingFactory.Current.CreateRadialGradientShader(
 				new Vector2(cx, cy), new Vector2(cx, cy), r, r, colors, positions, tileMode, localMatrix);
 		}
 
@@ -245,7 +245,7 @@ internal sealed class ManagedSvg
 		var y1 = MapY(Frac("y1", 0f));
 		var x2 = MapX(Frac("x2", 1f));
 		var y2 = MapY(Frac("y2", 0f));
-		return DrawingBackend.Current.CreateLinearGradientShader(
+		return DrawingFactory.Current.CreateLinearGradientShader(
 			new Vector2(x1, y1), new Vector2(x2, y2), colors, positions, tileMode, localMatrix);
 	}
 
@@ -310,7 +310,7 @@ internal sealed class ManagedSvg
 
 		var x = Len(el, "x");
 		var y = Len(el, "y");
-		var b = DrawingBackend.Current.CreatePathBuilder();
+		var b = DrawingFactory.Current.CreatePathBuilder();
 		// (Rounded rx/ry omitted in v1 — sharp corners.)
 		b.MoveTo(new Vector2(x, y));
 		b.LineTo(new Vector2(x + w, y));
@@ -329,7 +329,7 @@ internal sealed class ManagedSvg
 
 		// Four cubic bezier quadrants (kappa).
 		const float k = 0.5522847498f;
-		var b = DrawingBackend.Current.CreatePathBuilder();
+		var b = DrawingFactory.Current.CreatePathBuilder();
 		b.MoveTo(new Vector2(cx + rx, cy));
 		b.CubicTo(new Vector2(cx + rx, cy + ry * k), new Vector2(cx + rx * k, cy + ry), new Vector2(cx, cy + ry));
 		b.CubicTo(new Vector2(cx - rx * k, cy + ry), new Vector2(cx - rx, cy + ry * k), new Vector2(cx - rx, cy));
@@ -346,7 +346,7 @@ internal sealed class ManagedSvg
 			return null;
 		}
 
-		var b = DrawingBackend.Current.CreatePathBuilder();
+		var b = DrawingFactory.Current.CreatePathBuilder();
 		b.MoveTo(new Vector2(pts[0], pts[1]));
 		for (var i = 2; i + 1 < pts.Length; i += 2)
 		{
@@ -368,7 +368,7 @@ internal sealed class ManagedSvg
 			return null;
 		}
 
-		var b = DrawingBackend.Current.CreatePathBuilder();
+		var b = DrawingFactory.Current.CreatePathBuilder();
 		new SvgPathParser(d, b).Parse();
 		return b.Build();
 	}

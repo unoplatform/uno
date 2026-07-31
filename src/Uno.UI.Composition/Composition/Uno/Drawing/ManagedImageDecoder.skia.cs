@@ -8,7 +8,7 @@ namespace Uno.UI.Composition.Drawing;
 /// <summary>
 /// A SkiaSharp-free image decoder: parses the common encoded formats (PNG, GIF incl. animation, BMP, baseline JPEG)
 /// straight into BGRA-premultiplied pixel frames. Format parsing is entirely managed; the backend turns the pixels
-/// into drawable <see cref="IImage"/> handles (see <c>SkiaDrawingBackend.TryDecodeImage</c>). Opt-in via
+/// into drawable <see cref="IImage"/> handles (see <c>SkiaDrawingFactory.TryDecodeImage</c>). Opt-in via
 /// <see cref="DrawingBackendOptions.UseManagedImageDecoder"/>; unsupported inputs return false so the caller
 /// falls back to the Skia codec.
 /// </summary>

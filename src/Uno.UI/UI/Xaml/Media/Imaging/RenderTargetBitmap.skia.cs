@@ -105,7 +105,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				var scaleX = render.Width == 0 ? (float)render.Dpi : (float)(render.TargetWidth * render.Dpi / render.Width);
 				var scaleY = render.Height == 0 ? (float)render.Dpi : (float)(render.TargetHeight * render.Dpi / render.Height);
 
-				var image = DrawingBackend.Current.RenderOffscreen(render.TargetWidth, render.TargetHeight, session =>
+				var image = DrawingFactory.Current.RenderOffscreen(render.TargetWidth, render.TargetHeight, session =>
 				{
 					session.Save();
 					session.Scale(scaleX, scaleY);

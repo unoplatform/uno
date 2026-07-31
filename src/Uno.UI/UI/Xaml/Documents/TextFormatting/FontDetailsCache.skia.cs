@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting;
 
 /// <remarks>
 /// Font <em>resolution</em> (family/style/bytes → <see cref="IFont"/>) is delegated to the backend's
-/// <see cref="IFontManager"/> (Skia or managed system-font lookup); this cache owns the URI/manifest byte
+/// <see cref="IFontProvider"/> (Skia or managed system-font lookup); this cache owns the URI/manifest byte
 /// loading, per-request caching, and building the <see cref="FontDetails"/> (font handle + HarfBuzz font).
 /// </remarks>
 internal static class FontDetailsCache
@@ -44,7 +44,7 @@ internal static class FontDetailsCache
 		FeatureConfiguration.Font.FallbackService
 		?? (ApiExtensibility.CreateInstance<IFontFallbackService>(typeof(FontDetailsCache), out var service) ? service : null);
 
-	private static IFontManager FontManager => global::Uno.UI.Composition.Drawing.FontManager.Current;
+	private static IFontProvider FontProvider => global::Uno.UI.Composition.Drawing.FontProvider.Current;
 
 	/// <summary>
 	/// Loads the raw font bytes for an application/URI font, resolving a <c>.manifest</c> sidecar to the
@@ -100,7 +100,7 @@ internal static class FontDetailsCache
 		FontStyle style,
 		float fontSize)
 	{
-		var manager = FontManager;
+		var manager = FontProvider;
 
 		// A font family can be specified as "<file-uri>#<family name>". The part after '#' selects a specific
 		// family within the file, which matters for TrueType/OpenType collections (.ttc/.otc).
@@ -214,8 +214,8 @@ internal static class FontDetailsCache
 					: $"{key} could not be found, using system default");
 			}
 
-			font = FontManager.MatchFamily(FeatureConfiguration.Font.DefaultTextFontFamily, weight, stretch, style, fontSize)
-				?? FontManager.GetDefaultFont(weight, stretch, style, fontSize);
+			font = FontProvider.MatchFamily(FeatureConfiguration.Font.DefaultTextFontFamily, weight, stretch, style, fontSize)
+				?? FontProvider.GetDefaultFont(weight, stretch, style, fontSize);
 		}
 
 		var details = FontDetails.Create(font, fontSize);
