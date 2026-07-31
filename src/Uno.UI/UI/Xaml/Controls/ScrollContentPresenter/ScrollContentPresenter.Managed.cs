@@ -173,7 +173,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (Content is UIElement contentElt)
 			{
-				ScrollDiagnostics.Record(ScrollDiagnostics.SampleKind.Frame, -contentElt.Visual.AnchorPoint.Y);
+				ScrollDiagnostics.RecordFrameIfMoved(-contentElt.Visual.AnchorPoint.Y);
 			}
 
 			ScrollDiagnostics.TryDump();
