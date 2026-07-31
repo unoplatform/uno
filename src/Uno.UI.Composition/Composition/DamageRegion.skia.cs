@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using SkiaSharp;
@@ -16,14 +16,15 @@ namespace Uno.UI.Composition;
 /// </remarks>
 internal sealed class DamageRegion : IDisposable
 {
-	// Past this many points the accumulated shape stops paying for itself, both here and later when it
-	// is used as a clip, and collapses to its bounding rect. A scroll frame contributes one rect per
-	// moved visual and reaches this almost immediately — which is the right answer, since the union of
-	// a scrolled subtree is its scroll port.
-	private const int MaxPoints = 256;
+	// The accumulated region is handed to SKCanvas.ClipPath, and a many-contour clip can cost a
+	// GPU-side mask allocation per frame — on a tiled mobile GPU that is enough to exhaust the
+	// driver's mappable memory. Keep the contour count low and collapse to the bounding rect beyond
+	// it. During a scroll that costs nothing: every moved visual is inside the scroll port, so the
+	// union is the scroll port either way.
+	private const int MaxPoints = 32;
 	private const int PointsPerRect = 4;
 
-	private SKPathBuilder _rects = NewRectBuilder();
+	private readonly SKPathBuilder _rects = NewRectBuilder();
 	private readonly SKPath _exact = new();
 
 	private SKRect _rectBounds;
@@ -44,8 +45,8 @@ internal sealed class DamageRegion : IDisposable
 		if (_hasRects && _rectPoints >= MaxPoints)
 		{
 			var collapsed = SKRect.Union(_rectBounds, rect);
-			_rects.Dispose();
-			_rects = NewRectBuilder();
+			_rects.Reset();
+			_rects.FillType = SKPathFillType.Winding;
 			_rects.AddRect(collapsed);
 			_rectBounds = collapsed;
 			_rectPoints = PointsPerRect;
@@ -80,12 +81,10 @@ internal sealed class DamageRegion : IDisposable
 
 	internal void Reset()
 	{
-		if (_hasRects)
-		{
-			_rects.Dispose();
-			_rects = NewRectBuilder();
-		}
-
+		// Reset, never dispose-and-recreate: the builder is reusable, and churning a native object per
+		// frame is exactly the pressure this type exists to avoid.
+		_rects.Reset();
+		_rects.FillType = SKPathFillType.Winding;
 		_exact.Reset();
 		_rectBounds = default;
 		_rectPoints = 0;
