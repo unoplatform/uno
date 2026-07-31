@@ -2144,5 +2144,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// The scroll offset should remain 0 — there's nothing to scroll
 			Assert.AreEqual(0d, sut.VerticalOffset, "Should not have scrolled");
 		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_SlowTouchDrag_Then_ScrollAdvancesEveryMove()
+		{
+			// The manipulation delta threshold that bounds public ManipulationDelta volume must not reach
+			// the scroll path, where it acts as a motion quantizer: below 2 logical px the content would not
+			// move at all, then jump the whole accumulated amount, so a slow drag advances every other frame.
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				IsScrollInertiaEnabled = false,
+				UpdatesMode = Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+				Content = new Border { Width = 180, Height = 2000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			var start = SUT.GetAbsoluteBounds().GetCenter();
+			finger.Press(start);
+
+			// Cross the manipulation start threshold first; only then are deltas fed to the scroll.
+			var current = start.Offset(0, -30);
+			finger.MoveTo(current, steps: 1);
+			await WindowHelper.WaitForIdle();
+
+			const int Moves = 6;
+			var offsets = new List<double>();
+			for (var i = 0; i < Moves; i++)
+			{
+				current = current.Offset(0, -1);
+				finger.MoveTo(current, steps: 1);
+				await WindowHelper.WaitForIdle();
+				offsets.Add(SUT.VerticalOffset);
+			}
+
+			finger.Release();
+
+			var advanced = 0;
+			for (var i = 1; i < offsets.Count; i++)
+			{
+				if (offsets[i] > offsets[i - 1])
+				{
+					advanced++;
+				}
+			}
+
+			Assert.AreEqual(
+				Moves - 1,
+				advanced,
+				$"Every 1px move should advance the offset, got [{string.Join(", ", offsets)}].");
+		}
 	}
 }
