@@ -118,14 +118,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// In the future, we should accurately set <see cref="_requiresRepaint"/> to
 	/// only be true when we really have something to paint (and that painting needs to be updated).
 	/// </summary>
-	private bool _isArrangePending;
+	internal virtual bool CanPaint() => false;
 
 	/// <summary>
-	/// Set while the owning element has never been arranged. Such a visual has no layout slot yet
-	/// (<see cref="ArrangeOffset"/>/<see cref="Size"/> are unset) and a visual's content is not bounded by
-	/// its Size, so painting it would draw at the parent's origin, unclipped. WinUI never renders an element
-	/// its parent didn't arrange. Defaults to <see langword="false"/> so visuals created directly through the
-	/// Composition API (which are never arranged by the layout system) keep rendering.
+	/// Set while the owning element has no layout slot, i.e. it has never been arranged (or was
+	/// re-parented and not arranged since). <see cref="ArrangeOffset"/>/<see cref="Size"/> are unset then,
+	/// and a visual's content is not bounded by its Size, so painting would draw at the parent's origin,
+	/// unclipped. WinUI never renders an element its parent didn't arrange. Defaults to
+	/// <see langword="false"/> so visuals created directly through the Composition API (which the layout
+	/// system never arranges) keep rendering.
 	/// </summary>
 	internal bool IsArrangePending
 	{
@@ -135,13 +136,31 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			if (_isArrangePending != value)
 			{
 				_isArrangePending = value;
-				// Becoming paintable has to re-collect this visual into any cached parent picture.
-				InvalidateParentChildrenPicture(includeSelf: true);
+
+				// Mirrors the visibility transitions: the ancestors' cached children pictures must be
+				// rebuilt either way (to drop or to re-collect this subtree). Passing includeSelf would
+				// stop the walk immediately, since a suppressed visual's own ChildrenSKPictureInvalid is
+				// never cleared (Render returns before that).
+				InvalidateParentChildrenPicture(includeSelf: false);
+
+				// Becoming suppressed leaves whatever was painted on screen, so damage it like
+				// OnIsVisibleChanged does. The reverse direction self-heals: the visual is walked again
+				// with no _lastRenderBounds, which reports it as moved.
+				if (value && CompositionTarget is { } target)
+				{
+					DamageLastRenderedRegion(target);
+				}
 			}
 		}
 	}
 
-	internal virtual bool CanPaint() => false;
+	private bool _isArrangePending;
+
+	/// <summary>
+	/// Nothing this visual or its subtree paints may reach the frame. Kept in one place so the paint
+	/// walks below cannot drift apart on which suppression reasons they honor.
+	/// </summary>
+	private bool IsRenderSuppressed => Opacity == 0f || !IsVisible || IsArrangePending;
 
 	/// <summary>
 	/// When true, this visual guarantees that everything <em>it itself</em> paints stays inside
@@ -348,7 +367,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
 	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride, SKPath? damage = null)
 	{
-		if (this is { Opacity: 0 } or { IsVisible: false })
+		if (IsRenderSuppressed)
 		{
 			return;
 		}
@@ -406,7 +425,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		global::System.Diagnostics.Debug.WriteLine($"{indent}{Comment} (Opacity:{parentSession.Opacity:F2}x{Opacity:F2} | IsVisible:{IsVisible})");
 #endif
 
-		if (this is { Opacity: 0 } or { IsVisible: false } or { IsArrangePending: true })
+		if (IsRenderSuppressed)
 		{
 			return;
 		}
@@ -816,7 +835,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		ShadowPathAccumulator accumulator)
 	{
 		var scratch = _spareShadowContributions;
-		if (visual.Opacity == 0f || !visual.IsVisible)
+		if (visual.IsRenderSuppressed)
 		{
 			return true;
 		}
