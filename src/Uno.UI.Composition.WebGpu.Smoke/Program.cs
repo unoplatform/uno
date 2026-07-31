@@ -80,8 +80,38 @@ var p7 = Render(r => { r.Save(); r.ClipRect(new Rect(0, 0, 10, 10)); r.Restore()
 var sc = At(p7, 32, 32);
 Check("save/restore: clip released → full green", sc.g > 200 && sc.r < 60, sc);
 
+// 8) CROSS-BACKEND AGREEMENT — render the SAME neutral scene (black bg + green managed-geometry triangle)
+//    through the Skia backend and the WebGPU backend, and assert both classify every unambiguous pixel the same.
+var black = WColor.FromArgb(255, 0, 0, 0);
+Uno.UI.Composition.Skia.SkiaBackend.Register();
+var skImg = DrawingBackend.Current.RenderOffscreen(64, 64, s =>
+{
+	s.DrawRect(new Rect(0, 0, 64, 64), black, false);
+	s.DrawPath(tri, green, false);
+});
+var skBgra = new byte[64 * 64 * 4];
+skImg.CopyPixels(skBgra);
+var wg = Render(r => r.DrawPath(tri, green, false));
+
+// Classify a pixel as 'G' (green), 'K' (black), or '?' (ambiguous/AA edge). Skia readback is BGRA, WebGPU is RGBA.
+char ClassSkia(int i) { int r = skBgra[i + 2], g = skBgra[i + 1], b = skBgra[i]; return (g > 150 && r < 60 && b < 60) ? 'G' : (r < 40 && g < 40 && b < 40) ? 'K' : '?'; }
+char ClassWgpu(int i) { int r = wg[i], g = wg[i + 1], b = wg[i + 2]; return (g > 150 && r < 60 && b < 60) ? 'G' : (r < 40 && g < 40 && b < 40) ? 'K' : '?'; }
+int compared = 0, disagree = 0;
+for (int y = 0; y < 64; y += 4)
+{
+	for (int x = 0; x < 64; x += 4)
+	{
+		int i = (y * 64 + x) * 4;
+		char cs = ClassSkia(i), cw = ClassWgpu(i);
+		if (cs == '?' || cw == '?') { continue; }   // skip AA-boundary pixels (rasterizers differ there)
+		compared++;
+		if (cs != cw) { disagree++; }
+	}
+}
+Check($"cross-backend: Skia vs WebGPU agree on {compared} sampled pixels", compared > 100 && disagree == 0, $"{disagree} disagreements / {compared}");
+
 Console.WriteLine(fail == 0
-	? "\nALL PASS — non-Skia render seam (rect · path · gradient · image · transform · clip · save/restore) verified headless"
+	? "\nALL PASS — non-Skia render seam verified headless, and Skia vs WebGPU agree on the same neutral scene"
 	: $"\n{fail} CHECK(S) FAILED");
 Environment.Exit(fail == 0 ? 0 : 1);
 
