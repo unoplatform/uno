@@ -1,4 +1,4 @@
-# Scroll smoothness on Skia targets — design
+﻿# Scroll smoothness on Skia targets — design
 
 Status: design accepted, implementation staged.
 Research: `specs/scroll-smoothness/research/` (15 notes, ~16 000 lines, all citation-backed).
@@ -319,7 +319,41 @@ under-damage, i.e. visual corruption. A2 therefore requires the subtree-level da
 **Not yet measured**: the A1 frame-budget win. It needs the instrumented counts described in §7 on a
 device where the cost is decisive (a phone or a mobile browser), which this Win32 machine is not.
 
-## 9. Known-open questions
+## 9. Field findings (from on-device testing)
+
+Observed by the product owner on real hardware, not derived from the code. Each needs its own
+investigation; none is addressed by what has landed so far.
+
+### F1 — WASM in a mobile browser is still the worst case
+
+Wheel/trackpad scrolling in a desktop browser benefits from the decay model (§4.2), but touch on a
+phone browser remains poor. Consistent with the platform axis in §5: WASM serializes record + raster
+on one thread and enqueues the record *outside* the rAF callback (C8), and touch inertia is still one
+frame late (A5). Likely warrants its own change set rather than being folded into the scroll work,
+since the fix is in the WASM host's frame scheduling, not in scrolling.
+
+### F2 — rAF is capped at 60 Hz unless touch is active (Android browser)
+
+On a 120 Hz Android phone, the browser runs `requestAnimationFrame` at 60 Hz while idle and boosts to
+120 Hz only while a touch is in progress. **The practical consequence is that a fling runs at half
+the frame rate of the drag that produced it**, with the cadence changing at the exact moment the
+finger lifts.
+
+Two implications for the design:
+
+1. **Any motion model must be correct under a frame rate that changes mid-flight.**
+   `ScrollDecaySimulation` already is — it integrates closed-form over an arbitrary interval, so a
+   60 Hz frame after a run of 120 Hz frames yields the correct position rather than drifting. The
+   parabolic inertia processor should be held to the same standard when it moves onto
+   `Compositor.FrameStarting` (A5).
+2. **Frame-rate-dependent tuning is invalid.** Any constant chosen by eye at 120 Hz will be wrong at
+   60 Hz and vice versa. This is a second reason (alongside A3) not to retune physics constants
+   before the clock work is complete.
+
+Whether Uno can request a sustained high refresh rate from the browser is unverified; there is no
+standard API for it, unlike native Android's `Surface.setFrameRate`.
+
+## 10. Known-open questions
 
 Carried from `research/00-cross-check.md` §9 — none block Tier A:
 
