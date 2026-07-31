@@ -13,7 +13,7 @@ namespace Uno.UI.Composition.Drawing;
 /// <summary>
 /// A SkiaSharp-free <see cref="IDrawingFactory"/> factory built on the managed engines (geometry via
 /// <see cref="ManagedPathBuilder"/>, decode via <see cref="ManagedImageDecoder"/>). Geometry and images are
-/// neutral, so any renderer (WebGPU, a future managed rasterizer) can reuse this as its <see cref="IGraphicsProvider.Drawing"/>.
+/// neutral, so any renderer (WebGPU, a future managed rasterizer) can reuse this as its <see cref="Graphics.DrawingFactory"/>.
 /// Shaders/effects/offscreen rasterization are still Skia-only and remain unimplemented here — a fully
 /// Skia-less setup needs managed equivalents (deferred).
 /// </summary>

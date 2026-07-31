@@ -7,27 +7,30 @@ using System.Text;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// The result of a successful <see cref="GraphicsRegistry.Activate"/>: the winning backend, the context that
-/// was created for it, and the render backend bound to that context.
+/// The result of a successful <see cref="GraphicsRegistry.Initialize"/>: the winning provider, the context that
+/// was created for it, and the matched <see cref="Graphics"/> (factory + renderer) bound to that context.
 /// </summary>
-public readonly struct GraphicsActivation
+public readonly struct GraphicsInitialization
 {
-	public GraphicsActivation(IGraphicsProvider backend, IGraphicsContext context, IRenderer renderBackend)
+	public GraphicsInitialization(IGraphicsProvider provider, IGraphicsContext context, Graphics graphics)
 	{
-		Backend = backend;
+		Provider = provider;
 		Context = context;
-		Renderer = renderBackend;
+		Graphics = graphics;
 	}
 
-	public IGraphicsProvider Backend { get; }
+	public IGraphicsProvider Provider { get; }
 	public IGraphicsContext Context { get; }
-	public IRenderer Renderer { get; }
+	public Graphics Graphics { get; }
+
+	/// <summary>The renderer of the matched pair (convenience for <see cref="Graphics"/>.Renderer).</summary>
+	public IRenderer Renderer => Graphics.Renderer;
 }
 
 /// <summary>
 /// Process-wide registry and negotiator for pluggable graphics backends. The app registers its ordered
 /// backend preference and the available per-kind context providers (both user-side; there is no default
-/// backend), then the host calls <see cref="Activate"/> once its window exists.
+/// backend), then the host calls <see cref="Initialize"/> once its window exists.
 /// </summary>
 /// <summary>
 /// Creates a context of a known kind for a window, or <see langword="null"/> if that API is unavailable or
@@ -64,10 +67,10 @@ public static class GraphicsRegistry
 	/// <summary>
 	/// Walks the registered backends in preference order and, for each, its preferred context kinds in order,
 	/// creating a context on demand until one succeeds. The first success wins: its factory is installed as
-	/// <see cref="DrawingFactory.Current"/> and a <see cref="GraphicsActivation"/> is returned. Nothing is
+	/// <see cref="DrawingFactory.Current"/> and a <see cref="GraphicsInitialization"/> is returned. Nothing is
 	/// created speculatively. Throws if no registered backend can initialize on <paramref name="window"/>.
 	/// </summary>
-	public static GraphicsActivation Activate(INativeWindow window)
+	public static GraphicsInitialization Initialize(INativeWindow window)
 	{
 		ArgumentNullException.ThrowIfNull(window);
 
@@ -87,7 +90,7 @@ public static class GraphicsRegistry
 		var factory = ContextFactory
 			?? throw new InvalidOperationException(
 				"No GraphicsRegistry.ContextFactory set. The Uno graphics layer must install the concrete " +
-				"context factory before Activate is called.");
+				"context factory before Initialize is called.");
 
 		var attempts = new StringBuilder();
 		foreach (var backend in backends)
@@ -113,15 +116,15 @@ public static class GraphicsRegistry
 
 				try
 				{
-					var renderBackend = backend.CreateRenderBackend(context);
-					DrawingFactory.Register(backend.Drawing);
-					return new GraphicsActivation(backend, context, renderBackend);
+					var graphics = backend.CreateGraphics(context);
+					DrawingFactory.Register(graphics.DrawingFactory);
+					return new GraphicsInitialization(backend, context, graphics);
 				}
 				catch (Exception e)
 				{
 					// A backend that can't stand up on a created context is treated like a context failure:
 					// dispose and continue the walk rather than hard-failing.
-					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: CreateRenderBackend threw ({e.GetType().Name})");
+					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: CreateGraphics threw ({e.GetType().Name})");
 					context.Dispose();
 				}
 			}

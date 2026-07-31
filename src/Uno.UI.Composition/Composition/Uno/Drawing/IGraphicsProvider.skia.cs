@@ -18,9 +18,20 @@ public interface IGraphicsProvider
 	/// <summary>What this backend needs from whatever context it is given (see <see cref="GraphicsRequirements"/>).</summary>
 	GraphicsRequirements Requirements { get; }
 
-	/// <summary>The resource/content factory. Installed as <see cref="DrawingFactory.Current"/> when this backend wins negotiation.</summary>
-	IDrawingFactory Drawing { get; }
+	/// <summary>Mints the matched (factory, renderer) pair bound to a successfully-created <paramref name="context"/>. Both are device-bound so they're created together; the factory is installed as <see cref="DrawingFactory.Current"/> when this backend wins negotiation.</summary>
+	Graphics CreateGraphics(IGraphicsContext context);
+}
 
-	/// <summary>Creates the render backend bound to a successfully-created <paramref name="context"/> (of one of <see cref="PreferredContexts"/>).</summary>
-	IRenderer CreateRenderBackend(IGraphicsContext context);
+/// <summary>
+/// The matched pair a provider mints for a context: the resource/content <see cref="DrawingFactory"/> and the
+/// <see cref="Renderer"/> that consumes its handles. They share the device, so they're created and disposed
+/// together — "a renderer without its matched factory" is unrepresentable.
+/// </summary>
+public sealed record Graphics(IDrawingFactory DrawingFactory, IRenderer Renderer) : System.IDisposable
+{
+	public void Dispose()
+	{
+		(Renderer as System.IDisposable)?.Dispose();
+		(DrawingFactory as System.IDisposable)?.Dispose();
+	}
 }

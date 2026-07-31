@@ -844,7 +844,9 @@ public sealed class WebGpuGraphicsProvider : IGraphicsProvider
 {
 	private static readonly GraphicsContextKind[] _preferred = { GraphicsContextKind.WebGpu };
 
-	public WebGpuGraphicsProvider(IDrawingFactory drawing) => Drawing = drawing;
+	private readonly IDrawingFactory _drawing;
+
+	public WebGpuGraphicsProvider(IDrawingFactory drawing) => _drawing = drawing;
 
 	public IReadOnlyList<GraphicsContextKind> PreferredContexts => _preferred;
 
@@ -852,9 +854,7 @@ public sealed class WebGpuGraphicsProvider : IGraphicsProvider
 
 	// Geometry/images are neutral, so the WebGPU backend can reuse a shared managed factory. Shaders/filters/
 	// effects would need a WebGPU-owned factory — deferred; this proves the negotiation + render path.
-	public IDrawingFactory Drawing { get; }
-
-	public IRenderer CreateRenderBackend(IGraphicsContext context) => new WebGpuRenderer(((WebGpuGraphicsContext)context).Device);
+	public Uno.UI.Composition.Drawing.Graphics CreateGraphics(IGraphicsContext context) => new(_drawing, new WebGpuRenderer(((WebGpuGraphicsContext)context).Device));
 }
 
 // --- Device-bound factory (IImageTexture + eventual shaders) ---

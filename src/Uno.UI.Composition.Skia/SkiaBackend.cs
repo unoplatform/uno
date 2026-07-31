@@ -32,7 +32,7 @@ public static class SkiaBackend
 		ApiExtensibility.Register(typeof(SKCanvasVisualBaseFactory), _ => new SKCanvasVisualFactory());
 
 		// Composition-root backend selection for the pluggable graphics pipeline: register Skia as the
-		// available backend. A host that drives the neutral loop (GraphicsRegistry.Activate) picks it up; swap
+		// available backend. A host that drives the neutral loop (GraphicsRegistry.Initialize) picks it up; swap
 		// this list to run a different backend. The choice lives here, not in the render loop or the host.
 		GraphicsRegistry.Register(new IGraphicsProvider[] { new SkiaGraphicsProvider() });
 	}
