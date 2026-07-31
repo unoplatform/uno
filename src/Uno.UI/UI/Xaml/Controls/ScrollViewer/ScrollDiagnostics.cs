@@ -43,6 +43,32 @@ internal static class ScrollDiagnostics
 	private static bool _dumpPending;
 	private static double _lastFrameValue;
 	private static bool _announced;
+	private static global::Windows.System.DispatcherQueueTimer? _dumpTimer;
+
+	/// <summary>
+	/// The dump is driven by a timer rather than by the frame callback: whether frames keep arriving
+	/// after a scroll settles depends on what else is animating, so hanging the trigger off rendering
+	/// means the buffer may simply never be flushed.
+	/// </summary>
+	private static void StartDumpTimer()
+	{
+		if (_dumpTimer is not null)
+		{
+			return;
+		}
+
+		var queue = global::Windows.System.DispatcherQueue.GetForCurrentThread();
+		if (queue is null)
+		{
+			return;
+		}
+
+		_dumpTimer = queue.CreateTimer();
+		_dumpTimer.Interval = TimeSpan.FromMilliseconds(250);
+		_dumpTimer.IsRepeating = true;
+		_dumpTimer.Tick += static (_, _) => TryDump();
+		_dumpTimer.Start();
+	}
 
 	internal static bool IsEnabled => Uno.UI.FeatureConfiguration.ScrollViewer.EnableDiagnostics;
 
@@ -90,6 +116,7 @@ internal static class ScrollDiagnostics
 			{
 				_announced = true;
 				typeof(ScrollDiagnostics).Log().Error("SCROLLDIAG ARMED");
+				StartDumpTimer();
 			}
 
 			if (_count < Capacity)
