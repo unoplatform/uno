@@ -272,7 +272,54 @@ Three measurements settle the ranking empirically, in order:
 3. **A4's premise** — log the distribution of `changeSet.Delta.Translation.Y` during a slow drag.
    Expect a spike at exactly ±2 and a hole in (−2, 2).
 
-## 8. Known-open questions
+## 8. Implementation status
+
+| Item | Status | Commit |
+|---|---|---|
+| A1 — scroll-aware damage (bounds for moved-unchanged visuals; rect accumulator) | **done** | `perf(composition): Make scroll-frame damage O(1) per moved visual` |
+| A4 — remove the 2-DIP drag quantizer | **done** | `fix(scroll): Remove drag quantizer, wheel dead zone and stale offset` |
+| B1 — `OnFrame` publishes the current frame's offset | **done** | same |
+| B2 — `int` wheel-delta dead zone | **done** | same |
+| Measurement harness (`ScrollSmoothnessBenchmark`) | **done** | `test(scroll): Add scroll smoothness benchmark sample` |
+| A2 — preserve `_childrenPicture` across a pure transform change | **not started** | — |
+| A3 — one authoritative per-frame timestamp | **not started** | — |
+| A5 — pre-record inertia tick | **not started** | — |
+| B3–B9, Tier C | **not started** | — |
+
+### A2 — why it is not landed yet, and what it needs
+
+A2 is rank 2 and is **coupled to the rest of A1**. Once a visual's `_childrenPicture` survives a
+move, `RenderChildrenStep` replays it and the descendants never run `ContributeDamageOnPaint`, so
+their `_lastRenderBounds`/`_lastRenderMatrix` go stale and the subtree contributes *no* damage —
+under-damage, i.e. visual corruption. A2 therefore requires the subtree-level damage fast path:
+
+1. Split `SetMatrixDirty()` into the originating call (which must keep invalidating the parent's
+   children-picture, because the visual's position *relative to its parent* changed) and a
+   `SetInheritedMatrixDirty()` used by the recursion (which must not, because a descendant's
+   position relative to its parent is unchanged when an ancestor moves).
+2. Cache the collapsed subtree's local-space bounds at record time, and on each replay contribute
+   `oldBounds ∪ newBounds` mapped by `TotalMatrix` — O(1) for the whole subtree.
+3. Keep `_lastRenderMatrix` refreshed for the collapsed root so the next real render is correct.
+
+### Validation performed
+
+- **Compile**: `Uno.UI.Skia.csproj` and `SamplesApp.Skia.Generic` (Release, net10.0) — clean.
+- **Runtime** (Skia Desktop / Win32): 135 tests across
+  `Windows_UI_Composition`, `Windows_UI_Input`, `Given_ScrollViewer`, `ScrollViewerTests`,
+  `Given_ScrollViewer_Zoom`, `ListViewTests` → **131 passed, 4 failed, 3 skipped**.
+  The 4 failures are **identical to the pre-change baseline** on this machine
+  (`When_Home_End_PageDown_PageUp`, `When_NonRound_Content_Height`,
+  `When_Presenter_Doesnt_Take_Up_All_Space`, `When_ScrollViewer_Resized`) — all fractional-DPI
+  layout assertions (e.g. expected 175, actual 175.19999), unrelated to this work.
+- **Fails-before / passes-after**: `When_SlowTouchDrag_Then_ScrollAdvancesEveryMove` fails with the
+  quantizer restored, reporting offsets `[30, 32, 32, 34, …]` — 3 advances over 6 one-pixel moves.
+  This is the empirical confirmation of `research/00-cross-check.md` G3, which predicted exactly a
+  spike at ±2 and a hole in (−2, 2).
+
+**Not yet measured**: the A1 frame-budget win. It needs the instrumented counts described in §7 on a
+device where the cost is decisive (a phone or a mobile browser), which this Win32 machine is not.
+
+## 9. Known-open questions
 
 Carried from `research/00-cross-check.md` §9 — none block Tier A:
 
