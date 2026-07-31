@@ -1,8 +1,8 @@
 # Research: Mobile Accessibility and Automation
 
-**Date**: 2026-07-10  
-**Branch**: `005-mobile-a11y-automation`  
-**Baseline**: `dev/doti/a11y-parity-remediation-impl` at `a496392e28`  
+**Date**: 2026-07-10<br>
+**Branch**: `005-mobile-a11y-automation`<br>
+**Baseline**: `dev/doti/a11y-parity-remediation-impl` at `a496392e28`<br>
 **Reference**: WinUI `microsoft-ui-xaml` automation peer implementation
 
 > Evidence level: code review by inspection. The Android, iOS, shared WinUI contract,

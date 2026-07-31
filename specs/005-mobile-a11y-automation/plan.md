@@ -1,7 +1,7 @@
 # Implementation Plan: Mobile Accessibility and Automation
 
-**Branch**: `005-mobile-a11y-automation` | **Date**: 2026-07-10 | **Spec**: [spec.md](./spec.md)  
-**Input**: Feature specification from `/specs/005-mobile-a11y-automation/spec.md`  
+**Branch**: `005-mobile-a11y-automation` | **Date**: 2026-07-10 | **Spec**: [spec.md](./spec.md)<br>
+**Input**: Feature specification from `/specs/005-mobile-a11y-automation/spec.md`<br>
 **Grounding**: [research.md](./research.md), based on independent Android, iOS,
 WinUI/shared-contract, and mobile-test-infrastructure audits
 
@@ -20,27 +20,27 @@ native Android/UIKit renderers are compile/no-regression targets only.
 
 ## Technical Context
 
-**Language/Version**: C# on .NET 9.0/10.0; .NET Android and .NET iOS platform bindings  
+**Language/Version**: C# on .NET 9.0/10.0; .NET Android and .NET iOS platform bindings<br>
 **Primary Dependencies**: Uno.UI `AutomationPeer` and provider interfaces;
 `Uno.UI.Runtime.Skia` (`AccessibilityRouter`, `SkiaAccessibilityBase`,
 `IAccessibilityOwner`); AndroidX `ExploreByTouchHelper` /
 `AccessibilityNodeInfoCompat`; Android accessibility events/actions; UIKit
-`UIAccessibilityElement`, `UIAccessibility`, and `UIView.AccessibilityElements`  
-**Storage**: In-memory per-window native-node registries with weak owner references; no persistence  
+`UIAccessibilityElement`, `UIAccessibility`, and `UIView.AccessibilityElements`<br>
+**Storage**: In-memory per-window native-node registries with weak owner references; no persistence<br>
 **Testing**: MSTest in `Uno.UI.RuntimeTests`; existing Skia Android/iOS device/simulator
 runtime-test stages; existing `SamplesApp.UITests`; manual TalkBack, VoiceOver,
-Accessibility Inspector, UIAutomator/XCUITest/Appium compatibility smoke  
+Accessibility Inspector, UIAutomator/XCUITest/Appium compatibility smoke<br>
 **Target Platform**: Skia-on-Android and Skia-on-iOS. Existing repository-supported OS
-versions; CI reference environments are Android API 34 and iOS 17.5 simulator  
-**Project Type**: Cross-platform framework runtime extension; no new product or test project  
+versions; CI reference environments are Android API 34 and iOS 17.5 simulator<br>
+**Project Type**: Cross-platform framework runtime extension; no new product or test project<br>
 **Performance Goals**: No full accessibility-tree invalidation per render frame; native
 property updates complete within the 16 ms p95 target on the 500-node fixture; only
 realized/accessibility-required nodes for a 1,000-item virtualized collection; removed
-nodes return registries to baseline  
+nodes return registries to baseline<br>
 **Constraints**: No new public API; preserve WinUI peer/tree/provider semantics; native
 callbacks may arrive asynchronously and must marshal to the UI thread; stable node
 identity; secure-text redaction; no strong-reference leaks; no native-renderer regression;
-UIA-only concepts require explicit mobile fallbacks  
+UIA-only concepts require explicit mobile fallbacks<br>
 **Scale/Scope**: 39 core automation properties, 34 `PatternInterface` values, pattern
 state groups, five relation groups, and 30 `AutomationEvents` values, plus
 `RaiseNotificationEvent`; standard peer-backed control matrix across two mobile backends
@@ -79,7 +79,7 @@ state groups, five relation groups, and 30 `AutomationEvents` values, plus
 | VI. Backward Compatibility | PASS | Internal additive backends and bug fixes; no public/binary breaking change. Behavior changes correct previously absent or invalid mobile accessibility. |
 | VII. WinUI Implementation Alignment | APPLIES / PASS | User supplied the `microsoft-ui-xaml` source. Research mapped AutomationPeer lifecycle, EventsSource, properties, patterns, actions, focus, structure, and events before design. |
 
-**Gate Status before research**: PASS.  
+**Gate Status before research**: PASS.<br>
 **Gate Status after design**: PASS. No constitution violation requires complexity tracking.
 
 ## Project Structure
