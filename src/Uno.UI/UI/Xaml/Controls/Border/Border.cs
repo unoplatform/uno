@@ -10,7 +10,6 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Markup;
 using Uno.UI.Xaml;
 using Color = System.Drawing.Color;
-using View = Microsoft.UI.Xaml.UIElement;
 using _Debug = System.Diagnostics.Debug;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
@@ -42,21 +41,6 @@ public partial class Border : FrameworkElement
 #if UNO_HAS_BORDER_VISUAL
 	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 #endif
-
-	/// <summary>
-	/// Support for the C# collection initializer style.
-	/// Allows items to be added like this
-	/// new Border
-	/// {
-	///    new Border()
-	/// }
-	/// </summary>
-	/// <param name="view"></param>
-	public
-		void Add(View view)
-	{
-		Child = VisualTreeHelper.TryAdaptNative(view);
-	}
 
 	protected override bool IsSimpleLayout => true;
 

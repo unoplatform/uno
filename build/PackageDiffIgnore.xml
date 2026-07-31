@@ -3076,6 +3076,11 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ContentPresenter.OnHorizontalContentAlignmentChanged(Microsoft.UI.Xaml.HorizontalAlignment oldHorizontalContentAlignment, Microsoft.UI.Xaml.HorizontalAlignment newHorizontalContentAlignment)" reason="Removed ContentPresenter.OnHorizontalContentAlignmentChanged virtual (BC34, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.TextBox.OnVerticalContentAlignmentChanged(Microsoft.UI.Xaml.VerticalAlignment oldVerticalContentAlignment, Microsoft.UI.Xaml.VerticalAlignment newVerticalContentAlignment)" reason="Removed empty TextBox.OnVerticalContentAlignmentChanged override (BC34, breaking changes for 7.0)" />
 
+		  <!-- Uno-only IEnumerable.GetEnumerator on FrameworkElement (enumerated the visual children); WinUI's FrameworkElement is not IEnumerable. ContentControl inherited it and re-declared the interface only. -->
+		  <Member fullName="System.Collections.IEnumerator Microsoft.UI.Xaml.FrameworkElement.GetEnumerator()" reason="Removed Uno-only IEnumerable/GetEnumerator (BC65, breaking changes for 7.0)" />
+
+		  <!-- Uno-only collection-initializer Add(UIElement) on Border/Panel/ScrollViewer, paired with the removed FrameworkElement IEnumerable to enable 'new Panel { child }' markup; WinUI has neither. -->
+		  <Member fullName="System\.Void Microsoft\.UI\.Xaml\.Controls\.(Border|Panel|ScrollViewer)(::|\.)Add\(.+\)" reason="Removed Uno-only collection-initializer Add(UIElement) (BC65, breaking changes for 7.0)" isRegex="true" />
 	  </Methods>
 	  <Events>
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->

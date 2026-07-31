@@ -8,7 +8,6 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Media.Animation;
-using System.Collections;
 using System.Linq;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
@@ -19,7 +18,7 @@ using View = Microsoft.UI.Xaml.UIElement;
 namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Content))]
-	public partial class ContentControl : Control, IEnumerable
+	public partial class ContentControl : Control
 	{
 		private View? _contentTemplateRoot;
 
