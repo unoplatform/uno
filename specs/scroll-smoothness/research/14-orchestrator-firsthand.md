@@ -294,6 +294,64 @@ Ranked by expected impact on perceived smoothness:
    mutates composition state off the UI thread (§11) — so "just move to ScrollPresenter" is not a
    fix.
 
+## 12. Why mobile-browser WASM is the worst case (reported, and explainable)
+
+The reported ordering is Win32 best → Android/iOS worse → **Skia WASM in a mobile browser worst**.
+The pipeline explains that ordering exactly.
+
+### The record never happens inside the rAF callback
+
+`BrowserRenderer.RenderFrame()` (`Rendering/BrowserRenderer.cs:65-115`) is the rAF callback. It calls
+`compositionTarget.OnNativePlatformFrameRequested(...)` (:98), which does two things
+(`CompositionTarget.RenderScheduling.skia.cs:166-176`):
+
+```csharp
+if (Interlocked.Exchange(ref _shouldEnqueueRenderOnNextNativePlatformFrameRequested, false))
+{
+    NativeDispatcher.Main.EnqueueRender(this, EnqueueRenderCallback);  // records the NEXT picture
+}
+return Draw(canvas, resizeFunc);                                       // presents the PREVIOUS one
+```
+
+On Win32 the two halves land on **different threads** — the render thread presents while the UI
+thread records, so they overlap and the per-frame budget is `max(record, raster)`.
+
+On WASM there is one thread. Per rAF the browser runs: present previous picture → return → *then*, in
+a separate dispatcher turn, record the next picture → `InvalidateRender()` → request another rAF. So:
+
+1. The per-frame budget is `record + raster`, **serialized** — not `max(…)`. Exceed 16.7 ms and the
+   frame rate halves.
+2. The record runs *outside* the rAF callback, in a task, with no deadline. If the main thread is
+   busy, the record slips past the next rAF and a frame is simply dropped.
+3. Finger-to-photon is **≥2 frames**: a pointer event moves the visual, but the picture containing
+   that move is only recorded after the next rAF, and only presented at the rAF after that.
+
+### Touch input on WASM is per-event and uncoalesced
+
+`ts/Runtime/BrowserPointerInputSource.ts:78`:
+
+```ts
+element.addEventListener("pointermove", this.onPointerEventReceived.bind(this), { capture: true });
+```
+
+- No `getCoalescedEvents()`. On mobile, where the digitizer runs above the display refresh, the
+  intermediate samples the browser did capture are discarded rather than used for velocity.
+- Every `pointermove` synchronously crosses into managed code, runs the full routed-event pipeline,
+  and mutates `Visual.AnchorPoint` — on the same thread that must then record and raster.
+
+### Why the compounding is worst on mobile
+
+| Factor | Desktop browser | Mobile browser |
+|---|---|---|
+| Input device | wheel (discrete, → animation path, frame-aligned) | touch (continuous, → raw per-event path) |
+| CPU per frame | fast | slow |
+| Pixels to raster | 1–2× DPI | 2.5–4× DPI |
+| Threads | 1 | 1 |
+
+Mobile browser is the only configuration that hits *all four* adverse factors simultaneously. Win32
+hits none of them (render thread, wheel input, low DPI, fast CPU) — which is exactly the reported
+ordering.
+
 ## Cross-cutting theme
 
 Every motion source in the codebase is driven by *something other than the presented frame*:
