@@ -897,6 +897,13 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	/// </summary>
 	private sealed class MacOSRenderThread : IDisposable
 	{
+		/// <summary>
+		/// Pause before retrying a frame the render loop could not present. nextDrawable already
+		/// blocks for up to ~1s before returning nil, so this only avoids a hot spin in the cases
+		/// where acquisition fails immediately (e.g. a zero-sized layer during window setup).
+		/// </summary>
+		private const int FrameRetryDelayMs = 8;
+
 		private readonly Thread _thread;
 		private readonly AutoResetEvent _frameSignal = new(false);
 		private readonly ManualResetEventSlim _presentedEvent = new(false);
@@ -945,6 +952,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 					break;
 				}
 
+				var framePresented = false;
 				try
 				{
 					if (NativeUno.uno_window_acquire_next_frame(_windowHandle, out var texture, out var width, out var height))
@@ -959,6 +967,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 						// Only a frame that actually reached the screen may release a waiter.
 						_presentedEvent.Set();
+						framePresented = true;
 					}
 				}
 				catch (Exception ex)
@@ -969,6 +978,24 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 					{
 						this.Log().Error($"macOS render thread error: {ex}");
 					}
+
+					// The drawable is only released by uno_window_present_frame, which we did not reach.
+					// Drop it explicitly, otherwise repeated failures exhaust the layer's drawable pool
+					// and every later nextDrawable call blocks then returns nil.
+					NativeUno.uno_window_discard_frame(_windowHandle);
+				}
+
+				if (!framePresented && !_disposed)
+				{
+					// The frame request must not be lost. CompositionTarget.RequestNewFrame latches
+					// RenderRequested and only clears it once a frame is actually drawn, so it will not
+					// signal us again on its own: dropping this wake-up stops rendering for this window
+					// permanently, and anything awaiting a render (RenderTargetBitmap jobs, composition
+					// animations) would then never complete. AppKit gives the non-threaded path the same
+					// guarantee by re-invoking drawInMTKView: for as long as the view stays dirty, so
+					// re-arm to keep retrying until a frame gets through.
+					Thread.Sleep(FrameRetryDelayMs);
+					_frameSignal.Set();
 				}
 			}
 		}

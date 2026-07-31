@@ -34,5 +34,8 @@ bool uno_window_acquire_next_frame(NSWindow* window, void* _Nullable * _Nonnull 
 /// Presents the previously acquired drawable via a Metal command buffer.
 /// Must be called after uno_window_acquire_next_frame returned true. Called from the managed render thread.
 void uno_window_present_frame(NSWindow* window);
+/// Releases the drawable acquired by uno_window_acquire_next_frame without presenting it.
+/// Called from the managed render thread when the frame could not be drawn.
+void uno_window_discard_frame(NSWindow* window);
 
 NS_ASSUME_NONNULL_END

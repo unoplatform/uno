@@ -340,6 +340,9 @@ internal static partial class NativeUno
 	internal static partial void uno_window_present_frame(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_discard_frame(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_move(nint window, double x, double y);
 
 	[LibraryImport("libUnoNativeMac.dylib")]

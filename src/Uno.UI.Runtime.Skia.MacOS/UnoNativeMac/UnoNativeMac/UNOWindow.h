@@ -352,6 +352,10 @@ bool uno_window_acquire_next_frame(NSWindow* window, void* _Nullable * _Nonnull 
 /// Presents the previously acquired drawable via a Metal command buffer.
 /// Called from the managed render thread after drawing is complete.
 void uno_window_present_frame(NSWindow* window);
+/// Releases the drawable acquired by uno_window_acquire_next_frame without presenting it.
+/// Called from the managed render thread when the frame could not be drawn.
+void uno_window_discard_frame(NSWindow* window);
+
 
 typedef void (*window_did_change_screen_fn_ptr)(NSWindow* window, uint32 width, uint32 height, CGFloat backingScaleFactor);
 window_did_change_screen_fn_ptr uno_get_window_did_change_screen_callback(void);
