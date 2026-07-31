@@ -514,7 +514,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 					{
 						_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
 					}
-					_renderer = new X11SoftwareRenderer(this, TopX11Window);
+					_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window);
 				}
 			}
 		}
@@ -525,7 +525,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			{
 				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
 			}
-			_renderer = new X11SoftwareRenderer(this, TopX11Window);
+			_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window);
 		}
 
 		// Only XI2.2 has touch events, and that's pretty much the only reason we're using XI2,
