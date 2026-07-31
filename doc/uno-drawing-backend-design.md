@@ -80,38 +80,61 @@ font stack is abstracted, the layout engine is not.
 flowchart TB
   subgraph Startup["Startup / composition root"]
     App["App head"] -->|"register providers"| Reg["GraphicsRegistry"]
-    App -->|"ImageDecoder.Current ="| Dec["IImageDecoder"]
-    App -->|"FontManager.Current ="| FM["IFontManager"]
+    App -->|".UseImageDecoder(…)"| Dec["IImageDecoder"]
+    App -->|".UseFontManager(…)"| FM["IFontManager"]
     Host["Platform host"] -->|"implements"| CF["IGraphicsContextFactory"]
   end
 
   Reg -->|"Initialize: negotiate kind + requirements"| CF
   CF -->|"create window + context pair"| Ctx["IGraphicsContext"]
-  Reg -->|"pick provider, CreateGraphics(context)"| Prov["IGraphicsProvider"]
-  Prov -->|"Graphics.DrawingFactory"| Fac["IDrawingFactory → DrawingFactory.Current"]
-  Prov -->|"Graphics.Renderer"| Ren["IRenderer → CompositionTarget.Renderer"]
-
-  subgraph Frame["Per frame — CompositionTarget"]
-    Ctx -->|"AcquireRenderTarget()"| RT["IRenderTarget"]
-    Ren -->|"BeginFrame(RT)"| PS["IPresentSession (an IDrawingSession)"]
-    Tree["Visual-tree walk"] -->|"draw verbs"| PS
-    PS -->|"Dispose = present"| Ctx
-  end
+  Reg -->|"pick provider"| Prov["IGraphicsProvider"]
+  Prov -->|"CreateGraphics(context)"| GS["Graphics<br/>(DrawingFactory + Renderer)"]
+  GS -->|".DrawingFactory"| Fac["IDrawingFactory<br/>DrawingFactory.Current"]
+  GS -->|".Renderer"| Ren["IRenderer<br/>CompositionTarget.Renderer"]
 
   subgraph Content["Content seams — renderer-independent"]
     Dec -->|"decode"| IMG["IImage"]
-    IMG -->|"CreateImageTexture"| TEX["IImageTexture"]
-    FM -->|"resolve"| Font["IFont"]
-    Font -->|"Shape + GetGlyphDrawables"| GLY["glyph outline (IGeometry) / image (IImage)"]
-    Fac -->|"CreatePathBuilder"| GEO["IGeometry"]
-    Fac -->|"shaders / color filters / effects"| PNT["IShader / IColorFilter / IEffectFilter"]
+    subgraph TextLane["Text (per run) — framework layout ⟷ font stack"]
+      direction TB
+      TA["Bidi · itemize · segment"] --> FR["Resolve font + fallback<br/><i>IFontManager</i>"]
+      FR --> SH["Shape + metrics<br/><i>IFont</i>"]
+      SH --> LB["Line-break + layout"]
+      LB --> GL["Glyph outlines / images<br/><i>IFont.GetGlyphDrawables</i>"]
+    end
+  end
+  FM -.->|"drives"| FR
+
+  subgraph Frame["Per frame — the visual-tree walk (calls IDrawingFactory, consumes the seams)"]
+    Ren -->|"BeginFrame(RT)"| PS["IPresentSession (an IDrawingSession)"]
+    Ctx -->|"AcquireRenderTarget()"| RT["IRenderTarget"]
+    Tree["Visual-tree walk"] -->|"CreatePathBuilder"| GEO["IGeometry"]
+    Tree -->|"shaders / color filters / effects"| PNT["IShader / IColorFilter / IEffectFilter"]
+    Tree -->|"CreateImageTexture"| TEX["IImageTexture"]
+    GEO --> PS
+    PNT --> PS
+    TEX --> PS
+    Tree -->|"draw verbs"| PS
+    PS -->|"Dispose = present"| Ctx
   end
 
-  Fac -.->|"upload"| TEX
-  GEO --> Tree
-  TEX --> Tree
-  GLY --> Tree
-  PNT --> Tree
+  Fac -.->|"methods called during the walk"| Tree
+  IMG -.->|"upload"| TEX
+  GL -->|"glyphs drawn"| PS
+
+  classDef startup fill:#eef2ff,stroke:#6366f1,color:#26268a;
+  classDef install fill:#f7f0ff,stroke:#9333ea,color:#5a1b96;
+  classDef frame fill:#eafaf4,stroke:#0d9488,color:#0a5c4b;
+  classDef content fill:#fef4e7,stroke:#d97706,color:#8a4b0e;
+  classDef fw fill:#eef1f6,stroke:#64748b,color:#334155;
+  classDef mgr fill:#fff4e5,stroke:#d97706,color:#8a4b0e;
+  classDef font fill:#fff4e5,stroke:#b45309,color:#7c3d09,stroke-width:2.5px;
+  class App,Reg,Host,CF,Ctx,Prov startup;
+  class GS,Fac,Ren install;
+  class Tree,PS,RT frame;
+  class Dec,FM,IMG,GEO,TEX,PNT content;
+  class TA,LB fw;
+  class FR mgr;
+  class SH,GL font;
 ```
 
 The base path is **immediate**: `BeginFrame(target)` → draw the tree straight into the `IPresentSession` → dispose
