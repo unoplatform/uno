@@ -26,15 +26,16 @@ public class Given_HotReloadClientOperation_Alc
 		// type. Where the platform can materialize a *genuinely collectible* type (desktop/CoreCLR: a real
 		// on-disk Assembly.Location that can be re-loaded into a collectible ALC) we use one so the
 		// previewed-app scenario is mirrored exactly. On WASM/Android assemblies are bundled with no
-		// loadable on-disk path (Assembly.Location is empty), so we fall back to an ordinary type; the
-		// operation's release behaviour — what this test asserts — is identical. Collectible-ALC
+		// loadable on-disk path (Assembly.Location is empty on WASM; on Android Mono it is a bare,
+		// non-rooted file name that LoadFromAssemblyPath rejects), so we fall back to an ordinary type;
+		// the operation's release behaviour — what this test asserts — is identical. Collectible-ALC
 		// *collection* itself is covered by AlcUnloadMemoryRuntimeTests.
 		global::System.Runtime.Loader.AssemblyLoadContext? collectibleAlc = null;
 		try
 		{
 			var type = typeof(Given_HotReloadClientOperation_Alc);
 			var assemblyLocation = type.Assembly.Location;
-			if (assemblyLocation is { Length: > 0 })
+			if (assemblyLocation is { Length: > 0 } && global::System.IO.Path.IsPathFullyQualified(assemblyLocation))
 			{
 				try
 				{
