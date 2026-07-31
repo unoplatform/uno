@@ -478,9 +478,22 @@ namespace Microsoft.UI.Xaml.Controls
 				scrollAnimation.InsertKeyFrame(1.0f, target, easing);
 				scrollAnimation.Duration = TimeSpan.FromSeconds(1);
 				// AnchorPoint also carries the centering offset, which has to be removed to get back the logical scroll offsets.
-				void OnFrame(CompositionAnimation? _) => Updated(GetAnimatedHorizontalOffset(), GetAnimatedVerticalOffset(), true);
+				var stopped = false;
+				void OnFrame(CompositionAnimation? _)
+				{
+					// The compositor stops a completed animation from inside its own AnimationFrame handler, so
+					// OnStopped can already have published the final offset by the time this runs — removing the
+					// handler there does not affect the invocation list of the raise that is already in flight.
+					if (stopped)
+					{
+						return;
+					}
+
+					Updated(GetAnimatedHorizontalOffset(), GetAnimatedVerticalOffset(), true);
+				}
 				void OnStopped(object? _, EventArgs __)
 				{
+					stopped = true;
 					scrollAnimation.AnimationFrame -= OnFrame;
 					scrollAnimation.Stopped -= OnStopped;
 

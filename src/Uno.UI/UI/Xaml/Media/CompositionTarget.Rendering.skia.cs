@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -61,7 +61,7 @@ public partial class CompositionTarget
 	private float _lastRasterizationScale = 1;
 	private static SKPath? _lastScaledNativeClipPath;
 
-	private readonly SKPath _pendingDamage = new();
+	private readonly DamageRegion _pendingDamage = new();
 
 	// Recycled per-frame damage snapshot paths. At most a couple of frames are ever in flight, so reusing
 	// their SKPaths avoids allocating (and finalizing) a native path every frame. Only touched under
@@ -141,11 +141,8 @@ public partial class CompositionTarget
 				_pendingDamage.Union(carried);
 			}
 
-			_pendingDamage.ClampTo(frameRect);
-
 			damageSnapshot = _damageSnapshotPool.Count > 0 ? _damageSnapshotPool.Pop() : new SKPath();
-			_pendingDamage.Transform(SKMatrix.Identity, damageSnapshot);
-			_pendingDamage.Reset();
+			_pendingDamage.SnapshotAndReset(damageSnapshot, frameRect);
 
 			_lastRenderedFrame = (framePicture, path, damageSnapshot);
 
