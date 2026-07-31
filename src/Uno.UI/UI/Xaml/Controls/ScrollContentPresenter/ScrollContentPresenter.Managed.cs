@@ -154,7 +154,31 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				HookScrollEvents(sv);
 			}
+
+			if (ScrollDiagnostics.IsEnabled)
+			{
+				// CompositionTarget.Rendering rather than Compositor.FrameStarting: it is raised once per
+				// recorded frame *after* the record, so it observes the value that went into that frame, and it
+				// does not make Compositor.IsAnimating permanently true the way a lifetime FrameStarting
+				// subscription would.
+				_diagnosticsHandler = OnDiagnosticsFrame;
+				Media.CompositionTarget.Rendering += _diagnosticsHandler;
+			}
 		}
+
+#nullable enable
+		private EventHandler<object>? _diagnosticsHandler;
+
+		private void OnDiagnosticsFrame(object? sender, object args)
+		{
+			if (Content is UIElement contentElt)
+			{
+				ScrollDiagnostics.Record(ScrollDiagnostics.SampleKind.Frame, -contentElt.Visual.AnchorPoint.Y);
+			}
+
+			ScrollDiagnostics.TryDump();
+		}
+#nullable restore
 
 		private protected override void OnUnloaded()
 		{
@@ -166,6 +190,12 @@ namespace Microsoft.UI.Xaml.Controls
 			_touchInertia?.Complete();
 			_touchInertia = null;
 			StopWheelDecay();
+
+			if (_diagnosticsHandler is not null)
+			{
+				Media.CompositionTarget.Rendering -= _diagnosticsHandler;
+				_diagnosticsHandler = null;
+			}
 		}
 
 		/// <inheritdoc />
@@ -562,6 +592,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_wheelDecayH.Start(HorizontalOffset, now);
 				_wheelDecayV.Start(VerticalOffset, now);
 				_isWheelDecayRunning = true;
+				ScrollDiagnostics.CurrentPhase = ScrollDiagnostics.PhaseWheel;
 				compositor.FrameStarting += OnWheelDecayFrame;
 				Microsoft.UI.Composition.Compositor.RequestFrame(Visual);
 			}
@@ -723,6 +754,9 @@ namespace Microsoft.UI.Xaml.Controls
 				// Mark scale as handled
 				unhandledDelta.Scale = 1.0f;
 			}
+
+			ScrollDiagnostics.CurrentPhase = args.IsInertial ? ScrollDiagnostics.PhaseInertia : ScrollDiagnostics.PhaseDrag;
+			ScrollDiagnostics.Record(ScrollDiagnostics.SampleKind.Input, VerticalOffset + deltaY);
 
 			if (args.IsInertial)
 			{

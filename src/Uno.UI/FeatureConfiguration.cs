@@ -494,6 +494,12 @@ namespace Uno.UI
 			/// Defines the delay of after which the ScrollViewer starts to move to snap points. The default value is 250ms.
 			/// </summary>
 			public static TimeSpan SnapDelay { get; set; } = TimeSpan.FromMilliseconds(250);
+
+			/// <summary>
+			/// Records per-frame scroll telemetry and dumps it to the log once each scroll settles.
+			/// Diagnostic only; adds a ring-buffer write per frame and per pointer sample.
+			/// </summary>
+			public static bool EnableDiagnostics { get; set; }
 		}
 
 		public static class ThemeAnimation
