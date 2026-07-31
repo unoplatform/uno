@@ -40,6 +40,12 @@ namespace Microsoft.UI.Xaml.Controls
 		private ScrollDecaySimulation _wheelDecayH;
 		private ScrollDecaySimulation _wheelDecayV;
 		private bool _isWheelDecayRunning;
+
+		private readonly Microsoft.UI.Input.ScrollVelocityTracker _velocityTracker = new();
+		private ScrollFlingSimulation _flingH;
+		private ScrollFlingSimulation _flingV;
+		private long _flingStartTimestamp;
+		private bool _isFlingRunning;
 #nullable restore
 
 		private bool _canHorizontallyScroll;
@@ -198,6 +204,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_touchInertia?.Complete();
 			_touchInertia = null;
 			StopWheelDecay();
+			StopFling();
 
 			if (_diagnosticsHandler is not null)
 			{
@@ -401,6 +408,11 @@ namespace Microsoft.UI.Xaml.Controls
 				StopWheelDecay();
 			}
 
+			if (!options.IsTouch)
+			{
+				StopFling();
+			}
+
 			var updatedHorizontalOffset = HorizontalOffset;
 			var updatedVerticalOffset = VerticalOffset;
 			if (updated || options.IsTouch)
@@ -572,6 +584,54 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 
+		/// <summary>Runs a touch fling from the frame clock, using the platform's own deceleration curve.</summary>
+		private void StartFling(double velocityXPerSecond, double velocityYPerSecond)
+		{
+			StopFling();
+
+			var compositor = Visual.Compositor;
+			_flingStartTimestamp = compositor.TimestampInTicks;
+			_flingH = ScrollFlingSimulation.Create(HorizontalOffset, -velocityXPerSecond);
+			_flingV = ScrollFlingSimulation.Create(VerticalOffset, -velocityYPerSecond);
+			_isFlingRunning = true;
+
+			compositor.FrameStarting += OnFlingFrame;
+			Microsoft.UI.Composition.Compositor.RequestFrame(Visual);
+		}
+
+		private void StopFling()
+		{
+			if (!_isFlingRunning)
+			{
+				return;
+			}
+
+			_isFlingRunning = false;
+			Visual.Compositor.FrameStarting -= OnFlingFrame;
+		}
+
+		private void OnFlingFrame(long timestampInTicks)
+		{
+			var elapsed = (timestampInTicks - _flingStartTimestamp) / (double)TimeSpan.TicksPerSecond;
+
+			var maxH = Scroller?.ScrollableWidth ?? Math.Max(0, ExtentWidth - ViewportWidth);
+			var maxV = Scroller?.ScrollableHeight ?? Math.Max(0, ExtentHeight - ViewportHeight);
+
+			var h = Math.Clamp(_flingH.GetPosition(elapsed), 0, maxH);
+			var v = Math.Clamp(_flingV.GetPosition(elapsed), 0, maxV);
+
+			// Done once both curves are spent, or the content has run into an edge in the direction of travel.
+			var running = elapsed < Math.Max(_flingH.Duration, _flingV.Duration)
+				&& (h > 0 && h < maxH || v > 0 && v < maxV);
+
+			if (!running)
+			{
+				StopFling();
+			}
+
+			Set(horizontalOffset: h, verticalOffset: v, options: new(DisableAnimation: true, IsTouch: true, IsIntermediate: running));
+		}
+
 		/// <summary>Feeds a wheel detent into the running decay, starting it if idle.</summary>
 		/// <returns>
 		/// False when this presenter has no room left in the requested direction, so the wheel event stays
@@ -722,6 +782,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void IDirectManipulationHandler.OnStarted(GestureRecognizer recognizer, ManipulationStartedEventArgs args, bool isResuming)
 		{
+			_velocityTracker.Reset();
+			StopFling();
+
 			Debug.Assert(_touchInertia is null || isResuming, "Inertia should already be null instead if we are resuming from a previous manipulation.");
 			_touchInertia = null;
 		}
@@ -765,6 +828,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 			ScrollDiagnostics.CurrentPhase = args.IsInertial ? ScrollDiagnostics.PhaseInertia : ScrollDiagnostics.PhaseDrag;
 			ScrollDiagnostics.Record(ScrollDiagnostics.SampleKind.Input, VerticalOffset + deltaY);
+
+			if (!args.IsInertial)
+			{
+				_velocityTracker.AddPosition(
+					Visual.Compositor.TimestampInTicks / (double)TimeSpan.TicksPerMillisecond,
+					args.Position);
+			}
 
 			if (args.IsInertial)
 			{
@@ -926,23 +996,16 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				// We can handle the inertia scrolling, configure to accept allow it by assigning the _touchInertia field.
-				_touchInertia = args.Manipulation;
+				// Fitted over the recent gesture rather than taken from the last two samples: inertia
+				// distance grows with the square of the launch velocity, so a two-point estimate that
+				// catches one short interval sends the content thousands of pixels.
+				var fitted = _velocityTracker.GetVelocity();
+				var vx = (fitted?.X ?? args.Velocities.Linear.X) * 1000;
+				var vy = (fitted?.Y ?? args.Velocities.Linear.Y) * 1000;
 
-#if __SKIA__
-				// The inertia driver ticks from the frame hook, which only runs while frames are being
-				// produced; the finger has just lifted, so nothing else is asking for one yet.
-				Microsoft.UI.Composition.Compositor.RequestFrame(Visual);
-#endif
-
-				// Even if usually empty, make sure to apply the delta
-				var deltaX = Math.Clamp(-args.Delta.Translation.X, scrollable.Left, scrollable.Right);
-				var deltaY = Math.Clamp(-args.Delta.Translation.Y, scrollable.Up, scrollable.Down);
-
-				Set(
-					horizontalOffset: HorizontalOffset + deltaX,
-					verticalOffset: VerticalOffset + deltaY,
-					options: new(DisableAnimation: true, IsTouch: true, IsIntermediate: true));
+				recognizer.CompleteGesture();
+				StartFling(vx, vy);
+				return true;
 			}
 
 			return true;

@@ -2167,6 +2167,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		public async Task When_Fling_Then_DistanceMatchesTheGesture()
+		{
+			// Inertia distance grows with the square of the launch velocity, so a velocity taken from the
+			// last two samples — which can catch one short interval — sends the content orders of magnitude
+			// too far. Fitting over the recent gesture keeps the fling proportionate to the flick.
+			var content = new Border { Width = 380, Height = 60000, Background = new SolidColorBrush(Colors.DeepPink) };
+			var SUT = new ScrollViewer { Width = 400, Height = 600, Content = content, IsScrollInertiaEnabled = true };
+			var bounds = await UITestHelper.Load(SUT);
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			double dragDistance;
+			using (var finger = input.GetFinger())
+			{
+				var c = bounds.GetCenter();
+				finger.Press(c);
+				for (var i = 1; i <= 12; i++)
+				{
+					finger.MoveTo(c.Offset(0, -i * 22), steps: 1);
+					await Task.Delay(8);
+				}
+
+				dragDistance = SUT.VerticalOffset;
+				finger.Release();
+			}
+
+			await Task.Delay(3000);
+			await WindowHelper.WaitForIdle();
+
+			var inertiaDistance = SUT.VerticalOffset - dragDistance;
+
+			inertiaDistance.Should().BeGreaterThan(0, because: "a flick must produce a fling");
+			inertiaDistance.Should().BeLessThan(
+				dragDistance * 30,
+				because: $"the fling must stay proportionate to the {dragDistance:F0}px flick that launched it");
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
 		public async Task When_SlowTouchDrag_Then_ScrollAdvancesEveryMove()
 		{
 			// The manipulation delta threshold that bounds public ManipulationDelta volume must not reach
