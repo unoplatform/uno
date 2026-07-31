@@ -364,11 +364,26 @@ output is the evidence the interface carries everything the backend needs.
 
 ---
 
-## Backend registration & graphics negotiation (decided; not yet implemented)
+## Backend registration & graphics negotiation (implemented; X11 GL/GLES/software neutral)
 
 This is the model the whole pluggable story hangs on. It has five moving parts — registration,
 negotiation, the host's contribution, the framework's contribution, and the per-frame contract —
 plus a clear answer to "who drives."
+
+> **Implementation status.** The negotiation is live under the vision naming (`GraphicsRegistry`,
+> `IGraphicsProvider`, `Graphics(IDrawingFactory, IRenderer)`, `IGraphicsContext`,
+> `GraphicsContextKind`). `SkiaBackend.Register` registers the one built-in pair (`SkiaGraphicsProvider`,
+> default kind order GL → GLES → software). On X11 the render-selection chain names **no** GPU-library
+> type: `X11SoftwareGraphicsRenderer` installs `X11GraphicsContextFactory` and calls
+> `GraphicsRegistry.Initialize`, which negotiates the context; the Skia backend wraps the acquired
+> neutral target (`ISoftwareRenderTarget` → CPU surface, `IGLRenderTarget` → `GRContext`-GL/GLES). A
+> host with one window type steers the outcome through `Initialize`'s optional neutral
+> **kind-preference override** (e.g. `[Software]`, `[OpenGLES, Software]`) — expressed in
+> `GraphicsContextKind` only, never a backend type. **Verified** headless (Xvfb): a render test passes
+> on both the default GLX (`OpenGL context`) and forced-software (`Software context`) paths, and the
+> WebGPU backend agrees pixel-for-pixel with Skia on the shared render seam. **Remaining kinds** —
+> Vulkan (fails headless on lavapipe) and WebGPU-on-window — await a real-GPU matrix before their X11
+> branches migrate and the `UseOpenGL*/UseVulkanOnX11`/`PreferGLESOverGLOnX11` knobs retire.
 
 ### The two seams stay separate
 
