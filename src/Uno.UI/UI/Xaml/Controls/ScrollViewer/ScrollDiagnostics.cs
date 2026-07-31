@@ -42,6 +42,7 @@ internal static class ScrollDiagnostics
 	private static long _lastActivityUs;
 	private static bool _dumpPending;
 	private static double _lastFrameValue;
+	private static bool _announced;
 
 	internal static bool IsEnabled => Uno.UI.FeatureConfiguration.ScrollViewer.EnableDiagnostics;
 
@@ -85,6 +86,12 @@ internal static class ScrollDiagnostics
 
 		lock (_gate)
 		{
+			if (!_announced)
+			{
+				_announced = true;
+				typeof(ScrollDiagnostics).Log().Error("SCROLLDIAG ARMED");
+			}
+
 			if (_count < Capacity)
 			{
 				_samples[_count++] = new Sample(nowUs, value, kind, CurrentPhase);
@@ -96,6 +103,7 @@ internal static class ScrollDiagnostics
 	}
 
 	/// <summary>Call once per frame; dumps and clears the buffer once the scroll has settled.</summary>
+	/// <summary>Call once per frame; dumps and clears the buffer once the scroll has settled.</summary>
 	internal static void TryDump()
 	{
 		if (!IsEnabled)
@@ -103,7 +111,8 @@ internal static class ScrollDiagnostics
 			return;
 		}
 
-		string? report = null;
+		Sample[] snapshot;
+		int count;
 
 		lock (_gate)
 		{
@@ -118,31 +127,36 @@ internal static class ScrollDiagnostics
 				return;
 			}
 
-			report = Format();
+			snapshot = new Sample[_count];
+			Array.Copy(_samples, snapshot, _count);
+			count = _count;
 			_count = 0;
 			_dumpPending = false;
 		}
 
-		typeof(ScrollDiagnostics).Log().Info(report);
-	}
+		// One log entry per batch, not one for the whole buffer: Android's logger drops entries over
+		// roughly 4 KB, which silently loses the entire dump.
+		var log = typeof(ScrollDiagnostics).Log();
+		log.Error($"SCROLLDIAG BEGIN samples={count}");
 
-	private static string Format()
-	{
-		var sb = new StringBuilder(Capacity * 40);
-		sb.Append("SCROLLDIAG BEGIN samples=").Append(_count).Append('\n');
-
-		for (var i = 0; i < _count; i++)
+		var sb = new StringBuilder(1024);
+		for (var i = 0; i < count; i++)
 		{
-			var s = _samples[i];
-			sb.Append("SCROLLDIAG ")
-				.Append(s.Kind == SampleKind.Frame ? 'F' : 'I')
+			var s = snapshot[i];
+			sb.Append(s.Kind == SampleKind.Frame ? 'F' : 'I')
 				.Append(' ').Append(s.Phase)
 				.Append(' ').Append(s.TimestampUs.ToString(CultureInfo.InvariantCulture))
 				.Append(' ').Append(s.Value.ToString("F3", CultureInfo.InvariantCulture))
-				.Append('\n');
+				.Append(';');
+
+			if (sb.Length > 900 || i == count - 1)
+			{
+				log.Error("SCROLLDIAG " + sb.ToString());
+				sb.Clear();
+			}
 		}
 
-		sb.Append("SCROLLDIAG END");
-		return sb.ToString();
+		log.Error("SCROLLDIAG END");
 	}
+
 }
