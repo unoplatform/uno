@@ -60,6 +60,38 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		CreatePipelines();
 	}
 
+	/// <summary>Reads a surface's resolved single-sample texture back to CPU as tightly-packed RGBA8 (top-down). For RTB and tests.</summary>
+	public byte[] ReadPixelsRgba(WebGpuRenderSurface s)
+	{
+		int w = s.Width, h = s.Height;
+		uint unpadded = (uint)(w * 4);
+		uint padded = (unpadded + 255u) & ~255u;              // wgpu requires 256-byte row alignment for T2B copies
+		ulong total = (ulong)padded * (uint)h;
+		var bd = new BufferDescriptor { Size = (nuint)total, Usage = BufferUsage.CopyDst | BufferUsage.MapRead };
+		var buf = W.DeviceCreateBuffer(Dev, ref bd);
+		var enc = W.DeviceCreateCommandEncoder(Dev, null);
+		var src = new ImageCopyTexture { Texture = s.Tex, Aspect = TextureAspect.All, MipLevel = 0, Origin = default };
+		var dst = new ImageCopyBuffer { Buffer = buf, Layout = new TextureDataLayout { Offset = 0, BytesPerRow = padded, RowsPerImage = (uint)h } };
+		var ext = new Extent3D((uint)w, (uint)h, 1);
+		W.CommandEncoderCopyTextureToBuffer(enc, in src, in dst, in ext);
+		var cb = W.CommandEncoderFinish(enc, null);
+		W.QueueSubmit(Q, 1, &cb);
+		Native.DevicePoll(Dev, true, null);
+
+		bool mapped = false;
+		W.BufferMapAsync(buf, MapMode.Read, 0, (nuint)total, new PfnBufferMapCallback((status, _) => mapped = true), null);
+		while (!mapped) { Native.DevicePoll(Dev, true, null); }
+		var mp = (byte*)W.BufferGetMappedRange(buf, 0, (nuint)total);
+		var outp = new byte[w * h * 4];
+		for (int y = 0; y < h; y++)
+		{
+			for (uint x = 0; x < unpadded; x++) { outp[y * (int)unpadded + (int)x] = mp[(uint)y * padded + x]; }
+		}
+		W.BufferUnmap(buf);
+		W.BufferDestroy(buf);
+		return outp;
+	}
+
 	private const string ColoredWgsl = @"
 struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 @vertex fn vs(@location(0) pos: vec2<f32>, @location(1) col: vec4<f32>) -> VOut {
