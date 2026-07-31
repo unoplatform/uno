@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using OpenQA.Selenium;
 
 namespace SamplesApp.AppiumTests.Infrastructure;
@@ -89,28 +90,17 @@ public static class TreeDumper
 		string? value;
 		IReadOnlyList<string> patterns;
 		IReadOnlyDictionary<string, string> extras;
-		try
+		automationId = adapter.GetAutomationId(element);
+		if (IsNoise(automationId))
 		{
-			automationId = adapter.GetAutomationId(element);
-			if (IsNoise(automationId))
-			{
-				return null;
-			}
+			return null;
+		}
 
-			rawRole = adapter.GetRole(element);
-			name = adapter.GetName(element);
-			value = adapter.GetValue(element);
-			patterns = adapter.GetSupportedPatterns(element);
-			extras = adapter.GetExtras(element);
-		}
-		catch (StaleElementReferenceException)
-		{
-			return null;
-		}
-		catch (NoSuchElementException)
-		{
-			return null;
-		}
+		rawRole = adapter.GetRole(element);
+		name = adapter.GetName(driver, element);
+		value = adapter.GetValue(element);
+		patterns = adapter.GetSupportedPatterns(element);
+		extras = adapter.GetExtras(element);
 
 		var node = new AccessibilityNode
 		{
@@ -122,15 +112,7 @@ public static class TreeDumper
 			Extras = new Dictionary<string, string>(extras),
 		};
 
-		IReadOnlyList<IWebElement> children;
-		try
-		{
-			children = adapter.GetChildren(driver, element);
-		}
-		catch (StaleElementReferenceException)
-		{
-			return node;
-		}
+		var children = adapter.GetChildren(driver, element);
 
 		foreach (var child in children)
 		{
@@ -153,4 +135,10 @@ public static class TreeDumper
 
 		return s_noiseAutomationIds.Contains(automationId);
 	}
+
+	public static string Serialize(AccessibilityNode root)
+		=> JsonSerializer.Serialize(root, new JsonSerializerOptions
+		{
+			WriteIndented = true,
+		}).Replace("\r\n", "\n");
 }

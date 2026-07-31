@@ -1,26 +1,18 @@
 #nullable enable
 
 using System;
-using System.Threading;
-using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace SamplesApp.AppiumTests.Infrastructure;
 
 /// <summary>
-/// Spins up an Appium session for the platform selected by the
-/// <c>UNO_APPIUM_PLATFORM</c> environment variable. Tests inherit and write
-/// platform-agnostic assertions against <see cref="Adapter"/>.
+/// Spins up an Appium session per test for the platform selected by
+/// <c>UNO_APPIUM_PLATFORM</c>. Host-independent tests should not derive from
+/// this class.
 /// </summary>
 public abstract class AppiumFixtureBase
 {
-	private IWebDriver? _driver;
-
-	protected IPlatformAdapter Adapter { get; private set; } = null!;
-
-	protected IWebDriver Driver
-		=> _driver ?? throw new InvalidOperationException("Driver not initialized.");
+	private AppiumTestSession? _session;
 
 	/// <summary>
 	/// Override to point the fixture at a specific sample. Format is the same
@@ -29,77 +21,34 @@ public abstract class AppiumFixtureBase
 	/// </summary>
 	protected abstract string SampleQuery { get; }
 
-	[OneTimeSetUp]
-	public void Initialize()
+	public TestContext TestContext { get; set; } = null!;
+
+	protected AppiumTestSession Session
+		=> _session ?? throw new InvalidOperationException("Appium test session not initialized.");
+
+	[TestInitialize]
+	public void InitializeTest()
+		=> _session = AppiumTestSession.Create(TestContext, SampleQuery);
+
+	[TestCleanup]
+	public void CleanupTest()
 	{
-		var platform = AppiumPlatformResolver.TryResolve();
-		if (platform is null)
+		if (_session is null)
 		{
-			Assert.Ignore(
-				$"Set {AppiumPlatformResolver.EnvVarPlatform}=windows|mac|wasm and " +
-				$"{AppiumPlatformResolver.EnvVarAppPath} to enable Appium fixtures.");
 			return;
 		}
 
-		Adapter = platform switch
-		{
-			AppiumPlatform.Windows => new WindowsAdapter(),
-			AppiumPlatform.Mac => new MacAdapter(),
-			AppiumPlatform.Wasm => new WasmAdapter(),
-			_ => throw new NotSupportedException(),
-		};
-
-		_driver = Adapter.CreateDriver(SampleQuery);
-		_driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
-	}
-
-	[OneTimeTearDown]
-	public void Cleanup()
-	{
 		try
 		{
-			_driver?.Quit();
+			_session.Dispose();
 		}
-		catch
+		catch (Exception ex) when (TestContext.CurrentTestOutcome != UnitTestOutcome.Passed)
 		{
-			// best-effort teardown
+			TestContext.WriteLine($"Session cleanup failed after {TestContext.CurrentTestOutcome}: {ex}");
 		}
 		finally
 		{
-			_driver?.Dispose();
-			_driver = null;
-			Adapter?.Dispose();
+			_session = null;
 		}
-	}
-
-	protected IWebElement WaitForAutomationId(string automationId, TimeSpan? timeout = null)
-	{
-		var wait = new WebDriverWait(Driver, timeout ?? TimeSpan.FromSeconds(15))
-		{
-			PollingInterval = TimeSpan.FromMilliseconds(200),
-		};
-		wait.IgnoreExceptionTypes(typeof(NoSuchElementException), typeof(StaleElementReferenceException));
-
-		return wait.Until(d =>
-		{
-			var element = d.FindElement(Adapter.ByAutomationId(automationId));
-			return element.Displayed ? element : null;
-		}) ?? throw new InvalidOperationException($"Element '{automationId}' never became visible.");
-	}
-
-	protected static void WaitFor(Func<bool> condition, TimeSpan? timeout = null, string? because = null)
-	{
-		var deadline = DateTime.UtcNow + (timeout ?? TimeSpan.FromSeconds(5));
-		while (DateTime.UtcNow < deadline)
-		{
-			if (condition())
-			{
-				return;
-			}
-
-			Thread.Sleep(100);
-		}
-
-		Assert.Fail(because ?? "Wait condition never became true.");
 	}
 }

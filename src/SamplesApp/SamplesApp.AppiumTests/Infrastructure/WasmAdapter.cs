@@ -2,95 +2,163 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Threading;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Appium;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
 
 namespace SamplesApp.AppiumTests.Infrastructure;
 
 /// <summary>
-/// Drives SamplesApp.Wasm via Appium's chromium driver against the running
-/// browser. The DOM is the automation tree: AutomationProperties.AutomationId
-/// is emitted as the <c>xamlname</c> attribute when SamplesApp.Wasm sets
-/// <c>AssignDOMXamlName = true</c>, and roles flow from the ARIA mapping
-/// done by Uno's AriaMapper.
+/// Drives SamplesApp.Skia.WebAssembly.Browser via ChromeDriver against the
+/// running browser. The Skia semantic DOM is the automation tree: Uno publishes
+/// <c>xamlautomationid</c> on semantic elements, and roles/states flow from the
+/// ARIA mapping done by Uno's Skia WebAssembly accessibility bridge.
 /// </summary>
 public sealed class WasmAdapter : IPlatformAdapter
 {
 	public AppiumPlatform Platform => AppiumPlatform.Wasm;
 
-	public IWebDriver CreateDriver(string sampleQuery)
+	public IWebDriver CreateDriver(AppiumTestOptions options, string sampleQuery)
 	{
-		var options = new AppiumOptions
+		var chromeOptions = new ChromeOptions();
+		if (options.ChromeBinaryPath is { } binaryPath)
 		{
-			AutomationName = "Chromium",
-			PlatformName = "Any",
-			BrowserName = "Chrome",
-		};
+			chromeOptions.BinaryLocation = binaryPath;
+		}
 
-		var baseUrl = AppiumPlatformResolver.RequireAppPath().TrimEnd('/');
-		var startUrl = string.IsNullOrEmpty(sampleQuery)
-			? baseUrl
-			: $"{baseUrl}/?{sampleQuery}";
+		foreach (var argument in options.ChromeArguments)
+		{
+			chromeOptions.AddArgument(argument);
+		}
 
-		options.AddAdditionalAppiumOption("appium:initialBrowserUrl", startUrl);
+		var baseUri = new Uri(options.AppPath.EndsWith("/", StringComparison.Ordinal)
+			? options.AppPath
+			: options.AppPath + "/");
+		var startUri = string.IsNullOrEmpty(sampleQuery)
+			? baseUri
+			: new Uri(baseUri, "?" + sampleQuery);
 
-		var driver = new RemoteWebDriver(new Uri(AppiumPlatformResolver.ServerUrl()), options);
-
-		// Some chromium driver builds ignore initialBrowserUrl; navigate explicitly.
-		driver.Navigate().GoToUrl(startUrl);
+		var driver = new RemoteWebDriver(options.ServerUri, chromeOptions.ToCapabilities(), options.Timeout);
+		driver.Navigate().GoToUrl(startUri);
+		EnableSemanticAccessibility(driver, options);
 		return driver;
 	}
 
 	public By ByAutomationId(string automationId)
-		=> By.CssSelector($"[xamlname=\"{Escape(automationId)}\"]");
+		=> By.CssSelector($"#uno-semantics-root [xamlautomationid=\"{EscapeCssAttribute(automationId)}\"]");
+
+	public void Activate(IWebDriver driver, IWebElement element)
+		=> ((IJavaScriptExecutor)driver).ExecuteScript(
+			"arguments[0].scrollIntoView({ block: 'center', inline: 'nearest' }); arguments[0].focus(); arguments[0].click();",
+			element);
+
+	public void EnterText(IWebDriver driver, IWebElement element, string value)
+	{
+		((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].focus();", element);
+		element.SendKeys(value);
+	}
 
 	public string GetRole(IWebElement element)
 	{
-		// Uno's AriaMapper writes role= on the element.
 		var role = element.GetAttribute("role");
-		return string.IsNullOrWhiteSpace(role) ? element.TagName.ToLowerInvariant() : role.ToLowerInvariant();
-	}
-
-	public string GetName(IWebElement element)
-	{
-		var ariaLabel = element.GetAttribute("aria-label");
-		if (!string.IsNullOrEmpty(ariaLabel))
+		if (!string.IsNullOrWhiteSpace(role))
 		{
-			return ariaLabel;
+			return role.ToLowerInvariant();
 		}
 
-		var text = element.Text;
-		return string.IsNullOrWhiteSpace(text) ? string.Empty : text;
+		var tagName = element.TagName.ToLowerInvariant();
+		var type = element.GetAttribute("type")?.ToLowerInvariant();
+
+		return tagName switch
+		{
+			"input" => type switch
+			{
+				"checkbox" => "checkbox",
+				"radio" => "radio",
+				"range" => "slider",
+				"search" => "searchbox",
+				_ => "textbox",
+			},
+			"textarea" => "textbox.multiline",
+			"select" => "combobox",
+			"h1" or "h2" or "h3" or "h4" or "h5" or "h6" => "heading",
+			_ => tagName,
+		};
 	}
 
+	public string GetName(IWebDriver driver, IWebElement element)
+		=> ExecuteScript(driver, @"
+const element = arguments[0];
+const ariaLabel = element.getAttribute('aria-label');
+if (ariaLabel && ariaLabel.trim().length > 0) {
+	return ariaLabel.trim();
+}
+const labelledBy = element.getAttribute('aria-labelledby');
+if (labelledBy && labelledBy.trim().length > 0) {
+	return labelledBy
+		.split(/\s+/)
+		.map(id => document.getElementById(id)?.textContent?.trim() ?? '')
+		.filter(text => text.length > 0)
+		.join(' ')
+		.trim();
+}
+if ('value' in element && element.value) {
+	return String(element.value).trim();
+}
+return (element.textContent || '').trim();
+", element) ?? string.Empty;
+
+	public string? GetDescription(IWebDriver driver, IWebElement element)
+		=> EmptyToNull(ExecuteScript(driver, @"
+const element = arguments[0];
+const ariaDescription = element.getAttribute('aria-description');
+if (ariaDescription && ariaDescription.trim().length > 0) {
+	return ariaDescription.trim();
+}
+const describedBy = element.getAttribute('aria-describedby');
+if (describedBy && describedBy.trim().length > 0) {
+	return describedBy
+		.split(/\s+/)
+		.map(id => document.getElementById(id)?.textContent?.trim() ?? '')
+		.filter(text => text.length > 0)
+		.join(' ')
+		.trim();
+}
+if (element.hasAttribute('placeholder')) {
+	return (element.getAttribute('placeholder') || '').trim();
+}
+return '';
+", element));
+
 	public IReadOnlyList<IWebElement> GetAllDescendants(IWebDriver driver)
-		=> driver.FindElements(By.CssSelector("[xamlname]"));
+		=> driver.FindElements(By.CssSelector("#uno-semantics-root [id^=\"uno-semantics-\"]"));
 
 	public string GetAutomationId(IWebElement element)
-		=> element.GetAttribute("xamlname") ?? string.Empty;
+		=> element.GetAttribute("xamlautomationid") ?? string.Empty;
 
 	public string? GetValue(IWebElement element)
 	{
-		var v = element.GetAttribute("value");
-		if (!string.IsNullOrEmpty(v))
+		var value = element.GetAttribute("value");
+		if (!string.IsNullOrWhiteSpace(value))
 		{
-			return v;
+			return value.Trim();
 		}
 
-		var ariaValue = element.GetAttribute("aria-valuenow");
-		return string.IsNullOrEmpty(ariaValue) ? null : ariaValue;
+		var ariaValue = element.GetAttribute("aria-valuetext")
+			?? element.GetAttribute("aria-valuenow");
+		return EmptyToNull(ariaValue)
+			?? EmptyToNull(element.GetDomProperty("textContent"))
+			?? EmptyToNull(element.Text);
 	}
 
 	public IReadOnlyList<string> GetSupportedPatterns(IWebElement element)
 	{
 		var patterns = new List<string>();
-		var role = element.GetAttribute("role")?.ToLowerInvariant();
-		switch (role)
+		switch (CanonicalRole.Normalize(GetRole(element), Platform))
 		{
 			case "button":
-			case "menuitem":
-			case "link":
 				patterns.Add("invoke");
 				break;
 			case "checkbox":
@@ -99,39 +167,170 @@ public sealed class WasmAdapter : IPlatformAdapter
 				break;
 			case "radio":
 				patterns.Add("selectionitem");
-				patterns.Add("toggle");
 				break;
 			case "textbox":
-			case "searchbox":
 				patterns.Add("value");
 				break;
 			case "slider":
-			case "spinbutton":
-			case "progressbar":
 				patterns.Add("rangevalue");
 				break;
 			case "combobox":
-			case "listbox":
 				patterns.Add("expandcollapse");
 				patterns.Add("selection");
 				break;
-		}
-
-		var ariaExpanded = element.GetAttribute("aria-expanded");
-		if (!string.IsNullOrEmpty(ariaExpanded) && !patterns.Contains("expandcollapse"))
-		{
-			patterns.Add("expandcollapse");
 		}
 
 		patterns.Sort(StringComparer.Ordinal);
 		return patterns;
 	}
 
+	public bool? GetEnabled(IWebElement element)
+	{
+		var ariaDisabled = element.GetAttribute("aria-disabled");
+		if (ParseBool(ariaDisabled) is { } fromAria)
+		{
+			return !fromAria;
+		}
+
+		return element.GetAttribute("disabled") is null;
+	}
+
+	public bool? GetKeyboardFocusable(IWebElement element)
+	{
+		var tabIndex = element.GetAttribute("tabindex");
+		if (int.TryParse(tabIndex, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed))
+		{
+			return parsed >= 0;
+		}
+
+		return CanonicalRole.Normalize(GetRole(element), Platform) switch
+		{
+			"button" or "checkbox" or "combobox" or "radio" or "slider" or "textbox" => true,
+			_ => false,
+		};
+	}
+
+	public bool? GetFocused(IWebDriver driver, IWebElement element)
+		=> ParseBool(ExecuteScript(driver, "return document.activeElement === arguments[0] ? 'true' : 'false';", element));
+
+	public bool? GetOffscreen(IWebElement element)
+	{
+		if (ParseBool(element.GetAttribute("aria-hidden")) is { } hidden && hidden)
+		{
+			return true;
+		}
+
+		return null;
+	}
+
+	public string? GetToggleState(IWebElement element)
+	{
+		var ariaChecked = element.GetAttribute("aria-checked");
+		if (!string.IsNullOrWhiteSpace(ariaChecked))
+		{
+			return NormalizeToggleState(ariaChecked);
+		}
+
+		var @checked = element.GetAttribute("checked");
+		var normalized = NormalizeToggleState(@checked);
+		if (normalized is not null)
+		{
+			return normalized;
+		}
+
+		return element.TagName.Equals("input", StringComparison.OrdinalIgnoreCase)
+			&& element.GetAttribute("type") is "checkbox" or "radio"
+				? element.Selected ? "on" : "off"
+				: null;
+	}
+
+	public bool? GetSelected(IWebElement element)
+	{
+		var selected = ParseBool(element.GetAttribute("aria-selected"));
+		if (selected is not null)
+		{
+			return selected;
+		}
+
+		if (ParseBool(element.GetAttribute("selected")) is { } selectedAttribute)
+		{
+			return selectedAttribute;
+		}
+
+		if (CanonicalRole.Normalize(GetRole(element), Platform) is "radio" or "option")
+		{
+			return element.Selected;
+		}
+
+		var toggleState = GetToggleState(element);
+		return toggleState is null ? null : toggleState == "on";
+	}
+
+	public bool? GetExpanded(IWebElement element)
+		=> ParseBool(element.GetAttribute("aria-expanded"));
+
+	public bool? GetRequired(IWebElement element)
+	{
+		var required = ParseBool(element.GetAttribute("aria-required"));
+		if (required is not null)
+		{
+			return required;
+		}
+
+		return element.GetAttribute("required") is null ? null : true;
+	}
+
+	public int? GetLevel(IWebElement element)
+	{
+		var ariaLevel = element.GetAttribute("aria-level");
+		if (int.TryParse(ariaLevel, NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsed))
+		{
+			return parsed;
+		}
+
+		return element.TagName.ToLowerInvariant() switch
+		{
+			"h1" => 1,
+			"h2" => 2,
+			"h3" => 3,
+			"h4" => 4,
+			"h5" => 5,
+			"h6" => 6,
+			_ => null,
+		};
+	}
+
+	public string? GetLandmark(IWebElement element)
+		=> element.GetAttribute("role")?.Trim().ToLowerInvariant() switch
+		{
+			"banner" => "banner",
+			"complementary" => "complementary",
+			"contentinfo" => "contentinfo",
+			"form" => "form",
+			"main" => "main",
+			"navigation" => "navigation",
+			"region" => "region",
+			"search" => "search",
+			_ => null,
+		};
+
+	public string? GetRoleDescription(IWebElement element)
+		=> EmptyToNull(element.GetAttribute("aria-roledescription"));
+
+	public string? GetLiveSetting(IWebElement element)
+		=> element.GetAttribute("aria-live")?.Trim().ToLowerInvariant() switch
+		{
+			"polite" => "polite",
+			"assertive" => "assertive",
+			_ => null,
+		};
+
 	public IReadOnlyList<IWebElement> GetChildren(IWebDriver driver, IWebElement? parent)
 	{
 		var context = (ISearchContext?)parent ?? driver;
-		// Only walk elements that participate in the Uno semantic overlay.
-		return context.FindElements(By.CssSelector(":scope > [xamlname], :scope > [role]"));
+		return parent is null
+			? context.FindElements(By.CssSelector("#uno-semantics-root > [id^=\"uno-semantics-\"]"))
+			: context.FindElements(By.CssSelector(":scope > [id^=\"uno-semantics-\"]"));
 	}
 
 	public IReadOnlyDictionary<string, string> GetExtras(IWebElement element)
@@ -140,6 +339,10 @@ public sealed class WasmAdapter : IPlatformAdapter
 		AddIfPresent(element, "role", "wasm.role", extras);
 		AddIfPresent(element, "tag", "wasm.tag", extras);
 		AddIfPresent(element, "aria-label", "wasm.aria-label", extras);
+		AddIfPresent(element, "xamlautomationid", "wasm.xamlAutomationId", extras);
+		AddIfPresent(element, "aria-live", "wasm.aria-live", extras);
+		AddIfPresent(element, "aria-level", "wasm.aria-level", extras);
+		AddIfPresent(element, "aria-required", "wasm.aria-required", extras);
 		return extras;
 	}
 
@@ -156,5 +359,70 @@ public sealed class WasmAdapter : IPlatformAdapter
 		}
 	}
 
-	private static string Escape(string value) => value.Replace("\"", "\\\"");
+	private static void EnableSemanticAccessibility(IWebDriver driver, AppiumTestOptions options)
+	{
+		var deadline = DateTime.UtcNow + options.Timeout;
+		Exception? lastError = null;
+
+		while (DateTime.UtcNow < deadline)
+		{
+			try
+			{
+				var state = ExecuteScript(driver, @"
+const button = document.getElementById('uno-enable-accessibility');
+if (button) {
+	button.click();
+}
+return document.getElementById('uno-semantics-root') ? 'ready' : 'waiting';
+");
+
+				if (string.Equals(state, "ready", StringComparison.Ordinal))
+				{
+					Thread.Sleep(options.PollInterval);
+					return;
+				}
+			}
+			catch (WebDriverException ex)
+			{
+				lastError = ex;
+			}
+
+			Thread.Sleep(options.PollInterval);
+		}
+
+		throw new InvalidOperationException(
+			$"Timed out enabling the Skia semantic DOM after {options.Timeout.TotalSeconds:F0}s. " +
+			$"Last error: {lastError?.Message ?? "n/a"}");
+	}
+
+	private static string? ExecuteScript(IWebDriver driver, string script, IWebElement? element = null)
+	{
+		var executor = (IJavaScriptExecutor)driver;
+		return element is null
+			? executor.ExecuteScript(script) as string
+			: executor.ExecuteScript(script, element) as string;
+	}
+
+	private static bool? ParseBool(string? value)
+		=> value?.Trim().ToLowerInvariant() switch
+		{
+			"true" or "1" => true,
+			"false" or "0" => false,
+			_ => null,
+		};
+
+	private static string? NormalizeToggleState(string? value)
+		=> value?.Trim().ToLowerInvariant() switch
+		{
+			"true" or "1" or "on" => "on",
+			"false" or "0" or "off" => "off",
+			"mixed" => "mixed",
+			_ => null,
+		};
+
+	private static string EscapeCssAttribute(string value)
+		=> value.Replace("\\", "\\\\").Replace("\"", "\\\"");
+
+	private static string? EmptyToNull(string? value)
+		=> string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }

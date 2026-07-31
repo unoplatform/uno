@@ -1,257 +1,277 @@
 # SamplesApp.AppiumTests
 
-Appium-driven smoke tests that prove the per-platform automation tree
-produced by the Uno SamplesApp is reachable and well-formed:
+Appium-backed accessibility regression tests for the real SamplesApp automation
+surfaces:
 
-| Target           | Backend exercised                          | Driver                  |
-|------------------|--------------------------------------------|-------------------------|
-| Win32 Skia       | UIAutomation (Uno.UI.Runtime.Skia.Win32)   | `appium-windows-driver` |
-| macOS Skia       | NSAccessibility (Uno.UI.Runtime.Skia.MacOS)| `appium-mac2-driver`    |
-| WebAssembly      | ARIA / `xamlname` DOM attribute (Uno WASM) | Appium chromium driver  |
+| Target | Platform tree exercised | Driver |
+| --- | --- | --- |
+| Windows Skia | UI Automation | `appium-windows-driver` |
+| macOS Skia | NSAccessibility through Mac2 | `appium-mac2-driver` |
+| Skia WASM | DOM + ARIA semantic tree | ChromeDriver |
 
-The tests are intentionally minimal: they validate that the automation
-tree is *created and queryable*, not that every control behaves correctly.
-That's what `Uno.UI.RuntimeTests` is for. Failures here point at the
-runtime accessibility backend, not at control logic.
+The suite does **not** compare raw trees position-by-position across platforms.
+Instead it captures a shared canonical model for a curated set of stable
+elements from `Automation/Accessibility_ScreenReader`, with per-platform field
+selection where the native surfaces legitimately differ.
+
+## What runs where
+
+Three categories exist:
+
+- `HostIndependent` - pure logic tests for configuration parsing, role
+  normalization, snapshot schema/diffing, and baseline-definition integrity.
+  These run in ordinary CI and do not need Appium.
+- `HostRequired` - real external-driver sessions that validate canonical snapshots and
+  representative interactions against the live platform tree.
+- `WasmHostRequired` - external semantic-DOM standards checks that run only
+  against the Skia-WASM ChromeDriver session.
+
+The unit-test job runs the host-independent gate:
+
+```powershell
+dotnet test --project src\SamplesApp\SamplesApp.AppiumTests\SamplesApp.AppiumTests.csproj `
+  -c Release `
+  --filter "TestCategory=HostIndependent"
+```
+
+`HostRequired` tests are opt-in on machines that actually have the matching
+host, app build, and driver available. The Skia-WASM runtime-test lane also
+runs all `HostRequired` tests once (matrix group 0) against the published app
+with a version-matched ChromeDriver. Windows and macOS host-backed runs remain
+manual until those CI lanes provide Appium and the required OS permissions.
+If you intentionally select host-backed tests without the required
+environment, they fail fast with a configuration error; they never silently
+skip or auto-bless baselines.
 
 ## Prerequisites
 
-```bash
-# Appium 2 + drivers (one-time)
+```powershell
 npm i -g appium@2
-appium driver install --source=npm appium-windows-driver   # Windows host
-appium driver install mac2                                 # macOS host
-appium driver install chromium                             # WASM (any host)
+appium driver install --source=npm appium-windows-driver
+appium driver install mac2
 ```
 
-On Windows, `appium-windows-driver` bundles WinAppDriver; nothing extra.
+Start Appium separately before running Windows or macOS host-backed tests:
 
-### macOS permission setup (REQUIRED)
-
-The Mac2 driver runs UI queries through Apple's XCTest framework, which
-refuses to operate unless the *invoking process tree* has been granted
-Accessibility permission. If the permission is missing you'll see one of:
-
-```
-Error Domain=XCTDaemonErrorDomain Code=41
-"Not authorized for performing UI testing actions."
+```powershell
+appium
 ```
 
-or `NoSuchElementException` on every `MobileBy.AccessibilityId(...)` lookup
-even though the SamplesApp window is clearly visible.
+The default Appium server URI for Windows and macOS is
+`http://127.0.0.1:4723/`. If you use a different address or
+`--base-path /wd/hub`, set `UNO_APPIUM_SERVER` explicitly. WASM uses a
+version-matched ChromeDriver directly; set `UNO_APPIUM_SERVER` to its URL.
 
-Grant access in **System Settings → Privacy & Security → Accessibility**
-to **all** of the following (whichever apply to your setup):
+## Building the app under test
 
-1. The terminal that launches `appium` (Terminal.app, iTerm, etc.) — the
-   Appium server's `node` process inherits its permission from its parent.
-2. The terminal that runs `dotnet test`.
-3. If you launch Appium from VS Code or another IDE, that IDE.
-4. `Node.js` itself, if it appears in the list (binary path resolves to
-   the `node` you installed, e.g. via Homebrew or nvm).
-5. After running once, a `WebDriverAgentRunner-Runner` entry will appear —
-   toggle it on too.
+Per `AGENTS.md`, use a single-target override for local iteration.
 
-After toggling these, fully restart the Appium server (`appium` in its
-terminal) so the freshly-permitted process tree picks up the change. A
-quick way to verify: with the Appium server running, execute
-`tccutil` or simply re-run the test — Code 41 should be gone.
+### Windows / macOS Skia
 
-If you also want VoiceOver / Inspect to see what Mac2 sees, leave the
-SamplesApp window focused and open `/Applications/Utilities/Inspect.app`
-(part of the Xcode Accessibility Tools) — it should show the same
-`UNOAccessibilityElement` tree Uno publishes.
-
-## Building the SamplesApp from source
-
-Per `AGENTS.md`, set up cross-targeting first:
-
-```bash
-cd src
-cp crosstargeting_override.props.sample crosstargeting_override.props
-# Edit to net10.0 (or net9.0 for Skia) per the target you're testing
+```powershell
+dotnet build src\SamplesApp\SamplesApp.Skia.Generic\SamplesApp.Skia.Generic.csproj `
+  -c Release `
+  -p:UnoTargetFrameworkOverride=net10.0 `
+  -p:UnoFastDevBuild=true
 ```
 
-Then build the host you want to drive:
+- Windows uses the produced `.exe`
+- macOS uses the produced `.dll` or an already-built `.app`
 
-```bash
-# Skia desktop (works for Win32 and macOS)
-dotnet build SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release
+### WASM
 
-# WebAssembly
-dotnet build SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj -c Release
+```powershell
+dotnet publish src\SamplesApp\SamplesApp.Skia.WebAssembly.Browser\SamplesApp.Skia.WebAssembly.Browser.csproj `
+  -c Release `
+  -f net10.0 `
+  -p:UnoTargetFrameworkOverride=net10.0 `
+  -p:UnoFastDevBuild=true
 ```
 
-## Building the test project
+Serve the built dist folder from any reachable URL, for example:
 
-```bash
-dotnet build src/SamplesApp/SamplesApp.AppiumTests/SamplesApp.AppiumTests.csproj
+```powershell
+dotnet tool install --global dotnet-serve
+dotnet serve --directory src\SamplesApp\SamplesApp.Skia.WebAssembly.Browser\bin\Release\net10.0\publish\wwwroot --port 8000
 ```
 
-## Running
+Start a ChromeDriver whose major version matches Chrome/Chromium:
 
-Start an Appium 2 server in a separate terminal first:
-
-```bash
-appium --base-path /wd/hub
+```powershell
+chromedriver --port=9515
 ```
 
-(The default `appium` start path also works; the tests honor
-`UNO_APPIUM_SERVER` if you need to point elsewhere.)
+## Building and running this project
 
-### Windows (Win32 Skia)
-
-```cmd
-set UNO_APPIUM_PLATFORM=windows
-set UNO_APPIUM_SAMPLESAPP=C:\path\to\uno\src\SamplesApp\SamplesApp.Skia.Generic\bin\Release\net9.0\SamplesApp.Skia.Generic.exe
-dotnet test src\SamplesApp\SamplesApp.AppiumTests
+```powershell
+dotnet build src\SamplesApp\SamplesApp.AppiumTests\SamplesApp.AppiumTests.csproj -c Release
 ```
 
-### macOS (macOS Skia)
+### Host-independent validation
 
-> **Run from `Terminal.app`, not from VS Code's integrated terminal.**
->
-> macOS LaunchServices refuses to register new GUI apps started from a
-> launchd domain that descends from a sandboxed parent (VS Code's
-> "Code Helper (Plugin)" process is the canonical culprit). The Mac2
-> adapter wraps the SamplesApp dll in a temporary `.app` bundle and asks
-> LaunchServices to launch it; from a VS Code-rooted shell that request
-> silently exits 0 without launching anything, and the test fixture
-> times out waiting for the bundle to appear. From `Terminal.app` (or
-> any other unsandboxed terminal), the same call succeeds.
->
-> If you absolutely must run from inside VS Code, launch the wrapper
-> bundle yourself once from `Terminal.app` and leave it open — the
-> adapter will attach to the already-running process via its bundle id
-> (`io.platform.uno.SamplesAppAppium`) and skip the launch step.
+```powershell
+dotnet test --project src\SamplesApp\SamplesApp.AppiumTests\SamplesApp.AppiumTests.csproj `
+  -c Release `
+  --filter "TestCategory=HostIndependent"
+```
+
+### Windows
+
+```powershell
+$env:UNO_APPIUM_PLATFORM = 'windows'
+$env:UNO_APPIUM_SAMPLESAPP = 'C:\path\to\SamplesApp.Skia.Generic.exe'
+dotnet test --project src\SamplesApp\SamplesApp.AppiumTests\SamplesApp.AppiumTests.csproj `
+  -c Release `
+  --filter "TestCategory=HostRequired"
+```
+
+### macOS
+
+> Run Appium and the tests from an unsandboxed terminal such as `Terminal.app`.
 
 ```bash
 export UNO_APPIUM_PLATFORM=mac
-export UNO_APPIUM_SAMPLESAPP="$PWD/src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net9.0/SamplesApp.Skia.Generic.dll"
-export UNO_APPIUM_DOTNET_PATH="$(which dotnet)"   # optional; auto-resolved if unset
-dotnet test src/SamplesApp/SamplesApp.AppiumTests
+export UNO_APPIUM_SAMPLESAPP="$PWD/src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net10.0/SamplesApp.Skia.Generic.dll"
+dotnet test --project src/SamplesApp/SamplesApp.AppiumTests/SamplesApp.AppiumTests.csproj \
+  -c Release \
+  --filter "TestCategory=HostRequired"
 ```
 
-The Mac2 adapter behaviour:
+If `UNO_APPIUM_SAMPLESAPP` points to a `.dll`, the adapter creates a wrapper
+`.app` bundle under the test artifacts directory (`mac-bundles\...`) and
+launches that bundle through LaunchServices. Set `UNO_APPIUM_KEEP_BUNDLE=1` if
+you want to inspect the generated wrapper after the run. If `dotnet` is not on
+the default macOS probe paths, set `UNO_APPIUM_DOTNET_PATH`.
 
-1. If `UNO_APPIUM_SAMPLESAPP` points at a real `.app` bundle, Mac2 launches it directly via its `CFBundleIdentifier`.
-2. If it points at a `.dll`, the adapter writes a minimal wrapper `.app` to `$TMPDIR/SamplesAppAppium-*.app` whose `MacOS/SamplesAppAppium` entry shells out to `dotnet <dll> <sampleQuery>`, launches it via AppleScript, and attaches Mac2 to the bundle id `io.platform.uno.SamplesAppAppium`. The wrapper is cleaned up on teardown unless you set `UNO_APPIUM_KEEP_BUNDLE=1`.
-3. If a process with that bundle id is already running, the launch step is skipped — useful for the VS Code workaround above.
+### WASM
 
-### WebAssembly
-
-Serve the built app on a port the test process can reach:
-
-```bash
-dotnet tool install -g dotnet-serve   # one-time
-dotnet-serve -d src/SamplesApp/SamplesApp.Wasm/bin/Release/net10.0/dist -p 8000 &
-
-export UNO_APPIUM_PLATFORM=wasm
-export UNO_APPIUM_SAMPLESAPP=http://localhost:8000
-dotnet test src/SamplesApp/SamplesApp.AppiumTests
+```powershell
+$env:UNO_APPIUM_PLATFORM = 'wasm'
+$env:UNO_APPIUM_SAMPLESAPP = 'http://127.0.0.1:8000/'
+$env:UNO_APPIUM_SERVER = 'http://127.0.0.1:9515/'
+# Optional when Chrome is not installed in a standard location:
+$env:UNO_APPIUM_CHROME_BINARY = 'C:\path\to\chrome.exe'
+# Optional, pipe-delimited (useful on a headless CI host):
+$env:UNO_APPIUM_CHROME_ARGUMENTS = '--headless=new|--disable-gpu'
+dotnet test --project src\SamplesApp\SamplesApp.AppiumTests\SamplesApp.AppiumTests.csproj `
+  -c Release `
+  --filter "TestCategory=HostRequired|TestCategory=WasmHostRequired"
 ```
 
-The browser-side selectors rely on `AssignDOMXamlName = true`, which
-SamplesApp.Wasm already enables in `Program.cs`. AutomationIds are read as
-the `xamlname` DOM attribute. If you switch to a host that does *not*
-enable `AssignDOMXamlName`, update `WasmAdapter.ByAutomationId` to use
-`[name=...]` or `[id=...]`.
+WASM discovery is based on Uno's semantic DOM:
 
-## Accessibility-tree baselines (golden-file snapshots)
+- the suite enables accessibility with `#uno-enable-accessibility`
+- elements are found under `#uno-semantics-root`
+- AutomationIds come from `xamlautomationid`
+- names/descriptions/states come from DOM + ARIA attributes
 
-`AccessibilityBaselineTests` walks the entire platform AX tree for each
-sample and compares it against a committed JSON baseline. This catches
-silent regressions that the smoke suite can't — a control losing its
-Toggle pattern, an AutomationId vanishing on one platform, a heading
-level dropping, etc.
+## Environment variables
 
-Layout:
+| Variable | Meaning |
+| --- | --- |
+| `UNO_APPIUM_PLATFORM` | `windows`, `mac`, or `wasm` |
+| `UNO_APPIUM_SAMPLESAPP` | Absolute `.exe`, absolute `.dll`/`.app`, or absolute `http(s)` URL |
+| `UNO_APPIUM_SERVER` | Optional Appium server URI; defaults to `http://127.0.0.1:4723/` |
+| `UNO_APPIUM_RECORD_SNAPSHOTS` | `1/0`, `true/false`, `yes/no`; explicitly rewrites committed baselines |
+| `UNO_APPIUM_SNAPSHOTS_DIR` | Optional override for the committed baseline root |
+| `UNO_APPIUM_ARTIFACTS_DIR` | Optional artifact root for actual snapshots, raw trees, and macOS wrapper bundles |
+| `UNO_APPIUM_TIMEOUT_SECONDS` | Per-wait timeout; default `20` |
+| `UNO_APPIUM_POLL_INTERVAL_MS` | Poll cadence for bounded waits; default `200` |
+| `UNO_APPIUM_KEEP_BUNDLE` | Keeps the generated macOS wrapper bundle |
+| `UNO_APPIUM_DOTNET_PATH` | Optional macOS-only `dotnet` override when wrapping a `.dll` |
+| `UNO_APPIUM_CHROME_BINARY` | Optional absolute Chrome/Chromium executable used by the WASM ChromeDriver session |
+| `UNO_APPIUM_CHROME_ARGUMENTS` | Optional pipe-delimited Chrome arguments, such as `--headless=new|--disable-gpu` |
 
-```
+Validation is strict:
+
+- Windows requires an absolute `.exe`
+- macOS requires an absolute `.app` or `.dll`
+- WASM requires an absolute `http(s)` URL
+- `UNO_APPIUM_SERVER` must be an absolute `http(s)` URL
+
+## Canonical snapshot baselines
+
+Committed, host-verified baselines live under:
+
+```text
 Snapshots/
-├── win32/
-│   └── Automation_AccessibilityScreenReader.json
-├── macos/
-│   └── Automation_AccessibilityScreenReader.json
 └── wasm/
-    └── Automation_AccessibilityScreenReader.json
 ```
 
-Each file is the canonical tree (normalized roles, AutomationIds, value,
-supported patterns, children in tree order) for one sample on one
-platform-flavor. Window-chrome and ScrollViewer template parts are
-stripped via an allowlist in `Infrastructure/TreeDumper.cs` so the
-baseline focuses on the sample under test.
+The WASM baseline is recorded and enforced in CI. Windows and macOS baselines
+must be recorded on their matching hosts before those snapshot lanes are
+enabled; the snapshot test fails clearly when a selected platform has no
+baseline and never substitutes values from another platform.
 
-### Workflow
+Each file is schema version 2:
 
-```bash
-# (1) Bootstrap baselines from a known-good Uno build, once per platform:
-UNO_APPIUM_RECORD_SNAPSHOTS=1 \
-UNO_APPIUM_PLATFORM=mac \
-UNO_APPIUM_SAMPLESAPP="$PWD/src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net9.0/SamplesApp.Skia.Generic.dll" \
-dotnet test src/SamplesApp/SamplesApp.AppiumTests \
-    --filter "Category=Baseline" -c Release --no-build
-
-# (2) Commit the JSON files under Snapshots/ in your PR.
-
-# (3) Subsequent runs verify against the committed baselines:
-UNO_APPIUM_PLATFORM=mac \
-UNO_APPIUM_SAMPLESAPP="..." \
-dotnet test src/SamplesApp/SamplesApp.AppiumTests \
-    --filter "Category=Baseline" -c Release --no-build
+```json
+{
+  "schema": 2,
+  "sample": "Automation/Accessibility_ScreenReader",
+  "flavor": "win32|macos|wasm",
+  "elements": [ ... ]
+}
 ```
 
-When a test fails, the live tree is written to
-`<bin>/snapshot-actual/<flavor>/<sample>.json` and attached to the test
-result, alongside a human-readable structural diff. Diff lines look
-like:
+Each canonical element is keyed by a stable id and stores only the semantic
+fields that matter for that platform: role, name, description, value, patterns,
+and selected state fields such as toggle state, selection, required, heading
+level, landmark, or live setting.
 
-```
-[changed] root.children[3].automation_id: expected 'VisibilityTargetButton' actual ''
-[pattern-lost] root.children[5].patterns: expected 'toggle' actual '(absent)'
-[added]   root.children[7]: button #NewControl ""
-```
+### Verifying baselines
 
-To update a baseline after a legit AX-tree change: rerun with
-`UNO_APPIUM_RECORD_SNAPSHOTS=1`, review the JSON diff, commit.
-
-### Adding a new sample to the suite
-
-Open `Tests/AccessibilityBaselineTests.cs`, add one entry to `Cases()`:
-
-```csharp
-yield return new BaselineCase(
-    Sample: "Controls/MyNewSample",
-    SnapshotId: "Controls_MyNewSample");
+```powershell
+$env:UNO_APPIUM_PLATFORM = 'windows'
+$env:UNO_APPIUM_SAMPLESAPP = 'C:\path\to\SamplesApp.Skia.Generic.exe'
+dotnet test --project src\SamplesApp\SamplesApp.AppiumTests\SamplesApp.AppiumTests.csproj `
+  -c Release `
+  --filter "TestCategory=Snapshot"
 ```
 
-Then record baselines on each platform you care about.
+### Re-recording baselines
 
-## What's covered
+Recording is always explicit:
 
-The smoke suite (`Tests/AutomationTreeSmokeTests.cs`) navigates the app to
-`Windows_UI.Xaml_Automation/AccessibilityScreenReaderPage` and runs:
+```powershell
+$env:UNO_APPIUM_RECORD_SNAPSHOTS = '1'
+dotnet test --project src\SamplesApp\SamplesApp.AppiumTests\SamplesApp.AppiumTests.csproj `
+  -c Release `
+  --filter "TestCategory=Snapshot"
+```
 
-| Test                                          | What it proves                            |
-|-----------------------------------------------|-------------------------------------------|
-| `Tree_HasPopulatedAutomationElements`         | The driver sees > 10 elements in the tree |
-| `Button_FoundByAutomationId_HasButtonRole`    | UIA/AX/ARIA reports the right role        |
-| `Button_FoundByAutomationId_CanBeInvoked`     | `Click()` round-trips to the control      |
-| `TextBox_FoundByAutomationId_AcceptsValue`    | The Value pattern reflects typed input    |
-| `TextBlock_FoundByAutomationId_HasAccessibleName` | Non-control elements still expose names |
-| `Tree_ExposesMoreThanRootElement`             | Multiple distinct roles are surfaced      |
+Review the JSON diff before committing. The tests never overwrite baselines
+unless `UNO_APPIUM_RECORD_SNAPSHOTS` is set.
 
-All tests run once per platform leg, controlled by `UNO_APPIUM_PLATFORM`.
-There is no cross-platform parallelism by design — each leg owns its
-own Appium server.
+### Failure artifacts
 
-## Why not extend `SamplesApp.UITests`?
+On a snapshot mismatch, the suite writes:
 
-`SamplesApp.UITests` uses the custom `Uno.UITest` abstraction (Selenium
-under the hood for WASM, Xamarin.UITest for mobile, in-process for Skia
-desktop). None of those paths actually attach to the *OS* automation
-backend — they read XAML state through internal hooks. The whole point
-of this project is to drive the app through the *real* automation API
-that screen readers, assistive technology, and external automation tools
-use, which is what Appium provides.
+- `snapshot-actual\<flavor>\<snapshot>.json` - canonical actual snapshot
+- `snapshot-actual\<flavor>\<snapshot>.tree.json` - raw captured platform tree,
+  when available
+
+The failure message includes the platform/session context plus an element-id
+based diff such as:
+
+```text
+[changed] FavoriteColorComboBox.value: expected 'Red' actual 'Green'
+[changed] EnableNotificationsCheckBox.state.toggleState: expected 'on' actual 'off'
+```
+
+## Interaction coverage
+
+The live suite currently checks that the platform tree reflects these actions:
+
+- checkbox invoke -> toggle state changes
+- radio selection -> selected state moves
+- combobox selection -> value and selected item change
+- textbox typing -> value and focus update
+- disable button -> enabled/focusable state changes
+- live-region update -> accessible text changes, with live setting where exposed
+
+## Why this project exists beside `SamplesApp.UITests`
+
+`SamplesApp.UITests` validates app behavior through Uno's existing UI test
+abstractions. `SamplesApp.AppiumTests` validates the external accessibility and
+automation contracts that screen readers, inspectors, and Appium itself see.
