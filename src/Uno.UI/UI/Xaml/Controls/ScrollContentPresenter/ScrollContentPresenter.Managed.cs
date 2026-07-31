@@ -186,7 +186,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (Math.Abs(anchor - _lastDiagnosticsAnchor) > 0.01)
 				{
 					_lastDiagnosticsAnchor = anchor;
-					ScrollDiagnostics.Record(ScrollDiagnostics.SampleKind.Frame, anchor, Visual.Compositor.CurrentFrameTimestampInTicks);
+					ScrollDiagnostics.Record(ScrollDiagnostics.SampleKind.Frame, anchor, Visual.Compositor.CurrentFrameTimestampInTicks, GetHashCode());
 				}
 			}
 
@@ -594,6 +594,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_flingH = ScrollFlingSimulation.Create(HorizontalOffset, -velocityXPerSecond);
 			_flingV = ScrollFlingSimulation.Create(VerticalOffset, -velocityYPerSecond);
 			_isFlingRunning = true;
+			ScrollDiagnostics.CurrentPhase = ScrollDiagnostics.PhaseInertia;
 
 			compositor.FrameStarting += OnFlingFrame;
 			Microsoft.UI.Composition.Compositor.RequestFrame(Visual);
@@ -607,6 +608,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_isFlingRunning = false;
+			ScrollDiagnostics.CurrentPhase = ScrollDiagnostics.PhaseIdle;
 			Visual.Compositor.FrameStarting -= OnFlingFrame;
 		}
 
@@ -827,7 +829,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			ScrollDiagnostics.CurrentPhase = args.IsInertial ? ScrollDiagnostics.PhaseInertia : ScrollDiagnostics.PhaseDrag;
-			ScrollDiagnostics.Record(ScrollDiagnostics.SampleKind.Input, VerticalOffset + deltaY);
+			ScrollDiagnostics.Record(ScrollDiagnostics.SampleKind.Input, VerticalOffset + deltaY, source: GetHashCode());
 
 			if (!args.IsInertial)
 			{
