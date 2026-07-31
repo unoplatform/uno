@@ -1,0 +1,38 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_MacOS_FunctionKeys_23646"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <StackPanel
+        MaxWidth="640"
+        Padding="16"
+        Spacing="12">
+        <TextBlock
+            FontWeight="SemiBold"
+            Text="macOS TextBox function-key verification"
+            TextWrapping="Wrap" />
+        <TextBlock Text="Focus the empty TextBox and press F1 through F12 (hold Fn if required by the keyboard settings). Function keys must not add text or control characters." TextWrapping="Wrap" />
+        <TextBlock Text="Failure is confirmed if the code-point readout changes from 'none', even when the TextBox still looks empty." TextWrapping="Wrap" />
+        <TextBox
+            x:Name="Input"
+            Header="Function-key target"
+            KeyDown="OnInputKeyDown"
+            TextChanged="OnInputTextChanged" />
+        <TextBlock
+            x:Name="LastKey"
+            Text="Last key: none"
+            TextWrapping="Wrap" />
+        <TextBlock
+            x:Name="CodePoints"
+            Text="Code points: none"
+            TextWrapping="Wrap" />
+        <Button
+            HorizontalAlignment="Left"
+            Click="OnClearClicked"
+            Content="Clear" />
+    </StackPanel>
+</Page>
