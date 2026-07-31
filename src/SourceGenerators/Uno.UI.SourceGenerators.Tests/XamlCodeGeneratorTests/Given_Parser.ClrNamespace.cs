@@ -61,6 +61,36 @@ public partial class Given_Parser
 	}
 
 	[TestMethod]
+	public async Task When_ClrNamespace_Xmlns_InlineScope()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+					<Page.Resources>
+						<DataTemplate x:Key="Template" xmlns:local="clr-namespace:TestRepro.Controls">
+							<TextBlock Text="Hello" />
+						</DataTemplate>
+					</Page.Resources>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.Add(
+			DiagnosticResult.CompilerError("UXAML0006").WithSpan("C:/Project/0/MainPage.xaml", 6, 34, 6, 34).WithArguments(
+				"""The 'clr-namespace:' XAML namespace form is not supported. Replace 'xmlns:local="clr-namespace:TestRepro.Controls"' with 'xmlns:local="using:TestRepro.Controls"'"""));
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
 	public async Task When_ClrNamespace_Xmlns_Ignorable()
 	{
 		var xamlFiles = new[]
