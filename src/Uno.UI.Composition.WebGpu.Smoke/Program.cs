@@ -138,8 +138,45 @@ for (int i = 0; i < 64 * 64; i++)
 Check("text: WebGPU rendered the glyph (non-empty)", wgGreen > 20, $"{wgGreen} green px");
 Check($"text: Skia vs WebGPU agree on {tCompared} glyph pixels (incl. fill-rule counter)", tCompared > 500 && tDisagree == 0, $"{tDisagree} disagreements / {tCompared}");
 
+// Render a neutral geometry green-on-black through BOTH backends and assert they classify every unambiguous pixel the same.
+void CrossCheck(string name, IGeometry g)
+{
+	var sk = new byte[64 * 64 * 4];
+	DrawingFactory.Current.RenderOffscreen(64, 64, s => { s.DrawRect(new Rect(0, 0, 64, 64), black, false); s.DrawPath(g, green, false); }).CopyPixels(sk);
+	var w = Render(r => r.DrawPath(g, green, false));
+	int cmp = 0, dis = 0;
+	for (int i = 0; i < 64 * 64; i++)
+	{
+		int b = i * 4;
+		char cs = (sk[b + 2] < 60 && sk[b + 1] > 150 && sk[b] < 60) ? 'G' : (sk[b + 2] < 40 && sk[b + 1] < 40 && sk[b] < 40) ? 'K' : '?';
+		char cw = (w[b] < 60 && w[b + 1] > 150 && w[b + 2] < 60) ? 'G' : (w[b] < 40 && w[b + 1] < 40 && w[b + 2] < 40) ? 'K' : '?';
+		if (cs == '?' || cw == '?') { continue; }
+		cmp++; if (cs != cw) { dis++; }
+	}
+	Check($"{name}: Skia vs WebGPU agree ({cmp} px)", cmp > 150 && dis == 0, $"{dis} disagreements / {cmp}");
+}
+
+// 10) STROKE — managed IGeometry.GetStrokeFillGeometry rendered by both backends
+var spb = new ManagedDrawingFactory().CreatePathBuilder();
+spb.MoveTo(new Vector2(10, 12)); spb.LineTo(new Vector2(54, 32)); spb.LineTo(new Vector2(10, 52));
+using var poly = spb.Build();
+using var stroked = poly.GetStrokeFillGeometry(new StrokeStyle { Thickness = 9f, LineJoin = StrokeJoin.Miter, MiterLimit = 10f });
+CrossCheck("stroke", stroked);
+
+// 11) BOOLEAN COMBINE — managed IGeometry.Combine(Union) rendered by both backends
+IGeometry Rect(float x0, float y0, float x1, float y1)
+{
+	var b = new ManagedDrawingFactory().CreatePathBuilder();
+	b.MoveTo(new Vector2(x0, y0)); b.LineTo(new Vector2(x1, y0)); b.LineTo(new Vector2(x1, y1)); b.LineTo(new Vector2(x0, y1)); b.Close();
+	return b.Build();
+}
+using var rA = Rect(12, 12, 40, 40);
+using var rB = Rect(26, 26, 54, 54);
+using var union = rA.Combine(rB, GeometryCombineMode.Union);
+CrossCheck("combine-union", union);
+
 Console.WriteLine(fail == 0
-	? "\nALL PASS — non-Skia render seam verified headless (primitives + text); Skia vs WebGPU agree on every neutral scene"
+	? "\nALL PASS — non-Skia render seam verified headless (primitives + text + stroke + boolean); Skia vs WebGPU agree on every neutral scene"
 	: $"\n{fail} CHECK(S) FAILED");
 Environment.Exit(fail == 0 ? 0 : 1);
 
