@@ -353,6 +353,49 @@ Two implications for the design:
 Whether Uno can request a sustained high refresh rate from the browser is unverified; there is no
 standard API for it, unlike native Android's `Surface.setFrameRate`.
 
+### F3 — Android (native Skia): measured, the jitter is frame production, not input
+
+On-device capture, Samsung Fold 7 (120 Hz panel, Vulkan render path — `UnoSKVulkanView`, not the GL
+`UnoSKCanvasView` most of the earlier analysis assumed). 1560 samples, segmented on >120 ms gaps so
+pauses between gestures do not contaminate the statistics.
+
+| Phase | Stream | n | dt mean | dt sd | dt p95 | jerk mean | jerk p90 |
+|---|---|---|---|---|---|---|---|
+| Drag | **input** | 310 | 8.45 ms | **1.35** | 8.70 | **0.090** | **0.232** |
+| Drag | **frame** | 229 | 11.25 ms | **4.12** | 16.91 | **0.532** | **1.105** |
+| Inertia | tick | 488 | 9.34 ms | 6.56 | 14.85 | 0.556 | 1.082 |
+| Inertia | frame | 489 | 9.63 ms | 8.14 | 14.96 | 0.665 | 0.867 |
+
+**Pointer input is near-perfect**: 8.45 ms mean with 1.35 ms standard deviation — a clean 118 Hz
+stream. **Frame production is not**: 3× the interval spread and **6× the jerk** of the input driving
+it. The frames are failing to render clean input evenly.
+
+Frame-interval histogram over the whole capture:
+
+```
+  0-3ms   ###### 60      <- near-duplicate records, ~8% of frames
+  4-7ms   ########## 103
+  8-11ms  ######################################## 382   <- 120Hz cadence
+ 12-15ms  ########## 95
+ 16-19ms  ######## 78                                    <- dropped to 60Hz cadence
+ 20ms+    14 (tail to 78ms)
+```
+
+The panel and the input are both at ~120 Hz; frame production alternates between the 120 Hz and
+60 Hz cadences, with a tail. That beat is what reads as "small jitters".
+
+**Implications, in order:**
+
+1. **This is not an input problem.** Coalescing, resampling and velocity estimation (C2–C4) would not
+   have moved this number. Confirms the cross-check's ranking: clock discipline over physics.
+2. **The ~8 % of frames at 0–3 ms are near-duplicate records** — the same double-record-per-present
+   pattern measured on Win32. Wasted UI-thread work at best.
+3. **Inertia inherits the frame irregularity** (it ticks on `CompositionTarget.Rendering`), and adds
+   its own: 116 ms maximum gap. A5 remains the right next step, but A5 alone will not fix drag.
+4. **P3 is now the prime suspect**: the render record is posted via `Handler.Post`, not
+   `Choreographer.postFrameCallback`, so it lands at an arbitrary phase relative to vsync. That is
+   exactly the shape that produces a 120/60 beat. C9 should be promoted and measured.
+
 ## 10. Known-open questions
 
 Carried from `research/00-cross-check.md` §9 — none block Tier A:
