@@ -5,6 +5,9 @@ using Android.OS;
 using Android.Views;
 using Windows.Devices.Input;
 using Microsoft.UI.Input;
+// PointerDeviceType now exists in both namespaces (Microsoft.UI.Input.PointerDeviceType relocated here);
+// this file's usage is the device-layer enum, so bind the bare name to it.
+using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
 
 namespace Uno.UI.Xaml.Extensions;
 
