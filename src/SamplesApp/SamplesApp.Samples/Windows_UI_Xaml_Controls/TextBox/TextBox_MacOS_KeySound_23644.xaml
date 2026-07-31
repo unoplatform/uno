@@ -1,0 +1,25 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_MacOS_KeySound_23644"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <StackPanel
+        MaxWidth="640"
+        Padding="16"
+        Spacing="12">
+        <TextBlock
+            FontWeight="SemiBold"
+            Text="macOS TextBox system-sound verification"
+            TextWrapping="Wrap" />
+        <TextBlock Text="Focus the TextBox and exercise Backspace, Left/Right Arrow, and Cmd+A/C/X/V. Each command must update the text or selection normally without playing the macOS error sound." TextWrapping="Wrap" />
+        <TextBlock Text="Repeat Backspace at the beginning of the text and the arrow keys at both boundaries. These no-op commands must not play the error sound either." TextWrapping="Wrap" />
+        <TextBox
+            Header="Test input"
+            Text="abc def ghi"
+            TextWrapping="Wrap" />
+    </StackPanel>
+</Page>
