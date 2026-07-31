@@ -104,7 +104,7 @@ flowchart TB
   end
   FM -.->|"drives"| FR
 
-  subgraph Frame["Per frame — walk records (UI thread) → renderer replays (render thread)"]
+  subgraph Record["Record — UI thread"]
     Tree["Visual-tree walk"] -->|"CreatePathBuilder"| GEO["IGeometry"]
     Tree -->|"shaders / color filters / effects"| PNT["IShader / IColorFilter / IEffectFilter"]
     Tree -->|"CreateImageTexture"| TEX["IImageTexture"]
@@ -113,11 +113,16 @@ flowchart TB
     TEX --> REC
     Tree -->|"draw verbs"| REC
     REC -->|"Finish()"| RD["IRenderData<br/>(recorded frame / subtree)"]
-    Ren -->|"BeginFrame(RT)"| PS["IPresentSession"]
-    RD -->|"Replay(renderData)"| PS
-    Ctx -->|"AcquireRenderTarget()"| RT["IRenderTarget"]
-    PS -->|"Dispose = present"| Ctx
   end
+
+  subgraph Present["Present — render thread"]
+    Ctx -->|"AcquireRenderTarget()"| RT["IRenderTarget"]
+    Ren -->|"BeginFrame(RT)"| PS["IPresentSession"]
+    RT -.->|"target of"| PS
+    PS -->|"Dispose → flush to target"| RT
+    RT -->|"IGraphicsContext.Present() → flips to window"| Win["Window / screen"]
+  end
+  RD -->|"PS.Replay(renderData)"| PS
 
   Fac -.->|"methods called during the walk"| Tree
   IMG -.->|"upload"| TEX
@@ -133,7 +138,7 @@ flowchart TB
   classDef retained fill:#e7f0ff,stroke:#2563eb,color:#1e3a8a,stroke-width:2.5px;
   class App,Reg,Host,CF,Ctx,Prov startup;
   class GS,Fac,Ren install;
-  class Tree,REC,PS,RT frame;
+  class Tree,REC,PS,RT,Win frame;
   class RD retained;
   class Dec,FM,IMG,GEO,TEX,PNT content;
   class TA,LB fw;
@@ -399,7 +404,7 @@ mirror the clip trio; no `DrawLine` (it's `Stroke` of a 2-point geometry); shado
 
 ```csharp
 // MANDATORY: the immediate draw-and-present session. Draw into it directly; Dispose flushes/presents. No recording.
-public interface IPresentSession : IDrawingSession, IDisposable { }   // Dispose = flush/present
+public interface IPresentSession : IDrawingSession, IDisposable { }   // Dispose = flush/submit to the target; the swapchain flip is IGraphicsContext.Present()
 
 // OPTIONAL retained layer — a renderer MAY implement it on its sessions for record-once / replay-many. The
 // framework guards `is IRetainedRenderingSession` and falls back to redraw-every-frame when it's absent.
@@ -450,7 +455,7 @@ e.g. `SKSurface`) is **not** here — it's `IPresentSession`, renderer-internal.
 ```csharp
 public interface IRenderer
 {
-    // IMMEDIATE: hand back a session bound to the target; draw the tree straight into it; Dispose = flush/present.
+    // IMMEDIATE: hand back a session bound to the target; draw the tree straight into it; Dispose = flush/submit (context presents).
     IPresentSession BeginFrame(IRenderTarget target);
 }
 ```
