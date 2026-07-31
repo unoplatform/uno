@@ -839,6 +839,10 @@ partial class Win32ClipboardExtension // to clipboard
 
 		var stream = task2.Result;
 		Debug.Assert(stream.CanRead);
+		using var positionRestorer = new DisposableStruct<IRandomAccessStream, ulong>(
+			static (randomAccessStream, position) => randomAccessStream.Seek(position),
+			stream,
+			stream.Position);
 		stream.Seek(0);
 
 #if false
@@ -935,6 +939,10 @@ partial class Win32ClipboardExtension // to clipboard
 
 		if (task.Result is IRandomAccessStream ras)
 		{
+			using var positionRestorer = new DisposableStruct<IRandomAccessStream, ulong>(
+				static (randomAccessStream, position) => randomAccessStream.Seek(position),
+				ras,
+				ras.Position);
 			ras.Seek(0);
 			var size = ras.Size;
 			if (size > int.MaxValue)

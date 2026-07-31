@@ -167,6 +167,7 @@ namespace Microsoft.UI.Text
 		{
 			var operation = BeginPasteOperation();
 			var retrieval = ReadClipboardContentAsync(content, operationRange, format, operation.CancellationToken);
+			await Task.Yield();
 			await PasteFromClipboardAsync(
 				retrieval,
 				operationRange,

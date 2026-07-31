@@ -119,14 +119,25 @@ namespace Microsoft.UI.Xaml.Documents
 			var removed = new Inline[count];
 			for (var i = 0; i < count; i++)
 			{
-				removed[i] = _collection[index + i];
+				removed[i] = (Inline)_collection[index + i];
 			}
 			_removedAfterUpdate = removed;
 			_insertedAfterUpdate = replacement;
 			var completed = false;
 			try
 			{
+#if __WASM__
+				for (var i = 0; i < count; i++)
+				{
+					_collection.RemoveAt(index);
+				}
+				for (var i = 0; i < replacement.Count; i++)
+				{
+					_collection.Insert(index + i, replacement[i]);
+				}
+#else
 				_collection.ReplaceRange(index, count, replacement);
+#endif
 				completed = true;
 			}
 			finally

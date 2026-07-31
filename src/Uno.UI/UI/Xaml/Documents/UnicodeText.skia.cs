@@ -2180,14 +2180,18 @@ internal readonly partial struct UnicodeText : IParsedText
 		else if (isBelowContent)
 		{
 			lineIndex = _xyTable.Count - 1;
-			var lastLineRtl = IsLineRightToLeft(_lines[^1]);
-			if (lastLineRtl && p.X > GetAlignmentOffsetForLine(_lines[^1]) + _lines[^1].width || !lastLineRtl && p.X < GetAlignmentOffsetForLine(_lines[^1]))
+			var lastLine = _lines[^1];
+			var lastLineRtl = IsLineRightToLeft(lastLine);
+			var lastLineAlignmentOffset = GetAlignmentOffsetForLine(lastLine);
+			if (lastLineRtl && p.X > lastLineAlignmentOffset + lastLine.width || !lastLineRtl && p.X < lastLineAlignmentOffset)
 			{
 				// corner case: bottom left (or bottom right if rtl) of the box, we can either go to the beginning or the end.
 				// we match winui and go to the beginning.
 
 				return 0;
 			}
+
+			return _text.Length - (ignoreEndingNewLine ? TrailingCRLFInLine(_endingNewLineLineHeight is null ? lastLine : null) : 0);
 		}
 		else
 		{
