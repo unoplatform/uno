@@ -1626,7 +1626,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			var selectionItemProvider = AriaMapper.GetPatternOrEventsSource(peer, PatternInterface.SelectionItem) as ISelectionItemProvider
 				?? throw new InvalidOperationException($"Semantic option {handle} does not expose SelectionItem.");
-			selectionItemProvider.Select();
+			if (selectionItemProvider is ComboBoxItemDataAutomationPeer comboBoxItemDataPeer)
+			{
+				comboBoxItemDataPeer.Select();
+			}
+			else
+			{
+				selectionItemProvider.Select();
+			}
 		});
 	}
 

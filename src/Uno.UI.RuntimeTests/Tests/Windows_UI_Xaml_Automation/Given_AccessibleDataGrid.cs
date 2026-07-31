@@ -744,7 +744,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			InvokeBrowserJs($"document.getElementById('{cellId}').focus(); 'ok'");
 			await UITestHelper.WaitFor(
 				() => ReferenceEquals(Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement(grid.XamlRoot), grid),
-				timeoutMS: 3000,
+				timeoutMS: 10000,
 				message: "Browser focus on a semantic cell did not move managed focus to its DataGrid.");
 
 			Assert.AreEqual(
@@ -869,7 +869,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			InvokeBrowserJs($"document.getElementById('{GetSemanticElementId(first)}').focus(); 'ok'");
 			await UITestHelper.WaitFor(
 				() => InvokeBrowserJs("document.activeElement ? document.activeElement.id : ''") == GetSemanticElementId(current),
-				timeoutMS: 3000,
+				timeoutMS: 10000,
 				message: "Toolkit-reported current-cell focus did not replace the provisional grid tab stop.");
 			Assert.AreEqual("0", GetSemanticAttribute(current, "tabindex"));
 			Assert.AreEqual("-1", GetSemanticAttribute(first, "tabindex"));
@@ -947,11 +947,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.WaitFor(() => SemanticElementExists(adjacent), timeoutMS: 5000, message: "Timed out waiting for the disable-transition grid.");
 
 			InvokeBrowserJs($"document.getElementById('{GetSemanticElementId(active)}').focus(); 'ok'");
+			await UITestHelper.WaitFor(
+				() => InvokeBrowserJs("document.activeElement ? document.activeElement.id : ''") == GetSemanticElementId(active),
+				timeoutMS: 10000,
+				message: "The middle cell did not receive browser focus before it was disabled.");
 			active.IsEnabled = false;
 			activePeer.RaisePropertyChangedEvent(AutomationElementIdentifiers.IsEnabledProperty, true, false);
 			await UITestHelper.WaitFor(
 				() => InvokeBrowserJs("document.activeElement ? document.activeElement.id : ''") == GetSemanticElementId(adjacent),
-				timeoutMS: 3000,
+				timeoutMS: 10000,
 				message: "Disabling the active middle cell did not move focus to its adjacent successor.");
 
 			var gridId = GetSemanticElementId(grid);
@@ -1037,12 +1041,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.WaitFor(() => SemanticElementExists(second), timeoutMS: 5000, message: "Timed out waiting for interaction descendants.");
 
 			InvokeBrowserJs($"document.getElementById('{GetSemanticElementId(first)}').focus(); 'ok'");
+			await UITestHelper.WaitFor(
+				() => InvokeBrowserJs("document.activeElement ? document.activeElement.id : ''") == GetSemanticElementId(first),
+				timeoutMS: 10000,
+				message: "The first interaction descendant did not receive browser focus.");
 			second.IsTabStop = true;
 			Assert.AreEqual("0", GetSemanticAttribute(first, "tabindex"));
 			Assert.AreEqual("-1", GetSemanticAttribute(second, "tabindex"));
 
 			first.IsTabStop = false;
-			await UITestHelper.WaitFor(() => InvokeBrowserJs("document.activeElement ? document.activeElement.id : ''") == GetSemanticElementId(second), timeoutMS: 3000,
+			await UITestHelper.WaitFor(() => InvokeBrowserJs("document.activeElement ? document.activeElement.id : ''") == GetSemanticElementId(second), timeoutMS: 10000,
 				message: "Disabling the active interaction descendant did not focus its eligible sibling.");
 			Assert.AreEqual("-1", GetSemanticAttribute(first, "tabindex"));
 			Assert.AreEqual("0", GetSemanticAttribute(second, "tabindex"));

@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
-public partial class ComboBoxItemDataAutomationPeer : SelectorItemAutomationPeer, IScrollItemProvider, ISelectionItemProvider
+public partial class ComboBoxItemDataAutomationPeer : SelectorItemAutomationPeer, IScrollItemProvider
 {
 	public ComboBoxItemDataAutomationPeer(object item, ComboBoxAutomationPeer parent) : base(item, parent)
 	{
