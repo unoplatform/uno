@@ -392,9 +392,31 @@ The panel and the input are both at ~120 Hz; frame production alternates between
    pattern measured on Win32. Wasted UI-thread work at best.
 3. **Inertia inherits the frame irregularity** (it ticks on `CompositionTarget.Rendering`), and adds
    its own: 116 ms maximum gap. A5 remains the right next step, but A5 alone will not fix drag.
-4. **P3 is now the prime suspect**: the render record is posted via `Handler.Post`, not
-   `Choreographer.postFrameCallback`, so it lands at an arbitrary phase relative to vsync. That is
-   exactly the shape that produces a 120/60 beat. C9 should be promoted and measured.
+4. **Not phase misalignment — missed deadlines.** An earlier reading of this data blamed
+   `Handler.Post` scheduling the record at an arbitrary phase relative to vsync (P3/C9). That is
+   wrong, and the histogram refutes it: arbitrary phase produces a *continuous* spread, whereas the
+   measured distribution is **bimodal at 1x and 2x the refresh period**, which is the signature of a
+   pipeline already quantised to the display whose producer sometimes misses a deadline.
+   **C9 (Choreographer alignment) would not fix this and should not be promoted.**
+
+5. **The Android present mode is the live candidate.** The two Android render views differ, and the
+   difference matters:
+
+   | View | Present | Vsync-locked? |
+   |---|---|---|
+   | `UnoSKCanvasView` (GL) | `GLSurfaceView` + `eglSwapBuffers` | **yes** — the swap blocks |
+   | `UnoSKVulkanView` | swapchain, **MAILBOX preferred**, FIFO fallback | **no** — MAILBOX returns immediately |
+
+   `VulkanDisplay.skia.cs:103-109` prefers `VK_PRESENT_MODE_MAILBOX_KHR`, which by definition replaces
+   the pending image rather than waiting, discarding frames that were never shown. Combined with a
+   free-running render thread (`UnoSKVulkanView.RenderLoop` waits on an event, not a frame callback),
+   presentation times are uneven even when production is healthy. Pacing comes only indirectly, from
+   swapchain-acquire back-pressure — which is exactly enough to quantise intervals to 1x/2x the
+   refresh period without making them *even*.
+
+   **Next experiment:** force `VK_PRESENT_MODE_FIFO_KHR` on Android and re-measure this histogram. If
+   the 16 ms bucket collapses, the present mode is the cause. If it does not, the misses are
+   UI-thread record cost and that is where to look instead.
 
 ## 10. Known-open questions
 
