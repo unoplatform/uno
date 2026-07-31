@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using Android.Content;
 using Android.Graphics;
@@ -180,10 +180,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 
 		var rect = holder.SurfaceFrame;
 		var factory = new AndroidVulkanSurfaceFactory();
-		// preferVsync: unlike Win32, this render loop has no pacer — it waits on an event and presents.
-		// With a non-blocking present it free-runs, and presentation lands at uneven times even when
-		// production is healthy. A blocking (FIFO) present makes the swapchain the pacer.
-		_vulkanContext.Initialize(factory, _nativeWindow, rect!.Width(), rect.Height(), preferVsync: true);
+		_vulkanContext.Initialize(factory, _nativeWindow, rect!.Width(), rect.Height());
 
 		var (deviceName, driverVersion) = _vulkanContext.GetDeviceInfo();
 		if (this.Log().IsEnabled(LogLevel.Information))
