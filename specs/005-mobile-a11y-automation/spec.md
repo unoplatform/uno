@@ -1,8 +1,8 @@
 # Feature Specification: Mobile Accessibility and Automation
 
-**Feature Branch**: `005-mobile-a11y-automation`  
-**Created**: 2026-07-10  
-**Status**: Draft  
+**Feature Branch**: `005-mobile-a11y-automation`<br>
+**Created**: 2026-07-10<br>
+**Status**: In Review<br>
 **Input**: Implement full mobile accessibility and automation support for Android and iOS, matching the existing Win32, WebAssembly, and macOS backends while reproducing WinUI behavior as closely as each mobile accessibility API permits.
 **Depends On**: `004-a11y-parity-remediation` shared automation-peer and backend parity work
 
