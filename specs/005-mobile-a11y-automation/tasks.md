@@ -1,6 +1,6 @@
 # Tasks: Mobile Accessibility and Automation
 
-**Input**: Design documents from `/specs/005-mobile-a11y-automation/`  
+**Input**: Design documents from `/specs/005-mobile-a11y-automation/`<br>
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`,
 `contracts/mobile-adapter-contract.md`, `contracts/capability-matrix.md`, `quickstart.md`
 
