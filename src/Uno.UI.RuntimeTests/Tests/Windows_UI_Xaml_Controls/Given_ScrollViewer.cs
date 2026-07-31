@@ -826,8 +826,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.IOS | RuntimeTestPlatforms.SkiaMacOS)] // uno-private#1740 changed the way mouse wheel events are processed on iOS and macOS: Not using animations
 		public async Task When_LotOfWheelEvents_Then_IgnoreIrrelevant()
 		{
-			// This test make sure than when using a "free wheel" mouse or a touch-pad (which both produces a lot of events),
-			// we don't end up to invoke ScrollContentPresenter.Set again and again (preventing the ScrollContentPresenter.Update methohd to properly process its animation)
+			// A free-spinning wheel or a touchpad emits many events in quick succession. Each one must feed the
+			// motion already in flight rather than restart it, otherwise the presented displacement alternates
+			// between a large first step and a small tail and the scroll visibly judders.
 
 			FrameworkElement content;
 			var sut = new ScrollViewer
@@ -836,40 +837,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Width = 100,
 				Content = content = new Border
 				{
-					Height = 200,
+					Height = 2000,
 					Background = new SolidColorBrush(Colors.Chartreuse)
 				},
 			};
 
 			var bounds = await UITestHelper.Load(sut);
-
 			var visual = ElementCompositionPreview.GetElementVisual(content);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
-
-			var initialAnimation = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			initialAnimation.Should().BeNull(because: "we have not scrolled yet");
-
 			mouse.MoveTo(bounds.GetCenter());
-			mouse.Wheel(-400, steps: 1);
 
-			// Here we assume that ScrollContentPresenter is using KeyFrameAnimation. If no longer the case, the test can be updated!
-			var scrollAnimation1 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			scrollAnimation1.Should().NotBeNull(because: "we have requested scroll");
+			sut.VerticalOffset.Should().Be(0, because: "we have not scrolled yet");
 
-			// Scroll again in the same direction
-			mouse.Wheel(-200, steps: 1);
+			// Sample the visual position every frame so we see the motion, not the coalesced offset property.
+			var positions = new List<double>();
+			EventHandler<object> onRendering = (_, __) => positions.Add(-visual.AnchorPoint.Y);
+			Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += onRendering;
+			try
+			{
+				for (var i = 0; i < 6; i++)
+				{
+					mouse.Wheel(-120, steps: 1);
+					await Task.Delay(50);
+				}
 
-			var scrollAnimation2 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			scrollAnimation2.Should().Be(scrollAnimation1, because: "the wheel event has no effect");
+				await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			}
+			finally
+			{
+				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= onRendering;
+			}
 
-			// But if we scroll in the opposite direction, the animation should be stopped and replaced
-			// (this basically confirm that the test is working -i.e the animation is not being re-used)
-			mouse.Wheel(+200, steps: 1);
+			sut.VerticalOffset.Should().BeGreaterThan(0, because: "the wheel events must scroll");
 
-			var scrollAnimation3 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			scrollAnimation3.Should().NotBe(scrollAnimation1, because: "the wheel event should scroll in the opposite direction");
+			// Monotonic: a restart-per-event model overshoots and settles back, which reads as a stutter.
+			for (var i = 1; i < positions.Count; i++)
+			{
+				positions[i].Should().BeGreaterThanOrEqualTo(
+					positions[i - 1] - 0.01,
+					because: $"same-direction wheel motion must never reverse (frame {i} of {positions.Count})");
+			}
+
+			// The opposite direction must take effect rather than being swallowed by the motion in flight.
+			var beforeReverse = sut.VerticalOffset;
+			mouse.Wheel(+240, steps: 1);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			sut.VerticalOffset.Should().BeLessThan(beforeReverse, because: "the wheel event should scroll in the opposite direction");
 		}
 #endif
 

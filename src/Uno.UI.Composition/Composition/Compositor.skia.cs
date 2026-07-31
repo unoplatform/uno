@@ -39,7 +39,8 @@ public partial class Compositor
 
 	internal static bool SkipVisualTreePainting { get; set; }
 
-	internal bool IsAnimating => _runningAnimations.Count > 0;
+	// Frame drivers (e.g. the wheel decay) are motion too, so "wait until animations settle" must cover them.
+	internal bool IsAnimating => _runningAnimations.Count > 0 || FrameStarting is not null;
 
 	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject host)
 	{
@@ -196,11 +197,45 @@ public partial class Compositor
 		return false;
 	}
 
+	/// <summary>
+	/// Raised once per recorded frame, before the paint walk, with the timestamp every driver in that
+	/// frame must evaluate against.
+	/// </summary>
+	/// <remarks>
+	/// This is the only pre-record per-frame hook in the Skia pipeline. CompositionTarget.Rendering is
+	/// raised from a dispatcher continuation *after* the picture is recorded, so a driver on it lands its
+	/// writes in the following frame.
+	/// </remarks>
+	internal event Action<long>? FrameStarting;
+
+	internal bool HasFrameStartingSubscribers => FrameStarting is not null;
+
+	/// <summary>Kicks the render loop so a newly-subscribed frame driver gets its first tick.</summary>
+	internal static void RequestFrame(Visual visual) => visual.CompositionTarget?.RequestNewFrame();
+
 	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual, DamageRegion? damage = null)
 	{
 		if (rootVisual is null)
 		{
 			throw new ArgumentNullException(nameof(rootVisual));
+		}
+
+		if (FrameStarting is { } frameStarting)
+		{
+			// One timestamp for the whole frame: TimestampInTicks re-reads the clock on every access, so
+			// sampling per driver would give drivers in the same frame different times.
+			var frameTimestamp = TimestampInTicks;
+			try
+			{
+				frameStarting(frameTimestamp);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("A frame driver threw; the frame is still recorded.", e);
+				}
+			}
 		}
 
 		foreach (var animation in _runningAnimations.Keys.ToArray())
@@ -249,7 +284,7 @@ public partial class Compositor
 			}
 		}
 
-		if (_runningAnimations.Count > 0 || transitionsCount > 0)
+		if (_runningAnimations.Count > 0 || transitionsCount > 0 || FrameStarting is not null)
 		{
 			rootVisual.CompositionTarget?.RequestNewFrame();
 		}

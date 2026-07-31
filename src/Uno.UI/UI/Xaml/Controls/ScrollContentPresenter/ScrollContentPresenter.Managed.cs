@@ -36,6 +36,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private GestureRecognizer.Manipulation? _touchInertia;
 		private (double hOffset, double vOffset, bool isIntermediate) _lastScrolledEvent;
+
+		private ScrollDecaySimulation _wheelDecayH;
+		private ScrollDecaySimulation _wheelDecayV;
+		private bool _isWheelDecayRunning;
 #nullable restore
 
 		private bool _canHorizontallyScroll;
@@ -161,6 +165,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			_touchInertia?.Complete();
 			_touchInertia = null;
+			StopWheelDecay();
 		}
 
 		/// <inheritdoc />
@@ -353,6 +358,11 @@ namespace Microsoft.UI.Xaml.Controls
 				_touchInertia?.Complete();
 			}
 
+			if (!options.IsWheelDecay)
+			{
+				StopWheelDecay();
+			}
+
 			var updatedHorizontalOffset = HorizontalOffset;
 			var updatedVerticalOffset = VerticalOffset;
 			if (updated || options.IsTouch)
@@ -523,6 +533,79 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+
+		/// <summary>Feeds a wheel detent into the running decay, starting it if idle.</summary>
+		/// <returns>
+		/// False when this presenter has no room left in the requested direction, so the wheel event stays
+		/// unhandled and chains to a parent ScrollViewer.
+		/// </returns>
+		internal bool AddWheelImpulse(double horizontalDistance, double verticalDistance)
+		{
+			var maxH = Scroller?.ScrollableWidth ?? Math.Max(0, ExtentWidth - ViewportWidth);
+			var maxV = Scroller?.ScrollableHeight ?? Math.Max(0, ExtentHeight - ViewportHeight);
+
+			// Against where the motion in flight will come to rest, not where it is now: a decay that is
+			// already destined for the end of the extent has no room left, and the event must chain to a parent.
+			var fromH = _isWheelDecayRunning ? _wheelDecayH.ProjectedEnd : HorizontalOffset;
+			var fromV = _isWheelDecayRunning ? _wheelDecayV.ProjectedEnd : VerticalOffset;
+
+			if (!HasRoom(fromH, horizontalDistance, maxH) && !HasRoom(fromV, verticalDistance, maxV))
+			{
+				return false;
+			}
+
+			var compositor = Visual.Compositor;
+			var now = compositor.TimestampInTicks;
+
+			if (!_isWheelDecayRunning)
+			{
+				_wheelDecayH.Start(HorizontalOffset, now);
+				_wheelDecayV.Start(VerticalOffset, now);
+				_isWheelDecayRunning = true;
+				compositor.FrameStarting += OnWheelDecayFrame;
+				Microsoft.UI.Composition.Compositor.RequestFrame(Visual);
+			}
+
+			_wheelDecayH.AddImpulse(horizontalDistance);
+			_wheelDecayV.AddImpulse(verticalDistance);
+			return true;
+
+			static bool HasRoom(double from, double distance, double max)
+				=> distance < 0 ? from > 0 : distance > 0 && from < max;
+		}
+
+		internal void StopWheelDecay()
+		{
+			if (!_isWheelDecayRunning)
+			{
+				return;
+			}
+
+			_isWheelDecayRunning = false;
+			_wheelDecayH.Stop();
+			_wheelDecayV.Stop();
+			Visual.Compositor.FrameStarting -= OnWheelDecayFrame;
+		}
+
+		private void OnWheelDecayFrame(long timestampInTicks)
+		{
+			var maxH = Scroller?.ScrollableWidth ?? Math.Max(0, ExtentWidth - ViewportWidth);
+			var maxV = Scroller?.ScrollableHeight ?? Math.Max(0, ExtentHeight - ViewportHeight);
+
+			var runningH = _wheelDecayH.Tick(timestampInTicks, 0, maxH);
+			var runningV = _wheelDecayV.Tick(timestampInTicks, 0, maxV);
+			var running = runningH || runningV;
+
+			if (!running)
+			{
+				StopWheelDecay();
+			}
+
+			Set(
+				horizontalOffset: _wheelDecayH.Position,
+				verticalOffset: _wheelDecayV.Position,
+				options: new(DisableAnimation: true, IsIntermediate: running, IsWheelDecay: true));
+		}
 
 		private void TryEnableDirectManipulation(object sender, PointerRoutedEventArgs args)
 		{
@@ -913,6 +996,6 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Indicates that the scroll is an intermediate value, not the final one
 	/// (i.e. active touch scrolling, touch scroll inertia or scroll animation).
 	/// </param>
-	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsTouch = false, bool IsIntermediate = false);
+	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsTouch = false, bool IsIntermediate = false, bool IsWheelDecay = false);
 }
 #endif
