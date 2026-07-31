@@ -553,11 +553,11 @@ namespace Microsoft.UI.Xaml.Controls
 			OnContextRequested(this, contextArgs);
 		}
 
-		void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args)
+		void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args, bool allowEmptySelection)
 			=> QueueUpdateSelectionFlyoutVisibility(args.Pointer.PointerDeviceType, args.GetCurrentPoint(this).Position);
 
-		void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, PointerRoutedEventArgs args)
-			=> TouchTap(args.GetCurrentPoint(_textBoxView!.DisplayBlock).Position, wasFocused: true);
+		void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
+			=> TouchTapAtIndex(anchorIndex);
 
 		private int GetActiveSelectionIndex()
 			=> _selection.selectionEndsAtTheStart
