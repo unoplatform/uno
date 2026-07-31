@@ -17,6 +17,9 @@ internal sealed class X11GraphicsNativeWindow(X11Window window, int width, int h
 
 	public nint Display => window.Display;
 
+	/// <summary>Host-private: the concrete X11 window (incl. any GLX info), for the context factory to downcast.</summary>
+	internal X11Window X11Window => window;
+
 	public int Width { get; } = width;
 
 	public int Height { get; } = height;
