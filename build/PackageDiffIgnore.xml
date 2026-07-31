@@ -2296,11 +2296,15 @@
 		  <Member fullName="Microsoft.UI.Input.PointerPointProperties" reason="Relocated Microsoft.UI.Input.PointerPointProperties to Uno.UWP (BC41, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Input.PointerUpdateKind" reason="Relocated Microsoft.UI.Input.PointerUpdateKind to Uno.UWP (BC41, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Input.IPointerPointTransform" reason="Relocated Microsoft.UI.Input.IPointerPointTransform to Uno.UWP (BC41, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Input.PointerDeviceType" reason="Relocated Microsoft.UI.Input.PointerDeviceType to Uno.UWP alongside PointerPoint (BC41, breaking changes for 7.0)" />
 
 		  <!-- Uno-only menu-plumbing interfaces reduced to internal; WinUI has no public counterparts. -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.IMenu" reason="Reduced Uno-only IMenu to internal (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.IMenuPresenter" reason="Reduced Uno-only IMenuPresenter to internal (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ISubMenuOwner" reason="Reduced Uno-only ISubMenuOwner to internal (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- Uno-only MaterializableList<T> reduced to internal (BC48); WinUI has no counterpart. -->
+		  <Member fullName="Uno.Collections.MaterializableList`1" reason="Reduced Uno-only MaterializableList&lt;T&gt; to internal (BC48, breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
@@ -2611,6 +2615,10 @@
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border::ChildProperty()" reason="Removed Border.ChildProperty DP; Child is a plain CLR property in WinUI (breaking changes for 7.0, uno#8339)" />
 		  <!-- ScrollControllerPanRequestedEventArgs.PointerPoint retyped from Windows.UI.Input.PointerPoint to Microsoft.UI.Input.PointerPoint (getter/ctor paired in <Methods> below). -->
 		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs::PointerPoint()" reason="Retyped ScrollControllerPanRequestedEventArgs.PointerPoint to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
+
+		  <!-- BC41: legacy Windows.UI.Input.PointerPoint variant dropped and Windows.UI.Core.PointerEventArgs.CurrentPoint retyped to Microsoft.UI.Input.PointerPoint (getters paired in <Methods> below). -->
+		  <Member fullName="Windows.Devices.Input.PointerDeviceType Windows.UI.Input.PointerPoint::PointerDeviceType()" reason="Dropped legacy Windows.UI.Input.PointerPoint variant (BC41, breaking changes for 7.0)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Windows.UI.Core.PointerEventArgs::CurrentPoint()" reason="Retyped Windows.UI.Core.PointerEventArgs.CurrentPoint to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
 
 	  </Properties>
 	  <Methods>
@@ -3113,6 +3121,15 @@
 		  <!-- ScrollControllerPanRequestedEventArgs.PointerPoint retyped to Microsoft.UI.Input.PointerPoint (BC41): old-typed getter and ctor read as removed (property paired in <Properties> above). -->
 		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs.get_PointerPoint()" reason="Retyped ScrollControllerPanRequestedEventArgs.PointerPoint to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs..ctor(Windows.UI.Input.PointerPoint pointerPoint)" reason="Retyped ScrollControllerPanRequestedEventArgs ctor param to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
+
+		  <!-- BC41: GestureRecognizer processing methods retyped to take Microsoft.UI.Input.PointerPoint; PointerEventArgs.CurrentPoint/GetIntermediatePoints retyped; legacy Windows.UI.Input.PointerPoint.PointerDeviceType getter dropped. Old-typed signatures read as removed. -->
+		  <Member fullName="System.Void Windows.UI.Input.GestureRecognizer.ProcessDownEvent(Windows.UI.Input.PointerPoint value)" reason="Retyped GestureRecognizer.ProcessDownEvent to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Windows.UI.Input.GestureRecognizer.ProcessMoveEvents(System.Collections.Generic.IList`1&lt;Windows.UI.Input.PointerPoint&gt; value)" reason="Retyped GestureRecognizer.ProcessMoveEvents to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Windows.UI.Input.GestureRecognizer.ProcessUpEvent(Windows.UI.Input.PointerPoint value)" reason="Retyped GestureRecognizer.ProcessUpEvent to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Windows.UI.Input.GestureRecognizer.CanBeDoubleTap(Windows.UI.Input.PointerPoint value)" reason="Retyped GestureRecognizer.CanBeDoubleTap to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
+		  <Member fullName="Windows.UI.Input.PointerPoint Windows.UI.Core.PointerEventArgs.get_CurrentPoint()" reason="Retyped Windows.UI.Core.PointerEventArgs.CurrentPoint to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
+		  <Member fullName="System.Collections.Generic.IList`1&lt;Windows.UI.Input.PointerPoint&gt; Windows.UI.Core.PointerEventArgs.GetIntermediatePoints()" reason="Retyped Windows.UI.Core.PointerEventArgs.GetIntermediatePoints to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
+		  <Member fullName="Windows.Devices.Input.PointerDeviceType Windows.UI.Input.PointerPoint.get_PointerDeviceType()" reason="Dropped legacy Windows.UI.Input.PointerPoint variant (BC41, breaking changes for 7.0)" />
 
 		  <!-- Uno-only public members removed/hidden to match WinUI. get_ accessors paired with the <Properties> entries above. -->
 		  <Member fullName="Microsoft.UI.Xaml.Data.UpdateSourceTrigger Microsoft.UI.Xaml.FrameworkPropertyMetadata.get_DefaultUpdateSourceTrigger()" reason="Removed Uno-only FrameworkPropertyMetadata.DefaultUpdateSourceTrigger (breaking changes for 7.0, uno#8339)" />
