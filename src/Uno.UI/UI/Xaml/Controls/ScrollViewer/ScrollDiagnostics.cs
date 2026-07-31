@@ -43,31 +43,22 @@ internal static class ScrollDiagnostics
 	private static bool _dumpPending;
 	private static double _lastFrameValue;
 	private static bool _announced;
-	private static global::Windows.System.DispatcherQueueTimer? _dumpTimer;
+	private static global::System.Threading.Timer? _dumpTimer;
+	private static int _idleTicks;
 
 	/// <summary>
-	/// The dump is driven by a timer rather than by the frame callback: whether frames keep arriving
-	/// after a scroll settles depends on what else is animating, so hanging the trigger off rendering
-	/// means the buffer may simply never be flushed.
+	/// The dump is driven by a threadpool timer, not by the frame callback or a DispatcherQueue:
+	/// Record is called from more than one thread, so GetForCurrentThread() can return null, and
+	/// whether frames keep arriving after a scroll settles depends on what else is animating. The
+	/// dump only snapshots under a lock and logs, so it has no thread affinity.
 	/// </summary>
 	private static void StartDumpTimer()
 	{
-		if (_dumpTimer is not null)
-		{
-			return;
-		}
-
-		var queue = global::Windows.System.DispatcherQueue.GetForCurrentThread();
-		if (queue is null)
-		{
-			return;
-		}
-
-		_dumpTimer = queue.CreateTimer();
-		_dumpTimer.Interval = TimeSpan.FromMilliseconds(250);
-		_dumpTimer.IsRepeating = true;
-		_dumpTimer.Tick += static (_, _) => TryDump();
-		_dumpTimer.Start();
+		_dumpTimer ??= new global::System.Threading.Timer(
+			static _ => TryDump(),
+			null,
+			dueTime: 250,
+			period: 250);
 	}
 
 	internal static bool IsEnabled => Uno.UI.FeatureConfiguration.ScrollViewer.EnableDiagnostics;
@@ -151,8 +142,16 @@ internal static class ScrollDiagnostics
 			var idleUs = _clock.Elapsed.Ticks / (TimeSpan.TicksPerMillisecond / 1000) - _lastActivityUs;
 			if (idleUs < SettleDelay.TotalMilliseconds * 1000)
 			{
+				if (++_idleTicks % 40 == 0)
+				{
+					typeof(ScrollDiagnostics).Log().Error(
+						$"SCROLLDIAG WAITING count={_count} idleMs={idleUs / 1000}");
+				}
+
 				return;
 			}
+
+			_idleTicks = 0;
 
 			snapshot = new Sample[_count];
 			Array.Copy(_samples, snapshot, _count);
