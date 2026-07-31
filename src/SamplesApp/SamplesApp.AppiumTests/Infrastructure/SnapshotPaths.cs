@@ -42,4 +42,3 @@ internal static class SnapshotPaths
 			_ => throw new InvalidDataException($"Unsupported Appium platform '{platform}'."),
 		};
 }
-
