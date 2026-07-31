@@ -13,7 +13,7 @@ public sealed class SkiaGraphicsProvider : IGraphicsProvider
 
 	public GraphicsRequirements Requirements => new() { MinStencilBits = 8, PreferredColor = GraphicsColorFormat.Bgra8888 };
 
-	public IDrawingFactory Drawing { get; } = new SkiaDrawingFactory();
+	private readonly SkiaDrawingFactory _drawing = new();
 
-	public IRenderer CreateRenderBackend(IGraphicsContext context) => new SkiaRenderer();
+	public Graphics CreateGraphics(IGraphicsContext context) => new(_drawing, new SkiaRenderer());
 }
