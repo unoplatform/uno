@@ -35,7 +35,7 @@ namespace Windows.Storage
 			=> Android.App.Application.Context
 				?? throw new InvalidOperationException(
 					"The Android Application context is not yet available. " +
-					"You need to initialize Windows.UI.Xaml.NativeApplication using the constructor " +
-					"with the Windows.UI.Xaml.NativeApplication.AppBuilder delegate.");
+					"Your Android head must declare a Microsoft.UI.Xaml.NativeApplication subclass, " +
+					"marked with [Application], overriding CreateHost().");
 	}
 }
