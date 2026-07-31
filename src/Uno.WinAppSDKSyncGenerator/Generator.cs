@@ -411,7 +411,7 @@ namespace Uno.WinAppSDKSyncGenerator
 			// The PointerPoint family lives in Uno.UWP (Uno.UI.Composition must reference it),
 			// unlike the rest of Microsoft.UI.Input which stays in Uno.UI.
 			else if (@namespace == "Microsoft.UI.Input"
-				&& type.Name is "PointerPoint" or "PointerPointProperties" or "PointerUpdateKind" or "IPointerPointTransform")
+				&& type.Name is "PointerPoint" or "PointerPointProperties" or "PointerUpdateKind" or "IPointerPointTransform" or "PointerDeviceType")
 			{
 				return @"..\..\..\Uno.UWP\Generated\3.0.0.0";
 			}

@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 using Windows.Devices.Input;
 using Uno.UI.Extensions;
 using System.Runtime.CompilerServices;
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using System.Reflection;
 using Uno.Extensions;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
@@ -96,9 +96,9 @@ partial class InputManager
 
 		private void RegisterGestureRecognizerCore(PointerIdentifier pointer, IGestureRecognizer recognizer)
 		{
-			if (!_gestureRecognizers.TryGetValue(pointer.Type, out var recognizers))
+			if (!_gestureRecognizers.TryGetValue((PointerDeviceType)pointer.Type, out var recognizers))
 			{
-				recognizers = _gestureRecognizers[pointer.Type] = new();
+				recognizers = _gestureRecognizers[(PointerDeviceType)pointer.Type] = new();
 			}
 
 			recognizers.Enqueue(recognizer);
@@ -263,7 +263,7 @@ partial class InputManager
 			_directManipulations.Scavenge();
 
 			// Search for the first direct-manipulation that is able to handle this new pointer
-			foreach (var manipulation in _directManipulations.OfType(args.CurrentPoint.PointerDeviceType))
+			foreach (var manipulation in _directManipulations.OfType((global::Windows.Devices.Input.PointerDeviceType)args.CurrentPoint.PointerDeviceType))
 			{
 				if (manipulation.TryProcessEnter(args))
 				{
@@ -287,7 +287,7 @@ partial class InputManager
 			_directManipulations.Scavenge();
 
 			// Search for the first direct-manipulation that is able to handle this new pointer
-			foreach (var manipulation in _directManipulations.OfType(args.CurrentPoint.PointerDeviceType))
+			foreach (var manipulation in _directManipulations.OfType((global::Windows.Devices.Input.PointerDeviceType)args.CurrentPoint.PointerDeviceType))
 			{
 				if (manipulation.TryProcessDown(args))
 				{
@@ -342,7 +342,7 @@ partial class InputManager
 			if (_directManipulations.Get(args.CurrentPoint.Pointer)?.TryProcessUp(args) is true)
 			{
 				// The AfterReleaseForManipulations will **not** be invoked, so make sure to clean-up the recognizers here.
-				_gestureRecognizers.Remove(args.CurrentPoint.Pointer.Type); // This is valid only because currently GestureRecognizer are completing gesture as soon as a pointer is being removed.
+				_gestureRecognizers.Remove((PointerDeviceType)args.CurrentPoint.Pointer.Type); // This is valid only because currently GestureRecognizer are completing gesture as soon as a pointer is being removed.
 
 				return true;
 			}
@@ -370,7 +370,7 @@ partial class InputManager
 			if (_directManipulations.Get(args.CurrentPoint.Pointer)?.TryProcessCancel(args) is true)
 			{
 				// The AfterCancelForManipulations will **not** be invoked, so make sure to clean-up the recognizers here.
-				_gestureRecognizers.Remove(args.CurrentPoint.Pointer.Type); // This is valid only because currently GestureRecognizer are completing gesture as soon as a pointer is being removed.
+				_gestureRecognizers.Remove((PointerDeviceType)args.CurrentPoint.Pointer.Type); // This is valid only because currently GestureRecognizer are completing gesture as soon as a pointer is being removed.
 
 				return true;
 			}

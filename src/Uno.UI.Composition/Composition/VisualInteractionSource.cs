@@ -86,7 +86,7 @@ public partial class VisualInteractionSource : CompositionObject, ICompositionIn
 	{
 		// https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.composition.interactions.visualinteractionsource.tryredirectformanipulation
 		// > This method should only be called with a PointerDeviceType of Touch.
-		if (pointerPoint.PointerDeviceType == global::Windows.Devices.Input.PointerDeviceType.Touch &&
+		if (pointerPoint.PointerDeviceType == global::Microsoft.UI.Input.PointerDeviceType.Touch &&
 			Source.CompositionTarget is { } compositionTarget)
 		{
 			foreach (var tracker in Trackers)

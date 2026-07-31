@@ -23,7 +23,7 @@ using Windows.Foundation;
 using Windows.System;
 using static DirectUI.ElevationHelper;
 
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 
 namespace Microsoft.UI.Xaml.Controls;
 
