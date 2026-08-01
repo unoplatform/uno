@@ -39,6 +39,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
 	private readonly System.Collections.Generic.List<nint> _pendingBindGroups = new();
 	private readonly System.Collections.Generic.List<nint> _pendingBuffers = new();
+	private readonly System.Collections.Generic.List<nint> _pendingBundles = new();
 
 	// Per-frame bind groups reference the frame's pooled buffers, so they're released at the next frame start once
 	// the previous frame's GPU work has completed (present DevicePolls). A cached recording's persistent resources
@@ -50,8 +51,10 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		BufferPool.BeginFrame();
 		foreach (var bg in _pendingBindGroups) { W.BindGroupRelease((BindGroup*)bg); }
 		foreach (var b in _pendingBuffers) { W.BufferRelease((Silk.NET.WebGPU.Buffer*)b); }
+		foreach (var bu in _pendingBundles) { W.RenderBundleRelease((RenderBundle*)bu); }
 		_pendingBindGroups.Clear();
 		_pendingBuffers.Clear();
+		_pendingBundles.Clear();
 	}
 
 	public BindGroup* TrackBg(BindGroup* bg) { _pendingBindGroups.Add((nint)bg); return bg; }
@@ -62,6 +65,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		if (owned is null) { return; }
 		_pendingBuffers.AddRange(owned.Buffers);
 		_pendingBindGroups.AddRange(owned.BindGroups);
+		_pendingBundles.AddRange(owned.Bundles);
 	}
 	public BindGroupLayout* ImgBgl;
 	public BindGroupLayout* GradBgl;
@@ -686,6 +690,7 @@ internal sealed class OwnedResources
 {
 	public System.Collections.Generic.List<nint> Buffers = new();
 	public System.Collections.Generic.List<nint> BindGroups = new();
+	public System.Collections.Generic.List<nint> Bundles = new();
 }
 
 // Backend-created gradient shader handle. The WebGPU backend mints its own (rather than delegating to Skia) so
@@ -732,23 +737,24 @@ public sealed unsafe class WebGpuRenderData : IRenderData
 	// is unchanged (core keeps the same object) and replayed at the same transform/clip.
 	internal List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> CachedOps;
 	internal OwnedResources Owned;
+	internal RenderBundle* CachedBundle;   // the cached ops pre-encoded into a render bundle (ExecuteBundles on replay)
 	internal Matrix4x4 CacheTransform;
 	internal ClipData CacheClip;
 	internal bool CacheValid;
 	internal bool? Cacheable;   // memoized: all commands are simple primitives with no path clip
 	private WebGpuDevice _cacheDevice;
 
-	internal void SetCache(WebGpuDevice device, List<(int, nint, uint, nint, bool, ClipData, nint)> ops, OwnedResources owned, Matrix4x4 transform, ClipData clip)
+	internal void SetCache(WebGpuDevice device, List<(int, nint, uint, nint, bool, ClipData, nint)> ops, OwnedResources owned, Matrix4x4 transform, ClipData clip, RenderBundle* bundle)
 	{
 		_cacheDevice = device;
-		CachedOps = ops; Owned = owned; CacheTransform = transform; CacheClip = clip; CacheValid = true;
+		CachedOps = ops; Owned = owned; CachedBundle = bundle; CacheTransform = transform; CacheClip = clip; CacheValid = true;
 	}
 
 	internal void ReleaseCache()
 	{
 		// Defer: ops emitted this frame may still reference these resources; the device frees them next frame.
 		_cacheDevice?.DeferRelease(Owned);
-		Owned = null; CachedOps = null; CacheValid = false;
+		Owned = null; CachedOps = null; CachedBundle = null; CacheValid = false;
 	}
 
 	public void Dispose() { ReleaseCache(); Commands = null; }
@@ -1390,6 +1396,61 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private static bool ClipDataEquals(in ClipData a, in ClipData b)
 		=> a.Aabb == b.Aabb && a.HasRound == b.HasRound && a.Rect == b.Rect && a.Radii == b.Radii && ReferenceEquals(a.PathFan, b.PathFan);
 
+	// Pre-encodes a cached recording's draw-ops into a render bundle (replayed with one ExecuteBundles instead of
+	// re-issuing every SetPipeline/SetBindGroup/SetVertexBuffer/Draw per frame). Bundles can't set scissor or the
+	// stencil reference — clipping is per-fragment (clipCov) and the cover pass uses the default stencil ref (0),
+	// so both are safe to omit. The descriptor matches the MSAA main/layer pass formats.
+	private RenderBundle* BuildBundle(List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops)
+	{
+		var W = _d.W;
+		var colorFmt = _d.ColorFormat;
+		var desc = new RenderBundleEncoderDescriptor
+		{
+			ColorFormatCount = 1,
+			ColorFormats = &colorFmt,
+			DepthStencilFormat = WebGpuDevice.DepthStencilFormat,
+			SampleCount = WebGpuDevice.MsaaSamples,
+		};
+		var enc = W.DeviceCreateRenderBundleEncoder(_d.Dev, ref desc);
+		foreach (var (kind, b0, u0, b1, flag, clip, clipBg) in ops)
+		{
+			switch (kind)
+			{
+				case 0:
+					W.RenderBundleEncoderSetPipeline(enc, _d.SolidPipe);
+					W.RenderBundleEncoderSetBindGroup(enc, 0, (BindGroup*)clipBg, 0, (uint*)null);
+					W.RenderBundleEncoderSetVertexBuffer(enc, 0, (Silk.NET.WebGPU.Buffer*)b0, 0, (nuint)(u0 * 6 * sizeof(float)));
+					W.RenderBundleEncoderDraw(enc, u0, 1, 0, 0);
+					break;
+				case 1:
+					W.RenderBundleEncoderSetPipeline(enc, flag ? _d.StencilEvenOdd : _d.StencilNonZero);
+					W.RenderBundleEncoderSetVertexBuffer(enc, 0, (Silk.NET.WebGPU.Buffer*)b0, 0, (nuint)(u0 * 2 * sizeof(float)));
+					W.RenderBundleEncoderDraw(enc, u0, 1, 0, 0);
+					W.RenderBundleEncoderSetPipeline(enc, _d.CoverPipe);
+					W.RenderBundleEncoderSetBindGroup(enc, 0, (BindGroup*)clipBg, 0, (uint*)null);
+					W.RenderBundleEncoderSetVertexBuffer(enc, 0, (Silk.NET.WebGPU.Buffer*)b1, 0, (nuint)(36 * sizeof(float)));
+					W.RenderBundleEncoderDraw(enc, 6, 1, 0, 0);
+					break;
+				case 2:
+					W.RenderBundleEncoderSetPipeline(enc, _d.ImagePipe);
+					W.RenderBundleEncoderSetBindGroup(enc, 0, (BindGroup*)b0, 0, (uint*)null);
+					W.RenderBundleEncoderSetBindGroup(enc, 1, (BindGroup*)clipBg, 0, (uint*)null);
+					W.RenderBundleEncoderSetVertexBuffer(enc, 0, (Silk.NET.WebGPU.Buffer*)b1, 0, (nuint)(24 * sizeof(float)));
+					W.RenderBundleEncoderDraw(enc, 6, 1, 0, 0);
+					break;
+				case 3:
+					W.RenderBundleEncoderSetPipeline(enc, _d.GradientPipe);
+					W.RenderBundleEncoderSetBindGroup(enc, 0, (BindGroup*)b0, 0, (uint*)null);
+					W.RenderBundleEncoderSetBindGroup(enc, 1, (BindGroup*)clipBg, 0, (uint*)null);
+					W.RenderBundleEncoderSetVertexBuffer(enc, 0, (Silk.NET.WebGPU.Buffer*)b1, 0, (nuint)(12 * sizeof(float)));
+					W.RenderBundleEncoderDraw(enc, 6, 1, 0, 0);
+					break;
+			}
+		}
+		var bdesc = new RenderBundleDescriptor();
+		return W.RenderBundleEncoderFinish(enc, ref bdesc);
+	}
+
 	// Builds the draw-op(s) for a simple primitive (rect/path/image/gradient) into `ops`, allocating GPU resources
 	// pooled (owned == null, per-frame) or persistent (owned != null, a cached recording's geometry).
 	private void BuildSimpleOp(WebGpuCommand cmd, List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops, OwnedResources owned)
@@ -1505,9 +1566,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						var owned = new OwnedResources();
 						var cachedOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
 						foreach (var tc in WebGpuCommandRecorder.TransformFor(child, rr.Transform, rr.Clip)) { BuildSimpleOp(tc, cachedOps, owned); }
-						child.SetCache(_d, cachedOps, owned, rr.Transform, rr.Clip);
+						var bundle = BuildBundle(cachedOps);
+						owned.Bundles.Add((nint)bundle);
+						child.SetCache(_d, cachedOps, owned, rr.Transform, rr.Clip, bundle);
 					}
-					ops.AddRange(child.CachedOps);
+					// One ExecuteBundles replays all the child's cached draws (kind 5). Full-surface clip so the
+					// scissor is reset to full before the bundle (its draws clip per-fragment via clipCov).
+					ops.Add((5, (nint)child.CachedBundle, 0, 0, false, ClipData.None, 0));
 					break;
 				}
 				case ShadowCmd sh:
@@ -1683,6 +1748,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					W.RenderPassEncoderSetBindGroup(pass, 0, (BindGroup*)b0, 0, (uint*)null);
 					W.RenderPassEncoderDraw(pass, 3, 1, 0, 0);
 					break;
+				case 5:
+				{
+					// Replay a cached recording's pre-encoded draws (scissor was reset to full above).
+					var bundle = (RenderBundle*)b0;
+					W.RenderPassEncoderExecuteBundles(pass, 1, &bundle);
+					break;
+				}
 			}
 		}
 
