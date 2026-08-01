@@ -1394,6 +1394,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		RenderInto(rd.Commands, _s, _presentClear ?? rd.ClearColor);
 	}
 
+	// Renders WITHOUT the per-frame reset — for a nested offscreen render (RenderOffscreen) that may run inside an
+	// enclosing frame; resetting the shared pools mid-frame would free the enclosing frame's in-flight resources.
+	public void ReplayNested(IRenderData data)
+	{
+		var rd = (WebGpuRenderData)data;
+		RenderInto(rd.Commands, _s, _presentClear ?? rd.ClearColor);
+	}
+
 	private static bool ClipDataEquals(in ClipData a, in ClipData b)
 		=> a.Aabb == b.Aabb && a.HasRound == b.HasRound && a.Rect == b.Rect && a.Radii == b.Radii && ReferenceEquals(a.PathFan, b.PathFan);
 
@@ -1895,18 +1903,21 @@ public sealed unsafe class WebGpuImageTexture : IImageTexture
 	}
 }
 
-/// <summary>A managed <see cref="IImage"/> over a WebGPU offscreen readback. The readback is tightly-packed RGBA
-/// (top-down); <see cref="CopyPixels"/> yields BGRA per the seam's image convention. No Skia.</summary>
+/// <summary>A managed <see cref="IImage"/> over a WebGPU offscreen readback. The readback bytes are in the
+/// device's color format (RGBA for the offscreen device, BGRA for a swapchain device); <see cref="CopyPixels"/>
+/// yields BGRA per the seam's image convention, swapping R/B only when the source is RGBA. No Skia.</summary>
 internal sealed class WebGpuReadbackImage : IImage
 {
-	private readonly byte[] _rgba;
-	public WebGpuReadbackImage(int width, int height, byte[] rgba) { PixelWidth = width; PixelHeight = height; _rgba = rgba; }
+	private readonly byte[] _bytes;
+	private readonly bool _sourceIsBgra;
+	public WebGpuReadbackImage(int width, int height, byte[] bytes, bool sourceIsBgra) { PixelWidth = width; PixelHeight = height; _bytes = bytes; _sourceIsBgra = sourceIsBgra; }
 	public int PixelWidth { get; }
 	public int PixelHeight { get; }
 	public void CopyPixels(Span<byte> destination)
 	{
-		int n = Math.Min(_rgba.Length, destination.Length);
-		for (int i = 0; i + 3 < n; i += 4) { destination[i] = _rgba[i + 2]; destination[i + 1] = _rgba[i + 1]; destination[i + 2] = _rgba[i]; destination[i + 3] = _rgba[i + 3]; }
+		int n = Math.Min(_bytes.Length, destination.Length);
+		if (_sourceIsBgra) { _bytes.AsSpan(0, n).CopyTo(destination); return; }
+		for (int i = 0; i + 3 < n; i += 4) { destination[i] = _bytes[i + 2]; destination[i + 1] = _bytes[i + 1]; destination[i + 2] = _bytes[i]; destination[i + 3] = _bytes[i + 3]; }
 	}
 }
 
@@ -1939,8 +1950,9 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 		render(recorder);
 		var surface = new WebGpuRenderSurface(_device, pixelWidth, pixelHeight);
 		var present = new WebGpuPresentSession(_device, surface);
-		present.Replay(recorder.Finish());
-		return new WebGpuReadbackImage(pixelWidth, pixelHeight, _device.ReadPixelsRgba(surface));
+		present.ReplayNested(recorder.Finish());   // nested: don't reset the enclosing frame's pools
+		var bytes = _device.ReadPixelsRgba(surface);   // bytes are in the device's color format
+		return new WebGpuReadbackImage(pixelWidth, pixelHeight, bytes, _device.ColorFormat == TextureFormat.Bgra8Unorm);
 	}
 	public IShader CreateLinearGradientShader(Vector2 start, Vector2 end, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix)
 		=> new WebGpuShader { Radial = false, P0 = start, P1 = end, Colors = colors, Stops = colorPositions, TileMode = tileMode, LocalMatrix = localMatrix };
