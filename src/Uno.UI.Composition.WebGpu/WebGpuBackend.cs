@@ -1895,12 +1895,27 @@ public sealed unsafe class WebGpuImageTexture : IImageTexture
 	}
 }
 
+/// <summary>A managed <see cref="IImage"/> over a WebGPU offscreen readback. The readback is tightly-packed RGBA
+/// (top-down); <see cref="CopyPixels"/> yields BGRA per the seam's image convention. No Skia.</summary>
+internal sealed class WebGpuReadbackImage : IImage
+{
+	private readonly byte[] _rgba;
+	public WebGpuReadbackImage(int width, int height, byte[] rgba) { PixelWidth = width; PixelHeight = height; _rgba = rgba; }
+	public int PixelWidth { get; }
+	public int PixelHeight { get; }
+	public void CopyPixels(Span<byte> destination)
+	{
+		int n = Math.Min(_rgba.Length, destination.Length);
+		for (int i = 0; i + 3 < n; i += 4) { destination[i] = _rgba[i + 2]; destination[i + 1] = _rgba[i + 1]; destination[i + 2] = _rgba[i]; destination[i + 3] = _rgba[i + 3]; }
+	}
+}
+
 /// <summary>
-/// The device-bound WebGPU resource factory. It WRAPS an inner factory (the host's existing one — Skia or
-/// managed), overriding only <see cref="CreateImageTexture"/> to produce a wgpu texture on the device.
-/// Everything else (geometry, decode, image frames, shaders, filters, offscreen) delegates to the inner
-/// factory — so a real app renders unchanged, but images become GPU-resident wgpu textures the WebGPU
-/// renderer consumes. (A future WebGpuShader would move shader creation here too.)
+/// The device-bound WebGPU resource factory. Textures, gradient shaders, color filters, the drop-shadow /
+/// backdrop-blur effect, and offscreen rasterization are all WebGPU-owned; only neutral geometry delegates to
+/// the inner factory. So paired with a managed inner (<see cref="ManagedDrawingFactory"/>) a WebGPU app links
+/// zero SkiaSharp for its drawing; paired with Skia it still works (geometry via SKPath, non-blur effects via
+/// the inner DAG). Font resolution/shaping and image decode are separate seams (FontProvider / ImageDecoder).
 /// </summary>
 public sealed class WebGpuDrawingFactory : IDrawingFactory
 {
@@ -1911,10 +1926,22 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 
 	public IImageTexture CreateImageTexture(IImage image) => new WebGpuImageTexture(_device, image);
 
+	// Geometry is neutral — delegate to the inner factory (managed engine → no Skia; Skia → SKPath).
 	public IPathBuilder CreatePathBuilder() => _inner.CreatePathBuilder();
 	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => _inner.CreatePrimitiveGeometryBuilder();
 	public IGeometry CreateRectangleGeometry(Windows.Foundation.Rect rect) => _inner.CreateRectangleGeometry(rect);
-	public IImage RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render) => _inner.RenderOffscreen(pixelWidth, pixelHeight, render);
+
+	// Offscreen rasterization on the WebGPU device (record → present into an offscreen surface → read back),
+	// so a WebGPU app needs no Skia rasterizer. The readback is a managed IImage (BGRA on CopyPixels).
+	public IImage RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render)
+	{
+		var recorder = new WebGpuCommandRecorder();
+		render(recorder);
+		var surface = new WebGpuRenderSurface(_device, pixelWidth, pixelHeight);
+		var present = new WebGpuPresentSession(_device, surface);
+		present.Replay(recorder.Finish());
+		return new WebGpuReadbackImage(pixelWidth, pixelHeight, _device.ReadPixelsRgba(surface));
+	}
 	public IShader CreateLinearGradientShader(Vector2 start, Vector2 end, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix)
 		=> new WebGpuShader { Radial = false, P0 = start, P1 = end, Colors = colors, Stops = colorPositions, TileMode = tileMode, LocalMatrix = localMatrix };
 	public IShader CreateRadialGradientShader(Vector2 center, Vector2 gradientOrigin, float radiusX, float radiusY, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix)
@@ -1947,6 +1974,16 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 			hasBackdropInput = true;
 			return new WebGpuEffectFilter { SigmaX = sigma, SigmaY = sigma, Color = default };
 		}
-		return _inner.CreateEffectFilter(effect, bounds, sourceResolver, useBackdropBlurClamp, isSoftwareRenderer, out hasBackdropInput);
+		// A non-blur effect: delegate to the inner factory (Skia realizes the full DAG). A Skia-less inner has no
+		// managed rasterizer for it — treat as unsupported (renders nothing) rather than crash.
+		try
+		{
+			return _inner.CreateEffectFilter(effect, bounds, sourceResolver, useBackdropBlurClamp, isSoftwareRenderer, out hasBackdropInput);
+		}
+		catch (NotImplementedException)
+		{
+			hasBackdropInput = false;
+			return null;
+		}
 	}
 }
