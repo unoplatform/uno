@@ -217,6 +217,16 @@ using var rB = Rect(26, 26, 54, 54);
 using var union = rA.Combine(rB, GeometryCombineMode.Union);
 CrossCheck("combine-union", union);
 
+// 12) DROP SHADOW — a blurred, tinted silhouette (offscreen coverage → separable gaussian → SrcIn composite).
+using var shRect = Rect(20, 20, 44, 44);   // (20,20)-(44,44), edge at x=44
+var pShadow = Render(r => r.DrawShadow(shRect, WColor.FromArgb(255, 255, 0, 0), 4f, 4f, false));
+var shIn = At(pShadow, 32, 32);     // inside silhouette → full coverage → red
+var shEdge = At(pShadow, 47, 32);   // ~3px past the edge → blur falloff → partial red
+var shFar = At(pShadow, 62, 32);    // far outside → ~0
+Check("shadow: inside silhouette red", shIn.r > 150 && shIn.g < 80 && shIn.b < 80, shIn);
+Check("shadow: blur falloff outside (partial red)", shEdge.r > 20 && shEdge.r < shIn.r, (shEdge, shIn));
+Check("shadow: far outside black", shFar.r < 40, shFar);
+
 Console.WriteLine(fail == 0
 	? "\nALL PASS — non-Skia render seam verified headless (primitives + text + stroke + boolean); Skia vs WebGPU agree on every neutral scene"
 	: $"\n{fail} CHECK(S) FAILED");

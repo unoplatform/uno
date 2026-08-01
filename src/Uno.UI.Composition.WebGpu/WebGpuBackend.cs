@@ -27,6 +27,8 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public RenderPipeline* CoverPipe;
 	public RenderPipeline* ImagePipe;
 	public RenderPipeline* GradientPipe;
+	public RenderPipeline* BlurPipe;              // separable gaussian (fullscreen), single-sample
+	public BindGroupLayout* BlurBgl;
 	public BindGroupLayout* ImgBgl;
 	public BindGroupLayout* GradBgl;
 	// group(1) clip-uniform layouts (one per color-writing pipeline; all describe the same ClipU).
@@ -118,6 +120,20 @@ fn clipCov(fc: vec2<f32>, clip: ClipU) -> f32 {
 }
 ";
 
+	/// <summary>A single-sample Rgba8 render target usable as a shader input (offscreen blur temp/output). The
+	/// returned view keeps its texture alive; not pooled/freed yet (fine for offscreen/one-shot).</summary>
+	public TextureView* CreateColorTarget(int w, int h)
+	{
+		var td = new TextureDescriptor
+		{
+			Size = new Extent3D((uint)w, (uint)h, 1), Format = DefaultColorFormat,
+			MipLevelCount = 1, SampleCount = 1, Dimension = TextureDimension.Dimension2D,
+			Usage = TextureUsage.RenderAttachment | TextureUsage.TextureBinding,
+		};
+		var tex = W.DeviceCreateTexture(Dev, ref td);
+		return W.TextureCreateView(tex, null);
+	}
+
 	private const string ColoredWgsl = @"
 @group(0) @binding(0) var<uniform> clip: ClipU;
 struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
@@ -162,6 +178,53 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 		CoverClipBgl = W.RenderPipelineGetBindGroupLayout(CoverPipe, 0);
 		CreateImagePipeline();
 		CreateGradientPipeline(&blend);
+		CreateBlurPipeline();
+	}
+
+	// One separable-gaussian pass over a texture. A fullscreen triangle (from vertex_index, no vertex buffer)
+	// samples the source along `dir` with per-tap gaussian weights; radius = ceil(3*sigma). Two passes
+	// (dir = (1,0) then (0,1)) give a full 2D blur. Single-sample, no blend (overwrite), no depth/stencil.
+	private const string BlurWgsl = @"
+struct BU { dir: vec2<f32>, texel: vec2<f32>, sigma: f32, pad0: f32, pad1: f32, pad2: f32 };
+@group(0) @binding(0) var src: texture_2d<f32>;
+@group(0) @binding(1) var smp: sampler;
+@group(0) @binding(2) var<uniform> b: BU;
+struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
+@vertex fn vs(@builtin(vertex_index) vi: u32) -> VO {
+  var pts = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
+  let p = pts[vi];
+  var o: VO; o.p = vec4<f32>(p, 0.0, 1.0); o.uv = vec2<f32>((p.x + 1.0) * 0.5, (1.0 - p.y) * 0.5); return o;
+}
+@fragment fn fs(i: VO) -> @location(0) vec4<f32> {
+  let sigma = max(b.sigma, 1e-4);
+  let r = i32(ceil(sigma * 3.0));
+  var sum = vec4<f32>(0.0);
+  var wsum = 0.0;
+  for (var k = -r; k <= r; k = k + 1) {
+    let w = exp(-0.5 * f32(k * k) / (sigma * sigma));
+    sum = sum + textureSampleLevel(src, smp, i.uv + b.dir * b.texel * f32(k), 0.0) * w;
+    wsum = wsum + w;
+  }
+  return sum / max(wsum, 1e-6);
+}";
+
+	private void CreateBlurPipeline()
+	{
+		var module = Module(BlurWgsl);
+		var vs = (byte*)SilkMarshal.StringToPtr("vs", NativeStringEncoding.UTF8);
+		var fs = (byte*)SilkMarshal.StringToPtr("fs", NativeStringEncoding.UTF8);
+		var vsState = new VertexState { Module = module, EntryPoint = vs, BufferCount = 0 };
+		var target = new ColorTargetState { Format = DefaultColorFormat, Blend = null, WriteMask = ColorWriteMask.All };
+		var fsState = new FragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
+		var pd = new RenderPipelineDescriptor
+		{
+			Vertex = vsState, Fragment = &fsState, DepthStencil = null,
+			Primitive = new PrimitiveState { Topology = PrimitiveTopology.TriangleList, FrontFace = FrontFace.Ccw, CullMode = CullMode.None },
+			Multisample = new MultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = false },
+			Layout = null,
+		};
+		BlurPipe = W.DeviceCreateRenderPipeline(Dev, ref pd);
+		BlurBgl = W.RenderPipelineGetBindGroupLayout(BlurPipe, 0);
 	}
 
 	// Evaluates a linear/radial gradient per pixel. The quad is positioned in NDC; the fragment uses its
@@ -316,7 +379,8 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 		{
 			Size = new Extent3D((uint)width, (uint)height, 1), Format = device.ColorFormat,
 			MipLevelCount = 1, SampleCount = 1, Dimension = TextureDimension.Dimension2D,
-			Usage = TextureUsage.RenderAttachment | TextureUsage.CopySrc,
+			// TextureBinding so a resolved surface can be sampled (e.g. shadow coverage feeding the blur pass).
+			Usage = TextureUsage.RenderAttachment | TextureUsage.CopySrc | TextureUsage.TextureBinding,
 		};
 		Tex = device.W.DeviceCreateTexture(device.Dev, ref td);
 		View = device.W.TextureCreateView(Tex, null);
@@ -399,6 +463,18 @@ internal sealed class GradientCmd : WebGpuCommand
 {
 	public Vector2 P0, P1, P2, P3;   // device-space quad
 	public float[] Uniform;          // packed Grad struct (WebGpuDevice.GradientUniformBytes / 4 floats)
+}
+
+// A drop shadow: the silhouette (flattened, device space) is filled into an offscreen coverage texture,
+// separably gaussian-blurred (SigmaX/Y), then composited tinted by Color. Same fan/bbox form as PathFill.
+internal sealed class ShadowCmd : WebGpuCommand
+{
+	public float[] FanDevice;
+	public Vector2 BbMin, BbMax;
+	public bool EvenOdd;
+	public WColor Color;
+	public float SigmaX, SigmaY;
+	public bool Additive;
 }
 
 // Backend-created gradient shader handle. The WebGPU backend mints its own (rather than delegating to Skia) so
@@ -585,7 +661,22 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			P2 = Map((float)rect.Right, (float)rect.Bottom), P3 = Map((float)rect.Left, (float)rect.Bottom),
 		});
 	}
-	public void DrawShadow(IGeometry silhouette, WColor color, float sigmaX, float sigmaY, bool additive, bool antialias = false) { }
+	public void DrawShadow(IGeometry silhouette, WColor color, float sigmaX, float sigmaY, bool additive, bool antialias = false)
+	{
+		_fan = new List<float>();
+		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
+		silhouette.StreamFlattened(this);
+		if (_fan.Count > 0)
+		{
+			_data.Commands.Add(new ShadowCmd
+			{
+				FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax,
+				EvenOdd = silhouette.FillRule == GeometryFillRule.EvenOdd,
+				Color = color, SigmaX = sigmaX, SigmaY = sigmaY, Additive = additive, Clip = _clip,
+			});
+		}
+		_fan = null;
+	}
 	public void StrokePath(IGeometry geometry, WColor color, float strokeWidth, bool antialias = false)
 	{
 		using var sg = geometry.GetStrokeFillGeometry(new StrokeStyle { Thickness = strokeWidth, LineJoin = StrokeJoin.Miter, MiterLimit = 10f });
@@ -682,6 +773,17 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					}
 					_data.Commands.Add(new PathFill { FanDevice = dst, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, Clip = ClipCompose(p.Clip, T) });
 					break;
+				case ShadowCmd sh:
+					var ssrc = sh.FanDevice; var sdst = new float[ssrc.Length];
+					var sbbMin = new Vector2(float.MaxValue); var sbbMax = new Vector2(float.MinValue);
+					for (int i = 0; i < ssrc.Length; i += 2)
+					{
+						var q = T(new Vector2(ssrc[i], ssrc[i + 1])); sdst[i] = q.X; sdst[i + 1] = q.Y;
+						sbbMin = Vector2.Min(sbbMin, q); sbbMax = Vector2.Max(sbbMax, q);
+					}
+					var ss = new Vector2(_m.M11, _m.M12).Length();
+					_data.Commands.Add(new ShadowCmd { FanDevice = sdst, BbMin = sbbMin, BbMax = sbbMax, EvenOdd = sh.EvenOdd, Color = sh.Color, SigmaX = sh.SigmaX * ss, SigmaY = sh.SigmaY * ss, Additive = sh.Additive, Clip = ClipCompose(sh.Clip, T) });
+					break;
 				case ImageCmd im:
 					_data.Commands.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), View = im.View, W = im.W, H = im.H, Opacity = im.Opacity, U0 = im.U0, V0 = im.V0, U1 = im.U1, V1 = im.V1, TintMode = im.TintMode, Tint = im.Tint, Clip = ClipCompose(im.Clip, T) });
 					break;
@@ -777,6 +879,84 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		return _d.W.DeviceCreateBindGroup(_d.Dev, ref bgd);
 	}
 
+	// Fills the shadow silhouette into an offscreen coverage surface (stencil-then-cover, white), then blurs it
+	// separably (H then V). Returns the blurred coverage texture + its device-space placement. NOTE: the per-
+	// shadow textures are not pooled/freed yet — fine for offscreen/one-shot; the on-window path needs cleanup.
+	private TextureView* RenderShadow(ShadowCmd sh, out Vector2 origin, out Vector2 size)
+	{
+		var W = _d.W;
+		float pad = MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f;
+		origin = new Vector2(sh.BbMin.X - pad, sh.BbMin.Y - pad);
+		int sw = Math.Clamp((int)MathF.Ceiling(sh.BbMax.X - sh.BbMin.X + 2 * pad), 1, 4096);
+		int sh2 = Math.Clamp((int)MathF.Ceiling(sh.BbMax.Y - sh.BbMin.Y + 2 * pad), 1, 4096);
+		size = new Vector2(sw, sh2);
+
+		// 1) coverage: fill the fan (stencil-then-cover, white) into an MSAA surface resolved to single-sample.
+		var cov = new WebGpuRenderSurface(_d, sw, sh2);
+		var fanNdc = new float[sh.FanDevice.Length];
+		for (int i = 0; i < sh.FanDevice.Length; i += 2)
+		{
+			fanNdc[i] = (sh.FanDevice[i] - origin.X) / sw * 2f - 1f;
+			fanNdc[i + 1] = 1f - (sh.FanDevice[i + 1] - origin.Y) / sh2 * 2f;
+		}
+		var fanBuf = MakeBuffer(fanNdc);
+		var cq = new List<float>();
+		void CQ(float x, float y) { cq.Add(x); cq.Add(y); cq.Add(1f); cq.Add(1f); cq.Add(1f); cq.Add(1f); }
+		CQ(-1, -1); CQ(1, -1); CQ(1, 1); CQ(-1, -1); CQ(1, 1); CQ(-1, 1);
+		var coverBuf = MakeBuffer(cq.ToArray());
+		var noClip = MakeClipBg(_d.CoverClipBgl, default);
+
+		var enc = W.DeviceCreateCommandEncoder(_d.Dev, null);
+		var ca = new RenderPassColorAttachment { View = cov.MsaaColorView, ResolveTarget = cov.View, LoadOp = LoadOp.Clear, StoreOp = StoreOp.Discard, ClearValue = default };
+		var dsa = new RenderPassDepthStencilAttachment { View = cov.DepthView, DepthLoadOp = LoadOp.Clear, DepthStoreOp = StoreOp.Discard, DepthClearValue = 1f, StencilLoadOp = LoadOp.Clear, StencilStoreOp = StoreOp.Discard, StencilClearValue = 0 };
+		var rp = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
+		var pass = W.CommandEncoderBeginRenderPass(enc, ref rp);
+		W.RenderPassEncoderSetPipeline(pass, sh.EvenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
+		W.RenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanNdc.Length * sizeof(float)));
+		W.RenderPassEncoderDraw(pass, (uint)(fanNdc.Length / 2), 1, 0, 0);
+		W.RenderPassEncoderSetPipeline(pass, _d.CoverPipe);
+		W.RenderPassEncoderSetBindGroup(pass, 0, noClip, 0, (uint*)null);
+		W.RenderPassEncoderSetStencilReference(pass, 0);
+		W.RenderPassEncoderSetVertexBuffer(pass, 0, coverBuf, 0, (nuint)(cq.Count * sizeof(float)));
+		W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
+		W.RenderPassEncoderEnd(pass);
+		var cb = W.CommandEncoderFinish(enc, null);
+		W.QueueSubmit(_d.Q, 1, &cb);
+
+		// 2) separable blur: coverage -> temp (H) -> blur (V).
+		var tempView = _d.CreateColorTarget(sw, sh2);
+		BlurPass(cov.View, tempView, new Vector2(1f, 0f), new Vector2(1f / sw, 0f), sh.SigmaX);
+		var blurView = _d.CreateColorTarget(sw, sh2);
+		BlurPass(tempView, blurView, new Vector2(0f, 1f), new Vector2(0f, 1f / sh2), sh.SigmaY);
+		return blurView;
+	}
+
+	private void BlurPass(TextureView* src, TextureView* dst, Vector2 dir, Vector2 texel, float sigma)
+	{
+		var W = _d.W;
+		var bu = new float[8]; bu[0] = dir.X; bu[1] = dir.Y; bu[2] = texel.X; bu[3] = texel.Y; bu[4] = sigma;
+		var ubd = new BufferDescriptor { Size = 32, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
+		var ubuf = W.DeviceCreateBuffer(_d.Dev, ref ubd);
+		fixed (float* p = bu) { W.QueueWriteBuffer(_d.Q, ubuf, 0, p, 32); }
+		var entries = stackalloc BindGroupEntry[3];
+		entries[0] = new BindGroupEntry { Binding = 0, TextureView = src };
+		entries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
+		entries[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
+		var bgd = new BindGroupDescriptor { Layout = _d.BlurBgl, EntryCount = 3, Entries = entries };
+		var bg = W.DeviceCreateBindGroup(_d.Dev, ref bgd);
+
+		var enc = W.DeviceCreateCommandEncoder(_d.Dev, null);
+		var ca = new RenderPassColorAttachment { View = dst, LoadOp = LoadOp.Clear, StoreOp = StoreOp.Store, ClearValue = default };
+		var rp = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca };
+		var pass = W.CommandEncoderBeginRenderPass(enc, ref rp);
+		W.RenderPassEncoderSetPipeline(pass, _d.BlurPipe);
+		W.RenderPassEncoderSetBindGroup(pass, 0, bg, 0, (uint*)null);
+		W.RenderPassEncoderDraw(pass, 3, 1, 0, 0);
+		W.RenderPassEncoderEnd(pass);
+		var cb = W.CommandEncoderFinish(enc, null);
+		W.QueueSubmit(_d.Q, 1, &cb);
+	}
+
 	public void Replay(IRenderData data)
 	{
 		var rd = (WebGpuRenderData)data;
@@ -847,6 +1027,30 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					void GV(int idx, Vector2 pos) { var n = Ndc(pos); gq[idx] = n.X; gq[idx + 1] = n.Y; }
 					GV(0, gc.P0); GV(2, gc.P1); GV(4, gc.P2); GV(6, gc.P0); GV(8, gc.P2); GV(10, gc.P3);
 					ops.Add((3, (nint)gbg, 0, (nint)MakeBuffer(gq), false, gc.Clip, (nint)MakeClipBg(_d.GradClipBgl, gc.Clip)));
+					break;
+				}
+				case ShadowCmd sh:
+				{
+					// Render the blurred coverage offscreen, then composite it as a SrcIn-tinted image (tint =
+					// shadow color) at its device placement — reusing the image draw path (kind 2), incl. clip.
+					var blurView = RenderShadow(sh, out var origin, out var size);
+					var ubd = new BufferDescriptor { Size = 32, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
+					var ubuf = W.DeviceCreateBuffer(_d.Dev, ref ubd);
+					var op = stackalloc float[8];
+					op[0] = 1f; op[1] = 1f; op[2] = 0; op[3] = 0;
+					op[4] = sh.Color.R / 255f; op[5] = sh.Color.G / 255f; op[6] = sh.Color.B / 255f; op[7] = sh.Color.A / 255f;
+					W.QueueWriteBuffer(_d.Q, ubuf, 0, op, 32);
+					var sentries = stackalloc BindGroupEntry[3];
+					sentries[0] = new BindGroupEntry { Binding = 0, TextureView = blurView };
+					sentries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
+					sentries[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
+					var sbgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sentries };
+					var sbg = W.DeviceCreateBindGroup(_d.Dev, ref sbgd);
+					var sq = new float[24];
+					void SQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); sq[idx] = n.X; sq[idx + 1] = n.Y; sq[idx + 2] = u; sq[idx + 3] = vv; }
+					var o0 = origin; var o1 = origin + new Vector2(size.X, 0); var o2 = origin + size; var o3 = origin + new Vector2(0, size.Y);
+					SQV(0, o0, 0, 0); SQV(4, o1, 1, 0); SQV(8, o2, 1, 1); SQV(12, o0, 0, 0); SQV(16, o2, 1, 1); SQV(20, o3, 0, 1);
+					ops.Add((2, (nint)sbg, 0, (nint)MakeBuffer(sq), false, sh.Clip, (nint)MakeClipBg(_d.ImageClipBgl, sh.Clip)));
 					break;
 				}
 			}
