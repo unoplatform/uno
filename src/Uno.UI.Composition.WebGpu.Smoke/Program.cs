@@ -332,6 +332,28 @@ Check("coalesce: rect 1 red", co1.r > 200 && co1.g < 60, co1);
 Check("coalesce: rect 2 green", co2.g > 200 && co2.r < 60, co2);
 Check("coalesce: rect 3 blue", co3.b > 200 && co3.r < 60, co3);
 
+// 20) SKIA-LESS DRAWING PATH — WebGpuDrawingFactory paired with the managed geometry engine: managed geometry
+//     (CreatePathBuilder) + a WebGPU gradient shader + WebGPU offscreen rasterization (RenderOffscreen), all
+//     without SkiaSharp. Proves a WebGPU app can link zero Skia for its drawing.
+var skiaLess = new WebGpuDrawingFactory(dev, new ManagedDrawingFactory());
+var slPath = skiaLess.CreatePathBuilder();                       // managed geometry, no Skia
+slPath.MoveTo(new Vector2(32, 4)); slPath.LineTo(new Vector2(60, 60)); slPath.LineTo(new Vector2(4, 60)); slPath.Close();
+using var slTri = slPath.Build();
+var slColors = new[] { WColor.FromArgb(255, 255, 0, 0), WColor.FromArgb(255, 0, 0, 255) };
+var slStops = new[] { 0f, 1f };
+var slGrad = skiaLess.CreateLinearGradientShader(new Vector2(0, 0), new Vector2(64, 0), slColors, slStops, GradientTileMode.Clamp, Matrix3x2.Identity);
+var slImg = skiaLess.RenderOffscreen(64, 64, s =>                // WebGPU offscreen, no Skia
+{
+	s.DrawRect(new Rect(0, 0, 64, 64), slGrad, false);          // gradient background (WebGpuShader)
+	s.DrawPath(slTri, WColor.FromArgb(255, 0, 255, 0), false);  // green triangle on top
+});
+var slBgra = new byte[64 * 64 * 4];
+slImg.CopyPixels(slBgra);                                        // BGRA: [B, G, R, A]
+int SL(int x, int y) => (y * 64 + x) * 4;
+int slInside = SL(32, 40), slCorner = SL(3, 6);
+Check("skia-less: triangle interior green", slBgra[slInside + 1] > 150 && slBgra[slInside] < 60 && slBgra[slInside + 2] < 60, (slBgra[slInside], slBgra[slInside + 1], slBgra[slInside + 2]));
+Check("skia-less: gradient corner reddish", slBgra[slCorner + 2] > 150 && slBgra[slCorner] < 100, (slBgra[slCorner], slBgra[slCorner + 1], slBgra[slCorner + 2]));
+
 Console.WriteLine(fail == 0
 	? "\nALL PASS — non-Skia render seam verified headless (primitives + text + stroke + boolean); Skia vs WebGPU agree on every neutral scene"
 	: $"\n{fail} CHECK(S) FAILED");
