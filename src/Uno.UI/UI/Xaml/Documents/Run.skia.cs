@@ -3,13 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using HarfBuzzSharp;
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Uno.Extensions;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
-using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = Microsoft.UI.Xaml.Documents.TextFormatting.GlyphInfo;
 
 using SegmentInfo = (int LeadingSpaces, int TrailingSpaces, int LineBreakLength, Uno.UI.Composition.Drawing.IFont? Font, int NextStartingIndex);
@@ -187,15 +185,8 @@ namespace Microsoft.UI.Xaml.Documents
 			// TODO: Implement Bidi algorithm here to split segments by direction prior to doing the below processing on each directional piece.
 			// TODO: Implement fallback font for international char segments
 			List<Segment> segments = new();
-			using HarfBuzzSharp.Buffer buffer = new();
 			var fontInfo = FontInfo;
 			var defaultFontHandle = fontInfo.FontHandle;
-			var defaultFont = fontInfo.Font;
-			var fontSize = fontInfo.FontSize;
-
-			defaultFont.GetScale(out int defaultFontScale, out _);
-			float defaultTextSizeY = fontInfo.FontSize / defaultFontScale;
-			float defaultTextSizeX = defaultTextSizeY * fontInfo.FontScaleX;
 
 			var text = Text.AsSpan();
 			int i = 0;
@@ -206,57 +197,29 @@ namespace Microsoft.UI.Xaml.Documents
 
 				int length = nextStartingIndex - i;
 				FontDetails? fallbackFont = null;
-				Font font;
-				int fontScale;
-				float textSizeY;
-				float textSizeX;
+				IFont segmentFont;
 				if (fontHandle is not null && !SameFont(fontHandle, defaultFontHandle))
 				{
 					// MatchCharacter returns installed fonts synchronously, so the fallback FontDetails is
 					// built directly from the resolved handle (no async family re-resolution).
 					fallbackFont = FontDetails.Create(fontHandle, (float)FontSize);
-
-					font = fallbackFont.Font;
-					font.GetScale(out fontScale, out _);
-					textSizeY = fontSize / fontScale;
-					textSizeX = textSizeY * fontInfo.FontScaleX;
+					segmentFont = fallbackFont.FontHandle;
 				}
 				else
 				{
-					font = defaultFont;
-					fontScale = defaultFontScale;
-					textSizeY = defaultTextSizeY;
-					textSizeX = defaultTextSizeX;
+					segmentFont = defaultFontHandle;
 				}
 
 				if (length > 0)
 				{
-					if (lineBreakLength == 2)
-					{
-						buffer.AddUtf16(text.Slice(i, length - 1)); // Skip second line break char so that it is considered part of the same cluster as the first
-					}
-					else
-					{
-						buffer.AddUtf16(text.Slice(i, length));
-					}
+					// Skip the second line break char so it stays part of the same cluster as the first.
+					var shapedLength = lineBreakLength == 2 ? length - 1 : length;
 
-					// TODO: Set the segment properties instead of using HB guessing like below.
-					// - Set direction using Bidi algorithm.
-					// - Set Language and Script on buffer. From HarfBuzz docs:
-
-					// Script is crucial for choosing the proper shaping behaviour for scripts that require it (e.g. Arabic) and the which OpenType features defined
-					// in the font to be applied.
-
-					// Languages are crucial for selecting which OpenType feature to apply to the buffer which can result in applying language-specific behaviour.
-					// Languages are orthogonal to the scripts, and though they are related, they are different concepts and should not be confused with each other.
-
-					// buffer.Direction = ...
-					// buffer.Language = ...
-					// buffer.Script = ...
-
-					// Guess the above properties for now before shaping:
-					buffer.GuessSegmentProperties();
-					var direction = buffer.Direction == Direction.LeftToRight ? FlowDirection.LeftToRight : FlowDirection.RightToLeft;
+					// The direction is guessed by the shaper from the run's script (bidi itemization isn't done here
+					// yet — see the TODO above). Ligatures are disabled because a TextBox needs each source char to
+					// stay separately addressable (uno#15528, uno#16788).
+					var glyphRun = segmentFont.Shape(text.Slice(i, shapedLength), out var resolvedDirection, enableLigatures: false);
+					var direction = resolvedDirection is TextDirection.LeftToRight ? FlowDirection.LeftToRight : FlowDirection.RightToLeft;
 					if (direction == FlowDirection.LeftToRight &&
 						segments.Count > 0 && segments[segments.Count - 1].Direction == FlowDirection.RightToLeft &&
 						trailingSpaces + leadingSpaces == length)
@@ -267,30 +230,17 @@ namespace Microsoft.UI.Xaml.Documents
 						direction = FlowDirection.RightToLeft;
 					}
 
-					// We don't support ligatures for now since they can cause buggy behaviour in TextBox
-					// where multiple chars in a TextBox are turned into a single glyph.
-					//https://github.com/unoplatform/uno/issues/15528
-					// https://github.com/unoplatform/uno/issues/16788
-					// https://harfbuzz.github.io/shaping-opentype-features.html
-					font.Shape(buffer, new Feature(new Tag('l', 'i', 'g', 'a'), 0));
-
-					if (buffer.Direction == Direction.RightToLeft)
-					{
-						buffer.ReverseClusters();
-					}
-
-					var glyphs = GetGlyphs(buffer, i, textSizeX, textSizeY);
+					var glyphs = GetGlyphs(glyphRun, i, resolvedDirection is TextDirection.RightToLeft);
 
 					Debug.Assert(!(Text.AsSpan(i, length).Contains('\t')) || length == 1);
 					if (length == 1 && text[i] == '\t')
 					{
-						glyphs[0] = glyphs[0] with { GlyphId = _getSpaceGlyph(fontInfo.Font) };
+						glyphs[0] = glyphs[0] with { GlyphId = defaultFontHandle.GetGlyphIndex(' ') };
 					}
 
 					var segment = new Segment(this, direction, i, length, leadingSpaces, trailingSpaces, lineBreakLength, glyphs, fallbackFont);
 
 					segments.Add(segment);
-					buffer.ClearContents();
 				}
 
 				i = nextStartingIndex;
@@ -300,28 +250,22 @@ namespace Microsoft.UI.Xaml.Documents
 
 			// Local functions:
 
-			static List<GlyphInfo> GetGlyphs(Buffer buffer, int clusterStart, float textSizeX, float textSizeY)
+			static List<GlyphInfo> GetGlyphs(GlyphRun glyphRun, int clusterStart, bool rtl)
 			{
-				int length = buffer.Length;
-				var hbGlyphs = buffer.GetGlyphInfoSpan();
-				var hbPositions = buffer.GetGlyphPositionSpan();
+				var count = glyphRun.Count;
+				List<TextFormatting.GlyphInfo> glyphs = new(count);
 
-				List<TextFormatting.GlyphInfo> glyphs = new(length);
-
-				for (int i = 0; i < length; i++)
+				// Mirror HarfBuzz's ReverseClusters for RTL runs. Ligatures are disabled here, so clusters are 1:1 and
+				// a plain reverse matches. Offsets/advances are already in pixels (IFont.Shape scaled them).
+				for (var k = 0; k < count; k++)
 				{
-					var hbGlyph = hbGlyphs[i];
-					var hbPos = hbPositions[i];
-
-					TextFormatting.GlyphInfo glyph = new(
-						(ushort)hbGlyph.Codepoint,
-						clusterStart + (int)hbGlyph.Cluster,
-						hbPos.XAdvance * textSizeX,
-						hbPos.XOffset * textSizeX,
-						hbPos.YOffset * textSizeY
-					);
-
-					glyphs.Add(glyph);
+					var index = rtl ? count - 1 - k : k;
+					glyphs.Add(new TextFormatting.GlyphInfo(
+						glyphRun.Glyphs[index],
+						clusterStart + glyphRun.Clusters[index],
+						glyphRun.Advances[index],
+						glyphRun.Offsets[index].X,
+						glyphRun.Offsets[index].Y));
 				}
 
 				return glyphs;
@@ -356,16 +300,5 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		partial void InvalidateSegmentsPartial() => _segments = null;
-
-		private static readonly Func<Font, ushort> _getSpaceGlyph =
-			((Func<Font, ushort>?)(font =>
-			{
-				using var buffer = new HarfBuzzSharp.Buffer();
-				buffer.AddUtf8(" ");
-				buffer.GuessSegmentProperties();
-				font.Shape(buffer);
-				return (ushort)buffer.GlyphInfos[0].Codepoint;
-			}))
-			.AsMemoized();
 	}
 }

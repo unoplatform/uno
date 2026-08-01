@@ -29,6 +29,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!-- Shaping (HarfBuzz) is a font capability behind IFont; ManagedFont builds its own HarfBuzz face from font bytes. HarfBuzz is not Skia. -->
+		<PackageReference Include="HarfBuzzSharp" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />

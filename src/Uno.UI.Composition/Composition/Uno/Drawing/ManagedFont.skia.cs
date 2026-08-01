@@ -3,7 +3,12 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using Windows.UI;
+using HbFont = HarfBuzzSharp.Font;
+using HbFace = HarfBuzzSharp.Face;
+using HbBuffer = HarfBuzzSharp.Buffer;
+using HbBlob = HarfBuzzSharp.Blob;
 
 namespace Uno.UI.Composition.Drawing;
 
@@ -22,9 +27,13 @@ namespace Uno.UI.Composition.Drawing;
 /// </remarks>
 internal sealed class ManagedFont : IFont
 {
+	// HarfBuzz shapes in font-design units at this fixed scale; Shape() converts the output back to pixels.
+	private const int ShapeScale = 512;
+
 	private readonly byte[] _data;
 	private readonly float _pixelSize;
 	private readonly int _unitsPerEm;
+	private HbFont? _hbFont;
 	private readonly int _numGlyphs;
 
 	// TrueType 'glyf' outlines.
@@ -139,8 +148,78 @@ internal sealed class ManagedFont : IFont
 	/// <summary>The font's family name from the <c>name</c> table (empty if unavailable).</summary>
 	public string FamilyName => _familyName ??= ParseFamilyName(_data, _name);
 
-	/// <summary>The font's units-per-em (design grid).</summary>
-	public int UnitsPerEm => _unitsPerEm;
+	public GlyphRun Shape(ReadOnlySpan<char> text, TextDirection direction, bool enableLigatures = true)
+		=> ShapeCore(text, direction, enableLigatures, out _);
+
+	public GlyphRun Shape(ReadOnlySpan<char> text, out TextDirection resolvedDirection, bool enableLigatures = true)
+		=> ShapeCore(text, null, enableLigatures, out resolvedDirection);
+
+	private GlyphRun ShapeCore(ReadOnlySpan<char> text, TextDirection? direction, bool enableLigatures, out TextDirection resolvedDirection)
+	{
+		using var buffer = new HbBuffer();
+		buffer.AddUtf16(text);
+		buffer.GuessSegmentProperties();
+		if (direction is { } requested)
+		{
+			buffer.Direction = requested == TextDirection.RightToLeft ? HarfBuzzSharp.Direction.RightToLeft : HarfBuzzSharp.Direction.LeftToRight;
+		}
+		resolvedDirection = buffer.Direction == HarfBuzzSharp.Direction.RightToLeft ? TextDirection.RightToLeft : TextDirection.LeftToRight;
+
+		if (enableLigatures)
+		{
+			GetHarfBuzzFont().Shape(buffer);
+		}
+		else
+		{
+			// Disable the OpenType 'liga' feature (a run may span multiple chars that must stay separately addressable).
+			GetHarfBuzzFont().Shape(buffer, new HarfBuzzSharp.Feature(new HarfBuzzSharp.Tag('l', 'i', 'g', 'a'), 0));
+		}
+
+		var infos = buffer.GetGlyphInfoSpan();
+		var pos = buffer.GetGlyphPositionSpan();
+		var count = buffer.Length;
+		var glyphs = new ushort[count];
+		var offsets = new Vector2[count];
+		var advances = new float[count];
+		var clusters = new int[count];
+		var scale = _pixelSize / ShapeScale;
+		for (var i = 0; i < count; i++)
+		{
+			glyphs[i] = (ushort)infos[i].Codepoint;
+			clusters[i] = (int)infos[i].Cluster;
+			offsets[i] = new Vector2(pos[i].XOffset * scale, pos[i].YOffset * scale);
+			advances[i] = pos[i].XAdvance * scale;
+		}
+
+		return new GlyphRun(glyphs, offsets, advances, clusters);
+	}
+
+	private HbFont GetHarfBuzzFont()
+	{
+		if (_hbFont is null)
+		{
+			var face = new HbFace((_, tag) => CreateTableBlob((uint)tag));
+			face.UnitsPerEm = _unitsPerEm;
+			var font = new HbFont(face);
+			font.SetScale(ShapeScale, ShapeScale);
+			font.SetFunctionsOpenType();
+			_hbFont = font;
+		}
+
+		return _hbFont;
+	}
+
+	private HbBlob? CreateTableBlob(uint tag)
+	{
+		var bytes = ReadTable(tag);
+		if (bytes is not { Length: > 0 })
+		{
+			return null;
+		}
+
+		var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+		return new HbBlob(handle.AddrOfPinnedObject(), bytes.Length, HarfBuzzSharp.MemoryMode.ReadOnly, handle.Free);
+	}
 
 	// Reads the family name from the 'name' table. Prefers the typographic family (nameID 16) over the legacy
 	// family (nameID 1); prefers a Windows UTF-16BE English record, else the first usable record.
@@ -227,8 +306,8 @@ internal sealed class ManagedFont : IFont
 		return new string(chars);
 	}
 
-	/// <summary>Returns the bytes of the sfnt table with the given tag, or null if absent.</summary>
-	public byte[]? GetFontTable(uint tag)
+	/// <summary>Returns the bytes of the sfnt table with the given tag, or null if absent (feeds the HarfBuzz face).</summary>
+	private byte[]? ReadTable(uint tag)
 	{
 		var numTables = U16(_data, _sfntOffset + 4);
 		var dir = _sfntOffset + 12;
