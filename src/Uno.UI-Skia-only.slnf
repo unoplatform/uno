@@ -48,6 +48,7 @@
       "Uno.UI.Composition\\Uno.UI.Composition.Reference.csproj",
       "Uno.UI.Composition\\Uno.UI.Composition.Skia.csproj",
       "Uno.UI.Composition.Skia\\Uno.UI.Composition.SkiaBackend.csproj",
+      "Uno.UI.Composition.Drawing\\Uno.UI.Composition.Drawing.csproj",
       "Uno.UI.DevServer.Cli\\Uno.UI.DevServer.Cli.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.netcoremobile.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Reference.csproj",

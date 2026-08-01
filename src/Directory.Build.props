@@ -159,6 +159,7 @@
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Tests.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Skia.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.SkiaBackend.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Drawing.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Composition.Reference.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.XamlHost.Tests.csproj</_AdjustedOutputProjects>
