@@ -100,6 +100,20 @@ var p7 = Render(r => { r.Save(); r.ClipRect(new Rect(0, 0, 10, 10)); r.Restore()
 var sc = At(p7, 32, 32);
 Check("save/restore: clip released → full green", sc.g > 200 && sc.r < 60, sc);
 
+// 7b) ROUNDED-RECT CLIP — a full-surface draw clipped by a rounded rect must leave the CORNERS unpainted
+//     (the old AABB-scissor clip painted them). Center stays inside → red.
+var rr = new RoundRectangle
+{
+	Rect = new Rect(8, 8, 48, 48),
+	TopLeft = new Vector2(16, 16), TopRight = new Vector2(16, 16),
+	BottomRight = new Vector2(16, 16), BottomLeft = new Vector2(16, 16),
+};
+var prr = Render(r => { r.ClipRoundRect(rr); r.DrawRect(new Rect(0, 0, 64, 64), red, false); });
+var rrCenter = At(prr, 32, 32);   // deep inside → red
+var rrCorner = At(prr, 10, 10);   // inside the 8..56 AABB but outside the r=16 corner → masked (black)
+Check("rounded-clip: center painted (red)", rrCenter.r > 200 && rrCenter.g < 60, rrCenter);
+Check("rounded-clip: corner masked (black)", rrCorner.r < 40 && rrCorner.g < 40 && rrCorner.b < 40, rrCorner);
+
 // 8) CROSS-BACKEND AGREEMENT — render the SAME neutral scene (black bg + green managed-geometry triangle)
 //    through the Skia backend and the WebGPU backend, and assert both classify every unambiguous pixel the same.
 var black = WColor.FromArgb(255, 0, 0, 0);

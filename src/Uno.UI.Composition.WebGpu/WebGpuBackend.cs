@@ -29,6 +29,11 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public RenderPipeline* GradientPipe;
 	public BindGroupLayout* ImgBgl;
 	public BindGroupLayout* GradBgl;
+	// group(1) clip-uniform layouts (one per color-writing pipeline; all describe the same ClipU).
+	public BindGroupLayout* SolidClipBgl;
+	public BindGroupLayout* CoverClipBgl;
+	public BindGroupLayout* ImageClipBgl;
+	public BindGroupLayout* GradClipBgl;
 	public Sampler* Smp;
 
 	// Uniform size (bytes) of the gradient struct: header(16) + geo(16) + colors(16*16) + stops(4*16).
@@ -92,12 +97,34 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		return outp;
 	}
 
+	// Shared clip type + coverage fn prepended to every color-writing shader. The uniform is passed as a
+	// parameter (each shader declares the binding at its own contiguous group index — colored uses group 0,
+	// image/gradient group 1 — avoiding a group hole wgpu's auto-layout rejects). Device-space, axis-aligned
+	// rounded-rect mask (radii 0 → plain rect, full coverage); ~1px analytic AA on the corner edge.
+	private const string ClipStructFn = @"
+struct ClipU { rect: vec4<f32>, radii: vec4<f32>, flags: vec4<f32> };
+fn clipCov(fc: vec2<f32>, clip: ClipU) -> f32 {
+  if (clip.flags.x < 0.5) { return 1.0; }
+  let rl = clip.rect;
+  let c = vec2<f32>((rl.x + rl.z) * 0.5, (rl.y + rl.w) * 0.5);
+  let h = vec2<f32>((rl.z - rl.x) * 0.5, (rl.w - rl.y) * 0.5);
+  let lp = fc - c;
+  let rTop = select(clip.radii.x, clip.radii.y, lp.x > 0.0);
+  let rBot = select(clip.radii.w, clip.radii.z, lp.x > 0.0);
+  let rad = select(rTop, rBot, lp.y > 0.0);
+  let q = abs(lp) - h + vec2<f32>(rad, rad);
+  let d = min(max(q.x, q.y), 0.0) + length(max(q, vec2<f32>(0.0, 0.0))) - rad;
+  return clamp(0.5 - d, 0.0, 1.0);
+}
+";
+
 	private const string ColoredWgsl = @"
+@group(0) @binding(0) var<uniform> clip: ClipU;
 struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 @vertex fn vs(@location(0) pos: vec2<f32>, @location(1) col: vec4<f32>) -> VOut {
   var o: VOut; o.p = vec4<f32>(pos, 0.0, 1.0); o.c = col; return o;
 }
-@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return i.c; }";
+@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy, clip)); }";
 
 	private const string PosOnlyWgsl = @"
 @vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return vec4<f32>(pos, 0.0, 1.0); }
@@ -116,7 +143,7 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 
 	private void CreatePipelines()
 	{
-		var colored = Module(ColoredWgsl);
+		var colored = Module(ClipStructFn + ColoredWgsl);
 		var posOnly = Module(PosOnlyWgsl);
 		var vs = (byte*)SilkMarshal.StringToPtr("vs", NativeStringEncoding.UTF8);
 		var fs = (byte*)SilkMarshal.StringToPtr("fs", NativeStringEncoding.UTF8);
@@ -131,6 +158,8 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 		StencilEvenOdd = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(CompareFunction.Always, StencilOperation.Invert), Face(CompareFunction.Always, StencilOperation.Invert), 0xFF, 0xFF);
 		StencilNonZero = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(CompareFunction.Always, StencilOperation.IncrementWrap), Face(CompareFunction.Always, StencilOperation.DecrementWrap), 0xFF, 0xFF);
 		CoverPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(CompareFunction.NotEqual, StencilOperation.Zero), Face(CompareFunction.NotEqual, StencilOperation.Zero), 0xFF, 0xFF);
+		SolidClipBgl = W.RenderPipelineGetBindGroupLayout(SolidPipe, 0);
+		CoverClipBgl = W.RenderPipelineGetBindGroupLayout(CoverPipe, 0);
 		CreateImagePipeline();
 		CreateGradientPipeline(&blend);
 	}
@@ -140,6 +169,7 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 	private const string GradientWgsl = @"
 struct Grad { header: vec4<f32>, geo: vec4<f32>, colors: array<vec4<f32>, 16>, stops: array<vec4<f32>, 4> };
 @group(0) @binding(0) var<uniform> g: Grad;
+@group(1) @binding(0) var<uniform> clip: ClipU;
 @vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return vec4<f32>(pos, 0.0, 1.0); }
 fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
 @fragment fn fs(@builtin(position) fc: vec4<f32>) -> @location(0) vec4<f32> {
@@ -170,12 +200,12 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
       }
     }
   }
-  return col;
+  return vec4<f32>(col.rgb, col.a * clipCov(fc.xy, clip));
 }";
 
 	private void CreateGradientPipeline(BlendState* blend)
 	{
-		var module = Module(GradientWgsl);
+		var module = Module(ClipStructFn + GradientWgsl);
 		var vs = (byte*)SilkMarshal.StringToPtr("vs", NativeStringEncoding.UTF8);
 		var fs = (byte*)SilkMarshal.StringToPtr("fs", NativeStringEncoding.UTF8);
 		var attr = new VertexAttribute { Format = VertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
@@ -188,6 +218,7 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
 		var pd = new RenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new PrimitiveState { Topology = PrimitiveTopology.TriangleList, StripIndexFormat = IndexFormat.Undefined, FrontFace = FrontFace.Ccw, CullMode = CullMode.None }, Multisample = new MultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = false }, Layout = null };
 		GradientPipe = W.DeviceCreateRenderPipeline(Dev, ref pd);
 		GradBgl = W.RenderPipelineGetBindGroupLayout(GradientPipe, 0);
+		GradClipBgl = W.RenderPipelineGetBindGroupLayout(GradientPipe, 1);
 	}
 
 	private const string ImageWgsl = @"
@@ -196,12 +227,13 @@ struct U { op: vec4<f32> };
 @group(0) @binding(0) var tex: texture_2d<f32>;
 @group(0) @binding(1) var smp: sampler;
 @group(0) @binding(2) var<uniform> u: U;
+@group(1) @binding(0) var<uniform> clip: ClipU;
 @vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> VOut { var o: VOut; o.p = vec4<f32>(pos, 0.0, 1.0); o.uv = uv; return o; }
-@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return textureSample(tex, smp, i.uv) * u.op.x; }";
+@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return textureSample(tex, smp, i.uv) * u.op.x * clipCov(i.p.xy, clip); }";
 
 	private void CreateImagePipeline()
 	{
-		var module = Module(ImageWgsl);
+		var module = Module(ClipStructFn + ImageWgsl);
 		var vs = (byte*)SilkMarshal.StringToPtr("vs", NativeStringEncoding.UTF8);
 		var fs = (byte*)SilkMarshal.StringToPtr("fs", NativeStringEncoding.UTF8);
 		var attrs = stackalloc VertexAttribute[2];
@@ -218,6 +250,7 @@ struct U { op: vec4<f32> };
 		var pd = new RenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new PrimitiveState { Topology = PrimitiveTopology.TriangleList, StripIndexFormat = IndexFormat.Undefined, FrontFace = FrontFace.Ccw, CullMode = CullMode.None }, Multisample = new MultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = false }, Layout = null };
 		ImagePipe = W.DeviceCreateRenderPipeline(Dev, ref pd);
 		ImgBgl = W.RenderPipelineGetBindGroupLayout(ImagePipe, 0);
+		ImageClipBgl = W.RenderPipelineGetBindGroupLayout(ImagePipe, 1);
 		var sd = new SamplerDescriptor { AddressModeU = AddressMode.ClampToEdge, AddressModeV = AddressMode.ClampToEdge, MagFilter = FilterMode.Linear, MinFilter = FilterMode.Linear, MipmapFilter = MipmapFilterMode.Nearest, MaxAnisotropy = 1 };
 		Smp = W.DeviceCreateSampler(Dev, ref sd);
 	}
@@ -311,10 +344,22 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 	}
 }
 
+// A clip is a device-space scissor AABB (fast reject + plain-rect clip) plus an optional device-space,
+// axis-aligned rounded-rect whose corners are masked per-fragment in the shaders. A rotated rounded clip
+// degrades to its AABB (the exact fix is clip-local-space eval, as with the radial gradient — follow-up).
+internal struct ClipData
+{
+	public Vector4 Aabb;    // device L,T,R,B scissor
+	public bool HasRound;
+	public Vector4 Rect;    // device rounded-rect L,T,R,B
+	public Vector4 Radii;   // per-corner radius (TL,TR,BR,BL), device px
+	public static ClipData None => new() { Aabb = new Vector4(-1e9f, -1e9f, 1e9f, 1e9f) };
+}
+
 // Draw commands share one ordered stream so cross-type z-order (rect over path over image) is preserved.
 internal abstract class WebGpuCommand
 {
-	public Vector4 Clip;
+	public ClipData Clip;
 }
 
 internal sealed class RectCommand : WebGpuCommand
@@ -369,9 +414,9 @@ public sealed class WebGpuRenderData : IRenderData
 
 public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
 {
-	private readonly Stack<(Matrix4x4 m, Vector4 clip)> _stack = new();
+	private readonly Stack<(Matrix4x4 m, ClipData clip)> _stack = new();
 	private Matrix4x4 _m = Matrix4x4.Identity;
-	private Vector4 _clip = new(-1e9f, -1e9f, 1e9f, 1e9f); // device-space L,T,R,B
+	private ClipData _clip = ClipData.None;
 	private readonly WebGpuRenderData _data = new();
 
 	public Matrix4x4 TotalMatrix => _m;
@@ -387,18 +432,36 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	public void SaveLayer(IColorFilter colorFilter, bool antialias = false) => Save();
 	public void SaveLayer(BlendMode blendMode, bool antialias = false) => Save();
 	public void SaveLayer(IEffectFilter filter) => Save();
-	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
+	// Device-space AABB of a mapped rect (its 4 corners), for the scissor / fast reject.
+	private Vector4 DeviceAabb(in Rect rect)
 	{
-		// Axis-aligned device AABB of the clip rect, intersected with the current clip (Intersect only; scissor).
 		var a = Map((float)rect.Left, (float)rect.Top); var b = Map((float)rect.Right, (float)rect.Top);
 		var c = Map((float)rect.Right, (float)rect.Bottom); var d = Map((float)rect.Left, (float)rect.Bottom);
 		var l = MathF.Min(MathF.Min(a.X, b.X), MathF.Min(c.X, d.X)); var t = MathF.Min(MathF.Min(a.Y, b.Y), MathF.Min(c.Y, d.Y));
 		var r = MathF.Max(MathF.Max(a.X, b.X), MathF.Max(c.X, d.X)); var bo = MathF.Max(MathF.Max(a.Y, b.Y), MathF.Max(c.Y, d.Y));
-		_clip = new Vector4(MathF.Max(_clip.X, l), MathF.Max(_clip.Y, t), MathF.Min(_clip.Z, r), MathF.Min(_clip.W, bo));
+		return new Vector4(l, t, r, bo);
 	}
-	// Round-rect / path clips approximated by their AABB scissor for now (corners not yet masked).
-	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) => ClipRect(roundRect.Rect, operation, antialias);
-	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) { var b = geometry.Bounds; ClipRect(b, operation, antialias); }
+
+	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
+	{
+		// Tighten the scissor AABB; any active rounded shape is preserved (Intersect only).
+		var a = DeviceAabb(rect);
+		_clip.Aabb = new Vector4(MathF.Max(_clip.Aabb.X, a.X), MathF.Max(_clip.Aabb.Y, a.Y), MathF.Min(_clip.Aabb.Z, a.Z), MathF.Min(_clip.Aabb.W, a.W));
+	}
+
+	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
+	{
+		var aabb = DeviceAabb(roundRect.Rect);
+		_clip.Aabb = new Vector4(MathF.Max(_clip.Aabb.X, aabb.X), MathF.Max(_clip.Aabb.Y, aabb.Y), MathF.Min(_clip.Aabb.Z, aabb.Z), MathF.Min(_clip.Aabb.W, aabb.W));
+		// Device-space, axis-aligned rounded rect (exact under scale/translate). Per-corner radius uses X, scaled
+		// by the matrix's X-axis length; a full rotation would need clip-local eval (falls back to the AABB above).
+		var s = new Vector2(_m.M11, _m.M12).Length();
+		_clip.HasRound = true;
+		_clip.Rect = aabb;
+		_clip.Radii = new Vector4(roundRect.TopLeft.X * s, roundRect.TopRight.X * s, roundRect.BottomRight.X * s, roundRect.BottomLeft.X * s);
+	}
+
+	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) => ClipRect(geometry.Bounds, operation, antialias);
 	public void Clear(WColor color) => _data.ClearColor = color;
 
 	private Vector2 Map(float x, float y) => new(x * _m.M11 + y * _m.M21 + _m.M41, x * _m.M12 + y * _m.M22 + _m.M42);
@@ -610,14 +673,33 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		}
 	}
 
-	// Transform a child clip AABB by the current matrix and intersect it with the current clip.
-	private Vector4 ClipCompose(Vector4 c, Func<Vector2, Vector2> t)
+	// AABB of a child rect (its 4 corners) under the replay transform t.
+	private static Vector4 TransformedAabb(Vector4 rect, Func<Vector2, Vector2> t)
 	{
-		if (c.X <= -1e8f && c.Y <= -1e8f && c.Z >= 1e8f && c.W >= 1e8f) { return _clip; }
-		var a = t(new Vector2(c.X, c.Y)); var b = t(new Vector2(c.Z, c.Y)); var e = t(new Vector2(c.Z, c.W)); var f = t(new Vector2(c.X, c.W));
+		var a = t(new Vector2(rect.X, rect.Y)); var b = t(new Vector2(rect.Z, rect.Y)); var e = t(new Vector2(rect.Z, rect.W)); var f = t(new Vector2(rect.X, rect.W));
 		var l = MathF.Min(MathF.Min(a.X, b.X), MathF.Min(e.X, f.X)); var top = MathF.Min(MathF.Min(a.Y, b.Y), MathF.Min(e.Y, f.Y));
 		var r = MathF.Max(MathF.Max(a.X, b.X), MathF.Max(e.X, f.X)); var bo = MathF.Max(MathF.Max(a.Y, b.Y), MathF.Max(e.Y, f.Y));
-		return new Vector4(MathF.Max(_clip.X, l), MathF.Max(_clip.Y, top), MathF.Min(_clip.Z, r), MathF.Min(_clip.W, bo));
+		return new Vector4(l, top, r, bo);
+	}
+
+	// Intersect a child (sub-recording) clip into the current session clip, transforming it by the replay matrix.
+	private ClipData ClipCompose(ClipData c, Func<Vector2, Vector2> t)
+	{
+		var result = _clip;
+		if (!(c.Aabb.X <= -1e8f && c.Aabb.Y <= -1e8f && c.Aabb.Z >= 1e8f && c.Aabb.W >= 1e8f))
+		{
+			var a = TransformedAabb(c.Aabb, t);
+			result.Aabb = new Vector4(MathF.Max(result.Aabb.X, a.X), MathF.Max(result.Aabb.Y, a.Y), MathF.Min(result.Aabb.Z, a.Z), MathF.Min(result.Aabb.W, a.W));
+		}
+		// Child rounded shape (innermost) wins; transform its rect and scale radii by the replay matrix.
+		if (c.HasRound)
+		{
+			var s = new Vector2(_m.M11, _m.M12).Length();
+			result.HasRound = true;
+			result.Rect = TransformedAabb(c.Rect, t);
+			result.Radii = c.Radii * s;
+		}
+		return result;
 	}
 }
 
@@ -646,6 +728,21 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		return buf;
 	}
 
+	// The group(1) clip bind group for a command: packs the ClipU (rect, radii, flags) into a uniform.
+	private BindGroup* MakeClipBg(BindGroupLayout* bgl, ClipData cd)
+	{
+		var cu = new float[12];
+		cu[0] = cd.Rect.X; cu[1] = cd.Rect.Y; cu[2] = cd.Rect.Z; cu[3] = cd.Rect.W;
+		cu[4] = cd.Radii.X; cu[5] = cd.Radii.Y; cu[6] = cd.Radii.Z; cu[7] = cd.Radii.W;
+		cu[8] = cd.HasRound ? 1f : 0f;
+		var bd = new BufferDescriptor { Size = 48, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
+		var buf = _d.W.DeviceCreateBuffer(_d.Dev, ref bd);
+		fixed (float* p = cu) { _d.W.QueueWriteBuffer(_d.Q, buf, 0, p, 48); }
+		var e = new BindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = 48 };
+		var bgd = new BindGroupDescriptor { Layout = bgl, EntryCount = 1, Entries = &e };
+		return _d.W.DeviceCreateBindGroup(_d.Dev, ref bgd);
+	}
+
 	public void Replay(IRenderData data)
 	{
 		var rd = (WebGpuRenderData)data;
@@ -654,7 +751,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// Build GPU resources for every command up front (buffers/textures must be created outside the
 		// render pass), preserving draw order in a single op list so cross-type z-order is honoured.
 		// kind: 0=rect (b0=verts), 1=path (b0=fan, u0=fanCount, b1=cover, flag=evenOdd), 2=image (b0=bindGroup, b1=quad).
-		var ops = new List<(int kind, nint b0, uint u0, nint b1, bool flag, Vector4 clip)>();
+		var ops = new List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)>();
 		foreach (var cmd in rd.Commands)
 		{
 			switch (cmd)
@@ -665,7 +762,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					var v = new List<float>();
 					void V(Vector2 p) { var n = Ndc(p); v.Add(n.X); v.Add(n.Y); v.Add(c.X); v.Add(c.Y); v.Add(c.Z); v.Add(c.W); }
 					V(rc.P0); V(rc.P1); V(rc.P2); V(rc.P0); V(rc.P2); V(rc.P3);
-					ops.Add((0, (nint)MakeBuffer(v.ToArray()), 0, 0, false, rc.Clip));
+					ops.Add((0, (nint)MakeBuffer(v.ToArray()), 0, 0, false, rc.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc.Clip)));
 					break;
 				}
 				case PathFill pf:
@@ -678,7 +775,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					void CV(Vector2 p) { var n = Ndc(p); cov.Add(n.X); cov.Add(n.Y); cov.Add(c.X); cov.Add(c.Y); cov.Add(c.Z); cov.Add(c.W); }
 					var tl = pf.BbMin; var br = pf.BbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
 					CV(tl); CV(tr); CV(br); CV(tl); CV(br); CV(bl);
-					ops.Add((1, (nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)MakeBuffer(cov.ToArray()), pf.EvenOdd, pf.Clip));
+					ops.Add((1, (nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)MakeBuffer(cov.ToArray()), pf.EvenOdd, pf.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf.Clip)));
 					break;
 				}
 				case ImageCmd im:
@@ -698,7 +795,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					var q = new float[24];
 					void QV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); q[idx] = n.X; q[idx + 1] = n.Y; q[idx + 2] = u; q[idx + 3] = vv; }
 					QV(0, im.P0, im.U0, im.V0); QV(4, im.P1, im.U1, im.V0); QV(8, im.P2, im.U1, im.V1); QV(12, im.P0, im.U0, im.V0); QV(16, im.P2, im.U1, im.V1); QV(20, im.P3, im.U0, im.V1);
-					ops.Add((2, (nint)bg, 0, (nint)MakeBuffer(q), false, im.Clip));
+					ops.Add((2, (nint)bg, 0, (nint)MakeBuffer(q), false, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip)));
 					break;
 				}
 				case GradientCmd gc:
@@ -713,7 +810,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					var gq = new float[12];
 					void GV(int idx, Vector2 pos) { var n = Ndc(pos); gq[idx] = n.X; gq[idx + 1] = n.Y; }
 					GV(0, gc.P0); GV(2, gc.P1); GV(4, gc.P2); GV(6, gc.P0); GV(8, gc.P2); GV(10, gc.P3);
-					ops.Add((3, (nint)gbg, 0, (nint)MakeBuffer(gq), false, gc.Clip));
+					ops.Add((3, (nint)gbg, 0, (nint)MakeBuffer(gq), false, gc.Clip, (nint)MakeClipBg(_d.GradClipBgl, gc.Clip)));
 					break;
 				}
 			}
@@ -739,13 +836,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var rp = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
 		var pass = W.CommandEncoderBeginRenderPass(enc, ref rp);
 
-		foreach (var (kind, b0, u0, b1, flag, clip) in ops)
+		foreach (var (kind, b0, u0, b1, flag, clip, clipBg) in ops)
 		{
-			if (!SetScissor(pass, clip)) { continue; }
+			if (!SetScissor(pass, clip.Aabb)) { continue; }
 			switch (kind)
 			{
 				case 0:
 					W.RenderPassEncoderSetPipeline(pass, _d.SolidPipe);
+					W.RenderPassEncoderSetBindGroup(pass, 0, (BindGroup*)clipBg, 0, (uint*)null);
 					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b0, 0, (nuint)(36 * sizeof(float)));
 					W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
 					break;
@@ -754,6 +852,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b0, 0, (nuint)(u0 * 2 * sizeof(float)));
 					W.RenderPassEncoderDraw(pass, u0, 1, 0, 0);
 					W.RenderPassEncoderSetPipeline(pass, _d.CoverPipe);
+					W.RenderPassEncoderSetBindGroup(pass, 0, (BindGroup*)clipBg, 0, (uint*)null);
 					W.RenderPassEncoderSetStencilReference(pass, 0);
 					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b1, 0, (nuint)(36 * sizeof(float)));
 					W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
@@ -761,12 +860,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				case 2:
 					W.RenderPassEncoderSetPipeline(pass, _d.ImagePipe);
 					W.RenderPassEncoderSetBindGroup(pass, 0, (BindGroup*)b0, 0, (uint*)null);
+					W.RenderPassEncoderSetBindGroup(pass, 1, (BindGroup*)clipBg, 0, (uint*)null);
 					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b1, 0, (nuint)(24 * sizeof(float)));
 					W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
 					break;
 				case 3:
 					W.RenderPassEncoderSetPipeline(pass, _d.GradientPipe);
 					W.RenderPassEncoderSetBindGroup(pass, 0, (BindGroup*)b0, 0, (uint*)null);
+					W.RenderPassEncoderSetBindGroup(pass, 1, (BindGroup*)clipBg, 0, (uint*)null);
 					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b1, 0, (nuint)(12 * sizeof(float)));
 					W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
 					break;
