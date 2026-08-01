@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -134,7 +136,7 @@ public class Given_Visual_ArrangePending
 
 		public double RasterizationScale => 1;
 
-		public event EventHandler RasterizationScaleChanged
+		public event EventHandler? RasterizationScaleChanged
 		{
 			add { }
 			remove { }
