@@ -22,14 +22,14 @@ namespace Uno.UI.Composition.Drawing;
 /// </summary>
 internal sealed class SkiaEffectFactory
 {
-	private readonly Func<string, CompositionBrush?> _getSourceParameter;
+	private readonly Func<string, IEffectSource?> _getSourceParameter;
 	private readonly bool _useBackdropBlurClamp;
 	private readonly bool _isSoftwareRenderer;
 
 	private bool _isCurrentInputBackdrop;
 	private bool _hasBackdropBrushInput;
 
-	internal SkiaEffectFactory(Func<string, CompositionBrush?> getSourceParameter, bool useBackdropBlurClamp, bool isSoftwareRenderer)
+	internal SkiaEffectFactory(Func<string, IEffectSource?> getSourceParameter, bool useBackdropBlurClamp, bool isSoftwareRenderer)
 	{
 		_getSourceParameter = getSourceParameter;
 		_useBackdropBlurClamp = useBackdropBlurClamp;
@@ -1002,7 +1002,7 @@ $$"""
 
 			if (mode == SKShaderTileMode.Repeat)
 			{
-				var srcBounds = source is CompositionEffectSourceParameter param && _getSourceParameter(param.Name) is ISizedBrush { Size: { } size }
+				var srcBounds = source is CompositionEffectSourceParameter param && _getSourceParameter(param.Name) is { Size: { } size }
 					? new SKRect(0, 0, size.X, size.Y)
 					: bounds;
 
@@ -1466,10 +1466,10 @@ $$"""
 		{
 			case CompositionEffectSourceParameter effectSourceParameter:
 				{
-					CompositionBrush? brush = _getSourceParameter(effectSourceParameter.Name);
+					IEffectSource? brush = _getSourceParameter(effectSourceParameter.Name);
 					if (brush is not null)
 					{
-						if (brush is CompositionBackdropBrush)
+						if (brush.IsBackdrop)
 						{
 							_isCurrentInputBackdrop = true;
 							_hasBackdropBrushInput = true;
@@ -1479,14 +1479,14 @@ $$"""
 						_isCurrentInputBackdrop = false;
 
 						SKRect srcBounds = bounds;
-						if (tryUsingSourceSize && brush is ISizedBrush { Size: Vector2 size })
+						if (tryUsingSourceSize && brush.Size is Vector2 size)
 						{
 							srcBounds = bounds with { Right = size.X, Bottom = size.Y };
 						}
 
 						// Creating a static SKPictureRecorder to be reused for all calls causes a segfault for some reason
 						var recorder = new SKPictureRecorder();
-						brush.TryPaint(new SkiaDrawingSession(recorder.BeginRecording(srcBounds)), 1, srcBounds.ToRect());
+						brush.Paint(new SkiaDrawingSession(recorder.BeginRecording(srcBounds)), 1, srcBounds.ToRect());
 						return SKImageFilter.CreatePicture(recorder.EndRecording());
 					}
 

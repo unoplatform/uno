@@ -3,7 +3,6 @@
 using System;
 using System.IO;
 using System.Numerics;
-using Microsoft.UI.Composition;
 using Windows.Foundation;
 using Windows.Graphics.Effects;
 using Windows.UI;
@@ -50,7 +49,7 @@ public sealed class ManagedDrawingFactory : IDrawingFactory
 	public IColorFilter CreateColorMatrixColorFilter(float[] matrix)
 		=> throw new NotImplementedException("Managed color filters are not yet implemented.");
 
-	public IEffectFilter? CreateEffectFilter(IGraphicsEffect effect, Rect bounds, Func<string, CompositionBrush?> sourceResolver, bool useBackdropBlurClamp, bool isSoftwareRenderer, out bool hasBackdropInput)
+	public IEffectFilter? CreateEffectFilter(IGraphicsEffect effect, Rect bounds, Func<string, IEffectSource?> sourceResolver, bool useBackdropBlurClamp, bool isSoftwareRenderer, out bool hasBackdropInput)
 		=> throw new NotImplementedException("Managed effect filters are not yet implemented.");
 
 	public IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, Color color)

@@ -4,7 +4,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Numerics;
-using Microsoft.UI.Composition;
 using Windows.Foundation;
 using Windows.Graphics.Effects;
 using Windows.UI;
@@ -78,15 +77,15 @@ public interface IDrawingFactory
 	/// </summary>
 	/// <param name="effect">The root of the effect graph to realize.</param>
 	/// <param name="bounds">The bounds the effect is generated for.</param>
-	/// <param name="sourceResolver">Maps an effect source-parameter name to its bound input brush, or null.</param>
+	/// <param name="sourceResolver">Maps an effect source-parameter name to its bound input (<see cref="IEffectSource"/>), or null.</param>
 	/// <param name="useBackdropBlurClamp">Clamps backdrop blurs to the element's area (prevents edge bleeding).</param>
 	/// <param name="isSoftwareRenderer">Whether the compositor is currently using a software renderer.</param>
-	/// <param name="hasBackdropInput">Set to true when the graph references a backdrop brush.</param>
+	/// <param name="hasBackdropInput">Set to true when the graph references a backdrop source.</param>
 	/// <returns>The realized effect, or null when the graph resolves to nothing renderable.</returns>
 	IEffectFilter? CreateEffectFilter(
 		IGraphicsEffect effect,
 		Rect bounds,
-		Func<string, CompositionBrush?> sourceResolver,
+		Func<string, IEffectSource?> sourceResolver,
 		bool useBackdropBlurClamp,
 		bool isSoftwareRenderer,
 		out bool hasBackdropInput);
