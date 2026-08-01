@@ -148,8 +148,8 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
     let a = g.geo.xy; let b = g.geo.zw; let ab = b - a; let denom = dot(ab, ab);
     if (denom > 0.0) { t = dot(fc.xy - a, ab) / denom; }
   } else {
-    let c = g.geo.xy; let rx = g.geo.z;
-    if (rx > 0.0) { t = distance(fc.xy, c) / rx; }
+    let c = g.geo.xy; let rx = g.geo.z; let ry = g.geo.w;
+    if (rx > 0.0 && ry > 0.0) { t = length((fc.xy - c) / vec2<f32>(rx, ry)); }
   }
   let tm = g.header.z;
   if (tm < 0.5) { t = clamp(t, 0.0, 1.0); }
@@ -449,8 +449,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		}
 
 		// Compose the gradient's local matrix with the current matrix, so gradient geometry is baked to device
-		// space (the WGSL fragment evaluates in device pixels). Linear is exact under affine; radial radii are
-		// scaled by the combined axis lengths (an ellipse under non-uniform scale is approximated).
+		// space (the WGSL fragment evaluates in device pixels). Linear is exact under affine; radial is elliptical
+		// (each radius scaled by its own device-axis length) — exact under scale/translate. Rotation and a focal
+		// origin != center remain approximate; the exact fix is the original's gradient-local-space eval (follow-up).
 		var lm = new Matrix4x4(
 			g.LocalMatrix.M11, g.LocalMatrix.M12, 0, 0,
 			g.LocalMatrix.M21, g.LocalMatrix.M22, 0, 0,
@@ -598,8 +599,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					}
 					else
 					{
-						var s = new Vector2(_m.M11, _m.M12).Length();
-						uu[6] *= s; uu[7] *= s;
+						// Elliptical: scale each radius by its own device-axis length (rx by X, ry by Y).
+						var rsx = new Vector2(_m.M11, _m.M12).Length();
+						var rsy = new Vector2(_m.M21, _m.M22).Length();
+						uu[6] *= rsx; uu[7] *= rsy;
 					}
 					_data.Commands.Add(new GradientCmd { P0 = T(gc.P0), P1 = T(gc.P1), P2 = T(gc.P2), P3 = T(gc.P3), Uniform = uu, Clip = ClipCompose(gc.Clip, T) });
 					break;
