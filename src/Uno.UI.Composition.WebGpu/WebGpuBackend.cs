@@ -223,13 +223,21 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
 
 	private const string ImageWgsl = @"
 struct VOut { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
-struct U { op: vec4<f32> };
+struct U { op: vec4<f32>, tint: vec4<f32> };
 @group(0) @binding(0) var tex: texture_2d<f32>;
 @group(0) @binding(1) var smp: sampler;
 @group(0) @binding(2) var<uniform> u: U;
 @group(1) @binding(0) var<uniform> clip: ClipU;
 @vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> VOut { var o: VOut; o.p = vec4<f32>(pos, 0.0, 1.0); o.uv = uv; return o; }
-@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return textureSample(tex, smp, i.uv) * u.op.x * clipCov(i.p.xy, clip); }";
+@fragment fn fs(i: VOut) -> @location(0) vec4<f32> {
+  var c = textureSample(tex, smp, i.uv);   // premultiplied
+  if (u.op.y > 0.5) {
+    // SrcIn blend-mode tint: premultiplied(filterColor) * dst.a.
+    let fp = vec4<f32>(u.tint.rgb * u.tint.a, u.tint.a);
+    c = fp * c.a;
+  }
+  return c * u.op.x * clipCov(i.p.xy, clip);
+}";
 
 	private void CreateImagePipeline()
 	{
@@ -383,6 +391,8 @@ internal sealed unsafe class ImageCmd : WebGpuCommand
 	public int W, H;
 	public float Opacity;
 	public float U0, V0, U1 = 1f, V1 = 1f;   // source UV sub-rect (whole texture by default)
+	public int TintMode;        // 0 = none, 1 = SrcIn blend-mode tint
+	public Vector4 Tint;        // straight-alpha tint color (0..1) for TintMode 1
 }
 
 internal sealed class GradientCmd : WebGpuCommand
@@ -403,6 +413,18 @@ public sealed class WebGpuShader : IShader
 	public float[] Stops;
 	public GradientTileMode TileMode;
 	public Matrix3x2 LocalMatrix;
+}
+
+// Backend-owned color filter so the WebGPU renderer can read the tint params (an IColorFilter is opaque —
+// consumed only by the paired renderer). Currently the SrcIn blend-mode tint (image fade/tint, the only
+// DrawImage color-filter case) is honored; other modes / the color matrix carry through but the image path
+// applies only SrcIn for now.
+public sealed class WebGpuColorFilter : IColorFilter
+{
+	public bool IsBlendMode;
+	public WColor Color;
+	public BlendMode Mode;
+	public float[] Matrix;
 }
 
 public sealed class WebGpuRenderData : IRenderData
@@ -587,8 +609,20 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		// No per-frame upload — the texture is already resident; record its view for the present pass.
 		_data.Commands.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = opacity, Clip = _clip });
 	}
-	// Color-filtered (tinted) image draw isn't supported yet on WebGPU — fall back to an untinted draw.
-	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false) => DrawImage(texture, x, y, sampling, 1f, antialias);
+	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false)
+	{
+		if (texture is not WebGpuImageTexture t) { return; }
+		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
+		var (mode, tint) = ResolveTint(colorFilter);
+		_data.Commands.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = 1f, TintMode = mode, Tint = tint, Clip = _clip });
+	}
+
+	// A SrcIn blend-mode WebGpuColorFilter → a straight-alpha tint (the only image color-filter case today);
+	// anything else (other modes, color matrix, or a foreign filter) → untinted.
+	private static (int mode, Vector4 tint) ResolveTint(IColorFilter colorFilter)
+		=> colorFilter is WebGpuColorFilter { IsBlendMode: true, Mode: BlendMode.SrcIn } f
+			? (1, new Vector4(f.Color.R / 255f, f.Color.G / 255f, f.Color.B / 255f, f.Color.A / 255f))
+			: (0, default);
 
 	public void DrawImageNineSlice(IImageTexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false)
 	{
@@ -649,7 +683,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					_data.Commands.Add(new PathFill { FanDevice = dst, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, Clip = ClipCompose(p.Clip, T) });
 					break;
 				case ImageCmd im:
-					_data.Commands.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), View = im.View, W = im.W, H = im.H, Opacity = im.Opacity, U0 = im.U0, V0 = im.V0, U1 = im.U1, V1 = im.V1, Clip = ClipCompose(im.Clip, T) });
+					_data.Commands.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), View = im.View, W = im.W, H = im.H, Opacity = im.Opacity, U0 = im.U0, V0 = im.V0, U1 = im.U1, V1 = im.V1, TintMode = im.TintMode, Tint = im.Tint, Clip = ClipCompose(im.Clip, T) });
 					break;
 				case GradientCmd gc:
 					// Transform the device-space geometry baked into the uniform by the replay matrix too, so the
@@ -782,14 +816,16 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				{
 					// The texture is already resident (WebGpuImageTexture); just bind its view — no upload.
 					var view = im.View;
-					var ubd = new BufferDescriptor { Size = 16, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
+					var ubd = new BufferDescriptor { Size = 32, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
 					var ubuf = W.DeviceCreateBuffer(_d.Dev, ref ubd);
-					var op = stackalloc float[4]; op[0] = im.Opacity; op[1] = op[2] = op[3] = 0;
-					W.QueueWriteBuffer(_d.Q, ubuf, 0, op, 16);
+					var op = stackalloc float[8];
+					op[0] = im.Opacity; op[1] = im.TintMode; op[2] = 0; op[3] = 0;
+					op[4] = im.Tint.X; op[5] = im.Tint.Y; op[6] = im.Tint.Z; op[7] = im.Tint.W;
+					W.QueueWriteBuffer(_d.Q, ubuf, 0, op, 32);
 					var entries = stackalloc BindGroupEntry[3];
 					entries[0] = new BindGroupEntry { Binding = 0, TextureView = view };
 					entries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
-					entries[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 16 };
+					entries[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
 					var bgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
 					var bg = W.DeviceCreateBindGroup(_d.Dev, ref bgd);
 					var q = new float[24];
@@ -1026,8 +1062,8 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 		=> new WebGpuShader { Radial = false, P0 = start, P1 = end, Colors = colors, Stops = colorPositions, TileMode = tileMode, LocalMatrix = localMatrix };
 	public IShader CreateRadialGradientShader(Vector2 center, Vector2 gradientOrigin, float radiusX, float radiusY, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix)
 		=> new WebGpuShader { Radial = true, P0 = center, P1 = gradientOrigin, RadiusX = radiusX, RadiusY = radiusY, Colors = colors, Stops = colorPositions, TileMode = tileMode, LocalMatrix = localMatrix };
-	public IColorFilter CreateBlendModeColorFilter(WColor color, BlendMode mode) => _inner.CreateBlendModeColorFilter(color, mode);
-	public IColorFilter CreateColorMatrixColorFilter(float[] matrix) => _inner.CreateColorMatrixColorFilter(matrix);
+	public IColorFilter CreateBlendModeColorFilter(WColor color, BlendMode mode) => new WebGpuColorFilter { IsBlendMode = true, Color = color, Mode = mode };
+	public IColorFilter CreateColorMatrixColorFilter(float[] matrix) => new WebGpuColorFilter { Matrix = matrix };
 	public IEffectFilter CreateEffectFilter(Windows.Graphics.Effects.IGraphicsEffect effect, Windows.Foundation.Rect bounds, Func<string, Microsoft.UI.Composition.CompositionBrush> sourceResolver, bool useBackdropBlurClamp, bool isSoftwareRenderer, out bool hasBackdropInput) => _inner.CreateEffectFilter(effect, bounds, sourceResolver, useBackdropBlurClamp, isSoftwareRenderer, out hasBackdropInput);
 	public IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, WColor color) => _inner.CreateDropShadowFilter(dx, dy, sigmaX, sigmaY, color);
 }
