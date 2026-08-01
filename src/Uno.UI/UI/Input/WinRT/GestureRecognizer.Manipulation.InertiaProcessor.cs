@@ -342,7 +342,7 @@ public partial class GestureRecognizer
 		private sealed class CompositionInertiaProcessorTimer(Action<TimeSpan> onTick) : IInertiaProcessorTimer
 		{
 #if __SKIA__
-			private Action<long>? _handler;
+			private EventHandler<long>? _handler;
 			private long _startTimestamp;
 
 			public bool IsRunning => _handler is not null;
@@ -351,17 +351,35 @@ public partial class GestureRecognizer
 			{
 				Stop();
 
-				var compositor = Compositor.GetSharedCompositor();
-				_startTimestamp = compositor.TimestampInTicks;
-				_handler = timestamp => onTick(TimeSpan.FromTicks(timestamp - _startTimestamp));
-				compositor.FrameStarting += _handler;
+				if (Microsoft.UI.Xaml.Media.CompositionTarget.MainFrameDriverTarget is not { } target)
+				{
+					return;
+				}
+
+				// Anchored on the first tick, not here: the grid sits at the mean tick offset, so timing from
+				// a raw clock read would make the first elapsed value negative.
+				_startTimestamp = 0;
+				_handler = (_, timestamp) =>
+				{
+					if (_startTimestamp == 0)
+					{
+						_startTimestamp = timestamp - target.FrameIntervalInTicks;
+					}
+
+					onTick(TimeSpan.FromTicks(timestamp - _startTimestamp));
+				};
+				target.FrameStarting += _handler;
 			}
 
 			public void Stop()
 			{
 				if (_handler is not null)
 				{
-					Compositor.GetSharedCompositor().FrameStarting -= _handler;
+					if (Microsoft.UI.Xaml.Media.CompositionTarget.MainFrameDriverTarget is { } target)
+					{
+						target.FrameStarting -= _handler;
+					}
+
 					_handler = null;
 				}
 			}

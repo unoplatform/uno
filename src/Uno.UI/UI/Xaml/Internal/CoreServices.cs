@@ -112,6 +112,13 @@ namespace Uno.UI.Xaml.Core
 					continue;
 				}
 
+#if __SKIA__
+				// Before layout and before the record: a driver's write is then an ordinary pre-frame
+				// invalidation rather than a mid-record one, and the layout it dirties is cleaned by this
+				// same tick instead of dirtying the tree for the next.
+				(root.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.RaiseFrameStarting();
+#endif
+
 				root.UpdateLayout();
 
 				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)

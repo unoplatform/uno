@@ -178,16 +178,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnDiagnosticsFrame(object? sender, object args)
 		{
-			if (Content is UIElement contentElt)
+			if (Content is UIElement contentElt && ScrollDiagnostics.CurrentPhase != ScrollDiagnostics.PhaseIdle)
 			{
-				// Per presenter, not shared: several presenters are loaded at once, and a single shared
-				// "did it move" comparison alternates between them every frame and never reads as idle.
+				// Every frame while a scroll is in flight, including ones that did not move: a frame that
+				// repeats the previous offset is the artefact being measured, so filtering those out hides
+				// exactly what the capture exists to find.
 				var anchor = -contentElt.Visual.AnchorPoint.Y;
-				if (Math.Abs(anchor - _lastDiagnosticsAnchor) > 0.01)
-				{
-					_lastDiagnosticsAnchor = anchor;
-					ScrollDiagnostics.Record(ScrollDiagnostics.SampleKind.Frame, anchor, Visual.Compositor.CurrentFrameTimestampInTicks, GetHashCode());
-				}
+				_lastDiagnosticsAnchor = anchor;
+				ScrollDiagnostics.Record(ScrollDiagnostics.SampleKind.Frame, anchor, FrameDriverTarget?.CurrentFrameTimestampInTicks ?? 0, GetHashCode());
 			}
 
 			ScrollDiagnostics.TryDump();
@@ -600,8 +598,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_isFlingRunning = true;
 			ScrollDiagnostics.CurrentPhase = ScrollDiagnostics.PhaseInertia;
 
-			compositor.FrameStarting += OnFlingFrame;
-			Microsoft.UI.Composition.Compositor.RequestFrame(Visual);
+			FrameDriverTarget!.FrameStarting += OnFlingFrame;
 		}
 
 		private void StopFling()
@@ -613,16 +610,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_isFlingRunning = false;
 			ScrollDiagnostics.CurrentPhase = ScrollDiagnostics.PhaseIdle;
-			Visual.Compositor.FrameStarting -= OnFlingFrame;
+			FrameDriverTarget!.FrameStarting -= OnFlingFrame;
 		}
 
-		private void OnFlingFrame(long timestampInTicks)
+		/// <summary>The target whose tick drives this presenter's fling and wheel decay.</summary>
+		private Media.CompositionTarget? FrameDriverTarget => Visual.CompositionTarget as Media.CompositionTarget;
+
+		private void OnFlingFrame(object? sender, long timestampInTicks)
 		{
 			if (_flingStartTimestamp == 0)
 			{
 				// One interval back, so this first frame advances by the same step the drag was producing
 				// when the finger left the glass.
-				_flingStartTimestamp = timestampInTicks - Visual.Compositor.FrameIntervalInTicks;
+				_flingStartTimestamp = timestampInTicks - FrameDriverTarget!.FrameIntervalInTicks;
 			}
 
 			var elapsed = (timestampInTicks - _flingStartTimestamp) / (double)TimeSpan.TicksPerSecond;
@@ -674,8 +674,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_wheelDecayV.Start(VerticalOffset, now);
 				_isWheelDecayRunning = true;
 				ScrollDiagnostics.CurrentPhase = ScrollDiagnostics.PhaseWheel;
-				compositor.FrameStarting += OnWheelDecayFrame;
-				Microsoft.UI.Composition.Compositor.RequestFrame(Visual);
+				FrameDriverTarget!.FrameStarting += OnWheelDecayFrame;
 			}
 
 			_wheelDecayH.AddImpulse(horizontalDistance);
@@ -696,10 +695,10 @@ namespace Microsoft.UI.Xaml.Controls
 			_isWheelDecayRunning = false;
 			_wheelDecayH.Stop();
 			_wheelDecayV.Stop();
-			Visual.Compositor.FrameStarting -= OnWheelDecayFrame;
+			FrameDriverTarget!.FrameStarting -= OnWheelDecayFrame;
 		}
 
-		private void OnWheelDecayFrame(long timestampInTicks)
+		private void OnWheelDecayFrame(object? sender, long timestampInTicks)
 		{
 			var maxH = Scroller?.ScrollableWidth ?? Math.Max(0, ExtentWidth - ViewportWidth);
 			var maxV = Scroller?.ScrollableHeight ?? Math.Max(0, ExtentHeight - ViewportHeight);

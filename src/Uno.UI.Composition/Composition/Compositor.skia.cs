@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
@@ -39,8 +40,15 @@ public partial class Compositor
 
 	internal static bool SkipVisualTreePainting { get; set; }
 
-	// Frame drivers (e.g. the wheel decay) are motion too, so "wait until animations settle" must cover them.
-	internal bool IsAnimating => _runningAnimations.Count > 0 || FrameStarting is not null;
+	// Frame drivers (e.g. the wheel decay) are motion too, so "wait until animations settle" must cover
+	// them. They live on the CompositionTarget, which this assembly cannot name, so they are counted.
+	private static int _frameDriverCount;
+
+	internal static void AddFrameDriver() => Interlocked.Increment(ref _frameDriverCount);
+
+	internal static void RemoveFrameDriver() => Interlocked.Decrement(ref _frameDriverCount);
+
+	internal bool IsAnimating => _runningAnimations.Count > 0 || Volatile.Read(ref _frameDriverCount) > 0;
 
 	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject host)
 	{
@@ -197,130 +205,14 @@ public partial class Compositor
 		return false;
 	}
 
-	/// <summary>
-	/// Raised once per recorded frame, before the paint walk, with the timestamp every driver in that
-	/// frame must evaluate against.
-	/// </summary>
-	/// <remarks>
-	/// This is the only pre-record per-frame hook in the Skia pipeline. CompositionTarget.Rendering is
-	/// raised from a dispatcher continuation *after* the picture is recorded, so a driver on it lands its
-	/// writes in the following frame.
-	/// </remarks>
-	internal event Action<long>? FrameStarting;
-
-	internal bool HasFrameStartingSubscribers => FrameStarting is not null;
-
-	/// <summary>The timestamp the current frame's drivers were evaluated against.</summary>
-	internal long CurrentFrameTimestampInTicks { get; private set; }
-
 	/// <summary>Kicks the render loop so a newly-subscribed frame driver gets its first tick.</summary>
 	internal static void RequestFrame(Visual visual) => visual.CompositionTarget?.RequestNewFrame();
-
-	/// <summary>Estimated interval between presented frames, for drivers that need a nominal step.</summary>
-	internal long FrameIntervalInTicks => _frameDeltaCount >= FrameClockMinSamples
-		? MedianFrameDelta()
-		: TimeSpan.TicksPerSecond / 60;
-
-	private const int FrameClockWindow = 32;
-	private const int FrameClockMinSamples = 8;
-
-	private readonly long[] _frameDeltas = new long[FrameClockWindow];
-	private int _frameDeltaIndex;
-	private int _frameDeltaCount;
-	private long _lastRawFrameTimestamp;
-	private long _frameClock;
-
-	/// <summary>
-	/// A uniform frame clock for the drivers to evaluate against.
-	/// </summary>
-	/// <remarks>
-	/// Pictures are presented one per vsync, but they are not <i>recorded</i> on a vsync: a record
-	/// carries the measure/arrange cost of the tick that produced it, so the raw clock wobbles by
-	/// milliseconds around a cadence that is otherwise exact. A driver whose position is a function of
-	/// time turns that wobble into v·Δt of position error, which at scroll speeds is a visible fraction
-	/// of a frame step — so the drivers get the grid the frames are actually shown on, recovered from
-	/// the median record interval, rather than the instant the UI thread happened to get here.
-	/// </remarks>
-	internal long GetFrameTimestamp(long raw)
-	{
-		if (_lastRawFrameTimestamp == 0)
-		{
-			_lastRawFrameTimestamp = raw;
-			return _frameClock = raw;
-		}
-
-		var delta = raw - _lastRawFrameTimestamp;
-		_lastRawFrameTimestamp = raw;
-
-		var period = _frameDeltaCount >= FrameClockMinSamples ? MedianFrameDelta() : 0;
-
-		// A gap far longer than a frame is the loop having been idle between motions, not an interval the
-		// display ever ran at. Admitting it would skew the median, which also sets the interval a fling
-		// back-dates its launch by — turning a timing artefact into a position error.
-		if (period <= 0 || delta < period * 4)
-		{
-			_frameDeltas[_frameDeltaIndex] = delta;
-			_frameDeltaIndex = (_frameDeltaIndex + 1) % FrameClockWindow;
-			if (_frameDeltaCount < FrameClockWindow)
-			{
-				_frameDeltaCount++;
-			}
-		}
-
-		if (period <= 0)
-		{
-			return _frameClock = raw;
-		}
-
-		var previous = _frameClock;
-
-		// Advance by whole frames, never fewer than one, then correct the sub-period phase. Rounding
-		// unconditionally rather than branching once the error passes a threshold is what keeps a period
-		// that is a whole multiple of the record rate from flipping sides on jitter, and it re-anchors
-		// after an idle gap without a special case.
-		var frames = Math.Max(1, (long)Math.Round((raw - _frameClock) / (double)period, MidpointRounding.AwayFromZero));
-		_frameClock += frames * period;
-		_frameClock += (raw - _frameClock) / 16;
-
-		// Monotone by construction above, asserted here so it stays that way under any future edit: a
-		// backward step makes a fling's elapsed time negative, and the curve reads that as "not started"
-		// and snaps the content back to where the flick began.
-		return _frameClock = Math.Max(_frameClock, previous);
-	}
-
-	private long MedianFrameDelta()
-	{
-		Span<long> sorted = stackalloc long[FrameClockWindow];
-		_frameDeltas.AsSpan(0, _frameDeltaCount).CopyTo(sorted);
-		sorted = sorted[.._frameDeltaCount];
-		sorted.Sort();
-		return sorted[_frameDeltaCount / 2];
-	}
 
 	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual, DamageRegion? damage = null)
 	{
 		if (rootVisual is null)
 		{
 			throw new ArgumentNullException(nameof(rootVisual));
-		}
-
-		if (FrameStarting is { } frameStarting)
-		{
-			// One timestamp for the whole frame: TimestampInTicks re-reads the clock on every access, so
-			// sampling per driver would give drivers in the same frame different times.
-			var frameTimestamp = GetFrameTimestamp(TimestampInTicks);
-			CurrentFrameTimestampInTicks = frameTimestamp;
-			try
-			{
-				frameStarting(frameTimestamp);
-			}
-			catch (Exception e)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error("A frame driver threw; the frame is still recorded.", e);
-				}
-			}
 		}
 
 		foreach (var animation in _runningAnimations.Keys.ToArray())
@@ -369,7 +261,7 @@ public partial class Compositor
 			}
 		}
 
-		if (_runningAnimations.Count > 0 || transitionsCount > 0 || FrameStarting is not null)
+		if (_runningAnimations.Count > 0 || transitionsCount > 0)
 		{
 			rootVisual.CompositionTarget?.RequestNewFrame();
 		}
