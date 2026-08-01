@@ -432,7 +432,7 @@ public partial class AutomationProperties
 		=> GetOrCreateRelationshipCollection<UIElement>(element, ControlledPeersProperty, AutomationElementIdentifiers.ControlledPeersProperty);
 
 	internal static IList<UIElement> TryGetControlledPeers(DependencyObject element)
-		=> element.GetValue(ControlledPeersProperty) as IList<UIElement>;
+		=> element?.GetValue(ControlledPeersProperty) as IList<UIElement>;
 
 	/// <summary>
 	/// Gets the 1-based position of the element within its set.

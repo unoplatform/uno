@@ -32,8 +32,8 @@ namespace Uno.UI.Runtime.Skia {
 			const hiddenElements: FocusTrapState["hiddenElements"] = [];
 
 			if (semanticsRoot && modalElement) {
-				let current: HTMLElement | null = modalElement;
-				while (current && current !== semanticsRoot) {
+				let current: HTMLElement = modalElement;
+				while (current !== semanticsRoot) {
 					const parent: HTMLElement | null = current.parentElement;
 					if (!parent) {
 						break;

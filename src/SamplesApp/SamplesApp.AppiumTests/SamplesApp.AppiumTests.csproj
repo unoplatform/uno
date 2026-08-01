@@ -6,8 +6,7 @@
 		<RollForward>Major</RollForward>
 		<Nullable>enable</Nullable>
 		<IsPackable>false</IsPackable>
-		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-		<NoWarn>$(NoWarn);CS1591;NU1903;NU1902</NoWarn>
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup Label="GlobalUsings">

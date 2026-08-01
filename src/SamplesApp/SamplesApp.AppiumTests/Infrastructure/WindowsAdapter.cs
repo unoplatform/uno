@@ -210,14 +210,6 @@ public sealed class WindowsAdapter : IPlatformAdapter
 	{
 	}
 
-	private static void AddIfTrue(IWebElement element, string attr, string pattern, List<string> sink)
-	{
-		if (ParseBool(GetAttributeAny(element, attr)) == true)
-		{
-			sink.Add(pattern);
-		}
-	}
-
 	private static void AddIfPresent(IWebElement element, string attr, string key, Dictionary<string, string> sink)
 	{
 		var v = element.GetAttribute(attr);

@@ -542,10 +542,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 		{
 			automationId = peer.GetAutomationId();
 		}
-		if (!string.IsNullOrEmpty(automationId))
-		{
-			NativeUno.uno_accessibility_update_identifier(handle, automationId);
-		}
+		NativeUno.uno_accessibility_update_identifier(handle, automationId);
 
 		if (!string.IsNullOrEmpty(attributes.Description))
 		{

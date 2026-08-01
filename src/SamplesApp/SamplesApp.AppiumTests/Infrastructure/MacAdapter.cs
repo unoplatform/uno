@@ -39,9 +39,10 @@ public sealed class MacAdapter : IPlatformAdapter
 		string bundleId;
 		if (IsAppBundle(appPath))
 		{
-			bundleId = ReadBundleId(appPath)
+			var bundleIdValue = ReadBundleId(appPath, out var bundleIdDiagnostic);
+			bundleId = bundleIdValue
 				?? throw new InvalidOperationException(
-					$"App bundle at '{appPath}' is missing CFBundleIdentifier in Info.plist.");
+					$"App bundle at '{appPath}' does not provide a readable CFBundleIdentifier. {bundleIdDiagnostic}");
 			if (!IsBundleRunning(bundleId))
 			{
 				LaunchAppBundle(appPath, sampleQuery);
@@ -77,19 +78,35 @@ public sealed class MacAdapter : IPlatformAdapter
 		}
 	}
 
-	private static string? ReadBundleId(string appBundle)
+	private static string? ReadBundleId(string appBundle, out string? diagnostic)
 	{
 		var plist = Path.Combine(appBundle, "Contents", "Info.plist");
 		if (!File.Exists(plist))
 		{
+			diagnostic = $"Info.plist was not found at '{plist}'.";
 			return null;
 		}
 
 		var result = RunProcess(
 			"/usr/bin/defaults",
 			new[] { "read", plist, "CFBundleIdentifier" },
-			TimeSpan.FromSeconds(10));
-		return string.IsNullOrWhiteSpace(result.StandardOutput) ? null : result.StandardOutput;
+			TimeSpan.FromSeconds(10),
+			throwOnNonZeroExit: false);
+		if (result.ExitCode != 0)
+		{
+			diagnostic =
+				$"defaults exited with code {result.ExitCode}. stdout='{result.StandardOutput}' stderr='{result.StandardError}'.";
+			return null;
+		}
+
+		if (string.IsNullOrWhiteSpace(result.StandardOutput))
+		{
+			diagnostic = "defaults returned an empty CFBundleIdentifier.";
+			return null;
+		}
+
+		diagnostic = null;
+		return result.StandardOutput;
 	}
 
 	private static void LaunchAppBundle(string bundlePath, string sampleQuery)
@@ -107,7 +124,11 @@ public sealed class MacAdapter : IPlatformAdapter
 	private static void LaunchWrapperBundle(string bundlePath)
 		=> RunProcess("/usr/bin/open", new[] { "-n", bundlePath }, TimeSpan.FromSeconds(10));
 
-	private static ProcessResult RunProcess(string fileName, IEnumerable<string> arguments, TimeSpan timeout)
+	private static ProcessResult RunProcess(
+		string fileName,
+		IEnumerable<string> arguments,
+		TimeSpan timeout,
+		bool throwOnNonZeroExit = true)
 	{
 		var startInfo = new ProcessStartInfo(fileName)
 		{
@@ -123,19 +144,22 @@ public sealed class MacAdapter : IPlatformAdapter
 
 		using var process = Process.Start(startInfo)
 			?? throw new InvalidOperationException($"Failed to start '{fileName}'.");
+		var standardOutput = process.StandardOutput.ReadToEndAsync();
+		var standardError = process.StandardError.ReadToEndAsync();
 
 		if (!process.WaitForExit(timeout))
 		{
 			process.Kill(entireProcessTree: true);
+			process.WaitForExit();
 			throw new TimeoutException($"Process '{fileName}' did not exit within {timeout.TotalSeconds:F0}s.");
 		}
 
 		var result = new ProcessResult(
 			process.ExitCode,
-			process.StandardOutput.ReadToEnd().Trim(),
-			process.StandardError.ReadToEnd().Trim());
+			standardOutput.GetAwaiter().GetResult().Trim(),
+			standardError.GetAwaiter().GetResult().Trim());
 
-		if (result.ExitCode != 0)
+		if (throwOnNonZeroExit && result.ExitCode != 0)
 		{
 			throw new InvalidOperationException(
 				$"Process '{fileName}' exited with code {result.ExitCode}. stdout='{result.StandardOutput}' stderr='{result.StandardError}'.");
@@ -148,28 +172,42 @@ public sealed class MacAdapter : IPlatformAdapter
 	{
 		var deadline = DateTime.UtcNow + timeout;
 		var attempts = 0;
+		string? lastDiagnostic = null;
 		while (DateTime.UtcNow < deadline)
 		{
 			attempts++;
-			if (IsBundleRunning(bundleId))
+			if (IsBundleRunning(bundleId, out var diagnostic))
 			{
 				// Give the runtime a moment to publish its accessibility tree.
 				Thread.Sleep(TimeSpan.FromSeconds(2));
 				return;
 			}
+			lastDiagnostic = diagnostic;
 			Thread.Sleep(500);
 		}
 
+		var diagnosticSuffix = lastDiagnostic is null ? string.Empty : $" Last query error: {lastDiagnostic}";
 		throw new InvalidOperationException(
-			$"App with bundle id '{bundleId}' did not start within {timeout.TotalSeconds:F0}s ({attempts} polls).");
+			$"App with bundle id '{bundleId}' did not start within {timeout.TotalSeconds:F0}s ({attempts} polls).{diagnosticSuffix}");
 	}
 
 	private static bool IsBundleRunning(string bundleId)
+		=> IsBundleRunning(bundleId, out _);
+
+	private static bool IsBundleRunning(string bundleId, out string? diagnostic)
 	{
 		var result = RunProcess(
 			"/usr/bin/osascript",
-			new[] { "-e", $"tell application \"System Events\" to (bundle identifier of every process) contains \"{bundleId}\"" },
-			TimeSpan.FromSeconds(10));
+			new[] { "-e", $"tell application \"System Events\" to (bundle identifier of every process) contains {ToAppleScriptStringLiteral(bundleId)}" },
+			TimeSpan.FromSeconds(10),
+			throwOnNonZeroExit: false);
+		if (result.ExitCode != 0)
+		{
+			diagnostic = $"osascript exited with code {result.ExitCode}. stdout='{result.StandardOutput}' stderr='{result.StandardError}'.";
+			return false;
+		}
+
+		diagnostic = null;
 		return string.Equals(result.StandardOutput, "true", StringComparison.OrdinalIgnoreCase);
 	}
 
@@ -378,7 +416,7 @@ public sealed class MacAdapter : IPlatformAdapter
 	{
 		RunProcess(
 			"/usr/bin/osascript",
-			new[] { "-e", $"tell application id \"{bundleId}\" to quit" },
+			new[] { "-e", $"tell application id {ToAppleScriptStringLiteral(bundleId)} to quit" },
 			TimeSpan.FromSeconds(10));
 	}
 
@@ -393,9 +431,7 @@ public sealed class MacAdapter : IPlatformAdapter
 		var contents = Path.Combine(bundleRoot, "Contents");
 		var macOS = Path.Combine(contents, "MacOS");
 		Directory.CreateDirectory(macOS);
-
 		const string executableName = "SamplesAppAppium";
-		const string bundleId = "io.platform.uno.SamplesAppAppium";
 
 		File.WriteAllText(Path.Combine(contents, "Info.plist"),
 			$@"<?xml version=""1.0"" encoding=""UTF-8""?>
@@ -403,7 +439,7 @@ public sealed class MacAdapter : IPlatformAdapter
 <plist version=""1.0"">
 <dict>
 	<key>CFBundleExecutable</key><string>{executableName}</string>
-	<key>CFBundleIdentifier</key><string>{bundleId}</string>
+	<key>CFBundleIdentifier</key><string>{WrapperBundleId}</string>
 	<key>CFBundleName</key><string>SamplesApp Appium Wrapper</string>
 	<key>CFBundlePackageType</key><string>APPL</string>
 	<key>CFBundleVersion</key><string>1.0</string>
@@ -414,13 +450,7 @@ public sealed class MacAdapter : IPlatformAdapter
 </plist>
 ");
 
-		var script = string.IsNullOrEmpty(sampleQuery)
-			? $@"#!/bin/bash
-exec ""{dotnetPath}"" ""{dllPath}""
-"
-			: $@"#!/bin/bash
-exec ""{dotnetPath}"" ""{dllPath}"" ""{sampleQuery}""
-";
+		var script = CreateWrapperScript(dotnetPath, dllPath, sampleQuery);
 		var executablePath = Path.Combine(macOS, executableName);
 		File.WriteAllText(executablePath, script);
 		File.SetUnixFileMode(executablePath,
@@ -535,6 +565,23 @@ exec ""{dotnetPath}"" ""{dllPath}"" ""{sampleQuery}""
 		var parts = value.Split('\'');
 		return "concat('" + string.Join("', \"'\", '", parts) + "')";
 	}
+
+	private static string ToAppleScriptStringLiteral(string value)
+		=> $"\"{value.Replace("\\", "\\\\").Replace("\"", "\\\"")}\"";
+
+	internal static string CreateWrapperScript(string dotnetPath, string dllPath, string sampleQuery)
+	{
+		var command = $"exec {BashSingleQuote(dotnetPath)} {BashSingleQuote(dllPath)}";
+		if (!string.IsNullOrEmpty(sampleQuery))
+		{
+			command += $" {BashSingleQuote(sampleQuery)}";
+		}
+
+		return $"#!/bin/bash\n{command}\n";
+	}
+
+	private static string BashSingleQuote(string value)
+		=> $"'{value.Replace("'", "'\\''")}'";
 
 	private readonly record struct ProcessResult(int ExitCode, string StandardOutput, string StandardError);
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using Uno.Extensions;
+﻿using Uno.Extensions;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;

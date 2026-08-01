@@ -770,9 +770,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			var gridId = GetSemanticElementId(grid);
 			InvokeBrowserJs($"document.getElementById('{gridId}').focus(); 'ok'");
-			Assert.AreEqual("-1", GetSemanticAttribute(grid, "tabindex"));
-			Assert.AreEqual("1", InvokeBrowserJs($"document.getElementById('{gridId}').querySelectorAll('[tabindex=\"0\"]').length.toString()"));
-			Assert.AreEqual(GetSemanticElementId(first), InvokeBrowserJs("document.activeElement ? document.activeElement.id : ''"));
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(grid, "tabindex") == "-1" &&
+					InvokeBrowserJs($"document.getElementById('{gridId}').querySelectorAll('[tabindex=\"0\"]').length.toString()") == "1" &&
+					InvokeBrowserJs("document.activeElement ? document.activeElement.id : ''") == GetSemanticElementId(first),
+				timeoutMS: 10000,
+				message: "Browser focus did not preserve the active cell as the grid's only tab stop.");
 		}
 
 		[TestMethod]

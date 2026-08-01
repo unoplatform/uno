@@ -880,6 +880,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	private void SchedulePoliteAnnouncement(int delay)
 	{
 		var generation = ++_politeAnnouncementGeneration;
+		_politeDebounceTimer?.Dispose();
 		_politeDebounceTimer = new Timer(
 			_ => RunOnDispatcher(() => FlushPoliteAnnouncement(generation)),
 			null,
@@ -890,6 +891,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	private void ScheduleAssertiveAnnouncement(int delay)
 	{
 		var generation = ++_assertiveAnnouncementGeneration;
+		_assertiveDebounceTimer?.Dispose();
 		_assertiveDebounceTimer = new Timer(
 			_ => RunOnDispatcher(() => FlushAssertiveAnnouncement(generation)),
 			null,

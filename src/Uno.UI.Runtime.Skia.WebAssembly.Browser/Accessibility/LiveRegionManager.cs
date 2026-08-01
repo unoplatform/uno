@@ -164,6 +164,7 @@ internal sealed partial class LiveRegionManager
 	private void SchedulePolite(int delay)
 	{
 		var generation = ++_politeGeneration;
+		_politeDebounceTimer?.Dispose();
 		_politeDebounceTimer = new Timer(
 			_ => NativeDispatcher.Main.Enqueue(() => FlushPolite(generation)),
 			null,
@@ -174,6 +175,7 @@ internal sealed partial class LiveRegionManager
 	private void ScheduleAssertive(int delay)
 	{
 		var generation = ++_assertiveGeneration;
+		_assertiveDebounceTimer?.Dispose();
 		_assertiveDebounceTimer = new Timer(
 			_ => NativeDispatcher.Main.Enqueue(() => FlushAssertive(generation)),
 			null,
