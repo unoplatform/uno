@@ -25,8 +25,9 @@ public class Given_Visual_ArrangePending
 	// so its ink exists independently of any arrange, and a visual's content is not bounded by its Size —
 	// several such children would stack at the parent's origin. WinUI paints nothing for an element its
 	// parent didn't arrange, so this runs on the WinUI head too and pins that parity.
-	// A TextBlock (not a Border) is required: a Border paints only inside its Size, which is 0x0 while
-	// unarranged, so it would pass whether or not the suppression works.
+	// A TextBlock is required: text ink comes from measure, so it exists without an arrange. A Border,
+	// Rectangle or Path paints only within its arranged size (0x0 here), so any of those would pass
+	// whether or not the suppression works.
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
@@ -101,9 +102,11 @@ public class Given_Visual_ArrangePending
 #endif
 	}
 
+	// Plain Latin letters, not a block glyph: the ink only has to come from measure, and WASM's bundled
+	// font has no U+2588 FULL BLOCK, so it laid out at the right size but painted nothing there.
 	private static TextBlock MakeInk() => new()
 	{
-		Text = "██████",
+		Text = "MMMMMM",
 		FontSize = 24,
 		Foreground = new SolidColorBrush(Colors.Black),
 	};
