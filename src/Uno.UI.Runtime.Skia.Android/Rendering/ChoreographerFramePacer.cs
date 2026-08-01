@@ -29,7 +29,12 @@ internal sealed class ChoreographerFramePacer : IDisposable
 	// (backgrounded, surface gone) and the render thread must not be held hostage.
 	private static readonly TimeSpan MaxWait = TimeSpan.FromMilliseconds(100);
 
-	private readonly AutoResetEvent _vsync = new(false);
+	// A count rather than an event: a callback left outstanding by a timed-out wait signals later, and an
+	// event carries no notion of which frame it belongs to, so that stale signal would satisfy the next
+	// wait immediately — and every wait after it — leaving the render thread silently unpaced for good.
+	private readonly object _gate = new();
+	private long _frameCount;
+
 	private readonly ManualResetEventSlim _ready = new(false);
 	private readonly Thread _thread;
 
@@ -51,7 +56,7 @@ internal sealed class ChoreographerFramePacer : IDisposable
 			Looper.Prepare();
 			_handler = new Handler(Looper.MyLooper()!);
 			_choreographer = Choreographer.Instance;
-			_callback = new FrameCallback(() => _vsync.Set());
+			_callback = new FrameCallback(OnVsync);
 			_ready.Set();
 			Looper.Loop();
 		}
@@ -59,6 +64,15 @@ internal sealed class ChoreographerFramePacer : IDisposable
 		{
 			this.LogError()?.Error($"Vsync pacer thread failed; rendering will not be paced: {e}");
 			_ready.Set();
+		}
+	}
+
+	private void OnVsync()
+	{
+		lock (_gate)
+		{
+			_frameCount++;
+			Monitor.PulseAll(_gate);
 		}
 	}
 
@@ -72,7 +86,19 @@ internal sealed class ChoreographerFramePacer : IDisposable
 
 		// PostFrameCallback must run on the Choreographer's own thread.
 		_handler.Post(() => _choreographer?.PostFrameCallback(_callback!));
-		_vsync.WaitOne(MaxWait);
+
+		lock (_gate)
+		{
+			// Read after posting, so only a vsync from here on counts.
+			var seen = _frameCount;
+			while (!_disposed && _frameCount == seen)
+			{
+				if (!Monitor.Wait(_gate, MaxWait))
+				{
+					return;
+				}
+			}
+		}
 	}
 
 	public void Dispose()
@@ -83,14 +109,17 @@ internal sealed class ChoreographerFramePacer : IDisposable
 		}
 
 		_disposed = true;
-		_vsync.Set();
+		lock (_gate)
+		{
+			Monitor.PulseAll(_gate);
+		}
+
 		_handler?.Post(() =>
 		{
 			_choreographer?.RemoveFrameCallback(_callback!);
 			Looper.MyLooper()?.Quit();
 		});
 
-		_vsync.Dispose();
 		_ready.Dispose();
 	}
 
