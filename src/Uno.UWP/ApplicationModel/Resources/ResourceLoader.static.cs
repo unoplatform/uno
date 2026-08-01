@@ -236,8 +236,12 @@ partial class ResourceLoader
 			{
 				ProcessAssembly(assembly, languagePreferences, ResolveRebuiltLoader, rebuiltMarkers);
 			}
-			catch (Exception error)
+			catch (Exception error) when (error is global::System.IO.InvalidDataException or global::System.IO.IOException or NotSupportedException or BadImageFormatException or global::System.IO.FileLoadException or ArgumentException or FormatException)
 			{
+				// Recoverable per-assembly parse/reflection failure (malformed .upri, unreadable
+				// embedded resource): skip this survivor and keep rebuilding. Fatal exceptions are
+				// intentionally not caught; the live loaders are untouched until the apply phase
+				// below, so an escaping exception here cannot leave a loader empty.
 				if (_log.IsEnabled(LogLevel.Error))
 				{
 					_log.LogError($"[ALC-CLEANUP] ResourceLoader: skipping lookup assembly '{assembly.FullName}' while rebuilding merged resources after ALC unload.", error);
@@ -262,15 +266,12 @@ partial class ResourceLoader
 		}
 
 		// A survivor may contribute a loader name with no live instance yet; materialize it.
-		foreach (var rebuilt in rebuiltResources)
+		foreach (var rebuilt in rebuiltResources.Where(rebuilt => !_loaders.ContainsKey(rebuilt.Key)))
 		{
-			if (!_loaders.ContainsKey(rebuilt.Key))
+			var loaderResources = GetOrCreateNamedResourceLoader(rebuilt.Key)._resources;
+			foreach (var culture in rebuilt.Value)
 			{
-				var loaderResources = GetOrCreateNamedResourceLoader(rebuilt.Key)._resources;
-				foreach (var culture in rebuilt.Value)
-				{
-					loaderResources[culture.Key] = culture.Value;
-				}
+				loaderResources[culture.Key] = culture.Value;
 			}
 		}
 
