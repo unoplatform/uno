@@ -40,6 +40,10 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	private readonly System.Collections.Generic.List<nint> _pendingBindGroups = new();
 	private readonly System.Collections.Generic.List<nint> _pendingBuffers = new();
 	private readonly System.Collections.Generic.List<nint> _pendingBundles = new();
+	// Per-visual GPU geometry cache, keyed by the recording's immutable command list (reference identity). Owned
+	// by the render thread; entries not referenced in a frame are evicted (their recording is gone).
+	internal readonly System.Collections.Generic.Dictionary<System.Collections.Generic.List<WebGpuCommand>, WebGpuGeometryCache> GeometryCache = new(System.Collections.Generic.ReferenceEqualityComparer.Instance);
+	private readonly System.Collections.Generic.List<System.Collections.Generic.List<WebGpuCommand>> _evict = new();
 
 	// Per-frame bind groups reference the frame's pooled buffers, so they're released at the next frame start once
 	// the previous frame's GPU work has completed (present DevicePolls). A cached recording's persistent resources
@@ -55,6 +59,12 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		_pendingBindGroups.Clear();
 		_pendingBuffers.Clear();
 		_pendingBundles.Clear();
+
+		// Evict geometry-cache entries not referenced in the previous frame (their recording is gone); then arm
+		// the used-flags for this frame.
+		_evict.Clear();
+		foreach (var kv in GeometryCache) { if (!kv.Value.Used) { _evict.Add(kv.Key); } else { kv.Value.Used = false; } }
+		foreach (var k in _evict) { DeferRelease(GeometryCache[k].Owned); GeometryCache.Remove(k); }
 	}
 
 	public BindGroup* TrackBg(BindGroup* bg) { _pendingBindGroups.Add((nint)bg); return bg; }
@@ -675,22 +685,34 @@ internal sealed class BackdropCmd : WebGpuCommand
 	public float Opacity;
 }
 
-// A deferred replay of a cacheable child recording under a transform+clip. The present keeps the child's GPU
-// geometry persistent and reuses it while the child is unchanged and replayed at the same transform (the
-// per-visual slab/scroll optimization) — instead of re-baking + re-uploading the child's commands every frame.
+// A deferred replay of a cacheable child recording under a transform+clip. Captures the child's IMMUTABLE
+// command-list reference (not the recording): the frame is presented on the render thread while the main thread
+// may Dispose the recording — Dispose only nulls the recording's field, so the captured list stays valid. The
+// GPU geometry cache lives on the render-thread device, keyed by this list (the per-visual slab/scroll win).
 internal sealed class ReplayRefCmd : WebGpuCommand
 {
-	public WebGpuRenderData Child;
+	public System.Collections.Generic.List<WebGpuCommand> Commands;
 	public System.Numerics.Matrix4x4 Transform;
 }
 
-// A recording's persistent (non-pooled) GPU resources, owned by its WebGpuRenderData and released on Dispose /
-// re-cache. Separate from the per-frame pool so cached draws survive across frames.
+// Persistent (non-pooled) GPU resources for a cached recording, released on eviction. Separate from the per-frame
+// pool so cached draws survive across frames.
 internal sealed class OwnedResources
 {
 	public System.Collections.Generic.List<nint> Buffers = new();
 	public System.Collections.Generic.List<nint> BindGroups = new();
 	public System.Collections.Generic.List<nint> Bundles = new();
+}
+
+// A recording's cached GPU geometry, owned by the render-thread device and keyed by the immutable command list.
+internal sealed unsafe class WebGpuGeometryCache
+{
+	public List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> Ops;
+	public OwnedResources Owned;
+	public RenderBundle* Bundle;
+	public Matrix4x4 Transform;
+	public ClipData Clip;
+	public bool Used;
 }
 
 // Backend-created gradient shader handle. The WebGPU backend mints its own (rather than delegating to Skia) so
@@ -728,36 +750,15 @@ public sealed class WebGpuEffectFilter : IEffectFilter
 	public void Dispose() { }
 }
 
-public sealed unsafe class WebGpuRenderData : IRenderData
+public sealed class WebGpuRenderData : IRenderData
 {
 	internal List<WebGpuCommand> Commands = new();
 	internal WColor? ClearColor;
-
-	// Per-visual GPU-geometry cache: the built draw-ops + their persistent resources, valid while this recording
-	// is unchanged (core keeps the same object) and replayed at the same transform/clip.
-	internal List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> CachedOps;
-	internal OwnedResources Owned;
-	internal RenderBundle* CachedBundle;   // the cached ops pre-encoded into a render bundle (ExecuteBundles on replay)
-	internal Matrix4x4 CacheTransform;
-	internal ClipData CacheClip;
-	internal bool CacheValid;
 	internal bool? Cacheable;   // memoized: all commands are simple primitives with no path clip
-	private WebGpuDevice _cacheDevice;
 
-	internal void SetCache(WebGpuDevice device, List<(int, nint, uint, nint, bool, ClipData, nint)> ops, OwnedResources owned, Matrix4x4 transform, ClipData clip, RenderBundle* bundle)
-	{
-		_cacheDevice = device;
-		CachedOps = ops; Owned = owned; CachedBundle = bundle; CacheTransform = transform; CacheClip = clip; CacheValid = true;
-	}
-
-	internal void ReleaseCache()
-	{
-		// Defer: ops emitted this frame may still reference these resources; the device frees them next frame.
-		_cacheDevice?.DeferRelease(Owned);
-		Owned = null; CachedOps = null; CachedBundle = null; CacheValid = false;
-	}
-
-	public void Dispose() { ReleaseCache(); Commands = null; }
+	// Dispose only nulls the field; the command LIST object stays alive while any in-flight frame's ReplayRef
+	// still references it (captured by reference), and the device's geometry cache is keyed on that list.
+	public void Dispose() { Commands = null; }
 }
 
 public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
@@ -1053,25 +1054,25 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		return ok;
 	}
 
-	// Transforms a child recording's (simple) commands to device space under a transform+clip, for building its
-	// GPU cache. Uses the inline (always-transform) path so it never emits a nested ReplayRef.
-	internal static List<WebGpuCommand> TransformFor(WebGpuRenderData child, Matrix4x4 transform, ClipData clip)
+	// Transforms a recording's (simple) commands to device space under a transform+clip, for building its GPU
+	// cache. Uses the inline (always-transform) path so it never emits a nested ReplayRef.
+	internal static List<WebGpuCommand> TransformFor(List<WebGpuCommand> commands, Matrix4x4 transform, ClipData clip)
 	{
 		var rec = new WebGpuCommandRecorder();
 		rec._m = transform;
 		rec._clip = clip;
-		rec.ReplayInline(child);
+		rec.ReplayInline(new WebGpuRenderData { Commands = commands });
 		return rec._data.Commands;
 	}
 
 	// Retained sub-recordings (SKPicture equivalent) are recorded at identity; replaying one bakes in the target
-	// session's current matrix + clip. A cacheable recording is deferred as a ReplayRef (the present caches its
-	// GPU geometry); otherwise its commands are transformed inline into this recording.
+	// session's current matrix + clip. A cacheable recording is deferred as a ReplayRef capturing its immutable
+	// command list (the present caches its GPU geometry); otherwise its commands are transformed inline.
 	public void Replay(IRenderData data)
 	{
 		if (data is WebGpuRenderData cacheable && IsCacheable(cacheable))
 		{
-			_target.Add(new ReplayRefCmd { Child = cacheable, Transform = _m, Clip = _clip });
+			_target.Add(new ReplayRefCmd { Commands = cacheable.Commands, Transform = _m, Clip = _clip });
 			return;
 		}
 		ReplayInline(data);
@@ -1142,8 +1143,8 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					_target.Add(new BackdropCmd { Effect = bk.Effect, Opacity = bk.Opacity, Clip = ClipCompose(bk.Clip, T) });
 					break;
 				case ReplayRefCmd rr:
-					// Compose this replay's transform/clip onto the ref so the present still caches the child.
-					_target.Add(new ReplayRefCmd { Child = rr.Child, Transform = rr.Transform * _m, Clip = ClipCompose(rr.Clip, T) });
+					// Compose this replay's transform/clip onto the ref so the present still caches it.
+					_target.Add(new ReplayRefCmd { Commands = rr.Commands, Transform = rr.Transform * _m, Clip = ClipCompose(rr.Clip, T) });
 					break;
 			}
 		}
@@ -1556,23 +1557,24 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					break;
 				case ReplayRefCmd rr:
 				{
-					// The per-visual GPU-geometry cache: build the child's persistent ops once and reuse them
-					// while it's unchanged and replayed at the same transform/clip (slab/scroll). On a miss,
-					// release the stale cache and rebuild in local... device space at this transform.
-					var child = rr.Child;
-					if (!child.CacheValid || child.CacheTransform != rr.Transform || !ClipDataEquals(child.CacheClip, rr.Clip))
+					// The per-visual GPU-geometry cache (slab/scroll), keyed by the recording's immutable command
+					// list. Build once; reuse while it's replayed at the same transform/clip. A stale entry (moved
+					// visual) is deferred-released and rebuilt. Entries not referenced any frame are evicted.
+					if (!_d.GeometryCache.TryGetValue(rr.Commands, out var entry) || entry.Transform != rr.Transform || !ClipDataEquals(entry.Clip, rr.Clip))
 					{
-						child.ReleaseCache();
+						if (entry is not null) { _d.DeferRelease(entry.Owned); }
 						var owned = new OwnedResources();
 						var cachedOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
-						foreach (var tc in WebGpuCommandRecorder.TransformFor(child, rr.Transform, rr.Clip)) { BuildSimpleOp(tc, cachedOps, owned); }
+						foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { BuildSimpleOp(tc, cachedOps, owned); }
 						var bundle = BuildBundle(cachedOps);
 						owned.Bundles.Add((nint)bundle);
-						child.SetCache(_d, cachedOps, owned, rr.Transform, rr.Clip, bundle);
+						entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Bundle = bundle, Transform = rr.Transform, Clip = rr.Clip };
+						_d.GeometryCache[rr.Commands] = entry;
 					}
-					// One ExecuteBundles replays all the child's cached draws (kind 5). Full-surface clip so the
-					// scissor is reset to full before the bundle (its draws clip per-fragment via clipCov).
-					ops.Add((5, (nint)child.CachedBundle, 0, 0, false, ClipData.None, 0));
+					entry.Used = true;
+					// One ExecuteBundles replays all the cached draws (kind 5). Full-surface clip so the scissor is
+					// reset to full before the bundle (its draws clip per-fragment via clipCov).
+					ops.Add((5, (nint)entry.Bundle, 0, 0, false, ClipData.None, 0));
 					break;
 				}
 				case ShadowCmd sh:
