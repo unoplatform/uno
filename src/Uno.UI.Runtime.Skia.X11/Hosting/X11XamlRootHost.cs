@@ -453,13 +453,13 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 		if (_renderer is null && FeatureConfiguration.Rendering.UseVulkanOnX11)
 		{
-			// Vulkan through the neutral pipeline: negotiate a Vulkan context (Skia GRContext on Vulkan), falling
-			// to software if Vulkan is unavailable.
+			// Vulkan through the neutral pipeline: negotiate a Vulkan-only context (Skia GRContext on Vulkan). If
+			// Vulkan is unavailable the negotiation throws and we fall through to the OpenGL/GLX branch below (the
+			// override is Vulkan-only, no software fallback here, so GPU-preferring behavior is preserved).
 			try
 			{
 				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-				GraphicsRegistry.Register(new IGraphicsProvider[] { new SkiaGraphicsProvider(GraphicsContextKind.Vulkan, GraphicsContextKind.Software) });
-				_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, new[] { GraphicsContextKind.Vulkan, GraphicsContextKind.Software });
+				_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, new[] { GraphicsContextKind.Vulkan });
 			}
 			catch (Exception e)
 			{

@@ -16,7 +16,7 @@ public sealed class SkiaGraphicsProvider : IGraphicsProvider
 	public SkiaGraphicsProvider(params GraphicsContextKind[] preferred)
 		=> _preferred = preferred.Length > 0
 			? preferred
-			: new[] { GraphicsContextKind.OpenGL, GraphicsContextKind.OpenGLES, GraphicsContextKind.Software };
+			: new[] { GraphicsContextKind.OpenGL, GraphicsContextKind.OpenGLES, GraphicsContextKind.Vulkan, GraphicsContextKind.Software };
 
 	public IReadOnlyList<GraphicsContextKind> PreferredContexts => _preferred;
 
