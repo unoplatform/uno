@@ -15,7 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 
 [TestClass]
 [PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaIOS)]
-public class Given_SkiaIOSAccessibilityElement
+public partial class Given_SkiaIOSAccessibilityElement
 {
 	private static AccessibilityNativeNodeSnapshot? GetSnapshot(UIElement element)
 		=> AccessibilityPeerHelper.IOSAccessibilityNodeSnapshotAccessor?.Invoke(element);

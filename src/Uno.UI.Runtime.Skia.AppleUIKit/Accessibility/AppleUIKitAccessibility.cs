@@ -1666,6 +1666,9 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	protected override void UpdateLandmark(nint handle, string? landmarkRole)
 		=> InvalidateElement(handle);
 
+	protected override void UpdateRoleDescription(nint handle, string? roleDescription)
+		=> InvalidateElement(handle);
+
 	protected override void UpdateIsReadOnly(nint handle, bool isReadOnly)
 		=> InvalidateElement(handle);
 
