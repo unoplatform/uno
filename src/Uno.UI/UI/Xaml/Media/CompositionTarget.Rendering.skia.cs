@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -152,9 +152,11 @@ public partial class CompositionTarget
 			{
 				_damageSnapshotPool.Push(superseded);
 			}
-		}
 
-		_fpsHelper.OnFrameRecorded();
+			// Under the same gate as the publish: a Draw acquiring it in between would see the fresh
+			// picture against the stale generation and record a dropped frame that never happened.
+			_fpsHelper.OnFrameRecorded();
+		}
 
 		if (previousFrame is { } prev)
 		{
