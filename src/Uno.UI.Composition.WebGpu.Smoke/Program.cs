@@ -290,6 +290,36 @@ var cpCorner = At(pClipPath, 6, 10); // inside the bbox but outside the triangle
 Check("clip-path: inside triangle red", cpIn.r > 200 && cpIn.g < 60, cpIn);
 Check("clip-path: outside triangle (in bbox) black", cpCorner.r < 40 && cpCorner.g < 40 && cpCorner.b < 40, cpCorner);
 
+// 18) RETAINED RECORDING (per-visual GPU cache) — record a rect once, replay it at two offsets in one frame,
+//     then again in a second frame (cache reuse). Renders through the ReplayRef + persistent-geometry path.
+byte[] RenderRetained(IRenderData child, Action<WebGpuCommandRecorder> frame)
+{
+	var surface = new WebGpuRenderSurface(dev, 64, 64);
+	var rec = new WebGpuCommandRecorder();
+	frame(rec);
+	var present = new WebGpuPresentSession(dev, surface);
+	present.Clear(WColor.FromArgb(255, 0, 0, 0));
+	present.Replay(rec.Finish());
+	return dev.ReadPixelsRgba(surface);
+}
+var childRec = new WebGpuCommandRecorder();
+childRec.DrawRect(new Rect(0, 0, 16, 16), red, false);   // recorded at identity
+var childData = childRec.Finish();
+Action<WebGpuCommandRecorder> twoOffsets = r =>
+{
+	r.Save(); r.Translate(8, 8); r.Replay(childData); r.Restore();     // rect -> (8,8)-(24,24)
+	r.Save(); r.Translate(40, 40); r.Replay(childData); r.Restore();   // rect -> (40,40)-(56,56)
+};
+var pRet1 = RenderRetained(childData, twoOffsets);
+var pRet2 = RenderRetained(childData, twoOffsets);   // second frame: cache reuse
+foreach (var (label, px) in new[] { ("frame1", pRet1), ("frame2", pRet2) })
+{
+	var a = At(px, 16, 16); var b = At(px, 48, 48); var mid = At(px, 32, 32);
+	Check($"retained {label}: first replay red", a.r > 200 && a.g < 60, a);
+	Check($"retained {label}: second replay red", b.r > 200 && b.g < 60, b);
+	Check($"retained {label}: gap black", mid.r < 40 && mid.g < 40 && mid.b < 40, mid);
+}
+
 Console.WriteLine(fail == 0
 	? "\nALL PASS — non-Skia render seam verified headless (primitives + text + stroke + boolean); Skia vs WebGPU agree on every neutral scene"
 	: $"\n{fail} CHECK(S) FAILED");
