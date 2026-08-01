@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading;
 using Android.Content;
 using Android.Graphics;
@@ -31,6 +31,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 
 	private readonly VulkanContext _vulkanContext = new();
 	private Thread? _renderThread;
+	private readonly ChoreographerFramePacer _pacer = new();
 	private volatile bool _renderRequested;
 	private volatile bool _surfaceReady;
 	private volatile bool _disposed;
@@ -99,6 +100,8 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 		{
 			_vulkanContext.Resize(width, height);
 		}
+
+
 		// Signal a render
 		InvalidateRender();
 	}
@@ -114,6 +117,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 		_renderEvent.Set(); // Wake the render thread so it can exit
 		_renderThread?.Join(TimeSpan.FromSeconds(2));
 		_renderThread = null;
+		_pacer.Dispose();
 
 		// Dispose Vulkan context first, then release the native window
 		_vulkanContext.Dispose();
@@ -149,6 +153,11 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 
 				_renderRequested = false;
 				RenderFrame();
+
+				// MAILBOX present returns without blocking, so pace here; otherwise this loop
+				// free-runs and presentation lands at uneven times even when production is healthy.
+				// Mirrors Win32's DwmFlush-based pacer.
+				_pacer.WaitForNextFrame();
 			}
 		}
 		catch (Exception ex)
