@@ -267,6 +267,19 @@ Check("effect-shadow: content on top (green)", fxContent.g > 150 && fxContent.b 
 Check("effect-shadow: shadow offset present (blue)", fxShadow.b > 40 && fxShadow.g < 150, fxShadow);
 Check("effect-shadow: empty area black", fxEmpty.r < 40 && fxEmpty.g < 40 && fxEmpty.b < 40, fxEmpty);
 
+// 16) BACKDROP / ACRYLIC — the content behind is captured, gaussian-blurred, and redrawn in the effect region.
+var acrylic = new WebGpuEffectFilter { SigmaX = 5, SigmaY = 5, Color = WColor.FromArgb(0, 0, 0, 0) };
+var pBd = Render(r =>
+{
+	r.DrawRect(new Rect(24, 24, 16, 16), red, false);   // sharp red block (24,24)-(40,40)
+	r.ClipRect(new Rect(0, 0, 64, 64));                 // effect region
+	r.DrawEffectBackdrop(acrylic, 1f);
+});
+var bdCenter = At(pBd, 32, 32);   // blurred red center → still red-ish
+var bdEdge = At(pBd, 45, 32);     // 5px past the sharp edge → blur spread → partial red (was black)
+Check("backdrop: center still red-ish (blurred)", bdCenter.r > 80, bdCenter);
+Check("backdrop: blur spreads content past the edge", bdEdge.r > 15 && bdEdge.r < bdCenter.r, (bdEdge, bdCenter));
+
 Console.WriteLine(fail == 0
 	? "\nALL PASS — non-Skia render seam verified headless (primitives + text + stroke + boolean); Skia vs WebGPU agree on every neutral scene"
 	: $"\n{fail} CHECK(S) FAILED");

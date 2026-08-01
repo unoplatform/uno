@@ -8,6 +8,7 @@ using Silk.NET.Core.Native;
 using Silk.NET.WebGPU;
 using Silk.NET.WebGPU.Extensions.WGPU;
 using Uno.UI.Composition.Drawing;
+using Windows.Graphics.Effects.Interop;
 using Windows.Foundation;
 using WColor = Windows.UI.Color;
 
@@ -547,6 +548,15 @@ internal sealed class LayerCmd : WebGpuCommand
 	public WebGpuEffectFilter ShadowEffect; // SaveLayer(IEffectFilter): a drop shadow derived from the content
 }
 
+// DrawEffectBackdrop (acrylic): the content drawn BEFORE this in the frame is captured, gaussian-blurred by
+// Effect's sigma, drawn clipped to the effect region, then tinted by Effect.Color. Effect-graph realization is
+// simplified to blur + tint (the dominant acrylic visual), not the full IGraphicsEffect DAG.
+internal sealed class BackdropCmd : WebGpuCommand
+{
+	public WebGpuEffectFilter Effect;
+	public float Opacity;
+}
+
 // Backend-created gradient shader handle. The WebGPU backend mints its own (rather than delegating to Skia) so
 // the recorder can read the gradient parameters back and evaluate them in the WGSL gradient pipeline.
 public sealed class WebGpuShader : IShader
@@ -846,7 +856,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			}
 		}
 	}
-	public void DrawEffectBackdrop(IEffectFilter filter, float opacity) { }
+	public void DrawEffectBackdrop(IEffectFilter filter, float opacity)
+	{
+		if (filter is WebGpuEffectFilter fx) { _target.Add(new BackdropCmd { Effect = fx, Opacity = opacity, Clip = _clip }); }
+	}
 
 	public IRenderData Finish() => _data;
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
@@ -913,6 +926,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					Replay(new WebGpuRenderData { Commands = lyr.Commands });   // recursively transform sub-commands
 					_target = saved;
 					_target.Add(new LayerCmd { Commands = layerList, CompositeMode = lyr.CompositeMode, ColorMatrix = lyr.ColorMatrix, ShadowEffect = lyr.ShadowEffect, Clip = ClipCompose(lyr.Clip, T) });
+					break;
+				case BackdropCmd bk:
+					_target.Add(new BackdropCmd { Effect = bk.Effect, Opacity = bk.Opacity, Clip = ClipCompose(bk.Clip, T) });
 					break;
 			}
 		}
@@ -1083,8 +1099,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// kind: 0=rect (b0=verts), 1=path (b0=fan, u0=fanCount, b1=cover, flag=evenOdd), 2=image (b0=bindGroup,
 		// b1=quad), 3=gradient, 4=composite layer (b0=bindGroup, u0=compositeMode).
 		var ops = new List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)>();
-		foreach (var cmd in cmds)
+		for (int ci = 0; ci < cmds.Count; ci++)
 		{
+			var cmd = cmds[ci];
 			switch (cmd)
 			{
 				case RectCommand rc:
@@ -1224,6 +1241,42 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					var lbgd = new BindGroupDescriptor { Layout = lyr.CompositeMode == 1 ? _d.CompositeDstInBgl : _d.CompositeBgl, EntryCount = 3, Entries = lentries };
 					var lbg = W.DeviceCreateBindGroup(_d.Dev, ref lbgd);
 					ops.Add((4, (nint)lbg, (uint)lyr.CompositeMode, 0, false, lyr.Clip, 0));
+					break;
+				}
+				case BackdropCmd bk:
+				{
+					// Capture the content drawn so far (this frame's backdrop), blur it, and draw it clipped to the
+					// effect region; then a tint overlay. Simplified acrylic = blurred backdrop + tint.
+					var bd = new WebGpuRenderSurface(_d, _s.Width, _s.Height);
+					RenderInto(cmds.GetRange(0, ci), bd, clear);
+					var btmp = _d.CreateColorTarget(_s.Width, _s.Height);
+					BlurPass(bd.View, btmp, new Vector2(1f, 0f), new Vector2(1f / _s.Width, 0f), bk.Effect.SigmaX);
+					var bblur = _d.CreateColorTarget(_s.Width, _s.Height);
+					BlurPass(btmp, bblur, new Vector2(0f, 1f), new Vector2(0f, 1f / _s.Height), bk.Effect.SigmaY);
+					var bubd = new BufferDescriptor { Size = 32, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
+					var bubuf = W.DeviceCreateBuffer(_d.Dev, ref bubd);
+					var bop = stackalloc float[8]; bop[0] = bk.Opacity; bop[1] = 0; bop[2] = 0; bop[3] = 0;
+					W.QueueWriteBuffer(_d.Q, bubuf, 0, bop, 32);
+					var bde = stackalloc BindGroupEntry[3];
+					bde[0] = new BindGroupEntry { Binding = 0, TextureView = bblur };
+					bde[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
+					bde[2] = new BindGroupEntry { Binding = 2, Buffer = bubuf, Offset = 0, Size = 32 };
+					var bdbgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = bde };
+					var bdbg = W.DeviceCreateBindGroup(_d.Dev, ref bdbgd);
+					var bq = new float[24];
+					void BQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); bq[idx] = n.X; bq[idx + 1] = n.Y; bq[idx + 2] = u; bq[idx + 3] = vv; }
+					BQV(0, new Vector2(0, 0), 0, 0); BQV(4, new Vector2(_s.Width, 0), 1, 0); BQV(8, new Vector2(_s.Width, _s.Height), 1, 1);
+					BQV(12, new Vector2(0, 0), 0, 0); BQV(16, new Vector2(_s.Width, _s.Height), 1, 1); BQV(20, new Vector2(0, _s.Height), 0, 1);
+					ops.Add((2, (nint)bdbg, 0, (nint)MakeBuffer(bq), false, bk.Clip, (nint)MakeClipBg(_d.ImageClipBgl, bk.Clip)));
+					if (bk.Effect.Color.A > 0)
+					{
+						var tc = new Vector4(bk.Effect.Color.R / 255f, bk.Effect.Color.G / 255f, bk.Effect.Color.B / 255f, bk.Effect.Color.A / 255f);
+						var tv = new List<float>();
+						void TV(float x, float y) { var n = Ndc(new Vector2(x, y)); tv.Add(n.X); tv.Add(n.Y); tv.Add(tc.X); tv.Add(tc.Y); tv.Add(tc.Z); tv.Add(tc.W); }
+						var a = bk.Clip.Aabb;
+						TV(a.X, a.Y); TV(a.Z, a.Y); TV(a.Z, a.W); TV(a.X, a.Y); TV(a.Z, a.W); TV(a.X, a.W);
+						ops.Add((0, (nint)MakeBuffer(tv.ToArray()), 0, 0, false, bk.Clip, (nint)MakeClipBg(_d.SolidClipBgl, bk.Clip)));
+					}
 					break;
 				}
 			}
@@ -1445,5 +1498,31 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 	public IColorFilter CreateBlendModeColorFilter(WColor color, BlendMode mode) => new WebGpuColorFilter { IsBlendMode = true, Color = color, Mode = mode };
 	public IColorFilter CreateColorMatrixColorFilter(float[] matrix) => new WebGpuColorFilter { Matrix = matrix };
 	public IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, WColor color) => new WebGpuEffectFilter { Dx = dx, Dy = dy, SigmaX = sigmaX, SigmaY = sigmaY, Color = color };
-	public IEffectFilter CreateEffectFilter(Windows.Graphics.Effects.IGraphicsEffect effect, Windows.Foundation.Rect bounds, Func<string, Microsoft.UI.Composition.CompositionBrush> sourceResolver, bool useBackdropBlurClamp, bool isSoftwareRenderer, out bool hasBackdropInput) => _inner.CreateEffectFilter(effect, bounds, sourceResolver, useBackdropBlurClamp, isSoftwareRenderer, out hasBackdropInput);
+	public IEffectFilter CreateEffectFilter(Windows.Graphics.Effects.IGraphicsEffect effect, Windows.Foundation.Rect bounds, Func<string, Microsoft.UI.Composition.CompositionBrush> sourceResolver, bool useBackdropBlurClamp, bool isSoftwareRenderer, out bool hasBackdropInput)
+	{
+		// Simplified realization: walk the graph for a GaussianBlur (the acrylic backdrop blur) and honor it as a
+		// backdrop blur + tint. Anything else falls back to the inner (Skia) factory. The full IGraphicsEffect DAG
+		// (noise, multi-stage blends) is not translated. GaussianBlurEffect GUID per EffectHelpers.
+		var blurGuid = new Guid("1FEB6D69-2FE6-4AC9-8C58-1D7F93E7A6A5");
+		float sigma = 0f;
+		void Walk(object node)
+		{
+			if (node is IGraphicsEffectD2D1Interop io)
+			{
+				if (io.GetEffectId() == blurGuid)
+				{
+					io.GetNamedPropertyMapping("BlurAmount", out var idx, out _);
+					if (io.GetProperty(idx) is float f) { sigma = MathF.Max(sigma, f); }
+				}
+				for (uint i = 0; i < io.GetSourceCount(); i++) { if (io.GetSource(i) is { } s) { Walk(s); } }
+			}
+		}
+		Walk(effect);
+		if (sigma > 0f)
+		{
+			hasBackdropInput = true;
+			return new WebGpuEffectFilter { SigmaX = sigma, SigmaY = sigma, Color = default };
+		}
+		return _inner.CreateEffectFilter(effect, bounds, sourceResolver, useBackdropBlurClamp, isSoftwareRenderer, out hasBackdropInput);
+	}
 }
