@@ -34,6 +34,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public RenderPipeline* CompositeDstIn;
 	public BindGroupLayout* CompositeBgl;         // SrcOver's group(0) layout
 	public BindGroupLayout* CompositeDstInBgl;    // DstIn's group(0) layout (auto-layouts aren't interchangeable)
+	public TextureView* DummyTex;                 // 1x1 placeholder for the clip coverage binding when no path clip
 	public BindGroupLayout* ImgBgl;
 	public BindGroupLayout* GradBgl;
 	// group(1) clip-uniform layouts (one per color-writing pipeline; all describe the same ClipU).
@@ -70,6 +71,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		W.AdapterRequestDevice(Adapter, in ddesc, new PfnRequestDeviceCallback((s, d, m, _) => Dev = d), null);
 		Q = W.DeviceGetQueue(Dev);
 		CreatePipelines();
+		DummyTex = CreateColorTarget(1, 1);
 	}
 
 	/// <summary>Reads a surface's resolved single-sample texture back to CPU as tightly-packed RGBA8 (top-down). For RTB and tests.</summary>
@@ -109,19 +111,26 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	// image/gradient group 1 — avoiding a group hole wgpu's auto-layout rejects). Device-space, axis-aligned
 	// rounded-rect mask (radii 0 → plain rect, full coverage); ~1px analytic AA on the corner edge.
 	private const string ClipStructFn = @"
-struct ClipU { rect: vec4<f32>, radii: vec4<f32>, flags: vec4<f32> };
-fn clipCov(fc: vec2<f32>, clip: ClipU) -> f32 {
-  if (clip.flags.x < 0.5) { return 1.0; }
-  let rl = clip.rect;
-  let c = vec2<f32>((rl.x + rl.z) * 0.5, (rl.y + rl.w) * 0.5);
-  let h = vec2<f32>((rl.z - rl.x) * 0.5, (rl.w - rl.y) * 0.5);
-  let lp = fc - c;
-  let rTop = select(clip.radii.x, clip.radii.y, lp.x > 0.0);
-  let rBot = select(clip.radii.w, clip.radii.z, lp.x > 0.0);
-  let rad = select(rTop, rBot, lp.y > 0.0);
-  let q = abs(lp) - h + vec2<f32>(rad, rad);
-  let d = min(max(q.x, q.y), 0.0) + length(max(q, vec2<f32>(0.0, 0.0))) - rad;
-  return clamp(0.5 - d, 0.0, 1.0);
+struct ClipU { rect: vec4<f32>, radii: vec4<f32>, flags: vec4<f32>, size: vec4<f32> };
+fn clipCov(fc: vec2<f32>, clip: ClipU, ctex: texture_2d<f32>, csmp: sampler) -> f32 {
+  var cov = 1.0;
+  if (clip.flags.x > 0.5) {
+    let rl = clip.rect;
+    let c = vec2<f32>((rl.x + rl.z) * 0.5, (rl.y + rl.w) * 0.5);
+    let h = vec2<f32>((rl.z - rl.x) * 0.5, (rl.w - rl.y) * 0.5);
+    let lp = fc - c;
+    let rTop = select(clip.radii.x, clip.radii.y, lp.x > 0.0);
+    let rBot = select(clip.radii.w, clip.radii.z, lp.x > 0.0);
+    let rad = select(rTop, rBot, lp.y > 0.0);
+    let q = abs(lp) - h + vec2<f32>(rad, rad);
+    let d = min(max(q.x, q.y), 0.0) + length(max(q, vec2<f32>(0.0, 0.0))) - rad;
+    cov = cov * clamp(0.5 - d, 0.0, 1.0);
+  }
+  if (clip.flags.y > 0.5) {
+    let uv = fc / max(clip.size.xy, vec2<f32>(1.0, 1.0));
+    cov = cov * textureSampleLevel(ctex, csmp, uv, 0.0).a;
+  }
+  return cov;
 }
 ";
 
@@ -141,11 +150,13 @@ fn clipCov(fc: vec2<f32>, clip: ClipU) -> f32 {
 
 	private const string ColoredWgsl = @"
 @group(0) @binding(0) var<uniform> clip: ClipU;
+@group(0) @binding(1) var clipTex: texture_2d<f32>;
+@group(0) @binding(2) var clipSmp: sampler;
 struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 @vertex fn vs(@location(0) pos: vec2<f32>, @location(1) col: vec4<f32>) -> VOut {
   var o: VOut; o.p = vec4<f32>(pos, 0.0, 1.0); o.c = col; return o;
 }
-@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy, clip)); }";
+@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy, clip, clipTex, clipSmp)); }";
 
 	private const string PosOnlyWgsl = @"
 @vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return vec4<f32>(pos, 0.0, 1.0); }
@@ -294,6 +305,8 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 struct Grad { header: vec4<f32>, geo: vec4<f32>, colors: array<vec4<f32>, 16>, stops: array<vec4<f32>, 4> };
 @group(0) @binding(0) var<uniform> g: Grad;
 @group(1) @binding(0) var<uniform> clip: ClipU;
+@group(1) @binding(1) var clipTex: texture_2d<f32>;
+@group(1) @binding(2) var clipSmp: sampler;
 @vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return vec4<f32>(pos, 0.0, 1.0); }
 fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
 @fragment fn fs(@builtin(position) fc: vec4<f32>) -> @location(0) vec4<f32> {
@@ -324,7 +337,7 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
       }
     }
   }
-  return vec4<f32>(col.rgb, col.a * clipCov(fc.xy, clip));
+  return vec4<f32>(col.rgb, col.a * clipCov(fc.xy, clip, clipTex, clipSmp));
 }";
 
 	private void CreateGradientPipeline(BlendState* blend)
@@ -352,6 +365,8 @@ struct U { op: vec4<f32>, tint: vec4<f32> };
 @group(0) @binding(1) var smp: sampler;
 @group(0) @binding(2) var<uniform> u: U;
 @group(1) @binding(0) var<uniform> clip: ClipU;
+@group(1) @binding(1) var clipTex: texture_2d<f32>;
+@group(1) @binding(2) var clipSmp: sampler;
 @vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> VOut { var o: VOut; o.p = vec4<f32>(pos, 0.0, 1.0); o.uv = uv; return o; }
 @fragment fn fs(i: VOut) -> @location(0) vec4<f32> {
   var c = textureSample(tex, smp, i.uv);   // premultiplied
@@ -360,7 +375,7 @@ struct U { op: vec4<f32>, tint: vec4<f32> };
     let fp = vec4<f32>(u.tint.rgb * u.tint.a, u.tint.a);
     c = fp * c.a;
   }
-  return c * u.op.x * clipCov(i.p.xy, clip);
+  return c * u.op.x * clipCov(i.p.xy, clip, clipTex, clipSmp);
 }";
 
 	private void CreateImagePipeline()
@@ -486,6 +501,10 @@ internal struct ClipData
 	public bool HasRound;
 	public Vector4 Rect;    // device rounded-rect L,T,R,B
 	public Vector4 Radii;   // per-corner radius (TL,TR,BR,BL), device px
+	// Arbitrary path clip: the flattened device-space fan is rendered to a full-size coverage texture at present
+	// time and sampled per-fragment. Innermost path wins (like the rounded shape); nested paths keep the AABB.
+	public float[] PathFan;
+	public bool PathEvenOdd;
 	public static ClipData None => new() { Aabb = new Vector4(-1e9f, -1e9f, 1e9f, 1e9f) };
 }
 
@@ -670,7 +689,21 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		_clip.Radii = new Vector4(roundRect.TopLeft.X * s, roundRect.TopRight.X * s, roundRect.BottomRight.X * s, roundRect.BottomLeft.X * s);
 	}
 
-	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) => ClipRect(geometry.Bounds, operation, antialias);
+	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
+	{
+		// Tighten the scissor to the path bounds, and capture the flattened device-space fan for an exact
+		// per-fragment coverage mask (built at present time).
+		ClipRect(geometry.Bounds, operation, antialias);
+		_fan = new List<float>();
+		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
+		geometry.StreamFlattened(this);
+		if (_fan.Count > 0)
+		{
+			_clip.PathFan = _fan.ToArray();
+			_clip.PathEvenOdd = geometry.FillRule == GeometryFillRule.EvenOdd;
+		}
+		_fan = null;
+	}
 	public void Clear(WColor color) => _data.ClearColor = color;
 
 	private Vector2 Map(float x, float y) => new(x * _m.M11 + y * _m.M21 + _m.M41, x * _m.M12 + y * _m.M22 + _m.M42);
@@ -960,6 +993,13 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			result.Rect = TransformedAabb(c.Rect, t);
 			result.Radii = c.Radii * s;
 		}
+		if (c.PathFan != null)
+		{
+			var pf = new float[c.PathFan.Length];
+			for (int i = 0; i < c.PathFan.Length; i += 2) { var p = t(new Vector2(c.PathFan[i], c.PathFan[i + 1])); pf[i] = p.X; pf[i + 1] = p.Y; }
+			result.PathFan = pf;
+			result.PathEvenOdd = c.PathEvenOdd;
+		}
 		return result;
 	}
 }
@@ -989,19 +1029,70 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		return buf;
 	}
 
-	// The group(1) clip bind group for a command: packs the ClipU (rect, radii, flags) into a uniform.
+	// Coverage textures for path clips, cached by the (reference-identical) fan shared across a clip's commands.
+	private readonly System.Collections.Generic.Dictionary<float[], nint> _coverageCache = new(System.Collections.Generic.ReferenceEqualityComparer.Instance);
+
+	// The clip bind group for a command: the ClipU uniform (rect, radii, flags, surface size), plus a coverage
+	// texture (the path-clip mask, or the device dummy when there's no path clip) and a sampler.
 	private BindGroup* MakeClipBg(BindGroupLayout* bgl, ClipData cd)
 	{
-		var cu = new float[12];
+		var cu = new float[16];
 		cu[0] = cd.Rect.X; cu[1] = cd.Rect.Y; cu[2] = cd.Rect.Z; cu[3] = cd.Rect.W;
 		cu[4] = cd.Radii.X; cu[5] = cd.Radii.Y; cu[6] = cd.Radii.Z; cu[7] = cd.Radii.W;
-		cu[8] = cd.HasRound ? 1f : 0f;
-		var bd = new BufferDescriptor { Size = 48, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
+		cu[8] = cd.HasRound ? 1f : 0f; cu[9] = cd.PathFan != null ? 1f : 0f;
+		cu[12] = _s.Width; cu[13] = _s.Height;
+		var bd = new BufferDescriptor { Size = 64, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
 		var buf = _d.W.DeviceCreateBuffer(_d.Dev, ref bd);
-		fixed (float* p = cu) { _d.W.QueueWriteBuffer(_d.Q, buf, 0, p, 48); }
-		var e = new BindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = 48 };
-		var bgd = new BindGroupDescriptor { Layout = bgl, EntryCount = 1, Entries = &e };
+		fixed (float* p = cu) { _d.W.QueueWriteBuffer(_d.Q, buf, 0, p, 64); }
+		var covView = cd.PathFan != null ? PathCoverage(cd.PathFan, cd.PathEvenOdd) : _d.DummyTex;
+		var e = stackalloc BindGroupEntry[3];
+		e[0] = new BindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = 64 };
+		e[1] = new BindGroupEntry { Binding = 1, TextureView = covView };
+		e[2] = new BindGroupEntry { Binding = 2, Sampler = _d.Smp };
+		var bgd = new BindGroupDescriptor { Layout = bgl, EntryCount = 3, Entries = e };
 		return _d.W.DeviceCreateBindGroup(_d.Dev, ref bgd);
+	}
+
+	private TextureView* PathCoverage(float[] fan, bool evenOdd)
+	{
+		if (_coverageCache.TryGetValue(fan, out var cached)) { return (TextureView*)cached; }
+		var view = RenderPathCoverage(fan, evenOdd);
+		_coverageCache[fan] = (nint)view;
+		return view;
+	}
+
+	// Fills the clip path (stencil-then-cover, white) into a full-size coverage surface; its resolved alpha is
+	// the per-fragment clip mask sampled by clipCov.
+	private TextureView* RenderPathCoverage(float[] fan, bool evenOdd)
+	{
+		var W = _d.W;
+		var cov = new WebGpuRenderSurface(_d, _s.Width, _s.Height);
+		var fanNdc = new float[fan.Length];
+		for (int i = 0; i < fan.Length; i += 2) { var n = Ndc(new Vector2(fan[i], fan[i + 1])); fanNdc[i] = n.X; fanNdc[i + 1] = n.Y; }
+		var fanBuf = MakeBuffer(fanNdc);
+		var cq = new System.Collections.Generic.List<float>();
+		void CQ(float x, float y) { cq.Add(x); cq.Add(y); cq.Add(1f); cq.Add(1f); cq.Add(1f); cq.Add(1f); }
+		CQ(-1, -1); CQ(1, -1); CQ(1, 1); CQ(-1, -1); CQ(1, 1); CQ(-1, 1);
+		var coverBuf = MakeBuffer(cq.ToArray());
+		var noClip = MakeClipBg(_d.CoverClipBgl, default);
+
+		var enc = W.DeviceCreateCommandEncoder(_d.Dev, null);
+		var ca = new RenderPassColorAttachment { View = cov.MsaaColorView, ResolveTarget = cov.View, LoadOp = LoadOp.Clear, StoreOp = StoreOp.Discard, ClearValue = default };
+		var dsa = new RenderPassDepthStencilAttachment { View = cov.DepthView, DepthLoadOp = LoadOp.Clear, DepthStoreOp = StoreOp.Discard, DepthClearValue = 1f, StencilLoadOp = LoadOp.Clear, StencilStoreOp = StoreOp.Discard, StencilClearValue = 0 };
+		var rp = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
+		var pass = W.CommandEncoderBeginRenderPass(enc, ref rp);
+		W.RenderPassEncoderSetPipeline(pass, evenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
+		W.RenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanNdc.Length * sizeof(float)));
+		W.RenderPassEncoderDraw(pass, (uint)(fanNdc.Length / 2), 1, 0, 0);
+		W.RenderPassEncoderSetPipeline(pass, _d.CoverPipe);
+		W.RenderPassEncoderSetBindGroup(pass, 0, noClip, 0, (uint*)null);
+		W.RenderPassEncoderSetStencilReference(pass, 0);
+		W.RenderPassEncoderSetVertexBuffer(pass, 0, coverBuf, 0, (nuint)(cq.Count * sizeof(float)));
+		W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
+		W.RenderPassEncoderEnd(pass);
+		var cb = W.CommandEncoderFinish(enc, null);
+		W.QueueSubmit(_d.Q, 1, &cb);
+		return cov.View;
 	}
 
 	// Fills the shadow silhouette into an offscreen coverage surface (stencil-then-cover, white), then blurs it
