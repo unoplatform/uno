@@ -100,6 +100,9 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 		{
 			_vulkanContext.Resize(width, height);
 		}
+
+		SurfaceFrameRate.RequestHighest(this, holder);
+
 		// Signal a render
 		InvalidateRender();
 	}
