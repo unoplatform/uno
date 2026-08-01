@@ -212,11 +212,24 @@ namespace Microsoft.UI.Xaml.Controls
 				hitResult = default;
 				return false;
 			}
+
+			var parsedText = displayBlock.ParsedText;
+			var textLength = GetPlainTextLength();
+			var firstCaret = parsedText.GetGeometryPosition(0).CaretRect;
+			var lastCaret = parsedText.GetGeometryPosition(textLength).CaretRect;
+			var hitTestPoint = local with
+			{
+				Y = local.Y < firstCaret.Top
+					? firstCaret.Y + firstCaret.Height / 2
+					: local.Y > lastCaret.Bottom
+						? lastCaret.Y + lastCaret.Height / 2
+						: local.Y,
+			};
 			index = Math.Clamp(
-				displayBlock.ParsedText.GetIndexAt(local, ignoreEndingNewLine: false, extendedSelection: true),
+				parsedText.GetIndexAt(hitTestPoint, ignoreEndingNewLine: false, extendedSelection: true),
 				0,
-				GetPlainTextLength());
-			var position = displayBlock.ParsedText.GetGeometryPosition(index);
+				textLength);
+			var position = parsedText.GetGeometryPosition(index);
 			var kind = MapGeometryKind(position.Kind);
 			kind |= GetPointViewportClipping(local);
 			hitResult = new RichEditTextGeometryHitResult(position.CaretRect, kind);

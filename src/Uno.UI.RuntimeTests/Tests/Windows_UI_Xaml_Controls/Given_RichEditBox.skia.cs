@@ -3569,6 +3569,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Programmatic_StartActive_Selection_Scrolls_To_Start()
 		{
+			using var imeDisposable = RichEditBox.SetImeExtensionForTesting(new FakeImeTextBoxExtension());
 			var SUT = new RichEditBox
 			{
 				Width = 180,
@@ -6119,7 +6120,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		// Android and UIKit clipboard backends do not expose custom RTF formats.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaUIKit)]
 		public async Task When_Control_Rich_Paste_TextChanging_Sees_Final_Formatting()
 		{
 			var SUT = new RichEditBox();
@@ -7325,8 +7327,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var contentElement = SUT.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement");
 				var block = contentElement?.Content as TextBlock;
 				Assert.IsNotNull(block);
-				Assert.AreEqual("Cambria Math", block.FontFamily.Source);
-				Assert.IsTrue(block.Inlines.OfType<Run>().All(run => run.FontFamily.Source == "Cambria Math"));
+				Assert.AreEqual(RichEditTextDocument.MathRenderingFontFamilyName, block.FontFamily.Source);
+				Assert.IsTrue(block.Inlines.OfType<Run>().All(run =>
+					run.FontFamily.Source == RichEditTextDocument.MathRenderingFontFamilyName));
 			}
 			finally
 			{
@@ -7510,7 +7513,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		// Android and UIKit clipboard backends do not expose custom RTF formats.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaUIKit)]
 		public async Task When_RtfOnly_Clipboard_Paste_Preserves_Formatting_Cross_Process()
 		{
 			var source = new RichEditBox();
@@ -7547,7 +7551,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		// Android and UIKit clipboard backends do not expose custom RTF formats.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaUIKit)]
 		public async Task When_ClipboardCopyFormat_Controls_Rtf_Payload()
 		{
 			var SUT = new RichEditBox();
@@ -9104,6 +9109,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_ReadOnly_Toggle_Preserves_Backward_Selection()
 		{
+			using var imeDisposable = RichEditBox.SetImeExtensionForTesting(new FakeImeTextBoxExtension());
 			var SUT = new RichEditBox();
 			try
 			{
@@ -9320,7 +9326,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		// Android and UIKit clipboard backends do not expose custom RTF formats.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaUIKit)]
 		public async Task When_Copy_Default_Preserves_Character_Formatting_On_Paste()
 		{
 			// Mirrors RichEditBoxTOMTests.cpp TestClipboardCopyFormats (~380-420): a default copy

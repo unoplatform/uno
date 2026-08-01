@@ -17,6 +17,7 @@ public partial class Given_RichEditBox
 	[RunsOnUIThread]
 	public async Task When_Interactive_Mixed_Height_UpDown_Uses_Visual_Lines()
 	{
+		using var imeDisposable = RichEditBox.SetImeExtensionForTesting(new FakeImeTextBoxExtension());
 		var editor = new RichEditBox { Width = 260, TextWrapping = TextWrapping.NoWrap };
 		try
 		{
@@ -29,6 +30,13 @@ public partial class Given_RichEditBox
 			editor.Document.Selection.SetRange(3, 3);
 			await WindowHelper.WaitForIdle();
 
+			await WindowHelper.WaitFor(() =>
+			{
+				var layout = GetDisplayBlock(editor).ParsedText;
+				return layout.VisualLineCount == 3
+					&& layout.GetVisualLine(1).Bounds.Height > layout.GetVisualLine(0).Bounds.Height
+					&& layout.GetVisualLine(1).Baseline > layout.GetVisualLine(0).Baseline;
+			});
 			var lines = GetDisplayBlock(editor).ParsedText;
 			Assert.AreEqual(3, lines.VisualLineCount);
 			Assert.IsTrue(lines.GetVisualLine(1).Bounds.Height > lines.GetVisualLine(0).Bounds.Height);
@@ -107,6 +115,8 @@ public partial class Given_RichEditBox
 
 	[TestMethod]
 	[RunsOnUIThread]
+	// Apple maps the command modifier plus Up/Down to document start/end, not paragraph navigation.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaUIKit)]
 	public async Task When_Ctrl_UpDown_Uses_Tom_Paragraph_Boundaries()
 	{
 		var editor = new RichEditBox { Width = 260, TextWrapping = TextWrapping.Wrap };

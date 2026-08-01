@@ -27,6 +27,7 @@ public partial class Given_RichEditBox
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Loaded_Million_Character_Local_Key_Edit_Stays_Range_Based()
 	{
+		using var imeDisposable = RichEditBox.SetImeExtensionForTesting(new FakeImeTextBoxExtension());
 		const int length = 1_000_000;
 		var editor = new RichEditBox
 		{
@@ -286,6 +287,8 @@ public partial class Given_RichEditBox
 	[TestMethod]
 	[DataRow(false)]
 	[DataRow(true)]
+	// Mono's conservative GC does not deterministically reclaim weakly referenced strings.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaUIKit)]
 	public void When_Large_Initial_Story_Is_Replaced_Or_Deleted_Original_Source_Is_Collectible(bool delete)
 	{
 		var document = new RichEditBox().Document;
