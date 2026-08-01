@@ -320,6 +320,18 @@ foreach (var (label, px) in new[] { ("frame1", pRet1), ("frame2", pRet2) })
 	Check($"retained {label}: gap black", mid.r < 40 && mid.g < 40 && mid.b < 40, mid);
 }
 
+// 19) DRAW COALESCING — three same-clip rects in one frame coalesce into a single draw; all must render.
+var pCo = Render(r =>
+{
+	r.DrawRect(new Rect(4, 4, 12, 12), red, false);
+	r.DrawRect(new Rect(26, 26, 12, 12), WColor.FromArgb(255, 0, 255, 0), false);
+	r.DrawRect(new Rect(48, 48, 12, 12), WColor.FromArgb(255, 0, 0, 255), false);
+});
+var co1 = At(pCo, 10, 10); var co2 = At(pCo, 32, 32); var co3 = At(pCo, 54, 54);
+Check("coalesce: rect 1 red", co1.r > 200 && co1.g < 60, co1);
+Check("coalesce: rect 2 green", co2.g > 200 && co2.r < 60, co2);
+Check("coalesce: rect 3 blue", co3.b > 200 && co3.r < 60, co3);
+
 Console.WriteLine(fail == 0
 	? "\nALL PASS — non-Skia render seam verified headless (primitives + text + stroke + boolean); Skia vs WebGPU agree on every neutral scene"
 	: $"\n{fail} CHECK(S) FAILED");
