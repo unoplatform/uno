@@ -29,6 +29,10 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public RenderPipeline* GradientPipe;
 	public RenderPipeline* BlurPipe;              // separable gaussian (fullscreen), single-sample
 	public BindGroupLayout* BlurBgl;
+	public RenderPipeline* CompositeSrcOver;      // composite a layer texture into an MSAA pass (SrcOver / DstIn)
+	public RenderPipeline* CompositeDstIn;
+	public BindGroupLayout* CompositeBgl;         // SrcOver's group(0) layout
+	public BindGroupLayout* CompositeDstInBgl;    // DstIn's group(0) layout (auto-layouts aren't interchangeable)
 	public BindGroupLayout* ImgBgl;
 	public BindGroupLayout* GradBgl;
 	// group(1) clip-uniform layouts (one per color-writing pipeline; all describe the same ClipU).
@@ -179,6 +183,62 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 		CreateImagePipeline();
 		CreateGradientPipeline(&blend);
 		CreateBlurPipeline();
+		CreateCompositePipelines();
+	}
+
+	// Composites a full-size layer texture into an MSAA pass. SrcOver for plain/opacity/colorfilter layers,
+	// DstIn (out = dst * src.a) for mask layers. Optional color matrix (params.x) applied to the layer content.
+	private const string CompositeWgsl = @"
+struct CU { params: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec4<f32>, m3: vec4<f32>, off: vec4<f32> };
+@group(0) @binding(0) var src: texture_2d<f32>;
+@group(0) @binding(1) var smp: sampler;
+@group(0) @binding(2) var<uniform> u: CU;
+struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
+@vertex fn vs(@builtin(vertex_index) vi: u32) -> VO {
+  var pts = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
+  let p = pts[vi];
+  var o: VO; o.p = vec4<f32>(p, 0.0, 1.0); o.uv = vec2<f32>((p.x + 1.0) * 0.5, (1.0 - p.y) * 0.5); return o;
+}
+@fragment fn fs(i: VO) -> @location(0) vec4<f32> {
+  var c = textureSampleLevel(src, smp, i.uv, 0.0);   // premultiplied layer content
+  if (u.params.x > 0.5) {
+    var s = c;
+    if (c.a > 0.0) { s = vec4<f32>(c.rgb / c.a, c.a); }
+    let r = vec4<f32>(dot(u.m0, s) + u.off.x, dot(u.m1, s) + u.off.y, dot(u.m2, s) + u.off.z, dot(u.m3, s) + u.off.w);
+    let rc = clamp(r, vec4<f32>(0.0), vec4<f32>(1.0));
+    c = vec4<f32>(rc.rgb * rc.a, rc.a);
+  }
+  return c * u.params.y;
+}";
+
+	private void CreateCompositePipelines()
+	{
+		var module = Module(CompositeWgsl);
+		var vs = (byte*)SilkMarshal.StringToPtr("vs", NativeStringEncoding.UTF8);
+		var fs = (byte*)SilkMarshal.StringToPtr("fs", NativeStringEncoding.UTF8);
+		var keepFace = Face(CompareFunction.Always, StencilOperation.Keep);
+		var ds = new DepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = false, DepthCompare = CompareFunction.Always, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
+		var over = new BlendState { Color = new BlendComponent { SrcFactor = BlendFactor.One, DstFactor = BlendFactor.OneMinusSrcAlpha, Operation = BlendOperation.Add }, Alpha = new BlendComponent { SrcFactor = BlendFactor.One, DstFactor = BlendFactor.OneMinusSrcAlpha, Operation = BlendOperation.Add } };
+		var dstIn = new BlendState { Color = new BlendComponent { SrcFactor = BlendFactor.Zero, DstFactor = BlendFactor.SrcAlpha, Operation = BlendOperation.Add }, Alpha = new BlendComponent { SrcFactor = BlendFactor.Zero, DstFactor = BlendFactor.SrcAlpha, Operation = BlendOperation.Add } };
+		CompositeSrcOver = MakeComposite(module, vs, fs, &over, &ds);
+		CompositeDstIn = MakeComposite(module, vs, fs, &dstIn, &ds);
+		CompositeBgl = W.RenderPipelineGetBindGroupLayout(CompositeSrcOver, 0);
+		CompositeDstInBgl = W.RenderPipelineGetBindGroupLayout(CompositeDstIn, 0);
+	}
+
+	private RenderPipeline* MakeComposite(ShaderModule* module, byte* vs, byte* fs, BlendState* blend, DepthStencilState* ds)
+	{
+		var vsState = new VertexState { Module = module, EntryPoint = vs, BufferCount = 0 };
+		var target = new ColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = ColorWriteMask.All };
+		var fsState = new FragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
+		var pd = new RenderPipelineDescriptor
+		{
+			Vertex = vsState, Fragment = &fsState, DepthStencil = ds,
+			Primitive = new PrimitiveState { Topology = PrimitiveTopology.TriangleList, FrontFace = FrontFace.Ccw, CullMode = CullMode.None },
+			Multisample = new MultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = false },
+			Layout = null,
+		};
+		return W.DeviceCreateRenderPipeline(Dev, ref pd);
 	}
 
 	// One separable-gaussian pass over a texture. A fullscreen triangle (from vertex_index, no vertex buffer)
@@ -477,6 +537,15 @@ internal sealed class ShadowCmd : WebGpuCommand
 	public bool Additive;
 }
 
+// A SaveLayer group: its Commands are rendered into a full-size offscreen surface, then composited onto the
+// parent with CompositeMode (0 = SrcOver, 1 = DstIn mask) and an optional color matrix (SaveLayer(IColorFilter)).
+internal sealed class LayerCmd : WebGpuCommand
+{
+	public List<WebGpuCommand> Commands;
+	public int CompositeMode;   // 0 = SrcOver, 1 = DstIn
+	public float[] ColorMatrix; // null, or 20-float (4x5) color matrix applied at composite
+}
+
 // Backend-created gradient shader handle. The WebGPU backend mints its own (rather than delegating to Skia) so
 // the recorder can read the gradient parameters back and evaluate them in the WGSL gradient pipeline.
 public sealed class WebGpuShader : IShader
@@ -512,24 +581,46 @@ public sealed class WebGpuRenderData : IRenderData
 
 public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
 {
-	private readonly Stack<(Matrix4x4 m, ClipData clip)> _stack = new();
+	// A save frame carries the matrix/clip to restore. Layer frames additionally redirect emitted commands into
+	// a sub-list until Restore, which composites that sub-list (as a LayerCmd) back onto the parent.
+	private struct SaveEntry { public Matrix4x4 M; public ClipData Clip; public bool IsLayer; public List<WebGpuCommand> ParentTarget; public int CompositeMode; public float[] ColorMatrix; }
+	private readonly Stack<SaveEntry> _stack = new();
 	private Matrix4x4 _m = Matrix4x4.Identity;
 	private ClipData _clip = ClipData.None;
 	private readonly WebGpuRenderData _data = new();
+	private List<WebGpuCommand> _target;   // current emit target (root command list, or a layer's list)
+
+	public WebGpuCommandRecorder() => _target = _data.Commands;
 
 	public Matrix4x4 TotalMatrix => _m;
 	public void SetMatrix(in Matrix4x4 matrix) => _m = matrix;
 	public void Concat(in Matrix4x4 matrix) => _m = matrix * _m;
 	public void Translate(float dx, float dy) => _m = Matrix4x4.CreateTranslation(dx, dy, 0) * _m;
 	public void Scale(float sx, float sy) => _m = Matrix4x4.CreateScale(sx, sy, 1) * _m;
-	public int Save() { _stack.Push((_m, _clip)); return _stack.Count; }
+	public int Save() { _stack.Push(new SaveEntry { M = _m, Clip = _clip }); return _stack.Count; }
 	public int SaveCount => _stack.Count;
-	public void Restore() { if (_stack.Count > 0) { var t = _stack.Pop(); _m = t.m; _clip = t.clip; } }
-	public void RestoreToCount(int count) { while (_stack.Count > count) { var t = _stack.Pop(); _m = t.m; _clip = t.clip; } }
-	public void SaveLayer(bool antialias = false) => Save();
-	public void SaveLayer(IColorFilter colorFilter, bool antialias = false) => Save();
-	public void SaveLayer(BlendMode blendMode, bool antialias = false) => Save();
-	public void SaveLayer(IEffectFilter filter) => Save();
+	public void Restore()
+	{
+		if (_stack.Count == 0) { return; }
+		var t = _stack.Pop(); _m = t.M; _clip = t.Clip;
+		if (t.IsLayer)
+		{
+			var layerCmds = _target;
+			_target = t.ParentTarget;
+			_target.Add(new LayerCmd { Commands = layerCmds, CompositeMode = t.CompositeMode, ColorMatrix = t.ColorMatrix, Clip = _clip });
+		}
+	}
+	public void RestoreToCount(int count) { while (_stack.Count > count) { Restore(); } }
+
+	private void PushLayer(int compositeMode, float[] colorMatrix)
+	{
+		_stack.Push(new SaveEntry { M = _m, Clip = _clip, IsLayer = true, ParentTarget = _target, CompositeMode = compositeMode, ColorMatrix = colorMatrix });
+		_target = new List<WebGpuCommand>();
+	}
+	public void SaveLayer(bool antialias = false) => PushLayer(0, null);
+	public void SaveLayer(IColorFilter colorFilter, bool antialias = false) => PushLayer(0, (colorFilter as WebGpuColorFilter)?.Matrix);
+	public void SaveLayer(BlendMode blendMode, bool antialias = false) => PushLayer(blendMode == BlendMode.DstIn ? 1 : 0, null);
+	public void SaveLayer(IEffectFilter filter) => PushLayer(0, null);
 	// Device-space AABB of a mapped rect (its 4 corners), for the scissor / fast reject.
 	private Vector4 DeviceAabb(in Rect rect)
 	{
@@ -565,7 +656,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	private Vector2 Map(float x, float y) => new(x * _m.M11 + y * _m.M21 + _m.M41, x * _m.M12 + y * _m.M22 + _m.M42);
 
 	public void DrawRect(in Rect rect, WColor color, bool antialias = false)
-		=> _data.Commands.Add(new RectCommand
+		=> _target.Add(new RectCommand
 		{
 			Color = color, Clip = _clip,
 			P0 = Map((float)rect.Left, (float)rect.Top), P1 = Map((float)rect.Right, (float)rect.Top),
@@ -586,7 +677,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		geometry.StreamFlattened(this);
 		if (_fan.Count > 0)
 		{
-			_data.Commands.Add(new PathFill { FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, Clip = _clip });
+			_target.Add(new PathFill { FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, Clip = _clip });
 		}
 		_fan = null;
 	}
@@ -654,7 +745,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			u[72 + i] = g.Stops is { Length: > 0 } && i < g.Stops.Length ? g.Stops[i] : (count > 1 ? i / (float)(count - 1) : 0f);
 		}
 
-		_data.Commands.Add(new GradientCmd
+		_target.Add(new GradientCmd
 		{
 			Clip = _clip, Uniform = u,
 			P0 = Map((float)rect.Left, (float)rect.Top), P1 = Map((float)rect.Right, (float)rect.Top),
@@ -668,7 +759,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		silhouette.StreamFlattened(this);
 		if (_fan.Count > 0)
 		{
-			_data.Commands.Add(new ShadowCmd
+			_target.Add(new ShadowCmd
 			{
 				FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax,
 				EvenOdd = silhouette.FillRule == GeometryFillRule.EvenOdd,
@@ -686,7 +777,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	{
 		var dir = p1 - p0; var len = dir.Length(); if (len < 1e-4f) { return; } dir /= len;
 		var n = new Vector2(-dir.Y, dir.X) * (strokeWidth / 2f);
-		_data.Commands.Add(new RectCommand
+		_target.Add(new RectCommand
 		{
 			Color = color, Clip = _clip,
 			P0 = Map(p0.X + n.X, p0.Y + n.Y), P1 = Map(p1.X + n.X, p1.Y + n.Y),
@@ -698,14 +789,14 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		if (texture is not WebGpuImageTexture t) { return; }
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
 		// No per-frame upload — the texture is already resident; record its view for the present pass.
-		_data.Commands.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = opacity, Clip = _clip });
+		_target.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = opacity, Clip = _clip });
 	}
 	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false)
 	{
 		if (texture is not WebGpuImageTexture t) { return; }
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
 		var (mode, tint) = ResolveTint(colorFilter);
-		_data.Commands.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = 1f, TintMode = mode, Tint = tint, Clip = _clip });
+		_target.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = 1f, TintMode = mode, Tint = tint, Clip = _clip });
 	}
 
 	// A SrcIn blend-mode WebGpuColorFilter → a straight-alpha tint (the only image color-filter case today);
@@ -736,7 +827,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 				if (centerHollow && row == 1 && col == 1) { continue; }
 				float dl = dxe[col], dr = dxe[col + 1], dt = dye[row], db = dye[row + 1];
 				if (dr - dl <= 0 || db - dt <= 0) { continue; }
-				_data.Commands.Add(new ImageCmd
+				_target.Add(new ImageCmd
 				{
 					View = t.View, W = w, H = h, Opacity = 1f, Clip = _clip,
 					P0 = Map(dl, dt), P1 = Map(dr, dt), P2 = Map(dr, db), P3 = Map(dl, db),
@@ -761,7 +852,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			switch (cmd)
 			{
 				case RectCommand r:
-					_data.Commands.Add(new RectCommand { Color = r.Color, Clip = ClipCompose(r.Clip, T), P0 = T(r.P0), P1 = T(r.P1), P2 = T(r.P2), P3 = T(r.P3) });
+					_target.Add(new RectCommand { Color = r.Color, Clip = ClipCompose(r.Clip, T), P0 = T(r.P0), P1 = T(r.P1), P2 = T(r.P2), P3 = T(r.P3) });
 					break;
 				case PathFill p:
 					var src = p.FanDevice; var dst = new float[src.Length];
@@ -771,7 +862,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 						var q = T(new Vector2(src[i], src[i + 1])); dst[i] = q.X; dst[i + 1] = q.Y;
 						bbMin = Vector2.Min(bbMin, q); bbMax = Vector2.Max(bbMax, q);
 					}
-					_data.Commands.Add(new PathFill { FanDevice = dst, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, Clip = ClipCompose(p.Clip, T) });
+					_target.Add(new PathFill { FanDevice = dst, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, Clip = ClipCompose(p.Clip, T) });
 					break;
 				case ShadowCmd sh:
 					var ssrc = sh.FanDevice; var sdst = new float[ssrc.Length];
@@ -782,10 +873,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 						sbbMin = Vector2.Min(sbbMin, q); sbbMax = Vector2.Max(sbbMax, q);
 					}
 					var ss = new Vector2(_m.M11, _m.M12).Length();
-					_data.Commands.Add(new ShadowCmd { FanDevice = sdst, BbMin = sbbMin, BbMax = sbbMax, EvenOdd = sh.EvenOdd, Color = sh.Color, SigmaX = sh.SigmaX * ss, SigmaY = sh.SigmaY * ss, Additive = sh.Additive, Clip = ClipCompose(sh.Clip, T) });
+					_target.Add(new ShadowCmd { FanDevice = sdst, BbMin = sbbMin, BbMax = sbbMax, EvenOdd = sh.EvenOdd, Color = sh.Color, SigmaX = sh.SigmaX * ss, SigmaY = sh.SigmaY * ss, Additive = sh.Additive, Clip = ClipCompose(sh.Clip, T) });
 					break;
 				case ImageCmd im:
-					_data.Commands.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), View = im.View, W = im.W, H = im.H, Opacity = im.Opacity, U0 = im.U0, V0 = im.V0, U1 = im.U1, V1 = im.V1, TintMode = im.TintMode, Tint = im.Tint, Clip = ClipCompose(im.Clip, T) });
+					_target.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), View = im.View, W = im.W, H = im.H, Opacity = im.Opacity, U0 = im.U0, V0 = im.V0, U1 = im.U1, V1 = im.V1, TintMode = im.TintMode, Tint = im.Tint, Clip = ClipCompose(im.Clip, T) });
 					break;
 				case GradientCmd gc:
 					// Transform the device-space geometry baked into the uniform by the replay matrix too, so the
@@ -803,7 +894,15 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 						var rsy = new Vector2(_m.M21, _m.M22).Length();
 						uu[6] *= rsx; uu[7] *= rsy;
 					}
-					_data.Commands.Add(new GradientCmd { P0 = T(gc.P0), P1 = T(gc.P1), P2 = T(gc.P2), P3 = T(gc.P3), Uniform = uu, Clip = ClipCompose(gc.Clip, T) });
+					_target.Add(new GradientCmd { P0 = T(gc.P0), P1 = T(gc.P1), P2 = T(gc.P2), P3 = T(gc.P3), Uniform = uu, Clip = ClipCompose(gc.Clip, T) });
+					break;
+				case LayerCmd lyr:
+					var saved = _target;
+					var layerList = new List<WebGpuCommand>();
+					_target = layerList;
+					Replay(new WebGpuRenderData { Commands = lyr.Commands });   // recursively transform sub-commands
+					_target = saved;
+					_target.Add(new LayerCmd { Commands = layerList, CompositeMode = lyr.CompositeMode, ColorMatrix = lyr.ColorMatrix, Clip = ClipCompose(lyr.Clip, T) });
 					break;
 			}
 		}
@@ -960,13 +1059,21 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	public void Replay(IRenderData data)
 	{
 		var rd = (WebGpuRenderData)data;
+		RenderInto(rd.Commands, _s, _presentClear ?? rd.ClearColor);
+	}
+
+	// Renders a command list into a target surface's MSAA pass (resolving to its single-sample view). Layers
+	// recurse into their own full-size surface then composite here; shadows/layers pre-render before the pass.
+	private void RenderInto(List<WebGpuCommand> cmds, WebGpuRenderSurface target, WColor? clear)
+	{
 		var W = _d.W;
 
 		// Build GPU resources for every command up front (buffers/textures must be created outside the
 		// render pass), preserving draw order in a single op list so cross-type z-order is honoured.
-		// kind: 0=rect (b0=verts), 1=path (b0=fan, u0=fanCount, b1=cover, flag=evenOdd), 2=image (b0=bindGroup, b1=quad).
+		// kind: 0=rect (b0=verts), 1=path (b0=fan, u0=fanCount, b1=cover, flag=evenOdd), 2=image (b0=bindGroup,
+		// b1=quad), 3=gradient, 4=composite layer (b0=bindGroup, u0=compositeMode).
 		var ops = new List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)>();
-		foreach (var cmd in rd.Commands)
+		foreach (var cmd in cmds)
 		{
 			switch (cmd)
 			{
@@ -1053,23 +1160,48 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					ops.Add((2, (nint)sbg, 0, (nint)MakeBuffer(sq), false, sh.Clip, (nint)MakeClipBg(_d.ImageClipBgl, sh.Clip)));
 					break;
 				}
+				case LayerCmd lyr:
+				{
+					// Render the layer's commands into a full-size offscreen surface, then composite (kind 4).
+					var layerSurface = new WebGpuRenderSurface(_d, _s.Width, _s.Height);
+					RenderInto(lyr.Commands, layerSurface, null);
+					var cu = new float[24];
+					cu[0] = lyr.ColorMatrix is { Length: >= 20 } ? 1f : 0f; cu[1] = 1f;
+					if (lyr.ColorMatrix is { Length: >= 20 } mm)
+					{
+						cu[4] = mm[0]; cu[5] = mm[1]; cu[6] = mm[2]; cu[7] = mm[3];        // m0
+						cu[8] = mm[5]; cu[9] = mm[6]; cu[10] = mm[7]; cu[11] = mm[8];      // m1
+						cu[12] = mm[10]; cu[13] = mm[11]; cu[14] = mm[12]; cu[15] = mm[13]; // m2
+						cu[16] = mm[15]; cu[17] = mm[16]; cu[18] = mm[17]; cu[19] = mm[18]; // m3
+						cu[20] = mm[4]; cu[21] = mm[9]; cu[22] = mm[14]; cu[23] = mm[19];   // off (5th column)
+					}
+					var lubd = new BufferDescriptor { Size = 96, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
+					var lubuf = W.DeviceCreateBuffer(_d.Dev, ref lubd);
+					fixed (float* p = cu) { W.QueueWriteBuffer(_d.Q, lubuf, 0, p, 96); }
+					var lentries = stackalloc BindGroupEntry[3];
+					lentries[0] = new BindGroupEntry { Binding = 0, TextureView = layerSurface.View };
+					lentries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
+					lentries[2] = new BindGroupEntry { Binding = 2, Buffer = lubuf, Offset = 0, Size = 96 };
+					var lbgd = new BindGroupDescriptor { Layout = lyr.CompositeMode == 1 ? _d.CompositeDstInBgl : _d.CompositeBgl, EntryCount = 3, Entries = lentries };
+					var lbg = W.DeviceCreateBindGroup(_d.Dev, ref lbgd);
+					ops.Add((4, (nint)lbg, (uint)lyr.CompositeMode, 0, false, lyr.Clip, 0));
+					break;
+				}
 			}
 		}
 
 		var enc = W.DeviceCreateCommandEncoder(_d.Dev, null);
-		// The neutral loop calls present.Clear(...) before Replay; honor it (else fall back to the frame's clear).
-		var clear = _presentClear ?? rd.ClearColor;
 		var ca = new RenderPassColorAttachment
 		{
-			// Render into the multisampled color and resolve into the single-sample present/readback texture.
+			// Render into the multisampled color and resolve into the single-sample target texture.
 			// A fresh MSAA buffer can't LoadOp.Load, so we always clear (transparent when no clear was given);
 			// the neutral loop redraws the whole frame each present, so nothing prior needs preserving here.
-			View = _s.MsaaColorView, ResolveTarget = _s.View, LoadOp = LoadOp.Clear, StoreOp = StoreOp.Discard,
+			View = target.MsaaColorView, ResolveTarget = target.View, LoadOp = LoadOp.Clear, StoreOp = StoreOp.Discard,
 			ClearValue = clear.HasValue ? new Silk.NET.WebGPU.Color(clear.Value.R / 255.0, clear.Value.G / 255.0, clear.Value.B / 255.0, clear.Value.A / 255.0) : default,
 		};
 		var dsa = new RenderPassDepthStencilAttachment
 		{
-			View = _s.DepthView,
+			View = target.DepthView,
 			DepthLoadOp = LoadOp.Clear, DepthStoreOp = StoreOp.Store, DepthClearValue = 1f,
 			StencilLoadOp = LoadOp.Clear, StencilStoreOp = StoreOp.Store, StencilClearValue = 0,
 		};
@@ -1110,6 +1242,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					W.RenderPassEncoderSetBindGroup(pass, 1, (BindGroup*)clipBg, 0, (uint*)null);
 					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b1, 0, (nuint)(12 * sizeof(float)));
 					W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
+					break;
+				case 4:
+					W.RenderPassEncoderSetPipeline(pass, u0 == 1 ? _d.CompositeDstIn : _d.CompositeSrcOver);
+					W.RenderPassEncoderSetBindGroup(pass, 0, (BindGroup*)b0, 0, (uint*)null);
+					W.RenderPassEncoderDraw(pass, 3, 1, 0, 0);
 					break;
 			}
 		}
