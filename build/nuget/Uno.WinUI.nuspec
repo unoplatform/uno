@@ -138,6 +138,8 @@
 		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition.Skia\Release\net11.0\Uno.UI.Composition.pdb" target="uno-runtime\net11.0\skia" />
 		<file src="..\..\src\Uno.UI.Composition.Skia\bin\Uno.UI.Composition.SkiaBackend\Release\net11.0\Uno.UI.Composition.Skia.dll" target="uno-runtime\net11.0\skia" />
 		<file src="..\..\src\Uno.UI.Composition.Skia\bin\Uno.UI.Composition.SkiaBackend\Release\net11.0\Uno.UI.Composition.Skia.pdb" target="uno-runtime\net11.0\skia" />
+		<file src="..\..\src\Uno.UI.Composition.Drawing\bin\Uno.UI.Composition.Drawing\Release\net11.0\Uno.UI.Composition.Drawing.dll" target="uno-runtime\net11.0\skia" />
+		<file src="..\..\src\Uno.UI.Composition.Drawing\bin\Uno.UI.Composition.Drawing\Release\net11.0\Uno.UI.Composition.Drawing.pdb" target="uno-runtime\net11.0\skia" />
 		<file src="..\..\src\Uno.UI\bin\Uno.UI.Skia\Release\net11.0\*.xml" target="uno-runtime\net11.0\skia" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.dll" target="uno-runtime\net11.0\skia" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.pdb" target="uno-runtime\net11.0\skia" />
@@ -157,6 +159,8 @@
 		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition.Skia\Release\net10.0\Uno.UI.Composition.pdb" target="uno-runtime\net10.0\skia" />
 		<file src="..\..\src\Uno.UI.Composition.Skia\bin\Uno.UI.Composition.SkiaBackend\Release\net10.0\Uno.UI.Composition.Skia.dll" target="uno-runtime\net10.0\skia" />
 		<file src="..\..\src\Uno.UI.Composition.Skia\bin\Uno.UI.Composition.SkiaBackend\Release\net10.0\Uno.UI.Composition.Skia.pdb" target="uno-runtime\net10.0\skia" />
+		<file src="..\..\src\Uno.UI.Composition.Drawing\bin\Uno.UI.Composition.Drawing\Release\net10.0\Uno.UI.Composition.Drawing.dll" target="uno-runtime\net10.0\skia" />
+		<file src="..\..\src\Uno.UI.Composition.Drawing\bin\Uno.UI.Composition.Drawing\Release\net10.0\Uno.UI.Composition.Drawing.pdb" target="uno-runtime\net10.0\skia" />
 		<file src="..\..\src\Uno.UI\bin\Uno.UI.Skia\Release\net10.0\*.xml" target="uno-runtime\net10.0\skia" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.dll" target="uno-runtime\net10.0\skia" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.pdb" target="uno-runtime\net10.0\skia" />
