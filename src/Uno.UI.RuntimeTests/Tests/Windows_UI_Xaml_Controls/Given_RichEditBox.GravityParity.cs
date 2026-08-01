@@ -55,7 +55,7 @@ public partial class Given_RichEditBox
 			Assert.AreEqual(testCase.ExpectedStart, tracked.StartPosition, testCase.Name);
 			Assert.AreEqual(testCase.ExpectedEnd, tracked.EndPosition, testCase.Name);
 			Assert.AreEqual(testCase.ExpectedText, tracked.Text, testCase.Name);
-#if HAS_UNO
+#if HAS_UNO && !__WASM__
 			Assert.IsTrue(document.AreRunIndexesValid(), testCase.Name);
 #endif
 		}

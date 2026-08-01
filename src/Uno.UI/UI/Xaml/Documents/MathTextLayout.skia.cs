@@ -684,7 +684,6 @@ internal sealed class MathParsedText : IParsedText
 
 			var span = _document.GetSpan(table);
 			var contentHeight = TableBox.GetContentHeight(rows, _em * 0.25f * scale);
-			var fenceScale = Math.Clamp(contentHeight / Math.Max(1, _em), 1, 3);
 			var openSpan = new MathTextSpan(span.Start, 1);
 			var closeSpan = new MathTextSpan(Math.Max(span.Start, span.End - 1), span.Length > 0 ? 1 : 0);
 			var open = CreateVerticalGlyphBox(
@@ -695,7 +694,7 @@ internal sealed class MathParsedText : IParsedText
 					scale,
 					GetBrush(table),
 					allowVariant: !OperatingSystem.IsBrowser())
-				?? CreateLiteralBox(table, "[", openSpan, scale * fenceScale, GetBrush(table));
+				?? CreateTableFenceBox(table, openSpan, contentHeight, scale, isOpen: true, GetBrush(table));
 			var close = CreateVerticalGlyphBox(
 					table,
 					"]",
@@ -704,7 +703,7 @@ internal sealed class MathParsedText : IParsedText
 					scale,
 					GetBrush(table),
 					allowVariant: !OperatingSystem.IsBrowser())
-				?? CreateLiteralBox(table, "]", closeSpan, scale * fenceScale, GetBrush(table));
+				?? CreateTableFenceBox(table, closeSpan, contentHeight, scale, isOpen: false, GetBrush(table));
 			return new TableBox(
 				table,
 				rows,
@@ -714,6 +713,23 @@ internal sealed class MathParsedText : IParsedText
 				_em * 0.25f * scale,
 				Metrics.AxisHeight * scale);
 		}
+
+		private VerticalRuleFenceBox CreateTableFenceBox(
+			MathTableNode table,
+			MathTextSpan span,
+			float targetHeight,
+			float scale,
+			bool isOpen,
+			Brush? brush)
+			=> new(
+				table,
+				span,
+				Math.Max(_em * scale, targetHeight),
+				Metrics.AxisHeight * scale,
+				Math.Max(1, _em * 0.3f * scale),
+				Math.Max(1, Metrics.FractionRuleThickness * scale),
+				isOpen,
+				brush);
 
 		private MathBox BuildOverUnder(MathOverUnderNode node, float scale)
 		{
@@ -1067,6 +1083,51 @@ internal sealed class MathParsedText : IParsedText
 			{
 				context.SetIndex(_span.Start, new Rect(x, top, 0, Ascent + Descent), baseline);
 			}
+		}
+	}
+
+	private sealed class VerticalRuleFenceBox : MathBox
+	{
+		private readonly MathTextSpan _span;
+		private readonly float _thickness;
+		private readonly bool _isOpen;
+		private readonly Brush? _brush;
+
+		internal VerticalRuleFenceBox(
+			MathNode node,
+			MathTextSpan span,
+			float height,
+			float axisHeight,
+			float width,
+			float thickness,
+			bool isOpen,
+			Brush? brush)
+			: base(
+				node,
+				width,
+				Math.Clamp(height / 2 + axisHeight, 0, height),
+				Math.Clamp(height / 2 - axisHeight, 0, height))
+		{
+			_span = span;
+			_thickness = Math.Min(thickness, Math.Min(width, height));
+			_isOpen = isOpen;
+			_brush = brush;
+		}
+
+		internal override void Arrange(ArrangeContext context, float x, float baseline)
+		{
+			var top = baseline - Ascent;
+			var bottom = baseline + Descent;
+			var verticalX = _isOpen ? x : x + Width - _thickness;
+			context.AddRule(new SKRect(verticalX, top, verticalX + _thickness, bottom), _brush);
+			context.AddRule(new SKRect(x, top, x + Width, top + _thickness), _brush);
+			context.AddRule(new SKRect(x, bottom - _thickness, x + Width, bottom), _brush);
+			context.SetNodeBounds(Node, x, baseline, Width, Ascent, Descent);
+			context.SetIndex(
+				_span.Start,
+				new Rect(x, top, Width, Ascent + Descent),
+				baseline,
+				force: _span.Length > 0);
 		}
 	}
 

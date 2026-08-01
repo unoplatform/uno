@@ -3615,6 +3615,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Backward_Selection_Gripper_Scrolls_To_Physical_Endpoint()
 		{
+			using var imeDisposable = RichEditBox.SetImeExtensionForTesting(new FakeImeTextBoxExtension());
 			var SUT = new RichEditBox
 			{
 				Width = 220,
