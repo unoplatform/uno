@@ -36,6 +36,21 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public BindGroupLayout* CompositeDstInBgl;    // DstIn's group(0) layout (auto-layouts aren't interchangeable)
 	public TextureView* DummyTex;                 // 1x1 placeholder for the clip coverage binding when no path clip
 	public WebGpuTexturePool Pool;                // transient offscreen pool (reused across frames)
+	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
+	private readonly System.Collections.Generic.List<nint> _pendingBindGroups = new();
+
+	// Bind groups reference this frame's pooled buffers, so they can't be pooled — but the previous frame's GPU
+	// work is complete by the next frame start (present DevicePolls), so release them there. Buffers/textures are
+	// reused (not released). Call once per frame before rebuilding.
+	public void BeginFrameResources()
+	{
+		Pool.BeginFrame();
+		BufferPool.BeginFrame();
+		foreach (var bg in _pendingBindGroups) { W.BindGroupRelease((BindGroup*)bg); }
+		_pendingBindGroups.Clear();
+	}
+
+	public BindGroup* TrackBg(BindGroup* bg) { _pendingBindGroups.Add((nint)bg); return bg; }
 	public BindGroupLayout* ImgBgl;
 	public BindGroupLayout* GradBgl;
 	// group(1) clip-uniform layouts (one per color-writing pipeline; all describe the same ClipU).
@@ -74,6 +89,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		CreatePipelines();
 		DummyTex = CreateColorTarget(1, 1);
 		Pool = new WebGpuTexturePool(this);
+		BufferPool = new WebGpuBufferPool(this);
 	}
 
 	/// <summary>Reads a surface's resolved single-sample texture back to CPU as tightly-packed RGBA8 (top-down). For RTB and tests.</summary>
@@ -462,6 +478,33 @@ public sealed unsafe class WebGpuTexturePool
 		var view = _d.W.TextureCreateView(tex, null);
 		_entries.Add(new Entry { Tex = tex, View = view, W = w, H = h, Samples = samples, Fmt = fmt, Usage = usage, InUse = true });
 		return view;
+	}
+}
+
+// Transient GPU-buffer pool (vertex + uniform buffers). Like the texture pool: BeginFrame frees all; Rent
+// reuses a free buffer of the same usage with enough capacity or creates one, so a steady-state frame allocates
+// no buffers. Callers QueueWriteBuffer their data before use.
+public sealed unsafe class WebGpuBufferPool
+{
+	private readonly WebGpuDevice _d;
+	private sealed class Entry { public Silk.NET.WebGPU.Buffer* Buf; public int Cap; public BufferUsage Usage; public bool InUse; }
+	private readonly System.Collections.Generic.List<Entry> _entries = new();
+
+	public WebGpuBufferPool(WebGpuDevice d) => _d = d;
+
+	public void BeginFrame() { foreach (var e in _entries) { e.InUse = false; } }
+
+	public Silk.NET.WebGPU.Buffer* Rent(int byteSize, BufferUsage usage)
+	{
+		foreach (var e in _entries)
+		{
+			if (!e.InUse && e.Usage == usage && e.Cap >= byteSize) { e.InUse = true; return e.Buf; }
+		}
+		int cap = Math.Max(byteSize, 256);
+		var bd = new BufferDescriptor { Size = (nuint)cap, Usage = usage };
+		var buf = _d.W.DeviceCreateBuffer(_d.Dev, ref bd);
+		_entries.Add(new Entry { Buf = buf, Cap = cap, Usage = usage, InUse = true });
+		return buf;
 	}
 }
 
@@ -1062,12 +1105,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	private Silk.NET.WebGPU.Buffer* MakeBuffer(float[] data)
 	{
-		var size = (nuint)(data.Length * sizeof(float));
-		var bd = new BufferDescriptor { Size = size, Usage = BufferUsage.Vertex | BufferUsage.CopyDst };
-		var buf = _d.W.DeviceCreateBuffer(_d.Dev, ref bd);
-		fixed (float* p = data) { _d.W.QueueWriteBuffer(_d.Q, buf, 0, p, size); }
+		var size = data.Length * sizeof(float);
+		var buf = _d.BufferPool.Rent(size, BufferUsage.Vertex | BufferUsage.CopyDst);
+		fixed (float* p = data) { _d.W.QueueWriteBuffer(_d.Q, buf, 0, p, (nuint)size); }
 		return buf;
 	}
+
+	private Silk.NET.WebGPU.Buffer* MakeUniform(int byteSize)
+		=> _d.BufferPool.Rent(byteSize, BufferUsage.Uniform | BufferUsage.CopyDst);
 
 	// Coverage textures for path clips, cached by the (reference-identical) fan shared across a clip's commands.
 	private readonly System.Collections.Generic.Dictionary<float[], nint> _coverageCache = new(System.Collections.Generic.ReferenceEqualityComparer.Instance);
@@ -1081,8 +1126,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		cu[4] = cd.Radii.X; cu[5] = cd.Radii.Y; cu[6] = cd.Radii.Z; cu[7] = cd.Radii.W;
 		cu[8] = cd.HasRound ? 1f : 0f; cu[9] = cd.PathFan != null ? 1f : 0f;
 		cu[12] = _s.Width; cu[13] = _s.Height;
-		var bd = new BufferDescriptor { Size = 64, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
-		var buf = _d.W.DeviceCreateBuffer(_d.Dev, ref bd);
+		var buf = MakeUniform(64);
 		fixed (float* p = cu) { _d.W.QueueWriteBuffer(_d.Q, buf, 0, p, 64); }
 		var covView = cd.PathFan != null ? PathCoverage(cd.PathFan, cd.PathEvenOdd) : _d.DummyTex;
 		var e = stackalloc BindGroupEntry[3];
@@ -1090,7 +1134,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		e[1] = new BindGroupEntry { Binding = 1, TextureView = covView };
 		e[2] = new BindGroupEntry { Binding = 2, Sampler = _d.Smp };
 		var bgd = new BindGroupDescriptor { Layout = bgl, EntryCount = 3, Entries = e };
-		return _d.W.DeviceCreateBindGroup(_d.Dev, ref bgd);
+		return _d.TrackBg(_d.W.DeviceCreateBindGroup(_d.Dev, ref bgd));
 	}
 
 	private TextureView* PathCoverage(float[] fan, bool evenOdd)
@@ -1191,15 +1235,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	{
 		var W = _d.W;
 		var bu = new float[8]; bu[0] = dir.X; bu[1] = dir.Y; bu[2] = texel.X; bu[3] = texel.Y; bu[4] = sigma;
-		var ubd = new BufferDescriptor { Size = 32, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
-		var ubuf = W.DeviceCreateBuffer(_d.Dev, ref ubd);
+		var ubuf = MakeUniform((int)32);
 		fixed (float* p = bu) { W.QueueWriteBuffer(_d.Q, ubuf, 0, p, 32); }
 		var entries = stackalloc BindGroupEntry[3];
 		entries[0] = new BindGroupEntry { Binding = 0, TextureView = src };
 		entries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
 		entries[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
 		var bgd = new BindGroupDescriptor { Layout = _d.BlurBgl, EntryCount = 3, Entries = entries };
-		var bg = W.DeviceCreateBindGroup(_d.Dev, ref bgd);
+		var bg = _d.TrackBg(W.DeviceCreateBindGroup(_d.Dev, ref bgd));
 
 		var enc = W.DeviceCreateCommandEncoder(_d.Dev, null);
 		var ca = new RenderPassColorAttachment { View = dst, LoadOp = LoadOp.Clear, StoreOp = StoreOp.Store, ClearValue = default };
@@ -1216,7 +1259,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	public void Replay(IRenderData data)
 	{
 		var rd = (WebGpuRenderData)data;
-		_d.Pool.BeginFrame();   // reclaim last frame's transient offscreens for reuse
+		_d.BeginFrameResources();   // reclaim last frame's pooled textures/buffers + release its bind groups
 		RenderInto(rd.Commands, _s, _presentClear ?? rd.ClearColor);
 	}
 
@@ -1262,8 +1305,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				{
 					// The texture is already resident (WebGpuImageTexture); just bind its view — no upload.
 					var view = im.View;
-					var ubd = new BufferDescriptor { Size = 32, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
-					var ubuf = W.DeviceCreateBuffer(_d.Dev, ref ubd);
+					var ubuf = MakeUniform((int)32);
 					var op = stackalloc float[8];
 					op[0] = im.Opacity; op[1] = im.TintMode; op[2] = 0; op[3] = 0;
 					op[4] = im.Tint.X; op[5] = im.Tint.Y; op[6] = im.Tint.Z; op[7] = im.Tint.W;
@@ -1273,7 +1315,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					entries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
 					entries[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
 					var bgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
-					var bg = W.DeviceCreateBindGroup(_d.Dev, ref bgd);
+					var bg = _d.TrackBg(W.DeviceCreateBindGroup(_d.Dev, ref bgd));
 					var q = new float[24];
 					void QV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); q[idx] = n.X; q[idx + 1] = n.Y; q[idx + 2] = u; q[idx + 3] = vv; }
 					QV(0, im.P0, im.U0, im.V0); QV(4, im.P1, im.U1, im.V0); QV(8, im.P2, im.U1, im.V1); QV(12, im.P0, im.U0, im.V0); QV(16, im.P2, im.U1, im.V1); QV(20, im.P3, im.U0, im.V1);
@@ -1283,12 +1325,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				case GradientCmd gc:
 				{
 					var bytes = (nuint)WebGpuDevice.GradientUniformBytes;
-					var ubd = new BufferDescriptor { Size = bytes, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
-					var ubuf = W.DeviceCreateBuffer(_d.Dev, ref ubd);
+					var ubuf = MakeUniform((int)bytes);
 					fixed (float* p = gc.Uniform) { W.QueueWriteBuffer(_d.Q, ubuf, 0, p, bytes); }
 					var gentry = new BindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = bytes };
 					var gbgd = new BindGroupDescriptor { Layout = _d.GradBgl, EntryCount = 1, Entries = &gentry };
-					var gbg = W.DeviceCreateBindGroup(_d.Dev, ref gbgd);
+					var gbg = _d.TrackBg(W.DeviceCreateBindGroup(_d.Dev, ref gbgd));
 					var gq = new float[12];
 					void GV(int idx, Vector2 pos) { var n = Ndc(pos); gq[idx] = n.X; gq[idx + 1] = n.Y; }
 					GV(0, gc.P0); GV(2, gc.P1); GV(4, gc.P2); GV(6, gc.P0); GV(8, gc.P2); GV(10, gc.P3);
@@ -1300,8 +1341,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// Render the blurred coverage offscreen, then composite it as a SrcIn-tinted image (tint =
 					// shadow color) at its device placement — reusing the image draw path (kind 2), incl. clip.
 					var blurView = RenderShadow(sh, out var origin, out var size);
-					var ubd = new BufferDescriptor { Size = 32, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
-					var ubuf = W.DeviceCreateBuffer(_d.Dev, ref ubd);
+					var ubuf = MakeUniform((int)32);
 					var op = stackalloc float[8];
 					op[0] = 1f; op[1] = 1f; op[2] = 0; op[3] = 0;
 					op[4] = sh.Color.R / 255f; op[5] = sh.Color.G / 255f; op[6] = sh.Color.B / 255f; op[7] = sh.Color.A / 255f;
@@ -1311,7 +1351,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					sentries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
 					sentries[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
 					var sbgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sentries };
-					var sbg = W.DeviceCreateBindGroup(_d.Dev, ref sbgd);
+					var sbg = _d.TrackBg(W.DeviceCreateBindGroup(_d.Dev, ref sbgd));
 					var sq = new float[24];
 					void SQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); sq[idx] = n.X; sq[idx + 1] = n.Y; sq[idx + 2] = u; sq[idx + 3] = vv; }
 					var o0 = origin; var o1 = origin + new Vector2(size.X, 0); var o2 = origin + size; var o3 = origin + new Vector2(0, size.Y);
@@ -1333,8 +1373,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						BlurPass(layerSurface.View, tmp, new Vector2(1f, 0f), new Vector2(1f / _s.Width, 0f), fx.SigmaX);
 						var blur = _d.Pool.Rent(_s.Width, _s.Height, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 						BlurPass(tmp, blur, new Vector2(0f, 1f), new Vector2(0f, 1f / _s.Height), fx.SigmaY);
-						var subd = new BufferDescriptor { Size = 32, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
-						var subuf = W.DeviceCreateBuffer(_d.Dev, ref subd);
+						var subuf = MakeUniform((int)32);
 						var sop = stackalloc float[8];
 						sop[0] = 1f; sop[1] = 1f; sop[2] = 0; sop[3] = 0;
 						sop[4] = fx.Color.R / 255f; sop[5] = fx.Color.G / 255f; sop[6] = fx.Color.B / 255f; sop[7] = fx.Color.A / 255f;
@@ -1344,7 +1383,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						sfe[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
 						sfe[2] = new BindGroupEntry { Binding = 2, Buffer = subuf, Offset = 0, Size = 32 };
 						var sfbgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sfe };
-						var sfbg = W.DeviceCreateBindGroup(_d.Dev, ref sfbgd);
+						var sfbg = _d.TrackBg(W.DeviceCreateBindGroup(_d.Dev, ref sfbgd));
 						var fq = new float[24];
 						void FQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); fq[idx] = n.X; fq[idx + 1] = n.Y; fq[idx + 2] = u; fq[idx + 3] = vv; }
 						var off = new Vector2(fx.Dx, fx.Dy);
@@ -1363,15 +1402,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						cu[16] = mm[15]; cu[17] = mm[16]; cu[18] = mm[17]; cu[19] = mm[18]; // m3
 						cu[20] = mm[4]; cu[21] = mm[9]; cu[22] = mm[14]; cu[23] = mm[19];   // off (5th column)
 					}
-					var lubd = new BufferDescriptor { Size = 96, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
-					var lubuf = W.DeviceCreateBuffer(_d.Dev, ref lubd);
+					var lubuf = MakeUniform((int)96);
 					fixed (float* p = cu) { W.QueueWriteBuffer(_d.Q, lubuf, 0, p, 96); }
 					var lentries = stackalloc BindGroupEntry[3];
 					lentries[0] = new BindGroupEntry { Binding = 0, TextureView = layerSurface.View };
 					lentries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
 					lentries[2] = new BindGroupEntry { Binding = 2, Buffer = lubuf, Offset = 0, Size = 96 };
 					var lbgd = new BindGroupDescriptor { Layout = lyr.CompositeMode == 1 ? _d.CompositeDstInBgl : _d.CompositeBgl, EntryCount = 3, Entries = lentries };
-					var lbg = W.DeviceCreateBindGroup(_d.Dev, ref lbgd);
+					var lbg = _d.TrackBg(W.DeviceCreateBindGroup(_d.Dev, ref lbgd));
 					ops.Add((4, (nint)lbg, (uint)lyr.CompositeMode, 0, false, lyr.Clip, 0));
 					break;
 				}
@@ -1385,8 +1423,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					BlurPass(bd.View, btmp, new Vector2(1f, 0f), new Vector2(1f / _s.Width, 0f), bk.Effect.SigmaX);
 					var bblur = _d.Pool.Rent(_s.Width, _s.Height, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 					BlurPass(btmp, bblur, new Vector2(0f, 1f), new Vector2(0f, 1f / _s.Height), bk.Effect.SigmaY);
-					var bubd = new BufferDescriptor { Size = 32, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
-					var bubuf = W.DeviceCreateBuffer(_d.Dev, ref bubd);
+					var bubuf = MakeUniform((int)32);
 					var bop = stackalloc float[8]; bop[0] = bk.Opacity; bop[1] = 0; bop[2] = 0; bop[3] = 0;
 					W.QueueWriteBuffer(_d.Q, bubuf, 0, bop, 32);
 					var bde = stackalloc BindGroupEntry[3];
@@ -1394,7 +1431,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					bde[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
 					bde[2] = new BindGroupEntry { Binding = 2, Buffer = bubuf, Offset = 0, Size = 32 };
 					var bdbgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = bde };
-					var bdbg = W.DeviceCreateBindGroup(_d.Dev, ref bdbgd);
+					var bdbg = _d.TrackBg(W.DeviceCreateBindGroup(_d.Dev, ref bdbgd));
 					var bq = new float[24];
 					void BQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); bq[idx] = n.X; bq[idx + 1] = n.Y; bq[idx + 2] = u; bq[idx + 3] = vv; }
 					BQV(0, new Vector2(0, 0), 0, 0); BQV(4, new Vector2(_s.Width, 0), 1, 0); BQV(8, new Vector2(_s.Width, _s.Height), 1, 1);
