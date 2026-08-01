@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Helpers;
 using Private.Infrastructure;
 
-#if HAS_UNO
+#if HAS_UNO && __SKIA__ && __WASM__
 using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper;
 #endif
 
@@ -21,7 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	[TestClass]
 	public class Given_WasmAria
 	{
-#if HAS_UNO
+#if HAS_UNO && __SKIA__ && __WASM__
 		[TestCleanup]
 		public void Cleanup()
 		{

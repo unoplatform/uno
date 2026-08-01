@@ -495,6 +495,9 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 	protected override void UpdateLandmark(nint handle, string? landmarkRole)
 		=> ScheduleInvalidation(handle);
 
+	protected override void UpdateRoleDescription(nint handle, string? roleDescription)
+		=> ScheduleInvalidation(handle);
+
 	protected override void UpdateIsReadOnly(nint handle, bool isReadOnly)
 		=> ScheduleInvalidation(handle);
 

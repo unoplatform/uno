@@ -145,6 +145,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Automation
 		private const string PageName =
 			"UITests.Shared.Windows_UI.Xaml_Automation.AutomationProperties_AutomationId";
 
+		[SetUp]
+		public void UsePortraitOrientation() => _app.SetOrientationPortrait();
+
+		[OneTimeTearDown]
+		public void RestoreLandscapeOrientation()
+		{
+			if (_app is not null)
+			{
+				_app.SetOrientationLandscape();
+			}
+		}
+
 		private void RunPage()
 		{
 			// Close any soft keyboard left open by a previous test *before* navigating: a
@@ -267,6 +279,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Automation
 		public void When_List_Items_Are_Exposed_Then_Each_AutomationId_Appears_Once()
 		{
 			RunPage();
+			AndroidUiAutomator.WaitForNode("MobileAutomationList");
 
 			Assert.AreEqual(1, AndroidUiAutomator.CountNodes("Item01"));
 			Assert.AreEqual(1, AndroidUiAutomator.CountNodes("Item02"));
@@ -280,9 +293,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Automation
 			// SC-006 ExpandCollapse + Selection through the native accessibility tree.
 			RunPage();
 
-			AndroidUiAutomator.Tap("MobileAutomationCombo");
-			AndroidUiAutomator.WaitForNode("ComboChoice02");
-			AndroidUiAutomator.Tap("ComboChoice02");
+			AndroidUiAutomator.TapCenteredInFixture("MobileAutomationCombo");
+			AndroidUiAutomator.WaitForNode("ComboChoice02", scrollFixture: false);
+			AndroidUiAutomator.Tap("ComboChoice02", scrollFixture: false);
 
 			AndroidUiAutomator.WaitForNode(
 				"MobileAutomationResult",
@@ -344,22 +357,43 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Automation
 	internal static class AndroidUiAutomator
 	{
 		private const string DeviceDumpPath = "/sdcard/uno-mobile-a11y.xml";
+		private const string FixtureScrollerId = "MobileAutomationFixtureScroller";
 		private static readonly Regex BoundsRegex = new(
 			@"^\[(\d+),(\d+)\]\[(\d+),(\d+)\]$",
 			RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-		internal static XElement WaitForNode(string automationId, Func<XElement, bool>? predicate = null)
+		internal static XElement WaitForNode(
+			string automationId,
+			Func<XElement, bool>? predicate = null,
+			bool scrollFixture = true)
 		{
 			var deadline = DateTime.UtcNow.AddSeconds(30);
+			var scrollForward = true;
+			var scrollCount = 0;
 			do
 			{
-				var node = FindNode(automationId);
+				var hierarchy = GetHierarchy();
+				var node = FindNode(hierarchy, automationId);
 				if (node is not null && (predicate is null || predicate(node)))
 				{
 					return node;
 				}
 
-				Thread.Sleep(250);
+				if (node is null && scrollFixture && TryScrollFixture(hierarchy, scrollForward))
+				{
+					scrollCount++;
+					if (scrollCount == 3)
+					{
+						scrollForward = !scrollForward;
+						scrollCount = 0;
+					}
+
+					Thread.Sleep(500);
+				}
+				else
+				{
+					Thread.Sleep(250);
+				}
 			}
 			while (DateTime.UtcNow < deadline);
 
@@ -367,9 +401,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Automation
 			throw new InvalidOperationException();
 		}
 
-		internal static void Tap(string automationId)
+		internal static void Tap(string automationId, bool scrollFixture = true)
 		{
-			var node = WaitForNode(automationId);
+			var node = WaitForNode(automationId, scrollFixture: scrollFixture);
 			var (left, top, right, bottom) = GetBounds(automationId, node);
 
 			var centerX = (left + right) / 2;
@@ -390,6 +424,30 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Automation
 			{
 				RunAdb("shell", "input", "tap", x, y);
 			}
+		}
+
+		internal static void TapCenteredInFixture(string automationId)
+		{
+			var node = WaitForNode(automationId);
+			var hierarchy = GetHierarchy();
+			var scroller = FindNode(hierarchy, FixtureScrollerId);
+			Assert.IsNotNull(scroller);
+
+			var (_, nodeTop, _, nodeBottom) = GetBounds(automationId, node);
+			var (_, scrollerTop, _, scrollerBottom) = GetBounds(FixtureScrollerId, scroller!);
+			const int edgeMargin = 64;
+			if (nodeBottom > scrollerBottom - edgeMargin)
+			{
+				TryScrollFixture(hierarchy, forward: true);
+				Thread.Sleep(500);
+			}
+			else if (nodeTop < scrollerTop + edgeMargin)
+			{
+				TryScrollFixture(hierarchy, forward: false);
+				Thread.Sleep(500);
+			}
+
+			Tap(automationId);
 		}
 
 		// Taps at a horizontal fraction of the node so range controls can be moved to a
@@ -503,11 +561,33 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Automation
 		private static XElement? FindNode(string automationId)
 		{
 			var hierarchy = GetHierarchy();
+			return FindNode(hierarchy, automationId);
+		}
+
+		private static XElement? FindNode(XDocument hierarchy, string automationId)
+		{
 			var resourceSuffix = $":id/{automationId}";
 			return hierarchy
 				.Descendants("node")
 				.FirstOrDefault(node =>
 					node.Attribute("resource-id")?.Value.EndsWith(resourceSuffix, StringComparison.Ordinal) is true);
+		}
+
+		private static bool TryScrollFixture(XDocument hierarchy, bool forward)
+		{
+			var scroller = FindNode(hierarchy, FixtureScrollerId);
+			if (scroller is null)
+			{
+				return false;
+			}
+
+			var (left, top, _, bottom) = GetBounds(FixtureScrollerId, scroller);
+			var x = left + 8;
+			var quarterHeight = (bottom - top) / 4;
+			var startY = forward ? bottom - quarterHeight : top + quarterHeight;
+			var endY = forward ? top + quarterHeight : bottom - quarterHeight;
+			RunAdb("shell", "input", "swipe", x.ToString(), startY.ToString(), x.ToString(), endY.ToString(), "300");
+			return true;
 		}
 
 		private static XDocument GetHierarchy()
