@@ -1,0 +1,64 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollSmoothnessBenchmark"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <DataTemplate x:Key="SimpleItemTemplate">
+            <TextBlock Padding="8,6" Text="{Binding}" />
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel
+            Padding="12,8"
+            Orientation="Horizontal"
+            Spacing="8">
+            <ComboBox
+                x:Name="ContentSelector"
+                Width="200"
+                SelectedIndex="0"
+                SelectionChanged="OnContentChanged">
+                <ComboBoxItem Content="Virtualized ListView" />
+                <ComboBoxItem Content="Plain StackPanel" />
+                <ComboBoxItem Content="Heavy items (borders)" />
+            </ComboBox>
+            <Button
+                x:Name="ResetButton"
+                Click="OnReset"
+                Content="Reset stats" />
+            <ToggleSwitch
+                x:Name="AutoScrollToggle"
+                OffContent="Manual"
+                OnContent="Auto-scroll"
+                Toggled="OnAutoScrollToggled" />
+        </StackPanel>
+
+        <Border
+            Grid.Row="1"
+            Margin="12,0,12,8"
+            Padding="10,8"
+            Background="{ThemeResource SystemControlBackgroundListLowBrush}"
+            CornerRadius="4">
+            <TextBlock
+                x:Name="StatsText"
+                FontFamily="Consolas"
+                FontSize="12"
+                Text="Scroll the list to collect samples." />
+        </Border>
+
+        <ContentPresenter
+            x:Name="Host"
+            Grid.Row="2"
+            Margin="12,0,12,12" />
+    </Grid>
+</UserControl>
