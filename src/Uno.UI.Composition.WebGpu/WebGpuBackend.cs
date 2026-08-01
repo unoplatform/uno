@@ -1403,7 +1403,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				var v = new List<float>();
 				void V(Vector2 p) { var n = Ndc(p); v.Add(n.X); v.Add(n.Y); v.Add(c.X); v.Add(c.Y); v.Add(c.Z); v.Add(c.W); }
 				V(rc.P0); V(rc.P1); V(rc.P2); V(rc.P0); V(rc.P2); V(rc.P3);
-				ops.Add((0, (nint)Vbuf(v.ToArray(), owned), 0, 0, false, rc.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc.Clip, owned)));
+				ops.Add((0, (nint)Vbuf(v.ToArray(), owned), 6, 0, false, rc.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc.Clip, owned)));
 				break;
 			}
 			case PathFill pf:
@@ -1472,7 +1472,22 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			var cmd = cmds[ci];
 			switch (cmd)
 			{
-				case RectCommand:
+				case RectCommand rc0:
+				{
+					// Coalesce a run of consecutive rects sharing the same clip into one vertex buffer + one draw.
+					var verts = new List<float>();
+					int j = ci;
+					while (j < cmds.Count && cmds[j] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
+					{
+						var c = new Vector4(rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
+						void V(Vector2 p) { var n = Ndc(p); verts.Add(n.X); verts.Add(n.Y); verts.Add(c.X); verts.Add(c.Y); verts.Add(c.Z); verts.Add(c.W); }
+						V(rcj.P0); V(rcj.P1); V(rcj.P2); V(rcj.P0); V(rcj.P2); V(rcj.P3);
+						j++;
+					}
+					ops.Add((0, (nint)MakeBuffer(verts.ToArray()), (uint)((j - ci) * 6), 0, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip)));
+					ci = j - 1;   // the for-loop's ci++ advances past the run
+					break;
+				}
 				case PathFill:
 				case ImageCmd:
 				case GradientCmd:
@@ -1636,8 +1651,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				case 0:
 					W.RenderPassEncoderSetPipeline(pass, _d.SolidPipe);
 					W.RenderPassEncoderSetBindGroup(pass, 0, (BindGroup*)clipBg, 0, (uint*)null);
-					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b0, 0, (nuint)(36 * sizeof(float)));
-					W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
+					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b0, 0, (nuint)(u0 * 6 * sizeof(float)));
+					W.RenderPassEncoderDraw(pass, u0, 1, 0, 0);   // u0 = 6 * (coalesced) rect count
 					break;
 				case 1:
 					W.RenderPassEncoderSetPipeline(pass, flag ? _d.StencilEvenOdd : _d.StencilNonZero);
