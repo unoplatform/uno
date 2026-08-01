@@ -61,6 +61,18 @@ namespace Windows.UI.Input
 		[EditorBrowsable(EditorBrowsableState.Advanced)]
 		public GestureRecognizerSuspiciousCases PatchCases { get; set; } = WinRTFeatureConfiguration.GestureRecognizer._defaultPatchSuspiciousCases;
 
+		/// <summary>
+		/// Reports every pointer move as a manipulation delta, instead of accumulating until the
+		/// per-device delta threshold is crossed.
+		/// </summary>
+		/// <remarks>
+		/// Set for the direct-manipulation (scrolling) recognizer only. The threshold exists to bound the
+		/// volume of public ManipulationDelta events, but on the scroll path it acts as a motion quantizer:
+		/// content does not move until 2 logical px have accumulated, then jumps by the whole amount. A slow
+		/// drag therefore advances every other frame. Inertia already bypasses the threshold for the same reason.
+		/// </remarks>
+		internal bool ReportsUnquantizedDeltas { get; init; }
+
 		internal bool IsDragging => _manipulation?.IsDragManipulation ?? false;
 
 		/// <summary>

@@ -346,7 +346,9 @@ internal partial class InputManager
 				{
 					foreach (var tracker in vis.Trackers)
 					{
-						tracker.ReceivePointerWheel(args.CurrentPoint.Properties.MouseWheelDelta / global::Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, args.CurrentPoint.Properties.IsHorizontalMouseWheel);
+						// Floating-point division: a precision touchpad reports deltas finer than one 120-unit
+						// detent, and integer division would floor every one of them to zero.
+						tracker.ReceivePointerWheel((double)args.CurrentPoint.Properties.MouseWheelDelta / global::Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, args.CurrentPoint.Properties.IsHorizontalMouseWheel);
 					}
 
 					return;
