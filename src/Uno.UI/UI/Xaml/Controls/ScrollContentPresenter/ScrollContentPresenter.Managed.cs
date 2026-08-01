@@ -36,6 +36,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private GestureRecognizer.Manipulation? _touchInertia;
 		private (double hOffset, double vOffset, bool isIntermediate) _lastScrolledEvent;
+
+		private ScrollDecaySimulation _wheelDecayH;
+		private ScrollDecaySimulation _wheelDecayV;
+		private bool _isWheelDecayRunning;
+
+		private readonly Microsoft.UI.Input.ScrollVelocityTracker _velocityTracker = new();
+		private ScrollFlingSimulation _flingH;
+		private ScrollFlingSimulation _flingV;
+		private long _flingStartTimestamp;
+		private bool _isFlingRunning;
 #nullable restore
 
 		private bool _canHorizontallyScroll;
@@ -152,6 +162,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
@@ -161,6 +172,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			_touchInertia?.Complete();
 			_touchInertia = null;
+			StopWheelDecay();
+			StopFling();
 		}
 
 		/// <inheritdoc />
@@ -353,6 +366,16 @@ namespace Microsoft.UI.Xaml.Controls
 				_touchInertia?.Complete();
 			}
 
+			if (!options.IsWheelDecay)
+			{
+				StopWheelDecay();
+			}
+
+			if (!options.IsTouch)
+			{
+				StopFling();
+			}
+
 			var updatedHorizontalOffset = HorizontalOffset;
 			var updatedVerticalOffset = VerticalOffset;
 			if (updated || options.IsTouch)
@@ -478,9 +501,22 @@ namespace Microsoft.UI.Xaml.Controls
 				scrollAnimation.InsertKeyFrame(1.0f, target, easing);
 				scrollAnimation.Duration = TimeSpan.FromSeconds(1);
 				// AnchorPoint also carries the centering offset, which has to be removed to get back the logical scroll offsets.
-				void OnFrame(CompositionAnimation? _) => Updated(GetAnimatedHorizontalOffset(), GetAnimatedVerticalOffset(), true);
+				var stopped = false;
+				void OnFrame(CompositionAnimation? _)
+				{
+					// The compositor stops a completed animation from inside its own AnimationFrame handler, so
+					// OnStopped can already have published the final offset by the time this runs — removing the
+					// handler there does not affect the invocation list of the raise that is already in flight.
+					if (stopped)
+					{
+						return;
+					}
+
+					Updated(GetAnimatedHorizontalOffset(), GetAnimatedVerticalOffset(), true);
+				}
 				void OnStopped(object? _, EventArgs __)
 				{
+					stopped = true;
 					scrollAnimation.AnimationFrame -= OnFrame;
 					scrollAnimation.Stopped -= OnStopped;
 
@@ -490,10 +526,14 @@ namespace Microsoft.UI.Xaml.Controls
 				double GetAnimatedHorizontalOffset() => Math.Round(-visual.AnchorPoint.X + centeringOffsetX);
 				double GetAnimatedVerticalOffset() => Math.Round(-visual.AnchorPoint.Y + centeringOffsetY);
 
-				scrollAnimation.AnimationFrame += OnFrame;
 				scrollAnimation.Stopped += OnStopped;
 
 				visual.StartAnimation(nameof(Visual.AnchorPoint), scrollAnimation);
+
+				// Subscribed after StartAnimation so it runs after the compositor's own ReEvaluateAnimation
+				// handler: AnimationFrame invokes in subscription order, so subscribing first would publish
+				// the previous frame's AnchorPoint and leave virtualization one frame behind the viewport.
+				scrollAnimation.AnimationFrame += OnFrame;
 
 				// Zoom animation (if zoom is changing)
 				if (Math.Abs(visual.Scale.X - zoom) > 0.0001f)
@@ -506,6 +546,139 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+
+		/// <summary>Runs a touch fling from the frame clock, using the platform's own deceleration curve.</summary>
+		private void StartFling(double velocityXPerSecond, double velocityYPerSecond)
+		{
+			StopFling();
+
+			var compositor = Visual.Compositor;
+
+			// Anchored on the first frame rather than here: the finger lifts at an arbitrary point within
+			// a frame, so timing from now would make the first inertial step a random fraction of a full
+			// one — at the exact moment the motion is fastest and a stutter most visible.
+			_flingStartTimestamp = 0;
+			_flingH = ScrollFlingSimulation.Create(HorizontalOffset, -velocityXPerSecond);
+			_flingV = ScrollFlingSimulation.Create(VerticalOffset, -velocityYPerSecond);
+			_isFlingRunning = true;
+
+			FrameDriverTarget!.FrameStarting += OnFlingFrame;
+		}
+
+		private void StopFling()
+		{
+			if (!_isFlingRunning)
+			{
+				return;
+			}
+
+			_isFlingRunning = false;
+			FrameDriverTarget!.FrameStarting -= OnFlingFrame;
+		}
+
+		/// <summary>The target whose tick drives this presenter's fling and wheel decay.</summary>
+		private Media.CompositionTarget? FrameDriverTarget => Visual.CompositionTarget as Media.CompositionTarget;
+
+		private void OnFlingFrame(object? sender, long timestampInTicks)
+		{
+			if (_flingStartTimestamp == 0)
+			{
+				// One interval back, so this first frame advances by the same step the drag was producing
+				// when the finger left the glass.
+				_flingStartTimestamp = timestampInTicks - FrameDriverTarget!.FrameIntervalInTicks;
+			}
+
+			var elapsed = (timestampInTicks - _flingStartTimestamp) / (double)TimeSpan.TicksPerSecond;
+
+			var maxH = Scroller?.ScrollableWidth ?? Math.Max(0, ExtentWidth - ViewportWidth);
+			var maxV = Scroller?.ScrollableHeight ?? Math.Max(0, ExtentHeight - ViewportHeight);
+
+			var h = Math.Clamp(_flingH.GetPosition(elapsed), 0, maxH);
+			var v = Math.Clamp(_flingV.GetPosition(elapsed), 0, maxV);
+
+			// Done once both curves are spent, or the content has run into an edge in the direction of travel.
+			var running = elapsed < Math.Max(_flingH.Duration, _flingV.Duration)
+				&& (h > 0 && h < maxH || v > 0 && v < maxV);
+
+			if (!running)
+			{
+				StopFling();
+			}
+
+			Set(horizontalOffset: h, verticalOffset: v, options: new(DisableAnimation: true, IsTouch: true, IsIntermediate: running));
+		}
+
+		/// <summary>Feeds a wheel detent into the running decay, starting it if idle.</summary>
+		/// <returns>
+		/// False when this presenter has no room left in the requested direction, so the wheel event stays
+		/// unhandled and chains to a parent ScrollViewer.
+		/// </returns>
+		internal bool AddWheelImpulse(double horizontalDistance, double verticalDistance)
+		{
+			var maxH = Scroller?.ScrollableWidth ?? Math.Max(0, ExtentWidth - ViewportWidth);
+			var maxV = Scroller?.ScrollableHeight ?? Math.Max(0, ExtentHeight - ViewportHeight);
+
+			// Against where the motion in flight will come to rest, not where it is now: a decay that is
+			// already destined for the end of the extent has no room left, and the event must chain to a parent.
+			var fromH = _isWheelDecayRunning ? _wheelDecayH.ProjectedEnd : HorizontalOffset;
+			var fromV = _isWheelDecayRunning ? _wheelDecayV.ProjectedEnd : VerticalOffset;
+
+			if (!HasRoom(fromH, horizontalDistance, maxH) && !HasRoom(fromV, verticalDistance, maxV))
+			{
+				return false;
+			}
+
+			var compositor = Visual.Compositor;
+			var now = compositor.TimestampInTicks;
+
+			if (!_isWheelDecayRunning)
+			{
+				_wheelDecayH.Start(HorizontalOffset, now);
+				_wheelDecayV.Start(VerticalOffset, now);
+				_isWheelDecayRunning = true;
+				FrameDriverTarget!.FrameStarting += OnWheelDecayFrame;
+			}
+
+			_wheelDecayH.AddImpulse(horizontalDistance);
+			_wheelDecayV.AddImpulse(verticalDistance);
+			return true;
+
+			static bool HasRoom(double from, double distance, double max)
+				=> distance < 0 ? from > 0 : distance > 0 && from < max;
+		}
+
+		internal void StopWheelDecay()
+		{
+			if (!_isWheelDecayRunning)
+			{
+				return;
+			}
+
+			_isWheelDecayRunning = false;
+			_wheelDecayH.Stop();
+			_wheelDecayV.Stop();
+			FrameDriverTarget!.FrameStarting -= OnWheelDecayFrame;
+		}
+
+		private void OnWheelDecayFrame(object? sender, long timestampInTicks)
+		{
+			var maxH = Scroller?.ScrollableWidth ?? Math.Max(0, ExtentWidth - ViewportWidth);
+			var maxV = Scroller?.ScrollableHeight ?? Math.Max(0, ExtentHeight - ViewportHeight);
+
+			var runningH = _wheelDecayH.Tick(timestampInTicks, 0, maxH);
+			var runningV = _wheelDecayV.Tick(timestampInTicks, 0, maxV);
+			var running = runningH || runningV;
+
+			if (!running)
+			{
+				StopWheelDecay();
+			}
+
+			Set(
+				horizontalOffset: _wheelDecayH.Position,
+				verticalOffset: _wheelDecayV.Position,
+				options: new(DisableAnimation: true, IsIntermediate: running, IsWheelDecay: true));
+		}
 
 		private void TryEnableDirectManipulation(object sender, PointerRoutedEventArgs args)
 		{
@@ -583,6 +756,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void IDirectManipulationHandler.OnStarted(GestureRecognizer recognizer, ManipulationStartedEventArgs args, bool isResuming)
 		{
+			_velocityTracker.Reset();
+			StopFling();
+
 			Debug.Assert(_touchInertia is null || isResuming, "Inertia should already be null instead if we are resuming from a previous manipulation.");
 			_touchInertia = null;
 		}
@@ -622,6 +798,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 				// Mark scale as handled
 				unhandledDelta.Scale = 1.0f;
+			}
+
+
+			if (!args.IsInertial)
+			{
+				_velocityTracker.AddPosition(
+					Visual.Compositor.TimestampInTicks / (double)TimeSpan.TicksPerMillisecond,
+					args.Position);
 			}
 
 			if (args.IsInertial)
@@ -784,17 +968,16 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				// We can handle the inertia scrolling, configure to accept allow it by assigning the _touchInertia field.
-				_touchInertia = args.Manipulation;
+				// Fitted over the recent gesture rather than taken from the last two samples: inertia
+				// distance grows with the square of the launch velocity, so a two-point estimate that
+				// catches one short interval sends the content thousands of pixels.
+				var fitted = _velocityTracker.GetVelocity();
+				var vx = (fitted?.X ?? args.Velocities.Linear.X) * 1000;
+				var vy = (fitted?.Y ?? args.Velocities.Linear.Y) * 1000;
 
-				// Even if usually empty, make sure to apply the delta
-				var deltaX = Math.Clamp(-args.Delta.Translation.X, scrollable.Left, scrollable.Right);
-				var deltaY = Math.Clamp(-args.Delta.Translation.Y, scrollable.Up, scrollable.Down);
-
-				Set(
-					horizontalOffset: HorizontalOffset + deltaX,
-					verticalOffset: VerticalOffset + deltaY,
-					options: new(DisableAnimation: true, IsTouch: true, IsIntermediate: true));
+				recognizer.CompleteGesture();
+				StartFling(vx, vy);
+				return true;
 			}
 
 			return true;
@@ -896,6 +1079,6 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Indicates that the scroll is an intermediate value, not the final one
 	/// (i.e. active touch scrolling, touch scroll inertia or scroll animation).
 	/// </param>
-	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsTouch = false, bool IsIntermediate = false);
+	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsTouch = false, bool IsIntermediate = false, bool IsWheelDecay = false);
 }
 #endif
