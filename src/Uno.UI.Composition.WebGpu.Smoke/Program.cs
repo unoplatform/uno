@@ -56,6 +56,25 @@ var gl = At(p3, 3, 32); var gr = At(p3, 60, 32);
 Check("gradient: left reddish", gl.r > 150 && gl.b < 100, gl);
 Check("gradient: right bluish", gr.b > 150 && gr.r < 100, gr);
 
+// 3b) RADIAL gradient must be ELLIPTICAL (RadiusX != RadiusY), not circular. Center red -> edge blue.
+var radial = new WebGpuShader
+{
+	Radial = true,
+	P0 = new Vector2(32, 32), P1 = new Vector2(32, 32),   // center, focal == center
+	RadiusX = 30f, RadiusY = 15f,
+	Colors = new[] { WColor.FromArgb(255, 255, 0, 0), WColor.FromArgb(255, 0, 0, 255) },
+	Stops = new[] { 0f, 1f },
+	TileMode = GradientTileMode.Clamp,
+	LocalMatrix = Matrix3x2.Identity,
+};
+var p3b = Render(r => r.DrawRect(new Rect(0, 0, 64, 64), radial, false));
+// 15px from center along the SHORT (y) axis reaches the ellipse edge (t≈1 → blue); the same 15px along the
+// LONG (x) axis is only halfway (t≈0.5 → still reddish). A CIRCULAR gradient would paint both identically.
+var yEdge = At(p3b, 32, 47);   // (32, 32+15)
+var xMid = At(p3b, 47, 32);    // (32+15, 32)
+Check("radial: elliptical short-axis reaches edge (blue)", yEdge.b > 150 && yEdge.r < 100, yEdge);
+Check("radial: elliptical long-axis still reddish (not circular)", xMid.r > yEdge.r + 40, (xMid, yEdge));
+
 // 4) GPU image draw — upload a managed BGRA image to a wgpu texture, draw it
 var blue = new SolidImage(40, 40, 0, 0, 255);
 using var tex = new WebGpuImageTexture(dev, blue);
