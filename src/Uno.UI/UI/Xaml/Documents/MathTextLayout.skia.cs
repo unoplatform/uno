@@ -87,6 +87,7 @@ internal sealed class MathParsedText : IParsedText
 		var root = builder.Build(document.Root, 1);
 		VerticalVariantGlyphCount = builder.VerticalVariantGlyphCount;
 		VerticalAssemblyGlyphCount = builder.VerticalAssemblyGlyphCount;
+		VerticalGlyphFallbackCount = builder.VerticalGlyphFallbackCount;
 		_width = Math.Max(0, root.Width);
 		_baseline = Math.Max(root.Ascent, defaultFontDetails.SKFontMetrics.Ascent * -1);
 		_height = Math.Max(defaultFontDetails.LineHeight, _baseline + root.Descent);
@@ -110,6 +111,8 @@ internal sealed class MathParsedText : IParsedText
 	internal int VerticalVariantGlyphCount { get; }
 
 	internal int VerticalAssemblyGlyphCount { get; }
+
+	internal int VerticalGlyphFallbackCount { get; }
 
 	internal int IndexStorageByteCount => checked(_indexLayout.Length * 24);
 
@@ -553,6 +556,8 @@ internal sealed class MathParsedText : IParsedText
 
 		internal int VerticalAssemblyGlyphCount { get; private set; }
 
+		internal int VerticalGlyphFallbackCount { get; private set; }
+
 		internal MathBox Build(MathNode node, float scale)
 			=> node switch
 			{
@@ -812,6 +817,7 @@ internal sealed class MathParsedText : IParsedText
 				out var run,
 				allowVariant))
 			{
+				VerticalGlyphFallbackCount++;
 				return null;
 			}
 
@@ -823,6 +829,7 @@ internal sealed class MathParsedText : IParsedText
 				glyphs[index] = run.Parts[index].Glyph;
 				if (glyphs[index] >= _mathFont.Typeface.GlyphCount)
 				{
+					VerticalGlyphFallbackCount++;
 					return null;
 				}
 			}
@@ -843,6 +850,7 @@ internal sealed class MathParsedText : IParsedText
 			}
 			if (!hasInk || !float.IsFinite(left) || !float.IsFinite(top))
 			{
+				VerticalGlyphFallbackCount++;
 				return null;
 			}
 
