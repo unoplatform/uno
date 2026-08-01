@@ -60,6 +60,13 @@ internal sealed unsafe class X11WebGpuGraphicsContext : IGraphicsContext, IWebGp
 		height = Math.Max(1, height);
 		Configure(width, height);
 
+		// A swapchain image can be acquired only once per present. The neutral loop may call this more than once
+		// per frame (e.g. a resize callback) — return the already-acquired target until Present() releases it.
+		if (_currentView is not null)
+		{
+			return _target!;
+		}
+
 		SurfaceTexture st = default;
 		_device.W.SurfaceGetCurrentTexture(_surface, ref st);
 		if (st.Status != SurfaceGetCurrentTextureStatus.Success || st.Texture is null)
@@ -95,6 +102,8 @@ internal sealed unsafe class X11WebGpuGraphicsContext : IGraphicsContext, IWebGp
 		}
 		_w = width;
 		_h = height;
+		_currentView = null;   // any pending acquisition is invalidated by reconfiguring the surface
+		_currentTexture = null;
 		_target?.Dispose();
 		_target = new WebGpuRenderSurface(_device, width, height, externalColor: true);
 
