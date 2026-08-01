@@ -83,6 +83,15 @@ var im = At(p4, 32, 32); var iout = At(p4, 2, 2);
 Check("image: center blue", im.b > 200 && im.r < 60 && im.g < 60, im);
 Check("image: outside black", iout.r < 40 && iout.g < 40 && iout.b < 40, iout);
 
+// 4b) TINTED IMAGE — a SrcIn blend-mode color filter tints a white image blue.
+var white = new SolidImage(40, 40, 255, 255, 255);
+using var wtex = new WebGpuImageTexture(dev, white);
+var tintFilter = new WebGpuColorFilter { IsBlendMode = true, Color = WColor.FromArgb(255, 0, 0, 255), Mode = BlendMode.SrcIn };
+var p4b = Render(r => r.DrawImage(wtex, 12, 12, default, tintFilter, false));
+var tp = At(p4b, 32, 32); var tpout = At(p4b, 2, 2);
+Check("tinted-image: white tinted blue (SrcIn) → blue", tp.b > 200 && tp.r < 60 && tp.g < 60, tp);
+Check("tinted-image: outside untouched (black)", tpout.r < 40 && tpout.g < 40 && tpout.b < 40, tpout);
+
 // 5) transform (Translate) — rect drawn at the origin lands in the translated region
 var p5 = Render(r => { r.Translate(16, 16); r.DrawRect(new Rect(0, 0, 16, 16), red, false); });
 var tin = At(p5, 20, 20); var tout = At(p5, 4, 4);
