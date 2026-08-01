@@ -25,7 +25,7 @@ public partial class Visual
 
 	internal virtual float DamageRegionSamplingMargin => 0;
 
-	private void ContributeDamageOnPaint(bool contentChanged, SKPath? damage, SKPath clip, bool clipChanged)
+	private void ContributeDamageOnPaint(bool contentChanged, DamageRegion? damage, SKPath clip, bool clipChanged)
 	{
 		if (damage is null)
 		{
@@ -53,7 +53,13 @@ public partial class Visual
 			return;
 		}
 
-		if (TryGetPaintDamageRegion(clip, out var bounds, out var regionPath))
+		// A visual that only moved is damaged at both its old and its new location, and the old one is
+		// only ever a rect. Computing exact geometry for the new one therefore buys nothing while costing
+		// the most expensive part of this method (a stroke-to-fill outset plus two path booleans, per
+		// visual per frame). Scrolling makes this the common case for the whole subtree, so take bounds.
+		var preferBounds = moved && !contentChanged;
+
+		if (TryGetPaintDamageRegion(clip, preferBounds, out var bounds, out var regionPath))
 		{
 			if (regionPath is not null)
 			{
@@ -80,7 +86,7 @@ public partial class Visual
 		}
 	}
 
-	private bool TryGetPaintDamageRegion(SKPath clip, out SKRect bounds, out SKPath? regionPath)
+	private bool TryGetPaintDamageRegion(SKPath clip, bool preferBounds, out SKRect bounds, out SKPath? regionPath)
 	{
 		bounds = default;
 		regionPath = null;
@@ -100,7 +106,13 @@ public partial class Visual
 			var clipIsRect = clipPath.IsRect;
 			var clipRect = clipPath.Bounds;
 
-			if (ShadowState is null && DamageRegionSamplingMargin == 0 && _ownContentPath is { IsEmpty: false } ownContent)
+			// preferBounds only downgrades to the (much cheaper) bounds branch when that branch can
+			// actually answer for this visual — otherwise it would fall through to the clip, which is a
+			// far larger region than the exact path it replaced.
+			var canUseBounds = ShadowState is null ? CanPaint() && PaintsWithinOwnSize : true;
+
+			if (!(preferBounds && canUseBounds)
+				&& ShadowState is null && DamageRegionSamplingMargin == 0 && _ownContentPath is { IsEmpty: false } ownContent)
 			{
 				ownContent.Transform(SKMatrix.Identity, contentPath);
 				contentPath.Transform(TotalMatrix.ToSKMatrix());
