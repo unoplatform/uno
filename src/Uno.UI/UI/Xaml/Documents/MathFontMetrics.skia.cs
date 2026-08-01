@@ -13,6 +13,7 @@ namespace Microsoft.UI.Xaml.Documents;
 internal sealed class MathFontMetrics
 {
 	private const int MaxMathTableBytes = 1024 * 1024;
+	private const int MaxAssemblyParts = 1024;
 	private static readonly ConditionalWeakTable<SKTypeface, RawMathData> _cache = new();
 	private readonly RawMathData _rawData;
 	private readonly float _em;
@@ -188,6 +189,28 @@ internal sealed class MathFontMetrics
 		variantCount = construction.Variants.Length;
 		partCount = construction.Parts.Length;
 		return true;
+	}
+
+	internal static bool TryBuildVerticalAssemblyForTesting(
+		byte[] table,
+		ushort glyph,
+		float targetUnits,
+		out int partCount,
+		out float advance)
+	{
+		partCount = 0;
+		advance = 0;
+		var variantsOffset = TryReadUInt16(table, 8, out var offset) ? offset : 0;
+		if (variantsOffset == 0
+			|| !TryReadVerticalConstruction(table, variantsOffset, glyph, out var construction)
+			|| !TryBuildAssembly(construction, 0, targetUnits, 1, out var run))
+		{
+			return false;
+		}
+
+		partCount = run.Parts.Length;
+		advance = run.Advance;
+		return run.IsAssembly;
 	}
 
 	internal static MathFontMetrics Create(FontDetails font)
@@ -467,7 +490,7 @@ internal sealed class MathFontMetrics
 		out MathGlyphRun glyphRun)
 	{
 		glyphRun = default;
-		if (construction.Parts.Length is 0 or > 64)
+		if (construction.Parts.Length is 0 or > 256)
 		{
 			return false;
 		}
@@ -499,9 +522,9 @@ internal sealed class MathFontMetrics
 				break;
 			}
 		}
-		while (maximumAdvance < targetUnits && parts.Count < 64);
+		while (maximumAdvance < targetUnits && parts.Count < MaxAssemblyParts);
 
-		if (parts.Count == 0 || parts.Count > 64)
+		if (parts.Count == 0 || parts.Count > MaxAssemblyParts || maximumAdvance < targetUnits)
 		{
 			return false;
 		}

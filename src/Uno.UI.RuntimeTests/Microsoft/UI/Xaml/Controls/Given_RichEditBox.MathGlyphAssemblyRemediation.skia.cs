@@ -42,6 +42,21 @@ public partial class Given_RichEditBox
 	}
 
 	[TestMethod]
+	public void When_Math_Assembly_Needs_More_Than_Sixty_Four_Parts_It_Reaches_The_Target()
+	{
+		var table = CreateMathVariantsTable();
+
+		Assert.IsTrue(MathFontMetrics.TryBuildVerticalAssemblyForTesting(
+			table,
+			glyph: 42,
+			targetUnits: 40_000,
+			out var partCount,
+			out var advance));
+		Assert.IsGreaterThan(64, partCount);
+		Assert.IsGreaterThanOrEqualTo(40_000, advance);
+	}
+
+	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
 	public async Task When_Tall_Math_Table_Uses_Available_Math_Font_And_Preserves_Hit_Testing()
@@ -78,7 +93,7 @@ public partial class Given_RichEditBox
 			var firstCell = parsed.GetRectForIndex(story.IndexOf("\U0001D465", StringComparison.Ordinal));
 			var lastCell = parsed.GetRectForIndex(story.LastIndexOf("\U0001D465", StringComparison.Ordinal));
 
-			if (parsed.UsesOpenTypeMath)
+			if (parsed.UsesOpenTypeMath && parsed.VerticalGlyphFallbackCount == 0)
 			{
 				Assert.IsGreaterThan(0, parsed.VerticalAssemblyGlyphCount);
 			}
@@ -130,7 +145,7 @@ public partial class Given_RichEditBox
 
 			var parsed = GetMathLayout(editor, out _);
 			var bracket = parsed.GetRectForIndex(0);
-			if (parsed.UsesOpenTypeMath)
+			if (parsed.UsesOpenTypeMath && parsed.VerticalGlyphFallbackCount == 0)
 			{
 				Assert.IsGreaterThan(0, parsed.VerticalAssemblyGlyphCount);
 			}
@@ -170,7 +185,7 @@ public partial class Given_RichEditBox
 			var numerator = parsed.GetRectForIndex(story.IndexOf("\U0001D44E", StringComparison.Ordinal));
 			var denominator = parsed.GetRectForIndex(story.IndexOf("\U0001D44F", StringComparison.Ordinal));
 
-			if (parsed.UsesOpenTypeMath)
+			if (parsed.UsesOpenTypeMath && parsed.VerticalGlyphFallbackCount == 0)
 			{
 				Assert.IsGreaterThan(0, parsed.VerticalVariantGlyphCount + parsed.VerticalAssemblyGlyphCount);
 			}

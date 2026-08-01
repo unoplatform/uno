@@ -1007,6 +1007,14 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
+			if (_selection.selectionEndsAtTheStart
+				&& selectionStart == _selection.start
+				&& selectionLength == _selection.length)
+			{
+				// Native selection APIs report normalized bounds and cannot represent the active endpoint.
+				// Ignore an echo of the current range rather than silently reversing its direction.
+				return;
+			}
 
 			SetInteractiveSelection(selectionStart, selectionLength);
 		}

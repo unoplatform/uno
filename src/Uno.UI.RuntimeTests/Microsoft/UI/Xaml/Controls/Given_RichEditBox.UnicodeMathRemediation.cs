@@ -78,6 +78,8 @@ public partial class Given_RichEditBox
 
 	[TestMethod]
 	[RunsOnUIThread]
+	// This exercises Uno's managed UnicodeMath parser; native RichEdit does not preserve these inputs linearly.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_UnicodeMath_Ordinary_Or_Unbalanced_Text_Remains_Linear()
 	{
 		foreach (var input in new[] { "ordinary text ", "x_( ", "/a ", "a//b ", "/ " })

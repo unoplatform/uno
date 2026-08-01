@@ -28,6 +28,21 @@ public partial class Given_RichEditBox
 	}
 
 	[TestMethod]
+	public void When_Normalized_Native_Selection_Echo_Preserves_The_Active_Start()
+	{
+		var sut = new RichEditBox();
+		sut.Document.SetText(TextSetOptions.None, "abc");
+		sut.Document.Selection.SetRange(0, 3);
+		sut.Document.Selection.Options |= SelectionOptions.StartActive;
+
+		sut.SelectFromNative(selectionStart: 0, selectionLength: 3);
+
+		Assert.IsTrue(sut.IsSelectionBackwardForTesting);
+		Assert.AreEqual(0, sut.Document.Selection.StartPosition);
+		Assert.AreEqual(3, sut.Document.Selection.EndPosition);
+	}
+
+	[TestMethod]
 	public async Task When_Candidate_Window_Alignment_Changes_While_Focused()
 	{
 		var fake = new FakeImeTextBoxExtension();
@@ -353,10 +368,10 @@ public partial class Given_RichEditBox
 			sut.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(
-				"email|true",
+			await WindowHelper.WaitFor(() =>
 				global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
-					"(function(){const input=document.getElementById('uno-input');return input ? `${input.getAttribute('inputmode')}|${input.spellcheck}` : 'missing';})()"));
+					"(function(){const input=document.getElementById('uno-input');return input ? `${input.getAttribute('inputmode')}|${input.spellcheck}` : 'missing';})()")
+				== "email|true");
 
 			sut.InputScope = new InputScope
 			{
@@ -369,10 +384,10 @@ public partial class Given_RichEditBox
 			sut.AcceptsReturn = false;
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(
-				"numeric|false|false|true",
+			await WindowHelper.WaitFor(() =>
 				global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
-					"(function(){const input=document.getElementById('uno-input');if(!input){return 'missing';}const event=new InputEvent('beforeinput',{inputType:'insertLineBreak',cancelable:true});input.dispatchEvent(event);return `${input.getAttribute('inputmode')}|${input.spellcheck}|${input.dataset.unoAcceptsReturn}|${event.defaultPrevented}`;})()"));
+					"(function(){const input=document.getElementById('uno-input');if(!input){return 'missing';}const event=new InputEvent('beforeinput',{inputType:'insertLineBreak',cancelable:true});input.dispatchEvent(event);return `${input.getAttribute('inputmode')}|${input.spellcheck}|${input.dataset.unoAcceptsReturn}|${event.defaultPrevented}`;})()")
+				== "numeric|false|false|true");
 		}
 		finally
 		{
@@ -477,10 +492,10 @@ public partial class Given_RichEditBox
 			sut.Template = template;
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(
-				"1|true",
+			await WindowHelper.WaitFor(() =>
 				global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
-					"(function(){const inputs=document.querySelectorAll('#uno-input');return `${inputs.length}|${document.activeElement===inputs[0]}`;})()"));
+					"(function(){const inputs=document.querySelectorAll('#uno-input');return `${inputs.length}|${document.activeElement===inputs[0]}`;})()")
+				== "1|true");
 		}
 		finally
 		{
