@@ -129,6 +129,8 @@ internal static class X11GraphicsContextFactory
 			GraphicsContextKind.OpenGLES when window is X11GraphicsNativeWindow gles => new X11EGLGraphicsContext(gles.X11Window),
 			// WebGPU on-window via a wgpu Xlib swapchain (throws if WSI is unavailable → negotiation falls through).
 			GraphicsContextKind.WebGpu when window is X11GraphicsNativeWindow gpu => new X11WebGpuGraphicsContext(gpu.X11Window),
+			// Vulkan on-window via the shared VulkanContext (throws if Vulkan is unavailable → falls through).
+			GraphicsContextKind.Vulkan when window is X11GraphicsNativeWindow vk => new X11VulkanGraphicsContext(vk.X11Window),
 			GraphicsContextKind.Software => new X11SoftwareGraphicsContext(window),
 			_ => null,
 		};
