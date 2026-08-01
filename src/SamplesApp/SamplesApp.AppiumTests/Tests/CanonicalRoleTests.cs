@@ -20,6 +20,8 @@ public sealed class CanonicalRoleTests
 			(rawRole: "textbox.multiline", platform: "Wasm", expected: "textbox"),
 			(rawRole: "input", platform: "Wasm", expected: "textbox"),
 			(rawRole: "AXStaticText", platform: "Mac", expected: "text"),
+			(rawRole: "tab", platform: "Windows", expected: "tablist"),
+			(rawRole: "tab item", platform: "Windows", expected: "tab"),
 		};
 
 		foreach (var @case in cases)

@@ -41,9 +41,42 @@ public sealed class WasmAdapter : IPlatformAdapter
 			: new Uri(baseUri, "?" + sampleQuery);
 
 		var driver = new RemoteWebDriver(options.ServerUri, chromeOptions.ToCapabilities(), options.Timeout);
-		driver.Navigate().GoToUrl(startUri);
-		EnableSemanticAccessibility(driver, options);
-		return driver;
+		try
+		{
+			driver.Manage().Timeouts().PageLoad = options.Timeout;
+			driver.Manage().Timeouts().AsynchronousJavaScript = options.Timeout;
+			driver.Navigate().GoToUrl(startUri);
+			EnableSemanticAccessibility(driver, options, startUri);
+			return driver;
+		}
+		catch (Exception startupError)
+		{
+			var errors = new List<Exception> { startupError };
+			try
+			{
+				driver.Quit();
+			}
+			catch (Exception quitError)
+			{
+				errors.Add(quitError);
+			}
+
+			try
+			{
+				driver.Dispose();
+			}
+			catch (Exception disposeError)
+			{
+				errors.Add(disposeError);
+			}
+
+			if (errors.Count > 1)
+			{
+				throw new AggregateException("WASM WebDriver startup and cleanup both failed.", errors);
+			}
+
+			throw;
+		}
 	}
 
 	public By ByAutomationId(string automationId)
@@ -359,10 +392,13 @@ return '';
 		}
 	}
 
-	private static void EnableSemanticAccessibility(IWebDriver driver, AppiumTestOptions options)
+	private static void EnableSemanticAccessibility(IWebDriver driver, AppiumTestOptions options, Uri startUri)
 	{
 		var deadline = DateTime.UtcNow + options.Timeout;
+		var retryAt = DateTime.UtcNow + TimeSpan.FromSeconds(Math.Min(10, options.Timeout.TotalSeconds / 2));
 		Exception? lastError = null;
+		string? lastState = null;
+		var navigationRetryAttempted = false;
 
 		while (DateTime.UtcNow < deadline)
 		{
@@ -373,13 +409,30 @@ const button = document.getElementById('uno-enable-accessibility');
 if (button) {
 	button.click();
 }
-return document.getElementById('uno-semantics-root') ? 'ready' : 'waiting';
+if (document.getElementById('uno-semantics-root')) {
+	return 'ready';
+}
+return document.readyState === 'complete' &&
+	!button &&
+	document.querySelector('canvas') === null
+		? 'bootstrap-missing'
+		: 'waiting';
 ");
+				lastState = state;
 
 				if (string.Equals(state, "ready", StringComparison.Ordinal))
 				{
 					Thread.Sleep(options.PollInterval);
 					return;
+				}
+
+				if (!navigationRetryAttempted &&
+					string.Equals(state, "bootstrap-missing", StringComparison.Ordinal) &&
+					DateTime.UtcNow >= retryAt)
+				{
+					navigationRetryAttempted = true;
+					driver.Navigate().GoToUrl(startUri);
+					continue;
 				}
 			}
 			catch (WebDriverException ex)
@@ -390,9 +443,31 @@ return document.getElementById('uno-semantics-root') ? 'ready' : 'waiting';
 			Thread.Sleep(options.PollInterval);
 		}
 
+		string pageState;
+		try
+		{
+			pageState = ExecuteScript(driver, """
+				const button = document.getElementById('uno-enable-accessibility');
+				return JSON.stringify({
+					url: window.location.href,
+					readyState: document.readyState,
+					bodyChildCount: document.body?.childElementCount ?? -1,
+					canvasPresent: document.querySelector('canvas') !== null,
+					enableButtonPresent: button !== null,
+					enableButtonDisabled: button?.getAttribute('aria-disabled') ?? null,
+					semanticsRootPresent: document.getElementById('uno-semantics-root') !== null
+				});
+				""") ?? "unavailable";
+		}
+		catch (WebDriverException diagnosticError)
+		{
+			pageState = $"unavailable ({diagnosticError.Message})";
+		}
+
 		throw new InvalidOperationException(
 			$"Timed out enabling the Skia semantic DOM after {options.Timeout.TotalSeconds:F0}s. " +
-			$"Last error: {lastError?.Message ?? "n/a"}");
+			$"Navigation retry attempted: {navigationRetryAttempted}. Last state: {lastState ?? "n/a"}. " +
+			$"Page state: {pageState}. Last error: {lastError?.Message ?? "n/a"}");
 	}
 
 	private static string? ExecuteScript(IWebDriver driver, string script, IWebElement? element = null)
@@ -420,8 +495,8 @@ return document.getElementById('uno-semantics-root') ? 'ready' : 'waiting';
 			_ => null,
 		};
 
-	private static string EscapeCssAttribute(string value)
-		=> value.Replace("\\", "\\\\").Replace("\"", "\\\"");
+	internal static string EscapeCssAttribute(string value)
+		=> value.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("]", "\\]");
 
 	private static string? EmptyToNull(string? value)
 		=> string.IsNullOrWhiteSpace(value) ? null : value.Trim();

@@ -1,6 +1,5 @@
 #nullable enable
 
-using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using SamplesApp.AppiumTests.Infrastructure;
@@ -18,11 +17,12 @@ public sealed class WasmAccessibilityStandardsTests : AppiumFixtureBase
 	{
 		if (Session.Options.Platform != AppiumPlatform.Wasm)
 		{
-			throw new InvalidOperationException(
+			Assert.Inconclusive(
 				$"{nameof(WasmAccessibilityStandardsTests)} requires {AppiumTestOptions.EnvVarPlatform}=wasm.");
+			return;
 		}
 
-		var violations = ((IJavaScriptExecutor)Session.Driver).ExecuteScript(
+		var scriptResult = ((IJavaScriptExecutor)Session.Driver).ExecuteScript(
 			"""
 			const root = document.getElementById('uno-semantics-root');
 			if (!root) {
@@ -109,7 +109,15 @@ public sealed class WasmAccessibilityStandardsTests : AppiumFixtureBase
 			}
 
 			return violations.sort().join('\n');
-			""") as string;
+			""");
+
+		if (scriptResult is not string violations)
+		{
+			Assert.Fail(
+				$"The semantic DOM standards scan returned {scriptResult?.GetType().FullName ?? "null"} instead of a string " +
+				$"({Session.DiagnosticContext}).");
+			return;
+		}
 
 		violations.Should().BeEmpty(
 			$"the external semantic DOM must satisfy its role/name/relationship/tab-order contract ({Session.DiagnosticContext})");
