@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -217,7 +218,14 @@ public partial class Given_SkiaAndroidAccessibilityNode
 		var button = new Button { Content = "Bounds", Width = 120, Height = 48 };
 		await UITestHelper.Load(button);
 
-		var node = FindByName(GetAllNodes(button.XamlRoot!), "Bounds");
+		AccessibilityNativeNodeSnapshot? node = null;
+		await TestServices.WindowHelper.WaitFor(
+			() =>
+			{
+				node = FindByName(GetAllNodes(button.XamlRoot!), "Bounds");
+				return node?.Bounds is { Width: > 0, Height: > 0 };
+			},
+			message: "The Android accessibility node did not receive non-degenerate bounds.");
 
 		Assert.IsNotNull(node);
 		Assert.IsTrue(node.Bounds.Width > 0);
@@ -703,7 +711,7 @@ public partial class Given_SkiaAndroidAccessibilityNode
 
 [TestClass]
 [PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
-public class Given_SkiaAndroidAutomationId
+public partial class Given_SkiaAndroidAutomationId
 {
 	private static AccessibilityNativeNodeSnapshot? GetSnapshot(UIElement element)
 		=> AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor?.Invoke(element);
@@ -1374,7 +1382,15 @@ public class Given_SkiaAndroidAutomationId
 		Assert.IsFalse(result);
 		Assert.AreEqual(0, textBox.SelectionStart);
 		Assert.AreEqual(0, textBox.SelectionLength);
+#if __SKIA__
 		Assert.IsFalse(textBox.IsBackwardSelection);
+#else
+		var isBackwardSelection = textBox
+			.GetType()
+			.GetProperty("IsBackwardSelection", BindingFlags.Instance | BindingFlags.NonPublic);
+		Assert.IsNotNull(isBackwardSelection);
+		Assert.IsFalse((bool)isBackwardSelection.GetValue(textBox)!);
+#endif
 	}
 
 	[TestMethod]

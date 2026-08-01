@@ -1479,16 +1479,14 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		}
 
 		var bounds = peer.ResolveProviderPeer(resolveEventsSource: true).GetBoundingRectangle();
-		if (!HasFiniteBounds(bounds) &&
+		if (!HasUsableBounds(bounds) &&
 			TryGetElement(virtualViewId, out var element) &&
 			element is UIElement uiElement)
 		{
 			bounds = GetElementLogicalBounds(uiElement);
 		}
 
-		return HasFiniteBounds(bounds) &&
-			bounds.Width > 0 &&
-			bounds.Height > 0 &&
+		return HasUsableBounds(bounds) &&
 			bounds.Contains(logicalPoint);
 	}
 
@@ -1921,7 +1919,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 		var effectivePeer = peer.ResolveProviderPeer(resolveEventsSource: true);
 		var peerBounds = effectivePeer.GetBoundingRectangle();
-		var logicalRect = HasFiniteBounds(peerBounds)
+		var logicalRect = HasUsableBounds(peerBounds)
 			? peerBounds
 			: uiElement is not null
 				? GetElementLogicalBounds(uiElement)
@@ -1934,7 +1932,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		{
 			var effectiveParentPeer = parentPeer.ResolveProviderPeer(resolveEventsSource: true);
 			var parentBounds = effectiveParentPeer.GetBoundingRectangle();
-			var parentLogicalRect = HasFiniteBounds(parentBounds)
+			var parentLogicalRect = HasUsableBounds(parentBounds)
 				? parentBounds
 				: TryGetElement(boundsParentId, out var parentElement) &&
 					parentElement is UIElement parentUiElement
@@ -2156,7 +2154,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	private static Windows.Foundation.Rect GetLogicalBounds(UIElement element, AutomationPeer peer)
 	{
 		var peerBounds = peer.GetBoundingRectangle();
-		return HasFiniteBounds(peerBounds)
+		return HasUsableBounds(peerBounds)
 			? peerBounds
 			: GetElementLogicalBounds(element);
 	}
@@ -2175,6 +2173,11 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			&& double.IsFinite(bounds.Y)
 			&& double.IsFinite(bounds.Width)
 			&& double.IsFinite(bounds.Height);
+
+	private static bool HasUsableBounds(Windows.Foundation.Rect bounds)
+		=> HasFiniteBounds(bounds)
+			&& bounds.Width > 0
+			&& bounds.Height > 0;
 
 	private void AddCustomActions(
 		AccessibilityNodeInfoCompat node,
