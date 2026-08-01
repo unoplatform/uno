@@ -544,6 +544,7 @@ internal sealed class LayerCmd : WebGpuCommand
 	public List<WebGpuCommand> Commands;
 	public int CompositeMode;   // 0 = SrcOver, 1 = DstIn
 	public float[] ColorMatrix; // null, or 20-float (4x5) color matrix applied at composite
+	public WebGpuEffectFilter ShadowEffect; // SaveLayer(IEffectFilter): a drop shadow derived from the content
 }
 
 // Backend-created gradient shader handle. The WebGPU backend mints its own (rather than delegating to Skia) so
@@ -572,6 +573,15 @@ public sealed class WebGpuColorFilter : IColorFilter
 	public float[] Matrix;
 }
 
+// Backend-owned effect filter. Today only the drop shadow (SaveLayer(IEffectFilter) from Visual/ShadowState):
+// the layer content is blurred, tinted by Color and offset by (Dx,Dy), drawn behind the content.
+public sealed class WebGpuEffectFilter : IEffectFilter
+{
+	public float Dx, Dy, SigmaX, SigmaY;
+	public WColor Color;
+	public void Dispose() { }
+}
+
 public sealed class WebGpuRenderData : IRenderData
 {
 	internal List<WebGpuCommand> Commands = new();
@@ -583,7 +593,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 {
 	// A save frame carries the matrix/clip to restore. Layer frames additionally redirect emitted commands into
 	// a sub-list until Restore, which composites that sub-list (as a LayerCmd) back onto the parent.
-	private struct SaveEntry { public Matrix4x4 M; public ClipData Clip; public bool IsLayer; public List<WebGpuCommand> ParentTarget; public int CompositeMode; public float[] ColorMatrix; }
+	private struct SaveEntry { public Matrix4x4 M; public ClipData Clip; public bool IsLayer; public List<WebGpuCommand> ParentTarget; public int CompositeMode; public float[] ColorMatrix; public WebGpuEffectFilter Effect; }
 	private readonly Stack<SaveEntry> _stack = new();
 	private Matrix4x4 _m = Matrix4x4.Identity;
 	private ClipData _clip = ClipData.None;
@@ -607,20 +617,20 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		{
 			var layerCmds = _target;
 			_target = t.ParentTarget;
-			_target.Add(new LayerCmd { Commands = layerCmds, CompositeMode = t.CompositeMode, ColorMatrix = t.ColorMatrix, Clip = _clip });
+			_target.Add(new LayerCmd { Commands = layerCmds, CompositeMode = t.CompositeMode, ColorMatrix = t.ColorMatrix, ShadowEffect = t.Effect, Clip = _clip });
 		}
 	}
 	public void RestoreToCount(int count) { while (_stack.Count > count) { Restore(); } }
 
-	private void PushLayer(int compositeMode, float[] colorMatrix)
+	private void PushLayer(int compositeMode, float[] colorMatrix, WebGpuEffectFilter effect = null)
 	{
-		_stack.Push(new SaveEntry { M = _m, Clip = _clip, IsLayer = true, ParentTarget = _target, CompositeMode = compositeMode, ColorMatrix = colorMatrix });
+		_stack.Push(new SaveEntry { M = _m, Clip = _clip, IsLayer = true, ParentTarget = _target, CompositeMode = compositeMode, ColorMatrix = colorMatrix, Effect = effect });
 		_target = new List<WebGpuCommand>();
 	}
 	public void SaveLayer(bool antialias = false) => PushLayer(0, null);
 	public void SaveLayer(IColorFilter colorFilter, bool antialias = false) => PushLayer(0, (colorFilter as WebGpuColorFilter)?.Matrix);
 	public void SaveLayer(BlendMode blendMode, bool antialias = false) => PushLayer(blendMode == BlendMode.DstIn ? 1 : 0, null);
-	public void SaveLayer(IEffectFilter filter) => PushLayer(0, null);
+	public void SaveLayer(IEffectFilter filter) => PushLayer(0, null, filter as WebGpuEffectFilter);
 	// Device-space AABB of a mapped rect (its 4 corners), for the scissor / fast reject.
 	private Vector4 DeviceAabb(in Rect rect)
 	{
@@ -902,7 +912,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					_target = layerList;
 					Replay(new WebGpuRenderData { Commands = lyr.Commands });   // recursively transform sub-commands
 					_target = saved;
-					_target.Add(new LayerCmd { Commands = layerList, CompositeMode = lyr.CompositeMode, ColorMatrix = lyr.ColorMatrix, Clip = ClipCompose(lyr.Clip, T) });
+					_target.Add(new LayerCmd { Commands = layerList, CompositeMode = lyr.CompositeMode, ColorMatrix = lyr.ColorMatrix, ShadowEffect = lyr.ShadowEffect, Clip = ClipCompose(lyr.Clip, T) });
 					break;
 			}
 		}
@@ -1165,6 +1175,35 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// Render the layer's commands into a full-size offscreen surface, then composite (kind 4).
 					var layerSurface = new WebGpuRenderSurface(_d, _s.Width, _s.Height);
 					RenderInto(lyr.Commands, layerSurface, null);
+
+					// SaveLayer(IEffectFilter) drop shadow: blur the content, draw it tinted+offset behind, then
+					// the content on top. Reuses the image path (SrcIn tint) for the shadow — same as DrawShadow.
+					if (lyr.ShadowEffect is { } fx)
+					{
+						var tmp = _d.CreateColorTarget(_s.Width, _s.Height);
+						BlurPass(layerSurface.View, tmp, new Vector2(1f, 0f), new Vector2(1f / _s.Width, 0f), fx.SigmaX);
+						var blur = _d.CreateColorTarget(_s.Width, _s.Height);
+						BlurPass(tmp, blur, new Vector2(0f, 1f), new Vector2(0f, 1f / _s.Height), fx.SigmaY);
+						var subd = new BufferDescriptor { Size = 32, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
+						var subuf = W.DeviceCreateBuffer(_d.Dev, ref subd);
+						var sop = stackalloc float[8];
+						sop[0] = 1f; sop[1] = 1f; sop[2] = 0; sop[3] = 0;
+						sop[4] = fx.Color.R / 255f; sop[5] = fx.Color.G / 255f; sop[6] = fx.Color.B / 255f; sop[7] = fx.Color.A / 255f;
+						W.QueueWriteBuffer(_d.Q, subuf, 0, sop, 32);
+						var sfe = stackalloc BindGroupEntry[3];
+						sfe[0] = new BindGroupEntry { Binding = 0, TextureView = blur };
+						sfe[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
+						sfe[2] = new BindGroupEntry { Binding = 2, Buffer = subuf, Offset = 0, Size = 32 };
+						var sfbgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sfe };
+						var sfbg = W.DeviceCreateBindGroup(_d.Dev, ref sfbgd);
+						var fq = new float[24];
+						void FQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); fq[idx] = n.X; fq[idx + 1] = n.Y; fq[idx + 2] = u; fq[idx + 3] = vv; }
+						var off = new Vector2(fx.Dx, fx.Dy);
+						FQV(0, new Vector2(0, 0) + off, 0, 0); FQV(4, new Vector2(_s.Width, 0) + off, 1, 0); FQV(8, new Vector2(_s.Width, _s.Height) + off, 1, 1);
+						FQV(12, new Vector2(0, 0) + off, 0, 0); FQV(16, new Vector2(_s.Width, _s.Height) + off, 1, 1); FQV(20, new Vector2(0, _s.Height) + off, 0, 1);
+						ops.Add((2, (nint)sfbg, 0, (nint)MakeBuffer(fq), false, lyr.Clip, (nint)MakeClipBg(_d.ImageClipBgl, lyr.Clip)));
+					}
+
 					var cu = new float[24];
 					cu[0] = lyr.ColorMatrix is { Length: >= 20 } ? 1f : 0f; cu[1] = 1f;
 					if (lyr.ColorMatrix is { Length: >= 20 } mm)
@@ -1405,6 +1444,6 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 		=> new WebGpuShader { Radial = true, P0 = center, P1 = gradientOrigin, RadiusX = radiusX, RadiusY = radiusY, Colors = colors, Stops = colorPositions, TileMode = tileMode, LocalMatrix = localMatrix };
 	public IColorFilter CreateBlendModeColorFilter(WColor color, BlendMode mode) => new WebGpuColorFilter { IsBlendMode = true, Color = color, Mode = mode };
 	public IColorFilter CreateColorMatrixColorFilter(float[] matrix) => new WebGpuColorFilter { Matrix = matrix };
+	public IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, WColor color) => new WebGpuEffectFilter { Dx = dx, Dy = dy, SigmaX = sigmaX, SigmaY = sigmaY, Color = color };
 	public IEffectFilter CreateEffectFilter(Windows.Graphics.Effects.IGraphicsEffect effect, Windows.Foundation.Rect bounds, Func<string, Microsoft.UI.Composition.CompositionBrush> sourceResolver, bool useBackdropBlurClamp, bool isSoftwareRenderer, out bool hasBackdropInput) => _inner.CreateEffectFilter(effect, bounds, sourceResolver, useBackdropBlurClamp, isSoftwareRenderer, out hasBackdropInput);
-	public IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, WColor color) => _inner.CreateDropShadowFilter(dx, dy, sigmaX, sigmaY, color);
 }

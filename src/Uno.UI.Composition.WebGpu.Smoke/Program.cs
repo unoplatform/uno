@@ -252,6 +252,21 @@ var pCf = Render(r =>
 var cf = At(pCf, 32, 32);
 Check("colorfilter-layer: red mapped to green", cf.g > 200 && cf.r < 60, cf);
 
+// 15) EFFECT-SHADOW LAYER — SaveLayer(IEffectFilter): a drop shadow derived from the layer content.
+var dropShadow = new WebGpuEffectFilter { Dx = 10, Dy = 10, SigmaX = 3, SigmaY = 3, Color = WColor.FromArgb(255, 0, 0, 255) };
+var pFx = Render(r =>
+{
+	r.SaveLayer(dropShadow);
+	r.DrawRect(new Rect(12, 12, 20, 20), WColor.FromArgb(255, 0, 255, 0), false);   // green content (12,12)-(32,32)
+	r.Restore();
+});
+var fxContent = At(pFx, 20, 20);   // content on top → green
+var fxShadow = At(pFx, 40, 40);    // offset by (10,10) → blurred blue shadow
+var fxEmpty = At(pFx, 2, 2);       // far → black
+Check("effect-shadow: content on top (green)", fxContent.g > 150 && fxContent.b < 100, fxContent);
+Check("effect-shadow: shadow offset present (blue)", fxShadow.b > 40 && fxShadow.g < 150, fxShadow);
+Check("effect-shadow: empty area black", fxEmpty.r < 40 && fxEmpty.g < 40 && fxEmpty.b < 40, fxEmpty);
+
 Console.WriteLine(fail == 0
 	? "\nALL PASS — non-Skia render seam verified headless (primitives + text + stroke + boolean); Skia vs WebGPU agree on every neutral scene"
 	: $"\n{fail} CHECK(S) FAILED");
