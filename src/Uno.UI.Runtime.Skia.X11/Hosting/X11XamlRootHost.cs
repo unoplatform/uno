@@ -430,6 +430,27 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 
 		var webgpuMode = Environment.GetEnvironmentVariable("UNO_WEBGPU");
+		if (_renderer is null && webgpuMode is "neutral")
+		{
+			// On-window WebGPU through the neutral pluggable pipeline: register the WebGPU provider (preferred)
+			// with a Skia software fallback, and let GraphicsRegistry negotiate the wgpu swapchain context.
+			try
+			{
+				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+				GraphicsRegistry.Register(new IGraphicsProvider[] { new Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider(), new SkiaGraphicsProvider() });
+				_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, new[] { GraphicsContextKind.WebGpu, GraphicsContextKind.Software });
+			}
+			catch (Exception e)
+			{
+				this.Log().Warn($"Neutral WebGPU pipeline requested but unavailable: {e.Message}. Falling back.");
+				if (_x11TopWindow is not null)
+				{
+					_ = XLib.XDestroyWindow(_x11TopWindow.Value.Display, _x11TopWindow.Value.Window);
+					_x11TopWindow = null;
+				}
+				_renderer = null;
+			}
+		}
 		if (_renderer is null && webgpuMode is "1" or "true" or "swapchain")
 		{
 			try

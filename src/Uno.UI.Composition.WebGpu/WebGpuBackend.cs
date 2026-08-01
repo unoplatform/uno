@@ -1482,7 +1482,7 @@ public sealed class WebGpuRenderer : IRenderer
 // --- New-SPI pluggable-backend surface (see doc/uno-drawing-backend-abstraction.md) ---
 
 /// <summary>A <see cref="IGraphicsContext"/> wrapping a <see cref="WebGpuDevice"/>. Created by the graphics-layer context factory for <see cref="GraphicsContextKind.WebGpu"/>.</summary>
-public sealed class WebGpuGraphicsContext : IGraphicsContext
+public sealed class WebGpuGraphicsContext : IGraphicsContext, IWebGpuDeviceContext
 {
 	public WebGpuGraphicsContext(WebGpuDevice device) => Device = device;
 
@@ -1503,22 +1503,29 @@ public sealed class WebGpuGraphicsContext : IGraphicsContext
 	public void Dispose() { }
 }
 
+/// <summary>A host graphics context that owns a <see cref="WebGpuDevice"/> (e.g. an on-window swapchain context).
+/// Lets <see cref="WebGpuGraphicsProvider"/> obtain the device without naming the platform context type.</summary>
+public interface IWebGpuDeviceContext
+{
+	WebGpuDevice Device { get; }
+}
+
 /// <summary>The registerable WebGPU backend pair. Prefers a WebGPU context; needs an 8-bit stencil for path fills.</summary>
 public sealed class WebGpuGraphicsProvider : IGraphicsProvider
 {
 	private static readonly GraphicsContextKind[] _preferred = { GraphicsContextKind.WebGpu };
 
-	private readonly IDrawingFactory _drawing;
-
-	public WebGpuGraphicsProvider(IDrawingFactory drawing) => _drawing = drawing;
-
 	public IReadOnlyList<GraphicsContextKind> PreferredContexts => _preferred;
 
 	public GraphicsRequirements Requirements => new() { MinStencilBits = 8, PreferredColor = GraphicsColorFormat.Rgba8888 };
 
-	// Geometry/images are neutral, so the WebGPU backend can reuse a shared managed factory. Shaders/filters/
-	// effects would need a WebGPU-owned factory — deferred; this proves the negotiation + render path.
-	public Uno.UI.Composition.Drawing.Graphics CreateGraphics(IGraphicsContext context) => new(_drawing, new WebGpuRenderer(((WebGpuGraphicsContext)context).Device));
+	// The device is created by the host context (it owns the window swapchain); the device-bound WebGpu drawing
+	// factory wraps whatever factory is current so images become GPU-resident, and the WebGpu renderer draws.
+	public Uno.UI.Composition.Drawing.Graphics CreateGraphics(IGraphicsContext context)
+	{
+		var device = ((IWebGpuDeviceContext)context).Device;
+		return new(new WebGpuDrawingFactory(device, DrawingFactory.Current), new WebGpuRenderer(device));
+	}
 }
 
 // --- Device-bound factory (IImageTexture + eventual shaders) ---

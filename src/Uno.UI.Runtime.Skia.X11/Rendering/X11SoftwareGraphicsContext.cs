@@ -127,6 +127,8 @@ internal static class X11GraphicsContextFactory
 				=> new X11OpenGLGraphicsContext(gl.X11Window),
 			// EGL/GLES works on a plain window (no GLX visual needed); returns null → falls to software if EGL is unavailable.
 			GraphicsContextKind.OpenGLES when window is X11GraphicsNativeWindow gles => new X11EGLGraphicsContext(gles.X11Window),
+			// WebGPU on-window via a wgpu Xlib swapchain (throws if WSI is unavailable → negotiation falls through).
+			GraphicsContextKind.WebGpu when window is X11GraphicsNativeWindow gpu => new X11WebGpuGraphicsContext(gpu.X11Window),
 			GraphicsContextKind.Software => new X11SoftwareGraphicsContext(window),
 			_ => null,
 		};
