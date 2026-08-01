@@ -227,6 +227,31 @@ Check("shadow: inside silhouette red", shIn.r > 150 && shIn.g < 80 && shIn.b < 8
 Check("shadow: blur falloff outside (partial red)", shEdge.r > 20 && shEdge.r < shIn.r, (shEdge, shIn));
 Check("shadow: far outside black", shFar.r < 40, shFar);
 
+// 13) MASK LAYER — SaveLayer() source + SaveLayer(DstIn) mask: source survives only where the mask is opaque.
+var pMask = Render(r =>
+{
+	r.SaveLayer();                                                      // L1 source
+	r.DrawRect(new Rect(0, 0, 64, 64), red, false);                    // red everywhere
+	r.SaveLayer(BlendMode.DstIn);                                       // L2 mask (DstIn)
+	r.DrawRect(new Rect(16, 16, 32, 32), WColor.FromArgb(255, 255, 255, 255), false); // white center
+	r.Restore();                                                        // mask DstIn onto source
+	r.Restore();                                                        // source onto frame
+});
+var mIn = At(pMask, 32, 32); var mOut = At(pMask, 4, 4);
+Check("mask-layer: inside mask red", mIn.r > 200 && mIn.g < 60, mIn);
+Check("mask-layer: outside mask black", mOut.r < 40 && mOut.g < 40 && mOut.b < 40, mOut);
+
+// 14) COLOR-FILTER LAYER — SaveLayer(IColorFilter) with a color matrix mapping red→green at composite.
+var swapMatrix = new float[] { 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 };
+var pCf = Render(r =>
+{
+	r.SaveLayer(new WebGpuColorFilter { Matrix = swapMatrix });
+	r.DrawRect(new Rect(0, 0, 64, 64), red, false);
+	r.Restore();
+});
+var cf = At(pCf, 32, 32);
+Check("colorfilter-layer: red mapped to green", cf.g > 200 && cf.r < 60, cf);
+
 Console.WriteLine(fail == 0
 	? "\nALL PASS — non-Skia render seam verified headless (primitives + text + stroke + boolean); Skia vs WebGPU agree on every neutral scene"
 	: $"\n{fail} CHECK(S) FAILED");
