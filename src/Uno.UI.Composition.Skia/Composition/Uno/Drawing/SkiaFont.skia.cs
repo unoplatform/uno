@@ -3,12 +3,18 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using Microsoft.UI.Composition;
 using SkiaSharp;
+using HbFont = HarfBuzzSharp.Font;
+using HbFace = HarfBuzzSharp.Face;
+using HbBuffer = HarfBuzzSharp.Buffer;
+using HbBlob = HarfBuzzSharp.Blob;
 
 namespace Uno.UI.Composition.Drawing;
 
-/// <summary>SkiaSharp-backed <see cref="IFont"/> wrapping an <see cref="SKFont"/>.</summary>
+/// <summary>SkiaSharp-backed <see cref="IFont"/> wrapping an <see cref="SKFont"/>. Shaping is done with HarfBuzz
+/// (an implementation detail of this handle), fed from the typeface's own sfnt tables.</summary>
 internal sealed class SkiaFont : IFont
 {
 	private static readonly uint _colrTag = Tag("COLR");
@@ -16,8 +22,12 @@ internal sealed class SkiaFont : IFont
 	private static readonly uint _sbixTag = Tag("sbix");
 	private static readonly uint _svgTag = Tag("SVG ");
 
+	// HarfBuzz shapes in font-design units at this fixed scale; Shape() converts the output back to pixels.
+	private const int ShapeScale = 512;
+
 	private readonly SKFont _font;
 	private readonly SKFontMetrics _metrics;
+	private HbFont? _hbFont;
 
 	public SkiaFont(SKFont font)
 	{
@@ -54,9 +64,68 @@ internal sealed class SkiaFont : IFont
 
 	public string FamilyName => _font.Typeface?.FamilyName ?? string.Empty;
 
-	public int UnitsPerEm => _font.Typeface?.UnitsPerEm ?? 0;
+	public GlyphRun Shape(ReadOnlySpan<char> text, TextDirection direction, bool enableLigatures = true)
+		=> ShapeCore(text, direction, enableLigatures, out _);
 
-	public byte[]? GetFontTable(uint tag)
+	public GlyphRun Shape(ReadOnlySpan<char> text, out TextDirection resolvedDirection, bool enableLigatures = true)
+		=> ShapeCore(text, null, enableLigatures, out resolvedDirection);
+
+	private GlyphRun ShapeCore(ReadOnlySpan<char> text, TextDirection? direction, bool enableLigatures, out TextDirection resolvedDirection)
+	{
+		using var buffer = new HbBuffer();
+		buffer.AddUtf16(text);
+		buffer.GuessSegmentProperties();
+		if (direction is { } requested)
+		{
+			buffer.Direction = requested == TextDirection.RightToLeft ? HarfBuzzSharp.Direction.RightToLeft : HarfBuzzSharp.Direction.LeftToRight;
+		}
+		resolvedDirection = buffer.Direction == HarfBuzzSharp.Direction.RightToLeft ? TextDirection.RightToLeft : TextDirection.LeftToRight;
+
+		if (enableLigatures)
+		{
+			GetHarfBuzzFont().Shape(buffer);
+		}
+		else
+		{
+			// Disable the OpenType 'liga' feature (a run may span multiple chars that must stay separately addressable).
+			GetHarfBuzzFont().Shape(buffer, new HarfBuzzSharp.Feature(new HarfBuzzSharp.Tag('l', 'i', 'g', 'a'), 0));
+		}
+
+		var infos = buffer.GetGlyphInfoSpan();
+		var pos = buffer.GetGlyphPositionSpan();
+		var count = buffer.Length;
+		var glyphs = new ushort[count];
+		var offsets = new Vector2[count];
+		var advances = new float[count];
+		var clusters = new int[count];
+		var scale = _font.Size / (float)ShapeScale;
+		for (var i = 0; i < count; i++)
+		{
+			glyphs[i] = (ushort)infos[i].Codepoint;
+			clusters[i] = (int)infos[i].Cluster;
+			offsets[i] = new Vector2(pos[i].XOffset * scale, pos[i].YOffset * scale);
+			advances[i] = pos[i].XAdvance * scale;
+		}
+
+		return new GlyphRun(glyphs, offsets, advances, clusters);
+	}
+
+	private HbFont GetHarfBuzzFont()
+	{
+		if (_hbFont is null)
+		{
+			var face = new HbFace((_, tag) => CreateTableBlob((uint)tag));
+			face.UnitsPerEm = _font.Typeface?.UnitsPerEm ?? 0;
+			var font = new HbFont(face);
+			font.SetScale(ShapeScale, ShapeScale);
+			font.SetFunctionsOpenType();
+			_hbFont = font;
+		}
+
+		return _hbFont;
+	}
+
+	private HbBlob? CreateTableBlob(uint tag)
 	{
 		var typeface = _font.Typeface;
 		if (typeface is null)
@@ -84,7 +153,8 @@ internal sealed class SkiaFont : IFont
 			}
 		}
 
-		return bytes;
+		var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+		return new HbBlob(handle.AddrOfPinnedObject(), bytes.Length, HarfBuzzSharp.MemoryMode.ReadOnly, handle.Free);
 	}
 
 	public IGeometry BuildGlyphRunOutline(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY)

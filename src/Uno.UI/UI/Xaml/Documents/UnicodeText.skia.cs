@@ -10,7 +10,6 @@ using System.Text;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Text;
-using HarfBuzzSharp;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
@@ -22,7 +21,6 @@ using Uno.Foundation.Logging;
 using Uno.Helpers;
 using Uno.UI;
 using Uno.UI.Dispatching;
-using Buffer = HarfBuzzSharp.Buffer;
 using FontWeights = Microsoft.UI.Text.FontWeights;
 
 
@@ -45,7 +43,8 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private record struct Line(int start, int end, LinkedListNode<Cluster> clusterStart, LinkedListNode<Cluster> clusterLast, float width, float widthWithoutTrailingSpaces, float lineHeight, float baselineOffset, bool hasEllipsis = false);
 
-	private record struct Glyph(GlyphPosition GlyphPosition, uint Codepoint);
+	// Positioned glyph in pixel space (offsets/advance already scaled by IFont.Shape).
+	private record struct Glyph(ushort GlyphId, float XAdvance, float XOffset, float YOffset);
 
 	private record struct Cluster(
 		int start,
@@ -73,7 +72,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			float clusterWidth = 0;
 			for (var glyphNode = glyphsStart; glyphNode != glyphsLast.Next; glyphNode = glyphNode.Next)
 			{
-				clusterWidth += AdvanceToPixels(glyphNode!.Value.GlyphPosition.XAdvance, fontDetails);
+				clusterWidth += glyphNode!.Value.XAdvance;
 			}
 
 			return new(indexStart, indexEnd, glyphsStart, glyphsLast, fontDetails, clusterWidth, clusterContainsOnlyWhitespace, clusterContainsTab, false, -1, -1);
@@ -252,60 +251,52 @@ internal readonly partial struct UnicodeText : IParsedText
 		var clusterBreaks = new LinkedList<Cluster>();
 		foreach (var shapingRun in EnumerateShapingRuns(_runBreaks, scriptBreaks, _bidiBreaks, fontBreaks))
 		{
-			using var buffer = new Buffer();
-			buffer.AddUtf16(_text.AsSpan(shapingRun.start, shapingRun.end - shapingRun.start));
-			buffer.GuessSegmentProperties();
-			buffer.Direction = shapingRun.direction is FlowDirection.RightToLeft ? Direction.RightToLeft : Direction.LeftToRight;
-			shapingRun.fontDetails.Font.Shape(buffer);
-			var positions = buffer.GetGlyphPositionSpan();
-			var infos = buffer.GetGlyphInfoSpan();
-			var count = buffer.Length;
+			var direction = shapingRun.direction is FlowDirection.RightToLeft ? TextDirection.RightToLeft : TextDirection.LeftToRight;
+			var glyphRun = shapingRun.fontDetails.FontHandle.Shape(_text.AsSpan(shapingRun.start, shapingRun.end - shapingRun.start), direction);
+			var clusters = glyphRun.Clusters;
+			var count = glyphRun.Count;
 
 			if (count == 0)
 			{
 				// Even though textRun is nonempty and fontDetails contains a font that can shape all the characters in it,
-				// Font.Shape may still decide to yield 0 glyphs.
-				_glyphs.AddLast(new Glyph { GlyphPosition = new GlyphPosition(), Codepoint = 0 });
+				// shaping may still decide to yield 0 glyphs.
+				_glyphs.AddLast(new Glyph(0, 0, 0, 0));
 			}
 			else
 			{
-				CI.Assert((buffer.Direction is Direction.LeftToRight && infos[0].Cluster == 0) || (buffer.Direction is Direction.RightToLeft && infos[^1].Cluster == 0));
-				if (buffer.Direction is Direction.LeftToRight)
+				CI.Assert((direction is TextDirection.LeftToRight && clusters[0] == 0) || (direction is TextDirection.RightToLeft && clusters[^1] == 0));
+				if (direction is TextDirection.LeftToRight)
 				{
-					for (var index = 0; index < infos.Length; index++)
+					for (var index = 0; index < count; index++)
 					{
-						var info = infos[index];
-						var position = positions[index];
-						if (index > 0 && info.Cluster != infos[index - 1].Cluster)
+						if (index > 0 && clusters[index] != clusters[index - 1])
 						{
 							clusterBreaks.AddLast(Cluster.Create(
 								_text,
 								clusterBreaks.Last?.Value.end ?? 0,
-								(int)(shapingRun.start + infos[index].Cluster),
+								shapingRun.start + clusters[index],
 								clusterBreaks.Last?.Value.glyphLast?.Next ?? _glyphs.First!,
 								_glyphs.Last!,
 								shapingRun.fontDetails));
 						}
-						_glyphs.AddLast(new Glyph { GlyphPosition = position, Codepoint = info.Codepoint });
+						_glyphs.AddLast(new Glyph(glyphRun.Glyphs[index], glyphRun.Advances[index], glyphRun.Offsets[index].X, glyphRun.Offsets[index].Y));
 					}
 				}
 				else
 				{
-					for (var index = infos.Length - 1; index >= 0; index--)
+					for (var index = count - 1; index >= 0; index--)
 					{
-						var info = infos[index];
-						var position = positions[index];
-						if (index < infos.Length - 1 && info.Cluster != infos[index + 1].Cluster)
+						if (index < count - 1 && clusters[index] != clusters[index + 1])
 						{
 							clusterBreaks.AddLast(Cluster.Create(
 								_text,
 								clusterBreaks.Last?.Value.end ?? 0,
-								(int)(shapingRun.start + infos[index].Cluster),
+								shapingRun.start + clusters[index],
 								clusterBreaks.Last?.Value.glyphLast?.Next ?? _glyphs.First!,
 								_glyphs.Last!,
 								shapingRun.fontDetails));
 						}
-						_glyphs.AddLast(new Glyph { GlyphPosition = position, Codepoint = info.Codepoint });
+						_glyphs.AddLast(new Glyph(glyphRun.Glyphs[index], glyphRun.Advances[index], glyphRun.Offsets[index].X, glyphRun.Offsets[index].Y));
 					}
 				}
 
@@ -543,21 +534,17 @@ internal readonly partial struct UnicodeText : IParsedText
 						lastClusterIncludedInLine = lastClusterIncludedInLine.Previous!;
 					}
 
-					using var buffer = new Buffer();
-					buffer.AddUtf16(HorizontalEllipsis);
-					buffer.GuessSegmentProperties();
 					var trimFontDetails = trimPoint.Value.fontDetails;
 					if (!trimFontDetails.FontHandle.ContainsGlyph(HorizontalEllipsis[0]))
 					{
 						trimFontDetails = GetFallbackFont(HorizontalEllipsis[0], trimFontDetails.FontSize, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal, fontListener) ?? trimFontDetails;
 					}
-					trimFontDetails.Font.Shape(buffer); // This can be cached and reused across trim points, but it's not expected to be a hotspot
-					var trimGlyphPositions = buffer.GetGlyphPositionSpan();
-					var trimGlyphInfos = buffer.GetGlyphInfoSpan();
+					// This can be cached and reused across trim points, but it's not expected to be a hotspot.
+					var trimGlyphRun = trimFontDetails.FontHandle.Shape(HorizontalEllipsis, TextDirection.LeftToRight);
 					float ellipsisWidth = 0;
-					foreach (var trimGlyphPosition in trimGlyphPositions)
+					for (var i = 0; i < trimGlyphRun.Count; i++)
 					{
-						ellipsisWidth += AdvanceToPixels(trimGlyphPosition.XAdvance, trimFontDetails);
+						ellipsisWidth += trimGlyphRun.Advances[i];
 					}
 					if (lineWidth + ellipsisWidth <= availableSize.Width || !hasMore)
 					{
@@ -570,9 +557,9 @@ internal readonly partial struct UnicodeText : IParsedText
 						}
 
 						var ellipsisGlyphList = new LinkedList<Glyph>();
-						for (var i = 0; i < trimGlyphInfos.Length; i++)
+						for (var i = 0; i < trimGlyphRun.Count; i++)
 						{
-							ellipsisGlyphList.AddLast(new Glyph(trimGlyphPositions[i], trimGlyphInfos[i].Codepoint));
+							ellipsisGlyphList.AddLast(new Glyph(trimGlyphRun.Glyphs[i], trimGlyphRun.Advances[i], trimGlyphRun.Offsets[i].X, trimGlyphRun.Offsets[i].Y));
 						}
 
 						var ellipsisCluster = new Cluster(
@@ -889,10 +876,9 @@ internal readonly partial struct UnicodeText : IParsedText
 				for (var glyphNode = cluster.Value.glyphStart; ; glyphNode = glyphNode.Next!)
 				{
 					var glyph = glyphNode.Value;
-					glyphs.Add((ushort)glyph.Codepoint);
-					positions.Add(new Vector2(positionAcc.X + AdvanceToPixels(glyph.GlyphPosition.XOffset, fontDetails),
-						positionAcc.Y + AdvanceToPixels(glyph.GlyphPosition.YOffset, fontDetails)));
-					positionAcc.X += AdvanceToPixels(glyph.GlyphPosition.XAdvance, fontDetails);
+					glyphs.Add(glyph.GlyphId);
+					positions.Add(new Vector2(positionAcc.X + glyph.XOffset, positionAcc.Y + glyph.YOffset));
+					positionAcc.X += glyph.XAdvance;
 					if (cluster.Value.glyphLast == glyphNode)
 					{
 						break;
@@ -1500,7 +1486,6 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 	}
 
-	private static float AdvanceToPixels(float xAdvance, FontDetails details) => xAdvance * details.TextScale.textScaleX;
 
 	private static int TrailingCRLFCount(string str, int end)
 	{

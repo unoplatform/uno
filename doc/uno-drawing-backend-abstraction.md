@@ -176,9 +176,13 @@ trimming, hit-testing, caret) — lives in `Uno.UI`'s text layer (`FontDetails`,
 
 Decisions:
 
-- **The shaper is NOT abstracted.** Shaping is upstream of the backend and font/script-dependent, not
-  render-backend-dependent; in practice everyone uses HarfBuzz, and no backend author would override it. Keep
-  it internal, non-overridable.
+- **Shaping IS abstracted — it lives on `IFont` (`Shape`).** (Per the vision `uno-drawing-backend-design.md`
+  §E; an earlier draft here said the opposite — that was wrong.) Shaping is font/engine-dependent yet
+  render-independent, so it's a **font capability**: `IFont.Shape(text, direction)` returns a neutral
+  `GlyphRun` (glyphs + pixel offsets/advances + clusters). The shaper (HarfBuzz today; CoreText/DirectWrite
+  possible) is an **implementation detail of the handle** — `SkiaFont`/`ManagedFont` each build their own
+  HarfBuzz face internally, so **no raw sfnt tables leak onto the seam** (`GetFontTable`/`UnitsPerEm` were
+  removed from `IFont`). The text engine no longer references `HarfBuzzSharp`.
 - **The text engine is NOT abstracted (for now).** `UnicodeText` (segmentation/bidi/wrap/arrange/hit-test) is
   mostly pure, backend-agnostic logic. A pluggable text-engine seam *could* be advantageous for perf/features
   — e.g. [PretextSharp](https://github.com/wieslawsoltes/PretextSharp), a managed-C#/MIT line-layout engine
@@ -200,25 +204,26 @@ provides today falls into six jobs, and each has a home:
 | glyph outlines / color glyphs | `SkiaFont.GetGlyphPath` | ✅ `IFont` (`ManagedFont` alt, toggle) |
 | **metrics** (ascent/descent/lineGap, underline & strikeout pos/thickness) | `SKFontMetrics`/`SKFont` | ✅ **`IFont`** — the handle exposes metrics (SkiaSharp sign convention; `ManagedFont` parses `post`/`OS-2`) |
 | **glyph coverage** ("does *this* font have the glyph") | `SKFont.ContainsGlyph` | ✅ **`IFont`** — `GetGlyphIndex`/`ContainsGlyph` |
-| **shaping table access** (HarfBuzz `Face` source) | `SKTypeface.GetTableData` | ✅ **`IFont`** — `GetFontTable`/`UnitsPerEm`; `SkiaFont` serves from its *variable-instanced* `SKTypeface` (shaping byte-identical to before), `ManagedFont` from its bytes. HarfBuzz stays (not Skia). |
+| **shaping** (string → glyphs+positions) | HarfBuzz on `SKTypeface` tables, driven by the text engine | ✅ **`IFont.Shape`** — returns a neutral `GlyphRun`. `SkiaFont`/`ManagedFont` each own a private HarfBuzz face (from the `SKTypeface`'s tables / from the font bytes); the shaper never leaks — `GetFontTable`/`UnitsPerEm` are **off** the seam. HarfBuzz stays (not Skia). |
 | value types (`SKPoint`/`SKRect`/`SKColor`/`SKPath`) | pervasive in layout/draw | ✅ existing equivalents — `Vector2`, `Windows.Foundation.Rect` (via `Point`), `Windows.UI.Color`, `IGeometry` (spell-check squiggle via `IPathBuilder`). Also collapsed the vestigial `SKPaint` color-carrier to `Color`. |
 | **font resolution + fallback** (family/weight/style → face; *which* font covers a codepoint) | `SKTypeface.FromFamilyName`, `SKFontManager.MatchCharacter` | the genuinely new part → **`IFontManager` seam** (below) **(not yet done)** |
 
-So the font *handle* (`IFont`) absorbs metrics + coverage + table access — none of it a separate abstraction,
-and none throwaway (it's the target regardless of when resolution is replaced). `FontDetails` now holds an
-`IFont` (+ the HarfBuzz `Font` built from `IFont`'s tables) instead of `SKFont`/`SKFontMetrics`; it keeps the
-resolved `SKTypeface` only as the *interim resolution handle* (used by Run's fallback matching) until the
-`IFontManager` seam replaces it.
+So the font *handle* (`IFont`) absorbs shaping + metrics + coverage — none of it a separate abstraction, and
+none throwaway (it's the target regardless of when resolution is replaced). `FontDetails` now holds just an
+`IFont` + size (no `SKFont`/`SKFontMetrics`, no HarfBuzz `Font`); the text engine calls `FontHandle.Shape(...)`
+and consumes the neutral `GlyphRun` (pixel-space), so `UnicodeText`/`Run`/`Inline`/`FontDetails` no longer
+reference `HarfBuzzSharp` at all.
 
 **Status:** the `IFont` absorption is **done and validated** — the text layout/measure/draw code (`FontDetails`,
-`Inline`, `UnicodeText`, `ParsedText`, `Run`) reads metrics/coverage/tables only through `IFont`; `Given_TextBlock`
-runtime tests pass 103/103 on both the default Skia path *and* the fully Skia-less managed-font path
-(`UNO_MANAGED_FONT_BACKEND=1`), which now exercises ManagedFont metrics + coverage + HarfBuzz-from-ManagedFont-tables
-end-to-end. The **value-type sweep is also done** — `UnicodeText`/`ParsedText` layout & draw code uses
-`Vector2`/`Rect`/`Color`/`IGeometry` (validated: TextBlock 103/103 on both paths, TextBox unchanged at its
-pre-existing headless baseline). **Still Skia in the text layer:** only font resolution/fallback — the
-`IFontManager` seam — plus the backend-internal `SKFont` that `FontDetails` builds to feed `SkiaFont` (which
-moves once resolution is behind the seam).
+`Inline`, `UnicodeText`, `ParsedText`, `Run`) reads shaping/metrics/coverage only through `IFont`, and the
+engine no longer imports `HarfBuzzSharp`. Shaping moved onto `IFont.Shape` (each backend owns its HarfBuzz face;
+`GetFontTable`/`UnitsPerEm` are off the seam). `Given_TextBlock` runtime tests pass **103/103** on both the
+default Skia path *and* the fully Skia-less managed-font path (`ManagedFont.Shape` end-to-end); `Given_TextBox`
+is unchanged at its pre-existing headless baseline (19 failures before and after this change — 18 pointer +
+1 tab-AA — none introduced here). The **value-type sweep is also done** — `UnicodeText`/`ParsedText` layout &
+draw code uses `Vector2`/`Rect`/`Color`/`IGeometry`. **Still Skia in the text layer:** only font
+resolution/fallback — the `IFontProvider` seam has a Skia-backed default (`SkiaFontProvider`); native providers
+(CoreText/DirectWrite/fontconfig) are the remaining step to a Skia-*free* core on every platform.
 
 #### Font resolution & fallback — approaches
 

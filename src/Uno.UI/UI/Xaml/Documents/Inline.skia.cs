@@ -1,5 +1,4 @@
 ﻿using System;
-using HarfBuzzSharp;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Uno.UI.Dispatching;
