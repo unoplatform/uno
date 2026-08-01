@@ -113,7 +113,7 @@ internal sealed class CompositionTargetFrameDispatcher
 			// Never let the buffer root a handler past its dispatch — a handler may be the only
 			// thing keeping a collectible-ALC object alive. Clearing the entire buffer (not just
 			// the first `count` slots) also drops any residue from a previous, larger frame.
-			Array.Clear(buffer);
+			Array.Clear(buffer, 0, buffer.Length);
 		}
 	}
 

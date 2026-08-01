@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.Loader;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -295,7 +294,7 @@ namespace Microsoft.UI.Xaml
 
 		/// <summary>
 		/// Removes, from every live pool, the pooled pages whose page <see cref="Type"/> belongs to a
-		/// non-default (collectible) <see cref="AssemblyLoadContext"/>. A downstream host that loads
+		/// non-default (collectible) <see cref="System.Runtime.Loader.AssemblyLoadContext"/>. A downstream host that loads
 		/// previewed apps into their own collectible AssemblyLoadContexts navigates the app's pages;
 		/// pooled instances (and the <see cref="Type"/> keys) then keep the app's context alive after
 		/// unload. Called from the ALC cleanup hook.

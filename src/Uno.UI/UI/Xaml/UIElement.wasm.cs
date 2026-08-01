@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using System.Runtime.Loader;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -681,7 +680,7 @@ namespace Microsoft.UI.Xaml
 
 		/// <summary>
 		/// Removes <see cref="UIElementNativeRegistrar"/> entries whose key <see cref="Type"/> belongs
-		/// to a non-default (collectible) <see cref="AssemblyLoadContext"/>. A downstream host that
+		/// to a non-default (collectible) <see cref="System.Runtime.Loader.AssemblyLoadContext"/>. A downstream host that
 		/// loads previewed apps into their own collectible AssemblyLoadContexts creates elements of the
 		/// app's control types; the process-lifetime registrar then keeps each such <see cref="Type"/>
 		/// alive for the process lifetime, pinning the context after unload. Called from the ALC
