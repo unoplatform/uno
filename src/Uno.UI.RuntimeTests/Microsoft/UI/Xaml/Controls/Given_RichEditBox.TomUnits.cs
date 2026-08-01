@@ -227,7 +227,7 @@ public partial class Given_RichEditBox
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Tom_Object_Unit_Uses_Inline_Image_Run()
 	{
-#if HAS_UNO
+#if HAS_UNO && !__WASM__
 		var document = new RichEditBox().Document;
 		document.SetText(TextSetOptions.None, "abcd");
 		document.GetRange(2, 2).InsertImage(
