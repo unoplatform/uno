@@ -38,19 +38,31 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public WebGpuTexturePool Pool;                // transient offscreen pool (reused across frames)
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
 	private readonly System.Collections.Generic.List<nint> _pendingBindGroups = new();
+	private readonly System.Collections.Generic.List<nint> _pendingBuffers = new();
 
-	// Bind groups reference this frame's pooled buffers, so they can't be pooled — but the previous frame's GPU
-	// work is complete by the next frame start (present DevicePolls), so release them there. Buffers/textures are
-	// reused (not released). Call once per frame before rebuilding.
+	// Per-frame bind groups reference the frame's pooled buffers, so they're released at the next frame start once
+	// the previous frame's GPU work has completed (present DevicePolls). A cached recording's persistent resources
+	// released mid-frame (cache miss) are deferred the same way, since ops already emitted this frame still use
+	// them. Pooled buffers/textures are reused (not released). Call once per frame before rebuilding.
 	public void BeginFrameResources()
 	{
 		Pool.BeginFrame();
 		BufferPool.BeginFrame();
 		foreach (var bg in _pendingBindGroups) { W.BindGroupRelease((BindGroup*)bg); }
+		foreach (var b in _pendingBuffers) { W.BufferRelease((Silk.NET.WebGPU.Buffer*)b); }
 		_pendingBindGroups.Clear();
+		_pendingBuffers.Clear();
 	}
 
 	public BindGroup* TrackBg(BindGroup* bg) { _pendingBindGroups.Add((nint)bg); return bg; }
+
+	// Defers a cached recording's persistent resources for release at the next frame start.
+	internal void DeferRelease(OwnedResources owned)
+	{
+		if (owned is null) { return; }
+		_pendingBuffers.AddRange(owned.Buffers);
+		_pendingBindGroups.AddRange(owned.BindGroups);
+	}
 	public BindGroupLayout* ImgBgl;
 	public BindGroupLayout* GradBgl;
 	// group(1) clip-uniform layouts (one per color-writing pipeline; all describe the same ClipU).
@@ -659,6 +671,23 @@ internal sealed class BackdropCmd : WebGpuCommand
 	public float Opacity;
 }
 
+// A deferred replay of a cacheable child recording under a transform+clip. The present keeps the child's GPU
+// geometry persistent and reuses it while the child is unchanged and replayed at the same transform (the
+// per-visual slab/scroll optimization) — instead of re-baking + re-uploading the child's commands every frame.
+internal sealed class ReplayRefCmd : WebGpuCommand
+{
+	public WebGpuRenderData Child;
+	public System.Numerics.Matrix4x4 Transform;
+}
+
+// A recording's persistent (non-pooled) GPU resources, owned by its WebGpuRenderData and released on Dispose /
+// re-cache. Separate from the per-frame pool so cached draws survive across frames.
+internal sealed class OwnedResources
+{
+	public System.Collections.Generic.List<nint> Buffers = new();
+	public System.Collections.Generic.List<nint> BindGroups = new();
+}
+
 // Backend-created gradient shader handle. The WebGPU backend mints its own (rather than delegating to Skia) so
 // the recorder can read the gradient parameters back and evaluate them in the WGSL gradient pipeline.
 public sealed class WebGpuShader : IShader
@@ -694,11 +723,35 @@ public sealed class WebGpuEffectFilter : IEffectFilter
 	public void Dispose() { }
 }
 
-public sealed class WebGpuRenderData : IRenderData
+public sealed unsafe class WebGpuRenderData : IRenderData
 {
 	internal List<WebGpuCommand> Commands = new();
 	internal WColor? ClearColor;
-	public void Dispose() { Commands = null; }
+
+	// Per-visual GPU-geometry cache: the built draw-ops + their persistent resources, valid while this recording
+	// is unchanged (core keeps the same object) and replayed at the same transform/clip.
+	internal List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> CachedOps;
+	internal OwnedResources Owned;
+	internal Matrix4x4 CacheTransform;
+	internal ClipData CacheClip;
+	internal bool CacheValid;
+	internal bool? Cacheable;   // memoized: all commands are simple primitives with no path clip
+	private WebGpuDevice _cacheDevice;
+
+	internal void SetCache(WebGpuDevice device, List<(int, nint, uint, nint, bool, ClipData, nint)> ops, OwnedResources owned, Matrix4x4 transform, ClipData clip)
+	{
+		_cacheDevice = device;
+		CachedOps = ops; Owned = owned; CacheTransform = transform; CacheClip = clip; CacheValid = true;
+	}
+
+	internal void ReleaseCache()
+	{
+		// Defer: ops emitted this frame may still reference these resources; the device frees them next frame.
+		_cacheDevice?.DeferRelease(Owned);
+		Owned = null; CachedOps = null; CacheValid = false;
+	}
+
+	public void Dispose() { ReleaseCache(); Commands = null; }
 }
 
 public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
@@ -980,9 +1033,45 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	public IRenderData Finish() => _data;
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
 
-	// Retained sub-recordings (SKPicture equivalent) are recorded at identity; replaying one bakes in
-	// the target session's current matrix + clip — matching Skia's sk_canvas_draw_picture semantics.
+	// Whether a recording can be GPU-geometry-cached: only simple primitives (rect/path/image/gradient) with no
+	// path clip (its coverage texture is per-frame pooled, so a cached bind group would dangle). Memoized.
+	internal static bool IsCacheable(WebGpuRenderData d)
+	{
+		if (d.Cacheable is { } memo) { return memo; }
+		bool ok = d.Commands.Count > 0;
+		foreach (var c in d.Commands)
+		{
+			if (c is not (RectCommand or PathFill or ImageCmd or GradientCmd) || c.Clip.PathFan is not null) { ok = false; break; }
+		}
+		d.Cacheable = ok;
+		return ok;
+	}
+
+	// Transforms a child recording's (simple) commands to device space under a transform+clip, for building its
+	// GPU cache. Uses the inline (always-transform) path so it never emits a nested ReplayRef.
+	internal static List<WebGpuCommand> TransformFor(WebGpuRenderData child, Matrix4x4 transform, ClipData clip)
+	{
+		var rec = new WebGpuCommandRecorder();
+		rec._m = transform;
+		rec._clip = clip;
+		rec.ReplayInline(child);
+		return rec._data.Commands;
+	}
+
+	// Retained sub-recordings (SKPicture equivalent) are recorded at identity; replaying one bakes in the target
+	// session's current matrix + clip. A cacheable recording is deferred as a ReplayRef (the present caches its
+	// GPU geometry); otherwise its commands are transformed inline into this recording.
 	public void Replay(IRenderData data)
+	{
+		if (data is WebGpuRenderData cacheable && IsCacheable(cacheable))
+		{
+			_target.Add(new ReplayRefCmd { Child = cacheable, Transform = _m, Clip = _clip });
+			return;
+		}
+		ReplayInline(data);
+	}
+
+	private void ReplayInline(IRenderData data)
 	{
 		if (data is not WebGpuRenderData d) { return; }
 		Vector2 T(Vector2 p) => new(p.X * _m.M11 + p.Y * _m.M21 + _m.M41, p.X * _m.M12 + p.Y * _m.M22 + _m.M42);
@@ -1045,6 +1134,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					break;
 				case BackdropCmd bk:
 					_target.Add(new BackdropCmd { Effect = bk.Effect, Opacity = bk.Opacity, Clip = ClipCompose(bk.Clip, T) });
+					break;
+				case ReplayRefCmd rr:
+					// Compose this replay's transform/clip onto the ref so the present still caches the child.
+					_target.Add(new ReplayRefCmd { Child = rr.Child, Transform = rr.Transform * _m, Clip = ClipCompose(rr.Clip, T) });
 					break;
 			}
 		}
@@ -1114,27 +1207,58 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private Silk.NET.WebGPU.Buffer* MakeUniform(int byteSize)
 		=> _d.BufferPool.Rent(byteSize, BufferUsage.Uniform | BufferUsage.CopyDst);
 
+	// Resource allocation that is pooled (owned == null) for per-frame commands, or persistent (added to `owned`
+	// for later release) for a cached recording's geometry that must survive across frames.
+	private Silk.NET.WebGPU.Buffer* Vbuf(float[] data, OwnedResources owned)
+	{
+		if (owned is null) { return MakeBuffer(data); }
+		int size = data.Length * sizeof(float);
+		var bd = new BufferDescriptor { Size = (nuint)size, Usage = BufferUsage.Vertex | BufferUsage.CopyDst };
+		var buf = _d.W.DeviceCreateBuffer(_d.Dev, ref bd);
+		fixed (float* p = data) { _d.W.QueueWriteBuffer(_d.Q, buf, 0, p, (nuint)size); }
+		owned.Buffers.Add((nint)buf);
+		return buf;
+	}
+
+	private Silk.NET.WebGPU.Buffer* Ubuf(int size, OwnedResources owned)
+	{
+		if (owned is null) { return MakeUniform(size); }
+		var bd = new BufferDescriptor { Size = (nuint)size, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
+		var buf = _d.W.DeviceCreateBuffer(_d.Dev, ref bd);
+		owned.Buffers.Add((nint)buf);
+		return buf;
+	}
+
+	private BindGroup* Bg(ref BindGroupDescriptor bgd, OwnedResources owned)
+	{
+		var bg = _d.W.DeviceCreateBindGroup(_d.Dev, ref bgd);
+		if (owned is null) { _d.TrackBg(bg); } else { owned.BindGroups.Add((nint)bg); }
+		return bg;
+	}
+
 	// Coverage textures for path clips, cached by the (reference-identical) fan shared across a clip's commands.
 	private readonly System.Collections.Generic.Dictionary<float[], nint> _coverageCache = new(System.Collections.Generic.ReferenceEqualityComparer.Instance);
 
 	// The clip bind group for a command: the ClipU uniform (rect, radii, flags, surface size), plus a coverage
 	// texture (the path-clip mask, or the device dummy when there's no path clip) and a sampler.
-	private BindGroup* MakeClipBg(BindGroupLayout* bgl, ClipData cd)
+	private BindGroup* MakeClipBg(BindGroupLayout* bgl, ClipData cd, OwnedResources owned = null)
 	{
 		var cu = new float[16];
 		cu[0] = cd.Rect.X; cu[1] = cd.Rect.Y; cu[2] = cd.Rect.Z; cu[3] = cd.Rect.W;
 		cu[4] = cd.Radii.X; cu[5] = cd.Radii.Y; cu[6] = cd.Radii.Z; cu[7] = cd.Radii.W;
 		cu[8] = cd.HasRound ? 1f : 0f; cu[9] = cd.PathFan != null ? 1f : 0f;
 		cu[12] = _s.Width; cu[13] = _s.Height;
-		var buf = MakeUniform(64);
+		var buf = Ubuf(64, owned);
 		fixed (float* p = cu) { _d.W.QueueWriteBuffer(_d.Q, buf, 0, p, 64); }
+		// Cached recordings never have a path clip (excluded by IsCacheable), so covView is always the persistent
+		// DummyTex there — no dangling reference to a per-frame pooled coverage texture.
 		var covView = cd.PathFan != null ? PathCoverage(cd.PathFan, cd.PathEvenOdd) : _d.DummyTex;
 		var e = stackalloc BindGroupEntry[3];
 		e[0] = new BindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = 64 };
 		e[1] = new BindGroupEntry { Binding = 1, TextureView = covView };
 		e[2] = new BindGroupEntry { Binding = 2, Sampler = _d.Smp };
 		var bgd = new BindGroupDescriptor { Layout = bgl, EntryCount = 3, Entries = e };
-		return _d.TrackBg(_d.W.DeviceCreateBindGroup(_d.Dev, ref bgd));
+		return Bg(ref bgd, owned);
 	}
 
 	private TextureView* PathCoverage(float[] fan, bool evenOdd)
@@ -1263,6 +1387,75 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		RenderInto(rd.Commands, _s, _presentClear ?? rd.ClearColor);
 	}
 
+	private static bool ClipDataEquals(in ClipData a, in ClipData b)
+		=> a.Aabb == b.Aabb && a.HasRound == b.HasRound && a.Rect == b.Rect && a.Radii == b.Radii && ReferenceEquals(a.PathFan, b.PathFan);
+
+	// Builds the draw-op(s) for a simple primitive (rect/path/image/gradient) into `ops`, allocating GPU resources
+	// pooled (owned == null, per-frame) or persistent (owned != null, a cached recording's geometry).
+	private void BuildSimpleOp(WebGpuCommand cmd, List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops, OwnedResources owned)
+	{
+		var W = _d.W;
+		switch (cmd)
+		{
+			case RectCommand rc:
+			{
+				var c = new Vector4(rc.Color.R / 255f, rc.Color.G / 255f, rc.Color.B / 255f, rc.Color.A / 255f);
+				var v = new List<float>();
+				void V(Vector2 p) { var n = Ndc(p); v.Add(n.X); v.Add(n.Y); v.Add(c.X); v.Add(c.Y); v.Add(c.Z); v.Add(c.W); }
+				V(rc.P0); V(rc.P1); V(rc.P2); V(rc.P0); V(rc.P2); V(rc.P3);
+				ops.Add((0, (nint)Vbuf(v.ToArray(), owned), 0, 0, false, rc.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc.Clip, owned)));
+				break;
+			}
+			case PathFill pf:
+			{
+				var fanNdc = new float[pf.FanDevice.Length];
+				for (int i = 0; i < pf.FanDevice.Length; i += 2) { var n = Ndc(new Vector2(pf.FanDevice[i], pf.FanDevice[i + 1])); fanNdc[i] = n.X; fanNdc[i + 1] = n.Y; }
+				var fanBuf = Vbuf(fanNdc, owned);
+				var c = new Vector4(pf.Color.R / 255f, pf.Color.G / 255f, pf.Color.B / 255f, pf.Color.A / 255f);
+				var cov = new List<float>();
+				void CV(Vector2 p) { var n = Ndc(p); cov.Add(n.X); cov.Add(n.Y); cov.Add(c.X); cov.Add(c.Y); cov.Add(c.Z); cov.Add(c.W); }
+				var tl = pf.BbMin; var br = pf.BbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
+				CV(tl); CV(tr); CV(br); CV(tl); CV(br); CV(bl);
+				ops.Add((1, (nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)Vbuf(cov.ToArray(), owned), pf.EvenOdd, pf.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf.Clip, owned)));
+				break;
+			}
+			case ImageCmd im:
+			{
+				var view = im.View;
+				var ubuf = Ubuf(32, owned);
+				var op = stackalloc float[8];
+				op[0] = im.Opacity; op[1] = im.TintMode; op[2] = 0; op[3] = 0;
+				op[4] = im.Tint.X; op[5] = im.Tint.Y; op[6] = im.Tint.Z; op[7] = im.Tint.W;
+				W.QueueWriteBuffer(_d.Q, ubuf, 0, op, 32);
+				var entries = stackalloc BindGroupEntry[3];
+				entries[0] = new BindGroupEntry { Binding = 0, TextureView = view };
+				entries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
+				entries[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
+				var bgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
+				var bg = Bg(ref bgd, owned);
+				var q = new float[24];
+				void QV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); q[idx] = n.X; q[idx + 1] = n.Y; q[idx + 2] = u; q[idx + 3] = vv; }
+				QV(0, im.P0, im.U0, im.V0); QV(4, im.P1, im.U1, im.V0); QV(8, im.P2, im.U1, im.V1); QV(12, im.P0, im.U0, im.V0); QV(16, im.P2, im.U1, im.V1); QV(20, im.P3, im.U0, im.V1);
+				ops.Add((2, (nint)bg, 0, (nint)Vbuf(q, owned), false, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip, owned)));
+				break;
+			}
+			case GradientCmd gc:
+			{
+				var bytes = (nuint)WebGpuDevice.GradientUniformBytes;
+				var ubuf = Ubuf((int)bytes, owned);
+				fixed (float* p = gc.Uniform) { W.QueueWriteBuffer(_d.Q, ubuf, 0, p, bytes); }
+				var gentry = new BindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = bytes };
+				var gbgd = new BindGroupDescriptor { Layout = _d.GradBgl, EntryCount = 1, Entries = &gentry };
+				var gbg = Bg(ref gbgd, owned);
+				var gq = new float[12];
+				void GV(int idx, Vector2 pos) { var n = Ndc(pos); gq[idx] = n.X; gq[idx + 1] = n.Y; }
+				GV(0, gc.P0); GV(2, gc.P1); GV(4, gc.P2); GV(6, gc.P0); GV(8, gc.P2); GV(10, gc.P3);
+				ops.Add((3, (nint)gbg, 0, (nint)Vbuf(gq, owned), false, gc.Clip, (nint)MakeClipBg(_d.GradClipBgl, gc.Clip, owned)));
+				break;
+			}
+		}
+	}
+
 	// Renders a command list into a target surface's MSAA pass (resolving to its single-sample view). Layers
 	// recurse into their own full-size surface then composite here; shadows/layers pre-render before the pass.
 	private void RenderInto(List<WebGpuCommand> cmds, WebGpuRenderSurface target, WColor? clear)
@@ -1279,61 +1472,27 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			var cmd = cmds[ci];
 			switch (cmd)
 			{
-				case RectCommand rc:
-				{
-					var c = new Vector4(rc.Color.R / 255f, rc.Color.G / 255f, rc.Color.B / 255f, rc.Color.A / 255f);
-					var v = new List<float>();
-					void V(Vector2 p) { var n = Ndc(p); v.Add(n.X); v.Add(n.Y); v.Add(c.X); v.Add(c.Y); v.Add(c.Z); v.Add(c.W); }
-					V(rc.P0); V(rc.P1); V(rc.P2); V(rc.P0); V(rc.P2); V(rc.P3);
-					ops.Add((0, (nint)MakeBuffer(v.ToArray()), 0, 0, false, rc.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc.Clip)));
+				case RectCommand:
+				case PathFill:
+				case ImageCmd:
+				case GradientCmd:
+					BuildSimpleOp(cmd, ops, null);   // pooled (per-frame)
 					break;
-				}
-				case PathFill pf:
+				case ReplayRefCmd rr:
 				{
-					var fanNdc = new float[pf.FanDevice.Length];
-					for (int i = 0; i < pf.FanDevice.Length; i += 2) { var n = Ndc(new Vector2(pf.FanDevice[i], pf.FanDevice[i + 1])); fanNdc[i] = n.X; fanNdc[i + 1] = n.Y; }
-					var fanBuf = MakeBuffer(fanNdc);
-					var c = new Vector4(pf.Color.R / 255f, pf.Color.G / 255f, pf.Color.B / 255f, pf.Color.A / 255f);
-					var cov = new List<float>();
-					void CV(Vector2 p) { var n = Ndc(p); cov.Add(n.X); cov.Add(n.Y); cov.Add(c.X); cov.Add(c.Y); cov.Add(c.Z); cov.Add(c.W); }
-					var tl = pf.BbMin; var br = pf.BbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
-					CV(tl); CV(tr); CV(br); CV(tl); CV(br); CV(bl);
-					ops.Add((1, (nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)MakeBuffer(cov.ToArray()), pf.EvenOdd, pf.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf.Clip)));
-					break;
-				}
-				case ImageCmd im:
-				{
-					// The texture is already resident (WebGpuImageTexture); just bind its view — no upload.
-					var view = im.View;
-					var ubuf = MakeUniform((int)32);
-					var op = stackalloc float[8];
-					op[0] = im.Opacity; op[1] = im.TintMode; op[2] = 0; op[3] = 0;
-					op[4] = im.Tint.X; op[5] = im.Tint.Y; op[6] = im.Tint.Z; op[7] = im.Tint.W;
-					W.QueueWriteBuffer(_d.Q, ubuf, 0, op, 32);
-					var entries = stackalloc BindGroupEntry[3];
-					entries[0] = new BindGroupEntry { Binding = 0, TextureView = view };
-					entries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
-					entries[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
-					var bgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
-					var bg = _d.TrackBg(W.DeviceCreateBindGroup(_d.Dev, ref bgd));
-					var q = new float[24];
-					void QV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); q[idx] = n.X; q[idx + 1] = n.Y; q[idx + 2] = u; q[idx + 3] = vv; }
-					QV(0, im.P0, im.U0, im.V0); QV(4, im.P1, im.U1, im.V0); QV(8, im.P2, im.U1, im.V1); QV(12, im.P0, im.U0, im.V0); QV(16, im.P2, im.U1, im.V1); QV(20, im.P3, im.U0, im.V1);
-					ops.Add((2, (nint)bg, 0, (nint)MakeBuffer(q), false, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip)));
-					break;
-				}
-				case GradientCmd gc:
-				{
-					var bytes = (nuint)WebGpuDevice.GradientUniformBytes;
-					var ubuf = MakeUniform((int)bytes);
-					fixed (float* p = gc.Uniform) { W.QueueWriteBuffer(_d.Q, ubuf, 0, p, bytes); }
-					var gentry = new BindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = bytes };
-					var gbgd = new BindGroupDescriptor { Layout = _d.GradBgl, EntryCount = 1, Entries = &gentry };
-					var gbg = _d.TrackBg(W.DeviceCreateBindGroup(_d.Dev, ref gbgd));
-					var gq = new float[12];
-					void GV(int idx, Vector2 pos) { var n = Ndc(pos); gq[idx] = n.X; gq[idx + 1] = n.Y; }
-					GV(0, gc.P0); GV(2, gc.P1); GV(4, gc.P2); GV(6, gc.P0); GV(8, gc.P2); GV(10, gc.P3);
-					ops.Add((3, (nint)gbg, 0, (nint)MakeBuffer(gq), false, gc.Clip, (nint)MakeClipBg(_d.GradClipBgl, gc.Clip)));
+					// The per-visual GPU-geometry cache: build the child's persistent ops once and reuse them
+					// while it's unchanged and replayed at the same transform/clip (slab/scroll). On a miss,
+					// release the stale cache and rebuild in local... device space at this transform.
+					var child = rr.Child;
+					if (!child.CacheValid || child.CacheTransform != rr.Transform || !ClipDataEquals(child.CacheClip, rr.Clip))
+					{
+						child.ReleaseCache();
+						var owned = new OwnedResources();
+						var cachedOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
+						foreach (var tc in WebGpuCommandRecorder.TransformFor(child, rr.Transform, rr.Clip)) { BuildSimpleOp(tc, cachedOps, owned); }
+						child.SetCache(_d, cachedOps, owned, rr.Transform, rr.Clip);
+					}
+					ops.AddRange(child.CachedOps);
 					break;
 				}
 				case ShadowCmd sh:
