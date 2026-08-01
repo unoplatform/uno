@@ -453,10 +453,13 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 		if (_renderer is null && FeatureConfiguration.Rendering.UseVulkanOnX11)
 		{
+			// Vulkan through the neutral pipeline: negotiate a Vulkan context (Skia GRContext on Vulkan), falling
+			// to software if Vulkan is unavailable.
 			try
 			{
 				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-				_renderer = X11VulkanRenderer.Create(this, TopX11Window);
+				GraphicsRegistry.Register(new IGraphicsProvider[] { new SkiaGraphicsProvider(GraphicsContextKind.Vulkan, GraphicsContextKind.Software) });
+				_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, new[] { GraphicsContextKind.Vulkan, GraphicsContextKind.Software });
 			}
 			catch (Exception e)
 			{
