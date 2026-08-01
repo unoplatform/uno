@@ -395,8 +395,12 @@ partial class Window
 		// that hold references to types from the ALC being torn down. Without this,
 		// these statics prevent the GC from collecting the ALC after Unload().
 		// The dying ALC captured above scopes the destructive removals (ResourceLoader lookup
-		// assemblies, CompositionTarget.Rendering handlers) so a live sibling secondary app's
-		// state survives this window's teardown.
+		// assemblies, CompositionTarget.Rendering handlers, user Style overrides) so a live sibling
+		// secondary app's state survives this window's teardown. This is the per-window entry point
+		// (allowUnscopedDestructive: false): if dyingAlc could not be identified above it stays null
+		// and the destructive sweeps are SKIPPED — this window close can NEVER trigger the wide
+		// all-non-default destructive sweep, which is reachable only through the explicit
+		// Application.CleanupAllSecondaryAlcCaches() global-shutdown entry.
 		try
 		{
 			Application.CleanupNonDefaultAlcCaches(dyingAlc);

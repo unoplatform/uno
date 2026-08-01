@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Runtime.Loader;
 using System.Threading;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -159,6 +160,49 @@ public class Given_PagePool
 			pooled,
 			pool.DequeuePage(typeof(PoolTestPage)),
 			"The ALC sweep must keep default-ALC page types; it only drops collectible-ALC keys.");
+	}
+
+	[TestMethod]
+	public void When_ClearNonDefaultAlcEntries_Then_Collectible_Key_Dropped_And_Default_Kept()
+	{
+		// The DROP half of the sweep: a page pooled under a COLLECTIBLE-ALC page type must be
+		// removed (it would otherwise pin the previewed app's context after unload), while a page
+		// pooled under a default-ALC (framework/host) type must survive. The collectible key stands
+		// in for a previewed-app page type by loading this test assembly into a collectible ALC.
+		var collectibleAlc = new AssemblyLoadContext("Given_PagePool.collectible", isCollectible: true);
+		try
+		{
+			var collectibleKey = collectibleAlc
+				.LoadFromAssemblyPath(typeof(PoolTestPage).Assembly.Location)
+				.GetType(typeof(PoolTestPage).FullName!, throwOnError: true)!;
+
+			Assert.IsTrue(collectibleKey.IsCollectible, "Pre-condition: the stand-in key must belong to the collectible ALC.");
+
+			var pool = new PagePool();
+			// EnqueuePage keys purely by the supplied Type, so a default-ALC PoolTestPage instance can
+			// stand in under the collectible key — the sweep discriminates on the KEY, which is what pins the ALC.
+			pool.EnqueuePage(collectibleKey, new PoolTestPage());
+			pool.EnqueuePage(typeof(PoolTestPage), new PoolTestPage());
+
+			Assert.AreEqual(1, pool.GetPooledCount(collectibleKey), "Pre-condition: the collectible-keyed entry must be pooled.");
+			Assert.AreEqual(1, pool.GetPooledCount(typeof(PoolTestPage)), "Pre-condition: the default-keyed entry must be pooled.");
+
+			PagePool.ClearNonDefaultAlcEntries();
+
+			Assert.AreEqual(
+				0,
+				pool.GetPooledCount(collectibleKey),
+				"The sweep must drop pooled entries keyed by a collectible-ALC page type; otherwise the pooled instance pins the previewed app's context after unload.");
+			Assert.AreEqual(
+				1,
+				pool.GetPooledCount(typeof(PoolTestPage)),
+				"The sweep must keep default-ALC (framework/host) page types; it only drops collectible-ALC keys.");
+		}
+		finally
+		{
+			PagePool.DropAllPooledInstances();
+			collectibleAlc.Unload();
+		}
 	}
 
 	public class PoolTestPage : Page

@@ -316,6 +316,19 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		/// <summary>
+		/// Test seam: the number of pooled entries currently held for <paramref name="pageType"/> in
+		/// THIS pool. Lets the ALC sweep's collectible-key drop be asserted without depending on
+		/// <see cref="DequeuePage"/> instantiating a (collectible) page type.
+		/// </summary>
+		internal int GetPooledCount(Type pageType)
+		{
+			lock (_gate)
+			{
+				return _pooledInstances.TryGetValue(pageType, out var list) ? list.Count : 0;
+			}
+		}
+
 		private class PagePoolEntry
 		{
 			public PagePoolEntry(TimeSpan creationTime, Page pageInstance)

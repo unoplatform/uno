@@ -176,5 +176,71 @@ public class Given_HotReloadClientOperation_Alc
 			op.Types.Length,
 			"The last overlapping scope's dispose must release the retained raw Type[] (double-dispose of the first scope must not double-decrement).");
 	}
+
+	[TestMethod]
+	public void When_Double_Terminalized_Under_Overlapping_Scopes_Then_Types_Released_Exactly_Once()
+	{
+		// Two overlapping scopes retain a terminal operation. A DOUBLE terminalization (a second
+		// ReportCompleted, e.g. success then a spurious re-complete) must NOT register the operation
+		// with the scopes twice: doing so would over-count the per-operation retention and drive it
+		// negative on dispose, stranding the raw Type[] (and its collectible previewed-app ALC) for
+		// the process lifetime — the exact leak this PR targets. ReportCompleted's terminal transition
+		// is once-only (its CAS on _result returns early on any already-terminal state), so the defer
+		// runs at most once; after BOTH scopes dispose the types must be released exactly once.
+		var op = new _Op(_Source.Manual, new[] { typeof(Given_HotReloadClientOperation_Alc) }, static () => { });
+
+		var first = _Op.EnterTypeCorrelationScope();
+		var second = _Op.EnterTypeCorrelationScope();
+		try
+		{
+			op.ReportCompleted();
+
+			// A spurious second terminalization is an internal programming error that ReportCompleted
+			// guards with Debug.Fail before returning early; suppress the assertion listener so the
+			// intentional double-call under test does not trip it, while still exercising the early
+			// return that must leave the retention count untouched.
+			SuppressDebugAssertions(op.ReportCompleted);
+
+			Assert.AreEqual(
+				1,
+				op.Types.Length,
+				"While both scopes are active the raw Type[] must be retained regardless of how many times the op was terminalized.");
+
+			first.Dispose();
+			Assert.AreEqual(
+				1,
+				op.Types.Length,
+				"After only the first of two scopes disposes, the types must still be retained (a double terminalization must not have inflated the retention count into an early release path).");
+
+			second.Dispose();
+			Assert.AreEqual(
+				0,
+				op.Types.Length,
+				"The last scope's dispose must release the raw Type[] exactly once; a double terminalization must not have left a residual retention that strands the types forever.");
+		}
+		finally
+		{
+			first.Dispose();
+			second.Dispose();
+		}
+	}
+
+	// Runs an action with the Debug/Trace assertion listeners removed, so an intentionally-triggered
+	// Debug.Fail (exercising a guarded programming-error path) does not fail the test host. The
+	// listeners are restored afterward.
+	private static void SuppressDebugAssertions(Action action)
+	{
+		var saved = new global::System.Diagnostics.TraceListener[global::System.Diagnostics.Trace.Listeners.Count];
+		global::System.Diagnostics.Trace.Listeners.CopyTo(saved, 0);
+		global::System.Diagnostics.Trace.Listeners.Clear();
+		try
+		{
+			action();
+		}
+		finally
+		{
+			global::System.Diagnostics.Trace.Listeners.AddRange(saved);
+		}
+	}
 }
 #endif

@@ -65,6 +65,26 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
+		/// Removes EVERY non-default-ALC <see cref="FeatureConfiguration.Style.UseUWPDefaultStylesOverride"/>
+		/// entry. DESTRUCTIVE and never rebuilt, so this is reserved for a genuine global shutdown
+		/// (<c>Application.CleanupAllSecondaryAlcCaches</c>), where every secondary app is going away and
+		/// no live sibling can be harmed. It keeps the user-override sweep consistent with the other
+		/// destructive global-shutdown sweeps (ResourceLoader lookup assemblies, CompositionTarget
+		/// handlers), which also go all-non-default there — otherwise a scoped-only override sweep would
+		/// leave keys that pin the very ALCs the shutdown exists to free. For a single dying ALC, use the
+		/// scoped <see cref="RemoveAlcScopedUserStyleOverrides"/> instead.
+		/// </summary>
+		internal static void RemoveAllNonDefaultAlcUserStyleOverrides()
+		{
+			var removed = Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(FeatureConfiguration.Style.UseUWPDefaultStylesOverride);
+
+			if (removed > 0 && _logger.IsEnabled(LogLevel.Debug))
+			{
+				_logger.Debug($"[ALC-CLEANUP] UseUWPDefaultStylesOverride: removed {removed} entrie(s) from all non-default ALCs (global shutdown).");
+			}
+		}
+
+		/// <summary>
 		/// The xaml scope in force at the time the Style was created.
 		/// </summary>
 		private readonly XamlScope _xamlScope;

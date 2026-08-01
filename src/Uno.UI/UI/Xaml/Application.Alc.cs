@@ -369,7 +369,7 @@ partial class Application
 	/// opt in to the wide sweep explicitly via <see cref="CleanupAllSecondaryAlcCaches"/>.
 	/// </param>
 	internal static void CleanupNonDefaultAlcCaches(AssemblyLoadContext dyingAlc)
-		=> CleanupNonDefaultAlcCachesCore(dyingAlc);
+		=> CleanupNonDefaultAlcCachesCore(dyingAlc, allowUnscopedDestructive: false);
 
 	/// <summary>
 	/// Purges Type-keyed caches of entries from ALL non-default (collectible) ALCs, including the
@@ -379,94 +379,139 @@ partial class Application
 	/// can be harmed — the unscoped semantics are opt-in at the call site rather than a default.
 	/// </summary>
 	internal static void CleanupAllSecondaryAlcCaches()
-		=> CleanupNonDefaultAlcCachesCore(dyingAlc: null);
+		=> CleanupNonDefaultAlcCachesCore(dyingAlc: null, allowUnscopedDestructive: true);
 
 	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "ALC cleanup reflection")]
 	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "ALC cleanup reflection")]
-	private static void CleanupNonDefaultAlcCachesCore(AssemblyLoadContext dyingAlc)
+	/// <param name="dyingAlc">
+	/// The single AssemblyLoadContext being torn down, or <see langword="null"/> when the caller
+	/// cannot name one (a per-window teardown that failed to capture its owner, or a global shutdown).
+	/// </param>
+	/// <param name="allowUnscopedDestructive">
+	/// Whether the DESTRUCTIVE sweeps (whose dropped state is never re-created — ResourceLoader lookup
+	/// assemblies, CompositionTarget.Rendering handlers, user Style overrides) may run wide (all
+	/// non-default ALCs) when <paramref name="dyingAlc"/> is <see langword="null"/>. Only the explicit
+	/// global-shutdown entry <see cref="CleanupAllSecondaryAlcCaches"/> passes <see langword="true"/>
+	/// (every secondary app is going away, so no live sibling can be harmed). The per-window entry
+	/// <see cref="CleanupNonDefaultAlcCaches"/> passes <see langword="false"/> so a window close that
+	/// could not identify its ALC SKIPS the destructive sweeps rather than clobbering a live sibling.
+	/// </param>
+	private static void CleanupNonDefaultAlcCachesCore(AssemblyLoadContext dyingAlc, bool allowUnscopedDestructive)
 	{
-		// The unscoped destructive branch drops state of EVERY non-default ALC; if it fires
-		// outside a genuine global shutdown (or a teardown that could not identify its ALC), a
-		// live secondary app silently loses never-re-created registrations (rendering
-		// subscriptions, resource lookups). Surface every unscoped run so a field report of
-		// silent partial degradation can be correlated with it.
-		if (dyingAlc is null && typeof(Application).Log().IsEnabled(LogLevel.Warning))
+		// The unscoped destructive branch drops state of EVERY non-default ALC; it is only safe at a
+		// genuine global shutdown. A per-window teardown that could not identify its dying ALC must
+		// NEVER run it (it would strip a live sibling's never-re-created registrations) — the
+		// destructive steps below no-op in that case. Surface each situation for field diagnostics.
+		if (dyingAlc is null && allowUnscopedDestructive && typeof(Application).Log().IsEnabled(LogLevel.Warning))
 		{
-			typeof(Application).Log().Warn("[ALC-CLEANUP] Running the UNSCOPED all-secondary-ALC sweep: destructive removals apply to every non-default AssemblyLoadContext.");
+			typeof(Application).Log().Warn("[ALC-CLEANUP] Running the UNSCOPED all-secondary-ALC sweep: destructive removals apply to every non-default AssemblyLoadContext (global shutdown).");
+		}
+		else if (dyingAlc is null && !allowUnscopedDestructive && typeof(Application).Log().IsEnabled(LogLevel.Warning))
+		{
+			typeof(Application).Log().Warn("[ALC-CLEANUP] Per-window teardown could not identify its dying AssemblyLoadContext: rebuildable caches are cleared, but the destructive sweeps are SKIPPED to avoid clobbering a live sibling secondary app.");
 		}
 		else if (dyingAlc is not null && typeof(Application).Log().IsEnabled(LogLevel.Debug))
 		{
 			typeof(Application).Log().Debug($"[ALC-CLEANUP] Sweeping caches for dying AssemblyLoadContext '{dyingAlc.Name}'.");
 		}
 
+		// THREADING CONTRACT for the sweeps below: the rebuildable Type-keyed caches
+		// (Application registry, DependencyProperty, Style, MetadataAPI, ResourceResolver, …) are
+		// populated and swept on the same UI/teardown thread, so they need no gate. The caches that
+		// DO carry their own _*Gate lock (UIElementNativeRegistrar, HtmlElementHelper,
+		// CompositionTarget, PagePool) are the ones additionally reachable off that thread — the WASM
+		// rendering frame callback and native element creation. Every step is isolated through
+		// RunCleanupStep so that, even if that contract is ever violated and an enumeration throws
+		// (e.g. a concurrent-modification), one failing sweep cannot abort the remaining sweeps and
+		// silently re-leak the ALC.
+
 		// Remove Application instances registered for non-default ALCs from the CWT.
 		// Without this, the CWT keeps the inner app's Application subclass alive.
-		ClearNonDefaultAlcApplications();
+		RunCleanupStep(nameof(ClearNonDefaultAlcApplications), ClearNonDefaultAlcApplications);
 
 		// Type-keyed caches. These (and the FrameworkElementHelper/ResourceResolver/
 		// UIElementNativeRegistrar sweeps below) intentionally stay all-non-default even when the
 		// dying ALC is known: cache entries rebuild on demand, so over-clearing a live sibling
 		// app's entries is a perf hiccup, not state loss. The DESTRUCTIVE removals further down
-		// (ResourceLoader lookup assemblies, CompositionTarget.Rendering handlers) are ALC-scoped
-		// because a dropped registration/subscription is never re-created.
-		DependencyProperty.ClearCachesForNonDefaultAlc();
-		Style.ClearCachesForNonDefaultAlc();
-		DirectUI.MetadataAPI.ClearCachesForNonDefaultAlc();
-		Uno.UI.Extensions.UIElementExtensions.ClearDependencyPropertyCacheForNonDefaultAlc();
-		Uno.UI.DataBinding.BindingPropertyHelper.ClearCachesForNonDefaultAlc();
-		Uno.UI.Xaml.UIElementGeneratedProxy.ClearCachesForNonDefaultAlc();
-		ApiInformation.ClearCachesForNonDefaultAlc();
+		// (ResourceLoader lookup assemblies, CompositionTarget.Rendering handlers, user Style
+		// overrides) are ALC-scoped because a dropped registration/subscription is never re-created.
+		RunCleanupStep(nameof(DependencyProperty.ClearCachesForNonDefaultAlc), DependencyProperty.ClearCachesForNonDefaultAlc);
+		RunCleanupStep(nameof(Style.ClearCachesForNonDefaultAlc), Style.ClearCachesForNonDefaultAlc);
+		RunCleanupStep(nameof(DirectUI.MetadataAPI.ClearCachesForNonDefaultAlc), DirectUI.MetadataAPI.ClearCachesForNonDefaultAlc);
+		RunCleanupStep(nameof(Uno.UI.Extensions.UIElementExtensions.ClearDependencyPropertyCacheForNonDefaultAlc), Uno.UI.Extensions.UIElementExtensions.ClearDependencyPropertyCacheForNonDefaultAlc);
+		RunCleanupStep(nameof(Uno.UI.DataBinding.BindingPropertyHelper.ClearCachesForNonDefaultAlc), Uno.UI.DataBinding.BindingPropertyHelper.ClearCachesForNonDefaultAlc);
+		RunCleanupStep(nameof(Uno.UI.Xaml.UIElementGeneratedProxy.ClearCachesForNonDefaultAlc), Uno.UI.Xaml.UIElementGeneratedProxy.ClearCachesForNonDefaultAlc);
+		RunCleanupStep(nameof(ApiInformation.ClearCachesForNonDefaultAlc), ApiInformation.ClearCachesForNonDefaultAlc);
 
 		// FrameworkElementHelper — remove CWT entries for ALC DependencyObjects
-		FrameworkElementHelper.ClearNonDefaultAlcEntries();
+		RunCleanupStep(nameof(FrameworkElementHelper.ClearNonDefaultAlcEntries), FrameworkElementHelper.ClearNonDefaultAlcEntries);
 
 		// ResourceResolver — remove Func delegates whose Target is from a non-default ALC
-		ResourceResolver.ClearNonDefaultAlcRegistrations();
+		RunCleanupStep(nameof(ResourceResolver.ClearNonDefaultAlcRegistrations), ResourceResolver.ClearNonDefaultAlcRegistrations);
 
 		// FeatureConfiguration.Style.UseUWPDefaultStylesOverride is USER CONFIGURATION, not a
 		// rebuildable cache: a dropped override is never re-created, so it must not ride the
-		// all-non-default cache-clear group above. DESTRUCTIVE: remove only keys owned by the
-		// dying ALC (never wholesale), so a live sibling app / session add-in keeps its overrides.
-		RunCleanupStep(nameof(Style.RemoveAlcScopedUserStyleOverrides), () => Style.RemoveAlcScopedUserStyleOverrides(dyingAlc));
+		// all-non-default cache-clear group above. DESTRUCTIVE — resolve the scope consistently with
+		// the other destructive sweeps: scoped to the dying ALC when known, wide only at a genuine
+		// global shutdown, and skipped when a per-window teardown could not name its ALC.
+		RunCleanupStep(nameof(Style.RemoveAlcScopedUserStyleOverrides), () =>
+		{
+			if (dyingAlc is not null)
+			{
+				Style.RemoveAlcScopedUserStyleOverrides(dyingAlc);
+			}
+			else if (allowUnscopedDestructive)
+			{
+				Style.RemoveAllNonDefaultAlcUserStyleOverrides();
+			}
+			// else: unknown ALC in a per-window teardown — never wholesale-drop a live sibling's overrides.
+		});
 
 		// ResourceLoader — drop previewed-app lookup assemblies (and their parsed-resource
 		// markers). The process-lifetime _lookupAssemblies list keeps a strong reference to
 		// every app assembly registered via AddLookupAssembly, pinning the collectible ALC.
-		// DESTRUCTIVE (registrations are never re-added): scope to the dying ALC when known so a
-		// live sibling secondary app keeps its resource lookups.
+		// DESTRUCTIVE (registrations are never re-added): scope to the dying ALC when known.
 		RunCleanupStep(nameof(global::Windows.ApplicationModel.Resources.ResourceLoader.ClearAlcAssemblies), () =>
 		{
 			if (dyingAlc is not null)
 			{
 				global::Windows.ApplicationModel.Resources.ResourceLoader.ClearAlcAssemblies(dyingAlc);
 			}
-			else
+			else if (allowUnscopedDestructive)
 			{
 				global::Windows.ApplicationModel.Resources.ResourceLoader.ClearNonDefaultAlcAssemblies();
 			}
+			// else: unknown ALC in a per-window teardown — skip; a wide sweep would break a live sibling's lookups.
 		});
 
 #if __WASM__
 		// UIElementNativeRegistrar (WASM) — the Type→registration-id map keys on every element
 		// type ever created, including the previewed app's control types. Desktop ClrMD guards
-		// never see this cache; drop its collectible-ALC keys here.
-		UIElement.ClearNonDefaultAlcElementRegistrations();
+		// never see this cache; drop its collectible-ALC keys here. REBUILDABLE (the JS-side map
+		// holds only strings and is left intact; a re-registration simply mints a fresh id), so the
+		// sweep stays all-non-default even when the dying ALC is known.
+		RunCleanupStep(nameof(UIElement.ClearNonDefaultAlcElementRegistrations), UIElement.ClearNonDefaultAlcElementRegistrations);
 
 		// CompositionTarget.Rendering (WASM) — a secondary-ALC subscriber that did not detach
 		// before unload keeps its ALC pinned through the static handler list.
-		// DESTRUCTIVE (a dropped handler is never re-subscribed): scope to the dying ALC when
-		// known so a live sibling secondary app keeps rendering.
-		if (dyingAlc is not null)
+		// DESTRUCTIVE (a dropped handler is never re-subscribed): scope to the dying ALC when known,
+		// wide only at a genuine global shutdown, skipped when a per-window teardown lacks its ALC.
+		RunCleanupStep(nameof(Media.CompositionTarget.ClearAlcHandlers), () =>
 		{
-			Media.CompositionTarget.ClearAlcHandlers(dyingAlc);
-		}
-		else
-		{
-			Media.CompositionTarget.ClearNonDefaultAlcHandlers();
-		}
+			if (dyingAlc is not null)
+			{
+				Media.CompositionTarget.ClearAlcHandlers(dyingAlc);
+			}
+			else if (allowUnscopedDestructive)
+			{
+				Media.CompositionTarget.ClearNonDefaultAlcHandlers();
+			}
+			// else: unknown ALC in a per-window teardown — skip; a wide sweep would drop a live sibling's handlers.
+		});
 
 		// HtmlElementHelper (WASM) — Type→HtmlTag cache keyed by external (app) element types.
-		HtmlElementHelper.ClearNonDefaultAlcEntries();
+		// REBUILDABLE (re-cached on demand), so the sweep stays all-non-default.
+		RunCleanupStep(nameof(HtmlElementHelper.ClearNonDefaultAlcEntries), HtmlElementHelper.ClearNonDefaultAlcEntries);
 #endif
 
 		// Shared resources (theme brushes etc.) first consumed by a secondary-ALC element record
@@ -527,8 +572,8 @@ partial class Application
 
 	// Runs a teardown cleanup step in isolation: teardown is best-effort, so a failing step must not
 	// abort the rest. A failure may indicate a real defect, so it is logged as a warning with the
-	// full exception.
-	private static void RunCleanupStep(string name, Action step)
+	// full exception. Internal (rather than private) so the fault-isolation contract can be unit tested.
+	internal static void RunCleanupStep(string name, Action step)
 	{
 		try
 		{
