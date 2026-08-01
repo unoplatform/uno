@@ -364,6 +364,12 @@ public sealed partial class AutomationProperties
 		AutomationProperty automationProperty,
 		DependencyPropertyChangedEventArgs args)
 	{
+		if (_initializingCollections.TryGetValue(dependencyObject, out var properties) &&
+			properties.Contains(dependencyProperty))
+		{
+			return;
+		}
+
 		var subscriptions = _relationshipSubscriptions.GetValue(
 			dependencyObject,
 			static _ => new RelationshipSubscriptions());
