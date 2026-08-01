@@ -124,6 +124,11 @@ public class Given_MobileAccessibilityEvents
 		public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 			=> Events.Add(eventId);
 
+		public void NotifyStructureChangedEvent(
+			AutomationPeer peer,
+			AutomationStructureChangeType structureChangeType,
+			AutomationPeer? child) { }
+
 		public void NotifyInvalidatePeer(AutomationPeer peer) { }
 
 		public void NotifyNotificationEvent(

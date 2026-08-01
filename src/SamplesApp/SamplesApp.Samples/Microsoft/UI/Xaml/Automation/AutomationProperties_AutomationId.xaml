@@ -8,98 +8,104 @@
     d:DesignWidth="480"
     mc:Ignorable="d">
 
-    <Grid Padding="16" RowSpacing="12">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <ScrollViewer
+        AutomationProperties.AutomationId="MobileAutomationFixtureScroller"
+        AutomationProperties.Name="Mobile automation fixtures"
+        VerticalScrollBarVisibility="Auto">
+        <Grid Padding="16" RowSpacing="12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <StackPanel Spacing="8">
+            <StackPanel Spacing="8">
+                <TextBlock
+                    AutomationProperties.HeadingLevel="Level2"
+                    Style="{ThemeResource SubtitleTextBlockStyle}"
+                    Text="Mobile automation fixtures" />
+                <TextBlock Text="Each machine identifier is intentionally different from the spoken name. The controls below exercise invocation, toggle, range, text, secure text, and relation semantics." TextWrapping="WrapWholeWords" />
+
+                <Button
+                    x:Name="ActionButton"
+                    AutomationProperties.AutomationId="MobileAutomationInvoke"
+                    AutomationProperties.Name="Run fixture action"
+                    Content="Run fixture action" />
+                <CheckBox
+                    AutomationProperties.AutomationId="MobileAutomationToggle"
+                    AutomationProperties.Name="Enable fixture option"
+                    Content="Enable fixture option" />
+                <Slider
+                    x:Name="VolumeSlider"
+                    AutomationProperties.AutomationId="MobileAutomationRange"
+                    AutomationProperties.Name="Fixture volume"
+                    Header="Fixture volume"
+                    Maximum="100"
+                    Minimum="0"
+                    Value="40" />
+                <TextBlock
+                    x:Name="VolumeValue"
+                    AutomationProperties.AutomationId="MobileAutomationRangeValue"
+                    AutomationProperties.Name="Volume 40"
+                    Text="Volume 40" />
+                <TextBox
+                    x:Name="ControlledField"
+                    AutomationProperties.AutomationId="MobileAutomationText"
+                    Header="Account name"
+                    Text="Ada" />
+                <PasswordBox
+                    AutomationProperties.AutomationId="MobileAutomationPassword"
+                    AutomationProperties.Name="Account password"
+                    Header="Account password"
+                    PasswordRevealMode="Hidden" />
+
+                <ComboBox
+                    x:Name="ChoiceBox"
+                    AutomationProperties.AutomationId="MobileAutomationCombo"
+                    AutomationProperties.Name="Fixture choice"
+                    Header="Fixture choice"
+                    PlaceholderText="Pick a choice">
+                    <ComboBoxItem AutomationProperties.AutomationId="ComboChoice01" Content="Choice 01" />
+                    <ComboBoxItem AutomationProperties.AutomationId="ComboChoice02" Content="Choice 02" />
+                    <ComboBoxItem AutomationProperties.AutomationId="ComboChoice03" Content="Choice 03" />
+                </ComboBox>
+
+                <TextBlock
+                    x:Name="RelationLabel"
+                    AutomationProperties.AccessibilityView="Raw"
+                    AutomationProperties.AutomationId="MobileAutomationRelationLabel"
+                    Text="Related search field" />
+                <TextBox
+                    x:Name="RelatedField"
+                    AutomationProperties.AutomationId="MobileAutomationRelatedField"
+                    AutomationProperties.LabeledBy="{x:Bind RelationLabel}"
+                    Header="Search" />
+            </StackPanel>
+
             <TextBlock
-                AutomationProperties.HeadingLevel="Level2"
-                Style="{ThemeResource SubtitleTextBlockStyle}"
-                Text="Mobile automation fixtures" />
-            <TextBlock Text="Each machine identifier is intentionally different from the spoken name. The controls below exercise invocation, toggle, range, text, secure text, and relation semantics." TextWrapping="WrapWholeWords" />
+                x:Name="result"
+                Grid.Row="1"
+                AutomationProperties.AutomationId="MobileAutomationResult"
+                AutomationProperties.LiveSetting="Polite"
+                Text="No action has run."
+                TextWrapping="WrapWholeWords" />
 
-            <Button
-                x:Name="ActionButton"
-                AutomationProperties.AutomationId="MobileAutomationInvoke"
-                AutomationProperties.Name="Run fixture action"
-                Content="Run fixture action" />
-            <CheckBox
-                AutomationProperties.AutomationId="MobileAutomationToggle"
-                AutomationProperties.Name="Enable fixture option"
-                Content="Enable fixture option" />
-            <Slider
-                x:Name="VolumeSlider"
-                AutomationProperties.AutomationId="MobileAutomationRange"
-                AutomationProperties.Name="Fixture volume"
-                Header="Fixture volume"
-                Maximum="100"
-                Minimum="0"
-                Value="40" />
-            <TextBlock
-                x:Name="VolumeValue"
-                AutomationProperties.AutomationId="MobileAutomationRangeValue"
-                AutomationProperties.Name="Volume 40"
-                Text="Volume 40" />
-            <TextBox
-                x:Name="ControlledField"
-                AutomationProperties.AutomationId="MobileAutomationText"
-                Header="Account name"
-                Text="Ada" />
-            <PasswordBox
-                AutomationProperties.AutomationId="MobileAutomationPassword"
-                AutomationProperties.Name="Account password"
-                Header="Account password"
-                PasswordRevealMode="Hidden" />
-
-            <ComboBox
-                x:Name="ChoiceBox"
-                AutomationProperties.AutomationId="MobileAutomationCombo"
-                AutomationProperties.Name="Fixture choice"
-                Header="Fixture choice"
-                PlaceholderText="Pick a choice">
-                <ComboBoxItem AutomationProperties.AutomationId="ComboChoice01" Content="Choice 01" />
-                <ComboBoxItem AutomationProperties.AutomationId="ComboChoice02" Content="Choice 02" />
-                <ComboBoxItem AutomationProperties.AutomationId="ComboChoice03" Content="Choice 03" />
-            </ComboBox>
-
-            <TextBlock
-                x:Name="RelationLabel"
-                AutomationProperties.AccessibilityView="Raw"
-                AutomationProperties.AutomationId="MobileAutomationRelationLabel"
-                Text="Related search field" />
-            <TextBox
-                x:Name="RelatedField"
-                AutomationProperties.AutomationId="MobileAutomationRelatedField"
-                AutomationProperties.LabeledBy="{x:Bind RelationLabel}"
-                Header="Search" />
-        </StackPanel>
-
-        <TextBlock
-            x:Name="result"
-            Grid.Row="1"
-            AutomationProperties.AutomationId="MobileAutomationResult"
-            AutomationProperties.LiveSetting="Polite"
-            Text="No action has run."
-            TextWrapping="WrapWholeWords" />
-
-        <ListView
-            x:Name="myList"
-            Grid.Row="2"
-            AutomationProperties.AutomationId="MobileAutomationList"
-            AutomationProperties.Name="Automation identifier items"
-            SelectionMode="Single">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock
-                        AutomationProperties.AutomationId="{Binding AutomationId}"
-                        AutomationProperties.Name="{Binding Text}"
-                        Text="{Binding Text}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </Grid>
+            <ListView
+                x:Name="myList"
+                Grid.Row="2"
+                Height="240"
+                AutomationProperties.AutomationId="MobileAutomationList"
+                AutomationProperties.Name="Automation identifier items"
+                SelectionMode="Single">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock
+                            AutomationProperties.AutomationId="{Binding AutomationId}"
+                            AutomationProperties.Name="{Binding Text}"
+                            Text="{Binding Text}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

@@ -18,6 +18,8 @@ namespace Windows.ApplicationModel.DataTransfer
 		private static long? _clearedClipTimestamp;
 		private static bool _clearPending;
 		private static bool _clipboardKnownCleared;
+		private static DataPackageView _locallySetContent;
+		private static long? _locallySetClipTimestamp;
 
 		public static void SetContent(DataPackage/* ? */ content)
 		{
@@ -127,6 +129,13 @@ namespace Windows.ApplicationModel.DataTransfer
 				_clearPending = false;
 				_clipboardKnownCleared = false;
 				_clearedClipTimestamp = null;
+				lock (_syncLock)
+				{
+					_locallySetContent = data;
+					_locallySetClipTimestamp = Build.VERSION.SdkInt >= BuildVersionCodes.O
+						? manager.PrimaryClipDescription?.Timestamp
+						: null;
+				}
 				OnContentChanged();
 			}
 			else
@@ -147,6 +156,11 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 
 			var clipData = manager.PrimaryClip;
+			if (clipData is null &&
+				TryGetLocallySetContent(manager.PrimaryClipDescription, out var locallySetContent))
+			{
+				return locallySetContent;
+			}
 
 			Uri/* ? */ clipApplicationLink = null;
 			string/* ? */ clipHtml = null;
@@ -222,6 +236,27 @@ namespace Windows.ApplicationModel.DataTransfer
 			return dataPackage.GetView();
 		}
 
+		private static bool TryGetLocallySetContent(
+			ClipDescription description,
+			out DataPackageView content)
+		{
+			lock (_syncLock)
+			{
+				var timestampMatches = Build.VERSION.SdkInt < BuildVersionCodes.O ||
+					_locallySetClipTimestamp == description?.Timestamp;
+				if (_locallySetContent is not null &&
+					!_clipboardKnownCleared &&
+					timestampMatches)
+				{
+					content = _locallySetContent;
+					return true;
+				}
+			}
+
+			content = null;
+			return false;
+		}
+
 		internal static bool IsTextAvailable()
 		{
 			var manager = ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
@@ -251,6 +286,11 @@ namespace Windows.ApplicationModel.DataTransfer
 			{
 				_clearPending = true;
 				_clipboardKnownCleared = true;
+				lock (_syncLock)
+				{
+					_locallySetContent = null;
+					_locallySetClipTimestamp = null;
+				}
 				if (Build.VERSION.SdkInt >= BuildVersionCodes.P)
 				{
 					manager.ClearPrimaryClip();
@@ -301,6 +341,15 @@ namespace Windows.ApplicationModel.DataTransfer
 					if (_clearedClipTimestamp != timestamp)
 					{
 						_clearedClipTimestamp = null;
+					}
+				}
+
+				lock (_syncLock)
+				{
+					if (_locallySetClipTimestamp != timestamp)
+					{
+						_locallySetContent = null;
+						_locallySetClipTimestamp = null;
 					}
 				}
 			}
