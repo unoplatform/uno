@@ -112,7 +112,7 @@ public partial class Popup
 	{
 		if (property == IsLightDismissEnabledProperty)
 		{
-			defaultValue = Uno.UI.Helpers.Boxes.Box(FeatureConfiguration.Popup.EnableLightDismissByDefault);
+			defaultValue = Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse;
 			return true;
 		}
 		return base.GetDefaultValue2(property, out defaultValue);

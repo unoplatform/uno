@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if false || false || false || false || false || false
+#if false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class DoubleCollection : global::System.Collections.Generic.IList<double>, global::System.Collections.Generic.ICollection<double>, global::System.Collections.Generic.IEnumerable<double>, global::System.Collections.IEnumerable
@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Media
 		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.Contains(double)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.CopyTo(double[], int)
 		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.Remove(double)
-		// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.DoubleCollection.GetEnumerator()
+		// Skipping already declared method Microsoft.UI.Xaml.Media.DoubleCollection.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.System.Collections.IEnumerable.GetEnumerator()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.System.Collections.Generic.IList<double>.get_Item(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Media.DoubleCollection.System.Collections.Generic.IList<double>.set_Item(int, double)

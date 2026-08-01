@@ -31,19 +31,6 @@ namespace Microsoft.UI.Xaml.Media
 			InitializeBinder();
 		}
 
-#if __ANDROID__ || __APPLE_UIKIT__
-		internal static Color GetFallbackColor(Brush brush)
-		{
-			return brush switch
-			{
-				SolidColorBrush scb => scb.ColorWithOpacity,
-				GradientBrush gb => gb.FallbackColorWithOpacity,
-				XamlCompositionBrushBase xamlCompositionBrushBase => xamlCompositionBrushBase.FallbackColorWithOpacity,
-				_ => SolidColorBrushHelper.Transparent.Color,
-			};
-		}
-#endif
-
 		public static implicit operator Brush(Color uiColor) => new SolidColorBrush(uiColor);
 
 		public static implicit operator Brush(string colorCode) => SolidColorBrushHelper.Parse(colorCode);
@@ -77,9 +64,9 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 		}
 
-		internal virtual void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
-			if (args.Property == DataContextProperty || args.Property == XamlCompositionBrushBase.CompositionBrushProperty)
+			if (args.Property == XamlCompositionBrushBase.CompositionBrushProperty)
 			{
 				return;
 			}

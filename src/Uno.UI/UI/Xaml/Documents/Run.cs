@@ -23,9 +23,6 @@ namespace Microsoft.UI.Xaml.Documents
 				typeof(Run),
 				new FrameworkPropertyMetadata(
 					defaultValue: string.Empty,
-#if XAMARIN || __WASM__
-					coerceValueCallback: Controls.TextBlock.CoerceText,
-#endif
 					propertyChangedCallback: (s, e) => ((Run)s).OnTextChanged()
 				)
 			);

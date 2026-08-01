@@ -6,11 +6,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 
-#if __ANDROID__
-using _View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using _View = UIKit.UIView;
-#elif UNO_REFERENCE_API
+#if UNO_REFERENCE_API
 using _View = Microsoft.UI.Xaml.UIElement;
 #else
 using _View = System.Object;
@@ -31,15 +27,6 @@ namespace Uno.UI.Media
 			CurrentSize = owner is IFrameworkElement fwElt
 				? new Size(fwElt.ActualWidth, fwElt.ActualHeight)
 				: new Size(0, 0);
-
-#if __ANDROID__ || __APPLE_UIKIT__
-			// For backward compatibility we set the "View" property on the transform
-			// This is used only by animations
-			if (transform is not null)
-			{
-				transform.View = owner;
-			}
-#endif
 
 			// Partial constructor
 			Initialized();

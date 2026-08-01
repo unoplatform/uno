@@ -59,32 +59,8 @@ namespace Microsoft.UI.Xaml
 			throw new NotImplementedException();
 		}
 
-		public Size AdjustArrange(Size finalSize)
-		{
-			return finalSize;
-		}
-
 		public object FindName(string name)
 			=> IFrameworkElementHelper.FindName(this, this, name);
-
-		#region Background DependencyProperty
-
-		public Brush Background
-		{
-			get => (Brush)GetValue(BackgroundProperty);
-			set => SetValue(BackgroundProperty, value);
-		}
-
-		// Using a DependencyProperty as the backing store for Background.  This enables animation, styling, binding, etc...
-		public static DependencyProperty BackgroundProperty { get; } =
-			DependencyProperty.Register("Background", typeof(Brush), typeof(FrameworkElement), new FrameworkPropertyMetadata(null, (s, e) => ((FrameworkElement)s)?.OnBackgroundChanged(e)));
-
-		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-		{
-
-		}
-
-		#endregion
 
 		public int? RenderPhase
 		{

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
@@ -56,15 +55,6 @@ namespace Windows.UI.Input
 
 			Properties = new PointerPointProperties(point.Properties);
 		}
-
-		// Historically, we had explicit conversion only.
-		// In the work for InteractionTracker, we needed an implicit conversion to avoid a breaking change.
-		// The compiler doesn't allow to define both. (https://learn.microsoft.com/en-us/dotnet/csharp/misc/cs0557)
-		// And changing the explicit conversion operator to implicit conversion operator is a binary breaking change.
-		// We manually add this method to avoid this binary breaking change.
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static global::Windows.UI.Input.PointerPoint op_Explicit(Microsoft.UI.Input.PointerPoint muxPointerPoint)
-			=> muxPointerPoint;
 
 		public static implicit operator global::Windows.UI.Input.PointerPoint(Microsoft.UI.Input.PointerPoint muxPointerPoint)
 		{

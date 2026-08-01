@@ -802,12 +802,6 @@ namespace Microsoft.UI.Xaml
 
 			NeedsClipToSlot = needsClipBounds;
 
-#if __WASM__
-			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
-			{
-				UpdateDOMXamlProperty(nameof(NeedsClipToSlot), NeedsClipToSlot);
-			}
-#endif
 			var visualOffset = new Point(offsetX, offsetY);
 			var clippedFrame = GetClipRect(needsClipBounds, visualOffset, finalRect, new Size(maxWidth, maxHeight), margin);
 			ArrangeNative(visualOffset, clippedFrame);
@@ -931,17 +925,11 @@ namespace Microsoft.UI.Xaml
 				if (needToClipSlot || needToClipLocally)
 				{
 					if (ShouldApplyLayoutClipAsAncestorClip()
-#if __WASM__
-						&& RenderTransform is { } renderTransform
-#endif
 						)
 					{
 #if __SKIA__
 						clipRect.X += visualOffset.X;
 						clipRect.Y += visualOffset.Y;
-#elif __WASM__
-						clipRect.X -= renderTransform.MatrixCore.M31;
-						clipRect.Y -= renderTransform.MatrixCore.M32;
 #endif
 					}
 

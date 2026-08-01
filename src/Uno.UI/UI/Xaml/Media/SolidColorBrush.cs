@@ -7,15 +7,6 @@ using Windows.UI;
 
 using Color = Windows.UI.Color;
 
-#if __ANDROID__
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using Font = UIKit.UIFont;
-#endif
-
 namespace Microsoft.UI.Xaml.Media
 {
 	public partial class SolidColorBrush : Brush, IEquatable<SolidColorBrush>

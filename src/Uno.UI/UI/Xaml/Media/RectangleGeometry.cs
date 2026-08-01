@@ -1,10 +1,6 @@
 ﻿using System;
 using Windows.Foundation;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml.Media
 {
 	public partial class RectangleGeometry : Geometry
@@ -42,34 +38,10 @@ namespace Microsoft.UI.Xaml.Media
 
 		#region Geometry implementation (not implemented)
 
-#if __ANDROID__
-		public override APath ToPath()
-		{
-			throw new NotImplementedException();
-		}
-#endif
-
 		public override void Dispose()
 		{
 			throw new NotImplementedException();
 		}
-
-#if __APPLE_UIKIT__
-		public override UIImage ToNativeImage()
-		{
-			throw new NotImplementedException();
-		}
-
-		public override UIImage ToNativeImage(CoreGraphics.CGSize targetSize, UIColor color = null, Thickness margin = default(Thickness))
-		{
-			throw new NotImplementedException();
-		}
-
-		public override CoreGraphics.CGPath ToCGPath()
-		{
-			throw new NotImplementedException();
-		}
-#endif
 
 		#endregion
 

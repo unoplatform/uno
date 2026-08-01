@@ -1,4 +1,4 @@
-﻿#if !__ANDROID__ && !__APPLE_UIKIT__ && !__SKIA__
+﻿#if !__SKIA__
 #nullable enable
 
 namespace Windows.UI.ViewManagement;

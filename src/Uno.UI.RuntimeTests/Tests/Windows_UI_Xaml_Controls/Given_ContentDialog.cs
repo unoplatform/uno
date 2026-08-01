@@ -807,17 +807,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// Fails because keyboard does not appear when TextBox is programmatically focussed, or appearance is not correctly registered - https://github.com/unoplatform/uno/issues/7995
 		[Ignore()]
 		[TestMethod]
-		public async Task When_Soft_Keyboard_And_VisibleBounds_Native()
-		{
-			using (FeatureConfigurationHelper.UseNativePopups())
-			{
-				await When_Soft_Keyboard_And_VisibleBounds();
-			}
-		}
-
-		// Fails because keyboard does not appear when TextBox is programmatically focussed, or appearance is not correctly registered - https://github.com/unoplatform/uno/issues/7995
-		[Ignore()]
-		[TestMethod]
 		public async Task When_Soft_Keyboard_And_VisibleBounds_Managed()
 		{
 			await When_Soft_Keyboard_And_VisibleBounds();

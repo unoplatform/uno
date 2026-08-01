@@ -18,10 +18,6 @@ using Windows.Foundation;
 using Windows.UI;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Uno.UI.Xaml.Core
 {
 	/// <summary>

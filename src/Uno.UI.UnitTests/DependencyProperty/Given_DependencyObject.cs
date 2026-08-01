@@ -138,7 +138,7 @@ namespace Uno.UI.Tests
 			// Children.Add validates for cycles.
 		}
 
-		public partial class MyObject : DependencyObject
+		public partial class MyObject : FrameworkElement
 		{
 			public MyObject(int value)
 			{

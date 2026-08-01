@@ -591,7 +591,6 @@
 					<TextBlock Text="{TemplateBinding Content}"
 							   FontSize="{TemplateBinding FontSize}"
 							   Foreground="{TemplateBinding Foreground}"
-							   Background="{TemplateBinding Background}"
 							   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 							   VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
 				</ControlTemplate>

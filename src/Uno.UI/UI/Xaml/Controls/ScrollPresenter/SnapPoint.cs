@@ -611,9 +611,9 @@ public partial class RepeatedScrollSnapPoint : ScrollSnapPointBase
 
 	public double Interval { get; }
 
-	private double Start { get; }
+	public double Start { get; }
 
-	private double End { get; }
+	public double End { get; }
 
 	internal override ExpressionAnimation CreateRestingPointExpression(
 		double ignoredValue,

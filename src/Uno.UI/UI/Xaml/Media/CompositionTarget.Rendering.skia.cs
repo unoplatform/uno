@@ -144,9 +144,8 @@ public partial class CompositionTarget
 			_pendingDamage.ClampTo(frameRect);
 
 			damageSnapshot = _damageSnapshotPool.Count > 0 ? _damageSnapshotPool.Pop() : new SKPath();
-			damageSnapshot.Rewind();
-			damageSnapshot.AddPath(_pendingDamage);
-			_pendingDamage.Rewind();
+			_pendingDamage.Transform(SKMatrix.Identity, damageSnapshot);
+			_pendingDamage.Reset();
 
 			_lastRenderedFrame = (framePicture, path, damageSnapshot);
 
@@ -310,7 +309,7 @@ public partial class CompositionTarget
 			canvas.Restore();
 
 			// This frame's damage is now presented; clear it so Render's carry-forward doesn't re-damage it next frame.
-			lastRenderedFrame.damage.Rewind();
+			lastRenderedFrame.damage.Reset();
 			ReturnFrame(lastRenderedFrame);
 
 			if (FrameRenderingOptions.applyScalingToNativeElementClipPath && rasterizationScale != 1)

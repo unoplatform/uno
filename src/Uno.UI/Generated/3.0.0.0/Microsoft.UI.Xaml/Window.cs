@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if false || false || false || false || false || false
+#if false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class Window
@@ -17,8 +17,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Dispatcher
 		// Skipping already declared property DispatcherQueue
 		// Skipping already declared property ExtendsContentIntoTitleBar
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
+#if false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.SystemBackdrop SystemBackdrop
 		{
 			get
@@ -31,20 +31,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if false || __IOS__ || __TVOS__ || false || false || false
-		[global::Uno.NotImplemented("__IOS__", "__TVOS__")]
-		public string Title
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Window", "Title");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Window", "Title");
-			}
-		}
-#endif
+		// Skipping already declared property Title
 		// Skipping already declared property Visible
 		// Skipping already declared method Microsoft.UI.Xaml.Window.Window()
 		// Forced skipping of method Microsoft.UI.Xaml.Window.Window()

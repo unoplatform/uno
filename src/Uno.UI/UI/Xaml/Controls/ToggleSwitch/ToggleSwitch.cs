@@ -3,10 +3,6 @@ using Uno.UI;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls
 {
 	/// <summary>
@@ -52,13 +48,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-#if __ANDROID__
-				return this.FindFirstChild<Uno.UI.Controls.BindableSwitchCompat>() != null;
-#elif __APPLE_UIKIT__
-				return this.FindFirstChild<Uno.UI.Views.Controls.BindableUISwitch>() != null;
-#else
 				return false;
-#endif
 			}
 		}
 #endif

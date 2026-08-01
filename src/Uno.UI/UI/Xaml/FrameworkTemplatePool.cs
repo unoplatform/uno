@@ -19,21 +19,7 @@ using Uno.UI.Dispatching;
 using Windows.Foundation.Metadata;
 using Windows.System;
 
-#if __ANDROID__
-using View = Android.Views.View;
-using ViewGroup = Android.Views.ViewGroup;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
-using DependencyObject = System.Object;
-using Uno.UI.Controls;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using ViewGroup = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-using DependencyObject = System.Object;
-using UIKit;
-#elif METRO
+#if METRO
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
@@ -373,13 +359,6 @@ namespace Microsoft.UI.Xaml
 			{
 				for (var x = 0; x < count; x++)
 				{
-#if __ANDROID__
-					if (((View)array[x]).Parent is BindableView bindableView)
-					{
-						bindableView.RemoveView((View)array[x]);
-					}
-#endif
-
 					array[x].SetParent(null);
 				}
 			}

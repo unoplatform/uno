@@ -21,14 +21,7 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-#if __APPLE_UIKIT__ || __ANDROID__
-using _Panel = Uno.UI.Controls.ManagedItemsStackPanel;
-#else
 using _Panel = Microsoft.UI.Xaml.Controls.Panel;
-#endif
 
 using static System.Math;
 using static Microsoft.UI.Xaml.Controls.Primitives.GeneratorDirection;
@@ -36,11 +29,7 @@ using IndexPath = Uno.UI.IndexPath;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __APPLE_UIKIT__ || __ANDROID__
-	internal abstract partial class ManagedVirtualizingPanelLayout : DependencyObject
-#else
 	public abstract partial class VirtualizingPanelLayout : DependencyObject
-#endif
 	{
 		private _Panel? _ownerPanel;
 		private _Panel OwnerPanel
@@ -323,7 +312,7 @@ namespace Microsoft.UI.Xaml.Controls
 				unappliedDelta = Max(0, unappliedDelta);
 				UpdateLayout(extentAdjustment: sign * -unappliedDelta, isScroll: true);
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
 				(ItemsControl as ListViewBase)?.TryLoadMoreItems(LastVisibleIndex);
 #endif
 			}
@@ -835,9 +824,6 @@ namespace Microsoft.UI.Xaml.Controls
 				: 0;
 
 		private double CalculatePanelMeasureBreadth() =>
-#if __WASM__
-			GetBreadth(XamlParent?.ScrollViewer.ScrollBarSize ?? default) +
-#endif
 			_materializedLines.Select(l => GetDesiredBreadth(l.FirstView)).MaxOrDefault();
 
 		private double CalculatePanelArrangeBreadth() => ShouldMeasuredBreadthStretch

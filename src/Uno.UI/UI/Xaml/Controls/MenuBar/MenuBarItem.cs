@@ -112,23 +112,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private void SynchronizeMenuBar()
 			=> m_menuBar = SharedHelpers.GetAncestorOfType<MenuBar>(VisualTreeHelper.GetParent(this));
 
-		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnDataContextChanged(e);
-
-			SetFlyoutDataContext();
-		}
-
-		private void SetFlyoutDataContext()
-		{
-			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout.
-			m_flyout?.SetValue(
-				MenuFlyout.DataContextProperty,
-				this.DataContext,
-				precedence: DependencyPropertyValuePrecedences.Inheritance
-			);
-		}
-
 		private void PopulateContent()
 		{
 			// Create flyout
@@ -153,8 +136,6 @@ namespace Microsoft.UI.Xaml.Controls
 				m_button.IsAccessKeyScope = true;
 				m_button.ContextFlyout = flyout;
 			}
-
-			SetFlyoutDataContext();
 		}
 
 		private void AttachEventHandlers()

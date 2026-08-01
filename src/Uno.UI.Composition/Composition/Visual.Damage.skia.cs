@@ -79,8 +79,7 @@ public partial class Visual
 		var keepContentPath = false;
 		try
 		{
-			clipPath.Rewind();
-			clipPath.AddPath(clip);
+			clip.Transform(SKMatrix.Identity, clipPath);
 			if (clipPath.IsEmpty)
 			{
 				return false;
@@ -91,8 +90,7 @@ public partial class Visual
 
 			if (ShadowState is null && DamageRegionSamplingMargin == 0 && _ownContentPath is { IsEmpty: false } ownContent)
 			{
-				contentPath.Rewind();
-				contentPath.AddPath(ownContent);
+				ownContent.Transform(SKMatrix.Identity, contentPath);
 				contentPath.Transform(TotalMatrix.ToSKMatrix());
 				OutsetForAntialiasing(contentPath);
 				contentPath.Op(clipPath, SKPathOp.Intersect, contentPath);
@@ -138,10 +136,7 @@ public partial class Visual
 					return true;
 				}
 
-				var rectPath = _pathPool.Allocate();
-				using var rectPathDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), rectPath);
-				rectPath.Rewind();
-				rectPath.AddRect(root);
+				using var rectPath = SkiaExtensions.CreateRectPath(root);
 				clipPath.Op(rectPath, SKPathOp.Intersect, clipPath);
 
 				if (clipPath.IsEmpty)
@@ -178,20 +173,19 @@ public partial class Visual
 	}
 
 	private static readonly SKPaint _outsetPaint = new() { Style = SKPaintStyle.Stroke, StrokeWidth = 4f, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
+	private static readonly SKPathBuilder _outsetBuilder = new();
 
 	private static void OutsetForAntialiasing(SKPath path)
 	{
-		var band = _pathPool.Allocate();
-		using var bandDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), band);
 		var result = _pathPool.Allocate();
 		using var resultDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), result);
 
-		band.Rewind();
-		result.Rewind();
-		_outsetPaint.GetFillPath(path, band);
+		_outsetBuilder.Reset();
+		_outsetPaint.GetFillPath(path, _outsetBuilder);
+		using var band = _outsetBuilder.Detach();
+		result.Reset();
 		path.Op(band, SKPathOp.Union, result);
-		path.Rewind();
-		path.AddPath(result);
+		result.Transform(SKMatrix.Identity, path);
 	}
 
 	internal virtual bool TryGetLocalContentBounds(out SKRect localBounds)

@@ -83,9 +83,6 @@ public partial class Page : UserControl
 	#region Frame
 
 	public
-#if __APPLE_UIKIT__
-		new
-#endif
 		Frame Frame
 	{
 		get => (Frame)this.GetValue(FrameProperty);
@@ -128,7 +125,7 @@ public partial class Page : UserControl
 			typeof(Page),
 			new FrameworkPropertyMetadata(NavigationCacheMode.Disabled));
 
-	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+	private protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 	{
 #if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();

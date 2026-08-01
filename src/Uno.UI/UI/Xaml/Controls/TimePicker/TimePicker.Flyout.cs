@@ -74,9 +74,7 @@ partial class TimePicker
 		var useNativeStyle = timePicker.UseNativeStyle;
 
 		TimePickerFlyout flyout;
-#if __ANDROID__ || __IOS__
-		flyout = useNativeStyle ? new NativeTimePickerFlyout() : new TimePickerFlyout();
-#elif __SKIA__
+#if __SKIA__
 		if (useNativeStyle && ApiExtensibility.CreateInstance<ISkiaNativeTimePickerProviderExtension>(null, out var instance))
 		{
 			flyout = instance.CreateNativeTimePickerFlyout();
@@ -91,9 +89,6 @@ partial class TimePicker
 
 		if (useNativeStyle)
 		{
-#if __IOS__
-			flyout.Placement = timePicker.FlyoutPlacement;
-#endif
 			if (timePicker.FlyoutPresenterStyle is not null)
 			{
 				flyout.TimePickerFlyoutPresenterStyle = timePicker.FlyoutPresenterStyle;

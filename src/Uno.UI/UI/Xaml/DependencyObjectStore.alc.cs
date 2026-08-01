@@ -61,7 +61,7 @@ namespace Microsoft.UI.Xaml
 			// must be preserved (mirrors the conservative _associatedParent gating above).
 			var dataContextFromUnloadingAlc = false;
 			if (!associationCleared
-				&& GetValue(_dataContextProperty) is { } dataContext
+				&& GetInheritedDataContextValue() is { } dataContext
 				&& dataContext.GetType().IsCollectible)
 			{
 				var valueAlc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(dataContext.GetType().Assembly);

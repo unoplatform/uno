@@ -10,13 +10,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 
-#if __ANDROID__
-using View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-#else
 using View = System.Object;
-#endif
 
 namespace Microsoft.UI.Xaml
 {

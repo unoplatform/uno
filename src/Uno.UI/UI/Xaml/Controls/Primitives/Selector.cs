@@ -214,25 +214,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			if (this is ListViewBase lvb)
 			{
-#if __APPLE_UIKIT__
-				// workaround to prevent scrolling when it is not ready
-				// without this, the ios TabView could render blank if the selection happens too early.
-				if (ContainerFromIndex(SelectedIndex) is not FrameworkElement { IsLoaded: true }) return;
-#endif
-
-#if __APPLE_UIKIT__ || __ANDROID__
-				lvb.InstantScrollToIndex(SelectedIndex);
-#else
 				lvb.ScrollIntoView(SelectedItem);
-#endif
 			}
 			else if (this is ComboBox cb)
 			{
-#if __APPLE_UIKIT__ || __ANDROID__
-				// TODO
-#else
 				cb.ScrollIntoView(SelectedItem);
-#endif
 			}
 		}
 
@@ -1006,10 +992,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Is the managed implementation for virtualized lists (ItemsStackPanel, ItemsWrapGrid, CarouselPanel etc) used on this platform?
 		/// </summary>
 		internal const bool UsesManagedLayouting =
-#if __APPLE_UIKIT__ || __ANDROID__
-			false;
-#else
 			true;
-#endif
 	}
 }

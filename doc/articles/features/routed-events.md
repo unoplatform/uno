@@ -68,24 +68,12 @@ This article covers some of the finer technical details of Uno Platform's routed
 
 ## Native bubbling vs Managed bubbling
 
-A special property named `EventsBubblingInManagedCode` is used to determine how properties are propagated through
-the platform. This value of this property is inherited in the visual tree.
+On the native targets (native Android Views, iOS/UIKit, WASM DOM), routed events that originate from the
+platform bubble natively by default (except for those which can't bubble natively like `LostFocus` on iOS or
+`KeyDown` on Android). Bubbling natively improves interoperability with native UI elements in the visual tree
+by letting the platform propagate the events, at the cost of more interop between managed and unmanaged code.
 
-This value is set to `RoutedEventFlag.None` by default, so all routed events are bubbling natively by default
-(except for those which can't bubble natively like `LostFocus` on iOS or `KeyDown` on Android).
-
-Bubbling natively will improve interoperability with native UI elements in the visual tree by letting the
-platform propagate the events. But this will cause more interop between managed and unmanaged code.
-
-You can control which events are bubbling in managed code by using the `EventsBubblingInManagedCode`
-dependency property. The value of this property is inherited to children. Example:
-
-```csharp
-  // Make sure PointerPressed and PointerReleased are always bubbling in
-  // managed code when they are originating from myControl and its children.
-  myControl.EventsBubblingInManagedCode =
-      RoutedEventFlag.PointerPressed | RoutedEventFlag.PointerReleased;
-```
+On the Skia targets there is no native visual tree, so every routed event bubbles in managed code.
 
 ### Limitations of managed bubbling
 

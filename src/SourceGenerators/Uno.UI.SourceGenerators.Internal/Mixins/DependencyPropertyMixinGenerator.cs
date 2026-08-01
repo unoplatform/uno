@@ -271,7 +271,11 @@ using View = Microsoft.UI.Xaml.FrameworkElement;
 				new PropertyDefinition("GroupPadding", "Thickness", "Thickness.Empty"),
 				new PropertyDefinition("CacheLength", "double", "4.0"),
 			}),
-			new ClassDefinition("ItemsWrapGridLayout", "true", "internal", new[]
+			// ItemsWrapGridLayout only derives from DependencyObject (via VirtualizingPanelLayout) in the native
+			// (!UNO_REFERENCE_API) build. UNO_REFERENCE_API is defined for Skia, WebAssembly and Reference, where
+			// ItemsWrapGridLayout is a baseless type, so the mixin must match that availability to avoid generating
+			// DependencyObject plumbing on a non-DO type.
+			new ClassDefinition("ItemsWrapGridLayout", "!UNO_REFERENCE_API", "internal", new[]
 			{
 				new PropertyDefinition("ItemHeight", "double", "Double.NaN"),
 				new PropertyDefinition("ItemWidth", "double", "Double.NaN"),

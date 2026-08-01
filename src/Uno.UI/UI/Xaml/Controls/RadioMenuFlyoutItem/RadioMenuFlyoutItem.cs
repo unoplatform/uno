@@ -1,18 +1,20 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference RadioMenuFlyoutItem.cpp, commit 69097129a853c65a16447aade4c82576d4724b1a
 using System;
 using System.Collections.Generic;
+using DirectUI;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	// UNO Docs:
-	// In WinUI 2.6. RadioMenuFlyoutItem derives publically from MenuFlyoutItem, but secretly from ToggleMenuFlyoutItem.
-	// Since we can't do that in C#, the important functionality are in ToggleMenuFlyoutItem, we derive from it.
-	public partial class RadioMenuFlyoutItem : ToggleMenuFlyoutItem
+	// In WinUI, RadioMenuFlyoutItem derives publicly from MenuFlyoutItem but secretly from ToggleMenuFlyoutItem.
+	// C# has no such double inheritance, so we derive from MenuFlyoutItem (matching the public WinUI base) and
+	// duplicate the check/toggle rendering behaviour ToggleMenuFlyoutItem would otherwise provide.
+	public partial class RadioMenuFlyoutItem : MenuFlyoutItem
 	{
 		[ThreadStatic]
 		private static Dictionary<string, WeakReference<RadioMenuFlyoutItem>> s_selectionMap;
@@ -21,8 +23,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// even if the dependency properties have since changed.
 		private bool m_isChecked;
 		private string m_groupName = "";
-
-		private bool m_isSafeUncheck;
 
 #if HAS_UNO
 		// Uno-specific: the GroupName under which we last registered ourselves in
@@ -36,9 +36,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public RadioMenuFlyoutItem()
 		{
-			this.RegisterPropertyChangedCallback(ToggleMenuFlyoutItem.IsCheckedProperty, OnInternalIsCheckedChanged);
-
-
 			if (s_selectionMap == null)
 			{
 				// Ensure that this object exists
@@ -49,7 +46,6 @@ namespace Microsoft.UI.Xaml.Controls
 			Unloaded += OnUnloaded;
 
 			this.SetDefaultStyleKey();
-
 		}
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
@@ -90,14 +86,22 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty property = args.Property;
 			if (property == IsCheckedProperty)
 			{
-				if (base.IsChecked != IsChecked)
+				m_isChecked = IsChecked;
+
+				UpdateVisualState();
+
+				if (IsChecked)
 				{
-					m_isSafeUncheck = true;
-					base.IsChecked = IsChecked;
-					m_isSafeUncheck = false;
 					UpdateCheckedItemInGroup();
 				}
-				m_isChecked = IsChecked;
+
+				if (AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
+				{
+					if (GetOrCreateAutomationPeer() is ToggleMenuFlyoutItemAutomationPeer toggleAutomationPeer)
+					{
+						toggleAutomationPeer.RaiseToggleStatePropertyChangedEvent(args.OldValue, args.NewValue);
+					}
+				}
 			}
 			else if (property == GroupNameProperty)
 			{
@@ -105,26 +109,17 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnInternalIsCheckedChanged(DependencyObject sender, DependencyProperty args)
+		// Reserve the check/toggle column in the parent MenuFlyoutPresenter, as ToggleMenuFlyoutItem does.
+		// Otherwise a menu containing only RadioMenuFlyoutItems would not reserve space for the checkmark.
+		internal override bool HasToggle() => true;
+
+		// Performs appropriate actions upon a mouse/keyboard invocation of a RadioMenuFlyoutItem.
+		// A radio item is always checked on invocation; it is never toggled off by user interaction.
+		internal override void Invoke()
 		{
-			if (!base.IsChecked)
-			{
-				if (m_isSafeUncheck)
-				{
-					// The uncheck is due to another radio button being checked -- that's all right.
-					IsChecked = false;
-				}
-				else
-				{
-					// The uncheck is due to user interaction -- not allowed.
-					base.IsChecked = true;
-				}
-			}
-			else if (!IsChecked)
-			{
-				IsChecked = true;
-				UpdateCheckedItemInGroup();
-			}
+			IsChecked = true;
+
+			base.Invoke();
 		}
 
 		private void UpdateCheckedItemInGroup()
@@ -164,6 +159,117 @@ namespace Microsoft.UI.Xaml.Controls
 				s_selectionMap[groupName] = new WeakReference<RadioMenuFlyoutItem>(this);
 			}
 		}
+
+		// Change to the correct visual state for the RadioMenuFlyoutItem.
+		private protected override void ChangeVisualState(
+			// true to use transitions when updating the visual state, false
+			// to snap directly to the new visual state.
+			bool bUseTransitions)
+		{
+			bool hasIconMenuItem = false;
+			bool hasMenuItemWithKeyboardAcceleratorText = false;
+			bool isKeyboardPresent = false;
+
+			var isPressed = IsPointerPressed;
+			var isPointerOver = IsPointerOver;
+			var isEnabled = IsEnabled;
+			var isChecked = IsChecked;
+			var focusState = FocusState;
+			var shouldBeNarrow = GetShouldBeNarrow();
+			var spPresenter = GetParentMenuFlyoutPresenter();
+
+			if (spPresenter is not null)
+			{
+				hasIconMenuItem = spPresenter.GetContainsIconItems();
+				hasMenuItemWithKeyboardAcceleratorText = spPresenter.GetContainsItemsWithKeyboardAcceleratorText();
+			}
+
+			// We only care about finding if we have a keyboard if we also have a menu item with accelerator text,
+			// since if we don't have any menu items with accelerator text, we won't be showing any accelerator text anyway.
+			if (hasMenuItemWithKeyboardAcceleratorText)
+			{
+				isKeyboardPresent = DXamlCore.Current.IsKeyboardPresent;
+			}
+
+			// CommonStates
+			if (!isEnabled)
+			{
+				VisualStateManager.GoToState(this, "Disabled", bUseTransitions);
+			}
+			else if (isPressed)
+			{
+				VisualStateManager.GoToState(this, "Pressed", bUseTransitions);
+			}
+			else if (isPointerOver)
+			{
+				VisualStateManager.GoToState(this, "PointerOver", bUseTransitions);
+			}
+			else
+			{
+				VisualStateManager.GoToState(this, "Normal", bUseTransitions);
+			}
+
+			// FocusStates
+			if (FocusState.Unfocused != focusState && isEnabled)
+			{
+				if (FocusState.Pointer == focusState)
+				{
+					VisualStateManager.GoToState(this, "PointerFocused", bUseTransitions);
+				}
+				else
+				{
+					VisualStateManager.GoToState(this, "Focused", bUseTransitions);
+				}
+			}
+			else
+			{
+				VisualStateManager.GoToState(this, "Unfocused", bUseTransitions);
+			}
+
+			// CheckStates
+			if (isChecked && hasIconMenuItem)
+			{
+				VisualStateManager.GoToState(this, "CheckedWithIcon", bUseTransitions);
+			}
+			else if (hasIconMenuItem)
+			{
+				VisualStateManager.GoToState(this, "UncheckedWithIcon", bUseTransitions);
+			}
+			else if (isChecked)
+			{
+				VisualStateManager.GoToState(this, "Checked", bUseTransitions);
+			}
+			else
+			{
+				VisualStateManager.GoToState(this, "Unchecked", bUseTransitions);
+			}
+
+			// PaddingSizeStates
+			if (shouldBeNarrow)
+			{
+				VisualStateManager.GoToState(this, "NarrowPadding", bUseTransitions);
+			}
+			else
+			{
+				VisualStateManager.GoToState(this, "DefaultPadding", bUseTransitions);
+			}
+
+			// We'll make the accelerator text visible if any item has accelerator text,
+			// as this causes the margin to be applied which reserves space, ensuring that accelerator text
+			// in one item won't be at the same horizontal position as label text in another item.
+			if (hasMenuItemWithKeyboardAcceleratorText && isKeyboardPresent)
+			{
+				VisualStateManager.GoToState(this, "KeyboardAcceleratorTextVisible", bUseTransitions);
+			}
+			else
+			{
+				VisualStateManager.GoToState(this, "KeyboardAcceleratorTextCollapsed", bUseTransitions);
+			}
+		}
+
+		// Radio menu items expose the same toggle automation surface as ToggleMenuFlyoutItem,
+		// matching WinUI where RadioMenuFlyoutItem secretly derives from ToggleMenuFlyoutItem.
+		protected override AutomationPeer OnCreateAutomationPeer() => new ToggleMenuFlyoutItemAutomationPeer(this);
 
 		private static void OnAreCheckStatesEnabledPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{

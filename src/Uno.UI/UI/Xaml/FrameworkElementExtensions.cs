@@ -12,9 +12,6 @@ using Microsoft.UI.Xaml;
 using IFrameworkElement = Microsoft.UI.Xaml.FrameworkElement;
 using IBinder = Microsoft.UI.Xaml.FrameworkElement;
 using Microsoft.UI.Xaml.Data;
-#elif XAMARIN
-using Microsoft.UI.Xaml.Data;
-using Uno.UI.DataBinding;
 #else
 using Microsoft.UI.Xaml.Data;
 #endif
@@ -321,46 +318,6 @@ namespace Microsoft.UI.Xaml
 
 			return false;
 		}
-
-#if __WASM__
-		/// <summary>
-		/// This method retrieves the actual border thickness of given FrameworkElement.
-		/// Note that for Control.BorderThickness is not actually applied unless
-		/// it is used somewhere within the ControlTemplate.
-		/// </summary>
-		/// <param name="frameworkElement">Framework element.</param>
-		/// <param name="borderThickness">Thickness.</param>
-		/// <returns>Whether the given element has an actual border.</returns>
-		internal static bool TryGetActualBorderThickness(this IFrameworkElement frameworkElement, out Thickness borderThickness)
-		{
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Panel_Available && frameworkElement is Panel { BorderBrushInternal: not null } p)
-			{
-				borderThickness = p.BorderThicknessInternal;
-				return true;
-			}
-
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_ContentPresenter_Available && frameworkElement is ContentPresenter { BorderBrush: not null } cp)
-			{
-				borderThickness = cp.BorderThickness;
-				return true;
-			}
-
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Border_Available && frameworkElement is Border { BorderBrush: not null } b)
-			{
-				borderThickness = b.BorderThickness;
-				return true;
-			}
-
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_CalendarViewDayItem_Available && frameworkElement is CalendarViewDayItem calendarViewDayItem)
-			{
-				borderThickness = calendarViewDayItem.EffectiveBorderThickness;
-				return true;
-			}
-
-			borderThickness = default;
-			return false;
-		}
-#endif
 
 		internal static bool TryGetBorderThickness(this IFrameworkElement frameworkElement, out Thickness borderThickness)
 		{

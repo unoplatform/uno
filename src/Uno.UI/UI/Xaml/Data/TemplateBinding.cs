@@ -3,11 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-#if XAMARIN
-using IValueConverter = Microsoft.UI.Xaml.Data.IValueConverter;
-#else
-#endif
-
 namespace Microsoft.UI.Xaml.Data
 {
 	/// <summary>

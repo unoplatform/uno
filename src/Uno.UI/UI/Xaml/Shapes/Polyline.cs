@@ -34,9 +34,6 @@ namespace Microsoft.UI.Xaml.Shapes
 		#endregion
 
 		public Polyline()
-#if __WASM__
-			: base("polyline")
-#endif
 		{
 			Points = new PointCollection();
 		}

@@ -3,6 +3,13 @@ set -x #echo on
 set -euo pipefail
 IFS=$'\n\t'
 
+if [ `uname` = "Darwin" ]; then
+	echo "uname -a:"
+	uname -a
+	echo "arch:"
+	arch
+fi
+
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
 
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-macos-runtimetests-$UITEST_RUNTIME_TEST_GROUP.txt
@@ -18,6 +25,16 @@ if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 fi
 
 cd $SamplesAppArtifactPath
+
+mkdir -p "$BUILD_SOURCESDIRECTORY/build/uitests-failure-results"
+
+# https://github.com/dotnet/runtime/blob/main/docs/design/coreclr/botr/xplat-minidump-generation.md#configurationpolicy
+export DOTNET_DbgEnableMiniDump=1
+export DOTNET_DbgMiniDumpName="$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/coredump-macos.%p"
+export DOTNET_CreateDumpDiagnostics=1
+export DOTNET_CreateDumpLogToFile="$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/createdump-macos.log"
+export DOTNET_EnableCrashReport=1
+
 dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE
 
 ## Export the failed tests list for reuse in a pipeline retry

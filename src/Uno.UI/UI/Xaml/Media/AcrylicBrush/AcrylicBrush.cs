@@ -118,7 +118,7 @@ namespace Microsoft.UI.Xaml.Media
 					// Due to the fact that additional subviews are added to acrylic owner views
 					// on platforms other than WASM and Skia, we default to using fallback where not completely safe
 					// When this is explicitly set to false, Acrylic will be displayed
-#if __WASM__ || __SKIA__
+#if __SKIA__
 					false
 #else
 					true

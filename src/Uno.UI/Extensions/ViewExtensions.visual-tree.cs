@@ -19,14 +19,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
 using Uno.Extensions;
 
-#if __APPLE_UIKIT__
-using UIKit;
-using _View = UIKit.UIView;
-#elif __ANDROID__
-using _View = Android.Views.View;
-#else
 using _View = Microsoft.UI.Xaml.DependencyObject;
-#endif
 
 using static System.Reflection.BindingFlags;
 using static Uno.UI.Extensions.PrettyPrint;
@@ -133,18 +126,6 @@ static partial class ViewExtensions
 			}
 #endif
 #if false // native layout coordinates
-#if __ANDROID__
-			if (x is Android.Views.View v)
-			{
-				yield return $"LTRB={v.Left},{v.Top},{v.Right},{v.Bottom}";
-			}
-#elif __APPLE_UIKIT__
-			if (x is _View view && view.Superview is { })
-			{
-				var abs = view.Superview.ConvertPointToView(view.Frame.Location, toView: null);
-				yield return $"Abs=[Rect {view.Frame.Width:0.#}x{view.Frame.Height:0.#}@{abs.X:0.#},{abs.Y:0.#}]";
-			}
-#endif
 #endif
 #if true // framework layout properties
 			if (x is FrameworkElement fe)
@@ -360,45 +341,6 @@ static partial class ViewExtensions
 
 	// note: methods for retrieving children/ancestors exist with varying signatures.
 	// re-implementing them with unified & more inclusive signature for convenience.
-#if __APPLE_UIKIT__
-	internal static IEnumerable<_View> EnumerateAncestors(this _View? o)
-	{
-		if (o is null) yield break;
-		while (o.Superview is _View parent)
-		{
-			yield return o = parent;
-		}
-	}
-
-	internal static IEnumerable<_View> EnumerateChildren(this _View? o)
-	{
-		if (o is null) return Enumerable.Empty<_View>();
-		return o.Subviews;
-	}
-#elif __ANDROID__
-	internal static IEnumerable<_View> EnumerateAncestors(this _View? o)
-	{
-		if (o is null) yield break;
-
-		while (o.Parent is _View parent)
-		{
-			yield return o = parent;
-		}
-	}
-
-	internal static IEnumerable<_View> EnumerateChildren(this _View? reference)
-	{
-		if (reference is Android.Views.ViewGroup vg)
-		{
-			return Enumerable
-				.Range(0, vg.ChildCount)
-				.Select(vg.GetChildAt)
-				.Where(x => x != null).Cast<_View>();
-		}
-
-		return Enumerable.Empty<_View>();
-	}
-#else
 	internal static IEnumerable<_View> EnumerateAncestors(this _View? o)
 	{
 		if (o is null) yield break;
@@ -414,5 +356,4 @@ static partial class ViewExtensions
 			.Range(0, VisualTreeHelper.GetChildrenCount(reference))
 			.Select(x => VisualTreeHelper.GetChild(reference, x));
 	}
-#endif
 }

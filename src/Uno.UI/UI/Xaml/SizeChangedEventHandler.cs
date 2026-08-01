@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-#if __ANDROID__
 using _Size = Windows.Foundation.Size;
-#elif __APPLE_UIKIT__
-using _Size = Windows.Foundation.Size;
-#else
-using _Size = Windows.Foundation.Size;
-#endif
 
 namespace Microsoft.UI.Xaml
 {

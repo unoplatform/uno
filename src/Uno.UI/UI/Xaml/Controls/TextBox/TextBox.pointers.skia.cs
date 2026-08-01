@@ -33,7 +33,7 @@ public partial class TextBox
 		base.OnPointerMoved(e);
 		e.Handled = true;
 
-		if (!_isSkiaTextBox || !HasPointerCapture)
+		if (!HasPointerCapture)
 		{
 			return;
 		}
@@ -128,11 +128,6 @@ public partial class TextBox
 		_isPressed = true;
 		TrySetCurrentlyTyping(false);
 
-		if (!_isSkiaTextBox)
-		{
-			return;
-		}
-
 		var currentPoint = args.GetCurrentPoint(null);
 		if (args.Pointer.PointerDeviceType == PointerDeviceType.Touch)
 		{
@@ -202,13 +197,6 @@ public partial class TextBox
 			return;
 		}
 		_isPressed = false;
-
-		if (!_isSkiaTextBox)
-		{
-			// Touch selection is handled by the native control for the overlay TextBox; the press side
-			// never runs for it, so _lastPointerDown is left uninitialized here.
-			return;
-		}
 
 		if (args.Pointer.PointerDeviceType is not PointerDeviceType.Touch)
 		{
@@ -354,8 +342,7 @@ public partial class TextBox
 	// Mouse/pen right-click and the Desktop convention keep the default context flyout.
 	private protected override void OnContextRequestedImpl(ContextRequestedEventArgs args)
 	{
-		if (_isSkiaTextBox
-			&& args.IsTouchInput
+		if (args.IsTouchInput
 			&& TouchSelectionConvention != TouchTextSelectionConvention.Desktop
 			&& args.TryGetPosition(TextBoxView.DisplayBlock, out var displayBlockPoint))
 		{

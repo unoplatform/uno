@@ -7,7 +7,7 @@ namespace Windows.Graphics;
 /// </summary>
 public partial struct RectInt32
 {
-	internal RectInt32(int x, int y, int width, int height)
+	public RectInt32(int x, int y, int width, int height)
 	{
 		X = x;
 		Y = y;

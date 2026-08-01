@@ -268,7 +268,7 @@ namespace Microsoft.UI.Xaml
 				m_size = new Size(0, 0);
 			}
 
-			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath && this.GetParent() is UIElement parent)
+			if (this.GetParent() is UIElement parent)
 			{
 				// Need to invalidate the parent when the visibility changes to ensure its
 				// algorithm is doing its layout properly.

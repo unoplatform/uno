@@ -7,7 +7,7 @@ namespace Windows.Graphics;
 /// </summary>
 public partial struct SizeInt32
 {
-	internal SizeInt32(int width, int height)
+	public SizeInt32(int width, int height)
 	{
 		Width = width;
 		Height = height;

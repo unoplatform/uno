@@ -56,16 +56,6 @@ namespace Uno.UI.DataBinding
 				{
 					if (!IsDisposed)
 					{
-						// Historically, Uno was processing property changes using INPC. Since the inclusion of DependencyObject
-						// values changes are now filtered by DependencyProperty updates, making equality updates at this location
-						// detrimental to the use of INPC events processing.
-						// In case of an INPC, the bindings engine must reevaluate the path completely from the raising point, regardless
-						// of the reference being changed.
-						if (FeatureConfiguration.Binding.IgnoreINPCSameReferences && !DependencyObjectStore.AreDifferent(DataContext, value))
-						{
-							return;
-						}
-
 						var weakDataContext = WeakReferencePool.RentWeakReference(this, value);
 						SetWeakDataContext(weakDataContext);
 					}
@@ -206,12 +196,7 @@ namespace Uno.UI.DataBinding
 					Next.DataContext = newValue;
 				}
 
-				if (shouldRaiseValueChanged
-					// If IgnoreINPCSameReferences is true, we will RaiseValueChanged only if previousValue != newValue
-					// If IgnoreINPCSameReferences is false, we are not going to compare previousValue and newValue (which is the correct behavior).
-					// In Uno 6, we should remove the following line.
-					&& (!FeatureConfiguration.Binding.IgnoreINPCSameReferences || previousValue != newValue)
-					)
+				if (shouldRaiseValueChanged)
 				{
 					// We should call RaiseValueChanged even if oldValue == newValue.
 					// It's the responsibility of the user to only raise PropertyChanged event when needed.
@@ -393,13 +378,6 @@ namespace Uno.UI.DataBinding
 
 					if (handlerDisposable != null)
 					{
-						if (FeatureConfiguration.Binding.IgnoreINPCSameReferences)
-						{
-							// GetSourceValue calls into user code.
-							// Avoid this if PreviousValue isn't going to be used at all.
-							valueHandler.PreviousValue = GetSourceValue();
-						}
-
 						// We need to keep the reference to the updatePropertyHandler
 						// in this disposable. The reference is attached to the source's
 						// object lifetime, to the target (bound) object.

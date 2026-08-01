@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Android.Content;
-using Android.Preferences;
 using Uno;
 using Uno.UI;
 using Windows.Foundation.Collections;
@@ -26,7 +25,10 @@ namespace Windows.Storage
 			}
 
 			private ISharedPreferences CreatePreferences()
-				=> PreferenceManager.GetDefaultSharedPreferences(ApplicationData.GetAndroidAppContext())!;
+			{
+				var context = ApplicationData.GetAndroidAppContext();
+				return context.GetSharedPreferences(context.PackageName + "_preferences", FileCreationMode.Private)!;
+			}
 
 			public object this[string key]
 			{

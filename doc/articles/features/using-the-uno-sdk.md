@@ -270,7 +270,7 @@ By default, the Uno.Sdk specifies a set of OS Platform versions, as follows:
 
 | Target | `SupportedOSPlatformVersion` |
 |--------|----------------------------|
-| Android | 21 |
+| Android | 24 |
 | iOS | 14.2 |
 | macOS | 10.14 |
 | tvOS  | 14.2 |
@@ -282,7 +282,7 @@ You can set this property in a `Choose` MSBuild block in order to alter its valu
  <Choose>
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
       <PropertyGroup>
-        <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
       </PropertyGroup>
     </When>
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">

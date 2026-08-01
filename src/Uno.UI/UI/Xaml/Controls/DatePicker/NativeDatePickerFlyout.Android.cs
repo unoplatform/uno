@@ -47,7 +47,7 @@ public
 
 	internal DateTimeOffset NativeDialogDate => _dialog.DatePicker.DateTime;
 
-	protected internal override void Open()
+	internal override void Open()
 	{
 		var date = Date;
 		// If we're setting the date to the null sentinel value,

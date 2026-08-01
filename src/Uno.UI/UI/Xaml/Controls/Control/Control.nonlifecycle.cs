@@ -15,19 +15,10 @@ partial class Control
 	/// <summary>
 	/// Defines a method that will request the update of the control's template and request layout update.
 	/// </summary>
-	/// <param name="forceUpdate">If true, forces an update even if the control has no parent.</param>
-	internal void SetUpdateControlTemplate(bool forceUpdate = false)
+	internal void SetUpdateControlTemplate()
 	{
-		if (
-			!Uno.UI.FeatureConfiguration.Control.UseLegacyLazyApplyTemplate ||
-			forceUpdate ||
-			this.HasParent() ||
-			CanCreateTemplateWithoutParent
-		)
-		{
-			UpdateTemplate();
-			this.InvalidateMeasure();
-		}
+		UpdateTemplate();
+		this.InvalidateMeasure();
 	}
 
 	internal void TryCallOnApplyTemplate()
@@ -46,7 +37,7 @@ partial class Control
 	public bool ApplyTemplate()
 	{
 		var currentTemplateRoot = _templatedRoot;
-		SetUpdateControlTemplate(forceUpdate: true);
+		SetUpdateControlTemplate();
 
 		// When .ApplyTemplate is called manually, we should not defer the call to OnApplyTemplate
 		TryCallOnApplyTemplate();

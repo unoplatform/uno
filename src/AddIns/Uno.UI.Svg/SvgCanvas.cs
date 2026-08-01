@@ -35,6 +35,7 @@ using SkiaPaintEventArgs = SkiaSharp.Views.UWP.SKPaintGLSurfaceEventArgs;
 #endif
 #endif
 
+
 namespace Uno.UI.Svg;
 
 internal partial class SvgCanvas : SkiaCanvas
@@ -138,7 +139,7 @@ internal partial class SvgCanvas : SkiaCanvas
 		{
 			var sourceRect = new SKRect(0, 0, bitmap.Width, bitmap.Height);
 			var destRect = new SKRect(0, 0, width, height);
-			canvas.DrawBitmap(bitmap, sourceRect, destRect);
+			canvas.DrawBitmap(bitmap, sourceRect, destRect, SKSamplingOptions.Default, null);
 		}
 		else if (_svgProvider.SkSvg?.Picture is { } picture)
 		{

@@ -174,7 +174,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
-		internal override bool TryGetSetterValue(out object? value, DependencyObject owner)
+		internal override bool TryGetSetterValue(out object? value)
 		{
 			if (ThemeResourceKey.HasValue)
 			{

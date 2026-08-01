@@ -1,23 +1,24 @@
 ﻿using SkiaSharp;
 using Uno.UI.UI.Xaml.Media;
 
+
 namespace Microsoft.UI.Xaml.Media
 {
 	partial class GeometryGroup
 	{
 		internal override SKPath GetSKPath()
 		{
-			var path = new SKPath();
+			var builder = new SKPathBuilder();
 
 			foreach (var geometry in Children)
 			{
 				// Use GetTransformedSKPath so each child's own Transform is applied
 				var geometryPath = geometry.GetTransformedSKPath();
-				path.AddPath(geometryPath);
+				builder.AddPath(geometryPath, SKPathAddMode.Append);
 			}
 
-			path.FillType = FillRule.ToSkiaFillType();
-			return path;
+			builder.FillType = FillRule.ToSkiaFillType();
+			return builder.Detach();
 		}
 	}
 }

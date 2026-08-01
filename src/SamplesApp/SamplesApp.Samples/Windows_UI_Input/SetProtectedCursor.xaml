@@ -23,7 +23,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel Margin="20">
-            <TextBlock Text="Tests for all platforms. Note for Wasm, Uno.UI.FeatureConfiguration.Cursors.UseHandForInteraction will need to be set to false to match the expected behavior." />
+            <TextBlock Text="Tests for all platforms." />
             <TextBlock Text="- Test 1: Hover the Button. Expected behavior: Cursor should show SizeWestEast cursor." />
             <TextBlock Text="- Test 2: Hover the Button and move to hover the yellow area. Expected behavior: Cursor should show SizeWestEast cursor the entire time." />
             <TextBlock Text="- Test 3: Hover the Button and move to hover the blue area. Expected behavior: Cursor should show SizeWestEast cursor first then show back the default Arrow cursor when hovering the blue area." />
@@ -32,7 +32,7 @@
             <TextBlock Text="- Test 6: Hover the pink Border and move to hover the yellow area. Expected behavior: Cursor should show Wait cursor the entire time." />
             <TextBlock Text="- Test 7: Hover the pink Border and move to hover the blue area. Expected behavior: Cursor should show Wait cursor first then show back the default Arrow cursor when hovering the blue area." />
             <TextBlock Text="- Test 8: Hover the pink border, press and keep pressing when moving to hover the blue area. Expected behavior: Cursor should show Wait cursor the entire time." />
-            <TextBlock Margin="0,10,0,0" Text="Tests for Wasm only. Uno.UI.FeatureConfiguration.Cursors.UseHandForInteraction will need to be set to true to match the expected behavior." />
+            <TextBlock Margin="0,10,0,0" Text="Tests for Wasm only." />
             <TextBlock Text="- Test 1: Hover the Button. Expected behavior: Cursor should show Hand cursor." />
             <TextBlock Text="- Test 2: Hover the Button and move to hover the yellow area. Expected behavior: Cursor should show Hand cursor the entire time." />
             <TextBlock Text="- Test 3: Hover the Button and move to hover the blue area. Expected behavior: Cursor should show Hand cursor first then show back the default Arrow cursor when hovering the blue area." />

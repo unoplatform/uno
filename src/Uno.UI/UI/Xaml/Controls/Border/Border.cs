@@ -9,20 +9,7 @@ using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Markup;
 using Uno.UI.Xaml;
-#if __ANDROID__
-using Android.Views;
-using Android.Graphics;
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-using UIKit;
-#else
 using Color = System.Drawing.Color;
-using View = Microsoft.UI.Xaml.UIElement;
-#endif
 using _Debug = System.Diagnostics.Debug;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
@@ -42,7 +29,7 @@ public partial class Border : FrameworkElement
 #endif
 	}
 
-#if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
+#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 	public BrushTransition BackgroundTransition { get; set; }
@@ -54,24 +41,6 @@ public partial class Border : FrameworkElement
 #if UNO_HAS_BORDER_VISUAL
 	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 #endif
-
-	/// <summary>
-	/// Support for the C# collection initializer style.
-	/// Allows items to be added like this
-	/// new Border
-	/// {
-	///    new Border()
-	/// }
-	/// </summary>
-	/// <param name="view"></param>
-	public
-#if __APPLE_UIKIT__
-		new
-#endif
-		void Add(View view)
-	{
-		Child = VisualTreeHelper.TryAdaptNative(view);
-	}
 
 	protected override bool IsSimpleLayout => true;
 
@@ -275,21 +244,12 @@ public partial class Border : FrameworkElement
 	private IDisposable _brushChangedSubscription;
 #endif
 
-#if __ANDROID__
-	//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)
-	private Brush _borderBrushStrongReference;
-#endif
-
 	public Brush BorderBrush
 	{
 		get => GetBorderBrushValue();
 		set
 		{
 			SetBorderBrushValue(value);
-
-#if __ANDROID__
-			_borderBrushStrongReference = value;
-#endif
 		}
 	}
 
@@ -310,19 +270,24 @@ public partial class Border : FrameworkElement
 			UpdateBorder();
 		}));
 #endif
-
-#if __WASM__
-		if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
-		{
-			// The transition from null to non-null (and vice-versa) affects child arrange on Wasm when non-zero BorderThickness is specified.
-			Child?.InvalidateArrange();
-		}
-#endif
 	}
 
 	#endregion
 
-	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+	public Brush Background
+	{
+		get => (Brush)GetValue(BackgroundProperty);
+		set => SetValue(BackgroundProperty, value);
+	}
+
+	public static DependencyProperty BackgroundProperty { get; } =
+		DependencyProperty.Register(
+			nameof(Background),
+			typeof(Brush),
+			typeof(Border),
+			new FrameworkPropertyMetadata(null, propertyChangedCallback: (s, e) => ((Border)s)?.OnBackgroundChanged(e)));
+
+	private protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 	{
 #if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();

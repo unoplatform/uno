@@ -73,12 +73,3 @@ If you wish to customize the overlay color, add the following to your top-level 
 <SolidColorBrush x:Key="TimePickerLightDismissOverlayBackground"
                  Color="Pink" />
 ```
-
-Since **iOS14** the native `TimePicker` changed the way it's presented. By default iOS14 devices will display this new style.  You can still force the previous style (the one found in iOS13 or earlier) by adding the following at your `App.cs` or `App.xaml.cs` class:
-
-```csharp
-Uno.UI.FeatureConfiguration.TimePicker.UseLegacyStyle = true;
-```
-
-> [!IMPORTANT]
-> This feature flag is required and will only affect iOS 14 devices. As of **iOS 15**, the preferred style for the DatePicker is again the one found in iOS13 and earlier.

@@ -328,7 +328,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				if (saveRestoreAndCleanCanvas)
 				{
 					canvas.Save();
-					canvas.Clear(GetBackgroundColor());
+					canvas.Clear(SKColors.Transparent);
 				}
 
 				canvas.Translate((float)x, (float)y);
@@ -350,16 +350,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				}
 #endif
 			}
-		}
-
-		private SKColor GetBackgroundColor()
-		{
-			if (_player?.Background is SolidColorBrush sb)
-			{
-				return new SKColor(alpha: sb.ColorWithOpacity.A, red: sb.ColorWithOpacity.R, green: sb.ColorWithOpacity.G, blue: sb.ColorWithOpacity.B);
-			}
-
-			return SKColors.Transparent;
 		}
 
 		private TimeSpan GetFrameTime()

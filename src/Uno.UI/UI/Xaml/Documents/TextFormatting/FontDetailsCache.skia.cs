@@ -33,14 +33,29 @@ internal static class FontDetailsCache
 		SKFontStyleWidth Width,
 		SKFontStyleSlant Slant);
 
+	// Standard OpenType variation axes that map to the WinUI font properties.
+	private static readonly SKFourByteTag WeightAxis = SKFourByteTag.Parse("wght");
+	private static readonly SKFourByteTag WidthAxis = SKFourByteTag.Parse("wdth");
+	private static readonly SKFourByteTag ItalicAxis = SKFourByteTag.Parse("ital");
+	private static readonly SKFourByteTag SlantAxis = SKFourByteTag.Parse("slnt");
+
 	private static readonly Dictionary<FontEntry, Task<SKTypeface?>> _fontCache = new();
 	private static readonly object _fontCacheGate = new();
+
+	// Data of loaded manifest-free embedded fonts, keyed by source uri. A variable font is a single file
+	// shared by every weight, so caching the data lets a new weight be resolved synchronously instead of
+	// reloading the file asynchronously (which briefly renders the default font — flicker when animating
+	// FontWeight).
+	private static readonly Dictionary<string, SKData> _fontDataByUri = new();
+	private static readonly object _fontDataGate = new();
 	private static readonly IFontFallbackService? _fontFallbackService =
 		FeatureConfiguration.Font.FallbackService
 		?? (ApiExtensibility.CreateInstance<IFontFallbackService>(typeof(FontDetailsCache), out var service) ? service : null);
 
-	private static async Task<SKTypeface?> LoadTypefaceFromApplicationUriAsync(Uri uri, FontWeight weight, FontStyle style, FontStretch stretch)
+	private static async Task<SKTypeface?> LoadTypefaceFromApplicationUriAsync(Uri uri, FontWeight weight, FontStyle style, FontStretch stretch, string? familyNameHint)
 	{
+		var sourceUri = uri.OriginalString;
+		var usedManifest = false;
 		try
 		{
 			var manifestUri = new Uri(uri.OriginalString + ".manifest");
@@ -50,6 +65,7 @@ internal static class FontDetailsCache
 				var manifestFile = await StorageFile.GetFileFromApplicationUriAsync(manifestUri);
 				using var manifestStream = await manifestFile.OpenStreamForReadAsync();
 				uri = new Uri(FontManifestHelpers.GetFamilyNameFromManifest(manifestStream, weight, style, stretch));
+				usedManifest = true;
 			}
 		}
 		catch (Exception e)
@@ -67,8 +83,26 @@ internal static class FontDetailsCache
 
 		try
 		{
-			using var stream = await AppDataUriEvaluator.ToStream(uri, CancellationToken.None);
-			return SKTypeface.FromStream(stream);
+			SKData data;
+			using (var stream = await AppDataUriEvaluator.ToStream(uri, CancellationToken.None))
+			using (var buffer = new MemoryStream())
+			{
+				await stream.CopyToAsync(buffer, CancellationToken.None);
+				data = SKData.CreateCopy(buffer.ToArray());
+			}
+
+			// A manifest maps each weight/style to a different file, so only cache when there's none: then
+			// the source uri identifies a single file shared by all weights, letting other weights resolve
+			// synchronously via the fast path in GetFontInternal.
+			if (!usedManifest)
+			{
+				lock (_fontDataGate)
+				{
+					_fontDataByUri[sourceUri] = data;
+				}
+			}
+
+			return CreateTypeface(data, familyNameHint);
 		}
 		catch (Exception e)
 		{
@@ -76,6 +110,57 @@ internal static class FontDetailsCache
 			return null;
 		}
 	}
+
+	// Upper bound on the number of faces probed in a font collection; guards against a malformed file
+	// (or a backend that doesn't return null past the last face) causing an unbounded loop.
+	private const int MaxFontCollectionFaces = 256;
+
+	/// <summary>
+	/// Builds the requested face from already-loaded font <paramref name="data"/>: face 0, or — when a
+	/// family-name hint is given — the collection face whose family/PostScript name matches it.
+	/// </summary>
+	private static SKTypeface? CreateTypeface(SKData data, string? familyNameHint) =>
+		string.IsNullOrEmpty(familyNameHint)
+			? SKTypeface.FromData(data, 0)
+			: SelectFaceByFamily(data, familyNameHint);
+
+	/// <summary>
+	/// Loads face 0 of <paramref name="data"/>. If the file is a TrueType/OpenType collection (.ttc/.otc),
+	/// probes its faces and returns the one whose family or PostScript name matches <paramref name="familyNameHint"/>,
+	/// falling back to face 0 when none match. <paramref name="data"/> is not disposed (the returned typeface
+	/// keeps the underlying data alive, and it may be shared by the data cache).
+	/// </summary>
+	private static SKTypeface? SelectFaceByFamily(SKData data, string familyNameHint)
+	{
+		var typeface = SKTypeface.FromData(data, 0);
+		if (typeface is null || FaceMatches(typeface, familyNameHint))
+		{
+			return typeface;
+		}
+
+		for (var index = 1; index < MaxFontCollectionFaces; index++)
+		{
+			var candidate = SKTypeface.FromData(data, index);
+			if (candidate is null)
+			{
+				break; // No more faces in the collection.
+			}
+
+			if (FaceMatches(candidate, familyNameHint))
+			{
+				typeface.Dispose();
+				return candidate;
+			}
+
+			candidate.Dispose();
+		}
+
+		return typeface; // The hint didn't match any face; use the default face.
+	}
+
+	private static bool FaceMatches(SKTypeface typeface, string familyNameHint) =>
+		string.Equals(typeface.FamilyName, familyNameHint, StringComparison.OrdinalIgnoreCase) ||
+		string.Equals(typeface.PostScriptName, familyNameHint, StringComparison.OrdinalIgnoreCase);
 
 	private static async Task<SKTypeface?> GetFontInternal(
 		string name,
@@ -87,15 +172,30 @@ internal static class FontDetailsCache
 		var skWidth = stretch.ToSkiaWidth();
 		var skSlant = style.ToSkiaSlant();
 
+		// A font family can be specified as "<file-uri>#<family name>". The part after '#' selects a
+		// specific family within the file, which matters for TrueType/OpenType collections (.ttc/.otc).
 		var hashIndex = name.IndexOf('#');
+		string? familyNameHint = null;
 		if (hashIndex > 0)
 		{
+			familyNameHint = name.Substring(hashIndex + 1);
 			name = name.Substring(0, hashIndex);
 		}
 
 		if (Uri.TryCreate(name, UriKind.Absolute, out var uri))
 		{
-			return await LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch);
+			SKData? cachedData;
+			lock (_fontDataGate)
+			{
+				_fontDataByUri.TryGetValue(uri.OriginalString, out cachedData);
+			}
+
+			// If the font file is already loaded, build this weight's face synchronously so we don't fall
+			// back to the default font for a frame (flicker) while an async reload completes.
+			var uriTypeface = cachedData is not null
+				? CreateTypeface(cachedData, familyNameHint)
+				: await LoadTypefaceFromApplicationUriAsync(uri, weight, style, stretch, familyNameHint);
+			return uriTypeface is null ? null : ApplyVariableFontAxes(uriTypeface, weight, stretch, style);
 		}
 
 		SKTypeface? fallbackTypeface = null;
@@ -115,7 +215,90 @@ internal static class FontDetailsCache
 		}
 
 		// FromFontFamilyName may return null: https://github.com/mono/SkiaSharp/issues/1058
-		return fallbackTypeface ?? SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant);
+		// It can also return the empty typeface on some platforms when the family isn't found; treat both
+		// as "not found" so the caller falls back to the default font.
+		var typeface = fallbackTypeface ?? SKTypeface.FromFamilyName(name, skWeight, skWidth, skSlant);
+		if (typeface is null || typeface.IsEmpty)
+		{
+			return null;
+		}
+
+		return ApplyVariableFontAxes(typeface, weight, stretch, style);
+	}
+
+	/// <summary>
+	/// If <paramref name="typeface"/> is a variable font, returns an instance positioned on its weight/width/
+	/// slant/italic axes to match the requested style. Static fonts (and fonts already at the requested
+	/// position) are returned unchanged.
+	/// </summary>
+	private static SKTypeface ApplyVariableFontAxes(SKTypeface typeface, FontWeight weight, FontStretch stretch, FontStyle style)
+	{
+		try
+		{
+			var axes = typeface.VariationDesignParameters;
+			if (axes is not { Length: > 0 })
+			{
+				return typeface; // Not a variable font.
+			}
+
+			List<SKFontVariationPositionCoordinate>? coordinates = null;
+			foreach (var axis in axes)
+			{
+				float target;
+				if (axis.Tag == WeightAxis)
+				{
+					target = weight.Weight;
+				}
+				else if (axis.Tag == WidthAxis)
+				{
+					target = stretch.ToVariableFontWidth();
+				}
+				else if (axis.Tag == ItalicAxis)
+				{
+					target = style == FontStyle.Italic ? 1f : 0f;
+				}
+				else if (axis.Tag == SlantAxis)
+				{
+					// The slnt axis is the slant in counter-clockwise degrees; italic/oblique fonts slant
+					// the other way, so a typical oblique sits around -10° (clamped to what the font allows).
+					target = style is FontStyle.Italic or FontStyle.Oblique ? -10f : 0f;
+				}
+				else
+				{
+					continue; // Leave any other axis (e.g. opsz) at its default.
+				}
+
+				target = Math.Clamp(target, Math.Min(axis.Min, axis.Max), Math.Max(axis.Min, axis.Max));
+				if (Math.Abs(target - axis.Default) < 0.01f)
+				{
+					continue; // Already at the default for this axis.
+				}
+
+				(coordinates ??= new()).Add(new SKFontVariationPositionCoordinate { Axis = axis.Tag, Value = target });
+			}
+
+			if (coordinates is null)
+			{
+				return typeface; // Nothing to adjust.
+			}
+
+			var arguments = new SKFontArguments();
+			arguments.VariationDesignPosition = coordinates.ToArray();
+
+			// For a face inside a collection (.ttc/.otc), Clone() silently ignores the requested variation
+			// unless the source face's collection index is carried in the arguments (it defaults to 0).
+			using (typeface.OpenStream(out var ttcIndex))
+			{
+				arguments.CollectionIndex = ttcIndex;
+			}
+
+			return typeface.Clone(arguments) ?? typeface;
+		}
+		catch (Exception e)
+		{
+			typeof(FontDetailsCache).LogError()?.Error("Failed to apply variable font axes", e);
+			return typeface;
+		}
 	}
 
 	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<FontDetails> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((

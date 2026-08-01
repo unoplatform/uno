@@ -3,6 +3,7 @@ using SkiaSharp;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Runtime.InteropServices;
 
+
 namespace Windows.Graphics.Imaging
 {
 	static class SoftwareBitmapExtensions
@@ -100,7 +101,7 @@ namespace Windows.Graphics.Imaging
 				throw new ArgumentException("Destionanion is ReadOnly", nameof(bitmap));
 			}
 			using var canvas = new SKCanvas(bitmap._bitmap);
-			canvas.DrawBitmap(_bitmap, 0, 0);
+			canvas.DrawBitmap(_bitmap, 0, 0, SKSamplingOptions.Default, null);
 			canvas.Flush();
 		}
 
