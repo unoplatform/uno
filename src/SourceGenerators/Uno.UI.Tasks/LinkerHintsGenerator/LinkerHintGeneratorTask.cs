@@ -158,7 +158,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				$"--trim-mode link",
 				$"--action link",
 				$"-b true",
-				$"-a {AssemblyPath} entrypoint",
+				$"-a {Path.GetFileNameWithoutExtension(AssemblyPath)} entrypoint",
 				$"-out {outputPath}",
 				rootDescriptors,
 				referencedAssemblies,
@@ -170,12 +170,23 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			File.WriteAllText(file, paramString);
 
 			Directory.CreateDirectory(OutputPath);
-
 			var res = StartProcess("dotnet", $"\"{linkerPath}\" @{file}", CurrentProjectPath);
 
-			if (!string.IsNullOrEmpty(res.error))
+			if (res.error.Count > 0)
 			{
-				Log.LogError(res.error);
+				foreach (var error in res.error)
+				{
+					Log.LogError(error);
+				}
+			}
+
+			if (res.exitCode != 0)
+			{
+				// in https://github.com/dotnet/runtime/issues/126268, the `error IL1032` messages were written to stdout!
+				foreach (var error in res.output.Where(e => e.Contains(" error ")))
+				{
+					Log.LogError(error);
+				}
 			}
 		}
 
@@ -425,7 +436,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		private string AlignPath(string outputPath)
 			=> outputPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Replace(new string(Path.DirectorySeparatorChar, 2), Path.DirectorySeparatorChar.ToString());
 
-		private (int exitCode, string output, string error) StartProcess(string executable, string parameters, string workingDirectory)
+		private (int exitCode, List<string> output, List<string> error) StartProcess(string executable, string parameters, string workingDirectory)
 		{
 			Log.LogMessage(
 				DefaultLogMessageLevel,
@@ -448,12 +459,12 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				p.StartInfo.WorkingDirectory = workingDirectory;
 			}
 
-			var output = new StringBuilder();
-			var error = new StringBuilder();
+			var output = new List<string>();
+			var error = new List<string>();
 			var elapsed = Stopwatch.StartNew();
 
-			p.OutputDataReceived += (s, e) => { if (e.Data != null) { Log.LogMessage(DefaultLogMessageLevel, $"[{elapsed.Elapsed}] {e.Data}"); output.Append(e.Data); } };
-			p.ErrorDataReceived += (s, e) => { if (e.Data != null) { Log.LogError($"[{elapsed.Elapsed}] {e.Data}"); error.Append(e.Data); } };
+			p.OutputDataReceived += (s, e) => { if (e.Data != null) { Log.LogMessage(DefaultLogMessageLevel, $"[{elapsed.Elapsed}] {e.Data}"); output.Add(e.Data); } };
+			p.ErrorDataReceived += (s, e) => { if (e.Data != null) { Log.LogError($"[{elapsed.Elapsed}] {e.Data}"); error.Add(e.Data); } };
 
 			if (p.Start())
 			{
@@ -465,7 +476,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				p.CancelOutputRead();
 				p.Close();
 
-				return (exitCore, output.ToString(), error.ToString());
+				return (exitCore, output, error);
 			}
 			else
 			{
