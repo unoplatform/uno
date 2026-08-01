@@ -16,7 +16,10 @@ namespace Uno.UI.Composition.Drawing;
 /// <remarks>
 /// This is the option-A "managed system-font lookup": correct and fully portable, but it re-implements OS font
 /// matching, so locale-specific family aliases and the platform's precise fallback ordering aren't reproduced.
-/// The index is built lazily on first use (reads font-file headers once).
+/// The index is built lazily on first use (reads font-file headers once). On platforms with no enumerable system
+/// fonts (iOS sandbox, the browser), the index is empty; pass a <c>bundledDefaultFont</c> so the provider still
+/// has a guaranteed default face. Registered as any other <see cref="IFontProvider"/> via
+/// <see cref="DrawingBackendOptions.FontProvider"/>.
 /// </remarks>
 public sealed class ManagedFontProvider : IFontProvider
 {
@@ -25,6 +28,18 @@ public sealed class ManagedFontProvider : IFontProvider
 	private readonly object _gate = new();
 	private Dictionary<string, List<FaceEntry>>? _byFamily; // family (lower-invariant) -> faces
 	private List<FaceEntry>? _allFaces;
+
+	// Optional app-bundled sfnt blob, used as the guaranteed default when no system font is available
+	// (iOS/WASM); parsed once per size.
+	private readonly byte[]? _bundledDefaultFont;
+	private readonly Dictionary<int, IFont?> _bundledDefaultBySize = new();
+
+	/// <summary>Creates a system-font provider.</summary>
+	/// <param name="bundledDefaultFont">
+	/// Optional sfnt bytes used as the default face when the system-font index is empty (iOS/WASM). Pass the app's
+	/// bundled font (e.g. Open Sans) on those platforms; leave <c>null</c> where system fonts are enumerable.
+	/// </param>
+	public ManagedFontProvider(byte[]? bundledDefaultFont = null) => _bundledDefaultFont = bundledDefaultFont;
 
 	// Loaded fonts, keyed by file + collection index + pixel size.
 	private readonly Dictionary<(string Path, int TtcIndex, int Size), ManagedFont?> _loaded = new();
@@ -123,7 +138,34 @@ public sealed class ManagedFontProvider : IFontProvider
 			}
 		}
 
-		throw new InvalidOperationException("No usable system font was found for the managed font manager.");
+		// No system fonts (iOS/WASM): fall back to the app-bundled default face if one was supplied.
+		if (GetBundledDefault(fontSize) is { } bundled)
+		{
+			return bundled;
+		}
+
+		throw new InvalidOperationException("No usable system font was found and no bundled default font was provided to the managed font provider.");
+	}
+
+	private IFont? GetBundledDefault(float fontSize)
+	{
+		if (_bundledDefaultFont is not { } data)
+		{
+			return null;
+		}
+
+		var key = (int)fontSize;
+		lock (_gate)
+		{
+			if (_bundledDefaultBySize.TryGetValue(key, out var cached))
+			{
+				return cached;
+			}
+
+			var font = ManagedFont.TryCreate(data, 0, fontSize, out var created) ? created : null;
+			_bundledDefaultBySize[key] = font;
+			return font;
+		}
 	}
 
 	private ManagedFont? Load(FaceEntry face, float fontSize)
