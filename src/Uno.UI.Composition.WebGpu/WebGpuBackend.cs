@@ -35,6 +35,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public BindGroupLayout* CompositeBgl;         // SrcOver's group(0) layout
 	public BindGroupLayout* CompositeDstInBgl;    // DstIn's group(0) layout (auto-layouts aren't interchangeable)
 	public TextureView* DummyTex;                 // 1x1 placeholder for the clip coverage binding when no path clip
+	public WebGpuTexturePool Pool;                // transient offscreen pool (reused across frames)
 	public BindGroupLayout* ImgBgl;
 	public BindGroupLayout* GradBgl;
 	// group(1) clip-uniform layouts (one per color-writing pipeline; all describe the same ClipU).
@@ -72,6 +73,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		Q = W.DeviceGetQueue(Dev);
 		CreatePipelines();
 		DummyTex = CreateColorTarget(1, 1);
+		Pool = new WebGpuTexturePool(this);
 	}
 
 	/// <summary>Reads a surface's resolved single-sample texture back to CPU as tightly-packed RGBA8 (top-down). For RTB and tests.</summary>
@@ -435,6 +437,34 @@ struct U { op: vec4<f32>, tint: vec4<f32> };
 	public void Dispose() { }
 }
 
+// Transient GPU-texture pool for the per-frame offscreens (shadow/backdrop/layer/path-coverage surfaces + blur
+// temps). BeginFrame marks all entries free; Rent reuses a free entry matching the key or creates one — so a
+// steady-state frame allocates nothing. Every renter clears (LoadOp.Clear) before writing, so reuse is safe.
+// (These offscreens stay "in use" until the frame's main pass samples them; reuse happens across frames.)
+public sealed unsafe class WebGpuTexturePool
+{
+	private readonly WebGpuDevice _d;
+	private sealed class Entry { public Texture* Tex; public TextureView* View; public int W, H, Samples; public TextureFormat Fmt; public TextureUsage Usage; public bool InUse; }
+	private readonly System.Collections.Generic.List<Entry> _entries = new();
+
+	public WebGpuTexturePool(WebGpuDevice d) => _d = d;
+
+	public void BeginFrame() { foreach (var e in _entries) { e.InUse = false; } }
+
+	public TextureView* Rent(int w, int h, int samples, TextureUsage usage, TextureFormat fmt)
+	{
+		foreach (var e in _entries)
+		{
+			if (!e.InUse && e.W == w && e.H == h && e.Samples == samples && e.Fmt == fmt && e.Usage == usage) { e.InUse = true; return e.View; }
+		}
+		var td = new TextureDescriptor { Size = new Extent3D((uint)w, (uint)h, 1), Format = fmt, MipLevelCount = 1, SampleCount = (uint)samples, Dimension = TextureDimension.Dimension2D, Usage = usage };
+		var tex = _d.W.DeviceCreateTexture(_d.Dev, ref td);
+		var view = _d.W.TextureCreateView(tex, null);
+		_entries.Add(new Entry { Tex = tex, View = view, W = w, H = h, Samples = samples, Fmt = fmt, Usage = usage, InUse = true });
+		return view;
+	}
+}
+
 public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 {
 	public Texture* Tex;
@@ -469,6 +499,16 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 	{
 		Width = width; Height = height;
 		CreateMultisampledTargets(device, width, height);
+	}
+
+	// Pooled transient offscreen: MSAA color + depth + a single-sample resolve target (sampled later), all rented
+	// from the pool so a steady-state frame allocates nothing. Dispose is a no-op (the pool reclaims on BeginFrame).
+	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, WebGpuTexturePool pool)
+	{
+		Width = width; Height = height;
+		MsaaColorView = pool.Rent(width, height, (int)WebGpuDevice.MsaaSamples, TextureUsage.RenderAttachment, device.ColorFormat);
+		DepthView = pool.Rent(width, height, (int)WebGpuDevice.MsaaSamples, TextureUsage.RenderAttachment, WebGpuDevice.DepthStencilFormat);
+		View = pool.Rent(width, height, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, device.ColorFormat);
 	}
 
 	private void CreateMultisampledTargets(WebGpuDevice device, int width, int height)
@@ -1066,7 +1106,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private TextureView* RenderPathCoverage(float[] fan, bool evenOdd)
 	{
 		var W = _d.W;
-		var cov = new WebGpuRenderSurface(_d, _s.Width, _s.Height);
+		var cov = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
 		var fanNdc = new float[fan.Length];
 		for (int i = 0; i < fan.Length; i += 2) { var n = Ndc(new Vector2(fan[i], fan[i + 1])); fanNdc[i] = n.X; fanNdc[i + 1] = n.Y; }
 		var fanBuf = MakeBuffer(fanNdc);
@@ -1108,7 +1148,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		size = new Vector2(sw, sh2);
 
 		// 1) coverage: fill the fan (stencil-then-cover, white) into an MSAA surface resolved to single-sample.
-		var cov = new WebGpuRenderSurface(_d, sw, sh2);
+		var cov = new WebGpuRenderSurface(_d, sw, sh2, _d.Pool);
 		var fanNdc = new float[sh.FanDevice.Length];
 		for (int i = 0; i < sh.FanDevice.Length; i += 2)
 		{
@@ -1140,9 +1180,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		W.QueueSubmit(_d.Q, 1, &cb);
 
 		// 2) separable blur: coverage -> temp (H) -> blur (V).
-		var tempView = _d.CreateColorTarget(sw, sh2);
+		var tempView = _d.Pool.Rent(sw, sh2, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 		BlurPass(cov.View, tempView, new Vector2(1f, 0f), new Vector2(1f / sw, 0f), sh.SigmaX);
-		var blurView = _d.CreateColorTarget(sw, sh2);
+		var blurView = _d.Pool.Rent(sw, sh2, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 		BlurPass(tempView, blurView, new Vector2(0f, 1f), new Vector2(0f, 1f / sh2), sh.SigmaY);
 		return blurView;
 	}
@@ -1176,6 +1216,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	public void Replay(IRenderData data)
 	{
 		var rd = (WebGpuRenderData)data;
+		_d.Pool.BeginFrame();   // reclaim last frame's transient offscreens for reuse
 		RenderInto(rd.Commands, _s, _presentClear ?? rd.ClearColor);
 	}
 
@@ -1281,16 +1322,16 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				case LayerCmd lyr:
 				{
 					// Render the layer's commands into a full-size offscreen surface, then composite (kind 4).
-					var layerSurface = new WebGpuRenderSurface(_d, _s.Width, _s.Height);
+					var layerSurface = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
 					RenderInto(lyr.Commands, layerSurface, null);
 
 					// SaveLayer(IEffectFilter) drop shadow: blur the content, draw it tinted+offset behind, then
 					// the content on top. Reuses the image path (SrcIn tint) for the shadow — same as DrawShadow.
 					if (lyr.ShadowEffect is { } fx)
 					{
-						var tmp = _d.CreateColorTarget(_s.Width, _s.Height);
+						var tmp = _d.Pool.Rent(_s.Width, _s.Height, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 						BlurPass(layerSurface.View, tmp, new Vector2(1f, 0f), new Vector2(1f / _s.Width, 0f), fx.SigmaX);
-						var blur = _d.CreateColorTarget(_s.Width, _s.Height);
+						var blur = _d.Pool.Rent(_s.Width, _s.Height, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 						BlurPass(tmp, blur, new Vector2(0f, 1f), new Vector2(0f, 1f / _s.Height), fx.SigmaY);
 						var subd = new BufferDescriptor { Size = 32, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
 						var subuf = W.DeviceCreateBuffer(_d.Dev, ref subd);
@@ -1338,11 +1379,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				{
 					// Capture the content drawn so far (this frame's backdrop), blur it, and draw it clipped to the
 					// effect region; then a tint overlay. Simplified acrylic = blurred backdrop + tint.
-					var bd = new WebGpuRenderSurface(_d, _s.Width, _s.Height);
+					var bd = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
 					RenderInto(cmds.GetRange(0, ci), bd, clear);
-					var btmp = _d.CreateColorTarget(_s.Width, _s.Height);
+					var btmp = _d.Pool.Rent(_s.Width, _s.Height, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 					BlurPass(bd.View, btmp, new Vector2(1f, 0f), new Vector2(1f / _s.Width, 0f), bk.Effect.SigmaX);
-					var bblur = _d.CreateColorTarget(_s.Width, _s.Height);
+					var bblur = _d.Pool.Rent(_s.Width, _s.Height, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 					BlurPass(btmp, bblur, new Vector2(0f, 1f), new Vector2(0f, 1f / _s.Height), bk.Effect.SigmaY);
 					var bubd = new BufferDescriptor { Size = 32, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
 					var bubuf = W.DeviceCreateBuffer(_d.Dev, ref bubd);
