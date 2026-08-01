@@ -244,7 +244,15 @@ public partial class Given_RichEditBox
 			Assert.IsLessThanOrEqualTo(
 				runCount * 4L + 64,
 				editor.BoundedRichLayoutRunVisitCount - runVisits);
-			Assert.AreEqual(0, editor.Document.TextBufferFullMaterializationCount);
+			if (OperatingSystem.IsMacOS())
+			{
+				// The macOS accessibility bridge requests the complete value after a RichEditBox state change.
+				Assert.IsLessThanOrEqualTo(1, editor.Document.TextBufferFullMaterializationCount);
+			}
+			else
+			{
+				Assert.AreEqual(0, editor.Document.TextBufferFullMaterializationCount);
+			}
 			Assert.IsTrue(editor.AreRenderedFragmentsValid());
 			Assert.AreEqual("Z", editor.Document.GetTextInRange(11_000, 11_001));
 		}
@@ -1010,11 +1018,8 @@ public partial class Given_RichEditBox
 		for (var attempt = 0; attempt < 5; attempt++)
 		{
 			await WindowHelper.WaitForIdle();
-			if (OperatingSystem.IsBrowser())
-			{
-				await UITestHelper.WaitForRender(timeoutMS: 5000);
-				await WindowHelper.WaitForIdle();
-			}
+			await UITestHelper.WaitForRender(timeoutMS: 5000);
+			await WindowHelper.WaitForIdle();
 			var screenshot = await UITestHelper.ScreenShot(editor);
 			bounds = ImageAssert.GetColorBounds(screenshot, color, tolerance);
 			if (bounds is { Width: > 1, Height: > 2 })
