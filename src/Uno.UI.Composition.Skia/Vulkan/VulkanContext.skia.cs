@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Uno.UI.Runtime.Skia.Vulkan.Interop;
 using Uno.UI.Runtime.Skia.Vulkan.UnmanagedInterop;
@@ -19,6 +20,7 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	private VulkanDisplay? _display;
 	private VulkanImage? _renderImage;
 	private GRContext? _grContext;
+	private GRVkExtensions? _vkExtensions;
 	private VulkanInstanceApi? _instanceApi;
 	private VulkanDeviceApi? _deviceApi;
 	private bool _disposed;
@@ -112,6 +114,17 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 			return _instance.GetInstanceProcAddress(IntPtr.Zero, name);
 		}
 
+		// SkiaSharp 4.x's newer Skia requires the enabled instance/device extensions and a max API version to be
+		// declared; without them GRContext.CreateVulkan returns null. (SkiaSharp 3.x tolerated an unpopulated context.)
+		var instanceExtensions = _instance.EnabledExtensions.ToArray();
+		var deviceExtensions = _device.EnabledExtensions.ToArray();
+		_vkExtensions = GRVkExtensions.Create(
+			GetProcAddressWrapper,
+			_device.Instance.Handle,
+			_device.PhysicalDeviceHandle,
+			instanceExtensions,
+			deviceExtensions);
+
 		var ctx = new GRVkBackendContext
 		{
 			VkInstance = _device.Instance.Handle,
@@ -119,6 +132,8 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 			VkDevice = _device.Handle,
 			VkQueue = _device.MainQueueHandle,
 			GraphicsQueueIndex = _device.GraphicsQueueFamilyIndex,
+			MaxAPIVersion = VulkanHelpers.MakeVersion(1, 1, 0),
+			Extensions = _vkExtensions,
 			GetProcedureAddress = GetProcAddressWrapper
 		};
 
@@ -372,6 +387,9 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		_grContext?.AbandonContext();
 		_grContext?.Dispose();
 		_grContext = null;
+
+		_vkExtensions?.Dispose();
+		_vkExtensions = null;
 
 		_renderImage?.Dispose();
 		_renderImage = null;
