@@ -49,6 +49,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _manipulationWasInertial;
 		private bool _isDirectManipulationActive;
 		private ProgrammaticManipulation? _programmaticManipulation;
+		private readonly SerialDisposable _contentLayoutSubscriptions = new();
 #nullable restore
 
 		private bool _canHorizontallyScroll;
@@ -160,6 +161,13 @@ namespace Microsoft.UI.Xaml.Controls
 			// SCP DP doesn't have a callback so we add one at construction time.
 			RegisterPropertyChangedCallback(CanContentRenderOutsideBoundsProperty, (s, e) =>
 				((ScrollContentPresenter)s).OnPropertyChanged2Core(CanContentRenderOutsideBoundsProperty));
+			RegisterPropertyChangedCallback(SizesContentToTemplatedParentProperty, (s, e) =>
+			{
+				var presenter = (ScrollContentPresenter)s;
+				(presenter.Content as UIElement)?.InvalidateMeasure();
+				presenter.InvalidateMeasure();
+				presenter.Scroller?.InvalidateMeasure();
+			});
 #endif
 		}
 
@@ -169,6 +177,12 @@ namespace Microsoft.UI.Xaml.Controls
 			if (Scroller is { } sv)
 			{
 				HookScrollEvents(sv);
+				sv.OnManipulatabilityAffectingPropertyChanged(
+					pIsInLiveTree: true,
+					isCachedPropertyChanged: false,
+					isContentChanged: false,
+					isAffectingConfigurations: true,
+					isAffectingTouchConfiguration: true);
 			}
 		}
 
@@ -226,6 +240,8 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <inheritdoc />
 		protected override void OnContentChanged(object oldValue, object newValue)
 		{
+			_contentLayoutSubscriptions.Disposable = null;
+
 			if (oldValue is UIElement oldElt)
 			{
 				// Reset old content's transform
@@ -238,6 +254,31 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// Apply current scroll and zoom state to new content
 				Update(newElt, HorizontalOffset, VerticalOffset, _zoomFactor, new(DisableAnimation: true));
+			}
+
+			if (newValue is FrameworkElement newElement)
+			{
+				var subscriptions = new CompositeDisposable();
+				_contentLayoutSubscriptions.Disposable = subscriptions;
+				RegisterAlignmentCallback(FrameworkElement.HorizontalAlignmentProperty);
+				RegisterAlignmentCallback(FrameworkElement.VerticalAlignmentProperty);
+
+				void RegisterAlignmentCallback(DependencyProperty property)
+				{
+					var token = newElement.RegisterPropertyChangedCallback(
+						property,
+						(_, _) =>
+						{
+							if (SizesContentToTemplatedParent)
+							{
+								newElement.InvalidateMeasure();
+								InvalidateMeasure();
+								Scroller?.InvalidateMeasure();
+							}
+						});
+					subscriptions.Add(Disposable.Create(() =>
+						newElement.UnregisterPropertyChangedCallback(property, token)));
+				}
 			}
 		}
 
@@ -389,28 +430,39 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var updatedHorizontalOffset = HorizontalOffset;
 			var updatedVerticalOffset = VerticalOffset;
+			var contentElt = Content as UIElement;
+
+			if ((updated || options.IsTouch) &&
+				contentElt is not null &&
+				!options.IsTouch &&
+				options.Configuration != DMConfigurations.None)
+			{
+				BeginProgrammaticManipulation(
+					contentElt,
+					initialHorizontalOffset,
+					initialVerticalOffset,
+					initialZoomFactor,
+					updatedHorizontalOffset,
+					updatedVerticalOffset,
+					_zoomFactor,
+					options.Configuration,
+					isInertial: !options.DisableAnimation);
+			}
 
 			// Publish the zoom first so any synchronous layout triggered while applying the offsets
 			// validates them against the target zoomed extent rather than the previous one.
 			if (zoomUpdated)
 			{
-				Scroller?.OnPresenterZoomed(_zoomFactor);
+				Scroller?.OnPresenterZoomed(
+					_zoomFactor,
+					isIntermediate: options.IsTouch || !options.DisableAnimation || options.IsIntermediate);
 				Scroller?.InvalidateArrange();
 			}
 
 			if (updated || options.IsTouch)
 			{
-				if (Content is UIElement contentElt)
+				if (contentElt is not null)
 				{
-					if (!options.IsTouch && options.Configuration != DMConfigurations.None)
-					{
-						BeginProgrammaticManipulation(
-							contentElt,
-							initialHorizontalOffset,
-							initialVerticalOffset,
-							initialZoomFactor,
-							options.Configuration);
-					}
 					Update(contentElt, updatedHorizontalOffset, updatedVerticalOffset, _zoomFactor, options);
 				}
 			}
@@ -517,11 +569,11 @@ namespace Microsoft.UI.Xaml.Controls
 				visual.StopAnimation(nameof(Visual.Scale));
 				visual.AnchorPoint = target;
 				visual.Scale = targetScale;
-				Updated(horizontalOffset, verticalOffset, options.IsIntermediate);
 				if (options.Configuration != DMConfigurations.None)
 				{
 					NotifyProgrammaticManipulationDelta(horizontalOffset, verticalOffset, zoom);
 				}
+				Updated(horizontalOffset, verticalOffset, options.IsIntermediate);
 			}
 			else
 			{
@@ -537,8 +589,8 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					var animatedHorizontalOffset = GetAnimatedHorizontalOffset();
 					var animatedVerticalOffset = GetAnimatedVerticalOffset();
-					Updated(animatedHorizontalOffset, animatedVerticalOffset, true);
 					NotifyProgrammaticManipulationDelta(animatedHorizontalOffset, animatedVerticalOffset, visual.Scale.X);
+					Updated(animatedHorizontalOffset, animatedVerticalOffset, true);
 				}
 				void OnStopped(object? _, EventArgs __)
 				{
@@ -547,8 +599,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 					var animatedHorizontalOffset = GetAnimatedHorizontalOffset();
 					var animatedVerticalOffset = GetAnimatedVerticalOffset();
-					Updated(animatedHorizontalOffset, animatedVerticalOffset, false);
 					NotifyProgrammaticManipulationDelta(animatedHorizontalOffset, animatedVerticalOffset, visual.Scale.X);
+					Updated(animatedHorizontalOffset, animatedVerticalOffset, false);
 					CompleteProgrammaticManipulation();
 				}
 
@@ -659,6 +711,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void RefreshDirectManipulationState()
 		{
+			if (_programmaticManipulation is not null)
+			{
+				return;
+			}
+
 			if (Content is UIElement content)
 			{
 				Update(
@@ -709,10 +766,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void BeginProgrammaticManipulation(
 			UIElement content,
-			double horizontalOffset,
-			double verticalOffset,
-			float zoomFactor,
-			DMConfigurations configuration)
+			double initialHorizontalOffset,
+			double initialVerticalOffset,
+			float initialZoomFactor,
+			double targetHorizontalOffset,
+			double targetVerticalOffset,
+			float targetZoomFactor,
+			DMConfigurations configuration,
+			bool isInertial)
 		{
 			CompleteProgrammaticManipulation();
 			content.Visual.StopAnimation(nameof(Visual.AnchorPoint));
@@ -722,11 +783,12 @@ namespace Microsoft.UI.Xaml.Controls
 			var center = GetManipulationCenter(absoluteCenter);
 			_programmaticManipulation = new ProgrammaticManipulation(
 				content,
-				horizontalOffset,
-				verticalOffset,
-				zoomFactor,
+				initialHorizontalOffset,
+				initialVerticalOffset,
+				initialZoomFactor,
 				center,
-				configuration);
+				configuration,
+				isInertial);
 			NotifyManipulationProgress(
 				content,
 				DMManipulationState.DMManipulationStarting,
@@ -745,6 +807,13 @@ namespace Microsoft.UI.Xaml.Controls
 				isInertial: false,
 				isTouchConfigurationActivated: false,
 				isBringIntoViewportConfigurationActivated: true);
+			if (isInertial)
+			{
+				_directManipulationOwner?.NotifyInertiaStarting(
+					targetHorizontalOffset,
+					targetVerticalOffset,
+					targetZoomFactor);
+			}
 		}
 
 		private void NotifyProgrammaticManipulationDelta(
@@ -767,9 +836,13 @@ namespace Microsoft.UI.Xaml.Controls
 				manipulation.CumulativeTranslation,
 				manipulation.CumulativeScale,
 				manipulation.Center,
-				isInertial: false,
+				isInertial: manipulation.IsInertial,
 				isTouchConfigurationActivated: false,
 				isBringIntoViewportConfigurationActivated: true);
+			_directManipulationOwner?.RaiseViewChanging(
+				horizontalOffset,
+				verticalOffset,
+				zoomFactor);
 		}
 
 		private void CompleteProgrammaticManipulation()
@@ -786,7 +859,7 @@ namespace Microsoft.UI.Xaml.Controls
 				manipulation.CumulativeTranslation,
 				manipulation.CumulativeScale,
 				manipulation.Center,
-				isInertial: false,
+				isInertial: manipulation.IsInertial,
 				isTouchConfigurationActivated: false,
 				isBringIntoViewportConfigurationActivated: true);
 			NotifyManipulationProgress(
@@ -795,7 +868,7 @@ namespace Microsoft.UI.Xaml.Controls
 				manipulation.CumulativeTranslation,
 				manipulation.CumulativeScale,
 				manipulation.Center,
-				isInertial: false,
+				isInertial: manipulation.IsInertial,
 				isTouchConfigurationActivated: false,
 				isBringIntoViewportConfigurationActivated: true);
 		}
@@ -1307,7 +1380,8 @@ namespace Microsoft.UI.Xaml.Controls
 				double initialVerticalOffset,
 				float initialZoomFactor,
 				Point center,
-				DMConfigurations configuration)
+				DMConfigurations configuration,
+				bool isInertial)
 			{
 				Content = content;
 				InitialHorizontalOffset = initialHorizontalOffset;
@@ -1315,6 +1389,7 @@ namespace Microsoft.UI.Xaml.Controls
 				InitialZoomFactor = initialZoomFactor;
 				Center = center;
 				Configuration = configuration;
+				IsInertial = isInertial;
 			}
 
 			public UIElement Content { get; }
@@ -1323,6 +1398,7 @@ namespace Microsoft.UI.Xaml.Controls
 			public float InitialZoomFactor { get; }
 			public Point Center { get; }
 			public DMConfigurations Configuration { get; }
+			public bool IsInertial { get; }
 			public Vector2 CumulativeTranslation { get; set; }
 			public float CumulativeScale { get; set; } = 1.0f;
 		}

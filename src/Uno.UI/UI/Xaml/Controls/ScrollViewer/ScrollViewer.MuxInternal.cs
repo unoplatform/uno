@@ -60,7 +60,35 @@ namespace Microsoft.UI.Xaml.Controls
 			bool skipAnimationWhileRunning,
 			bool animate)
 		{
-#if __WASM__
+#if __SKIA__
+			if (m_hManipulationHandler is null)
+			{
+				return false;
+			}
+
+			GetCanManipulateElements(
+				out _,
+				out _,
+				out var canManipulateElementsWithBringIntoViewport);
+			if (!canManipulateElementsWithBringIntoViewport)
+			{
+				return false;
+			}
+
+			BringIntoViewportInternal(
+				bounds,
+				0.0f,
+				0.0f,
+				1.0f,
+				transformIsValid: false,
+				skipDuringTouchContact,
+				skipAnimationWhileRunning,
+				animate && IsAnimationEnabled,
+				applyAsManip: true,
+				isForMakeVisible: false,
+				out var handled);
+			return handled;
+#elif __WASM__
 			return ChangeView(bounds.X, bounds.Y, null, true);
 #else
 			return ChangeView(bounds.X, bounds.Y, null, !animate);

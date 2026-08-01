@@ -4,11 +4,9 @@
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class ScrollViewerViewChangingEventArgs
+	public sealed partial class ScrollViewerViewChangingEventArgs
 	{
 #if __SKIA__
-		// On Skia we provide a real implementation. The generated NotImplemented-stub
-		// remains for the other platforms.
 		internal ScrollViewerViewChangingEventArgs() { }
 
 		public ScrollViewerView NextView { get; internal set; }

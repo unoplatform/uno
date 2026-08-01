@@ -77,12 +77,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Presenter to Control, i.e. OnPresenterZoomed
-		internal void OnPresenterZoomed(float zoomFactor)
+		internal void OnPresenterZoomed(float zoomFactor, bool isIntermediate = false)
 		{
 			ZoomFactor = zoomFactor;
 
-			// Note: We should also defer the intermediate zoom changes
-			Update(isIntermediate: false);
+			Update(isIntermediate);
 
 			UpdateZoomedContentAlignment();
 		}

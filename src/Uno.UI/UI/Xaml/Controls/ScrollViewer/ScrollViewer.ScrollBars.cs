@@ -85,6 +85,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void AttachScrollBars()
 		{
+#if __SKIA__
+			return;
+#else
 			bool hasManagedVerticalScrollBar;
 			if (_verticalScrollbar is { } vertical)
 			{
@@ -121,6 +124,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_verticalScrollbar!.PointerExited += HideScrollBarSeparator;
 				_horizontalScrollbar!.PointerExited += HideScrollBarSeparator;
 			}
+#endif
 		}
 
 		internal void OnVerticalScrollBarScrolled(object sender, ScrollEventArgs e)

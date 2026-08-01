@@ -175,6 +175,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_isInertiaEndTransformValid = false;
 			m_isInertial = false;
 			m_isViewChangingDelayed = false;
+			m_isDelayedViewChangingInertial = false;
 			m_isViewChangedDelayed = false;
 			m_isDelayedViewChangedIntermediate = false;
 			m_isInIntermediateViewChangedMode = false;
@@ -318,13 +319,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// Hook the WinUI-port template-part state on top of the cross-platform
-		// OnApplyTemplate already in ScrollViewer.cs. Caches the SCP, the
-		// horizontal/vertical ScrollBars and wires the Scroll / DragStarted /
-		// DragCompleted / PointerEntered / PointerExited handlers as the
-		// C++ OnApplyTemplate at line 1232 does. The remainder of the C++
-		// OnApplyTemplate (visual-state storyboards, transition cleanup,
-		// IsRootScrollViewer special case) is Phase-4 work.
+		// Hook the WinUI template-part state on top of the cross-platform
+		// OnApplyTemplate already in ScrollViewer.cs.
 		private void OnApplyTemplate_MuxPartial()
 		{
 			m_keepIndicatorsShowing = false;
@@ -358,7 +354,9 @@ namespace Microsoft.UI.Xaml.Controls
 				// IScrollOwner pipeline becomes live for programmatic scroll + bring-into-view.
 				if (m_trElementScrollContentPresenter is not null)
 				{
+					m_trElementScrollContentPresenter.SetZoomFactor(ZoomFactor);
 					UpdateScrollContentPresenterHeaders();
+					m_trElementScrollContentPresenter.CanContentRenderOutsideBounds = CanContentRenderOutsideBounds;
 					m_trElementScrollContentPresenter.HookupScrollingComponents();
 					PutManipulationHandler(m_trElementScrollContentPresenter);
 				}
@@ -423,6 +421,71 @@ namespace Microsoft.UI.Xaml.Controls
 
 				RefreshScrollBarIsIgnoringUserInput(false /*isForHorizontalOrientation*/);
 			}
+
+			var storyboardSubscriptions = new CompositeDisposable();
+			m_templateStoryboardSubscriptions.Disposable = storyboardSubscriptions;
+			if (m_trElementRoot is { } root)
+			{
+				var foundNoIndicator = false;
+				var foundTouchIndicator = false;
+				var foundMouseIndicator = false;
+				var foundMouseIndicatorFull = false;
+
+				foreach (var group in VisualStateManager.GetVisualStateGroups(root))
+				{
+					foreach (var state in group.States)
+					{
+						if (state.Storyboard is not { } storyboard)
+						{
+							continue;
+						}
+
+						switch (state.Name)
+						{
+							case "NoIndicator":
+								AddStoryboardCompletedHandler(storyboard, NoIndicatorStateStoryboardCompleted, storyboardSubscriptions);
+								m_hasNoIndicatorStateStoryboardCompletedHandler = true;
+								foundNoIndicator = true;
+								break;
+							case "TouchIndicator":
+								AddStoryboardCompletedHandler(storyboard, IndicatorStateStoryboardCompleted, storyboardSubscriptions);
+								MakeStoryboardEssential(storyboard);
+								foundTouchIndicator = true;
+								break;
+							case "MouseIndicator":
+								AddStoryboardCompletedHandler(storyboard, IndicatorStateStoryboardCompleted, storyboardSubscriptions);
+								foundMouseIndicator = true;
+								break;
+							case "MouseIndicatorFull":
+								AddStoryboardCompletedHandler(storyboard, IndicatorStateStoryboardCompleted, storyboardSubscriptions);
+								foundMouseIndicatorFull = true;
+								break;
+						}
+					}
+
+					foreach (var transition in group.Transitions)
+					{
+						if (transition.To == "NoIndicator" &&
+							transition.From is "TouchIndicator" or "MouseIndicator" or "MouseIndicatorFull" &&
+							transition.Storyboard is { } storyboard)
+						{
+							MakeStoryboardEssential(storyboard);
+						}
+					}
+
+					if (foundNoIndicator && foundTouchIndicator && foundMouseIndicator && foundMouseIndicatorFull)
+					{
+						break;
+					}
+				}
+			}
+
+			if (m_ignoreSemanticZoomNavigationInput)
+			{
+				RegisterAsSemanticZoomHost();
+			}
+
+			UpdateVisualState(false);
 		}
 
 		// Releases and unhooks template parts and their events.
@@ -450,6 +513,7 @@ namespace Microsoft.UI.Xaml.Controls
 				m_verticalScrollbarPointerExitedToken.Disposable = null;
 			}
 			StopOcclusionReflow();
+			m_templateStoryboardSubscriptions.Disposable = null;
 			m_trElementRoot = null;
 			m_trElementScrollContentPresenter = null;
 			m_trElementHorizontalScrollBar = null;
@@ -819,6 +883,14 @@ namespace Microsoft.UI.Xaml.Controls
 				currentTargetZoomFactor = currentZoomFactor;
 			}
 
+			GetManipulationConfigurations(
+				canUseCachedProperties: false,
+				out _,
+				out m_canManipulateElementsWithAsyncBringIntoViewport,
+				out _,
+				out _,
+				out _);
+
 			if (!m_canManipulateElementsWithAsyncBringIntoViewport)
 			{
 				// When a projection is set for instance, and DManip is partially turned off, only perform non-animated view changes.
@@ -1149,6 +1221,15 @@ namespace Microsoft.UI.Xaml.Controls
 				isBringIntoViewportCallAllowed = false;
 			}
 
+			if (disableAnimation &&
+				pZoomFactor.HasValue &&
+				(pHorizontalOffset.HasValue || pVerticalOffset.HasValue))
+			{
+				// Apply zoom and offsets together through SetOffsetsWithExtents so
+				// offset clamping uses the target zoomed extent.
+				isBringIntoViewportCallAllowed = false;
+			}
+
 			if (isBringIntoViewportCallAllowed)
 			{
 				GetManipulationConfigurations(
@@ -1187,23 +1268,6 @@ namespace Microsoft.UI.Xaml.Controls
 						targetPixelVerticalOffset = targetVerticalOffset;
 					}
 
-					m_targetChangeViewHorizontalOffset = targetHorizontalOffset;
-					m_targetChangeViewVerticalOffset = targetVerticalOffset;
-					m_targetChangeViewZoomFactor = targetZoomFactor;
-
-					if (pZoomFactor.HasValue)
-					{
-						NotifyZoomFactorChanging(targetZoomFactor);
-					}
-					if (pHorizontalOffset.HasValue)
-					{
-						NotifyHorizontalOffsetChanging(targetHorizontalOffset, targetVerticalOffset);
-					}
-					if (pVerticalOffset.HasValue)
-					{
-						NotifyVerticalOffsetChanging(targetHorizontalOffset, targetVerticalOffset);
-					}
-
 					bounds = new global::Windows.Foundation.Rect(
 						targetPixelHorizontalOffset / targetZoomFactor,
 						targetPixelVerticalOffset / targetZoomFactor,
@@ -1212,21 +1276,66 @@ namespace Microsoft.UI.Xaml.Controls
 					targetTranslateX = (float)-targetPixelHorizontalOffset;
 					targetTranslateY = (float)-targetPixelVerticalOffset;
 
-					m_isInChangeViewBringIntoViewport = true;
-					clearInChangeViewBringIntoViewport = true;
-					isBringIntoViewportCalled = true;
+					// Batch up notifications produced while DirectManipulation configures the view.
+					DelayViewChanging();
+					isViewChangingDelayed = true;
+					DelayViewChanged();
+					isViewChangedDelayed = true;
+
+					if (!m_isInChangeViewBringIntoViewport)
+					{
+						m_isInChangeViewBringIntoViewport = true;
+						clearInChangeViewBringIntoViewport = true;
+					}
+
 					BringIntoViewportInternal(
 						bounds,
 						targetTranslateX,
 						targetTranslateY,
 						targetZoomFactor,
-						transformIsValid: true,
+						transformIsValid: disableAnimation || skipAnimationWhileRunning,
 						skipDuringTouchContact,
 						skipAnimationWhileRunning,
 						animate: !disableAnimation,
 						applyAsManip,
 						isForMakeVisible,
 						out isHandled);
+					isBringIntoViewportCalled = true;
+
+					if (clearInChangeViewBringIntoViewport)
+					{
+						global::System.Diagnostics.Debug.Assert(m_isInChangeViewBringIntoViewport);
+						m_isInChangeViewBringIntoViewport = false;
+						clearInChangeViewBringIntoViewport = false;
+					}
+
+					if (isHandled)
+					{
+						if (currentTargetHorizontalOffset != currentHorizontalOffset)
+						{
+							m_xPixelOffsetRequested = currentTargetHorizontalOffset;
+						}
+						if (currentTargetVerticalOffset != currentVerticalOffset)
+						{
+							m_yPixelOffsetRequested = currentTargetVerticalOffset;
+						}
+
+						if (m_isInDirectManipulationSync)
+						{
+							if (m_isTargetZoomFactorValid &&
+								targetZoomFactor == m_targetZoomFactor &&
+								currentZoomFactor != targetZoomFactor)
+							{
+								PutZoomFactorCore(targetZoomFactor);
+							}
+						}
+						else
+						{
+							m_targetChangeViewHorizontalOffset = targetPixelHorizontalOffset;
+							m_targetChangeViewVerticalOffset = targetPixelVerticalOffset;
+							m_targetChangeViewZoomFactor = targetZoomFactor;
+						}
+					}
 				}
 			}
 
@@ -1655,6 +1764,118 @@ namespace Microsoft.UI.Xaml.Controls
 			ComputePixelViewportHeight(pProvider, true /*isProviderSet*/, out var viewport);
 
 			pixelScrollableHeight = Math.Max(0.0, extent - viewport);
+		}
+
+		// Scrolls by the number of provided pixels, even for logical scrolling scenarios.
+		internal void ScrollByPixelDelta(
+			bool isForHorizontalOrientation,
+			double newPixelOffset,
+			double pixelDelta,
+			bool isDManipInput)
+		{
+			var spScrollInfo = GetScrollInfo();
+			if (spScrollInfo is null)
+			{
+				return;
+			}
+
+			var spProvider = GetInnerManipulationDataProvider(isForHorizontalOrientation);
+			var newPixelDelta = pixelDelta;
+			var newOffset = spProvider is not null
+				? spProvider.ComputeLogicalOffset(isForHorizontalOrientation, ref newPixelDelta)
+				: newPixelOffset;
+
+			if (isForHorizontalOrientation)
+			{
+				var oldOffset = spScrollInfo.GetHorizontalOffset();
+				newOffset = Math.Max(newOffset, 0.0);
+
+				double scrollable;
+				if (spProvider is not null || m_contentWidthRequested == -1)
+				{
+					scrollable = ScrollableWidth;
+				}
+				else
+				{
+					// The ScrollContentPresenter's clamping of the newOffset is based on the smallest of m_xExtent & m_contentWidthRequested
+					scrollable = Math.Max(m_xMinOffset, Math.Min(m_xExtent, m_contentWidthRequested) - ViewportWidth);
+				}
+
+				newOffset = Math.Min(scrollable, newOffset);
+				if (!DoubleUtil.AreClose(oldOffset, newOffset))
+				{
+					var pixelScrollable = scrollable;
+					if (spProvider is not null)
+					{
+						ComputePixelScrollableWidth(spProvider, out pixelScrollable);
+					}
+
+					// Do not set an expected horizontal offset when this call is not triggered by DManip feedback.
+					if (isDManipInput)
+					{
+						m_xPixelOffsetRequested = Math.Min(Math.Max(newPixelOffset, 0), pixelScrollable);
+					}
+
+					ScrollToHorizontalOffsetInternal(newOffset);
+				}
+				else
+				{
+					// Since the current offset is now close to the target, no offset change is expected
+					m_xPixelOffsetRequested = -1;
+				}
+			}
+			else
+			{
+				var oldOffset = spScrollInfo.GetVerticalOffset();
+				var isCarouselPanel = IsPanelACarouselPanel(false);
+				double scrollable = 0.0;
+
+				// Do not clamp offset for carouseling panel.
+				if (!isCarouselPanel)
+				{
+					newOffset = Math.Max(newOffset, 0.0);
+					if (spProvider is not null || m_contentHeightRequested == -1)
+					{
+						scrollable = ScrollableHeight;
+					}
+					else
+					{
+						// The ScrollContentPresenter's clamping of the newOffset is based on the smallest of m_yExtent & m_contentHeightRequested
+						scrollable = Math.Max(m_yMinOffset, Math.Min(m_yExtent, m_contentHeightRequested) - ViewportHeight);
+					}
+
+					newOffset = Math.Min(scrollable, newOffset);
+				}
+
+				if (!DoubleUtil.AreClose(oldOffset, newOffset))
+				{
+					if (isCarouselPanel)
+					{
+						m_yPixelOffsetRequested = newPixelOffset;
+					}
+					else
+					{
+						var pixelScrollable = scrollable;
+						if (spProvider is not null)
+						{
+							ComputePixelScrollableHeight(spProvider, out pixelScrollable);
+						}
+
+						// Do not set an expected vertical offset when this call is not triggered by DManip feedback.
+						if (isDManipInput)
+						{
+							m_yPixelOffsetRequested = Math.Min(Math.Max(newPixelOffset, 0.0), pixelScrollable);
+						}
+					}
+
+					ScrollToVerticalOffsetInternal(newOffset);
+				}
+				else
+				{
+					// Since the current offset is now close to the target, no offset change is expected
+					m_yPixelOffsetRequested = -1;
+				}
+			}
 		}
 
 		// Ensures the target horizontal offset for a ChangeView request does
@@ -2322,24 +2543,12 @@ namespace Microsoft.UI.Xaml.Controls
 			double horizontalAlignmentRatio,
 			double verticalAlignmentRatio,
 			double offsetX,
-			double offsetY,
-			// Uno-specific out parameters used by OnBringIntoViewRequested for parent
-			// SV propagation. The C++ ScrollViewer::MakeVisible (line 2856) calls
-			// UIElement::BringIntoView at the end to originate a fresh RequestBringIntoView
-			// event up the visual tree; Uno hasn't ported that internal API yet, so the
-			// caller (OnBringIntoViewRequested) updates the args directly using these
-			// out params instead.
-			out global::Windows.Foundation.Rect desiredViewOut,
-			out double remainingOffsetX,
-			out double remainingOffsetY)
+			double offsetY)
 		{
 			global::Windows.Foundation.Rect visibleBounds = default;
 			global::Windows.Foundation.Rect desiredView = default;
 			global::Windows.Foundation.Point visiblePoint = default;
 			global::Windows.Foundation.Point transformedPoint = default;
-			desiredViewOut = default;
-			remainingOffsetX = offsetX;
-			remainingOffsetY = offsetY;
 
 			if (element is not null && m_trElementScrollContentPresenter is not null)
 			{
@@ -2392,11 +2601,11 @@ namespace Microsoft.UI.Xaml.Controls
 						// applied by the last contributor, spScrollInfo, must not be applied more than once.
 						if (appliedOffsetX != 0.0)
 						{
-							remainingOffsetX -= appliedOffsetX;
+							offsetX -= appliedOffsetX;
 						}
 						if (appliedOffsetY != 0.0)
 						{
-							remainingOffsetY -= appliedOffsetY;
+							offsetY -= appliedOffsetY;
 						}
 					}
 
@@ -2417,14 +2626,15 @@ namespace Microsoft.UI.Xaml.Controls
 						desiredView = visibleBounds;
 					}
 
-					desiredViewOut = desiredView;
-
-					// Uno's OnBringIntoViewRequested uses the
-					// `desiredView` + `remaining*Offset` out params to update the routed-event
-					// args directly so the parent SV picks up the bubbled event with the
-					// adjusted target without spawning a second event.
-					_ = forceIntoView;
-					_ = skipDuringManipulation;
+					BringIntoView(
+						desiredView,
+						forceIntoView,
+						useAnimation,
+						skipDuringManipulation,
+						horizontalAlignmentRatio,
+						verticalAlignmentRatio,
+						offsetX,
+						offsetY);
 				}
 			}
 		}
@@ -2454,12 +2664,9 @@ namespace Microsoft.UI.Xaml.Controls
 				bool isAncestor = this.IsAncestorOf(elementNoRef);
 				if (isAncestor)
 				{
-					// BringIntoViewRequestedEventArgs.ForceIntoView is not exposed by Uno.
-					bool forceIntoView = false;
+					bool forceIntoView = args.ForceIntoView;
 					bool useAnimation = args.AnimationDesired;
-					// BringIntoViewRequestedEventArgs.InterruptDuringManipulation is not exposed
-					// by Uno, so use the WinUI default.
-					bool skipDuringManipulation = true;
+					bool skipDuringManipulation = args.InterruptDuringManipulation;
 					double horizontalAlignmentRatio = args.HorizontalAlignmentRatio;
 					double verticalAlignmentRatio = args.VerticalAlignmentRatio;
 					double offsetX = args.HorizontalOffset;
@@ -2485,54 +2692,11 @@ namespace Microsoft.UI.Xaml.Controls
 							horizontalAlignmentRatio,
 							verticalAlignmentRatio,
 							offsetX,
-							offsetY,
-							out var desiredView,
-							out var remainingOffsetX,
-							out var remainingOffsetY);
-
-						// Parent SV propagation (Uno-specific): the C++ MakeVisible originates
-						// a fresh RequestBringIntoView event via UIElement::BringIntoView so
-						// any ancestor ScrollViewer can complete the request. Until that internal
-						// API is ported, update the routed-event args so the same event continues
-						// bubbling with the adjusted target rect / element / offsets — the parent
-						// SV's OnBringIntoViewRequested then picks up the request with a target
-						// inside this SV.
-						bool desiredViewEmpty = desiredView.IsEmpty || (desiredView.Width == 0 && desiredView.Height == 0);
-						if (!desiredViewEmpty)
-						{
-							// Compute the SV's own viewport rectangle in its coordinate space.
-							var viewportRect = new global::Windows.Foundation.Rect(0, 0, ActualWidth, ActualHeight);
-
-							if (Uno.UI.Helpers.WinUI.SharedHelpers.DoRectsIntersect(desiredView, viewportRect))
-							{
-								// A portion of the rect is still in this SV's viewport — let the
-								// event bubble so a parent SV can scroll the rest into its own view.
-								args.TargetRect = desiredView;
-								args.TargetElement = this;
-								args.HorizontalOffset = remainingOffsetX;
-								args.VerticalOffset = remainingOffsetY;
-							}
-							else
-							{
-								// The rect is entirely outside this SV's viewport — no further
-								// parent scrolling can help; mark handled.
-								args.Handled = true;
-							}
-						}
-						else
-						{
-							// MakeVisible bailed out (this SV isn't a real ancestor of the target,
-							// or no IScrollInfo). Mark handled so the event doesn't keep firing.
-							args.Handled = true;
-						}
+							offsetY);
 					}
-					else
-					{
-						// SV is configured not to bring into view (BringIntoViewOnFocusChange=false
-						// without forceIntoView, or skipping during manipulation). Mark handled to
-						// prevent duplicate work by ancestors.
-						args.Handled = true;
-					}
+
+					// MakeVisible originates a new request for parent contributors.
+					args.Handled = true;
 				}
 			}
 		}
@@ -2962,13 +3126,6 @@ namespace Microsoft.UI.Xaml.Controls
 					vScrollBar.IsIgnoringUserInput = scrollMode == ScrollMode.Disabled;
 				}
 			}
-		}
-
-		// Updates the zoom factor value. Equivalent of ScrollToHorizontalOffset
-		// and ScrollToVerticalOffset for the ZoomFactor dependency property.
-		public void ZoomToFactor(float value)
-		{
-			ZoomToFactorInternal(value, delayAndFlushViewChanged: true, out _);
 		}
 
 		// Called internally to update the zoom factor property without batching the ViewChanged notifications.
@@ -3538,20 +3695,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Retrieves the UIElement for the ScrollViewer content if any.
-		internal UIElement GetContentUIElement()
-		{
-			if (m_trElementScrollContentPresenter is { } scp)
-			{
-				return scp.Content as UIElement;
-			}
-			// Fallback while OnApplyTemplate hasn't run: use the cross-platform
-			// _presenter field if it has been populated by the legacy path.
-			if (IsLoaded && _presenter is ScrollContentPresenter legacyScp)
-			{
-				return legacyScp.Content as UIElement;
-			}
-			return null;
-		}
+		internal UIElement GetContentUIElement() =>
+			m_trElementScrollContentPresenter?.Content as UIElement;
 
 		// Retrieves the effective IsHorizontalRailEnabled value: m_currentIsHorizontalRailEnabled or
 		// get_IsHorizontalRailEnabled depending on whether there is an active manip or not.
@@ -5409,6 +5554,40 @@ namespace Microsoft.UI.Xaml.Controls
 			m_showingMouseIndicators = false;
 		}
 
+		private static void AddStoryboardCompletedHandler(
+			Storyboard storyboard,
+			EventHandler<object> handler,
+			CompositeDisposable subscriptions)
+		{
+			storyboard.Completed += handler;
+			subscriptions.Add(Disposable.Create(() => storyboard.Completed -= handler));
+		}
+
+		private static void MakeStoryboardEssential(Storyboard storyboard)
+		{
+			foreach (var timeline in storyboard.Children)
+			{
+				switch (timeline)
+				{
+					case DoubleAnimation animation:
+						animation.EnableDependentAnimation = true;
+						break;
+					case DoubleAnimationUsingKeyFrames animation:
+						animation.EnableDependentAnimation = true;
+						break;
+					case PointAnimationUsingKeyFrames animation:
+						animation.EnableDependentAnimation = true;
+						break;
+					case ColorAnimationUsingKeyFrames animation:
+						animation.EnableDependentAnimation = true;
+						break;
+					case Storyboard nestedStoryboard:
+						MakeStoryboardEssential(nestedStoryboard);
+						break;
+				}
+			}
+		}
+
 		// Raises or delays the ViewChanging event with the provided target transform and IsInertial flag.
 		// The event is delayed when m_iViewChangingDelay is strictly positive. In that case the event is
 		// raised later when m_iViewChangingDelay reaches 0.
@@ -5431,16 +5610,21 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_iViewChangingDelay > 0)
 			{
 				m_isViewChangingDelayed = true;
+				m_isDelayedViewChangingInertial = m_isInertial;
 			}
 			else
 			{
+				var isInertial = m_isViewChangingDelayed
+					? m_isDelayedViewChangingInertial
+					: m_isInertial;
 				m_isViewChangingDelayed = false;
+				m_isDelayedViewChangingInertial = false;
 
 				if (ViewChanging is { } pEventSource)
 				{
 					var spArgs = new ScrollViewerViewChangingEventArgs
 					{
-						IsInertial = m_isInertial
+						IsInertial = isInertial
 					};
 
 					var spNextView = new ScrollViewerView(
@@ -5450,7 +5634,7 @@ namespace Microsoft.UI.Xaml.Controls
 					spArgs.NextView = spNextView;
 
 					var spProvider = GetInnerManipulationDataProvider();
-					if (m_isInertial && m_isInertiaEndTransformValid && spProvider is null)
+					if (isInertial && m_isInertiaEndTransformValid && spProvider is null)
 					{
 						var spFinalView = new ScrollViewerView(
 							m_inertiaEndHorizontalOffset,

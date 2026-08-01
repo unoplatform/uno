@@ -17,7 +17,11 @@ using View = Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+#if __SKIA__
+	public sealed partial class ScrollContentPresenter : ContentPresenter, ILayoutConstraints
+#else
 	public partial class ScrollContentPresenter : ContentPresenter, ILayoutConstraints
+#endif
 	{
 		public ScrollContentPresenter()
 		{

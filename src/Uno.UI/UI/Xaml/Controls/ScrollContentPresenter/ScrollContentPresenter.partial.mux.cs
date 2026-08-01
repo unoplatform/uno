@@ -309,42 +309,16 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Gets the horizontal size of the extent.
-		// Note: the new SCP MeasureOverridePort / ArrangeOverridePort don't run on
-		// Skia yet (the cross-platform path is still active), so VerifyScrollData
-		// never refreshes ScrollData.m_extent / m_viewport. Fall back to the cross-
-		// platform ExtentWidth/Height + ViewportWidth/Height DPs which the existing
-		// Skia pipeline maintains. Once the port's Measure/Arrange take over the
-		// fallback becomes redundant.
-		internal double GetExtentWidth()
-		{
-			if (!IsScrollClient()) return 0.0;
-			var fromScrollData = GetScrollData().m_extent.Width;
-			return fromScrollData != 0.0 ? fromScrollData : ExtentWidth;
-		}
+		internal double GetExtentWidth() => IsScrollClient() ? GetScrollData().m_extent.Width : 0.0;
 
 		// Gets the vertical size of the extent.
-		internal double GetExtentHeight()
-		{
-			if (!IsScrollClient()) return 0.0;
-			var fromScrollData = GetScrollData().m_extent.Height;
-			return fromScrollData != 0.0 ? fromScrollData : ExtentHeight;
-		}
+		internal double GetExtentHeight() => IsScrollClient() ? GetScrollData().m_extent.Height : 0.0;
 
 		// Gets the horizontal size of the viewport for this content.
-		internal double GetViewportWidth()
-		{
-			if (!IsScrollClient()) return 0.0;
-			var fromScrollData = GetScrollData().m_viewport.Width;
-			return fromScrollData != 0.0 ? fromScrollData : ViewportWidth;
-		}
+		internal double GetViewportWidth() => IsScrollClient() ? GetScrollData().m_viewport.Width : 0.0;
 
 		// Gets the vertical size of the viewport for this content.
-		internal double GetViewportHeight()
-		{
-			if (!IsScrollClient()) return 0.0;
-			var fromScrollData = GetScrollData().m_viewport.Height;
-			return fromScrollData != 0.0 ? fromScrollData : ViewportHeight;
-		}
+		internal double GetViewportHeight() => IsScrollClient() ? GetScrollData().m_viewport.Height : 0.0;
 
 		// Gets the horizontal offset of the scrolled content.
 		internal double GetHorizontalOffset() => IsScrollClient() ? GetScrollData().m_ComputedOffset.X : 0.0;
@@ -472,10 +446,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Scroll content by one line to the top.
-		public void MouseWheelUp() => MouseWheelUp(ScrollViewer.ScrollViewerDefaultMouseWheelDelta);
+		public void MouseWheelUp() => ((IScrollInfo)this).MouseWheelUp(ScrollViewer.ScrollViewerDefaultMouseWheelDelta);
 
 		// IScrollInfo::MouseWheelUp implementation which takes the mouse wheel delta into account.
-		public void MouseWheelUp(uint mouseWheelDelta)
+		void IScrollInfo.MouseWheelUp(uint mouseWheelDelta)
 		{
 			if (IsScrollClient())
 			{
@@ -495,10 +469,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Scroll content by one line to the bottom.
-		public void MouseWheelDown() => MouseWheelDown(ScrollViewer.ScrollViewerDefaultMouseWheelDelta);
+		public void MouseWheelDown() => ((IScrollInfo)this).MouseWheelDown(ScrollViewer.ScrollViewerDefaultMouseWheelDelta);
 
 		// IScrollInfo::MouseWheelDown implementation which takes the mouse wheel delta into account.
-		public void MouseWheelDown(uint mouseWheelDelta)
+		void IScrollInfo.MouseWheelDown(uint mouseWheelDelta)
 		{
 			if (IsScrollClient())
 			{
@@ -518,10 +492,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Scroll content by one page to the left.
-		public void MouseWheelLeft() => MouseWheelLeft(ScrollViewer.ScrollViewerDefaultMouseWheelDelta);
+		public void MouseWheelLeft() => ((IScrollInfo)this).MouseWheelLeft(ScrollViewer.ScrollViewerDefaultMouseWheelDelta);
 
 		// IScrollInfo::MouseWheelLeft implementation which takes the mouse wheel delta into account.
-		public void MouseWheelLeft(uint mouseWheelDelta)
+		void IScrollInfo.MouseWheelLeft(uint mouseWheelDelta)
 		{
 			if (IsScrollClient())
 			{
@@ -532,10 +506,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Scroll content by one page to the right.
-		public void MouseWheelRight() => MouseWheelRight(ScrollViewer.ScrollViewerDefaultMouseWheelDelta);
+		public void MouseWheelRight() => ((IScrollInfo)this).MouseWheelRight(ScrollViewer.ScrollViewerDefaultMouseWheelDelta);
 
 		// IScrollInfo::MouseWheelRight implementation which takes the mouse wheel delta into account.
-		public void MouseWheelRight(uint mouseWheelDelta)
+		void IScrollInfo.MouseWheelRight(uint mouseWheelDelta)
 		{
 			if (IsScrollClient())
 			{
@@ -1648,8 +1622,9 @@ namespace Microsoft.UI.Xaml.Controls
 			var spScrollOwner = pScrollData.GetScrollOwner();
 			if (!valid && spScrollOwner is not null)
 			{
-				if (!DoubleUtil.AreClose(HorizontalOffset, pScrollData.m_ComputedOffset.X) ||
-					!DoubleUtil.AreClose(VerticalOffset, pScrollData.m_ComputedOffset.Y))
+				if (_programmaticManipulation is null &&
+					(!DoubleUtil.AreClose(HorizontalOffset, pScrollData.m_ComputedOffset.X) ||
+					 !DoubleUtil.AreClose(VerticalOffset, pScrollData.m_ComputedOffset.Y)))
 				{
 					Set(
 						horizontalOffset: pScrollData.m_ComputedOffset.X,
@@ -1909,7 +1884,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			var spScrollOwner = pScrollData.GetScrollOwner();
-			spScrollViewer = spScrollOwner as ScrollViewer;
+			spScrollViewer = Scroller ?? spScrollOwner as ScrollViewer;
 
 			if (spScrollViewer is not null)
 			{
@@ -1936,13 +1911,12 @@ namespace Microsoft.UI.Xaml.Controls
 			// when set to true, this means that we wanted to set to infinity but were blocked in doing it.
 			var childPreventsInfiniteAvailableWidth = false;
 			var childPreventsInfiniteAvailableHeight = false;
-			bool sizesContentToTemplatedParent = false;
+			bool sizesContentToTemplatedParent = SizesContentToTemplatedParent;
 
 			if (spScrollViewer is not null)
 			{
 				// When ScrollContentPresenter.SizesContentToTemplatedParent is True, the child's available size
 				// is set to the templated parent's (typically the ScrollViewer's) available size.
-				sizesContentToTemplatedParent = SizesContentToTemplatedParent;
 				if (sizesContentToTemplatedParent)
 				{
 					// Note: Accessing the templated parent with get_TemplatedParent and using LayoutInformation::GetAvailableSize
@@ -2043,6 +2017,20 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				spChild.Measure(childAvailableSize);
 				desiredSize = spChild.DesiredSize;
+
+				if (sizesContentToTemplatedParent && spChild is StackPanel stackPanel)
+				{
+					if (stackPanel.Orientation == Orientation.Horizontal &&
+						spChildAsFE?.HorizontalAlignment != HorizontalAlignment.Stretch)
+					{
+						desiredSize.Width = Math.Min(desiredSize.Width, childAvailableSize.Width);
+					}
+					else if (stackPanel.Orientation == Orientation.Vertical &&
+						spChildAsFE?.VerticalAlignment != VerticalAlignment.Stretch)
+					{
+						desiredSize.Height = Math.Min(desiredSize.Height, childAvailableSize.Height);
+					}
+				}
 
 				if (spChild is Primitives.CalendarPanel calendarPanel)
 				{
@@ -2364,11 +2352,27 @@ namespace Microsoft.UI.Xaml.Controls
 				if (spChild is not null)
 				{
 					var desiredSize = spChild.DesiredSize;
+					var childWidth = Math.Max(desiredSize.Width, finalSize.Width);
+					var childHeight = Math.Max(desiredSize.Height, finalSize.Height);
+					if (SizesContentToTemplatedParent && spChild is StackPanel stackPanel)
+					{
+						if (stackPanel.Orientation == Orientation.Horizontal &&
+							spChildAsFE?.HorizontalAlignment != HorizontalAlignment.Stretch)
+						{
+							childWidth = finalSize.Width;
+						}
+						else if (stackPanel.Orientation == Orientation.Vertical &&
+							spChildAsFE?.VerticalAlignment != VerticalAlignment.Stretch)
+						{
+							childHeight = finalSize.Height;
+						}
+					}
+
 					var childRect = new global::Windows.Foundation.Rect(
 						Math.Max(topLeftHeaderDesiredSize.Width, leftHeaderDesiredSize.Width),
 						Math.Max(topLeftHeaderDesiredSize.Height, topHeaderDesiredSize.Height),
-						Math.Max(desiredSize.Width, finalSize.Width),
-						Math.Max(desiredSize.Height, finalSize.Height));
+						childWidth,
+						childHeight);
 
 					spChild.Arrange(childRect);
 

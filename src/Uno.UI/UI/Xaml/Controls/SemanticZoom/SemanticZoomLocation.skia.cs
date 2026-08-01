@@ -11,13 +11,17 @@ namespace Microsoft.UI.Xaml.Controls;
 /// <summary>
 /// Communicates information for items and view state in a SemanticZoom.
 /// </summary>
-public partial class SemanticZoomLocation
+public sealed partial class SemanticZoomLocation
 {
 	/// <summary>
 	/// Initializes a new instance of the SemanticZoomLocation class.
 	/// </summary>
 	public SemanticZoomLocation()
 	{
+		ZoomPoint = default;
+		Bounds = new Rect(0, 0, -1, -1);
+		Remainder = default;
+		IsBottomAlignment = true;
 	}
 
 	/// <summary>

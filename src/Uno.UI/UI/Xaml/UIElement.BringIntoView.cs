@@ -54,13 +54,55 @@ public partial class UIElement
 		}
 
 
-		var args = new BringIntoViewRequestedEventArgs()
+		RaiseBringIntoViewRequested(
+			targetRect,
+			forceIntoView: false,
+			options.AnimationDesired,
+			interruptDuringManipulation: true,
+			options.HorizontalAlignmentRatio,
+			options.VerticalAlignmentRatio,
+			options.HorizontalOffset,
+			options.VerticalOffset);
+	}
+
+	internal void BringIntoView(
+		Rect targetRect,
+		bool forceIntoView,
+		bool useAnimation,
+		bool interruptDuringManipulation,
+		double horizontalAlignmentRatio,
+		double verticalAlignmentRatio,
+		double offsetX,
+		double offsetY) =>
+		RaiseBringIntoViewRequested(
+			targetRect,
+			forceIntoView,
+			useAnimation,
+			interruptDuringManipulation,
+			horizontalAlignmentRatio,
+			verticalAlignmentRatio,
+			offsetX,
+			offsetY);
+
+	private void RaiseBringIntoViewRequested(
+		Rect targetRect,
+		bool forceIntoView,
+		bool useAnimation,
+		bool interruptDuringManipulation,
+		double horizontalAlignmentRatio,
+		double verticalAlignmentRatio,
+		double offsetX,
+		double offsetY)
+	{
+		var args = new BringIntoViewRequestedEventArgs
 		{
-			AnimationDesired = options.AnimationDesired,
-			HorizontalOffset = options.HorizontalOffset,
-			VerticalOffset = options.VerticalOffset,
-			HorizontalAlignmentRatio = options.HorizontalAlignmentRatio,
-			VerticalAlignmentRatio = options.VerticalAlignmentRatio,
+			AnimationDesired = useAnimation,
+			ForceIntoView = forceIntoView,
+			InterruptDuringManipulation = interruptDuringManipulation,
+			HorizontalOffset = offsetX,
+			VerticalOffset = offsetY,
+			HorizontalAlignmentRatio = horizontalAlignmentRatio,
+			VerticalAlignmentRatio = verticalAlignmentRatio,
 			TargetRect = targetRect,
 			OriginalSource = this,
 			TargetElement = this,

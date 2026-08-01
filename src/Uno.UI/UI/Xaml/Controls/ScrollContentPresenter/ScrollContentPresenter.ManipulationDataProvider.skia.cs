@@ -88,10 +88,10 @@ namespace Microsoft.UI.Xaml.Controls
 			public void PageDown() => _presenter.PageDown();
 			public void PageLeft() => _presenter.PageLeft();
 			public void PageRight() => _presenter.PageRight();
-			public void MouseWheelUp(uint mouseWheelDelta) => _presenter.MouseWheelUp(mouseWheelDelta);
-			public void MouseWheelDown(uint mouseWheelDelta) => _presenter.MouseWheelDown(mouseWheelDelta);
-			public void MouseWheelLeft(uint mouseWheelDelta) => _presenter.MouseWheelLeft(mouseWheelDelta);
-			public void MouseWheelRight(uint mouseWheelDelta) => _presenter.MouseWheelRight(mouseWheelDelta);
+			public void MouseWheelUp(uint mouseWheelDelta) => ((IScrollInfo)_presenter).MouseWheelUp(mouseWheelDelta);
+			public void MouseWheelDown(uint mouseWheelDelta) => ((IScrollInfo)_presenter).MouseWheelDown(mouseWheelDelta);
+			public void MouseWheelLeft(uint mouseWheelDelta) => ((IScrollInfo)_presenter).MouseWheelLeft(mouseWheelDelta);
+			public void MouseWheelRight(uint mouseWheelDelta) => ((IScrollInfo)_presenter).MouseWheelRight(mouseWheelDelta);
 			public void SetHorizontalOffset(double offset) => _presenter.SetHorizontalOffset(offset);
 			public void SetVerticalOffset(double offset) => _presenter.SetVerticalOffset(offset);
 			public Rect MakeVisible(UIElement visual, Rect rectangle) => _presenter.MakeVisible(visual, rectangle);

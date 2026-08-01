@@ -6,11 +6,9 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	// Represents a snapshot of the current view (offsets + zoom factor) reported by
 	// ScrollViewer's ViewChanging event. Plain value carrier — no behavior.
-	public partial class ScrollViewerView
+	public sealed partial class ScrollViewerView
 	{
 #if __SKIA__
-		// On Skia we provide a real implementation. The generated NotImplemented-stub
-		// remains for the other platforms.
 		internal ScrollViewerView() { }
 
 		internal ScrollViewerView(double horizontalOffset, double verticalOffset, float zoomFactor)

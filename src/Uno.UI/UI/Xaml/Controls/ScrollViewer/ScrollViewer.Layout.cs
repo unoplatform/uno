@@ -13,6 +13,9 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			ViewportMeasureSize = availableSize;
+#if __SKIA__
+			m_latestAvailableSize = availableSize;
+#endif
 
 			var size = base.MeasureOverride(availableSize);
 
@@ -34,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void TrimOverscroll(Orientation orientation);
 
-		// TODO: Revisit if this can use SizeChanged += (_, _) => OnControlsBoundsChanged(); on all platforms.
+		// Refresh dimensions at the platform's post-arrange lifecycle point.
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		internal override void AfterArrange()
 		{

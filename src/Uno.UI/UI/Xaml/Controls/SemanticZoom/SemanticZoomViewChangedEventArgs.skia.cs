@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// <summary>
 /// Provides event data for the ViewChangeStarted and ViewChangeCompleted events.
 /// </summary>
-public partial class SemanticZoomViewChangedEventArgs
+public sealed partial class SemanticZoomViewChangedEventArgs
 {
 	/// <summary>
 	/// Initializes a new instance of the SemanticZoomViewChangedEventArgs class.

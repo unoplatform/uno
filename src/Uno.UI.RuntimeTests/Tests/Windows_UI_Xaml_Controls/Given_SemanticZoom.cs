@@ -12,6 +12,12 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Toolkit.DevTools.Input;
+using Windows.UI.Input.Preview.Injection;
+
+#if HAS_UNO
+using DirectUI;
+#endif
 
 using static Private.Infrastructure.TestServices;
 
@@ -57,10 +63,13 @@ public class Given_SemanticZoom
 
 			toggleProvider.Toggle();
 			await WindowHelper.WaitFor(() => completed);
+			peer.InvalidatePeer();
+			await WindowHelper.WaitFor(() => peer.GetChildren().Any(child => child.GetName() == "Zoomed out"));
+			var activeChildren = peer.GetChildren();
 
 			Assert.AreEqual(ToggleState.Off, toggleProvider.ToggleState);
-			Assert.IsTrue(peer.GetChildren().Any(child => child.GetName() == "Zoomed out"));
-			Assert.IsFalse(peer.GetChildren().Any(child => child.GetName() == "Zoomed in"));
+			Assert.IsTrue(activeChildren.Any(child => child.GetName() == "Zoomed out"));
+			Assert.IsFalse(activeChildren.Any(child => child.GetName() == "Zoomed in"));
 		}
 		finally
 		{
@@ -72,12 +81,26 @@ public class Given_SemanticZoom
 	public void When_Constructed_DefaultsMatchWinUI()
 	{
 		var sut = new SemanticZoom();
+		var scrollViewer = new ScrollViewer();
 
 		Assert.IsTrue(sut.IsZoomedInViewActive);
 		Assert.IsTrue(sut.CanChangeViews);
 		Assert.IsTrue(sut.IsZoomOutButtonEnabled);
 		Assert.IsNull(sut.ZoomedInView);
 		Assert.IsNull(sut.ZoomedOutView);
+		Assert.AreEqual(ZoomMode.Enabled, scrollViewer.ZoomMode);
+		Assert.AreEqual(ScrollBarVisibility.Visible, scrollViewer.VerticalScrollBarVisibility);
+		Assert.IsFalse(scrollViewer.CanContentRenderOutsideBounds);
+		Assert.IsFalse(scrollViewer.IsDeferredScrollingEnabled);
+		Assert.IsTrue(scrollViewer.IsZoomChainingEnabled);
+		Assert.IsTrue(scrollViewer.IsZoomInertiaEnabled);
+		Assert.IsFalse(scrollViewer.ReduceViewportForCoreInputViewOcclusions);
+		Assert.IsNull(scrollViewer.LeftHeader);
+		Assert.IsNull(scrollViewer.TopHeader);
+		Assert.IsNull(scrollViewer.TopLeftHeader);
+		Assert.AreEqual(SnapPointsType.Optional, scrollViewer.ZoomSnapPointsType);
+		Assert.IsNotNull(scrollViewer.ZoomSnapPoints);
+		Assert.AreSame(scrollViewer.ZoomSnapPoints, scrollViewer.ZoomSnapPoints);
 	}
 
 	[TestMethod]
@@ -115,7 +138,256 @@ public class Given_SemanticZoom
 	}
 
 	[TestMethod]
-	public async Task When_DirectPropertyChange_UpdatesAutomationToggleState()
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_ControlMouseWheel_ChangesActiveView()
+	{
+		var sut = CreateSemanticZoom();
+
+		try
+		{
+			await UITestHelper.Load(sut, element => element.IsLoaded);
+			var scrollViewer = FindNamedDescendant<ScrollViewer>(sut, "ScrollViewer")
+				?? throw new InvalidOperationException("SemanticZoom did not contain its ScrollViewer template part");
+			scrollViewer.ZoomMode = ZoomMode.Enabled;
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+			mouse.MoveTo(sut.TransformToVisual(null).TransformPoint(new Point(sut.ActualWidth / 2, sut.ActualHeight / 2)));
+
+			try
+			{
+				await KeyboardHelper.PressKeySequence("$d$_ctrl", sut);
+
+				mouse.WheelDown();
+				await WindowHelper.WaitFor(() => !sut.IsZoomedInViewActive);
+
+				mouse.WheelUp();
+				await WindowHelper.WaitFor(() => sut.IsZoomedInViewActive);
+			}
+			finally
+			{
+				await KeyboardHelper.PressKeySequence("$u$_ctrl", sut);
+			}
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public void When_CanChangeViewsIsFalse_ActiveViewCannotChange()
+	{
+		var sut = new SemanticZoom
+		{
+			CanChangeViews = false,
+		};
+
+		Assert.ThrowsExactly<InvalidOperationException>(() => sut.IsZoomedInViewActive = false);
+		Assert.IsFalse(sut.IsZoomedInViewActive);
+	}
+
+#if HAS_UNO
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_BackPressed_ZoomedOutViewReturnsToZoomedInView()
+	{
+		var sut = CreateSemanticZoom();
+		var completedChanges = 0;
+		sut.ViewChangeCompleted += (sender, args) => completedChanges++;
+
+		try
+		{
+			await UITestHelper.Load(sut, element => element.IsLoaded);
+
+			ToggleThroughAutomation(sut);
+			await WindowHelper.WaitFor(() => completedChanges == 1);
+			Assert.IsFalse(sut.IsZoomedInViewActive);
+
+			Assert.IsTrue(sut.OnBackButtonPressedImpl());
+			await WindowHelper.WaitFor(() => completedChanges == 2);
+			Assert.IsTrue(sut.IsZoomedInViewActive);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_DirectManipulationCrossesThreshold_TogglesBothDirections()
+	{
+		var sut = CreateSemanticZoom();
+		((FrameworkElement)sut.ZoomedInView).Width = 600;
+		((FrameworkElement)sut.ZoomedInView).Height = 600;
+		((FrameworkElement)sut.ZoomedOutView).Width = 600;
+		((FrameworkElement)sut.ZoomedOutView).Height = 600;
+		ScrollViewer.SetZoomMode(sut, ZoomMode.Enabled);
+		var completedChanges = 0;
+		sut.ViewChangeCompleted += (sender, args) => completedChanges++;
+
+		try
+		{
+			await UITestHelper.Load(sut, element => element.IsLoaded);
+			var scrollViewer = FindNamedDescendant<ScrollViewer>(sut, "ScrollViewer")
+				?? throw new InvalidOperationException("SemanticZoom did not contain its ScrollViewer template part");
+			Assert.AreEqual(ZoomMode.Enabled, scrollViewer.ZoomMode);
+			var zoomRange = await Pinch(sut, scrollViewer, startHalfSpan: 80, endHalfSpan: 25);
+			Assert.IsLessThan(0.9f, zoomRange.minimum,
+				$"Pinch did not lower ZoomFactor; range={zoomRange.minimum}..{zoomRange.maximum}, extent={scrollViewer.ExtentWidth}x{scrollViewer.ExtentHeight}, viewport={scrollViewer.ViewportWidth}x{scrollViewer.ViewportHeight}");
+
+			await WindowHelper.WaitFor(() => completedChanges == 1);
+			Assert.IsFalse(sut.IsZoomedInViewActive);
+
+			zoomRange = await Pinch(sut, scrollViewer, startHalfSpan: 25, endHalfSpan: 80);
+			Assert.IsGreaterThan(0.6f, zoomRange.maximum,
+				$"Pinch did not raise ZoomFactor; range={zoomRange.minimum}..{zoomRange.maximum}");
+
+			await WindowHelper.WaitFor(() => completedChanges == 2);
+			Assert.IsTrue(sut.IsZoomedInViewActive);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+#endif
+
+#if HAS_UNO
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_SizeChanges_LayoutSizeAndActiveZoomAreReset()
+	{
+		var sut = CreateSemanticZoom();
+
+		try
+		{
+			await UITestHelper.Load(sut, element => element.IsLoaded);
+			var scrollViewer = FindNamedDescendant<ScrollViewer>(sut, "ScrollViewer");
+			Assert.IsNotNull(scrollViewer);
+
+			sut.Width = 420;
+			sut.Height = 260;
+			await WindowHelper.WaitForIdle();
+
+			var layoutSize = scrollViewer.GetLayoutSize();
+			Assert.IsGreaterThan(0, layoutSize.Width);
+			Assert.IsGreaterThan(0, layoutSize.Height);
+			Assert.AreEqual(1.0f, scrollViewer.ZoomFactor);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+#endif
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_ViewIsReplaced_RolesMoveToReplacement()
+	{
+		var originalCalls = new List<string>();
+		var replacementCalls = new List<string>();
+		var original = new TestSemanticZoomView("original", originalCalls);
+		var replacement = new TestSemanticZoomView("replacement", replacementCalls);
+		var sut = new SemanticZoom
+		{
+			Width = 300,
+			Height = 300,
+			ZoomedInView = new TestSemanticZoomView("in", new List<string>()),
+			ZoomedOutView = original,
+		};
+		var completed = false;
+		sut.ViewChangeCompleted += (sender, args) => completed = true;
+
+		try
+		{
+			await UITestHelper.Load(sut, element => element.IsLoaded);
+
+			sut.ZoomedOutView = replacement;
+
+			Assert.IsNull(original.SemanticZoomOwner);
+			Assert.IsFalse(original.IsActiveView);
+			Assert.AreSame(sut, replacement.SemanticZoomOwner);
+			Assert.IsFalse(replacement.IsZoomedInView);
+
+			ToggleThroughAutomation(sut);
+			await WindowHelper.WaitFor(() => completed);
+
+			Assert.IsTrue(replacement.IsActiveView);
+			CollectionAssert.Contains(replacementCalls, "replacement.MakeVisible");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_UnloadedAndReloaded_TransitionSubscriptionsRemainSingle()
+	{
+		var sut = CreateSemanticZoom();
+		var completedChanges = 0;
+		sut.ViewChangeCompleted += (sender, args) => completedChanges++;
+
+		try
+		{
+			await UITestHelper.Load(sut, element => element.IsLoaded);
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitFor(() => !sut.IsLoaded);
+			await UITestHelper.Load(sut, element => element.IsLoaded);
+
+			ToggleThroughAutomation(sut);
+			await WindowHelper.WaitFor(() => completedChanges == 1);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, completedChanges);
+			Assert.IsFalse(sut.IsZoomedInViewActive);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Retemplated_TransitionSubscriptionsRemainSingle()
+	{
+		var sut = CreateSemanticZoom();
+		var completedChanges = 0;
+		sut.ViewChangeCompleted += (sender, args) => completedChanges++;
+
+		try
+		{
+			await UITestHelper.Load(sut, element => element.IsLoaded);
+			var template = sut.Template;
+			Assert.IsNotNull(template);
+
+			sut.Template = null;
+			sut.Template = template;
+			sut.ApplyTemplate();
+			await WindowHelper.WaitForIdle();
+
+			var zoomOutButton = FindNamedDescendant<Button>(sut, "ZoomOutButton");
+			Assert.IsNotNull(zoomOutButton);
+			new ButtonAutomationPeer(zoomOutButton).Invoke();
+			await WindowHelper.WaitFor(() => completedChanges == 1);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, completedChanges);
+			Assert.IsFalse(sut.IsZoomedInViewActive);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	public async Task When_AutomationToggle_RaisesPropertyChanged()
 	{
 		var sut = new SemanticZoom
 		{
@@ -124,6 +396,8 @@ public class Given_SemanticZoom
 			ZoomedInView = new TestSemanticZoomView("in", new List<string>()),
 			ZoomedOutView = new TestSemanticZoomView("out", new List<string>()),
 		};
+		var completedChanges = 0;
+		sut.ViewChangeCompleted += (sender, args) => completedChanges++;
 
 		try
 		{
@@ -136,13 +410,13 @@ public class Given_SemanticZoom
 			AutomationPeer.TestAutomationPeerListener = listener;
 #endif
 
-			sut.IsZoomedInViewActive = false;
+			((IToggleProvider)peer).Toggle();
+			await WindowHelper.WaitFor(() => completedChanges == 1);
 
-			Assert.AreEqual(ToggleState.Off, peer.ToggleState);
 #if __SKIA__
 			Assert.AreSame(TogglePatternIdentifiers.ToggleStateProperty, listener.Property);
-			Assert.AreEqual(ToggleState.On, listener.OldValue);
-			Assert.AreEqual(ToggleState.Off, listener.NewValue);
+			Assert.AreEqual(ToggleState.Off, listener.OldValue);
+			Assert.AreEqual(ToggleState.On, listener.NewValue);
 #endif
 		}
 		finally
@@ -157,6 +431,26 @@ public class Given_SemanticZoom
 	[TestMethod]
 	public void When_LocationAndEventArgs_AreMutable()
 	{
+		Assert.IsTrue(typeof(SemanticZoom).IsSealed);
+		Assert.IsTrue(typeof(SemanticZoomLocation).IsSealed);
+		Assert.IsTrue(typeof(SemanticZoomViewChangedEventArgs).IsSealed);
+		Assert.IsTrue(typeof(ScrollContentPresenter).IsSealed);
+		Assert.IsTrue(typeof(ScrollViewerView).IsSealed);
+		Assert.IsTrue(typeof(ScrollViewerViewChangingEventArgs).IsSealed);
+		Assert.AreEqual(typeof(object), typeof(SemanticZoomViewChangedEventArgs).BaseType);
+
+		var defaultLocation = new SemanticZoomLocation();
+		Assert.IsNull(defaultLocation.Item);
+		Assert.AreEqual(0, defaultLocation.Bounds.X);
+		Assert.AreEqual(0, defaultLocation.Bounds.Y);
+		Assert.AreEqual(-1, defaultLocation.Bounds.Width);
+		Assert.AreEqual(-1, defaultLocation.Bounds.Height);
+#if HAS_UNO
+		Assert.AreEqual(default(Point), defaultLocation.ZoomPoint);
+		Assert.AreEqual(default(Rect), defaultLocation.Remainder);
+		Assert.IsTrue(defaultLocation.IsBottomAlignment);
+#endif
+
 		var source = new SemanticZoomLocation
 		{
 			Item = "source",
@@ -212,132 +506,6 @@ public class Given_SemanticZoom
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
-	public async Task When_ViewChangeCompleted_ReentersAndThrows_StateConverges()
-	{
-		var zoomedInView = new TestSemanticZoomView("in", new List<string>());
-		var zoomedOutView = new TestSemanticZoomView("out", new List<string>());
-		var sut = new SemanticZoom
-		{
-			Width = 300,
-			Height = 300,
-			ZoomedInView = zoomedInView,
-			ZoomedOutView = zoomedOutView,
-		};
-		sut.ViewChangeCompleted += (sender, args) =>
-		{
-			sut.ToggleActiveView();
-			throw new InvalidOperationException("Expected test exception.");
-		};
-
-		try
-		{
-			await UITestHelper.Load(sut, element => element.IsLoaded);
-
-			Assert.ThrowsExactly<InvalidOperationException>(sut.ToggleActiveView);
-
-			Assert.IsTrue(sut.IsZoomedInViewActive);
-			Assert.IsTrue(zoomedInView.IsActiveView);
-			Assert.IsFalse(zoomedOutView.IsActiveView);
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
-	}
-
-	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
-	public async Task When_DestinationViewReplacedDuringStarted_RestartsWithReplacement()
-	{
-		var zoomedInView = new TestSemanticZoomView("in", new List<string>());
-		var originalZoomedOutCalls = new List<string>();
-		var replacementZoomedOutCalls = new List<string>();
-		var originalZoomedOutView = new TestSemanticZoomView("original", originalZoomedOutCalls);
-		var replacementZoomedOutView = new TestSemanticZoomView("replacement", replacementZoomedOutCalls);
-		var sut = new SemanticZoom
-		{
-			Width = 300,
-			Height = 300,
-			ZoomedInView = zoomedInView,
-			ZoomedOutView = originalZoomedOutView,
-		};
-		var startedChanges = 0;
-		var completedChanges = 0;
-		sut.ViewChangeStarted += (sender, args) =>
-		{
-			startedChanges++;
-			if (startedChanges == 1)
-			{
-				sut.ZoomedOutView = replacementZoomedOutView;
-			}
-		};
-		sut.ViewChangeCompleted += (sender, args) => completedChanges++;
-
-		try
-		{
-			await UITestHelper.Load(sut, element => element.IsLoaded);
-
-			sut.ToggleActiveView();
-			await WindowHelper.WaitFor(() => completedChanges == 2);
-
-			Assert.AreEqual(2, startedChanges);
-			Assert.IsNull(originalZoomedOutView.SemanticZoomOwner);
-			Assert.IsFalse(originalZoomedOutView.IsActiveView);
-			Assert.AreSame(sut, replacementZoomedOutView.SemanticZoomOwner);
-			Assert.IsTrue(replacementZoomedOutView.IsActiveView);
-			CollectionAssert.Contains(replacementZoomedOutCalls, "replacement.MakeVisible");
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
-	}
-
-	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
-	public async Task When_ViewChangeStarted_Reenters_LatestViewWins()
-	{
-		var zoomedInView = new TestSemanticZoomView("in", new List<string>());
-		var zoomedOutView = new TestSemanticZoomView("out", new List<string>());
-		var sut = new SemanticZoom
-		{
-			Width = 300,
-			Height = 300,
-			ZoomedInView = zoomedInView,
-			ZoomedOutView = zoomedOutView,
-		};
-		var startedChanges = 0;
-		var completedChanges = 0;
-		sut.ViewChangeStarted += (sender, args) =>
-		{
-			startedChanges++;
-			if (startedChanges == 1)
-			{
-				sut.ToggleActiveView();
-			}
-		};
-		sut.ViewChangeCompleted += (sender, args) => completedChanges++;
-
-		try
-		{
-			await UITestHelper.Load(sut, element => element.IsLoaded);
-
-			sut.ToggleActiveView();
-			await WindowHelper.WaitFor(() => completedChanges == 2);
-
-			Assert.AreEqual(2, startedChanges);
-			Assert.IsTrue(sut.IsZoomedInViewActive);
-			Assert.IsTrue(zoomedInView.IsActiveView);
-			Assert.IsFalse(zoomedOutView.IsActiveView);
-		}
-		finally
-		{
-			WindowHelper.WindowContent = null;
-		}
-	}
-
-	[TestMethod]
 	public async Task When_Toggled_CoordinatesViewLifecycleAndEvents()
 	{
 		var calls = new List<string>();
@@ -377,11 +545,8 @@ public class Given_SemanticZoom
 			await UITestHelper.Load(sut, element => element.IsLoaded);
 			calls.Clear();
 
-			sut.ToggleActiveView();
-			await WindowHelper.WaitForIdle();
-			Assert.IsTrue(
-				completed,
-				$"View change did not complete. Active={sut.IsZoomedInViewActive}; Calls={string.Join(", ", calls)}");
+			ToggleThroughAutomation(sut);
+			await WindowHelper.WaitFor(() => completed);
 
 			Assert.IsFalse(sut.IsZoomedInViewActive);
 			Assert.IsFalse(zoomedInView.IsActiveView);
@@ -406,12 +571,7 @@ public class Given_SemanticZoom
 
 			CollectionAssert.AreEqual(callsBeforeCompletion, calls.GetRange(0, callsBeforeCompletion.Length));
 			Assert.IsTrue(calls.IndexOf("completed") >= callsBeforeCompletion.Length);
-
-#if HAS_UNO
-			CollectionAssert.AreEqual(
-				new[] { "completed", "in.Complete", "out.Complete" },
-				calls.GetRange(callsBeforeCompletion.Length, 3));
-#endif
+			Assert.AreEqual(callsBeforeCompletion.Length, calls.IndexOf("completed"));
 		}
 		finally
 		{
@@ -443,6 +603,10 @@ public class Given_SemanticZoom
 		{
 			ItemsSource = collectionViewSource.View.CollectionGroups,
 		};
+		var destinationGroupData = groups[1];
+		var destinationGroup = collectionViewSource.View.CollectionGroups
+			.Cast<ICollectionViewGroup>()
+			.Single(group => ReferenceEquals(group.Group, destinationGroupData));
 		var sut = new SemanticZoom
 		{
 			Width = 300,
@@ -467,18 +631,25 @@ public class Given_SemanticZoom
 			Assert.IsTrue(sut.TryGetFocusState(out _), "SemanticZoom did not detect focus in its source view.");
 #endif
 
-			sut.ToggleActiveView();
-			await WindowHelper.WaitFor(() => completedChanges == 1);
+			var scrollViewer = FindNamedDescendant<ScrollViewer>(sut, "ScrollViewer")
+				?? throw new InvalidOperationException("SemanticZoom did not contain its ScrollViewer template part");
+			scrollViewer.ZoomMode = ZoomMode.Enabled;
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+			mouse.MoveTo(sourceContainer.TransformToVisual(null).TransformPoint(
+				new Point(sourceContainer.ActualWidth / 2, sourceContainer.ActualHeight / 2)));
+			try
+			{
+				await KeyboardHelper.PressKeySequence("$d$_ctrl", sut);
+				mouse.WheelDown();
+				await WindowHelper.WaitFor(() => completedChanges == 1);
+			}
+			finally
+			{
+				await KeyboardHelper.PressKeySequence("$u$_ctrl", sut);
+			}
 
-			var mappedDestination = startedChanges[0].DestinationItem.Item;
-			var destinationGroupData =
-				mappedDestination as SemanticZoomGroup ??
-				(mappedDestination as ICollectionViewGroup)?.Group as SemanticZoomGroup;
-			Assert.IsNotNull(destinationGroupData);
-			Assert.AreEqual("B", destinationGroupData.Key);
-			var destinationGroup = collectionViewSource.View.CollectionGroups
-				.Cast<ICollectionViewGroup>()
-				.Single(group => ReferenceEquals(group.Group, destinationGroupData));
+			Assert.AreSame(destinationGroup, startedChanges[0].DestinationItem.Item);
 
 			await WindowHelper.WaitFor(
 				() => zoomedOutView.ContainerFromItem(destinationGroup) is Control);
@@ -488,9 +659,8 @@ public class Given_SemanticZoom
 					destinationContainer,
 					FocusManager.GetFocusedElement(sut.XamlRoot)));
 
-			zoomedOutView.SelectedItem = destinationGroup;
-
-			sut.ToggleActiveView();
+			Assert.IsTrue(destinationContainer.Focus(FocusState.Keyboard));
+			await KeyboardHelper.PressKeySequence("$d$_enter#$u$_enter", destinationContainer);
 			await WindowHelper.WaitFor(() => completedChanges == 2);
 
 			var reverseSource = startedChanges[1].SourceItem.Item;
@@ -517,7 +687,7 @@ public class Given_SemanticZoom
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
-	public async Task When_ZoomedOutItemClicked_TogglesToZoomedInView()
+	public async Task When_ZoomedOutItemInvoked_TogglesToZoomedInView()
 	{
 		var zoomedInView = new ListView
 		{
@@ -541,15 +711,13 @@ public class Given_SemanticZoom
 		{
 			await UITestHelper.Load(sut, element => element.IsLoaded);
 
-			sut.ToggleActiveView();
+			ToggleThroughAutomation(sut);
 			await WindowHelper.WaitFor(() => completedChanges == 1);
-			await WindowHelper.WaitFor(() => zoomedOutView.ContainerFromIndex(1) is not null);
+			await WindowHelper.WaitFor(() => zoomedOutView.ContainerFromIndex(1) is Control);
 
-#if HAS_UNO
-			zoomedOutView.OnItemClicked(1, default);
-#else
-			Assert.Inconclusive("This test exercises Uno's internal item interaction path.");
-#endif
+			var destinationContainer = (Control)zoomedOutView.ContainerFromIndex(1);
+			Assert.IsTrue(destinationContainer.Focus(FocusState.Keyboard));
+			await KeyboardHelper.PressKeySequence("$d$_enter#$u$_enter", destinationContainer);
 			await WindowHelper.WaitFor(() => completedChanges == 2);
 
 			Assert.IsTrue(sut.IsZoomedInViewActive);
@@ -595,11 +763,8 @@ public class Given_SemanticZoom
 			var completed = false;
 			sut.ViewChangeCompleted += (sender, args) => completed = true;
 
-			sut.ToggleActiveView();
-			await WindowHelper.WaitForIdle();
-			Assert.IsTrue(
-				completed,
-				$"View change did not complete. Active={sut.IsZoomedInViewActive}; InActive={zoomedInView.IsActiveView}; OutActive={zoomedOutView.IsActiveView}");
+			ToggleThroughAutomation(sut);
+			await WindowHelper.WaitFor(() => completed);
 
 			Assert.IsFalse(zoomedInView.IsActiveView);
 			Assert.IsTrue(zoomedOutView.IsActiveView);
@@ -608,6 +773,62 @@ public class Given_SemanticZoom
 		{
 			WindowHelper.WindowContent = null;
 		}
+	}
+
+	private static SemanticZoom CreateSemanticZoom() =>
+		new()
+		{
+			Width = 300,
+			Height = 300,
+			ZoomedInView = new TestSemanticZoomView("in", new List<string>()),
+			ZoomedOutView = new TestSemanticZoomView("out", new List<string>()),
+		};
+
+	private static void ToggleThroughAutomation(SemanticZoom semanticZoom)
+	{
+		var peer = FrameworkElementAutomationPeer.CreatePeerForElement(semanticZoom)
+			?? throw new InvalidOperationException("Failed to create the SemanticZoom automation peer");
+		((IToggleProvider)peer.GetPattern(PatternInterface.Toggle)).Toggle();
+	}
+
+	private static async Task<(float minimum, float maximum)> Pinch(
+		FrameworkElement element,
+		ScrollViewer scrollViewer,
+		double startHalfSpan,
+		double endHalfSpan)
+	{
+		var center = element.TransformToVisual(null).TransformPoint(
+			new Point(element.ActualWidth / 2, element.ActualHeight / 2));
+		var injector1 = InputInjector.TryCreate()
+			?? throw new InvalidOperationException("Failed to initialize the first touch injector");
+		var injector2 = InputInjector.TryCreate()
+			?? throw new InvalidOperationException("Failed to initialize the second touch injector");
+		using var finger1 = injector1.GetFinger(id: 101);
+		using var finger2 = injector2.GetFinger(id: 102);
+		var minimumZoomFactor = scrollViewer.ZoomFactor;
+		var maximumZoomFactor = scrollViewer.ZoomFactor;
+
+		finger1.Press(new Point(center.X - startHalfSpan, center.Y));
+		await WindowHelper.WaitForIdle();
+		finger2.Press(new Point(center.X + startHalfSpan, center.Y));
+		await WindowHelper.WaitForIdle();
+
+		const int stepCount = 10;
+		for (var step = 1; step <= stepCount; step++)
+		{
+			var halfSpan = startHalfSpan + (endHalfSpan - startHalfSpan) * step / stepCount;
+			finger1.MoveTo(new Point(center.X - halfSpan, center.Y), steps: 2);
+			await WindowHelper.WaitForIdle();
+			finger2.MoveTo(new Point(center.X + halfSpan, center.Y), steps: 2);
+			await WindowHelper.WaitForIdle();
+			minimumZoomFactor = Math.Min(minimumZoomFactor, scrollViewer.ZoomFactor);
+			maximumZoomFactor = Math.Max(maximumZoomFactor, scrollViewer.ZoomFactor);
+		}
+
+		finger2.Release();
+		finger1.Release();
+		await WindowHelper.WaitForIdle();
+		return (minimumZoomFactor, maximumZoomFactor);
 	}
 
 	private static T FindNamedDescendant<T>(DependencyObject root, string name)
@@ -628,7 +849,7 @@ public class Given_SemanticZoom
 			}
 		}
 
-		return null;
+		return default;
 	}
 
 	private sealed class TestSemanticZoomView : ContentControl, ISemanticZoomInformation

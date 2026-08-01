@@ -4,12 +4,14 @@
 
 #nullable enable
 
+using DirectUI;
+
 namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents a scrollable control that incorporates two views that have a semantic relationship.
 /// </summary>
 [Microsoft.UI.Xaml.Markup.ContentProperty(Name = nameof(ZoomedInView))]
-public partial class SemanticZoom : Control
+public sealed partial class SemanticZoom : Control, IDirectManipulationStateChangeHandler, IBackButtonListener
 {
 }

@@ -67,7 +67,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollBarVisibility),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
-					ScrollBarVisibility.Auto,
+					ScrollBarVisibility.Visible,
 					propertyChangedCallback: OnVerticalScrollabilityPropertyChanged
 				)
 			);
@@ -201,8 +201,8 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ZoomMode),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
-					ZoomMode.Disabled,
-					propertyChangedCallback: (o, e) => ((ScrollViewer)o).OnZoomModeChanged((ZoomMode)e.NewValue)
+					ZoomMode.Enabled,
+					propertyChangedCallback: (o, e) => (o as ScrollViewer)?.OnZoomModeChanged((ZoomMode)e.NewValue)
 				)
 			);
 

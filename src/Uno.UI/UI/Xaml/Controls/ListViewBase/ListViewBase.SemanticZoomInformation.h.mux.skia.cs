@@ -9,7 +9,5 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class ListViewBase
 {
 	private FocusState m_semanticZoomCompletedFocusState = FocusState.Programmatic;
-	private bool m_semanticZoomShouldTakeFocus;
-	private bool m_semanticZoomFocusQueued;
-	private object? m_semanticZoomPendingFocusItem;
+	private object? m_tpSZRequestingItem;
 }

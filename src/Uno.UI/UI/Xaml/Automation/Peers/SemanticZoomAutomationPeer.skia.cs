@@ -10,6 +10,9 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 
 public partial class SemanticZoomAutomationPeer
 {
+	internal IList<AutomationPeer> GetAutomationPeerChildren(UIElement presenter) =>
+		GetAutomationPeersForChildrenOfElement(presenter);
+
 	protected override IList<AutomationPeer> GetChildrenCore()
 	{
 		if ((Owner as Controls.SemanticZoom)?.AutomationGetActivePresenter() is { } activePresenter)

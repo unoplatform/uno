@@ -650,5 +650,14 @@ public partial class ScrollViewer
 		{
 			InvalidateArrange();
 		}
+
+#if __SKIA__
+		OnManipulatabilityAffectingPropertyChanged(
+			pIsInLiveTree: true,
+			isCachedPropertyChanged: false,
+			isContentChanged: false,
+			isAffectingConfigurations: false,
+			isAffectingTouchConfiguration: false);
+#endif
 	}
 }

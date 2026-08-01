@@ -26,6 +26,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// used by most of the C++ integration tests.
 		private static async Task<ScrollViewer> AddScrollViewer(Orientation orientation)
 		{
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
 			var scrollViewer = new ScrollViewer
 			{
 				Width = 100,
@@ -306,15 +309,75 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0.0, scrollViewer.ScrollableHeight, 0.5, "ScrollableHeight after second Content=null");
 		}
 
-		// TODO Uno: Phase-4 ChangeViewInternal + DM adapter — port C++
-		// ViewChangeEventsAreCorrect (C++ line 3066) when ChangeView with
-		// disableAnimation=false drives a real inertial-frame chain on Skia.
-		// The original test asserts:
-		//   VERIFY_IS_GREATER_THAN(*inertialViewChangingCount, 0);
-		//   VERIFY_IS_GREATER_THAN(*intermediateViewChangedCount, 0);
-		// Both require the DM inertia per-frame ticking that the cross-platform
-		// synchronous Skia path doesn't produce. Per the don't-simplify rule,
-		// the test stays unported until those features land.
+		[TestMethod]
+		public async Task ViewChangeEventsAreCorrect()
+		{
+			var scrollViewer = await AddScrollViewer(Orientation.Vertical);
+			scrollViewer.ZoomMode = ZoomMode.Enabled;
+			const double newVerticalOffset = 10.0;
+			const float newZoomFactor = 2.0f;
+			var inertialViewChangingCount = 0;
+			var intermediateViewChangedCount = 0;
+			var nonIntermediateViewChangedCount = 0;
+			var directManipulationStartedCount = 0;
+			var directManipulationCompletedCount = 0;
+			var lastNextView = (HorizontalOffset: 0.0, VerticalOffset: 0.0, ZoomFactor: 0.0f);
+			var completed = new TaskCompletionSource<bool>();
+			scrollViewer.DirectManipulationStarted += (_, _) => directManipulationStartedCount++;
+			scrollViewer.DirectManipulationCompleted += (_, _) => directManipulationCompletedCount++;
+
+			scrollViewer.ViewChanging += (_, args) =>
+			{
+				lastNextView = (
+					args.NextView.HorizontalOffset,
+					args.NextView.VerticalOffset,
+					args.NextView.ZoomFactor);
+				Assert.AreEqual(0.0, args.FinalView.HorizontalOffset, 0.001);
+				Assert.IsTrue(
+					Math.Abs(args.FinalView.VerticalOffset - newVerticalOffset) < 0.001 ||
+					Math.Abs(args.FinalView.VerticalOffset - args.NextView.VerticalOffset) < 0.001);
+				Assert.IsTrue(
+					Math.Abs(args.FinalView.ZoomFactor - newZoomFactor) < 0.001 ||
+					Math.Abs(args.FinalView.ZoomFactor - args.NextView.ZoomFactor) < 0.001);
+				if (args.IsInertial)
+				{
+					inertialViewChangingCount++;
+				}
+			};
+			scrollViewer.ViewChanged += (_, args) =>
+			{
+				if (args.IsIntermediate)
+				{
+					intermediateViewChangedCount++;
+				}
+				else
+				{
+					nonIntermediateViewChangedCount++;
+					completed.TrySetResult(true);
+				}
+			};
+
+			Assert.IsTrue(scrollViewer.ChangeView(null, newVerticalOffset, newZoomFactor, disableAnimation: false));
+			Assert.AreEqual(completed.Task, await Task.WhenAny(completed.Task, Task.Delay(TimeSpan.FromSeconds(3))));
+
+			if (new global::Windows.UI.ViewManagement.UISettings().AnimationsEnabled)
+			{
+				Assert.IsGreaterThan(
+					0,
+					inertialViewChangingCount,
+					$"intermediate={intermediateViewChangedCount}, final={nonIntermediateViewChangedCount}, dm={directManipulationStartedCount}/{directManipulationCompletedCount}, next={lastNextView}");
+				Assert.IsGreaterThan(0, intermediateViewChangedCount);
+			}
+			else
+			{
+				Assert.AreEqual(0, inertialViewChangingCount);
+				Assert.AreEqual(0, intermediateViewChangedCount);
+			}
+			Assert.AreEqual(1, nonIntermediateViewChangedCount);
+			Assert.AreEqual(0.0, lastNextView.HorizontalOffset, 0.001);
+			Assert.AreEqual(newVerticalOffset, lastNextView.VerticalOffset, 0.001);
+			Assert.AreEqual(newZoomFactor, lastNextView.ZoomFactor, 0.001);
+		}
 
 		// MUX Reference ValidateNoLayoutCycleByChangeContentSize (C++ line 4854).
 		// Regression test for a layout cycle that used to occur when the content
@@ -422,16 +485,94 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0.1, scrollViewer.MinZoomFactor, 0.001);
 		}
 
-		// TODO Uno: SCP.SizesContentToTemplatedParent + alignment behavior gap —
-		// port C++ ConstrainVerticalStackPanelAvailableSize (C++ 7123) /
-		// ConstrainHorizontalStackPanelAvailableSize (C++ 7130) /
-		// ConstrainStackPanelAvailableSize (C++ 7135) once SCP on Skia matches
-		// WinUI's behavior: with SizesContentToTemplatedParent=true and child
-		// alignment=Top/Left, the child is expected to be size-constrained to
-		// the viewport (scrollable extent = 0). On Skia the child stays
-		// unconstrained (scrollable extent stays 1100). Likely needs a fix in
-		// SCP.MeasureOverride's slotSize derivation under the
-		// UNO_HAS_MANAGED_SCROLL_PRESENTER branch.
+		[TestMethod]
+		public Task ConstrainVerticalStackPanelAvailableSize() =>
+			ConstrainStackPanelAvailableSize(Orientation.Vertical);
+
+		[TestMethod]
+		public Task ConstrainHorizontalStackPanelAvailableSize() =>
+			ConstrainStackPanelAvailableSize(Orientation.Horizontal);
+
+		private static async Task ConstrainStackPanelAvailableSize(Orientation orientation)
+		{
+			var scrollViewer = await AddScrollViewer(orientation);
+			var presenter = FindNamedDescendant<ScrollContentPresenter>(scrollViewer, "ScrollContentPresenter");
+			Assert.IsNotNull(presenter);
+			Assert.IsFalse(presenter.SizesContentToTemplatedParent);
+
+			scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
+			scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var stackPanel = (StackPanel)scrollViewer.Content;
+			if (orientation == Orientation.Vertical)
+			{
+				Assert.AreEqual(0.0, scrollViewer.ScrollableWidth, 0.5);
+				Assert.AreEqual(1100.0, scrollViewer.ScrollableHeight, 0.5);
+			}
+			else
+			{
+				Assert.AreEqual(1100.0, scrollViewer.ScrollableWidth, 0.5);
+				Assert.AreEqual(0.0, scrollViewer.ScrollableHeight, 0.5);
+			}
+
+			presenter.SizesContentToTemplatedParent = true;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			if (orientation == Orientation.Vertical)
+			{
+				Assert.AreEqual(1100.0, scrollViewer.ScrollableHeight, 0.5);
+				Assert.AreEqual(Visibility.Visible, scrollViewer.ComputedVerticalScrollBarVisibility);
+				stackPanel.VerticalAlignment = VerticalAlignment.Top;
+			}
+			else
+			{
+				Assert.AreEqual(1100.0, scrollViewer.ScrollableWidth, 0.5);
+				Assert.AreEqual(Visibility.Visible, scrollViewer.ComputedHorizontalScrollBarVisibility);
+				stackPanel.HorizontalAlignment = HorizontalAlignment.Left;
+			}
+
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(() =>
+				orientation == Orientation.Vertical
+					? Math.Abs(scrollViewer.ScrollableHeight) < 0.5
+					: Math.Abs(scrollViewer.ScrollableWidth) < 0.5);
+			var diagnostics =
+				$"content={presenter.Content?.GetType().Name ?? "<null>"}, owner={presenter.ScrollOwner?.GetType().Name ?? "<null>"}, " +
+				$"presenter desired={presenter.DesiredSize} actual={presenter.ActualWidth}x{presenter.ActualHeight}, " +
+				$"panel desired={stackPanel.DesiredSize} actual={stackPanel.ActualWidth}x{stackPanel.ActualHeight}, " +
+				$"available={LayoutInformation.GetAvailableSize(presenter)}, sizesToParent={presenter.SizesContentToTemplatedParent}";
+
+			if (orientation == Orientation.Vertical)
+			{
+				Assert.AreEqual(0.0, scrollViewer.ScrollableHeight, 0.5, diagnostics);
+				Assert.AreEqual(Visibility.Collapsed, scrollViewer.ComputedVerticalScrollBarVisibility);
+				stackPanel.VerticalAlignment = VerticalAlignment.Stretch;
+			}
+			else
+			{
+				Assert.AreEqual(0.0, scrollViewer.ScrollableWidth, 0.5, diagnostics);
+				Assert.AreEqual(Visibility.Collapsed, scrollViewer.ComputedHorizontalScrollBarVisibility);
+				stackPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
+			}
+
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(() =>
+				orientation == Orientation.Vertical
+					? Math.Abs(scrollViewer.ScrollableHeight - 1100.0) < 0.5
+					: Math.Abs(scrollViewer.ScrollableWidth - 1100.0) < 0.5);
+
+			if (orientation == Orientation.Vertical)
+			{
+				Assert.AreEqual(1100.0, scrollViewer.ScrollableHeight, 0.5);
+				Assert.AreEqual(Visibility.Visible, scrollViewer.ComputedVerticalScrollBarVisibility);
+			}
+			else
+			{
+				Assert.AreEqual(1100.0, scrollViewer.ScrollableWidth, 0.5);
+				Assert.AreEqual(Visibility.Visible, scrollViewer.ComputedHorizontalScrollBarVisibility);
+			}
+		}
 
 		// MUX Reference ReenterContent (C++ line 1697).
 		// Validates that resetting Content to null and then back to the original
@@ -439,10 +580,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// ZoomFactor). The C++ test additionally renders before/after the toggle
 		// and asserts DComp pixel parity; the Skia variant skips that (no DComp)
 		// and keeps the public-API view assertions.
-		// Note: the requested verticalOffset=200 stays within the unzoomed
-		// scrollable height (1200-100=1100), so the assertion passes even though
-		// the visual-zoom rendering feature isn't yet on Skia. ZoomFactor DP is
-		// updated via the iter-#14 feature (commit 9dada7a6d4).
 		[TestMethod]
 		public async Task ReenterContent()
 		{
@@ -456,6 +593,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					viewChangedTcs.TrySetResult(true);
 				}
 			}
+
 			scrollViewer.ViewChanged += OnViewChanged;
 			try
 			{
@@ -482,12 +620,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		// TODO Uno: visual zoom rendering — port C++ ChangeViewTwice (C++ line 1763)
-		// once SCP applies ZoomFactor as a visual transform and recomputes
-		// scrollable extents at the new zoom. The test asserts a final
-		// VerticalOffset of 3500 after ChangeView(null, 3500, 3.0f) — only
-		// achievable when the content extent is multiplied by the zoom factor
-		// (12*100*3 = 3600, scrollable = 3500). The DP-update half (ZoomFactor)
-		// is in via 9dada7a6d4; the visual half is the missing feature.
+		private static T FindNamedDescendant<T>(DependencyObject root, string name)
+			where T : FrameworkElement
+		{
+			var childCount = VisualTreeHelper.GetChildrenCount(root);
+			for (var index = 0; index < childCount; index++)
+			{
+				var child = VisualTreeHelper.GetChild(root, index);
+				if (child is T element && element.Name == name)
+				{
+					return element;
+				}
+
+				if (FindNamedDescendant<T>(child, name) is { } descendant)
+				{
+					return descendant;
+				}
+			}
+
+			return default;
+		}
+
+		[TestMethod]
+		public async Task ChangeViewTwice()
+		{
+			var scrollViewer = await AddScrollViewer(Orientation.Vertical);
+			scrollViewer.ZoomMode = ZoomMode.Enabled;
+			var completed = new TaskCompletionSource<bool>();
+			scrollViewer.ViewChanged += (_, args) =>
+			{
+				if (!args.IsIntermediate)
+				{
+					completed.TrySetResult(true);
+				}
+			};
+
+			Assert.IsTrue(scrollViewer.ChangeView(null, null, 2.0f, disableAnimation: true));
+			Assert.IsTrue(scrollViewer.ChangeView(null, 3500.0, 3.0f, disableAnimation: true));
+			Assert.AreEqual(completed.Task, await Task.WhenAny(completed.Task, Task.Delay(TimeSpan.FromSeconds(3))));
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0.0, scrollViewer.HorizontalOffset, 0.001);
+			Assert.AreEqual(3500.0, scrollViewer.VerticalOffset, 5.0);
+			Assert.AreEqual(3.0f, scrollViewer.ZoomFactor, 0.001);
+		}
 	}
 }

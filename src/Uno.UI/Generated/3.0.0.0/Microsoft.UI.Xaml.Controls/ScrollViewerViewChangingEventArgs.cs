@@ -3,43 +3,38 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ScrollViewerViewChangingEventArgs
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
-		internal ScrollViewerViewChangingEventArgs()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Controls.ScrollViewerView FinalView
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ScrollViewerView ScrollViewerViewChangingEventArgs.FinalView is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ScrollViewerView%20ScrollViewerViewChangingEventArgs.FinalView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs", "FinalView");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 		public bool IsInertial
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ScrollViewerViewChangingEventArgs.IsInertial is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ScrollViewerViewChangingEventArgs.IsInertial");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs", "IsInertial");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Controls.ScrollViewerView NextView
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ScrollViewerView ScrollViewerViewChangingEventArgs.NextView is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ScrollViewerView%20ScrollViewerViewChangingEventArgs.NextView");
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs", "NextView");
 			}
 		}
 #endif

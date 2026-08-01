@@ -198,6 +198,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly SerialDisposable m_horizontalScrollbarPointerEnteredToken = new();
 		private readonly SerialDisposable m_horizontalScrollbarPointerExitedToken = new();
 		private readonly SerialDisposable m_coreInputViewOcclusionsChangedToken = new();
+		private readonly SerialDisposable m_templateStoryboardSubscriptions = new();
 
 		// Whether we are in a state where we want to prevent the normal fade-out of the scrolling indicators.
 		private bool m_keepIndicatorsShowing;
@@ -429,6 +430,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// into a single ViewChanging event.
 		private bool m_isViewChangingDelayed;
 
+		// IsInertial value captured for a delayed ViewChanging event.
+		private bool m_isDelayedViewChangingInertial;
+
 		// Set to True when we are attempting to batch up HorizontalOffset, VerticalOffset & ZoomFactor change notifications
 		// into a single ViewChanged event.
 		private bool m_isViewChangedDelayed;
@@ -485,6 +489,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Note: m_arePointerWheelEventsIgnored handled by ArePointerWheelEventsIgnored property in MuxInternal partial.
 
 		private bool m_isRequestBringIntoViewIgnored;
+		private bool m_isRootScrollViewerAllowImplicitStyle;
 
 		// Indicates whether the NoIndicator visual state has a Storyboard for which a completion event was hooked up.
 		private bool m_hasNoIndicatorStateStoryboardCompletedHandler;
@@ -765,11 +770,17 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static bool IsConscious() => Uno.UI.Helpers.WinUI.SharedHelpers.ShouldUseDynamicScrollbars();
 
-		// Inline header virtuals — root-ScrollViewer specializations override these. Default to false
-		// since regular ScrollViewers are never the root ScrollViewer.
-		protected virtual bool IsRootScrollViewer() => false;
-		protected virtual bool IsRootScrollViewerAllowImplicitStyle() => false;
-		protected virtual bool IsInputPaneShow() => false;
+		internal void SetRootScrollViewerAllowImplicitStyle() =>
+			m_isRootScrollViewerAllowImplicitStyle = true;
+
+		private bool IsRootScrollViewer() =>
+			ReferenceEquals(XamlRoot?.VisualTree.RootScrollViewer, this);
+
+		private bool IsRootScrollViewerAllowImplicitStyle() =>
+			m_isRootScrollViewerAllowImplicitStyle;
+
+		private static bool IsInputPaneShow() =>
+			global::Windows.UI.ViewManagement.InputPane.GetForCurrentView().Visible;
 
 		// #endregion
 

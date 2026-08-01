@@ -1,19 +1,51 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Toolkit.DevTools.Input;
 using Windows.UI;
+
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 [TestClass]
 [RunsOnUIThread]
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-[Ignore("Zoom is only implemented for the managed scroll presenter.")]
-#endif
+[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.NativeWinUI)]
 public class Given_ScrollViewer_Zoom
 {
+	[TestMethod]
+	public async Task When_ControlPlusMinus_ZoomsByWinUIStep()
+	{
+		var sut = new ScrollViewer
+		{
+			Width = 200,
+			Height = 200,
+			ZoomMode = ZoomMode.Enabled,
+			MinZoomFactor = 0.5f,
+			MaxZoomFactor = 4.0f,
+			Content = new Border { Width = 500, Height = 500 },
+		};
+		var manipulationStarted = 0;
+		var manipulationCompleted = 0;
+		sut.DirectManipulationStarted += (_, _) => manipulationStarted++;
+		sut.DirectManipulationCompleted += (_, _) => manipulationCompleted++;
+
+		await UITestHelper.Load(sut, element => element.IsLoaded);
+
+		await KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_+#$u$_+#$u$_ctrl", sut);
+		await TestServices.WindowHelper.WaitFor(() => sut.ZoomFactor > 1.0f);
+		await TestServices.WindowHelper.WaitFor(() => manipulationCompleted > 0);
+		Assert.AreEqual(1.1f, sut.ZoomFactor, 0.01f);
+		Assert.IsGreaterThan(0, manipulationStarted);
+
+		await KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_-#$u$_-#$u$_ctrl", sut);
+		await TestServices.WindowHelper.WaitFor(() => Math.Abs(sut.ZoomFactor - 1.0f) < 0.01f);
+	}
+
 	[TestMethod]
 	public async Task When_ChangeView_With_ZoomFactor()
 	{
@@ -50,7 +82,7 @@ public class Given_ScrollViewer_Zoom
 	}
 
 	[TestMethod]
-	public async Task When_ZoomMode_Disabled_ZoomFactor_Stays_1()
+	public async Task When_ZoomMode_Disabled_ProgrammaticZoomStillApplies()
 	{
 		var content = new Border
 		{
@@ -71,12 +103,11 @@ public class Given_ScrollViewer_Zoom
 		await TestServices.WindowHelper.WaitForLoaded(sut);
 		await TestServices.WindowHelper.WaitForIdle();
 
-		// Try to change zoom when disabled
+		// ZoomMode gates user input, not programmatic ChangeView requests.
 		sut.ChangeView(null, null, 2.0f, disableAnimation: true);
 		await TestServices.WindowHelper.WaitForIdle();
 
-		// Zoom should remain at 1.0 when ZoomMode is Disabled
-		Assert.AreEqual(1.0f, sut.ZoomFactor, 0.01f, "Zoom factor should stay 1.0 when ZoomMode is Disabled");
+		Assert.AreEqual(2.0f, sut.ZoomFactor, 0.01f);
 	}
 
 	[TestMethod]

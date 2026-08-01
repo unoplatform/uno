@@ -123,11 +123,16 @@ partial class SemanticZoom
 	/// </summary>
 	public event SemanticZoomViewChangedEventHandler? ViewChangeCompleted;
 
+	/// <summary>
+	/// Switches the control between the zoomed-in and zoomed-out views.
+	/// </summary>
+	public void ToggleActiveView() => ToggleActiveViewImpl();
+
 	private static void OnIsZoomOutButtonEnabledChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-		=> ((SemanticZoom)sender).OnIsZoomOutButtonEnabledChanged((bool)args.NewValue);
+		=> ((SemanticZoom)sender).OnPropertyChanged2(IsZoomOutButtonEnabledProperty, args.NewValue);
 
 	private static void OnIsZoomedInViewActiveChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
-		=> ((SemanticZoom)sender).OnIsZoomedInViewActiveChanged((bool)args.OldValue, (bool)args.NewValue);
+		=> ((SemanticZoom)sender).OnPropertyChanged2(IsZoomedInViewActiveProperty, args.NewValue);
 
 	private static void OnZoomedInViewChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		=> ((SemanticZoom)sender).InitializeSemanticZoomInformation(
