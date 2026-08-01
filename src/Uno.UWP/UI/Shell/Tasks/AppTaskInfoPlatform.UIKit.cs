@@ -1,26 +1,27 @@
 #nullable enable
 #pragma warning disable CS8305
 
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Uno.Foundation.Extensibility;
-using Uno.UI.Dispatching;
+using UIKit;
 using Uno.UI.Shell.Tasks;
 using Windows.UI.Notifications;
-using Windows.UI.Shell.Tasks;
 
-namespace Uno.UI.Runtime.Skia.MacOS;
+namespace Windows.UI.Shell.Tasks;
 
-internal sealed class MacOSAppTaskInfoExtension : AppTaskInfoExtensionBase
+internal static partial class AppTaskInfoPlatform
 {
-	private static readonly MacOSAppTaskInfoExtension Instance = new();
+	internal static partial IAppTaskInfoExtension? CreateExtension() => AppleAppTaskInfoExtension.Instance;
+}
 
-	private MacOSAppTaskInfoExtension()
+internal sealed class AppleAppTaskInfoExtension : AppTaskInfoExtensionBase
+{
+	internal static AppleAppTaskInfoExtension Instance { get; } = new();
+
+	private AppleAppTaskInfoExtension()
 	{
 	}
-
-	public static void Register() =>
-		ApiExtensibility.Register(typeof(IAppTaskInfoExtension), _ => Instance);
 
 	public override bool IsSupported() => true;
 
@@ -33,11 +34,11 @@ internal sealed class MacOSAppTaskInfoExtension : AppTaskInfoExtensionBase
 				or AppTaskState.Error);
 
 		var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-		NativeDispatcher.Main.Enqueue(() =>
+		UIApplication.SharedApplication.BeginInvokeOnMainThread(() =>
 		{
 			try
 			{
-				BadgeUpdater.SetAppTaskBadge(visibleTaskCount == 0 ? null : visibleTaskCount);
+				UpdateBadge(visibleTaskCount);
 				completion.SetResult();
 			}
 			catch (Exception error)
@@ -47,4 +48,7 @@ internal sealed class MacOSAppTaskInfoExtension : AppTaskInfoExtensionBase
 		});
 		return completion.Task;
 	}
+
+	private void UpdateBadge(int visibleTaskCount)
+		=> BadgeUpdater.SetAppTaskBadge(visibleTaskCount == 0 ? null : visibleTaskCount);
 }

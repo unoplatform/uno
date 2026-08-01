@@ -189,6 +189,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 	internal static void RegisterWindow(HWND hwnd)
 	{
 		Interlocked.Increment(ref _openWindows);
+		Win32AppTaskInfoExtension.ApplyToWindow(hwnd);
 	}
 
 	internal static void UnregisterWindow(HWND hwnd)

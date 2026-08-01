@@ -95,8 +95,6 @@ internal static unsafe class TaskBarList
 				return _taskbarList != null;
 			}
 
-			_initialized = true;
-
 			var taskbarListClsid = CLSID.TaskbarList;
 			var taskbarListIid = ITaskbarList3.IID_Guid;
 			ITaskbarList3* taskbarList;
@@ -123,6 +121,7 @@ internal static unsafe class TaskBarList
 			}
 
 			_taskbarList = taskbarList;
+			_initialized = true;
 			return true;
 		}
 	}

@@ -1,6 +1,10 @@
+#nullable enable
+#pragma warning disable CS8305
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
@@ -8,7 +12,7 @@ using Windows.UI.Shell.Tasks;
 
 namespace UITests.Shared.Windows_UI_Shell;
 
-[Sample("Windows.UI.Shell.Tasks", Name = "AppTaskInfo", IsManualTest = true, Description = "Creates, updates, and removes app tasks. Inspect the taskbar on Win32 or the Dock badge on macOS while the sample is running.")]
+[Sample("Windows.UI.Shell.Tasks", Name = "AppTaskInfo", IsManualTest = true, Description = "Creates, restores, updates, and removes app tasks while exposing each platform's shell approximation.")]
 public sealed partial class AppTaskInfoTests : Page
 {
 	private static readonly string[] _primarySteps =
@@ -20,7 +24,7 @@ public sealed partial class AppTaskInfoTests : Page
 
 	private readonly List<AppTaskInfo> _trackedTasks = new();
 	private readonly List<string> _logEntries = new();
-	private AppTaskInfo _primaryTask;
+	private AppTaskInfo? _primaryTask;
 	private int _primaryStepIndex;
 	private int _secondaryTaskCounter;
 
@@ -28,7 +32,6 @@ public sealed partial class AppTaskInfoTests : Page
 	{
 		this.InitializeComponent();
 		Loaded += OnLoaded;
-		Unloaded += OnUnloaded;
 	}
 
 	private static Uri DemoDeepLink => new Uri("sample-app://shelltasks/open");
@@ -36,15 +39,24 @@ public sealed partial class AppTaskInfoTests : Page
 	private static Uri DemoPreviewUri => new Uri("ms-appx:///Assets/ingredient1.png");
 	private static Uri DemoGeneratedAssetUri => new Uri("ms-appx:///Assets/Uno200x200.png");
 
-	private void OnLoaded(object sender, RoutedEventArgs e)
+	private async void OnLoaded(object sender, RoutedEventArgs e)
 	{
-		Log("Sample loaded.");
-		RefreshVisualState();
-	}
+#if __ANDROID__
+		RequestAndroidNotificationPermission();
+#endif
+		for (var attempt = 0; attempt < 50 && !AppTaskInfo.IsSupported(); attempt++)
+		{
+			await Task.Delay(100);
+		}
 
-	private void OnUnloaded(object sender, RoutedEventArgs e)
-	{
-		ClearTrackedTasks(logAction: false);
+		if (!IsLoaded)
+		{
+			return;
+		}
+
+		ReloadPersistedTasks();
+		Log($"Sample loaded with {_trackedTasks.Count} persisted task(s).");
+		RefreshVisualState();
 	}
 
 	private void CreatePrimaryTask_Click(object sender, RoutedEventArgs e)
@@ -114,8 +126,9 @@ public sealed partial class AppTaskInfoTests : Page
 
 	private void RefreshTasks_Click(object sender, RoutedEventArgs e)
 	{
+		ReloadPersistedTasks();
 		RefreshVisualState();
-		Log("Refreshed the task list.");
+		Log("Reloaded the persisted task list.");
 	}
 
 	private void PausePrimaryTask_Click(object sender, RoutedEventArgs e)
@@ -202,6 +215,19 @@ public sealed partial class AppTaskInfoTests : Page
 		RefreshVisualState();
 	}
 
+	private void UpdateDeepLinkPrimaryTask_Click(object sender, RoutedEventArgs e)
+	{
+		if (!TryGetPrimaryTask(out var task))
+		{
+			return;
+		}
+
+		var deepLink = CreateDeepLink($"details/{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}");
+		task.UpdateDeepLink(deepLink);
+		Log($"Updated the primary task deep link to '{deepLink}'.");
+		RefreshVisualState();
+	}
+
 	private void CompletePrimaryTask_Click(object sender, RoutedEventArgs e)
 	{
 		if (!TryGetPrimaryTask(out var task))
@@ -226,7 +252,10 @@ public sealed partial class AppTaskInfoTests : Page
 
 	private void TrackTask(AppTaskInfo task)
 	{
-		_trackedTasks.Add(task);
+		if (_trackedTasks.All(existing => existing.Id != task.Id))
+		{
+			_trackedTasks.Add(task);
+		}
 	}
 
 	private void RemoveTrackedTask(AppTaskInfo task, bool logAction = false)
@@ -248,7 +277,10 @@ public sealed partial class AppTaskInfoTests : Page
 
 	private void ClearTrackedTasks(bool logAction = true)
 	{
-		foreach (var task in _trackedTasks.ToArray())
+		var tasks = AppTaskInfo.IsSupported()
+			? AppTaskInfo.FindAll()
+			: _trackedTasks.ToArray();
+		foreach (var task in tasks)
 		{
 			task.Remove();
 		}
@@ -280,12 +312,13 @@ public sealed partial class AppTaskInfoTests : Page
 
 	private bool TryGetPrimaryTask(out AppTaskInfo task)
 	{
-		task = _primaryTask;
-		if (task is not null)
+		if (_primaryTask is { } primaryTask)
 		{
+			task = primaryTask;
 			return true;
 		}
 
+		task = null!;
 		Log("Create the primary task first.");
 		RefreshVisualState();
 		return false;
@@ -297,8 +330,8 @@ public sealed partial class AppTaskInfoTests : Page
 		var activeTasks = isSupported ? AppTaskInfo.FindAll() : Array.Empty<AppTaskInfo>();
 
 		SupportTextBlock.Text = isSupported
-			? "AppTaskInfo is supported here. On Win32 watch the taskbar button; on macOS watch the Dock badge."
-			: "AppTaskInfo is not currently supported on this platform, so the action buttons are disabled.";
+			? "AppTaskInfo is supported. The in-app list shows the persisted public task properties; the external shell representation varies by platform."
+			: "AppTaskInfo is not currently supported. Android 13 or later requires notification permission; Linux requires a D-Bus notification service.";
 		ControlsPanel.IsHitTestVisible = isSupported;
 		ControlsPanel.Opacity = isSupported ? 1d : 0.6d;
 		PrimaryTaskTextBlock.Text = GetPrimaryTaskDescription();
@@ -325,7 +358,7 @@ public sealed partial class AppTaskInfoTests : Page
 			? "Current step: none"
 			: $"Current step: {executingStep}";
 
-		return $"Primary task: {_primaryTask.Title} — {_primaryTask.State}. {completedDescription}. {executingDescription}.";
+		return $"Primary task: {_primaryTask.Title} — {_primaryTask.State}. ID: {_primaryTask.Id}. Hidden: {_primaryTask.HiddenByUser}. {completedDescription}. {executingDescription}.";
 	}
 
 	private void Log(string message)
@@ -347,7 +380,7 @@ public sealed partial class AppTaskInfoTests : Page
 			? $" | Ended: {endTime:HH:mm:ss}"
 			: string.Empty;
 
-		return $"{task.Title} — {task.State} | {task.Subtitle} | {completedDescription} | {executingStep}{endedAt}";
+		return $"{task.Title} — {task.State} | ID: {task.Id} | Hidden: {task.HiddenByUser} | {task.Subtitle} | {completedDescription} | {executingStep}{endedAt}";
 	}
 
 	private static AppTaskContent CreateSequenceContent(int currentStepIndex)
@@ -357,7 +390,7 @@ public sealed partial class AppTaskInfoTests : Page
 		content.SetQuestion("Leave this task running in the background?");
 		content.AddButton("Open details", CreateDeepLink("details"));
 		content.AddButton("Pause", CreateDeepLink("pause"));
-		content.SetTextInput("Add a note", "sample-app://shelltasks/note?text={0}");
+		content.SetTextInput("Add a note", "sample-app://shelltasks/note?text={userTextInput}");
 		return content;
 	}
 
@@ -383,4 +416,31 @@ public sealed partial class AppTaskInfoTests : Page
 	{
 		return new Uri($"sample-app://shelltasks/{action}");
 	}
+
+	private void ReloadPersistedTasks()
+	{
+		_trackedTasks.Clear();
+		if (!AppTaskInfo.IsSupported())
+		{
+			_primaryTask = null;
+			return;
+		}
+
+		_trackedTasks.AddRange(AppTaskInfo.FindAll());
+		_primaryTask = _trackedTasks.FirstOrDefault(task => task.Title.StartsWith("Publish release notes", StringComparison.Ordinal));
+		_primaryStepIndex = Math.Min(_primaryTask?.GetCompletedSteps().Length ?? 0, _primarySteps.Length - 1);
+	}
+
+#if __ANDROID__
+	private void RequestAndroidNotificationPermission()
+	{
+		if (OperatingSystem.IsAndroidVersionAtLeast(33)
+			&& Uno.UI.ContextHelper.Current is Android.App.Activity activity
+			&& activity.CheckSelfPermission(Android.Manifest.Permission.PostNotifications) != Android.Content.PM.Permission.Granted)
+		{
+			activity.RequestPermissions([Android.Manifest.Permission.PostNotifications], requestCode: 23752);
+			Log("Requested Android notification permission. After granting it, select 'Reload persisted tasks'.");
+		}
+	}
+#endif
 }

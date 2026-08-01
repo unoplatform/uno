@@ -13,18 +13,23 @@
                 FontSize="20"
                 FontWeight="SemiBold"
                 Text="Windows.UI.Shell.Tasks AppTaskInfo" />
-            <TextBlock Text="Create and update app tasks, then inspect the app icon while this page is open. Win32 maps task state to taskbar progress, while macOS maps the number of running tasks to the Dock badge." TextWrapping="Wrap" />
+            <TextBlock Text="Create and update persistent app tasks, then inspect the platform shell surface. Win32 uses taskbar progress, macOS and Apple platforms use app badges, Android uses notifications, WebAssembly uses the Badging API, and Linux uses desktop notifications." TextWrapping="Wrap" />
+            <TextBlock Text="Tasks remain available after navigating away from this page or restarting the app. Use Clear all tasks when the task representations are no longer needed." TextWrapping="Wrap" />
             <TextBlock
                 x:Name="SupportTextBlock"
+                AutomationProperties.AutomationId="AppTaskInfoSupport"
                 FontWeight="SemiBold"
                 TextWrapping="Wrap" />
+            <Button
+                HorizontalAlignment="Left"
+                Click="RefreshTasks_Click"
+                Content="Reload persisted tasks" />
 
             <StackPanel x:Name="ControlsPanel" Spacing="12">
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <Button Click="CreatePrimaryTask_Click" Content="Create primary task" />
                     <Button Click="AdvancePrimaryTask_Click" Content="Advance step" />
                     <Button Click="AddSecondaryTask_Click" Content="Add extra task" />
-                    <Button Click="RefreshTasks_Click" Content="Refresh task list" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Spacing="8">
@@ -38,13 +43,20 @@
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <Button Click="ShowPreviewContent_Click" Content="Preview content" />
                     <Button Click="ShowGeneratedAssets_Click" Content="Generated assets" />
+                    <Button Click="UpdateDeepLinkPrimaryTask_Click" Content="Update deep link" />
                     <Button Click="CompletePrimaryTask_Click" Content="Complete task" />
                     <Button Click="ClearAllTasks_Click" Content="Clear all tasks" />
                 </StackPanel>
             </StackPanel>
 
-            <TextBlock x:Name="PrimaryTaskTextBlock" TextWrapping="Wrap" />
-            <TextBlock x:Name="TasksSummaryTextBlock" FontWeight="SemiBold" />
+            <TextBlock
+                x:Name="PrimaryTaskTextBlock"
+                AutomationProperties.AutomationId="AppTaskInfoPrimaryTask"
+                TextWrapping="Wrap" />
+            <TextBlock
+                x:Name="TasksSummaryTextBlock"
+                AutomationProperties.AutomationId="AppTaskInfoTaskCount"
+                FontWeight="SemiBold" />
             <ListView
                 x:Name="TasksListView"
                 MinHeight="120"

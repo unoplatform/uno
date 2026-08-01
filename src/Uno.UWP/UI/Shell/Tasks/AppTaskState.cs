@@ -1,32 +1,42 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+// WinSDK Reference windows.ui.shell.tasks.idl, Windows SDK 10.0.26100.7705, commit 1bfb76d
+
+#pragma warning disable CS8305
+
+using Windows.Foundation.Metadata;
+
 namespace Windows.UI.Shell.Tasks;
 
 /// <summary>
-/// Defines constants that specify the state of an app task.
+/// Defines constants that specify the state of the app task.
 /// </summary>
+[ContractVersion(typeof(AppTaskContract), 65536U)]
+[Experimental]
 public enum AppTaskState
 {
 	/// <summary>
-	/// Task is created and running.
+	/// The task is actively executing.
 	/// </summary>
 	Running = 0,
 
 	/// <summary>
-	/// Task completed.
+	/// The task has finished execution successfully.
 	/// </summary>
 	Completed = 1,
 
 	/// <summary>
-	/// Task is paused and needs user attention to continue.
+	/// The task needs user input to continue.
 	/// </summary>
 	NeedsAttention = 2,
 
 	/// <summary>
-	/// Task is paused, but can be resumed without user intervention.
+	/// The task execution is suspended but can be resumed without user intervention.
 	/// </summary>
 	Paused = 3,
 
 	/// <summary>
-	/// Task stopped permanently because of an unrecoverable error.
+	/// The task completed with an error state.
 	/// </summary>
 	Error = 4,
 }

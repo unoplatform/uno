@@ -1,35 +1,120 @@
-using Windows.UI.Shell.Tasks;
+#nullable enable
+#pragma warning disable CS8305
+
+using System;
+using System.Threading.Tasks;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Shell.Tasks;
 
-/// <summary>
-/// Extension interface for platform-specific implementations of app task
-/// integration with the operating system's shell (taskbar/dock).
-/// </summary>
 internal interface IAppTaskInfoExtension
 {
-	/// <summary>
-	/// Returns whether app tasks are supported on the current platform.
-	/// </summary>
 	bool IsSupported();
 
-	/// <summary>
-	/// Retrieves all tasks that the app has created.
-	/// </summary>
-	AppTaskInfo[] FindAll();
+	void SetAvailability(bool isAvailable);
 
-	/// <summary>
-	/// Called when a new app task has been created.
-	/// </summary>
-	void OnTaskCreated(AppTaskInfo task);
+	void Synchronize(long revision, Windows.UI.Shell.Tasks.AppTaskInfoSnapshot[] tasks);
+}
 
-	/// <summary>
-	/// Called when an app task has been updated (state, titles, or content).
-	/// </summary>
-	void OnTaskUpdated(AppTaskInfo task);
+internal abstract class AppTaskInfoExtensionBase : IAppTaskInfoExtension
+{
+	private readonly object _synchronizationGate = new();
+	private long _lastRevision = -1;
+	private long _activeRevision = -1;
+	private long _queuedRevision = -1;
+	private Windows.UI.Shell.Tasks.AppTaskInfoSnapshot[]? _queuedTasks;
+	private bool _isSynchronizing;
+	private bool _isAvailable;
 
-	/// <summary>
-	/// Called when an app task has been removed.
-	/// </summary>
-	void OnTaskRemoved(AppTaskInfo task);
+	public abstract bool IsSupported();
+
+	public void SetAvailability(bool isAvailable)
+	{
+		lock (_synchronizationGate)
+		{
+			if (isAvailable && !_isAvailable)
+			{
+				_lastRevision = -1;
+			}
+
+			_isAvailable = isAvailable;
+		}
+	}
+
+	public void Synchronize(long revision, Windows.UI.Shell.Tasks.AppTaskInfoSnapshot[] tasks)
+	{
+		lock (_synchronizationGate)
+		{
+			if (revision <= _lastRevision || revision <= _activeRevision || revision <= _queuedRevision)
+			{
+				return;
+			}
+
+			_queuedRevision = revision;
+			_queuedTasks = tasks;
+			if (_isSynchronizing)
+			{
+				return;
+			}
+
+			_isSynchronizing = true;
+		}
+
+		_ = ProcessQueueAsync();
+	}
+
+	protected abstract Task OnSynchronizeAsync(Windows.UI.Shell.Tasks.AppTaskInfoSnapshot[] tasks);
+
+	protected void InvalidateSynchronization()
+	{
+		lock (_synchronizationGate)
+		{
+			_lastRevision = -1;
+		}
+	}
+
+	private async Task ProcessQueueAsync()
+	{
+		while (true)
+		{
+			long revision;
+			Windows.UI.Shell.Tasks.AppTaskInfoSnapshot[] tasks;
+			lock (_synchronizationGate)
+			{
+				revision = _queuedRevision;
+				tasks = _queuedTasks!;
+				_queuedRevision = -1;
+				_queuedTasks = null;
+				_activeRevision = revision;
+			}
+
+			try
+			{
+				await OnSynchronizeAsync(tasks);
+				lock (_synchronizationGate)
+				{
+					_lastRevision = Math.Max(_lastRevision, revision);
+				}
+			}
+			catch (Exception error)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error(
+						$"Failed to synchronize app task presenter '{GetType().FullName}' at revision {revision}.",
+						error);
+				}
+			}
+
+			lock (_synchronizationGate)
+			{
+				_activeRevision = -1;
+				if (_queuedTasks is null)
+				{
+					_isSynchronizing = false;
+					return;
+				}
+			}
+		}
+	}
 }

@@ -1,8 +1,12 @@
+#nullable enable
+#pragma warning disable CS8305
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Uno.Foundation.Extensibility;
-using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Uno.UI.Shell.Tasks;
 using Windows.UI.Shell.Tasks;
 using Windows.Win32.Foundation;
@@ -10,100 +14,72 @@ using Windows.Win32.UI.Shell;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
-/// <summary>
-/// Win32 implementation of <see cref="IAppTaskInfoExtension"/> that maps
-/// app task state to Windows taskbar progress indication via ITaskbarList3.
-/// </summary>
-internal sealed class Win32AppTaskInfoExtension : IAppTaskInfoExtension
+internal sealed class Win32AppTaskInfoExtension : AppTaskInfoExtensionBase
 {
-	private static readonly Win32AppTaskInfoExtension _instance = new();
+	private static readonly Win32AppTaskInfoExtension Instance = new();
 
-	private readonly List<AppTaskInfo> _tasks = new();
-	private readonly object _gate = new();
+	private AppTaskInfoSnapshot[] _latestTasks = Array.Empty<AppTaskInfoSnapshot>();
 
 	private Win32AppTaskInfoExtension()
 	{
 	}
 
 	public static void Register() =>
-		ApiExtensibility.Register(typeof(IAppTaskInfoExtension), _ => _instance);
+		ApiExtensibility.Register(typeof(IAppTaskInfoExtension), _ => Instance);
 
-	public bool IsSupported() => true;
+	public override bool IsSupported() => OperatingSystem.IsWindowsVersionAtLeast(6, 1);
 
-	public AppTaskInfo[] FindAll()
+	internal static void ApplyToWindow(HWND hwnd) =>
+		Instance.UpdateTaskbarProgress(hwnd, Volatile.Read(ref Instance._latestTasks));
+
+	protected override Task OnSynchronizeAsync(AppTaskInfoSnapshot[] tasks)
 	{
-		lock (_gate)
-		{
-			return _tasks.ToArray();
-		}
+		Volatile.Write(ref _latestTasks, tasks);
+		var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+		Win32EventLoop.Schedule(
+			() =>
+			{
+				try
+				{
+					foreach (var hwnd in Win32WindowWrapper.GetHwnds())
+					{
+						UpdateTaskbarProgress(hwnd, tasks);
+					}
+
+					completion.SetResult();
+				}
+				catch (Exception error)
+				{
+					completion.SetException(error);
+				}
+			},
+			NativeDispatcherPriority.Normal);
+		return completion.Task;
 	}
 
-	public void OnTaskCreated(AppTaskInfo task)
+	private void UpdateTaskbarProgress(HWND hwnd, AppTaskInfoSnapshot[] tasks)
 	{
-		lock (_gate)
+		var hasError = tasks.Any(static task => task.State == AppTaskState.Error);
+		var hasPaused = tasks.Any(static task => task.State is AppTaskState.Paused or AppTaskState.NeedsAttention);
+		var hasRunning = tasks.Any(static task => task.State == AppTaskState.Running);
+
+		if (hasError)
 		{
-			_tasks.Add(task);
+			TaskBarList.SetProgressState(hwnd, TBPFLAG.TBPF_ERROR);
+			TaskBarList.SetProgressValue(hwnd, completed: 100, total: 100);
 		}
-
-		UpdateTaskbarProgress();
-	}
-
-	public void OnTaskUpdated(AppTaskInfo task)
-	{
-		UpdateTaskbarProgress();
-	}
-
-	public void OnTaskRemoved(AppTaskInfo task)
-	{
-		lock (_gate)
+		else if (hasPaused)
 		{
-			_tasks.Remove(task);
+			TaskBarList.SetProgressState(hwnd, TBPFLAG.TBPF_PAUSED);
+			TaskBarList.SetProgressValue(hwnd, completed: 50, total: 100);
 		}
-
-		UpdateTaskbarProgress();
-	}
-
-	private void UpdateTaskbarProgress()
-	{
-		int runningCount;
-		int totalCount;
-		bool hasError;
-		bool hasPaused;
-		bool hasNeedsAttention;
-
-		lock (_gate)
+		else if (hasRunning)
 		{
-			runningCount = _tasks.Count(t => t.State == AppTaskState.Running);
-			totalCount = _tasks.Count;
-			hasError = _tasks.Any(t => t.State == AppTaskState.Error);
-			hasPaused = _tasks.Any(t => t.State is AppTaskState.Paused or AppTaskState.NeedsAttention);
-			hasNeedsAttention = _tasks.Any(t => t.State == AppTaskState.NeedsAttention);
+			TaskBarList.SetProgressState(hwnd, TBPFLAG.TBPF_INDETERMINATE);
 		}
-
-		foreach (var hwnd in Win32WindowWrapper.GetHwnds())
+		else
 		{
-			if (totalCount == 0 || runningCount == 0 && !hasError && !hasPaused && !hasNeedsAttention)
-			{
-				// No active tasks — clear progress
-				TaskBarList.SetProgressState(hwnd, TBPFLAG.TBPF_NOPROGRESS);
-			}
-			else if (hasError)
-			{
-				// At least one error — show error state
-				TaskBarList.SetProgressState(hwnd, TBPFLAG.TBPF_ERROR);
-				TaskBarList.SetProgressValue(hwnd, 100, 100);
-			}
-			else if (hasPaused)
-			{
-				// At least one paused — show paused state
-				TaskBarList.SetProgressState(hwnd, TBPFLAG.TBPF_PAUSED);
-				TaskBarList.SetProgressValue(hwnd, 50, 100);
-			}
-			else
-			{
-				// Running tasks — show indeterminate progress
-				TaskBarList.SetProgressState(hwnd, TBPFLAG.TBPF_INDETERMINATE);
-			}
+			TaskBarList.SetProgressState(hwnd, TBPFLAG.TBPF_NOPROGRESS);
 		}
 	}
 }

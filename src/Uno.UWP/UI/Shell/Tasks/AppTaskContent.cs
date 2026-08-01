@@ -1,133 +1,214 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+// WinSDK Reference windows.ui.shell.tasks.idl, Windows SDK 10.0.26100.7705, commit 1bfb76d
+
+#nullable enable
+#pragma warning disable CS8305
+
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Windows.Foundation.Metadata;
 
 namespace Windows.UI.Shell.Tasks;
 
 /// <summary>
-/// Represents the task content shown in the UI that is displayed on hover
-/// over the app's taskbar icon.
+/// Represents the content displayed for an app task in the Windows Shell UI.
+/// Use this class to create different visual representations of task progress and results.
 /// </summary>
+[ContractVersion(typeof(AppTaskContract), 65536U)]
+[Experimental]
+[MarshalingBehavior(MarshalingType.Agile)]
+[Threading(ThreadingModel.Both)]
 public sealed class AppTaskContent
 {
-	private readonly List<(string Text, Uri ActionUri)> _buttons = new();
-	private string _question;
-	private string _textInputPlaceholder;
-	private string _textInputActionUriTemplate;
+	private const uint UnoMaxButtons = 3;
+	private const string UserTextInputPlaceholder = "{userTextInput}";
 
-	internal AppTaskContentKind Kind { get; private set; }
-	internal string[] CompletedSteps { get; private set; }
-	internal string ExecutingStep { get; private set; }
-	internal Uri ImageUri { get; private set; }
-	internal string TextSummary { get; private set; }
-	internal AppTaskResultAsset[] GeneratedAssets { get; private set; }
-	internal IReadOnlyList<(string Text, Uri ActionUri)> Buttons => _buttons;
-	internal string Question => _question;
-	internal string TextInputPlaceholder => _textInputPlaceholder;
-	internal string TextInputActionUriTemplate => _textInputActionUriTemplate;
+	private readonly object _gate = new();
+	private readonly List<AppTaskButtonSnapshot> _buttons = new();
+	private readonly AppTaskContentKind _kind;
+	private readonly string[] _completedSteps;
+	private readonly string _executingStep;
+	private readonly Uri? _imageUri;
+	private readonly string _textSummary;
+	private readonly AppTaskResultAssetSnapshot[] _generatedAssets;
+	private string _question = string.Empty;
+	private string _textInputPlaceholder = string.Empty;
+	private string _textInputActionUriTemplate = string.Empty;
 
-	private AppTaskContent()
+	private AppTaskContent(
+		AppTaskContentKind kind,
+		string[]? completedSteps = null,
+		string? executingStep = null,
+		Uri? imageUri = null,
+		string? textSummary = null,
+		AppTaskResultAssetSnapshot[]? generatedAssets = null)
 	{
+		_kind = kind;
+		_completedSteps = completedSteps ?? Array.Empty<string>();
+		_executingStep = executingStep ?? string.Empty;
+		_imageUri = imageUri;
+		_textSummary = textSummary ?? string.Empty;
+		_generatedAssets = generatedAssets ?? Array.Empty<AppTaskResultAssetSnapshot>();
 	}
 
 	/// <summary>
-	/// Gets the maximum number of buttons that can be added to the task content.
+	/// Gets the maximum number of buttons that can be added to task content.
 	/// </summary>
-	public static uint MaxButtons => 3;
+	public static uint MaxButtons => UnoMaxButtons;
 
 	/// <summary>
-	/// Builds a sequence of steps being executed by the app task to display in the UI.
+	/// Creates task content that displays a sequence of steps showing task progress.
 	/// </summary>
-	/// <param name="completedSteps">An array of strings that describe the task steps that have been completed.</param>
-	/// <param name="executingStep">A string that describes the step that the task is currently working on.</param>
-	/// <returns>An instance of <see cref="AppTaskContent"/> with the created sequence of steps.</returns>
+	/// <param name="completedSteps">The sequence of steps that have already been completed.</param>
+	/// <param name="executingStep">The step that is currently executing.</param>
+	/// <returns>Task content that displays the specified sequence of steps.</returns>
 	public static AppTaskContent CreateSequenceOfSteps(string[] completedSteps, string executingStep)
 	{
-		return new AppTaskContent
-		{
-			Kind = AppTaskContentKind.SequenceOfSteps,
-			CompletedSteps = completedSteps ?? throw new ArgumentNullException(nameof(completedSteps)),
-			ExecutingStep = executingStep ?? throw new ArgumentNullException(nameof(executingStep)),
-		};
-	}
+		ArgumentNullException.ThrowIfNull(completedSteps);
+		ArgumentNullException.ThrowIfNull(executingStep);
 
-	/// <summary>
-	/// Creates a thumbnail preview of the task output for tasks that create images.
-	/// </summary>
-	/// <param name="imageUri">The path to the image preview.</param>
-	/// <param name="executingStep">A string that describes the step that the task is currently working on.</param>
-	/// <returns>An instance of <see cref="AppTaskContent"/> with the created image preview and step.</returns>
-	public static AppTaskContent CreatePreviewThumbnail(Uri imageUri, string executingStep)
-	{
-		return new AppTaskContent
+		if (completedSteps.Any(static step => step is null))
 		{
-			Kind = AppTaskContentKind.PreviewThumbnail,
-			ImageUri = imageUri ?? throw new ArgumentNullException(nameof(imageUri)),
-			ExecutingStep = executingStep ?? throw new ArgumentNullException(nameof(executingStep)),
-		};
-	}
-
-	/// <summary>
-	/// Creates a text summary of the task results.
-	/// </summary>
-	/// <param name="text">Text that describes the result of the task.</param>
-	/// <returns>An instance of <see cref="AppTaskContent"/> that contains the text description of the task results.</returns>
-	public static AppTaskContent CreateTextSummaryResult(string text)
-	{
-		return new AppTaskContent
-		{
-			Kind = AppTaskContentKind.TextSummary,
-			TextSummary = text ?? throw new ArgumentNullException(nameof(text)),
-		};
-	}
-
-	/// <summary>
-	/// Creates a display of assets generated by the app task.
-	/// </summary>
-	/// <param name="assets">An array of <see cref="AppTaskResultAsset"/> objects that describe the assets generated by the task.</param>
-	/// <returns>An instance of <see cref="AppTaskContent"/> with the created assets.</returns>
-	public static AppTaskContent CreateGeneratedAssetsResult(AppTaskResultAsset[] assets)
-	{
-		return new AppTaskContent
-		{
-			Kind = AppTaskContentKind.GeneratedAssets,
-			GeneratedAssets = assets ?? throw new ArgumentNullException(nameof(assets)),
-		};
-	}
-
-	/// <summary>
-	/// Adds a button to the content of the app task UI.
-	/// </summary>
-	/// <param name="text">The button label.</param>
-	/// <param name="actionUri">The path to an app action using an app-defined deep link URI scheme.</param>
-	public void AddButton(string text, Uri actionUri)
-	{
-		if (_buttons.Count >= MaxButtons)
-		{
-			throw new InvalidOperationException($"Cannot add more than {MaxButtons} buttons.");
+			throw new ArgumentException("Completed steps cannot contain null values.", nameof(completedSteps));
 		}
 
-		_buttons.Add((
-			text ?? throw new ArgumentNullException(nameof(text)),
-			actionUri ?? throw new ArgumentNullException(nameof(actionUri))));
+		return new(
+			AppTaskContentKind.SequenceOfSteps,
+			completedSteps: (string[])completedSteps.Clone(),
+			executingStep: executingStep);
 	}
 
 	/// <summary>
-	/// Adds a text box to the app task UI that lets the user provide text input.
+	/// Creates task content that displays a preview thumbnail of the task output.
 	/// </summary>
-	/// <param name="placeholderText">The placeholder text shown in the text box.</param>
-	/// <param name="actionUriTemplate">An app-defined deep link URI with a placeholder that is replaced by the user's input.</param>
+	/// <param name="imageUri">The URI of the preview thumbnail.</param>
+	/// <param name="executingStep">The step that is currently executing.</param>
+	/// <returns>Task content that displays the specified preview thumbnail.</returns>
+	public static AppTaskContent CreatePreviewThumbnail(Uri imageUri, string executingStep)
+	{
+		ArgumentNullException.ThrowIfNull(imageUri);
+		ArgumentNullException.ThrowIfNull(executingStep);
+
+		return new(
+			AppTaskContentKind.PreviewThumbnail,
+			executingStep: executingStep,
+			imageUri: AppTaskValidation.RequireAbsoluteUri(imageUri, nameof(imageUri)));
+	}
+
+	/// <summary>
+	/// Creates task content that displays a text summary of the task result.
+	/// </summary>
+	/// <param name="text">The text summary to display.</param>
+	/// <returns>Task content that displays the specified text summary.</returns>
+	public static AppTaskContent CreateTextSummaryResult(string text)
+	{
+		ArgumentNullException.ThrowIfNull(text);
+		return new(AppTaskContentKind.TextSummary, textSummary: text);
+	}
+
+	/// <summary>
+	/// Creates task content that displays a collection of assets generated by the task.
+	/// </summary>
+	/// <param name="assets">The assets generated by the task.</param>
+	/// <returns>Task content that displays the specified generated assets.</returns>
+	public static AppTaskContent CreateGeneratedAssetsResult(AppTaskResultAsset[] assets)
+	{
+		ArgumentNullException.ThrowIfNull(assets);
+
+		if (assets.Any(static asset => asset is null))
+		{
+			throw new ArgumentException("Generated assets cannot contain null values.", nameof(assets));
+		}
+
+		return new(
+			AppTaskContentKind.GeneratedAssets,
+			generatedAssets: assets.Select(static asset => asset.CreateSnapshot()).ToArray());
+	}
+
+	/// <summary>
+	/// Adds a button to the task content that the user can click to take an action.
+	/// </summary>
+	/// <param name="text">The text displayed on the button.</param>
+	/// <param name="actionUri">The URI launched when the user clicks the button.</param>
+	public void AddButton(string text, Uri actionUri)
+	{
+		ArgumentNullException.ThrowIfNull(text);
+		ArgumentNullException.ThrowIfNull(actionUri);
+
+		lock (_gate)
+		{
+			if (_buttons.Count >= MaxButtons)
+			{
+				throw new InvalidOperationException($"Task content supports at most {MaxButtons} buttons.");
+			}
+
+			_buttons.Add(new(text, AppTaskValidation.RequireAbsoluteUri(actionUri, nameof(actionUri))));
+		}
+	}
+
+	/// <summary>
+	/// Sets up a text input field for the user to provide a free-form text response.
+	/// </summary>
+	/// <param name="placeholderText">The placeholder text displayed in the input field to guide the user.</param>
+	/// <param name="actionUriTemplate">
+	/// A URI template string containing <c>{userTextInput}</c> that is replaced with the user's escaped input text when submitted.
+	/// </param>
 	public void SetTextInput(string placeholderText, string actionUriTemplate)
 	{
-		_textInputPlaceholder = placeholderText ?? throw new ArgumentNullException(nameof(placeholderText));
-		_textInputActionUriTemplate = actionUriTemplate ?? throw new ArgumentNullException(nameof(actionUriTemplate));
+		ArgumentNullException.ThrowIfNull(placeholderText);
+		ArgumentNullException.ThrowIfNull(actionUriTemplate);
+
+		if (!actionUriTemplate.Contains(UserTextInputPlaceholder, StringComparison.Ordinal))
+		{
+			throw new ArgumentException(
+				$"The URI template must contain {UserTextInputPlaceholder}.",
+				nameof(actionUriTemplate));
+		}
+
+		var exampleUri = actionUriTemplate.Replace(UserTextInputPlaceholder, "example", StringComparison.Ordinal);
+		if (!Uri.TryCreate(exampleUri, UriKind.Absolute, out _))
+		{
+			throw new ArgumentException("The text-input URI template must produce an absolute URI.", nameof(actionUriTemplate));
+		}
+
+		lock (_gate)
+		{
+			_textInputPlaceholder = placeholderText;
+			_textInputActionUriTemplate = actionUriTemplate;
+		}
 	}
 
 	/// <summary>
-	/// Adds text to the app task UI that lets you ask the user a question.
+	/// Sets a question to display to the user when the task needs attention.
 	/// </summary>
-	/// <param name="question">The question that requires a user's response.</param>
+	/// <param name="question">The question to display.</param>
 	public void SetQuestion(string question)
 	{
-		_question = question ?? throw new ArgumentNullException(nameof(question));
+		ArgumentNullException.ThrowIfNull(question);
+
+		lock (_gate)
+		{
+			_question = question;
+		}
+	}
+
+	internal AppTaskContentSnapshot CreateSnapshot()
+	{
+		lock (_gate)
+		{
+			return new(
+				_kind,
+				(string[])_completedSteps.Clone(),
+				_executingStep,
+				_imageUri,
+				_textSummary,
+				(AppTaskResultAssetSnapshot[])_generatedAssets.Clone(),
+				_buttons.ToArray(),
+				_question,
+				_textInputPlaceholder,
+				_textInputActionUriTemplate);
+		}
 	}
 }
