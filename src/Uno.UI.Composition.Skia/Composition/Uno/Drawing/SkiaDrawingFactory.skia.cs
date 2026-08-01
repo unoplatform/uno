@@ -183,7 +183,7 @@ internal sealed class SkiaDrawingFactory : IDrawingFactory
 	public IEffectFilter? CreateEffectFilter(
 		global::Windows.Graphics.Effects.IGraphicsEffect effect,
 		Rect bounds,
-		System.Func<string, CompositionBrush?> sourceResolver,
+		System.Func<string, IEffectSource?> sourceResolver,
 		bool useBackdropBlurClamp,
 		bool isSoftwareRenderer,
 		out bool hasBackdropInput)

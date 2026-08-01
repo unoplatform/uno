@@ -41,7 +41,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 			_filter = DrawingFactory.Current.CreateEffectFilter(
 				_effect,
 				bounds,
-				GetSourceParameter,
+				name => CompositionBrushEffectSource.From(GetSourceParameter(name)),
 				UseBackdropBlurClamp,
 				Compositor.IsSoftwareRenderer is true,
 				out var hasBackdropInput)
