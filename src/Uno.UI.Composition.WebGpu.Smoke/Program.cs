@@ -280,6 +280,16 @@ var bdEdge = At(pBd, 45, 32);     // 5px past the sharp edge → blur spread →
 Check("backdrop: center still red-ish (blurred)", bdCenter.r > 80, bdCenter);
 Check("backdrop: blur spreads content past the edge", bdEdge.r > 15 && bdEdge.r < bdCenter.r, (bdEdge, bdCenter));
 
+// 17) EXACT PATH CLIP — ClipPath(triangle) masks a full-surface draw to the triangle (not its bounding box).
+var clipTri = new ManagedDrawingFactory().CreatePathBuilder();
+clipTri.MoveTo(new Vector2(32, 8)); clipTri.LineTo(new Vector2(56, 56)); clipTri.LineTo(new Vector2(8, 56)); clipTri.Close();
+using var clipTriGeom = clipTri.Build();
+var pClipPath = Render(r => { r.ClipPath(clipTriGeom); r.DrawRect(new Rect(0, 0, 64, 64), red, false); });
+var cpIn = At(pClipPath, 32, 40);   // inside triangle → red
+var cpCorner = At(pClipPath, 6, 10); // inside the bbox but outside the triangle → clipped (black)
+Check("clip-path: inside triangle red", cpIn.r > 200 && cpIn.g < 60, cpIn);
+Check("clip-path: outside triangle (in bbox) black", cpCorner.r < 40 && cpCorner.g < 40 && cpCorner.b < 40, cpCorner);
+
 Console.WriteLine(fail == 0
 	? "\nALL PASS — non-Skia render seam verified headless (primitives + text + stroke + boolean); Skia vs WebGPU agree on every neutral scene"
 	: $"\n{fail} CHECK(S) FAILED");
