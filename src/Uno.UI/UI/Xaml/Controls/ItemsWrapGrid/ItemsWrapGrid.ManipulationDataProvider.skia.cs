@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference OrientedVirtualizingPanel_Partial.cpp, commit dc46907e92
 
-#if !IS_UNIT_TESTS
+#if !IS_UNIT_TESTS && !UNO_REFERENCE_API
 
 using DirectUI;
 using Windows.Foundation;
@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 	partial class ItemsWrapGrid : IManipulationDataProvider
 	{
 		private VirtualizingPanelLayout ManipulationLayout
-			=> ((IVirtualizingPanel)this).GetLayouter();
+			=> GetLayouter();
 
 		Orientation IManipulationDataProvider.PhysicalOrientation
 			=> ManipulationLayout.ManipulationPhysicalOrientation;

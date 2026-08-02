@@ -937,32 +937,38 @@ namespace Microsoft.UI.Xaml.Controls
 		private ManipulationModes ComputeAcceptedManipulationModes()
 		{
 			var mode = ManipulationModes.None;
-			var configuration = _touchConfiguration;
-			if ((configuration & DMConfigurations.PanX) != 0)
+			var scrollable = GetScrollableOffsets();
+			if (scrollable.Horizontally)
 			{
 				mode |= ManipulationModes.TranslateX;
 			}
 
-			if ((configuration & DMConfigurations.PanY) != 0)
+			if (scrollable.Vertically)
 			{
 				mode |= ManipulationModes.TranslateY;
 			}
 
-			if ((configuration & DMConfigurations.PanInertia) != 0)
+			if (Scroller is { } sv)
 			{
-				mode |= ManipulationModes.TranslateInertia;
-			}
-			if ((configuration & DMConfigurations.RailsX) != 0)
-			{
-				mode |= ManipulationModes.TranslateRailsX;
-			}
-			if ((configuration & DMConfigurations.RailsY) != 0)
-			{
-				mode |= ManipulationModes.TranslateRailsY;
-			}
-			if ((configuration & DMConfigurations.Zoom) != 0)
-			{
-				mode |= ManipulationModes.Scale;
+				if (sv.IsScrollInertiaEnabled)
+				{
+					mode |= ManipulationModes.TranslateInertia;
+				}
+
+				if (sv.IsHorizontalRailEnabled)
+				{
+					mode |= ManipulationModes.TranslateRailsX;
+				}
+
+				if (sv.IsVerticalRailEnabled)
+				{
+					mode |= ManipulationModes.TranslateRailsY;
+				}
+
+				if (sv.ZoomMode == ZoomMode.Enabled)
+				{
+					mode |= ManipulationModes.Scale;
+				}
 			}
 
 			return mode;

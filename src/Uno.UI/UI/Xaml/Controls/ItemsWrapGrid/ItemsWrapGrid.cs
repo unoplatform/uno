@@ -38,7 +38,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		VirtualizingPanelLayout IVirtualizingPanel.GetLayouter()
+		VirtualizingPanelLayout IVirtualizingPanel.GetLayouter() => GetLayouter();
+
+		private VirtualizingPanelLayout GetLayouter()
 		{
 			if (_layout == null)
 			{

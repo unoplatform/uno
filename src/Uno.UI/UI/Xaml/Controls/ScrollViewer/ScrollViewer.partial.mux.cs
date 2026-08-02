@@ -3214,7 +3214,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Bridge to the ZoomFactor DP setter (which is `private set` on the cross-platform partial).
 		// Mirrors ScrollViewerGenerated::put_ZoomFactor in WinUI.
-		private void PutZoomFactorCore(float value) => SetValue(ZoomFactorProperty, value);
+		private void PutZoomFactorCore(float value)
+		{
+			SetValue(ZoomFactorProperty, value);
+#if __SKIA__
+			if (_presenter is ScrollContentPresenter presenter && presenter.ZoomFactor != value)
+			{
+				presenter.Set(zoomFactor: value, disableAnimation: true);
+			}
+#endif
+		}
 
 		// Validates the MinZoomFactor property when its value is changed.
 		internal void OnMinZoomFactorPropertyChanged(object pOldValue, object pNewValue)

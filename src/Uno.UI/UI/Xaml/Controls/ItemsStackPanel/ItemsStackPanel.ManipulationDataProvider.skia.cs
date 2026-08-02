@@ -12,7 +12,13 @@ namespace Microsoft.UI.Xaml.Controls
 	partial class ItemsStackPanel : IManipulationDataProvider
 	{
 		private VirtualizingPanelLayout ManipulationLayout
-			=> ((IVirtualizingPanel)this).GetLayouter();
+		{
+			get
+			{
+				CreateLayoutIfNeeded();
+				return _layout;
+			}
+		}
 
 		Orientation IManipulationDataProvider.PhysicalOrientation
 			=> ManipulationLayout.ManipulationPhysicalOrientation;
