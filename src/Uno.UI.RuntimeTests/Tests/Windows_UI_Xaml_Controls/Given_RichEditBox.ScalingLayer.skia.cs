@@ -244,9 +244,9 @@ public partial class Given_RichEditBox
 			Assert.IsLessThanOrEqualTo(
 				runCount * 4L + 64,
 				editor.BoundedRichLayoutRunVisitCount - runVisits);
-			if (OperatingSystem.IsMacOS())
+			if (OperatingSystem.IsMacOS() || OperatingSystem.IsBrowser())
 			{
-				// The macOS accessibility bridge requests the complete value after a RichEditBox state change.
+				// Native accessibility bridges request the complete value after a RichEditBox state change.
 				Assert.IsLessThanOrEqualTo(1, editor.Document.TextBufferFullMaterializationCount);
 			}
 			else

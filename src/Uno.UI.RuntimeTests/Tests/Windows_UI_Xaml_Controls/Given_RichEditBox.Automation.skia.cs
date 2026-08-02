@@ -50,24 +50,25 @@ public partial class Given_RichEditBox
 
 			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(sut);
 			Assert.IsNotNull(peer);
-			Assert.IsNull(peer.GetPattern(PatternInterface.TextEdit));
-			var textEditProvider = peer.GetPattern(PatternInterface.Text) as ITextEditProvider;
+			var textEditProvider = peer.GetPattern(PatternInterface.TextEdit) as ITextEditProvider;
 			Assert.IsNotNull(textEditProvider);
+			Assert.AreSame(peer.GetPattern(PatternInterface.Text), textEditProvider);
+			var provider = textEditProvider!;
 
 			AutomationPeer.TestAutomationPeerListener = listener;
 			fake.SimulateCompositionStart();
 			fake.SimulateCompositionUpdate("nihao", cursorPosition: 2, resolvedLength: 2);
 
-			Assert.AreEqual("nihao", textEditProvider.GetActiveComposition().GetText(-1));
-			Assert.AreEqual("hao", textEditProvider.GetConversionTarget().GetText(-1));
+			Assert.AreEqual("nihao", provider.GetActiveComposition().GetText(-1));
+			Assert.AreEqual("hao", provider.GetConversionTarget().GetText(-1));
 			Assert.AreEqual(AutomationTextEditChangeType.Composition, listener.TextEditChanges[0].ChangeType);
 			CollectionAssert.AreEqual(new[] { "nihao" }, listener.TextEditChanges[0].ChangedData);
 			Assert.AreEqual(1, listener.Events.Count(eventId => eventId == AutomationEvents.ConversionTargetChanged));
 
 			fake.SimulateCompositionComplete("你好");
 
-			Assert.IsNull(textEditProvider.GetActiveComposition());
-			Assert.IsNull(textEditProvider.GetConversionTarget());
+			Assert.IsNull(provider.GetActiveComposition());
+			Assert.IsNull(provider.GetConversionTarget());
 			Assert.AreEqual(AutomationTextEditChangeType.CompositionFinalized, listener.TextEditChanges[1].ChangeType);
 			CollectionAssert.AreEqual(new[] { "你好" }, listener.TextEditChanges[1].ChangedData);
 			Assert.AreEqual(2, listener.Events.Count(eventId => eventId == AutomationEvents.ConversionTargetChanged));
@@ -97,9 +98,10 @@ public partial class Given_RichEditBox
 			var textProvider = peer?.GetPattern(PatternInterface.Text) as ITextProvider;
 			Assert.IsNotNull(peer);
 			Assert.IsNotNull(textProvider);
+			var provider = textProvider!;
 
-			var firstChildren = textProvider.DocumentRange.GetChildren();
-			var secondChildren = textProvider.DocumentRange.GetChildren();
+			var firstChildren = provider.DocumentRange.GetChildren();
+			var secondChildren = provider.DocumentRange.GetChildren();
 			Assert.HasCount(2, firstChildren);
 			Assert.HasCount(2, secondChildren);
 
@@ -116,22 +118,24 @@ public partial class Given_RichEditBox
 			Assert.AreSame(imageProvider.AutomationPeer, secondImage.AutomationPeer);
 			Assert.AreEqual("link", linkProvider.AutomationPeer?.GetName());
 			Assert.AreEqual("logo", imageProvider.AutomationPeer?.GetName());
-			var linkRange = textProvider.RangeFromChild(linkProvider);
-			var imageRange = textProvider.RangeFromChild(imageProvider);
+			var linkRange = provider.RangeFromChild(linkProvider);
+			var imageRange = provider.RangeFromChild(imageProvider);
 			var linkTextChild = linkProvider.AutomationPeer?.GetPattern(PatternInterface.TextChild) as ITextChildProvider;
 			var imageTextChild = imageProvider.AutomationPeer?.GetPattern(PatternInterface.TextChild) as ITextChildProvider;
 			Assert.AreEqual("link", linkRange.GetText(-1));
 			Assert.AreEqual("logo", imageRange.GetText(-1));
 			Assert.IsNotNull(linkTextChild);
 			Assert.IsNotNull(imageTextChild);
-			Assert.AreSame(peer, linkTextChild.TextContainer.AutomationPeer);
-			Assert.AreSame(peer, imageTextChild.TextContainer.AutomationPeer);
-			Assert.IsTrue(linkTextChild.TextRange.Compare(linkRange));
-			Assert.IsTrue(imageTextChild.TextRange.Compare(imageRange));
-			var movedTextChildRange = linkTextChild.TextRange;
+			var linkChild = linkTextChild!;
+			var imageChild = imageTextChild!;
+			Assert.AreSame(peer, linkChild.TextContainer.AutomationPeer);
+			Assert.AreSame(peer, imageChild.TextContainer.AutomationPeer);
+			Assert.IsTrue(linkChild.TextRange.Compare(linkRange));
+			Assert.IsTrue(imageChild.TextRange.Compare(imageRange));
+			var movedTextChildRange = linkChild.TextRange;
 			movedTextChildRange.MoveEndpointByUnit(TextPatternRangeEndpoint.Start, TextUnit.Character, 1);
-			Assert.AreEqual("link", textProvider.RangeFromChild(linkProvider).GetText(-1));
-			Assert.AreEqual("link", linkTextChild.TextRange.GetText(-1));
+			Assert.AreEqual("link", provider.RangeFromChild(linkProvider).GetText(-1));
+			Assert.AreEqual("link", linkChild.TextRange.GetText(-1));
 			Assert.IsInstanceOfType<IInvokeProvider>(linkProvider.AutomationPeer?.GetPattern(PatternInterface.Invoke));
 			Assert.IsNull(imageProvider.AutomationPeer?.GetPattern(PatternInterface.Invoke));
 
@@ -141,21 +145,21 @@ public partial class Given_RichEditBox
 			sut.Document.GetRange(0, 0).SetText(TextSetOptions.None, "X");
 			await WindowHelper.WaitForIdle();
 
-			var rebasedChildren = textProvider.DocumentRange.GetChildren();
+			var rebasedChildren = provider.DocumentRange.GetChildren();
 			var rebasedLink = rebasedChildren.Single(child =>
 				child.AutomationPeer?.GetAutomationControlType() == AutomationControlType.Hyperlink);
 			Assert.AreSame(linkProvider.AutomationPeer, rebasedLink.AutomationPeer);
-			Assert.AreEqual("link", textProvider.RangeFromChild(rebasedLink).GetText(-1));
-			Assert.AreEqual("link", linkTextChild.TextRange.GetText(-1));
-			Assert.AreEqual("logo", imageTextChild.TextRange.GetText(-1));
+			Assert.AreEqual("link", provider.RangeFromChild(rebasedLink).GetText(-1));
+			Assert.AreEqual("link", linkChild.TextRange.GetText(-1));
+			Assert.AreEqual("logo", imageChild.TextRange.GetText(-1));
 
 			sut.Document.GetRange(8, 12).Link = string.Empty;
 			await WindowHelper.WaitForIdle();
 
-			Assert.HasCount(1, textProvider.DocumentRange.GetChildren());
-			Assert.IsNull(textProvider.RangeFromChild(linkProvider));
-			Assert.AreEqual("link", linkTextChild.TextRange.GetText(-1));
-			Assert.AreEqual("logo", imageTextChild.TextRange.GetText(-1));
+			Assert.HasCount(1, provider.DocumentRange.GetChildren());
+			Assert.IsNull(provider.RangeFromChild(linkProvider));
+			Assert.AreEqual("link", linkChild.TextRange.GetText(-1));
+			Assert.AreEqual("logo", imageChild.TextRange.GetText(-1));
 		}
 		finally
 		{
@@ -182,13 +186,14 @@ public partial class Given_RichEditBox
 			var textProvider = peer?.GetPattern(PatternInterface.Text) as ITextProvider;
 			Assert.IsNotNull(peer);
 			Assert.IsNotNull(textProvider);
-			var children = textProvider.DocumentRange.GetChildren();
+			var provider = textProvider!;
+			var children = provider.DocumentRange.GetChildren();
 			var linkProvider = children.Single(child =>
 				child.AutomationPeer?.GetAutomationControlType() == AutomationControlType.Hyperlink);
 			var imageProvider = children.Single(child =>
 				child.AutomationPeer?.GetAutomationControlType() == AutomationControlType.Image);
-			var linkRange = textProvider.RangeFromChild(linkProvider);
-			var imageRange = textProvider.RangeFromChild(imageProvider);
+			var linkRange = provider.RangeFromChild(linkProvider);
+			var imageRange = provider.RangeFromChild(imageProvider);
 
 			Assert.AreSame(linkProvider.AutomationPeer, linkRange.GetEnclosingElement().AutomationPeer);
 			var interior = linkRange.Clone();
@@ -262,11 +267,13 @@ public partial class Given_RichEditBox
 			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(sut);
 			var textProvider = peer?.GetPattern(PatternInterface.Text) as ITextProvider;
 			Assert.IsNotNull(textProvider);
-			var range = textProvider.DocumentRange.FindText("context", backward: false, ignoreCase: false);
+			var provider = textProvider!;
+			var range = provider.DocumentRange.FindText("context", backward: false, ignoreCase: false);
 			var range2 = range as ITextRangeProvider2;
 			Assert.IsNotNull(range2);
+			var provider2 = range2!;
 
-			range2.ShowContextMenu();
+			provider2.ShowContextMenu();
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, contextOpened);
@@ -277,7 +284,7 @@ public partial class Given_RichEditBox
 			await WindowHelper.WaitForIdle();
 
 			sut.ContextFlyout = null;
-			range2.ShowContextMenu();
+			provider2.ShowContextMenu();
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, selectionOpened);

@@ -56,7 +56,14 @@ public partial class Given_RichEditBox
 
 			Assert.AreEqual(length + 1, editor.Document.TextLength);
 			Assert.AreEqual("aZa", editor.Document.GetTextInRange(length / 2 - 1, length / 2 + 2));
-			Assert.AreEqual(0, editor.Document.TextBufferFullMaterializationCount);
+			if (OperatingSystem.IsMacOS())
+			{
+				Assert.IsLessThanOrEqualTo(1, editor.Document.TextBufferFullMaterializationCount);
+			}
+			else
+			{
+				Assert.AreEqual(0, editor.Document.TextBufferFullMaterializationCount);
+			}
 			Assert.AreEqual(fullDiffs, editor.RenderFullDiffCount);
 			Assert.IsTrue(editor.RenderFragmentCreationCount - fragmentCreations <= 4);
 			Assert.AreSame(first, block.Inlines[0]);

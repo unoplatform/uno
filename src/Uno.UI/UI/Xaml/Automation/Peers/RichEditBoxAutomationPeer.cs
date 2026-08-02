@@ -42,7 +42,8 @@ public partial class RichEditBoxAutomationPeer : FrameworkElementAutomationPeer,
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
 		if (patternInterface == PatternInterface.Text
-			|| patternInterface == PatternInterface.Text2)
+			|| patternInterface == PatternInterface.Text2
+			|| patternInterface == PatternInterface.TextEdit)
 		{
 			if (m_textPattern is null && Owner is Controls.RichEditBox owner)
 			{
