@@ -375,6 +375,9 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 	protected override bool IsPeripheralCore()
 		=> AutomationProperties.GetIsPeripheral(Owner);
 
+	protected override int GetCultureCore()
+		=> AutomationProperties.GetCulture(Owner);
+
 	protected override bool IsDataValidForFormCore()
 		=> AutomationProperties.GetIsDataValidForForm(Owner);
 
@@ -402,7 +405,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		// AutomationProperties deals with UIElements but the peer world wants to work in AutomationPeers.
 		// Here we do the translation.
 
-		var elements = AutomationProperties.GetControlledPeers(Owner as UIElement);
+		var elements = AutomationProperties.TryGetControlledPeers(Owner as UIElement);
 
 		if (elements != null)
 		{
@@ -561,15 +564,15 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 			if (eProperty == AutomationProperties.DescribedByProperty)
 			{
-				elements = AutomationProperties.GetDescribedBy(Owner);
+				elements = AutomationProperties.TryGetDescribedBy(Owner);
 			}
 			else if (eProperty == AutomationProperties.FlowsToProperty)
 			{
-				elements = AutomationProperties.GetFlowsTo(Owner);
+				elements = AutomationProperties.TryGetFlowsTo(Owner);
 			}
 			else if (eProperty == AutomationProperties.FlowsFromProperty)
 			{
-				elements = AutomationProperties.GetFlowsFrom(Owner);
+				elements = AutomationProperties.TryGetFlowsFrom(Owner);
 			}
 
 			if (elements is not null && elements.Count > 0)

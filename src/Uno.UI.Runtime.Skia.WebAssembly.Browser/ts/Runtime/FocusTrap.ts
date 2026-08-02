@@ -25,8 +25,8 @@ namespace Uno.UI.Runtime.Skia {
 			const parentState = FocusTrap.activeTrap;
 
 			// Hide all semantic elements outside the modal
-			const semanticsRoot = document.getElementById("uno-semantics-root");
-			const modalElement = document.getElementById(`uno-semantics-${modalHandle}`);
+			const semanticsRoot = Accessibility.getSemanticsRoot();
+			const modalElement = Accessibility.getSemanticElementByHandle(modalHandle);
 			const hiddenElements: FocusTrapState["hiddenElements"] = [];
 
 			if (semanticsRoot && modalElement) {
@@ -74,7 +74,7 @@ namespace Uno.UI.Runtime.Skia {
 
 			// Focus the first focusable element in the modal
 			if (focusableHandles.length > 0) {
-				const firstElement = document.getElementById(`uno-semantics-${focusableHandles[0]}`);
+				const firstElement = Accessibility.getSemanticElementByHandle(focusableHandles[0]);
 				if (firstElement) {
 					firstElement.focus();
 				}
@@ -124,11 +124,11 @@ namespace Uno.UI.Runtime.Skia {
 
 			// Restore focus to trigger element, with fallback to parent trap or body
 			if (trap.triggerHandle) {
-				const triggerElement = document.getElementById(`uno-semantics-${trap.triggerHandle}`);
+				const triggerElement = Accessibility.getSemanticElementByHandle(trap.triggerHandle);
 				if (triggerElement) {
 					triggerElement.focus();
 				} else if (trap.parentState && trap.parentState.focusableHandles.length > 0) {
-					const fallback = document.getElementById(`uno-semantics-${trap.parentState.focusableHandles[0]}`);
+					const fallback = Accessibility.getSemanticElementByHandle(trap.parentState.focusableHandles[0]);
 					if (fallback) {
 						fallback.focus();
 					}
@@ -170,7 +170,7 @@ namespace Uno.UI.Runtime.Skia {
 			if (shiftKey) {
 				// Shift+Tab: wrap from first to last
 				if (currentIndex <= 0) {
-					const lastElement = document.getElementById(`uno-semantics-${handles[handles.length - 1]}`);
+					const lastElement = Accessibility.getSemanticElementByHandle(handles[handles.length - 1]);
 					if (lastElement) {
 						lastElement.focus();
 						return true;
@@ -179,7 +179,7 @@ namespace Uno.UI.Runtime.Skia {
 			} else {
 				// Tab: wrap from last to first
 				if (currentIndex >= handles.length - 1) {
-					const firstElement = document.getElementById(`uno-semantics-${handles[0]}`);
+					const firstElement = Accessibility.getSemanticElementByHandle(handles[0]);
 					if (firstElement) {
 						firstElement.focus();
 						return true;
@@ -220,7 +220,7 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		private static removeDialogRole(modalHandle: number): void {
-			const modalElement = document.getElementById(`uno-semantics-${modalHandle}`);
+			const modalElement = Accessibility.getSemanticElementByHandle(modalHandle);
 			if (modalElement) {
 				modalElement.removeAttribute("role");
 				modalElement.removeAttribute("aria-modal");

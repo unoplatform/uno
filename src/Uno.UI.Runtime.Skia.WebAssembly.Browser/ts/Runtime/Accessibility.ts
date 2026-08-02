@@ -7,6 +7,17 @@ namespace Uno.UI.Runtime.Skia {
 		private static semanticsRoot: HTMLDivElement;
 		private static containerElement: HTMLElement;
 		private static debugModeEnabled: boolean = false;
+		private static roleOverrideSnapshots = new WeakMap<HTMLElement, {
+			role: string | null;
+			attributes: Map<string, string | null>;
+		}>();
+		private static readonly roleSpecificAriaAttributes = [
+			"aria-activedescendant", "aria-checked", "aria-colcount", "aria-colindex", "aria-colspan",
+			"aria-expanded", "aria-level", "aria-modal", "aria-multiselectable", "aria-orientation",
+			"aria-posinset", "aria-pressed", "aria-readonly", "aria-required", "aria-rowcount",
+			"aria-rowindex", "aria-rowspan", "aria-selected", "aria-setsize", "aria-sort",
+			"aria-valuemax", "aria-valuemin", "aria-valuenow", "aria-valuetext"
+		];
 
 		private static focusSentinelStart: HTMLDivElement | null = null;
 		private static focusSentinelEnd: HTMLDivElement | null = null;
@@ -26,6 +37,7 @@ namespace Uno.UI.Runtime.Skia {
 		private static managedOnSentinelFocus: any;
 
 		private static managedIsAutoEnableAccessibility: () => boolean;
+		private static isAccessibilityActivated: boolean = false;
 
 		private static createLiveElement(kind: string) {
 			const element = document.createElement("div");
@@ -88,27 +100,7 @@ namespace Uno.UI.Runtime.Skia {
 			const autoEnable = this.managedIsAutoEnableAccessibility();
 
 			if (!autoEnable) {
-				// Create enable accessibility button (for screen reader activation)
-				this.enableAccessibilityButton = document.createElement("div");
-				this.enableAccessibilityButton.id = "uno-enable-accessibility";
-				this.enableAccessibilityButton.setAttribute("aria-live", "polite");
-				this.enableAccessibilityButton.setAttribute("role", "button");
-				this.enableAccessibilityButton.setAttribute("tabindex", "0");
-				this.enableAccessibilityButton.setAttribute("aria-label", "Enable accessibility");
-				this.enableAccessibilityButton.addEventListener("click", this.onEnableAccessibilityButtonClicked.bind(this));
-
-				// Also add a keydown listener so keyboard users can activate it via Enter/Space
-				this.enableAccessibilityButton.addEventListener("keydown", (e) => {
-					if (e.key === "Enter" || e.key === " ") {
-						e.preventDefault();
-						this.onEnableAccessibilityButtonClicked(e as any);
-					}
-				});
-
-				// Prepend so the button is the first focusable element in the DOM,
-				// reachable by the very first Tab press (inspired by Flutter's
-				// DesktopSemanticsEnabler which prepends its placeholder to <body>).
-				this.containerElement.prepend(this.enableAccessibilityButton);
+				this.ensureEnableAccessibilityButton();
 			}
 
 			// Create semantic DOM root container (hidden but accessible).
@@ -134,8 +126,32 @@ namespace Uno.UI.Runtime.Skia {
 				// Window/RootElement aren't ready yet.
 				Accessibility.debugLog('[A11y] Auto-enabling accessibility (FeatureConfiguration.AutomationPeer.AutoEnableAccessibility = true)');
 				this.managedEnableAccessibility();
-				LiveRegion.initialize();
 			}
+		}
+
+		private static ensureEnableAccessibilityButton(): void {
+			const existing = document.getElementById("uno-enable-accessibility") as HTMLDivElement | null;
+			if (existing) {
+				this.enableAccessibilityButton = existing;
+				existing.setAttribute("tabindex", "0");
+				existing.removeAttribute("aria-disabled");
+				return;
+			}
+
+			this.enableAccessibilityButton = document.createElement("div");
+			this.enableAccessibilityButton.id = "uno-enable-accessibility";
+			this.enableAccessibilityButton.setAttribute("aria-live", "polite");
+			this.enableAccessibilityButton.setAttribute("role", "button");
+			this.enableAccessibilityButton.setAttribute("tabindex", "0");
+			this.enableAccessibilityButton.setAttribute("aria-label", "Enable accessibility");
+			this.enableAccessibilityButton.addEventListener("click", this.onEnableAccessibilityButtonClicked.bind(this));
+			this.enableAccessibilityButton.addEventListener("keydown", (e) => {
+				if (e.key === "Enter" || e.key === " ") {
+					e.preventDefault();
+					this.onEnableAccessibilityButtonClicked(e as any);
+				}
+			});
+			this.containerElement.prepend(this.enableAccessibilityButton);
 		}
 
 		/// <summary>
@@ -198,13 +214,22 @@ namespace Uno.UI.Runtime.Skia {
 		private static createSemanticElement(x: number, y: number, width: number, height: number, handle: number, isFocusable: boolean) {
 			let element = document.createElement("div");
 			element.style.position = "absolute";
+			const isCurrent = () => Accessibility.isCurrentSemanticElement(element);
 
 			element.addEventListener('wheel', (e) => {
+				if (!isCurrent()) {
+					e.stopImmediatePropagation();
+					return;
+				}
 				// When scrolling with wheel, we want to prevent scroll events.
 				e.preventDefault();
 			}, {passive:false});
 
 			element.addEventListener('scroll', (e) => {
+				if (!isCurrent()) {
+					e.stopImmediatePropagation();
+					return;
+				}
 				let element = e.target as HTMLElement;
 				this.managedOnScroll(handle, element.scrollLeft, element.scrollTop);
 			});
@@ -221,15 +246,50 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		public static updateElementFocusability(element: HTMLElement, isFocusable: boolean) {
+			const owningListbox = element.getAttribute('role') === 'option'
+				? element.parentElement?.closest('[role="listbox"]') as HTMLElement | null
+				: null;
+			if (owningListbox && element.parentElement === owningListbox) {
+				element.dataset.unoOptionFocusable = String(isFocusable);
+				if (!isFocusable) {
+					element.tabIndex = -1;
+				}
+				Accessibility.synchronizeListboxTabStop(owningListbox);
+				return;
+			}
+			if (element.getAttribute('role') === 'grid') {
+				element.dataset.unoGridFocusable = String(isFocusable);
+				if (!isFocusable || element.getAttribute('aria-disabled') === 'true') {
+					Accessibility.suspendGridTabStops(element);
+				} else {
+					Accessibility.synchronizeGridTabStop(element);
+				}
+				return;
+			}
+			if (element.getAttribute('role') === 'row') {
+				element.tabIndex = -1;
+				return;
+			}
+			if (Accessibility.isGridItem(element)) {
+				const grid = element.closest('[role="grid"]') as HTMLElement | null;
+				if (grid) {
+					Accessibility.synchronizeGridTabStop(grid);
+				}
+				return;
+			}
+
+			const desiredTabIndex = isFocusable ? 0 : -1;
+			const owningGridItem = element.closest('[role="gridcell"], [role="columnheader"], [role="rowheader"]') as HTMLElement | null;
+			if (owningGridItem && owningGridItem !== element) {
+				element.dataset.unoGridTabIndex = String(desiredTabIndex);
+				Accessibility.updateGridDescendantFocusability(element, owningGridItem, isFocusable);
+			} else {
 			// Focusable controls participate in the natural tab order (tabindex="0").
 			// Non-focusable controls must NOT participate, but they may still need to be
 			// programmatically focusable (for screen-reader navigation / focus recovery),
 			// so they get tabindex="-1" rather than having the attribute removed —
 			// native <button>/<input>/<a> default to tabbable when no tabindex is set.
-			if (isFocusable) {
-				element.tabIndex = 0;
-			} else {
-				element.tabIndex = -1;
+				element.tabIndex = desiredTabIndex;
 			}
 			// Semantic elements must NEVER have pointer-events: all.
 			// Mouse events must pass through to the canvas below.
@@ -239,8 +299,21 @@ namespace Uno.UI.Runtime.Skia {
 			element.style.touchAction = "none";
 		}
 
-		public static getSemanticElementByHandle(handle: number): HTMLElement {
-			return document.getElementById(`uno-semantics-${handle}`)
+		public static getSemanticsRoot(): HTMLElement | null {
+			return this.semanticsRoot ?? null;
+		}
+
+		public static getSemanticElementById(id: string): HTMLElement | null {
+			const root = this.getSemanticsRoot();
+			return root?.querySelector<HTMLElement>(`#${CSS.escape(id)}`) ?? null;
+		}
+
+		public static getSemanticElementByHandle(handle: number): HTMLElement | null {
+			return this.getSemanticElementById(`uno-semantics-${handle}`);
+		}
+
+		public static isCurrentSemanticElement(element: HTMLElement): boolean {
+			return element.isConnected && this.getSemanticElementById(element.id) === element;
 		}
 
 		public static announcePolite(text: string) {
@@ -271,13 +344,28 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		private static onEnableAccessibilityButtonClicked(evt: MouseEvent) {
-			this.containerElement.removeChild(this.enableAccessibilityButton);
+			if (this.enableAccessibilityButton.getAttribute("aria-disabled") === "true") {
+				return;
+			}
+			this.enableAccessibilityButton.setAttribute("aria-disabled", "true");
+			this.enableAccessibilityButton.tabIndex = -1;
 			this.managedEnableAccessibility();
+		}
 
-			// Initialize subsystem TypeScript modules
+		public static onAccessibilityActivationSucceeded(): void {
+			if (this.isAccessibilityActivated) {
+				return;
+			}
+			this.isAccessibilityActivated = true;
+			this.enableAccessibilityButton?.remove();
 			LiveRegion.initialize();
-
 			this.announceAssertive("Accessibility enabled successfully.");
+		}
+
+		public static onAccessibilityActivationFailed(): void {
+			this.isAccessibilityActivated = false;
+			this.ensureEnableAccessibilityButton();
+			this.announceAssertive("Accessibility could not be enabled. Try again.");
 		}
 
 		/**
@@ -392,6 +480,51 @@ namespace Uno.UI.Runtime.Skia {
 			if (!activeElement) {
 				return;
 			}
+			if (activeElement.getAttribute('role') === 'grid') {
+				if (!Accessibility.isGridHierarchyEnabled(activeElement)) {
+					Accessibility.suspendGridTabStops(activeElement);
+					return;
+				}
+				Accessibility.synchronizeGridTabStop(activeElement, true);
+				return;
+			}
+
+			let nestedGrid = activeElement.closest('[role="grid"]') as HTMLElement | null;
+			while (nestedGrid) {
+				const containingGridItem = nestedGrid.parentElement?.closest('[role="gridcell"], [role="columnheader"], [role="rowheader"]') as HTMLElement | null;
+				if (!containingGridItem) {
+					break;
+				}
+				const containingGrid = containingGridItem.closest('[role="grid"]') as HTMLElement | null;
+				if (!containingGrid || !Accessibility.isGridItemEligible(containingGridItem, containingGrid)) {
+					activeElement.tabIndex = -1;
+					Accessibility.synchronizeGridTabStop(nestedGrid, true);
+					return;
+				}
+
+				Accessibility.enterGridInteractionMode(containingGridItem, activeElement);
+				nestedGrid = containingGridItem.closest('[role="grid"]') as HTMLElement | null;
+			}
+
+			const owningGridItem = activeElement.closest('[role="gridcell"], [role="columnheader"], [role="rowheader"]') as HTMLElement | null;
+			if (owningGridItem && owningGridItem !== activeElement) {
+				Accessibility.enterGridInteractionMode(owningGridItem, activeElement);
+				return;
+			}
+			if (owningGridItem === activeElement) {
+				const grid = activeElement.closest('[role="grid"]') as HTMLElement | null;
+				if (!grid || !Accessibility.isGridItemEligible(activeElement, grid)) {
+					activeElement.tabIndex = -1;
+					if (grid) {
+						if (grid.dataset.unoGridActiveId === activeElement.id) {
+							delete grid.dataset.unoGridActiveId;
+						}
+						Accessibility.synchronizeGridTabStop(grid, true);
+					}
+					return;
+				}
+				Accessibility.exitGridInteractionMode(activeElement);
+			}
 
 			// Promote the active element to the single tab stop (tabindex="0").
 			// Sibling group members are demoted to tabindex="-1" below.
@@ -403,22 +536,23 @@ namespace Uno.UI.Runtime.Skia {
 			if (!parent) {
 				return;
 			}
+			if (activeElement.getAttribute('role') === 'option' && parent.getAttribute('role') === 'listbox') {
+				Accessibility.synchronizeListboxTabStop(parent, activeElement);
+				return;
+			}
 
 			let groupSelector: string | null = null;
+			let groupRoot: HTMLElement = parent;
 
 			if (activeElement instanceof HTMLInputElement &&
 				activeElement.type === 'radio' &&
 				activeElement.name) {
 				// Radio group: only affect radios with the same name
-				groupSelector = `input[type="radio"][name="${activeElement.name}"]`;
+				groupSelector = `input[type="radio"][name="${CSS.escape(activeElement.name)}"]`;
 			} else if (activeElement.getAttribute('role') === 'tab' &&
 				parent.getAttribute('role') === 'tablist') {
 				// Tablist group: only affect tab-role children
 				groupSelector = '[role="tab"]';
-			} else if (activeElement.getAttribute('role') === 'option' &&
-				parent.getAttribute('role') === 'listbox') {
-				// Listbox group: only affect option-role children
-				groupSelector = '[role="option"]';
 			} else if (activeElement.getAttribute('role') === 'menuitem' &&
 				parent.getAttribute('role') === 'menu') {
 				// Menu group: only affect menuitem-role children
@@ -426,6 +560,13 @@ namespace Uno.UI.Runtime.Skia {
 			} else if (activeElement.getAttribute('role') === 'treeitem') {
 				// Tree group: affect treeitem-role siblings at same level
 				groupSelector = '[role="treeitem"]';
+			} else if (['gridcell', 'columnheader', 'rowheader'].includes(activeElement.getAttribute('role') ?? '')) {
+				const grid = activeElement.closest('[role="grid"]') as HTMLElement | null;
+				if (grid) {
+					grid.dataset.unoGridActiveId = activeElement.id;
+					groupRoot = grid;
+					groupSelector = '[role="gridcell"], [role="columnheader"], [role="rowheader"]';
+				}
 			}
 
 			if (!groupSelector) {
@@ -435,18 +576,362 @@ namespace Uno.UI.Runtime.Skia {
 			}
 
 			// Only modify tabindex on elements within the same group
-			const groupMembers = parent.querySelectorAll(groupSelector);
+			const groupMembers = groupRoot.querySelectorAll(groupSelector);
 			groupMembers.forEach((member: HTMLElement) => {
+				if (groupRoot.getAttribute('role') === 'grid' && member.closest('[role="grid"]') !== groupRoot) {
+					return;
+				}
 				if (member !== activeElement && member.tabIndex === 0) {
 					member.tabIndex = -1;
 				}
 			});
 		}
 
+		public static synchronizeListboxTabStop(listbox: HTMLElement, preferred: HTMLElement | null = null): void {
+			const options = Array.from(listbox.querySelectorAll<HTMLElement>('[role="option"]'))
+				.filter(option => option.parentElement === listbox);
+			if (listbox.dataset.unoUsesActiveDescendant === 'true') {
+				options.forEach(option => option.tabIndex = -1);
+				return;
+			}
+
+			const isEligible = (option: HTMLElement) =>
+				option.dataset.unoOptionFocusable === 'true' &&
+				option.getAttribute('aria-disabled') !== 'true';
+			const active = preferred && isEligible(preferred)
+				? preferred
+				: options.find(option => option.tabIndex === 0 && isEligible(option))
+					?? options.find(option => option.getAttribute('aria-selected') === 'true' && isEligible(option))
+					?? options.find(isEligible)
+					?? null;
+
+			options.forEach(option => option.tabIndex = option === active ? 0 : -1);
+		}
+
+		public static initializeListboxOption(listbox: HTMLElement, option: HTMLElement, preferred: boolean): void {
+			if (listbox.dataset.unoUsesActiveDescendant === 'true') {
+				option.tabIndex = -1;
+				return;
+			}
+
+			const eligible = option.dataset.unoOptionFocusable === 'true' &&
+				option.getAttribute('aria-disabled') !== 'true';
+			if (!eligible) {
+				option.tabIndex = -1;
+				return;
+			}
+
+			const current = listbox.querySelector<HTMLElement>(':scope > [role="option"][tabindex="0"]');
+			if (preferred || !current) {
+				if (current && current !== option) {
+					current.tabIndex = -1;
+				}
+				option.tabIndex = 0;
+			} else {
+				option.tabIndex = -1;
+			}
+		}
+
+		public static initializeGridTabStop(element: HTMLElement, preferDataCell: boolean): void {
+			const grid = element.closest('[role="grid"]') as HTMLElement | null;
+			if (!grid) {
+				return;
+			}
+
+			const activeId = grid.dataset.unoGridActiveId;
+			const activeItem = activeId
+				? Accessibility.getDirectGridItems(grid).find(item => item.id === activeId) ?? null
+				: null;
+			const validActiveItem = activeItem && Accessibility.isGridItemEligible(activeItem, grid) ? activeItem : null;
+			if (!Accessibility.isGridItemEligible(element, grid)) {
+				element.tabIndex = -1;
+				return;
+			}
+			if (!validActiveItem || preferDataCell && validActiveItem.getAttribute('role') !== 'gridcell') {
+				if (validActiveItem) {
+					validActiveItem.tabIndex = -1;
+				}
+				grid.dataset.unoGridActiveId = element.id;
+				element.dataset.unoGridTabIndex = '0';
+				if (grid.dataset.unoGridFocusable !== 'false' && grid.getAttribute('aria-disabled') !== 'true') {
+					const owningGridItem = Accessibility.getOwningGridItem(grid);
+					element.tabIndex = owningGridItem && owningGridItem.dataset.unoGridInteractionMode !== 'true' ? -1 : 0;
+				}
+				grid.tabIndex = -1;
+				return;
+			}
+
+			element.tabIndex = -1;
+		}
+
+		public static updateGridDisabledState(grid: HTMLElement, disabled: boolean): void {
+			if (disabled) {
+				Accessibility.suspendGridTabStops(grid);
+			} else {
+				Accessibility.synchronizeGridTabStop(grid);
+			}
+		}
+
+		public static synchronizeGridTabStop(grid: HTMLElement, focusActiveItem: boolean = false): void {
+			grid.tabIndex = -1;
+			if (!Accessibility.isGridHierarchyEnabled(grid)) {
+				Accessibility.suspendGridTabStops(grid);
+				return;
+			}
+
+			const owningGridItem = Accessibility.getOwningGridItem(grid);
+			const items = Accessibility.getDirectGridItems(grid);
+			let activeItem = Accessibility.getGridActiveItem(grid, items)
+				?? items.find(item => item.getAttribute('role') === 'gridcell')
+				?? items[0];
+			items.forEach(item => {
+				item.tabIndex = -1;
+				if (item !== activeItem && item.dataset.unoGridInteractionMode === 'true') {
+					Accessibility.exitGridInteractionMode(item);
+				}
+			});
+			if (!activeItem) {
+				delete grid.dataset.unoGridActiveId;
+				grid.tabIndex = owningGridItem ? -1 : 0;
+				if (focusActiveItem && grid.tabIndex === 0 && document.activeElement !== grid) {
+					grid.focus();
+				}
+				return;
+			}
+
+			grid.dataset.unoGridActiveId = activeItem.id;
+			activeItem.dataset.unoGridTabIndex = '0';
+			if (activeItem.dataset.unoGridInteractionMode === 'true') {
+				const focusedDescendant = activeItem.contains(document.activeElement) && document.activeElement !== activeItem
+					? document.activeElement as HTMLElement
+					: activeItem.querySelector('[tabindex="0"]') as HTMLElement | null;
+				if (focusedDescendant) {
+					activeItem.querySelectorAll('[tabindex="0"]').forEach((descendant: HTMLElement) => {
+						if (descendant !== focusedDescendant) {
+							descendant.tabIndex = -1;
+						}
+					});
+					focusedDescendant.tabIndex = Number(focusedDescendant.dataset.unoGridTabIndex ?? '0');
+					if (focusActiveItem && document.activeElement !== focusedDescendant) {
+						focusedDescendant.focus();
+					}
+					return;
+				}
+				Accessibility.exitGridInteractionMode(activeItem);
+			}
+			activeItem.tabIndex = owningGridItem && owningGridItem.dataset.unoGridInteractionMode !== 'true' ? -1 : 0;
+			if (focusActiveItem && activeItem.tabIndex === 0 && document.activeElement !== activeItem) {
+				activeItem.focus();
+			}
+		}
+
+		public static suspendGridTabStops(grid: HTMLElement): void {
+			const currentItem = Accessibility.getGridActiveItem(grid);
+			if (currentItem) {
+				grid.dataset.unoGridActiveId = currentItem.id;
+			}
+
+			const interactionItems = (Array.from(grid.querySelectorAll('[data-uno-grid-interaction-mode="true"]')) as HTMLElement[])
+				.sort((left, right) => Accessibility.getElementDepth(right) - Accessibility.getElementDepth(left));
+			interactionItems.forEach(item => Accessibility.exitGridInteractionMode(item));
+			grid.querySelectorAll('[role="gridcell"], [role="columnheader"], [role="rowheader"]').forEach((item: HTMLElement) => item.tabIndex = -1);
+			grid.tabIndex = -1;
+
+			if (grid.contains(document.activeElement)) {
+				const owningGridItem = Accessibility.getOwningGridItem(grid);
+				const owningGrid = owningGridItem?.closest('[role="grid"]') as HTMLElement | null;
+				if (owningGridItem && owningGrid && Accessibility.isGridItemEligible(owningGridItem, owningGrid)) {
+					Accessibility.exitGridInteractionMode(owningGridItem);
+					owningGridItem.focus();
+				} else if (document.activeElement instanceof HTMLElement) {
+					document.activeElement.blur();
+				}
+			}
+		}
+
+		private static getDirectGridItems(grid: HTMLElement): HTMLElement[] {
+			return (Array.from(grid.querySelectorAll('[role="gridcell"], [role="columnheader"], [role="rowheader"]')) as HTMLElement[])
+				.filter(item => Accessibility.isGridItemEligible(item, grid));
+		}
+
+		private static isGridItem(element: HTMLElement): boolean {
+			return ['gridcell', 'columnheader', 'rowheader'].includes(element.getAttribute('role') ?? '');
+		}
+
+		public static isGridItemEligible(item: HTMLElement, grid: HTMLElement): boolean {
+			if (!Accessibility.isGridItem(item) || item.closest('[role="grid"]') !== grid ||
+				item.hidden || item.getAttribute('aria-disabled') === 'true' || item.closest('[hidden]') ||
+				!Accessibility.isGridHierarchyEnabled(grid)) {
+				return false;
+			}
+
+			for (let ancestor = item.parentElement; ancestor && ancestor !== grid; ancestor = ancestor.parentElement) {
+				if (ancestor.hidden || ancestor.getAttribute('aria-disabled') === 'true') {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		private static isGridHierarchyEnabled(grid: HTMLElement): boolean {
+			let currentGrid: HTMLElement | null = grid;
+			while (currentGrid) {
+				if (currentGrid.dataset.unoGridFocusable === 'false' || currentGrid.getAttribute('aria-disabled') === 'true' ||
+					currentGrid.hidden || currentGrid.closest('[hidden]')) {
+					return false;
+				}
+
+				const owningItem = Accessibility.getOwningGridItem(currentGrid);
+				if (!owningItem) {
+					return true;
+				}
+				const parentGrid = owningItem.closest('[role="grid"]') as HTMLElement | null;
+				if (!parentGrid || owningItem.hidden || owningItem.getAttribute('aria-disabled') === 'true') {
+					return false;
+				}
+				for (let ancestor = owningItem.parentElement; ancestor && ancestor !== parentGrid; ancestor = ancestor.parentElement) {
+					if (ancestor.hidden || ancestor.getAttribute('aria-disabled') === 'true') {
+						return false;
+					}
+				}
+				currentGrid = parentGrid;
+			}
+			return true;
+		}
+
+		public static suspendGridSubtree(element: HTMLElement): void {
+			const interactionItems = ([element, ...Array.from(element.querySelectorAll('[data-uno-grid-interaction-mode="true"]'))] as HTMLElement[])
+				.filter(item => item.dataset.unoGridInteractionMode === 'true')
+				.sort((left, right) => Accessibility.getElementDepth(right) - Accessibility.getElementDepth(left));
+			interactionItems.forEach(item => Accessibility.exitGridInteractionMode(item));
+			if (element.tabIndex === 0) {
+				element.tabIndex = -1;
+			}
+			element.querySelectorAll('[tabindex="0"]').forEach((descendant: HTMLElement) => descendant.tabIndex = -1);
+		}
+
+		private static updateGridDescendantFocusability(element: HTMLElement, owningGridItem: HTMLElement, isFocusable: boolean): void {
+			if (owningGridItem.dataset.unoGridInteractionMode !== 'true') {
+				element.tabIndex = -1;
+				return;
+			}
+
+			const current = owningGridItem.contains(document.activeElement) && document.activeElement !== owningGridItem
+				? document.activeElement as HTMLElement
+				: owningGridItem.querySelector('[tabindex="0"]') as HTMLElement | null;
+			if (isFocusable) {
+				if (current === element || !current) {
+					owningGridItem.querySelectorAll('[tabindex="0"]').forEach((descendant: HTMLElement) => {
+						if (descendant !== element) {
+							descendant.tabIndex = -1;
+						}
+					});
+					element.tabIndex = Number(element.dataset.unoGridTabIndex ?? '0');
+				} else {
+					element.tabIndex = -1;
+				}
+				return;
+			}
+
+			element.tabIndex = -1;
+			if (current !== element) {
+				return;
+			}
+			const replacement = (Array.from(owningGridItem.querySelectorAll('[data-uno-grid-tab-index]')) as HTMLElement[])
+				.find(candidate => candidate !== element && Number(candidate.dataset.unoGridTabIndex ?? '-1') >= 0);
+			if (replacement) {
+				replacement.tabIndex = Number(replacement.dataset.unoGridTabIndex ?? '0');
+				replacement.focus();
+			} else {
+				Accessibility.exitGridInteractionMode(owningGridItem);
+				owningGridItem.focus();
+			}
+		}
+
+		public static prepareGridItemFocus(item: HTMLElement): boolean {
+			const grid = item.closest('[role="grid"]') as HTMLElement | null;
+			if (grid && Accessibility.isGridItemEligible(item, grid)) {
+				return true;
+			}
+
+			item.tabIndex = -1;
+			if (grid) {
+				if (grid.dataset.unoGridActiveId === item.id) {
+					delete grid.dataset.unoGridActiveId;
+				}
+				Accessibility.synchronizeGridTabStop(grid, true);
+			}
+			return false;
+		}
+
+		private static getGridActiveItem(grid: HTMLElement, items: HTMLElement[] = Accessibility.getDirectGridItems(grid)): HTMLElement | null {
+			const activeId = grid.dataset.unoGridActiveId;
+			return items.find(item => item.id === activeId) ?? items.find(item => item.tabIndex === 0) ?? null;
+		}
+
+		private static getOwningGridItem(grid: HTMLElement): HTMLElement | null {
+			return grid.parentElement?.closest('[role="gridcell"], [role="columnheader"], [role="rowheader"]') as HTMLElement | null;
+		}
+
+		private static getElementDepth(element: HTMLElement): number {
+			let depth = 0;
+			for (let current = element.parentElement; current; current = current.parentElement) {
+				depth++;
+			}
+			return depth;
+		}
+
+		private static enterGridInteractionMode(gridItem: HTMLElement, activeDescendant: HTMLElement): void {
+			const grid = gridItem.closest('[role="grid"]') as HTMLElement | null;
+			if (!grid || !Accessibility.isGridItemEligible(gridItem, grid)) {
+				return;
+			}
+
+			gridItem.dataset.unoGridInteractionMode = 'true';
+			grid.dataset.unoGridActiveId = gridItem.id;
+			gridItem.dataset.unoGridNavigationTabIndex = String(gridItem.tabIndex);
+			gridItem.tabIndex = -1;
+			grid.querySelectorAll('[role="gridcell"], [role="columnheader"], [role="rowheader"]').forEach((item: HTMLElement) => {
+				if (item.closest('[role="grid"]') === grid && item !== gridItem) {
+					item.tabIndex = -1;
+				}
+			});
+			gridItem.querySelectorAll('[data-uno-grid-tab-index]').forEach((descendant: HTMLElement) => {
+				descendant.tabIndex = descendant === activeDescendant
+					? Number(descendant.dataset.unoGridTabIndex ?? '0')
+					: -1;
+			});
+			activeDescendant.tabIndex = Number(activeDescendant.dataset.unoGridTabIndex ?? '0');
+		}
+
+		public static exitGridInteractionMode(gridItem: HTMLElement): void {
+			if (gridItem.dataset.unoGridInteractionMode !== 'true') {
+				return;
+			}
+
+			delete gridItem.dataset.unoGridInteractionMode;
+			gridItem.querySelectorAll('[data-uno-grid-tab-index]').forEach((descendant: HTMLElement) => {
+				descendant.tabIndex = -1;
+			});
+			const grid = gridItem.closest('[role="grid"]') as HTMLElement | null;
+			gridItem.tabIndex = grid && grid.dataset.unoGridActiveId === gridItem.id && Accessibility.isGridItemEligible(gridItem, grid)
+				? 0
+				: -1;
+			delete gridItem.dataset.unoGridNavigationTabIndex;
+		}
+
 		public static addRootElementToSemanticsRoot(rootHandle: number, width: number, height: number, x: number, y: number, isFocusable: boolean): void {
 			Accessibility.debugLog(`[A11y] addRootElementToSemanticsRoot: handle=${rootHandle} size=${width}x${height} pos=(${x},${y}) focusable=${isFocusable}`);
+			Accessibility.getSemanticElementByHandle(rootHandle)?.remove();
 			let element = Accessibility.createSemanticElement(x, y, width, height, rootHandle, isFocusable);
 			this.semanticsRoot.appendChild(element);
+		}
+
+		public static clearSemanticTree(): void {
+			while (this.semanticsRoot?.firstChild) {
+				this.semanticsRoot.removeChild(this.semanticsRoot.firstChild);
+			}
 		}
 
 		public static addSemanticElement(
@@ -468,7 +953,7 @@ namespace Uno.UI.Runtime.Skia {
 			xamlAutomationId: string): boolean {
 
 			// Remove any pre-existing element with this handle to prevent duplicates
-			const existing = document.getElementById(`uno-semantics-${handle}`);
+			const existing = Accessibility.getSemanticElementByHandle(handle);
 			if (existing) {
 				existing.remove();
 			}
@@ -528,8 +1013,47 @@ namespace Uno.UI.Runtime.Skia {
 			} else {
 				parent.appendChild(element);
 			}
+			Accessibility.updateElementFocusability(element, isFocusable);
 
 			return true;
+		}
+
+		public static configureSemanticAction(handle: number, action: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (!element || !action) {
+				return;
+			}
+
+			const invoke = (event: Event) => {
+				if (!Accessibility.isCurrentSemanticElement(element)) {
+					event.preventDefault();
+					event.stopImmediatePropagation();
+					return;
+				}
+
+				event.preventDefault();
+				switch (action) {
+					case "invoke":
+						Accessibility.managedOnInvoke?.(handle);
+						break;
+					case "toggle":
+						Accessibility.managedOnToggle?.(handle);
+						break;
+					case "expandCollapse":
+						Accessibility.managedOnExpandCollapse?.(handle);
+						break;
+					case "selection":
+						Accessibility.managedOnSelection?.(handle);
+						break;
+				}
+			};
+
+			element.addEventListener("click", invoke);
+			element.addEventListener("keydown", event => {
+				if (event.key === "Enter" || event.key === " ") {
+					invoke(event);
+				}
+			});
 		}
 
 		public static removeSemanticElement(parentHandle: number, childHandle: number): void {
@@ -539,6 +1063,7 @@ namespace Uno.UI.Runtime.Skia {
 				return;
 			}
 			Accessibility.debugLog(`[A11y] removeSemanticElement: parent=${parentHandle} child=${childHandle}`);
+			Accessibility.repairGridFocusBeforeRemoval(child);
 			// Use child.remove() instead of parent.removeChild(child) to handle
 			// cases where the child's actual DOM parent differs from the semantic parent
 			// (e.g., after re-parenting or when duplicate IDs existed previously).
@@ -549,7 +1074,12 @@ namespace Uno.UI.Runtime.Skia {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
 				Accessibility.debugLog(`[A11y] TS updateIsFocusable: handle=${handle} focusable=${isFocusable}`);
-				Accessibility.updateElementFocusability(element, isFocusable);
+				if (element.getAttribute('aria-disabled') === 'true' && element.dataset.unoEnabledTabIndex !== undefined) {
+					element.dataset.unoEnabledTabIndex = String(isFocusable ? 0 : -1);
+					element.tabIndex = -1;
+				} else {
+					Accessibility.updateElementFocusability(element, isFocusable);
+				}
 			}
 			// Silently skip if element doesn't exist in the semantic DOM.
 			// Many controls get IsFocusable updates but aren't in the semantic
@@ -596,9 +1126,15 @@ namespace Uno.UI.Runtime.Skia {
 		public static updateAriaDescription(handle: number, description: string): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				// Use aria-description (modern) with title fallback (wider support)
-				element.setAttribute("aria-description", description);
-				element.title = description;
+				const trimmed = description ? description.trim() : "";
+				if (trimmed.length > 0) {
+					// Use aria-description (modern) with title fallback (wider support)
+					element.setAttribute("aria-description", trimmed);
+					element.title = trimmed;
+				} else {
+					element.removeAttribute("aria-description");
+					element.removeAttribute("title");
+				}
 			}
 		}
 
@@ -609,7 +1145,175 @@ namespace Uno.UI.Runtime.Skia {
 		public static updateLandmarkRole(handle: number, role: string): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.setAttribute("role", role);
+				const snapshot = this.roleOverrideSnapshots.get(element);
+				if (snapshot) {
+					snapshot.role = role || null;
+					return;
+				}
+
+				if (role) {
+					element.setAttribute("role", role);
+				} else {
+					element.removeAttribute("role");
+				}
+			}
+		}
+
+		public static updateRoleOverride(handle: number, role: string, isOverride: boolean): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (!element) {
+				return;
+			}
+
+			let snapshot = this.roleOverrideSnapshots.get(element);
+			if (snapshot) {
+				this.restoreRoleOverrideSnapshot(element, snapshot);
+			}
+
+			if (isOverride) {
+				if (!snapshot) {
+					snapshot = {
+						role: element.getAttribute("role"),
+						attributes: new Map(this.roleSpecificAriaAttributes.map(name => [name, element.getAttribute(name)]))
+					};
+					this.roleOverrideSnapshots.set(element, snapshot);
+				}
+				if (role) {
+					element.setAttribute("role", role);
+				} else {
+					element.removeAttribute("role");
+				}
+				this.sanitizeRoleOverrideAttributes(element);
+			} else {
+				this.roleOverrideSnapshots.delete(element);
+				if (role) {
+					element.setAttribute("role", role);
+				} else {
+					element.removeAttribute("role");
+				}
+			}
+		}
+
+		public static updateRoleOverrideToggleState(handle: number, attribute: string, state: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (!element) {
+				return;
+			}
+
+			element.removeAttribute("aria-checked");
+			element.removeAttribute("aria-pressed");
+			if (element instanceof HTMLInputElement && (element.type === "checkbox" || element.type === "radio")) {
+				element.checked = state === "true";
+				element.indeterminate = state === "mixed";
+			}
+			if (attribute && !(attribute === "aria-checked" && element instanceof HTMLInputElement &&
+				(element.type === "checkbox" || element.type === "radio"))) {
+				element.setAttribute(attribute, state);
+			}
+		}
+
+		public static sanitizeActiveRoleOverride(element: HTMLElement): void {
+			if (this.roleOverrideSnapshots.has(element)) {
+				this.sanitizeRoleOverrideAttributes(element);
+			}
+		}
+
+		public static updateIntrinsicRoleAttribute(element: HTMLElement, attribute: string, value: string | null): void {
+			const snapshot = this.roleOverrideSnapshots.get(element);
+			if (snapshot) {
+				const intrinsicRole = snapshot.role?.trim().split(/\s+/, 1)[0] ?? "";
+				const intrinsicValue = value !== null && (!intrinsicRole || this.roleSupportsAttribute(intrinsicRole, attribute))
+					? value
+					: null;
+				snapshot.attributes.set(attribute, intrinsicValue);
+
+				const presentedRole = element.getAttribute("role")?.trim().split(/\s+/, 1)[0] ?? "";
+				if (value === null || presentedRole && !this.roleSupportsAttribute(presentedRole, attribute)) {
+					element.removeAttribute(attribute);
+				} else {
+					element.setAttribute(attribute, value);
+				}
+				return;
+			}
+
+			if (value === null) {
+				element.removeAttribute(attribute);
+			} else {
+				element.setAttribute(attribute, value);
+			}
+		}
+
+		private static restoreRoleOverrideSnapshot(
+			element: HTMLElement,
+			snapshot: { role: string | null; attributes: Map<string, string | null> }
+		): void {
+			if (snapshot.role === null) {
+				element.removeAttribute("role");
+			} else {
+				element.setAttribute("role", snapshot.role);
+			}
+			snapshot.attributes.forEach((value, name) => {
+				if (value === null) {
+					element.removeAttribute(name);
+				} else {
+					element.setAttribute(name, value);
+				}
+			});
+		}
+
+		private static sanitizeRoleOverrideAttributes(element: HTMLElement): void {
+			const role = element.getAttribute("role")?.trim().split(/\s+/, 1)[0] ?? "";
+			this.roleSpecificAriaAttributes.forEach(attribute => {
+				if (element.hasAttribute(attribute) && !this.roleSupportsAttribute(role, attribute)) {
+					element.removeAttribute(attribute);
+				}
+			});
+		}
+
+		private static roleSupportsAttribute(role: string, attribute: string): boolean {
+			switch (attribute) {
+				case "aria-checked":
+					return ["checkbox", "menuitemcheckbox", "menuitemradio", "option", "radio", "switch", "treeitem"].includes(role);
+				case "aria-pressed":
+					return role === "button";
+				case "aria-valuemax":
+				case "aria-valuemin":
+				case "aria-valuenow":
+				case "aria-valuetext":
+					return ["meter", "progressbar", "scrollbar", "separator", "slider", "spinbutton"].includes(role);
+				case "aria-expanded":
+					return ["application", "button", "checkbox", "combobox", "gridcell", "link", "listbox", "menuitem", "row", "rowheader", "tab", "treeitem"].includes(role);
+				case "aria-selected":
+					return ["gridcell", "option", "row", "tab", "treeitem"].includes(role);
+				case "aria-readonly":
+					return ["checkbox", "combobox", "grid", "gridcell", "listbox", "radiogroup", "slider", "spinbutton", "textbox"].includes(role);
+				case "aria-level":
+					return ["heading", "listitem", "row", "tab", "treeitem"].includes(role);
+				case "aria-posinset":
+				case "aria-setsize":
+					return ["article", "listitem", "menuitem", "menuitemcheckbox", "menuitemradio", "option", "radio", "row", "tab", "treeitem"].includes(role);
+				case "aria-multiselectable":
+					return ["grid", "listbox", "tablist", "tree"].includes(role);
+				case "aria-colcount":
+				case "aria-rowcount":
+					return ["grid", "table", "treegrid"].includes(role);
+				case "aria-colindex":
+				case "aria-colspan":
+				case "aria-rowindex":
+				case "aria-rowspan":
+					return ["cell", "columnheader", "gridcell", "row", "rowheader"].includes(role);
+				case "aria-sort":
+					return role === "columnheader" || role === "rowheader";
+				case "aria-activedescendant":
+					return ["application", "combobox", "grid", "group", "listbox", "menu", "menubar", "radiogroup", "row", "searchbox", "select", "spinbutton", "tablist", "textbox", "toolbar", "tree", "treegrid"].includes(role);
+				case "aria-orientation":
+					return ["listbox", "menu", "menubar", "radiogroup", "scrollbar", "separator", "slider", "tablist", "toolbar", "tree"].includes(role);
+				case "aria-required":
+					return ["checkbox", "combobox", "gridcell", "listbox", "radiogroup", "searchbox", "spinbutton", "textbox", "tree"].includes(role);
+				case "aria-modal":
+					return role === "dialog" || role === "alertdialog";
+				default:
+					return true;
 			}
 		}
 
@@ -620,14 +1324,22 @@ namespace Uno.UI.Runtime.Skia {
 		public static updateAriaRoleDescription(handle: number, roleDescription: string): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.setAttribute("aria-roledescription", roleDescription);
+				const trimmed = roleDescription?.trim() ?? "";
+				if (trimmed) {
+					element.setAttribute("aria-roledescription", trimmed);
+				} else {
+					element.removeAttribute("aria-roledescription");
+				}
 			}
 		}
 
 		public static updateAriaLevel(handle: number, level: number): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				if (level > 0) {
+				const snapshot = this.roleOverrideSnapshots.get(element);
+				if (snapshot) {
+					this.updateIntrinsicRoleAttribute(element, "aria-level", level > 0 ? String(level) : null);
+				} else if (level > 0 && this.supportsAriaLevel(element)) {
 					element.setAttribute("aria-level", String(level));
 				} else {
 					element.removeAttribute("aria-level");
@@ -635,11 +1347,36 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
+		private static supportsAriaLevel(element: HTMLElement): boolean {
+			const role = element.getAttribute("role")?.trim().split(/\s+/, 1)[0];
+			if (role) {
+				return role === "heading" || role === "listitem" || role === "row" || role === "tab" || role === "treeitem";
+			}
+
+			return this.supportsImplicitAriaLevel(element);
+		}
+
+		private static supportsImplicitAriaLevel(element: HTMLElement): boolean {
+			return /^H[1-6]$/.test(element.tagName) || element.tagName === "LI" || element.tagName === "TR";
+		}
+
 		public static updatePositionInSet(handle: number, positionInSet: number, sizeOfSet: number): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.setAttribute("aria-posinset", String(positionInSet));
-				element.setAttribute("aria-setsize", String(sizeOfSet));
+				const valid = positionInSet > 0 && sizeOfSet > 0;
+				if (this.roleOverrideSnapshots.has(element)) {
+					this.updateIntrinsicRoleAttribute(element, "aria-posinset", valid ? String(positionInSet) : null);
+					this.updateIntrinsicRoleAttribute(element, "aria-setsize", valid ? String(sizeOfSet) : null);
+				} else {
+					const role = element.getAttribute("role")?.trim().split(/\s+/, 1)[0] ?? "";
+					if (valid && this.roleSupportsAttribute(role, "aria-posinset")) {
+						element.setAttribute("aria-posinset", String(positionInSet));
+						element.setAttribute("aria-setsize", String(sizeOfSet));
+					} else {
+						element.removeAttribute("aria-posinset");
+						element.removeAttribute("aria-setsize");
+					}
+				}
 			}
 		}
 
@@ -650,17 +1387,24 @@ namespace Uno.UI.Runtime.Skia {
 		public static updateAriaRequired(handle: number, required: boolean): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				if (required) {
-					element.setAttribute("aria-required", "true");
-					// Also set the native required attribute for input elements
-					if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
-						element.required = true;
-					}
-				} else {
+				const nativeRequired = element instanceof HTMLTextAreaElement ||
+					element instanceof HTMLInputElement &&
+					["checkbox", "date", "datetime-local", "email", "file", "month", "number", "password", "radio", "search", "tel", "text", "time", "url", "week"].includes(element.type);
+				if (nativeRequired) {
+					(element as HTMLInputElement | HTMLTextAreaElement).required = required;
 					element.removeAttribute("aria-required");
-					if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
-						element.required = false;
-					}
+					return;
+				}
+
+				if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
+					element.required = false;
+				}
+				const snapshot = this.roleOverrideSnapshots.get(element);
+				const intrinsicRole = (snapshot?.role ?? element.getAttribute("role"))?.trim().split(/\s+/, 1)[0] ?? "";
+				if (required && intrinsicRole && this.roleSupportsAttribute(intrinsicRole, "aria-required")) {
+					this.updateIntrinsicRoleAttribute(element, "aria-required", "true");
+				} else {
+					this.updateIntrinsicRoleAttribute(element, "aria-required", null);
 				}
 			}
 		}
@@ -686,7 +1430,7 @@ namespace Uno.UI.Runtime.Skia {
 		public static updateAriaPressed(handle: number, pressed: string): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.setAttribute("aria-pressed", pressed);
+				this.updateIntrinsicRoleAttribute(element, "aria-pressed", pressed);
 			}
 		}
 
@@ -751,11 +1495,7 @@ namespace Uno.UI.Runtime.Skia {
 		public static updateAriaModal(handle: number, modal: boolean): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				if (modal) {
-					element.setAttribute("aria-modal", "true");
-				} else {
-					element.removeAttribute("aria-modal");
-				}
+				this.updateIntrinsicRoleAttribute(element, "aria-modal", modal ? "true" : null);
 			}
 		}
 
@@ -806,7 +1546,12 @@ namespace Uno.UI.Runtime.Skia {
 				// on any change; the browser default (false — announce only changed nodes) is
 				// correct for the common status/log case. A region whose WinUI semantics require
 				// atomic announcement must opt in explicitly elsewhere.
-				element.setAttribute("aria-live", ariaLive);
+				const trimmed = ariaLive?.trim() ?? "";
+				if (trimmed) {
+					element.setAttribute("aria-live", trimmed);
+				} else {
+					element.removeAttribute("aria-live");
+				}
 			}
 		}
 
@@ -847,11 +1592,31 @@ namespace Uno.UI.Runtime.Skia {
 		public static updateAriaControls(handle: number, idList: string): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				if (idList) {
-					element.setAttribute("aria-controls", idList);
-				} else {
-					element.removeAttribute("aria-controls");
+				element.dataset.unoAuthoredControls = idList.trim();
+				Accessibility.applyAriaControls(element);
+			}
+		}
+
+		public static updateRuntimeAriaControls(handle: number, idList: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.dataset.unoRuntimeControls = idList.trim();
+				Accessibility.applyAriaControls(element);
+			}
+		}
+
+		private static applyAriaControls(element: HTMLElement): void {
+			const controls: string[] = [];
+			[element.dataset.unoAuthoredControls, element.dataset.unoRuntimeControls].forEach(value => {
+				if (value) {
+					controls.push(...value.split(/\s+/).filter(Boolean));
 				}
+			});
+			const idList = Array.from(new Set(controls)).join(' ');
+			if (idList) {
+				element.setAttribute('aria-controls', idList);
+			} else {
+				element.removeAttribute('aria-controls');
 			}
 		}
 
@@ -862,11 +1627,31 @@ namespace Uno.UI.Runtime.Skia {
 		public static updateAriaFlowTo(handle: number, idList: string): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				if (idList) {
-					element.setAttribute("aria-flowto", idList);
-				} else {
-					element.removeAttribute("aria-flowto");
+				element.dataset.unoAuthoredFlowTo = idList.trim();
+				this.applyAriaFlowTo(element);
+			}
+		}
+
+		public static updateInverseAriaFlowTo(handle: number, idList: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.dataset.unoInverseFlowTo = idList.trim();
+				this.applyAriaFlowTo(element);
+			}
+		}
+
+		private static applyAriaFlowTo(element: HTMLElement): void {
+			const ids: string[] = [];
+			[element.dataset.unoAuthoredFlowTo, element.dataset.unoInverseFlowTo].forEach(value => {
+				if (value) {
+					ids.push(...value.split(/\s+/).filter(Boolean));
 				}
+			});
+			const idList = Array.from(new Set(ids)).join(" ");
+			if (idList) {
+				element.setAttribute("aria-flowto", idList);
+			} else {
+				element.removeAttribute("aria-flowto");
 			}
 		}
 
@@ -874,8 +1659,6 @@ namespace Uno.UI.Runtime.Skia {
 			Accessibility.debugLog(`[A11y] TS updateAriaChecked: handle=${handle} checked=${ariaChecked}`);
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.setAttribute("aria-checked", ariaChecked);
-
 				// Also update native checkbox/radio checked property if applicable
 				if (element instanceof HTMLInputElement &&
 					(element.type === 'checkbox' || element.type === 'radio')) {
@@ -888,6 +1671,9 @@ namespace Uno.UI.Runtime.Skia {
 						element.checked = false;
 						element.indeterminate = false;
 					}
+					element.removeAttribute("aria-checked");
+				} else {
+					this.updateIntrinsicRoleAttribute(element, "aria-checked", ariaChecked);
 				}
 			}
 		}
@@ -904,18 +1690,97 @@ namespace Uno.UI.Runtime.Skia {
 			Accessibility.debugLog(`[A11y] TS hideSemanticElement: handle=${handle}`);
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
+				Accessibility.repairGridFocusBeforeRemoval(element);
 				element.hidden = true;
 			}
+		}
+
+		public static repairGridFocusBeforeRemoval(element: HTMLElement): void {
+			if (element.contains(document.activeElement)) {
+				let nestedGrid = document.activeElement?.closest('[role="grid"]') as HTMLElement | null;
+				while (nestedGrid && element.contains(nestedGrid)) {
+					const containingGridItem = nestedGrid.parentElement?.closest('[role="gridcell"], [role="columnheader"], [role="rowheader"]') as HTMLElement | null;
+					if (!containingGridItem) {
+						break;
+					}
+
+					Accessibility.exitGridInteractionMode(containingGridItem);
+					nestedGrid = containingGridItem.closest('[role="grid"]') as HTMLElement | null;
+				}
+			}
+
+			const grid = element.closest('[role="grid"]') as HTMLElement | null;
+			if (!grid || grid === element) {
+				if (grid === element) {
+					Accessibility.suspendGridTabStops(grid);
+				}
+				return;
+			}
+			const owningGridItem = element.closest('[role="gridcell"], [role="columnheader"], [role="rowheader"]') as HTMLElement | null;
+			const removesOwningGridItem = !!owningGridItem &&
+				(element === owningGridItem || element.contains(owningGridItem));
+			const containedFocus = element.contains(document.activeElement);
+			const activeId = grid.dataset.unoGridActiveId;
+			const activeItem = activeId
+				? Accessibility.getDirectGridItems(grid).find(item => item.id === activeId) ?? null
+				: null;
+			const removesActiveItem = element.id === activeId || !!(activeItem && element.contains(activeItem));
+			if (!containedFocus && !removesActiveItem && element.tabIndex !== 0 && !element.querySelector('[tabindex="0"]')) {
+				return;
+			}
+			if (owningGridItem && !removesOwningGridItem && containedFocus) {
+				Accessibility.exitGridInteractionMode(owningGridItem);
+				owningGridItem.focus();
+				return;
+			}
+
+			const allItems = Accessibility.getDirectGridItems(grid);
+			const removedIndex = allItems.findIndex(item => item === element || element.contains(item));
+			const items = allItems.filter((item: HTMLElement) =>
+				item !== element &&
+				!element.contains(item));
+			const replacement = items[Math.min(Math.max(removedIndex, 0), items.length - 1)] ?? null;
+			const wasActiveStop = element.tabIndex === 0 || !!element.querySelector('[tabindex="0"]');
+			const containingGridItem = Accessibility.getOwningGridItem(grid);
+			const remainingDataCell = items.find(item => item.getAttribute('role') === 'gridcell');
+			if (!remainingDataCell) {
+				delete grid.dataset.unoGridHasDataCell;
+			}
+			if (wasActiveStop && replacement) {
+				grid.dataset.unoGridActiveId = replacement.id;
+			}
+			if (containedFocus && replacement) {
+				replacement.focus();
+			} else if (containedFocus && !replacement) {
+				if (containingGridItem) {
+					Accessibility.exitGridInteractionMode(containingGridItem);
+					containingGridItem.focus();
+				}
+			}
+			queueMicrotask(() => {
+				if (!grid.isConnected) {
+					return;
+				}
+				Accessibility.synchronizeGridTabStop(grid);
+				if (containedFocus && !replacement && !containingGridItem) {
+					grid.focus();
+				}
+			});
 		}
 
 		public static updateSemanticElementPositioning(handle: number, width: number, height: number, x: number, y: number) {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
+				const wasHidden = element.hidden;
 				element.hidden = false;
 				element.style.left = `${x}px`;
 				element.style.top = `${y}px`;
 				element.style.width = `${width}px`;
 				element.style.height = `${height}px`;
+				const grid = wasHidden ? element.closest('[role="grid"]') as HTMLElement | null : null;
+				if (grid) {
+					Accessibility.synchronizeGridTabStop(grid);
+				}
 			}
 		}
 

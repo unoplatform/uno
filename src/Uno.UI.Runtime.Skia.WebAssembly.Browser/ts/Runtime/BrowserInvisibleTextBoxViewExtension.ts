@@ -233,7 +233,7 @@
 		}
 
 		public static focus(handle: number, isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string): boolean {
-			const semanticElement = document.getElementById(`uno-semantics-${handle}`);
+			const semanticElement = Accessibility.getSemanticElementByHandle(handle);
 			if (semanticElement && document.activeElement === semanticElement) {
 				BrowserInvisibleTextBoxViewExtension.detach();
 				return false;

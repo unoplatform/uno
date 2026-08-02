@@ -1,18 +1,202 @@
 ﻿#nullable enable
 
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Uno.UI;
+using Windows.Foundation.Collections;
 
 namespace Microsoft.UI.Xaml.Automation;
 
 [Bindable]
 public sealed partial class AutomationProperties
 {
+#if __SKIA__
+	private static readonly ConditionalWeakTable<DependencyObject, RelationshipSubscriptions> _relationshipSubscriptions = new();
+	internal static Action<UIElement, string?>? RoleOverrideChangedCallback { get; set; }
+	internal static Action<UIElement>? FlowsFromChangedCallback { get; set; }
+#endif
+
+	private static IList<T> GetOrCreateRelationshipCollection<T>(DependencyObject owner, DependencyProperty property, AutomationProperty automationProperty)
+		where T : DependencyObject
+	{
+		if (owner.GetValue(property) is IList<T> collection)
+		{
+			return collection;
+		}
+
+		collection = new AutomationRelationshipCollection<T>(owner, automationProperty);
+		owner.SetValue(property, collection);
+		return collection;
+	}
+
+	private static void OnControlledPeersChanged(DependencyObject owner, DependencyPropertyChangedEventArgs args)
+		=> OnRelationshipCollectionChanged<UIElement>(owner, ControlledPeersProperty, AutomationElementIdentifiers.ControlledPeersProperty, args);
+
+	private static void OnDescribedByChanged(DependencyObject owner, DependencyPropertyChangedEventArgs args)
+		=> OnRelationshipCollectionChanged<DependencyObject>(owner, DescribedByProperty, AutomationElementIdentifiers.DescribedByProperty, args);
+
+	private static void OnFlowsToChanged(DependencyObject owner, DependencyPropertyChangedEventArgs args)
+		=> OnRelationshipCollectionChanged<DependencyObject>(owner, FlowsToProperty, AutomationElementIdentifiers.FlowsToProperty, args);
+
+	private static void OnFlowsFromChanged(DependencyObject owner, DependencyPropertyChangedEventArgs args)
+		=> OnRelationshipCollectionChanged<DependencyObject>(owner, FlowsFromProperty, AutomationElementIdentifiers.FlowsFromProperty, args);
+
+	private static void OnRelationshipCollectionChanged<T>(DependencyObject owner, DependencyProperty property, AutomationProperty automationProperty, DependencyPropertyChangedEventArgs args)
+		where T : DependencyObject
+	{
+#if __SKIA__
+		var subscriptions = _relationshipSubscriptions.GetOrCreateValue(owner);
+		subscriptions.Replace(property, ObserveRelationshipCollection<T>(owner, automationProperty, args.NewValue));
+
+		if (args.OldValue is not null || args.NewValue is not ICollection<T> { Count: 0 })
+		{
+			NotifyAutomationPropertyChanged(owner, automationProperty, args.OldValue, args.NewValue);
+			NotifyFlowsFromChanged(owner, automationProperty);
+		}
+#endif
+	}
+
+#if __SKIA__
+	private static Action? ObserveRelationshipCollection<T>(DependencyObject owner, AutomationProperty automationProperty, object? value)
+		where T : DependencyObject
+	{
+		if (value is null || value.GetType().IsGenericType && value.GetType().GetGenericTypeDefinition() == typeof(AutomationRelationshipCollection<>))
+		{
+			return null;
+		}
+
+		var ownerReference = new WeakReference<DependencyObject>(owner);
+		if (value is INotifyCollectionChanged notifyCollectionChanged)
+		{
+			NotifyCollectionChangedEventHandler? handler = null;
+			handler = (_, _) =>
+			{
+				if (ownerReference.TryGetTarget(out var target))
+				{
+					NotifyAutomationPropertyChanged(target, automationProperty, null, value);
+					NotifyFlowsFromChanged(target, automationProperty);
+				}
+				else
+				{
+					notifyCollectionChanged.CollectionChanged -= handler;
+				}
+			};
+			notifyCollectionChanged.CollectionChanged += handler;
+			return () => notifyCollectionChanged.CollectionChanged -= handler;
+		}
+
+		if (value is IObservableVector<T> observableVector)
+		{
+			VectorChangedEventHandler<T>? handler = null;
+			handler = (_, _) =>
+			{
+				if (ownerReference.TryGetTarget(out var target))
+				{
+					NotifyAutomationPropertyChanged(target, automationProperty, null, value);
+					NotifyFlowsFromChanged(target, automationProperty);
+				}
+				else
+				{
+					observableVector.VectorChanged -= handler;
+				}
+			};
+			observableVector.VectorChanged += handler;
+			return () => observableVector.VectorChanged -= handler;
+		}
+
+		return null;
+	}
+#endif
+
+	private static void OnLabeledByChanged(DependencyObject owner, DependencyPropertyChangedEventArgs args)
+	{
+#if __SKIA__
+		NotifyAutomationPropertyChanged(owner, AutomationElementIdentifiers.LabeledByProperty, args.OldValue, args.NewValue);
+#endif
+	}
+
+	private static void NotifyAutomationPropertyChanged(DependencyObject owner, AutomationProperty property, object? oldValue, object? newValue)
+	{
+#if __SKIA__
+		if (AutomationPeer.AutomationPeerListener?.ListenerExistsHelper(AutomationEvents.PropertyChanged) == true &&
+			owner is UIElement element &&
+			element.GetOrCreateAutomationPeer() is { } peer)
+		{
+			AutomationPeer.AutomationPeerListener.NotifyPropertyChangedEvent(peer, property, oldValue!, newValue!);
+		}
+#endif
+	}
+
+	private static void NotifyFlowsFromChanged(DependencyObject owner, AutomationProperty property)
+	{
+#if __SKIA__
+		if (property == AutomationElementIdentifiers.FlowsFromProperty && owner is UIElement element)
+		{
+			FlowsFromChangedCallback?.Invoke(element);
+		}
+#endif
+	}
+
+	private sealed class AutomationRelationshipCollection<T> : DependencyObjectCollection<T>
+		where T : DependencyObject
+	{
+		private readonly DependencyObject _owner;
+		private readonly AutomationProperty _automationProperty;
+
+		public AutomationRelationshipCollection(DependencyObject owner, AutomationProperty automationProperty)
+			: base(owner, isAutoPropertyInheritanceEnabled: false)
+		{
+			_owner = owner;
+			_automationProperty = automationProperty;
+		}
+
+		private protected override void OnAdded(T item)
+		{
+		}
+
+		private protected override void OnRemoved(T item)
+		{
+		}
+
+		private protected override void OnCollectionChanged()
+		{
+			base.OnCollectionChanged();
+			NotifyAutomationPropertyChanged(_owner, _automationProperty, null, this);
+			NotifyFlowsFromChanged(_owner, _automationProperty);
+		}
+	}
+
+#if __SKIA__
+	private sealed class RelationshipSubscriptions
+	{
+		private readonly Dictionary<DependencyProperty, Action> _subscriptions = new();
+
+		public void Replace(DependencyProperty property, Action? unsubscribe)
+		{
+			if (_subscriptions.Remove(property, out var previous))
+			{
+				previous();
+			}
+
+			if (unsubscribe is not null)
+			{
+				_subscriptions[property] = unsubscribe;
+			}
+		}
+	}
+#endif
+
 	private static void OnAutomationIdChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 	{
+#if __SKIA__
+		NotifyAutomationPropertyChanged(dependencyObject, AutomationElementIdentifiers.AutomationIdProperty, args.OldValue, args.NewValue);
+#endif
 #if __APPLE_UIKIT__
 		if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is UIKit.UIView view)
 		{
@@ -89,6 +273,64 @@ public sealed partial class AutomationProperties
 #endif
 	}
 
+	private static void OnLandmarkTypeChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+	{
+#if __SKIA__
+		NotifyAutomationPropertyChanged(dependencyObject, AutomationElementIdentifiers.LandmarkTypeProperty, args.OldValue, args.NewValue);
+#endif
+	}
+
+	private static void OnLocalizedLandmarkTypeChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+	{
+#if __SKIA__
+		NotifyAutomationPropertyChanged(dependencyObject, AutomationElementIdentifiers.LocalizedLandmarkTypeProperty, args.OldValue, args.NewValue);
+#endif
+	}
+
+	private static void OnFullDescriptionChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+	{
+#if __SKIA__
+		NotifyAutomationPropertyChanged(dependencyObject, AutomationElementIdentifiers.FullDescriptionProperty, args.OldValue, args.NewValue);
+#endif
+	}
+
+	private static void OnHelpTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+	{
+#if __SKIA__
+		NotifyAutomationPropertyChanged(dependencyObject, AutomationElementIdentifiers.HelpTextProperty, args.OldValue, args.NewValue);
+#endif
+	}
+
+	private static void OnAcceleratorKeyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		=> NotifyAutomationPropertyChanged(dependencyObject, AutomationElementIdentifiers.AcceleratorKeyProperty, args.OldValue, args.NewValue);
+
+	private static void OnAccessKeyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		=> NotifyAutomationPropertyChanged(dependencyObject, AutomationElementIdentifiers.AccessKeyProperty, args.OldValue, args.NewValue);
+
+	private static void OnCultureChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		=> NotifyAutomationPropertyChanged(dependencyObject, AutomationElementIdentifiers.CultureProperty, args.OldValue, args.NewValue);
+
+	private static void OnIsDialogChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		=> NotifyAutomationPropertyChanged(dependencyObject, AutomationElementIdentifiers.IsDialogProperty, args.OldValue, args.NewValue);
+
+	private static void OnItemStatusChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		=> NotifyAutomationPropertyChanged(dependencyObject, AutomationElementIdentifiers.ItemStatusProperty, args.OldValue, args.NewValue);
+
+	private static void OnLevelChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		=> NotifyAutomationPropertyChanged(dependencyObject, AutomationElementIdentifiers.LevelProperty, args.OldValue, args.NewValue);
+
+	private static void OnLiveSettingChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		=> NotifyAutomationPropertyChanged(dependencyObject, AutomationElementIdentifiers.LiveSettingProperty, args.OldValue, args.NewValue);
+
+	private static void OnLocalizedControlTypeChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		=> NotifyAutomationPropertyChanged(dependencyObject, AutomationElementIdentifiers.LocalizedControlTypeProperty, args.OldValue, args.NewValue);
+
+	private static void OnPositionInSetChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		=> NotifyAutomationPropertyChanged(dependencyObject, AutomationElementIdentifiers.PositionInSetProperty, args.OldValue, args.NewValue);
+
+	private static void OnSizeOfSetChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		=> NotifyAutomationPropertyChanged(dependencyObject, AutomationElementIdentifiers.SizeOfSetProperty, args.OldValue, args.NewValue);
+
 	// FR-023: a runtime IsDataValidForForm change must reach assistive tech. The attached property is not
 	// polled by RaiseAutomaticPropertyChanges, so we raise the change here; the accessibility router then
 	// live-updates aria-invalid (inverted polarity — false means invalid).
@@ -100,6 +342,18 @@ public sealed partial class AutomationProperties
 			element.GetOrCreateAutomationPeer() is { } peer)
 		{
 			AutomationPeer.AutomationPeerListener.NotifyPropertyChangedEvent(peer, AutomationElementIdentifiers.IsDataValidForFormProperty, args.OldValue, args.NewValue);
+		}
+#endif
+	}
+
+	private static void OnIsRequiredForFormChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+	{
+#if __SKIA__
+		if (AutomationPeer.AutomationPeerListener?.ListenerExistsHelper(AutomationEvents.PropertyChanged) == true &&
+			dependencyObject is UIElement element &&
+			element.GetOrCreateAutomationPeer() is { } peer)
+		{
+			AutomationPeer.AutomationPeerListener.NotifyPropertyChangedEvent(peer, AutomationElementIdentifiers.IsRequiredForFormProperty, args.OldValue, args.NewValue);
 		}
 #endif
 	}
@@ -285,7 +539,17 @@ public sealed partial class AutomationProperties
 			"RoleOverride",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(default(string), OnRoleOverrideChanged));
+
+	private static void OnRoleOverrideChanged(DependencyObject owner, DependencyPropertyChangedEventArgs args)
+	{
+#if __SKIA__
+		if (owner is UIElement element)
+		{
+			RoleOverrideChangedCallback?.Invoke(element, args.NewValue as string);
+		}
+#endif
+	}
 
 	public static void SetRoleOverride(UIElement element, string value) =>
 		element.SetValue(RoleOverrideProperty, value);

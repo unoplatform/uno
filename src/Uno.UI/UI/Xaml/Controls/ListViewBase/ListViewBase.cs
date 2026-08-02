@@ -67,6 +67,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public event TypedEventHandler<ListViewBase, ContainerContentChangingEventArgs> ContainerContentChanging;
+		internal event Action<SelectorItem, int> UnoContainerClearing;
+		internal event Action UnoItemsChangedForAccessibility;
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
@@ -861,12 +863,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 			//Call base after so that list state is 'fresh' when we update SelectedItem
 			base.OnItemsSourceSingleCollectionChanged(sender, args, section);
+			UnoItemsChangedForAccessibility?.Invoke();
 
 			void completeRefresh()
 			{
 				Refresh();
 				ObserveCollectionChanged();
 				base.OnItemsSourceSingleCollectionChanged(sender, args, section);
+				UnoItemsChangedForAccessibility?.Invoke();
 			}
 		}
 
@@ -1144,6 +1148,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal override void ContainerClearedForItem(object item, SelectorItem itemContainer)
 		{
+			UnoContainerClearing?.Invoke(itemContainer, IndexFromContainer(itemContainer));
 			ClearContainerForDragDrop(itemContainer);
 
 			base.ContainerClearedForItem(item, itemContainer);

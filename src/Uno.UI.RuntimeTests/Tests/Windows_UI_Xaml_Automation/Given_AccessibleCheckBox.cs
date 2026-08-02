@@ -353,8 +353,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 #if __SKIA__
 
 		/// <summary>
-		/// T036/FR-016 (WASM DOM): a checked CheckBox emits a native &lt;input type="checkbox"&gt; with
-		/// aria-checked="true", matching its visual state (WCAG 4.1.2).
+		/// T036/FR-016 (WASM DOM): native checkbox state is the single source of truth.
 		/// </summary>
 		[TestMethod]
 		[RunsOnUIThread]
@@ -372,11 +371,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			Assert.AreEqual("input", GetSemanticElementTagName(checkBox), "A CheckBox must emit a native <input> semantic element.");
 			Assert.AreEqual("checkbox", GetSemanticInputType(checkBox), "A CheckBox must emit input[type=checkbox].");
-			Assert.AreEqual("true", GetSemanticAttribute(checkBox, "aria-checked"), "A checked CheckBox must emit aria-checked=\"true\".");
+			Assert.AreEqual("true", GetNativeCheckboxState(checkBox, "checked"));
+			Assert.IsFalse(SemanticElementHasAttribute(checkBox, "aria-checked"));
 		}
 
 		/// <summary>
-		/// FR-016 (WASM DOM): an unchecked CheckBox emits aria-checked="false".
+		/// FR-016 (WASM DOM): an unchecked CheckBox exposes native checked=false.
 		/// </summary>
 		[TestMethod]
 		[RunsOnUIThread]
@@ -392,11 +392,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.WaitFor(() => SemanticElementExists(checkBox), timeoutMS: 5000, message: "Timed out waiting for the checkbox semantic element to be created.");
 			await UITestHelper.WaitForIdle();
 
-			Assert.AreEqual("false", GetSemanticAttribute(checkBox, "aria-checked"), "An unchecked CheckBox must emit aria-checked=\"false\".");
+			Assert.AreEqual("false", GetNativeCheckboxState(checkBox, "checked"));
+			Assert.IsFalse(SemanticElementHasAttribute(checkBox, "aria-checked"));
 		}
 
 		/// <summary>
-		/// T038/FR-016 (WASM DOM): a tri-state CheckBox in the indeterminate state emits aria-checked="mixed".
+		/// T038/FR-016 (WASM DOM): a tri-state CheckBox uses the native indeterminate state.
 		/// </summary>
 		[TestMethod]
 		[RunsOnUIThread]
@@ -412,8 +413,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.WaitFor(() => SemanticElementExists(checkBox), timeoutMS: 5000, message: "Timed out waiting for the tri-state checkbox semantic element to be created.");
 			await UITestHelper.WaitForIdle();
 
-			Assert.AreEqual("mixed", GetSemanticAttribute(checkBox, "aria-checked"), "An indeterminate tri-state CheckBox must emit aria-checked=\"mixed\".");
+			Assert.AreEqual("true", GetNativeCheckboxState(checkBox, "indeterminate"));
+			Assert.IsFalse(SemanticElementHasAttribute(checkBox, "aria-checked"));
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Radio_GroupName_Contains_Selector_Syntax_Then_Roving_Tabindex_Remains_Valid()
+		{
+			const string groupName = "group\"] hostile";
+			var first = new RadioButton { Content = "First", GroupName = groupName, IsChecked = true };
+			var second = new RadioButton { Content = "Second", GroupName = groupName };
+			var panel = new StackPanel { Children = { first, second } };
+
+			await UITestHelper.Load(panel);
+			first.GetOrCreateAutomationPeer();
+			second.GetOrCreateAutomationPeer();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(
+				() => SemanticElementExists(first) && SemanticElementExists(second),
+				timeoutMS: 5000,
+				message: "Timed out waiting for radio semantic nodes.");
+
+			var serializedGroupName = System.Text.Json.JsonSerializer.Serialize(groupName);
+			InvokeBrowserJs($"(function(){{const host=document.createElement('input');host.id='host-radio-collision';host.type='radio';host.name={serializedGroupName};host.tabIndex=0;document.body.appendChild(host);return 'ok';}})()");
+
+			try
+			{
+				var result = InvokeBrowserJs($"(function(){{try{{document.querySelector('#uno-semantics-root [id=\"{GetSemanticElementId(second)}\"]')?.focus();return 'contained';}}catch(e){{return 'escaped';}}}})()");
+				Assert.AreEqual("contained", result, "A selector-hostile GroupName must not throw during roving-tabindex synchronization.");
+				await UITestHelper.WaitForIdle();
+
+				Assert.AreEqual(
+					"1",
+					InvokeBrowserJs("document.querySelectorAll('#uno-semantics-root input[type=\"radio\"][tabindex=\"0\"]').length.toString()"),
+					"A radio group must retain exactly one in-root tab stop after focusing a member with a selector-hostile GroupName.");
+				Assert.AreEqual(
+					"1",
+					InvokeBrowserJs($"Array.from(document.querySelectorAll('#uno-semantics-root input[type=\"radio\"]')).every(e => e.name !== {serializedGroupName}) ? '1' : '0'"),
+					"Semantic radio names must be namespaced away from same-named host-page groups.");
+				Assert.AreEqual("0", InvokeBrowserJs("document.getElementById('host-radio-collision').tabIndex.toString()"),
+					"Roving semantic focus must not mutate a colliding host-page radio.");
+			}
+			finally
+			{
+				InvokeBrowserJs("document.getElementById('host-radio-collision')?.remove(); 'ok'");
+			}
+		}
+
+		private static string GetNativeCheckboxState(CheckBox checkBox, string property)
+			=> InvokeBrowserJs($"String(document.getElementById('{GetSemanticElementId(checkBox)}')?.{property} ?? false)");
 
 
 

@@ -26,6 +26,9 @@ internal sealed partial class LiveRegionManager
 	private string? _pendingAssertiveContent;
 	private Timer? _politeDebounceTimer;
 	private Timer? _assertiveDebounceTimer;
+	private readonly object _announcementGate = new();
+	private int _politeGeneration;
+	private int _assertiveGeneration;
 	private long _politeThrottleTimestamp;
 	private long _assertiveThrottleTimestamp;
 	/// <summary>
@@ -119,9 +122,14 @@ internal sealed partial class LiveRegionManager
 		{
 			this.Log().Debug($"EnqueuePolite content='{content}' debounce={DebounceMs}ms");
 		}
-		_pendingPoliteContent = content;
-		_politeDebounceTimer?.Dispose();
-		_politeDebounceTimer = new Timer(_ => FlushPolite(), null, DebounceMs, Timeout.Infinite);
+		lock (_announcementGate)
+		{
+			_pendingPoliteContent = content;
+			if (_politeDebounceTimer is null)
+			{
+				SchedulePoliteLocked(DebounceMs);
+			}
+		}
 	}
 
 	private void EnqueueAssertive(string content)
@@ -130,69 +138,96 @@ internal sealed partial class LiveRegionManager
 		{
 			this.Log().Debug($"EnqueueAssertive content='{content}' debounce={DebounceMs}ms");
 		}
-		_pendingAssertiveContent = content;
-		_assertiveDebounceTimer?.Dispose();
-		_assertiveDebounceTimer = new Timer(_ => FlushAssertive(), null, DebounceMs, Timeout.Infinite);
-	}
-
-	private void FlushPolite()
-	{
-		var content = _pendingPoliteContent;
-		_pendingPoliteContent = null;
-		_politeDebounceTimer?.Dispose();
-		_politeDebounceTimer = null;
-
-		if (string.IsNullOrEmpty(content))
+		lock (_announcementGate)
 		{
-			return;
-		}
-
-		var now = Environment.TickCount64;
-		if (now - _politeThrottleTimestamp < PoliteThrottleMs)
-		{
-			// Throttled — re-enqueue with remaining throttle time
-			var remaining = PoliteThrottleMs - (int)(now - _politeThrottleTimestamp);
-			_pendingPoliteContent = content;
-			_politeDebounceTimer = new Timer(_ => FlushPolite(), null, remaining, Timeout.Infinite);
-			return;
-		}
-
-		_politeThrottleTimestamp = now;
-		if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"FlushPolite announcing content='{content}'");
-		}
-		NativeMethods.UpdateLiveRegionContent(IntPtr.Zero, content, 1);
-	}
-
-	private void FlushAssertive()
-	{
-		var content = _pendingAssertiveContent;
-		_pendingAssertiveContent = null;
-		_assertiveDebounceTimer?.Dispose();
-		_assertiveDebounceTimer = null;
-
-		if (string.IsNullOrEmpty(content))
-		{
-			return;
-		}
-
-		var now = Environment.TickCount64;
-		if (now - _assertiveThrottleTimestamp < AssertiveThrottleMs)
-		{
-			// Throttled — re-enqueue with remaining throttle time
-			var remaining = AssertiveThrottleMs - (int)(now - _assertiveThrottleTimestamp);
 			_pendingAssertiveContent = content;
-			_assertiveDebounceTimer = new Timer(_ => FlushAssertive(), null, remaining, Timeout.Infinite);
-			return;
+			if (_assertiveDebounceTimer is null)
+			{
+				ScheduleAssertiveLocked(DebounceMs);
+			}
 		}
+	}
 
-		_assertiveThrottleTimestamp = now;
-		if (this.Log().IsEnabled(LogLevel.Debug))
+	private void SchedulePoliteLocked(int delay)
+	{
+		var generation = ++_politeGeneration;
+		_politeDebounceTimer = new Timer(_ => FlushPolite(generation), null, delay, Timeout.Infinite);
+	}
+
+	private void ScheduleAssertiveLocked(int delay)
+	{
+		var generation = ++_assertiveGeneration;
+		_assertiveDebounceTimer = new Timer(_ => FlushAssertive(generation), null, delay, Timeout.Infinite);
+	}
+
+	private void FlushPolite(int generation)
+	{
+		lock (_announcementGate)
 		{
-			this.Log().Debug($"FlushAssertive announcing content='{content}'");
+			if (generation != _politeGeneration)
+			{
+				return;
+			}
+
+			_politeDebounceTimer?.Dispose();
+			_politeDebounceTimer = null;
+			var content = _pendingPoliteContent;
+			_pendingPoliteContent = null;
+			if (string.IsNullOrEmpty(content))
+			{
+				return;
+			}
+
+			var now = Environment.TickCount64;
+			if (now - _politeThrottleTimestamp < PoliteThrottleMs)
+			{
+				_pendingPoliteContent = content;
+				SchedulePoliteLocked(PoliteThrottleMs - (int)(now - _politeThrottleTimestamp));
+				return;
+			}
+
+			_politeThrottleTimestamp = now;
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"FlushPolite announcing content='{content}'");
+			}
+			NativeMethods.UpdateLiveRegionContent(IntPtr.Zero, content, 1);
 		}
-		NativeMethods.UpdateLiveRegionContent(IntPtr.Zero, content, 2);
+	}
+
+	private void FlushAssertive(int generation)
+	{
+		lock (_announcementGate)
+		{
+			if (generation != _assertiveGeneration)
+			{
+				return;
+			}
+
+			_assertiveDebounceTimer?.Dispose();
+			_assertiveDebounceTimer = null;
+			var content = _pendingAssertiveContent;
+			_pendingAssertiveContent = null;
+			if (string.IsNullOrEmpty(content))
+			{
+				return;
+			}
+
+			var now = Environment.TickCount64;
+			if (now - _assertiveThrottleTimestamp < AssertiveThrottleMs)
+			{
+				_pendingAssertiveContent = content;
+				ScheduleAssertiveLocked(AssertiveThrottleMs - (int)(now - _assertiveThrottleTimestamp));
+				return;
+			}
+
+			_assertiveThrottleTimestamp = now;
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"FlushAssertive announcing content='{content}'");
+			}
+			NativeMethods.UpdateLiveRegionContent(IntPtr.Zero, content, 2);
+		}
 	}
 
 	/// <summary>
@@ -204,13 +239,18 @@ internal sealed partial class LiveRegionManager
 		{
 			this.Log().Debug("ClearPending — clearing all pending announcements");
 		}
-		_politeDebounceTimer?.Dispose();
-		_politeDebounceTimer = null;
-		_assertiveDebounceTimer?.Dispose();
-		_assertiveDebounceTimer = null;
-		_pendingPoliteContent = null;
-		_pendingAssertiveContent = null;
-		NativeMethods.ClearPendingAnnouncements();
+		lock (_announcementGate)
+		{
+			_politeGeneration++;
+			_assertiveGeneration++;
+			_politeDebounceTimer?.Dispose();
+			_politeDebounceTimer = null;
+			_assertiveDebounceTimer?.Dispose();
+			_assertiveDebounceTimer = null;
+			_pendingPoliteContent = null;
+			_pendingAssertiveContent = null;
+			NativeMethods.ClearPendingAnnouncements();
+		}
 	}
 
 	private static partial class NativeMethods

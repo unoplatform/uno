@@ -316,6 +316,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.WaitForIdle();
 
 			Assert.IsTrue(SemanticElementHasAttribute(textBox, "readonly"), "A read-only TextBox must emit a semantic input with the readonly attribute set.");
+			Assert.IsFalse(SemanticElementHasAttribute(textBox, "aria-readonly"), "Native readonly must not be duplicated by aria-readonly.");
 		}
 
 		/// <summary>

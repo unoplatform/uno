@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -27,6 +28,18 @@ internal partial class WebAssemblyAccessibility
 	// DropDownOpened (the Popup may not exist at registration time) and cleared on close.
 	private readonly Dictionary<Popup, ComboBox> _comboBoxByPopup = new();
 
+	private bool IsRealizedComboBoxItem(IntPtr handle)
+	{
+		foreach (var region in _comboBoxListBoxes.Values)
+		{
+			if (region.ContainsRealizedHandle(handle))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	/// <summary>
 	/// Subscribes to a ComboBox's dropdown lifecycle so its listbox region can be torn down
 	/// when the dropdown closes. Safe to call repeatedly for the same ComboBox.
@@ -37,6 +50,7 @@ internal partial class WebAssemblyAccessibility
 		{
 			comboBox.DropDownOpened += OnComboBoxDropDownOpened;
 			comboBox.DropDownClosed += OnComboBoxDropDownClosed;
+			comboBox.SelectionChanged += OnComboBoxSelectionChanged;
 		}
 	}
 
@@ -50,11 +64,35 @@ internal partial class WebAssemblyAccessibility
 		{
 			comboBox.DropDownOpened -= OnComboBoxDropDownOpened;
 			comboBox.DropDownClosed -= OnComboBoxDropDownClosed;
+			comboBox.SelectionChanged -= OnComboBoxSelectionChanged;
 			if (comboBox.GetPopup() is { } popup)
 			{
 				_comboBoxByPopup.Remove(popup);
 			}
 			DisposeComboBoxListBox(comboBox);
+		}
+	}
+
+	private void ResetComboBoxTracking()
+	{
+		var trackedComboBoxes = _trackedComboBoxes.ToArray();
+		var listBoxes = _comboBoxListBoxes.Values.ToArray();
+		_trackedComboBoxes.Clear();
+		_comboBoxListBoxes.Clear();
+		_comboBoxByPopup.Clear();
+
+		foreach (var comboBox in trackedComboBoxes)
+		{
+			TryRollbackCleanup("ComboBox subscription", () =>
+			{
+				comboBox.DropDownOpened -= OnComboBoxDropDownOpened;
+				comboBox.DropDownClosed -= OnComboBoxDropDownClosed;
+				comboBox.SelectionChanged -= OnComboBoxSelectionChanged;
+			});
+		}
+		foreach (var region in listBoxes)
+		{
+			TryRollbackCleanup("ComboBox listbox", region.Dispose);
 		}
 	}
 
@@ -106,16 +144,69 @@ internal partial class WebAssemblyAccessibility
 		}
 	}
 
+	private void OnComboBoxSelectionChanged(object sender, SelectionChangedEventArgs e)
+	{
+		if (sender is not ComboBox comboBox)
+		{
+			return;
+		}
+
+		if (comboBox.GetOrCreateAutomationPeer() is { } peer)
+		{
+			NativeMethods.UpdateComboBoxValue(
+				comboBox.Visual.Handle,
+				SemanticElementFactory.ResolveComboBoxValue(peer, comboBox) ?? string.Empty);
+		}
+
+		if (!_comboBoxListBoxes.TryGetValue(comboBox, out var region))
+		{
+			return;
+		}
+
+		foreach (var handle in region.GetRealizedHandles())
+		{
+			NativeMethods.UpdateSelectionState(handle, false);
+		}
+
+		if (comboBox.ContainerFromIndex(comboBox.SelectedIndex) is ComboBoxItem selectedItem &&
+			region.ContainsRealizedHandle(selectedItem.Visual.Handle))
+		{
+			NativeMethods.UpdateSelectionState(selectedItem.Visual.Handle, true);
+			NativeMethods.UpdateActiveDescendant(comboBox.Visual.Handle, selectedItem.Visual.Handle);
+		}
+		else
+		{
+			NativeMethods.UpdateActiveDescendant(comboBox.Visual.Handle, IntPtr.Zero);
+		}
+	}
+
 	private void DisposeComboBoxListBox(ComboBox comboBox)
 	{
-		if (_comboBoxListBoxes.TryGetValue(comboBox, out var region))
+		if (_comboBoxListBoxes.Remove(comboBox, out var region))
 		{
-			region.Dispose();
-			_comboBoxListBoxes.Remove(comboBox);
-
-			// Drop the head's relationships to the now-removed listbox.
-			NativeMethods.UpdateAriaControls(comboBox.Visual.Handle, string.Empty);
-			NativeMethods.UpdateActiveDescendant(comboBox.Visual.Handle, IntPtr.Zero);
+			try
+			{
+				region.Dispose();
+			}
+			finally
+			{
+				try
+				{
+					// Drop the head's relationships even when native region teardown fails.
+					NativeMethods.UpdateRuntimeAriaControls(comboBox.Visual.Handle, string.Empty);
+				}
+				finally
+				{
+					try
+					{
+						NativeMethods.UpdateActiveDescendant(comboBox.Visual.Handle, IntPtr.Zero);
+					}
+					finally
+					{
+						QueueRelationshipRefresh();
+					}
+				}
+			}
 		}
 	}
 
@@ -156,16 +247,30 @@ internal partial class WebAssemblyAccessibility
 
 		var totalCount = comboBox.Items.Count;
 		var offset = GetOffsetRelativeToSemanticParent(item, region.ContainerHandle);
-		var label = item.GetOrCreateAutomationPeer()?.GetName() ?? string.Empty;
+		var itemPeer = item.GetOrCreateAutomationPeer();
+		var label = itemPeer?.GetName() ?? string.Empty;
+		var disabled = itemPeer?.IsEnabled() != true;
+		var focusable = itemPeer is not null && IsAccessibilityFocusable(item, item.IsFocusable);
 
-		region.OnItemRealized(
+		var removedHandle = region.OnItemRealized(
 			item.Visual.Handle,
 			index,
 			totalCount,
 			offset.X, offset.Y,
 			item.Visual.Size.X, item.Visual.Size.Y,
 			"option",
-			label);
+			label,
+			item.IsSelected,
+			disabled,
+			focusable);
+		CleanupVirtualizedHandle(removedHandle);
+		InitializeInverseFlows(item);
+		if (itemPeer is not null)
+		{
+			ApplyOrDeferLabelledBy(item.Visual.Handle, itemPeer);
+			ApplyOrDeferRelationshipAttributes(item.Visual.Handle, itemPeer);
+		}
+		QueueRelationshipRefresh();
 
 		// Point aria-activedescendant at the selected option so the combobox head
 		// announces the active item without moving DOM focus off the head.
@@ -185,7 +290,16 @@ internal partial class WebAssemblyAccessibility
 			ItemsControl.ItemsControlFromItemContainer(item) is ComboBox comboBox &&
 			_comboBoxListBoxes.TryGetValue(comboBox, out var region))
 		{
-			region.OnItemUnrealized(item.Visual.Handle, comboBox.IndexFromContainer(item));
+			if (item.IsSelected)
+			{
+				NativeMethods.UpdateActiveDescendant(comboBox.Visual.Handle, IntPtr.Zero);
+			}
+			if (region.OnItemUnrealized(item.Visual.Handle, comboBox.IndexFromContainer(item)))
+			{
+				RemoveFlowsFromTarget(item.Visual.Handle);
+				RemoveRelationshipSource(item.Visual.Handle);
+				QueueRelationshipRefresh();
+			}
 		}
 	}
 
@@ -214,13 +328,14 @@ internal partial class WebAssemblyAccessibility
 			itemsHost.Visual.Handle,
 			"listbox",
 			label,
-			multiselectable: false);
+			multiselectable: false,
+			usesActiveDescendant: true);
 		_comboBoxListBoxes[comboBox] = region;
 
 		// WAI-ARIA combobox pattern: the head owns the popup listbox via aria-controls so
 		// screen readers associate the two separate DOM subtrees and aria-activedescendant
 		// can reference options that live outside the head's own subtree.
-		NativeMethods.UpdateAriaControls(comboBox.Visual.Handle, $"uno-semantics-{region.ContainerHandle}");
+		NativeMethods.UpdateRuntimeAriaControls(comboBox.Visual.Handle, $"uno-semantics-{region.ContainerHandle}");
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{

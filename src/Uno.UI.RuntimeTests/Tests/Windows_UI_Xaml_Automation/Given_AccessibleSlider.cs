@@ -307,8 +307,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 #if __SKIA__
 
 		/// <summary>
-		/// T026/FR-016 (WASM DOM): a Slider emits a native &lt;input type="range"&gt; whose aria-valuenow/min/max
-		/// reflect the XAML Value/Minimum/Maximum.
+		/// T026/FR-016 (WASM DOM): a Slider emits a native &lt;input type="range"&gt; whose native
+		/// value/min/max reflect XAML without conflicting ARIA duplicates.
 		/// </summary>
 		[TestMethod]
 		[RunsOnUIThread]
@@ -326,14 +326,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			Assert.AreEqual("input", GetSemanticElementTagName(slider), "A Slider must emit a native <input> semantic element.");
 			Assert.AreEqual("range", GetSemanticInputType(slider), "A Slider must emit input[type=range].");
-			Assert.AreEqual("50", GetSemanticAttribute(slider, "aria-valuenow"), "A Slider must emit aria-valuenow reflecting its Value.");
-			Assert.AreEqual("0", GetSemanticAttribute(slider, "aria-valuemin"), "A Slider must emit aria-valuemin reflecting its Minimum.");
-			Assert.AreEqual("100", GetSemanticAttribute(slider, "aria-valuemax"), "A Slider must emit aria-valuemax reflecting its Maximum.");
+			Assert.AreEqual("50", GetSemanticInputProperty(slider, "value"));
+			Assert.AreEqual("0", GetSemanticInputProperty(slider, "min"));
+			Assert.AreEqual("100", GetSemanticInputProperty(slider, "max"));
+			Assert.IsFalse(SemanticElementHasAttribute(slider, "aria-valuenow"));
+			Assert.IsFalse(SemanticElementHasAttribute(slider, "aria-valuemin"));
+			Assert.IsFalse(SemanticElementHasAttribute(slider, "aria-valuemax"));
 		}
 
 		/// <summary>
-		/// T028/FR-016 (WASM DOM): when the Slider Value changes at runtime, aria-valuenow live-syncs to the new
-		/// value on the semantic element.
+		/// T028/FR-016 (WASM DOM): when Slider.Value changes, the native range value live-syncs.
 		/// </summary>
 		[TestMethod]
 		[RunsOnUIThread]
@@ -349,12 +351,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.WaitFor(() => SemanticElementExists(slider), timeoutMS: 5000, message: "Timed out waiting for the slider semantic element to be created.");
 			await UITestHelper.WaitForIdle();
 
-			Assert.AreEqual("25", GetSemanticAttribute(slider, "aria-valuenow"), "Initial aria-valuenow must reflect the starting Value.");
+			Assert.AreEqual("25", GetSemanticInputProperty(slider, "value"));
 
 			slider.Value = 75;
-			await UITestHelper.WaitFor(() => GetSemanticAttribute(slider, "aria-valuenow") == "75", timeoutMS: 5000, message: "Timed out waiting for aria-valuenow to live-sync to the new Slider value.");
+			await UITestHelper.WaitFor(() => GetSemanticInputProperty(slider, "value") == "75", timeoutMS: 5000, message: "Timed out waiting for the native range value to live-sync.");
 
-			Assert.AreEqual("75", GetSemanticAttribute(slider, "aria-valuenow"), "A runtime Slider Value change must live-update aria-valuenow.");
+			Assert.IsFalse(SemanticElementHasAttribute(slider, "aria-valuenow"));
 		}
 
 		/// <summary>
@@ -379,25 +381,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		}
 
 		/// <summary>
-		/// T029/FR-018 (WASM DOM): a non-zero AutomationProperties.Level emits aria-level on
-		/// the semantic node, so AT exposes the structural depth.
+		/// T029/FR-018 (WASM DOM): AutomationProperties.Level is emitted only when the final
+		/// ARIA role supports hierarchical levels, including after live role overrides.
 		/// </summary>
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
-		public async Task When_AutomationLevel_Set_Then_Dom_AriaLevel_Is_Set()
+		public async Task When_AutomationLevel_Set_Then_Dom_AriaLevel_Follows_Role_Capability()
 		{
-			var slider = new Slider { Value = 50 };
-			AutomationProperties.SetLevel(slider, 3);
+			var element = new Border { Width = 100, Height = 30 };
+			AutomationProperties.SetName(element, "Nested item");
+			AutomationProperties.SetRoleOverride(element, "treeitem");
+			AutomationProperties.SetLevel(element, 3);
 
-			await UITestHelper.Load(slider);
-			slider.GetOrCreateAutomationPeer();
+			await UITestHelper.Load(element);
 
 			EnableAccessibilityThroughDom();
-			await UITestHelper.WaitFor(() => SemanticElementExists(slider), timeoutMS: 5000, message: "Timed out waiting for the slider semantic element to be created.");
+			await UITestHelper.WaitFor(() => SemanticElementExists(element), timeoutMS: 5000, message: "Timed out waiting for the level-bearing semantic element.");
 			await UITestHelper.WaitForIdle();
 
-			Assert.AreEqual("3", GetSemanticAttribute(slider, "aria-level"), "AutomationProperties.Level=3 must emit aria-level=\"3\".");
+			Assert.AreEqual("3", GetSemanticAttribute(element, "aria-level"));
+
+			AutomationProperties.SetRoleOverride(element, "group");
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(element, "role") == "group" && !SemanticElementHasAttribute(element, "aria-level"),
+				timeoutMS: 3000,
+				message: "Changing to a role without level support left stale aria-level metadata.");
+
+			AutomationProperties.SetRoleOverride(element, "treeitem");
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(element, "role") == "treeitem" && GetSemanticAttribute(element, "aria-level") == "3",
+				timeoutMS: 3000,
+				message: "Returning to treeitem did not restore the authored hierarchical level.");
+
+			AutomationProperties.SetLevel(element, 5);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(element, "aria-level") == "5", timeoutMS: 3000,
+				message: "A direct Level change did not update aria-level.");
+
+			AutomationProperties.SetRoleOverride(element, "group");
+			AutomationProperties.SetLevel(element, 7);
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(element, "aria-level"), timeoutMS: 3000,
+				message: "A Level change emitted aria-level on a role that does not support it.");
+
+			AutomationProperties.SetRoleOverride(element, "treeitem");
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(element, "aria-level") == "7", timeoutMS: 3000,
+				message: "Returning to treeitem did not present the current authored level.");
+
+			AutomationProperties.SetRoleOverride(element, string.Empty);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(element, "role") == "group" && !SemanticElementHasAttribute(element, "aria-level"), timeoutMS: 3000,
+				message: "Clearing the role override restored an unsupported intrinsic aria-level.");
 		}
 
 		/// <summary>
@@ -422,7 +454,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			Assert.AreEqual("true", GetSemanticAttribute(slider, "aria-busy"), "ItemStatus=\"Busy\" must emit aria-busy=\"true\".");
 			Assert.AreEqual("en-US", GetSemanticAttribute(slider, "lang"), "Culture LCID 1033 must emit lang=\"en-US\".");
+
+			AutomationProperties.SetItemStatus(slider, "Ready");
+			AutomationProperties.SetCulture(slider, 1036); // fr-FR
+			await UITestHelper.WaitFor(
+				() => !SemanticElementHasAttribute(slider, "aria-busy") && GetSemanticAttribute(slider, "lang") == "fr-FR",
+				timeoutMS: 3000,
+				message: "Direct ItemStatus/Culture changes did not update owner-scoped metadata.");
+
+			AutomationProperties.SetCulture(slider, 0);
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(slider, "lang"), timeoutMS: 3000,
+				message: "Clearing Culture left stale language metadata.");
 		}
+
+		private static string GetSemanticInputProperty(Slider slider, string property)
+			=> InvokeBrowserJs($"String(document.getElementById('{GetSemanticElementId(slider)}')?.{property} ?? '')");
 
 
 
