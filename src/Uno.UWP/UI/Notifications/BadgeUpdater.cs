@@ -1,4 +1,6 @@
-﻿#if !__ANDROID__
+﻿#nullable enable
+
+#if !__ANDROID__
 
 using System;
 using System.Globalization;
@@ -11,9 +13,9 @@ namespace Windows.UI.Notifications
 		private const string BadgeNodeXPath = "/badge";
 		private const string ValueAttribute = "value";
 		private static readonly object BadgeGate = new();
-		private static BadgeUpdater _coordinatorUpdater;
-		private static string _explicitBadge;
-		private static string _appTaskBadge;
+		private static BadgeUpdater? _coordinatorUpdater;
+		private static string? _explicitBadge;
+		private static string? _appTaskBadge;
 
 		internal BadgeUpdater()
 		{
@@ -36,7 +38,7 @@ namespace Windows.UI.Notifications
 
 		public void Clear() => SetExplicitBadge(null);
 
-		partial void SetBadge(string value);
+		partial void SetBadge(string? value);
 
 		internal static void SetAppTaskBadge(int? value)
 		{
@@ -47,7 +49,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 
-		private static void SetExplicitBadge(string value)
+		private static void SetExplicitBadge(string? value)
 		{
 			lock (BadgeGate)
 			{

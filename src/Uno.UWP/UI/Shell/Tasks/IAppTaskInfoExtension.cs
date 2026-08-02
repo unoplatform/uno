@@ -60,7 +60,7 @@ internal abstract class AppTaskInfoExtensionBase : IAppTaskInfoExtension
 			_isSynchronizing = true;
 		}
 
-		_ = ProcessQueueAsync();
+		_ = ProcessQueueSafelyAsync();
 	}
 
 	protected abstract Task OnSynchronizeAsync(Windows.UI.Shell.Tasks.AppTaskInfoSnapshot[] tasks);
@@ -70,6 +70,31 @@ internal abstract class AppTaskInfoExtensionBase : IAppTaskInfoExtension
 		lock (_synchronizationGate)
 		{
 			_lastRevision = -1;
+		}
+	}
+
+	private async Task ProcessQueueSafelyAsync()
+	{
+		try
+		{
+			await ProcessQueueAsync();
+		}
+		catch (Exception error)
+		{
+			lock (_synchronizationGate)
+			{
+				_activeRevision = -1;
+				_queuedRevision = -1;
+				_queuedTasks = null;
+				_isSynchronizing = false;
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error(
+					$"Unexpected failure in app task presenter queue '{GetType().FullName}'.",
+					error);
+			}
 		}
 	}
 

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>$(NetCurrent)-windows10.0.26100.0</TargetFramework>
+		<TargetFramework>$(NetCurrentWinAppSDK)</TargetFramework>
 		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 		<RootNamespace>SamplesApp.Windows</RootNamespace>
 		<ApplicationManifest>app.manifest</ApplicationManifest>

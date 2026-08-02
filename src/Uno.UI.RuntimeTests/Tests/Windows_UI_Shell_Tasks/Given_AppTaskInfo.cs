@@ -1,6 +1,8 @@
 #nullable enable
 #pragma warning disable CS8305
 
+#if HAS_UNO
+
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -78,3 +80,5 @@ public class Given_AppTaskInfo
 		}
 	}
 }
+
+#endif

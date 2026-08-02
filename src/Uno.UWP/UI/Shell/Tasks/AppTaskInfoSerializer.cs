@@ -13,7 +13,6 @@ namespace Windows.UI.Shell.Tasks;
 internal static class AppTaskInfoSerializer
 {
 	private const int CurrentVersion = 1;
-	private const string UserTextInputPlaceholder = "{userTextInput}";
 
 	internal static string Serialize(AppTaskInfoSnapshot[] tasks)
 	{
@@ -121,17 +120,15 @@ internal static class AppTaskInfoSerializer
 		}
 
 		var textInputActionUriTemplate = content.TextInputActionUriTemplate ?? string.Empty;
-		if (!string.IsNullOrEmpty(textInputActionUriTemplate))
-		{
-			if (!textInputActionUriTemplate.Contains(UserTextInputPlaceholder, StringComparison.Ordinal)
+		if (!string.IsNullOrEmpty(textInputActionUriTemplate)
+			&& (!textInputActionUriTemplate.Contains(AppTaskValidation.UserTextInputPlaceholder, StringComparison.Ordinal)
 				|| !Uri.TryCreate(
-					textInputActionUriTemplate.Replace(UserTextInputPlaceholder, "example", StringComparison.Ordinal),
+					textInputActionUriTemplate.Replace(AppTaskValidation.UserTextInputPlaceholder, "example", StringComparison.Ordinal),
 					UriKind.Absolute,
-					out _))
-			{
-				throw new InvalidDataException(
-					$"Persisted app task '{task.Id}' contains an invalid text-input action URI template.");
-			}
+					out _)))
+		{
+			throw new InvalidDataException(
+				$"Persisted app task '{task.Id}' contains an invalid text-input action URI template.");
 		}
 
 		return new(

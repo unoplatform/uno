@@ -152,7 +152,7 @@ internal sealed class AndroidAppTaskInfoExtension : AppTaskInfoExtensionBase
 		{
 			var replyIntent = new Intent(context, typeof(AppTaskTextInputReceiver));
 			replyIntent.SetAction(AppTaskTextInputReceiver.ActionSubmit);
-			replyIntent.PutExtra(AppTaskTextInputReceiver.ExtraUriTemplate, task.Content.TextInputActionUriTemplate);
+			replyIntent.PutExtra(AppTaskTextInputReceiver.ExtraTaskId, task.Id);
 
 			var replyPendingIntent = PendingIntent.GetBroadcast(
 				context,
@@ -230,22 +230,22 @@ internal sealed class AndroidAppTaskInfoExtension : AppTaskInfoExtensionBase
 internal sealed class AppTaskTextInputReceiver : BroadcastReceiver
 {
 	internal const string ActionSubmit = "uno.platform.appTasks.SUBMIT";
-	internal const string ExtraUriTemplate = "uno.platform.appTasks.uriTemplate";
+	internal const string ExtraTaskId = "uno.platform.appTasks.taskId";
 	internal const string RemoteInputKey = "uno.platform.appTasks.userTextInput";
-	private const string UserTextInputPlaceholder = "{userTextInput}";
 
 	public override void OnReceive(Context? context, Intent? intent)
 	{
 		if (context is null
 			|| intent?.Action != ActionSubmit
-			|| intent.GetStringExtra(ExtraUriTemplate) is not { } template
+			|| intent.GetStringExtra(ExtraTaskId) is not { } taskId
+			|| AppTaskInfoRegistry.TryGet(taskId)?.Content.TextInputActionUriTemplate is not { Length: > 0 } template
 			|| RemoteInput.GetResultsFromIntent(intent)?.GetCharSequence(RemoteInputKey)?.ToString() is not { } input)
 		{
 			return;
 		}
 
 		var actionUri = template.Replace(
-			UserTextInputPlaceholder,
+			AppTaskValidation.UserTextInputPlaceholder,
 			Uri.EscapeDataString(input),
 			StringComparison.Ordinal);
 		var launchIntent = new Intent(Intent.ActionView, AUri.Parse(actionUri));

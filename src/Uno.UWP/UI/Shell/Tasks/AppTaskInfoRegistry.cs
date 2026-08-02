@@ -31,12 +31,15 @@ internal static class AppTaskInfoRegistry
 
 		AppTaskInfoSnapshot[] snapshots;
 		long revision;
-		lock (Gate)
+		var store = GetStore();
+		using (store.AcquireLock())
 		{
-			using var storeLock = GetStoreLocked().AcquireLock();
-			EnsureLoadedLocked(forceReload: true);
-			snapshots = GetSnapshotsLocked();
-			revision = _revision;
+			lock (Gate)
+			{
+				EnsureLoadedLocked(store, forceReload: true);
+				snapshots = GetSnapshotsLocked();
+				revision = _revision;
+			}
 		}
 
 		extension.Synchronize(revision, snapshots);
@@ -53,12 +56,15 @@ internal static class AppTaskInfoRegistry
 
 		AppTaskInfoSnapshot[] snapshots;
 		long revision;
-		lock (Gate)
+		var store = GetStore();
+		using (store.AcquireLock())
 		{
-			using var storeLock = GetStoreLocked().AcquireLock();
-			EnsureLoadedLocked(forceReload: true);
-			snapshots = GetSnapshotsLocked();
-			revision = _revision;
+			lock (Gate)
+			{
+				EnsureLoadedLocked(store, forceReload: true);
+				snapshots = GetSnapshotsLocked();
+				revision = _revision;
+			}
 		}
 
 		extension.Synchronize(revision, snapshots);
@@ -89,19 +95,22 @@ internal static class AppTaskInfoRegistry
 
 		AppTaskInfoSnapshot[] snapshots;
 		long revision;
-		lock (Gate)
+		var store = GetStore();
+		using (store.AcquireLock())
 		{
-			using var storeLock = GetStoreLocked().AcquireLock();
-			EnsureLoadedLocked(forceReload: true);
-			_tasks!.Add(snapshot.Id, snapshot);
-			try
+			lock (Gate)
 			{
-				(revision, snapshots) = PersistLocked();
-			}
-			catch
-			{
-				_tasks.Remove(snapshot.Id);
-				throw;
+				EnsureLoadedLocked(store, forceReload: true);
+				_tasks!.Add(snapshot.Id, snapshot);
+				try
+				{
+					(revision, snapshots) = PersistLocked(store);
+				}
+				catch
+				{
+					_tasks.Remove(snapshot.Id);
+					throw;
+				}
 			}
 		}
 
@@ -113,13 +122,24 @@ internal static class AppTaskInfoRegistry
 	{
 		lock (Gate)
 		{
-			if (_tasks is null)
+			if (_tasks is not null)
 			{
-				using var storeLock = GetStoreLocked().AcquireLock();
-				EnsureLoadedLocked(forceReload: true);
+				return _tasks.TryGetValue(id, out var loadedSnapshot) ? loadedSnapshot : null;
 			}
+		}
 
-			return _tasks!.TryGetValue(id, out var snapshot) ? snapshot : null;
+		var store = GetStore();
+		using (store.AcquireLock())
+		{
+			lock (Gate)
+			{
+				if (_tasks is null)
+				{
+					EnsureLoadedLocked(store, forceReload: true);
+				}
+
+				return _tasks!.TryGetValue(id, out var snapshot) ? snapshot : null;
+			}
 		}
 	}
 
@@ -132,25 +152,28 @@ internal static class AppTaskInfoRegistry
 		AppTaskInfoSnapshot updated;
 		AppTaskInfoSnapshot[] snapshots;
 		long revision;
-		lock (Gate)
+		var store = GetStore();
+		using (store.AcquireLock())
 		{
-			using var storeLock = GetStoreLocked().AcquireLock();
-			EnsureLoadedLocked(forceReload: true);
-			if (!_tasks!.TryGetValue(id, out var current))
+			lock (Gate)
 			{
-				return null;
-			}
+				EnsureLoadedLocked(store, forceReload: true);
+				if (!_tasks!.TryGetValue(id, out var current))
+				{
+					return null;
+				}
 
-			updated = update(current);
-			_tasks[id] = updated;
-			try
-			{
-				(revision, snapshots) = PersistLocked();
-			}
-			catch
-			{
-				_tasks[id] = current;
-				throw;
+				updated = update(current);
+				_tasks[id] = updated;
+				try
+				{
+					(revision, snapshots) = PersistLocked(store);
+				}
+				catch
+				{
+					_tasks[id] = current;
+					throw;
+				}
 			}
 		}
 
@@ -163,23 +186,26 @@ internal static class AppTaskInfoRegistry
 		AppTaskInfoSnapshot removed;
 		AppTaskInfoSnapshot[] snapshots;
 		long revision;
-		lock (Gate)
+		var store = GetStore();
+		using (store.AcquireLock())
 		{
-			using var storeLock = GetStoreLocked().AcquireLock();
-			EnsureLoadedLocked(forceReload: true);
-			if (!_tasks!.Remove(id, out removed!))
+			lock (Gate)
 			{
-				return null;
-			}
+				EnsureLoadedLocked(store, forceReload: true);
+				if (!_tasks!.Remove(id, out removed!))
+				{
+					return null;
+				}
 
-			try
-			{
-				(revision, snapshots) = PersistLocked();
-			}
-			catch
-			{
-				_tasks.Add(id, removed);
-				throw;
+				try
+				{
+					(revision, snapshots) = PersistLocked(store);
+				}
+				catch
+				{
+					_tasks.Add(id, removed);
+					throw;
+				}
 			}
 		}
 
@@ -244,14 +270,13 @@ internal static class AppTaskInfoRegistry
 		return isSupported ? extension : null;
 	}
 
-	private static void EnsureLoadedLocked(bool forceReload)
+	private static void EnsureLoadedLocked(IAppTaskInfoStore store, bool forceReload)
 	{
 		if (_tasks is not null && !forceReload)
 		{
 			return;
 		}
 
-		var store = GetStoreLocked();
 		var value = store.Read();
 		if (_tasks is not null && value == _storeValue)
 		{
@@ -292,16 +317,22 @@ internal static class AppTaskInfoRegistry
 		_revision++;
 	}
 
-	private static (long Revision, AppTaskInfoSnapshot[] Snapshots) PersistLocked()
+	private static (long Revision, AppTaskInfoSnapshot[] Snapshots) PersistLocked(IAppTaskInfoStore store)
 	{
 		var snapshots = GetSnapshotsLocked();
 		var value = AppTaskInfoSerializer.Serialize(snapshots);
-		GetStoreLocked().Write(value);
+		store.Write(value);
 		_storeValue = value;
 		return (++_revision, snapshots);
 	}
 
-	private static IAppTaskInfoStore GetStoreLocked() => _store ??= new FileAppTaskInfoStore();
+	private static IAppTaskInfoStore GetStore()
+	{
+		lock (Gate)
+		{
+			return _store ??= new FileAppTaskInfoStore();
+		}
+	}
 
 	private static AppTaskInfoSnapshot[] GetSnapshotsLocked() =>
 		_tasks!.Values

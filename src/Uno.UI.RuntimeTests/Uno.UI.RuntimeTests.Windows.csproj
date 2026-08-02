@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPrevious)-windows10.0.26100.0;$(NetCurrent)-windows10.0.26100.0</TargetFrameworks>
+		<TargetFrameworks>$(NetUWPOrWinUI);$(NetCurrentUWPOrWinUI)</TargetFrameworks>
 		<AssemblyName>Uno.UI.RuntimeTests</AssemblyName>
 		<RootNamespace>Uno.UI.RuntimeTests</RootNamespace>
 
@@ -63,7 +63,7 @@
 		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="2.1.3" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.7705" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.4654" />
 
 		<!-- We remove Unit tests imported from MUX on UAP as they are usualy heavily relying on internal classes.-->
 		<Compile Remove="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.cs" />

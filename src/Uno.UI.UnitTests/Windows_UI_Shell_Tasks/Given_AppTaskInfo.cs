@@ -120,6 +120,32 @@ public class Given_AppTaskInfo
 	}
 
 	[TestMethod]
+	public void When_Content_Snapshots_Have_Equivalent_Arrays_Then_They_Are_Equal()
+	{
+		var first = new AppTaskContentSnapshot(
+			AppTaskContentKind.SequenceOfSteps,
+			["One"],
+			"Two",
+			new Uri("https://example.com/image.png"),
+			"Summary",
+			[new("Asset", "Context", new Uri("https://example.com/icon.png"), new Uri("https://example.com/asset"))],
+			[new("Open", new Uri("https://example.com/open"))],
+			"Question",
+			"Reply",
+			"https://example.com/reply?text={userTextInput}");
+		var equivalent = first with
+		{
+			CompletedSteps = ["One"],
+			GeneratedAssets = [new("Asset", "Context", new Uri("https://example.com/icon.png"), new Uri("https://example.com/asset"))],
+			Buttons = [new("Open", new Uri("https://example.com/open"))],
+		};
+
+		Assert.AreEqual(first, equivalent);
+		Assert.AreEqual(first.GetHashCode(), equivalent.GetHashCode());
+		Assert.AreNotEqual(first, equivalent with { CompletedSteps = ["Changed"] });
+	}
+
+	[TestMethod]
 	public void When_Content_Interactions_Are_Invalid_Then_They_Are_Rejected()
 	{
 		var content = AppTaskContent.CreateTextSummaryResult("Summary");
@@ -161,6 +187,29 @@ public class Given_AppTaskInfo
 	}
 
 	[TestMethod]
+	public async Task When_Store_Lock_Is_Contended_Then_Cached_Lookup_Remains_Responsive()
+	{
+		var task = CreateTask();
+		_store.BlockNextLockAcquisition();
+		var findAllTask = Task.Run(AppTaskInfo.FindAll);
+
+		Assert.IsTrue(_store.WaitForLockAcquisition(TimeSpan.FromSeconds(5)));
+		try
+		{
+			var lookupTask = Task.Run(() => AppTaskInfoRegistry.TryGet(task.Id));
+			var completedTask = await Task.WhenAny(lookupTask, Task.Delay(TimeSpan.FromSeconds(1)));
+
+			Assert.AreSame(lookupTask, completedTask, "Cached lookups must not wait behind storage lock contention.");
+			Assert.IsNotNull(await lookupTask);
+		}
+		finally
+		{
+			_store.ReleaseLockAcquisition();
+			await findAllTask;
+		}
+	}
+
+	[TestMethod]
 	public void When_Platform_Is_Unsupported_Then_Creation_Is_Rejected()
 	{
 		AppTaskInfoRegistry.ConfigureForTests(_store, new TestAppTaskInfoExtension(isSupported: false));
@@ -179,6 +228,29 @@ public class Given_AppTaskInfo
 		Assert.AreEqual(0, AppTaskInfo.FindAll().Length);
 		Assert.AreEqual(1, _store.QuarantineCount);
 		Assert.IsNull(_store.Value);
+	}
+
+	[TestMethod]
+	public void When_File_Store_Is_Repeatedly_Quarantined_Then_Only_Recent_Files_Are_Retained()
+	{
+		var directory = Path.Combine(Path.GetTempPath(), $"uno-app-task-tests-{Guid.NewGuid():N}");
+		var filePath = Path.Combine(directory, "tasks.json");
+		try
+		{
+			var store = new FileAppTaskInfoStore(filePath);
+			for (var index = 0; index < 5; index++)
+			{
+				store.Write($"corrupt-{index}");
+				store.Quarantine();
+			}
+
+			Assert.AreEqual(3, Directory.GetFiles(directory, "tasks.corrupt.*.json").Length);
+			Assert.IsFalse(File.Exists(filePath));
+		}
+		finally
+		{
+			Directory.Delete(directory, recursive: true);
+		}
 	}
 
 	[TestMethod]
@@ -330,7 +402,10 @@ public class Given_AppTaskInfo
 	private sealed class MemoryAppTaskInfoStore : IAppTaskInfoStore
 	{
 		private readonly object _gate = new();
+		private readonly ManualResetEventSlim _lockAcquireStarted = new(initialState: false);
+		private readonly ManualResetEventSlim _releaseLockAcquire = new(initialState: false);
 		private string? _value;
+		private int _blockNextLockAcquisition;
 
 		internal int QuarantineCount { get; private set; }
 
@@ -384,7 +459,30 @@ public class Given_AppTaskInfo
 			}
 		}
 
-		public IDisposable AcquireLock() => NoopAppTaskInfoStoreLock.Instance;
+		internal void BlockNextLockAcquisition()
+		{
+			_lockAcquireStarted.Reset();
+			_releaseLockAcquire.Reset();
+			Volatile.Write(ref _blockNextLockAcquisition, 1);
+		}
+
+		internal bool WaitForLockAcquisition(TimeSpan timeout) => _lockAcquireStarted.Wait(timeout);
+
+		internal void ReleaseLockAcquisition() => _releaseLockAcquire.Set();
+
+		public IDisposable AcquireLock()
+		{
+			if (Interlocked.Exchange(ref _blockNextLockAcquisition, 0) == 1)
+			{
+				_lockAcquireStarted.Set();
+				if (!_releaseLockAcquire.Wait(TimeSpan.FromSeconds(5)))
+				{
+					throw new TimeoutException("Timed out waiting for the test store lock to be released.");
+				}
+			}
+
+			return NoopAppTaskInfoStoreLock.Instance;
+		}
 	}
 
 	private sealed class TestAppTaskInfoExtension : AppTaskInfoExtensionBase

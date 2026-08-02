@@ -23,7 +23,6 @@ namespace Windows.UI.Shell.Tasks;
 public sealed class AppTaskContent
 {
 	private const uint UnoMaxButtons = 3;
-	private const string UserTextInputPlaceholder = "{userTextInput}";
 
 	private readonly object _gate = new();
 	private readonly List<AppTaskButtonSnapshot> _buttons = new();
@@ -160,14 +159,14 @@ public sealed class AppTaskContent
 		ArgumentNullException.ThrowIfNull(placeholderText);
 		ArgumentNullException.ThrowIfNull(actionUriTemplate);
 
-		if (!actionUriTemplate.Contains(UserTextInputPlaceholder, StringComparison.Ordinal))
+		if (!actionUriTemplate.Contains(AppTaskValidation.UserTextInputPlaceholder, StringComparison.Ordinal))
 		{
 			throw new ArgumentException(
-				$"The URI template must contain {UserTextInputPlaceholder}.",
+				$"The URI template must contain {AppTaskValidation.UserTextInputPlaceholder}.",
 				nameof(actionUriTemplate));
 		}
 
-		var exampleUri = actionUriTemplate.Replace(UserTextInputPlaceholder, "example", StringComparison.Ordinal);
+		var exampleUri = actionUriTemplate.Replace(AppTaskValidation.UserTextInputPlaceholder, "example", StringComparison.Ordinal);
 		if (!Uri.TryCreate(exampleUri, UriKind.Absolute, out _))
 		{
 			throw new ArgumentException("The text-input URI template must produce an absolute URI.", nameof(actionUriTemplate));

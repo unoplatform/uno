@@ -2,6 +2,7 @@
 #pragma warning disable CS8305
 
 using System;
+using System.Collections;
 
 namespace Windows.UI.Shell.Tasks;
 
@@ -27,7 +28,40 @@ internal sealed record AppTaskContentSnapshot(
 	AppTaskButtonSnapshot[] Buttons,
 	string Question,
 	string TextInputPlaceholder,
-	string TextInputActionUriTemplate);
+	string TextInputActionUriTemplate)
+{
+	private static readonly IEqualityComparer ArrayComparer = StructuralComparisons.StructuralEqualityComparer;
+
+	public bool Equals(AppTaskContentSnapshot? other) =>
+		ReferenceEquals(this, other)
+		|| (other is not null
+			&& Kind == other.Kind
+			&& ArrayComparer.Equals(CompletedSteps, other.CompletedSteps)
+			&& ExecutingStep == other.ExecutingStep
+			&& ImageUri == other.ImageUri
+			&& TextSummary == other.TextSummary
+			&& ArrayComparer.Equals(GeneratedAssets, other.GeneratedAssets)
+			&& ArrayComparer.Equals(Buttons, other.Buttons)
+			&& Question == other.Question
+			&& TextInputPlaceholder == other.TextInputPlaceholder
+			&& TextInputActionUriTemplate == other.TextInputActionUriTemplate);
+
+	public override int GetHashCode()
+	{
+		var hash = new HashCode();
+		hash.Add(Kind);
+		hash.Add(ArrayComparer.GetHashCode(CompletedSteps));
+		hash.Add(ExecutingStep, StringComparer.Ordinal);
+		hash.Add(ImageUri);
+		hash.Add(TextSummary, StringComparer.Ordinal);
+		hash.Add(ArrayComparer.GetHashCode(GeneratedAssets));
+		hash.Add(ArrayComparer.GetHashCode(Buttons));
+		hash.Add(Question, StringComparer.Ordinal);
+		hash.Add(TextInputPlaceholder, StringComparer.Ordinal);
+		hash.Add(TextInputActionUriTemplate, StringComparer.Ordinal);
+		return hash.ToHashCode();
+	}
+}
 
 internal sealed record AppTaskButtonSnapshot(string Text, Uri ActionUri);
 

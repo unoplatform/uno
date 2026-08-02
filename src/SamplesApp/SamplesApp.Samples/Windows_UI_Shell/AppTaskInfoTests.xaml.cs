@@ -41,22 +41,32 @@ public sealed partial class AppTaskInfoTests : Page
 
 	private async void OnLoaded(object sender, RoutedEventArgs e)
 	{
+		try
+		{
 #if __ANDROID__
-		RequestAndroidNotificationPermission();
+			RequestAndroidNotificationPermission();
 #endif
-		for (var attempt = 0; attempt < 50 && !AppTaskInfo.IsSupported(); attempt++)
-		{
-			await Task.Delay(100);
-		}
+			for (var attempt = 0; attempt < 50 && !AppTaskInfo.IsSupported(); attempt++)
+			{
+				await Task.Delay(100);
+			}
 
-		if (!IsLoaded)
-		{
-			return;
-		}
+			if (!IsLoaded)
+			{
+				return;
+			}
 
-		ReloadPersistedTasks();
-		Log($"Sample loaded with {_trackedTasks.Count} persisted task(s).");
-		RefreshVisualState();
+			ReloadPersistedTasks();
+			Log($"Sample loaded with {_trackedTasks.Count} persisted task(s).");
+			RefreshVisualState();
+		}
+		catch (Exception error)
+		{
+			Log($"Unable to initialize AppTaskInfo: {error.Message}");
+			SupportTextBlock.Text = "AppTaskInfo initialization failed. See the action log for details.";
+			ControlsPanel.IsHitTestVisible = false;
+			ControlsPanel.Opacity = 0.6d;
+		}
 	}
 
 	private void CreatePrimaryTask_Click(object sender, RoutedEventArgs e)

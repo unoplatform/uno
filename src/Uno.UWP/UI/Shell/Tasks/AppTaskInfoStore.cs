@@ -21,6 +21,7 @@ internal interface IAppTaskInfoStore
 
 internal sealed class FileAppTaskInfoStore : IAppTaskInfoStore
 {
+	private const int MaxQuarantineFiles = 3;
 	private static readonly Encoding Utf8WithoutBom = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
 	private readonly string _filePath;
 	private readonly string _lockFilePath;
@@ -45,6 +46,11 @@ internal sealed class FileAppTaskInfoStore : IAppTaskInfoStore
 		var directory = Path.GetDirectoryName(_filePath)
 			?? throw new InvalidOperationException($"Unable to determine the app task storage directory for '{_filePath}'.");
 		Directory.CreateDirectory(directory);
+		if (OperatingSystem.IsBrowser())
+		{
+			File.WriteAllText(_filePath, value, Utf8WithoutBom);
+			return;
+		}
 
 		var temporaryPath = Path.Combine(directory, $".{Path.GetFileName(_filePath)}.{Guid.NewGuid():N}.tmp");
 		try
@@ -74,6 +80,11 @@ internal sealed class FileAppTaskInfoStore : IAppTaskInfoStore
 		{
 			return;
 		}
+		if (OperatingSystem.IsBrowser())
+		{
+			File.Delete(_filePath);
+			return;
+		}
 
 		var directory = Path.GetDirectoryName(_filePath)
 			?? throw new InvalidOperationException($"Unable to determine the app task storage directory for '{_filePath}'.");
@@ -81,6 +92,26 @@ internal sealed class FileAppTaskInfoStore : IAppTaskInfoStore
 			directory,
 			$"{Path.GetFileNameWithoutExtension(_filePath)}.corrupt.{DateTimeOffset.UtcNow:yyyyMMddHHmmss}.{Guid.NewGuid():N}{Path.GetExtension(_filePath)}");
 		File.Move(_filePath, quarantinePath);
+		TrimQuarantineFiles(directory);
+	}
+
+	private void TrimQuarantineFiles(string directory)
+	{
+		var fileName = Path.GetFileNameWithoutExtension(_filePath);
+		var extension = Path.GetExtension(_filePath);
+		var quarantineFiles = Directory.GetFiles(directory, $"{fileName}.corrupt.*{extension}");
+		if (quarantineFiles.Length <= MaxQuarantineFiles)
+		{
+			return;
+		}
+
+		Array.Sort(
+			quarantineFiles,
+			(left, right) => File.GetLastWriteTimeUtc(right).CompareTo(File.GetLastWriteTimeUtc(left)));
+		foreach (var quarantineFile in quarantineFiles.AsSpan(MaxQuarantineFiles))
+		{
+			File.Delete(quarantineFile);
+		}
 	}
 
 	public IDisposable AcquireLock()

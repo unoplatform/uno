@@ -24,6 +24,7 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 	private readonly Dictionary<string, string> _signatures = new(StringComparer.Ordinal);
 	private readonly Dictionary<string, uint> _notificationIds = new(StringComparer.Ordinal);
 	private readonly object _supportProbeGate = new();
+	private DBusConnection? _publicationConnection;
 	private Task? _supportProbe;
 	private int _supportState;
 	private long _nextSupportProbeAt;
@@ -52,6 +53,7 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 		}
 		catch
 		{
+			ResetPublicationConnection();
 			Volatile.Write(ref _supportState, 0);
 			Interlocked.Exchange(ref _nextSupportProbeAt, Environment.TickCount64 + 5000);
 			throw;
@@ -66,8 +68,7 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 			throw new InvalidOperationException("The D-Bus session address is unavailable.");
 		}
 
-		using var connection = new DBusConnection(sessionAddress);
-		await WithTimeout(connection.ConnectAsync());
+		var connection = await GetPublicationConnectionAsync(sessionAddress);
 		var service = new DBusService(connection, Service);
 		var notifications = service.CreateNotifications(ObjectPath);
 		var currentIds = tasks.Select(static task => task.Id).ToHashSet(StringComparer.Ordinal);
@@ -82,7 +83,9 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 		{
 			if (_notificationIds.TryGetValue(removedId, out var notificationId))
 			{
-				await WithTimeout(notifications.CloseNotificationAsync(notificationId));
+				await notifications.CloseNotificationAsync(notificationId)
+					.WaitAsync(TimeSpan.FromSeconds(5))
+					.ConfigureAwait(false);
 				_notificationIds.Remove(removedId);
 			}
 
@@ -92,7 +95,7 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 		foreach (var task in changedTasks)
 		{
 			_notificationIds.TryGetValue(task.Id, out var replacesId);
-			var notificationId = await WithTimeout(notifications.NotifyAsync(
+			var notificationId = await notifications.NotifyAsync(
 				"Uno Platform",
 				replacesId,
 				GetIcon(task.IconUri),
@@ -100,10 +103,41 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 				EscapeMarkup(GetBody(task)),
 				Array.Empty<string>(),
 				new Dictionary<string, VariantValue>(),
-				expireTimeout: -1));
+				expireTimeout: -1)
+				.WaitAsync(TimeSpan.FromSeconds(5))
+				.ConfigureAwait(false);
 			_notificationIds[task.Id] = notificationId;
 			_signatures[task.Id] = GetSignature(task);
 		}
+	}
+
+	private async Task<DBusConnection> GetPublicationConnectionAsync(string sessionAddress)
+	{
+		if (_publicationConnection is not null)
+		{
+			return _publicationConnection;
+		}
+
+		var connection = new DBusConnection(sessionAddress);
+		try
+		{
+			await connection.ConnectAsync()
+				.AsTask()
+				.WaitAsync(TimeSpan.FromSeconds(5))
+				.ConfigureAwait(false);
+			return _publicationConnection = connection;
+		}
+		catch
+		{
+			connection.Dispose();
+			throw;
+		}
+	}
+
+	private void ResetPublicationConnection()
+	{
+		_publicationConnection?.Dispose();
+		_publicationConnection = null;
 	}
 
 	private static async Task<bool> ServiceHasOwnerAsync(string sessionAddress)
@@ -111,10 +145,15 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 		try
 		{
 			using var connection = new DBusConnection(sessionAddress);
-			await WithTimeout(connection.ConnectAsync()).ConfigureAwait(false);
+			await connection.ConnectAsync()
+				.AsTask()
+				.WaitAsync(TimeSpan.FromSeconds(5))
+				.ConfigureAwait(false);
 			var service = new DBusService(connection, "org.freedesktop.DBus");
 			var dbus = service.CreateDBus("/org/freedesktop/DBus");
-			return await WithTimeout(dbus.NameHasOwnerAsync(Service)).ConfigureAwait(false);
+			return await dbus.NameHasOwnerAsync(Service)
+				.WaitAsync(TimeSpan.FromSeconds(5))
+				.ConfigureAwait(false);
 		}
 
 		catch (Exception error)
@@ -159,18 +198,6 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 			InvalidateSynchronization();
 		}
 	}
-
-	private static async Task WithTimeout(Task operation) =>
-		await operation.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
-
-	private static async Task<T> WithTimeout<T>(Task<T> operation) =>
-		await operation.WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
-
-	private static async Task WithTimeout(ValueTask operation) =>
-		await operation.AsTask().WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
-
-	private static async Task<T> WithTimeout<T>(ValueTask<T> operation) =>
-		await operation.AsTask().WaitAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
 
 	private static string GetSignature(AppTaskInfoSnapshot task) =>
 		$"{task.State}\n{task.Title}\n{task.Subtitle}\n{task.Content.ExecutingStep}\n{task.Content.TextSummary}\n{task.Content.Question}";
