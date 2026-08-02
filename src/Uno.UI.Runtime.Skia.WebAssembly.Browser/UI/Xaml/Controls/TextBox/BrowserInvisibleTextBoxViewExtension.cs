@@ -121,7 +121,9 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		{
 			if (NativeMethods.HasInput())
 			{
-				NativeMethods.Blur();
+				// The handle lets the JS side ignore this blur when another TextBox has already
+				// taken over the shared input (focus moving between TextBoxes).
+				NativeMethods.Blur(_view.TextBox?.Visual.Handle ?? 0);
 			}
 			_isNativeInputActive = false;
 		}
@@ -233,7 +235,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		public static partial bool Focus(IntPtr handle, bool isPassword, string? text, bool acceptsReturn, string inputMode, string enterKeyHint);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.blur")]
-		public static partial void Blur();
+		public static partial void Blur(IntPtr handle);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.detach")]
 		public static partial void Detach();
