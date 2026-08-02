@@ -43,7 +43,7 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 		_initialValue = initialValue;
 		_finalValue = finalValue;
 		_duration = duration;
-		_iterationCount = iterationBehavior == AnimationIterationBehavior.Forever ? Math.Max(iterationCount, 1) : Math.Max(iterationCount, 1);
+		_iterationCount = Math.Max(iterationCount, 1);
 		_iterationBehavior = iterationBehavior;
 		_keyFrames = keyFrames;
 		_lerp = lerp;

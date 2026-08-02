@@ -96,13 +96,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public event TypedEventHandler<IDynamicAnimatedVisualSource, object>? AnimatedVisualInvalidated;
 
-		public IAnimatedVisual TryCreateAnimatedVisual(Compositor compositor, out object diagnostics)
+		public IAnimatedVisual? TryCreateAnimatedVisual(Compositor compositor, out object diagnostics)
 			=> TryCreateAnimatedVisualCore(compositor, out diagnostics, createAnimations: true);
 
-		public IAnimatedVisual2 TryCreateAnimatedVisual(Compositor compositor, out object diagnostics, bool createAnimations)
+		public IAnimatedVisual2? TryCreateAnimatedVisual(Compositor compositor, out object diagnostics, bool createAnimations)
 			=> TryCreateAnimatedVisualCore(compositor, out diagnostics, createAnimations);
 
-		private IAnimatedVisual2 TryCreateAnimatedVisualCore(Compositor compositor, out object diagnostics, bool createAnimations)
+		private IAnimatedVisual2? TryCreateAnimatedVisualCore(Compositor compositor, out object diagnostics, bool createAnimations)
 		{
 			_dispatcherQueue ??= DispatcherQueue.GetForCurrentThread();
 
@@ -122,10 +122,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			if (animationJson is null)
 			{
-				return hasLoadFailure ? null! : CreatePendingAnimatedVisual(compositor);
+				return hasLoadFailure ? null : CreatePendingAnimatedVisual(compositor);
 			}
 
-			return TryCreateAnimatedVisualFromJson(compositor, animationJson, createAnimations, out diagnostics) ?? null!;
+			return TryCreateAnimatedVisualFromJson(compositor, animationJson, createAnimations, out diagnostics);
 		}
 
 		private static void OnUriSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -226,11 +226,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			_loadRevoker.Disposable = null;
 			_animationDataSubscription.Disposable = null;
-			_hasPendingAnimatedVisualInvalidation = false;
-			_pendingAnimatedVisualInvalidation = Task.CompletedTask;
 
 			lock (_stateGate)
 			{
+				_hasPendingAnimatedVisualInvalidation = false;
+				_pendingAnimatedVisualInvalidation = Task.CompletedTask;
 				_requestedSource = null;
 				_animationJson = null;
 				_diagnostics = null;
