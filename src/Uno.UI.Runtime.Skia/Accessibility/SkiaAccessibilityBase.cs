@@ -399,10 +399,9 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 			case AutomationEvents.TextEditTextChanged:
 			case AutomationEvents.TextPatternOnTextChanged:
-				if (TryGetPeerOwner(peer, out var textElement) &&
-					peer.GetPattern(PatternInterface.Value) is IValueProvider textValueProvider)
+				if (TryGetPeerOwner(peer, out var textElement))
 				{
-					UpdateTextValue(textElement.Visual.Handle, textValueProvider.Value);
+					UpdateTextValueFromProvider(peer, textElement);
 				}
 				break;
 
@@ -417,6 +416,22 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		AutomationTextEditChangeType changeType,
 		System.Collections.Generic.IReadOnlyList<string> changedData)
 	{
+		if (!_isDisposed && IsAccessibilityEnabled && TryGetPeerOwner(peer, out var textElement))
+		{
+			UpdateTextValueFromProvider(peer, textElement);
+		}
+	}
+
+	private void UpdateTextValueFromProvider(AutomationPeer peer, UIElement element)
+	{
+		if (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
+		{
+			UpdateTextValue(element.Visual.Handle, valueProvider.Value);
+		}
+		else if (peer.GetPattern(PatternInterface.Text) is ITextProvider textProvider)
+		{
+			UpdateTextValue(element.Visual.Handle, textProvider.DocumentRange.GetText(-1));
+		}
 	}
 
 	public virtual void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)

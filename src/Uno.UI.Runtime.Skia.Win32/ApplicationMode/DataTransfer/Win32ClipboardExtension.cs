@@ -99,9 +99,8 @@ internal partial class Win32ClipboardExtension : IClipboardExtension
 	// _windowClass must be statically stored, otherwise lpfnWndProc will get collected and the CLR will throw some weird exceptions
 	// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
 	private readonly WNDCLASSEXW _windowClass;
-	private readonly ThreadLocal<HWND> _clipboardWindows;
+	private readonly HWND _clipboardWindow;
 
-	private int _listenerRegistered;
 	private bool _observeContentChanged;
 	private DataPackage? _currentPackage;
 
@@ -123,8 +122,7 @@ internal partial class Win32ClipboardExtension : IClipboardExtension
 			throw new InvalidOperationException($"{nameof(PInvoke.RegisterClassEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		_clipboardWindows = new ThreadLocal<HWND>(CreateClipboardWindow);
-		_ = _clipboardWindows.Value;
+		_clipboardWindow = CreateClipboardWindow();
 	}
 
 	private unsafe HWND CreateClipboardWindow()
@@ -150,20 +148,16 @@ internal partial class Win32ClipboardExtension : IClipboardExtension
 			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		if (Interlocked.CompareExchange(ref _listenerRegistered, 1, 0) == 0)
+		var success = PInvoke.AddClipboardFormatListener(hwnd);
+		if (!success)
 		{
-			var success = PInvoke.AddClipboardFormatListener(hwnd);
-			if (!success)
-			{
-				Volatile.Write(ref _listenerRegistered, 0);
-				this.LogError()?.Error($"{nameof(PInvoke.AddClipboardFormatListener)} failed: {Win32Helper.GetErrorMessage()}");
-			}
+			this.LogError()?.Error($"{nameof(PInvoke.AddClipboardFormatListener)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
 		return hwnd;
 	}
 
-	private HWND GetClipboardWindow() => _clipboardWindows.Value;
+	private HWND GetClipboardWindow() => _clipboardWindow;
 
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
 	internal static LRESULT WndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)

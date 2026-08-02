@@ -208,7 +208,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				var valueProvider = peer?.GetPattern(PatternInterface.Value) as IValueProvider;
 
 				Assert.IsNotNull(peer);
-				Assert.AreEqual("Notes", peer.GetName());
+				Assert.AreEqual("Notes", peer!.GetName());
 				Assert.IsNull(valueProvider, "RichEditBox exposes Text/Text2, but not the Value pattern.");
 			}
 			finally
@@ -237,18 +237,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 				Assert.IsNotNull(textProvider);
 				Assert.IsNotNull(textProvider2);
-				Assert.AreEqual(SupportedTextSelection.Single, textProvider.SupportedTextSelection);
-				Assert.AreEqual("hello", textProvider.DocumentRange.GetText(-1));
+				var provider = textProvider!;
+				var provider2 = textProvider2!;
+				Assert.AreEqual(SupportedTextSelection.Single, provider.SupportedTextSelection);
+				Assert.AreEqual("hello", provider.DocumentRange.GetText(-1));
 
-				var selection = textProvider.GetSelection();
+				var selection = provider.GetSelection();
 				Assert.AreEqual(1, selection.Length);
 				Assert.AreEqual("ell", selection[0].GetText(-1));
 
-				var caret = textProvider2.GetCaretRange(out var isActive);
+				var caret = provider2.GetCaretRange(out var isActive);
 				Assert.IsTrue(isActive);
 				Assert.AreEqual(0, caret.CompareEndpoints(TextPatternRangeEndpoint.Start, selection[0], TextPatternRangeEndpoint.End));
 
-				var selectedByAutomation = textProvider.DocumentRange.Clone();
+				var selectedByAutomation = provider.DocumentRange.Clone();
 				selectedByAutomation.MoveEndpointByUnit(TextPatternRangeEndpoint.Start, TextUnit.Character, 2);
 				selectedByAutomation.MoveEndpointByUnit(TextPatternRangeEndpoint.End, TextUnit.Character, -1);
 				selectedByAutomation.Select();
