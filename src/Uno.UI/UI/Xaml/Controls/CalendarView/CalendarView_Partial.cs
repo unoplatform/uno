@@ -788,7 +788,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (spPreviousButton is { })
 			{
 				strAutomationName = AutomationProperties.GetName((Button)spPreviousButton);
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					// USe the same resource string as for FlipView's Previous Button.
 					strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_PREVIOUS);
@@ -799,7 +799,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (spNextButton is { })
 			{
 				strAutomationName = AutomationProperties.GetName((Button)spNextButton);
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					// USe the same resource string as for FlipView's Next Button.
 					strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_NEXT);

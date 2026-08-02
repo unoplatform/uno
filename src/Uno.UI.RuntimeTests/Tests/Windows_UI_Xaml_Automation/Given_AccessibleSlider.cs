@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
+using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
@@ -304,6 +305,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.IsTrue(capabilities.CanRangeValue, "Slider should have CanRangeValue capability");
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+		public async Task When_Slider_On_Mobile_Then_Native_Range_Details_Match_Provider()
+		{
+			var slider = new Slider { Minimum = 0, Maximum = 100, Value = 60 };
+			AutomationProperties.SetAutomationId(slider, "slider-range-t045");
+
+			await UITestHelper.Load(slider);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var snapshot = MobileAccessibilityTestHelper.TryGetNativeSnapshot(slider);
+			Assert.IsNotNull(snapshot, "Native snapshot must be available on mobile Skia.");
+			Assert.IsNotNull(snapshot.Details?.Range, "Range must be populated for a Slider.");
+
+			var range = snapshot.Details!.Range!;
+			Assert.AreEqual(60.0, range.Value, "Range.Value must match Slider.Value.");
+			Assert.AreEqual(0.0, range.Minimum, "Range.Minimum must match Slider.Minimum.");
+			Assert.AreEqual(100.0, range.Maximum, "Range.Maximum must match Slider.Maximum.");
+			Assert.IsFalse(range.IsReadOnly, "An enabled Slider must report IsReadOnly=false.");
+		}
+
 #if __SKIA__
 
 		/// <summary>
@@ -423,12 +447,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual("true", GetSemanticAttribute(slider, "aria-busy"), "ItemStatus=\"Busy\" must emit aria-busy=\"true\".");
 			Assert.AreEqual("en-US", GetSemanticAttribute(slider, "lang"), "Culture LCID 1033 must emit lang=\"en-US\".");
 		}
-
-
-
-
-
-
 
 #endif
 

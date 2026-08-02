@@ -58,9 +58,18 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 
 	public void InvalidateRender()
 	{
-		ExploreByTouchHelper.InvalidateRoot();
 		_renderRequested = true;
 		_renderEvent.Set();
+	}
+
+	protected override void OnSizeChanged(int width, int height, int oldWidth, int oldHeight)
+	{
+		base.OnSizeChanged(width, height, oldWidth, oldHeight);
+
+		if (width != oldWidth || height != oldHeight)
+		{
+			ExploreByTouchHelper.InvalidateAccessibilityRoot();
+		}
 	}
 
 	public void ResetRendererContext()
@@ -239,14 +248,38 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 	{
 		if (e is null)
 			return base.DispatchHoverEvent(e);
-		return ExploreByTouchHelper.DispatchHoverEvent(e) || base.DispatchHoverEvent(e);
+		try
+		{
+			return ExploreByTouchHelper.DispatchHoverEvent(e) || base.DispatchHoverEvent(e);
+		}
+		catch (System.Exception error)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("Android accessibility hover dispatch failed.", error);
+			}
+
+			return base.DispatchHoverEvent(e);
+		}
 	}
 
 	public override bool DispatchKeyEvent(KeyEvent? e)
 	{
 		if (e is null)
 			return base.DispatchKeyEvent(e);
-		return ExploreByTouchHelper.DispatchKeyEvent(e) || base.DispatchKeyEvent(e);
+		try
+		{
+			return ExploreByTouchHelper.DispatchKeyEvent(e) || base.DispatchKeyEvent(e);
+		}
+		catch (System.Exception error)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("Android accessibility key dispatch failed.", error);
+			}
+
+			return base.DispatchKeyEvent(e);
+		}
 	}
 
 	protected override void OnFocusChanged(bool gainFocus, [GeneratedEnum] FocusSearchDirection direction, Rect? previouslyFocusedRect)
