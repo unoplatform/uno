@@ -39,28 +39,15 @@
 		     GHSA-23rf-6693-g89p, GHSA-8q5v-6pqq-x66h; all affect <= 10.0.9). The 8.0.x line has no
 		     fixed release (8.0.4 is the highest published and still in range). -->
 		<PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.10" />
-	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='$(NetPrevious)'">
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.14.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.14.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.14.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.14.0" />
-		<PackageReference Include="Microsoft.Build" Version="17.7.2" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Framework" Version="17.8.43" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.43" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.43" ExcludeAssets="runtime" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='$(NetCurrent)'">
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.14.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.14.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.14.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.14.0" />
-		<PackageReference Include="Microsoft.Build" Version="18.7.1" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Framework" Version="18.7.1" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="18.7.1" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="18.7.1" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.CodeAnalysis"/>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" />
+		<PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" ExcludeAssets="runtime" />
 	</ItemGroup>
 
 </Project>

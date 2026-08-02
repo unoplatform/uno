@@ -20,18 +20,24 @@ internal sealed class TemplateParser
 		_template = template;
 	}
 
-	private TemplateRootNode EnsureCompleted(TemplateRootNode root)
+	private bool TryComplete(TemplateRootNode root, [NotNullWhen(true)] out TemplateRootNode? result)
 	{
 		if (!Completed)
 		{
-			throw new ArgumentException($"Failed to parse '{_template}'. Couldn't consume all characters. Stopped at index '{_index}'.");
+			result = null;
+			return false;
 		}
 
 		root.Traverse(Info);
-		return root;
+		result = root;
+		return true;
 	}
 
-	public TemplateRootNode Parse()
+	// Returns false (without throwing) when the input is not a valid template.
+	// The input may still be a valid format pattern, which the caller handles separately.
+	// Avoiding exceptions here keeps the common pattern path (e.g. TimePicker's "{hour.integer(1)}")
+	// free of first-chance exceptions that show up as noise when debugging with all CLR exceptions enabled.
+	public bool TryParse([NotNullWhen(true)] out TemplateRootNode? root)
 	{
 		_ = SkipWhitespace();
 		if (TryParseDate(out var date))
@@ -41,10 +47,10 @@ internal sealed class TemplateParser
 				TryParseTime(out var time))
 			{
 				_ = SkipWhitespace();
-				return EnsureCompleted(new TemplateRootNode(date, time));
+				return TryComplete(new TemplateRootNode(date, time), out root);
 			}
 
-			return EnsureCompleted(new TemplateRootNode(date));
+			return TryComplete(new TemplateRootNode(date), out root);
 		}
 		else if (TryParseTime(out var time))
 		{
@@ -54,19 +60,20 @@ internal sealed class TemplateParser
 				if (TryParseSpecificDate(out var specificDate))
 				{
 					_ = SkipWhitespace();
-					return EnsureCompleted(new TemplateRootNode(time, date));
+					return TryComplete(new TemplateRootNode(time, specificDate), out root);
 				}
 				else if (TryParseRelativeDate(out var relativeDate))
 				{
 					_ = SkipWhitespace();
-					return EnsureCompleted(new TemplateRootNode(time, date));
+					return TryComplete(new TemplateRootNode(time, relativeDate), out root);
 				}
 			}
 
-			return EnsureCompleted(new TemplateRootNode(time));
+			return TryComplete(new TemplateRootNode(time), out root);
 		}
 
-		throw new ArgumentException($"Failed to parse date time template '{_template}'");
+		root = null;
+		return false;
 	}
 
 	private bool TryParseTime([NotNullWhen(true)] out TemplateTimeNode? time)

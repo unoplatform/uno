@@ -298,11 +298,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// IsHorizontalMouseWheel already carries the correct sign (positive = right). A Shift-redirected
 					// vertical wheel uses the vertical convention (positive = up), so negate to get positive = right.
 					var horizontalDelta = properties.IsHorizontalMouseWheel ? delta : -delta;
-#if __WASM__
-					success = Set(
-						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta),
-						disableAnimation: false);
-#else
+
 					// Trackpad/touchpad-style scroll events can arrive at display-refresh rate (~60/s) with precise
 					// pixel-level deltas. The 1-second composition animation is NOT suitable because:
 					// 1. When many events have accumulated the target far ahead of the visual, the animation's
@@ -333,15 +329,9 @@ namespace Microsoft.UI.Xaml.Controls
 							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta),
 							disableAnimation: false);
 					}
-#endif
 				}
 				else if (canScrollVertically && !properties.IsHorizontalMouseWheel)
 				{
-#if __WASM__
-					success = Set(
-						verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
-						disableAnimation: false);
-#else
 					if (OperatingSystem.IsIOS() || OperatingSystem.IsMacOS())
 					{
 						var vScrollAmount = Math.Abs(delta) < ScrollViewerDefaultMouseWheelDelta
@@ -357,7 +347,6 @@ namespace Microsoft.UI.Xaml.Controls
 							verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
 							disableAnimation: false);
 					}
-#endif
 				}
 
 				// This is not similar to what WinUI is doing, since we already differ quite a bit from
