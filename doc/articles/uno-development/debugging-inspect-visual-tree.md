@@ -45,17 +45,6 @@ For an Uno.WASM app you can simply use the layout inspection tools built into wh
 
 ![DOM tree in Chrome](assets/debugging-inspect-visual-tree/WASM-DOM-Elements.jpg)
 
-You can configure Uno to annotate the DOM with the values of common XAML properties. Just add the following somewhere in your app's entry point (eg the constructor of `App.cs` or `App.xaml.cs`):
-
-```csharp
-#if DEBUG && __WASM__
-    // Annotate generated DOM elements with commonly-used XAML properties (height/width, alignment etc)
-    Uno.UI.FeatureConfiguration.UIElement.AssignDOMXamlProperties = true;
-#endif
-```
-
-**Note:** for performance reasons, if a _release build_ of Uno.UI is used, `AssignDOMXamlProperties` will only display the values of properties as they were when the element was loaded - that is, they may be stale in some cases. If a _debug build_ of Uno.UI is used, this limitation is lifted and the DOM annotation will reflect the most up-to-date values.
-
 ## Retrieving the visual tree through code or at a breakpoint (Android/iOS/WebAssembly/macOS)
 
 It's common enough when debugging Uno to be at a breakpoint and want to quickly know exactly where the view is in the visual tree, that we added a helper method.  
