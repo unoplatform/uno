@@ -120,7 +120,8 @@ Skia/WinUI behavior:
   (see `NSObjectExtensions.ValidateDispose` above).
 - **WebAssembly:** `Interop.ForceJavascriptInterop`, `UIElement.AssignDOMXamlName`,
   `UIElement.AssignDOMXamlProperties`, `UIElement.RenderToStringWithId`,
-  `TextBlock.IsMeasureCacheEnabled`,
+  `TextBlock.IsMeasureCacheEnabled`, `Shape.WasmDelayUpdateUntilFirstArrange`,
+  `Shape.WasmCacheBBoxCalculationResult`, `Shape.WasmBBoxCacheSize`,
   `Cursors.UseHandForInteraction` (the "hand" cursor for interactive controls is
   now never used).
 - **Native (Android + iOS):** `ListViewBase.AnimateScrollIntoView`.
