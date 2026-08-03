@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Runtime.Loader;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Uno.HotReload.Roslyn;
 using Uno.HotReload.Tests.TestUtils;
@@ -131,11 +132,103 @@ public sealed class Given_CollectibleAnalyzerAssemblyLoader
 		Assert.IsTrue(AssemblyLoadContext.GetLoadContext(loaded)!.IsCollectible, "the swapped loader must load collectible");
 	}
 
+	[TestMethod]
+	[Description(
+		"Resolution must be DELEGATED to the compiler's context (LoadFromAssemblyName) so its " +
+		"load policy can materialize dependencies it has not loaded YET: probing only its " +
+		"already-loaded assemblies would fall through and load a split-identity local copy.")]
+	public void When_CompilerContextResolvesLazily_Then_AnalyzerRequestsUnifyToIt()
+	{
+		var root = Directory.CreateTempSubdirectory("uno-hr-tests").FullName;
+		var csharpPath = typeof(CSharpCompilation).Assembly.Location;
+		var compilerContext = new OnDemandContext(new() { ["Microsoft.CodeAnalysis.CSharp"] = csharpPath });
+		try
+		{
+			var payload = CopyTo(root, typeof(Given_CollectibleAnalyzerAssemblyLoader).Assembly.Location);
+			CopyTo(root, csharpPath); // A same-directory copy that must NOT win over the compiler's.
+			var loader = new CollectibleAnalyzerAssemblyLoader(compilerContext);
+			var analyzerContext = AssemblyLoadContext.GetLoadContext(loader.LoadFromPath(payload))!;
+
+			Assert.IsFalse(compilerContext.Assemblies.Any(), "premise: the compiler context resolves lazily, nothing loaded yet");
+
+			var resolved = analyzerContext.LoadFromAssemblyName(new AssemblyName("Microsoft.CodeAnalysis.CSharp"));
+
+			Assert.AreSame(compilerContext, AssemblyLoadContext.GetLoadContext(resolved),
+				"the request must materialize the dependency IN the compiler's context, not load the analyzer-local copy");
+		}
+		finally
+		{
+			compilerContext.Unload();
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description(
+		"AddDependencyLocation must retain EVERY location registered for a file name (distinct " +
+		"projects may use distinct versions of the same analyzer package): resolution picks the " +
+		"version matching the request, not whichever project registered that file name first.")]
+	public void When_MultipleVersionsRegistered_Then_RequestedVersionWins()
+	{
+		var root = Directory.CreateTempSubdirectory("uno-hr-tests").FullName;
+		try
+		{
+			var v1 = EmitAssembly(Path.Join(root, "v1", "Dep.dll"), "Dep", new Version(1, 0, 0, 0));
+			var v2 = EmitAssembly(Path.Join(root, "v2", "Dep.dll"), "Dep", new Version(2, 0, 0, 0));
+			var payload = CopyTo(Directory.CreateDirectory(Path.Join(root, "analyzer")).FullName, typeof(Given_CollectibleAnalyzerAssemblyLoader).Assembly.Location);
+
+			var loader = new CollectibleAnalyzerAssemblyLoader();
+			loader.AddDependencyLocation(v1); // Registered FIRST: "first file name wins" would pick this one.
+			loader.AddDependencyLocation(v2);
+			var analyzerContext = AssemblyLoadContext.GetLoadContext(loader.LoadFromPath(payload))!;
+
+			var resolved = analyzerContext.LoadFromAssemblyName(new AssemblyName("Dep, Version=2.0.0.0"));
+
+			Assert.AreEqual(new Version(2, 0, 0, 0), resolved.GetName().Version, "the exact requested version must win over the first registered one");
+		}
+		finally
+		{
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
 	private static string CopyTo(string directory, string sourcePath, string? fileName = null)
 	{
-		var target = Path.Combine(directory, fileName ?? Path.GetFileName(sourcePath));
+		var target = Path.Join(directory, fileName ?? Path.GetFileName(sourcePath));
 		File.Copy(sourcePath, target);
 		return target;
+	}
+
+	/// <summary>
+	/// Emits a minimal assembly with the requested identity — the best-candidate resolution
+	/// reads the real <see cref="AssemblyName"/> from disk, so the fixture needs real PE files.
+	/// </summary>
+	private static string EmitAssembly(string path, string name, Version version)
+	{
+		Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+
+		var compilation = CSharpCompilation.Create(
+			name,
+			[CSharpSyntaxTree.ParseText($"""[assembly: System.Reflection.AssemblyVersion("{version}")]""")],
+			references: [MetadataReference.CreateFromFile(typeof(object).Assembly.Location)],
+			options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+		var emit = compilation.Emit(path);
+		Assert.IsTrue(emit.Success, $"Fixture assembly emit failed: {string.Join(", ", emit.Diagnostics)}");
+		return path;
+	}
+
+	/// <summary>
+	/// A compiler-side context that — like the dev-server's per-application context — can
+	/// RESOLVE assemblies it has not loaded yet (lazy, on demand).
+	/// </summary>
+	private sealed class OnDemandContext(Dictionary<string, string> resolvable)
+		: AssemblyLoadContext("test-on-demand-compiler", isCollectible: true)
+	{
+		protected override Assembly? Load(AssemblyName assemblyName)
+			=> assemblyName.Name is { } name && resolvable.TryGetValue(name, out var path)
+				? LoadFromAssemblyPath(path)
+				: null;
 	}
 
 	private sealed class PassthroughLoader : IAnalyzerAssemblyLoader
