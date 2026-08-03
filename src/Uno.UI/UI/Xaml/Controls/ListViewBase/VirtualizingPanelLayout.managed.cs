@@ -805,7 +805,11 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"{GetMethodTag()} Begin");
 			}
 
-			// Estimate remaining extent based on current average line height and remaining unmaterialized items
+			// Estimate remaining extent based on current average line height and remaining unmaterialized items.
+			// The last index and the measured end it is extrapolated from must come off the SAME line: GetContentEnd()
+			// is the bottommost materialized pixel, which includes the dragged item's line -- FillLayout() parks that
+			// one past the last row whenever the pointer is out of view -- so pairing the two counts a row that a
+			// reorder only MOVES as if it had been appended, inflating the extent for the rest of the gesture.
 			var lastIndexPath = GetLastMaterializedIndexPath();
 			if (lastIndexPath == null)
 			{
@@ -819,11 +823,14 @@ namespace Microsoft.UI.Xaml.Controls
 			int itemsPerLine = GetItemsPerLine();
 			var remainingLines = remainingItems / itemsPerLine + remainingItems % itemsPerLine;
 
-			double estimatedExtent = GetContentEnd() + remainingLines * _averageLineHeight;
+			var contentEnd = FindViewByIndexPath(lastIndexPath.Value) is { } lastView
+				? GetMeasuredEnd(lastView)
+				: GetContentEnd();
+			double estimatedExtent = contentEnd + remainingLines * _averageLineHeight;
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"{GetMethodTag()}=>{estimatedExtent}, GetContentEnd()={GetContentEnd()}, remainingLines={remainingLines}, averageLineHeight={_averageLineHeight}");
+				this.Log().LogDebug($"{GetMethodTag()}=>{estimatedExtent}, contentEnd={contentEnd}, GetContentEnd()={GetContentEnd()}, remainingLines={remainingLines}, averageLineHeight={_averageLineHeight}");
 			}
 
 			return estimatedExtent;
@@ -936,17 +943,13 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private void ScrapLayout()
 		{
-			// BOTH halves of the seed must be read off the SAME line. _dynamicSeedStart is where the item
-			// FOLLOWING _dynamicSeedIndex gets placed (see FillForward/GetItemsEnd), so pairing an index taken
-			// from one line with an offset taken from another shifts every item materialized afterwards by the
-			// difference between the two -- which inflates GetContentEnd(), and with it the estimated extent.
-			// GetFirstMaterializedIndexPath() searches for the lowest index rather than reading the front of the
-			// deque, so this pair stays consistent while a drag-to-reorder leaves the deque unsorted; that is
-			// also why the previous ".Min() and rewind the seed" correction here is no longer needed.
-			var firstLine = GetLowestIndexMaterializedLine();
-			var firstVisibleItem = firstLine?.FirstItem;
+			// _dynamicSeedStart is where the item FOLLOWING _dynamicSeedIndex gets placed (see FillForward/
+			// GetItemsEnd), so it is the topmost materialized PIXEL -- including the dragged item's line, which the
+			// refill puts back at that same pixel. Reading it off any lower line instead walks the whole realized
+			// window one row down the panel per pass, and the extent with it.
+			var firstVisibleItem = GetFirstMaterializedIndexPath();
 			var seed = GetDynamicSeedIndex(firstVisibleItem);
-			var offset = firstLine is null ? 0 : GetMeasuredStart(firstLine.FirstView);
+			var offset = GetContentStart();
 
 			SetDynamicSeed(seed, offset);
 
@@ -1081,36 +1084,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// POSITIONAL, and deliberately so: these two are paired with _materializedLines.RemoveFromFront()/
 		// RemoveFromBack() in UnfillLayout(), so the line they return must be the one that removal will drop.
-		// They are NOT index-ordered -- see GetLowestIndexMaterializedLine() for why.
+		// They are NOT index-ordered -- see GetFirstMaterializedIndexPath() for why.
 		private Line? GetFirstMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[0] : null;
 
 		private Line? GetLastMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[_materializedLines.Count - 1] : null;
-
-		/// <summary>
-		/// The materialized line holding the LOWEST item index, which is not necessarily the line at the front
-		/// of the deque.
-		/// </summary>
-		/// <remarks>
-		/// During a drag-to-reorder, FillLayout() appends the line for the dragged item to the BACK of the
-		/// deque whatever its index, and GetNextUnmaterializedItem() skips that index while filling, so the
-		/// remaining items slide into its slots. The deque is therefore index-unsorted for the duration of the
-		/// drag, and anything that needs "the lowest/highest materialized index" or "the topmost/bottommost
-		/// materialized pixel" must search rather than index into the ends.
-		/// </remarks>
-		private Line? GetLowestIndexMaterializedLine()
-		{
-			Line? lowest = null;
-			for (var i = 0; i < _materializedLines.Count; i++)
-			{
-				var line = _materializedLines[i];
-				if (lowest is null || line.FirstItem < lowest.FirstItem)
-				{
-					lowest = line;
-				}
-			}
-
-			return lowest;
-		}
 
 		/// <summary>
 		/// Whether any materialized line already holds <paramref name="index"/>. Generating a second container
@@ -1132,26 +1109,55 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// The materialized line holding the HIGHEST item index. See <see cref="GetLowestIndexMaterializedLine"/>.
+		/// The lowest materialized item index, ignoring the item being dragged.
 		/// </summary>
-		private Line? GetHighestIndexMaterializedLine()
+		/// <remarks>
+		/// These two are the index-domain frontiers: FillBackward/FillForward resume from them, and ScrapLayout()
+		/// seeds the refill off the first one. All three want the frontier of the ORDINARY fill, which skips the
+		/// dragged item (see GetNextUnmaterializedItem) -- handing back its index instead makes the fill walk from
+		/// the DRAGGED item's neighbour rather than the frontier's, leaving a hole in the realized window.
+		///
+		/// They are also not readable off the ends of the deque: FillLayout() appends the dragged item's line to
+		/// the BACK whatever its index, so the deque is index-unsorted for the duration of the drag.
+		/// </remarks>
+		private Uno.UI.IndexPath? GetFirstMaterializedIndexPath()
 		{
-			Line? highest = null;
+			var reorderIndex = GetAndUpdateReorderingIndex();
+			Uno.UI.IndexPath? lowest = null;
 			for (var i = 0; i < _materializedLines.Count; i++)
 			{
-				var line = _materializedLines[i];
-				if (highest is null || line.LastItem > highest.LastItem)
+				foreach (var (_, index) in _materializedLines[i].Items)
 				{
-					highest = line;
+					if (index != reorderIndex && (lowest is null || index < lowest))
+					{
+						lowest = index;
+					}
+				}
+			}
+
+			return lowest;
+		}
+
+		/// <summary>
+		/// The highest materialized item index, ignoring the item being dragged. See <see cref="GetFirstMaterializedIndexPath"/>.
+		/// </summary>
+		private Uno.UI.IndexPath? GetLastMaterializedIndexPath()
+		{
+			var reorderIndex = GetAndUpdateReorderingIndex();
+			Uno.UI.IndexPath? highest = null;
+			for (var i = 0; i < _materializedLines.Count; i++)
+			{
+				foreach (var (_, index) in _materializedLines[i].Items)
+				{
+					if (index != reorderIndex && (highest is null || index > highest))
+					{
+						highest = index;
+					}
 				}
 			}
 
 			return highest;
 		}
-
-		private Uno.UI.IndexPath? GetFirstMaterializedIndexPath() => GetLowestIndexMaterializedLine()?.FirstItem;
-
-		private Uno.UI.IndexPath? GetLastMaterializedIndexPath() => GetHighestIndexMaterializedLine()?.LastItem;
 
 		/// <summary>
 		/// The topmost (leftmost) materialized pixel, i.e. the minimum measured start over all materialized
