@@ -498,14 +498,6 @@ namespace Uno.UI
 			public static int ShowDuration { get; set; } = 5000;
 		}
 
-		public static class UIElement
-		{
-			/// <summary>
-			/// [WebAssembly Only] Enable UIElement.ToString() to return the element's unique ID
-			/// </summary>
-			public static bool RenderToStringWithId { get; set; } = true;
-		}
-
 		public static class WebView2
 		{
 			/// <summary>

@@ -119,7 +119,8 @@ Skia/WinUI behavior:
   `TimePicker.UseLegacyStyle`, `UIElement.FailOnNSObjectExtensionsValidateDispose`
   (see `NSObjectExtensions.ValidateDispose` above).
 - **WebAssembly:** `Interop.ForceJavascriptInterop`, `UIElement.AssignDOMXamlName`,
-  `UIElement.AssignDOMXamlProperties`, `TextBlock.IsMeasureCacheEnabled`,
+  `UIElement.AssignDOMXamlProperties`, `UIElement.RenderToStringWithId`,
+  `TextBlock.IsMeasureCacheEnabled`,
   `Cursors.UseHandForInteraction` (the "hand" cursor for interactive controls is
   now never used).
 - **Native (Android + iOS):** `ListViewBase.AnimateScrollIntoView`.
