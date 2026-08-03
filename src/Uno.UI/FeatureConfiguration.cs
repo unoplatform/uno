@@ -244,12 +244,6 @@ namespace Uno.UI
 		public static class Image
 		{
 			/// <summary>
-			/// Use the old way to align iOS images, using the "ContentMode".
-			/// New way is using the Layer to better position the image according to alignments.
-			/// </summary>
-			public static bool LegacyIosAlignment { get; set; }
-
-			/// <summary>
 			/// On platforms that support caching BitmapImage assets, this sets
 			/// the maximum number of entries in the cache. The value must be a
 			/// positive integer.

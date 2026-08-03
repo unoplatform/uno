@@ -2408,6 +2408,7 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBlock::IsMeasureCacheEnabled()" reason="Removed TextBlock.IsMeasureCacheEnabled flag along with the orphaned TextBlockMeasureCache it gated (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBlock::IsJavaStringCachedEnabled()" reason="Removed TextBlock.IsJavaStringCachedEnabled flag; the Android Java string-cache it gated no longer exists (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Int32 Uno.UI.FeatureConfiguration/TextBlock::JavaStringCachedCapacity()" reason="Removed TextBlock.JavaStringCachedCapacity flag; the Android Java string-cache it sized no longer exists (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Image::LegacyIosAlignment()" reason="Removed Image.LegacyIosAlignment flag; the UIKit ContentMode alignment path it selected no longer exists (#2052, breaking changes for 7.0)" />
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
 		  <!-- BEGIN WinUI sync: WinRT IVector.Size replaced by ICollection.Count -->
 		  <Member fullName="System.UInt32 Microsoft.UI.Composition.CompositionColorGradientStopCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
@@ -2692,6 +2693,8 @@
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/TextBlock.set_IsJavaStringCachedEnabled(System.Boolean value)" reason="Removed TextBlock.IsJavaStringCachedEnabled flag (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Int32 Uno.UI.FeatureConfiguration/TextBlock.get_JavaStringCachedCapacity()" reason="Removed TextBlock.JavaStringCachedCapacity flag (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/TextBlock.set_JavaStringCachedCapacity(System.Int32 value)" reason="Removed TextBlock.JavaStringCachedCapacity flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Image.get_LegacyIosAlignment()" reason="Removed Image.LegacyIosAlignment flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Image.set_LegacyIosAlignment(System.Boolean value)" reason="Removed Image.LegacyIosAlignment flag (#2052, breaking changes for 7.0)" />
 		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
