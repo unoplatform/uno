@@ -394,11 +394,6 @@ namespace Uno.UI
 		public static class TextBlock
 		{
 			/// <summary>
-			/// [WebAssembly Only] Determines if the measure cache is enabled.
-			/// </summary>
-			public static bool IsMeasureCacheEnabled { get; set; } = true;
-
-			/// <summary>
 			/// [Android Only] Determines if the Java string-cache is enabled.
 			/// This option must be set on application startup before the cache is initialized.
 			/// </summary>
