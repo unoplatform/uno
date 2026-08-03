@@ -88,6 +88,69 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		}
 	}
 
+	/// <summary>
+	/// Creates the window-independent resources: instance, device and SkiaSharp GRContext.
+	/// Throws when the driver cannot provide a usable device, letting callers fall back to another
+	/// renderer before committing to Vulkan. Device feature flags alone are not reliable: emulators
+	/// declare Vulkan features even when the driver cannot render.
+	/// </summary>
+	public void InitializeDevice(IVulkanPlatformSurfaceFactory factory)
+	{
+		_factory = factory;
+
+		var getProcAddr = factory.GetVkGetInstanceProcAddr();
+		_instance = VulkanInstance.Create(getProcAddr, factory.RequiredInstanceExtensions);
+		_instanceApi = new VulkanInstanceApi(_instance);
+		_device = VulkanDevice.Create((VulkanInstance)_instance, _instanceApi);
+		_deviceApi = new VulkanDeviceApi(_device);
+
+		using (_device.Lock())
+		{
+			CreateGrContext();
+		}
+	}
+
+	/// <summary>
+	/// Completes initialization for a native window: creates the swapchain and the intermediate
+	/// render image. Requires <see cref="InitializeDevice"/> to have succeeded; may be called again
+	/// with a new window after <see cref="DisposeSurfaceResources"/>.
+	/// </summary>
+	public void InitializeSurface(IntPtr nativeWindowHandle, int width, int height)
+	{
+		if (_device == null || _factory == null)
+			throw new InvalidOperationException("Vulkan device not initialized");
+
+		_nativeWindowHandle = nativeWindowHandle;
+
+		using (_device.Lock())
+		{
+			var platformSurface = new DirectVulkanSurface(nativeWindowHandle, new SKSizeI(width, height), _factory);
+			_display = VulkanDisplay.CreateDisplay(this, platformSurface);
+			_renderImage = new VulkanImage(this, _display.CommandBufferPool,
+				_display.SurfaceFormat.format, new SKSizeI(width, height));
+		}
+	}
+
+	/// <summary>
+	/// Disposes the window-scoped resources (swapchain, render image, cached Skia surfaces) while
+	/// keeping the instance, device and GRContext for reuse with a new surface.
+	/// </summary>
+	public void DisposeSurfaceResources()
+	{
+		if (_device == null)
+			return;
+
+		using (_device.Lock())
+		{
+			_deviceApi?.DeviceWaitIdle(DeviceHandle);
+			DisposeCachedSkiaSurface();
+			_renderImage?.Dispose();
+			_renderImage = null;
+			_display?.Dispose();
+			_display = null;
+		}
+	}
+
 	private void CreateGrContext()
 	{
 		if (_device == null || _instance == null)
