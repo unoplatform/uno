@@ -122,6 +122,12 @@ public sealed class AppNotificationManager
 	}
 
 	public void Show(AppNotification notification)
+		=> Show(notification, replaceTagAndGroup: false);
+
+	internal void ShowReplacingTagAndGroup(AppNotification notification)
+		=> Show(notification, replaceTagAndGroup: true);
+
+	private void Show(AppNotification notification, bool replaceTagAndGroup)
 	{
 		if (GetBackend() is not { IsSupported: true } backend)
 		{
@@ -151,6 +157,34 @@ public sealed class AppNotificationManager
 				state.ReconcileActiveIds(activeIds);
 			}
 			var progress = snapshot.Progress is null ? null : AppNotificationProgressSnapshot.From(snapshot.Progress);
+			if (replaceTagAndGroup && snapshot.Tag.Length > 0 && state.GetByTagAndGroup(snapshot.Tag, snapshot.Group) is { Count: > 0 } matches)
+			{
+				var replacement = state.BeginReplacement(
+					matches[0].Id,
+					snapshot.Payload,
+					snapshot.Tag,
+					snapshot.Group,
+					snapshot.Expiration,
+					snapshot.ExpiresOnReboot,
+					backend.BootIdentifier,
+					snapshot.Priority,
+					snapshot.SuppressDisplay,
+					progress,
+					DateTimeOffset.UtcNow);
+				if (!backend.TryUpdate(replacement))
+				{
+					return;
+				}
+
+				state.MarkShown(replacement.Id);
+				notification.SetNotificationId(replacement.Id);
+				foreach (var duplicate in matches.Skip(1))
+				{
+					backend.Remove(duplicate);
+					state.RemoveById(duplicate.Id);
+				}
+				return;
+			}
 			var record = state.Reserve(
 				snapshot.Payload,
 				snapshot.Tag,
@@ -355,7 +389,7 @@ public sealed class AppNotificationManager
 		}
 	}
 
-	private void RemoveById(uint notificationId)
+	internal void RemoveById(uint notificationId)
 	{
 		if (GetBackend() is not { IsSupported: true } backend)
 		{
@@ -364,7 +398,7 @@ public sealed class AppNotificationManager
 		Remove(backend, store => store.GetById(notificationId));
 	}
 
-	private void RemoveByTag(string tag)
+	internal void RemoveByTag(string tag)
 	{
 		if (GetBackend() is not { IsSupported: true } backend)
 		{
@@ -373,7 +407,7 @@ public sealed class AppNotificationManager
 		Remove(backend, store => store.GetByTag(tag));
 	}
 
-	private void RemoveByTagAndGroup(string tag, string group)
+	internal void RemoveByTagAndGroup(string tag, string group)
 	{
 		if (GetBackend() is not { IsSupported: true } backend)
 		{
@@ -382,7 +416,7 @@ public sealed class AppNotificationManager
 		Remove(backend, store => store.GetByTagAndGroup(tag, group));
 	}
 
-	private void RemoveByGroup(string group)
+	internal void RemoveByGroup(string group)
 	{
 		if (GetBackend() is not { IsSupported: true } backend)
 		{
@@ -391,7 +425,7 @@ public sealed class AppNotificationManager
 		Remove(backend, store => store.GetByGroup(group));
 	}
 
-	private void RemoveAll()
+	internal void RemoveAll()
 	{
 		if (GetBackend() is not { IsSupported: true } backend)
 		{
@@ -412,7 +446,7 @@ public sealed class AppNotificationManager
 		}
 	}
 
-	private IList<AppNotification> GetAll()
+	internal IList<AppNotification> GetAll()
 	{
 		if (GetBackend() is not { IsSupported: true } backend)
 		{
