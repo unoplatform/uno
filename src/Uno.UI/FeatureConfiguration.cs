@@ -262,16 +262,6 @@ namespace Uno.UI
 			public static bool EnableBitmapImageCache { get; set; } = true;
 		}
 
-		public static class Interop
-		{
-			/// <summary>
-			/// [WebAssembly Only] Used to control the behavior of the C#/Javascript interop. Setting this
-			/// flag to true forces the use of the Javascript eval mode, instead of binary interop.
-			/// This flag has no effect when running in hosted mode.
-			/// </summary>
-			public static bool ForceJavascriptInterop { get; set; }
-		}
-
 		public static class BindingExpression
 		{
 			/// <summary>
