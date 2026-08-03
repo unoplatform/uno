@@ -1,9 +1,11 @@
 #nullable enable
 
 using System;
+using Windows.Foundation.Metadata;
 
 namespace Microsoft.Windows.AppNotifications;
 
+[ContractVersion(typeof(AppNotificationsContract), 1 * 0x10000u)]
 public sealed class AppNotificationProgressData
 {
 	private readonly object _gate = new();
@@ -107,6 +109,20 @@ public sealed class AppNotificationProgressData
 			{
 				_status = value ?? string.Empty;
 			}
+		}
+	}
+
+	internal AppNotificationProgressData Clone()
+	{
+		lock (_gate)
+		{
+			return new AppNotificationProgressData(_sequenceNumber)
+			{
+				Title = _title,
+				Value = _value,
+				ValueStringOverride = _valueStringOverride,
+				Status = _status,
+			};
 		}
 	}
 
