@@ -394,18 +394,6 @@ namespace Uno.UI
 		public static class TextBlock
 		{
 			/// <summary>
-			/// [Android Only] Determines if the Java string-cache is enabled.
-			/// This option must be set on application startup before the cache is initialized.
-			/// </summary>
-			public static bool IsJavaStringCachedEnabled { get; set; } = true;
-
-			/// <summary>
-			/// [Android Only] Determines the maximum capacity of the Java string-cache.
-			/// This option must be set on application startup before the cache is initialized.
-			/// </summary>
-			public static int JavaStringCachedCapacity { get; set; } = 1000;
-
-			/// <summary>
 			/// On Skia targets, determines if the TextBlock should render whitespace characters.
 			/// There's usually no effect between toggling this flag on and off, but it can have
 			/// an effect when the font used to draw the TextBlock doesn't have a glyph for the
