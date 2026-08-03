@@ -14,6 +14,7 @@ using Uno.Extensions;
 using Uno.HotReload;
 using Uno.HotReload.Microsoft;
 using Uno.HotReload.Diffing;
+using Uno.HotReload.Roslyn;
 using Uno.HotReload.Tracking;
 using Uno.HotReload.Utils;
 using Uno.Roslyn.MSBuild;
@@ -101,10 +102,18 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						// compilation errors or fail the initial emit (they were never built). Then re-point the
 						// kept flavor's compilation outputs to the assembly the running application was actually
 						// built from (RID-specific paths) — before the watch session starts, as EnC captures its
-						// baselines from those paths.
-						return workspace.CurrentSolution
+						// baselines from those paths. Finally rewire the analyzer references onto collectible
+						// load contexts (the workspace's own loaders cannot load ANY analyzer in this host under
+						// Roslyn 5.x — see CollectibleAnalyzerAssemblyLoader) and force-load them so a residual
+						// failure is warned about now instead of surfacing as missing generated code mid-session.
+						var solution = workspace.CurrentSolution
 							.FilterHeadProjectTargetFramework(configureServer.ProjectPath, runtimeTargetFramework, _reporter)
-							.AlignHeadProjectCompilationOutputs(configureServer.ProjectPath, runtimeIdentifier, _reporter, ct2);
+							.AlignHeadProjectCompilationOutputs(configureServer.ProjectPath, runtimeIdentifier, _reporter, ct2)
+							.WithCollectibleAnalyzerReferences();
+
+						EmbeddedRoslyn.WarnOnAnalyzerLoadFailures(solution, _reporter, ct2);
+
+						return solution;
 					}
 
 					var manager = await HotReloadManager.CreateAsync(LoadSolutionFromDisk, configureServer.MetadataUpdateCapabilities, new DelegateHotReloadHandler(SendUpdates), _tracker, ct);
