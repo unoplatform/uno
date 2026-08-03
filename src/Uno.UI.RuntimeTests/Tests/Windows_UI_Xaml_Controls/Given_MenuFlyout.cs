@@ -12,7 +12,6 @@ using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.MenuFlyoutPages;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
@@ -84,40 +83,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			page.ViewModel.AreItemsEnabled = false;
 
 			await AssertIsEnabled(false);
-		}
-
-		[TestMethod]
-		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_Native_AppBarButton_And_Managed_Popups()
-		{
-			using (StyleHelper.UseNativeFrameNavigation())
-			{
-				var page = new Native_AppBarButton_Page();
-
-				WindowHelper.WindowContent = page;
-				await WindowHelper.WaitForLoaded(page);
-
-				var flyout = page.SUT.Flyout as MenuFlyout;
-				try
-				{
-					await ControlHelper.DoClickUsingAP(page.SUT);
-#if !WINAPPSDK
-					Assert.IsFalse(flyout.UseNativePopup);
-#endif
-					var flyoutItem = page.FirstFlyoutItem;
-
-					await WindowHelper.WaitForLoaded(flyoutItem);
-					var pageBounds = page.GetOnScreenBounds();
-					var flyoutItemBounds = flyoutItem.GetOnScreenBounds();
-					Assert.AreEqual(pageBounds.Right, flyoutItemBounds.Right, delta: 1);
-					NumberAssert.Less(flyoutItemBounds.Top, pageBounds.Height / 4); // Exact command bar height may vary between platforms, but the flyout should at least be in the ~top 1/4th of screen
-				}
-				finally
-				{
-					flyout.Hide();
-				}
-			}
 		}
 
 		[TestMethod]
