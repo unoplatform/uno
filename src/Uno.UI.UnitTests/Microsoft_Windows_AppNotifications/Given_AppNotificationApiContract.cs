@@ -7,6 +7,7 @@ using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Windows.AppNotifications;
 using Microsoft.Windows.AppNotifications.Builder;
+using Windows.Foundation.Metadata;
 
 namespace Uno.UI.Tests.Microsoft_Windows_AppNotifications;
 
@@ -207,6 +208,34 @@ public class Given_AppNotificationApiContract
 		AssertEnum<AppNotificationBuilderContract>();
 	}
 
+	[TestMethod]
+	public void When_AppNotifications_Contract_Is_Queried_Stable_Implemented_Versions_Are_Reported()
+	{
+		const string contractName = "Microsoft.Windows.AppNotifications.AppNotificationsContract";
+
+		Assert.IsTrue(ApiInformation.IsApiContractPresent(contractName, 1));
+		Assert.IsTrue(ApiInformation.IsApiContractPresent(contractName, 3));
+		Assert.IsFalse(ApiInformation.IsApiContractPresent(contractName, 4));
+	}
+
+	[TestMethod]
+	public void When_Core_Metadata_Is_Inspected_Stable_Contract_Annotations_Are_Present()
+	{
+		AssertContractVersion(typeof(AppNotificationsContract), 3);
+		AssertContractVersion(typeof(AppNotificationManager), 1);
+		AssertContractVersion(typeof(AppNotification), 1);
+		AssertContractVersion(typeof(AppNotificationProgressData), 1);
+		AssertContractVersion(typeof(AppNotificationActivatedEventArgs).GetProperty(nameof(AppNotificationActivatedEventArgs.Arguments))!, 3);
+
+		var overloads = typeof(AppNotificationManager)
+			.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+			.Where(method => method.Name == nameof(AppNotificationManager.UpdateAsync))
+			.Select(method => method.CustomAttributes.Single(attribute => attribute.AttributeType == typeof(OverloadAttribute)))
+			.Select(attribute => (string)attribute.ConstructorArguments.Single().Value!)
+			.ToArray();
+		CollectionAssert.AreEquivalent(new[] { "UpdateAsync", "UpdateAsync2" }, overloads);
+	}
+
 	private static void AssertSurface<T>(string expectedSurface)
 	{
 		const BindingFlags flags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
@@ -238,6 +267,13 @@ public class Given_AppNotificationApiContract
 			.ToArray();
 
 		CollectionAssert.AreEqual(expected, actual);
+	}
+
+	private static void AssertContractVersion(MemberInfo member, uint expectedMajorVersion)
+	{
+		var attribute = member.CustomAttributes.Single(attribute => attribute.AttributeType == typeof(ContractVersionAttribute));
+		var encodedVersion = (uint)attribute.ConstructorArguments[^1].Value!;
+		Assert.AreEqual(expectedMajorVersion, encodedVersion >> 16);
 	}
 
 	private static string FormatParameters(IEnumerable<ParameterInfo> parameters)
