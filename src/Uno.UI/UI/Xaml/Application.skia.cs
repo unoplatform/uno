@@ -150,7 +150,7 @@ namespace Microsoft.UI.Xaml
 		{
 			InitializeSystemTheme();
 
-			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
+			using (WritePhaseEventTrace(TraceProvider.LaunchedStart, TraceProvider.LaunchedStop))
 			{
 				InitializationCompleted();
 				FontPreloadTask = PreloadFonts();

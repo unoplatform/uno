@@ -6,7 +6,7 @@ using Uno.UI.Xaml.Extensions;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
 
 #if !HAS_UNO_WINUI
@@ -124,8 +124,8 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 
 		switch (action)
 		{
-			case MotionEventActions.HoverEnter when args.CurrentPoint.PointerDeviceType is Windows.Devices.Input.PointerDeviceType.Touch:
-			case MotionEventActions.HoverExit when args.CurrentPoint.PointerDeviceType is Windows.Devices.Input.PointerDeviceType.Touch:
+			case MotionEventActions.HoverEnter when args.CurrentPoint.PointerDeviceType is PointerDeviceType.Touch:
+			case MotionEventActions.HoverExit when args.CurrentPoint.PointerDeviceType is PointerDeviceType.Touch:
 				// We get HoverEnter and HoverExit for touch only when TalkBack is enabled.
 				// We ignore these events.
 				break;

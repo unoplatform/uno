@@ -227,7 +227,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(textBox);
 
 				FocusManager.GettingFocus += OnGettingFocus;
-				textBox.OnTemplateRecycled();
+				((Microsoft.UI.Xaml.IFrameworkTemplatePoolAware)textBox).OnTemplateRecycled();
 			}
 			finally
 			{

@@ -1,8 +1,4 @@
-﻿#if HAS_UNO_WINUI
-using System;
-using System.Text;
-
-namespace Microsoft.UI.Input;
+﻿namespace Microsoft.UI.Input;
 
 public enum PointerDeviceType
 {
@@ -26,4 +22,3 @@ public enum PointerDeviceType
 	/// </summary>
 	Touchpad = 3,
 }
-#endif

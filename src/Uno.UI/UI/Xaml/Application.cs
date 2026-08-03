@@ -144,8 +144,8 @@ namespace Microsoft.UI.Xaml
 				unchecked((int)0xdee07725), 0x1cbf, 0x4bf6, new byte[] { 0xac, 0x8a, 0x96, 0x3, 0x60, 0xcb, 0x35, 0x12 }
 			);
 
-			public const int LauchedStart = 1;
-			public const int LauchedStop = 2;
+			public const int LaunchedStart = 1;
+			public const int LaunchedStop = 2;
 		}
 
 		public static Application Current
