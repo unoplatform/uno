@@ -164,7 +164,7 @@ public class Given_AppNotificationStateStore
 				SuppressDisplay = true,
 				Progress = Snapshot(3, 0.75),
 			};
-			persistence.Save(new AppNotificationStateSnapshot(1, 43, new[] { record }));
+			persistence.Save(new AppNotificationStateSnapshot(AppNotificationStateSnapshot.CurrentSchemaVersion, 43, new[] { record }));
 
 			var loaded = persistence.Load();
 
@@ -206,8 +206,8 @@ public class Given_AppNotificationStateStore
 		try
 		{
 			var persistence = new FileAppNotificationStatePersistence(path);
-			persistence.Save(new AppNotificationStateSnapshot(1, 2, new[] { Record(1, "backup", AppNotificationPostingState.Shown) }));
-			persistence.Save(new AppNotificationStateSnapshot(1, 3, new[] { Record(2, "primary", AppNotificationPostingState.Shown) }));
+			persistence.Save(new AppNotificationStateSnapshot(AppNotificationStateSnapshot.CurrentSchemaVersion, 2, new[] { Record(1, "backup", AppNotificationPostingState.Shown) }));
+			persistence.Save(new AppNotificationStateSnapshot(AppNotificationStateSnapshot.CurrentSchemaVersion, 3, new[] { Record(2, "primary", AppNotificationPostingState.Shown) }));
 			File.WriteAllText(path, "corrupt primary");
 
 			var loaded = persistence.Load();
@@ -232,8 +232,8 @@ public class Given_AppNotificationStateStore
 		try
 		{
 			var persistence = new FileAppNotificationStatePersistence(path);
-			persistence.Save(new AppNotificationStateSnapshot(1, 2, new[] { Record(1, "backup", AppNotificationPostingState.Shown) }));
-			persistence.Save(new AppNotificationStateSnapshot(1, 3, new[] { Record(2, "primary", AppNotificationPostingState.Shown) }));
+			persistence.Save(new AppNotificationStateSnapshot(AppNotificationStateSnapshot.CurrentSchemaVersion, 2, new[] { Record(1, "backup", AppNotificationPostingState.Shown) }));
+			persistence.Save(new AppNotificationStateSnapshot(AppNotificationStateSnapshot.CurrentSchemaVersion, 3, new[] { Record(2, "primary", AppNotificationPostingState.Shown) }));
 			File.Delete(path);
 
 			var loaded = persistence.Load();
@@ -276,6 +276,58 @@ public class Given_AppNotificationStateStore
 	}
 
 	[TestMethod]
+	public void When_SchemaV1_State_Is_Loaded_Delivery_Correlation_Defaults_Empty()
+	{
+		var path = Path.GetTempFileName();
+		try
+		{
+			var record = Record(1, "tag", AppNotificationPostingState.Shown);
+			using (var writer = new BinaryWriter(File.Open(path, FileMode.Create, FileAccess.Write, FileShare.None)))
+			{
+				writer.Write(0x554E4F4E);
+				writer.Write(1);
+				writer.Write(2u);
+				writer.Write(1);
+				writer.Write(record.Id);
+				WriteV1String(writer, record.Payload);
+				WriteV1String(writer, record.Tag);
+				WriteV1String(writer, record.Group);
+				writer.Write(record.CreatedUtc.UtcTicks);
+				writer.Write(record.ExpirationUtc.UtcTicks);
+				writer.Write(record.ExpiresOnReboot);
+				writer.Write(false);
+				writer.Write((int)record.Priority);
+				writer.Write(record.SuppressDisplay);
+				writer.Write((int)record.PostingState);
+				writer.Write(false);
+			}
+
+			var loaded = new FileAppNotificationStatePersistence(path).Load();
+
+			Assert.AreEqual(string.Empty, loaded.Records.Single().DeliveryCorrelation);
+		}
+		finally
+		{
+			File.Delete(path);
+		}
+	}
+
+	[TestMethod]
+	public void When_SchemaV2_Shown_Correlation_Is_Migrated_Delivery_Receipt_Is_Preserved()
+	{
+		const string correlation = "0123456789abcdef0123456789abcdef";
+		var correlated = Record(1, "tag", AppNotificationPostingState.Shown) with { DeliveryCorrelation = correlation };
+		var persistence = new InMemoryAppNotificationStatePersistence(new AppNotificationStateSnapshot(2, 2, new[] { correlated }));
+
+		var store = new AppNotificationStateStore(persistence);
+
+		Assert.IsTrue(store.HasDeliveryReceipt(correlation));
+		var next = Reserve(store, "next");
+		Assert.AreEqual(AppNotificationStateSnapshot.CurrentSchemaVersion, persistence.Load().SchemaVersion);
+		Assert.AreEqual(2u, next.Id);
+	}
+
+	[TestMethod]
 	public void When_State_Contains_Duplicate_Ids_Save_Is_Rejected()
 	{
 		var path = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"), "state.bin");
@@ -299,7 +351,7 @@ public class Given_AppNotificationStateStore
 		try
 		{
 			var persistence = new FileAppNotificationStatePersistence(path);
-			persistence.Save(new AppNotificationStateSnapshot(1, 2, new[] { Record(1, "tag", AppNotificationPostingState.Shown) }));
+			persistence.Save(new AppNotificationStateSnapshot(AppNotificationStateSnapshot.CurrentSchemaVersion, 2, new[] { Record(1, "tag", AppNotificationPostingState.Shown) }));
 			var bytes = File.ReadAllBytes(path);
 			bytes[24] = 0xFF;
 			File.WriteAllBytes(path, bytes);
@@ -368,4 +420,11 @@ public class Given_AppNotificationStateStore
 
 	private static AppNotificationProgressSnapshot Snapshot(uint sequence, double value)
 		=> new(sequence, "Title", value, $"{value:P0}", "Status");
+
+	private static void WriteV1String(BinaryWriter writer, string value)
+	{
+		var bytes = global::System.Text.Encoding.UTF8.GetBytes(value);
+		writer.Write(bytes.Length);
+		writer.Write(bytes);
+	}
 }
