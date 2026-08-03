@@ -97,6 +97,12 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 				{
 					WriteRecord(writer, record);
 				}
+				var deliveryReceipts = state.DeliveryReceipts ?? Array.Empty<string>();
+				writer.Write(deliveryReceipts.Count);
+				foreach (var receipt in deliveryReceipts)
+				{
+					WriteString(writer, receipt);
+				}
 				writer.Flush();
 				if (stream.Length > MaxSnapshotBytes)
 				{
@@ -145,7 +151,7 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 			throw new InvalidDataException("Invalid app notification state header.");
 		}
 		var schemaVersion = reader.ReadInt32();
-		if (schemaVersion != AppNotificationStateSnapshot.CurrentSchemaVersion)
+		if (schemaVersion is < 1 or > AppNotificationStateSnapshot.CurrentSchemaVersion)
 		{
 			throw new AppNotificationStateVersionException(schemaVersion);
 		}
@@ -164,18 +170,37 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 		var ids = new HashSet<uint>();
 		for (var index = 0; index < count; index++)
 		{
-			var record = ReadRecord(reader);
+			var record = ReadRecord(reader, schemaVersion);
 			ValidateRecord(record, ids);
 			records.Add(record);
+		}
+		var deliveryReceipts = new List<string>();
+		if (schemaVersion >= 3)
+		{
+			var receiptCount = reader.ReadInt32();
+			if (receiptCount < 0 || receiptCount > MaxRecords)
+			{
+				throw new InvalidDataException("Invalid app notification delivery receipt count.");
+			}
+			var receiptSet = new HashSet<string>(StringComparer.Ordinal);
+			for (var index = 0; index < receiptCount; index++)
+			{
+				var receipt = ReadString(reader);
+				if (receipt.Length == 0 || !receiptSet.Add(receipt))
+				{
+					throw new InvalidDataException("Invalid app notification delivery receipt.");
+				}
+				deliveryReceipts.Add(receipt);
+			}
 		}
 		if (stream.Position != stream.Length)
 		{
 			throw new InvalidDataException("App notification state contains trailing data.");
 		}
-		return new AppNotificationStateSnapshot(schemaVersion, nextId, records);
+		return new AppNotificationStateSnapshot(schemaVersion, nextId, records, deliveryReceipts);
 	}
 
-	private static AppNotificationStateRecord ReadRecord(BinaryReader reader)
+	private static AppNotificationStateRecord ReadRecord(BinaryReader reader, int schemaVersion)
 	{
 		var id = reader.ReadUInt32();
 		var payload = ReadString(reader);
@@ -198,6 +223,7 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 				ReadString(reader),
 				ReadString(reader));
 		}
+		var deliveryCorrelation = schemaVersion >= 2 ? ReadString(reader) : string.Empty;
 		return new AppNotificationStateRecord(
 			id,
 			payload,
@@ -210,7 +236,8 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 			priority,
 			suppressDisplay,
 			postingState,
-			progress);
+			progress,
+			deliveryCorrelation);
 	}
 
 	private static void WriteRecord(BinaryWriter writer, AppNotificationStateRecord record)
@@ -235,6 +262,7 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 			WriteString(writer, progress.ValueStringOverride);
 			WriteString(writer, progress.Status);
 		}
+		WriteString(writer, record.DeliveryCorrelation);
 	}
 
 	private static DateTimeOffset ReadDateTimeOffset(BinaryReader reader)
@@ -300,6 +328,7 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 			encodedBytes += GetEncodedByteCount(record.Payload);
 			encodedBytes += GetEncodedByteCount(record.Tag);
 			encodedBytes += GetEncodedByteCount(record.Group);
+			encodedBytes += GetEncodedByteCount(record.DeliveryCorrelation);
 			encodedBytes += record.BootIdentifier is null ? 0 : GetEncodedByteCount(record.BootIdentifier);
 			if (record.Progress is { } progress)
 			{
@@ -311,6 +340,21 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 			{
 				throw new InvalidDataException("App notification state exceeds the maximum snapshot size.");
 			}
+		}
+		var deliveryReceipts = state.DeliveryReceipts ?? Array.Empty<string>();
+		if (deliveryReceipts.Count > MaxRecords ||
+			deliveryReceipts.Any(receipt => receipt.Length == 0) ||
+			deliveryReceipts.Distinct(StringComparer.Ordinal).Count() != deliveryReceipts.Count)
+		{
+			throw new InvalidDataException("Invalid app notification delivery receipts.");
+		}
+		foreach (var receipt in deliveryReceipts)
+		{
+			encodedBytes += GetEncodedByteCount(receipt);
+		}
+		if (encodedBytes > MaxSnapshotBytes)
+		{
+			throw new InvalidDataException("App notification state exceeds the maximum snapshot size.");
 		}
 	}
 

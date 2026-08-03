@@ -45,7 +45,8 @@ internal sealed record AppNotificationStateRecord(
 	AppNotificationPriority Priority,
 	bool SuppressDisplay,
 	AppNotificationPostingState PostingState,
-	AppNotificationProgressSnapshot? Progress)
+	AppNotificationProgressSnapshot? Progress,
+	string DeliveryCorrelation = "")
 {
 	public AppNotificationEnvelope ToEnvelope()
 		=> new(
@@ -63,11 +64,16 @@ internal sealed record AppNotificationStateRecord(
 internal sealed record AppNotificationStateSnapshot(
 	int SchemaVersion,
 	uint NextId,
-	IReadOnlyList<AppNotificationStateRecord> Records)
+	IReadOnlyList<AppNotificationStateRecord> Records,
+	IReadOnlyList<string>? DeliveryReceipts = null)
 {
-	public const int CurrentSchemaVersion = 1;
+	public const int CurrentSchemaVersion = 3;
 
-	public static AppNotificationStateSnapshot Empty { get; } = new(CurrentSchemaVersion, 1, Array.Empty<AppNotificationStateRecord>());
+	public static AppNotificationStateSnapshot Empty { get; } = new(
+		CurrentSchemaVersion,
+		1,
+		Array.Empty<AppNotificationStateRecord>(),
+		Array.Empty<string>());
 }
 
 internal interface IAppNotificationStatePersistence
@@ -91,11 +97,16 @@ internal sealed class InMemoryAppNotificationStatePersistence : IAppNotification
 	public void Save(AppNotificationStateSnapshot state) => _state = Clone(state);
 
 	private static AppNotificationStateSnapshot Clone(AppNotificationStateSnapshot state)
-		=> state with { Records = state.Records.ToArray() };
+		=> state with
+		{
+			Records = state.Records.ToArray(),
+			DeliveryReceipts = (state.DeliveryReceipts ?? Array.Empty<string>()).ToArray(),
+		};
 }
 
 internal sealed class AppNotificationStateStore
 {
+	private const int MaximumDeliveryReceipts = 10_000;
 	private readonly object _gate = new();
 	private readonly IAppNotificationStatePersistence _persistence;
 	private AppNotificationStateSnapshot _state;
@@ -104,7 +115,7 @@ internal sealed class AppNotificationStateStore
 	{
 		_persistence = persistence ?? throw new ArgumentNullException(nameof(persistence));
 		var loaded = persistence.Load();
-		_state = loaded.SchemaVersion == AppNotificationStateSnapshot.CurrentSchemaVersion
+		_state = loaded.SchemaVersion is >= 1 and <= AppNotificationStateSnapshot.CurrentSchemaVersion
 			? Normalize(loaded)
 			: AppNotificationStateSnapshot.Empty;
 	}
@@ -119,7 +130,8 @@ internal sealed class AppNotificationStateStore
 		AppNotificationPriority priority,
 		bool suppressDisplay,
 		AppNotificationProgressSnapshot? progress,
-		DateTimeOffset now)
+		DateTimeOffset now,
+		string deliveryCorrelation = "")
 	{
 		lock (_gate)
 		{
@@ -137,18 +149,50 @@ internal sealed class AppNotificationStateStore
 				priority,
 				suppressDisplay,
 				AppNotificationPostingState.Posting,
-				progress);
+				progress,
+				deliveryCorrelation);
 			records.Add(record);
-			Commit(new AppNotificationStateSnapshot(
-				AppNotificationStateSnapshot.CurrentSchemaVersion,
-				IncrementId(id),
-				records));
+			Commit(_state with
+			{
+				SchemaVersion = AppNotificationStateSnapshot.CurrentSchemaVersion,
+				NextId = IncrementId(id),
+				Records = records,
+			});
 			return record;
 		}
 	}
 
 	public void MarkShown(uint id)
-		=> UpdateRecord(id, record => record with { PostingState = AppNotificationPostingState.Shown });
+	{
+		lock (_gate)
+		{
+			AppNotificationStateRecord? shown = null;
+			var records = _state.Records.Select(record =>
+			{
+				if (record.Id != id)
+				{
+					return record;
+				}
+				shown = record with { PostingState = AppNotificationPostingState.Shown };
+				return shown;
+			}).ToArray();
+			if (shown is null)
+			{
+				throw new InvalidOperationException($"Notification state record {id} was not found.");
+			}
+
+			var receipts = (_state.DeliveryReceipts ?? Array.Empty<string>()).ToList();
+			if (shown.DeliveryCorrelation.Length > 0 && !receipts.Contains(shown.DeliveryCorrelation, StringComparer.Ordinal))
+			{
+				receipts.Add(shown.DeliveryCorrelation);
+				if (receipts.Count > MaximumDeliveryReceipts)
+				{
+					receipts.RemoveRange(0, receipts.Count - MaximumDeliveryReceipts);
+				}
+			}
+			Commit(_state with { Records = records, DeliveryReceipts = receipts });
+		}
+	}
 
 	public AppNotificationStateRecord BeginReplacement(
 		uint id,
@@ -161,7 +205,8 @@ internal sealed class AppNotificationStateStore
 		AppNotificationPriority priority,
 		bool suppressDisplay,
 		AppNotificationProgressSnapshot? progress,
-		DateTimeOffset now)
+		DateTimeOffset now,
+		string deliveryCorrelation = "")
 	{
 		AppNotificationStateRecord? replacement = null;
 		UpdateRecord(id, record => replacement = new AppNotificationStateRecord(
@@ -176,7 +221,8 @@ internal sealed class AppNotificationStateStore
 			priority,
 			suppressDisplay,
 			AppNotificationPostingState.Updating,
-			progress));
+			progress,
+			deliveryCorrelation));
 		return replacement!;
 	}
 
@@ -220,6 +266,24 @@ internal sealed class AppNotificationStateStore
 
 	public IReadOnlyList<AppNotificationStateRecord> GetByGroup(string group)
 		=> GetRecords(record => IsManaged(record) && record.Group == group);
+
+	public AppNotificationStateRecord? GetByDeliveryCorrelation(string deliveryCorrelation)
+	{
+		ArgumentNullException.ThrowIfNull(deliveryCorrelation);
+		lock (_gate)
+		{
+			return _state.Records.FirstOrDefault(record => IsManaged(record) && record.DeliveryCorrelation == deliveryCorrelation);
+		}
+	}
+
+	public bool HasDeliveryReceipt(string deliveryCorrelation)
+	{
+		ArgumentNullException.ThrowIfNull(deliveryCorrelation);
+		lock (_gate)
+		{
+			return (_state.DeliveryReceipts ?? Array.Empty<string>()).Contains(deliveryCorrelation, StringComparer.Ordinal);
+		}
+	}
 
 	public IReadOnlyList<AppNotificationStateRecord> RemoveById(uint id)
 		=> Remove(record => record.Id == id);
@@ -328,11 +392,25 @@ internal sealed class AppNotificationStateStore
 	}
 
 	private static AppNotificationStateSnapshot Normalize(AppNotificationStateSnapshot state)
-		=> state with
+	{
+		var receipts = (state.DeliveryReceipts ?? Array.Empty<string>())
+			.Concat(state.SchemaVersion < 3
+				? state.Records
+					.Where(record => record.PostingState == AppNotificationPostingState.Shown)
+					.Select(record => record.DeliveryCorrelation)
+				: Array.Empty<string>())
+			.Where(receipt => receipt.Length > 0)
+			.Distinct(StringComparer.Ordinal)
+			.TakeLast(MaximumDeliveryReceipts)
+			.ToArray();
+		return state with
 		{
+			SchemaVersion = AppNotificationStateSnapshot.CurrentSchemaVersion,
 			NextId = state.NextId == 0 ? 1 : state.NextId,
 			Records = state.Records.ToArray(),
+			DeliveryReceipts = receipts,
 		};
+	}
 
 	private static bool IsManaged(AppNotificationStateRecord record)
 		=> record.PostingState is AppNotificationPostingState.Shown or AppNotificationPostingState.Updating;

@@ -127,7 +127,13 @@ public sealed class AppNotificationManager
 	internal void ShowReplacingTagAndGroup(AppNotification notification)
 		=> Show(notification, replaceTagAndGroup: true);
 
-	private void Show(AppNotification notification, bool replaceTagAndGroup)
+	internal void ShowScheduled(AppNotification notification, string deliveryCorrelation)
+	{
+		ArgumentNullException.ThrowIfNull(deliveryCorrelation);
+		Show(notification, replaceTagAndGroup: true, deliveryCorrelation);
+	}
+
+	private void Show(AppNotification notification, bool replaceTagAndGroup, string deliveryCorrelation = "")
 	{
 		if (GetBackend() is not { IsSupported: true } backend)
 		{
@@ -152,6 +158,10 @@ public sealed class AppNotificationManager
 			var activeIds = RecoverPendingOperations(backend);
 			SweepExpired(backend);
 			var state = GetStateStore();
+			if (deliveryCorrelation.Length > 0 && state.HasDeliveryReceipt(deliveryCorrelation))
+			{
+				return;
+			}
 			if (activeIds is not null)
 			{
 				state.ReconcileActiveIds(activeIds);
@@ -170,7 +180,8 @@ public sealed class AppNotificationManager
 					snapshot.Priority,
 					snapshot.SuppressDisplay,
 					progress,
-					DateTimeOffset.UtcNow);
+					DateTimeOffset.UtcNow,
+					deliveryCorrelation);
 				if (!backend.TryUpdate(replacement))
 				{
 					return;
@@ -195,7 +206,8 @@ public sealed class AppNotificationManager
 				snapshot.Priority,
 				snapshot.SuppressDisplay,
 				progress,
-				DateTimeOffset.UtcNow);
+				DateTimeOffset.UtcNow,
+				deliveryCorrelation);
 			var envelope = new AppNotificationEnvelope(
 				record.Id,
 				payload,
