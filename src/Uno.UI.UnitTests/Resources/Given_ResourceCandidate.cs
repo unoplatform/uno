@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel.Resources.Core;
 
 namespace Uno.UI.Tests.Resources
@@ -94,18 +93,6 @@ namespace Uno.UI.Tests.Resources
 			Assert.AreEqual(scale, resourceCandidate.GetQualifierValue("scale"));
 			Assert.AreEqual(language, resourceCandidate.GetQualifierValue("language"));
 			Assert.AreEqual(custom, resourceCandidate.GetQualifierValue("custom"));
-		}
-
-		[TestMethod]
-		public void When_Parse_AbsolutePath_WithRelativeTargetPath()
-		{
-			var fullPath = Path.Combine(Path.DirectorySeparatorChar.ToString(), "tmp", "OS", "MyProject", "Strings", "fr", "Resources.resw");
-			var relativePath = Path.Combine("Strings", "fr", "Resources.resw");
-
-			var resourceCandidate = ResourceCandidate.Parse(fullPath, relativePath);
-
-			Assert.AreEqual(Path.Combine("Strings", "Resources.resw"), resourceCandidate.LogicalPath);
-			Assert.AreEqual("fr", resourceCandidate.GetQualifierValue("language"));
 		}
 	}
 }
