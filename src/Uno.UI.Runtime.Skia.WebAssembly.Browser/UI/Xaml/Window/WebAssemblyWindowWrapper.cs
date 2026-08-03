@@ -113,9 +113,9 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 					? new Rect(0, viewportHeight - occludedHeight, viewportWidth, occludedHeight)
 					: new Rect(0, 0, 0, 0);
 
-				if (_instance!.Log().IsEnabled(LogLevel.Trace))
+				if (wrapper.Log().IsEnabled(LogLevel.Trace))
 				{
-					_instance.Log().Trace($"OnViewportOcclusionChanged: occludedHeight={occludedHeight}, OccludedRect={inputPane.OccludedRect}");
+					wrapper.Log().Trace($"OnViewportOcclusionChanged: occludedHeight={occludedHeight}, OccludedRect={inputPane.OccludedRect}");
 				}
 			}
 		}
