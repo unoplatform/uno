@@ -100,10 +100,7 @@
             Content="RadioButton 1"
             Style="{StaticResource SampleChooserNavRadioButtonStyle}" />
 
-        <!--
-            My MyRadioButton_2
-            android:Style="{StaticResource NativeDefaultRadioButton}"
-        -->
+        <!--  My MyRadioButton_2  -->
         <RadioButton
             x:Name="MyRadioButton_2"
             Margin="0,0,0,16"
