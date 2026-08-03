@@ -2,9 +2,11 @@
 
 using System;
 using Windows.Data.Xml.Dom;
+using Windows.Foundation.Metadata;
 
 namespace Microsoft.Windows.AppNotifications;
 
+[ContractVersion(typeof(AppNotificationsContract), 1 * 0x10000u)]
 public sealed class AppNotification
 {
 	private readonly object _gate = new();
@@ -166,6 +168,23 @@ public sealed class AppNotification
 		}
 	}
 
+	internal AppNotificationSnapshot CaptureSnapshot()
+	{
+		lock (_gate)
+		{
+			return new AppNotificationSnapshot(
+				_id,
+				_payload,
+				_tag,
+				_group,
+				_expiration,
+				_expiresOnReboot,
+				_priority,
+				_suppressDisplay,
+				_progress?.Clone());
+		}
+	}
+
 	internal void SetNotificationId(uint id)
 	{
 		lock (_gate)
@@ -174,3 +193,14 @@ public sealed class AppNotification
 		}
 	}
 }
+
+internal sealed record AppNotificationSnapshot(
+	uint Id,
+	string Payload,
+	string Tag,
+	string Group,
+	DateTimeOffset Expiration,
+	bool ExpiresOnReboot,
+	AppNotificationPriority Priority,
+	bool SuppressDisplay,
+	AppNotificationProgressData? Progress);

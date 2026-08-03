@@ -205,6 +205,7 @@
 	<ItemGroup Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' ">
 		<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.8.0" />
 		<PackageReference Update="Xamarin.AndroidX.Browser" Version="1.10.0.1" />
+		<PackageReference Update="Xamarin.AndroidX.Core" Version="1.19.0.1" />
 		<PackageReference Update="Xamarin.AndroidX.Core.SplashScreen" Version="1.2.0.3" />
 		<PackageReference Update="Xamarin.AndroidX.DocumentFile" Version="1.1.0.4" />
 		<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.4.0.6" />
