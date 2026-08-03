@@ -62,11 +62,17 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	{
 		try
 		{
-			var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
+			var xamlRoot = WebAssemblyWindowWrapper.Instance?.XamlRoot;
+			if (xamlRoot is null)
+			{
+				// Fired before the window/XamlRoot exists or during teardown: no managed focus to re-sync.
+				return;
+			}
+
 			// Fired only for browser-initiated blurs of the shared native input (managed-initiated
 			// blurs are suppressed on the JS side). In that case managed focus is still stale on the
 			// TextBox, so clearing it here is what finally raises LostFocus and re-syncs FocusManager.
-			var focused = FocusManager.GetFocusedElement(xamlRoot!);
+			var focused = FocusManager.GetFocusedElement(xamlRoot);
 			if (typeof(BrowserInvisibleTextBoxViewExtension).Log().IsEnabled(LogLevel.Trace))
 			{
 				typeof(BrowserInvisibleTextBoxViewExtension).Log().Trace($"OnNativeBlur: focused element is {focused?.GetType().Name ?? "null"}");
