@@ -6,12 +6,6 @@ uid: Uno.Development.FeatureFlags
 
 Uno provides a set of feature flags that can be set early in an app's startup to control its behavior. Some of these flags are for backward compatibility, some of them provide fine-grained customizability of a particular feature, and some of them allow to toggle between more 'WinUI-like' and more 'native-like' behavior in a particular context.
 
-## WinUI styles default
-
-By default, Uno favors the default WinUI XAML styles over the native styles for Button, Slider, ComboBox, etc...
-
-This can be changed using `Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles`.
-
 ## Disabling accessibility text scaling (Android and iOS)
 
 By default, Uno automatically enables accessibility text scaling on iOS and Android devices. However, to have more control, the feature flag `Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor` was added to control.

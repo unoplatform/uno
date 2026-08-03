@@ -6,20 +6,9 @@ uid: Uno.Controls.CommandBar
 
 The `CommandBar` in **Uno** is designed to be used the same way you would use the `CommandBar` on **WinUI**. In most cases, you should refer to the [official `CommandBar` documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.commandbar).
 
-This document exists to highlight some of the differences you might encounter when working with the native mode of `CommandBar` on either **iOS** or **Android**.
+This document exists to highlight some of the differences you might encounter when working with `CommandBar` on **iOS** or **Android**.
 
-## Modes
-
-The `CommandBar` supports 2 different modes:
-
-| Mode    | Style                    |
-|---------|--------------------------|
-| Windows | `XamlDefaultCommandBar`  |
-| Native  | `NativeDefaultCommandBar`|
-
-### Windows
-
-This mode replicates **WinUI**'s `CommandBar`. It is templatable and supports a template that's almost identical to **WinUI**'s default `CommandBar`.
+The `CommandBar` replicates **WinUI**'s `CommandBar`. It is templatable and supports a template that's almost identical to **WinUI**'s default `CommandBar`, based on the `XamlDefaultCommandBar` style.
 
 ![CommandBar Example - Windows](assets/commandbar/windows/example.png)
 
@@ -28,36 +17,6 @@ This mode replicates **WinUI**'s `CommandBar`. It is templatable and supports a 
 ```csharp
 <Style TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}" />
 ```
-
-#### Remarks
-
-- This mode hasn't been extensively tested.
-- We usually avoid using this mode, and prefer to use the Native one instead.
-
-### Native
-
-This mode is the preferred one and is enabled by default. It uses platform-specific controls to ensure a more native user experience.
-
-![CommandBar Example - Android](assets/commandbar/android/example.png)
-
-![CommandBar Example - iOS](assets/commandbar/ios/example.png)
-
-| Platform | Native control      | Benefits                                              |
-|----------|---------------------|-------------------------------------------------------|
-| Android  | `Toolbar`          | Native pressed states (ripple), native overflow menu. |
-| iOS      | `UINavigationBar` | Transitions when navigating  between pages.   |
-
-The rest of this document will exclusively cover this mode.
-
-#### Usage Example
-
-```csharp
-<Style TargetType="CommandBar" BasedOn="{StaticResource NativeDefaultCommandBar}" />
-```
-
-#### Remarks
-
-In this mode, the `CommandBar` can't be fully customized like other templatable controls would. Additionally, you can't customize the visual states of either the `CommandBar` or its `AppBarButton`s.
 
 ### Padding
 

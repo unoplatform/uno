@@ -96,11 +96,6 @@ The `Private.Infrastructure.TestServices.WindowHelper` class exposes several sta
 - `Task WindowHelper.WaitForIdle()`: returns a task that will complete when the idle dispatcher is raised, roughly indicating that the UI thread 'isn't doing anything'. Await this to wait for the UI thread to 'settle' without a specific condition.
 - `Task WindowHelper.WaitFor(Func<bool> condition)`: returns a task that will complete once `condition` is met, or throw an exception if it times out. Await this to wait for the UI to reach a specific expected state.
 
-#### StyleHelper
-
-- `IDisposable UseNativeStyle<T>() where T : Control`: This allows you to override the style settings to use a native default style for the duration of a test. Eg, `using (UseNativeStyle<Slider>()) { }` will cause all `Slider` elements to use the native style by default.
-- `IDisposable UseNativeFrameNavigation()`: This is a helper which sets native styles as default for the control types implicated in frame navigation (`Frame`, `CommandBar` and `AppBarButton`). This is useful for testing native frame navigation.
-
 #### Useful methods coming from `Uno.UI` itself
 
  The `FindFirstChild<T>` and `FindFirstParent<T>` extension methods are helpful in the common case that you want to retrieve a descendant or ancestor element by traversing the visual tree. They optionally take a condition to be met.
