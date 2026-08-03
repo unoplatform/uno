@@ -86,6 +86,9 @@ Uno.SDK single-project model.
 - **Composition:** `Uno.CompositionConfiguration.Options.UseCompositorThread` (the Android
   RenderNode compositor thread). Remove the flag; Skia composition needs no dedicated
   native render thread.
+- **Deprecated UIKit disposal helper:** `Uno.Foundation.NSObjectExtensions.ValidateDispose`,
+  deprecated since Uno 5.x. Remove the call from your `NSObject`/`UIView` `Dispose`
+  overrides — Skia does not host native views, so there is nothing to validate.
 - **Legacy WebAssembly JavaScript interop:** `Uno.Foundation.Interop.IJSObject`,
   `IJSObjectMetadata`, `JSObjectHandle`, `JSObject`, and
   `WebAssemblyRuntime.InvokeJSWithInterop(FormattableString)` — the Uno-only
@@ -113,7 +116,8 @@ Skia/WinUI behavior:
 - **iOS:** `Image.LegacyIosAlignment`,
   `FrameworkElement.IOsAllowSuperviewNeedsLayoutWhileInLayoutSubViews`,
   `CommandBar.AllowNativePresenterContent`, `DatePicker.UseLegacyStyle`,
-  `TimePicker.UseLegacyStyle`.
+  `TimePicker.UseLegacyStyle`, `UIElement.FailOnNSObjectExtensionsValidateDispose`
+  (see `NSObjectExtensions.ValidateDispose` above).
 - **WebAssembly:** `Interop.ForceJavascriptInterop`, `UIElement.AssignDOMXamlName`,
   `UIElement.AssignDOMXamlProperties`, `TextBlock.IsMeasureCacheEnabled`,
   `Cursors.UseHandForInteraction` (the "hand" cursor for interactive controls is

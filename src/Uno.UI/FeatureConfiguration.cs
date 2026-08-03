@@ -526,11 +526,6 @@ namespace Uno.UI
 			/// the values change subsequently. This restriction doesn't apply to debug Uno builds.
 			/// </remarks>
 			public static bool AssignDOMXamlProperties { get; set; }
-
-			/// <summary>
-			/// Enables failure when <see cref="Foundation.NSObjectExtensions.ValidateDispose"/> is invoked.
-			/// </summary>
-			public static bool FailOnNSObjectExtensionsValidateDispose { get; set; }
 		}
 
 		public static class WebView2
