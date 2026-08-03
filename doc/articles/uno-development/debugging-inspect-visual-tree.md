@@ -49,8 +49,6 @@ You can configure Uno to annotate the DOM with the values of common XAML propert
 
 ```csharp
 #if DEBUG && __WASM__
-    // Annotate generated DOM elements with x:Name
-    Uno.UI.FeatureConfiguration.UIElement.AssignDOMXamlName = true;
     // Annotate generated DOM elements with commonly-used XAML properties (height/width, alignment etc)
     Uno.UI.FeatureConfiguration.UIElement.AssignDOMXamlProperties = true;
 #endif

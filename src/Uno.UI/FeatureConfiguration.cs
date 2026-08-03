@@ -511,13 +511,6 @@ namespace Uno.UI
 		public static class UIElement
 		{
 			/// <summary>
-			/// [WebAssembly Only] Enable the assignation of the "xamlname", "xuid" and "xamlautomationid" attributes on DOM elements created
-			/// from the XAML visual tree. This enables tools such as Puppeteer to select elements
-			/// in the DOM for automation purposes.
-			/// </summary>
-			public static bool AssignDOMXamlName { get; set; }
-
-			/// <summary>
 			/// [WebAssembly Only] Enable UIElement.ToString() to return the element's unique ID
 			/// </summary>
 			public static bool RenderToStringWithId { get; set; } = true;

@@ -2396,6 +2396,8 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control::UseDeferredOnApplyTemplate()" reason="Removed Control.UseDeferredOnApplyTemplate legacy flag; OnApplyTemplate deferral is now a compile-time platform decision (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Popup::EnableLightDismissByDefault()" reason="Removed Popup.EnableLightDismissByDefault legacy flag; Popup.IsLightDismissEnabled always defaults to false (WinUI-aligned) (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBox::UseOverlayOnSkia()" reason="Removed TextBox.UseOverlayOnSkia legacy flag; the Skia-based TextBox is always used (#2053, breaking changes for 7.0)" />
+		  <!-- Residual dead native-renderer FeatureConfiguration flags removed (#2125/#2052, breaking changes for 7.0). -->
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::AssignDOMXamlName()" reason="Removed UIElement.AssignDOMXamlName flag; the WASM DOM annotation it gated no longer exists (#2125/#2052, breaking changes for 7.0)" />
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
 		  <!-- BEGIN WinUI sync: WinRT IVector.Size replaced by ICollection.Count -->
 		  <Member fullName="System.UInt32 Microsoft.UI.Composition.CompositionColorGradientStopCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
@@ -2663,6 +2665,9 @@
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Popup.set_EnableLightDismissByDefault(System.Boolean value)" reason="Removed Popup.EnableLightDismissByDefault legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBox.get_UseOverlayOnSkia()" reason="Removed TextBox.UseOverlayOnSkia legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/TextBox.set_UseOverlayOnSkia(System.Boolean value)" reason="Removed TextBox.UseOverlayOnSkia legacy flag (#2053, breaking changes for 7.0)" />
+		  <!-- Residual dead native-renderer flag accessors: paired with the removed properties (see <Properties> above) (#2125/#2052). -->
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement.get_AssignDOMXamlName()" reason="Removed UIElement.AssignDOMXamlName flag (#2125/#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/UIElement.set_AssignDOMXamlName(System.Boolean value)" reason="Removed UIElement.AssignDOMXamlName flag (#2125/#2052, breaking changes for 7.0)" />
 		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
