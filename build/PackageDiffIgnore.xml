@@ -2126,6 +2126,9 @@
 		  <Member fullName="Uno.UI.FeatureConfiguration/Interop" reason="Removed empty FeatureConfiguration.Interop holder after deleting ForceJavascriptInterop (#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/UIElement" reason="Removed empty FeatureConfiguration.UIElement holder after deleting its last WASM DOM flags (#2125/#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Shape" reason="Removed empty FeatureConfiguration.Shape holder after deleting its WASM getBBox/svg flags (#2052, breaking changes for 7.0)" />
+		  <!-- Native default-styles system removed: the styles templated native views that no longer exist (#2052, breaking changes for 7.0). -->
+		  <Member fullName="Uno.UI.FeatureConfiguration/Style" reason="Removed FeatureConfiguration.Style holder along with the native default-styles system it gated (#2052, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Converters.UnoNativeDefaultProgressBarReverseBoolConverter" reason="Removed Uno-internal converter used only by the deleted NativeDefaultProgressBar style (#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Control" reason="Removed empty FeatureConfiguration.Control holder after deleting UseLegacyContentAlignment (BC45, breaking changes for 7.0)" />
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.DropDownButtonAutomationPeer" reason="Moved to correct namespace Microsoft.UI.Xaml.Automation.Peers" />
@@ -2414,6 +2417,8 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Shape::WasmCacheBBoxCalculationResult()" reason="Removed Shape.WasmCacheBBoxCalculationResult flag; the WASM getBBox cache it gated no longer exists (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Int32 Uno.UI.FeatureConfiguration/Shape::WasmBBoxCacheSize()" reason="Removed Shape.WasmBBoxCacheSize flag; the WASM getBBox cache it sized no longer exists (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase::UseNativePopup()" reason="Removed FlyoutBase.UseNativePopup; the native popup presentation it selected no longer exists (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Style::UseUWPDefaultStyles()" reason="Removed Style.UseUWPDefaultStyles flag; the native default styles it opted out of no longer exist (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Collections.Generic.IDictionary`2&lt;System.Type,System.Boolean&gt; Uno.UI.FeatureConfiguration/Style::UseUWPDefaultStylesOverride()" reason="Removed Style.UseUWPDefaultStylesOverride; the per-type native style opt-in it carried no longer exists (#2052, breaking changes for 7.0)" />
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
 		  <!-- BEGIN WinUI sync: WinRT IVector.Size replaced by ICollection.Count -->
 		  <Member fullName="System.UInt32 Microsoft.UI.Composition.CompositionColorGradientStopCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
@@ -2708,6 +2713,15 @@
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Shape.set_WasmBBoxCacheSize(System.Int32 value)" reason="Removed Shape.WasmBBoxCacheSize flag (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.get_UseNativePopup()" reason="Removed FlyoutBase.UseNativePopup (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.set_UseNativePopup(System.Boolean value)" reason="Removed FlyoutBase.UseNativePopup (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Style.get_UseUWPDefaultStyles()" reason="Removed Style.UseUWPDefaultStyles flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Style.set_UseUWPDefaultStyles(System.Boolean value)" reason="Removed Style.UseUWPDefaultStyles flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Collections.Generic.IDictionary`2&lt;System.Type,System.Boolean&gt; Uno.UI.FeatureConfiguration/Style.get_UseUWPDefaultStylesOverride()" reason="Removed Style.UseUWPDefaultStylesOverride (get-only) (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Style.ConfigureNativeFrameNavigation()" reason="Removed Style.ConfigureNativeFrameNavigation(); native frame navigation no longer exists (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Style.SetUWPDefaultStylesOverride(System.Boolean useUWPDefaultStyle)" reason="Removed Style.SetUWPDefaultStylesOverride&lt;TControl&gt;(); the per-type native style opt-in it wrote no longer exists (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Style.RegisterDefaultStyleForType(System.Type type, Uno.UI.IXamlResourceDictionaryProvider dictionaryProvider, System.Boolean isNative)" reason="RegisterDefaultStyleForType lost its isNative parameter with the native default styles; the 2-parameter overload replaces it (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.Converters.UnoNativeDefaultProgressBarReverseBoolConverter..ctor()" reason="Removed Uno-internal converter used only by the deleted NativeDefaultProgressBar style (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Object Uno.UI.Converters.UnoNativeDefaultProgressBarReverseBoolConverter.Convert(System.Object value, System.Type targetType, System.Object parameter)" reason="Removed Uno-internal converter used only by the deleted NativeDefaultProgressBar style (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Object Uno.UI.Converters.UnoNativeDefaultProgressBarReverseBoolConverter.ConvertBack(System.Object value, System.Type targetType, System.Object parameter)" reason="Removed Uno-internal converter used only by the deleted NativeDefaultProgressBar style (#2052, breaking changes for 7.0)" />
 		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />

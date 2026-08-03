@@ -86,6 +86,25 @@ Uno.SDK single-project model.
 - **Native flyout opt-in:** `FlyoutBase.UseNativePopup`, including its conditional-XAML forms
   (`android:UseNativePopup` / `ios:UseNativePopup`). Remove the assignment — flyouts always use
   the WinUI presentation.
+- **Native default styles:** the whole `Generic.Native.xaml` dictionary is gone, so the
+  `NativeDefaultButton`, `NativeDefaultCheckBox`, `NativeDefaultCommandBar`,
+  `NativeDefaultAppBarButton`, `NativeDefaultFrame`, `NativeDefaultPivot`,
+  `NativeDefaultProgressBar`, `NativeDefaultSlider`, `NativeDefaultTextBox`,
+  `NativeDefaultToggleSwitch`, `NativeDefaultSplitViewOpenPaneLength`, `AndroidButtonStyle`,
+  `AndroidCheckBoxStyle`, `AndroidRadioButtonStyle`, `iOSButtonStyle`,
+  `IosPickerFlyoutTextButtonStyle`, `LeftDrawerSplitViewStyle`, and
+  `RightDrawerSplitViewStyle` resource keys no longer resolve. These styles templated native
+  views, so there is no Skia equivalent — drop the `Style="{StaticResource NativeDefault…}"`
+  and the control falls back to the WinUI default style it already used when no native style
+  was registered. `Uno.UI.Converters.UnoNativeDefaultProgressBarReverseBoolConverter` goes
+  with them.
+- **Native-style declaration:** the `not_win:IsNativeStyle="True"` attribute on a `Style` is no
+  longer recognized. A third-party dictionary that still carries it now **fails the XAML
+  build** instead of silently registering a second, native default style — remove the
+  attribute. Relatedly, the Uno-only
+  `Style.RegisterDefaultStyleForType(Type, IXamlResourceDictionaryProvider, bool)` loses its
+  `isNative` parameter; it is `[EditorBrowsable(Never)]` and normally only called from
+  XAML-generated code, so rebuilding regenerates the correct call.
 - **Composition:** `Uno.CompositionConfiguration.Options.UseCompositorThread` (the Android
   RenderNode compositor thread). Remove the flag; Skia composition needs no dedicated
   native render thread.
@@ -128,7 +147,9 @@ Skia/WinUI behavior:
   `Cursors.UseHandForInteraction` (the "hand" cursor for interactive controls is
   now never used).
 - **Native (Android + iOS):** `ListViewBase.AnimateScrollIntoView`.
-- **Native styling:** `Style.UseUWPDefaultStyles`, `Style.ConfigureNativeFrameNavigation()`.
+- **Native styling:** the whole `Style` holder — `Style.UseUWPDefaultStyles`,
+  `Style.UseUWPDefaultStylesOverride`, `Style.SetUWPDefaultStylesOverride<TControl>()`, and
+  `Style.ConfigureNativeFrameNavigation()`. The WinUI default styles are now the only ones.
 - **Skia overlay:** `TextBox.UseOverlayOnSkia`.
 
 `WebView2.IsInspectable` is also removed; it was an obsolete alias, so switch to
