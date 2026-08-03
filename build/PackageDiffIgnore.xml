@@ -2129,6 +2129,9 @@
 		  <!-- Native default-styles system removed: the styles templated native views that no longer exist (#2052, breaking changes for 7.0). -->
 		  <Member fullName="Uno.UI.FeatureConfiguration/Style" reason="Removed FeatureConfiguration.Style holder along with the native default-styles system it gated (#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Converters.UnoNativeDefaultProgressBarReverseBoolConverter" reason="Removed Uno-internal converter used only by the deleted NativeDefaultProgressBar style (#2052, breaking changes for 7.0)" />
+		  <!-- Toolkit attached properties whose only consumer was the native iOS MenuFlyout presentation (#2052, breaking changes for 7.0). -->
+		  <Member fullName="Uno.UI.Toolkit.MenuFlyoutItemExtensions" reason="Removed MenuFlyoutItemExtensions; its IsDestructive attached property was read only by the native iOS MenuFlyout presentation (#2052, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Toolkit.MenuFlyoutExtensions" reason="Removed MenuFlyoutExtensions; its CancelTextIosOverride attached property was read only by the native iOS MenuFlyout presentation (#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Control" reason="Removed empty FeatureConfiguration.Control holder after deleting UseLegacyContentAlignment (BC45, breaking changes for 7.0)" />
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.DropDownButtonAutomationPeer" reason="Moved to correct namespace Microsoft.UI.Xaml.Automation.Peers" />
@@ -2419,6 +2422,8 @@
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase::UseNativePopup()" reason="Removed FlyoutBase.UseNativePopup; the native popup presentation it selected no longer exists (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Style::UseUWPDefaultStyles()" reason="Removed Style.UseUWPDefaultStyles flag; the native default styles it opted out of no longer exist (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Collections.Generic.IDictionary`2&lt;System.Type,System.Boolean&gt; Uno.UI.FeatureConfiguration/Style::UseUWPDefaultStylesOverride()" reason="Removed Style.UseUWPDefaultStylesOverride; the per-type native style opt-in it carried no longer exists (#2052, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Uno.UI.Toolkit.MenuFlyoutItemExtensions::IsDestructiveProperty()" reason="Removed MenuFlyoutItemExtensions.IsDestructive; only the native iOS MenuFlyout presentation read it (#2052, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Uno.UI.Toolkit.MenuFlyoutExtensions::CancelTextIosOverrideProperty()" reason="Removed MenuFlyoutExtensions.CancelTextIosOverride; only the native iOS MenuFlyout presentation read it (#2052, breaking changes for 7.0)" />
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
 		  <!-- BEGIN WinUI sync: WinRT IVector.Size replaced by ICollection.Count -->
 		  <Member fullName="System.UInt32 Microsoft.UI.Composition.CompositionColorGradientStopCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
@@ -2722,6 +2727,13 @@
 		  <Member fullName="System.Void Uno.UI.Converters.UnoNativeDefaultProgressBarReverseBoolConverter..ctor()" reason="Removed Uno-internal converter used only by the deleted NativeDefaultProgressBar style (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Object Uno.UI.Converters.UnoNativeDefaultProgressBarReverseBoolConverter.Convert(System.Object value, System.Type targetType, System.Object parameter)" reason="Removed Uno-internal converter used only by the deleted NativeDefaultProgressBar style (#2052, breaking changes for 7.0)" />
 		  <Member fullName="System.Object Uno.UI.Converters.UnoNativeDefaultProgressBarReverseBoolConverter.ConvertBack(System.Object value, System.Type targetType, System.Object parameter)" reason="Removed Uno-internal converter used only by the deleted NativeDefaultProgressBar style (#2052, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Uno.UI.Toolkit.MenuFlyoutItemExtensions.get_IsDestructiveProperty()" reason="Removed MenuFlyoutItemExtensions.IsDestructive (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.Toolkit.MenuFlyoutItemExtensions.SetIsDestructive(Microsoft.UI.Xaml.Controls.MenuFlyoutItem menuFlyoutItem, System.Boolean isDestructive)" reason="Removed MenuFlyoutItemExtensions.IsDestructive (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.Toolkit.MenuFlyoutItemExtensions.GetIsDestructive(Microsoft.UI.Xaml.Controls.MenuFlyoutItem menuFlyoutItem)" reason="Removed MenuFlyoutItemExtensions.IsDestructive (#2052, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Uno.UI.Toolkit.MenuFlyoutExtensions.get_CancelTextIosOverrideProperty()" reason="Removed MenuFlyoutExtensions.CancelTextIosOverride (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.String Uno.UI.Toolkit.MenuFlyoutExtensions.GetCancelTextIosOverride(Microsoft.UI.Xaml.Controls.MenuFlyout obj)" reason="Removed MenuFlyoutExtensions.CancelTextIosOverride (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.Toolkit.MenuFlyoutExtensions.SetCancelTextIosOverride(Microsoft.UI.Xaml.Controls.MenuFlyout obj, System.String value)" reason="Removed MenuFlyoutExtensions.CancelTextIosOverride (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.Toolkit.MenuFlyoutExtensions..ctor()" reason="Removed MenuFlyoutExtensions (non-static class, implicit public constructor) (#2052, breaking changes for 7.0)" />
 		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
