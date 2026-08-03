@@ -83,6 +83,9 @@ Uno.SDK single-project model.
   `IShadowChildrenProvider`, `CompositorThread`,
   `Uno.UI.Composition.ICompositionRoot`. Use the WinUI control
   (`ListView`/`Frame`/`Popup`/…) — everything renders via Skia.
+- **Native flyout opt-in:** `FlyoutBase.UseNativePopup`, including its conditional-XAML forms
+  (`android:UseNativePopup` / `ios:UseNativePopup`). Remove the assignment — flyouts always use
+  the WinUI presentation.
 - **Composition:** `Uno.CompositionConfiguration.Options.UseCompositorThread` (the Android
   RenderNode compositor thread). Remove the flag; Skia composition needs no dedicated
   native render thread.
