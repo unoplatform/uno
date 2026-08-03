@@ -150,6 +150,36 @@ internal sealed class AppNotificationStateStore
 	public void MarkShown(uint id)
 		=> UpdateRecord(id, record => record with { PostingState = AppNotificationPostingState.Shown });
 
+	public AppNotificationStateRecord BeginReplacement(
+		uint id,
+		string payload,
+		string tag,
+		string group,
+		DateTimeOffset expiration,
+		bool expiresOnReboot,
+		string? bootIdentifier,
+		AppNotificationPriority priority,
+		bool suppressDisplay,
+		AppNotificationProgressSnapshot? progress,
+		DateTimeOffset now)
+	{
+		AppNotificationStateRecord? replacement = null;
+		UpdateRecord(id, record => replacement = new AppNotificationStateRecord(
+			id,
+			payload,
+			tag,
+			group,
+			now.ToUniversalTime(),
+			expiration.ToUniversalTime(),
+			expiresOnReboot,
+			expiresOnReboot ? bootIdentifier : null,
+			priority,
+			suppressDisplay,
+			AppNotificationPostingState.Updating,
+			progress));
+		return replacement!;
+	}
+
 	public void Abort(uint id)
 		=> Remove(record => record.Id == id);
 
