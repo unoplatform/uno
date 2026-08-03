@@ -156,11 +156,32 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void SetupInlines();
 
-		internal void InvalidateInlines(bool updateText)
+		internal void InvalidateInlines(bool updateText) => InvalidateInlines(updateText, knownText: null);
+
+		internal void InvalidateInlines(
+			string knownText,
+			IReadOnlyList<Inline> removed,
+			IReadOnlyList<Inline> inserted)
+			=> InvalidateInlines(updateText: true, knownText, removed, inserted);
+
+		internal void InvalidateInlinesWithoutTextUpdate(
+			IReadOnlyList<Inline> removed,
+			IReadOnlyList<Inline> inserted)
+			=> InvalidateInlines(updateText: false, knownText: null, removed, inserted);
+
+		private void InvalidateInlines(
+			bool updateText,
+			string knownText,
+			IReadOnlyList<Inline> removed = null,
+			IReadOnlyList<Inline> inserted = null)
 		{
 			if (updateText)
 			{
-				if (Inlines.Count == 1 && Inlines[0] is Run run)
+				if (knownText is not null)
+				{
+					_inlinesText = knownText;
+				}
+				else if (Inlines.Count == 1 && Inlines[0] is Run run)
 				{
 					_inlinesText = run.Text;
 				}
@@ -174,7 +195,19 @@ namespace Microsoft.UI.Xaml.Controls
 					Text = _inlinesText;
 				}
 
-				UpdateHyperlinks();
+				if (removed is null || inserted is null)
+				{
+					UpdateHyperlinks();
+				}
+				else
+				{
+					UpdateHyperlinks(removed, inserted);
+				}
+				Inlines.InvalidateTraversedTree();
+			}
+			else if (removed is not null && inserted is not null)
+			{
+				UpdateHyperlinks(removed, inserted);
 				Inlines.InvalidateTraversedTree();
 			}
 
@@ -1269,6 +1302,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private readonly ObservableCollection<Hyperlink> _hyperlinks = new();
+		private readonly HashSet<Hyperlink> _hyperlinkSet = new();
 
 		private void HyperlinksOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RecalculateSubscribeToPointerEvents();
 
@@ -1297,17 +1331,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 					HyperlinkOver = null;
 					_hyperlinks.Clear();
+					_hyperlinkSet.Clear();
 				}
 
 				return;
 			}
 
 			HyperlinkOver = null;
-			var previousHyperLinks = _hyperlinks.ToHashSet();
+			var previousHyperLinks = new HashSet<Hyperlink>(_hyperlinkSet);
 			_hyperlinks.Clear();
+			_hyperlinkSet.Clear();
 			foreach (var hyperlink in Inlines.TraversedTree.preorderTree.OfType<Hyperlink>())
 			{
-				_hyperlinks.Add(hyperlink);
+				if (_hyperlinkSet.Add(hyperlink))
+				{
+					_hyperlinks.Add(hyperlink);
+				}
 				previousHyperLinks.Remove(hyperlink);
 			}
 
@@ -1315,6 +1354,52 @@ namespace Microsoft.UI.Xaml.Controls
 			foreach (var removed in previousHyperLinks)
 			{
 				removed.AbortAllPointerState();
+			}
+		}
+
+		private void UpdateHyperlinks(IReadOnlyList<Inline> removed, IReadOnlyList<Inline> inserted)
+		{
+			HyperlinkOver = null;
+			var changedHyperlinks = new List<Hyperlink>();
+			foreach (var inline in removed)
+			{
+				CollectHyperlinks(inline, changedHyperlinks);
+			}
+			foreach (var hyperlink in changedHyperlinks)
+			{
+				if (_hyperlinkSet.Remove(hyperlink))
+				{
+					_hyperlinks.Remove(hyperlink);
+					hyperlink.AbortAllPointerState();
+				}
+			}
+
+			changedHyperlinks.Clear();
+			foreach (var inline in inserted)
+			{
+				CollectHyperlinks(inline, changedHyperlinks);
+			}
+			foreach (var hyperlink in changedHyperlinks)
+			{
+				if (_hyperlinkSet.Add(hyperlink))
+				{
+					_hyperlinks.Add(hyperlink);
+				}
+			}
+		}
+
+		private static void CollectHyperlinks(Inline inline, List<Hyperlink> hyperlinks)
+		{
+			if (inline is Hyperlink hyperlink)
+			{
+				hyperlinks.Add(hyperlink);
+			}
+			if (inline is Span span)
+			{
+				foreach (var child in span.Inlines)
+				{
+					CollectHyperlinks(child, hyperlinks);
+				}
 			}
 		}
 

@@ -651,6 +651,28 @@ namespace Uno.UI
 #endif
 		}
 
+		public static class RichEditBox
+		{
+			private const int MaximumRtfImportCharacters = 16 * 1024 * 1024;
+			private static int _maxRtfImportCharacters = 8 * 1024 * 1024;
+
+			/// <summary>
+			/// Gets or sets the maximum decoded character count accepted by one RichEditBox RTF or
+			/// clipboard import. The default is 8,388,608 characters.
+			/// </summary>
+			/// <remarks>
+			/// This safety policy is independent of <see cref="Microsoft.UI.Xaml.Controls.RichEditBox.MaxLength"/>.
+			/// Values must be between 1 and 16,777,216 characters.
+			/// </remarks>
+			public static int MaxRtfImportCharacters
+			{
+				get => _maxRtfImportCharacters;
+				set => _maxRtfImportCharacters = value is > 0 and <= MaximumRtfImportCharacters
+					? value
+					: throw new ArgumentOutOfRangeException(nameof(value));
+			}
+		}
+
 		public static class ScrollViewer
 		{
 			/// <summary>

@@ -8,8 +8,10 @@
 		private static isInSelectionChange: boolean;
 		private static acceptsReturn: boolean;
 		private static isComposing: boolean;
+		private static compositionStart: number = 0;
 		private static suppressNextInput: boolean;
 		private static enterHandledByKeyDown: boolean;
+		private static compositionGeneration: number = 0;
 
 		private static waitingAsyncOnSelectionChange: boolean;
 		private static nextSelectionStart: number;
@@ -20,6 +22,16 @@
 		// Text changes are synced via the oninput handler instead.
 		private static readonly ANDROID_IME_KEYCODE = 229;
 
+		public static getNativePasteSourceLimit(): number {
+			BrowserInvisibleTextBoxViewExtension.initialize();
+			return BrowserInvisibleTextBoxViewExtension._exports.GetNativePasteSourceLimit();
+		}
+
+		public static onNativePaste(source: string): void {
+			BrowserInvisibleTextBoxViewExtension.initialize();
+			BrowserInvisibleTextBoxViewExtension._exports.OnNativePaste(source);
+		}
+
 		public static initialize() {
 			if (BrowserInvisibleTextBoxViewExtension._exports == undefined) {
 				const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
@@ -29,7 +41,7 @@
 
 				document.onselectionchange = () => {
 					let input = document.activeElement;
-					if (input instanceof HTMLInputElement) {
+					if (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) {
 						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
 
 						if (BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange) {
@@ -59,6 +71,7 @@
 			}
 
 			input.id = BrowserInvisibleTextBoxViewExtension.inputElementId;
+			input.dataset.unoAcceptsReturn = acceptsReturn ? "true" : "false";
 			input.tabIndex = -1;
 			input.spellcheck = false;
 			input.style.whiteSpace = "pre-wrap";
@@ -99,7 +112,10 @@
 			};
 
 			input.onpaste = ev => {
-				BrowserInvisibleTextBoxViewExtension._exports.OnNativePaste(ev.clipboardData.getData("text"));
+				const source = ev.clipboardData.getData("text");
+				const sourceLimit = BrowserInvisibleTextBoxViewExtension._exports.GetNativePasteSourceLimit();
+				BrowserInvisibleTextBoxViewExtension._exports.OnNativePaste(
+					source.length > sourceLimit ? source.substring(0, sourceLimit) : source);
 				ev.preventDefault();
 			};
 
@@ -115,22 +131,33 @@
 
 			BrowserInvisibleTextBoxViewExtension.attachTextInputKeyHandlers(input, acceptsReturn);
 
+			let activeCompositionGeneration = 0;
 			input.addEventListener("compositionstart", () => {
+				activeCompositionGeneration = ++BrowserInvisibleTextBoxViewExtension.compositionGeneration;
 				BrowserInvisibleTextBoxViewExtension.isComposing = true;
+				BrowserInvisibleTextBoxViewExtension.compositionStart = input.selectionStart ?? 0;
 				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStarted();
 			});
 
 			input.addEventListener("compositionupdate", (ev: CompositionEvent) => {
+				if (activeCompositionGeneration !== BrowserInvisibleTextBoxViewExtension.compositionGeneration) {
+					return;
+				}
 				// Use input.selectionStart for cursor position when available,
 				// as the IME may place the caret within the preedit string.
 				const selectionStart = input.selectionStart;
 				const cursorPosition = selectionStart === null
 					? ev.data.length
-					: Math.max(0, Math.min(selectionStart, ev.data.length));
+					: Math.max(0, Math.min(
+						selectionStart - BrowserInvisibleTextBoxViewExtension.compositionStart,
+						ev.data.length));
 				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdated(ev.data, cursorPosition);
 			});
 
 			input.addEventListener("compositionend", (ev: CompositionEvent) => {
+				if (activeCompositionGeneration !== BrowserInvisibleTextBoxViewExtension.compositionGeneration) {
+					return;
+				}
 				BrowserInvisibleTextBoxViewExtension.isComposing = false;
 				// The browser fires an input event after compositionend with the committed text.
 				// Suppress it to avoid double-inserting — the commit is handled by OnCompositionCompleted.
@@ -138,7 +165,7 @@
 				if (ev.data.length > 0) {
 					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(ev.data);
 				} else {
-					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
+					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCanceled();
 				}
 			});
 
@@ -152,6 +179,10 @@
 		// the character natively AND via the managed path, producing duplicated input.
 		public static attachTextInputKeyHandlers(input: HTMLInputElement | HTMLTextAreaElement, acceptsReturn: boolean) {
 			input.addEventListener("keydown", (ev: KeyboardEvent) => {
+				const acceptsReturnNow = input === BrowserInvisibleTextBoxViewExtension.inputElement
+					? BrowserInvisibleTextBoxViewExtension.acceptsReturn
+					: acceptsReturn;
+
 				// During IME composition, let the browser/IME handle all keys.
 				// stopPropagation prevents BrowserKeyboardInputSource from calling preventDefault.
 				if (ev.isComposing) {
@@ -173,7 +204,7 @@
 				// BrowserKeyboardInputSource raises the managed KeyDown. The flag prevents the
 				// keyup branch below from dispatching a duplicate OnEnterKeyPressed.
 				// This enables focus navigation (e.g., Uno.Toolkit's AutoFocusNext) on mobile browsers
-				if ((ev.key === "Enter" || ev.keyCode === 13) && !acceptsReturn) {
+				if ((ev.key === "Enter" || ev.keyCode === 13) && !acceptsReturnNow) {
 					// Don't call preventDefault() to allow the key event to propagate to document listeners
 					BrowserInvisibleTextBoxViewExtension.enterHandledByKeyDown = true;
 					return;
@@ -193,6 +224,10 @@
 			});
 
 			input.addEventListener("keyup", (ev: KeyboardEvent) => {
+				const acceptsReturnNow = input === BrowserInvisibleTextBoxViewExtension.inputElement
+					? BrowserInvisibleTextBoxViewExtension.acceptsReturn
+					: acceptsReturn;
+
 				// Android virtual keyboards (Gboard/SwiftKey/Samsung/AOSP) report keydown
 				// with keyCode 229 ("Unidentified") for Enter, which is stopPropagation'd
 				// above so it never reaches BrowserKeyboardInputSource. They DO report keyup
@@ -200,7 +235,7 @@
 				// focus-navigation patterns (Uno.Toolkit AutoFocusNext, FocusManager) work
 				// on Android browsers. The flag guards against double-dispatch on desktop/iOS,
 				// where the keydown branch already routed Enter through the document listener.
-				if (!acceptsReturn
+				if (!acceptsReturnNow
 					&& ev.key === "Enter"
 					&& !BrowserInvisibleTextBoxViewExtension.enterHandledByKeyDown
 					&& !ev.isComposing) {
@@ -232,6 +267,29 @@
 			}
 		}
 
+		public static setTextPredictionEnabled(enabled: boolean) {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input) {
+				input.autocomplete = enabled ? "on" : "off";
+				input.setAttribute("autocorrect", enabled ? "on" : "off");
+			}
+		}
+
+		public static setSpellCheckEnabled(enabled: boolean) {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input) {
+				input.spellcheck = enabled;
+			}
+		}
+
+		public static setAcceptsReturn(acceptsReturn: boolean) {
+			BrowserInvisibleTextBoxViewExtension.acceptsReturn = acceptsReturn;
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input) {
+				input.dataset.unoAcceptsReturn = acceptsReturn ? "true" : "false";
+			}
+		}
+
 		public static focus(handle: number, isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string): boolean {
 			const semanticElement = document.getElementById(`uno-semantics-${handle}`);
 			if (semanticElement && document.activeElement === semanticElement) {
@@ -243,6 +301,7 @@
 			// This happens when TextBox is focused twice with different FocusStates (e.g, Pointer, Programmatic, Keyboard)
 			// For such case, we do call StartEntry twice without any EndEntry in between.
 			// So, cleanup the existing inputElement and create a new one.
+			BrowserInvisibleTextBoxViewExtension.suppressNextInput = false;
 			BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
 			this.createInput(isPassword, text, acceptsReturn, inputMode, enterKeyHint);
 
@@ -293,6 +352,41 @@
 					BrowserInvisibleTextBoxViewExtension.nextSelectionDirection = input.selectionDirection;
 					input.value = text;
 				}
+			}
+		}
+
+		public static replaceText(start: number, length: number, replacement: string) {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input == null || BrowserInvisibleTextBoxViewExtension.isComposing) {
+				return;
+			}
+
+			start = Math.max(0, Math.min(start, input.value.length));
+			const end = Math.max(start, Math.min(start + length, input.value.length));
+			input.setRangeText(replacement, start, end, "preserve");
+		}
+
+		public static invalidateComposition() {
+			const wasComposing = BrowserInvisibleTextBoxViewExtension.isComposing;
+			BrowserInvisibleTextBoxViewExtension.compositionGeneration++;
+			BrowserInvisibleTextBoxViewExtension.isComposing = false;
+			BrowserInvisibleTextBoxViewExtension.suppressNextInput = wasComposing;
+		}
+
+		public static restartComposition() {
+			BrowserInvisibleTextBoxViewExtension.invalidateComposition();
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input == null || document.activeElement !== input) {
+				return;
+			}
+
+			const selectionStart = input.selectionStart;
+			const selectionEnd = input.selectionEnd;
+			const selectionDirection = input.selectionDirection;
+			input.blur();
+			input.focus({ preventScroll: true });
+			if (selectionStart !== null && selectionEnd !== null) {
+				input.setSelectionRange(selectionStart, selectionEnd, selectionDirection);
 			}
 		}
 

@@ -590,7 +590,21 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="value">Specifies how focus was set, as a value of the enumeration.</param>
 		/// <returns>True if focus was set to the UIElement, or focus was already on the UIElement. False if the UIElement is not focusable.</returns>
-		public bool Focus(FocusState value) => FocusImpl(value);
+		public bool Focus(FocusState value)
+		{
+			var originHandler = this as IFocusRequestOriginHandler;
+			originHandler?.OnFocusRequesting(value);
+			var succeeded = false;
+			try
+			{
+				succeeded = FocusImpl(value);
+				return succeeded;
+			}
+			finally
+			{
+				originHandler?.OnFocusRequested(value, succeeded);
+			}
+		}
 
 		internal void Unfocus()
 		{

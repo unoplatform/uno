@@ -9,7 +9,7 @@ internal interface IInvisibleTextBoxView
 {
 	string? Text { get; }
 
-	bool IsCompatible(TextBox textBox);
+	bool IsCompatible(IImeSessionHost host);
 
 	bool BecomeFirstResponder();
 
@@ -20,6 +20,8 @@ internal interface IInvisibleTextBoxView
 	void SetTextNative(string text);
 
 	void Select(int start, int length);
+
+	void NotifyImePositionChanged();
 
 	UITextAutocapitalizationType AutocapitalizationType { get; set; }
 

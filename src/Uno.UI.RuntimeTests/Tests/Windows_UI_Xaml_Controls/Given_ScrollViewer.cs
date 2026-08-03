@@ -2144,5 +2144,71 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// The scroll offset should remain 0 — there's nothing to scroll
 			Assert.AreEqual(0d, sut.VerticalOffset, "Should not have scrolled");
 		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Rapid_Programmatic_Scrolls_Are_Captured_At_The_Current_Viewport()
+		{
+			var content = new Canvas
+			{
+				Width = 100,
+				Height = 6000,
+			};
+			AddMarker(0, Colors.Red);
+			AddMarker(3000, Colors.Lime);
+			AddMarker(5900, Colors.Blue);
+
+			var scrollViewer = new ScrollViewer
+			{
+				Width = 100,
+				Height = 100,
+				HorizontalScrollMode = ScrollMode.Disabled,
+				VerticalScrollMode = ScrollMode.Enabled,
+				Content = content,
+			};
+			try
+			{
+				await UITestHelper.Load(scrollViewer);
+
+				await AssertRapidViewport(0, 3000, 5900, Colors.Blue);
+				await AssertRapidViewport(5900, 0, 3000, Colors.Lime);
+				await AssertRapidViewport(3000, 5900, 0, Colors.Red);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+
+			void AddMarker(double top, Color color)
+			{
+				var marker = new Border
+				{
+					Width = 100,
+					Height = 100,
+					Background = new SolidColorBrush(color),
+				};
+				Canvas.SetTop(marker, top);
+				content.Children.Add(marker);
+			}
+
+			async Task AssertRapidViewport(
+				double primedOffset,
+				double intermediateOffset,
+				double finalOffset,
+				Color color)
+			{
+				scrollViewer.ChangeView(0, primedOffset, null, disableAnimation: true);
+				await WindowHelper.WaitForIdle();
+				scrollViewer.ChangeView(0, intermediateOffset, null, disableAnimation: true);
+				scrollViewer.ChangeView(0, finalOffset, null, disableAnimation: true);
+				await WindowHelper.WaitForIdle();
+				await UITestHelper.WaitForRender(timeoutMS: 5000);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(finalOffset, scrollViewer.VerticalOffset, 0.5);
+				var screenshot = await UITestHelper.ScreenShot(scrollViewer);
+				ImageAssert.HasColorAt(screenshot, 50, 50, color);
+			}
+		}
 	}
 }

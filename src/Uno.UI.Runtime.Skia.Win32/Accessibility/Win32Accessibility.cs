@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
@@ -773,8 +774,18 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 		try
 		{
-			_ = Win32UIAutomationInterop.UiaRaiseAutomationPropertyChangedEvent(
-				provider, propertyId.Value, oldValue, newValue);
+			if (ReferenceEquals(automationProperty, AutomationElementIdentifiers.BoundingRectangleProperty))
+			{
+				Marshal.ThrowExceptionForHR(
+					Win32UIAutomationInterop.UiaRaiseAutomationPropertyChangedEvent(
+						provider, propertyId.Value, null, null));
+			}
+			else
+			{
+				Marshal.ThrowExceptionForHR(
+					Win32UIAutomationInterop.UiaRaiseAutomationPropertyChangedEvent(
+						provider, propertyId.Value, oldValue, newValue));
+			}
 		}
 		catch (Exception ex)
 		{
@@ -872,6 +883,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
 						provider, Win32UIAutomationInterop.UIA_Text_TextSelectionChangedEventId);
 					break;
+				case AutomationEvents.ConversionTargetChanged:
+					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
+						provider, Win32UIAutomationInterop.UIA_TextEdit_ConversionTargetChangedEventId);
+					break;
 				case AutomationEvents.StructureChanged:
 					// Drop the cached subtree (cascading to virtual peers) and coalesce
 					// the UIA notification on the dispatcher. Deferring rather than
@@ -923,6 +938,38 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			{
 				this.Log().Debug($"NotifyAutomationEvent failed for {eventId}: {ex.Message}");
 			}
+		}
+	}
+
+	public override void NotifyTextEditTextChangedEvent(
+		AutomationPeer peer,
+		AutomationTextEditChangeType changeType,
+		IReadOnlyList<string> changedData)
+	{
+		if (!IsAccessibilityEnabled
+			|| changeType == AutomationTextEditChangeType.None
+			|| FindExistingProviderForPeer(peer, resolveEventsSource: true) is not { } provider)
+		{
+			return;
+		}
+
+		var data = changedData as string[];
+		if (data is null)
+		{
+			data = new string[changedData.Count];
+			for (var i = 0; i < changedData.Count; i++)
+			{
+				data[i] = changedData[i] ?? string.Empty;
+			}
+		}
+
+		var result = Win32UIAutomationInterop.UiaRaiseTextEditTextChangedEvent(
+			provider,
+			(int)changeType,
+			data);
+		if (result < 0 && this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"UiaRaiseTextEditTextChangedEvent failed with HRESULT 0x{result:X8}.");
 		}
 	}
 
@@ -1047,6 +1094,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		if (ReferenceEquals(property, AutomationElementIdentifiers.NameProperty))
 		{
 			return Win32UIAutomationInterop.UIA_NamePropertyId;
+		}
+		if (ReferenceEquals(property, AutomationElementIdentifiers.BoundingRectangleProperty))
+		{
+			return Win32UIAutomationInterop.UIA_BoundingRectanglePropertyId;
 		}
 		if (ReferenceEquals(property, TogglePatternIdentifiers.ToggleStateProperty))
 		{

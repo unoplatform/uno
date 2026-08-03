@@ -44,7 +44,7 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 				textInputPlugin.HideTextInput();
 			}
 
-			textInputPlugin.NotifyViewExited(textBox.GetHashCode());
+			textInputPlugin.NotifyViewExited(textBox, textBox.GetHashCode());
 		}
 
 		static bool IsFocusingElementKeyboardActivator(XamlRoot? xamlRoot)
@@ -89,6 +89,10 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 
 	public void NotifySelectionChanged(TextBox textBox)
 	{
+		if (ApplicationActivity.RenderView?.TextInputPlugin is { } textInputPlugin)
+		{
+			textInputPlugin.NotifySelectionChanged(textBox);
+		}
 	}
 
 	private static bool CouldRequireKeyboard(FrameworkElement? element)

@@ -15,6 +15,14 @@ internal interface IParsedText
 
 	Rect GetRectForIndex(int adjustedIndex);
 
+	TextGeometryPositionInfo GetGeometryPosition(int adjustedIndex);
+
+	double GetBaselineForIndex(int adjustedIndex);
+
+	int VisualLineCount { get; }
+
+	TextVisualLineInfo GetVisualLine(int lineIndex);
+
 	int GetIndexAt(Point p, bool ignoreEndingNewLine, bool extendedSelection);
 
 	Hyperlink GetHyperlinkAt(Point point);
