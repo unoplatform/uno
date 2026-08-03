@@ -13,7 +13,8 @@ public interface IAndroidSkiaHostBuilder
 	/// render view, whose acceleration is controlled by <see cref="UseOpenGL"/>.
 	/// </summary>
 	/// <remarks>
-	/// This takes precedence over <see cref="FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid"/>.
+	/// When called, this takes precedence over <see cref="FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid"/>;
+	/// if it is never called, any value already set on that flag is preserved.
 	/// It is deliberately independent from <see cref="UseOpenGL"/>: the Vulkan path can fail at
 	/// runtime, so both values remain meaningful for a single configuration.
 	/// </remarks>
@@ -25,7 +26,8 @@ public interface IAndroidSkiaHostBuilder
 	/// in software.
 	/// </summary>
 	/// <remarks>
-	/// This takes precedence over <see cref="FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid"/>.
+	/// When called, this takes precedence over <see cref="FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid"/>;
+	/// if it is never called, any value already set on that flag is preserved.
 	/// </remarks>
 	IAndroidSkiaHostBuilder UseOpenGL(bool enabled = true);
 }
