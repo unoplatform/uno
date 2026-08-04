@@ -62,7 +62,10 @@ public class Given_RelativeUriRewrite
 		Assert.AreEqual("ms-appx:///Assets/cart.png", ((BitmapImage)SUT.localResourceImage.Source).UriSource.ToString());
 	}
 
+	// The two loading tests assert Uno's ms-resource -> ms-appx mapping, which has no WinUI analog:
+	// there, MRT resolves the local-resource URI out of the package.
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Local_Resource_Uri_Loads()
 	{
 		var SUT = new RelativeUriRewritePage();
@@ -74,6 +77,7 @@ public class Given_RelativeUriRewrite
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_BitmapIcon_With_Relative_Uri_Loads()
 	{
 		var SUT = new RelativeUriRewritePage();
