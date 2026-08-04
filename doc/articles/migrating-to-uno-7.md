@@ -172,6 +172,50 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
   via inheritance, and `is TileBrush` is now `true` for an `ImageBrush`. Instance usage
   (`imageBrush.Stretch`, XAML `Stretch="…"`) is unaffected.
 
+### Android head uses the host builder
+
+The Android head now builds its host through `UnoPlatformHostBuilder`, like every other target.
+`Microsoft.UI.Xaml.NativeApplication` is now `abstract`; its `AppBuilder` delegate type and the
+constructor taking one have been removed, replaced by an abstract `CreateHost()` method.
+
+```csharp
+// Before
+public class Application : Microsoft.UI.Xaml.NativeApplication
+{
+    public Application(IntPtr javaReference, JniHandleOwnership transfer)
+        : base(() => new App(), javaReference, transfer)
+    {
+    }
+}
+
+// After
+using Uno.UI.Hosting;
+
+public class Application : Microsoft.UI.Xaml.NativeApplication
+{
+    public Application(IntPtr javaReference, JniHandleOwnership transfer)
+        : base(javaReference, transfer)
+    {
+    }
+
+    protected override UnoPlatformHost CreateHost() =>
+        UnoPlatformHostBuilder.Create()
+            .App(() => new App())
+            .UseAndroid()
+            .Build();
+}
+```
+
+Two related behavior changes:
+
+- **Startup failures now propagate.** Previously an exception during Android host initialization
+  was written to the console and swallowed, leaving a blank screen. It is now logged and rethrown.
+  Apps with latent initialization failures that used to start degraded will now crash on launch.
+- **`Uno.UI.Runtime.Skia.Android.AndroidHost` is now `internal`.** Use `UseAndroid()` instead of
+  constructing it.
+
+See [Customizing the `Application` class on Android](xref:Uno.Features.CustomizingAndroidApplication).
+
 ### Templates and project heads
 
 New apps get Skia heads only. Existing apps should drop native `*.Mobile` / native
@@ -188,7 +232,9 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 5. Replace the WASM DOM head with the Skia WebAssembly Browser head; remove any DOM/CSS
    customization and `HtmlElement` usage.
 6. Remove manual `ConfigureUniversalImageLoader();` (Android) and other native bootstrap.
-7. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+7. Convert the Android `Application` class to override `CreateHost()` instead of passing an
+   `AppBuilder` delegate to the base constructor.
+8. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
