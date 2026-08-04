@@ -26,7 +26,7 @@ public partial class RelativeUriHolder : Control
 	}
 
 	public static DependencyProperty UriProperty { get; } =
-		DependencyProperty.Register(nameof(Uri), typeof(Uri), typeof(RelativeUriHolder), new FrameworkPropertyMetadata(default(Uri)));
+		DependencyProperty.Register(nameof(Uri), typeof(Uri), typeof(RelativeUriHolder), new PropertyMetadata(default(Uri)));
 
 	public ImageSource ImageSource
 	{
@@ -35,5 +35,5 @@ public partial class RelativeUriHolder : Control
 	}
 
 	public static DependencyProperty ImageSourceProperty { get; } =
-		DependencyProperty.Register(nameof(ImageSource), typeof(ImageSource), typeof(RelativeUriHolder), new FrameworkPropertyMetadata(default(ImageSource)));
+		DependencyProperty.Register(nameof(ImageSource), typeof(ImageSource), typeof(RelativeUriHolder), new PropertyMetadata(default(ImageSource)));
 }
