@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Uno.HotReload.Roslyn;
+using Uno.HotReload.Tracking;
 
 namespace Uno.HotReload.Utils;
 
@@ -18,11 +19,11 @@ public static partial class RoslynExtensions
 	/// <see cref="CollectibleAnalyzerAssemblyLoader"/>. Pure snapshot transform: the underlying
 	/// workspace (and the .csproj files an applied change would rewrite) is never touched.
 	/// </summary>
-	internal static Solution WithCollectibleAnalyzerReferences(this Solution solution)
+	internal static Solution WithCollectibleAnalyzerReferences(this Solution solution, IReporter? reporter = null)
 	{
 		// One loader (and one set of per-directory contexts) per solution snapshot lineage: every
 		// project sharing an analyzer path shares its loaded assembly, mirroring Roslyn's caching.
-		var loader = new CollectibleAnalyzerAssemblyLoader();
+		var loader = new CollectibleAnalyzerAssemblyLoader(reporter);
 
 		foreach (var projectId in solution.ProjectIds)
 		{
