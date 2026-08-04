@@ -21,6 +21,10 @@ partial class InputManager
 
 	partial void InitializeKeyboard(object host) => Keyboard.Init(host);
 
+	partial void InjectKeyDown(KeyEventArgs args) => Keyboard.Inject(args, down: true);
+
+	partial void InjectKeyUp(KeyEventArgs args) => Keyboard.Inject(args, down: false);
+
 	internal sealed class KeyboardManager
 	{
 		private readonly InputManager _inputManager;
@@ -140,6 +144,27 @@ partial class InputManager
 			};
 
 			originalSource.RaiseEvent(UIElement.CharacterReceivedEvent, routedArgs);
+		}
+
+		/// <summary>
+		/// Entry point for <see cref="InputInjector.InjectKeyboardInput"/>, joining the pipeline at
+		/// the same place a host does so injected keys get focus routing, accelerators and text input.
+		/// </summary>
+		internal void Inject(KeyEventArgs args, bool down)
+		{
+			if (_inputManager.ContentRoot.XamlRoot is null)
+			{
+				// FocusManager.GetFocusedElement throws on a null XamlRoot. Injection is an
+				// automation API, so a diagnosable no-op beats throwing out of a startup race.
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning("Ignoring injected key: the content root is not attached to a window yet.");
+				}
+
+				return;
+			}
+
+			OnKey(args, down);
 		}
 
 		/// <summary>
