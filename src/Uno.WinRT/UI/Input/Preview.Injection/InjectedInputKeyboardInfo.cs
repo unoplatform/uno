@@ -6,6 +6,10 @@ using Windows.UI.Core;
 
 namespace Windows.UI.Input.Preview.Injection;
 
+/// <summary>
+/// Describes a single simulated keyboard event passed to
+/// <see cref="InputInjector"/>.<c>InjectKeyboardInput</c>.
+/// </summary>
 public partial class InjectedInputKeyboardInfo
 {
 	/// <summary>
@@ -46,17 +50,19 @@ public partial class InjectedInputKeyboardInfo
 
 	private bool IsUnicode => KeyOptions.HasFlag(InjectedInputKeyOptions.Unicode);
 
-	internal KeyEventArgs ToEventArgs(VirtualKeyModifiers modifiers, bool capsLock, bool wasKeyDown)
+	internal void Validate(int index)
 	{
-		var isUp = IsKeyUp;
-
 		if (IsUnicode && VirtualKey != 0)
 		{
 			throw new ArgumentException(
-				$"{nameof(VirtualKey)} must be 0 when {nameof(InjectedInputKeyOptions)}.{nameof(InjectedInputKeyOptions.Unicode)} is set.",
-				nameof(VirtualKey));
+				$"{nameof(VirtualKey)} must be 0 when {nameof(InjectedInputKeyOptions)}.{nameof(InjectedInputKeyOptions.Unicode)} is set (entry {index}).",
+				nameof(InputInjector.InjectKeyboardInput));
 		}
+	}
 
+	internal KeyEventArgs ToEventArgs(VirtualKeyModifiers modifiers, bool capsLock, bool wasKeyDown)
+	{
+		var isUp = IsKeyUp;
 		var key = IsUnicode ? (VirtualKey)UnicodeVirtualKey : (VirtualKey)VirtualKey;
 
 		// A key-up never carries a character: Windows pairs WM_CHAR with the key press, and

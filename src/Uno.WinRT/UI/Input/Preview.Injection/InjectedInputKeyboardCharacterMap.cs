@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using Windows.System;
 
 namespace Windows.UI.Input.Preview.Injection;
@@ -28,6 +29,10 @@ internal static class InjectedInputKeyboardCharacterMap
 	private const ushort VkOem6 = 0xDD;      // ]}
 	private const ushort VkOem7 = 0xDE;      // '"
 
+	// Kept in step with Uno.UI's DeviceTargetHelper, which this assembly cannot reference.
+	private static bool UsesAppleKeyboardLayout
+		=> OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst() || OperatingSystem.IsTvOS();
+
 	/// <summary>
 	/// Gets the character produced by a key press, or <c>null</c> when the key types nothing.
 	/// </summary>
@@ -47,11 +52,17 @@ internal static class InjectedInputKeyboardCharacterMap
 		var control = modifiers.HasFlag(VirtualKeyModifiers.Control);
 		var menu = modifiers.HasFlag(VirtualKeyModifiers.Menu);
 
-		// AltGr (Ctrl+Alt) types real characters on non-Apple layouts; every other shortcut
-		// modifier suppresses the character, which is why an injected Ctrl+A raises no
+		// Mirrors the suppression rules TextBox applies when inserting text: AltGr (Ctrl+Alt) types
+		// real characters on non-Apple layouts, and Option alone does on Apple ones. Every other
+		// shortcut modifier suppresses the character, which is why an injected Ctrl+A raises no
 		// CharacterReceived on Windows.
-		var isAltGr = control && menu;
-		if (!isAltGr && (control || menu || modifiers.HasFlag(VirtualKeyModifiers.Windows)))
+		var isAltGr = !UsesAppleKeyboardLayout && control && menu;
+		var hasShortcutModifier = !isAltGr
+			&& (control
+				|| modifiers.HasFlag(VirtualKeyModifiers.Windows)
+				|| (!UsesAppleKeyboardLayout && menu));
+
+		if (hasShortcutModifier)
 		{
 			return null;
 		}
