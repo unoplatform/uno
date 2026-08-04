@@ -206,6 +206,7 @@ public partial class ClientHotReloadProcessor
 	{
 		var result = default(UpdateResult);
 		HotReloadUIPauseHandle? pauseHandle = null;
+		IDisposable? typeCorrelationScope = null;
 		var currentLocalHrId = -1;
 
 		try
@@ -254,6 +255,20 @@ public partial class ClientHotReloadProcessor
 				{
 					debug?.Debug($"{tag} '{edit.FilePath}' (from: {edit.OldText?[..100]} | to: {edit.NewText?[..100]}).");
 				}
+			}
+
+			// When a UI pause will be taken (below), the raw Type[] of each local HR operation is the
+			// pause-correlation payload: after awaiting completion we read the completed operations'
+			// Types to compute the set to drop from the pause handle. ReportCompleted normally
+			// releases that array the instant an operation turns terminal (collectible-ALC
+			// guarantee), which would always hand us an empty drop set. Enter a type-correlation
+			// scope BEFORE the update begins: operations turning terminal while it is active are
+			// registered with it and released by its Dispose (in the finally block) — the raw types
+			// are only ever retained while a scope holds them, so the ALC release guarantee is
+			// preserved without any additional call from this method.
+			if (req.PauseUIPhases != HotReloadUIPhases.None)
+			{
+				typeCorrelationScope = HotReloadClientOperation.EnterTypeCorrelationScope();
 			}
 
 			// As the local HR is not really ID trackable (trigger by VS without any ID), we capture the current ID here to make sure that if HR completes locally before we get info from the server, we won't miss it.
@@ -390,7 +405,17 @@ public partial class ClientHotReloadProcessor
 		}
 		finally
 		{
+			// Dispose the pause FIRST: its drain promotes deferred operations to terminal
+			// (ReportCompleted) while the correlation scope is still active, so they too get
+			// registered with the scope and released by its Dispose below.
 			pauseHandle?.Dispose();
+
+			// Disposing the scope releases the raw Type[] (and detaches the exception graphs) of
+			// every operation that turned terminal while it was active — including operations that
+			// fell outside this update's drop window. The release is deferred only if another
+			// concurrent caller's scope still holds an operation; the last scope out releases it,
+			// so no operation can pin its collectible previewed-app ALC past the overlapping calls.
+			typeCorrelationScope?.Dispose();
 		}
 	}
 
