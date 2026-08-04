@@ -229,9 +229,9 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
 - [ ] **BC50** — Default `UseLegacyPrimaryLanguageOverride` = false  `d3·S` · #13704
   - Flip default to `false` (WinUI restart-to-apply). **Behavior change** — runtime language-switch apps must opt back in; needs a migration note.
   - Files: `src/Uno.UWP/FeatureConfiguration/WinRTFeatureConfiguration.cs`, `src/Uno.UWP/Globalization/ApplicationLanguages.cs`, `src/Uno.UI/UI/Xaml/Application.cs`
-- [ ] **BC42** — Remove `clr-namespace:` XAML leniency  `d3·M`
-  - Remove the leniency; migrate repo XAML/tests/docs to `using:`. Hard-error, no deprecation cycle.
-  - Files: `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.Reflection.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindParser.cs`
+- [x] **BC42** — Remove `clr-namespace:` XAML leniency  `d3·M`
+  - Remove the leniency; migrate repo XAML/tests/docs to `using:`. Hard-error (`UXAML0006`) on the xmlns declaration at build time and a `XamlParseException` from `XamlReader`, no deprecation cycle. Only `mc:Ignorable` prefixes are exempt.
+  - Files: `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlNamespaceValidation.cs`, `.../XamlFileParser.cs`, `.../XamlFileParserContext.cs`, `.../XamlCodeGeneration.Diagnostics.cs`, `.../XamlCodeGeneration.cs`, `.../XamlFileGenerator.Reflection.cs`, `.../XamlCodeBehindParser.cs`, `src/Uno.UI/UI/Xaml/Markup/Reader/XamlNamespaceValidation.cs`, `.../XamlStringParser.cs`, `.../XamlTypeResolver.cs`
 - [ ] **BC51** — Implement `ms-resource:///` URI rewrite  `d3·M`
   - Implement the rewrite to `ms-resource:///Files/`. **Changes compiled URI value** — behavior-changing, validate at runtime.
   - Files: `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs`, `src/Uno.UI/UI/Xaml/XamlFilePathHelper.shared.cs`

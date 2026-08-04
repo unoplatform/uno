@@ -172,6 +172,23 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
   via inheritance, and `is TileBrush` is now `true` for an `ImageBrush`. Instance usage
   (`imageBrush.Stretch`, XAML `Stretch="…"`) is unaffected.
 
+### XAML changes
+
+- **The WPF-style `clr-namespace:` xmlns form is no longer accepted.** WinUI only supports
+  `using:`; Uno used to also accept `clr-namespace:MyApp.Controls;assembly=MyLib` and silently
+  strip the prefix and the `;assembly=` token. Replace each declaration with the `using:` form —
+  the assembly is inferred, so the `;assembly=` part is simply dropped:
+
+  ```diff
+  - xmlns:local="clr-namespace:MyApp.Controls;assembly=MyLib"
+  + xmlns:local="using:MyApp.Controls"
+  ```
+
+  This is enforced at **build time** (the `UXAML0006` diagnostic) and at **run time** by
+  `XamlReader.Load` and Hot Reload, which throw a `XamlParseException`. The declaration itself is
+  rejected whether or not the prefix is used, so unused `clr-namespace:` declarations must also be
+  removed — the only exemption is a prefix listed in `mc:Ignorable` on the root element.
+
 ### Templates and project heads
 
 New apps get Skia heads only. Existing apps should drop native `*.Mobile` / native
@@ -188,7 +205,8 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 5. Replace the WASM DOM head with the Skia WebAssembly Browser head; remove any DOM/CSS
    customization and `HtmlElement` usage.
 6. Remove manual `ConfigureUniversalImageLoader();` (Android) and other native bootstrap.
-7. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+7. Convert every `xmlns:…="clr-namespace:…"` declaration in your XAML to the `using:` form.
+8. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)

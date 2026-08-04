@@ -723,20 +723,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			// Try "using:" or "clr-namespace:" prefixed namespaces
+			// Try "using:" prefixed namespaces
 			var nsName = trimmedNamespace;
 			if (nsName.StartsWith("using:", StringComparison.Ordinal))
 			{
 				nsName = nsName.Substring("using:".Length);
-			}
-			else if (nsName.StartsWith("clr-namespace:", StringComparison.Ordinal))
-			{
-				nsName = nsName.Substring("clr-namespace:".Length);
-				var semiIndex = nsName.IndexOf(';');
-				if (semiIndex > 0)
-				{
-					nsName = nsName.Substring(0, semiIndex);
-				}
 			}
 
 			return _metadataHelper.FindTypeByFullName(nsName + "." + xamlType.Name) as INamedTypeSymbol;
@@ -785,7 +776,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			foreach (var exception in Flatten(e))
 			{
 				var diagnostic = Diagnostic.Create(
-					XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
+					(exception as XamlParsingException)?.Descriptor ?? XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
 					GetExceptionFileLocation(exception),
 					exception.Message);
 

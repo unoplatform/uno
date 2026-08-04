@@ -803,15 +803,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Trim prefixes from namespace declaration
 		/// </summary>
 		private static string GetTrimmedNamespace(string nsNamespace)
-		{
-			var nsName = nsNamespace.TrimStart("using:");
-			if (nsName.StartsWith("clr-namespace:", StringComparison.Ordinal))
-			{
-				nsName = nsName.Split(';')[0].TrimStart("clr-namespace:");
-			}
-
-			return nsName;
-		}
+			=> nsNamespace.TrimStart("using:");
 
 		private IEnumerable<string> FindLocalizableProperties(INamedTypeSymbol? type)
 		{
