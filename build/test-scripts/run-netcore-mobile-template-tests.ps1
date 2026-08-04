@@ -200,7 +200,10 @@ $projects =
     # 5.6 net-current with XAML trimming validation - wasm
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-browserwasm", "-p:UnoXamlResourcesTrimming=true", "-p:WasmShellILLinkerEnabled=true"), @("macOS", "NetCore", "Publish")),
 
-    # 5.6 multi-platform template - covers the Android application head (Platforms/Android)
+    # 5.6 multi-platform template - covers the Android application head (Platforms/Android).
+    # The app carries a PackageReference on Uno56NugetLibrary, so that package must be packed
+    # into the "Solution Packages" feed before the app can restore.
+    @(3, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY\src\PackageCache"), @("macOS", "NetCore", "CleanNugetTemp", "NoBuildClean")),
     @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("-f", "net11.0-android"), @("macOS", "NetCore")),
 
     # Ensure that build can happen even if a RID is specified
