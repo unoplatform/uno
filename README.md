@@ -1,3 +1,5 @@
+[![MCP Toplist](https://mcptoplist.com/badge/pulsemcp%2Funo-platform.svg)](https://mcptoplist.com/server/pulsemcp%2Funo-platform)
+
 ﻿<h1 align=center>
  <img alt="Uno Platform Banner" align=center width="95%" src="https://github.com/user-attachments/assets/ac1b6c72-a6ed-4c3f-9e0d-a8eca96bdc4e" />
 </h1>
