@@ -2127,6 +2127,18 @@
 		  <Member fullName="Uno.UI.FeatureConfiguration/UIElement" reason="Removed empty FeatureConfiguration.UIElement holder after deleting its last WASM DOM flags (#2125/#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Shape" reason="Removed empty FeatureConfiguration.Shape holder after deleting its WASM getBBox/svg flags (#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Control" reason="Removed empty FeatureConfiguration.Control holder after deleting UseLegacyContentAlignment (BC45, breaking changes for 7.0)" />
+		  <!-- MRT Core relocated from Uno.UI to Uno (BC75, breaking changes for 7.0). Same package, same names/namespaces — only assembly identity changes. -->
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.IResourceContext" reason="Moved from Uno.UI to Uno (BC75)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.IResourceManager" reason="Moved from Uno.UI to Uno (BC75)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName" reason="Moved from Uno.UI to Uno (BC75)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.MrtCoreContract" reason="Moved from Uno.UI to Uno (BC75)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate" reason="Moved from Uno.UI to Uno (BC75)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceCandidateKind" reason="Moved from Uno.UI to Uno (BC75)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceContext" reason="Moved from Uno.UI to Uno (BC75)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceLoader" reason="Moved from Uno.UI to Uno (BC75)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceManager" reason="Moved from Uno.UI to Uno (BC75)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceMap" reason="Moved from Uno.UI to Uno (BC75)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs" reason="Moved from Uno.UI to Uno (BC75)" />
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.DropDownButtonAutomationPeer" reason="Moved to correct namespace Microsoft.UI.Xaml.Automation.Peers" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ExpanderAutomationPeer" reason="Moved to correct namespace Microsoft.UI.Xaml.Automation.Peers" />

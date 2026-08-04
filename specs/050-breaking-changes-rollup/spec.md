@@ -238,9 +238,9 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
 - [ ] **BC21** — Delete legacy `AutomationProperties` member ⚠️  `d3·S`
   - **INVESTIGATE / likely drop.** The member at ~L44 (`AnnotationsProperty`) is valid WinUI and must NOT be deleted — the line ref drifted. Real target is probably the native `OnAutomationIdChanged` branches in `AutomationProperties.uno.cs`.
   - Files: `src/Uno.UI/UI/Xaml/Automation/AutomationProperties.cs`, `src/Uno.UI/UI/Xaml/Automation/AutomationProperties.uno.cs`
-- [ ] **BC75** — Move MRT Core (`ApplicationModel.Resources`) -> `Uno.UWP`  `d3·M`
-  - Move the MRT-Core types to `Uno.UWP` (lower risk than a new assembly).
-  - Files: `src/Uno.UI/Windows/ApplicationModel/Resources/ResourceLoader.cs`, `src/Uno.UI/Windows/ApplicationModel/Resources/IResourceContext.cs`, `src/Uno.UI/Windows/ApplicationModel/Resources/IResourceManager.cs`
+- [x] **BC75** — Move MRT Core (`ApplicationModel.Resources`) -> `Uno.UWP`  `d3·M`
+  - Move the MRT-Core types to `Uno.UWP` (lower risk than a new assembly). Names and namespaces are unchanged, so only assembly-identity consumers break; the sync generator now routes the namespace to `Uno.UWP` by its containing assembly instead of the legacy `Uno.UI` redirect, which widens the generated stubs to the native platform defines.
+  - Files: `src/Uno.UWP/Microsoft/Windows/ApplicationModel/Resources/*.cs` (moved from `src/Uno.UI/Windows/ApplicationModel/Resources/`), `src/Uno.UWP/Generated/3.0.0.0/Microsoft.Windows.ApplicationModel.Resources/*.cs` (moved from `src/Uno.UI/Generated/3.0.0.0/`), `src/Uno.WinAppSDKSyncGenerator/Generator.cs`, `build/PackageDiffIgnore.xml`, `doc/articles/migrating-to-uno-7.md`, `src/Uno.UI.RuntimeTests/Tests/Microsoft_Windows_ApplicationModel_Resources/Given_MrtCoreAssemblyIdentity.cs`
 
 ---
 
