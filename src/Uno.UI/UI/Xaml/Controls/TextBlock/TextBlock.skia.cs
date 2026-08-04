@@ -749,11 +749,16 @@ namespace Microsoft.UI.Xaml.Controls
 			OnContextRequested(this, contextArgs);
 		}
 
-		void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args)
+		// A TextBlock only ever shows Both-mode grippers over a real selection, so there's never a collapsed
+		// caret to re-open the flyout over; allowEmptySelection is irrelevant here.
+		void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args, bool allowEmptySelection)
 			=> QueueUpdateSelectionFlyoutVisibility(args.Pointer.PointerDeviceType, args.GetCurrentPoint(this).Position);
 
-		void ITextSelectionGripperHost.OnGripperTapped(PointerRoutedEventArgs args)
-			=> TouchTap(args.GetCurrentPoint(this).Position);
+		// Both grippers sit on the current selection's edges, so tapping either one keeps the selection and
+		// re-shows the grippers/flyout — there's no insertion handle (or editable caret) to re-place, so press
+		// and anchorIndex are unused here.
+		void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
+			=> ShowGrippers();
 		#endregion
 		#endregion
 

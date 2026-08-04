@@ -152,7 +152,10 @@ public static partial class RoslynExtensions
 		var resolvedFlavors = headFlavors
 			.Select(p => (Project: p, TargetFramework: p.TryGetTargetFramework(out var tfm) ? tfm : null))
 			.ToList();
-		var flavorsDescription = string.Join(", ", resolvedFlavors.Select(f => f.TargetFramework ?? $"<unresolved: {f.Project.Name}>"));
+		var flavorsDescription = string.Join(", ", resolvedFlavors.Select(f => f.TargetFramework
+			?? (f.Project.IsMissingFrameworkReferences()
+				? $"<unresolved, no framework references: {f.Project.Name}>"
+				: $"<unresolved: {f.Project.Name}>")));
 
 		if (string.IsNullOrWhiteSpace(runtimeTargetFramework))
 		{
@@ -169,10 +172,15 @@ public static partial class RoslynExtensions
 
 		if (matchedFlavors.Count == 0)
 		{
+			var missingPackHint = resolvedFlavors.Any(f => f.TargetFramework is null && f.Project.IsMissingFrameworkReferences())
+				? " At least one flavor loaded without .NET framework references (missing targeting pack at design time) — " +
+					"see the preceding workspace warning for the remediation."
+				: "";
+
 			reporter.Warn(
 				$"None of the {headFlavors.Count} target frameworks loaded for '{headProjectPath}' ({flavorsDescription}) matches " +
 				$"the application's '{runtimeTargetFramework}'. Keeping all of them; hot reload may be blocked by compilation " +
-				"errors coming from the other target frameworks.");
+				$"errors coming from the other target frameworks.{missingPackHint}");
 			return solution;
 		}
 
