@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <DiffIgnore>
   <IgnoreSets>
 	<IgnoreSet baseVersion="4.0.13">
@@ -2122,6 +2122,10 @@
 		  <Member fullName="Uno.UI.FeatureConfiguration/VisualState" reason="Removed empty FeatureConfiguration.VisualState holder after deleting ApplySettersBeforeTransition (#2053, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/DataTemplateSelector" reason="Removed empty FeatureConfiguration.DataTemplateSelector holder after deleting UseLegacyTemplateSelectorOverload (#2053, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/ManipulationRoutedEventArgs" reason="Removed empty FeatureConfiguration.ManipulationRoutedEventArgs holder after deleting IsAbsolutePositionEnabled (#2053, breaking changes for 7.0)" />
+		  <!-- Holder classes emptied by the residual dead native-renderer flag removals (#2125/#2052, breaking changes for 7.0). -->
+		  <Member fullName="Uno.UI.FeatureConfiguration/Interop" reason="Removed empty FeatureConfiguration.Interop holder after deleting ForceJavascriptInterop (#2052, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FeatureConfiguration/UIElement" reason="Removed empty FeatureConfiguration.UIElement holder after deleting its last WASM DOM flags (#2125/#2052, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FeatureConfiguration/Shape" reason="Removed empty FeatureConfiguration.Shape holder after deleting its WASM getBBox/svg flags (#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Control" reason="Removed empty FeatureConfiguration.Control holder after deleting UseLegacyContentAlignment (BC45, breaking changes for 7.0)" />
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.DropDownButtonAutomationPeer" reason="Moved to correct namespace Microsoft.UI.Xaml.Automation.Peers" />
@@ -2396,6 +2400,19 @@
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Control::UseDeferredOnApplyTemplate()" reason="Removed Control.UseDeferredOnApplyTemplate legacy flag; OnApplyTemplate deferral is now a compile-time platform decision (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Popup::EnableLightDismissByDefault()" reason="Removed Popup.EnableLightDismissByDefault legacy flag; Popup.IsLightDismissEnabled always defaults to false (WinUI-aligned) (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBox::UseOverlayOnSkia()" reason="Removed TextBox.UseOverlayOnSkia legacy flag; the Skia-based TextBox is always used (#2053, breaking changes for 7.0)" />
+		  <!-- Residual dead native-renderer FeatureConfiguration flags removed (#2125/#2052, breaking changes for 7.0). -->
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::AssignDOMXamlName()" reason="Removed UIElement.AssignDOMXamlName flag; the WASM DOM annotation it gated no longer exists (#2125/#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::FailOnNSObjectExtensionsValidateDispose()" reason="Removed UIElement.FailOnNSObjectExtensionsValidateDispose flag; NSObjectExtensions.ValidateDispose it gated is gone (BC47) (#2125, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::AssignDOMXamlProperties()" reason="Removed UIElement.AssignDOMXamlProperties flag; the WASM DOM attribute annotation it gated no longer exists (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Interop::ForceJavascriptInterop()" reason="Removed Interop.ForceJavascriptInterop flag; the WASM eval-mode interop switch it gated no longer exists (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement::RenderToStringWithId()" reason="Removed UIElement.RenderToStringWithId flag; the WASM UIElement.ToString() override it gated no longer exists (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBlock::IsMeasureCacheEnabled()" reason="Removed TextBlock.IsMeasureCacheEnabled flag along with the orphaned TextBlockMeasureCache it gated (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBlock::IsJavaStringCachedEnabled()" reason="Removed TextBlock.IsJavaStringCachedEnabled flag; the Android Java string-cache it gated no longer exists (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Int32 Uno.UI.FeatureConfiguration/TextBlock::JavaStringCachedCapacity()" reason="Removed TextBlock.JavaStringCachedCapacity flag; the Android Java string-cache it sized no longer exists (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Image::LegacyIosAlignment()" reason="Removed Image.LegacyIosAlignment flag; the UIKit ContentMode alignment path it selected no longer exists (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Shape::WasmDelayUpdateUntilFirstArrange()" reason="Removed Shape.WasmDelayUpdateUntilFirstArrange flag; the WASM svg attribute assignment path it gated no longer exists (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Shape::WasmCacheBBoxCalculationResult()" reason="Removed Shape.WasmCacheBBoxCalculationResult flag; the WASM getBBox cache it gated no longer exists (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Int32 Uno.UI.FeatureConfiguration/Shape::WasmBBoxCacheSize()" reason="Removed Shape.WasmBBoxCacheSize flag; the WASM getBBox cache it sized no longer exists (#2052, breaking changes for 7.0)" />
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
 		  <!-- BEGIN WinUI sync: WinRT IVector.Size replaced by ICollection.Count -->
 		  <Member fullName="System.UInt32 Microsoft.UI.Composition.CompositionColorGradientStopCollection::Size()" reason="WinUI sync: WinRT Size replaced by Count" />
@@ -2663,6 +2680,31 @@
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Popup.set_EnableLightDismissByDefault(System.Boolean value)" reason="Removed Popup.EnableLightDismissByDefault legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBox.get_UseOverlayOnSkia()" reason="Removed TextBox.UseOverlayOnSkia legacy flag (#2053, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/TextBox.set_UseOverlayOnSkia(System.Boolean value)" reason="Removed TextBox.UseOverlayOnSkia legacy flag (#2053, breaking changes for 7.0)" />
+		  <!-- Residual dead native-renderer flag accessors: paired with the removed properties (see <Properties> above) (#2125/#2052). -->
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement.get_AssignDOMXamlName()" reason="Removed UIElement.AssignDOMXamlName flag (#2125/#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/UIElement.set_AssignDOMXamlName(System.Boolean value)" reason="Removed UIElement.AssignDOMXamlName flag (#2125/#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement.get_FailOnNSObjectExtensionsValidateDispose()" reason="Removed UIElement.FailOnNSObjectExtensionsValidateDispose flag (#2125, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/UIElement.set_FailOnNSObjectExtensionsValidateDispose(System.Boolean value)" reason="Removed UIElement.FailOnNSObjectExtensionsValidateDispose flag (#2125, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement.get_AssignDOMXamlProperties()" reason="Removed UIElement.AssignDOMXamlProperties flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/UIElement.set_AssignDOMXamlProperties(System.Boolean value)" reason="Removed UIElement.AssignDOMXamlProperties flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Interop.get_ForceJavascriptInterop()" reason="Removed Interop.ForceJavascriptInterop flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Interop.set_ForceJavascriptInterop(System.Boolean value)" reason="Removed Interop.ForceJavascriptInterop flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/UIElement.get_RenderToStringWithId()" reason="Removed UIElement.RenderToStringWithId flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/UIElement.set_RenderToStringWithId(System.Boolean value)" reason="Removed UIElement.RenderToStringWithId flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBlock.get_IsMeasureCacheEnabled()" reason="Removed TextBlock.IsMeasureCacheEnabled flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/TextBlock.set_IsMeasureCacheEnabled(System.Boolean value)" reason="Removed TextBlock.IsMeasureCacheEnabled flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/TextBlock.get_IsJavaStringCachedEnabled()" reason="Removed TextBlock.IsJavaStringCachedEnabled flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/TextBlock.set_IsJavaStringCachedEnabled(System.Boolean value)" reason="Removed TextBlock.IsJavaStringCachedEnabled flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Int32 Uno.UI.FeatureConfiguration/TextBlock.get_JavaStringCachedCapacity()" reason="Removed TextBlock.JavaStringCachedCapacity flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/TextBlock.set_JavaStringCachedCapacity(System.Int32 value)" reason="Removed TextBlock.JavaStringCachedCapacity flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Image.get_LegacyIosAlignment()" reason="Removed Image.LegacyIosAlignment flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Image.set_LegacyIosAlignment(System.Boolean value)" reason="Removed Image.LegacyIosAlignment flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Shape.get_WasmDelayUpdateUntilFirstArrange()" reason="Removed Shape.WasmDelayUpdateUntilFirstArrange flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Shape.set_WasmDelayUpdateUntilFirstArrange(System.Boolean value)" reason="Removed Shape.WasmDelayUpdateUntilFirstArrange flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.UI.FeatureConfiguration/Shape.get_WasmCacheBBoxCalculationResult()" reason="Removed Shape.WasmCacheBBoxCalculationResult flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Shape.set_WasmCacheBBoxCalculationResult(System.Boolean value)" reason="Removed Shape.WasmCacheBBoxCalculationResult flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Int32 Uno.UI.FeatureConfiguration/Shape.get_WasmBBoxCacheSize()" reason="Removed Shape.WasmBBoxCacheSize flag (#2052, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.UI.FeatureConfiguration/Shape.set_WasmBBoxCacheSize(System.Int32 value)" reason="Removed Shape.WasmBBoxCacheSize flag (#2052, breaking changes for 7.0)" />
 		  <!-- NavigationView API surface aligned to the WinUI IDL: get-only properties and a non-activatable args type. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationView.set_SettingsItem(System.Object value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_CompactPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />

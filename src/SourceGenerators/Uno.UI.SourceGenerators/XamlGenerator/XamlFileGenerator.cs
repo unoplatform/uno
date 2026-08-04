@@ -604,12 +604,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (_isUiAutomationMappingEnabled)
 				{
 					w.AppendLineIndented("global::Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled = true;");
-
-					if (_isWasm)
-					{
-						// When automation mapping is enabled, remove the element ID from the ToString so test screenshots stay the same.
-						w.AppendLineIndented("global::Uno.UI.FeatureConfiguration.UIElement.RenderToStringWithId = false;");
-					}
 				}
 
 				AttachUnhandledExceptionHandler();
