@@ -3,7 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
+using System.Reflection.Metadata;
+using System.Reflection.Metadata.Ecma335;
+using System.Reflection.PortableExecutable;
 using System.Runtime.Loader;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Globalization;
@@ -213,6 +217,166 @@ public class Given_ResourceLoader_Alc
 			ApplicationLanguages.PrimaryLanguageOverride = previousPlo;
 			_ResourceLoader.DefaultLanguage = previousDefault;
 		}
+	}
+
+	[TestMethod]
+	public void When_ClearAlcAssemblies_With_Malformed_Survivor_Then_Rebuild_Completes_And_Override_Removed()
+	{
+		// Reviewer scenario: RebuildLoaderResourcesFromSurvivors guards each survivor with a
+		// data-format catch, but ProcessResourceFile used to surface malformed .upri content as
+		// InvalidOperationException (bad magic / unsupported version) and a bare Exception (null
+		// stream) — escaping the guard, aborting the rebuild BEFORE the apply phase, and leaving
+		// the removed ALC's merged overrides observable. A malformed survivor must be
+		// logged-and-skipped, never fatal to the sweep.
+		const string defaultLanguage = "en";
+		const string uiTestResources = "Uno.UI.UnitTests/Resources";
+		const string overrideValue = "Collectible-Override-MalformedSurvivor";
+		const string hostValue = "App70-en";
+
+		var previousCulture = CultureInfo.CurrentUICulture;
+		var previousPlo = ApplicationLanguages.PrimaryLanguageOverride;
+		var previousDefault = _ResourceLoader.DefaultLanguage;
+
+		var defaultAlcAssembly = typeof(Given_ResourceLoader_Alc).Assembly;
+		var survivorAlc = new AssemblyLoadContext("Given_ResourceLoader_Alc.malformedSurvivor", isCollectible: true);
+		var dyingAlc = new AssemblyLoadContext("Given_ResourceLoader_Alc.dyingWithSurvivor", isCollectible: true);
+		try
+		{
+			CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+			ApplicationLanguages.PrimaryLanguageOverride = defaultLanguage;
+			_ResourceLoader.DefaultLanguage = defaultLanguage;
+
+			_ResourceLoader.AddLookupAssembly(defaultAlcAssembly);
+			Assert.AreEqual(
+				hostValue,
+				_ResourceLoader.GetForCurrentView(uiTestResources).GetString("ApplicationName"),
+				"Pre-condition: the host resource resolves before the collectible override.");
+
+			// A dying collectible app that overrides a host key (same seam as the override test above).
+			var dyingAssembly = dyingAlc.LoadFromAssemblyPath(defaultAlcAssembly.Location);
+			_ResourceLoader.AddLookupAssembly(dyingAssembly);
+			OverrideMergedResource(uiTestResources, defaultLanguage, "ApplicationName", overrideValue);
+			Assert.AreEqual(
+				overrideValue,
+				_ResourceLoader.GetForCurrentView(uiTestResources).GetString("ApplicationName"),
+				"Pre-condition: the collectible override must win while its assembly is registered.");
+
+			// A surviving lookup assembly whose .upri cannot be parsed. The AddLookupAssembly
+			// rollback keeps a malformed assembly from lingering through the public path, so
+			// inject it at the private list seam — the rebuild guard is defense-in-depth for
+			// survivors whose .upri only fails at rebuild time (unreadable/truncated stream).
+			var malformedSurvivor = LoadAssemblyWithMalformedUpri(survivorAlc, "Uno.UI.Tests.MalformedUpriSurvivor");
+			InjectLookupAssembly(malformedSurvivor);
+
+			// Tear the dying app down. This must NOT throw even though a survivor is malformed.
+			_ResourceLoader.ClearAlcAssemblies(dyingAlc);
+
+			Assert.IsFalse(
+				_ResourceLoader.ContainsLookupAssembly(dyingAssembly),
+				"The scoped sweep must drop the dying ALC's lookup assembly.");
+			Assert.AreEqual(
+				hostValue,
+				_ResourceLoader.GetForCurrentView(uiTestResources).GetString("ApplicationName"),
+				"The malformed survivor must be skipped (not fatal): the rebuild must still reach its apply phase so the dying app's override does not outlive its ALC.");
+		}
+		finally
+		{
+			// Drop the injected malformed survivor and any leftover non-default registrations.
+			_ResourceLoader.ClearNonDefaultAlcAssemblies();
+			survivorAlc.Unload();
+			dyingAlc.Unload();
+			CultureInfo.CurrentUICulture = previousCulture;
+			ApplicationLanguages.PrimaryLanguageOverride = previousPlo;
+			_ResourceLoader.DefaultLanguage = previousDefault;
+		}
+	}
+
+	[TestMethod]
+	public void When_AddLookupAssembly_Malformed_Then_Throws_And_Registration_Rolled_Back()
+	{
+		// AddLookupAssembly registers the assembly BEFORE parsing; without a rollback a malformed
+		// .upri leaves the assembly among the lookup assemblies forever, so every later rebuild
+		// (culture change, ALC sweep) re-hits the same parse failure. The registration must be
+		// rolled back on failure while the exception still surfaces to the caller — as
+		// InvalidDataException, the data-format type the per-assembly rebuild guard catches.
+		var collectibleAlc = new AssemblyLoadContext("Given_ResourceLoader_Alc.malformedRollback", isCollectible: true);
+		try
+		{
+			var malformed = LoadAssemblyWithMalformedUpri(collectibleAlc, "Uno.UI.Tests.MalformedUpriRollback");
+
+			Assert.ThrowsExactly<InvalidDataException>(
+				() => _ResourceLoader.AddLookupAssembly(malformed),
+				"A malformed .upri must surface as InvalidDataException — the data-format exception the rebuild guard catches.");
+
+			Assert.IsFalse(
+				_ResourceLoader.ContainsLookupAssembly(malformed),
+				"A failed registration must be rolled back; otherwise the malformed assembly lingers among the survivors and every later rebuild re-throws.");
+		}
+		finally
+		{
+			_ResourceLoader.ClearNonDefaultAlcAssemblies();
+			collectibleAlc.Unload();
+		}
+	}
+
+	/// <summary>
+	/// Emits (in memory, via <see cref="ManagedPEBuilder"/>) a minimal assembly whose single
+	/// manifest resource is a malformed <c>.upri</c> (payload does not start with the expected
+	/// magic), and loads it into <paramref name="alc"/>. Lets the malformed-resource paths be
+	/// exercised with a REAL <see cref="Assembly"/> — no fake seam in the product code.
+	/// </summary>
+	private static Assembly LoadAssemblyWithMalformedUpri(AssemblyLoadContext alc, string assemblyName)
+	{
+		var metadata = new MetadataBuilder();
+		metadata.AddAssembly(
+			metadata.GetOrAddString(assemblyName),
+			new Version(1, 0, 0, 0),
+			culture: default,
+			publicKey: default,
+			flags: default,
+			hashAlgorithm: AssemblyHashAlgorithm.None);
+		metadata.AddModule(
+			generation: 0,
+			metadata.GetOrAddString(assemblyName + ".dll"),
+			metadata.GetOrAddGuid(Guid.NewGuid()),
+			encId: default,
+			encBaseId: default);
+
+		// ECMA-335 II.24.2.4: each manifest resource is a 4-byte length prefix followed by the data.
+		var payload = "BAD-upri-payload"u8.ToArray(); // does not start with the "uno" magic
+		var resources = new BlobBuilder();
+		resources.WriteInt32(payload.Length);
+		resources.WriteBytes(payload);
+
+		metadata.AddManifestResource(
+			ManifestResourceAttributes.Public,
+			metadata.GetOrAddString("Malformed.upri"),
+			implementation: default,
+			offset: 0);
+
+		var peBuilder = new ManagedPEBuilder(
+			PEHeaderBuilder.CreateLibraryHeader(),
+			new MetadataRootBuilder(metadata),
+			ilStream: new BlobBuilder(),
+			managedResources: resources);
+		var peBlob = new BlobBuilder();
+		peBuilder.Serialize(peBlob);
+
+		using var stream = new MemoryStream(peBlob.ToArray());
+		return alc.LoadFromStream(stream);
+	}
+
+	/// <summary>
+	/// Adds <paramref name="assembly"/> directly to the private
+	/// <c>ResourceLoader._lookupAssemblies</c> list, bypassing <c>AddLookupAssembly</c>'s parse
+	/// (and its rollback). Simulates a survivor whose .upri only becomes unreadable after
+	/// registration — the scenario the per-assembly rebuild guard exists for.
+	/// </summary>
+	private static void InjectLookupAssembly(Assembly assembly)
+	{
+		var field = typeof(_ResourceLoader).GetField("_lookupAssemblies", BindingFlags.Static | BindingFlags.NonPublic)
+			?? throw new InvalidOperationException("ResourceLoader._lookupAssemblies field was not found.");
+		((List<Assembly>)field.GetValue(null)!).Add(assembly);
 	}
 
 	/// <summary>

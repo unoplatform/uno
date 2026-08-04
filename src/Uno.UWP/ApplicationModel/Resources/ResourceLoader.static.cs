@@ -74,15 +74,37 @@ partial class ResourceLoader
 	{
 		_lookupAssemblies.Add(assembly);
 
-		if (HasContextChangedSignificantly(out var context))
+		try
 		{
-			// The cache is still valid, we only have to load resources from the given assembly
-			ProcessAssembly(assembly, context.LanguagePreferences);
+			if (HasContextChangedSignificantly(out var context))
+			{
+				// The cache is still valid, we only have to load resources from the given assembly
+				ProcessAssembly(assembly, context.LanguagePreferences);
+			}
+			else
+			{
+				// The current culture was altered, rebuild the whole/missing cache
+				ReloadResources(context);
+			}
 		}
-		else
+		catch (Exception)
 		{
-			// The current culture was altered, rebuild the whole/missing cache
-			ReloadResources(context);
+			// A failed registration must not linger: the list is re-enumerated by every later
+			// rebuild (culture change, ALC sweep), so a malformed assembly left registered would
+			// re-hit the same parse failure forever. Roll back the just-added entry (and any
+			// parsed markers it contributed) before rethrowing to the caller.
+			var lastIndex = _lookupAssemblies.LastIndexOf(assembly);
+			if (lastIndex >= 0)
+			{
+				_lookupAssemblies.RemoveAt(lastIndex);
+			}
+
+			if (!_lookupAssemblies.Contains(assembly))
+			{
+				_parsedResources.RemoveWhere(marker => marker.Assembly == assembly);
+			}
+
+			throw;
 		}
 	}
 
@@ -238,9 +260,11 @@ partial class ResourceLoader
 			}
 			catch (Exception error) when (error is global::System.IO.InvalidDataException or global::System.IO.IOException or NotSupportedException or BadImageFormatException or global::System.IO.FileLoadException or ArgumentException or FormatException)
 			{
-				// Recoverable per-assembly parse/reflection failure (malformed .upri, unreadable
-				// embedded resource): skip this survivor and keep rebuilding. Fatal exceptions are
-				// intentionally not caught; the live loaders are untouched until the apply phase
+				// Recoverable per-assembly parse/reflection failure: skip this survivor and keep
+				// rebuilding. ProcessResourceFile surfaces malformed .upri content (bad magic,
+				// unsupported version, unreadable stream) as InvalidDataException, so every parser
+				// failure is covered here. Fatal exceptions are intentionally not caught; the live
+				// loaders are untouched until the apply phase
 				// below, so an escaping exception here cannot leave a loader empty.
 				if (_log.IsEnabled(LogLevel.Error))
 				{
@@ -346,9 +370,12 @@ partial class ResourceLoader
 		Func<string, Dictionary<string, Dictionary<string, string>>> resolveLoaderResources,
 		HashSet<(Assembly Assembly, string ResourceName)> parsedMarkers)
 	{
+		// Malformed/unreadable .upri content is surfaced as InvalidDataException (a data-format
+		// exception) so the per-assembly guard in RebuildLoaderResourcesFromSurvivors can skip the
+		// offending assembly instead of aborting the whole rebuild.
 		if (stream is null)
 		{
-			throw new Exception($"The resource file {fileName} could not be read.");
+			throw new InvalidDataException($"The resource file {fileName} could not be read.");
 		}
 
 		using (var reader = new BinaryReader(stream))
@@ -358,13 +385,13 @@ partial class ResourceLoader
 			var magicCount = reader.Read(magic);
 			if (magicCount != 3 || !magic.SequenceEqual(_expectedUnoSequence))
 			{
-				throw new InvalidOperationException($"The file {fileName} is not a resource file");
+				throw new InvalidDataException($"The file {fileName} is not a resource file");
 			}
 
 			var version = reader.ReadInt32();
 			if (version is not (3 or 2))
 			{
-				throw new InvalidOperationException($"The resource file {fileName} has an invalid version (got {version}, expecting 2 or 3)");
+				throw new InvalidDataException($"The resource file {fileName} has an invalid version (got {version}, expecting 2 or 3)");
 			}
 
 			var name = reader.ReadString();
