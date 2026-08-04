@@ -290,17 +290,31 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
   ```
 
   The rewrite is a prefix concat that drops a leading `/` and ignores the folder of the XAML file
-  containing it, exactly as WinUI does. **Images keep loading the same asset** — Uno resolves
-  `ms-resource:///Files/X` as `ms-appx:///X`. Only code that *reads these values back* needs
-  changing: compare against the `ms-resource:///Files/` form, or write the URI as an explicit
-  `ms-appx:///…` in XAML to keep it verbatim.
+  containing it, exactly as WinUI does. **Images declared in application XAML keep loading the same
+  asset** — Uno resolves `ms-resource:///Files/X` as `ms-appx:///X`. To keep a value verbatim, write
+  it as an explicit `ms-appx:///…` URI in XAML.
+
+  Two changes go beyond the value you read back:
+
+  - **A relative value is now absolute at the point of use.** `WebView2.Source` with a relative value
+    used to throw `ArgumentException` while the page initialized; it now navigates a `ms-resource:` URI
+    no web view can service, so the failure is silent instead of loud. A `NavigateUri` written without
+    a scheme (`www.example.com`) likewise becomes `ms-resource:///Files/www.example.com` and reaches
+    the launcher as an unregistered scheme, and a relative `Control.DefaultStyleResourceUri` no longer
+    throws while resolving. Give these properties absolute URIs — `https://…`, `ms-appx:///…`.
+  - **In a library, relative URIs resolve differently per property type.** On an `ImageSource`-typed
+    property the value now carries the library's assembly prefix (`ms-appx:///MyLib/Assets/x.png`), so
+    a library's own assets resolve — but a library asset that previously resolved from the *consuming
+    app's* root no longer does. On a `Uri`-typed property the `ms-resource` form cannot express that
+    prefix, so it resolves against the app root; a library shipping assets for `BitmapIcon` must use
+    an explicit `ms-appx:///MyLib/…` URI.
 
   Properties typed `ImageSource` are unaffected in shape but now resolve consistently: `Image.Source`,
   `ImageBrush.ImageSource`, and custom `ImageSource` properties all resolve a relative URI against
-  the base URI (`ms-appx:///`, prefixed with the assembly name for a library). `ImageBrush.ImageSource`
-  and custom `ImageSource` properties previously kept the relative string. `ResourceDictionary.Source`
-  is unchanged, and `SvgImageSource.UriSource` intentionally keeps the `ms-appx:///` form so a
-  library's svg assets stay reachable through the assembly prefix.
+  the base URI. `ImageBrush.ImageSource` and custom `ImageSource` properties previously kept the
+  relative string. `ResourceDictionary.Source` is unchanged, and `SvgImageSource.UriSource`
+  intentionally keeps the `ms-appx:///` form so a library's svg assets stay reachable through the
+  assembly prefix.
 
 ### Android head uses the host builder
 
