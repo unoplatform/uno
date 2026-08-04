@@ -278,6 +278,30 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
   rejected whether or not the prefix is used, so unused `clr-namespace:` declarations must also be
   removed — the only exemption is a prefix listed in `mc:Ignorable` on the root element.
 
+- **A relative URI on a `Uri`-typed property now compiles to `ms-resource:///Files/…`**, the MRT
+  local-resource form WinUI produces. Previously Uno emitted the relative string verbatim. This
+  affects custom `Uri` properties, `HyperlinkButton.NavigateUri`, `Hyperlink.NavigateUri`,
+  `BitmapIcon.UriSource`, `BitmapIconSource.UriSource`, and `WebView2.Source`:
+
+  ```diff
+    <BitmapIcon UriSource="Assets/icon.png" />
+  - // compiled value: Assets/icon.png
+  + // compiled value: ms-resource:///Files/Assets/icon.png
+  ```
+
+  The rewrite is a prefix concat that drops a leading `/` and ignores the folder of the XAML file
+  containing it, exactly as WinUI does. **Images keep loading the same asset** — Uno resolves
+  `ms-resource:///Files/X` as `ms-appx:///X`. Only code that *reads these values back* needs
+  changing: compare against the `ms-resource:///Files/` form, or write the URI as an explicit
+  `ms-appx:///…` in XAML to keep it verbatim.
+
+  Properties typed `ImageSource` are unaffected in shape but now resolve consistently: `Image.Source`,
+  `ImageBrush.ImageSource`, and custom `ImageSource` properties all resolve a relative URI against
+  the base URI (`ms-appx:///`, prefixed with the assembly name for a library). `ImageBrush.ImageSource`
+  and custom `ImageSource` properties previously kept the relative string. `ResourceDictionary.Source`
+  is unchanged, and `SvgImageSource.UriSource` intentionally keeps the `ms-appx:///` form so a
+  library's svg assets stay reachable through the assembly prefix.
+
 ### Android head uses the host builder
 
 The Android head now builds its host through `UnoPlatformHostBuilder`, like every other target.
