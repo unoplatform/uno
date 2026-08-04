@@ -9,6 +9,7 @@ using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
 using System.Reflection.PortableExecutable;
 using System.Runtime.Loader;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Globalization;
 using _ResourceLoader = Windows.ApplicationModel.Resources.ResourceLoader;
@@ -319,6 +320,176 @@ public class Given_ResourceLoader_Alc
 		}
 	}
 
+	[TestMethod]
+	public void When_AddLookupAssembly_Truncated_Upri_Then_Throws_And_Partial_Value_Not_Observable()
+	{
+		// Issue scenario: a .upri with a VALID header that declares two key/value pairs, carries one
+		// complete pair, then truncates before the second. ProcessResourceFile used to merge each
+		// pair directly into the live loader as it read, so BinaryReader.ReadString throwing
+		// EndOfStreamException on the second pair left the FIRST pair's value observable even after
+		// the AddLookupAssembly rollback removed the registration and its parsed markers — an
+		// unregistered assembly's partially parsed resource value survived. A failed
+		// AddLookupAssembly must be fully transactional: no registration, marker, or value remains.
+		const string defaultLanguage = "en";
+		const string uiTestResources = "Uno.UI.UnitTests/Resources";
+		const string truncatedLoaderName = "Uno.UI.Tests.TruncatedUpri/Resources";
+		const string hostValue = "App70-en";
+
+		var previousCulture = CultureInfo.CurrentUICulture;
+		var previousPlo = ApplicationLanguages.PrimaryLanguageOverride;
+		var previousDefault = _ResourceLoader.DefaultLanguage;
+
+		var defaultAlcAssembly = typeof(Given_ResourceLoader_Alc).Assembly;
+		var collectibleAlc = new AssemblyLoadContext("Given_ResourceLoader_Alc.truncated", isCollectible: true);
+		try
+		{
+			// Establish the loader context BEFORE the failing registration: with an unchanged
+			// context no later GetString call reloads (and incidentally wipes) the loaders, so a
+			// leaked partial value would remain observable for the rest of the process lifetime.
+			CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+			ApplicationLanguages.PrimaryLanguageOverride = defaultLanguage;
+			_ResourceLoader.DefaultLanguage = defaultLanguage;
+
+			_ResourceLoader.AddLookupAssembly(defaultAlcAssembly);
+			Assert.AreEqual(
+				hostValue,
+				_ResourceLoader.GetForCurrentView(uiTestResources).GetString("ApplicationName"),
+				"Pre-condition: the host resource resolves before the failing registration.");
+
+			var truncated = LoadAssemblyWithUpri(
+				collectibleAlc,
+				"Uno.UI.Tests.TruncatedUpri",
+				BuildTruncatedUpriPayload(truncatedLoaderName, defaultLanguage));
+
+			Assert.ThrowsExactly<EndOfStreamException>(
+				() => _ResourceLoader.AddLookupAssembly(truncated),
+				"A .upri truncated in the middle of its declared pairs must surface BinaryReader's EndOfStreamException.");
+
+			Assert.IsFalse(
+				_ResourceLoader.ContainsLookupAssembly(truncated),
+				"A failed registration must be rolled back.");
+			Assert.AreEqual(
+				string.Empty,
+				_ResourceLoader.GetForCurrentView(truncatedLoaderName).GetString("TruncatedKey"),
+				"The first pair of a truncated .upri must NOT remain observable after the failed registration — the rollback must cover partially merged values, not just the registration and markers.");
+			Assert.AreEqual(
+				hostValue,
+				_ResourceLoader.GetForCurrentView(uiTestResources).GetString("ApplicationName"),
+				"Surviving registrations must still resolve after the failed registration is rolled back.");
+		}
+		finally
+		{
+			_ResourceLoader.ClearNonDefaultAlcAssemblies();
+			collectibleAlc.Unload();
+			CultureInfo.CurrentUICulture = previousCulture;
+			ApplicationLanguages.PrimaryLanguageOverride = previousPlo;
+			_ResourceLoader.DefaultLanguage = previousDefault;
+		}
+	}
+
+	[TestMethod]
+	public void When_AddLookupAssembly_Truncated_Upri_With_Changed_Context_Then_Live_Loaders_Untouched()
+	{
+		// Same truncated .upri as above, but through AddLookupAssembly's OTHER branch: when the
+		// loader context changed since it was last established, the new assembly is parsed on its
+		// own (no full reload). That parse used to write each pair straight into the live loader
+		// too; it must instead parse into temporaries so a failure leaves the live loaders
+		// completely untouched. Observed at the merged-dictionary seam (no GetString) because a
+		// later GetString reloads for the new context and would mask the leak.
+		const string truncatedLoaderName = "Uno.UI.Tests.TruncatedUpriChangedContext/Resources";
+
+		var previousCulture = CultureInfo.CurrentUICulture;
+		var previousPlo = ApplicationLanguages.PrimaryLanguageOverride;
+		var previousDefault = _ResourceLoader.DefaultLanguage;
+
+		var collectibleAlc = new AssemblyLoadContext("Given_ResourceLoader_Alc.truncatedChangedContext", isCollectible: true);
+		try
+		{
+			// Establish a French loader context...
+			CultureInfo.CurrentUICulture = new CultureInfo("fr-FR");
+			ApplicationLanguages.PrimaryLanguageOverride = "fr";
+			_ResourceLoader.DefaultLanguage = "fr";
+
+			// ...then flip the environment to English WITHOUT the ResourceLoader observing it
+			// (neither setter below re-enters the loader), so the next AddLookupAssembly sees a
+			// significantly changed context and takes the single-assembly parse branch.
+			CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+			ApplicationLanguages.PrimaryLanguageOverride = "en";
+
+			var truncated = LoadAssemblyWithUpri(
+				collectibleAlc,
+				"Uno.UI.Tests.TruncatedUpriChangedContext",
+				BuildTruncatedUpriPayload(truncatedLoaderName, "en"));
+
+			Assert.ThrowsExactly<EndOfStreamException>(
+				() => _ResourceLoader.AddLookupAssembly(truncated),
+				"A .upri truncated in the middle of its declared pairs must surface BinaryReader's EndOfStreamException.");
+
+			Assert.IsFalse(
+				_ResourceLoader.ContainsLookupAssembly(truncated),
+				"A failed registration must be rolled back.");
+			Assert.IsFalse(
+				TryGetMergedResource(truncatedLoaderName, "en", "TruncatedKey", out var leaked),
+				$"The failed single-assembly parse must not leave any value in the live loaders (found '{leaked}').");
+		}
+		finally
+		{
+			_ResourceLoader.ClearNonDefaultAlcAssemblies();
+			collectibleAlc.Unload();
+			CultureInfo.CurrentUICulture = previousCulture;
+			ApplicationLanguages.PrimaryLanguageOverride = previousPlo;
+			_ResourceLoader.DefaultLanguage = previousDefault;
+		}
+	}
+
+	/// <summary>
+	/// Builds a <c>.upri</c> payload with a valid header (magic, version 3, loader name, culture)
+	/// that declares TWO key/value pairs, carries one complete pair, then truncates — matching
+	/// <c>ProcessResourceFile</c>'s binary layout so the parser fails on the second
+	/// <see cref="BinaryReader.ReadString"/> AFTER the first pair parsed successfully.
+	/// </summary>
+	private static byte[] BuildTruncatedUpriPayload(string loaderName, string culture)
+	{
+		using var payload = new MemoryStream();
+		using (var writer = new BinaryWriter(payload, Encoding.UTF8, leaveOpen: true))
+		{
+			writer.Write("uno"u8); // magic
+			writer.Write(3); // version
+			writer.Write(loaderName);
+			writer.Write(culture);
+			writer.Write(2); // resourceCount: declares two pairs...
+			writer.Write("TruncatedKey");
+			writer.Write("TruncatedValue");
+			// ...but the stream ends before the second pair.
+		}
+
+		return payload.ToArray();
+	}
+
+	/// <summary>
+	/// Reads a merged resource value at the private per-loader dictionary seam
+	/// (<c>ResourceLoader._resources[culture][key]</c>) WITHOUT going through
+	/// <c>GetString</c> — which re-establishes the loader context (reloading, and thereby wiping,
+	/// the loaders when the culture changed) and would mask a leaked value.
+	/// </summary>
+	private static bool TryGetMergedResource(string loaderName, string culture, string key, out string? value)
+	{
+		value = null;
+
+		var loadersField = typeof(_ResourceLoader).GetField("_loaders", BindingFlags.Static | BindingFlags.NonPublic)
+			?? throw new InvalidOperationException("ResourceLoader._loaders field was not found.");
+		var loaders = (Dictionary<string, _ResourceLoader>)loadersField.GetValue(null)!;
+		if (!loaders.TryGetValue(loaderName, out var loader))
+		{
+			return false;
+		}
+
+		var resourcesField = typeof(_ResourceLoader).GetField("_resources", BindingFlags.Instance | BindingFlags.NonPublic)
+			?? throw new InvalidOperationException("ResourceLoader._resources field was not found.");
+		var resources = (Dictionary<string, Dictionary<string, string>>)resourcesField.GetValue(loader)!;
+		return resources.TryGetValue(culture, out var map) && map.TryGetValue(key, out value);
+	}
+
 	/// <summary>
 	/// Emits (in memory, via <see cref="ManagedPEBuilder"/>) a minimal assembly whose single
 	/// manifest resource is a malformed <c>.upri</c> (payload does not start with the expected
@@ -326,6 +497,15 @@ public class Given_ResourceLoader_Alc
 	/// exercised with a REAL <see cref="Assembly"/> — no fake seam in the product code.
 	/// </summary>
 	private static Assembly LoadAssemblyWithMalformedUpri(AssemblyLoadContext alc, string assemblyName)
+		=> LoadAssemblyWithUpri(alc, assemblyName, "BAD-upri-payload"u8.ToArray()); // does not start with the "uno" magic
+
+	/// <summary>
+	/// Emits (in memory, via <see cref="ManagedPEBuilder"/>) a minimal assembly whose single
+	/// manifest resource is a <c>.upri</c> with the given <paramref name="upriPayload"/>, and
+	/// loads it into <paramref name="alc"/>. Lets the malformed/truncated-resource paths be
+	/// exercised with a REAL <see cref="Assembly"/> — no fake seam in the product code.
+	/// </summary>
+	private static Assembly LoadAssemblyWithUpri(AssemblyLoadContext alc, string assemblyName, byte[] upriPayload)
 	{
 		var metadata = new MetadataBuilder();
 		metadata.AddAssembly(
@@ -343,14 +523,13 @@ public class Given_ResourceLoader_Alc
 			encBaseId: default);
 
 		// ECMA-335 II.24.2.4: each manifest resource is a 4-byte length prefix followed by the data.
-		var payload = "BAD-upri-payload"u8.ToArray(); // does not start with the "uno" magic
 		var resources = new BlobBuilder();
-		resources.WriteInt32(payload.Length);
-		resources.WriteBytes(payload);
+		resources.WriteInt32(upriPayload.Length);
+		resources.WriteBytes(upriPayload);
 
 		metadata.AddManifestResource(
 			ManifestResourceAttributes.Public,
-			metadata.GetOrAddString("Malformed.upri"),
+			metadata.GetOrAddString("Embedded.upri"),
 			implementation: default,
 			offset: 0);
 
