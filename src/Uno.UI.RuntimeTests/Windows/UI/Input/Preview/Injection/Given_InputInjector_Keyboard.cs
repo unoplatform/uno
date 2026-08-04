@@ -1,4 +1,4 @@
-﻿#if HAS_INPUT_INJECTOR || WINAPPSDK
+﻿#if __SKIA__
 #nullable enable
 
 using System;
@@ -24,8 +24,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Input_Preview_Injection;
 [RunsOnUIThread]
 public class Given_InputInjector_Keyboard
 {
-	private static InputInjector? TryGetInjector()
-		=> TestServices.WindowHelper.IsXamlIsland ? null : InputInjector.TryCreate();
+	private static InputInjector GetInjector()
+	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			// Input injection is not supported in XamlIslands.
+			Assert.Inconclusive("Input injection is not supported in XamlIslands.");
+		}
+
+		return InputInjector.TryCreate() ?? throw new InvalidOperationException("InputInjector.TryCreate() returned null.");
+	}
 
 	private static InjectedInputKeyboardInfo Key(VirtualKey key, InjectedInputKeyOptions options = InjectedInputKeyOptions.None)
 		=> new() { VirtualKey = (ushort)key, KeyOptions = options };
@@ -40,14 +48,9 @@ public class Given_InputInjector_Keyboard
 		=> injector.InjectKeyboardInput(new[] { Key(key), KeyUp(key) });
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_InjectKey_Types_Into_Focused_TextBox()
 	{
-		if (TryGetInjector() is not { } injector)
-		{
-			return;
-		}
-
+		var injector = GetInjector();
 		var textBox = new TextBox();
 		await UITestHelper.Load(textBox);
 		textBox.Focus(FocusState.Programmatic);
@@ -65,14 +68,9 @@ public class Given_InputInjector_Keyboard
 	/// pass through TestServices.KeyboardHelper, which raises routed events directly on an element.
 	/// </summary>
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_InjectKey_Raises_CharacterReceived()
 	{
-		if (TryGetInjector() is not { } injector)
-		{
-			return;
-		}
-
+		var injector = GetInjector();
 		var textBox = new TextBox();
 		await UITestHelper.Load(textBox);
 		textBox.Focus(FocusState.Programmatic);
@@ -96,14 +94,9 @@ public class Given_InputInjector_Keyboard
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_InjectShiftA_Produces_Uppercase()
 	{
-		if (TryGetInjector() is not { } injector)
-		{
-			return;
-		}
-
+		var injector = GetInjector();
 		var textBox = new TextBox();
 		await UITestHelper.Load(textBox);
 		textBox.Focus(FocusState.Programmatic);
@@ -129,14 +122,9 @@ public class Given_InputInjector_Keyboard
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_InjectCtrlA_Selects_All_Without_Character()
 	{
-		if (TryGetInjector() is not { } injector)
-		{
-			return;
-		}
-
+		var injector = GetInjector();
 		var textBox = new TextBox { Text = "hello world" };
 		await UITestHelper.Load(textBox);
 		textBox.Focus(FocusState.Programmatic);
@@ -170,14 +158,9 @@ public class Given_InputInjector_Keyboard
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_InjectModifierKey_Fires_Accelerator()
 	{
-		if (TryGetInjector() is not { } injector)
-		{
-			return;
-		}
-
+		var injector = GetInjector();
 		var invoked = false;
 		var button = new Button { Content = "Target" };
 		var accelerator = new KeyboardAccelerator { Key = VirtualKey.X, Modifiers = VirtualKeyModifiers.Control };
@@ -214,14 +197,63 @@ public class Given_InputInjector_Keyboard
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_InjectCapsLock_Produces_Uppercase()
+	{
+		var injector = GetInjector();
+
+		var textBox = new TextBox();
+		await UITestHelper.Load(textBox);
+		textBox.Focus(FocusState.Programmatic);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		try
+		{
+			Tap(injector, VirtualKey.CapitalLock);
+			Tap(injector, VirtualKey.A);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("A", textBox.Text);
+
+			// Latched state is process-wide, so a second injector must observe it too.
+			Tap(InputInjector.TryCreate()!, VirtualKey.B);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("AB", textBox.Text);
+		}
+		finally
+		{
+			// Unlatch so later tests see a normal keyboard.
+			Tap(injector, VirtualKey.CapitalLock);
+		}
+	}
+
+	[TestMethod]
+	public async Task When_InjectUnicode_With_NonZero_VirtualKey_Throws_Before_Dispatching()
+	{
+		var injector = GetInjector();
+
+		var textBox = new TextBox();
+		await UITestHelper.Load(textBox);
+		textBox.Focus(FocusState.Programmatic);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var batch = new[]
+		{
+			Key(VirtualKey.A),
+			new InjectedInputKeyboardInfo { VirtualKey = (ushort)VirtualKey.B, ScanCode = 'b', KeyOptions = InjectedInputKeyOptions.Unicode },
+		};
+
+		Assert.ThrowsExactly<ArgumentException>(() => injector.InjectKeyboardInput(batch));
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// The valid leading entry must not have been dispatched.
+		Assert.AreEqual(string.Empty, textBox.Text);
+	}
+
+	[TestMethod]
 	public async Task When_InjectTab_Moves_Focus()
 	{
-		if (TryGetInjector() is not { } injector)
-		{
-			return;
-		}
-
+		var injector = GetInjector();
 		var first = new Button { Content = "First" };
 		var second = new Button { Content = "Second" };
 		var panel = new StackPanel();
@@ -239,14 +271,9 @@ public class Given_InputInjector_Keyboard
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_InjectTab_Does_Not_Type_Tab_Character()
 	{
-		if (TryGetInjector() is not { } injector)
-		{
-			return;
-		}
-
+		var injector = GetInjector();
 		var textBox = new TextBox { AcceptsReturn = true };
 		await UITestHelper.Load(textBox);
 		textBox.Focus(FocusState.Programmatic);
@@ -259,14 +286,9 @@ public class Given_InputInjector_Keyboard
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_InjectUnicode_Delivers_Character()
 	{
-		if (TryGetInjector() is not { } injector)
-		{
-			return;
-		}
-
+		var injector = GetInjector();
 		var textBox = new TextBox();
 		await UITestHelper.Load(textBox);
 		textBox.Focus(FocusState.Programmatic);
@@ -283,14 +305,9 @@ public class Given_InputInjector_Keyboard
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_InjectUnicode_SurrogatePair()
 	{
-		if (TryGetInjector() is not { } injector)
-		{
-			return;
-		}
-
+		var injector = GetInjector();
 		var textBox = new TextBox();
 		await UITestHelper.Load(textBox);
 		textBox.Focus(FocusState.Programmatic);
@@ -308,14 +325,9 @@ public class Given_InputInjector_Keyboard
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_InjectUnicode_With_NonZero_VirtualKey_Throws()
 	{
-		if (TryGetInjector() is not { } injector)
-		{
-			return;
-		}
-
+		var injector = GetInjector();
 		var info = new InjectedInputKeyboardInfo
 		{
 			VirtualKey = (ushort)VirtualKey.A,
@@ -327,14 +339,9 @@ public class Given_InputInjector_Keyboard
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_InjectKeyUp_Without_KeyDown()
 	{
-		if (TryGetInjector() is not { } injector)
-		{
-			return;
-		}
-
+		var injector = GetInjector();
 		var textBox = new TextBox();
 		await UITestHelper.Load(textBox);
 		textBox.Focus(FocusState.Programmatic);
@@ -356,14 +363,9 @@ public class Given_InputInjector_Keyboard
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_InjectKeys_Preserve_Order()
 	{
-		if (TryGetInjector() is not { } injector)
-		{
-			return;
-		}
-
+		var injector = GetInjector();
 		var textBox = new TextBox();
 		await UITestHelper.Load(textBox);
 		textBox.Focus(FocusState.Programmatic);
@@ -381,14 +383,9 @@ public class Given_InputInjector_Keyboard
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_InjectCtrl_Then_Click_Reports_Control_Modifier()
 	{
-		if (TryGetInjector() is not { } injector)
-		{
-			return;
-		}
-
+		var injector = GetInjector();
 		var target = new Border
 		{
 			Width = 100,
@@ -417,14 +414,9 @@ public class Given_InputInjector_Keyboard
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_InjectKey_Populates_KeyStatus()
 	{
-		if (TryGetInjector() is not { } injector)
-		{
-			return;
-		}
-
+		var injector = GetInjector();
 		var textBox = new TextBox();
 		await UITestHelper.Load(textBox);
 		textBox.Focus(FocusState.Programmatic);
