@@ -80,9 +80,9 @@ internal sealed class CollectibleAnalyzerAssemblyLoader : IAnalyzerAssemblyLoade
 	/// whose identity is compatible — never just "whichever project registered that file name
 	/// first". Returns <c>null</c> when nothing usable was registered.
 	/// </summary>
-	private string? GetBestKnownPath(AssemblyName requested)
+	private string? GetBestKnownPath(string simpleName, AssemblyName requested)
 	{
-		if (!_knownPathsByFileName.TryGetValue(requested.Name + ".dll", out var candidates))
+		if (!_knownPathsByFileName.TryGetValue(simpleName + ".dll", out var candidates))
 		{
 			return null;
 		}
@@ -110,7 +110,7 @@ internal sealed class CollectibleAnalyzerAssemblyLoader : IAnalyzerAssemblyLoade
 				continue; // Deleted since it was registered, or not a loadable assembly.
 			}
 
-			if (!string.Equals(candidate.Name, requested.Name, StringComparison.OrdinalIgnoreCase)
+			if (!string.Equals(candidate.Name, simpleName, StringComparison.OrdinalIgnoreCase)
 				|| (requestedToken is { Length: > 0 } && !requestedToken.AsSpan().SequenceEqual(candidate.GetPublicKeyToken().AsSpan())))
 			{
 				continue;
@@ -241,7 +241,7 @@ internal sealed class CollectibleAnalyzerAssemblyLoader : IAnalyzerAssemblyLoade
 				return LoadShadowCopy(candidate);
 			}
 
-			return _loader.GetBestKnownPath(assemblyName) is { } known ? LoadShadowCopy(known) : null;
+			return _loader.GetBestKnownPath(simpleName, assemblyName) is { } known ? LoadShadowCopy(known) : null;
 		}
 
 		protected override IntPtr LoadUnmanagedDll(string unmanagedDllName)
