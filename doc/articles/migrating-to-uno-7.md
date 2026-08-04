@@ -59,7 +59,7 @@ Uno.SDK single-project model.
 | `Uno.UI.Maps` AddIn removed | The native Google Maps control has no core Skia equivalent — use a third-party/Skia map or custom rendering. |
 | `Uno.WinUI` UI assemblies for `net*-android/ios/tvos/maccatalyst` are now the Skia binaries | Same TFM string, but binary-incompatible with previously native-built consumers. Recompile all libraries against 7.0 and remove native bootstrap. |
 | `Xamarin.AndroidX.*` transitive deps removed (AppCompat, RecyclerView, Activity, Browser, SwipeRefreshLayout) | If *your own* code uses AndroidX, add explicit `PackageReference`s. |
-| MRT Core (`Microsoft.Windows.ApplicationModel.Resources`) moved from `Uno.UI.dll` to `Uno.dll` | Both assemblies ship in the same `Uno.WinUI` package, and the type names and namespaces are unchanged — source and `PackageReference` consumers recompile with no edit. Only code that binds these types by assembly identity needs updating: assembly-qualified type names (`"…ResourceLoader, Uno.UI"` → `"…ResourceLoader, Uno"`), `Assembly.Load` lookups, and `typeof(ResourceLoader).Assembly` checks. |
+| MRT Core (`Microsoft.Windows.ApplicationModel.Resources`) moved from `Uno.UI.dll` (`Uno.WinUI` package) to `Uno.dll` (`Uno.WinRT` package) | No reference change is needed — `Uno.WinUI` already depends on `Uno.WinRT` — and the type names and namespaces are unchanged, so source and `PackageReference` consumers recompile with no edit. Only code that binds these types by assembly identity needs updating: assembly-qualified type names (`"…ResourceLoader, Uno.UI"` → `"…ResourceLoader, Uno"`), `Assembly.Load` lookups, and `typeof(ResourceLoader).Assembly` checks. |
 
 > [!NOTE]
 > Referencing `Uno.WinUI.WebAssembly` (or the older `Uno.WinUI.Runtime.WebAssembly`)
