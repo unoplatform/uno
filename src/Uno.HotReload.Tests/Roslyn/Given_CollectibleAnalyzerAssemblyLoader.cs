@@ -39,6 +39,7 @@ public sealed class Given_CollectibleAnalyzerAssemblyLoader
 			Assert.IsNotNull(context);
 			Assert.IsTrue(context.IsCollectible, "analyzer contexts must be collectible");
 			Assert.AreSame(context, AssemblyLoadContext.GetLoadContext(assembly2), "same directory must share one context");
+			Assert.AreSame(assembly1, loader.LoadFromPath(payload1), "same path must keep yielding the same assembly instance");
 		}
 		finally
 		{
@@ -141,7 +142,7 @@ public sealed class Given_CollectibleAnalyzerAssemblyLoader
 	{
 		var root = Directory.CreateTempSubdirectory("uno-hr-tests").FullName;
 		var csharpPath = typeof(CSharpCompilation).Assembly.Location;
-		var compilerContext = new OnDemandContext(new() { ["Microsoft.CodeAnalysis.CSharp"] = csharpPath });
+		var compilerContext = new OnDemandContext(new Dictionary<string, string> { ["Microsoft.CodeAnalysis.CSharp"] = csharpPath });
 		try
 		{
 			var payload = CopyTo(root, typeof(Given_CollectibleAnalyzerAssemblyLoader).Assembly.Location);
@@ -224,6 +225,66 @@ public sealed class Given_CollectibleAnalyzerAssemblyLoader
 		}
 	}
 
+	[TestMethod]
+	[Description(
+		"A registered candidate whose identity does not match the request (public key token) " +
+		"must be skipped — not force-loaded because its file name matches — leaving the " +
+		"request to the runtime's own resolution.")]
+	public void When_RequestedTokenDoesNotMatch_Then_CandidatesAreSkipped()
+	{
+		var root = Directory.CreateTempSubdirectory("uno-hr-tests").FullName;
+		try
+		{
+			var v1 = EmitAssembly(Path.Join(root, "v1", "Dep.dll"), "Dep", new Version(1, 0, 0, 0));
+			var v2 = EmitAssembly(Path.Join(root, "v2", "Dep.dll"), "Dep", new Version(2, 0, 0, 0));
+			var payload = CopyTo(Directory.CreateDirectory(Path.Join(root, "analyzer")).FullName, typeof(Given_CollectibleAnalyzerAssemblyLoader).Assembly.Location);
+
+			var loader = new CollectibleAnalyzerAssemblyLoader();
+			loader.AddDependencyLocation(v1);
+			loader.AddDependencyLocation(v2);
+			var analyzerContext = AssemblyLoadContext.GetLoadContext(loader.LoadFromPath(payload))!;
+
+			// Both candidates are unsigned: a request carrying a public key token must skip them
+			// (and then fail in the runtime's own resolution, since nobody can provide it).
+			Assert.ThrowsExactly<FileNotFoundException>(() =>
+				analyzerContext.LoadFromAssemblyName(new AssemblyName("Dep, Version=2.0.0.0, PublicKeyToken=b03f5f7f11d50a3a")));
+		}
+		finally
+		{
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description(
+		"A shadow directory holding partial state — an orphaned staging file and a pdb " +
+		"published without its dll, i.e. a process killed mid-publish — must not prevent the " +
+		"load: the dll's atomic publish is what completes the bundle.")]
+	public void When_ShadowDirectoryHoldsPartialState_Then_LoadRecovers()
+	{
+		var root = Directory.CreateTempSubdirectory("uno-hr-tests").FullName;
+		try
+		{
+			var payload = CopyTo(root, typeof(Given_CollectibleAnalyzerAssemblyLoader).Assembly.Location);
+
+			// Re-create the debris a kill between the pdb and dll publishes would leave behind.
+			var shadowPath = CollectibleAnalyzerAssemblyLoader.GetShadowCopyPath(payload);
+			Assert.IsFalse(File.Exists(shadowPath), "premise: this (path, timestamp, size) key must be fresh");
+			Directory.CreateDirectory(Path.GetDirectoryName(shadowPath)!);
+			File.WriteAllText($"{shadowPath}.{Guid.NewGuid():N}.staging", "debris from a killed copy");
+			File.WriteAllBytes(Path.ChangeExtension(shadowPath, ".pdb"), [1, 2, 3]);
+
+			var loaded = new CollectibleAnalyzerAssemblyLoader().LoadFromPath(payload);
+
+			Assert.IsNotNull(loaded);
+			Assert.IsTrue(File.Exists(shadowPath), "the dll must have been published despite the pre-existing debris");
+		}
+		finally
+		{
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
 	private static string CopyTo(string directory, string sourcePath, string? fileName = null)
 	{
 		var target = Path.Join(directory, fileName ?? Path.GetFileName(sourcePath));
@@ -254,7 +315,7 @@ public sealed class Given_CollectibleAnalyzerAssemblyLoader
 	/// A compiler-side context that — like the dev-server's per-application context — can
 	/// RESOLVE assemblies it has not loaded yet (lazy, on demand).
 	/// </summary>
-	private sealed class OnDemandContext(Dictionary<string, string> resolvable)
+	private sealed class OnDemandContext(IReadOnlyDictionary<string, string> resolvable)
 		: AssemblyLoadContext("test-on-demand-compiler", isCollectible: true)
 	{
 		protected override Assembly? Load(AssemblyName assemblyName)
