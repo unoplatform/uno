@@ -368,7 +368,9 @@ public partial class InputInjector
 				_mouse.StartNewSequence();
 			}
 
-			var args = info.ToEventArgs(_mouse!, VirtualKeyModifiers.None);
+			// Pick up modifiers held by injected keyboard input, so Ctrl+Click can be composed
+			// from InjectKeyboardInput and InjectMouseInput.
+			var args = info.ToEventArgs(_mouse!, GetTrackedModifiers());
 			_mouse!.Update(args);
 
 			DispatchPointerUpdated(args);
@@ -385,7 +387,7 @@ public partial class InputInjector
 				_mouse.StartNewSequence();
 			}
 
-			var args = info.ToEventArgs(_mouse!, VirtualKeyModifiers.None);
+			var args = info.ToEventArgs(_mouse!, GetTrackedModifiers());
 			_mouse!.Update(args);
 
 			DispatchPointerUpdated(args);
