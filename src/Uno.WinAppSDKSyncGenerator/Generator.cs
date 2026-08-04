@@ -160,7 +160,6 @@ namespace Uno.WinAppSDKSyncGenerator
 			"Microsoft.UI.Input",
 			"Microsoft.System",
 			"Microsoft.Graphics",
-			"Microsoft.Windows.ApplicationModel.Resources",
 			};
 
 		static Generator()
@@ -453,12 +452,6 @@ namespace Uno.WinAppSDKSyncGenerator
 				@namespace.StartsWith("Microsoft.Graphics.Display", StringComparison.Ordinal))
 			{
 				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
-			}
-			// Microsoft.Windows.ApplicationModel.Resources: Correct location would be Uno.UWP,
-			// but was previously generated in Uno.UI.
-			else if (@namespace.StartsWith("Microsoft.Windows.ApplicationModel.Resources", StringComparison.Ordinal))
-			{
-				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 			}
 			// Microsoft.Web.WebView2.Core: Correct location would be Uno.UWP,
 			// but was previously generated in Uno.UI.
