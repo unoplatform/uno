@@ -113,12 +113,24 @@ partial class Application
 	/// </summary>
 	internal static void RemoveAlcApplication(AssemblyLoadContext alc)
 	{
+		RemoveAlcApplicationRegistration(alc);
+
+		CleanupNonDefaultAlcCaches(alc);
+	}
+
+	/// <summary>
+	/// Removes only the ALC → Application registry entry for <paramref name="alc"/>, without
+	/// triggering the cache sweeps. Used by the sweep itself
+	/// (<see cref="CleanupNonDefaultAlcCachesCore"/>), where calling
+	/// <see cref="RemoveAlcApplication"/> would recurse back into the sweep. Idempotent — the
+	/// Unloading hook may already have removed the entry.
+	/// </summary>
+	private static void RemoveAlcApplicationRegistration(AssemblyLoadContext alc)
+	{
 		lock (_applicationsByAlcSync)
 		{
 			_applicationsByAlc.Remove(alc);
 		}
-
-		CleanupNonDefaultAlcCaches(alc);
 	}
 
 	internal static Application GetForInstance(object instance)
@@ -373,8 +385,8 @@ partial class Application
 
 	/// <summary>
 	/// Purges Type-keyed caches of entries from ALL non-default (collectible) ALCs, including the
-	/// DESTRUCTIVE removals (ResourceLoader lookup assemblies, CompositionTarget.Rendering
-	/// handlers) that <see cref="CleanupNonDefaultAlcCaches"/> scopes to a single dying ALC.
+	/// DESTRUCTIVE removals (the ALC → Application registry, ResourceLoader lookup assemblies,
+	/// CompositionTarget.Rendering handlers) that <see cref="CleanupNonDefaultAlcCaches"/> scopes to a single dying ALC.
 	/// Reserved for global shutdown, where every secondary app is going away and no live sibling
 	/// can be harmed — the unscoped semantics are opt-in at the call site rather than a default.
 	/// </summary>
@@ -388,8 +400,9 @@ partial class Application
 	/// cannot name one (a per-window teardown that failed to capture its owner, or a global shutdown).
 	/// </param>
 	/// <param name="allowUnscopedDestructive">
-	/// Whether the DESTRUCTIVE sweeps (whose dropped state is never re-created — ResourceLoader lookup
-	/// assemblies, CompositionTarget.Rendering handlers, user Style overrides) may run wide (all
+	/// Whether the DESTRUCTIVE sweeps (whose dropped state is never re-created — the ALC → Application
+	/// registry, ResourceLoader lookup assemblies, CompositionTarget.Rendering handlers, user Style
+	/// overrides) may run wide (all
 	/// non-default ALCs) when <paramref name="dyingAlc"/> is <see langword="null"/>. Only the explicit
 	/// global-shutdown entry <see cref="CleanupAllSecondaryAlcCaches"/> passes <see langword="true"/>
 	/// (every secondary app is going away, so no live sibling can be harmed). The per-window entry
@@ -425,16 +438,33 @@ partial class Application
 		// (e.g. a concurrent-modification), one failing sweep cannot abort the remaining sweeps and
 		// silently re-leak the ALC.
 
-		// Remove Application instances registered for non-default ALCs from the CWT.
-		// Without this, the CWT keeps the inner app's Application subclass alive.
-		RunCleanupStep(nameof(ClearNonDefaultAlcApplications), ClearNonDefaultAlcApplications);
+		// The ALC → Application registry is DESTRUCTIVE state, not a rebuildable cache: it is
+		// populated only by each secondary app's constructor and never rebuilt on demand, and
+		// GetForAssemblyLoadContext / secondary-app resource fallback / window ownership / theme
+		// lookups all read it. Resolve the scope like the other destructive sweeps below: remove
+		// only the dying ALC's entry when it is known (also releasing the CWT value that keeps the
+		// inner app's Application subclass alive), wide only at a genuine global shutdown.
+		RunCleanupStep(nameof(ClearNonDefaultAlcApplications), () =>
+		{
+			if (dyingAlc is not null)
+			{
+				// Registration-only removal: RemoveAlcApplication would recurse into this sweep.
+				// Idempotent — the Unloading hook may already have removed it.
+				RemoveAlcApplicationRegistration(dyingAlc);
+			}
+			else if (allowUnscopedDestructive)
+			{
+				ClearNonDefaultAlcApplications();
+			}
+			// else: unknown ALC in a per-window teardown — never unregister a live sibling's application.
+		});
 
 		// Type-keyed caches. These (and the FrameworkElementHelper/ResourceResolver/
 		// UIElementNativeRegistrar sweeps below) intentionally stay all-non-default even when the
 		// dying ALC is known: cache entries rebuild on demand, so over-clearing a live sibling
-		// app's entries is a perf hiccup, not state loss. The DESTRUCTIVE removals further down
-		// (ResourceLoader lookup assemblies, CompositionTarget.Rendering handlers, user Style
-		// overrides) are ALC-scoped because a dropped registration/subscription is never re-created.
+		// app's entries is a perf hiccup, not state loss. The DESTRUCTIVE removals (the Application
+		// registry above, ResourceLoader lookup assemblies, CompositionTarget.Rendering handlers,
+		// user Style overrides) are ALC-scoped because a dropped registration/subscription is never re-created.
 		RunCleanupStep(nameof(DependencyProperty.ClearCachesForNonDefaultAlc), DependencyProperty.ClearCachesForNonDefaultAlc);
 		RunCleanupStep(nameof(Style.ClearCachesForNonDefaultAlc), Style.ClearCachesForNonDefaultAlc);
 		RunCleanupStep(nameof(DirectUI.MetadataAPI.ClearCachesForNonDefaultAlc), DirectUI.MetadataAPI.ClearCachesForNonDefaultAlc);

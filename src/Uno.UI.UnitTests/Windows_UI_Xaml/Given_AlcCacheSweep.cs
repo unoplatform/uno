@@ -63,6 +63,83 @@ public class Given_AlcCacheSweep
 	}
 
 	[TestMethod]
+	public void When_Scoped_Cleanup_Then_Sibling_Alc_Application_Registration_Kept()
+	{
+		// The ALC → Application registry is DESTRUCTIVE state, not a rebuildable cache: it is
+		// populated only by each secondary app's constructor and never rebuilt on demand, and
+		// GetForAssemblyLoadContext / secondary-app resource fallback / window ownership / theme
+		// lookups all read it. Tearing ONE app down (dying ALC known) must therefore remove only
+		// that ALC's registration — a wide sweep would unregister a live sibling secondary app
+		// and permanently break its lookups.
+		var dyingAlc = new AssemblyLoadContext("Given_AlcCacheSweep.dyingApp", isCollectible: true);
+		var siblingAlc = new AssemblyLoadContext("Given_AlcCacheSweep.siblingApp", isCollectible: true);
+		try
+		{
+			var dyingApp = CreateAlcApplication(dyingAlc);
+			var siblingApp = CreateAlcApplication(siblingAlc);
+
+			Assert.AreSame(dyingApp, Application.GetForAssemblyLoadContext(dyingAlc), "Pre-condition: the dying ALC's application must be registered.");
+			Assert.AreSame(siblingApp, Application.GetForAssemblyLoadContext(siblingAlc), "Pre-condition: the sibling ALC's application must be registered.");
+
+			Application.CleanupNonDefaultAlcCaches(dyingAlc);
+
+			Assert.IsNull(
+				Application.GetForAssemblyLoadContext(dyingAlc),
+				"The scoped sweep must drop the dying ALC's Application registration; otherwise the registry pins the unloaded context.");
+			Assert.AreSame(
+				siblingApp,
+				Application.GetForAssemblyLoadContext(siblingAlc),
+				"The scoped sweep must keep a live sibling's Application registration — it is never re-created, so dropping it breaks GetForAssemblyLoadContext/ownership/theme lookups for the sibling.");
+		}
+		finally
+		{
+			Application.RemoveAlcApplication(siblingAlc);
+			Application.RemoveAlcApplication(dyingAlc);
+			dyingAlc.Unload();
+			siblingAlc.Unload();
+		}
+	}
+
+	[TestMethod]
+	public void When_Unscoped_NonDestructive_Cleanup_Then_Alc_Application_Registrations_Kept()
+	{
+		// A per-window teardown that could not identify its dying ALC clears the rebuildable
+		// caches but must SKIP the destructive sweeps — including the Application registry —
+		// rather than unregister every live secondary app.
+		var aliveAlc = new AssemblyLoadContext("Given_AlcCacheSweep.aliveApp", isCollectible: true);
+		try
+		{
+			var aliveApp = CreateAlcApplication(aliveAlc);
+			Assert.AreSame(aliveApp, Application.GetForAssemblyLoadContext(aliveAlc), "Pre-condition: the application must be registered.");
+
+			Application.CleanupNonDefaultAlcCaches(dyingAlc: null);
+
+			Assert.AreSame(
+				aliveApp,
+				Application.GetForAssemblyLoadContext(aliveAlc),
+				"A per-window teardown with an unknown dying ALC must not unregister a live secondary app's Application — the registration is never re-created.");
+		}
+		finally
+		{
+			Application.RemoveAlcApplication(aliveAlc);
+			aliveAlc.Unload();
+		}
+	}
+
+	/// <summary>
+	/// Instantiates <see cref="AlcSweepTestApplication"/> from a copy of this test assembly loaded
+	/// into <paramref name="alc"/> — the base <see cref="Application"/> constructor registers a
+	/// non-default-ALC instance in the ALC → Application registry, the same path a real secondary
+	/// app takes at bootstrap.
+	/// </summary>
+	private static Application CreateAlcApplication(AssemblyLoadContext alc)
+	{
+		var assembly = alc.LoadFromAssemblyPath(typeof(Given_AlcCacheSweep).Assembly.Location);
+		var appType = assembly.GetType(typeof(AlcSweepTestApplication).FullName!, throwOnError: true)!;
+		return (Application)Activator.CreateInstance(appType)!;
+	}
+
+	[TestMethod]
 	public void When_A_Cleanup_Step_Throws_Then_Later_Steps_Still_Run()
 	{
 		// The teardown chokepoint runs each sweep through RunCleanupStep so a single failure cannot
@@ -79,4 +156,13 @@ public class Given_AlcCacheSweep
 		Assert.IsTrue(firstRan, "A step before the fault must run.");
 		Assert.IsTrue(laterRan, "A step after a throwing sweep must still run — one failing sweep must not abort the teardown chain.");
 	}
+}
+
+/// <summary>
+/// Minimal <see cref="Application"/> subclass instantiated from copies of this test assembly
+/// loaded into collectible ALCs. The base constructor's non-default-ALC branch registers the
+/// instance in the ALC → Application registry, exactly like a real secondary app's bootstrap.
+/// </summary>
+public class AlcSweepTestApplication : Application
+{
 }
