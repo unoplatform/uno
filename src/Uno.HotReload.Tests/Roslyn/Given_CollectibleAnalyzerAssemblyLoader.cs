@@ -192,6 +192,38 @@ public sealed class Given_CollectibleAnalyzerAssemblyLoader
 		}
 	}
 
+	[TestMethod]
+	[Description(
+		"When the exact requested version is not registered, resolution must fall back to the " +
+		"highest registered version with a compatible identity — a fresh context is required " +
+		"here: once a context has loaded a simple name, its own by-name cache answers (or " +
+		"rejects) later requests without ever calling Load() again.")]
+	public void When_RequestedVersionNotRegistered_Then_HighestCompatibleWins()
+	{
+		var root = Directory.CreateTempSubdirectory("uno-hr-tests").FullName;
+		try
+		{
+			var v1 = EmitAssembly(Path.Join(root, "v1", "Dep.dll"), "Dep", new Version(1, 0, 0, 0));
+			var v2 = EmitAssembly(Path.Join(root, "v2", "Dep.dll"), "Dep", new Version(2, 0, 0, 0));
+			var payload = CopyTo(Directory.CreateDirectory(Path.Join(root, "analyzer")).FullName, typeof(Given_CollectibleAnalyzerAssemblyLoader).Assembly.Location);
+
+			var loader = new CollectibleAnalyzerAssemblyLoader();
+			loader.AddDependencyLocation(v1);
+			loader.AddDependencyLocation(v2);
+			var analyzerContext = AssemblyLoadContext.GetLoadContext(loader.LoadFromPath(payload))!;
+
+			// 1.5 is not registered: the scan must pick the highest compatible version (2.0) —
+			// which also satisfies the runtime's own version validation on the returned assembly.
+			var resolved = analyzerContext.LoadFromAssemblyName(new AssemblyName("Dep, Version=1.5.0.0"));
+
+			Assert.AreEqual(new Version(2, 0, 0, 0), resolved.GetName().Version, "the highest compatible registered version must win");
+		}
+		finally
+		{
+			Directory.Delete(root, recursive: true);
+		}
+	}
+
 	private static string CopyTo(string directory, string sourcePath, string? fileName = null)
 	{
 		var target = Path.Join(directory, fileName ?? Path.GetFileName(sourcePath));
