@@ -1,4 +1,4 @@
-#if HAS_INPUT_INJECTOR || WINAPPSDK
+﻿#if HAS_INPUT_INJECTOR || WINAPPSDK
 #nullable enable
 
 using System;
@@ -8,9 +8,12 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
@@ -375,6 +378,42 @@ public class Given_InputInjector_Keyboard
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Assert.AreEqual("uno", textBox.Text);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_InjectCtrl_Then_Click_Reports_Control_Modifier()
+	{
+		if (TryGetInjector() is not { } injector)
+		{
+			return;
+		}
+
+		var target = new Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.DeepPink),
+		};
+		var bounds = await UITestHelper.Load(target);
+
+		VirtualKeyModifiers? modifiers = null;
+		target.PointerPressed += (_, e) => modifiers ??= e.KeyModifiers;
+
+		var mouse = injector.GetMouse();
+		try
+		{
+			injector.InjectKeyboardInput(new[] { Key(VirtualKey.Control) });
+			mouse.Press(new Point(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2));
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(VirtualKeyModifiers.Control, modifiers);
+		}
+		finally
+		{
+			mouse.Release();
+			injector.InjectKeyboardInput(new[] { KeyUp(VirtualKey.Control) });
+		}
 	}
 
 	[TestMethod]
