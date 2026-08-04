@@ -1,3 +1,6 @@
+// These tests drive the InputPane.OccludedRect setter, which is Uno-internal:
+// on native WinUI the property is read-only (the OS owns the input pane).
+#if HAS_UNO
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -195,3 +198,4 @@ public class Given_InputPane
 	private static double GetBottom(FrameworkElement element)
 		=> element.TransformToVisual(null).TransformPoint(default).Y + element.ActualHeight;
 }
+#endif
