@@ -74,16 +74,25 @@ partial class ResourceLoader
 	{
 		_lookupAssemblies.Add(assembly);
 
+		// Tracks whether the parse below merged directly into the LIVE loaders (the reload path
+		// processes every lookup assembly straight into them), so the rollback knows whether the
+		// merged state must be re-derived from the surviving registrations.
+		var liveLoadersTouched = false;
+
 		try
 		{
 			if (HasContextChangedSignificantly(out var context))
 			{
-				// The cache is still valid, we only have to load resources from the given assembly
-				ProcessAssembly(assembly, context.LanguagePreferences);
+				// The cache is still valid, we only have to load resources from the given assembly.
+				// Parse into temporaries and merge only on success, so a malformed .upri (e.g. a
+				// stream truncated in the middle of a key/value pair) can never leave a partially
+				// parsed value or marker in the live state.
+				ProcessAssemblyTransactionally(assembly, context.LanguagePreferences);
 			}
 			else
 			{
 				// The current culture was altered, rebuild the whole/missing cache
+				liveLoadersTouched = true;
 				ReloadResources(context);
 			}
 		}
@@ -91,17 +100,22 @@ partial class ResourceLoader
 		{
 			// A failed registration must not linger: the list is re-enumerated by every later
 			// rebuild (culture change, ALC sweep), so a malformed assembly left registered would
-			// re-hit the same parse failure forever. Roll back the just-added entry (and any
-			// parsed markers it contributed) before rethrowing to the caller.
+			// re-hit the same parse failure forever. Roll back the just-added entry before
+			// rethrowing to the caller.
 			var lastIndex = _lookupAssemblies.LastIndexOf(assembly);
 			if (lastIndex >= 0)
 			{
 				_lookupAssemblies.RemoveAt(lastIndex);
 			}
 
-			if (!_lookupAssemblies.Contains(assembly))
+			if (liveLoadersTouched)
 			{
-				_parsedResources.RemoveWhere(marker => marker.Assembly == assembly);
+				// The reload merged each assembly's pairs (and parsed markers) straight into the
+				// live state as it read, so the failed assembly may have left partially parsed
+				// values behind. Re-derive the merged values and the markers from the surviving
+				// registrations — the same recovery the ALC sweep uses — so nothing contributed by
+				// the failed attempt remains observable.
+				RebuildLoaderResourcesFromSurvivors();
 			}
 
 			throw;
@@ -110,6 +124,64 @@ partial class ResourceLoader
 
 	private static void ProcessAssembly(Assembly assembly, string[] languagePreferences)
 		=> ProcessAssembly(assembly, languagePreferences, GetOrCreateNamedLoaderResources, _parsedResources);
+
+	/// <summary>
+	/// Parses <paramref name="assembly"/>'s .upri resources into TEMPORARY structures and merges
+	/// them into the live loaders only once every file parsed successfully — the same
+	/// temp-then-apply pattern as <see cref="RebuildLoaderResourcesFromSurvivors"/>. A malformed
+	/// .upri therefore throws without any partially parsed value or marker becoming observable.
+	/// </summary>
+	private static void ProcessAssemblyTransactionally(Assembly assembly, string[] languagePreferences)
+	{
+		var parsedResources = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>(StringComparer.OrdinalIgnoreCase);
+
+		// Seed the temporary marker set with the assembly's already-parsed files so they are
+		// skipped exactly as a parse against the live markers would skip them.
+		var parsedMarkers = new HashSet<(Assembly Assembly, string ResourceName)>();
+		foreach (var marker in _parsedResources)
+		{
+			if (marker.Assembly == assembly)
+			{
+				parsedMarkers.Add(marker);
+			}
+		}
+
+		Dictionary<string, Dictionary<string, string>> ResolveParsedLoader(string name)
+		{
+			if (!parsedResources.TryGetValue(name, out var cultures))
+			{
+				parsedResources[name] = cultures = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+			}
+
+			return cultures;
+		}
+
+		ProcessAssembly(assembly, languagePreferences, ResolveParsedLoader, parsedMarkers);
+
+		// Apply phase: parsing succeeded, merge into the live loaders with the same
+		// last-writer-wins semantics ProcessResourceFile uses when writing to them directly.
+		foreach (var parsed in parsedResources)
+		{
+			var loaderResources = GetOrCreateNamedLoaderResources(parsed.Key);
+			foreach (var culture in parsed.Value)
+			{
+				if (!loaderResources.TryGetValue(culture.Key, out var resources))
+				{
+					loaderResources[culture.Key] = resources = new Dictionary<string, string>();
+				}
+
+				foreach (var pair in culture.Value)
+				{
+					resources[pair.Key] = pair.Value;
+				}
+			}
+		}
+
+		foreach (var marker in parsedMarkers)
+		{
+			_parsedResources.Add(marker);
+		}
+	}
 
 	private static void ProcessAssembly(
 		Assembly assembly,
