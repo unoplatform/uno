@@ -5127,7 +5127,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					case "System.Uri":
 						var uriValue = GetMemberValue();
-						return $"new System.Uri({RewriteUri(uriValue)}, global::System.UriKind.RelativeOrAbsolute)";
+						return $"new System.Uri({RewriteUri(uriValue, isImageSourceProperty: false)}, global::System.UriKind.RelativeOrAbsolute)";
 
 					case "System.Type":
 						return $"typeof({GetType(GetMemberValue(), owner?.Owner).GetFullyQualifiedTypeIncludingGlobal()})";
@@ -5189,7 +5189,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return "Windows.Media.Core.MediaSource.CreateFromUri(new Uri(\"" + memberValue + "\"))";
 
 					case "Microsoft.UI.Xaml.Media.ImageSource":
-						return RewriteUri(memberValue);
+						return RewriteUri(memberValue, isImageSourceProperty: true);
 
 					case "Microsoft.UI.Xaml.TargetPropertyPath":
 						return BuildTargetPropertyPath(GetMemberValue(), owner);
@@ -5291,32 +5291,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return splitRegex.Replace(value, ", ");
 				}
 
-				string RewriteUri(string? rawValue)
+				string RewriteUri(string? rawValue, bool isImageSourceProperty)
 				{
-					if (rawValue is not null
-						&& Uri.TryCreate(rawValue, UriKind.RelativeOrAbsolute, out var parsedUri)
-						&& !parsedUri.IsAbsoluteUri)
+					if (rawValue is not { Length: > 0 }
+						|| !Uri.TryCreate(rawValue, UriKind.RelativeOrAbsolute, out var parsedUri)
+						|| parsedUri.IsAbsoluteUri)
 					{
-						var declaringType = FindFirstConcreteAncestorType(owner?.Owner);
-
-						if (
-							declaringType.Is(Generation.ImageSourceSymbol.Value)
-							|| declaringType.Is(Generation.ImageSymbol.Value)
-						)
-						{
-							var uriBase = rawValue.StartsWith("/", StringComparison.Ordinal)
-								? "\"ms-appx:///\""
-								: $"__baseUri_prefix_{_fileUniqueId}";
-
-							return $"{uriBase} + \"{rawValue.TrimStart('/')}\"";
-						}
-						else
-						{
-							// Breaking change, support for ms-resource:// for non framework owners (https://github.com/unoplatform/uno/issues/8339)
-						}
+						return $"@\"{rawValue}\"";
 					}
 
-					return $"@\"{rawValue}\"";
+					// WinUI resolves a relative URI against the base URI for ImageSource-typed properties and
+					// for BitmapImage/SvgImageSource owners, and rewrites every other one to the MRT
+					// local-resource form (a raw prefix concat, not a base-URI resolution).
+					if (isImageSourceProperty
+						|| FindFirstConcreteAncestorType(owner?.Owner).Is(Generation.ImageSourceSymbol.Value))
+					{
+						var uriBase = rawValue.StartsWith("/", StringComparison.Ordinal)
+							? "\"ms-appx:///\""
+							: $"__baseUri_prefix_{_fileUniqueId}";
+
+						return $"{uriBase} + \"{rawValue.TrimStart('/')}\"";
+					}
+
+					return $"@\"{XamlFilePathHelper.LocalResourcePrefix}{rawValue.TrimStart('/')}\"";
 				}
 			}
 		}

@@ -13,8 +13,18 @@ namespace Uno.UI.Xaml
 		public const string AppXIdentifier = AppXScheme + ":///";
 		public const string AppXScheme = "ms-appx";
 		public const string MSResourceIdentifier = "ms-resource:///";
-		public static string LocalResourcePrefix => $"{MSResourceIdentifier}Files/";
+		public const string LocalResourcePrefix = MSResourceIdentifier + "Files/";
 		public const string WinUICompactURL = "Microsoft.UI.Xaml/DensityStyles/Compact.xaml";
+
+		/// <summary>
+		/// Converts the MRT local-resource form the XAML compiler emits for relative URIs
+		/// (<c>ms-resource:///Files/logo.png</c>) to the equivalent <c>ms-appx:///logo.png</c>,
+		/// which is the form asset resolution understands.
+		/// </summary>
+		internal static Uri NormalizeLocalResourceUri(Uri uri)
+			=> uri.IsAbsoluteUri && uri.OriginalString.StartsWith(LocalResourcePrefix, StringComparison.OrdinalIgnoreCase)
+				? new Uri(AppXIdentifier + uri.OriginalString.Substring(LocalResourcePrefix.Length))
+				: uri;
 
 		/// <summary>
 		/// Convert relative source path to absolute path.

@@ -13,6 +13,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
 using Uno.UI;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Media
@@ -91,7 +92,7 @@ namespace Microsoft.UI.Xaml.Media
 					uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
 				}
 
-				return uri;
+				return XamlFilePathHelper.NormalizeLocalResourceUri(uri);
 			}
 
 			return null;
@@ -107,6 +108,8 @@ namespace Microsoft.UI.Xaml.Media
 			{
 				return;
 			}
+
+			uri = XamlFilePathHelper.NormalizeLocalResourceUri(uri);
 
 			if (!uri.IsAbsoluteUri || uri.Scheme == "")
 			{
@@ -158,6 +161,8 @@ namespace Microsoft.UI.Xaml.Media
 			{
 				return null;
 			}
+
+			uri = XamlFilePathHelper.NormalizeLocalResourceUri(uri);
 
 			if (!uri.IsAbsoluteUri && TryCreateUriFromString(uri.OriginalString) is { } adjustedUri)
 			{
