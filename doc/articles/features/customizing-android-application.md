@@ -81,8 +81,7 @@ public override void OnCreate()
 > [!IMPORTANT]
 > Do not use the host builder's `AfterInit()` callback for this. It runs *after* the framework has registered its own extensions, so your registration would be silently discarded.
 
-> [!NOTE]
-> `Application.OnCreate()` also runs for process entries that have no activity, such as background services and broadcast receivers. Keep it free of UI work.
+Note that `Application.OnCreate()` also runs for process entries that have no activity, such as background services and broadcast receivers. Keep it free of UI work.
 
 ## Customizing the activity
 
