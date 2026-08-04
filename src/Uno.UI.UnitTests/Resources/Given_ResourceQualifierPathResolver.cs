@@ -60,6 +60,46 @@ public class Given_ResourceQualifierPathResolver
 		Assert.AreEqual(expectedLanguage, resourceCandidate.GetQualifierValue("language"));
 	}
 
+	// `Link` and `TargetPath` keep the separator the project authored, which is not necessarily
+	// the build host's. Qualifiers are split on the host separator, so an unaligned path yields none.
+	[DataRow('/')]
+	[DataRow('\\')]
+	[TestMethod]
+	public void When_Authored_Separator_Is_Not_The_Host_Separator(char separator)
+	{
+		string Authored(string path) => path.Replace('\\', separator);
+
+		var itemSpec = Native(@"\Elsewhere\Resources.resw");
+
+		var qualifierPath = ResourceQualifierPathResolver.Resolve(
+			itemSpec,
+			link: Authored(@"Strings\fr\Resources.resw"),
+			targetPath: null,
+			definingProjectDirectory: Native(@"\P\MyProject\"),
+			projectDirectory: Native(@"\P\MyProject\"));
+
+		Assert.AreEqual(Native(@"Strings\fr\Resources.resw"), qualifierPath);
+		Assert.AreEqual("fr", ResourceCandidate.Parse(itemSpec, qualifierPath).GetQualifierValue("language"));
+	}
+
+	// The item spec and the project directory may also disagree on separators.
+	[DataRow('/')]
+	[DataRow('\\')]
+	[TestMethod]
+	public void When_Project_Directory_Separator_Is_Not_The_Host_Separator(char separator)
+	{
+		string Authored(string path) => path.Replace('\\', separator);
+
+		var qualifierPath = ResourceQualifierPathResolver.Resolve(
+			Authored(@"\P\MyProject\Strings\de\Resources.resw"),
+			link: null,
+			targetPath: null,
+			definingProjectDirectory: Authored(@"\P\MyProject\"),
+			projectDirectory: Authored(@"\P\MyProject\"));
+
+		Assert.AreEqual(Native(@"Strings\de\Resources.resw"), qualifierPath);
+	}
+
 	private static string Native(string path)
 		=> path?.Replace('\\', Path.DirectorySeparatorChar);
 }

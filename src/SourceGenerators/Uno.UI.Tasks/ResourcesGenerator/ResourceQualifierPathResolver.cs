@@ -24,6 +24,12 @@ internal static class ResourceQualifierPathResolver
 		string definingProjectDirectory,
 		string projectDirectory)
 	{
+		itemSpec = AlignPath(itemSpec);
+		link = AlignPath(link);
+		targetPath = AlignPath(targetPath);
+		definingProjectDirectory = AlignPath(definingProjectDirectory);
+		projectDirectory = AlignPath(projectDirectory);
+
 		if (!string.IsNullOrEmpty(link))
 		{
 			return link;
@@ -51,6 +57,19 @@ internal static class ResourceQualifierPathResolver
 		// No project-relative context available, parsing the full path is the best we can do.
 		return itemSpec;
 	}
+
+	/// <summary>
+	/// Aligns a path to the build host's separator.
+	/// </summary>
+	/// <remarks>
+	/// Metadata such as `Link` keeps the separator the project authored, which is not necessarily
+	/// the host's. Qualifiers are split on the host separator, so a `\` authored on Windows would
+	/// leave a path with no folder segments — and therefore no qualifiers — on a mac or Linux host.
+	/// </remarks>
+	private static string AlignPath(string path)
+		=> path?
+			.Replace('/', Path.DirectorySeparatorChar)
+			.Replace('\\', Path.DirectorySeparatorChar);
 
 	private static bool TryMakeRelative(string fullPath, string directory, out string relativePath)
 	{
