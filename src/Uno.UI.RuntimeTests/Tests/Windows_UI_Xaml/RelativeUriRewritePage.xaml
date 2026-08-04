@@ -47,9 +47,18 @@
 			</Image.Source>
 		</Image>
 
-		<!-- An explicit local-resource URI must resolve to the matching asset. -->
+		<!-- An explicit local-resource URI must resolve to the matching asset, whether it reaches
+			 asset resolution through the ImageSource conversion or straight through the UriSource property. -->
 		<Image x:Name="localResourceImage"
 			   x:FieldModifier="public"
 			   Source="ms-resource:///Files/Assets/cart.png" />
+		<Image x:Name="localResourceBitmapImage"
+			   x:FieldModifier="public">
+			<Image.Source>
+				<BitmapImage x:Name="localResourceBitmap"
+							 x:FieldModifier="public"
+							 UriSource="ms-resource:///Files/Assets/cart.png" />
+			</Image.Source>
+		</Image>
 	</StackPanel>
 </Grid>

@@ -62,8 +62,9 @@ public class Given_RelativeUriRewrite
 		Assert.AreEqual("ms-appx:///Assets/cart.png", ((BitmapImage)SUT.localResourceImage.Source).UriSource.ToString());
 	}
 
-	// The two loading tests assert Uno's ms-resource -> ms-appx mapping, which has no WinUI analog:
-	// there, MRT resolves the local-resource URI out of the package.
+	// The loading tests below assert Uno's ms-resource -> ms-appx mapping, which has no WinUI analog:
+	// there, MRT resolves the local-resource URI out of the package. A non-zero ActualHeight means the
+	// asset resolved - When_Local_Resource_On_UriSource_Loads is the case that fails when it does not.
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Local_Resource_Uri_Loads()
@@ -76,6 +77,23 @@ public class Given_RelativeUriRewrite
 		Assert.IsGreaterThan(0, SUT.localResourceImage.ActualHeight);
 	}
 
+	/// <summary>
+	/// A UriSource assigned directly keeps the value it was given (WinUI does the same), so the mapping
+	/// has to happen where the URI is consumed - not only in the ImageSource conversion.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Local_Resource_On_UriSource_Loads()
+	{
+		var SUT = new RelativeUriRewritePage();
+
+		await UITestHelper.Load(SUT);
+		await TestServices.WindowHelper.WaitFor(() => SUT.localResourceBitmapImage.ActualHeight > 0, 3000);
+
+		Assert.AreEqual("ms-resource:///Files/Assets/cart.png", SUT.localResourceBitmap.UriSource.ToString());
+		Assert.IsGreaterThan(0, SUT.localResourceBitmapImage.ActualHeight);
+	}
+
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_BitmapIcon_With_Relative_Uri_Loads()
@@ -86,5 +104,22 @@ public class Given_RelativeUriRewrite
 		await TestServices.WindowHelper.WaitFor(() => SUT.bitmapIcon.ActualHeight > 0, 3000);
 
 		Assert.IsGreaterThan(0, SUT.bitmapIcon.ActualHeight);
+	}
+
+	/// <summary>
+	/// An ImageSource-typed property keeps the assembly prefix, so a library's own asset resolves. The
+	/// ms-resource form cannot express that prefix, which is why a Uri-typed property in a library
+	/// resolves against the app root instead.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Library_Asset_On_ImageSource_Property_Loads()
+	{
+		var SUT = new RelativeUriRewritePage();
+
+		await UITestHelper.Load(SUT);
+		await TestServices.WindowHelper.WaitFor(() => SUT.image.ActualHeight > 0, 3000);
+
+		Assert.IsGreaterThan(0, SUT.image.ActualHeight);
 	}
 }

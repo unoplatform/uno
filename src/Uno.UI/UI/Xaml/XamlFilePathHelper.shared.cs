@@ -5,6 +5,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using Uno.Extensions;
+#if !NETSTANDARD
+using Uno.Foundation.Logging;
+#endif
 
 namespace Uno.UI.Xaml
 {
@@ -22,9 +25,25 @@ namespace Uno.UI.Xaml
 		/// which is the form asset resolution understands.
 		/// </summary>
 		internal static Uri NormalizeLocalResourceUri(Uri uri)
-			=> uri.IsAbsoluteUri && uri.OriginalString.StartsWith(LocalResourcePrefix, StringComparison.OrdinalIgnoreCase)
-				? new Uri(AppXIdentifier + uri.OriginalString.Substring(LocalResourcePrefix.Length))
-				: uri;
+		{
+			if (!uri.IsAbsoluteUri
+				|| !uri.OriginalString.StartsWith(LocalResourcePrefix, StringComparison.OrdinalIgnoreCase)
+				// Callers rely on this being total; a remainder that is not a valid URI stays untouched.
+				|| !Uri.TryCreate(AppXIdentifier + uri.OriginalString.Substring(LocalResourcePrefix.Length), UriKind.Absolute, out var appxUri))
+			{
+				return uri;
+			}
+
+#if !NETSTANDARD
+			// The value read back from the property is not the one being resolved, so trace the pair.
+			if (typeof(XamlFilePathHelper).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(XamlFilePathHelper).Log().Debug($"Resolving local resource '{uri}' as '{appxUri}'");
+			}
+#endif
+
+			return appxUri;
+		}
 
 		/// <summary>
 		/// Convert relative source path to absolute path.
