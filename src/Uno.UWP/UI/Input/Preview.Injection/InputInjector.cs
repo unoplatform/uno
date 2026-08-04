@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
@@ -18,21 +19,47 @@ public partial class InputInjector
 	// One entry per ContentRoot created on this thread. Pointer injection keeps using the first
 	// (matching the historical behavior), while keyboard injection resolves the active window,
 	// mirroring how the Windows implementation targets the foreground window.
-	[ThreadStatic] private static List<IInputInjectorTarget>? _inputManagers;
+	// Weak, so a closed window's InputManager and visual tree are not pinned for the process lifetime.
+	[ThreadStatic] private static List<WeakReference<IInputInjectorTarget>>? _inputManagers;
 
 	internal static void SetTargetForCurrentThread(IInputInjectorTarget manager)
 	{
-		_inputManagers ??= new();
+		var managers = _inputManagers ??= new();
 
-		if (!_inputManagers.Contains(manager))
+		for (var i = managers.Count - 1; i >= 0; i--)
 		{
-			_inputManagers.Add(manager);
+			if (!managers[i].TryGetTarget(out var existing))
+			{
+				managers.RemoveAt(i);
+			}
+			else if (existing == manager)
+			{
+				return;
+			}
 		}
+
+		managers.Add(new WeakReference<IInputInjectorTarget>(manager));
+	}
+
+	private static IInputInjectorTarget? GetFirstTarget()
+	{
+		if (_inputManagers is { } managers)
+		{
+			foreach (var weak in managers)
+			{
+				if (weak.TryGetTarget(out var target))
+				{
+					return target;
+				}
+			}
+		}
+
+		return null;
 	}
 
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 	public static InputInjector? TryCreate()
-		=> _inputManagers is { Count: > 0 } managers ? new InputInjector(managers[0]) : null;
+		=> GetFirstTarget() is { } target ? new InputInjector(target) : null;
 
 	/// <summary>
 	/// Creates an <see cref="InputInjector"/> whose injected pointer events carry
@@ -65,9 +92,11 @@ public partial class InputInjector
 	private (InjectedInputState state, bool isAdded)? _pen;
 	private object? _relativeRoot;
 
+	// Process-wide like KeyboardStateTracker, because TryCreate() mints a new injector per call
+	// and per-instance latching would silently reset between them.
 	// CoreVirtualKeyStates.Locked cannot carry this: the routed-event pipeline feeds
 	// KeyboardStateTracker once per ancestor while bubbling, toggling the Locked bit each time.
-	private bool _capsLock;
+	private static bool _capsLock;
 
 	/// <summary>
 	/// Gets the current state of the mouse pointer
@@ -267,32 +296,67 @@ public partial class InputInjector
 	/// composition, and are silently ignored by a text box while one is in progress. Characters are
 	/// synthesized against an invariant US layout unless
 	/// <see cref="InjectedInputKeyOptions.Unicode"/> is used, key repeats are never generated
-	/// automatically, and mixing injected and real keyboard input is not supported.
+	/// automatically, and mixing injected and real keyboard input is not supported. Windows also
+	/// rejects batches larger than 16 events; Uno Platform accepts any length, so keep batches at or
+	/// below 16 for code that must run on both.
 	/// </para>
 	/// </remarks>
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__NETSTD_REFERENCE__")]
+	/// <exception cref="ArgumentException">
+	/// An entry sets <see cref="InjectedInputKeyOptions.Unicode"/> together with a non-zero
+	/// <see cref="InjectedInputKeyboardInfo.VirtualKey"/>. The batch is validated before anything is
+	/// dispatched, so no partial input is delivered.
+	/// </exception>
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 	public void InjectKeyboardInput(IEnumerable<InjectedInputKeyboardInfo> input)
 	{
-		foreach (var info in input)
+		ArgumentNullException.ThrowIfNull(input);
+		EnsureUIThread();
+
+		// Validate the whole batch first: throwing mid-dispatch would leave injected modifier keys
+		// latched in the process-wide KeyboardStateTracker with no key-up to release them.
+		var infos = input as IReadOnlyList<InjectedInputKeyboardInfo> ?? input.ToList();
+		for (var i = 0; i < infos.Count; i++)
 		{
-			var target = ResolveKeyboardTarget();
-			var modifiers = GetTrackedModifiers();
-			var wasKeyDown = KeyboardStateTracker.GetKeyState((VirtualKey)info.VirtualKey).HasFlag(CoreVirtualKeyStates.Down);
-			var args = info.ToEventArgs(modifiers, _capsLock, wasKeyDown);
+			infos[i].Validate(i);
+		}
 
-			if (info.IsKeyUp)
-			{
-				target.InjectKeyUp(args);
-			}
-			else
-			{
-				if (info.VirtualKey == (ushort)VirtualKey.CapitalLock)
-				{
-					_capsLock = !_capsLock;
-				}
+		foreach (var info in infos)
+		{
+			InjectKeyboardInputCore(info);
+		}
+	}
 
-				target.InjectKeyDown(args);
+	private void InjectKeyboardInputCore(InjectedInputKeyboardInfo info)
+	{
+		var target = ResolveKeyboardTarget();
+		var modifiers = GetTrackedModifiers();
+		var wasKeyDown = KeyboardStateTracker.GetKeyState((VirtualKey)info.VirtualKey).HasFlag(CoreVirtualKeyStates.Down);
+		var args = info.ToEventArgs(modifiers, _capsLock, wasKeyDown);
+
+		if (info.IsKeyUp)
+		{
+			target.InjectKeyUp(args);
+		}
+		else
+		{
+			if (info.VirtualKey == (ushort)VirtualKey.CapitalLock)
+			{
+				_capsLock = !_capsLock;
 			}
+
+			target.InjectKeyDown(args);
+		}
+	}
+
+	/// <summary>
+	/// Injection drives the routed-event pipeline directly and reads the shared keyboard state,
+	/// neither of which is thread-safe, so it carries the same UI-thread affinity as real input.
+	/// </summary>
+	private static void EnsureUIThread()
+	{
+		if (DispatcherQueue.GetForCurrentThread() is null)
+		{
+			throw new InvalidOperationException("Keyboard injection must be performed on the UI thread.");
 		}
 	}
 
@@ -310,17 +374,27 @@ public partial class InputInjector
 	/// Resolves the target owning the active window, so injected keys reach the focused window's
 	/// focus manager. Falls back to the injector's own target when no window reports as active.
 	/// </summary>
+	/// <remarks>
+	/// Hosts that never report activation (macOS today) leave every window in the default
+	/// <see cref="CoreWindowActivationState.CodeActivated"/> state, so the first registered target
+	/// wins there and multi-window injection is not yet supported on them.
+	/// </remarks>
 	private IInputInjectorTarget ResolveKeyboardTarget()
 	{
-		if (_inputManagers is { Count: > 1 } managers)
+		if (_inputManagers is { } managers)
 		{
-			foreach (var manager in managers)
+			foreach (var weak in managers)
 			{
-				if (manager.IsActive)
+				if (weak.TryGetTarget(out var target) && target.IsActive)
 				{
-					return manager;
+					return target;
 				}
 			}
+		}
+
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug("No active window found for keyboard injection; using the injector's original target.");
 		}
 
 		return _target;
