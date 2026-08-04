@@ -107,8 +107,8 @@ Uno.SDK single-project model.
 - **Native-style declaration:** the `not_win:IsNativeStyle="True"` attribute on a `Style` is no
   longer recognized. A third-party dictionary that still carries it now **fails the XAML
   build** instead of silently registering a second, native default style — remove the
-  attribute. Relatedly, the Uno-only
-  `Style.RegisterDefaultStyleForType(Type, IXamlResourceDictionaryProvider, bool)` loses its
+  attribute. The Uno-only
+  `Style.RegisterDefaultStyleForType(Type, IXamlResourceDictionaryProvider, bool)` also loses its
   `isNative` parameter; it is `[EditorBrowsable(Never)]` and normally only called from
   XAML-generated code, so rebuilding regenerates the correct call.
 - **Composition:** `Uno.CompositionConfiguration.Options.UseCompositorThread` (the Android

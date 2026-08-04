@@ -12,21 +12,21 @@ The `CommandBar` replicates **WinUI**'s `CommandBar`. It is templatable and supp
 
 ![CommandBar Example - Windows](assets/commandbar/windows/example.png)
 
-#### Usage Example
+## Usage Example
 
 ```csharp
 <Style TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}" />
 ```
 
-### Padding
+## Padding
 
 You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS/Native and Android/Native.
 
 On Skia-based renderers, you'll need to set the `VisibleBoundsPadding` or `SafeArea` on the parent control of the `CommandBar`.
 
-#### Back button
+## Back button
 
-An important difference with this mode is the presence of a back button. Whenever the `CommandBar` is part of a `Page` whose `Frame` has a non-empty back stack, the back button will be displayed.
+An important difference on these platforms is the presence of a back button. Whenever the `CommandBar` is part of a `Page` whose `Frame` has a non-empty back stack, the back button will be displayed.
 
 ![CommandBar Example - Android - Back button](assets/commandbar/android/back.png)
 
