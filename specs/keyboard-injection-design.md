@@ -2,8 +2,27 @@
 
 `Windows.UI.Input.Preview.Injection.InputInjector.InjectKeyboardInput`
 
-Supporting research: [`keyboard-injection-dossier.md`](keyboard-injection-dossier.md) — includes measured
-WinUI 3 behaviour from a purpose-built repro app, not just documentation.
+## Measured Windows behaviour
+
+The contract below was measured against a WinUI 3 app calling the real `InputInjector`, not taken
+from documentation. Recording it here because several of these are undocumented and none are
+obvious.
+
+| Behaviour | Detail |
+|---|---|
+| Asynchronous | `InjectKeyboardInput` returns before any event is delivered. |
+| Batch cap | 16 events per call; 17 throws `ArgumentException`. Undocumented. |
+| Unicode option | Raises `PreviewKeyDown`/`KeyDown`/`KeyUp` with `Key == 255` *and* `CharacterReceived` with the code unit — it is not a character-only channel. A non-zero `VirtualKey` throws. |
+| Lone Unicode down | Delivers the character even with no matching key-up. |
+| Surrogate pairs | Two consecutive Unicode events yield two key/char cycles; the text box ends with the full pair. |
+| ScanCode option | `wScan` identifies the key and `VirtualKey` is ignored. |
+| Without ScanCode option | The supplied scan code is **discarded** — `KeyStatus.ScanCode` is 0. |
+| ExtendedKey | Surfaces as `KeyStatus.IsExtendedKey`, but does not split `VK_CONTROL` into `RightControl`. |
+| Global key state | Injection updates `GetKeyState`/`GetAsyncKeyState`, so an injected Shift genuinely produces uppercase and an injected Ctrl+A really selects all (raising no `CharacterReceived`). |
+| Auto-repeat | None. A key held 1.5 s produces exactly one `KeyDown`, `RepeatCount == 1`. |
+| Key-up alone | Delivered as a bare `KeyUp`; no `KeyDown`, no `CharacterReceived`, no text change. |
+| Ordering | Strictly preserved within and across calls. |
+| Targeting | System-wide: delivery follows the foreground window, not the calling app. |
 
 ## Goal
 
@@ -77,8 +96,8 @@ Two directional methods mirror both the pointer trio and the host's `KeyDown`/`K
 implementations forwarding to `partial void`s, with bodies only in `InputManager.Keyboard.skia.cs`:
 
 ```csharp
-partial void InjectKeyDown(KeyEventArgs args) => Keyboard.OnKey(args, down: true);
-partial void InjectKeyUp(KeyEventArgs args)   => Keyboard.OnKey(args, down: false);
+partial void InjectKeyDown(KeyEventArgs args) => Keyboard.Inject(args, down: true);
+partial void InjectKeyUp(KeyEventArgs args)   => Keyboard.Inject(args, down: false);
 ```
 
 Off-Skia the partial has no body → silent no-op, exactly like the pointer partials. That is what lets
@@ -97,14 +116,26 @@ they hit-test; keyboard is focus-driven and cannot.
 Fix:
 
 ```csharp
-[ThreadStatic] private static List<IInputInjectorTarget>? _targets;
+// Weak, so a closed window's InputManager and visual tree are not pinned for the process lifetime.
+[ThreadStatic] private static List<WeakReference<IInputInjectorTarget>>? _inputManagers;
 
-internal static void SetTargetForCurrentThread(IInputInjectorTarget target)
-    => (_targets ??= new()).Add(target);
+private IInputInjectorTarget ResolveKeyboardTarget()
+{
+    foreach (var weak in _inputManagers ?? [])
+    {
+        if (weak.TryGetTarget(out var target) && target.IsActive)
+        {
+            return target;
+        }
+    }
 
-private IInputInjectorTarget ResolveTarget()
-    => _targets?.FirstOrDefault(t => t.IsActive) ?? _target;
+    return _target;   // no window reports active
+}
 ```
+
+Hosts that never report activation leave every window in the default `CodeActivated` state, so the
+first registered target wins there. macOS is in that category today, so multi-window keyboard
+injection is not yet supported on it.
 
 `IsActive` is implemented on `InputManager` from the existing activation chain:
 
@@ -186,15 +217,15 @@ isolated commit so it can be reverted independently.
 
 - **In-process only.** Unlike WinUI, injection does not reach other applications or the OS.
 - **No IME participation.** All six `IImeTextBoxExtension` implementations are driven exclusively by
-  native platform events; an injected key cannot start, feed or commit a composition. Worse, keys
-  injected *during* a live composition are silently swallowed by
-  `ShouldSwallowKeyDuringComposition`, so `InjectKeyboardInput` logs an informational warning when the
-  focused `TextBox` is composing.
+  native platform events; an injected key cannot start, feed or commit a composition. Keys injected
+  *during* a live composition are silently swallowed by `ShouldSwallowKeyDuringComposition`.
 - **No scan-code-driven key identification** — the value round-trips through `KeyStatus.ScanCode` but
   does not select the key.
 - **No auto-repeat**, matching WinUI.
 - **Invariant-US character synthesis**, so injected sequences behave identically on every Skia target.
 - **Access keys never fire** — `AccessKeyManager` is unimplemented on Skia. Pre-existing gap.
+- **Native WASM (DOM) is not supported** — only the Skia targets have a keyboard body, so the API
+  stays `[Uno.NotImplemented]` for `__WASM__`.
 - **Do not mix real and injected keyboard input.** Hosts compute modifiers from OS/native state that
   injection never updates.
 - **`CoreWindow.KeyDown`/`KeyUp` do not observe injected keys** — they are wired to the host source.
@@ -216,11 +247,12 @@ Uno Platform divergences above.
 
 ## Test plan
 
-New `Given_InputInjector_Keyboard.cs`, guarded `#if HAS_INPUT_INJECTOR || WINAPPSDK`:
-typing into a focused TextBox, Shift → uppercase, Ctrl+A select-all with no `CharacterReceived`,
-accelerator firing via injected modifier keys, Tab focus movement, Unicode + surrogate pairs,
-`ArgumentException` on Unicode with non-zero `VirtualKey`, bare KeyUp, no auto-repeat, ordering,
-`KeyStatus` population, Shift+F10 context flyout, transient flyout dismissal.
+New `Given_InputInjector_Keyboard.cs`, guarded `#if __SKIA__`:
+typing into a focused TextBox, Shift and CapsLock casing, Ctrl+A select-all with no
+`CharacterReceived`, accelerator firing via injected modifier keys, Tab focus movement (and Tab not
+typing a character), Unicode + surrogate pairs, `ArgumentException` on Unicode with a non-zero
+`VirtualKey` (asserting nothing was dispatched), bare KeyUp, ordering, `KeyStatus` population, and
+Ctrl+Click composed across keyboard and mouse injection.
 
 The discriminating test is `When_InjectKey_Raises_CharacterReceived`: `TestServices.KeyboardHelper`
 raises routed events directly on an element and never enters `OnKey`, and `RaiseCharacterReceived` is
