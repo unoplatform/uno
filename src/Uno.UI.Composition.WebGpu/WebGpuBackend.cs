@@ -37,6 +37,10 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public TextureView* DummyTex;                 // 1x1 placeholder for the clip coverage binding when no path clip
 	public WebGpuTexturePool Pool;                // transient offscreen pool (reused across frames)
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
+	// Serializes a whole frame's render (reset → record → submit → poll) on this device. The on-window render
+	// loop and off-loop renders (RenderTargetBitmap) share the device's transient pools/caches, so two frames
+	// must not overlap or one frame's BeginFrameResources frees the other's in-flight resources (wgpu panics).
+	public readonly object RenderGate = new();
 	private readonly System.Collections.Generic.List<nint> _pendingBindGroups = new();
 	private readonly System.Collections.Generic.List<nint> _pendingBuffers = new();
 	private readonly System.Collections.Generic.List<nint> _pendingBundles = new();
@@ -488,22 +492,28 @@ public sealed unsafe class WebGpuTexturePool
 	private readonly WebGpuDevice _d;
 	private sealed class Entry { public Texture* Tex; public TextureView* View; public int W, H, Samples; public TextureFormat Fmt; public TextureUsage Usage; public bool InUse; }
 	private readonly System.Collections.Generic.List<Entry> _entries = new();
+	// The pool is shared per-device, so an off-loop render (e.g. RenderTargetBitmap) can hit it concurrently
+	// with the on-window render loop. Guard mutation/enumeration so a concurrent Add can't invalidate Rent's walk.
+	private readonly object _gate = new();
 
 	public WebGpuTexturePool(WebGpuDevice d) => _d = d;
 
-	public void BeginFrame() { foreach (var e in _entries) { e.InUse = false; } }
+	public void BeginFrame() { lock (_gate) { foreach (var e in _entries) { e.InUse = false; } } }
 
 	public TextureView* Rent(int w, int h, int samples, TextureUsage usage, TextureFormat fmt)
 	{
-		foreach (var e in _entries)
+		lock (_gate)
 		{
-			if (!e.InUse && e.W == w && e.H == h && e.Samples == samples && e.Fmt == fmt && e.Usage == usage) { e.InUse = true; return e.View; }
+			foreach (var e in _entries)
+			{
+				if (!e.InUse && e.W == w && e.H == h && e.Samples == samples && e.Fmt == fmt && e.Usage == usage) { e.InUse = true; return e.View; }
+			}
+			var td = new TextureDescriptor { Size = new Extent3D((uint)w, (uint)h, 1), Format = fmt, MipLevelCount = 1, SampleCount = (uint)samples, Dimension = TextureDimension.Dimension2D, Usage = usage };
+			var tex = _d.W.DeviceCreateTexture(_d.Dev, ref td);
+			var view = _d.W.TextureCreateView(tex, null);
+			_entries.Add(new Entry { Tex = tex, View = view, W = w, H = h, Samples = samples, Fmt = fmt, Usage = usage, InUse = true });
+			return view;
 		}
-		var td = new TextureDescriptor { Size = new Extent3D((uint)w, (uint)h, 1), Format = fmt, MipLevelCount = 1, SampleCount = (uint)samples, Dimension = TextureDimension.Dimension2D, Usage = usage };
-		var tex = _d.W.DeviceCreateTexture(_d.Dev, ref td);
-		var view = _d.W.TextureCreateView(tex, null);
-		_entries.Add(new Entry { Tex = tex, View = view, W = w, H = h, Samples = samples, Fmt = fmt, Usage = usage, InUse = true });
-		return view;
 	}
 }
 
@@ -515,22 +525,27 @@ public sealed unsafe class WebGpuBufferPool
 	private readonly WebGpuDevice _d;
 	private sealed class Entry { public Silk.NET.WebGPU.Buffer* Buf; public int Cap; public BufferUsage Usage; public bool InUse; }
 	private readonly System.Collections.Generic.List<Entry> _entries = new();
+	// Shared per-device; guard against concurrent Add invalidating Rent's enumeration (see WebGpuTexturePool).
+	private readonly object _gate = new();
 
 	public WebGpuBufferPool(WebGpuDevice d) => _d = d;
 
-	public void BeginFrame() { foreach (var e in _entries) { e.InUse = false; } }
+	public void BeginFrame() { lock (_gate) { foreach (var e in _entries) { e.InUse = false; } } }
 
 	public Silk.NET.WebGPU.Buffer* Rent(int byteSize, BufferUsage usage)
 	{
-		foreach (var e in _entries)
+		lock (_gate)
 		{
-			if (!e.InUse && e.Usage == usage && e.Cap >= byteSize) { e.InUse = true; return e.Buf; }
+			foreach (var e in _entries)
+			{
+				if (!e.InUse && e.Usage == usage && e.Cap >= byteSize) { e.InUse = true; return e.Buf; }
+			}
+			int cap = Math.Max(byteSize, 256);
+			var bd = new BufferDescriptor { Size = (nuint)cap, Usage = usage };
+			var buf = _d.W.DeviceCreateBuffer(_d.Dev, ref bd);
+			_entries.Add(new Entry { Buf = buf, Cap = cap, Usage = usage, InUse = true });
+			return buf;
 		}
-		int cap = Math.Max(byteSize, 256);
-		var bd = new BufferDescriptor { Size = (nuint)cap, Usage = usage };
-		var buf = _d.W.DeviceCreateBuffer(_d.Dev, ref bd);
-		_entries.Add(new Entry { Buf = buf, Cap = cap, Usage = usage, InUse = true });
-		return buf;
 	}
 }
 
@@ -1389,17 +1404,24 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	public void Replay(IRenderData data)
 	{
-		var rd = (WebGpuRenderData)data;
-		_d.BeginFrameResources();   // reclaim last frame's pooled textures/buffers + release its bind groups
-		RenderInto(rd.Commands, _s, _presentClear ?? rd.ClearColor);
+		lock (_d.RenderGate)
+		{
+			var rd = (WebGpuRenderData)data;
+			_d.BeginFrameResources();   // reclaim last frame's pooled textures/buffers + release its bind groups
+			RenderInto(rd.Commands, _s, _presentClear ?? rd.ClearColor);
+		}
 	}
 
 	// Renders WITHOUT the per-frame reset — for a nested offscreen render (RenderOffscreen) that may run inside an
 	// enclosing frame; resetting the shared pools mid-frame would free the enclosing frame's in-flight resources.
+	// The gate is reentrant, so a nested call inside an enclosing Replay is safe; an independent call is serialized.
 	public void ReplayNested(IRenderData data)
 	{
-		var rd = (WebGpuRenderData)data;
-		RenderInto(rd.Commands, _s, _presentClear ?? rd.ClearColor);
+		lock (_d.RenderGate)
+		{
+			var rd = (WebGpuRenderData)data;
+			RenderInto(rd.Commands, _s, _presentClear ?? rd.ClearColor);
+		}
 	}
 
 	private static bool ClipDataEquals(in ClipData a, in ClipData b)
@@ -1883,6 +1905,21 @@ public sealed unsafe class WebGpuImageTexture : IImageTexture
 		_source = image;
 		int w = image.PixelWidth, h = image.PixelHeight;
 		PixelWidth = w; PixelHeight = h;
+		// A zero-sized source (e.g. an image brush whose surface isn't ready yet) would create an empty wgpu
+		// texture whose view is a null/"empty" handle, which fails bind-group validation. Fall back to a 1x1
+		// transparent texture so the draw is a no-op instead of a hard wgpu panic.
+		if (w <= 0 || h <= 0)
+		{
+			var td0 = new TextureDescriptor { Size = new Extent3D(1, 1, 1), Format = TextureFormat.Rgba8Unorm, MipLevelCount = 1, SampleCount = 1, Dimension = TextureDimension.Dimension2D, Usage = TextureUsage.TextureBinding | TextureUsage.CopyDst };
+			Tex = device.W.DeviceCreateTexture(device.Dev, ref td0);
+			View = device.W.TextureCreateView(Tex, null);
+			var transparent = new byte[4];
+			var dst0 = new ImageCopyTexture { Texture = Tex, Aspect = TextureAspect.All, MipLevel = 0, Origin = default };
+			var layout0 = new TextureDataLayout { BytesPerRow = 4, RowsPerImage = 1 };
+			var ext0 = new Extent3D(1, 1, 1);
+			fixed (byte* p0 = transparent) { device.W.QueueWriteTexture(device.Q, in dst0, p0, 4, in layout0, in ext0); }
+			return;
+		}
 		var bgra = new byte[w * h * 4];
 		image.CopyPixels(bgra);
 		var rgba = new byte[w * h * 4];
