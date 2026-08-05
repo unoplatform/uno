@@ -90,7 +90,7 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 
 	private void CreateGrContext()
 	{
-		if (_device == null || _instance == null)
+		if (_device == null || _instance == null || _instanceApi == null)
 			throw new InvalidOperationException("Vulkan device not initialized");
 
 		IntPtr GetProcAddressWrapper(string name, IntPtr instance, IntPtr device)
@@ -129,7 +129,7 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		_grContext = GRContext.CreateVulkan(ctx);
 		if (_grContext == null)
 		{
-			_instanceApi!.GetPhysicalDeviceProperties(PhysicalDeviceHandle, out var properties);
+			_instanceApi.GetPhysicalDeviceProperties(PhysicalDeviceHandle, out var properties);
 			throw new VulkanException(
 				$"Unable to create SkiaSharp GRContext from Vulkan device (instance apiVersion {VulkanHelpers.FormatVersion(VulkanInstance.ApiVersion)}, device apiVersion {VulkanHelpers.FormatVersion(properties.apiVersion)})");
 		}
