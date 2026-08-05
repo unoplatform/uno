@@ -24,7 +24,7 @@ public abstract partial class GLCanvasElement
 				_textureColorBuffer = gl.GenTexture();
 				gl.BindTexture(GLEnum.Texture2D, _textureColorBuffer);
 				{
-					gl.TexImage2D(GLEnum.Texture2D, 0, InternalFormat.Rgb, (uint)renderSize.Width, (uint)renderSize.Height, 0, GLEnum.Rgb,
+					gl.TexImage2D(GLEnum.Texture2D, 0, InternalFormat.Rgba8, (uint)renderSize.Width, (uint)renderSize.Height, 0, GLEnum.Rgba,
 						GLEnum.UnsignedByte, (void*)0);
 					gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMinFilter, (uint)GLEnum.Linear);
 					gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMagFilter, (uint)GLEnum.Linear);
@@ -36,7 +36,7 @@ public abstract partial class GLCanvasElement
 				_renderBuffer = gl.GenRenderbuffer();
 				gl.BindRenderbuffer(GLEnum.Renderbuffer, _renderBuffer);
 				{
-					gl.RenderbufferStorage(GLEnum.Renderbuffer, InternalFormat.Depth24Stencil8, (uint)renderSize.Width, (uint)renderSize.Width);
+					gl.RenderbufferStorage(GLEnum.Renderbuffer, InternalFormat.Depth24Stencil8, (uint)renderSize.Width, (uint)renderSize.Height);
 					gl.FramebufferRenderbuffer(GLEnum.Framebuffer, GLEnum.DepthStencilAttachment,
 						GLEnum.Renderbuffer, _renderBuffer);
 				}
