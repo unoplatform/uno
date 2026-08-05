@@ -226,8 +226,8 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
 - [ ] **BC74** — Android drawable extension in retarget keys  `d3·S` · PR #15891
   - Adjust signature to match WinUI.
   - Files: `src/Uno.UWP/Helpers/AndroidResourceNameEncoder.cs`, `src/Uno.UWP/Helpers/DrawableHelper.Android.cs`, `src/SourceGenerators/Uno.UI.Tasks/ResourceConverters/AndroidResourceConverter.cs`
-- [ ] **BC50** — Default `UseLegacyPrimaryLanguageOverride` = false  `d3·S` · #13704
-  - Flip default to `false` (WinUI restart-to-apply). **Behavior change** — runtime language-switch apps must opt back in; needs a migration note.
+- [x] **BC50** — Remove `UseLegacyPrimaryLanguageOverride`  `d3·S` · #13704
+  - Hard-remove the flag and the legacy path; `PrimaryLanguageOverride` is always restart-to-apply (WinUI). **Behavior change** — the flag defaulted to `true`, so runtime language-switch apps must set the culture themselves; migration note added.
   - Files: `src/Uno.UWP/FeatureConfiguration/WinRTFeatureConfiguration.cs`, `src/Uno.UWP/Globalization/ApplicationLanguages.cs`, `src/Uno.UI/UI/Xaml/Application.cs`
 - [x] **BC42** — Remove `clr-namespace:` XAML leniency  `d3·M`
   - Remove the leniency; migrate repo XAML/tests/docs to `using:`. Hard-error (`UXAML0006`) on the xmlns declaration at build time and a `XamlParseException` from `XamlReader`, no deprecation cycle. Only `mc:Ignorable` prefixes are exempt.

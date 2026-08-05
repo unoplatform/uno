@@ -2310,6 +2310,9 @@
 
 		  <!-- Uno-only MaterializableList<T> reduced to internal (BC48); WinUI has no counterpart. -->
 		  <Member fullName="Uno.Collections.MaterializableList`1" reason="Reduced Uno-only MaterializableList&lt;T&gt; to internal (BC48, breaking changes for 7.0)" />
+
+		  <!-- Legacy WinRTFeatureConfiguration holder removed with its sole flag (accessors paired in <Properties>/<Methods> below). -->
+		  <Member fullName="Uno.WinRTFeatureConfiguration/ApplicationLanguages" reason="Removed empty WinRTFeatureConfiguration.ApplicationLanguages holder after deleting UseLegacyPrimaryLanguageOverride (BC50, breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
@@ -2639,6 +2642,8 @@
 		  <Member fullName="Windows.Devices.Input.PointerDeviceType Windows.UI.Input.PointerPoint::PointerDeviceType()" reason="Dropped legacy Windows.UI.Input.PointerPoint variant (BC41, breaking changes for 7.0)" />
 		  <Member fullName="Windows.UI.Input.PointerPoint Windows.UI.Core.PointerEventArgs::CurrentPoint()" reason="Retyped Windows.UI.Core.PointerEventArgs.CurrentPoint to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
 
+		  <!-- PrimaryLanguageOverride no longer applies the culture in its setter (restart-to-apply, as on WinUI), so the opt-out flag is gone. Accessors paired in <Methods> below. -->
+		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/ApplicationLanguages::UseLegacyPrimaryLanguageOverride()" reason="Removed ApplicationLanguages.UseLegacyPrimaryLanguageOverride legacy flag; PrimaryLanguageOverride is always restart-to-apply (BC50, breaking changes for 7.0)" />
 	  </Properties>
 	  <Methods>
 		  <!-- StackLayout.DisableVirtualizationProperty DP getter: paired with the removed property (see <Properties> above). DisableVirtualization is a plain CLR property in WinUI. -->
@@ -3192,9 +3197,10 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Navigation.NavigatingCancelEventArgs..ctor(Microsoft.UI.Xaml.Navigation.NavigationMode navigationMode, Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo navigationTransitionInfo, System.Object parameter, System.Type sourcePageType)" reason="Hid NavigatingCancelEventArgs ctor to match WinUI (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Navigation.PageStackEntry.set_SourcePageType(System.Type value)" reason="Removed PageStackEntry.SourcePageType setter to match WinUI (breaking changes for 7.0, uno#8339)" />
 
+		  <!-- WinRTFeatureConfiguration.ApplicationLanguages.UseLegacyPrimaryLanguageOverride accessors (paired with the <Properties> entry above). -->
+		  <Member fullName="System.Boolean Uno.WinRTFeatureConfiguration/ApplicationLanguages.get_UseLegacyPrimaryLanguageOverride()" reason="Removed ApplicationLanguages.UseLegacyPrimaryLanguageOverride legacy flag (BC50, breaking changes for 7.0)" />
 	  </Methods>
 	  <Events>
-		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
 		  <!-- ====================================================================== -->
 		  <!-- BEGIN WinUI sync (Category B): shadow event removals.                  -->
 		  <!--                                                                        -->
