@@ -74,7 +74,6 @@ Using Skia rendering might have some limitations compared to native rendering. S
 - **IME support**: This portion of input support is also a work in progress, expect improvements in upcoming releases.
 - **Limited hardware acceleration on some platforms**: Depending on the platform, Skia may fall back to software rendering, affecting the overall performance.
 - Skia Rendering on WebAssembly is only supported on .NET 9 and later.
-- Removing `SkiaRenderer` from `UnoFeatures` inside the project's `.csproj` file to target native rendering, then setting it back after a new build will raise a runtime Exception. You will need to remove `bin` and `obj` folders, and clear site data of the browser app in order to avoid encountering this exception.
 
 Skia rendering is best suited for cross-platform scenarios where a unified appearance and customized graphics are key. Some native integration scenarios may not yet be supported. If you encounter any of such scenarios, make sure to let it be known by [opening an issue](https://github.com/unoplatform/uno/issues).
 
@@ -84,23 +83,10 @@ In order to accommodate the inclusion of Skia rendering for all platforms, the U
 
 ### Publish-time switching
 
-When building in the `SkiaRenderer` node, an application compiles against "reference" versions of `Uno.UI`, `Uno.UI.Dispatching`, `Uno.UI.Composition`, `Uno`, and `Uno.Foundation`. When the application is being packaged, `Uno.UI` and `Uno.UI.Composition` are switched to the Skia-compatible versions. The `Uno.UI.Dispatching`, `Uno`, and `Uno.Foundation` are switched to their corresponding target platform versions.
+An application compiles against "reference" versions of `Uno.UI`, `Uno.UI.Dispatching`, `Uno.UI.Composition`, `Uno`, and `Uno.Foundation`. When the application is being packaged, `Uno.UI` and `Uno.UI.Composition` are switched to the Skia-compatible versions. The `Uno.UI.Dispatching`, `Uno`, and `Uno.Foundation` are switched to their corresponding target platform versions.
 
 By doing so, any use of the APIs provided by `Uno.UI.Dispatching`, `Uno`, and `Uno.Foundation` is automatically redirected to the proper platform support, for instance, redirecting `GeoLocator` to use the proper APIs provided by the underlying platform.
 
 ### Implications for iOS/Android class libraries
 
-At this time, NuGet packages that provide UI features on iOS/Android may not be consumed by both native and Skia renderer projects under certain conditions.
-
-The reason for this limitation is caused by the fact that Native renderers expose a different API set for `Microsoft.UI.Xaml` types, therefore causing incompatibility issues when apps use such a library.
-
-Here are the different scenarios:
-
-- Given a library that uses `net10.0-ios` or `net10.0-android`, which does not have the `SkiaRenderer` set as an `UnoFeature`, but uses platform conditional code with `#if` blocks:
-
-  - This package is only usable by both native and Skia apps if it also provides a `net10.0` TFM. In this case, for a native app, nothing changes.
-  - For a `SkiaRenderer` enabled app, the `net10.0` variant of the library will be used and will not offer iOS/Android specific conditional code, but any code that uses Uno Platform provided APIs will work properly.
-
-- Given a library that uses `net10.0-ios` or `net10.0-android`, which does have the `SkiaRenderer` set as an `UnoFeature`, but uses platform conditional code with `#if` blocks:
-
-  - This package is only usable by Skia-enabled apps.
+A library that targets `net10.0-ios` or `net10.0-android` and uses platform conditional code with `#if` blocks needs to also provide a `net10.0` TFM to be consumable by an application. The `net10.0` variant is the one that gets used: it does not offer iOS/Android specific conditional code, but any code that uses Uno Platform provided APIs works properly.
