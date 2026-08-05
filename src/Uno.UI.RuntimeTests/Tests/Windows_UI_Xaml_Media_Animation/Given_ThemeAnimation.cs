@@ -32,6 +32,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		}
 
 		[TestMethod]
+		// Driving a theme animation through Storyboard.Target/TargetProperty is Uno-only: WinUI
+		// resolves the target from TargetName and animates Opacity implicitly, so the storyboard
+		// completes without touching Opacity there.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_FadeInThemeAnimation_Animates_Opacity()
 		{
 			var target = new Border { Width = 100, Height = 100, Opacity = 0 };
@@ -44,6 +48,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_FadeOutThemeAnimation_Animates_Opacity()
 		{
 			var target = new Border { Width = 100, Height = 100, Opacity = 1 };
