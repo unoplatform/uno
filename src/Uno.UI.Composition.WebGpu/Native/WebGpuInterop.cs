@@ -1854,4 +1854,26 @@ public static unsafe partial class WGPU {
     [DllImport(L, EntryPoint="wgpuTextureViewSetLabel")] public static extern void wgpuTextureViewSetLabel(IntPtr textureView, WGPUStringView label);
     [DllImport(L, EntryPoint="wgpuTextureViewAddRef")] public static extern void wgpuTextureViewAddRef(IntPtr textureView);
     [DllImport(L, EntryPoint="wgpuTextureViewRelease")] public static extern void wgpuTextureViewRelease(IntPtr textureView);
+    [DllImport(L, EntryPoint="wgpuInstanceEnumerateAdapters")] public static extern nuint wgpuInstanceEnumerateAdapters(IntPtr instance, WGPUInstanceEnumerateAdapterOptions* options, IntPtr adapters);
+    [DllImport(L, EntryPoint="wgpuQueueSubmitForIndex")] public static extern ulong wgpuQueueSubmitForIndex(IntPtr queue, nuint commandCount, IntPtr commands);
+    [DllImport(L, EntryPoint="wgpuQueueGetTimestampPeriod")] public static extern float wgpuQueueGetTimestampPeriod(IntPtr queue);
+    [DllImport(L, EntryPoint="wgpuDevicePoll")] public static extern uint wgpuDevicePoll(IntPtr device, uint wait, ulong* submissionIndex);
+    [DllImport(L, EntryPoint="wgpuDeviceCreateShaderModuleSpirV")] public static extern IntPtr wgpuDeviceCreateShaderModuleSpirV(IntPtr device, WGPUShaderModuleDescriptorSpirV* descriptor);
+    [DllImport(L, EntryPoint="wgpuSetLogCallback")] public static extern void wgpuSetLogCallback(IntPtr callback, IntPtr userdata);
+    [DllImport(L, EntryPoint="wgpuSetLogLevel")] public static extern void wgpuSetLogLevel(WGPULogLevel level);
+    [DllImport(L, EntryPoint="wgpuGetVersion")] public static extern uint wgpuGetVersion();
+    [DllImport(L, EntryPoint="wgpuRenderPassEncoderMultiDrawIndirect")] public static extern void wgpuRenderPassEncoderMultiDrawIndirect(IntPtr encoder, IntPtr buffer, ulong offset, uint count);
+    [DllImport(L, EntryPoint="wgpuRenderPassEncoderMultiDrawIndexedIndirect")] public static extern void wgpuRenderPassEncoderMultiDrawIndexedIndirect(IntPtr encoder, IntPtr buffer, ulong offset, uint count);
+    [DllImport(L, EntryPoint="wgpuRenderPassEncoderMultiDrawIndirectCount")] public static extern void wgpuRenderPassEncoderMultiDrawIndirectCount(IntPtr encoder, IntPtr buffer, ulong offset, IntPtr count_buffer, ulong count_buffer_offset, uint max_count);
+    [DllImport(L, EntryPoint="wgpuRenderPassEncoderMultiDrawIndexedIndirectCount")] public static extern void wgpuRenderPassEncoderMultiDrawIndexedIndirectCount(IntPtr encoder, IntPtr buffer, ulong offset, IntPtr count_buffer, ulong count_buffer_offset, uint max_count);
+    [DllImport(L, EntryPoint="wgpuComputePassEncoderBeginPipelineStatisticsQuery")] public static extern void wgpuComputePassEncoderBeginPipelineStatisticsQuery(IntPtr computePassEncoder, IntPtr querySet, uint queryIndex);
+    [DllImport(L, EntryPoint="wgpuComputePassEncoderEndPipelineStatisticsQuery")] public static extern void wgpuComputePassEncoderEndPipelineStatisticsQuery(IntPtr computePassEncoder);
+    [DllImport(L, EntryPoint="wgpuRenderPassEncoderBeginPipelineStatisticsQuery")] public static extern void wgpuRenderPassEncoderBeginPipelineStatisticsQuery(IntPtr renderPassEncoder, IntPtr querySet, uint queryIndex);
+    [DllImport(L, EntryPoint="wgpuRenderPassEncoderEndPipelineStatisticsQuery")] public static extern void wgpuRenderPassEncoderEndPipelineStatisticsQuery(IntPtr renderPassEncoder);
+    [DllImport(L, EntryPoint="wgpuComputePassEncoderWriteTimestamp")] public static extern void wgpuComputePassEncoderWriteTimestamp(IntPtr computePassEncoder, IntPtr querySet, uint queryIndex);
+    [DllImport(L, EntryPoint="wgpuRenderPassEncoderWriteTimestamp")] public static extern void wgpuRenderPassEncoderWriteTimestamp(IntPtr renderPassEncoder, IntPtr querySet, uint queryIndex);
+    [DllImport(L, EntryPoint="wgpuDeviceStartGraphicsDebuggerCapture")] public static extern uint wgpuDeviceStartGraphicsDebuggerCapture(IntPtr device);
+    [DllImport(L, EntryPoint="wgpuDeviceStopGraphicsDebuggerCapture")] public static extern void wgpuDeviceStopGraphicsDebuggerCapture(IntPtr device);
+    [DllImport(L, EntryPoint="wgpuCommandEncoderClearTexture")] public static extern void wgpuCommandEncoderClearTexture(IntPtr commandEncoder, IntPtr texture, WGPUImageSubresourceRange* range);
+    [DllImport(L, EntryPoint="wgpuDeviceCreateShaderModuleTrusted")] public static extern IntPtr wgpuDeviceCreateShaderModuleTrusted(IntPtr device, WGPUShaderModuleDescriptor* descriptor, WGPUShaderRuntimeChecks runtimeChecks);
 }

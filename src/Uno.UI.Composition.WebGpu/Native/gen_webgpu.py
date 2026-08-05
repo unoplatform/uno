@@ -49,6 +49,11 @@ def main(headers, out):
     structs = {}    # name -> [(ctype, fieldname)]
     funcs = []      # (ret, name, [(ctype, arg)])
 
+    # primitive typedefs: typedef <prim> WGPUName;  (e.g. WGPUSubmissionIndex = uint64_t)
+    for m in re.finditer(r'typedef (uint64_t|int64_t|uint32_t|int32_t|uint16_t|int16_t|uint8_t|int8_t|float|double)\s+(WGPU\w+)\s*;', text):
+        if m.group(2) not in PRIM:
+            PRIM[m.group(2)] = PRIM[m.group(1)]
+
     # opaque handles: typedef struct WGPUXxxImpl* WGPUXxx;
     for m in re.finditer(r'typedef struct (\w+Impl)\s*\*\s*(\w+)(?:\s+WGPU_\w+)?\s*;', text):
         handles.add(m.group(2))
@@ -103,9 +108,8 @@ def main(headers, out):
                 if ptr==0 and base not in known:
                     del structs[name]; changed=True; break
 
-    # functions: WGPU_EXPORT ret wgpuXxx(args) ...;
-    for m in re.finditer(r'WGPU_EXPORT\s+(.+?)\s+(wgpu\w+)\s*\((.*?)\)\s*WGPU_FUNCTION_ATTRIBUTE', text, re.S):
-        ret, name, args = m.group(1).strip(), m.group(2), m.group(3).strip()
+    # functions: WGPU_EXPORT ret wgpuXxx(args) ...;   (standard webgpu.h form)
+    def parse_args(args):
         arglist=[]
         if args and args!='void':
             for a in args.split(','):
@@ -113,7 +117,16 @@ def main(headers, out):
                 mm=re.match(r'^(.*?)(\**)\s*(\w+)$', a)
                 if mm:
                     arglist.append(((mm.group(1)+mm.group(2)).strip(), mm.group(3)))
-        funcs.append((ret,name,arglist))
+        return arglist
+    for m in re.finditer(r'WGPU_EXPORT\s+(.+?)\s+(wgpu\w+)\s*\((.*?)\)\s*WGPU_FUNCTION_ATTRIBUTE', text, re.S):
+        funcs.append((m.group(1).strip(), m.group(2), parse_args(m.group(3).strip())))
+    # wgpu.h native-only extras: plain `ret wgpuXxx(args);` inside extern "C" (no WGPU_EXPORT).
+    seen_fn = {n for _,n,_ in funcs}
+    for m in re.finditer(r'(?<=[;{}])\s*([A-Za-z_]\w*\s*\**)\s+(wgpu\w+)\s*\(([^;{}]*?)\)\s*;', text, re.S):
+        ret, name, args = m.group(1).strip(), m.group(2), m.group(3).strip()
+        if name in seen_fn: continue
+        seen_fn.add(name)
+        funcs.append((ret, name, parse_args(args)))
 
     # ---- emit ----
     o=[]
