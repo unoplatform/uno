@@ -15,8 +15,10 @@ namespace Uno.UI.Xaml
 	{
 		public const string AppXIdentifier = AppXScheme + ":///";
 		public const string AppXScheme = "ms-appx";
-		public const string MSResourceIdentifier = "ms-resource:///";
-		public const string LocalResourcePrefix = MSResourceIdentifier + "Files/";
+		public const string MSResourceScheme = "ms-resource";
+		public const string MSResourceIdentifier = MSResourceScheme + ":///";
+		private const string LocalResourceFolder = "Files/";
+		public const string LocalResourcePrefix = MSResourceIdentifier + LocalResourceFolder;
 		public const string WinUICompactURL = "Microsoft.UI.Xaml/DensityStyles/Compact.xaml";
 
 		/// <summary>
@@ -26,10 +28,18 @@ namespace Uno.UI.Xaml
 		/// </summary>
 		internal static Uri NormalizeLocalResourceUri(Uri uri)
 		{
-			if (!uri.IsAbsoluteUri
-				|| !uri.OriginalString.StartsWith(LocalResourcePrefix, StringComparison.OrdinalIgnoreCase)
+			if (!uri.IsAbsoluteUri || !uri.Scheme.Equals(MSResourceScheme, StringComparison.Ordinal))
+			{
+				return uri;
+			}
+
+			// Matched on the parsed path rather than on the original string, so that a leading
+			// whitespace or an upper-cased scheme the Uri parser accepted still resolves.
+			var path = uri.PathAndQuery.TrimStart('/');
+
+			if (!path.StartsWith(LocalResourceFolder, StringComparison.OrdinalIgnoreCase)
 				// Callers rely on this being total; a remainder that is not a valid URI stays untouched.
-				|| !Uri.TryCreate(AppXIdentifier + uri.OriginalString.Substring(LocalResourcePrefix.Length), UriKind.Absolute, out var appxUri))
+				|| !Uri.TryCreate(AppXIdentifier + path.Substring(LocalResourceFolder.Length), UriKind.Absolute, out var appxUri))
 			{
 				return uri;
 			}

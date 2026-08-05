@@ -29,7 +29,10 @@ public class Given_RelativeUri
 						<BitmapIcon UriSource="Assets/asset.png" />
 
 						<Image Source="Assets/asset.png" />
+						<Image Source="/Assets/asset.png" />
 						<local:UriHolder ImageSource="Assets/asset.png" />
+						<!-- A backslash has to survive the emitted literal rather than read as an escape. -->
+						<local:UriHolder ImageSource="Assets\asset.png" />
 						<Border>
 							<Border.Background>
 								<ImageBrush ImageSource="Assets/asset.png" />
@@ -38,6 +41,11 @@ public class Given_RelativeUri
 						<Image>
 							<Image.Source>
 								<BitmapImage UriSource="Assets/asset.png" />
+							</Image.Source>
+						</Image>
+						<Image>
+							<Image.Source>
+								<SvgImageSource UriSource="Assets/asset.svg" />
 							</Image.Source>
 						</Image>
 					</StackPanel>

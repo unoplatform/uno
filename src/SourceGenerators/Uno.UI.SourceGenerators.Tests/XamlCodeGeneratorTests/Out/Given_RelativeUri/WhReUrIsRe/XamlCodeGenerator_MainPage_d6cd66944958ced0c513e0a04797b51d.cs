@@ -121,8 +121,23 @@ namespace TestRepro
 							new global::Microsoft.UI.Xaml.Controls.Image
 							{
 								IsParsing = true,
-								Source = __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d + "Assets/asset.png",
+								Source = __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d + @"Assets/asset.png",
 								// Source 0\MainPage.xaml (Line 11:4)
+							}
+							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+							{
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+							__p1.CreationComplete();
+							}
+							))
+						)
+						,
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.Image
+							{
+								IsParsing = true,
+								Source = "ms-appx:///" + @"Assets/asset.png",
+								// Source 0\MainPage.xaml (Line 12:4)
 							}
 							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 							{
@@ -136,8 +151,23 @@ namespace TestRepro
 							new global::TestRepro.UriHolder
 							{
 								IsParsing = true,
-								ImageSource = __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d + "Assets/asset.png",
-								// Source 0\MainPage.xaml (Line 12:4)
+								ImageSource = __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d + @"Assets/asset.png",
+								// Source 0\MainPage.xaml (Line 13:4)
+							}
+							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							{
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+							__p1.CreationComplete();
+							}
+							))
+						)
+						,
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::TestRepro.UriHolder
+							{
+								IsParsing = true,
+								ImageSource = __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d + @"Assets\asset.png",
+								// Source 0\MainPage.xaml (Line 15:4)
 							}
 							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 							{
@@ -154,12 +184,12 @@ namespace TestRepro
 								Background = 								global::MyProject.GlobalStaticResources.__PreserveProperties(
 									new global::Microsoft.UI.Xaml.Media.ImageBrush
 									{
-										ImageSource = __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d + "Assets/asset.png",
-										// Source 0\MainPage.xaml (Line 15:6)
+										ImageSource = __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d + @"Assets/asset.png",
+										// Source 0\MainPage.xaml (Line 18:6)
 									}
 								)
 								,
-								// Source 0\MainPage.xaml (Line 13:4)
+								// Source 0\MainPage.xaml (Line 16:4)
 							}
 							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 							{
@@ -176,12 +206,34 @@ namespace TestRepro
 								Source = 								global::MyProject.GlobalStaticResources.__PreserveProperties(
 									new global::Microsoft.UI.Xaml.Media.Imaging.BitmapImage
 									{
-										UriSource = new System.Uri(__baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d + "Assets/asset.png", global::System.UriKind.RelativeOrAbsolute),
-										// Source 0\MainPage.xaml (Line 20:6)
+										UriSource = new System.Uri(__baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d + @"Assets/asset.png", global::System.UriKind.RelativeOrAbsolute),
+										// Source 0\MainPage.xaml (Line 23:6)
 									}
 								)
 								,
-								// Source 0\MainPage.xaml (Line 18:4)
+								// Source 0\MainPage.xaml (Line 21:4)
+							}
+							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+							{
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+							__p1.CreationComplete();
+							}
+							))
+						)
+						,
+						global::MyProject.GlobalStaticResources.__PreserveProperties(
+							new global::Microsoft.UI.Xaml.Controls.Image
+							{
+								IsParsing = true,
+								Source = 								global::MyProject.GlobalStaticResources.__PreserveProperties(
+									new global::Microsoft.UI.Xaml.Media.Imaging.SvgImageSource
+									{
+										UriSource = new System.Uri(__baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d + @"Assets/asset.svg", global::System.UriKind.RelativeOrAbsolute),
+										// Source 0\MainPage.xaml (Line 28:6)
+									}
+								)
+								,
+								// Source 0\MainPage.xaml (Line 26:4)
 							}
 							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 							{
@@ -193,7 +245,7 @@ namespace TestRepro
 						,
 					}
 				}
-				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler7)(__p1 => 
+				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler8)(__p1 => 
 				{
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 				__p1.CreationComplete();
@@ -203,14 +255,14 @@ namespace TestRepro
 			;
 			
 			this
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler8)(__p1 => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
 			{
 			// Source 0\MainPage.xaml (Line 1:2)
 			
 			// [WARNING] C:/Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler8)(__p1 => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
 			{
 			// Class TestRepro.MainPage
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
@@ -277,16 +329,23 @@ namespace MyProject
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler7(global::Microsoft.UI.Xaml.Controls.StackPanel instance);
+		public delegate void XamlApplyHandler7(global::Microsoft.UI.Xaml.Media.Imaging.SvgImageSource instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.StackPanel MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler7 handler)
+		public static global::Microsoft.UI.Xaml.Media.Imaging.SvgImageSource MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Media.Imaging.SvgImageSource instance, XamlApplyHandler7 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler8(global::Microsoft.UI.Xaml.Controls.Page instance);
+		public delegate void XamlApplyHandler8(global::Microsoft.UI.Xaml.Controls.StackPanel instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler8 handler)
+		public static global::Microsoft.UI.Xaml.Controls.StackPanel MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler8 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler9(global::Microsoft.UI.Xaml.Controls.Page instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler9 handler)
 		{
 			handler(instance);
 			return instance;
