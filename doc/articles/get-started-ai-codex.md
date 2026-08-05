@@ -42,7 +42,7 @@ This guide will walk you through the setup process for getting started with Code
 
 Uno Platform ships a catalog of agent skills — covering areas such as MVUX, navigation, Uno Toolkit controls, theming, and UI testing — bundled in the `uno-platform-studio` plugin. Once installed, Codex automatically selects the relevant skills as it works on your prompts.
 
-Install the plugin:
+From a terminal, install the plugin:
 
 ```text
 codex plugin marketplace add unoplatform/studio

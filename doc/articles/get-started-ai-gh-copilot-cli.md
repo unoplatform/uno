@@ -34,7 +34,7 @@ To get started with GitHub Copilot CLI:
 
 Uno Platform ships a catalog of agent skills — covering areas such as MVUX, navigation, Uno Toolkit controls, theming, and UI testing — bundled in the `uno-platform-studio` plugin. Once installed, Copilot CLI automatically selects the relevant skills as it works on your prompts.
 
-Install the plugin:
+From a terminal, install the plugin:
 
 ```text
 copilot plugin marketplace add unoplatform/studio

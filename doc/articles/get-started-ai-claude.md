@@ -35,7 +35,7 @@ This guide will walk you through the setup process for getting started with Clau
 
 Uno Platform ships a catalog of agent skills — covering areas such as MVUX, navigation, Uno Toolkit controls, theming, and UI testing — bundled in the `uno-platform-studio` plugin. Once installed, Claude Code automatically selects the relevant skills as it works on your prompts.
 
-1. Install the plugin:
+1. In Claude Code, install the plugin:
 
     ```text
     /plugin marketplace add unoplatform/studio

@@ -47,7 +47,7 @@ In other words: while traditional Uno tests are written and maintained by develo
 
 ## Using the Uno Platform Skills
 
-Alongside the MCPs, Uno Platform ships a catalog of agent skills — covering areas such as MVUX, navigation, Uno Toolkit controls, theming, and UI testing — bundled in the `uno-platform-studio` plugin. Once installed, your agent selects the relevant skills automatically as it works on your prompts; no special command is required.
+Alongside the MCPs, Uno Platform ships a catalog of agent skills — covering areas such as MVUX, navigation, Uno Toolkit controls, theming, and UI testing — installed through the `uno-platform-studio` plugin, or as standalone skill folders. Once installed, your agent selects the relevant skills automatically as it works on your prompts; no special command is required.
 
 See [Skills & Plugins](xref:Uno.PlatformStudio.Skills) for the full catalog and the installation steps for each agent.
 
