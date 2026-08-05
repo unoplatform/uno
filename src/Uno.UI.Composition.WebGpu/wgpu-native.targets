@@ -1,0 +1,38 @@
+<Project>
+	<!-- Fetches the pinned wgpu-native (modern webgpu.h ABI) release for the host OS/arch and drops the native
+	     library next to the consuming output so the DllImportResolver ("webgpu") finds it. Import this from the
+	     WebGpu backend project and from any app head that renders with the WebGPU backend. Cached under obj/. -->
+	<PropertyGroup>
+		<WgpuNativeVersion>v29.0.1.1</WgpuNativeVersion>
+		<WgpuNativeCacheDir>$(MSBuildThisFileDirectory)obj\wgpu-native\$(WgpuNativeVersion)\</WgpuNativeCacheDir>
+	</PropertyGroup>
+
+	<Target Name="ProvisionWgpuNative" AfterTargets="Build">
+		<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
+			<_WgpuAsset>wgpu-linux-x86_64-release.zip</_WgpuAsset>
+			<_WgpuNativeFile>libwgpu_native.so</_WgpuNativeFile>
+		</PropertyGroup>
+		<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+			<_WgpuAsset>wgpu-windows-x86_64-msvc-release.zip</_WgpuAsset>
+			<_WgpuNativeFile>wgpu_native.dll</_WgpuNativeFile>
+		</PropertyGroup>
+		<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX')) And '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'Arm64'">
+			<_WgpuAsset>wgpu-macos-aarch64-release.zip</_WgpuAsset>
+			<_WgpuNativeFile>libwgpu_native.dylib</_WgpuNativeFile>
+		</PropertyGroup>
+		<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX')) And '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'X64'">
+			<_WgpuAsset>wgpu-macos-x86_64-release.zip</_WgpuAsset>
+			<_WgpuNativeFile>libwgpu_native.dylib</_WgpuNativeFile>
+		</PropertyGroup>
+
+		<Message Importance="high" Text="ProvisionWgpuNative: asset=$(_WgpuAsset) -> $(OutDir)" />
+		<MakeDir Directories="$(WgpuNativeCacheDir)" Condition="'$(_WgpuAsset)' != ''" />
+		<DownloadFile Condition="'$(_WgpuAsset)' != '' And !Exists('$(WgpuNativeCacheDir)$(_WgpuAsset)')"
+			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/$(_WgpuAsset)"
+			DestinationFolder="$(WgpuNativeCacheDir)" Retries="3" />
+		<Unzip Condition="'$(_WgpuAsset)' != '' And !Exists('$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)')"
+			SourceFiles="$(WgpuNativeCacheDir)$(_WgpuAsset)" DestinationFolder="$(WgpuNativeCacheDir)" />
+		<Copy Condition="'$(_WgpuAsset)' != ''"
+			SourceFiles="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+	</Target>
+</Project>
