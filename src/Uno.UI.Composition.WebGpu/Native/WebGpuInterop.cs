@@ -811,844 +811,844 @@ public enum WGPUShaderRuntimeChecks : ulong {
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUStringView {
-    public IntPtr data;
-    public nuint length;
+    public IntPtr Data;
+    public nuint Length;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUChainedStruct {
-    public IntPtr next;
-    public WGPUSType sType;
+    public IntPtr Next;
+    public WGPUSType SType;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUBufferMapCallbackInfo {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUCallbackMode mode;
-    public IntPtr callback;
-    public IntPtr userdata1;
-    public IntPtr userdata2;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUCallbackMode Mode;
+    public IntPtr Callback;
+    public IntPtr Userdata1;
+    public IntPtr Userdata2;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUCompilationInfoCallbackInfo {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUCallbackMode mode;
-    public IntPtr callback;
-    public IntPtr userdata1;
-    public IntPtr userdata2;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUCallbackMode Mode;
+    public IntPtr Callback;
+    public IntPtr Userdata1;
+    public IntPtr Userdata2;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUCreateComputePipelineAsyncCallbackInfo {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUCallbackMode mode;
-    public IntPtr callback;
-    public IntPtr userdata1;
-    public IntPtr userdata2;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUCallbackMode Mode;
+    public IntPtr Callback;
+    public IntPtr Userdata1;
+    public IntPtr Userdata2;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUCreateRenderPipelineAsyncCallbackInfo {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUCallbackMode mode;
-    public IntPtr callback;
-    public IntPtr userdata1;
-    public IntPtr userdata2;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUCallbackMode Mode;
+    public IntPtr Callback;
+    public IntPtr Userdata1;
+    public IntPtr Userdata2;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUDeviceLostCallbackInfo {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUCallbackMode mode;
-    public IntPtr callback;
-    public IntPtr userdata1;
-    public IntPtr userdata2;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUCallbackMode Mode;
+    public IntPtr Callback;
+    public IntPtr Userdata1;
+    public IntPtr Userdata2;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUPopErrorScopeCallbackInfo {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUCallbackMode mode;
-    public IntPtr callback;
-    public IntPtr userdata1;
-    public IntPtr userdata2;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUCallbackMode Mode;
+    public IntPtr Callback;
+    public IntPtr Userdata1;
+    public IntPtr Userdata2;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUQueueWorkDoneCallbackInfo {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUCallbackMode mode;
-    public IntPtr callback;
-    public IntPtr userdata1;
-    public IntPtr userdata2;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUCallbackMode Mode;
+    public IntPtr Callback;
+    public IntPtr Userdata1;
+    public IntPtr Userdata2;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPURequestAdapterCallbackInfo {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUCallbackMode mode;
-    public IntPtr callback;
-    public IntPtr userdata1;
-    public IntPtr userdata2;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUCallbackMode Mode;
+    public IntPtr Callback;
+    public IntPtr Userdata1;
+    public IntPtr Userdata2;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPURequestDeviceCallbackInfo {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUCallbackMode mode;
-    public IntPtr callback;
-    public IntPtr userdata1;
-    public IntPtr userdata2;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUCallbackMode Mode;
+    public IntPtr Callback;
+    public IntPtr Userdata1;
+    public IntPtr Userdata2;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUUncapturedErrorCallbackInfo {
-    public WGPUChainedStruct* nextInChain;
-    public IntPtr callback;
-    public IntPtr userdata1;
-    public IntPtr userdata2;
+    public WGPUChainedStruct* NextInChain;
+    public IntPtr Callback;
+    public IntPtr Userdata1;
+    public IntPtr Userdata2;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUAdapterInfo {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView vendor;
-    public WGPUStringView architecture;
-    public WGPUStringView device;
-    public WGPUStringView description;
-    public WGPUBackendType backendType;
-    public WGPUAdapterType adapterType;
-    public uint vendorID;
-    public uint deviceID;
-    public uint subgroupMinSize;
-    public uint subgroupMaxSize;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Vendor;
+    public WGPUStringView Architecture;
+    public WGPUStringView Device;
+    public WGPUStringView Description;
+    public WGPUBackendType BackendType;
+    public WGPUAdapterType AdapterType;
+    public uint VendorID;
+    public uint DeviceID;
+    public uint SubgroupMinSize;
+    public uint SubgroupMaxSize;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUBlendComponent {
-    public WGPUBlendOperation operation;
-    public WGPUBlendFactor srcFactor;
-    public WGPUBlendFactor dstFactor;
+    public WGPUBlendOperation Operation;
+    public WGPUBlendFactor SrcFactor;
+    public WGPUBlendFactor DstFactor;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUBufferBindingLayout {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUBufferBindingType type;
-    public uint hasDynamicOffset;
-    public ulong minBindingSize;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUBufferBindingType Type;
+    public uint HasDynamicOffset;
+    public ulong MinBindingSize;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUBufferDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
-    public WGPUBufferUsage usage;
-    public ulong size;
-    public uint mappedAtCreation;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
+    public WGPUBufferUsage Usage;
+    public ulong Size;
+    public uint MappedAtCreation;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUColor {
-    public double r;
-    public double g;
-    public double b;
-    public double a;
+    public double R;
+    public double G;
+    public double B;
+    public double A;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUCommandBufferDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUCommandEncoderDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUCompatibilityModeLimits {
-    public WGPUChainedStruct chain;
-    public uint maxStorageBuffersInVertexStage;
-    public uint maxStorageTexturesInVertexStage;
-    public uint maxStorageBuffersInFragmentStage;
-    public uint maxStorageTexturesInFragmentStage;
+    public WGPUChainedStruct Chain;
+    public uint MaxStorageBuffersInVertexStage;
+    public uint MaxStorageTexturesInVertexStage;
+    public uint MaxStorageBuffersInFragmentStage;
+    public uint MaxStorageTexturesInFragmentStage;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUCompilationMessage {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView message;
-    public WGPUCompilationMessageType type;
-    public ulong lineNum;
-    public ulong linePos;
-    public ulong offset;
-    public ulong length;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Message;
+    public WGPUCompilationMessageType Type;
+    public ulong LineNum;
+    public ulong LinePos;
+    public ulong Offset;
+    public ulong Length;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUConstantEntry {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView key;
-    public double value;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Key;
+    public double Value;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUExtent3D {
-    public uint width;
-    public uint height;
-    public uint depthOrArrayLayers;
+    public uint Width;
+    public uint Height;
+    public uint DepthOrArrayLayers;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUExternalTextureBindingEntry {
-    public WGPUChainedStruct chain;
-    public IntPtr externalTexture;
+    public WGPUChainedStruct Chain;
+    public IntPtr ExternalTexture;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUExternalTextureBindingLayout {
-    public WGPUChainedStruct chain;
+    public WGPUChainedStruct Chain;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUFuture {
-    public ulong id;
+    public ulong Id;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUInstanceLimits {
-    public WGPUChainedStruct* nextInChain;
-    public nuint timedWaitAnyMaxCount;
+    public WGPUChainedStruct* NextInChain;
+    public nuint TimedWaitAnyMaxCount;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUMultisampleState {
-    public WGPUChainedStruct* nextInChain;
-    public uint count;
-    public uint mask;
-    public uint alphaToCoverageEnabled;
+    public WGPUChainedStruct* NextInChain;
+    public uint Count;
+    public uint Mask;
+    public uint AlphaToCoverageEnabled;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUOrigin3D {
-    public uint x;
-    public uint y;
-    public uint z;
+    public uint X;
+    public uint Y;
+    public uint Z;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUPassTimestampWrites {
-    public WGPUChainedStruct* nextInChain;
-    public IntPtr querySet;
-    public uint beginningOfPassWriteIndex;
-    public uint endOfPassWriteIndex;
+    public WGPUChainedStruct* NextInChain;
+    public IntPtr QuerySet;
+    public uint BeginningOfPassWriteIndex;
+    public uint EndOfPassWriteIndex;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUPipelineLayoutDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
-    public nuint bindGroupLayoutCount;
-    public IntPtr bindGroupLayouts;
-    public uint immediateSize;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
+    public nuint BindGroupLayoutCount;
+    public IntPtr BindGroupLayouts;
+    public uint ImmediateSize;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUPrimitiveState {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUPrimitiveTopology topology;
-    public WGPUIndexFormat stripIndexFormat;
-    public WGPUFrontFace frontFace;
-    public WGPUCullMode cullMode;
-    public uint unclippedDepth;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUPrimitiveTopology Topology;
+    public WGPUIndexFormat StripIndexFormat;
+    public WGPUFrontFace FrontFace;
+    public WGPUCullMode CullMode;
+    public uint UnclippedDepth;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUQuerySetDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
-    public WGPUQueryType type;
-    public uint count;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
+    public WGPUQueryType Type;
+    public uint Count;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUQueueDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPURenderBundleDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPURenderBundleEncoderDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
-    public nuint colorFormatCount;
-    public WGPUTextureFormat* colorFormats;
-    public WGPUTextureFormat depthStencilFormat;
-    public uint sampleCount;
-    public uint depthReadOnly;
-    public uint stencilReadOnly;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
+    public nuint ColorFormatCount;
+    public WGPUTextureFormat* ColorFormats;
+    public WGPUTextureFormat DepthStencilFormat;
+    public uint SampleCount;
+    public uint DepthReadOnly;
+    public uint StencilReadOnly;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPURenderPassDepthStencilAttachment {
-    public WGPUChainedStruct* nextInChain;
-    public IntPtr view;
-    public WGPULoadOp depthLoadOp;
-    public WGPUStoreOp depthStoreOp;
-    public float depthClearValue;
-    public uint depthReadOnly;
-    public WGPULoadOp stencilLoadOp;
-    public WGPUStoreOp stencilStoreOp;
-    public uint stencilClearValue;
-    public uint stencilReadOnly;
+    public WGPUChainedStruct* NextInChain;
+    public IntPtr View;
+    public WGPULoadOp DepthLoadOp;
+    public WGPUStoreOp DepthStoreOp;
+    public float DepthClearValue;
+    public uint DepthReadOnly;
+    public WGPULoadOp StencilLoadOp;
+    public WGPUStoreOp StencilStoreOp;
+    public uint StencilClearValue;
+    public uint StencilReadOnly;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPURenderPassMaxDrawCount {
-    public WGPUChainedStruct chain;
-    public ulong maxDrawCount;
+    public WGPUChainedStruct Chain;
+    public ulong MaxDrawCount;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPURequestAdapterWebXROptions {
-    public WGPUChainedStruct chain;
-    public uint xrCompatible;
+    public WGPUChainedStruct Chain;
+    public uint XrCompatible;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSamplerBindingLayout {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUSamplerBindingType type;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUSamplerBindingType Type;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSamplerDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
-    public WGPUAddressMode addressModeU;
-    public WGPUAddressMode addressModeV;
-    public WGPUAddressMode addressModeW;
-    public WGPUFilterMode magFilter;
-    public WGPUFilterMode minFilter;
-    public WGPUMipmapFilterMode mipmapFilter;
-    public float lodMinClamp;
-    public float lodMaxClamp;
-    public WGPUCompareFunction compare;
-    public ushort maxAnisotropy;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
+    public WGPUAddressMode AddressModeU;
+    public WGPUAddressMode AddressModeV;
+    public WGPUAddressMode AddressModeW;
+    public WGPUFilterMode MagFilter;
+    public WGPUFilterMode MinFilter;
+    public WGPUMipmapFilterMode MipmapFilter;
+    public float LodMinClamp;
+    public float LodMaxClamp;
+    public WGPUCompareFunction Compare;
+    public ushort MaxAnisotropy;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUShaderSourceSPIRV {
-    public WGPUChainedStruct chain;
-    public uint codeSize;
-    public uint* code;
+    public WGPUChainedStruct Chain;
+    public uint CodeSize;
+    public uint* Code;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUShaderSourceWGSL {
-    public WGPUChainedStruct chain;
-    public WGPUStringView code;
+    public WGPUChainedStruct Chain;
+    public WGPUStringView Code;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUStencilFaceState {
-    public WGPUCompareFunction compare;
-    public WGPUStencilOperation failOp;
-    public WGPUStencilOperation depthFailOp;
-    public WGPUStencilOperation passOp;
+    public WGPUCompareFunction Compare;
+    public WGPUStencilOperation FailOp;
+    public WGPUStencilOperation DepthFailOp;
+    public WGPUStencilOperation PassOp;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUStorageTextureBindingLayout {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStorageTextureAccess access;
-    public WGPUTextureFormat format;
-    public WGPUTextureViewDimension viewDimension;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStorageTextureAccess Access;
+    public WGPUTextureFormat Format;
+    public WGPUTextureViewDimension ViewDimension;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSupportedFeatures {
-    public nuint featureCount;
-    public WGPUFeatureName* features;
+    public nuint FeatureCount;
+    public WGPUFeatureName* Features;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSupportedInstanceFeatures {
-    public nuint featureCount;
-    public WGPUInstanceFeatureName* features;
+    public nuint FeatureCount;
+    public WGPUInstanceFeatureName* Features;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSupportedWGSLLanguageFeatures {
-    public nuint featureCount;
-    public WGPUWGSLLanguageFeatureName* features;
+    public nuint FeatureCount;
+    public WGPUWGSLLanguageFeatureName* Features;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSurfaceCapabilities {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUTextureUsage usages;
-    public nuint formatCount;
-    public WGPUTextureFormat* formats;
-    public nuint presentModeCount;
-    public WGPUPresentMode* presentModes;
-    public nuint alphaModeCount;
-    public WGPUCompositeAlphaMode* alphaModes;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUTextureUsage Usages;
+    public nuint FormatCount;
+    public WGPUTextureFormat* Formats;
+    public nuint PresentModeCount;
+    public WGPUPresentMode* PresentModes;
+    public nuint AlphaModeCount;
+    public WGPUCompositeAlphaMode* AlphaModes;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSurfaceColorManagement {
-    public WGPUChainedStruct chain;
-    public WGPUPredefinedColorSpace colorSpace;
-    public WGPUToneMappingMode toneMappingMode;
+    public WGPUChainedStruct Chain;
+    public WGPUPredefinedColorSpace ColorSpace;
+    public WGPUToneMappingMode ToneMappingMode;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSurfaceConfiguration {
-    public WGPUChainedStruct* nextInChain;
-    public IntPtr device;
-    public WGPUTextureFormat format;
-    public WGPUTextureUsage usage;
-    public uint width;
-    public uint height;
-    public nuint viewFormatCount;
-    public WGPUTextureFormat* viewFormats;
-    public WGPUCompositeAlphaMode alphaMode;
-    public WGPUPresentMode presentMode;
+    public WGPUChainedStruct* NextInChain;
+    public IntPtr Device;
+    public WGPUTextureFormat Format;
+    public WGPUTextureUsage Usage;
+    public uint Width;
+    public uint Height;
+    public nuint ViewFormatCount;
+    public WGPUTextureFormat* ViewFormats;
+    public WGPUCompositeAlphaMode AlphaMode;
+    public WGPUPresentMode PresentMode;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSurfaceSourceAndroidNativeWindow {
-    public WGPUChainedStruct chain;
-    public IntPtr window;
+    public WGPUChainedStruct Chain;
+    public IntPtr Window;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSurfaceSourceMetalLayer {
-    public WGPUChainedStruct chain;
-    public IntPtr layer;
+    public WGPUChainedStruct Chain;
+    public IntPtr Layer;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSurfaceSourceWaylandSurface {
-    public WGPUChainedStruct chain;
-    public IntPtr display;
-    public IntPtr surface;
+    public WGPUChainedStruct Chain;
+    public IntPtr Display;
+    public IntPtr Surface;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSurfaceSourceWindowsHWND {
-    public WGPUChainedStruct chain;
-    public IntPtr hinstance;
-    public IntPtr hwnd;
+    public WGPUChainedStruct Chain;
+    public IntPtr Hinstance;
+    public IntPtr Hwnd;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSurfaceSourceXCBWindow {
-    public WGPUChainedStruct chain;
-    public IntPtr connection;
-    public uint window;
+    public WGPUChainedStruct Chain;
+    public IntPtr Connection;
+    public uint Window;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSurfaceSourceXlibWindow {
-    public WGPUChainedStruct chain;
-    public IntPtr display;
-    public ulong window;
+    public WGPUChainedStruct Chain;
+    public IntPtr Display;
+    public ulong Window;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSurfaceTexture {
-    public WGPUChainedStruct* nextInChain;
-    public IntPtr texture;
-    public WGPUSurfaceGetCurrentTextureStatus status;
+    public WGPUChainedStruct* NextInChain;
+    public IntPtr Texture;
+    public WGPUSurfaceGetCurrentTextureStatus Status;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUTexelCopyBufferLayout {
-    public ulong offset;
-    public uint bytesPerRow;
-    public uint rowsPerImage;
+    public ulong Offset;
+    public uint BytesPerRow;
+    public uint RowsPerImage;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUTextureBindingLayout {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUTextureSampleType sampleType;
-    public WGPUTextureViewDimension viewDimension;
-    public uint multisampled;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUTextureSampleType SampleType;
+    public WGPUTextureViewDimension ViewDimension;
+    public uint Multisampled;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUTextureBindingViewDimension {
-    public WGPUChainedStruct chain;
-    public WGPUTextureViewDimension textureBindingViewDimension;
+    public WGPUChainedStruct Chain;
+    public WGPUTextureViewDimension TextureBindingViewDimension;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUTextureComponentSwizzle {
-    public WGPUComponentSwizzle r;
-    public WGPUComponentSwizzle g;
-    public WGPUComponentSwizzle b;
-    public WGPUComponentSwizzle a;
+    public WGPUComponentSwizzle R;
+    public WGPUComponentSwizzle G;
+    public WGPUComponentSwizzle B;
+    public WGPUComponentSwizzle A;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUVertexAttribute {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUVertexFormat format;
-    public ulong offset;
-    public uint shaderLocation;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUVertexFormat Format;
+    public ulong Offset;
+    public uint ShaderLocation;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUBindGroupEntry {
-    public WGPUChainedStruct* nextInChain;
-    public uint binding;
-    public IntPtr buffer;
-    public ulong offset;
-    public ulong size;
-    public IntPtr sampler;
-    public IntPtr textureView;
+    public WGPUChainedStruct* NextInChain;
+    public uint Binding;
+    public IntPtr Buffer;
+    public ulong Offset;
+    public ulong Size;
+    public IntPtr Sampler;
+    public IntPtr TextureView;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUBindGroupLayoutEntry {
-    public WGPUChainedStruct* nextInChain;
-    public uint binding;
-    public WGPUShaderStage visibility;
-    public uint bindingArraySize;
-    public WGPUBufferBindingLayout buffer;
-    public WGPUSamplerBindingLayout sampler;
-    public WGPUTextureBindingLayout texture;
-    public WGPUStorageTextureBindingLayout storageTexture;
+    public WGPUChainedStruct* NextInChain;
+    public uint Binding;
+    public WGPUShaderStage Visibility;
+    public uint BindingArraySize;
+    public WGPUBufferBindingLayout Buffer;
+    public WGPUSamplerBindingLayout Sampler;
+    public WGPUTextureBindingLayout Texture;
+    public WGPUStorageTextureBindingLayout StorageTexture;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUBlendState {
-    public WGPUBlendComponent color;
-    public WGPUBlendComponent alpha;
+    public WGPUBlendComponent Color;
+    public WGPUBlendComponent Alpha;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUCompilationInfo {
-    public WGPUChainedStruct* nextInChain;
-    public nuint messageCount;
-    public WGPUCompilationMessage* messages;
+    public WGPUChainedStruct* NextInChain;
+    public nuint MessageCount;
+    public WGPUCompilationMessage* Messages;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUComputePassDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
-    public WGPUPassTimestampWrites* timestampWrites;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
+    public WGPUPassTimestampWrites* TimestampWrites;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUComputeState {
-    public WGPUChainedStruct* nextInChain;
-    public IntPtr module;
-    public WGPUStringView entryPoint;
-    public nuint constantCount;
-    public WGPUConstantEntry* constants;
+    public WGPUChainedStruct* NextInChain;
+    public IntPtr Module;
+    public WGPUStringView EntryPoint;
+    public nuint ConstantCount;
+    public WGPUConstantEntry* Constants;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUDepthStencilState {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUTextureFormat format;
-    public WGPUOptionalBool depthWriteEnabled;
-    public WGPUCompareFunction depthCompare;
-    public WGPUStencilFaceState stencilFront;
-    public WGPUStencilFaceState stencilBack;
-    public uint stencilReadMask;
-    public uint stencilWriteMask;
-    public int depthBias;
-    public float depthBiasSlopeScale;
-    public float depthBiasClamp;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUTextureFormat Format;
+    public WGPUOptionalBool DepthWriteEnabled;
+    public WGPUCompareFunction DepthCompare;
+    public WGPUStencilFaceState StencilFront;
+    public WGPUStencilFaceState StencilBack;
+    public uint StencilReadMask;
+    public uint StencilWriteMask;
+    public int DepthBias;
+    public float DepthBiasSlopeScale;
+    public float DepthBiasClamp;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUFutureWaitInfo {
-    public WGPUFuture future;
-    public uint completed;
+    public WGPUFuture Future;
+    public uint Completed;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUInstanceDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public nuint requiredFeatureCount;
-    public WGPUInstanceFeatureName* requiredFeatures;
-    public WGPUInstanceLimits* requiredLimits;
+    public WGPUChainedStruct* NextInChain;
+    public nuint RequiredFeatureCount;
+    public WGPUInstanceFeatureName* RequiredFeatures;
+    public WGPUInstanceLimits* RequiredLimits;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPULimits {
-    public WGPUChainedStruct* nextInChain;
-    public uint maxTextureDimension1D;
-    public uint maxTextureDimension2D;
-    public uint maxTextureDimension3D;
-    public uint maxTextureArrayLayers;
-    public uint maxBindGroups;
-    public uint maxBindGroupsPlusVertexBuffers;
-    public uint maxBindingsPerBindGroup;
-    public uint maxDynamicUniformBuffersPerPipelineLayout;
-    public uint maxDynamicStorageBuffersPerPipelineLayout;
-    public uint maxSampledTexturesPerShaderStage;
-    public uint maxSamplersPerShaderStage;
-    public uint maxStorageBuffersPerShaderStage;
-    public uint maxStorageTexturesPerShaderStage;
-    public uint maxUniformBuffersPerShaderStage;
-    public ulong maxUniformBufferBindingSize;
-    public ulong maxStorageBufferBindingSize;
-    public uint minUniformBufferOffsetAlignment;
-    public uint minStorageBufferOffsetAlignment;
-    public uint maxVertexBuffers;
-    public ulong maxBufferSize;
-    public uint maxVertexAttributes;
-    public uint maxVertexBufferArrayStride;
-    public uint maxInterStageShaderVariables;
-    public uint maxColorAttachments;
-    public uint maxColorAttachmentBytesPerSample;
-    public uint maxComputeWorkgroupStorageSize;
-    public uint maxComputeInvocationsPerWorkgroup;
-    public uint maxComputeWorkgroupSizeX;
-    public uint maxComputeWorkgroupSizeY;
-    public uint maxComputeWorkgroupSizeZ;
-    public uint maxComputeWorkgroupsPerDimension;
-    public uint maxImmediateSize;
+    public WGPUChainedStruct* NextInChain;
+    public uint MaxTextureDimension1D;
+    public uint MaxTextureDimension2D;
+    public uint MaxTextureDimension3D;
+    public uint MaxTextureArrayLayers;
+    public uint MaxBindGroups;
+    public uint MaxBindGroupsPlusVertexBuffers;
+    public uint MaxBindingsPerBindGroup;
+    public uint MaxDynamicUniformBuffersPerPipelineLayout;
+    public uint MaxDynamicStorageBuffersPerPipelineLayout;
+    public uint MaxSampledTexturesPerShaderStage;
+    public uint MaxSamplersPerShaderStage;
+    public uint MaxStorageBuffersPerShaderStage;
+    public uint MaxStorageTexturesPerShaderStage;
+    public uint MaxUniformBuffersPerShaderStage;
+    public ulong MaxUniformBufferBindingSize;
+    public ulong MaxStorageBufferBindingSize;
+    public uint MinUniformBufferOffsetAlignment;
+    public uint MinStorageBufferOffsetAlignment;
+    public uint MaxVertexBuffers;
+    public ulong MaxBufferSize;
+    public uint MaxVertexAttributes;
+    public uint MaxVertexBufferArrayStride;
+    public uint MaxInterStageShaderVariables;
+    public uint MaxColorAttachments;
+    public uint MaxColorAttachmentBytesPerSample;
+    public uint MaxComputeWorkgroupStorageSize;
+    public uint MaxComputeInvocationsPerWorkgroup;
+    public uint MaxComputeWorkgroupSizeX;
+    public uint MaxComputeWorkgroupSizeY;
+    public uint MaxComputeWorkgroupSizeZ;
+    public uint MaxComputeWorkgroupsPerDimension;
+    public uint MaxImmediateSize;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPURenderPassColorAttachment {
-    public WGPUChainedStruct* nextInChain;
-    public IntPtr view;
-    public uint depthSlice;
-    public IntPtr resolveTarget;
-    public WGPULoadOp loadOp;
-    public WGPUStoreOp storeOp;
-    public WGPUColor clearValue;
+    public WGPUChainedStruct* NextInChain;
+    public IntPtr View;
+    public uint DepthSlice;
+    public IntPtr ResolveTarget;
+    public WGPULoadOp LoadOp;
+    public WGPUStoreOp StoreOp;
+    public WGPUColor ClearValue;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPURequestAdapterOptions {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUFeatureLevel featureLevel;
-    public WGPUPowerPreference powerPreference;
-    public uint forceFallbackAdapter;
-    public WGPUBackendType backendType;
-    public IntPtr compatibleSurface;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUFeatureLevel FeatureLevel;
+    public WGPUPowerPreference PowerPreference;
+    public uint ForceFallbackAdapter;
+    public WGPUBackendType BackendType;
+    public IntPtr CompatibleSurface;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUShaderModuleDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSurfaceDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUTexelCopyBufferInfo {
-    public WGPUTexelCopyBufferLayout layout;
-    public IntPtr buffer;
+    public WGPUTexelCopyBufferLayout Layout;
+    public IntPtr Buffer;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUTexelCopyTextureInfo {
-    public IntPtr texture;
-    public uint mipLevel;
-    public WGPUOrigin3D origin;
-    public WGPUTextureAspect aspect;
+    public IntPtr Texture;
+    public uint MipLevel;
+    public WGPUOrigin3D Origin;
+    public WGPUTextureAspect Aspect;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUTextureComponentSwizzleDescriptor {
-    public WGPUChainedStruct chain;
-    public WGPUTextureComponentSwizzle swizzle;
+    public WGPUChainedStruct Chain;
+    public WGPUTextureComponentSwizzle Swizzle;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUTextureDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
-    public WGPUTextureUsage usage;
-    public WGPUTextureDimension dimension;
-    public WGPUExtent3D size;
-    public WGPUTextureFormat format;
-    public uint mipLevelCount;
-    public uint sampleCount;
-    public nuint viewFormatCount;
-    public WGPUTextureFormat* viewFormats;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
+    public WGPUTextureUsage Usage;
+    public WGPUTextureDimension Dimension;
+    public WGPUExtent3D Size;
+    public WGPUTextureFormat Format;
+    public uint MipLevelCount;
+    public uint SampleCount;
+    public nuint ViewFormatCount;
+    public WGPUTextureFormat* ViewFormats;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUVertexBufferLayout {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUVertexStepMode stepMode;
-    public ulong arrayStride;
-    public nuint attributeCount;
-    public WGPUVertexAttribute* attributes;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUVertexStepMode StepMode;
+    public ulong ArrayStride;
+    public nuint AttributeCount;
+    public WGPUVertexAttribute* Attributes;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUBindGroupDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
-    public IntPtr layout;
-    public nuint entryCount;
-    public WGPUBindGroupEntry* entries;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
+    public IntPtr Layout;
+    public nuint EntryCount;
+    public WGPUBindGroupEntry* Entries;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUBindGroupLayoutDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
-    public nuint entryCount;
-    public WGPUBindGroupLayoutEntry* entries;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
+    public nuint EntryCount;
+    public WGPUBindGroupLayoutEntry* Entries;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUColorTargetState {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUTextureFormat format;
-    public WGPUBlendState* blend;
-    public WGPUColorWriteMask writeMask;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUTextureFormat Format;
+    public WGPUBlendState* Blend;
+    public WGPUColorWriteMask WriteMask;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUComputePipelineDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
-    public IntPtr layout;
-    public WGPUComputeState compute;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
+    public IntPtr Layout;
+    public WGPUComputeState Compute;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUDeviceDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
-    public nuint requiredFeatureCount;
-    public WGPUFeatureName* requiredFeatures;
-    public WGPULimits* requiredLimits;
-    public WGPUQueueDescriptor defaultQueue;
-    public WGPUDeviceLostCallbackInfo deviceLostCallbackInfo;
-    public WGPUUncapturedErrorCallbackInfo uncapturedErrorCallbackInfo;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
+    public nuint RequiredFeatureCount;
+    public WGPUFeatureName* RequiredFeatures;
+    public WGPULimits* RequiredLimits;
+    public WGPUQueueDescriptor DefaultQueue;
+    public WGPUDeviceLostCallbackInfo DeviceLostCallbackInfo;
+    public WGPUUncapturedErrorCallbackInfo UncapturedErrorCallbackInfo;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPURenderPassDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
-    public nuint colorAttachmentCount;
-    public WGPURenderPassColorAttachment* colorAttachments;
-    public WGPURenderPassDepthStencilAttachment* depthStencilAttachment;
-    public IntPtr occlusionQuerySet;
-    public WGPUPassTimestampWrites* timestampWrites;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
+    public nuint ColorAttachmentCount;
+    public WGPURenderPassColorAttachment* ColorAttachments;
+    public WGPURenderPassDepthStencilAttachment* DepthStencilAttachment;
+    public IntPtr OcclusionQuerySet;
+    public WGPUPassTimestampWrites* TimestampWrites;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUTextureViewDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
-    public WGPUTextureFormat format;
-    public WGPUTextureViewDimension dimension;
-    public uint baseMipLevel;
-    public uint mipLevelCount;
-    public uint baseArrayLayer;
-    public uint arrayLayerCount;
-    public WGPUTextureAspect aspect;
-    public WGPUTextureUsage usage;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
+    public WGPUTextureFormat Format;
+    public WGPUTextureViewDimension Dimension;
+    public uint BaseMipLevel;
+    public uint MipLevelCount;
+    public uint BaseArrayLayer;
+    public uint ArrayLayerCount;
+    public WGPUTextureAspect Aspect;
+    public WGPUTextureUsage Usage;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUVertexState {
-    public WGPUChainedStruct* nextInChain;
-    public IntPtr module;
-    public WGPUStringView entryPoint;
-    public nuint constantCount;
-    public WGPUConstantEntry* constants;
-    public nuint bufferCount;
-    public WGPUVertexBufferLayout* buffers;
+    public WGPUChainedStruct* NextInChain;
+    public IntPtr Module;
+    public WGPUStringView EntryPoint;
+    public nuint ConstantCount;
+    public WGPUConstantEntry* Constants;
+    public nuint BufferCount;
+    public WGPUVertexBufferLayout* Buffers;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUFragmentState {
-    public WGPUChainedStruct* nextInChain;
-    public IntPtr module;
-    public WGPUStringView entryPoint;
-    public nuint constantCount;
-    public WGPUConstantEntry* constants;
-    public nuint targetCount;
-    public WGPUColorTargetState* targets;
+    public WGPUChainedStruct* NextInChain;
+    public IntPtr Module;
+    public WGPUStringView EntryPoint;
+    public nuint ConstantCount;
+    public WGPUConstantEntry* Constants;
+    public nuint TargetCount;
+    public WGPUColorTargetState* Targets;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPURenderPipelineDescriptor {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUStringView label;
-    public IntPtr layout;
-    public WGPUVertexState vertex;
-    public WGPUPrimitiveState primitive;
-    public WGPUDepthStencilState* depthStencil;
-    public WGPUMultisampleState multisample;
-    public WGPUFragmentState* fragment;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUStringView Label;
+    public IntPtr Layout;
+    public WGPUVertexState Vertex;
+    public WGPUPrimitiveState Primitive;
+    public WGPUDepthStencilState* DepthStencil;
+    public WGPUMultisampleState Multisample;
+    public WGPUFragmentState* Fragment;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUXlibDisplayHandle {
-    public IntPtr display;
-    public int screen;
+    public IntPtr Display;
+    public int Screen;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUXcbDisplayHandle {
-    public IntPtr connection;
-    public int screen;
+    public IntPtr Connection;
+    public int Screen;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUWaylandDisplayHandle {
-    public IntPtr display;
+    public IntPtr Display;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUDeviceExtras {
-    public WGPUChainedStruct chain;
-    public WGPUStringView tracePath;
+    public WGPUChainedStruct Chain;
+    public WGPUStringView TracePath;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUNativeLimits {
-    public WGPUChainedStruct chain;
-    public uint maxNonSamplerBindings;
-    public uint maxBindingArrayElementsPerShaderStage;
-    public uint maxBindingArraySamplerElementsPerShaderStage;
-    public uint maxMultiviewViewCount;
+    public WGPUChainedStruct Chain;
+    public uint MaxNonSamplerBindings;
+    public uint MaxBindingArrayElementsPerShaderStage;
+    public uint MaxBindingArraySamplerElementsPerShaderStage;
+    public uint MaxMultiviewViewCount;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUShaderDefine {
-    public WGPUStringView name;
-    public WGPUStringView value;
+    public WGPUStringView Name;
+    public WGPUStringView Value;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUShaderSourceGLSL {
-    public WGPUChainedStruct chain;
-    public WGPUShaderStage stage;
-    public WGPUStringView code;
-    public uint defineCount;
-    public WGPUShaderDefine* defines;
+    public WGPUChainedStruct Chain;
+    public WGPUShaderStage Stage;
+    public WGPUStringView Code;
+    public uint DefineCount;
+    public WGPUShaderDefine* Defines;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUShaderModuleDescriptorSpirV {
-    public WGPUStringView label;
-    public uint sourceSize;
-    public uint* source;
+    public WGPUStringView Label;
+    public uint SourceSize;
+    public uint* Source;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPURegistryReport {
-    public nuint numAllocated;
-    public nuint numKeptFromUser;
-    public nuint numReleasedFromUser;
-    public nuint elementSize;
+    public nuint NumAllocated;
+    public nuint NumKeptFromUser;
+    public nuint NumReleasedFromUser;
+    public nuint ElementSize;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUHubReport {
-    public WGPURegistryReport adapters;
-    public WGPURegistryReport devices;
-    public WGPURegistryReport queues;
-    public WGPURegistryReport pipelineLayouts;
-    public WGPURegistryReport shaderModules;
-    public WGPURegistryReport bindGroupLayouts;
-    public WGPURegistryReport bindGroups;
-    public WGPURegistryReport commandBuffers;
-    public WGPURegistryReport renderBundles;
-    public WGPURegistryReport renderPipelines;
-    public WGPURegistryReport computePipelines;
-    public WGPURegistryReport pipelineCaches;
-    public WGPURegistryReport querySets;
-    public WGPURegistryReport buffers;
-    public WGPURegistryReport textures;
-    public WGPURegistryReport textureViews;
-    public WGPURegistryReport samplers;
+    public WGPURegistryReport Adapters;
+    public WGPURegistryReport Devices;
+    public WGPURegistryReport Queues;
+    public WGPURegistryReport PipelineLayouts;
+    public WGPURegistryReport ShaderModules;
+    public WGPURegistryReport BindGroupLayouts;
+    public WGPURegistryReport BindGroups;
+    public WGPURegistryReport CommandBuffers;
+    public WGPURegistryReport RenderBundles;
+    public WGPURegistryReport RenderPipelines;
+    public WGPURegistryReport ComputePipelines;
+    public WGPURegistryReport PipelineCaches;
+    public WGPURegistryReport QuerySets;
+    public WGPURegistryReport Buffers;
+    public WGPURegistryReport Textures;
+    public WGPURegistryReport TextureViews;
+    public WGPURegistryReport Samplers;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUGlobalReport {
-    public WGPURegistryReport surfaces;
-    public WGPUHubReport hub;
+    public WGPURegistryReport Surfaces;
+    public WGPUHubReport Hub;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUInstanceEnumerateAdapterOptions {
-    public WGPUChainedStruct* nextInChain;
-    public WGPUInstanceBackend backends;
+    public WGPUChainedStruct* NextInChain;
+    public WGPUInstanceBackend Backends;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUBindGroupEntryExtras {
-    public WGPUChainedStruct chain;
-    public IntPtr buffers;
-    public nuint bufferCount;
-    public IntPtr samplers;
-    public nuint samplerCount;
-    public IntPtr textureViews;
-    public nuint textureViewCount;
+    public WGPUChainedStruct Chain;
+    public IntPtr Buffers;
+    public nuint BufferCount;
+    public IntPtr Samplers;
+    public nuint SamplerCount;
+    public IntPtr TextureViews;
+    public nuint TextureViewCount;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUBindGroupLayoutEntryExtras {
-    public WGPUChainedStruct chain;
-    public uint count;
+    public WGPUChainedStruct Chain;
+    public uint Count;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUQuerySetDescriptorExtras {
-    public WGPUChainedStruct chain;
-    public WGPUPipelineStatisticName* pipelineStatistics;
-    public nuint pipelineStatisticCount;
+    public WGPUChainedStruct Chain;
+    public WGPUPipelineStatisticName* PipelineStatistics;
+    public nuint PipelineStatisticCount;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSurfaceConfigurationExtras {
-    public WGPUChainedStruct chain;
-    public uint desiredMaximumFrameLatency;
+    public WGPUChainedStruct Chain;
+    public uint DesiredMaximumFrameLatency;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSurfaceSourceSwapChainPanel {
-    public WGPUChainedStruct chain;
-    public IntPtr panelNative;
+    public WGPUChainedStruct Chain;
+    public IntPtr PanelNative;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUPrimitiveStateExtras {
-    public WGPUChainedStruct chain;
-    public WGPUPolygonMode polygonMode;
-    public uint conservative;
+    public WGPUChainedStruct Chain;
+    public WGPUPolygonMode PolygonMode;
+    public uint Conservative;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUImageSubresourceRange {
-    public WGPUTextureAspect aspect;
-    public uint baseMipLevel;
-    public uint mipLevelCount;
-    public uint baseArrayLayer;
-    public uint arrayLayerCount;
+    public WGPUTextureAspect Aspect;
+    public uint BaseMipLevel;
+    public uint MipLevelCount;
+    public uint BaseArrayLayer;
+    public uint ArrayLayerCount;
 }
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUSamplerDescriptorExtras {
-    public WGPUChainedStruct chain;
-    public WGPUSamplerBorderColor samplerBorderColor;
+    public WGPUChainedStruct Chain;
+    public WGPUSamplerBorderColor SamplerBorderColor;
 }
 public static unsafe partial class WGPU {
     const string L = "webgpu";
