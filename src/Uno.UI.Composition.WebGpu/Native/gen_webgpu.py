@@ -138,12 +138,16 @@ def main(headers, out):
             if short and short[0].isdigit(): short='_'+short
             o.append(f'    {short} = {val},')
         o.append('}')
+    # PascalCase the camelCase C field names so they line up with the field names the
+    # (Silk-originated) backend already writes — PascalCase(webgpu.h camelCase) == Silk's names.
+    def pascal(s):
+        return s[:1].upper() + s[1:] if s else s
     for name, fields in structs.items():
         o.append('[StructLayout(LayoutKind.Sequential)]')
         o.append(f'public unsafe struct {name} {{')
         for ctype,fname in fields:
             cs = map_type(ctype, enums, flags, handles, structs)
-            o.append(f'    public {cs} {fname};')
+            o.append(f'    public {cs} {pascal(fname)};')
         o.append('}')
     o.append('public static unsafe partial class WGPU {')
     o.append('    const string L = "webgpu";')
