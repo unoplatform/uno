@@ -6,6 +6,16 @@
 
 	<Import Project="../../targetframework-override-noplatform.props" />
 
+	<!-- Silk.NET.WebGPU.Native.WGPU only ships its flat-copy .targets for net461, so on .NET the wgpu native
+	     lands only under runtimes/<rid>/native/, which Silk's NativeLibrary.Load doesn't resolve in a
+	     framework-dependent build (WebGPU silently falls back to software). Flatten it next to the app. -->
+	<Target Name="_FlattenWebGpuNativeForLoader" AfterTargets="Build">
+		<ItemGroup>
+			<_WebGpuNative Include="$(OutDir)runtimes\**\native\*wgpu_native*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_WebGpuNative)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" Condition="'@(_WebGpuNative)' != ''" />
+	</Target>
+
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 
