@@ -16,11 +16,9 @@
 		<Description>EXPERIMENTAL WebGPU drawing backend for Uno Platform (implements the neutral IRenderBackend seam).</Description>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Silk.NET.WebGPU" Version="2.23.0" />
-		<PackageReference Include="Silk.NET.WebGPU.Native.WGPU" Version="2.23.0" />
-		<PackageReference Include="Silk.NET.WebGPU.Extensions.WGPU" Version="2.23.0" />
-	</ItemGroup>
+	<!-- Modern-ABI native (wgpu-native, pinned) provisioned at build via a GitHub-release fetch;
+	     the generated binding in Native/WebGpuInterop.cs P/Invokes it via a DllImportResolver. -->
+	<Import Project="wgpu-native.targets" />
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.Skia.csproj" />

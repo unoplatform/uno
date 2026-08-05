@@ -4,9 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Silk.NET.Core.Native;
-using Silk.NET.WebGPU;
-using Silk.NET.WebGPU.Extensions.WGPU;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using Uno.WebGpu.Native;
+using static Uno.WebGpu.Native.WGPU;
 using Uno.UI.Composition.Drawing;
 using Windows.Graphics.Effects.Interop;
 using Windows.Foundation;
@@ -16,25 +17,23 @@ namespace Uno.UI.Composition.WebGpu;
 
 public sealed unsafe class WebGpuDevice : IDisposable
 {
-	public readonly WebGPU W;
-	public readonly Wgpu Native;
-	public Instance* Inst;
-	public Adapter* Adapter;
-	public Device* Dev;
-	public Queue* Q;
-	public RenderPipeline* SolidPipe;
-	public RenderPipeline* StencilEvenOdd;
-	public RenderPipeline* StencilNonZero;
-	public RenderPipeline* CoverPipe;
-	public RenderPipeline* ImagePipe;
-	public RenderPipeline* GradientPipe;
-	public RenderPipeline* BlurPipe;              // separable gaussian (fullscreen), single-sample
-	public BindGroupLayout* BlurBgl;
-	public RenderPipeline* CompositeSrcOver;      // composite a layer texture into an MSAA pass (SrcOver / DstIn)
-	public RenderPipeline* CompositeDstIn;
-	public BindGroupLayout* CompositeBgl;         // SrcOver's group(0) layout
-	public BindGroupLayout* CompositeDstInBgl;    // DstIn's group(0) layout (auto-layouts aren't interchangeable)
-	public TextureView* DummyTex;                 // 1x1 placeholder for the clip coverage binding when no path clip
+	public IntPtr Inst;
+	public IntPtr Adapter;
+	public IntPtr Dev;
+	public IntPtr Q;
+	public IntPtr SolidPipe;
+	public IntPtr StencilEvenOdd;
+	public IntPtr StencilNonZero;
+	public IntPtr CoverPipe;
+	public IntPtr ImagePipe;
+	public IntPtr GradientPipe;
+	public IntPtr BlurPipe;              // separable gaussian (fullscreen), single-sample
+	public IntPtr BlurBgl;
+	public IntPtr CompositeSrcOver;      // composite a layer texture into an MSAA pass (SrcOver / DstIn)
+	public IntPtr CompositeDstIn;
+	public IntPtr CompositeBgl;         // SrcOver's group(0) layout
+	public IntPtr CompositeDstInBgl;    // DstIn's group(0) layout (auto-layouts aren't interchangeable)
+	public IntPtr DummyTex;                 // 1x1 placeholder for the clip coverage binding when no path clip
 	public WebGpuTexturePool Pool;                // transient offscreen pool (reused across frames)
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
 	// Serializes a whole frame's render (reset → record → submit → poll) on this device. The on-window render
@@ -57,9 +56,9 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	{
 		Pool.BeginFrame();
 		BufferPool.BeginFrame();
-		foreach (var bg in _pendingBindGroups) { W.BindGroupRelease((BindGroup*)bg); }
-		foreach (var b in _pendingBuffers) { W.BufferRelease((Silk.NET.WebGPU.Buffer*)b); }
-		foreach (var bu in _pendingBundles) { W.RenderBundleRelease((RenderBundle*)bu); }
+		foreach (var bg in _pendingBindGroups) { wgpuBindGroupRelease((IntPtr)bg); }
+		foreach (var b in _pendingBuffers) { wgpuBufferRelease((IntPtr)b); }
+		foreach (var bu in _pendingBundles) { wgpuRenderBundleRelease((IntPtr)bu); }
 		_pendingBindGroups.Clear();
 		_pendingBuffers.Clear();
 		_pendingBundles.Clear();
@@ -71,7 +70,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		foreach (var k in _evict) { DeferRelease(GeometryCache[k].Owned); GeometryCache.Remove(k); }
 	}
 
-	public BindGroup* TrackBg(BindGroup* bg) { _pendingBindGroups.Add((nint)bg); return bg; }
+	public IntPtr TrackBg(IntPtr bg) { _pendingBindGroups.Add((nint)bg); return bg; }
 
 	// Defers a cached recording's persistent resources for release at the next frame start.
 	internal void DeferRelease(OwnedResources owned)
@@ -81,14 +80,14 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		_pendingBindGroups.AddRange(owned.BindGroups);
 		_pendingBundles.AddRange(owned.Bundles);
 	}
-	public BindGroupLayout* ImgBgl;
-	public BindGroupLayout* GradBgl;
+	public IntPtr ImgBgl;
+	public IntPtr GradBgl;
 	// group(1) clip-uniform layouts (one per color-writing pipeline; all describe the same ClipU).
-	public BindGroupLayout* SolidClipBgl;
-	public BindGroupLayout* CoverClipBgl;
-	public BindGroupLayout* ImageClipBgl;
-	public BindGroupLayout* GradClipBgl;
-	public Sampler* Smp;
+	public IntPtr SolidClipBgl;
+	public IntPtr CoverClipBgl;
+	public IntPtr ImageClipBgl;
+	public IntPtr GradClipBgl;
+	public IntPtr Smp;
 
 	// Uniform size (bytes) of the gradient struct: header(16) + geo(16) + colors(16*16) + stops(4*16).
 	public const int GradientUniformBytes = 16 + 16 + 16 * 16 + 4 * 16;
@@ -100,22 +99,42 @@ public sealed unsafe class WebGpuDevice : IDisposable
 
 	// The color-attachment format the pipelines + offscreen targets use. Rgba8Unorm by default (the
 	// offscreen/readback path assumes it); a swapchain renderer passes the surface's supported format.
-	public readonly TextureFormat ColorFormat;
-	public const TextureFormat DefaultColorFormat = TextureFormat.Rgba8Unorm;
-	public const TextureFormat DepthStencilFormat = TextureFormat.Depth24PlusStencil8;
+	public readonly WGPUTextureFormat ColorFormat;
+	public const WGPUTextureFormat DefaultColorFormat = WGPUTextureFormat.RGBA8Unorm;
+	public const WGPUTextureFormat DepthStencilFormat = WGPUTextureFormat.Depth24PlusStencil8;
 
-	public WebGpuDevice(TextureFormat colorFormat = DefaultColorFormat)
+	public WebGpuDevice(WGPUTextureFormat colorFormat = DefaultColorFormat)
 	{
 		ColorFormat = colorFormat;
-		W = WebGPU.GetApi();
-		W.TryGetDeviceExtension(null, out Native);
-		var idesc = new InstanceDescriptor();
-		Inst = W.CreateInstance(ref idesc);
-		var aopts = new RequestAdapterOptions { PowerPreference = PowerPreference.HighPerformance };
-		W.InstanceRequestAdapter(Inst, in aopts, new PfnRequestAdapterCallback((s, a, m, _) => Adapter = a), null);
-		var ddesc = new DeviceDescriptor();
-		W.AdapterRequestDevice(Adapter, in ddesc, new PfnRequestDeviceCallback((s, d, m, _) => Dev = d), null);
-		Q = W.DeviceGetQueue(Dev);
+		Inst = wgpuCreateInstance(null);
+
+		var abox = new IntPtr[1];
+		var ah = GCHandle.Alloc(abox);
+		var aopts = new WGPURequestAdapterOptions { PowerPreference = WGPUPowerPreference.HighPerformance };
+		wgpuInstanceRequestAdapter(Inst, &aopts, new WGPURequestAdapterCallbackInfo
+		{
+			Mode = WGPUCallbackMode.AllowProcessEvents,
+			Callback = (IntPtr)(delegate* unmanaged[Cdecl]<WGPURequestAdapterStatus, IntPtr, WGPUStringView, IntPtr, IntPtr, void>)&OnAdapter,
+			Userdata1 = GCHandle.ToIntPtr(ah),
+		});
+		for (int i = 0; i < 1000 && abox[0] == IntPtr.Zero; i++) { wgpuInstanceProcessEvents(Inst); }
+		Adapter = abox[0];
+		ah.Free();
+
+		var dbox = new IntPtr[1];
+		var dh = GCHandle.Alloc(dbox);
+		var ddesc = new WGPUDeviceDescriptor();
+		wgpuAdapterRequestDevice(Adapter, &ddesc, new WGPURequestDeviceCallbackInfo
+		{
+			Mode = WGPUCallbackMode.AllowProcessEvents,
+			Callback = (IntPtr)(delegate* unmanaged[Cdecl]<WGPURequestDeviceStatus, IntPtr, WGPUStringView, IntPtr, IntPtr, void>)&OnDevice,
+			Userdata1 = GCHandle.ToIntPtr(dh),
+		});
+		for (int i = 0; i < 1000 && dbox[0] == IntPtr.Zero; i++) { wgpuInstanceProcessEvents(Inst); }
+		Dev = dbox[0];
+		dh.Free();
+
+		Q = wgpuDeviceGetQueue(Dev);
 		CreatePipelines();
 		DummyTex = CreateColorTarget(1, 1);
 		Pool = new WebGpuTexturePool(this);
@@ -129,28 +148,35 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		uint unpadded = (uint)(w * 4);
 		uint padded = (unpadded + 255u) & ~255u;              // wgpu requires 256-byte row alignment for T2B copies
 		ulong total = (ulong)padded * (uint)h;
-		var bd = new BufferDescriptor { Size = (nuint)total, Usage = BufferUsage.CopyDst | BufferUsage.MapRead };
-		var buf = W.DeviceCreateBuffer(Dev, ref bd);
-		var enc = W.DeviceCreateCommandEncoder(Dev, null);
-		var src = new ImageCopyTexture { Texture = s.Tex, Aspect = TextureAspect.All, MipLevel = 0, Origin = default };
-		var dst = new ImageCopyBuffer { Buffer = buf, Layout = new TextureDataLayout { Offset = 0, BytesPerRow = padded, RowsPerImage = (uint)h } };
-		var ext = new Extent3D((uint)w, (uint)h, 1);
-		W.CommandEncoderCopyTextureToBuffer(enc, in src, in dst, in ext);
-		var cb = W.CommandEncoderFinish(enc, null);
-		W.QueueSubmit(Q, 1, &cb);
-		Native.DevicePoll(Dev, true, null);
+		var bd = new WGPUBufferDescriptor { Size = (nuint)total, Usage = WGPUBufferUsage.CopyDst | WGPUBufferUsage.MapRead };
+		var buf = wgpuDeviceCreateBuffer(Dev, &bd);
+		var enc = wgpuDeviceCreateCommandEncoder(Dev, null);
+		var src = new WGPUTexelCopyTextureInfo { Texture = s.Tex, Aspect = WGPUTextureAspect.All, MipLevel = 0, Origin = default };
+		var dst = new WGPUTexelCopyBufferInfo { Buffer = buf, Layout = new WGPUTexelCopyBufferLayout { Offset = 0, BytesPerRow = padded, RowsPerImage = (uint)h } };
+		var ext = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 };
+		wgpuCommandEncoderCopyTextureToBuffer(enc, &src, &dst, &ext);
+		var cb = wgpuCommandEncoderFinish(enc, null);
+		wgpuQueueSubmit(Q, 1, (IntPtr)(&cb));
+		wgpuDevicePoll(Dev, 1u, null);
 
-		bool mapped = false;
-		W.BufferMapAsync(buf, MapMode.Read, 0, (nuint)total, new PfnBufferMapCallback((status, _) => mapped = true), null);
-		while (!mapped) { Native.DevicePoll(Dev, true, null); }
-		var mp = (byte*)W.BufferGetMappedRange(buf, 0, (nuint)total);
+		var mapped = new bool[1];
+		var mh = GCHandle.Alloc(mapped);
+		wgpuBufferMapAsync(buf, WGPUMapMode.Read, 0, (nuint)total, new WGPUBufferMapCallbackInfo
+		{
+			Mode = WGPUCallbackMode.AllowProcessEvents,
+			Callback = (IntPtr)(delegate* unmanaged[Cdecl]<WGPUMapAsyncStatus, WGPUStringView, IntPtr, IntPtr, void>)&OnMap,
+			Userdata1 = GCHandle.ToIntPtr(mh),
+		});
+		while (!mapped[0]) { wgpuDevicePoll(Dev, 1u, null); }
+		mh.Free();
+		var mp = (byte*)(void*)wgpuBufferGetMappedRange(buf, 0, (nuint)total);
 		var outp = new byte[w * h * 4];
 		for (int y = 0; y < h; y++)
 		{
 			for (uint x = 0; x < unpadded; x++) { outp[y * (int)unpadded + (int)x] = mp[(uint)y * padded + x]; }
 		}
-		W.BufferUnmap(buf);
-		W.BufferDestroy(buf);
+		wgpuBufferUnmap(buf);
+		wgpuBufferDestroy(buf);
 		return outp;
 	}
 
@@ -184,16 +210,16 @@ fn clipCov(fc: vec2<f32>, clip: ClipU, ctex: texture_2d<f32>, csmp: sampler) -> 
 
 	/// <summary>A single-sample Rgba8 render target usable as a shader input (offscreen blur temp/output). The
 	/// returned view keeps its texture alive; not pooled/freed yet (fine for offscreen/one-shot).</summary>
-	public TextureView* CreateColorTarget(int w, int h)
+	public IntPtr CreateColorTarget(int w, int h)
 	{
-		var td = new TextureDescriptor
+		var td = new WGPUTextureDescriptor
 		{
-			Size = new Extent3D((uint)w, (uint)h, 1), Format = DefaultColorFormat,
-			MipLevelCount = 1, SampleCount = 1, Dimension = TextureDimension.Dimension2D,
-			Usage = TextureUsage.RenderAttachment | TextureUsage.TextureBinding,
+			Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 }, Format = DefaultColorFormat,
+			MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D,
+			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding,
 		};
-		var tex = W.DeviceCreateTexture(Dev, ref td);
-		return W.TextureCreateView(tex, null);
+		var tex = wgpuDeviceCreateTexture(Dev, &td);
+		return wgpuTextureCreateView(tex, null);
 	}
 
 	private const string ColoredWgsl = @"
@@ -210,36 +236,36 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 @vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return vec4<f32>(pos, 0.0, 1.0); }
 @fragment fn fs() -> @location(0) vec4<f32> { return vec4<f32>(0.0, 0.0, 0.0, 0.0); }";
 
-	private ShaderModule* Module(string wgsl)
+	private IntPtr Module(string wgsl)
 	{
-		var code = (byte*)SilkMarshal.StringToPtr(wgsl, NativeStringEncoding.UTF8);
-		var w = new ShaderModuleWGSLDescriptor { Chain = new ChainedStruct { SType = SType.ShaderModuleWgslDescriptor }, Code = code };
-		var d = new ShaderModuleDescriptor { NextInChain = (ChainedStruct*)&w };
-		return W.DeviceCreateShaderModule(Dev, ref d);
+		var code = SV(wgsl);
+		var w = new WGPUShaderSourceWGSL { Chain = new WGPUChainedStruct { SType = WGPUSType.ShaderSourceWGSL }, Code = code };
+		var d = new WGPUShaderModuleDescriptor { NextInChain = (WGPUChainedStruct*)&w };
+		return wgpuDeviceCreateShaderModule(Dev, &d);
 	}
 
-	private static StencilFaceState Face(CompareFunction cmp, StencilOperation pass)
-		=> new() { Compare = cmp, FailOp = StencilOperation.Keep, DepthFailOp = StencilOperation.Keep, PassOp = pass };
+	private static WGPUStencilFaceState Face(WGPUCompareFunction cmp, WGPUStencilOperation pass)
+		=> new() { Compare = cmp, FailOp = WGPUStencilOperation.Keep, DepthFailOp = WGPUStencilOperation.Keep, PassOp = pass };
 
 	private void CreatePipelines()
 	{
 		var colored = Module(ClipStructFn + ColoredWgsl);
 		var posOnly = Module(PosOnlyWgsl);
-		var vs = (byte*)SilkMarshal.StringToPtr("vs", NativeStringEncoding.UTF8);
-		var fs = (byte*)SilkMarshal.StringToPtr("fs", NativeStringEncoding.UTF8);
+		var vs = SV("vs");
+		var fs = SV("fs");
 
-		var blend = new BlendState
+		var blend = new WGPUBlendState
 		{
-			Color = new BlendComponent { SrcFactor = BlendFactor.SrcAlpha, DstFactor = BlendFactor.OneMinusSrcAlpha, Operation = BlendOperation.Add },
-			Alpha = new BlendComponent { SrcFactor = BlendFactor.One, DstFactor = BlendFactor.OneMinusSrcAlpha, Operation = BlendOperation.Add },
+			Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.SrcAlpha, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add },
+			Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add },
 		};
 
-		SolidPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(CompareFunction.Always, StencilOperation.Keep), Face(CompareFunction.Always, StencilOperation.Keep), 0x00, 0x00);
-		StencilEvenOdd = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(CompareFunction.Always, StencilOperation.Invert), Face(CompareFunction.Always, StencilOperation.Invert), 0xFF, 0xFF);
-		StencilNonZero = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(CompareFunction.Always, StencilOperation.IncrementWrap), Face(CompareFunction.Always, StencilOperation.DecrementWrap), 0xFF, 0xFF);
-		CoverPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(CompareFunction.NotEqual, StencilOperation.Zero), Face(CompareFunction.NotEqual, StencilOperation.Zero), 0xFF, 0xFF);
-		SolidClipBgl = W.RenderPipelineGetBindGroupLayout(SolidPipe, 0);
-		CoverClipBgl = W.RenderPipelineGetBindGroupLayout(CoverPipe, 0);
+		SolidPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), 0x00, 0x00);
+		StencilEvenOdd = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), 0xFF, 0xFF);
+		StencilNonZero = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.IncrementWrap), Face(WGPUCompareFunction.Always, WGPUStencilOperation.DecrementWrap), 0xFF, 0xFF);
+		CoverPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), 0xFF, 0xFF);
+		SolidClipBgl = wgpuRenderPipelineGetBindGroupLayout(SolidPipe, 0);
+		CoverClipBgl = wgpuRenderPipelineGetBindGroupLayout(CoverPipe, 0);
 		CreateImagePipeline();
 		CreateGradientPipeline(&blend);
 		CreateBlurPipeline();
@@ -274,31 +300,31 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 	private void CreateCompositePipelines()
 	{
 		var module = Module(CompositeWgsl);
-		var vs = (byte*)SilkMarshal.StringToPtr("vs", NativeStringEncoding.UTF8);
-		var fs = (byte*)SilkMarshal.StringToPtr("fs", NativeStringEncoding.UTF8);
-		var keepFace = Face(CompareFunction.Always, StencilOperation.Keep);
-		var ds = new DepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = false, DepthCompare = CompareFunction.Always, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
-		var over = new BlendState { Color = new BlendComponent { SrcFactor = BlendFactor.One, DstFactor = BlendFactor.OneMinusSrcAlpha, Operation = BlendOperation.Add }, Alpha = new BlendComponent { SrcFactor = BlendFactor.One, DstFactor = BlendFactor.OneMinusSrcAlpha, Operation = BlendOperation.Add } };
-		var dstIn = new BlendState { Color = new BlendComponent { SrcFactor = BlendFactor.Zero, DstFactor = BlendFactor.SrcAlpha, Operation = BlendOperation.Add }, Alpha = new BlendComponent { SrcFactor = BlendFactor.Zero, DstFactor = BlendFactor.SrcAlpha, Operation = BlendOperation.Add } };
+		var vs = SV("vs");
+		var fs = SV("fs");
+		var keepFace = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
+		var ds = new WGPUDepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = WGPUCompareFunction.Always, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
+		var over = new WGPUBlendState { Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add }, Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add } };
+		var dstIn = new WGPUBlendState { Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.Zero, DstFactor = WGPUBlendFactor.SrcAlpha, Operation = WGPUBlendOperation.Add }, Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.Zero, DstFactor = WGPUBlendFactor.SrcAlpha, Operation = WGPUBlendOperation.Add } };
 		CompositeSrcOver = MakeComposite(module, vs, fs, &over, &ds);
 		CompositeDstIn = MakeComposite(module, vs, fs, &dstIn, &ds);
-		CompositeBgl = W.RenderPipelineGetBindGroupLayout(CompositeSrcOver, 0);
-		CompositeDstInBgl = W.RenderPipelineGetBindGroupLayout(CompositeDstIn, 0);
+		CompositeBgl = wgpuRenderPipelineGetBindGroupLayout(CompositeSrcOver, 0);
+		CompositeDstInBgl = wgpuRenderPipelineGetBindGroupLayout(CompositeDstIn, 0);
 	}
 
-	private RenderPipeline* MakeComposite(ShaderModule* module, byte* vs, byte* fs, BlendState* blend, DepthStencilState* ds)
+	private IntPtr MakeComposite(IntPtr module, WGPUStringView vs, WGPUStringView fs, WGPUBlendState* blend, WGPUDepthStencilState* ds)
 	{
-		var vsState = new VertexState { Module = module, EntryPoint = vs, BufferCount = 0 };
-		var target = new ColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = ColorWriteMask.All };
-		var fsState = new FragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var pd = new RenderPipelineDescriptor
+		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 0 };
+		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
+		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
+		var pd = new WGPURenderPipelineDescriptor
 		{
 			Vertex = vsState, Fragment = &fsState, DepthStencil = ds,
-			Primitive = new PrimitiveState { Topology = PrimitiveTopology.TriangleList, FrontFace = FrontFace.Ccw, CullMode = CullMode.None },
-			Multisample = new MultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = false },
-			Layout = null,
+			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
+			Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
+			Layout = IntPtr.Zero,
 		};
-		return W.DeviceCreateRenderPipeline(Dev, ref pd);
+		return wgpuDeviceCreateRenderPipeline(Dev, &pd);
 	}
 
 	// One separable-gaussian pass over a texture. A fullscreen triangle (from vertex_index, no vertex buffer)
@@ -331,20 +357,20 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 	private void CreateBlurPipeline()
 	{
 		var module = Module(BlurWgsl);
-		var vs = (byte*)SilkMarshal.StringToPtr("vs", NativeStringEncoding.UTF8);
-		var fs = (byte*)SilkMarshal.StringToPtr("fs", NativeStringEncoding.UTF8);
-		var vsState = new VertexState { Module = module, EntryPoint = vs, BufferCount = 0 };
-		var target = new ColorTargetState { Format = DefaultColorFormat, Blend = null, WriteMask = ColorWriteMask.All };
-		var fsState = new FragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var pd = new RenderPipelineDescriptor
+		var vs = SV("vs");
+		var fs = SV("fs");
+		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 0 };
+		var target = new WGPUColorTargetState { Format = DefaultColorFormat, Blend = null, WriteMask = WGPUColorWriteMask.All };
+		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
+		var pd = new WGPURenderPipelineDescriptor
 		{
 			Vertex = vsState, Fragment = &fsState, DepthStencil = null,
-			Primitive = new PrimitiveState { Topology = PrimitiveTopology.TriangleList, FrontFace = FrontFace.Ccw, CullMode = CullMode.None },
-			Multisample = new MultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = false },
-			Layout = null,
+			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
+			Multisample = new WGPUMultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
+			Layout = IntPtr.Zero,
 		};
-		BlurPipe = W.DeviceCreateRenderPipeline(Dev, ref pd);
-		BlurBgl = W.RenderPipelineGetBindGroupLayout(BlurPipe, 0);
+		BlurPipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
+		BlurBgl = wgpuRenderPipelineGetBindGroupLayout(BlurPipe, 0);
 	}
 
 	// Evaluates a linear/radial gradient per pixel. The quad is positioned in NDC; the fragment uses its
@@ -388,22 +414,22 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
   return vec4<f32>(col.rgb, col.a * clipCov(fc.xy, clip, clipTex, clipSmp));
 }";
 
-	private void CreateGradientPipeline(BlendState* blend)
+	private void CreateGradientPipeline(WGPUBlendState* blend)
 	{
 		var module = Module(ClipStructFn + GradientWgsl);
-		var vs = (byte*)SilkMarshal.StringToPtr("vs", NativeStringEncoding.UTF8);
-		var fs = (byte*)SilkMarshal.StringToPtr("fs", NativeStringEncoding.UTF8);
-		var attr = new VertexAttribute { Format = VertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
-		var vbl = new VertexBufferLayout { ArrayStride = 8, StepMode = VertexStepMode.Vertex, AttributeCount = 1, Attributes = &attr };
-		var vsState = new VertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
-		var target = new ColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = ColorWriteMask.All };
-		var fsState = new FragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var keepFace = Face(CompareFunction.Always, StencilOperation.Keep);
-		var ds = new DepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = false, DepthCompare = CompareFunction.Always, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
-		var pd = new RenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new PrimitiveState { Topology = PrimitiveTopology.TriangleList, StripIndexFormat = IndexFormat.Undefined, FrontFace = FrontFace.Ccw, CullMode = CullMode.None }, Multisample = new MultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = false }, Layout = null };
-		GradientPipe = W.DeviceCreateRenderPipeline(Dev, ref pd);
-		GradBgl = W.RenderPipelineGetBindGroupLayout(GradientPipe, 0);
-		GradClipBgl = W.RenderPipelineGetBindGroupLayout(GradientPipe, 1);
+		var vs = SV("vs");
+		var fs = SV("fs");
+		var attr = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
+		var vbl = new WGPUVertexBufferLayout { ArrayStride = 8, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 1, Attributes = &attr };
+		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
+		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
+		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
+		var keepFace = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
+		var ds = new WGPUDepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = WGPUCompareFunction.Always, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
+		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = IntPtr.Zero };
+		GradientPipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
+		GradBgl = wgpuRenderPipelineGetBindGroupLayout(GradientPipe, 0);
+		GradClipBgl = wgpuRenderPipelineGetBindGroupLayout(GradientPipe, 1);
 	}
 
 	private const string ImageWgsl = @"
@@ -429,56 +455,72 @@ struct U { op: vec4<f32>, tint: vec4<f32> };
 	private void CreateImagePipeline()
 	{
 		var module = Module(ClipStructFn + ImageWgsl);
-		var vs = (byte*)SilkMarshal.StringToPtr("vs", NativeStringEncoding.UTF8);
-		var fs = (byte*)SilkMarshal.StringToPtr("fs", NativeStringEncoding.UTF8);
-		var attrs = stackalloc VertexAttribute[2];
-		attrs[0] = new VertexAttribute { Format = VertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
-		attrs[1] = new VertexAttribute { Format = VertexFormat.Float32x2, Offset = 8, ShaderLocation = 1 };
-		var vbl = new VertexBufferLayout { ArrayStride = 16, StepMode = VertexStepMode.Vertex, AttributeCount = 2, Attributes = attrs };
-		var vsState = new VertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
+		var vs = SV("vs");
+		var fs = SV("fs");
+		var attrs = stackalloc WGPUVertexAttribute[2];
+		attrs[0] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
+		attrs[1] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 8, ShaderLocation = 1 };
+		var vbl = new WGPUVertexBufferLayout { ArrayStride = 16, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 2, Attributes = attrs };
+		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
 		// premultiplied image pixels -> One/OneMinusSrcAlpha
-		var blend = new BlendState { Color = new BlendComponent { SrcFactor = BlendFactor.One, DstFactor = BlendFactor.OneMinusSrcAlpha, Operation = BlendOperation.Add }, Alpha = new BlendComponent { SrcFactor = BlendFactor.One, DstFactor = BlendFactor.OneMinusSrcAlpha, Operation = BlendOperation.Add } };
-		var target = new ColorTargetState { Format = ColorFormat, Blend = &blend, WriteMask = ColorWriteMask.All };
-		var fsState = new FragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var keepFace = Face(CompareFunction.Always, StencilOperation.Keep);
-		var ds = new DepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = false, DepthCompare = CompareFunction.Always, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
-		var pd = new RenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new PrimitiveState { Topology = PrimitiveTopology.TriangleList, StripIndexFormat = IndexFormat.Undefined, FrontFace = FrontFace.Ccw, CullMode = CullMode.None }, Multisample = new MultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = false }, Layout = null };
-		ImagePipe = W.DeviceCreateRenderPipeline(Dev, ref pd);
-		ImgBgl = W.RenderPipelineGetBindGroupLayout(ImagePipe, 0);
-		ImageClipBgl = W.RenderPipelineGetBindGroupLayout(ImagePipe, 1);
-		var sd = new SamplerDescriptor { AddressModeU = AddressMode.ClampToEdge, AddressModeV = AddressMode.ClampToEdge, MagFilter = FilterMode.Linear, MinFilter = FilterMode.Linear, MipmapFilter = MipmapFilterMode.Nearest, MaxAnisotropy = 1 };
-		Smp = W.DeviceCreateSampler(Dev, ref sd);
+		var blend = new WGPUBlendState { Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add }, Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add } };
+		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = &blend, WriteMask = WGPUColorWriteMask.All };
+		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
+		var keepFace = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
+		var ds = new WGPUDepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = WGPUCompareFunction.Always, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
+		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = IntPtr.Zero };
+		ImagePipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
+		ImgBgl = wgpuRenderPipelineGetBindGroupLayout(ImagePipe, 0);
+		ImageClipBgl = wgpuRenderPipelineGetBindGroupLayout(ImagePipe, 1);
+		var sd = new WGPUSamplerDescriptor { AddressModeU = WGPUAddressMode.ClampToEdge, AddressModeV = WGPUAddressMode.ClampToEdge, MagFilter = WGPUFilterMode.Linear, MinFilter = WGPUFilterMode.Linear, MipmapFilter = WGPUMipmapFilterMode.Nearest, MaxAnisotropy = 1 };
+		Smp = wgpuDeviceCreateSampler(Dev, &sd);
 	}
 
-	private RenderPipeline* MakePipe(ShaderModule* module, byte* vs, byte* fs, bool colorWrite, bool colorAttrs, BlendState* blend, StencilFaceState front, StencilFaceState back, uint stencilWrite, uint stencilRead)
+	private IntPtr MakePipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, bool colorWrite, bool colorAttrs, WGPUBlendState* blend, WGPUStencilFaceState front, WGPUStencilFaceState back, uint stencilWrite, uint stencilRead)
 	{
-		var attrs = stackalloc VertexAttribute[2];
-		attrs[0] = new VertexAttribute { Format = VertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
+		var attrs = stackalloc WGPUVertexAttribute[2];
+		attrs[0] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
 		var stride = 8ul;
 		var attrCount = 1u;
 		if (colorAttrs)
 		{
-			attrs[1] = new VertexAttribute { Format = VertexFormat.Float32x4, Offset = 8, ShaderLocation = 1 };
+			attrs[1] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x4, Offset = 8, ShaderLocation = 1 };
 			stride = 24; attrCount = 2;
 		}
-		var vbl = new VertexBufferLayout { ArrayStride = stride, StepMode = VertexStepMode.Vertex, AttributeCount = attrCount, Attributes = attrs };
-		var vsState = new VertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
-		var target = new ColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = colorWrite ? ColorWriteMask.All : 0 };
-		var fsState = new FragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var ds = new DepthStencilState
+		var vbl = new WGPUVertexBufferLayout { ArrayStride = stride, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = attrCount, Attributes = attrs };
+		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
+		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = colorWrite ? WGPUColorWriteMask.All : 0 };
+		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
+		var ds = new WGPUDepthStencilState
 		{
-			Format = DepthStencilFormat, DepthWriteEnabled = false, DepthCompare = CompareFunction.Always,
+			Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = WGPUCompareFunction.Always,
 			StencilFront = front, StencilBack = back, StencilReadMask = stencilRead, StencilWriteMask = stencilWrite,
 		};
-		var pd = new RenderPipelineDescriptor
+		var pd = new WGPURenderPipelineDescriptor
 		{
 			Vertex = vsState, Fragment = &fsState, DepthStencil = &ds,
-			Primitive = new PrimitiveState { Topology = PrimitiveTopology.TriangleList, StripIndexFormat = IndexFormat.Undefined, FrontFace = FrontFace.Ccw, CullMode = CullMode.None },
-			Multisample = new MultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = false },
-			Layout = null,
+			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
+			Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
+			Layout = IntPtr.Zero,
 		};
-		return W.DeviceCreateRenderPipeline(Dev, ref pd);
+		return wgpuDeviceCreateRenderPipeline(Dev, &pd);
 	}
+
+	// Persistent UTF-8 for a WGPUStringView (WGSL/entry points; created once at pipeline init, intentionally not freed).
+	private static WGPUStringView SV(string s)
+		=> new() { Data = Marshal.StringToCoTaskMemUTF8(s), Length = (nuint)System.Text.Encoding.UTF8.GetByteCount(s) };
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnAdapter(WGPURequestAdapterStatus status, IntPtr adapter, WGPUStringView message, IntPtr u1, IntPtr u2)
+		=> ((IntPtr[])GCHandle.FromIntPtr(u1).Target!)[0] = adapter;
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnDevice(WGPURequestDeviceStatus status, IntPtr device, WGPUStringView message, IntPtr u1, IntPtr u2)
+		=> ((IntPtr[])GCHandle.FromIntPtr(u1).Target!)[0] = device;
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnMap(WGPUMapAsyncStatus status, WGPUStringView message, IntPtr u1, IntPtr u2)
+		=> ((bool[])GCHandle.FromIntPtr(u1).Target!)[0] = true;
 
 	public void Dispose() { }
 }
@@ -490,7 +532,7 @@ struct U { op: vec4<f32>, tint: vec4<f32> };
 public sealed unsafe class WebGpuTexturePool
 {
 	private readonly WebGpuDevice _d;
-	private sealed class Entry { public Texture* Tex; public TextureView* View; public int W, H, Samples; public TextureFormat Fmt; public TextureUsage Usage; public bool InUse; }
+	private sealed class Entry { public IntPtr Tex; public IntPtr View; public int W, H, Samples; public WGPUTextureFormat Fmt; public WGPUTextureUsage Usage; public bool InUse; }
 	private readonly System.Collections.Generic.List<Entry> _entries = new();
 	// The pool is shared per-device, so an off-loop render (e.g. RenderTargetBitmap) can hit it concurrently
 	// with the on-window render loop. Guard mutation/enumeration so a concurrent Add can't invalidate Rent's walk.
@@ -500,7 +542,7 @@ public sealed unsafe class WebGpuTexturePool
 
 	public void BeginFrame() { lock (_gate) { foreach (var e in _entries) { e.InUse = false; } } }
 
-	public TextureView* Rent(int w, int h, int samples, TextureUsage usage, TextureFormat fmt)
+	public IntPtr Rent(int w, int h, int samples, WGPUTextureUsage usage, WGPUTextureFormat fmt)
 	{
 		lock (_gate)
 		{
@@ -508,9 +550,9 @@ public sealed unsafe class WebGpuTexturePool
 			{
 				if (!e.InUse && e.W == w && e.H == h && e.Samples == samples && e.Fmt == fmt && e.Usage == usage) { e.InUse = true; return e.View; }
 			}
-			var td = new TextureDescriptor { Size = new Extent3D((uint)w, (uint)h, 1), Format = fmt, MipLevelCount = 1, SampleCount = (uint)samples, Dimension = TextureDimension.Dimension2D, Usage = usage };
-			var tex = _d.W.DeviceCreateTexture(_d.Dev, ref td);
-			var view = _d.W.TextureCreateView(tex, null);
+			var td = new WGPUTextureDescriptor { Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 }, Format = fmt, MipLevelCount = 1, SampleCount = (uint)samples, Dimension = WGPUTextureDimension._2D, Usage = usage };
+			var tex = wgpuDeviceCreateTexture(_d.Dev, &td);
+			var view = wgpuTextureCreateView(tex, null);
 			_entries.Add(new Entry { Tex = tex, View = view, W = w, H = h, Samples = samples, Fmt = fmt, Usage = usage, InUse = true });
 			return view;
 		}
@@ -523,7 +565,7 @@ public sealed unsafe class WebGpuTexturePool
 public sealed unsafe class WebGpuBufferPool
 {
 	private readonly WebGpuDevice _d;
-	private sealed class Entry { public Silk.NET.WebGPU.Buffer* Buf; public int Cap; public BufferUsage Usage; public bool InUse; }
+	private sealed class Entry { public IntPtr Buf; public int Cap; public WGPUBufferUsage Usage; public bool InUse; }
 	private readonly System.Collections.Generic.List<Entry> _entries = new();
 	// Shared per-device; guard against concurrent Add invalidating Rent's enumeration (see WebGpuTexturePool).
 	private readonly object _gate = new();
@@ -532,7 +574,7 @@ public sealed unsafe class WebGpuBufferPool
 
 	public void BeginFrame() { lock (_gate) { foreach (var e in _entries) { e.InUse = false; } } }
 
-	public Silk.NET.WebGPU.Buffer* Rent(int byteSize, BufferUsage usage)
+	public IntPtr Rent(int byteSize, WGPUBufferUsage usage)
 	{
 		lock (_gate)
 		{
@@ -541,8 +583,8 @@ public sealed unsafe class WebGpuBufferPool
 				if (!e.InUse && e.Usage == usage && e.Cap >= byteSize) { e.InUse = true; return e.Buf; }
 			}
 			int cap = Math.Max(byteSize, 256);
-			var bd = new BufferDescriptor { Size = (nuint)cap, Usage = usage };
-			var buf = _d.W.DeviceCreateBuffer(_d.Dev, ref bd);
+			var bd = new WGPUBufferDescriptor { Size = (nuint)cap, Usage = usage };
+			var buf = wgpuDeviceCreateBuffer(_d.Dev, &bd);
 			_entries.Add(new Entry { Buf = buf, Cap = cap, Usage = usage, InUse = true });
 			return buf;
 		}
@@ -551,12 +593,12 @@ public sealed unsafe class WebGpuBufferPool
 
 public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 {
-	public Texture* Tex;
-	public TextureView* View;              // single-sample resolve target (offscreen readback / swapchain image)
-	public Texture* MsaaColorTex;
-	public TextureView* MsaaColorView;     // multisampled color the pass renders into, resolved into View
-	public Texture* DepthTex;
-	public TextureView* DepthView;         // multisampled depth/stencil (clip mask + stencil-then-cover)
+	public IntPtr Tex;
+	public IntPtr View;              // single-sample resolve target (offscreen readback / swapchain image)
+	public IntPtr MsaaColorTex;
+	public IntPtr MsaaColorView;     // multisampled color the pass renders into, resolved into View
+	public IntPtr DepthTex;
+	public IntPtr DepthView;         // multisampled depth/stencil (clip mask + stencil-then-cover)
 	public int Width { get; }
 	public int Height { get; }
 	public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
@@ -565,15 +607,15 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height)
 	{
 		Width = width; Height = height;
-		var td = new TextureDescriptor
+		var td = new WGPUTextureDescriptor
 		{
-			Size = new Extent3D((uint)width, (uint)height, 1), Format = device.ColorFormat,
-			MipLevelCount = 1, SampleCount = 1, Dimension = TextureDimension.Dimension2D,
+			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 }, Format = device.ColorFormat,
+			MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D,
 			// TextureBinding so a resolved surface can be sampled (e.g. shadow coverage feeding the blur pass).
-			Usage = TextureUsage.RenderAttachment | TextureUsage.CopySrc | TextureUsage.TextureBinding,
+			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.CopySrc | WGPUTextureUsage.TextureBinding,
 		};
-		Tex = device.W.DeviceCreateTexture(device.Dev, ref td);
-		View = device.W.TextureCreateView(Tex, null);
+		Tex = wgpuDeviceCreateTexture(device.Dev, &td);
+		View = wgpuTextureCreateView(Tex, null);
 		CreateMultisampledTargets(device, width, height);
 	}
 
@@ -590,29 +632,29 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, WebGpuTexturePool pool)
 	{
 		Width = width; Height = height;
-		MsaaColorView = pool.Rent(width, height, (int)WebGpuDevice.MsaaSamples, TextureUsage.RenderAttachment, device.ColorFormat);
-		DepthView = pool.Rent(width, height, (int)WebGpuDevice.MsaaSamples, TextureUsage.RenderAttachment, WebGpuDevice.DepthStencilFormat);
-		View = pool.Rent(width, height, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, device.ColorFormat);
+		MsaaColorView = pool.Rent(width, height, (int)WebGpuDevice.MsaaSamples, WGPUTextureUsage.RenderAttachment, device.ColorFormat);
+		DepthView = pool.Rent(width, height, (int)WebGpuDevice.MsaaSamples, WGPUTextureUsage.RenderAttachment, WebGpuDevice.DepthStencilFormat);
+		View = pool.Rent(width, height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, device.ColorFormat);
 	}
 
 	private void CreateMultisampledTargets(WebGpuDevice device, int width, int height)
 	{
-		var cd = new TextureDescriptor
+		var cd = new WGPUTextureDescriptor
 		{
-			Size = new Extent3D((uint)width, (uint)height, 1), Format = device.ColorFormat,
-			MipLevelCount = 1, SampleCount = WebGpuDevice.MsaaSamples, Dimension = TextureDimension.Dimension2D,
-			Usage = TextureUsage.RenderAttachment,
+			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 }, Format = device.ColorFormat,
+			MipLevelCount = 1, SampleCount = WebGpuDevice.MsaaSamples, Dimension = WGPUTextureDimension._2D,
+			Usage = WGPUTextureUsage.RenderAttachment,
 		};
-		MsaaColorTex = device.W.DeviceCreateTexture(device.Dev, ref cd);
-		MsaaColorView = device.W.TextureCreateView(MsaaColorTex, null);
+		MsaaColorTex = wgpuDeviceCreateTexture(device.Dev, &cd);
+		MsaaColorView = wgpuTextureCreateView(MsaaColorTex, null);
 
-		var dd = new TextureDescriptor
+		var dd = new WGPUTextureDescriptor
 		{
-			Size = new Extent3D((uint)width, (uint)height, 1), Format = WebGpuDevice.DepthStencilFormat,
-			MipLevelCount = 1, SampleCount = WebGpuDevice.MsaaSamples, Dimension = TextureDimension.Dimension2D, Usage = TextureUsage.RenderAttachment,
+			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 }, Format = WebGpuDevice.DepthStencilFormat,
+			MipLevelCount = 1, SampleCount = WebGpuDevice.MsaaSamples, Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.RenderAttachment,
 		};
-		DepthTex = device.W.DeviceCreateTexture(device.Dev, ref dd);
-		DepthView = device.W.TextureCreateView(DepthTex, null);
+		DepthTex = wgpuDeviceCreateTexture(device.Dev, &dd);
+		DepthView = wgpuTextureCreateView(DepthTex, null);
 	}
 }
 
@@ -655,7 +697,7 @@ internal sealed class PathFill : WebGpuCommand
 internal sealed unsafe class ImageCmd : WebGpuCommand
 {
 	public Vector2 P0, P1, P2, P3;
-	public TextureView* View;   // the pre-uploaded WebGpuImageTexture view (no per-frame upload)
+	public IntPtr View;   // the pre-uploaded WebGpuImageTexture view (no per-frame upload)
 	public int W, H;
 	public float Opacity;
 	public float U0, V0, U1 = 1f, V1 = 1f;   // source UV sub-rect (whole texture by default)
@@ -724,7 +766,7 @@ internal sealed unsafe class WebGpuGeometryCache
 {
 	public List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> Ops;
 	public OwnedResources Owned;
-	public RenderBundle* Bundle;
+	public IntPtr Bundle;
 	public Matrix4x4 Transform;
 	public ClipData Clip;
 	public bool Used;
@@ -735,7 +777,7 @@ internal sealed unsafe class WebGpuGeometryCache
 public sealed class WebGpuShader : IShader
 {
 	public bool Radial;
-	public Vector2 P0;          // start (linear) / center (radial), in gradient-local space
+	public Vector2 P0;          // start (linear) / center (radial), &gradient-local space
 	public Vector2 P1;          // end (linear) / gradient origin (radial)
 	public float RadiusX, RadiusY;
 	public WColor[] Colors;
@@ -1209,51 +1251,51 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private WColor? _presentClear;
 	public WebGpuPresentSession(WebGpuDevice d, WebGpuRenderSurface s) { _d = d; _s = s; }
 
-	private bool SetScissor(RenderPassEncoder* pass, Vector4 clip)
+	private bool SetScissor(IntPtr pass, Vector4 clip)
 	{
 		int x = (int)MathF.Max(0, MathF.Floor(clip.X)); int y = (int)MathF.Max(0, MathF.Floor(clip.Y));
 		int r = (int)MathF.Min(_s.Width, MathF.Ceiling(clip.Z)); int b = (int)MathF.Min(_s.Height, MathF.Ceiling(clip.W));
 		int w = r - x, h = b - y; if (w <= 0 || h <= 0) { return false; }
-		_d.W.RenderPassEncoderSetScissorRect(pass, (uint)x, (uint)y, (uint)w, (uint)h); return true;
+		wgpuRenderPassEncoderSetScissorRect(pass, (uint)x, (uint)y, (uint)w, (uint)h); return true;
 	}
 	private Vector2 Ndc(Vector2 dev) => new(2f * dev.X / _s.Width - 1f, 1f - 2f * dev.Y / _s.Height);
 
-	private Silk.NET.WebGPU.Buffer* MakeBuffer(float[] data)
+	private IntPtr MakeBuffer(float[] data)
 	{
 		var size = data.Length * sizeof(float);
-		var buf = _d.BufferPool.Rent(size, BufferUsage.Vertex | BufferUsage.CopyDst);
-		fixed (float* p = data) { _d.W.QueueWriteBuffer(_d.Q, buf, 0, p, (nuint)size); }
+		var buf = _d.BufferPool.Rent(size, WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst);
+		fixed (float* p = data) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, (nuint)size); }
 		return buf;
 	}
 
-	private Silk.NET.WebGPU.Buffer* MakeUniform(int byteSize)
-		=> _d.BufferPool.Rent(byteSize, BufferUsage.Uniform | BufferUsage.CopyDst);
+	private IntPtr MakeUniform(int byteSize)
+		=> _d.BufferPool.Rent(byteSize, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
 
 	// Resource allocation that is pooled (owned == null) for per-frame commands, or persistent (added to `owned`
 	// for later release) for a cached recording's geometry that must survive across frames.
-	private Silk.NET.WebGPU.Buffer* Vbuf(float[] data, OwnedResources owned)
+	private IntPtr Vbuf(float[] data, OwnedResources owned)
 	{
 		if (owned is null) { return MakeBuffer(data); }
 		int size = data.Length * sizeof(float);
-		var bd = new BufferDescriptor { Size = (nuint)size, Usage = BufferUsage.Vertex | BufferUsage.CopyDst };
-		var buf = _d.W.DeviceCreateBuffer(_d.Dev, ref bd);
-		fixed (float* p = data) { _d.W.QueueWriteBuffer(_d.Q, buf, 0, p, (nuint)size); }
+		var bd = new WGPUBufferDescriptor { Size = (nuint)size, Usage = WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst };
+		var buf = wgpuDeviceCreateBuffer(_d.Dev, &bd);
+		fixed (float* p = data) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, (nuint)size); }
 		owned.Buffers.Add((nint)buf);
 		return buf;
 	}
 
-	private Silk.NET.WebGPU.Buffer* Ubuf(int size, OwnedResources owned)
+	private IntPtr Ubuf(int size, OwnedResources owned)
 	{
 		if (owned is null) { return MakeUniform(size); }
-		var bd = new BufferDescriptor { Size = (nuint)size, Usage = BufferUsage.Uniform | BufferUsage.CopyDst };
-		var buf = _d.W.DeviceCreateBuffer(_d.Dev, ref bd);
+		var bd = new WGPUBufferDescriptor { Size = (nuint)size, Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
+		var buf = wgpuDeviceCreateBuffer(_d.Dev, &bd);
 		owned.Buffers.Add((nint)buf);
 		return buf;
 	}
 
-	private BindGroup* Bg(ref BindGroupDescriptor bgd, OwnedResources owned)
+	private IntPtr Bg(ref WGPUBindGroupDescriptor bgd, OwnedResources owned)
 	{
-		var bg = _d.W.DeviceCreateBindGroup(_d.Dev, ref bgd);
+		var bg = wgpuDeviceCreateBindGroup(_d.Dev, (WGPUBindGroupDescriptor*)Unsafe.AsPointer(ref bgd));
 		if (owned is null) { _d.TrackBg(bg); } else { owned.BindGroups.Add((nint)bg); }
 		return bg;
 	}
@@ -1263,7 +1305,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	// The clip bind group for a command: the ClipU uniform (rect, radii, flags, surface size), plus a coverage
 	// texture (the path-clip mask, or the device dummy when there's no path clip) and a sampler.
-	private BindGroup* MakeClipBg(BindGroupLayout* bgl, ClipData cd, OwnedResources owned = null)
+	private IntPtr MakeClipBg(IntPtr bgl, ClipData cd, OwnedResources owned = null)
 	{
 		var cu = new float[16];
 		cu[0] = cd.Rect.X; cu[1] = cd.Rect.Y; cu[2] = cd.Rect.Z; cu[3] = cd.Rect.W;
@@ -1271,21 +1313,21 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		cu[8] = cd.HasRound ? 1f : 0f; cu[9] = cd.PathFan != null ? 1f : 0f;
 		cu[12] = _s.Width; cu[13] = _s.Height;
 		var buf = Ubuf(64, owned);
-		fixed (float* p = cu) { _d.W.QueueWriteBuffer(_d.Q, buf, 0, p, 64); }
+		fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, 64); }
 		// Cached recordings never have a path clip (excluded by IsCacheable), so covView is always the persistent
 		// DummyTex there — no dangling reference to a per-frame pooled coverage texture.
 		var covView = cd.PathFan != null ? PathCoverage(cd.PathFan, cd.PathEvenOdd) : _d.DummyTex;
-		var e = stackalloc BindGroupEntry[3];
-		e[0] = new BindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = 64 };
-		e[1] = new BindGroupEntry { Binding = 1, TextureView = covView };
-		e[2] = new BindGroupEntry { Binding = 2, Sampler = _d.Smp };
-		var bgd = new BindGroupDescriptor { Layout = bgl, EntryCount = 3, Entries = e };
+		var e = stackalloc WGPUBindGroupEntry[3];
+		e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = 64 };
+		e[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = covView };
+		e[2] = new WGPUBindGroupEntry { Binding = 2, Sampler = _d.Smp };
+		var bgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 3, Entries = e };
 		return Bg(ref bgd, owned);
 	}
 
-	private TextureView* PathCoverage(float[] fan, bool evenOdd)
+	private IntPtr PathCoverage(float[] fan, bool evenOdd)
 	{
-		if (_coverageCache.TryGetValue(fan, out var cached)) { return (TextureView*)cached; }
+		if (_coverageCache.TryGetValue(fan, out var cached)) { return (IntPtr)cached; }
 		var view = RenderPathCoverage(fan, evenOdd);
 		_coverageCache[fan] = (nint)view;
 		return view;
@@ -1293,9 +1335,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	// Fills the clip path (stencil-then-cover, white) into a full-size coverage surface; its resolved alpha is
 	// the per-fragment clip mask sampled by clipCov.
-	private TextureView* RenderPathCoverage(float[] fan, bool evenOdd)
+	private IntPtr RenderPathCoverage(float[] fan, bool evenOdd)
 	{
-		var W = _d.W;
 		var cov = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
 		var fanNdc = new float[fan.Length];
 		for (int i = 0; i < fan.Length; i += 2) { var n = Ndc(new Vector2(fan[i], fan[i + 1])); fanNdc[i] = n.X; fanNdc[i + 1] = n.Y; }
@@ -1306,31 +1347,30 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var coverBuf = MakeBuffer(cq.ToArray());
 		var noClip = MakeClipBg(_d.CoverClipBgl, default);
 
-		var enc = W.DeviceCreateCommandEncoder(_d.Dev, null);
-		var ca = new RenderPassColorAttachment { View = cov.MsaaColorView, ResolveTarget = cov.View, LoadOp = LoadOp.Clear, StoreOp = StoreOp.Discard, ClearValue = default };
-		var dsa = new RenderPassDepthStencilAttachment { View = cov.DepthView, DepthLoadOp = LoadOp.Clear, DepthStoreOp = StoreOp.Discard, DepthClearValue = 1f, StencilLoadOp = LoadOp.Clear, StencilStoreOp = StoreOp.Discard, StencilClearValue = 0 };
-		var rp = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
-		var pass = W.CommandEncoderBeginRenderPass(enc, ref rp);
-		W.RenderPassEncoderSetPipeline(pass, evenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
-		W.RenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanNdc.Length * sizeof(float)));
-		W.RenderPassEncoderDraw(pass, (uint)(fanNdc.Length / 2), 1, 0, 0);
-		W.RenderPassEncoderSetPipeline(pass, _d.CoverPipe);
-		W.RenderPassEncoderSetBindGroup(pass, 0, noClip, 0, (uint*)null);
-		W.RenderPassEncoderSetStencilReference(pass, 0);
-		W.RenderPassEncoderSetVertexBuffer(pass, 0, coverBuf, 0, (nuint)(cq.Count * sizeof(float)));
-		W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
-		W.RenderPassEncoderEnd(pass);
-		var cb = W.CommandEncoderFinish(enc, null);
-		W.QueueSubmit(_d.Q, 1, &cb);
+		var enc = wgpuDeviceCreateCommandEncoder(_d.Dev, null);
+		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = cov.MsaaColorView, ResolveTarget = cov.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Discard, ClearValue = default };
+		var dsa = new WGPURenderPassDepthStencilAttachment { View = cov.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 1f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
+		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
+		var pass = wgpuCommandEncoderBeginRenderPass(enc, &rp);
+		wgpuRenderPassEncoderSetPipeline(pass, evenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
+		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanNdc.Length * sizeof(float)));
+		wgpuRenderPassEncoderDraw(pass, (uint)(fanNdc.Length / 2), 1, 0, 0);
+		wgpuRenderPassEncoderSetPipeline(pass, _d.CoverPipe);
+		wgpuRenderPassEncoderSetBindGroup(pass, 0, noClip, 0, (uint*)null);
+		wgpuRenderPassEncoderSetStencilReference(pass, 0);
+		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, coverBuf, 0, (nuint)(cq.Count * sizeof(float)));
+		wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
+		wgpuRenderPassEncoderEnd(pass);
+		var cb = wgpuCommandEncoderFinish(enc, null);
+		wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 		return cov.View;
 	}
 
 	// Fills the shadow silhouette into an offscreen coverage surface (stencil-then-cover, white), then blurs it
 	// separably (H then V). Returns the blurred coverage texture + its device-space placement. NOTE: the per-
 	// shadow textures are not pooled/freed yet — fine for offscreen/one-shot; the on-window path needs cleanup.
-	private TextureView* RenderShadow(ShadowCmd sh, out Vector2 origin, out Vector2 size)
+	private IntPtr RenderShadow(ShadowCmd sh, out Vector2 origin, out Vector2 size)
 	{
-		var W = _d.W;
 		float pad = MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f;
 		origin = new Vector2(sh.BbMin.X - pad, sh.BbMin.Y - pad);
 		int sw = Math.Clamp((int)MathF.Ceiling(sh.BbMax.X - sh.BbMin.X + 2 * pad), 1, 4096);
@@ -1352,54 +1392,53 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var coverBuf = MakeBuffer(cq.ToArray());
 		var noClip = MakeClipBg(_d.CoverClipBgl, default);
 
-		var enc = W.DeviceCreateCommandEncoder(_d.Dev, null);
-		var ca = new RenderPassColorAttachment { View = cov.MsaaColorView, ResolveTarget = cov.View, LoadOp = LoadOp.Clear, StoreOp = StoreOp.Discard, ClearValue = default };
-		var dsa = new RenderPassDepthStencilAttachment { View = cov.DepthView, DepthLoadOp = LoadOp.Clear, DepthStoreOp = StoreOp.Discard, DepthClearValue = 1f, StencilLoadOp = LoadOp.Clear, StencilStoreOp = StoreOp.Discard, StencilClearValue = 0 };
-		var rp = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
-		var pass = W.CommandEncoderBeginRenderPass(enc, ref rp);
-		W.RenderPassEncoderSetPipeline(pass, sh.EvenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
-		W.RenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanNdc.Length * sizeof(float)));
-		W.RenderPassEncoderDraw(pass, (uint)(fanNdc.Length / 2), 1, 0, 0);
-		W.RenderPassEncoderSetPipeline(pass, _d.CoverPipe);
-		W.RenderPassEncoderSetBindGroup(pass, 0, noClip, 0, (uint*)null);
-		W.RenderPassEncoderSetStencilReference(pass, 0);
-		W.RenderPassEncoderSetVertexBuffer(pass, 0, coverBuf, 0, (nuint)(cq.Count * sizeof(float)));
-		W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
-		W.RenderPassEncoderEnd(pass);
-		var cb = W.CommandEncoderFinish(enc, null);
-		W.QueueSubmit(_d.Q, 1, &cb);
+		var enc = wgpuDeviceCreateCommandEncoder(_d.Dev, null);
+		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = cov.MsaaColorView, ResolveTarget = cov.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Discard, ClearValue = default };
+		var dsa = new WGPURenderPassDepthStencilAttachment { View = cov.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 1f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
+		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
+		var pass = wgpuCommandEncoderBeginRenderPass(enc, &rp);
+		wgpuRenderPassEncoderSetPipeline(pass, sh.EvenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
+		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanNdc.Length * sizeof(float)));
+		wgpuRenderPassEncoderDraw(pass, (uint)(fanNdc.Length / 2), 1, 0, 0);
+		wgpuRenderPassEncoderSetPipeline(pass, _d.CoverPipe);
+		wgpuRenderPassEncoderSetBindGroup(pass, 0, noClip, 0, (uint*)null);
+		wgpuRenderPassEncoderSetStencilReference(pass, 0);
+		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, coverBuf, 0, (nuint)(cq.Count * sizeof(float)));
+		wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
+		wgpuRenderPassEncoderEnd(pass);
+		var cb = wgpuCommandEncoderFinish(enc, null);
+		wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 
 		// 2) separable blur: coverage -> temp (H) -> blur (V).
-		var tempView = _d.Pool.Rent(sw, sh2, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+		var tempView = _d.Pool.Rent(sw, sh2, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 		BlurPass(cov.View, tempView, new Vector2(1f, 0f), new Vector2(1f / sw, 0f), sh.SigmaX);
-		var blurView = _d.Pool.Rent(sw, sh2, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+		var blurView = _d.Pool.Rent(sw, sh2, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 		BlurPass(tempView, blurView, new Vector2(0f, 1f), new Vector2(0f, 1f / sh2), sh.SigmaY);
 		return blurView;
 	}
 
-	private void BlurPass(TextureView* src, TextureView* dst, Vector2 dir, Vector2 texel, float sigma)
+	private void BlurPass(IntPtr src, IntPtr dst, Vector2 dir, Vector2 texel, float sigma)
 	{
-		var W = _d.W;
 		var bu = new float[8]; bu[0] = dir.X; bu[1] = dir.Y; bu[2] = texel.X; bu[3] = texel.Y; bu[4] = sigma;
 		var ubuf = MakeUniform((int)32);
-		fixed (float* p = bu) { W.QueueWriteBuffer(_d.Q, ubuf, 0, p, 32); }
-		var entries = stackalloc BindGroupEntry[3];
-		entries[0] = new BindGroupEntry { Binding = 0, TextureView = src };
-		entries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
-		entries[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
-		var bgd = new BindGroupDescriptor { Layout = _d.BlurBgl, EntryCount = 3, Entries = entries };
-		var bg = _d.TrackBg(W.DeviceCreateBindGroup(_d.Dev, ref bgd));
+		fixed (float* p = bu) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, 32); }
+		var entries = stackalloc WGPUBindGroupEntry[3];
+		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = src };
+		entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+		entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
+		var bgd = new WGPUBindGroupDescriptor { Layout = _d.BlurBgl, EntryCount = 3, Entries = entries };
+		var bg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
 
-		var enc = W.DeviceCreateCommandEncoder(_d.Dev, null);
-		var ca = new RenderPassColorAttachment { View = dst, LoadOp = LoadOp.Clear, StoreOp = StoreOp.Store, ClearValue = default };
-		var rp = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca };
-		var pass = W.CommandEncoderBeginRenderPass(enc, ref rp);
-		W.RenderPassEncoderSetPipeline(pass, _d.BlurPipe);
-		W.RenderPassEncoderSetBindGroup(pass, 0, bg, 0, (uint*)null);
-		W.RenderPassEncoderDraw(pass, 3, 1, 0, 0);
-		W.RenderPassEncoderEnd(pass);
-		var cb = W.CommandEncoderFinish(enc, null);
-		W.QueueSubmit(_d.Q, 1, &cb);
+		var enc = wgpuDeviceCreateCommandEncoder(_d.Dev, null);
+		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = dst, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
+		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca };
+		var pass = wgpuCommandEncoderBeginRenderPass(enc, &rp);
+		wgpuRenderPassEncoderSetPipeline(pass, _d.BlurPipe);
+		wgpuRenderPassEncoderSetBindGroup(pass, 0, bg, 0, (uint*)null);
+		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+		wgpuRenderPassEncoderEnd(pass);
+		var cb = wgpuCommandEncoderFinish(enc, null);
+		wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 	}
 
 	public void Replay(IRenderData data)
@@ -1431,62 +1470,60 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// re-issuing every SetPipeline/SetBindGroup/SetVertexBuffer/Draw per frame). Bundles can't set scissor or the
 	// stencil reference — clipping is per-fragment (clipCov) and the cover pass uses the default stencil ref (0),
 	// so both are safe to omit. The descriptor matches the MSAA main/layer pass formats.
-	private RenderBundle* BuildBundle(List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops)
+	private IntPtr BuildBundle(List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops)
 	{
-		var W = _d.W;
 		var colorFmt = _d.ColorFormat;
-		var desc = new RenderBundleEncoderDescriptor
+		var desc = new WGPURenderBundleEncoderDescriptor
 		{
 			ColorFormatCount = 1,
 			ColorFormats = &colorFmt,
 			DepthStencilFormat = WebGpuDevice.DepthStencilFormat,
 			SampleCount = WebGpuDevice.MsaaSamples,
 		};
-		var enc = W.DeviceCreateRenderBundleEncoder(_d.Dev, ref desc);
+		var enc = wgpuDeviceCreateRenderBundleEncoder(_d.Dev, &desc);
 		foreach (var (kind, b0, u0, b1, flag, clip, clipBg) in ops)
 		{
 			switch (kind)
 			{
 				case 0:
-					W.RenderBundleEncoderSetPipeline(enc, _d.SolidPipe);
-					W.RenderBundleEncoderSetBindGroup(enc, 0, (BindGroup*)clipBg, 0, (uint*)null);
-					W.RenderBundleEncoderSetVertexBuffer(enc, 0, (Silk.NET.WebGPU.Buffer*)b0, 0, (nuint)(u0 * 6 * sizeof(float)));
-					W.RenderBundleEncoderDraw(enc, u0, 1, 0, 0);
+					wgpuRenderBundleEncoderSetPipeline(enc, _d.SolidPipe);
+					wgpuRenderBundleEncoderSetBindGroup(enc, 0, (IntPtr)clipBg, 0, (uint*)null);
+					wgpuRenderBundleEncoderSetVertexBuffer(enc, 0, (IntPtr)b0, 0, (nuint)(u0 * 6 * sizeof(float)));
+					wgpuRenderBundleEncoderDraw(enc, u0, 1, 0, 0);
 					break;
 				case 1:
-					W.RenderBundleEncoderSetPipeline(enc, flag ? _d.StencilEvenOdd : _d.StencilNonZero);
-					W.RenderBundleEncoderSetVertexBuffer(enc, 0, (Silk.NET.WebGPU.Buffer*)b0, 0, (nuint)(u0 * 2 * sizeof(float)));
-					W.RenderBundleEncoderDraw(enc, u0, 1, 0, 0);
-					W.RenderBundleEncoderSetPipeline(enc, _d.CoverPipe);
-					W.RenderBundleEncoderSetBindGroup(enc, 0, (BindGroup*)clipBg, 0, (uint*)null);
-					W.RenderBundleEncoderSetVertexBuffer(enc, 0, (Silk.NET.WebGPU.Buffer*)b1, 0, (nuint)(36 * sizeof(float)));
-					W.RenderBundleEncoderDraw(enc, 6, 1, 0, 0);
+					wgpuRenderBundleEncoderSetPipeline(enc, flag ? _d.StencilEvenOdd : _d.StencilNonZero);
+					wgpuRenderBundleEncoderSetVertexBuffer(enc, 0, (IntPtr)b0, 0, (nuint)(u0 * 2 * sizeof(float)));
+					wgpuRenderBundleEncoderDraw(enc, u0, 1, 0, 0);
+					wgpuRenderBundleEncoderSetPipeline(enc, _d.CoverPipe);
+					wgpuRenderBundleEncoderSetBindGroup(enc, 0, (IntPtr)clipBg, 0, (uint*)null);
+					wgpuRenderBundleEncoderSetVertexBuffer(enc, 0, (IntPtr)b1, 0, (nuint)(36 * sizeof(float)));
+					wgpuRenderBundleEncoderDraw(enc, 6, 1, 0, 0);
 					break;
 				case 2:
-					W.RenderBundleEncoderSetPipeline(enc, _d.ImagePipe);
-					W.RenderBundleEncoderSetBindGroup(enc, 0, (BindGroup*)b0, 0, (uint*)null);
-					W.RenderBundleEncoderSetBindGroup(enc, 1, (BindGroup*)clipBg, 0, (uint*)null);
-					W.RenderBundleEncoderSetVertexBuffer(enc, 0, (Silk.NET.WebGPU.Buffer*)b1, 0, (nuint)(24 * sizeof(float)));
-					W.RenderBundleEncoderDraw(enc, 6, 1, 0, 0);
+					wgpuRenderBundleEncoderSetPipeline(enc, _d.ImagePipe);
+					wgpuRenderBundleEncoderSetBindGroup(enc, 0, (IntPtr)b0, 0, (uint*)null);
+					wgpuRenderBundleEncoderSetBindGroup(enc, 1, (IntPtr)clipBg, 0, (uint*)null);
+					wgpuRenderBundleEncoderSetVertexBuffer(enc, 0, (IntPtr)b1, 0, (nuint)(24 * sizeof(float)));
+					wgpuRenderBundleEncoderDraw(enc, 6, 1, 0, 0);
 					break;
 				case 3:
-					W.RenderBundleEncoderSetPipeline(enc, _d.GradientPipe);
-					W.RenderBundleEncoderSetBindGroup(enc, 0, (BindGroup*)b0, 0, (uint*)null);
-					W.RenderBundleEncoderSetBindGroup(enc, 1, (BindGroup*)clipBg, 0, (uint*)null);
-					W.RenderBundleEncoderSetVertexBuffer(enc, 0, (Silk.NET.WebGPU.Buffer*)b1, 0, (nuint)(12 * sizeof(float)));
-					W.RenderBundleEncoderDraw(enc, 6, 1, 0, 0);
+					wgpuRenderBundleEncoderSetPipeline(enc, _d.GradientPipe);
+					wgpuRenderBundleEncoderSetBindGroup(enc, 0, (IntPtr)b0, 0, (uint*)null);
+					wgpuRenderBundleEncoderSetBindGroup(enc, 1, (IntPtr)clipBg, 0, (uint*)null);
+					wgpuRenderBundleEncoderSetVertexBuffer(enc, 0, (IntPtr)b1, 0, (nuint)(12 * sizeof(float)));
+					wgpuRenderBundleEncoderDraw(enc, 6, 1, 0, 0);
 					break;
 			}
 		}
-		var bdesc = new RenderBundleDescriptor();
-		return W.RenderBundleEncoderFinish(enc, ref bdesc);
+		var bdesc = new WGPURenderBundleDescriptor();
+		return wgpuRenderBundleEncoderFinish(enc, &bdesc);
 	}
 
 	// Builds the draw-op(s) for a simple primitive (rect/path/image/gradient) into `ops`, allocating GPU resources
 	// pooled (owned == null, per-frame) or persistent (owned != null, a cached recording's geometry).
 	private void BuildSimpleOp(WebGpuCommand cmd, List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops, OwnedResources owned)
 	{
-		var W = _d.W;
 		switch (cmd)
 		{
 			case RectCommand rc:
@@ -1518,12 +1555,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				var op = stackalloc float[8];
 				op[0] = im.Opacity; op[1] = im.TintMode; op[2] = 0; op[3] = 0;
 				op[4] = im.Tint.X; op[5] = im.Tint.Y; op[6] = im.Tint.Z; op[7] = im.Tint.W;
-				W.QueueWriteBuffer(_d.Q, ubuf, 0, op, 32);
-				var entries = stackalloc BindGroupEntry[3];
-				entries[0] = new BindGroupEntry { Binding = 0, TextureView = view };
-				entries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
-				entries[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
-				var bgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
+				wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)op, 32);
+				var entries = stackalloc WGPUBindGroupEntry[3];
+				entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = view };
+				entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+				entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
+				var bgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
 				var bg = Bg(ref bgd, owned);
 				var q = new float[24];
 				void QV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); q[idx] = n.X; q[idx + 1] = n.Y; q[idx + 2] = u; q[idx + 3] = vv; }
@@ -1535,9 +1572,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			{
 				var bytes = (nuint)WebGpuDevice.GradientUniformBytes;
 				var ubuf = Ubuf((int)bytes, owned);
-				fixed (float* p = gc.Uniform) { W.QueueWriteBuffer(_d.Q, ubuf, 0, p, bytes); }
-				var gentry = new BindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = bytes };
-				var gbgd = new BindGroupDescriptor { Layout = _d.GradBgl, EntryCount = 1, Entries = &gentry };
+				fixed (float* p = gc.Uniform) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, bytes); }
+				var gentry = new WGPUBindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = bytes };
+				var gbgd = new WGPUBindGroupDescriptor { Layout = _d.GradBgl, EntryCount = 1, Entries = &gentry };
 				var gbg = Bg(ref gbgd, owned);
 				var gq = new float[12];
 				void GV(int idx, Vector2 pos) { var n = Ndc(pos); gq[idx] = n.X; gq[idx + 1] = n.Y; }
@@ -1552,7 +1589,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// recurse into their own full-size surface then composite here; shadows/layers pre-render before the pass.
 	private void RenderInto(List<WebGpuCommand> cmds, WebGpuRenderSurface target, WColor? clear)
 	{
-		var W = _d.W;
 
 		// Build GPU resources for every command up front (buffers/textures must be created outside the
 		// render pass), preserving draw order in a single op list so cross-type z-order is honoured.
@@ -1616,13 +1652,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					var op = stackalloc float[8];
 					op[0] = 1f; op[1] = 1f; op[2] = 0; op[3] = 0;
 					op[4] = sh.Color.R / 255f; op[5] = sh.Color.G / 255f; op[6] = sh.Color.B / 255f; op[7] = sh.Color.A / 255f;
-					W.QueueWriteBuffer(_d.Q, ubuf, 0, op, 32);
-					var sentries = stackalloc BindGroupEntry[3];
-					sentries[0] = new BindGroupEntry { Binding = 0, TextureView = blurView };
-					sentries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
-					sentries[2] = new BindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
-					var sbgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sentries };
-					var sbg = _d.TrackBg(W.DeviceCreateBindGroup(_d.Dev, ref sbgd));
+					wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)op, 32);
+					var sentries = stackalloc WGPUBindGroupEntry[3];
+					sentries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blurView };
+					sentries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+					sentries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
+					var sbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sentries };
+					var sbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &sbgd));
 					var sq = new float[24];
 					void SQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); sq[idx] = n.X; sq[idx + 1] = n.Y; sq[idx + 2] = u; sq[idx + 3] = vv; }
 					var o0 = origin; var o1 = origin + new Vector2(size.X, 0); var o2 = origin + size; var o3 = origin + new Vector2(0, size.Y);
@@ -1640,21 +1676,21 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// the content on top. Reuses the image path (SrcIn tint) for the shadow — same as DrawShadow.
 					if (lyr.ShadowEffect is { } fx)
 					{
-						var tmp = _d.Pool.Rent(_s.Width, _s.Height, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+						var tmp = _d.Pool.Rent(_s.Width, _s.Height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 						BlurPass(layerSurface.View, tmp, new Vector2(1f, 0f), new Vector2(1f / _s.Width, 0f), fx.SigmaX);
-						var blur = _d.Pool.Rent(_s.Width, _s.Height, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+						var blur = _d.Pool.Rent(_s.Width, _s.Height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 						BlurPass(tmp, blur, new Vector2(0f, 1f), new Vector2(0f, 1f / _s.Height), fx.SigmaY);
 						var subuf = MakeUniform((int)32);
 						var sop = stackalloc float[8];
 						sop[0] = 1f; sop[1] = 1f; sop[2] = 0; sop[3] = 0;
 						sop[4] = fx.Color.R / 255f; sop[5] = fx.Color.G / 255f; sop[6] = fx.Color.B / 255f; sop[7] = fx.Color.A / 255f;
-						W.QueueWriteBuffer(_d.Q, subuf, 0, sop, 32);
-						var sfe = stackalloc BindGroupEntry[3];
-						sfe[0] = new BindGroupEntry { Binding = 0, TextureView = blur };
-						sfe[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
-						sfe[2] = new BindGroupEntry { Binding = 2, Buffer = subuf, Offset = 0, Size = 32 };
-						var sfbgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sfe };
-						var sfbg = _d.TrackBg(W.DeviceCreateBindGroup(_d.Dev, ref sfbgd));
+						wgpuQueueWriteBuffer(_d.Q, subuf, 0, (IntPtr)sop, 32);
+						var sfe = stackalloc WGPUBindGroupEntry[3];
+						sfe[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blur };
+						sfe[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+						sfe[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = subuf, Offset = 0, Size = 32 };
+						var sfbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sfe };
+						var sfbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &sfbgd));
 						var fq = new float[24];
 						void FQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); fq[idx] = n.X; fq[idx + 1] = n.Y; fq[idx + 2] = u; fq[idx + 3] = vv; }
 						var off = new Vector2(fx.Dx, fx.Dy);
@@ -1674,13 +1710,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						cu[20] = mm[4]; cu[21] = mm[9]; cu[22] = mm[14]; cu[23] = mm[19];   // off (5th column)
 					}
 					var lubuf = MakeUniform((int)96);
-					fixed (float* p = cu) { W.QueueWriteBuffer(_d.Q, lubuf, 0, p, 96); }
-					var lentries = stackalloc BindGroupEntry[3];
-					lentries[0] = new BindGroupEntry { Binding = 0, TextureView = layerSurface.View };
-					lentries[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
-					lentries[2] = new BindGroupEntry { Binding = 2, Buffer = lubuf, Offset = 0, Size = 96 };
-					var lbgd = new BindGroupDescriptor { Layout = lyr.CompositeMode == 1 ? _d.CompositeDstInBgl : _d.CompositeBgl, EntryCount = 3, Entries = lentries };
-					var lbg = _d.TrackBg(W.DeviceCreateBindGroup(_d.Dev, ref lbgd));
+					fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, lubuf, 0, (IntPtr)p, 96); }
+					var lentries = stackalloc WGPUBindGroupEntry[3];
+					lentries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = layerSurface.View };
+					lentries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+					lentries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = lubuf, Offset = 0, Size = 96 };
+					var lbgd = new WGPUBindGroupDescriptor { Layout = lyr.CompositeMode == 1 ? _d.CompositeDstInBgl : _d.CompositeBgl, EntryCount = 3, Entries = lentries };
+					var lbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &lbgd));
 					ops.Add((4, (nint)lbg, (uint)lyr.CompositeMode, 0, false, lyr.Clip, 0));
 					break;
 				}
@@ -1690,19 +1726,19 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// effect region; then a tint overlay. Simplified acrylic = blurred backdrop + tint.
 					var bd = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
 					RenderInto(cmds.GetRange(0, ci), bd, clear);
-					var btmp = _d.Pool.Rent(_s.Width, _s.Height, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+					var btmp = _d.Pool.Rent(_s.Width, _s.Height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 					BlurPass(bd.View, btmp, new Vector2(1f, 0f), new Vector2(1f / _s.Width, 0f), bk.Effect.SigmaX);
-					var bblur = _d.Pool.Rent(_s.Width, _s.Height, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+					var bblur = _d.Pool.Rent(_s.Width, _s.Height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 					BlurPass(btmp, bblur, new Vector2(0f, 1f), new Vector2(0f, 1f / _s.Height), bk.Effect.SigmaY);
 					var bubuf = MakeUniform((int)32);
 					var bop = stackalloc float[8]; bop[0] = bk.Opacity; bop[1] = 0; bop[2] = 0; bop[3] = 0;
-					W.QueueWriteBuffer(_d.Q, bubuf, 0, bop, 32);
-					var bde = stackalloc BindGroupEntry[3];
-					bde[0] = new BindGroupEntry { Binding = 0, TextureView = bblur };
-					bde[1] = new BindGroupEntry { Binding = 1, Sampler = _d.Smp };
-					bde[2] = new BindGroupEntry { Binding = 2, Buffer = bubuf, Offset = 0, Size = 32 };
-					var bdbgd = new BindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = bde };
-					var bdbg = _d.TrackBg(W.DeviceCreateBindGroup(_d.Dev, ref bdbgd));
+					wgpuQueueWriteBuffer(_d.Q, bubuf, 0, (IntPtr)bop, 32);
+					var bde = stackalloc WGPUBindGroupEntry[3];
+					bde[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = bblur };
+					bde[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+					bde[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = bubuf, Offset = 0, Size = 32 };
+					var bdbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = bde };
+					var bdbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bdbgd));
 					var bq = new float[24];
 					void BQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); bq[idx] = n.X; bq[idx + 1] = n.Y; bq[idx + 2] = u; bq[idx + 3] = vv; }
 					BQV(0, new Vector2(0, 0), 0, 0); BQV(4, new Vector2(_s.Width, 0), 1, 0); BQV(8, new Vector2(_s.Width, _s.Height), 1, 1);
@@ -1722,23 +1758,24 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			}
 		}
 
-		var enc = W.DeviceCreateCommandEncoder(_d.Dev, null);
-		var ca = new RenderPassColorAttachment
+		var enc = wgpuDeviceCreateCommandEncoder(_d.Dev, null);
+		var ca = new WGPURenderPassColorAttachment
 		{
 			// Render into the multisampled color and resolve into the single-sample target texture.
 			// A fresh MSAA buffer can't LoadOp.Load, so we always clear (transparent when no clear was given);
 			// the neutral loop redraws the whole frame each present, so nothing prior needs preserving here.
-			View = target.MsaaColorView, ResolveTarget = target.View, LoadOp = LoadOp.Clear, StoreOp = StoreOp.Discard,
-			ClearValue = clear.HasValue ? new Silk.NET.WebGPU.Color(clear.Value.R / 255.0, clear.Value.G / 255.0, clear.Value.B / 255.0, clear.Value.A / 255.0) : default,
+			DepthSlice = uint.MaxValue,
+			View = target.MsaaColorView, ResolveTarget = target.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Discard,
+			ClearValue = clear.HasValue ? new WGPUColor { R = clear.Value.R / 255.0, G = clear.Value.G / 255.0, B = clear.Value.B / 255.0, A = clear.Value.A / 255.0 } : default,
 		};
-		var dsa = new RenderPassDepthStencilAttachment
+		var dsa = new WGPURenderPassDepthStencilAttachment
 		{
 			View = target.DepthView,
-			DepthLoadOp = LoadOp.Clear, DepthStoreOp = StoreOp.Store, DepthClearValue = 1f,
-			StencilLoadOp = LoadOp.Clear, StencilStoreOp = StoreOp.Store, StencilClearValue = 0,
+			DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Store, DepthClearValue = 1f,
+			StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Store, StencilClearValue = 0,
 		};
-		var rp = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
-		var pass = W.CommandEncoderBeginRenderPass(enc, ref rp);
+		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
+		var pass = wgpuCommandEncoderBeginRenderPass(enc, &rp);
 
 		foreach (var (kind, b0, u0, b1, flag, clip, clipBg) in ops)
 		{
@@ -1746,54 +1783,54 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			switch (kind)
 			{
 				case 0:
-					W.RenderPassEncoderSetPipeline(pass, _d.SolidPipe);
-					W.RenderPassEncoderSetBindGroup(pass, 0, (BindGroup*)clipBg, 0, (uint*)null);
-					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b0, 0, (nuint)(u0 * 6 * sizeof(float)));
-					W.RenderPassEncoderDraw(pass, u0, 1, 0, 0);   // u0 = 6 * (coalesced) rect count
+					wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
+					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
+					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b0, 0, (nuint)(u0 * 6 * sizeof(float)));
+					wgpuRenderPassEncoderDraw(pass, u0, 1, 0, 0);   // u0 = 6 * (coalesced) rect count
 					break;
 				case 1:
-					W.RenderPassEncoderSetPipeline(pass, flag ? _d.StencilEvenOdd : _d.StencilNonZero);
-					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b0, 0, (nuint)(u0 * 2 * sizeof(float)));
-					W.RenderPassEncoderDraw(pass, u0, 1, 0, 0);
-					W.RenderPassEncoderSetPipeline(pass, _d.CoverPipe);
-					W.RenderPassEncoderSetBindGroup(pass, 0, (BindGroup*)clipBg, 0, (uint*)null);
-					W.RenderPassEncoderSetStencilReference(pass, 0);
-					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b1, 0, (nuint)(36 * sizeof(float)));
-					W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
+					wgpuRenderPassEncoderSetPipeline(pass, flag ? _d.StencilEvenOdd : _d.StencilNonZero);
+					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b0, 0, (nuint)(u0 * 2 * sizeof(float)));
+					wgpuRenderPassEncoderDraw(pass, u0, 1, 0, 0);
+					wgpuRenderPassEncoderSetPipeline(pass, _d.CoverPipe);
+					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
+					wgpuRenderPassEncoderSetStencilReference(pass, 0);
+					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(36 * sizeof(float)));
+					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
 					break;
 				case 2:
-					W.RenderPassEncoderSetPipeline(pass, _d.ImagePipe);
-					W.RenderPassEncoderSetBindGroup(pass, 0, (BindGroup*)b0, 0, (uint*)null);
-					W.RenderPassEncoderSetBindGroup(pass, 1, (BindGroup*)clipBg, 0, (uint*)null);
-					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b1, 0, (nuint)(24 * sizeof(float)));
-					W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
+					wgpuRenderPassEncoderSetPipeline(pass, _d.ImagePipe);
+					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)b0, 0, (uint*)null);
+					wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
+					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(24 * sizeof(float)));
+					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
 					break;
 				case 3:
-					W.RenderPassEncoderSetPipeline(pass, _d.GradientPipe);
-					W.RenderPassEncoderSetBindGroup(pass, 0, (BindGroup*)b0, 0, (uint*)null);
-					W.RenderPassEncoderSetBindGroup(pass, 1, (BindGroup*)clipBg, 0, (uint*)null);
-					W.RenderPassEncoderSetVertexBuffer(pass, 0, (Silk.NET.WebGPU.Buffer*)b1, 0, (nuint)(12 * sizeof(float)));
-					W.RenderPassEncoderDraw(pass, 6, 1, 0, 0);
+					wgpuRenderPassEncoderSetPipeline(pass, _d.GradientPipe);
+					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)b0, 0, (uint*)null);
+					wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
+					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(12 * sizeof(float)));
+					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
 					break;
 				case 4:
-					W.RenderPassEncoderSetPipeline(pass, u0 == 1 ? _d.CompositeDstIn : _d.CompositeSrcOver);
-					W.RenderPassEncoderSetBindGroup(pass, 0, (BindGroup*)b0, 0, (uint*)null);
-					W.RenderPassEncoderDraw(pass, 3, 1, 0, 0);
+					wgpuRenderPassEncoderSetPipeline(pass, u0 == 1 ? _d.CompositeDstIn : _d.CompositeSrcOver);
+					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)b0, 0, (uint*)null);
+					wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
 					break;
 				case 5:
 				{
 					// Replay a cached recording's pre-encoded draws (scissor was reset to full above).
-					var bundle = (RenderBundle*)b0;
-					W.RenderPassEncoderExecuteBundles(pass, 1, &bundle);
+					var bundle = (IntPtr)b0;
+					wgpuRenderPassEncoderExecuteBundles(pass, 1, (IntPtr)(&bundle));
 					break;
 				}
 			}
 		}
 
-		W.RenderPassEncoderEnd(pass);
-		var cb = W.CommandEncoderFinish(enc, null);
-		W.QueueSubmit(_d.Q, 1, &cb);
-		_d.Native.DevicePoll(_d.Dev, true, null);
+		wgpuRenderPassEncoderEnd(pass);
+		var cb = wgpuCommandEncoderFinish(enc, null);
+		wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+		wgpuDevicePoll(_d.Dev, 1u, null);
 	}
 
 	public Matrix4x4 TotalMatrix => Matrix4x4.Identity;
@@ -1891,8 +1928,8 @@ public sealed unsafe class WebGpuImageTexture : IImageTexture
 {
 	private readonly WebGpuDevice _d;
 	private readonly IImage _source; // kept for the neutral CopyPixels cross-backend fallback
-	public Texture* Tex;
-	public TextureView* View;
+	public IntPtr Tex;
+	public IntPtr View;
 
 	public int PixelWidth { get; }
 	public int PixelHeight { get; }
@@ -1910,33 +1947,33 @@ public sealed unsafe class WebGpuImageTexture : IImageTexture
 		// transparent texture so the draw is a no-op instead of a hard wgpu panic.
 		if (w <= 0 || h <= 0)
 		{
-			var td0 = new TextureDescriptor { Size = new Extent3D(1, 1, 1), Format = TextureFormat.Rgba8Unorm, MipLevelCount = 1, SampleCount = 1, Dimension = TextureDimension.Dimension2D, Usage = TextureUsage.TextureBinding | TextureUsage.CopyDst };
-			Tex = device.W.DeviceCreateTexture(device.Dev, ref td0);
-			View = device.W.TextureCreateView(Tex, null);
+			var td0 = new WGPUTextureDescriptor { Size = new WGPUExtent3D { Width = 1, Height = 1, DepthOrArrayLayers = 1 }, Format = WGPUTextureFormat.RGBA8Unorm, MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopyDst };
+			Tex = wgpuDeviceCreateTexture(device.Dev, &td0);
+			View = wgpuTextureCreateView(Tex, null);
 			var transparent = new byte[4];
-			var dst0 = new ImageCopyTexture { Texture = Tex, Aspect = TextureAspect.All, MipLevel = 0, Origin = default };
-			var layout0 = new TextureDataLayout { BytesPerRow = 4, RowsPerImage = 1 };
-			var ext0 = new Extent3D(1, 1, 1);
-			fixed (byte* p0 = transparent) { device.W.QueueWriteTexture(device.Q, in dst0, p0, 4, in layout0, in ext0); }
+			var dst0 = new WGPUTexelCopyTextureInfo { Texture = Tex, Aspect = WGPUTextureAspect.All, MipLevel = 0, Origin = default };
+			var layout0 = new WGPUTexelCopyBufferLayout { BytesPerRow = 4, RowsPerImage = 1 };
+			var ext0 = new WGPUExtent3D { Width = 1, Height = 1, DepthOrArrayLayers = 1 };
+			fixed (byte* p0 = transparent) { wgpuQueueWriteTexture(device.Q, &dst0, (IntPtr)p0, 4, &layout0, &ext0); }
 			return;
 		}
 		var bgra = new byte[w * h * 4];
 		image.CopyPixels(bgra);
 		var rgba = new byte[w * h * 4];
 		for (int i = 0; i < bgra.Length; i += 4) { rgba[i] = bgra[i + 2]; rgba[i + 1] = bgra[i + 1]; rgba[i + 2] = bgra[i]; rgba[i + 3] = bgra[i + 3]; }
-		var td = new TextureDescriptor { Size = new Extent3D((uint)w, (uint)h, 1), Format = TextureFormat.Rgba8Unorm, MipLevelCount = 1, SampleCount = 1, Dimension = TextureDimension.Dimension2D, Usage = TextureUsage.TextureBinding | TextureUsage.CopyDst | TextureUsage.CopySrc };
-		Tex = device.W.DeviceCreateTexture(device.Dev, ref td);
-		View = device.W.TextureCreateView(Tex, null);
-		var dst = new ImageCopyTexture { Texture = Tex, Aspect = TextureAspect.All, MipLevel = 0, Origin = default };
-		var layout = new TextureDataLayout { BytesPerRow = (uint)(w * 4), RowsPerImage = (uint)h };
-		var ext = new Extent3D((uint)w, (uint)h, 1);
-		fixed (byte* p = rgba) { device.W.QueueWriteTexture(device.Q, in dst, p, (nuint)rgba.Length, in layout, in ext); }
+		var td = new WGPUTextureDescriptor { Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 }, Format = WGPUTextureFormat.RGBA8Unorm, MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopyDst | WGPUTextureUsage.CopySrc };
+		Tex = wgpuDeviceCreateTexture(device.Dev, &td);
+		View = wgpuTextureCreateView(Tex, null);
+		var dst = new WGPUTexelCopyTextureInfo { Texture = Tex, Aspect = WGPUTextureAspect.All, MipLevel = 0, Origin = default };
+		var layout = new WGPUTexelCopyBufferLayout { BytesPerRow = (uint)(w * 4), RowsPerImage = (uint)h };
+		var ext = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 };
+		fixed (byte* p = rgba) { wgpuQueueWriteTexture(device.Q, &dst, (IntPtr)p, (nuint)rgba.Length, &layout, &ext); }
 	}
 
 	public void Dispose()
 	{
-		if (View != null) { _d.W.TextureViewRelease(View); View = null; }
-		if (Tex != null) { _d.W.TextureDestroy(Tex); Tex = null; }
+		if (View != IntPtr.Zero) { wgpuTextureViewRelease(View); View = IntPtr.Zero; }
+		if (Tex != IntPtr.Zero) { wgpuTextureDestroy(Tex); Tex = IntPtr.Zero; }
 	}
 }
 
@@ -1989,7 +2026,7 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 		var present = new WebGpuPresentSession(_device, surface);
 		present.ReplayNested(recorder.Finish());   // nested: don't reset the enclosing frame's pools
 		var bytes = _device.ReadPixelsRgba(surface);   // bytes are in the device's color format
-		return new WebGpuReadbackImage(pixelWidth, pixelHeight, bytes, _device.ColorFormat == TextureFormat.Bgra8Unorm);
+		return new WebGpuReadbackImage(pixelWidth, pixelHeight, bytes, _device.ColorFormat == WGPUTextureFormat.BGRA8Unorm);
 	}
 	public IShader CreateLinearGradientShader(Vector2 start, Vector2 end, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix)
 		=> new WebGpuShader { Radial = false, P0 = start, P1 = end, Colors = colors, Stops = colorPositions, TileMode = tileMode, LocalMatrix = localMatrix };
