@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Private.Infrastructure;
@@ -27,6 +28,7 @@ public class Given_RelativeUriRewrite
 		Assert.AreEqual("ms-resource:///Files/Assets/cart.png", SUT.customUriRooted.Uri.ToString());
 		Assert.AreEqual("ms-resource:///Files/Assets/UnoA4.pdf", SUT.navigateUri.NavigateUri.ToString());
 		Assert.AreEqual("ms-resource:///Files/Assets/cart.png", SUT.bitmapIcon.UriSource.ToString());
+		Assert.AreEqual("ms-resource:///Files/Assets/cart.png", SUT.bitmapIconSource.UriSource.ToString());
 	}
 
 	[TestMethod]
@@ -40,6 +42,9 @@ public class Given_RelativeUriRewrite
 		Assert.AreEqual(expected, ((BitmapImage)SUT.customImageSource.ImageSource).UriSource.ToString());
 		Assert.AreEqual(expected, ((BitmapImage)SUT.imageBrush.ImageSource).UriSource.ToString());
 		Assert.AreEqual(expected, SUT.bitmapImage.UriSource.ToString());
+
+		// A rooted path is resolved against the application root, dropping the assembly prefix.
+		Assert.AreEqual("ms-appx:///Assets/cart.png", ((BitmapImage)SUT.imageRooted.Source).UriSource.ToString());
 	}
 
 	[TestMethod]
@@ -60,6 +65,22 @@ public class Given_RelativeUriRewrite
 		var SUT = new RelativeUriRewritePage();
 
 		Assert.AreEqual("ms-appx:///Assets/cart.png", ((BitmapImage)SUT.localResourceImage.Source).UriSource.ToString());
+	}
+
+	/// <summary>
+	/// A local-resource URI converted to an ImageSource keeps the value it was given, the way WinUI
+	/// reports a Uri-typed property; the mapping to ms-appx happens behind the property.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_Local_Resource_Uri_Converted_To_ImageSource()
+	{
+#if HAS_UNO
+		// The implicit Uri conversion is Uno-only surface, hence the guard.
+		Microsoft.UI.Xaml.Media.ImageSource source = new Uri("ms-resource:///Files/Assets/cart.png");
+
+		Assert.AreEqual("ms-resource:///Files/Assets/cart.png", ((BitmapImage)source).UriSource.ToString());
+#endif
 	}
 
 	// The loading tests below assert Uno's ms-resource -> ms-appx mapping, which has no WinUI analog:
@@ -104,6 +125,22 @@ public class Given_RelativeUriRewrite
 		await TestServices.WindowHelper.WaitFor(() => SUT.bitmapIcon.ActualHeight > 0, 3000);
 
 		Assert.IsGreaterThan(0, SUT.bitmapIcon.ActualHeight);
+	}
+
+	/// <summary>
+	/// BitmapIconSource hands its value to a BitmapIcon through a binding, so the mapping has to
+	/// survive a copy between two Uri-typed properties.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_BitmapIconSource_With_Relative_Uri_Loads()
+	{
+		var SUT = new RelativeUriRewritePage();
+
+		await UITestHelper.Load(SUT);
+		await TestServices.WindowHelper.WaitFor(() => SUT.bitmapIconSourceElement.ActualHeight > 0, 3000);
+
+		Assert.IsGreaterThan(0, SUT.bitmapIconSourceElement.ActualHeight);
 	}
 
 	/// <summary>

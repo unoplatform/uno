@@ -162,8 +162,6 @@ namespace Microsoft.UI.Xaml.Media
 				return null;
 			}
 
-			uri = XamlFilePathHelper.NormalizeLocalResourceUri(uri);
-
 			if (!uri.IsAbsoluteUri && TryCreateUriFromString(uri.OriginalString) is { } adjustedUri)
 			{
 				uri = adjustedUri;

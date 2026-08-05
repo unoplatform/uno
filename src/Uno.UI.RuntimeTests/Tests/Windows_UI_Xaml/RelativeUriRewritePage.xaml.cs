@@ -16,6 +16,8 @@ public sealed partial class RelativeUriRewritePage : Grid
 /// <summary>
 /// Holds one <see cref="System.Uri"/> and one <see cref="Microsoft.UI.Xaml.Media.ImageSource"/> property, so that
 /// the rewrite applied to a non-framework owner can be observed for both property types.
+/// Registered with <see cref="PropertyMetadata"/> rather than Uno's FrameworkPropertyMetadata, so that the
+/// page also compiles against the WinUI head.
 /// </summary>
 public partial class RelativeUriHolder : Control
 {

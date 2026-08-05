@@ -1,4 +1,4 @@
-<Grid x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.RelativeUriRewritePage"
+﻿<Grid x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.RelativeUriRewritePage"
 	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	  xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml">
@@ -17,11 +17,21 @@
 		<BitmapIcon x:Name="bitmapIcon"
 					x:FieldModifier="public"
 					UriSource="Assets/cart.png" />
+		<IconSourceElement x:Name="bitmapIconSourceElement"
+						   x:FieldModifier="public">
+			<BitmapIconSource x:Name="bitmapIconSource"
+							  x:FieldModifier="public"
+							  UriSource="Assets/cart.png" />
+		</IconSourceElement>
 
 		<!-- ImageSource-typed properties: resolved against the base URI, like WinUI. -->
 		<Image x:Name="image"
 			   x:FieldModifier="public"
 			   Source="Assets/Transitive-ingredient01.png" />
+		<!-- A rooted path drops the assembly prefix, so it resolves against the application root. -->
+		<Image x:Name="imageRooted"
+			   x:FieldModifier="public"
+			   Source="/Assets/cart.png" />
 		<local:RelativeUriHolder x:Name="customImageSource"
 								 x:FieldModifier="public"
 								 ImageSource="Assets/Transitive-ingredient01.png" />

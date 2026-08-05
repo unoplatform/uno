@@ -5307,12 +5307,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						|| !Uri.TryCreate(rawValue, UriKind.RelativeOrAbsolute, out var parsedUri)
 						|| parsedUri.IsAbsoluteUri)
 					{
-						return $"@\"{rawValue}\"";
+						return ToVerbatimLiteral(rawValue ?? "");
 					}
 
-					// WinUI resolves a relative URI against the base URI for ImageSource-typed properties and
-					// for BitmapImage/SvgImageSource owners, and rewrites every other one to the MRT
-					// local-resource form (a raw prefix concat, not a base-URI resolution).
+					// WinUI resolves against the base URI for ImageSource-typed properties and for
+					// BitmapImage.UriSource, and rewrites every other relative URI to the MRT local-resource
+					// form (a raw prefix concat, not a base-URI resolution). The owner check also catches
+					// SvgImageSource.UriSource - kept on ms-appx so a library's svg assets stay reachable.
 					if (isImageSourceProperty
 						|| FindFirstConcreteAncestorType(owner?.Owner).Is(Generation.ImageSourceSymbol.Value))
 					{
@@ -5320,10 +5321,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							? "\"ms-appx:///\""
 							: $"__baseUri_prefix_{_fileUniqueId}";
 
-						return $"{uriBase} + \"{rawValue.TrimStart('/')}\"";
+						return $"{uriBase} + {ToVerbatimLiteral(rawValue.TrimStart('/'))}";
 					}
 
-					return $"@\"{XamlFilePathHelper.LocalResourcePrefix}{rawValue.TrimStart('/')}\"";
+					return ToVerbatimLiteral(XamlFilePathHelper.LocalResourcePrefix + rawValue.TrimStart('/'));
+
+					// A path is free to contain a backslash, which a regular literal would read as an escape.
+					static string ToVerbatimLiteral(string value) => $"@\"{value.Replace("\"", "\"\"")}\"";
 				}
 			}
 		}
