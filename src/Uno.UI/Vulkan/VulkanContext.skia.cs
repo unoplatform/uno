@@ -119,11 +119,20 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 			VkDevice = _device.Handle,
 			VkQueue = _device.MainQueueHandle,
 			GraphicsQueueIndex = _device.GraphicsQueueFamilyIndex,
+			// Must match VkApplicationInfo.apiVersion. If left at 0, Skia m148+ resolves the
+			// version from the loader instead of the instance and GRContext creation fails
+			// on strict loaders (https://github.com/unoplatform/uno/issues/23958).
+			MaxAPIVersion = VulkanInstance.ApiVersion,
 			GetProcedureAddress = GetProcAddressWrapper
 		};
 
-		_grContext = GRContext.CreateVulkan(ctx)
-			?? throw new VulkanException("Unable to create SkiaSharp GRContext from Vulkan device");
+		_grContext = GRContext.CreateVulkan(ctx);
+		if (_grContext == null)
+		{
+			_instanceApi!.GetPhysicalDeviceProperties(PhysicalDeviceHandle, out var properties);
+			throw new VulkanException(
+				$"Unable to create SkiaSharp GRContext from Vulkan device (instance apiVersion {VulkanHelpers.FormatVersion(VulkanInstance.ApiVersion)}, device apiVersion {VulkanHelpers.FormatVersion(properties.apiVersion)})");
+		}
 	}
 
 	/// <summary>
