@@ -24,7 +24,12 @@ def map_type(ctype, enums, flags, handles, structs):
     ptr = t.count('*')
     base = t.replace('*','').strip()
     if ptr > 0:
-        return 'IntPtr'   # all pointers -> IntPtr (platform pointer size)
+        # typed pointers for struct/primitive pointees (ergonomic + type-safe); IntPtr for
+        # opaque handles, callbacks, void*, and char* (strings are handled via WGPUStringView).
+        if base in structs: return base + '*' * ptr
+        if base in enums or base in flags: return base + '*' * ptr
+        if base in PRIM and base not in ('void','char'): return PRIM[base] + '*' * ptr
+        return 'IntPtr'
     if base in PRIM: return PRIM[base]
     if base in enums: return base
     if base in flags: return base
@@ -135,7 +140,7 @@ def main(headers, out):
         o.append('}')
     for name, fields in structs.items():
         o.append('[StructLayout(LayoutKind.Sequential)]')
-        o.append(f'public struct {name} {{')
+        o.append(f'public unsafe struct {name} {{')
         for ctype,fname in fields:
             cs = map_type(ctype, enums, flags, handles, structs)
             o.append(f'    public {cs} {fname};')
