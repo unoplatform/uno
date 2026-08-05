@@ -38,6 +38,19 @@ This guide will walk you through the setup process for getting started with Code
     > [!IMPORTANT]
     > The uno-app MCP may fail to load unless Codex is opened in a folder containing an Uno Platform app.
 
+## Setting up the Uno Platform Skills
+
+Uno Platform ships a catalog of agent skills — covering areas such as MVUX, navigation, Uno Toolkit controls, theming, and UI testing — bundled in the `uno-platform-studio` plugin. Once installed, Codex automatically selects the relevant skills as it works on your prompts.
+
+Install the plugin:
+
+```text
+codex plugin marketplace add unoplatform/studio
+codex plugin install uno-platform-studio@uno-platform
+```
+
+For the full skill catalog, update instructions, and other installation options, see [Skills & Plugins](xref:Uno.PlatformStudio.Skills).
+
 ## Next Steps
 
 Now that you are set up, let's [create your first app](xref:Uno.GettingStarted.CreateAnApp.AI.Codex).

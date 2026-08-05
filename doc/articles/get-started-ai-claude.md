@@ -31,6 +31,21 @@ This guide will walk you through the setup process for getting started with Clau
     > [!IMPORTANT]
     > The `uno-app` MCP [may fail to load](https://github.com/anthropics/claude-code/issues/4384) unless Claude is opened in a folder containing an Uno Platform app.
 
+## Setting up the Uno Platform Skills
+
+Uno Platform ships a catalog of agent skills — covering areas such as MVUX, navigation, Uno Toolkit controls, theming, and UI testing — bundled in the `uno-platform-studio` plugin. Once installed, Claude Code automatically selects the relevant skills as it works on your prompts.
+
+1. Install the plugin:
+
+    ```text
+    /plugin marketplace add unoplatform/studio
+    /plugin install uno-platform-studio@uno-platform
+    ```
+
+1. If Claude Code prompts you to run `/reload-plugins`, do so to apply the new plugin.
+
+For the full skill catalog, update instructions, and other installation options, see [Skills & Plugins](xref:Uno.PlatformStudio.Skills).
+
 ## Next Steps
 
 Now that you are set up, let's [create your first app](xref:Uno.GettingStarted.CreateAnApp.AI.Claude).
