@@ -10,6 +10,16 @@ This document exists to highlight some of the differences you might encounter wh
 
 The `CommandBar` replicates **WinUI**'s `CommandBar`. It is templatable and supports a template that's almost identical to **WinUI**'s default `CommandBar`, based on the `XamlDefaultCommandBar` style.
 
+> [!NOTE]
+> Uno Platform 7.0 removed the native `CommandBar` backends — the iOS `UINavigationBar`
+> and Android `Toolbar` presentation and the `NativeDefaultCommandBar` style went with the
+> native renderers, so there is no longer a separate native mode to opt into. The
+> iOS/Android-specific guidance below — the back button, the fixed `Height`, the
+> unsupported `SecondaryCommands`, the `CommandBarExtensions` attached properties, and the
+> `Known issues` and `FAQ` entries that mention "native mode" — describes that removed mode
+> and is kept as legacy content pending a rewrite. See
+> [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
+
 ![CommandBar Example - Windows](assets/commandbar/windows/example.png)
 
 ## Usage Example
