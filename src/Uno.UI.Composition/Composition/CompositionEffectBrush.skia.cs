@@ -29,6 +29,24 @@ public partial class CompositionEffectBrush : CompositionBrush
 		if (_filter is { } filter)
 		{
 			session.DrawEffectBackdrop(filter, opacity);
+			return true;
+		}
+		// The backend couldn't realize the effect as a filter (e.g. the WebGPU backend for a per-pixel colour
+		// effect). Fall back to the neutral "recipe": reduce the graph to a single source + composed 4×5 colour
+		// matrix and paint the source with that matrix applied.
+		if (TryGetWebGpuEffectRecipe(out var source, out _, out var solidColor, out var matrix))
+		{
+			if (solidColor is { } sc)
+			{
+				session.DrawRect(bounds, ApplyColorMatrix(sc, matrix));
+			}
+			else if (source is { } src)
+			{
+				var count = session.Save();
+				session.SaveLayer(DrawingFactory.Current.CreateColorMatrixColorFilter(matrix));
+				src.TryPaint(session, opacity, bounds);
+				session.RestoreToCount(count);
+			}
 		}
 		return true;
 	}
@@ -38,14 +56,15 @@ public partial class CompositionEffectBrush : CompositionBrush
 		if (_currentBounds != bounds || _filter is null || Compositor.IsSoftwareRenderer != _currentCompMode)
 		{
 			_filter?.Dispose();
+			// A null filter means the backend can't realize this effect as a backdrop filter — TryPaint falls back
+			// to the recipe path (a source + composed colour matrix). Not an error.
 			_filter = DrawingFactory.Current.CreateEffectFilter(
 				_effect,
 				bounds,
 				name => CompositionBrushEffectSource.From(GetSourceParameter(name)),
 				UseBackdropBlurClamp,
 				Compositor.IsSoftwareRenderer is true,
-				out var hasBackdropInput)
-				?? throw new NotSupportedException($"Unsupported effect description.\r\nEffect name: {_effect.Name}");
+				out var hasBackdropInput);
 			HasBackdropBrushInput = hasBackdropInput;
 			_currentBounds = bounds;
 			_currentCompMode = Compositor.IsSoftwareRenderer;
