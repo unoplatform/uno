@@ -1,4 +1,4 @@
-#if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 
 namespace Microsoft.UI.Xaml;
 
@@ -9,9 +9,6 @@ public partial class Application
 	/// <summary>
 	/// Gets or sets whether the framework automatically adjusts application visuals when high contrast is enabled.
 	/// </summary>
-#if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-#endif
 	public ApplicationHighContrastAdjustment HighContrastAdjustment
 	{
 		get => _highContrastAdjustment;

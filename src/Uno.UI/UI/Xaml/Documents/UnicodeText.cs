@@ -95,6 +95,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static readonly Brush _blackBrush = new SolidColorBrush(Colors.Black);
 	private static readonly SKPaint _spareDrawPaint = new() { IsStroke = false, IsAntialias = true };
 	private static readonly SKPaint _spareBackplatePaint = new() { IsStroke = false, IsAntialias = true };
+	private static readonly SKPaint _spareSelectionPaint = new() { IsStroke = false, IsAntialias = true };
 	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true };
 	private static readonly SKPaint _spareCompositionUnderlinePaint = new() { Style = SKPaintStyle.Stroke, StrokeWidth = 1, IsAntialias = true };
 	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
@@ -823,9 +824,9 @@ internal readonly partial struct UnicodeText : IParsedText
 		var effectiveOpacity = useHighContrastAdjustment && session.Opacity > 0
 			? 1f
 			: session.Opacity;
-		var (highContrastForeground, highContrastBackground, highContrastSelectionForeground) =
+		var (highContrastForeground, highContrastBackground, highContrastSelectionForeground, highContrastSelectionBackground) =
 			useHighContrastAdjustment
-				? UIElement.GetHighContrastTextColors()
+				? owner.GetHighContrastTextColors()
 				: default;
 		if (useHighContrastAdjustment)
 		{
@@ -958,7 +959,18 @@ internal readonly partial struct UnicodeText : IParsedText
 				FlushHighContrastBackplate(session.Canvas, ref pendingHighContrastBackplate);
 			}
 
-			highlighter.Value.background?.Paint(session.Canvas, effectiveOpacity, backgroundRect);
+			if (highlighter.Value.background is { } selectionBackground)
+			{
+				if (useHighContrastAdjustment)
+				{
+					_spareSelectionPaint.Color = ToSkColor(highContrastSelectionBackground, effectiveOpacity);
+					session.Canvas.DrawRect(backgroundRect, _spareSelectionPaint);
+				}
+				else
+				{
+					selectionBackground.Paint(session.Canvas, effectiveOpacity, backgroundRect);
+				}
+			}
 
 			if (_corrections?[wordBoundariesIndex] is { } correction)
 			{

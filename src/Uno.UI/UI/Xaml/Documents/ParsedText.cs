@@ -18,6 +18,7 @@ internal readonly struct ParsedText : IParsedText
 {
 	private static readonly SKPaint _spareDrawPaint = new();
 	private static readonly SKPaint _spareBackplatePaint = new() { IsAntialias = true };
+	private static readonly SKPaint _spareSelectionPaint = new() { IsAntialias = true };
 	// This is safe as a static field.
 	// 1) It's only accessed from UI thread.
 	// 2) Once we call SKTextBlobBuilder.Build(), the instance is reset to its initial state.
@@ -353,9 +354,9 @@ internal readonly struct ParsedText : IParsedText
 		var effectiveOpacity = useHighContrastAdjustment && session.Opacity > 0
 			? 1f
 			: session.Opacity;
-		var (highContrastForeground, highContrastBackground, highContrastSelectionForeground) =
+		var (highContrastForeground, highContrastBackground, highContrastSelectionForeground, highContrastSelectionBackground) =
 			useHighContrastAdjustment
-				? UIElement.GetHighContrastTextColors()
+				? owner.GetHighContrastTextColors()
 				: default;
 
 		if (_renderLines.Count == 0)
@@ -523,7 +524,22 @@ internal readonly struct ParsedText : IParsedText
 				if (selection is not null)
 				{
 					var selectionDetails = CalculateSelection(selection.Value.StartIndex, selection.Value.StartIndex + selection.Value.Length);
-					HandleSelection(selectionDetails, lineIndex, characterCountSoFar, positionsSpan, x, justifySpaceOffset, segmentSpan, segment, fontInfo, y, line, canvas, highlighter!.Background.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()), effectiveOpacity);
+					HandleSelection(
+						selectionDetails,
+						lineIndex,
+						characterCountSoFar,
+						positionsSpan,
+						x,
+						justifySpaceOffset,
+						segmentSpan,
+						segment,
+						fontInfo,
+						y,
+						line,
+						canvas,
+						highlighter!.Background.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()),
+						effectiveOpacity,
+						useHighContrastAdjustment ? ToSkColor(highContrastSelectionBackground, effectiveOpacity) : null);
 					RenderText(
 						selectionDetails,
 						lineIndex,
@@ -804,7 +820,7 @@ internal readonly struct ParsedText : IParsedText
 	private void HandleSelection(SelectionDetails selection, int lineIndex,
 		int characterCountSoFar, Span<SKPoint> positions, float x, float justifySpaceOffset,
 		RenderSegmentSpan segmentSpan, Segment segment, FontDetails fontInfo, float y, RenderLine line, SKCanvas canvas,
-		CompositionBrush brush, float opacity)
+		CompositionBrush brush, float opacity, SKColor? colorOverride)
 	{
 		if (selection is { } bg && bg.StartLine <= lineIndex && lineIndex <= bg.EndLine)
 		{
@@ -858,7 +874,15 @@ internal readonly struct ParsedText : IParsedText
 			if (Math.Abs(left - right) > 0.01)
 			{
 				var rect = new SKRect(left, y - line.Height, right, y);
-				brush.Paint(canvas, opacity, rect);
+				if (colorOverride is { } color)
+				{
+					_spareSelectionPaint.Color = color;
+					canvas.DrawRect(rect, _spareSelectionPaint);
+				}
+				else
+				{
+					brush.Paint(canvas, opacity, rect);
+				}
 			}
 		}
 	}
