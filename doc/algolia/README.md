@@ -1,68 +1,84 @@
 # Algolia DocSearch configuration
 
 This folder holds the **index/crawler-side** configuration for the docs search
-(`platform` index, DocSearch v3). It is the counterpart to the display-layer code
-in `doc/templates/uno/partials/scripts.tmpl.partial` and
+(`platform` index, DocSearch v3, Algolia app `PHB9D8WS99`). It is the counterpart
+to the display-layer code in `doc/templates/uno/partials/scripts.tmpl.partial` and
 `doc/templates/uno/service/docsearch-transform.js`.
 
-Background and rationale: **unoplatform/uno-private#2038** (recap of
-unoplatform/uno#22788 / PR #22789).
+`docsearch-crawler-config.js` **mirrors the live crawler configuration** with the
+two fixes from **unoplatform/uno-private#2038** applied. Background: unoplatform/uno#22788 / PR #22789.
 
 ## Why the fixes live here, not in the docs repo templates
 
 DocSearch renders whatever records exist in the **hosted** Algolia index. The
-crawler configuration that produces those records runs on Algolia's servers and
-is **not executed by the docs build**. As a result:
+crawler that produces those records runs on Algolia's servers and is **not**
+executed by the docs build. So the fixes below are made in the hosted crawler /
+index, using this file as the source of truth:
 
-| Symptom | Correct layer | Mechanism (see `docsearch-crawler-config.js`) |
-|---|---|---|
-| Duplicate entries (one record per heading) | Index | `attributeForDistinct: 'url_without_anchor'` + `distinct: 1` |
-| `./page`, `./page/`, `./page/index.html` as separate hits | Crawler | URL canonicalization in `recordExtractor` |
-| Nav / footer / sidebar / breadcrumb indexed as content | Crawler | `$(...).remove()` in `recordExtractor` |
-| Same-titled pages across sections | Index | `section` facet + `customRanking` |
-| Poor intent (e.g. "Get Started") | Index | `customRanking` (`weight.pageRank` first) |
+| Symptom | Layer | Mechanism | Status |
+|---|---|---|---|
+| Duplicate entries (one record per heading anchor) | Index setting | `attributeForDistinct: "url_without_anchor"` + `distinct: true` (was `"url"`) | **applied** |
+| Nav / footer / sidebar / breadcrumb indexed as content | Crawler | `$(...).remove()` in `recordExtractor` | **applied** |
+| Poor intent (e.g. "Get Started") | Index | `customRanking` (`weight.pageRank` first) | already present |
+| `./page`, `./page/`, `./page/index.html` as separate hits | Crawler | canonical-URL collapsing in `recordExtractor` | optional (not yet applied) |
+| Same-titled pages across sections | Index | `section` facet + `customRanking` | optional (not yet applied) |
 
-> ⚠️ **`data-docsearch-exclude` HTML attributes are NOT honored by the DocSearch
-> crawler.** Excluding chrome must be done here (`selectors_exclude` / `.remove()`),
-> not by adding attributes to the docfx templates. The attribute additions in the
-> original PR have no effect on the index.
+> ⚠️ `data-docsearch-exclude` HTML attributes are **not** honored by the DocSearch
+> crawler (verified against Algolia's docs). Exclusion must be done here
+> (`$(...).remove()` / `selectors_exclude`), not by adding attributes to the docfx
+> templates. The template markers remain only as intent documentation.
 
-The client-side `transformItems` (in `service/docsearch-transform.js`) remains
-only as an **interim display polish** — it operates on the already-returned
-top-N hits per group and cannot recover a result that a duplicate displaced in
-ranking. Once this crawler config is live, that module can be trimmed further.
+The client-side `transformItems` (`service/docsearch-transform.js`) is an interim
+display polish — it only reshapes the already-returned top-N hits per group and
+cannot fix ranking. Once this crawler config is live it can be trimmed further.
 
 ## How to apply
 
-1. Open the **Algolia Crawler** for the DocSearch account that owns app
-   `PHB9D8WS99` (Crawler → Editor), or use the Crawler API.
-2. Paste `docsearch-crawler-config.js`. Provide the **crawler (write) API key**
-   from the dashboard / secret store — it is intentionally a placeholder here and
-   must never be committed.
-3. **Validate on a staging index first** (do not touch production):
-   - Set `indexPrefix: 'staging_'` (indexes as `staging_platform`).
-   - Run the crawler and inspect the records / test queries in the dashboard.
-   - Point a local docs build at the staging index by temporarily changing
-     `indexName` in `scripts.tmpl.partial` to `staging_platform`.
-4. Verify against the acceptance checks below, then promote to `platform`.
+1. Open the crawler for app `PHB9D8WS99`: [dashboard.algolia.com](https://dashboard.algolia.com)
+   → **Data sources → Crawlers** → the crawler whose target index is `platform`
+   → **Editor**. Merge in the two changes from `docsearch-crawler-config.js`
+   (the `$(...).remove()` block and `attributeForDistinct: "url_without_anchor"`),
+   keeping your existing `appId` / `apiKey` / `startUrls` / `schedule`.
+2. **Validate on a staging index first.** Set `indexPrefix: "staging_"` (indexes
+   into `staging_platform`), **Save**, and run a crawl. Because the staging index
+   is brand-new, `initialIndexSettings` (incl. `attributeForDistinct`) applies
+   automatically. Inspect records / test queries against the acceptance checks below.
+3. **Promote to production — two parts:**
+   - **Records:** remove `indexPrefix` (→ `platform`) and run a crawl. See the
+     safety-check note below.
+   - **Settings:** `initialIndexSettings` is applied **only on the first crawl of a
+     new index**, so the existing `platform` index will *ignore* the
+     `attributeForDistinct` change. Set it on the index directly — **Search →
+     Indices → `platform` → Configuration → Distinct** (attribute `url_without_anchor`,
+     distinct on), or `setSettings { attributeForDistinct: "url_without_anchor",
+     distinct: true }`. It takes effect immediately on existing records (they already
+     carry `url_without_anchor`), so the dedup fix can ship without a re-crawl.
 
-## Acceptance checks (run on the staging index)
+> ⚠️ **Safety check:** adding the chrome exclusions reduces the record count, so the
+> first production crawl may exceed `safetyChecks.beforeIndexPublishing`
+> (`maxLostRecordsPercentage: 30`) and refuse to publish. Raise it temporarily for
+> that crawl, then restore.
+>
+> ⚠️ The `apiKey` in `docsearch-crawler-config.js` is a placeholder — it is a crawler
+> **write** key and must never be committed. Set it in the dashboard.
+
+## Acceptance checks (on the staging index)
 
 - Searching a common term (e.g. **"MVUX"**, **"Get Started"**) returns **one row
   per page**, not one per heading.
-- **No** navbar / footer / sidebar / breadcrumb text appears as a result, and no
-  `#breadcrumb`-anchored URLs are present.
-- A page reachable as both `.../page.html` and `.../page/index.html` appears once.
-- Same-titled pages in different sections are distinguishable (different
-  `section` facet value) and ranked sensibly.
+- **No** navbar / footer / sidebar / breadcrumb text appears as a result.
+- Same-titled pages across sections are ranked sensibly.
+- (If canonical-URL collapsing is later enabled) a page reachable as both
+  `.../page.html` and `.../page/index.html` appears once.
 
 ## Related
 
-- Display layer: `doc/templates/uno/partials/scripts.tmpl.partial`
-  (DocSearch init, `resultsFooterComponent`).
+- Display layer: `doc/templates/uno/partials/scripts.tmpl.partial` (DocSearch init,
+  `resultsFooterComponent`).
 - Transform module + tests: `doc/templates/uno/service/docsearch-transform.js`,
   `docsearch-transform.test.js` (`node --test`).
 - Full results page: `doc/search.html` (InstantSearch.js).
 - References: DocSearch API <https://docsearch.algolia.com/docs/api/>,
   record extractor <https://docsearch.algolia.com/docs/record-extractor/>,
-  `attributeForDistinct` <https://www.algolia.com/doc/api-reference/api-parameters/attributeForDistinct/>.
+  `attributeForDistinct` <https://www.algolia.com/doc/api-reference/api-parameters/attributeForDistinct/>,
+  `initialIndexSettings` <https://www.algolia.com/doc/tools/crawler/apis/configuration/initial-index-settings/>.
