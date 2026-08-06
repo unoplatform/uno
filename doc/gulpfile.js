@@ -133,6 +133,9 @@ exports.default = series(build, run);
 
 exports.clean = series(clean);
 
+// Rebuild only the JS bundle (styles/docfx.js, styles/main.js) from source.
+exports.scripts = scripts;
+
 exports.debug = series(build, run);
 
 exports.strict = series(useStrict, build, run);

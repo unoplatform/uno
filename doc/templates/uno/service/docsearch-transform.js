@@ -1,23 +1,23 @@
 /**
- * Uno DocSearch client-side result transforms.
+ * Uno DocSearch client-side result transform.
  *
  * IMPORTANT (see unoplatform/uno-private#2038):
- *   Deduplication, navigation exclusion and ranking are fundamentally an
- *   *indexing* concern and are handled server-side in the Algolia crawler /
- *   index configuration (see doc/algolia/docsearch-crawler-config.js:
- *   `.remove()` selectors + `attributeForDistinct` / `distinct`).
+ *   Deduplication and navigation exclusion are handled SERVER-SIDE in the Algolia
+ *   crawler / index config (see doc/algolia/docsearch-crawler-config.js): chrome
+ *   is stripped via `$(...).remove()` and each page collapses to one result via
+ *   `attributeForDistinct: 'url_without_anchor'` + `distinct`. Those are now live,
+ *   so the former client-side breadcrumb filter and page-level dedup have been
+ *   removed.
  *
- *   The transforms below are a *display-layer* stop-gap only. `transformItems`
- *   runs on the already-returned top-N hits per group (bounded by
- *   `maxResultsPerGroup`) and re-runs on every keystroke, so it can only hide /
- *   relabel rows that were already returned — it cannot recover a real result
- *   that a duplicate displaced in the ranking. Keep this logic minimal and let
- *   the crawler config do the real work.
+ *   The one thing left client-side is same-title disambiguation: when several
+ *   results share an identical title but point to different pages, append a
+ *   distinguishing URL path segment so the dropdown rows are tellable apart.
+ *   (`transformItems` only sees the already-returned top-N hits per group; the
+ *   index-side equivalent is the optional `section` facet in the crawler config.)
  *
- * This module is intentionally free of DOM/DocSearch dependencies so it can be
- * unit-tested under `node --test` (see docsearch-transform.test.js). It is
- * exposed as `window.unoDocSearch` in the browser and as `module.exports` in
- * Node.
+ * This module is free of DOM/DocSearch dependencies so it can be unit-tested
+ * under `node --test` (see docsearch-transform.test.js). It is exposed as
+ * `window.unoDocSearch` in the browser and `module.exports` in Node.
  */
 (function (root, factory) {
     'use strict';
@@ -39,43 +39,6 @@
     /** Split a URL into non-empty path segments (host/protocol segments included). */
     function pathSegments(url) {
         return baseUrl(url).split('/').filter(Boolean);
-    }
-
-    /**
-     * Stage 1 — drop crawler breadcrumb-anchor artifacts (`...#breadcrumb`).
-     * Interim only: the crawler config also excludes `#breadcrumb` server-side.
-     */
-    function filterBreadcrumbAnchors(items) {
-        return items.filter(function (item) {
-            return !(item && item.url && item.url.indexOf('#breadcrumb') !== -1);
-        });
-    }
-
-    /**
-     * Stage 2 — collapse duplicate *page-level* (`lvl1`) records so a page's
-     * title appears once, while keeping deeper `lvl2+` heading records so users
-     * can still jump to sub-sections. Real per-page dedup is done index-side via
-     * `attributeForDistinct: 'url_without_anchor'` + `distinct` — this only tidies
-     * the visible dropdown.
-     */
-    function dedupePageLevel(items) {
-        // Object.create(null): no prototype chain, so titles/URLs equal to
-        // "__proto__", "constructor", "hasOwnProperty", ... are treated as plain
-        // keys and cannot corrupt the map (prototype-pollution safe).
-        var seen = Object.create(null);
-        return items.filter(function (item) {
-            if (!item || !item.url) {
-                return true;
-            }
-            if (item.type === 'lvl1') {
-                var base = baseUrl(item.url);
-                if (seen[base]) {
-                    return false;
-                }
-                seen[base] = true;
-            }
-            return true;
-        });
     }
 
     /** "get-started_2" -> "Get Started 2"; drops a trailing .htm(l) file extension. */
@@ -116,17 +79,19 @@
     }
 
     /**
-     * Stage 3 — when several results share an identical title but point to
-     * different pages (e.g. XAML vs C# Markup workshop variants), append the
-     * first URL path segment that distinguishes them so the dropdown rows are
-     * telling apart-able.
+     * When several results share an identical title but point to different pages
+     * (e.g. XAML vs C# Markup workshop variants), append the first URL path
+     * segment that distinguishes them so the dropdown rows are tellable apart.
      *
      * Robust to the "short first URL" edge case: the differing index is chosen
      * treating a missing segment as distinct, and any item lacking a segment at
      * that index falls back to its own last path segment.
      */
     function disambiguateSameTitle(items) {
-        var groups = Object.create(null); // prototype-pollution safe (see dedupePageLevel)
+        // Object.create(null): no prototype chain, so titles equal to "__proto__",
+        // "constructor", "hasOwnProperty", … are treated as plain keys and cannot
+        // corrupt the map (prototype-pollution safe).
+        var groups = Object.create(null);
         items.forEach(function (item) {
             var hierarchy = item && item.hierarchy;
             var title = (hierarchy && item.type && hierarchy[item.type]) || '';
@@ -176,21 +141,17 @@
         return items;
     }
 
-    /** Full display transform applied by DocSearch's `transformItems` option. */
+    /** Display transform applied by DocSearch's `transformItems` option. */
     function transformItems(items) {
         if (!items || !items.length) {
             return items || [];
         }
-        var result = filterBreadcrumbAnchors(items);
-        result = dedupePageLevel(result);
-        disambiguateSameTitle(result);
-        return result;
+        disambiguateSameTitle(items);
+        return items;
     }
 
     return {
         transformItems: transformItems,
-        filterBreadcrumbAnchors: filterBreadcrumbAnchors,
-        dedupePageLevel: dedupePageLevel,
         disambiguateSameTitle: disambiguateSameTitle,
         humanizeSegment: humanizeSegment,
         baseUrl: baseUrl,
