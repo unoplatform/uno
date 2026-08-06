@@ -15,6 +15,35 @@ using WColor = Windows.UI.Color;
 
 namespace Uno.UI.Composition.WebGpu;
 
+/// <summary>Async device creation for the browser, where the JS event loop must run for requestAdapter/
+/// requestDevice to resolve (WebGpuDevice's blocking ctor would deadlock). Non-unsafe so it can await; the
+/// pointer work lives in WebGpuDevice's internal helpers.</summary>
+public static class WebGpuDeviceAsync
+{
+	public static async System.Threading.Tasks.Task<WebGpuDevice> CreateAsync(WGPUTextureFormat colorFormat = WebGpuDevice.DefaultColorFormat)
+	{
+		var inst = WebGpuDevice.CreateInstancePtr();
+		var adapter = await PumpBox(inst, WebGpuDevice.BeginAdapterRequest(inst));
+		if (adapter == IntPtr.Zero) { throw new InvalidOperationException("WebGPU: no adapter (browser)."); }
+		var dev = await PumpBox(inst, WebGpuDevice.BeginDeviceRequest(adapter));
+		if (dev == IntPtr.Zero) { throw new InvalidOperationException("WebGPU: no device (browser)."); }
+		return new WebGpuDevice(colorFormat, inst, adapter, dev);
+	}
+
+	private static async System.Threading.Tasks.Task<IntPtr> PumpBox(IntPtr inst, GCHandle handle)
+	{
+		var box = (IntPtr[])handle.Target!;
+		for (int i = 0; i < 2000 && box[0] == IntPtr.Zero; i++)
+		{
+			WebGpuDevice.ProcessEvents(inst);
+			await System.Threading.Tasks.Task.Delay(5);   // yield to the JS event loop so navigator.gpu promises resolve
+		}
+		var result = box[0];
+		handle.Free();
+		return result;
+	}
+}
+
 public sealed unsafe class WebGpuDevice : IDisposable
 {
 	public IntPtr Inst;
@@ -134,12 +163,59 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		Dev = dbox[0];
 		dh.Free();
 
+		FinishInit();
+	}
+
+	// Adopts an already-acquired instance/adapter/device (used by the async browser init, which cannot spin-block).
+	internal WebGpuDevice(WGPUTextureFormat colorFormat, IntPtr inst, IntPtr adapter, IntPtr dev)
+	{
+		ColorFormat = colorFormat;
+		Inst = inst;
+		Adapter = adapter;
+		Dev = dev;
+		FinishInit();
+	}
+
+	private void FinishInit()
+	{
 		Q = wgpuDeviceGetQueue(Dev);
 		CreatePipelines();
 		DummyTex = CreateColorTarget(1, 1);
 		Pool = new WebGpuTexturePool(this);
 		BufferPool = new WebGpuBufferPool(this);
 	}
+
+	internal static unsafe IntPtr CreateInstancePtr() => wgpuCreateInstance(null);
+
+	internal static unsafe GCHandle BeginAdapterRequest(IntPtr inst)
+	{
+		var box = new IntPtr[1];
+		var h = GCHandle.Alloc(box);
+		var aopts = new WGPURequestAdapterOptions { PowerPreference = WGPUPowerPreference.HighPerformance };
+		wgpuInstanceRequestAdapter(inst, &aopts, new WGPURequestAdapterCallbackInfo
+		{
+			Mode = WGPUCallbackMode.AllowProcessEvents,
+			Callback = (IntPtr)(delegate* unmanaged[Cdecl]<WGPURequestAdapterStatus, IntPtr, WGPUStringView, IntPtr, IntPtr, void>)&OnAdapter,
+			Userdata1 = GCHandle.ToIntPtr(h),
+		});
+		return h;
+	}
+
+	internal static unsafe GCHandle BeginDeviceRequest(IntPtr adapter)
+	{
+		var box = new IntPtr[1];
+		var h = GCHandle.Alloc(box);
+		var ddesc = new WGPUDeviceDescriptor();
+		wgpuAdapterRequestDevice(adapter, &ddesc, new WGPURequestDeviceCallbackInfo
+		{
+			Mode = WGPUCallbackMode.AllowProcessEvents,
+			Callback = (IntPtr)(delegate* unmanaged[Cdecl]<WGPURequestDeviceStatus, IntPtr, WGPUStringView, IntPtr, IntPtr, void>)&OnDevice,
+			Userdata1 = GCHandle.ToIntPtr(h),
+		});
+		return h;
+	}
+
+	internal static unsafe void ProcessEvents(IntPtr inst) => wgpuInstanceProcessEvents(inst);
 
 	/// <summary>Reads a surface's resolved single-sample texture back to CPU as tightly-packed RGBA8 (top-down). For RTB and tests.</summary>
 	public byte[] ReadPixelsRgba(WebGpuRenderSurface s)
