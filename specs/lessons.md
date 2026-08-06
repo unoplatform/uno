@@ -33,3 +33,18 @@ one diff. No specific file paths from the change that triggered it.
 - **Lens:** quality
 - **Lesson:** `// TODO Uno:` comments and `#if HAS_UNO` / `#if !__SKIA__` blocks deliberately mark intentional divergences from WinUI; they are not dead code or stale TODOs.
 - **Apply:** Don't flag these markers as comment noise or unreachable code; flag only genuine drift.
+
+## 2026-08-06 — Check a generator claim against its golden before reporting it
+- **Lens:** skeptic, contract, architect
+- **Lesson:** Tracing argument flow through the XAML generator reliably shows what *could* diverge but not what does. A finding that one emission path keys differently from another was reported high-severity from call-graph reading; the golden showed both paths emit identically, because the deciding value was passed as a literal from a type-switch branch rather than derived from the argument that was traced. The generator has a `WRITE_EXPECTED` flag that regenerates goldens, so confirming an emission claim costs one test run.
+- **Apply:** Before reporting that a generator emits differently across two paths, diff the emitted golden for both. Report unconfirmed call-graph reasoning as a question or a coverage gap, not as a defect with a severity.
+
+## 2026-08-06 — Don't call a pre-existing bug newly introduced without checking the old path
+- **Lens:** security, all
+- **Lesson:** A change that alters an input's *shape* often routes to an unguarded sink that the previous shape also reached. A crash was reported as introduced by the change under review; the pre-change value hit the same unguarded call and failed the same way. What the change actually did was make an intermittent failure deterministic — still worth fixing, but a different claim, priority, and owner.
+- **Apply:** Before attributing a failure to the diff, trace the pre-change value to the same sink. State whether the change *introduces*, *makes deterministic*, or merely *exposes* the failure.
+
+## 2026-08-06 — Cross-branch CI comparisons need the runtime pinned
+- **Lens:** all
+- **Lesson:** "Green on the other branch, red here" is not evidence the diff caused it when the branches build on different SDKs or TFMs — long-lived integration branches routinely carry a runtime bump the trunk doesn't. A failure was attributed to a branch's own commits until the two pipelines turned out to run different .NET versions.
+- **Apply:** When citing another branch's CI as a baseline, confirm both ran the same SDK/TFM first; otherwise say the comparison is confounded rather than drawing a causal conclusion.
