@@ -10,7 +10,7 @@ The whole UI Visual Tree is drawn on an hardware accelerated canvas, using Metal
 
 The Skia Rendering backend has a very cheap cost for creating UI elements, which makes it very efficient for large user interfaces.
 
-Starting with Uno.Sdk 6.0, **it is the default rendering engine** when creating a project from the templates. On **WebAssembly (Wasm)**, **Android**, and **iOS**, you can opt in to use the native rendering engine instead.
+Starting with Uno.Sdk 6.0, **it is the default rendering engine** when creating a project from the templates. Starting with Uno Platform 7.0, it is the **only** rendering engine: the native renderers have been removed, and the `SkiaRenderer` `UnoFeature` is implied on every target and kept as a no-op for backwards compatibility.
 
 This renderer supports [integrating native views](xref:Uno.Skia.Embedding.Native).
 
@@ -40,20 +40,20 @@ As the Skia Renderer bypasses native UI components, Skia can offer pixel-perfect
 
 ## Using Skia rendering for new apps
 
-You can use our [Visual Studio Wizard](xref:Uno.GettingStarted.UsingWizard) to create a new project. By default, the Wizard uses the Skia rendering engine, automatically setting up the necessary MSBuild properties and references for you. If you prefer to use native rendering instead, you can select it in the Wizard’s configuration options. You can find more details on how to use the Wizard here: [Creating a new project](xref:Uno.GettingStarted.UsingWizard).
+You can use our [Visual Studio Wizard](xref:Uno.GettingStarted.UsingWizard) to create a new project. The Wizard uses the Skia rendering engine, automatically setting up the necessary MSBuild properties and references for you. You can find more details on how to use the Wizard here: [Creating a new project](xref:Uno.GettingStarted.UsingWizard).
 
 > [!NOTE]
 > If you're upgrading an existing project to Uno Platform 6.0, be sure to also check our migration guidance in [Migrating from previous releases](xref:Uno.Development.MigratingFromPreviousReleases).
 
 ## Using Skia rendering for existing apps
 
-To enable Skia rendering in your Uno Platform project, you must opt in using MSBuild properties and features.
+Skia rendering requires no opt-in: it is used on every Uno Platform target. There is no MSBuild property or `UnoFeature` to enable or disable it.
 
 ### Using Skia Desktop
 
 On **macOS**, **Linux**, and **Windows**, using the `netX.0-desktop` target framework, Skia rendering is always used.
 
-However, when using **WinAppSDK**, the **native rendering engine** is always used, regardless of whether Skia or Native is enabled in `UnoFeatures`.
+However, when using **WinAppSDK**, the **native WinUI rendering engine** is always used, since that target is not provided by Uno Platform.
 
 > [!NOTE]
 > Starting with Uno Platform 6.0, **Mac Catalyst** is no longer present in templates, and we encourage users to move to `netX.0-desktop`, which runs on macOS using Skia for rendering.
@@ -63,7 +63,7 @@ You can find more details in [Using the Skia Desktop](xref:Uno.Skia.Desktop).
 ### Upgrading to use Skia for iOS, Android, and WebAssembly
 
 > [!TIP]
-> If your project was created before Uno Platform 6.0 and you want to enable Skia rendering, [follow the upgrade guide](xref:Uno.Development.MigratingToUno6).
+> If your project still relies on native rendering, [follow the Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7). For projects created before Uno Platform 6.0, [start with the 6.0 upgrade guide](xref:Uno.Development.MigratingToUno6) to move to the Uno.Sdk single-project model.
 
 ## Limitations
 

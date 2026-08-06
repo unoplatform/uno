@@ -151,7 +151,7 @@ This situation is due to an MSBuild property overriding bug found in the .NET SD
 
 ### UNOB0017: A reference to either Uno.WinUI.Runtime.WebAssembly or Uno.WinUI.WebAssembly has been detected
 
-When the `SkiaRenderer` feature is enabled, the `Uno.WinUI.Runtime.WebAssembly` and `Uno.WinUI.WebAssembly` packages must not be referenced directly.
+The `Uno.WinUI.Runtime.WebAssembly` and `Uno.WinUI.WebAssembly` packages must not be referenced directly alongside the Skia browser head. Removing the explicit reference resolves the diagnostic.
 
 This is generally a package authoring error, make sure to open an issue in the Uno Platform repository to report the problem.
 
