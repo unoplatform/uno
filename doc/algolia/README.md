@@ -22,16 +22,22 @@ index, using this file as the source of truth:
 | docfx tabbed pages indexed under `?tabs=…` variants | Crawler | query string stripped in `recordExtractor` (NOT `ignoreQueryParams` — it infinite-loops the ?tabs redirect) | **applied** |
 | Poor intent (e.g. "Get Started") | Index | `customRanking` (`weight.pageRank` first) | already present |
 | `./page`, `./page/`, `./page/index.html` as separate hits | Crawler | canonical-URL collapsing in `recordExtractor` | optional — snippet below |
-| Same-titled pages across sections | Index | `section` facet + `customRanking` | optional — snippet below |
+| Same-titled pages across sections | Client (by design) | path-segment suffix in `docsearch-transform.js` — see note below | **applied** |
 
 > ⚠️ `data-docsearch-exclude` HTML attributes are **not** honored by the DocSearch
 > crawler (verified against Algolia's docs). Exclusion must be done here
 > (`$(...).remove()` / `selectors_exclude`), not by adding attributes to the docfx
 > templates. The template markers remain only as intent documentation.
 
-The client-side `transformItems` (`service/docsearch-transform.js`) is an interim
-display polish — it only reshapes the already-returned top-N hits per group and
-cannot fix ranking. Once this crawler config is live it can be trimmed further.
+**Same-title disambiguation stays client-side by design.** With the crawler
+exclusions + `distinct` live, `service/docsearch-transform.js` is trimmed to a
+single job: when several returned hits share an identical title (e.g. the
+`MVUX-XAML` vs `MVVM-XAML` workshop variants), append the first *differing* URL
+path segment so they're tellable apart. This genuinely **cannot** move to the
+index layer for uno — `recordExtractor` runs on one page at a time, so it can't
+compare same-titled pages to find their distinguishing segment, and that segment
+sits at a variable depth (not a top-level section a facet could capture). So,
+contrary to #2038's generic guidance, this one item is correctly kept client-side.
 
 ## How to apply
 
@@ -97,10 +103,13 @@ return records.map((r) => ({
 Regular `.html` pages are untouched (only `index.html` and trailing slashes are
 collapsed, and the `#anchor` is preserved).
 
-### 2. `section` facet for same-title disambiguation
+### 2. `section` facet (for future contextual filtering / ranking)
 
-Filter/rank same-titled pages by their docs section server-side (the client-side
-`disambiguateSameTitle` in `docsearch-transform.js` is the display-only version).
+> **Not** for same-title disambiguation — that stays client-side (see the note
+> above). A path-derived section can't distinguish uno's deep-path variants (the
+> workshop `MVUX-XAML` vs `MVVM-XAML` pages share the `external` top segment), and
+> the crawler can't compare same-titled pages per-page. This facet is only useful
+> if you later add contextual/facet filtering or section weighting to `customRanking`.
 
 **a. Extractor** — add `url` to the args and attach a `section` to each record:
 

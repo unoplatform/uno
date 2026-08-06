@@ -10,10 +10,13 @@
  *   removed.
  *
  *   The one thing left client-side is same-title disambiguation: when several
- *   results share an identical title but point to different pages, append a
- *   distinguishing URL path segment so the dropdown rows are tellable apart.
- *   (`transformItems` only sees the already-returned top-N hits per group; the
- *   index-side equivalent is the optional `section` facet in the crawler config.)
+ *   results share an identical title but point to different pages, append the
+ *   first distinguishing URL path segment so the dropdown rows are tellable apart.
+ *   This is kept client-side BY DESIGN — the crawler processes one page at a time
+ *   and can't compare same-titled pages to find their distinguishing segment
+ *   (which sits at a variable path depth), so it can't move to the index layer
+ *   for uno's structure. `transformItems` sees the already-returned top-N hits
+ *   per group — exactly the cross-record view this needs. See doc/algolia/README.md.
  *
  * This module is free of DOM/DocSearch dependencies so it can be unit-tested
  * under `node --test` (see docsearch-transform.test.js). It is exposed as
