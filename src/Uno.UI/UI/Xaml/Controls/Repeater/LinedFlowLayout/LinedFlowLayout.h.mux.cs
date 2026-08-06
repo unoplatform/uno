@@ -6,13 +6,12 @@
 
 using System;
 using System.Collections.Generic;
-using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class LinedFlowLayout
+	partial class LinedFlowLayout
 	{
-		// Default property values (LinedFlowLayout.h).
+		// Properties' default values.
 		private const LinedFlowLayoutItemsJustification s_defaultItemsJustification = LinedFlowLayoutItemsJustification.Start;
 		private const LinedFlowLayoutItemsStretch s_defaultItemsStretch = LinedFlowLayoutItemsStretch.None;
 		private const double s_defaultActualLineHeight = 0.0;
@@ -20,30 +19,111 @@ namespace Microsoft.UI.Xaml.Controls
 		private const double s_defaultLineHeight = double.NaN;
 		private const double s_defaultMinItemSpacing = 0.0;
 
-		// Constants (LinedFlowLayout.h).
-		private const string s_cannotShareLinedFlowLayout = "LinedFlowLayout cannot be shared.";
-		private const int s_measureCountdownStart = 5;
+		// #pragma region ILayoutOverrides
+		// #pragma endregion
 
-		// The desired aspect ratio associated with an item has a weight between 1 and 16. Each time an item's
-		// aspect ratio is evaluated, its weight is incremented up to 16. The average aspect ratio is computed
-		// using those weights to stabilize m_averageItemsPerLine and reduce total re-layouts (LinedFlowLayout.cpp).
-		private const int c_maxAspectRatioWeight = 16;
+		// #pragma region IVirtualizingLayoutOverrides
+		// #pragma endregion
 
-		// Frozen lines before/after the displayed lines use 80% of a scroll viewport (or 40% of the
-		// sized area, whichever is largest) so small scroll deltas don't force a re-layout.
-		private const double c_frozenLinesRatio = 0.8;
+		internal void SetDesiredAspectRatios(double[] values) => m_itemsInfoDesiredAspectRatiosForFastPath = (double[])values.Clone();
 
-		// Scroll offsets within this epsilon of 0 are snapped to 0 to avoid sub-pixel line-index jitter.
-		private const double c_offsetEqualityEpsilon = 0.01;
+		internal void SetMinWidths(double[] values) => m_itemsInfoMinWidthsForFastPath = (double[])values.Clone();
 
-		// Number of layout passes m_anchorIndex is retained after RecommendedAnchorIndex momentarily
-		// switches to -1 during a bring-into-view operation (purely experimental value).
-		private const int c_maxAnchorIndexRetentionCount = 10;
+		internal void SetMaxWidths(double[] values) => m_itemsInfoMaxWidthsForFastPath = (double[])values.Clone();
 
-		// Sizing info returned by the ItemsInfoRequested event handler for a range of items.
-		// WinUI declares ItemsInfo private; it is internal here so RaiseItemsInfoRequested's return
-		// value can be validated by tests before the measure path that consumes it (WS-D3c) is ported.
-		internal struct ItemsInfo
+		// #pragma region LayoutsTestHooks
+
+		internal int FirstRealizedItemIndexDbg()
+		{
+			if (!m_wasInitializedForContext)
+			{
+				return -1;
+			}
+
+			return m_elementManager.GetFirstRealizedDataIndex();
+		}
+
+		internal int LastRealizedItemIndexDbg()
+		{
+			if (!m_wasInitializedForContext)
+			{
+				return -1;
+			}
+
+			int realizedElementCount = m_elementManager.GetRealizedElementCount;
+			return realizedElementCount == 0 ? -1 : m_elementManager.GetFirstRealizedDataIndex() + realizedElementCount - 1;
+		}
+
+		internal int FirstFrozenItemIndexDbg() => m_firstFrozenItemIndex;
+
+		internal int LastFrozenItemIndexDbg() => m_lastFrozenItemIndex;
+
+		internal double AverageItemAspectRatioDbg() => m_averageItemAspectRatioDbg;
+
+		internal double ForcedAverageItemAspectRatioDbg() => m_forcedAverageItemAspectRatioDbg;
+
+		internal void ForcedAverageItemAspectRatioDbg(double forcedAverageItemAspectRatio)
+		{
+			if (m_forcedAverageItemAspectRatioDbg != forcedAverageItemAspectRatio)
+			{
+				m_forcedAverageItemAspectRatioDbg = forcedAverageItemAspectRatio;
+				InvalidateLayout();
+			}
+		}
+
+		internal double ForcedAverageItemsPerLineDividerDbg() => m_forcedAverageItemsPerLineDividerDbg;
+
+		internal void ForcedAverageItemsPerLineDividerDbg(double forcedAverageItemsPerLineDivider)
+		{
+			if (m_forcedAverageItemsPerLineDividerDbg != forcedAverageItemsPerLineDivider)
+			{
+				m_forcedAverageItemsPerLineDividerDbg = forcedAverageItemsPerLineDivider;
+				InvalidateLayout();
+			}
+		}
+
+		internal double ForcedWrapMultiplierDbg() => m_forcedWrapMultiplierDbg;
+
+		// Allows to change LinedFlowLayout::GetItemWidthMultiplierThreshold()'s return value for testing purposes.
+		internal void ForcedWrapMultiplierDbg(double forcedWrapMultiplier)
+		{
+			if (m_forcedWrapMultiplierDbg != forcedWrapMultiplier)
+			{
+				m_forcedWrapMultiplierDbg = forcedWrapMultiplier;
+				InvalidateLayout();
+			}
+		}
+
+		internal bool IsFastPathSupportedDbg() => m_isFastPathSupportedDbg;
+
+		// Allows the fall path layout to be turned off for testing purposes.
+		// This allows for instance to provide sizing information for an entire
+		// small source collection and still exercise the regular path.
+		internal void IsFastPathSupportedDbg(bool isFastPathSupported)
+		{
+			if (m_isFastPathSupportedDbg != isFastPathSupported)
+			{
+				m_isFastPathSupportedDbg = isFastPathSupported;
+
+				if (UsesFastPathLayout())
+				{
+					ResetItemsInfo();
+				}
+
+				InvalidateLayout();
+			}
+		}
+
+		internal double RawAverageItemsPerLineDbg() => m_averageItemsPerLine.first;
+
+		internal double SnappedAverageItemsPerLineDbg() => m_averageItemsPerLine.second;
+
+		internal int GetLineIndexDbg(int itemIndex) => GetLineIndex(itemIndex, UsesFastPathLayout());
+
+		// #pragma endregion
+
+		// Structs
+		private struct ItemsInfo
 		{
 			public int m_itemsRangeStartIndex = -1;
 			public int m_itemsRangeLength = -1;
@@ -55,22 +135,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private static readonly ItemsInfo s_emptyItemsInfo = new()
-		{
-			m_itemsRangeStartIndex = -1,
-			m_itemsRangeLength = -1,
-			m_minWidth = -1.0,
-			m_maxWidth = -1.0,
-		};
-
-		// WinUI declares ItemsLayout as a private value struct that is always either mutated through an
-		// ItemsLayout& reference or copied by value (stored in a std::vector<ItemsLayout>, reassigned as
-		// bestItemsLayout = itemsLayout, etc.). Those value copies deep-copy the inner std::vector members.
-		// It is modelled here as a reference type (avoids C# ref-parameter churn on the many mutating helpers)
-		// with an explicit Clone() that deep-copies the two lists; GetItemsLayout inserts Clone() at exactly
-		// the points where WinUI relies on value-copy semantics. It is internal so GetItemsLayout can be
-		// white-box tested via hand-built aspect-ratio arrays.
-		internal sealed class ItemsLayout
+		private sealed class ItemsLayout
 		{
 			public List<int> m_lineItemCounts = new();
 			public List<double> m_lineItemWidths = new();
@@ -88,96 +153,94 @@ namespace Microsoft.UI.Xaml.Controls
 			public int m_bestEqualizingTailItemIndex;
 			public int m_bestEqualizingHeadLineIndex;
 			public int m_bestEqualizingTailLineIndex;
-
-			public ItemsLayout Clone()
-			{
-				return new ItemsLayout
-				{
-					m_lineItemCounts = new List<int>(m_lineItemCounts),
-					m_lineItemWidths = new List<double>(m_lineItemWidths),
-					m_availableLineItemsWidth = m_availableLineItemsWidth,
-					m_drawback = m_drawback,
-					m_smallestHeadItemWidth = m_smallestHeadItemWidth,
-					m_smallestTailItemWidth = m_smallestTailItemWidth,
-					m_bestEqualizingHeadItemDrawbackImprovement = m_bestEqualizingHeadItemDrawbackImprovement,
-					m_bestEqualizingTailItemDrawbackImprovement = m_bestEqualizingTailItemDrawbackImprovement,
-					m_smallestHeadItemIndex = m_smallestHeadItemIndex,
-					m_smallestTailItemIndex = m_smallestTailItemIndex,
-					m_smallestHeadLineIndex = m_smallestHeadLineIndex,
-					m_smallestTailLineIndex = m_smallestTailLineIndex,
-					m_bestEqualizingHeadItemIndex = m_bestEqualizingHeadItemIndex,
-					m_bestEqualizingTailItemIndex = m_bestEqualizingTailItemIndex,
-					m_bestEqualizingHeadLineIndex = m_bestEqualizingHeadLineIndex,
-					m_bestEqualizingTailLineIndex = m_bestEqualizingTailLineIndex,
-				};
-			}
 		}
 
-		// Items info collected through the ItemsInfoRequested event for the regular (non-fast) path.
-		// WinUI declares this private; it is internal here so GetItemsLayout can be white-box tested with
-		// a hand-built aspect-ratio list before the measure path (WS-D3c sub-slice 5) that fills it is ported.
-		internal readonly List<double> m_itemsInfoDesiredAspectRatiosForRegularPath = new();
-		private readonly List<double> m_itemsInfoMinWidthsForRegularPath = new();
-		private readonly List<double> m_itemsInfoMaxWidthsForRegularPath = new();
-		// WinUI: std::vector<float>. Holds the per-item arrange widths (fast or regular path).
-		private readonly List<float> m_itemsInfoArrangeWidths = new();
+		// Constants
+		private const string s_cannotShareLinedFlowLayout = "LinedFlowLayout cannot be shared.";
+		private const int s_measureCountdownStart = 5;
 
-		// First index of the regular-path items info (-1 when the fast path is used or no info is available).
-		// Read by UsesFastPathLayout()/RequestedRangeStartIndex (WS-D3b); written by ResetItemsInfo (WS-D3c: ExitRegularPath).
-		// WinUI declares this private; it is internal here so GetItemsLayout can be white-box tested (see above).
-		internal int m_itemsInfoFirstIndex = -1;
+		private static readonly ItemsInfo s_emptyItemsInfo = new()
+		{
+			m_itemsRangeStartIndex = -1 /*itemsRangeStartIndex*/,
+			m_itemsRangeLength = -1 /*itemsRangeLength*/,
+			m_minWidth = -1.0 /*minWidth*/,
+			m_maxWidth = -1.0 /*maxWidth*/,
+		};
 
-		// Items info collected through the ItemsInfoRequested event for the fast path.
-		// WinUI: winrt::com_array<double>. Written by the Set*Widths seams; read by Get*FromItemsInfo (WS-D3c).
-		private double[] m_itemsInfoDesiredAspectRatiosForFastPath = Array.Empty<double>();
-		private double[] m_itemsInfoMinWidthsForFastPath = Array.Empty<double>();
-		private double[] m_itemsInfoMaxWidthsForFastPath = Array.Empty<double>();
+		// Methods
 
-		// Global min/max widths provided by the ItemsInfoRequested handler; read by Get{Min,Max}WidthFromItemsInfo (WS-D3c).
-		private double m_itemsInfoMinWidth = -1.0;
-		private double m_itemsInfoMaxWidth = -1.0;
+		// #ifdef DBG
+		// static winrt::hstring DependencyPropertyToStringDbg(
+		//     winrt::IDependencyProperty const& dependencyProperty);
+		// void LogElementManagerDbg();
+		// void LogItemsInfoDbg(
+		//     int itemsRangeStartIndex,
+		//     int itemsRangeRequestedLength,
+		//     ItemsInfo const& itemsInfo);
+		// void LogItemsLayoutDbg(
+		//     ItemsLayout const& itemsLayout,
+		//     double averageLineItemsWidth) const;
+		// void LogLayoutDbg();
+		// void LogVirtualizingLayoutContextDbg(
+		//     winrt::VirtualizingLayoutContext const& context) const;
+		// void VerifyInternalLockedItemsDbg(
+		//     std::map<int, int> const& internalLockedItemIndexes,
+		//     int beginSizedLineIndex,
+		//     int endSizedLineIndex,
+		//     int beginSizedItemIndex,
+		//     int endSizedItemIndex);
+		// void VerifyLockedItemsDbg();
+		// #endif
 
-#pragma warning disable 414 // Assigned but not yet read: consumed by later WS-D3c measure slices, kept to mirror WinUI.
-		private bool m_forceRelayout;
-#pragma warning restore 414
-
-		// Core state (LinedFlowLayout.h). Owns the realized-element bookkeeping and the
-		// weighted aspect-ratio cache. LinedFlowLayout stores its state on the instance
-		// (it cannot be shared across ItemsRepeaters, unlike the other layouts).
+		// Fields
 		private readonly ElementManager m_elementManager = new();
 
-		// Item count as reported by the context; refreshed on each Initialize/OnItemsChanged.
-		// internal for white-box testability of the line-breaking helpers.
-		internal int m_itemCount;
-
-		// Map keeping track of the locked items. Key: locked item index; Value: line index holding it.
-		private readonly SortedDictionary<int, int> m_lockedItemIndexes = new();
-
-		private bool m_isVirtualizingContext;
-		private bool m_wasInitializedForContext;
-		private bool m_isFirstOrLastItemLocked;
-
-		// Fields consumed by later WS-D3b..D3f measure/arrange slices. Declared now so the state
-		// shape mirrors LinedFlowLayout.h; some are only read (or only written) until those slices land.
-#pragma warning disable 169, 414, 649
-		// Data structure for storing item desired aspect ratios (allocated during measure).
+		// Data structure for storing item desired aspect ratios.
 		private LinedFlowLayoutItemAspectRatios? m_aspectRatios;
+
+		// Map keeping track of the locked items.
+		// Key:   index of locked item
+		// Value: index of line holding the locked item
+		private readonly SortedDictionary<int, int> m_lockedItemIndexes = new();
 
 		// Element index used in bring-into-view operations to disconnected items.
 		private int m_anchorIndex = -1;
 		private int m_anchorIndexRetentionCountdown;
 
-		// Measured item widths (heights are always equal to ActualLineHeight).
+		// Keep track of the measured items width. The heights are always equal to LineHeight.
 		private Dictionary<UIElement, float>? m_elementAvailableWidths;
 		private Dictionary<UIElement, float>? m_elementDesiredWidths;
 
-		// Instance line-item-counts written by the measure paths (fast/regular). Internal for white-box testability.
-		internal readonly List<int> m_lineItemCounts = new();
+		private readonly List<int> m_lineItemCounts = new();
+		private readonly List<float> m_itemsInfoArrangeWidths = new();
 
-		// Clamps the average aspect ratio during initial loading; also progressively expands the
-		// effective CacheLength to a minimum of 4.
+		// Items info collected through the ItemsInfoRequested event:
+		// - Used only by the regular path layout:
+		private readonly List<double> m_itemsInfoDesiredAspectRatiosForRegularPath = new();
+		private readonly List<double> m_itemsInfoMinWidthsForRegularPath = new();
+		private readonly List<double> m_itemsInfoMaxWidthsForRegularPath = new();
+		private int m_itemsInfoFirstIndex = -1; // Indicates the index of the first element represented in the 4 vectors above.
+
+		// - Used only by the fast path layout
+		private double[] m_itemsInfoDesiredAspectRatiosForFastPath = Array.Empty<double>();
+		private double[] m_itemsInfoMinWidthsForFastPath = Array.Empty<double>();
+		private double[] m_itemsInfoMaxWidthsForFastPath = Array.Empty<double>();
+		// - Used by both layout paths:
+		private double m_itemsInfoMinWidth = -1.0;
+		private double m_itemsInfoMaxWidth = -1.0;
+		// Note that the List<double> instances are used in the regular path because information gathered by successive ItemsInfoRequested occurrences
+		// is stitched together in those lists. This allows to only request information for a fraction of the sized items belonging to 5 viewports
+		// in each ItemsInfoRequested event.
+		// The fast path is only using cheaper temporary arrays because no such stitching is performed. Information is gathered for
+		// the entire source collection and the arrays are discarded at the end of the measure path.
+
+		// This countdown is used during initial loading in order to clamp the average aspect ratio between
+		// 2/3 and 3/2 to avoid extranuous item realizations while the first items are still unpopulated.
+		// It also allows a progressive expansion of the effective CacheLength to the minimum of 4 when
+		// the ItemsRepeater's value is smaller than that.
 		private int m_measureCountdown = s_measureCountdownStart;
 
+		private int m_itemCount;
 		private int m_unsizedNearLineCount = -1;
 		private int m_unrealizedNearLineCount = -1;
 		private int m_firstSizedLineIndex = -1;
@@ -189,25 +252,37 @@ namespace Microsoft.UI.Xaml.Controls
 		private int m_firstFrozenItemIndex = -1;
 		private int m_lastFrozenItemIndex = -1;
 		private int m_invalidateMeasureTimerTickCount;
+		private bool m_isVirtualizingContext;
+		private bool m_wasInitializedForContext;
+		private bool m_forceRelayout;
+		private bool m_isFirstOrLastItemLocked;
 		private float m_previousAvailableWidth;
 		private float m_maxLineWidth;
 		private double m_roundingScaleFactor = 1.0;
 
-		// First value is the 'raw' average-items-per-line; second is that value snapped to a power of 1.1.
-		// internal for white-box testability of the line-breaking helpers.
-		internal (double first, double second) m_averageItemsPerLine;
+		// First double is the 'raw' average-items-per-line value that was snapped to the second double.
+		// Second double is the 'snapped' average-items-per-line value starting from the raw first double.
+		// The snapping is to a power of 1.1.
+		private (double first, double second) m_averageItemsPerLine;
 
-		// Timer used to trigger an asynchronous measure pass when no items info was provided by the
-		// ItemsInfoRequested event (started from the measure path in WS-D3f).
+		// Timer used to trigger an asynchronous measure pass when no items info was provided by the ItemsInfoRequested event.
+		// It is started after an item was realized or when the timer expires and m_invalidateMeasureTimerTickCount is still
+		// smaller than 7. The interval begins at 100ms and is then increased by 50% each time it is re-started, until
+		// m_invalidateMeasureTimerTickCount reaches 7. By then the interval is 1.7s and the total time elapsed is about 5s
+		// when the timer is no longer re-started.
 		private DispatcherTimer? m_invalidateMeasureTimer;
 
-		// Fields backing the LayoutsTestHooks (WS-D5). Always compiled (not DBG-only); consumed by the
-		// measure algorithm (e.g. m_forcedAverageItemsPerLineDividerDbg tunes SnapAverageItemsPerLine).
+		// Fields used to support the LayoutsTestHooks
 		private double m_averageItemAspectRatioDbg;
 		private double m_forcedAverageItemAspectRatioDbg;
 		private double m_forcedAverageItemsPerLineDividerDbg;
 		private double m_forcedWrapMultiplierDbg;
 		private bool m_isFastPathSupportedDbg = true;
-#pragma warning restore 169, 414, 649
+
+		// #ifdef DBG
+		// Other debug fields
+		// int m_previousFirstDisplayedArrangedLineIndexDbg{ -1 };
+		// int m_previousLastDisplayedArrangedLineIndexDbg{ -1 };
+		// #endif
 	}
 }
