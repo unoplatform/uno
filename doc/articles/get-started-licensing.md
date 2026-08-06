@@ -86,7 +86,7 @@ If you’ve already set up **JetBrains Rider** by following the [Get Started on 
 
    ![Uno Platform Studio Window Welcome](Assets/uno-studio-welcome.png)
 
-2. After signing in (or creating your account), return to the Uno Platform Studio window. You’ll now see your account and subscription details displayed. Your subscription type (Community or Pro) determines which products you can access. From the overflow menu (...), you can access additional resources, refresh your account information, or sign out.
+2. After signing in (or creating your account), return to the Uno Platform Studio window. You’ll now see your account and subscription details displayed. Your subscription type (Community, Pro, or Business) determines which products you can access. From the overflow menu (...), you can access additional resources, refresh your account information, or sign out.
 
    ![Uno Platform Studio Window Main](Assets/uno-studio-main.png)
 
@@ -194,7 +194,7 @@ If you encounter issues during the subscription or licensing process:
    - Visit [platform.uno/select-subscription](https://platform.uno/select-subscription/) to upgrade
 
 1. **Support**:
-   - Pro support covers Uno Platform Studio features only
+   - Pro and Business support covers Uno Platform Studio features only
    - For general support, visit [GitHub Discussions](https://github.com/unoplatform/uno/discussions) or [Discord](https://www.platform.uno/discord)
    - [Paid support](https://platform.uno/contact/) available for enterprise needs
 
