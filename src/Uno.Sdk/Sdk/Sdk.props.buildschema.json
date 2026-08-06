@@ -556,7 +556,7 @@
 					"helpUrl": "https://aka.platform.uno/feature-serialization"
 				},
 				"SkiaRenderer": {
-					"description": "No-op, kept for backwards compatibility. Skia is always used as the UI renderer on all targets.",
+					"description": "No-op, kept for backwards compatibility. Skia is always used as the UI renderer on Uno Platform targets. The WinAppSDK target always renders natively with WinUI.",
 					"helpUrl": "https://aka.platform.uno/skia-rendering"
 				},
 				"Storage": {

@@ -8,7 +8,8 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Lottie" ProjectSystem="true" />
 	</ItemGroup>
 
-	<!-- Skia is the only renderer, so SkiaSharp.Views is always included -->
+	<!-- This file is only imported for Uno Platform targets (not WinAppSDK), where Skia is the
+	     only renderer, so SkiaSharp.Views is always included. -->
 	<ItemGroup>
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true"/>
 	</ItemGroup>
