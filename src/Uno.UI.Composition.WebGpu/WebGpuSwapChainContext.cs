@@ -1,58 +1,40 @@
+// Shared on-window WebGPU context for NATIVE hosts (X11, Win32, macOS, …). The WebGPU swapchain semantics are
+// identical across them — only the platform surface source differs — so hosts create a device + a surface (via
+// the CreateXxxSurface factories) and this type owns acquire/configure/present. The browser is separate: it
+// presents implicitly and blits (no wgpuSurfacePresent), so it has its own context.
 #nullable enable
 
 using System;
 using Uno.UI.Composition.Drawing;
-using Uno.UI.Composition.WebGpu;
 using Uno.WebGpu.Native;
 using static Uno.WebGpu.Native.WGPU;
 
-namespace Uno.WinUI.Runtime.Skia.X11;
+namespace Uno.UI.Composition.WebGpu;
 
-/// <summary>
-/// On-window WebGPU <see cref="IGraphicsContext"/> for X11: owns a <see cref="WebGpuDevice"/> and a real wgpu
-/// swapchain (VK_KHR_xlib_surface), so the WebGPU backend renders straight into the acquired surface texture and
-/// presents it (no offscreen readback / XPutImage). <see cref="AcquireRenderTarget"/> configures the surface and
-/// hands the backend the current backbuffer as a neutral <see cref="IRenderTarget"/>; <see cref="Present"/> swaps.
-/// The device is exposed via <see cref="IWebGpuDeviceContext"/> so the neutral provider needs no X11 type.
-/// Requires WSI support from the Vulkan driver (software lavapipe may or may not provide it).
-/// </summary>
-internal sealed unsafe class X11WebGpuGraphicsContext : IGraphicsContext, IWebGpuDeviceContext
+public sealed unsafe class WebGpuSwapChainContext : IGraphicsContext, IWebGpuDeviceContext
 {
-	private readonly X11Window _x11Window;
 	private readonly WebGpuDevice _device;
 	private IntPtr _surface;
-	private WebGpuRenderSurface? _target;   // owns the depth/stencil + MSAA; color View set per frame
+	private WebGpuRenderSurface? _target;
 	private IntPtr _currentTexture;
 	private IntPtr _currentView;
 	private int _w, _h;
 	private bool _configured;
 
-	public X11WebGpuGraphicsContext(X11Window x11Window)
+	/// <param name="createSurface">Builds the wgpu surface for the platform window, given the instance handle
+	/// (use one of the CreateXxxSurface factories).</param>
+	public WebGpuSwapChainContext(WGPUTextureFormat colorFormat, Func<IntPtr, IntPtr> createSurface)
 	{
-		_x11Window = x11Window;
-
-		// Swapchain surfaces here (lavapipe/X11) expose Bgra8Unorm, not Rgba8Unorm — build the backend pipelines
-		// for Bgra8Unorm to match the swapchain image (avoids a color-format validation error).
-		_device = new WebGpuDevice(WGPUTextureFormat.BGRA8Unorm);
-
-		var xlib = new WGPUSurfaceSourceXlibWindow
-		{
-			Chain = new WGPUChainedStruct { SType = WGPUSType.SurfaceSourceXlibWindow },
-			Display = (IntPtr)_x11Window.Display,
-			Window = (ulong)_x11Window.Window,
-		};
-		var desc = new WGPUSurfaceDescriptor { NextInChain = (WGPUChainedStruct*)&xlib };
-		_surface = wgpuInstanceCreateSurface(_device.Inst, &desc);
+		_device = new WebGpuDevice(colorFormat);
+		_surface = createSurface(_device.Inst);
 		if (_surface == IntPtr.Zero)
 		{
-			throw new InvalidOperationException("Failed to create a wgpu Xlib surface.");
+			throw new InvalidOperationException("Failed to create the wgpu surface for this window.");
 		}
 	}
 
 	public WebGpuDevice Device => _device;
-
 	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
-
 	public bool IsLost => false;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
@@ -61,8 +43,6 @@ internal sealed unsafe class X11WebGpuGraphicsContext : IGraphicsContext, IWebGp
 		height = Math.Max(1, height);
 		Configure(width, height);
 
-		// A swapchain image can be acquired only once per present. The neutral loop may call this more than once
-		// per frame (e.g. a resize callback) — return the already-acquired target until Present() releases it.
 		if (_currentView != IntPtr.Zero)
 		{
 			return _target!;
@@ -74,7 +54,6 @@ internal sealed unsafe class X11WebGpuGraphicsContext : IGraphicsContext, IWebGp
 				&& st.Status != WGPUSurfaceGetCurrentTextureStatus.SuccessSuboptimal)
 			|| st.Texture == IntPtr.Zero)
 		{
-			// Backbuffer not ready this tick; hand back the target with its previous view (present will no-op).
 			return _target!;
 		}
 
@@ -105,7 +84,7 @@ internal sealed unsafe class X11WebGpuGraphicsContext : IGraphicsContext, IWebGp
 		}
 		_w = width;
 		_h = height;
-		_currentView = IntPtr.Zero;   // any pending acquisition is invalidated by reconfiguring the surface
+		_currentView = IntPtr.Zero;
 		_currentTexture = IntPtr.Zero;
 		_target?.Dispose();
 		_target = new WebGpuRenderSurface(_device, width, height, externalColor: true);
@@ -137,5 +116,42 @@ internal sealed unsafe class X11WebGpuGraphicsContext : IGraphicsContext, IWebGp
 		_target?.Dispose();
 		if (_surface != IntPtr.Zero) { wgpuSurfaceRelease(_surface); _surface = IntPtr.Zero; }
 		_device.Dispose();
+	}
+
+	// ---- Platform surface factories (build the chained surface source + create the wgpu surface) ----
+
+	public static IntPtr CreateXlibSurface(IntPtr instance, IntPtr display, ulong window)
+	{
+		var xlib = new WGPUSurfaceSourceXlibWindow
+		{
+			Chain = new WGPUChainedStruct { SType = WGPUSType.SurfaceSourceXlibWindow },
+			Display = display,
+			Window = window,
+		};
+		var desc = new WGPUSurfaceDescriptor { NextInChain = (WGPUChainedStruct*)&xlib };
+		return wgpuInstanceCreateSurface(instance, &desc);
+	}
+
+	public static IntPtr CreateHwndSurface(IntPtr instance, IntPtr hinstance, IntPtr hwnd)
+	{
+		var hwndSrc = new WGPUSurfaceSourceWindowsHWND
+		{
+			Chain = new WGPUChainedStruct { SType = WGPUSType.SurfaceSourceWindowsHWND },
+			Hinstance = hinstance,
+			Hwnd = hwnd,
+		};
+		var desc = new WGPUSurfaceDescriptor { NextInChain = (WGPUChainedStruct*)&hwndSrc };
+		return wgpuInstanceCreateSurface(instance, &desc);
+	}
+
+	public static IntPtr CreateMetalSurface(IntPtr instance, IntPtr metalLayer)
+	{
+		var metal = new WGPUSurfaceSourceMetalLayer
+		{
+			Chain = new WGPUChainedStruct { SType = WGPUSType.SurfaceSourceMetalLayer },
+			Layer = metalLayer,
+		};
+		var desc = new WGPUSurfaceDescriptor { NextInChain = (WGPUChainedStruct*)&metal };
+		return wgpuInstanceCreateSurface(instance, &desc);
 	}
 }
