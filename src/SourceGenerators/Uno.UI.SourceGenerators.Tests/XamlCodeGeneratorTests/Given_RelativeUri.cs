@@ -103,4 +103,91 @@ public class Given_RelativeUri
 
 		await test.RunAsync();
 	}
+
+	/// <summary>
+	/// A Setter reaches the rewrite through the style's target type rather than the syntactic owner,
+	/// so each property has to land on the same form it would inline.
+	/// </summary>
+	[TestMethod]
+	public async Task When_Relative_Uri_In_Setter()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					  xmlns:local="using:TestRepro">
+					<Page.Resources>
+						<Style x:Key="ImageStyle" TargetType="Image">
+							<Setter Property="Source" Value="Assets/asset.png" />
+						</Style>
+						<Style x:Key="LinkStyle" TargetType="HyperlinkButton">
+							<Setter Property="NavigateUri" Value="Assets/doc.pdf" />
+						</Style>
+						<Style x:Key="HolderStyle" TargetType="local:UriHolder">
+							<Setter Property="Uri" Value="Assets/asset.png" />
+							<Setter Property="ImageSource" Value="Assets/asset.png" />
+						</Style>
+					</Page.Resources>
+					<StackPanel>
+						<Image Style="{StaticResource ImageStyle}" />
+						<HyperlinkButton Style="{StaticResource LinkStyle}" />
+						<local:UriHolder Style="{StaticResource HolderStyle}" />
+					</StackPanel>
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using System;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml.Media;
+
+					namespace TestRepro
+					{
+						public partial class UriHolder : Control
+						{
+							public Uri Uri
+							{
+								get => (Uri)GetValue(UriProperty);
+								set => SetValue(UriProperty, value);
+							}
+
+							public static DependencyProperty UriProperty { get; } =
+								DependencyProperty.Register(nameof(Uri), typeof(Uri), typeof(UriHolder), new FrameworkPropertyMetadata(default(Uri)));
+
+							public ImageSource ImageSource
+							{
+								get => (ImageSource)GetValue(ImageSourceProperty);
+								set => SetValue(ImageSourceProperty, value);
+							}
+
+							public static DependencyProperty ImageSourceProperty { get; } =
+								DependencyProperty.Register(nameof(ImageSource), typeof(ImageSource), typeof(UriHolder), new FrameworkPropertyMetadata(default(ImageSource)));
+						}
+
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }
