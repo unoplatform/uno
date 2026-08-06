@@ -44,7 +44,7 @@ public
 	{
 		// WKWebView.CreatePdf is available on iOS 14+, Mac Catalyst 14+, and macOS 11+.
 		var config = new WKPdfConfiguration();
-		var tcs = new TaskCompletionSource<NSData>();
+		var tcs = new TaskCompletionSource<NSData>(TaskCreationOptions.RunContinuationsAsynchronously);
 		CreatePdf(config, (data, error) =>
 		{
 			if (error != null)
@@ -70,7 +70,7 @@ public
 		info.JobName = Title ?? "WebView";
 		print.PrintInfo = info;
 		print.PrintFormatter = ViewPrintFormatter;
-		var tcs = new TaskCompletionSource<CoreWebView2PrintStatus>();
+		var tcs = new TaskCompletionSource<CoreWebView2PrintStatus>(TaskCreationOptions.RunContinuationsAsynchronously);
 		print.Present(true, (_, completed, error) =>
 		{
 			if (error != null)
@@ -101,7 +101,7 @@ public
 	async Task<IReadOnlyList<CoreWebView2Cookie>> ISupportsCookieManager.GetCookiesAsync(string uri, CancellationToken ct)
 	{
 		var store = Configuration.WebsiteDataStore.HttpCookieStore;
-		var tcs = new TaskCompletionSource<NSHttpCookie[]>();
+		var tcs = new TaskCompletionSource<NSHttpCookie[]>(TaskCreationOptions.RunContinuationsAsynchronously);
 		store.GetAllCookies(cookies => tcs.TrySetResult(cookies));
 		using var reg = ct.Register(() => tcs.TrySetCanceled());
 		var all = await tcs.Task;

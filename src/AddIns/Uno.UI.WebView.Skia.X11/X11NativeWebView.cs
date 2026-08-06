@@ -43,21 +43,29 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 	async Task<Stream> ISupportsPrint.PrintToPdfStreamAsync(CoreWebView2PrintSettings? settings, CancellationToken ct)
 	{
 		ct.ThrowIfCancellationRequested();
-		var tempFile = Path.Combine(Path.GetTempPath(), "uno-webview-" + Guid.NewGuid().ToString("N") + ".pdf");
+		var tempFile = Path.Join(Path.GetTempPath(), "uno-webview-" + Guid.NewGuid().ToString("N") + ".pdf");
 		var tempFileUri = new UriBuilder(Uri.UriSchemeFile, string.Empty) { Path = tempFile }.Uri.AbsoluteUri;
 		var tcs = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
 		using var reg = ct.Register(() => tcs.TrySetCanceled(ct));
 		RunOnGtkThread(() =>
 		{
+			WebKit.PrintOperation? op = null;
+			void DisposeOperation()
+			{
+				op?.Dispose();
+				op = null;
+			}
+
 			try
 			{
-				var op = new WebKit.PrintOperation(_webview);
+				op = new WebKit.PrintOperation(_webview);
 				var printSettings = new Gtk.PrintSettings();
 				printSettings.Set("output-uri", tempFileUri);
 				printSettings.Set("output-file-format", "pdf");
 				op.PrintSettings = printSettings;
 				op.Finished += (_, _) =>
 				{
+					DisposeOperation();
 					if (!tcs.TrySetResult(tempFile))
 					{
 						DeleteTemporaryPrintFile(tempFile);
@@ -65,6 +73,7 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 				};
 				op.Failed += (_, _) =>
 				{
+					DisposeOperation();
 					DeleteTemporaryPrintFile(tempFile);
 					tcs.TrySetException(new InvalidOperationException("Print failed"));
 				};
@@ -72,6 +81,7 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 			}
 			catch (Exception e)
 			{
+				DisposeOperation();
 				DeleteTemporaryPrintFile(tempFile);
 				tcs.TrySetException(e);
 			}
@@ -91,12 +101,14 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 	async Task<CoreWebView2PrintStatus> ISupportsPrint.ShowPrintUIAsync(CoreWebView2PrintDialogKind dialogKind, CancellationToken ct)
 	{
 		ct.ThrowIfCancellationRequested();
-		await RunOnGtkThreadAsync(() =>
+		var result = await RunOnGtkThreadAsync(() =>
 		{
-			var op = new WebKit.PrintOperation(_webview);
+			using var op = new WebKit.PrintOperation(_webview);
 			return op.RunDialog(_window);
 		}).WaitAsync(ct);
-		return CoreWebView2PrintStatus.Succeeded;
+		return result == WebKit.PrintOperationResponse.Print
+			? CoreWebView2PrintStatus.Succeeded
+			: CoreWebView2PrintStatus.OtherError;
 	}
 
 	private void DeleteTemporaryPrintFile(string path)
@@ -140,7 +152,7 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 		_documentCreatedScripts[id] = javaScript;
 		RunOnGtkThread(() =>
 		{
-			var script = new WebKit.UserScript(
+			using var script = new WebKit.UserScript(
 				javaScript,
 				WebKit.UserContentInjectedFrames.AllFrames,
 				WebKit.UserScriptInjectionTime.Start,
@@ -163,7 +175,7 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 			_webview.UserContentManager.RemoveAllScripts();
 			foreach (var remaining in _documentCreatedScripts.Values)
 			{
-				var script = new WebKit.UserScript(
+				using var script = new WebKit.UserScript(
 					remaining,
 					WebKit.UserContentInjectedFrames.AllFrames,
 					WebKit.UserScriptInjectionTime.Start,

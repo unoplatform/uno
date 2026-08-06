@@ -162,6 +162,7 @@ public partial class WebView2 : Control, IWebView
 			coreWebView2.NavigationCompleted -= CoreWebView2_NavigationCompleted;
 			coreWebView2.SourceChanged -= CoreWebView2_SourceChanged;
 			coreWebView2.WebMessageReceived -= CoreWebView2_WebMessageReceived;
+			coreWebView2.HistoryChanged -= CoreWebView2_HistoryChanged;
 			coreWebView2.Close();
 		}
 		(CanGoBack, CanGoForward) = (false, false);

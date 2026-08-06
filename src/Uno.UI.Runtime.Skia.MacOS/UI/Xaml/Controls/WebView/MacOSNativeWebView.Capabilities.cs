@@ -268,7 +268,7 @@ internal partial class MacOSNativeWebView :
 			return System.Array.Empty<CoreWebView2Cookie>();
 		}
 
-		var doc = JsonDocument.Parse(json);
+		using var doc = JsonDocument.Parse(json);
 		var list = new List<CoreWebView2Cookie>(doc.RootElement.GetArrayLength());
 		foreach (var e in doc.RootElement.EnumerateArray())
 		{
