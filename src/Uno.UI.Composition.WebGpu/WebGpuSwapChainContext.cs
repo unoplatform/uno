@@ -144,6 +144,17 @@ public sealed unsafe class WebGpuSwapChainContext : IGraphicsContext, IWebGpuDev
 		return wgpuInstanceCreateSurface(instance, &desc);
 	}
 
+	public static IntPtr CreateAndroidSurface(IntPtr instance, IntPtr aNativeWindow)
+	{
+		var android = new WGPUSurfaceSourceAndroidNativeWindow
+		{
+			Chain = new WGPUChainedStruct { SType = WGPUSType.SurfaceSourceAndroidNativeWindow },
+			Window = aNativeWindow,
+		};
+		var desc = new WGPUSurfaceDescriptor { NextInChain = (WGPUChainedStruct*)&android };
+		return wgpuInstanceCreateSurface(instance, &desc);
+	}
+
 	public static IntPtr CreateMetalSurface(IntPtr instance, IntPtr metalLayer)
 	{
 		var metal = new WGPUSurfaceSourceMetalLayer
