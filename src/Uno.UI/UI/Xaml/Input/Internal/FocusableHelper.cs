@@ -27,8 +27,10 @@ namespace Uno.UI.Xaml.Input
 		{
 			if (dependencyObject is Hyperlink hyperlink)
 			{
-				var contentStart = hyperlink.ContentStart;
-				var contentStartVisualParent = contentStart.VisualParent;
+				// WinUI fail-fasts when GetContentStart() returns E_NOT_SUPPORTED, which happens when the
+				// Hyperlink has no containing TextBlock/RichTextBlock. Uno yields null there instead and
+				// falls through to the containing element, which is what that error path would have meant.
+				var contentStartVisualParent = hyperlink.ContentStart?.VisualParent;
 				if (contentStartVisualParent != null)
 				{
 					return contentStartVisualParent;
