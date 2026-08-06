@@ -898,7 +898,8 @@ public sealed class WebGpuColorFilter : IColorFilter
 public sealed class WebGpuEffectFilter : IEffectFilter
 {
 	public float Dx, Dy, SigmaX, SigmaY;
-	public WColor Color;
+	public WColor Color;      // acrylic tint (composited SrcOver on top) / drop-shadow color
+	public WColor LumColor;   // acrylic luminosity color (SrcOver over the blurred backdrop == mix(blurred, lum.rgb, lum.a))
 	public void Dispose() { }
 }
 
@@ -1845,15 +1846,20 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					BQV(0, new Vector2(0, 0), 0, 0); BQV(4, new Vector2(_s.Width, 0), 1, 0); BQV(8, new Vector2(_s.Width, _s.Height), 1, 1);
 					BQV(12, new Vector2(0, 0), 0, 0); BQV(16, new Vector2(_s.Width, _s.Height), 1, 1); BQV(20, new Vector2(0, _s.Height), 0, 1);
 					ops.Add((2, (nint)bdbg, 0, (nint)MakeBuffer(bq), false, bk.Clip, (nint)MakeClipBg(_d.ImageClipBgl, bk.Clip)));
-					if (bk.Effect.Color.A > 0)
+					// Acrylic recipe over the blurred backdrop: SrcOver the luminosity colour (== mix(blurred, lum.rgb,
+					// lum.a)), then SrcOver the tint. Both fill the effect region (clip AABB). A=0 colours are skipped.
+					void Overlay(WColor col)
 					{
-						var tc = new Vector4(bk.Effect.Color.R / 255f, bk.Effect.Color.G / 255f, bk.Effect.Color.B / 255f, bk.Effect.Color.A / 255f);
+						if (col.A == 0) { return; }
+						var tc = new Vector4(col.R / 255f, col.G / 255f, col.B / 255f, col.A / 255f);
 						var tv = new List<float>();
 						void TV(float x, float y) { var n = Ndc(new Vector2(x, y)); tv.Add(n.X); tv.Add(n.Y); tv.Add(tc.X); tv.Add(tc.Y); tv.Add(tc.Z); tv.Add(tc.W); }
 						var a = bk.Clip.Aabb;
 						TV(a.X, a.Y); TV(a.Z, a.Y); TV(a.Z, a.W); TV(a.X, a.Y); TV(a.Z, a.W); TV(a.X, a.W);
-						ops.Add((0, (nint)MakeBuffer(tv.ToArray()), 0, 0, false, bk.Clip, (nint)MakeClipBg(_d.SolidClipBgl, bk.Clip)));
+						ops.Add((0, (nint)MakeBuffer(tv.ToArray()), 6, 0, false, bk.Clip, (nint)MakeClipBg(_d.SolidClipBgl, bk.Clip)));
 					}
+					Overlay(bk.Effect.LumColor);
+					Overlay(bk.Effect.Color);
 					break;
 				}
 			}
@@ -2143,6 +2149,8 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 		// (noise, multi-stage blends) is not translated. GaussianBlurEffect GUID per EffectHelpers.
 		var blurGuid = new Guid("1FEB6D69-2FE6-4AC9-8C58-1D7F93E7A6A5");
 		float sigma = 0f;
+		WColor tint = default, lum = default;
+		bool sawColorSource = false;
 		void Walk(object node)
 		{
 			if (node is IGraphicsEffectD2D1Interop io)
@@ -2152,14 +2160,26 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 					io.GetNamedPropertyMapping("BlurAmount", out var idx, out _);
 					if (io.GetProperty(idx) is float f) { sigma = MathF.Max(sigma, f); }
 				}
+				// Acrylic bakes its tint/luminosity into named ColorSourceEffects ("TintColor"/"LuminosityColor").
+				// The tint is composited SrcOver on top; the luminosity is SrcOver over the blurred backdrop, which
+				// equals the original's mix(blurred, lum.rgb, lum.a) luminosity blend.
+				if (node is Windows.Graphics.Effects.IGraphicsEffect ge && ge.Name is "TintColor" or "LuminosityColor")
+				{
+					io.GetNamedPropertyMapping("Color", out var ci, out _);
+					if (io.GetProperty(ci) is WColor c)
+					{
+						sawColorSource = true;
+						if (ge.Name == "TintColor") { tint = c; } else { lum = c; }
+					}
+				}
 				for (uint i = 0; i < io.GetSourceCount(); i++) { if (io.GetSource(i) is { } s) { Walk(s); } }
 			}
 		}
 		Walk(effect);
-		if (sigma > 0f)
+		if (sigma > 0f || sawColorSource)
 		{
 			hasBackdropInput = true;
-			return new WebGpuEffectFilter { SigmaX = sigma, SigmaY = sigma, Color = default };
+			return new WebGpuEffectFilter { SigmaX = sigma, SigmaY = sigma, Color = tint, LumColor = lum };
 		}
 		// A non-blur effect: delegate to the inner factory (Skia realizes the full DAG). A Skia-less inner has no
 		// managed rasterizer for it — treat as unsupported (renders nothing) rather than crash.
