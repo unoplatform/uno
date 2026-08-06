@@ -19,7 +19,6 @@
 		test for more details.
 	  -->
 	  <_NonMergedXamlResources Include="$(MSBuildProjectDirectory)\UI\Xaml\Style\Generic\SystemResources.xaml" />
-	  <_NonMergedXamlResources Include="$(MSBuildProjectDirectory)\UI\Xaml\Style\Generic\Generic.Native.xaml" />
   </ItemGroup>
 
   <Import Project="$(NuGetPackageRoot)\uno.xamlmerge.task\$(_Uno_XamlMerge_Task_Version)\build\Uno.XamlMerge.Task.targets"

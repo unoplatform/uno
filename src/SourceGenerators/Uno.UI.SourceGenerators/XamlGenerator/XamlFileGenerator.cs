@@ -1622,7 +1622,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var key = GetDictionaryResourceKey(resource);
 
-				if (key == null || IsNativeStyle(resource))
+				if (key == null)
 				{
 					continue;
 				}
@@ -1646,7 +1646,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var key = GetDictionaryResourceKey(resource);
 
-				if (key == null || IsNativeStyle(resource))
+				if (key == null)
 				{
 					continue;
 				}
@@ -1797,14 +1797,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var implicitKey = GetImplicitDictionaryResourceKey(style);
 					if (SymbolEqualityComparer.Default.Equals(targetType.ContainingAssembly, _metadataHelper.Compilation.Assembly))
 					{
-						var isNativeStyle = IsNativeStyle(style);
-
 						using (TrySingleLineIfForLinkerHint(writer, style))
 						{
-							writer.AppendLineInvariantIndented("global::Microsoft.UI.Xaml.Style.RegisterDefaultStyleForType({0}, {1}, /*isNativeStyle:*/{2});",
+							writer.AppendLineInvariantIndented("global::Microsoft.UI.Xaml.Style.RegisterDefaultStyleForType({0}, {1});",
 										implicitKey,
-										SingletonInstanceAccess,
-										isNativeStyle.ToString().ToLowerInvariant()
+										SingletonInstanceAccess
 									);
 						}
 					}
@@ -1817,13 +1814,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			return true;
 		}
-
-		/// <summary>
-		/// Determines if the provided object is setting the "IsNativeStyle" property, used in
-		/// conjuction with "FeatureConfiguration.Style.UseUWPDefaultStyles"
-		/// </summary>
-		private bool IsNativeStyle(XamlObjectDefinition style)
-			=> string.Equals(style.Members.FirstOrDefault(m => m.Member.Name == "IsNativeStyle")?.Value as string, "True", StringComparison.OrdinalIgnoreCase);
 
 		/// <summary>
 		/// Initialize a new ResourceDictionary instance and populate its items and properties.
@@ -6084,7 +6074,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								else
 								{
 									if (IsRelevantNamespace(member?.Member?.PreferredXamlNamespace)
-										&& IsRelevantProperty(member?.Member, objectDefinition))
+										&& IsRelevantProperty(member?.Member))
 									{
 										GenerateError(
 											writer,

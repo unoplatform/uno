@@ -331,60 +331,6 @@ namespace Uno.UI
 			public static bool UseOverStates { get; set; } = true;
 		}
 
-		public static class Style
-		{
-			/// <summary>
-			/// Determines if Uno.UI should be using native styles for controls that have
-			/// a native counterpart. (e.g. Button, Slider, ComboBox, ...)
-			///
-			/// By default this is true.
-			/// </summary>
-			public static bool UseUWPDefaultStyles { get; set; } = true;
-
-			/// <summary>
-			/// Override the native styles usage per control type.
-			/// </summary>
-			/// <remarks>
-			/// Usage: 'UseUWPDefaultStylesOverride[typeof(Frame)] = false;' will result in the native style always being the default for Frame, irrespective
-			/// of the value of <see cref="UseUWPDefaultStyles"/>. This is useful when an app uses the UWP default look for most controls but the native
-			/// appearance/comportment for a few particular controls, or vice versa.
-			/// </remarks>
-			public static IDictionary<Type, bool> UseUWPDefaultStylesOverride { get; } = new Dictionary<Type, bool>();
-
-			/// <summary>
-			/// This enables native frame navigation on Android and iOS by setting related classes (<see cref="Frame"/>, <see cref="CommandBar"/>
-			/// and <see cref="Microsoft.UI.Xaml.Controls.AppBarButton"/>) to use their native styles.
-			/// </summary>
-			public static void ConfigureNativeFrameNavigation()
-			{
-				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Frame_Available)
-				{
-					SetUWPDefaultStylesOverride<Microsoft.UI.Xaml.Controls.Frame>(useUWPDefaultStyle: false);
-				}
-
-				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_CommandBar_Available)
-				{
-					SetUWPDefaultStylesOverride<Microsoft.UI.Xaml.Controls.CommandBar>(useUWPDefaultStyle: false);
-				}
-
-				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_AppBarButton_Available)
-				{
-					SetUWPDefaultStylesOverride<Microsoft.UI.Xaml.Controls.AppBarButton>(useUWPDefaultStyle: false);
-				}
-			}
-
-			/// <summary>
-			/// Override the native styles useage for control type <typeparamref name="TControl"/>.
-			/// </summary>
-			/// <typeparam name="TControl"></typeparam>
-			/// <param name="useUWPDefaultStyle">
-			/// Whether instances of <typeparamref name="TControl"/> should use the UWP default style.
-			/// If false, the native default style (if one exists) will be used.
-			/// </param>
-			public static void SetUWPDefaultStylesOverride<TControl>(bool useUWPDefaultStyle) where TControl : Microsoft.UI.Xaml.Controls.Control
-				=> UseUWPDefaultStylesOverride[typeof(TControl)] = useUWPDefaultStyle;
-		}
-
 		public static class TextBlock
 		{
 			/// <summary>

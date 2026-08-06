@@ -83,6 +83,34 @@ Uno.SDK single-project model.
   `IShadowChildrenProvider`, `CompositorThread`,
   `Uno.UI.Composition.ICompositionRoot`. Use the WinUI control
   (`ListView`/`Frame`/`Popup`/…) — everything renders via Skia.
+- **Native flyout opt-in:** `FlyoutBase.UseNativePopup`, including its conditional-XAML forms
+  (`android:UseNativePopup` / `ios:UseNativePopup`). Remove the assignment — flyouts always use
+  the WinUI presentation. The two `Uno.UI.Toolkit` attached properties that only ever
+  customized that native iOS presentation go with it:
+  `MenuFlyoutItemExtensions.IsDestructive` (red "destructive" item text) and
+  `MenuFlyoutExtensions.CancelTextIosOverride` (custom cancel-button caption). Remove the
+  attributes; style the `MenuFlyoutItem` directly for a destructive look.
+  `UICommandExtensions.SetDestructive` / `UICommand.IsDestructive` are **not** removed —
+  those still drive the native iOS `MessageDialog`.
+- **Native default styles:** the whole `Generic.Native.xaml` dictionary is gone, so the
+  `NativeDefaultButton`, `NativeDefaultCheckBox`, `NativeDefaultCommandBar`,
+  `NativeDefaultAppBarButton`, `NativeDefaultFrame`, `NativeDefaultPivot`,
+  `NativeDefaultProgressBar`, `NativeDefaultSlider`, `NativeDefaultTextBox`,
+  `NativeDefaultToggleSwitch`, `NativeDefaultSplitViewOpenPaneLength`, `AndroidButtonStyle`,
+  `AndroidCheckBoxStyle`, `AndroidRadioButtonStyle`, `iOSButtonStyle`,
+  `IosPickerFlyoutTextButtonStyle`, `LeftDrawerSplitViewStyle`, and
+  `RightDrawerSplitViewStyle` resource keys no longer resolve. These styles templated native
+  views, so there is no Skia equivalent — drop the `Style="{StaticResource NativeDefault…}"`
+  and the control falls back to the WinUI default style it already used when no native style
+  was registered. `Uno.UI.Converters.UnoNativeDefaultProgressBarReverseBoolConverter` goes
+  with them.
+- **Native-style declaration:** the `not_win:IsNativeStyle="True"` attribute on a `Style` is no
+  longer recognized. A third-party dictionary that still carries it now **fails the XAML
+  build** instead of silently registering a second, native default style — remove the
+  attribute. The Uno-only
+  `Style.RegisterDefaultStyleForType(Type, IXamlResourceDictionaryProvider, bool)` also loses its
+  `isNative` parameter; it is `[EditorBrowsable(Never)]` and normally only called from
+  XAML-generated code, so rebuilding regenerates the correct call.
 - **Composition:** `Uno.CompositionConfiguration.Options.UseCompositorThread` (the Android
   RenderNode compositor thread). Remove the flag; Skia composition needs no dedicated
   native render thread.
@@ -125,7 +153,9 @@ Skia/WinUI behavior:
   `Cursors.UseHandForInteraction` (the "hand" cursor for interactive controls is
   now never used).
 - **Native (Android + iOS):** `ListViewBase.AnimateScrollIntoView`.
-- **Native styling:** `Style.UseUWPDefaultStyles`, `Style.ConfigureNativeFrameNavigation()`.
+- **Native styling:** the whole `Style` holder — `Style.UseUWPDefaultStyles`,
+  `Style.UseUWPDefaultStylesOverride`, `Style.SetUWPDefaultStylesOverride<TControl>()`, and
+  `Style.ConfigureNativeFrameNavigation()`. The WinUI default styles are now the only ones.
 - **Skia overlay:** `TextBox.UseOverlayOnSkia`.
 
 `WebView2.IsInspectable` is also removed; it was an obsolete alias, so switch to

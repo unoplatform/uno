@@ -167,12 +167,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			OnOpened();
 		}
 
-		/// <summary>
-		/// Controls the appeareance of <see cref="MenuFlyout"/>, when true the native popups and appearance
-		/// is used, otherwise the UWP appeareance is used. The default value is provided by <see cref="FeatureConfiguration.Style.UseUWPDefaultStyles"/>.
-		/// </summary>
-		public bool UseNativePopup { get; set; } = !FeatureConfiguration.Style.UseUWPDefaultStyles;
-
 		protected virtual void InitializePopupPanel()
 		{
 			InitializePopupPanelPartial();

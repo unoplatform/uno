@@ -19,17 +19,6 @@
 
                 <StackPanel>
 
-                    <TextBlock Text="Native Checkbox" />
-                    <CheckBox
-                        android:Style="{StaticResource AndroidCheckBoxStyle}"
-                        Command="{Binding [SampleCommand]}"
-                        Content="Checkbox" />
-                    <CheckBox
-                        android:Style="{StaticResource AndroidCheckBoxStyle}"
-                        Command="{Binding [SampleCommand]}"
-                        Content="Checkbox"
-                        IsChecked="true" />
-
                     <TextBlock Text="Checkbox with the default style from UWA" />
                     <CheckBox Command="{Binding [SampleCommand]}" Content="UWACheckbox" />
                     <CheckBox

@@ -62,34 +62,6 @@
                 IsChecked="{Binding IsChecked}"
                 IsEnabled="{Binding IsEnabled}"
                 Tapped="OnTapped" />
-            <TextBlock Margin="0,20,0,0" Text="Native styles (if applicable)" />
-            <Button
-                android:Style="{StaticResource AndroidButtonStyle}"
-                ios:Style="{StaticResource iOSButtonStyle}"
-                Click="OnClick"
-                Command="{Binding Command}"
-                CommandParameter="Microsoft.UI.Xaml.Controls.Button"
-                Content="Button"
-                IsEnabled="{Binding IsEnabled}"
-                Tapped="OnTapped" />
-            <CheckBox
-                android:Style="{StaticResource AndroidCheckBoxStyle}"
-                Click="OnClick"
-                Command="{Binding Command}"
-                CommandParameter="Microsoft.UI.Xaml.Controls.CheckBox"
-                Content="CheckBox"
-                IsChecked="{Binding IsChecked}"
-                IsEnabled="{Binding IsEnabled}"
-                Tapped="OnTapped" />
-            <RadioButton
-                android:Style="{StaticResource AndroidRadioButtonStyle}"
-                Click="OnClick"
-                Command="{Binding Command}"
-                CommandParameter="Microsoft.UI.Xaml.Controls.RadioButton"
-                Content="RadioButton"
-                IsChecked="{Binding IsChecked}"
-                IsEnabled="{Binding IsEnabled}"
-                Tapped="OnTapped" />
         </StackPanel>
         <StackPanel x:Name="myStackPanel" Grid.Column="1">
             <CheckBox Content="IsEnabled" IsChecked="{Binding IsEnabled, Mode=TwoWay}" />
