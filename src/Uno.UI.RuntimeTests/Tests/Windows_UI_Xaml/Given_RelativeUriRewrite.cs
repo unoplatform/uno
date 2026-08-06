@@ -54,8 +54,9 @@ public class Given_RelativeUriRewrite
 	{
 		var SUT = new RelativeUriRewritePage();
 
-		// WinUI emits the local-resource form here; Uno keeps the ms-appx form so that a library's
-		// svg assets stay reachable through the assembly prefix.
+		// Measured on WinAppSDK 1.7: WinUI emits the local-resource form for every svg, whether it is
+		// written as an SvgImageSource element or reached through an ImageSource-typed property. Uno
+		// keeps the ms-appx form so a library's svg assets stay reachable through the assembly prefix.
 		Assert.AreEqual(AssemblyBase + "Assets/couch.svg", SUT.svgImageSource.UriSource.ToString());
 	}
 

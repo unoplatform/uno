@@ -227,7 +227,9 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
 - **A relative URI on a `Uri`-typed property now compiles to `ms-resource:///Files/…`**, the MRT
   local-resource form WinUI produces. Previously Uno emitted the relative string verbatim. This
   affects custom `Uri` properties, `HyperlinkButton.NavigateUri`, `Hyperlink.NavigateUri`,
-  `BitmapIcon.UriSource`, `BitmapIconSource.UriSource`, and `WebView2.Source`:
+  `BitmapIcon.UriSource`, `BitmapIconSource.UriSource`, `WebView2.Source`,
+  `MediaPlayerElement.Source`, `LottieVisualSource.UriSource`, and the `Uri` passed to
+  `RandomAccessStreamReference.CreateFromUri`:
 
   ```diff
     <BitmapIcon UriSource="Assets/icon.png" />
@@ -239,6 +241,11 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
   containing it, exactly as WinUI does. **Images declared in application XAML keep loading the same
   asset** — Uno resolves `ms-resource:///Files/X` as `ms-appx:///X`. To keep a value verbatim, write
   it as an explicit `ms-appx:///…` URI in XAML.
+
+  Only the four image sinks Uno already resolved as assets carry that mapping. The properties above
+  that never resolved a relative URI stay inert with the new value, exactly as they are on WinUI —
+  a hand-written `ms-resource:///Files/…` is treated the same as the compiler-generated form, since
+  that *is* MRT's local-file namespace and Uno ships no MRT to resolve it any other way.
 
   Two changes go beyond the value you read back:
 
@@ -258,9 +265,18 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
   Properties typed `ImageSource` are unaffected in shape but now resolve consistently: `Image.Source`,
   `ImageBrush.ImageSource`, and custom `ImageSource` properties all resolve a relative URI against
   the base URI. `ImageBrush.ImageSource` and custom `ImageSource` properties previously kept the
-  relative string. `ResourceDictionary.Source` is unchanged, and `SvgImageSource.UriSource`
-  intentionally keeps the `ms-appx:///` form so a library's svg assets stay reachable through the
-  assembly prefix.
+  relative string. `ResourceDictionary.Source` is unchanged.
+
+  Two divergences from WinUI remain here, both deliberate:
+
+  - **The base URI is the assembly root, not the XAML file's folder.** `Assets/logo.png` written in
+    `Views/MainPage.xaml` resolves as `ms-appx:///Assets/logo.png` on Uno and
+    `ms-appx:///Views/Assets/logo.png` on WinUI. This predates the rewrite and is unchanged by it.
+  - **Svg assets keep the `ms-appx:///` form.** Measured on WinAppSDK 1.7, WinUI compiles every
+    relative svg URI to `ms-resource:///Files/…` — including one written on `Image.Source` rather
+    than on `SvgImageSource.UriSource`. Uno keeps `ms-appx:///`, because that form is resolved as an
+    asset path and so carries the assembly prefix a library's own svg assets need; the `ms-resource`
+    form resolves only against the application root.
 
 ### Templates and project heads
 

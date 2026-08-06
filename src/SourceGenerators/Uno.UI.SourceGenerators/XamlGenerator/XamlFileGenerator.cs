@@ -5310,10 +5310,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return ToVerbatimLiteral(rawValue ?? "");
 					}
 
-					// WinUI resolves against the base URI for ImageSource-typed properties and for
-					// BitmapImage.UriSource, and rewrites every other relative URI to the MRT local-resource
-					// form (a raw prefix concat, not a base-URI resolution). The owner check also catches
-					// SvgImageSource.UriSource - kept on ms-appx so a library's svg assets stay reachable.
+					// Measured on WinAppSDK 1.7: WinUI resolves a relative URI against the XAML file's
+					// folder only where it lands in a BitmapImage, and rewrites every other one - including
+					// an SvgImageSource reached through an ImageSource-typed property - to the MRT
+					// local-resource form, a raw prefix concat rather than a base-URI resolution.
+					//
+					// Uno keeps every ImageSource-typed property, SvgImageSource.UriSource included, on the
+					// ms-appx form. The two forms differ in how the sink resolves them, not in what they can
+					// express: ms-appx is resolved as an asset path, so it carries the assembly prefix a
+					// library's own assets need, while ms-resource is only understood by the mapping in
+					// XamlFilePathHelper, which maps to the app root. Following WinUI here would leave a
+					// library's svg assets unreachable, with no MRT to fall back on.
 					if (isImageSourceProperty
 						|| FindFirstConcreteAncestorType(owner?.Owner).Is(Generation.ImageSourceSymbol.Value))
 					{
