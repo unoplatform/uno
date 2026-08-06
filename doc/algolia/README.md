@@ -19,6 +19,7 @@ index, using this file as the source of truth:
 |---|---|---|---|
 | Duplicate entries (one record per heading anchor) | Index setting | `attributeForDistinct: "url_without_anchor"` + `distinct: true` (was `"url"`) | **applied** |
 | Nav / footer / sidebar / breadcrumb indexed as content | Crawler | `$(...).remove()` in `recordExtractor` | **applied** |
+| docfx tabbed pages indexed under `?tabs=…` variants | Crawler | query string stripped in `recordExtractor` (NOT `ignoreQueryParams` — it infinite-loops the ?tabs redirect) | **applied** |
 | Poor intent (e.g. "Get Started") | Index | `customRanking` (`weight.pageRank` first) | already present |
 | `./page`, `./page/`, `./page/index.html` as separate hits | Crawler | canonical-URL collapsing in `recordExtractor` | optional (not yet applied) |
 | Same-titled pages across sections | Index | `section` facet + `customRanking` | optional (not yet applied) |

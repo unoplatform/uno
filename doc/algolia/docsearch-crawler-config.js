@@ -2,7 +2,7 @@
  * Algolia DocSearch — Crawler configuration for the `platform` docs index
  * (Algolia app PHB9D8WS99).
  *
- * This mirrors the LIVE crawler configuration, with the two fixes from
+ * This mirrors the LIVE crawler configuration, with the fixes from
  * unoplatform/uno-private#2038 applied:
  *
  *   CHANGE 1 — `recordExtractor` now strips site chrome (navbar / footer /
@@ -14,6 +14,11 @@
  *   CHANGE 2 — `attributeForDistinct` is `url_without_anchor` (was `url`) so a
  *   page yields ONE result instead of one per heading anchor. This is the
  *   duplicate-results fix.
+ *
+ *   CHANGE 3 — `recordExtractor` strips the query string (e.g. ?tabs=…) from
+ *   record URLs so docfx tabbed pages index under one clean URL. This is done
+ *   in the extractor, NOT via the crawler's `ignoreQueryParams` — that option
+ *   infinite-loops against the pages' client-side ?tabs redirect and drops them.
  *
  * This file is NOT executed by the docs build; it is the source of truth for the
  * hosted Algolia Crawler. Apply it via the Crawler dashboard (Data sources →
@@ -61,7 +66,7 @@ new Crawler({
           ".sidenav, .sideaffix, #affix, .affix, [role='complementary'], #docsearch, .toc, #toc"
         ).remove();
 
-        return helpers.docsearch({
+        const records = helpers.docsearch({
           recordProps: {
             lvl1: [
               "header h1",
@@ -85,6 +90,18 @@ new Crawler({
           aggregateContent: false,
           recordVersion: "v3",
         });
+
+        // CHANGE 3: strip the query string (e.g. ?tabs=…) so docfx tabbed pages
+        // index under one clean, query-free URL (the #anchor is kept). Done here
+        // in the extractor rather than via the crawler's `ignoreQueryParams`:
+        // that option infinite-loops against these pages' client-side ?tabs
+        // redirect (renderJavaScript: true) and would drop every tabbed page.
+        const stripQuery = (u) => String(u || "").replace(/\?[^#]*/, "");
+        return records.map((r) => ({
+          ...r,
+          url: stripQuery(r.url),
+          url_without_anchor: stripQuery(r.url_without_anchor),
+        }));
       },
     },
   ],
