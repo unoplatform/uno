@@ -391,8 +391,9 @@ also expose a builder enum):
 | **X11** | `X11SoftwareGraphicsContext` factory → `WebGpuSwapChainContext(CreateXlibSurface)` | ✅ validated headless (Xvfb + lavapipe): render tests pass, "WebGpu context via WebGpuRenderer" |
 | **WebAssembly (browser)** | `BrowserRenderer` opt-in → `WebGpuBrowserGraphicsContext` (async device init, canvas-selector surface, blit present) | renders with **zero Dawn validation errors** headless; visual pixels need a real-GPU browser (headless SwiftShader doesn't capture WebGPU-canvas output in screenshots — reproduced with pure-JS WebGPU) |
 | **Win32** | `Win32RenderingBackend.WebGpu` → `WebGpuSwapChainContext(CreateHwndSurface)` + `Win32WebGpuRenderer` bridges the render thread | build-validated (net10.0 on Linux); GPU present needs a real Windows GPU — same swapchain path as validated X11 |
+| **Android (Skia)** | `UnoSKWebGpuView` (SurfaceView) → `WebGpuSwapChainContext(CreateAndroidSurface)` from the Surface's ANativeWindow, opt-in `UNO_WEBGPU` | build/runtime needs the mobile CI restore context + a device (the base Android host doesn't build standalone in a plain Linux container — a pre-existing TFM-graph limitation, not this change); the wgpu-native android `.so` must be packaged per-ABI as `AndroidNativeLibrary` |
 | **macOS** | `CreateMetalSurface` ready, but the native ObjC helper (`UnoNativeMac`) owns the `CAMetalLayer`/present; WebGPU needs it to expose the layer and cede present — a native change + a Mac |
-| **FrameBuffer** | n/a — `wgpu-native` has no KMS/DRM surface source |
+| **FrameBuffer** | surfaceless — `wgpu-native` has no KMS/DRM surface source, so WebGPU would render **offscreen + read back** and present via the host's existing framebuffer path (a GPU→CPU copy per frame); not yet wired |
 
 ---
 
