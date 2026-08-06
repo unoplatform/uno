@@ -86,7 +86,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 #if __SKIA__ // Not yet supported on the other platforms (https://github.com/unoplatform/uno/issues/8909)
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaFrameBuffer)]
+		// The ms-appdata load never completes on Skia Linux, and the awaited TCS has no timeout, so the job hangs to its limit (#23967).
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaFrameBuffer | RuntimeTestPlatforms.SkiaX11)]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23967")]
 		public async Task When_MsAppData()
 		{
@@ -172,7 +173,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaFrameBuffer)]
+		// Same Skia Linux hang as When_MsAppData (#23967): never reached in CI, but it awaits the same unbounded TCS.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaFrameBuffer | RuntimeTestPlatforms.SkiaX11)]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23967")]
 		public async Task When_MsAppData_StreamDisposed_FileNotLocked()
 		{
