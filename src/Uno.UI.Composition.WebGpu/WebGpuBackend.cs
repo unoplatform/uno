@@ -931,7 +931,11 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	public void Concat(in Matrix4x4 matrix) => _m = matrix * _m;
 	public void Translate(float dx, float dy) => _m = Matrix4x4.CreateTranslation(dx, dy, 0) * _m;
 	public void Scale(float sx, float sy) => _m = Matrix4x4.CreateScale(sx, sy, 1) * _m;
-	public int Save() { _stack.Push(new SaveEntry { M = _m, Clip = _clip }); return _stack.Count; }
+	// Returns the PRE-push depth, matching SKCanvas.Save(): RestoreToCount(count) pops entries while Count > count,
+	// so it must be handed the depth to restore *to* (before this save). Returning the post-push count made
+	// RestoreToCount a no-op, leaking _m/_clip across sibling visuals (identity-local visuals — e.g. opaque
+	// container backgrounds — inherited a sibling's transform and painted over content).
+	public int Save() { var pre = _stack.Count; _stack.Push(new SaveEntry { M = _m, Clip = _clip }); return pre; }
 	public int SaveCount => _stack.Count;
 	public void Restore()
 	{
