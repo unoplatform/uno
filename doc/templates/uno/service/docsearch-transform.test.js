@@ -90,6 +90,23 @@ test('Stage 3: same title on different pages gets a distinguishing suffix', () =
     assert.strictEqual(a._highlightResult.hierarchy.lvl1.value, 'Get Started — Xaml');
 });
 
+test('Stage 3: disambiguation preserves existing <mark> highlight markup', () => {
+    function marked(title, url) {
+        var h = hit('lvl1', title, url);
+        h._highlightResult.hierarchy.lvl1.value = 'Get <mark>Started</mark>';
+        h._snippetResult.hierarchy.lvl1.value = 'Get <mark>Started</mark>';
+        return h;
+    }
+    var a = marked('Get Started', BASE + '/xaml/get-started.html');
+    var b = marked('Get Started', BASE + '/csharp/get-started.html');
+    t.disambiguateSameTitle([a, b]);
+    assert.strictEqual(a.hierarchy.lvl1, 'Get Started — Xaml'); // raw hierarchy still gets the suffix
+    // highlight/snippet keep the <mark> markup, with the suffix appended (not overwritten):
+    assert.strictEqual(a._highlightResult.hierarchy.lvl1.value, 'Get <mark>Started</mark> — Xaml');
+    assert.strictEqual(a._snippetResult.hierarchy.lvl1.value, 'Get <mark>Started</mark> — Xaml');
+    assert.strictEqual(b._highlightResult.hierarchy.lvl1.value, 'Get <mark>Started</mark> — Csharp');
+});
+
 test('Stage 3: identical titles on the SAME page are left untouched', () => {
     const a = hit('lvl1', 'Same', BASE + '/same.html');
     const b = hit('lvl1', 'Same', BASE + '/same.html');

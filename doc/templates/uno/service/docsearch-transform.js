@@ -87,24 +87,32 @@
             .trim();
     }
 
-    function setHighlightValue(result, type, value) {
+    function appendToHighlight(result, type, sep) {
         var hierarchy = result && result.hierarchy;
-        if (hierarchy && hierarchy[type]) {
-            hierarchy[type].value = value;
+        if (hierarchy && hierarchy[type] && typeof hierarchy[type].value === 'string') {
+            // DocSearch renders these values as HTML and they may contain <mark>
+            // highlight markup, so append the suffix rather than overwriting —
+            // overwriting with a plain string would strip the highlighting.
+            hierarchy[type].value = hierarchy[type].value + sep;
         }
     }
 
     /**
-     * Mutate an item's display title. DocSearch renders from `_snippetResult` /
-     * `_highlightResult`, not the raw `hierarchy`, so all three are updated.
+     * Append a disambiguating suffix (" — <suffix>") to an item's display title.
+     * DocSearch renders from `_snippetResult` / `_highlightResult`, not the raw
+     * `hierarchy`, so all three are updated; the highlight/snippet values keep
+     * their existing markup.
      */
-    function applyTitle(item, newTitle) {
-        if (!item || !item.hierarchy || !item.type) {
+    function appendSuffix(item, suffix) {
+        if (!item || !item.hierarchy || !item.type || !suffix) {
             return;
         }
-        item.hierarchy[item.type] = newTitle;
-        setHighlightValue(item._snippetResult, item.type, newTitle);
-        setHighlightValue(item._highlightResult, item.type, newTitle);
+        var type = item.type;
+        var sep = ' — ' + suffix;
+        var current = item.hierarchy[type];
+        item.hierarchy[type] = (current == null ? '' : String(current)) + sep;
+        appendToHighlight(item._snippetResult, type, sep);
+        appendToHighlight(item._highlightResult, type, sep);
     }
 
     /**
@@ -160,7 +168,7 @@
                 }
                 var suffix = seg ? humanizeSegment(seg) : '';
                 if (suffix) {
-                    applyTitle(item, title + ' — ' + suffix);
+                    appendSuffix(item, suffix);
                 }
             });
         });
