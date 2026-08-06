@@ -262,15 +262,19 @@ public class Given_WebView2_Improvements
 	{
 		var webView = await CreateWebViewAsync();
 		var core = webView.CoreWebView2!;
+#if HAS_UNO
 		core.SetHistoryProperties(true, true);
 		core.RaiseHistoryChanged();
 		Assert.IsTrue(webView.CanGoBack);
 		Assert.IsTrue(webView.CanGoForward);
+#endif
 
 		webView.Close();
 		webView.Close();
+#if HAS_UNO
 		core.SetHistoryProperties(true, true);
 		core.RaiseHistoryChanged();
+#endif
 
 		Assert.IsFalse(webView.CanGoBack);
 		Assert.IsFalse(webView.CanGoForward);
