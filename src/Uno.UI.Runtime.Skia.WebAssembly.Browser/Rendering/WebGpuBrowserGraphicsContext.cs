@@ -11,24 +11,44 @@ namespace Uno.UI.Runtime.Skia;
 
 /// <summary>
 /// On-canvas WebGPU <see cref="IGraphicsContext"/> for the browser: owns a <see cref="WebGpuDevice"/> and a wgpu
-/// surface bound to the HTML &lt;canvas&gt; (via emdawnwebgpu's canvas-selector source), so the WebGPU backend
-/// renders straight into the acquired surface texture and presents it. The device is created asynchronously
-/// (the browser cannot block on requestAdapter/requestDevice) via <see cref="WebGpuDeviceAsync.CreateAsync"/>
-/// by the caller and handed to the constructor. Mirrors X11WebGpuGraphicsContext; the only browser-specific
-/// parts are the async device init and the canvas-selector surface.
+/// surface bound to the HTML &lt;canvas&gt; (via emdawnwebgpu's canvas-selector source). The device is created
+/// asynchronously (the browser cannot block on requestAdapter/requestDevice) via
+/// <see cref="WebGpuDeviceAsync.CreateAsync"/> by the caller and handed to the constructor.
+///
+/// Presentation differs from native: the backend renders MSAA and resolves into an OFFSCREEN single-sample
+/// texture, which is then COPIED into the canvas' current texture. A direct MSAA-resolve into the canvas texture
+/// does not composite on the browser's SwiftShader WebGPU adapter, whereas a plain texture-to-texture copy does;
+/// and the browser presents implicitly when control returns to the event loop (no wgpuSurfacePresent).
 /// </summary>
 internal sealed unsafe class WebGpuBrowserGraphicsContext : IGraphicsContext, IWebGpuDeviceContext
 {
 	private readonly WebGpuDevice _device;
 	private IntPtr _surface;
 	private WebGpuRenderSurface? _target;
-	private IntPtr _currentTexture;
-	private IntPtr _currentView;
+	private IntPtr _presentTex;    // offscreen single-sample resolve target (the backend resolves MSAA into this)
+	private IntPtr _presentView;
+	private IntPtr _canvasTexture;  // this frame's acquired canvas texture (blit destination)
+	private bool _frameAcquired;
 	private int _w, _h;
 	private bool _configured;
 
-	// Takes an already-created device (the caller awaits WebGpuDeviceAsync.CreateAsync — this class is unsafe,
-	// which forbids await). The surface is created synchronously here.
+	// A 1-sample fullscreen-blit pipeline that samples _presentView into the canvas texture. SwiftShader only
+	// composites the canvas from a render pass targeting it directly (not a resolve or a copy), so present blits.
+	private IntPtr _blitModule;
+	private IntPtr _blitPipe;
+	private IntPtr _blitBgl;
+
+	private const string BlitWgsl = @"
+@group(0) @binding(0) var t: texture_2d<f32>;
+@group(0) @binding(1) var s: sampler;
+struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
+@vertex fn vs(@builtin(vertex_index) i: u32) -> VO {
+  var pts = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
+  let p = pts[i];
+  var o: VO; o.p = vec4<f32>(p, 0.0, 1.0); o.uv = vec2<f32>((p.x + 1.0) * 0.5, (1.0 - p.y) * 0.5); return o;
+}
+@fragment fn fs(i: VO) -> @location(0) vec4<f32> { return textureSampleLevel(t, s, i.uv, 0.0); }";
+
 	public WebGpuBrowserGraphicsContext(WebGpuDevice device, string canvasId)
 	{
 		_device = device;
@@ -51,7 +71,6 @@ internal sealed unsafe class WebGpuBrowserGraphicsContext : IGraphicsContext, IW
 		}
 	}
 
-	// Persistent UTF-8 for a WGPUStringView (the selector lives only for the create call, but keeping it simple).
 	private static WGPUStringView Utf8(string s)
 		=> new() { Data = Marshal.StringToCoTaskMemUTF8(s), Length = (nuint)System.Text.Encoding.UTF8.GetByteCount(s) };
 
@@ -64,38 +83,77 @@ internal sealed unsafe class WebGpuBrowserGraphicsContext : IGraphicsContext, IW
 		width = Math.Max(1, width);
 		height = Math.Max(1, height);
 		Configure(width, height);
-
-		if (_currentView != IntPtr.Zero)
-		{
-			return _target!;
-		}
-
-		WGPUSurfaceTexture st = default;
-		wgpuSurfaceGetCurrentTexture(_surface, &st);
-		if ((st.Status != WGPUSurfaceGetCurrentTextureStatus.SuccessOptimal
-				&& st.Status != WGPUSurfaceGetCurrentTextureStatus.SuccessSuboptimal)
-			|| st.Texture == IntPtr.Zero)
-		{
-			return _target!;
-		}
-
-		_currentTexture = st.Texture;
-		_currentView = wgpuTextureCreateView(st.Texture, null);
-		_target!.View = _currentView;
-		return _target;
+		_frameAcquired = true;
+		return _target!;   // the backend renders/resolves into _presentView (offscreen); Present() blits it to the canvas
 	}
 
 	public void Present()
 	{
-		if (_currentView == IntPtr.Zero)
+		if (!_frameAcquired)
 		{
 			return;
 		}
-		wgpuSurfacePresent(_surface);
-		wgpuTextureViewRelease(_currentView);
-		wgpuTextureRelease(_currentTexture);
-		_currentView = IntPtr.Zero;
-		_currentTexture = IntPtr.Zero;
+		_frameAcquired = false;
+		EnsureBlitPipeline();
+
+		// Acquire the canvas texture at present time (after all offscreen rendering) and blit into it — matching the
+		// pattern that composits on SwiftShader (render pass into the just-acquired canvas texture).
+		WGPUSurfaceTexture st = default;
+		wgpuSurfaceGetCurrentTexture(_surface, &st);
+		if (st.Texture == IntPtr.Zero) { return; }
+		_canvasTexture = st.Texture;
+
+		var canvasView = wgpuTextureCreateView(_canvasTexture, null);
+
+		var entries = stackalloc WGPUBindGroupEntry[2];
+		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = _presentView };
+		entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _device.Smp };
+		var bgd = new WGPUBindGroupDescriptor { Layout = _blitBgl, EntryCount = 2, Entries = entries };
+		var bg = wgpuDeviceCreateBindGroup(_device.Dev, &bgd);
+
+		var enc = wgpuDeviceCreateCommandEncoder(_device.Dev, null);
+		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = canvasView, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
+		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca };
+		var pass = wgpuCommandEncoderBeginRenderPass(enc, &rp);
+		wgpuRenderPassEncoderSetPipeline(pass, _blitPipe);
+		wgpuRenderPassEncoderSetBindGroup(pass, 0, bg, 0, null);
+		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+		wgpuRenderPassEncoderEnd(pass);
+		var cb = wgpuCommandEncoderFinish(enc, null);
+		wgpuQueueSubmit(_device.Q, 1, (IntPtr)(&cb));
+
+		wgpuBindGroupRelease(bg);
+		wgpuTextureViewRelease(canvasView);
+		wgpuTextureRelease(_canvasTexture);
+		_canvasTexture = IntPtr.Zero;
+	}
+
+	private void EnsureBlitPipeline()
+	{
+		if (_blitPipe != IntPtr.Zero)
+		{
+			return;
+		}
+		var code = Utf8(BlitWgsl);
+		var wgsl = new WGPUShaderSourceWGSL { Chain = new WGPUChainedStruct { SType = WGPUSType.ShaderSourceWGSL }, Code = code };
+		var smd = new WGPUShaderModuleDescriptor { NextInChain = (WGPUChainedStruct*)&wgsl };
+		_blitModule = wgpuDeviceCreateShaderModule(_device.Dev, &smd);
+
+		var vs = Utf8("vs");
+		var fs = Utf8("fs");
+		var target = new WGPUColorTargetState { Format = _device.ColorFormat, Blend = null, WriteMask = WGPUColorWriteMask.All };
+		var fsState = new WGPUFragmentState { Module = _blitModule, EntryPoint = fs, TargetCount = 1, Targets = &target };
+		var pd = new WGPURenderPipelineDescriptor
+		{
+			Vertex = new WGPUVertexState { Module = _blitModule, EntryPoint = vs, BufferCount = 0 },
+			Fragment = &fsState,
+			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
+			Multisample = new WGPUMultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
+			DepthStencil = null,
+			Layout = IntPtr.Zero,
+		};
+		_blitPipe = wgpuDeviceCreateRenderPipeline(_device.Dev, &pd);
+		_blitBgl = wgpuRenderPipelineGetBindGroupLayout(_blitPipe, 0);
 	}
 
 	private void Configure(int width, int height)
@@ -106,10 +164,26 @@ internal sealed unsafe class WebGpuBrowserGraphicsContext : IGraphicsContext, IW
 		}
 		_w = width;
 		_h = height;
-		_currentView = IntPtr.Zero;
-		_currentTexture = IntPtr.Zero;
+		_canvasTexture = IntPtr.Zero;
 		_target?.Dispose();
-		_target = new WebGpuRenderSurface(_device, width, height, externalColor: true);
+
+		if (_presentView != IntPtr.Zero) { wgpuTextureViewRelease(_presentView); _presentView = IntPtr.Zero; }
+		if (_presentTex != IntPtr.Zero) { wgpuTextureRelease(_presentTex); _presentTex = IntPtr.Zero; }
+
+		// Offscreen single-sample resolve target (copied to the canvas each present).
+		var td = new WGPUTextureDescriptor
+		{
+			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 },
+			Format = _device.ColorFormat,
+			MipLevelCount = 1,
+			SampleCount = 1,
+			Dimension = WGPUTextureDimension._2D,
+			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding,
+		};
+		_presentTex = wgpuDeviceCreateTexture(_device.Dev, &td);
+		_presentView = wgpuTextureCreateView(_presentTex, null);
+
+		_target = new WebGpuRenderSurface(_device, width, height, externalColor: true) { View = _presentView };
 
 		WGPUSurfaceCapabilities caps = default;
 		wgpuSurfaceGetCapabilities(_surface, _device.Adapter, &caps);
@@ -123,7 +197,7 @@ internal sealed unsafe class WebGpuBrowserGraphicsContext : IGraphicsContext, IW
 		{
 			Device = _device.Dev,
 			Format = format,
-			Usage = WGPUTextureUsage.RenderAttachment,
+			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.CopyDst,
 			Width = (uint)width,
 			Height = (uint)height,
 			PresentMode = WGPUPresentMode.Fifo,
@@ -136,6 +210,8 @@ internal sealed unsafe class WebGpuBrowserGraphicsContext : IGraphicsContext, IW
 	public void Dispose()
 	{
 		_target?.Dispose();
+		if (_presentView != IntPtr.Zero) { wgpuTextureViewRelease(_presentView); _presentView = IntPtr.Zero; }
+		if (_presentTex != IntPtr.Zero) { wgpuTextureRelease(_presentTex); _presentTex = IntPtr.Zero; }
 		if (_surface != IntPtr.Zero) { wgpuSurfaceRelease(_surface); _surface = IntPtr.Zero; }
 		_device.Dispose();
 	}
