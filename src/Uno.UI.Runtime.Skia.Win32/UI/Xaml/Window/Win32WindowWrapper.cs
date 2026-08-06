@@ -105,14 +105,30 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Win32Host.RegisterWindow(_hwnd);
 
-		_renderer = FeatureConfiguration.Rendering.UseVulkanOnWin32
-			? (IRenderer?)VulkanRenderer.TryCreateVulkanRenderer(_hwnd)
-				?? (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
+		var webgpuEnv = Environment.GetEnvironmentVariable("UNO_WEBGPU");
+		if (PreferWebGpu || webgpuEnv is "1" or "true" or "swapchain")
+		{
+			// EXPERIMENTAL: WebGPU on an HWND swapchain via the neutral backend. Renders through the shared
+			// WebGpuSwapChainContext (same code path validated on X11); presents via wgpuSurfacePresent in
+			// Win32WebGpuRenderer.CopyPixels. Not runtime-validated on Linux CI — needs a real Windows GPU.
+			var context = new global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext(
+				global::Uno.WebGpu.Native.WGPUTextureFormat.BGRA8Unorm,
+				inst => global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext.CreateHwndSurface(inst, Win32Helper.GetHInstance(), _hwnd));
+			_webgpuContext = context;
+			Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = new global::Uno.UI.Composition.WebGpu.WebGpuRenderer(context.Device);
+			_renderer = new Win32WebGpuRenderer(context);
+		}
+		else
+		{
+			_renderer = FeatureConfiguration.Rendering.UseVulkanOnWin32
+				? (IRenderer?)VulkanRenderer.TryCreateVulkanRenderer(_hwnd)
+					?? (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
+						? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
+						: new SoftwareRenderer(_hwnd))
+				: FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
 					? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
-					: new SoftwareRenderer(_hwnd))
-			: FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
-				? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
-				: new SoftwareRenderer(_hwnd);
+					: new SoftwareRenderer(_hwnd);
+		}
 
 		InitializeRenderThread();
 

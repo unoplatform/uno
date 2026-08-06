@@ -15,6 +15,11 @@ internal partial class Win32WindowWrapper
 	private SKSurface? _surface;
 	private RenderThread? _renderThread;
 
+	/// <summary>EXPERIMENTAL opt-in (Win32RenderingBackend.WebGpu). Set before the window is created.</summary>
+	internal static bool PreferWebGpu;
+	// Non-null when the WebGPU backend is active: renders through the shared swapchain context instead of an SKSurface.
+	private global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext? _webgpuContext;
+
 	public event EventHandler<SKPath>? RenderingNegativePathReevaluated; // not necessarily changed
 
 	// Wake the render thread directly rather than via InvalidateRect/WM_PAINT. A synthesized
@@ -57,6 +62,20 @@ internal partial class Win32WindowWrapper
 			return null;
 		}
 
+		if (_webgpuContext is { } webgpu)
+		{
+			// WebGPU renders into the HWND swapchain (no SKSurface). Present happens in Win32WebGpuRenderer.CopyPixels.
+			var webgpuClip = ct.OnNativePlatformFrameRequested(
+				null,
+				size => webgpu.AcquireRenderTarget((int)size.Width, (int)size.Height));
+			if (!PInvoke.GetClientRect(_hwnd, out RECT webgpuRect))
+			{
+				this.LogError()?.Error($"{nameof(PInvoke.GetClientRect)} failed: {Win32Helper.GetErrorMessage()}");
+				return null;
+			}
+			return (SkiaGeometryInterop.ToSKPath(webgpuClip), webgpuRect.Width, webgpuRect.Height);
+		}
+
 		var clipGeometry = ct.OnNativePlatformFrameRequested(_surface is null ? null : new SkiaRenderTarget(_surface.Canvas), size =>
 		{
 			_surface?.Dispose();
@@ -78,5 +97,27 @@ internal partial class Win32WindowWrapper
 		}
 
 		return (SkiaGeometryInterop.ToSKPath(clipGeometry), clientRect.Width, clientRect.Height);
+	}
+
+	/// <summary>
+	/// Bridges the neutral WebGPU swapchain context to the Win32 render thread's <see cref="IRenderer"/> contract.
+	/// WebGPU renders through the context (not an SKSurface), so UpdateSize is unused; CopyPixels presents the
+	/// swapchain (wgpuSurfacePresent). EXPERIMENTAL — not runtime-validated on Linux CI (needs a real Windows GPU).
+	/// </summary>
+	private sealed class Win32WebGpuRenderer : IRenderer
+	{
+		private readonly global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext _context;
+
+		public Win32WebGpuRenderer(global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext context) => _context = context;
+
+		public void StartPaint() { }
+		public void EndPaint() { }
+		public SKSurface UpdateSize(int width, int height)
+			=> throw new NotSupportedException("The WebGPU renderer presents through the swapchain context, not an SKSurface.");
+		public void CopyPixels(int width, int height) => _context.Present();
+		public bool IsSoftware() => false;
+		public void Reinitialize() { }
+		public void UpdateRefreshRate(double fps) { }
+		public void Dispose() => _context.Dispose();
 	}
 }

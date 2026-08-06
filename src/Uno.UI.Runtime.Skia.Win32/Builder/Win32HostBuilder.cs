@@ -59,6 +59,9 @@ public class Win32HostBuilder : IPlatformHostBuilder
 				FeatureConfiguration.Rendering.UseVulkanOnWin32 = false;
 				FeatureConfiguration.Rendering.UseOpenGLOnWin32 = false;
 				break;
+			case Win32RenderingBackend.WebGpu:
+				Win32WindowWrapper.PreferWebGpu = true;
+				break;
 			case Win32RenderingBackend.Default:
 			default:
 				break;
