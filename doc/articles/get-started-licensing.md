@@ -96,7 +96,7 @@ When you create a free **Community** account, **Uno Platform Studio** includes a
 
 ## Getting a Uno Platform Studio License
 
-**Uno Platform Studio** revolutionizes how developers design, build, and iterate on their applications. A **Uno Platform Studio** license unlocks the full suites of purpose-built tools that streamline your workflow:
+**Uno Platform Studio** revolutionizes how developers design, build, and iterate on their applications. A **Uno Platform Studio** license unlocks the full suite of purpose-built tools that streamline your workflow:
 
 - **[Uno Platform Studio App](xref:Uno.PlatformStudio.GetStarted)**: Go from a prompt to a working, cross-platform Uno Platform app in minutes. Start from a description (or one of the curated samples in the Gallery), watch the app build live thanks to Hot Reload, refine it through the conversation panel, then export to your preferred IDE or CLI to keep building. App generation is powered by the **[Uno Platform Studio Agent](xref:Uno.PlatformStudio.Agent)**. [Get started](xref:Uno.PlatformStudio.GetStarted)
 
@@ -109,7 +109,7 @@ The free **Community** plan already includes core productivity tools, such as **
 Check out [Compare Uno Platform Studio plans](https://platform.uno/select-subscription/) to see exactly what is included in each plan and what you gain by upgrading.
 
 > [!IMPORTANT]
-> Uno Platform itself remains open-source and free under Apache 2.0. The Pro and Business subscriptions are specifically for Uno Platform Studio features.
+> Uno Platform itself remains open-source and free under Apache 2.0. The Pro and Business subscriptions are specifically for Uno Platform Studio features.
 
 ![Uno Platform Studio compare](Assets/uno-studio-plans-compare.png)
 
@@ -124,7 +124,7 @@ Check out [Compare Uno Platform Studio plans](https://platform.uno/select-subscr
 
 ### Special Pricing
 
-- **Students, educators, and open-source maintainers**: Qualify for complimentary Uno Platform Studio licenses upon verification. Contact [info@platform.uno](mailto:info@platform.uno) to get started.
+- **Students, educators, and open-source maintainers**: Qualify for complimentary Pro or Business licenses upon verification. Contact [info@platform.uno](mailto:info@platform.uno) to get started.
 - **Enterprise/Custom Quotes**: Enterprise customers can arrange purchase orders and invoicing. Contact [info@platform.uno](mailto:info@platform.uno) for customized licensing.
 
 ### Subscription Management
