@@ -65,10 +65,15 @@ internal partial class BrowserRenderer
 	{
 		try
 		{
-			var device = await WebGpuDeviceAsync.CreateAsync(WGPUTextureFormat.BGRA8Unorm);
+			// The browser canvas prefers rgba8unorm; match it so the surface, pipelines and canvas agree (no
+			// extra present-time BGRA->RGBA copy, which appears unreliable on SwiftShader).
+			var device = await WebGpuDeviceAsync.CreateAsync(WGPUTextureFormat.RGBA8Unorm);
 			_webgpuContext = new WebGpuBrowserGraphicsContext(device, WebAssemblyWindowWrapper.Instance.CanvasId);
 			CompositionTarget.Renderer = new WebGpuRenderer(device);
 			this.Log().Info("Neutral graphics pipeline active: WebGpu context via WebGpuRenderer (browser).");
+			// Force a fresh record+present under the new renderer (the last frame was recorded by SkiaRenderer
+			// before the async switch and is skipped by the present session).
+			(_host.RootElement as Microsoft.UI.Xaml.UIElement)?.InvalidateArrange();
 			InvalidateRender();   // device is ready — request a frame now
 		}
 		catch (Exception e)
@@ -129,7 +134,7 @@ internal partial class BrowserRenderer
 				return;
 			}
 
-			// Present into the wgpu canvas backbuffer (acquired fresh each frame via the resize callback).
+			// Render into the offscreen resolve target, then Present() blits it into the canvas backbuffer.
 			var webgpuClip = compositionTarget.OnNativePlatformFrameRequested(
 				null,
 				size => _webgpuContext.AcquireRenderTarget((int)size.Width, (int)size.Height));

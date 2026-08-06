@@ -1519,9 +1519,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	public void Replay(IRenderData data)
 	{
+		// During an async backend switch (e.g. the browser's on-canvas WebGPU init) a frame recorded by the
+		// previous renderer can reach us; skip it rather than mis-cast — the next frame is recorded by this backend.
+		if (data is not WebGpuRenderData rd) { return; }
 		lock (_d.RenderGate)
 		{
-			var rd = (WebGpuRenderData)data;
 			_d.BeginFrameResources();   // reclaim last frame's pooled textures/buffers + release its bind groups
 			RenderInto(rd.Commands, _s, _presentClear ?? rd.ClearColor);
 		}
@@ -1532,9 +1534,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// The gate is reentrant, so a nested call inside an enclosing Replay is safe; an independent call is serialized.
 	public void ReplayNested(IRenderData data)
 	{
+		if (data is not WebGpuRenderData rd) { return; }
 		lock (_d.RenderGate)
 		{
-			var rd = (WebGpuRenderData)data;
 			RenderInto(rd.Commands, _s, _presentClear ?? rd.ClearColor);
 		}
 	}
