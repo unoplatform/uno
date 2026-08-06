@@ -678,7 +678,26 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 	public int Width { get; }
 	public int Height { get; }
 	public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
-	public void Dispose() { }
+
+	// Pooled surfaces rent their views from the WebGpuTexturePool, which owns and reclaims them — Dispose must not
+	// touch those. Directly-created surfaces (offscreen readback / swapchain resolve) own their textures and MUST
+	// release them, otherwise every window resize leaks a full-window MSAA color + depth texture until VRAM is
+	// exhausted (wgpuDeviceCreateTexture: "Not enough memory left").
+	private readonly bool _ownsResources = true;
+
+	public void Dispose()
+	{
+		if (!_ownsResources)
+		{
+			return;
+		}
+		if (View != IntPtr.Zero) { wgpuTextureViewRelease(View); View = IntPtr.Zero; }
+		if (Tex != IntPtr.Zero) { wgpuTextureDestroy(Tex); Tex = IntPtr.Zero; }
+		if (MsaaColorView != IntPtr.Zero) { wgpuTextureViewRelease(MsaaColorView); MsaaColorView = IntPtr.Zero; }
+		if (MsaaColorTex != IntPtr.Zero) { wgpuTextureDestroy(MsaaColorTex); MsaaColorTex = IntPtr.Zero; }
+		if (DepthView != IntPtr.Zero) { wgpuTextureViewRelease(DepthView); DepthView = IntPtr.Zero; }
+		if (DepthTex != IntPtr.Zero) { wgpuTextureDestroy(DepthTex); DepthTex = IntPtr.Zero; }
+	}
 
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height)
 	{
