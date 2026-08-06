@@ -21,6 +21,7 @@ namespace Uno.UI.Xaml
 		public const string LocalResourcePrefix = MSResourceIdentifier + LocalResourceFolder;
 		public const string WinUICompactURL = "Microsoft.UI.Xaml/DensityStyles/Compact.xaml";
 
+#if !NETSTANDARD
 		/// <summary>
 		/// Converts the MRT local-resource form the XAML compiler emits for relative URIs
 		/// (<c>ms-resource:///Files/logo.png</c>) to the equivalent <c>ms-appx:///logo.png</c>,
@@ -39,21 +40,20 @@ namespace Uno.UI.Xaml
 
 			if (!path.StartsWith(LocalResourceFolder, StringComparison.OrdinalIgnoreCase)
 				// Callers rely on this being total; a remainder that is not a valid URI stays untouched.
-				|| !Uri.TryCreate(AppXIdentifier + path.Substring(LocalResourceFolder.Length), UriKind.Absolute, out var appxUri))
+				|| !Uri.TryCreate(string.Concat(AppXIdentifier, path.AsSpan(LocalResourceFolder.Length)), UriKind.Absolute, out var appxUri))
 			{
 				return uri;
 			}
 
-#if !NETSTANDARD
 			// The value read back from the property is not the one being resolved, so trace the pair.
 			if (typeof(XamlFilePathHelper).Log().IsEnabled(LogLevel.Debug))
 			{
 				typeof(XamlFilePathHelper).Log().Debug($"Resolving local resource '{uri}' as '{appxUri}'");
 			}
-#endif
 
 			return appxUri;
 		}
+#endif
 
 		/// <summary>
 		/// Convert relative source path to absolute path.
