@@ -296,6 +296,19 @@ namespace Microsoft.UI.Xaml
 
 		private IUnoSkiaRenderView CreateRenderView()
 		{
+			// EXPERIMENTAL: WebGPU on an ANativeWindow swapchain via the neutral backend (opt in with UNO_WEBGPU).
+			if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "swapchain")
+			{
+				try
+				{
+					return new UnoSKWebGpuView(this);
+				}
+				catch (Exception ex)
+				{
+					typeof(ApplicationActivity).Log().Warn($"WebGPU rendering not available: {ex.Message}. Falling back.");
+				}
+			}
+
 			if (FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid)
 			{
 				if (!PackageManager?.HasSystemFeature(PackageManager.FeatureVulkanHardwareLevel) ?? true)
