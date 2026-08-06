@@ -55,7 +55,8 @@ public static class UriExtensions
 			throw new ArgumentNullException(nameof(uri));
 		}
 
-		return uri.Scheme.Equals("ms-appdata", StringComparison.OrdinalIgnoreCase);
+		// Uri.Scheme throws on a relative URI, so the absolute check has to come first.
+		return uri.IsAbsoluteUri && uri.Scheme.Equals("ms-appdata", StringComparison.OrdinalIgnoreCase);
 	}
 
 	public static bool IsLocalResource(this Uri uri)
