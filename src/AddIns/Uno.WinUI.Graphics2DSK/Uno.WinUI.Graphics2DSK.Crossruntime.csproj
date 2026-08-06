@@ -22,7 +22,7 @@
 		<DefineConstants>$(DefineConstants);CROSSRUNTIME</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" PrivateAssets="all" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" PrivateAssets="all" />
 	</ItemGroup>
 	
 

@@ -1,4 +1,4 @@
-<Solution>
+﻿<Solution>
   <Configurations>
     <BuildType Name="Debug" />
     <BuildType Name="Release" />
@@ -18,9 +18,6 @@
     <Project Path="AddIns/Uno.UI.GooglePlay/Uno.UI.GooglePlay.netcoremobile.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="AddIns/Uno.UI.Lottie/Uno.UI.Lottie.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="AddIns/Uno.UI.Lottie/Uno.UI.Lottie.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -33,16 +30,10 @@
     <Project Path="AddIns/Uno.UI.MSAL/Uno.UI.MSAL.netcoremobile.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="AddIns/Uno.UI.MSAL/Uno.UI.MSAL.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="AddIns/Uno.UI.MSAL/Uno.UI.MSAL.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="AddIns/Uno.UI.MSAL/Uno.UI.MSAL.Windows.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="AddIns/Uno.UI.Svg/Uno.UI.Svg.Reference.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="AddIns/Uno.UI.Svg/Uno.UI.Svg.Skia.csproj">
@@ -244,17 +235,11 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/Composition/">
-    <Project Path="Uno.UI.Composition/Uno.UI.Composition.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.Composition/Uno.UI.Composition.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/DevServer/">
-    <Project Path="Uno.UI.RemoteControl/Uno.UI.RemoteControl.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.RemoteControl/Uno.UI.RemoteControl.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -274,19 +259,10 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/Fluent/">
-    <Project Path="Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.FluentTheme.v2/Uno.UI.FluentTheme.v2.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.FluentTheme.v2/Uno.UI.FluentTheme.v2.Skia.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.FluentTheme/Uno.UI.FluentTheme.Reference.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.FluentTheme/Uno.UI.FluentTheme.Skia.csproj">
@@ -343,9 +319,6 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/Islands/">
-    <Project Path="Uno.UI.XamlHost/Uno.UI.XamlHost.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.XamlHost/Uno.UI.XamlHost.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -379,7 +352,7 @@
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
     <Project Path="Uno.UI.Runtime.Skia/Uno.UI.Runtime.Skia.csproj">
-      <BuildDependency Project="Uno.UI/Uno.UI.Reference.csproj" />
+      <BuildDependency Project="Uno.UI/Uno.UI.Skia.csproj" />
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>
@@ -399,9 +372,6 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/Toolkit/">
-    <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.Windows.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -420,9 +390,6 @@
       <Build Solution="Release|iPhoneSimulator" Project="false" />
       <Build Solution="Release|x64" Project="false" />
       <Build Solution="Release|x86" Project="false" />
-    </Project>
-    <Project Path="Uno.UI/Uno.UI.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI/Uno.UI.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />

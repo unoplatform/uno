@@ -1,10 +1,9 @@
-{
+﻿{
   "solution": {
     "path": "..\\..\\src\\Uno.UI.slnx",
     "projects": [
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Skia.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Skia.csproj",
-      "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Reference.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.netcoremobile.csproj",
       "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.Skia.csproj",
       "AddIns\\Uno.UI.MediaPlayer.Skia.X11\\Uno.UI.MediaPlayer.Skia.X11.csproj",
