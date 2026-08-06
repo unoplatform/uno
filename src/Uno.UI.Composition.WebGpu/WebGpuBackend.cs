@@ -118,8 +118,9 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public IntPtr GradClipBgl;
 	public IntPtr Smp;
 
-	// Uniform size (bytes) of the gradient struct: header(16) + geo(16) + colors(16*16) + stops(4*16).
-	public const int GradientUniformBytes = 16 + 16 + 16 * 16 + 4 * 16;
+	// Uniform size (bytes) of the gradient struct: header(16) + geo(16) + colors(16*16) + stops(4*16) + origin(16).
+	// origin (radial focal point, device space) is appended last so colour/stop indices stay put.
+	public const int GradientUniformBytes = 16 + 16 + 16 * 16 + 4 * 16 + 16;
 	public const int MaxGradientStops = 16;
 
 	// Multisample count for anti-aliasing. Every pipeline + the color/depth render targets use this; the pass
@@ -452,7 +453,7 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 	// Evaluates a linear/radial gradient per pixel. The quad is positioned in NDC; the fragment uses its
 	// framebuffer position (device pixels) so the gradient geometry can be baked to device space at record time.
 	private const string GradientWgsl = @"
-struct Grad { header: vec4<f32>, geo: vec4<f32>, colors: array<vec4<f32>, 16>, stops: array<vec4<f32>, 4> };
+struct Grad { header: vec4<f32>, geo: vec4<f32>, colors: array<vec4<f32>, 16>, stops: array<vec4<f32>, 4>, origin: vec4<f32> };
 @group(0) @binding(0) var<uniform> g: Grad;
 @group(1) @binding(0) var<uniform> clip: ClipU;
 @group(1) @binding(1) var clipTex: texture_2d<f32>;
@@ -465,8 +466,21 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
     let a = g.geo.xy; let b = g.geo.zw; let ab = b - a; let denom = dot(ab, ab);
     if (denom > 0.0) { t = dot(fc.xy - a, ab) / denom; }
   } else {
+    // Radial: normalize to unit-ellipse space, then param along the ray from the focal origin so t=0 at the
+    // origin and t=1 at the ellipse edge. origin == center reduces to plain concentric distance.
     let c = g.geo.xy; let rx = g.geo.z; let ry = g.geo.w;
-    if (rx > 0.0 && ry > 0.0) { t = length((fc.xy - c) / vec2<f32>(rx, ry)); }
+    if (rx > 0.0 && ry > 0.0) {
+      let inv = vec2<f32>(1.0 / rx, 1.0 / ry);
+      let pn = (fc.xy - c) * inv;
+      let on = (g.origin.xy - c) * inv;
+      let dir = pn - on; let aa = dot(dir, dir);
+      if (aa < 1e-9) { t = 0.0; }
+      else {
+        let bb = 2.0 * dot(on, dir); let cc = dot(on, on) - 1.0;
+        let s = (-bb + sqrt(max(bb * bb - 4.0 * aa * cc, 0.0))) / (2.0 * aa);
+        t = 1.0 / max(s, 1e-6);
+      }
+    }
   }
   let tm = g.header.z;
   if (tm < 0.5) { t = clamp(t, 0.0, 1.0); }
@@ -1082,6 +1096,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		if (g.Radial)
 		{
 			u[4] = a.X; u[5] = a.Y; u[6] = g.RadiusX * sx; u[7] = g.RadiusY * sy;
+			u[88] = b.X; u[89] = b.Y;   // focal origin (device); b = mapped g.P1 (gradientOrigin)
 		}
 		else
 		{
@@ -1285,6 +1300,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 						var rsx = new Vector2(_m.M11, _m.M12).Length();
 						var rsy = new Vector2(_m.M21, _m.M22).Length();
 						uu[6] *= rsx; uu[7] *= rsy;
+						var go = T(new Vector2(uu[88], uu[89])); uu[88] = go.X; uu[89] = go.Y;   // focal origin
 					}
 					_target.Add(new GradientCmd { P0 = T(gc.P0), P1 = T(gc.P1), P2 = T(gc.P2), P3 = T(gc.P3), Uniform = uu, Clip = ClipCompose(gc.Clip, T) });
 					break;
