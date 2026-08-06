@@ -242,6 +242,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		InvalidateParentChildrenPicture(false);
 	}
 
+	internal void InvalidateSubtreePaint()
+	{
+		InvalidatePaint();
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			child.InvalidateSubtreePaint();
+		}
+	}
+
 	internal void InvalidateParentChildrenPicture(bool includeSelf)
 	{
 		var parent = includeSelf ? this : Parent;

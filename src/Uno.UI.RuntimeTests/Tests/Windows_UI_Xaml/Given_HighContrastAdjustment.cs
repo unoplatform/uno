@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 #if HAS_UNO
@@ -176,6 +177,51 @@ public class Given_HighContrastAdjustment
 				new(25, 25),
 				Color.FromArgb(255, 255, 127, 127),
 				tolerance: 2);
+
+			Application.Current.HighContrastAdjustment = ApplicationHighContrastAdjustment.Auto;
+			await WindowHelper.WaitForIdle();
+
+			var enabled = await UITestHelper.ScreenShot(root);
+			ImageAssert.HasColorAt(enabled, new(25, 25), MColors.Red, tolerance: 1);
+		}
+		finally
+		{
+			Application.Current.HighContrastAdjustment = originalAdjustment;
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = originalHighContrast;
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Parent_Adjustment_Changes_Opacity_Live()
+	{
+		var originalAdjustment = Application.Current.HighContrastAdjustment;
+		var originalHighContrast = Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride;
+
+		var child = new Rectangle
+		{
+			Fill = new SolidColorBrush(MColors.Red),
+			HighContrastAdjustment = ElementHighContrastAdjustment.None,
+		};
+		var root = new Border
+		{
+			Width = 50,
+			Height = 50,
+			Background = new SolidColorBrush(MColors.White),
+			Child = child,
+			Opacity = 0.5,
+		};
+
+		try
+		{
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = true;
+			Application.Current.HighContrastAdjustment = ApplicationHighContrastAdjustment.None;
+			await UITestHelper.Load(root);
+
+			var disabled = await UITestHelper.ScreenShot(root);
+			ImageAssert.DoesNotHaveColorAt(disabled, new(25, 25), MColors.Red, tolerance: 1);
 
 			Application.Current.HighContrastAdjustment = ApplicationHighContrastAdjustment.Auto;
 			await WindowHelper.WaitForIdle();
@@ -525,6 +571,133 @@ public class Given_HighContrastAdjustment
 				"None must not draw the high-contrast backplate.");
 			Assert.IsTrue(CountPixels(unadjusted, MColors.Red, tolerance: 2) > 20,
 				"None must preserve the element foreground.");
+		}
+		finally
+		{
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride = originalColors;
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSchemeOverride = originalScheme;
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = originalHighContrast;
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Disabled_Text_Uses_System_Disabled_Color()
+	{
+		var originalHighContrast = Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride;
+		var originalScheme = Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSchemeOverride;
+		var originalColors = Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride;
+
+		var systemColors = new HighContrastSystemColors(
+			ButtonFaceColor: MColors.Black,
+			ButtonTextColor: MColors.White,
+			GrayTextColor: MColors.Lime,
+			HighlightColor: MColors.Blue,
+			HighlightTextColor: MColors.Yellow,
+			HotlightColor: MColors.Yellow,
+			WindowColor: MColors.Black,
+			WindowTextColor: MColors.White,
+			ActiveCaptionColor: MColors.Black,
+			BackgroundColor: MColors.Black,
+			CaptionTextColor: MColors.White,
+			InactiveCaptionColor: MColors.Black,
+			InactiveCaptionTextColor: MColors.Lime,
+			DisabledTextColor: MColors.Lime);
+
+		var textBox = new TextBox
+		{
+			Width = 160,
+			Height = 60,
+			Text = "MMMM",
+			FontSize = 32,
+			Foreground = new SolidColorBrush(MColors.Red),
+			HighContrastAdjustment = ElementHighContrastAdjustment.Auto,
+		};
+
+		try
+		{
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride = systemColors;
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSchemeOverride = "High Contrast Black";
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = true;
+			await UITestHelper.Load(textBox);
+
+			var enabled = await UITestHelper.ScreenShot(textBox);
+			Assert.IsTrue(CountPixels(enabled, MColors.White, tolerance: 2) > 20,
+				"Enabled text must use the system window text color.");
+
+			textBox.IsEnabled = false;
+			await WindowHelper.WaitForIdle();
+
+			var disabled = await UITestHelper.ScreenShot(textBox);
+			Assert.IsTrue(CountPixels(disabled, MColors.Lime, tolerance: 2) > 20,
+				"Disabled text must use the system disabled text color.");
+		}
+		finally
+		{
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride = originalColors;
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSchemeOverride = originalScheme;
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = originalHighContrast;
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Text_Highlighter_Uses_System_Selection_Colors()
+	{
+		var originalHighContrast = Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride;
+		var originalScheme = Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSchemeOverride;
+		var originalColors = Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride;
+
+		var systemColors = new HighContrastSystemColors(
+			ButtonFaceColor: MColors.Black,
+			ButtonTextColor: MColors.White,
+			GrayTextColor: MColors.Gray,
+			HighlightColor: MColors.Lime,
+			HighlightTextColor: MColors.Yellow,
+			HotlightColor: MColors.Yellow,
+			WindowColor: MColors.Black,
+			WindowTextColor: MColors.White,
+			ActiveCaptionColor: MColors.Black,
+			BackgroundColor: MColors.Black,
+			CaptionTextColor: MColors.White,
+			InactiveCaptionColor: MColors.Black,
+			InactiveCaptionTextColor: MColors.Gray,
+			DisabledTextColor: MColors.Gray);
+
+		var text = new TextBlock
+		{
+			Width = 160,
+			Height = 60,
+			Text = "MMMM",
+			FontSize = 32,
+			Foreground = new SolidColorBrush(MColors.Red),
+			HighContrastAdjustment = ElementHighContrastAdjustment.Auto,
+		};
+		text.TextHighlighters.Add(new TextHighlighter
+		{
+			Background = new SolidColorBrush(MColors.Magenta),
+			Foreground = new SolidColorBrush(MColors.Red),
+			Ranges = { new TextRange { StartIndex = 0, Length = text.Text.Length } },
+		});
+
+		try
+		{
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSystemColorsOverride = systemColors;
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastSchemeOverride = "High Contrast Black";
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = true;
+			await UITestHelper.Load(text);
+
+			var screenshot = await UITestHelper.ScreenShot(text);
+			Assert.IsTrue(CountPixels(screenshot, MColors.Lime, tolerance: 2) > 200,
+				"Selection must use the system highlight color.");
+			Assert.IsTrue(CountPixels(screenshot, MColors.Yellow, tolerance: 2) > 20,
+				"Selected text must use the system highlight text color.");
+			Assert.AreEqual(0, CountPixels(screenshot, MColors.Magenta, tolerance: 2),
+				"Selection must not keep the app-provided highlight color.");
 		}
 		finally
 		{
