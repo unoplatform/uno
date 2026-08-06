@@ -72,6 +72,15 @@ cannot fix ranking. Once this crawler config is live it can be trimmed further.
 - (If canonical-URL collapsing is later enabled) a page reachable as both
   `.../page.html` and `.../page/index.html` appears once.
 
+## Rollback
+
+`docsearch-crawler-config.original.js` is the pre-#2038 baseline, kept as a
+one-paste rollback. To revert: paste it into the Crawler Editor (restore your
+real `apiKey`) and crawl, then set `attributeForDistinct` back to `"url"` on the
+`platform` index directly (a crawl won't change settings on an existing index).
+The `attributeForDistinct` change is separately reversible at any time — flipping
+it back to `"url"` on the index takes effect immediately, no crawl needed.
+
 ## Related
 
 - Display layer: `doc/templates/uno/partials/scripts.tmpl.partial` (DocSearch init,
