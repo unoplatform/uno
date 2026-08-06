@@ -123,7 +123,9 @@ internal partial class TextRangeCollection
 
 	// CCollection::GetOwner() equivalent. Set by the owning TextHighlighter when this
 	// collection is attached (NeedsOwnerInfo() == true in the C++ original).
-	internal DependencyObject? Owner { get; set; }
+	// Typed as object because Uno's TextHighlighter, unlike CTextHighlighter, does not
+	// derive from DependencyObject.
+	internal object? Owner { get; set; }
 
 	private readonly List<TextRange> _items = new();
 }
