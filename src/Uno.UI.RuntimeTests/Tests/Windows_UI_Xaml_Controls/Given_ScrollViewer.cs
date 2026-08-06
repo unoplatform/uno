@@ -826,8 +826,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.IOS | RuntimeTestPlatforms.SkiaMacOS)] // uno-private#1740 changed the way mouse wheel events are processed on iOS and macOS: Not using animations
 		public async Task When_LotOfWheelEvents_Then_IgnoreIrrelevant()
 		{
-			// This test make sure than when using a "free wheel" mouse or a touch-pad (which both produces a lot of events),
-			// we don't end up to invoke ScrollContentPresenter.Set again and again (preventing the ScrollContentPresenter.Update methohd to properly process its animation)
+			// A free-spinning wheel or a touchpad emits many events in quick succession. Each one must feed the
+			// motion already in flight rather than restart it, otherwise the presented displacement alternates
+			// between a large first step and a small tail and the scroll visibly judders.
 
 			FrameworkElement content;
 			var sut = new ScrollViewer
@@ -836,40 +837,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Width = 100,
 				Content = content = new Border
 				{
-					Height = 200,
+					Height = 2000,
 					Background = new SolidColorBrush(Colors.Chartreuse)
 				},
 			};
 
 			var bounds = await UITestHelper.Load(sut);
-
 			var visual = ElementCompositionPreview.GetElementVisual(content);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
-
-			var initialAnimation = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			initialAnimation.Should().BeNull(because: "we have not scrolled yet");
-
 			mouse.MoveTo(bounds.GetCenter());
-			mouse.Wheel(-400, steps: 1);
 
-			// Here we assume that ScrollContentPresenter is using KeyFrameAnimation. If no longer the case, the test can be updated!
-			var scrollAnimation1 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			scrollAnimation1.Should().NotBeNull(because: "we have requested scroll");
+			sut.VerticalOffset.Should().Be(0, because: "we have not scrolled yet");
 
-			// Scroll again in the same direction
-			mouse.Wheel(-200, steps: 1);
+			// Sample the visual position every frame so we see the motion, not the coalesced offset property.
+			var positions = new List<double>();
+			EventHandler<object> onRendering = (_, __) => positions.Add(-visual.AnchorPoint.Y);
+			Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += onRendering;
+			try
+			{
+				for (var i = 0; i < 6; i++)
+				{
+					mouse.Wheel(-120, steps: 1);
+					await Task.Delay(50);
+				}
 
-			var scrollAnimation2 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			scrollAnimation2.Should().Be(scrollAnimation1, because: "the wheel event has no effect");
+				await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			}
+			finally
+			{
+				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= onRendering;
+			}
 
-			// But if we scroll in the opposite direction, the animation should be stopped and replaced
-			// (this basically confirm that the test is working -i.e the animation is not being re-used)
-			mouse.Wheel(+200, steps: 1);
+			sut.VerticalOffset.Should().BeGreaterThan(0, because: "the wheel events must scroll");
 
-			var scrollAnimation3 = visual.GetKeyFrameAnimation(nameof(Visual.AnchorPoint));
-			scrollAnimation3.Should().NotBe(scrollAnimation1, because: "the wheel event should scroll in the opposite direction");
+			// Monotonic: a restart-per-event model overshoots and settles back, which reads as a stutter.
+			for (var i = 1; i < positions.Count; i++)
+			{
+				positions[i].Should().BeGreaterThanOrEqualTo(
+					positions[i - 1] - 0.01,
+					because: $"same-direction wheel motion must never reverse (frame {i} of {positions.Count})");
+			}
+
+			// The opposite direction must take effect rather than being swallowed by the motion in flight.
+			var beforeReverse = sut.VerticalOffset;
+			mouse.Wheel(+240, steps: 1);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			sut.VerticalOffset.Should().BeLessThan(beforeReverse, because: "the wheel event should scroll in the opposite direction");
 		}
 #endif
 
@@ -2143,6 +2159,108 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// The scroll offset should remain 0 — there's nothing to scroll
 			Assert.AreEqual(0d, sut.VerticalOffset, "Should not have scrolled");
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Fling_Then_DistanceMatchesTheGesture()
+		{
+			// Inertia distance grows with the square of the launch velocity, so a velocity taken from the
+			// last two samples — which can catch one short interval — sends the content orders of magnitude
+			// too far. Fitting over the recent gesture keeps the fling proportionate to the flick.
+			var content = new Border { Width = 380, Height = 60000, Background = new SolidColorBrush(Colors.DeepPink) };
+			var SUT = new ScrollViewer { Width = 400, Height = 600, Content = content, IsScrollInertiaEnabled = true };
+			var bounds = await UITestHelper.Load(SUT);
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			double dragDistance;
+			using (var finger = input.GetFinger())
+			{
+				var c = bounds.GetCenter();
+				finger.Press(c);
+				for (var i = 1; i <= 12; i++)
+				{
+					finger.MoveTo(c.Offset(0, -i * 22), steps: 1);
+					await Task.Delay(8);
+				}
+
+				dragDistance = SUT.VerticalOffset;
+				finger.Release();
+			}
+
+			await Task.Delay(3000);
+			await WindowHelper.WaitForIdle();
+
+			var inertiaDistance = SUT.VerticalOffset - dragDistance;
+
+			inertiaDistance.Should().BeGreaterThan(0, because: "a flick must produce a fling");
+			inertiaDistance.Should().BeLessThan(
+				dragDistance * 30,
+				because: $"the fling must stay proportionate to the {dragDistance:F0}px flick that launched it");
+		}
+
+		[TestMethod]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_SlowTouchDrag_Then_ScrollAdvancesEveryMove()
+		{
+			// The manipulation delta threshold that bounds public ManipulationDelta volume must not reach
+			// the scroll path, where it acts as a motion quantizer: below 2 logical px the content would not
+			// move at all, then jump the whole accumulated amount, so a slow drag advances every other frame.
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				IsScrollInertiaEnabled = false,
+				UpdatesMode = Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+				Content = new Border { Width = 180, Height = 2000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+
+			var start = SUT.GetAbsoluteBounds().GetCenter();
+			finger.Press(start);
+
+			// Cross the manipulation start threshold first; only then are deltas fed to the scroll.
+			var current = start.Offset(0, -30);
+			finger.MoveTo(current, steps: 1);
+			await WindowHelper.WaitForIdle();
+
+			const int Moves = 6;
+			var offsets = new List<double>();
+			for (var i = 0; i < Moves; i++)
+			{
+				current = current.Offset(0, -1);
+				finger.MoveTo(current, steps: 1);
+				await WindowHelper.WaitForIdle();
+				offsets.Add(SUT.VerticalOffset);
+			}
+
+			finger.Release();
+
+			var advanced = 0;
+			for (var i = 1; i < offsets.Count; i++)
+			{
+				if (offsets[i] > offsets[i - 1])
+				{
+					advanced++;
+				}
+			}
+
+			Assert.AreEqual(
+				Moves - 1,
+				advanced,
+				$"Every 1px move should advance the offset, got [{string.Join(", ", offsets)}].");
 		}
 	}
 }
