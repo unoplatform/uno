@@ -367,6 +367,33 @@ backend renders/decodes with zero SkiaSharp, and its output is compared pixel-fo
 backend (e.g. `Given_IFont_AlternativeBackend`, and pixel-parity of the managed decoders/SVG). Identical
 output is the evidence the interface carries everything the backend needs.
 
+### WebGPU backend — per-target status & how to enable
+
+`Uno.UI.Composition.WebGpu` is the second full render backend behind the neutral seam (`WebGpuRenderer` /
+`WebGpuCommandRecorder` / `WebGpuPresentSession` + the device-bound `WebGpuDrawingFactory`). It binds the
+**modern `webgpu.h` ABI** through a generated, Silk-free interop layer (`Native/WebGpuInterop.cs`, shared by
+all targets — Dawn and wgpu-native agree on the ABI); the native library is provisioned at build (desktop
+`wgpu-native` via `wgpu-native.targets`, browser `emdawnwebgpu` via `wgpu-wasm.targets`).
+
+**On-window presentation** splits into two shapes, both opt-in via `UNO_WEBGPU=1|true|swapchain` (native hosts
+also expose a builder enum):
+
+- **Native swapchain** (X11, Win32, macOS, …) — one shared `WebGpuSwapChainContext` owns the device + surface +
+  acquire/configure/present, parameterized by a platform surface factory (`CreateXlibSurface` /
+  `CreateHwndSurface` / `CreateMetalSurface`). MSAA-resolves into the swapchain texture and presents with
+  `wgpuSurfacePresent`. A new native host is just its surface factory + its host's present hook.
+- **Browser** (`WebGpuBrowserGraphicsContext`) is separate: emdawnwebgpu presents the canvas *implicitly* on
+  return to the event loop (no `wgpuSurfacePresent`), and SwiftShader composits the canvas only from a render
+  pass into it — so it resolves into an offscreen texture and **blits** that into the canvas' current texture.
+
+| Host | Wiring | Runtime state |
+|------|--------|---------------|
+| **X11** | `X11SoftwareGraphicsContext` factory → `WebGpuSwapChainContext(CreateXlibSurface)` | ✅ validated headless (Xvfb + lavapipe): render tests pass, "WebGpu context via WebGpuRenderer" |
+| **WebAssembly (browser)** | `BrowserRenderer` opt-in → `WebGpuBrowserGraphicsContext` (async device init, canvas-selector surface, blit present) | renders with **zero Dawn validation errors** headless; visual pixels need a real-GPU browser (headless SwiftShader doesn't capture WebGPU-canvas output in screenshots — reproduced with pure-JS WebGPU) |
+| **Win32** | `Win32RenderingBackend.WebGpu` → `WebGpuSwapChainContext(CreateHwndSurface)` + `Win32WebGpuRenderer` bridges the render thread | build-validated (net10.0 on Linux); GPU present needs a real Windows GPU — same swapchain path as validated X11 |
+| **macOS** | `CreateMetalSurface` ready, but the native ObjC helper (`UnoNativeMac`) owns the `CAMetalLayer`/present; WebGPU needs it to expose the layer and cede present — a native change + a Mac |
+| **FrameBuffer** | n/a — `wgpu-native` has no KMS/DRM surface source |
+
 ---
 
 ## Backend registration & graphics negotiation (implemented; X11 GL/GLES/software neutral)
@@ -386,9 +413,10 @@ plus a clear answer to "who drives."
 > **kind-preference override** (e.g. `[Software]`, `[OpenGLES, Software]`) — expressed in
 > `GraphicsContextKind` only, never a backend type. **Verified** headless (Xvfb): a render test passes
 > on both the default GLX (`OpenGL context`) and forced-software (`Software context`) paths, and the
-> WebGPU backend agrees pixel-for-pixel with Skia on the shared render seam. **Remaining kinds** —
-> Vulkan (fails headless on lavapipe) and WebGPU-on-window — await a real-GPU matrix before their X11
-> branches migrate and the `UseOpenGL*/UseVulkanOnX11`/`PreferGLESOverGLOnX11` knobs retire.
+> WebGPU backend agrees pixel-for-pixel with Skia on the shared render seam. **WebGPU on-window is now live**
+> on X11 (validated headless via the shared `WebGpuSwapChainContext`), the browser, and Win32 (build-only) —
+> see "WebGPU backend — per-target status" above. **Remaining kind** — Vulkan (fails headless on lavapipe) —
+> awaits a real-GPU matrix before its X11 branch migrates and the `UseOpenGL*/UseVulkanOnX11`/`PreferGLESOverGLOnX11` knobs retire.
 
 ### The two seams stay separate
 
