@@ -17,8 +17,8 @@ namespace Uno.UI.Xaml
 		public const string AppXScheme = "ms-appx";
 		public const string MSResourceScheme = "ms-resource";
 		public const string MSResourceIdentifier = MSResourceScheme + ":///";
-		private const string LocalResourceFolder = "Files/";
-		public const string LocalResourcePrefix = MSResourceIdentifier + LocalResourceFolder;
+		private const string MsResourceFilesFolder = "Files/";
+		public const string MsResourceFilesPrefix = MSResourceIdentifier + MsResourceFilesFolder;
 		public const string WinUICompactURL = "Microsoft.UI.Xaml/DensityStyles/Compact.xaml";
 
 #if !NETSTANDARD
@@ -27,7 +27,7 @@ namespace Uno.UI.Xaml
 		/// (<c>ms-resource:///Files/logo.png</c>) to the equivalent <c>ms-appx:///logo.png</c>,
 		/// which is the form asset resolution understands.
 		/// </summary>
-		internal static Uri NormalizeLocalResourceUri(Uri uri)
+		internal static Uri NormalizeMsResourceFilesUri(Uri uri)
 		{
 			if (!uri.IsAbsoluteUri || !uri.Scheme.Equals(MSResourceScheme, StringComparison.Ordinal))
 			{
@@ -38,15 +38,15 @@ namespace Uno.UI.Xaml
 			// whitespace or an upper-cased scheme the Uri parser accepted still resolves.
 			var path = uri.PathAndQuery.TrimStart('/');
 
-			if (!path.StartsWith(LocalResourceFolder, StringComparison.OrdinalIgnoreCase)
+			if (!path.StartsWith(MsResourceFilesFolder, StringComparison.OrdinalIgnoreCase)
 				// Callers rely on this being total; a remainder that is not a valid URI stays untouched.
-				|| !Uri.TryCreate(string.Concat(AppXIdentifier, path.AsSpan(LocalResourceFolder.Length)), UriKind.Absolute, out var appxUri))
+				|| !Uri.TryCreate(string.Concat(AppXIdentifier, path.AsSpan(MsResourceFilesFolder.Length)), UriKind.Absolute, out var appxUri))
 			{
 				// Only an ms-resource URI reaches here, and one that maps to nothing resolves to no
 				// asset downstream without raising - so say so, or it just silently never appears.
 				if (typeof(XamlFilePathHelper).Log().IsEnabled(LogLevel.Warning))
 				{
-					typeof(XamlFilePathHelper).Log().Warn($"'{uri}' is not a local resource ('{LocalResourcePrefix}…') and will not resolve to an asset.");
+					typeof(XamlFilePathHelper).Log().Warn($"'{uri}' is not an MRT local-file resource ('{MsResourceFilesPrefix}…') and will not resolve to an asset.");
 				}
 
 				return uri;

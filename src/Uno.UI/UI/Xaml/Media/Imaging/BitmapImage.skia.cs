@@ -61,7 +61,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				var (decodeWidth, decodeHeight) = GetDecodePixelSize();
 				// Reads the property rather than the normalized AbsoluteUri, so a UriSource assigned
 				// directly (ctor, x:Bind, Setter, code-behind) still needs the local-resource mapping.
-				var uri = UriSource is { } uriSource ? XamlFilePathHelper.NormalizeLocalResourceUri(uriSource) : null;
+				var uri = UriSource is { } uriSource ? XamlFilePathHelper.NormalizeMsResourceFilesUri(uriSource) : null;
 				if (uri is null)
 				{
 					if (_stream is null)
