@@ -21,8 +21,8 @@ index, using this file as the source of truth:
 | Nav / footer / sidebar / breadcrumb indexed as content | Crawler | `$(...).remove()` in `recordExtractor` | **applied** |
 | docfx tabbed pages indexed under `?tabs=…` variants | Crawler | query string stripped in `recordExtractor` (NOT `ignoreQueryParams` — it infinite-loops the ?tabs redirect) | **applied** |
 | Poor intent (e.g. "Get Started") | Index | `customRanking` (`weight.pageRank` first) | already present |
-| `./page`, `./page/`, `./page/index.html` as separate hits | Crawler | canonical-URL collapsing in `recordExtractor` | optional (not yet applied) |
-| Same-titled pages across sections | Index | `section` facet + `customRanking` | optional (not yet applied) |
+| `./page`, `./page/`, `./page/index.html` as separate hits | Crawler | canonical-URL collapsing in `recordExtractor` | optional — snippet below |
+| Same-titled pages across sections | Index | `section` facet + `customRanking` | optional — snippet below |
 
 > ⚠️ `data-docsearch-exclude` HTML attributes are **not** honored by the DocSearch
 > crawler (verified against Algolia's docs). Exclusion must be done here
@@ -71,6 +71,60 @@ cannot fix ranking. Once this crawler config is live it can be trimmed further.
 - Same-titled pages across sections are ranked sensibly.
 - (If canonical-URL collapsing is later enabled) a page reachable as both
   `.../page.html` and `.../page/index.html` appears once.
+
+## Optional enhancements (ready to apply)
+
+NOT deployed — ready-to-paste snippets for when you want them. Apply in the
+Crawler Editor, staging-first.
+
+### 1. Collapse `/index.html` + trailing-slash URL variants
+
+In `recordExtractor`, swap `stripQuery` for a `canonicalize` that also strips
+`/index.html` and a trailing slash, and use it in the `.map`:
+
+```js
+const stripQuery = (u) => String(u || "").replace(/\?[^#]*/, "");
+const canonicalize = (u) => stripQuery(u)
+  .replace(/\/index\.html($|[#?])/, "$1")  // .../dir/index.html -> .../dir
+  .replace(/\/($|[#?])/, "$1");            // .../dir/           -> .../dir
+return records.map((r) => ({
+  ...r,
+  url: canonicalize(r.url),
+  url_without_anchor: canonicalize(r.url_without_anchor),
+}));
+```
+
+Regular `.html` pages are untouched (only `index.html` and trailing slashes are
+collapsed, and the `#anchor` is preserved).
+
+### 2. `section` facet for same-title disambiguation
+
+Filter/rank same-titled pages by their docs section server-side (the client-side
+`disambiguateSameTitle` in `docsearch-transform.js` is the display-only version).
+
+**a. Extractor** — add `url` to the args and attach a `section` to each record:
+
+```js
+recordExtractor: ({ $, url, helpers }) => {
+  // …$(…).remove(); const records = helpers.docsearch({…}); …
+  const path = (url && url.pathname) || String(url || "");
+  const m = /\/docs\/articles\/([^/#?]+)/.exec(path);
+  const section = m ? m[1] : "general";
+  return records.map((r) => ({ ...r, /* url cleaning */ section }));
+}
+```
+
+**b. Index settings** — declare the facet and return it:
+
+```js
+attributesForFaceting: ["type", "lang", "filterOnly(section)"],
+attributesToRetrieve: ["hierarchy", "content", "anchor", "url", "url_without_anchor", "type", "section"],
+```
+
+**c. Client (required to actually use it)** — the facet does nothing until
+queries filter on it. Wire DocSearch `searchParameters.facetFilters` (or
+contextual search) to the current section, and/or add `section` to
+`customRanking`. Validate on a staging index first.
 
 ## Rollback
 

@@ -40,9 +40,9 @@
  *   • `apiKey` below is a crawler WRITE key — it is intentionally a placeholder.
  *     Set the real value in the Crawler dashboard; never commit it.
  *
- * Optional future enhancements (NOT currently deployed): a `section` facet
- * derived from the URL path for same-title disambiguation, and canonical-URL
- * collapsing of `/index.html` / trailing-slash variants. See uno-private#2038.
+ * Optional enhancements (NOT deployed) — a `section` facet for same-title
+ * disambiguation, and `/index.html` / trailing-slash canonicalization — are
+ * provided as ready-to-apply snippets in README.md ("Optional enhancements").
  */
 new Crawler({
   rateLimit: 8,
@@ -97,6 +97,9 @@ new Crawler({
         // that option infinite-loops against these pages' client-side ?tabs
         // redirect (renderJavaScript: true) and would drop every tabbed page.
         const stripQuery = (u) => String(u || "").replace(/\?[^#]*/, "");
+        // OPTIONAL (not deployed): swap `stripQuery` for a `canonicalize` that
+        // also collapses /index.html + trailing slashes, and attach a `section`
+        // facet — ready-to-apply snippets in README.md ("Optional enhancements").
         return records.map((r) => ({
           ...r,
           url: stripQuery(r.url),
@@ -108,7 +111,7 @@ new Crawler({
   safetyChecks: { beforeIndexPublishing: { maxLostRecordsPercentage: 30 } },
   initialIndexSettings: {
     platform: {
-      attributesForFaceting: ["type", "lang"],
+      attributesForFaceting: ["type", "lang"], // + "filterOnly(section)" to enable the section-facet enhancement (README)
       attributesToRetrieve: [
         "hierarchy",
         "content",
