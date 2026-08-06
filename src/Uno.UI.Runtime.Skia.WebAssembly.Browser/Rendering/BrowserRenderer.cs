@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Uno.UI.Composition.Drawing;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Foundation.Logging;
+using Uno.UI.Composition.WebGpu;
 using Uno.UI.Hosting;
+using Uno.WebGpu.Native;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -13,8 +16,13 @@ internal partial class BrowserRenderer
 {
 	private readonly Stopwatch _renderStopwatch = new Stopwatch();
 	private readonly IXamlRootHost _host;
-	private readonly IBrowserRenderer _renderer;
+	private readonly IBrowserRenderer? _renderer;
 	private JSObject? _nativeInstance;
+
+	// On-canvas WebGPU path (opt-in via UNO_WEBGPU): the device is created asynchronously, so _webgpuContext is
+	// null until ready and frames re-arm meanwhile. Uses its own canvas surface (no Skia SKCanvas / WebGL context).
+	private readonly bool _webgpuRequested;
+	private WebGpuBrowserGraphicsContext? _webgpuContext;
 
 	private int _renderCount;
 	private SKCanvas? _canvas;
@@ -29,6 +37,16 @@ internal partial class BrowserRenderer
 
 		_host = host;
 
+		var webgpu = Environment.GetEnvironmentVariable("UNO_WEBGPU");
+		if (webgpu is "1" or "true" or "neutral" or "swapchain")
+		{
+			// WebGPU needs its own canvas context (can't coexist with a WebGL context on the same canvas), so
+			// don't create the WebGl/Software renderer; kick off async device init and render once it's ready.
+			_webgpuRequested = true;
+			_ = InitWebGpuAsync();
+			return;
+		}
+
 		if (!forceSoftwareRendering && WebGlBrowserRenderer.TryCreate(out var webGlBrowserRenderer))
 		{
 			_renderer = webGlBrowserRenderer;
@@ -40,6 +58,22 @@ internal partial class BrowserRenderer
 		else
 		{
 			throw new InvalidOperationException("Unable to create renderer");
+		}
+	}
+
+	private async Task InitWebGpuAsync()
+	{
+		try
+		{
+			var device = await WebGpuDeviceAsync.CreateAsync(WGPUTextureFormat.BGRA8Unorm);
+			_webgpuContext = new WebGpuBrowserGraphicsContext(device, WebAssemblyWindowWrapper.Instance.CanvasId);
+			CompositionTarget.Renderer = new WebGpuRenderer(device);
+			this.Log().Info("Neutral graphics pipeline active: WebGpu context via WebGpuRenderer (browser).");
+			InvalidateRender();   // device is ready — request a frame now
+		}
+		catch (Exception e)
+		{
+			this.Log().Error($"WebGPU browser init failed: {e.Message}. No fallback (canvas context already claimed).");
 		}
 	}
 
@@ -86,7 +120,30 @@ internal partial class BrowserRenderer
 			this.Log().Trace($"Render {_renderCount++}");
 		}
 
-		_renderer.MakeCurrent();
+		if (_webgpuRequested)
+		{
+			if (_webgpuContext is null)
+			{
+				// Async device init not finished yet — re-arm so we render as soon as it's ready.
+				if (_nativeInstance is not null) { NativeMethods.Invalidate(_nativeInstance); }
+				return;
+			}
+
+			// Present into the wgpu canvas backbuffer (acquired fresh each frame via the resize callback).
+			var webgpuClip = compositionTarget.OnNativePlatformFrameRequested(
+				null,
+				size => _webgpuContext.AcquireRenderTarget((int)size.Width, (int)size.Height));
+			_webgpuContext.Present();
+			ApplyNativeElementClip(webgpuClip);
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"Render time (WebGPU): {_renderStopwatch.Elapsed}");
+			}
+			return;
+		}
+
+		_renderer!.MakeCurrent();
 
 		if (_renderer.NeedsForceResize())
 		{
@@ -105,6 +162,16 @@ internal partial class BrowserRenderer
 			_renderer.Flush();
 		}
 
+		ApplyNativeElementClip(currentClipPath);
+
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"Render time: {_renderStopwatch.Elapsed}");
+		}
+	}
+
+	private static void ApplyNativeElementClip(IGeometry currentClipPath)
+	{
 		string path, fillType;
 		if (!currentClipPath.IsEmpty)
 		{
@@ -118,11 +185,6 @@ internal partial class BrowserRenderer
 			fillType = "nonzero";
 		}
 		BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(path, fillType);
-
-		if (this.Log().IsEnabled(LogLevel.Trace))
-		{
-			this.Log().Trace($"Render time: {_renderStopwatch.Elapsed}");
-		}
 	}
 
 
