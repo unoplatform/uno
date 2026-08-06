@@ -91,6 +91,17 @@
           .replace(/'/g, '&#39;');
       }
 
+      // Allow only http(s) and relative/anchor URLs in href — block javascript:,
+      // data:, etc. Control chars are stripped first so schemes can't be smuggled.
+      function safeUrl(u) {
+        u = String(u == null ? '' : u).replace(/[\x00-\x1F\x7F]/g, '').trim();
+        var scheme = /^([a-z][a-z0-9+.\-]*):/i.exec(u);
+        if (scheme && scheme[1].toLowerCase() !== 'http' && scheme[1].toLowerCase() !== 'https') {
+          return '#';
+        }
+        return u;
+      }
+
       function hitTitle(hit) {
         var h = hit._highlightResult && hit._highlightResult.hierarchy;
         var raw = hit.hierarchy || {};
@@ -149,7 +160,7 @@
             empty: '<div class="uno-empty">No results{{#query}} for “{{query}}”{{/query}}.</div>',
             item: function (hit) {
               var crumb = hitCrumb(hit);
-              return '<a class="uno-hit" href="' + esc(hit.url) + '">'
+              return '<a class="uno-hit" href="' + esc(safeUrl(hit.url)) + '">'
                 + (crumb ? '<div class="uno-hit-crumb">' + esc(crumb) + '</div>' : '')
                 + '<div class="uno-hit-title">' + hitTitle(hit) + '</div>'
                 + '<div class="uno-hit-snippet">' + hitSnippet(hit) + '</div>'
