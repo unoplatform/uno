@@ -38,9 +38,13 @@ namespace Uno.UI.Xaml
 			// whitespace or an upper-cased scheme the Uri parser accepted still resolves.
 			var path = uri.PathAndQuery.TrimStart('/');
 
-			if (!path.StartsWith(MsResourceFilesFolder, StringComparison.OrdinalIgnoreCase)
-				// Callers rely on this being total; a remainder that is not a valid URI stays untouched.
-				|| !Uri.TryCreate(string.Concat(AppXIdentifier, path.AsSpan(MsResourceFilesFolder.Length)), UriKind.Absolute, out var appxUri))
+			// An authority names another package, whose assets ms-appx cannot reach - mapping it anyway
+			// would silently resolve the *app's* asset of the same name.
+			if (uri.Authority.Length > 0
+				|| !path.StartsWith(MsResourceFilesFolder, StringComparison.OrdinalIgnoreCase)
+				// The fragment is load-bearing for SvgImageSource and PathAndQuery drops it. Callers rely
+				// on this being total, so a remainder that is not a valid URI stays untouched.
+				|| !Uri.TryCreate(string.Concat(AppXIdentifier, path.AsSpan(MsResourceFilesFolder.Length), uri.Fragment.AsSpan()), UriKind.Absolute, out var appxUri))
 			{
 				// Only an ms-resource URI reaches here, and one that maps to nothing resolves to no
 				// asset downstream without raising - so say so, or it just silently never appears.
