@@ -275,7 +275,9 @@ fn clipCov(fc: vec2<f32>, clip: ClipU, ctex: texture_2d<f32>, csmp: sampler) -> 
     let rad = select(rTop, rBot, lp.y > 0.0);
     let q = abs(lp) - h + vec2<f32>(rad, rad);
     let d = min(max(q.x, q.y), 0.0) + length(max(q, vec2<f32>(0.0, 0.0))) - rad;
-    cov = cov * clamp(0.5 - d, 0.0, 1.0);
+    let rr = clamp(0.5 - d, 0.0, 1.0);
+    // flags.z = Difference (exclude): keep the OUTSIDE of the rounded rect; otherwise keep the inside.
+    cov = cov * select(rr, 1.0 - rr, clip.flags.z > 0.5);
   }
   if (clip.flags.y > 0.5) {
     let uv = fc / max(clip.size.xy, vec2<f32>(1.0, 1.0));
@@ -776,6 +778,7 @@ internal struct ClipData
 	public bool HasRound;
 	public Vector4 Rect;    // device rounded-rect L,T,R,B
 	public Vector4 Radii;   // per-corner radius (TL,TR,BR,BL), device px
+	public bool HasExclude; // Difference op: keep the area OUTSIDE the rounded Rect (PushClipExclude) rather than inside
 	// Arbitrary path clip: the flattened device-space fan is rendered to a full-size coverage texture at present
 	// time and sampled per-fragment. Innermost path wins (like the rounded shape); nested paths keep the AABB.
 	public float[] PathFan;
@@ -994,13 +997,19 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
 	{
 		var aabb = DeviceAabb(roundRect.Rect);
-		_clip.Aabb = new Vector4(MathF.Max(_clip.Aabb.X, aabb.X), MathF.Max(_clip.Aabb.Y, aabb.Y), MathF.Min(_clip.Aabb.Z, aabb.Z), MathF.Min(_clip.Aabb.W, aabb.W));
 		// Device-space, axis-aligned rounded rect (exact under scale/translate). Per-corner radius uses X, scaled
-		// by the matrix's X-axis length; a full rotation would need clip-local eval (falls back to the AABB above).
+		// by the matrix's X-axis length; a full rotation would need clip-local eval (falls back to the AABB below).
 		var s = new Vector2(_m.M11, _m.M12).Length();
 		_clip.HasRound = true;
 		_clip.Rect = aabb;
 		_clip.Radii = new Vector4(roundRect.TopLeft.X * s, roundRect.TopRight.X * s, roundRect.BottomRight.X * s, roundRect.BottomLeft.X * s);
+		// Difference (PushClipExclude): keep the area OUTSIDE the rounded rect — so DON'T tighten the scissor to it
+		// (the visible region extends past the rect); the per-fragment clipCov inverts the coverage.
+		_clip.HasExclude = operation == ClipOperation.Difference;
+		if (!_clip.HasExclude)
+		{
+			_clip.Aabb = new Vector4(MathF.Max(_clip.Aabb.X, aabb.X), MathF.Max(_clip.Aabb.Y, aabb.Y), MathF.Min(_clip.Aabb.Z, aabb.Z), MathF.Min(_clip.Aabb.W, aabb.W));
+		}
 	}
 
 	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
@@ -1348,6 +1357,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			result.HasRound = true;
 			result.Rect = TransformedAabb(c.Rect, t);
 			result.Radii = c.Radii * s;
+			result.HasExclude = c.HasExclude;
 		}
 		if (c.PathFan != null)
 		{
@@ -1426,7 +1436,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var cu = new float[16];
 		cu[0] = cd.Rect.X; cu[1] = cd.Rect.Y; cu[2] = cd.Rect.Z; cu[3] = cd.Rect.W;
 		cu[4] = cd.Radii.X; cu[5] = cd.Radii.Y; cu[6] = cd.Radii.Z; cu[7] = cd.Radii.W;
-		cu[8] = cd.HasRound ? 1f : 0f; cu[9] = cd.PathFan != null ? 1f : 0f;
+		cu[8] = cd.HasRound ? 1f : 0f; cu[9] = cd.PathFan != null ? 1f : 0f; cu[10] = cd.HasExclude ? 1f : 0f;
 		cu[12] = _s.Width; cu[13] = _s.Height;
 		var buf = Ubuf(64, owned);
 		fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, 64); }
