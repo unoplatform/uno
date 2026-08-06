@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml.Media
 					uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
 				}
 
-				return XamlFilePathHelper.NormalizeLocalResourceUri(uri);
+				return XamlFilePathHelper.NormalizeMsResourceFilesUri(uri);
 			}
 
 			return null;
@@ -109,7 +109,7 @@ namespace Microsoft.UI.Xaml.Media
 				return;
 			}
 
-			uri = XamlFilePathHelper.NormalizeLocalResourceUri(uri);
+			uri = XamlFilePathHelper.NormalizeMsResourceFilesUri(uri);
 
 			if (!uri.IsAbsoluteUri || uri.Scheme == "")
 			{

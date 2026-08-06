@@ -59,7 +59,7 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			if (uri is not null)
 			{
-				uri = XamlFilePathHelper.NormalizeLocalResourceUri(uri);
+				uri = XamlFilePathHelper.NormalizeMsResourceFilesUri(uri);
 			}
 
 			var retVal = new LoadedImageSurface(async (LoadedImageSurface imgSurf) =>

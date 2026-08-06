@@ -1573,7 +1573,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											writer.AppendLineIndented(";");
 										}
 
-										writer.AppendLineInvariantIndented("{0}.Source = new global::System.Uri(\"{1}{2}\");", dictVarId, XamlFilePathHelper.LocalResourcePrefix, url);
+										writer.AppendLineInvariantIndented("{0}.Source = new global::System.Uri(\"{1}{2}\");", dictVarId, XamlFilePathHelper.MsResourceFilesPrefix, url);
 										writer.AppendLineInvariantIndented("{0}.CreationComplete();", dictVarId);
 									}
 
@@ -5314,7 +5314,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return $"{uriBase} + {ToVerbatimLiteral(rawValue.TrimStart('/'))}";
 					}
 
-					return ToVerbatimLiteral(XamlFilePathHelper.LocalResourcePrefix + rawValue.TrimStart('/'));
+					return ToVerbatimLiteral(XamlFilePathHelper.MsResourceFilesPrefix + rawValue.TrimStart('/'));
 
 					// A path is free to contain a backslash, which a regular literal would read as an escape.
 					static string ToVerbatimLiteral(string value) => $"@\"{value.Replace("\"", "\"\"")}\"";
