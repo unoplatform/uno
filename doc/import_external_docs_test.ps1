@@ -14,22 +14,34 @@ Write-Host 'Updating docfx tool...' -ForegroundColor Black -BackgroundColor Gree
 # Intentionally pinned to match the CI docs build toolchain (build/Uno.UI.Build.csproj)
 # so local validation reproduces doc generation behavior consistently.
 dotnet tool update --global docfx --version 2.73.2 --allow-downgrade
+if ($LASTEXITCODE -ne 0) {
+    # `dotnet tool update` fails when docfx isn't installed yet (clean machine);
+    # fall back to a fresh install of the pinned version.
+    Write-Host 'docfx not installed; installing pinned version...' -ForegroundColor Black -BackgroundColor DarkYellow
+    dotnet tool install --global docfx --version 2.73.2
+}
 
 # Older or newer local versions can cause template behavior differences.
-# Verify the actual resolved version and force-install the pinned toolchain when needed.
-# A Homebrew or other system-wide install may shadow the dotnet tool, so prefer
-# the dotnet tool path explicitly when it exists.
-$dotnetToolDocfx = Join-Path $env:HOME '.dotnet/tools/docfx'
-if (Test-Path $dotnetToolDocfx) {
-    $script:DocfxCmd = $dotnetToolDocfx
-} else {
-    $script:DocfxCmd = 'docfx'
+# Resolve the dotnet global tool explicitly (a Homebrew or other system-wide install
+# may otherwise shadow it), verify the pinned version, and reinstall when needed.
+function Resolve-DocfxCommand {
+    # The dotnet global-tools shim lives under the user profile ($env:HOME is not
+    # reliably set on Windows PowerShell). The executable is docfx.exe on Windows
+    # and docfx elsewhere.
+    $toolsDir = Join-Path ([Environment]::GetFolderPath('UserProfile')) '.dotnet/tools'
+    foreach ($candidate in @((Join-Path $toolsDir 'docfx.exe'), (Join-Path $toolsDir 'docfx'))) {
+        if (Test-Path $candidate) { return $candidate }
+    }
+    return 'docfx' # fall back to whatever is on PATH
 }
+$script:DocfxCmd = Resolve-DocfxCommand
 $docfxVersionOutput = (& $script:DocfxCmd --version | Select-Object -First 1).Trim()
 if ($docfxVersionOutput -notlike '2.73.2*') {
     Write-Host "DocFX version '$docfxVersionOutput' does not match required 2.73.2. Reinstalling pinned version..." -ForegroundColor Black -BackgroundColor DarkYellow
     dotnet tool uninstall --global docfx | Out-Null
     dotnet tool install --global docfx --version 2.73.2
+    # Re-resolve after reinstall in case the shim path changed.
+    $script:DocfxCmd = Resolve-DocfxCommand
     $docfxVersionOutput = (& $script:DocfxCmd --version | Select-Object -First 1).Trim()
     if ($docfxVersionOutput -notlike '2.73.2*') {
         Write-Error "Failed to install DocFX 2.73.2. Resolved version: $docfxVersionOutput"
