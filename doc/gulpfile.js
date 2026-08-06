@@ -76,7 +76,8 @@ function scripts(done) {
         `!${assets}/styles/*.js`,
         `!${assets}/conceptual.html.primary.js`,
         `!${assets}/main.js`,
-        `!${assets}/vendor/*.js`])
+        `!${assets}/vendor/*.js`,
+        `!${assets}/**/*.test.js`]) // test files are Node-only (require()); never bundle them into the browser script
         .pipe(sourcemaps.init())
         .pipe(uglify())
         .pipe(concat('docfx.js'))
@@ -96,7 +97,7 @@ function watch() {
         .on('change', browserSync.reload);
 
     // Watch javascript files
-    gulpwatch([`${assets}/**/*.js`, `!${assets}/styles/*.js`], series([scripts, docfx]))
+    gulpwatch([`${assets}/**/*.js`, `!${assets}/styles/*.js`, `!${assets}/**/*.test.js`], series([scripts, docfx]))
         .on('change', browserSync.reload);
 }
 

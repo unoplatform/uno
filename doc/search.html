@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<!--
+  Full docs search results page.
+
+  Per unoplatform/uno-private#2038 this replaces the former custom
+  MutationObserver overlay with a maintained widget (InstantSearch.js). It is a
+  self-contained static resource (copied verbatim by docfx — see the `resource`
+  entry in docfx.json) served at https://platform.uno/docs/search.html. The
+  DocSearch modal's "See all N results" footer (resultsFooterComponent in
+  templates/uno/partials/scripts.tmpl.partial) links here with ?q=<query>.
+
+  Uses the public *search-only* API key (same one already used by DocSearch).
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Search — Uno Platform Docs</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@8/themes/satellite-min.css" />
+  <style>
+    :root { --uno-primary: #159bff; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Open Sans", -apple-system, Segoe UI, Roboto, sans-serif; color: #242424; background: #fff; }
+    .uno-search-header { display: flex; align-items: center; gap: 16px; padding: 20px 24px; border-bottom: 1px solid #f0f0f0; }
+    .uno-search-header a.home { display: inline-flex; align-items: center; font-weight: 700; color: #242424; text-decoration: none; white-space: nowrap; }
+    .uno-search-main { max-width: 900px; margin: 0 auto; padding: 24px; }
+    .ais-SearchBox { margin-bottom: 8px; }
+    .uno-stats { color: #757575; font-size: 13px; margin: 4px 0 20px; }
+    .ais-Hits-item { display: block; width: 100%; padding: 0; border: none; box-shadow: none; margin-bottom: 14px; }
+    .uno-hit { display: block; padding: 14px 16px; border: 1px solid #eaeaea; border-radius: 8px; text-decoration: none; color: inherit; transition: border-color .15s, box-shadow .15s; }
+    .uno-hit:hover { border-color: var(--uno-primary); box-shadow: 0 2px 8px rgba(0,0,0,.06); }
+    .uno-hit-crumb { font-size: 12px; color: #999; margin-bottom: 2px; }
+    .uno-hit-title { font-size: 16px; font-weight: 600; color: var(--uno-primary); }
+    .uno-hit-snippet { font-size: 14px; color: #444; line-height: 1.5; margin-top: 6px; }
+    .uno-hit mark, .uno-hit-title mark { background: #fff3bf; color: inherit; padding: 0 1px; border-radius: 2px; }
+    .ais-Pagination { margin-top: 24px; }
+    .uno-empty { color: #666; padding: 24px 0; }
+  </style>
+</head>
+<body>
+  <header class="uno-search-header">
+    <a class="home" href="./articles/intro.html">← Uno Platform Docs</a>
+    <div id="searchbox" style="flex:1;"></div>
+  </header>
+
+  <main class="uno-search-main">
+    <div id="stats" class="uno-stats"></div>
+    <div id="hits"></div>
+    <div id="pagination"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var APP_ID = 'PHB9D8WS99';
+      var SEARCH_KEY = '7877394996f96cde1a9b795dce3f7787'; // public search-only key
+      var INDEX = 'platform';
+
+      var searchClient = algoliasearch(APP_ID, SEARCH_KEY);
+      var w = instantsearch.widgets;
+
+      var search = instantsearch({
+        indexName: INDEX,
+        searchClient: searchClient,
+        // Keep ?q=<query> in the URL so the page is shareable / reloadable.
+        routing: {
+          stateMapping: {
+            stateToRoute: function (uiState) {
+              return { q: (uiState[INDEX] && uiState[INDEX].query) || '', page: (uiState[INDEX] && uiState[INDEX].page) || 1 };
+            },
+            routeToState: function (route) {
+              var s = {}; s[INDEX] = { query: route.q || '', page: Number(route.page) || 1 }; return s;
+            }
+          }
+        }
+      });
+
+      // HTML-escape plain-text values before inserting them into innerHTML.
+      // (Highlight/snippet values from the connector are already escaped and are
+      // inserted WITHOUT esc(); everything else — url, breadcrumb, query echo —
+      // is untrusted-ish and must go through here.)
+      function esc(s) {
+        return String(s == null ? '' : s)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function hitTitle(hit) {
+        var h = hit._highlightResult && hit._highlightResult.hierarchy;
+        var raw = hit.hierarchy || {};
+        function lvl(n) {
+          var key = 'lvl' + n;
+          return (h && h[key] && h[key].value) || raw[key];
+        }
+        return lvl(6) || lvl(5) || lvl(4) || lvl(3) || lvl(2) || lvl(1) || lvl(0) || 'Untitled';
+      }
+
+      function hitCrumb(hit) {
+        var raw = hit.hierarchy || {};
+        var parts = [];
+        for (var n = 0; n <= 6; n++) { if (raw['lvl' + n]) parts.push(raw['lvl' + n]); }
+        // The deepest present level is the title (hitTitle uses it); drop just
+        // that one so the full parent trail is kept even for lvl4–lvl6 titles.
+        parts.pop();
+        return parts.join(' › ');
+      }
+
+      function hitSnippet(hit) {
+        var s = hit._snippetResult && hit._snippetResult.content && hit._snippetResult.content.value;
+        if (!s) { s = hit.content || ''; if (s.length > 200) s = s.slice(0, 200) + '…'; }
+        return s;
+      }
+
+      search.addWidgets([
+        w.configure({ hitsPerPage: 20, distinct: true }),
+
+        w.searchBox({
+          container: '#searchbox',
+          placeholder: 'Search the Uno Platform docs…',
+          autofocus: true,
+          showReset: true,
+          showSubmit: true
+        }),
+
+        w.stats({
+          container: '#stats',
+          templates: {
+            text: function (data) {
+              if (!data.query) { return 'Type to search the documentation.'; }
+              return data.nbHits + ' result' + (data.nbHits === 1 ? '' : 's') + ' for “' + esc(data.query) + '” (' + data.processingTimeMS + 'ms)';
+            }
+          }
+        }),
+
+        w.hits({
+          container: '#hits',
+          templates: {
+            empty: '<div class="uno-empty">No results{{#query}} for “{{query}}”{{/query}}.</div>',
+            item: function (hit) {
+              var crumb = hitCrumb(hit);
+              return '<a class="uno-hit" href="' + esc(hit.url) + '">'
+                + (crumb ? '<div class="uno-hit-crumb">' + esc(crumb) + '</div>' : '')
+                + '<div class="uno-hit-title">' + hitTitle(hit) + '</div>'
+                + '<div class="uno-hit-snippet">' + hitSnippet(hit) + '</div>'
+                + '</a>';
+            }
+          }
+        }),
+
+        w.pagination({ container: '#pagination' })
+      ]);
+
+      search.start();
+    })();
+  </script>
+</body>
+</html>
