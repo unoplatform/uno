@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference src\controls\dev\NumberBox\NumberBox.cpp, tag winui3/release/1.7.1, commit 5f27a786ac9
+// MUX Reference controls\dev\NumberBox\NumberBox.cpp, commit b8cfb849061c00df624ebb29ac4727b9e58ea99c
 
 using System;
 using System.Collections.Generic;
@@ -15,6 +15,7 @@ using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Globalization.NumberFormatting;
 using Windows.System;
+using Windows.System.UserProfile;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -89,45 +90,30 @@ partial class NumberBox
 	// This was largely copied from Calculator's GetRegionalSettingsAwareDecimalFormatter()
 	private DecimalFormatter GetRegionalSettingsAwareDecimalFormatter()
 	{
-		return new DecimalFormatter
+		DecimalFormatter formatter = null;
+		var languages = GlobalizationPreferences.Languages;
+		if (languages.Count > 0)
 		{
-			IntegerDigits = 1,
-			FractionDigits = 0,
-		};
+			var currentLocale = languages[0];
 
-#if HAS_UNO // UNO TODO: https://github.com/unoplatform/uno/issues/6908
+			// GetUserDefaultLocaleName may return an invalid bcp47 language tag with trailing non-BCP47 friendly characters,
+			// which if present would start with an underscore, for example sort order
+			// (see https://msdn.microsoft.com/en-us/library/windows/desktop/dd373814(v=vs.85).aspx).
+			// Therefore, if there is an underscore in the locale name, trim all characters from the underscore onwards.
+			var underscore = currentLocale.IndexOf('_');
+			if (underscore >= 0)
+			{
+				currentLocale = currentLocale.Substring(0, underscore);
+			}
 
-		//WCHAR currentLocale[LOCALE_NAME_MAX_LENGTH] = { };
-		//if (GetUserDefaultLocaleName(currentLocale, LOCALE_NAME_MAX_LENGTH) != 0)
-		//{
-		//	// GetUserDefaultLocaleName may return an invalid bcp47 language tag with trailing non-BCP47 friendly characters,
-		//	// which if present would start with an underscore, for example sort order
-		//	// (see https://msdn.microsoft.com/en-us/library/windows/desktop/dd373814(v=vs.85).aspx).
-		//	// Therefore, if there is an underscore in the locale name, trim all characters from the underscore onwards.
-		//	WCHAR* underscore = wcschr(currentLocale, L'_');
-		//	if (underscore != nullptr)
-		//	{
-		//		*underscore = L'\0';
-		//	}
+			formatter = new DecimalFormatter([currentLocale], GlobalizationPreferences.HomeGeographicRegion);
+		}
 
-		//	if (winrt::Language::IsWellFormed(currentLocale))
-		//	{
-		//		std::vector<winrt::hstring> languageList;
-		//		languageList.push_back(winrt::hstring(currentLocale));
-		//		formatter = winrt::DecimalFormatter(languageList, winrt::GlobalizationPreferences::HomeGeographicRegion());
-		//	}
-		//}
+		formatter ??= new DecimalFormatter();
+		formatter.IntegerDigits = 1;
+		formatter.FractionDigits = 0;
 
-		//if (!formatter)
-		//{
-		//	formatter = winrt::DecimalFormatter();
-		//}
-
-		//formatter.IntegerDigits(1);
-		//formatter.FractionDigits(0);
-
-		//return formatter;
-#endif
+		return formatter;
 	}
 
 	protected override AutomationPeer OnCreateAutomationPeer()
