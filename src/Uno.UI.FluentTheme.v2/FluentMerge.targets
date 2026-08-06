@@ -6,7 +6,7 @@
 
   <ItemGroup>
 	<!--
-	  ExcludeAssets="build" so the package's targets are not auto-imported into every variant (which
+	  ExcludeAssets="build;buildTransitive" so the package's targets are not auto-imported into every variant (which
 	  would run the merge in the Reference stub too); they are imported explicitly below only for the
 	  variants that carry theme resources.
 	-->
