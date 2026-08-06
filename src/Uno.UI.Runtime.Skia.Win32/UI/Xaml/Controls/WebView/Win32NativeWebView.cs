@@ -75,31 +75,45 @@ internal class Win32NativeWebViewProvider(CoreWebView2 owner) : INativeWebViewPr
 	}
 }
 
-internal partial class Win32NativeWebView : Win32NativeWebViewBase, ISupportsVirtualHostMapping, ISupportsWebResourceRequested, ISupportsUserAgent, ISupportsScriptEnabled, ISupportsZoomControl, ISupportsPostWebMessage, ISupportsDocumentCreatedScripts, ISupportsCookieManager, ISupportsPrint
+internal partial class Win32NativeWebView : Win32NativeWebViewBase, ISupportsVirtualHostMapping, ISupportsWebResourceRequested, ISupportsUserAgent, ISupportsScriptEnabled, ISupportsZoomControl, ISupportsPostWebMessage, ISupportsDocumentCreatedScripts, ISupportsCookieManager, ISupportsPrint, ISupportsClose
 {
 	async Task<Stream> ISupportsPrint.PrintToPdfStreamAsync(CoreWebView2PrintSettings? settings, CancellationToken ct)
 	{
+		ct.ThrowIfCancellationRequested();
 		NativeWebView.CoreWebView2PrintSettings? nativeSettings = null;
 		if (settings is not null)
 		{
 			nativeSettings = _nativeWebView.Environment.CreatePrintSettings();
 			nativeSettings.Orientation = (NativeWebView.CoreWebView2PrintOrientation)(int)settings.Orientation;
 			nativeSettings.ScaleFactor = settings.ScaleFactor;
+			nativeSettings.Copies = settings.Copies;
+			nativeSettings.Collation = (NativeWebView.CoreWebView2PrintCollation)(int)settings.Collation;
+			nativeSettings.ColorMode = (NativeWebView.CoreWebView2PrintColorMode)(int)settings.ColorMode;
+			nativeSettings.Duplex = (NativeWebView.CoreWebView2PrintDuplex)(int)settings.Duplex;
+			nativeSettings.MediaSize = (NativeWebView.CoreWebView2PrintMediaSize)(int)settings.MediaSize;
 			nativeSettings.MarginTop = settings.MarginTop;
 			nativeSettings.MarginBottom = settings.MarginBottom;
 			nativeSettings.MarginLeft = settings.MarginLeft;
 			nativeSettings.MarginRight = settings.MarginRight;
+			nativeSettings.FooterUri = settings.FooterUri;
+			nativeSettings.HeaderTitle = settings.HeaderTitle;
+			nativeSettings.PageRanges = settings.PageRanges;
+			nativeSettings.PagesPerSide = settings.PagesPerSide;
 			nativeSettings.ShouldPrintBackgrounds = settings.ShouldPrintBackgrounds;
+			nativeSettings.ShouldPrintHeaderAndFooter = settings.ShouldPrintHeaderAndFooter;
+			nativeSettings.ShouldPrintSelectionOnly = settings.ShouldPrintSelectionOnly;
 			nativeSettings.PageWidth = settings.PageWidth;
 			nativeSettings.PageHeight = settings.PageHeight;
+			nativeSettings.PrinterName = settings.PrinterName;
 		}
 
-		var stream = await _nativeWebView.PrintToPdfStreamAsync(nativeSettings);
+		var stream = await _nativeWebView.PrintToPdfStreamAsync(nativeSettings).WaitAsync(ct);
 		return stream;
 	}
 
 	async Task<CoreWebView2PrintStatus> ISupportsPrint.ShowPrintUIAsync(CoreWebView2PrintDialogKind dialogKind, CancellationToken ct)
 	{
+		ct.ThrowIfCancellationRequested();
 		_nativeWebView.ShowPrintUI((NativeWebView.CoreWebView2PrintDialogKind)(int)dialogKind);
 		await Task.Yield();
 		return CoreWebView2PrintStatus.Succeeded;
@@ -107,7 +121,8 @@ internal partial class Win32NativeWebView : Win32NativeWebViewBase, ISupportsVir
 
 	async Task<IReadOnlyList<CoreWebView2Cookie>> ISupportsCookieManager.GetCookiesAsync(string uri, CancellationToken ct)
 	{
-		var nativeCookies = await _nativeWebView.CookieManager.GetCookiesAsync(uri);
+		ct.ThrowIfCancellationRequested();
+		var nativeCookies = await _nativeWebView.CookieManager.GetCookiesAsync(uri).WaitAsync(ct);
 		var result = new List<CoreWebView2Cookie>(nativeCookies.Count);
 		foreach (var c in nativeCookies)
 		{
@@ -154,7 +169,10 @@ internal partial class Win32NativeWebView : Win32NativeWebViewBase, ISupportsVir
 	void ISupportsPostWebMessage.PostWebMessageAsString(string message) => _nativeWebView.PostWebMessageAsString(message);
 
 	async Task<string> ISupportsDocumentCreatedScripts.AddScriptToExecuteOnDocumentCreatedAsync(string javaScript, CancellationToken ct)
-		=> await _nativeWebView.AddScriptToExecuteOnDocumentCreatedAsync(javaScript);
+	{
+		ct.ThrowIfCancellationRequested();
+		return await _nativeWebView.AddScriptToExecuteOnDocumentCreatedAsync(javaScript).WaitAsync(ct);
+	}
 
 	void ISupportsDocumentCreatedScripts.RemoveScriptToExecuteOnDocumentCreated(string id)
 		=> _nativeWebView.RemoveScriptToExecuteOnDocumentCreated(id);
@@ -194,11 +212,32 @@ internal partial class Win32NativeWebView : Win32NativeWebViewBase, ISupportsVir
 			}
 		}
 	}
+
+	void ISupportsClose.Close()
+	{
+		if (_isClosed)
+		{
+			return;
+		}
+
+		_isClosed = true;
+		_nativeWebView.WebResourceRequested -= NativeWebView2_WebResourceRequested;
+		try
+		{
+			_controller.Close();
+		}
+		finally
+		{
+			DestroyWindow();
+		}
+	}
+
 	private readonly CoreWebView2 _coreWebView;
 	private readonly NativeWebView.CoreWebView2 _nativeWebView;
 	private readonly NativeWebView.CoreWebView2Controller _controller;
 	private Dictionary<ulong, string> _navigationIdToUriMap = new();
 	private string _documentTitle = string.Empty;
+	private bool _isClosed;
 
 	public Win32NativeWebView(CoreWebView2 owner, ContentPresenter presenter)
 	: base(presenter)
@@ -244,7 +283,7 @@ internal partial class Win32NativeWebView : Win32NativeWebViewBase, ISupportsVir
 			var browserFolder = customEnv?.BrowserExecutableFolder;
 			var userDataFolder = !string.IsNullOrEmpty(customEnv?.UserDataFolder)
 				? customEnv!.UserDataFolder
-				: Path.Combine(ApplicationData.Current.LocalFolder.Path, "WebView2");
+				: Path.Join(ApplicationData.Current.LocalFolder.Path, "WebView2");
 			var env = await NativeWebView.CoreWebView2Environment.CreateAsync(browserFolder, userDataFolder, nativeEnvOptions);
 			if (customEnv is not null)
 			{

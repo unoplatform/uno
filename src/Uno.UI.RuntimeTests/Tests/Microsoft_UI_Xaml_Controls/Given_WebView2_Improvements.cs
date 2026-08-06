@@ -15,7 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
 [RunsOnUIThread]
 [TestClass]
-[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaWasm)]
+[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaWasm)]
 public class Given_WebView2_Improvements
 {
 	private static readonly string MessageBridgeHtml = """
@@ -124,6 +124,13 @@ public class Given_WebView2_Improvements
 		core.PostWebMessageAsJson("{\"answer\":42}");
 		await TestServices.WindowHelper.WaitFor(
 			() => webMessage?.Contains("\"answer\":42", StringComparison.Ordinal) == true,
+			5_000);
+
+		webMessage = null;
+		core.PostWebMessageAsString(string.Empty);
+		await TestServices.WindowHelper.WaitFor(
+			() => webMessage?.Contains("\"kind\":\"host\"", StringComparison.Ordinal) == true
+				&& webMessage.Contains("\"data\":\"\"", StringComparison.Ordinal),
 			5_000);
 
 		Assert.ThrowsExactly<ArgumentException>(() => core.PostWebMessageAsJson("not-json"));
@@ -255,8 +262,15 @@ public class Given_WebView2_Improvements
 	{
 		var webView = await CreateWebViewAsync();
 		var core = webView.CoreWebView2!;
+		core.SetHistoryProperties(true, true);
+		core.RaiseHistoryChanged();
+		Assert.IsTrue(webView.CanGoBack);
+		Assert.IsTrue(webView.CanGoForward);
+
 		webView.Close();
 		webView.Close();
+		core.SetHistoryProperties(true, true);
+		core.RaiseHistoryChanged();
 
 		Assert.IsFalse(webView.CanGoBack);
 		Assert.IsFalse(webView.CanGoForward);
@@ -292,8 +306,8 @@ public class Given_WebView2_Improvements
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
-	public async Task When_MacOS_InPrivate_Environment_Is_Applied_Before_Initialization()
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_InPrivate_Environment_Is_Applied_Before_Initialization()
 	{
 		var environment = await CoreWebView2Environment.CreateWithOptionsAsync(null, null, new CoreWebView2EnvironmentOptions());
 		var controllerOptions = environment.CreateCoreWebView2ControllerOptions();
@@ -312,7 +326,7 @@ public class Given_WebView2_Improvements
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_DocumentCreatedScript_Is_Added_And_Removed()
 	{
 		var webView = await CreateWebViewAsync();
@@ -332,7 +346,7 @@ public class Given_WebView2_Improvements
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_UserAgent_And_ScriptEnabled_Are_Applied()
 	{
 		var webView = await CreateWebViewAsync();
@@ -365,7 +379,7 @@ public class Given_WebView2_Improvements
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_Cookie_Is_RoundTripped_And_Deleted()
 	{
 		var webView = await CreateWebViewAsync();
@@ -396,7 +410,7 @@ public class Given_WebView2_Improvements
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_PrintToPdfStream_Returns_A_Pdf()
 	{
 		var webView = await CreateWebViewAsync();
@@ -406,14 +420,29 @@ public class Given_WebView2_Improvements
 		await TestServices.WindowHelper.WaitFor(() => completed, 10_000);
 
 		var customSettings = webView.CoreWebView2.Environment.CreatePrintSettings();
+		customSettings.Orientation = CoreWebView2PrintOrientation.Landscape;
 		customSettings.ScaleFactor = 1.5d;
+		customSettings.MarginTop = 0.25d;
+		customSettings.MarginBottom = 0.25d;
+		customSettings.MarginLeft = 0.25d;
+		customSettings.MarginRight = 0.25d;
+		customSettings.ShouldPrintBackgrounds = true;
 		Func<Task> customPrint = async () => await webView.CoreWebView2.PrintToPdfStreamAsync(customSettings);
-		await customPrint.Should().ThrowAsync<NotSupportedException>();
 
 		var unsupportedSettings = webView.CoreWebView2.Environment.CreatePrintSettings();
 		unsupportedSettings.Copies = 2;
 		Func<Task> unsupportedPrint = async () => await webView.CoreWebView2.PrintToPdfStreamAsync(unsupportedSettings);
-		await unsupportedPrint.Should().ThrowAsync<NotSupportedException>();
+
+		if (OperatingSystem.IsWindows())
+		{
+			using var customPdf = await webView.CoreWebView2.PrintToPdfStreamAsync(customSettings);
+			Assert.IsTrue(customPdf.Size > 0);
+		}
+		else
+		{
+			await customPrint.Should().ThrowAsync<NotSupportedException>();
+			await unsupportedPrint.Should().ThrowAsync<NotSupportedException>();
+		}
 
 		using var pdf = await webView.CoreWebView2.PrintToPdfStreamAsync(null);
 		using var stream = pdf.AsStreamForRead();
@@ -463,6 +492,32 @@ public class Given_WebView2_Improvements
 		finally
 		{
 			File.Delete(filePath);
+		}
+	}
+
+	[RunsOnUIThread]
+	[TestClass]
+	[PlatformCondition(
+		ConditionMode.Include,
+		RuntimeTestPlatforms.SkiaX11
+			| RuntimeTestPlatforms.SkiaFrameBuffer
+			| RuntimeTestPlatforms.Android
+			| RuntimeTestPlatforms.NativeUIKit
+			| RuntimeTestPlatforms.SkiaUIKit)]
+	public class Given_WebView2_Unsupported_Environment_Options
+	{
+		[TestMethod]
+		public async Task When_NonDefault_Environment_Options_Are_Requested_They_Are_Rejected()
+		{
+			var options = new CoreWebView2EnvironmentOptions
+			{
+				AdditionalBrowserArguments = "--disable-features=ExampleFeature",
+			};
+			var environment = await CoreWebView2Environment.CreateWithOptionsAsync(null, null, options);
+			var webView = new WebView2();
+			Func<Task> initialize = async () => await webView.EnsureCoreWebView2Async(environment);
+
+			await initialize.Should().ThrowAsync<NotSupportedException>();
 		}
 	}
 

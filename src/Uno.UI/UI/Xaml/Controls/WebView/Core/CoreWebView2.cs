@@ -136,6 +136,15 @@ public partial class CoreWebView2
 				throw new NotSupportedException("The Skia macOS WebKit host supports only the IsInPrivateModeEnabled controller option.");
 			}
 		}
+		else if (!OperatingSystem.IsWindows()
+			&& (!string.IsNullOrEmpty(environment.BrowserExecutableFolder)
+				|| !string.IsNullOrEmpty(environment.UserDataFolder)
+				|| environment.Options?.HasNonDefaultValues == true
+				|| controllerOptions is { IsInPrivateModeEnabled: true }
+				|| controllerOptions?.HasUnsupportedWebKitOptions == true))
+		{
+			throw new NotSupportedException("Custom CoreWebView2 environments and controller options are not supported on this platform.");
+		}
 	}
 
 	internal IReadOnlyDictionary<string, string> HostToFolderMap { get; }
