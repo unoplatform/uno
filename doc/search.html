@@ -96,7 +96,9 @@
         var raw = hit.hierarchy || {};
         function lvl(n) {
           var key = 'lvl' + n;
-          return (h && h[key] && h[key].value) || raw[key];
+          if (h && h[key] && h[key].value) return h[key].value; // connector-escaped, keeps <mark>
+          if (raw[key]) return esc(raw[key]);                   // raw fallback -> escape
+          return '';
         }
         return lvl(6) || lvl(5) || lvl(4) || lvl(3) || lvl(2) || lvl(1) || lvl(0) || 'Untitled';
       }
@@ -113,9 +115,12 @@
 
       function hitSnippet(hit) {
         var s = hit._snippetResult && hit._snippetResult.content && hit._snippetResult.content.value;
-        if (!s) { s = hit.content || ''; if (s.length > 200) s = s.slice(0, 200) + '…'; }
-        return s;
+        if (s) { return s; } // connector-escaped, keeps <mark>
+        s = hit.content || '';
+        if (s.length > 200) s = s.slice(0, 200) + '…';
+        return esc(s); // raw fallback -> escape
       }
+
 
       search.addWidgets([
         w.configure({ hitsPerPage: 20, distinct: true }),
