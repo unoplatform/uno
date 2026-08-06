@@ -89,6 +89,15 @@ Uno.SDK single-project model.
 - **Deprecated UIKit disposal helper:** `Uno.Foundation.NSObjectExtensions.ValidateDispose`,
   deprecated since Uno 5.x. Remove the call from your `NSObject`/`UIView` `Dispose`
   overrides — Skia does not host native views, so there is nothing to validate.
+- **`Uno.Extensions.UriExtensions.IsLocalResource` is renamed to `IsMsAppx`.** Same behavior —
+  the predicate has always tested for the `ms-appx` scheme, which the old name did not say.
+  Rename the call; there is no forwarding shim.
+
+  ```diff
+  - if (uri.IsLocalResource())
+  + if (uri.IsMsAppx())
+  ```
+
 - **Legacy WebAssembly JavaScript interop:** `Uno.Foundation.Interop.IJSObject`,
   `IJSObjectMetadata`, `JSObjectHandle`, `JSObject`, and
   `WebAssemblyRuntime.InvokeJSWithInterop(FormattableString)` — the Uno-only

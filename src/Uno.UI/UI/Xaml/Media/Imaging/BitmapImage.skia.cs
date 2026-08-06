@@ -121,7 +121,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						return ImageData.FromError(new InvalidOperationException($"UriSource must be absolute"));
 					}
 
-					if (uri.IsLocalResource())
+					if (uri.IsMsAppx())
 					{
 						uri = await TryResolveLocalResource(uri);
 					}
@@ -201,7 +201,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		internal static async Task<Uri> TryResolveLocalResource(Uri uri, ResolutionScale? scaleOverride = null)
 		{
-			if (!uri.IsLocalResource())
+			if (!uri.IsMsAppx())
 			{
 				return uri;
 			}

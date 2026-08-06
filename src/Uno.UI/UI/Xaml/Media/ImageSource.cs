@@ -116,7 +116,7 @@ namespace Microsoft.UI.Xaml.Media
 				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
 			}
 
-			if (uri.IsLocalResource())
+			if (uri.IsMsAppx())
 			{
 				InitFromResource(uri);
 				return;

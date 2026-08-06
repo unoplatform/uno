@@ -59,7 +59,10 @@ public static class UriExtensions
 		return uri.IsAbsoluteUri && uri.Scheme.Equals("ms-appdata", StringComparison.OrdinalIgnoreCase);
 	}
 
-	public static bool IsLocalResource(this Uri uri)
+	/// <summary>
+	/// Whether the URI addresses a packaged application asset (<c>ms-appx</c>).
+	/// </summary>
+	public static bool IsMsAppx(this Uri uri)
 	{
 		if (uri is null)
 		{
