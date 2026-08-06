@@ -1172,6 +1172,15 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	{
 		if (texture is not WebGpuImageTexture t) { return; }
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
+		// A 4x5 colour-matrix filter (e.g. MonochromeColor / effect brush): draw the image inside a colour-matrix
+		// layer, reusing LayerCmd.ColorMatrix (applied at composite). The SrcIn blend-mode tint stays the fast path.
+		if (colorFilter is WebGpuColorFilter { Matrix: not null })
+		{
+			SaveLayer(colorFilter);
+			DrawImage(texture, x, y, sampling);
+			Restore();
+			return;
+		}
 		var (mode, tint) = ResolveTint(colorFilter);
 		_target.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = 1f, TintMode = mode, Tint = tint, Clip = _clip });
 	}
@@ -2207,16 +2216,10 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 			hasBackdropInput = true;
 			return new WebGpuEffectFilter { SigmaX = sigma, SigmaY = sigma, Color = tint, LumColor = lum };
 		}
-		// A non-blur effect: delegate to the inner factory (Skia realizes the full DAG). A Skia-less inner has no
-		// managed rasterizer for it — treat as unsupported (renders nothing) rather than crash.
-		try
-		{
-			return _inner.CreateEffectFilter(effect, bounds, sourceResolver, useBackdropBlurClamp, isSoftwareRenderer, out hasBackdropInput);
-		}
-		catch (NotImplementedException)
-		{
-			hasBackdropInput = false;
-			return null;
-		}
+		// A non-blur, non-acrylic effect (e.g. grayscale/hue/sepia on an image source): the WebGPU backend can't
+		// realize it as a backdrop filter. Return null so CompositionEffectBrush.TryPaint falls back to the recipe
+		// path — reduce to a source + composed 4×5 colour matrix and paint the source through a colour-matrix layer.
+		hasBackdropInput = false;
+		return null;
 	}
 }
