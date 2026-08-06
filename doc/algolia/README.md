@@ -21,7 +21,7 @@ index, using this file as the source of truth:
 | Nav / footer / sidebar / breadcrumb indexed as content | Crawler | `$(...).remove()` in `recordExtractor` | **applied** |
 | docfx tabbed pages indexed under `?tabs=…` variants | Crawler | query string stripped in `recordExtractor` (NOT `ignoreQueryParams` — it infinite-loops the ?tabs redirect) | **applied** |
 | Poor intent (e.g. "Get Started") | Index | `customRanking` (`weight.pageRank` first) | already present |
-| `./page`, `./page/`, `./page/index.html` as separate hits | Crawler | canonical-URL collapsing in `recordExtractor` | optional — snippet below |
+| `./page`, `./page/`, `./page/index.html` as separate hits | Crawler | canonical-URL collapsing in `recordExtractor` | in config — deploy on next crawl |
 | Same-titled pages across sections | Client (by design) | path-segment suffix in `docsearch-transform.js` — see note below | **applied** |
 
 > ⚠️ `data-docsearch-exclude` HTML attributes are **not** honored by the DocSearch
@@ -83,27 +83,7 @@ contrary to #2038's generic guidance, this one item is correctly kept client-sid
 NOT deployed — ready-to-paste snippets for when you want them. Apply in the
 Crawler Editor, staging-first.
 
-### 1. Collapse `/index.html` + trailing-slash URL variants
-
-In `recordExtractor`, swap `stripQuery` for a `canonicalize` that also strips
-`/index.html` and a trailing slash, and use it in the `.map`:
-
-```js
-const stripQuery = (u) => String(u || "").replace(/\?[^#]*/, "");
-const canonicalize = (u) => stripQuery(u)
-  .replace(/\/index\.html($|[#?])/, "$1")  // .../dir/index.html -> .../dir
-  .replace(/\/($|[#?])/, "$1");            // .../dir/           -> .../dir
-return records.map((r) => ({
-  ...r,
-  url: canonicalize(r.url),
-  url_without_anchor: canonicalize(r.url_without_anchor),
-}));
-```
-
-Regular `.html` pages are untouched (only `index.html` and trailing slashes are
-collapsed, and the `#anchor` is preserved).
-
-### 2. `section` facet (for future contextual filtering / ranking)
+### `section` facet (for future contextual filtering / ranking)
 
 > **Not** for same-title disambiguation — that stays client-side (see the note
 > above). A path-derived section can't distinguish uno's deep-path variants (the

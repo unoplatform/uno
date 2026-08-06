@@ -20,6 +20,10 @@
  *   in the extractor, NOT via the crawler's `ignoreQueryParams` — that option
  *   infinite-loops against the pages' client-side ?tabs redirect and drops them.
  *
+ *   CHANGE 4 — `recordExtractor` also collapses `/index.html` and trailing-slash
+ *   URL variants so a page reachable as .../dir, .../dir/ and .../dir/index.html
+ *   indexes once (regular .html pages and #anchors untouched).
+ *
  * This file is NOT executed by the docs build; it is the source of truth for the
  * hosted Algolia Crawler. Apply it via the Crawler dashboard (Data sources →
  * Crawlers → Editor) or the Crawler API. Validate on a staging index first by
@@ -40,9 +44,9 @@
  *   • `apiKey` below is a crawler WRITE key — it is intentionally a placeholder.
  *     Set the real value in the Crawler dashboard; never commit it.
  *
- * Optional enhancements (NOT deployed) — a `section` facet for same-title
- * disambiguation, and `/index.html` / trailing-slash canonicalization — are
- * provided as ready-to-apply snippets in README.md ("Optional enhancements").
+ * Optional enhancement (NOT deployed): a `section` facet — for potential
+ * contextual filtering / ranking, NOT for same-title disambiguation (that is
+ * kept client-side; see README). Ready-to-apply snippet in README.md.
  */
 new Crawler({
   rateLimit: 8,
@@ -97,13 +101,17 @@ new Crawler({
         // that option infinite-loops against these pages' client-side ?tabs
         // redirect (renderJavaScript: true) and would drop every tabbed page.
         const stripQuery = (u) => String(u || "").replace(/\?[^#]*/, "");
-        // OPTIONAL (not deployed): swap `stripQuery` for a `canonicalize` that
-        // also collapses /index.html + trailing slashes, and attach a `section`
-        // facet — ready-to-apply snippets in README.md ("Optional enhancements").
+        // CHANGE 4: also collapse /index.html and a trailing slash so a page
+        // reachable as .../dir, .../dir/ and .../dir/index.html indexes once.
+        // Regular .html pages and #anchors are untouched.
+        const canonicalize = (u) => stripQuery(u)
+          .replace(/\/index\.html($|[#?])/, "$1")
+          .replace(/\/($|[#?])/, "$1");
+        // OPTIONAL (not deployed): a `section` facet — snippet in README.md.
         return records.map((r) => ({
           ...r,
-          url: stripQuery(r.url),
-          url_without_anchor: stripQuery(r.url_without_anchor),
+          url: canonicalize(r.url),
+          url_without_anchor: canonicalize(r.url_without_anchor),
         }));
       },
     },
