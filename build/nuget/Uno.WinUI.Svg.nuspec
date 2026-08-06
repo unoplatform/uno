@@ -91,17 +91,15 @@
 	</metadata>
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
-		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.Reference\Release\net10.0\Uno.UI.Svg.dll" target="lib\net10.0" />
-		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.Reference\Release\net11.0\Uno.UI.Svg.dll" target="lib\net11.0" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\Bin\Uno.UI.Svg.Skia\Release\net10.0\Uno.UI.Svg.*" target="lib\net10.0" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\Bin\Uno.UI.Svg.Skia\Release\net11.0\Uno.UI.Svg.*" target="lib\net11.0" />
 
 		<!-- Build targets -->
 		<file src="..\..\src\AddIns\Uno.UI.Svg\buildTransitive\*" target="buildTransitive" />
 
 		<!-- net10.0 Skia -->
-		<file src="..\..\src\AddIns\Uno.UI.Svg\Bin\Uno.UI.Svg.Skia\Release\net10.0\Uno.UI.Svg.*" target="uno-runtime\net10.0\skia" />
 
 		<!-- net11.0 Skia -->
-		<file src="..\..\src\AddIns\Uno.UI.Svg\Bin\Uno.UI.Svg.Skia\Release\net11.0\Uno.UI.Svg.*" target="uno-runtime\net11.0\skia" />
 
 	</files>
 </package>
