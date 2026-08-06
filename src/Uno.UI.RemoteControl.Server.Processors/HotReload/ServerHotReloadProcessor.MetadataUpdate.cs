@@ -109,7 +109,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						var solution = workspace.CurrentSolution
 							.FilterHeadProjectTargetFramework(configureServer.ProjectPath, runtimeTargetFramework, _reporter)
 							.AlignHeadProjectCompilationOutputs(configureServer.ProjectPath, runtimeIdentifier, _reporter, ct2)
-							.WithCollectibleAnalyzerReferences();
+							.WithCollectibleAnalyzerReferences(_reporter);
 
 						EmbeddedRoslyn.WarnOnAnalyzerLoadFailures(solution, _reporter, ct2);
 
