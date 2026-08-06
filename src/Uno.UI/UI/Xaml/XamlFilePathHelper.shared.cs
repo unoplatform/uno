@@ -42,6 +42,13 @@ namespace Uno.UI.Xaml
 				// Callers rely on this being total; a remainder that is not a valid URI stays untouched.
 				|| !Uri.TryCreate(string.Concat(AppXIdentifier, path.AsSpan(LocalResourceFolder.Length)), UriKind.Absolute, out var appxUri))
 			{
+				// Only an ms-resource URI reaches here, and one that maps to nothing resolves to no
+				// asset downstream without raising - so say so, or it just silently never appears.
+				if (typeof(XamlFilePathHelper).Log().IsEnabled(LogLevel.Warning))
+				{
+					typeof(XamlFilePathHelper).Log().Warn($"'{uri}' is not a local resource ('{LocalResourcePrefix}…') and will not resolve to an asset.");
+				}
+
 				return uri;
 			}
 
