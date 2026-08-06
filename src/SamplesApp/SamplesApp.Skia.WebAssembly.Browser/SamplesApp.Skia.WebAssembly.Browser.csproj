@@ -151,4 +151,7 @@
 			<_WasmLinkStepArgs Include="@(_EmccLinkStepArgs)" />
 		</ItemGroup>
 	</Target>
+
+	<!-- Opt-in: link Dawn's emdawnwebgpu so the WebGPU backend runs on WASM (build with -p:UnoWebGpuWasm=true). -->
+	<Import Project="..\..\Uno.UI.Composition.WebGpu\wgpu-wasm.targets" Condition="'$(UnoWebGpuWasm)' == 'true'" />
 </Project>

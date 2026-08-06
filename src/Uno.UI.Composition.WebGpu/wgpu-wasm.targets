@@ -1,0 +1,68 @@
+<Project>
+	<!-- Links Dawn's emdawnwebgpu (modern webgpu.h ABI) into a Microsoft.NET.Sdk.WebAssembly app so the WebGPU
+	     backend's [DllImport("webgpu")] resolves in the browser. Import from any Skia-on-WASM app head that
+	     renders with the WebGPU backend. The generated binding (Native/WebGpuInterop.cs) is shared with desktop;
+	     the 18 wgpu-native-only functions Dawn lacks are satisfied by Native/wgpu_wasm_stubs.c (never called on
+	     WASM). Requires the SkiaSharp-proven library_webgpu.js patch to load under the .NET-pinned Emscripten. -->
+	<PropertyGroup>
+		<EmdawnTag>v20260624.223603</EmdawnTag>
+		<EmdawnCacheDir>$(MSBuildThisFileDirectory)obj\emdawnwebgpu\$(EmdawnTag)\</EmdawnCacheDir>
+		<EmdawnPkgDir>$(EmdawnCacheDir)emdawnwebgpu_pkg\</EmdawnPkgDir>
+		<!-- A writable emcc cache (a copy of the SDK's) so emcc can build the port + its extra stdlibs; pointing
+		     WasmCachePath off the SDK's default dir makes the SDK pass EM_FROZEN_CACHE=0 (BrowserWasmApp.targets). -->
+		<WgpuWasmCacheDir>$(MSBuildThisFileDirectory)obj\wgpu-wasm-emcache\</WgpuWasmCacheDir>
+		<WasmCachePath>$(WgpuWasmCacheDir)</WasmCachePath>
+		<EmccExtraLDFlags>$(EmccExtraLDFlags) --use-port=$(EmdawnPkgDir)emdawnwebgpu.port.py -sDEFAULT_TO_CXX=1</EmccExtraLDFlags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Satisfy the static link of the wgpu-native-only imports Dawn doesn't export (ScanForPInvokes=false:
+		     this file is not itself a P/Invoke module). -->
+		<NativeFileReference Include="$(MSBuildThisFileDirectory)Native\wgpu_wasm_stubs.c" ScanForPInvokes="false" />
+	</ItemGroup>
+
+	<UsingTask TaskName="PatchEmdawnLibraryJs" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<File ParameterType="System.String" Required="true" />
+		</ParameterGroup>
+		<Task>
+			<Code Type="Fragment" Language="cs"><![CDATA[
+				var text = System.IO.File.ReadAllText(File);
+				// emsdk 3.1.56 exposes stackSave/stackRestore only as bare names, not the $-aliases the modern
+				// port's __deps declare; rewrite so a bare --js-library load doesn't fail at compiler.mjs.
+				var patched = text.Replace("'$stackSave'", "'stackSave'").Replace("'$stackRestore'", "'stackRestore'");
+				if (patched != text) { System.IO.File.WriteAllText(File, patched); }
+			]]></Code>
+		</Task>
+	</UsingTask>
+
+	<!-- Fetch + patch the pinned emdawnwebgpu port before the native link. -->
+	<Target Name="_ProvisionEmdawnWebGpu" BeforeTargets="_GenerateManagedToNative;_WasmCompileNativeSources;Build"
+			Inputs="$(MSBuildThisFileFullPath)" Outputs="$(EmdawnPkgDir)webgpu\src\library_webgpu.js">
+		<MakeDir Directories="$(EmdawnCacheDir)" />
+		<DownloadFile Condition="!Exists('$(EmdawnCacheDir)emdawnwebgpu_pkg-$(EmdawnTag).zip')"
+			SourceUrl="https://github.com/google/dawn/releases/download/$(EmdawnTag)/emdawnwebgpu_pkg-$(EmdawnTag).zip"
+			DestinationFolder="$(EmdawnCacheDir)" Retries="3" />
+		<Unzip Condition="!Exists('$(EmdawnPkgDir)emdawnwebgpu.port.py')"
+			SourceFiles="$(EmdawnCacheDir)emdawnwebgpu_pkg-$(EmdawnTag).zip" DestinationFolder="$(EmdawnCacheDir)" />
+		<PatchEmdawnLibraryJs File="$(EmdawnPkgDir)webgpu\src\library_webgpu.js" />
+	</Target>
+
+	<!-- Seed the writable emcc cache from the SDK's once (so only the port + its extra stdlibs get built). -->
+	<Target Name="_SeedWgpuWasmCache" BeforeTargets="_GenerateManagedToNative;_WasmCompileNativeSources;Build"
+			Condition="!Exists('$(WgpuWasmCacheDir)sysroot') and '$(EmscriptenCacheSdkCacheDir)' != '' and Exists('$(EmscriptenCacheSdkCacheDir)')">
+		<ItemGroup>
+			<_WgpuSdkCacheFiles Include="$(EmscriptenCacheSdkCacheDir)\**\*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_WgpuSdkCacheFiles)"
+			DestinationFiles="@(_WgpuSdkCacheFiles->'$(WgpuWasmCacheDir)%(RecursiveDir)%(Filename)%(Extension)')"
+			SkipUnchangedFiles="true" />
+	</Target>
+
+	<!-- Register "webgpu" as a statically-linked P/Invoke module (else the runtime can't resolve wgpu* imports). -->
+	<Target Name="_AddWebGpuPInvokeModule" BeforeTargets="_GenerateManagedToNative">
+		<ItemGroup>
+			<_WasmPInvokeModules Include="webgpu" />
+		</ItemGroup>
+	</Target>
+</Project>
