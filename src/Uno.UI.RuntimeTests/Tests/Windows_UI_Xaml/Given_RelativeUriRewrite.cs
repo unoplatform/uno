@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
@@ -125,6 +126,22 @@ public class Given_RelativeUriRewrite
 		await TestServices.WindowHelper.WaitFor(() => SUT.bitmapIcon.ActualHeight > 0, 3000);
 
 		Assert.IsGreaterThan(0, SUT.bitmapIcon.ActualHeight);
+	}
+
+	/// <summary>
+	/// BitmapIcon.UriSource has no changed callback - the value reaches the image through the binding
+	/// its constructor sets up - so a URI assigned outside the compiled XAML has to map there too.
+	/// </summary>
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Local_Resource_Assigned_To_BitmapIcon_Loads()
+	{
+		var SUT = new BitmapIcon { UriSource = new Uri("ms-resource:///Files/Assets/cart.png") };
+
+		await UITestHelper.Load(SUT);
+		await TestServices.WindowHelper.WaitFor(() => SUT.ActualHeight > 0, 3000);
+
+		Assert.IsGreaterThan(0, SUT.ActualHeight);
 	}
 
 	/// <summary>
