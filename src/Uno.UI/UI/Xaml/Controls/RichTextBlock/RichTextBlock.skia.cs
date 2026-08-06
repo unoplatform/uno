@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Numerics;
+using SkiaSharp;
 using Windows.Foundation;
 using Windows.System;
 using Microsoft.UI.Composition;
@@ -696,12 +697,14 @@ namespace Microsoft.UI.Xaml.Controls
 				_owner = new WeakReference<RichTextBlock>(owner);
 			}
 
-			internal override void Paint(in PaintingSession session)
+			internal override SKPath? Paint(in PaintingSession session)
 			{
 				if (_owner.TryGetTarget(out var owner))
 				{
 					owner.Draw(in session);
 				}
+
+				return null;
 			}
 
 			internal override bool CanPaint() => true;

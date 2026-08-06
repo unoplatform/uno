@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using SkiaSharp;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls.Text.Core;
@@ -441,12 +442,14 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 			_owner = new WeakReference<RichTextBlockOverflow>(owner);
 		}
 
-		internal override void Paint(in PaintingSession session)
+		internal override SKPath? Paint(in PaintingSession session)
 		{
 			if (_owner.TryGetTarget(out var owner))
 			{
 				owner.Draw(in session);
 			}
+
+			return null;
 		}
 
 		internal override bool CanPaint() => true;
