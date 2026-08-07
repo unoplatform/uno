@@ -3,166 +3,26 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class LinedFlowLayout : global::Microsoft.UI.Xaml.Controls.VirtualizingLayout
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ActualLineHeightProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ActualLineHeight), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Controls.LinedFlowLayout),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ItemsJustificationProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ItemsJustification), typeof(global::Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsJustification),
-			typeof(global::Microsoft.UI.Xaml.Controls.LinedFlowLayout),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsJustification)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ItemsStretchProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ItemsStretch), typeof(global::Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsStretch),
-			typeof(global::Microsoft.UI.Xaml.Controls.LinedFlowLayout),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsStretch)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty LineHeightProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(LineHeight), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Controls.LinedFlowLayout),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty LineSpacingProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(LineSpacing), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Controls.LinedFlowLayout),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty MinItemSpacingProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(MinItemSpacing), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Controls.LinedFlowLayout),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public double ActualLineHeight
-		{
-			get
-			{
-				return (double)this.GetValue(ActualLineHeightProperty);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsJustification ItemsJustification
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsJustification)this.GetValue(ItemsJustificationProperty);
-			}
-			set
-			{
-				this.SetValue(ItemsJustificationProperty, value);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsStretch ItemsStretch
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsStretch)this.GetValue(ItemsStretchProperty);
-			}
-			set
-			{
-				this.SetValue(ItemsStretchProperty, value);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public double LineHeight
-		{
-			get
-			{
-				return (double)this.GetValue(LineHeightProperty);
-			}
-			set
-			{
-				this.SetValue(LineHeightProperty, value);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public double LineSpacing
-		{
-			get
-			{
-				return (double)this.GetValue(LineSpacingProperty);
-			}
-			set
-			{
-				this.SetValue(LineSpacingProperty, value);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public double MinItemSpacing
-		{
-			get
-			{
-				return (double)this.GetValue(MinItemSpacingProperty);
-			}
-			set
-			{
-				this.SetValue(MinItemSpacingProperty, value);
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public int RequestedRangeLength
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "RequestedRangeLength");
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public int RequestedRangeStartIndex
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "RequestedRangeStartIndex");
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public LinedFlowLayout() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "LinedFlowLayout()");
-		}
-#endif
+		// Skipping already declared property ActualLineHeightProperty
+		// Skipping already declared property ItemsJustificationProperty
+		// Skipping already declared property ItemsStretchProperty
+		// Skipping already declared property LineHeightProperty
+		// Skipping already declared property LineSpacingProperty
+		// Skipping already declared property MinItemSpacingProperty
+		// Skipping already declared property ActualLineHeight
+		// Skipping already declared property ItemsJustification
+		// Skipping already declared property ItemsStretch
+		// Skipping already declared property LineHeight
+		// Skipping already declared property LineSpacing
+		// Skipping already declared property MinItemSpacing
+		// Skipping already declared property RequestedRangeLength
+		// Skipping already declared property RequestedRangeStartIndex
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LinedFlowLayout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LinedFlowLayout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ActualLineHeightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsJustificationProperty.get
@@ -170,20 +30,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LineHeightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LineSpacingProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.MinItemSpacingProperty.get
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public void InvalidateItemsInfo()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "InvalidateItemsInfo()");
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public int LockItemToLine(int itemIndex)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "LockItemToLine(int itemIndex)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.LinedFlowLayout.InvalidateItemsInfo()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.LinedFlowLayout.LockItemToLine(int)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsInfoRequested.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsInfoRequested.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsUnlocked.add
@@ -201,37 +49,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.MinItemSpacing.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.RequestedRangeLength.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.LinedFlowLayout.RequestedRangeStartIndex.get
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.LinedFlowLayout, global::Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemsInfoRequestedEventArgs> ItemsInfoRequested
-		{
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "event ItemsInfoRequested");
-			}
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "event ItemsInfoRequested");
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.LinedFlowLayout, object> ItemsUnlocked
-		{
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "event ItemsUnlocked");
-			}
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.LinedFlowLayout", "event ItemsUnlocked");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsInfoRequested
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.LinedFlowLayout.ItemsUnlocked
 	}
 }

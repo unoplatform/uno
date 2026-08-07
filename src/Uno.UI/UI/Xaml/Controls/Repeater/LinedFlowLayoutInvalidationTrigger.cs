@@ -6,6 +6,9 @@
 
 namespace Microsoft.UI.Private.Controls;
 
-internal partial class LayoutsTestHooks
+internal enum LinedFlowLayoutInvalidationTrigger
 {
+	InvalidateLayoutCall = 0,
+	SnappedAverageItemsPerLineChange = 1,
+	ItemDesiredWidthChange = 2,
 }

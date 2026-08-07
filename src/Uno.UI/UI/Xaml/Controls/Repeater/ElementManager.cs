@@ -86,18 +86,19 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					// UNO: This is useless in managed code where we use a List which resizes itself
-
-					//// If we are initialized with a non-virtualizing context, make sure that
-					//// we have enough space to hold the bounds for all the elements.
-					//int count = m_context.ItemCount;
-					//if ((int)(m_realizedElementLayoutBounds.Count) != count)
-					//{
-					//	// Make sure there is enough space for the bounds.
-					//	// Note: We could optimize when the count becomes smaller, but keeping
-					//	// it always up to date is the simplest option for now.
-					//	m_realizedElementLayoutBounds.resize(count, new Rect());
-					//}
+					// If we are initialized with a non-virtualizing context, make sure that
+					// we have enough space to hold the bounds for all the elements.
+					// Uno-specific: unlike std::vector::resize, a List<T> indexer does not grow
+					// the backing store, so SetLayoutBoundsForDataIndex/SetLayoutBoundsForRealizedIndex
+					// would throw IndexOutOfRange for a non-virtualizing context unless we size it here.
+					int count = m_context.ItemCount;
+					if (m_realizedElementLayoutBounds.Count != count)
+					{
+						// Make sure there is enough space for the bounds.
+						// Note: We could optimize when the count becomes smaller, but keeping
+						// it always up to date is the simplest option for now.
+						ResizeLayoutBounds(count);
+					}
 				}
 			}
 		}
@@ -222,6 +223,24 @@ namespace Microsoft.UI.Xaml.Controls
 		public void SetLayoutBoundsForRealizedIndex(int realizedIndex, Rect bounds)
 		{
 			m_realizedElementLayoutBounds[realizedIndex] = bounds;
+		}
+
+		// Uno-specific: emulates std::vector::resize(count, Rect{}) for the non-virtualizing
+		// bounds cache. List<T> indexers do not auto-grow, so the list must be sized explicitly
+		// (from OnBeginMeasure) before SetLayoutBoundsFor*Index writes into it by index.
+		private void ResizeLayoutBounds(int count)
+		{
+			if (count < m_realizedElementLayoutBounds.Count)
+			{
+				m_realizedElementLayoutBounds.RemoveRange(count, m_realizedElementLayoutBounds.Count - count);
+			}
+			else
+			{
+				while (m_realizedElementLayoutBounds.Count < count)
+				{
+					m_realizedElementLayoutBounds.Add(default);
+				}
+			}
 		}
 
 		public bool IsDataIndexRealized(int index)
@@ -383,6 +402,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			MUX_ASSERT(rangeIndex >= 0 && rangeIndex < GetRealizedElementCount);
 			return IsVirtualizingContext ? rangeIndex + m_firstRealizedDataIndex : rangeIndex;
+		}
+
+		public int GetFirstRealizedDataIndex()
+		{
+			return m_firstRealizedDataIndex;
 		}
 
 		int GetRealizedRangeIndexFromDataIndex(int dataIndex)
