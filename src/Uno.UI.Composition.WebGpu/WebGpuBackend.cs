@@ -621,17 +621,6 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 	private static void OnMap(WGPUMapAsyncStatus status, WGPUStringView message, IntPtr u1, IntPtr u2)
 		=> ((bool[])GCHandle.FromIntPtr(u1).Target!)[0] = true;
 
-	// Flushes an offscreen surface so a later, separately-submitted pass can sample its resolved content.
-	// A layer's offscreen render + MSAA resolve is one queue submission; the composite that samples it is a
-	// later one, and the resolve→sample hazard isn't covered across submissions — without this the composite
-	// samples an empty texture. A full texture→buffer copy + map (what ReadPixelsRgba does) forces the deferred
-	// MSAA resolve to materialize; a device-idle wait or a partial copy is NOT enough. Perf follow-up: encode the
-	// offscreen render and its composite in one command buffer so wgpu barriers it automatically.
-	public void FlushForSample(WebGpuRenderSurface s)
-	{
-		if (s.Tex != IntPtr.Zero) { _ = ReadPixelsRgba(s); }
-	}
-
 	public void Dispose() { }
 }
 
@@ -772,8 +761,7 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 		_ownsResources = false;   // the pool owns and reclaims these; Dispose must not release them
 		MsaaColorView = pool.Rent(width, height, (int)WebGpuDevice.MsaaSamples, WGPUTextureUsage.RenderAttachment, device.ColorFormat);
 		DepthView = pool.Rent(width, height, (int)WebGpuDevice.MsaaSamples, WGPUTextureUsage.RenderAttachment, WebGpuDevice.DepthStencilFormat);
-		// CopySrc so the resolved result can be flushed (see WebGpuDevice.FlushForSample) before a later,
-		// separately-submitted pass samples it.
+		// CopySrc so the resolved result can be read back (ReadPixelsRgba) for RenderTargetBitmap / offscreen.
 		View = pool.Rent(width, height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopySrc, device.ColorFormat);
 		Tex = pool.TexForView(View);
 	}
@@ -1425,7 +1413,32 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private readonly WebGpuDevice _d;
 	private readonly WebGpuRenderSurface _s;
 	private WColor? _presentClear;
+	// The single command encoder for the whole frame. Every pass (offscreen coverage/blur/layer + the main pass)
+	// records into it and it's submitted once — so wgpu barriers offscreen resolve->sample automatically, without
+	// the cross-submission resolve hazard (which previously needed a full-texture readback flush to work around).
+	private IntPtr _frameEncoder;
 	public WebGpuPresentSession(WebGpuDevice d, WebGpuRenderSurface s) { _d = d; _s = s; }
+
+	// Runs a frame: opens the shared encoder (if not already inside one), renders, then finishes+submits once.
+	private void RunFrame(List<WebGpuCommand> cmds, WColor? clear)
+	{
+		var owns = _frameEncoder == IntPtr.Zero;
+		if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); }
+		try
+		{
+			RenderInto(cmds, _s, clear);
+		}
+		finally
+		{
+			if (owns)
+			{
+				var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
+				wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+				wgpuDevicePoll(_d.Dev, 1u, null);
+				_frameEncoder = IntPtr.Zero;
+			}
+		}
+	}
 
 	private bool SetScissor(IntPtr pass, Vector4 clip)
 	{
@@ -1523,11 +1536,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var coverBuf = MakeBuffer(cq.ToArray());
 		var noClip = MakeClipBg(_d.CoverClipBgl, default);
 
-		var enc = wgpuDeviceCreateCommandEncoder(_d.Dev, null);
-		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = cov.MsaaColorView, ResolveTarget = cov.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Discard, ClearValue = default };
+		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = cov.MsaaColorView, ResolveTarget = cov.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
 		var dsa = new WGPURenderPassDepthStencilAttachment { View = cov.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 1f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
-		var pass = wgpuCommandEncoderBeginRenderPass(enc, &rp);
+		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
 		wgpuRenderPassEncoderSetPipeline(pass, evenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
 		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanNdc.Length * sizeof(float)));
 		wgpuRenderPassEncoderDraw(pass, (uint)(fanNdc.Length / 2), 1, 0, 0);
@@ -1537,8 +1549,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, coverBuf, 0, (nuint)(cq.Count * sizeof(float)));
 		wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
 		wgpuRenderPassEncoderEnd(pass);
-		var cb = wgpuCommandEncoderFinish(enc, null);
-		wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 		return cov.View;
 	}
 
@@ -1568,11 +1578,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var coverBuf = MakeBuffer(cq.ToArray());
 		var noClip = MakeClipBg(_d.CoverClipBgl, default);
 
-		var enc = wgpuDeviceCreateCommandEncoder(_d.Dev, null);
-		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = cov.MsaaColorView, ResolveTarget = cov.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Discard, ClearValue = default };
+		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = cov.MsaaColorView, ResolveTarget = cov.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
 		var dsa = new WGPURenderPassDepthStencilAttachment { View = cov.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 1f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
-		var pass = wgpuCommandEncoderBeginRenderPass(enc, &rp);
+		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
 		wgpuRenderPassEncoderSetPipeline(pass, sh.EvenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
 		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanNdc.Length * sizeof(float)));
 		wgpuRenderPassEncoderDraw(pass, (uint)(fanNdc.Length / 2), 1, 0, 0);
@@ -1582,8 +1591,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, coverBuf, 0, (nuint)(cq.Count * sizeof(float)));
 		wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
 		wgpuRenderPassEncoderEnd(pass);
-		var cb = wgpuCommandEncoderFinish(enc, null);
-		wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 
 		// 2) separable blur: coverage -> temp (H) -> blur (V).
 		var tempView = _d.Pool.Rent(sw, sh2, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
@@ -1605,16 +1612,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var bgd = new WGPUBindGroupDescriptor { Layout = _d.BlurBgl, EntryCount = 3, Entries = entries };
 		var bg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
 
-		var enc = wgpuDeviceCreateCommandEncoder(_d.Dev, null);
 		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = dst, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca };
-		var pass = wgpuCommandEncoderBeginRenderPass(enc, &rp);
+		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
 		wgpuRenderPassEncoderSetPipeline(pass, _d.BlurPipe);
 		wgpuRenderPassEncoderSetBindGroup(pass, 0, bg, 0, (uint*)null);
 		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
 		wgpuRenderPassEncoderEnd(pass);
-		var cb = wgpuCommandEncoderFinish(enc, null);
-		wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 	}
 
 	public void Replay(IRenderData data)
@@ -1625,7 +1629,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		lock (_d.RenderGate)
 		{
 			_d.BeginFrameResources();   // reclaim last frame's pooled textures/buffers + release its bind groups
-			RenderInto(rd.Commands, _s, _presentClear ?? rd.ClearColor);
+			RunFrame(rd.Commands, _presentClear ?? rd.ClearColor);
 		}
 	}
 
@@ -1637,7 +1641,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (data is not WebGpuRenderData rd) { return; }
 		lock (_d.RenderGate)
 		{
-			RenderInto(rd.Commands, _s, _presentClear ?? rd.ClearColor);
+			RunFrame(rd.Commands, _presentClear ?? rd.ClearColor);
 		}
 	}
 
@@ -1855,13 +1859,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				}
 				case LayerCmd lyr:
 				{
-					// Render the layer's commands into a full-size offscreen surface, then composite (kind 4). The
-					// offscreen render is a separate queue submission; wait for it to complete so its MSAA resolve is
-					// visible to the composite's sample below (without this, the composite samples an empty scratch —
-					// the resolve→sample hazard isn't covered across submissions).
+					// Render the layer's commands into a full-size offscreen surface, then composite (kind 4). Both the
+					// offscreen render and this composite record into the frame's single encoder, so wgpu barriers the
+					// offscreen resolve before the composite samples it — no explicit flush needed.
 					var layerSurface = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
 					RenderInto(lyr.Commands, layerSurface, null);
-					_d.FlushForSample(layerSurface);
 
 					// SaveLayer(IEffectFilter) drop shadow: blur the content, draw it tinted+offset behind, then
 					// the content on top. Reuses the image path (SrcIn tint) for the shadow — same as DrawShadow.
@@ -1954,14 +1956,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			}
 		}
 
-		var enc = wgpuDeviceCreateCommandEncoder(_d.Dev, null);
 		var ca = new WGPURenderPassColorAttachment
 		{
 			// Render into the multisampled color and resolve into the single-sample target texture.
 			// A fresh MSAA buffer can't LoadOp.Load, so we always clear (transparent when no clear was given);
 			// the neutral loop redraws the whole frame each present, so nothing prior needs preserving here.
+			// StoreOp.Store keeps the resolve so a layer/backdrop target can be sampled later in the same encoder.
 			DepthSlice = uint.MaxValue,
-			View = target.MsaaColorView, ResolveTarget = target.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Discard,
+			View = target.MsaaColorView, ResolveTarget = target.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store,
 			ClearValue = clear.HasValue ? new WGPUColor { R = clear.Value.R / 255.0, G = clear.Value.G / 255.0, B = clear.Value.B / 255.0, A = clear.Value.A / 255.0 } : default,
 		};
 		var dsa = new WGPURenderPassDepthStencilAttachment
@@ -1971,7 +1973,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Store, StencilClearValue = 0,
 		};
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
-		var pass = wgpuCommandEncoderBeginRenderPass(enc, &rp);
+		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
 
 		foreach (var (kind, b0, u0, b1, flag, clip, clipBg) in ops)
 		{
@@ -2024,9 +2026,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 
 		wgpuRenderPassEncoderEnd(pass);
-		var cb = wgpuCommandEncoderFinish(enc, null);
-		wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
-		wgpuDevicePoll(_d.Dev, 1u, null);
 	}
 
 	public Matrix4x4 TotalMatrix => Matrix4x4.Identity;
