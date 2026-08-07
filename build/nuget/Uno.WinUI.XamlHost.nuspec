@@ -37,18 +37,11 @@
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
 
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Reference\Release\net10.0\Uno.UI.XamlHost.dll" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Reference\Release\net11.0\Uno.UI.XamlHost.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net10.0\Uno.UI.XamlHost.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net10.0\Uno.UI.XamlHost.pdb" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net11.0\Uno.UI.XamlHost.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net11.0\Uno.UI.XamlHost.pdb" target="lib\net11.0" />
 
-		<!-- net10.0 Skia -->
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net10.0\Uno.UI.XamlHost.dll" target="uno-runtime\net10.0\skia" />
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net10.0\Uno.UI.XamlHost.pdb" target="uno-runtime\net10.0\skia" />
-
-		<!-- net11.0 Skia -->
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net11.0\Uno.UI.XamlHost.dll" target="uno-runtime\net11.0\skia" />
-		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net11.0\Uno.UI.XamlHost.pdb" target="uno-runtime\net11.0\skia" />
-
-		<file src="..\..\src\Uno.UI.XamlHost\buildTransitive\Uno.WinUI.XamlHost.props" target="buildTransitive" />
 	</files>
 
 </package>
