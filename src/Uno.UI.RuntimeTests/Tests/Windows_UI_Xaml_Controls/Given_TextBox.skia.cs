@@ -5112,7 +5112,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("", SUT.SelectedText);
-			Assert.AreEqual(expectedCaret, SUT.CaretMode);
+			// The thumbless iOS caret blinks on a 500 ms timer, so sampling CaretMode once fails when the assert
+			// lands on the hidden half; the thumbed Android mode stops the timer and matches immediately.
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == expectedCaret,
+				timeoutMS: 3000,
+				message: $"tap should settle the caret in {expectedCaret}");
 		}
 
 		// Native iOS/Android: a double-tap selects the word under the tap.
@@ -5558,12 +5563,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("", SUT.SelectedText, "there is nothing to select in an empty box");
-			Assert.AreEqual(
-				convention == TextBox.TouchTextSelectionConvention.Android
-					? TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing
-					: TextBox.CaretDisplayMode.ThumblessCaretShowing,
-				SUT.CaretMode,
-				"the gesture should leave the convention's collapsed caret");
+			// The thumbless iOS caret blinks on a 500 ms timer, so it can be mid-blink by the time the flyout opens.
+			var expectedCaret = convention == TextBox.TouchTextSelectionConvention.Android
+				? TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing
+				: TextBox.CaretDisplayMode.ThumblessCaretShowing;
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == expectedCaret,
+				timeoutMS: 3000,
+				message: $"the gesture should leave the convention's collapsed caret ({expectedCaret})");
 
 			if (SUT.SelectionFlyout is not TextCommandBarFlyout flyout)
 			{

@@ -227,6 +227,14 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
   (`ImageBrush.StretchProperty`, `AlignmentXProperty`, `AlignmentYProperty`) still resolves
   via inheritance, and `is TileBrush` is now `true` for an `ImageBrush`. Instance usage
   (`imageBrush.Stretch`, XAML `Stretch="…"`) is unaffected.
+- **`FadeInThemeAnimation` / `FadeOutThemeAnimation`** now derive directly from `Timeline`
+  (matching WinUI) instead of Uno's `DoubleAnimation`. The `DoubleAnimation`-only members
+  they used to inherit — `From`, `To`, `By`, `EasingFunction`, and
+  `EnableDependentAnimation` — are gone; WinUI never exposed them on these theme
+  animations. `TargetName` and the `Timeline` members (`Duration`, `BeginTime`,
+  `RepeatBehavior`, `FillBehavior`) are unchanged. Set only `TargetName` (as the built-in
+  styles do); the fade always animates `Opacity` to its fixed target (1 for fade-in, 0 for
+  fade-out).
 
 ### XAML changes
 
