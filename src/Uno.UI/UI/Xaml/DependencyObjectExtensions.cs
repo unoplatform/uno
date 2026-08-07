@@ -166,6 +166,11 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal static bool IsAncestorOf(this DependencyObject ancestor, DependencyObject descendant)
 		{
+			if (descendant is null)
+			{
+				return false;
+			}
+
 			var current = descendant.GetParent();
 			while (current != null && ancestor != current)
 			{

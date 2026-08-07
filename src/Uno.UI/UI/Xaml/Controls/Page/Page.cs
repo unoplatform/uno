@@ -38,15 +38,19 @@ public partial class Page : UserControl
 
 	protected internal virtual void OnNavigatingFrom(NavigatingCancelEventArgs e) { }
 
+	// MUX Reference Page_Partial.cpp
+	internal void AppBarClosedSizeChanged()
+	{
+		InvalidateMeasure();
+	}
+
 	#region TopAppBar
-	[Uno.NotImplemented]
 	public AppBar TopAppBar
 	{
 		get => (AppBar)this.GetValue(TopAppBarProperty);
 		set => this.SetValue(TopAppBarProperty, value);
 	}
 
-	[Uno.NotImplemented]
 	public static DependencyProperty TopAppBarProperty { get; } =
 		DependencyProperty.Register(
 			"TopAppBar",
@@ -60,14 +64,12 @@ public partial class Page : UserControl
 	#endregion
 
 	#region BottomAppBar
-	[Uno.NotImplemented]
 	public AppBar BottomAppBar
 	{
 		get => (AppBar)this.GetValue(BottomAppBarProperty);
 		set => this.SetValue(BottomAppBarProperty, value);
 	}
 
-	[Uno.NotImplemented]
 	public static DependencyProperty BottomAppBarProperty { get; } =
 		DependencyProperty.Register(
 			"BottomAppBar",
