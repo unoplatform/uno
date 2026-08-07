@@ -149,8 +149,8 @@
 		<ProjectCapability Include="DotNetWslLaunch" />
 	</ItemGroup>
 
-	<!-- Define the default folder for Hot Design Stories, so they can be excluded in Release -->
+	<!-- Define the default folder for Hot Design previews, so they can be excluded in Release -->
 	<PropertyGroup Condition="'$(UnoDisableHotDesign)' != 'true'">
-		<HotDesignStoriesFolder Condition="'$(HotDesignStoriesFolder)' == ''">HotDesignStories</HotDesignStoriesFolder>
+		<HotDesignPreviewsFolder Condition="'$(HotDesignPreviewsFolder)' == ''">HotDesignPreviews</HotDesignPreviewsFolder>
 	</PropertyGroup>
 </Project>

@@ -845,6 +845,67 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 		}
 
 		[TestMethod]
+		// Opening and inspecting the picker flyout is unreliable on Android in CI (see When_Time_Zone, #9080).
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.Android)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23589")]
+		public async Task When_Year_Range_Spans_Two_Years_Year_Should_Not_Loop()
+		{
+			// #23589: a small range (MinYear != MaxYear but too few years to fill the column) must show each
+			// year exactly once, like WinUI. Before the year column stopped looping it repeated the two years
+			// (…2026, 2025, 2026, 2025…). Use midday-UTC bounds so the local-time years are stable in every
+			// time zone, mirroring the issue's `MinYear = Now.AddYears(-1)`, `MaxYear = Now`.
+			var datePicker = await SetupDatePickerTest();
+
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				datePicker.MinYear = new DateTimeOffset(2025, 6, 24, 12, 0, 0, TimeSpan.Zero);
+				datePicker.MaxYear = new DateTimeOffset(2026, 6, 24, 12, 0, 0, TimeSpan.Zero);
+				datePicker.SelectedDate = new DateTimeOffset(2026, 6, 24, 12, 0, 0, TimeSpan.Zero);
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var yearTexts = new global::System.Collections.Generic.List<string>();
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				var presenter = GetDatePickerFlyoutPresenter();
+				Assert.IsNotNull(presenter, "DatePickerFlyoutPresenter should be open");
+
+				var yearSelector = VisualTreeUtils.FindVisualChildByName(presenter, "YearLoopingSelector") as LoopingSelector;
+				Assert.IsNotNull(yearSelector, "YearLoopingSelector should be found");
+
+				var scrollViewer = VisualTreeUtils.FindVisualChildByName(yearSelector, "ScrollViewer") as ScrollViewer;
+				Assert.IsNotNull(scrollViewer, "ScrollViewer should be found");
+
+				var panel = scrollViewer.Content as LoopingSelectorPanel;
+				Assert.IsNotNull(panel, "LoopingSelectorPanel should be found");
+
+				// Count realized year items by their populated PrimaryText (recycled/offscreen shells stay
+				// as children with empty text), same approach as the multi-year test.
+				foreach (var child in panel.Children)
+				{
+					if (child is ContentControl cc && cc.Content is DatePickerFlyoutItem item && !string.IsNullOrEmpty(item.PrimaryText))
+					{
+						yearTexts.Add(item.PrimaryText);
+					}
+				}
+			});
+
+			// Exactly the two selectable years, each realized once (a looping column would realize the
+			// short list many times over, producing duplicates).
+			Assert.AreEqual(2, yearTexts.Count,
+				$"Year selector should show the two years once each, but showed: [{string.Join(", ", yearTexts)}]");
+			var distinctYears = new global::System.Collections.Generic.HashSet<string>(yearTexts);
+			Assert.AreEqual(2, distinctYears.Count,
+				$"Year selector should not repeat years, but showed: [{string.Join(", ", yearTexts)}]");
+
+			await ControlHelper.ClickFlyoutCloseButton(datePicker, false /* isAccept */);
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		[TestMethod]
 		[Ignore]
 		public async Task ValidateFlyoutPositioningForRightToLeftCalendar()
 		{

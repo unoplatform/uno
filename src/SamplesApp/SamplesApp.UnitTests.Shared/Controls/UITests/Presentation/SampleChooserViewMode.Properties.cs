@@ -548,6 +548,16 @@ namespace SampleControl.Presentation
 				RaisePropertyChanged();
 			}
 		}
+
+		public bool DamageRegionOverlay
+		{
+			get => FeatureConfiguration.Rendering.DamageRegionOverlay;
+			set
+			{
+				FeatureConfiguration.Rendering.DamageRegionOverlay = value;
+				RaisePropertyChanged();
+			}
+		}
 #endif
 
 		public bool ExtendContentIntoTitleBar

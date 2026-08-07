@@ -5330,6 +5330,305 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreSame(containersBefore[2], containersAfter[1], "Container at 2→1 must be the same instance (displaced item)");
 			Assert.AreSame(containersBefore[3], containersAfter[3], "Container at 3→3 must be the same instance");
 		}
+
+		// The four tests below reproduce the drag-drop reorder "whole-list flicker": on drop the managed
+		// layout used to call the heavy Refresh() (recycle every container) instead of a light re-measure,
+		// re-dealing containers to different data so every row re-templated. Identity is keyed by data item
+		// (indices change across a reorder). A/B are the collection-mutation paths (always reused); C is the
+		// real drag-drop drop path (the regression); D isolates that Refresh() itself churns containers.
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_Reorder_Move_ReusesContainers()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 8).Select(x => $"Item {x}"));
+			var SUT = new ListView
+			{
+				Height = 400, // tall enough to realize all 8 items at 29px (no scroll virtualization)
+				ItemsSource = source,
+				ItemTemplate = FixedSizeItemTemplate, // height=29
+			};
+
+			await UITestHelper.Load(SUT, x => x.IsLoaded && SUT.ContainerFromIndex(7) is { });
+			await UITestHelper.WaitForIdle();
+
+			var before = CaptureContainersByItem(SUT, source);
+
+			source.Move(2, 5); // the Move Up/Down button path — a single NCC 'Move'
+			await UITestHelper.WaitForIdle();
+
+			var after = CaptureContainersByItem(SUT, source);
+			AssertAllContainersReused(before, after, "Move(2→5)");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_Reorder_RemoveInsert_ReusesContainers()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 8).Select(x => $"Item {x}"));
+			var SUT = new ListView
+			{
+				Height = 400,
+				ItemsSource = source,
+				ItemTemplate = FixedSizeItemTemplate,
+			};
+
+			await UITestHelper.Load(SUT, x => x.IsLoaded && SUT.ContainerFromIndex(7) is { });
+			await UITestHelper.WaitForIdle();
+
+			var before = CaptureContainersByItem(SUT, source);
+
+			// The collection-mutation half of a drag-drop commit (UWP uses RemoveAt+Insert, not Move).
+			var item = source[2];
+			source.RemoveAt(2);
+			source.Insert(5, item);
+			await UITestHelper.WaitForIdle();
+
+			var after = CaptureContainersByItem(SUT, source);
+			AssertAllContainersReused(before, after, "RemoveAt(2)+Insert(5)");
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Reorder_DragDrop_ReusesContainers()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 8).Select(x => $"Item {x}"));
+			var SUT = new ListView
+			{
+				Height = 400,
+				AllowDrop = true,
+				CanDragItems = true,
+				CanReorderItems = true,
+				ItemsSource = source,
+				ItemTemplate = FixedSizeItemTemplate,
+			};
+
+			await UITestHelper.Load(SUT, x => x.IsLoaded && SUT.ContainerFromIndex(7) is { });
+			await UITestHelper.WaitForIdle();
+
+			var dragged = source[2];
+			var before = CaptureContainersByItem(SUT, source);
+
+			var fromRect = (SUT.ContainerFromIndex(2) as ListViewItem ?? throw new InvalidOperationException("no container at index 2")).GetAbsoluteBoundsRect();
+			var toRect = (SUT.ContainerFromIndex(5) as ListViewItem ?? throw new InvalidOperationException("no container at index 5")).GetAbsoluteBoundsRect();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			// pick up item#2, drag down over item#5's row, then drop
+			mouse.MoveTo(fromRect.GetCenter());
+			await WindowHelper.WaitForIdle();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+			mouse.MoveTo(toRect.GetCenter(), 16);
+			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+			mouse.MoveTo(toRect.GetCenter(), 2);
+			await WindowHelper.WaitForIdle();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle();
+
+			// Guard: the drop must actually have reordered, otherwise the reuse check would be vacuous.
+			Assert.AreNotEqual(2, source.IndexOf(dragged), "drag-drop did not reorder the dragged item");
+
+			var after = CaptureContainersByItem(SUT, source);
+
+			// The drop must keep every container's identity — the managed layout used to call the heavy
+			// Refresh() here, recycling and re-dealing every container (the whole-list flicker).
+			AssertAllContainersReused(before, after, "drag-drop reorder");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_Layouter_Refresh_RecreatesContainers()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 8).Select(x => $"Item {x}"));
+			var SUT = new ListView
+			{
+				Height = 400,
+				ItemsSource = source,
+				ItemTemplate = FixedSizeItemTemplate,
+			};
+
+			await UITestHelper.Load(SUT, x => x.IsLoaded && SUT.ContainerFromIndex(7) is { });
+			await UITestHelper.WaitForIdle();
+
+			var before = CaptureContainersByItem(SUT, source);
+
+			// Isolation: drive the heavy layout path a drop used to call, with NO collection change at all.
+			var layout = (SUT.ItemsPanelRoot as IVirtualizingPanel)?.GetLayouter()
+				?? throw new InvalidOperationException("ListView is not backed by a virtualizing panel layout");
+			layout.Refresh();
+			await UITestHelper.WaitForIdle();
+
+			var after = CaptureContainersByItem(SUT, source);
+
+			// Refresh() recycles every container and clears the id cache → containers are re-dealt.
+			var reused = CountReusedContainers(before, after);
+			Assert.IsTrue(reused < before.Count, $"Refresh() should recycle/re-deal containers, but all {before.Count} were reused");
+		}
+
+		// A drag-to-reorder during which the list scrolls away from the dragged item.
+		//
+		// While a reorder is in flight the dragged item is skipped by the ordinary fill (see
+		// GetNextUnmaterializedItem), so once the viewport moves away from it, FillLayout() force-materializes it by
+		// appending a line to the BACK of _materializedLines -- whatever its index. The deque is then index-UNSORTED
+		// with a LOW index at its tail, and everything that read "the highest materialized index" off that tail got
+		// the dragged item's index instead:
+		//
+		//  * EstimatePanelExtent() derived remainingItems from it, counting rows that were already materialized as
+		//    still to come. Measured on this scenario before the fix: ExtentHeight 2920 instead of 1440 mid-drag and
+		//    2440 after the drop, i.e. the corruption outlives the gesture. An over-large ScrollableHeight is also
+		//    what lets VerticalOffset be driven past the real end of the list.
+		//  * The seed offset paired with it placed every subsequently materialized line that far down the panel, so
+		//    the row for index i no longer sat at i * rowHeight -- dead space above the first item.
+		//  * FillForward() seeded from it too, so GetNextUnmaterializedItem(Forward, ...) could return an index that
+		//    was ALREADY materialized. DequeueViewForItem() has no in-use check, so a second container was built for
+		//    it and the first was dropped by the next ScrapLayout() without being unlinked from the panel -- left a
+		//    child forever, never recycled, never re-arranged. On screen, two rows of text on top of each other.
+		//
+		// The scroll must arrive DURING the drag: OnScrollChanged() reaches UpdateLayout() without going through
+		// ScrapLayout() first, so the fill runs against the still-unsorted deque.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Reorder_DragDrop_ScrollsAwayFromDraggedItem_KeepsExtentAndPositions()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, ReorderItemCount).Select(x => $"Item {x}"));
+			var SUT = new ListView
+			{
+				Height = 240, // deliberately far smaller than the content, so the list scrolls
+				AllowDrop = true,
+				CanDragItems = true,
+				CanReorderItems = true,
+				ItemsSource = source,
+				ItemTemplate = FixedSizeItemTemplate,
+			};
+
+			await UITestHelper.Load(SUT, x => x.IsLoaded);
+			await UITestHelper.WaitForIdle();
+
+			var scroll = SUT.FindFirstDescendant<ScrollViewer>()
+				?? throw new InvalidOperationException("ListView has no ScrollViewer");
+
+			// The row pitch is MEASURED, not assumed: the ListViewItem style makes the container taller than the item
+			// template, so the assertions must not hardcode the template's own height.
+			var probe = SUT.ContainerFromIndex(0) as ListViewItem
+				?? throw new InvalidOperationException("the first item is not realized");
+			var rowHeight = probe.ActualHeight;
+			Assert.IsTrue(rowHeight > 0, "precondition: containers must be measured");
+
+			var expectedExtent = ReorderItemCount * rowHeight;
+			Assert.AreEqual(expectedExtent, scroll.ExtentHeight, 0.5,
+				$"precondition: {ReorderItemCount} rows x {rowHeight}px should measure {expectedExtent} before any drag");
+
+			// Index 2 specifically: it must be a LOW index, so that after the list scrolls to the far end the
+			// dragged item's index is nowhere near the highest materialized one -- otherwise reading the deque's
+			// tail would give the right answer by coincidence and the test would pass with or without the bug.
+			var from = SUT.ContainerFromIndex(2) as ListViewItem
+				?? throw new InvalidOperationException("drag source is not realized");
+			var to = SUT.ContainerFromIndex(4) as ListViewItem
+				?? throw new InvalidOperationException("drag target is not realized");
+			var start = from.GetAbsoluteBoundsRect().GetCenter();
+			var end = to.GetAbsoluteBoundsRect().GetCenter();
+
+			var dragStarted = false;
+			SUT.DragItemsStarting += (_, _) => dragStarted = true;
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(start);
+			await WindowHelper.WaitForIdle();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			// Separate moves with a pump between each, rather than one multi-step MoveTo: DragOver is coalesced, so a
+			// burst of fast moves delivers only a handful of frames, and with too few the drop reports Move while
+			// committing nothing -- which would make every assertion below vacuous.
+			const int steps = 12;
+			for (var i = 1; i <= steps; i++)
+			{
+				var t = (double)i / steps;
+				mouse.MoveTo(new Point(start.X + (end.X - start.X) * t, start.Y + (end.Y - start.Y) * t));
+				await WindowHelper.WaitForIdle();
+			}
+
+			await UITestHelper.WaitForRender();
+
+			// Guard against a vacuous pass: everything below assumes a reorder is actually in flight. Note this is
+			// asserted on the DRAG, not on the drop committing a move -- releasing after the list has scrolled away
+			// leaves the pointer over unrelated rows, so whether the drop resolves to a real move is incidental to
+			// what is being tested here.
+			Assert.IsTrue(dragStarted, "the drag never started -- the assertions below would be vacuous");
+
+			// Scroll to the far end of the list while the button is still down, leaving the dragged item behind.
+			scroll.ChangeView(null, scroll.ScrollableHeight, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+
+			// Mid-drag: a reorder moves an item, it does not add one, so the extent must not have grown.
+			Assert.AreEqual(expectedExtent, scroll.ExtentHeight, 0.5,
+				"extent must not grow while a reorder is in flight and the list scrolls away from the dragged item");
+
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle();
+
+			using var _ = new AssertionScope();
+
+			// Deliberately NOT asserted after the drop, all three blocked on the same open defect: the dragged item's
+			// line is still parked past the last row when the reorder ends, and with _pendingReorder cleared nothing
+			// marks it as out of ordinal position any more, so the next ScrapLayout() pairs its low index with the
+			// topmost pixel and the refill renumbers the whole window. Measured today: ExtentHeight 2440 instead of
+			// 1440, and indices 2-13 arranged at y=1080-1520 where 27-35 belong. To restore once that is fixed:
+			//  * ExtentHeight == expectedExtent -- a reorder MOVES a row, it does not add one.
+			//  * VerticalOffset <= ScrollableHeight -- vacuous while the extent is inflated, since ScrollableHeight
+			//    is derived from it and can only be too large.
+			//  * every row at index * rowHeight -- a window shifted by a constant is the blank space above item 0.
+			// The mid-drag ExtentHeight assertion above still covers the seed/extent pairing this test was added for.
+			var realized = SUT.ItemsPanelRoot.Children.OfType<ListViewItem>()
+				.Select(x => (Index: SUT.IndexFromContainer(x), Offset: x.TransformToVisual(SUT.ItemsPanelRoot).TransformPoint(default).Y))
+				.OrderBy(x => x.Offset)
+				.ToArray();
+
+			// The anchor of the window is what the defect above moves; the PITCH is not, so it stays asserted. This is
+			// strictly stronger than the stacked check below, which only catches an exact offset collision.
+			var mispitched = realized.Zip(realized.Skip(1), (from, to) => (from, to))
+				.Where(x => Math.Abs(x.to.Offset - x.from.Offset - rowHeight) > 0.5)
+				.ToArray();
+			Assert.AreEqual(0, mispitched.Length,
+				$"consecutive rows must be exactly {rowHeight}px apart, but these are not: " +
+				string.Join(", ", mispitched.Select(x => $"index {x.from.Index} at y={x.from.Offset:0} -> index {x.to.Index} at y={x.to.Offset:0}")));
+
+			var duplicated = realized.GroupBy(x => x.Index).Where(g => g.Count() > 1).ToArray();
+			Assert.AreEqual(0, duplicated.Length,
+				"every item index must be realized by at most one container, but these are duplicated: " +
+				string.Join(", ", duplicated.Select(g => $"index {g.Key} x{g.Count()}")));
+
+			// Independent of the index check, and the one the user actually sees: two containers arranged at the same
+			// offset paint their text on top of each other.
+			var stacked = realized.GroupBy(x => Math.Round(x.Offset)).Where(g => g.Count() > 1).ToArray();
+			Assert.AreEqual(0, stacked.Length,
+				"no two containers may be arranged at the same offset, but these are stacked: " +
+				string.Join(", ", stacked.Select(g => $"y={g.Key} holds " + string.Join("/", g.Select(x => $"index {x.Index}")))));
+		}
+
+		private const int ReorderItemCount = 36;
+
+#endif
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
@@ -5700,6 +5999,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.ToArray();
 #endif
 		}
+
+		// Maps each data item to its realized container. Keyed by data item (not index) so identity can be
+		// compared across a reorder, where indices change. Asserts every item is realized at capture time.
+		// Typed on ItemsControl (which defines ContainerFromItem); items comes in as IEnumerable<object>,
+		// which ObservableCollection<string> satisfies via IEnumerable<out T> covariance.
+		private static Dictionary<object, object> CaptureContainersByItem(ItemsControl list, IEnumerable<object> items)
+		{
+			var map = new Dictionary<object, object>();
+			foreach (var item in items)
+			{
+				var container = list.ContainerFromItem(item);
+				Assert.IsNotNull(container, $"Expected a realized container for '{item}'");
+				map[item] = container;
+			}
+
+			return map;
+		}
+
+		private static void AssertAllContainersReused(Dictionary<object, object> before, Dictionary<object, object> after, string context)
+		{
+			using var _ = new AssertionScope();
+			foreach (var (item, container) in before)
+			{
+				Assert.AreSame(container, after[item], $"{context}: container for '{item}' must be reused (would flicker if recreated)");
+			}
+		}
+
+		private static int CountReusedContainers(Dictionary<object, object> before, Dictionary<object, object> after)
+			=> before.Count(kvp => ReferenceEquals(kvp.Value, after[kvp.Key]));
 
 		private static double GetTop(FrameworkElement element, FrameworkElement container)
 		{

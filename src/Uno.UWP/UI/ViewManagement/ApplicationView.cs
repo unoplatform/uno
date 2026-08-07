@@ -140,6 +140,16 @@ namespace Windows.UI.ViewManagement
 			return appView;
 		}
 
+		/// <summary>
+		/// Removes the <see cref="ApplicationView"/> registered for a window once that window is
+		/// closed. The per-<see cref="MUXWindowId"/> map has no other removal path, so a closed
+		/// window's <see cref="ApplicationView"/> — and every event subscriber reachable from it
+		/// (e.g. a <see cref="VisibleBoundsChanged"/> handler) — is retained for the process
+		/// lifetime. For a secondary-app window in a collectible <c>AssemblyLoadContext</c> this
+		/// pins the whole ALC. Called from ALC window close.
+		/// </summary>
+		internal static void DestroyForWindowId(MUXWindowId windowId) => _windowIdMap.TryRemove(windowId, out _);
+
 		[global::Uno.NotImplemented]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, global::Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs> Consolidated;
 

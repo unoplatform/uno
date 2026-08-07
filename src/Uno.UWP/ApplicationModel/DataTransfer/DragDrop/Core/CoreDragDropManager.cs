@@ -53,6 +53,16 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			return coreDragDropManager;
 		}
 
+		/// <summary>
+		/// Removes the <see cref="CoreDragDropManager"/> registered for a window once that window is
+		/// closed. The per-<see cref="WindowId"/> map has no other removal path, so a closed
+		/// window's <see cref="CoreDragDropManager"/> — and every event subscriber reachable from it
+		/// (e.g. a <see cref="TargetRequested"/> handler) — is retained for the process lifetime.
+		/// For a secondary-app window in a collectible <c>AssemblyLoadContext</c> this pins the whole
+		/// ALC. Called from ALC window close.
+		/// </summary>
+		internal static void DestroyForWindowId(WindowId windowId) => _windowIdMap.TryRemove(windowId, out _);
+
 		public event TypedEventHandler<CoreDragDropManager, CoreDropOperationTargetRequestedEventArgs>? TargetRequested;
 
 		private IDragDropManager? _manager;

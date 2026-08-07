@@ -481,7 +481,6 @@ declare namespace Windows.Storage.Pickers {
     class FileSavePicker {
         static isNativeSupported(): boolean;
         static nativePickSaveFileAsync(showAllEntry: boolean, fileTypesJson: string, suggestedFileName: string, id: string, startIn: StartInDirectory): Promise<string>;
-        static SaveAs(fileName: string, dataPtr: any, size: number): void;
     }
 }
 declare namespace Windows.Storage.Pickers {
@@ -503,6 +502,49 @@ declare namespace Uno.Storage.Pickers {
     }
 }
 declare namespace Uno.Storage.Streams {
+    /**
+     * An in-memory, randomly accessible byte buffer stored as a list of small
+     * fixed-size chunks. Chunking avoids the browser's per-ArrayBuffer contiguous
+     * allocation ceiling and the reallocate-and-copy growth spikes of a single
+     * buffer, so large payloads degrade gracefully under memory pressure.
+     */
+    class NativeChunkedBuffer {
+        private static _bufferMap;
+        private static readonly _chunkSize;
+        private static readonly DownloadFolderName;
+        private static readonly _sessionPrefix;
+        private static readonly DownloadRetentionMs;
+        private static readonly UrlReleaseGraceMs;
+        private static _pendingDownloadUrl;
+        private static _downloadSequence;
+        private _chunks;
+        private _length;
+        private _released;
+        private _lastModified;
+        static create(bufferId: string): void;
+        static dispose(bufferId: string): void;
+        static getLength(bufferId: string): number;
+        /** Epoch milliseconds of the last write, for file modification metadata. */
+        static getLastModified(bufferId: string): number;
+        static write(bufferId: string, dataPtr: number, count: number, position: number): void;
+        static read(bufferId: string, dataPtr: number, count: number, position: number): number;
+        static truncate(bufferId: string, length: number): void;
+        /**
+         * Triggers a browser download of the staged content.
+         * The payload is first moved into an origin-private (OPFS) file so the download
+         * streams from disk: materializing it as an in-memory Blob instead makes large
+         * files exceed the browser's blob storage, which surfaces as a failed download.
+         */
+        static saveAsDownloadAsync(bufferId: string, fileName: string): Promise<void>;
+        private static purgeStaleEntriesAsync;
+        private writeToOpfsAsync;
+        private buildBlob;
+        private static tryGetDownloadDirectoryAsync;
+        private throwIfReleased;
+        private ensureCapacity;
+    }
+}
+declare namespace Uno.Storage.Streams {
     class NativeFileReadStream {
         private static _streamMap;
         private _file;
@@ -516,7 +558,6 @@ declare namespace Uno.Storage.Streams {
     class NativeFileWriteStream {
         private static _streamMap;
         private _stream;
-        private _buffer;
         private constructor();
         static openAsync(streamId: string, fileId: string): Promise<string>;
         private static verifyPermissionAsync;

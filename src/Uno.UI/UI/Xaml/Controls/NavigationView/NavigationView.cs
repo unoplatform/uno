@@ -4098,8 +4098,11 @@ public partial class NavigationView : ContentControl
 			{
 				// Exchange items between Primary and Overflow
 				{
-					m_topDataProvider.MoveItemsToPrimaryList(itemsToBeAdded);
+					// Uno workaround: move items out of primary first so the overflow list never becomes
+					// empty mid-exchange — OnOverflowItemsSourceCollectionChanged would collapse the overflow
+					// button for good (upstream bug: https://github.com/microsoft/microsoft-ui-xaml/issues/6626).
 					m_topDataProvider.MoveItemsOutOfPrimaryList(itemsToBeRemoved);
+					m_topDataProvider.MoveItemsToPrimaryList(itemsToBeAdded);
 				}
 
 				if (NeedRearrangeOfTopElementsAfterOverflowSelectionChanged(selectedOverflowItemIndex))

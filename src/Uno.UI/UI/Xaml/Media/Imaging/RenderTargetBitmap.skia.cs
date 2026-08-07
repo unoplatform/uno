@@ -84,21 +84,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		}
 
 		/// <summary>
-		/// Renders synchronously on the UI thread using the software rasterizer. For internal
-		/// callers that cannot yield to the dispatcher — e.g. the drag visual must be captured
-		/// within the DragStarting sequence so DragEnter/DragOver still fire synchronously right
-		/// after it, matching WinUI. Must not be called while a RenderAsync is in flight on the
-		/// same instance.
-		/// </summary>
-		internal void RenderSync(UIElement element, int scaledWidth, int scaledHeight)
-		{
-			(_bufferSize, PixelWidth, PixelHeight) = PrepareRender(element, new Size(scaledWidth, scaledHeight)) is { } render
-				? RenderSoftware(element.Visual, render)
-				: (0, 0, 0);
-			InvalidateSource();
-		}
-
-		/// <summary>
 		/// Computes the render dimensions and sizes the pixel buffer accordingly; null when the
 		/// element has nothing to render.
 		/// </summary>

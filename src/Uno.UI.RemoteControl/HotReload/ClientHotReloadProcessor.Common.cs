@@ -49,6 +49,129 @@ namespace Uno.UI.RemoteControl.HotReload
 		}
 #endif
 
+		// Guards single-arming of the collectible-context Unloading teardown below.
+		private static bool _alcTeardownArmed;
+
+		static ClientHotReloadProcessor()
+		{
+			// Arm at type initialization: in a collectible-context copy the metadata-updater
+			// initialization path may never run (e.g. when the dev-server connection is unavailable),
+			// yet the per-context statics above still get populated and would pin the context.
+			ArmCollectibleAlcTeardown();
+		}
+
+		/// <summary>
+		/// When this processor copy is owned by a collectible load context (the case where a downstream
+		/// host loads previewed apps into their own collectible <see cref="AssemblyLoadContext"/>s, each
+		/// loading its own copy of this assembly), arm a teardown that runs when that context unloads.
+		/// The per-context static state here — the processor instance, its <c>_agent</c>, and the shared
+		/// <c>_elementAgent</c> — each hold a process-wide <see cref="AppDomain.AssemblyLoad"/> subscription
+		/// that otherwise keeps the whole context alive after unload. NOTE: <see cref="AssemblyLoadContext.Unloading"/>
+		/// was observed NOT to be raised on the browser-wasm runtime, where collectible-context unload is
+		/// unimplemented (dotnet/runtime#34072) — there this hook never fires. It is therefore best-effort for
+		/// runtimes that do raise the event; a host that needs deterministic release must still dispose the
+		/// processor explicitly on teardown (the load-bearing part is that <c>Dispose()</c> on the agents now
+		/// clears their Type/delta maps and detaches their <see cref="AppDomain.AssemblyLoad"/> subscriptions).
+		/// </summary>
+		private static void ArmCollectibleAlcTeardown()
+		{
+			if (_alcTeardownArmed || _processorAlc == AssemblyLoadContext.Default || !_processorAlc.IsCollectible)
+			{
+				return;
+			}
+
+			_alcTeardownArmed = true;
+			_processorAlc.Unloading += static _ => TearDownForAlcUnload();
+
+			if (_log.IsEnabled(LogLevel.Trace))
+			{
+				_log.Trace("Armed Unloading teardown for the collectible processor load context.");
+			}
+		}
+
+		/// <summary>
+		/// Releases this collectible context's per-context hot-reload state: disposes the processor instance
+		/// (which disposes its <c>_agent</c>, detaches that agent's AssemblyLoad subscription, and — for a
+		/// collectible owner — releases the per-context statics), then calls
+		/// <see cref="ReleasePerContextStatics"/> to cover a context that never initialized a processor
+		/// instance. No-op for the default (host) context or a non-collectible owner, so a live processor is
+		/// never torn down.
+		/// </summary>
+		private static void TearDownForAlcUnload()
+		{
+			if (_processorAlc == AssemblyLoadContext.Default || !_processorAlc.IsCollectible)
+			{
+				return;
+			}
+
+			if (_log.IsEnabled(LogLevel.Trace))
+			{
+				_log.Trace("Tearing down hot-reload state for the collectible processor load context unload.");
+			}
+
+			// Detach the instance BEFORE disposing it: for a collectible owner Dispose() re-enters the
+			// static teardown through ReleasePerContextStatics() (never through this method, keeping the
+			// flow non-recursive), and clearing the reference first keeps the whole path idempotent.
+			var instance = _instance;
+			_instance = null;
+
+			try
+			{
+				// Dispose() lives in the base partial file, which some consumers (e.g. Uno.UI.Toolkit)
+				// link WITHOUT: cast through IDisposable so this binds in the full assembly (where the
+				// type is IDisposable) and compiles-to-no-op in those partial embeds. Harmless there:
+				// the teardown only runs for a collectible context, which such embeds never have.
+				(instance as IDisposable)?.Dispose();
+			}
+			catch (Exception e)
+			{
+				_log.Error("Failed to dispose the hot-reload processor during collectible context teardown.", e);
+			}
+
+			// Dispose() above already released the statics when an instance existed; this covers a context
+			// whose statics were populated without a processor instance ever being initialized.
+			ReleasePerContextStatics();
+		}
+
+		/// <summary>
+		/// Releases the per-context static hot-reload state that would otherwise pin a collectible owning
+		/// context: disposes the shared element-update agent (detaching its process-wide
+		/// <see cref="AppDomain.AssemblyLoad"/> subscription and clearing its Type-keyed handler map) and
+		/// clears the static references. Idempotent and never calls back into
+		/// <see cref="TearDownForAlcUnload"/>, so it is safe to invoke from both the
+		/// <see cref="AssemblyLoadContext.Unloading"/> teardown and an explicit host-driven
+		/// <see cref="Dispose"/> (the load-bearing release path on browser-wasm, where Unloading is not
+		/// raised — dotnet/runtime#34072).
+		/// </summary>
+		private static void ReleasePerContextStatics()
+		{
+			try
+			{
+				_elementAgent?.Dispose();
+			}
+			catch (Exception e)
+			{
+				_log.Error("Failed to dispose the element-update agent during collectible context teardown.", e);
+			}
+
+			_elementAgent = null;
+
+#if HAS_UNO_WINUI
+			// Detach the first-activation diagnostics handler before dropping the window reference.
+			// The handler is a static method on this collectible-context copy of the processor; if the
+			// host Window outlives the context (it does — the window is owned by the host), its Activated
+			// event would keep that method — and through it this context — alive after unload. The handler
+			// self-detaches on first activation, but only once RootElement.XamlRoot is available, so a
+			// context torn down before that (or with the indicator disabled) would otherwise still be pinned.
+			if (CurrentWindow is not null)
+			{
+				CurrentWindow.Activated -= ShowDiagnosticsOnFirstActivation;
+			}
+#endif
+
+			CurrentWindow = null;
+		}
+
 		private static async IAsyncEnumerable<TMatch> EnumerateHotReloadInstances<TMatch>(
 			object? instance,
 			Func<FrameworkElement, string, Task<TMatch?>> predicate,

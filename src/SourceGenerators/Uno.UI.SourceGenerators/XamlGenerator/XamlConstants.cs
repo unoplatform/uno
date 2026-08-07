@@ -173,6 +173,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string DragEventArgs = Namespaces.Base + ".DragEventArgs";
 			public const string RoutedEventArgs = Namespaces.Base + ".RoutedEventArgs";
 			public const string KeyRoutedEventArgs = Namespaces.Input + ".KeyRoutedEventArgs";
+			public const string CharacterReceivedRoutedEventArgs = Namespaces.Input + ".CharacterReceivedRoutedEventArgs";
 			public const string BringIntoViewRequestedEventArgs = Namespaces.Base + ".BringIntoViewRequestedEventArgs";
 
 			// Documents

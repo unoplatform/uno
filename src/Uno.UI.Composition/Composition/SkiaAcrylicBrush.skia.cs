@@ -61,7 +61,11 @@ internal class SkiaAcrylicBrush : CompositionBrush
 		set => SetObjectProperty(ref _noiseImage, value);
 	}
 
+	private const int BlurPadding = 100;
+
 	internal override bool RequiresRepaintOnEveryFrame => !_isOpaque;
+
+	internal override float DamageRegionSamplingMargin => _isOpaque ? 0 : BlurPadding;
 
 	internal override bool CanPaint() => true;
 
@@ -184,13 +188,12 @@ internal class SkiaAcrylicBrush : CompositionBrush
 
 		_filter?.Dispose();
 
-		const int blurPadding = 100;
 		var blurBounds = bounds with
 		{
-			Left = bounds.Left - blurPadding,
-			Top = bounds.Top - blurPadding,
-			Right = bounds.Right + blurPadding,
-			Bottom = bounds.Bottom + blurPadding
+			Left = bounds.Left - BlurPadding,
+			Top = bounds.Top - BlurPadding,
+			Right = bounds.Right + BlurPadding,
+			Bottom = bounds.Bottom + BlurPadding
 		};
 
 		var scaleFactor = Math.Max(1, (int)(_blurSigma / 8));

@@ -36,6 +36,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared property CanBeScrollAnchorProperty
 		// Skipping already declared property CanDragProperty
+<<<<<<< HEAD
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Microsoft.UI.Xaml.RoutedEvent CharacterReceivedEvent
@@ -46,6 +47,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
+=======
+		// Skipping already declared property CharacterReceivedEvent
+>>>>>>> origin/master
 		// Skipping already declared property ClipProperty
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
@@ -1099,6 +1103,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.AccessKeyInvoked
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.BringIntoViewRequested
+<<<<<<< HEAD
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.UIElement, global::Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs> CharacterReceived
@@ -1115,6 +1120,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
+=======
+		// Skipping already declared event Microsoft.UI.Xaml.UIElement.CharacterReceived
+>>>>>>> origin/master
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.ContextCanceled
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.ContextRequested
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.DoubleTapped
