@@ -57,7 +57,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.canvasElement.setAttribute("aria-hidden", "true");
 			this.containerElement.appendChild(this.canvasElement);
 
-			Accessibility.setup();
+			await Accessibility.setup();
 
 			window.addEventListener("resize", x => this.resize());
 
