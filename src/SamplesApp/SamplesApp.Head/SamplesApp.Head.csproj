@@ -404,13 +404,14 @@
 	        Condition="'$(_IsSkiaTfm)' == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'desktop' AND '$(SkipUnoResourceGeneration)' == ''" />
 
 	<!--
-	Mobile needs the Uno generators, as the netcoremobile head does (the desktop and wasm heads
-	don't): AndroidResourcesGenerator emits the DrawableHelper.SetDrawableResolver call, and
-	without it every ms-appx local asset lookup throws "Drawable resources were not initialized"
-	at runtime. Only the generators half is imported — the tasks half is already above.
+	Android needs the Uno generators: AndroidResourcesGenerator emits the
+	DrawableHelper.SetDrawableResolver call, and without it every ms-appx local asset lookup
+	throws "Drawable resources were not initialized" at runtime. Scoped to android rather than
+	all of mobile — that generator is android-only, and iOS/tvOS resolve their assets without it.
+	Only the generators half is imported; the tasks half is already above.
 	-->
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props"
-	        Condition="'$(_IsMobile)' == 'true'" />
+	        Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" />
 
 	<!-- ==================== Windows build configuration ==================== -->
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
