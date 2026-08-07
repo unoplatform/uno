@@ -30,6 +30,6 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]
 
-[assembly: InternalsVisibleTo("Uno")]
+[assembly: InternalsVisibleTo("Uno.WinRT")]
 
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]

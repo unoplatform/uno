@@ -259,7 +259,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		}
 
 		private bool IsWinRTAssembly(string fileNameWithoutExtension)
-			=> fileNameWithoutExtension.ToLower(CultureInfo.InvariantCulture) is "uno" or "uno.ui.dispatching" or "uno.foundation";
+			=> fileNameWithoutExtension.ToLower(CultureInfo.InvariantCulture) is "uno.winrt" or "uno.ui.dispatching" or "uno.foundation";
 
 		private string GetWinRTAssembly(string runtimeDirectory, string assembly, Version targetFrameworkVersion)
 		{

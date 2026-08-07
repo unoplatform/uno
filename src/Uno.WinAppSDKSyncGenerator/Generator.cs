@@ -183,7 +183,7 @@ namespace Uno.WinAppSDKSyncGenerator
 			// still ship per-platform binaries are Uno.WinRT, Uno.Foundation and Uno.UI.Dispatching.
 			// Uno.WinRT references the other two, so its native/WASM compilation transitively resolves
 			// all three sets of symbols.
-			var platformProject = @"..\..\..\Uno.WinRT\Uno";
+			var platformProject = @"..\..\..\Uno.WinRT\Uno.WinRT";
 
 			_iOSCompilation = await LoadProject($@"{platformProject}.netcoremobile.csproj", "net10.0-ios26.0");
 			_tvOSCompilation = await LoadProject($@"{platformProject}.netcoremobile.csproj", "net10.0-tvos26.0");
@@ -2325,7 +2325,7 @@ namespace Uno.WinAppSDKSyncGenerator
 			// Microsoft.UI.Dispatching native #if defines instead of failing the restore loudly.
 			var isTopProject = projectFile.Replace('/', '\\').Contains(@"\Uno.UI\Uno.UI.", StringComparison.Ordinal);
 			string[] expectedRefs = isTopProject
-				? ["Uno.Foundation", "Uno", "Uno.UI.Composition", "Uno.UI.Dispatching"]
+				? ["Uno.Foundation", "Uno.WinRT", "Uno.UI.Composition", "Uno.UI.Dispatching"]
 				: ["Uno.Foundation", "Uno.UI.Dispatching"];
 			foreach (var expectedRef in expectedRefs)
 			{
