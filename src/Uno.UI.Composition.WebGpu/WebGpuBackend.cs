@@ -614,6 +614,17 @@ struct U { op: vec4<f32>, tint: vec4<f32> };
 	private static void OnMap(WGPUMapAsyncStatus status, WGPUStringView message, IntPtr u1, IntPtr u2)
 		=> ((bool[])GCHandle.FromIntPtr(u1).Target!)[0] = true;
 
+	// Flushes an offscreen surface so a later, separately-submitted pass can sample its resolved content.
+	// A layer's offscreen render + MSAA resolve is one queue submission; the composite that samples it is a
+	// later one, and the resolve→sample hazard isn't covered across submissions — without this the composite
+	// samples an empty texture. A full texture→buffer copy + map (what ReadPixelsRgba does) forces the deferred
+	// MSAA resolve to materialize; a device-idle wait or a partial copy is NOT enough. Perf follow-up: encode the
+	// offscreen render and its composite in one command buffer so wgpu barriers it automatically.
+	public void FlushForSample(WebGpuRenderSurface s)
+	{
+		if (s.Tex != IntPtr.Zero) { _ = ReadPixelsRgba(s); }
+	}
+
 	public void Dispose() { }
 }
 
@@ -648,6 +659,14 @@ public sealed unsafe class WebGpuTexturePool
 			_entries.Add(new Entry { Tex = tex, View = view, W = w, H = h, Samples = samples, Fmt = fmt, Usage = usage, InUse = true });
 			return view;
 		}
+	}
+
+	/// <summary>The backing texture for a rented view, or Zero if unknown. Used to flush an offscreen's resolve so
+	/// a later, separately-submitted pass can sample it.</summary>
+	public IntPtr TexForView(IntPtr view)
+	{
+		lock (_gate) { foreach (var e in _entries) { if (e.View == view) { return e.Tex; } } }
+		return IntPtr.Zero;
 	}
 }
 
@@ -743,9 +762,13 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, WebGpuTexturePool pool)
 	{
 		Width = width; Height = height;
+		_ownsResources = false;   // the pool owns and reclaims these; Dispose must not release them
 		MsaaColorView = pool.Rent(width, height, (int)WebGpuDevice.MsaaSamples, WGPUTextureUsage.RenderAttachment, device.ColorFormat);
 		DepthView = pool.Rent(width, height, (int)WebGpuDevice.MsaaSamples, WGPUTextureUsage.RenderAttachment, WebGpuDevice.DepthStencilFormat);
-		View = pool.Rent(width, height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, device.ColorFormat);
+		// CopySrc so the resolved result can be flushed (see WebGpuDevice.FlushForSample) before a later,
+		// separately-submitted pass samples it.
+		View = pool.Rent(width, height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopySrc, device.ColorFormat);
+		Tex = pool.TexForView(View);
 	}
 
 	private void CreateMultisampledTargets(WebGpuDevice device, int width, int height)
@@ -1805,9 +1828,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				}
 				case LayerCmd lyr:
 				{
-					// Render the layer's commands into a full-size offscreen surface, then composite (kind 4).
+					// Render the layer's commands into a full-size offscreen surface, then composite (kind 4). The
+					// offscreen render is a separate queue submission; wait for it to complete so its MSAA resolve is
+					// visible to the composite's sample below (without this, the composite samples an empty scratch —
+					// the resolve→sample hazard isn't covered across submissions).
 					var layerSurface = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
 					RenderInto(lyr.Commands, layerSurface, null);
+					_d.FlushForSample(layerSurface);
 
 					// SaveLayer(IEffectFilter) drop shadow: blur the content, draw it tinted+offset behind, then
 					// the content on top. Reuses the image path (SrcIn tint) for the shadow — same as DrawShadow.
