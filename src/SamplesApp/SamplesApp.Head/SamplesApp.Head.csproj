@@ -550,6 +550,13 @@
 	-->
 	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true'">
 		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
+		<!--
+		The samples, tests and their [Bindable]/attached-property types all live in the base lib,
+		and nothing in the head references them statically. Without rooting it the trimmer drops
+		them, and the generated Uno.*.Descriptor.xml files then fail to resolve under NativeAOT
+		(IL2008). netcoremobile roots it the same way.
+		-->
+		<TrimmerRootAssembly Include="SamplesApp.Skia" RootMode="All" />
 	</ItemGroup>
 
 	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.props" Condition="'$(_IsSkiaTfm)' != 'true'" />
