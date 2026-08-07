@@ -677,6 +677,58 @@ declare namespace Windows.UI.Core {
         private clearStack;
     }
 }
+interface UnoAppNotificationActionCommand {
+    id: string;
+    title: string;
+    icon: string;
+    argument: string;
+    protocolUri: string | null;
+}
+interface UnoAppNotificationCommand {
+    id: number;
+    nativeTag: string;
+    title: string;
+    body: string;
+    language: string;
+    direction: NotificationDirection;
+    icon: string;
+    image: string;
+    timestamp: number | null;
+    expirationTimestamp: number | null;
+    silent: boolean;
+    requireInteraction: boolean;
+    launchArgument: string;
+    protocolUri: string | null;
+    actions: UnoAppNotificationActionCommand[];
+}
+declare namespace Windows.UI.Notifications {
+    class AppNotificationManager {
+        private static readonly tagPrefix;
+        private static readonly activeNotifications;
+        private static readonly activeIds;
+        private static readonly expirationTimers;
+        private static stateKnown;
+        private static initialized;
+        private static dispatchActivation;
+        static isSupported(): boolean;
+        static getPermission(): string;
+        static initialize(): void;
+        static uninitialize(): void;
+        static requestPermission(): void;
+        static show(commandJson: string): boolean;
+        static close(tag: string): void;
+        static closeAll(tagPrefix: string): void;
+        static getActiveIds(tagPrefix: string): string | null;
+        private static createOptions;
+        private static activate;
+        private static navigateProtocol;
+        private static isValidCommand;
+        private static scheduleExpiration;
+        private static removeActive;
+        private static removeActiveId;
+        private static clearExpiration;
+    }
+}
 interface Navigator {
     setAppBadge(value: number): void;
     clearAppBadge(): void;
