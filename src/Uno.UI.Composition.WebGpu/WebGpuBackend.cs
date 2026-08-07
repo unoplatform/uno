@@ -1853,11 +1853,30 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			case GradientCmd gc:
 			{
 				var bytes = (nuint)WebGpuDevice.GradientUniformBytes;
-				var ubuf = Ubuf((int)bytes, owned);
-				fixed (float* p = gc.Uniform) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, bytes); }
-				var gentry = new WGPUBindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = bytes };
-				var gbgd = new WGPUBindGroupDescriptor { Layout = _d.GradBgl, EntryCount = 1, Entries = &gentry };
-				var gbg = Bg(ref gbgd, owned);
+				// A per-frame gradient bind group depends only on its uniform (the packed stops/geometry) — cache it
+				// across frames like clips, so a static gradient isn't a CreateBuffer + CreateBindGroup every frame.
+				IntPtr gbg;
+				if (!(owned is null && _d.TryGetCachedBg((nint)_d.GradBgl, gc.Uniform, out gbg)))
+				{
+					// Cached (owned == null) entries need a PERSISTENT uniform buffer — a pooled one would be reused
+					// next frame and corrupt the cached bind group. Cached-recording (owned) buffers persist already.
+					IntPtr ubuf;
+					if (owned is null)
+					{
+						var gbd = new WGPUBufferDescriptor { Size = bytes, Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
+						ubuf = wgpuDeviceCreateBuffer(_d.Dev, &gbd);
+					}
+					else { ubuf = Ubuf((int)bytes, owned); }
+					fixed (float* p = gc.Uniform) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, bytes); }
+					var gentry = new WGPUBindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = bytes };
+					var gbgd = new WGPUBindGroupDescriptor { Layout = _d.GradBgl, EntryCount = 1, Entries = &gentry };
+					if (owned is null)
+					{
+						gbg = wgpuDeviceCreateBindGroup(_d.Dev, (WGPUBindGroupDescriptor*)Unsafe.AsPointer(ref gbgd));
+						_d.AddCachedBg((nint)_d.GradBgl, gc.Uniform, ubuf, gbg);
+					}
+					else { gbg = Bg(ref gbgd, owned); }
+				}
 				var gq = new float[12];
 				void GV(int idx, Vector2 pos) { var n = Ndc(pos); gq[idx] = n.X; gq[idx + 1] = n.Y; }
 				GV(0, gc.P0); GV(2, gc.P1); GV(4, gc.P2); GV(6, gc.P0); GV(8, gc.P2); GV(10, gc.P3);
