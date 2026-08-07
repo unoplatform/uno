@@ -50,11 +50,13 @@ public partial class RichTextBlockOverflowAutomationPeer : FrameworkElementAutom
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Text;
 
-#if __SKIA__
 	// CRichTextBlockOverflowAutomationPeer::GetChildrenCore — append the inline peers from the source
 	// (master) RichTextBlock's blocks that fall within this overflow's slice [contentStart, overflowStart).
+	// The slice needs the TextPointer position layer, which only Skia has; the override still has to exist
+	// everywhere so the reference assembly matches the runtime API.
 	protected override IList<AutomationPeer> GetChildrenCore()
 	{
+#if __SKIA__
 		if (Owner is not Controls.RichTextBlockOverflow owner)
 		{
 			return base.GetChildrenCore();
@@ -91,6 +93,8 @@ public partial class RichTextBlockOverflowAutomationPeer : FrameworkElementAutom
 		}
 
 		return children;
-	}
+#else
+		return base.GetChildrenCore();
 #endif
+	}
 }
