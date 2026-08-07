@@ -1,8 +1,10 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 
 using static Microsoft.UI.Composition.SubPropertyHelpers;
+using SkiaSharp;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition
 {
@@ -89,5 +91,39 @@ namespace Microsoft.UI.Composition
 				base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
 			}
 		}
+
+#nullable disable
+		private (Rect? bounds, SKPath path)? _clipPath;
+
+		private protected override Rect? GetBoundsCore(Visual visual)
+		{
+			return new Rect(
+				x: LeftInset,
+				y: TopInset,
+				width: visual.Size.X - LeftInset - RightInset,
+				height: visual.Size.Y - TopInset - BottomInset);
+		}
+
+		internal override SKPath GetClipPath(Visual visual)
+		{
+			if (GetBounds(visual) is not { } bounds)
+			{
+				return null;
+			}
+			if (_clipPath is null || _clipPath.Value.bounds != bounds)
+			{
+				var builder = new SKPathBuilder();
+				var rect = bounds.ToSKRect();
+				builder.AddRect(rect);
+				_clipPath = (bounds, builder.Detach());
+			}
+			return _clipPath.Value.path;
+		}
+
+		private protected override SKRect? GetClipRect(Visual visual)
+		{
+			return GetBounds(visual)?.ToSKRect();
+		}
+#nullable enable
 	}
 }

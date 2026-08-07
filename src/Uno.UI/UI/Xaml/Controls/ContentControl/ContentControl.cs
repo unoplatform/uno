@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -14,6 +14,10 @@ using Microsoft.UI.Xaml.Markup;
 using Uno;
 
 using View = Microsoft.UI.Xaml.UIElement;
+using Uno.UI.Controls;
+using Windows.Foundation;
+using Uno.Disposables;
+using System.Runtime.CompilerServices;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -516,5 +520,19 @@ namespace Microsoft.UI.Xaml.Controls
 				ContentTemplateRoot = null;
 			}
 		}
+
+#nullable disable
+		partial void RegisterContentTemplateRoot()
+		{
+			AddChild(ContentTemplateRoot);
+		}
+
+		partial void UnregisterContentTemplateRoot()
+		{
+			RemoveChild(ContentTemplateRoot);
+		}
+
+		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
+#nullable enable
 	}
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,6 +6,7 @@ using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
+using SkiaSharp;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
@@ -152,6 +153,14 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 #endif
 
 			return $"{GetType().Name}/-empty-";
+		}
+
+		partial void UpdatePixelWidthAndHeightPartial(Stream stream)
+		{
+			using var codec = SKCodec.Create(stream);
+			var info = codec.Info;
+			PixelWidth = info.Width;
+			PixelHeight = info.Height;
 		}
 	}
 }

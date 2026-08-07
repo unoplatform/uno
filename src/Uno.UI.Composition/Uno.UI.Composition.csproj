@@ -25,10 +25,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="AssemblyInfo.skia.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="SkiaSharp" />
 	</ItemGroup>
 
@@ -43,7 +39,6 @@
 		<Compile Include="..\Uno.UI\UI\Xaml\CornerRadius.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\FullCornerRadius.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\NonUniformCornerRadius.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\NonUniformCornerRadius.skia.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Thickness.cs" />
 	</ItemGroup>
 
