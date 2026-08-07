@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -837,8 +838,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// has opted in to auto-enabling accessibility (bypassing the "Enable Accessibility" button).
 	/// </summary>
 	[JSExport]
-	public static bool IsAutoEnableAccessibility()
-		=> FeatureConfiguration.AutomationPeer.AutoEnableAccessibility;
+	public static Task<bool> IsAutoEnableAccessibilityAsync()
+		=> Task.FromResult(FeatureConfiguration.AutomationPeer.AutoEnableAccessibility);
 
 	// Retry state for EnableAccessibility if Window isn't ready
 	private static int _enableAccessibilityRetryCount;
