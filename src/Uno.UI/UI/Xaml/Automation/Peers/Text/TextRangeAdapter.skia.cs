@@ -1144,12 +1144,40 @@ internal sealed partial class TextRangeAdapter : ITextRangeProvider
 
 	internal static void MoveByWord(int count, out uint movedCount, ref PlainTextPosition plainTextPosition)
 	{
-		// TODO Uno (UIA): word navigation. WinUI calls
-		// CTextBoxHelpers::GetAdjacentWordNavigationBoundaryPosition(container, pos, FindBoundaryType, ...),
-		// a wrapper that builds a text backend and calls CSelectionWordBreaker.GetAdjacentWordNavigationBoundary
-		// (ported in SelectionWordBreaker.skia.cs). That container-level wrapper (the ISimpleTextBackend bridge)
-		// is not ported yet, so word movement is a no-op here rather than guessing a boundary.
-		movedCount = 0;
+		uint posCount = count >= 0 ? (uint)count : (uint)-count;
+		var curPosition = new TextPosition(plainTextPosition);
+		uint moveCount = 0;
+
+		// WinUI takes the container as _In_opt_; without one there is nothing to walk.
+		if (plainTextPosition.GetTextContainer() is not { } container)
+		{
+			movedCount = 0;
+			return;
+		}
+
+		for (uint i = 0; i < posCount; i++)
+		{
+			TextBoxHelpers.GetAdjacentWordNavigationBoundaryPosition(
+				container,
+				curPosition,
+				count > 0 ? FindBoundaryType.ForwardIncludeTrailingWhitespace : FindBoundaryType.Backward,
+				TagConversion.Default,
+				out var nextPosition,
+				out _);
+
+			if (curPosition != nextPosition)
+			{
+				curPosition = nextPosition;
+				moveCount++;
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		movedCount = moveCount;
+		plainTextPosition = curPosition.GetPlainPosition();
 	}
 
 	internal static void ExpandToLine(
