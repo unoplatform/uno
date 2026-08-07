@@ -13,25 +13,36 @@ namespace Microsoft.UI.Xaml.Documents
 {
 	public abstract partial class Inline : TextElement
 	{
-		internal void InvalidateInlines(bool updateText)
+		internal void InvalidateInlines(bool updateText) => InvalidateInlines(updateText, inherited: false);
+
+		internal void InvalidateInlines(bool updateText, bool inherited)
 		{
 #if !IS_UNIT_TESTS
 			switch (this.GetParent())
 			{
 				case Span span:
-					span.InvalidateInlines(updateText);
+					span.InvalidateInlines(updateText, inherited);
 					break;
 				case TextBlock textBlock:
 					textBlock.InvalidateInlines(updateText);
 					break;
 				case Block block:
-					block.InvalidateInlines();
+					block.InvalidateInlines(contentChanged: !inherited);
 					break;
 				default:
 					break;
 			}
 #endif
 		}
+
+		// CUIElement::MarkInheritedPropertyDirty walks only GetChildren(), so an inherited formatting change
+		// on the owning RichTextBlock never reaches CTextElement::MarkDirty -> CRichTextBlock::OnContentChanged;
+		// the owner just runs its own InvalidateContent. A locally set value does go through MarkDirty, and
+		// must keep clearing the selection and the cached focusable children.
+		private protected void InvalidateInlinesForFormatChange(DependencyProperty property)
+			=> InvalidateInlines(
+				updateText: false,
+				inherited: this.GetCurrentHighestValuePrecedence(property) == DependencyPropertyValuePrecedences.Inheritance);
 
 #nullable enable
 		private FontDetails? _fontInfo;
@@ -71,35 +82,35 @@ namespace Microsoft.UI.Xaml.Documents
 		protected override void OnFontFamilyChanged()
 		{
 			base.OnFontFamilyChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange(FontFamilyProperty);
 			InvalidateFontInfo();
 		}
 
 		protected override void OnFontStyleChanged()
 		{
 			base.OnFontStyleChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange(FontStyleProperty);
 			InvalidateFontInfo();
 		}
 
 		protected override void OnFontStretchChanged()
 		{
 			base.OnFontStretchChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange(FontStretchProperty);
 			InvalidateFontInfo();
 		}
 
 		protected override void OnFontWeightChanged()
 		{
 			base.OnFontWeightChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange(FontWeightProperty);
 			InvalidateFontInfo();
 		}
 
 		protected override void OnFontSizeChanged()
 		{
 			base.OnFontSizeChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange(FontSizeProperty);
 			InvalidateFontInfo();
 		}
 
@@ -109,7 +120,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			base.OnIsTextScaleFactorEnabledChanged();
 			InvalidateFontInfo();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange(IsTextScaleFactorEnabledProperty);
 		}
 
 		/// <summary>
