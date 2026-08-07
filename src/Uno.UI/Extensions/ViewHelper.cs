@@ -46,7 +46,7 @@ namespace Uno.UI
 
 		internal static double PhysicalToLogicalPixels(double value)
 		{
-			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.UWP
+			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.WinRT
 			if (Uno.UI.Helpers.DeviceTargetHelper.IsMobile())
 			{
 				return value / _cachedDensity;
@@ -57,7 +57,7 @@ namespace Uno.UI
 
 		internal static double LogicalToPhysicalPixels(double value)
 		{
-			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.UWP
+			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.WinRT
 			if (Uno.UI.Helpers.DeviceTargetHelper.IsMobile())
 			{
 				if (double.IsNaN(value))

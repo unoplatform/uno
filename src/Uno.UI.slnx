@@ -120,14 +120,14 @@
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
     <Project Path="SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj">
-      <BuildDependency Project="Uno.UWP/Uno.netcoremobile.csproj" />
+      <BuildDependency Project="Uno.WinRT/Uno.WinRT.netcoremobile.csproj" />
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Deploy Solution="Debug|Any CPU" />
       <Deploy Solution="Debug|iPhoneSimulator" />
     </Project>
     <Project Path="SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj">
       <BuildDependency Project="Uno.UI.Dispatching/Uno.UI.Dispatching.Wasm.csproj" />
-      <BuildDependency Project="Uno.UWP/Uno.Wasm.csproj" />
+      <BuildDependency Project="Uno.WinRT/Uno.WinRT.Wasm.csproj" />
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="SamplesApp/SamplesApp.Skia/SamplesApp.Skia.csproj">
@@ -399,16 +399,16 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/WinRT/">
-    <Project Path="Uno.UWP/Uno.netcoremobile.csproj">
+    <Project Path="Uno.WinRT/Uno.WinRT.netcoremobile.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UWP/Uno.Reference.csproj">
+    <Project Path="Uno.WinRT/Uno.WinRT.Reference.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UWP/Uno.Skia.csproj">
+    <Project Path="Uno.WinRT/Uno.WinRT.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UWP/Uno.Wasm.csproj">
+    <Project Path="Uno.WinRT/Uno.WinRT.Wasm.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>

@@ -1,5 +1,5 @@
 ---
-description: Non-obvious C# style/idiom conventions for Uno.UI / Uno.UWP / Uno.Foundation source. Auto-loaded when editing src C# files.
+description: Non-obvious C# style/idiom conventions for Uno.UI / Uno.WinRT / Uno.Foundation source. Auto-loaded when editing src C# files.
 paths:
   - "src/**/*.cs"
 ---

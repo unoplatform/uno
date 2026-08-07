@@ -16,7 +16,7 @@ using static Microsoft.UI.Input.PointerUpdateKind;
 using _NativeMethods = __Windows.UI.Core.CoreWindow.NativeMethods;
 using _PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
 using _PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
-// PointerDeviceType now exists in both namespaces (Microsoft.UI.Input.PointerDeviceType relocated to Uno.UWP);
+// PointerDeviceType now exists in both namespaces (Microsoft.UI.Input.PointerDeviceType relocated to Uno.WinRT);
 // the native DOM handling here works with the device-layer enum, so bind the bare name to it.
 using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
 
