@@ -278,7 +278,6 @@
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
 		<DefineConstants Condition=" '$(UseMonoRuntime)' == 'false' ">$(DefineConstants);RUNTIME_CORECLR</DefineConstants>
-		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
 		<!-- apk (not aab) so the runtime-test harness can deploy to emulators -->
 		<AndroidPackageFormat>apk</AndroidPackageFormat>
 		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
