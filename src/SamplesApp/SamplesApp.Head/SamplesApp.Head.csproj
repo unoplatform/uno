@@ -355,17 +355,19 @@
 	</PropertyGroup>
 
 	<!-- iOS/tvOS bundle the WebView2 test content. The .NET iOS/tvOS toolchain reserves the
-	     top-level bundle folder name 'Resources' (_CollectBundleResources errors on it), so prefix
-	     the Link with the platform name as the old netcoremobile head did. -->
+	     top-level bundle folder name 'Resources' (_CollectBundleResources errors on it), so the Link
+	     is prefixed with the platform folder — $(iOSProjectFolder), i.e. Platforms\iOS here, not the
+	     bare iOS netcoremobile's layout uses. Matching the SDK's folder is what makes the bundled
+	     path resolvable, exactly as MonoAndroidAssetsPrefix does on android. -->
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-		<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="iOS\Resources\WebContent\css\site.css" />
-		<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="iOS\Resources\WebContent\index.html" />
-		<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="iOS\Resources\WebContent\js\site.js" />
+		<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="Platforms\iOS\Resources\WebContent\css\site.css" />
+		<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="Platforms\iOS\Resources\WebContent\index.html" />
+		<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="Platforms\iOS\Resources\WebContent\js\site.js" />
 	</ItemGroup>
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">
-		<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="tvOS\Resources\WebContent\css\site.css" />
-		<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="tvOS\Resources\WebContent\index.html" />
-		<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="tvOS\Resources\WebContent\js\site.js" />
+		<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="Platforms\tvOS\Resources\WebContent\css\site.css" />
+		<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="Platforms\tvOS\Resources\WebContent\index.html" />
+		<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="Platforms\tvOS\Resources\WebContent\js\site.js" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
