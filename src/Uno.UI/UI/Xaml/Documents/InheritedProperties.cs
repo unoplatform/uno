@@ -81,8 +81,8 @@ internal sealed class InheritedProperties
 		public bool SlashedZero;
 		public bool MathematicalGreek;
 
-		// Default Typography matches the property-system defaults; an all-default
-		// (default-constructed) struct represents "no typographic features set".
+		// Matches WinUI's Typography defaults, which leave the OpenType liga/clig/calt/kern features
+		// on — so this is not the same as a default-constructed struct.
 		public readonly bool IsTypographyDefault()
 		{
 			return AnnotationAlternates == 0
