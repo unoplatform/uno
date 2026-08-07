@@ -130,12 +130,22 @@ public partial class Block : TextElement
 		}
 	}
 
-	internal void InvalidateInlines()
+	// contentChanged maps to CTextElementCollection::MarkDirty -> CRichTextBlock::OnContentChanged;
+	// otherwise this is CRichTextBlock::MarkInheritedPropertyDirty -> InvalidateContent, which leaves the
+	// selection and the cached focusable children alone.
+	internal void InvalidateInlines(bool contentChanged)
 	{
 		var parent = GetContainingFrameworkElement();
 		if (parent is RichTextBlock richTextBlock)
 		{
-			richTextBlock.InvalidateBlockContent();
+			if (contentChanged)
+			{
+				richTextBlock.InvalidateBlockContent();
+			}
+			else
+			{
+				richTextBlock.InvalidateContent();
+			}
 		}
 	}
 }

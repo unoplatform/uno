@@ -114,6 +114,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Local_Inline_FontSize_Changes_Selection_Is_Cleared()
+		{
+			// The mirror of When_Selection_Survives_Remeasure. An inherited cascade from the owner is
+			// CRichTextBlock::MarkInheritedPropertyDirty and keeps the selection, but setting the property
+			// locally on the Run goes through CTextElement::SetValue -> MarkDirty -> OnContentChanged,
+			// which does clear it.
+			var run = new Run { Text = LongText };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(run);
+			var SUT = new RichTextBlock { Width = 300 };
+			SUT.Blocks.Add(paragraph);
+
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				await WindowHelper.WaitForIdle();
+
+				SUT.SelectAll();
+				await WindowHelper.WaitForIdle();
+				Assert.IsTrue(SUT.SelectionEnd.Offset > SUT.SelectionStart.Offset, "Precondition: non-empty selection");
+
+				run.FontSize = 22;
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(
+					SUT.SelectionStart.Offset,
+					SUT.SelectionEnd.Offset,
+					"A locally set inline property is a content change and must clear the selection");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Content_Changes_Selection_Is_Cleared()
 		{
 			var SUT = CreateRichTextBlock(LongText);

@@ -137,11 +137,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void ClearSelectionOnContentChangedPartial();
 
-		private void InvalidateRichTextBlock()
+		// CRichTextBlock::InvalidateContent
+		internal void InvalidateContent()
 		{
 			InvalidateRichTextBlockPartial();
 			InvalidateMeasure();
 		}
+
+		private void InvalidateRichTextBlock() => InvalidateContent();
 
 		partial void InvalidateRichTextBlockPartial();
 
