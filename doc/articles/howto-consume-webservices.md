@@ -890,7 +890,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels"
         xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
-        xmlns:toolkit="using:Uno.UI.Toolkit"
+        xmlns:toolkit="using:Uno.UI.Extras"
         mc:Ignorable="d"
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -928,14 +928,14 @@ In this task you will create the XAML for the UI and implement the bindings for 
 
     This page utilizes a simple grid layout with 6 rows to separate the various areas of the UI and will define an overlay that will appear when the app is busy retrieving data from the service.
 
-    Notice that the XAML includes namespace definitions for the **ViewModels** and **DataModels**, as well as the **Uno.UI.Toolkit**:
+    Notice that the XAML includes namespace definitions for the **ViewModels** and **DataModels**, as well as the **Uno.UI.Extras**:
 
     ```xml
     <Page
         ...
         xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels"
         xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
-        xmlns:toolkit="using:Uno.UI.Toolkit"
+        xmlns:toolkit="using:Uno.UI.Extras"
         ...
     >
     ```
@@ -1017,7 +1017,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels"
         xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
-        xmlns:toolkit="using:Uno.UI.Toolkit"
+        xmlns:toolkit="using:Uno.UI.Extras"
         mc:Ignorable="d"
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 

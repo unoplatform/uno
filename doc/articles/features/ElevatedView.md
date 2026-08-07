@@ -15,7 +15,7 @@ This control is very useful for creating cards with both rounded corners and an 
 First you need to add the `toolkit` namespace in your XAML file:
 
 ```xml
-xmlns:toolkit="using:Uno.UI.Toolkit"
+xmlns:toolkit="using:Uno.UI.Extras"
 ```
 
 After that, use the `ElevatedView` to host the content you need to be elevated:

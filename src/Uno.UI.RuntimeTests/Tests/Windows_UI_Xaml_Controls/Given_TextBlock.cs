@@ -23,7 +23,7 @@ using Uno.UI.Extensions;
 using Combinatorial.MSTest;
 using Uno.UI.Helpers;
 using Microsoft.UI.Xaml.Markup;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Extras.DevTools.Input;
 
 #if __SKIA__
 using Microsoft.UI.Xaml.Data;

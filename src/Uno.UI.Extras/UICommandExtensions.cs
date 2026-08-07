@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Popups;
 
-namespace Uno.UI.Toolkit
+namespace Uno.UI.Extras
 {
 	public static class UICommandExtensions
 	{

@@ -14,7 +14,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Extras.DevTools.Input;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls

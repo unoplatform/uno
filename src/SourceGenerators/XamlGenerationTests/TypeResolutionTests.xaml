@@ -11,7 +11,7 @@
     xmlns:android="http://uno.ui/android"
 	xmlns:not_win="http://uno.ui/not_win"
 	xmlns:test="http://uno.ui/test"
-	xmlns:toolkit="using:Uno.UI.Toolkit"
+	xmlns:toolkit="using:Uno.UI.Extras"
     mc:Ignorable="d not_win android test ios"
     d:DesignHeight="300"
     d:DesignWidth="400">

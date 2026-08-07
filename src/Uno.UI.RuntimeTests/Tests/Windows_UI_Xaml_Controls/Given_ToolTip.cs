@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Extras.DevTools.Input;
 using Uno.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls

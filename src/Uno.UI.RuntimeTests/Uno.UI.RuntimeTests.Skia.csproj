@@ -70,7 +70,7 @@
 		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" />
-		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.Extras\Uno.UI.Extras.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
 	</ItemGroup>

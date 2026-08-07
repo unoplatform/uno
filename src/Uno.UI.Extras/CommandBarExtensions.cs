@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 
-namespace Uno.UI.Toolkit
+namespace Uno.UI.Extras
 {
 	public static class CommandBarExtensions
 	{

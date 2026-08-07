@@ -175,7 +175,7 @@ The height is fixed and cannot be changed.
 
 Extensions are attached properties that extend the **WinUI** APIs to provide platform-specific features.
 
-They can be found in the `Uno.UI.Toolkit` namespace.
+They can be found in the `Uno.UI.Extras` namespace.
 
 Extensions to extend the functionality of `CommandBar` can be found in the `CommandBarExtensions` class.
 
@@ -431,7 +431,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS and Android.
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:toolkit="using:Uno.UI.Extras"
   ...
   <Style Target="CommandBar">
       <Setter Property="toolkit:VisibleBoundsPadding.PaddingMask"
@@ -442,7 +442,7 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I remove the back button title from all pages on iOS?
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:toolkit="using:Uno.UI.Extras"
   ...
   <Style Target="CommandBar">
       <Setter Property="toolkit:CommandBarExtensions.BackButtonTitle"
@@ -453,7 +453,7 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I change the back button icon/arrow/chevron in my app?
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:toolkit="using:Uno.UI.Extras"
   ...
   <Style Target="CommandBar">
       <Setter Property="toolkit:CommandBarExtensions.BackButtonIcon">
@@ -467,7 +467,7 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I change the color of the back button?
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:toolkit="using:Uno.UI.Extras"
   ...
   <CommandBar toolkit:CommandBarExtensions.BackButtonForeground="Red" />
   ```
@@ -490,7 +490,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   You must use `VisibleBoundsPadding.PaddingMask="Top"` on the parent control of `CommandBar` to properly support the notch or punch-holes on iOS and Android.
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:toolkit="using:Uno.UI.Extras"
   ...
   <Grid toolkit:VisibleBoundsPadding.PaddingMask="Top">
       <CommandBar>
@@ -597,7 +597,7 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I add an elevation shadow to the CommandBar on Android?
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:toolkit="using:Uno.UI.Extras"
   ...
   <CommandBar toolkit:UIElementExtensions.Elevation="4" />
   ```
@@ -628,7 +628,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   </CommandBar>
   ```
 
-  And in the `.resw` file, the name would be: `MyCommandBar.[using:Uno.UI.Toolkit]CommandBarExtensions.BackButtonTitle`
+  And in the `.resw` file, the name would be: `MyCommandBar.[using:Uno.UI.Extras]CommandBarExtensions.BackButtonTitle`
 
 - > How can I put a ComboBox in my CommandBar?
 

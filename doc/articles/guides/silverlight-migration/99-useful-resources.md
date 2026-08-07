@@ -8,7 +8,7 @@ uid: Uno.SilverlightMigration.UsefulResources
   * [Using Uno - getting started on Visual Studio](xref:Uno.GetStarted.vs2022)
 * Uno Platform Samples:
   * [unoplatform/Uno.Samples GitHub Repo](https://github.com/unoplatform/Uno.Samples)
-  * [Uno.UI.Toolkit.SL GitHub Repo](https://github.com/unoplatform/Uno.UI.Toolkit.SL)
+  * [Uno.UI.Extras.SL GitHub Repo](https://github.com/unoplatform/Uno.UI.Extras.SL)
 * Microsoft Documentation
   * [Move from Windows Phone Silverlight to UWP](https://learn.microsoft.com/windows/uwp/porting/wpsl-to-uwp-root)
 * Visual Studio Extensions

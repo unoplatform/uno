@@ -16,7 +16,7 @@
 
 		<dependencies>
 
-			<!-- References from Uno.UI.Toolkit -->
+			<!-- References from Uno.UI.Extras -->
 			<!-- BEGIN UWP-excluded -->
 			<group targetFramework="net10.0-windows10.0.19041.0">
 				<dependency id="Microsoft.WindowsAppSDK" version="1.0.0" />
@@ -69,7 +69,7 @@
 				<reference file="Uno.Xaml.dll" />
 				<reference file="Uno.UI.dll" />
 				<reference file="Uno.UI.Composition.dll" />
-				<reference file="Uno.UI.Toolkit.dll" />
+				<reference file="Uno.UI.Extras.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
 				<reference file="Uno.UI.FluentTheme.v1.dll" />
 				<reference file="Uno.UI.FluentTheme.v2.dll" />
@@ -80,7 +80,7 @@
 				<reference file="Uno.Xaml.dll" />
 				<reference file="Uno.UI.dll" />
 				<reference file="Uno.UI.Composition.dll" />
-				<reference file="Uno.UI.Toolkit.dll" />
+				<reference file="Uno.UI.Extras.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
 				<reference file="Uno.UI.FluentTheme.v1.dll" />
 				<reference file="Uno.UI.FluentTheme.v2.dll" />
@@ -88,7 +88,7 @@
 
 			<!-- Windows -->
 			<group targetFramework="uap10.0.19041">
-				<reference file="Uno.UI.Toolkit.dll" />
+				<reference file="Uno.UI.Extras.dll" />
 			</group>
 
 		</references>
@@ -98,23 +98,23 @@
 		<file src="..\..\src\Common\uno.png" target="/" />
 
 		<!-- UAP / netprevious -->
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.dll" target="lib\$winuitargetpath$" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pdb" target="lib\$winuitargetpath$" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pri" target="lib\$winuitargetpath$" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit\**" target="lib\$winuitargetpath$\Uno.UI.Toolkit" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$winuisourcepath$\Uno.UI.Extras*.dll" target="lib\$winuitargetpath$" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$winuisourcepath$\Uno.UI.Extras*.pdb" target="lib\$winuitargetpath$" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$winuisourcepath$\Uno.UI.Extras*.pri" target="lib\$winuitargetpath$" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$winuisourcepath$\Uno.UI.Extras\**" target="lib\$winuitargetpath$\Uno.UI.Extras" />
 
 		<!-- BEGIN UWP-excluded -->
 		<!-- netcurrent, currently using netprevious to avoid netcore build issues -->
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.dll" target="lib\net10.0-windows10.0.19041.0" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pdb" target="lib\net10.0-windows10.0.19041.0" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pri" target="lib\net10.0-windows10.0.19041.0" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit\**"   target="lib\net10.0-windows10.0.19041.0\Uno.UI.Toolkit" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$winuisourcepath$\Uno.UI.Extras*.dll" target="lib\net10.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$winuisourcepath$\Uno.UI.Extras*.pdb" target="lib\net10.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$winuisourcepath$\Uno.UI.Extras*.pri" target="lib\net10.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$winuisourcepath$\Uno.UI.Extras\**"   target="lib\net10.0-windows10.0.19041.0\Uno.UI.Extras" />
 
 		<!-- Duplicated block to avoid nuget from downgrading to net11.0 -->
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.dll" target="lib\net11.0-windows10.0.19041.0" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pdb" target="lib\net11.0-windows10.0.19041.0" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pri" target="lib\net11.0-windows10.0.19041.0" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit\**"   target="lib\net11.0-windows10.0.19041.0\Uno.UI.Toolkit" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$winuisourcepath$\Uno.UI.Extras*.dll" target="lib\net11.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$winuisourcepath$\Uno.UI.Extras*.pdb" target="lib\net11.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$winuisourcepath$\Uno.UI.Extras*.pri" target="lib\net11.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$winuisourcepath$\Uno.UI.Extras\**"   target="lib\net11.0-windows10.0.19041.0\Uno.UI.Extras" />
 		<!-- END UWP-excluded -->
 
 		<!--
@@ -139,8 +139,8 @@
 		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1\Release\net11.0\Uno.UI.FluentTheme.v1.pdb" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2\Release\net11.0\Uno.UI.FluentTheme.v2.dll" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2\Release\net11.0\Uno.UI.FluentTheme.v2.pdb" target="lib\net11.0" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net11.0\Uno.UI.Toolkit.dll" target="lib\net11.0" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net11.0\Uno.UI.Toolkit.pdb" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Skia\Release\net11.0\Uno.UI.Extras.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Skia\Release\net11.0\Uno.UI.Extras.pdb" target="lib\net11.0" />
 
 		<!-- net10.0 -->
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI\Release\net10.0\Uno.UI.dll" target="lib\net10.0" />
@@ -156,8 +156,8 @@
 		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1\Release\net10.0\Uno.UI.FluentTheme.v1.pdb" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2\Release\net10.0\Uno.UI.FluentTheme.v2.dll" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2\Release\net10.0\Uno.UI.FluentTheme.v2.pdb" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net10.0\Uno.UI.Toolkit.dll" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net10.0\Uno.UI.Toolkit.pdb" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Skia\Release\net10.0\Uno.UI.Extras.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Skia\Release\net10.0\Uno.UI.Extras.pdb" target="lib\net10.0" />
 
 		<!-- Analyzers -->
 		<file src="..\..\src\Uno.Analyzers\Bin\Release\Uno.Analyzers.dll" target="analyzers/dotnet/cs" />
