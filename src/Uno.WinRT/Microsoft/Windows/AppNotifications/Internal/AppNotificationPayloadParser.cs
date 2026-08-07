@@ -18,20 +18,7 @@ internal static class AppNotificationPayloadParser
 
 	public static AppNotificationPayload Parse(string payload)
 	{
-		ArgumentNullException.ThrowIfNull(payload);
-		if (payload.Length > MaxPayloadCharacters)
-		{
-			throw new FormatException("The app notification payload exceeds 5120 characters.");
-		}
-
-		using var textReader = new StringReader(payload);
-		using var xmlReader = XmlReader.Create(textReader, new XmlReaderSettings
-		{
-			DtdProcessing = DtdProcessing.Prohibit,
-			MaxCharactersInDocument = MaxPayloadCharacters,
-			XmlResolver = null,
-		});
-		var document = XDocument.Load(xmlReader, LoadOptions.None);
+		var document = LoadDocument(payload);
 		var toast = document.Root;
 		if (toast is null || toast.Name != "toast")
 		{
@@ -109,6 +96,26 @@ internal static class AppNotificationPayloadParser
 			ParseInputs(toast),
 			ParseActions(toast),
 			ParseAudio(toast));
+	}
+
+	public static void ValidateXml(string payload) => _ = LoadDocument(payload);
+
+	private static XDocument LoadDocument(string payload)
+	{
+		ArgumentNullException.ThrowIfNull(payload);
+		if (payload.Length > MaxPayloadCharacters)
+		{
+			throw new FormatException("The app notification payload exceeds 5120 characters.");
+		}
+
+		using var textReader = new StringReader(payload);
+		using var xmlReader = XmlReader.Create(textReader, new XmlReaderSettings
+		{
+			DtdProcessing = DtdProcessing.Prohibit,
+			MaxCharactersInDocument = MaxPayloadCharacters,
+			XmlResolver = null,
+		});
+		return XDocument.Load(xmlReader, LoadOptions.None);
 	}
 
 	private static AppNotificationTextData ParseText(XElement text, string inheritedLanguage)

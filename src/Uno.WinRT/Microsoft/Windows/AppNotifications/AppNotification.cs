@@ -1,7 +1,7 @@
 #nullable enable
 
 using System;
-using Windows.Data.Xml.Dom;
+using Microsoft.Windows.AppNotifications.Internal;
 using Windows.Foundation.Metadata;
 
 namespace Microsoft.Windows.AppNotifications;
@@ -23,9 +23,7 @@ public sealed class AppNotification
 	public AppNotification(string payload)
 	{
 		ArgumentNullException.ThrowIfNull(payload);
-
-		var document = new XmlDocument();
-		document.LoadXml(payload);
+		AppNotificationPayloadParser.ValidateXml(payload);
 		_payload = payload;
 	}
 

@@ -73,7 +73,7 @@ public sealed class AppNotificationButton
 			throw new ArgumentException("Arguments and protocol activation cannot be combined.", nameof(key));
 		}
 
-		_arguments[AppNotificationArgumentCodec.EncodeComponent(key)] = AppNotificationArgumentCodec.EncodeComponent(value ?? string.Empty);
+		_arguments[key] = value ?? string.Empty;
 		return this;
 	}
 
@@ -85,7 +85,7 @@ public sealed class AppNotificationButton
 
 	public AppNotificationButton SetToolTip(string value)
 	{
-		ToolTip = AppNotificationBuilderUtility.EncodeXml(value);
+		ToolTip = value;
 		return this;
 	}
 
@@ -107,7 +107,7 @@ public sealed class AppNotificationButton
 
 	public AppNotificationButton SetInputId(string value)
 	{
-		InputId = AppNotificationBuilderUtility.EncodeXml(value);
+		InputId = value;
 		return this;
 	}
 
@@ -119,18 +119,18 @@ public sealed class AppNotificationButton
 
 	internal string ToXml()
 	{
-		var xml = new StringBuilder($"<action content='{Content}'");
+		var xml = new StringBuilder($"<action content='{AppNotificationBuilderUtility.EncodeXml(Content)}'");
 		if (InvokeUri is not null)
 		{
-			xml.Append($" arguments='{InvokeUri}' activationType='protocol'");
+			xml.Append($" arguments='{AppNotificationBuilderUtility.EncodeXml(InvokeUri.ToString())}' activationType='protocol'");
 			if (TargetAppId.Length > 0)
 			{
-				xml.Append($" protocolActivationTargetApplicationPfn='{TargetAppId}'");
+				xml.Append($" protocolActivationTargetApplicationPfn='{AppNotificationBuilderUtility.EncodeXml(TargetAppId)}'");
 			}
 		}
 		else
 		{
-			xml.Append($" arguments='{AppNotificationArgumentCodec.SerializeEncoded(_arguments)}'");
+			xml.Append($" arguments='{AppNotificationArgumentCodec.Encode(_arguments)}'");
 		}
 
 		if (ContextMenuPlacement)
@@ -139,11 +139,11 @@ public sealed class AppNotificationButton
 		}
 		if (Icon is not null)
 		{
-			xml.Append($" imageUri='{Icon}'");
+			xml.Append($" imageUri='{AppNotificationBuilderUtility.EncodeXml(Icon.ToString())}'");
 		}
 		if (InputId.Length > 0)
 		{
-			xml.Append($" hint-inputId='{InputId}'");
+			xml.Append($" hint-inputId='{AppNotificationBuilderUtility.EncodeXml(InputId)}'");
 		}
 		if (ButtonStyle != AppNotificationButtonStyle.Default)
 		{
@@ -151,7 +151,7 @@ public sealed class AppNotificationButton
 		}
 		if (ToolTip.Length > 0)
 		{
-			xml.Append($" hint-toolTip='{ToolTip}'");
+			xml.Append($" hint-toolTip='{AppNotificationBuilderUtility.EncodeXml(ToolTip)}'");
 		}
 
 		xml.Append("/>");

@@ -36,7 +36,7 @@ public sealed class AppNotificationTextProperties
 
 	internal string ToXml()
 	{
-		var language = Language.Length > 0 ? $" lang='{Language}'" : string.Empty;
+		var language = Language.Length > 0 ? $" lang='{AppNotificationBuilderUtility.EncodeXml(Language)}'" : string.Empty;
 		var maxLines = MaxLines != 0 ? $" hint-maxLines='{MaxLines}'" : string.Empty;
 		var incomingCallAlignment = IncomingCallAlignment ? " hint-callScenarioCenterAlign='true'" : string.Empty;
 		return $"<text{language}{maxLines}{incomingCallAlignment}>";

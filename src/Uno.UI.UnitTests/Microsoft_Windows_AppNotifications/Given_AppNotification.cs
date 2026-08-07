@@ -40,6 +40,22 @@ public class Given_AppNotification
 	}
 
 	[TestMethod]
+	public void When_Payload_Contains_A_Dtd_It_Throws()
+	{
+		const string payload = "<!DOCTYPE toast [<!ENTITY content 'expanded'>]><toast>&content;</toast>";
+
+		Assert.ThrowsExactly<XmlException>(() => new AppNotification(payload));
+	}
+
+	[TestMethod]
+	public void When_Payload_Exceeds_Size_Limit_It_Throws()
+	{
+		var payload = $"<toast>{new string('A', 5121)}</toast>";
+
+		Assert.ThrowsExactly<FormatException>(() => new AppNotification(payload));
+	}
+
+	[TestMethod]
 	public void When_Properties_Are_Changed_Values_Round_Trip()
 	{
 		var notification = new AppNotification("<toast/>");
