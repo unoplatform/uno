@@ -153,7 +153,7 @@ public class Given_LegacyToastNotifications
 	}
 
 	[TestMethod]
-	public void When_Legacy_Surface_Is_Inspected_Only_Implemented_Subset_Loses_NotImplemented_Marker()
+	public void When_Legacy_Surface_Is_Inspected_Implemented_Members_Lose_NotImplemented_Marker()
 	{
 		var show = typeof(ToastNotifier).GetMethod(nameof(ToastNotifier.Show))!;
 		var hide = typeof(ToastNotifier).GetMethod(nameof(ToastNotifier.Hide))!;
@@ -163,7 +163,7 @@ public class Given_LegacyToastNotifications
 
 		Assert.IsFalse(HasNotImplementedAttribute(show));
 		Assert.IsTrue(HasNotImplementedAttribute(hide));
-		Assert.IsTrue(HasNotImplementedAttribute(schedule));
+		Assert.IsFalse(HasNotImplementedAttribute(schedule));
 		Assert.IsTrue(HasNotImplementedAttribute(update));
 		Assert.IsTrue(HasNotImplementedAttribute(crossApp));
 	}

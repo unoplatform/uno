@@ -73,6 +73,83 @@ public class Given_ToastNotificationScheduler
 	}
 
 	[TestMethod]
+	public void When_Native_Scheduler_Recovers_Pending_Request_Is_Not_Duplicated()
+	{
+		var record = Record("pending", Now.AddMinutes(1));
+		var persistence = new InMemoryToastNotificationSchedulePersistence(new ToastNotificationScheduleSnapshot(
+			ToastNotificationScheduleSnapshot.CurrentSchemaVersion,
+			new[] { record }));
+		var backend = new TestNativeSchedulerBackend
+		{
+			Pending = new[] { record.ScheduleIdentifier },
+			Delivered = Array.Empty<string>(),
+		};
+		var scheduler = new ToastNotificationScheduler(new ToastNotificationScheduleStore(persistence), backend);
+
+		scheduler.Recover(Now);
+
+		Assert.AreEqual(0, backend.Scheduled.Count);
+		Assert.AreEqual(1, scheduler.GetAll().Count);
+	}
+
+	[TestMethod]
+	public void When_Native_Scheduler_Recovers_Delivered_Request_Journal_Is_Completed()
+	{
+		var record = Record("delivered", Now.AddMinutes(-1));
+		var persistence = new InMemoryToastNotificationSchedulePersistence(new ToastNotificationScheduleSnapshot(
+			ToastNotificationScheduleSnapshot.CurrentSchemaVersion,
+			new[] { record }));
+		var backend = new TestNativeSchedulerBackend
+		{
+			Pending = Array.Empty<string>(),
+			Delivered = new[] { record.ScheduleIdentifier },
+		};
+		var scheduler = new ToastNotificationScheduler(new ToastNotificationScheduleStore(persistence), backend);
+
+		scheduler.Recover(Now);
+
+		Assert.AreEqual(0, backend.Scheduled.Count);
+		Assert.AreEqual(0, scheduler.GetAll().Count);
+	}
+
+	[TestMethod]
+	public void When_Native_State_Is_Unavailable_Recovery_Is_Deferred()
+	{
+		var record = Record("unknown", Now.AddMinutes(1));
+		var persistence = new InMemoryToastNotificationSchedulePersistence(new ToastNotificationScheduleSnapshot(
+			ToastNotificationScheduleSnapshot.CurrentSchemaVersion,
+			new[] { record }));
+		var backend = new TestNativeSchedulerBackend();
+		var scheduler = new ToastNotificationScheduler(new ToastNotificationScheduleStore(persistence), backend);
+
+		var recovered = scheduler.Recover(Now);
+
+		Assert.IsFalse(recovered);
+		Assert.AreEqual(0, backend.Scheduled.Count);
+		Assert.AreEqual(1, scheduler.GetAll().Count);
+	}
+
+	[TestMethod]
+	public void When_Native_Pending_Request_Is_Too_Late_It_Is_Canceled()
+	{
+		var record = Record("expired-pending", Now.AddMinutes(-6));
+		var persistence = new InMemoryToastNotificationSchedulePersistence(new ToastNotificationScheduleSnapshot(
+			ToastNotificationScheduleSnapshot.CurrentSchemaVersion,
+			new[] { record }));
+		var backend = new TestNativeSchedulerBackend
+		{
+			Pending = new[] { record.ScheduleIdentifier },
+			Delivered = Array.Empty<string>(),
+		};
+		var scheduler = new ToastNotificationScheduler(new ToastNotificationScheduleStore(persistence), backend);
+
+		scheduler.Recover(Now);
+
+		CollectionAssert.AreEqual(new[] { record.ScheduleIdentifier }, backend.Canceled.ToArray());
+		Assert.AreEqual(0, scheduler.GetAll().Count);
+	}
+
+	[TestMethod]
 	public void When_Alarm_Is_Consumed_Duplicate_Delivery_Is_Idempotent()
 	{
 		var scheduler = CreateScheduler(new TestSchedulerBackend());
@@ -85,6 +162,19 @@ public class Given_ToastNotificationScheduler
 		Assert.AreEqual(ToastNotificationScheduleStatus.Delivering, delivering?.Status);
 		Assert.IsNull(scheduler.BeginDelivery(record.ScheduleIdentifier));
 		scheduler.CompleteDelivery(record.ScheduleIdentifier);
+		Assert.IsNull(scheduler.BeginDelivery(record.ScheduleIdentifier));
+	}
+
+	[TestMethod]
+	public void When_Native_Platform_Delivers_Record_Is_Completed_Without_Second_Show()
+	{
+		var scheduler = CreateScheduler(new TestSchedulerBackend());
+		var record = Record("native", Now.AddHours(1));
+		scheduler.Add(record, Now);
+
+		Assert.IsTrue(scheduler.CompleteNativeDelivery(record.ScheduleIdentifier));
+		Assert.IsFalse(scheduler.CompleteNativeDelivery(record.ScheduleIdentifier));
+		Assert.AreEqual(0, scheduler.GetAll().Count);
 		Assert.IsNull(scheduler.BeginDelivery(record.ScheduleIdentifier));
 	}
 
@@ -179,5 +269,24 @@ public class Given_ToastNotificationScheduler
 			}
 			Canceled.Add(scheduleIdentifier);
 		}
+	}
+
+	private sealed class TestNativeSchedulerBackend : IToastNotificationSchedulerBackend, INativeToastNotificationSchedulerBackend
+	{
+		public IReadOnlyCollection<string>? Pending { get; init; }
+
+		public IReadOnlyCollection<string>? Delivered { get; init; }
+
+		public List<string> Scheduled { get; } = new();
+
+		public List<string> Canceled { get; } = new();
+
+		public void Schedule(ToastNotificationScheduleRecord record) => Scheduled.Add(record.ScheduleIdentifier);
+
+		public void Cancel(string scheduleIdentifier) => Canceled.Add(scheduleIdentifier);
+
+		public IReadOnlyCollection<string>? GetPendingScheduleIdentifiers() => Pending;
+
+		public IReadOnlyCollection<string>? GetDeliveredScheduleIdentifiers() => Delivered;
 	}
 }

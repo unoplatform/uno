@@ -58,7 +58,8 @@ internal sealed record AppNotificationStateRecord(
 			ExpiresOnReboot,
 			SuppressDisplay,
 			Priority,
-			Progress);
+			Progress,
+			Payload);
 }
 
 internal sealed record AppNotificationStateSnapshot(

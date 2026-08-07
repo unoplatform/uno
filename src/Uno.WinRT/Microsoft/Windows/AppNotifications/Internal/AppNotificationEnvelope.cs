@@ -13,4 +13,5 @@ internal sealed record AppNotificationEnvelope(
 	bool ExpiresOnReboot,
 	bool SuppressDisplay,
 	AppNotificationPriority Priority,
-	AppNotificationProgressSnapshot? Progress = null);
+	AppNotificationProgressSnapshot? Progress = null,
+	string RawPayload = "");

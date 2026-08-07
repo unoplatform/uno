@@ -198,13 +198,13 @@ public class Given_ScheduledToastNotification
 	}
 
 	[TestMethod]
-	public void When_Scheduling_Surface_Is_Inspected_NonAndroid_Host_Remains_Unsupported()
+	public void When_Scheduling_Surface_Is_Inspected_Members_Are_Implemented()
 	{
 		var schedule = typeof(ToastNotifier).GetMethod(nameof(ToastNotifier.AddToSchedule))!;
 		var getScheduled = typeof(ToastNotifier).GetMethod(nameof(ToastNotifier.GetScheduledToastNotifications))!;
 
-		Assert.IsTrue(HasNotImplementedAttribute(schedule));
-		Assert.IsTrue(HasNotImplementedAttribute(getScheduled));
+		Assert.IsFalse(HasNotImplementedAttribute(schedule));
+		Assert.IsFalse(HasNotImplementedAttribute(getScheduled));
 	}
 
 	private static XmlDocument CreateContent()
