@@ -311,6 +311,11 @@
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<AndroidAsset Include="Platforms\Android\Assets\sound.mp3" Link="Assets\sound.mp3" />
 		<AndroidAsset Include="Platforms\Android\Assets\Lottie\**\*.json" Link="Assets\Lottie\%(RecursiveDir)%(Filename)%(Extension)" />
+		<!-- WebView2 maps a virtual host to this folder (Given_WebView2.When_LocalFolder_File);
+		     iOS/tvOS get the same files as BundleResource below. -->
+		<AndroidAsset Include="..\LinkedFiles\WebContent\css\site.css" Link="Assets\WebContent\css\site.css" />
+		<AndroidAsset Include="..\LinkedFiles\WebContent\index.html" Link="Assets\WebContent\index.html" />
+		<AndroidAsset Include="..\LinkedFiles\WebContent\js\site.js" Link="Assets\WebContent\js\site.js" />
 		<AndroidEnvironment Include="Platforms\Android\environment.conf" />
 		<TrimmerRootDescriptor Include="Platforms\Android\LinkerConfig.xml" />
 	</ItemGroup>
