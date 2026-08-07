@@ -5,6 +5,7 @@
 #nullable enable
 
 using System;
+using System.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Documents.BlockLayout;
@@ -86,6 +87,88 @@ internal static class TextBoxHelpers
 		}
 
 		return true;
+	}
+
+	//------------------------------------------------------------------------
+	//
+	//  Method:   CTextBoxHelpers::GetText
+	//
+	//  Synopsis: Concatenates all text content between 2 offsets into a flat
+	//            string. When insertNewlines is set, the reserved edge that
+	//            closes a Paragraph and the content of a LineBreak are both
+	//            emitted as "\r\n" (clipboard / UIA text).
+	//
+	//------------------------------------------------------------------------
+	internal static string GetText(
+		ITextContainer pTextContainer,
+		uint charPosition1,
+		uint charPosition2,
+		bool insertNewlines)
+	{
+		const string newline = "\r\n";
+
+		if (!VerifyPositionPair(pTextContainer, charPosition1, charPosition2))
+		{
+			return string.Empty;
+		}
+
+		pTextContainer.GetPositionCount(out var length);
+
+		var textBuilder = new StringBuilder();
+		var characterPosition = charPosition1;
+
+		while (characterPosition < length &&
+			   characterPosition < charPosition2)
+		{
+			var replaceWithNewLine = false;
+
+			pTextContainer.GetRun(
+				characterPosition,
+				out _,
+				out _,
+				out var nestingType,
+				out var pNestedElement,
+				out var pRunCharacters,
+				out var runTextLength);
+
+			if (insertNewlines
+				&& pNestedElement is not null
+				&& ((nestingType == TextNestingType.CloseNesting && pNestedElement is Paragraph)
+					|| (nestingType == TextNestingType.NestedContent && pNestedElement is LineBreak)))
+			{
+				replaceWithNewLine = true;
+			}
+
+			// Count up real text characters, exclude reserved positions.
+			if (!pRunCharacters.IsEmpty || replaceWithNewLine)
+			{
+				if (characterPosition + runTextLength > charPosition2)
+				{
+					runTextLength = charPosition2 - characterPosition;
+				}
+
+				if (replaceWithNewLine)
+				{
+					textBuilder.Append(newline);
+				}
+				else
+				{
+					var span = pRunCharacters.Span;
+					textBuilder.Append(span.Slice(0, (int)Math.Min(runTextLength, (uint)span.Length)));
+				}
+			}
+
+			MUX_ASSERT(runTextLength > 0);
+			if (runTextLength == 0)
+			{
+				// WinUI only asserts; bail out rather than spin forever on a malformed run.
+				break;
+			}
+
+			characterPosition += runTextLength;
+		}
+
+		return textBuilder.ToString();
 	}
 
 	internal static void IsNotInSurrogateCRLF(
