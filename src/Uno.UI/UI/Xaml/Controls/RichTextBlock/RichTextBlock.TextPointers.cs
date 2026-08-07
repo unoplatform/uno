@@ -7,6 +7,7 @@
 
 #nullable enable
 
+using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Documents;
 #if __SKIA__
@@ -52,10 +53,9 @@ partial class RichTextBlock
 	/// </summary>
 	public void Select(TextPointer start, TextPointer end)
 	{
-		if (start is null || end is null)
-		{
-			return;
-		}
+		// RichTextBlock::SelectImpl guards both pointers with IFCPTR (E_POINTER).
+		ArgumentNullException.ThrowIfNull(start);
+		ArgumentNullException.ThrowIfNull(end);
 
 		SelectCore(start, end);
 	}

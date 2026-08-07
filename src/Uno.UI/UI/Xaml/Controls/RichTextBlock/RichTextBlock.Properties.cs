@@ -280,7 +280,9 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(RichTextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: false,
+					// CRichTextBlock's ctor sets m_isTextSelectionEnabled = true, so RichTextBlock content
+					// is selectable by default (unlike TextBlock).
+					defaultValue: true,
 					propertyChangedCallback: (s, _) => ((RichTextBlock)s).OnIsTextSelectionEnabledChanged()
 				)
 			);
@@ -626,11 +628,5 @@ namespace Microsoft.UI.Xaml.Controls
 #pragma warning restore IDE0051
 
 		internal void OnFontLoaded() => InvalidateRichTextBlock();
-
-#if __SKIA__
-		private bool IsTextTrimmable =>
-			TextTrimming != TextTrimming.None ||
-			MaxLines != 0;
-#endif
 	}
 }
