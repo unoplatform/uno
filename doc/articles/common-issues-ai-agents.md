@@ -45,6 +45,6 @@ To fix this issue, change directories to a folder that contains the `.sln` or `.
 ## Diagnosing Dev Server issues
 
 > [!TIP]
-> When the App MCP fails to start, run `uno-devserver disco` from your solution directory.
+> When the App MCP fails to start, run `uno-devserver disco` from your workspace directory (the folder containing your solution file or, for solution-less projects, your `global.json`).
 > Check that **hostPath** is resolved and that there are no **errors**. Pass `--json` for machine-readable output.
 > See [Diagnostics (disco)](xref:Uno.Features.DevServerDisco) for a full guide.
