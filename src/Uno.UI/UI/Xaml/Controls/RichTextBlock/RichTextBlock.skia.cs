@@ -167,18 +167,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_blockLayout ??= new BlockLayoutEngine(this);
 
-			// Recreate the page node each measure so content/property changes (FontSize, Padding,
-			// inlines, wrapping, MaxLines) are picked up — parity with the old re-parse-every-measure
-			// path. (A future optimization can invalidate only on change.)
-			_pageNode = (PageNode)_blockLayout.CreatePageNode(Blocks, this);
-
-			// Rebuild the per-element view against the fresh page node and notify the manager so its
-			// selection / text positions are recreated against the new view. When this control is linked
-			// to an overflow chain the manager queries through the stable LinkedRichTextBlockView, so the
-			// per-element view swap must not be reported as the manager's active view (that stays the linked
-			// view); only swap the manager when standalone.
-			var oldElementView = _pTextView;
-			_pTextView = new Microsoft.UI.Xaml.Controls.Text.Core.RichTextBlockView(_pageNode, this);
+			// Since IsTextSelectionEnabled is true by default, the manager is created once here.
 			if (_pSelectionManager is null && (IsTextSelectionEnabled || ((ITextSelectionManagerOwner)this).IsHighContrast))
 			{
 				_pSelectionManager = TextSelectionManager.Create(this, Blocks.GetTextContainer(), this);
@@ -191,9 +180,23 @@ namespace Microsoft.UI.Xaml.Controls
 					_pSelectionManager.TextViewChanged(null, _pLinkedView);
 				}
 			}
-			if (_pLinkedView is null)
+
+			// The page node and the view are each created once, exactly as EnsureBlockLayout does.
+			// Content and property changes go through InvalidateContent on the existing node rather
+			// than a rebuild, which is what keeps the selection's text positions valid across a
+			// re-measure (a fresh view makes the manager throw its selection away).
+			_pageNode ??= (PageNode)_blockLayout.CreatePageNode(Blocks, this);
+
+			// If there is a valid PageNode, there is content that will be laid out. Create a TextView.
+			if (_pageNode is not null && _pTextView is null)
 			{
-				_pSelectionManager?.TextViewChanged(oldElementView, _pTextView);
+				_pTextView = new Microsoft.UI.Xaml.Controls.Text.Core.RichTextBlockView(_pageNode, this);
+
+				// If there is no linked view, TextSelectionManager needs to be set to the local view.
+				if (_pSelectionManager is not null && _pLinkedView is null)
+				{
+					_pSelectionManager.TextViewChanged(null, _pTextView);
+				}
 			}
 		}
 
@@ -394,6 +397,11 @@ namespace Microsoft.UI.Xaml.Controls
 			if (IsSelectionEnabled() && _pSelectionManager?.GetTextSelection() is { } selection)
 			{
 				selection.Select(0, 0, TextGravity.LineForwardCharacterBackward);
+
+				// WinUI derives SelectedText from the selection on demand. Uno caches it against the
+				// flat selection, and going straight to the selection object skips the manager's
+				// NotifySelectionChanged, so collapse the flat selection too.
+				Selection = default;
 			}
 		}
 
@@ -448,6 +456,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void InvalidateRichTextBlockPartial()
 		{
+			// CRichTextBlock::InvalidateContent — invalidate the block layout engine's content rather
+			// than dropping the node, so the view (and the selection built against it) stays alive.
+			_pageNode?.InvalidateContent();
+
 			InvalidateInlineAndRequireRepaint();
 			// Master content/property changes invalidate the linked overflow chain so it re-measures
 			// its slice from the (re)computed master break. Mirrors CRichTextBlock::InvalidateContentMeasure
