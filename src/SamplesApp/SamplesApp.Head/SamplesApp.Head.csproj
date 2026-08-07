@@ -92,9 +92,9 @@
 		<!--
 		The App/ApplicationDefinition lives in the SamplesApp.Skia base lib, not here, so the
 		hot-restart helper generator has nothing to bind to and fails the build with Uno0005.
-		netcoremobile disables it outright; do the same rather than per-TFM.
+		Only android imports the generators, so scope it there rather than setting it globally.
 		-->
-		<UnoDisableHotRestartHelperGeneration>true</UnoDisableHotRestartHelperGeneration>
+		<UnoDisableHotRestartHelperGeneration Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">true</UnoDisableHotRestartHelperGeneration>
 	</PropertyGroup>
 
 	<!-- ==================== Source mode: framework via ProjectReference ==================== -->
