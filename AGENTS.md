@@ -71,7 +71,7 @@ These load **automatically** when you touch matching files — you don't invoke 
 ### Key Source Directories
 
 - `src/Uno.UI/` - Core UI framework (WinUI controls, layout, XAML runtime)
-- `src/Uno.UWP/` - Non-UI WinRT APIs (platform-specific assemblies)
+- `src/Uno.WinRT/` - Non-UI WinRT APIs (platform-specific assemblies)
 - `src/Uno.Foundation/` - Foundation APIs (platform-specific assemblies)
 - `src/Uno.UI.Runtime.Skia.*/` - Skia platform runtimes
 - `src/SourceGenerators/` - XAML parser, DependencyProperty generator
@@ -154,7 +154,7 @@ Single C#/XAML codebase → WinUI 3 API → Platform-specific runtimes (Skia, We
 
 **Unless a task explicitly states otherwise, new features and enhancements target the Skia targets only** (Desktop Win32/macOS/Linux and Skia-on-Android/iOS/WASM). The **native targets** — native Android Views, native iOS/UIKit, WASM DOM — are **maintenance-only**: don't build new features for them, but **don't break them either** (keep them compiling and behaving as-is).
 
-This applies to the **UI rendering layer** (`Uno.UI` native views), *not* to platform APIs. **Platform-specific non-UI WinRT APIs (in `Uno.UWP`/`Uno.Foundation`) are still actively enhanced**, because the Skia targets compile and consume those same per-platform implementations (e.g. Skia-on-Android uses the Android implementation of a file picker, sensor, contacts, etc.).
+This applies to the **UI rendering layer** (`Uno.UI` native views), *not* to platform APIs. **Platform-specific non-UI WinRT APIs (in `Uno.WinRT`/`Uno.Foundation`) are still actively enhanced**, because the Skia targets compile and consume those same per-platform implementations (e.g. Skia-on-Android uses the Android implementation of a file picker, sensor, contacts, etc.).
 
 ### Platform Base Classes
 
@@ -179,7 +179,7 @@ Most libraries have 5 variants: Reference, Skia, WebAssembly, NetCoreMobile, Tes
 
 ### Runtime Target Selection
 
-For Skia, `RuntimeAssetsSelectorTask` ensures `Uno.UI` uses `netX` (generic) target for all Skia platforms. `Uno.UWP` and `Uno.Foundation` use platform-specific assemblies. Use runtime checks like `OperatingSystem.IsAndroid()` for platform-specific behavior on Skia for libraries above and including `Uno.UI`, or use `ApiExtensibility` with platform-specific implementations in `Runtime.Skia` projects.
+For Skia, `RuntimeAssetsSelectorTask` ensures `Uno.UI` uses `netX` (generic) target for all Skia platforms. `Uno.WinRT` and `Uno.Foundation` use platform-specific assemblies. Use runtime checks like `OperatingSystem.IsAndroid()` for platform-specific behavior on Skia for libraries above and including `Uno.UI`, or use `ApiExtensibility` with platform-specific implementations in `Runtime.Skia` projects.
 
 ### NotImplemented Stubs
 
@@ -323,7 +323,7 @@ A GitHub Actions workflow enforces formatting on PRs that touch SamplesApp XAML 
 
 ### Implementing New WinUI Features
 
-1. Find generated stub: `src/Uno.UWP/Generated/3.0.0.0/Windows.*/ClassName.cs`
+1. Find generated stub: `src/Uno.WinRT/Generated/3.0.0.0/Windows.*/ClassName.cs`
 2. Copy to non-generated location
 3. Remove implemented platforms from `[NotImplemented]` attribute
 4. Use platform suffix for platform-specific files

@@ -185,7 +185,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			if (isTwoLayer)
 			{
 				// Two layer mode.
-				// We use Skia, except for Uno.dll, Uno.Foundation.dll, and Uno.Dispatching.dll
+				// We use Skia, except for Uno.WinRT.dll, Uno.Foundation.dll, and Uno.Dispatching.dll
 				// We will adjust for those dlls later.
 				if (UnoUIRuntimeIdentifier != "skia")
 				{
@@ -259,7 +259,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		}
 
 		private bool IsWinRTAssembly(string fileNameWithoutExtension)
-			=> fileNameWithoutExtension.ToLower(CultureInfo.InvariantCulture) is "uno" or "uno.ui.dispatching" or "uno.foundation";
+			=> fileNameWithoutExtension.ToLower(CultureInfo.InvariantCulture) is "uno.winrt" or "uno.ui.dispatching" or "uno.foundation";
 
 		private string GetWinRTAssembly(string runtimeDirectory, string assembly, Version targetFrameworkVersion)
 		{

@@ -30,10 +30,10 @@
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Skia.csproj",
       "Uno.UI\\Uno.UI.Reference.csproj",
       "Uno.UI\\Uno.UI.Skia.csproj",
-      "Uno.UWP\\Uno.Reference.csproj",
-      "Uno.UWP\\Uno.Skia.csproj",
-      "Uno.UWP\\Uno.Wasm.csproj",
-      "Uno.UWP\\Uno.netcoremobile.csproj"
+      "Uno.WinRT\\Uno.WinRT.Reference.csproj",
+      "Uno.WinRT\\Uno.WinRT.Skia.csproj",
+      "Uno.WinRT\\Uno.WinRT.Wasm.csproj",
+      "Uno.WinRT\\Uno.WinRT.netcoremobile.csproj"
     ]
   }
 }

@@ -25,7 +25,7 @@
       "Uno.UI\\Uno.UI.Reference.csproj",
       "Uno.WinAppSDKSyncGenerator.References\\Uno.WinAppSDKSyncGenerator.References.csproj",
       "Uno.WinAppSDKSyncGenerator\\Uno.WinAppSDKSyncGenerator.csproj",
-      "Uno.UWP\\Uno.Reference.csproj"
+      "Uno.WinRT\\Uno.WinRT.Reference.csproj"
     ]
   }
 }

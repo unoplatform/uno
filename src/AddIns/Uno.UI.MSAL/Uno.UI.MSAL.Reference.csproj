@@ -47,7 +47,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Uno.UWP\Uno.Reference.csproj" />
+		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.Reference.csproj" />
 	</ItemGroup>
 
 	<Import Project="..\..\..\build\nuget\uno.winui.cross-runtime.targets"/>

@@ -4,8 +4,8 @@
     "projects": [
       "Uno.UI\\Uno.UI.Skia.csproj",
       "Uno.UI\\Uno.UI.Reference.csproj",
-      "Uno.UWP\\Uno.netcoremobile.csproj",
-      "Uno.UWP\\Uno.Wasm.csproj",
+      "Uno.WinRT\\Uno.WinRT.netcoremobile.csproj",
+      "Uno.WinRT\\Uno.WinRT.Wasm.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.netcoremobile.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Wasm.csproj"
     ]
