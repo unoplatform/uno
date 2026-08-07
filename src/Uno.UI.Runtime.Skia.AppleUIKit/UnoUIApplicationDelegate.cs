@@ -19,6 +19,9 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 	public override bool FinishedLaunching(UIApplication application, NSDictionary? launchOptions)
 	{
 		this.LogDebug()?.LogDebug($"Application finished launching");
+#if !__TVOS__
+		Microsoft.Windows.AppNotifications.Internal.AppleAppNotificationRuntime.InitializeEarly();
+#endif
 		Application.Start(AppleUIKitHost.CreateAppAction);
 
 		return true;
