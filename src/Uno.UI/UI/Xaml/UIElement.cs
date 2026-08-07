@@ -56,6 +56,7 @@ namespace Microsoft.UI.Xaml
 		private string _uid;
 
 		private Vector3 _translation = Vector3.Zero;
+		internal bool HasCompositionChildVisual { get; set; }
 
 		private InputCursor _protectedCursor;
 		private SerialDisposable _disposedEventDisposable = new();

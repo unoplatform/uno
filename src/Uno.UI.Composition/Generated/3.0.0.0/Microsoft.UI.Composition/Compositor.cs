@@ -274,13 +274,7 @@ namespace Microsoft.UI.Composition
 #endif
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateRadialGradientBrush()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateVisualSurface()
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.AnimationController CreateAnimationController()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateAnimationController()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateAnimationController()
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public void Dispose()
