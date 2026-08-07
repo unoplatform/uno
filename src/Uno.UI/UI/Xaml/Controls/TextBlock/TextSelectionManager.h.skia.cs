@@ -53,10 +53,10 @@ internal sealed partial class TextSelectionManager : ITextSelectionNotify
 	private bool m_showGrippersOnCMDismiss;
 	// Part of the faithful WinUI field set used by the gripper-drag / snapping path that the
 	// presenter handles owner-side (NotifyGripperPressed/SetActiveGripper not re-ported here).
-#pragma warning disable CS0169, CS0414 // field never used / assigned but never used
+#pragma warning disable CS0169, CS0414, IDE0051 // field never used / assigned but never used
 	private bool m_endGripperLastMoved;
 	private bool m_interacting;
-#pragma warning restore CS0169, CS0414
+#pragma warning restore CS0169, CS0414, IDE0051
 	private bool m_forceFocusedVisualState;
 	private bool m_isSelectionFlyoutUpdateQueued;
 
@@ -74,7 +74,9 @@ internal sealed partial class TextSelectionManager : ITextSelectionNotify
 
 	private PointerDeviceType m_lastInputDeviceType = (PointerDeviceType)(-1);
 
+#pragma warning disable IDE0051 // Unused here as well, kept for 1:1 parity with TextSelectionManager.h
 	private const uint DefaultCaretColor = 0xffffffff;
+#pragma warning restore IDE0051
 
 	private Point m_lastPointerPosition;
 

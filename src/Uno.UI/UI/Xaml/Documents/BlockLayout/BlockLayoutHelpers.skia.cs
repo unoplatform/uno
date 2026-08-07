@@ -657,6 +657,7 @@ internal static class BlockLayoutHelpers
 	// CDependencyObject::GetTextFormatting. The Uno TextFormatting equivalent (resolved font/decoration/language for a
 	// TextElement) is not yet ported, so the property-resolution helpers below read the individual inherited DPs off
 	// the effective paragraph instead. Restore the single GetFormatting call path once TextFormatting lands.
+#pragma warning disable IDE0051 // Restored to use once TextFormatting lands (see note above).
 	private static object? GetFormatting(
 		DependencyObject pParagraph)
 	{
@@ -691,6 +692,7 @@ internal static class BlockLayoutHelpers
 		// TODO Uno (integrate): CDependencyObject::GetInheritedProperties(out ppInheritedAttachedProperties).
 		throw new NotImplementedException();
 	}
+#pragma warning restore IDE0051
 
 	//---------------------------------------------------------------------------
 	//

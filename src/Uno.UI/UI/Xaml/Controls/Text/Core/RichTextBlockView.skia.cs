@@ -485,11 +485,13 @@ internal sealed class RichTextBlockView : ITextView
 		return false;
 	}
 
+#pragma warning disable IDE0051 // Unused here as well, kept for 1:1 parity with RichTextBlockView.cpp
 	private uint TransformPositionFromPage(uint position)
 	{
 		uint pageStart = m_pPageNode.GetStartPosition();
 		return (position + pageStart);
 	}
+#pragma warning restore IDE0051
 
 	public static Rect[] GetBoundsCollectionForElement(
 		ITextView textView,

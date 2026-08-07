@@ -86,7 +86,9 @@ namespace Microsoft.UI.Xaml.Controls
 			private set => SetValue(HasOverflowContentProperty, value);
 		}
 
+#pragma warning disable IDE0051 // Called from the Skia layout partial, which the reference build excludes.
 		private void SetHasOverflowContent(bool value) => HasOverflowContent = value;
+#pragma warning restore IDE0051
 
 		#endregion
 
@@ -114,6 +116,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Sets IsTextTrimmed and raises IsTextTrimmedChanged when the value flips.
+#pragma warning disable IDE0051 // Called from the Skia layout partial, which the reference build excludes.
 		private void SetIsTextTrimmed(bool value)
 		{
 			if (IsTextTrimmed != value)
@@ -122,6 +125,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_isTextTrimmedChanged?.Invoke(this, new IsTextTrimmedChangedEventArgs());
 			}
 		}
+#pragma warning restore IDE0051
 
 		#endregion
 

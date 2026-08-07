@@ -30,11 +30,13 @@ namespace Microsoft.UI.Xaml.Documents.BlockLayout;
 // LineStackingStrategy off this same object).
 internal sealed class ParagraphTextSource : TextSource, ISkiaParagraphSource
 {
+#pragma warning disable IDE0051 // Unused here as well, kept for 1:1 parity with ParagraphTextSource.cpp
 	private const char UNICODE_CARRIAGE_RETURN = '\u000D';
 	private const char UNICODE_LINE_FEED = '\u000A';
 	private const char UNICODE_CHARACTER_TABULATION = '\u0009';
 	private const char UNICODE_PARAGRAPH_SEPARATOR = '\u2029';
 	private static bool IS_TRAILING_SURROGATE(char c) => char.IsLowSurrogate(c);
+#pragma warning restore IDE0051
 
 	private readonly Paragraph? m_pParagraph;
 	private readonly FrameworkElement m_pContentOwner;
