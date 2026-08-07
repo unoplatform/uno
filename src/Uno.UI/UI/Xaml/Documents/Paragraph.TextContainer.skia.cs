@@ -98,7 +98,12 @@ partial class Paragraph
 	{
 		TextElement? pElement = null;
 
-		Inlines.GetContainingElement(characterPosition, out pElement);
+		// WinUI tests `m_pInlines`, which stays null until the paragraph actually gets inlines.
+		// Uno allocates Inlines eagerly, so an empty collection is the equivalent of that null.
+		if (Inlines.Count > 0)
+		{
+			Inlines.GetContainingElement(characterPosition, out pElement);
+		}
 
 		if (pElement == null)
 		{
