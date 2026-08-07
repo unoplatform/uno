@@ -69,6 +69,15 @@
 										TargetPath="render-worker.js"/>
 		</ItemGroup>
 
+		<!--
+			This is a workaround for .NET 10, the SSA optimizer has a bug and ends up in an infinite loop.
+			We need to test .NET 11 to see if this fix can be relaxed for .NET 11+.
+			See: https://github.com/dotnet/runtime/issues/122529
+		-->
+		<ItemGroup>
+			<WasmShellMonoEnvironment Include="MONO_INTERPRETER_OPTIONS" Value="-ssa" />
+		</ItemGroup>
+
 	</Target>
 
 </Project>
