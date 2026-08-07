@@ -70,6 +70,16 @@ internal sealed class SkiaTextLine : TextLine
 		m_start = lineOffset;
 
 		ComputeCharacterCounts(renderLine, out m_length, out m_trailingWhitespaceLength, out m_newlineLength);
+
+		// ParagraphTextSource::GetTextRun always yields an EndOfParagraphRun for the paragraph terminator,
+		// so even a content-free paragraph formats a line of non-zero length. ParsedText has no such run,
+		// and PageNode::MeasureCore reads a zero-length child as "no content fit" and breaks the page -
+		// which silently drops every later paragraph.
+		if (m_length == 0 && parsedText.IsEmpty && parsedText.LineCount == 1)
+		{
+			m_length = 1;
+		}
+
 		m_dependentLength = 0;
 		m_overhangLeading = 0;
 		m_overhangTrailing = 0;

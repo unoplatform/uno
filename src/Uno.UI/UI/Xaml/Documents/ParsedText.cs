@@ -901,6 +901,10 @@ internal readonly struct ParsedText : IParsedText
 
 	internal int LineCount => _renderLines.Count;
 
+	// True when the paragraph carries no text at all; SkiaTextLine uses it to stand in for
+	// WinUI's EndOfParagraphRun (ParagraphTextSource::GetTextRun).
+	internal bool IsEmpty => _text.Length == 0;
+
 	// Bridge accessors used by the RichTextServices Skia formatter (SkiaTextLine /
 	// SkiaTextFormatter) to vend per-line metrics over the parsed layout.
 	internal IReadOnlyList<RenderLine> RenderLines => _renderLines;
