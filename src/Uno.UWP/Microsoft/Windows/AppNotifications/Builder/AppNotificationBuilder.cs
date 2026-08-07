@@ -92,7 +92,7 @@ public sealed class AppNotificationBuilder
 			throw new ArgumentException("A language is required.", nameof(language));
 		}
 
-		_attributionText = $"<text placement='attribution' lang='{language}'>{AppNotificationBuilderUtility.EncodeXml(text)}</text>";
+		_attributionText = $"<text placement='attribution' lang='{AppNotificationBuilderUtility.EncodeXml(language)}'>{AppNotificationBuilderUtility.EncodeXml(text)}</text>";
 		return this;
 	}
 

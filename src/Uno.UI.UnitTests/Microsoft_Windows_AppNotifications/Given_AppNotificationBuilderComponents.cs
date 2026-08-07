@@ -1,8 +1,10 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Windows.AppNotifications.Builder;
+using Microsoft.Windows.AppNotifications.Internal;
 
 namespace Uno.UI.Tests.Microsoft_Windows_AppNotifications;
 
@@ -117,5 +119,34 @@ public class Given_AppNotificationBuilderComponents
 		Assert.AreEqual("<action content='content' arguments='http://www.microsoft.com/' activationType='protocol' protocolActivationTargetApplicationPfn='Contoso.App_123'/>", button.ToXml());
 		Assert.ThrowsExactly<ArgumentException>(() => button.AddArgument("key", "value"));
 		Assert.ThrowsExactly<ArgumentException>(() => new AppNotificationButton().AddArgument("key", "value").SetInvokeUri(uri));
+	}
+
+	[TestMethod]
+	public void When_Component_Attributes_Contain_Xml_Syntax_They_Are_Encoded_Once()
+	{
+		const string content = "Safe' /><action content='Injected";
+		var button = new AppNotificationButton(content)
+		{
+			Arguments = new Dictionary<string, string> { ["key' name="] = "value&<" },
+			InputId = "input' id",
+			ToolTip = "tip&'",
+		};
+		var comboBox = new AppNotificationComboBox("choice' id")
+		{
+			Items = new Dictionary<string, string> { ["item' id"] = "content&<" },
+			Title = "title' value",
+			SelectedItem = "item' id",
+		};
+
+		var payload = $"<toast><visual><binding template='ToastGeneric'/></visual><actions>{comboBox.ToXml()}{button.ToXml()}</actions></toast>";
+		var parsed = AppNotificationPayloadParser.Parse(payload);
+
+		Assert.AreEqual(1, parsed.Actions.Length);
+		Assert.AreEqual(content, parsed.Actions[0].Content);
+		Assert.AreEqual("value&<", parsed.Actions[0].Arguments["key' name="]);
+		Assert.AreEqual("input' id", parsed.Actions[0].InputId);
+		Assert.AreEqual("tip&'", parsed.Actions[0].ToolTip);
+		Assert.AreEqual("choice' id", parsed.Inputs[0].Id);
+		Assert.AreEqual("content&<", parsed.Inputs[0].Selections[0].Content);
 	}
 }

@@ -20,7 +20,7 @@ public sealed class AppNotificationComboBox
 			throw new ArgumentException("A combo box ID is required.", nameof(id));
 		}
 
-		_id = AppNotificationBuilderUtility.EncodeXml(id);
+		_id = id;
 	}
 
 	public IDictionary<string, string> Items
@@ -53,13 +53,13 @@ public sealed class AppNotificationComboBox
 			throw new ArgumentException("A combo box item ID is required.", nameof(id));
 		}
 
-		_items[AppNotificationBuilderUtility.EncodeXml(id)] = AppNotificationBuilderUtility.EncodeXml(content);
+		_items[id] = content ?? string.Empty;
 		return this;
 	}
 
 	public AppNotificationComboBox SetTitle(string value)
 	{
-		_title = AppNotificationBuilderUtility.EncodeXml(value);
+		_title = value ?? string.Empty;
 		return this;
 	}
 
@@ -70,26 +70,26 @@ public sealed class AppNotificationComboBox
 			throw new ArgumentException("A selected item ID is required.", nameof(id));
 		}
 
-		_selectedItem = AppNotificationBuilderUtility.EncodeXml(id);
+		_selectedItem = id;
 		return this;
 	}
 
 	internal string ToXml()
 	{
-		var xml = new StringBuilder($"<input id='{_id}' type='selection'");
+		var xml = new StringBuilder($"<input id='{AppNotificationBuilderUtility.EncodeXml(_id)}' type='selection'");
 		if (_title.Length > 0)
 		{
-			xml.Append($" title='{_title}'");
+			xml.Append($" title='{AppNotificationBuilderUtility.EncodeXml(_title)}'");
 		}
 		if (_selectedItem.Length > 0)
 		{
-			xml.Append($" defaultInput='{_selectedItem}'");
+			xml.Append($" defaultInput='{AppNotificationBuilderUtility.EncodeXml(_selectedItem)}'");
 		}
 		xml.Append('>');
 
 		foreach (var item in _items)
 		{
-			xml.Append($"<selection id='{item.Key}' content='{item.Value}'/>");
+			xml.Append($"<selection id='{AppNotificationBuilderUtility.EncodeXml(item.Key)}' content='{AppNotificationBuilderUtility.EncodeXml(item.Value)}'/>");
 		}
 
 		xml.Append("</input>");

@@ -21,7 +21,7 @@ public sealed class AppNotificationProgressBar
 		get => _title;
 		set
 		{
-			_title = AppNotificationBuilderUtility.EncodeXml(value);
+			_title = value ?? string.Empty;
 			_titleBindMode = BindMode.Value;
 		}
 	}
@@ -31,7 +31,7 @@ public sealed class AppNotificationProgressBar
 		get => _status;
 		set
 		{
-			_status = AppNotificationBuilderUtility.EncodeXml(value);
+			_status = value ?? string.Empty;
 			_statusBindMode = BindMode.Value;
 		}
 	}
@@ -56,7 +56,7 @@ public sealed class AppNotificationProgressBar
 		get => _valueStringOverride;
 		set
 		{
-			_valueStringOverride = AppNotificationBuilderUtility.EncodeXml(value);
+			_valueStringOverride = value ?? string.Empty;
 			_valueStringOverrideBindMode = BindMode.Value;
 		}
 	}
@@ -113,19 +113,19 @@ public sealed class AppNotificationProgressBar
 	{
 		var title = _titleBindMode switch
 		{
-			BindMode.Value => $" title='{_title}'",
+			BindMode.Value => $" title='{AppNotificationBuilderUtility.EncodeXml(_title)}'",
 			BindMode.Bind => " title='{progressTitle}'",
 			_ => string.Empty,
 		};
 		var status = _statusBindMode == BindMode.Value
-			? $" status='{_status}'"
+			? $" status='{AppNotificationBuilderUtility.EncodeXml(_status)}'"
 			: " status='{progressStatus}'";
 		var value = _valueBindMode == BindMode.Value
 			? $" value='{_value.ToString("G6", CultureInfo.InvariantCulture)}'"
 			: " value='{progressValue}'";
 		var valueStringOverride = _valueStringOverrideBindMode switch
 		{
-			BindMode.Value => $" valueStringOverride='{_valueStringOverride}'",
+			BindMode.Value => $" valueStringOverride='{AppNotificationBuilderUtility.EncodeXml(_valueStringOverride)}'",
 			BindMode.Bind => " valueStringOverride='{progressValueString}'",
 			_ => string.Empty,
 		};
