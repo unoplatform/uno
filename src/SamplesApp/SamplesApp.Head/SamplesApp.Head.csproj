@@ -76,6 +76,13 @@
 
 		<!-- Build the Uno.UI.Tasks shadow assembly first (CI / clean builds), as the source heads do -->
 		<PreBuildUnoUITasks Condition="'$(BuildingInsideVisualStudio)'==''">true</PreBuildUnoUITasks>
+
+		<!--
+		NU1703 (transitive package binds to the deprecated MonoAndroid framework) is raised by restore,
+		which resolves before the per-TFM property groups apply, so it must be suppressed unconditionally
+		— TreatWarningsAsErrors would otherwise fail the android restore. Matches the netcoremobile head.
+		-->
+		<NoWarn>$(NoWarn);NU1703</NoWarn>
 	</PropertyGroup>
 
 	<!-- ==================== Source mode: framework via ProjectReference ==================== -->
@@ -316,7 +323,8 @@
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(_IsUIKit)' == 'true'">
-		<SupportedOSPlatformVersion>12.2</SupportedOSPlatformVersion>
+		<!-- 13.0 is the floor the .NET 11 iOS/tvOS SDKs enforce, and what netcoremobile targets -->
+		<SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
 		<!-- iOS 17 compatibility -->
 		<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
 		<!-- AOT currently fails (uno-private #648): interpret instead -->
