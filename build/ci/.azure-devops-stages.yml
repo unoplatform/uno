@@ -46,6 +46,12 @@ stages:
         pwsh: true
         filePath: build/ci/scripts/determine-test-scope.ps1
 
+    - task: PowerShell@2
+      displayName: Check for native UI rendering regressions
+      inputs:
+        pwsh: true
+        filePath: build/ci/scripts/check-native-drop-regressions.ps1
+
 - template: setup/.azure-devops-master-health.yml
   parameters:
     vmImage: '$(linuxVMImage)'

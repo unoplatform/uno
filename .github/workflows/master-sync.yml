@@ -234,6 +234,25 @@ jobs:
           elif git ls-files -u | grep -q .; then
             CONFLICT=1
             conflict_files="$(git diff --name-only --diff-filter=U || true)"
+
+            # A modify/delete conflict has no "ours" stage (2) when the feature branch is
+            # the side that deleted the file. `git add -A` below would then stage master's
+            # copy, silently resurrecting it with no conflict markers for a reviewer to
+            # catch. Keep the deletion and surface it in the PR body instead.
+            readded=""
+            while IFS= read -r f; do
+              [ -z "${f:-}" ] && continue
+              if ! git ls-files -u -- "$f" | awk '{print $3}' | grep -qx 2; then
+                readded="${readded}${f}"$'\n'
+                git rm -f -q -- "$f"   # -f: plain `git rm` refuses unmerged paths
+              fi
+            done < <(git diff --name-only --diff-filter=U)
+
+            if [ -n "$readded" ]; then
+              conflict_files="$(printf '%s\n%s' "$conflict_files" \
+                "$(printf '%s' "$readded" | sed 's|^|  (deleted here, modified on master — deletion kept): |')")"
+            fi
+
             git add -A
             git commit --no-edit || { git merge --abort 2>/dev/null || true; note "❌ conflict commit failed"; exit 1; }
           else
