@@ -99,19 +99,4 @@ internal static partial class KeyboardStateTracker
 	}
 
 	internal static void Reset() => _keyStates.Clear();
-
-#pragma warning disable IDE0051 // Remove unused private members
-	[JSExport]
-	private static void UpdateKeyStateNative(string key, bool down)
-#pragma warning restore IDE0051 // Remove unused private members
-	{
-		if (down)
-		{
-			OnKeyDown(BrowserVirtualKeyHelper.FromKey(key));
-		}
-		else
-		{
-			OnKeyUp(BrowserVirtualKeyHelper.FromKey(key));
-		}
-	}
 }
