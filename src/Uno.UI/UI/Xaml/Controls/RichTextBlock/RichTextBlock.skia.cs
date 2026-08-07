@@ -301,6 +301,11 @@ namespace Microsoft.UI.Xaml.Controls
 				canvas.Save();
 				canvas.Translate((float)layout.Margin.Left, layout.YOffset);
 
+				// The engine arranges only the lines that fit (MaxLines, or the slice handed to a linked
+				// overflow), but ParsedText renders the whole paragraph in one call. Clip to the arranged
+				// slice so the lines the page node left out are not overdrawn.
+				canvas.ClipRect(new SKRect(0, 0, (float)layout.Size.Width, (float)layout.Size.Height));
+
 				// Build highlighters for this paragraph (including selection)
 				var paragraphHighlighters = GetParagraphHighlighters(layout, p);
 
