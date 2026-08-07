@@ -4,7 +4,7 @@ uid: Uno.Development.AdditionalFeatures
 
 # Other Uno.UI Features
 
-Uno.UI.Toolkit is a set of extension methods or behaviors used to enhance WinUI and activate device/OS specific features.
+Uno.UI.Extras is a set of extension methods or behaviors used to enhance WinUI and activate device/OS specific features.
 
 Those methods are built to have no effect on a platform that does not support the enhanced feature: no need to wrap them into conditional code.
 
@@ -15,7 +15,7 @@ iOS can display `UICommand` to warn user the action will be "destructive". In th
 To set a `UICommand` as destructive, add the toolkit namespace to your code
 
 ```csharp
-using Uno.UI.Toolkit;
+using Uno.UI.Extras;
 ```
 
 And declare your `UICommand` as follow

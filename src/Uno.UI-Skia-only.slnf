@@ -79,7 +79,7 @@
       "Uno.UI.Runtime.Skia\\Uno.UI.Runtime.Skia.csproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.Skia.csproj",
       "Uno.UI.TestComparer\\Uno.UI.TestComparer.csproj",
-      "Uno.UI.Toolkit\\Uno.UI.Toolkit.Skia.csproj",
+      "Uno.UI.Extras\\Uno.UI.Extras.Skia.csproj",
       "Uno.UI.XamlHost\\Uno.UI.XamlHost.Skia.csproj",
       "Uno.UI\\Uno.UI.Reference.csproj",
       "Uno.UI\\Uno.UI.Skia.csproj",

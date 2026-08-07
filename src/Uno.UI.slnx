@@ -229,7 +229,7 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/">
-    <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.Skia.csproj">
+    <Project Path="Uno.UI.Extras/Uno.UI.Extras.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>
@@ -399,10 +399,10 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/Toolkit/">
-    <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.Reference.csproj">
+    <Project Path="Uno.UI.Extras/Uno.UI.Extras.Reference.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.Windows.csproj">
+    <Project Path="Uno.UI.Extras/Uno.UI.Extras.Windows.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>

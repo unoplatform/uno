@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:UITests.Windows_UI_Xaml.WindowTests"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ui="using:Uno.UI.Toolkit"
+    xmlns:ui="using:Uno.UI.Extras"
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d">

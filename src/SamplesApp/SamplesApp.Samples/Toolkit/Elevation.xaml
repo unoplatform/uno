@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Uno.UI.Samples.Content.UITests.Elevation"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:toolkit="using:Uno.UI.Toolkit"
+    xmlns:toolkit="using:Uno.UI.Extras"
     mc:Ignorable="">
 
     <Grid>

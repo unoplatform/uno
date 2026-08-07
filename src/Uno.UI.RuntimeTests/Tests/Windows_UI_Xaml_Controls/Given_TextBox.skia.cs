@@ -17,7 +17,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Extras.DevTools.Input;
 using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;

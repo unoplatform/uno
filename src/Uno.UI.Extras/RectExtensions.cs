@@ -7,7 +7,7 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Microsoft.UI.Xaml;
 
-namespace Uno.UI.Toolkit.Extensions
+namespace Uno.UI.Extras.Extensions
 {
 	internal static class RectExtensions
 	{

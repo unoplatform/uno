@@ -8,7 +8,7 @@ using AndroidCanvas = Android.Graphics.Canvas;
 using AndroidColor = Android.Graphics.Color;
 using AndroidPaint = Android.Graphics.Paint;
 
-namespace Uno.UI.Toolkit;
+namespace Uno.UI.Extras;
 
 partial class ElevatedView
 {

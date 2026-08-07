@@ -85,7 +85,7 @@ Uno.SDK single-project model.
   (`ListView`/`Frame`/`Popup`/…) — everything renders via Skia.
 - **Native flyout opt-in:** `FlyoutBase.UseNativePopup`, including its conditional-XAML forms
   (`android:UseNativePopup` / `ios:UseNativePopup`). Remove the assignment — flyouts always use
-  the WinUI presentation. The two `Uno.UI.Toolkit` attached properties that only ever
+  the WinUI presentation. The two `Uno.UI.Extras` attached properties that only ever
   customized that native iOS presentation go with it:
   `MenuFlyoutItemExtensions.IsDestructive` (red "destructive" item text) and
   `MenuFlyoutExtensions.CancelTextIosOverride` (custom cancel-button caption). Remove the

@@ -190,8 +190,8 @@
 		</PropertyGroup>
 
 		<!-- Pre-validation of contents to be packed -->
-		<Error Text="The Uno.UI.Toolkit PRI file is not present in src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release"
-					 Condition="!exists('..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$(NetUWPOrWinUI)\Uno.UI.Toolkit.pri')" />
+		<Error Text="The Uno.UI.Extras PRI file is not present in src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release"
+					 Condition="!exists('..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$(NetUWPOrWinUI)\Uno.UI.Extras.pri')" />
 
 		<!-- Create the packages -->
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />

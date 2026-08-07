@@ -11,7 +11,7 @@ using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Extras.DevTools.Input;
 using ItemContainer = Microsoft.UI.Xaml.Controls.ItemContainer;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;

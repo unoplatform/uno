@@ -26,7 +26,7 @@ internal static partial class XamlHelper
 	{
 		[string.Empty] = "http://schemas.microsoft.com/winfx/2006/xaml/presentation",
 		["x"] = "http://schemas.microsoft.com/winfx/2006/xaml",
-		["toolkit"] = "using:Uno.UI.Toolkit", // uno utilities
+		["toolkit"] = "using:Uno.UI.Extras", // uno utilities
 		["muxc"] = "using:Microsoft.UI.Xaml.Controls",
 	};
 

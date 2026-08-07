@@ -2,7 +2,7 @@
     x:Class="UITests.Shared.Windows_UI_Composition.DamageRegion.DamageRegion_ShadowChildShape"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:toolkit="using:Uno.UI.Toolkit"
+    xmlns:toolkit="using:Uno.UI.Extras"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Canvas>
         <Border
