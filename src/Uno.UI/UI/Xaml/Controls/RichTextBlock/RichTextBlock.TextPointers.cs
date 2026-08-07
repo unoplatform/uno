@@ -80,6 +80,26 @@ partial class RichTextBlock
 		return TextPointer.CreateInstanceWithInternalPointer(textPosition);
 	}
 
+	// CRichTextBlock::GetContentLength
+	private uint GetContentLength()
+	{
+		// If there is a valid measured page, use its length unless there is no overflow target for this
+		// element. If there's no overflow target the element is considered to "contain" all the content
+		// up to the text container's end, even if it's not visible or doesn't fit.
+		if (_pageNode is not null &&
+			!_pageNode.IsMeasureDirty() &&
+			!_pageNode.IsArrangeDirty() &&
+			_pOverflowTarget is not null)
+		{
+			return _pageNode.GetContentLength();
+		}
+		else
+		{
+			Blocks.GetTextContainer().GetPositionCount(out var containerLength);
+			return containerLength;
+		}
+	}
+
 	// CRichTextBlock::GetContentEnd
 	private TextPointer? GetContentEnd()
 	{
@@ -95,7 +115,7 @@ partial class RichTextBlock
 		// ContentEnd is the position just after the end of content. If there's a break, its gravity is
 		// backward (the forward-gravity position lives in the next link); without a break it's forward
 		// since it's the end of all content.
-		var contentEndPosition = view.GetContentStartPosition() + view.GetContentLength();
+		var contentEndPosition = view.GetContentStartPosition() + GetContentLength();
 		var gravity = _break is null ? TextGravity.LineForwardCharacterForward : TextGravity.LineForwardCharacterBackward;
 
 		var textPosition = new PlainTextPosition(container, contentEndPosition, gravity);
