@@ -223,6 +223,9 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
 - [x] **BC52** — Reparent `RadioMenuFlyoutItem` -> `MenuFlyoutItem`  `d3·M`
   - Reparent to `MenuFlyoutItem`; re-implement the toggle behavior currently inherited from `ToggleMenuFlyoutItem`.
   - Files: `src/Uno.UI/UI/Xaml/Controls/RadioMenuFlyoutItem/RadioMenuFlyoutItem.cs`, `src/Uno.UI/UI/Xaml/Controls/RadioMenuFlyoutItem/RadioMenuFlyoutItem.Properties.cs`, `src/Uno.WinAppSDKSyncGenerator/Generator.cs`
+- [ ] **#2138** — `PasswordBox` no longer inherits `TextBox`  `d3·L` · **[impact spec](bc2138-passwordbox-to-control.md)**
+  - Both `TextBox` and `PasswordBox` derive from `Control` and share the editing implementation by composition — an `internal sealed TextBoxCore` reached through an `internal ITextBoxHost`. Stops the password being mirrored into the inherited `Text` and removes the leaked text-input API. An *internal shared base* is impossible (CS0060) and a public one would add Uno-only surface, so composition is used instead; WinUI's own `CTextBoxBase` accessor design carries over as the interface.
+  - Files: `src/Uno.UI/UI/Xaml/Controls/TextBoxCore/*.cs` (new), `src/Uno.UI/UI/Xaml/Controls/PasswordBox/PasswordBox.cs`, `src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox*.cs`, `src/Uno.UI/UI/Xaml/Controls/CommandBarFlyout/TextCommandBarFlyout.mux.cs`, `src/Uno.UI/UI/Xaml/Internal/TextControlFlyoutHelper.cs`
 - [ ] **BC74** — Android drawable extension in retarget keys  `d3·S` · PR #15891
   - Adjust signature to match WinUI.
   - Files: `src/Uno.UWP/Helpers/AndroidResourceNameEncoder.cs`, `src/Uno.UWP/Helpers/DrawableHelper.Android.cs`, `src/SourceGenerators/Uno.UI.Tasks/ResourceConverters/AndroidResourceConverter.cs`
