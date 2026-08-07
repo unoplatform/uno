@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property SelectionHighlightColorProperty
 		// Skipping already declared property TextAlignmentProperty
 		// Skipping already declared property TextDecorationsProperty
-// Skipping already declared TextLineBoundsProperty
+		// Skipping already declared property TextLineBoundsProperty
 		// Skipping already declared property TextProperty
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -56,7 +56,16 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property TextTrimmingProperty
 		// Skipping already declared property TextWrappingProperty
-		// Skipping already declared property BaselineOffset
+#if false
+		[global::Uno.NotImplemented]
+		public double BaselineOffset
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.TextBlock", "BaselineOffset");
+			}
+		}
+#endif
 		// Skipping already declared property CharacterSpacing
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -148,7 +157,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TextAlignment
 		// Skipping already declared property TextDecorations
 		// Skipping already declared property TextHighlighters
-// Skipping already declared TextLineBounds
+		// Skipping already declared property TextLineBounds
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.TextReadingOrder TextReadingOrder
