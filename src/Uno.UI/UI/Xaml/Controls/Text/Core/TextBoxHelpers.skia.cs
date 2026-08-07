@@ -317,6 +317,32 @@ internal static class TextBoxHelpers
 	//  position in the specified direction and determine text gravity.
 	//
 	//------------------------------------------------------------------------
+	//------------------------------------------------------------------------
+	//  Method:   GetAdjacentWordNavigationBoundaryPosition
+	//
+	//  Summary:  Word-boundary lookup for caret / TextPattern navigation. Same shape as the
+	//            selection variant below, but driven by the navigation word breaker.
+	//------------------------------------------------------------------------
+	internal static bool GetAdjacentWordNavigationBoundaryPosition(
+		ITextContainer pTextContainer,
+		TextPosition textPosition,
+		FindBoundaryType findType,
+		TagConversion tagConversion,
+		out TextPosition pAdjacentPosition,
+		out TextGravity peAdjacentGravity)
+	{
+		CTextContainerWrapper backend = new(pTextContainer, tagConversion);
+
+		CSelectionWordBreaker.GetAdjacentWordNavigationBoundary(textPosition, backend, findType, out pAdjacentPosition);
+
+		// The gravity is normally the opposite of the direction
+		peAdjacentGravity = CSelectionWordBreaker.IsForwardDirection(findType)
+			? TextGravity.LineForwardCharacterBackward
+			: TextGravity.LineBackwardCharacterForward;
+
+		return true;
+	}
+
 	internal static bool GetAdjacentWordSelectionBoundaryPosition(
 		ITextContainer pTextContainer,
 		TextPosition textPosition,
