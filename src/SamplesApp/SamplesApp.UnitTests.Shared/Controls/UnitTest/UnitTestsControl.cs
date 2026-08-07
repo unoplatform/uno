@@ -69,6 +69,7 @@ namespace Uno.UI.Samples.Tests
 		private List<TestCaseResult> _testCases = new();
 		private TestRun _currentRun;
 		private long _scrollableHeightCallbackToken;
+		private TestRunStallMonitor _stallMonitor;
 
 		// On WinUI/UWP dependency properties cannot be accessed outside of
 		// UI thread. This field caches the current value so it can be accessed
@@ -749,6 +750,11 @@ namespace Uno.UI.Samples.Tests
 				StartTime = DateTimeOffset.UtcNow
 			};
 
+			// Resolved here rather than inside the probe: the monitor calls it from its own
+			// thread, and resolving the dispatcher touches the visual tree.
+			var dispatcher = TestServices.WindowHelper.RootElementDispatcher;
+			_stallMonitor = TestRunStallMonitor.TryStart(() => dispatcher.RunAsync(() => { }));
+
 			try
 			{
 				_ = ReportMessage("Enumerating tests");
@@ -782,6 +788,8 @@ namespace Uno.UI.Samples.Tests
 			}
 			finally
 			{
+				Interlocked.Exchange(ref _stallMonitor, null)?.Dispose();
+
 				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
 					testFilter.IsEnabled = runButton.IsEnabled = true; // Disable the testFilter to avoid SIP to re-open
@@ -865,6 +873,7 @@ namespace Uno.UI.Samples.Tests
 					var fullTestName = testName + testCase.ToString();
 
 					_currentRun.Run++;
+					_stallMonitor?.SetCurrentTest(fullTestName);
 
 					// We await this to make sure the UI is updated before running the test.
 					// This will help developers to identify faulty tests when the app is crashing.
