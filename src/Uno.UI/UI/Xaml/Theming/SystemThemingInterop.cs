@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml;
 using Uno.Helpers.Theming;
 using Windows.UI;
 using Windows.UI.ViewManagement;
+using static Uno.UI.Xaml.Core.Win32SystemColorIds;
 
 namespace Uno.UI.Xaml.Core;
 
@@ -48,24 +49,38 @@ internal sealed class SystemThemingInterop : IThemingInterop
 	// theme otherwise.
 	public Theme GetSystemHighContrastTheme()
 	{
-		var highContrastTheme = Theme.HighContrastNone;
-
-		// WinUI (SystemThemingInterop.cpp:121-177) checks SystemParametersInfoW(SPI_GETHIGHCONTRAST)
-		// and, when high contrast is on, classifies the variant from the OS WINDOW/WINDOWTEXT colors:
-		//   // Redstone Bug #6417331: Xbox uses video-safe black (0x101010) and white (0xEBEBEB) when in High Contrast
-		//   white background (0xFFFFFF, or Xbox 0xEBEBEB) + black foreground => Theme::HighContrastWhite
-		//   black background (0x000000, or Xbox 0x101010) + white foreground => Theme::HighContrastBlack
-		//   anything else                                                    => Theme::HighContrastCustom
-		// (The test-override path additionally classifies 0xFFEEEEEE/0xFF111111 as HighContrastCustom and
-		// falls back to the generic Theme::HighContrast for unrecognized palettes.)
-		// TODO Uno: OS high-contrast variant detection on Skia is a documented follow-up; until then the
-		// app-global flag maps to the generic Theme.HighContrast.
-		if (SystemThemeHelper.IsHighContrast)
+#if !__SKIA__
+		return Theme.HighContrastNone;
+#else
+		if (!SystemThemeHelper.IsHighContrast)
 		{
-			highContrastTheme = Theme.HighContrast;
+			return Theme.HighContrastNone;
 		}
 
-		return highContrastTheme;
+		if (SystemThemeHelper.HighContrastSystemColors is { } colors)
+		{
+			if (IsWhite(colors.WindowColor) && IsBlack(colors.WindowTextColor))
+			{
+				return Theme.HighContrastWhite;
+			}
+
+			if (IsBlack(colors.WindowColor) && IsWhite(colors.WindowTextColor))
+			{
+				return Theme.HighContrastBlack;
+			}
+
+			return Theme.HighContrastCustom;
+		}
+
+		return SystemThemeHelper.HighContrastSchemeName switch
+		{
+			"High Contrast White" => Theme.HighContrastWhite,
+			"High Contrast Black" => Theme.HighContrastBlack,
+			"High Contrast #1" => Theme.HighContrastCustom,
+			"High Contrast #2" => Theme.HighContrastCustom,
+			_ => Theme.HighContrast,
+		};
+#endif
 	}
 
 	public uint GetSystemColor(int colorId)
@@ -73,11 +88,62 @@ internal sealed class SystemThemingInterop : IThemingInterop
 		// WinUI (SystemThemingInterop.cpp:179-203) returns the live OS system-color palette —
 		// ConvertFromABGRToARGB(GetSysColor(colorId) | 0xFF000000) — with a test-override palette
 		// (s_sysColorPaletteOverride) taking precedence.
-		// TODO Uno: there is no OS system-color palette abstraction yet (part of the high-contrast
-		// follow-up above). Until then, default to the same easily findable color value WinUI uses
-		// for entries not in its override palette, so brushes referencing unmapped system colors can
-		// be spotted.
-		return 0xFFAABBCC;
+		if (!SystemThemeHelper.IsHighContrast)
+		{
+			return 0xFFAABBCC;
+		}
+
+		if (SystemThemeHelper.HighContrastSystemColors is not { } colors)
+		{
+			return GetFallbackSystemColor(colorId);
+		}
+
+		var color = colorId switch
+		{
+			COLOR_ACTIVECAPTION => colors.ActiveCaptionColor,
+			COLOR_BACKGROUND => colors.BackgroundColor,
+			COLOR_BTNFACE => colors.ButtonFaceColor,
+			COLOR_BTNTEXT => colors.ButtonTextColor,
+			COLOR_CAPTIONTEXT => colors.CaptionTextColor,
+			COLOR_GRAYTEXT => colors.GrayTextColor,
+			COLOR_HIGHLIGHT => colors.HighlightColor,
+			COLOR_HIGHLIGHTTEXT => colors.HighlightTextColor,
+			COLOR_HOTLIGHT => colors.HotlightColor,
+			COLOR_INACTIVECAPTION => colors.InactiveCaptionColor,
+			COLOR_INACTIVECAPTIONTEXT => colors.InactiveCaptionTextColor,
+			COLOR_WINDOW => colors.WindowColor,
+			COLOR_WINDOWTEXT => colors.WindowTextColor,
+			_ => Colors.Fuchsia,
+		};
+
+		return ConvertColorToIntValue(color);
+	}
+
+	private uint GetFallbackSystemColor(int colorId)
+	{
+		var isWhite = GetSystemHighContrastTheme() == Theme.HighContrastWhite;
+		var window = isWhite ? Colors.White : Colors.Black;
+		var windowText = isWhite ? Colors.Black : Colors.White;
+		var highlight = isWhite ? Colors.Black : Color.FromArgb(255, 26, 235, 255);
+		var highlightText = isWhite ? Colors.White : Colors.Black;
+
+		return ConvertColorToIntValue(colorId switch
+		{
+			COLOR_ACTIVECAPTION => window,
+			COLOR_BACKGROUND => window,
+			COLOR_BTNFACE => window,
+			COLOR_BTNTEXT => windowText,
+			COLOR_CAPTIONTEXT => windowText,
+			COLOR_GRAYTEXT => isWhite ? Color.FromArgb(255, 109, 109, 109) : Color.FromArgb(255, 63, 242, 63),
+			COLOR_HIGHLIGHT => highlight,
+			COLOR_HIGHLIGHTTEXT => highlightText,
+			COLOR_HOTLIGHT => isWhite ? Colors.Blue : Colors.Yellow,
+			COLOR_INACTIVECAPTION => window,
+			COLOR_INACTIVECAPTIONTEXT => windowText,
+			COLOR_WINDOW => window,
+			COLOR_WINDOWTEXT => windowText,
+			_ => Colors.Fuchsia,
+		});
 	}
 
 	public uint GetSystemAccentColor()
@@ -128,4 +194,14 @@ internal sealed class SystemThemingInterop : IThemingInterop
 	{
 		return (uint)(color.A << 24 | color.R << 16 | color.G << 8 | color.B);
 	}
+
+#if __SKIA__
+	private static bool IsWhite(Color color) =>
+		(color.R == 0xFF && color.G == 0xFF && color.B == 0xFF)
+		|| (color.R == 0xEB && color.G == 0xEB && color.B == 0xEB);
+
+	private static bool IsBlack(Color color) =>
+		(color.R == 0x00 && color.G == 0x00 && color.B == 0x00)
+		|| (color.R == 0x10 && color.G == 0x10 && color.B == 0x10);
+#endif
 } // class SystemThemingInterop

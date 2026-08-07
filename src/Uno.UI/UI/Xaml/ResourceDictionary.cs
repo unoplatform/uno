@@ -10,7 +10,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.UI.Xaml.Data;
 using Uno.Extensions;
-using Uno.Helpers.Theming;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
@@ -127,6 +126,19 @@ namespace Microsoft.UI.Xaml
 
 		public IList<ResourceDictionary> MergedDictionaries => _mergedDictionaries;
 		public IDictionary<object, object> ThemeDictionaries => GetOrCreateThemeDictionaries();
+
+		internal bool TryGetThemeDictionary(string themeKey, out ResourceDictionary themeDictionary)
+		{
+			if (_themeDictionaries?.TryGetValue(themeKey, out var value, shouldCheckSystem: false) == true
+				&& value is ResourceDictionary dictionary)
+			{
+				themeDictionary = dictionary;
+				return true;
+			}
+
+			themeDictionary = null;
+			return false;
+		}
 
 		/// <summary>
 		/// Determines if this instance is empty
@@ -273,6 +285,8 @@ namespace Microsoft.UI.Xaml
 		public void Add(object key, object value) => Set(new ResourceKey(key), value, throwIfPresent: true);
 
 		public bool ContainsKey(object key) => ContainsKey(key, shouldCheckSystem: true);
+
+		internal bool ContainsKeyLocal(object key) => _values.ContainsKey(new ResourceKey(key));
 
 		public bool ContainsKey(object key, bool shouldCheckSystem)
 		{
@@ -751,9 +765,12 @@ namespace Microsoft.UI.Xaml
 			var baseOrRequestedThemeChanged = !activeThemeKey.Equals(_activeTheme);
 
 			// MUX (Resources.cpp:701): highContrastChanged = (m_activeTheme & Theme::HighContrastMask) != core->GetFrameworkTheming()->GetHighContrastTheme()
-			// Uno: high contrast is a single app-global bool — the FrameworkTheming::GetHighContrastTheme()
-			// analog collapsed to HighContrast/HighContrastNone.
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			var core = Uno.UI.Xaml.Core.CoreServices.Instance;
+			var highContrastTheme = core.Theming.GetHighContrastTheme();
+#else
 			var highContrastTheme = Themes.IsHighContrast ? Theme.HighContrast : Theme.HighContrastNone;
+#endif
 			var highContrastChanged = Theming.GetHighContrastValue(_activeThemeValue) != highContrastTheme;
 
 			if (_activeThemeDictionary is null ||                                       // No active theme dictionary
@@ -781,13 +798,19 @@ namespace Microsoft.UI.Xaml
 					// returned true." otherwise); else switch on the OS high-contrast variant
 					// (core->GetFrameworkTheming()->GetHighContrastTheme()) — HighContrastBlack /
 					// HighContrastWhite / HighContrastCustom → the same-named key.
-					// Uno: GetActiveTheme() already composes requested-or-base, so the subtree branch is
-					// the base-derived variant key below, and the app-wide branch collapses onto it
-					// because high contrast is a single bool.
-					// TODO Uno: detect the OS high-contrast variant (White/Black/Custom —
-					// SystemThemingInterop.GetSystemHighContrastTheme) and port the app-wide variant
-					// switch 1:1.
-					resources = GetThemeDictionary(GetHighContrastKeyForBaseTheme(activeThemeKey));
+					ResourceKey highContrastKey;
+#if UNO_HAS_ENHANCED_LIFECYCLE
+					highContrastKey = core.IsThemeRequestedForSubTree()
+						? GetHighContrastKeyForBaseTheme(activeThemeKey)
+						: GetHighContrastKey(highContrastTheme);
+#else
+					highContrastKey = GetHighContrastKeyForBaseTheme(activeThemeKey);
+#endif
+
+					if (!highContrastKey.Equals(ResourceKey.Empty))
+					{
+						resources = GetThemeDictionary(highContrastKey);
+					}
 
 					if (resources is null)
 					{
@@ -855,6 +878,17 @@ namespace Microsoft.UI.Xaml
 
 		private static ResourceKey GetHighContrastKeyForBaseTheme(in ResourceKey baseTheme)
 			=> baseTheme.Equals(Themes.Dark) ? Themes.HighContrastBlack : Themes.HighContrastWhite;
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		private static ResourceKey GetHighContrastKey(Theme highContrastTheme) =>
+			highContrastTheme switch
+			{
+				Theme.HighContrastBlack => Themes.HighContrastBlack,
+				Theme.HighContrastWhite => Themes.HighContrastWhite,
+				Theme.HighContrastCustom => Themes.HighContrastCustom,
+				_ => ResourceKey.Empty,
+			};
+#endif
 
 		// MUX: theme sub-dictionaries resolve with LookupScope::LocalOnly (self + merged + local theme,
 		// Resources.cpp:725-784); the "HighContrast" and "Default" fallbacks additionally search the
@@ -1461,6 +1495,7 @@ namespace Microsoft.UI.Xaml
 			public static SpecializedResourceDictionary.ResourceKey HighContrast { get; } = "HighContrast";
 			public static SpecializedResourceDictionary.ResourceKey HighContrastWhite { get; } = "HighContrastWhite";
 			public static SpecializedResourceDictionary.ResourceKey HighContrastBlack { get; } = "HighContrastBlack";
+			public static SpecializedResourceDictionary.ResourceKey HighContrastCustom { get; } = "HighContrastCustom";
 
 			// The application/OS base theme. The per-subtree theme lives in the core
 			// requested-theme-for-subtree slot (CCoreServices::m_requestedThemeForSubTree), which
@@ -1472,7 +1507,7 @@ namespace Microsoft.UI.Xaml
 			// from the accessibility settings — high contrast is orthogonal to the Light/Dark base theme and
 			// is composed at the resolution leaf (GetActiveThemeDictionary), matching WinUI reading it from
 			// FrameworkTheming rather than from the per-object/subtree theme.
-			public static bool IsHighContrast => SystemThemeHelper.IsHighContrast;
+			public static bool IsHighContrast => ThemingHelper.IsHighContrastActive;
 		}
 	}
 }

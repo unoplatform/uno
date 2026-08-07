@@ -119,12 +119,13 @@ internal partial class CoreServices
 	{
 		using var endOnExit = ThemeWalkResourceCache.BeginCachingThemeResources();
 
-		// TODO Uno: UpdateColorAndBrushResources (xcpcore.cpp:8017-8026) creates/updates the
-		// SystemColor*/SystemAccentColor color and brush resources in the global theme resources from
-		// FrameworkTheming's ColorAndBrushResourceInfo list. Uno's system palette is provided by the
-		// generated Uno.Themes/Fluent resources instead, so there is no first-create short-circuit.
+		ResourceResolver.UpdateSystemColorAndBrushResources(
+			Theming.GetColorAndBrushResourceInfoList(),
+			restoreDefaults: !Theming.HasHighContrastTheme());
+
+		// MUX UpdateColorAndBrushResources has a first-create short-circuit. Uno's system resources
+		// are generated before this path runs, so there is no first-create case.
 		//   bool wasFirstCreateForResources = false;
-		//   IFC_RETURN(UpdateColorAndBrushResources(&wasFirstCreateForResources));
 		//   // We skip the rest of the theme notification if we just created
 		//   // our color and brush resources
 		//   if (wasFirstCreateForResources)
@@ -169,7 +170,7 @@ internal partial class CoreServices
 		{
 			if (contentRoot.VisualTree?.RootElement is IRootElement rootElement)
 			{
-				rootElement.SetBackgroundColor(ThemingHelper.GetRootVisualBackground());
+				rootElement.SetBackgroundColor(ThemingHelper.FromArgb(Theming.GetRootVisualBackground()));
 			}
 		}
 
