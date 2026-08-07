@@ -151,6 +151,13 @@ internal sealed class SkiaTextLine : TextLine
 	{
 		var segment = segmentSpan.Segment;
 
+		// A LineBreak segment has no Text to inspect (Segment.Text throws); the break is its whole content.
+		// Mirrors ParsedText.SpanEndsInNewLine - keep the two in step.
+		if (segment.Inline is LineBreak)
+		{
+			return segment.LineBreakLength > 0;
+		}
+
 		return segment is { Inline: Run, LineBreakAfter: true } &&
 			segment.Text.TrimEnd().Length <= segmentSpan.GlyphsStart + segmentSpan.GlyphsLength;
 	}
