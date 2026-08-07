@@ -119,10 +119,11 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 			_text = run.Text;
 		}
 
-		public Segment(LineBreak lineBreak)
+		public Segment(LineBreak lineBreak, int lineBreakLength = 0)
 		{
 			Inline = lineBreak;
 			LineBreakAfter = true;
+			LineBreakLength = lineBreakLength;
 			_text = String.Empty;
 		}
 
