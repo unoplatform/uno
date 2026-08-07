@@ -6294,8 +6294,7 @@
 											  IsFullWindow="{TemplateBinding IsFullWindow}"
 											  Stretch="{TemplateBinding Stretch}"
 											  MediaPlayer="{TemplateBinding MediaPlayer}"
-											  Visibility="Collapsed"
-											  Background="{TemplateBinding Background}" />
+											  Visibility="Collapsed" />
 						<ContentPresenter x:Name="TransportControlsPresenter"
 										  Visibility="{TemplateBinding AreTransportControlsEnabled}" />
 						<Grid x:Name="TimedTextSourcePresenter" />
