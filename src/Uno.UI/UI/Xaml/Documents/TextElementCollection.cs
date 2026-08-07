@@ -44,7 +44,7 @@ internal static class TextElementCollection
 				inline.InvalidateInlines(true);
 				break;
 			case Block block:
-				block.InvalidateInlines();
+				block.InvalidateInlines(contentChanged: true);
 				break;
 			case BlockCollection blockCollection:
 				MarkDirty(blockCollection);
