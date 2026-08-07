@@ -56,7 +56,7 @@
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
-		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj">
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Reference.csproj">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />

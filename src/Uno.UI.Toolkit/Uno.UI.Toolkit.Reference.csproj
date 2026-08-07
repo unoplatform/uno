@@ -33,7 +33,7 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Reference.csproj">
 			<Name>Uno.UI</Name>
 		</ProjectReference>
-		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj">
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Reference.csproj">
 			<Name>Uno</Name>
 		</ProjectReference>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj">

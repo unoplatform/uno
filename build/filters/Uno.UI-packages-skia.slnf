@@ -40,7 +40,7 @@
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Skia.csproj",
       "Uno.UI.XamlHost\\Uno.UI.XamlHost.Skia.csproj",
       "Uno.UI\\Uno.UI.Skia.csproj",
-      "Uno.UWP\\Uno.Skia.csproj"
+      "Uno.WinRT\\Uno.WinRT.Skia.csproj"
     ]
   }
 }

@@ -36,7 +36,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Messaging\Uno.UI.RemoteControl.Messaging.csproj" />
-		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Reference.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Reference.csproj" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Reference.csproj" />
 	</ItemGroup>
