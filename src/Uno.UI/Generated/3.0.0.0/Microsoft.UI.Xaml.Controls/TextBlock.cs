@@ -65,7 +65,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property TextAlignmentProperty
 		// Skipping already declared property TextDecorationsProperty
-// Skipping already declared TextLineBoundsProperty
+		// Skipping already declared property TextLineBoundsProperty
 		// Skipping already declared property TextProperty
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
@@ -77,7 +77,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property TextTrimmingProperty
 		// Skipping already declared property TextWrappingProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __NETSTD_REFERENCE__
+#if false || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public double BaselineOffset
 		{
@@ -213,7 +213,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TextAlignment
 		// Skipping already declared property TextDecorations
 		// Skipping already declared property TextHighlighters
-// Skipping already declared TextLineBounds
+		// Skipping already declared property TextLineBounds
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.TextReadingOrder TextReadingOrder

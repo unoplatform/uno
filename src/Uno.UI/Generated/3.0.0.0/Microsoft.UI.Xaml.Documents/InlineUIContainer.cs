@@ -4,7 +4,7 @@
 namespace Microsoft.UI.Xaml.Documents
 {
 	[global::Microsoft.UI.Xaml.Markup.ContentPropertyAttribute(Name = "Child")]
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __NETSTD_REFERENCE__
+#if false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class InlineUIContainer : global::Microsoft.UI.Xaml.Documents.Inline

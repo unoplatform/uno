@@ -112,10 +112,10 @@ namespace Microsoft.UI.Xaml.Documents
 #endif
 		// Skipping already declared property AllowFocusOnInteraction
 		// Skipping already declared property CharacterSpacing
-		// Skipping already declared ContentEnd
-		// Skipping already declared ContentStart
-		// Skipping already declared ElementEnd
-		// Skipping already declared ElementStart
+		// Skipping already declared property ContentEnd
+		// Skipping already declared property ContentStart
+		// Skipping already declared property ElementEnd
+		// Skipping already declared property ElementStart
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool ExitDisplayModeOnAccessKeyInvoked
