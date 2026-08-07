@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Windows.AppNotifications;
@@ -52,11 +53,81 @@ public class Given_AppNotificationManager
 		var backend = new TestBackend { Setting = AppNotificationSetting.DisabledForApplication };
 		var manager = new AppNotificationManager(backend);
 		var notification = CreateNotification();
+		manager.Register();
 
 		manager.Show(notification);
 
 		Assert.AreEqual(0u, notification.Id);
 		Assert.AreEqual(0, backend.Shown.Count);
+	}
+
+	[TestMethod]
+	public void When_Public_Show_Is_Called_Before_Register_It_Is_A_NoOp()
+	{
+		var backend = new TestBackend();
+		var manager = new AppNotificationManager(backend);
+		var notification = CreateNotification();
+
+		manager.Show(notification);
+
+		Assert.AreEqual(0u, notification.Id);
+		Assert.AreEqual(0, backend.Shown.Count);
+		Assert.AreEqual(0, backend.Calls.Count);
+	}
+
+	[TestMethod]
+	public void When_Manager_Unregisters_Public_Show_Remains_Available()
+	{
+		var backend = new TestBackend();
+		var manager = new AppNotificationManager(backend);
+		manager.Register();
+		manager.Unregister();
+		var notification = CreateNotification();
+
+		manager.Show(notification);
+
+		Assert.AreNotEqual(0u, notification.Id);
+		Assert.AreEqual(1, backend.Shown.Count);
+		CollectionAssert.AreEqual(new[] { "Register", "Unregister" }, backend.Calls);
+	}
+
+	[TestMethod]
+	public void When_Manager_Unregisters_All_Public_Show_Waits_For_Register()
+	{
+		var backend = new TestBackend();
+		var manager = new AppNotificationManager(backend);
+		manager.Register();
+		manager.UnregisterAll();
+		var blocked = CreateNotification();
+
+		manager.Show(blocked);
+
+		Assert.AreEqual(0u, blocked.Id);
+		Assert.AreEqual(0, backend.Shown.Count);
+
+		manager.Register();
+		var restored = CreateNotification();
+		manager.Show(restored);
+
+		Assert.AreNotEqual(0u, restored.Id);
+		Assert.AreEqual(1, backend.Shown.Count);
+		CollectionAssert.AreEqual(new[] { "Register", "UnregisterAll", "Register" }, backend.Calls);
+	}
+
+	[TestMethod]
+	public void When_UnregisterAll_Fails_After_Unregister_Public_Show_Remains_Available()
+	{
+		var backend = new TestBackend { UnregisterAllException = new InvalidOperationException("failed") };
+		var manager = new AppNotificationManager(backend);
+		manager.Register();
+		manager.Unregister();
+
+		Assert.ThrowsExactly<InvalidOperationException>(manager.UnregisterAll);
+		var notification = CreateNotification();
+		manager.Show(notification);
+
+		Assert.AreNotEqual(0u, notification.Id);
+		Assert.AreEqual(1, backend.Shown.Count);
 	}
 
 	[TestMethod]
@@ -66,6 +137,7 @@ public class Given_AppNotificationManager
 		var manager = new AppNotificationManager(backend);
 		var first = CreateNotification("first", "group");
 		var second = CreateNotification("second", "group");
+		manager.Register();
 
 		manager.Show(first);
 		manager.Show(second);
@@ -82,6 +154,7 @@ public class Given_AppNotificationManager
 		var backend = new TestBackend { AcceptShow = false };
 		var manager = new AppNotificationManager(backend);
 		var rejected = CreateNotification();
+		manager.Register();
 		manager.Show(rejected);
 
 		backend.AcceptShow = true;
@@ -97,6 +170,7 @@ public class Given_AppNotificationManager
 	{
 		var manager = new AppNotificationManager(new TestBackend());
 		var notification = CreateNotification();
+		manager.Register();
 		manager.Show(notification);
 
 		var exception = Assert.ThrowsExactly<COMException>(() => manager.Show(notification));
@@ -124,6 +198,7 @@ public class Given_AppNotificationManager
 		backend = new TestBackend();
 
 		Assert.AreEqual(AppNotificationSetting.Enabled, manager.Setting);
+		manager.Register();
 		manager.Show(CreateNotification());
 		Assert.AreEqual(1, ((TestBackend)backend).Shown.Count);
 	}
@@ -142,6 +217,23 @@ public class Given_AppNotificationManager
 		Assert.AreEqual("action=open%3Bitem", received.Argument);
 		Assert.AreEqual("open;item", received.Arguments["action"]);
 		Assert.AreEqual("Hello", received.UserInput["reply"]);
+	}
+
+	[TestMethod]
+	public void When_Register_Drains_Activation_Handler_Calling_Unregister_Is_Rejected()
+	{
+		var backend = new TestBackend();
+		var manager = new AppNotificationManager(backend);
+		manager.NotificationInvoked += (_, _) =>
+			Assert.ThrowsExactly<InvalidOperationException>(manager.Unregister);
+		AppNotificationActivationBroker.Publish(CreateActivation("open"));
+
+		manager.Register();
+		var notification = CreateNotification();
+		manager.Show(notification);
+
+		Assert.AreNotEqual(0u, notification.Id);
+		CollectionAssert.AreEqual(new[] { "Register" }, backend.Calls);
 	}
 
 	[TestMethod]
@@ -185,6 +277,83 @@ public class Given_AppNotificationManager
 	}
 
 	[TestMethod]
+	public async Task When_Unregister_Waits_For_Activation_Handler_Calling_Show_It_Does_Not_Deadlock()
+	{
+		var backend = new TestBackend();
+		var manager = new AppNotificationManager(backend);
+		using var activationEntered = new ManualResetEventSlim();
+		using var allowShow = new ManualResetEventSlim();
+		manager.NotificationInvoked += (_, _) =>
+		{
+			activationEntered.Set();
+			Assert.IsTrue(allowShow.Wait(TimeSpan.FromSeconds(5)));
+			manager.Show(CreateNotification());
+		};
+		manager.Register();
+
+		var publish = Task.Run(() => AppNotificationActivationBroker.Publish(CreateActivation("open")));
+		Assert.IsTrue(activationEntered.Wait(TimeSpan.FromSeconds(5)));
+		var unregister = Task.Run(manager.Unregister);
+		allowShow.Set();
+
+		await Task.WhenAll(publish, unregister).WaitAsync(TimeSpan.FromSeconds(5));
+
+		Assert.AreEqual(1, backend.Shown.Count);
+		CollectionAssert.AreEqual(new[] { "Register", "Unregister" }, backend.Calls);
+	}
+
+	[TestMethod]
+	public async Task When_Unregister_Waits_For_Activation_Handler_Calling_Unregister_It_Does_Not_Deadlock()
+	{
+		using var activationEntered = new ManualResetEventSlim();
+		using var unregisterEntered = new ManualResetEventSlim();
+		var backend = new TestBackend { UnregisterAction = unregisterEntered.Set };
+		var manager = new AppNotificationManager(backend);
+		manager.NotificationInvoked += (_, _) =>
+		{
+			activationEntered.Set();
+			Assert.IsTrue(unregisterEntered.Wait(TimeSpan.FromSeconds(5)));
+			Assert.ThrowsExactly<InvalidOperationException>(manager.Unregister);
+		};
+		manager.Register();
+
+		var publish = Task.Run(() => AppNotificationActivationBroker.Publish(CreateActivation("open")));
+		Assert.IsTrue(activationEntered.Wait(TimeSpan.FromSeconds(5)));
+		var unregister = Task.Run(manager.Unregister);
+
+		await Task.WhenAll(publish, unregister).WaitAsync(TimeSpan.FromSeconds(5));
+
+		CollectionAssert.AreEqual(new[] { "Register", "Unregister" }, backend.Calls);
+	}
+
+	[TestMethod]
+	public async Task When_UnregisterAll_Waits_For_Activation_Handler_Calling_Show_It_Is_A_NoOp()
+	{
+		using var activationEntered = new ManualResetEventSlim();
+		using var unregisterAllEntered = new ManualResetEventSlim();
+		var backend = new TestBackend { UnregisterAllAction = unregisterAllEntered.Set };
+		var manager = new AppNotificationManager(backend);
+		var notification = CreateNotification();
+		manager.NotificationInvoked += (_, _) =>
+		{
+			activationEntered.Set();
+			Assert.IsTrue(unregisterAllEntered.Wait(TimeSpan.FromSeconds(5)));
+			manager.Show(notification);
+		};
+		manager.Register();
+
+		var publish = Task.Run(() => AppNotificationActivationBroker.Publish(CreateActivation("open")));
+		Assert.IsTrue(activationEntered.Wait(TimeSpan.FromSeconds(5)));
+		var unregisterAll = Task.Run(manager.UnregisterAll);
+
+		await Task.WhenAll(publish, unregisterAll).WaitAsync(TimeSpan.FromSeconds(5));
+
+		Assert.AreEqual(0u, notification.Id);
+		Assert.AreEqual(0, backend.Shown.Count);
+		CollectionAssert.AreEqual(new[] { "Register", "UnregisterAll" }, backend.Calls);
+	}
+
+	[TestMethod]
 	public void When_Manager_Register_Is_Called_Twice_It_Throws()
 	{
 		var manager = new AppNotificationManager(new TestBackend());
@@ -211,8 +380,12 @@ public class Given_AppNotificationManager
 
 		Assert.ThrowsExactly<InvalidOperationException>(() => manager.Register());
 		AppNotificationActivationBroker.Publish(new AppNotificationActivation("open", new Dictionary<string, string>()));
+		var notification = CreateNotification();
+		manager.Show(notification);
 
 		Assert.AreEqual(0, count);
+		Assert.AreEqual(0u, notification.Id);
+		Assert.AreEqual(0, backend.Shown.Count);
 	}
 
 	[TestMethod]
@@ -297,6 +470,7 @@ public class Given_AppNotificationManager
 		notification.Priority = AppNotificationPriority.High;
 		notification.SuppressDisplay = true;
 		notification.Progress = new PublicAppNotificationProgressData(1) { Status = "Starting", Value = 0.1 };
+		manager.Register();
 		manager.Show(notification);
 
 		var shown = await manager.GetAllAsync();
@@ -318,6 +492,7 @@ public class Given_AppNotificationManager
 		var first = CreateNotification("tag", "group");
 		var second = CreateNotification("tag", "group");
 		var other = CreateNotification("tag", "other");
+		manager.Register();
 		manager.Show(first);
 		manager.Show(second);
 		manager.Show(other);
@@ -346,6 +521,7 @@ public class Given_AppNotificationManager
 		var backend = new TestBackend();
 		var manager = new AppNotificationManager(backend, new InMemoryAppNotificationStatePersistence());
 		var notification = CreateNotification("progress", "group");
+		manager.Register();
 		manager.Show(notification);
 
 		var first = await manager.UpdateAsync(new PublicAppNotificationProgressData(5) { Status = "Half", Value = 0.5 }, "progress", "group");
@@ -390,6 +566,7 @@ public class Given_AppNotificationManager
 	{
 		var backend = new TestBackend { ActiveNotificationIds = new HashSet<uint>() };
 		var manager = new AppNotificationManager(backend, new InMemoryAppNotificationStatePersistence());
+		manager.Register();
 		manager.Show(CreateNotification());
 
 		var shown = await manager.GetAllAsync();
@@ -403,6 +580,7 @@ public class Given_AppNotificationManager
 		var backend = new TestBackend { RemoveException = new InvalidOperationException("failed") };
 		var manager = new AppNotificationManager(backend, new InMemoryAppNotificationStatePersistence());
 		var notification = CreateNotification();
+		manager.Register();
 		manager.Show(notification);
 
 		await Assert.ThrowsExactlyAsync<InvalidOperationException>(() => manager.RemoveByIdAsync(notification.Id).AsTask());
@@ -418,6 +596,7 @@ public class Given_AppNotificationManager
 	{
 		var backend = new TestBackend();
 		var manager = new AppNotificationManager(backend, new InMemoryAppNotificationStatePersistence());
+		manager.Register();
 		manager.Show(CreateNotification("progress", "group"));
 		backend.ActiveNotificationIds = new HashSet<uint>();
 
@@ -451,6 +630,7 @@ public class Given_AppNotificationManager
 		var backend = new TestBackend();
 		var manager = new AppNotificationManager(backend, persistence);
 		var dismissed = CreateNotification("dismissed", "group");
+		manager.Register();
 		manager.Show(dismissed);
 		backend.ActiveNotificationIds = new HashSet<uint>();
 
@@ -467,6 +647,7 @@ public class Given_AppNotificationManager
 		var backend = new TestBackend();
 		var manager = new AppNotificationManager(backend, new InMemoryAppNotificationStatePersistence());
 		var notification = CreateNotification("progress", "group");
+		manager.Register();
 		manager.Show(notification);
 		backend.ActiveNotificationIds = new HashSet<uint> { notification.Id };
 		backend.AcceptUpdate = false;
@@ -520,6 +701,12 @@ public class Given_AppNotificationManager
 
 		public Exception? RemoveException { get; set; }
 
+		public Exception? UnregisterAllException { get; set; }
+
+		public Action? UnregisterAction { get; set; }
+
+		public Action? UnregisterAllAction { get; set; }
+
 		public List<string> Calls { get; } = new();
 
 		public List<AppNotificationEnvelope> Shown { get; } = new();
@@ -541,9 +728,21 @@ public class Given_AppNotificationManager
 
 		public void Register(string displayName, Uri iconUri) => Calls.Add($"Register:{displayName}:{iconUri}");
 
-		public void Unregister() => Calls.Add("Unregister");
+		public void Unregister()
+		{
+			Calls.Add("Unregister");
+			UnregisterAction?.Invoke();
+		}
 
-		public void UnregisterAll() => Calls.Add("UnregisterAll");
+		public void UnregisterAll()
+		{
+			if (UnregisterAllException is not null)
+			{
+				throw UnregisterAllException;
+			}
+			Calls.Add("UnregisterAll");
+			UnregisterAllAction?.Invoke();
+		}
 
 		public bool TryShow(AppNotificationEnvelope notification)
 		{

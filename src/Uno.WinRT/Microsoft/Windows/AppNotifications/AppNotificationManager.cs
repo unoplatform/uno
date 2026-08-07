@@ -16,12 +16,15 @@ public sealed class AppNotificationManager
 {
 	private static readonly AppNotificationManager _default = new();
 	private readonly object _gate = new();
+	private readonly object _lifecycleGate = new();
 	private readonly Func<IAppNotificationManagerBackend?> _backendFactory;
 	private readonly Func<AppNotificationStateStore> _stateStoreFactory;
 	private IAppNotificationManagerBackend? _backend;
 	private AppNotificationStateStore? _stateStore;
 	private TypedEventHandler<AppNotificationManager, AppNotificationActivatedEventArgs>? _notificationInvoked;
+	private volatile bool _hasRegistration;
 	private bool _isRegistered;
+	private bool _isLifecycleTransitioning;
 
 	private AppNotificationManager()
 	{
@@ -62,13 +65,35 @@ public sealed class AppNotificationManager
 	{
 		if (GetBackend() is { IsSupported: true } backend)
 		{
-			if (_isRegistered)
+			lock (_lifecycleGate)
 			{
-				throw new InvalidOperationException("The application is already registered for app notifications.");
+				if (_isLifecycleTransitioning)
+				{
+					throw new InvalidOperationException("Another app notification registration operation is already in progress.");
+				}
+				if (_isRegistered)
+				{
+					throw new InvalidOperationException("The application is already registered for app notifications.");
+				}
+				_isLifecycleTransitioning = true;
 			}
-			backend.Register();
-			_isRegistered = true;
-			AppNotificationActivationBroker.Register(OnNotificationActivated);
+			try
+			{
+				backend.Register();
+				lock (_lifecycleGate)
+				{
+					_hasRegistration = true;
+					_isRegistered = true;
+				}
+				AppNotificationActivationBroker.Register(OnNotificationActivated);
+			}
+			finally
+			{
+				lock (_lifecycleGate)
+				{
+					_isLifecycleTransitioning = false;
+				}
+			}
 		}
 	}
 
@@ -85,26 +110,71 @@ public sealed class AppNotificationManager
 		}
 		ArgumentNullException.ThrowIfNull(iconUri);
 
-		if (_isRegistered)
+		lock (_lifecycleGate)
 		{
-			throw new InvalidOperationException("The application is already registered for app notifications.");
+			if (_isLifecycleTransitioning)
+			{
+				throw new InvalidOperationException("Another app notification registration operation is already in progress.");
+			}
+			if (_isRegistered)
+			{
+				throw new InvalidOperationException("The application is already registered for app notifications.");
+			}
+			_isLifecycleTransitioning = true;
 		}
-		backend.Register(displayName, iconUri);
-		_isRegistered = true;
-		AppNotificationActivationBroker.Register(OnNotificationActivated);
+		try
+		{
+			backend.Register(displayName, iconUri);
+			lock (_lifecycleGate)
+			{
+				_hasRegistration = true;
+				_isRegistered = true;
+			}
+			AppNotificationActivationBroker.Register(OnNotificationActivated);
+		}
+		finally
+		{
+			lock (_lifecycleGate)
+			{
+				_isLifecycleTransitioning = false;
+			}
+		}
 	}
 
 	public void Unregister()
 	{
 		if (GetBackend() is { IsSupported: true } backend)
 		{
-			if (!_isRegistered)
+			lock (_lifecycleGate)
 			{
-				throw new InvalidOperationException("The application is not registered for app notifications.");
+				if (_isLifecycleTransitioning)
+				{
+					throw new InvalidOperationException("Another app notification registration operation is already in progress.");
+				}
+				if (!_isRegistered)
+				{
+					throw new InvalidOperationException("The application is not registered for app notifications.");
+				}
+				_isLifecycleTransitioning = true;
 			}
-			backend.Unregister();
-			AppNotificationActivationBroker.Unregister(OnNotificationActivated);
-			_isRegistered = false;
+			var completed = false;
+			try
+			{
+				backend.Unregister();
+				AppNotificationActivationBroker.Unregister(OnNotificationActivated);
+				completed = true;
+			}
+			finally
+			{
+				lock (_lifecycleGate)
+				{
+					if (completed)
+					{
+						_isRegistered = false;
+					}
+					_isLifecycleTransitioning = false;
+				}
+			}
 		}
 	}
 
@@ -115,24 +185,57 @@ public sealed class AppNotificationManager
 			return;
 		}
 
-		backend.UnregisterAll();
-		AppNotificationActivationBroker.Unregister(OnNotificationActivated);
-		_isRegistered = false;
+		bool hadRegistration;
+		lock (_lifecycleGate)
+		{
+			if (_isLifecycleTransitioning)
+			{
+				throw new InvalidOperationException("Another app notification registration operation is already in progress.");
+			}
+			_isLifecycleTransitioning = true;
+			hadRegistration = _hasRegistration;
+			_hasRegistration = false;
+		}
+		var nativeRegistrationRemoved = false;
+		try
+		{
+			lock (_gate)
+			{
+				backend.UnregisterAll();
+			}
+			nativeRegistrationRemoved = true;
+			AppNotificationActivationBroker.Unregister(OnNotificationActivated);
+		}
+		finally
+		{
+			lock (_lifecycleGate)
+			{
+				if (nativeRegistrationRemoved)
+				{
+					_isRegistered = false;
+				}
+				else
+				{
+					_hasRegistration = hadRegistration;
+				}
+				_isLifecycleTransitioning = false;
+			}
+		}
 	}
 
 	public void Show(AppNotification notification)
-		=> Show(notification, replaceTagAndGroup: false);
+		=> Show(notification, replaceTagAndGroup: false, requiresRegistration: true);
 
 	internal void ShowReplacingTagAndGroup(AppNotification notification)
-		=> Show(notification, replaceTagAndGroup: true);
+		=> Show(notification, replaceTagAndGroup: true, requiresRegistration: false);
 
 	internal void ShowScheduled(AppNotification notification, string deliveryCorrelation)
 	{
 		ArgumentNullException.ThrowIfNull(deliveryCorrelation);
-		Show(notification, replaceTagAndGroup: true, deliveryCorrelation);
+		Show(notification, replaceTagAndGroup: true, requiresRegistration: false, deliveryCorrelation);
 	}
 
-	private void Show(AppNotification notification, bool replaceTagAndGroup, string deliveryCorrelation = "")
+	private void Show(AppNotification notification, bool replaceTagAndGroup, bool requiresRegistration, string deliveryCorrelation = "")
 	{
 		if (GetBackend() is not { IsSupported: true } backend)
 		{
@@ -142,6 +245,10 @@ public sealed class AppNotificationManager
 
 		lock (_gate)
 		{
+			if (requiresRegistration && !_hasRegistration)
+			{
+				return;
+			}
 			var snapshot = notification.CaptureSnapshot();
 			if (snapshot.Id != 0)
 			{
@@ -326,11 +433,14 @@ public sealed class AppNotificationManager
 	{
 		add
 		{
-			if (_isRegistered)
+			lock (_lifecycleGate)
 			{
-				throw new InvalidOperationException("NotificationInvoked handlers must be added before Register is called.");
+				if (_isRegistered || _isLifecycleTransitioning)
+				{
+					throw new InvalidOperationException("NotificationInvoked handlers must be added before Register is called.");
+				}
+				_notificationInvoked += value;
 			}
-			_notificationInvoked += value;
 		}
 		remove => _notificationInvoked -= value;
 	}
