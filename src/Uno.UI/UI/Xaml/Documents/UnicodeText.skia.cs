@@ -212,7 +212,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			_rtl = flowDirection is FlowDirection.RightToLeft;
 			_textAlignment = textAlignment ?? (flowDirection is FlowDirection.RightToLeft ? TextAlignment.Right : TextAlignment.Left);
 			_wordBoundaries = [];
-			var (emptyHeight, emptyBaseline) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight,defaultFontDetails, false, true);
+			var (emptyHeight, emptyBaseline) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight, defaultFontDetails, false, true);
 			calculatedSize = new Size(0, emptyHeight);
 			_firstLineBaseline = emptyBaseline;
 			_availableSize = availableSize;
@@ -372,7 +372,7 @@ internal readonly partial struct UnicodeText : IParsedText
 						if (currentLineEnd != -1)
 						{
 							// If anything is already committed on the current line, flush it first so the chunk starts on a fresh line.
-							var (currentLineH, currentLineB) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight,maxHeightFontDetailsInCurrentLine!, lines.Count == 0, false);
+							var (currentLineH, currentLineB) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine!, lines.Count == 0, false);
 							lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast!, lineWidth, lineWidthWithoutTrailingSpaces, currentLineH, currentLineB));
 						}
 
@@ -403,7 +403,7 @@ internal readonly partial struct UnicodeText : IParsedText
 							clusterLast = currentClusterBreak.Previous!;
 						}
 
-						var (h, b) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight,fontDetails, lines.Count == 0, false);
+						var (h, b) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight, fontDetails, lines.Count == 0, false);
 						lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, end, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, clusterLast, width, widthWithoutTrailingSpaces, h, b));
 						lineWidth = 0;
 						lineWidthWithoutTrailingSpaces = 0;
@@ -433,7 +433,7 @@ internal readonly partial struct UnicodeText : IParsedText
 						{
 							if (textWrapping is not TextWrapping.NoWrap && currentLineEnd != -1)
 							{
-								var (h, b) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight,maxHeightFontDetailsInCurrentLine!, lines.Count == 0, false);
+								var (h, b) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine!, lines.Count == 0, false);
 								lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast!, lineWidth, lineWidthWithoutTrailingSpaces, h, b));
 								lineWidth = 0;
 								lineWidthWithoutTrailingSpaces = 0;
@@ -475,7 +475,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 						if (IsLineBreak(_text, currentClusterBreak.Value.end))
 						{
-							var (h, b) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight,maxHeightFontDetailsInCurrentLine, lines.Count == 0, false);
+							var (h, b) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine, lines.Count == 0, false);
 							lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast, lineWidth, lineWidthWithoutTrailingSpaces, h, b));
 							lineWidth = 0;
 							lineWidthWithoutTrailingSpaces = 0;
@@ -486,7 +486,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 						if (currentClusterBreak.Value.end == _text.Length && currentLineEnd != -1)
 						{
-							var (h, b) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight,maxHeightFontDetailsInCurrentLine ?? defaultFontDetails, lines.Count == 0, true);
+							var (h, b) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine ?? defaultFontDetails, lines.Count == 0, true);
 							lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast!, lineWidth, lineWidthWithoutTrailingSpaces, h, b));
 						}
 					}
@@ -506,7 +506,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			var nextLineHeight = lineIndex < lines.Count - 1
 				? lines[lineIndex + 1].lineHeight
 				: textEndsInLineBreak
-					? GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight,defaultFontDetails, false, true).lineHeight
+					? GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight, defaultFontDetails, false, true).lineHeight
 					: 0;
 			var actualLineCount = lines.Count + (textEndsInLineBreak ? 1 : 0);
 			var isEarlyLastLine = (maxLines > 0 && maxLines < actualLineCount && lineIndex == maxLines - 1) || (lineIndex < actualLineCount - 1 && nextLineHeight + totalHeight > availableSize.Height);
@@ -606,7 +606,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		_endingNewLineLineHeight = lines[^1].end == _text.Length && textEndsInLineBreak ? GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight,defaultFontDetails, false, true).lineHeight : null;
+		_endingNewLineLineHeight = lines[^1].end == _text.Length && textEndsInLineBreak ? GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight, defaultFontDetails, false, true).lineHeight : null;
 		totalHeight += _endingNewLineLineHeight ?? 0;
 
 		float maxLineWidth = 0;

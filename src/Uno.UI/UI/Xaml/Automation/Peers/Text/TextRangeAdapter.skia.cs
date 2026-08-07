@@ -263,12 +263,13 @@ internal sealed partial class TextRangeAdapter : ITextRangeProvider
 			return;
 		}
 
-		// TODO Uno (UIA): RichTextBlock/TextBlock GetFocusableChildren (the hyperlink collection) is not
-		// ported. Once it is, walk the focusable children and add those whose link offsets fall within
+		// TODO Uno (UIA): TextBlock.GetFocusableChildren (the hyperlink collection) is not ported. Once it
+		// is, walk the focusable children of both owners and add those whose link offsets fall within
 		// [startOffset, endOffset) via IsLinkWithinRange.
 	}
 
 	// CTextRangeAdapter::IsLinkWithinRange
+#pragma warning disable IDE0051 // Consumed once the UIA children enumeration above is wired up.
 	private bool IsLinkWithinRange(Inline link, uint startOffset, uint endOffset)
 	{
 		if (link is not Hyperlink hyperlink)
@@ -293,6 +294,7 @@ internal sealed partial class TextRangeAdapter : ITextRangeProvider
 
 		return isStartWithinRange || isEndWithinRange;
 	}
+#pragma warning restore IDE0051
 
 	public void ExpandToEnclosingUnit(TextUnit unit)
 	{
