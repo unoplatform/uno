@@ -40,7 +40,7 @@ In Visual Studio, the App MCP might turn red on some occasions. To fix this issu
 
 The Uno Platform App MCP may fail to start in Claude/Codex/Copilot CLI when it is started in a folder that does not contain an Uno Platform project.
 
-To fix this issue, change directories to a folder that contains the `.sln` or `.slnx` file of your project.
+To fix this issue, change directories to a folder that contains the `.sln` or `.slnx` file of your project — or, for solution-less projects, the folder containing the `global.json` file that declares your `Uno.Sdk` version.
 
 ## Diagnosing Dev Server issues
 

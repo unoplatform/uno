@@ -165,7 +165,7 @@ uno-devserver disco --addins-only --json
 globalJsonPath     <null> (missing global.json in working directory or parents)
 ```
 
-You are running `disco` outside of an Uno Platform project directory. Change to the directory containing your `.sln` or `.slnx` file.
+You are running `disco` outside of an Uno Platform workspace. Change to a directory that contains — or is beneath — the `global.json` file declaring your `Uno.Sdk` version. A solution file is not required: solution-less workspaces are resolved through `global.json`.
 
 ### SDK package not restored
 

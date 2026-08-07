@@ -15,6 +15,40 @@ This document explains the many features of this SDK and how to configure its be
 
 Updating the Uno.Sdk is [done through the global.json file](xref:Uno.Development.UpgradeUnoNuget).
 
+## Solution-less projects and `.slnx` solutions
+
+Uno.Sdk projects are standard .NET SDK-style projects: a single `.csproj` is all you need to build, run, and publish an application. A solution file is a convenience for IDEs and multi-project repositories — it is not a requirement of the Uno.Sdk or the .NET CLI.
+
+From the directory containing your project file:
+
+```bash
+dotnet build -f net10.0-desktop
+dotnet run -f net10.0-desktop
+dotnet publish -f net10.0-desktop -c Release
+```
+
+> [!IMPORTANT]
+> The `global.json` file that selects your `Uno.Sdk` version applies to projects, not solutions. When working without a solution file, keep `global.json` in the project directory or in any parent directory.
+
+> [!NOTE]
+> IDE dev-loop tooling (Hot Reload, the [Dev Server](xref:Uno.DevServer), and Uno Platform Studio add-ins) supports solution-less workspaces starting with **Uno.Sdk 6.6**. In VS Code, this additionally requires the Uno Platform extension 0.25.3 or later together with the C# Dev Kit extension. On earlier Uno.Sdk versions the Dev Server still starts, but the Studio add-ins are not loaded.
+
+### Using the `.slnx` solution format
+
+The XML-based [`.slnx` solution format](https://devblogs.microsoft.com/dotnet/introducing-slnx-support-dotnet-cli/) is fully supported — by the .NET CLI, by the Uno Platform IDE extensions, and by the Dev Server (workspace discovery enumerates both `.sln` and `.slnx` files):
+
+```xml
+<Solution>
+  <Project Path="MyApp/MyApp.csproj" />
+</Solution>
+```
+
+To convert an existing solution, run:
+
+```bash
+dotnet sln MyApp.sln migrate
+```
+
 ## Uno Platform Features
 
 As Uno Platform can be used in many different ways, in order to reduce the build time and avoid downloading many packages, the Uno.Sdk offers a way to simplify which Uno Platform features should be enabled.
@@ -178,6 +212,65 @@ Those properties can be set from `Directory.Build.props` or may be set in the `c
 ```
 
 In the sample above, we are overriding the default versions of the `UnoToolkit`, `MicrosoftLogging`, and `CommunityToolkitMvvm` packages.
+
+## Using Central Package Management with implicit packages
+
+Uno Platform templates use [NuGet Central Package Management](https://learn.microsoft.com/nuget/consume-packages/central-package-management) (CPM) by default: package versions live in a `Directory.Packages.props` file at the root of the repository, and `<PackageReference>` items in project files carry no `Version` attribute.
+
+CPM and the Uno.Sdk implicit packages coexist automatically:
+
+- The SDK keeps managing the versions of its implicit packages (based on the Uno Platform version from `global.json` and the `*Version` properties above).
+- If your `Directory.Packages.props` contains a `<PackageVersion>` entry for a package the SDK already references implicitly, the SDK removes that central entry during restore, so it cannot conflict with the SDK-managed version. To change the version of an implicit package, use the matching `*Version` property or take over the package with an explicit reference (see below) — a lone `<PackageVersion>` entry has no effect.
+- If your project declares its own `<PackageReference>` for a package the SDK would otherwise add implicitly — versioned centrally, via `Version`, or via `VersionOverride` — the SDK backs off and your reference wins.
+
+A typical `Directory.Packages.props` only needs entries for the packages *you* add — implicit packages need none:
+
+```xml
+<Project ToolsVersion="15.0">
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Your own dependencies -->
+    <PackageVersion Include="AutoMapper" Version="13.0.1" />
+    <PackageVersion Include="FluentValidation" Version="11.9.0" />
+    <!-- Takes over an otherwise-implicit package (requires a matching
+         PackageReference in the project file) -->
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+  </ItemGroup>
+</Project>
+```
+
+### Overriding the version of a single package
+
+Under CPM, the standard NuGet [`VersionOverride`](https://learn.microsoft.com/nuget/consume-packages/central-package-management#overriding-package-versions) metadata overrides the centrally-defined version for one project, and is honored by the Uno.Sdk when deciding whether to back off from an implicit package:
+
+```xml
+<ItemGroup>
+  <PackageReference Include="CommunityToolkit.Mvvm" VersionOverride="8.3.2" />
+</ItemGroup>
+```
+
+For Uno-managed packages, prefer the `*Version` MSBuild properties documented above (`UnoToolkitVersion`, `CommunityToolkitMvvmVersion`, …) — they adjust the implicit reference itself, without needing a `PackageReference`/`PackageVersion` pair.
+
+### Per-TargetFramework package versions
+
+A single `<PackageVersion>` entry cannot express different versions per target framework, but `Directory.Packages.props` is evaluated once per target framework, so conditional item groups work:
+
+```xml
+<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+  <PackageVersion Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
+</ItemGroup>
+<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">
+  <PackageVersion Include="Uno.CommunityToolkit.WinUI.UI.Controls" Version="7.1.200" />
+</ItemGroup>
+```
+
+The same pattern works with a `Choose`/`When` block, as shown in [Supported OS Platform versions](#supported-os-platform-versions).
+
+### NuGet audit
+
+Implicit packages are turned into ordinary `<PackageReference>` items before restore runs, so [NuGet audit](https://learn.microsoft.com/nuget/concepts/auditing-packages) evaluates them exactly like packages you reference yourself: known vulnerabilities in implicit packages are reported as direct-dependency warnings, and `NuGetAudit*` properties apply to them as usual.
 
 ## Disabling Implicit Uno Packages
 
