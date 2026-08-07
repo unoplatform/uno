@@ -177,6 +177,15 @@ partial class TextElement
 	private FlowDirection GetFlowDirection()
 		=> this is Run run ? run.FlowDirection : FlowDirection.LeftToRight;
 
+	// TODO Uno: the Typography attached properties are still generated [NotImplemented] stubs, and the
+	// generated metadata defaults every flag to false. WinUI leaves the OpenType liga/clig/calt/kern
+	// features on by default, so honor that here until Typography itself is ported.
+	private bool GetTypographyFlag(DependencyProperty property, bool winUIDefault)
+	{
+		var localValue = ReadLocalValue(property);
+		return localValue == DependencyProperty.UnsetValue ? winUIDefault : (bool)localValue;
+	}
+
 	private InheritedProperties BuildInheritedProperties()
 	{
 		var inherited = new InheritedProperties();
@@ -186,13 +195,13 @@ partial class TextElement
 			EastAsianExpertForms = TypographyAttachedProperties.GetEastAsianExpertForms(this),
 			EastAsianLanguage = TypographyAttachedProperties.GetEastAsianLanguage(this),
 			EastAsianWidths = TypographyAttachedProperties.GetEastAsianWidths(this),
-			StandardLigatures = TypographyAttachedProperties.GetStandardLigatures(this),
-			ContextualLigatures = TypographyAttachedProperties.GetContextualLigatures(this),
+			StandardLigatures = GetTypographyFlag(TypographyAttachedProperties.StandardLigaturesProperty, winUIDefault: true),
+			ContextualLigatures = GetTypographyFlag(TypographyAttachedProperties.ContextualLigaturesProperty, winUIDefault: true),
 			DiscretionaryLigatures = TypographyAttachedProperties.GetDiscretionaryLigatures(this),
 			HistoricalLigatures = TypographyAttachedProperties.GetHistoricalLigatures(this),
 			StandardSwashes = TypographyAttachedProperties.GetStandardSwashes(this),
 			ContextualSwashes = TypographyAttachedProperties.GetContextualSwashes(this),
-			ContextualAlternates = TypographyAttachedProperties.GetContextualAlternates(this),
+			ContextualAlternates = GetTypographyFlag(TypographyAttachedProperties.ContextualAlternatesProperty, winUIDefault: true),
 			StylisticAlternates = TypographyAttachedProperties.GetStylisticAlternates(this),
 			StylisticSet1 = TypographyAttachedProperties.GetStylisticSet1(this),
 			StylisticSet2 = TypographyAttachedProperties.GetStylisticSet2(this),
@@ -216,7 +225,7 @@ partial class TextElement
 			StylisticSet20 = TypographyAttachedProperties.GetStylisticSet20(this),
 			Capitals = TypographyAttachedProperties.GetCapitals(this),
 			CapitalSpacing = TypographyAttachedProperties.GetCapitalSpacing(this),
-			Kerning = TypographyAttachedProperties.GetKerning(this),
+			Kerning = GetTypographyFlag(TypographyAttachedProperties.KerningProperty, winUIDefault: true),
 			CaseSensitiveForms = TypographyAttachedProperties.GetCaseSensitiveForms(this),
 			HistoricalForms = TypographyAttachedProperties.GetHistoricalForms(this),
 			Fraction = TypographyAttachedProperties.GetFraction(this),
