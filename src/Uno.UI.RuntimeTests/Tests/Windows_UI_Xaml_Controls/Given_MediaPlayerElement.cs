@@ -17,9 +17,6 @@ using Uno.Media.Playback;
 using _MediaPlayer = Windows.Media.Playback.MediaPlayer; // alias to avoid same name root namespace from ios/macos
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
-#if __WASM__
-[Ignore("UNO TODO - This test is failing on WASM [https://github.com/unoplatform/uno/issues/12665]")]
-#endif
 [TestClass]
 [RunsOnUIThread]
 [PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
@@ -28,7 +25,7 @@ public partial class Given_MediaPlayerElement
 	private static readonly Uri TestVideoUrl = new Uri("https://uno-assets.platform.uno/tests/uno/big_buck_bunny_720p_5mb.mp4");
 
 	[TestMethod]
-	[Ignore("https://github.com/unoplatform/uno/issues/13384")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/13384")]
 	public async Task When_MediaPlayerElement_NotAutoPlay_Source()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -50,7 +47,7 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	[Ignore("https://github.com/unoplatform/uno/issues/13384")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/13384")]
 	public async Task When_MediaPlayerElement_AutoPlay_Source()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -114,15 +111,8 @@ public partial class Given_MediaPlayerElement
 		Assert.IsNotNull(mediaPlayer);
 	}
 
-#if __APPLE_UIKIT__ || __ANDROID__ || !HAS_UNO
-	// [Ignore("Test ignored on windows. Could not find the element by name. And Not supported under MAC [https://github.com/unoplatform/uno/issues/12663]")]
-	// [Ignore("https://github.com/unoplatform/uno/issues/13384")]
-	[Ignore("https://github.com/unoplatform/uno/issues/13384")]
-#endif
-#if __SKIA__
-	[Ignore("https://github.com/unoplatform/uno/issues/14735")]
-#endif
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/14735")]
 	public async Task When_MediaPlayerElement_SetIsFullWindow_Check_Fullscreen()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -165,9 +155,7 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-#if __SKIA__
-	[Ignore("https://github.com/unoplatform/uno/issues/15471")]
-#endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15471")]
 	public async Task When_MediaPlayerElement_SetSource_Check_Play()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -193,7 +181,7 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	[Ignore("https://github.com/unoplatform/uno/issues/13384")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/13384")]
 	public async Task When_MediaPlayerElement_SetSource_Check_PlayStop()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -233,11 +221,7 @@ public partial class Given_MediaPlayerElement
 
 	}
 
-#if __SKIA__
-	[Ignore("Test not work properly on CI, the player do not have time to pause, doe the video do not auto play.  [https://github.com/unoplatform/uno/issues/12692]")]
-#elif __ANDROID__
-	[Ignore("Fails on Android")]
-#endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12692")]
 	[TestMethod]
 	public async Task When_MediaPlayerElement_SetSource_Check_PlayPause()
 	{
