@@ -265,9 +265,12 @@ _Danger 3-4. Heavier multi-file changes: remove the legacy templated-parent mech
 - [ ] **BC71** — Remove Fluent V1 public surface  `d2·M` · #14765
   - Hard-remove `XamlControlsResourcesV1` + `ControlsResourcesVersion.Version1` + build/package scaffolding (V1 content is already gone).
   - Files: `src/Uno.UI.FluentTheme.v1/XamlControlsResourcesV1.cs`, `src/Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Skia.csproj`, `src/Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Wasm.csproj`
-- [ ] **BC53** — Rename `Uno.UI.Toolkit` assembly/namespace ⚠️  `d4·M` · #12322
-  - **DECIDE the new assembly/namespace name.** Hard rename, no type-forwarders / xmlns alias (per hard-remove policy).
-  - Files: `src/Uno.UI.Toolkit/`, `src/Uno.UI.Toolkit/Uno.UI.Toolkit.Skia.csproj`, `src/Uno.UI.Toolkit/Uno.UI.Toolkit.Wasm.csproj`
+- [ ] **BC53** — Rename `Uno.UI.Toolkit` assembly/namespace -> **`Uno.UI.Extras`**  `d4·M` · #12322
+  - Name decided. Hard rename, no type-forwarders / xmlns alias (per hard-remove policy). Only the `Uno.UI.Toolkit`, `.DevTools.*` and `.Extensions` namespaces move; `Uno.Diagnostics.UI`, `Uno.UI.Markup`, `Uno.Helpers`, `Uno.UI` and `Uno.UI.Maps` stay. See [spec 056](../056-assembly-renames/spec.md).
+  - Files: `src/Uno.UI.Toolkit/`, `src/Uno.UI.Toolkit/Uno.UI.Toolkit.Skia.csproj`, `src/Uno.UI.Toolkit/Uno.UI.Toolkit.Windows.csproj`
+- [ ] **BC77** — Rename `Uno.UWP` project + `Uno` assembly -> **`Uno.WinRT`**  `d4·M`
+  - Folder, csprojs and `AssemblyName` (`Uno.dll` -> `Uno.WinRT.dll`), matching the `Uno.WinRT` package that already ships it. `RootNamespace` stays `Windows` — no type moves. Prerequisite for the remaining sync-generator API relocation work. See [spec 056](../056-assembly-renames/spec.md).
+  - Files: `src/Uno.UWP/`, `src/Directory.Build.props`, `build/nuget/Uno.WinRT.nuspec`, `src/Uno.WinAppSDKSyncGenerator/Generator.cs`, 9 × `InternalsVisibleTo("Uno")`
 - [ ] **BC76** — Remove/internalize `Windows.UI.Input.*` (~173 types)  `d4·M` · #18875
   - Hard-remove the ~173 stub types. The **real** `InputInjector` family (test infra) -> move to `Microsoft.UI.Input.Preview.Injection` and update call sites.
   - Files: `src/Uno.UWP/Generated/3.0.0.0/Windows.UI.Input`, `src/Uno.UWP/Generated/3.0.0.0/Windows.UI.Input.Spatial`, `src/Uno.UWP/Generated/3.0.0.0/Windows.UI.Input.Inking`

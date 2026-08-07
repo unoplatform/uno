@@ -15,7 +15,7 @@ type-forwarder, an `[Obsolete]` alias, or an `xmlns` alias.
 
 Both names are historical artifacts rather than deliberate API choices:
 
-- **`Uno.WinRT` / `Uno.dll`** holds the non-UI WinRT surface (`Windows.*` / `Microsoft.*`
+- **`Uno.UWP` / `Uno.dll`** holds the non-UI WinRT surface (`Windows.*` / `Microsoft.*`
   projections for storage, sensors, networking, …). "UWP" predates Uno Platform's WinAppSDK
   alignment, and `Uno.dll` is an uninformatively generic assembly name. The NuGet package is
   **already** `Uno.WinRT`, so this rename closes a gap between package, project, and assembly
@@ -28,7 +28,7 @@ Both names are historical artifacts rather than deliberate API choices:
 
 | Decision | Outcome |
 |---|---|
-| `Uno.WinRT` new name | **`Uno.WinRT`** — folder, csprojs, and `AssemblyName` |
+| `Uno.UWP` new name | **`Uno.WinRT`** — folder, csprojs, and `AssemblyName` |
 | `Uno.UI.Toolkit` new name | **`Uno.UI.Extras`** — folder, csprojs, `AssemblyName`, root namespace |
 | Namespace scope (Extras) | Only `Uno.UI.Toolkit`, `.DevTools.*`, `.Extensions` move |
 | `RootNamespace` (WinRT) | Unchanged (`Windows`) — the projected API surface must not move |
@@ -67,13 +67,13 @@ Toolkit. The assembly name and root namespace matching exactly is not worth the 
 
 ---
 
-## Part A — `Uno.WinRT` → `Uno.WinRT`
+## Part A — `Uno.UWP` → `Uno.WinRT`
 
 ### Rename
 
 | What | From | To |
 |---|---|---|
-| Folder | `src/Uno.WinRT` | `src/Uno.WinRT` |
+| Folder | `src/Uno.UWP` | `src/Uno.WinRT` |
 | Projects | `Uno.{Skia,Reference,Wasm,netcoremobile}.csproj` | `Uno.WinRT.{…}.csproj` |
 | `AssemblyName` (×4) | `Uno` | `Uno.WinRT` |
 | Output | `Uno.dll` | `Uno.WinRT.dll` |
@@ -86,7 +86,7 @@ Output paths are `bin/<ProjectName>/`, so renaming the csprojs **moves every bui
 directory**. Everything that hard-codes one of those paths breaks:
 
 - **26 `<file src>` paths** in `build/nuget/Uno.WinRT.nuspec`
-  (`src\Uno.WinRT\Bin\Uno.Skia\…\Uno.dll` → `src\Uno.WinRT\bin\Uno.WinRT.Skia\…\Uno.WinRT.dll`)
+  (`src\Uno.UWP\Bin\Uno.Skia\…\Uno.dll` → `src\Uno.WinRT\bin\Uno.WinRT.Skia\…\Uno.WinRT.dll`)
 - `SamplesApp.Skia.Generic.csproj` (2 hard-coded `…\Uno.Skia\…\Uno.dll` item paths)
 - **5 `_AdjustedOutputProjects` entries** in `src/Directory.Build.props`. Note two of these
   (`Uno.Tests.csproj`) are already stale — no such project exists. Drop them rather than rename
@@ -106,12 +106,12 @@ compiler will catch:
 The **sync generator** routes generated WinRT stubs by hard-coded path and assembly name
 (`src/Uno.WinAppSDKSyncGenerator/`):
 
-- `Generator.cs` — 3 × `..\..\..\Uno.WinRT\Generated\3.0.0.0` output paths
-- `Generator.cs:186` — `var platformProject = @"..\..\..\Uno.WinRT\Uno";` (project path prefix,
+- `Generator.cs` — 3 × `..\..\..\Uno.UWP\Generated\3.0.0.0` output paths
+- `Generator.cs:186` — `var platformProject = @"..\..\..\Uno.UWP\Uno";` (project path prefix,
   suffixed per variant)
-- `Generator.cs:536` — `basePath.Contains(@"\Uno.WinRT\", …)` platform-vs-Skia discriminator
+- `Generator.cs:536` — `basePath.Contains(@"\Uno.UWP\", …)` platform-vs-Skia discriminator
 - `Generator.cs:2346` — assembly list `["Uno.Foundation", "Uno", "Uno.UI.Composition", …]`
-- `Program.cs:19` — `DeleteDirectoryIfExists(@"..\..\..\Uno.WinRT\Generated\")`
+- `Program.cs:19` — `DeleteDirectoryIfExists(@"..\..\..\Uno.UWP\Generated\")`
 
 Plus ~30 `ProjectReference` paths across the tree and 6 `src/Uno.UI.slnx` entries.
 
@@ -189,7 +189,7 @@ Part A first, because the sync-generator relocation work depends on the final na
 
 The two changes are file-independent except for four shared files — `src/Directory.Build.props`,
 `src/Uno.UI.slnx`, `build/PackageDiffIgnore.xml`, and the Extras csprojs' `ProjectReference` to
-`..\Uno.WinRT\…`. Both branches can therefore be developed in parallel; the Extras branch rebases
+`..\Uno.UWP\…`. Both branches can therefore be developed in parallel; the Extras branch rebases
 once Part A merges.
 
 Commit in logical groups that each build clean, rather than one squashed rename:
@@ -222,9 +222,25 @@ pass `-p:UnoTargetFrameworkOverride=net10.0` (plus `-p:UnoFastDevBuild=true` for
 | 5 | Runtime tests, Skia Desktop | 48 RuntimeTests files consume the renamed namespaces (input injection via `DevTools`) |
 | 6 | **Sync-generator round-trip** (Part A) | Re-run and confirm `Generated/` returns byte-identical under the new path — otherwise four hard-coded strings are unverified |
 | 7 | PackageDiff | Expected to flag every type in both assemblies; handled as a baseline reset |
-| 8 | WASM head build | `LinkerDefinition.Wasm.xml` names the assembly literally; a stale entry fails silently at trim time, not at compile time |
+| 8 | ~~WASM head build for `LinkerDefinition.Wasm.xml`~~ | **Dropped.** The file is dead: `Uno.UI` has no WASM csproj after the native drop, and nothing embeds it. Its `<assembly fullname>` entry is updated for consistency only, and the file is a deletion candidate in its own right. |
 
-Checks 3, 4, 6, and 8 are the ones that fail *silently* — a green Skia build proves none of them.
+Checks 3, 4, and 6 are the ones that fail *silently* — a green Skia build proves none of them.
+
+### Duplicate assembly identity (found during Part A)
+
+Renaming an assembly means the old and new names are **different identities**, so both can be
+referenced by one compilation. Every `Windows.*` type is then defined twice, and Roslyn's
+`Compilation.GetTypeByMetadataName` returns null on ambiguity rather than erroring — which made
+the XAML generator *silently drop* literal and extended properties from its output.
+
+This is not hypothetical: it broke 8 source-generator tests, because they reference a pre-7.0
+`Uno.WinUI` package (which still ships `Uno.dll`) on top of the local build. Before the rename the
+identical identity meant the local assembly simply shadowed the package's. The fix drops the
+superseded package reference in the test harness.
+
+The same failure mode reaches real consumers: a 7.0 app that transitively pulls a library compiled
+against Uno 6.x gets duplicate `Windows.*` types. Recompiling every dependent library against 7.0
+is the only remedy, and the migration guide says so explicitly.
 
 ## Risks
 
