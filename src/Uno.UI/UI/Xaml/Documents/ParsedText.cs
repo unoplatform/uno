@@ -745,23 +745,49 @@ internal readonly struct ParsedText : IParsedText
 	{
 		var start = 0;
 		var hyperlinks = new List<(int start, int end, Hyperlink hyperlink)>();
+
+		// Only leaves carry text, and _inlines may be either the leaf list (RichTextBlock feeds the
+		// formatter through ISkiaParagraphSource.GetLeafInlines) or a pre-order walk. Deriving the
+		// ranges from the leaves and walking up to the containing Hyperlink handles both.
 		foreach (var inline in _inlines)
 		{
-			switch (inline)
+			if (inline is Span)
 			{
-				case Hyperlink h:
-					hyperlinks.Add((start, start + h.GetText().Length, h));
-					break;
-				case Span:
-					break;
-				default: // Leaf node
-					start += inline.GetText().Length;
-					break;
+				// Container - its leaves contribute the text.
+				continue;
 			}
+
+			var length = inline.GetText().Length;
+
+			if (FindContainingHyperlink(inline) is { } hyperlink)
+			{
+				hyperlinks.Add((start, start + length, hyperlink));
+			}
+
+			start += length;
 		}
 		var characterIndex = ((IParsedText)this).GetIndexAt(point, ignoreEndingNewLine: false, extendedSelection: false);
 		return hyperlinks.FirstOrDefault(h => h.start <= characterIndex && h.end > characterIndex)
 			.hyperlink;
+	}
+
+	// Nearest Hyperlink ancestor of a leaf inline, or null when the leaf is not inside one.
+	private static Hyperlink? FindContainingHyperlink(Inline inline)
+	{
+		for (DependencyObject? current = inline; current is not null; current = current.GetParent() as DependencyObject)
+		{
+			if (current is Hyperlink hyperlink)
+			{
+				return hyperlink;
+			}
+
+			if (current is Microsoft.UI.Xaml.Controls.TextBlock or Microsoft.UI.Xaml.Controls.RichTextBlock)
+			{
+				break;
+			}
+		}
+
+		return null;
 	}
 
 	public (int start, int length) GetWordAt(int index, bool right)
