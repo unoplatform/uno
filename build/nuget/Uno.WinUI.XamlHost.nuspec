@@ -42,10 +42,6 @@
 		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net11.0\Uno.UI.XamlHost.dll" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net11.0\Uno.UI.XamlHost.pdb" target="lib\net11.0" />
 
-		<!-- net10.0 Skia -->
-
-		<!-- net11.0 Skia -->
-
 	</files>
 
 </package>
