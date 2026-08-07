@@ -131,8 +131,7 @@ namespace Microsoft.UI.Xaml
 					}
 				}
 
-				// Force a schedule to let the dotnet exports be initialized properly
-				DispatcherQueue.Main.TryEnqueue(currentApp.InvokeOnLaunched);
+				currentApp.InvokeOnLaunched();
 			}
 			else
 			{
