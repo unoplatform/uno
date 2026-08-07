@@ -362,6 +362,28 @@ namespace Microsoft.UI.Xaml.Documents
 
 		partial void OnNameChangedPartial(string newValue);
 
+		// CTextElement::MarkDirty — propagate the change up if we have a text element collection as
+		// parent. WinUI reaches the collection directly; Uno parents elements to the owning element,
+		// so we hop through it to the collection that actually holds this element.
+		internal void MarkDirty()
+		{
+			switch (this.GetParent())
+			{
+				case TextBlock textBlock:
+					textBlock.Inlines?.MarkDirty();
+					break;
+				case Span span:
+					span.Inlines?.MarkDirty();
+					break;
+				case Paragraph paragraph:
+					paragraph.Inlines?.MarkDirty();
+					break;
+				case RichTextBlock richTextBlock:
+					richTextBlock.Blocks?.MarkDirty();
+					break;
+			}
+		}
+
 		/// <summary>
 		/// Retrieves the parent RichTextBox/CRichTextBlock/TextBlock.
 		/// </summary>
