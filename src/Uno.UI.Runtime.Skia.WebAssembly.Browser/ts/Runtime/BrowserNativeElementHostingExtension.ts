@@ -37,6 +37,11 @@ namespace Uno.UI.NativeElementHosting {
 			this.clipPath.setAttribute("clip-rule", fillType);
 		}
 
+		public static setSvgClipPathForNativeElementHostAsync(path: string, fillType: string) : Promise<void> {
+			BrowserHtmlElement.setSvgClipPathForNativeElementHost(path, fillType);
+			return Promise.resolve();
+		}
+
 		private static getNativeElementHost(): HTMLElement {
 			let nativeElementHost = document.getElementById("uno-native-element-host");
 			if (!nativeElementHost) {

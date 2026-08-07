@@ -59,4 +59,16 @@
 
 	</Target>
 
+	<Target Name="_UnoSetupWebAssemblyThreading"
+			BeforeTargets="GenerateUnoWasmAssets"
+			Condition="'$(WasmEnableThreads)' == 'true'">
+
+		<ItemGroup>
+			<_UnoWasmCopyToOutputAssets Include="$(MSBuildThisFileDirectory)js\mt\render-worker.js"
+										CopyToOutputDirectory="PreserveNewest"
+										TargetPath="render-worker.js"/>
+		</ItemGroup>
+
+	</Target>
+
 </Project>
