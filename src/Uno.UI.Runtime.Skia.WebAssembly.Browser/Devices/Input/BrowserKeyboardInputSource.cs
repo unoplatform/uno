@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
@@ -73,6 +74,22 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 		}
 
 		return (byte)(args.Handled ? HtmlEventDispatchResult.PreventDefault : HtmlEventDispatchResult.Ok);
+	}
+
+	[JSExport]
+	private static Task OnNativeKeyboardEventAsync(
+		[JSMarshalAs<JSType.Any>] object inputSource,
+		bool down,
+		bool ctrl,
+		bool shift,
+		bool alt,
+		bool meta,
+		string code,
+		string key)
+	{
+		OnNativeKeyboardEvent(inputSource, down, ctrl, shift, alt, meta, code, key);
+
+		return Task.CompletedTask;
 	}
 
 	private static char? GetUnicodeKey(string key)
