@@ -25,12 +25,25 @@ USE_XVFB=${1:-true}
 sudo chmod a+rw /dev/dri/card* 2>/dev/null || true
 sudo chmod a+rw /dev/fb* 2>/dev/null || true
 
+export UITEST_DIAGNOSTICS_DIR=$BUILD_SOURCESDIRECTORY/build/uitests-diagnostics
+export UNO_WATCHDOG_HARD_TIMEOUT_SECONDS=${UNO_WATCHDOG_HARD_TIMEOUT_SECONDS:-3300}
+mkdir -p $UITEST_DIAGNOSTICS_DIR
+APP_LOG=$UITEST_DIAGNOSTICS_DIR/runtime-tests-console.log
+
+chmod +x $BUILD_SOURCESDIRECTORY/build/test-scripts/stall-watchdog.sh
+$BUILD_SOURCESDIRECTORY/build/test-scripts/stall-watchdog.sh \
+	"$APP_LOG" "$UITEST_DIAGNOSTICS_DIR" "dotnet.*SamplesApp\.Skia\.Generic\.dll" &
+WATCHDOG_PID=$!
+trap 'kill $WATCHDOG_PID 2>/dev/null || true' EXIT
+
 cd $SamplesAppArtifactPath
 if [ "$USE_XVFB" = "true" ]; then
-	xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE' || true # sometimes we crash during app shutdown, so we're forcing a 0 exit code
+	xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE' 2>&1 | tee "$APP_LOG" || true # sometimes we crash during app shutdown, so we're forcing a 0 exit code
 else
-	dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE || true
+	dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE 2>&1 | tee "$APP_LOG" || true
 fi
+
+kill $WATCHDOG_PID 2>/dev/null || true
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
