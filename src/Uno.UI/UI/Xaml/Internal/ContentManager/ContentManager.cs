@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using Uno.UI.Xaml.Core;
@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Controls;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.Disposables;
 using Uno.UI.Xaml.Islands;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -157,4 +158,10 @@ internal partial class ContentManager
 	internal static void AttachToWindow(UIElement rootElement, Microsoft.UI.Xaml.Window window) => AttachToWindowPlatform(rootElement, window);
 
 	static partial void AttachToWindowPlatform(UIElement rootElement, Microsoft.UI.Xaml.Window window);
+
+	static partial void LoadRootElementPlatform(XamlRoot xamlRoot, UIElement rootElement)
+	{
+		xamlRoot.InvalidateMeasure();
+		xamlRoot.InvalidateArrange();
+	}
 }
