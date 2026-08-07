@@ -7,5 +7,6 @@
 		public const string SR_DragViewCopyCaption = "DragViewCopyCaption";
 		public const string SR_DragViewMoveCaption = "DragViewMoveCaption";
 
+		public const string SR_AutoSuggestBoxQueryButton = "AutoSuggestBoxQueryButton";
 	}
 }
