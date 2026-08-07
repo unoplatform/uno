@@ -23,7 +23,9 @@ namespace Microsoft.UI.Xaml.Controls;
 
 internal sealed partial class TextSelectionManager
 {
+#pragma warning disable IDE0051 // Unused here as well, kept for 1:1 parity with TextSelectionManager.cpp
 	private const TextGravity c_defaultGravity = LineForwardCharacterBackward;
+#pragma warning restore IDE0051
 
 	// MUX Reference free function XAML_SetClipboardText.
 	private static void XAML_SetClipboardText(string strText)
@@ -942,7 +944,9 @@ internal sealed partial class TextSelectionManager
 		return m_pSelectionBackground!;
 	}
 
+#pragma warning disable IDE0051 // Unused here as well, kept for 1:1 parity with TextSelectionManager.cpp
 	private SolidColorBrush GetSystemColorWindowBrush() => m_owner.GetSystemColorWindowBrush();
+#pragma warning restore IDE0051
 
 	//------------------------------------------------------------------------
 	//  Method:   TextSelectionManager::CopySelectionToClipboard
