@@ -71,7 +71,6 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public readonly object RenderGate = new();
 	private readonly System.Collections.Generic.List<nint> _pendingBindGroups = new();
 	private readonly System.Collections.Generic.List<nint> _pendingBuffers = new();
-	private readonly System.Collections.Generic.List<nint> _pendingBundles = new();
 	// Transient image textures whose owning IRenderData was disposed; drained (GPU-released) at the next frame start.
 	// Concurrent because a frame is disposed on the UI thread while BeginFrameResources runs on the render thread.
 	private readonly System.Collections.Concurrent.ConcurrentQueue<(nint view, nint tex)> _pendingTextures = new();
@@ -90,11 +89,9 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		BufferPool.BeginFrame();
 		foreach (var bg in _pendingBindGroups) { wgpuBindGroupRelease((IntPtr)bg); }
 		foreach (var b in _pendingBuffers) { wgpuBufferRelease((IntPtr)b); }
-		foreach (var bu in _pendingBundles) { wgpuRenderBundleRelease((IntPtr)bu); }
 		while (_pendingTextures.TryDequeue(out var t)) { if (t.view != IntPtr.Zero) { wgpuTextureViewRelease((IntPtr)t.view); } if (t.tex != IntPtr.Zero) { wgpuTextureDestroy((IntPtr)t.tex); } }
 		_pendingBindGroups.Clear();
 		_pendingBuffers.Clear();
-		_pendingBundles.Clear();
 
 		// Evict geometry-cache entries not referenced in the previous frame (their recording is gone); then arm
 		// the used-flags for this frame.
@@ -118,7 +115,6 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		if (owned is null) { return; }
 		_pendingBuffers.AddRange(owned.Buffers);
 		_pendingBindGroups.AddRange(owned.BindGroups);
-		_pendingBundles.AddRange(owned.Bundles);
 	}
 	public IntPtr ImgBgl;
 	public IntPtr GradBgl;
@@ -942,7 +938,6 @@ internal sealed class OwnedResources
 {
 	public System.Collections.Generic.List<nint> Buffers = new();
 	public System.Collections.Generic.List<nint> BindGroups = new();
-	public System.Collections.Generic.List<nint> Bundles = new();
 }
 
 // A recording's cached GPU geometry, owned by the render-thread device and keyed by the immutable command list.
@@ -950,7 +945,6 @@ internal sealed unsafe class WebGpuGeometryCache
 {
 	public List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> Ops;
 	public OwnedResources Owned;
-	public IntPtr Bundle;
 	public Matrix4x4 Transform;
 	public ClipData Clip;
 	public bool Used;
@@ -1716,60 +1710,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private static bool ClipDataEquals(in ClipData a, in ClipData b)
 		=> a.Aabb == b.Aabb && a.HasRound == b.HasRound && a.Rect == b.Rect && a.Radii == b.Radii && ReferenceEquals(a.PathFan, b.PathFan);
 
-	// Pre-encodes a cached recording's draw-ops into a render bundle (replayed with one ExecuteBundles instead of
-	// re-issuing every SetPipeline/SetBindGroup/SetVertexBuffer/Draw per frame). Bundles can't set scissor or the
-	// stencil reference — clipping is per-fragment (clipCov) and the cover pass uses the default stencil ref (0),
-	// so both are safe to omit. The descriptor matches the MSAA main/layer pass formats.
-	private IntPtr BuildBundle(List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops)
-	{
-		var colorFmt = _d.ColorFormat;
-		var desc = new WGPURenderBundleEncoderDescriptor
-		{
-			ColorFormatCount = 1,
-			ColorFormats = &colorFmt,
-			DepthStencilFormat = WebGpuDevice.DepthStencilFormat,
-			SampleCount = _d.MsaaSamples,
-		};
-		var enc = wgpuDeviceCreateRenderBundleEncoder(_d.Dev, &desc);
-		foreach (var (kind, b0, u0, b1, flag, clip, clipBg) in ops)
-		{
-			switch (kind)
-			{
-				case 0:
-					wgpuRenderBundleEncoderSetPipeline(enc, _d.SolidPipe);
-					wgpuRenderBundleEncoderSetBindGroup(enc, 0, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderBundleEncoderSetVertexBuffer(enc, 0, (IntPtr)b0, 0, (nuint)(u0 * 6 * sizeof(float)));
-					wgpuRenderBundleEncoderDraw(enc, u0, 1, 0, 0);
-					break;
-				case 1:
-					wgpuRenderBundleEncoderSetPipeline(enc, flag ? _d.StencilEvenOdd : _d.StencilNonZero);
-					wgpuRenderBundleEncoderSetVertexBuffer(enc, 0, (IntPtr)b0, 0, (nuint)(u0 * 2 * sizeof(float)));
-					wgpuRenderBundleEncoderDraw(enc, u0, 1, 0, 0);
-					wgpuRenderBundleEncoderSetPipeline(enc, _d.CoverPipe);
-					wgpuRenderBundleEncoderSetBindGroup(enc, 0, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderBundleEncoderSetVertexBuffer(enc, 0, (IntPtr)b1, 0, (nuint)(36 * sizeof(float)));
-					wgpuRenderBundleEncoderDraw(enc, 6, 1, 0, 0);
-					break;
-				case 2:
-					wgpuRenderBundleEncoderSetPipeline(enc, _d.ImagePipe);
-					wgpuRenderBundleEncoderSetBindGroup(enc, 0, (IntPtr)b0, 0, (uint*)null);
-					wgpuRenderBundleEncoderSetBindGroup(enc, 1, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderBundleEncoderSetVertexBuffer(enc, 0, (IntPtr)b1, 0, (nuint)(24 * sizeof(float)));
-					wgpuRenderBundleEncoderDraw(enc, 6, 1, 0, 0);
-					break;
-				case 3:
-					wgpuRenderBundleEncoderSetPipeline(enc, _d.GradientPipe);
-					wgpuRenderBundleEncoderSetBindGroup(enc, 0, (IntPtr)b0, 0, (uint*)null);
-					wgpuRenderBundleEncoderSetBindGroup(enc, 1, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderBundleEncoderSetVertexBuffer(enc, 0, (IntPtr)b1, 0, (nuint)(12 * sizeof(float)));
-					wgpuRenderBundleEncoderDraw(enc, 6, 1, 0, 0);
-					break;
-			}
-		}
-		var bdesc = new WGPURenderBundleDescriptor();
-		return wgpuRenderBundleEncoderFinish(enc, &bdesc);
-	}
-
 	// Builds the draw-op(s) for a simple primitive (rect/path/image/gradient) into `ops`, allocating GPU resources
 	// pooled (owned == null, per-frame) or persistent (owned != null, a cached recording's geometry).
 	private void BuildSimpleOp(WebGpuCommand cmd, List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops, OwnedResources owned)
@@ -1891,15 +1831,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						var owned = new OwnedResources();
 						var cachedOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
 						foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { BuildSimpleOp(tc, cachedOps, owned); }
-						var bundle = BuildBundle(cachedOps);
-						owned.Bundles.Add((nint)bundle);
-						entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Bundle = bundle, Transform = rr.Transform, Clip = rr.Clip };
+						entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip };
 						_d.GeometryCache[rr.Commands] = entry;
 					}
 					entry.Used = true;
-					// One ExecuteBundles replays all the cached draws (kind 5). Full-surface clip so the scissor is
-					// reset to full before the bundle (its draws clip per-fragment via clipCov).
-					ops.Add((5, (nint)entry.Bundle, 0, 0, false, ClipData.None, 0));
+					// Splice the cached draw-ops straight into this frame's op list — replayed by direct encoding in
+					// the main pass, NOT a render bundle (ExecuteBundles measured ~6x slower on wgpu-native, and forces
+					// a scissor reset; direct replay keeps each op's scissor). Buffers/bind groups persist in `owned`.
+					ops.AddRange(entry.Ops);
 					break;
 				}
 				case ShadowCmd sh:
@@ -2083,13 +2022,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)b0, 0, (uint*)null);
 					wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
 					break;
-				case 5:
-				{
-					// Replay a cached recording's pre-encoded draws (scissor was reset to full above).
-					var bundle = (IntPtr)b0;
-					wgpuRenderPassEncoderExecuteBundles(pass, 1, (IntPtr)(&bundle));
-					break;
-				}
 			}
 		}
 
