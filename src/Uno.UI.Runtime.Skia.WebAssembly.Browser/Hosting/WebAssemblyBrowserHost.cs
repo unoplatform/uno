@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using Uno.Extensions.ApplicationModel.Core;
+using Uno.Foundation;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Media.Playback;
@@ -64,6 +65,9 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 		if (!_isInitialized)
 		{
 			_isInitialized = true;
+
+			WebAssemblyThreading.Initialize();
+
 			NativeMethods.PersistBootstrapperLoader();
 
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
