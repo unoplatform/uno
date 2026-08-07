@@ -21,4 +21,11 @@
 		</ItemGroup>
 	</Target>
 
+	<Target Name="_UnoCopyWin32AppNotificationMetadata" BeforeTargets="CopyFilesToOutputDirectory" Condition="'$(IsUnoHead)'=='true'">
+		<ItemGroup>
+			_UnoWin32AppNotificationMetadata Include="$(MSBuildThisFileDirectory)..\runtimes\win\native\Microsoft.Windows.AppNotifications.winmd" Condition="Exists('$(MSBuildThisFileDirectory)..\runtimes\win\native\Microsoft.Windows.AppNotifications.winmd')" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_UnoWin32AppNotificationMetadata)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+	</Target>
+
 </Project>
