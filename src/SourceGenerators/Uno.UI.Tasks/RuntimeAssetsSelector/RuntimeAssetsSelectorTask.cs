@@ -185,7 +185,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			if (isTwoLayer)
 			{
 				// Two layer mode.
-				// We use Skia, except for Uno.dll, Uno.Foundation.dll, and Uno.Dispatching.dll
+				// We use Skia, except for Uno.WinRT.dll, Uno.Foundation.dll, and Uno.Dispatching.dll
 				// We will adjust for those dlls later.
 				if (UnoUIRuntimeIdentifier != "skia")
 				{
