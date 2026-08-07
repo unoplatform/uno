@@ -23,9 +23,7 @@ namespace Windows.Storage {
 		/**
 		 * Setup the storage persistence of a given set of paths.
 		 * */
-		private static async makePersistent(paths: string[]) {
-
-			await Windows.ApplicationModel.Core.CoreApplication.waitForInitialized();
+		private static makePersistent(paths: string[]) {
 
 			for (var i = 0; i < paths.length; i++) {
 				this.setupStorage(paths[i])
