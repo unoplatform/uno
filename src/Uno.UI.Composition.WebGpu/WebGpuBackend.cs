@@ -93,6 +93,8 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		_pendingBindGroups.Clear();
 		_pendingBuffers.Clear();
 
+		EvictStaleBindGroups();
+
 		// Evict geometry-cache entries not referenced in the previous frame (their recording is gone); then arm
 		// the used-flags for this frame.
 		_evict.Clear();
@@ -101,6 +103,67 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	}
 
 	public IntPtr TrackBg(IntPtr bg) { _pendingBindGroups.Add((nint)bg); return bg; }
+
+	// Cross-frame cache for content-identical bind groups whose resources are all persistent (the uniform buffer we
+	// own here + device-stable DummyTex/sampler) — i.e. non-path clips and gradients. Static UI chrome rebuilds the
+	// same clip/gradient every frame; caching drops a CreateBuffer + CreateBindGroup per such command per frame.
+	// Keyed by (layout, uniform floats). Evicted after 240 unused frames. Path-clip bind groups are NOT cached (their
+	// coverage texture is per-frame pooled). Touched only under RenderGate (main + nested renders serialize on it).
+	private int _bgFrameNo;
+	private sealed class CachedBg { public nint Bgl; public float[] Sig; public IntPtr Buf; public IntPtr Bg; public int LastUsed; }
+	private readonly System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<CachedBg>> _bgCache = new();
+	private readonly System.Collections.Generic.List<int> _bgCacheEvict = new();
+
+	private static int SigHash(nint bgl, float[] sig)
+	{
+		unchecked
+		{
+			int h = (int)bgl ^ (int)(bgl >> 32);
+			foreach (var f in sig) { h = (h * 16777619) ^ BitConverter.SingleToInt32Bits(f); }
+			return h;
+		}
+	}
+
+	internal bool TryGetCachedBg(nint bgl, float[] sig, out IntPtr bg)
+	{
+		if (_bgCache.TryGetValue(SigHash(bgl, sig), out var bucket))
+		{
+			foreach (var e in bucket)
+			{
+				if (e.Bgl == bgl && ((ReadOnlySpan<float>)e.Sig).SequenceEqual(sig)) { e.LastUsed = _bgFrameNo; bg = e.Bg; return true; }
+			}
+		}
+		bg = default;
+		return false;
+	}
+
+	internal void AddCachedBg(nint bgl, float[] sig, IntPtr buf, IntPtr bg)
+	{
+		var h = SigHash(bgl, sig);
+		if (!_bgCache.TryGetValue(h, out var bucket)) { bucket = new(); _bgCache[h] = bucket; }
+		bucket.Add(new CachedBg { Bgl = bgl, Sig = sig, Buf = buf, Bg = bg, LastUsed = _bgFrameNo });
+	}
+
+	private void EvictStaleBindGroups()
+	{
+		_bgFrameNo++;
+		_bgCacheEvict.Clear();
+		foreach (var kv in _bgCache)
+		{
+			var bucket = kv.Value;
+			for (int i = bucket.Count - 1; i >= 0; i--)
+			{
+				if (_bgFrameNo - bucket[i].LastUsed > 240)
+				{
+					wgpuBindGroupRelease(bucket[i].Bg);
+					if (bucket[i].Buf != IntPtr.Zero) { wgpuBufferRelease(bucket[i].Buf); }
+					bucket.RemoveAt(i);
+				}
+			}
+			if (bucket.Count == 0) { _bgCacheEvict.Add(kv.Key); }
+		}
+		foreach (var k in _bgCacheEvict) { _bgCache.Remove(k); }
+	}
 
 	// Queues a transient image texture's GPU release for the next frame start. A brush that uploads a one-shot
 	// texture (e.g. CompositionNineGridBrush) disposes it right after recording its draw, but the WebGPU draw is
@@ -1563,6 +1626,26 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		cu[4] = cd.Radii.X; cu[5] = cd.Radii.Y; cu[6] = cd.Radii.Z; cu[7] = cd.Radii.W;
 		cu[8] = cd.HasRound ? 1f : 0f; cu[9] = cd.PathFan != null ? 1f : 0f; cu[10] = cd.HasExclude ? 1f : 0f;
 		cu[12] = _s.Width; cu[13] = _s.Height;
+
+		// A non-path per-frame clip depends only on (layout, these floats) + device-stable DummyTex/sampler, so it's
+		// identical across frames for static chrome — reuse a cached bind group instead of rebuilding it every frame.
+		// (Path clips reference a per-frame pooled coverage texture, so they take the uncached path below.)
+		if (owned is null && cd.PathFan is null)
+		{
+			if (_d.TryGetCachedBg(bgl, cu, out var cachedBg)) { return cachedBg; }
+			var cbd = new WGPUBufferDescriptor { Size = 64, Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
+			var cbuf = wgpuDeviceCreateBuffer(_d.Dev, &cbd);
+			fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, cbuf, 0, (IntPtr)p, 64); }
+			var ce = stackalloc WGPUBindGroupEntry[3];
+			ce[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = cbuf, Offset = 0, Size = 64 };
+			ce[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = _d.DummyTex };
+			ce[2] = new WGPUBindGroupEntry { Binding = 2, Sampler = _d.Smp };
+			var cbgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 3, Entries = ce };
+			var cbg = wgpuDeviceCreateBindGroup(_d.Dev, (WGPUBindGroupDescriptor*)Unsafe.AsPointer(ref cbgd));
+			_d.AddCachedBg(bgl, cu, cbuf, cbg);
+			return cbg;
+		}
+
 		var buf = Ubuf(64, owned);
 		fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, 64); }
 		// Cached recordings never have a path clip (excluded by IsCacheable), so covView is always the persistent
