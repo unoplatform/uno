@@ -445,6 +445,10 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 			canvas.Save();
 			canvas.Translate((float)layout.Margin.Left, layout.YOffset);
 
+			// ParsedText renders the whole paragraph, so clip to the slice this link arranged; otherwise
+			// the lines belonging to the previous or next link in the chain are overdrawn.
+			canvas.ClipRect(new SKRect(0, 0, (float)layout.Size.Width, (float)layout.Size.Height));
+
 			// TODO Uno (Stage 9 overflow selection): apply selection/text-highlighters to the overflow's
 			// content slice (the master's TextSelectionManager owns selection across the whole chain).
 			layout.ParsedText.Draw(session, null, Enumerable.Empty<TextHighlighter>(), compositionRange: null);
