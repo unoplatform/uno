@@ -97,9 +97,5 @@
 		<!-- Build targets -->
 		<file src="..\..\src\AddIns\Uno.UI.Svg\buildTransitive\*" target="buildTransitive" />
 
-		<!-- net10.0 Skia -->
-
-		<!-- net11.0 Skia -->
-
 	</files>
 </package>
