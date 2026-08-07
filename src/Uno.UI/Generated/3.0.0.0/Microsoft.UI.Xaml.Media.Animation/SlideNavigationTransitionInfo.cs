@@ -8,15 +8,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class SlideNavigationTransitionInfo : global::Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty EffectProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Effect), typeof(global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionEffect),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionEffect)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false // Implemented in SlideNavigationTransitionInfo.cs
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionEffect Effect
 		{
@@ -29,6 +21,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				this.SetValue(EffectProperty, value);
 			}
 		}
+#endif
+#if false // Implemented in SlideNavigationTransitionInfo.cs
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty EffectProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(Effect), typeof(global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionEffect),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionEffect)));
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.SlideNavigationTransitionInfo()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo.SlideNavigationTransitionInfo()

@@ -3,44 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ContinuumNavigationTransitionInfo : global::Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ExitElementContainerProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"ExitElementContainer", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ExitElementProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ExitElement), typeof(global::Microsoft.UI.Xaml.UIElement),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsEntranceElementProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsEntranceElement", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsExitElementProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsExitElement", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.UIElement ExitElement
 		{
@@ -54,61 +22,51 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ContinuumNavigationTransitionInfo() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo", "ContinuumNavigationTransitionInfo()");
-		}
+		public static global::Microsoft.UI.Xaml.DependencyProperty ExitElementContainerProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
+			"ExitElementContainer", typeof(bool),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty ExitElementProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(ExitElement), typeof(global::Microsoft.UI.Xaml.UIElement),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
+#endif
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty IsEntranceElementProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
+			"IsEntranceElement", typeof(bool),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+#endif
+#if false // Implemented in ContinuumNavigationTransitionInfo.cs
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty IsExitElementProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
+			"IsExitElement", typeof(bool),
+			typeof(global::Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ContinuumNavigationTransitionInfo()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ContinuumNavigationTransitionInfo()
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool GetIsEntranceElement(global::Microsoft.UI.Xaml.UIElement element)
-		{
-			return (bool)element.GetValue(IsEntranceElementProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetIsEntranceElement(global::Microsoft.UI.Xaml.UIElement element, bool value)
-		{
-			element.SetValue(IsEntranceElementProperty, value);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool GetIsExitElement(global::Microsoft.UI.Xaml.UIElement element)
-		{
-			return (bool)element.GetValue(IsExitElementProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetIsExitElement(global::Microsoft.UI.Xaml.UIElement element, bool value)
-		{
-			element.SetValue(IsExitElementProperty, value);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static bool GetExitElementContainer(global::Microsoft.UI.Xaml.Controls.ListViewBase element)
-		{
-			return (bool)element.GetValue(ExitElementContainerProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void SetExitElementContainer(global::Microsoft.UI.Xaml.Controls.ListViewBase element, bool value)
-		{
-			element.SetValue(ExitElementContainerProperty, value);
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElementContainerProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElementProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.IsEntranceElementProperty.get
-		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.IsExitElementProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElement.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElement.set
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElementProperty.get
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.IsEntranceElementProperty.get
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.GetIsEntranceElement(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.SetIsEntranceElement(Microsoft.UI.Xaml.UIElement, bool)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.IsExitElementProperty.get
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.GetIsExitElement(Microsoft.UI.Xaml.UIElement)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.SetIsExitElement(Microsoft.UI.Xaml.UIElement, bool)
+		// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElementContainerProperty.get
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.GetExitElementContainer(Microsoft.UI.Xaml.Controls.ListViewBase)
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.SetExitElementContainer(Microsoft.UI.Xaml.Controls.ListViewBase, bool)
 	}
 }
