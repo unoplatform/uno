@@ -628,7 +628,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(14.0, SUT.FontSize, "Default FontSize should be 14");
 			Assert.AreEqual(0, SUT.MaxLines, "Default MaxLines should be 0 (unlimited)");
 			Assert.AreEqual(0, SUT.CharacterSpacing, "Default CharacterSpacing should be 0");
-			Assert.AreEqual(false, SUT.IsTextSelectionEnabled, "Default IsTextSelectionEnabled should be false");
+			// CRichTextBlock's ctor sets m_isTextSelectionEnabled = true (CTextBlock's sets it false).
+			Assert.AreEqual(true, SUT.IsTextSelectionEnabled, "Default IsTextSelectionEnabled should be true");
 			Assert.AreEqual(0d, SUT.LineHeight, "Default LineHeight should be 0");
 			Assert.AreEqual(LineStackingStrategy.MaxHeight, SUT.LineStackingStrategy, "Default LineStackingStrategy should be MaxHeight");
 		}
