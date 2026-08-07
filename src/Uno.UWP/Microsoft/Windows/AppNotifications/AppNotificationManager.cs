@@ -14,7 +14,6 @@ namespace Microsoft.Windows.AppNotifications;
 [ContractVersion(typeof(AppNotificationsContract), 1 * 0x10000u)]
 public sealed class AppNotificationManager
 {
-	private const string TypeName = "Microsoft.Windows.AppNotifications.AppNotificationManager";
 	private static readonly AppNotificationManager _default = new();
 	private readonly object _gate = new();
 	private readonly Func<IAppNotificationManagerBackend?> _backendFactory;
@@ -217,7 +216,8 @@ public sealed class AppNotificationManager
 				snapshot.ExpiresOnReboot,
 				snapshot.SuppressDisplay,
 				snapshot.Priority,
-				progress);
+				progress,
+				snapshot.Payload);
 			if (!backend.TryShow(envelope))
 			{
 				state.Abort(record.Id);

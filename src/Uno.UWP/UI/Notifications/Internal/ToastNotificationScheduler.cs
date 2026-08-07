@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Windows.UI.Notifications.Internal;
 
@@ -10,6 +11,13 @@ internal interface IToastNotificationSchedulerBackend
 	void Schedule(ToastNotificationScheduleRecord record);
 
 	void Cancel(string scheduleIdentifier);
+}
+
+internal interface INativeToastNotificationSchedulerBackend
+{
+	IReadOnlyCollection<string>? GetPendingScheduleIdentifiers();
+
+	IReadOnlyCollection<string>? GetDeliveredScheduleIdentifiers();
 }
 
 internal static partial class ToastNotificationSchedulerBackendFactory
@@ -70,7 +78,9 @@ internal sealed class ToastNotificationScheduler
 
 	public IReadOnlyList<ToastNotificationScheduleRecord> GetAll() => _store.GetAll();
 
-	public void Recover(DateTimeOffset now)
+	public bool UsesNativeScheduling => _backend is INativeToastNotificationSchedulerBackend;
+
+	public bool Recover(DateTimeOffset now)
 	{
 		lock (_gate)
 		{
@@ -80,17 +90,39 @@ internal sealed class ToastNotificationScheduler
 				_backend.Cancel(record.ScheduleIdentifier);
 				_store.Remove(record.ScheduleIdentifier);
 			}
+			HashSet<string>? pending = null;
+			HashSet<string>? delivered = null;
+			if (_backend is INativeToastNotificationSchedulerBackend nativeBackend)
+			{
+				var pendingIdentifiers = nativeBackend.GetPendingScheduleIdentifiers();
+				var deliveredIdentifiers = nativeBackend.GetDeliveredScheduleIdentifiers();
+				if (pendingIdentifiers is null || deliveredIdentifiers is null)
+				{
+					return false;
+				}
+				pending = pendingIdentifiers.ToHashSet(StringComparer.Ordinal);
+				delivered = deliveredIdentifiers.ToHashSet(StringComparer.Ordinal);
+			}
 			foreach (var record in _store.GetAll())
 			{
-				if (IsTooLateForRecovery(record, now))
+				if (delivered?.Contains(record.ScheduleIdentifier) == true)
+				{
+					_store.Remove(record.ScheduleIdentifier);
+				}
+				else if (IsTooLateForRecovery(record, now))
 				{
 					Remove(record.ScheduleIdentifier);
+				}
+				else if (pending?.Contains(record.ScheduleIdentifier) == true)
+				{
+					continue;
 				}
 				else
 				{
 					_backend.Schedule(record);
 				}
 			}
+			return true;
 		}
 	}
 
@@ -117,6 +149,25 @@ internal sealed class ToastNotificationScheduler
 		{
 			_store.Remove(scheduleIdentifier);
 			_activeDeliveries.Remove(scheduleIdentifier);
+		}
+	}
+
+	public bool CompleteNativeDelivery(string scheduleIdentifier)
+	{
+		lock (_gate)
+		{
+			if (!_activeDeliveries.Add(scheduleIdentifier))
+			{
+				return false;
+			}
+			if (_store.BeginDelivery(scheduleIdentifier) is null)
+			{
+				_activeDeliveries.Remove(scheduleIdentifier);
+				return false;
+			}
+			_store.Remove(scheduleIdentifier);
+			_activeDeliveries.Remove(scheduleIdentifier);
+			return true;
 		}
 	}
 

@@ -29,25 +29,46 @@ internal static class ToastNotificationSchedulerRuntime
 			}
 			if (recover && !_wasRecovered)
 			{
-				_scheduler.Recover(DateTimeOffset.UtcNow);
-				_wasRecovered = true;
+				_wasRecovered = _scheduler.Recover(DateTimeOffset.UtcNow);
 			}
 			return _scheduler;
+		}
+	}
+
+	public static ToastNotificationScheduler? GetSchedulerForEnumeration()
+	{
+		lock (_gate)
+		{
+			var scheduler = GetScheduler(recover: false);
+			if (scheduler is not null && (!_wasRecovered || scheduler.UsesNativeScheduling))
+			{
+				_wasRecovered = scheduler.Recover(DateTimeOffset.UtcNow);
+			}
+			return scheduler;
 		}
 	}
 
 	public static void Recover()
 	{
 		var scheduler = GetScheduler(recover: false);
-		scheduler?.Recover(DateTimeOffset.UtcNow);
+		var recovered = scheduler?.Recover(DateTimeOffset.UtcNow) == true;
 		lock (_gate)
 		{
-			_wasRecovered = scheduler is not null;
+			_wasRecovered = recovered;
 		}
 	}
 
 	public static void Deliver(string scheduleIdentifier)
 		=> Deliver(scheduleIdentifier, AppNotificationManager.Default);
+
+	public static bool CompleteNativeDelivery(string scheduleIdentifier)
+	{
+		ArgumentNullException.ThrowIfNull(scheduleIdentifier);
+		var scheduler = GetScheduler(recover: false);
+		var completed = scheduler?.CompleteNativeDelivery(scheduleIdentifier) == true;
+		EnsureRecovered(scheduler);
+		return completed;
+	}
 
 	internal static void Deliver(string scheduleIdentifier, AppNotificationManager manager)
 	{
@@ -154,8 +175,7 @@ internal static class ToastNotificationSchedulerRuntime
 		{
 			if (!_wasRecovered)
 			{
-				scheduler.Recover(DateTimeOffset.UtcNow);
-				_wasRecovered = true;
+				_wasRecovered = scheduler.Recover(DateTimeOffset.UtcNow);
 			}
 		}
 	}
