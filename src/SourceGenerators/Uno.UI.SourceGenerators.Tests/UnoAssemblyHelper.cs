@@ -16,7 +16,7 @@ internal static partial class UnoAssemblyHelper
 				"Uno.UI",
 				"Uno.UI.dll",
 				[
-					"Uno.UI.Skia",
+					"Uno.UI",
 					"Uno.UI.Reference",
 				],
 				[TFMPrevious, TFMCurrent]
@@ -43,7 +43,7 @@ internal static partial class UnoAssemblyHelper
 				"Uno.UI.Composition",
 				"Uno.UI.Composition.dll",
 				[
-					"Uno.UI.Composition.Skia",
+					"Uno.UI.Composition",
 					"Uno.UI.Composition.Reference",
 				],
 				[TFMPrevious, TFMCurrent]

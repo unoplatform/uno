@@ -21,7 +21,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 	</ItemGroup>
 
 	<Import Project="FluentMerge.targets" />
