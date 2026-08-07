@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.Disposables;
 
 namespace Uno.UI
 {
@@ -144,6 +145,38 @@ namespace Uno.UI
 
 			return ShowDescendants(root, viewOfInterest: element);
 		}
+
+#nullable disable
+		/// <summary>
+		/// (Mock) Gets an enumerator containing all the children of a View group
+		/// </summary>
+		/// <param name="group"></param>
+		/// <returns></returns>
+		internal static IEnumerable<object> GetChildren(this object group)
+		{
+			return Array.Empty<object>();
+		}
+
+		internal static FrameworkElement GetTopLevelParent(this UIElement view) => throw new NotImplementedException();
+
+		internal static T FindFirstChild<T>(this FrameworkElement root) where T : FrameworkElement
+		{
+			return root.GetDescendants().OfType<T>().FirstOrDefault();
+		}
+
+		private static IEnumerable<FrameworkElement> GetDescendants(this FrameworkElement root)
+		{
+			foreach (var child in root._children)
+			{
+				yield return child as FrameworkElement;
+
+				foreach (var descendant in (child as FrameworkElement).GetDescendants())
+				{
+					yield return descendant;
+				}
+			}
+		}
+	#nullable enable
 #endif
 	}
 }
