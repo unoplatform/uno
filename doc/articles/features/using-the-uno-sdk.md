@@ -30,8 +30,7 @@ dotnet publish -f net10.0-desktop -c Release
 > [!IMPORTANT]
 > The `global.json` file that selects your `Uno.Sdk` version applies to projects, not solutions. When working without a solution file, keep `global.json` in the project directory or in any parent directory.
 
-> [!NOTE]
-> IDE dev-loop tooling (Hot Reload, the [Dev Server](xref:Uno.DevServer), and Uno Platform Studio add-ins) supports solution-less workspaces starting with **Uno.Sdk 6.6**. In VS Code, this additionally requires the Uno Platform extension 0.25.3 or later together with the C# Dev Kit extension. On earlier Uno.Sdk versions the Dev Server still starts, but the Studio add-ins are not loaded.
+IDE dev-loop tooling (Hot Reload, the [Dev Server](xref:Uno.DevServer), and Uno Platform Studio add-ins) supports solution-less workspaces starting with **Uno.Sdk 6.6**. In VS Code, this additionally requires the Uno Platform extension 0.25.3 or later together with the C# Dev Kit extension. On earlier Uno.Sdk versions the Dev Server still starts, but the Studio add-ins are not loaded.
 
 ### Using the `.slnx` solution format
 
