@@ -53,7 +53,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private List<ParagraphLayout> _paragraphLayouts = new();
 		private Size _lastMeasuredContentSize;
-		private bool _isContentClippedByMaxLines;
 
 		// Stage 9: the ported BlockLayout engine drives measure/arrange; the node tree is the
 		// authoritative layout. _paragraphLayouts is rebuilt from the arranged tree and still
@@ -183,6 +182,14 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_pSelectionManager is null && (IsTextSelectionEnabled || ((ITextSelectionManagerOwner)this).IsHighContrast))
 			{
 				_pSelectionManager = TextSelectionManager.Create(this, Blocks.GetTextContainer(), this);
+
+				// ResolveNextLink runs before the first measure, so a chain linked up front reported its
+				// linked view to a manager that did not exist yet. Attach it now, otherwise the manager
+				// never builds a selection and SelectAll / the first click hit a null one.
+				if (_pLinkedView is not null)
+				{
+					_pSelectionManager.TextViewChanged(null, _pLinkedView);
+				}
 			}
 			if (_pLinkedView is null)
 			{
@@ -207,7 +214,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private void PopulateLayoutsFromTree()
 		{
 			_paragraphLayouts.Clear();
-			_isContentClippedByMaxLines = false;
 
 			float accumHeight = 0;
 			float maxWidth = 0;
@@ -255,7 +261,6 @@ namespace Microsoft.UI.Xaml.Controls
 				blockIndex++;
 			}
 
-			_isContentClippedByMaxLines = _break is not null || (MaxLines > 0 && totalLines >= MaxLines);
 			_lastMeasuredContentSize = new Size(maxWidth, accumHeight);
 		}
 
@@ -382,12 +387,28 @@ namespace Microsoft.UI.Xaml.Controls
 			return success && inverted.Transform(LayoutSlotWithMarginsAndAlignments).Contains(point);
 		}
 
+		// CRichTextBlock::OnContentChanged clears the selection through the manager, since the content
+		// change may have invalidated the selection's start/end positions.
+		partial void ClearSelectionOnContentChangedPartial()
+		{
+			if (IsSelectionEnabled() && _pSelectionManager?.GetTextSelection() is { } selection)
+			{
+				selection.Select(0, 0, TextGravity.LineForwardCharacterBackward);
+			}
+		}
+
 		partial void OnIsTextSelectionEnabledChangedPartial()
 		{
 			UpdateSelectionRendering();
 			if (IsTextSelectionEnabled)
 			{
 				EnsureContextMenuGesturesEnabled();
+			}
+			else if (_pSelectionManager is not null && !((ITextSelectionManagerOwner)this).IsHighContrast)
+			{
+				// CRichTextBlock drops the manager once neither selection nor the back plate needs it.
+				TextSelectionManager.Destroy(ref _pSelectionManager);
+				Selection = default;
 			}
 		}
 
@@ -450,12 +471,31 @@ namespace Microsoft.UI.Xaml.Controls
 			RaiseSelectionChanged();
 		}
 
+		//------------------------------------------------------------------------
+		//
+		//  CRichTextBlock::UpdateIsTextTrimmed
+		//
+		//------------------------------------------------------------------------
 		partial void UpdateIsTextTrimmed()
 		{
-			IsTextTrimmed = IsTextTrimmable && (
-				_isContentClippedByMaxLines ||
-				_lastMeasuredContentSize.Width + Padding.Left + Padding.Right > ActualWidth ||
-				_lastMeasuredContentSize.Height + Padding.Top + Padding.Bottom > ActualHeight);
+			if (HasOverflowContent)
+			{
+				IsTextTrimmed = true;
+				return;
+			}
+
+			bool isTrimmed = false;
+
+			for (var blockChild = _pageNode?.GetFirstChild(); blockChild is not null; blockChild = blockChild.GetNext())
+			{
+				if (blockChild is ParagraphNode paragraphNode && paragraphNode.GetHasTrimmedLine())
+				{
+					isTrimmed = true;
+					break;
+				}
+			}
+
+			IsTextTrimmed = isTrimmed;
 		}
 
 		private int GetCharacterIndexAtPointSkia(Point point, bool extended)
