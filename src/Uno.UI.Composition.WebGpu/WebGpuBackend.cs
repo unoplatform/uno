@@ -136,7 +136,11 @@ public sealed unsafe class WebGpuDevice : IDisposable
 
 	// Multisample count for anti-aliasing. Every pipeline + the color/depth render targets use this; the pass
 	// renders into a multisampled color texture that resolves into the single-sample present/readback texture.
-	public const uint MsaaSamples = 4;
+	// Multisample count, probed per device at init (PickSampleCount): 2x when the device supports it for our colour
+	// format (half the MSAA colour/depth bandwidth + resolve cost of 4x for near-identical AA at typical DPI), else
+	// 4x — the only count besides 1 the WebGPU spec guarantees for every format (lavapipe/CI reject 2x for
+	// Bgra8Unorm). UNO_WEBGPU_MSAA=4 forces 4x. (1x/no-MSAA would need a separate no-resolve path — not wired.)
+	public uint MsaaSamples { get; private set; } = 4;
 
 	// The color-attachment format the pipelines + offscreen targets use. Rgba8Unorm by default (the
 	// offscreen/readback path assumes it); a swapchain renderer passes the surface's supported format.
@@ -191,10 +195,41 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	private void FinishInit()
 	{
 		Q = wgpuDeviceGetQueue(Dev);
+		MsaaSamples = PickSampleCount();   // must precede CreatePipelines (pipelines bake the sample count)
 		CreatePipelines();
 		DummyTex = CreateColorTarget(1, 1);
 		Pool = new WebGpuTexturePool(this);
 		BufferPool = new WebGpuBufferPool(this);
+	}
+
+	// Prefer 2x MSAA (half the cost) where the device supports it for our colour format, else 4x (spec-guaranteed).
+	private uint PickSampleCount()
+		=> Environment.GetEnvironmentVariable("UNO_WEBGPU_MSAA") != "4" && SupportsSampleCount(2) ? 2u : 4u;
+
+	// Probes whether a sample count is valid for the colour format WITHOUT aborting: an unsupported count raises a
+	// validation error, which a pushed error scope captures (the default uncaptured handler panics the process).
+	private bool SupportsSampleCount(uint samples)
+	{
+		wgpuDevicePushErrorScope(Dev, WGPUErrorFilter.Validation);
+		var td = new WGPUTextureDescriptor
+		{
+			Size = new WGPUExtent3D { Width = 1, Height = 1, DepthOrArrayLayers = 1 },
+			Format = ColorFormat, MipLevelCount = 1, SampleCount = samples,
+			Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.RenderAttachment,
+		};
+		var tex = wgpuDeviceCreateTexture(Dev, &td);
+		var box = new uint[2];   // [0] = callback fired, [1] = captured WGPUErrorType (0 stays => treat as failure)
+		var h = GCHandle.Alloc(box);
+		wgpuDevicePopErrorScope(Dev, new WGPUPopErrorScopeCallbackInfo
+		{
+			Mode = WGPUCallbackMode.AllowProcessEvents,
+			Callback = (IntPtr)(delegate* unmanaged[Cdecl]<WGPUPopErrorScopeStatus, WGPUErrorType, WGPUStringView, IntPtr, IntPtr, void>)&OnPopErrorScope,
+			Userdata1 = GCHandle.ToIntPtr(h),
+		});
+		for (int i = 0; i < 1000 && box[0] == 0; i++) { wgpuInstanceProcessEvents(Inst); }
+		h.Free();
+		if (tex != IntPtr.Zero) { wgpuTextureDestroy(tex); }
+		return box[1] == (uint)WGPUErrorType.NoError;   // supported only if the scope popped with no error
 	}
 
 	internal static unsafe IntPtr CreateInstancePtr() => wgpuCreateInstance(null);
@@ -632,6 +667,13 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 	private static void OnMap(WGPUMapAsyncStatus status, WGPUStringView message, IntPtr u1, IntPtr u2)
 		=> ((bool[])GCHandle.FromIntPtr(u1).Target!)[0] = true;
 
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnPopErrorScope(WGPUPopErrorScopeStatus status, WGPUErrorType type, WGPUStringView message, IntPtr u1, IntPtr u2)
+	{
+		var box = (uint[])GCHandle.FromIntPtr(u1).Target!;
+		box[0] = 1; box[1] = (uint)type;
+	}
+
 	public void Dispose() { }
 }
 
@@ -770,8 +812,8 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 	{
 		Width = width; Height = height;
 		_ownsResources = false;   // the pool owns and reclaims these; Dispose must not release them
-		MsaaColorView = pool.Rent(width, height, (int)WebGpuDevice.MsaaSamples, WGPUTextureUsage.RenderAttachment, device.ColorFormat);
-		DepthView = pool.Rent(width, height, (int)WebGpuDevice.MsaaSamples, WGPUTextureUsage.RenderAttachment, WebGpuDevice.DepthStencilFormat);
+		MsaaColorView = pool.Rent(width, height, (int)device.MsaaSamples, WGPUTextureUsage.RenderAttachment, device.ColorFormat);
+		DepthView = pool.Rent(width, height, (int)device.MsaaSamples, WGPUTextureUsage.RenderAttachment, WebGpuDevice.DepthStencilFormat);
 		// CopySrc so the resolved result can be read back (ReadPixelsRgba) for RenderTargetBitmap / offscreen.
 		View = pool.Rent(width, height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopySrc, device.ColorFormat);
 		Tex = pool.TexForView(View);
@@ -782,7 +824,7 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 		var cd = new WGPUTextureDescriptor
 		{
 			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 }, Format = device.ColorFormat,
-			MipLevelCount = 1, SampleCount = WebGpuDevice.MsaaSamples, Dimension = WGPUTextureDimension._2D,
+			MipLevelCount = 1, SampleCount = device.MsaaSamples, Dimension = WGPUTextureDimension._2D,
 			Usage = WGPUTextureUsage.RenderAttachment,
 		};
 		MsaaColorTex = wgpuDeviceCreateTexture(device.Dev, &cd);
@@ -791,7 +833,7 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 		var dd = new WGPUTextureDescriptor
 		{
 			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 }, Format = WebGpuDevice.DepthStencilFormat,
-			MipLevelCount = 1, SampleCount = WebGpuDevice.MsaaSamples, Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.RenderAttachment,
+			MipLevelCount = 1, SampleCount = device.MsaaSamples, Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.RenderAttachment,
 		};
 		DepthTex = wgpuDeviceCreateTexture(device.Dev, &dd);
 		DepthView = wgpuTextureCreateView(DepthTex, null);
@@ -1686,7 +1728,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			ColorFormatCount = 1,
 			ColorFormats = &colorFmt,
 			DepthStencilFormat = WebGpuDevice.DepthStencilFormat,
-			SampleCount = WebGpuDevice.MsaaSamples,
+			SampleCount = _d.MsaaSamples,
 		};
 		var enc = wgpuDeviceCreateRenderBundleEncoder(_d.Dev, &desc);
 		foreach (var (kind, b0, u0, b1, flag, clip, clipBg) in ops)
