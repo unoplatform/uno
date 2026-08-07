@@ -204,6 +204,8 @@ partial class BlockCollection
 		ResetLengths();
 	}
 
+	partial void MarkDirtyPartial() => ResetLengths();
+
 	// Invalidates the cached block lengths.
 	internal void ResetLengths()
 	{

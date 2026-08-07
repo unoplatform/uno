@@ -30,6 +30,8 @@ namespace Microsoft.UI.Xaml.Documents
 		public void OnTextChanged()
 		{
 			OnTextChangedPartial();
+			// The run's length feeds every ancestor's cached position counts, so drop those first.
+			MarkDirty();
 			InvalidateInlines(true);
 			InvalidateSegmentsPartial();
 		}
