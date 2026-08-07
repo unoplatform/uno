@@ -96,6 +96,35 @@ stages:
       poolName: '${{ parameters.poolName }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
+- stage: runtime_tests_skia_ios_nativeaot
+  displayName: Tests - iOS+NativeAOT Skia
+  dependsOn:
+    - binaries_build_native_macos
+
+  jobs:
+  - template: .azure-devops-tests-ios-nativeaot-skia-build.yml
+    parameters:
+      vmImage: '${{ parameters.vmImage }}'
+      vmMacImage: '${{ parameters.vmMacImage }}'
+      vmMacImageTest: '${{ parameters.vmMacImageTest }}'
+      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
+      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
+      xCodeRootTest: '${{ parameters.xCodeRootTest }}'
+      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
+      poolName: '${{ parameters.poolName }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+  - template: .azure-devops-tests-ios-nativeaot-skia.yml
+    parameters:
+      vmImage: '${{ parameters.vmImage }}'
+      vmMacImage: '${{ parameters.vmMacImage }}'
+      vmMacImageTest: '${{ parameters.vmMacImageTest }}'
+      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
+      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
+      xCodeRootTest: '${{ parameters.xCodeRootTest }}'
+      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
+      poolName: '${{ parameters.poolName }}'
+      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
+
 - stage: runtime_tests_skia_linux
   displayName: Tests - Desktop Skia Linux
   dependsOn:

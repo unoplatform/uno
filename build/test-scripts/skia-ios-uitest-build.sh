@@ -6,4 +6,8 @@ _TFM="${TFM:=net10.0-ios}"
 
 cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Skia.netcoremobile
 
-dotnet build -f "$_TFM" -c Release "-p:UnoTargetFrameworkOverride=$_TFM" -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /bl:$BUILD_ARTIFACTSTAGINGDIRECTORY/skia-ios-netcoremobile-sampleapp.binlog
+if [ "${NAOT:=}" = "1" ]; then
+    dotnet build -f "$_TFM" -c Release "-p:UnoTargetFrameworkOverride=$_TFM" -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /bl:$BUILD_ARTIFACTSTAGINGDIRECTORY/skia-ios-nativeaot-netcoremobile-sampleapp.binlog -p:SkiaPublishAot=true -p:_IsPublishing=true
+else
+    dotnet build -f "$_TFM" -c Release "-p:UnoTargetFrameworkOverride=$_TFM" -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /bl:$BUILD_ARTIFACTSTAGINGDIRECTORY/skia-ios-netcoremobile-sampleapp.binlog
+fi
