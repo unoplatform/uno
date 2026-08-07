@@ -263,9 +263,9 @@
 	</ItemGroup>
 	<!-- AndroidX versions track $(NetCurrent)'s .NET for Android bindings -->
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
-		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.9.0.2" />
-		<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.2.0.2" />
-		<PackageReference Include="Xamarin.Google.Android.Material" Version="1.14.0.1" />
+		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.10.0.1" />
+		<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.2.0.3" />
+		<PackageReference Include="Xamarin.Google.Android.Material" Version="1.14.0.5" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
