@@ -7,6 +7,10 @@
 	<Import Project="../targetframework-override-noplatform.props" />
 
 	<PropertyGroup>
+		<WindowsAppSdkFoundationVersion>2.3.5</WindowsAppSdkFoundationVersion>
+		<WindowsSdkNetRefVersion>10.0.26100.57</WindowsSdkNetRefVersion>
+		<PkgMicrosoft_WindowsAppSDK_Foundation Condition="'$(PkgMicrosoft_WindowsAppSDK_Foundation)' == ''">$(NuGetPackageRoot)microsoft.windowsappsdk.foundation\$(WindowsAppSdkFoundationVersion)</PkgMicrosoft_WindowsAppSDK_Foundation>
+		<PkgMicrosoft_Windows_SDK_NET_Ref Condition="'$(PkgMicrosoft_Windows_SDK_NET_Ref)' == ''">$(NuGetPackageRoot)microsoft.windows.sdk.net.ref\$(WindowsSdkNetRefVersion)</PkgMicrosoft_Windows_SDK_NET_Ref>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<Description>This package provides the platform support for Skia in Uno Platform projects.</Description>
 
@@ -28,8 +32,33 @@
 		<PackageReference Include="Microsoft.Web.WebView2" Aliases="mswebview2" PrivateAssets="all" />
 
 		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
+		<PackageReference Include="Microsoft.WindowsAppSDK.Foundation" Version="$(WindowsAppSdkFoundationVersion)" PrivateAssets="all" ExcludeAssets="all" GeneratePathProperty="true" />
+		<PackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences" Version="2.1.3" PrivateAssets="all" ExcludeAssets="all" />
+		<PackageReference Include="Microsoft.Windows.SDK.NET.Ref" Version="$(WindowsSdkNetRefVersion)" PrivateAssets="all" ExcludeAssets="all" GeneratePathProperty="true" />
 		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="Uno.icu-win" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="Microsoft.Windows.AppNotifications.Projection" HintPath="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.Windows.AppNotifications.Projection.dll" Aliases="winappsdk" Private="true" />
+		<Reference Include="Microsoft.WindowsAppRuntime.Bootstrap.Net" HintPath="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.WindowsAppRuntime.Bootstrap.Net.dll" Aliases="winappsdk" Private="true" />
+		<Reference Include="Microsoft.Windows.SDK.NET" HintPath="$(PkgMicrosoft_Windows_SDK_NET_Ref)\lib\net8.0\Microsoft.Windows.SDK.NET.dll" Aliases="winappsdk" Private="true" />
+		<Reference Include="WinRT.Runtime" HintPath="$(PkgMicrosoft_Windows_SDK_NET_Ref)\lib\net8.0\WinRT.Runtime.dll" Aliases="winappsdk" Private="true" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\runtimes\win-x64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" Link="runtimes\win-x64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="runtimes\win-x64\native" />
+		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\runtimes\win-x86\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" Link="runtimes\win-x86\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" Pack="true" PackagePath="runtimes\win-x86\native" />
+		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\runtimes\win-arm64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" Link="runtimes\win-arm64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" Pack="true" PackagePath="runtimes\win-arm64\native" />
+		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\metadata\Microsoft.Windows.AppNotifications.winmd" Pack="true" PackagePath="runtimes\win\native" />
+		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.Windows.AppNotifications.Projection.dll" Pack="true" PackagePath="runtimes\win\lib\$(NetPrevious)" />
+		<None Include="$(PkgMicrosoft_Windows_SDK_NET_Ref)\lib\net8.0\Microsoft.Windows.SDK.NET.dll" Pack="true" PackagePath="runtimes\win\lib\$(NetPrevious)" />
+		<None Include="$(PkgMicrosoft_Windows_SDK_NET_Ref)\lib\net8.0\WinRT.Runtime.dll" Pack="true" PackagePath="runtimes\win\lib\$(NetPrevious)" />
+		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.WindowsAppRuntime.Bootstrap.Net.dll" Pack="true" PackagePath="runtimes\win\lib\$(NetPrevious)" />
+		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.Windows.AppNotifications.Projection.dll" Pack="true" PackagePath="runtimes\win\lib\$(NetCurrent)" />
+		<None Include="$(PkgMicrosoft_Windows_SDK_NET_Ref)\lib\net8.0\Microsoft.Windows.SDK.NET.dll" Pack="true" PackagePath="runtimes\win\lib\$(NetCurrent)" />
+		<None Include="$(PkgMicrosoft_Windows_SDK_NET_Ref)\lib\net8.0\WinRT.Runtime.dll" Pack="true" PackagePath="runtimes\win\lib\$(NetCurrent)" />
+		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.WindowsAppRuntime.Bootstrap.Net.dll" Pack="true" PackagePath="runtimes\win\lib\$(NetCurrent)" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net10.0'))">
