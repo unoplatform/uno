@@ -72,6 +72,9 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	private readonly System.Collections.Generic.List<nint> _pendingBindGroups = new();
 	private readonly System.Collections.Generic.List<nint> _pendingBuffers = new();
 	private readonly System.Collections.Generic.List<nint> _pendingBundles = new();
+	// Transient image textures whose owning IRenderData was disposed; drained (GPU-released) at the next frame start.
+	// Concurrent because a frame is disposed on the UI thread while BeginFrameResources runs on the render thread.
+	private readonly System.Collections.Concurrent.ConcurrentQueue<(nint view, nint tex)> _pendingTextures = new();
 	// Per-visual GPU geometry cache, keyed by the recording's immutable command list (reference identity). Owned
 	// by the render thread; entries not referenced in a frame are evicted (their recording is gone).
 	internal readonly System.Collections.Generic.Dictionary<System.Collections.Generic.List<WebGpuCommand>, WebGpuGeometryCache> GeometryCache = new(System.Collections.Generic.ReferenceEqualityComparer.Instance);
@@ -88,6 +91,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		foreach (var bg in _pendingBindGroups) { wgpuBindGroupRelease((IntPtr)bg); }
 		foreach (var b in _pendingBuffers) { wgpuBufferRelease((IntPtr)b); }
 		foreach (var bu in _pendingBundles) { wgpuRenderBundleRelease((IntPtr)bu); }
+		while (_pendingTextures.TryDequeue(out var t)) { if (t.view != IntPtr.Zero) { wgpuTextureViewRelease((IntPtr)t.view); } if (t.tex != IntPtr.Zero) { wgpuTextureDestroy((IntPtr)t.tex); } }
 		_pendingBindGroups.Clear();
 		_pendingBuffers.Clear();
 		_pendingBundles.Clear();
@@ -100,6 +104,13 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	}
 
 	public IntPtr TrackBg(IntPtr bg) { _pendingBindGroups.Add((nint)bg); return bg; }
+
+	// Queues a transient image texture's GPU release for the next frame start. A brush that uploads a one-shot
+	// texture (e.g. CompositionNineGridBrush) disposes it right after recording its draw, but the WebGPU draw is
+	// replayed at present (possibly across several presents of the same recording) — so the texture must live until
+	// its owning IRenderData is disposed. WebGpuRenderData.Dispose calls this; the actual free happens at the next
+	// BeginFrameResources, after the last present's submit+DevicePoll, like the per-frame bind groups/buffers.
+	internal void DeferTextureRelease(IntPtr view, IntPtr tex) => _pendingTextures.Enqueue(((nint)view, (nint)tex));
 
 	// Defers a cached recording's persistent resources for release at the next frame start.
 	internal void DeferRelease(OwnedResources owned)
@@ -944,10 +955,18 @@ public sealed class WebGpuRenderData : IRenderData
 	internal List<WebGpuCommand> Commands = new();
 	internal WColor? ClearColor;
 	internal bool? Cacheable;   // memoized: all commands are simple primitives with no path clip
+	// Transient image textures recorded into this frame that the caller disposed while recording (e.g. the one-shot
+	// texture CompositionNineGridBrush uploads). We keep them alive for every present of this recording, then release
+	// their GPU resources here at Dispose — resident textures (surface-owned) are left untouched (DisposeRequested=false).
+	internal List<WebGpuImageTexture> Textures;
 
 	// Dispose only nulls the field; the command LIST object stays alive while any in-flight frame's ReplayRef
 	// still references it (captured by reference), and the device's geometry cache is keyed on that list.
-	public void Dispose() { Commands = null; }
+	public void Dispose()
+	{
+		if (Textures is { } textures) { foreach (var t in textures) { if (t.DisposeRequested) { t.ReleaseDeferred(); } } }
+		Commands = null;
+	}
 }
 
 public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
@@ -1192,10 +1211,15 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			P2 = Map(p1.X - n.X, p1.Y - n.Y), P3 = Map(p0.X - n.X, p0.Y - n.Y),
 		});
 	}
+	// Keep a texture recorded into this frame alive for the frame's lifetime (it may be a one-shot texture the
+	// caller disposes right after recording — e.g. CompositionNineGridBrush; the draw is replayed later at present).
+	private void TrackTexture(WebGpuImageTexture t) => (_data.Textures ??= new()).Add(t);
+
 	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false)
 	{
 		if (texture is not WebGpuImageTexture t) { return; }
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
+		TrackTexture(t);
 		// No per-frame upload — the texture is already resident; record its view for the present pass.
 		_target.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = opacity, ColorMatrix = _pendingColorMatrix, Clip = _clip });
 	}
@@ -1203,6 +1227,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	{
 		if (texture is not WebGpuImageTexture t) { return; }
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
+		TrackTexture(t);
 		// A 4x5 colour-matrix filter (e.g. MonochromeColor / effect brush): apply it in the image shader.
 		// The SrcIn blend-mode tint stays the fast path.
 		if (colorFilter is WebGpuColorFilter { Matrix: { } matrix })
@@ -1225,6 +1250,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	{
 		if (texture is not WebGpuImageTexture t) { return; }
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
+		TrackTexture(t);
 
 		// Source (pixel) column/row edges from the center slice, and the matching destination edges: the corner
 		// insets keep their source pixel size, the middle band stretches to fill the rest of the destination.
@@ -2165,10 +2191,17 @@ public sealed unsafe class WebGpuImageTexture : IImageTexture
 		fixed (byte* p = rgba) { wgpuQueueWriteTexture(device.Q, &dst, (IntPtr)p, (nuint)rgba.Length, &layout, &ext); }
 	}
 
-	public void Dispose()
+	// A transient texture (e.g. CompositionNineGridBrush) is disposed right after recording its draw, but the WebGPU
+	// draw is replayed later at present. So Dispose only marks intent; the owning WebGpuRenderData releases the GPU
+	// resources when it's disposed (after its last present), keeping the view alive for every replay in between.
+	internal bool DisposeRequested { get; private set; }
+	public void Dispose() => DisposeRequested = true;
+
+	// Called by WebGpuRenderData.Dispose for each texture it recorded. Idempotent: a texture referenced by several
+	// in-flight recordings is released only once (whichever disposes last finds the handles already cleared).
+	internal void ReleaseDeferred()
 	{
-		if (View != IntPtr.Zero) { wgpuTextureViewRelease(View); View = IntPtr.Zero; }
-		if (Tex != IntPtr.Zero) { wgpuTextureDestroy(Tex); Tex = IntPtr.Zero; }
+		if (View != IntPtr.Zero || Tex != IntPtr.Zero) { _d.DeferTextureRelease(View, Tex); View = IntPtr.Zero; Tex = IntPtr.Zero; }
 	}
 }
 
