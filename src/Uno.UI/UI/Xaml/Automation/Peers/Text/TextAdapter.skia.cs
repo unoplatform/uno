@@ -397,7 +397,6 @@ internal sealed partial class TextAdapter : ITextProvider
 				endTextPointer = pRTbl.ContentEnd;
 				break;
 			case RichTextBlockOverflow pRTblo:
-				// TODO Uno (UIA): RichTextBlockOverflow.ContentStart/ContentEnd (text-pointer slice of the master).
 				startTextPointer = GetOverflowContentStart(pRTblo);
 				endTextPointer = GetOverflowContentEnd(pRTblo);
 				break;
@@ -532,7 +531,7 @@ internal sealed partial class TextAdapter : ITextProvider
 	// WinUI returns CRichTextBlockOverflow::GetContentStart()/GetContentEnd() (the overflow's
 	// own page slice). Until those are ported, return null so the overflow adapter degrades to
 	// "no document range" rather than mis-reporting the whole master.
-	private static TextPointer? GetOverflowContentStart(RichTextBlockOverflow overflow) => null;
+	private static TextPointer? GetOverflowContentStart(RichTextBlockOverflow overflow) => overflow.GetContentStart();
 
-	private static TextPointer? GetOverflowContentEnd(RichTextBlockOverflow overflow) => null;
+	private static TextPointer? GetOverflowContentEnd(RichTextBlockOverflow overflow) => overflow.GetContentEnd();
 }

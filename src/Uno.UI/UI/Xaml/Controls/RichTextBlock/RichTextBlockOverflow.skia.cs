@@ -113,6 +113,39 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 
 	#endregion
 
+	// CRichTextBlockOverflow::GetContentStart
+	internal TextPointer? GetContentStart()
+	{
+		// With no PageNode this element was either not laid out yet or has no content overflowed from
+		// its master, and overflow elements have no content of their own.
+		// If the master has no TextContainer it would not overflow here, so returning null is enough.
+		if (_pPageNode is null || _pMaster?.Blocks.GetTextContainer() is not { } container)
+		{
+			return null;
+		}
+
+		// ContentStart always has forward gravity; backward gravity would belong in the previous link.
+		var textPosition = new PlainTextPosition(container, GetContentStartPosition(), TextGravity.LineForwardCharacterForward);
+		return TextPointer.CreateInstanceWithInternalPointer(textPosition);
+	}
+
+	// CRichTextBlockOverflow::GetContentEnd
+	internal TextPointer? GetContentEnd()
+	{
+		if (_pPageNode is null || _pMaster?.Blocks.GetTextContainer() is not { } container)
+		{
+			return null;
+		}
+
+		// ContentEnd is the position just after the end of content. With a break the gravity is backward
+		// (the forward-gravity position lives in the next link); without one it is forward.
+		var contentEndPosition = GetContentStartPosition() + GetContentLength();
+		var gravity = _pBreak is null ? TextGravity.LineForwardCharacterForward : TextGravity.LineForwardCharacterBackward;
+
+		var textPosition = new PlainTextPosition(container, contentEndPosition, gravity);
+		return TextPointer.CreateInstanceWithInternalPointer(textPosition);
+	}
+
 	internal uint GetContentStartPosition()
 	{
 		if (_pPageNode is not null &&
