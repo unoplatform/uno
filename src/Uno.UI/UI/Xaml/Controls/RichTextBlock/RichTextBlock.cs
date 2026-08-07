@@ -124,6 +124,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void InvalidateBlockContent()
 		{
+			// Clear selection, since content has changed selection start/end may no longer be valid.
+			ClearSelectionOnContentChangedPartial();
+
 			// Delete the cached collection of focusable children on any content change.
 			// It gets repopulated on the next usage.
 			_focusableChildrenCollection = null;
@@ -131,6 +134,8 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateHyperlinks();
 			InvalidateRichTextBlock();
 		}
+
+		partial void ClearSelectionOnContentChangedPartial();
 
 		private void InvalidateRichTextBlock()
 		{

@@ -78,7 +78,11 @@ internal partial class InputManager : IInputInjectorTarget
 		//TODO Uno: match WinUI
 		if (bringIntoView)
 		{
-			((UIElement)focusedElement).StartBringIntoView(new BringIntoViewOptions
+			// A Hyperlink is focusable without being a UIElement, so fall back to the element containing it.
+			var target = focusedElement as UIElement
+				?? FocusableHelper.GetContainingFrameworkElementIfFocusable(focusedElement);
+
+			target?.StartBringIntoView(new BringIntoViewOptions
 			{
 				AnimationDesired = animateIfBringIntoView
 			});
