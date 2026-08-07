@@ -126,36 +126,36 @@
 		-->
 
 		<!-- net11.0 -->
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net11.0\Uno.UI.dll" target="lib\net11.0" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net11.0\Uno.UI.pdb" target="lib\net11.0" />
-		<file src="..\..\src\Uno.UI\bin\Uno.UI.Skia\Release\net11.0\*.xml" target="lib\net11.0" />
-		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition.Skia\Release\net11.0\Uno.UI.Composition.dll" target="lib\net11.0" />
-		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition.Skia\Release\net11.0\Uno.UI.Composition.pdb" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI\Bin\Uno.UI\Release\net11.0\Uno.UI.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI\Bin\Uno.UI\Release\net11.0\Uno.UI.pdb" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI\bin\Uno.UI\Release\net11.0\*.xml" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition\Release\net11.0\Uno.UI.Composition.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition\Release\net11.0\Uno.UI.Composition.pdb" target="lib\net11.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net11.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net11.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\net11.0\Uno.UI.FluentTheme.dll" target="lib\net11.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\net11.0\Uno.UI.FluentTheme.pdb" target="lib\net11.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1.Skia\Release\net11.0\Uno.UI.FluentTheme.v1.dll" target="lib\net11.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1.Skia\Release\net11.0\Uno.UI.FluentTheme.v1.pdb" target="lib\net11.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2.Skia\Release\net11.0\Uno.UI.FluentTheme.v2.dll" target="lib\net11.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2.Skia\Release\net11.0\Uno.UI.FluentTheme.v2.pdb" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme\Release\net11.0\Uno.UI.FluentTheme.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme\Release\net11.0\Uno.UI.FluentTheme.pdb" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1\Release\net11.0\Uno.UI.FluentTheme.v1.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1\Release\net11.0\Uno.UI.FluentTheme.v1.pdb" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2\Release\net11.0\Uno.UI.FluentTheme.v2.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2\Release\net11.0\Uno.UI.FluentTheme.v2.pdb" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net11.0\Uno.UI.Toolkit.dll" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net11.0\Uno.UI.Toolkit.pdb" target="lib\net11.0" />
 
 		<!-- net10.0 -->
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net10.0\Uno.UI.dll" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net10.0\Uno.UI.pdb" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI\bin\Uno.UI.Skia\Release\net10.0\*.xml" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition.Skia\Release\net10.0\Uno.UI.Composition.dll" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition.Skia\Release\net10.0\Uno.UI.Composition.pdb" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI\Bin\Uno.UI\Release\net10.0\Uno.UI.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI\Bin\Uno.UI\Release\net10.0\Uno.UI.pdb" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI\bin\Uno.UI\Release\net10.0\*.xml" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition\Release\net10.0\Uno.UI.Composition.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition\Release\net10.0\Uno.UI.Composition.pdb" target="lib\net10.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net10.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\net10.0\Uno.UI.FluentTheme.dll" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Skia\Release\net10.0\Uno.UI.FluentTheme.pdb" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1.Skia\Release\net10.0\Uno.UI.FluentTheme.v1.dll" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1.Skia\Release\net10.0\Uno.UI.FluentTheme.v1.pdb" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2.Skia\Release\net10.0\Uno.UI.FluentTheme.v2.dll" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2.Skia\Release\net10.0\Uno.UI.FluentTheme.v2.pdb" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme\Release\net10.0\Uno.UI.FluentTheme.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme\Release\net10.0\Uno.UI.FluentTheme.pdb" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1\Release\net10.0\Uno.UI.FluentTheme.v1.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1\Release\net10.0\Uno.UI.FluentTheme.v1.pdb" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2\Release\net10.0\Uno.UI.FluentTheme.v2.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2\Release\net10.0\Uno.UI.FluentTheme.v2.pdb" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net10.0\Uno.UI.Toolkit.dll" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Skia\Release\net10.0\Uno.UI.Toolkit.pdb" target="lib\net10.0" />
 
