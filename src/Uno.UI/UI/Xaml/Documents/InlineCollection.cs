@@ -20,8 +20,7 @@ namespace Microsoft.UI.Xaml.Documents
 		private void OnCollectionChanged(
 			)
 		{
-			// Invalidate the run-model position-count cache (CInlineCollection::MarkDirty).
-			ResetPositionCountsPartial();
+			MarkDirty();
 
 			InvalidateTraversedTree();
 
@@ -38,6 +37,18 @@ namespace Microsoft.UI.Xaml.Documents
 					break;
 				default:
 					break;
+			}
+		}
+
+		// CInlineCollection::MarkDirty — drop our cached position counts, then let the owning element
+		// carry the invalidation on to the collection that holds it, so no ancestor keeps a stale count.
+		internal void MarkDirty()
+		{
+			ResetPositionCountsPartial();
+
+			if (_collection.GetParent() is TextElement owner)
+			{
+				owner.MarkDirty();
 			}
 		}
 
