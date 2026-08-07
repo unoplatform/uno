@@ -6,6 +6,7 @@
 
 using System;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Text.Core;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Documents;
@@ -111,7 +112,8 @@ partial class InlineCollection
 			CachePositionCounts();
 		}
 
-		MUX_ASSERT(characterPosition <= m_cCollectionPositions);
+		// WinUI guards this with IFCEXPECT, which is active in release too — not a debug-only assert.
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(characterPosition, m_cCollectionPositions);
 
 		if (characterPosition == m_cCollectionPositions)
 		{
@@ -197,7 +199,8 @@ partial class InlineCollection
 			CachePositionCounts();
 		}
 
-		MUX_ASSERT(characterPosition <= m_cCollectionPositions);
+		// WinUI guards this with IFCEXPECT, which is active in release too — not a debug-only assert.
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(characterPosition, m_cCollectionPositions);
 
 		if (characterPosition == 0 ||
 			characterPosition >= m_cCollectionPositions - 1)
@@ -298,10 +301,6 @@ partial class InlineCollection
 	//
 	//  Synopsis: Concatenates all text content between 2 offsets into a flat string.
 	//
-	//  NOTE (Uno): WinUI delegated to CTextBoxHelpers::GetText, which walks the run
-	//  model between the two positions. That helper is not yet ported; the run-model
-	//  walk below reproduces its text-concatenation behavior over GetRun.
-	//
 	//------------------------------------------------------------------------
 	internal string GetText(uint iTextPosition1, uint iTextPosition2, bool insertNewlines)
 	{
@@ -312,36 +311,7 @@ partial class InlineCollection
 			iTextPosition2 = cPositions;
 		}
 
-		var builder = new global::System.Text.StringBuilder();
-		uint position = iTextPosition1;
-
-		while (position < iTextPosition2)
-		{
-			GetRun(
-				position,
-				out _,
-				out _,
-				out _,
-				out _,
-				out var characters,
-				out var cCharacters);
-
-			if (cCharacters == 0)
-			{
-				break;
-			}
-
-			if (!characters.IsEmpty)
-			{
-				uint take = Math.Min(cCharacters, iTextPosition2 - position);
-				var span = characters.Span;
-				builder.Append(span.Slice(0, (int)Math.Min(take, (uint)span.Length)));
-			}
-
-			position += cCharacters;
-		}
-
-		return builder.ToString();
+		return TextBoxHelpers.GetText(this, iTextPosition1, iTextPosition2, insertNewlines);
 	}
 
 	// Returns the owning element of the inline collection (TextBlock, Span or Paragraph).
