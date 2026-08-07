@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -10,6 +10,11 @@ using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Extensions;
+
+// Aliased rather than imported: the RichTextServices namespace also declares a TextFormatting type,
+// which would collide with the TextFormatting namespace imported above.
+using ObjectRun = Microsoft.UI.Xaml.Documents.RichTextServices.ObjectRun;
+using ObjectRunMetrics = Microsoft.UI.Xaml.Documents.RichTextServices.ObjectRunMetrics;
 
 namespace Microsoft.UI.Xaml.Documents;
 
@@ -59,10 +64,12 @@ internal readonly struct ParsedText : IParsedText
 		int maxLines,
 		float lineHeight,
 		LineStackingStrategy lineStackingStrategy,
+		TextLineBounds textLineBounds,
 		TextAlignment textAlignment,
 		TextWrapping textWrapping,
 		FlowDirection flowDirection,
-		out Size desiredSize)
+		out Size desiredSize,
+		IReadOnlyDictionary<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)>? inlineObjects = null)
 	{
 		lineStackingStrategy = lineHeight == 0 ? LineStackingStrategy.MaxHeight : lineStackingStrategy;
 
@@ -80,11 +87,41 @@ internal readonly struct ParsedText : IParsedText
 		{
 			if (inline is LineBreak lineBreak)
 			{
-				Segment breakSegment = new(lineBreak);
+				// A <LineBreak/> is one flat character (CLineBreak::GetRun yields a single \x2028), matching the
+				// "\n" InlineExtensions.GetText already put in _text. It renders no glyph, so FullGlyphsLength stays 0.
+				Segment breakSegment = new(lineBreak, lineBreakLength: 1);
 				RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0, 0, 0, 0, 0);
 				lineSegmentSpans.Add(breakSegmentSpan);
 
 				MoveToNextLine(currentLineWrapped: false);
+			}
+			else if (inline is InlineUIContainer container)
+			{
+				// Only containers the caller measured occupy space. Formatting outside a block-layout
+				// host (so with no embedded element host to measure against) leaves them zero-sized.
+				if (inlineObjects is null || !inlineObjects.TryGetValue(container, out var inlineObject))
+				{
+					continue;
+				}
+
+				if (maxLines > 0 && renderLines.Count == maxLines)
+				{
+					goto MaxLinesHit;
+				}
+
+				var objectWidth = inlineObject.Metrics.Width;
+
+				if (x > 0 && objectWidth > availableWidth - x)
+				{
+					// The object doesn't fit in what's left of the line, and there is content before it,
+					// so wrap it whole onto the next line. An object never breaks internally.
+					MoveToNextLine(currentLineWrapped: true);
+				}
+
+				Segment objectSegment = new(container, flowDirection, inlineObject.Run, inlineObject.Metrics);
+				RenderSegmentSpan objectSegmentSpan = new(objectSegment, 0, 0, 0, 0, 0, objectWidth, objectWidth, 0);
+				lineSegmentSpans.Add(objectSegmentSpan);
+				x += objectWidth;
 			}
 			else if (inline is Run run)
 			{
@@ -279,7 +316,9 @@ internal readonly struct ParsedText : IParsedText
 			lineHeight = defaultLineHeight;
 			lineStackingStrategy = LineStackingStrategy.BlockLineHeight;
 
-			// this bit isn't strictly necessary but it maintains the invariant that RenderLines always have a span
+			// this bit isn't strictly necessary but it maintains the invariant that RenderLines always have a span.
+			// lineBreakLength stays 0: the newline it stands for was already counted by the preceding Run's
+			// LineBreakLength (or there is no newline at all), so it must not be counted twice.
 			Segment breakSegment = new(new LineBreak());
 			RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0, 0, 0, 0, 0);
 			lineSegmentSpans.Add(breakSegmentSpan);
@@ -320,7 +359,7 @@ internal readonly struct ParsedText : IParsedText
 
 		void MoveToNextLine(bool currentLineWrapped)
 		{
-			var renderLine = new RenderLine(lineSegmentSpans, lineStackingStrategy, lineHeight, renderLines.Count == 0, currentLineWrapped);
+			var renderLine = new RenderLine(lineSegmentSpans, lineStackingStrategy, lineHeight, renderLines.Count == 0, currentLineWrapped, textLineBounds);
 			renderLines.Add(renderLine);
 			lineSegmentSpans.Clear();
 
@@ -391,6 +430,14 @@ internal readonly struct ParsedText : IParsedText
 				var segmentSpan = line.RenderOrderedSegmentSpans[s];
 
 				var segment = segmentSpan.Segment;
+
+				if (segment.IsInlineObject)
+				{
+					// Inline objects do not render content directly. They are rendering through UIElement tree render walk.
+					x += segmentSpan.Width;
+					continue;
+				}
+
 				var inline = segment.Inline;
 				var fontInfo = segment.FallbackFont ?? inline.FontInfo;
 
@@ -560,11 +607,16 @@ internal readonly struct ParsedText : IParsedText
 
 	// Warning: this is only tested and currently used by TextBox
 	/// <remarks>Takes an already adjusted-for-surrogate-pairs index</remarks>
-	public Rect GetRectForIndex(int adjustedIndex)
+	public Rect GetRectForIndex(int adjustedIndex) => GetRectForUnadjustedIndex(_text[..adjustedIndex].EnumerateRunes().Count());
+
+	/// <remarks>
+	/// Takes an unadjusted (glyph-space) index — the same space as the RenderLine glyph counts, and
+	/// therefore as the RichTextServices TextLine character indices.
+	/// </remarks>
+	internal Rect GetRectForUnadjustedIndex(int index)
 	{
 		var characterCount = 0;
 		float y = 0, x = 0;
-		var index = _text[..adjustedIndex].EnumerateRunes().Count(); // unadjust
 
 		foreach (var line in _renderLines)
 		{
@@ -579,7 +631,13 @@ internal readonly struct ParsedText : IParsedText
 				{
 					// we found the right span
 					var segment = span.Segment;
-					var run = (Run)segment.Inline;
+
+					// A <LineBreak/> (or inline-object) span has no glyphs; the caret sits at the span's left edge.
+					if (segment.Inline is not Run run)
+					{
+						return new Rect(x, y, 0, line.Height);
+					}
+
 					var characterSpacing = (float)run.FontSize * run.CharacterSpacing / 1000;
 
 					var glyphStart = span.GlyphsStart;
@@ -623,23 +681,49 @@ internal readonly struct ParsedText : IParsedText
 	{
 		var start = 0;
 		var hyperlinks = new List<(int start, int end, Hyperlink hyperlink)>();
+
+		// Only leaves carry text, and _inlines may be either the leaf list (RichTextBlock feeds the
+		// formatter through ISkiaParagraphSource.GetLeafInlines) or a pre-order walk. Deriving the
+		// ranges from the leaves and walking up to the containing Hyperlink handles both.
 		foreach (var inline in _inlines)
 		{
-			switch (inline)
+			if (inline is Span)
 			{
-				case Hyperlink h:
-					hyperlinks.Add((start, start + h.GetText().Length, h));
-					break;
-				case Span:
-					break;
-				default: // Leaf node
-					start += inline.GetText().Length;
-					break;
+				// Container - its leaves contribute the text.
+				continue;
 			}
+
+			var length = inline.GetText().Length;
+
+			if (FindContainingHyperlink(inline) is { } hyperlink)
+			{
+				hyperlinks.Add((start, start + length, hyperlink));
+			}
+
+			start += length;
 		}
 		var characterIndex = ((IParsedText)this).GetIndexAt(point, ignoreEndingNewLine: false, extendedSelection: false);
 		return hyperlinks.FirstOrDefault(h => h.start <= characterIndex && h.end > characterIndex)
 			.hyperlink;
+	}
+
+	// Nearest Hyperlink ancestor of a leaf inline, or null when the leaf is not inside one.
+	private static Hyperlink? FindContainingHyperlink(Inline inline)
+	{
+		for (DependencyObject? current = inline; current is not null; current = current.GetParent() as DependencyObject)
+		{
+			if (current is Hyperlink hyperlink)
+			{
+				return hyperlink;
+			}
+
+			if (current is Microsoft.UI.Xaml.Controls.TextBlock or Microsoft.UI.Xaml.Controls.RichTextBlock)
+			{
+				break;
+			}
+		}
+
+		return null;
 	}
 
 	public (int start, int length) GetWordAt(int index, bool right)
@@ -740,6 +824,24 @@ internal readonly struct ParsedText : IParsedText
 	}
 
 	public bool IsBaseDirectionRightToLeft => false;
+
+	internal int LineCount => _renderLines.Count;
+
+	// True when the paragraph carries no text at all; SkiaTextLine uses it to stand in for
+	// WinUI's EndOfParagraphRun (ParagraphTextSource::GetTextRun).
+	internal bool IsEmpty => _text.Length == 0;
+
+	// Bridge accessors used by the RichTextServices Skia formatter (SkiaTextLine /
+	// SkiaTextFormatter) to vend per-line metrics over the parsed layout.
+	internal IReadOnlyList<RenderLine> RenderLines => _renderLines;
+
+	public float FirstLineBaseline => _renderLines.Count > 0 ? _renderLines[0].Height + _renderLines[0].BaselineOffsetY : _defaultLineHeight;
+
+	internal Size AvailableSize => _availableSize;
+
+	internal TextAlignment TextAlignment => _textAlignment;
+
+	internal FlowDirection FlowDirection => _flowDirection;
 
 	#endregion
 
@@ -962,7 +1064,7 @@ internal readonly struct ParsedText : IParsedText
 	}
 
 	// Warning: this is only tested and currently used by TextBox
-	private List<(int start, int length)> GetLineIntervals()
+	internal List<(int start, int length)> GetLineIntervals()
 	{
 		var lineIntervals = new List<(int start, int length)>(_renderLines.Count);
 
@@ -1079,7 +1181,7 @@ internal readonly struct ParsedText : IParsedText
 		return count;
 	}
 
-	private int GetIndexAtUnadjusted(Point p, bool ignoreEndingSpace, bool extendedSelection)
+	internal int GetIndexAtUnadjusted(Point p, bool ignoreEndingSpace, bool extendedSelection)
 	{
 		var line = GetRenderLineAt(p.Y, extendedSelection)?.line;
 
@@ -1149,6 +1251,12 @@ internal readonly struct ParsedText : IParsedText
 	private static bool SpanEndsInNewLine(RenderSegmentSpan segmentSpan)
 	{
 		var segment = segmentSpan.Segment;
+
+		// A LineBreak segment has no Text to inspect (Segment.Text throws); the break is its whole content.
+		if (segment.Inline is LineBreak)
+		{
+			return segment.LineBreakLength > 0;
+		}
 
 		return segment is { Inline: Run, LineBreakAfter: true } &&
 			   segment.Text.TrimEnd().Length <= segmentSpan.GlyphsStart + segmentSpan.GlyphsLength; // last in segment

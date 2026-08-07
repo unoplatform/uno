@@ -47,10 +47,10 @@ public partial class TextBlockAutomationPeer : FrameworkElementAutomationPeer
 	{
 		if (Owner is TextBlock owner)
 		{
-			var children = new ObservableCollection<AutomationPeer>();
+			var children = new List<AutomationPeer>();
 			foreach (var inline in owner.Inlines)
 			{
-				inline.AppendAutomationPeerChildren(-1, int.MaxValue);
+				inline.AppendAutomationPeerChildren(children, -1, int.MaxValue);
 			}
 			return children;
 		}

@@ -30,6 +30,8 @@ namespace Microsoft.UI.Xaml.Documents
 		public void OnTextChanged()
 		{
 			OnTextChangedPartial();
+			// The run's length feeds every ancestor's cached position counts, so drop those first.
+			MarkDirty();
 			InvalidateInlines(true);
 			InvalidateSegmentsPartial();
 		}
@@ -41,60 +43,60 @@ namespace Microsoft.UI.Xaml.Documents
 		protected override void OnForegroundChanged()
 		{
 			base.OnForegroundChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange(ForegroundProperty);
 		}
 
 		protected override void OnFontFamilyChanged()
 		{
 			base.OnFontFamilyChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange(FontFamilyProperty);
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontSizeChanged()
 		{
 			base.OnFontSizeChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange(FontSizeProperty);
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontStyleChanged()
 		{
 			base.OnFontStyleChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange(FontStyleProperty);
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontStretchChanged()
 		{
 			base.OnFontStretchChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange(FontStretchProperty);
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnFontWeightChanged()
 		{
 			base.OnFontWeightChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange(FontWeightProperty);
 			InvalidateSegmentsPartial();
 		}
 
 		protected override void OnBaseLineAlignmentChanged()
 		{
 			base.OnBaseLineAlignmentChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange(BaseLineAlignmentProperty);
 		}
 
 		protected override void OnCharacterSpacingChanged()
 		{
 			base.OnCharacterSpacingChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange(CharacterSpacingProperty);
 		}
 
 		protected override void OnTextDecorationsChanged()
 		{
 			base.OnTextDecorationsChanged();
-			InvalidateInlines(false);
+			InvalidateInlinesForFormatChange(TextDecorationsProperty);
 		}
 
 		partial void InvalidateSegmentsPartial();

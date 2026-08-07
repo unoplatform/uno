@@ -65,14 +65,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property TextAlignmentProperty
 		// Skipping already declared property TextDecorationsProperty
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TextLineBoundsProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TextLineBounds), typeof(global::Microsoft.UI.Xaml.TextLineBounds),
-			typeof(global::Microsoft.UI.Xaml.Controls.TextBlock),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.TextLineBounds)));
-#endif
+		// Skipping already declared property TextLineBoundsProperty
 		// Skipping already declared property TextProperty
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
@@ -84,8 +77,8 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property TextTrimmingProperty
 		// Skipping already declared property TextWrappingProperty
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public double BaselineOffset
 		{
 			get
@@ -220,20 +213,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TextAlignment
 		// Skipping already declared property TextDecorations
 		// Skipping already declared property TextHighlighters
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.TextLineBounds TextLineBounds
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.TextLineBounds)this.GetValue(TextLineBoundsProperty);
-			}
-			set
-			{
-				this.SetValue(TextLineBoundsProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property TextLineBounds
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.UI.Xaml.TextReadingOrder TextReadingOrder
