@@ -90,7 +90,9 @@ internal readonly struct ParsedText : IParsedText
 		{
 			if (inline is LineBreak lineBreak)
 			{
-				Segment breakSegment = new(lineBreak);
+				// A <LineBreak/> is one flat character (CLineBreak::GetRun yields a single \x2028), matching the
+				// "\n" InlineExtensions.GetText already put in _text. It renders no glyph, so FullGlyphsLength stays 0.
+				Segment breakSegment = new(lineBreak, lineBreakLength: 1);
 				RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0, 0, 0, 0, 0);
 				lineSegmentSpans.Add(breakSegmentSpan);
 
@@ -317,7 +319,9 @@ internal readonly struct ParsedText : IParsedText
 			lineHeight = defaultLineHeight;
 			lineStackingStrategy = LineStackingStrategy.BlockLineHeight;
 
-			// this bit isn't strictly necessary but it maintains the invariant that RenderLines always have a span
+			// this bit isn't strictly necessary but it maintains the invariant that RenderLines always have a span.
+			// lineBreakLength stays 0: the newline it stands for was already counted by the preceding Run's
+			// LineBreakLength (or there is no newline at all), so it must not be counted twice.
 			Segment breakSegment = new(new LineBreak());
 			RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0, 0, 0, 0, 0);
 			lineSegmentSpans.Add(breakSegmentSpan);
@@ -701,7 +705,13 @@ internal readonly struct ParsedText : IParsedText
 				{
 					// we found the right span
 					var segment = span.Segment;
-					var run = (Run)segment.Inline;
+
+					// A <LineBreak/> (or inline-object) span has no glyphs; the caret sits at the span's left edge.
+					if (segment.Inline is not Run run)
+					{
+						return new Rect(x, y, 0, line.Height);
+					}
+
 					var characterSpacing = (float)run.FontSize * run.CharacterSpacing / 1000;
 
 					var glyphStart = span.GlyphsStart;
@@ -1326,6 +1336,12 @@ internal readonly struct ParsedText : IParsedText
 	private static bool SpanEndsInNewLine(RenderSegmentSpan segmentSpan)
 	{
 		var segment = segmentSpan.Segment;
+
+		// A LineBreak segment has no Text to inspect (Segment.Text throws); the break is its whole content.
+		if (segment.Inline is LineBreak)
+		{
+			return segment.LineBreakLength > 0;
+		}
 
 		return segment is { Inline: Run, LineBreakAfter: true } &&
 			   segment.Text.TrimEnd().Length <= segmentSpan.GlyphsStart + segmentSpan.GlyphsLength; // last in segment
