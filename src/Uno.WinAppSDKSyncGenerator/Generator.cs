@@ -105,7 +105,6 @@ namespace Uno.WinAppSDKSyncGenerator
 			BaseXamlNamespace + ".Media.LinearGradientBrush",
 			BaseXamlNamespace + ".Data.RelativeSource",
 			BaseXamlNamespace + ".Controls.Primitives.CarouselPanel",
-			BaseXamlNamespace + ".Controls.MediaPlayerPresenter",
 			BaseXamlNamespace + ".Controls.NavigationViewItemBase",
 			"Microsoft.UI.Xaml.Controls.WebView2",
 			// In Uno DependencyObjectCollection derives from DependencyObjectCollection<DependencyObject>, which
