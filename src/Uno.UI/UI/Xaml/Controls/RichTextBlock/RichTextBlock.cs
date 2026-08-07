@@ -124,6 +124,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void InvalidateBlockContent()
 		{
+			// Delete the cached collection of focusable children on any content change.
+			// It gets repopulated on the next usage.
+			_focusableChildrenCollection = null;
+
 			UpdateHyperlinks();
 			InvalidateRichTextBlock();
 		}
@@ -387,6 +391,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private readonly ObservableCollection<Hyperlink> _hyperlinks = new();
 
+		// CRichTextBlock::m_focusableChildrenCollection - lazily built, dropped on any content change.
+		private List<DependencyObject> _focusableChildrenCollection;
+
 		private void HyperlinksOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RecalculateSubscribeToPointerEvents();
 
 		private void RecalculateSubscribeToPointerEvents()
@@ -423,6 +430,48 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private bool HasHyperlink => _hyperlinks.Count > 0;
+
+		// CRichTextBlock::GetFocusableChildrenHelper: navigates through the TextElement collection and
+		// retrieves the list of focusable elements.
+		private static void GetFocusableChildrenHelper(List<DependencyObject> focusChildren, IEnumerable<TextElement> collection)
+		{
+			foreach (var element in collection)
+			{
+				if (FocusableHelper.IsFocusableDO(element))
+				{
+					focusChildren.Add(element);
+				}
+				else if (element is InlineUIContainer inlineUIContainer)
+				{
+					if (inlineUIContainer.Child is { } child)
+					{
+						focusChildren.Add(child);
+					}
+				}
+				else if (element is Paragraph paragraph)
+				{
+					GetFocusableChildrenHelper(focusChildren, paragraph.Inlines);
+				}
+				else if (element is Span span)
+				{
+					GetFocusableChildrenHelper(focusChildren, span.Inlines);
+				}
+			}
+		}
+
+		// CRichTextBlock::GetFocusableChildren: builds a collection of elements for the focus manager to
+		// discover and work with for tab navigation. The collection is cached until the content changes.
+		internal IReadOnlyList<DependencyObject> GetFocusableChildren()
+		{
+			if (_focusableChildrenCollection is null)
+			{
+				var focusableChildren = new List<DependencyObject>();
+				GetFocusableChildrenHelper(focusableChildren, Blocks);
+				_focusableChildrenCollection = focusableChildren;
+			}
+
+			return _focusableChildrenCollection;
+		}
 
 		private bool SubscribeToPointerEvents
 		{
