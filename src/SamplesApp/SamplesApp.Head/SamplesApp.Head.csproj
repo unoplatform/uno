@@ -88,6 +88,13 @@
 		— TreatWarningsAsErrors would otherwise fail the android restore. Matches the netcoremobile head.
 		-->
 		<NoWarn>$(NoWarn);NU1703</NoWarn>
+
+		<!--
+		The App/ApplicationDefinition lives in the SamplesApp.Skia base lib, not here, so the
+		hot-restart helper generator has nothing to bind to and fails the build with Uno0005.
+		netcoremobile disables it outright; do the same rather than per-TFM.
+		-->
+		<UnoDisableHotRestartHelperGeneration>true</UnoDisableHotRestartHelperGeneration>
 	</PropertyGroup>
 
 	<!-- ==================== Source mode: framework via ProjectReference ==================== -->
@@ -292,8 +299,6 @@
 		<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
 		<!-- We need all the intermediate assemblies for the runtime tests -->
 		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
-		<!-- Temporarily disabled due to uno-private #647 -->
-		<UnoDisableHotRestartHelperGeneration>true</UnoDisableHotRestartHelperGeneration>
 		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
 		<PublishAot Condition=" '$(SkiaPublishAot)' != '' ">$(SkiaPublishAot)</PublishAot>
 		<NoWarn>$(NoWarn);NU1703;SYSLIB1045;IL2026;IL2057;IL2062;IL2065;IL2067;IL2068;IL2070;IL2072;IL2075;IL2077;IL2080;IL2104;IL2111;IL2122;IL3000;IL3002;IL3050;IL3053</NoWarn>
