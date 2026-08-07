@@ -74,8 +74,13 @@
 		<DisableImplicitUnoPackages Condition="'$(SamplesAppUseImplicitPackages)' != 'true'">true</DisableImplicitUnoPackages>
 		<DisableImplicitUnoWinAppSdkPackages Condition="'$(SamplesAppUseImplicitPackages)' != 'true'">true</DisableImplicitUnoWinAppSdkPackages>
 
-		<!-- Build the Uno.UI.Tasks shadow assembly first (CI / clean builds), as the source heads do -->
-		<PreBuildUnoUITasks Condition="'$(BuildingInsideVisualStudio)'==''">true</PreBuildUnoUITasks>
+		<!--
+		Build the Uno.UI.Tasks shadow assembly first (CI / clean builds), as the Skia heads do.
+		Skipped on windows, like SamplesApp.Windows: that TFM neither imports Uno.UI.Tasks.targets
+		nor runs the Uno generators, and building the netstandard2.0 tools under the WinAppSDK
+		MSBuild.exe environment fails to resolve their framework references (CS0518/CS0012).
+		-->
+		<PreBuildUnoUITasks Condition="'$(BuildingInsideVisualStudio)'=='' AND '$(_IsSkiaTfm)' == 'true'">true</PreBuildUnoUITasks>
 
 		<!--
 		NU1703 (transitive package binds to the deprecated MonoAndroid framework) is raised by restore,
