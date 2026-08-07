@@ -9,6 +9,7 @@
       "SamplesApp\\SamplesApp.Samples\\SamplesApp.Samples.csproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.csproj",
       "SamplesApp\\SamplesApp.UnitTests.Shared\\SamplesApp.UnitTests.Shared.csproj",
+      "SamplesApp\\SamplesApp.Head\\SamplesApp.Head.csproj",
       "SamplesApp\\SamplesApp.Windows\\SamplesApp.Windows.csproj",
       "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
