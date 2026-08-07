@@ -67,7 +67,12 @@ namespace Windows.Storage {
 		private static onStorageInitialized() {
 			if (!StorageFolder.dispatchStorageInitialized) {
 				if ((<any>globalThis).DotnetExports !== undefined) {
-					StorageFolder.dispatchStorageInitialized = (<any>globalThis).DotnetExports.Uno.Windows.Storage.StorageFolder.DispatchStorageInitialized;
+					if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+						StorageFolder.dispatchStorageInitialized = (<any>globalThis).DotnetExports.Uno.Windows.Storage.StorageFolder.DispatchStorageInitializedAsync;
+					}
+					else {
+						StorageFolder.dispatchStorageInitialized = (<any>globalThis).DotnetExports.Uno.Windows.Storage.StorageFolder.DispatchStorageInitialized;
+					}
 				} else {
 					throw `StorageFolder: Unable to find dotnet exports`;
 				}
