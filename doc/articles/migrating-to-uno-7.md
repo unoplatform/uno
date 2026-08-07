@@ -245,7 +245,7 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
   Only the four image sinks Uno already resolved as assets carry that mapping. The properties above
   that never resolved a relative URI stay inert with the new value, exactly as they are on WinUI —
   a hand-written `ms-resource:///Files/…` is treated the same as the compiler-generated form, since
-  that *is* MRT's local-file namespace and Uno ships no MRT to resolve it any other way.
+  that *is* the MRT local-file namespace and Uno ships no MRT to resolve it any other way.
 
   Two changes go beyond the value you read back:
 
