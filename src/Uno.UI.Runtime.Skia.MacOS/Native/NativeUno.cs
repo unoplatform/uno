@@ -262,6 +262,45 @@ internal static partial class NativeUno
 	internal static partial void uno_application_quit();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_notifications_is_supported();
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial int uno_notifications_get_setting();
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_notifications_initialize();
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_notifications_request_authorization();
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_notifications_post(string commandJson, double delaySeconds);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_notifications_remove(string requestIdentifier);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_notifications_remove_all(string requestIdentifierPrefix);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial nint uno_notifications_get_identifiers_json(
+		string requestIdentifierPrefix,
+		[MarshalAs(UnmanagedType.I1)] bool includePending,
+		[MarshalAs(UnmanagedType.I1)] bool includeDelivered);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_notifications_free_string(nint value);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_notifications_set_callbacks(
+		delegate* unmanaged[Cdecl]<byte*, byte*, byte*, byte*, byte*, void> activated,
+		delegate* unmanaged[Cdecl]<byte*, void> delivered);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial nint uno_window_create(double width, double height);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
