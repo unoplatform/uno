@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Helpers;
 using Uno.UI;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel;
 using Windows.Graphics.Display;
@@ -58,7 +59,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			try
 			{
 				var (decodeWidth, decodeHeight) = GetDecodePixelSize();
-				var uri = UriSource;
+				// Reads the property rather than the normalized AbsoluteUri, so a UriSource assigned
+				// directly (ctor, x:Bind, Setter, code-behind) still needs the local-resource mapping.
+				var uri = UriSource is { } uriSource ? XamlFilePathHelper.NormalizeMsResourceFilesUri(uriSource) : null;
 				if (uri is null)
 				{
 					if (_stream is null)
@@ -118,7 +121,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						return ImageData.FromError(new InvalidOperationException($"UriSource must be absolute"));
 					}
 
-					if (uri.IsLocalResource())
+					if (uri.IsMsAppx())
 					{
 						uri = await TryResolveLocalResource(uri);
 					}
@@ -198,7 +201,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		internal static async Task<Uri> TryResolveLocalResource(Uri uri, ResolutionScale? scaleOverride = null)
 		{
-			if (!uri.IsLocalResource())
+			if (!uri.IsMsAppx())
 			{
 				return uri;
 			}

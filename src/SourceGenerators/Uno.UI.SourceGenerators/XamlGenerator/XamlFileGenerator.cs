@@ -1573,7 +1573,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											writer.AppendLineIndented(";");
 										}
 
-										writer.AppendLineInvariantIndented("{0}.Source = new global::System.Uri(\"{1}{2}\");", dictVarId, XamlFilePathHelper.LocalResourcePrefix, url);
+										writer.AppendLineInvariantIndented("{0}.Source = new global::System.Uri(\"{1}{2}\");", dictVarId, XamlFilePathHelper.MsResourceFilesPrefix, url);
 										writer.AppendLineInvariantIndented("{0}.CreationComplete();", dictVarId);
 									}
 
@@ -5127,7 +5127,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					case "System.Uri":
 						var uriValue = GetMemberValue();
-						return $"new System.Uri({RewriteUri(uriValue)}, global::System.UriKind.RelativeOrAbsolute)";
+						return $"new System.Uri({RewriteUri(uriValue, isImageSourceProperty: false)}, global::System.UriKind.RelativeOrAbsolute)";
 
 					case "System.Type":
 						return $"typeof({GetType(GetMemberValue(), owner?.Owner).GetFullyQualifiedTypeIncludingGlobal()})";
@@ -5189,7 +5189,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return "Windows.Media.Core.MediaSource.CreateFromUri(new Uri(\"" + memberValue + "\"))";
 
 					case "Microsoft.UI.Xaml.Media.ImageSource":
-						return RewriteUri(memberValue);
+						return RewriteUri(memberValue, isImageSourceProperty: true);
 
 					case "Microsoft.UI.Xaml.TargetPropertyPath":
 						return BuildTargetPropertyPath(GetMemberValue(), owner);
@@ -5291,32 +5291,40 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return splitRegex.Replace(value, ", ");
 				}
 
-				string RewriteUri(string? rawValue)
+				string RewriteUri(string? rawValue, bool isImageSourceProperty)
 				{
-					if (rawValue is not null
-						&& Uri.TryCreate(rawValue, UriKind.RelativeOrAbsolute, out var parsedUri)
-						&& !parsedUri.IsAbsoluteUri)
+					if (rawValue is not { Length: > 0 }
+						|| !Uri.TryCreate(rawValue, UriKind.RelativeOrAbsolute, out var parsedUri)
+						|| parsedUri.IsAbsoluteUri)
 					{
-						var declaringType = FindFirstConcreteAncestorType(owner?.Owner);
-
-						if (
-							declaringType.Is(Generation.ImageSourceSymbol.Value)
-							|| declaringType.Is(Generation.ImageSymbol.Value)
-						)
-						{
-							var uriBase = rawValue.StartsWith("/", StringComparison.Ordinal)
-								? "\"ms-appx:///\""
-								: $"__baseUri_prefix_{_fileUniqueId}";
-
-							return $"{uriBase} + \"{rawValue.TrimStart('/')}\"";
-						}
-						else
-						{
-							// Breaking change, support for ms-resource:// for non framework owners (https://github.com/unoplatform/uno/issues/8339)
-						}
+						return ToVerbatimLiteral(rawValue ?? "");
 					}
 
-					return $"@\"{rawValue}\"";
+					// Measured on WinAppSDK 1.7: WinUI resolves a relative URI against the XAML file's
+					// folder only where it lands in a BitmapImage, and rewrites every other one - including
+					// an SvgImageSource reached through an ImageSource-typed property - to the MRT
+					// local-resource form, a raw prefix concat rather than a base-URI resolution.
+					//
+					// Uno keeps every ImageSource-typed property, SvgImageSource.UriSource included, on the
+					// ms-appx form. The two forms differ in how the sink resolves them, not in what they can
+					// express: ms-appx is resolved as an asset path, so it carries the assembly prefix a
+					// library's own assets need, while ms-resource is only understood by the mapping in
+					// XamlFilePathHelper, which maps to the app root. Following WinUI here would leave a
+					// library's svg assets unreachable, with no MRT to fall back on.
+					if (isImageSourceProperty
+						|| FindFirstConcreteAncestorType(owner?.Owner).Is(Generation.ImageSourceSymbol.Value))
+					{
+						var uriBase = rawValue.StartsWith("/", StringComparison.Ordinal)
+							? "\"ms-appx:///\""
+							: $"__baseUri_prefix_{_fileUniqueId}";
+
+						return $"{uriBase} + {ToVerbatimLiteral(rawValue.TrimStart('/'))}";
+					}
+
+					return ToVerbatimLiteral(XamlFilePathHelper.MsResourceFilesPrefix + rawValue.TrimStart('/'));
+
+					// A path is free to contain a backslash, which a regular literal would read as an escape.
+					static string ToVerbatimLiteral(string value) => $"@\"{value.Replace("\"", "\"\"")}\"";
 				}
 			}
 		}

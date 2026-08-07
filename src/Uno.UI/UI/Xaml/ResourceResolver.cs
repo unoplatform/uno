@@ -1091,7 +1091,7 @@ namespace Uno.UI
 			if (!XamlFilePathHelper.IsAbsolutePath(source))
 			{
 				// If we don't have an absolute path it must be a local resource reference
-				source = XamlFilePathHelper.LocalResourcePrefix + XamlFilePathHelper.ResolveAbsoluteSource(currentAbsolutePath, source);
+				source = XamlFilePathHelper.MsResourceFilesPrefix + XamlFilePathHelper.ResolveAbsoluteSource(currentAbsolutePath, source);
 			}
 
 			// When secondary ALCs are active, check the ALC-scoped registry first.
@@ -1161,7 +1161,7 @@ namespace Uno.UI
 			if (!XamlFilePathHelper.IsAbsolutePath(source))
 			{
 				// If we don't have an absolute path it must be a local resource reference
-				source = XamlFilePathHelper.LocalResourcePrefix + XamlFilePathHelper.ResolveAbsoluteSource(currentAbsolutePath, source);
+				source = XamlFilePathHelper.MsResourceFilesPrefix + XamlFilePathHelper.ResolveAbsoluteSource(currentAbsolutePath, source);
 			}
 
 			// Try ALC-specific registry first (for non-default ALCs)
