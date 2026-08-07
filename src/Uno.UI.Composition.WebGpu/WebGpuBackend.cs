@@ -526,7 +526,7 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
 
 	private const string ImageWgsl = @"
 struct VOut { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
-struct U { op: vec4<f32>, tint: vec4<f32> };
+struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec4<f32>, m3: vec4<f32>, off: vec4<f32> };
 @group(0) @binding(0) var tex: texture_2d<f32>;
 @group(0) @binding(1) var smp: sampler;
 @group(0) @binding(2) var<uniform> u: U;
@@ -536,7 +536,14 @@ struct U { op: vec4<f32>, tint: vec4<f32> };
 @vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> VOut { var o: VOut; o.p = vec4<f32>(pos, 0.0, 1.0); o.uv = uv; return o; }
 @fragment fn fs(i: VOut) -> @location(0) vec4<f32> {
   var c = textureSample(tex, smp, i.uv);   // premultiplied
-  if (u.op.y > 0.5) {
+  if (u.op.z > 0.5) {
+    // 4x5 colour matrix (effect brush): unpremultiply -> matrix + offset -> clamp -> premultiply.
+    var s = c;
+    if (c.a > 0.0) { s = vec4<f32>(c.rgb / c.a, c.a); }
+    let r = vec4<f32>(dot(u.m0, s) + u.off.x, dot(u.m1, s) + u.off.y, dot(u.m2, s) + u.off.z, dot(u.m3, s) + u.off.w);
+    let rc = clamp(r, vec4<f32>(0.0), vec4<f32>(1.0));
+    c = vec4<f32>(rc.rgb * rc.a, rc.a);
+  } else if (u.op.y > 0.5) {
     // SrcIn blend-mode tint: premultiplied(filterColor) * dst.a.
     let fp = vec4<f32>(u.tint.rgb * u.tint.a, u.tint.a);
     c = fp * c.a;
@@ -838,6 +845,7 @@ internal sealed unsafe class ImageCmd : WebGpuCommand
 	public float U0, V0, U1 = 1f, V1 = 1f;   // source UV sub-rect (whole texture by default)
 	public int TintMode;        // 0 = none, 1 = SrcIn blend-mode tint
 	public Vector4 Tint;        // straight-alpha tint color (0..1) for TintMode 1
+	public float[] ColorMatrix; // null, or 20-float (4x5) effect colour matrix applied in the image shader
 }
 
 internal sealed class GradientCmd : WebGpuCommand
@@ -958,10 +966,11 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 {
 	// A save frame carries the matrix/clip to restore. Layer frames additionally redirect emitted commands into
 	// a sub-list until Restore, which composites that sub-list (as a LayerCmd) back onto the parent.
-	private struct SaveEntry { public Matrix4x4 M; public ClipData Clip; public bool IsLayer; public List<WebGpuCommand> ParentTarget; public int CompositeMode; public float[] ColorMatrix; public WebGpuEffectFilter Effect; }
+	private struct SaveEntry { public Matrix4x4 M; public ClipData Clip; public bool IsLayer; public List<WebGpuCommand> ParentTarget; public int CompositeMode; public float[] ColorMatrix; public WebGpuEffectFilter Effect; public float[] PendingColorMatrix; }
 	private readonly Stack<SaveEntry> _stack = new();
 	private Matrix4x4 _m = Matrix4x4.Identity;
 	private ClipData _clip = ClipData.None;
+	private float[] _pendingColorMatrix;   // active effect colour matrix, applied per DrawImage in the image shader
 	private readonly WebGpuRenderData _data = new();
 	private List<WebGpuCommand> _target;   // current emit target (root command list, or a layer's list)
 
@@ -976,12 +985,12 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	// so it must be handed the depth to restore *to* (before this save). Returning the post-push count made
 	// RestoreToCount a no-op, leaking _m/_clip across sibling visuals (identity-local visuals — e.g. opaque
 	// container backgrounds — inherited a sibling's transform and painted over content).
-	public int Save() { var pre = _stack.Count; _stack.Push(new SaveEntry { M = _m, Clip = _clip }); return pre; }
+	public int Save() { var pre = _stack.Count; _stack.Push(new SaveEntry { M = _m, Clip = _clip, PendingColorMatrix = _pendingColorMatrix }); return pre; }
 	public int SaveCount => _stack.Count;
 	public void Restore()
 	{
 		if (_stack.Count == 0) { return; }
-		var t = _stack.Pop(); _m = t.M; _clip = t.Clip;
+		var t = _stack.Pop(); _m = t.M; _clip = t.Clip; _pendingColorMatrix = t.PendingColorMatrix;
 		if (t.IsLayer)
 		{
 			var layerCmds = _target;
@@ -993,11 +1002,22 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 
 	private void PushLayer(int compositeMode, float[] colorMatrix, WebGpuEffectFilter effect = null)
 	{
-		_stack.Push(new SaveEntry { M = _m, Clip = _clip, IsLayer = true, ParentTarget = _target, CompositeMode = compositeMode, ColorMatrix = colorMatrix, Effect = effect });
+		_stack.Push(new SaveEntry { M = _m, Clip = _clip, IsLayer = true, ParentTarget = _target, CompositeMode = compositeMode, ColorMatrix = colorMatrix, Effect = effect, PendingColorMatrix = _pendingColorMatrix });
 		_target = new List<WebGpuCommand>();
 	}
 	public void SaveLayer(bool antialias = false) => PushLayer(0, null);
-	public void SaveLayer(IColorFilter colorFilter, bool antialias = false) => PushLayer(0, (colorFilter as WebGpuColorFilter)?.Matrix);
+	public void SaveLayer(IColorFilter colorFilter, bool antialias = false)
+	{
+		// A 4x5 colour-matrix filter (effect brush): apply it directly in the image shader — matching the original
+		// webgpu branch's AddImage(colorMatrix) — instead of an offscreen layer. Scope it to the matching Restore.
+		if ((colorFilter as WebGpuColorFilter)?.Matrix is { } matrix)
+		{
+			_stack.Push(new SaveEntry { M = _m, Clip = _clip, PendingColorMatrix = _pendingColorMatrix });
+			_pendingColorMatrix = matrix;
+			return;
+		}
+		PushLayer(0, null);
+	}
 	public void SaveLayer(BlendMode blendMode, bool antialias = false) => PushLayer(blendMode == BlendMode.DstIn ? 1 : 0, null);
 	public void SaveLayer(IEffectFilter filter) => PushLayer(0, null, filter as WebGpuEffectFilter);
 	// Device-space AABB of a mapped rect (its 4 corners), for the scissor / fast reject.
@@ -1189,23 +1209,21 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		if (texture is not WebGpuImageTexture t) { return; }
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
 		// No per-frame upload — the texture is already resident; record its view for the present pass.
-		_target.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = opacity, Clip = _clip });
+		_target.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = opacity, ColorMatrix = _pendingColorMatrix, Clip = _clip });
 	}
 	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false)
 	{
 		if (texture is not WebGpuImageTexture t) { return; }
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
-		// A 4x5 colour-matrix filter (e.g. MonochromeColor / effect brush): draw the image inside a colour-matrix
-		// layer, reusing LayerCmd.ColorMatrix (applied at composite). The SrcIn blend-mode tint stays the fast path.
-		if (colorFilter is WebGpuColorFilter { Matrix: not null })
+		// A 4x5 colour-matrix filter (e.g. MonochromeColor / effect brush): apply it in the image shader.
+		// The SrcIn blend-mode tint stays the fast path.
+		if (colorFilter is WebGpuColorFilter { Matrix: { } matrix })
 		{
-			SaveLayer(colorFilter);
-			DrawImage(texture, x, y, sampling);
-			Restore();
+			_target.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = 1f, ColorMatrix = matrix, Clip = _clip });
 			return;
 		}
 		var (mode, tint) = ResolveTint(colorFilter);
-		_target.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = 1f, TintMode = mode, Tint = tint, Clip = _clip });
+		_target.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = 1f, TintMode = mode, Tint = tint, ColorMatrix = _pendingColorMatrix, Clip = _clip });
 	}
 
 	// A SrcIn blend-mode WebGpuColorFilter → a straight-alpha tint (the only image color-filter case today);
@@ -1324,7 +1342,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					_target.Add(new ShadowCmd { FanDevice = sdst, BbMin = sbbMin, BbMax = sbbMax, EvenOdd = sh.EvenOdd, Color = sh.Color, SigmaX = sh.SigmaX * ss, SigmaY = sh.SigmaY * ss, Additive = sh.Additive, Clip = ClipCompose(sh.Clip, T) });
 					break;
 				case ImageCmd im:
-					_target.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), View = im.View, W = im.W, H = im.H, Opacity = im.Opacity, U0 = im.U0, V0 = im.V0, U1 = im.U1, V1 = im.V1, TintMode = im.TintMode, Tint = im.Tint, Clip = ClipCompose(im.Clip, T) });
+					_target.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), View = im.View, W = im.W, H = im.H, Opacity = im.Opacity, U0 = im.U0, V0 = im.V0, U1 = im.U1, V1 = im.V1, TintMode = im.TintMode, Tint = im.Tint, ColorMatrix = im.ColorMatrix, Clip = ClipCompose(im.Clip, T) });
 					break;
 				case GradientCmd gc:
 					// Transform the device-space geometry baked into the uniform by the replay matrix too, so the
@@ -1711,15 +1729,24 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			case ImageCmd im:
 			{
 				var view = im.View;
-				var ubuf = Ubuf(32, owned);
-				var op = stackalloc float[8];
-				op[0] = im.Opacity; op[1] = im.TintMode; op[2] = 0; op[3] = 0;
+				var ubuf = Ubuf(112, owned);
+				var op = stackalloc float[28];
+				bool hasMatrix = im.ColorMatrix is { Length: >= 20 };
+				op[0] = im.Opacity; op[1] = im.TintMode; op[2] = hasMatrix ? 1f : 0f; op[3] = 0;
 				op[4] = im.Tint.X; op[5] = im.Tint.Y; op[6] = im.Tint.Z; op[7] = im.Tint.W;
-				wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)op, 32);
+				if (im.ColorMatrix is { Length: >= 20 } mm)
+				{
+					op[8] = mm[0]; op[9] = mm[1]; op[10] = mm[2]; op[11] = mm[3];        // m0
+					op[12] = mm[5]; op[13] = mm[6]; op[14] = mm[7]; op[15] = mm[8];      // m1
+					op[16] = mm[10]; op[17] = mm[11]; op[18] = mm[12]; op[19] = mm[13];  // m2
+					op[20] = mm[15]; op[21] = mm[16]; op[22] = mm[17]; op[23] = mm[18];  // m3
+					op[24] = mm[4]; op[25] = mm[9]; op[26] = mm[14]; op[27] = mm[19];    // off (5th column)
+				}
+				wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)op, 112);
 				var entries = stackalloc WGPUBindGroupEntry[3];
 				entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = view };
 				entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-				entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
+				entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 112 };
 				var bgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
 				var bg = Bg(ref bgd, owned);
 				var q = new float[24];
@@ -1808,7 +1835,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// Render the blurred coverage offscreen, then composite it as a SrcIn-tinted image (tint =
 					// shadow color) at its device placement — reusing the image draw path (kind 2), incl. clip.
 					var blurView = RenderShadow(sh, out var origin, out var size);
-					var ubuf = MakeUniform((int)32);
+					var ubuf = MakeUniform((int)112);
 					var op = stackalloc float[8];
 					op[0] = 1f; op[1] = 1f; op[2] = 0; op[3] = 0;
 					op[4] = sh.Color.R / 255f; op[5] = sh.Color.G / 255f; op[6] = sh.Color.B / 255f; op[7] = sh.Color.A / 255f;
@@ -1816,7 +1843,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					var sentries = stackalloc WGPUBindGroupEntry[3];
 					sentries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blurView };
 					sentries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-					sentries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
+					sentries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 112 };
 					var sbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sentries };
 					var sbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &sbgd));
 					var sq = new float[24];
@@ -1844,7 +1871,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						BlurPass(layerSurface.View, tmp, new Vector2(1f, 0f), new Vector2(1f / _s.Width, 0f), fx.SigmaX);
 						var blur = _d.Pool.Rent(_s.Width, _s.Height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 						BlurPass(tmp, blur, new Vector2(0f, 1f), new Vector2(0f, 1f / _s.Height), fx.SigmaY);
-						var subuf = MakeUniform((int)32);
+						var subuf = MakeUniform((int)112);
 						var sop = stackalloc float[8];
 						sop[0] = 1f; sop[1] = 1f; sop[2] = 0; sop[3] = 0;
 						sop[4] = fx.Color.R / 255f; sop[5] = fx.Color.G / 255f; sop[6] = fx.Color.B / 255f; sop[7] = fx.Color.A / 255f;
@@ -1852,7 +1879,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						var sfe = stackalloc WGPUBindGroupEntry[3];
 						sfe[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blur };
 						sfe[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-						sfe[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = subuf, Offset = 0, Size = 32 };
+						sfe[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = subuf, Offset = 0, Size = 112 };
 						var sfbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sfe };
 						var sfbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &sfbgd));
 						var fq = new float[24];
@@ -1894,13 +1921,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					BlurPass(bd.View, btmp, new Vector2(1f, 0f), new Vector2(1f / _s.Width, 0f), bk.Effect.SigmaX);
 					var bblur = _d.Pool.Rent(_s.Width, _s.Height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 					BlurPass(btmp, bblur, new Vector2(0f, 1f), new Vector2(0f, 1f / _s.Height), bk.Effect.SigmaY);
-					var bubuf = MakeUniform((int)32);
+					var bubuf = MakeUniform((int)112);
 					var bop = stackalloc float[8]; bop[0] = bk.Opacity; bop[1] = 0; bop[2] = 0; bop[3] = 0;
 					wgpuQueueWriteBuffer(_d.Q, bubuf, 0, (IntPtr)bop, 32);
 					var bde = stackalloc WGPUBindGroupEntry[3];
 					bde[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = bblur };
 					bde[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-					bde[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = bubuf, Offset = 0, Size = 32 };
+					bde[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = bubuf, Offset = 0, Size = 112 };
 					var bdbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = bde };
 					var bdbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bdbgd));
 					var bq = new float[24];
