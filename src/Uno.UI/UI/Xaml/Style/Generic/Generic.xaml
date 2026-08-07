@@ -7216,7 +7216,7 @@
 											<Button x:Name='PlaybackRateButton'
 													Style='{StaticResource MTC_ButtonStyle}'
 													Visibility='Collapsed'>
-												<FontIcon Glyph="&#xEC57;" /><Button.Flyout>
+												<Button.Flyout>
 													<Flyout x:Name='PlaybackRateFlyout'
 															Placement="RightEdgeAlignedBottom"
 															FlyoutPresenterStyle="{StaticResource MTC_FlyoutStyle}">
