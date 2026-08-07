@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Uno.UI.Toolkit
+namespace Uno.UI.Extras
 {
 	public static class SplitViewExtensions
 	{

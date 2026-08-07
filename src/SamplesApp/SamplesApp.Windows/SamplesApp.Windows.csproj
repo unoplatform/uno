@@ -96,9 +96,9 @@
 			<Project>{028f3ee0-d51b-469a-a72c-c272585dcd40}</Project>
 			<Name>Uno.UI.RuntimeTests</Name>
 		</ProjectReference>
-		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Windows.csproj">
+		<ProjectReference Include="..\..\Uno.UI.Extras\Uno.UI.Extras.Windows.csproj">
 			<Project>{2EAF39E3-2AC9-457A-A5B2-47D6548799B3}</Project>
-			<Name>Uno.UI.Toolkit</Name>
+			<Name>Uno.UI.Extras</Name>
 		</ProjectReference>
 	</ItemGroup>
 

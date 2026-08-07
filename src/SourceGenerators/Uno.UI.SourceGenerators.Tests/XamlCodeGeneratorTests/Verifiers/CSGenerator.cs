@@ -215,8 +215,22 @@ build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 
 			protected override Project ApplyCompilationOptions(Project project)
 			{
+				// Tests using WithUnoPackage() pull a pre-7.0 Uno.WinUI package, which still ships
+				// Uno.UI.Toolkit.dll. Its types were renamed to Uno.UI.Extras, so the package copy no
+				// longer matches the local build and would resolve the old namespace instead. The local
+				// build is authoritative.
+				var supersededByLocalBuild = project.MetadataReferences
+					.Where(r => Path.GetFileName((r as PortableExecutableReference)?.FilePath ?? string.Empty) == "Uno.UI.Toolkit.dll")
+					.ToArray();
+
 				project = project
+					.WithMetadataReferences(project.MetadataReferences.Except(supersededByLocalBuild))
 					.AddMetadataReferences(UnoAssemblyHelper.LoadAssemblies());
+
+				if (supersededByLocalBuild.Length > 0)
+				{
+					project = project.AddMetadataReferences(UnoAssemblyHelper.LoadExtrasAssemblies());
+				}
 
 				return base.ApplyCompilationOptions(project);
 			}

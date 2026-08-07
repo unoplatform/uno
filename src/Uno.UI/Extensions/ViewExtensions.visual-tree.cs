@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-// note: This file is selectively included on windows build in: src\Uno.UI.Toolkit\Uno.UI.Toolkit.Windows.csproj
+// note: This file is selectively included on windows build in: src\Uno.UI.Extras\Uno.UI.Extras.Windows.csproj
 // Any other source file that we depends here should also be made available there.
 
 using System;

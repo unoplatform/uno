@@ -11,7 +11,7 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.UnitTests")]
 [assembly: InternalsVisibleTo("Uno.UI.Wasm.Tests")]
 [assembly: InternalsVisibleTo("Uno.Foundation.Runtime.WebAssembly")]
-[assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
+[assembly: InternalsVisibleTo("Uno.UI.Extras")]
 [assembly: InternalsVisibleTo("Uno.UI.RemoteControl")]
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme")]
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme.v1")]

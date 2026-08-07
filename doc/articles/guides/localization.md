@@ -23,7 +23,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
         <Page x:Class="UnoLocalization.MainPage"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-              xmlns:toolkit="using:Uno.UI.Toolkit">
+              xmlns:toolkit="using:Uno.UI.Extras">
 
             <StackPanel toolkit:VisibleBoundsPadding.PaddingMask="Top">
                 <TextBlock x:Uid="MainPage_IntroText" Text="Hello, world!" Margin="20" FontSize="30" />

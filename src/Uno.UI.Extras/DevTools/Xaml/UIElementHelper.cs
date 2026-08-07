@@ -2,7 +2,7 @@
 using Microsoft.UI.Xaml.Input;
 using Windows.System;
 
-namespace Uno.UI.Toolkit.DevTools.Xaml;
+namespace Uno.UI.Extras.DevTools.Xaml;
 
 internal static class UIElementHelper
 {

@@ -22,9 +22,9 @@ using Windows.UI.ViewManagement;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Toolkit.Extensions;
+using Uno.UI.Extras.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Extras.DevTools.Input;
 
 using static Private.Infrastructure.TestServices;
 using Disposable = Uno.Disposables.Disposable;

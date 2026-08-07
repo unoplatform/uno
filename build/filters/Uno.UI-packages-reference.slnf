@@ -27,7 +27,7 @@
       "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Reference.csproj",
       "Uno.UI.DevServer.Cli\\Uno.UI.DevServer.Cli.csproj",
-      "Uno.UI.Toolkit\\Uno.UI.Toolkit.Reference.csproj",
+      "Uno.UI.Extras\\Uno.UI.Extras.Reference.csproj",
       "Uno.UI.XamlHost\\Uno.UI.XamlHost.Reference.csproj",
       "Uno.UI\\Uno.UI.Reference.csproj",
       "Uno.UWP\\Uno.Reference.csproj"

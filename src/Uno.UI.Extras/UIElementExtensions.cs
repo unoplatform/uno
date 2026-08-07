@@ -32,7 +32,7 @@ using ObjCRuntime;
 using Uno.UI.Composition.Composition;
 #endif
 
-namespace Uno.UI.Toolkit
+namespace Uno.UI.Extras
 {
 	public static class UIElementExtensions
 	{

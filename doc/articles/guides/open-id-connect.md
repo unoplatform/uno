@@ -99,7 +99,7 @@ Add the following lines in your application, in `[Project-name]/MainPage.xaml`:
 ```xml
 
 <!--Add this line with the other dependencies-->
-xmlns:toolkit="using:Uno.UI.Toolkit"
+xmlns:toolkit="using:Uno.UI.Extras"
 
 <!--This will replace the initial Grid-->
 <Border toolkit:VisibleBoundsPadding.PaddingMask="All">

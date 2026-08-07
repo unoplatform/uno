@@ -7,14 +7,14 @@ uid: Uno.Features.Accessibility.RoleOverride
 This Uno-specific attached property lets you explicitly override the accessibility role of any XAML element. It is useful for declaring landmarks, custom regions, or forcing a specific ARIA role when the default mapping from the control's `AutomationPeer` is not sufficient.
 
 > [!NOTE]
-> This is an Uno Platform extension with no WinUI equivalent. It is defined in the `Uno.UI.Toolkit` namespace.
+> This is an Uno Platform extension with no WinUI equivalent. It is defined in the `Uno.UI.Extras` namespace.
 
 ## How to use
 
-Add the `Uno.UI.Toolkit` namespace to your XAML, then set the `AutomationPropertiesExtensions.Role` attached property on any element:
+Add the `Uno.UI.Extras` namespace to your XAML, then set the `AutomationPropertiesExtensions.Role` attached property on any element:
 
 ```xml
-<Page xmlns:uut="using:Uno.UI.Toolkit">
+<Page xmlns:uut="using:Uno.UI.Extras">
 
     <!-- Declare a navigation landmark -->
     <StackPanel uut:AutomationPropertiesExtensions.Role="navigation">

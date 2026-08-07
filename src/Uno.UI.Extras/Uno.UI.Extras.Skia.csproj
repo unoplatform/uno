@@ -6,8 +6,8 @@
 	<Import Project="../targetframework-override.props"/>
 
 	<PropertyGroup>
-		<AssemblyName>Uno.UI.Toolkit</AssemblyName>
-		<RootNamespace>Uno.UI.Toolkit</RootNamespace>
+		<AssemblyName>Uno.UI.Extras</AssemblyName>
+		<RootNamespace>Uno.UI.Extras</RootNamespace>
 		<DefaultLanguage>en-US</DefaultLanguage>
 
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>

@@ -1,0 +1,8 @@
+﻿<linker>
+  <assembly fullname="Uno.UI.Extras">
+	<type fullname="Uno.UI.Extras.CommandBarExtensions"/>
+	<type fullname="Uno.UI.Extras.UIElementExtensions"/>
+	<type fullname="Uno.UI.Extras.SplitViewExtensions"/>
+	<type fullname="Uno.UI.Markup.FromJsonExtension"/>
+  </assembly>
+</linker>

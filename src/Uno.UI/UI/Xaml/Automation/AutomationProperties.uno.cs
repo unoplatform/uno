@@ -61,7 +61,7 @@ public sealed partial class AutomationProperties
 	internal static string? FindHtmlRole(UIElement uIElement)
 	{
 		// Uno-specific: allow explicit role override via AutomationPropertiesExtensions.Role
-		// (defined in Uno.UI.Toolkit). The provider is registered via RoleOverrideProvider.
+		// (defined in Uno.UI.Extras). The provider is registered via RoleOverrideProvider.
 		var roleOverride = GetRoleOverride(uIElement);
 		if (!string.IsNullOrEmpty(roleOverride))
 		{
@@ -230,7 +230,7 @@ public sealed partial class AutomationProperties
 #endif
 
 	/// <summary>
-	/// Attached property allowing role override to be supplied by external assemblies (e.g. Uno.UI.Toolkit).
+	/// Attached property allowing role override to be supplied by external assemblies (e.g. Uno.UI.Extras).
 	/// This avoids the need for a delegate/provider and simplifies lookups.
 	/// </summary>
 	public static DependencyProperty RoleOverrideProperty { get; } =

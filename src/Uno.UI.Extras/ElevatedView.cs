@@ -18,7 +18,7 @@ using Uno.UI.Xaml.Controls;
 #endif
 
 
-namespace Uno.UI.Toolkit
+namespace Uno.UI.Extras
 {
 	[ContentProperty(Name = "ElevatedContent")]
 	[TemplatePart(Name = "PART_Border", Type = typeof(Border))]
