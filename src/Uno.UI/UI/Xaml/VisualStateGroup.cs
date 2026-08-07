@@ -349,7 +349,7 @@ namespace Microsoft.UI.Xaml
 
 			void ApplyTargetState()
 			{
-				// Apply target state setters (the right time to do it!) 
+				// Apply target state setters (the right time to do it!)
 				if (!FeatureConfiguration.VisualState.ApplySettersBeforeTransition)
 				{
 					ApplyTargetStateSetters();

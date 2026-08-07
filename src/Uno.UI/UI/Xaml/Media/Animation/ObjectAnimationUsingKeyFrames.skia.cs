@@ -2,26 +2,19 @@ using Windows.UI.Core;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-	partial class ColorAnimationUsingKeyFrames
+	public partial class ObjectAnimationUsingKeyFrames
 	{
-		private bool ReportEachFrame() => true;
-
-		// Tracks whether animator initialization has been deferred to the next dispatcher tick.
-		// This matches WinUI behavior where keyframe values are read at tick time (after layout),
-		// not at Begin() time. See CAnimation::UpdateAnimationUsingKeyFrames in animation.cpp.
+		// Tracks whether play has been deferred to the next dispatcher tick.
+		// This matches WinUI behavior where keyframe values are read at tick time
+		// (after layout), not at Begin() time.
 		private bool _deferredPlayPending;
 
 		// Invalidates callbacks already queued on the dispatcher: a Begin/Stop/Begin sequence within
 		// a single tick would otherwise let the stale callback run PlayImmediate() a second time.
 		private int _deferredPlayGeneration;
 
-		partial void OnFrame(IValueAnimator currentAnimator)
-		{
-			SetValue(currentAnimator.AnimatedValue);
-		}
-
 		/// <summary>
-		/// On Skia, defers animator initialization to the next dispatcher tick.
+		/// On Skia, defers scheduler creation to the next dispatcher tick.
 		/// This ensures keyframe binding values are read after layout has completed,
 		/// matching WinUI's tick-based value reading.
 		/// </summary>
@@ -33,12 +26,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 
 			_deferredPlayPending = true;
-
-			// Active has to be set now, not in PlayImmediate(): the parent Storyboard must see this child
-			// as running, and Pause() ignores a Stopped timeline, so a Begin(); Pause(); pair would
-			// otherwise silently start the animation anyway on the tick. Pause/Resume/Seek all tolerate
-			// the null animators of that window.
-			State = TimelineState.Active;
 
 			var generation = ++_deferredPlayGeneration;
 
@@ -54,8 +41,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 				if (State != TimelineState.Active)
 				{
-					// Paused before the tick: nothing has played yet, so leave the animators
-					// uninitialized. Resume() re-schedules the play.
+					// Paused before the tick: nothing has played yet, so leave the scheduler
+					// uncreated. Resume() re-schedules the play.
 					return;
 				}
 
