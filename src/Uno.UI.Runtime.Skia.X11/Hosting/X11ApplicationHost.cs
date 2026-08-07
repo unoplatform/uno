@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.Marshalling;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Media.Playback;
+using Microsoft.Windows.AppNotifications.Internal;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -97,6 +98,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), _ => new X11NativeWindowFactoryExtension());
 
 		ApiExtensibility.Register(typeof(ILauncherExtension), o => new LinuxLauncherExtension(o));
+		ApiExtensibility.Register(typeof(IAppNotificationManagerBackend), _ => LinuxAppNotificationManagerBackend.Instance);
 
 		ApiExtensibility.Register(typeof(IClipboardExtension), _ => X11ClipboardExtension.Instance);
 

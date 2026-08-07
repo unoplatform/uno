@@ -11,5 +11,9 @@
       <arg direction="in"  type="s" name="name" />
       <arg direction="out" type="b" name="has_owner" />
     </method>
+    <method name="GetNameOwner">
+      <arg direction="in" type="s" name="name" />
+      <arg direction="out" type="s" name="owner" />
+    </method>
   </interface>
 </node>
