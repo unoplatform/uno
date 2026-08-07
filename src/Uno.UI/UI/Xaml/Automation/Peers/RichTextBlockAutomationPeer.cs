@@ -51,12 +51,13 @@ public partial class RichTextBlockAutomationPeer : FrameworkElementAutomationPee
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Text;
 
-#if __SKIA__
 	// CRichTextBlockAutomationPeer::GetChildrenCore — walk the block collection, stopping at the first
 	// block whose content starts at/after the overflow target's content start, and append each block's
-	// inline peers. Skia-only: the overflow/position filtering needs the TextPointer position layer.
+	// inline peers. The overflow/position filtering needs the TextPointer position layer, which only Skia
+	// has; the override still has to exist everywhere so the reference assembly matches the runtime API.
 	protected override IList<AutomationPeer> GetChildrenCore()
 	{
+#if __SKIA__
 		if (Owner is not Controls.RichTextBlock owner)
 		{
 			return base.GetChildrenCore();
@@ -86,6 +87,8 @@ public partial class RichTextBlockAutomationPeer : FrameworkElementAutomationPee
 		}
 
 		return children;
-	}
+#else
+		return base.GetChildrenCore();
 #endif
+	}
 }
