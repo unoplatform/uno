@@ -190,6 +190,14 @@ partial class App
 			return false;
 		}
 
+		// System.CommandLine's parse-error path calls Console.ResetColor(), which throws PlatformNotSupportedException
+		// on WASM. Only invoke it for an actual --auto-screenshots command so other launch args (e.g. "sample=...")
+		// fall through to TryNavigateToLaunchSample instead of crashing launch-argument handling.
+		if (!args.Contains("--auto-screenshots", StringComparison.Ordinal))
+		{
+			return false;
+		}
+
 		var autoScreenshotsOption = new Option<string>("--auto-screenshots");
 		var totalGroupsOption = new Option<int>("--total-groups", getDefaultValue: () => 1);
 		var currentGroupIndexOption = new Option<int>("--current-group-index", getDefaultValue: () => 0);
