@@ -102,7 +102,14 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		foreach (var k in _evict) { DeferRelease(GeometryCache[k].Owned); GeometryCache.Remove(k); }
 	}
 
-	public IntPtr TrackBg(IntPtr bg) { _pendingBindGroups.Add((nint)bg); return bg; }
+	// Diagnostic (UNO_RENDER_PERF): per-frame render CPU time + bind-group/buffer creates, logged from RunFrame.
+	// PerfBgCreates trends to ~0 in steady state once the cross-frame bind-group cache warms. Off by default.
+	internal static readonly bool PerfEnabled = Environment.GetEnvironmentVariable("UNO_RENDER_PERF") == "1";
+	public int PerfBgCreates, PerfBufCreates, PerfFrame;
+	public readonly System.Diagnostics.Stopwatch PerfSw = new();
+	public double PerfAccumMs;
+
+	public IntPtr TrackBg(IntPtr bg) { PerfBgCreates++; _pendingBindGroups.Add((nint)bg); return bg; }
 
 	// Cross-frame cache for content-identical bind groups whose resources are all persistent (the uniform buffer we
 	// own here + device-stable DummyTex/sampler) — i.e. non-path clips and gradients. Static UI chrome rebuilds the
@@ -139,6 +146,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 
 	internal void AddCachedBg(nint bgl, float[] sig, IntPtr buf, IntPtr bg)
 	{
+		PerfBgCreates++;   // this path only runs on a cache miss (a bind group was just created)
 		var h = SigHash(bgl, sig);
 		if (!_bgCache.TryGetValue(h, out var bucket)) { bucket = new(); _bgCache[h] = bucket; }
 		bucket.Add(new CachedBg { Bgl = bgl, Sig = sig, Buf = buf, Bg = bg, LastUsed = _bgFrameNo });
@@ -804,6 +812,7 @@ public sealed unsafe class WebGpuBufferPool
 			int cap = Math.Max(byteSize, 256);
 			var bd = new WGPUBufferDescriptor { Size = (nuint)cap, Usage = usage };
 			var buf = wgpuDeviceCreateBuffer(_d.Dev, &bd);
+			_d.PerfBufCreates++;
 			_entries.Add(new Entry { Buf = buf, Cap = cap, Usage = usage, InUse = true });
 			return buf;
 		}
@@ -1548,7 +1557,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private void RunFrame(List<WebGpuCommand> cmds, WColor? clear)
 	{
 		var owns = _frameEncoder == IntPtr.Zero;
-		if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); }
+		if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); if (WebGpuDevice.PerfEnabled) { _d.PerfBgCreates = 0; _d.PerfBufCreates = 0; _d.PerfSw.Restart(); } }
 		try
 		{
 			RenderInto(cmds, _s, clear);
@@ -1561,6 +1570,17 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 				wgpuDevicePoll(_d.Dev, 1u, null);
 				_frameEncoder = IntPtr.Zero;
+				if (WebGpuDevice.PerfEnabled)
+				{
+					_d.PerfSw.Stop();
+					_d.PerfAccumMs += _d.PerfSw.Elapsed.TotalMilliseconds;
+					_d.PerfFrame++;
+					if (_d.PerfFrame == 1 || _d.PerfFrame % 20 == 0)
+					{
+						System.Console.Error.WriteLine($"RENDERPERF frame={_d.PerfFrame} cmds={cmds.Count} bgCreates={_d.PerfBgCreates} bufCreates={_d.PerfBufCreates} frameMs={_d.PerfSw.Elapsed.TotalMilliseconds:F2} avgMs={_d.PerfAccumMs / _d.PerfFrame:F2}");
+						System.Console.Error.Flush();
+					}
+				}
 			}
 		}
 	}
