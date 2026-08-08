@@ -1,0 +1,392 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.Repeater.ItemsRepeaterChatConversation"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.Repeater"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <!--  User message: right-aligned bubble with a fixed left gutter  -->
+        <DataTemplate x:Key="ChatUserTemplate" x:DataType="local:ChatMessage">
+            <Grid Padding="0,4" ColumnDefinitions="60,*">
+                <Border
+                    Grid.Column="1"
+                    Margin="0,0,16,0"
+                    Padding="12,8,12,10"
+                    HorizontalAlignment="Right"
+                    Background="{ThemeResource SolidBackgroundFillColorSecondaryBrush}"
+                    BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                    <StackPanel Spacing="4">
+                        <TextBlock
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="{Binding Text}"
+                            TextWrapping="Wrap" />
+                        <!--  Nested horizontal image-attachment repeater (repeater-inside-item)  -->
+                        <mux:ItemsRepeater
+                            Margin="0,4,0,0"
+                            ItemsSource="{Binding Images}"
+                            Visibility="{Binding ImagesVisibility}">
+                            <mux:ItemsRepeater.Layout>
+                                <mux:StackLayout Orientation="Horizontal" Spacing="6" />
+                            </mux:ItemsRepeater.Layout>
+                            <mux:ItemsRepeater.ItemTemplate>
+                                <DataTemplate x:DataType="local:ChatImageAttachment">
+                                    <Border
+                                        Width="36"
+                                        Height="36"
+                                        Background="{Binding Fill}"
+                                        CornerRadius="4" />
+                                </DataTemplate>
+                            </mux:ItemsRepeater.ItemTemplate>
+                        </mux:ItemsRepeater>
+                        <TextBlock
+                            HorizontalAlignment="Right"
+                            FontSize="10"
+                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                            Text="{Binding Timestamp}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+        <!--  Assistant (standard) message: left-aligned body text with an optional image grid  -->
+        <DataTemplate x:Key="ChatAssistantTemplate" x:DataType="local:ChatMessage">
+            <StackPanel Padding="20,12,44,12">
+                <TextBlock
+                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                    Text="{Binding Text}"
+                    TextWrapping="Wrap" />
+                <!--  Nested wrapping image grid (repeater-inside-item, variable row count -> variable height)  -->
+                <mux:ItemsRepeater
+                    MaxWidth="320"
+                    Margin="0,8,0,0"
+                    HorizontalAlignment="Left"
+                    ItemsSource="{Binding Images}"
+                    Visibility="{Binding ImagesVisibility}">
+                    <mux:ItemsRepeater.Layout>
+                        <mux:UniformGridLayout
+                            ItemsStretch="None"
+                            MinColumnSpacing="6"
+                            MinItemHeight="64"
+                            MinItemWidth="64"
+                            MinRowSpacing="6" />
+                    </mux:ItemsRepeater.Layout>
+                    <mux:ItemsRepeater.ItemTemplate>
+                        <DataTemplate x:DataType="local:ChatImageAttachment">
+                            <Border
+                                Width="64"
+                                Height="64"
+                                Background="{Binding Fill}"
+                                CornerRadius="6" />
+                        </DataTemplate>
+                    </mux:ItemsRepeater.ItemTemplate>
+                </mux:ItemsRepeater>
+            </StackPanel>
+        </DataTemplate>
+
+        <!--  Reasoning: collapsible Expander section (the only Expander-based item)  -->
+        <DataTemplate x:Key="ChatReasoningTemplate" x:DataType="local:ChatMessage">
+            <Border Padding="20,2">
+                <Expander
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    IsExpanded="{Binding IsReasoningExpanded, Mode=OneWay}">
+                    <Expander.Header>
+                        <Grid MinHeight="32" ColumnDefinitions="Auto,*">
+                            <FontIcon
+                                Grid.Column="0"
+                                Margin="0,0,8,0"
+                                VerticalAlignment="Center"
+                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                FontSize="14"
+                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                Glyph="&#xE10B;" />
+                            <TextBlock
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="{Binding ReasoningHeader}" />
+                        </Grid>
+                    </Expander.Header>
+                    <TextBlock
+                        Margin="28,4,4,8"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Text="{Binding Text}"
+                        TextWrapping="Wrap" />
+                </Expander>
+            </Border>
+        </DataTemplate>
+
+        <!--  Tool call: single-line step row with status icon, optional file pill and diff/entry counts  -->
+        <DataTemplate x:Key="ChatToolCallTemplate" x:DataType="local:ChatMessage">
+            <Border Padding="16,3,20,3">
+                <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*">
+                    <Grid
+                        Grid.Column="0"
+                        Width="20"
+                        Height="20"
+                        Margin="0,0,8,0"
+                        VerticalAlignment="Center">
+                        <mux:ProgressRing
+                            Width="14"
+                            Height="14"
+                            IsActive="True"
+                            Visibility="{Binding ToolProgressVisibility}" />
+                        <FontIcon
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            FontSize="14"
+                            Foreground="{ThemeResource SystemFillColorSuccessBrush}"
+                            Glyph="&#xE10B;"
+                            Visibility="{Binding ToolSuccessVisibility}" />
+                        <FontIcon
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            FontSize="14"
+                            Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                            Glyph="&#xE783;"
+                            Visibility="{Binding ToolFailureVisibility}" />
+                    </Grid>
+                    <TextBlock
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        FontSize="13"
+                        Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                        Text="{Binding ToolStatusText}"
+                        TextTrimming="CharacterEllipsis" />
+                    <Border
+                        Grid.Column="2"
+                        Height="18"
+                        Margin="6,0,0,0"
+                        VerticalAlignment="Center"
+                        Background="{ThemeResource ControlFillColorDefaultBrush}"
+                        CornerRadius="4"
+                        Visibility="{Binding ToolFileNameVisibility}">
+                        <TextBlock
+                            Padding="6,0"
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="{Binding ToolFileName}" />
+                    </Border>
+                    <StackPanel
+                        Grid.Column="3"
+                        Margin="8,0,0,0"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal"
+                        Spacing="6">
+                        <TextBlock
+                            FontSize="12"
+                            Foreground="{ThemeResource SystemFillColorSuccessBrush}"
+                            Text="{Binding ToolDiffAddedText}"
+                            Visibility="{Binding ToolDiffVisibility}" />
+                        <TextBlock
+                            FontSize="12"
+                            Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                            Text="{Binding ToolDiffRemovedText}"
+                            Visibility="{Binding ToolDiffRemovedVisibility}" />
+                        <TextBlock
+                            FontSize="12"
+                            Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                            Text="{Binding ToolEntryCountText}"
+                            Visibility="{Binding ToolEntryCountVisibility}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <!--  Thinking indicator: spinner + status text  -->
+        <DataTemplate x:Key="ChatThinkingTemplate" x:DataType="local:ChatMessage">
+            <Grid Padding="20,10,44,10" ColumnDefinitions="Auto,*">
+                <mux:ProgressRing
+                    Grid.Column="0"
+                    Width="16"
+                    Height="16"
+                    Margin="0,0,10,0"
+                    VerticalAlignment="Center"
+                    IsActive="True" />
+                <TextBlock
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Text="{Binding Text}" />
+            </Grid>
+        </DataTemplate>
+
+        <!--  Benchmark line: bold accent text  -->
+        <DataTemplate x:Key="ChatBenchmarkTemplate" x:DataType="local:ChatMessage">
+            <Grid Padding="20,6,44,6">
+                <TextBlock
+                    FontSize="12"
+                    FontWeight="Bold"
+                    Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                    Text="{Binding Text}" />
+            </Grid>
+        </DataTemplate>
+
+        <!--  Outcome card: Success / Warning / Critical variants toggled by binding  -->
+        <DataTemplate x:Key="ChatOutcomeTemplate" x:DataType="local:ChatMessage">
+            <Grid Padding="16,4">
+                <Border
+                    Padding="16,12"
+                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Visibility="{Binding OutcomeSuccessVisibility}">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <FontIcon
+                            Grid.Column="0"
+                            Margin="0,0,12,0"
+                            VerticalAlignment="Center"
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            FontSize="20"
+                            Foreground="{ThemeResource SystemFillColorSuccessBrush}"
+                            Glyph="&#xE930;" />
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock
+                                FontWeight="SemiBold"
+                                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                Text="{Binding OutcomeTitle}" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="{Binding OutcomeSubtitle}"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Padding="16,12"
+                    Background="{ThemeResource SystemFillColorCautionBackgroundBrush}"
+                    BorderBrush="{ThemeResource SystemFillColorCautionBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Visibility="{Binding OutcomeWarningVisibility}">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <FontIcon
+                            Grid.Column="0"
+                            Margin="0,0,12,0"
+                            VerticalAlignment="Center"
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            FontSize="20"
+                            Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                            Glyph="&#xE7BA;" />
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock
+                                FontWeight="SemiBold"
+                                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                Text="{Binding OutcomeTitle}" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="{Binding OutcomeSubtitle}"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <Border
+                    Padding="16,12"
+                    Background="{ThemeResource SystemFillColorCriticalBackgroundBrush}"
+                    BorderBrush="{ThemeResource SystemFillColorCriticalBrush}"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Visibility="{Binding OutcomeCriticalVisibility}">
+                    <Grid ColumnDefinitions="Auto,*">
+                        <FontIcon
+                            Grid.Column="0"
+                            Margin="0,0,12,0"
+                            VerticalAlignment="Center"
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            FontSize="20"
+                            Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                            Glyph="&#xE783;" />
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock
+                                FontWeight="SemiBold"
+                                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                                Text="{Binding OutcomeTitle}" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Text="{Binding OutcomeSubtitle}"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+        <local:ChatMessageTemplateSelector
+            x:Key="ChatTemplateSelector"
+            AssistantTemplate="{StaticResource ChatAssistantTemplate}"
+            BenchmarkTemplate="{StaticResource ChatBenchmarkTemplate}"
+            OutcomeTemplate="{StaticResource ChatOutcomeTemplate}"
+            ReasoningTemplate="{StaticResource ChatReasoningTemplate}"
+            ThinkingTemplate="{StaticResource ChatThinkingTemplate}"
+            ToolCallTemplate="{StaticResource ChatToolCallTemplate}"
+            UserTemplate="{StaticResource ChatUserTemplate}" />
+    </Page.Resources>
+
+    <Grid Padding="12" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            MaxWidth="640"
+            HorizontalAlignment="Left"
+            Style="{ThemeResource BodyTextBlockStyle}"
+            TextWrapping="Wrap">
+            ScrollViewer + ItemsRepeater chat conversation mimicking an agentic-assistant UI: right-aligned user bubbles, assistant replies, reasoning expanders, tool-call rows, outcome cards, thinking/benchmark lines, and nested image-attachment repeaters, all on a cooking topic. Heights vary widely and auto-scroll-on-add is enabled. Generation is seeded, so reloading and clicking "Add" always produce identical results.
+        </TextBlock>
+
+        <StackPanel
+            Grid.Row="1"
+            Orientation="Horizontal"
+            Spacing="6">
+            <Button Click="OnTopClick" Content="Top" />
+            <Button Click="OnBottomClick" Content="Bottom" />
+            <Button Click="OnAddItemsClick" Content="Add 20 items" />
+            <Button Click="OnRemoveExpandersClick" Content="Remove expanders" />
+            <Button Click="OnClearClick" Content="Clear" />
+            <Button Click="OnResetClick" Content="Reset" />
+            <TextBlock
+                x:Name="StatusText"
+                VerticalAlignment="Center"
+                FontSize="12"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+        </StackPanel>
+
+        <Border
+            Grid.Row="2"
+            VerticalAlignment="Stretch"
+            BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+            BorderThickness="1">
+            <ScrollViewer
+                x:Name="Scroller"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
+                <mux:ItemsRepeater
+                    x:Name="Repeater"
+                    Margin="0,16,0,12"
+                    VerticalAlignment="Bottom"
+                    local:ChatAutoScroll.IsEnabled="True"
+                    ItemTemplate="{StaticResource ChatTemplateSelector}">
+                    <mux:ItemsRepeater.Layout>
+                        <mux:StackLayout Orientation="Vertical" Spacing="0" />
+                    </mux:ItemsRepeater.Layout>
+                </mux:ItemsRepeater>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</Page>
