@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Uno.HotReload.Diffing;
 using Uno.HotReload.Microsoft;
 using Uno.HotReload.Tracking;
@@ -163,11 +161,18 @@ public sealed class HotReloadManager : IDisposable
 	{
 		var workspace = this;
 		var sw = Stopwatch.StartNew();
+		var diagnosticsReporter = new DiagnosticsReporter(_tracker);
 
 		// Detects the changes and try to update the solution
 		var originalSolution = workspace.CurrentSolution;
 		var changeSet = await _changesDetector.DiscoverChangesAsync(originalSolution, files, ct).ConfigureAwait(false);
 		var result = await _solutionUpdater.UpdateAsync(originalSolution, changeSet, ct).ConfigureAwait(false);
+
+		// Surface the updater's own diagnostics (csproj re-evaluation, package resolution, …) as verbose
+		// detail. The updater returns them in the result for the caller to handle — neither it nor the
+		// change detector reports them (both in uno and Studio Live's AdhocSolutionUpdater), so this is the
+		// single reporting point; the Failed-outcome summary for error diagnostics is handled below.
+		diagnosticsReporter.ReportSolutionUpdateDiagnostics(result.Diagnostics);
 
 		// Updaters report what they did not consume; surface that to the operation
 		// before any short-circuit so the report reflects skipped inputs.
@@ -213,8 +218,37 @@ public sealed class HotReloadManager : IDisposable
 		}
 		else
 		{
-			// Compile the solution and get deltas.
-			var (updates, emitDiagnostics) = await _watchService.EmitSolutionUpdateAsync(result.Solution, ct).ConfigureAwait(false);
+			// The projects owning the pass's changed files (spec 054) — resolved once and shared by the
+			// generator-error suppression below and the blocked-compilation audit in the (true, true)
+			// branch, so neither judges a project the pass never touched.
+			var auditedProjects = ResolveAuditProjects(result.Solution, files);
+
+			// A source generator can report an Error WITHOUT the C# compilation failing: a corrupt .resw
+			// makes the Uno XAML generator emit UXAML0003 (Error) while the assembly still compiles. Roslyn
+			// 5.x's EnC refuses to emit ANY metadata update while such a generator error is present (4.x did
+			// not), so a single broken generator input freezes hot reload for every later edit — including
+			// valid edits to unrelated files — until it is fixed. Generator diagnostics never reach
+			// compilation.GetDiagnostics() (so the GetCompilationErrors audit below cannot see them either),
+			// so read them from the change-set's projects and suppress them for the emit: a non-fatal
+			// generator error then degrades to stale generated output instead of blocking hot reload.
+			// Generated code that genuinely does NOT compile still reports a C# error and is handled by the
+			// (true, true) audit / rude-edit branches below. The suppression is applied to the emit itself,
+			// not as a retry after a blocked emit: EmitSolutionUpdateAsync advances the EnC baseline as a
+			// side effect, so a throwaway first emit would consume the change and leave a second nothing to
+			// apply.
+			var generatorErrors = await GetGeneratorErrorsAsync(auditedProjects, ct).ConfigureAwait(false);
+			if (!generatorErrors.IsEmpty)
+			{
+				_tracker.Output(
+					$"Hot reload is continuing despite {generatorErrors.Length} source generator error(s); " +
+					"the affected generated code stays stale until they are fixed.");
+				diagnosticsReporter.ReportAnalyzerDiagnostics(generatorErrors);
+			}
+			// Attempt to emit anyway ...
+			var emitSolution = result.Solution.WithSuppressedDiagnostics(generatorErrors);
+
+			// Compile the solution with those generator errors suppressed, and get deltas.
+			var (updates, emitDiagnostics) = await _watchService.EmitSolutionUpdateAsync(emitSolution, ct).ConfigureAwait(false);
 			// emitDiagnostics currently includes semantic Warnings and Errors for types being updated. We want to limit rude edits to the class
 			// of unrecoverable errors that a user cannot fix and requires an app rebuild.
 			var rudeEdits = emitDiagnostics.RemoveAll(d => d.Severity <= DiagnosticSeverity.Warning || !d.Descriptor.Id.StartsWith("ENC", StringComparison.Ordinal));
@@ -229,11 +263,7 @@ public sealed class HotReloadManager : IDisposable
 				// A rude edit is unrecoverable: the user must rebuild. Surface every diagnostic.
 				case (false, _):
 					_tracker.Output("Unable to apply hot reload because of a rude edit.");
-					foreach (var diagnostic in emitDiagnostics)
-					{
-						_tracker.Verbose(CSharpDiagnosticFormatter.Instance.Format(diagnostic, CultureInfo.InvariantCulture));
-					}
-
+					diagnosticsReporter.ReportEmitDiagnostics(emitDiagnostics);
 					outcome = HotReloadOperationResult.RudeEdit;
 					break;
 
@@ -247,13 +277,15 @@ public sealed class HotReloadManager : IDisposable
 				// The audit is scoped to the projects owning this pass's changed files (spec 054): a pass must
 				// never complete Failed on errors from projects it never touched. When the change-set resolves
 				// to no project the audit yields no errors and we fall through to NoChanges below.
-				// FIXME: GetCompilationErrors side-effects into _tracker but doesn't populate `diagnostics`;
-				// consumers see Failed without the reason (asymmetric with rude edits). Needs dedup before fixing.
-				case (true, true) when GetCompilationErrors(result.Solution, files, ct) is { Errors.IsEmpty: false } audit:
+				// FIXME: these compilation errors are reported to the console but not propagated into the
+				// operation's `diagnostics`; consumers see Failed without the reason (asymmetric with rude
+				// edits). Needs dedup before fixing.
+				case (true, true) when GetCompilationErrors(auditedProjects, ct) is { Errors.IsEmpty: false } audit:
 					_tracker.Output(
 						$"Hot reload blocked by {audit.Errors.Length} compilation error(s) in " +
 						$"{string.Join(", ", audit.BlockingProjects)} " +
 						$"(edited: {FormatEditedFiles(files)}).");
+					diagnosticsReporter.ReportCompilationDiagnostics(audit.Errors);
 					outcome = HotReloadOperationResult.Failed;
 					break;
 
@@ -293,30 +325,16 @@ public sealed class HotReloadManager : IDisposable
 		await hotReload.Complete(outcome, diagnostics: diagnostics).ConfigureAwait(false);
 	}
 
-	/// <summary>
-	/// Maximum number of compilation errors to format and report per hot-reload cycle.
-	/// Formatting diagnostics allocates strings via <see cref="CSharpDiagnosticFormatter"/>;
-	/// capping prevents unbounded allocations when the code is heavily broken.
-	/// </summary>
-	private const int MaxCompilationErrorsPerCycle = 20;
-
-	private CompilationAudit GetCompilationErrors(Solution solution, ImmutableHashSet<string> files, CancellationToken cancellationToken)
+	private static CompilationAudit GetCompilationErrors(ImmutableArray<Project> auditedProjects, CancellationToken cancellationToken)
 	{
-		// Scope the audit to the projects owning the pass's changed files. A file that resolves to no
-		// project contributes nothing (it was already surfaced via NotifyIgnored); when the whole
-		// change-set resolves to nothing there is no project to judge, so we return an empty audit and
-		// the caller falls through to NoChanges rather than failing the pass on foreign projects.
-		var auditedProjects = ResolveAuditProjects(solution, files);
-		if (auditedProjects.IsEmpty)
-		{
-			return new CompilationAudit([], []);
-		}
-
-		// ALC-hosted workspaces always have a single project — sequential iteration avoids
-		// Parallel.ForEach overhead (thread pool work items, partitioner, lambda closures).
-		// Only the projects that actually produce an error are named in the output line (a scoped
-		// project can be clean), and the names are ordered so the blocked line is deterministic.
-		var errors = ImmutableArray.CreateBuilder<string>();
+		// auditedProjects is the change-set scope resolved by the caller (spec 054): a pass never judges a
+		// project it did not touch, and an empty scope simply yields an empty audit (the loop below does
+		// not run) so the caller falls through to NoChanges instead of failing on foreign projects. This is
+		// a pure read — TryGetCompilation serves whatever compilation is already cached and never forces a
+		// compile; formatting/capping of the returned errors is the caller's job (DiagnosticsReporter). Only
+		// the projects that actually produce an error are named (a scoped project can be clean), ordered so
+		// the blocked line is deterministic.
+		var errors = ImmutableArray.CreateBuilder<Diagnostic>();
 		var blockingProjects = new SortedSet<string>(StringComparer.Ordinal);
 		foreach (var project in auditedProjects)
 		{
@@ -325,34 +343,46 @@ public sealed class HotReloadManager : IDisposable
 				continue;
 			}
 
-			var compilationDiagnostics = compilation.GetDiagnostics(cancellationToken);
-			if (compilationDiagnostics.IsEmpty)
+			foreach (var diagnostic in compilation.GetDiagnostics(cancellationToken))
 			{
-				continue;
-			}
-
-			foreach (var item in compilationDiagnostics)
-			{
-				if (item.Severity == DiagnosticSeverity.Error)
+				if (diagnostic.Severity == DiagnosticSeverity.Error)
 				{
-					var diagnostic = CSharpDiagnosticFormatter.Instance.Format(item, CultureInfo.InvariantCulture);
-					_tracker.Output("\x1B[40m\x1B[31m" + diagnostic);
 					errors.Add(diagnostic);
 					blockingProjects.Add(project.Name);
-
-					// On WASM, memory.grow() is irreversible — cap diagnostic formatting
-					// to avoid unbounded string allocations when code is heavily broken.
-					// On desktop, report all errors for full IDE-like diagnostics.
-					if (OperatingSystem.IsBrowser() && errors.Count >= MaxCompilationErrorsPerCycle)
-					{
-						_tracker.Output($"... and more errors (capped at {MaxCompilationErrorsPerCycle}).");
-						return new CompilationAudit(errors.ToImmutable(), [.. blockingProjects]);
-					}
 				}
 			}
 		}
 
 		return new CompilationAudit(errors.ToImmutable(), [.. blockingProjects]);
+	}
+
+	/// <summary>
+	/// The Error-severity diagnostics reported by the source generators of the given
+	/// <paramref name="auditedProjects"/> (the pass's change-set scope). Source-generator diagnostics are
+	/// absent from <see cref="Compilation.GetDiagnostics(CancellationToken)"/> — reachable only via
+	/// <see cref="RoslynExtensions.GetSourceGeneratorDiagnosticsAsync"/> — yet Roslyn 5.x's EnC refuses to
+	/// emit a metadata update while any of them is present. <see cref="ProcessSolutionChanged"/> suppresses
+	/// these for the emit so a non-fatal generator error (e.g. a corrupt <c>.resw</c> → UXAML0003) does not
+	/// block hot reload for otherwise-valid edits. Empty when there are no audited projects or when the
+	/// reflection-bound API is unavailable, so the behavior degrades to the pre-fix path.
+	/// </summary>
+	private static async ValueTask<ImmutableArray<Diagnostic>> GetGeneratorErrorsAsync(
+		ImmutableArray<Project> auditedProjects,
+		CancellationToken cancellationToken)
+	{
+		var errors = ImmutableArray.CreateBuilder<Diagnostic>();
+		foreach (var project in auditedProjects)
+		{
+			foreach (var diagnostic in await project.GetSourceGeneratorDiagnosticsAsync(cancellationToken).ConfigureAwait(false))
+			{
+				if (diagnostic.Severity == DiagnosticSeverity.Error)
+				{
+					errors.Add(diagnostic);
+				}
+			}
+		}
+
+		return errors.ToImmutable();
 	}
 
 	/// <summary>
@@ -371,7 +401,8 @@ public sealed class HotReloadManager : IDisposable
 		// matched with a single O(1) lookup instead of an O(files) scan per document.
 		var changeSet = files.ToHashSet(PathComparer.PathEqualityComparer);
 
-		return solution.Projects
+		return solution
+			.Projects
 			.Where(project =>
 				project.Documents.Any(document => document.FilePath is { } path && changeSet.Contains(path))
 				|| project.AdditionalDocuments.Any(document => document.FilePath is { } path && changeSet.Contains(path)))
@@ -399,11 +430,11 @@ public sealed class HotReloadManager : IDisposable
 	}
 
 	/// <summary>
-	/// Outcome of the change-set-scoped blocked-compilation audit: the formatted compilation errors found
-	/// in the audited projects, and the distinct, ordered names of the projects that actually produced
-	/// those errors (named in the blocked output line).
+	/// Outcome of the change-set-scoped blocked-compilation audit: the compilation errors found in the
+	/// audited projects, and the distinct, ordered names of the projects that actually produced those
+	/// errors (named in the blocked output line). Formatting/reporting is the caller's job.
 	/// </summary>
-	private readonly record struct CompilationAudit(ImmutableArray<string> Errors, ImmutableArray<string> BlockingProjects);
+	private readonly record struct CompilationAudit(ImmutableArray<Diagnostic> Errors, ImmutableArray<string> BlockingProjects);
 
 	/// <inheritdoc />
 	public void Dispose()
