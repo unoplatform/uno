@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
@@ -31,12 +32,14 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private readonly XamlRoot _xamlRoot;
 	private readonly DisplayInformation _displayInformation;
 	private readonly GRContext? _context;
+	private MacOSRenderThread? _metalRenderThread;
 	private SKBitmap? _bitmap;
 	private SKSurface? _surface;
 	private readonly RetainedLayer _retainedLayer = new();
 	private int _rowBytes;
 	private bool _initializationCompleted;
-	private string? _lastSvgClipPath;
+	// Written by the software/legacy draw paths on the main thread and by the Metal render thread.
+	private volatile string? _lastSvgClipPath;
 	private Size _nativeWindowSize;
 	private MacOSAccessibility? _accessibility;
 	private bool _accessibilityBuildQueued;
@@ -61,6 +64,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 					QueueHandle = queue,
 				};
 				_context = GRContext.CreateMetal(ctx);
+				InitializeMetalRenderThread();
 				break;
 			case RenderSurfaceType.Software:
 				break;
@@ -83,8 +87,80 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		SizeChanged?.Invoke(this, _nativeWindowSize);
 	}
 
+	private void InitializeMetalRenderThread()
+	{
+		if (_context is null)
+		{
+			return;
+		}
+
+		_metalRenderThread = new MacOSRenderThread(_nativeWindow.Handle, _context, RenderThreadMetalDraw);
+	}
+
+	/// <summary>
+	/// Called on the render thread. Draws the recorded SKPicture into the Metal texture
+	/// acquired from the layer; the render loop flushes and presents after this returns.
+	/// </summary>
+	private void RenderThreadMetalDraw(double nativeWidth, double nativeHeight, nint texture)
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"Window {_nativeWindow.Handle} render thread drawing {nativeWidth}x{nativeHeight} texture: {texture}");
+		}
+
+		if (RootElement?.Visual.CompositionTarget is not CompositionTarget ct)
+		{
+			return;
+		}
+
+		// The app is drawn into a retained layer sized from the managed XamlRoot bounds, which can
+		// briefly disagree with the drawable size while a resize is in flight. Only the blit below
+		// targets the drawable, so the swapchain surface must use the texture's own dimensions.
+		// The layer also survives across frames, which is what keeps damage-region rendering usable
+		// even though the drawable rotates every frame.
+		var nativeElementClipPath = ct.OnNativePlatformFrameRequested(
+			_retainedLayer.Surface?.Canvas,
+			size => _retainedLayer.EnsureSurface(_context!, (int)size.Width, (int)size.Height, SKColors.Transparent).Canvas);
+
+		using (var target = new GRBackendRenderTarget((int)nativeWidth, (int)nativeHeight, new GRMtlTextureInfo(texture)))
+		using (var swapchainSurface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888))
+		{
+			_retainedLayer.Present(swapchainSurface);
+		}
+
+		// uno_window_clip_svg mutates AppKit view layers, which must be touched only on the
+		// main thread; this method runs on the render thread, so marshal the update there.
+		var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
+		if (clip != _lastSvgClipPath)
+		{
+			// Written before the enqueue so a subsequent render-thread frame producing the same clip
+			// doesn't queue a duplicate update while this one is still pending. MetalDraw can write
+			// on success instead because it already runs on the main thread.
+			_lastSvgClipPath = clip;
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				// if too early it's possible that the native element has not been arranged yet
+				// so the position and dimension of the element are not yet correct (0,0,0,0)
+				if (!NativeUno.uno_window_clip_svg(_nativeWindow.Handle, clip) && _lastSvgClipPath == clip)
+				{
+					// Retry on the next frame, unless a newer clip was recorded meanwhile — that one
+					// has its own pending update and must not be forced to re-apply.
+					_lastSvgClipPath = null;
+				}
+			}, NativeDispatcherPriority.Normal);
+		}
+	}
+
 	private void MetalDraw(double nativeWidth, double nativeHeight, nint texture)
 	{
+		if (_metalRenderThread is not null)
+		{
+			// The render thread owns the GRContext and the retained layer on the Metal path. AppKit
+			// should not reach this (the view is paused), but bail out rather than risk drawing from
+			// the main thread concurrently with it.
+			return;
+		}
+
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			this.Log().Trace($"Window {_nativeWindow.Handle} drawing {nativeWidth}x{nativeHeight} texture: {texture}");
@@ -285,7 +361,19 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		AccessibilityRouter.NotifyDisposed(this);
 	}
 
-	void IXamlRootHost.InvalidateRender() => NativeUno.uno_window_invalidate(_nativeWindow.Handle);
+	void IXamlRootHost.InvalidateRender()
+	{
+		if (_metalRenderThread is not null)
+		{
+			// Metal path: wake the dedicated render thread so draw + present run off the UI thread.
+			_metalRenderThread.SignalNewFrame();
+		}
+		else
+		{
+			// Software path: drive AppKit's display loop on the UI thread.
+			NativeUno.uno_window_invalidate(_nativeWindow.Handle);
+		}
+	}
 
 	void IXamlRootHost.ResignNativeFocus() => NativeUno.uno_window_resign_native_first_responder(_nativeWindow.Handle);
 
@@ -742,6 +830,9 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			var window = GetWindowHost(handle);
 			if (window is not null)
 			{
+				// Stop the render thread before tearing down the native window / GRContext.
+				window._metalRenderThread?.Dispose();
+				window._metalRenderThread = null;
 				Unregister(handle);
 				window._nativeWindow.Destroyed();
 				window.Closed?.Invoke(window, EventArgs.Empty);
@@ -794,6 +885,139 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		catch (Exception e)
 		{
 			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	// --- Render thread ---
+
+	/// <summary>
+	/// Dedicated render thread for macOS Metal: acquires a drawable, draws the recorded
+	/// SKPicture, flushes, then presents — all off the UI thread so a slow present / VSync
+	/// wait never blocks input or layout. Mirrors the Win32 render thread and the iOS
+	/// CADisplayLink render thread.
+	/// </summary>
+	private sealed class MacOSRenderThread : IDisposable
+	{
+		/// <summary>
+		/// Pause before retrying a frame the render loop could not present. nextDrawable already
+		/// blocks for up to ~1s before returning nil, so this only avoids a hot spin in the cases
+		/// where acquisition fails immediately (e.g. a zero-sized layer during window setup).
+		/// </summary>
+		private const int FrameRetryDelayMs = 8;
+
+		private readonly Thread _thread;
+		private readonly AutoResetEvent _frameSignal = new(false);
+		private readonly ManualResetEventSlim _presentedEvent = new(false);
+		private readonly nint _windowHandle;
+		private readonly GRContext _context;
+		private readonly Action<double, double, nint> _drawFrame;
+		private volatile bool _disposed;
+
+		internal MacOSRenderThread(nint windowHandle, GRContext context, Action<double, double, nint> drawFrame)
+		{
+			_windowHandle = windowHandle;
+			_context = context;
+			_drawFrame = drawFrame;
+			_thread = new Thread(RenderLoop) { Name = "Uno macOS Render Thread", IsBackground = true };
+			_thread.Start();
+		}
+
+		/// <summary>
+		/// Wakes the render thread to present a new frame. Calls made while it is busy
+		/// coalesce into a single wake-up. Resets the present-completion event first so a
+		/// <see cref="WaitForNextPresent"/> caller can never observe a previous present.
+		/// </summary>
+		internal void SignalNewFrame()
+		{
+			_presentedEvent.Reset();
+			_frameSignal.Set();
+		}
+
+		/// <summary>
+		/// Blocks until the render thread finishes presenting the current frame, and returns
+		/// <see langword="false"/> if the timeout elapsed first.
+		/// </summary>
+		/// <remarks>
+		/// Currently unused. It mirrors the Win32 render-thread contract, where the UI thread waits for
+		/// a present during a synchronous resize/show (Win32WindowWrapper.SynchronousRenderAndDraw).
+		/// </remarks>
+		internal bool WaitForNextPresent(TimeSpan timeout) => _presentedEvent.Wait(timeout);
+
+		private void RenderLoop()
+		{
+			while (!_disposed)
+			{
+				_frameSignal.WaitOne();
+				if (_disposed)
+				{
+					break;
+				}
+
+				var framePresented = false;
+				try
+				{
+					if (NativeUno.uno_window_acquire_next_frame(_windowHandle, out var texture, out var width, out var height))
+					{
+						_drawFrame(width, height, texture);
+
+						// submit: true commits the Metal command buffer before present (matches the iOS path).
+						_context.Flush(submit: true);
+
+						// Present the drawable; may block on VSync / drawable availability.
+						NativeUno.uno_window_present_frame(_windowHandle);
+
+						// Only a frame that actually reached the screen may release a waiter.
+						_presentedEvent.Set();
+						framePresented = true;
+					}
+				}
+				catch (Exception ex)
+				{
+					// Intentionally broad: the loop must survive any per-frame Skia or interop failure.
+					// Letting an exception escape would end the thread and stop rendering permanently.
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"macOS render thread error: {ex}");
+					}
+
+					// The drawable is only released by uno_window_present_frame, which we did not reach.
+					// Drop it explicitly, otherwise repeated failures exhaust the layer's drawable pool
+					// and every later nextDrawable call blocks then returns nil.
+					NativeUno.uno_window_discard_frame(_windowHandle);
+				}
+
+				if (!framePresented && !_disposed)
+				{
+					// The frame request must not be lost. CompositionTarget.RequestNewFrame latches
+					// RenderRequested and only clears it once a frame is actually drawn, so it will not
+					// signal us again on its own: dropping this wake-up stops rendering for this window
+					// permanently, and anything awaiting a render (RenderTargetBitmap jobs, composition
+					// animations) would then never complete. AppKit gives the non-threaded path the same
+					// guarantee by re-invoking drawInMTKView: for as long as the view stays dirty, so
+					// re-arm to keep retrying until a frame gets through.
+					Thread.Sleep(FrameRetryDelayMs);
+					_frameSignal.Set();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Stops the render thread, waits for it to exit, then releases its synchronization
+		/// primitives. The join is intentionally unbounded, matching the Win32 render thread: the
+		/// loop only delays observing <see cref="_disposed"/> while a frame is in flight, and both
+		/// <c>nextDrawable</c> and the present complete in bounded time (a vsync wait, or ~1s and a
+		/// nil drawable when the window is occluded), so the thread always exits. The caller tears
+		/// down the native window and the <see cref="GRContext"/> right after this returns, and the
+		/// render thread is their sole other user, so it must be guaranteed stopped first.
+		/// </summary>
+		public void Dispose()
+		{
+			_disposed = true;
+			_frameSignal.Set();
+			_thread.Join();
+
+			_frameSignal.Dispose();
+			_presentedEvent.Dispose();
 		}
 	}
 }
