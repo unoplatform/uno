@@ -36,5 +36,36 @@ namespace Uno.UI.Runtime.Skia {
 				return 0;
 			}
 		}
+
+		// Maps a readback buffer (identified by its wgpu handle ptr) off the event loop and inspects the first
+		// byteLen bytes as RGBA8. Returns the count of non-transparent pixels (alpha != 0), or -1 on failure, and
+		// logs luminance min/max. Used to verify the offscreen frame headless without needing the canvas to composite.
+		public static async mapReadStats(bufferPtr: number, byteLen: number): Promise<number> {
+			try {
+				const module = (window as any).Module;
+				const buffer = module && typeof module.unoWebGpuJsObject === "function"
+					? module.unoWebGpuJsObject(bufferPtr) : null;
+				if (!buffer) {
+					console.error("WebGpuInit.mapReadStats: no JS buffer for ptr=" + bufferPtr);
+					return -1;
+				}
+				await buffer.mapAsync(1 /* GPUMapMode.READ */);
+				const data = new Uint8Array(buffer.getMappedRange());
+				let opaque = 0, lumMin = 255, lumMax = 0;
+				const n = Math.min(byteLen, data.length);
+				for (let i = 0; i + 3 < n; i += 4) {
+					if (data[i + 3] !== 0) { opaque++; }
+					const lum = (data[i] + data[i + 1] + data[i + 2]) / 3 | 0;
+					if (lum < lumMin) { lumMin = lum; }
+					if (lum > lumMax) { lumMax = lum; }
+				}
+				buffer.unmap();
+				console.log("WebGpuInit.mapReadStats: opaque=" + opaque + " lumMin=" + lumMin + " lumMax=" + lumMax);
+				return opaque;
+			} catch (e) {
+				console.error("WebGpuInit.mapReadStats: failed: " + e);
+				return -1;
+			}
+		}
 	}
 }
