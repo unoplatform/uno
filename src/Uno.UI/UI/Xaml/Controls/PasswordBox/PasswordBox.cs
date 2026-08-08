@@ -115,6 +115,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 			OnPasswordChangedPartial(e);
 
+			var peer = GetOrCreateAutomationPeer();
+			if (peer is PasswordBoxAutomationPeer passwordPeer)
+			{
+				if (AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged))
+				{
+					passwordPeer.RaiseValuePropertyChangedEvent(
+						PasswordBoxAutomationPeer.MaskPasswordValue((string)e.OldValue),
+						PasswordBoxAutomationPeer.MaskPasswordValue((string)e.NewValue));
+				}
+
+				if (AutomationPeer.ListenerExistsHelper(AutomationEvents.TextPatternOnTextChanged))
+				{
+					passwordPeer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextChanged);
+				}
+			}
+
 			if (Password.IsNullOrEmpty() &&
 				((PasswordRevealMode == PasswordRevealMode.Peek) || (UseIsPasswordEnabledProperty && IsPasswordRevealButtonEnabled)))
 			{

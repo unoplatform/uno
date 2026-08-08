@@ -129,6 +129,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnIsTabStopChangedPartial() => UpdateTextBoxViewIsReadOnly();
 
+		partial void OnPlaceholderTextChangedPartial(string newValue)
+			=> _textBoxView?.SetAttribute("placeholder", newValue);
+
 		private void UpdateTextBoxViewIsReadOnly()
 		{
 			var isNativeReadOnly = IsReadOnly || !IsTabStop;
@@ -207,5 +210,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnBringIntoViewRequested(e);
 		}
+
 	}
 }

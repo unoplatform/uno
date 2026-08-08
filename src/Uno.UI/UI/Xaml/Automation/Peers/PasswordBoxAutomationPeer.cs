@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DirectUI;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 
@@ -68,10 +69,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		{
 			get
 			{
-				var password = (Owner as PasswordBox)?.Password ?? string.Empty;
-				return password.Length == 0
-					? string.Empty
-					: new string('•', password.Length);
+				return MaskPasswordValue((Owner as PasswordBox)?.Password);
 			}
 		}
 
@@ -82,6 +80,43 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			if (Owner is PasswordBox passwordBox)
 			{
 				passwordBox.Password = value ?? string.Empty;
+			}
+		}
+
+		internal static string MaskPasswordValue(string password)
+		{
+			var safePassword = password ?? string.Empty;
+			return safePassword.Length == 0
+				? string.Empty
+				: new string('•', safePassword.Length);
+		}
+
+		internal void RaiseValuePropertyChangedEvent(string oldValue, string newValue)
+		{
+			if (ListenerExistsHelper(AutomationEvents.PropertyChanged))
+			{
+				RaisePropertyChangedEvent(ValuePatternIdentifiers.ValueProperty, oldValue, newValue);
+			}
+		}
+
+		internal void RaisePlaceholderTextChangedEvents(string oldPlaceholder, string newPlaceholder)
+		{
+			if (!ListenerExistsHelper(AutomationEvents.PropertyChanged))
+			{
+				return;
+			}
+
+			if (Owner is not PasswordBox owner)
+			{
+				return;
+			}
+
+			var headerText = owner.Header?.ToString();
+			if (string.IsNullOrEmpty(AutomationProperties.GetName(owner)) &&
+				AutomationProperties.GetLabeledBy(owner) is null &&
+				string.IsNullOrEmpty(headerText))
+			{
+				RaisePropertyChangedEvent(AutomationElementIdentifiers.NameProperty, oldPlaceholder, newPlaceholder);
 			}
 		}
 

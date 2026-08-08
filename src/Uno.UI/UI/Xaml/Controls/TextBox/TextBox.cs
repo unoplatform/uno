@@ -451,6 +451,26 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private void OnPlaceholderTextChanged(DependencyPropertyChangedEventArgs e)
+		{
+			UpdatePlaceholderVisibility();
+			OnPlaceholderTextChangedPartial((string)e.NewValue ?? string.Empty);
+
+			var oldPlaceholder = (string)e.OldValue ?? string.Empty;
+			var newPlaceholder = (string)e.NewValue ?? string.Empty;
+			switch (GetOrCreateAutomationPeer())
+			{
+				case TextBoxAutomationPeer textPeer:
+					textPeer.RaisePlaceholderTextChangedEvents(oldPlaceholder, newPlaceholder);
+					break;
+				case PasswordBoxAutomationPeer passwordPeer:
+					passwordPeer.RaisePlaceholderTextChangedEvents(oldPlaceholder, newPlaceholder);
+					break;
+			}
+		}
+
+		partial void OnPlaceholderTextChangedPartial(string newValue);
+
 		private object CoerceText(object baseValue)
 		{
 			if (!(baseValue is string baseString))
@@ -609,7 +629,10 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(PlaceholderText),
 				typeof(string),
 				typeof(TextBox),
-				new FrameworkPropertyMetadata(defaultValue: string.Empty, options: FrameworkPropertyMetadataOptions.AffectsMeasure)
+				new FrameworkPropertyMetadata(
+					defaultValue: string.Empty,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnPlaceholderTextChanged(e))
 			);
 
 		#endregion
