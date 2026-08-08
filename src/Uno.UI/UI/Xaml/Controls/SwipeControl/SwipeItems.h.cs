@@ -5,7 +5,7 @@
 // https://github.com/microsoft/microsoft-ui-xaml/blob/307bd99682cccaa128483036b764c0b7c862d666/dev/SwipeControl/SwipeItem.h
 
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Collections.ObjectModel;
 using Windows.Foundation.Collections;
 
@@ -28,12 +28,49 @@ namespace Microsoft.UI.Xaml.Controls
 		//void RemoveAtEnd();
 		//void Clear();
 
-		// TODO:
-		public SwipeItem First() { throw new NotImplementedException(); }
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("This method is not part of WinUI's projected API. Use the indexer [0] or LINQ First() instead.")]
+		public SwipeItem First() => GetAt(0);
 
-		public uint GetMany(uint startIndex, SwipeItem[] items) { throw new NotImplementedException(); }
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("This method is not part of WinUI's projected API. Use CopyTo instead.")]
+		public uint GetMany(uint startIndex, SwipeItem[] items)
+		{
+			ArgumentNullException.ThrowIfNull(items);
 
-		public void ReplaceAll(SwipeItem[] items) { throw new NotImplementedException(); }
+			if (startIndex > m_items.Count)
+			{
+				throw new IndexOutOfRangeException();
+			}
+
+			var count = Math.Min(items.Length, m_items.Count - (int)startIndex);
+			for (var i = 0; i < count; i++)
+			{
+				items[i] = m_items[(int)startIndex + i];
+			}
+
+			return (uint)count;
+		}
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Obsolete("This method is not part of WinUI's projected API. Use IList members instead.")]
+		public void ReplaceAll(SwipeItem[] items)
+		{
+			ArgumentNullException.ThrowIfNull(items);
+
+			if (Mode == SwipeMode.Execute && items.Length > 1)
+			{
+				throw new ArgumentException("Execute items should only have one item.");
+			}
+
+			m_items.Clear();
+			foreach (var item in items)
+			{
+				m_items.Add(item);
+			}
+
+			m_vectorChangedEventSource?.Invoke(this, new VectorChangedEventArgs(CollectionChange.Reset, 0));
+		}
 		#endregion
 
 		#region IObservableVector
