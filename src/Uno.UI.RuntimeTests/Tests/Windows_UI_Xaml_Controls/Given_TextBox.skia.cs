@@ -7756,6 +7756,442 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		#endregion
 
+		#region Caret drag gesture (iOS space-bar trackpad / floating cursor)
+
+		private static async Task<TextBox> SetUpCaretDragTextBox(string text, bool acceptsReturn = false)
+		{
+			var SUT = new TextBox
+			{
+				// AcceptsReturn must precede Text: a single-line TextBox truncates to the first line.
+				AcceptsReturn = acceptsReturn,
+				Text = text,
+				Width = 300,
+				Height = acceptsReturn ? 200 : double.NaN,
+				FontSize = 16,
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			return SUT;
+		}
+
+		// Horizontal distance that reliably crosses several characters at the sizes used above.
+		private const double CaretDragStep = 60;
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Previews_Without_Committing_Selection()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(25, 0);
+			await WindowHelper.WaitForIdle();
+
+			var selectionChangedCount = 0;
+			SUT.SelectionChanged += (_, _) => selectionChangedCount++;
+
+			Assert.IsTrue(SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default));
+			Assert.IsTrue(SUT.IsCaretDragActive);
+
+			Assert.IsTrue(SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(-CaretDragStep, 0)));
+			await WindowHelper.WaitForIdle();
+
+			// The whole point of the design: the drag previews, it does not commit.
+			Assert.AreEqual(25, SUT.SelectionStart);
+			Assert.AreEqual(0, selectionChangedCount);
+
+			Assert.IsTrue(SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default));
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.IsCaretDragActive);
+			Assert.IsTrue(SUT.SelectionStart < 25, $"Caret should have moved left, but SelectionStart is {SUT.SelectionStart}.");
+			Assert.AreEqual(0, SUT.SelectionLength);
+			Assert.AreEqual(1, selectionChangedCount, "A whole gesture must raise exactly one SelectionChanged.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Moves_Right_And_Left()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(12, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(CaretDragStep, 0));
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			var afterRight = SUT.SelectionStart;
+			Assert.IsTrue(afterRight > 12, $"Dragging right should advance the caret, got {afterRight}.");
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(-CaretDragStep, 0));
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.SelectionStart < afterRight, $"Dragging left should retreat the caret, got {SUT.SelectionStart}.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Uses_Cumulative_Offset()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(0, 0);
+			await WindowHelper.WaitForIdle();
+
+			// One update at 3x the step must land where three updates ramping to 3x land, because
+			// the offset is measured from the gesture origin rather than the previous callback.
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(CaretDragStep * 3, 0));
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			var single = SUT.SelectionStart;
+			Assert.IsTrue(single > 0, "The drag did not move the caret at all, so the comparison below would be vacuous.");
+
+			SUT.Select(0, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(CaretDragStep, 0));
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(CaretDragStep * 2, 0));
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(CaretDragStep * 3, 0));
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(single, SUT.SelectionStart);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Ends_Without_Update_Then_NoOp()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(4, 11);
+			await WindowHelper.WaitForIdle();
+
+			var selectionChangedCount = 0;
+			SUT.SelectionChanged += (_, _) => selectionChangedCount++;
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			// A tap-and-release on the space bar must not collapse an existing selection.
+			Assert.AreEqual(4, SUT.SelectionStart);
+			Assert.AreEqual(11, SUT.SelectionLength);
+			Assert.AreEqual(0, selectionChangedCount);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Cancelled_Then_Selection_Unchanged()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(25, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(-CaretDragStep, 0));
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Cancel, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.IsCaretDragActive);
+			Assert.AreEqual(25, SUT.SelectionStart);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Overshoots_Then_Clamps_Into_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var text = "The quick brown fox jumps";
+			var SUT = await SetUpCaretDragTextBox(text);
+			SUT.Select(12, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(-100000, -100000));
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			// GetIndexAt returns -1 on a miss; a clamped drag must never produce a negative index.
+			Assert.AreEqual(0, SUT.SelectionStart);
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(100000, 100000));
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(text.Length, SUT.SelectionStart);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Vertical_On_Multiline_Then_Changes_Line()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("first line here\rsecond line here\rthird line here", acceptsReturn: true);
+			Assert.AreEqual(3, SUT.Text.Split('\r').Length, "The multiline set-up did not keep its line breaks.");
+			SUT.Select(5, 0); // on the first line
+			await WindowHelper.WaitForIdle();
+
+			var firstLineRect = SUT.TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(5);
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(0, firstLineRect.Height));
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(SUT.SelectionStart > 15, $"Caret should have dropped past the first line break, got {SUT.SelectionStart}.");
+
+			var landedRect = SUT.TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(SUT.SelectionStart);
+			Assert.IsTrue(landedRect.Top > firstLineRect.Top, "Caret should be on a lower line.");
+			// A vertical-only drag should keep roughly the same column.
+			Assert.IsTrue(Math.Abs(landedRect.Left - firstLineRect.Left) < 12, $"Column drifted: {firstLineRect.Left} -> {landedRect.Left}.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Then_Caret_Stops_Blinking()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			FeatureConfiguration.TextBox.HideCaret = false;
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(25, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(-CaretDragStep, 0));
+
+			// The blink interval is 500ms; the caret must stay visible across a few of them.
+			for (var i = 0; i < 4; i++)
+			{
+				await Task.Delay(200);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(TextBox.CaretDisplayMode.ThumblessCaretShowing, SUT.CaretMode, $"Caret blinked away at iteration {i}.");
+				Assert.IsNotNull(SUT.TextBoxView.DisplayBlock.RenderCaret);
+			}
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			// ...and blinking must resume afterwards. Generous headroom over the 500ms interval so a
+			// loaded CI shard doesn't turn this flaky.
+			var blinkedOff = false;
+			for (var i = 0; i < 40 && !blinkedOff; i++)
+			{
+				await Task.Delay(100);
+				await WindowHelper.WaitForIdle();
+				blinkedOff = SUT.CaretMode == TextBox.CaretDisplayMode.ThumblessCaretHidden;
+			}
+
+			Assert.IsTrue(blinkedOff, "Blinking did not resume after the gesture ended.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Previews_Caret_Without_Moving_Selection()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			FeatureConfiguration.TextBox.HideCaret = false;
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(25, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(-CaretDragStep, 0));
+			await WindowHelper.WaitForIdle();
+
+			var renderCaret = SUT.TextBoxView.DisplayBlock.RenderCaret;
+			Assert.IsNotNull(renderCaret);
+			Assert.IsTrue(renderCaret.Value.index < 25, $"The rendered caret should preview the drag, but it is at {renderCaret.Value.index}.");
+			Assert.AreEqual(25, SUT.SelectionStart, "The selection must not follow the preview.");
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Cancel, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(25, SUT.TextBoxView.DisplayBlock.RenderCaret!.Value.index, "Cancelling must restore the caret to the selection.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Beyond_Viewport_Then_Scrolls_To_Follow_Preview()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			FeatureConfiguration.TextBox.HideCaret = false;
+
+			var SUT = await SetUpCaretDragTextBox(
+				"The quick brown fox jumps over the lazy dog while the caret keeps travelling right past the edge");
+			SUT.Select(0, 0);
+			await WindowHelper.WaitForIdle();
+
+			var sv = (ScrollViewer)SUT.ContentElement;
+			Assert.IsGreaterThan(0, sv.ScrollableWidth, "The text must overflow for this test to mean anything.");
+			Assert.AreEqual(0, sv.HorizontalOffset);
+
+			// Drag to the far end of the text, expressed in the same text coordinates the gesture uses.
+			var parsedText = SUT.TextBoxView.DisplayBlock.ParsedText;
+			var travel = parsedText.GetRectForIndex(SUT.Text.Length).Left - parsedText.GetRectForIndex(0).Left;
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(travel, 0));
+			await WindowHelper.WaitForIdle();
+
+			var previewIndex = SUT.TextBoxView.DisplayBlock.RenderCaret!.Value.index;
+			var caretRect = parsedText.GetRectForIndex(previewIndex);
+
+			// ChangeView animates, so poll on the invariant that matters: the previewed caret ends up
+			// inside the visible viewport.
+			await WindowHelper.WaitFor(
+				() => caretRect.Left >= sv.HorizontalOffset - 1
+					&& caretRect.Right <= sv.HorizontalOffset + sv.ViewportWidth + 1,
+				message: $"Caret at {caretRect.Left} never came into the viewport (width {sv.ViewportWidth})");
+
+			Assert.IsGreaterThan(0, sv.HorizontalOffset, "The viewport should have followed the previewed caret.");
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(previewIndex, SUT.SelectionStart);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_On_Touch_Then_Insertion_Handle_Survives()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			// The iOS convention taps to a bare caret, so the Android one is what exercises a
+			// caret drag starting from a mode that carries a handle.
+			var SUT = new TextBox
+			{
+				Width = 300,
+				Text = "The quick brown fox jumps over",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var bounds = SUT.GetAbsoluteBoundsRect();
+			finger.Press(new Point(bounds.Left + 90, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "tap should place the insertion handle");
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			Assert.AreEqual(TextBox.CaretDisplayMode.ThumblessCaretShowing, SUT.CaretMode, "The thumb should be hidden while dragging.");
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(-40, 0));
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode,
+				"The insertion handle must come back after the gesture.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Declined()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var readOnly = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			readOnly.IsReadOnly = true;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(readOnly.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default), "Read-only should decline.");
+			Assert.IsFalse(readOnly.IsCaretDragActive);
+
+			// An Update without a Begin must not throw or move anything.
+			readOnly.IsReadOnly = false;
+			readOnly.Select(7, 0);
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(readOnly.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(CaretDragStep, 0)));
+			Assert.AreEqual(7, readOnly.SelectionStart);
+
+			var unfocused = new TextBox { Text = "The quick brown fox jumps", Width = 300 };
+			WindowHelper.WindowContent = unfocused;
+			await WindowHelper.WaitForLoaded(unfocused);
+			Assert.IsFalse(unfocused.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default), "Unfocused should decline.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Rebegins_Without_End()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(25, 0);
+			await WindowHelper.WaitForIdle();
+
+			// UIKit is known to send unbalanced Begin/Begin/End sequences.
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(-CaretDragStep, 0));
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			// The second Begin re-anchors and drops the pending preview, so End commits nothing.
+			Assert.IsFalse(SUT.IsCaretDragActive);
+			Assert.AreEqual(25, SUT.SelectionStart);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Then_Unfocus_Cancels()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			var other = new Button { Content = "other" };
+			var panel = new StackPanel();
+			WindowHelper.WindowContent = panel;
+			panel.Children.Add(SUT);
+			panel.Children.Add(other);
+			await WindowHelper.WaitForLoaded(other);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+			SUT.Select(25, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Update, new Point(-CaretDragStep, 0));
+
+			other.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(SUT.IsCaretDragActive, "Losing focus must cancel an in-flight drag.");
+			Assert.AreEqual(25, SUT.SelectionStart);
+		}
+
+		#endregion
+
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{
 			private bool _useOverlay;
