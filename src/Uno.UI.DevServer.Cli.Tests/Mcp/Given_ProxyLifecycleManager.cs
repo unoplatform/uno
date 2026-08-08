@@ -1607,7 +1607,7 @@ public class Given_ProxyLifecycleManager
 		var monitor = new DevServerMonitor(services, NullLogger<DevServerMonitor>.Instance);
 		var upstreamClient = new McpUpstreamClient(NullLogger<McpUpstreamClient>.Instance, monitor);
 		var toolListManager = new ToolListManager(NullLogger<ToolListManager>.Instance, upstreamClient);
-		var healthService = new HealthService(upstreamClient, monitor, toolListManager);
+		var healthService = new HealthService(upstreamClient, monitor, toolListManager, NullLogger<HealthService>.Instance, _ => System.Threading.Tasks.Task.FromResult<string?>(null));
 		var stdioServer = new McpStdioServer(NullLogger<McpStdioServer>.Instance, toolListManager, healthService, upstreamClient);
 		var finder = solutionFileFinder ?? new FileSystemSolutionFileFinder();
 		var workspaceResolver = new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance, finder);

@@ -294,6 +294,11 @@ internal class CliManager
 	private async Task<int> RunHealthAsync(string requestedWorkingDirectory, WorkspaceResolution workspaceResolution, bool outputJson)
 	{
 		var workingDirectory = workspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
+
+		// Start the manifest fetch up front so it overlaps discovery + host checks rather than
+		// adding its latency serially at the end.
+		var latestUnoSdkVersionTask = SdkManifest.GetLatestUnoSdkVersionAsync(_logger);
+
 		var info = await _unoToolsLocator.DiscoverAsync(workingDirectory, workspaceResolution);
 
 		// In standalone CLI mode, check if any active workspace-matching server
@@ -316,7 +321,8 @@ internal class CliManager
 			connectionState: null,
 			discoveredSolutions: null,
 			hostProcessId: activeWorkspaceServer?.ProcessId,
-			hostEndpoint: activeWorkspaceServer?.McpEndpoint);
+			hostEndpoint: activeWorkspaceServer?.McpEndpoint,
+			latestUnoSdkVersion: await latestUnoSdkVersionTask);
 
 		if (outputJson)
 		{
