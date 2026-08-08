@@ -8,6 +8,19 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AdaptiveStates">
+                <!-- Inactive under any real test window; only a (scoped) window-size override can activate it. -->
+                <VisualState x:Name="SimulatedWideState">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="4000"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="AdaptiveStateProbe.Visibility" Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock x:Name="TitleTextBlock"
                        Text="ALC Test App"
@@ -19,6 +32,10 @@
                        Text="App loaded successfully"
                        HorizontalAlignment="Center"
                        Style="{StaticResource TestTextBlockStyle}"/>
+            <TextBlock x:Name="AdaptiveStateProbe"
+                       Text="Simulated wide state active"
+                       HorizontalAlignment="Center"
+                       Visibility="Collapsed"/>
         </StackPanel>
     </Grid>
 </Page>
