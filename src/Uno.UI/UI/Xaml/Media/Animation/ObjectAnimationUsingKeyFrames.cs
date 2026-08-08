@@ -95,13 +95,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			State = TimelineState.Active;
 
-			// MUX Reference: CAnimation::GetAnimationBaseValue / ReadBaseValuesFromTargetOrHandoff
-			// Ensure keyframe theme resources are resolved with the target element's
-			// effective theme before playback begins. This is needed because keyframe
-			// values may have been resolved with the wrong theme context during template
-			// materialization or resource binding updates outside a theme walk.
-			EnsureKeyFrameThemeResources();
-
 			_playStatus = default;
 			_frameScheduler = new KeyFrameScheduler<object>(
 				BeginTime,
@@ -313,30 +306,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				_frameScheduler.Dispose();
 				_frameScheduler = null;
-			}
-		}
-
-		/// <summary>
-		/// Resolves all keyframe theme resources with the target element's effective theme.
-		/// Called once at Begin time to ensure keyframe values match the element-level theme.
-		/// </summary>
-		private void EnsureKeyFrameThemeResources()
-		{
-			if (PropertyInfo?.DataContext is not FrameworkElement targetElement)
-			{
-				return;
-			}
-
-			// Resolve against the target's effective (inherited) theme, not its own per-object _theme: a
-			// template child (e.g. a CheckBox's NormalRectangle) is usually None even inside a themed subtree.
-			// preferAppResourceOverride lets an app-level key override win over the generic template default
-			// (WinUI GetKeyOverrideFromApplicationResourcesNoRef, Resources.cpp:668-682).
-			foreach (var keyFrame in KeyFrames)
-			{
-				if (keyFrame is IDependencyObjectStoreProvider provider)
-				{
-					provider.Store.UpdateAllThemeReferences(targetElement, preferAppResourceOverride: true);
-				}
 			}
 		}
 

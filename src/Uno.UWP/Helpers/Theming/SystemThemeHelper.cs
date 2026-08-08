@@ -13,6 +13,7 @@ namespace Uno.Helpers.Theming;
 internal static partial class SystemThemeHelper
 {
 	private static EventHandler? _systemThemeChanged;
+	private static EventHandler? _highContrastChanged;
 	private static bool _changesObserved;
 	private static SystemTheme? _lastSystemTheme;
 	private static SystemTheme? _systemThemeOverride;
@@ -85,15 +86,39 @@ internal static partial class SystemThemeHelper
 	}
 
 	/// <summary>
+	/// Triggered when the high-contrast state changes (sourced from
+	/// <see cref="Uno.WinRTFeatureConfiguration.Accessibility.HighContrast"/>). Kept separate from
+	/// <see cref="SystemThemeChanged"/> so only the enhanced-lifecycle theme pipeline routes it into a
+	/// theme walk; native stays OS + application theme only.
+	/// </summary>
+	internal static event EventHandler? HighContrastChanged
+	{
+		add => _highContrastChanged += value;
+		remove => _highContrastChanged -= value;
+	}
+
+	/// <summary>
+	/// Raises <see cref="HighContrastChanged"/>. Called by the high-contrast override hook so a runtime
+	/// toggle drives the same theme refresh an OS theme change does (WinUI routes OS high-contrast
+	/// changes through <c>UISettings.ColorValuesChanged</c> → <c>FrameworkTheming::OnThemeChanged</c>).
+	/// </summary>
+	internal static void NotifyHighContrastChanged() => _highContrastChanged?.Invoke(null, EventArgs.Empty);
+
+	/// <summary>
 	/// Removes event handlers whose target belongs to a non-default ALC.
 	/// Called during ALC teardown to release references to inner-app objects.
 	/// </summary>
 	internal static void ClearNonDefaultAlcHandlers()
 	{
-		var handler = _systemThemeChanged;
+		_systemThemeChanged = RemoveNonDefaultAlcHandlers(_systemThemeChanged);
+		_highContrastChanged = RemoveNonDefaultAlcHandlers(_highContrastChanged);
+	}
+
+	private static EventHandler? RemoveNonDefaultAlcHandlers(EventHandler? handler)
+	{
 		if (handler is null)
 		{
-			return;
+			return null;
 		}
 
 		foreach (var d in handler.GetInvocationList())
@@ -109,10 +134,12 @@ internal static partial class SystemThemeHelper
 				var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(handlerAssembly);
 				if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
 				{
-					_systemThemeChanged -= (EventHandler)d;
+					handler -= (EventHandler)d;
 				}
 			}
 		}
+
+		return handler;
 	}
 
 	/// <summary>

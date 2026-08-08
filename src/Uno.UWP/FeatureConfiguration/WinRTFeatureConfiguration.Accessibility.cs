@@ -21,6 +21,10 @@ partial class WinRTFeatureConfiguration
 				{
 					_highContrast = value;
 					AccessibilitySettings.OnHighContrastChanged();
+
+					// Drive the theme pipeline so a runtime high-contrast toggle re-resolves themed
+					// resources (the enhanced-lifecycle theme walk subscribes via Application).
+					Uno.Helpers.Theming.SystemThemeHelper.NotifyHighContrastChanged();
 				}
 			}
 		}

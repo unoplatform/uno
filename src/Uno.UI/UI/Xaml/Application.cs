@@ -487,6 +487,14 @@ namespace Microsoft.UI.Xaml
 
 			SystemThemeHelper.SystemThemeChanged += OnSystemThemeChanged;
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			// A runtime high-contrast toggle must drive the same FrameworkTheming.OnThemeChanged walk an
+			// OS theme change does (WinUI routes OS high-contrast changes through
+			// UISettings.ColorValuesChanged → OnThemeChanged). Enhanced-lifecycle only — native stays
+			// OS + application theme only. Torn down per-ALC by SystemThemeHelper.ClearNonDefaultAlcHandlers.
+			SystemThemeHelper.HighContrastChanged += OnSystemThemeChanged;
+#endif
+
 			InitializeTextScaling();
 
 			_initializationComplete = true;

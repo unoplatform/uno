@@ -21,7 +21,7 @@ internal struct ColorAndBrushResourceInfo
 
 internal sealed class FrameworkTheming
 {
-	public delegate void NotifyThemeChangedFunc();
+	internal delegate void NotifyThemeChangedFunc();
 
 	public FrameworkTheming(
 		IThemingInterop themingInterop,
@@ -209,84 +209,124 @@ internal sealed class FrameworkTheming
 
 	public bool IsHighContrastChanging() => m_isHighContrastChanging;
 
+	// C++: const bool overrideAlpha = true;
+	private const bool s_overrideAlpha = true;
+
+	// C++: static const xstring_ptr_storage colorKeyStorage[]
+	private static readonly string[] s_colorKeyStorage =
+	{
+		// System color resources
+		"SystemColorActiveCaptionColor",
+		"SystemColorBackgroundColor",
+		"SystemColorButtonFaceColor",
+		"SystemColorButtonTextColor",
+		"SystemColorCaptionTextColor",
+		"SystemColorGrayTextColor",
+		"SystemColorHighlightColor",
+		"SystemColorHighlightTextColor",
+		"SystemColorHotlightColor",
+		"SystemColorInactiveCaptionColor",
+		"SystemColorInactiveCaptionTextColor",
+		"SystemColorWindowColor",
+		"SystemColorWindowTextColor",
+		"SystemColorDisabledTextColor",
+
+		// Accent color resources
+		"SystemColorControlAccentColor",
+		"SystemAccentColor",
+
+		// Variant accent color resources
+		"SystemAccentColorDark1",
+		"SystemAccentColorDark2",
+		"SystemAccentColorDark3",
+		"SystemAccentColorLight1",
+		"SystemAccentColorLight2",
+		"SystemAccentColorLight3",
+
+		// List selection color resources.
+		"SystemListAccentLowColor",
+		"SystemListAccentMediumColor",
+		"SystemListAccentHighColor"
+	};
+
+	// C++: static const xstring_ptr_storage brushKeyStorage[]
+	private static readonly string?[] s_brushKeyStorage =
+	{
+		// System color resources
+		"SystemColorActiveCaptionBrush",
+		"SystemColorBackgroundBrush",
+		"SystemColorButtonFaceBrush",
+		"SystemColorButtonTextBrush",
+		"SystemColorCaptionTextBrush",
+		"SystemColorGrayTextBrush",
+		"SystemColorHighlightBrush",
+		"SystemColorHighlightTextBrush",
+		"SystemColorHotlightBrush",
+		"SystemColorInactiveCaptionBrush",
+		"SystemColorInactiveCaptionTextBrush",
+		"SystemColorWindowBrush",
+		"SystemColorWindowTextBrush",
+		"SystemColorDisabledTextBrush",
+
+		// Accent color resources
+		"SystemColorControlAccentBrush",
+		null,
+
+		// Variant accent color resources
+		null,
+		null,
+		null,
+		null,
+		null,
+		null,
+
+		// List selection color resources.
+		null,
+		null,
+		null
+	};
+
+	// C++: static const bool overrideAlphaValues[]
+	private static readonly bool[] s_overrideAlphaValues =
+	{
+		// SystemColor resources
+		s_overrideAlpha,
+		s_overrideAlpha,
+		s_overrideAlpha,
+		s_overrideAlpha,
+		s_overrideAlpha,
+		s_overrideAlpha,
+		s_overrideAlpha,
+		s_overrideAlpha,
+		s_overrideAlpha,
+		s_overrideAlpha,
+		s_overrideAlpha,
+		s_overrideAlpha,
+		s_overrideAlpha,
+		s_overrideAlpha,
+
+		// Accent color resources
+		false,
+		false,
+
+		// Variant accent color resources
+		false,
+		false,
+		false,
+		false,
+		false,
+		false,
+
+		// List selection color resources (Accent color RGB values, different Alpha-channel values).
+		false,
+		false,
+		false
+	};
+
 	private void RebuildColorAndBrushResources()
 	{
-		const bool overrideAlpha = true;
-
-		// C++: static const xstring_ptr_storage colorKeyStorage[]
-		string[] colorKeyStorage =
-		{
-			// System color resources
-			"SystemColorActiveCaptionColor",
-			"SystemColorBackgroundColor",
-			"SystemColorButtonFaceColor",
-			"SystemColorButtonTextColor",
-			"SystemColorCaptionTextColor",
-			"SystemColorGrayTextColor",
-			"SystemColorHighlightColor",
-			"SystemColorHighlightTextColor",
-			"SystemColorHotlightColor",
-			"SystemColorInactiveCaptionColor",
-			"SystemColorInactiveCaptionTextColor",
-			"SystemColorWindowColor",
-			"SystemColorWindowTextColor",
-			"SystemColorDisabledTextColor",
-
-			// Accent color resources
-			"SystemColorControlAccentColor",
-			"SystemAccentColor",
-
-			// Variant accent color resources
-			"SystemAccentColorDark1",
-			"SystemAccentColorDark2",
-			"SystemAccentColorDark3",
-			"SystemAccentColorLight1",
-			"SystemAccentColorLight2",
-			"SystemAccentColorLight3",
-
-			// List selection color resources.
-			"SystemListAccentLowColor",
-			"SystemListAccentMediumColor",
-			"SystemListAccentHighColor"
-		};
-
-		// C++: static const xstring_ptr_storage brushKeyStorage[]
-		string?[] brushKeyStorage =
-		{
-			// System color resources
-			"SystemColorActiveCaptionBrush",
-			"SystemColorBackgroundBrush",
-			"SystemColorButtonFaceBrush",
-			"SystemColorButtonTextBrush",
-			"SystemColorCaptionTextBrush",
-			"SystemColorGrayTextBrush",
-			"SystemColorHighlightBrush",
-			"SystemColorHighlightTextBrush",
-			"SystemColorHotlightBrush",
-			"SystemColorInactiveCaptionBrush",
-			"SystemColorInactiveCaptionTextBrush",
-			"SystemColorWindowBrush",
-			"SystemColorWindowTextBrush",
-			"SystemColorDisabledTextBrush",
-
-			// Accent color resources
-			"SystemColorControlAccentBrush",
-			null,
-
-			// Variant accent color resources
-			null,
-			null,
-			null,
-			null,
-			null,
-			null,
-
-			// List selection color resources.
-			null,
-			null,
-			null
-		};
-		Debug.Assert(brushKeyStorage.Length == colorKeyStorage.Length, "Array does not match number of color resources.");
+		Debug.Assert(s_brushKeyStorage.Length == s_colorKeyStorage.Length, "Array does not match number of color resources.");
+		Debug.Assert(s_overrideAlphaValues.Length == s_colorKeyStorage.Length, "Array does not match number of color resources.");
 
 		// Dynamic values.
 		uint[] colorValues =
@@ -324,54 +364,17 @@ internal sealed class FrameworkTheming
 			(0x99FFFFFF & m_accentColor),
 			(0xB2FFFFFF & m_accentColor)
 		};
-		Debug.Assert(colorValues.Length == colorKeyStorage.Length, "Array does not match number of color resources.");
-
-		bool[] overrideAlphaValues =
-		{
-			// SystemColor resources
-			overrideAlpha,
-			overrideAlpha,
-			overrideAlpha,
-			overrideAlpha,
-			overrideAlpha,
-			overrideAlpha,
-			overrideAlpha,
-			overrideAlpha,
-			overrideAlpha,
-			overrideAlpha,
-			overrideAlpha,
-			overrideAlpha,
-			overrideAlpha,
-			overrideAlpha,
-
-			// Accent color resources
-			false,
-			false,
-
-			// Variant accent color resources
-			false,
-			false,
-			false,
-			false,
-			false,
-			false,
-
-			// List selection color resources (Accent color RGB values, different Alpha-channel values).
-			false,
-			false,
-			false
-		};
-		Debug.Assert(overrideAlphaValues.Length == colorKeyStorage.Length, "Array does not match number of color resources.");
+		Debug.Assert(colorValues.Length == s_colorKeyStorage.Length, "Array does not match number of color resources.");
 
 		m_colorAndBrushResourceInfoList.Clear();
-		for (var i = 0; i < colorKeyStorage.Length; ++i)
+		for (var i = 0; i < s_colorKeyStorage.Length; ++i)
 		{
 			var info = new ColorAndBrushResourceInfo
 			{
-				ColorKey = colorKeyStorage[i],
-				BrushKey = brushKeyStorage[i],
+				ColorKey = s_colorKeyStorage[i],
+				BrushKey = s_brushKeyStorage[i],
 				RgbValue = colorValues[i],
-				OverrideAlpha = overrideAlphaValues[i]
+				OverrideAlpha = s_overrideAlphaValues[i]
 			};
 
 			m_colorAndBrushResourceInfoList.Add(info);
