@@ -271,7 +271,12 @@ public sealed unsafe class WebGpuDevice : IDisposable
 
 	// Prefer 2x MSAA (half the cost) where the device supports it for our colour format, else 4x (spec-guaranteed).
 	private uint PickSampleCount()
-		=> Environment.GetEnvironmentVariable("UNO_WEBGPU_MSAA") != "4" && SupportsSampleCount(2) ? 2u : 4u;
+	{
+		// The browser (Dawn) init is async and can't synchronously pump the error-scope callback (no JS event-loop
+		// yield), so skip the probe there and take the spec-guaranteed 4x. Desktop probes for 2x.
+		if (OperatingSystem.IsBrowser()) { return 4; }
+		return Environment.GetEnvironmentVariable("UNO_WEBGPU_MSAA") != "4" && SupportsSampleCount(2) ? 2u : 4u;
+	}
 
 	// Probes whether a sample count is valid for the colour format WITHOUT aborting: an unsupported count raises a
 	// validation error, which a pushed error scope captures (the default uncaptured handler panics the process).
