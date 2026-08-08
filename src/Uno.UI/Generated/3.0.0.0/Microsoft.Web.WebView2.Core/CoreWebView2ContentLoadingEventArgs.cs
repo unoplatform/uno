@@ -3,36 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2ContentLoadingEventArgs
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CoreWebView2ContentLoadingEventArgs()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsErrorPage
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ContentLoadingEventArgs", "IsErrorPage");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ulong NavigationId
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ContentLoadingEventArgs", "NavigationId");
-			}
-		}
-#endif
+		// Skipping already declared property IsErrorPage
+		// Skipping already declared property NavigationId
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContentLoadingEventArgs.IsErrorPage.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ContentLoadingEventArgs.NavigationId.get
 	}

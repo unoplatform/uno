@@ -190,20 +190,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsScriptEnabled
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "IsScriptEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "IsScriptEnabled");
-			}
-		}
-#endif
+		// Skipping already declared property IsScriptEnabled
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public bool IsStatusBarEnabled
@@ -233,34 +220,8 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Skipping already declared property IsWebMessageEnabled
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool IsZoomControlEnabled
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "IsZoomControlEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "IsZoomControlEnabled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string UserAgent
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "UserAgent");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "UserAgent");
-			}
-		}
-#endif
+		// Skipping already declared property IsZoomControlEnabled
+		// Skipping already declared property UserAgent
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.AreBrowserAcceleratorKeysEnabled.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.AreBrowserAcceleratorKeysEnabled.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.AreDefaultContextMenusEnabled.get

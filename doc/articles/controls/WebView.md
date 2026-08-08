@@ -107,6 +107,55 @@ webView.WebMessageReceived += (s, e) =>
 
 The `WebMessageAsJson` property contains a JSON-encoded string of the data passed to `postWebViewMessage` above.
 
+## C# to JavaScript communication
+
+Use `PostWebMessageAsString` or `PostWebMessageAsJson` to send a message from C# to the current page:
+
+```csharp
+await webView.EnsureCoreWebView2Async();
+
+webView.CoreWebView2.PostWebMessageAsString("hello");
+webView.CoreWebView2.PostWebMessageAsJson("""{"command":"refresh"}""");
+```
+
+Receive these messages in JavaScript through the WebView2-compatible message event:
+
+```javascript
+window.chrome.webview.addEventListener("message", event => {
+    console.log(event.data);
+});
+```
+
+`PostWebMessageAsJson` validates that its argument contains one JSON value. Both methods throw when `CoreWebView2Settings.IsWebMessageEnabled` is `false`.
+
+## Running scripts when a document is created
+
+`AddScriptToExecuteOnDocumentCreatedAsync` registers JavaScript that runs at the start of each subsequent document:
+
+```csharp
+var scriptId = await webView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(
+    "window.unoHostAvailable = true;");
+
+// Remove the registration when it is no longer needed.
+webView.CoreWebView2.RemoveScriptToExecuteOnDocumentCreated(scriptId);
+```
+
+Document-created scripts are not supported by the WebAssembly iframe host.
+
+## WebView settings
+
+The following settings are available through `CoreWebView2.Settings`:
+
+```csharp
+await webView.EnsureCoreWebView2Async();
+
+webView.CoreWebView2.Settings.UserAgent = "MyApp/1.0";
+webView.CoreWebView2.Settings.IsScriptEnabled = true;
+webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
+```
+
+Platform browser restrictions still apply. WebAssembly cannot override its user agent or disable scripts and browser zoom. Some WebKit-based hosts retain the requested zoom setting without changing native gesture behavior.
+
 ## Navigating to web content in the application package
 
 To load local web content bundled with the application, you can use the `SetVirtualHostNameToFolderMapping` method. This allows you to set a virtual hostname that maps to a folder within the package, from which the web content will be loaded:
@@ -204,6 +253,77 @@ public App()
     this.InitializeComponent();
 }
 ```
+
+### Per-control environment and profile options
+
+Use the `EnsureCoreWebView2Async` overloads to initialize a control with a custom environment and controller options:
+
+```csharp
+var environmentOptions = new CoreWebView2EnvironmentOptions
+{
+    AdditionalBrowserArguments = "--disable-features=ExampleFeature",
+    Language = "en-US",
+};
+
+var userDataFolder = Path.Combine(
+    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+    "MyApp",
+    "WebViewProfiles",
+    "Profile1");
+
+var environment = await CoreWebView2Environment.CreateWithOptionsAsync(
+    browserExecutableFolder: null,
+    userDataFolder,
+    environmentOptions);
+
+var controllerOptions = environment.CreateCoreWebView2ControllerOptions();
+controllerOptions.ProfileName = "Profile1";
+controllerOptions.IsInPrivateModeEnabled = true;
+
+await webView.EnsureCoreWebView2Async(environment, controllerOptions);
+```
+
+Windows supports the complete environment and controller option set on both WebView2 backends. The macOS Skia host supports private mode. Other custom environment combinations throw `NotSupportedException` when the native browser cannot provide equivalent behavior.
+
+## Cookies
+
+Use `CoreWebView2.CookieManager` to create, query, update, and delete cookies:
+
+```csharp
+var manager = webView.CoreWebView2.CookieManager;
+var cookie = manager.CreateCookie("session", "value", "example.com", "/");
+cookie.IsSecure = true;
+cookie.IsHttpOnly = true;
+
+manager.AddOrUpdateCookie(cookie);
+var cookies = await manager.GetCookiesAsync("https://example.com/");
+manager.DeleteCookie(cookie);
+```
+
+Windows, Apple platforms, and Android expose their native cookie stores. Android requires an absolute URI when querying cookies and cannot enumerate every cookie in the profile. Cookie management is not available on WebAssembly or the X11 WebKitGTK host.
+
+## Printing
+
+Use `PrintToPdfStreamAsync` to capture the current document as PDF, or `ShowPrintUI` to open the platform print UI:
+
+```csharp
+var settings = webView.CoreWebView2.Environment.CreatePrintSettings();
+settings.Orientation = CoreWebView2PrintOrientation.Landscape;
+settings.ShouldPrintBackgrounds = true;
+
+using var pdf = await webView.CoreWebView2.PrintToPdfStreamAsync(settings);
+webView.CoreWebView2.ShowPrintUI(CoreWebView2PrintDialogKind.System);
+```
+
+PDF output is supported on Windows, macOS, iOS, and X11. Android and WebAssembly can show print UI but do not provide PDF streams through this API. Some platform print engines support only a subset of `CoreWebView2PrintSettings` and throw `NotSupportedException` for unsupported combinations.
+
+## Lifecycle and cleanup
+
+In addition to navigation events, `CoreWebView2` exposes `ContentLoading`, `DOMContentLoaded`, `DocumentTitleChanged`, `HistoryChanged`, and `SourceChanged`.
+
+The document/content events depend on equivalent callbacks from the native browser backend and may not be available on every target.
+
+Call `WebView2.Close()` when the control will not be used again. Closing releases native browser resources and is terminal: subsequent navigation, script execution, or initialization calls throw `ObjectDisposedException`.
 
 ## Linux specifics
 
