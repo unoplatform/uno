@@ -17,8 +17,28 @@ if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 	fi
 fi
 
+export UITEST_DIAGNOSTICS_DIR=$BUILD_SOURCESDIRECTORY/build/uitests-diagnostics
+export UNO_WATCHDOG_HARD_TIMEOUT_SECONDS=${UNO_WATCHDOG_HARD_TIMEOUT_SECONDS:-3300}
+mkdir -p $UITEST_DIAGNOSTICS_DIR
+APP_LOG=$UITEST_DIAGNOSTICS_DIR/runtime-tests-console.log
+
+chmod +x $BUILD_SOURCESDIRECTORY/build/test-scripts/stall-watchdog.sh
+$BUILD_SOURCESDIRECTORY/build/test-scripts/stall-watchdog.sh \
+	"$APP_LOG" "$UITEST_DIAGNOSTICS_DIR" "dotnet.*SamplesApp\.Skia\.Generic\.dll" &
+WATCHDOG_PID=$!
+trap 'kill $WATCHDOG_PID 2>/dev/null || true' EXIT
+
 cd $SamplesAppArtifactPath
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE
+
+## The app exit code must not abort the script: the failed-test list below is what lets a
+## pipeline retry run only the failures instead of the whole suite.
+set +e
+dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE 2>&1 | tee "$APP_LOG"
+APP_EXIT=${PIPESTATUS[0]}
+set -e
+
+kill $WATCHDOG_PID 2>/dev/null || true
+echo "Runtime tests app exited with code $APP_EXIT"
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool

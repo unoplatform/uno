@@ -131,3 +131,13 @@ jobs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
       ArtifactName: runtime-tests-desktop-skia-linux-failures
       ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    displayName: Publish Stall Diagnostics
+    continueOnError: true
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-diagnostics
+      ArtifactName: runtime-tests-desktop-skia-linux${{ parameters.testResultLabel }}-diagnostics
+      ArtifactType: Container
