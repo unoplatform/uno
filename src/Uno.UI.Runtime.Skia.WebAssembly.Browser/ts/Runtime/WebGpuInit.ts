@@ -37,10 +37,11 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
-		// Maps a readback buffer (identified by its wgpu handle ptr) off the event loop and inspects the first
-		// byteLen bytes as RGBA8. Returns the count of non-transparent pixels (alpha != 0), or -1 on failure, and
-		// logs luminance min/max. Used to verify the offscreen frame headless without needing the canvas to composite.
-		public static async mapReadStats(bufferPtr: number, byteLen: number): Promise<number> {
+		// Maps a readback buffer (by its wgpu handle ptr) off the event loop and inspects it as RGBA8 (rows padded to
+		// bytesPerRow). Returns the count of non-transparent pixels (alpha != 0), or -1 on failure, logs luminance
+		// min/max, and stashes a PNG data-URL of the frame on window.__unoLastFramePng so a headless driver can save
+		// an actual screenshot — the only way to observe WebGPU output where SwiftShader can't composite the canvas.
+		public static async mapReadStats(bufferPtr: number, w: number, h: number, bytesPerRow: number): Promise<number> {
 			try {
 				const module = (window as any).Module;
 				const buffer = module && typeof module.unoWebGpuJsObject === "function"
@@ -50,16 +51,28 @@ namespace Uno.UI.Runtime.Skia {
 					return -1;
 				}
 				await buffer.mapAsync(1 /* GPUMapMode.READ */);
-				const data = new Uint8Array(buffer.getMappedRange());
+				const src = new Uint8Array(buffer.getMappedRange());
+				const rgba = new Uint8ClampedArray(w * h * 4);
 				let opaque = 0, lumMin = 255, lumMax = 0;
-				const n = Math.min(byteLen, data.length);
-				for (let i = 0; i + 3 < n; i += 4) {
-					if (data[i + 3] !== 0) { opaque++; }
-					const lum = (data[i] + data[i + 1] + data[i + 2]) / 3 | 0;
-					if (lum < lumMin) { lumMin = lum; }
-					if (lum > lumMax) { lumMax = lum; }
+				for (let y = 0; y < h; y++) {
+					const row = y * bytesPerRow;
+					for (let x = 0; x < w; x++) {
+						const s = row + x * 4, d = (y * w + x) * 4;
+						const r = src[s], g = src[s + 1], b = src[s + 2], a = src[s + 3];
+						rgba[d] = r; rgba[d + 1] = g; rgba[d + 2] = b; rgba[d + 3] = a;
+						if (a !== 0) { opaque++; }
+						const lum = (r + g + b) / 3 | 0;
+						if (lum < lumMin) { lumMin = lum; }
+						if (lum > lumMax) { lumMax = lum; }
+					}
 				}
 				buffer.unmap();
+				try {
+					const canvas = document.createElement("canvas");
+					canvas.width = w; canvas.height = h;
+					canvas.getContext("2d")!.putImageData(new ImageData(rgba, w, h), 0, 0);
+					(window as any).__unoLastFramePng = canvas.toDataURL("image/png");
+				} catch (e) { /* PNG capture is best-effort */ }
 				console.log("WebGpuInit.mapReadStats: opaque=" + opaque + " lumMin=" + lumMin + " lumMax=" + lumMax);
 				return opaque;
 			} catch (e) {
