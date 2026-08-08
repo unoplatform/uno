@@ -15,7 +15,7 @@ Each target platform has its own idea of a native element.
 |---------------------------------|------------------------------------------------------------------------------------|----------------------------------------------|
 | Skia Desktop (Win32)            | Uno.UI.NativeElementHosting.Win32NativeWindow                                      | A native Windows window with a unique `Hwnd` |
 | Skia Desktop (X11)              | Uno.UI.NativeElementHosting.X11NativeWindow                                        | A native X11 window with a unique `XID`      |
-| Skia Desktop (macOS)            | Not yet supported.                                                                 | Not yet supported as of Uno Platform 6.0     |
+| Skia Desktop (macOS)            | Not yet supported.                                                                 | Hosting an arbitrary `NSView` is not publicly exposed yet |
 | WebAssembly                     | [Uno.UI.NativeElementHosting.BrowserHtmlElement](xref:Uno.Interop.WasmJavaScript1) | An HTML element with a unique `id`.          |
 | Android                         | Android.Views.View                                                                 | An Android view.                             |
 | Apple UIKit                     | UIKit.UIView                                                                       | An UIKit view.                               |

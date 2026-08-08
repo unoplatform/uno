@@ -90,3 +90,8 @@ By doing so, any use of the APIs provided by `Uno.UI.Dispatching`, `Uno`, and `U
 ### Implications for iOS/Android class libraries
 
 A library that targets `net10.0-ios` or `net10.0-android` and uses platform conditional code with `#if` blocks needs to also provide a `net10.0` TFM to be consumable by an application. The `net10.0` variant is the one that gets used: it does not offer iOS/Android specific conditional code, but any code that uses Uno Platform provided APIs works properly.
+
+> [!TIP]
+> For code that needs to behave differently per platform, prefer runtime branching from a single `net10.0` target framework, using [`OperatingSystem.IsIOS()`](https://learn.microsoft.com/dotnet/api/system.operatingsystem.isios), `OperatingSystem.IsAndroid()`, and the other `OperatingSystem.IsXXX` methods. See [Platform-specific C# code](xref:Uno.Development.PlatformSpecificCSharp).
+>
+> Runtime branching cannot reach platform SDK types such as `UIKit` or `Android.*`, which are not available from a `net10.0` target framework. When those are genuinely required, expose an interface from the `net10.0` library and inject the platform implementation from the application head, which does target `net10.0-ios`/`net10.0-android`.
