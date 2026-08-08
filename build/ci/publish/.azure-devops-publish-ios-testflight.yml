@@ -6,7 +6,9 @@ parameters:
 jobs:
 - job: iOS_TestFlight
   displayName: 'Build Samples App - TestFlight'
-  condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
+  # TEMPORARY (revert before merge — see #23541): also run the TestFlight *build* on PRs to validate the
+  # native-iOS compile fix. The App Store publish deployments below stay master-only, so nothing is uploaded.
+  condition: or(startsWith(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'PullRequest'))
   cancelTimeoutInMinutes: 0
 
   strategy:
