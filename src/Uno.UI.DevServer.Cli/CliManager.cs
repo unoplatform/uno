@@ -361,17 +361,18 @@ internal class CliManager
 
 		if (exitCode is not null)
 		{
-			// Display output for debugging purposes
-			if (!string.IsNullOrWhiteSpace(stdOut))
-			{
-				_logger.LogDebug("Settings application stdout:\n{Stdout}", stdOut);
-			}
-			if (!string.IsNullOrWhiteSpace(stdErr))
-			{
-				_logger.LogError("Settings application stderr:\n{Stderr}", stdErr);
-			}
+			// The settings app writes its exit reason to its output; surface it so the cause is
+			// visible instead of a bare exit code.
+			var reason = FormatSettingsExitReason(stdOut, stdErr);
 
-			_logger.LogError("Settings application exited with code {ExitCode}", exitCode);
+			if (!string.IsNullOrWhiteSpace(reason))
+			{
+				_logger.LogError("Settings application exited with code {ExitCode}: {Reason}", exitCode, reason);
+			}
+			else
+			{
+				_logger.LogError("Settings application exited with code {ExitCode} (no diagnostic output captured).", exitCode);
+			}
 
 			return 1;
 		}
@@ -380,6 +381,28 @@ internal class CliManager
 			_logger.LogInformation("Settings application started successfully");
 			return 0;
 		}
+	}
+
+	/// <summary>
+	/// Labels stdout/stderr (stdout first — the app writes its exit reason there) and collapses
+	/// internal whitespace so the reason stays a single log line.
+	/// </summary>
+	internal static string FormatSettingsExitReason(string? stdOut, string? stdErr)
+	{
+		var parts = new List<string>();
+		if (!string.IsNullOrWhiteSpace(stdOut))
+		{
+			parts.Add($"stdout: {CollapseWhitespace(stdOut)}");
+		}
+		if (!string.IsNullOrWhiteSpace(stdErr))
+		{
+			parts.Add($"stderr: {CollapseWhitespace(stdErr)}");
+		}
+
+		return string.Join("; ", parts);
+
+		static string CollapseWhitespace(string value)
+			=> string.Join(" ", value.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
 	}
 
 	private async Task<int> RunMcpProxyAsync(string[] args, string requestedWorkingDirectory, WorkspaceResolution workspaceResolution)
