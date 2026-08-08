@@ -53,5 +53,11 @@
 		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\**" />
 		<None Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\**"
 		      Link="Microsoft_UI_Xaml_Controls\WebView2Tests\%(RecursiveDir)%(Filename)%(Extension)" />
+
+		<!-- AppTaskInfo is experimental and is not projected by Microsoft.Windows.SDK.NET.Ref. -->
+		<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Shell\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Shell\**" />
+		<None Include="$(MSBuildThisFileDirectory)Windows_UI_Shell\**"
+		      Link="Windows_UI_Shell\%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 </Project>

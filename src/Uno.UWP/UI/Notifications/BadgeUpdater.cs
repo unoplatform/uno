@@ -1,6 +1,9 @@
-﻿#if !__ANDROID__
+﻿#nullable enable
+
+#if !__ANDROID__
 
 using System;
+using System.Globalization;
 using Windows.Data.Xml.Dom;
 
 namespace Windows.UI.Notifications
@@ -9,6 +12,10 @@ namespace Windows.UI.Notifications
 	{
 		private const string BadgeNodeXPath = "/badge";
 		private const string ValueAttribute = "value";
+		private static readonly object BadgeGate = new();
+		private static BadgeUpdater? _coordinatorUpdater;
+		private static string? _explicitBadge;
+		private static string? _appTaskBadge;
 
 		internal BadgeUpdater()
 		{
@@ -26,12 +33,36 @@ namespace Windows.UI.Notifications
 
 			var element = notification.Content.SelectSingleNode(BadgeNodeXPath) as XmlElement;
 			var attributeValue = element?.GetAttribute(ValueAttribute);
-			SetBadge(attributeValue);
+			SetExplicitBadge(attributeValue);
 		}
 
-		public void Clear() => SetBadge(null);
+		public void Clear() => SetExplicitBadge(null);
 
-		partial void SetBadge(string value);
+		partial void SetBadge(string? value);
+
+		internal static void SetAppTaskBadge(int? value)
+		{
+			lock (BadgeGate)
+			{
+				_appTaskBadge = value?.ToString(CultureInfo.InvariantCulture);
+				ApplyEffectiveBadgeLocked();
+			}
+		}
+
+		private static void SetExplicitBadge(string? value)
+		{
+			lock (BadgeGate)
+			{
+				_explicitBadge = string.IsNullOrEmpty(value) ? null : value;
+				ApplyEffectiveBadgeLocked();
+			}
+		}
+
+		private static void ApplyEffectiveBadgeLocked()
+		{
+			_coordinatorUpdater ??= new BadgeUpdater();
+			_coordinatorUpdater.SetBadge(_explicitBadge ?? _appTaskBadge);
+		}
 	}
 }
 #endif

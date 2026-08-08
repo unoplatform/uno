@@ -108,6 +108,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => Win32ImeTextBoxExtension.Instance);
 		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new Win32NativeOpenGLWrapper(xamlRoot));
 
+		Win32AppTaskInfoExtension.Register();
 		AccessibilityRouter.EnsureInitialized();
 	}
 
@@ -188,6 +189,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 	internal static void RegisterWindow(HWND hwnd)
 	{
 		Interlocked.Increment(ref _openWindows);
+		Win32AppTaskInfoExtension.ApplyToWindow(hwnd);
 	}
 
 	internal static void UnregisterWindow(HWND hwnd)
