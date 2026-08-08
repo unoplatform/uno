@@ -42,6 +42,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			CounterGrid2.Reset();
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task When_GridViewUsesItemsWrapGrid_Then_LayoutCompletes()
+		{
+			var gridView = new GridView
+			{
+				ItemsSource = new[] { "one", "two" },
+				ItemsPanel = new ItemsPanelTemplate(() => new ItemsWrapGrid()),
+			};
+
+			try
+			{
+				WindowHelper.WindowContent = gridView;
+				await WindowHelper.WaitForIdle();
+				gridView.UpdateLayout();
+				Assert.IsInstanceOfType<ItemsWrapGrid>(gridView.ItemsPanelRoot);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]

@@ -7,12 +7,16 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		internal void DisableOverpan()
 		{
-			// TODO
+#if __SKIA__
+			DisableOverpanImpl();
+#endif
 		}
 
 		internal void EnableOverpan()
 		{
-			// TODO
+#if __SKIA__
+			EnableOverpanImpl();
+#endif
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

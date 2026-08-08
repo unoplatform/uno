@@ -147,26 +147,34 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
 
-		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, double? zoomFactor, bool disableAnimation)
-			=> (_presenter as ScrollContentPresenter)?.Set(horizontalOffset, verticalOffset, zoomFactor: (float?)zoomFactor, disableAnimation: disableAnimation) ?? true;
+		private partial void OnLoadedPartial()
+		{
+#if __SKIA__
+			OnLoadedCore();
+#endif
+		}
 
-		private partial void OnLoadedPartial() { }
-		private partial void OnUnloadedPartial() { }
+		private partial void OnUnloadedPartial()
+		{
+#if __SKIA__
+			OnUnloadedCore();
+#endif
+		}
 
 		#region Over scroll support
 		/// <summary>
-		/// Trim excess scroll, which can be present if the content size is reduced or zoom level changed.
+		/// Trim excess scroll, which can be present if the content size is reduced.
 		/// </summary>
 		partial void TrimOverscroll(Orientation orientation)
 		{
 			if (_presenter is not null)
 			{
-				// Use scaled extent to account for zoom
 				var (contentExtent, presenterViewportSize, offset) = orientation switch
 				{
-					Orientation.Vertical => (ExtentHeight * ZoomFactor, ViewportHeight, VerticalOffset),
-					_ => (ExtentWidth * ZoomFactor, ViewportWidth, HorizontalOffset),
+					Orientation.Vertical => (ExtentHeight, ViewportHeight, VerticalOffset),
+					_ => (ExtentWidth, ViewportWidth, HorizontalOffset),
 				};
+				contentExtent *= ZoomFactor;
 				var viewportEnd = offset + presenterViewportSize;
 				var overscroll = contentExtent - viewportEnd;
 				if (offset > 0 && overscroll < -0.5)

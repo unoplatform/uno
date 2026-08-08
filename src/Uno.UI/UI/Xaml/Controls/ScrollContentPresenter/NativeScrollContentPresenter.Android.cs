@@ -145,9 +145,14 @@ namespace Microsoft.UI.Xaml.Controls
 			VerticalScrollBarEnabled = verticalScrollVisible;
 			HorizontalScrollBarEnabled = horizontalScrollVisible;
 
-			// TODO: for now there's no way to only disable scrolling in one direction
 			IsScrollingEnabled = verticalScrollEnabled || horizontalScrollEnabled;
 		}
+
+		public override bool CanScrollHorizontally(int direction)
+			=> CanHorizontallyScroll && base.CanScrollHorizontally(direction);
+
+		public override bool CanScrollVertically(int direction)
+			=> CanVerticallyScroll && base.CanScrollVertically(direction);
 
 		private class ScrollViewerLayouter : Layouter
 		{
@@ -247,7 +252,30 @@ namespace Microsoft.UI.Xaml.Controls
 			float? zoomFactor,
 			bool disableAnimation,
 			bool isIntermediate)
-			=> throw new NotImplementedException();
+		{
+			var physicalHorizontalOffset = ViewHelper.LogicalToPhysicalPixels(
+				horizontalOffset ?? ViewHelper.PhysicalToLogicalPixels(ScrollX));
+			var physicalVerticalOffset = ViewHelper.LogicalToPhysicalPixels(
+				verticalOffset ?? ViewHelper.PhysicalToLogicalPixels(ScrollY));
+
+			const int maxScroll = int.MaxValue / 2;
+			const int minScroll = -maxScroll;
+			var adjustedHorizontalOffset = Math.Clamp(physicalHorizontalOffset, minScroll, maxScroll);
+			var adjustedVerticalOffset = Math.Clamp(physicalVerticalOffset, minScroll, maxScroll);
+
+			if (disableAnimation)
+			{
+				ScrollTo(adjustedHorizontalOffset, adjustedVerticalOffset);
+			}
+			else
+			{
+				SmoothScrollTo(adjustedHorizontalOffset, adjustedVerticalOffset);
+			}
+
+			return (zoomFactor is null || zoomFactor == 1.0f) &&
+				physicalHorizontalOffset == adjustedHorizontalOffset &&
+				physicalVerticalOffset == adjustedVerticalOffset;
+		}
 		#endregion
 
 		#region Native to managed

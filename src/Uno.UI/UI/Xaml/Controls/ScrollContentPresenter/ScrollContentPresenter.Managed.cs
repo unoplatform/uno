@@ -5,6 +5,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using DirectUI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
@@ -36,6 +37,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private GestureRecognizer.Manipulation? _touchInertia;
 		private (double hOffset, double vOffset, bool isIntermediate) _lastScrolledEvent;
+		private ScrollViewer? _directManipulationOwner;
+		private DMConfigurations _touchConfiguration;
+		private DMConfigurations _nonTouchConfiguration;
+		private DMConfigurations _bringIntoViewportConfiguration;
+		private Vector2 _manipulationSegmentBaseTranslation;
+		private Vector2 _manipulationCumulativeTranslation;
+		private float _manipulationSegmentBaseScale = 1.0f;
+		private float _manipulationCumulativeScale = 1.0f;
+		private Point _manipulationCenter;
+		private bool _manipulationWasInertial;
+		private bool _isDirectManipulationActive;
+		private ProgrammaticManipulation? _programmaticManipulation;
+		private readonly SerialDisposable _contentLayoutSubscriptions = new();
 #nullable restore
 
 		private bool _canHorizontallyScroll;
@@ -140,6 +154,20 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 #if __SKIA__
 			Visual.Clip = Visual.Compositor.CreateInsetClip(0, 0, 0, 0);
+
+			// Wire DP-changed callbacks to invoke OnPropertyChanged2Core (the C++
+			// SCP::OnPropertyChanged2 dispatch — only checks
+			// CanContentRenderOutsideBoundsProperty for now). The Uno cross-platform
+			// SCP DP doesn't have a callback so we add one at construction time.
+			RegisterPropertyChangedCallback(CanContentRenderOutsideBoundsProperty, (s, e) =>
+				((ScrollContentPresenter)s).OnPropertyChanged2Core(CanContentRenderOutsideBoundsProperty));
+			RegisterPropertyChangedCallback(SizesContentToTemplatedParentProperty, (s, e) =>
+			{
+				var presenter = (ScrollContentPresenter)s;
+				(presenter.Content as UIElement)?.InvalidateMeasure();
+				presenter.InvalidateMeasure();
+				presenter.Scroller?.InvalidateMeasure();
+			});
 #endif
 		}
 
@@ -149,12 +177,21 @@ namespace Microsoft.UI.Xaml.Controls
 			if (Scroller is { } sv)
 			{
 				HookScrollEvents(sv);
+				sv.OnManipulatabilityAffectingPropertyChanged(
+					pIsInLiveTree: true,
+					isCachedPropertyChanged: false,
+					isContentChanged: false,
+					isAffectingConfigurations: true,
+					isAffectingTouchConfiguration: true);
 			}
 		}
 
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
+#if __SKIA__
+			UnparentHeaders();
+#endif
 			if (Scroller is { } sv)
 			{
 				UnhookScrollEvents(sv);
@@ -203,6 +240,8 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <inheritdoc />
 		protected override void OnContentChanged(object oldValue, object newValue)
 		{
+			_contentLayoutSubscriptions.Disposable = null;
+
 			if (oldValue is UIElement oldElt)
 			{
 				// Reset old content's transform
@@ -215,6 +254,31 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// Apply current scroll and zoom state to new content
 				Update(newElt, HorizontalOffset, VerticalOffset, _zoomFactor, new(DisableAnimation: true));
+			}
+
+			if (newValue is FrameworkElement newElement)
+			{
+				var subscriptions = new CompositeDisposable();
+				_contentLayoutSubscriptions.Disposable = subscriptions;
+				RegisterAlignmentCallback(FrameworkElement.HorizontalAlignmentProperty);
+				RegisterAlignmentCallback(FrameworkElement.VerticalAlignmentProperty);
+
+				void RegisterAlignmentCallback(DependencyProperty property)
+				{
+					var token = newElement.RegisterPropertyChangedCallback(
+						property,
+						(_, _) =>
+						{
+							if (SizesContentToTemplatedParent)
+							{
+								newElement.InvalidateMeasure();
+								InvalidateMeasure();
+								Scroller?.InvalidateMeasure();
+							}
+						});
+					subscriptions.Add(Disposable.Create(() =>
+						newElement.UnregisterPropertyChangedCallback(property, token)));
+				}
 			}
 		}
 
@@ -256,9 +320,16 @@ namespace Microsoft.UI.Xaml.Controls
 			float? zoomFactor = null,
 			bool disableAnimation = false,
 			bool isIntermediate = false,
+			DMConfigurations configuration = DMConfigurations.None,
 			[CallerMemberName] string callerName = "",
 			[CallerLineNumber] int callerLine = -1)
-			=> Set(horizontalOffset, verticalOffset, zoomFactor, options: new(disableAnimation, IsIntermediate: isIntermediate), callerName, callerLine);
+			=> Set(
+				horizontalOffset,
+				verticalOffset,
+				zoomFactor,
+				options: new(disableAnimation, IsIntermediate: isIntermediate, Configuration: configuration),
+				callerName,
+				callerLine);
 
 		private bool Set(
 			double? horizontalOffset = null,
@@ -269,6 +340,9 @@ namespace Microsoft.UI.Xaml.Controls
 			[CallerLineNumber] int callerLine = -1)
 		{
 			bool success = true, updated = false;
+			var initialHorizontalOffset = HorizontalOffset;
+			var initialVerticalOffset = VerticalOffset;
+			var initialZoomFactor = _zoomFactor;
 
 			// The zoom factor is applied first: the scrollable range - and therefore the offset clamping
 			// below - depends on it. Applying it afterwards would clamp offsets against the previous zoom.
@@ -281,6 +355,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (Math.Abs(_zoomFactor - targetZoom) > 0.0001f)
 				{
 					_zoomFactor = targetZoom;
+					SetZoomFactor(targetZoom);
 					updated = true;
 					zoomUpdated = true;
 				}
@@ -290,7 +365,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// Scroller.ScrollableWidth is only refreshed once the zoom change has been reported back to it,
 				// so while zooming the range has to be recomputed from the target zoom factor.
-				var maxOffset = zoomUpdated
+				var maxOffset = zoomFactor.HasValue
 					? Math.Max(0, ExtentWidth * _zoomFactor - ViewportWidth)
 					: Scroller?.ScrollableWidth ?? ExtentWidth - ViewportWidth;
 				var targetHorizontalOffset = ValidateInputOffset(hOffset, 0, maxOffset);
@@ -306,7 +381,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (verticalOffset is double vOffset)
 			{
-				var maxOffset = zoomUpdated
+				var maxOffset = zoomFactor.HasValue
 					? Math.Max(0, ExtentHeight * _zoomFactor - ViewportHeight)
 					: Scroller?.ScrollableHeight ?? ExtentHeight - ViewportHeight;
 				var targetVerticalOffset = ValidateInputOffset(vOffset, 0, maxOffset);
@@ -355,18 +430,46 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var updatedHorizontalOffset = HorizontalOffset;
 			var updatedVerticalOffset = VerticalOffset;
+			var contentElt = Content as UIElement;
+
+			if ((updated || options.IsTouch) &&
+				contentElt is not null &&
+				!options.IsTouch &&
+				options.Configuration != DMConfigurations.None)
+			{
+				BeginProgrammaticManipulation(
+					contentElt,
+					initialHorizontalOffset,
+					initialVerticalOffset,
+					initialZoomFactor,
+					updatedHorizontalOffset,
+					updatedVerticalOffset,
+					_zoomFactor,
+					options.Configuration,
+					isInertial: !options.DisableAnimation);
+			}
+
+			// Publish the zoom first so any synchronous layout triggered while applying the offsets
+			// validates them against the target zoomed extent rather than the previous one.
+			if (zoomUpdated)
+			{
+				Scroller?.OnPresenterZoomed(
+					_zoomFactor,
+					isIntermediate: options.IsTouch || !options.DisableAnimation || options.IsIntermediate);
+				Scroller?.InvalidateArrange();
+			}
+
 			if (updated || options.IsTouch)
 			{
-				if (Content is UIElement contentElt)
+				if (contentElt is not null)
 				{
 					Update(contentElt, updatedHorizontalOffset, updatedVerticalOffset, _zoomFactor, options);
 				}
 			}
 
-			// Notify ScrollViewer of zoom change
-			if (zoomUpdated)
+			if (updated && !options.IsTouch && options.Configuration != DMConfigurations.None && options.DisableAnimation)
 			{
-				Scroller?.OnPresenterZoomed(_zoomFactor);
+				CompleteProgrammaticManipulation();
 			}
 
 			return success;
@@ -466,6 +569,10 @@ namespace Microsoft.UI.Xaml.Controls
 				visual.StopAnimation(nameof(Visual.Scale));
 				visual.AnchorPoint = target;
 				visual.Scale = targetScale;
+				if (options.Configuration != DMConfigurations.None)
+				{
+					NotifyProgrammaticManipulationDelta(horizontalOffset, verticalOffset, zoom);
+				}
 				Updated(horizontalOffset, verticalOffset, options.IsIntermediate);
 			}
 			else
@@ -478,13 +585,23 @@ namespace Microsoft.UI.Xaml.Controls
 				scrollAnimation.InsertKeyFrame(1.0f, target, easing);
 				scrollAnimation.Duration = TimeSpan.FromSeconds(1);
 				// AnchorPoint also carries the centering offset, which has to be removed to get back the logical scroll offsets.
-				void OnFrame(CompositionAnimation? _) => Updated(GetAnimatedHorizontalOffset(), GetAnimatedVerticalOffset(), true);
+				void OnFrame(CompositionAnimation? _)
+				{
+					var animatedHorizontalOffset = GetAnimatedHorizontalOffset();
+					var animatedVerticalOffset = GetAnimatedVerticalOffset();
+					NotifyProgrammaticManipulationDelta(animatedHorizontalOffset, animatedVerticalOffset, visual.Scale.X);
+					Updated(animatedHorizontalOffset, animatedVerticalOffset, true);
+				}
 				void OnStopped(object? _, EventArgs __)
 				{
 					scrollAnimation.AnimationFrame -= OnFrame;
 					scrollAnimation.Stopped -= OnStopped;
 
-					Updated(GetAnimatedHorizontalOffset(), GetAnimatedVerticalOffset(), false);
+					var animatedHorizontalOffset = GetAnimatedHorizontalOffset();
+					var animatedVerticalOffset = GetAnimatedVerticalOffset();
+					NotifyProgrammaticManipulationDelta(animatedHorizontalOffset, animatedVerticalOffset, visual.Scale.X);
+					Updated(animatedHorizontalOffset, animatedVerticalOffset, false);
+					CompleteProgrammaticManipulation();
 				}
 
 				double GetAnimatedHorizontalOffset() => Math.Round(-visual.AnchorPoint.X + centeringOffsetX);
@@ -505,6 +622,286 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
+
+		internal void SetDirectManipulationOwner(ScrollViewer? owner)
+		{
+			if (_directManipulationOwner == owner)
+			{
+				return;
+			}
+
+			if (owner is null)
+			{
+				CompleteProgrammaticManipulation();
+				_touchInertia?.Complete();
+				_touchInertia = null;
+			}
+
+			_directManipulationOwner = owner;
+		}
+
+		internal void OnManipulationConfigurationChanged(
+			DMConfigurations touchConfiguration,
+			DMConfigurations nonTouchConfiguration,
+			DMConfigurations bringIntoViewportConfiguration)
+		{
+			_touchConfiguration = touchConfiguration;
+			_nonTouchConfiguration = nonTouchConfiguration;
+			_bringIntoViewportConfiguration = bringIntoViewportConfiguration;
+		}
+
+		internal bool BringIntoViewport(
+			Rect bounds,
+			float translateX,
+			float translateY,
+			float zoomFactor,
+			bool transformIsValid,
+			bool skipDuringTouchContact,
+			bool skipAnimationWhileRunning,
+			bool animate,
+			DMConfigurations configuration)
+		{
+			if (skipDuringTouchContact && _isDirectManipulationActive && _touchInertia is null)
+			{
+				return false;
+			}
+			if (skipAnimationWhileRunning && IsScrollAnimationInProgress)
+			{
+				return false;
+			}
+
+			var horizontalOffset = transformIsValid ? -translateX : bounds.X * zoomFactor;
+			var verticalOffset = transformIsValid ? -translateY : bounds.Y * zoomFactor;
+			return Set(
+				horizontalOffset,
+				verticalOffset,
+				zoomFactor,
+				disableAnimation: !animate,
+				configuration: configuration);
+		}
+
+		internal void StopInertialManipulation()
+		{
+			_touchInertia?.Complete();
+			_touchInertia = null;
+		}
+
+		internal void OnSnapPointsChanged(DMMotionTypes motionType)
+		{
+			if (_touchInertia is null)
+			{
+				return;
+			}
+
+			_touchInertia.Complete();
+			_touchInertia = null;
+
+			double? horizontalOffset = motionType == DMMotionTypes.PanX ? HorizontalOffset : null;
+			double? verticalOffset = motionType == DMMotionTypes.PanY ? VerticalOffset : null;
+			_directManipulationOwner?.AdjustOffsetsForSnapPoints(
+				ref horizontalOffset,
+				ref verticalOffset,
+				zoomFactor: null);
+			Set(
+				horizontalOffset,
+				verticalOffset,
+				disableAnimation: false,
+				configuration: _bringIntoViewportConfiguration);
+		}
+
+		internal void RefreshDirectManipulationState()
+		{
+			if (_programmaticManipulation is not null)
+			{
+				return;
+			}
+
+			if (Content is UIElement content)
+			{
+				Update(
+					content,
+					HorizontalOffset,
+					VerticalOffset,
+					_zoomFactor,
+					new ScrollOptions(DisableAnimation: true));
+			}
+		}
+
+		internal void GetDirectManipulationView(
+			out float translationX,
+			out float translationY,
+			out float zoomFactor)
+		{
+			if (Content is UIElement content)
+			{
+				translationX = content.Visual.AnchorPoint.X;
+				translationY = content.Visual.AnchorPoint.Y;
+				zoomFactor = content.Visual.Scale.X;
+			}
+			else
+			{
+				translationX = 0;
+				translationY = 0;
+				zoomFactor = 1;
+			}
+		}
+
+		internal void GetDirectManipulationOffsets(
+			out double horizontalOffset,
+			out double verticalOffset,
+			out float zoomFactor)
+		{
+			GetDirectManipulationView(out var translationX, out var translationY, out zoomFactor);
+			var scaledExtentWidth = ExtentWidth * zoomFactor;
+			var scaledExtentHeight = ExtentHeight * zoomFactor;
+			var centeringOffsetX = scaledExtentWidth < ViewportWidth
+				? (ViewportWidth - scaledExtentWidth) / 2
+				: 0;
+			var centeringOffsetY = scaledExtentHeight < ViewportHeight
+				? (ViewportHeight - scaledExtentHeight) / 2
+				: 0;
+			horizontalOffset = -translationX + centeringOffsetX;
+			verticalOffset = -translationY + centeringOffsetY;
+		}
+
+		private void BeginProgrammaticManipulation(
+			UIElement content,
+			double initialHorizontalOffset,
+			double initialVerticalOffset,
+			float initialZoomFactor,
+			double targetHorizontalOffset,
+			double targetVerticalOffset,
+			float targetZoomFactor,
+			DMConfigurations configuration,
+			bool isInertial)
+		{
+			CompleteProgrammaticManipulation();
+			content.Visual.StopAnimation(nameof(Visual.AnchorPoint));
+			content.Visual.StopAnimation(nameof(Visual.Scale));
+			var absoluteCenter = TransformToVisual(null).TransformPoint(
+				new Point(ViewportWidth / 2, ViewportHeight / 2));
+			var center = GetManipulationCenter(absoluteCenter);
+			_programmaticManipulation = new ProgrammaticManipulation(
+				content,
+				initialHorizontalOffset,
+				initialVerticalOffset,
+				initialZoomFactor,
+				center,
+				configuration,
+				isInertial);
+			NotifyManipulationProgress(
+				content,
+				DMManipulationState.DMManipulationStarting,
+				Vector2.Zero,
+				1.0f,
+				center,
+				isInertial: false,
+				isTouchConfigurationActivated: false,
+				isBringIntoViewportConfigurationActivated: true);
+			NotifyManipulationProgress(
+				content,
+				DMManipulationState.DMManipulationStarted,
+				Vector2.Zero,
+				1.0f,
+				center,
+				isInertial: false,
+				isTouchConfigurationActivated: false,
+				isBringIntoViewportConfigurationActivated: true);
+			if (isInertial)
+			{
+				_directManipulationOwner?.NotifyInertiaStarting(
+					targetHorizontalOffset,
+					targetVerticalOffset,
+					targetZoomFactor);
+			}
+		}
+
+		private void NotifyProgrammaticManipulationDelta(
+			double horizontalOffset,
+			double verticalOffset,
+			float zoomFactor)
+		{
+			if (_programmaticManipulation is not { } manipulation)
+			{
+				return;
+			}
+
+			manipulation.CumulativeTranslation = new Vector2(
+				(float)(manipulation.InitialHorizontalOffset - horizontalOffset),
+				(float)(manipulation.InitialVerticalOffset - verticalOffset));
+			manipulation.CumulativeScale = zoomFactor / manipulation.InitialZoomFactor;
+			NotifyManipulationProgress(
+				manipulation.Content,
+				DMManipulationState.DMManipulationDelta,
+				manipulation.CumulativeTranslation,
+				manipulation.CumulativeScale,
+				manipulation.Center,
+				isInertial: manipulation.IsInertial,
+				isTouchConfigurationActivated: false,
+				isBringIntoViewportConfigurationActivated: true);
+			_directManipulationOwner?.RaiseViewChanging(
+				horizontalOffset,
+				verticalOffset,
+				zoomFactor);
+		}
+
+		private void CompleteProgrammaticManipulation()
+		{
+			if (_programmaticManipulation is not { } manipulation)
+			{
+				return;
+			}
+
+			_programmaticManipulation = null;
+			NotifyManipulationProgress(
+				manipulation.Content,
+				DMManipulationState.DMManipulationLastDelta,
+				manipulation.CumulativeTranslation,
+				manipulation.CumulativeScale,
+				manipulation.Center,
+				isInertial: manipulation.IsInertial,
+				isTouchConfigurationActivated: false,
+				isBringIntoViewportConfigurationActivated: true);
+			NotifyManipulationProgress(
+				manipulation.Content,
+				DMManipulationState.DMManipulationCompleted,
+				manipulation.CumulativeTranslation,
+				manipulation.CumulativeScale,
+				manipulation.Center,
+				isInertial: manipulation.IsInertial,
+				isTouchConfigurationActivated: false,
+				isBringIntoViewportConfigurationActivated: true);
+		}
+
+		private Point GetManipulationCenter(Point position)
+		{
+			if (Content is UIElement content)
+			{
+				return content.TransformToVisual(null).Inverse.TransformPoint(position);
+			}
+			return position;
+		}
+
+		private void NotifyManipulationProgress(
+			UIElement content,
+			DMManipulationState state,
+			Vector2 cumulativeTranslation,
+			float cumulativeScale,
+			Point center,
+			bool isInertial,
+			bool isTouchConfigurationActivated,
+			bool isBringIntoViewportConfigurationActivated)
+			=> _directManipulationOwner?.NotifyManipulationProgress(
+				content,
+				state,
+				cumulativeTranslation.X,
+				cumulativeTranslation.Y,
+				cumulativeScale,
+				(float)center.X,
+				(float)center.Y,
+				isInertial,
+				isTouchConfigurationActivated,
+				isBringIntoViewportConfigurationActivated);
 
 
 		private void TryEnableDirectManipulation(object sender, PointerRoutedEventArgs args)
@@ -568,7 +965,6 @@ namespace Microsoft.UI.Xaml.Controls
 					mode |= ManipulationModes.TranslateRailsY;
 				}
 
-				// Enable pinch-to-zoom when ZoomMode is Enabled
 				if (sv.ZoomMode == ZoomMode.Enabled)
 				{
 					mode |= ManipulationModes.Scale;
@@ -585,6 +981,41 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			Debug.Assert(_touchInertia is null || isResuming, "Inertia should already be null instead if we are resuming from a previous manipulation.");
 			_touchInertia = null;
+			_isDirectManipulationActive = true;
+			_manipulationCenter = GetManipulationCenter(args.Position);
+			_manipulationWasInertial = false;
+
+			if (isResuming)
+			{
+				_manipulationSegmentBaseTranslation = _manipulationCumulativeTranslation;
+				_manipulationSegmentBaseScale = _manipulationCumulativeScale;
+			}
+			else
+			{
+				_manipulationSegmentBaseTranslation = Vector2.Zero;
+				_manipulationCumulativeTranslation = Vector2.Zero;
+				_manipulationSegmentBaseScale = 1.0f;
+				_manipulationCumulativeScale = 1.0f;
+				NotifyManipulationProgress(
+					(Content as UIElement)!,
+					DMManipulationState.DMManipulationStarting,
+					_manipulationCumulativeTranslation,
+					_manipulationCumulativeScale,
+					_manipulationCenter,
+					isInertial: false,
+					isTouchConfigurationActivated: true,
+					isBringIntoViewportConfigurationActivated: false);
+			}
+
+			NotifyManipulationProgress(
+				(Content as UIElement)!,
+				DMManipulationState.DMManipulationStarted,
+				_manipulationCumulativeTranslation,
+				_manipulationCumulativeScale,
+				_manipulationCenter,
+				isInertial: false,
+				isTouchConfigurationActivated: true,
+				isBringIntoViewportConfigurationActivated: false);
 		}
 
 		/// <inheritdoc />
@@ -594,6 +1025,13 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
+
+			_manipulationCumulativeTranslation =
+				_manipulationSegmentBaseTranslation +
+				new Vector2((float)args.Cumulative.Translation.X, (float)args.Cumulative.Translation.Y);
+			_manipulationCumulativeScale = _manipulationSegmentBaseScale * args.Cumulative.Scale;
+			_manipulationCenter = GetManipulationCenter(args.Position);
+			_manipulationWasInertial |= args.IsInertial;
 
 			var scrollable = GetScrollableOffsets();
 			var deltaX = Math.Clamp(-unhandledDelta.Translation.X, scrollable.Left, scrollable.Right);
@@ -609,7 +1047,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// Adjust scroll offsets to keep the pinch center point fixed
 				// When zooming around a center point, we need to adjust offsets so that
 				// the content point under the center stays in the same screen position
-				var center = args.Position;
+				var center = TransformToVisual(null).Inverse.TransformPoint(args.Position);
 				var zoomRatio = newZoomFactor.Value / _zoomFactor;
 
 				// Formula: new_offset = (old_offset + center) * zoomRatio - center
@@ -663,6 +1101,19 @@ namespace Microsoft.UI.Xaml.Controls
 					unhandledDelta.Translation.Y = 0;
 				}
 			}
+
+			if (Content is UIElement content)
+			{
+				NotifyManipulationProgress(
+					content,
+					DMManipulationState.DMManipulationDelta,
+					_manipulationCumulativeTranslation,
+					_manipulationCumulativeScale,
+					_manipulationCenter,
+					args.IsInertial,
+					isTouchConfigurationActivated: true,
+					isBringIntoViewportConfigurationActivated: false);
+			}
 		}
 
 		/// <inheritdoc />
@@ -680,6 +1131,8 @@ namespace Microsoft.UI.Xaml.Controls
 				_touchInertia = null;
 				return false;
 			}
+
+			sv.NotifyInertiaStarting();
 
 			var direction = GetDirection(args.Velocities);
 
@@ -743,6 +1196,23 @@ namespace Microsoft.UI.Xaml.Controls
 				inertia.DesiredDisplacementDeceleration = GestureRecognizer.Manipulation.InertiaProcessor.DefaultDesiredDisplacementDeceleration;
 			}
 
+			// Compute the end-of-inertia transform now that DesiredDisplacementDeceleration
+			// is initialized. This lets ViewChanging events raised during inertia populate
+			// FinalView with the right targets.
+			{
+				var v0X = args.Velocities.Linear.X;
+				var v0Y = args.Velocities.Linear.Y;
+				var dur = GestureRecognizer.Manipulation.InertiaProcessor.GetCompletionTime(
+					Math.Max(Math.Abs(v0X), Math.Abs(v0Y)),
+					inertia.DesiredDisplacementDeceleration);
+				var endX = GestureRecognizer.Manipulation.InertiaProcessor.GetValue(v0X, inertia.DesiredDisplacementDeceleration, dur);
+				var endY = GestureRecognizer.Manipulation.InertiaProcessor.GetValue(v0Y, inertia.DesiredDisplacementDeceleration, dur);
+				sv.NotifyInertiaStarting(
+					inertiaEndHorizontalOffset: HorizontalOffset - endX,
+					inertiaEndVerticalOffset: VerticalOffset - endY,
+					inertiaEndZoomFactor: sv.ZoomFactor);
+			}
+
 			// If we have snap points, we disable the inertia support (for local SV).
 			// However, we determine the final value of the inertia to snap on the right snap-point.
 			var shouldSnapHorizontally = scrollable.Horizontally && sv is { HorizontalSnapPointsType: SnapPointsType.OptionalSingle or SnapPointsType.MandatorySingle };
@@ -779,8 +1249,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 				sv.AdjustOffsetsForSnapPoints(ref h, ref v, null);
 
-				// note: IsTouch = true as we are not in the touch scrolling anymore here, we are just snapping.
-				Set(horizontalOffset: h, verticalOffset: v, disableAnimation: false, isIntermediate: false);
+				Set(
+					horizontalOffset: h,
+					verticalOffset: v,
+					disableAnimation: false,
+					isIntermediate: false,
+					configuration: _bringIntoViewportConfiguration);
 			}
 			else
 			{
@@ -803,16 +1277,47 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <inheritdoc />
 		void IDirectManipulationHandler.OnCompleted(GestureRecognizer _, ManipulationCompletedEventArgs? args)
 		{
-			if (args?.IsInertial is true && _touchInertia is null)
+			var shouldApplyFinalValue = args?.IsInertial is not true || _touchInertia is not null;
+			if (args is not null)
 			{
-				// Inertia has been aborted (external ChangeView request?) or was not even allowed, do not try to apply the final value.
-				return;
+				_manipulationCumulativeTranslation =
+					_manipulationSegmentBaseTranslation +
+					new Vector2((float)args.Cumulative.Translation.X, (float)args.Cumulative.Translation.Y);
+				_manipulationCumulativeScale = _manipulationSegmentBaseScale * args.Cumulative.Scale;
+				_manipulationCenter = GetManipulationCenter(args.Position);
+				_manipulationWasInertial |= args.IsInertial;
 			}
 
 			_touchInertia = null;
 
-			//Set(disableAnimation: true, isIntermediate: false);
-			Set(options: new ScrollOptions(DisableAnimation: true, IsTouch: true, IsIntermediate: false));
+			if (shouldApplyFinalValue)
+			{
+				Set(options: new ScrollOptions(DisableAnimation: true, IsTouch: true, IsIntermediate: false));
+			}
+
+			if (Content is UIElement content)
+			{
+				NotifyManipulationProgress(
+					content,
+					DMManipulationState.DMManipulationLastDelta,
+					_manipulationCumulativeTranslation,
+					_manipulationCumulativeScale,
+					_manipulationCenter,
+					_manipulationWasInertial,
+					isTouchConfigurationActivated: true,
+					isBringIntoViewportConfigurationActivated: false);
+				NotifyManipulationProgress(
+					content,
+					DMManipulationState.DMManipulationCompleted,
+					_manipulationCumulativeTranslation,
+					_manipulationCumulativeScale,
+					_manipulationCenter,
+					_manipulationWasInertial,
+					isTouchConfigurationActivated: true,
+					isBringIntoViewportConfigurationActivated: false);
+			}
+
+			_isDirectManipulationActive = false;
 		}
 
 		private ScrollDirection GetDirection(ManipulationVelocities velocities)
@@ -873,6 +1378,37 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private sealed class ProgrammaticManipulation
+		{
+			public ProgrammaticManipulation(
+				UIElement content,
+				double initialHorizontalOffset,
+				double initialVerticalOffset,
+				float initialZoomFactor,
+				Point center,
+				DMConfigurations configuration,
+				bool isInertial)
+			{
+				Content = content;
+				InitialHorizontalOffset = initialHorizontalOffset;
+				InitialVerticalOffset = initialVerticalOffset;
+				InitialZoomFactor = initialZoomFactor;
+				Center = center;
+				Configuration = configuration;
+				IsInertial = isInertial;
+			}
+
+			public UIElement Content { get; }
+			public double InitialHorizontalOffset { get; }
+			public double InitialVerticalOffset { get; }
+			public float InitialZoomFactor { get; }
+			public Point Center { get; }
+			public DMConfigurations Configuration { get; }
+			public bool IsInertial { get; }
+			public Vector2 CumulativeTranslation { get; set; }
+			public float CumulativeScale { get; set; } = 1.0f;
+		}
+
 		[Flags]
 		private enum ScrollDirection
 		{
@@ -896,6 +1432,10 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Indicates that the scroll is an intermediate value, not the final one
 	/// (i.e. active touch scrolling, touch scroll inertia or scroll animation).
 	/// </param>
-	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsTouch = false, bool IsIntermediate = false);
+	internal record struct ScrollOptions(
+		bool DisableAnimation = false,
+		bool IsTouch = false,
+		bool IsIntermediate = false,
+		DMConfigurations Configuration = DMConfigurations.None);
 }
 #endif

@@ -659,7 +659,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				IsPressed = false;
 				_pointerForPendingRightTapped = args.Pointer;
 			}
-			//TODO Uno: GestureFollowing is not implemented yet.
 			var gestureFollowing = args.GestureFollowing;
 			if (gestureFollowing == GestureModes.RightTapped)
 			{
