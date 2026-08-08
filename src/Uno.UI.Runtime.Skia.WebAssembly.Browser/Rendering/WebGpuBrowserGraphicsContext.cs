@@ -11,9 +11,9 @@ namespace Uno.UI.Runtime.Skia;
 
 /// <summary>
 /// On-canvas WebGPU <see cref="IGraphicsContext"/> for the browser: owns a <see cref="WebGpuDevice"/> and a wgpu
-/// surface bound to the HTML &lt;canvas&gt; (via emdawnwebgpu's canvas-selector source). The device is created
-/// asynchronously (the browser cannot block on requestAdapter/requestDevice) via
-/// <see cref="WebGpuDeviceAsync.CreateAsync"/> by the caller and handed to the constructor.
+/// surface bound to the HTML &lt;canvas&gt; (via emdawnwebgpu's canvas-selector source). The device is created in
+/// JavaScript (navigator.gpu) and imported into the wgpu handle table by the caller (BrowserRenderer /
+/// WebGpuJsInterop), then handed to the constructor.
 ///
 /// Presentation differs from native: the backend renders MSAA and resolves into an OFFSCREEN single-sample
 /// texture, which is then COPIED into the canvas' current texture. A direct MSAA-resolve into the canvas texture
@@ -185,13 +185,20 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 
 		_target = new WebGpuRenderSurface(_device, width, height, externalColor: true) { View = _presentView };
 
-		WGPUSurfaceCapabilities caps = default;
-		wgpuSurfaceGetCapabilities(_surface, _device.Adapter, &caps);
 		var format = _device.ColorFormat;
-		bool supported = false;
-		for (nuint i = 0; i < caps.FormatCount; i++) { if (caps.Formats[i] == format) { supported = true; break; } }
-		if (!supported && caps.FormatCount > 0) { format = caps.Formats[0]; }
-		var alphaMode = caps.AlphaModeCount > 0 ? caps.AlphaModes[0] : WGPUCompositeAlphaMode.Auto;
+		var alphaMode = WGPUCompositeAlphaMode.Opaque;
+		// The JS-import device-init path has no adapter handle; skip the caps query and use rgba8unorm + Opaque,
+		// both valid for a browser canvas. When an adapter is present (should not happen on the browser today),
+		// prefer the surface's reported format/alpha.
+		if (_device.Adapter != IntPtr.Zero)
+		{
+			WGPUSurfaceCapabilities caps = default;
+			wgpuSurfaceGetCapabilities(_surface, _device.Adapter, &caps);
+			bool supported = false;
+			for (nuint i = 0; i < caps.FormatCount; i++) { if (caps.Formats[i] == format) { supported = true; break; } }
+			if (!supported && caps.FormatCount > 0) { format = caps.Formats[0]; }
+			if (caps.AlphaModeCount > 0) { alphaMode = caps.AlphaModes[0]; }
+		}
 
 		var cfg = new WGPUSurfaceConfiguration
 		{
