@@ -5481,8 +5481,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var reused = CountReusedContainers(before, after);
 			Assert.IsTrue(reused < before.Count, $"Refresh() should recycle/re-deal containers, but all {before.Count} were reused");
 		}
-<<<<<<< HEAD
-=======
 
 		// A drag-to-reorder during which the list scrolls away from the dragged item.
 		//
@@ -5638,7 +5636,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private const int ReorderItemCount = 36;
 
->>>>>>> c0ce315db5 (test(listview): gate reorder scroll-away test off Skia-iOS)
 #endif
 	}
 
