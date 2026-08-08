@@ -154,12 +154,12 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			var currentFontDetails = inline.FontInfo;
 			int currentScript = 0;
-			for (var i = 0; i < inlineText.Length; i += char.IsSurrogate(inlineText, i) ? 2 : 1)
+			for (var i = 0; i < inlineText.Length; i += IsSurrogatePairAt(inlineText, i) ? 2 : 1)
 			{
 				FontDetails newFontDetails;
-				var codepoint = char.ConvertToUtf32(inlineText, i);
+				var codepoint = CodepointAt(inlineText, i);
 
-				var newScript = ICU.GetMethod<ICU.uscript_getScript>()(char.ConvertToUtf32(inlineText, i), out var errorCode);
+				var newScript = ICU.GetMethod<ICU.uscript_getScript>()(codepoint, out var errorCode);
 				ICU.CheckErrorCode<ICU.uscript_getScript>(errorCode);
 
 				if (newScript != currentScript)
@@ -199,6 +199,19 @@ internal readonly partial struct UnicodeText : IParsedText
 				_hyperlinkRanges.Add((inlineStart, inlineStart + inlineText.Length, hyperLink));
 			}
 		}
+
+		static bool IsSurrogatePairAt(string text, int index)
+			=> char.IsHighSurrogate(text[index])
+				&& index + 1 < text.Length
+				&& char.IsLowSurrogate(text[index + 1]);
+
+		// An unpaired surrogate is not a valid code point, but it shows up transiently whenever a
+		// surrogate pair arrives one code unit at a time (typing, injection, an IME commit).
+		// Substitute the replacement character so layout can proceed instead of throwing.
+		static int CodepointAt(string text, int index)
+			=> IsSurrogatePairAt(text, index)
+				? char.ConvertToUtf32(text[index], text[index + 1])
+				: char.IsSurrogate(text[index]) ? 0xFFFD : text[index];
 
 		_text = stringBuilder.ToString();
 		if (_text.Length == 0)
