@@ -1,5 +1,6 @@
-using System.Runtime.InteropServices.JavaScript;
 using System;
+using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -35,6 +36,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	[JSExport]
+	private static Task OnInputTextChangedAsync(string text, int selectionStart, int selectionLength)
+	{
+		OnInputTextChanged(text, selectionStart, selectionLength);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	private static void OnNativePaste(string clipboardText)
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
@@ -43,6 +52,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		{
 			textBox.PasteFromClipboard(clipboardText);
 		}
+	}
+
+	[JSExport]
+	private static Task OnNativePasteAsync(string clipboardText)
+	{
+		OnNativePaste(clipboardText);
+
+		return Task.CompletedTask;
 	}
 
 	[JSExport]
@@ -57,6 +74,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	[JSExport]
+	private static Task OnSelectionChangedAsync(int selectionStart, int selectionLength)
+	{
+		OnSelectionChanged(selectionStart, selectionLength);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	private static void OnEnterKeyPressed()
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
@@ -66,6 +91,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			var keyArgs = new KeyRoutedEventArgs(textBox, VirtualKey.Enter, VirtualKeyModifiers.None);
 			textBox.RaiseEvent(UIElement.KeyDownEvent, keyArgs);
 		}
+	}
+
+	[JSExport]
+	private static Task OnEnterKeyPressedAsync()
+	{
+		OnEnterKeyPressed();
+
+		return Task.CompletedTask;
 	}
 
 	// The "overlay layer" is the DOM, which is always present.
