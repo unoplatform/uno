@@ -18,8 +18,9 @@ internal static partial class WebGpuJsInterop
 	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.createImportedDevice")]
 	public static partial Task<int> CreateImportedDeviceAsync(int instancePtr);
 
-	/// <summary>Maps a readback buffer (by its wgpu handle ptr) off the event loop and inspects its first
-	/// <paramref name="byteLen"/> RGBA8 bytes. Returns the non-transparent pixel count, or -1 on failure.</summary>
+	/// <summary>Maps a readback buffer (by its wgpu handle ptr) off the event loop and inspects it as RGBA8
+	/// (rows padded to <paramref name="bytesPerRow"/>). Returns the non-transparent pixel count, or -1 on failure,
+	/// and stashes a PNG of the frame on window.__unoLastFramePng.</summary>
 	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.mapReadStats")]
-	public static partial Task<int> MapReadStatsAsync(int bufferPtr, int byteLen);
+	public static partial Task<int> MapReadStatsAsync(int bufferPtr, int width, int height, int bytesPerRow);
 }

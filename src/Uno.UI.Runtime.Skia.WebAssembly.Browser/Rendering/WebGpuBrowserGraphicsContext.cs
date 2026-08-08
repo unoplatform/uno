@@ -163,7 +163,7 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 
 		// mapAsync must run off the event loop (the in-WASM DevicePoll busy-spin can't yield); hand the buffer ptr to
 		// JS. The await lives in a non-unsafe helper — 'await' is illegal inside this unsafe class's members (CS4004).
-		_ = WebGpuReadbackReporter.ReportAsync(buf, (int)total, w, h, () => _readbackInFlight = false);
+		_ = WebGpuReadbackReporter.ReportAsync(buf, w, h, (int)padded, () => _readbackInFlight = false);
 	}
 
 	private void EnsureBlitPipeline()
@@ -267,11 +267,11 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 /// context class). Maps the readback buffer off the event loop via JS and logs the offscreen frame's pixel stats.</summary>
 internal static class WebGpuReadbackReporter
 {
-	public static async System.Threading.Tasks.Task ReportAsync(IntPtr buf, int total, int w, int h, Action onDone)
+	public static async System.Threading.Tasks.Task ReportAsync(IntPtr buf, int w, int h, int bytesPerRow, Action onDone)
 	{
 		try
 		{
-			var opaque = await WebGpuJsInterop.MapReadStatsAsync((int)buf, total);
+			var opaque = await WebGpuJsInterop.MapReadStatsAsync((int)buf, w, h, bytesPerRow);
 			Console.WriteLine($"[webgpu] UNO-READBACK {w}x{h} opaquePixels={opaque} (of {w * h})");
 			WGPU.wgpuBufferDestroy(buf);
 		}
