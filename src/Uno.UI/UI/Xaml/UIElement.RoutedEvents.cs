@@ -628,6 +628,13 @@ namespace Microsoft.UI.Xaml
 			}
 			catch (Exception e)
 			{
+				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions)
+				{
+					Application.Current.RaiseUnhandledExceptionOrThrow(e, this);
+					// Reached only when an UnhandledException handler set Handled = true.
+					return false;
+				}
+
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
 					this.Log().Error($"Failed to raise '{routedEvent.Name}': {e}");
@@ -646,6 +653,13 @@ namespace Microsoft.UI.Xaml
 			}
 			catch (Exception e)
 			{
+				if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions)
+				{
+					Application.Current.RaiseUnhandledExceptionOrThrow(e, this);
+					// Reached only when an UnhandledException handler set Handled = true.
+					return false;
+				}
+
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
 					this.Log().Error($"Failed to raise '{routedEvent.Name}': {e}");
