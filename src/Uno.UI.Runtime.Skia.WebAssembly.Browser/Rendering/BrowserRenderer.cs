@@ -65,9 +65,17 @@ internal partial class BrowserRenderer
 	{
 		try
 		{
-			// The browser canvas prefers rgba8unorm; match it so the surface, pipelines and canvas agree (no
-			// extra present-time BGRA->RGBA copy, which appears unreliable on SwiftShader).
-			var device = await WebGpuDeviceAsync.CreateAsync(WGPUTextureFormat.RGBA8Unorm);
+			// Device bring-up is done in JS (navigator.gpu) and the JS GPUDevice is imported into emdawnwebgpu's
+			// handle table — the in-WASM wgpuInstanceProcessEvents pump hangs when driven from a managed call stack
+			// on the browser (see WebGpuInit.ts / WebGpuJsInterop). The canvas prefers rgba8unorm; match it so the
+			// surface, pipelines and canvas agree (no present-time BGRA->RGBA copy, unreliable on SwiftShader).
+			var inst = WebGpuDevice.CreateInstancePtr();
+			var devPtr = await WebGpuJsInterop.CreateImportedDeviceAsync((int)inst);
+			if (devPtr == 0)
+			{
+				throw new InvalidOperationException("WebGPU: JS-side device creation/import failed (see browser console).");
+			}
+			var device = WebGpuDevice.FromImported(WGPUTextureFormat.RGBA8Unorm, inst, (IntPtr)devPtr);
 			_webgpuContext = new WebGpuBrowserGraphicsContext(device, WebAssemblyWindowWrapper.Instance.CanvasId);
 			CompositionTarget.Renderer = new WebGpuRenderer(device);
 			this.Log().Info("Neutral graphics pipeline active: WebGpu context via WebGpuRenderer (browser).");

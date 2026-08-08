@@ -33,6 +33,13 @@
 				// emsdk 3.1.56 exposes stackSave/stackRestore only as bare names, not the $-aliases the modern
 				// port's __deps declare; rewrite so a bare --js-library load doesn't fail at compiler.mjs.
 				var patched = text.Replace("'$stackSave'", "'stackSave'").Replace("'$stackRestore'", "'stackRestore'");
+				// Expose emdawn's importJsDevice on Module so the browser device-init (created in JS via navigator.gpu,
+				// SkiaSharp-style) can graft the JS GPUDevice into the C handle table — avoiding the in-WASM
+				// wgpuInstanceProcessEvents pump, which hangs when driven from a managed call stack on the browser.
+				if (!patched.Contains("unoWebGpuImportDevice")) {
+					patched = patched.Replace("$WebGPU__deps: [],",
+						"$WebGPU__deps: [],\n  $WebGPU__postset: \"Module['unoWebGpuImportDevice'] = function(d, p) { return WebGPU.importJsDevice(d, p); };\",");
+				}
 				if (patched != text) { System.IO.File.WriteAllText(File, patched); }
 			]]></Code>
 		</Task>
