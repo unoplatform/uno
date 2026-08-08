@@ -46,10 +46,13 @@ public partial class ToggleButtonAutomationPeer : ButtonBaseAutomationPeer, Prov
 	/// </summary>
 	public void Toggle()
 	{
-		if (IsEnabled())
+		if (!IsEnabled())
 		{
-			((ToggleButton)Owner).AutomationToggleButtonOnToggle();
+			// UIA_E_ELEMENTNOTENABLED — match WinUI: check enabled before acting.
+			throw new ElementNotEnabledException();
 		}
+
+		((ToggleButton)Owner).AutomationToggleButtonOnToggle();
 	}
 
 	internal void RaiseToggleStatePropertyChangedEvent(object pOldValue, object pNewValue)

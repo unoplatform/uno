@@ -962,6 +962,11 @@ namespace Microsoft.UI.Xaml
 				return new NamedContainerAutomationPeer(this);
 			}
 
+			if (HasLandmark())
+			{
+				return new LandmarkTargetAutomationPeer(this);
+			}
+
 			return null;
 		}
 
@@ -973,6 +978,22 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return AutomationProperties.GetLabeledBy(this) is not null;
+		}
+
+		// Match WinUI: a FrameworkElement that sets AutomationProperties.LandmarkType or
+		// LocalizedLandmarkType is force-promoted into the UIA tree using a
+		// LandmarkTargetAutomationPeer, so the landmark reaches AT even when the element is not a
+		// control. See framework.cpp OnPropertyChanged for AutomationProperties_LandmarkType /
+		// AutomationProperties_LocalizedLandmarkType. Name/LabeledBy take precedence (they carry
+		// the primary identity, and their peer still exposes any landmark set on the element).
+		private bool HasLandmark()
+		{
+			if (AutomationProperties.GetLandmarkType(this) != AutomationLandmarkType.None)
+			{
+				return true;
+			}
+
+			return !string.IsNullOrEmpty(AutomationProperties.GetLocalizedLandmarkType(this));
 		}
 
 		public virtual string GetAccessibilityInnerText()
