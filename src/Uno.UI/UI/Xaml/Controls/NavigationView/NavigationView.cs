@@ -188,15 +188,6 @@ public partial class NavigationView : ContentControl
 
 		m_shadowCasterEaseOutStoryboardRevoker.Disposable = null;
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
-		m_leftNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
-		m_leftNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
-		m_topNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
-		m_topNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
-		m_topNavOverflowItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
-#endif
-
 		if (isFromDestructor)
 		{
 			m_selectionChangedRevoker.Disposable = null;
@@ -485,12 +476,6 @@ public partial class NavigationView : ContentControl
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
-				leftNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
-				m_leftNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => leftNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
-#endif
-
 				leftNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_leftNavItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => leftNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
 				leftNavRepeater.ElementClearing += OnRepeaterElementClearing;
@@ -517,12 +502,6 @@ public partial class NavigationView : ContentControl
 					var stackLayoutImpl = stackLayout;
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
-
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
-				topNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
-				m_topNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
-#endif
 
 				topNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_topNavItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
@@ -551,12 +530,6 @@ public partial class NavigationView : ContentControl
 					var stackLayoutImpl = stackLayout;
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
-
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
-				topNavListOverflowRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
-				m_topNavOverflowItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topNavListOverflowRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
-#endif
 
 				topNavListOverflowRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_topNavOverflowItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topNavListOverflowRepeater.ElementPrepared -= OnRepeaterElementPrepared);
@@ -607,12 +580,6 @@ public partial class NavigationView : ContentControl
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
-				leftFooterMenuNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
-				m_leftNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => leftFooterMenuNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
-#endif
-
 				leftFooterMenuNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_leftNavFooterMenuItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => leftFooterMenuNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
 				leftFooterMenuNavRepeater.ElementClearing += OnRepeaterElementClearing;
@@ -640,12 +607,6 @@ public partial class NavigationView : ContentControl
 					var stackLayoutImpl = stackLayout;
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
-
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
-				topFooterMenuNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
-				m_topNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topFooterMenuNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
-#endif
 
 				topFooterMenuNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_topNavFooterMenuItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topFooterMenuNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);

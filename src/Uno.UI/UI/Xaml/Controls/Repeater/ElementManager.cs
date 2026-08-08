@@ -60,6 +60,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public int GetRealizedElementCount => IsVirtualizingContext ? (int)(m_realizedElements.Count) : m_context.ItemCount;
 
+		public int GetFirstRealizedDataIndex => m_firstRealizedDataIndex;
+
 		private readonly List<UIElement> m_realizedElements = new List<UIElement>();
 		private readonly List<Rect> m_realizedElementLayoutBounds = new List<Rect>();
 		private int m_firstRealizedDataIndex = -1;
@@ -224,6 +226,13 @@ namespace Microsoft.UI.Xaml.Controls
 			m_realizedElementLayoutBounds[realizedIndex] = bounds;
 		}
 
+		public bool IsLayoutBoundsForRealizedIndexSet(int realizedIndex)
+		{
+			MUX_ASSERT(realizedIndex >= 0 && realizedIndex < GetRealizedElementCount);
+
+			return m_realizedElementLayoutBounds[realizedIndex] != ItemsRepeater.InvalidRect;
+		}
+
 		public bool IsDataIndexRealized(int index)
 		{
 			if (IsVirtualizingContext)
@@ -359,8 +368,8 @@ namespace Microsoft.UI.Xaml.Controls
 						break;
 
 					case NotifyCollectionChangedAction.Move:
-						// Move is not supported by default by ItemsRepeater (throw new NotImplementedException();)
-						// This is Uno specific
+						// Defensive fallback: ItemsSourceView normally decomposes Move into Remove+Add
+						// at the C#/WinUI bridge, so the layout should never see Move here.
 						OnItemsRemoved(args.OldStartingIndex, args.OldItems.Count);
 						OnItemsAdded(args.NewStartingIndex, args.NewItems.Count);
 						break;

@@ -407,9 +407,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
-		[Ignore("Fails due to async native scrolling.")]
-#endif
+		[Ignore("Validated the Uno-specific firstRealizedMajor clamping in StackLayout.GetExtent, which was removed in favor of WinUI parity. Fails on Skia (WinUI behavior) and on native targets (async native scrolling).")]
 		public async Task When_ItemSignificantlyTaller_Then_VirtualizeProperly()
 		{
 			var sut = SUT.Create(
@@ -465,9 +463,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !__SKIA__
-		[Ignore("Fails due to async native scrolling.")]
-#endif
+		[Ignore("Validated the Uno-specific firstRealizedMajor clamping in StackLayout.GetExtent, which was removed in favor of WinUI parity. Fails on Skia (WinUI behavior) and on native targets (async native scrolling).")]
 		public async Task When_UnloadReload_Then_MaterializeItemsForCurrentViewport()
 		{
 			var sut = SUT.Create(30, new Size(100, 500));
@@ -532,6 +528,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			sut.MaterializedItems.Should().Contain(lastItem);
 		}
 
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_No_Layout_Set_Then_Uses_Default_StackLayout()
+		{
+			// Verifies that ItemsRepeater works without an explicit Layout property being set.
+			// In WinUI 1.8.2, ItemsRepeater falls back to a default StackLayout when Layout is null.
+			var sut = new ItemsRepeater
+			{
+				ItemsSource = new[] { "Item_1", "Item_2", "Item_3" },
+			};
+
+			TestServices.WindowHelper.WindowContent = sut;
+			await TestServices.WindowHelper.WaitForLoaded(sut);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			try
+			{
+				await TestHelper.RetryAssert(() =>
+				{
+					var items = sut.GetAllChildren().OfType<TextBlock>().ToList();
+					Assert.IsTrue(items.Count >= 3, $"Expected at least 3 items, got {items.Count}");
+					Assert.AreEqual("Item_1", items[0].Text);
+					Assert.AreEqual("Item_2", items[1].Text);
+					Assert.AreEqual("Item_3", items[2].Text);
+				});
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
 
 		[TestMethod]
 		[RunsOnUIThread]
