@@ -74,6 +74,10 @@
 			input.style.textShadow = "none";
 			input.style.overflow = "hidden";
 			input.style.pointerEvents = "none";
+			// Re-enable text selection on the IME input: the root disables it (uno.css) to suppress the
+			// browser's long-press selection gesture, but the input still needs it for editing/IME.
+			input.style.userSelect = "text";
+			(input.style as any).webkitUserSelect = "text";
 			input.style.zIndex = "99";
 			input.style.top = "0px";
 			input.style.left = "0px";
