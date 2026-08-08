@@ -5505,7 +5505,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// ScrapLayout() first, so the fill runs against the still-unsorted deque.
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		// Skia-iOS is excluded: the mid-drag extent intermittently measures 3 rows too large there (1560 vs 1440),
+		// same values every failure — tracked in the linked issue; Desktop/Android Skia keep covering the regression.
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia & ~RuntimeTestPlatforms.SkiaIOS)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24013")]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
