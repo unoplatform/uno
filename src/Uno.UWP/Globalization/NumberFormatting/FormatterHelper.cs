@@ -13,6 +13,12 @@ namespace Uno.Globalization.NumberFormatting
 		{
 		}
 
+		/// <summary>
+		/// Gets or sets the format used for punctuation, grouping, and signs.
+		/// It remains invariant when <see cref="NumeralSystemTranslator"/> localizes punctuation.
+		/// </summary>
+		public NumberFormatInfo NumberFormat { get; set; } = CultureInfo.InvariantCulture.NumberFormat;
+
 		public bool IsDecimalPointAlwaysDisplayed { get; set; }
 
 		public int IntegerDigits { get; set; } = 1;
@@ -55,7 +61,7 @@ namespace Uno.Globalization.NumberFormatting
 
 			if (IsZeroSigned && isNegative)
 			{
-				stringBuilder.Append(CultureInfo.InvariantCulture.NumberFormat.NegativeSign);
+				stringBuilder.Append(NumberFormat.NegativeSign);
 			}
 
 			AppendFormatZero(stringBuilder);
@@ -77,7 +83,7 @@ namespace Uno.Globalization.NumberFormatting
 				return;
 			}
 
-			stringBuilder.Append(CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator);
+			stringBuilder.Append(NumberFormat.NumberDecimalSeparator);
 			stringBuilder.Append('0', FractionDigits);
 		}
 
@@ -113,19 +119,19 @@ namespace Uno.Globalization.NumberFormatting
 			}
 
 			var format = StringBuilderCache.GetStringAndRelease(formatBuilder);
-			stringBuilder.AppendFormat(CultureInfo.InvariantCulture, format, integerPart);
+			stringBuilder.AppendFormat(NumberFormat, format, integerPart);
 		}
 
 		private void AppendFormatFractionPart(double value, StringBuilder stringBuilder)
 		{
-			var numberDecimalSeparator = CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator;
+			var numberDecimalSeparator = NumberFormat.NumberDecimalSeparator;
 
 			var integerPart = (int)Math.Truncate(value);
 			var integerPartLen = integerPart.GetLength();
 			var fractionDigits = Math.Max(FractionDigits, SignificantDigits - integerPartLen);
 			var rounded = Math.Round(value, fractionDigits, MidpointRounding.AwayFromZero);
 			var needZeros = value == rounded;
-			var formattedFractionPart = needZeros ? value.ToString($"F{fractionDigits}", CultureInfo.InvariantCulture) : value.ToString(CultureInfo.InvariantCulture);
+			var formattedFractionPart = needZeros ? value.ToString($"F{fractionDigits}", NumberFormat) : value.ToString(NumberFormat);
 			var indexOfDecimalSeperator = formattedFractionPart.LastIndexOf(numberDecimalSeparator, StringComparison.Ordinal);
 
 			if (indexOfDecimalSeperator != -1)
@@ -134,51 +140,57 @@ namespace Uno.Globalization.NumberFormatting
 			}
 			else if (IsDecimalPointAlwaysDisplayed)
 			{
-				stringBuilder.Append(CultureInfo.InvariantCulture.NumberFormat.NumberDecimalSeparator);
+				stringBuilder.Append(NumberFormat.NumberDecimalSeparator);
 			}
 		}
 
 		private bool HasInvalidGroupSize(string text)
 		{
-			var numberFormat = CultureInfo.InvariantCulture.NumberFormat;
-			var decimalSeperatorIndex = text.LastIndexOf(numberFormat.NumberDecimalSeparator, StringComparison.Ordinal);
-			var groupSize = numberFormat.NumberGroupSizes[0];
-			var groupSeperatorLength = numberFormat.NumberGroupSeparator.Length;
-			var groupSeperator = numberFormat.NumberGroupSeparator;
-
-			var preIndex = text.IndexOf(groupSeperator, StringComparison.Ordinal);
-			var Index = -1;
-
-			if (preIndex != -1)
+			var groupSeparator = NumberFormat.NumberGroupSeparator;
+			if (string.IsNullOrEmpty(groupSeparator) ||
+				!text.Contains(groupSeparator, StringComparison.Ordinal))
 			{
-				while (preIndex + groupSeperatorLength < text.Length)
+				return false;
+			}
+
+			var decimalSeparatorIndex = text.LastIndexOf(NumberFormat.NumberDecimalSeparator, StringComparison.Ordinal);
+			var integerPart = decimalSeparatorIndex >= 0 ? text.Substring(0, decimalSeparatorIndex) : text;
+			if (integerPart.StartsWith(NumberFormat.NegativeSign, StringComparison.Ordinal))
+			{
+				integerPart = integerPart.Substring(NumberFormat.NegativeSign.Length);
+			}
+			else if (integerPart.StartsWith(NumberFormat.PositiveSign, StringComparison.Ordinal))
+			{
+				integerPart = integerPart.Substring(NumberFormat.PositiveSign.Length);
+			}
+
+			var groups = integerPart.Split([groupSeparator], StringSplitOptions.None);
+			var groupSizes = NumberFormat.NumberGroupSizes;
+			var groupSizeIndex = 0;
+
+			for (var groupIndex = groups.Length - 1; groupIndex > 0; groupIndex--)
+			{
+				var expectedSize = groupSizes[Math.Min(groupSizeIndex, groupSizes.Length - 1)];
+				if (expectedSize == 0 || groups[groupIndex].Length != expectedSize)
 				{
-					Index = text.IndexOf(groupSeperator, preIndex + groupSeperatorLength, StringComparison.Ordinal);
+					return true;
+				}
 
-					if (Index == -1)
-					{
-						if (decimalSeperatorIndex - preIndex - groupSeperatorLength != groupSize)
-						{
-							return true;
-						}
-
-						break;
-					}
-					else if (Index - preIndex != groupSize)
-					{
-						return true;
-					}
-
-					preIndex = Index;
+				if (groupSizeIndex < groupSizes.Length - 1)
+				{
+					groupSizeIndex++;
 				}
 			}
 
-			return false;
+			var leftmostExpectedSize = groupSizes[Math.Min(groupSizeIndex, groupSizes.Length - 1)];
+			return groups[0].Length == 0 ||
+				leftmostExpectedSize > 0 && groups[0].Length > leftmostExpectedSize;
 		}
 
 		public double? ParseDouble(string text)
 		{
-			if (text.IndexOf(' ') != -1)
+			if (!string.IsNullOrEmpty(NumberFormat.PositiveSign) &&
+				text.StartsWith(NumberFormat.PositiveSign, StringComparison.Ordinal))
 			{
 				return null;
 			}
@@ -189,14 +201,17 @@ namespace Uno.Globalization.NumberFormatting
 			}
 
 			if (!double.TryParse(text,
-				NumberStyles.Float | NumberStyles.AllowThousands,
-				CultureInfo.InvariantCulture, out double value))
+				NumberStyles.AllowLeadingSign |
+				NumberStyles.AllowDecimalPoint |
+				NumberStyles.AllowThousands |
+				NumberStyles.AllowExponent,
+				NumberFormat, out double value))
 			{
 				return null;
 			}
 
 			if (value == 0 &&
-				text.IndexOf(CultureInfo.InvariantCulture.NumberFormat.NegativeSign, StringComparison.Ordinal) != -1)
+				text.IndexOf(NumberFormat.NegativeSign, StringComparison.Ordinal) != -1)
 			{
 				return -0d;
 			}
