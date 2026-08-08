@@ -36,9 +36,16 @@
 				// Expose emdawn's importJsDevice on Module so the browser device-init (created in JS via navigator.gpu,
 				// SkiaSharp-style) can graft the JS GPUDevice into the C handle table — avoiding the in-WASM
 				// wgpuInstanceProcessEvents pump, which hangs when driven from a managed call stack on the browser.
+				// Two helpers grafted onto Module: importJsDevice (JS-created device -> C handle) and jsObject
+				// (resolve a wgpu handle ptr back to its JS object, so managed code can mapAsync a readback buffer
+				// off the event loop — the in-WASM DevicePoll busy-spin can't yield for the map to complete).
 				if (!patched.Contains("unoWebGpuImportDevice")) {
 					patched = patched.Replace("$WebGPU__deps: [],",
-						"$WebGPU__deps: [],\n  $WebGPU__postset: \"Module['unoWebGpuImportDevice'] = function(d, p) { return WebGPU.importJsDevice(d, p); };\",");
+						"$WebGPU__deps: [],\n  $WebGPU__postset: \"Module['unoWebGpuImportDevice'] = function(d, p) { return WebGPU.importJsDevice(d, p); }; Module['unoWebGpuJsObject'] = function(p) { return WebGPU.Internals.jsObjects[p]; };\",");
+				} else if (!patched.Contains("unoWebGpuJsObject")) {
+					// File was patched by an older build that installed only the device helper; append jsObject to it.
+					patched = patched.Replace("return WebGPU.importJsDevice(d, p); };",
+						"return WebGPU.importJsDevice(d, p); }; Module['unoWebGpuJsObject'] = function(p) { return WebGPU.Internals.jsObjects[p]; };");
 				}
 				if (patched != text) { System.IO.File.WriteAllText(File, patched); }
 			]]></Code>
