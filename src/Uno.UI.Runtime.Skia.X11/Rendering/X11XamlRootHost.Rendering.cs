@@ -31,11 +31,17 @@ internal partial class X11XamlRootHost
 		return thread;
 	}
 
+	// Diagnostic (UNO_RENDER_CONTINUOUS): present every ~1ms regardless of frame requests, so per-frame render cost
+	// can be profiled headless (Xvfb has no compositor keeping an animation's frame requests flowing). Each present
+	// re-enqueues a record, so the tree stays current; the 1ms yield keeps the UI thread free to record. Off by default.
+	private static readonly bool _continuousRender = System.Environment.GetEnvironmentVariable("UNO_RENDER_CONTINUOUS") == "1";
+
 	private void RenderLoop()
 	{
 		while (_renderLoopRunning)
 		{
-			_renderRequested.WaitOne();
+			if (_continuousRender) { Thread.Sleep(1); }
+			else { _renderRequested.WaitOne(); }
 
 			_framePacer.OnFrameStart();
 			_renderer?.Render();
