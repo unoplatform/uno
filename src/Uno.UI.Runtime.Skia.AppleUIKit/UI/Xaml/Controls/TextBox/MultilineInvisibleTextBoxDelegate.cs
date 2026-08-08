@@ -83,6 +83,9 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 		return true;
 	}
 
+	public override void SelectionChanged(UITextView textView)
+		=> _textBoxViewExtension.GetTarget()?.OnNativeSelectionChanged();
+
 	public override bool ShouldEndEditing(UITextView textView)
 	{
 		return true;
