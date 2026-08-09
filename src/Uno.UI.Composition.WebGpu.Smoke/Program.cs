@@ -280,6 +280,19 @@ var bdEdge = At(pBd, 45, 32);     // 5px past the sharp edge → blur spread →
 Check("backdrop: center still red-ish (blurred)", bdCenter.r > 80, bdCenter);
 Check("backdrop: blur spreads content past the edge", bdEdge.r > 15 && bdEdge.r < bdCenter.r, (bdEdge, bdCenter));
 
+// 16b) OPAQUE ACRYLIC — a fully-opaque tint short-circuits the blur/backdrop capture: the region shows the
+//      tint (not the blurred content), and the clip still masks it to the region.
+var acrylicOpaque = new WebGpuEffectFilter { SigmaX = 5, SigmaY = 5, Color = WColor.FromArgb(255, 0, 0, 255) };
+var pBdO = Render(r =>
+{
+	r.DrawRect(new Rect(0, 0, 64, 64), red, false);   // red content behind
+	r.ClipRect(new Rect(16, 16, 32, 32));             // effect region (16,16)-(48,48)
+	r.DrawEffectBackdrop(acrylicOpaque, 1f);
+});
+var bdoIn = At(pBdO, 32, 32); var bdoOut = At(pBdO, 4, 4);
+Check("opaque-acrylic: region shows opaque tint (blue)", bdoIn.b > 200 && bdoIn.r < 60, bdoIn);
+Check("opaque-acrylic: outside region untouched (red)", bdoOut.r > 200 && bdoOut.b < 60, bdoOut);
+
 // 17) EXACT PATH CLIP — ClipPath(triangle) masks a full-surface draw to the triangle (not its bounding box).
 var clipTri = new ManagedDrawingFactory().CreatePathBuilder();
 clipTri.MoveTo(new Vector2(32, 8)); clipTri.LineTo(new Vector2(56, 56)); clipTri.LineTo(new Vector2(8, 56)); clipTri.Close();
