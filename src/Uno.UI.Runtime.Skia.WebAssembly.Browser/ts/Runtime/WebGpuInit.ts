@@ -81,22 +81,26 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
-		// Maps a readback buffer (by wgpu handle ptr) off the event loop and returns its first byteLen bytes.
-		// Used by SnapshotAsync (RenderTargetBitmap) — the only way to complete a GPU->CPU map on WASM's single
-		// JS thread. (Marshalled as a number[]; adequate for occasional RTB, could be a heap copy if it gets hot.)
-		public static async mapReadBytes(bufferPtr: number, byteLen: number): Promise<number[]> {
+		// Maps a readback buffer (by wgpu handle ptr) off the event loop and returns its first byteLen bytes as a
+		// base64 string. Used by SnapshotAsync (RenderTargetBitmap) — the only way to complete a GPU->CPU map on
+		// WASM's single JS thread. (base64 marshals cleanly as a string; adequate for occasional RTB.)
+		public static async mapReadBase64(bufferPtr: number, byteLen: number): Promise<string> {
 			const module = (window as any).Module;
 			const buffer = module && typeof module.unoWebGpuJsObject === "function"
 				? module.unoWebGpuJsObject(bufferPtr) : null;
 			if (!buffer) {
-				console.error("WebGpuInit.mapReadBytes: no JS buffer for ptr=" + bufferPtr);
-				return [];
+				console.error("WebGpuInit.mapReadBase64: no JS buffer for ptr=" + bufferPtr);
+				return "";
 			}
 			await buffer.mapAsync(1 /* GPUMapMode.READ */);
-			const src = new Uint8Array(buffer.getMappedRange());
-			const out = Array.from(src.subarray(0, byteLen));
+			const src = new Uint8Array(buffer.getMappedRange()).subarray(0, byteLen);
+			let binary = "";
+			const chunk = 0x8000;
+			for (let i = 0; i < src.length; i += chunk) {
+				binary += String.fromCharCode.apply(null, src.subarray(i, i + chunk) as unknown as number[]);
+			}
 			buffer.unmap();
-			return out;
+			return btoa(binary);
 		}
 	}
 }
