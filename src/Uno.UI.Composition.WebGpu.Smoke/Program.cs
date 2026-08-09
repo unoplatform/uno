@@ -75,6 +75,24 @@ var xMid = At(p3b, 47, 32);    // (32+15, 32)
 Check("radial: elliptical short-axis reaches edge (blue)", yEdge.b > 150 && yEdge.r < 100, yEdge);
 Check("radial: elliptical long-axis still reddish (not circular)", xMid.r > yEdge.r + 40, (xMid, yEdge));
 
+// 3c) ROTATED RADIAL — a 90° local-matrix rotation swaps the ellipse's long/short device axes. Device-space
+//     per-axis scaling could not represent this; the M (inverse-linear-map) eval must.
+var radialRot = new WebGpuShader
+{
+	Radial = true,
+	P0 = new Vector2(32, 32), P1 = new Vector2(32, 32),
+	RadiusX = 30f, RadiusY = 15f,   // long axis local-X, short axis local-Y
+	Colors = new[] { WColor.FromArgb(255, 255, 0, 0), WColor.FromArgb(255, 0, 0, 255) },
+	Stops = new[] { 0f, 1f },
+	TileMode = GradientTileMode.Clamp,
+	LocalMatrix = Matrix3x2.CreateRotation(MathF.PI / 2f, new Vector2(32, 32)),
+};
+var p3c = Render(r => r.DrawRect(new Rect(0, 0, 64, 64), radialRot, false));
+var xEdgeR = At(p3c, 47, 32);   // 15px along device X — after 90° the SHORT axis → edge → blue
+var yMidR = At(p3c, 32, 47);    // 15px along device Y — after 90° the LONG axis → halfway → reddish
+Check("rotated-radial: short axis now along X (blue)", xEdgeR.b > 150 && xEdgeR.r < 100, xEdgeR);
+Check("rotated-radial: long axis now along Y (reddish, not circular)", yMidR.r > xEdgeR.r + 40, (yMidR, xEdgeR));
+
 // 4) GPU image draw — upload a managed BGRA image to a wgpu texture, draw it
 var blue = new SolidImage(40, 40, 0, 0, 255);
 using var tex = new WebGpuImageTexture(dev, blue);
