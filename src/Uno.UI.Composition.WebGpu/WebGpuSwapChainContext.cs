@@ -16,10 +16,32 @@ public sealed unsafe class WebGpuSwapChainContext : IGraphicsContext, IWebGpuDev
 	private readonly WebGpuDevice _device;
 	private IntPtr _surface;
 	private WebGpuRenderSurface? _target;
-	private IntPtr _currentTexture;
-	private IntPtr _currentView;
+	// The scene renders (MSAA) and resolves into this OFFSCREEN single-sample texture; Present() then blits it into
+	// the acquired swapchain image. A direct MSAA-resolve straight into the swapchain texture does NOT composite on
+	// several native surfaces (and SwiftShader in the browser) — a render pass that TARGETS the swapchain image (the
+	// blit) does. This mirrors the browser context and the original branch's proven Win32 swapchain path.
+	private IntPtr _presentTex;
+	private IntPtr _presentView;
+	private bool _frameAcquired;
 	private int _w, _h;
 	private bool _configured;
+	private WGPUTextureFormat _surfaceFormat;
+
+	// Fullscreen-triangle blit pipeline: samples _presentView and draws it into the swapchain image.
+	private IntPtr _blitModule;
+	private IntPtr _blitPipe;
+	private IntPtr _blitBgl;
+
+	private const string BlitWgsl = @"
+@group(0) @binding(0) var t: texture_2d<f32>;
+@group(0) @binding(1) var s: sampler;
+struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
+@vertex fn vs(@builtin(vertex_index) i: u32) -> VO {
+  var pts = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
+  let p = pts[i];
+  var o: VO; o.p = vec4<f32>(p, 0.0, 1.0); o.uv = vec2<f32>((p.x + 1.0) * 0.5, (1.0 - p.y) * 0.5); return o;
+}
+@fragment fn fs(i: VO) -> @location(0) vec4<f32> { return textureSampleLevel(t, s, i.uv, 0.0); }";
 
 	/// <param name="createSurface">Builds the wgpu surface for the platform window, given the instance handle
 	/// (use one of the CreateXxxSurface factories).</param>
@@ -42,41 +64,85 @@ public sealed unsafe class WebGpuSwapChainContext : IGraphicsContext, IWebGpuDev
 		width = Math.Max(1, width);
 		height = Math.Max(1, height);
 		Configure(width, height);
+		_frameAcquired = true;
+		// The backend renders + resolves into _presentView (offscreen); Present() blits that to the swapchain image.
+		return _target!;
+	}
 
-		if (_currentView != IntPtr.Zero)
+	public void Present()
+	{
+		if (!_frameAcquired || _target is null)
 		{
-			return _target!;
+			return;
 		}
+		_frameAcquired = false;
+		EnsureBlitPipeline();
 
+		// Acquire the swapchain image at present time (after the scene render) and blit the offscreen frame into it.
 		WGPUSurfaceTexture st = default;
 		wgpuSurfaceGetCurrentTexture(_surface, &st);
 		if ((st.Status != WGPUSurfaceGetCurrentTextureStatus.SuccessOptimal
 				&& st.Status != WGPUSurfaceGetCurrentTextureStatus.SuccessSuboptimal)
 			|| st.Texture == IntPtr.Zero)
 		{
-			return _target!;
+			_configured = false;   // surface lost / out of date — reconfigure next frame
+			return;
 		}
 
-		_currentTexture = st.Texture;
-		_currentView = wgpuTextureCreateView(st.Texture, null);
-		_target!.View = _currentView;
-		return _target;
+		var view = wgpuTextureCreateView(st.Texture, null);
+
+		var entries = stackalloc WGPUBindGroupEntry[2];
+		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = _presentView };
+		entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _device.Smp };
+		var bgd = new WGPUBindGroupDescriptor { Layout = _blitBgl, EntryCount = 2, Entries = entries };
+		var bg = wgpuDeviceCreateBindGroup(_device.Dev, &bgd);
+
+		var enc = wgpuDeviceCreateCommandEncoder(_device.Dev, null);
+		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = view, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
+		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca };
+		var pass = wgpuCommandEncoderBeginRenderPass(enc, &rp);
+		wgpuRenderPassEncoderSetPipeline(pass, _blitPipe);
+		wgpuRenderPassEncoderSetBindGroup(pass, 0, bg, 0, (uint*)null);
+		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+		wgpuRenderPassEncoderEnd(pass);
+		var cb = wgpuCommandEncoderFinish(enc, null);
+		wgpuQueueSubmit(_device.Q, 1, (IntPtr)(&cb));
+
+		wgpuSurfacePresent(_surface);
+
+		wgpuBindGroupRelease(bg);
+		wgpuCommandEncoderRelease(enc);
+		wgpuTextureViewRelease(view);
+		wgpuTextureRelease(st.Texture);
 	}
 
-	public void Present()
+	private void EnsureBlitPipeline()
 	{
-		if (_currentView == IntPtr.Zero)
+		if (_blitPipe != IntPtr.Zero)
 		{
 			return;
 		}
-		wgpuSurfacePresent(_surface);
-		wgpuTextureViewRelease(_currentView);
-		wgpuTextureRelease(_currentTexture);
-		_currentView = IntPtr.Zero;
-		_currentTexture = IntPtr.Zero;
-		// The acquired view is released; drop the alias the target holds so a resize-time Dispose (and the next
-		// acquire's early-return guard) never sees a dangling swapchain view.
-		if (_target is not null) { _target.View = IntPtr.Zero; }
+		var code = Utf8(BlitWgsl);
+		var wgsl = new WGPUShaderSourceWGSL { Chain = new WGPUChainedStruct { SType = WGPUSType.ShaderSourceWGSL }, Code = code };
+		var smd = new WGPUShaderModuleDescriptor { NextInChain = (WGPUChainedStruct*)&wgsl };
+		_blitModule = wgpuDeviceCreateShaderModule(_device.Dev, &smd);
+
+		var vs = Utf8("vs");
+		var fs = Utf8("fs");
+		// Target must match the configured swapchain format (not necessarily the device's offscreen format).
+		var target = new WGPUColorTargetState { Format = _surfaceFormat, Blend = null, WriteMask = WGPUColorWriteMask.All };
+		var fsState = new WGPUFragmentState { Module = _blitModule, EntryPoint = fs, TargetCount = 1, Targets = &target };
+		var pd = new WGPURenderPipelineDescriptor
+		{
+			Vertex = new WGPUVertexState { Module = _blitModule, EntryPoint = vs, BufferCount = 0 },
+			Fragment = &fsState,
+			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
+			Multisample = new WGPUMultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
+			DepthStencil = null,
+			Layout = IntPtr.Zero,
+		};
+		_blitPipe = wgpuDeviceCreateRenderPipeline(_device.Dev, &pd);
+		_blitBgl = wgpuRenderPipelineGetBindGroupLayout(_blitPipe, 0);
 	}
 
 	private void Configure(int width, int height)
@@ -87,23 +153,38 @@ public sealed unsafe class WebGpuSwapChainContext : IGraphicsContext, IWebGpuDev
 		}
 		_w = width;
 		_h = height;
-		_currentView = IntPtr.Zero;
-		_currentTexture = IntPtr.Zero;
 		_target?.Dispose();
-		_target = new WebGpuRenderSurface(_device, width, height, externalColor: true);
+		if (_presentView != IntPtr.Zero) { wgpuTextureViewRelease(_presentView); _presentView = IntPtr.Zero; }
+		if (_presentTex != IntPtr.Zero) { wgpuTextureDestroy(_presentTex); _presentTex = IntPtr.Zero; }
+
+		// Offscreen single-sample resolve target: the scene's MSAA pass resolves into this, and it is sampled by the
+		// present blit. TextureBinding so the blit can sample it; CopySrc so ReadPixels/RenderTargetBitmap can read it.
+		var td = new WGPUTextureDescriptor
+		{
+			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 },
+			Format = _device.ColorFormat,
+			MipLevelCount = 1,
+			SampleCount = 1,
+			Dimension = WGPUTextureDimension._2D,
+			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopySrc,
+		};
+		_presentTex = wgpuDeviceCreateTexture(_device.Dev, &td);
+		_presentView = wgpuTextureCreateView(_presentTex, null);
+		// External-colour surface: owns MSAA+depth; its resolve View is our offscreen _presentView.
+		_target = new WebGpuRenderSurface(_device, width, height, externalColor: true) { View = _presentView, Tex = _presentTex };
 
 		WGPUSurfaceCapabilities caps = default;
 		wgpuSurfaceGetCapabilities(_surface, _device.Adapter, &caps);
-		var format = _device.ColorFormat;
+		_surfaceFormat = _device.ColorFormat;
 		bool supported = false;
-		for (nuint i = 0; i < caps.FormatCount; i++) { if (caps.Formats[i] == format) { supported = true; break; } }
-		if (!supported && caps.FormatCount > 0) { format = caps.Formats[0]; }
+		for (nuint i = 0; i < caps.FormatCount; i++) { if (caps.Formats[i] == _surfaceFormat) { supported = true; break; } }
+		if (!supported && caps.FormatCount > 0) { _surfaceFormat = caps.Formats[0]; }
 		var alphaMode = caps.AlphaModeCount > 0 ? caps.AlphaModes[0] : WGPUCompositeAlphaMode.Auto;
 
 		var cfg = new WGPUSurfaceConfiguration
 		{
 			Device = _device.Dev,
-			Format = format,
+			Format = _surfaceFormat,
 			Usage = WGPUTextureUsage.RenderAttachment,
 			Width = (uint)width,
 			Height = (uint)height,
@@ -114,9 +195,14 @@ public sealed unsafe class WebGpuSwapChainContext : IGraphicsContext, IWebGpuDev
 		_configured = true;
 	}
 
+	private static WGPUStringView Utf8(string s)
+		=> new() { Data = System.Runtime.InteropServices.Marshal.StringToCoTaskMemUTF8(s), Length = (nuint)System.Text.Encoding.UTF8.GetByteCount(s) };
+
 	public void Dispose()
 	{
 		_target?.Dispose();
+		if (_presentView != IntPtr.Zero) { wgpuTextureViewRelease(_presentView); _presentView = IntPtr.Zero; }
+		if (_presentTex != IntPtr.Zero) { wgpuTextureDestroy(_presentTex); _presentTex = IntPtr.Zero; }
 		if (_surface != IntPtr.Zero) { wgpuSurfaceRelease(_surface); _surface = IntPtr.Zero; }
 		_device.Dispose();
 	}
