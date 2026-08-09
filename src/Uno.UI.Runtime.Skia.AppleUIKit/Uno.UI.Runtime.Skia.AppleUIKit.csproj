@@ -26,6 +26,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
+<<<<<<< HEAD
 	<ItemGroup>
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -40,6 +41,8 @@
 >>>>>>> 4873bb24 (chore: Cleanup)
 	</ItemGroup>
 
+=======
+>>>>>>> 68c9a347 (fix: Address blocker and high findings on iOS SceneDelegate support)
 	<ItemGroup Condition="!$(IsTvOS)">
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\LocalWKUIDelegate.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\LocalWKUIDelegate.Apple.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\NativeWebView.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\NativeWebView.Apple.cs" />
