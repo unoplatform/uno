@@ -2558,8 +2558,17 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 		float sigma = 0f;
 		WColor tint = default, lum = default;
 		bool sawColorSource = false;
+		bool sawBackdrop = false;
 		void Walk(object node)
 		{
+			// A leaf source parameter: resolve it and note whether it's the backdrop. Only a graph that actually
+			// samples the backdrop is an acrylic-style backdrop filter; a blur over a normal source (image/element)
+			// must NOT be hijacked into the backdrop path (it would capture+blur the whole frame prefix instead).
+			if (node is Microsoft.UI.Composition.CompositionEffectSourceParameter sp)
+			{
+				if (sourceResolver(sp.Name)?.IsBackdrop == true) { sawBackdrop = true; }
+				return;
+			}
 			if (node is IGraphicsEffectD2D1Interop io)
 			{
 				if (io.GetEffectId() == blurGuid)
@@ -2583,7 +2592,7 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 			}
 		}
 		Walk(effect);
-		if (sigma > 0f || sawColorSource)
+		if ((sigma > 0f || sawColorSource) && sawBackdrop)
 		{
 			hasBackdropInput = true;
 			return new WebGpuEffectFilter { SigmaX = sigma, SigmaY = sigma, Color = tint, LumColor = lum };
