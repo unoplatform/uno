@@ -213,8 +213,16 @@
 			<CommonOverridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</CommonOverridePackageId>
 			<CommonOverridePackageId>$(CommonOverridePackageId.ToLowerInvariant())</CommonOverridePackageId>
 			<CommonOverridePackageId>$(CommonOverridePackageId.Replace('uno.ui','uno.winui'))</CommonOverridePackageId>
-			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
-			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
+			<!--
+				Uno.WinUI ships the UI layer in lib/ only — the Skia build is the compile reference,
+				so there is no uno-runtime folder to override into. uno.winrt and uno.foundation
+				still carry both flavors.
+			-->
+			<_UnoOverrideUsesRuntimeFolder>true</_UnoOverrideUsesRuntimeFolder>
+			<_UnoOverrideUsesRuntimeFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference' or '$(CommonOverridePackageId)'=='uno.winui'">false</_UnoOverrideUsesRuntimeFolder>
+
+			<_TargetNugetFolder Condition="'$(_UnoOverrideUsesRuntimeFolder)'!='true'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder Condition="'$(_UnoOverrideUsesRuntimeFolder)'=='true'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
 			<!-- Track ownership so shared package folders are cleaned safely. -->
 			<_OwnedCommonOverrideManifest>$(_TargetNugetFolder)\.$(MSBuildProjectName).$(_OverrideTargetFramework).owned-files.txt</_OwnedCommonOverrideManifest>
 		</PropertyGroup>

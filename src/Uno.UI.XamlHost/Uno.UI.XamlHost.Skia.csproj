@@ -29,4 +29,25 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
 	</ItemGroup>
 
+	<!--
+		Skia sets UnoRuntimeIdentifier, so _UnoOverrideNuget skips this project; the Reference head
+		that used to do the copy is gone. Uno.WinUI.XamlHost ships lib/ only.
+	-->
+	<Target Name="_UnoUIXamlHostOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
+
+		<PropertyGroup>
+			<_overridePackageId>uno.winui.xamlhost</_overridePackageId>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_overridePackageId)\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
+		</PropertyGroup>
+		<ItemGroup>
+			<_OutputFiles Include="$(TargetDir)**" />
+		</ItemGroup>
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+	</Target>
+
 </Project>
