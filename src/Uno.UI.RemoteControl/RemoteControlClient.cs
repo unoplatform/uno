@@ -1330,7 +1330,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 
 		return isEmulator ? ["10.0.2.2", "127.0.0.1"] : Array.Empty<string>();
 #else
-		// Skia desktop (Windows, Linux, macOS) and Reference build.
+		// Skia desktop (Windows, Linux, macOS).
 		return ["127.0.0.1", "[::1]"];
 #endif
 	}
