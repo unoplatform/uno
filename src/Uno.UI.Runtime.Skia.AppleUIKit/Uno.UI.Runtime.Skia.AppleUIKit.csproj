@@ -25,10 +25,6 @@
 		<DefineConstants>$(DefineConstants);UIKIT_SKIA</DefineConstants>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<Compile Include="..\Uno.UI\UI\Xaml\UnoUISceneDelegate.UIKit.cs" Link="UnoUISceneDelegate.UIKit.cs" />
-	</ItemGroup>
-
 	<ItemGroup Condition="!$(IsTvOS)">
 		<!-- Shared native WebResourceRequested header helpers, also compiled into the Android head, kept in Uno.UI.
 		     ISupportsWebResourceRequested.cs is intentionally NOT compiled here: it already lives in Uno.UI.Skia,

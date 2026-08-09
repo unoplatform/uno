@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿#nullable enable
+
+using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
 using CoreGraphics;
 using Foundation;
 using Microsoft.UI.Xaml;
@@ -20,56 +20,88 @@ namespace Uno.UI.Xaml.Controls;
 
 internal class NativeWindowWrapper : NativeWindowWrapperBase
 {
-	private AppleUIKitWindow? _nativeWindow;
+	private static readonly object _visibilityGate = new();
+	private static int _visibleWindowCount;
 
-	private RootViewController _mainController;
+	private readonly RootViewController _mainController;
 	private readonly DisplayInformation _displayInformation;
-	private InputPane _inputPane;
-	private XamlRoot _xamlRoot;
-	private bool _isPendingShow;
-	private readonly CompositeDisposable _sceneObservers = new();
+	private readonly InputPane _inputPane;
+	private readonly XamlRoot _xamlRoot;
+	private readonly CompositeDisposable _subscriptions = new();
 
-#if !__TVOS__
-	private NSObject? _orientationRegistration;
-#endif
+	// Captured at construction: ContentHostOverride is ambient static state that is only valid
+	// while the window is being created, but it is needed again when the scene connects.
+	private readonly bool _isAlcHosted;
+	private readonly bool _requiresScene;
+
+	private AppleUIKitWindow? _nativeWindow;
+	private bool _isPendingShow;
+	private bool _pendingShowActivate;
+	private bool _isCountedVisible;
+	private bool _isSceneDisconnected;
 
 	public NativeWindowWrapper(Window window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
-		if (!UnoUISceneDelegate.HasSceneManifest())
-		{
-			SetNativeWindow(new AppleUIKitWindow());
-		}
-		else
-		{
-			// The real bounds are only known once the scene connects and provides the native window.
-			Bounds = new Rect(default, new Size(InitialWidth, InitialHeight));
-		}
+		_xamlRoot = xamlRoot;
+		_isAlcHosted = Window.ContentHostOverride is not null;
+		_requiresScene = UnoUISceneDelegate.HasSceneManifest && !_isAlcHosted;
 
 		_mainController = new RootViewController();
 		_mainController.SetXamlRoot(xamlRoot);
-		_xamlRoot = xamlRoot;
 		XamlRootMap.Register(xamlRoot, _mainController);
 		_mainController.View!.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
 
 		_inputPane = InputPane.GetForCurrentView();
 
-		SubscribeBackgroundNotifications();
-
 #if !__TVOS__
-		UIKeyboard.Notifications.ObserveWillShow(OnKeyboardWillShow);
-		UIKeyboard.Notifications.ObserveWillHide(OnKeyboardWillHide);
+		var keyboardWillShow = UIKeyboard.Notifications.ObserveWillShow(OnKeyboardWillShow);
+		var keyboardWillHide = UIKeyboard.Notifications.ObserveWillHide(OnKeyboardWillHide);
+		_subscriptions.Add(Disposable.Create(() =>
+		{
+			keyboardWillShow.Dispose();
+			keyboardWillHide.Dispose();
+		}));
 #endif
 
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
-		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
+		_displayInformation.DpiChanged += OnDpiChanged;
+		_subscriptions.Add(Disposable.Create(() => _displayInformation.DpiChanged -= OnDpiChanged));
 		DispatchDpiChanged();
 
-		if (UnoUISceneDelegate.HasSceneManifest())
+		if (_requiresScene)
 		{
-			AwaitingScene.Enqueue(this);
+			// The scene supplies the native window later; seed a placeholder size so the first
+			// layout pass has something to measure against.
+			Bounds = new Rect(default, new Size(InitialWidth, InitialHeight));
+		}
+		else
+		{
+			if (!UnoUISceneDelegate.HasSceneManifest)
+			{
+				Instance ??= this;
+			}
+
+			// Must run after _mainController exists - SetNativeWindow starts observing it.
+			SetNativeWindow(new AppleUIKitWindow());
 		}
 	}
+
+	/// <summary>
+	/// Gets the wrapper driving app lifecycle for apps that do not use the scene lifecycle, where a
+	/// single window owns the whole app.
+	/// </summary>
+	internal static NativeWindowWrapper? Instance { get; private set; }
+
+	/// <summary>
+	/// Gets a value indicating whether this window is backed by its own scene. ALC-hosted windows
+	/// render into their host's window, so they must never own or request one.
+	/// </summary>
+	internal bool RequiresScene => _requiresScene;
+
+	public override AppleUIKitWindow? NativeWindow => _nativeWindow;
+
+	internal RootViewController MainController => _mainController;
 
 	[MemberNotNull(nameof(_nativeWindow))]
 	internal void SetNativeWindow(AppleUIKitWindow nativeWindow)
@@ -80,16 +112,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
 #endif
 
-		// This method needs to be called synchronously with `UnoSkiaAppDelegate.FinishedLaunching`
-		// otherwise, a black screen may appear.
-		//
-		// Skip the extended-splash transition when a secondary ALC is being hosted
-		// (Window.ContentHostOverride != null). TryCreateExtendedSplashScreen calls
-		// UIWindow.MakeKeyAndVisible eagerly — a secondary ALC window created via
-		// `new Window()` would otherwise immediately cover the host's UIWindow.
-		// ALC-mode windows never reach ShowCore because Window.Activate routes to
-		// ActivateAlcWindow once _alcState is set.
-		if (Window.ContentHostOverride is null)
+		// Must run synchronously with UnoUIApplicationDelegate.FinishedLaunching for the initial
+		// window, otherwise a black screen may appear before the first frame is drawn. ALC-hosted
+		// windows are skipped because this calls MakeKeyAndVisible eagerly, which would cover the
+		// host's own window.
+		if (!_isAlcHosted)
 		{
 			NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
 		}
@@ -98,70 +125,166 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		if (_isPendingShow)
 		{
-			ShowCore();
+			_isPendingShow = false;
+			base.Show(_pendingShowActivate);
 		}
 	}
 
-	public static ConcurrentQueue<NativeWindowWrapper> AwaitingScene { get; } = new();
-
-	private static int _visibleWindowCount;
-
-	public override AppleUIKitWindow? NativeWindow => _nativeWindow;
-
-	private void DispatchDpiChanged() =>
-		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
-
-	protected override void ShowCore()
+	public override void Show(bool activateWindow)
 	{
 		if (_nativeWindow is null)
 		{
-			// In case of scene delegate apps, the native window
-			// may be created after Show is called.
+			// Under the scene lifecycle the native window only exists once UIKit connects the
+			// scene. Defer so IsVisible and Shown are not raised before anything is on screen.
 			_isPendingShow = true;
+			_pendingShowActivate = activateWindow;
 			return;
 		}
 
-		_isPendingShow = false;
-		Interlocked.Increment(ref _visibleWindowCount);
+		base.Show(activateWindow);
+	}
+
+	protected override void ShowCore()
+	{
+		var nativeWindow = _nativeWindow;
+
+		if (nativeWindow is null)
+		{
+			return;
+		}
 
 		if (_xamlRoot.Content is FrameworkElement { IsLoaded: false } fe)
 		{
 			void OnLoaded(object sender, object args)
 			{
-				if (this.Log().IsDebugEnabled())
+				fe.Loaded -= OnLoaded;
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
 					this.Log().Debug($"ShowCore: Root loaded");
 				}
 
-				NativeWindowHelpers.TransitionFromSplashScreen(_nativeWindow, _mainController);
+				NativeWindowHelpers.TransitionFromSplashScreen(nativeWindow, _mainController);
 			}
 
 			fe.Loaded += OnLoaded;
 		}
 		else
 		{
-			if (this.Log().IsDebugEnabled())
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Debug($"ShowCore: Root already loaded");
 			}
 
-			NativeWindowHelpers.TransitionFromSplashScreen(_nativeWindow, _mainController);
+			NativeWindowHelpers.TransitionFromSplashScreen(nativeWindow, _mainController);
 		}
 	}
 
-	internal RootViewController MainController => _mainController;
+	protected override void CloseCore()
+	{
+		MarkHidden();
+
+		if (!_isSceneDisconnected &&
+			Window != Microsoft.UI.Xaml.Window.InitialWindow &&
+			_nativeWindow?.WindowScene?.Session is { } session)
+		{
+			// A secondary window must also tear down its scene, otherwise the OS keeps showing it
+			// in the app switcher after the XAML window is gone.
+			UIApplication.SharedApplication.RequestSceneSessionDestruction(session, null, null);
+		}
+
+		SceneWindowRegistry.Remove(this);
+		_subscriptions.Dispose();
+
+		base.CloseCore();
+	}
+
+	internal void OnSceneEnteredForeground()
+	{
+		if (MarkVisible())
+		{
+			// The first window returning to the foreground drives the app-level events.
+			Application.Current?.RaiseResuming();
+			Application.Current?.RaiseLeavingBackground(() => OnNativeVisibilityChanged(true));
+		}
+		else
+		{
+			OnNativeVisibilityChanged(true);
+		}
+	}
+
+	internal void OnSceneEnteredBackground()
+	{
+		OnNativeVisibilityChanged(false);
+
+		if (MarkHidden())
+		{
+			Application.Current?.RaiseEnteredBackground(() => Application.Current?.RaiseSuspending());
+		}
+	}
+
+	internal void OnSceneActivationChanged(CoreWindowActivationState state) => OnNativeActivated(state);
+
+	internal void OnSceneDisconnected()
+	{
+		_isSceneDisconnected = true;
+
+		MarkHidden();
+		OnNativeVisibilityChanged(false);
+		OnNativeClosed();
+
+		Close();
+
+		XamlRootMap.Unregister(_xamlRoot);
+		_nativeWindow = null;
+	}
 
 	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
-	internal void OnNativeClosed() => RaiseClosing(); // TODO: Handle closing when multiwindow #13847
+	internal void OnNativeClosed() => RaiseClosing();
+
+	/// <returns><see langword="true"/> when this window became the first visible one.</returns>
+	private bool MarkVisible()
+	{
+		lock (_visibilityGate)
+		{
+			if (_isCountedVisible)
+			{
+				return false;
+			}
+
+			_isCountedVisible = true;
+			return ++_visibleWindowCount == 1;
+		}
+	}
+
+	/// <returns><see langword="true"/> when this window was the last visible one.</returns>
+	private bool MarkHidden()
+	{
+		lock (_visibilityGate)
+		{
+			if (!_isCountedVisible)
+			{
+				return false;
+			}
+
+			_isCountedVisible = false;
+			return --_visibleWindowCount == 0;
+		}
+	}
+
+	private void OnDpiChanged(DisplayInformation sender, object args) => DispatchDpiChanged();
+
+	private void DispatchDpiChanged() =>
+		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
 	internal void RaiseNativeSizeChanged()
 	{
 		if (_nativeWindow is null)
 		{
-			throw new InvalidOperationException("Native window is not set.");
+			return;
 		}
 
 		var newWindowSize = GetWindowSize();
@@ -175,32 +298,44 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	{
 		if (_nativeWindow is null)
 		{
-			throw new InvalidOperationException("Native window is not set.");
+			return;
 		}
 
-#if !__TVOS__
-		_orientationRegistration = UIApplication
-			.Notifications
-			.ObserveDidChangeStatusBarOrientation(
-				(sender, args) => RaiseNativeSizeChanged()
-			);
+		var nativeWindow = _nativeWindow;
 
-		_orientationRegistration = UIApplication
+#if !__TVOS__
+		var orientationRegistration = UIApplication
 			.Notifications
-			.ObserveDidChangeStatusBarFrame(
-				(sender, args) => RaiseNativeSizeChanged()
-			);
+			.ObserveDidChangeStatusBarOrientation((sender, args) => RaiseNativeSizeChanged());
+
+		var statusBarFrameRegistration = UIApplication
+			.Notifications
+			.ObserveDidChangeStatusBarFrame((sender, args) => RaiseNativeSizeChanged());
+
+		_subscriptions.Add(Disposable.Create(() =>
+		{
+			orientationRegistration.Dispose();
+			statusBarFrameRegistration.Dispose();
+		}));
 #endif
 
-		_nativeWindow.FrameChanged +=
-			() => RaiseNativeSizeChanged();
+		void OnFrameChanged() => RaiseNativeSizeChanged();
+		nativeWindow.FrameChanged += OnFrameChanged;
+		_subscriptions.Add(Disposable.Create(() => nativeWindow.FrameChanged -= OnFrameChanged));
 
-		_mainController.VisibleBoundsChanged +=
-			() => RaiseNativeSizeChanged();
+		void OnVisibleBoundsChanged() => RaiseNativeSizeChanged();
+		_mainController.VisibleBoundsChanged += OnVisibleBoundsChanged;
+		_subscriptions.Add(Disposable.Create(() => _mainController.VisibleBoundsChanged -= OnVisibleBoundsChanged));
 
 		var statusBar = StatusBar.GetForCurrentView();
-		statusBar.Showing += (o, e) => RaiseNativeSizeChanged();
-		statusBar.Hiding += (o, e) => RaiseNativeSizeChanged();
+		void OnStatusBarVisibilityChanged(StatusBar sender, object args) => RaiseNativeSizeChanged();
+		statusBar.Showing += OnStatusBarVisibilityChanged;
+		statusBar.Hiding += OnStatusBarVisibilityChanged;
+		_subscriptions.Add(Disposable.Create(() =>
+		{
+			statusBar.Showing -= OnStatusBarVisibilityChanged;
+			statusBar.Hiding -= OnStatusBarVisibilityChanged;
+		}));
 
 		RaiseNativeSizeChanged();
 	}
@@ -246,98 +381,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	}
 
 	private static bool UseSafeAreaInsets => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);
-
-	private void SubscribeBackgroundNotifications()
-	{
-		// For non-scene-manifest apps, the app delegate handles lifecycle events (same as master).
-		// For scene-manifest apps, we handle per-window with visible count tracking.
-		if (!UnoUISceneDelegate.HasSceneManifest())
-		{
-			return;
-		}
-
-		// The scene isn't known yet when this runs, so observers are registered globally and
-		// filtered per notification in IsForThisScene.
-		Observe(UIScene.DidEnterBackgroundNotification, OnEnteredBackground);
-		Observe(UIScene.WillEnterForegroundNotification, OnLeavingBackground);
-		Observe(UIScene.DidActivateNotification, OnActivated);
-		Observe(UIScene.WillDeactivateNotification, OnDeactivated);
-
-		void Observe(NSString name, Action<NSNotification> handler)
-		{
-			var token = NSNotificationCenter.DefaultCenter.AddObserver(name, handler);
-			_sceneObservers.Add(Disposable.Create(() => NSNotificationCenter.DefaultCenter.RemoveObserver(token)));
-		}
-	}
-
-	internal void UnsubscribeBackgroundNotifications() => _sceneObservers.Dispose();
-
-	/// <summary>
-	/// Determines whether a scene notification belongs to the scene backing this window.
-	/// Observers are registered on the default center, so every wrapper is notified for every scene.
-	/// </summary>
-	private bool IsForThisScene(NSNotification notification) =>
-		_nativeWindow?.WindowScene is { } windowScene &&
-		notification.Object is UIScene scene &&
-		scene.Handle == windowScene.Handle;
-
-	private void OnEnteredBackground(NSNotification notification)
-	{
-		if (!IsForThisScene(notification))
-		{
-			return;
-		}
-
-		OnNativeVisibilityChanged(false);
-
-		if (Interlocked.Decrement(ref _visibleWindowCount) == 0)
-		{
-			// Last window backgrounded - raise app-level events
-			Application.Current?.RaiseEnteredBackground(() => Application.Current?.RaiseSuspending());
-		}
-	}
-
-	private void OnLeavingBackground(NSNotification notification)
-	{
-		if (!IsForThisScene(notification))
-		{
-			return;
-		}
-
-		// Increment first so the check and the update are a single atomic step; a zero
-		// previous value means this is the first window coming back to the foreground.
-		if (Interlocked.Increment(ref _visibleWindowCount) == 1)
-		{
-			Application.Current?.RaiseResuming();
-			Application.Current?.RaiseLeavingBackground(() => OnNativeVisibilityChanged(true));
-		}
-		else
-		{
-			OnNativeVisibilityChanged(true);
-		}
-	}
-
-	private void OnActivated(NSNotification notification)
-	{
-		if (IsForThisScene(notification))
-		{
-			OnNativeActivated(CoreWindowActivationState.CodeActivated);
-		}
-	}
-
-	private void OnDeactivated(NSNotification notification)
-	{
-		if (IsForThisScene(notification))
-		{
-			OnNativeActivated(CoreWindowActivationState.Deactivated);
-		}
-	}
-
-	protected override void CloseCore()
-	{
-		UnsubscribeBackgroundNotifications();
-		base.CloseCore();
-	}
 
 #if !__TVOS__
 	private void OnKeyboardWillShow(object? sender, UIKeyboardEventArgs e)

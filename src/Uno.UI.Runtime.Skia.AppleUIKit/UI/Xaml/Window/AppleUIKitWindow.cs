@@ -13,11 +13,11 @@ internal partial class AppleUIKitWindow : UIWindow
 {
 	internal event Action? FrameChanged;
 
-	public AppleUIKitWindow()
+	internal AppleUIKitWindow()
 	{
 	}
 
-	public AppleUIKitWindow(UIWindowScene scene) : base(scene)
+	internal AppleUIKitWindow(UIWindowScene scene) : base(scene)
 	{
 	}
 
