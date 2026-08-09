@@ -1705,12 +1705,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 	}
 
-	private bool SetScissor(IntPtr pass, Vector4 clip)
+	// Computes the device-space scissor for a clip AABB (clamped to the surface). Returns false when degenerate
+	// (the op is fully clipped out and should be skipped).
+	private bool TryScissor(Vector4 clip, out int x, out int y, out int w, out int h)
 	{
-		int x = (int)MathF.Max(0, MathF.Floor(clip.X)); int y = (int)MathF.Max(0, MathF.Floor(clip.Y));
+		x = (int)MathF.Max(0, MathF.Floor(clip.X)); y = (int)MathF.Max(0, MathF.Floor(clip.Y));
 		int r = (int)MathF.Min(_s.Width, MathF.Ceiling(clip.Z)); int b = (int)MathF.Min(_s.Height, MathF.Ceiling(clip.W));
-		int w = r - x, h = b - y; if (w <= 0 || h <= 0) { return false; }
-		wgpuRenderPassEncoderSetScissorRect(pass, (uint)x, (uint)y, (uint)w, (uint)h); return true;
+		w = r - x; h = b - y; return w > 0 && h > 0;
 	}
 	private Vector2 Ndc(Vector2 dev) => new(2f * dev.X / _s.Width - 1f, 1f - 2f * dev.Y / _s.Height);
 
@@ -2229,9 +2230,18 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
 
+		// Track the last-applied scissor and skip redundant SetScissorRect calls: static chrome draws many ops under
+		// one clip, so this collapses a per-op call to one per distinct clip. Locals (not a field) keep it correct
+		// under the recursive nested-layer RenderInto (each pass has its own scissor state).
+		int lastX = -1, lastY = -1, lastW = -1, lastH = -1;
 		foreach (var (kind, b0, u0, b1, flag, clip, clipBg) in ops)
 		{
-			if (!SetScissor(pass, clip.Aabb)) { continue; }
+			if (!TryScissor(clip.Aabb, out var sx, out var sy, out var sw, out var sh)) { continue; }
+			if (sx != lastX || sy != lastY || sw != lastW || sh != lastH)
+			{
+				wgpuRenderPassEncoderSetScissorRect(pass, (uint)sx, (uint)sy, (uint)sw, (uint)sh);
+				lastX = sx; lastY = sy; lastW = sw; lastH = sh;
+			}
 			switch (kind)
 			{
 				case 0:
