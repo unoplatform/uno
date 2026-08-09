@@ -8,19 +8,38 @@
 	</PropertyGroup>
 
 	<Target Name="ProvisionWgpuNative" AfterTargets="Build">
-		<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Linux'))">
-			<_WgpuAsset>wgpu-linux-x86_64-release.zip</_WgpuAsset>
-			<_WgpuNativeFile>libwgpu_native.so</_WgpuNativeFile>
-		</PropertyGroup>
-		<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+		<!-- Pick the native by the target RuntimeIdentifier when set (so a cross-publish, e.g. Linux -> win-x64,
+		     gets the right binary), else fall back to the build host OS/arch. -->
+		<PropertyGroup Condition="$(RuntimeIdentifier.StartsWith('win'))">
 			<_WgpuAsset>wgpu-windows-x86_64-msvc-release.zip</_WgpuAsset>
 			<_WgpuNativeFile>wgpu_native.dll</_WgpuNativeFile>
 		</PropertyGroup>
-		<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX')) And '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'Arm64'">
+		<PropertyGroup Condition="$(RuntimeIdentifier.StartsWith('linux'))">
+			<_WgpuAsset>wgpu-linux-x86_64-release.zip</_WgpuAsset>
+			<_WgpuNativeFile>libwgpu_native.so</_WgpuNativeFile>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(RuntimeIdentifier)' == 'osx-arm64'">
 			<_WgpuAsset>wgpu-macos-aarch64-release.zip</_WgpuAsset>
 			<_WgpuNativeFile>libwgpu_native.dylib</_WgpuNativeFile>
 		</PropertyGroup>
-		<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX')) And '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'X64'">
+		<PropertyGroup Condition="'$(RuntimeIdentifier)' == 'osx-x64'">
+			<_WgpuAsset>wgpu-macos-x86_64-release.zip</_WgpuAsset>
+			<_WgpuNativeFile>libwgpu_native.dylib</_WgpuNativeFile>
+		</PropertyGroup>
+
+		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('Linux'))">
+			<_WgpuAsset>wgpu-linux-x86_64-release.zip</_WgpuAsset>
+			<_WgpuNativeFile>libwgpu_native.so</_WgpuNativeFile>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('Windows'))">
+			<_WgpuAsset>wgpu-windows-x86_64-msvc-release.zip</_WgpuAsset>
+			<_WgpuNativeFile>wgpu_native.dll</_WgpuNativeFile>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('OSX')) And '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'Arm64'">
+			<_WgpuAsset>wgpu-macos-aarch64-release.zip</_WgpuAsset>
+			<_WgpuNativeFile>libwgpu_native.dylib</_WgpuNativeFile>
+		</PropertyGroup>
+		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('OSX')) And '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'X64'">
 			<_WgpuAsset>wgpu-macos-x86_64-release.zip</_WgpuAsset>
 			<_WgpuNativeFile>libwgpu_native.dylib</_WgpuNativeFile>
 		</PropertyGroup>

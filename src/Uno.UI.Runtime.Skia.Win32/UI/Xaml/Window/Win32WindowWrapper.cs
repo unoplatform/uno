@@ -115,6 +115,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				global::Uno.WebGpu.Native.WGPUTextureFormat.BGRA8Unorm,
 				inst => global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext.CreateHwndSurface(inst, Win32Helper.GetHInstance(), _hwnd));
 			_webgpuContext = context;
+			// Pair the WebGPU renderer with the WebGPU drawing factory so images, gradient shaders, color glyphs,
+			// nine-slice, SVG and RenderTargetBitmap are GPU-resident WebGPU resources (not Skia objects the WebGPU
+			// recorder drops). Geometry/decode still delegate to the previous (Skia) factory.
+			global::Uno.UI.Composition.Drawing.DrawingFactory.Register(
+				new global::Uno.UI.Composition.WebGpu.WebGpuDrawingFactory(context.Device, global::Uno.UI.Composition.Drawing.DrawingFactory.Current));
 			Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = new global::Uno.UI.Composition.WebGpu.WebGpuRenderer(context.Device);
 			_renderer = new Win32WebGpuRenderer(context);
 		}
