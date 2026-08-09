@@ -74,6 +74,9 @@ public sealed unsafe class WebGpuSwapChainContext : IGraphicsContext, IWebGpuDev
 		wgpuTextureRelease(_currentTexture);
 		_currentView = IntPtr.Zero;
 		_currentTexture = IntPtr.Zero;
+		// The acquired view is released; drop the alias the target holds so a resize-time Dispose (and the next
+		// acquire's early-return guard) never sees a dangling swapchain view.
+		if (_target is not null) { _target.View = IntPtr.Zero; }
 	}
 
 	private void Configure(int width, int height)
