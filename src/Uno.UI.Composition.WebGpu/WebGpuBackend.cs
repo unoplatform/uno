@@ -180,6 +180,16 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	// Bgra8Unorm). UNO_WEBGPU_MSAA=4 forces 4x. (1x/no-MSAA would need a separate no-resolve path — not wired.)
 	public uint MsaaSamples { get; private set; } = 4;
 
+	// TEMP DIAGNOSTIC (Win32 OOM): log + clamp every texture extent so an absurd size (e.g. a bad DPI/bounds
+	// computation) is visible in the console and doesn't hard-abort wgpu with "Not enough memory". Remove once
+	// the Win32 texture-allocation crash is root-caused.
+	internal static int _texCreateCount;
+	internal static void TexLog(string site, uint w, uint h, uint samples)
+	{
+		var n = System.Threading.Interlocked.Increment(ref _texCreateCount);
+		if (n <= 1000 || w > 16384 || h > 16384) { Console.WriteLine($"[webgpu] TEX #{n} {site} {w}x{h} x{samples}"); }
+	}
+
 	// The color-attachment format the pipelines + offscreen targets use. Rgba8Unorm by default (the
 	// offscreen/readback path assumes it); a swapchain renderer passes the surface's supported format.
 	public readonly WGPUTextureFormat ColorFormat;
@@ -389,6 +399,7 @@ fn clipCov(fc: vec2<f32>, clip: ClipU, ctex: texture_2d<f32>, csmp: sampler) -> 
 			MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D,
 			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding,
 		};
+		TexLog("CreateColorTarget", (uint)w, (uint)h, 1);
 		var tex = wgpuDeviceCreateTexture(Dev, &td);
 		return wgpuTextureCreateView(tex, null);
 	}
@@ -720,25 +731,53 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 		box[0] = 1; box[1] = (uint)type;
 	}
 
-	public void Dispose() { }
+	// Releases the transient pools (the multi-GB VRAM the offscreens + resize generations accumulate). The wgpu
+	// device/queue/adapter/instance are owned by the host context and released there; here we only reclaim what
+	// this device allocated into its own pools so a closed window doesn't leak its full-window textures.
+	public void Dispose()
+	{
+		Pool?.Dispose();
+		BufferPool?.Dispose();
+	}
 }
 
 // Transient GPU-texture pool for the per-frame offscreens (shadow/backdrop/layer/path-coverage surfaces + blur
 // temps). BeginFrame marks all entries free; Rent reuses a free entry matching the key or creates one — so a
 // steady-state frame allocates nothing. Every renter clears (LoadOp.Clear) before writing, so reuse is safe.
 // (These offscreens stay "in use" until the frame's main pass samples them; reuse happens across frames.)
-public sealed unsafe class WebGpuTexturePool
+public sealed unsafe class WebGpuTexturePool : IDisposable
 {
 	private readonly WebGpuDevice _d;
-	private sealed class Entry { public IntPtr Tex; public IntPtr View; public int W, H, Samples; public WGPUTextureFormat Fmt; public WGPUTextureUsage Usage; public bool InUse; }
+	private sealed class Entry { public IntPtr Tex; public IntPtr View; public int W, H, Samples; public WGPUTextureFormat Fmt; public WGPUTextureUsage Usage; public bool InUse; public int LastUsed; }
 	private readonly System.Collections.Generic.List<Entry> _entries = new();
 	// The pool is shared per-device, so an off-loop render (e.g. RenderTargetBitmap) can hit it concurrently
 	// with the on-window render loop. Guard mutation/enumeration so a concurrent Add can't invalidate Rent's walk.
 	private readonly object _gate = new();
+	private int _frameNo;
+	// Release entries not rented for this many frames. Without eviction, every window resize strands a whole
+	// generation of full-window MSAA colour + depth textures (they no longer match a Rent key) until process exit.
+	private const int EvictAfterFrames = 16;
 
 	public WebGpuTexturePool(WebGpuDevice d) => _d = d;
 
-	public void BeginFrame() { lock (_gate) { foreach (var e in _entries) { e.InUse = false; } } }
+	public void BeginFrame()
+	{
+		lock (_gate)
+		{
+			for (int i = _entries.Count - 1; i >= 0; i--)
+			{
+				var e = _entries[i];
+				if (!e.InUse && _frameNo - e.LastUsed > EvictAfterFrames)
+				{
+					if (e.View != IntPtr.Zero) { wgpuTextureViewRelease(e.View); }
+					if (e.Tex != IntPtr.Zero) { wgpuTextureDestroy(e.Tex); }
+					_entries.RemoveAt(i);
+				}
+				else { e.InUse = false; }
+			}
+			_frameNo++;
+		}
+	}
 
 	public IntPtr Rent(int w, int h, int samples, WGPUTextureUsage usage, WGPUTextureFormat fmt)
 	{
@@ -746,14 +785,24 @@ public sealed unsafe class WebGpuTexturePool
 		{
 			foreach (var e in _entries)
 			{
-				if (!e.InUse && e.W == w && e.H == h && e.Samples == samples && e.Fmt == fmt && e.Usage == usage) { e.InUse = true; return e.View; }
+				if (!e.InUse && e.W == w && e.H == h && e.Samples == samples && e.Fmt == fmt && e.Usage == usage) { e.InUse = true; e.LastUsed = _frameNo; return e.View; }
 			}
 			var td = new WGPUTextureDescriptor { Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 }, Format = fmt, MipLevelCount = 1, SampleCount = (uint)samples, Dimension = WGPUTextureDimension._2D, Usage = usage };
+			WebGpuDevice.TexLog("Pool.Rent", (uint)w, (uint)h, (uint)samples);
 			var tex = wgpuDeviceCreateTexture(_d.Dev, &td);
 			var view = wgpuTextureCreateView(tex, null);
-			_entries.Add(new Entry { Tex = tex, View = view, W = w, H = h, Samples = samples, Fmt = fmt, Usage = usage, InUse = true });
+			_entries.Add(new Entry { Tex = tex, View = view, W = w, H = h, Samples = samples, Fmt = fmt, Usage = usage, InUse = true, LastUsed = _frameNo });
 			return view;
 		}
+	}
+
+	/// <summary>Marks a rented view free again so it can be re-rented within the SAME frame. Used for the depth/
+	/// stencil target, which is written only inside its own (already-ended) render pass and never sampled after —
+	/// so one depth texture per size is reused across all of a frame's offscreen passes + the main pass.</summary>
+	public void Return(IntPtr view)
+	{
+		if (view == IntPtr.Zero) { return; }
+		lock (_gate) { foreach (var e in _entries) { if (e.View == view) { e.InUse = false; return; } } }
 	}
 
 	/// <summary>The backing texture for a rented view, or Zero if unknown. Used to flush an offscreen's resolve so
@@ -763,12 +812,25 @@ public sealed unsafe class WebGpuTexturePool
 		lock (_gate) { foreach (var e in _entries) { if (e.View == view) { return e.Tex; } } }
 		return IntPtr.Zero;
 	}
+
+	public void Dispose()
+	{
+		lock (_gate)
+		{
+			foreach (var e in _entries)
+			{
+				if (e.View != IntPtr.Zero) { wgpuTextureViewRelease(e.View); }
+				if (e.Tex != IntPtr.Zero) { wgpuTextureDestroy(e.Tex); }
+			}
+			_entries.Clear();
+		}
+	}
 }
 
 // Transient GPU-buffer pool (vertex + uniform buffers). Like the texture pool: BeginFrame frees all; Rent
 // reuses a free buffer of the same usage with enough capacity or creates one, so a steady-state frame allocates
 // no buffers. Callers QueueWriteBuffer their data before use.
-public sealed unsafe class WebGpuBufferPool
+public sealed unsafe class WebGpuBufferPool : IDisposable
 {
 	private readonly WebGpuDevice _d;
 	private sealed class Entry { public IntPtr Buf; public int Cap; public WGPUBufferUsage Usage; public bool InUse; }
@@ -779,6 +841,15 @@ public sealed unsafe class WebGpuBufferPool
 	public WebGpuBufferPool(WebGpuDevice d) => _d = d;
 
 	public void BeginFrame() { lock (_gate) { foreach (var e in _entries) { e.InUse = false; } } }
+
+	public void Dispose()
+	{
+		lock (_gate)
+		{
+			foreach (var e in _entries) { if (e.Buf != IntPtr.Zero) { wgpuBufferRelease(e.Buf); } }
+			_entries.Clear();
+		}
+	}
 
 	public IntPtr Rent(int byteSize, WGPUBufferUsage usage)
 	{
@@ -808,6 +879,11 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 	public IntPtr DepthView;         // multisampled depth/stencil (clip mask + stencil-then-cover)
 	public int Width { get; }
 	public int Height { get; }
+	// True when MSAA colour + depth were rented from the transient pool. Both are write-only within this surface's
+	// own render pass (the MSAA colour resolves into View, depth is discarded) and never sampled afterwards, so
+	// once the pass ends they can be returned to the pool and reused by the next same-size offscreen/main pass —
+	// only the single-sample resolve View must stay live (it's sampled later as a layer/coverage/backdrop texture).
+	public bool Pooled { get; private set; }
 	public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
 
 	// Pooled surfaces rent their views from the WebGpuTexturePool, which owns and reclaims them — Dispose must not
@@ -815,6 +891,10 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 	// release them, otherwise every window resize leaks a full-window MSAA color + depth texture until VRAM is
 	// exhausted (wgpuDeviceCreateTexture: "Not enough memory left").
 	private readonly bool _ownsResources = true;
+	// For a swapchain surface the colour View/Tex are the per-frame acquired swapchain image, borrowed from the
+	// context (WebGpuSwapChainContext) which releases them in Present. Only the MSAA+depth are owned here, so
+	// Dispose (on resize) must NOT release the borrowed colour — doing so double-frees the swapchain view.
+	private readonly bool _ownsColor = true;
 
 	public void Dispose()
 	{
@@ -822,8 +902,11 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 		{
 			return;
 		}
-		if (View != IntPtr.Zero) { wgpuTextureViewRelease(View); View = IntPtr.Zero; }
-		if (Tex != IntPtr.Zero) { wgpuTextureDestroy(Tex); Tex = IntPtr.Zero; }
+		if (_ownsColor)
+		{
+			if (View != IntPtr.Zero) { wgpuTextureViewRelease(View); View = IntPtr.Zero; }
+			if (Tex != IntPtr.Zero) { wgpuTextureDestroy(Tex); Tex = IntPtr.Zero; }
+		}
 		if (MsaaColorView != IntPtr.Zero) { wgpuTextureViewRelease(MsaaColorView); MsaaColorView = IntPtr.Zero; }
 		if (MsaaColorTex != IntPtr.Zero) { wgpuTextureDestroy(MsaaColorTex); MsaaColorTex = IntPtr.Zero; }
 		if (DepthView != IntPtr.Zero) { wgpuTextureViewRelease(DepthView); DepthView = IntPtr.Zero; }
@@ -840,6 +923,7 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 			// TextureBinding so a resolved surface can be sampled (e.g. shadow coverage feeding the blur pass).
 			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.CopySrc | WGPUTextureUsage.TextureBinding,
 		};
+		WebGpuDevice.TexLog("Surface.color", (uint)width, (uint)height, 1);
 		Tex = wgpuDeviceCreateTexture(device.Dev, &td);
 		View = wgpuTextureCreateView(Tex, null);
 		CreateMultisampledTargets(device, width, height);
@@ -850,6 +934,7 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, bool externalColor)
 	{
 		Width = width; Height = height;
+		_ownsColor = false;   // View/Tex are the borrowed swapchain image (set per frame); only MSAA+depth are owned
 		CreateMultisampledTargets(device, width, height);
 	}
 
@@ -859,6 +944,7 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 	{
 		Width = width; Height = height;
 		_ownsResources = false;   // the pool owns and reclaims these; Dispose must not release them
+		Pooled = true;
 		MsaaColorView = pool.Rent(width, height, (int)device.MsaaSamples, WGPUTextureUsage.RenderAttachment, device.ColorFormat);
 		DepthView = pool.Rent(width, height, (int)device.MsaaSamples, WGPUTextureUsage.RenderAttachment, WebGpuDevice.DepthStencilFormat);
 		// CopySrc so the resolved result can be read back (ReadPixelsRgba) for RenderTargetBitmap / offscreen.
@@ -884,6 +970,7 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 			MipLevelCount = 1, SampleCount = device.MsaaSamples, Dimension = WGPUTextureDimension._2D,
 			Usage = WGPUTextureUsage.RenderAttachment,
 		};
+		WebGpuDevice.TexLog("Surface.msaa", (uint)width, (uint)height, device.MsaaSamples);
 		MsaaColorTex = wgpuDeviceCreateTexture(device.Dev, &cd);
 		MsaaColorView = wgpuTextureCreateView(MsaaColorTex, null);
 
@@ -892,6 +979,7 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 }, Format = WebGpuDevice.DepthStencilFormat,
 			MipLevelCount = 1, SampleCount = device.MsaaSamples, Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.RenderAttachment,
 		};
+		WebGpuDevice.TexLog("Surface.depth", (uint)width, (uint)height, device.MsaaSamples);
 		DepthTex = wgpuDeviceCreateTexture(device.Dev, &dd);
 		DepthView = wgpuTextureCreateView(DepthTex, null);
 	}
@@ -1703,6 +1791,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, coverBuf, 0, (nuint)(cq.Count * sizeof(float)));
 		wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
 		wgpuRenderPassEncoderEnd(pass);
+		// The MSAA colour resolved into cov.View and the depth/stencil is spent — free both for the next offscreen
+		// to reuse. Only cov.View (the coverage mask sampled in the main pass) stays live.
+		_d.Pool.Return(cov.MsaaColorView); _d.Pool.Return(cov.DepthView);
 		return cov.View;
 	}
 
@@ -1745,6 +1836,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, coverBuf, 0, (nuint)(cq.Count * sizeof(float)));
 		wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
 		wgpuRenderPassEncoderEnd(pass);
+		_d.Pool.Return(cov.MsaaColorView); _d.Pool.Return(cov.DepthView);
 
 		// 2) separable blur: coverage -> temp (H) -> blur (V).
 		var tempView = _d.Pool.Rent(sw, sh2, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
@@ -2137,6 +2229,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 
 		wgpuRenderPassEncoderEnd(pass);
+		// A pooled offscreen (layer/backdrop) target: its MSAA colour has resolved into View and the depth is spent,
+		// so return both for the next same-size pass to reuse — only View (composited/sampled later) stays live. The
+		// on-window/dedicated target owns its MSAA+depth (persistent across frames) and is left untouched.
+		if (target.Pooled) { _d.Pool.Return(target.MsaaColorView); _d.Pool.Return(target.DepthView); }
 	}
 
 	public Matrix4x4 TotalMatrix => Matrix4x4.Identity;
@@ -2301,6 +2397,7 @@ public sealed unsafe class WebGpuImageTexture : IImageTexture
 		var rgba = new byte[w * h * 4];
 		for (int i = 0; i < bgra.Length; i += 4) { rgba[i] = bgra[i + 2]; rgba[i + 1] = bgra[i + 1]; rgba[i + 2] = bgra[i]; rgba[i + 3] = bgra[i + 3]; }
 		var td = new WGPUTextureDescriptor { Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 }, Format = WGPUTextureFormat.RGBA8Unorm, MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopyDst | WGPUTextureUsage.CopySrc };
+		WebGpuDevice.TexLog("ImageTexture.upload", (uint)w, (uint)h, 1);
 		Tex = wgpuDeviceCreateTexture(device.Dev, &td);
 		View = wgpuTextureCreateView(Tex, null);
 		var dst = new WGPUTexelCopyTextureInfo { Texture = Tex, Aspect = WGPUTextureAspect.All, MipLevel = 0, Origin = default };
