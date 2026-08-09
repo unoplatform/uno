@@ -189,9 +189,10 @@ namespace Uno.WinAppSDKSyncGenerator
 			_tvOSCompilation = await LoadProject($@"{platformProject}.netcoremobile.csproj", "net10.0-tvos26.0");
 			_androidCompilation = await LoadProject($@"{platformProject}.netcoremobile.csproj", "net10.0-android");
 
-			// Skia and Reference surfaces still come from Uno.UI (kept); it carries the
-			// Uno.UWP / Uno.Foundation / Uno.UI.Dispatching symbols transitively.
-			_netstdReferenceCompilation = await LoadProject($@"{topProject}.Reference.csproj", "net10.0");
+			// Skia comes from Uno.UI, which carries the WinRT trio's symbols transitively. The UI
+			// layer has no Reference head anymore (Skia is its compile reference), so the Reference
+			// surface comes from Uno.UWP instead.
+			_netstdReferenceCompilation = await LoadProject($@"{platformProject}.Reference.csproj", "net10.0");
 			_wasmCompilation = await LoadProject($@"{platformProject}.Wasm.csproj", "net10.0");
 			_skiaCompilation = await LoadProject($@"{topProject}.Skia.csproj", "net10.0");
 
