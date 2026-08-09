@@ -1,5 +1,4 @@
-﻿#if !__NETSTD_REFERENCE__
-using System;
+﻿using System;
 using System.IO;
 using SkiaSharp;
 using Svg.Skia;
@@ -163,4 +162,3 @@ internal partial class SvgCanvas : SkiaCanvas
 		return scaleMatrix;
 	}
 }
-#endif

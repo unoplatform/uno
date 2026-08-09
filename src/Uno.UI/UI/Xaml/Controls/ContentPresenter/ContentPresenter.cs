@@ -42,9 +42,6 @@ namespace Microsoft.UI.Xaml.Controls;
 [ContentProperty(Name = nameof(Content))]
 public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePoolAware
 {
-#if !UNO_HAS_BORDER_VISUAL
-	private readonly BorderLayerRenderer _borderRenderer;
-#endif
 
 	private bool _firstLoadResetDone;
 	private View _contentTemplateRoot;
@@ -57,9 +54,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public ContentPresenter()
 	{
-#if !UNO_HAS_BORDER_VISUAL
-		_borderRenderer = new BorderLayerRenderer(this);
-#endif
 		UpdateLastUsedTheme();
 
 		InitializePlatform();
@@ -70,9 +64,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 #endif
 	public BrushTransition BackgroundTransition { get; set; }
 
-#if UNO_HAS_BORDER_VISUAL
 	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
-#endif
 
 	partial void InitializePlatform();
 
@@ -198,11 +190,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	}
 	private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackgroundSizing();
-#else
-		UpdateBorder();
-#endif
 		base.OnBackgroundSizingChangedInner(e);
 	}
 
@@ -533,11 +521,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		// TODO: https://github.com/unoplatform/uno/issues/16705
-#else
-		UpdateBorder();
-#endif
 	}
 
 	#endregion
@@ -564,11 +548,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBorderThickness();
-#else
-		UpdateBorder();
-#endif
 	}
 
 	#endregion
@@ -594,11 +574,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBorderBrush();
-#else
-		UpdateBorder();
-#endif
 	}
 
 
@@ -618,11 +594,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateCornerRadius();
-#else
-		UpdateBorder();
-#endif
 	}
 
 	#endregion
@@ -882,7 +854,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 	}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	internal override void EnterImpl(EnterParams @params, int depth)
 	{
 		base.EnterImpl(@params, depth);
@@ -913,7 +884,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			DetachNativeElement(Content);
 		}
 	}
-#endif
 
 	private protected override void OnLoaded()
 	{
@@ -929,33 +899,13 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
-		{
-			SetUpdateTemplate();
-		}
-#endif
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		UpdateBorder();
-
-		if (IsNativeHost)
-		{
-			AttachNativeElement();
-		}
-#endif
 	}
 
 	private protected override void OnUnloaded()
 	{
 		base.OnUnloaded();
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		if (IsNativeHost)
-		{
-			DetachNativeElement(Content);
-		}
-#endif
 	}
 
 	private bool ResetDataContextOnFirstLoad()
@@ -1109,7 +1059,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// </remarks>
 	private protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
 		BorderHelper.SetUpBrushTransitionIfAllowed(
 			(BorderVisual)this.Visual,
@@ -1117,9 +1066,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			e.NewValue as Brush,
 			this.BackgroundTransition,
 			((IDependencyObjectStoreProvider)this).Store.GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
-#else
-		UpdateBorder();
-#endif
 	}
 
 	internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
@@ -1277,9 +1223,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// </summary>
 	partial void DetachNativeElement(object content);
 
-#if !UNO_HAS_BORDER_VISUAL
-	private void UpdateBorder() => _borderRenderer.Update();
-#endif
 
 	private void SetUpdateTemplate()
 	{

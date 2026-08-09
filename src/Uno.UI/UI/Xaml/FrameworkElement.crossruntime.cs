@@ -1,7 +1,4 @@
-﻿#if __NETSTD_REFERENCE__
-#pragma warning disable IDE0051
-#endif
-
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;

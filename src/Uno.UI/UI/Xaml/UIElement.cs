@@ -100,9 +100,7 @@ namespace Microsoft.UI.Xaml
 		/// theming is enhanced-lifecycle only; this is a no-op on native targets.</remarks>
 		internal void NotifyThemeChanged(Theme theme, bool forceRefresh = false)
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			((IDependencyObjectStoreProvider)this).Store.NotifyThemeChanged(theme, forceRefresh);
-#endif
 		}
 
 		public Size DesiredSize => Visibility == Visibility.Visible && HasLayoutStorage ? m_desiredSize : default;
@@ -952,7 +950,6 @@ namespace Microsoft.UI.Xaml
 
 			var bounds = root.XamlRoot.Bounds;
 
-#if !__NETSTD_REFERENCE__
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			var eventManager = root.GetContext().EventManager;
@@ -1040,7 +1037,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			throw new LayoutCycleException("Layout cycle detected. For more information, see https://aka.platform.uno/layout-cycle");
-#endif
 		}
 
 		internal void ApplyClip()
@@ -2009,5 +2005,5 @@ namespace Microsoft.UI.Xaml
 #if DEBUG
 		public string ShowLocalVisualTree() => this.ShowLocalVisualTree(1000);
 #endif
-		}
+	}
 }

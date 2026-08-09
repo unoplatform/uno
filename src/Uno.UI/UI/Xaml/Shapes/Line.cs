@@ -103,9 +103,5 @@ namespace Microsoft.UI.Xaml.Shapes
 		}
 		#endregion
 
-#if __NETSTD_REFERENCE__
-		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
-		protected override Size ArrangeOverride(Size finalSize) => base.ArrangeOverride(finalSize);
-#endif
 	}
 }

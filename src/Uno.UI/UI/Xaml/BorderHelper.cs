@@ -1,4 +1,3 @@
-#if UNO_HAS_BORDER_VISUAL
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -87,4 +86,3 @@ internal static class BorderHelper
 		}
 	}
 }
-#endif

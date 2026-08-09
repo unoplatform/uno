@@ -34,7 +34,6 @@ namespace Uno.UI
 			return null;
 		}
 
-#if !__NETSTD_REFERENCE__
 		/// <summary>
 		/// Find the first child of a specific type.
 		/// </summary>
@@ -176,7 +175,6 @@ namespace Uno.UI
 				}
 			}
 		}
-	#nullable enable
-#endif
+#nullable enable
 	}
 }

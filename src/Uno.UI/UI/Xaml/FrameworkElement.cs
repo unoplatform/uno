@@ -166,16 +166,11 @@ namespace Microsoft.UI.Xaml
 		{
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 			SizeChanged?.Invoke(this, args);
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-			_renderTransform?.UpdateSize(args.NewSize);
-#endif
 #endif
 		}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal void UpdateRenderTransformSize(Size newSize)
 			=> _renderTransform?.UpdateSize(newSize);
-#endif
 
 #if !IS_UNIT_TESTS
 		private protected override double GetActualHeight()
@@ -281,9 +276,7 @@ namespace Microsoft.UI.Xaml
 			LogicalParentOverride ??
 			((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
 
-#if !__NETSTD_REFERENCE__
 		internal bool HasParent() => Parent != null;
-#endif
 
 		public global::System.Uri BaseUri
 		{
@@ -404,7 +397,6 @@ namespace Microsoft.UI.Xaml
 		{
 			this.StoreTryEnableHardReferences();
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			var effectiveTheme = GetTheme();
 
 			// Apply active style and default style when we enter the visual tree.
@@ -430,21 +422,11 @@ namespace Microsoft.UI.Xaml
 					EnsureThemeForeground(parentFg);
 				}
 			}
-#else
-			if (RequestedTheme is not ElementTheme.Default)
-			{
-				SyncRootRequestedTheme();
-			}
-			ApplyStyles();
-			this.UpdateResourceBindings();
-#endif
 		}
 
 		partial void OnUnloadedPartial()
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			ClearThemeStateOnUnloaded();
-#endif
 			this.StoreDisableHardReferences();
 		}
 
@@ -755,41 +737,30 @@ namespace Microsoft.UI.Xaml
 		{
 			add
 			{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				var isFirstSubscriber = _layoutUpdated is null;
-#endif
 
 				_layoutUpdated += value;
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				if (isFirstSubscriber)
 				{
 					Uno.UI.Extensions.DependencyObjectExtensions.GetContext(this).EventManager.AddLayoutUpdatedEventHandler(this);
 				}
-#endif
 			}
 			remove
 			{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				var hadSubscribers = _layoutUpdated is not null;
-#endif
 
 				_layoutUpdated -= value;
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				if (hadSubscribers && _layoutUpdated is null)
 				{
 					Uno.UI.Extensions.DependencyObjectExtensions.GetContext(this).EventManager.RemoveLayoutUpdatedEventHandler(this);
 				}
-#endif
 			}
 		}
 
 		// This shouldn't be virtual on enhanced lifecycle as it won't be called if there is no real subscriber to LayoutUpdated.
 		internal
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-			virtual
-#endif
 			void OnLayoutUpdated()
 		{
 			_layoutUpdated?.Invoke(null, null);
@@ -1008,5 +979,5 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-		}
+	}
 }

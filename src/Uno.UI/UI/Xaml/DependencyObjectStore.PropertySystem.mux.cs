@@ -14,7 +14,6 @@
 
 #nullable enable
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 
 using System;
 using System.Collections;
@@ -339,4 +338,3 @@ public partial class DependencyObjectStore
 	}
 }
 
-#endif
