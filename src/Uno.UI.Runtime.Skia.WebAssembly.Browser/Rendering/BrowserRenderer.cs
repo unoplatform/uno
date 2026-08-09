@@ -81,6 +81,10 @@ internal partial class BrowserRenderer
 			// JS interop marshals the bytes as base64; decode to byte[] here.
 			WebGpuDevice.BrowserReadbackAsync = async (buf, len) =>
 				Convert.FromBase64String(await WebGpuJsInterop.MapReadBase64Async((int)buf, len));
+			// Pair the WebGPU renderer with the WebGPU drawing factory: images, gradient shaders, color glyphs,
+			// nine-slice, SVG and RenderTargetBitmap all become GPU-resident WebGPU resources instead of Skia
+			// objects the WebGPU recorder can't draw. Geometry/decode still delegate to the previous (Skia) factory.
+			Uno.UI.Composition.Drawing.DrawingFactory.Register(new WebGpuDrawingFactory(device, Uno.UI.Composition.Drawing.DrawingFactory.Current));
 			_webgpuContext = new WebGpuBrowserGraphicsContext(device, WebAssemblyWindowWrapper.Instance.CanvasId);
 			CompositionTarget.Renderer = new WebGpuRenderer(device);
 			this.Log().Info("Neutral graphics pipeline active: WebGpu context via WebGpuRenderer (browser).");
