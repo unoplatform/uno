@@ -571,20 +571,20 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
     let a = g.geo.xy; let b = g.geo.zw; let ab = b - a; let denom = dot(ab, ab);
     if (denom > 0.0) { t = dot(fc.xy - a, ab) / denom; }
   } else {
-    // Radial: normalize to unit-ellipse space, then param along the ray from the focal origin so t=0 at the
-    // origin and t=1 at the ellipse edge. origin == center reduces to plain concentric distance.
-    let c = g.geo.xy; let rx = g.geo.z; let ry = g.geo.w;
-    if (rx > 0.0 && ry > 0.0) {
-      let inv = vec2<f32>(1.0 / rx, 1.0 / ry);
-      let pn = (fc.xy - c) * inv;
-      let on = (g.origin.xy - c) * inv;
-      let dir = pn - on; let aa = dot(dir, dir);
-      if (aa < 1e-9) { t = 0.0; }
-      else {
-        let bb = 2.0 * dot(on, dir); let cc = dot(on, on) - 1.0;
-        let s = (-bb + sqrt(max(bb * bb - 4.0 * aa * cc, 0.0))) / (2.0 * aa);
-        t = 1.0 / max(s, 1e-6);
-      }
+    // Radial: map the device delta from the (device-space) center into unit-ellipse space via M — the inverse of
+    // the gradient's local->device linear map, per-axis normalized by the local radii. M carries rotation, so a
+    // rotated elliptical gradient (and an off-centre focal under rotation) is exact, not axis-aligned-approximate.
+    // Then param along the ray from the focal origin so t=0 at the origin and t=1 at the ellipse edge.
+    let c = g.geo.xy;
+    let m = mat2x2<f32>(g.geo.z, g.geo.w, g.origin.z, g.origin.w);
+    let pn = m * (fc.xy - c);
+    let on = m * (g.origin.xy - c);
+    let dir = pn - on; let aa = dot(dir, dir);
+    if (aa < 1e-9) { t = 0.0; }
+    else {
+      let bb = 2.0 * dot(on, dir); let cc = dot(on, on) - 1.0;
+      let s = (-bb + sqrt(max(bb * bb - 4.0 * aa * cc, 0.0))) / (2.0 * aa);
+      t = 1.0 / max(s, 1e-6);
     }
   }
   let tm = g.header.z;
@@ -1326,10 +1326,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			return;
 		}
 
-		// Compose the gradient's local matrix with the current matrix, so gradient geometry is baked to device
-		// space (the WGSL fragment evaluates in device pixels). Linear is exact under affine; radial is elliptical
-		// (each radius scaled by its own device-axis length) — exact under scale/translate. Rotation and a focal
-		// origin != center remain approximate; the exact fix is the original's gradient-local-space eval (follow-up).
+		// Compose the gradient's local matrix with the current matrix (F = local->device). The center and focal
+		// origin are baked to device space (so a replay transform can re-map them as points); for the radial case
+		// we ALSO pack M = diag(1/rx,1/ry) * F^-1 — the linear map from a device delta to unit-ellipse space — so
+		// the eval is exact under rotation/skew (not just per-axis scale). Linear stays exact in device space.
 		var lm = new Matrix4x4(
 			g.LocalMatrix.M11, g.LocalMatrix.M12, 0, 0,
 			g.LocalMatrix.M21, g.LocalMatrix.M22, 0, 0,
@@ -1339,8 +1339,6 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		Vector2 MapM(Vector2 p) => new(p.X * m.M11 + p.Y * m.M21 + m.M41, p.X * m.M12 + p.Y * m.M22 + m.M42);
 		var a = MapM(g.P0);
 		var b = MapM(g.P1);
-		var sx = new Vector2(m.M11, m.M12).Length();
-		var sy = new Vector2(m.M21, m.M22).Length();
 
 		var count = Math.Min(g.Colors?.Length ?? 0, WebGpuDevice.MaxGradientStops);
 		if (count == 0)
@@ -1354,8 +1352,15 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		u[2] = g.TileMode switch { GradientTileMode.Repeat => 1f, GradientTileMode.Mirror => 2f, _ => 0f };
 		if (g.Radial)
 		{
-			u[4] = a.X; u[5] = a.Y; u[6] = g.RadiusX * sx; u[7] = g.RadiusY * sy;
-			u[88] = b.X; u[89] = b.Y;   // focal origin (device); b = mapped g.P1 (gradientOrigin)
+			// F = [[M11,M21],[M12,M22]] (local->device linear part). M = diag(1/rx,1/ry) * F^-1, row-major
+			// [[m00,m01],[m10,m11]]; packed column-major into geo.zw (col0) + origin.zw (col1) for the WGSL mat2x2.
+			float det = m.M11 * m.M22 - m.M21 * m.M12;
+			if (MathF.Abs(det) < 1e-12f) { det = det < 0 ? -1e-12f : 1e-12f; }
+			float rx = g.RadiusX <= 0 ? 1e-6f : g.RadiusX, ry = g.RadiusY <= 0 ? 1e-6f : g.RadiusY;
+			float m00 = (m.M22 / det) / rx, m01 = (-m.M21 / det) / rx;
+			float m10 = (-m.M12 / det) / ry, m11 = (m.M11 / det) / ry;
+			u[4] = a.X; u[5] = a.Y; u[6] = m00; u[7] = m10;   // geo: center + M col0
+			u[88] = b.X; u[89] = b.Y; u[90] = m01; u[91] = m11;   // origin: focal + M col1
 		}
 		else
 		{
@@ -1583,11 +1588,20 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					}
 					else
 					{
-						// Elliptical: scale each radius by its own device-axis length (rx by X, ry by Y).
-						var rsx = new Vector2(_m.M11, _m.M12).Length();
-						var rsy = new Vector2(_m.M21, _m.M22).Length();
-						uu[6] *= rsx; uu[7] *= rsy;
-						var go = T(new Vector2(uu[88], uu[89])); uu[88] = go.X; uu[89] = go.Y;   // focal origin
+						// Center + focal are points → transform by T. The unit-ellipse map M is relative to device
+						// deltas, so under the extra device transform T2 it becomes M' = M * T2^-1 (deltas map back
+						// through T2 before M). Center/focal stay in the (new) device space.
+						var go = T(new Vector2(uu[88], uu[89])); uu[88] = go.X; uu[89] = go.Y;
+						float t11 = _m.M11, t12 = _m.M12, t21 = _m.M21, t22 = _m.M22;
+						float dt = t11 * t22 - t21 * t12;
+						if (MathF.Abs(dt) < 1e-12f) { dt = dt < 0 ? -1e-12f : 1e-12f; }
+						// T2^-1 (row-major [[i00,i01],[i10,i11]]), where T2 = [[t11,t21],[t12,t22]] (MapM convention).
+						float i00 = t22 / dt, i01 = -t21 / dt, i10 = -t12 / dt, i11 = t11 / dt;
+						// M row-major from packed cols: m00=uu[6], m10=uu[7], m01=uu[90], m11=uu[91]. M' = M * T2^-1.
+						float m00 = uu[6], m10 = uu[7], m01 = uu[90], m11 = uu[91];
+						float n00 = m00 * i00 + m01 * i10, n01 = m00 * i01 + m01 * i11;
+						float n10 = m10 * i00 + m11 * i10, n11 = m10 * i01 + m11 * i11;
+						uu[6] = n00; uu[7] = n10; uu[90] = n01; uu[91] = n11;
 					}
 					_target.Add(new GradientCmd { P0 = T(gc.P0), P1 = T(gc.P1), P2 = T(gc.P2), P3 = T(gc.P3), Uniform = uu, Clip = ClipCompose(gc.Clip, T) });
 					break;
@@ -1807,7 +1821,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var coverBuf = MakeBuffer(cq.ToArray());
 		var noClip = MakeClipBg(_d.CoverClipBgl, default);
 
-		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = cov.MsaaColorView, ResolveTarget = cov.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
+		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = cov.MsaaColorView, ResolveTarget = cov.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Discard, ClearValue = default };
 		var dsa = new WGPURenderPassDepthStencilAttachment { View = cov.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 1f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
@@ -1852,7 +1866,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var coverBuf = MakeBuffer(cq.ToArray());
 		var noClip = MakeClipBg(_d.CoverClipBgl, default);
 
-		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = cov.MsaaColorView, ResolveTarget = cov.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
+		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = cov.MsaaColorView, ResolveTarget = cov.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Discard, ClearValue = default };
 		var dsa = new WGPURenderPassDepthStencilAttachment { View = cov.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 1f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
@@ -2200,16 +2214,17 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			// Render into the multisampled color and resolve into the single-sample target texture.
 			// A fresh MSAA buffer can't LoadOp.Load, so we always clear (transparent when no clear was given);
 			// the neutral loop redraws the whole frame each present, so nothing prior needs preserving here.
-			// StoreOp.Store keeps the resolve so a layer/backdrop target can be sampled later in the same encoder.
+			// The resolve into target.View happens regardless of StoreOp; StoreOp.Discard drops the MSAA samples
+			// afterwards (never sampled) to save the store bandwidth — target.View (sampled later) is unaffected.
 			DepthSlice = uint.MaxValue,
-			View = target.MsaaColorView, ResolveTarget = target.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store,
+			View = target.MsaaColorView, ResolveTarget = target.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Discard,
 			ClearValue = clear.HasValue ? new WGPUColor { R = clear.Value.R / 255.0, G = clear.Value.G / 255.0, B = clear.Value.B / 255.0, A = clear.Value.A / 255.0 } : default,
 		};
 		var dsa = new WGPURenderPassDepthStencilAttachment
 		{
 			View = target.DepthView,
-			DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Store, DepthClearValue = 1f,
-			StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Store, StencilClearValue = 0,
+			DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 1f,
+			StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0,
 		};
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
