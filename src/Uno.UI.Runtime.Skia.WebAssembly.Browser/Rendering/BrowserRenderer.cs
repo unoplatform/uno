@@ -78,7 +78,9 @@ internal partial class BrowserRenderer
 			var device = WebGpuDevice.FromImported(WGPUTextureFormat.RGBA8Unorm, inst, (IntPtr)devPtr);
 			// GPU→CPU readback (SnapshotAsync / RenderTargetBitmap) can't block on the browser's JS thread, so route
 			// the buffer map through JS (mapAsync). Off-browser this hook stays null and a blocking poll is used.
-			WebGpuDevice.BrowserReadbackAsync = (buf, len) => WebGpuJsInterop.MapReadBytesAsync((int)buf, len);
+			// JS interop marshals the bytes as base64; decode to byte[] here.
+			WebGpuDevice.BrowserReadbackAsync = async (buf, len) =>
+				Convert.FromBase64String(await WebGpuJsInterop.MapReadBase64Async((int)buf, len));
 			_webgpuContext = new WebGpuBrowserGraphicsContext(device, WebAssemblyWindowWrapper.Instance.CanvasId);
 			CompositionTarget.Renderer = new WebGpuRenderer(device);
 			this.Log().Info("Neutral graphics pipeline active: WebGpu context via WebGpuRenderer (browser).");
