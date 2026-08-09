@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Foundation;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using UIKit;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
@@ -15,24 +9,30 @@ internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 {
 	public bool SupportsClosingCancellation => false;
 
-	public bool SupportsMultipleWindows => true;
+	// Additional windows are backed by UIScenes, which requires the app to declare
+	// a scene manifest and to opt into multiple scenes.
+	public bool SupportsMultipleWindows =>
+		UnoUISceneDelegate.HasSceneManifest() &&
+		UIApplication.SharedApplication.SupportsMultipleScenes;
 
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
 	{
 		var wrapper = new NativeWindowWrapper(window, xamlRoot);
 
-		if (window != Window.InitialWindow)
+		if (window != Window.InitialWindow && SupportsMultipleWindows)
 		{
-			// Request scene for the new window
-			var userActivity = new NSUserActivity(UnoUISceneDelegate.UIApplicationSceneManifestKey);
-			var request = UISceneSessionActivationRequest.Create();
-			request.UserActivity = userActivity;
-			Action<NSError> errorAction = err => typeof(NativeWindowFactory).LogError()?.LogError($"Failed to create new window: {err}");
-			UIApplication.SharedApplication.ActivateSceneSession(
-				request,
-				errorAction);
+			RequestScene();
 		}
 
 		return wrapper;
+	}
+
+	private static void RequestScene()
+	{
+		var request = UISceneSessionActivationRequest.Create();
+
+		UIApplication.SharedApplication.ActivateSceneSession(
+			request,
+			err => typeof(NativeWindowFactoryExtension).LogError()?.LogError($"Failed to create new window: {err}"));
 	}
 }

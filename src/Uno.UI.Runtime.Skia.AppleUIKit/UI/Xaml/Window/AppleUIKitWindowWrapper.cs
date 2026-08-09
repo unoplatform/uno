@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using CoreGraphics;
 using Foundation;
-using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using UIKit;
 using Uno.Disposables;
@@ -29,6 +27,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	private InputPane _inputPane;
 	private XamlRoot _xamlRoot;
 	private bool _isPendingShow;
+	private readonly CompositeDisposable _sceneObservers = new();
 
 #if !__TVOS__
 	private NSObject? _orientationRegistration;
@@ -42,7 +41,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		}
 		else
 		{
-			Bounds = new Rect(default, new Windows.Foundation.Size(1025, 768));
+			// The real bounds are only known once the scene connects and provides the native window.
+			Bounds = new Rect(default, new Size(InitialWidth, InitialHeight));
 		}
 
 		_mainController = new RootViewController();
@@ -256,14 +256,38 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			return;
 		}
 
-		NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidEnterBackgroundNotification, OnEnteredBackground);
-		NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillEnterForegroundNotification, OnLeavingBackground);
-		NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidActivateNotification, OnActivated);
-		NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillDeactivateNotification, OnDeactivated);
+		// The scene isn't known yet when this runs, so observers are registered globally and
+		// filtered per notification in IsForThisScene.
+		Observe(UIScene.DidEnterBackgroundNotification, OnEnteredBackground);
+		Observe(UIScene.WillEnterForegroundNotification, OnLeavingBackground);
+		Observe(UIScene.DidActivateNotification, OnActivated);
+		Observe(UIScene.WillDeactivateNotification, OnDeactivated);
+
+		void Observe(NSString name, Action<NSNotification> handler)
+		{
+			var token = NSNotificationCenter.DefaultCenter.AddObserver(name, handler);
+			_sceneObservers.Add(Disposable.Create(() => NSNotificationCenter.DefaultCenter.RemoveObserver(token)));
+		}
 	}
+
+	internal void UnsubscribeBackgroundNotifications() => _sceneObservers.Dispose();
+
+	/// <summary>
+	/// Determines whether a scene notification belongs to the scene backing this window.
+	/// Observers are registered on the default center, so every wrapper is notified for every scene.
+	/// </summary>
+	private bool IsForThisScene(NSNotification notification) =>
+		_nativeWindow?.WindowScene is { } windowScene &&
+		notification.Object is UIScene scene &&
+		scene.Handle == windowScene.Handle;
 
 	private void OnEnteredBackground(NSNotification notification)
 	{
+		if (!IsForThisScene(notification))
+		{
+			return;
+		}
+
 		OnNativeVisibilityChanged(false);
 
 		if (Interlocked.Decrement(ref _visibleWindowCount) == 0)
@@ -275,9 +299,15 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private void OnLeavingBackground(NSNotification notification)
 	{
-		if (_visibleWindowCount == 0)
+		if (!IsForThisScene(notification))
 		{
-			// First window returning to foreground - raise app-level events
+			return;
+		}
+
+		// Increment first so the check and the update are a single atomic step; a zero
+		// previous value means this is the first window coming back to the foreground.
+		if (Interlocked.Increment(ref _visibleWindowCount) == 1)
+		{
 			Application.Current?.RaiseResuming();
 			Application.Current?.RaiseLeavingBackground(() => OnNativeVisibilityChanged(true));
 		}
@@ -285,13 +315,29 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		{
 			OnNativeVisibilityChanged(true);
 		}
-
-		Interlocked.Increment(ref _visibleWindowCount);
 	}
 
-	private void OnActivated(NSNotification notification) => OnNativeActivated(CoreWindowActivationState.CodeActivated);
+	private void OnActivated(NSNotification notification)
+	{
+		if (IsForThisScene(notification))
+		{
+			OnNativeActivated(CoreWindowActivationState.CodeActivated);
+		}
+	}
 
-	private void OnDeactivated(NSNotification notification) => OnNativeActivated(CoreWindowActivationState.Deactivated);
+	private void OnDeactivated(NSNotification notification)
+	{
+		if (IsForThisScene(notification))
+		{
+			OnNativeActivated(CoreWindowActivationState.Deactivated);
+		}
+	}
+
+	protected override void CloseCore()
+	{
+		UnsubscribeBackgroundNotifications();
+		base.CloseCore();
+	}
 
 #if !__TVOS__
 	private void OnKeyboardWillShow(object? sender, UIKeyboardEventArgs e)
