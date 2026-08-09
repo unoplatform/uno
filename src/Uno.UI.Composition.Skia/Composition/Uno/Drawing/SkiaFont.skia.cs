@@ -228,7 +228,7 @@ internal sealed class SkiaFont : IFont
 		// Shift the glyph's ink from its baseline-relative bounds into [0,0]..[width,height].
 		surface.Canvas.DrawText(blob, -ink.Left, -ink.Top, paint);
 
-		result = new PositionedGlyphImage(new SkiaImage(surface.Snapshot()), originX + ink.Left, originY + ink.Top, width, height);
+		result = new PositionedGlyphImage(new SkiaImageTexture(surface.Snapshot()), originX + ink.Left, originY + ink.Top, width, height);
 		return true;
 	}
 

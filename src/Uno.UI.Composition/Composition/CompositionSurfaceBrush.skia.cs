@@ -23,9 +23,9 @@ namespace Microsoft.UI.Composition
 
 		Vector2? ISizedBrush.Size => Surface switch
 		{
-			CompositionImageSurface { Image: { } img } => new(img.PixelWidth, img.PixelHeight),
+			CompositionImageSurface { Size: { } sz } => sz,
 			ISkiaSurface skiaSurface => skiaSurface.Size,
-			ICompositionImageSurfaceProvider { ImageSurface: { Image: { } img } } => new(img.PixelWidth, img.PixelHeight),
+			ICompositionImageSurfaceProvider { ImageSurface: { Size: { } sz } } => sz,
 			_ => null
 		};
 
@@ -101,7 +101,14 @@ namespace Microsoft.UI.Composition
 				return false;
 			}
 
-			var backgroundArea = GetArrangedImageRect(new Size(scs.Image!.PixelWidth, scs.Image.PixelHeight), bounds);
+			// Size comes from the current frame's IImage or a directly-retained texture (SVG) — never dereference
+			// Image, which is null for a texture-backed surface.
+			if (scs.Size is not { } sourceSize)
+			{
+				return true;
+			}
+
+			var backgroundArea = GetArrangedImageRect(new Size(sourceSize.X, sourceSize.Y), bounds);
 			if (backgroundArea.Width <= 0 || backgroundArea.Height <= 0)
 			{
 				return true;
@@ -110,7 +117,7 @@ namespace Microsoft.UI.Composition
 			// RelativeTransform is applied to the brush's output before it's mapped to the paint area;
 			// Transform is applied after. (See the WPF brush-transform docs.)
 			var matrix = Matrix3x2.Identity;
-			matrix *= Matrix3x2.CreateScale((float)(backgroundArea.Width / scs.Image!.PixelWidth), (float)(backgroundArea.Height / scs.Image.PixelHeight));
+			matrix *= Matrix3x2.CreateScale((float)(backgroundArea.Width / sourceSize.X), (float)(backgroundArea.Height / sourceSize.Y));
 			matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
 			matrix *= TransformMatrix;
 			matrix *= Matrix3x2.CreateScale((float)bounds.Width, (float)bounds.Height).Inverse();

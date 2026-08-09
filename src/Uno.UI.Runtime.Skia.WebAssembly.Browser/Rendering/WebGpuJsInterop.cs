@@ -23,4 +23,10 @@ internal static partial class WebGpuJsInterop
 	/// and stashes a PNG of the frame on window.__unoLastFramePng.</summary>
 	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.mapReadStats")]
 	public static partial Task<int> MapReadStatsAsync(int bufferPtr, int width, int height, int bytesPerRow);
+
+	/// <summary>Maps a readback buffer (by its wgpu handle ptr) off the event loop and returns its first
+	/// <paramref name="byteLen"/> bytes. Backs WebGpuDrawingFactory.SnapshotAsync (RenderTargetBitmap) on WASM.</summary>
+	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.mapReadBytes")]
+	[return: JSMarshalAs<JSType.Promise<JSType.Array<JSType.Number>>>]
+	public static partial Task<byte[]> MapReadBytesAsync(int bufferPtr, int byteLen);
 }

@@ -29,8 +29,11 @@ public sealed class ManagedDrawingFactory : IDrawingFactory
 		return builder.Build();
 	}
 
-	public IImage RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render)
+	public IImageTexture RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render)
 		=> throw new NotImplementedException("Managed offscreen rasterization is not yet implemented; requires a managed rasterizer.");
+
+	public System.Threading.Tasks.Task<IImage> SnapshotAsync(IImageTexture texture)
+		=> throw new NotSupportedException("ManagedDrawingFactory has no GPU device; use a device-bound backend factory to snapshot textures.");
 
 	// The managed factory is a CPU-resource factory (geometry/decode); GPU textures are created by the
 	// device-bound backend factory (e.g. WebGpuDrawingFactory), not here.

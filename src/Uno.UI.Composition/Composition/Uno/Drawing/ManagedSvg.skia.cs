@@ -66,7 +66,7 @@ internal sealed class ManagedSvg
 		}
 	}
 
-	public IImage Render(int pixelWidth, int pixelHeight)
+	public IImageTexture Render(int pixelWidth, int pixelHeight)
 	{
 		return DrawingFactory.Current.RenderOffscreen(pixelWidth, pixelHeight, session =>
 		{

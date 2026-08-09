@@ -284,21 +284,14 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public static unsafe IntPtr CreateInstancePtr() => wgpuCreateInstance(null);
 
 	/// <summary>Reads a surface's resolved single-sample texture back to CPU as tightly-packed RGBA8 (top-down). For RTB and tests.</summary>
-	public byte[] ReadPixelsRgba(WebGpuRenderSurface s)
+	public byte[] ReadPixelsRgba(WebGpuRenderSurface s) => ReadPixelsFromTex(s.Tex, s.Width, s.Height);
+
+	/// <summary>Synchronous GPU→CPU readback of a texture, tightly-packed in the device color format. Uses a
+	/// blocking wgpuDevicePoll spin — valid off-browser (a native thread can pump); on WASM the poll is a no-op
+	/// and the map never completes, so browser readback goes through <see cref="SnapshotBrowserAsync"/> instead.</summary>
+	public byte[] ReadPixelsFromTex(IntPtr tex, int w, int h)
 	{
-		int w = s.Width, h = s.Height;
-		uint unpadded = (uint)(w * 4);
-		uint padded = (unpadded + 255u) & ~255u;              // wgpu requires 256-byte row alignment for T2B copies
-		ulong total = (ulong)padded * (uint)h;
-		var bd = new WGPUBufferDescriptor { Size = (nuint)total, Usage = WGPUBufferUsage.CopyDst | WGPUBufferUsage.MapRead };
-		var buf = wgpuDeviceCreateBuffer(Dev, &bd);
-		var enc = wgpuDeviceCreateCommandEncoder(Dev, null);
-		var src = new WGPUTexelCopyTextureInfo { Texture = s.Tex, Aspect = WGPUTextureAspect.All, MipLevel = 0, Origin = default };
-		var dst = new WGPUTexelCopyBufferInfo { Buffer = buf, Layout = new WGPUTexelCopyBufferLayout { Offset = 0, BytesPerRow = padded, RowsPerImage = (uint)h } };
-		var ext = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 };
-		wgpuCommandEncoderCopyTextureToBuffer(enc, &src, &dst, &ext);
-		var cb = wgpuCommandEncoderFinish(enc, null);
-		wgpuQueueSubmit(Q, 1, (IntPtr)(&cb));
+		EncodeCopyTexToReadbackBuffer(tex, w, h, out var buf, out var total, out var padded);
 		wgpuDevicePoll(Dev, 1u, null);
 
 		var mapped = new bool[1];
@@ -312,15 +305,49 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		while (!mapped[0]) { wgpuDevicePoll(Dev, 1u, null); }
 		mh.Free();
 		var mp = (byte*)(void*)wgpuBufferGetMappedRange(buf, 0, (nuint)total);
-		var outp = new byte[w * h * 4];
-		for (int y = 0; y < h; y++)
-		{
-			for (uint x = 0; x < unpadded; x++) { outp[y * (int)unpadded + (int)x] = mp[(uint)y * padded + x]; }
-		}
+		var outp = Unpad(new ReadOnlySpan<byte>(mp, (int)total), w, h, padded);
 		wgpuBufferUnmap(buf);
 		wgpuBufferDestroy(buf);
 		return outp;
 	}
+
+	/// <summary>Creates a MAP_READ buffer, copies <paramref name="tex"/> into it (256-byte-aligned rows) and submits.
+	/// The caller maps <paramref name="buf"/> (blocking off-browser, async in JS on the browser) then destroys it.</summary>
+	public void EncodeCopyTexToReadbackBuffer(IntPtr tex, int w, int h, out IntPtr buf, out int total, out int padded)
+	{
+		uint pad = ((uint)(w * 4) + 255u) & ~255u;              // wgpu requires 256-byte row alignment for T2B copies
+		ulong tot = (ulong)pad * (uint)h;
+		var bd = new WGPUBufferDescriptor { Size = (nuint)tot, Usage = WGPUBufferUsage.CopyDst | WGPUBufferUsage.MapRead };
+		buf = wgpuDeviceCreateBuffer(Dev, &bd);
+		var enc = wgpuDeviceCreateCommandEncoder(Dev, null);
+		var src = new WGPUTexelCopyTextureInfo { Texture = tex, Aspect = WGPUTextureAspect.All, MipLevel = 0, Origin = default };
+		var dst = new WGPUTexelCopyBufferInfo { Buffer = buf, Layout = new WGPUTexelCopyBufferLayout { Offset = 0, BytesPerRow = pad, RowsPerImage = (uint)h } };
+		var ext = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 };
+		wgpuCommandEncoderCopyTextureToBuffer(enc, &src, &dst, &ext);
+		var cb = wgpuCommandEncoderFinish(enc, null);
+		wgpuQueueSubmit(Q, 1, (IntPtr)(&cb));
+		total = (int)tot;
+		padded = (int)pad;
+	}
+
+	public void DestroyBuffer(IntPtr buf) => wgpuBufferDestroy(buf);
+
+	/// <summary>Drops the 256-byte row padding, yielding tightly-packed w×h×4 bytes.</summary>
+	public static byte[] Unpad(ReadOnlySpan<byte> paddedRows, int w, int h, int padded)
+	{
+		int unpadded = w * 4;
+		var outp = new byte[w * h * 4];
+		for (int y = 0; y < h; y++)
+		{
+			paddedRows.Slice(y * padded, unpadded).CopyTo(outp.AsSpan(y * unpadded, unpadded));
+		}
+		return outp;
+	}
+
+	/// <summary>Set by the browser head at WebGPU init: maps a readback buffer (by wgpu handle ptr) off the JS
+	/// event loop and returns its raw (row-padded) bytes. The only way to complete a GPU→CPU map on WASM, where a
+	/// synchronous poll can't yield. Off-browser this stays null and readback uses the blocking poll.</summary>
+	public static Func<IntPtr, int, System.Threading.Tasks.Task<byte[]>> BrowserReadbackAsync { get; set; }
 
 	// Shared clip type + coverage fn prepended to every color-writing shader. The uniform is passed as a
 	// parameter (each shader declares the binding at its own contiguous group index — colored uses group 0,
@@ -837,6 +864,16 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 		// CopySrc so the resolved result can be read back (ReadPixelsRgba) for RenderTargetBitmap / offscreen.
 		View = pool.Rent(width, height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopySrc, device.ColorFormat);
 		Tex = pool.TexForView(View);
+	}
+
+	// Hands the resolved single-sample color texture/view to a longer-lived owner (RenderOffscreen → IImageTexture)
+	// and nulls them here so Dispose releases only the (now-finished) MSAA + depth targets. Only valid on a
+	// resource-owning surface (the dedicated ctor), after the render has been submitted+resolved.
+	internal (IntPtr tex, IntPtr view) DetachColor()
+	{
+		var t = Tex; var v = View;
+		Tex = IntPtr.Zero; View = IntPtr.Zero;
+		return (t, v);
 	}
 
 	private void CreateMultisampledTargets(WebGpuDevice device, int width, int height)
@@ -2196,14 +2233,47 @@ public sealed class WebGpuGraphicsProvider : IGraphicsProvider
 public sealed unsafe class WebGpuImageTexture : IImageTexture
 {
 	private readonly WebGpuDevice _d;
-	private readonly IImage _source; // kept for the neutral CopyPixels cross-backend fallback
+	private readonly IImage _source; // set when uploaded from a CPU IImage; null for an adopted offscreen texture
 	public IntPtr Tex;
 	public IntPtr View;
 
 	public int PixelWidth { get; }
 	public int PixelHeight { get; }
 
-	public void CopyPixels(Span<byte> destination) => _source.CopyPixels(destination);
+	// Cross-backend fallback only (a foreign backend drawing this texture). When uploaded from an IImage, defer to
+	// it; for an adopted offscreen texture (no CPU source) do a blocking GPU readback — off-browser only, since the
+	// matched WebGPU backend never calls this (it samples View directly), and browser readback is async elsewhere.
+	public void CopyPixels(Span<byte> destination)
+	{
+		if (_source is { } s)
+		{
+			s.CopyPixels(destination);
+			return;
+		}
+
+		var bytes = _d.ReadPixelsFromTex(Tex, PixelWidth, PixelHeight);
+		int n = Math.Min(bytes.Length, destination.Length);
+		if (_d.ColorFormat == WGPUTextureFormat.BGRA8Unorm)
+		{
+			bytes.AsSpan(0, n).CopyTo(destination);
+		}
+		else
+		{
+			for (int i = 0; i + 3 < n; i += 4) { destination[i] = bytes[i + 2]; destination[i + 1] = bytes[i + 1]; destination[i + 2] = bytes[i]; destination[i + 3] = bytes[i + 3]; }
+		}
+	}
+
+	// Adopts an already-rendered offscreen texture (from RenderOffscreen) as a sampleable, disposable handle —
+	// no upload, no readback. Deferred release is shared with the upload path (DisposeRequested/ReleaseDeferred).
+	internal WebGpuImageTexture(WebGpuDevice device, IntPtr tex, IntPtr view, int width, int height)
+	{
+		_d = device;
+		_source = null;
+		Tex = tex;
+		View = view;
+		PixelWidth = width;
+		PixelHeight = height;
+	}
 
 	public WebGpuImageTexture(WebGpuDevice device, IImage image)
 	{
@@ -2292,17 +2362,44 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => _inner.CreatePrimitiveGeometryBuilder();
 	public IGeometry CreateRectangleGeometry(Windows.Foundation.Rect rect) => _inner.CreateRectangleGeometry(rect);
 
-	// Offscreen rasterization on the WebGPU device (record → present into an offscreen surface → read back),
-	// so a WebGPU app needs no Skia rasterizer. The readback is a managed IImage (BGRA on CopyPixels).
-	public IImage RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render)
+	// Offscreen rasterization on the WebGPU device (record → present into a dedicated offscreen surface) and hand
+	// back the resolved color texture as a sampleable IImageTexture — no CPU read-back, so a nine-slice/glyph/SVG
+	// consumer draws it straight. CPU pixels (RenderTargetBitmap) come from SnapshotAsync instead.
+	public IImageTexture RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render)
 	{
 		var recorder = new WebGpuCommandRecorder();
 		render(recorder);
 		var surface = new WebGpuRenderSurface(_device, pixelWidth, pixelHeight);
 		var present = new WebGpuPresentSession(_device, surface);
-		present.ReplayNested(recorder.Finish());   // nested: don't reset the enclosing frame's pools
-		var bytes = _device.ReadPixelsRgba(surface);   // bytes are in the device's color format
-		return new WebGpuReadbackImage(pixelWidth, pixelHeight, bytes, _device.ColorFormat == WGPUTextureFormat.BGRA8Unorm);
+		present.ReplayNested(recorder.Finish());   // encodes + submits the nested render into the surface's color texture
+		// Take ownership of the resolved color texture; dispose releases only the (finished) MSAA + depth targets.
+		var (tex, view) = surface.DetachColor();
+		surface.Dispose();
+		return new WebGpuImageTexture(_device, tex, view, pixelWidth, pixelHeight);
+	}
+
+	// GPU→CPU read of a texture produced by this factory. Off-browser a native thread drives the map (blocking);
+	// on the browser the map must run off the JS event loop, so the copy is encoded here and mapped in JS.
+	public async System.Threading.Tasks.Task<IImage> SnapshotAsync(IImageTexture texture)
+	{
+		if (texture is not WebGpuImageTexture t)
+		{
+			throw new ArgumentException("Texture was not produced by WebGpuDrawingFactory.", nameof(texture));
+		}
+
+		int w = t.PixelWidth, h = t.PixelHeight;
+		bool srcBgra = _device.ColorFormat == WGPUTextureFormat.BGRA8Unorm;
+		if (!OperatingSystem.IsBrowser())
+		{
+			return new WebGpuReadbackImage(w, h, _device.ReadPixelsFromTex(t.Tex, w, h), srcBgra);
+		}
+
+		var hook = WebGpuDevice.BrowserReadbackAsync
+			?? throw new InvalidOperationException("WebGPU browser readback is not registered (see BrowserRenderer.InitWebGpuAsync).");
+		_device.EncodeCopyTexToReadbackBuffer(t.Tex, w, h, out var buf, out var total, out var padded);
+		var paddedBytes = await hook(buf, total);
+		_device.DestroyBuffer(buf);
+		return new WebGpuReadbackImage(w, h, WebGpuDevice.Unpad(paddedBytes, w, h, padded), srcBgra);
 	}
 	public IShader CreateLinearGradientShader(Vector2 start, Vector2 end, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix)
 		=> new WebGpuShader { Radial = false, P0 = start, P1 = end, Colors = colors, Stops = colorPositions, TileMode = tileMode, LocalMatrix = localMatrix };

@@ -80,5 +80,23 @@ namespace Uno.UI.Runtime.Skia {
 				return -1;
 			}
 		}
+
+		// Maps a readback buffer (by wgpu handle ptr) off the event loop and returns its first byteLen bytes.
+		// Used by SnapshotAsync (RenderTargetBitmap) — the only way to complete a GPU->CPU map on WASM's single
+		// JS thread. (Marshalled as a number[]; adequate for occasional RTB, could be a heap copy if it gets hot.)
+		public static async mapReadBytes(bufferPtr: number, byteLen: number): Promise<number[]> {
+			const module = (window as any).Module;
+			const buffer = module && typeof module.unoWebGpuJsObject === "function"
+				? module.unoWebGpuJsObject(bufferPtr) : null;
+			if (!buffer) {
+				console.error("WebGpuInit.mapReadBytes: no JS buffer for ptr=" + bufferPtr);
+				return [];
+			}
+			await buffer.mapAsync(1 /* GPUMapMode.READ */);
+			const src = new Uint8Array(buffer.getMappedRange());
+			const out = Array.from(src.subarray(0, byteLen));
+			buffer.unmap();
+			return out;
+		}
 	}
 }

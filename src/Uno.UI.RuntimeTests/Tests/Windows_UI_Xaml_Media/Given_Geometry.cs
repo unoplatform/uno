@@ -304,6 +304,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			Assert.IsTrue(images.Count > 0, "expected the color emoji glyph to rasterize to at least one image");
 			Assert.IsTrue(images[0].Width > 0 && images[0].Height > 0, "expected the rasterized glyph image to have a positive size");
+
+			foreach (var g in images)
+			{
+				g.Image.Dispose();
+			}
 		}
 #endif
 	}

@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Numerics;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Graphics.Effects;
 using Windows.UI;
@@ -30,10 +31,21 @@ public interface IDrawingFactory
 	IGeometry CreateRectangleGeometry(Rect rect);
 
 	/// <summary>
-	/// Renders <paramref name="render"/> into a fresh transparent offscreen image of the given pixel size
-	/// and returns it (e.g. to rasterize a brush before nine-slicing it).
+	/// Renders <paramref name="render"/> into a fresh transparent offscreen target of the given pixel size and
+	/// returns it as a backend-resident <see cref="IImageTexture"/> — the same currency the draw verbs consume
+	/// (<see cref="IDrawingSession.DrawImage"/>), so the result is sampled directly with no CPU round-trip. The
+	/// caller owns the returned texture and disposes it. To read the pixels back to the CPU (e.g.
+	/// RenderTargetBitmap), use <see cref="SnapshotAsync"/> — the only genuinely-async operation in the seam,
+	/// because a GPU→CPU read cannot block the browser's single JS thread.
 	/// </summary>
-	IImage RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render);
+	IImageTexture RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render);
+
+	/// <summary>
+	/// Reads <paramref name="texture"/>'s pixels back to a neutral CPU <see cref="IImage"/> (BGRA8888 premultiplied).
+	/// Async because on a GPU backend the readback completes only when control yields to the event loop (on WASM a
+	/// synchronous poll would hang). The texture must have been produced by this factory; a foreign texture throws.
+	/// </summary>
+	Task<IImage> SnapshotAsync(IImageTexture texture);
 
 	/// <summary>
 	/// Uploads a neutral <see cref="IImage"/>'s pixels into a backend-specific GPU texture (see

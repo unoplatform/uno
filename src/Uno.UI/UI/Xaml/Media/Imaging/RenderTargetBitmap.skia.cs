@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			try
 			{
 				return PrepareRender(element, scaledSize) is { } render
-					? RenderToBuffer(element.Visual, render)
+					? await RenderToBufferAsync(element.Visual, render)
 					: (0, 0, 0);
 			}
 			finally
@@ -60,6 +60,13 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		/// </summary>
 		internal void RenderSync(UIElement element, int scaledWidth, int scaledHeight)
 		{
+			// A synchronous GPU→CPU readback can't complete on the browser's single JS thread (the map needs the
+			// event loop). Skip the custom drag-visual capture there — the default drag visual is used instead.
+			if (OperatingSystem.IsBrowser())
+			{
+				return;
+			}
+
 			(_bufferSize, PixelWidth, PixelHeight) = PrepareRender(element, new Size(scaledWidth, scaledHeight)) is { } render
 				? RenderToBuffer(element.Visual, render)
 				: (0, 0, 0);
@@ -89,7 +96,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			return (dpi, width, height, targetWidth, targetHeight, byteCount, _buffer!);
 		}
 
-		private static unsafe (int ByteCount, int Width, int Height) RenderToBuffer(ContainerVisual visual, (double Dpi, int Width, int Height, int TargetWidth, int TargetHeight, int ByteCount, UnmanagedArrayOfBytes Buffer) render)
+		// Renders the element into an offscreen backend texture at the target pixel size. The caller owns the
+		// returned texture and reads it back — synchronously (RenderToBuffer) or asynchronously (RenderToBufferAsync).
+		private static IImageTexture RenderToTexture(ContainerVisual visual, (double Dpi, int Width, int Height, int TargetWidth, int TargetHeight, int ByteCount, UnmanagedArrayOfBytes Buffer) render)
 		{
 			var compositor = Compositor.GetSharedCompositor();
 			var previousCompMode = compositor.IsSoftwareRenderer;
@@ -105,16 +114,13 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				var scaleX = render.Width == 0 ? (float)render.Dpi : (float)(render.TargetWidth * render.Dpi / render.Width);
 				var scaleY = render.Height == 0 ? (float)render.Dpi : (float)(render.TargetHeight * render.Dpi / render.Height);
 
-				var image = DrawingFactory.Current.RenderOffscreen(render.TargetWidth, render.TargetHeight, session =>
+				return DrawingFactory.Current.RenderOffscreen(render.TargetWidth, render.TargetHeight, session =>
 				{
 					session.Save();
 					session.Scale(scaleX, scaleY);
 					visual.RenderRootVisual(session, offsetOverride: Vector2.Zero);
 					session.Restore();
 				});
-
-				image.CopyPixels(new Span<byte>(render.Buffer.Pointer.ToPointer(), render.ByteCount));
-				return (render.ByteCount, render.TargetWidth, render.TargetHeight);
 			}
 			finally
 			{
@@ -122,5 +128,30 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				compositor.IsSoftwareRenderer = previousCompMode;
 			}
 		}
+
+		// Async readback (SnapshotAsync) — the general path. Completes synchronously on CPU/desktop backends and
+		// truly asynchronously on WASM WebGPU (where a blocking GPU→CPU map would hang the single JS thread).
+		private static async Task<(int ByteCount, int Width, int Height)> RenderToBufferAsync(ContainerVisual visual, (double Dpi, int Width, int Height, int TargetWidth, int TargetHeight, int ByteCount, UnmanagedArrayOfBytes Buffer) render)
+		{
+			using var texture = RenderToTexture(visual, render);
+			var image = await DrawingFactory.Current.SnapshotAsync(texture);
+			CopyPixelsTo(image, render.Buffer.Pointer, render.ByteCount);
+			return (render.ByteCount, render.TargetWidth, render.TargetHeight);
+		}
+
+		// Synchronous readback for callers that cannot yield (RenderSync). Correct on CPU (Skia) and on a desktop
+		// GPU that can block a poll; on WASM WebGPU it can't complete, so RenderSync is skipped there.
+		private static (int ByteCount, int Width, int Height) RenderToBuffer(ContainerVisual visual, (double Dpi, int Width, int Height, int TargetWidth, int TargetHeight, int ByteCount, UnmanagedArrayOfBytes Buffer) render)
+		{
+			using var texture = RenderToTexture(visual, render);
+			CopyPixelsTo(texture, render.Buffer.Pointer, render.ByteCount);
+			return (render.ByteCount, render.TargetWidth, render.TargetHeight);
+		}
+
+		private static unsafe void CopyPixelsTo(IImageTexture texture, IntPtr destination, int byteCount)
+			=> texture.CopyPixels(new Span<byte>((void*)destination, byteCount));
+
+		private static unsafe void CopyPixelsTo(IImage image, IntPtr destination, int byteCount)
+			=> image.CopyPixels(new Span<byte>((void*)destination, byteCount));
 	}
 }
