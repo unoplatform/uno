@@ -1,25 +1,30 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Foundation;
 using UIKit;
 using Uno.Foundation.Logging;
-using Uno.UI;
-using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 
-#if UIKIT_SKIA
 using NativeWindow = Uno.UI.Runtime.Skia.AppleUIKit.UI.Xaml.AppleUIKitWindow;
-#else
-using NativeWindow = Uno.UI.Controls.Window;
-#endif
 
 namespace Microsoft.UI.Xaml;
 
+/// <summary>
+/// Default <see cref="UISceneDelegate"/> implementation used by Uno Platform on iOS and tvOS.
+/// </summary>
+/// <remarks>
+/// <para>
+/// Creates and attaches the native <see cref="UIWindow"/> to a <see cref="UIWindowScene"/> when a
+/// scene connects, and releases it when the scene disconnects.
+/// </para>
+/// <para>
+/// Apps using the scene-based lifecycle (iOS 13 / tvOS 13 and later) subclass this type and
+/// register the subclass as the <c>UISceneDelegateClassName</c> in their scene manifest
+/// (<c>UIApplicationSceneManifest</c> in Info.plist) to integrate with Uno Platform's
+/// multi-window support.
+/// </para>
+/// </remarks>
 [System.Runtime.Versioning.SupportedOSPlatform("ios13.0")]
 [System.Runtime.Versioning.SupportedOSPlatform("tvos13.0")]
 public class UnoUISceneDelegate : UISceneDelegate
@@ -27,6 +32,8 @@ public class UnoUISceneDelegate : UISceneDelegate
 	internal const string GetConfigurationSelectorName = "application:configurationForConnectingSceneSession:options:";
 	internal const string UnoSceneConfigurationKey = "__UNO_DEFAULT_SCENE_CONFIGURATION__";
 	internal const string UIApplicationSceneManifestKey = "UIApplicationSceneManifest";
+
+	private NativeWindowWrapper? _wrapper;
 
 	[Export("window")]
 	public UIWindow? Window { get; set; }
@@ -58,6 +65,7 @@ public class UnoUISceneDelegate : UISceneDelegate
 				$"No window wrapper available for the scene (PersistentIdentifier={scene.Session.PersistentIdentifier}). " +
 				$"Ensure a Window is created before the scene connects.");
 		}
+		_wrapper = wrapper;
 		wrapper.SetNativeWindow(window);
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
@@ -73,8 +81,10 @@ public class UnoUISceneDelegate : UISceneDelegate
 			this.Log().Debug($"DidDisconnect: Scene={scene.Session.PersistentIdentifier}");
 		}
 
-		// Clear the window reference. The scene has already gone to background
-		// before disconnecting, so visibility count is already updated.
+		// The scene has already gone to background before disconnecting, so the visible
+		// window count is already updated; only the observers and references are released here.
+		_wrapper?.UnsubscribeBackgroundNotifications();
+		_wrapper = null;
 		Window = null;
 	}
 

@@ -2,7 +2,6 @@
 
 using System.Linq;
 using Microsoft.UI.Composition;
-using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml.Hosting;
 
