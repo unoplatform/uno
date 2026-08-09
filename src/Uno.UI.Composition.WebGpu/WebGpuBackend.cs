@@ -1479,7 +1479,21 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	}
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity)
 	{
-		if (filter is WebGpuEffectFilter fx) { _target.Add(new BackdropCmd { Effect = fx, Opacity = opacity, Clip = _clip }); }
+		if (filter is not WebGpuEffectFilter fx) { return; }
+		// Opaque acrylic: a fully-opaque tint completely covers the blurred backdrop, so skip the backdrop capture,
+		// full-window surface and gaussian blur entirely — just fill the effect region with the tint (the clip masks
+		// its rounded corners). Matches WinUI's opaque acrylic fallback and the original branch's short-circuit.
+		if (fx.Color.A == 255)
+		{
+			var a = _clip.Aabb;
+			_target.Add(new RectCommand
+			{
+				Color = fx.Color, Clip = _clip,
+				P0 = new Vector2(a.X, a.Y), P1 = new Vector2(a.Z, a.Y), P2 = new Vector2(a.Z, a.W), P3 = new Vector2(a.X, a.W),
+			});
+			return;
+		}
+		_target.Add(new BackdropCmd { Effect = fx, Opacity = opacity, Clip = _clip });
 	}
 
 	public IRenderData Finish() => _data;
