@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using Uno;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 using Uno.Xaml;
 using Windows.UI;
@@ -435,13 +436,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				// the default ALC's — avoiding stale per-app ALCs that AppDomain.GetAssemblies
 				// would otherwise still expose. Falls back to AppDomain.GetAssemblies otherwise.
 				() => ContextualAssemblyResolver.GetRelevantAssemblies()
-					.Select(
-
-						[UnconditionalSuppressMessage("Trimming","IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
-						(a) =>
-							(name != null ? a.GetType(name) : null) ??
-							a.GetType(originalName)
-					)
+					.Select(a => TryGetTypeFromAssembly(a, name, originalName))
 					.Trim()
 					.FirstOrDefault(),
 			};
@@ -451,6 +446,46 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				.Trim()
 				.FirstOrDefault();
 		}
+
+		/// <summary>
+		/// Resolves <paramref name="name"/> (falling back to <paramref name="originalName"/>) in a single
+		/// assembly, treating any resolution failure as "not found in this assembly".
+		/// </summary>
+		/// <remarks>
+		/// <see cref="Assembly.GetType(string)"/> returns <see langword="null"/> for a type it cannot find,
+		/// and the caller relies on that to keep scanning the remaining assemblies. It can however still
+		/// <em>throw</em> while parsing a name — observed as an <see cref="InvalidOperationException"/> out of
+		/// <c>RuntimeType.DeclaringMethod</c> ("Method may only be called on a Type for which
+		/// Type.IsGenericParameter is true") on the Linux Skia head. Because that throw escaped the enclosing
+		/// <c>Select</c>, a single uncooperative assembly aborted the whole lookup — including assemblies not
+		/// yet reached, one of which may hold the type — surfacing to callers as a <c>XamlParseException</c>
+		/// from <c>XamlReader.Load</c>.
+		/// <para>
+		/// Containing the failure per assembly restores the intended behaviour: a name this assembly cannot
+		/// resolve yields <see langword="null"/> and the scan continues.
+		/// </para>
+		/// </remarks>
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
+		private static Type? TryGetTypeFromAssembly(Assembly assembly, string? name, string originalName)
+		{
+			try
+			{
+				return (name != null ? assembly.GetType(name) : null)
+					?? assembly.GetType(originalName);
+			}
+			catch (Exception error)
+			{
+				if (typeof(XamlTypeResolver).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(XamlTypeResolver).Log().Debug(
+						$"Unable to resolve type '{name ?? originalName}' in assembly '{assembly.FullName}'; " +
+						$"continuing with the remaining assemblies. ({error})");
+				}
+
+				return null;
+			}
+		}
+
 		private static bool SourceIsAttachedProperty(
 			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicMethods)]
 			Type type,
