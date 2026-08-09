@@ -407,6 +407,40 @@ also expose a builder enum):
 | **macOS** | `CreateMetalSurface` ready, but the native ObjC helper (`UnoNativeMac`) owns the `CAMetalLayer`/present; WebGPU needs it to expose the layer and cede present — a native change + a Mac |
 | **FrameBuffer** | surfaceless — `wgpu-native` has no KMS/DRM surface source, so WebGPU would render **offscreen + read back** and present via the host's existing framebuffer path (a GPU→CPU copy per frame); not yet wired |
 
+### Offscreen VRAM lifecycle (WebGPU)
+
+Every layer/mask/path-clip-coverage/shadow/backdrop renders into a transient offscreen (`WebGpuRenderSurface`)
+rented from a per-device pool. Each such surface has three parts with **different lifetimes** within a frame:
+
+- **MSAA colour** and **depth/stencil** are *write-only inside that surface's own render pass* — the MSAA colour
+  resolves into the single-sample view and the depth is discarded; neither is sampled afterwards. They are
+  returned to the pool the instant the pass ends (`WebGpuTexturePool.Return`) so the next same-size pass reuses
+  them. One MSAA+depth pair per size serves a whole frame regardless of how many offscreens it has.
+- **The single-sample resolve view** is sampled later (as the layer/coverage/backdrop texture in the main pass),
+  so it stays `InUse` until the frame's `BeginFrame`.
+
+The pool evicts entries unused for 16 frames (so a window resize doesn't strand a whole generation of full-window
+textures) and `WebGpuDevice.Dispose` releases it. This is what keeps a layer/clip/acrylic-heavy frame from
+allocating one full MSAA+depth+resolve triple per offscreen (which exhausted VRAM on real GPUs). The swapchain
+`WebGpuRenderSurface` owns only its MSAA+depth; the acquired swapchain image is borrowed and released by
+`WebGpuSwapChainContext.Present`, so its `Dispose` must not double-free it on resize.
+
+### Parity gaps vs the original X11 WebGPU branch (`ramez/webgpu-experiment`)
+
+A line-by-line audit against the pre-seam branch found these still-open items (VRAM/crash items are fixed above;
+the rest are tracked for follow-up). None affect the neutral-seam contract — they are backend-internal quality:
+
+- **Acrylic (translucent):** still re-renders the whole command prefix into a full-window surface per backdrop
+  (O(n²)); the original blurred only the element's padded region sampled from the already-rendered target. Also
+  missing: procedural noise/grain and the rounded-corner SDF mask. (Opaque acrylic already short-circuits.)
+- **Nested clips:** only the innermost rounded-rect / path clip survives; the original intersected a full clip stack.
+- **Radial gradient** rotation + off-centre focal are approximate (device-space eval) vs the original's exact
+  gradient-local-space eval; gradient stops are capped at 16 (the original baked a 256-entry LUT).
+- **No analytic rounded-rect/border** primitive (rounded chrome arrives as path fills); **no glyph atlas**
+  (text is per-run geometry fill — plain text is on par, but color glyphs upload a texture per glyph per frame).
+- **Perf:** per-frame full vertex/uniform re-upload (no persistent dirty-range slabs), rect-only draw-call
+  coalescing, and no per-visual transform-restamp (a moved cached visual rebuilds its geometry).
+
 ---
 
 ## Backend registration & graphics negotiation (implemented; X11 GL/GLES/software neutral)
