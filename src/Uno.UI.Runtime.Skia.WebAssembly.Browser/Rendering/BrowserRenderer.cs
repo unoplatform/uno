@@ -76,6 +76,9 @@ internal partial class BrowserRenderer
 				throw new InvalidOperationException("WebGPU: JS-side device creation/import failed (see browser console).");
 			}
 			var device = WebGpuDevice.FromImported(WGPUTextureFormat.RGBA8Unorm, inst, (IntPtr)devPtr);
+			// GPU→CPU readback (SnapshotAsync / RenderTargetBitmap) can't block on the browser's JS thread, so route
+			// the buffer map through JS (mapAsync). Off-browser this hook stays null and a blocking poll is used.
+			WebGpuDevice.BrowserReadbackAsync = (buf, len) => WebGpuJsInterop.MapReadBytesAsync((int)buf, len);
 			_webgpuContext = new WebGpuBrowserGraphicsContext(device, WebAssemblyWindowWrapper.Instance.CanvasId);
 			CompositionTarget.Renderer = new WebGpuRenderer(device);
 			this.Log().Info("Neutral graphics pipeline active: WebGpu context via WebGpuRenderer (browser).");

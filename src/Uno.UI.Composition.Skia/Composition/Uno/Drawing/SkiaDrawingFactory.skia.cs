@@ -39,14 +39,26 @@ internal sealed class SkiaDrawingFactory : IDrawingFactory
 		return new SkiaGeometrySource2D(builder.Detach());
 	}
 
-	public IImage RenderOffscreen(int pixelWidth, int pixelHeight, System.Action<IDrawingSession> render)
+	public IImageTexture RenderOffscreen(int pixelWidth, int pixelHeight, System.Action<IDrawingSession> render)
 	{
 		var info = new SKImageInfo(pixelWidth, pixelHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 		using var surface = SKSurface.Create(info);
 		surface.Canvas.Clear(SKColors.Transparent);
 		render(new SkiaDrawingSession(surface.Canvas));
-		// Snapshot detaches from the surface (copy-on-write), so the returned image outlives it.
-		return new SkiaImage(surface.Snapshot());
+		// Snapshot detaches from the surface (copy-on-write), so the returned texture outlives it. On Skia an
+		// SKImage is already the sampleable form, so there is no readback here.
+		return new SkiaImageTexture(surface.Snapshot());
+	}
+
+	// Skia rasterizes on the CPU, so the readback is synchronous — return an already-completed task.
+	public System.Threading.Tasks.Task<IImage> SnapshotAsync(IImageTexture texture)
+	{
+		if (texture is not SkiaImageTexture skia)
+		{
+			throw new System.ArgumentException("Texture was not produced by SkiaDrawingFactory.", nameof(texture));
+		}
+
+		return System.Threading.Tasks.Task.FromResult<IImage>(new SkiaImage(skia.Image));
 	}
 
 	public IImageTexture CreateImageTexture(IImage image)

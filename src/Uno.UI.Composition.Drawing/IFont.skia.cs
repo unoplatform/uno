@@ -122,5 +122,6 @@ public enum TextDirection
 	RightToLeft,
 }
 
-/// <summary>A color glyph rasterized to an <see cref="IImage"/>, with the destination rectangle to draw it at.</summary>
-public readonly record struct PositionedGlyphImage(IImage Image, float X, float Y, float Width, float Height);
+/// <summary>A color glyph rasterized to a backend <see cref="IImageTexture"/> (owned by the caller — dispose after
+/// drawing), with the destination rectangle to draw it at.</summary>
+public readonly record struct PositionedGlyphImage(IImageTexture Image, float X, float Y, float Width, float Height);

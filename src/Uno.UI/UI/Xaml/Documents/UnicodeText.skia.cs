@@ -975,10 +975,21 @@ internal readonly partial struct UnicodeText : IParsedText
 				{
 					var images = new List<PositionedGlyphImage>();
 					font.AppendColorGlyphImages(glyphSpan, positionSpan, 0, images);
-					foreach (var g in images)
+					// Each glyph is already a backend texture (rendered offscreen, no readback). Draw them, then
+					// dispose the whole set in finally so a mid-loop throw can't leak GPU textures.
+					try
 					{
-						using var glyphTexture = global::Uno.UI.Composition.Drawing.DrawingFactory.Current.CreateImageTexture(g.Image);
-						drawingSession.DrawImage(glyphTexture, g.X, g.Y, ImageSampling.Linear, antialias: true);
+						foreach (var g in images)
+						{
+							drawingSession.DrawImage(g.Image, g.X, g.Y, ImageSampling.Linear, antialias: true);
+						}
+					}
+					finally
+					{
+						foreach (var g in images)
+						{
+							g.Image.Dispose();
+						}
 					}
 				}
 			}
