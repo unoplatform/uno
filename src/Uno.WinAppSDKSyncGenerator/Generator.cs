@@ -2388,7 +2388,12 @@ namespace Uno.WinAppSDKSyncGenerator
 
 			var ws = MSBuildWorkspace.Create(properties);
 
-			ws.LoadMetadataForReferencedProjects = true;
+			// Referenced projects must load as projects, not as metadata: the generator resolves
+			// non-generated members to decide what to stub, and a metadata reference hides the
+			// internals it needs to see. Leaving this on makes Roslyn prefer a referenced project's
+			// compiled output when one happens to exist, which silently degrades those references
+			// and trips the assertion in LoadProject on any tree that has been built.
+			ws.LoadMetadataForReferencedProjects = false;
 
 			ws.WorkspaceFailed +=
 				(s, e) => Console.WriteLine(e.Diagnostic.ToString());
