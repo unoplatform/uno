@@ -1266,10 +1266,24 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 
 	private Vector2 Map(float x, float y) => new(x * _m.M11 + y * _m.M21 + _m.M41, x * _m.M12 + y * _m.M22 + _m.M42);
 
+	// Applies an active effect colour matrix (SaveLayer(IColorFilter)) to a straight-alpha solid colour, matching
+	// the image shader's 4x5 row-major matrix+offset. DrawImage folds the matrix in the shader; solid rect/path
+	// fills fold it here so a colour-filter layer transforms ALL its content, not only images.
+	private static WColor ApplyColorMatrix(WColor c, float[] m)
+	{
+		static float Cl(float v) => v < 0f ? 0f : v > 1f ? 1f : v;
+		float r = c.R / 255f, g = c.G / 255f, b = c.B / 255f, a = c.A / 255f;
+		float nr = Cl(m[0] * r + m[1] * g + m[2] * b + m[3] * a + m[4]);
+		float ng = Cl(m[5] * r + m[6] * g + m[7] * b + m[8] * a + m[9]);
+		float nb = Cl(m[10] * r + m[11] * g + m[12] * b + m[13] * a + m[14]);
+		float na = Cl(m[15] * r + m[16] * g + m[17] * b + m[18] * a + m[19]);
+		return WColor.FromArgb((byte)(na * 255f + 0.5f), (byte)(nr * 255f + 0.5f), (byte)(ng * 255f + 0.5f), (byte)(nb * 255f + 0.5f));
+	}
+
 	public void DrawRect(in Rect rect, WColor color, bool antialias = false)
 		=> _target.Add(new RectCommand
 		{
-			Color = color, Clip = _clip,
+			Color = _pendingColorMatrix is { Length: >= 20 } pm ? ApplyColorMatrix(color, pm) : color, Clip = _clip,
 			P0 = Map((float)rect.Left, (float)rect.Top), P1 = Map((float)rect.Right, (float)rect.Top),
 			P2 = Map((float)rect.Right, (float)rect.Bottom), P3 = Map((float)rect.Left, (float)rect.Bottom),
 		});
@@ -1283,6 +1297,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 
 	private void FillGeometry(IGeometry geometry, WColor color, bool evenOdd)
 	{
+		if (_pendingColorMatrix is { Length: >= 20 } pm) { color = ApplyColorMatrix(color, pm); }
 		_fan = new List<float>();
 		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
 		geometry.StreamFlattened(this);
