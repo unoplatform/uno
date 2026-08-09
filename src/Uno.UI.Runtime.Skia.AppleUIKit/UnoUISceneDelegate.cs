@@ -139,7 +139,12 @@ public class UnoUISceneDelegate : UISceneDelegate
 
 	private static string? GetRequestToken(UISceneConnectionOptions connectionOptions)
 	{
-		foreach (var activity in connectionOptions.UserActivities)
+		if (connectionOptions.UserActivities is not { } activities)
+		{
+			return null;
+		}
+
+		foreach (var activity in activities)
 		{
 			if (activity.ActivityType == SceneWindowRegistry.ActivityType &&
 				activity.UserInfo?[SceneWindowRegistry.TokenKey] is NSString token)
