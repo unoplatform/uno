@@ -57,7 +57,8 @@ IPathBuilder CreatePathBuilder();
 IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder();
 IGeometry CreateRectangleGeometry(Rect rect);
 
-IImage RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render);
+IImageTexture RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render);
+Task<IImage> SnapshotAsync(IImageTexture texture);
 bool TryDecodeImage(Stream stream, int? targetWidth, int? targetHeight, out IImageFrames? frames);
 IImageFrames CreateImageFrame(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul);
 
@@ -96,9 +97,9 @@ void DrawPath(IGeometry g, Color color, bool aa = false);
 void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive, bool aa = false);
 void StrokePath(IGeometry g, Color color, float strokeWidth, bool aa = false);
 void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool aa = false);
-void DrawImage(IImage img, float x, float y, ImageSampling s, float opacity = 1f, bool aa = false);
-void DrawImage(IImage img, float x, float y, ImageSampling s, IColorFilter filter, bool aa = false);
-void DrawImageNineSlice(IImage img, in Rect centerSlice, in Rect destination, bool centerHollow, bool aa = false);
+void DrawImage(IImageTexture img, float x, float y, ImageSampling s, float opacity = 1f, bool aa = false);
+void DrawImage(IImageTexture img, float x, float y, ImageSampling s, IColorFilter filter, bool aa = false);
+void DrawImageNineSlice(IImageTexture img, in Rect centerSlice, in Rect destination, bool centerHollow, bool aa = false);
 void DrawEffectBackdrop(IEffectFilter filter, float opacity);
 ```
 
@@ -140,9 +141,19 @@ overlays (e.g. the FPS counter) compose *before* the frame is finalized; disposi
 - **`IShader`** — opaque gradient/shader handle (from the backend's `Create*GradientShader`).
 - **`IColorFilter`** — blend-mode / color-matrix filter handle.
 - **`IEffectFilter`** — realized `IGraphicsEffect` graph, or a drop-shadow filter.
-- **`IImage`** — opaque bitmap handle: `int PixelWidth/PixelHeight`. Not itself disposable (its owner is).
+- **`IImage`** — neutral **CPU** pixels: `int PixelWidth/PixelHeight` + `CopyPixels` (BGRA8888 premul). The
+  decode/snapshot form. Not itself disposable (its owner is).
+- **`IImageTexture : IDisposable`** — backend-resident **GPU** form (wgpu texture / `SKImage`). The currency the
+  draw verbs consume (`DrawImage`) and that `RenderOffscreen` returns, so an offscreen result is sampled directly
+  with no CPU round-trip. Caller-owned, disposed deterministically.
 - **`IImageFrames : IDisposable`** — decode/upload result: `IReadOnlyList<IImage> Frames`,
   `IReadOnlyList<int> DurationsMs` (one entry = still image; several = animation). Owns frame lifetime.
+
+**Produce vs. read-back.** `RenderOffscreen` yields an `IImageTexture` (stays on the backend — nine-slice, color
+glyphs and rendered SVG sample it straight). Pulling CPU pixels out (`RenderTargetBitmap`, snapshots) is the one
+inherently-async step — a GPU→CPU map can't block the browser's single JS thread — so it is isolated to
+`SnapshotAsync(IImageTexture) : Task<IImage>`. Skia returns a completed task; WASM WebGPU maps via JS `mapAsync`;
+desktop WebGPU blocks a poll. Everything else in the seam (record/draw/present/geometry) stays synchronous.
 
 ---
 
@@ -157,7 +168,8 @@ bool HasColorGlyphs { get; }
 void AppendColorGlyphImages(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<PositionedGlyphImage> output);
 ```
 Outline glyphs → one filled `IGeometry` (drawn via `DrawPath`); color glyphs (emoji: COLR/CBDT/sbix/SVG) →
-positioned `IImage`s (`PositionedGlyphImage`, drawn via `DrawImage`). Obtained from `FontDetails.FontHandle`.
+positioned backend textures (`PositionedGlyphImage.Image` is an `IImageTexture`, drawn via `DrawImage` and
+disposed by the caller). Obtained from `FontDetails.FontHandle`.
 
 - **`SkiaFont`** — default (`SKFont.GetGlyphPath` + offscreen rasterization for color glyphs).
 - **`ManagedFont`** — alternative, SkiaSharp-free: reads outlines straight from sfnt tables (TrueType `glyf`
