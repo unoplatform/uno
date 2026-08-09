@@ -1,5 +1,5 @@
 ﻿// Generates tables for font fallback based on notofonts GitHub repository.
-// Typical usage: dotnet run -- --summary-only > ../Uno.UI/UI/Xaml/Documents/FontFallbackMaps.skia.cs
+// Typical usage: dotnet run -- --summary-only > ../Uno.UI/UI/Xaml/Documents/FontFallbackMaps.cs
 
 using System.CommandLine;
 using System.Diagnostics;
