@@ -40,7 +40,7 @@
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.6.1" />
 				<dependency id="Uno.WinRT" version="2.4.5" />
-				<dependency id="SkiaSharp" version="4.151.0-rc.1.1" />
+				<dependency id="SkiaSharp" version="4.151.1" />
 				<dependency id="HarfBuzzSharp" version="14.2.1.1" />
 			</group>
 
@@ -54,7 +54,7 @@
 				<dependency id="System.Collections.Immutable" version="1.3.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.6.1" />
 				<dependency id="Uno.WinRT" version="2.4.5" />
-				<dependency id="SkiaSharp" version="4.151.0-rc.1.1" />
+				<dependency id="SkiaSharp" version="4.151.1" />
 				<dependency id="HarfBuzzSharp" version="14.2.1.1" />
 			</group>
 		</dependencies>
