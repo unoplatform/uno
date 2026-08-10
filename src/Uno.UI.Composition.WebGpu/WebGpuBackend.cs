@@ -401,8 +401,13 @@ fn clipCov(fc: vec2<f32>, clip: ClipU, ctex: texture_2d<f32>, csmp: sampler) -> 
     cov = cov * select(rr, 1.0 - rr, clip.flags.z > 0.5);
   }
   if (clip.flags.y > 0.5) {
-    let uv = fc / max(clip.size.xy, vec2<f32>(1.0, 1.0));
-    cov = cov * textureSampleLevel(ctex, csmp, uv, 0.0).a;
+    // The coverage texture is bounds-sized to the clip path's bbox (origin = size.zw, extent = the texture's own
+    // dimensions) — not the full window — so a small clip costs a small offscreen. Sample by the local offset;
+    // outside the bbox the path can't cover, so coverage is 0.
+    let dims = max(vec2<f32>(textureDimensions(ctex)), vec2<f32>(1.0, 1.0));
+    let uv = (fc - clip.size.zw) / dims;
+    let inb = all(uv >= vec2<f32>(0.0, 0.0)) && all(uv <= vec2<f32>(1.0, 1.0));
+    cov = cov * select(0.0, textureSampleLevel(ctex, csmp, uv, 0.0).a, inb);
   }
   return cov;
 }
@@ -1932,18 +1937,25 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	}
 
 	// Coverage textures for path clips, cached by the (reference-identical) fan shared across a clip's commands.
-	private readonly System.Collections.Generic.Dictionary<float[], nint> _coverageCache = new(System.Collections.Generic.ReferenceEqualityComparer.Instance);
+	// Each entry is the bounds-sized coverage view + its device-space origin (top-left of the fan bbox).
+	private readonly System.Collections.Generic.Dictionary<float[], (nint view, Vector2 origin)> _coverageCache = new(System.Collections.Generic.ReferenceEqualityComparer.Instance);
 
 	// The clip bind group for a command: the ClipU uniform (rect, radii, flags, surface size), plus a coverage
 	// texture (the path-clip mask, or the device dummy when there's no path clip) and a sampler.
 	private IntPtr MakeClipBg(IntPtr bgl, ClipData cd, OwnedResources owned = null)
 	{
+		// Resolve a path clip's (bounds-sized) coverage FIRST: PathCoverage recursively calls MakeClipBg for its own
+		// cover quad, which reuses the shared _clipU scratch — so it must finish before we fill _clipU below.
+		nint covView = _d.DummyTex; Vector2 covOrigin = default;
+		if (cd.PathFan != null) { (covView, covOrigin) = PathCoverage(cd.PathFan, cd.PathEvenOdd); }
+
 		var cu = _clipU;
 		System.Array.Clear(cu);
 		cu[0] = cd.Rect.X; cu[1] = cd.Rect.Y; cu[2] = cd.Rect.Z; cu[3] = cd.Rect.W;
 		cu[4] = cd.Radii.X; cu[5] = cd.Radii.Y; cu[6] = cd.Radii.Z; cu[7] = cd.Radii.W;
 		cu[8] = cd.HasRound ? 1f : 0f; cu[9] = cd.PathFan != null ? 1f : 0f; cu[10] = cd.HasExclude ? 1f : 0f;
 		cu[12] = _s.Width; cu[13] = _s.Height;
+		cu[14] = covOrigin.X; cu[15] = covOrigin.Y;   // coverage bbox origin (size.zw); clipCov reads the extent from the texture
 
 		// A non-path per-frame clip depends only on (layout, these floats) + device-stable DummyTex/sampler, so it's
 		// identical across frames for static chrome — reuse a cached bind group instead of rebuilding it every frame.
@@ -1966,9 +1978,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 		var buf = Ubuf(64, owned);
 		fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, 64); }
-		// Cached recordings never have a path clip (excluded by IsCacheable), so covView is always the persistent
-		// DummyTex there — no dangling reference to a per-frame pooled coverage texture.
-		var covView = cd.PathFan != null ? PathCoverage(cd.PathFan, cd.PathEvenOdd) : _d.DummyTex;
+		// Cached recordings never have a path clip (excluded by IsCacheable), so covView stays the persistent DummyTex
+		// there — no dangling reference to a per-frame pooled coverage texture.
 		var e = stackalloc WGPUBindGroupEntry[3];
 		e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = 64 };
 		e[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = covView };
@@ -1977,22 +1988,39 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		return Bg(ref bgd, owned);
 	}
 
-	private IntPtr PathCoverage(float[] fan, bool evenOdd)
+	private (nint view, Vector2 origin) PathCoverage(float[] fan, bool evenOdd)
 	{
-		if (_coverageCache.TryGetValue(fan, out var cached)) { return (IntPtr)cached; }
-		var view = RenderPathCoverage(fan, evenOdd);
-		_coverageCache[fan] = (nint)view;
-		return view;
+		if (_coverageCache.TryGetValue(fan, out var cached)) { return cached; }
+		var res = RenderPathCoverage(fan, evenOdd);
+		_coverageCache[fan] = res;
+		return res;
 	}
 
-	// Fills the clip path (stencil-then-cover, white) into a full-size coverage surface; its resolved alpha is
-	// the per-fragment clip mask sampled by clipCov.
-	private IntPtr RenderPathCoverage(float[] fan, bool evenOdd)
+	// Fills the clip path (stencil-then-cover, white) into a coverage surface sized to the path's device-space
+	// bbox (NOT the full window — a small clip is a small offscreen); its resolved alpha is the per-fragment clip
+	// mask sampled (by local offset) in clipCov. Returns the view + the bbox origin.
+	private (nint view, Vector2 origin) RenderPathCoverage(float[] fan, bool evenOdd)
 	{
 		_d.Profiler?.OsCov();
-		var cov = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
+		// Fan device-space bbox, clamped to the surface — the coverage only needs to cover the path.
+		float minX = float.MaxValue, minY = float.MaxValue, maxX = float.MinValue, maxY = float.MinValue;
+		for (int i = 0; i < fan.Length; i += 2)
+		{
+			if (fan[i] < minX) { minX = fan[i]; } if (fan[i] > maxX) { maxX = fan[i]; }
+			if (fan[i + 1] < minY) { minY = fan[i + 1]; } if (fan[i + 1] > maxY) { maxY = fan[i + 1]; }
+		}
+		int ox = Math.Clamp((int)MathF.Floor(minX), 0, _s.Width), oy = Math.Clamp((int)MathF.Floor(minY), 0, _s.Height);
+		int rx = Math.Clamp((int)MathF.Ceiling(maxX), 0, _s.Width), by = Math.Clamp((int)MathF.Ceiling(maxY), 0, _s.Height);
+		int cw = Math.Max(1, rx - ox), ch = Math.Max(1, by - oy);
+		var origin = new Vector2(ox, oy);
+		var cov = new WebGpuRenderSurface(_d, cw, ch, _d.Pool);
 		var fanNdc = new float[fan.Length];
-		for (int i = 0; i < fan.Length; i += 2) { var n = Ndc(new Vector2(fan[i], fan[i + 1])); fanNdc[i] = n.X; fanNdc[i + 1] = n.Y; }
+		// Map the device fan into the bbox-local NDC (origin at the bbox top-left, extent = cw x ch).
+		for (int i = 0; i < fan.Length; i += 2)
+		{
+			fanNdc[i] = (fan[i] - ox) / cw * 2f - 1f;
+			fanNdc[i + 1] = 1f - (fan[i + 1] - oy) / ch * 2f;
+		}
 		var fanBuf = MakeBuffer(fanNdc);
 		var cq = new System.Collections.Generic.List<float>();
 		void CQ(float x, float y) { cq.Add(x); cq.Add(y); cq.Add(1f); cq.Add(1f); cq.Add(1f); cq.Add(1f); }
@@ -2016,7 +2044,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// The MSAA colour resolved into cov.View and the depth/stencil is spent — free both for the next offscreen
 		// to reuse. Only cov.View (the coverage mask sampled in the main pass) stays live.
 		_d.Pool.Return(cov.MsaaColorView); _d.Pool.Return(cov.DepthView);
-		return cov.View;
+		return (cov.View, origin);
 	}
 
 	// Fills the shadow silhouette into an offscreen coverage surface (stencil-then-cover, white), then blurs it
