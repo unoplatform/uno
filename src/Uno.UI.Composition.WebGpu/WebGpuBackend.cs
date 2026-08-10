@@ -35,9 +35,8 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public IntPtr ClipDepthCover1; // depth := 1 where stencil != 0 (inside the fan) + reset stencil — exclude
 	public IntPtr ImagePipe;
 	public IntPtr GradientPipe;
-	public IntPtr RrPipe;                // analytic rounded-rect fill (SDF quad)
-	public IntPtr RrBgl;                 // group 0: RR uniform (rect/radii/color)
-	public IntPtr RrClipBgl;             // group 1: ClipU
+	public IntPtr RrPipe;                // analytic rounded-rect / border-ring fill (per-vertex SDF quad)
+	public IntPtr RrClipBgl;             // group 0: ClipU
 	public IntPtr BlurPipe;              // separable gaussian (fullscreen), single-sample
 	public IntPtr BlurBgl;
 	public IntPtr CompositeSrcOver;      // composite a layer texture into an MSAA pass (SrcOver / DstIn)
@@ -751,16 +750,27 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
   return vec4<f32>(col.rgb, col.a * clipCov(fc.xy, clip));
 }";
 
-	// Analytic rounded-rect fill: one quad + an SDF fragment (reuses roundCov + clipCov). rr.rect/radii are in the
-	// SAME device space as @builtin(position), so no arena re-map is needed (rrect is never arena-baked).
+	// Analytic rounded-rect / border-ring fill (ported from ramez's RoundedWgsl). The SDF is evaluated in LOCAL
+	// centred space (`p`/`hf`/`radii` interpolated per-vertex) so it's exact under any affine transform; the four
+	// device corners only position the quad. `ihalf.x >= 0` = BORDER RING (subtract an inner rounded rect). clipCov
+	// applies neutral's analytic rounded/rect clips using the device-pixel builtin position.
 	private const string RoundedRectWgsl = @"
-struct RR { rect: vec4<f32>, radii: vec4<f32>, color: vec4<f32> };
-@group(0) @binding(0) var<uniform> rr: RR;
-@group(1) @binding(0) var<uniform> clip: ClipU;
-@vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return xformPos(clip, pos); }
-@fragment fn fs(@builtin(position) fc: vec4<f32>) -> @location(0) vec4<f32> {
-  let cov = roundCov(fc.xy, rr.rect, rr.radii, 0.0) * clipCov(fc.xy, clip);
-  return vec4<f32>(rr.color.rgb, rr.color.a * cov);
+struct VSOut { @builtin(position) pos: vec4<f32>, @location(0) p: vec2<f32>, @location(1) hf: vec2<f32>, @location(2) radii: vec4<f32>, @location(3) col: vec4<f32>, @location(4) ihalf: vec2<f32>, @location(5) icenter: vec2<f32>, @location(6) iradii: vec4<f32> };
+@group(0) @binding(0) var<uniform> clip: ClipU;
+@vertex fn vs(@location(0) cpos: vec2<f32>, @location(1) p: vec2<f32>, @location(2) hf: vec2<f32>, @location(3) radii: vec4<f32>, @location(4) col: vec4<f32>, @location(5) ihalf: vec2<f32>, @location(6) icenter: vec2<f32>, @location(7) iradii: vec4<f32>) -> VSOut {
+  var o: VSOut; o.pos = vec4<f32>(cpos, 0.0, 1.0); o.p = p; o.hf = hf; o.radii = radii; o.col = col; o.ihalf = ihalf; o.icenter = icenter; o.iradii = iradii; return o;
+}
+fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
+  let rTop = select(radii.x, radii.y, p.x > 0.0); let rBot = select(radii.w, radii.z, p.x > 0.0);
+  let rad = select(rTop, rBot, p.y > 0.0); let q = abs(p) - hf + vec2<f32>(rad, rad);
+  return min(max(q.x, q.y), 0.0) + length(max(q, vec2<f32>(0.0, 0.0))) - rad;
+}
+@fragment fn fs(i: VSOut) -> @location(0) vec4<f32> {
+  let d = sdRR(i.p, i.hf, i.radii); let aa = max(fwidth(d), 1e-4);
+  var cov = 1.0 - smoothstep(-aa, aa, d);
+  if (i.ihalf.x >= 0.0) { let di = sdRR(i.p - i.icenter, i.ihalf, i.iradii); let aai = max(fwidth(di), 1e-4); cov = cov * smoothstep(-aai, aai, di); }
+  cov = cov * clipCov(i.pos.xy, clip);
+  return vec4<f32>(i.col.rgb, i.col.a * cov);
 }";
 
 	private void CreateRoundedRectPipeline(WGPUBlendState* blend)
@@ -768,8 +778,18 @@ struct RR { rect: vec4<f32>, radii: vec4<f32>, color: vec4<f32> };
 		var module = Module(ClipStructFn + RoundedRectWgsl);
 		var vs = SV("vs");
 		var fs = SV("fs");
-		var attr = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
-		var vbl = new WGPUVertexBufferLayout { ArrayStride = 8, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 1, Attributes = &attr };
+		var attrs = stackalloc WGPUVertexAttribute[8]
+		{
+			new() { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 },   // cpos (NDC)
+			new() { Format = WGPUVertexFormat.Float32x2, Offset = 8, ShaderLocation = 1 },   // p (local centred)
+			new() { Format = WGPUVertexFormat.Float32x2, Offset = 16, ShaderLocation = 2 },  // hf
+			new() { Format = WGPUVertexFormat.Float32x4, Offset = 24, ShaderLocation = 3 },  // radii
+			new() { Format = WGPUVertexFormat.Float32x4, Offset = 40, ShaderLocation = 4 },  // col
+			new() { Format = WGPUVertexFormat.Float32x2, Offset = 56, ShaderLocation = 5 },  // ihalf
+			new() { Format = WGPUVertexFormat.Float32x2, Offset = 64, ShaderLocation = 6 },  // icenter
+			new() { Format = WGPUVertexFormat.Float32x4, Offset = 72, ShaderLocation = 7 },  // iradii
+		};
+		var vbl = new WGPUVertexBufferLayout { ArrayStride = 88, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 8, Attributes = attrs };
 		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
 		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
@@ -777,8 +797,7 @@ struct RR { rect: vec4<f32>, radii: vec4<f32>, color: vec4<f32> };
 		var ds = new WGPUDepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = WGPUCompareFunction.GreaterEqual, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
 		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = IntPtr.Zero };
 		RrPipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
-		RrBgl = wgpuRenderPipelineGetBindGroupLayout(RrPipe, 0);
-		RrClipBgl = wgpuRenderPipelineGetBindGroupLayout(RrPipe, 1);
+		RrClipBgl = wgpuRenderPipelineGetBindGroupLayout(RrPipe, 0);
 	}
 
 	private void CreateGradientPipeline(WGPUBlendState* blend)
@@ -1406,14 +1425,20 @@ internal sealed class RectCommand : WebGpuCommand
 	public Vector2 P0, P1, P2, P3;
 }
 
-// An analytic rounded rectangle (device-space, axis-aligned): one SDF quad instead of a tessellated path — the
-// common WinUI border/background shape. Radii = (TopLeft, TopRight, BottomRight, BottomLeft), device-scaled.
-// Non-axis-aligned transforms are tessellated to a PathFill at record/replay time (this stays axis-aligned).
+// An analytic rounded rectangle / border ring (ported from ramez): one SDF quad instead of a tessellated path.
+// The SDF is evaluated in LOCAL centred space (Half/Radii are local, transform-independent), so it's correct under
+// ANY affine transform (rotation/scale/skew) — the four device corners P0..P3 only position the quad. A positive
+// InnerHalf makes it a BORDER RING (outer minus an inner rounded rect at InnerCenter); InnerHalf<0 = solid fill.
+// Radii = (TopLeft, TopRight, BottomRight, BottomLeft).
 internal sealed class RoundedRectCmd : WebGpuCommand
 {
-	public Vector4 RectLTRB;
-	public Vector4 Radii;
-	public WColor Color;
+	public Vector2 P0, P1, P2, P3;   // device-space corners: TL, TR, BR, BL (matches RectCommand order)
+	public Vector2 Half;             // local half-size
+	public Vector4 Radii;            // local per-corner
+	public WColor Color; public float Opacity = 1f;
+	public Vector2 InnerHalf = new(-1f, -1f);
+	public Vector2 InnerCenter;
+	public Vector4 InnerRadii;
 }
 
 internal sealed class PathFill : WebGpuCommand
@@ -1712,60 +1737,16 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	public void DrawRoundedRect(in Rect rect, Vector4 radii, WColor color, bool antialias = false)
 	{
 		if (_pendingColorMatrix is { Length: >= 20 } pm) { color = ApplyColorMatrix(color, pm); }
-		// Analytic (one SDF quad) only when the matrix is axis-aligned + uniform scale (translate / DPI): the rrect
-		// SDF is axis-aligned. Rotated / skewed / non-uniform scale falls back to a tessellated path (rare for borders).
-		if (MathF.Abs(_m.M12) < 1e-4f && MathF.Abs(_m.M21) < 1e-4f && MathF.Abs(MathF.Abs(_m.M11) - MathF.Abs(_m.M22)) < 1e-3f)
+		float w = (float)rect.Width, h = (float)rect.Height;
+		float maxR = MathF.Min(w, h) * 0.5f;
+		_target.Add(new RoundedRectCmd
 		{
-			var a = Map((float)rect.Left, (float)rect.Top); var c = Map((float)rect.Right, (float)rect.Bottom);
-			float s = MathF.Abs(_m.M11);
-			_target.Add(new RoundedRectCmd
-			{
-				RectLTRB = new Vector4(MathF.Min(a.X, c.X), MathF.Min(a.Y, c.Y), MathF.Max(a.X, c.X), MathF.Max(a.Y, c.Y)),
-				Radii = radii * s, Color = color, Clip = _clip,
-			});
-			return;
-		}
-		var pts = RoundRectOutline((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom, radii);
-		_fan = new List<float>(); _bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
-		var sink = (IFlattenedPathSink)this;
-		sink.BeginContour(pts[0]);
-		for (int i = 1; i < pts.Count; i++) { sink.LineTo(pts[i]); }
-		sink.LineTo(pts[0]);
-		if (_fan.Count > 0) { _target.Add(new PathFill { FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = false, Clip = _clip }); }
-		_fan = null;
-	}
-
-	// A rounded-rect outline as a convex point loop (space-agnostic — caller supplies coords): straight edges +
-	// per-corner arcs, clockwise. radii = (TL, TR, BR, BL). A zero radius degenerates to the sharp corner point.
-	private static List<Vector2> RoundRectOutline(float l, float t, float r, float b, Vector4 radii)
-	{
-		float mx = MathF.Min((r - l) * 0.5f, (b - t) * 0.5f);
-		float tl = MathF.Min(MathF.Max(radii.X, 0f), mx), tr = MathF.Min(MathF.Max(radii.Y, 0f), mx);
-		float br = MathF.Min(MathF.Max(radii.Z, 0f), mx), bl = MathF.Min(MathF.Max(radii.W, 0f), mx);
-		const int seg = 6;
-		var p = new List<Vector2>(4 * (seg + 1));
-		void Arc(float cx, float cy, float rad, float a0, float a1)
-		{
-			if (rad <= 0f) { p.Add(new Vector2(cx, cy)); return; }
-			for (int i = 0; i <= seg; i++) { float a = a0 + (a1 - a0) * i / seg; p.Add(new Vector2(cx + rad * MathF.Cos(a), cy + rad * MathF.Sin(a))); }
-		}
-		Arc(l + tl, t + tl, tl, MathF.PI, MathF.PI * 1.5f);          // top-left
-		Arc(r - tr, t + tr, tr, MathF.PI * 1.5f, MathF.PI * 2f);     // top-right
-		Arc(r - br, b - br, br, 0f, MathF.PI * 0.5f);               // bottom-right
-		Arc(l + bl, b - bl, bl, MathF.PI * 0.5f, MathF.PI);          // bottom-left
-		return p;
-	}
-
-	// Triangulated (fan) device-space rounded rect for the tessellation fallback under a non-axis-aligned replay.
-	internal static (float[] fan, Vector2 min, Vector2 max) RoundRectFanDevice(Vector4 r, Vector4 radii)
-	{
-		var pts = RoundRectOutline(r.X, r.Y, r.Z, r.W, radii);
-		var fan = new List<float>((pts.Count - 2) * 6);
-		for (int i = 1; i < pts.Count - 1; i++)
-		{
-			fan.Add(pts[0].X); fan.Add(pts[0].Y); fan.Add(pts[i].X); fan.Add(pts[i].Y); fan.Add(pts[i + 1].X); fan.Add(pts[i + 1].Y);
-		}
-		return (fan.ToArray(), new Vector2(r.X, r.Y), new Vector2(r.Z, r.W));
+			P0 = Map((float)rect.Left, (float)rect.Top), P1 = Map((float)rect.Right, (float)rect.Top),
+			P2 = Map((float)rect.Right, (float)rect.Bottom), P3 = Map((float)rect.Left, (float)rect.Bottom),
+			Half = new Vector2(w * 0.5f, h * 0.5f),
+			Radii = new Vector4(Math.Clamp(radii.X, 0, maxR), Math.Clamp(radii.Y, 0, maxR), Math.Clamp(radii.Z, 0, maxR), Math.Clamp(radii.W, 0, maxR)),
+			Color = color, Clip = _clip,
+		});
 	}
 
 	public void DrawPath(IGeometry geometry, WColor color, bool antialias = false)
@@ -2031,19 +2012,8 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					_target.Add(new RectCommand { Color = r.Color, Clip = ClipCompose(r.Clip, T), P0 = T(r.P0), P1 = T(r.P1), P2 = T(r.P2), P3 = T(r.P3) });
 					break;
 				case RoundedRectCmd rrc:
-					if (MathF.Abs(_m.M12) < 1e-4f && MathF.Abs(_m.M21) < 1e-4f && MathF.Abs(MathF.Abs(_m.M11) - MathF.Abs(_m.M22)) < 1e-3f)
-					{
-						var ra = T(new Vector2(rrc.RectLTRB.X, rrc.RectLTRB.Y)); var rc = T(new Vector2(rrc.RectLTRB.Z, rrc.RectLTRB.W));
-						float rs = MathF.Abs(_m.M11);
-						_target.Add(new RoundedRectCmd { RectLTRB = new Vector4(MathF.Min(ra.X, rc.X), MathF.Min(ra.Y, rc.Y), MathF.Max(ra.X, rc.X), MathF.Max(ra.Y, rc.Y)), Radii = rrc.Radii * rs, Color = rrc.Color, Clip = ClipCompose(rrc.Clip, T) });
-					}
-					else
-					{
-						var (rfan, _, _) = RoundRectFanDevice(rrc.RectLTRB, rrc.Radii);
-						var rdst = new float[rfan.Length]; var rmn = new Vector2(float.MaxValue); var rmx = new Vector2(float.MinValue);
-						for (int i = 0; i < rfan.Length; i += 2) { var q = T(new Vector2(rfan[i], rfan[i + 1])); rdst[i] = q.X; rdst[i + 1] = q.Y; rmn = Vector2.Min(rmn, q); rmx = Vector2.Max(rmx, q); }
-						_target.Add(new PathFill { FanDevice = rdst, BbMin = rmn, BbMax = rmx, Color = rrc.Color, EvenOdd = false, Clip = ClipCompose(rrc.Clip, T) });
-					}
+					// Local Half/Radii/Inner are intrinsic (transform-independent); only the device corners move.
+					_target.Add(new RoundedRectCmd { P0 = T(rrc.P0), P1 = T(rrc.P1), P2 = T(rrc.P2), P3 = T(rrc.P3), Half = rrc.Half, Radii = rrc.Radii, Color = rrc.Color, Opacity = rrc.Opacity, InnerHalf = rrc.InnerHalf, InnerCenter = rrc.InnerCenter, InnerRadii = rrc.InnerRadii, Clip = ClipCompose(rrc.Clip, T) });
 					break;
 				case PathFill p:
 					var src = p.FanDevice; var dst = new float[src.Length];
@@ -2703,38 +2673,21 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			}
 			case RoundedRectCmd rrc:
 			{
-				var r = rrc.RectLTRB; var rad = rrc.Radii;
-				var uni = new float[12]
+				var hf = rrc.Half; var rad = rrc.Radii; var ih = rrc.InnerHalf; var ic = rrc.InnerCenter; var ir = rrc.InnerRadii;
+				float cr = rrc.Color.R / 255f, cg = rrc.Color.G / 255f, cb = rrc.Color.B / 255f, ca = rrc.Color.A / 255f * rrc.Opacity;
+				// device corners TL,TR,BL,BR; local centred coords match; two tris (0,1,2, 2,1,3).
+				Span<Vector2> dev = stackalloc Vector2[4] { rrc.P0, rrc.P1, rrc.P3, rrc.P2 };
+				Span<Vector2> ctr = stackalloc Vector2[4] { new(-hf.X, -hf.Y), new(hf.X, -hf.Y), new(-hf.X, hf.Y), new(hf.X, hf.Y) };
+				ReadOnlySpan<int> tri = stackalloc int[6] { 0, 1, 2, 2, 1, 3 };
+				var v = new float[6 * 22]; int o = 0;
+				foreach (var idx in tri)
 				{
-					r.X, r.Y, r.Z, r.W, rad.X, rad.Y, rad.Z, rad.W,
-					rrc.Color.R / 255f, rrc.Color.G / 255f, rrc.Color.B / 255f, rrc.Color.A / 255f,
-				};
-				const int RrBytes = 48;
-				IntPtr rbg;
-				if (!(owned is null && _d.TryGetCachedBg((nint)_d.RrBgl, uni, out rbg)))
-				{
-					IntPtr ubuf;
-					if (owned is null)
-					{
-						var rbd = new WGPUBufferDescriptor { Size = RrBytes, Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
-						ubuf = wgpuDeviceCreateBuffer(_d.Dev, &rbd);
-					}
-					else { ubuf = Ubuf(RrBytes, owned); }
-					fixed (float* p = uni) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, RrBytes); }
-					var rentry = new WGPUBindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = RrBytes };
-					var rbgd = new WGPUBindGroupDescriptor { Layout = _d.RrBgl, EntryCount = 1, Entries = &rentry };
-					if (owned is null)
-					{
-						rbg = wgpuDeviceCreateBindGroup(_d.Dev, (WGPUBindGroupDescriptor*)Unsafe.AsPointer(ref rbgd));
-						_d.AddCachedBg((nint)_d.RrBgl, uni, ubuf, rbg);
-					}
-					else { rbg = Bg(ref rbgd, owned); }
+					var n = Ndc(dev[idx]);
+					v[o++] = n.X; v[o++] = n.Y; v[o++] = ctr[idx].X; v[o++] = ctr[idx].Y; v[o++] = hf.X; v[o++] = hf.Y;
+					v[o++] = rad.X; v[o++] = rad.Y; v[o++] = rad.Z; v[o++] = rad.W; v[o++] = cr; v[o++] = cg; v[o++] = cb; v[o++] = ca;
+					v[o++] = ih.X; v[o++] = ih.Y; v[o++] = ic.X; v[o++] = ic.Y; v[o++] = ir.X; v[o++] = ir.Y; v[o++] = ir.Z; v[o++] = ir.W;
 				}
-				var rq = new float[12];
-				void RV(int idx, Vector2 pos) { var n = Ndc(pos); rq[idx] = n.X; rq[idx + 1] = n.Y; }
-				var tl = new Vector2(r.X, r.Y); var tr = new Vector2(r.Z, r.Y); var brr = new Vector2(r.Z, r.W); var bl = new Vector2(r.X, r.W);
-				RV(0, tl); RV(2, tr); RV(4, brr); RV(6, tl); RV(8, brr); RV(10, bl);
-				ops.Add((5, (nint)rbg, 0, (nint)Vbuf(rq, owned), false, rrc.Clip, (nint)MakeClipBg(_d.RrClipBgl, rrc.Clip, owned)));
+				ops.Add((5, 0, 0, (nint)Vbuf(v, owned), false, rrc.Clip, (nint)MakeClipBg(_d.RrClipBgl, rrc.Clip, owned)));
 				break;
 			}
 		}
@@ -3175,9 +3128,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					break;
 				case 5:
 					wgpuRenderPassEncoderSetPipeline(pass, _d.RrPipe);
-					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)b0, 0, (uint*)null);
-					wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(12 * sizeof(float)));
+					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
+					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(6 * 22 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
 					WebGpuTrace.Draw("rrect", 6);
 					_d.Profiler?.DrawKind(6);

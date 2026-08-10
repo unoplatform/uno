@@ -264,9 +264,13 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 					var useInner = _useInnerBorderBoundsAsAreaForBackground;
 					var bgRect = useInner ? new Rect(0, 0, innerWidth, innerHeight) : new Rect(0, 0, Size.X, Size.Y);
-					var bgGeometry = BuildRoundRectPath(bgRect, useInner ? fullCornerRadius.Inner : fullCornerRadius.Outer);
+					var bgRadii = useInner ? fullCornerRadius.Inner : fullCornerRadius.Outer;
+					var bgGeometry = BuildRoundRectPath(bgRect, bgRadii);
 					((CompositionPathGeometry)_backgroundShape!.Geometry!).Path =
 						new CompositionPath((IGeometrySource2D)bgGeometry);
+					// Let a supporting backend fill the background as one analytic rounded rect (SDF) instead of the
+					// tessellated path. The path stays set as the fallback (non-solid brushes, non-identity transforms).
+					_backgroundShape!.RoundedRectFillHint = (bgRect, new Vector4(bgRadii.TopLeft.X, bgRadii.TopRight.X, bgRadii.BottomRight.X, bgRadii.BottomLeft.X));
 					_backgroundShape!.Offset = useInner
 						? new Vector2(borderLeft, borderTop)
 						: Vector2.Zero;
@@ -274,6 +278,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 				else if (_backgroundShape is not null) // reset values
 				{
 					((CompositionPathGeometry)_backgroundShape!.Geometry!).Path = null;
+					_backgroundShape!.RoundedRectFillHint = null;
 					_backgroundShape!.Offset = Vector2.Zero;
 				}
 			}
