@@ -91,10 +91,12 @@ on macOS with Skia rendering. To migrate:
 
 > [!IMPORTANT]
 > Both renames are hard renames — there are no type-forwarders and no `xmlns` alias.
-> Because `Uno.dll` and `Uno.WinRT.dll` are *different assembly identities*, a 7.0 app that
-> still pulls a library compiled against Uno 6.x can end up with every `Windows.*` type
-> defined twice, which surfaces as ambiguous-type errors rather than a missing reference.
-> Recompile every dependent library against 7.0 rather than mixing majors.
+> `Uno.dll` and `Uno.WinRT.dll` are *different assembly identities*, so a library compiled
+> against Uno 6.x can no longer bind: its references into `Uno` resolve to nothing and the build
+> fails with `CS0012` naming a projected type such as `Windows.UI.Core.CoreDispatcher`. When the
+> graph *also* pulls a pre-7.0 `Uno.WinUI` package, the old `Uno.dll` returns alongside
+> `Uno.WinRT.dll` and every `Windows.*` type is defined twice, giving ambiguous-type errors
+> instead. Recompile every dependent library against 7.0 rather than mixing majors.
 > [!NOTE]
 > Referencing `Uno.WinUI.WebAssembly` (or the older `Uno.WinUI.Runtime.WebAssembly`)
 > alongside the Skia browser head raises the `UNOB0017` build diagnostic. Removing the
