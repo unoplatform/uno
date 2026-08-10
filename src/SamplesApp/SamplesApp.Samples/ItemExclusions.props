@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project>
 	<ItemGroup>
-		<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MapPresenter\**" />
-		<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MapPresenter\**" />
-		<None Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MapPresenter\**"
-		      Link="Windows_UI_Xaml_Controls\MapPresenter\%(RecursiveDir)%(Filename)%(Extension)" />
-
 		<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\RevealBrushes\**" />
 		<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\RevealBrushes\**" />
 		<None Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\RevealBrushes\**"

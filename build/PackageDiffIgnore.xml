@@ -2133,6 +2133,8 @@
 		  <Member fullName="Uno.UI.Toolkit.MenuFlyoutItemExtensions" reason="Removed MenuFlyoutItemExtensions; its IsDestructive attached property was read only by the native iOS MenuFlyout presentation (#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Toolkit.MenuFlyoutExtensions" reason="Removed MenuFlyoutExtensions; its CancelTextIosOverride attached property was read only by the native iOS MenuFlyout presentation (#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Control" reason="Removed empty FeatureConfiguration.Control holder after deleting UseLegacyContentAlignment (BC45, breaking changes for 7.0)" />
+		  <!-- Xaml-compat stub of the native-only Uno.UI.Maps addin, removed along with the addin itself (#2049, breaking changes for 7.0). -->
+		  <Member fullName="Uno.UI.Maps.MapResources" reason="Removed the Uno.UI.Toolkit Xaml-compat ResourceDictionary stub together with the native-only Uno.UI.Maps addin (#2049, breaking changes for 7.0)" />
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.DropDownButtonAutomationPeer" reason="Moved to correct namespace Microsoft.UI.Xaml.Automation.Peers" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ExpanderAutomationPeer" reason="Moved to correct namespace Microsoft.UI.Xaml.Automation.Peers" />
