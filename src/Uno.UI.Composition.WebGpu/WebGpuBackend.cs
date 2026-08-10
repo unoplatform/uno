@@ -25,6 +25,14 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public IntPtr StencilEvenOdd;
 	public IntPtr StencilNonZero;
 	public IntPtr CoverPipe;
+	// In-pass path-clip depth mask: instead of an offscreen coverage texture per clip, stencil the clip fan into
+	// the shared depth buffer inside the main pass (depth=0 inside the clip, 1 outside) and let content depth-test
+	// against it (GreaterEqual). Fullscreen depth writers (bbox-scissored): SetN clears the region to N; CoverN
+	// writes N where the fan stencil is set (and resets the stencil). Depth = clip mask, stencil = fill winding.
+	public IntPtr ClipDepthSet0;   // depth := 0 over the scissor region (restore "no clip")
+	public IntPtr ClipDepthSet1;   // depth := 1 over the scissor region (prep intersect mask)
+	public IntPtr ClipDepthCover0; // depth := 0 where stencil != 0 (inside the fan) + reset stencil — intersect
+	public IntPtr ClipDepthCover1; // depth := 1 where stencil != 0 (inside the fan) + reset stencil — exclude
 	public IntPtr ImagePipe;
 	public IntPtr GradientPipe;
 	public IntPtr BlurPipe;              // separable gaussian (fullscreen), single-sample
@@ -392,7 +400,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	// rounded-rect mask (radii 0 → plain rect, full coverage); ~1px analytic AA on the corner edge.
 	private const string ClipStructFn = @"
 struct ClipU { rect: vec4<f32>, radii: vec4<f32>, flags: vec4<f32>, size: vec4<f32> };
-fn clipCov(fc: vec2<f32>, clip: ClipU, ctex: texture_2d<f32>, csmp: sampler) -> f32 {
+fn clipCov(fc: vec2<f32>, clip: ClipU) -> f32 {
   var cov = 1.0;
   if (clip.flags.x > 0.5) {
     let rl = clip.rect;
@@ -408,15 +416,9 @@ fn clipCov(fc: vec2<f32>, clip: ClipU, ctex: texture_2d<f32>, csmp: sampler) -> 
     // flags.z = Difference (exclude): keep the OUTSIDE of the rounded rect; otherwise keep the inside.
     cov = cov * select(rr, 1.0 - rr, clip.flags.z > 0.5);
   }
-  if (clip.flags.y > 0.5) {
-    // The coverage texture is bounds-sized to the clip path's bbox (origin = size.zw, extent = the texture's own
-    // dimensions) — not the full window — so a small clip costs a small offscreen. Sample by the local offset;
-    // outside the bbox the path can't cover, so coverage is 0.
-    let dims = max(vec2<f32>(textureDimensions(ctex)), vec2<f32>(1.0, 1.0));
-    let uv = (fc - clip.size.zw) / dims;
-    let inb = all(uv >= vec2<f32>(0.0, 0.0)) && all(uv <= vec2<f32>(1.0, 1.0));
-    cov = cov * select(0.0, textureSampleLevel(ctex, csmp, uv, 0.0).a, inb);
-  }
+  // Arbitrary path clips (flags.y) are applied via the shared depth buffer as an in-pass mask (see the main-pass
+  // clip protocol), not sampled here — so clipCov only carries the analytic rounded-rect. ctex/csmp are unused now
+  // (kept in the bind group to avoid a layout change) and the depth test does the path clipping.
   return cov;
 }
 ";
@@ -438,13 +440,11 @@ fn clipCov(fc: vec2<f32>, clip: ClipU, ctex: texture_2d<f32>, csmp: sampler) -> 
 
 	private const string ColoredWgsl = @"
 @group(0) @binding(0) var<uniform> clip: ClipU;
-@group(0) @binding(1) var clipTex: texture_2d<f32>;
-@group(0) @binding(2) var clipSmp: sampler;
 struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 @vertex fn vs(@location(0) pos: vec2<f32>, @location(1) col: vec4<f32>) -> VOut {
   var o: VOut; o.p = vec4<f32>(pos, 0.0, 1.0); o.c = col; return o;
 }
-@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy, clip, clipTex, clipSmp)); }";
+@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy, clip)); }";
 
 	private const string PosOnlyWgsl = @"
 @vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return vec4<f32>(pos, 0.0, 1.0); }
@@ -474,16 +474,67 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 			Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add },
 		};
 
-		SolidPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), 0x00, 0x00);
+		// Content pipelines depth-test GreaterEqual against the clip mask (content z=0: passes where mask depth<=0,
+		// i.e. inside the clip or where no clip is active). The fan-stencil pipelines keep DepthCompare=Always
+		// (winding is independent of the clip; the clip applies at the colour-writing cover/solid/image/gradient).
+		var keep = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
+		SolidPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, keep, keep, 0x00, 0x00, WGPUCompareFunction.GreaterEqual);
 		StencilEvenOdd = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), 0xFF, 0xFF);
 		StencilNonZero = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.IncrementWrap), Face(WGPUCompareFunction.Always, WGPUStencilOperation.DecrementWrap), 0xFF, 0xFF);
-		CoverPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), 0xFF, 0xFF);
+		CoverPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), 0xFF, 0xFF, WGPUCompareFunction.GreaterEqual);
 		SolidClipBgl = wgpuRenderPipelineGetBindGroupLayout(SolidPipe, 0);
 		CoverClipBgl = wgpuRenderPipelineGetBindGroupLayout(CoverPipe, 0);
+		CreateClipDepthPipelines();
 		CreateImagePipeline();
 		CreateGradientPipeline(&blend);
 		CreateBlurPipeline();
 		CreateCompositePipelines();
+	}
+
+	// Fullscreen-triangle depth writers for the in-pass path-clip mask. vs0/vs1 emit the tri at z=0/z=1; the
+	// fragment writes nothing (colour masked off) — only depth (and, for the cover variants, the stencil reset).
+	private const string ClipDepthWgsl = @"
+@vertex fn vs0(@builtin(vertex_index) vi: u32) -> @builtin(position) vec4<f32> {
+  var p = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
+  return vec4<f32>(p[vi], 0.0, 1.0);
+}
+@vertex fn vs1(@builtin(vertex_index) vi: u32) -> @builtin(position) vec4<f32> {
+  var p = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
+  return vec4<f32>(p[vi], 1.0, 1.0);
+}
+@fragment fn fs() -> @location(0) vec4<f32> { return vec4<f32>(0.0, 0.0, 0.0, 0.0); }";
+
+	private void CreateClipDepthPipelines()
+	{
+		var module = Module(ClipDepthWgsl);
+		var vs0 = SV("vs0"); var vs1 = SV("vs1"); var fs = SV("fs");
+		var setFace = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);                 // clear region, don't touch stencil
+		var coverFace = Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero);              // write where stencil != 0, reset it
+		ClipDepthSet0 = MakeClipDepthPipe(module, vs0, fs, setFace, 0x00, 0x00);
+		ClipDepthSet1 = MakeClipDepthPipe(module, vs1, fs, setFace, 0x00, 0x00);
+		ClipDepthCover0 = MakeClipDepthPipe(module, vs0, fs, coverFace, 0xFF, 0xFF);
+		ClipDepthCover1 = MakeClipDepthPipe(module, vs1, fs, coverFace, 0xFF, 0xFF);
+	}
+
+	// A vertex-buffer-less fullscreen pipeline that writes only depth (colour masked) with the given stencil face.
+	private IntPtr MakeClipDepthPipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, WGPUStencilFaceState face, uint stencilWrite, uint stencilRead)
+	{
+		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = null, WriteMask = 0 };
+		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
+		var ds = new WGPUDepthStencilState
+		{
+			Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.True, DepthCompare = WGPUCompareFunction.Always,
+			StencilFront = face, StencilBack = face, StencilReadMask = stencilRead, StencilWriteMask = stencilWrite,
+		};
+		var pd = new WGPURenderPipelineDescriptor
+		{
+			Vertex = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 0 },
+			Fragment = &fsState, DepthStencil = &ds,
+			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
+			Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
+			Layout = IntPtr.Zero,
+		};
+		return wgpuDeviceCreateRenderPipeline(Dev, &pd);
 	}
 
 	// Composites a full-size layer texture into an MSAA pass. SrcOver for plain/opacity/colorfilter layers,
@@ -593,8 +644,6 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 struct Grad { header: vec4<f32>, geo: vec4<f32>, colors: array<vec4<f32>, 16>, stops: array<vec4<f32>, 4>, origin: vec4<f32> };
 @group(0) @binding(0) var<uniform> g: Grad;
 @group(1) @binding(0) var<uniform> clip: ClipU;
-@group(1) @binding(1) var clipTex: texture_2d<f32>;
-@group(1) @binding(2) var clipSmp: sampler;
 @vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return vec4<f32>(pos, 0.0, 1.0); }
 fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
 @fragment fn fs(@builtin(position) fc: vec4<f32>) -> @location(0) vec4<f32> {
@@ -638,7 +687,7 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
       }
     }
   }
-  return vec4<f32>(col.rgb, col.a * clipCov(fc.xy, clip, clipTex, clipSmp));
+  return vec4<f32>(col.rgb, col.a * clipCov(fc.xy, clip));
 }";
 
 	private void CreateGradientPipeline(WGPUBlendState* blend)
@@ -652,7 +701,7 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
 		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
 		var keepFace = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
-		var ds = new WGPUDepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = WGPUCompareFunction.Always, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
+		var ds = new WGPUDepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = WGPUCompareFunction.GreaterEqual, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
 		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = IntPtr.Zero };
 		GradientPipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
 		GradBgl = wgpuRenderPipelineGetBindGroupLayout(GradientPipe, 0);
@@ -666,8 +715,6 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 @group(0) @binding(1) var smp: sampler;
 @group(0) @binding(2) var<uniform> u: U;
 @group(1) @binding(0) var<uniform> clip: ClipU;
-@group(1) @binding(1) var clipTex: texture_2d<f32>;
-@group(1) @binding(2) var clipSmp: sampler;
 @vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> VOut { var o: VOut; o.p = vec4<f32>(pos, 0.0, 1.0); o.uv = uv; return o; }
 @fragment fn fs(i: VOut) -> @location(0) vec4<f32> {
   var c = textureSample(tex, smp, i.uv);   // premultiplied
@@ -683,7 +730,7 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
     let fp = vec4<f32>(u.tint.rgb * u.tint.a, u.tint.a);
     c = fp * c.a;
   }
-  return c * u.op.x * clipCov(i.p.xy, clip, clipTex, clipSmp);
+  return c * u.op.x * clipCov(i.p.xy, clip);
 }";
 
 	private void CreateImagePipeline()
@@ -701,7 +748,7 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = &blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
 		var keepFace = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
-		var ds = new WGPUDepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = WGPUCompareFunction.Always, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
+		var ds = new WGPUDepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = WGPUCompareFunction.GreaterEqual, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
 		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = IntPtr.Zero };
 		ImagePipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
 		ImgBgl = wgpuRenderPipelineGetBindGroupLayout(ImagePipe, 0);
@@ -710,7 +757,7 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 		Smp = wgpuDeviceCreateSampler(Dev, &sd);
 	}
 
-	private IntPtr MakePipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, bool colorWrite, bool colorAttrs, WGPUBlendState* blend, WGPUStencilFaceState front, WGPUStencilFaceState back, uint stencilWrite, uint stencilRead)
+	private IntPtr MakePipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, bool colorWrite, bool colorAttrs, WGPUBlendState* blend, WGPUStencilFaceState front, WGPUStencilFaceState back, uint stencilWrite, uint stencilRead, WGPUCompareFunction depthCompare = WGPUCompareFunction.Always, bool depthWrite = false)
 	{
 		var attrs = stackalloc WGPUVertexAttribute[2];
 		attrs[0] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
@@ -727,7 +774,7 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
 		var ds = new WGPUDepthStencilState
 		{
-			Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = WGPUCompareFunction.Always,
+			Format = DepthStencilFormat, DepthWriteEnabled = depthWrite ? WGPUOptionalBool.True : WGPUOptionalBool.False, DepthCompare = depthCompare,
 			StencilFront = front, StencilBack = back, StencilReadMask = stencilRead, StencilWriteMask = stencilWrite,
 		};
 		var pd = new WGPURenderPipelineDescriptor
@@ -1944,41 +1991,27 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		return bg;
 	}
 
-	// Coverage textures for path clips, cached by the (reference-identical) fan shared across a clip's commands.
-	// Each entry is the bounds-sized coverage view + its device-space origin (top-left of the fan bbox).
-	private readonly System.Collections.Generic.Dictionary<float[], (nint view, Vector2 origin)> _coverageCache = new(System.Collections.Generic.ReferenceEqualityComparer.Instance);
-
-	// The clip bind group for a command: the ClipU uniform (rect, radii, flags, surface size), plus a coverage
-	// texture (the path-clip mask, or the device dummy when there's no path clip) and a sampler.
+	// The clip bind group for a command: just the ClipU uniform (rounded-rect + surface size). Arbitrary path clips
+	// are applied via the shared depth mask in the main pass, not sampled here, so there is no coverage texture.
 	private IntPtr MakeClipBg(IntPtr bgl, ClipData cd, OwnedResources owned = null)
 	{
-		// Resolve a path clip's (bounds-sized) coverage FIRST: PathCoverage recursively calls MakeClipBg for its own
-		// cover quad, which reuses the shared _clipU scratch — so it must finish before we fill _clipU below.
-		nint covView = _d.DummyTex; Vector2 covOrigin = default;
-		if (cd.PathFan != null) { (covView, covOrigin) = PathCoverage(cd.PathFan, cd.PathEvenOdd); }
-
 		var cu = _clipU;
 		System.Array.Clear(cu);
 		cu[0] = cd.Rect.X; cu[1] = cd.Rect.Y; cu[2] = cd.Rect.Z; cu[3] = cd.Rect.W;
 		cu[4] = cd.Radii.X; cu[5] = cd.Radii.Y; cu[6] = cd.Radii.Z; cu[7] = cd.Radii.W;
-		cu[8] = cd.HasRound ? 1f : 0f; cu[9] = cd.PathFan != null ? 1f : 0f; cu[10] = cd.HasExclude ? 1f : 0f;
+		cu[8] = cd.HasRound ? 1f : 0f; cu[10] = cd.HasExclude ? 1f : 0f;
 		cu[12] = _s.Width; cu[13] = _s.Height;
-		cu[14] = covOrigin.X; cu[15] = covOrigin.Y;   // coverage bbox origin (size.zw); clipCov reads the extent from the texture
 
-		// A non-path per-frame clip depends only on (layout, these floats) + device-stable DummyTex/sampler, so it's
-		// identical across frames for static chrome — reuse a cached bind group instead of rebuilding it every frame.
-		// (Path clips reference a per-frame pooled coverage texture, so they take the uncached path below.)
-		if (owned is null && cd.PathFan is null)
+		// The ClipU depends only on (layout, these floats) — identical across frames for static chrome — so reuse a
+		// cached bind group. Now that path clips carry no per-frame coverage texture, every clip is cacheable.
+		if (owned is null)
 		{
 			if (_d.TryGetCachedBg(bgl, cu, out var cachedBg)) { return cachedBg; }
 			var cbd = new WGPUBufferDescriptor { Size = 64, Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
 			var cbuf = wgpuDeviceCreateBuffer(_d.Dev, &cbd);
 			fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, cbuf, 0, (IntPtr)p, 64); }
-			var ce = stackalloc WGPUBindGroupEntry[3];
-			ce[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = cbuf, Offset = 0, Size = 64 };
-			ce[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = _d.DummyTex };
-			ce[2] = new WGPUBindGroupEntry { Binding = 2, Sampler = _d.Smp };
-			var cbgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 3, Entries = ce };
+			var ce = new WGPUBindGroupEntry { Binding = 0, Buffer = cbuf, Offset = 0, Size = 64 };
+			var cbgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 1, Entries = &ce };
 			var cbg = wgpuDeviceCreateBindGroup(_d.Dev, (WGPUBindGroupDescriptor*)Unsafe.AsPointer(ref cbgd));
 			_d.AddCachedBg(bgl, (float[])cu.Clone(), cbuf, cbg);   // cache stores the key — clone off the reused scratch
 			return cbg;
@@ -1986,73 +2019,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 		var buf = Ubuf(64, owned);
 		fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, 64); }
-		// Cached recordings never have a path clip (excluded by IsCacheable), so covView stays the persistent DummyTex
-		// there — no dangling reference to a per-frame pooled coverage texture.
-		var e = stackalloc WGPUBindGroupEntry[3];
-		e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = 64 };
-		e[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = covView };
-		e[2] = new WGPUBindGroupEntry { Binding = 2, Sampler = _d.Smp };
-		var bgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 3, Entries = e };
+		var e = new WGPUBindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = 64 };
+		var bgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 1, Entries = &e };
 		return Bg(ref bgd, owned);
-	}
-
-	private (nint view, Vector2 origin) PathCoverage(float[] fan, bool evenOdd)
-	{
-		if (_coverageCache.TryGetValue(fan, out var cached)) { return cached; }
-		var res = RenderPathCoverage(fan, evenOdd);
-		_coverageCache[fan] = res;
-		return res;
-	}
-
-	// Fills the clip path (stencil-then-cover, white) into a coverage surface sized to the path's device-space
-	// bbox (NOT the full window — a small clip is a small offscreen); its resolved alpha is the per-fragment clip
-	// mask sampled (by local offset) in clipCov. Returns the view + the bbox origin.
-	private (nint view, Vector2 origin) RenderPathCoverage(float[] fan, bool evenOdd)
-	{
-		_d.Profiler?.OsCov();
-		// Fan device-space bbox, clamped to the surface — the coverage only needs to cover the path.
-		float minX = float.MaxValue, minY = float.MaxValue, maxX = float.MinValue, maxY = float.MinValue;
-		for (int i = 0; i < fan.Length; i += 2)
-		{
-			if (fan[i] < minX) { minX = fan[i]; } if (fan[i] > maxX) { maxX = fan[i]; }
-			if (fan[i + 1] < minY) { minY = fan[i + 1]; } if (fan[i + 1] > maxY) { maxY = fan[i + 1]; }
-		}
-		int ox = Math.Clamp((int)MathF.Floor(minX), 0, _s.Width), oy = Math.Clamp((int)MathF.Floor(minY), 0, _s.Height);
-		int rx = Math.Clamp((int)MathF.Ceiling(maxX), 0, _s.Width), by = Math.Clamp((int)MathF.Ceiling(maxY), 0, _s.Height);
-		int cw = Math.Max(1, rx - ox), ch = Math.Max(1, by - oy);
-		var origin = new Vector2(ox, oy);
-		var cov = new WebGpuRenderSurface(_d, cw, ch, _d.Pool);
-		var fanNdc = new float[fan.Length];
-		// Map the device fan into the bbox-local NDC (origin at the bbox top-left, extent = cw x ch).
-		for (int i = 0; i < fan.Length; i += 2)
-		{
-			fanNdc[i] = (fan[i] - ox) / cw * 2f - 1f;
-			fanNdc[i + 1] = 1f - (fan[i + 1] - oy) / ch * 2f;
-		}
-		var fanBuf = MakeBuffer(fanNdc);
-		var cq = new System.Collections.Generic.List<float>();
-		void CQ(float x, float y) { cq.Add(x); cq.Add(y); cq.Add(1f); cq.Add(1f); cq.Add(1f); cq.Add(1f); }
-		CQ(-1, -1); CQ(1, -1); CQ(1, 1); CQ(-1, -1); CQ(1, 1); CQ(-1, 1);
-		var coverBuf = MakeBuffer(cq.ToArray());
-		var noClip = MakeClipBg(_d.CoverClipBgl, default);
-
-		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = cov.MsaaColorView, ResolveTarget = cov.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Discard, ClearValue = default };
-		var dsa = new WGPURenderPassDepthStencilAttachment { View = cov.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 1f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
-		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
-		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
-		wgpuRenderPassEncoderSetPipeline(pass, evenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
-		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanNdc.Length * sizeof(float)));
-		wgpuRenderPassEncoderDraw(pass, (uint)(fanNdc.Length / 2), 1, 0, 0);
-		wgpuRenderPassEncoderSetPipeline(pass, _d.CoverPipe);
-		wgpuRenderPassEncoderSetBindGroup(pass, 0, noClip, 0, (uint*)null);
-		wgpuRenderPassEncoderSetStencilReference(pass, 0);
-		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, coverBuf, 0, (nuint)(cq.Count * sizeof(float)));
-		wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
-		wgpuRenderPassEncoderEnd(pass);
-		// The MSAA colour resolved into cov.View and the depth/stencil is spent — free both for the next offscreen
-		// to reuse. Only cov.View (the coverage mask sampled in the main pass) stays live.
-		_d.Pool.Return(cov.MsaaColorView); _d.Pool.Return(cov.DepthView);
-		return (cov.View, origin);
 	}
 
 	// Fills the shadow silhouette into an offscreen coverage surface (stencil-then-cover, white), then blurs it
@@ -2083,7 +2052,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var noClip = MakeClipBg(_d.CoverClipBgl, default);
 
 		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = cov.MsaaColorView, ResolveTarget = cov.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Discard, ClearValue = default };
-		var dsa = new WGPURenderPassDepthStencilAttachment { View = cov.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 1f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
+		var dsa = new WGPURenderPassDepthStencilAttachment { View = cov.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
 		wgpuRenderPassEncoderSetPipeline(pass, sh.EvenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
@@ -2252,6 +2221,41 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				break;
 			}
 		}
+	}
+
+	// Applies the in-pass path-clip transition to the shared depth buffer (all draws recorded into the open `pass`):
+	// restore the previous clip's region to depth=0, then write the new clip's mask (depth=0 kept / else clipped)
+	// via stencil-then-cover over its bbox. Content depth-tests GreaterEqual against it. No offscreen, no resolve.
+	private void ApplyDepthClip(IntPtr pass, float[] prevFan, Vector4 prevAabb, ClipData next)
+	{
+		// Restore the previous path clip's region to depth=0 (no clip) so its mask doesn't leak past its bbox.
+		if (prevFan is not null && TryScissor(prevAabb, out var px, out var py, out var pw, out var ph))
+		{
+			wgpuRenderPassEncoderSetScissorRect(pass, (uint)px, (uint)py, (uint)pw, (uint)ph);
+			wgpuRenderPassEncoderSetPipeline(pass, _d.ClipDepthSet0);
+			wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+		}
+		if (next.PathFan is not { } fan || !TryScissor(next.Aabb, out var nx, out var ny, out var nw, out var nh))
+		{
+			return;
+		}
+		wgpuRenderPassEncoderSetScissorRect(pass, (uint)nx, (uint)ny, (uint)nw, (uint)nh);
+		var excl = next.HasExclude;
+		// 1) fill the bbox with the "clipped" depth (intersect: 1 = clipped outside the shape; exclude: 0).
+		wgpuRenderPassEncoderSetPipeline(pass, excl ? _d.ClipDepthSet0 : _d.ClipDepthSet1);
+		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+		// 2) stencil the clip fan (winding) in full-window NDC.
+		_scratch.Clear();
+		for (int i = 0; i < fan.Length; i += 2) { var n = Ndc(new Vector2(fan[i], fan[i + 1])); _scratch.Add(n.X); _scratch.Add(n.Y); }
+		var fanBuf = MakeBuffer(_scratch);
+		wgpuRenderPassEncoderSetPipeline(pass, next.PathEvenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
+		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(_scratch.Count * sizeof(float)));
+		wgpuRenderPassEncoderDraw(pass, (uint)(_scratch.Count / 2), 1, 0, 0);
+		// 3) cover: write the "kept" depth (intersect: 0 inside the shape; exclude: 1) where the stencil is set,
+		// and reset the stencil to 0 (PassOp=Zero) so the next fill/clip starts clean.
+		wgpuRenderPassEncoderSetPipeline(pass, excl ? _d.ClipDepthCover1 : _d.ClipDepthCover0);
+		wgpuRenderPassEncoderSetStencilReference(pass, 0);
+		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
 	}
 
 	// Renders a command list into a target surface's MSAA pass (resolving to its single-sample view). Layers
@@ -2450,7 +2454,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var dsa = new WGPURenderPassDepthStencilAttachment
 		{
 			View = target.DepthView,
-			DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 1f,
+			DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f,
 			StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0,
 		};
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
@@ -2461,8 +2465,17 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// under the recursive nested-layer RenderInto (each pass has its own scissor state).
 		if (!target.Pooled) { _d.Profiler?.Ops(ops.Count); }
 		int lastX = -1, lastY = -1, lastW = -1, lastH = -1;
+		// Current in-pass path-clip mask (device depth buffer). Changes only when a run of ops moves to a different
+		// path clip — the composition emits a clip then its subtree consecutively, so this fires ~once per clip.
+		float[] curFan = null; Vector4 curAabb = default;
 		foreach (var (kind, b0, u0, b1, flag, clip, clipBg) in ops)
 		{
+			if (!ReferenceEquals(clip.PathFan, curFan))
+			{
+				ApplyDepthClip(pass, curFan, curAabb, clip);
+				curFan = clip.PathFan; curAabb = clip.Aabb;
+				lastX = lastY = lastW = lastH = -1;   // the clip setup changed the scissor
+			}
 			if (!TryScissor(clip.Aabb, out var sx, out var sy, out var sw, out var sh)) { continue; }
 			_d.Profiler?.Draw();
 			if (sx != lastX || sy != lastY || sw != lastW || sh != lastH)
