@@ -590,9 +590,10 @@ Check("many-stop gradient: right blue (stops 16..19 not clamped away)", manyRigh
 	Check("coalesce-cached: rect3 blue", cor3.b > 200 && cor3.r < 60, cor3);
 	if (WebGpuTrace.Enabled)
 	{
-		int solidDraws = 0;
-		foreach (var l in coDraws.Split('\n')) { if (l.Contains("DRAW solid")) { solidDraws++; } }
-		Check("coalesce-cached: 3 rects -> 1 solid draw", solidDraws == 1, $"solidDraws={solidDraws}");
+		int solidDraws = 0; string solidLine = "";
+		foreach (var l in coDraws.Split('\n')) { if (l.Contains("DRAW solid")) { solidDraws++; solidLine = l; } }
+		// Ramez-combo parity: 3 rects coalesce to ONE `DRAW solid v=18` (== ramez's "rect x3 (coalesce)" trace).
+		Check("coalesce-cached: 3 rects -> 1 solid draw v=18", solidDraws == 1 && solidLine.Contains("v=18"), $"solidDraws={solidDraws} line='{solidLine.Trim()}'");
 	}
 }
 
@@ -647,9 +648,11 @@ Check("many-stop gradient: right blue (stops 16..19 not clamped away)", manyRigh
 	Check("cross-visual: visual B blue", xb.b > 200 && xb.r < 60, xb);
 	if (WebGpuTrace.Enabled)
 	{
-		int solidDraws = 0;
-		foreach (var l in xDraws.Split('\n')) { if (l.Contains("DRAW solid")) { solidDraws++; } }
-		Check("cross-visual: 2 visuals -> 1 solid draw", solidDraws == 1, $"solidDraws={solidDraws}");
+		int solidDraws = 0; string solidLine = "";
+		foreach (var l in xDraws.Split('\n')) { if (l.Contains("DRAW solid")) { solidDraws++; solidLine = l; } }
+		// Ramez-combo parity: 2 rects across 2 visuals coalesce to ONE `DRAW solid v=12` (matches ramez's single
+		// coalesced solid draw of v=6*rectCount), not two v=6 draws.
+		Check("cross-visual: 2 visuals -> 1 solid draw v=12", solidDraws == 1 && solidLine.Contains("v=12"), $"solidDraws={solidDraws} line='{solidLine.Trim()}'");
 	}
 }
 
