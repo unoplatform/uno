@@ -496,6 +496,23 @@ var manyRight = At(pMany, 62, 32); var manyLeft = At(pMany, 2, 32);
 Check("many-stop gradient: left red (early stops)", manyLeft.r > 150 && manyLeft.b < 100, manyLeft);
 Check("many-stop gradient: right blue (stops 16..19 not clamped away)", manyRight.b > 150 && manyRight.r < 100, manyRight);
 
+// 18) ARENA (#22) — replay a cached child recording at two transforms on ONE session. The moved frame must reuse
+//     the geometry (see the moving-visual trace) AND land at the translated position — validating the re-stamp
+//     xform math, not just that a buffer was reused.
+{
+	var aSurface = new WebGpuRenderSurface(dev, 64, 64);
+	var aPresent = new WebGpuPresentSession(dev, aSurface);
+	aPresent.Clear(WColor.FromArgb(255, 0, 0, 0));
+	var aChild = new WebGpuCommandRecorder(); aChild.DrawRect(new Rect(0, 0, 16, 16), red, false); var aChildData = aChild.Finish();
+	var af1 = new WebGpuCommandRecorder(); af1.Replay(aChildData); aPresent.Replay(af1.Finish());   // frame 1 at origin
+	var af2 = new WebGpuCommandRecorder(); af2.Translate(40, 40); af2.Replay(aChildData); aPresent.Replay(af2.Finish());
+	var af2px = dev.ReadPixelsRgba(aSurface);   // frame 2: rect moved to (40,40)-(56,56)
+	var amMoved = At(af2px, 48, 48);   // inside the moved rect → red
+	var amOld = At(af2px, 8, 8);       // origin position, now vacated → black
+	Check("arena: moved visual lands at translated position (red)", amMoved.r > 200 && amMoved.g < 60, amMoved);
+	Check("arena: origin position vacated (black)", amOld.r < 40 && amOld.g < 40 && amOld.b < 40, amOld);
+}
+
 // ---- Ordered GPU-command TRACE (UNO_WEBGPU_TRACE=1) ----
 // Dumps exactly what each primitive submits to the GPU (passes, pipelines, draws), in order, so it can be diffed
 // against the original ramez/webgpu-experiment backend's submission for the same primitive. Not a pass/fail check.
