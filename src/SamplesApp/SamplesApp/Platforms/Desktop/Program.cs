@@ -8,11 +8,11 @@ using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Win32;
 using Uno.WinUI.Runtime.Skia.X11;
 
-namespace SamplesApp.Head;
+namespace SamplesApp;
 
 internal static class Program
 {
-	private static SamplesApp.App? _app;
+	private static App? _app;
 
 	[STAThread]
 	public static void Main(string[] args)
@@ -29,11 +29,11 @@ internal static class Program
 
 	private static void Run()
 	{
-		SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
+		App.ConfigureLogging(); // Enable tracing of the host
 
 		UnoPlatformHost? host = default;
 		var builder = UnoPlatformHostBuilder.Create()
-			.App(() => _app = new SamplesApp.App())
+			.App(() => _app = new App())
 			.AfterInit(() =>
 			{
 				if (host is X11ApplicationHost)

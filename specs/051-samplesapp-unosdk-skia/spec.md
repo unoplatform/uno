@@ -18,7 +18,7 @@
 
 ## 1. Executive summary
 
-Create one `Uno.Sdk`-based app head — provisionally `src/SamplesApp/SamplesApp.Head/SamplesApp.Head.csproj`, `AssemblyName=SamplesApp` — that multi-targets:
+Create one `Uno.Sdk`-based app head — provisionally `src/SamplesApp/SamplesApp/SamplesApp.csproj`, `AssemblyName=SamplesApp` — that multi-targets:
 
 ```
 net10.0-desktop;net10.0-browserwasm;$(NetCurrentWinAppSDK);net10.0-android;net10.0-ios;net10.0-tvos
@@ -85,7 +85,7 @@ The new head lands **alongside** the four current heads. CI build/test stages ar
 - **WinUI/WinAppSDK target included** via `$(NetCurrentWinAppSDK)` (= `net10.0-windows10.0.19041.0`), matching the existing `SamplesApp.Windows` head's TFM. This is the **only** native-rendering TFM; all others are Skia.
 - **tvOS retained** to honor "all Skia targets" — not obviously exercised by current Skia CI; a cheap drop later (open item, non-blocking).
 - **`OutputType`** is `WinExe` for windows, `Exe` elsewhere (Uno.Sdk may already set this per platform; the explicit condition is a safety net, validated in the Windows phase).
-- **Naming:** provisional csproj `SamplesApp.Head` (dropped `.Skia` since the head now spans Skia **and** WinUI); `AssemblyName=SamplesApp`. Final name decided in cleanup.
+- **Naming:** provisional csproj `SamplesApp` (dropped `.Skia` since the head now spans Skia **and** WinUI); `AssemblyName=SamplesApp`. Final name decided in cleanup.
 
 ## 4. Framework wiring (the hybrid core)
 
@@ -204,6 +204,6 @@ The four heads are consumed by ~16+ Azure DevOps YAML files and shell/PowerShell
 ## 14. Open items (non-blocking)
 
 - Keep tvOS, or drop it if it adds no CI value?
-- Final project/folder name (rename in P6 cleanup vs keep `SamplesApp.Head`).
+- Final project/folder name (rename in P6 cleanup vs keep `SamplesApp`).
 - Exact `<UnoFeatures>` list for implicit mode (finalized in P-implicit).
 - Whether the windows TFM's `OutputType=WinExe` needs the explicit condition or Uno.Sdk sets it (confirmed in P3).

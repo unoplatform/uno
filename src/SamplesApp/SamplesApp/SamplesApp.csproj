@@ -46,6 +46,9 @@
 	<PropertyGroup>
 		<OutputType Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">WinExe</OutputType>
 		<UnoSingleProject>true</UnoSingleProject>
+		<!-- Redundant with the project name, but kept explicit: nine InternalsVisibleTo("SamplesApp")
+		     grants across the framework key off this exact name, so a future project rename must not
+		     change it silently. -->
 		<AssemblyName>SamplesApp</AssemblyName>
 		<!--
 		On WinUI the assembly is named like the old SamplesApp.Windows head, which is deliberately

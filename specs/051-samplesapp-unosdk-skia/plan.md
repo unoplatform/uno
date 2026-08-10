@@ -30,13 +30,13 @@
 ## File Structure
 
 **New files (the head):**
-- `src/SamplesApp/SamplesApp.Head/SamplesApp.Head.csproj` — the consolidated head (`AssemblyName=SamplesApp`).
-- `src/SamplesApp/SamplesApp.Head/Platforms/Desktop/Program.cs` — desktop entry point.
-- `src/SamplesApp/SamplesApp.Head/Platforms/WebAssembly/Program.cs` + web assets (P2).
-- `src/SamplesApp/SamplesApp.Head/Platforms/Windows/` — WinUI `App`/`Main`, `Package.appxmanifest`, MSIX logo `Assets/`, `app.manifest` (P3).
-- `src/SamplesApp/SamplesApp.Head/Platforms/Android/` — `Application` + `MainActivity` + `AndroidManifest.xml` + assets (P4).
-- `src/SamplesApp/SamplesApp.Head/Platforms/iOS/` + `Platforms/tvOS/` — `Main.cs` + `Info.plist`/entitlements (P5).
-- `src/SamplesApp/SamplesApp.Head/Assets/`, `app.manifest`, `Resources/Info.plist` (desktop) — migrated per phase.
+- `src/SamplesApp/SamplesApp/SamplesApp.csproj` — the consolidated head (`AssemblyName=SamplesApp`).
+- `src/SamplesApp/SamplesApp/Platforms/Desktop/Program.cs` — desktop entry point.
+- `src/SamplesApp/SamplesApp/Platforms/WebAssembly/Program.cs` + web assets (P2).
+- `src/SamplesApp/SamplesApp/Platforms/Windows/` — WinUI `App`/`Main`, `Package.appxmanifest`, MSIX logo `Assets/`, `app.manifest` (P3).
+- `src/SamplesApp/SamplesApp/Platforms/Android/` — `Application` + `MainActivity` + `AndroidManifest.xml` + assets (P4).
+- `src/SamplesApp/SamplesApp/Platforms/iOS/` + `Platforms/tvOS/` — `Main.cs` + `Info.plist`/entitlements (P5).
+- `src/SamplesApp/SamplesApp/Assets/`, `app.manifest`, `Resources/Info.plist` (desktop) — migrated per phase.
 
 **Modified files:**
 - ~~`global.json`~~ — no longer modified; the head imports Uno.Sdk by path, so there is no SDK version to pin.
@@ -60,7 +60,7 @@
 
 ## Implementation status snapshot (2026-06-24)
 
-**One `Uno.Sdk` head (`src/SamplesApp/SamplesApp.Head`) targets all of `net10.0-{browserwasm,desktop,android,ios,tvos}` + `$(NetCurrentWinAppSDK)`.**
+**One `Uno.Sdk` head (`src/SamplesApp/SamplesApp`) targets all of `net10.0-{browserwasm,desktop,android,ios,tvos}` + `$(NetCurrentWinAppSDK)`.**
 
 | Target | Builds from head | Validated |
 |--------|------------------|-----------|
@@ -215,15 +215,15 @@ git commit -m "build: Pin local Uno.Sdk.Private sentinel in root global.json"
 ### Task 0.3: Create the desktop-only skeleton head (the layering spike)
 
 **Files:**
-- Create: `src/SamplesApp/SamplesApp.Head/SamplesApp.Head.csproj`
-- Create: `src/SamplesApp/SamplesApp.Head/Platforms/Desktop/Program.cs`
+- Create: `src/SamplesApp/SamplesApp/SamplesApp.csproj`
+- Create: `src/SamplesApp/SamplesApp/Platforms/Desktop/Program.cs`
 
 **Interfaces:**
-- Produces: a buildable head named `SamplesApp.Head` (`AssemblyName=SamplesApp`) targeting `net10.0-desktop`.
+- Produces: a buildable head named `SamplesApp` (`AssemblyName=SamplesApp`) targeting `net10.0-desktop`.
 
 - [ ] **Step 1: Write the minimal skeleton csproj**
 
-`SamplesApp.Head.csproj` (spike form — desktop only, minimal refs to isolate the layering question):
+`SamplesApp.csproj` (spike form — desktop only, minimal refs to isolate the layering question):
 ```xml
 <Project Sdk="Uno.Sdk.Private">
   <PropertyGroup>
@@ -257,7 +257,7 @@ git commit -m "build: Pin local Uno.Sdk.Private sentinel in root global.json"
 #nullable enable
 using Uno.UI.Hosting;
 
-namespace SamplesApp.Head;
+namespace SamplesApp;
 
 internal static class Program
 {
@@ -279,7 +279,7 @@ internal static class Program
 Run:
 ```bash
 pwsh build/pack-local-uno-sdk.ps1
-dotnet build src/SamplesApp/SamplesApp.Head/SamplesApp.Head.csproj -p:UnoTargetFrameworkOverride=net10.0-desktop -p:UnoFastDevBuild=true /bl:spike.binlog
+dotnet build src/SamplesApp/SamplesApp/SamplesApp.csproj -p:UnoTargetFrameworkOverride=net10.0-desktop -p:UnoFastDevBuild=true /bl:spike.binlog
 ```
 Expected: SUCCESS. **If it fails**, this is the P0 layering spike doing its job — diagnose via `spike.binlog` (use the `dotnet-msbuild:binlog-failure-analysis` skill). Likely culprits/fixes:
 - *Double platform-symbol / suffix application* (repo `Uno.CrossTargetting.targets` + SDK `Uno.CrossTargeting.targets`): set the repo-side opt-out the spike identifies, or scope the repo import with `Condition` on `'$(UsingUnoSdk)' != 'true'`.
@@ -290,13 +290,13 @@ Record the mitigations as csproj comments and in `spec.md` §8.
 
 - [ ] **Step 4: Run the booted app briefly**
 
-Run: `dotnet run --project src/SamplesApp/SamplesApp.Head/SamplesApp.Head.csproj -p:UnoTargetFrameworkOverride=net10.0-desktop`
+Run: `dotnet run --project src/SamplesApp/SamplesApp/SamplesApp.csproj -p:UnoTargetFrameworkOverride=net10.0-desktop`
 Expected: a window opens (empty app), no startup crash; close it.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add src/SamplesApp/SamplesApp.Head/
+git add src/SamplesApp/SamplesApp/
 git commit -m "feat: Add desktop-only Uno.Sdk SamplesApp head skeleton (P0 spike)"
 ```
 
@@ -309,19 +309,19 @@ git commit -m "feat: Add desktop-only Uno.Sdk SamplesApp head skeleton (P0 spike
 
 In `src/Directory.Build.props`, add to `_AdjustedOutputProjects` (matching existing entries' form):
 ```xml
-<_AdjustedOutputProjects Include="SamplesApp.Head" />
+<_AdjustedOutputProjects Include="SamplesApp" />
 ```
 
 - [ ] **Step 2: Rebuild and confirm isolated output**
 
-Run: `dotnet build src/SamplesApp/SamplesApp.Head/SamplesApp.Head.csproj -p:UnoTargetFrameworkOverride=net10.0-desktop -p:UnoFastDevBuild=true`
-Expected: SUCCESS; output under `src/SamplesApp/SamplesApp.Head/bin/SamplesApp.Head/...` (no collision warnings).
+Run: `dotnet build src/SamplesApp/SamplesApp/SamplesApp.csproj -p:UnoTargetFrameworkOverride=net10.0-desktop -p:UnoFastDevBuild=true`
+Expected: SUCCESS; output under `src/SamplesApp/SamplesApp/bin/SamplesApp/...` (no collision warnings).
 
 - [ ] **Step 3: Commit**
 
 ```bash
 git add src/Directory.Build.props
-git commit -m "build: Register SamplesApp.Head in _AdjustedOutputProjects"
+git commit -m "build: Register SamplesApp in _AdjustedOutputProjects"
 ```
 
 ---
@@ -333,7 +333,7 @@ git commit -m "build: Register SamplesApp.Head in _AdjustedOutputProjects"
 ### Task 1.1: Wire the full desktop framework references
 
 **Files:**
-- Modify: `src/SamplesApp/SamplesApp.Head/SamplesApp.Head.csproj`
+- Modify: `src/SamplesApp/SamplesApp/SamplesApp.csproj`
 - Read for parity: `SamplesApp.Skia.Generic.csproj` (lines 33–78), `SamplesApp.Skia.csproj` (lines 33–78)
 
 - [ ] **Step 1: Add the complete desktop ProjectReference set**
@@ -348,20 +348,20 @@ Add (from `SamplesApp.Skia.Generic.csproj` + base lib): `SkiaSharp`, `SkiaSharp.
 
 - [ ] **Step 4: Build**
 
-Run: `dotnet build src/SamplesApp/SamplesApp.Head/SamplesApp.Head.csproj -p:UnoTargetFrameworkOverride=net10.0-desktop -p:UnoFastDevBuild=true /bl:p1-build.binlog`
+Run: `dotnet build src/SamplesApp/SamplesApp/SamplesApp.csproj -p:UnoTargetFrameworkOverride=net10.0-desktop -p:UnoFastDevBuild=true /bl:p1-build.binlog`
 Expected: SUCCESS.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add src/SamplesApp/SamplesApp.Head/SamplesApp.Head.csproj
+git add src/SamplesApp/SamplesApp/SamplesApp.csproj
 git commit -m "feat: Wire full desktop framework references for the consolidated head"
 ```
 
 ### Task 1.2: Import shared content and wire the real App
 
 **Files:**
-- Modify: `src/SamplesApp/SamplesApp.Head/SamplesApp.Head.csproj`
+- Modify: `src/SamplesApp/SamplesApp/SamplesApp.csproj`
 - Read: `SamplesApp.Skia.csproj` lines 80–102
 
 - [ ] **Step 1: Import the shared content globs**
@@ -387,20 +387,20 @@ Expected: `clean`. If not, fix to `$(MSBuildThisFileDirectory)`-relative in the 
 
 - [ ] **Step 4: Build**
 
-Run: `dotnet build src/SamplesApp/SamplesApp.Head/SamplesApp.Head.csproj -p:UnoTargetFrameworkOverride=net10.0-desktop -p:UnoFastDevBuild=true`
+Run: `dotnet build src/SamplesApp/SamplesApp/SamplesApp.csproj -p:UnoTargetFrameworkOverride=net10.0-desktop -p:UnoFastDevBuild=true`
 Expected: SUCCESS (samples + unit-test + benchmark sources compile in).
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add src/SamplesApp/SamplesApp.Head/
+git add src/SamplesApp/SamplesApp/
 git commit -m "feat: Compile shared samples/tests and wire SamplesApp.App into desktop head"
 ```
 
 ### Task 1.3: Migrate desktop assets and the macOS app-bundle target
 
 **Files:**
-- Create: `src/SamplesApp/SamplesApp.Head/Assets/`, `app.manifest`, `Resources/Info.plist`
+- Create: `src/SamplesApp/SamplesApp/Assets/`, `app.manifest`, `Resources/Info.plist`
 - Read: `SamplesApp.Skia.Generic.csproj` lines 29–37, 90–93, 122–153
 
 - [ ] **Step 1: Copy desktop assets + manifest and reference them**
@@ -409,13 +409,13 @@ Copy `Assets/`, `app.manifest`, `Resources/Info.plist` from `SamplesApp.Skia.Gen
 
 - [ ] **Step 2: Build + run**
 
-Run: `dotnet run --project src/SamplesApp/SamplesApp.Head/SamplesApp.Head.csproj -p:UnoTargetFrameworkOverride=net10.0-desktop`
+Run: `dotnet run --project src/SamplesApp/SamplesApp/SamplesApp.csproj -p:UnoTargetFrameworkOverride=net10.0-desktop`
 Expected: SamplesApp launches with icon/splash; the sample list is populated (confirms `SamplesListGenerator` ran against the head).
 
 - [ ] **Step 3: Commit**
 
 ```bash
-git add src/SamplesApp/SamplesApp.Head/
+git add src/SamplesApp/SamplesApp/
 git commit -m "feat: Migrate desktop assets, manifest and macOS bundle target to the head"
 ```
 
@@ -426,8 +426,8 @@ git commit -m "feat: Migrate desktop assets, manifest and macOS bundle target to
 - [ ] **Step 1: Run a runtime-test slice through the new head**
 
 ```bash
-dotnet build src/SamplesApp/SamplesApp.Head/SamplesApp.Head.csproj -c Release -p:UnoTargetFrameworkOverride=net10.0-desktop
-dotnet src/SamplesApp/SamplesApp.Head/bin/SamplesApp.Head/Release/net10.0-desktop/SamplesApp.dll --runtime-tests=$(pwd)/rt-results.xml
+dotnet build src/SamplesApp/SamplesApp/SamplesApp.csproj -c Release -p:UnoTargetFrameworkOverride=net10.0-desktop
+dotnet src/SamplesApp/SamplesApp/bin/SamplesApp/Release/net10.0-desktop/SamplesApp.dll --runtime-tests=$(pwd)/rt-results.xml
 ```
 Expected: `rt-results.xml` produced; pass rate matches the current `SamplesApp.Skia.Generic` baseline. **Runtime validation** — record pass/fail counts.
 
@@ -488,7 +488,7 @@ git commit -m "ci: Build and runtime-test desktop Skia via the consolidated head
 - [ ] **Task 3.1:** Add `$(NetCurrentWinAppSDK)` to `<TargetFrameworks>`. Add the windows-gated PropertyGroup mirroring `SamplesApp.Windows.csproj` lines 3–23: `OutputType=WinExe`, `UseWinUI=true`, `EnableMsixTooling=true`, `TargetPlatformMinVersion=10.0.17763.0`, `WINAPPSDK` define, `Platforms=x86;x64;ARM64`, `RuntimeIdentifiers=win-x86;win-x64;win-arm64`, MSIX signing props, `CsWinRTAotOptimizerEnabled=false`. Gate `OutputType=WinExe` on `GetTargetPlatformIdentifier == 'windows'`.
 - [ ] **Task 3.2:** Add windows-gated `ProjectReference`s to the **`.Windows` variants** (mirror `SamplesApp.Windows.csproj` lines 88–107): `Uno.UI.Toolkit.Windows`, `Uno.UI.MSAL.Windows`, `Uno.WinUI.Graphics2DSK.Windows`, `Uno.WinUI.Graphics3DGL` (`AdditionalProperties="BuildGraphics3DGLForWindows=true"`), `Uno.UI.RuntimeTests.Windows`, and the linked `Uno.UI/Extensions/DependencyObjectExtensions.cs`. **No `Uno.UI` reference.** Add windows `PackageReference`s: `Microsoft.WindowsAppSDK` 2.1.3, `Microsoft.Windows.SDK.BuildTools`, `Microsoft.Windows.SDK.BuildTools.WinApp` (PrivateAssets=all), `CommunityToolkit.WinUI.Lottie`, plus the Uno.Core/logging/Graph/MSAL packages from the Windows head.
 - [ ] **Task 3.3:** Create `Platforms/Windows/` with the WinUI `App`/`Main`, `Package.appxmanifest`, MSIX logo `Assets/`, `app.manifest`, and `Msix` ProjectCapability + `HasPackageAndPublishMenu` (mirror `SamplesApp.Windows.csproj` lines 25–33, 59–75). Move the `Package.appxmanifest` `EmbeddedResource` reference here (from Task 1.2). Ensure `WINAPPSDK`-gated app code in `SamplesApp.Shared/App.xaml.cs` compiles.
-- [ ] **Task 3.4:** Build the MSIX: `MSBuild.exe src/SamplesApp/SamplesApp.Head/SamplesApp.Head.csproj /r /p:Configuration=Release /p:Platform=x64 /p:UnoTargetFrameworkOverride=$(NetCurrentWinAppSDK)`. Expected: MSIX produced; launch on Windows (runtime validation via `winui-runtime-tests` skill).
+- [ ] **Task 3.4:** Build the MSIX: `MSBuild.exe src/SamplesApp/SamplesApp/SamplesApp.csproj /r /p:Configuration=Release /p:Platform=x64 /p:UnoTargetFrameworkOverride=$(NetCurrentWinAppSDK)`. Expected: MSIX produced; launch on Windows (runtime validation via `winui-runtime-tests` skill).
 - [ ] **Task 3.5:** Flip `build/ci/tests/.azure-devops-tests-winappsdk.yml` (project path, TFM, MSIX/artifact paths, publish profile) and any windows UITest launch config. Verify the WinAppSDK CI stage green. Commit per task.
 
 ---
@@ -525,7 +525,7 @@ git commit -m "ci: Build and runtime-test desktop Skia via the consolidated head
 - [ ] **Task 6.2:** Check `SamplesApp.Skia` (base lib) consumers (`grep -rl "SamplesApp.Skia.csproj" --include=*.csproj src/`). Delete if none; else leave + note why.
 - [ ] **Task 6.3:** Remove dead CI scripts/stages referencing old head names; remove old heads from `_AdjustedOutputProjects` if present.
 - [ ] **Task 6.4:** Full Skia solution build + a desktop runtime-test run + a WinAppSDK build to confirm no regressions. Commit.
-- [ ] **Task 6.5 (optional):** Rename `SamplesApp.Head` → final name if desired; update `_AdjustedOutputProjects`, `.slnf`, CI paths in one commit.
+- [ ] **Task 6.5 (optional):** Rename `SamplesApp` → final name if desired; update `_AdjustedOutputProjects`, `.slnf`, CI paths in one commit.
 
 ---
 
@@ -560,4 +560,4 @@ git commit -m "ci: Build and runtime-test desktop Skia via the consolidated head
 
 **Placeholder scan:** P0/P1 carry concrete code/commands. P2–P6/P-implicit are task-level per the "Plan structure note" — each names exact files, refs, and a runnable verification, with source-of-truth csprojs to mirror. The one soft spot (`UnoApplicationShim` in 0.3 Step 2) has an explicit fallback.
 
-**Type/name consistency:** sentinel `255.255.255-dev` (0.1↔0.2); head name `SamplesApp.Head` + `AssemblyName=SamplesApp` consistent throughout (renamed from earlier `.Skia.Head`); switch `SamplesAppUseImplicitPackages` toggling **both** `DisableImplicitUnoPackages` and `DisableImplicitUnoWinAppSdkPackages` identical in spec §3/§4 and plan 0.3/1.1/PI.*; windows TFM via `$(NetCurrentWinAppSDK)` consistent; artifact `samplesapp-desktop-skia` preserved (1.6). ✓
+**Type/name consistency:** sentinel `255.255.255-dev` (0.1↔0.2); head name `SamplesApp` + `AssemblyName=SamplesApp` consistent throughout (renamed from earlier `.Skia.Head`); switch `SamplesAppUseImplicitPackages` toggling **both** `DisableImplicitUnoPackages` and `DisableImplicitUnoWinAppSdkPackages` identical in spec §3/§4 and plan 0.3/1.1/PI.*; windows TFM via `$(NetCurrentWinAppSDK)` consistent; artifact `samplesapp-desktop-skia` preserved (1.6). ✓
