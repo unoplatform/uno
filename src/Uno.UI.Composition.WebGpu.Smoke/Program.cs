@@ -626,6 +626,33 @@ Check("many-stop gradient: right blue (stops 16..19 not clamped away)", manyRigh
 	}
 }
 
+// 18g) CROSS-VISUAL COALESCE — TWO separate solid-only cached recordings (two sibling visuals) with no clip must
+//      render both AND collapse to ONE solid draw. Before the shared solid buffer, each visual baked its transform
+//      into its own clip bind group, so sibling visuals could not coalesce (a draw per visual — the profiler's
+//      draw-count bottleneck). Now their rects share one buffer + one no-clip bind group and coalesce across visuals.
+{
+	var xSurf = new WebGpuRenderSurface(dev, 64, 64);
+	var xPres = new WebGpuPresentSession(dev, xSurf);
+	xPres.Clear(WColor.FromArgb(255, 0, 0, 0));
+	var xBlue = WColor.FromArgb(255, 0, 0, 255);
+	var vaRec = new WebGpuCommandRecorder(); vaRec.DrawRect(new Rect(4, 4, 12, 12), red, false); var vaData = vaRec.Finish();
+	var vbRec = new WebGpuCommandRecorder(); vbRec.DrawRect(new Rect(48, 48, 12, 12), xBlue, false); var vbData = vbRec.Finish();
+	var xRec = new WebGpuCommandRecorder(); xRec.Replay(vaData); xRec.Replay(vbData);
+	WebGpuTrace.Reset();
+	xPres.Replay(xRec.Finish());
+	var xDraws = WebGpuTrace.Enabled ? WebGpuTrace.Dump() : "";
+	var xpx = dev.ReadPixelsRgba(xSurf);
+	var xa = At(xpx, 10, 10); var xb = At(xpx, 54, 54);
+	Check("cross-visual: visual A red", xa.r > 200 && xa.g < 60, xa);
+	Check("cross-visual: visual B blue", xb.b > 200 && xb.r < 60, xb);
+	if (WebGpuTrace.Enabled)
+	{
+		int solidDraws = 0;
+		foreach (var l in xDraws.Split('\n')) { if (l.Contains("DRAW solid")) { solidDraws++; } }
+		Check("cross-visual: 2 visuals -> 1 solid draw", solidDraws == 1, $"solidDraws={solidDraws}");
+	}
+}
+
 // 19) DPI SCALE — a logical 20x20 rect replayed through present.Save/Scale(2)/Replay/Restore must fill the 40x40
 //     PHYSICAL region. This is the 1.5x-DPI bug: WebGpuPresentSession.Scale was an empty stub, so the composition's
 //     RasterizationScale (applied via the neutral session) was dropped and content rendered at logical size.

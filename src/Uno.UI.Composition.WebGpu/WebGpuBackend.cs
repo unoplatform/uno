@@ -945,6 +945,10 @@ public sealed class WebGpuProfiler
 	// missing/unpaired FrameStart can't stall logging). No gate: adders always accumulate.
 	private long _tFrameReq, _tReplay, _tPresent, _tBeginFrame, _tRender, _tSubmit, _tPoll, _tAcquire, _tBlit, _tSurface;
 	private long _cCmds, _cOps, _cDraws, _cOsLayer, _cOsBackdrop, _cOsCov, _cOsShadow, _cBackReCmds, _cTexCreate, _cRent, _cBgHit, _cBgMiss, _cBufNew, _cUpBytes;
+	// Per-kind draw counts (which draws dominate a real scene: Solid/Path/Image/Gradient/Composite/Clip) — the lever
+	// for deciding where cross-visual coalescing pays off. `_cDCoal` counts solid ops folded away by coalescing.
+	private long _cDSolid, _cDPath, _cDImage, _cDGrad, _cDComp, _cDClip, _cDCoal;
+	private long _dSolid, _dPath, _dImage, _dGrad, _dComp, _dClip, _dCoal;
 	// Window-level GC + wall clock marks (measured across the window, not per frame, so no FrameStart dependency).
 	private long _allocMark; private int _g0Mark, _g1Mark, _g2Mark; private long _flushMark; private bool _started;
 
@@ -954,6 +958,7 @@ public sealed class WebGpuProfiler
 	{
 		_tFrameReq = _tReplay = _tPresent = _tBeginFrame = _tRender = _tSubmit = _tPoll = _tAcquire = _tBlit = _tSurface = 0;
 		_cCmds = _cOps = _cDraws = _cOsLayer = _cOsBackdrop = _cOsCov = _cOsShadow = _cBackReCmds = _cTexCreate = _cRent = _cBgHit = _cBgMiss = _cBufNew = _cUpBytes = 0;
+		_cDSolid = _cDPath = _cDImage = _cDGrad = _cDComp = _cDClip = _cDCoal = 0;
 	}
 
 	public void FrameStart() => ResetFrameTemps();
@@ -974,6 +979,20 @@ public sealed class WebGpuProfiler
 	public void Cmds(int n) => _cCmds += n;
 	public void Ops(int n) => _cOps += n;
 	public void Draw() => _cDraws++;
+	// kind: 0=solid 1=path 2=image 3=gradient 4=composite 5=clip. `coalesced` = solid ops merged into one draw.
+	public void DrawKind(int kind)
+	{
+		switch (kind)
+		{
+			case 0: _cDSolid++; break;
+			case 1: _cDPath++; break;
+			case 2: _cDImage++; break;
+			case 3: _cDGrad++; break;
+			case 4: _cDComp++; break;
+			case 5: _cDClip++; break;
+		}
+	}
+	public void Coalesced(int n) => _cDCoal += n;
 	public void OsLayer() => _cOsLayer++;
 	public void OsBackdrop(int reCmds) { _cOsBackdrop++; _cBackReCmds += reCmds; }
 	public void OsCov() => _cOsCov++;
@@ -994,6 +1013,7 @@ public sealed class WebGpuProfiler
 		_frameReq += _tFrameReq; _replay += _tReplay; _present += _tPresent; _beginFrame += _tBeginFrame; _render += _tRender; _submit += _tSubmit; _poll += _tPoll; _acquire += _tAcquire; _blit += _tBlit; _surface += _tSurface;
 		var frame = _tFrameReq + _tPresent; if (frame > _pkFrame) { _pkFrame = frame; } if (_tPoll > _pkPoll) { _pkPoll = _tPoll; } if (_tRender > _pkRender) { _pkRender = _tRender; } if (_tPresent > _pkPresent) { _pkPresent = _tPresent; }
 		_cmds += _cCmds; _ops += _cOps; _draws += _cDraws; _osLayer += _cOsLayer; _osBackdrop += _cOsBackdrop; _osCov += _cOsCov; _osShadow += _cOsShadow; _backReCmds += _cBackReCmds; _texCreate += _cTexCreate; _rent += _cRent; _bgHit += _cBgHit; _bgMiss += _cBgMiss; _bufNew += _cBufNew; _upBytes += _cUpBytes;
+		_dSolid += _cDSolid; _dPath += _cDPath; _dImage += _cDImage; _dGrad += _cDGrad; _dComp += _cDComp; _dClip += _cDClip; _dCoal += _cDCoal;
 		ResetFrameTemps();
 		_n++;
 		if (_n >= 30 || (T() - _flushMark) * Ms >= 1000.0) { Flush(); }
@@ -1017,13 +1037,14 @@ public sealed class WebGpuProfiler
 			$"[webgpu-profile] n={_n} FRAME={frameMs:F2}ms (~{fps:F0}fps: record={A(record):F2} replay={A(_replay):F2} present={A(_present):F2}) | " +
 			$"replay[beginFrame={A(_beginFrame):F2} render={A(_render):F2} submit={A(_submit):F2} poll={A(_poll):F2}] " +
 			$"present[acquire={A(_acquire):F2} blit={A(_blit):F2} surface={A(_surface):F2}] | " +
-			$"cnt/f: cmds={C(_cmds)} ops={C(_ops)} draws={C(_draws)} offscr={C(_osLayer + _osBackdrop + _osCov + _osShadow)}(L{C(_osLayer)} B{C(_osBackdrop)} Cov{C(_osCov)} Sh{C(_osShadow)}) backdropReCmds={C(_backReCmds)} texCreate={C(_texCreate)} rent={C(_rent)} bg(hit={C(_bgHit)} miss={C(_bgMiss)}) bufNew={C(_bufNew)} upload={C(_upBytes) / 1024}KB | " +
+			$"cnt/f: cmds={C(_cmds)} ops={C(_ops)} draws={C(_draws)}[S{C(_dSolid)} P{C(_dPath)} I{C(_dImage)} G{C(_dGrad)} C{C(_dComp)} Clip{C(_dClip)} coal-{C(_dCoal)}] offscr={C(_osLayer + _osBackdrop + _osCov + _osShadow)}(L{C(_osLayer)} B{C(_osBackdrop)} Cov{C(_osCov)} Sh{C(_osShadow)}) backdropReCmds={C(_backReCmds)} texCreate={C(_texCreate)} rent={C(_rent)} bg(hit={C(_bgHit)} miss={C(_bgMiss)}) bufNew={C(_bufNew)} upload={C(_upBytes) / 1024}KB | " +
 			$"gc: alloc={alloc / _n / 1024}KB/f gen0={g0} gen1={g1} gen2={g2} | peak: FRAME={Pk(_pkFrame):F2} render={Pk(_pkRender):F2} poll={Pk(_pkPoll):F2} present={Pk(_pkPresent):F2}");
 		System.Console.Out.Flush();
 		_n = 0;
 		_frameReq = _replay = _present = _beginFrame = _render = _submit = _poll = _acquire = _blit = _surface = 0;
 		_pkFrame = _pkPoll = _pkRender = _pkPresent = 0;
 		_cmds = _ops = _draws = _osLayer = _osBackdrop = _osCov = _osShadow = _backReCmds = _texCreate = _rent = _bgHit = _bgMiss = _bufNew = _upBytes = 0;
+		_dSolid = _dPath = _dImage = _dGrad = _dComp = _dClip = _dCoal = 0;
 		_allocMark = GC.GetAllocatedBytesForCurrentThread(); _g0Mark = GC.CollectionCount(0); _g1Mark = GC.CollectionCount(1); _g2Mark = GC.CollectionCount(2); _flushMark = T();
 	}
 }
@@ -2102,6 +2123,23 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		_opsPool.Push(ops);
 	}
 
+	// Per-pass shared SOLID vertex buffer (ramez arena baseline): every device-space solid run — immediate draws AND
+	// solid-only cached recordings — appends its 6-float verts here in op order, so adjacent solid ops sharing a clip
+	// occupy a CONTIGUOUS range and the emit loop coalesces them into ONE draw (cross-visual, not just within one
+	// recording). Uploaded once per pass; recycled next pass. A solid op with b0==0 references (b1=startVert, u0=count)
+	// into this buffer; b0!=0 is a legacy private-buffer solid (mixed/arena recording) that draws on its own.
+	private readonly Stack<List<float>> _solidPool = new();
+	private List<float> RentSolid() => _solidPool.Count > 0 ? _solidPool.Pop() : new(4096);
+	private void ReturnSolid(List<float> s) { s.Clear(); _solidPool.Push(s); }
+	// Appends one device-space quad (two tris) to the shared solid buffer; returns the start vertex index. 6 verts.
+	private int AppendSolidRect(List<float> solid, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float r, float g, float b, float a)
+	{
+		int start = solid.Count / 6;
+		void V(Vector2 p) { var n = Ndc(p); solid.Add(n.X); solid.Add(n.Y); solid.Add(r); solid.Add(g); solid.Add(b); solid.Add(a); }
+		V(p0); V(p1); V(p2); V(p0); V(p2); V(p3);
+		return start;
+	}
+
 	private IntPtr MakeBuffer(float[] data)
 	{
 		var size = data.Length * sizeof(float);
@@ -2351,6 +2389,15 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// doesn't depend on device position, so its geometry can be baked once in the recording's own space and moved by
 	// re-stamping the vertex xform (clipCov is a constant 1). Paths (stencil pass has no xform), gradients (device-
 	// space geometry in the fragment) and any clip need a device-space re-stamp and are NOT arena-safe yet.
+	// A recording is solid-only when every command is a rect — cheap to re-emit each frame into the shared solid
+	// buffer (ramez arena baseline) so its draws coalesce across visuals, instead of caching per-visual GPU buffers.
+	private static bool IsSolidOnly(List<WebGpuCommand> cmds)
+	{
+		if (cmds.Count == 0) { return false; }
+		for (int i = 0; i < cmds.Count; i++) { if (cmds[i] is not RectCommand) { return false; } }
+		return true;
+	}
+
 	private static bool IsArenaSafe(List<WebGpuCommand> cmds)
 	{
 		for (int i = 0; i < cmds.Count; i++)
@@ -2576,9 +2623,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 		// Build GPU resources for every command up front (buffers/textures must be created outside the
 		// render pass), preserving draw order in a single op list so cross-type z-order is honoured.
-		// kind: 0=rect (b0=verts), 1=path (b0=fan, u0=fanCount, b1=cover, flag=evenOdd), 2=image (b0=bindGroup,
-		// b1=quad), 3=gradient, 4=composite layer (b0=bindGroup, u0=compositeMode).
+		// kind: 0=rect (b0=verts OR b0=0 => shared solid buffer at b1=startVert/u0=count), 1=path (b0=fan, u0=fanCount,
+		// b1=cover, flag=evenOdd), 2=image (b0=bindGroup, b1=quad), 3=gradient, 4=composite layer.
 		var ops = RentOps();
+		var solid = RentSolid();
 		for (int ci = 0; ci < cmds.Count; ci++)
 		{
 			var cmd = cmds[ci];
@@ -2586,18 +2634,16 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			{
 				case RectCommand rc0:
 				{
-					// Coalesce a run of consecutive rects sharing the same clip into one vertex buffer + one draw.
-					_scratch.Clear();
-					int j = ci;
+					// Coalesce a run of consecutive rects sharing the same clip into the shared solid buffer + one op.
+					// b0==0 marks a shared-buffer solid (b1=start vertex, u0=vertex count) so adjacent solid ops that
+					// share a clip bind group coalesce further ACROSS recordings in the emit loop.
+					int j = ci; int start = solid.Count / 6;
 					while (j < cmds.Count && cmds[j] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
 					{
-						float vr = rcj.Color.R / 255f, vg = rcj.Color.G / 255f, vb = rcj.Color.B / 255f, va = rcj.Color.A / 255f;
-						PushVert(rcj.P0, vr, vg, vb, va); PushVert(rcj.P1, vr, vg, vb, va); PushVert(rcj.P2, vr, vg, vb, va);
-						PushVert(rcj.P0, vr, vg, vb, va); PushVert(rcj.P2, vr, vg, vb, va); PushVert(rcj.P3, vr, vg, vb, va);
+						AppendSolidRect(solid, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
 						j++;
 					}
-					var rvb = MakeBuffer(_scratch);   // upload before the clip bind group (which may reuse _scratch)
-					ops.Add((0, (nint)rvb, (uint)((j - ci) * 6), 0, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip)));
+					ops.Add((0, 0, (uint)((j - ci) * 6), (nint)start, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip)));
 					ci = j - 1;   // the for-loop's ci++ advances past the run
 					break;
 				}
@@ -2608,6 +2654,22 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					break;
 				case ReplayRefCmd rr:
 				{
+					// SOLID-ONLY recording fast path (ramez arena baseline): a visual whose whole recording is rects
+					// (a Border background/edges, a fill) is cheap to re-emit, so instead of caching per-visual GPU
+					// buffers (which forces a distinct bind group per visual and blocks coalescing), append its
+					// device-space rects to the SHARED solid buffer every frame. Adjacent such visuals sharing a clip
+					// then collapse to ONE draw in the emit loop — the cross-visual draw-count win the profiler showed.
+					if (IsSolidOnly(rr.Commands))
+					{
+						foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip))
+						{
+							if (tc is not RectCommand rcx) { continue; }
+							int st = solid.Count / 6;
+							AppendSolidRect(solid, rcx.P0, rcx.P1, rcx.P2, rcx.P3, rcx.Color.R / 255f, rcx.Color.G / 255f, rcx.Color.B / 255f, rcx.Color.A / 255f);
+							ops.Add((0, 0, 6, (nint)st, false, rcx.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rcx.Clip)));
+						}
+						break;
+					}
 					// The per-visual GPU-geometry cache (slab/scroll), keyed by the recording's immutable command
 					// list. Build once; reuse while it's replayed at the same transform/clip. A stale entry (moved
 					// visual) is deferred-released and rebuilt. Entries not referenced any frame are evicted.
@@ -2800,6 +2862,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			}
 		}
 
+		// Upload the whole pass's coalesceable solid geometry in ONE buffer; shared-buffer solid ops (b0==0) index it.
+		nint solidBuf = solid.Count > 0 ? (nint)MakeBuffer(solid) : IntPtr.Zero;
+
 		var ca = new WGPURenderPassColorAttachment
 		{
 			// Render into the multisampled color and resolve into the single-sample target texture.
@@ -2830,8 +2895,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// Current in-pass path-clip mask (device depth buffer). Changes only when a run of ops moves to a different
 		// path clip — the composition emits a clip then its subtree consecutively, so this fires ~once per clip.
 		float[] curFan = null; Vector4 curAabb = default;
-		foreach (var (kind, b0, u0, b1, flag, clip, clipBg) in ops)
+		for (int oi = 0; oi < ops.Count; oi++)
 		{
+			var (kind, b0, u0, b1, flag, clip, clipBg) = ops[oi];
 			if (!ReferenceEquals(clip.PathFan, curFan))
 			{
 				ApplyDepthClip(pass, curFan, curAabb, clip);
@@ -2847,12 +2913,34 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			}
 			switch (kind)
 			{
+				case 0 when b0 == 0:
+				{
+					// Shared-buffer solid (b1=start vertex, u0=vertex count). COALESCE the maximal run of following
+					// solid ops sharing this clip bind group + clip (same scissor + depth-clip): their verts are
+					// contiguous in the shared buffer by construction, so the whole run draws in ONE call.
+					int startVert = (int)b1; uint count = u0;
+					while (oi + 1 < ops.Count)
+					{
+						var nx = ops[oi + 1];
+						if (nx.kind != 0 || nx.b0 != 0 || nx.clipBg != clipBg
+							|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
+						count += nx.u0; oi++; _d.Profiler?.Coalesced(1);
+					}
+					wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
+					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
+					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, solidBuf, (nuint)(startVert * 6 * sizeof(float)), (nuint)(count * 6 * sizeof(float)));
+					wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
+					WebGpuTrace.Draw("solid", count);
+					_d.Profiler?.DrawKind(0);
+					break;
+				}
 				case 0:
 					wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b0, 0, (nuint)(u0 * 6 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, u0, 1, 0, 0);   // u0 = 6 * (coalesced) rect count
 					WebGpuTrace.Draw("solid", u0);
+					_d.Profiler?.DrawKind(0);
 					break;
 				case 1:
 					wgpuRenderPassEncoderSetPipeline(pass, flag ? _d.StencilEvenOdd : _d.StencilNonZero);
@@ -2866,6 +2954,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(36 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
 					WebGpuTrace.Draw("path-cover", 6);
+					_d.Profiler?.DrawKind(1);
 					break;
 				case 2:
 					wgpuRenderPassEncoderSetPipeline(pass, _d.ImagePipe);
@@ -2874,6 +2963,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(24 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
 					WebGpuTrace.Draw("image", 6);
+					_d.Profiler?.DrawKind(2);
 					break;
 				case 3:
 					wgpuRenderPassEncoderSetPipeline(pass, _d.GradientPipe);
@@ -2882,12 +2972,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(12 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
 					WebGpuTrace.Draw("gradient", 6);
+					_d.Profiler?.DrawKind(3);
 					break;
 				case 4:
 					wgpuRenderPassEncoderSetPipeline(pass, u0 == 1 ? _d.CompositeDstIn : _d.CompositeSrcOver);
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)b0, 0, (uint*)null);
 					wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
 					WebGpuTrace.Draw(u0 == 1 ? "composite-dstin" : "composite-srcover", 3);
+					_d.Profiler?.DrawKind(4);
 					break;
 			}
 		}
@@ -2899,6 +2991,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// on-window/dedicated target owns its MSAA+depth (persistent across frames) and is left untouched.
 		if (target.Pooled) { if (_d.MsaaSamples > 1) { _d.Pool.Return(target.MsaaColorView); } _d.Pool.Return(target.DepthView); }   // at 1x MsaaColorView aliases View (sampled later) — don't reclaim
 		ReturnOps(ops);   // ops are fully encoded into the pass now — recycle the list
+		ReturnSolid(solid);
 	}
 
 	public Matrix4x4 TotalMatrix => Matrix4x4.Identity;
