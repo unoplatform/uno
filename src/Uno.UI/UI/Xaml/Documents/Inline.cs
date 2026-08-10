@@ -116,16 +116,5 @@ namespace Microsoft.UI.Xaml.Documents
 		internal virtual void InvalidateTextScaleFontInfo() => _fontInfo = null;
 #nullable disable
 
-#if __NETSTD_REFERENCE__
-		protected override void OnFontFamilyChanged() => base.OnFontFamilyChanged();
-
-		protected override void OnFontStyleChanged() => base.OnFontStyleChanged();
-
-		protected override void OnFontWeightChanged() => base.OnFontWeightChanged();
-
-		protected override void OnFontSizeChanged() => base.OnFontSizeChanged();
-
-		protected override void OnFontStretchChanged() => base.OnFontStretchChanged();
-#endif
 	}
 }

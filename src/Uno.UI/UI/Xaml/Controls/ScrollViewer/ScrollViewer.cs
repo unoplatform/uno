@@ -29,11 +29,7 @@ using Uno.UI.Xaml.Core;
 
 using View = Microsoft.UI.Xaml.UIElement;
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
-#else
-using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.IScrollContentPresenter;
-#endif
 
 using Microsoft.UI.Input;
 
@@ -668,15 +664,9 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void TrimOverscroll(Orientation orientation);
 
 		// TODO: Revisit if this can use SizeChanged += (_, _) => OnControlsBoundsChanged(); on all platforms.
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal override void AfterArrange()
 		{
 			base.AfterArrange();
-#else
-		internal override void OnLayoutUpdated()
-		{
-			base.OnLayoutUpdated();
-#endif
 			if (m_dimensionsUpdatedInArrange)
 			{
 				m_dimensionsUpdatedInArrange = false;
@@ -849,14 +839,6 @@ namespace Microsoft.UI.Xaml.Controls
 			ComputedVerticalScrollBarVisibility = computedVisibility;
 			ComputedIsVerticalScrollEnabled = computedEnabled;
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-			// Support for the native scroll bars (delegated to the native _presenter).
-			_presenter.NativeVerticalScrollBarVisibility = ComputeNativeScrollBarVisibility(scrollable, visibility, mode, _verticalScrollbar);
-			if (invalidate && _verticalScrollbar is null)
-			{
-				InvalidateMeasure(); // Useless for managed ScrollBar, it will invalidate itself if needed.
-			}
-#endif
 		}
 
 		private void UpdateComputedHorizontalScrollability(bool invalidate)
@@ -882,14 +864,6 @@ namespace Microsoft.UI.Xaml.Controls
 			ComputedHorizontalScrollBarVisibility = computedVisibility;
 			ComputedIsHorizontalScrollEnabled = computedEnabled;
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-			// Support for the native scroll bars (delegated to the native _presenter).
-			_presenter.NativeHorizontalScrollBarVisibility = ComputeNativeScrollBarVisibility(scrollable, visibility, mode, _horizontalScrollbar);
-			if (invalidate && _horizontalScrollbar is null)
-			{
-				InvalidateMeasure(); // Useless for managed ScrollBar, it will invalidate itself if needed.
-			}
-#endif
 		}
 
 		/// <summary>
@@ -921,17 +895,6 @@ namespace Microsoft.UI.Xaml.Controls
 				&& visibility != ScrollBarVisibility.Disabled
 				&& mode != ScrollMode.Disabled;
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-		private ScrollBarVisibility ComputeNativeScrollBarVisibility(double scrollable, ScrollBarVisibility visibility, ScrollMode mode, ScrollBar? managedScrollbar)
-			=> (scrollable, visibility, mode, managedScrollbar) switch
-			{
-				(_, _, ScrollMode.Disabled, _) => ScrollBarVisibility.Disabled,
-				(0, ScrollBarVisibility.Auto, _, null) => ScrollBarVisibility.Hidden, // If scrollable is 0, the managed scrollbar won't be realized, we prefer to hide the native one until we are sure!
-				(_, _, _, null) when Uno.UI.Xaml.Controls.ScrollViewer.GetShouldFallBackToNativeScrollBars(this) => visibility,
-				(_, ScrollBarVisibility.Disabled, _, _) => ScrollBarVisibility.Disabled,
-				_ => ScrollBarVisibility.Hidden // If a managed scroll bar was set in the template, native scroll bar has to stay Hidden
-			};
-#endif
 
 		protected override void OnApplyTemplate()
 		{
@@ -1556,12 +1519,10 @@ namespace Microsoft.UI.Xaml.Controls
 			// and stop intermediate effects (e.g. ListViewBase IncrementalLoading triggered by the
 			// progressive viewport move). Once the animation completes the next layout pass runs
 			// the recompute and seats the offset at clamp(intent, SH).
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 			if ((_presenter as ScrollContentPresenter)?.IsScrollAnimationInProgress == true)
 			{
 				return false;
 			}
-#endif
 
 			var changed = false;
 
@@ -1749,7 +1710,6 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 			// Handle Ctrl+Plus/Minus for zoom
 			if (ZoomMode == ZoomMode.Enabled)
 			{
@@ -1788,7 +1748,6 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 			}
-#endif
 
 			var oldHorizontalOffset = Presenter.TargetHorizontalOffset;
 			var oldVerticalOffset = Presenter.TargetVerticalOffset;

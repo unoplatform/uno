@@ -1,5 +1,4 @@
-﻿#if !__NETSTD_REFERENCE__
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Globalization;
 using System.Linq;
@@ -1087,4 +1086,3 @@ namespace Microsoft.UI.Xaml
 		}
 	}
 }
-#endif

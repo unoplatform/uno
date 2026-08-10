@@ -81,15 +81,6 @@ public partial class NavigationViewItem : NavigationViewItemBase
 
 	protected override void OnApplyTemplate()
 	{
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle),
-		// so the parent NavigationView may not be set yet; postpone and reapply once it is.
-		if (GetNavigationView() is null)
-		{
-			// Postpone template application for later
-			return;
-		}
-#endif
 
 		// Stop UpdateVisualState before template is applied. Otherwise the visuals may be unexpected
 		m_appliedTemplate = false;
@@ -160,9 +151,6 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		var visual = ElementCompositionPreview.GetElementVisual(this);
 		NavigationView.CreateAndAttachHeaderAnimation(visual);
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		_fullyInitialized = true;
-#endif
 	}
 
 	private void LoadElementsForDisplayingChildren()

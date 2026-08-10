@@ -75,9 +75,6 @@ namespace Microsoft.UI.Xaml
 
 		private bool _initializationComplete;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		private ApplicationTheme _requestedTheme = ApplicationTheme.Dark; // Default theme in WinUI is Dark.
-#endif
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
 		private bool _isInBackground;
 		private ResourceDictionary _resources = new ResourceDictionary();
@@ -193,7 +190,6 @@ namespace Microsoft.UI.Xaml
 
 		public ApplicationTheme RequestedTheme
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// MUX Reference: FrameworkApplication::get_RequestedThemeImpl — FrameworkApplication_Partial.cpp:1048-1061:
 			//   "RequestedTheme getter. Bypasses the core application object and get's it directly from
 			//    the framework theming object."
@@ -205,9 +201,6 @@ namespace Microsoft.UI.Xaml
 				: WinUICoreServices.Instance.Theming.GetBaseTheme() == Theme.Light
 					? ApplicationTheme.Light
 					: ApplicationTheme.Dark;
-#else
-			get => InternalRequestedTheme;
-#endif
 			set
 			{
 				// MUX Reference: FrameworkApplication::put_RequestedThemeImpl — FrameworkApplication_Partial.cpp:987-994:
@@ -225,19 +218,11 @@ namespace Microsoft.UI.Xaml
 
 		internal void InitializeSystemTheme()
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// The explicit theming init point. FrameworkTheming's constructor already read the OS theme
 			// (FrameworkTheming.cpp:13-29); run the initial OnThemeChanged so the high-contrast state and
 			// accent color are read too, exactly like WinUI's startup OnThemeChanged. If app code set
 			// RequestedTheme before this point, SetRequestedTheme already ran it and this is a no-op.
 			WinUICoreServices.Instance.Theming.OnThemeChanged();
-#else
-			if (!IsThemeSetExplicitly)
-			{
-				// just cache the theme, but do not notify about a change unnecessarily
-				InternalRequestedTheme = GetSystemTheme();
-			}
-#endif
 
 			// Force-sync ResourceDictionary's static Themes.Active with the application's
 			// resolved theme before any resource lookup can happen at startup. On enhanced
@@ -251,22 +236,6 @@ namespace Microsoft.UI.Xaml
 			UpdateRequestedThemesForResources();
 		}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		private ApplicationTheme InternalRequestedTheme
-		{
-			get => _requestedTheme;
-			set
-			{
-				_requestedTheme = value;
-
-				// Sync with core application's theme
-				CoreApplication.RequestedTheme = value == ApplicationTheme.Dark ? SystemTheme.Dark : SystemTheme.Light;
-
-				UpdateRootElementBackground();
-				UpdateRequestedThemesForResources();
-			}
-		}
-#endif
 
 		internal static void UpdateRequestedThemesForResources()
 		{
@@ -285,11 +254,9 @@ namespace Microsoft.UI.Xaml
 				_ => throw new InvalidOperationException($"Theme {Application.Current.RequestedTheme} is not valid"),
 			};
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// Sync with core application's theme (kept from the InternalRequestedTheme setter, which
 			// the FrameworkTheming-driven flow no longer goes through).
 			CoreApplication.RequestedTheme = Current.RequestedTheme == ApplicationTheme.Dark ? SystemTheme.Dark : SystemTheme.Light;
-#endif
 		}
 
 		internal SpecializedResourceDictionary.ResourceKey RequestedThemeForResources
@@ -309,7 +276,6 @@ namespace Microsoft.UI.Xaml
 			_ => throw new InvalidOperationException("Application's RequestedTheme is invalid."),
 		};
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// MUX: an explicit app theme IS FrameworkTheming's requested-theme override
 		// (m_requestedTheme != None) — while set, OnThemeChanged keeps following GetTheme(), where the
 		// override takes precedence over the system theme, so OS changes don't flip the app.
@@ -317,9 +283,6 @@ namespace Microsoft.UI.Xaml
 		internal bool IsThemeSetExplicitly => _isSecondaryAlcApplication
 			? _alcRequestedTheme.HasValue
 			: WinUICoreServices.Instance.Theming.HasRequestedTheme();
-#else
-		internal bool IsThemeSetExplicitly { get; private set; }
-#endif
 
 		internal void SetExplicitRequestedTheme(ApplicationTheme? explicitTheme)
 		{
@@ -332,7 +295,6 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			var previousTheme = RequestedTheme;
 
 			if (explicitTheme is { } theme)
@@ -355,30 +317,8 @@ namespace Microsoft.UI.Xaml
 			{
 				RequestedThemeChanged?.Invoke(this, EventArgs.Empty);
 			}
-#else
-			// this flag makes sure the app will not respond to OS events
-			IsThemeSetExplicitly = explicitTheme.HasValue;
-			var theme = explicitTheme ?? GetSystemTheme();
-			SetRequestedTheme(theme);
-#endif
 		}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		internal void SyncRequestedThemeFromXamlRoot(XamlRoot xamlRoot)
-		{
-			if (xamlRoot is null)
-			{
-				throw new ArgumentNullException(nameof(xamlRoot));
-			}
-
-			if (xamlRoot.Content is FrameworkElement fe)
-			{
-				var theme = fe.RequestedTheme;
-				SetExplicitRequestedTheme(
-					Uno.UI.Extensions.ElementThemeExtensions.ToApplicationThemeOrDefault(theme));
-			}
-		}
-#endif
 
 		public ResourceDictionary Resources
 		{
@@ -499,11 +439,6 @@ namespace Microsoft.UI.Xaml
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		private ApplicationTheme GetSystemTheme() =>
-			SystemThemeHelper.SystemTheme == SystemTheme.Light ?
-				ApplicationTheme.Light : ApplicationTheme.Dark;
-#endif
 
 		private void InitializeTextScaling()
 		{
@@ -518,21 +453,12 @@ namespace Microsoft.UI.Xaml
 
 		private void OnSystemThemeChanged(object sender, EventArgs e)
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// The OS broadcast routes to FrameworkTheming::OnThemeChanged, which re-reads the system
 			// theme/high contrast/accent from the interop and only notifies the core (NotifyThemeChange,
 			// walking all roots) when the effective theme actually changed. When the app theme is
 			// explicit (m_requestedTheme != None), GetTheme() is unchanged by an OS flip and the change
 			// is suppressed — the FrameworkTheming-native form of the old IsThemeSetExplicitly guard.
 			WinUICoreServices.Instance.Theming.OnThemeChanged();
-#else
-			// if user overrides theme, don't apply system theme
-			if (!IsThemeSetExplicitly)
-			{
-				var theme = GetSystemTheme();
-				SetRequestedTheme(theme);
-			}
-#endif
 
 			UISettings.OnColorValuesChanged();
 		}
@@ -644,21 +570,9 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private DateTimeOffset GetSuspendingOffset() => DateTimeOffset.Now;
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		private void SetRequestedTheme(ApplicationTheme requestedTheme)
-		{
-			if (requestedTheme != InternalRequestedTheme)
-			{
-				InternalRequestedTheme = requestedTheme;
-
-				OnRequestedThemeChanged();
-			}
-		}
-#endif
 
 		internal void UpdateResourceBindingsForHotReload() => OnResourcesChanged(ResourceUpdateReason.HotReload | ResourceUpdateReason.ThemeResource);
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// MUX Reference: FrameworkTheming::IsBaseThemeChanging (FrameworkTheming.h) — true while a base
 		// (app/system) theme switch is being applied, i.e. while FrameworkTheming::OnThemeChanged runs
 		// the notify callback with m_isAppThemeChanging/m_isSystemThemeChanging set.
@@ -666,60 +580,19 @@ namespace Microsoft.UI.Xaml
 		// yet been theme-walked (m_theme == None) still raises ActualThemeChanged on the switch
 		// (framework.cpp:3378-3384). Hot reload goes through OnResourcesChanged and never sets it.
 		internal static bool IsBaseThemeChanging => WinUICoreServices.Instance.Theming.IsBaseThemeChanging();
-#else
-		// See the enhanced-lifecycle branch above; on native targets the Application-driven walk
-		// (OnRequestedThemeChanged) sets the flag itself.
-		internal static bool IsBaseThemeChanging { get; private set; }
-#endif
 
 		internal void OnRequestedThemeChanged()
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			RequestedThemeChanged?.Invoke(this, EventArgs.Empty);
 
 			// Force a full re-notification of the current theme (ApplicationHelper.ReapplyApplicationTheme
 			// contract): FrameworkTheming::OnThemeChanged(forceUpdate: true) invokes the notify callback —
 			// CCoreServices::NotifyThemeChange — even when nothing changed on any axis.
 			WinUICoreServices.Instance.Theming.OnThemeChanged(forceUpdate: true);
-#else
-			RequestedThemeChanged?.Invoke(this, EventArgs.Empty);
-
-			var wasBaseThemeChanging = IsBaseThemeChanging;
-			IsBaseThemeChanging = true;
-			try
-			{
-				OnResourcesChanged(ResourceUpdateReason.ThemeResource);
-			}
-			finally
-			{
-				IsBaseThemeChanging = wasBaseThemeChanging;
-			}
-#endif
 		}
 
 		internal event EventHandler RequestedThemeChanged;
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		// On enhanced-lifecycle targets the root background update lives in
-		// CCoreServices.NotifyThemeChange (the m_pMainVisualTree->GetRootVisual()->SetBackgroundColor
-		// port, xcpcore.cpp:8045-8048).
-		private void UpdateRootElementBackground()
-		{
-			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
-			{
-				if (contentRoot.VisualTree.RootElement is IRootElement rootElement)
-				{
-					if (contentRoot.GetOwnerWindow() is { HasSupportedSystemBackdrop: true })
-					{
-						rootElement.SetBackgroundColor(Microsoft.UI.Colors.Transparent);
-						continue;
-					}
-
-					rootElement.SetBackgroundColor(ThemingHelper.GetRootVisualBackground());
-				}
-			}
-		}
-#endif
 
 		private void OnResourcesChanged(ResourceUpdateReason updateReason)
 		{
@@ -745,7 +618,6 @@ namespace Microsoft.UI.Xaml
 						// On enhanced lifecycle OnResourcesChanged only serves hot reload — app/system theme
 						// changes flow through FrameworkTheming.OnThemeChanged → CCoreServices.NotifyThemeChange
 						// (the single WinUI walk entry) instead.
-#if UNO_HAS_ENHANCED_LIFECYCLE
 						if ((updateReason & ResourceUpdateReason.ThemeResource) != 0)
 						{
 							// Walk each content root with the theme of the application that OWNS it (see
@@ -758,7 +630,6 @@ namespace Microsoft.UI.Xaml
 							var rootFe = root as FrameworkElement ?? contentRoot.XamlRoot.Content as FrameworkElement;
 							rootFe?.NotifyThemeChanged(theme, forceRefresh);
 						}
-#endif
 
 						PropagateResourcesChanged(root, updateReason);
 					}
@@ -791,7 +662,6 @@ namespace Microsoft.UI.Xaml
 			// Update ThemeResource references that have changed
 			if (instance is FrameworkElement fe)
 			{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				// If element has explicit RequestedTheme and this is a theme change,
 				// skip it - its subtree is managed by its own theme context and
 				// will be updated via NotifyThemeChanged, not by propagation.
@@ -800,7 +670,6 @@ namespace Microsoft.UI.Xaml
 				{
 					return;
 				}
-#endif
 
 				fe.UpdateThemeBindings(updateReason);
 			}

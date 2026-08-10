@@ -42,11 +42,7 @@ namespace Uno.UI
 		/// The master system resources dictionary.
 		/// </summary>
 		private static ResourceDictionary MasterDictionary =>
-#if __NETSTD_REFERENCE__
-			throw new InvalidOperationException();
-#else
 			Uno.UI.GlobalStaticResources.MasterDictionary;
-#endif
 
 		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByUri = new(StringComparer.OrdinalIgnoreCase);
 		private static readonly Dictionary<string, ResourceDictionary> _registeredDictionariesByAssembly = new(StringComparer.Ordinal);

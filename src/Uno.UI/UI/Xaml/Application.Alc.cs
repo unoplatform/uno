@@ -135,7 +135,6 @@ partial class Application
 		}
 	}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	/// <summary>
 	/// Returns the <see cref="Application"/> that owns <paramref name="contentRoot"/>. The owner window's
 	/// <see cref="Window.OwnerAssemblyLoadContext"/> — tagged at construction with the ALC of the code
@@ -177,7 +176,6 @@ partial class Application
 			? (alcTheme == ApplicationTheme.Dark ? Theme.Dark : Theme.Light)
 				| global::Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetHighContrastTheme()
 			: global::Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetTheme();
-#endif
 
 	/// <summary>
 	/// The explicit <see cref="ApplicationTheme"/> of a secondary-ALC application, if set.
@@ -451,9 +449,7 @@ partial class Application
 
 	private static void ClearCollectibleResourceAssociations()
 	{
-#if !__NETSTD_REFERENCE__
 		Uno.UI.GlobalStaticResources.MasterDictionary.ClearCollectibleAssociatedParents();
-#endif
 		_current?.Resources?.ClearCollectibleAssociatedParents();
 	}
 
