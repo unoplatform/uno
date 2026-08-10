@@ -76,6 +76,8 @@ internal sealed partial class TextBoxCore
 
 	internal TextAlignment TextAlignment => _host.TextAlignment;
 
+	internal bool IsTextAlignmentExplicitlySet => _host.IsTextAlignmentExplicitlySet;
+
 	private CharacterCasing CharacterCasing => _host.CharacterCasing;
 
 	private bool IsTextPredictionEnabled => _host.IsTextPredictionEnabled;

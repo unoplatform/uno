@@ -49,6 +49,13 @@ internal interface ITextBoxHost
 	Control Owner { get; }
 
 	/// <summary>
+	/// The engine this control hosts. Lets the framework internals that are handed a
+	/// <see cref="FrameworkElement"/> reach the shared implementation without type-testing for a
+	/// concrete control — <c>element is ITextBoxHost { Core: { } core }</c> serves both.
+	/// </summary>
+	TextBoxCore Core { get; }
+
+	/// <summary>
 	/// The edited text: <see cref="TextBox.Text"/> for a text box, <c>PasswordBox.Password</c> for a
 	/// password box. The core works exclusively through this, so the cleartext password is never
 	/// reachable through a <see cref="TextBox"/>-shaped API.
@@ -85,6 +92,13 @@ internal interface ITextBoxHost
 	InputScope InputScope { get; }
 
 	TextAlignment TextAlignment { get; }
+
+	/// <summary>
+	/// Whether <see cref="TextAlignment"/> was set rather than left at its default. The display block
+	/// only adjusts its own alignment when the host has an explicit one; a password box has no such
+	/// property, so it answers <c>false</c> and the adjustment is skipped by construction.
+	/// </summary>
+	bool IsTextAlignmentExplicitlySet { get; }
 
 	CharacterCasing CharacterCasing { get; }
 

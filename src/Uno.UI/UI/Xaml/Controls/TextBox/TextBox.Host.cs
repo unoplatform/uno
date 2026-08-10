@@ -17,6 +17,8 @@ partial class TextBox : ITextBoxHost
 	// For the framework internals that need the engine rather than the control.
 	internal TextBoxCore Core => _core;
 
+	TextBoxCore ITextBoxHost.Core => Core;
+
 	Control ITextBoxHost.Owner => this;
 
 	string ITextBoxHost.TextValue
@@ -43,6 +45,10 @@ partial class TextBox : ITextBoxHost
 	InputScope ITextBoxHost.InputScope => InputScope;
 
 	TextAlignment ITextBoxHost.TextAlignment => TextAlignment;
+
+	bool ITextBoxHost.IsTextAlignmentExplicitlySet
+		=> ((IDependencyObjectStoreProvider)this).Store
+			.GetCurrentHighestValuePrecedence(TextAlignmentProperty) != DependencyPropertyValuePrecedences.DefaultValue;
 
 	CharacterCasing ITextBoxHost.CharacterCasing => CharacterCasing;
 

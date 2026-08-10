@@ -18,6 +18,8 @@ partial class PasswordBox : ITextBoxHost
 	// For the framework internals that need the engine rather than the control.
 	internal TextBoxCore Core => _core;
 
+	TextBoxCore ITextBoxHost.Core => Core;
+
 	// Set only by this control's pointer/visibility overrides and read only for visual state.
 	private bool _isPointerOver;
 
@@ -45,6 +47,8 @@ partial class PasswordBox : ITextBoxHost
 	CharacterCasing ITextBoxHost.CharacterCasing => CharacterCasing.Normal;
 
 	TextAlignment ITextBoxHost.TextAlignment => TextAlignment.Left;
+
+	bool ITextBoxHost.IsTextAlignmentExplicitlySet => false;
 
 	bool ITextBoxHost.IsPointerOver => _isPointerOver;
 

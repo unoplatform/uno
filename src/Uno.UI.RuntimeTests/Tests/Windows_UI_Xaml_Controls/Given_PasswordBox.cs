@@ -17,7 +17,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 [TestClass]
 [RunsOnUIThread]
-public class Given_PasswordBox
+public partial class Given_PasswordBox
 {
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
