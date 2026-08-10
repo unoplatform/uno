@@ -16,31 +16,30 @@ using Uno.Extensions;
 using Windows.Foundation.Metadata;
 using System.ComponentModel;
 using Uno.Foundation.Logging;
+using Uno.UI.Hosting;
 using Windows.UI.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using IOnPreDrawListener = Android.Views.ViewTreeObserver.IOnPreDrawListener;
 
 namespace Microsoft.UI.Xaml
 {
-	public class NativeApplication : AApplication
+	/// <summary>
+	/// Base <see cref="Android.App.Application"/> for an Uno Platform app. Derive from this type in the
+	/// Android head, mark it with <see cref="ApplicationAttribute"/>, and override <see cref="CreateHost"/>.
+	/// </summary>
+	/// <remarks>
+	/// Android has no managed entry point — the .NET for Android SDK rewrites <c>OutputType</c> from
+	/// <c>Exe</c> to <c>Library</c>, and startup is driven by ART instantiating the class named in the
+	/// manifest. <see cref="CreateHost"/> is therefore the Android equivalent of the <c>Main</c> method
+	/// other targets use to build their <see cref="UnoPlatformHost"/>.
+	/// </remarks>
+	public abstract class NativeApplication : AApplication
 	{
-		private Application _app;
-
-#if ANDROID_SKIA
-		private AppBuilder _appBuilder;
-#endif
-
 		private Intent _lastHandledIntent;
 
 		private bool _isRunning;
 
-		public delegate Microsoft.UI.Xaml.Application AppBuilder();
-
-		/// <summary>
-		/// Creates an android Application instance
-		/// </summary>
-		/// <param name="appBuilder">A <see cref="AppBuilder"/> delegate that provides an <see cref="Application"/> instance.</param>
-		public NativeApplication(AppBuilder appBuilder, IntPtr javaReference, JniHandleOwnership transfer)
+		protected NativeApplication(IntPtr javaReference, JniHandleOwnership transfer)
 			: base(javaReference, transfer)
 		{
 			// Register assemblies earlier than Application itself, otherwise
@@ -48,17 +47,27 @@ namespace Microsoft.UI.Xaml
 			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
 			ApiInformation.RegisterAssembly(typeof(global::Windows.Storage.ApplicationData).Assembly);
 			ApiInformation.RegisterAssembly(typeof(Microsoft.UI.Composition.Compositor).Assembly);
-
-			// Delay create the Microsoft.UI.Xaml.Application in order to get the
-			// Android.App.Application.Context to be populated properly. This enables
-			// APIs such as Windows.Storage.ApplicationData.Current.LocalSettings to function properly.
-#if ANDROID_SKIA
-			_appBuilder = appBuilder;
-#else
-			_app = appBuilder();
-#endif
-
 		}
+
+		/// <summary>
+		/// Builds the <see cref="UnoPlatformHost"/> that runs this application.
+		/// </summary>
+		/// <example>
+		/// <code>
+		/// protected override UnoPlatformHost CreateHost() =&gt;
+		/// 	UnoPlatformHostBuilder.Create()
+		/// 		.App(() =&gt; new App())
+		/// 		.UseAndroid()
+		/// 		.Build();
+		/// </code>
+		/// </example>
+		/// <remarks>
+		/// Called once, when the first <see cref="ApplicationActivity"/> starts — late enough for
+		/// <see cref="Uno.UI.ContextHelper.Current"/> to be set. Do not perform UI work in
+		/// <see cref="OnCreate"/> instead: it also runs for process entries that have no activity,
+		/// such as background services and broadcast receivers.
+		/// </remarks>
+		protected abstract UnoPlatformHost CreateHost();
 
 		public override void OnCreate()
 		{
@@ -74,27 +83,31 @@ namespace Microsoft.UI.Xaml
 					this.Log().LogDebug($"Application activity started with intent {activity.Intent}");
 				}
 
-#if ANDROID_SKIA
 				// We need to call TryHandleIntent first so the application arguments are set correctly.
 				// Then, when the Application is created, it will use those arguments.
 				_ = TryHandleIntent(activity.Intent);
 				if (!_isRunning)
 				{
-					// We create the host late enough for the ContextHelper.Context to have been set correctly.
-					new Uno.UI.Runtime.Skia.Android.AndroidHost(() => _app = _appBuilder()).Run();
+					StartHost();
 				}
-#else
-				_app.InitializationCompleted();
-				var handled = TryHandleIntent(activity.Intent);
-
-				// default to normal launch
-				if (!handled && !_isRunning)
-				{
-					_app.OnLaunched(new LaunchActivatedEventArgs());
-				}
-#endif
 
 				_isRunning = true;
+			}
+		}
+
+		private void StartHost()
+		{
+			try
+			{
+				// The host is created this late for ContextHelper.Current, set by BaseActivity,
+				// to have been populated.
+				CreateHost().Run();
+			}
+			catch (Exception e)
+			{
+				// Mono truncates managed stacks thrown out of Activity.OnStart, so log before rethrowing.
+				this.Log().Error("The Uno Platform host failed to start.", e);
+				throw;
 			}
 		}
 
@@ -116,11 +129,7 @@ namespace Microsoft.UI.Xaml
 						this.Log().LogDebug("Intent contained JumpList extra arguments, calling OnLaunched.");
 					}
 
-#if ANDROID_SKIA
 					Application.SetArguments(intent.GetStringExtra(JumpListItem.ArgumentsExtraKey));
-#else
-					_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
-#endif
 					handled = true;
 				}
 				else if (intent.Data != null)
@@ -132,18 +141,17 @@ namespace Microsoft.UI.Xaml
 							this.Log().LogDebug("Intent data parsed successfully as Uri, calling OnActivated.");
 						}
 
-#if ANDROID_SKIA
 						if (_isRunning)
 						{
-							_app?.OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
+							// Application.Current rather than a cached instance: the app is created by the
+							// host built in CreateHost(), which this type never sees.
+							Application.Current?.OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
 						}
 						else
 						{
 							Application.SetActivationUri(uri);
 						}
-#else
-						_app.OnActivated(new ProtocolActivatedEventArgs(uri, _isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning));
-#endif
+
 						handled = true;
 					}
 					else
