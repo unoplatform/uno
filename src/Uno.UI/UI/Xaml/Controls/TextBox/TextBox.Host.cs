@@ -33,9 +33,10 @@ partial class TextBox : ITextBoxHost
 
 	bool ITextBoxHost.IsSpellCheckEnabled => IsSpellCheckEnabled;
 
-	// Until PasswordBox is reparented (item 11) it still derives from TextBox, so the type test remains
-	// the only truthful answer here. It becomes `=> false` on TextBox / `=> true` on PasswordBox then.
-	bool ITextBoxHost.IsPassword => this is PasswordBox;
+	bool ITextBoxHost.IsPassword => false;
+
+	// Never read: only the masking path asks, and only when IsPassword is set.
+	char ITextBoxHost.PasswordChar => '\0';
 
 	int ITextBoxHost.MaxLength => MaxLength;
 

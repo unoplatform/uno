@@ -3,9 +3,12 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml;
+using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.System;
 using Private.Infrastructure;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -187,14 +190,18 @@ public class Given_PasswordBox
 		passwordBox.SelectAll();
 		await TestServices.WindowHelper.WaitForIdle();
 
-		passwordBox.CopySelectionToClipboard();
-		await TestServices.WindowHelper.WaitForIdle();
-		Assert.AreEqual(sentinel, await ClipboardHelper.WaitForTextAsync(sentinel));
+		// Driven through the keyboard rather than CopySelectionToClipboard/CutSelectionToClipboard: those are
+		// TextBox-only API that a PasswordBox no longer exposes, and the accelerator is the path a user has.
+		var ctrl = DeviceTargetHelper.PlatformCommandModifier;
 
-		passwordBox.CutSelectionToClipboard();
+		passwordBox.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(passwordBox, VirtualKey.C, ctrl, unicodeKey: 'c'));
 		await TestServices.WindowHelper.WaitForIdle();
-		Assert.AreEqual(sentinel, await ClipboardHelper.WaitForTextAsync(sentinel));
-		Assert.AreEqual(secret, passwordBox.Password);
+		Assert.AreEqual(sentinel, await ClipboardHelper.WaitForTextAsync(sentinel), "Ctrl+C must not put the password on the clipboard");
+
+		passwordBox.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(passwordBox, VirtualKey.X, ctrl, unicodeKey: 'x'));
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.AreEqual(sentinel, await ClipboardHelper.WaitForTextAsync(sentinel), "Ctrl+X must not put the password on the clipboard");
+		Assert.AreEqual(secret, passwordBox.Password, "Ctrl+X must not remove the selected password");
 	}
 #endif
 }

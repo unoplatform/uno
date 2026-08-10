@@ -4718,7 +4718,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			char defaultPasswordBoxChar = PasswordBox.DefaultPasswordChar[0];
 #endif
 
-			Assert.AreEqual(new string(defaultPasswordBoxChar, 4), SUT.TextBoxView.DisplayBlock.Text);
+			Assert.AreEqual(new string(defaultPasswordBoxChar, 4), SUT.Core.TextBoxView.DisplayBlock.Text);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
@@ -4728,7 +4728,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("test", SUT.TextBoxView.DisplayBlock.Text);
+			Assert.AreEqual("test", SUT.Core.TextBoxView.DisplayBlock.Text);
 		}
 
 		[TestMethod]
@@ -6893,7 +6893,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(SUT);
 
 				SUT.Focus(FocusState.Programmatic);
-				SUT.Select(0, 4);
+				SUT.Core.Select(0, 4);
 				await WindowHelper.WaitForIdle();
 
 				Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "PasswordBox should have TextCommandBarFlyout as ContextFlyout");

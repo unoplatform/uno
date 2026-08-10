@@ -1,4 +1,5 @@
 using System;
+using DirectUI;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -6,17 +7,21 @@ using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.UI.Xaml;
+using Uno.UI.Xaml.Media;
+using Windows.System;
+using Windows.UI.Text;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class PasswordBox : TextBox
+	public partial class PasswordBox : Control, IFrameworkTemplatePoolAware
 	{
-		// On Windows, \u25CF is used as password character.
+		// On Windows, ● is used as password character.
 		// However, this character can't be retrieved on Android (doesn't exist in any system font) and on some browser/OS combinations.
-		// We use \u2022 instead, which is already the one normally used by Android and all the major browsers.
+		// We use • instead, which is already the one normally used by Android and all the major browsers.
 		// See https://github.com/mozilla/gecko-dev/blob/1d4c27f9f166ce6e967fb0e8c8d6e0795dbbd12e/widget/android/nsLookAndFeel.cpp#L441
-		internal static readonly string DefaultPasswordChar = OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser() ? "\u2022" : "\u25CF";
+		internal static readonly string DefaultPasswordChar = OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser() ? "•" : "●";
+
+		private protected bool _isButtonEnabled = true;
 
 		public event RoutedEventHandler PasswordChanged;
 
@@ -27,16 +32,55 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public PasswordBox()
 		{
+			_core = new TextBoxCore(this);
+
 			DefaultStyleKey = typeof(PasswordBox);
+
+			_core.Initialize();
 		}
 
-		public new void SelectAll() => base.SelectAll();
+#if !IS_UNIT_TESTS
+		/// <summary>
+		/// Occurs when content is pasted into the control.
+		/// </summary>
+		public event TextControlPasteEventHandler Paste;
+
+		internal void RaisePaste(TextControlPasteEventArgs args) => Paste?.Invoke(this, args);
+#endif
+
+		public void SelectAll() => _core.SelectAll();
+
+		/// <summary>
+		/// Copies content from the OS clipboard into the text control.
+		/// </summary>
+		public void PasteFromClipboard() => _core.PasteFromClipboard();
 
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
+
+			_core.OnLoadedCore();
+
 			RegisterSetPasswordScope();
 			UpdateDescriptionVisibility(true);
+		}
+
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			_core.OnUnloadedCore();
+
+			_revealButtonSubscription.Disposable = null;
+		}
+
+		protected override void OnGotFocus(RoutedEventArgs e) => _core.OnGotFocusCore();
+
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+			_core.ApplyTemplate();
 		}
 
 		private void RegisterSetPasswordScope()
@@ -81,12 +125,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void EndRevealPartial();
 
-		private protected override void OnUnloaded()
-		{
-			base.OnUnloaded();
-			_revealButtonSubscription.Disposable = null;
-		}
-
 		partial void SetPasswordRevealState(PasswordRevealState state);
 
 		#region Password DependencyProperty
@@ -104,15 +142,15 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(PasswordBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: string.Empty,
-					propertyChangedCallback: (s, e) => ((PasswordBox)s)?.OnPasswordChanged(e)
+					options: FrameworkPropertyMetadataOptions.CoerceOnlyWhenChanged,
+					propertyChangedCallback: (s, e) => ((PasswordBox)s)?.OnPasswordChanged(e),
+					coerceValueCallback: (d, v, _) => ((PasswordBox)d)?._core.CoerceText(v)
 				)
 			);
 
 		private void OnPasswordChanged(DependencyPropertyChangedEventArgs e)
 		{
-			SetValue(TextProperty, (string)e.NewValue);
-
-			PasswordChanged?.Invoke(this, new RoutedEventArgs(this));
+			_core.OnTextChangedCore((string)e.OldValue, (string)e.NewValue);
 
 			OnPasswordChangedPartial(e);
 
@@ -151,58 +189,162 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnPasswordCharChangedPartial(DependencyPropertyChangedEventArgs e);
 
-		public new object Description
+		#region Description DependencyProperty
+
+		public object Description
 		{
 			get => this.GetValue(DescriptionProperty);
 			set => this.SetValue(DescriptionProperty, value);
 		}
 
-		public static new global::Microsoft.UI.Xaml.DependencyProperty DescriptionProperty { get; } =
-			Microsoft.UI.Xaml.DependencyProperty.Register(
-				nameof(Description), typeof(object),
-				typeof(global::Microsoft.UI.Xaml.Controls.PasswordBox),
-				new FrameworkPropertyMetadata(default(object), propertyChangedCallback: (s, e) => (s as PasswordBox)?.UpdateDescriptionVisibility(false)));
+		public static DependencyProperty DescriptionProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Description),
+				typeof(object),
+				typeof(PasswordBox),
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					propertyChangedCallback: (s, e) => (s as PasswordBox)?.UpdateDescriptionVisibility(false)));
+
+		#endregion
+
+		#region Header DependencyProperty
+
+		public object Header
+		{
+			get => this.GetValue(HeaderProperty);
+			set => this.SetValue(HeaderProperty, value);
+		}
+
+		public static DependencyProperty HeaderProperty { get; } =
+			DependencyProperty.Register(
+				nameof(Header),
+				typeof(object),
+				typeof(PasswordBox),
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((PasswordBox)s)?._core.OnHeaderChanged()
+				)
+			);
+
+		#endregion
+
+		#region HeaderTemplate DependencyProperty
+
+		public DataTemplate HeaderTemplate
+		{
+			get => (DataTemplate)this.GetValue(HeaderTemplateProperty);
+			set => this.SetValue(HeaderTemplateProperty, value);
+		}
+
+		public static DependencyProperty HeaderTemplateProperty { get; } =
+			DependencyProperty.Register(
+				nameof(HeaderTemplate),
+				typeof(DataTemplate),
+				typeof(PasswordBox),
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) => ((PasswordBox)s)?._core.OnHeaderChanged()
+				)
+			);
+
+		#endregion
+
+		#region PlaceholderText DependencyProperty
+
+		public string PlaceholderText
+		{
+			get => (string)this.GetValue(PlaceholderTextProperty);
+			set => this.SetValue(PlaceholderTextProperty, value);
+		}
+
+		public static DependencyProperty PlaceholderTextProperty { get; } =
+			DependencyProperty.Register(
+				nameof(PlaceholderText),
+				typeof(string),
+				typeof(PasswordBox),
+				new FrameworkPropertyMetadata(defaultValue: string.Empty, options: FrameworkPropertyMetadataOptions.AffectsMeasure)
+			);
+
+		#endregion
+
+		#region InputScope DependencyProperty
+
+		public InputScope InputScope
+		{
+			get => (InputScope)this.GetValue(InputScopeProperty);
+			set => this.SetValue(InputScopeProperty, value);
+		}
+
+		public static DependencyProperty InputScopeProperty { get; } =
+			DependencyProperty.Register(
+				"InputScope",
+				typeof(InputScope),
+				typeof(PasswordBox),
+				new FrameworkPropertyMetadata(
+					defaultValue: new InputScope()
+					{
+						Names =
+						{
+							new InputScopeName
+							{
+								NameValue = InputScopeNameValue.Password
+							}
+						}
+					},
+					propertyChangedCallback: (s, e) => ((PasswordBox)s)?._core.OnInputScopeChanged((InputScope)e.NewValue)
+				)
+			);
+
+		#endregion
+
+		#region MaxLength DependencyProperty
+
+		public int MaxLength
+		{
+			get => (int)this.GetValue(MaxLengthProperty);
+			set => this.SetValue(MaxLengthProperty, value);
+		}
+
+		public static DependencyProperty MaxLengthProperty { get; } =
+			DependencyProperty.Register(
+				nameof(MaxLength),
+				typeof(int),
+				typeof(PasswordBox),
+				new FrameworkPropertyMetadata(
+					defaultValue: 0,
+					propertyChangedCallback: (s, e) => ((PasswordBox)s)?._core.OnMaxLengthChanged((int)e.NewValue)
+				)
+			);
+
+		#endregion
 
 		#region SelectionHighlightColor DependencyProperty
 
 		/// <summary>
 		/// Gets or sets the brush used to highlight the selected text.
 		/// </summary>
-		public new SolidColorBrush SelectionHighlightColor
+		public SolidColorBrush SelectionHighlightColor
 		{
-			get => base.SelectionHighlightColor;
-			set => base.SelectionHighlightColor = value;
+			get => (SolidColorBrush)GetValue(SelectionHighlightColorProperty);
+			set => SetValue(SelectionHighlightColorProperty, value);
 		}
 
 		/// <summary>
 		/// Identifies the SelectionHighlightColor dependency property.
 		/// </summary>
-		public new static DependencyProperty SelectionHighlightColorProperty => TextBox.SelectionHighlightColorProperty;
+		public static DependencyProperty SelectionHighlightColorProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SelectionHighlightColor),
+				typeof(SolidColorBrush),
+				typeof(PasswordBox),
+				new FrameworkPropertyMetadata(
+					DefaultBrushes.SelectionHighlightColor,
+					propertyChangedCallback: (s, e) => ((PasswordBox)s)?._core.OnSelectionHighlightColorChanged((SolidColorBrush)e.OldValue, (SolidColorBrush)e.NewValue)));
 
 		#endregion
-
-		protected override void OnTextChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnTextChanged(e);
-
-			SetValue(PasswordProperty, (string)e.NewValue);
-		}
-
-		protected override AutomationPeer OnCreateAutomationPeer()
-		{
-			return new PasswordBoxAutomationPeer(this);
-		}
-
-		public override string GetAccessibilityInnerText()
-		{
-			// We don't want to reveal the password
-			return null;
-		}
-
-		/// <summary>
-		/// Copies content from the OS clipboard into the text control.
-		/// </summary>
-		public new void PasteFromClipboard() => base.PasteFromClipboard();
 
 		#region IsPasswordRevealButtonEnabled DependencyProperty
 		public bool IsPasswordRevealButtonEnabled
@@ -278,17 +420,65 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
+#if SUPPORTS_RTL
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+			if (args.Property == FrameworkElement.FlowDirectionProperty)
+			{
+				_core.OnFlowDirectionChanged();
+			}
+		}
+#endif
+
+		protected override void OnFontSizeChanged(double oldValue, double newValue)
+		{
+			base.OnFontSizeChanged(oldValue, newValue);
+			_core.UpdateFont();
+		}
+
+		protected override void OnFontFamilyChanged(FontFamily oldValue, FontFamily newValue)
+		{
+			base.OnFontFamilyChanged(oldValue, newValue);
+			_core.UpdateFont();
+		}
+
+		protected override void OnFontStyleChanged(FontStyle oldValue, FontStyle newValue)
+		{
+			base.OnFontStyleChanged(oldValue, newValue);
+			_core.UpdateFont();
+		}
+
+		private protected override void OnFontStretchChanged(FontStretch oldValue, FontStretch newValue)
+		{
+			base.OnFontStretchChanged(oldValue, newValue);
+			_core.UpdateFont();
+		}
+
+		protected override void OnFontWeightChanged(FontWeight oldValue, FontWeight newValue)
+		{
+			base.OnFontWeightChanged(oldValue, newValue);
+			_core.UpdateFont();
+		}
+
+		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue)
+			=> _core.OnForegroundColorChanged(newValue);
+
 		internal override void UpdateFocusState(FocusState focusState)
 		{
 			var oldValue = FocusState;
 			base.UpdateFocusState(focusState);
-			OnFocusStateChanged(oldValue, focusState);
+			if (oldValue != focusState)
+			{
+				_core.OnFocusStateChanged(oldValue, focusState, initial: false);
+			}
+
+			OnRevealButtonFocusStateChanged(oldValue, focusState);
 		}
 
-		private void OnFocusStateChanged(FocusState oldValue, FocusState newValue)
+		private void OnRevealButtonFocusStateChanged(FocusState oldValue, FocusState newValue)
 		{
 			if (oldValue == newValue) { return; }
-
 
 			if (oldValue == FocusState.Unfocused)
 			{
@@ -321,6 +511,103 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
+		{
+			base.OnVisibilityChanged(oldValue, newValue);
+			if (newValue == Visibility.Visible)
+			{
+				UpdateVisualState();
+			}
+			else
+			{
+				_isPointerOver = false;
+			}
+		}
+
+		protected override void OnPointerEntered(PointerRoutedEventArgs e)
+		{
+			base.OnPointerEntered(e);
+			_isPointerOver = true;
+			UpdateVisualState();
+		}
+
+		protected override void OnPointerExited(PointerRoutedEventArgs e)
+		{
+			base.OnPointerExited(e);
+			_isPointerOver = false;
+			UpdateVisualState();
+		}
+
+		protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
+		{
+			base.OnPointerCaptureLost(e);
+			_isPointerOver = false;
+			UpdateVisualState();
+			_core.OnPointerCaptureLost(e);
+		}
+
+		protected override void OnPointerPressed(PointerRoutedEventArgs args)
+		{
+			base.OnPointerPressed(args);
+
+			_core.OnPointerPressed(args);
+		}
+
+		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		{
+			base.OnPointerReleased(args);
+
+			_core.OnPointerReleased(args);
+		}
+
+		protected override void OnKeyDown(KeyRoutedEventArgs args)
+		{
+			base.OnKeyDown(args);
+
+			_core.OnKeyDown(args);
+		}
+
+		private protected override void OnPostKeyDown(KeyRoutedEventArgs args)
+		{
+			_core.OnPostKeyDown(args);
+
+			var modifiers = CoreImports.Input_GetKeyboardModifiers();
+			if (!args.Handled && KeyboardAcceleratorUtility.IsKeyValidForAccelerators(args.Key, KeyboardAcceleratorUtility.MapVirtualKeyModifiersToIntegersModifiers(modifiers)))
+			{
+				bool shouldNotImpedeTextInput = KeyboardAcceleratorUtility.TextInputHasPriorityForKey(
+					args.Key,
+					modifiers.HasFlag(VirtualKeyModifiers.Control),
+					modifiers.HasFlag(VirtualKeyModifiers.Menu));
+				args.HandledShouldNotImpedeTextInput = shouldNotImpedeTextInput;
+			}
+		}
+
+		protected virtual void UpdateButtonStates() => _core.UpdateButtonStatesCore();
+
+		void IFrameworkTemplatePoolAware.OnTemplateRecycled()
+		{
+			_core.OnTemplateRecycled();
+		}
+
+		protected override AutomationPeer OnCreateAutomationPeer()
+		{
+			return new PasswordBoxAutomationPeer(this);
+		}
+
+		public override string GetAccessibilityInnerText()
+		{
+			// We don't want to reveal the password
+			return null;
+		}
+
+		internal override bool CanHaveChildren() => true;
+
+		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+		{
+			base.OnIsEnabledChanged(e);
+			UpdateVisualState();
+		}
+
 		private void UpdateDescriptionVisibility(bool initialization)
 		{
 			if (initialization && Description == null)
@@ -335,47 +622,5 @@ namespace Microsoft.UI.Xaml.Controls
 				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
-
-#if !IS_UNIT_TESTS
-		/// <summary>
-		/// Occurs when text is pasted into the control.
-		/// </summary>
-		public new event TextControlPasteEventHandler Paste
-		{
-			add => base.Paste += value;
-			remove => base.Paste -= value;
-		}
-
-		partial void OnPasswordCharChangedPartial(DependencyPropertyChangedEventArgs e)
-		{
-			if (string.IsNullOrEmpty(PasswordChar) || PasswordChar.Length != 1)
-			{
-				throw new ArgumentException("PasswordChar must be a single character string.");
-			}
-
-			// Force display update to refresh the password character
-			TextBoxView?.UpdateDisplayBlockText(Text);
-		}
-
-		partial void SetPasswordRevealState(PasswordRevealState state) => TextBoxView?.SetPasswordRevealState(state);
-
-		public new FlyoutBase SelectionFlyout
-		{
-			get => base.SelectionFlyout;
-			set => base.SelectionFlyout = value;
-		}
-
-		public static new DependencyProperty SelectionFlyoutProperty => TextBox.SelectionFlyoutProperty;
-
-		public static new DependencyProperty CanPasteClipboardContentProperty => TextBox.CanPasteClipboardContentProperty;
-
-		public new bool CanPasteClipboardContent => base.CanPasteClipboardContent;
-
-		public new event ContextMenuOpeningEventHandler ContextMenuOpening
-		{
-			add => base.ContextMenuOpening += value;
-			remove => base.ContextMenuOpening -= value;
-		}
-#endif
 	}
 }

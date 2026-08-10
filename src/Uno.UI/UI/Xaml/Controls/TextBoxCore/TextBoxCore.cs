@@ -50,9 +50,9 @@ internal sealed partial class TextBoxCore
 	private Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue => _host.Owner.DispatcherQueue;
 
 	// Shims that let the moved implementation compile unchanged: host state the core must ask for, and
-	// framework API it cannot inherit because it is not a UIElement. Deliberately private — the public
-	// seam is ITextBoxHost, not these.
-	private string Text
+	// framework API it cannot inherit because it is not a UIElement. Private by default — ITextBoxHost is
+	// the seam. The `internal` ones are those TextBoxView reads, since it is driven by the core.
+	internal string Text
 	{
 		get => _host.TextValue;
 		set => _host.TextValue = value;
@@ -62,9 +62,11 @@ internal sealed partial class TextBoxCore
 
 	private bool AcceptsReturn => _host.AcceptsReturn;
 
-	private TextWrapping TextWrapping => _host.TextWrapping;
+	internal TextWrapping TextWrapping => _host.TextWrapping;
 
 	internal bool IsSpellCheckEnabled => _host.IsSpellCheckEnabled;
+
+	internal char PasswordChar => _host.PasswordChar;
 
 	internal bool IsPassword => _host.IsPassword;
 
@@ -72,7 +74,7 @@ internal sealed partial class TextBoxCore
 
 	private InputScope InputScope => _host.InputScope;
 
-	private TextAlignment TextAlignment => _host.TextAlignment;
+	internal TextAlignment TextAlignment => _host.TextAlignment;
 
 	private CharacterCasing CharacterCasing => _host.CharacterCasing;
 
@@ -108,7 +110,7 @@ internal sealed partial class TextBoxCore
 
 	private Brush Foreground => _host.Owner.Foreground;
 
-	private FlowDirection FlowDirection => _host.Owner.FlowDirection;
+	internal FlowDirection FlowDirection => _host.Owner.FlowDirection;
 
 	private bool HasPointerCapture => _host.Owner.HasPointerCapture;
 

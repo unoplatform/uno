@@ -172,7 +172,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 	public void SetPasswordRevealState(PasswordRevealState revealState)
 	{
-		if (_owner.TextBox is PasswordBox)
+		if (_owner.IsPasswordBox)
 		{
 			_textBoxView?.SetPasswordRevealState(revealState);
 			_currentPasswordRevealState = revealState;

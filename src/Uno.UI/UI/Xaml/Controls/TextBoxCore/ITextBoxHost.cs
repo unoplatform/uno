@@ -71,6 +71,13 @@ internal interface ITextBoxHost
 	/// </summary>
 	bool IsPassword { get; }
 
+	/// <summary>
+	/// The character the display text is masked with when <see cref="IsPassword"/> is set. Asked of the host
+	/// so the masking path never has to type-test its way to a <c>PasswordBox</c>; a text box answers
+	/// <c>'\0'</c>, which is never read because its text is not masked.
+	/// </summary>
+	char PasswordChar { get; }
+
 	bool IsPointerOver { get; }
 
 	int MaxLength { get; }

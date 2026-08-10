@@ -88,18 +88,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void SetFlowDirection()
 		{
-			if (TextBox is not { } textBox)
+			if (Core is not { } core)
 			{
 				return;
 			}
-			DisplayBlock.FlowDirection = textBox.FlowDirection;
+			DisplayBlock.FlowDirection = core.FlowDirection;
 		}
 
 		internal void SetWrapping()
 		{
-			if (TextBox is { } textBox)
+			if (Core is { } core)
 			{
-				DisplayBlock.TextWrapping = textBox.TextWrapping;
+				DisplayBlock.TextWrapping = core.TextWrapping;
 			}
 		}
 
@@ -136,13 +136,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void UpdateFont()
 		{
-			if (TextBox is { } textBox)
+			if (Core?.Owner is { } owner)
 			{
-				DisplayBlock.FontFamily = textBox.FontFamily;
-				DisplayBlock.FontSize = textBox.FontSize;
-				DisplayBlock.FontStyle = textBox.FontStyle;
-				DisplayBlock.FontStretch = textBox.FontStretch;
-				DisplayBlock.FontWeight = textBox.FontWeight;
+				DisplayBlock.FontFamily = owner.FontFamily;
+				DisplayBlock.FontSize = owner.FontSize;
+				DisplayBlock.FontStyle = owner.FontStyle;
+				DisplayBlock.FontStretch = owner.FontStretch;
+				DisplayBlock.FontWeight = owner.FontWeight;
 			}
 			// TODO: Propagate font family to the native InputWidget via _textBoxExtension.
 		}
@@ -151,19 +151,19 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_isPasswordRevealed = revealState == PasswordRevealState.Revealed;
 			_overlayTextBoxViewExtension?.SetPasswordRevealState(revealState);
-			if (TextBox is { } textBox)
+			if (Core is { } core)
 			{
-				UpdateDisplayBlockText(textBox.Text);
+				UpdateDisplayBlockText(core.Text);
 			}
 		}
 
 		internal void UpdateTextFromNative(string newText)
 		{
-			if (TextBox is { } textBox)
+			if (Core is { } core)
 			{
-				var oldText = textBox.Text; // preexisting text
+				var oldText = core.Text; // preexisting text
 				var oldSelection = SelectionBeforeKeyDown; // On Gtk, SelectionBeforeKeyDown just points to Selection, which is updated by SetTextNative, so we need to read it before SetTextNative.
-				var modifiedText = textBox.ProcessTextInput(newText); // new text after BeforeTextChanging, TextChanging, DP callback, etc
+				var modifiedText = core.ProcessTextInput(newText); // new text after BeforeTextChanging, TextChanging, DP callback, etc
 				UpdateDisplayBlockText(modifiedText);
 				if (modifiedText != newText)
 				{
@@ -189,8 +189,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void UpdateDisplayBlockText(string text)
 		{
-			// TODO: Inheritance hierarchy is wrong in Uno. PasswordBox shouldn't inherit TextBox.
-			// This needs to be moved to PasswordBox if it's separated from TextBox.
 			if (IsPasswordBox && !_isPasswordRevealed)
 			{
 				var passwordChar = GetPasswordChar();
@@ -201,38 +199,29 @@ namespace Microsoft.UI.Xaml.Controls
 				DisplayBlock.Text = text;
 			}
 
-			TextBox?.ContentElement?.InvalidateMeasure();
-			TextBox?.UpdateLayout();
+			Core?.ContentElement?.InvalidateMeasure();
+			Core?.Owner.UpdateLayout();
 		}
 
 		internal char GetPasswordChar()
-		{
-			if (TextBox is PasswordBox passwordBox && !string.IsNullOrEmpty(passwordBox.PasswordChar))
-			{
-				// Use the first character of the PasswordChar property
-				return passwordBox.PasswordChar[0];
-			}
-
-			// Fallback to the platform-specific default
-			return PasswordBox.DefaultPasswordChar[0];
-		}
+			=> Core?.PasswordChar is { } passwordChar and not '\0' ? passwordChar : PasswordBox.DefaultPasswordChar[0];
 
 		internal void UpdateProperties() => _overlayTextBoxViewExtension?.UpdateProperties();
 
 		internal void UpdatePasswordMasking()
 		{
 			// For Skia, we can update the display block text directly
-			if (TextBox is { } textBox)
+			if (Core is { } core)
 			{
-				UpdateDisplayBlockText(textBox.Text);
+				UpdateDisplayBlockText(core.Text);
 			}
 		}
 
 		internal void SetTextAlignment()
 		{
-			if (TextBox is { } textBox)
+			if (Core is { } core)
 			{
-				DisplayBlock.TextAlignment = textBox.TextAlignment;
+				DisplayBlock.TextAlignment = core.TextAlignment;
 			}
 		}
 	}
