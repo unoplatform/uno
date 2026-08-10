@@ -297,7 +297,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	{
 		var env = Environment.GetEnvironmentVariable("UNO_WEBGPU_MSAA");
 		if (env == "4") { return 4; }
-		if (env == "1") { System.Console.WriteLine("[webgpu] UNO_WEBGPU_MSAA=1 not supported yet (no no-resolve path) — using 4x"); return 4; }
+		if (env == "1") { return 1; }   // no-resolve 1x: passes render straight into the single-sample view (see WebGpuRenderSurface)
 		if (env == "2") { return 2; }   // force 2x, bypassing the probe (for drivers that reject the probe but accept 2x)
 		// The browser (Dawn) init is async and can't synchronously pump the error-scope callback (no JS event-loop
 		// yield), so skip the probe there and take the spec-guaranteed 4x. Desktop probes for 2x.
@@ -1146,8 +1146,9 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 			if (View != IntPtr.Zero) { wgpuTextureViewRelease(View); View = IntPtr.Zero; }
 			if (Tex != IntPtr.Zero) { wgpuTextureDestroy(Tex); Tex = IntPtr.Zero; }
 		}
-		if (MsaaColorView != IntPtr.Zero) { wgpuTextureViewRelease(MsaaColorView); MsaaColorView = IntPtr.Zero; }
-		if (MsaaColorTex != IntPtr.Zero) { wgpuTextureDestroy(MsaaColorTex); MsaaColorTex = IntPtr.Zero; }
+		// At 1x MsaaColorView aliases the (already-released) View and there is no MSAA texture — only release it when
+		// it's a distinct multisampled texture (MsaaColorTex set).
+		if (MsaaColorTex != IntPtr.Zero) { wgpuTextureViewRelease(MsaaColorView); MsaaColorView = IntPtr.Zero; wgpuTextureDestroy(MsaaColorTex); MsaaColorTex = IntPtr.Zero; }
 		if (DepthView != IntPtr.Zero) { wgpuTextureViewRelease(DepthView); DepthView = IntPtr.Zero; }
 		if (DepthTex != IntPtr.Zero) { wgpuTextureDestroy(DepthTex); DepthTex = IntPtr.Zero; }
 	}
@@ -1184,11 +1185,16 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 		Width = width; Height = height;
 		_ownsResources = false;   // the pool owns and reclaims these; Dispose must not release them
 		Pooled = true;
-		MsaaColorView = pool.Rent(width, height, (int)device.MsaaSamples, WGPUTextureUsage.RenderAttachment, device.ColorFormat);
 		DepthView = pool.Rent(width, height, (int)device.MsaaSamples, WGPUTextureUsage.RenderAttachment, WebGpuDevice.DepthStencilFormat);
 		// CopySrc so the resolved result can be read back (ReadPixelsRgba) for RenderTargetBitmap / offscreen.
 		View = pool.Rent(width, height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopySrc, device.ColorFormat);
 		Tex = pool.TexForView(View);
+		// 1x: no separate MSAA colour — the pass renders straight into the single-sample View (no resolve). Otherwise
+		// the pass renders into a multisampled colour that resolves into View. MsaaColorView aliases View at 1x, so the
+		// pool-return/Dispose paths must NOT free it as if it were a distinct texture (guarded on MsaaSamples>1).
+		MsaaColorView = device.MsaaSamples > 1
+			? pool.Rent(width, height, (int)device.MsaaSamples, WGPUTextureUsage.RenderAttachment, device.ColorFormat)
+			: View;
 	}
 
 	// Hands the resolved single-sample color texture/view to a longer-lived owner (RenderOffscreen → IImageTexture)
@@ -1203,15 +1209,24 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 
 	private void CreateMultisampledTargets(WebGpuDevice device, int width, int height)
 	{
-		var cd = new WGPUTextureDescriptor
+		// 1x: no multisampled colour — the pass renders straight into the single-sample View (no resolve). For the
+		// swapchain external-colour surface View is set per frame, so MsaaColorView is aliased to it there.
+		if (device.MsaaSamples > 1)
 		{
-			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 }, Format = device.ColorFormat,
-			MipLevelCount = 1, SampleCount = device.MsaaSamples, Dimension = WGPUTextureDimension._2D,
-			Usage = WGPUTextureUsage.RenderAttachment,
-		};
-		WebGpuDevice.TexLog("Surface.msaa", (uint)width, (uint)height, device.MsaaSamples);
-		MsaaColorTex = wgpuDeviceCreateTexture(device.Dev, &cd);
-		MsaaColorView = wgpuTextureCreateView(MsaaColorTex, null);
+			var cd = new WGPUTextureDescriptor
+			{
+				Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 }, Format = device.ColorFormat,
+				MipLevelCount = 1, SampleCount = device.MsaaSamples, Dimension = WGPUTextureDimension._2D,
+				Usage = WGPUTextureUsage.RenderAttachment,
+			};
+			WebGpuDevice.TexLog("Surface.msaa", (uint)width, (uint)height, device.MsaaSamples);
+			MsaaColorTex = wgpuDeviceCreateTexture(device.Dev, &cd);
+			MsaaColorView = wgpuTextureCreateView(MsaaColorTex, null);
+		}
+		else
+		{
+			MsaaColorView = View;   // Zero for the swapchain ctor (View set per frame) — aliased in the context
+		}
 
 		var dd = new WGPUTextureDescriptor
 		{
@@ -2155,7 +2170,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var coverBuf = MakeBuffer(cq.ToArray());
 		var noClip = MakeClipBg(_d.CoverClipBgl, default);
 
-		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = cov.MsaaColorView, ResolveTarget = cov.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Discard, ClearValue = default };
+		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = cov.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? cov.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = _d.MsaaSamples > 1 ? WGPUStoreOp.Discard : WGPUStoreOp.Store, ClearValue = default };
 		var dsa = new WGPURenderPassDepthStencilAttachment { View = cov.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
@@ -2172,7 +2187,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		WebGpuTrace.Draw("shadow-cover", 6);
 		wgpuRenderPassEncoderEnd(pass);
 		WebGpuTrace.PassEnd();
-		_d.Pool.Return(cov.MsaaColorView); _d.Pool.Return(cov.DepthView);
+		if (_d.MsaaSamples > 1) { _d.Pool.Return(cov.MsaaColorView); }   // at 1x MsaaColorView aliases cov.View (blurred next) — don't reclaim
+		_d.Pool.Return(cov.DepthView);
 
 		// 2) separable blur: coverage -> temp (H) -> blur (V).
 		var tempView = _d.Pool.Rent(sw, sh2, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
@@ -2564,7 +2580,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			// The resolve into target.View happens regardless of StoreOp; StoreOp.Discard drops the MSAA samples
 			// afterwards (never sampled) to save the store bandwidth — target.View (sampled later) is unaffected.
 			DepthSlice = uint.MaxValue,
-			View = target.MsaaColorView, ResolveTarget = target.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Discard,
+			// 1x: render straight into the single-sample View (no resolve target), and Store it (it IS the result).
+			View = target.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = _d.MsaaSamples > 1 ? WGPUStoreOp.Discard : WGPUStoreOp.Store,
 			ClearValue = clear.HasValue ? new WGPUColor { R = clear.Value.R / 255.0, G = clear.Value.G / 255.0, B = clear.Value.B / 255.0, A = clear.Value.A / 255.0 } : default,
 		};
 		var dsa = new WGPURenderPassDepthStencilAttachment
@@ -2651,7 +2668,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// A pooled offscreen (layer/backdrop) target: its MSAA colour has resolved into View and the depth is spent,
 		// so return both for the next same-size pass to reuse — only View (composited/sampled later) stays live. The
 		// on-window/dedicated target owns its MSAA+depth (persistent across frames) and is left untouched.
-		if (target.Pooled) { _d.Pool.Return(target.MsaaColorView); _d.Pool.Return(target.DepthView); }
+		if (target.Pooled) { if (_d.MsaaSamples > 1) { _d.Pool.Return(target.MsaaColorView); } _d.Pool.Return(target.DepthView); }   // at 1x MsaaColorView aliases View (sampled later) — don't reclaim
 		ReturnOps(ops);   // ops are fully encoded into the pass now — recycle the list
 	}
 
