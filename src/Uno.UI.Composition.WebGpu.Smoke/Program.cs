@@ -141,6 +141,23 @@ var rrCorner = At(prr, 10, 10);   // inside the 8..56 AABB but outside the r=16 
 Check("rounded-clip: center painted (red)", rrCenter.r > 200 && rrCenter.g < 60, rrCenter);
 Check("rounded-clip: corner masked (black)", rrCorner.r < 40 && rrCorner.g < 40 && rrCorner.b < 40, rrCorner);
 
+// 7c) NESTED ROUNDED CLIPS — two concentric rounded rects (same bounds), outer r=20, inner r=4. The correct clip is
+//     the AND of both. Point (12,12) is INSIDE the inner r=4 arc but OUTSIDE the outer r=20 arc → must stay masked.
+//     The old single-slot clip let the innermost (r=4) overwrite the outer, wrongly painting the corner red.
+RoundRectangle Rounded(double l, double t, double rr2, double bb, float rad) => new()
+{
+	Rect = new Rect(l, t, rr2 - l, bb - t),
+	TopLeft = new Vector2(rad, rad), TopRight = new Vector2(rad, rad),
+	BottomRight = new Vector2(rad, rad), BottomLeft = new Vector2(rad, rad),
+};
+var rrOuter = Rounded(8, 8, 48, 48, 20);
+var rrInner = Rounded(8, 8, 48, 48, 4);
+var pNest = Render(r => { r.ClipRoundRect(rrOuter); r.ClipRoundRect(rrInner); r.DrawRect(new Rect(0, 0, 64, 64), red, false); });
+var nestCorner = At(pNest, 12, 12);   // outside outer r=20 arc → must be masked (black)
+var nestCenter = At(pNest, 32, 32);   // inside both → red
+Check("nested-rounded: outer corner still masked (black)", nestCorner.r < 40 && nestCorner.g < 40 && nestCorner.b < 40, nestCorner);
+Check("nested-rounded: center painted (red)", nestCenter.r > 200 && nestCenter.g < 60, nestCenter);
+
 // 8) CROSS-BACKEND AGREEMENT — render the SAME neutral scene (black bg + green managed-geometry triangle)
 //    through the Skia backend and the WebGPU backend, and assert both classify every unambiguous pixel the same.
 var black = WColor.FromArgb(255, 0, 0, 0);
@@ -447,6 +464,46 @@ if (Environment.GetEnvironmentVariable("UNO_WEBGPU_PERF") == "1")
 	for (int f = 0; f < 60; f++) { dev.Profiler?.FrameStart(); var rec = new WebGpuCommandRecorder(); RecordClips(rec); perfPresent.Replay(rec.Finish()); dev.Profiler?.FrameEnd(); }
 	Console.WriteLine("PERF clip-heavy: see the [webgpu-profile] line above — offscr must be 0 (in-pass depth clip, no coverage passes)");
 	foreach (var g in clipGeos) { g.Dispose(); }
+}
+
+// 18) MANY-STOP GRADIENT — 20 stops, where the distinctive colour lives only in stops 16..19 (near t=1). The old
+//     backend clamped to 16 stops (MaxGradientStops=16), dropping those → the right edge stayed red. With the raised
+//     analytic cap all 20 stops render → the right edge is blue. Fail-before (red) / pass-after (blue).
+var manyColors = new WColor[20];
+var manyStops = new float[20];
+for (int i = 0; i < 20; i++) { manyColors[i] = i < 16 ? red : WColor.FromArgb(255, 0, 0, 255); manyStops[i] = i / 19f; }
+var manyGrad = new WebGpuShader { Radial = false, P0 = new Vector2(0, 0), P1 = new Vector2(64, 0), Colors = manyColors, Stops = manyStops, TileMode = GradientTileMode.Clamp, LocalMatrix = Matrix3x2.Identity };
+var pMany = Render(r => r.DrawRect(new Rect(0, 0, 64, 64), manyGrad, false));
+var manyRight = At(pMany, 62, 32); var manyLeft = At(pMany, 2, 32);
+Check("many-stop gradient: left red (early stops)", manyLeft.r > 150 && manyLeft.b < 100, manyLeft);
+Check("many-stop gradient: right blue (stops 16..19 not clamped away)", manyRight.b > 150 && manyRight.r < 100, manyRight);
+
+// ---- Ordered GPU-command TRACE (UNO_WEBGPU_TRACE=1) ----
+// Dumps exactly what each primitive submits to the GPU (passes, pipelines, draws), in order, so it can be diffed
+// against the original ramez/webgpu-experiment backend's submission for the same primitive. Not a pass/fail check.
+if (WebGpuTrace.Enabled)
+{
+	void Trace(string label, Action<WebGpuCommandRecorder> draw)
+	{
+		Render(draw);   // Replay resets the trace at frame start and fills it during submission.
+		Console.WriteLine($"--- TRACE {label} ---");
+		Console.Write(WebGpuTrace.Dump());
+	}
+	Console.WriteLine("\n======== GPU SUBMISSION TRACE (neutral) ========");
+	Trace("rect (solid)", r => r.DrawRect(new Rect(0, 0, 64, 64), red, false));
+	Trace("rect x3 (coalesce)", r => { r.DrawRect(new Rect(4, 4, 12, 12), red, false); r.DrawRect(new Rect(26, 26, 12, 12), green, false); r.DrawRect(new Rect(48, 48, 12, 12), WColor.FromArgb(255, 0, 0, 255), false); });
+	Trace("path (stencil-then-cover)", r => r.DrawPath(tri, green, false));
+	Trace("gradient linear", r => r.DrawRect(new Rect(0, 0, 64, 64), grad, false));
+	Trace("gradient radial", r => r.DrawRect(new Rect(0, 0, 64, 64), radial, false));
+	Trace("image", r => r.DrawImage(tex, 12, 12, default, 1f, false));
+	Trace("clip-rect (scissor only)", r => { r.ClipRect(new Rect(24, 24, 16, 16)); r.DrawRect(new Rect(0, 0, 64, 64), red, false); });
+	Trace("clip-rounded (analytic SDF)", r => { r.ClipRoundRect(rr); r.DrawRect(new Rect(0, 0, 64, 64), red, false); });
+	Trace("clip-path (depth mask)", r => { r.ClipPath(clipTriGeom); r.DrawRect(new Rect(0, 0, 64, 64), red, false); });
+	Trace("save-layer opacity", r => { r.SaveLayer(); r.DrawRect(new Rect(0, 0, 64, 64), red, false); r.Restore(); });
+	Trace("mask-layer (DstIn)", r => { r.SaveLayer(); r.DrawRect(new Rect(0, 0, 64, 64), red, false); r.SaveLayer(BlendMode.DstIn); r.DrawRect(new Rect(16, 16, 32, 32), WColor.FromArgb(255, 255, 255, 255), false); r.Restore(); r.Restore(); });
+	Trace("shadow (coverage+blur+composite)", r => r.DrawShadow(shRect, WColor.FromArgb(255, 255, 0, 0), 4f, 4f, false));
+	Trace("backdrop-acrylic (translucent)", r => { r.DrawRect(new Rect(24, 24, 16, 16), red, false); r.ClipRect(new Rect(0, 0, 64, 64)); r.DrawEffectBackdrop(acrylic, 1f); });
+	Console.WriteLine("================================================\n");
 }
 
 Console.WriteLine(fail == 0
