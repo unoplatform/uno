@@ -706,6 +706,31 @@ Check("many-stop gradient: right blue (stops 16..19 not clamped away)", manyRigh
 	}
 }
 
+// 18j) CROSS-VISUAL RRECT COALESCE — two separate rounded-rect visuals (no clip) must render AND collapse to ONE
+//      rrect draw (v=12 = 2*6), matching ramez batching adjacent rrects (v=6*N) instead of a draw per visual.
+{
+	var rcSurf = new WebGpuRenderSurface(dev, 64, 64);
+	var rcPres = new WebGpuPresentSession(dev, rcSurf);
+	rcPres.Clear(WColor.FromArgb(255, 0, 0, 0));
+	var rcBlue = WColor.FromArgb(255, 0, 0, 255);
+	var vr1 = new WebGpuCommandRecorder(); vr1.DrawRoundedRect(new Rect(4, 4, 20, 20), new Vector4(6, 6, 6, 6), red, true); var vr1d = vr1.Finish();
+	var vr2 = new WebGpuCommandRecorder(); vr2.DrawRoundedRect(new Rect(40, 40, 20, 20), new Vector4(6, 6, 6, 6), rcBlue, true); var vr2d = vr2.Finish();
+	var rcRec = new WebGpuCommandRecorder(); rcRec.Replay(vr1d); rcRec.Replay(vr2d);
+	WebGpuTrace.Reset();
+	rcPres.Replay(rcRec.Finish());
+	var rcDraws = WebGpuTrace.Enabled ? WebGpuTrace.Dump() : "";
+	var rcpx = dev.ReadPixelsRgba(rcSurf);
+	var rca = At(rcpx, 14, 14); var rcb = At(rcpx, 50, 50);
+	Check("rrect-coalesce: visual A red", rca.r > 200 && rca.g < 60, rca);
+	Check("rrect-coalesce: visual B blue", rcb.b > 200 && rcb.r < 60, rcb);
+	if (WebGpuTrace.Enabled)
+	{
+		int n = 0; string line = "";
+		foreach (var l in rcDraws.Split('\n')) { if (l.Contains("DRAW rrect")) { n++; line = l; } }
+		Check("rrect-coalesce: 2 visuals -> 1 rrect draw v=12", n == 1 && line.Contains("v=12"), $"rrect={n} line='{line.Trim()}'");
+	}
+}
+
 // 19) DPI SCALE — a logical 20x20 rect replayed through present.Save/Scale(2)/Replay/Restore must fill the 40x40
 //     PHYSICAL region. This is the 1.5x-DPI bug: WebGpuPresentSession.Scale was an empty stub, so the composition's
 //     RasterizationScale (applied via the neutral session) was dropped and content rendered at logical size.

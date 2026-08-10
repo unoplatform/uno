@@ -2234,6 +2234,30 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		return start;
 	}
 
+	// Per-pass shared ROUNDED-RECT buffer (22 floats/vert; ramez per-vertex SDF layout). Every rrect — immediate and
+	// re-appended cached — lands here in op order so adjacent rrect ops sharing a clip coalesce into ONE draw across
+	// visuals (ramez emits rrect v=6*N; neutral used to emit N separate v=6). Returns the start vertex index.
+	private readonly Stack<List<float>> _rrectPool = new();
+	private List<float> RentRrect() => _rrectPool.Count > 0 ? _rrectPool.Pop() : new(4096);
+	private void ReturnRrect(List<float> s) { s.Clear(); _rrectPool.Push(s); }
+	private int AppendRrect(List<float> rr, RoundedRectCmd rrc)
+	{
+		int start = rr.Count / 22;
+		var hf = rrc.Half; var rad = rrc.Radii; var ih = rrc.InnerHalf; var ic = rrc.InnerCenter; var ir = rrc.InnerRadii;
+		float cr = rrc.Color.R / 255f, cg = rrc.Color.G / 255f, cb = rrc.Color.B / 255f, ca = rrc.Color.A / 255f * rrc.Opacity;
+		Span<Vector2> dev = stackalloc Vector2[4] { rrc.P0, rrc.P1, rrc.P3, rrc.P2 };
+		Span<Vector2> ctr = stackalloc Vector2[4] { new(-hf.X, -hf.Y), new(hf.X, -hf.Y), new(-hf.X, hf.Y), new(hf.X, hf.Y) };
+		ReadOnlySpan<int> tri = stackalloc int[6] { 0, 1, 2, 2, 1, 3 };
+		foreach (var idx in tri)
+		{
+			var n = Ndc(dev[idx]);
+			rr.Add(n.X); rr.Add(n.Y); rr.Add(ctr[idx].X); rr.Add(ctr[idx].Y); rr.Add(hf.X); rr.Add(hf.Y);
+			rr.Add(rad.X); rr.Add(rad.Y); rr.Add(rad.Z); rr.Add(rad.W); rr.Add(cr); rr.Add(cg); rr.Add(cb); rr.Add(ca);
+			rr.Add(ih.X); rr.Add(ih.Y); rr.Add(ic.X); rr.Add(ic.Y); rr.Add(ir.X); rr.Add(ir.Y); rr.Add(ir.Z); rr.Add(ir.W);
+		}
+		return start;
+	}
+
 	private IntPtr MakeBuffer(float[] data)
 	{
 		var size = data.Length * sizeof(float);
@@ -2485,14 +2509,16 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// space geometry in the fragment) and any clip need a device-space re-stamp and are NOT arena-safe yet.
 	// A recording contains at least one rect — its solids are cheap to re-emit each frame into the shared solid
 	// buffer (ramez arena baseline) so they coalesce across visuals; any non-solids stay cached (NonSolidOps).
-	private static bool HasAnyRect(List<WebGpuCommand> cmds)
+	// Re-appendable = rect or rounded-rect: cheap to re-emit each frame into a shared per-pass buffer (solids /
+	// rrects) so they coalesce across visuals. Glyphs/images/gradients stay cached and are spliced in draw order.
+	private static bool HasReappendable(List<WebGpuCommand> cmds)
 	{
-		for (int i = 0; i < cmds.Count; i++) { if (cmds[i] is RectCommand) { return true; } }
+		for (int i = 0; i < cmds.Count; i++) { if (cmds[i] is RectCommand or RoundedRectCmd) { return true; } }
 		return false;
 	}
 	private static bool HasNonRect(List<WebGpuCommand> cmds)
 	{
-		for (int i = 0; i < cmds.Count; i++) { if (cmds[i] is not RectCommand) { return true; } }
+		for (int i = 0; i < cmds.Count; i++) { if (cmds[i] is not (RectCommand or RoundedRectCmd)) { return true; } }
 		return false;
 	}
 
@@ -2673,21 +2699,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			}
 			case RoundedRectCmd rrc:
 			{
-				var hf = rrc.Half; var rad = rrc.Radii; var ih = rrc.InnerHalf; var ic = rrc.InnerCenter; var ir = rrc.InnerRadii;
-				float cr = rrc.Color.R / 255f, cg = rrc.Color.G / 255f, cb = rrc.Color.B / 255f, ca = rrc.Color.A / 255f * rrc.Opacity;
-				// device corners TL,TR,BL,BR; local centred coords match; two tris (0,1,2, 2,1,3).
-				Span<Vector2> dev = stackalloc Vector2[4] { rrc.P0, rrc.P1, rrc.P3, rrc.P2 };
-				Span<Vector2> ctr = stackalloc Vector2[4] { new(-hf.X, -hf.Y), new(hf.X, -hf.Y), new(-hf.X, hf.Y), new(hf.X, hf.Y) };
-				ReadOnlySpan<int> tri = stackalloc int[6] { 0, 1, 2, 2, 1, 3 };
-				var v = new float[6 * 22]; int o = 0;
-				foreach (var idx in tri)
-				{
-					var n = Ndc(dev[idx]);
-					v[o++] = n.X; v[o++] = n.Y; v[o++] = ctr[idx].X; v[o++] = ctr[idx].Y; v[o++] = hf.X; v[o++] = hf.Y;
-					v[o++] = rad.X; v[o++] = rad.Y; v[o++] = rad.Z; v[o++] = rad.W; v[o++] = cr; v[o++] = cg; v[o++] = cb; v[o++] = ca;
-					v[o++] = ih.X; v[o++] = ih.Y; v[o++] = ic.X; v[o++] = ic.Y; v[o++] = ir.X; v[o++] = ir.Y; v[o++] = ir.Z; v[o++] = ir.W;
-				}
-				ops.Add((5, 0, 0, (nint)Vbuf(v, owned), false, rrc.Clip, (nint)MakeClipBg(_d.RrClipBgl, rrc.Clip, owned)));
+				// Legacy per-op fallback (b0=1). The common path routes rrects through the shared per-pass buffer
+				// (b0==0) for cross-visual coalescing; this stays for any non-frame-solid cached recording.
+				var tmp = RentRrect();
+				AppendRrect(tmp, rrc);
+				var buf = Vbuf(tmp, owned);
+				ReturnRrect(tmp);
+				ops.Add((5, 1, 6, (nint)buf, false, rrc.Clip, (nint)MakeClipBg(_d.RrClipBgl, rrc.Clip, owned)));
 				break;
 			}
 		}
@@ -2744,6 +2762,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// b1=cover, flag=evenOdd), 2=image (b0=bindGroup, b1=quad), 3=gradient, 4=composite layer.
 		var ops = RentOps();
 		var solid = RentSolid();
+		var rrect = RentRrect();
 		for (int ci = 0; ci < cmds.Count; ci++)
 		{
 			var cmd = cmds[ci];
@@ -2767,9 +2786,16 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				case PathFill:
 				case ImageCmd:
 				case GradientCmd:
-				case RoundedRectCmd:
 					BuildSimpleOp(cmd, ops, null);   // pooled (per-frame)
 					break;
+				case RoundedRectCmd rri:
+				{
+					// Shared rrect buffer (b0==0, b1=start vert): adjacent same-clip rrects coalesce in the emit loop.
+					int st = rrect.Count / 22;
+					AppendRrect(rrect, rri);
+					ops.Add((5, 0, 6, (nint)st, false, rri.Clip, (nint)MakeClipBg(_d.RrClipBgl, rri.Clip)));
+					break;
+				}
 				case ReplayRefCmd rr:
 				{
 					// FRAME-SOLID path (ramez arena baseline): any recording that contains rects — a Border background,
@@ -2778,7 +2804,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// win the profiler showed). NON-solids (glyphs/images/gradients) stay cached (device space,
 					// rebuilt only on a transform/clip change) and are consumed in draw order as the recording is
 					// re-walked. Pure non-solid recordings fall through to the arena path below (moving-visual reuse).
-					if (HasAnyRect(rr.Commands))
+					if (HasReappendable(rr.Commands))
 					{
 						List<(int, nint, uint, nint, bool, ClipData, nint)> nonSolid = null;
 						if (HasNonRect(rr.Commands))
@@ -2792,7 +2818,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								var nsOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
 								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip))
 								{
-									if (tc is not RectCommand) { BuildSimpleOp(tc, nsOps, nsOwned); }
+									if (tc is not (RectCommand or RoundedRectCmd)) { BuildSimpleOp(tc, nsOps, nsOwned); }
 								}
 								nsEntry = new WebGpuGeometryCache { NonSolidOps = nsOps, Owned = nsOwned, Transform = rr.Transform, Clip = rr.Clip, FrameSolid = true };
 								_d.GeometryCache[rr.Commands] = nsEntry;
@@ -2810,6 +2836,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								int st = solid.Count / 6;
 								AppendSolidRect(solid, rcx.P0, rcx.P1, rcx.P2, rcx.P3, rcx.Color.R / 255f, rcx.Color.G / 255f, rcx.Color.B / 255f, rcx.Color.A / 255f);
 								ops.Add((0, 0, 6, (nint)st, false, rcx.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rcx.Clip)));
+							}
+							else if (tc is RoundedRectCmd rcr)
+							{
+								int st = rrect.Count / 22;
+								AppendRrect(rrect, rcr);
+								ops.Add((5, 0, 6, (nint)st, false, rcr.Clip, (nint)MakeClipBg(_d.RrClipBgl, rcr.Clip)));
 							}
 							else if (nonSolid is not null && nsIdx < nonSolid.Count) { ops.Add(nonSolid[nsIdx++]); }
 						}
@@ -3007,8 +3039,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			}
 		}
 
-		// Upload the whole pass's coalesceable solid geometry in ONE buffer; shared-buffer solid ops (b0==0) index it.
+		// Upload the whole pass's coalesceable solid + rrect geometry in ONE buffer each; b0==0 ops index them.
 		nint solidBuf = solid.Count > 0 ? (nint)MakeBuffer(solid) : IntPtr.Zero;
+		nint rrectBuf = rrect.Count > 0 ? (nint)MakeBuffer(rrect) : IntPtr.Zero;
 
 		var ca = new WGPURenderPassColorAttachment
 		{
@@ -3126,6 +3159,26 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					WebGpuTrace.Draw(u0 == 1 ? "composite-dstin" : "composite-srcover", 3);
 					_d.Profiler?.DrawKind(4);
 					break;
+				case 5 when b0 == 0:
+				{
+					// Shared rrect buffer (b1=start vert, u0=6). COALESCE the run of following rrect ops sharing this
+					// clip bind group + clip: their 22-float verts are contiguous, so the run draws in ONE call.
+					int startVert = (int)b1; uint count = u0;
+					while (oi + 1 < ops.Count)
+					{
+						var nx = ops[oi + 1];
+						if (nx.kind != 5 || nx.b0 != 0 || nx.clipBg != clipBg
+							|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
+						count += nx.u0; oi++; _d.Profiler?.Coalesced(1);
+					}
+					wgpuRenderPassEncoderSetPipeline(pass, _d.RrPipe);
+					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
+					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, rrectBuf, (nuint)(startVert * 22 * sizeof(float)), (nuint)(count * 22 * sizeof(float)));
+					wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
+					WebGpuTrace.Draw("rrect", count);
+					_d.Profiler?.DrawKind(6);
+					break;
+				}
 				case 5:
 					wgpuRenderPassEncoderSetPipeline(pass, _d.RrPipe);
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
@@ -3145,6 +3198,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (target.Pooled) { if (_d.MsaaSamples > 1) { _d.Pool.Return(target.MsaaColorView); } _d.Pool.Return(target.DepthView); }   // at 1x MsaaColorView aliases View (sampled later) — don't reclaim
 		ReturnOps(ops);   // ops are fully encoded into the pass now — recycle the list
 		ReturnSolid(solid);
+		ReturnRrect(rrect);
 	}
 
 	public Matrix4x4 TotalMatrix => Matrix4x4.Identity;
