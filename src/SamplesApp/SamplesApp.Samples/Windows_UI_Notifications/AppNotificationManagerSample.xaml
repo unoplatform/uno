@@ -57,6 +57,7 @@
                     Click="AdvanceProgress_Click"
                     Content="Advance progress" />
                 <Button
+                    x:Name="ScheduleButton"
                     HorizontalAlignment="Stretch"
                     Click="Schedule_Click"
                     Content="Schedule in 10 seconds" />
@@ -81,6 +82,7 @@
                     Click="RemoveAll_Click"
                     Content="Remove all notifications" />
                 <Button
+                    x:Name="RemoveScheduledButton"
                     HorizontalAlignment="Stretch"
                     Click="RemoveScheduled_Click"
                     Content="Remove scheduled notifications" />
