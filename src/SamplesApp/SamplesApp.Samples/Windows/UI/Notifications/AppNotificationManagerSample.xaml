@@ -1,0 +1,108 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Notifications.AppNotificationManagerSample"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    Loaded="Page_Loaded"
+    Unloaded="Page_Unloaded"
+    mc:Ignorable="d">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <StackPanel
+            MaxWidth="720"
+            Padding="24"
+            HorizontalAlignment="Left"
+            Spacing="16">
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="App notifications" />
+
+            <StackPanel Spacing="8">
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Registration" />
+                <TextBlock x:Name="RegistrationStatusText" TextWrapping="Wrap" />
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Click="Register_Click"
+                    Content="Register and enable notifications" />
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Click="RefreshRegistrationStatus_Click"
+                    Content="Refresh status" />
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Click="Unregister_Click"
+                    Content="Unregister foreground activation" />
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Click="UnregisterAll_Click"
+                    Content="Unregister all" />
+            </StackPanel>
+
+            <StackPanel Spacing="8">
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Notification" />
+                <TextBox
+                    x:Name="TitleTextBox"
+                    Header="Title"
+                    Text="Uno Platform app notification" />
+                <TextBox
+                    x:Name="BodyTextBox"
+                    Header="Body"
+                    Text="Posted from the shared SamplesApp code." />
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Click="Show_Click"
+                    Content="Show notification" />
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Click="AdvanceProgress_Click"
+                    Content="Advance progress" />
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Click="Schedule_Click"
+                    Content="Schedule in 10 seconds" />
+            </StackPanel>
+
+            <StackPanel Spacing="8">
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="History" />
+                <TextBlock
+                    x:Name="HistoryStatusText"
+                    Text="Active: not queried | Scheduled: not queried"
+                    TextWrapping="Wrap" />
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Click="RefreshHistory_Click"
+                    Content="Refresh history" />
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Click="RemoveLast_Click"
+                    Content="Remove last notification" />
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Click="RemoveAll_Click"
+                    Content="Remove all notifications" />
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Click="RemoveScheduled_Click"
+                    Content="Remove scheduled notifications" />
+            </StackPanel>
+
+            <StackPanel Spacing="8">
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Activation" />
+                <TextBlock
+                    x:Name="ActivationStatusText"
+                    Text="No notification activation received."
+                    TextWrapping="Wrap" />
+            </StackPanel>
+
+            <StackPanel Spacing="8">
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Activity" />
+                <TextBox
+                    x:Name="ActivityLogTextBox"
+                    Height="180"
+                    AcceptsReturn="True"
+                    IsReadOnly="True"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
