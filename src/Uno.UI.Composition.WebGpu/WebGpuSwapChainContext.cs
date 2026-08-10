@@ -186,6 +186,9 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 		_presentView = wgpuTextureCreateView(_presentTex, null);
 		// External-colour surface: owns MSAA+depth; its resolve View is our offscreen _presentView.
 		_target = new WebGpuRenderSurface(_device, width, height, externalColor: true) { View = _presentView, Tex = _presentTex };
+		// 1x has no MSAA colour — the scene renders straight into _presentView (aliased; ctor left it unset as View
+		// wasn't assigned yet). At 2x/4x the ctor already created the multisampled colour that resolves into _presentView.
+		if (_device.MsaaSamples == 1) { _target.MsaaColorView = _presentView; }
 
 		WGPUSurfaceCapabilities caps = default;
 		wgpuSurfaceGetCapabilities(_surface, _device.Adapter, &caps);
