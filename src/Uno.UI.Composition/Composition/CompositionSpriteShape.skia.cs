@@ -81,20 +81,24 @@ namespace Microsoft.UI.Composition
 				if (FillBrush is { } fill && _fillGeometryWithTransformations is { } finalFillGeometryWithTransformations)
 				{
 					using var fillGeometry = finalFillGeometryWithTransformations.GetFilledGeometry(Geometry?.TrimStart ?? 0f, Geometry?.TrimEnd ?? 0f);
-					
-					session.Session.Save();
-					session.Session.ClipPath(fillGeometry, antialias: true);
+
 					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
+						// Solid fill: fill the geometry directly. Clip-to-shape + fill-rect is equivalent but forces a
+						// per-shape clip (a coverage offscreen on the WebGPU backend) — a huge cost for shape-heavy UI
+						// (list items, icons). DrawPath fills the shape in-pass with no clip.
 						var opacity = session.Opacity;
 						var color = opacity >= 1f ? colorFromTransition : global::Windows.UI.Color.FromArgb((byte)(colorFromTransition.A * opacity), colorFromTransition.R, colorFromTransition.G, colorFromTransition.B);
-						session.Session.DrawRect(fillGeometry.Bounds, color);
+						session.Session.DrawPath(fillGeometry, color, antialias: true);
 					}
 					else
 					{
+						// General brush (gradient/image): the brush paints its bounds, so clip to the shape.
+						session.Session.Save();
+						session.Session.ClipPath(fillGeometry, antialias: true);
 						fill.TryPaint(session.Session, session.Opacity, finalFillGeometryWithTransformations.Bounds);
+						session.Session.Restore();
 					}
-					session.Session.Restore();
 				}
 				
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
