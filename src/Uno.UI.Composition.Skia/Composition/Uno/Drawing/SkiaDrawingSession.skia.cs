@@ -147,6 +147,18 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 	public void DrawRect(in Rect rect, IShader shader, bool antialias)
 		=> _canvas.DrawRect(rect.ToSKRect(), ShaderPaint(shader, antialias));
 
+	public void DrawRoundedRect(in Rect rect, Vector4 radii, Color color, bool antialias)
+	{
+		// radii = (TopLeft, TopRight, BottomRight, BottomLeft); SKRoundRect.SetRectRadii uses the same corner order.
+		var rr = new SKRoundRect();
+		rr.SetRectRadii(rect.ToSKRect(), new[]
+		{
+			new SKPoint(radii.X, radii.X), new SKPoint(radii.Y, radii.Y),
+			new SKPoint(radii.Z, radii.Z), new SKPoint(radii.W, radii.W),
+		});
+		_canvas.DrawRoundRect(rr, FillPaint(color, antialias));
+	}
+
 	public void DrawPath(IGeometry geometry, Color color, bool antialias)
 	{
 		using var lease = SkiaGeometryInterop.Lease(geometry);

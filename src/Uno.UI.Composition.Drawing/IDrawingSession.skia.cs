@@ -67,6 +67,13 @@ public interface IDrawingSession
 	/// <summary>Fills <paramref name="rect"/> with <paramref name="shader"/> (which carries its own alpha).</summary>
 	void DrawRect(in Rect rect, IShader shader, bool antialias = false);
 
+	/// <summary>
+	/// Fills a rounded rectangle with a solid <paramref name="color"/>. <paramref name="radii"/> are the per-corner
+	/// radii in the order (TopLeft, TopRight, BottomRight, BottomLeft). A backend may render this analytically
+	/// (a single SDF quad) rather than tessellating a path — the common WinUI border/background shape.
+	/// </summary>
+	void DrawRoundedRect(in Rect rect, Vector4 radii, Color color, bool antialias = false);
+
 	/// <summary>Fills <paramref name="geometry"/> with a solid <paramref name="color"/> (bake any opacity into its alpha).</summary>
 	void DrawPath(IGeometry geometry, Color color, bool antialias = false);
 
