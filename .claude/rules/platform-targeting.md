@@ -8,7 +8,7 @@ paths:
 
 Preprocessor symbols and file-suffix exclusion are injected by `src/Uno.CrossTargetting.targets` from `UnoRuntimeIdentifier` / `TargetPlatformIdentifier` — **never** set platform `DefineConstants` or `Compile Remove` for suffixes in a `.csproj`. Symbols are **mutually exclusive per build**: a single compilation never has both `__SKIA__` and `__WASM__`.
 
-Current symbols: `__ANDROID__`, `__APPLE_UIKIT__` (iOS/tvOS/MacCatalyst), `__WASM__`, `__SKIA__`, `__NETSTD_REFERENCE__` / `UNO_REFERENCE_API`, `__CROSSRUNTIME__` (true for Skia, WebAssembly, Reference).
+Current symbols: `__ANDROID__`, `__APPLE_UIKIT__` (iOS/tvOS), `__WASM__`, `__SKIA__`, `__NETSTD_REFERENCE__` / `UNO_REFERENCE_API`, `__CROSSRUNTIME__` (true for Skia, WebAssembly, Reference).
 
 ## Scope: Skia-first
 New UI features target **Skia** (incl. Skia-on-Android/iOS/WASM); the **native** UI targets (native Android Views, iOS/UIKit, WASM DOM) are **maintenance-only** — keep them building and behaving, but don't add features there unless the task says so. This is the *UI* layer only: platform-specific **non-UI WinRT APIs** in `Uno.UWP`/`Uno.Foundation` (rule 5 below) are still actively enhanced, since Skia compiles and uses those per-platform implementations. See AGENTS.md → "Development scope".
