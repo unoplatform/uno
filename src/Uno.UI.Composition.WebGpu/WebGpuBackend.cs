@@ -1715,12 +1715,52 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	}
 	private Vector2 Ndc(Vector2 dev) => new(2f * dev.X / _s.Width - 1f, 1f - 2f * dev.Y / _s.Height);
 
+	// Reused scratch so the per-frame op rebuild doesn't allocate a List + array per primitive (the whole frame is
+	// rebuilt every present). Safe: each primitive fills the scratch, uploads it (copied to GPU immediately), and is
+	// done before the next — no builder holds the scratch across a nested RenderInto. _clipU backs MakeClipBg's
+	// lookup; a bind-group cache MISS clones it before storing.
+	private readonly List<float> _scratch = new();
+	private readonly float[] _clipU = new float[16];
+
+	// Pool of per-RenderInto op lists so a static frame's rebuild doesn't allocate the (large ClipData) op array
+	// every present. A stack (not one field) keeps it correct under the recursive nested-layer RenderInto — each
+	// level rents its own list and returns it when done.
+	private readonly Stack<List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)>> _opsPool = new();
+	private List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> RentOps()
+		=> _opsPool.Count > 0 ? _opsPool.Pop() : new(256);
+	private void ReturnOps(List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops)
+	{
+		ops.Clear();   // drops the captured ClipData/PathFan refs; keeps the backing array for reuse
+		_opsPool.Push(ops);
+	}
+
 	private IntPtr MakeBuffer(float[] data)
 	{
 		var size = data.Length * sizeof(float);
 		var buf = _d.BufferPool.Rent(size, WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst);
 		fixed (float* p = data) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, (nuint)size); }
 		return buf;
+	}
+
+	// List overload: uploads directly from the list's backing store (no ToArray copy).
+	private IntPtr MakeBuffer(List<float> data)
+	{
+		var span = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(data);
+		var size = span.Length * sizeof(float);
+		var buf = _d.BufferPool.Rent(size, WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst);
+		fixed (float* p = span) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, (nuint)size); }
+		return buf;
+	}
+
+	private IntPtr Vbuf(List<float> data, OwnedResources owned)
+		=> owned is null ? MakeBuffer(data) : Vbuf(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(data).ToArray(), owned);
+
+	// Append a coloured vertex (pos in device space -> NDC) to the scratch. A class method, not a per-primitive
+	// local function, so building a run of rects/a path cover allocates no capturing closure.
+	private void PushVert(Vector2 dev, float r, float g, float b, float a)
+	{
+		var n = Ndc(dev);
+		_scratch.Add(n.X); _scratch.Add(n.Y); _scratch.Add(r); _scratch.Add(g); _scratch.Add(b); _scratch.Add(a);
 	}
 
 	private IntPtr MakeUniform(int byteSize)
@@ -1762,7 +1802,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// texture (the path-clip mask, or the device dummy when there's no path clip) and a sampler.
 	private IntPtr MakeClipBg(IntPtr bgl, ClipData cd, OwnedResources owned = null)
 	{
-		var cu = new float[16];
+		var cu = _clipU;
+		System.Array.Clear(cu);
 		cu[0] = cd.Rect.X; cu[1] = cd.Rect.Y; cu[2] = cd.Rect.Z; cu[3] = cd.Rect.W;
 		cu[4] = cd.Radii.X; cu[5] = cd.Radii.Y; cu[6] = cd.Radii.Z; cu[7] = cd.Radii.W;
 		cu[8] = cd.HasRound ? 1f : 0f; cu[9] = cd.PathFan != null ? 1f : 0f; cu[10] = cd.HasExclude ? 1f : 0f;
@@ -1783,7 +1824,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			ce[2] = new WGPUBindGroupEntry { Binding = 2, Sampler = _d.Smp };
 			var cbgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 3, Entries = ce };
 			var cbg = wgpuDeviceCreateBindGroup(_d.Dev, (WGPUBindGroupDescriptor*)Unsafe.AsPointer(ref cbgd));
-			_d.AddCachedBg(bgl, cu, cbuf, cbg);
+			_d.AddCachedBg(bgl, (float[])cu.Clone(), cbuf, cbg);   // cache stores the key — clone off the reused scratch
 			return cbg;
 		}
 
@@ -1955,15 +1996,17 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			}
 			case PathFill pf:
 			{
-				var fanNdc = new float[pf.FanDevice.Length];
-				for (int i = 0; i < pf.FanDevice.Length; i += 2) { var n = Ndc(new Vector2(pf.FanDevice[i], pf.FanDevice[i + 1])); fanNdc[i] = n.X; fanNdc[i + 1] = n.Y; }
-				var fanBuf = Vbuf(fanNdc, owned);
-				var c = new Vector4(pf.Color.R / 255f, pf.Color.G / 255f, pf.Color.B / 255f, pf.Color.A / 255f);
-				var cov = new List<float>();
-				void CV(Vector2 p) { var n = Ndc(p); cov.Add(n.X); cov.Add(n.Y); cov.Add(c.X); cov.Add(c.Y); cov.Add(c.Z); cov.Add(c.W); }
+				_scratch.Clear();
+				for (int i = 0; i < pf.FanDevice.Length; i += 2) { var n = Ndc(new Vector2(pf.FanDevice[i], pf.FanDevice[i + 1])); _scratch.Add(n.X); _scratch.Add(n.Y); }
+				var fanBuf = Vbuf(_scratch, owned);
+				float pr = pf.Color.R / 255f, pg = pf.Color.G / 255f, pb = pf.Color.B / 255f, pa = pf.Color.A / 255f;
+				_scratch.Clear();
 				var tl = pf.BbMin; var br = pf.BbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
-				CV(tl); CV(tr); CV(br); CV(tl); CV(br); CV(bl);
-				ops.Add((1, (nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)Vbuf(cov.ToArray(), owned), pf.EvenOdd, pf.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf.Clip, owned)));
+				PushVert(tl, pr, pg, pb, pa); PushVert(tr, pr, pg, pb, pa); PushVert(br, pr, pg, pb, pa);
+				PushVert(tl, pr, pg, pb, pa); PushVert(br, pr, pg, pb, pa); PushVert(bl, pr, pg, pb, pa);
+				var covBuf = Vbuf(_scratch, owned);
+				var clipBg = MakeClipBg(_d.CoverClipBgl, pf.Clip, owned);
+				ops.Add((1, (nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)covBuf, pf.EvenOdd, pf.Clip, (nint)clipBg));
 				break;
 			}
 			case ImageCmd im:
@@ -2040,7 +2083,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// render pass), preserving draw order in a single op list so cross-type z-order is honoured.
 		// kind: 0=rect (b0=verts), 1=path (b0=fan, u0=fanCount, b1=cover, flag=evenOdd), 2=image (b0=bindGroup,
 		// b1=quad), 3=gradient, 4=composite layer (b0=bindGroup, u0=compositeMode).
-		var ops = new List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)>();
+		var ops = RentOps();
 		for (int ci = 0; ci < cmds.Count; ci++)
 		{
 			var cmd = cmds[ci];
@@ -2049,16 +2092,17 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				case RectCommand rc0:
 				{
 					// Coalesce a run of consecutive rects sharing the same clip into one vertex buffer + one draw.
-					var verts = new List<float>();
+					_scratch.Clear();
 					int j = ci;
 					while (j < cmds.Count && cmds[j] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
 					{
-						var c = new Vector4(rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
-						void V(Vector2 p) { var n = Ndc(p); verts.Add(n.X); verts.Add(n.Y); verts.Add(c.X); verts.Add(c.Y); verts.Add(c.Z); verts.Add(c.W); }
-						V(rcj.P0); V(rcj.P1); V(rcj.P2); V(rcj.P0); V(rcj.P2); V(rcj.P3);
+						float vr = rcj.Color.R / 255f, vg = rcj.Color.G / 255f, vb = rcj.Color.B / 255f, va = rcj.Color.A / 255f;
+						PushVert(rcj.P0, vr, vg, vb, va); PushVert(rcj.P1, vr, vg, vb, va); PushVert(rcj.P2, vr, vg, vb, va);
+						PushVert(rcj.P0, vr, vg, vb, va); PushVert(rcj.P2, vr, vg, vb, va); PushVert(rcj.P3, vr, vg, vb, va);
 						j++;
 					}
-					ops.Add((0, (nint)MakeBuffer(verts.ToArray()), (uint)((j - ci) * 6), 0, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip)));
+					var rvb = MakeBuffer(_scratch);   // upload before the clip bind group (which may reuse _scratch)
+					ops.Add((0, (nint)rvb, (uint)((j - ci) * 6), 0, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip)));
 					ci = j - 1;   // the for-loop's ci++ advances past the run
 					break;
 				}
@@ -2287,6 +2331,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// so return both for the next same-size pass to reuse — only View (composited/sampled later) stays live. The
 		// on-window/dedicated target owns its MSAA+depth (persistent across frames) and is left untouched.
 		if (target.Pooled) { _d.Pool.Return(target.MsaaColorView); _d.Pool.Return(target.DepthView); }
+		ReturnOps(ops);   // ops are fully encoded into the pass now — recycle the list
 	}
 
 	public Matrix4x4 TotalMatrix => Matrix4x4.Identity;

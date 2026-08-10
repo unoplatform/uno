@@ -385,6 +385,47 @@ int slInside = SL(32, 40), slCorner = SL(3, 6);
 Check("skia-less: triangle interior green", slBgra[slInside + 1] > 150 && slBgra[slInside] < 60 && slBgra[slInside + 2] < 60, (slBgra[slInside], slBgra[slInside + 1], slBgra[slInside + 2]));
 Check("skia-less: gradient corner reddish", slBgra[slCorner + 2] > 150 && slBgra[slCorner] < 100, (slBgra[slCorner], slBgra[slCorner + 1], slBgra[slCorner + 2]));
 
+// ---- PERF micro-benchmark (UNO_WEBGPU_PERF=1; not a pass/fail check) ----
+// Measures per-frame managed allocation + wall time for a representative complex frame re-recorded and
+// re-presented each frame (mimics the on-window loop). Allocation/frame is platform-independent (the GC-churn
+// signal); ms/frame on lavapipe is software-GPU-bound (relative only). Compares full-record vs replay-only.
+if (Environment.GetEnvironmentVariable("UNO_WEBGPU_PERF") == "1")
+{
+	int W = 512, H = 512;
+	var perfSurface = new WebGpuRenderSurface(dev, W, H);
+	var perfPresent = new WebGpuPresentSession(dev, perfSurface);
+	perfPresent.Clear(WColor.FromArgb(255, 0, 0, 0));
+	var blueC = WColor.FromArgb(255, 0, 0, 255);
+
+	void RecordComplex(WebGpuCommandRecorder r)
+	{
+		for (int i = 0; i < 200; i++) { r.DrawRect(new Rect((i * 7) % (W - 12), (i * 13) % (H - 12), 10, 10), red, false); }
+		for (int i = 0; i < 100; i++) { r.Save(); r.ClipRect(new Rect((i * 5) % 400, (i * 11) % 400, 40, 40)); r.DrawRect(new Rect(0, 0, W, H), green, false); r.Restore(); }
+		for (int i = 0; i < 80; i++) { r.Save(); r.Translate((i * 6) % 400, (i * 9) % 400); r.DrawPath(tri, blueC, false); r.Restore(); }
+	}
+
+	const int frames = 120;
+	// Full path: new recording each frame (record + build ops + encode + submit + poll).
+	for (int f = 0; f < 5; f++) { var rec = new WebGpuCommandRecorder(); RecordComplex(rec); perfPresent.Replay(rec.Finish()); }
+	var sw = System.Diagnostics.Stopwatch.StartNew();
+	long a0 = GC.GetAllocatedBytesForCurrentThread();
+	int g0 = GC.CollectionCount(0);
+	for (int f = 0; f < frames; f++) { var rec = new WebGpuCommandRecorder(); RecordComplex(rec); perfPresent.Replay(rec.Finish()); }
+	sw.Stop();
+	long alloc = GC.GetAllocatedBytesForCurrentThread() - a0;
+	Console.WriteLine($"PERF full-record: {sw.Elapsed.TotalMilliseconds / frames:F2} ms/frame, {alloc / frames / 1024} KB alloc/frame, gen0 GCs={GC.CollectionCount(0) - g0}  (380 prims: 200 rect + 100 clipped + 80 path)");
+
+	// Replay-only: one fixed recording re-presented each frame (static UI — isolates build+encode+present from record).
+	var fixedRec = new WebGpuCommandRecorder(); RecordComplex(fixedRec); var fixedData = fixedRec.Finish();
+	for (int f = 0; f < 5; f++) { perfPresent.Replay(fixedData); }
+	var sw2 = System.Diagnostics.Stopwatch.StartNew();
+	long a2 = GC.GetAllocatedBytesForCurrentThread();
+	for (int f = 0; f < frames; f++) { perfPresent.Replay(fixedData); }
+	sw2.Stop();
+	long alloc2 = GC.GetAllocatedBytesForCurrentThread() - a2;
+	Console.WriteLine($"PERF replay-only: {sw2.Elapsed.TotalMilliseconds / frames:F2} ms/frame, {alloc2 / frames / 1024} KB alloc/frame  (static recording re-presented)");
+}
+
 Console.WriteLine(fail == 0
 	? "\nALL PASS — non-Skia render seam verified headless (primitives + text + stroke + boolean); Skia vs WebGPU agree on every neutral scene"
 	: $"\n{fail} CHECK(S) FAILED");
