@@ -95,7 +95,10 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	// ordered on the queue after the prior frame's reads, and transient textures are refcount-released (not
 	// destroyed) so wgpu frees them only once the GPU is done. Off by default (the drain is the conservative path);
 	// needs a real-GPU check for present-time tearing before it can become the default.
-	internal static readonly bool Pipeline = Environment.GetEnvironmentVariable("UNO_WEBGPU_PIPELINE") == "1";
+	// Default ON: pooled-buffer reuse is queue-ordered (wgpuQueueWriteBuffer runs after the prior frame's reads) and
+	// transient textures are refcount-released, so non-blocking is safe; the swapchain's max-frames-in-flight
+	// provides backpressure. Set UNO_WEBGPU_PIPELINE=0 to force the old blocking drain (debugging / tearing check).
+	internal static readonly bool Pipeline = Environment.GetEnvironmentVariable("UNO_WEBGPU_PIPELINE") != "0";
 	public int PerfBgCreates, PerfBufCreates, PerfFrame;
 	public readonly System.Diagnostics.Stopwatch PerfSw = new();
 	public double PerfAccumMs;
@@ -1529,9 +1532,27 @@ internal sealed unsafe class WebGpuGeometryCache
 	public bool Arena;
 	// Frame-solid entry (recording contains solids): only its NON-solid ops (paths/images/gradients, device space)
 	// are cached here; its solids are re-appended into the shared per-pass buffer each frame so they coalesce across
-	// visuals. NonSolidOps are consumed in draw order (1 op per non-rect command) while the recording is re-walked.
+	// visuals; the ordered emit list (FrameOrder) interleaves them with cached non-solid ops in draw order.
 	public bool FrameSolid;
-	public List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> NonSolidOps;
+	// Resident extracted geometry for a frame-solid recording: device-space verts (solid = 6 floats/vert, rrect =
+	// 22) + an ordered emit list, built ONCE (rebuilt only on transform/clip change). Each frame the verts are
+	// bulk-appended to the shared buffers and the ops re-emitted with the base offset — NO per-frame TransformFor,
+	// re-tessellation, or allocation (that was ~60ms + 26MB/frame at 500 visuals).
+	public float[] SolidVerts;
+	public float[] RrectVerts;
+	public List<FrameOp> FrameOrder;
+}
+
+// One entry in a frame-solid recording's ordered emit list: a solid/rrect run (relative vert start into the
+// recording's cached SolidVerts/RrectVerts) or a spliced non-solid op (glyph/image/gradient).
+internal struct FrameOp
+{
+	public int Kind;          // 0 = solid, 5 = rrect, -1 = non-solid
+	public int RelStart;      // vertex index within the recording's cached block (solid/rrect)
+	public uint Count;        // vertex count (solid/rrect)
+	public ClipData Clip;
+	public nint ClipBg;
+	public (int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg) NonSolid;
 }
 
 // Backend-created gradient shader handle. The WebGPU backend mints its own (rather than delegating to Skia) so
@@ -2830,49 +2851,57 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// win the profiler showed). NON-solids (glyphs/images/gradients) stay cached (device space,
 					// rebuilt only on a transform/clip change) and are consumed in draw order as the recording is
 					// re-walked. Pure non-solid recordings fall through to the arena path below (moving-visual reuse).
-					if (HasReappendable(rr.Commands))
-					{
-						List<(int, nint, uint, nint, bool, ClipData, nint)> nonSolid = null;
-						if (HasNonRect(rr.Commands))
+						if (HasReappendable(rr.Commands))
 						{
-							var nsMiss = !_d.GeometryCache.TryGetValue(rr.Commands, out var nsEntry);
-							var nsStale = !nsMiss && (!nsEntry.FrameSolid || nsEntry.Transform != rr.Transform || !ClipDataEquals(nsEntry.Clip, rr.Clip) || nsEntry.NonSolidOps is null);
-							if (nsMiss || nsStale)
+							var fMiss = !_d.GeometryCache.TryGetValue(rr.Commands, out var fe);
+							var fStale = !fMiss && (!fe.FrameSolid || fe.FrameOrder is null || fe.Transform != rr.Transform || !ClipDataEquals(fe.Clip, rr.Clip));
+							if (fMiss || fStale)
 							{
-								if (nsEntry is not null) { _d.DeferRelease(nsEntry.Owned); }
-								var nsOwned = new OwnedResources();
-								var nsOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
+								// Build once: extract device-space solid/rrect verts + an ordered emit list; owned (persistent) clip
+								// bind groups so nothing is re-created per frame.
+								if (fe is not null) { _d.DeferRelease(fe.Owned); }
+								var fOwned = new OwnedResources();
+								var sv = new List<float>(); var rv = new List<float>(); var order = new List<FrameOp>();
+								var tmp = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
 								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip))
 								{
-									if (tc is not (RectCommand or RoundedRectCmd)) { BuildSimpleOp(tc, nsOps, nsOwned); }
+									if (tc is RectCommand rcx)
+									{
+										int rel = sv.Count / 6;
+										AppendSolidRect(sv, rcx.P0, rcx.P1, rcx.P2, rcx.P3, rcx.Color.R / 255f, rcx.Color.G / 255f, rcx.Color.B / 255f, rcx.Color.A / 255f);
+										order.Add(new FrameOp { Kind = 0, RelStart = rel, Count = 6, Clip = rcx.Clip, ClipBg = (nint)MakeClipBg(_d.SolidClipBgl, rcx.Clip, fOwned) });
+									}
+									else if (tc is RoundedRectCmd rcr)
+									{
+										int rel = rv.Count / 22;
+										AppendRrect(rv, rcr);
+										order.Add(new FrameOp { Kind = 5, RelStart = rel, Count = 6, Clip = rcr.Clip, ClipBg = (nint)MakeClipBg(_d.RrClipBgl, rcr.Clip, fOwned) });
+									}
+									else
+									{
+										tmp.Clear();
+										BuildSimpleOp(tc, tmp, fOwned);
+										foreach (var o in tmp) { order.Add(new FrameOp { Kind = -1, NonSolid = o }); }
+									}
 								}
-								nsEntry = new WebGpuGeometryCache { NonSolidOps = nsOps, Owned = nsOwned, Transform = rr.Transform, Clip = rr.Clip, FrameSolid = true };
-								_d.GeometryCache[rr.Commands] = nsEntry;
-								WebGpuTrace.Upload("geometry-build(frame-solid)", nsOps.Count);
+								fe = new WebGpuGeometryCache { FrameSolid = true, SolidVerts = sv.ToArray(), RrectVerts = rv.ToArray(), FrameOrder = order, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip };
+								_d.GeometryCache[rr.Commands] = fe;
+								WebGpuTrace.Upload("geometry-build(frame-solid)", order.Count);
 							}
 							else { WebGpuTrace.Upload("geometry-reuse(frame-solid)", 0); }
-							nsEntry.Used = true;
-							nonSolid = nsEntry.NonSolidOps;
-						}
-						int nsIdx = 0;
-						foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip))
-						{
-							if (tc is RectCommand rcx)
+							fe.Used = true;
+							// Per frame: bulk-append the resident verts + re-emit ops with the base offset (no rebuild/alloc).
+							int sBase = solid.Count / 6, rBase = rrect.Count / 22;
+							if (fe.SolidVerts.Length > 0) { solid.AddRange(fe.SolidVerts); }
+							if (fe.RrectVerts.Length > 0) { rrect.AddRange(fe.RrectVerts); }
+							foreach (var fo in fe.FrameOrder)
 							{
-								int st = solid.Count / 6;
-								AppendSolidRect(solid, rcx.P0, rcx.P1, rcx.P2, rcx.P3, rcx.Color.R / 255f, rcx.Color.G / 255f, rcx.Color.B / 255f, rcx.Color.A / 255f);
-								ops.Add((0, 0, 6, (nint)st, false, rcx.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rcx.Clip)));
+								if (fo.Kind == 0) { ops.Add((0, 0, fo.Count, (nint)(sBase + fo.RelStart), false, fo.Clip, fo.ClipBg)); }
+								else if (fo.Kind == 5) { ops.Add((5, 0, fo.Count, (nint)(rBase + fo.RelStart), false, fo.Clip, fo.ClipBg)); }
+								else { ops.Add(fo.NonSolid); }
 							}
-							else if (tc is RoundedRectCmd rcr)
-							{
-								int st = rrect.Count / 22;
-								AppendRrect(rrect, rcr);
-								ops.Add((5, 0, 6, (nint)st, false, rcr.Clip, (nint)MakeClipBg(_d.RrClipBgl, rcr.Clip)));
-							}
-							else if (nonSolid is not null && nsIdx < nonSolid.Count) { ops.Add(nonSolid[nsIdx++]); }
+							break;
 						}
-						break;
-					}
 					// The per-visual GPU-geometry cache (slab/scroll), keyed by the recording's immutable command
 					// list. Build once; reuse while it's replayed at the same transform/clip. A stale entry (moved
 					// visual) is deferred-released and rebuilt. Entries not referenced any frame are evicted.
