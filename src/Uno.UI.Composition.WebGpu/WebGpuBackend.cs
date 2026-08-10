@@ -190,10 +190,15 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public IntPtr GradClipBgl;
 	public IntPtr Smp;
 
-	// Uniform size (bytes) of the gradient struct: header(16) + geo(16) + colors(16*16) + stops(4*16) + origin(16).
-	// origin (radial focal point, device space) is appended last so colour/stop indices stay put.
-	public const int GradientUniformBytes = 16 + 16 + 16 * 16 + 4 * 16 + 16;
-	public const int MaxGradientStops = 16;
+	// Gradient stops are evaluated analytically in-shader (exact, unlike a quantised LUT). The cap sizes the colour
+	// + stop arrays in the uniform; raised well past any realistic UI gradient so >16-stop gradients render all their
+	// stops instead of silently clamping (the original branch used an unbounded 256-entry LUT — analytic ≤ cap is
+	// crisper). Float offsets within the uniform are derived so the layout stays consistent if the cap changes.
+	public const int MaxGradientStops = 64;
+	public const int GradColorsBase = 8;                                    // floats: after header(4) + geo(4)
+	public const int GradStopsBase = GradColorsBase + MaxGradientStops * 4; // colours are vec4 each
+	public const int GradOriginBase = GradStopsBase + MaxGradientStops;     // stops are one float each (packed as vec4[])
+	public const int GradientUniformBytes = (GradOriginBase + 4) * 4;       // + origin(vec4)
 
 	// Multisample count for anti-aliasing. Every pipeline + the color/depth render targets use this; the pass
 	// renders into a multisampled color texture that resolves into the single-sample present/readback texture.
@@ -399,26 +404,27 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	// image/gradient group 1 — avoiding a group hole wgpu's auto-layout rejects). Device-space, axis-aligned
 	// rounded-rect mask (radii 0 → plain rect, full coverage); ~1px analytic AA on the corner edge.
 	private const string ClipStructFn = @"
-struct ClipU { rect: vec4<f32>, radii: vec4<f32>, flags: vec4<f32>, size: vec4<f32> };
+// rects[i]/radii[i] are the nested rounded-rect clips (device space), ANDed together; ex[i]>0.5 = Difference
+// (keep outside). meta.x = active count. Arbitrary path clips are applied via the shared depth buffer as an in-pass
+// mask (see the main-pass clip protocol), not sampled here — so clipCov only carries the analytic rounded-rects.
+struct ClipU { rects: array<vec4<f32>, 4>, radii: array<vec4<f32>, 4>, ex: vec4<f32>, ctrl: vec4<f32>, size: vec4<f32> };
 fn clipCov(fc: vec2<f32>, clip: ClipU) -> f32 {
   var cov = 1.0;
-  if (clip.flags.x > 0.5) {
-    let rl = clip.rect;
+  let n = i32(clip.ctrl.x);
+  for (var i = 0; i < n; i = i + 1) {
+    let rl = clip.rects[i];
+    let rad4 = clip.radii[i];
     let c = vec2<f32>((rl.x + rl.z) * 0.5, (rl.y + rl.w) * 0.5);
     let h = vec2<f32>((rl.z - rl.x) * 0.5, (rl.w - rl.y) * 0.5);
     let lp = fc - c;
-    let rTop = select(clip.radii.x, clip.radii.y, lp.x > 0.0);
-    let rBot = select(clip.radii.w, clip.radii.z, lp.x > 0.0);
+    let rTop = select(rad4.x, rad4.y, lp.x > 0.0);
+    let rBot = select(rad4.w, rad4.z, lp.x > 0.0);
     let rad = select(rTop, rBot, lp.y > 0.0);
     let q = abs(lp) - h + vec2<f32>(rad, rad);
     let d = min(max(q.x, q.y), 0.0) + length(max(q, vec2<f32>(0.0, 0.0))) - rad;
     let rr = clamp(0.5 - d, 0.0, 1.0);
-    // flags.z = Difference (exclude): keep the OUTSIDE of the rounded rect; otherwise keep the inside.
-    cov = cov * select(rr, 1.0 - rr, clip.flags.z > 0.5);
+    cov = cov * select(rr, 1.0 - rr, clip.ex[i] > 0.5);
   }
-  // Arbitrary path clips (flags.y) are applied via the shared depth buffer as an in-pass mask (see the main-pass
-  // clip protocol), not sampled here — so clipCov only carries the analytic rounded-rect. ctex/csmp are unused now
-  // (kept in the bind group to avoid a layout change) and the depth test does the path clipping.
   return cov;
 }
 ";
@@ -641,7 +647,7 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 	// Evaluates a linear/radial gradient per pixel. The quad is positioned in NDC; the fragment uses its
 	// framebuffer position (device pixels) so the gradient geometry can be baked to device space at record time.
 	private const string GradientWgsl = @"
-struct Grad { header: vec4<f32>, geo: vec4<f32>, colors: array<vec4<f32>, 16>, stops: array<vec4<f32>, 4>, origin: vec4<f32> };
+struct Grad { header: vec4<f32>, geo: vec4<f32>, colors: array<vec4<f32>, 64>, stops: array<vec4<f32>, 16>, origin: vec4<f32> };
 @group(0) @binding(0) var<uniform> g: Grad;
 @group(1) @binding(0) var<uniform> clip: ClipU;
 @vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return vec4<f32>(pos, 0.0, 1.0); }
@@ -823,6 +829,47 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 // Detailed per-frame profiler (UNO_WEBGPU_PROFILE=1). Accumulates phase timings + operation counts over a window
 // of frames and logs one line per window, so a single run pinpoints the bottleneck — CPU record vs CPU encode vs
 // the GPU poll-drain vs present vs offscreen count vs allocation — without another round-trip. All timings are ms.
+// Ordered, human-readable trace of exactly what each frame submits to the GPU (passes, pipelines, draws, uploads),
+// gated by UNO_WEBGPU_TRACE. Pure logging — no behaviour change. Used to prove per-primitive GPU-submission parity
+// against the original ramez/webgpu-experiment backend. Reset() at frame start, Dump() to read the accumulated trace.
+public static class WebGpuTrace
+{
+	public static readonly bool Enabled = Environment.GetEnvironmentVariable("UNO_WEBGPU_TRACE") is "1" or "true";
+	private static readonly System.Text.StringBuilder _sb = new();
+	private static int _depth;
+
+	public static void Reset() { if (!Enabled) { return; } _sb.Clear(); _depth = 0; }
+
+	public static void Pass(string kind, int w, int h, uint msaa, bool clear)
+	{
+		if (!Enabled) { return; }
+		_sb.Append(' ', _depth * 2).Append("PASS ").Append(kind).Append(' ').Append(w).Append('x').Append(h)
+			.Append(" msaa=").Append(msaa).Append(clear ? " clear" : " load").Append('\n');
+		_depth++;
+	}
+
+	public static void PassEnd()
+	{
+		if (!Enabled) { return; }
+		_depth = Math.Max(0, _depth - 1);
+		_sb.Append(' ', _depth * 2).Append("PASS end\n");
+	}
+
+	public static void Draw(string pipe, uint vtx)
+	{
+		if (!Enabled) { return; }
+		_sb.Append(' ', _depth * 2).Append("DRAW ").Append(pipe).Append(" v=").Append(vtx).Append('\n');
+	}
+
+	public static void Upload(string what, int bytes)
+	{
+		if (!Enabled) { return; }
+		_sb.Append(' ', _depth * 2).Append("UPLOAD ").Append(what).Append(' ').Append(bytes).Append("B\n");
+	}
+
+	public static string Dump() => Enabled ? _sb.ToString() : "";
+}
+
 public sealed class WebGpuProfiler
 {
 	public static readonly bool Enabled = Environment.GetEnvironmentVariable("UNO_WEBGPU_PROFILE") is "1" or "true";
@@ -1173,18 +1220,44 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 // A clip is a device-space scissor AABB (fast reject + plain-rect clip) plus an optional device-space,
 // axis-aligned rounded-rect whose corners are masked per-fragment in the shaders. A rotated rounded clip
 // degrades to its AABB (the exact fix is clip-local-space eval, as with the radial gradient — follow-up).
-internal struct ClipData
+// A single analytic rounded-rect clip (device space). Nested clips stack in ClipData.Rounds and are ANDed in-shader.
+internal struct RoundClip
 {
-	public Vector4 Aabb;    // device L,T,R,B scissor
-	public bool HasRound;
 	public Vector4 Rect;    // device rounded-rect L,T,R,B
 	public Vector4 Radii;   // per-corner radius (TL,TR,BR,BL), device px
-	public bool HasExclude; // Difference op: keep the area OUTSIDE the rounded Rect (PushClipExclude) rather than inside
-	// Arbitrary path clip: the flattened device-space fan is rendered to a full-size coverage texture at present
-	// time and sampled per-fragment. Innermost path wins (like the rounded shape); nested paths keep the AABB.
+	public bool Exclude;    // Difference op: keep the area OUTSIDE the rounded rect (PushClipExclude) rather than inside
+}
+
+internal struct ClipData
+{
+	public const int MaxRounds = 4;   // nesting depth beyond this drops the outermost (least likely to clip content)
+	public Vector4 Aabb;    // device L,T,R,B scissor
+	// Nested rounded-rect clips, all ANDed per-fragment (clipCov). null/empty = none. Copy-on-write: each push
+	// allocates a fresh array so Save/Restore snapshots and sibling commands keep their own reference.
+	public RoundClip[] Rounds;
+	// Arbitrary path clip: the flattened device-space fan is applied via the shared depth mask in the main pass.
+	// Single slot — innermost path wins (nested arbitrary paths keep only the AABB intersection for the outer ones).
 	public float[] PathFan;
 	public bool PathEvenOdd;
+	public bool PathExclude;   // Difference op for the path clip
 	public static ClipData None => new() { Aabb = new Vector4(-1e9f, -1e9f, 1e9f, 1e9f) };
+
+	// Append a rounded clip, copy-on-write, capped at MaxRounds (drops the oldest/outermost on overflow).
+	public static RoundClip[] Push(RoundClip[] existing, in RoundClip rc)
+	{
+		int n = existing?.Length ?? 0;
+		if (n < MaxRounds)
+		{
+			var arr = new RoundClip[n + 1];
+			if (n > 0) { System.Array.Copy(existing, arr, n); }
+			arr[n] = rc;
+			return arr;
+		}
+		var capped = new RoundClip[MaxRounds];
+		System.Array.Copy(existing, 1, capped, 0, MaxRounds - 1);
+		capped[MaxRounds - 1] = rc;
+		return capped;
+	}
 }
 
 // Draw commands share one ordered stream so cross-type z-order (rect over path over image) is preserved.
@@ -1420,13 +1493,18 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		// Device-space, axis-aligned rounded rect (exact under scale/translate). Per-corner radius uses X, scaled
 		// by the matrix's X-axis length; a full rotation would need clip-local eval (falls back to the AABB below).
 		var s = new Vector2(_m.M11, _m.M12).Length();
-		_clip.HasRound = true;
-		_clip.Rect = aabb;
-		_clip.Radii = new Vector4(roundRect.TopLeft.X * s, roundRect.TopRight.X * s, roundRect.BottomRight.X * s, roundRect.BottomLeft.X * s);
+		var exclude = operation == ClipOperation.Difference;
+		var rc = new RoundClip
+		{
+			Rect = aabb,
+			Radii = new Vector4(roundRect.TopLeft.X * s, roundRect.TopRight.X * s, roundRect.BottomRight.X * s, roundRect.BottomLeft.X * s),
+			Exclude = exclude,
+		};
+		// Nested rounded clips stack (all ANDed in clipCov) instead of the innermost overwriting the outer.
+		_clip.Rounds = ClipData.Push(_clip.Rounds, rc);
 		// Difference (PushClipExclude): keep the area OUTSIDE the rounded rect — so DON'T tighten the scissor to it
 		// (the visible region extends past the rect); the per-fragment clipCov inverts the coverage.
-		_clip.HasExclude = operation == ClipOperation.Difference;
-		if (!_clip.HasExclude)
+		if (!exclude)
 		{
 			_clip.Aabb = new Vector4(MathF.Max(_clip.Aabb.X, aabb.X), MathF.Max(_clip.Aabb.Y, aabb.Y), MathF.Min(_clip.Aabb.Z, aabb.Z), MathF.Min(_clip.Aabb.W, aabb.W));
 		}
@@ -1444,6 +1522,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		{
 			_clip.PathFan = _fan.ToArray();
 			_clip.PathEvenOdd = geometry.FillRule == GeometryFillRule.EvenOdd;
+			_clip.PathExclude = operation == ClipOperation.Difference;
 		}
 		_fan = null;
 	}
@@ -1545,7 +1624,8 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			float m00 = (m.M22 / det) / rx, m01 = (-m.M21 / det) / rx;
 			float m10 = (-m.M12 / det) / ry, m11 = (m.M11 / det) / ry;
 			u[4] = a.X; u[5] = a.Y; u[6] = m00; u[7] = m10;   // geo: center + M col0
-			u[88] = b.X; u[89] = b.Y; u[90] = m01; u[91] = m11;   // origin: focal + M col1
+			u[WebGpuDevice.GradOriginBase] = b.X; u[WebGpuDevice.GradOriginBase + 1] = b.Y;
+			u[WebGpuDevice.GradOriginBase + 2] = m01; u[WebGpuDevice.GradOriginBase + 3] = m11;   // origin: focal + M col1
 		}
 		else
 		{
@@ -1555,11 +1635,11 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		for (var i = 0; i < count; i++)
 		{
 			var c = g.Colors[i];
-			u[8 + i * 4] = c.R / 255f;
-			u[8 + i * 4 + 1] = c.G / 255f;
-			u[8 + i * 4 + 2] = c.B / 255f;
-			u[8 + i * 4 + 3] = c.A / 255f;
-			u[72 + i] = g.Stops is { Length: > 0 } && i < g.Stops.Length ? g.Stops[i] : (count > 1 ? i / (float)(count - 1) : 0f);
+			u[WebGpuDevice.GradColorsBase + i * 4] = c.R / 255f;
+			u[WebGpuDevice.GradColorsBase + i * 4 + 1] = c.G / 255f;
+			u[WebGpuDevice.GradColorsBase + i * 4 + 2] = c.B / 255f;
+			u[WebGpuDevice.GradColorsBase + i * 4 + 3] = c.A / 255f;
+			u[WebGpuDevice.GradStopsBase + i] = g.Stops is { Length: > 0 } && i < g.Stops.Length ? g.Stops[i] : (count > 1 ? i / (float)(count - 1) : 0f);
 		}
 
 		_target.Add(new GradientCmd
@@ -1776,17 +1856,18 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 						// Center + focal are points → transform by T. The unit-ellipse map M is relative to device
 						// deltas, so under the extra device transform T2 it becomes M' = M * T2^-1 (deltas map back
 						// through T2 before M). Center/focal stay in the (new) device space.
-						var go = T(new Vector2(uu[88], uu[89])); uu[88] = go.X; uu[89] = go.Y;
+						int ob = WebGpuDevice.GradOriginBase;
+						var go = T(new Vector2(uu[ob], uu[ob + 1])); uu[ob] = go.X; uu[ob + 1] = go.Y;
 						float t11 = _m.M11, t12 = _m.M12, t21 = _m.M21, t22 = _m.M22;
 						float dt = t11 * t22 - t21 * t12;
 						if (MathF.Abs(dt) < 1e-12f) { dt = dt < 0 ? -1e-12f : 1e-12f; }
 						// T2^-1 (row-major [[i00,i01],[i10,i11]]), where T2 = [[t11,t21],[t12,t22]] (MapM convention).
 						float i00 = t22 / dt, i01 = -t21 / dt, i10 = -t12 / dt, i11 = t11 / dt;
-						// M row-major from packed cols: m00=uu[6], m10=uu[7], m01=uu[90], m11=uu[91]. M' = M * T2^-1.
-						float m00 = uu[6], m10 = uu[7], m01 = uu[90], m11 = uu[91];
+						// M row-major from packed cols: m00=uu[6], m10=uu[7], m01=uu[ob+2], m11=uu[ob+3]. M' = M * T2^-1.
+						float m00 = uu[6], m10 = uu[7], m01 = uu[ob + 2], m11 = uu[ob + 3];
 						float n00 = m00 * i00 + m01 * i10, n01 = m00 * i01 + m01 * i11;
 						float n10 = m10 * i00 + m11 * i10, n11 = m10 * i01 + m11 * i11;
-						uu[6] = n00; uu[7] = n10; uu[90] = n01; uu[91] = n11;
+						uu[6] = n00; uu[7] = n10; uu[ob + 2] = n01; uu[ob + 3] = n11;
 					}
 					_target.Add(new GradientCmd { P0 = T(gc.P0), P1 = T(gc.P1), P2 = T(gc.P2), P3 = T(gc.P3), Uniform = uu, Clip = ClipCompose(gc.Clip, T) });
 					break;
@@ -1827,14 +1908,19 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			var a = TransformedAabb(c.Aabb, t);
 			result.Aabb = new Vector4(MathF.Max(result.Aabb.X, a.X), MathF.Max(result.Aabb.Y, a.Y), MathF.Min(result.Aabb.Z, a.Z), MathF.Min(result.Aabb.W, a.W));
 		}
-		// Child rounded shape (innermost) wins; transform its rect and scale radii by the replay matrix.
-		if (c.HasRound)
+		// Child rounded clips AND with the parent's; transform each rect and scale radii by the replay matrix.
+		if (c.Rounds is { Length: > 0 } rounds)
 		{
 			var s = new Vector2(_m.M11, _m.M12).Length();
-			result.HasRound = true;
-			result.Rect = TransformedAabb(c.Rect, t);
-			result.Radii = c.Radii * s;
-			result.HasExclude = c.HasExclude;
+			foreach (var src in rounds)
+			{
+				result.Rounds = ClipData.Push(result.Rounds, new RoundClip
+				{
+					Rect = TransformedAabb(src.Rect, t),
+					Radii = src.Radii * s,
+					Exclude = src.Exclude,
+				});
+			}
 		}
 		if (c.PathFan != null)
 		{
@@ -1842,6 +1928,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			for (int i = 0; i < c.PathFan.Length; i += 2) { var p = t(new Vector2(c.PathFan[i], c.PathFan[i + 1])); pf[i] = p.X; pf[i + 1] = p.Y; }
 			result.PathFan = pf;
 			result.PathEvenOdd = c.PathEvenOdd;
+			result.PathExclude = c.PathExclude;
 		}
 		return result;
 	}
@@ -1914,7 +2001,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// done before the next — no builder holds the scratch across a nested RenderInto. _clipU backs MakeClipBg's
 	// lookup; a bind-group cache MISS clones it before storing.
 	private readonly List<float> _scratch = new();
-	private readonly float[] _clipU = new float[16];
+	private readonly float[] _clipU = new float[44];   // ClipU: rects[4]+radii[4] (32) + ex(4) + meta(4) + size(4) = 176B
 
 	// Pool of per-RenderInto op lists so a static frame's rebuild doesn't allocate the (large ClipData) op array
 	// every present. A stack (not one field) keeps it correct under the recursive nested-layer RenderInto — each
@@ -1995,31 +2082,40 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// are applied via the shared depth mask in the main pass, not sampled here, so there is no coverage texture.
 	private IntPtr MakeClipBg(IntPtr bgl, ClipData cd, OwnedResources owned = null)
 	{
+		const int ClipUBytes = 176;   // rects[4]+radii[4] (128) + ex(16) + meta(16) + size(16); must match the WGSL struct
 		var cu = _clipU;
 		System.Array.Clear(cu);
-		cu[0] = cd.Rect.X; cu[1] = cd.Rect.Y; cu[2] = cd.Rect.Z; cu[3] = cd.Rect.W;
-		cu[4] = cd.Radii.X; cu[5] = cd.Radii.Y; cu[6] = cd.Radii.Z; cu[7] = cd.Radii.W;
-		cu[8] = cd.HasRound ? 1f : 0f; cu[10] = cd.HasExclude ? 1f : 0f;
-		cu[12] = _s.Width; cu[13] = _s.Height;
+		var rounds = cd.Rounds;
+		int n = rounds?.Length ?? 0;
+		if (n > ClipData.MaxRounds) { n = ClipData.MaxRounds; }
+		for (int i = 0; i < n; i++)
+		{
+			var rc = rounds[i];
+			cu[i * 4 + 0] = rc.Rect.X; cu[i * 4 + 1] = rc.Rect.Y; cu[i * 4 + 2] = rc.Rect.Z; cu[i * 4 + 3] = rc.Rect.W;   // rects[i]
+			cu[16 + i * 4 + 0] = rc.Radii.X; cu[16 + i * 4 + 1] = rc.Radii.Y; cu[16 + i * 4 + 2] = rc.Radii.Z; cu[16 + i * 4 + 3] = rc.Radii.W;   // radii[i]
+			cu[32 + i] = rc.Exclude ? 1f : 0f;   // ex[i]
+		}
+		cu[36] = n;                              // ctrl.x = active count
+		cu[40] = _s.Width; cu[41] = _s.Height;   // size
 
 		// The ClipU depends only on (layout, these floats) — identical across frames for static chrome — so reuse a
 		// cached bind group. Now that path clips carry no per-frame coverage texture, every clip is cacheable.
 		if (owned is null)
 		{
 			if (_d.TryGetCachedBg(bgl, cu, out var cachedBg)) { return cachedBg; }
-			var cbd = new WGPUBufferDescriptor { Size = 64, Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
+			var cbd = new WGPUBufferDescriptor { Size = ClipUBytes, Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
 			var cbuf = wgpuDeviceCreateBuffer(_d.Dev, &cbd);
-			fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, cbuf, 0, (IntPtr)p, 64); }
-			var ce = new WGPUBindGroupEntry { Binding = 0, Buffer = cbuf, Offset = 0, Size = 64 };
+			fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, cbuf, 0, (IntPtr)p, ClipUBytes); }
+			var ce = new WGPUBindGroupEntry { Binding = 0, Buffer = cbuf, Offset = 0, Size = ClipUBytes };
 			var cbgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 1, Entries = &ce };
 			var cbg = wgpuDeviceCreateBindGroup(_d.Dev, (WGPUBindGroupDescriptor*)Unsafe.AsPointer(ref cbgd));
 			_d.AddCachedBg(bgl, (float[])cu.Clone(), cbuf, cbg);   // cache stores the key — clone off the reused scratch
 			return cbg;
 		}
 
-		var buf = Ubuf(64, owned);
-		fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, 64); }
-		var e = new WGPUBindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = 64 };
+		var buf = Ubuf(ClipUBytes, owned);
+		fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, ClipUBytes); }
+		var e = new WGPUBindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = ClipUBytes };
 		var bgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 1, Entries = &e };
 		return Bg(ref bgd, owned);
 	}
@@ -2055,15 +2151,19 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var dsa = new WGPURenderPassDepthStencilAttachment { View = cov.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
+		WebGpuTrace.Pass("shadow-coverage", sw, sh2, _d.MsaaSamples, true);
 		wgpuRenderPassEncoderSetPipeline(pass, sh.EvenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
 		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanNdc.Length * sizeof(float)));
 		wgpuRenderPassEncoderDraw(pass, (uint)(fanNdc.Length / 2), 1, 0, 0);
+		WebGpuTrace.Draw(sh.EvenOdd ? "shadow-stencil-eo" : "shadow-stencil-nz", (uint)(fanNdc.Length / 2));
 		wgpuRenderPassEncoderSetPipeline(pass, _d.CoverPipe);
 		wgpuRenderPassEncoderSetBindGroup(pass, 0, noClip, 0, (uint*)null);
 		wgpuRenderPassEncoderSetStencilReference(pass, 0);
 		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, coverBuf, 0, (nuint)(cq.Count * sizeof(float)));
 		wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
+		WebGpuTrace.Draw("shadow-cover", 6);
 		wgpuRenderPassEncoderEnd(pass);
+		WebGpuTrace.PassEnd();
 		_d.Pool.Return(cov.MsaaColorView); _d.Pool.Return(cov.DepthView);
 
 		// 2) separable blur: coverage -> temp (H) -> blur (V).
@@ -2089,10 +2189,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = dst, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
+		WebGpuTrace.Pass(dir.X != 0 ? "blur-h" : "blur-v", 0, 0, 1, true);
 		wgpuRenderPassEncoderSetPipeline(pass, _d.BlurPipe);
 		wgpuRenderPassEncoderSetBindGroup(pass, 0, bg, 0, (uint*)null);
 		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+		WebGpuTrace.Draw("blur", 3);
 		wgpuRenderPassEncoderEnd(pass);
+		WebGpuTrace.PassEnd();
 	}
 
 	public void Replay(IRenderData data)
@@ -2102,6 +2205,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (data is not WebGpuRenderData rd) { return; }
 		lock (_d.RenderGate)
 		{
+			WebGpuTrace.Reset();
 			var pr = _d.Profiler;
 			var tReplay = WebGpuProfiler.T();
 			pr?.Cmds(rd.Commands.Count);
@@ -2126,7 +2230,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	}
 
 	private static bool ClipDataEquals(in ClipData a, in ClipData b)
-		=> a.Aabb == b.Aabb && a.HasRound == b.HasRound && a.Rect == b.Rect && a.Radii == b.Radii && ReferenceEquals(a.PathFan, b.PathFan);
+		=> a.Aabb == b.Aabb && ReferenceEquals(a.Rounds, b.Rounds) && ReferenceEquals(a.PathFan, b.PathFan);
 
 	// Builds the draw-op(s) for a simple primitive (rect/path/image/gradient) into `ops`, allocating GPU resources
 	// pooled (owned == null, per-frame) or persistent (owned != null, a cached recording's geometry).
@@ -2234,16 +2338,18 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			wgpuRenderPassEncoderSetScissorRect(pass, (uint)px, (uint)py, (uint)pw, (uint)ph);
 			wgpuRenderPassEncoderSetPipeline(pass, _d.ClipDepthSet0);
 			wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+			WebGpuTrace.Draw("clipdepth-set0(restore-prev)", 3);
 		}
 		if (next.PathFan is not { } fan || !TryScissor(next.Aabb, out var nx, out var ny, out var nw, out var nh))
 		{
 			return;
 		}
 		wgpuRenderPassEncoderSetScissorRect(pass, (uint)nx, (uint)ny, (uint)nw, (uint)nh);
-		var excl = next.HasExclude;
+		var excl = next.PathExclude;
 		// 1) fill the bbox with the "clipped" depth (intersect: 1 = clipped outside the shape; exclude: 0).
 		wgpuRenderPassEncoderSetPipeline(pass, excl ? _d.ClipDepthSet0 : _d.ClipDepthSet1);
 		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+		WebGpuTrace.Draw(excl ? "clipdepth-set0(fill)" : "clipdepth-set1(fill)", 3);
 		// 2) stencil the clip fan (winding) in full-window NDC.
 		_scratch.Clear();
 		for (int i = 0; i < fan.Length; i += 2) { var n = Ndc(new Vector2(fan[i], fan[i + 1])); _scratch.Add(n.X); _scratch.Add(n.Y); }
@@ -2251,11 +2357,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		wgpuRenderPassEncoderSetPipeline(pass, next.PathEvenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
 		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(_scratch.Count * sizeof(float)));
 		wgpuRenderPassEncoderDraw(pass, (uint)(_scratch.Count / 2), 1, 0, 0);
+		WebGpuTrace.Draw(next.PathEvenOdd ? "clip-stencil-eo" : "clip-stencil-nz", (uint)(_scratch.Count / 2));
 		// 3) cover: write the "kept" depth (intersect: 0 inside the shape; exclude: 1) where the stencil is set,
 		// and reset the stencil to 0 (PassOp=Zero) so the next fill/clip starts clean.
 		wgpuRenderPassEncoderSetPipeline(pass, excl ? _d.ClipDepthCover1 : _d.ClipDepthCover0);
 		wgpuRenderPassEncoderSetStencilReference(pass, 0);
 		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+		WebGpuTrace.Draw(excl ? "clipdepth-cover1" : "clipdepth-cover0", 3);
 	}
 
 	// Renders a command list into a target surface's MSAA pass (resolving to its single-sample view). Layers
@@ -2459,6 +2567,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		};
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
+		WebGpuTrace.Pass(target.Pooled ? "offscreen" : "main", target.Width, target.Height, _d.MsaaSamples, true);
 
 		// Track the last-applied scissor and skip redundant SetScissorRect calls: static chrome draws many ops under
 		// one clip, so this collapses a per-op call to one per distinct clip. Locals (not a field) keep it correct
@@ -2490,16 +2599,19 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b0, 0, (nuint)(u0 * 6 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, u0, 1, 0, 0);   // u0 = 6 * (coalesced) rect count
+					WebGpuTrace.Draw("solid", u0);
 					break;
 				case 1:
 					wgpuRenderPassEncoderSetPipeline(pass, flag ? _d.StencilEvenOdd : _d.StencilNonZero);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b0, 0, (nuint)(u0 * 2 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, u0, 1, 0, 0);
+					WebGpuTrace.Draw(flag ? "path-stencil-eo" : "path-stencil-nz", u0);
 					wgpuRenderPassEncoderSetPipeline(pass, _d.CoverPipe);
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetStencilReference(pass, 0);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(36 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
+					WebGpuTrace.Draw("path-cover", 6);
 					break;
 				case 2:
 					wgpuRenderPassEncoderSetPipeline(pass, _d.ImagePipe);
@@ -2507,6 +2619,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(24 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
+					WebGpuTrace.Draw("image", 6);
 					break;
 				case 3:
 					wgpuRenderPassEncoderSetPipeline(pass, _d.GradientPipe);
@@ -2514,16 +2627,19 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(12 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
+					WebGpuTrace.Draw("gradient", 6);
 					break;
 				case 4:
 					wgpuRenderPassEncoderSetPipeline(pass, u0 == 1 ? _d.CompositeDstIn : _d.CompositeSrcOver);
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)b0, 0, (uint*)null);
 					wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+					WebGpuTrace.Draw(u0 == 1 ? "composite-dstin" : "composite-srcover", 3);
 					break;
 			}
 		}
 
 		wgpuRenderPassEncoderEnd(pass);
+		WebGpuTrace.PassEnd();
 		// A pooled offscreen (layer/backdrop) target: its MSAA colour has resolved into View and the depth is spent,
 		// so return both for the next same-size pass to reuse — only View (composited/sampled later) stays live. The
 		// on-window/dedicated target owns its MSAA+depth (persistent across frames) and is left untouched.
