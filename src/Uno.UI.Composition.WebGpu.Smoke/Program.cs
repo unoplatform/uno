@@ -746,6 +746,36 @@ if (WebGpuTrace.Enabled)
 	var mvF2 = new WebGpuCommandRecorder(); mvF2.Translate(24, 0); mvF2.Replay(mvChildData);
 	Console.WriteLine("--- TRACE moving-visual frame1 (build) ---"); mvPresent.Replay(mvF1.Finish()); Console.Write(WebGpuTrace.Dump());
 	Console.WriteLine("--- TRACE moving-visual frame2 (moved) ---"); mvPresent.Replay(mvF2.Finish()); Console.Write(WebGpuTrace.Dump());
+
+	// FULL-UI (the real stream-diff target): a realistic frame of MANY per-visual recordings — a sidebar of 10
+	// solid rows (solid-only visuals) + a 2x3 grid of "cards" (each a mixed visual: background rect + a glyph
+	// triangle). Replayed as separate recordings (exactly how a real visual tree reaches the backend), then the
+	// whole-frame command stream is dumped for a line-by-line diff against ramez's identical full-UI scene.
+	{
+		var uiSurf = new WebGpuRenderSurface(dev, 256, 256);
+		var uiPres = new WebGpuPresentSession(dev, uiSurf);
+		uiPres.Clear(WColor.FromArgb(255, 0, 0, 0));
+		var uiBlue = WColor.FromArgb(255, 0, 0, 255);
+		var recs = new System.Collections.Generic.List<WebGpuCommandRecorder>();
+		for (int i = 0; i < 10; i++)   // sidebar: 10 solid-only row visuals
+		{
+			var rr2 = new WebGpuCommandRecorder(); rr2.DrawRect(new Rect(8, 8 + i * 20, 60, 16), red, false); recs.Add(rr2);
+		}
+		for (int k = 0; k < 6; k++)     // 2x3 card grid: each a mixed visual (bg rect + glyph triangle)
+		{
+			int col = k % 2, row = k / 2; float x = 90 + col * 80, y = 8 + row * 70;
+			var cb = new ManagedDrawingFactory().CreatePathBuilder();
+			cb.MoveTo(new Vector2(x + 10, y + 10)); cb.LineTo(new Vector2(x + 30, y + 10)); cb.LineTo(new Vector2(x + 10, y + 30)); cb.Close();
+			var glyph = cb.Build();
+			var cr = new WebGpuCommandRecorder(); cr.DrawRect(new Rect(x, y, 72, 60), uiBlue, false); cr.DrawPath(glyph, green, false); recs.Add(cr);
+		}
+		var uiFrame = new WebGpuCommandRecorder();
+		foreach (var rec in recs) { uiFrame.Replay(rec.Finish()); }
+		WebGpuTrace.Reset();
+		uiPres.Replay(uiFrame.Finish());
+		Console.WriteLine("--- TRACE full-ui (neutral: 10 solid rows + 6 mixed cards) ---");
+		Console.Write(WebGpuTrace.Dump());
+	}
 	Console.WriteLine("================================================\n");
 }
 
