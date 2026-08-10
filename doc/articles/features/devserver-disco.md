@@ -179,6 +179,9 @@ If your workspace genuinely has no `global.json`, create one next to your projec
 
 See [Updating the Uno Platform version](xref:Uno.Development.UpgradeUnoNuget) for details.
 
+> [!NOTE]
+> Declaring the version inline in the project file (`<Project Sdk="Uno.Sdk/6.6.29">`) is enough to build, but the Dev Server tooling resolves the `Uno.Sdk` version from `global.json` only — a `global.json` is still required for `disco` and the dev loop.
+
 ### SDK package not restored
 
 ```text
