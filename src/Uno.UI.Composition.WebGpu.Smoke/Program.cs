@@ -731,6 +731,23 @@ Check("many-stop gradient: right blue (stops 16..19 not clamped away)", manyRigh
 	}
 }
 
+// 18k) PRESENT-SESSION IMMEDIATE DRAW (the FPS/diagnostics-overlay mechanism) — a draw made DIRECTLY on the present
+//      session AFTER Replay must composite over the replayed frame, not no-op. Proves the present session is a real
+//      drawing session (its immediate verbs were previously empty stubs, so the overlay never appeared on WebGPU).
+{
+	var ovSurf = new WebGpuRenderSurface(dev, 64, 64);
+	var ovPres = new WebGpuPresentSession(dev, ovSurf);
+	var ovBg = new WebGpuCommandRecorder(); ovBg.DrawRect(new Rect(0, 0, 64, 64), WColor.FromArgb(255, 0, 0, 255), false); // blue frame
+	ovPres.Clear(WColor.FromArgb(255, 0, 0, 0));
+	ovPres.Replay(ovBg.Finish());
+	ovPres.DrawRect(new Rect(20, 20, 24, 24), red, false);   // immediate red overlay, drawn on the present session
+	ovPres.Dispose();                                        // composites the overlay over the frame
+	var ovpx = dev.ReadPixelsRgba(ovSurf);
+	var ovCenter = At(ovpx, 32, 32); var ovCorner = At(ovpx, 4, 4);
+	Check("present-overlay: immediate draw composited (red)", ovCenter.r > 200 && ovCenter.g < 60, ovCenter);
+	Check("present-overlay: replayed frame preserved under it (blue)", ovCorner.b > 200 && ovCorner.r < 60, ovCorner);
+}
+
 // 19) DPI SCALE — a logical 20x20 rect replayed through present.Save/Scale(2)/Replay/Restore must fill the 40x40
 //     PHYSICAL region. This is the 1.5x-DPI bug: WebGpuPresentSession.Scale was an empty stub, so the composition's
 //     RasterizationScale (applied via the neutral session) was dropped and content rendered at logical size.
