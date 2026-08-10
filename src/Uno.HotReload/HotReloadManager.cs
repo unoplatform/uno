@@ -128,8 +128,9 @@ public sealed class HotReloadManager : IDisposable
 		foreach (var name in multiVersionNames)
 		{
 			_tracker.Verbose(
-				$"Reference identity pinning is disabled for '{name}': the session baseline references " +
-				"multiple identities of it (a re-bind of it during hot reload requires a rebuild).");
+				$"Reference identity pinning is partially disabled for '{name}': one or more projects in the " +
+				"session baseline reference multiple identities of it (a re-bind of it in those projects " +
+				"during hot reload requires a rebuild).");
 		}
 	}
 
