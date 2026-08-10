@@ -3263,27 +3263,9 @@ public sealed class WebGpuRenderer : IRenderer
 
 // --- New-SPI pluggable-backend surface (see doc/uno-drawing-backend-abstraction.md) ---
 
-/// <summary>A <see cref="IGraphicsContext"/> wrapping a <see cref="WebGpuDevice"/>. Created by the graphics-layer context factory for <see cref="GraphicsContextKind.WebGpu"/>.</summary>
-public sealed class WebGpuGraphicsContext : IGraphicsContext, IWebGpuDeviceContext
-{
-	public WebGpuGraphicsContext(WebGpuDevice device) => Device = device;
-
-	public WebGpuDevice Device { get; }
-
-	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
-
-	public bool IsLost => false;
-
-	// The WebGPU render path is driven by the (legacy, env-gated) X11WebGpu*Renderer today, not GraphicsRegistry
-	// .Activate, so this context isn't asked to acquire/present. Stubbed until the WebGPU host adopts the seam.
-	public IRenderTarget AcquireRenderTarget(int width, int height)
-		=> throw new System.NotSupportedException("WebGpuGraphicsContext does not yet drive AcquireRenderTarget/Present.");
-
-	public void Present()
-		=> throw new System.NotSupportedException("WebGpuGraphicsContext does not yet drive AcquireRenderTarget/Present.");
-
-	public void Dispose() { }
-}
+// NOTE: presentation belongs on the HOST graphics context that owns the window swapchain (it implements
+// IWebGpuDeviceContext below and drives Acquire/Present); there is deliberately no device-only IGraphicsContext
+// here — a device without a window has no surface to present to.
 
 /// <summary>A host graphics context that owns a <see cref="WebGpuDevice"/> (e.g. an on-window swapchain context).
 /// Lets <see cref="WebGpuGraphicsProvider"/> obtain the device without naming the platform context type.</summary>
