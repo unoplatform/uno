@@ -275,13 +275,21 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		System.Console.WriteLine($"[webgpu] backend init — UNO_WEBGPU_PROFILE={WebGpuProfiler.Enabled} pipeline={Pipeline} msaa={MsaaSamples}x colorFormat={ColorFormat}");
 	}
 
-	// Prefer 2x MSAA (half the cost) where the device supports it for our colour format, else 4x (spec-guaranteed).
+	// MSAA sample count. UNO_WEBGPU_MSAA=1|2|4 forces a count (bypassing the probe): 2 forces 2x even where the
+	// auto-probe reported it unsupported (some drivers report conservatively) — if the GPU genuinely rejects it a
+	// validation error follows, so fall back to 4. 1 is experimental (needs a no-resolve pass path — not wired yet;
+	// currently the pipelines/resolve assume MSAA, so 1 will error) and is clamped to 4 for safety. With no override,
+	// prefer 2x where the device supports it for the colour format, else 4x (the only counts the spec guarantees).
 	private uint PickSampleCount()
 	{
+		var env = Environment.GetEnvironmentVariable("UNO_WEBGPU_MSAA");
+		if (env == "4") { return 4; }
+		if (env == "1") { System.Console.WriteLine("[webgpu] UNO_WEBGPU_MSAA=1 not supported yet (no no-resolve path) — using 4x"); return 4; }
+		if (env == "2") { return 2; }   // force 2x, bypassing the probe (for drivers that reject the probe but accept 2x)
 		// The browser (Dawn) init is async and can't synchronously pump the error-scope callback (no JS event-loop
 		// yield), so skip the probe there and take the spec-guaranteed 4x. Desktop probes for 2x.
 		if (OperatingSystem.IsBrowser()) { return 4; }
-		return Environment.GetEnvironmentVariable("UNO_WEBGPU_MSAA") != "4" && SupportsSampleCount(2) ? 2u : 4u;
+		return SupportsSampleCount(2) ? 2u : 4u;
 	}
 
 	// Probes whether a sample count is valid for the colour format WITHOUT aborting: an unsupported count raises a
