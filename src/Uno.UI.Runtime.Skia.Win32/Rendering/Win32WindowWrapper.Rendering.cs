@@ -65,9 +65,14 @@ internal partial class Win32WindowWrapper
 		if (_webgpuContext is { } webgpu)
 		{
 			// WebGPU renders into the HWND swapchain (no SKSurface). Present happens in Win32WebGpuRenderer.CopyPixels.
+			// Bracket the profiler frame here (record+replay); FrameEnd is in the swapchain Present (CopyPixels).
+			var prof = webgpu.Device.Profiler;
+			prof?.FrameStart();
+			var tReq = global::Uno.UI.Composition.WebGpu.WebGpuProfiler.T();
 			var webgpuClip = ct.OnNativePlatformFrameRequested(
 				null,
 				size => webgpu.AcquireRenderTarget((int)size.Width, (int)size.Height));
+			prof?.FrameRequested(tReq);
 			if (!PInvoke.GetClientRect(_hwnd, out RECT webgpuRect))
 			{
 				this.LogError()?.Error($"{nameof(PInvoke.GetClientRect)} failed: {Win32Helper.GetErrorMessage()}");
