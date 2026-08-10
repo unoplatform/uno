@@ -60,7 +60,9 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		BufferPool.BeginFrame();
 		foreach (var bg in _pendingBindGroups) { wgpuBindGroupRelease((IntPtr)bg); }
 		foreach (var b in _pendingBuffers) { wgpuBufferRelease((IntPtr)b); }
-		while (_pendingTextures.TryDequeue(out var t)) { if (t.view != IntPtr.Zero) { wgpuTextureViewRelease((IntPtr)t.view); } if (t.tex != IntPtr.Zero) { wgpuTextureDestroy((IntPtr)t.tex); } }
+		// Release (refcount) rather than Destroy (immediate) the transient one-shot textures: wgpu then frees them
+		// only once the GPU has finished the frames that used them — safe even when the per-frame drain is skipped.
+		while (_pendingTextures.TryDequeue(out var t)) { if (t.view != IntPtr.Zero) { wgpuTextureViewRelease((IntPtr)t.view); } if (t.tex != IntPtr.Zero) { wgpuTextureRelease((IntPtr)t.tex); } }
 		_pendingBindGroups.Clear();
 		_pendingBuffers.Clear();
 
@@ -76,6 +78,14 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	// Diagnostic (UNO_RENDER_PERF): per-frame render CPU time + bind-group/buffer creates, logged from RunFrame.
 	// PerfBgCreates trends to ~0 in steady state once the cross-frame bind-group cache warms. Off by default.
 	internal static readonly bool PerfEnabled = Environment.GetEnvironmentVariable("UNO_RENDER_PERF") == "1";
+
+	// EXPERIMENTAL opt-in (UNO_WEBGPU_PIPELINE=1): don't block the CPU on a full GPU drain after each on-window
+	// frame — poll non-blocking so the CPU can record the next frame while the GPU renders the current one
+	// (~2x steady frame rate). Safe because pooled buffer/texture reuse and the persistent present target are
+	// ordered on the queue after the prior frame's reads, and transient textures are refcount-released (not
+	// destroyed) so wgpu frees them only once the GPU is done. Off by default (the drain is the conservative path);
+	// needs a real-GPU check for present-time tearing before it can become the default.
+	internal static readonly bool Pipeline = Environment.GetEnvironmentVariable("UNO_WEBGPU_PIPELINE") == "1";
 	public int PerfBgCreates, PerfBufCreates, PerfFrame;
 	public readonly System.Diagnostics.Stopwatch PerfSw = new();
 	public double PerfAccumMs;
@@ -1688,7 +1698,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			{
 				var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 				wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
-				wgpuDevicePoll(_d.Dev, 1u, null);
+				// Pump the device. Blocking (wait=1) fully drains the GPU each frame (conservative, serializes CPU/GPU);
+				// UNO_WEBGPU_PIPELINE polls non-blocking (wait=0) so the CPU can overlap the next frame with the GPU.
+				wgpuDevicePoll(_d.Dev, WebGpuDevice.Pipeline ? 0u : 1u, null);
 				_frameEncoder = IntPtr.Zero;
 				if (WebGpuDevice.PerfEnabled)
 				{
