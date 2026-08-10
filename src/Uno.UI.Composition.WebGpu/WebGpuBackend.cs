@@ -2145,10 +2145,16 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// records into it and it's submitted once — so wgpu barriers offscreen resolve->sample automatically, without
 	// the cross-submission resolve hazard (which previously needed a full-texture readback flush to work around).
 	private IntPtr _frameEncoder;
+	// Immediate-mode drawing on the present session (e.g. the FPS/diagnostics overlay drawn after Replay) records
+	// here and is composited onto the replayed frame at Dispose — the present session IS a real drawing session,
+	// like the Skia one, not a replay-only sink. State verbs (Save/Scale/clip/…) forward here too so the overlay
+	// honours the transform; Scale/Save/Restore additionally drive the frame's root DPI scale (_presentScale).
+	private readonly WebGpuCommandRecorder _overlay = new();
 	public WebGpuPresentSession(WebGpuDevice d, WebGpuRenderSurface s) { _d = d; _s = s; }
 
 	// Runs a frame: opens the shared encoder (if not already inside one), renders, then finishes+submits once.
-	private void RunFrame(List<WebGpuCommand> cmds, WColor? clear)
+	// load=true preserves the target's existing colour (LoadOp.Load) so an overlay composites over the frame.
+	private void RunFrame(List<WebGpuCommand> cmds, WColor? clear, bool load = false)
 	{
 		var owns = _frameEncoder == IntPtr.Zero;
 		if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); if (WebGpuDevice.PerfEnabled) { _d.PerfBgCreates = 0; _d.PerfBufCreates = 0; _d.PerfSw.Restart(); } }
@@ -2156,7 +2162,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			var tRender = WebGpuProfiler.T();
 			try
 			{
-				RenderInto(cmds, _s, clear);
+				RenderInto(cmds, _s, clear, load);
 			}
 			finally
 			{
@@ -2753,7 +2759,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	// Renders a command list into a target surface's MSAA pass (resolving to its single-sample view). Layers
 	// recurse into their own full-size surface then composite here; shadows/layers pre-render before the pass.
-	private void RenderInto(List<WebGpuCommand> cmds, WebGpuRenderSurface target, WColor? clear)
+	private void RenderInto(List<WebGpuCommand> cmds, WebGpuRenderSurface target, WColor? clear, bool load = false)
 	{
 
 		// Build GPU resources for every command up front (buffers/textures must be created outside the
@@ -3052,7 +3058,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			// afterwards (never sampled) to save the store bandwidth — target.View (sampled later) is unaffected.
 			DepthSlice = uint.MaxValue,
 			// 1x: render straight into the single-sample View (no resolve target), and Store it (it IS the result).
-			View = target.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = _d.MsaaSamples > 1 ? WGPUStoreOp.Discard : WGPUStoreOp.Store,
+			// load=true (overlay compositing over the replayed frame) preserves the existing colour via LoadOp.Load
+			// (valid at 1x, where MsaaColorView aliases the persistent View; an MSAA buffer can't be loaded).
+			// A pooled offscreen discards its MSAA after resolve (never reloaded); the dedicated on-window target
+			// STORES it so a follow-up overlay pass (load=true) can LoadOp.Load a valid multisampled buffer.
+			View = target.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero, LoadOp = load ? WGPULoadOp.Load : WGPULoadOp.Clear, StoreOp = (_d.MsaaSamples > 1 && target.Pooled) ? WGPUStoreOp.Discard : WGPUStoreOp.Store,
 			ClearValue = clear.HasValue ? new WGPUColor { R = clear.Value.R / 255.0, G = clear.Value.G / 255.0, B = clear.Value.B / 255.0, A = clear.Value.A / 255.0 } : default,
 		};
 		var dsa = new WGPURenderPassDepthStencilAttachment
@@ -3201,36 +3211,46 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		ReturnRrect(rrect);
 	}
 
-	public Matrix4x4 TotalMatrix => Matrix4x4.Identity;
-	public void SetMatrix(in Matrix4x4 matrix) { }
-	public void Concat(in Matrix4x4 matrix) { }
-	public void Translate(float dx, float dy) { }
-	public void Scale(float sx, float sy) => _presentScale = new Vector2(_presentScale.X * sx, _presentScale.Y * sy);
-	public int Save() { _presentScaleStack.Push(_presentScale); return _presentScaleStack.Count; }
+	// Immediate-mode drawing forwards to the overlay recorder; Scale/Save/Restore additionally drive the frame's
+	// root DPI scale (_presentScale) applied to the replayed frame.
+	public Matrix4x4 TotalMatrix => _overlay.TotalMatrix;
+	public void SetMatrix(in Matrix4x4 matrix) => _overlay.SetMatrix(matrix);
+	public void Concat(in Matrix4x4 matrix) => _overlay.Concat(matrix);
+	public void Translate(float dx, float dy) => _overlay.Translate(dx, dy);
+	public void Scale(float sx, float sy) { _presentScale = new Vector2(_presentScale.X * sx, _presentScale.Y * sy); _overlay.Scale(sx, sy); }
+	public int Save() { _presentScaleStack.Push(_presentScale); _overlay.Save(); return _presentScaleStack.Count; }
 	public int SaveCount => _presentScaleStack.Count;
-	public void Restore() { if (_presentScaleStack.Count > 0) { _presentScale = _presentScaleStack.Pop(); } }
+	public void Restore() { if (_presentScaleStack.Count > 0) { _presentScale = _presentScaleStack.Pop(); } _overlay.Restore(); }
 	public void RestoreToCount(int count) { while (_presentScaleStack.Count > count) { Restore(); } }
-	public void SaveLayer(bool antialias = false) { }
-	public void SaveLayer(IColorFilter colorFilter, bool antialias = false) { }
-	public void SaveLayer(BlendMode blendMode, bool antialias = false) { }
-	public void SaveLayer(IEffectFilter filter) { }
-	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) { }
-	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) { }
-	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) { }
+	public void SaveLayer(bool antialias = false) => _overlay.SaveLayer(antialias);
+	public void SaveLayer(IColorFilter colorFilter, bool antialias = false) => _overlay.SaveLayer(colorFilter, antialias);
+	public void SaveLayer(BlendMode blendMode, bool antialias = false) => _overlay.SaveLayer(blendMode, antialias);
+	public void SaveLayer(IEffectFilter filter) => _overlay.SaveLayer(filter);
+	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) => _overlay.ClipRect(rect, operation, antialias);
+	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) => _overlay.ClipRoundRect(roundRect, operation, antialias);
+	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) => _overlay.ClipPath(geometry, operation, antialias);
 	public void Clear(WColor color) => _presentClear = color;
-	public void DrawRect(in Rect rect, WColor color, bool antialias = false) { }
-	public void DrawRect(in Rect rect, IShader shader, bool antialias = false) { }
-	public void DrawRoundedRect(in Rect rect, Vector4 radii, WColor color, bool antialias = false) { }
-	public void DrawPath(IGeometry geometry, WColor color, bool antialias = false) { }
-	public void DrawShadow(IGeometry silhouette, WColor color, float sigmaX, float sigmaY, bool additive, bool antialias = false) { }
-	public void StrokePath(IGeometry geometry, WColor color, float strokeWidth, bool antialias = false) { }
-	public void DrawLine(Vector2 p0, Vector2 p1, WColor color, float strokeWidth, bool antialias = false) { }
-	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false) { }
-	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false) { }
-	public void DrawImageNineSlice(IImageTexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false) { }
-	public void DrawEffectBackdrop(IEffectFilter filter, float opacity) { }
+	public void DrawRect(in Rect rect, WColor color, bool antialias = false) => _overlay.DrawRect(rect, color, antialias);
+	public void DrawRect(in Rect rect, IShader shader, bool antialias = false) => _overlay.DrawRect(rect, shader, antialias);
+	public void DrawRoundedRect(in Rect rect, Vector4 radii, WColor color, bool antialias = false) => _overlay.DrawRoundedRect(rect, radii, color, antialias);
+	public void DrawPath(IGeometry geometry, WColor color, bool antialias = false) => _overlay.DrawPath(geometry, color, antialias);
+	public void DrawShadow(IGeometry silhouette, WColor color, float sigmaX, float sigmaY, bool additive, bool antialias = false) => _overlay.DrawShadow(silhouette, color, sigmaX, sigmaY, additive, antialias);
+	public void StrokePath(IGeometry geometry, WColor color, float strokeWidth, bool antialias = false) => _overlay.StrokePath(geometry, color, strokeWidth, antialias);
+	public void DrawLine(Vector2 p0, Vector2 p1, WColor color, float strokeWidth, bool antialias = false) => _overlay.DrawLine(p0, p1, color, strokeWidth, antialias);
+	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false) => _overlay.DrawImage(texture, x, y, sampling, opacity, antialias);
+	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false) => _overlay.DrawImage(texture, x, y, sampling, colorFilter, antialias);
+	public void DrawImageNineSlice(IImageTexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false) => _overlay.DrawImageNineSlice(texture, centerSlice, destination, centerHollow, antialias);
+	public void DrawEffectBackdrop(IEffectFilter filter, float opacity) => _overlay.DrawEffectBackdrop(filter, opacity);
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
-	public void Dispose() { }
+
+	// Composite any immediate-mode overlay (e.g. the diagnostics FPS counter drawn after Replay) over the frame.
+	public void Dispose()
+	{
+		if (_overlay.Finish() is WebGpuRenderData od && od.Commands.Count > 0)
+		{
+			lock (_d.RenderGate) { RunFrame(od.Commands, null, load: true); }
+		}
+	}
 }
 
 public sealed class WebGpuRenderer : IRenderer
