@@ -427,19 +427,31 @@ allocating one full MSAA+depth+resolve triple per offscreen (which exhausted VRA
 
 ### Parity gaps vs the original X11 WebGPU branch (`ramez/webgpu-experiment`)
 
-A line-by-line audit against the pre-seam branch found these still-open items (VRAM/crash items are fixed above;
-the rest are tracked for follow-up). None affect the neutral-seam contract — they are backend-internal quality:
+A line-by-line audit against the pre-seam branch drove a series of fixes. **Fixed:** the VRAM/crash items above;
+the native swapchain now blits an offscreen resolve into the acquired image (a direct MSAA-resolve into the
+swapchain didn't composite); opaque acrylic short-circuits to a tint fill; `SaveLayer(IColorFilter)` colour
+matrices apply to solid fills; radial gradients are exact under rotation/skew; a blur is only routed to the
+acrylic path when it actually samples the backdrop; MSAA/depth are `StoreOp.Discard`ed after resolve; the main
+pass dedups redundant scissor changes.
+
+**Still-open** (backend-internal quality; none affect the neutral-seam contract). These are larger reworks that
+want real-GPU visual validation:
 
 - **Acrylic (translucent):** still re-renders the whole command prefix into a full-window surface per backdrop
-  (O(n²)); the original blurred only the element's padded region sampled from the already-rendered target. Also
-  missing: procedural noise/grain and the rounded-corner SDF mask. (Opaque acrylic already short-circuits.)
-- **Nested clips:** only the innermost rounded-rect / path clip survives; the original intersected a full clip stack.
-- **Radial gradient** rotation + off-centre focal are approximate (device-space eval) vs the original's exact
-  gradient-local-space eval; gradient stops are capped at 16 (the original baked a 256-entry LUT).
-- **No analytic rounded-rect/border** primitive (rounded chrome arrives as path fills); **no glyph atlas**
-  (text is per-run geometry fill — plain text is on par, but color glyphs upload a texture per glyph per frame).
-- **Perf:** per-frame full vertex/uniform re-upload (no persistent dirty-range slabs), rect-only draw-call
-  coalescing, and no per-visual transform-restamp (a moved cached visual rebuilds its geometry).
+  (O(n²)); the original blurred only the element's padded region sampled from the already-rendered target — the
+  fix needs the resolve-then-sample rearchitecture below. Also missing: procedural noise/grain and the rounded-corner mask.
+- **Bounds-sized offscreens:** layer/coverage offscreens are full-window; sizing them to the element/clip AABB
+  needs `Ndc`/`SetScissor` parameterized by a target origin+size (the same rearchitecture as translucent acrylic).
+- **Nested clips:** only the innermost rounded-rect / path clip survives; the original intersected a full clip
+  stack (needs a shader-side clip stack — touches the ubiquitous clip path, so validate carefully).
+- **Gradient** stops are capped at 16 (the original baked a 256-entry LUT). **No analytic rounded-rect/border**
+  primitive. **No glyph atlas** (color glyphs upload a texture per glyph per frame, and only render through a
+  WebGPU-native font texture — a `SkiaImageTexture` color glyph is a no-op in `DrawImage`).
+- **Perf:** the replay path is now zero-allocation for a static frame (reused scratch + pooled op list); the
+  on-window present can pipeline via `UNO_WEBGPU_PIPELINE=1` (opt-in — non-blocking poll; default still drains
+  each frame, pending a real-GPU tearing check). Still open: per-frame full vertex/uniform re-upload (no
+  persistent dirty-range slabs), rect-only draw-call coalescing, no per-visual transform-restamp (a moved cached
+  visual — e.g. scrolling — rebuilds its geometry), and no DPI-aware 1× MSAA (needs a no-resolve pipeline variant).
 
 ---
 
