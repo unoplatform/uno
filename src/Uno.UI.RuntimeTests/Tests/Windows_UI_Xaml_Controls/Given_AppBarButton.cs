@@ -19,49 +19,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task Check_DataContext_Propagation()
 		{
-			using (StyleHelper.UseNativeFrameNavigation())
-			{
-				var frame = new Frame();
-				WindowHelper.WindowContent = frame;
-				await WindowHelper.WaitForIdle();
-				frame.Navigate(typeof(Page_With_AppBarButton_Visibility_Bound));
-				await WindowHelper.WaitForIdle();
-				var page = frame.Content as Page_With_AppBarButton_Visibility_Bound;
-				Assert.IsNotNull(page);
-				page.DataContext = new MyContext();
-				await WindowHelper.WaitForIdle();
-				var tb = page.innerTextBlock;
-				var icon = page.innerIcon;
-				Assert.IsNotNull(tb);
-				Assert.IsNotNull(icon);
-				Assert.AreEqual("Archaeopteryx", tb.Text);
-				Assert.IsGreaterThan(0, tb.ActualWidth);
-				Assert.IsGreaterThan(0, tb.ActualHeight);
-			}
+			var frame = new Frame();
+			WindowHelper.WindowContent = frame;
+			await WindowHelper.WaitForIdle();
+			frame.Navigate(typeof(Page_With_AppBarButton_Visibility_Bound));
+			await WindowHelper.WaitForIdle();
+			var page = frame.Content as Page_With_AppBarButton_Visibility_Bound;
+			Assert.IsNotNull(page);
+			page.DataContext = new MyContext();
+			await WindowHelper.WaitForIdle();
+			var tb = page.innerTextBlock;
+			var icon = page.innerIcon;
+			Assert.IsNotNull(tb);
+			Assert.IsNotNull(icon);
+			Assert.AreEqual("Archaeopteryx", tb.Text);
+			Assert.IsGreaterThan(0, tb.ActualWidth);
+			Assert.IsGreaterThan(0, tb.ActualHeight);
 		}
 
 		[TestMethod]
 		public async Task Check_Binding_No_DataContext()
 		{
-			using (StyleHelper.UseNativeFrameNavigation())
-			{
-				var frame = new Frame();
-				WindowHelper.WindowContent = frame;
-				await WindowHelper.WaitForIdle();
-				frame.Navigate(typeof(Page_With_AppBarButton_Visibility_Bound));
-				await WindowHelper.WaitForIdle();
-				var page = frame.Content as Page_With_AppBarButton_Visibility_Bound;
-				page.DataContext = null;
-				Assert.IsNotNull(page);
-				await WindowHelper.WaitForIdle();
-				var tb = page.innerTextBlock;
-				var icon = page.innerIcon;
-				var barButton1 = page.innerBarButton;
-				Assert.IsNotNull(tb);
-				Assert.IsNotNull(icon);
-				Assert.IsNotNull(barButton1);
-				Assert.AreEqual(Visibility.Collapsed, barButton1.Visibility);
-			}
+			var frame = new Frame();
+			WindowHelper.WindowContent = frame;
+			await WindowHelper.WaitForIdle();
+			frame.Navigate(typeof(Page_With_AppBarButton_Visibility_Bound));
+			await WindowHelper.WaitForIdle();
+			var page = frame.Content as Page_With_AppBarButton_Visibility_Bound;
+			page.DataContext = null;
+			Assert.IsNotNull(page);
+			await WindowHelper.WaitForIdle();
+			var tb = page.innerTextBlock;
+			var icon = page.innerIcon;
+			var barButton1 = page.innerBarButton;
+			Assert.IsNotNull(tb);
+			Assert.IsNotNull(icon);
+			Assert.IsNotNull(barButton1);
+			Assert.AreEqual(Visibility.Collapsed, barButton1.Visibility);
 		}
 
 		private class MyContext

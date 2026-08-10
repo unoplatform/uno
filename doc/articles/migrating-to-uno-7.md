@@ -83,9 +83,40 @@ Uno.SDK single-project model.
   `IShadowChildrenProvider`, `CompositorThread`,
   `Uno.UI.Composition.ICompositionRoot`. Use the WinUI control
   (`ListView`/`Frame`/`Popup`/…) — everything renders via Skia.
+- **Native flyout opt-in:** `FlyoutBase.UseNativePopup`, including its conditional-XAML forms
+  (`android:UseNativePopup` / `ios:UseNativePopup`). Remove the assignment — flyouts always use
+  the WinUI presentation. The two `Uno.UI.Toolkit` attached properties that only ever
+  customized that native iOS presentation go with it:
+  `MenuFlyoutItemExtensions.IsDestructive` (red "destructive" item text) and
+  `MenuFlyoutExtensions.CancelTextIosOverride` (custom cancel-button caption). Remove the
+  attributes; style the `MenuFlyoutItem` directly for a destructive look.
+  `UICommandExtensions.SetDestructive` / `UICommand.IsDestructive` are **not** removed —
+  those still drive the native iOS `MessageDialog`.
+- **Native default styles:** the whole `Generic.Native.xaml` dictionary is gone, so the
+  `NativeDefaultButton`, `NativeDefaultCheckBox`, `NativeDefaultCommandBar`,
+  `NativeDefaultAppBarButton`, `NativeDefaultFrame`, `NativeDefaultPivot`,
+  `NativeDefaultProgressBar`, `NativeDefaultSlider`, `NativeDefaultTextBox`,
+  `NativeDefaultToggleSwitch`, `NativeDefaultSplitViewOpenPaneLength`, `AndroidButtonStyle`,
+  `AndroidCheckBoxStyle`, `AndroidRadioButtonStyle`, `iOSButtonStyle`,
+  `IosPickerFlyoutTextButtonStyle`, `LeftDrawerSplitViewStyle`, and
+  `RightDrawerSplitViewStyle` resource keys no longer resolve. These styles templated native
+  views, so there is no Skia equivalent — drop the `Style="{StaticResource NativeDefault…}"`
+  and the control falls back to the WinUI default style it already used when no native style
+  was registered. `Uno.UI.Converters.UnoNativeDefaultProgressBarReverseBoolConverter` goes
+  with them.
+- **Native-style declaration:** the `not_win:IsNativeStyle="True"` attribute on a `Style` is no
+  longer recognized. A third-party dictionary that still carries it now **fails the XAML
+  build** instead of silently registering a second, native default style — remove the
+  attribute. The Uno-only
+  `Style.RegisterDefaultStyleForType(Type, IXamlResourceDictionaryProvider, bool)` also loses its
+  `isNative` parameter; it is `[EditorBrowsable(Never)]` and normally only called from
+  XAML-generated code, so rebuilding regenerates the correct call.
 - **Composition:** `Uno.CompositionConfiguration.Options.UseCompositorThread` (the Android
   RenderNode compositor thread). Remove the flag; Skia composition needs no dedicated
   native render thread.
+- **Deprecated UIKit disposal helper:** `Uno.Foundation.NSObjectExtensions.ValidateDispose`,
+  deprecated since Uno 5.x. Remove the call from your `NSObject`/`UIView` `Dispose`
+  overrides — Skia does not host native views, so there is nothing to validate.
 - **Legacy WebAssembly JavaScript interop:** `Uno.Foundation.Interop.IJSObject`,
   `IJSObjectMetadata`, `JSObjectHandle`, `JSObject`, and
   `WebAssemblyRuntime.InvokeJSWithInterop(FormattableString)` — the Uno-only
@@ -113,17 +144,47 @@ Skia/WinUI behavior:
 - **iOS:** `Image.LegacyIosAlignment`,
   `FrameworkElement.IOsAllowSuperviewNeedsLayoutWhileInLayoutSubViews`,
   `CommandBar.AllowNativePresenterContent`, `DatePicker.UseLegacyStyle`,
-  `TimePicker.UseLegacyStyle`.
+  `TimePicker.UseLegacyStyle`, `UIElement.FailOnNSObjectExtensionsValidateDispose`
+  (see `NSObjectExtensions.ValidateDispose` above).
 - **WebAssembly:** `Interop.ForceJavascriptInterop`, `UIElement.AssignDOMXamlName`,
-  `UIElement.AssignDOMXamlProperties`, `TextBlock.IsMeasureCacheEnabled`,
+  `UIElement.AssignDOMXamlProperties`, `UIElement.RenderToStringWithId`,
+  `TextBlock.IsMeasureCacheEnabled`, `Shape.WasmDelayUpdateUntilFirstArrange`,
+  `Shape.WasmCacheBBoxCalculationResult`, `Shape.WasmBBoxCacheSize`,
   `Cursors.UseHandForInteraction` (the "hand" cursor for interactive controls is
   now never used).
 - **Native (Android + iOS):** `ListViewBase.AnimateScrollIntoView`.
-- **Native styling:** `Style.UseUWPDefaultStyles`, `Style.ConfigureNativeFrameNavigation()`.
+- **Native styling:** the whole `Style` holder — `Style.UseUWPDefaultStyles`,
+  `Style.UseUWPDefaultStylesOverride`, `Style.SetUWPDefaultStylesOverride<TControl>()`, and
+  `Style.ConfigureNativeFrameNavigation()`. The WinUI default styles are now the only ones.
 - **Skia overlay:** `TextBox.UseOverlayOnSkia`.
 
 `WebView2.IsInspectable` is also removed; it was an obsolete alias, so switch to
 `WebView2.EnableDevTools` instead.
+
+The cross-platform `Control.UseLegacyContentAlignment` flag is also removed. It opted into the
+legacy Top/Left default for `HorizontalContentAlignment`/`VerticalContentAlignment`; the default is
+now always the WinUI-correct **Center/Center**. Apps that set it to `true` should instead set
+`HorizontalContentAlignment`/`VerticalContentAlignment` explicitly (via a `Style` or per control).
+
+The cross-platform `WinRTFeatureConfiguration.ApplicationLanguages.UseLegacyPrimaryLanguageOverride`
+flag is also removed. Unlike the flags above it defaulted to `true`, so this changes behavior for
+apps that never touched it: setting `Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride`
+no longer swaps `CultureInfo.CurrentCulture`/`CurrentUICulture` from inside the setter. The override
+is persisted and applied to the culture on the next app start, matching WinUI. Resource lookup
+(`x:Uid`, `ResourceLoader`) still follows the new value immediately, so localized strings keep
+updating once the affected pages reload.
+
+Apps that relied on the immediate culture swap — number, date, and currency formatting, or .NET
+resource lookup through `CurrentUICulture` — should set the culture themselves alongside the
+override:
+
+```csharp
+ApplicationLanguages.PrimaryLanguageOverride = language;
+
+var culture = new CultureInfo(language);
+CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = culture;
+CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
+```
 
 If a single codebase must target both pre-7.0 and 7.0, guard the calls with `#if`.
 
@@ -166,6 +227,31 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
   (`ImageBrush.StretchProperty`, `AlignmentXProperty`, `AlignmentYProperty`) still resolves
   via inheritance, and `is TileBrush` is now `true` for an `ImageBrush`. Instance usage
   (`imageBrush.Stretch`, XAML `Stretch="…"`) is unaffected.
+- **`FadeInThemeAnimation` / `FadeOutThemeAnimation`** now derive directly from `Timeline`
+  (matching WinUI) instead of Uno's `DoubleAnimation`. The `DoubleAnimation`-only members
+  they used to inherit — `From`, `To`, `By`, `EasingFunction`, and
+  `EnableDependentAnimation` — are gone; WinUI never exposed them on these theme
+  animations. `TargetName` and the `Timeline` members (`Duration`, `BeginTime`,
+  `RepeatBehavior`, `FillBehavior`) are unchanged. Set only `TargetName` (as the built-in
+  styles do); the fade always animates `Opacity` to its fixed target (1 for fade-in, 0 for
+  fade-out).
+
+### XAML changes
+
+- **The WPF-style `clr-namespace:` xmlns form is no longer accepted.** WinUI only supports
+  `using:`; Uno used to also accept `clr-namespace:MyApp.Controls;assembly=MyLib` and silently
+  strip the prefix and the `;assembly=` token. Replace each declaration with the `using:` form —
+  the assembly is inferred, so the `;assembly=` part is simply dropped:
+
+  ```diff
+  - xmlns:local="clr-namespace:MyApp.Controls;assembly=MyLib"
+  + xmlns:local="using:MyApp.Controls"
+  ```
+
+  This is enforced at **build time** (the `UXAML0006` diagnostic) and at **run time** by
+  `XamlReader.Load` and Hot Reload, which throw a `XamlParseException`. The declaration itself is
+  rejected whether or not the prefix is used, so unused `clr-namespace:` declarations must also be
+  removed — the only exemption is a prefix listed in `mc:Ignorable` on the root element.
 
 ### Android head uses the host builder
 
@@ -227,9 +313,10 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 5. Replace the WASM DOM head with the Skia WebAssembly Browser head; remove any DOM/CSS
    customization and `HtmlElement` usage.
 6. Remove manual `ConfigureUniversalImageLoader();` (Android) and other native bootstrap.
-7. Convert the Android `Application` class to override `CreateHost()` instead of passing an
+7. Convert every `xmlns:…="clr-namespace:…"` declaration in your XAML to the `using:` form.
+8. Convert the Android `Application` class to override `CreateHost()` instead of passing an
    `AppBuilder` delegate to the base constructor.
-8. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+9. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)

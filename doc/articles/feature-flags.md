@@ -6,12 +6,6 @@ uid: Uno.Development.FeatureFlags
 
 Uno provides a set of feature flags that can be set early in an app's startup to control its behavior. Some of these flags are for backward compatibility, some of them provide fine-grained customizability of a particular feature, and some of them allow to toggle between more 'WinUI-like' and more 'native-like' behavior in a particular context.
 
-## WinUI styles default
-
-By default, Uno favors the default WinUI XAML styles over the native styles for Button, Slider, ComboBox, etc...
-
-This can be changed using `Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles`.
-
 ## Disabling accessibility text scaling (Android and iOS)
 
 By default, Uno automatically enables accessibility text scaling on iOS and Android devices. However, to have more control, the feature flag `Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor` was added to control.
@@ -152,12 +146,6 @@ public App()
 ## `ApplicationData`
 
 On Skia Desktop targets, it is possible to override the default `ApplicationData` folder locations using `WinRTFeatureConfiguration.ApplicationData` properties. For more information, see [related docs here](/articles/features/applicationdata.md#data-location-on-skia-desktop)
-
-## Deprecated NSObjectExtensions.ValidateDispose for iOS
-
-The method `NSObjectExtensions.ValidateDispose` is deprecated in Uno 5.x and will be removed in the next major release.
-
-In order for calls to fail on uses of this method, set the `Uno.UI.FeatureConfiguration.UIElement.FailOnNSObjectExtensionsValidateDispose` flag to `true`.
 
 ## Android Settings
 

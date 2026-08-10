@@ -144,8 +144,6 @@
             href: xref:Uno.Development.CommunityToolkit.v7
       - name: How to manually add a splash screen
         href: xref:Uno.Development.SplashScreen
-      - name: How to use native Frame navigation
-        href: xref:Uno.Tutorials.UseNativeFrameNav
       - name: How to consume a web API
         href: xref:Uno.Development.ConsumeWebApi
       - name: How to localize text resources
@@ -567,8 +565,6 @@
               href: controls/MenuFlyout.md
             - name: NavigationView
               href: controls/NavigationView.md
-            - name: Native control styles
-              href: native-styles.md
             - name: Other features
               href: xref:Uno.Development.AdditionalFeatures
             - name: Pivot
@@ -635,8 +631,6 @@
           href: features/custom-fonts.md
         - name: Markup Extensions
           href: features/windows-ui-markup-extensions.md
-        - name: Native frame navigation
-          href: features/native-frame-nav.md
         - name: Orientation
           href: features/orientation.md
         - name: Routed Events

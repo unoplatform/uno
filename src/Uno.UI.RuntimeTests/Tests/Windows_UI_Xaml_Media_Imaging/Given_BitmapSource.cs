@@ -86,6 +86,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 #if __SKIA__ // Not yet supported on the other platforms (https://github.com/unoplatform/uno/issues/8909)
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaFrameBuffer)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23967")]
 		public async Task When_MsAppData()
 		{
 			var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
@@ -170,6 +172,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaFrameBuffer)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23967")]
 		public async Task When_MsAppData_StreamDisposed_FileNotLocked()
 		{
 			var fileName = $"test_stream_disposed_{Guid.NewGuid()}.png";

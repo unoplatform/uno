@@ -13,10 +13,6 @@
         <StackPanel>
             <TextBlock Text="Measure Performance" />
             <TextBlock x:Name="result1" />
-            <CheckBox
-                x:Name="measureCacheEnabled"
-                Content="Measure Cache Enabled"
-                IsChecked="True" />
             <Button Click="Bench_TextMeasure_SameText" Content="Rerun Same Text" />
         </StackPanel>
     </Grid>

@@ -68,7 +68,7 @@ The following XAML root elements are supported with their corresponding base typ
 | `Application` | `Microsoft.UI.Xaml.Application` |
 | `ResourceDictionary` | `Microsoft.UI.Xaml.ResourceDictionary` |
 
-Custom root elements using `using:` or `clr-namespace:` xmlns prefixes are also supported.
+Custom root elements using `using:` xmlns prefixes are also supported.
 
 ## How it works
 

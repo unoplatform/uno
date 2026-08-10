@@ -19,22 +19,19 @@
             x:Name="AppCommandBar"
             Grid.Row="0"
             Background="Red"
-            Content="Title"
-            Style="{StaticResource NativeDefaultCommandBar}">
+            Content="Title">
 
             <!--  Disabled Button  -->
             <AppBarButton
                 x:Uid="ButtonDisabled"
                 Content="Disabled"
-                IsEnabled="False"
-                Style="{StaticResource NativeDefaultAppBarButton}" />
+                IsEnabled="False" />
 
             <!--  Done Button  -->
             <AppBarButton
                 x:Uid="ButtonDone"
                 Content="Done"
-                Foreground="Blue"
-                Style="{StaticResource NativeDefaultAppBarButton}" />
+                Foreground="Blue" />
         </not_win:CommandBar>
 
         <!--  Message  -->

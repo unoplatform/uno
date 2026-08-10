@@ -136,14 +136,6 @@ namespace Uno.UI
 			public static bool UseImplicitContentFromTemplatedParent { get; set; }
 		}
 
-		public static class Control
-		{
-			/// <summary>
-			/// Make the default value of VerticalContentAlignment and HorizontalContentAlignment be Top/Left instead of Center/Center
-			/// </summary>
-			public static bool UseLegacyContentAlignment { get; set; }
-		}
-
 		public static class DependencyObject
 		{
 			/// <summary>
@@ -252,12 +244,6 @@ namespace Uno.UI
 		public static class Image
 		{
 			/// <summary>
-			/// Use the old way to align iOS images, using the "ContentMode".
-			/// New way is using the Layer to better position the image according to alignments.
-			/// </summary>
-			public static bool LegacyIosAlignment { get; set; }
-
-			/// <summary>
 			/// On platforms that support caching BitmapImage assets, this sets
 			/// the maximum number of entries in the cache. The value must be a
 			/// positive integer.
@@ -268,16 +254,6 @@ namespace Uno.UI
 			/// On platforms that support caching BitmapImage assets, this enables caching.
 			/// </summary>
 			public static bool EnableBitmapImageCache { get; set; } = true;
-		}
-
-		public static class Interop
-		{
-			/// <summary>
-			/// [WebAssembly Only] Used to control the behavior of the C#/Javascript interop. Setting this
-			/// flag to true forces the use of the Javascript eval mode, instead of binary interop.
-			/// This flag has no effect when running in hosted mode.
-			/// </summary>
-			public static bool ForceJavascriptInterop { get; set; }
 		}
 
 		public static class BindingExpression
@@ -355,79 +331,8 @@ namespace Uno.UI
 			public static bool UseOverStates { get; set; } = true;
 		}
 
-		public static class Style
-		{
-			/// <summary>
-			/// Determines if Uno.UI should be using native styles for controls that have
-			/// a native counterpart. (e.g. Button, Slider, ComboBox, ...)
-			///
-			/// By default this is true.
-			/// </summary>
-			public static bool UseUWPDefaultStyles { get; set; } = true;
-
-			/// <summary>
-			/// Override the native styles usage per control type.
-			/// </summary>
-			/// <remarks>
-			/// Usage: 'UseUWPDefaultStylesOverride[typeof(Frame)] = false;' will result in the native style always being the default for Frame, irrespective
-			/// of the value of <see cref="UseUWPDefaultStyles"/>. This is useful when an app uses the UWP default look for most controls but the native
-			/// appearance/comportment for a few particular controls, or vice versa.
-			/// </remarks>
-			public static IDictionary<Type, bool> UseUWPDefaultStylesOverride { get; } = new Dictionary<Type, bool>();
-
-			/// <summary>
-			/// This enables native frame navigation on Android and iOS by setting related classes (<see cref="Frame"/>, <see cref="CommandBar"/>
-			/// and <see cref="Microsoft.UI.Xaml.Controls.AppBarButton"/>) to use their native styles.
-			/// </summary>
-			public static void ConfigureNativeFrameNavigation()
-			{
-				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Frame_Available)
-				{
-					SetUWPDefaultStylesOverride<Microsoft.UI.Xaml.Controls.Frame>(useUWPDefaultStyle: false);
-				}
-
-				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_CommandBar_Available)
-				{
-					SetUWPDefaultStylesOverride<Microsoft.UI.Xaml.Controls.CommandBar>(useUWPDefaultStyle: false);
-				}
-
-				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_AppBarButton_Available)
-				{
-					SetUWPDefaultStylesOverride<Microsoft.UI.Xaml.Controls.AppBarButton>(useUWPDefaultStyle: false);
-				}
-			}
-
-			/// <summary>
-			/// Override the native styles useage for control type <typeparamref name="TControl"/>.
-			/// </summary>
-			/// <typeparam name="TControl"></typeparam>
-			/// <param name="useUWPDefaultStyle">
-			/// Whether instances of <typeparamref name="TControl"/> should use the UWP default style.
-			/// If false, the native default style (if one exists) will be used.
-			/// </param>
-			public static void SetUWPDefaultStylesOverride<TControl>(bool useUWPDefaultStyle) where TControl : Microsoft.UI.Xaml.Controls.Control
-				=> UseUWPDefaultStylesOverride[typeof(TControl)] = useUWPDefaultStyle;
-		}
-
 		public static class TextBlock
 		{
-			/// <summary>
-			/// [WebAssembly Only] Determines if the measure cache is enabled.
-			/// </summary>
-			public static bool IsMeasureCacheEnabled { get; set; } = true;
-
-			/// <summary>
-			/// [Android Only] Determines if the Java string-cache is enabled.
-			/// This option must be set on application startup before the cache is initialized.
-			/// </summary>
-			public static bool IsJavaStringCachedEnabled { get; set; } = true;
-
-			/// <summary>
-			/// [Android Only] Determines the maximum capacity of the Java string-cache.
-			/// This option must be set on application startup before the cache is initialized.
-			/// </summary>
-			public static int JavaStringCachedCapacity { get; set; } = 1000;
-
 			/// <summary>
 			/// On Skia targets, determines if the TextBlock should render whitespace characters.
 			/// There's usually no effect between toggling this flag on and off, but it can have
@@ -514,38 +419,6 @@ namespace Uno.UI
 			public static int ShowDelay { get; set; } = 1000;
 
 			public static int ShowDuration { get; set; } = 5000;
-		}
-
-		public static class UIElement
-		{
-			/// <summary>
-			/// [WebAssembly Only] Enable the assignation of the "xamlname", "xuid" and "xamlautomationid" attributes on DOM elements created
-			/// from the XAML visual tree. This enables tools such as Puppeteer to select elements
-			/// in the DOM for automation purposes.
-			/// </summary>
-			public static bool AssignDOMXamlName { get; set; }
-
-			/// <summary>
-			/// [WebAssembly Only] Enable UIElement.ToString() to return the element's unique ID
-			/// </summary>
-			public static bool RenderToStringWithId { get; set; } = true;
-
-			/// <summary>
-			/// [WebAssembly Only] Enables the assignation of properties from the XAML visual tree as DOM attributes: Height -> "xamlheight",
-			/// HorizontalAlignment -> "xamlhorizontalalignment" etc.
-			/// </summary>
-			/// <remarks>
-			/// This should only be enabled for debug builds, but can greatly aid layout debugging.
-			///
-			/// Note: for release builds of Uno, if the flag is set, attributes will be set on loading and *not* updated if
-			/// the values change subsequently. This restriction doesn't apply to debug Uno builds.
-			/// </remarks>
-			public static bool AssignDOMXamlProperties { get; set; }
-
-			/// <summary>
-			/// Enables failure when <see cref="Foundation.NSObjectExtensions.ValidateDispose"/> is invoked.
-			/// </summary>
-			public static bool FailOnNSObjectExtensionsValidateDispose { get; set; }
 		}
 
 		public static class WebView2
@@ -796,26 +669,6 @@ namespace Uno.UI
 			public static bool PreventKeyboardStateTrackerFromResettingOnWindowActivationChange { get; set; }
 
 			public static bool WaitIndefinitelyInEventTester { get; set; }
-		}
-
-		public static class Shape
-		{
-			/// <summary>
-			/// [WebAssembly Only] Gets or sets whether native svg attributes assignments can be postponed until the first arrange pass.
-			/// </summary>
-			/// <remarks>This avoid double assignments(with js interop call) from both OnPropertyChanged and UpdateRender.</remarks>
-			public static bool WasmDelayUpdateUntilFirstArrange { get; set; } = true;
-
-			/// <summary>
-			/// [WebAssembly Only] Gets or sets whether native getBBox() result will be cached.
-			/// </summary>
-			public static bool WasmCacheBBoxCalculationResult { get; set; } = true;
-
-			internal const int WasmDefaultBBoxCacheSize = 64;
-			/// <summary>
-			/// [WebAssembly Only] Gets or sets the size of getBBox cache. The default size is 64.
-			/// </summary>
-			public static int WasmBBoxCacheSize { get; set; } = WasmDefaultBBoxCacheSize;
 		}
 
 	}
