@@ -74,6 +74,13 @@ public interface IDrawingSession
 	/// </summary>
 	void DrawRoundedRect(in Rect rect, Vector4 radii, Color color, bool antialias = false);
 
+	/// <summary>
+	/// Fills the ANNULUS between an outer and an inner rounded rectangle with a solid <paramref name="color"/> —
+	/// a rounded border/edge in one shape. Per-corner radii in (TopLeft, TopRight, BottomRight, BottomLeft) order.
+	/// A backend may render this analytically (one SDF quad, outer minus inner) rather than tessellating a ring path.
+	/// </summary>
+	void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, Color color, bool antialias = false);
+
 	/// <summary>Fills <paramref name="geometry"/> with a solid <paramref name="color"/> (bake any opacity into its alpha).</summary>
 	void DrawPath(IGeometry geometry, Color color, bool antialias = false);
 
