@@ -17,7 +17,7 @@ namespace UITests.Windows_UI_Notifications;
 	"Microsoft.Windows.AppNotifications",
 	"Windows.UI.Notifications",
 	Name = "AppNotificationManager",
-	Description = "Exercises registration, posting, progress updates, scheduling, activation, history, and removal.",
+	Description = "Exercises registration, posting, progress updates, scheduling where supported, activation, history, and removal.",
 	IsManualTest = true,
 	IgnoreInSnapshotTests = true)]
 public sealed partial class AppNotificationManagerSample : Page
@@ -45,6 +45,12 @@ public sealed partial class AppNotificationManagerSample : Page
 	private void Page_Loaded(object sender, RoutedEventArgs e)
 	{
 		_isLoaded = true;
+		if (OperatingSystem.IsBrowser())
+		{
+			ScheduleButton.Visibility = Visibility.Collapsed;
+			RemoveScheduledButton.Visibility = Visibility.Collapsed;
+			HistoryStatusText.Text = "Active: not queried";
+		}
 		if (!_isHandlerAttached)
 		{
 			_manager.NotificationInvoked += Manager_NotificationInvoked;
@@ -313,9 +319,16 @@ public sealed partial class AppNotificationManagerSample : Page
 	private async Task RefreshHistoryCore()
 	{
 		var active = await _manager.GetAllAsync();
-		var scheduled = ToastNotificationManager.CreateToastNotifier().GetScheduledToastNotifications();
 		var activeIds = active.Count == 0 ? "none" : string.Join(", ", active.Select(notification => notification.Id));
-		HistoryStatusText.Text = $"Active: {active.Count} ({activeIds}) | Scheduled: {scheduled.Count}";
+		if (OperatingSystem.IsBrowser())
+		{
+			HistoryStatusText.Text = $"Active: {active.Count} ({activeIds})";
+		}
+		else
+		{
+			var scheduled = ToastNotificationManager.CreateToastNotifier().GetScheduledToastNotifications();
+			HistoryStatusText.Text = $"Active: {active.Count} ({activeIds}) | Scheduled: {scheduled.Count}";
+		}
 		Log("History refreshed.");
 	}
 
