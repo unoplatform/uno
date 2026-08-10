@@ -36,10 +36,13 @@ public class Given_PasswordBox
 			Padding = new Thickness(4)
 		};
 
-		// Create a TextBox with "AAAA" to compare visual appearance
+		// Create a TextBox with "AAAA" to compare visual appearance. Spell-check is off so the comparison
+		// isolates the mask character: a PasswordBox never spell-checks, and a TextBox showing the same
+		// letters otherwise draws a squiggly underline the PasswordBox correctly lacks.
 		var textBox = new TextBox
 		{
 			Text = new string('A', passwordLength),
+			IsSpellCheckEnabled = false,
 			FontSize = 16,
 			Width = 100,
 			Height = 32,
@@ -105,10 +108,11 @@ public class Given_PasswordBox
 				Padding = new Thickness(4)
 			};
 
-			// Create a TextBox with the same special characters for comparison
+			// Create a TextBox with the same special characters for comparison (spell-check off, as above)
 			var textBox = new TextBox
 			{
 				Text = new string(specialChar[0], passwordLength),
+				IsSpellCheckEnabled = false,
 				FontSize = 16,
 				Width = 100,
 				Height = 32,

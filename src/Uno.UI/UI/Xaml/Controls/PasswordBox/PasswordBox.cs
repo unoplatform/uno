@@ -290,7 +290,7 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							new InputScopeName
 							{
-								NameValue = InputScopeNameValue.Password
+								NameValue = InputScopeNameValue.Default
 							}
 						}
 					},
@@ -583,6 +583,24 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		protected virtual void UpdateButtonStates() => _core.UpdateButtonStatesCore();
+
+		internal override void UpdateVisualState(bool useTransitions = true)
+			=> _core.UpdateVisualStateCore(useTransitions);
+
+		internal override string GetPlainText()
+		{
+			// Header or placeholder only — never the password.
+			if (Header is not null)
+			{
+				var plainText = FrameworkElement.GetStringFromObject(Header);
+				if (!string.IsNullOrEmpty(plainText))
+				{
+					return plainText;
+				}
+			}
+
+			return PlaceholderText ?? string.Empty;
+		}
 
 		void IFrameworkTemplatePoolAware.OnTemplateRecycled()
 		{
