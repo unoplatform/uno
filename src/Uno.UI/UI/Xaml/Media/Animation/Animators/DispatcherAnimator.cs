@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Security.Authentication.ExtendedProtection;
 using Microsoft.UI.Dispatching;
 using Windows.UI.Core;
 

@@ -113,7 +113,7 @@ internal sealed class TextSelectionGripperPresenter
 		}
 
 		// Keep the grippers glued to the selection ends as the text surface is (re)drawn.
-		_host.GripperTextSurface.DrawingFinished += () =>
+		_host.GripperTextSurface.DrawingFinished += (_, _) =>
 		{
 			// Only invalidate the grippers after drawing is complete to avoid modifying the children
 			// visuals during the render cycle.

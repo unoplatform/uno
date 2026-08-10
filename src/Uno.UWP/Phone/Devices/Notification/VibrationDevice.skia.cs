@@ -12,7 +12,7 @@ namespace Windows.Phone.Devices.Notification
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__")]
 		public static VibrationDevice GetDefault()
 		{
-			throw new global::System.NotImplementedException("The member VibrationDevice VibrationDevice.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VibrationDevice%20VibrationDevice.GetDefault%28%29");
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Phone.Devices.Notification.VibrationDevice", "VibrationDevice VibrationDevice.GetDefault()");
 		}
 
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__")]

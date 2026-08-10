@@ -1385,7 +1385,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private (Size availableSize, Size outSize, TextAlignment? alignment) _lastParsedTextCreationValues = (Size.Empty, Size.Empty, TextAlignment.Left);
 		internal IParsedText ParsedText { get; private set; } = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
 
-		internal event Action? DrawingFinished;
+		internal event EventHandler? DrawingFinished;
 
 		public TextBlock()
 		{
@@ -1637,7 +1637,7 @@ namespace Microsoft.UI.Xaml.Controls
 				highligherters,
 				compositionRange);
 			session.Canvas.Restore();
-			DrawingFinished?.Invoke();
+			DrawingFinished?.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>
