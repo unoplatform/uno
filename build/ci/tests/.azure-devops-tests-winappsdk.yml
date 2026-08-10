@@ -25,8 +25,6 @@ jobs:
   - template: ../templates/gitversion.yml
   - template: ../templates/dotnet-install.yml
 
-  - template: ../templates/pack-local-uno-sdk.yml
-
   # Required until Uno.Xaml can build without all targets enabled
   - template: ../templates/jdk-setup.yml
 

@@ -32,7 +32,6 @@ jobs:
     parameters:
       UnoCheckParameters: '--preview-major --tfm $(netCurrentTargetFramework)-browserwasm'
 
-  - template: ../templates/pack-local-uno-sdk.yml
  
   - template: ../templates/nuget-cache.yml
     parameters:

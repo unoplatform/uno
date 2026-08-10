@@ -54,8 +54,6 @@ jobs:
     parameters:
       UnoCheckParameters: '--tfm $(netCurrentTargetFramework)-ios'
 
-  - template: ../templates/pack-local-uno-sdk.yml
-
   - template: ../templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRootBuild }}
