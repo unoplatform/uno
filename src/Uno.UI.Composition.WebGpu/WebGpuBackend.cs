@@ -415,11 +415,14 @@ fn xformPos(clip: ClipU, pos: vec2<f32>) -> vec4<f32> {
   return vec4<f32>(clip.xform.x * pos.x + clip.xform.y * pos.y + clip.xoff.x,
                    clip.xform.z * pos.x + clip.xform.w * pos.y + clip.xoff.y, 0.0, 1.0);
 }
+// Maps a (moved) device fragment position back to the recording's own space so device-space fragment inputs (clip
+// shape, gradient geometry) baked at identity stay correct after an arena transform re-stamp. Identity = no-op.
+fn finvMap(clip: ClipU, fcRaw: vec2<f32>) -> vec2<f32> {
+  return vec2<f32>(clip.finv.x * fcRaw.x + clip.finv.z * fcRaw.y + clip.xoff.z,
+                   clip.finv.y * fcRaw.x + clip.finv.w * fcRaw.y + clip.xoff.w);
+}
 fn clipCov(fcRaw: vec2<f32>, clip: ClipU) -> f32 {
-  // finv maps the (moved) device fragment position back to the recording's own space so a clip baked at identity
-  // stays correct after an arena transform re-stamp (finv + xoff.zw = the inverse device affine). Identity = no-op.
-  let fc = vec2<f32>(clip.finv.x * fcRaw.x + clip.finv.z * fcRaw.y + clip.xoff.z,
-                     clip.finv.y * fcRaw.x + clip.finv.w * fcRaw.y + clip.xoff.w);
+  let fc = finvMap(clip, fcRaw);
   var cov = 1.0;
   let n = i32(clip.ctrl.x);
   for (var i = 0; i < n; i = i + 1) {
@@ -667,10 +670,13 @@ struct Grad { header: vec4<f32>, geo: vec4<f32>, colors: array<vec4<f32>, 64>, s
 @vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return xformPos(clip, pos); }
 fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
 @fragment fn fs(@builtin(position) fc: vec4<f32>) -> @location(0) vec4<f32> {
+  // Arena: map the device fragment back to the recording's own space so the gradient geometry (baked at identity)
+  // is correct after a transform re-stamp. Identity finv => gfc == fc.xy for immediate/non-arena draws.
+  let gfc = finvMap(clip, fc.xy);
   var t: f32 = 0.0;
   if (g.header.x < 0.5) {
     let a = g.geo.xy; let b = g.geo.zw; let ab = b - a; let denom = dot(ab, ab);
-    if (denom > 0.0) { t = dot(fc.xy - a, ab) / denom; }
+    if (denom > 0.0) { t = dot(gfc - a, ab) / denom; }
   } else {
     // Radial: map the device delta from the (device-space) center into unit-ellipse space via M — the inverse of
     // the gradient's local->device linear map, per-axis normalized by the local radii. M carries rotation, so a
@@ -678,7 +684,7 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
     // Then param along the ray from the focal origin so t=0 at the origin and t=1 at the ellipse edge.
     let c = g.geo.xy;
     let m = mat2x2<f32>(g.geo.z, g.geo.w, g.origin.z, g.origin.w);
-    let pn = m * (fc.xy - c);
+    let pn = m * (gfc - c);
     let on = m * (g.origin.xy - c);
     let dir = pn - on; let aa = dot(dir, dir);
     if (aa < 1e-9) { t = 0.0; }
@@ -2308,10 +2314,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		for (int i = 0; i < cmds.Count; i++)
 		{
 			var c = cmds[i];
-			// Solid/image only (paths use a stencil pass with no xform; gradients read device fc for their geometry).
-			// A rect/rounded clip is fine — clipCov maps fc back to local via finv; a PATH clip uses the depth mask
-			// (no finv) so it's excluded.
-			if (c is not (RectCommand or ImageCmd) || c.Clip.PathFan is not null) { return false; }
+			// Solid/image/gradient (all route device fc through finv). Paths use a stencil pass with no xform binding,
+			// so they're excluded. A rect/rounded clip is fine (clipCov maps fc back via finv); a PATH clip uses the
+			// depth mask (no finv) so it's excluded.
+			if (c is not (RectCommand or ImageCmd or GradientCmd) || c.Clip.PathFan is not null) { return false; }
 		}
 		return cmds.Count > 0;
 	}
@@ -2532,7 +2538,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							Vector2 MoveP(float x, float y) => new(x * t2.M11 + y * t2.M21 + t2.M31, x * t2.M12 + y * t2.M22 + t2.M32);
 							foreach (var op in entry.Ops)
 							{
-								var abgl = op.kind == 2 ? _d.ImageClipBgl : _d.SolidClipBgl;
+								var abgl = op.kind == 3 ? _d.GradClipBgl : (op.kind == 2 ? _d.ImageClipBgl : _d.SolidClipBgl);
 								// clipCov reads the LOCAL rounded shape (finv maps fc back to it); the SCISSOR is device-space
 								// so its Aabb must follow the move — transform the (finite) clip Aabb by the replay transform.
 								var scissorClip = op.clip;
