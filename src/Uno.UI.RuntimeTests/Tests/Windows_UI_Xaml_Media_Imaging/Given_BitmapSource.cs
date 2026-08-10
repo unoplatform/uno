@@ -104,7 +104,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			TaskCompletionSource<bool> tcs = new();
 			sut.ImageOpened += (s, e) => tcs.TrySetResult(true);
 
-			await tcs.Task;
+			// ImageOpened never fires on some Skia legs (#23967). Without a timeout the bare await
+			// hangs until the 60-minute job cap, which loses the results file for the whole suite.
+			await tcs.Task.WaitAsync(TimeSpan.FromSeconds(30));
 		}
 #endif
 
