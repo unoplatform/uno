@@ -12,7 +12,9 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using SKMatrix = SkiaSharp.SKMatrix;
 using SKRect = SkiaSharp.SKRect;
 #if HAS_UNO_WINUI
+#if !__SKIA__
 using SkiaSharp.Views.Windows;
+#endif
 
 #if __SKIA__
 using SkiaCanvas = global::Uno.WinUI.Graphics2DSK.SKCanvasElement;
