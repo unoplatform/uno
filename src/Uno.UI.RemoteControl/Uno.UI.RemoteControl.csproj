@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
-		<UnoDisableTargetFrameworkPlatformOverride>true</UnoDisableTargetFrameworkPlatformOverride>
+		<UnoShouldUseNoPlatformOverride>true</UnoShouldUseNoPlatformOverride>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
