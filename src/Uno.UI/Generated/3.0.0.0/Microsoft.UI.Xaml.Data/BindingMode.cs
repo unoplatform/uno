@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Data
 {
-#if false || false
+#if false
 	public enum BindingMode
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Data.BindingMode.OneWay

@@ -3,28 +3,28 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Markup
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class XamlBindingHelper
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty DataTemplateComponentProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"DataTemplateComponent", typeof(global::Microsoft.UI.Xaml.Markup.IDataTemplateComponent),
 			typeof(global::Microsoft.UI.Xaml.Markup.XamlBindingHelper),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Markup.IDataTemplateComponent)));
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.Markup.IDataTemplateComponent GetDataTemplateComponent(global::Microsoft.UI.Xaml.DependencyObject element)
 		{
 			return (global::Microsoft.UI.Xaml.Markup.IDataTemplateComponent)element.GetValue(DataTemplateComponentProperty);
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetDataTemplateComponent(global::Microsoft.UI.Xaml.DependencyObject element, global::Microsoft.UI.Xaml.Markup.IDataTemplateComponent value)
 		{
 			element.SetValue(DataTemplateComponentProperty, value);

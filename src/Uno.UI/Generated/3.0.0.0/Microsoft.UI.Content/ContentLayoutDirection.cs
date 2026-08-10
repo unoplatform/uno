@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Content
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum ContentLayoutDirection
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		LeftToRight = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		RightToLeft = 1,
 #endif
 	}

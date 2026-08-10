@@ -4,7 +4,7 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 	[global::Microsoft.UI.Xaml.Markup.ContentPropertyAttribute(Name = "Source")]
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class AnimatedIcon : global::Microsoft.UI.Xaml.Controls.IconElement
