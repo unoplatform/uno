@@ -136,10 +136,10 @@ var rr = new RoundRectangle
 	BottomRight = new Vector2(16, 16), BottomLeft = new Vector2(16, 16),
 };
 var prr = Render(r => { r.ClipRoundRect(rr); r.DrawRect(new Rect(0, 0, 64, 64), red, false); });
-var rrCenter = At(prr, 32, 32);   // deep inside → red
-var rrCorner = At(prr, 10, 10);   // inside the 8..56 AABB but outside the r=16 corner → masked (black)
-Check("rounded-clip: center painted (red)", rrCenter.r > 200 && rrCenter.g < 60, rrCenter);
-Check("rounded-clip: corner masked (black)", rrCorner.r < 40 && rrCorner.g < 40 && rrCorner.b < 40, rrCorner);
+var aqCenter = At(prr, 32, 32);   // deep inside → red
+var aqCorner = At(prr, 10, 10);   // inside the 8..56 AABB but outside the r=16 corner → masked (black)
+Check("rounded-clip: center painted (red)", aqCenter.r > 200 && aqCenter.g < 60, aqCenter);
+Check("rounded-clip: corner masked (black)", aqCorner.r < 40 && aqCorner.g < 40 && aqCorner.b < 40, aqCorner);
 
 // 7c) NESTED ROUNDED CLIPS — two concentric rounded rects (same bounds), outer r=20, inner r=4. The correct clip is
 //     the AND of both. Point (12,12) is INSIDE the inner r=4 arc but OUTSIDE the outer r=20 arc → must stay masked.
@@ -680,6 +680,30 @@ Check("many-stop gradient: right blue (stops 16..19 not clamped away)", manyRigh
 	Check("mixed-frame-solid: solid A red", mA.r > 200 && mA.g < 60, mA);
 	Check("mixed-frame-solid: path green", mP.g > 150 && mP.r < 100, mP);
 	Check("mixed-frame-solid: solid B blue", mB.b > 200 && mB.r < 60, mB);
+}
+
+// 18i) ANALYTIC RRECT — a rounded-rect fill must render as ONE `rrect` draw (no path tessellation): centre filled,
+//      a corner outside the radius arc masked by the SDF.
+{
+	var rrSurf = new WebGpuRenderSurface(dev, 64, 64);
+	var rrPres = new WebGpuPresentSession(dev, rrSurf);
+	rrPres.Clear(WColor.FromArgb(255, 0, 0, 0));
+	var rrRec = new WebGpuCommandRecorder();
+	rrRec.DrawRoundedRect(new Rect(8, 8, 48, 48), new Vector4(16, 16, 16, 16), red, true);
+	WebGpuTrace.Reset();
+	rrPres.Replay(rrRec.Finish());
+	var rrDraws = WebGpuTrace.Enabled ? WebGpuTrace.Dump() : "";
+	var rrpx = dev.ReadPixelsRgba(rrSurf);
+	var rrqCenter = At(rrpx, 32, 32);   // centre → red
+	var rrqCorner = At(rrpx, 9, 9);     // top-left, outside the r=16 arc → black
+	Check("rrect: centre filled red", rrqCenter.r > 200 && rrqCenter.g < 60, rrqCenter);
+	Check("rrect: corner outside radius masked", rrqCorner.r < 60 && rrqCorner.g < 60 && rrqCorner.b < 60, rrqCorner);
+	if (WebGpuTrace.Enabled)
+	{
+		int rrn = 0, pthn = 0;
+		foreach (var l in rrDraws.Split('\n')) { if (l.Contains("DRAW rrect")) { rrn++; } if (l.Contains("path-stencil")) { pthn++; } }
+		Check("rrect: ONE analytic draw, no path tessellation", rrn == 1 && pthn == 0, $"rrect={rrn} pathStencil={pthn}");
+	}
 }
 
 // 19) DPI SCALE — a logical 20x20 rect replayed through present.Save/Scale(2)/Replay/Restore must fill the 40x40
