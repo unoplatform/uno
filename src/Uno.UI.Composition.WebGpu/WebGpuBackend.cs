@@ -407,7 +407,14 @@ public sealed unsafe class WebGpuDevice : IDisposable
 // rects[i]/radii[i] are the nested rounded-rect clips (device space), ANDed together; ex[i]>0.5 = Difference
 // (keep outside). meta.x = active count. Arbitrary path clips are applied via the shared depth buffer as an in-pass
 // mask (see the main-pass clip protocol), not sampled here — so clipCov only carries the analytic rounded-rects.
-struct ClipU { rects: array<vec4<f32>, 4>, radii: array<vec4<f32>, 4>, ex: vec4<f32>, ctrl: vec4<f32>, size: vec4<f32> };
+struct ClipU { rects: array<vec4<f32>, 4>, radii: array<vec4<f32>, 4>, ex: vec4<f32>, ctrl: vec4<f32>, size: vec4<f32>, xform: vec4<f32>, xoff: vec4<f32> };
+// Arena transform: verts are stored in the recording's own (identity-baked) NDC space; xform (an NDC->NDC affine,
+// M = xform.xyzw = [m00 m01 m10 m11], t = xoff.xy) maps them to the replay transform. Identity for immediate draws;
+// re-stamped (a single uniform write) when a cached visual moves, so its geometry is reused, not rebuilt.
+fn xformPos(clip: ClipU, pos: vec2<f32>) -> vec4<f32> {
+  return vec4<f32>(clip.xform.x * pos.x + clip.xform.y * pos.y + clip.xoff.x,
+                   clip.xform.z * pos.x + clip.xform.w * pos.y + clip.xoff.y, 0.0, 1.0);
+}
 fn clipCov(fc: vec2<f32>, clip: ClipU) -> f32 {
   var cov = 1.0;
   let n = i32(clip.ctrl.x);
@@ -448,7 +455,7 @@ fn clipCov(fc: vec2<f32>, clip: ClipU) -> f32 {
 @group(0) @binding(0) var<uniform> clip: ClipU;
 struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 @vertex fn vs(@location(0) pos: vec2<f32>, @location(1) col: vec4<f32>) -> VOut {
-  var o: VOut; o.p = vec4<f32>(pos, 0.0, 1.0); o.c = col; return o;
+  var o: VOut; o.p = xformPos(clip, pos); o.c = col; return o;
 }
 @fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy, clip)); }";
 
@@ -653,7 +660,7 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 struct Grad { header: vec4<f32>, geo: vec4<f32>, colors: array<vec4<f32>, 64>, stops: array<vec4<f32>, 16>, origin: vec4<f32> };
 @group(0) @binding(0) var<uniform> g: Grad;
 @group(1) @binding(0) var<uniform> clip: ClipU;
-@vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return vec4<f32>(pos, 0.0, 1.0); }
+@vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return xformPos(clip, pos); }
 fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
 @fragment fn fs(@builtin(position) fc: vec4<f32>) -> @location(0) vec4<f32> {
   var t: f32 = 0.0;
@@ -724,7 +731,7 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 @group(0) @binding(1) var smp: sampler;
 @group(0) @binding(2) var<uniform> u: U;
 @group(1) @binding(0) var<uniform> clip: ClipU;
-@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> VOut { var o: VOut; o.p = vec4<f32>(pos, 0.0, 1.0); o.uv = uv; return o; }
+@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> VOut { var o: VOut; o.p = xformPos(clip, pos); o.uv = uv; return o; }
 @fragment fn fs(i: VOut) -> @location(0) vec4<f32> {
   var c = textureSample(tex, smp, i.uv);   // premultiplied
   if (u.op.z > 0.5) {
@@ -1267,6 +1274,11 @@ internal struct ClipData
 	public bool PathExclude;   // Difference op for the path clip
 	public static ClipData None => new() { Aabb = new Vector4(-1e9f, -1e9f, 1e9f, 1e9f) };
 
+	// No clip at all: infinite scissor, no rounded shapes, no path mask. (Arena re-stamp is only correct when the
+	// fragment shader doesn't depend on device position — i.e. no clip; see the ReplayRefCmd arena path.)
+	public bool IsNone => (Rounds is null || Rounds.Length == 0) && PathFan is null
+		&& Aabb.X <= -1e8f && Aabb.Y <= -1e8f && Aabb.Z >= 1e8f && Aabb.W >= 1e8f;
+
 	// Append a rounded clip, copy-on-write, capped at MaxRounds (drops the oldest/outermost on overflow).
 	public static RoundClip[] Push(RoundClip[] existing, in RoundClip rc)
 	{
@@ -1380,6 +1392,9 @@ internal sealed unsafe class WebGpuGeometryCache
 	public Matrix4x4 Transform;
 	public ClipData Clip;
 	public bool Used;
+	// Arena entry: Ops geometry is baked in the recording's OWN (identity) NDC space; a moved replay re-stamps a
+	// transform uniform (xform) on the per-op clip bind groups and reuses the vertex buffers instead of rebuilding.
+	public bool Arena;
 }
 
 // Backend-created gradient shader handle. The WebGPU backend mints its own (rather than delegating to Skia) so
@@ -2027,7 +2042,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// done before the next — no builder holds the scratch across a nested RenderInto. _clipU backs MakeClipBg's
 	// lookup; a bind-group cache MISS clones it before storing.
 	private readonly List<float> _scratch = new();
-	private readonly float[] _clipU = new float[44];   // ClipU: rects[4]+radii[4] (32) + ex(4) + meta(4) + size(4) = 176B
+	private readonly float[] _clipU = new float[52];   // ClipU: rects[4]+radii[4] (32) + ex + ctrl + size + xform + xoff = 208B
 
 	// Pool of per-RenderInto op lists so a static frame's rebuild doesn't allocate the (large ClipData) op array
 	// every present. A stack (not one field) keeps it correct under the recursive nested-layer RenderInto — each
@@ -2106,9 +2121,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	// The clip bind group for a command: just the ClipU uniform (rounded-rect + surface size). Arbitrary path clips
 	// are applied via the shared depth mask in the main pass, not sampled here, so there is no coverage texture.
-	private IntPtr MakeClipBg(IntPtr bgl, ClipData cd, OwnedResources owned = null)
+	private IntPtr MakeClipBg(IntPtr bgl, ClipData cd, OwnedResources owned = null, Matrix3x2 xform = default)
 	{
-		const int ClipUBytes = 176;   // rects[4]+radii[4] (128) + ex(16) + meta(16) + size(16); must match the WGSL struct
+		if (xform == default) { xform = Matrix3x2.Identity; }   // default(Matrix3x2) is all-zero; treat as identity
+		const int ClipUBytes = 208;   // rects[4]+radii[4] (128) + ex + ctrl + size + xform + xoff (16 each); match the WGSL struct
 		var cu = _clipU;
 		System.Array.Clear(cu);
 		var rounds = cd.Rounds;
@@ -2123,6 +2139,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 		cu[36] = n;                              // ctrl.x = active count
 		cu[40] = _s.Width; cu[41] = _s.Height;   // size
+		// xform maps stored (identity-baked) NDC verts to the replay NDC: px = M11*x + M21*y + M31, py = M12*x + M22*y + M32.
+		cu[44] = xform.M11; cu[45] = xform.M21; cu[46] = xform.M12; cu[47] = xform.M22;
+		cu[48] = xform.M31; cu[49] = xform.M32;   // xoff (NDC translation)
 
 		// The ClipU depends only on (layout, these floats) — identical across frames for static chrome — so reuse a
 		// cached bind group. Now that path clips carry no per-frame coverage texture, every clip is cacheable.
@@ -2269,6 +2288,34 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	private static bool ClipDataEquals(in ClipData a, in ClipData b)
 		=> a.Aabb == b.Aabb && ReferenceEquals(a.Rounds, b.Rounds) && ReferenceEquals(a.PathFan, b.PathFan);
+
+	// A recording is arena-safe when every draw is a solid rect or image with no clip: then the fragment shader
+	// doesn't depend on device position, so its geometry can be baked once in the recording's own space and moved by
+	// re-stamping the vertex xform (clipCov is a constant 1). Paths (stencil pass has no xform), gradients (device-
+	// space geometry in the fragment) and any clip need a device-space re-stamp and are NOT arena-safe yet.
+	private static bool IsArenaSafe(List<WebGpuCommand> cmds)
+	{
+		for (int i = 0; i < cmds.Count; i++)
+		{
+			var c = cmds[i];
+			if (c is not (RectCommand or ImageCmd) || !c.Clip.IsNone) { return false; }
+		}
+		return cmds.Count > 0;
+	}
+
+	// The NDC->NDC affine that maps the recording's own (identity-baked) NDC verts to the replay transform `t`
+	// (device->device). Derived so re-stamping this uniform reproduces baking `t` into the verts: with A = the
+	// device->NDC map (surface size), the vertex xform is A·T·A⁻¹. Lets a moved cached visual reuse its geometry.
+	private Matrix3x2 ArenaXform(Matrix4x4 t)
+	{
+		float w = _s.Width, h = _s.Height;
+		float a = t.M11, b = t.M21, c = t.M12, d = t.M22, e = t.M41, f = t.M42;
+		return new Matrix3x2(
+			a, -c * w / h,
+			-b * h / w, d,
+			a + b * h / w + 2f * e / w - 1f,
+			-(c * w / h + d) - 2f * f / h + 1f);
+	}
 
 	// Builds the draw-op(s) for a simple primitive (rect/path/image/gradient) into `ops`, allocating GPU resources
 	// pooled (owned == null, per-frame) or persistent (owned != null, a cached recording's geometry).
@@ -2447,8 +2494,34 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// list. Build once; reuse while it's replayed at the same transform/clip. A stale entry (moved
 					// visual) is deferred-released and rebuilt. Entries not referenced any frame are evicted.
 					var miss = !_d.GeometryCache.TryGetValue(rr.Commands, out var entry);
+						// ARENA (#22): a transform-safe recording (solid/image, no clip) bakes its geometry ONCE in its
+						// own identity NDC space; a moved replay re-stamps the vertex xform on the per-op clip bind groups
+						// and REUSES the vertex buffers instead of rebuilding. Moving-visual trace: moved frame => reuse.
+						if (rr.Clip.IsNone && IsArenaSafe(rr.Commands))
+						{
+							if (miss || !entry.Arena)
+							{
+								if (entry is not null) { _d.DeferRelease(entry.Owned); }
+								var aOwned = new OwnedResources();
+								var aOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
+								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None)) { BuildSimpleOp(tc, aOps, aOwned); }
+								entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true };
+								_d.GeometryCache[rr.Commands] = entry;
+								WebGpuTrace.Upload("geometry-build(new,arena)", aOps.Count);
+							}
+							else { WebGpuTrace.Upload("geometry-reuse(cache-hit)", 0); }
+							entry.Used = true;
+							var xf = ArenaXform(rr.Transform);
+							foreach (var op in entry.Ops)
+							{
+								var abgl = op.kind == 2 ? _d.ImageClipBgl : _d.SolidClipBgl;
+								var aClipBg = MakeClipBg(abgl, op.clip, null, xf);
+								ops.Add((op.kind, op.b0, op.u0, op.b1, op.flag, op.clip, (nint)aClipBg));
+							}
+							break;
+						}
 						var transformChanged = !miss && entry.Transform != rr.Transform;
-						if (miss || transformChanged || !ClipDataEquals(entry.Clip, rr.Clip))
+						if (miss || transformChanged || entry.Arena || !ClipDataEquals(entry.Clip, rr.Clip))
 						{
 							if (entry is not null) { _d.DeferRelease(entry.Owned); }
 							var owned = new OwnedResources();
