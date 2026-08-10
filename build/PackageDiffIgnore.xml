@@ -3281,6 +3281,22 @@
 		  <Member fullName="Microsoft.UI.Composition.Visual Microsoft.UI.Xaml.UIElement.GetVisualInternal()" reason="Reference flavor folded into Skia; accessor changed vtable slot, member still present (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.TextBlock(::|\.)(get_TextWrapping|get_MaxLines|get_TextTrimming|get_TextAlignment|get_LineHeight|get_LineStackingStrategy)\(\)" reason="Reference flavor folded into Skia; accessors changed vtable slot, members still present (breaking changes for 7.0, uno#8339)" isRegex="true" />
 
+		  <!-- ====================================================================== -->
+		  <!-- SpeechRecognitionResult construction and mutation made internal        -->
+		  <!-- (breaking changes for 7.0, uno#8339).                                  -->
+		  <!--                                                                        -->
+		  <!-- Unlike the vtable-slot entries above, these are real removals from the -->
+		  <!-- public surface: the parameterless constructor and the Text /           -->
+		  <!-- RawConfidence setters were public only under #if __WASM__, a TODO      -->
+		  <!-- deferral explicitly labelled "make a breaking change". Every caller is -->
+		  <!-- internal to Uno.WinRT, so nothing inside the assembly breaks, but      -->
+		  <!-- external code that constructed or mutated a result needs a migration   -->
+		  <!-- note.                                                                  -->
+		  <!-- ====================================================================== -->
+		  <Member fullName="System.Void Windows.Media.SpeechRecognition.SpeechRecognitionResult..ctor()" reason="SpeechRecognitionResult constructor made internal; results are produced by the recognizer (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Windows.Media.SpeechRecognition.SpeechRecognitionResult.set_Text(System.String value)" reason="SpeechRecognitionResult.Text setter made internal (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Windows.Media.SpeechRecognition.SpeechRecognitionResult.set_RawConfidence(System.Double value)" reason="SpeechRecognitionResult.RawConfidence setter made internal (breaking changes for 7.0, uno#8339)" />
+
 	  </Methods>
 	  <Events>
 		  <!-- ====================================================================== -->
