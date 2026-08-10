@@ -143,19 +143,13 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
 }
 
 ## Tests Per versions of uno
-
-# Uno.UI.HotDesign, and every Uno-family feature package below, are still compiled against the
-# pre-7.0 `Uno` assembly, which no longer exists after the Uno.WinRT rename. Restore these once
-# 7.0 builds of those packages are published.
-$noPreRenamePackages = '-p:UnoDisableHotDesign=true'
-
 if ($IsWindows)
 {
-    $default = @('-v:m', '-p:EnableWindowsTargeting=true', $noPreRenamePackages)
+    $default = @('-v:m', '-p:EnableWindowsTargeting=true')
 }
 else
 {
-    $default = @('-v:m', '-p:AotAssemblies=false', $noPreRenamePackages)
+    $default = @('-v:m', '-p:AotAssemblies=false')
 }
 
 $debug = $default + '-p:Configuration=Debug'
@@ -163,9 +157,7 @@ $release = $default + '-p:Configuration=Release'
 
 & $env:BUILD_SOURCESDIRECTORY/build/test-scripts/update-uno-sdk-globaljson.ps1
 
-# Material, Extensions, Toolkit, CSharpMarkup and MVUX all resolve to packages built against the
-# pre-7.0 `Uno` assembly; Svg is the only one of the set that comes from this repository.
-$sdkFeatures = "-p:UnoFeaturesOverride=Svg";
+$sdkFeatures = $(If ($IsWindows) {"-p:UnoFeaturesOverride=Material%3BExtensions%3BToolkit%3BCSharpMarkup%3BSvg%3BMVUX"} Else { "-p:UnoFeaturesOverride=Material%3BToolkit" });
 
 $projects =
 @(

@@ -4,7 +4,7 @@ using global::System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("Uno.UI")]
 [assembly: InternalsVisibleTo("Uno.UI.Dispatching")]
-[assembly: InternalsVisibleTo("Uno.WinRT")]
+[assembly: InternalsVisibleTo("Uno")]
 [assembly: InternalsVisibleTo("Uno.Foundation")]
 [assembly: InternalsVisibleTo("Uno.UI.Wasm")]
 [assembly: InternalsVisibleTo("Uno.Wasm")]

@@ -6,7 +6,7 @@
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
-		<AssemblyName>Uno.WinRT</AssemblyName>
+		<AssemblyName>Uno</AssemblyName>
 		<RootNamespace>Windows</RootNamespace>
 		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO;HAS_UMBRELLA_UI;HAS_UMBRELLA_BINDING;HAS_CRIPPLEDREFLECTION</DefineConstants>
 		<UnoDisableAnalyzersForSamples>true</UnoDisableAnalyzersForSamples>

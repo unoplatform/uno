@@ -9,7 +9,7 @@ internal static class DispatcherTimerProxy
 	private static Func<IDispatcherTimer>? _getter;
 
 	/// <summary>
-	/// Provides access to DispatcherTimer within the Uno.WinRT.dll layer
+	/// Provides access to DispatcherTimer within the Uno.dll layer
 	/// </summary>
 	public static IDispatcherTimer? GetDispatcherTimer() => _getter?.Invoke();
 

@@ -30,7 +30,7 @@
 		public static async initializeExports() {
 
 			if ((<any>Module).getAssemblyExports !== undefined) {
-				const unoExports = await (<any>Module).getAssemblyExports("Uno.WinRT");
+				const unoExports = await (<any>Module).getAssemblyExports("Uno");
 				const unoUIDispatchingExports = await (<any>Module).getAssemblyExports("Uno.UI.Dispatching");
 
 				const runtimeWasmExports = await (<any>Module).getAssemblyExports("Uno.Foundation.Runtime.WebAssembly");

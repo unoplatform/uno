@@ -221,15 +221,8 @@ build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 					.Where(r => Path.GetFileName((r as PortableExecutableReference)?.FilePath ?? string.Empty) == "Uno.UI.Toolkit.dll")
 					.ToArray();
 
-				// The same package still ships Uno.dll. It used to be shadowed by the local build sharing
-				// its assembly identity; since the rename to Uno.WinRT the two are distinct, so every
-				// Windows.* type would be defined twice and GetTypeByMetadataName would return null.
-				var supersededByLocalWinRT = project.MetadataReferences
-					.Where(r => Path.GetFileName((r as PortableExecutableReference)?.FilePath ?? string.Empty) == "Uno.dll")
-					.ToArray();
-
 				project = project
-					.WithMetadataReferences(project.MetadataReferences.Except(supersededByLocalBuild).Except(supersededByLocalWinRT))
+					.WithMetadataReferences(project.MetadataReferences.Except(supersededByLocalBuild))
 					.AddMetadataReferences(UnoAssemblyHelper.LoadAssemblies());
 
 				if (supersededByLocalBuild.Length > 0)

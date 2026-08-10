@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("SamplesApp.macOS")]
 [assembly: InternalsVisibleTo("SamplesApp.Skia")]
 
-[assembly: InternalsVisibleTo("Uno.WinRT")]
+[assembly: InternalsVisibleTo("Uno")]
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
 
 
