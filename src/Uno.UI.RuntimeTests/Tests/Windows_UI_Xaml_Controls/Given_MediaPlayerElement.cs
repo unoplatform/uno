@@ -25,6 +25,9 @@ public partial class Given_MediaPlayerElement
 {
 	private static readonly Uri TestVideoUrl = new Uri("https://uno-assets.platform.uno/tests/uno/big_buck_bunny_720p_5mb.mp4");
 
+	[TestCleanup]
+	public void Cleanup() => WindowHelper.WindowContent = null;
+
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/13384")]
 	public async Task When_MediaPlayerElement_NotAutoPlay_Source()
