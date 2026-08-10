@@ -76,9 +76,12 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 			return;
 		}
 		_frameAcquired = false;
+		var pr = _device.Profiler;
+		var tPresent = WebGpuProfiler.T();
 		EnsureBlitPipeline();
 
 		// Acquire the swapchain image at present time (after the scene render) and blit the offscreen frame into it.
+		var tAcquire = WebGpuProfiler.T();
 		WGPUSurfaceTexture st = default;
 		wgpuSurfaceGetCurrentTexture(_surface, &st);
 		if ((st.Status != WGPUSurfaceGetCurrentTextureStatus.SuccessOptimal
@@ -86,11 +89,14 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 			|| st.Texture == IntPtr.Zero)
 		{
 			_configured = false;   // surface lost / out of date — reconfigure next frame
+			pr?.Acquire(tAcquire); pr?.Presented(tPresent); pr?.FrameEnd();
 			return;
 		}
 
 		var view = wgpuTextureCreateView(st.Texture, null);
+		pr?.Acquire(tAcquire);
 
+		var tBlit = WebGpuProfiler.T();
 		var entries = stackalloc WGPUBindGroupEntry[2];
 		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = _presentView };
 		entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _device.Smp };
@@ -107,13 +113,18 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 		wgpuRenderPassEncoderEnd(pass);
 		var cb = wgpuCommandEncoderFinish(enc, null);
 		wgpuQueueSubmit(_device.Q, 1, (IntPtr)(&cb));
+		pr?.Blit(tBlit);
 
+		var tSurface = WebGpuProfiler.T();
 		wgpuSurfacePresent(_surface);
+		pr?.Surface(tSurface);
 
 		wgpuBindGroupRelease(bg);
 		wgpuCommandEncoderRelease(enc);
 		wgpuTextureViewRelease(view);
 		wgpuTextureRelease(st.Texture);
+		pr?.Presented(tPresent);
+		pr?.FrameEnd();
 	}
 
 	private void EnsureBlitPipeline()

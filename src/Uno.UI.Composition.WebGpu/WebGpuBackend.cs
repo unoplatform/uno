@@ -118,9 +118,10 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		{
 			foreach (var e in bucket)
 			{
-				if (e.Bgl == bgl && ((ReadOnlySpan<float>)e.Sig).SequenceEqual(sig)) { e.LastUsed = _bgFrameNo; bg = e.Bg; return true; }
+				if (e.Bgl == bgl && ((ReadOnlySpan<float>)e.Sig).SequenceEqual(sig)) { e.LastUsed = _bgFrameNo; bg = e.Bg; Profiler?.BgHit(); return true; }
 			}
 		}
+		Profiler?.BgMiss();
 		bg = default;
 		return false;
 	}
@@ -168,6 +169,10 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		_pendingBuffers.AddRange(owned.Buffers);
 		_pendingBindGroups.AddRange(owned.BindGroups);
 	}
+	// Detailed frame profiler (UNO_WEBGPU_PROFILE=1). Null when disabled — every hook is `Profiler?.X()` so there
+	// is zero overhead and no behaviour change off. Bracketed by the host DrawFrame (FrameStart) + Present (FrameEnd).
+	public WebGpuProfiler Profiler;
+
 	public IntPtr ImgBgl;
 	public IntPtr GradBgl;
 	// group(1) clip-uniform layouts (one per color-writing pipeline; all describe the same ClipU).
@@ -264,6 +269,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		DummyTex = CreateColorTarget(1, 1);
 		Pool = new WebGpuTexturePool(this);
 		BufferPool = new WebGpuBufferPool(this);
+		if (WebGpuProfiler.Enabled) { Profiler = new WebGpuProfiler(); }
 	}
 
 	// Prefer 2x MSAA (half the cost) where the device supports it for our colour format, else 4x (spec-guaranteed).
@@ -751,6 +757,100 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 	}
 }
 
+// Detailed per-frame profiler (UNO_WEBGPU_PROFILE=1). Accumulates phase timings + operation counts over a window
+// of frames and logs one line per window, so a single run pinpoints the bottleneck — CPU record vs CPU encode vs
+// the GPU poll-drain vs present vs offscreen count vs allocation — without another round-trip. All timings are ms.
+public sealed class WebGpuProfiler
+{
+	public static readonly bool Enabled = Environment.GetEnvironmentVariable("UNO_WEBGPU_PROFILE") is "1" or "true";
+	private static readonly double Ms = 1000.0 / System.Diagnostics.Stopwatch.Frequency;
+	private const int Window = 60;
+	private int _n;
+
+	// Window sums (ticks) + single-frame peaks.
+	private long _frameReq, _replay, _present, _beginFrame, _render, _submit, _poll, _acquire, _blit, _surface;
+	private long _pkFrame, _pkPoll, _pkRender, _pkPresent;
+	// Window count sums.
+	private long _cmds, _ops, _draws, _osLayer, _osBackdrop, _osCov, _osShadow, _backReCmds, _texCreate, _rent, _bgHit, _bgMiss, _bufNew, _upBytes;
+	// GC over the window.
+	private long _alloc; private int _g0, _g1, _g2;
+
+	// Per-frame temporaries (reset each FrameStart).
+	private long _tFrameReq, _tReplay, _tPresent, _tBeginFrame, _tRender, _tSubmit, _tPoll, _tAcquire, _tBlit, _tSurface;
+	private long _cCmds, _cOps, _cDraws, _cOsLayer, _cOsBackdrop, _cOsCov, _cOsShadow, _cBackReCmds, _cTexCreate, _cRent, _cBgHit, _cBgMiss, _cBufNew, _cUpBytes;
+	private long _allocStart; private int _sg0, _sg1, _sg2;
+	private bool _inFrame;
+
+	public static long T() => System.Diagnostics.Stopwatch.GetTimestamp();
+
+	public void FrameStart()
+	{
+		_inFrame = true;
+		_tFrameReq = _tReplay = _tPresent = _tBeginFrame = _tRender = _tSubmit = _tPoll = _tAcquire = _tBlit = _tSurface = 0;
+		_cCmds = _cOps = _cDraws = _cOsLayer = _cOsBackdrop = _cOsCov = _cOsShadow = _cBackReCmds = _cTexCreate = _cRent = _cBgHit = _cBgMiss = _cBufNew = _cUpBytes = 0;
+		_allocStart = GC.GetAllocatedBytesForCurrentThread(); _sg0 = GC.CollectionCount(0); _sg1 = GC.CollectionCount(1); _sg2 = GC.CollectionCount(2);
+	}
+
+	// Timing adders — pass a start timestamp captured with T(). No-op outside a bracketed frame so off-loop renders
+	// (RenderTargetBitmap) don't pollute the on-window window.
+	public void FrameRequested(long t0) { if (_inFrame) { _tFrameReq += T() - t0; } }
+	public void Replayed(long t0) { if (_inFrame) { _tReplay += T() - t0; } }
+	public void Presented(long t0) { if (_inFrame) { _tPresent += T() - t0; } }
+	public void BeginFrameT(long t0) { if (_inFrame) { _tBeginFrame += T() - t0; } }
+	public void Render(long t0) { if (_inFrame) { _tRender += T() - t0; } }
+	public void Submit(long t0) { if (_inFrame) { _tSubmit += T() - t0; } }
+	public void Poll(long t0) { if (_inFrame) { _tPoll += T() - t0; } }
+	public void Acquire(long t0) { if (_inFrame) { _tAcquire += T() - t0; } }
+	public void Blit(long t0) { if (_inFrame) { _tBlit += T() - t0; } }
+	public void Surface(long t0) { if (_inFrame) { _tSurface += T() - t0; } }
+
+	// Counters.
+	public void Cmds(int n) { if (_inFrame) { _cCmds += n; } }
+	public void Ops(int n) { if (_inFrame) { _cOps += n; } }
+	public void Draw() { if (_inFrame) { _cDraws++; } }
+	public void OsLayer() { if (_inFrame) { _cOsLayer++; } }
+	public void OsBackdrop(int reCmds) { if (_inFrame) { _cOsBackdrop++; _cBackReCmds += reCmds; } }
+	public void OsCov() { if (_inFrame) { _cOsCov++; } }
+	public void OsShadow() { if (_inFrame) { _cOsShadow++; } }
+	public void TexCreate() { if (_inFrame) { _cTexCreate++; } }
+	public void Rent() { if (_inFrame) { _cRent++; } }
+	public void BgHit() { if (_inFrame) { _cBgHit++; } }
+	public void BgMiss() { if (_inFrame) { _cBgMiss++; } }
+	public void BufNew() { if (_inFrame) { _cBufNew++; } }
+	public void Upload(long bytes) { if (_inFrame) { _cUpBytes += bytes; } }
+
+	public void FrameEnd()
+	{
+		if (!_inFrame) { return; }
+		_inFrame = false;
+		_frameReq += _tFrameReq; _replay += _tReplay; _present += _tPresent; _beginFrame += _tBeginFrame; _render += _tRender; _submit += _tSubmit; _poll += _tPoll; _acquire += _tAcquire; _blit += _tBlit; _surface += _tSurface;
+		var frame = _tFrameReq + _tPresent; if (frame > _pkFrame) { _pkFrame = frame; } if (_tPoll > _pkPoll) { _pkPoll = _tPoll; } if (_tRender > _pkRender) { _pkRender = _tRender; } if (_tPresent > _pkPresent) { _pkPresent = _tPresent; }
+		_cmds += _cCmds; _ops += _cOps; _draws += _cDraws; _osLayer += _cOsLayer; _osBackdrop += _cOsBackdrop; _osCov += _cOsCov; _osShadow += _cOsShadow; _backReCmds += _cBackReCmds; _texCreate += _cTexCreate; _rent += _cRent; _bgHit += _cBgHit; _bgMiss += _cBgMiss; _bufNew += _cBufNew; _upBytes += _cUpBytes;
+		_alloc += GC.GetAllocatedBytesForCurrentThread() - _allocStart; _g0 += GC.CollectionCount(0) - _sg0; _g1 += GC.CollectionCount(1) - _sg1; _g2 += GC.CollectionCount(2) - _sg2;
+		if (++_n >= Window) { Flush(); }
+	}
+
+	private void Flush()
+	{
+		double A(long ticks) => ticks * Ms / _n;   // avg ms/frame
+		double Pk(long ticks) => ticks * Ms;        // single-frame peak ms
+		long C(long c) => _n == 0 ? 0 : c / _n;     // avg count/frame
+		var record = _frameReq - _replay;           // record = frame-requested (record+replay) minus backend replay
+		System.Console.Error.WriteLine(
+			$"[webgpu-profile] n={_n} FRAME={A(_frameReq + _present):F2}ms (record={A(record):F2} replay={A(_replay):F2} present={A(_present):F2}) | " +
+			$"replay[beginFrame={A(_beginFrame):F2} render={A(_render):F2} submit={A(_submit):F2} poll={A(_poll):F2}] " +
+			$"present[acquire={A(_acquire):F2} blit={A(_blit):F2} surface={A(_surface):F2}] | " +
+			$"cnt/f: cmds={C(_cmds)} ops={C(_ops)} draws={C(_draws)} offscr={C(_osLayer + _osBackdrop + _osCov + _osShadow)}(L{C(_osLayer)} B{C(_osBackdrop)} Cov{C(_osCov)} Sh{C(_osShadow)}) backdropReCmds={C(_backReCmds)} texCreate={C(_texCreate)} rent={C(_rent)} bg(hit={C(_bgHit)} miss={C(_bgMiss)}) bufNew={C(_bufNew)} upload={C(_upBytes) / 1024}KB | " +
+			$"gc: alloc={_alloc / _n / 1024}KB/f gen0={_g0} gen1={_g1} gen2={_g2} | peak: FRAME={Pk(_pkFrame):F2} render={Pk(_pkRender):F2} poll={Pk(_pkPoll):F2} present={Pk(_pkPresent):F2}");
+		System.Console.Error.Flush();
+		_n = 0;
+		_frameReq = _replay = _present = _beginFrame = _render = _submit = _poll = _acquire = _blit = _surface = 0;
+		_pkFrame = _pkPoll = _pkRender = _pkPresent = 0;
+		_cmds = _ops = _draws = _osLayer = _osBackdrop = _osCov = _osShadow = _backReCmds = _texCreate = _rent = _bgHit = _bgMiss = _bufNew = _upBytes = 0;
+		_alloc = 0; _g0 = _g1 = _g2 = 0;
+	}
+}
+
 // Transient GPU-texture pool for the per-frame offscreens (shadow/backdrop/layer/path-coverage surfaces + blur
 // temps). BeginFrame marks all entries free; Rent reuses a free entry matching the key or creates one — so a
 // steady-state frame allocates nothing. Every renter clears (LoadOp.Clear) before writing, so reuse is safe.
@@ -793,10 +893,12 @@ public sealed unsafe class WebGpuTexturePool : IDisposable
 	{
 		lock (_gate)
 		{
+			_d.Profiler?.Rent();
 			foreach (var e in _entries)
 			{
 				if (!e.InUse && e.W == w && e.H == h && e.Samples == samples && e.Fmt == fmt && e.Usage == usage) { e.InUse = true; e.LastUsed = _frameNo; return e.View; }
 			}
+			_d.Profiler?.TexCreate();
 			var td = new WGPUTextureDescriptor { Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 }, Format = fmt, MipLevelCount = 1, SampleCount = (uint)samples, Dimension = WGPUTextureDimension._2D, Usage = usage };
 			WebGpuDevice.TexLog("Pool.Rent", (uint)w, (uint)h, (uint)samples);
 			var tex = wgpuDeviceCreateTexture(_d.Dev, &td);
@@ -873,6 +975,7 @@ public sealed unsafe class WebGpuBufferPool : IDisposable
 			var bd = new WGPUBufferDescriptor { Size = (nuint)cap, Usage = usage };
 			var buf = wgpuDeviceCreateBuffer(_d.Dev, &bd);
 			_d.PerfBufCreates++;
+			_d.Profiler?.BufNew();
 			_entries.Add(new Entry { Buf = buf, Cap = cap, Usage = usage, InUse = true });
 			return buf;
 		}
@@ -1688,20 +1791,27 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	{
 		var owns = _frameEncoder == IntPtr.Zero;
 		if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); if (WebGpuDevice.PerfEnabled) { _d.PerfBgCreates = 0; _d.PerfBufCreates = 0; _d.PerfSw.Restart(); } }
-		try
-		{
-			RenderInto(cmds, _s, clear);
-		}
-		finally
-		{
-			if (owns)
+			var pr = _d.Profiler;
+			var tRender = WebGpuProfiler.T();
+			try
 			{
-				var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
-				wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
-				// Pump the device. Blocking (wait=1) fully drains the GPU each frame (conservative, serializes CPU/GPU);
-				// UNO_WEBGPU_PIPELINE polls non-blocking (wait=0) so the CPU can overlap the next frame with the GPU.
-				wgpuDevicePoll(_d.Dev, WebGpuDevice.Pipeline ? 0u : 1u, null);
-				_frameEncoder = IntPtr.Zero;
+				RenderInto(cmds, _s, clear);
+			}
+			finally
+			{
+				if (owns)
+				{
+					pr?.Render(tRender);
+					var tSubmit = WebGpuProfiler.T();
+					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
+					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+					pr?.Submit(tSubmit);
+					// Pump the device. Blocking (wait=1) fully drains the GPU each frame (conservative, serializes CPU/GPU);
+					// UNO_WEBGPU_PIPELINE polls non-blocking (wait=0) so the CPU can overlap the next frame with the GPU.
+					var tPoll = WebGpuProfiler.T();
+					wgpuDevicePoll(_d.Dev, WebGpuDevice.Pipeline ? 0u : 1u, null);
+					pr?.Poll(tPoll);
+					_frameEncoder = IntPtr.Zero;
 				if (WebGpuDevice.PerfEnabled)
 				{
 					_d.PerfSw.Stop();
@@ -1751,6 +1861,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var size = data.Length * sizeof(float);
 		var buf = _d.BufferPool.Rent(size, WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst);
 		fixed (float* p = data) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, (nuint)size); }
+		_d.Profiler?.Upload(size);
 		return buf;
 	}
 
@@ -1761,6 +1872,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var size = span.Length * sizeof(float);
 		var buf = _d.BufferPool.Rent(size, WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst);
 		fixed (float* p = span) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, (nuint)size); }
+		_d.Profiler?.Upload(size);
 		return buf;
 	}
 
@@ -1865,6 +1977,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// the per-fragment clip mask sampled by clipCov.
 	private IntPtr RenderPathCoverage(float[] fan, bool evenOdd)
 	{
+		_d.Profiler?.OsCov();
 		var cov = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
 		var fanNdc = new float[fan.Length];
 		for (int i = 0; i < fan.Length; i += 2) { var n = Ndc(new Vector2(fan[i], fan[i + 1])); fanNdc[i] = n.X; fanNdc[i + 1] = n.Y; }
@@ -1899,6 +2012,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// shadow textures are not pooled/freed yet — fine for offscreen/one-shot; the on-window path needs cleanup.
 	private IntPtr RenderShadow(ShadowCmd sh, out Vector2 origin, out Vector2 size)
 	{
+		_d.Profiler?.OsShadow();
 		float pad = MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f;
 		origin = new Vector2(sh.BbMin.X - pad, sh.BbMin.Y - pad);
 		int sw = Math.Clamp((int)MathF.Ceiling(sh.BbMax.X - sh.BbMin.X + 2 * pad), 1, 4096);
@@ -1971,8 +2085,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (data is not WebGpuRenderData rd) { return; }
 		lock (_d.RenderGate)
 		{
+			var pr = _d.Profiler;
+			var tReplay = WebGpuProfiler.T();
+			pr?.Cmds(rd.Commands.Count);
+			var tBf = WebGpuProfiler.T();
 			_d.BeginFrameResources();   // reclaim last frame's pooled textures/buffers + release its bind groups
+			pr?.BeginFrameT(tBf);
 			RunFrame(rd.Commands, _presentClear ?? rd.ClearColor);
+			pr?.Replayed(tReplay);
 		}
 	}
 
@@ -2172,6 +2292,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// Render the layer's commands into a full-size offscreen surface, then composite (kind 4). Both the
 					// offscreen render and this composite record into the frame's single encoder, so wgpu barriers the
 					// offscreen resolve before the composite samples it — no explicit flush needed.
+					_d.Profiler?.OsLayer();
 					var layerSurface = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
 					RenderInto(lyr.Commands, layerSurface, null);
 
@@ -2228,6 +2349,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// Capture the content drawn so far (this frame's backdrop), blur it, and draw it clipped to the
 					// effect region; then a tint overlay. Simplified acrylic = blurred backdrop + tint.
 					var bd = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
+					_d.Profiler?.OsBackdrop(ci);   // ci = prefix commands re-rendered for this backdrop (the O(n^2) signal)
 					RenderInto(cmds.GetRange(0, ci), bd, clear);
 					var btmp = _d.Pool.Rent(_s.Width, _s.Height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 					BlurPass(bd.View, btmp, new Vector2(1f, 0f), new Vector2(1f / _s.Width, 0f), bk.Effect.SigmaX);
@@ -2289,10 +2411,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// Track the last-applied scissor and skip redundant SetScissorRect calls: static chrome draws many ops under
 		// one clip, so this collapses a per-op call to one per distinct clip. Locals (not a field) keep it correct
 		// under the recursive nested-layer RenderInto (each pass has its own scissor state).
+		if (!target.Pooled) { _d.Profiler?.Ops(ops.Count); }
 		int lastX = -1, lastY = -1, lastW = -1, lastH = -1;
 		foreach (var (kind, b0, u0, b1, flag, clip, clipBg) in ops)
 		{
 			if (!TryScissor(clip.Aabb, out var sx, out var sy, out var sw, out var sh)) { continue; }
+			_d.Profiler?.Draw();
 			if (sx != lastX || sy != lastY || sw != lastW || sh != lastH)
 			{
 				wgpuRenderPassEncoderSetScissorRect(pass, (uint)sx, (uint)sy, (uint)sw, (uint)sh);
