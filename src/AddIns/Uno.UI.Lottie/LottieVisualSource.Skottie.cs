@@ -3,7 +3,7 @@
 #if HAS_SKOTTIE
 
 // SkiaSharp.Views.Uno uses the underlying canvas for hardware acceleration.
-#if !__SKIA__ && !__MACCATALYST__
+#if !__SKIA__
 #define USE_HARDWARE_ACCELERATION
 #endif
 

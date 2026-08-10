@@ -19,9 +19,7 @@ using System.Globalization;
 using Windows.UI.Core;
 using Uno.UI;
 
-#if !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 using MessageUI;
-#endif
 
 #if __APPLE_UIKIT__
 using UIKit;
@@ -610,13 +608,8 @@ public
 			});
 	}
 
-	public
-#if !__MACCATALYST__
-	async
-#endif
-	Task LaunchMailto(CancellationToken ct, string? subject = null, string? body = null, string[]? to = null, string[]? cc = null, string[]? bcc = null)
+	public async Task LaunchMailto(CancellationToken ct, string? subject = null, string? body = null, string[]? to = null, string[]? cc = null, string[]? bcc = null)
 	{
-#if !__MACCATALYST__  // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 		if (!MFMailComposeViewController.CanSendMail)
 		{
 			return;
@@ -654,9 +647,6 @@ public
 				})
 				.AsTask(CancellationToken.None);
 		}
-#else
-		return Task.CompletedTask;
-#endif
 	}
 #endif
 

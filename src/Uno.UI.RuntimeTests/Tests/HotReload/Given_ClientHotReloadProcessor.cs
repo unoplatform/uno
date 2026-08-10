@@ -27,7 +27,6 @@ public class Given_ClientHotReloadProcessor
 		var rid = RuntimeInformation.RuntimeIdentifier;
 		var expectedPlatform =
 			rid.StartsWith("android", StringComparison.OrdinalIgnoreCase) ? "android"
-			: rid.StartsWith("maccatalyst", StringComparison.OrdinalIgnoreCase) ? "maccatalyst"
 			: rid.StartsWith("tvos", StringComparison.OrdinalIgnoreCase) ? "tvos" // incl. tvossimulator
 			: rid.StartsWith("ios", StringComparison.OrdinalIgnoreCase) ? "ios" // incl. iossimulator
 			: rid.StartsWith("browser", StringComparison.OrdinalIgnoreCase) ? "browserwasm"
