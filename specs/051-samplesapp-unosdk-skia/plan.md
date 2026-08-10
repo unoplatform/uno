@@ -4,7 +4,9 @@
 
 **Goal:** Replace the four SamplesApp heads (`SamplesApp.Skia.Generic`, `SamplesApp.Skia.WebAssembly.Browser`, `SamplesApp.Skia.netcoremobile`, `SamplesApp.Windows`) with one `Uno.Sdk`-based multi-targeted head covering all Skia targets except MacCatalyst, plus the WinUI/WinAppSDK target.
 
-**Architecture:** New head uses `Sdk="Uno.Sdk.Private"` (packed from local `src/Uno.Sdk`) for cross-platform MSBuild plumbing, but consumes the Uno framework from in-repo source via per-TFM `ProjectReference` with `DisableImplicitUnoPackages=true` + `DisableImplicitUnoWinAppSdkPackages=true`. A `SamplesAppUseImplicitPackages` switch (default `false`) flips both flags to exercise NuGet `UnoFeatures` resolution on demand. Skia renders all non-Windows TFMs; the `windows10.0` TFM uses native WinUI. Lands alongside the old heads; CI migrates per-target; old heads deleted last.
+**Architecture:** New head imports the in-repo Uno.Sdk **by path** (`<Import Project="..\..\Uno.Sdk\Sdk\Sdk.props" />` + matching `Sdk.targets`) for cross-platform MSBuild plumbing, and consumes the Uno framework from in-repo source via per-TFM `ProjectReference` with `DisableImplicitUnoPackages=true` + `DisableImplicitUnoWinAppSdkPackages=true`. Skia renders all non-Windows TFMs; the `windows10.0` TFM uses native WinUI. Lands alongside the old heads; CI migrates per-target; old heads deleted last.
+
+> **Revised during implementation.** The head originally used `Sdk="Uno.Sdk.Private"` with a sentinel version pinned in `global.json`, fed by `build/pack-local-uno-sdk.ps1`. An `Sdk` attribute resolves through NuGet at *evaluation* time, so a fresh clone could not load the project — or even complete `dotnet restore Uno.UI-Skia-only.slnf` — until that pack step had been run manually, and CI masked this because it packed on every run. Importing the SDK by path removes the resolution step entirely: no package, no version pin, no bootstrap. The pack script, the `global.json` pin and the CI pack steps were removed, and the `SamplesAppUseImplicitPackages` switch was dropped with them (NuGet `UnoFeatures` resolution is covered by `src/SolutionTemplate/**`, which consumes published Uno.Sdk versions). Phase 0 Tasks 0.1–0.2 and Phase P-implicit below are superseded.
 
 **Tech Stack:** MSBuild / `Uno.Sdk`, .NET 10, Skia runtimes (Win32/X11/FrameBuffer/macOS/WebAssembly.Browser/Android/AppleUIKit), WinAppSDK 2.1.3 / WinUI + MSIX, Azure DevOps YAML, PowerShell/bash test scripts.
 
@@ -13,7 +15,7 @@
 ## Global Constraints
 
 - **TFMs:** `net10.0` only. Final head: `net10.0-desktop;net10.0-browserwasm;$(NetCurrentWinAppSDK);net10.0-android;net10.0-ios;net10.0-tvos`, where `$(NetCurrentWinAppSDK)` = `net10.0-windows10.0.19041.0`. Reference `Net*` properties from `Directory.Build.props`; never hardcode. (No MacCatalyst.)
-- **Default mode:** `DisableImplicitUnoPackages=true` **and** `DisableImplicitUnoWinAppSdkPackages=true` (source `ProjectReference`s). The `SamplesAppUseImplicitPackages` switch (default `false`) is the only thing that flips them.
+- **Framework source:** `DisableImplicitUnoPackages=true` **and** `DisableImplicitUnoWinAppSdkPackages=true`, unconditionally — the framework always comes from source `ProjectReference`s. (The original `SamplesAppUseImplicitPackages` escape hatch was dropped; see the revision note in the Architecture section.)
 - **From-source build:** Uno framework via `ProjectReference` to in-repo projects in default mode; never NuGet for `Uno.*` framework assemblies. Non-framework deps (SkiaSharp native, Uno.Wasm.Bootstrap, AndroidX, Microsoft.WindowsAppSDK + SDK BuildTools, fonts, MSAL, MSTest) stay `PackageReference`, pinned via `PackageReference … Update` (CPM stays disabled — do **not** add `Directory.Packages.props`).
 - **Windows renders native WinUI** (`UseWinUI=true`, no `Uno.UI` reference); all other TFMs render Skia.
 - **Platform symbols & suffix exclusion** are owned by `src/Uno.CrossTargetting.targets` / `Uno.Sdk` — never set platform `DefineConstants` or `Compile Remove="**/*.skia.cs"` in the head csproj.
@@ -37,7 +39,7 @@
 - `src/SamplesApp/SamplesApp.Head/Assets/`, `app.manifest`, `Resources/Info.plist` (desktop) — migrated per phase.
 
 **Modified files:**
-- `global.json` — pin `Uno.Sdk.Private` sentinel.
+- ~~`global.json`~~ — no longer modified; the head imports Uno.Sdk by path, so there is no SDK version to pin.
 - `src/Directory.Build.props` — register head in `_AdjustedOutputProjects`.
 - `src/Uno.UI-Skia-only.slnf` — add (P1) then remove old heads (P6).
 - `build/ci/tests/*.yml`, `build/ci/publish/*.yml`, `build/test-scripts/*.{ps1,sh}` — repoint per target (P1–P5), delete dead ones (P6). Includes `.azure-devops-tests-winappsdk.yml` (P3).
@@ -80,7 +82,7 @@
 **The hybrid approach is validated end-to-end on desktop.** Key empirical results for P2+ implementers:
 
 - **Layering risk RETIRED, zero mitigations:** `Sdk="Uno.Sdk.Private"` (local pack) layered over the repo's `Directory.Build.props/.targets` + `Uno.CrossTargetting.targets` with no conflicts. Uno.Sdk's `CustomAfterDirectoryBuildProps` ordering handles it. No opt-outs were needed.
-- **Pack mechanism:** `Uno.Sdk` has `GeneratePackageOnBuild=true` and a CoreCompile-time version-replacement dance — pack via **`dotnet build`** (not `dotnet pack`, which skips the compile → NU5026). `build/pack-local-uno-sdk.ps1` does this at sentinel `255.255.255-dev`.
+- ~~**Pack mechanism:**~~ **SUPERSEDED** — no packing is involved any more. `Sdk.props` locates its targets via `$(MSBuildThisFileDirectory)..	argets`, and `src/Uno.Sdk/{Sdk,targets}` are already siblings on disk, so the source tree satisfies the SDK layout directly.
 - **Gotchas found & fixed (apply the same in P2+):**
   1. **`UnoRuntimeIdentifier=Skia` must be set EARLY** (top PropertyGroup, before the `sourcegenerators.local.props` import) for non-windows TFMs. Uno.Sdk sets it in `.targets` (too late), so the XAML source-generator props compute `IncludeXamlNamespaces` with `not_skia` → conditional namespaces like `xmlns:skia="http://uno.ui/skia"` get stripped → `CS0103` on x:Named fields (e.g. `BrowserInputHelper_Tests`). Fixed in the head csproj.
   2. Shared imports: the targets file is `SamplesApp.UnitTests.targets` (NOT `.Shared.targets`); the props is `.Shared.props`.
@@ -129,7 +131,9 @@
 
 ## Phase 0 — Local Uno.Sdk bootstrapping + layering spike
 
-**Exit criterion:** A desktop-only (`net10.0-desktop`) skeleton head using `Sdk="Uno.Sdk.Private"` builds and launches from source locally.
+> **Tasks 0.1–0.2 are SUPERSEDED** (pack script + `global.json` sentinel pin). The head imports the SDK by path instead; see the revision note in the Architecture section. The layering conclusions in this phase still hold.
+
+**Exit criterion:** A desktop-only (`net10.0-desktop`) skeleton head importing `src/Uno.Sdk` builds and launches from source locally.
 
 ### Task 0.1: Pack the local Uno.Sdk.Private into the local feed
 
@@ -526,6 +530,8 @@ git commit -m "ci: Build and runtime-test desktop Skia via the consolidated head
 ---
 
 ## Phase P-implicit — Validate the implicit-packages switch
+
+> **DROPPED.** The `SamplesAppUseImplicitPackages` switch was removed during implementation; `src/SolutionTemplate/**` already exercises NuGet `UnoFeatures` resolution against published Uno.Sdk versions. Retained for history only.
 
 **Exit criterion:** `SamplesAppUseImplicitPackages=true` builds and runs the head (≥ desktop + wasm) via `UnoFeatures`→packages against local override packages.
 
