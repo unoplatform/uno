@@ -1,4 +1,13 @@
-<Project Sdk="Uno.Sdk.Private">
+<Project>
+	<!--
+	Uno.Sdk is imported by path instead of via Sdk="Uno.Sdk.Private". An Sdk attribute resolves through
+	NuGet at *evaluation* time, so a fresh clone could not even load this project until the SDK had been
+	packed into a local feed. A plain Import needs no package, no version pin and no bootstrap step.
+	The source tree already has the layout Sdk.props expects: it locates its targets via
+	$(MSBuildThisFileDirectory)..\targets, and src\Uno.Sdk\{Sdk,targets} are siblings.
+	-->
+	<Import Project="$(MSBuildThisFileDirectory)..\..\Uno.Sdk\Sdk\Sdk.props" />
+
 	<PropertyGroup>
 		<!--
 		Desktop intentionally not first (UNOB0011): keeps VS multi-target debugging working.
@@ -70,9 +79,13 @@
 		<!-- Keep full exception strings in release, as the current heads do -->
 		<UseSystemResourceKeys>false</UseSystemResourceKeys>
 
-		<SamplesAppUseImplicitPackages Condition="'$(SamplesAppUseImplicitPackages)' == ''">false</SamplesAppUseImplicitPackages>
-		<DisableImplicitUnoPackages Condition="'$(SamplesAppUseImplicitPackages)' != 'true'">true</DisableImplicitUnoPackages>
-		<DisableImplicitUnoWinAppSdkPackages Condition="'$(SamplesAppUseImplicitPackages)' != 'true'">true</DisableImplicitUnoWinAppSdkPackages>
+		<!--
+		The framework always comes from in-repo source via ProjectReference below, so the Sdk's implicit
+		package resolution stays off. NuGet UnoFeatures resolution is covered by src\SolutionTemplate\**,
+		which consumes published Uno.Sdk versions.
+		-->
+		<DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>
+		<DisableImplicitUnoWinAppSdkPackages>true</DisableImplicitUnoWinAppSdkPackages>
 
 		<!--
 		Build the Uno.UI.Tasks shadow assembly first (CI / clean builds), as the Skia heads do.
@@ -97,10 +110,10 @@
 		<UnoDisableHotRestartHelperGeneration Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">true</UnoDisableHotRestartHelperGeneration>
 	</PropertyGroup>
 
-	<!-- ==================== Source mode: framework via ProjectReference ==================== -->
+	<!-- ==================== Framework via ProjectReference ==================== -->
 
 	<!-- Cross-Skia framework + AddIns shared by every Skia TFM (desktop/wasm/android/ios/tvos), NOT windows -->
-	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true' AND '$(_IsSkiaTfm)' == 'true'">
+	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true'">
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Composition\Uno.UI.Composition.Skia.csproj" />
 		<ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
@@ -117,7 +130,7 @@
 	</ItemGroup>
 
 	<!-- Desktop framework variants + runtimes + AddIns (Win32/X11/FrameBuffer/macOS) -->
-	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj" />
@@ -133,7 +146,7 @@
 	</ItemGroup>
 
 	<!-- browserwasm framework variants + runtime -->
-	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Wasm.csproj" />
@@ -142,7 +155,7 @@
 	</ItemGroup>
 
 	<!-- Windows / WinAppSDK: NATIVE WinUI (no Uno.UI / SkiaSharp). Only the .Windows helper variants. -->
-	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
 		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Windows.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Windows.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Windows.csproj" />
@@ -266,7 +279,7 @@
 	</Target>
 
 	<!-- ==================== android (Skia) ==================== -->
-	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" />
@@ -335,7 +348,7 @@
 	<!-- ==================== iOS + tvOS (AppleUIKit + Skia) — REQUIRES macOS to build ==================== -->
 	<!-- Mirrors the old SamplesApp.Skia.netcoremobile apple <When> blocks. Samples come from the
 	     SamplesApp.Skia base lib (referenced for all Skia TFMs above). Not compile-validated on Windows. -->
-	<ItemGroup Condition="'$(SamplesAppUseImplicitPackages)' != 'true' AND '$(_IsUIKit)' == 'true'">
+	<ItemGroup Condition="'$(_IsUIKit)' == 'true'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" />
@@ -566,4 +579,7 @@
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.props" Condition="'$(_IsSkiaTfm)' != 'true'" />
 	<Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" Condition="'$(_IsSkiaTfm)' != 'true'" />
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" Condition="'$(_IsSkiaTfm)' != 'true'" />
+
+	<!-- Must stay last: replaces the implicit bottom import an Sdk attribute would have added. -->
+	<Import Project="$(MSBuildThisFileDirectory)..\..\Uno.Sdk\Sdk\Sdk.targets" />
 </Project>
