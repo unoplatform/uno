@@ -1,6 +1,6 @@
 # Single Uno.Sdk SamplesApp Head — Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** Implement this plan task-by-task, using the repo's standard skill set (see `AGENTS.md`). Steps use checkbox (`- [ ]`) syntax for tracking progress.
 
 **Goal:** Replace the four SamplesApp heads (`SamplesApp.Skia.Generic`, `SamplesApp.Skia.WebAssembly.Browser`, `SamplesApp.Skia.netcoremobile`, `SamplesApp.Windows`) with one `Uno.Sdk`-based multi-targeted head covering all Skia targets except MacCatalyst, plus the WinUI/WinAppSDK target.
 
