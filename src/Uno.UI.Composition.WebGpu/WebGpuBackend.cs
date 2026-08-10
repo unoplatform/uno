@@ -2368,6 +2368,34 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			-(c * w / h + d) - 2f * f / h + 1f);
 	}
 
+	// Builds ops for a command list, COALESCING runs of consecutive same-clip solid rects into one vertex buffer +
+	// one draw (a Border's background+edges collapse from 4 draws to 1). Used for cached recordings — the per-command
+	// BuildSimpleOp path did not coalesce, so every cached visual emitted a draw per rect (a major draw-count source
+	// on Intel, where per-draw overhead dominates — see the RenderDoc capture). Coalesced rects share a clip so they
+	// share the arena xform (one clip bind group), staying correct under re-stamp.
+	private void BuildCoalesced(List<WebGpuCommand> cmds, List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops, OwnedResources owned)
+	{
+		for (int ci = 0; ci < cmds.Count; ci++)
+		{
+			if (cmds[ci] is RectCommand rc0)
+			{
+				_scratch.Clear();
+				int j = ci;
+				while (j < cmds.Count && cmds[j] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
+				{
+					float vr = rcj.Color.R / 255f, vg = rcj.Color.G / 255f, vb = rcj.Color.B / 255f, va = rcj.Color.A / 255f;
+					PushVert(rcj.P0, vr, vg, vb, va); PushVert(rcj.P1, vr, vg, vb, va); PushVert(rcj.P2, vr, vg, vb, va);
+					PushVert(rcj.P0, vr, vg, vb, va); PushVert(rcj.P2, vr, vg, vb, va); PushVert(rcj.P3, vr, vg, vb, va);
+					j++;
+				}
+				var rvb = Vbuf(_scratch, owned);
+				ops.Add((0, (nint)rvb, (uint)((j - ci) * 6), 0, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, owned)));
+				ci = j - 1;
+			}
+			else { BuildSimpleOp(cmds[ci], ops, owned); }
+		}
+	}
+
 	// Builds the draw-op(s) for a simple primitive (rect/path/image/gradient) into `ops`, allocating GPU resources
 	// pooled (owned == null, per-frame) or persistent (owned != null, a cached recording's geometry).
 	private void BuildSimpleOp(WebGpuCommand cmd, List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops, OwnedResources owned)
@@ -2556,7 +2584,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								if (entry is not null) { _d.DeferRelease(entry.Owned); }
 								var aOwned = new OwnedResources();
 								var aOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
-								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None)) { BuildSimpleOp(tc, aOps, aOwned); }
+								var aList = new List<WebGpuCommand>();
+								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None)) { aList.Add(tc); }
+								BuildCoalesced(aList, aOps, aOwned);
 								entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true };
 								_d.GeometryCache[rr.Commands] = entry;
 								WebGpuTrace.Upload("geometry-build(new,arena)", aOps.Count);
@@ -2594,7 +2624,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							if (entry is not null) { _d.DeferRelease(entry.Owned); }
 							var owned = new OwnedResources();
 							var cachedOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
-							foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { BuildSimpleOp(tc, cachedOps, owned); }
+							var cList = new List<WebGpuCommand>();
+							foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { cList.Add(tc); }
+							BuildCoalesced(cList, cachedOps, owned);
 							entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip };
 							_d.GeometryCache[rr.Commands] = entry;
 							// Rebuild signal: transform-only changes SHOULD become a uniform re-stamp under arena (#22),

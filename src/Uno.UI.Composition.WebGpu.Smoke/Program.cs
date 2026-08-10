@@ -567,6 +567,35 @@ Check("many-stop gradient: right blue (stops 16..19 not clamped away)", manyRigh
 	Check("arena-path: origin vacated (black)", apOld.r < 40 && apOld.g < 40 && apOld.b < 40, apOld);
 }
 
+// 18e) COALESCE (cached) — a cached child recording with 3 adjacent same-clip rects must (a) all render and (b)
+//      collapse to ONE coalesced solid draw when replayed. Pre-coalesce the cached build emitted a draw per rect.
+{
+	var cSurf = new WebGpuRenderSurface(dev, 64, 64);
+	var cPres = new WebGpuPresentSession(dev, cSurf);
+	cPres.Clear(WColor.FromArgb(255, 0, 0, 0));
+	var blueC = WColor.FromArgb(255, 0, 0, 255);
+	var coChild = new WebGpuCommandRecorder();
+	coChild.DrawRect(new Rect(4, 4, 12, 12), red, false);
+	coChild.DrawRect(new Rect(26, 26, 12, 12), green, false);
+	coChild.DrawRect(new Rect(48, 48, 12, 12), blueC, false);
+	var coData = coChild.Finish();
+	var coRec = new WebGpuCommandRecorder(); coRec.Replay(coData);
+	WebGpuTrace.Reset();
+	cPres.Replay(coRec.Finish());
+	var coDraws = WebGpuTrace.Enabled ? WebGpuTrace.Dump() : "";
+	var copx = dev.ReadPixelsRgba(cSurf);
+	var cor1 = At(copx, 10, 10); var cor2 = At(copx, 32, 32); var cor3 = At(copx, 54, 54);
+	Check("coalesce-cached: rect1 red", cor1.r > 200 && cor1.g < 60, cor1);
+	Check("coalesce-cached: rect2 green", cor2.g > 200 && cor2.r < 60, cor2);
+	Check("coalesce-cached: rect3 blue", cor3.b > 200 && cor3.r < 60, cor3);
+	if (WebGpuTrace.Enabled)
+	{
+		int solidDraws = 0;
+		foreach (var l in coDraws.Split('\n')) { if (l.Contains("DRAW solid")) { solidDraws++; } }
+		Check("coalesce-cached: 3 rects -> 1 solid draw", solidDraws == 1, $"solidDraws={solidDraws}");
+	}
+}
+
 // ---- Ordered GPU-command TRACE (UNO_WEBGPU_TRACE=1) ----
 // Dumps exactly what each primitive submits to the GPU (passes, pipelines, draws), in order, so it can be diffed
 // against the original ramez/webgpu-experiment backend's submission for the same primitive. Not a pass/fail check.
