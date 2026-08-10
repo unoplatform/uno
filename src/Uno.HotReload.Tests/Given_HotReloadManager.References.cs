@@ -52,6 +52,7 @@ public sealed class Given_HotReloadManager_References
 
 		var reporter = new RecordingReporter();
 		var handler = new HotReloadManagerHarness.RecordingHandler();
+		enc.OwnsSession = false; // the manager's Dispose ends the EnC session
 		using var manager = new HotReloadManager(
 			enc.Workspace,
 			enc.Watch,
@@ -116,6 +117,7 @@ public sealed class Given_HotReloadManager_References
 
 		var reporter = new RecordingReporter();
 		var handler = new HotReloadManagerHarness.RecordingHandler();
+		enc.OwnsSession = false; // the manager's Dispose ends the EnC session
 		using var manager = new HotReloadManager(
 			enc.Workspace,
 			enc.Watch,

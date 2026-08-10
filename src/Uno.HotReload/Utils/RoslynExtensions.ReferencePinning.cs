@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
@@ -9,6 +8,21 @@ namespace Uno.HotReload.Utils;
 
 public static partial class RoslynExtensions
 {
+	private static readonly char[] _referencePathSeparators = ['/', '\\'];
+
+	// Assembly simple name == file name without extension for every build/NuGet asset. Split on
+	// BOTH separator styles regardless of OS — paths reaching the workspace may carry either style
+	// (see PathComparer) and Path.GetFileNameWithoutExtension is separator-agnostic only on
+	// Windows — so a foreign-style path never silently keys as its full string.
+	private static string? GetReferenceSimpleName(string path)
+	{
+		var fileName = path.AsSpan(path.LastIndexOfAny(_referencePathSeparators) + 1);
+		var extension = fileName.LastIndexOf('.');
+		var name = extension < 0 ? fileName : fileName[..extension];
+
+		return name.IsEmpty ? null : name.ToString();
+	}
+
 	/// <summary>
 	/// Captures, per project, the file-backed metadata references of <paramref name="solution"/>
 	/// keyed by assembly simple name (the file name, which is the assembly's simple name for every
@@ -32,7 +46,7 @@ public static partial class RoslynExtensions
 			foreach (var reference in project.MetadataReferences)
 			{
 				if (reference is not PortableExecutableReference { FilePath: { Length: > 0 } path } peReference
-					|| Path.GetFileNameWithoutExtension(path) is not { Length: > 0 } name)
+					|| GetReferenceSimpleName(path) is not { } name)
 				{
 					continue;
 				}
@@ -99,7 +113,7 @@ public static partial class RoslynExtensions
 			foreach (var reference in references)
 			{
 				if (reference is PortableExecutableReference { FilePath: { Length: > 0 } path }
-					&& Path.GetFileNameWithoutExtension(path) is { Length: > 0 } name
+					&& GetReferenceSimpleName(path) is { } name
 					&& baselineByName.TryGetValue(name, out var baselineReference)
 					&& !PathComparer.PathEquals(path, baselineReference.FilePath))
 				{
@@ -114,7 +128,14 @@ public static partial class RoslynExtensions
 						updated.Add(baselineReference);
 					}
 
-					pins.Add(new PinnedReference(project.Name, name, path, baselineReference.FilePath!));
+					// The same conflicting file can appear more than once (duplicate reference
+					// instances are legal at the workspace level); record the pin once so
+					// HotReloadUpdate.PinnedReferences stays canonical for handlers.
+					var pin = new PinnedReference(project.Name, name, path, baselineReference.FilePath!);
+					if (!pins.Contains(pin))
+					{
+						pins.Add(pin);
+					}
 				}
 			}
 

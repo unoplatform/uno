@@ -156,6 +156,37 @@ public sealed class Given_ReferenceIdentityPinning
 		pinned.Should().ContainSingle();
 	}
 
+	[TestMethod]
+	[Description(
+		"Simple-name keying splits on both separator styles regardless of OS: a Windows-style " +
+		"path string reaching the workspace on Unix must key as its file name, not its full string.")]
+	public void When_PathUsesForeignSeparators_Then_StillPinned()
+	{
+		if (OperatingSystem.IsWindows())
+		{
+			// '\' is a real separator on Windows: the foreign-style file cannot exist there.
+			Assert.Inconclusive("Unix-only scenario: requires a file whose name contains a backslash.");
+		}
+
+		// A file whose NAME literally contains a backslash (legal on Unix) is how a
+		// Windows-style path string presents to path APIs on another OS.
+		var emitted = EnCHarness.EmitLibrary(_temp, "ConflictLib", "2.0.0.0", EnCHarness.ConflictLibSource, subdir: "foreign");
+		var foreignStyle = Path.Join(Path.GetDirectoryName(emitted), @"sub\ConflictLib.dll");
+		File.Move(emitted, foreignStyle);
+
+		using var app = CreateProject(MetadataReference.CreateFromFile(_v1));
+		var baseline = app.Solution.SnapshotReferenceIdentities(out _);
+
+		var changed = app.Solution.WithProjectMetadataReferences(
+			app.ProjectId,
+			[MetadataReference.CreateFromFile(foreignStyle)]);
+
+		var aligned = changed.WithBaselineReferenceIdentities(baseline, out var pinned);
+
+		PathsOf(aligned, app.ProjectId).Should().BeEquivalentTo([_v1]);
+		pinned.Should().ContainSingle();
+	}
+
 	private sealed record AppProject(AdhocWorkspace Workspace, ProjectId ProjectId) : IDisposable
 	{
 		public Solution Solution => Workspace.CurrentSolution;

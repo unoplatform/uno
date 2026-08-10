@@ -34,6 +34,14 @@ internal sealed class EnCHarness : IDisposable
 	public required ProjectId ProjectId { get; init; }
 	public required DocumentId DocumentId { get; init; }
 
+	/// <summary>
+	/// Whether disposing the harness ends the EnC session. Defaults to <see langword="true"/>
+	/// (shim-level tests drive <see cref="Watch"/> directly); tests that hand <see cref="Watch"/>
+	/// to a <see cref="HotReloadManager"/> must set this to <see langword="false"/> — the
+	/// manager's <c>Dispose</c> ends the session, and ending it twice throws.
+	/// </summary>
+	public bool OwnsSession { get; set; } = true;
+
 	public static string AppSource(string expression)
 		=> $$"""
 		public class C
@@ -51,8 +59,8 @@ internal sealed class EnCHarness : IDisposable
 
 		var projectId = ProjectId.CreateNewId();
 		var documentId = DocumentId.CreateNewId(projectId);
-		var appPath = Path.Combine(temp.Path, "App.cs");
-		var appDll = Path.Combine(temp.Path, "bin", "App.dll");
+		var appPath = Path.Join(temp.Path, "App.cs");
+		var appDll = Path.Join(temp.Path, "bin", "App.dll");
 
 		var projectInfo = ProjectInfo.Create(
 				projectId,
@@ -60,7 +68,7 @@ internal sealed class EnCHarness : IDisposable
 				name: "App",
 				assemblyName: "App",
 				language: LanguageNames.CSharp,
-				filePath: Path.Combine(temp.Path, "App.csproj"),
+				filePath: Path.Join(temp.Path, "App.csproj"),
 				compilationOptions: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary),
 				documents:
 				[
@@ -110,9 +118,9 @@ internal sealed class EnCHarness : IDisposable
 			[MetadataReference.CreateFromFile(typeof(object).Assembly.Location)],
 			new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-		var dir = subdir is null ? temp.Path : Path.Combine(temp.Path, subdir);
+		var dir = subdir is null ? temp.Path : Path.Join(temp.Path, subdir);
 		Directory.CreateDirectory(dir);
-		var path = Path.Combine(dir, $"{name}.dll");
+		var path = Path.Join(dir, $"{name}.dll");
 		var emit = compilation.Emit(path);
 		if (!emit.Success)
 		{
@@ -123,5 +131,12 @@ internal sealed class EnCHarness : IDisposable
 	}
 
 	public void Dispose()
-		=> Workspace.Dispose();
+	{
+		if (OwnsSession)
+		{
+			Watch.EndSession();
+		}
+
+		Workspace.Dispose();
+	}
 }
