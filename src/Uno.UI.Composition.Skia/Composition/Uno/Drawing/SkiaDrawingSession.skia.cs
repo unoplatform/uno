@@ -159,6 +159,26 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 		_canvas.DrawRoundRect(rr, FillPaint(color, antialias));
 	}
 
+	public void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, Color color, bool antialias)
+	{
+		// Annulus = outer round rect with the inner round rect clipped OUT (Difference), then filled.
+		_canvas.Save();
+		_canvas.ClipRoundRect(RoundRect(inner, innerRadii), SKClipOperation.Difference, antialias);
+		_canvas.DrawRoundRect(RoundRect(outer, outerRadii), FillPaint(color, antialias));
+		_canvas.Restore();
+	}
+
+	private static SKRoundRect RoundRect(in Rect r, Vector4 radii)
+	{
+		var rr = new SKRoundRect();
+		rr.SetRectRadii(r.ToSKRect(), new[]
+		{
+			new SKPoint(radii.X, radii.X), new SKPoint(radii.Y, radii.Y),
+			new SKPoint(radii.Z, radii.Z), new SKPoint(radii.W, radii.W),
+		});
+		return rr;
+	}
+
 	public void DrawPath(IGeometry geometry, Color color, bool antialias)
 	{
 		using var lease = SkiaGeometryInterop.Lease(geometry);

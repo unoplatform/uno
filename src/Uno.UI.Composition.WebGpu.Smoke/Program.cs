@@ -748,6 +748,30 @@ Check("many-stop gradient: right blue (stops 16..19 not clamped away)", manyRigh
 	Check("present-overlay: replayed frame preserved under it (blue)", ovCorner.b > 200 && ovCorner.r < 60, ovCorner);
 }
 
+// 18l) ANALYTIC BORDER RING — DrawRoundedRectBorder fills the annulus between an outer and inner rounded rect as
+//      ONE rrect draw: the ring is painted, the interior (inside the inner rect) is HOLLOW (background shows).
+{
+	var brSurf = new WebGpuRenderSurface(dev, 64, 64);
+	var brPres = new WebGpuPresentSession(dev, brSurf);
+	brPres.Clear(WColor.FromArgb(255, 0, 0, 0));
+	var brRec = new WebGpuCommandRecorder();
+	brRec.DrawRoundedRectBorder(new Rect(8, 8, 48, 48), new Vector4(10, 10, 10, 10), new Rect(16, 16, 32, 32), new Vector4(4, 4, 4, 4), red, true);
+	WebGpuTrace.Reset();
+	brPres.Replay(brRec.Finish());
+	var brDraws = WebGpuTrace.Enabled ? WebGpuTrace.Dump() : "";
+	var brpx = dev.ReadPixelsRgba(brSurf);
+	var brEdge = At(brpx, 11, 32);    // on the ring (between outer 8 and inner 16) → red
+	var brHole = At(brpx, 32, 32);    // centre, inside the inner rect → hollow (black)
+	Check("border-ring: ring painted red", brEdge.r > 200 && brEdge.g < 60, brEdge);
+	Check("border-ring: interior hollow (black)", brHole.r < 60 && brHole.g < 60 && brHole.b < 60, brHole);
+	if (WebGpuTrace.Enabled)
+	{
+		int rrn = 0, pth = 0;
+		foreach (var l in brDraws.Split('\n')) { if (l.Contains("DRAW rrect")) { rrn++; } if (l.Contains("path-stencil")) { pth++; } }
+		Check("border-ring: ONE analytic rrect draw, no tessellation", rrn == 1 && pth == 0, $"rrect={rrn} path={pth}");
+	}
+}
+
 // 19) DPI SCALE — a logical 20x20 rect replayed through present.Save/Scale(2)/Replay/Restore must fill the 40x40
 //     PHYSICAL region. This is the 1.5x-DPI bug: WebGpuPresentSession.Scale was an empty stub, so the composition's
 //     RasterizationScale (applied via the neutral session) was dropped and content rendered at logical size.

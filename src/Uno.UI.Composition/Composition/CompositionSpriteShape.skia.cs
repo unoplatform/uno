@@ -29,6 +29,10 @@ namespace Microsoft.UI.Composition
 		// DrawRoundedRect (one SDF quad) instead of a tessellated path. Null → unchanged path behaviour.
 		internal (Rect Rect, Vector4 Radii)? RoundedRectFillHint { get; set; }
 
+		// Set by BorderVisual for a rounded border stroke: the fill goes through DrawRoundedRectBorder (one analytic
+		// annulus SDF quad, outer minus inner) instead of a tessellated ring path. Null → unchanged path behaviour.
+		internal (Rect Outer, Vector4 OuterRadii, Rect Inner, Vector4 InnerRadii)? RoundedRectBorderHint { get; set; }
+
 		/// <summary>
 		/// This is largely a hack that's needed for MUX.Shapes.Path with Data set to a PathGeometry that has some
 		/// figures with IsFilled = False. CompositionSpriteShapes don't have the concept of a "selectively filled
@@ -105,15 +109,19 @@ namespace Microsoft.UI.Composition
 					// SDF quad on backends that support it — instead of a tessellated path (stencil + cover). Only for a
 					// solid colour with an identity geometry transform; anything else keeps the path.
 					var rrHint = _geometryTransform.IsIdentity ? RoundedRectFillHint : null;
-					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
+					var brHint = _geometryTransform.IsIdentity ? RoundedRectBorderHint : null;
+					// A solid colour fill draws analytically when the shape is a rounded-rect background (rrHint, one
+					// SDF quad) or a rounded border ring (brHint, one annulus SDF quad); otherwise it fills the path.
+					global::Windows.UI.Color? solidFill =
+						Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition) ? colorFromTransition :
+						fill is CompositionColorBrush fillColor && fill.CanPaint() ? fillColor.Color :
+						null;
+					if (solidFill is { } sc)
 					{
-						if (rrHint is { } h) { session.Session.DrawRoundedRect(h.Rect, h.Radii, WithOpacity(colorFromTransition, session.Opacity), antialias: true); }
-						else { session.Session.DrawPath(fillGeometry, WithOpacity(colorFromTransition, session.Opacity), antialias: true); }
-					}
-					else if (fill is CompositionColorBrush fillColor && fill.CanPaint())
-					{
-						if (rrHint is { } h) { session.Session.DrawRoundedRect(h.Rect, h.Radii, WithOpacity(fillColor.Color, session.Opacity), antialias: true); }
-						else { session.Session.DrawPath(fillGeometry, WithOpacity(fillColor.Color, session.Opacity), antialias: true); }
+						var oc = WithOpacity(sc, session.Opacity);
+						if (brHint is { } b) { session.Session.DrawRoundedRectBorder(b.Outer, b.OuterRadii, b.Inner, b.InnerRadii, oc, antialias: true); }
+						else if (rrHint is { } h) { session.Session.DrawRoundedRect(h.Rect, h.Radii, oc, antialias: true); }
+						else { session.Session.DrawPath(fillGeometry, oc, antialias: true); }
 					}
 					else
 					{

@@ -292,10 +292,16 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 					var borderGeometry = BuildRoundRectRingPath(outerArea, fullCornerRadius.Outer, innerArea, fullCornerRadius.Inner);
 					((CompositionPathGeometry)_borderShape!.Geometry!).Path =
 						new CompositionPath((IGeometrySource2D)borderGeometry);
+					// Let a supporting backend fill the border as one analytic annulus (SDF) instead of a ring path.
+					var or = fullCornerRadius.Outer; var ir = fullCornerRadius.Inner;
+					_borderShape!.RoundedRectBorderHint = (
+						outerArea, new Vector4(or.TopLeft.X, or.TopRight.X, or.BottomRight.X, or.BottomLeft.X),
+						innerArea, new Vector4(ir.TopLeft.X, ir.TopRight.X, ir.BottomRight.X, ir.BottomLeft.X));
 				}
 				else if (_borderShape is not null)
 				{
 					((CompositionPathGeometry)_borderShape!.Geometry!).Path = null;
+					_borderShape!.RoundedRectBorderHint = null;
 				}
 			}
 		}
