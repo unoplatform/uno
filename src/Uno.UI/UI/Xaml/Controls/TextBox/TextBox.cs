@@ -1679,7 +1679,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public bool CanUndo => (bool)GetValue(CanUndoProperty);
 
-	#nullable enable
+#nullable enable
 		private static object? GetCanUndo(DependencyObject instance, bool isGet, object? valueToSet)
 		{
 			if (!isGet)
@@ -1689,7 +1689,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return Uno.UI.Helpers.Boxes.Box(((TextBox)instance)._historyIndex > 0);
 		}
-	#nullable restore
+#nullable restore
 
 		public static DependencyProperty CanRedoProperty { get; } = DependencyProperty.Register(
 			nameof(CanRedo),
@@ -1702,7 +1702,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public bool CanRedo => (bool)GetValue(CanRedoProperty);
 
-	#nullable enable
+#nullable enable
 		private static object? GetCanRedo(DependencyObject instance, bool isGet, object? valueToSet)
 		{
 			if (!isGet)
@@ -1713,7 +1713,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var textBox = (TextBox)instance;
 			return Uno.UI.Helpers.Boxes.Box(textBox._historyIndex < textBox._history.Count - 1);
 		}
-	#nullable restore
+#nullable restore
 
 		[GeneratedDependencyProperty(DefaultValue = false)]
 		public static DependencyProperty CanPasteClipboardContentProperty { get; } = CreateCanPasteClipboardContentProperty();
@@ -2045,13 +2045,13 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateVisualState();
 		}
 
-	#if false // Removing temporarily. We'll need to add it back.
+#if false // Removing temporarily. We'll need to add it back.
 		// TODO: Discuss this public API.
 		public static void FinishAutofillContext(bool shouldSave)
 		{
 			_textBoxNotificationsSingleton?.FinishAutofillContext(shouldSave);
 		}
-	#endif
+#endif
 
 		partial void SelectPartial(int start, int length)
 		{
@@ -3392,9 +3392,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			public void Execute(object parameter) => action();
 
-	#pragma warning disable 67 // An event was declared but never used in the class in which it was declared.
+#pragma warning disable 67 // An event was declared but never used in the class in which it was declared.
 			public event EventHandler CanExecuteChanged;
-	#pragma warning restore 67 // An event was declared but never used in the class in which it was declared.
+#pragma warning restore 67 // An event was declared but never used in the class in which it was declared.
 		}
 
 		#region ITextSelectionGripperHost
