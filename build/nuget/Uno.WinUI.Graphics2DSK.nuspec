@@ -43,7 +43,7 @@
 			</group>
 			<group targetFramework="net11.0-tvos26.5">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="SkiaSharp" version="3.119.0" />
+				<dependency id="SkiaSharp" version="4.151.1" />
 			</group>
 		</dependencies>
 	</metadata>
