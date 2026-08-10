@@ -232,6 +232,7 @@ public partial class CompositionTarget
 
 		// The stroke straddles the edge, so a width of 2 device pixels outsets the fill by 1.
 		_damageOutsetPaint.StrokeWidth = 2 / rasterizationScale;
+		_damageOutsetBand.Rewind();
 		_damageOutsetPaint.GetFillPath(damage, _damageOutsetBand);
 		_outsetDamage.Rewind();
 		damage.Op(_damageOutsetBand, SKPathOp.Union, _outsetDamage);
