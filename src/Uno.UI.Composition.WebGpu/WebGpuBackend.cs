@@ -2392,6 +2392,34 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				ops.Add((0, (nint)rvb, (uint)((j - ci) * 6), 0, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, owned)));
 				ci = j - 1;
 			}
+			else if (cmds[ci] is PathFill pf0 && !pf0.EvenOdd)
+			{
+				// Coalesce a run of consecutive NON-ZERO paths sharing colour + clip (a text run's glyphs) into one
+				// stencil (all fans) + one cover over the union bbox — N glyphs collapse from 2N draws to 2. Safe for
+				// non-zero winding: the union of same-colour shapes fills identically. Even-odd is excluded (an overlap
+				// would XOR to a hole), and per-path clips (PathFan) never enter cached recordings (not arena-safe).
+				_scratch.Clear();
+				var bbMin = new Vector2(float.MaxValue); var bbMax = new Vector2(float.MinValue);
+				int j = ci;
+				while (j < cmds.Count && cmds[j] is PathFill pfj && !pfj.EvenOdd
+					&& pfj.Color.R == pf0.Color.R && pfj.Color.G == pf0.Color.G && pfj.Color.B == pf0.Color.B && pfj.Color.A == pf0.Color.A
+					&& ClipDataEquals(pfj.Clip, pf0.Clip))
+				{
+					for (int i = 0; i < pfj.FanDevice.Length; i += 2) { var n = Ndc(new Vector2(pfj.FanDevice[i], pfj.FanDevice[i + 1])); _scratch.Add(n.X); _scratch.Add(n.Y); }
+					bbMin = Vector2.Min(bbMin, pfj.BbMin); bbMax = Vector2.Max(bbMax, pfj.BbMax);
+					j++;
+				}
+				var fanBuf = Vbuf(_scratch, owned);
+				uint fanCount = (uint)(_scratch.Count / 2);
+				float pr = pf0.Color.R / 255f, pg = pf0.Color.G / 255f, pb = pf0.Color.B / 255f, pa = pf0.Color.A / 255f;
+				_scratch.Clear();
+				var tl = bbMin; var br = bbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
+				PushVert(tl, pr, pg, pb, pa); PushVert(tr, pr, pg, pb, pa); PushVert(br, pr, pg, pb, pa);
+				PushVert(tl, pr, pg, pb, pa); PushVert(br, pr, pg, pb, pa); PushVert(bl, pr, pg, pb, pa);
+				var covBuf = Vbuf(_scratch, owned);
+				ops.Add((1, (nint)fanBuf, fanCount, (nint)covBuf, false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, owned)));
+				ci = j - 1;
+			}
 			else { BuildSimpleOp(cmds[ci], ops, owned); }
 		}
 	}

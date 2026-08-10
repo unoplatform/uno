@@ -596,6 +596,36 @@ Check("many-stop gradient: right blue (stops 16..19 not clamped away)", manyRigh
 	}
 }
 
+// 18f) COALESCE (path/glyph) — a cached child with two non-overlapping same-colour non-zero triangles (a text-run
+//      stand-in) must render both and collapse to ONE stencil + ONE cover when replayed.
+{
+	var tA = new ManagedDrawingFactory().CreatePathBuilder();
+	tA.MoveTo(new Vector2(0, 0)); tA.LineTo(new Vector2(16, 0)); tA.LineTo(new Vector2(0, 16)); tA.Close();
+	using var triA = tA.Build();
+	var tB = new ManagedDrawingFactory().CreatePathBuilder();
+	tB.MoveTo(new Vector2(40, 40)); tB.LineTo(new Vector2(56, 40)); tB.LineTo(new Vector2(40, 56)); tB.Close();
+	using var triB = tB.Build();
+	var cpSurf = new WebGpuRenderSurface(dev, 64, 64);
+	var cpPres = new WebGpuPresentSession(dev, cpSurf);
+	cpPres.Clear(WColor.FromArgb(255, 0, 0, 0));
+	var cpChild = new WebGpuCommandRecorder(); cpChild.DrawPath(triA, green, false); cpChild.DrawPath(triB, green, false); var cpData = cpChild.Finish();
+	var cpRec = new WebGpuCommandRecorder(); cpRec.Replay(cpData);
+	WebGpuTrace.Reset();
+	cpPres.Replay(cpRec.Finish());
+	var cpDraws = WebGpuTrace.Enabled ? WebGpuTrace.Dump() : "";
+	var cppx = dev.ReadPixelsRgba(cpSurf);
+	var cpA = At(cppx, 3, 3); var cpB = At(cppx, 44, 44); var cpMid = At(cppx, 30, 10);
+	Check("coalesce-path: triangle A green", cpA.g > 150 && cpA.r < 100, cpA);
+	Check("coalesce-path: triangle B green", cpB.g > 150 && cpB.r < 100, cpB);
+	Check("coalesce-path: gap between them black", cpMid.g < 60 && cpMid.r < 60, cpMid);
+	if (WebGpuTrace.Enabled)
+	{
+		int st = 0, cv = 0;
+		foreach (var l in cpDraws.Split('\n')) { if (l.Contains("path-stencil")) { st++; } if (l.Contains("path-cover")) { cv++; } }
+		Check("coalesce-path: 2 paths -> 1 stencil + 1 cover", st == 1 && cv == 1, $"stencil={st} cover={cv}");
+	}
+}
+
 // ---- Ordered GPU-command TRACE (UNO_WEBGPU_TRACE=1) ----
 // Dumps exactly what each primitive submits to the GPU (passes, pipelines, draws), in order, so it can be diffed
 // against the original ramez/webgpu-experiment backend's submission for the same primitive. Not a pass/fail check.
