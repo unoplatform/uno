@@ -1538,8 +1538,8 @@ internal sealed unsafe class WebGpuGeometryCache
 	// 22) + an ordered emit list, built ONCE (rebuilt only on transform/clip change). Each frame the verts are
 	// bulk-appended to the shared buffers and the ops re-emitted with the base offset — NO per-frame TransformFor,
 	// re-tessellation, or allocation (that was ~60ms + 26MB/frame at 500 visuals).
-	public float[] SolidVerts;
-	public float[] RrectVerts;
+	public nint SolidBuf;     // persistent GPU buffer holding this recording's solid verts (uploaded once)
+	public nint RrectBuf;     // persistent GPU buffer holding this recording's rrect verts (uploaded once)
 	public List<FrameOp> FrameOrder;
 }
 
@@ -2752,7 +2752,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				AppendRrect(tmp, rrc);
 				var buf = Vbuf(tmp, owned);
 				ReturnRrect(tmp);
-				ops.Add((5, 1, 6, (nint)buf, false, rrc.Clip, (nint)MakeClipBg(_d.RrClipBgl, rrc.Clip, owned)));
+				ops.Add((5, (nint)buf, 6, 0, false, rrc.Clip, (nint)MakeClipBg(_d.RrClipBgl, rrc.Clip, owned)));
 				break;
 			}
 		}
@@ -2863,19 +2863,33 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								var fOwned = new OwnedResources();
 								var sv = new List<float>(); var rv = new List<float>(); var order = new List<FrameOp>();
 								var tmp = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
-								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip))
+								var tcmds = new List<WebGpuCommand>();
+								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { tcmds.Add(tc); }
+								for (int ti = 0; ti < tcmds.Count; ti++)
 								{
-									if (tc is RectCommand rcx)
+									var tc = tcmds[ti];
+									if (tc is RectCommand rc0)
 									{
-										int rel = sv.Count / 6;
-										AppendSolidRect(sv, rcx.P0, rcx.P1, rcx.P2, rcx.P3, rcx.Color.R / 255f, rcx.Color.G / 255f, rcx.Color.B / 255f, rcx.Color.A / 255f);
-										order.Add(new FrameOp { Kind = 0, RelStart = rel, Count = 6, Clip = rcx.Clip, ClipBg = (nint)MakeClipBg(_d.SolidClipBgl, rcx.Clip, fOwned) });
+										// Coalesce a run of consecutive same-clip rects into one contiguous range + one draw.
+										int rel = sv.Count / 6; int tj = ti;
+										while (tj < tcmds.Count && tcmds[tj] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
+										{
+											AppendSolidRect(sv, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
+											tj++;
+										}
+										order.Add(new FrameOp { Kind = 0, RelStart = rel, Count = (uint)((tj - ti) * 6), Clip = rc0.Clip, ClipBg = (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, fOwned) });
+										ti = tj - 1;
 									}
-									else if (tc is RoundedRectCmd rcr)
+									else if (tc is RoundedRectCmd rr0)
 									{
-										int rel = rv.Count / 22;
-										AppendRrect(rv, rcr);
-										order.Add(new FrameOp { Kind = 5, RelStart = rel, Count = 6, Clip = rcr.Clip, ClipBg = (nint)MakeClipBg(_d.RrClipBgl, rcr.Clip, fOwned) });
+										int rel = rv.Count / 22; int tj = ti;
+										while (tj < tcmds.Count && tcmds[tj] is RoundedRectCmd rrj && ClipDataEquals(rrj.Clip, rr0.Clip))
+										{
+											AppendRrect(rv, rrj);
+											tj++;
+										}
+										order.Add(new FrameOp { Kind = 5, RelStart = rel, Count = (uint)((tj - ti) * 6), Clip = rr0.Clip, ClipBg = (nint)MakeClipBg(_d.RrClipBgl, rr0.Clip, fOwned) });
+										ti = tj - 1;
 									}
 									else
 									{
@@ -2884,20 +2898,22 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 										foreach (var o in tmp) { order.Add(new FrameOp { Kind = -1, NonSolid = o }); }
 									}
 								}
-								fe = new WebGpuGeometryCache { FrameSolid = true, SolidVerts = sv.ToArray(), RrectVerts = rv.ToArray(), FrameOrder = order, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip };
+								// Upload the extracted verts to PERSISTENT per-recording buffers ONCE (resident, ramez SLAB
+								// steady state): later frames draw from them with no re-upload and no re-tessellation.
+								nint sbuf = sv.Count > 0 ? (nint)Vbuf(sv, fOwned) : IntPtr.Zero;
+								nint rbuf = rv.Count > 0 ? (nint)Vbuf(rv, fOwned) : IntPtr.Zero;
+								fe = new WebGpuGeometryCache { FrameSolid = true, SolidBuf = sbuf, RrectBuf = rbuf, FrameOrder = order, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip };
 								_d.GeometryCache[rr.Commands] = fe;
 								WebGpuTrace.Upload("geometry-build(frame-solid)", order.Count);
 							}
 							else { WebGpuTrace.Upload("geometry-reuse(frame-solid)", 0); }
 							fe.Used = true;
-							// Per frame: bulk-append the resident verts + re-emit ops with the base offset (no rebuild/alloc).
-							int sBase = solid.Count / 6, rBase = rrect.Count / 22;
-							if (fe.SolidVerts.Length > 0) { solid.AddRange(fe.SolidVerts); }
-							if (fe.RrectVerts.Length > 0) { rrect.AddRange(fe.RrectVerts); }
+							// Per frame (cache hit): just re-emit ops drawing from the resident buffers — no append, no
+							// upload, no allocation. b0 = the persistent buffer, b1 = the byte offset of the op's verts.
 							foreach (var fo in fe.FrameOrder)
 							{
-								if (fo.Kind == 0) { ops.Add((0, 0, fo.Count, (nint)(sBase + fo.RelStart), false, fo.Clip, fo.ClipBg)); }
-								else if (fo.Kind == 5) { ops.Add((5, 0, fo.Count, (nint)(rBase + fo.RelStart), false, fo.Clip, fo.ClipBg)); }
+								if (fo.Kind == 0) { ops.Add((0, fe.SolidBuf, fo.Count, (nint)(fo.RelStart * 6 * sizeof(float)), false, fo.Clip, fo.ClipBg)); }
+								else if (fo.Kind == 5) { ops.Add((5, fe.RrectBuf, fo.Count, (nint)(fo.RelStart * 22 * sizeof(float)), false, fo.Clip, fo.ClipBg)); }
 								else { ops.Add(fo.NonSolid); }
 							}
 							break;
@@ -3172,9 +3188,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					break;
 				}
 				case 0:
+					// b0 = vertex buffer (private/immediate or a resident frame-solid buffer); b1 = byte offset into it.
 					wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b0, 0, (nuint)(u0 * 6 * sizeof(float)));
+					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b0, (nuint)b1, (nuint)(u0 * 6 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, u0, 1, 0, 0);   // u0 = 6 * (coalesced) rect count
 					WebGpuTrace.Draw("solid", u0);
 					_d.Profiler?.DrawKind(0);
@@ -3239,11 +3256,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					break;
 				}
 				case 5:
+					// b0 = vertex buffer (resident frame-solid or legacy per-op); b1 = byte offset; u0 = vertex count.
 					wgpuRenderPassEncoderSetPipeline(pass, _d.RrPipe);
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(6 * 22 * sizeof(float)));
-					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
-					WebGpuTrace.Draw("rrect", 6);
+					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b0, (nuint)b1, (nuint)(u0 * 22 * sizeof(float)));
+					wgpuRenderPassEncoderDraw(pass, u0, 1, 0, 0);
+					WebGpuTrace.Draw("rrect", u0);
 					_d.Profiler?.DrawKind(6);
 					break;
 			}
