@@ -277,8 +277,13 @@
 		<Exec Command="$(MSBuildThisFileDirectory)\tools\generatepkgdiff.exe --base=$(DiffBase) --other=$(DiffOther) --diffignore=PackageDiffIgnore.xml --outfile=$(DiffOutput)" />
 	</Target>
 
+	<!--
+		Uno.WinUI no longer ships an uno-runtime folder: lib/ is the Skia build. Uno.WinRT still
+		ships both the skia and webassembly flavors against a Reference lib/, so that is where the
+		reference-vs-runtime API comparison still has something to validate.
+	-->
 	<Target Name="ValidatePackageReferenceAPI" AfterTargets="BuildNuGetPackage">
-		<Exec Command="dotnet $(MSBuildThisFileDirectory)..\src\Uno.ReferenceImplComparer\bin\Release\Uno.ReferenceImplComparer.dll $(MSBuildThisFileDirectory)Uno.WinUI.$(NBGV_SemVer2).nupkg" />
+		<Exec Command="dotnet $(MSBuildThisFileDirectory)..\src\Uno.ReferenceImplComparer\bin\Release\Uno.ReferenceImplComparer.dll $(MSBuildThisFileDirectory)Uno.WinRT.$(NBGV_SemVer2).nupkg" />
 	</Target>
 
 	<!-- Custom target to avoid path normalization introduced by the WriteLinesToFile task -->

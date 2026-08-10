@@ -1,5 +1,4 @@
-﻿#if UNO_HAS_MANAGED_SCROLL_PRESENTER
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
@@ -898,4 +897,3 @@ namespace Microsoft.UI.Xaml.Controls
 	/// </param>
 	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsTouch = false, bool IsIntermediate = false);
 }
-#endif

@@ -29,22 +29,18 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (_scroller is { } oldScroller)
 				{
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 					if (oldScroller.Target is ScrollViewer oldScrollerTarget)
 					{
 						UnhookScrollEvents(oldScrollerTarget);
 					}
-#endif
 					WeakReferencePool.ReturnWeakReference(this, oldScroller);
 				}
 
 				_scroller = WeakReferencePool.RentWeakReference(this, value);
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 				if (IsInLiveTree && value is ScrollViewer newTarget)
 				{
 					HookScrollEvents(newTarget);
 				}
-#endif
 			}
 		}
 		#endregion
@@ -57,7 +53,6 @@ namespace Microsoft.UI.Xaml.Controls
 		internal double TargetVerticalOffset =>
 			VerticalOffset;
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 		public static DependencyProperty SizesContentToTemplatedParentProperty { get; } = DependencyProperty.Register(
 			nameof(SizesContentToTemplatedParent),
 			typeof(bool),
@@ -69,7 +64,6 @@ namespace Microsoft.UI.Xaml.Controls
 			get => (bool)GetValue(SizesContentToTemplatedParentProperty);
 			set => SetValue(SizesContentToTemplatedParentProperty, value);
 		}
-#endif
 
 		public Rect MakeVisible(UIElement visual, Rect rectangle)
 		{
@@ -134,7 +128,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public double ViewportWidth => DesiredSize.Width - Margin.Left - Margin.Right;
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			if (Content is UIElement child)
@@ -383,10 +376,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return Math.Max(minOffset, Math.Min(offset, maxOffset));
 		}
-#endif
 
-#if __NETSTD_REFERENCE__
-		protected override void OnContentChanged(object oldValue, object newValue) => base.OnContentChanged(oldValue, newValue);
-#endif
 	}
 }

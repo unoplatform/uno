@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Hosting
 {
-#if false || false
+#if false
 	public enum XamlSourceFocusNavigationReason
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Hosting.XamlSourceFocusNavigationReason.Programmatic

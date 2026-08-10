@@ -1,11 +1,16 @@
 <Project>
 	<PropertyGroup>
+		<!-- The suffix tests below are a proxy for "platform-agnostic project". A project whose file name
+		     carries no such suffix must set UnoShouldUseNoPlatformOverride itself, before importing this
+		     file, or it will pull platform TFMs and fail to satisfy no-platform consumers.
+		     Note this selects which override applies, it does not suppress overriding: the no-platform
+		     props below still maps UnoTargetFrameworkOverride onto the matching platform-less TFM. -->
 		<_ShouldUseNoPlatformOverride>false</_ShouldUseNoPlatformOverride>
 		<_ShouldUseNoPlatformOverride Condition="
 			$(MSBuildProjectFile.EndsWith('.Skia.csproj')) 
 			OR $(MSBuildProjectFile.EndsWith('.Wasm.csproj')) 
 			OR $(MSBuildProjectFile.EndsWith('.Reference.csproj'))
-			OR '$(UnoDisableTargetFrameworkPlatformOverride)' == 'true'
+			OR '$(UnoShouldUseNoPlatformOverride)' == 'true'
 		">true</_ShouldUseNoPlatformOverride>
 	</PropertyGroup>
 

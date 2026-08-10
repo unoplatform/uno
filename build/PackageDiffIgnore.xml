@@ -2414,6 +2414,11 @@
 
 		  <!-- Duration.TimeSpan public field removed; WinUI exposes TimeSpan as a get-only property (paired accessor is emitted by the property, not a field). -->
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Made Duration.TimeSpan read-only to match WinUI (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- Reference flavor folded into Skia: lib/ now carries the Skia build, so members that only the -->
+		  <!-- Reference compilation produced are gone. _fullyInitialized sat under !UNO_HAS_ENHANCED_LIFECYCLE, -->
+		  <!-- which Skia defines, so it never existed in the build lib/ now ships.                            -->
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.NavigationViewItemBase::_fullyInitialized" reason="Reference flavor folded into Skia; field was compiled only under !UNO_HAS_ENHANCED_LIFECYCLE (breaking changes for 7.0, uno#8339)" />
 	  </Fields>
 	  <Properties>
 		  <!-- StackLayout.DisableVirtualization is a plain CLR property in WinUI (backed by internal IsVirtualizationEnabledProperty); the DisableVirtualizationProperty DP is not part of the WinUI surface. -->
@@ -3268,6 +3273,38 @@
 
 		  <!-- FadeIn/FadeOutThemeAnimation reparent accessors (paired with the <Properties> entry above): get_/set_ for the removed From/To/By/EasingFunction/EnableDependentAnimation and the get_ DP-field accessors. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.Animation\.(FadeIn|FadeOut)ThemeAnimation(::|\.)(get_From|set_From|get_To|set_To|get_By|set_By|get_EasingFunction|set_EasingFunction|get_EnableDependentAnimation|set_EnableDependentAnimation|get_FromProperty|get_ToProperty|get_ByProperty|get_EasingFunctionProperty|get_EnableDependentAnimationProperty)\(.*\)" reason="Reparented *ThemeAnimation from DoubleAnimation to Timeline for WinUI parity; DoubleAnimation-only member accessors removed (breaking changes for 7.0, uno#8339)" isRegex="true" />
+
+		  <!-- ====================================================================== -->
+		  <!-- Reference flavor folded into Skia (breaking changes for 7.0, uno#8339). -->
+		  <!--                                                                        -->
+		  <!-- lib/ used to carry the Reference build and now carries the Skia one.   -->
+		  <!-- These members exist in both, with the same signature, but differ in    -->
+		  <!-- their vtable slot: the Skia compilation implements the internal        -->
+		  <!-- interfaces these types declare, so the accessors become newslot        -->
+		  <!-- virtual final, while GetVisualInternal goes the other way (Skia        -->
+		  <!-- provides an explicit IVisualElement2 implementation, leaving the       -->
+		  <!-- generated stub non-virtual). PackageDiff keys on the exact slot, so    -->
+		  <!-- the flip reads as a removal even though the API surface is unchanged.  -->
+		  <!-- ====================================================================== -->
+		  <Member fullName="Microsoft.UI.Xaml.FlowDirection Microsoft.UI.Xaml.FrameworkElement.get_FlowDirection()" reason="Reference flavor folded into Skia; accessor changed vtable slot, member still present (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Composition.Visual Microsoft.UI.Xaml.UIElement.GetVisualInternal()" reason="Reference flavor folded into Skia; accessor changed vtable slot, member still present (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.TextBlock(::|\.)(get_TextWrapping|get_MaxLines|get_TextTrimming|get_TextAlignment|get_LineHeight|get_LineStackingStrategy)\(\)" reason="Reference flavor folded into Skia; accessors changed vtable slot, members still present (breaking changes for 7.0, uno#8339)" isRegex="true" />
+
+		  <!-- ====================================================================== -->
+		  <!-- SpeechRecognitionResult construction and mutation made internal        -->
+		  <!-- (breaking changes for 7.0, uno#8339).                                  -->
+		  <!--                                                                        -->
+		  <!-- Unlike the vtable-slot entries above, these are real removals from the -->
+		  <!-- public surface: the parameterless constructor and the Text /           -->
+		  <!-- RawConfidence setters were public only under #if __WASM__, a TODO      -->
+		  <!-- deferral explicitly labelled "make a breaking change". Every caller is -->
+		  <!-- internal to Uno.WinRT, so nothing inside the assembly breaks, but      -->
+		  <!-- external code that constructed or mutated a result needs a migration   -->
+		  <!-- note.                                                                  -->
+		  <!-- ====================================================================== -->
+		  <Member fullName="System.Void Windows.Media.SpeechRecognition.SpeechRecognitionResult..ctor()" reason="SpeechRecognitionResult constructor made internal; results are produced by the recognizer (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Windows.Media.SpeechRecognition.SpeechRecognitionResult.set_Text(System.String value)" reason="SpeechRecognitionResult.Text setter made internal (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Windows.Media.SpeechRecognition.SpeechRecognitionResult.set_RawConfidence(System.Double value)" reason="SpeechRecognitionResult.RawConfidence setter made internal (breaking changes for 7.0, uno#8339)" />
 
 	  </Methods>
 	  <Events>

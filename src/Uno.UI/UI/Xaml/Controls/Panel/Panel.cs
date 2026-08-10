@@ -20,9 +20,6 @@ namespace Microsoft.UI.Xaml.Controls;
 [Markup.ContentProperty(Name = "Children")]
 public partial class Panel : FrameworkElement, IPanel
 {
-#if !UNO_HAS_BORDER_VISUAL
-	private readonly BorderLayerRenderer _borderRenderer;
-#endif
 
 #if IS_UNIT_TESTS || UNO_REFERENCE_API
 	private new UIElementCollection _children;
@@ -34,9 +31,6 @@ public partial class Panel : FrameworkElement, IPanel
 
 	public Panel()
 	{
-#if !UNO_HAS_BORDER_VISUAL
-		_borderRenderer = new BorderLayerRenderer(this);
-#endif
 		_children = new UIElementCollection(this);
 	}
 
@@ -45,9 +39,7 @@ public partial class Panel : FrameworkElement, IPanel
 #endif
 	public BrushTransition BackgroundTransition { get; set; }
 
-#if UNO_HAS_BORDER_VISUAL
 	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
-#endif
 
 	private protected override void OnLoaded()
 	{
@@ -179,38 +171,22 @@ public partial class Panel : FrameworkElement, IPanel
 
 	protected virtual void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateCornerRadius();
-#else
-		UpdateBorder();
-#endif
 	}
 
 	protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		// TODO: https://github.com/unoplatform/uno/issues/16705
-#else
-		UpdateBorder();
-#endif
 	}
 
 	protected virtual void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBorderThickness();
-#else
-		UpdateBorder();
-#endif
 	}
 
 	protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBorderBrush();
-#else
-		UpdateBorder();
-#endif
 	}
 
 	private protected override Thickness GetBorderThickness() => BorderThicknessInternal;
@@ -232,7 +208,6 @@ public partial class Panel : FrameworkElement, IPanel
 
 	private protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
 		BorderHelper.SetUpBrushTransitionIfAllowed(
 			(BorderVisual)this.Visual,
@@ -240,9 +215,6 @@ public partial class Panel : FrameworkElement, IPanel
 			e.NewValue as Brush,
 			this.BackgroundTransition,
 			((IDependencyObjectStoreProvider)this).Store.GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
-#else
-		UpdateBorder();
-#endif
 		OnBackgroundChangedPartial();
 	}
 
@@ -252,17 +224,10 @@ public partial class Panel : FrameworkElement, IPanel
 	{
 		base.OnBackgroundSizingChangedInner(e);
 
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackgroundSizing();
-#else
-		UpdateBorder();
-#endif
 	}
 
 	internal override bool IsViewHit() => Border.IsViewHitImpl(this);
 
-#if !UNO_HAS_BORDER_VISUAL
-	private void UpdateBorder() => _borderRenderer.Update();
-#endif
 
 }

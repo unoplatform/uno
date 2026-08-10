@@ -355,12 +355,6 @@
 		</ItemGroup>
 
 		<PropertyGroup>
-			<_UnoUIPackageBasePath
-				Condition="
-					'%(UnoRuntimeEnabledPackage.Identity)'=='Uno.UI'
-					or '%(UnoRuntimeEnabledPackage.Identity)'=='Uno.WinUI'"
-				>%(UnoRuntimeEnabledPackage.PackageBasePath)</_UnoUIPackageBasePath>
-
 			<!-- .NET 10 RC2+ path structure: tools/net/illink.dll -->
 			<_UnoLinkerHintGeneratorILLinkerPath Condition="'$(ILLinkTasksAssembly)'!=''">$([System.IO.Path]::Combine($([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly))), '..', 'net'))</_UnoLinkerHintGeneratorILLinkerPath>
 			<!-- Pre-.NET 11 path structure: tools/net11.0/illink.dll -->
@@ -380,9 +374,7 @@
 			ILLinkerPath="$(_UnoLinkerHintGeneratorILLinkerPath)"
 			TrimmerRootDescriptor="@(TrimmerRootDescriptor)"
 			TargetFramework="$(TargetFramework)"
-			TargetFrameworkVersion="$(TargetFrameworkVersion.Substring(1))"
-			UnoUIPackageBasePath="$(_UnoUIPackageBasePath)"
-			UnoRuntimeIdentifier="$(UnoRuntimeIdentifier)">
+			TargetFrameworkVersion="$(TargetFrameworkVersion.Substring(1))">
 			<Output TaskParameter="OutputFeatures"
 					 ItemName="_LinkerHintOutputFeatures" />
 		</LinkerHintGeneratorTask_v0>

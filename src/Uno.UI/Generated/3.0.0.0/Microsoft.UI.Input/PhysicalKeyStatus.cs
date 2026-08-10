@@ -3,36 +3,36 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct PhysicalKeyStatus
 	{
 		// Forced skipping of method Microsoft.UI.Input.PhysicalKeyStatus.PhysicalKeyStatus()
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public PhysicalKeyStatus(uint _RepeatCount, uint _ScanCode, bool _IsExtendedKey, bool _IsMenuKeyDown, bool _WasKeyDown, bool _IsKeyReleased)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.PhysicalKeyStatus", "PhysicalKeyStatus(uint _RepeatCount, uint _ScanCode, bool _IsExtendedKey, bool _IsMenuKeyDown, bool _WasKeyDown, bool _IsKeyReleased)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.PhysicalKeyStatus.PhysicalKeyStatus(uint, uint, bool, bool, bool, bool)
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public uint RepeatCount;
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public uint ScanCode;
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public bool IsExtendedKey;
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public bool IsMenuKeyDown;
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public bool WasKeyDown;
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public bool IsKeyReleased;
 #endif
 	}

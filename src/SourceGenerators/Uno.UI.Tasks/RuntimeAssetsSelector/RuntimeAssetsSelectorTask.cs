@@ -478,7 +478,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 									var adjustedPath = $"{nugetCacheRoot}{packageName}/{packageVersion}/lib/{adjustedTargetFramework}/{dllFileName}";
 									if (File.Exists(adjustedPath))
 									{
-										var originalAssembly = AssemblyDefinition.ReadAssembly(identityNormalized);
+										using var originalAssembly = AssemblyDefinition.ReadAssembly(identityNormalized);
 										if (!originalAssembly.MainModule.AssemblyReferences.Any(m => m.Name == "Uno.UI"))
 										{
 											// We only need to retarget packages that are explicitly referencing Uno.UI

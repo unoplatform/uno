@@ -4,20 +4,20 @@
 namespace Microsoft.UI.Xaml.CustomAttributes
 {
 	[global::System.AttributeUsageAttribute(global::System.AttributeTargets.Delegate | global::System.AttributeTargets.Interface | global::System.AttributeTargets.Property | global::System.AttributeTargets.Method | global::System.AttributeTargets.Enum | global::System.AttributeTargets.Struct | global::System.AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class MUXPropertyChangedCallbackAttribute : global::System.Attribute
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public MUXPropertyChangedCallbackAttribute() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.CustomAttributes.MUXPropertyChangedCallbackAttribute", "MUXPropertyChangedCallbackAttribute()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.CustomAttributes.MUXPropertyChangedCallbackAttribute.MUXPropertyChangedCallbackAttribute()
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public bool enable;
 #endif
 	}

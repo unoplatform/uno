@@ -9,7 +9,7 @@ When creating an Uno Platform application, developers might want to create elabo
 On Uno Platform targets with Skia rendering, we can utilize the pre-existing internal Skia canvas used to render the application window instead of creating additional Skia surfaces. Unlike `SKXamlCanvas` which doesn't support hardware acceleration on Skia targets yet, hardware acceleration comes out of the box if the Uno application is already using OpenGL to render. Moreover, `SKXamlCanvas` has to make additional buffer copying, which can be skipped with this implementation.
 
 > [!IMPORTANT]
-> The `Uno.WinUI.Graphics2DSK` package which provides the `SKCanvasElement` class is referenced for you by Uno.Sdk automatically on every target. However, the class is only supported (i.e. `SKCanvasElement.IsSupportedOnCurrentPlatform` returns true) on the targets that use Skia rendering, which is every Uno Platform target — the WinAppSDK target renders natively with WinUI and is not supported.
+> The `Uno.WinUI.Graphics2DSK` package which provides the `SKCanvasElement` class is referenced for you by Uno.Sdk automatically on every target. However, the class is only supported (i.e. `SKCanvasElement.IsSupportedOnCurrentPlatform` returns true) on Uno Platform targets that use Skia rendering; the WinAppSDK target renders natively with WinUI and is not supported.
 
 `SKCanvasElement` is an abstract `FrameworkElement` for 2D drawing with Skia. To use `SKCanvasElement`, create a subclass of `SKCanvasElement` and override the `RenderOverride` method, which takes the canvas that will be drawn on and the clipping area inside the canvas.
 

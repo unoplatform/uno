@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum ComponentResourceLocation
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Application = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Nested = 1,
 #endif
 	}

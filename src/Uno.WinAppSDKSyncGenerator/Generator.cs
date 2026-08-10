@@ -136,13 +136,14 @@ namespace Uno.WinAppSDKSyncGenerator
 		private static string MSBuildBasePath;
 
 		/// <summary>
-		/// Whether the type currently being generated targets a library that still ships
-		/// per-platform (native) binaries (Uno.UWP / Uno.Foundation / Uno.UI.Dispatching). For the
-		/// Skia-only libraries (Uno.UI, Uno.UI.Composition) rendering is Skia-only after 7.0, so
-		/// the native (__ANDROID__/__IOS__/__TVOS__/__WASM__) symbols are not emitted in the
-		/// generated stubs. Set from <see cref="ShouldEmitNativeDefines"/> in <see cref="GetAllSymbols"/>.
+		/// Whether the type currently being generated targets a library that still ships more than
+		/// the Skia flavor (Uno.UWP / Uno.Foundation / Uno.UI.Dispatching). For the Skia-only
+		/// libraries (Uno.UI, Uno.UI.Composition) neither the native
+		/// (__ANDROID__/__IOS__/__TVOS__/__WASM__) nor the __NETSTD_REFERENCE__ symbol can be
+		/// defined after 7.0, so the generated stubs must not reference them. Set from
+		/// <see cref="ShouldEmitNonSkiaDefines"/> in <see cref="GetAllSymbols"/>.
 		/// </summary>
-		protected bool CurrentTypeEmitsNativeDefines { get; private set; } = true;
+		protected bool CurrentTypeEmitsNonSkiaDefines { get; private set; } = true;
 
 		private static readonly string[] _unoUINamespaces = new[]
 		{
@@ -189,11 +190,12 @@ namespace Uno.WinAppSDKSyncGenerator
 			_tvOSCompilation = await LoadProject($@"{platformProject}.netcoremobile.csproj", "net10.0-tvos26.0");
 			_androidCompilation = await LoadProject($@"{platformProject}.netcoremobile.csproj", "net10.0-android");
 
-			// Skia and Reference surfaces still come from Uno.UI (kept); it carries the
-			// Uno.UWP / Uno.Foundation / Uno.UI.Dispatching symbols transitively.
-			_netstdReferenceCompilation = await LoadProject($@"{topProject}.Reference.csproj", "net10.0");
+			// Skia comes from Uno.UI, which carries the WinRT trio's symbols transitively. The UI
+			// layer has no Reference head anymore (Skia is its compile reference), so the Reference
+			// surface comes from Uno.UWP instead.
+			_netstdReferenceCompilation = await LoadProject($@"{platformProject}.Reference.csproj", "net10.0");
 			_wasmCompilation = await LoadProject($@"{platformProject}.Wasm.csproj", "net10.0");
-			_skiaCompilation = await LoadProject($@"{topProject}.Skia.csproj", "net10.0");
+			_skiaCompilation = await LoadProject($@"{topProject}.csproj", "net10.0");
 
 			_iOSBaseSymbol = _iOSCompilation.GetTypeByMetadataName("UIKit.UIView");
 			_tvOSBaseSymbol = _tvOSCompilation.GetTypeByMetadataName("UIKit.UIView");
@@ -507,12 +509,14 @@ namespace Uno.WinAppSDKSyncGenerator
 		}
 
 		/// <summary>
-		/// Native (per-platform) symbols are only generated for the libraries that still ship
-		/// per-platform binaries — Uno.UWP, Uno.Foundation and Uno.UI.Dispatching. The Skia-only
-		/// libraries (Uno.UI, Uno.UI.Composition) render through Skia on all targets after 7.0,
-		/// so their generated stubs must not reference __ANDROID__/__IOS__/__TVOS__/__WASM__.
+		/// Non-Skia symbols are only generated for the libraries that still ship more than the Skia
+		/// flavor — Uno.UWP, Uno.Foundation and Uno.UI.Dispatching, which keep both their native
+		/// heads and their Reference head. The Skia-only libraries (Uno.UI, Uno.UI.Composition)
+		/// render through Skia on all targets after 7.0 and lost their Reference head with the
+		/// fold, so their generated stubs must reference neither
+		/// __ANDROID__/__IOS__/__TVOS__/__WASM__ nor __NETSTD_REFERENCE__.
 		/// </summary>
-		private bool ShouldEmitNativeDefines(INamedTypeSymbol type)
+		private bool ShouldEmitNonSkiaDefines(INamedTypeSymbol type)
 		{
 			var basePath = GetNamespaceBasePath(type);
 			return basePath.Contains(@"\Uno.UWP\", StringComparison.Ordinal)
@@ -530,7 +534,7 @@ namespace Uno.WinAppSDKSyncGenerator
 			public T WasmSymbol;
 			public T SkiaSymbol;
 
-			private readonly bool _emitNativeDefines;
+			private readonly bool _emitNonSkiaDefines;
 
 			private ImplementedFor _implementedFor;
 			public ImplementedFor ImplementedFor => _implementedFor;
@@ -544,10 +548,10 @@ namespace Uno.WinAppSDKSyncGenerator
 				T wasmType,
 				T skiaType,
 				T uapType,
-				bool emitNativeDefines = true
+				bool emitNonSkiaDefines = true
 			)
 			{
-				_emitNativeDefines = emitNativeDefines;
+				_emitNonSkiaDefines = emitNonSkiaDefines;
 				this.AndroidSymbol = androidType;
 				this.IOSSymbol = iOSType;
 				this.TvOSSymbol = tvOSType;
@@ -586,12 +590,12 @@ namespace Uno.WinAppSDKSyncGenerator
 
 			/// <summary>
 			/// The (preprocessor define, platform symbol) pairs that participate in the generated
-			/// stub for the current library. Native (per-platform) targets are excluded for
-			/// Skia-only libraries — see <see cref="Generator.ShouldEmitNativeDefines"/>.
-			/// The native ordering is preserved to minimize diffs for Uno.UWP/Uno.Foundation.
+			/// stub for the current library. Skia-only libraries contribute Skia alone — see
+			/// <see cref="Generator.ShouldEmitNonSkiaDefines"/>. The ordering is preserved to
+			/// minimize diffs for Uno.UWP/Uno.Foundation.
 			/// </summary>
 			private (string define, T symbol)[] GetRelevantPlatforms()
-				=> _emitNativeDefines
+				=> _emitNonSkiaDefines
 					? new (string define, T symbol)[]
 					{
 						(AndroidDefine, AndroidSymbol),
@@ -604,7 +608,6 @@ namespace Uno.WinAppSDKSyncGenerator
 					: new (string define, T symbol)[]
 					{
 						(SkiaDefine, SkiaSymbol),
-						(NetStdReferenceDefine, NetStdReferenceSymbol),
 					};
 
 			public void AppendIf(IndentedStringBuilder b)
@@ -667,7 +670,7 @@ namespace Uno.WinAppSDKSyncGenerator
 
 		protected PlatformSymbols<INamedTypeSymbol> GetAllSymbols(INamedTypeSymbol uapType)
 		{
-			CurrentTypeEmitsNativeDefines = ShouldEmitNativeDefines(uapType);
+			CurrentTypeEmitsNonSkiaDefines = ShouldEmitNonSkiaDefines(uapType);
 			var name = uapType.ContainingNamespace + "." + uapType.MetadataName;
 			return new PlatformSymbols<INamedTypeSymbol>(
 				  androidType: _androidCompilation.GetTypeByMetadataName(name),
@@ -677,7 +680,7 @@ namespace Uno.WinAppSDKSyncGenerator
 				  wasmType: _wasmCompilation.GetTypeByMetadataName(name),
 				  skiaType: _skiaCompilation.GetTypeByMetadataName(name),
 				  uapType: uapType,
-				  emitNativeDefines: CurrentTypeEmitsNativeDefines
+				  emitNonSkiaDefines: CurrentTypeEmitsNonSkiaDefines
 			  );
 		}
 
@@ -705,7 +708,7 @@ namespace Uno.WinAppSDKSyncGenerator
 				wasmType: filter(wasm),
 				skiaType: filter(skia),
 				uapType: uapSymbol,
-				emitNativeDefines: CurrentTypeEmitsNativeDefines
+				emitNonSkiaDefines: CurrentTypeEmitsNonSkiaDefines
 			);
 		}
 
@@ -718,7 +721,7 @@ namespace Uno.WinAppSDKSyncGenerator
 				wasmType: FindMatchingMethod(types.WasmSymbol, method),
 				skiaType: FindMatchingMethod(types.SkiaSymbol, method),
 				uapType: method,
-				emitNativeDefines: CurrentTypeEmitsNativeDefines
+				emitNonSkiaDefines: CurrentTypeEmitsNonSkiaDefines
 			);
 
 		protected PlatformSymbols<IPropertySymbol> GetAllMatchingPropertyMember(PlatformSymbols<INamedTypeSymbol> types, IPropertySymbol property)
@@ -730,7 +733,7 @@ namespace Uno.WinAppSDKSyncGenerator
 				wasmType: GetMatchingPropertyMember(types.WasmSymbol, property),
 				skiaType: GetMatchingPropertyMember(types.SkiaSymbol, property),
 				uapType: property,
-				emitNativeDefines: CurrentTypeEmitsNativeDefines
+				emitNonSkiaDefines: CurrentTypeEmitsNonSkiaDefines
 			);
 
 		protected PlatformSymbols<ISymbol> GetAllMatchingEvents(PlatformSymbols<INamedTypeSymbol> types, IEventSymbol eventMember)
@@ -2385,7 +2388,12 @@ namespace Uno.WinAppSDKSyncGenerator
 
 			var ws = MSBuildWorkspace.Create(properties);
 
-			ws.LoadMetadataForReferencedProjects = true;
+			// Referenced projects must load as projects, not as metadata: the generator resolves
+			// non-generated members to decide what to stub, and a metadata reference hides the
+			// internals it needs to see. Leaving this on makes Roslyn prefer a referenced project's
+			// compiled output when one happens to exist, which silently degrades those references
+			// and trips the assertion in LoadProject on any tree that has been built.
+			ws.LoadMetadataForReferencedProjects = false;
 
 			ws.WorkspaceFailed +=
 				(s, e) => Console.WriteLine(e.Diagnostic.ToString());

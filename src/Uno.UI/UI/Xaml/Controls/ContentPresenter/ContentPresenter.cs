@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
@@ -25,6 +25,9 @@ using Rect = Windows.Foundation.Rect;
 #if UNO_REFERENCE_API || IS_UNIT_TESTS
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
+using System.Buffers;
+using Uno.Disposables;
+using Uno.Foundation.Extensibility;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -39,9 +42,6 @@ namespace Microsoft.UI.Xaml.Controls;
 [ContentProperty(Name = nameof(Content))]
 public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePoolAware
 {
-#if !UNO_HAS_BORDER_VISUAL
-	private readonly BorderLayerRenderer _borderRenderer;
-#endif
 
 	private bool _firstLoadResetDone;
 	private View _contentTemplateRoot;
@@ -54,9 +54,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public ContentPresenter()
 	{
-#if !UNO_HAS_BORDER_VISUAL
-		_borderRenderer = new BorderLayerRenderer(this);
-#endif
 		UpdateLastUsedTheme();
 
 		InitializePlatform();
@@ -67,9 +64,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 #endif
 	public BrushTransition BackgroundTransition { get; set; }
 
-#if UNO_HAS_BORDER_VISUAL
 	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
-#endif
 
 	partial void InitializePlatform();
 
@@ -195,11 +190,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	}
 	private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackgroundSizing();
-#else
-		UpdateBorder();
-#endif
 		base.OnBackgroundSizingChangedInner(e);
 	}
 
@@ -530,11 +521,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		// TODO: https://github.com/unoplatform/uno/issues/16705
-#else
-		UpdateBorder();
-#endif
 	}
 
 	#endregion
@@ -561,11 +548,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBorderThickness();
-#else
-		UpdateBorder();
-#endif
 	}
 
 	#endregion
@@ -591,11 +574,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBorderBrush();
-#else
-		UpdateBorder();
-#endif
 	}
 
 
@@ -615,11 +594,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateCornerRadius();
-#else
-		UpdateBorder();
-#endif
 	}
 
 	#endregion
@@ -879,7 +854,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 	}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	internal override void EnterImpl(EnterParams @params, int depth)
 	{
 		base.EnterImpl(@params, depth);
@@ -910,7 +884,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			DetachNativeElement(Content);
 		}
 	}
-#endif
 
 	private protected override void OnLoaded()
 	{
@@ -926,33 +899,13 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
-		{
-			SetUpdateTemplate();
-		}
-#endif
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		UpdateBorder();
-
-		if (IsNativeHost)
-		{
-			AttachNativeElement();
-		}
-#endif
 	}
 
 	private protected override void OnUnloaded()
 	{
 		base.OnUnloaded();
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		if (IsNativeHost)
-		{
-			DetachNativeElement(Content);
-		}
-#endif
 	}
 
 	private bool ResetDataContextOnFirstLoad()
@@ -1106,7 +1059,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// </remarks>
 	private protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
 		BorderHelper.SetUpBrushTransitionIfAllowed(
 			(BorderVisual)this.Visual,
@@ -1114,9 +1066,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			e.NewValue as Brush,
 			this.BackgroundTransition,
 			((IDependencyObjectStoreProvider)this).Store.GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
-#else
-		UpdateBorder();
-#endif
 	}
 
 	internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
@@ -1274,9 +1223,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// </summary>
 	partial void DetachNativeElement(object content);
 
-#if !UNO_HAS_BORDER_VISUAL
-	private void UpdateBorder() => _borderRenderer.Update();
-#endif
 
 	private void SetUpdateTemplate()
 	{
@@ -1294,5 +1240,208 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 
 		return null;
+	}
+
+	private Lazy<INativeElementHostingExtension> _nativeElementHostingExtension;
+	private static readonly HashSet<ContentPresenter> _nativeHosts = new();
+
+	private bool _nativeElementAttached;
+	private SerialDisposable _frameRenderedDisposable = new();
+	private Rect? _lastArrangeRect;
+
+	internal static bool HasNativeElements() => _nativeHosts.Count > 0;
+
+	partial void InitializePlatform()
+	{
+		_nativeElementHostingExtension = new Lazy<INativeElementHostingExtension>(() =>
+		{
+			try
+			{
+				ApiExtensibility.CreateInstance<INativeElementHostingExtension>(this, out var extension);
+				return extension;
+			}
+			catch (Exception e) // this catches weird cases like an enqueued Loaded event on a ContentPresenter that dispatches after the window of that ContentPresenter is closed
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError($"Couldn't create an {nameof(INativeElementHostingExtension)}.", e);
+				}
+				return null;
+			}
+		});
+	}
+
+	partial void TryRegisterNativeElement(object oldValue, object newValue)
+	{
+		if (IsNativeHost && IsInLiveTree)
+		{
+			DetachNativeElement(oldValue);
+		}
+
+		if (_nativeElementHostingExtension.Value?.IsNativeElement(newValue) ?? false)
+		{
+			IsNativeHost = true;
+			Visual.SetAsNativeHostVisual(true);
+
+			if (ContentTemplate is not null)
+			{
+				throw new InvalidOperationException("ContentTemplate cannot be set when the Content is a native element");
+			}
+			if (ContentTemplateSelector is not null)
+			{
+				throw new InvalidOperationException("ContentTemplateSelector cannot be set when the Content is a native element");
+			}
+
+			if (IsInLiveTree)
+			{
+				//If in visual tree, attach immediately. If not, don't attach since Enter will attach later.
+				AttachNativeElement();
+				ArrangeNativeElement();
+			}
+		}
+		else
+		{
+			IsNativeHost = false;
+			Visual.SetAsNativeHostVisual(null);
+		}
+	}
+
+	partial void AttachNativeElement()
+	{
+#if DEBUG
+		global::System.Diagnostics.Debug.Assert(IsNativeHost && XamlRoot is not null && !_nativeElementAttached);
+#endif
+		_nativeElementAttached = true;
+		_nativeElementHostingExtension.Value!.AttachNativeElement(Content);
+		_nativeHosts.Add(this);
+		var ct = ((CompositionTarget)Visual.CompositionTarget)!;
+		ct.FrameRendered += OnFrameRendered;
+		_frameRenderedDisposable.Disposable = Disposable.Create(() => ct.FrameRendered -= OnFrameRendered);
+	}
+
+	private void OnFrameRendered()
+	{
+		if (_nativeElementAttached)
+		{
+			ArrangeNativeElement();
+		}
+	}
+
+	partial void DetachNativeElement(object content)
+	{
+#if DEBUG
+		global::System.Diagnostics.Debug.Assert(IsNativeHost);
+#endif
+		_nativeHosts.Remove(this);
+		_lastArrangeRect = null;
+		_frameRenderedDisposable.Disposable = null;
+		if (_nativeElementAttached)
+		{
+			_nativeElementAttached = false;
+			_nativeElementHostingExtension.Value!.DetachNativeElement(content);
+		}
+	}
+
+	private Size MeasureNativeElement(Size childMeasuredSize, Size availableSize)
+	{
+		global::System.Diagnostics.Debug.Assert(IsNativeHost);
+		var ret = _nativeElementHostingExtension.Value!.MeasureNativeElement(Content, childMeasuredSize, availableSize);
+		if (ret.Width is double.PositiveInfinity or double.NaN)
+		{
+			ret.Width = 0;
+		}
+		if (ret.Height is double.PositiveInfinity or double.NaN)
+		{
+			ret.Height = 0;
+		}
+		return ret;
+	}
+
+	internal static void UpdateNativeHostContentPresentersOpacities()
+	{
+		foreach (var contentPresenter in _nativeHosts)
+		{
+			double finalOpacity = 1;
+			UIElement parent = contentPresenter;
+			while (parent is not null)
+			{
+				finalOpacity *= parent.Opacity;
+				parent = parent.GetParent() as UIElement;
+			}
+
+			contentPresenter._nativeElementHostingExtension!.Value.ChangeNativeElementOpacity(contentPresenter.Content, finalOpacity);
+		}
+	}
+
+	/// <remarks>
+	/// <see cref="nativeVisualsInZOrder"/> is read-only and won't be modified.
+	/// </remarks>
+	internal static void OnNativeHostsRenderOrderChanged(List<Visual> nativeVisualsInZOrder)
+	{
+		var rentedArray = ArrayPool<(int, ContentPresenter)>.Shared.Rent(_nativeHosts.Count);
+		using var _ = new DisposableStruct<(int, ContentPresenter)[]>(static rentedArray => ArrayPool<(int, ContentPresenter)>.Shared.Return(rentedArray, clearArray: true), rentedArray);
+
+		var count = 0;
+		foreach (var host in _nativeHosts)
+		{
+			rentedArray[count++] = (nativeVisualsInZOrder.IndexOf(host.Visual), host);
+		}
+		new Span<(int, ContentPresenter)>(rentedArray, 0, _nativeHosts.Count).Sort((one, two) => one.Item1 - two.Item1);
+
+		for (var index = 0; index < _nativeHosts.Count; index++)
+		{
+			var host = rentedArray[index].Item2;
+			var order = rentedArray[index].Item1;
+
+			if (host._nativeElementAttached)
+			{
+				if (order == -1)
+				{
+					// We're detaching the native element as it's no longer in view, but conceptually, it's still in the tree, so IsNativeHost is still true
+					Debug.Assert(host.IsNativeHost);
+					host._nativeElementAttached = false;
+					host._lastArrangeRect = null;
+					host._frameRenderedDisposable.Disposable = null;
+					host._nativeElementHostingExtension.Value!.DetachNativeElement(host.Content);
+				}
+				else
+				{
+					if (host._nativeElementHostingExtension.Value.SupportsZIndex())
+					{
+						host._nativeElementHostingExtension.Value.SetZIndex(host.Content, index);
+					}
+					else
+					{
+						host.DetachNativeElement(host.Content);
+						host.AttachNativeElement();
+						host.ArrangeNativeElement();
+					}
+				}
+			}
+			else if (order != -1)
+			{
+				host.AttachNativeElement();
+				host.ArrangeNativeElement();
+				if (host._nativeElementHostingExtension.Value.SupportsZIndex())
+				{
+					host._nativeElementHostingExtension.Value.SetZIndex(host.Content, index);
+				}
+			}
+		}
+	}
+
+	private void ArrangeNativeElement()
+	{
+		var arrangeRect = this.GetAbsoluteBoundsRect();
+		if (_lastArrangeRect != arrangeRect)
+		{
+			_lastArrangeRect = arrangeRect;
+			_nativeElementHostingExtension.Value!.ArrangeNativeElement(Content, arrangeRect);
+		}
+	}
+
+	internal object CreateSampleComponent(string text)
+	{
+		return _nativeElementHostingExtension.Value?.CreateSampleComponent(text);
 	}
 }

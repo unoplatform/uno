@@ -16,7 +16,6 @@
 
 #nullable enable
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 
 using System;
 using Microsoft.UI.Xaml.Documents;
@@ -416,4 +415,3 @@ public partial class DependencyObjectStore
 	}
 }
 
-#endif

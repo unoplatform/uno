@@ -79,11 +79,13 @@ Skia rendering is best suited for cross-platform scenarios where a unified appea
 
 ## Architecture
 
-In order to accommodate the inclusion of Skia rendering for all platforms, the Uno Platform internal structure uses two layers of "bait-and-switch" of reference assemblies.
+In order to provide platform-specific WinRT APIs from a single UI assembly, the Uno Platform internal structure uses a "bait-and-switch" of reference assemblies for its WinRT layer, while the UI layer uses the Skia build directly.
 
 ### Publish-time switching
 
-An application compiles against "reference" versions of `Uno.UI`, `Uno.UI.Dispatching`, `Uno.UI.Composition`, `Uno`, and `Uno.Foundation`. When the application is being packaged, `Uno.UI` and `Uno.UI.Composition` are switched to the Skia-compatible versions. The `Uno.UI.Dispatching`, `Uno`, and `Uno.Foundation` are switched to their corresponding target platform versions.
+The UI assemblies, `Uno.UI` and `Uno.UI.Composition`, are the Skia build: an application compiles against exactly the assemblies it runs against.
+
+The WinRT assemblies, `Uno.UI.Dispatching`, `Uno`, and `Uno.Foundation`, still use the switch. An application compiles against a "reference" version of each, which carries the union of the API surface across platforms, and when the application is packaged each is switched to the version matching the target platform.
 
 By doing so, any use of the APIs provided by `Uno.UI.Dispatching`, `Uno`, and `Uno.Foundation` is automatically redirected to the proper platform support, for instance, redirecting `GeoLocator` to use the proper APIs provided by the underlying platform.
 

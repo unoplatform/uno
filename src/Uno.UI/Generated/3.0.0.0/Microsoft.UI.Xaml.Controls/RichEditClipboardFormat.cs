@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum RichEditClipboardFormat
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		AllFormats = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		PlainText = 1,
 #endif
 	}

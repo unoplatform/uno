@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("Uno.UI")]
 [assembly: InternalsVisibleTo("Uno.UI.Wasm")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.WebAssembly")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
 [assembly: InternalsVisibleTo("Uno.UI.UnitTests")]
 [assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
@@ -17,7 +16,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Foldable")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.X11")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.Win32")]
-[assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.WebAssembly")]
 [assembly: InternalsVisibleTo("Uno.UI.WebView.Skia.X11")]
 [assembly: InternalsVisibleTo("Uno.UI.XamlHost")]
 
@@ -26,7 +24,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]
 [assembly: InternalsVisibleTo("SamplesApp.macOS")]
-[assembly: InternalsVisibleTo("SamplesApp.Wasm")]
 [assembly: InternalsVisibleTo("SamplesApp.Skia")]
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
