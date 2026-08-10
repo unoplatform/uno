@@ -315,6 +315,24 @@ var bdEdge = At(pBd, 45, 32);     // 5px past the sharp edge → blur spread →
 Check("backdrop: center still red-ish (blurred)", bdCenter.r > 80, bdCenter);
 Check("backdrop: blur spreads content past the edge", bdEdge.r > 15 && bdEdge.r < bdCenter.r, (bdEdge, bdCenter));
 
+// 16c) ACRYLIC PROCEDURAL NOISE — luminosity fills the region with a flat colour; the grain (Noise) must add
+//      per-pixel variation. Over a flat gray backdrop with opaque gray luminosity the region is uniform WITHOUT
+//      noise (variance ~0) and speckled WITH it. Fail-before (Noise=0 → flat) / pass-after (Noise>0 → spread).
+var gray = WColor.FromArgb(255, 128, 128, 128);
+var acrylicNoise = new WebGpuEffectFilter { SigmaX = 3, SigmaY = 3, Color = WColor.FromArgb(0, 0, 0, 0), LumColor = gray, Noise = 0.12f };
+var pNz = Render(r =>
+{
+	r.DrawRect(new Rect(0, 0, 64, 64), gray, false);
+	r.ClipRect(new Rect(0, 0, 64, 64));
+	r.DrawEffectBackdrop(acrylicNoise, 1f);
+});
+int nzMin = 255, nzMax = 0;
+for (int y = 28; y < 34; y++)
+{
+	for (int x = 28; x < 34; x++) { var p = At(pNz, x, y); nzMin = Math.Min(nzMin, p.r); nzMax = Math.Max(nzMax, p.r); }
+}
+Check("acrylic-noise: grain produces per-pixel variation", nzMax - nzMin > 8, (nzMin, nzMax));
+
 // 16b) OPAQUE ACRYLIC — a fully-opaque tint short-circuits the blur/backdrop capture: the region shows the
 //      tint (not the blurred content), and the clip still masks it to the region.
 var acrylicOpaque = new WebGpuEffectFilter { SigmaX = 5, SigmaY = 5, Color = WColor.FromArgb(255, 0, 0, 255) };

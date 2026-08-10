@@ -735,6 +735,13 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
     // SrcIn blend-mode tint: premultiplied(filterColor) * dst.a.
     let fp = vec4<f32>(u.tint.rgb * u.tint.a, u.tint.a);
     c = fp * c.a;
+  } else if (u.op.w > 0.5) {
+    // Acrylic backdrop composite: blurred backdrop -> luminosity blend (tint = lum rgb/a) -> procedural grain
+    // (off.x = noise opacity), opaque within the region. One draw replaces the blurred-image + luminosity overlay.
+    var rgb = mix(c.rgb, u.tint.rgb, u.tint.a);
+    let nz = (fract(sin(dot(floor(i.p.xy), vec2<f32>(12.9898, 78.233))) * 43758.5453) - 0.5) * 2.0 * u.off.x;
+    rgb = clamp(rgb + vec3<f32>(nz), vec3<f32>(0.0), vec3<f32>(1.0));
+    c = vec4<f32>(rgb, 1.0);
   }
   return c * u.op.x * clipCov(i.p.xy, clip);
 }";
@@ -1390,6 +1397,7 @@ public sealed class WebGpuEffectFilter : IEffectFilter
 	public float Dx, Dy, SigmaX, SigmaY;
 	public WColor Color;      // acrylic tint (composited SrcOver on top) / drop-shadow color
 	public WColor LumColor;   // acrylic luminosity color (SrcOver over the blurred backdrop == mix(blurred, lum.rgb, lum.a))
+	public float Noise;       // acrylic procedural-grain opacity (0 = none); baked into the backdrop composite
 	public void Dispose() { }
 }
 
@@ -2516,8 +2524,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					var bblur = _d.Pool.Rent(_s.Width, _s.Height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 					BlurPass(btmp, bblur, new Vector2(0f, 1f), new Vector2(0f, 1f / _s.Height), bk.Effect.SigmaY);
 					var bubuf = MakeUniform((int)112);
-					var bop = stackalloc float[8]; bop[0] = bk.Opacity; bop[1] = 0; bop[2] = 0; bop[3] = 0;
-					wgpuQueueWriteBuffer(_d.Q, bubuf, 0, (IntPtr)bop, 32);
+					var bop = stackalloc float[28]; bop[0] = bk.Opacity; bop[3] = 1f; var lum = bk.Effect.LumColor; bop[4] = lum.R / 255f; bop[5] = lum.G / 255f; bop[6] = lum.B / 255f; bop[7] = lum.A / 255f; bop[24] = bk.Effect.Noise;
+					wgpuQueueWriteBuffer(_d.Q, bubuf, 0, (IntPtr)bop, 112);
 					var bde = stackalloc WGPUBindGroupEntry[3];
 					bde[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = bblur };
 					bde[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
@@ -2541,7 +2549,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						TV(a.X, a.Y); TV(a.Z, a.Y); TV(a.Z, a.W); TV(a.X, a.Y); TV(a.Z, a.W); TV(a.X, a.W);
 						ops.Add((0, (nint)MakeBuffer(tv.ToArray()), 6, 0, false, bk.Clip, (nint)MakeClipBg(_d.SolidClipBgl, bk.Clip)));
 					}
-					Overlay(bk.Effect.LumColor);
+					// luminosity + grain are baked into the acrylic composite above; only the tint overlay remains
 					Overlay(bk.Effect.Color);
 					break;
 				}
@@ -2963,7 +2971,7 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 		if ((sigma > 0f || sawColorSource) && sawBackdrop)
 		{
 			hasBackdropInput = true;
-			return new WebGpuEffectFilter { SigmaX = sigma, SigmaY = sigma, Color = tint, LumColor = lum };
+			return new WebGpuEffectFilter { SigmaX = sigma, SigmaY = sigma, Color = tint, LumColor = lum, Noise = 0.02f };
 		}
 		// A non-blur, non-acrylic effect (e.g. grayscale/hue/sepia on an image source): the WebGPU backend can't
 		// realize it as a backdrop filter. Return null so CompositionEffectBrush.TryPaint falls back to the recipe
