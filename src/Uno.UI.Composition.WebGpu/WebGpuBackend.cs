@@ -2314,9 +2314,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		for (int i = 0; i < cmds.Count; i++)
 		{
 			var c = cmds[i];
-			// Solid/image/gradient (all route device fc through finv). Paths use a stencil pass with no xform binding,
-			// so they're excluded. A rect/rounded clip is fine (clipCov maps fc back via finv); a PATH clip uses the
-			// depth mask (no finv) so it's excluded.
+			// Solid/image/gradient route device fc through finv. Paths are excluded: arena'ing the stencil fan needs a
+			// second (stencil-layout) bind group per op — a tuple refactor / shared explicit pipeline layout, deferred.
+			// A rect/rounded clip is fine (clipCov maps fc back via finv); a PATH clip uses the depth mask (no finv).
 			if (c is not (RectCommand or ImageCmd or GradientCmd) || c.Clip.PathFan is not null) { return false; }
 		}
 		return cmds.Count > 0;
@@ -2538,7 +2538,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							Vector2 MoveP(float x, float y) => new(x * t2.M11 + y * t2.M21 + t2.M31, x * t2.M12 + y * t2.M22 + t2.M32);
 							foreach (var op in entry.Ops)
 							{
-								var abgl = op.kind == 3 ? _d.GradClipBgl : (op.kind == 2 ? _d.ImageClipBgl : _d.SolidClipBgl);
+								var abgl = op.kind switch { 3 => _d.GradClipBgl, 2 => _d.ImageClipBgl, _ => _d.SolidClipBgl };
 								// clipCov reads the LOCAL rounded shape (finv maps fc back to it); the SCISSOR is device-space
 								// so its Aabb must follow the move — transform the (finite) clip Aabb by the replay transform.
 								var scissorClip = op.clip;
