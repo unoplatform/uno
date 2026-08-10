@@ -47,7 +47,7 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="_UnoIncludeUIToolkit"
+	<Target Name="_UnoIncludeUIExtras"
 			BeforeTargets="$(_UnoRemoveReferences_BeforeTargets)"
 			Condition="$(ShouldComputeInputPris)">
 		
@@ -63,14 +63,14 @@
 						CopyToOutputDirectory="PreserveNewest"
 						OutputGroup="CopyLocalFilesOutputGroup" />
 
-			<_UnoUIToolkitAssets Include="$(PkgUno_WinUI)/lib/net10.0-windows10.0.19041.0/Uno.UI.Extras/**"/>
+			<_UnoUIExtrasAssets Include="$(PkgUno_WinUI)/lib/net10.0-windows10.0.19041.0/Uno.UI.Extras/**"/>
 
 			<None
-				Include="@(_UnoUIToolkitAssets)"
+				Include="@(_UnoUIExtrasAssets)"
 				TargetPath="Uno.UI.Extras/%(RecursiveDir)%(Filename)%(Extension)"
 				CopyToOutputDirectory="PreserveNewest" />
 
-			<_UnoUIToolkitAssets Remove="@(_UnoUIToolkitAssets)" />
+			<_UnoUIExtrasAssets Remove="@(_UnoUIExtrasAssets)" />
 		</ItemGroup>
 
 	</Target>

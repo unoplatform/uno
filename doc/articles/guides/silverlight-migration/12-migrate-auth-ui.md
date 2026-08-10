@@ -59,7 +59,7 @@ By examining the `<local:CustomDataForm x:Name="loginForm"` control we can see t
 > The source code for the Silverlight Toolkit has been archived on GitHub and some of the controls have been migrated to Uno (unfortunately, this does not include the DataForm):
 >
 > * [Silverlight Toolkit archive on GitHub](https://github.com/microsoftarchive/SilverlightToolkit)
-> * [Uno port of Silverlight Toolkit](https://github.com/unoplatform/Uno.UI.Extras.SL)
+> * [Uno port of Silverlight Toolkit](https://github.com/unoplatform/Uno.UI.Toolkit.SL)
 >
 > The Uno team also published a blog post on migrating the Silverlight Toolkit TreeView control:
 >
