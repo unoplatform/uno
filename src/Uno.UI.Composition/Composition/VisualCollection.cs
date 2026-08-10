@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -113,31 +113,5 @@ namespace Microsoft.UI.Composition
 		public IEnumerator<Visual> GetEnumerator() => _visuals.GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator() => _visuals.GetEnumerator();
-
-#nullable enable
-		partial void InsertAbovePartial(Visual newChild, Visual sibling)
-		{
-		}
-
-		partial void InsertAtBottomPartial(Visual newChild)
-		{
-		}
-
-		partial void InsertAtTopPartial(Visual newChild)
-		{
-		}
-
-		partial void InsertBelowPartial(Visual newChild, Visual sibling)
-		{
-		}
-
-		partial void RemoveAllPartial()
-		{
-		}
-
-		partial void RemovePartial(Visual child)
-		{
-		}
-#nullable disable
 	}
 }

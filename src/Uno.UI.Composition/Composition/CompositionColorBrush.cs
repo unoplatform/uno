@@ -1,12 +1,9 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using Windows.UI;
 
 using static Microsoft.UI.Composition.SubPropertyHelpers;
-using System.Collections.Generic;
-using SkiaSharp;
-using Uno.Disposables;
 
 namespace Microsoft.UI.Composition
 {
@@ -48,19 +45,5 @@ namespace Microsoft.UI.Composition
 				base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
 			}
 		}
-
-#nullable disable
-		// We don't call SKPaint.Reset() after usage, so make sure
-		// that only SKPaint.Color is being set
-		private static readonly SKPaint _tempPaint = new() { IsAntialias = true };
-
-		internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
-		{
-			_tempPaint.Color = Color.ToSKColor(opacity);
-			canvas.DrawRect(bounds, _tempPaint);
-		}
-
-		internal override bool CanPaint() => Color != Colors.Transparent;
-#nullable enable
 	}
 }

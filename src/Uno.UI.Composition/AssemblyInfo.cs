@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -31,12 +31,3 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp")]
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
-
-
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.MacOS")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Tizen")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Headless")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.X11")]

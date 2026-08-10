@@ -25,6 +25,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="AssemblyInfo.skia.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="SkiaSharp" />
 	</ItemGroup>
 
