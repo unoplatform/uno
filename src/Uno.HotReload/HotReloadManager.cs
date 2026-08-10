@@ -97,6 +97,10 @@ public sealed class HotReloadManager : IDisposable
 	private readonly IHotReloadTracker _tracker;
 	private readonly IChangesDetector _changesDetector;
 	private readonly ISolutionUpdater _solutionUpdater;
+	private readonly ImmutableDictionary<ProjectId, ImmutableDictionary<string, PortableExecutableReference>> _baselineReferences;
+
+	// The last pin set reported at Output level; guarded by _solutionUpdateGate (single-flight passes).
+	private ImmutableHashSet<PinnedReference>? _reportedPins;
 
 	// Internal (not private) so unit tests can drive the manager with a stub
 	// IWatchHotReloadService; production code goes through CreateAsync.
@@ -117,6 +121,16 @@ public sealed class HotReloadManager : IDisposable
 		_solutionUpdater = solutionUpdater;
 
 		CurrentSolution = initialSolution ?? innerWorkspace.CurrentSolution;
+
+		// The reference set the EnC baseline of each project's module captures at session start;
+		// every emit is pinned back onto it (see the alignment step in ProcessSolutionChanged).
+		_baselineReferences = CurrentSolution.SnapshotReferenceIdentities(out var multiVersionNames);
+		foreach (var name in multiVersionNames)
+		{
+			_tracker.Verbose(
+				$"Reference identity pinning is disabled for '{name}': the session baseline references " +
+				"multiple identities of it (a re-bind of it during hot reload requires a rebuild).");
+		}
 	}
 
 	public Solution CurrentSolution { get; private set; }
@@ -202,6 +216,7 @@ public sealed class HotReloadManager : IDisposable
 		HotReloadOperationResult outcome;
 		var deltas = ImmutableArray<Update>.Empty;
 		var diagnostics = ImmutableArray<Diagnostic>.Empty;
+		var pinnedReferences = ImmutableArray<PinnedReference>.Empty;
 
 		if (result.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error))
 		{
@@ -218,10 +233,47 @@ public sealed class HotReloadManager : IDisposable
 		}
 		else
 		{
+			// Roslyn 5.x refuses to emit any EnC update for a project that references an assembly at
+			// another identity than the one its baseline captured (ENC1099, a rude edit with zero
+			// deltas) — 4.x had no such check, and the runtime accepts deltas binding assemblies the
+			// baseline never referenced. A package added mid-session routinely re-binds part of its
+			// transitive closure onto assemblies the application was already built against (#24023),
+			// so pin those back to their baseline identity for this pass: genuinely new assemblies
+			// flow through (their files are staged by the handler), and the emitted delta binds
+			// against the identities the running application actually loaded.
+			var alignedSolution = result.Solution.WithBaselineReferenceIdentities(_baselineReferences, out pinnedReferences);
+			if (!pinnedReferences.IsEmpty)
+			{
+				// The updater's re-bind persists in CurrentSolution, so the same pins recur on every
+				// later cycle; the Output summary would repeat verbatim for the rest of the session
+				// (unlike the generator-error report below, the condition is not fixable mid-session).
+				// Report it at Output only when the pin set changes — a NEW pin must not drown in the
+				// repetition — and keep the per-cycle detail at Verbose.
+				var pins = pinnedReferences.ToImmutableHashSet();
+				if (_reportedPins is null || !_reportedPins.SetEquals(pins))
+				{
+					_reportedPins = pins;
+					_tracker.Output(
+						$"Hot reload keeps {FormatPinnedReferences(pinnedReferences)} at the identity the " +
+						"application was built with; changing a referenced assembly requires a rebuild.");
+				}
+
+				foreach (var pin in pinnedReferences)
+				{
+					_tracker.Verbose($"{pin.AssemblyName} ({pin.ProjectName}): '{pin.ConflictingPath}' -> '{pin.BaselinePath}'");
+				}
+			}
+			else
+			{
+				// A pin-free emit means the re-bind is gone (e.g. the csproj edit was reverted):
+				// forget the last-reported set so a later identical re-bind reports at Output again.
+				_reportedPins = null;
+			}
+
 			// The projects owning the pass's changed files (spec 054) — resolved once and shared by the
 			// generator-error suppression below and the blocked-compilation audit in the (true, true)
 			// branch, so neither judges a project the pass never touched.
-			var auditedProjects = ResolveAuditProjects(result.Solution, files);
+			var auditedProjects = ResolveAuditProjects(alignedSolution, files);
 
 			// A source generator can report an Error WITHOUT the C# compilation failing: a corrupt .resw
 			// makes the Uno XAML generator emit UXAML0003 (Error) while the assembly still compiles. Roslyn
@@ -245,7 +297,7 @@ public sealed class HotReloadManager : IDisposable
 				diagnosticsReporter.ReportAnalyzerDiagnostics(generatorErrors);
 			}
 			// Attempt to emit anyway ...
-			var emitSolution = result.Solution.WithSuppressedDiagnostics(generatorErrors);
+			var emitSolution = alignedSolution.WithSuppressedDiagnostics(generatorErrors);
 
 			// Compile the solution with those generator errors suppressed, and get deltas.
 			var (updates, emitDiagnostics) = await _watchService.EmitSolutionUpdateAsync(emitSolution, ct).ConfigureAwait(false);
@@ -303,7 +355,7 @@ public sealed class HotReloadManager : IDisposable
 		// across a worker→main boundary). A handler exception is a hot-reload failure for THIS
 		// operation, distinct from a manager-internal fault (spec 045 §3). Cancellation is not a
 		// failure and propagates to the ProcessFileChanges catch.
-		var update = new HotReloadUpdate(files, changeSet, result, diagnostics, deltas);
+		var update = new HotReloadUpdate(files, changeSet, result, diagnostics, deltas, pinnedReferences);
 		try
 		{
 			await _handler.OnHotReloadAsync(outcome, update, ct).ConfigureAwait(false);
@@ -407,6 +459,26 @@ public sealed class HotReloadManager : IDisposable
 				project.Documents.Any(document => document.FilePath is { } path && changeSet.Contains(path))
 				|| project.AdditionalDocuments.Any(document => document.FilePath is { } path && changeSet.Contains(path)))
 			.ToImmutableArray();
+	}
+
+	/// <summary>
+	/// Names the pinned assemblies for the pin summary line: distinct simple names, ordered for a
+	/// deterministic message, capped to the first 3 with a <c>+N more</c> suffix beyond (mirrors
+	/// <see cref="FormatEditedFiles"/>).
+	/// </summary>
+	private static string FormatPinnedReferences(ImmutableArray<PinnedReference> pinned)
+	{
+		const int maxNamed = 3;
+		var names = pinned
+			.Select(pin => pin.AssemblyName)
+			.Distinct(StringComparer.OrdinalIgnoreCase)
+			.OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+			.ToArray();
+		var named = string.Join(", ", names.Take(maxNamed));
+
+		return names.Length > maxNamed
+			? $"{named} +{names.Length - maxNamed} more"
+			: named;
 	}
 
 	/// <summary>
