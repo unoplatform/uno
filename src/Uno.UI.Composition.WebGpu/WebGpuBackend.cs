@@ -613,6 +613,9 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
   var o: VO; o.p = vec4<f32>(p, 0.0, 1.0); o.uv = vec2<f32>((p.x + 1.0) * 0.5, (1.0 - p.y) * 0.5); return o;
 }
 @fragment fn fs(i: VO) -> @location(0) vec4<f32> {
+  // pad0 > 0.5 => downsample: a single linear tap into a half-size target box-averages the 2x2 source block
+  // (pyramid level). Otherwise a separable gaussian tap-loop.
+  if (b.pad0 > 0.5) { return textureSampleLevel(src, smp, i.uv, 0.0); }
   let sigma = max(b.sigma, 1e-4);
   let r = i32(ceil(sigma * 3.0));
   var sum = vec4<f32>(0.0);
@@ -2190,17 +2193,28 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (_d.MsaaSamples > 1) { _d.Pool.Return(cov.MsaaColorView); }   // at 1x MsaaColorView aliases cov.View (blurred next) — don't reclaim
 		_d.Pool.Return(cov.DepthView);
 
-		// 2) separable blur: coverage -> temp (H) -> blur (V).
-		var tempView = _d.Pool.Rent(sw, sh2, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
-		BlurPass(cov.View, tempView, new Vector2(1f, 0f), new Vector2(1f / sw, 0f), sh.SigmaX);
-		var blurView = _d.Pool.Rent(sw, sh2, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
-		BlurPass(tempView, blurView, new Vector2(0f, 1f), new Vector2(0f, 1f / sh2), sh.SigmaY);
-		return blurView;
+		// 2) blur pyramid (2x downsample + separable gaussian), matching the original's 3-pass shadow blur.
+		return BlurPyramid(cov.View, sw, sh2, sh.SigmaX, sh.SigmaY);
 	}
 
-	private void BlurPass(IntPtr src, IntPtr dst, Vector2 dir, Vector2 texel, float sigma)
+	// Blur pyramid (matches ramez's offscreen-ss:blur ×3): one 2x box-downsample, then a small separable gaussian
+	// H+V on the half-res level. The half-res result is sampled by UV in the composite (bilinear upscales it), so a
+	// large blur is cheap (small kernel on a small texture) and the pass stream is 3 blur passes, like the original.
+	private IntPtr BlurPyramid(IntPtr src, int w, int h, float sigmaX, float sigmaY)
 	{
-		var bu = new float[8]; bu[0] = dir.X; bu[1] = dir.Y; bu[2] = texel.X; bu[3] = texel.Y; bu[4] = sigma;
+		int dw = Math.Max(1, w / 2), dh = Math.Max(1, h / 2);
+		var down = _d.Pool.Rent(dw, dh, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+		BlurPass(src, down, default, default, 0f, downsample: true);
+		var tmp = _d.Pool.Rent(dw, dh, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+		BlurPass(down, tmp, new Vector2(1f, 0f), new Vector2(1f / dw, 0f), sigmaX * 0.5f);   // sigma halved with the resolution
+		var outv = _d.Pool.Rent(dw, dh, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+		BlurPass(tmp, outv, new Vector2(0f, 1f), new Vector2(0f, 1f / dh), sigmaY * 0.5f);
+		return outv;
+	}
+
+	private void BlurPass(IntPtr src, IntPtr dst, Vector2 dir, Vector2 texel, float sigma, bool downsample = false)
+	{
+		var bu = new float[8]; bu[0] = dir.X; bu[1] = dir.Y; bu[2] = texel.X; bu[3] = texel.Y; bu[4] = sigma; bu[5] = downsample ? 1f : 0f;
 		var ubuf = MakeUniform((int)32);
 		fixed (float* p = bu) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, 32); }
 		var entries = stackalloc WGPUBindGroupEntry[3];
@@ -2213,7 +2227,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = dst, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
-		WebGpuTrace.Pass(dir.X != 0 ? "blur-h" : "blur-v", 0, 0, 1, true);
+		WebGpuTrace.Pass(downsample ? "blur-down" : (dir.X != 0 ? "blur-h" : "blur-v"), 0, 0, 1, true);
 		wgpuRenderPassEncoderSetPipeline(pass, _d.BlurPipe);
 		wgpuRenderPassEncoderSetBindGroup(pass, 0, bg, 0, (uint*)null);
 		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
@@ -2535,11 +2549,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					var bd = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
 					_d.Profiler?.OsBackdrop(ci);   // ci = prefix commands re-rendered for this backdrop (the O(n^2) signal)
 					RenderInto(cmds.GetRange(0, ci), bd, clear);
-					var btmp = _d.Pool.Rent(_s.Width, _s.Height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
-					BlurPass(bd.View, btmp, new Vector2(1f, 0f), new Vector2(1f / _s.Width, 0f), bk.Effect.SigmaX);
-					var bblur = _d.Pool.Rent(_s.Width, _s.Height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
-					BlurPass(btmp, bblur, new Vector2(0f, 1f), new Vector2(0f, 1f / _s.Height), bk.Effect.SigmaY);
-					var bubuf = MakeUniform((int)112);
+					var bblur = BlurPyramid(bd.View, _s.Width, _s.Height, bk.Effect.SigmaX, bk.Effect.SigmaY);   // 3-pass pyramid
+																				var bubuf = MakeUniform((int)112);
 					var bop = stackalloc float[28]; bop[0] = bk.Opacity; bop[3] = 1f; var lum = bk.Effect.LumColor; bop[4] = lum.R / 255f; bop[5] = lum.G / 255f; bop[6] = lum.B / 255f; bop[7] = lum.A / 255f; bop[24] = bk.Effect.Noise;
 					wgpuQueueWriteBuffer(_d.Q, bubuf, 0, (IntPtr)bop, 112);
 					var bde = stackalloc WGPUBindGroupEntry[3];
