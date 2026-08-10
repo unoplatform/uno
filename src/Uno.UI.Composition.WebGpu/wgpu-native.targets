@@ -51,7 +51,9 @@
 			DestinationFolder="$(WgpuNativeCacheDir)" Retries="3" />
 		<Unzip Condition="'$(_WgpuAsset)' != '' And !Exists('$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)')"
 			SourceFiles="$(WgpuNativeCacheDir)$(_WgpuAsset)" DestinationFolder="$(WgpuNativeCacheDir)" />
-		<Copy Condition="'$(_WgpuAsset)' != ''"
+		<!-- Guard on OutDir: this target runs AfterTargets=Build, which also fires in an outer multi-TFM build pass
+		     where OutDir is empty — an unguarded Copy then throws MSB3023 (no destination). -->
+		<Copy Condition="'$(_WgpuAsset)' != '' And '$(OutDir)' != ''"
 			SourceFiles="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
 	</Target>
 </Project>
