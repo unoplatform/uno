@@ -1457,6 +1457,11 @@ internal sealed unsafe class WebGpuGeometryCache
 	// Arena entry: Ops geometry is baked in the recording's OWN (identity) NDC space; a moved replay re-stamps a
 	// transform uniform (xform) on the per-op clip bind groups and reuses the vertex buffers instead of rebuilding.
 	public bool Arena;
+	// Frame-solid entry (recording contains solids): only its NON-solid ops (paths/images/gradients, device space)
+	// are cached here; its solids are re-appended into the shared per-pass buffer each frame so they coalesce across
+	// visuals. NonSolidOps are consumed in draw order (1 op per non-rect command) while the recording is re-walked.
+	public bool FrameSolid;
+	public List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> NonSolidOps;
 }
 
 // Backend-created gradient shader handle. The WebGPU backend mints its own (rather than delegating to Skia) so
@@ -2389,13 +2394,17 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// doesn't depend on device position, so its geometry can be baked once in the recording's own space and moved by
 	// re-stamping the vertex xform (clipCov is a constant 1). Paths (stencil pass has no xform), gradients (device-
 	// space geometry in the fragment) and any clip need a device-space re-stamp and are NOT arena-safe yet.
-	// A recording is solid-only when every command is a rect — cheap to re-emit each frame into the shared solid
-	// buffer (ramez arena baseline) so its draws coalesce across visuals, instead of caching per-visual GPU buffers.
-	private static bool IsSolidOnly(List<WebGpuCommand> cmds)
+	// A recording contains at least one rect — its solids are cheap to re-emit each frame into the shared solid
+	// buffer (ramez arena baseline) so they coalesce across visuals; any non-solids stay cached (NonSolidOps).
+	private static bool HasAnyRect(List<WebGpuCommand> cmds)
 	{
-		if (cmds.Count == 0) { return false; }
-		for (int i = 0; i < cmds.Count; i++) { if (cmds[i] is not RectCommand) { return false; } }
-		return true;
+		for (int i = 0; i < cmds.Count; i++) { if (cmds[i] is RectCommand) { return true; } }
+		return false;
+	}
+	private static bool HasNonRect(List<WebGpuCommand> cmds)
+	{
+		for (int i = 0; i < cmds.Count; i++) { if (cmds[i] is not RectCommand) { return true; } }
+		return false;
 	}
 
 	private static bool IsArenaSafe(List<WebGpuCommand> cmds)
@@ -2654,19 +2663,46 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					break;
 				case ReplayRefCmd rr:
 				{
-					// SOLID-ONLY recording fast path (ramez arena baseline): a visual whose whole recording is rects
-					// (a Border background/edges, a fill) is cheap to re-emit, so instead of caching per-visual GPU
-					// buffers (which forces a distinct bind group per visual and blocks coalescing), append its
-					// device-space rects to the SHARED solid buffer every frame. Adjacent such visuals sharing a clip
-					// then collapse to ONE draw in the emit loop — the cross-visual draw-count win the profiler showed.
-					if (IsSolidOnly(rr.Commands))
+					// FRAME-SOLID path (ramez arena baseline): any recording that contains rects — a Border background,
+					// a Button (background + border + glyphs) — re-emits its SOLIDS into the SHARED per-pass buffer
+					// every frame so sibling visuals sharing a clip collapse to ONE draw (the cross-visual draw-count
+					// win the profiler showed). NON-solids (glyphs/images/gradients) stay cached (device space,
+					// rebuilt only on a transform/clip change) and are consumed in draw order as the recording is
+					// re-walked. Pure non-solid recordings fall through to the arena path below (moving-visual reuse).
+					if (HasAnyRect(rr.Commands))
 					{
+						List<(int, nint, uint, nint, bool, ClipData, nint)> nonSolid = null;
+						if (HasNonRect(rr.Commands))
+						{
+							var nsMiss = !_d.GeometryCache.TryGetValue(rr.Commands, out var nsEntry);
+							var nsStale = !nsMiss && (!nsEntry.FrameSolid || nsEntry.Transform != rr.Transform || !ClipDataEquals(nsEntry.Clip, rr.Clip) || nsEntry.NonSolidOps is null);
+							if (nsMiss || nsStale)
+							{
+								if (nsEntry is not null) { _d.DeferRelease(nsEntry.Owned); }
+								var nsOwned = new OwnedResources();
+								var nsOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
+								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip))
+								{
+									if (tc is not RectCommand) { BuildSimpleOp(tc, nsOps, nsOwned); }
+								}
+								nsEntry = new WebGpuGeometryCache { NonSolidOps = nsOps, Owned = nsOwned, Transform = rr.Transform, Clip = rr.Clip, FrameSolid = true };
+								_d.GeometryCache[rr.Commands] = nsEntry;
+								WebGpuTrace.Upload("geometry-build(frame-solid)", nsOps.Count);
+							}
+							else { WebGpuTrace.Upload("geometry-reuse(frame-solid)", 0); }
+							nsEntry.Used = true;
+							nonSolid = nsEntry.NonSolidOps;
+						}
+						int nsIdx = 0;
 						foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip))
 						{
-							if (tc is not RectCommand rcx) { continue; }
-							int st = solid.Count / 6;
-							AppendSolidRect(solid, rcx.P0, rcx.P1, rcx.P2, rcx.P3, rcx.Color.R / 255f, rcx.Color.G / 255f, rcx.Color.B / 255f, rcx.Color.A / 255f);
-							ops.Add((0, 0, 6, (nint)st, false, rcx.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rcx.Clip)));
+							if (tc is RectCommand rcx)
+							{
+								int st = solid.Count / 6;
+								AppendSolidRect(solid, rcx.P0, rcx.P1, rcx.P2, rcx.P3, rcx.Color.R / 255f, rcx.Color.G / 255f, rcx.Color.B / 255f, rcx.Color.A / 255f);
+								ops.Add((0, 0, 6, (nint)st, false, rcx.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rcx.Clip)));
+							}
+							else if (nonSolid is not null && nsIdx < nonSolid.Count) { ops.Add(nonSolid[nsIdx++]); }
 						}
 						break;
 					}

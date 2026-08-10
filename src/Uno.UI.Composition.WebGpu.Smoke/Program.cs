@@ -653,6 +653,32 @@ Check("many-stop gradient: right blue (stops 16..19 not clamped away)", manyRigh
 	}
 }
 
+// 18h) MIXED FRAME-SOLID — a cached recording that interleaves rect/path/rect must render ALL three in order
+//      (validates the frame-solid interleaving: solids re-appended to the shared buffer, the path consumed from
+//      cached NonSolidOps at the right position — a nsIdx misalignment would swap or drop geometry).
+{
+	var mtb = new ManagedDrawingFactory().CreatePathBuilder();
+	mtb.MoveTo(new Vector2(24, 4)); mtb.LineTo(new Vector2(40, 4)); mtb.LineTo(new Vector2(24, 20)); mtb.Close();
+	using var mTri = mtb.Build();
+	var mSurf = new WebGpuRenderSurface(dev, 64, 64);
+	var mPres = new WebGpuPresentSession(dev, mSurf);
+	mPres.Clear(WColor.FromArgb(255, 0, 0, 0));
+	var mBlue = WColor.FromArgb(255, 0, 0, 255);
+	var mChild = new WebGpuCommandRecorder();
+	mChild.DrawRect(new Rect(4, 4, 12, 12), red, false);    // solid A
+	mChild.DrawPath(mTri, green, false);                    // path (non-solid) between the solids
+	mChild.DrawRect(new Rect(48, 48, 12, 12), mBlue, false); // solid B
+	var mData = mChild.Finish();
+	var mRec = new WebGpuCommandRecorder(); mRec.Replay(mData);
+	WebGpuTrace.Reset();
+	mPres.Replay(mRec.Finish());
+	var mpx = dev.ReadPixelsRgba(mSurf);
+	var mA = At(mpx, 10, 10); var mP = At(mpx, 28, 8); var mB = At(mpx, 54, 54);
+	Check("mixed-frame-solid: solid A red", mA.r > 200 && mA.g < 60, mA);
+	Check("mixed-frame-solid: path green", mP.g > 150 && mP.r < 100, mP);
+	Check("mixed-frame-solid: solid B blue", mB.b > 200 && mB.r < 60, mB);
+}
+
 // 19) DPI SCALE — a logical 20x20 rect replayed through present.Save/Scale(2)/Replay/Restore must fill the 40x40
 //     PHYSICAL region. This is the 1.5x-DPI bug: WebGpuPresentSession.Scale was an empty stub, so the composition's
 //     RasterizationScale (applied via the neutral session) was dropped and content rendered at logical size.
