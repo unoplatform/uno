@@ -405,12 +405,14 @@ if (Environment.GetEnvironmentVariable("UNO_WEBGPU_PERF") == "1")
 	}
 
 	const int frames = 120;
-	// Full path: new recording each frame (record + build ops + encode + submit + poll).
+	// Full path: new recording each frame (record + build ops + encode + submit + poll). Bracket with the profiler
+	// (if UNO_WEBGPU_PROFILE=1) so the [webgpu-profile] emit path is exercised headless — there's no swapchain
+	// Present here, so present/acquire/blit/surface stay 0, but replay phases + counts + gc are validated.
 	for (int f = 0; f < 5; f++) { var rec = new WebGpuCommandRecorder(); RecordComplex(rec); perfPresent.Replay(rec.Finish()); }
 	var sw = System.Diagnostics.Stopwatch.StartNew();
 	long a0 = GC.GetAllocatedBytesForCurrentThread();
 	int g0 = GC.CollectionCount(0);
-	for (int f = 0; f < frames; f++) { var rec = new WebGpuCommandRecorder(); RecordComplex(rec); perfPresent.Replay(rec.Finish()); }
+	for (int f = 0; f < frames; f++) { dev.Profiler?.FrameStart(); var rec = new WebGpuCommandRecorder(); RecordComplex(rec); perfPresent.Replay(rec.Finish()); dev.Profiler?.FrameEnd(); }
 	sw.Stop();
 	long alloc = GC.GetAllocatedBytesForCurrentThread() - a0;
 	Console.WriteLine($"PERF full-record: {sw.Elapsed.TotalMilliseconds / frames:F2} ms/frame, {alloc / frames / 1024} KB alloc/frame, gen0 GCs={GC.CollectionCount(0) - g0}  (380 prims: 200 rect + 100 clipped + 80 path)");

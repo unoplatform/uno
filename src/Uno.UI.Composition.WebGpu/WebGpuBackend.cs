@@ -270,6 +270,9 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		Pool = new WebGpuTexturePool(this);
 		BufferPool = new WebGpuBufferPool(this);
 		if (WebGpuProfiler.Enabled) { Profiler = new WebGpuProfiler(); }
+		// Startup marker (always logged): confirms this build is current + reports the profiler/pipeline/MSAA state,
+		// so a missing profiler line can be told apart from a stale build or the flag not being read.
+		System.Console.WriteLine($"[webgpu] backend init — UNO_WEBGPU_PROFILE={WebGpuProfiler.Enabled} pipeline={Pipeline} msaa={MsaaSamples}x colorFormat={ColorFormat}");
 	}
 
 	// Prefer 2x MSAA (half the cost) where the device supports it for our colour format, else 4x (spec-guaranteed).
@@ -772,82 +775,91 @@ public sealed class WebGpuProfiler
 	private long _pkFrame, _pkPoll, _pkRender, _pkPresent;
 	// Window count sums.
 	private long _cmds, _ops, _draws, _osLayer, _osBackdrop, _osCov, _osShadow, _backReCmds, _texCreate, _rent, _bgHit, _bgMiss, _bufNew, _upBytes;
-	// GC over the window.
-	private long _alloc; private int _g0, _g1, _g2;
 
-	// Per-frame temporaries (reset each FrameStart).
+	// Per-frame temporaries (reset in FrameEnd after aggregation; FrameStart also resets for cleanliness — so a
+	// missing/unpaired FrameStart can't stall logging). No gate: adders always accumulate.
 	private long _tFrameReq, _tReplay, _tPresent, _tBeginFrame, _tRender, _tSubmit, _tPoll, _tAcquire, _tBlit, _tSurface;
 	private long _cCmds, _cOps, _cDraws, _cOsLayer, _cOsBackdrop, _cOsCov, _cOsShadow, _cBackReCmds, _cTexCreate, _cRent, _cBgHit, _cBgMiss, _cBufNew, _cUpBytes;
-	private long _allocStart; private int _sg0, _sg1, _sg2;
-	private bool _inFrame;
+	// Window-level GC + wall clock marks (measured across the window, not per frame, so no FrameStart dependency).
+	private long _allocMark; private int _g0Mark, _g1Mark, _g2Mark; private long _flushMark; private bool _started;
 
 	public static long T() => System.Diagnostics.Stopwatch.GetTimestamp();
 
-	public void FrameStart()
+	private void ResetFrameTemps()
 	{
-		_inFrame = true;
 		_tFrameReq = _tReplay = _tPresent = _tBeginFrame = _tRender = _tSubmit = _tPoll = _tAcquire = _tBlit = _tSurface = 0;
 		_cCmds = _cOps = _cDraws = _cOsLayer = _cOsBackdrop = _cOsCov = _cOsShadow = _cBackReCmds = _cTexCreate = _cRent = _cBgHit = _cBgMiss = _cBufNew = _cUpBytes = 0;
-		_allocStart = GC.GetAllocatedBytesForCurrentThread(); _sg0 = GC.CollectionCount(0); _sg1 = GC.CollectionCount(1); _sg2 = GC.CollectionCount(2);
 	}
 
-	// Timing adders — pass a start timestamp captured with T(). No-op outside a bracketed frame so off-loop renders
-	// (RenderTargetBitmap) don't pollute the on-window window.
-	public void FrameRequested(long t0) { if (_inFrame) { _tFrameReq += T() - t0; } }
-	public void Replayed(long t0) { if (_inFrame) { _tReplay += T() - t0; } }
-	public void Presented(long t0) { if (_inFrame) { _tPresent += T() - t0; } }
-	public void BeginFrameT(long t0) { if (_inFrame) { _tBeginFrame += T() - t0; } }
-	public void Render(long t0) { if (_inFrame) { _tRender += T() - t0; } }
-	public void Submit(long t0) { if (_inFrame) { _tSubmit += T() - t0; } }
-	public void Poll(long t0) { if (_inFrame) { _tPoll += T() - t0; } }
-	public void Acquire(long t0) { if (_inFrame) { _tAcquire += T() - t0; } }
-	public void Blit(long t0) { if (_inFrame) { _tBlit += T() - t0; } }
-	public void Surface(long t0) { if (_inFrame) { _tSurface += T() - t0; } }
+	public void FrameStart() => ResetFrameTemps();
+
+	// Timing adders — pass a start timestamp captured with T().
+	public void FrameRequested(long t0) => _tFrameReq += T() - t0;
+	public void Replayed(long t0) => _tReplay += T() - t0;
+	public void Presented(long t0) => _tPresent += T() - t0;
+	public void BeginFrameT(long t0) => _tBeginFrame += T() - t0;
+	public void Render(long t0) => _tRender += T() - t0;
+	public void Submit(long t0) => _tSubmit += T() - t0;
+	public void Poll(long t0) => _tPoll += T() - t0;
+	public void Acquire(long t0) => _tAcquire += T() - t0;
+	public void Blit(long t0) => _tBlit += T() - t0;
+	public void Surface(long t0) => _tSurface += T() - t0;
 
 	// Counters.
-	public void Cmds(int n) { if (_inFrame) { _cCmds += n; } }
-	public void Ops(int n) { if (_inFrame) { _cOps += n; } }
-	public void Draw() { if (_inFrame) { _cDraws++; } }
-	public void OsLayer() { if (_inFrame) { _cOsLayer++; } }
-	public void OsBackdrop(int reCmds) { if (_inFrame) { _cOsBackdrop++; _cBackReCmds += reCmds; } }
-	public void OsCov() { if (_inFrame) { _cOsCov++; } }
-	public void OsShadow() { if (_inFrame) { _cOsShadow++; } }
-	public void TexCreate() { if (_inFrame) { _cTexCreate++; } }
-	public void Rent() { if (_inFrame) { _cRent++; } }
-	public void BgHit() { if (_inFrame) { _cBgHit++; } }
-	public void BgMiss() { if (_inFrame) { _cBgMiss++; } }
-	public void BufNew() { if (_inFrame) { _cBufNew++; } }
-	public void Upload(long bytes) { if (_inFrame) { _cUpBytes += bytes; } }
+	public void Cmds(int n) => _cCmds += n;
+	public void Ops(int n) => _cOps += n;
+	public void Draw() => _cDraws++;
+	public void OsLayer() => _cOsLayer++;
+	public void OsBackdrop(int reCmds) { _cOsBackdrop++; _cBackReCmds += reCmds; }
+	public void OsCov() => _cOsCov++;
+	public void OsShadow() => _cOsShadow++;
+	public void TexCreate() => _cTexCreate++;
+	public void Rent() => _cRent++;
+	public void BgHit() => _cBgHit++;
+	public void BgMiss() => _cBgMiss++;
+	public void BufNew() => _cBufNew++;
+	public void Upload(long bytes) => _cUpBytes += bytes;
 
+	// Called once per on-window frame (from the swapchain Present — the last frame step). Aggregates the frame's
+	// temporaries and logs one line every 30 frames OR every ~1s (whichever first — so even at very low fps a line
+	// appears within a second).
 	public void FrameEnd()
 	{
-		if (!_inFrame) { return; }
-		_inFrame = false;
+		if (!_started) { _started = true; _allocMark = GC.GetAllocatedBytesForCurrentThread(); _g0Mark = GC.CollectionCount(0); _g1Mark = GC.CollectionCount(1); _g2Mark = GC.CollectionCount(2); _flushMark = T(); }
 		_frameReq += _tFrameReq; _replay += _tReplay; _present += _tPresent; _beginFrame += _tBeginFrame; _render += _tRender; _submit += _tSubmit; _poll += _tPoll; _acquire += _tAcquire; _blit += _tBlit; _surface += _tSurface;
 		var frame = _tFrameReq + _tPresent; if (frame > _pkFrame) { _pkFrame = frame; } if (_tPoll > _pkPoll) { _pkPoll = _tPoll; } if (_tRender > _pkRender) { _pkRender = _tRender; } if (_tPresent > _pkPresent) { _pkPresent = _tPresent; }
 		_cmds += _cCmds; _ops += _cOps; _draws += _cDraws; _osLayer += _cOsLayer; _osBackdrop += _cOsBackdrop; _osCov += _cOsCov; _osShadow += _cOsShadow; _backReCmds += _cBackReCmds; _texCreate += _cTexCreate; _rent += _cRent; _bgHit += _cBgHit; _bgMiss += _cBgMiss; _bufNew += _cBufNew; _upBytes += _cUpBytes;
-		_alloc += GC.GetAllocatedBytesForCurrentThread() - _allocStart; _g0 += GC.CollectionCount(0) - _sg0; _g1 += GC.CollectionCount(1) - _sg1; _g2 += GC.CollectionCount(2) - _sg2;
-		if (++_n >= Window) { Flush(); }
+		ResetFrameTemps();
+		_n++;
+		if (_n >= 30 || (T() - _flushMark) * Ms >= 1000.0) { Flush(); }
 	}
 
 	private void Flush()
 	{
+		if (_n == 0) { return; }
 		double A(long ticks) => ticks * Ms / _n;   // avg ms/frame
 		double Pk(long ticks) => ticks * Ms;        // single-frame peak ms
-		long C(long c) => _n == 0 ? 0 : c / _n;     // avg count/frame
-		var record = _frameReq - _replay;           // record = frame-requested (record+replay) minus backend replay
-		System.Console.Error.WriteLine(
-			$"[webgpu-profile] n={_n} FRAME={A(_frameReq + _present):F2}ms (record={A(record):F2} replay={A(_replay):F2} present={A(_present):F2}) | " +
+		long C(long c) => c / _n;                   // avg count/frame
+		long alloc = GC.GetAllocatedBytesForCurrentThread() - _allocMark;
+		int g0 = GC.CollectionCount(0) - _g0Mark, g1 = GC.CollectionCount(1) - _g1Mark, g2 = GC.CollectionCount(2) - _g2Mark;
+		// frameReq (host DrawFrame) wraps record+replay; if it wasn't measured (e.g. a non-Win32 host or the smoke),
+		// fall back to replay+present so FRAME/fps/record stay sane instead of 0/Infinity/negative.
+		var totalTicks = _frameReq >= _replay ? _frameReq + _present : _replay + _present;
+		var record = _frameReq > _replay ? _frameReq - _replay : 0;
+		var frameMs = A(totalTicks);
+		var fps = frameMs > 0.001 ? 1000.0 / frameMs : 0;
+		System.Console.WriteLine(
+			$"[webgpu-profile] n={_n} FRAME={frameMs:F2}ms (~{fps:F0}fps: record={A(record):F2} replay={A(_replay):F2} present={A(_present):F2}) | " +
 			$"replay[beginFrame={A(_beginFrame):F2} render={A(_render):F2} submit={A(_submit):F2} poll={A(_poll):F2}] " +
 			$"present[acquire={A(_acquire):F2} blit={A(_blit):F2} surface={A(_surface):F2}] | " +
 			$"cnt/f: cmds={C(_cmds)} ops={C(_ops)} draws={C(_draws)} offscr={C(_osLayer + _osBackdrop + _osCov + _osShadow)}(L{C(_osLayer)} B{C(_osBackdrop)} Cov{C(_osCov)} Sh{C(_osShadow)}) backdropReCmds={C(_backReCmds)} texCreate={C(_texCreate)} rent={C(_rent)} bg(hit={C(_bgHit)} miss={C(_bgMiss)}) bufNew={C(_bufNew)} upload={C(_upBytes) / 1024}KB | " +
-			$"gc: alloc={_alloc / _n / 1024}KB/f gen0={_g0} gen1={_g1} gen2={_g2} | peak: FRAME={Pk(_pkFrame):F2} render={Pk(_pkRender):F2} poll={Pk(_pkPoll):F2} present={Pk(_pkPresent):F2}");
-		System.Console.Error.Flush();
+			$"gc: alloc={alloc / _n / 1024}KB/f gen0={g0} gen1={g1} gen2={g2} | peak: FRAME={Pk(_pkFrame):F2} render={Pk(_pkRender):F2} poll={Pk(_pkPoll):F2} present={Pk(_pkPresent):F2}");
+		System.Console.Out.Flush();
 		_n = 0;
 		_frameReq = _replay = _present = _beginFrame = _render = _submit = _poll = _acquire = _blit = _surface = 0;
 		_pkFrame = _pkPoll = _pkRender = _pkPresent = 0;
 		_cmds = _ops = _draws = _osLayer = _osBackdrop = _osCov = _osShadow = _backReCmds = _texCreate = _rent = _bgHit = _bgMiss = _bufNew = _upBytes = 0;
-		_alloc = 0; _g0 = _g1 = _g2 = 0;
+		_allocMark = GC.GetAllocatedBytesForCurrentThread(); _g0Mark = GC.CollectionCount(0); _g1Mark = GC.CollectionCount(1); _g2Mark = GC.CollectionCount(2); _flushMark = T();
 	}
 }
 
