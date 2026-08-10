@@ -421,24 +421,30 @@ fn finvMap(clip: ClipU, fcRaw: vec2<f32>) -> vec2<f32> {
   return vec2<f32>(clip.finv.x * fcRaw.x + clip.finv.z * fcRaw.y + clip.xoff.z,
                    clip.finv.y * fcRaw.x + clip.finv.w * fcRaw.y + clip.xoff.w);
 }
+// Coverage of one rounded-rect clip (rl = L,T,R,B; rad4 = per-corner radii; ex>0.5 = Difference/keep-outside).
+fn roundCov(fc: vec2<f32>, rl: vec4<f32>, rad4: vec4<f32>, ex: f32) -> f32 {
+  let c = vec2<f32>((rl.x + rl.z) * 0.5, (rl.y + rl.w) * 0.5);
+  let h = vec2<f32>((rl.z - rl.x) * 0.5, (rl.w - rl.y) * 0.5);
+  let lp = fc - c;
+  let rTop = select(rad4.x, rad4.y, lp.x > 0.0);
+  let rBot = select(rad4.w, rad4.z, lp.x > 0.0);
+  let rad = select(rTop, rBot, lp.y > 0.0);
+  let q = abs(lp) - h + vec2<f32>(rad, rad);
+  let d = min(max(q.x, q.y), 0.0) + length(max(q, vec2<f32>(0.0, 0.0))) - rad;
+  let rr = clamp(0.5 - d, 0.0, 1.0);
+  return select(rr, 1.0 - rr, ex > 0.5);
+}
 fn clipCov(fcRaw: vec2<f32>, clip: ClipU) -> f32 {
-  let fc = finvMap(clip, fcRaw);
-  var cov = 1.0;
+  // Fast path: no clip => full coverage, and NO finvMap (unclipped fragments must cost what they did pre-arena).
   let n = i32(clip.ctrl.x);
-  for (var i = 0; i < n; i = i + 1) {
-    let rl = clip.rects[i];
-    let rad4 = clip.radii[i];
-    let c = vec2<f32>((rl.x + rl.z) * 0.5, (rl.y + rl.w) * 0.5);
-    let h = vec2<f32>((rl.z - rl.x) * 0.5, (rl.w - rl.y) * 0.5);
-    let lp = fc - c;
-    let rTop = select(rad4.x, rad4.y, lp.x > 0.0);
-    let rBot = select(rad4.w, rad4.z, lp.x > 0.0);
-    let rad = select(rTop, rBot, lp.y > 0.0);
-    let q = abs(lp) - h + vec2<f32>(rad, rad);
-    let d = min(max(q.x, q.y), 0.0) + length(max(q, vec2<f32>(0.0, 0.0))) - rad;
-    let rr = clamp(0.5 - d, 0.0, 1.0);
-    cov = cov * select(rr, 1.0 - rr, clip.ex[i] > 0.5);
-  }
+  if (n == 0) { return 1.0; }
+  // Unrolled with STATIC array indices (n is 1..4). A dynamic uniform-array index (clip.rects[i]) is a GPU perf
+  // cliff on some drivers; the common single-clip case (n==1) must cost what the old single-rect clipCov did.
+  let fc = finvMap(clip, fcRaw);
+  var cov = roundCov(fc, clip.rects[0], clip.radii[0], clip.ex.x);
+  if (n > 1) { cov = cov * roundCov(fc, clip.rects[1], clip.radii[1], clip.ex.y); }
+  if (n > 2) { cov = cov * roundCov(fc, clip.rects[2], clip.radii[2], clip.ex.z); }
+  if (n > 3) { cov = cov * roundCov(fc, clip.rects[3], clip.radii[3], clip.ex.w); }
   return cov;
 }
 ";
