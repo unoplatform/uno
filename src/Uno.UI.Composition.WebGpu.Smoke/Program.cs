@@ -426,6 +426,27 @@ if (Environment.GetEnvironmentVariable("UNO_WEBGPU_PERF") == "1")
 	sw2.Stop();
 	long alloc2 = GC.GetAllocatedBytesForCurrentThread() - a2;
 	Console.WriteLine($"PERF replay-only: {sw2.Elapsed.TotalMilliseconds / frames:F2} ms/frame, {alloc2 / frames / 1024} KB alloc/frame  (static recording re-presented)");
+
+	// Clip-heavy scene: 120 distinct path clips, each clipping a fill — the sample-chooser pattern. Pre-refactor
+	// this was 120 offscreen coverage passes/frame; with the in-pass depth mask the profiler must report offscr=0
+	// (Cov0) — that's the objective parity check vs the original branch (no per-clip passes).
+	var clipGeos = new System.Collections.Generic.List<IGeometry>();
+	var mf = new ManagedDrawingFactory();
+	for (int i = 0; i < 120; i++)
+	{
+		var b = mf.CreatePathBuilder();
+		float ox = (i * 7) % (W - 60), oy = (i * 13) % (H - 60);
+		b.MoveTo(new Vector2(ox + 30, oy)); b.LineTo(new Vector2(ox + 60, oy + 40)); b.LineTo(new Vector2(ox, oy + 40)); b.Close();
+		clipGeos.Add(b.Build());
+	}
+	void RecordClips(WebGpuCommandRecorder r)
+	{
+		foreach (var g in clipGeos) { r.Save(); r.ClipPath(g); r.DrawRect(new Rect(0, 0, W, H), red, false); r.Restore(); }
+	}
+	for (int f = 0; f < 5; f++) { var rec = new WebGpuCommandRecorder(); RecordClips(rec); perfPresent.Replay(rec.Finish()); }
+	for (int f = 0; f < 60; f++) { dev.Profiler?.FrameStart(); var rec = new WebGpuCommandRecorder(); RecordClips(rec); perfPresent.Replay(rec.Finish()); dev.Profiler?.FrameEnd(); }
+	Console.WriteLine("PERF clip-heavy: see the [webgpu-profile] line above — offscr must be 0 (in-pass depth clip, no coverage passes)");
+	foreach (var g in clipGeos) { g.Dispose(); }
 }
 
 Console.WriteLine(fail == 0
