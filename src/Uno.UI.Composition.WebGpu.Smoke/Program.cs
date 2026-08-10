@@ -548,6 +548,25 @@ Check("many-stop gradient: right blue (stops 16..19 not clamped away)", manyRigh
 	Check("arena-gradient: moved right edge blue", glRight.b > 120 && glRight.r < 130, glRight);
 }
 
+// 18d) ARENA phase-4 (path) — a path-filled child replayed translated. The stencil fan carries the arena xform via
+//      the shared ClipU layout, so the moved path lands at the translated position and reuses its geometry.
+{
+	var ptb = new ManagedDrawingFactory().CreatePathBuilder();
+	ptb.MoveTo(new Vector2(0, 0)); ptb.LineTo(new Vector2(16, 0)); ptb.LineTo(new Vector2(0, 16)); ptb.Close();
+	using var smallTri = ptb.Build();
+	var pSurface = new WebGpuRenderSurface(dev, 64, 64);
+	var pPresent = new WebGpuPresentSession(dev, pSurface);
+	pPresent.Clear(WColor.FromArgb(255, 0, 0, 0));
+	var pChild = new WebGpuCommandRecorder(); pChild.DrawPath(smallTri, green, false); var pChildData = pChild.Finish();
+	var pf1 = new WebGpuCommandRecorder(); pf1.Replay(pChildData); pPresent.Replay(pf1.Finish());
+	var pf2 = new WebGpuCommandRecorder(); pf2.Translate(30, 30); pf2.Replay(pChildData); pPresent.Replay(pf2.Finish());
+	var ppx = dev.ReadPixelsRgba(pSurface);
+	var apMoved = At(ppx, 34, 34);   // inside the moved triangle (local ~4,4) → green
+	var apOld = At(ppx, 4, 4);       // origin, vacated → black
+	Check("arena-path: moved path lands at translated position (green)", apMoved.g > 150 && apMoved.r < 100, apMoved);
+	Check("arena-path: origin vacated (black)", apOld.r < 40 && apOld.g < 40 && apOld.b < 40, apOld);
+}
+
 // ---- Ordered GPU-command TRACE (UNO_WEBGPU_TRACE=1) ----
 // Dumps exactly what each primitive submits to the GPU (passes, pipelines, draws), in order, so it can be diffed
 // against the original ramez/webgpu-experiment backend's submission for the same primitive. Not a pass/fail check.

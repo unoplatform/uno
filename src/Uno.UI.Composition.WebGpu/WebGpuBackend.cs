@@ -2346,10 +2346,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		for (int i = 0; i < cmds.Count; i++)
 		{
 			var c = cmds[i];
-			// Solid/image/gradient route device fc through finv. Paths are excluded: arena'ing the stencil fan needs a
-			// second (stencil-layout) bind group per op — a tuple refactor / shared explicit pipeline layout, deferred.
-			// A rect/rounded clip is fine (clipCov maps fc back via finv); a PATH clip uses the depth mask (no finv).
-			if (c is not (RectCommand or ImageCmd or GradientCmd) || c.Clip.PathFan is not null) { return false; }
+			// Solid/image/gradient/path all route device fc through finv; the path stencil fan carries the xform via
+			// the shared ClipU layout (ClipBgl binds to both stencil + cover). A rect/rounded clip is fine (clipCov
+			// maps fc back via finv); a PATH clip uses the depth mask (no finv) so it's still excluded.
+			if (c is not (RectCommand or ImageCmd or GradientCmd or PathFill) || c.Clip.PathFan is not null) { return false; }
 		}
 		return cmds.Count > 0;
 	}
