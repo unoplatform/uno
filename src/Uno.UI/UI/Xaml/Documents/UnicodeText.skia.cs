@@ -93,7 +93,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static readonly LRUCache<int, SKTypeface?> _skFontManagerDefaultMatchCharacterCache = new(1000); // most languages need much less than 1000 unique Unicode codepoints
 	private static readonly Brush _blackBrush = new SolidColorBrush(Colors.Black);
 	private static readonly SKPaint _spareDrawPaint = new() { IsStroke = false, IsAntialias = true };
-	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true };
+	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
 	private static readonly SKPaint _spareCompositionUnderlinePaint = new() { Style = SKPaintStyle.Stroke, StrokeWidth = 1, IsAntialias = true };
 	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
 	private static readonly Dictionary<string, HashSet<IFontCacheUpdateListener>> _fontFamilyToListeners = new();
@@ -812,6 +812,43 @@ internal readonly partial struct UnicodeText : IParsedText
 		return shapingRuns;
 	}
 
+	// Wave metrics in units of fontSize / 12: half-period and half-height of the zigzag.
+	// Sized so the wave band fits within the font's descent for typical fonts.
+	private const float SpellCheckSquigglyStepScale = 3;
+	private const float SpellCheckSquigglyAmplitudeScale = 1;
+
+	/// <summary>
+	/// Builds a single continuous spell-check zigzag from <paramref name="left"/> to <paramref name="right"/>.
+	/// The wave phase is anchored at the left edge and the trailing partial half-wave is truncated by
+	/// interpolation instead of snapping back to the midline, so the wave stays regular no matter where it ends.
+	/// </summary>
+	private static SKPath BuildSpellCheckSquigglyPath(float midY, float left, float right, float scale)
+	{
+		var step = SpellCheckSquigglyStepScale * scale;
+		var amplitude = SpellCheckSquigglyAmplitudeScale * scale;
+
+		var path = new SKPath();
+		var x = left;
+		var lastY = midY;
+		path.MoveTo(x, lastY);
+		var up = true;
+		while (x + step < right)
+		{
+			x += step;
+			lastY = midY + (up ? -amplitude : amplitude);
+			path.LineTo(x, lastY);
+			up = !up;
+		}
+
+		if (x < right)
+		{
+			var targetY = midY + (up ? -amplitude : amplitude);
+			path.LineTo(right, lastY + (targetY - lastY) * ((right - x) / step));
+		}
+
+		return path;
+	}
+
 	public void Draw(in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret, // null to skip drawing a caret
 		IEnumerable<TextHighlighter> highlighters,
@@ -834,7 +871,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		Dictionary<SKColor, Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>> _colorToFontToGlyphs = new();
-		List<(SKPath path, float strokeThickness)> spellCheckUnderlines = new();
+		Dictionary<(int wordIndex, int lineIndex, float scale), (float left, float right, float y)> spellCheckUnderlines = new();
 		List<(float x1, float x2, float y, SKColor color)> compositionUnderlines = new();
 
 		SKRect? caretRect = default;
@@ -915,29 +952,24 @@ internal readonly partial struct UnicodeText : IParsedText
 				var correctionIndexBase = wordBoundariesIndex == 0 ? 0 : _wordBoundaries[wordBoundariesIndex - 1];
 				if (correctionIndexBase + correction.correctionStart <= cluster.Value.start && correctionIndexBase + correction.correctionEnd >= cluster.Value.end)
 				{
-					var fontSize = fontDetails.SKFontSize;
-					var scale = fontSize / 12.0f;
-					var step = 4 * scale;
-					var amplitude = 2 * scale;
-					var yOffset = 2 * scale;
-
-					var p = new SKPath();
-					var underlineY = y + line.baselineOffset + yOffset;
+					// Only widen this word's underline span here; one continuous squiggly per word is
+					// built and drawn after the cluster loop. Building a small zigzag per cluster
+					// restarts the wave phase and snaps back to the midline at every cluster boundary,
+					// which renders as an irregular scribble. A word wrapped across lines (or switching
+					// fonts via fallback) gets one wave per (line, font) span.
+					var scale = fontDetails.SKFontSize / 12.0f;
+					// The text visual clips at y + lineHeight, so the whole wave band (midline ± amplitude
+					// plus the stroke) must fit above the line bottom or its lower vertices get cut off and
+					// the wave renders as disconnected peaks. Place it just below the baseline and clamp.
+					var amplitude = SpellCheckSquigglyAmplitudeScale * scale;
+					var underlineY = y + line.baselineOffset + 2.5f * scale;
+					underlineY = Math.Min(underlineY, y + line.lineHeight - (amplitude + scale));
 					var underlineLeftX = unalignedX + alignmentOffset;
 					var underlineRightX = underlineLeftX + cluster.Value.width;
-					p.MoveTo(underlineLeftX, underlineY);
-					var x = underlineLeftX;
-					var up = true;
-					while (x + step < underlineRightX)
-					{
-						x += step;
-						var yWave = underlineY + (up ? -amplitude : amplitude);
-						p.LineTo(x, yWave);
-						up = !up;
-					}
-					p.LineTo(underlineRightX, underlineY);
-
-					spellCheckUnderlines.Add((p, scale));
+					spellCheckUnderlines[(wordBoundariesIndex, lineIndex, scale)] =
+						spellCheckUnderlines.TryGetValue((wordBoundariesIndex, lineIndex, scale), out var span)
+							? (Math.Min(span.left, underlineLeftX), Math.Max(span.right, underlineRightX), underlineY)
+							: (underlineLeftX, underlineRightX, underlineY);
 				}
 			}
 
@@ -984,9 +1016,10 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		foreach (var (path, strokeThickness) in spellCheckUnderlines)
+		foreach (var ((_, _, scale), (left, right, midY)) in spellCheckUnderlines)
 		{
-			_spareSpellCheckPaint.StrokeWidth = strokeThickness;
+			using var path = BuildSpellCheckSquigglyPath(midY, left, right, scale);
+			_spareSpellCheckPaint.StrokeWidth = scale;
 			session.Canvas.DrawPath(path, _spareSpellCheckPaint);
 		}
 
