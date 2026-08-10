@@ -59,10 +59,14 @@ The following conditional symbols are predefined for each Uno platform:
 | tvOS            | `__TVOS__`         | |
 | Catalyst        | `__MACCATALYST__`  | |
 | iOS or tvOS or Catalyst | `__APPLE_UIKIT__` | |
-| WebAssembly     | `__WASM__`         | Only available in the `net10.0-browserwasm` target framework, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-considerations) |
+| WebAssembly     | `__WASM__`         | Only available in the `net10.0-browserwasm` target framework |
 | Desktop         | `__DESKTOP__`      | Only available in the `net10.0-desktop` target framework. |
-| Skia            | `__UNO_SKIA__`     | Only available with `SkiaRenderer` feature. |
+| Skia            | `__UNO_SKIA__`     | |
 | _Non-Windows_   | `__UNO__`          | To learn about symbols available when `__UNO__` is not present, see [below](xref:Uno.Development.PlatformSpecificCSharp#windows-specific-code) |
+
+**Each symbol is only defined in the target framework that provides it.** In an application head, which targets `net10.0-ios`, `net10.0-android`, `net10.0-browserwasm`, and `net10.0-desktop` directly, `#if` blocks behave as described above.
+
+In a class library the picture differs: a library that multi-targets `net10.0-ios` or `net10.0-android` alongside a plain `net10.0` has its `net10.0` asset consumed by the application, so conditional code in the platform-specific assets is not the code that runs — see [Implications for iOS/Android class libraries](xref:uno.features.renderer.skia#implications-for-iosandroid-class-libraries). Prefer `OperatingSystem.IsXXX` runtime checks in libraries, and reserve `#if` for application heads and for code that cannot compile on every target.
 
 > [!TIP]
 > Conditionals can be combined with boolean operators, e.g. `#if __ANDROID__ || __IOS__`. It is also possible to define custom conditional compilation symbols per project in the 'Build' tab in the project's properties.
