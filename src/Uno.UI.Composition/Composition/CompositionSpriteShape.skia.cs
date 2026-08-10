@@ -74,6 +74,9 @@ namespace Microsoft.UI.Composition
 
 		internal override bool CanPaint() => (FillBrush?.CanPaint() ?? false) || (StrokeBrush?.CanPaint() ?? false);
 
+		private static global::Windows.UI.Color WithOpacity(global::Windows.UI.Color c, float opacity)
+			=> opacity >= 1f ? c : global::Windows.UI.Color.FromArgb((byte)(c.A * opacity), c.R, c.G, c.B);
+
 		internal override void Paint(in Visual.PaintingSession session)
 		{
 			if (_geometryWithTransformations is { } geometryWithTransformations)
@@ -82,33 +85,43 @@ namespace Microsoft.UI.Composition
 				{
 					using var fillGeometry = finalFillGeometryWithTransformations.GetFilledGeometry(Geometry?.TrimStart ?? 0f, Geometry?.TrimEnd ?? 0f);
 
+					// A solid colour (a theme/transition background, or a plain colour brush) can fill the geometry
+					// directly. Clip-to-shape + fill-rect is equivalent but forces a per-shape clip — a coverage
+					// offscreen on the WebGPU backend, ruinous for shape-heavy UI (list items, icons, charts). Only a
+					// non-solid brush (gradient/image/surface) needs clip-to-shape + paint-bounds.
 					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
-						// Solid fill: fill the geometry directly. Clip-to-shape + fill-rect is equivalent but forces a
-						// per-shape clip (a coverage offscreen on the WebGPU backend) — a huge cost for shape-heavy UI
-						// (list items, icons). DrawPath fills the shape in-pass with no clip.
-						var opacity = session.Opacity;
-						var color = opacity >= 1f ? colorFromTransition : global::Windows.UI.Color.FromArgb((byte)(colorFromTransition.A * opacity), colorFromTransition.R, colorFromTransition.G, colorFromTransition.B);
-						session.Session.DrawPath(fillGeometry, color, antialias: true);
+						session.Session.DrawPath(fillGeometry, WithOpacity(colorFromTransition, session.Opacity), antialias: true);
+					}
+					else if (fill is CompositionColorBrush fillColor && fill.CanPaint())
+					{
+						session.Session.DrawPath(fillGeometry, WithOpacity(fillColor.Color, session.Opacity), antialias: true);
 					}
 					else
 					{
-						// General brush (gradient/image): the brush paints its bounds, so clip to the shape.
 						session.Session.Save();
 						session.Session.ClipPath(fillGeometry, antialias: true);
 						fill.TryPaint(session.Session, session.Opacity, finalFillGeometryWithTransformations.Bounds);
 						session.Session.Restore();
 					}
 				}
-				
+
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
 				{
 					using var strokeGeometry = geometryWithTransformations.GetStrokeFillGeometry(GetStrokeStyle(withTrim: true));
 
-					session.Session.Save();
-					session.Session.ClipPath(strokeGeometry, antialias: true);
-					stroke.TryPaint(session.Session, session.Opacity, strokeGeometry.Bounds);
-					session.Session.Restore();
+					if (stroke is CompositionColorBrush strokeColor && stroke.CanPaint())
+					{
+						// Solid stroke: fill the stroke geometry directly (same reasoning as the solid fill above).
+						session.Session.DrawPath(strokeGeometry, WithOpacity(strokeColor.Color, session.Opacity), antialias: true);
+					}
+					else
+					{
+						session.Session.Save();
+						session.Session.ClipPath(strokeGeometry, antialias: true);
+						stroke.TryPaint(session.Session, session.Opacity, strokeGeometry.Bounds);
+						session.Session.Restore();
+					}
 				}
 			}
 		}
