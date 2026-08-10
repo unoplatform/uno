@@ -46,6 +46,10 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public IntPtr DummyTex;                 // 1x1 placeholder for the clip coverage binding when no path clip
 	public WebGpuTexturePool Pool;                // transient offscreen pool (reused across frames)
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
+	public WebGpuSlab SolidSlab;                  // persistent shared slab: all recordings' solid verts (6 floats/v)
+	public WebGpuSlab RrectSlab;                  // persistent shared slab: all recordings' rrect verts (22 floats/v)
+	private long _nextSlabId = 1;                 // stable per-recording slab id (assigned on cache miss)
+	public long NextSlabId() => _nextSlabId++;
 	// Serializes a whole frame's render (reset → record → submit → poll) on this device. The on-window render
 	// loop and off-loop renders (RenderTargetBitmap) share the device's transient pools/caches, so two frames
 	// must not overlap or one frame's BeginFrameResources frees the other's in-flight resources (wgpu panics).
@@ -182,6 +186,8 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		_pendingBuffers.AddRange(owned.Buffers);
 		_pendingBindGroups.AddRange(owned.BindGroups);
 	}
+	// Defers a single GPU buffer (e.g. an outgrown slab buffer) for release at the next frame start.
+	internal void DeferReleaseBuffer(nint buf) { if (buf != IntPtr.Zero) { _pendingBuffers.Add(buf); } }
 	// Detailed frame profiler (UNO_WEBGPU_PROFILE=1). Null when disabled — every hook is `Profiler?.X()` so there
 	// is zero overhead and no behaviour change off. Bracketed by the host DrawFrame (FrameStart) + Present (FrameEnd).
 	public WebGpuProfiler Profiler;
@@ -290,6 +296,8 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		DummyTex = CreateColorTarget(1, 1);
 		Pool = new WebGpuTexturePool(this);
 		BufferPool = new WebGpuBufferPool(this);
+		SolidSlab = new WebGpuSlab(this, 6);
+		RrectSlab = new WebGpuSlab(this, 22);
 		if (WebGpuProfiler.Enabled) { Profiler = new WebGpuProfiler(); }
 		// Startup marker (always logged): confirms this build is current + reports the profiler/pipeline/MSAA state,
 		// so a missing profiler line can be told apart from a stale build or the flag not being read.
@@ -1538,9 +1546,109 @@ internal sealed unsafe class WebGpuGeometryCache
 	// 22) + an ordered emit list, built ONCE (rebuilt only on transform/clip change). Each frame the verts are
 	// bulk-appended to the shared buffers and the ops re-emitted with the base offset — NO per-frame TransformFor,
 	// re-tessellation, or allocation (that was ~60ms + 26MB/frame at 500 visuals).
-	public nint SolidBuf;     // persistent GPU buffer holding this recording's solid verts (uploaded once)
-	public nint RrectBuf;     // persistent GPU buffer holding this recording's rrect verts (uploaded once)
+	public long SlabId;       // stable id for this recording's slices in the shared solid/rrect slabs
 	public List<FrameOp> FrameOrder;
+}
+
+// Per-visual STABLE slice allocator over a persistent per-kind vertex buffer (ported from ramez's
+// WebGpuVertexSlab). Each visual (keyed by its recording's command-list identity) gets a fixed offset+capacity in
+// a shared GPU buffer, so a content change rewrites its slice IN PLACE (stable offset → dirty only that byte
+// range) and geometry is RESIDENT across frames (no re-upload for a static visual). Holds CPU metadata only.
+internal sealed class WebGpuVertexSlab
+{
+	internal struct Slice { public int Off; public int Cap; public int Len; }   // in vertices (caller's stride)
+	private readonly Dictionary<long, Slice> _map = new();
+	private readonly List<(int off, int cap)> _free = new();
+	private int _cap;                       // high-water = the buffer length (in vertices) to size to
+	private readonly List<long> _toFree = new();
+
+	internal int Capacity => _cap;
+	internal void Reset() { _map.Clear(); _free.Clear(); _cap = 0; }
+	internal bool TryGet(long id, out Slice s) => _map.TryGetValue(id, out s);
+
+	// Reserve `verts` vertices for `id`, reusing its slot when it still fits (stable offset), else best-fit/grow.
+	// Returns the VERTEX offset. `grew` is set when the high-water advanced (the GPU buffer must be (re)allocated).
+	internal int Ensure(long id, int verts, out bool grew)
+	{
+		grew = false;
+		if (_map.TryGetValue(id, out var s))
+		{
+			if (s.Cap >= verts) { s.Len = verts; _map[id] = s; return s.Off; }
+			_free.Add((s.Off, s.Cap));   // outgrew → reclaim, reallocate below
+		}
+		int want = verts + (verts >> 1);   // 1.5x slack so small growth doesn't realloc next frame
+		int bestI = -1, bestCap = int.MaxValue;
+		for (int i = 0; i < _free.Count; i++) { if (_free[i].cap >= verts && _free[i].cap < bestCap) { bestI = i; bestCap = _free[i].cap; } }
+		int off, capAlloc;
+		if (bestI >= 0) { off = _free[bestI].off; capAlloc = _free[bestI].cap; _free.RemoveAt(bestI); }
+		else { off = _cap; capAlloc = want; _cap += want; grew = true; }
+		_map[id] = new Slice { Off = off, Cap = capAlloc, Len = verts };
+		return off;
+	}
+
+	internal void Free(long id) { if (_map.TryGetValue(id, out var s)) { _free.Add((s.Off, s.Cap)); _map.Remove(id); } }
+
+	// Free slices of visuals not present this frame (returns their capacity to the free list). `live` = this frame's ids.
+	internal void RetainOnly(HashSet<long> live)
+	{
+		_toFree.Clear();
+		foreach (var id in _map.Keys) { if (!live.Contains(id)) { _toFree.Add(id); } }
+		foreach (var id in _toFree) { Free(id); }
+	}
+}
+
+// A persistent, shared, per-kind vertex slab: ONE GPU buffer holding every visual's geometry of a kind (solid /
+// rrect / …) at stable per-visual slices (via WebGpuVertexSlab). A static visual's slice is resident — drawn each
+// frame with NO re-upload; a changed visual rewrites its slice in place and only those bytes upload (DIRTY); a new
+// visual appends. This is what makes resident + coalescing + partial-upload work ACROSS recordings (not per-
+// recording buffers). `Put`/`Offset` return BYTE offsets. Grow reallocs the buffer once and re-uploads the shadow.
+public sealed unsafe class WebGpuSlab
+{
+	private readonly WebGpuDevice _d;
+	private readonly int _stride;                 // floats per vertex
+	private readonly WebGpuVertexSlab _alloc = new();
+	private readonly List<float> _shadow = new();
+	private readonly HashSet<long> _live = new();
+	public IntPtr Buf;                             // persistent GPU buffer (Vertex | CopyDst)
+	private int _bufVerts;                         // GPU buffer capacity in vertices
+
+	public WebGpuSlab(WebGpuDevice d, int strideFloats) { _d = d; _stride = strideFloats; }
+
+	public void BeginFrame() => _live.Clear();
+	public void MarkLive(long id) => _live.Add(id);
+	public void EndFrame() => _alloc.RetainOnly(_live);
+	public int ByteOffset(long id) => (_alloc.TryGet(id, out var s) ? s.Off : 0) * _stride * sizeof(float);
+
+	// Reserve/reuse `id`'s stable slice, write its verts to the CPU shadow, and upload ONLY the changed bytes
+	// (or the whole shadow if the buffer had to grow). Returns the slice's BYTE offset.
+	public int Put(long id, System.Collections.Generic.List<float> verts)
+	{
+		_live.Add(id);
+		int vcount = verts.Count / _stride;
+		int voff = _alloc.Ensure(id, vcount, out _);
+		int capVerts = _alloc.Capacity;
+		int needFloats = capVerts * _stride;
+		if (_shadow.Count < needFloats) { System.Runtime.InteropServices.CollectionsMarshal.SetCount(_shadow, needFloats); }
+		var dst = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_shadow);
+		System.Runtime.InteropServices.CollectionsMarshal.AsSpan(verts).CopyTo(dst.Slice(voff * _stride, verts.Count));
+		int byteOff = voff * _stride * sizeof(float);
+		if (Buf == IntPtr.Zero || _bufVerts < capVerts)
+		{
+			// (Re)allocate the persistent buffer (1.5x headroom already in the allocator) and upload the whole shadow.
+			if (Buf != IntPtr.Zero) { _d.DeferReleaseBuffer(Buf); }
+			_bufVerts = capVerts;
+			var bd = new WGPUBufferDescriptor { Size = (nuint)(_bufVerts * _stride * sizeof(float)), Usage = WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst };
+			Buf = wgpuDeviceCreateBuffer(_d.Dev, &bd);
+			fixed (float* p = dst) { wgpuQueueWriteBuffer(_d.Q, Buf, 0, (IntPtr)p, (nuint)(needFloats * sizeof(float))); }
+			_d.Profiler?.Upload(needFloats * sizeof(float));
+		}
+		else
+		{
+			fixed (float* p = &dst[voff * _stride]) { wgpuQueueWriteBuffer(_d.Q, Buf, (nuint)byteOff, (IntPtr)p, (nuint)(verts.Count * sizeof(float))); }
+			_d.Profiler?.Upload(verts.Count * sizeof(float));
+		}
+		return byteOff;
+	}
 }
 
 // One entry in a frame-solid recording's ordered emit list: a solid/rrect run (relative vert start into the
@@ -1548,7 +1656,7 @@ internal sealed unsafe class WebGpuGeometryCache
 internal struct FrameOp
 {
 	public int Kind;          // 0 = solid, 5 = rrect, -1 = non-solid
-	public int RelStart;      // vertex index within the recording's cached block (solid/rrect)
+	public int ByteOff;       // byte offset of this run within its shared slab (solid/rrect)
 	public uint Count;        // vertex count (solid/rrect)
 	public ClipData Clip;
 	public nint ClipBg;
@@ -2524,6 +2632,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			pr?.Cmds(rd.Commands.Count);
 			var tBf = WebGpuProfiler.T();
 			_d.BeginFrameResources();   // reclaim last frame's pooled textures/buffers + release its bind groups
+			_d.SolidSlab.BeginFrame(); _d.RrectSlab.BeginFrame();   // reset the shared slabs' live sets for this frame
 			pr?.BeginFrameT(tBf);
 			// Apply the root DPI scale to the whole (logical-coord) frame. Nested retained recordings keep their
 			// command-list reference (only their Transform gains the scale) so the geometry cache still hits.
@@ -2531,6 +2640,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				? rd.Commands
 				: WebGpuCommandRecorder.TransformFor(rd.Commands, Matrix4x4.CreateScale(_presentScale.X, _presentScale.Y, 1f), ClipData.None);
 			RunFrame(cmds, _presentClear ?? rd.ClearColor);
+			_d.SolidSlab.EndFrame(); _d.RrectSlab.EndFrame();   // free slices of recordings not seen this frame
 			pr?.Replayed(tReplay);
 		}
 	}
@@ -2810,6 +2920,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var ops = RentOps();
 		var solid = RentSolid();
 		var rrect = RentRrect();
+		// Recordings emitted so far in THIS pass. A recording replayed more than once in one frame (same command
+		// list at different transforms) can't share its single resident slab slice — see the frame-solid branch.
+		var frameEmitted = new HashSet<List<WebGpuCommand>>(System.Collections.Generic.ReferenceEqualityComparer.Instance);
 		for (int ci = 0; ci < cmds.Count; ci++)
 		{
 			var cmd = cmds[ci];
@@ -2853,8 +2966,19 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// re-walked. Pure non-solid recordings fall through to the arena path below (moving-visual reuse).
 						if (HasReappendable(rr.Commands))
 						{
-							var fMiss = !_d.GeometryCache.TryGetValue(rr.Commands, out var fe);
-							var fStale = !fMiss && (!fe.FrameSolid || fe.FrameOrder is null || fe.Transform != rr.Transform || !ClipDataEquals(fe.Clip, rr.Clip));
+							// A recording replayed MORE THAN ONCE in a single frame (same command list, different
+							// transforms) can't reuse one resident slab slice — the second build's Put would overwrite
+							// the first. Repeat emissions get a fresh transient slice (freed next frame); the first
+							// emission keeps the recording's stable, resident slice.
+							bool repeat = !frameEmitted.Add(rr.Commands);
+							WebGpuGeometryCache fe = null;
+							bool fMiss, fStale;
+							if (repeat) { fMiss = true; fStale = false; }
+							else
+							{
+								fMiss = !_d.GeometryCache.TryGetValue(rr.Commands, out fe);
+								fStale = !fMiss && (!fe.FrameSolid || fe.FrameOrder is null || fe.Transform != rr.Transform || !ClipDataEquals(fe.Clip, rr.Clip));
+							}
 							if (fMiss || fStale)
 							{
 								// Build once: extract device-space solid/rrect verts + an ordered emit list; owned (persistent) clip
@@ -2877,7 +3001,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 											AppendSolidRect(sv, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
 											tj++;
 										}
-										order.Add(new FrameOp { Kind = 0, RelStart = rel, Count = (uint)((tj - ti) * 6), Clip = rc0.Clip, ClipBg = (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, fOwned) });
+										order.Add(new FrameOp { Kind = 0, ByteOff = rel * 6 * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rc0.Clip, ClipBg = (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, fOwned) });
 										ti = tj - 1;
 									}
 									else if (tc is RoundedRectCmd rr0)
@@ -2888,7 +3012,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 											AppendRrect(rv, rrj);
 											tj++;
 										}
-										order.Add(new FrameOp { Kind = 5, RelStart = rel, Count = (uint)((tj - ti) * 6), Clip = rr0.Clip, ClipBg = (nint)MakeClipBg(_d.RrClipBgl, rr0.Clip, fOwned) });
+										order.Add(new FrameOp { Kind = 5, ByteOff = rel * 22 * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rr0.Clip, ClipBg = (nint)MakeClipBg(_d.RrClipBgl, rr0.Clip, fOwned) });
 										ti = tj - 1;
 									}
 									else
@@ -2898,22 +3022,34 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 										foreach (var o in tmp) { order.Add(new FrameOp { Kind = -1, NonSolid = o }); }
 									}
 								}
-								// Upload the extracted verts to PERSISTENT per-recording buffers ONCE (resident, ramez SLAB
-								// steady state): later frames draw from them with no re-upload and no re-tessellation.
-								nint sbuf = sv.Count > 0 ? (nint)Vbuf(sv, fOwned) : IntPtr.Zero;
-								nint rbuf = rv.Count > 0 ? (nint)Vbuf(rv, fOwned) : IntPtr.Zero;
-								fe = new WebGpuGeometryCache { FrameSolid = true, SolidBuf = sbuf, RrectBuf = rbuf, FrameOrder = order, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip };
-								_d.GeometryCache[rr.Commands] = fe;
+								// Write the extracted verts into this recording's STABLE slices in the SHARED slabs (uploads
+								// only the changed bytes; grows the slab buffer 1.5x when needed) and rebase the ordered
+								// ops to absolute slab byte offsets. `id` is stable across frames so a static recording's
+								// slice is resident (no re-upload) and coalesces with neighbours across recordings.
+								long id = repeat ? _d.NextSlabId()
+									: ((fMiss || fe is null || fe.SlabId == 0) ? _d.NextSlabId() : fe.SlabId);
+								int sBase = sv.Count > 0 ? _d.SolidSlab.Put(id, sv) : 0;
+								int rBase = rv.Count > 0 ? _d.RrectSlab.Put(id, rv) : 0;
+								for (int oi2 = 0; oi2 < order.Count; oi2++)
+								{
+									var fo = order[oi2];
+									if (fo.Kind == 0) { fo.ByteOff += sBase; order[oi2] = fo; }
+									else if (fo.Kind == 5) { fo.ByteOff += rBase; order[oi2] = fo; }
+								}
+								fe = new WebGpuGeometryCache { FrameSolid = true, SlabId = id, FrameOrder = order, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip };
+								// A repeat emission is not cached (its slice is transient); free its bind groups next frame.
+								if (repeat) { _d.DeferRelease(fOwned); }
+								else { _d.GeometryCache[rr.Commands] = fe; }
 								WebGpuTrace.Upload("geometry-build(frame-solid)", order.Count);
 							}
-							else { WebGpuTrace.Upload("geometry-reuse(frame-solid)", 0); }
+							else { WebGpuTrace.Upload("geometry-reuse(frame-solid)", 0); _d.SolidSlab.MarkLive(fe.SlabId); _d.RrectSlab.MarkLive(fe.SlabId); }
 							fe.Used = true;
-							// Per frame (cache hit): just re-emit ops drawing from the resident buffers — no append, no
-							// upload, no allocation. b0 = the persistent buffer, b1 = the byte offset of the op's verts.
+							// Per frame: re-emit ops drawing from the RESIDENT shared slabs (b0=1 => solid slab / rrect slab;
+							// b1 = absolute slab byte offset). No append, no upload, no re-tessellation on a cache hit.
 							foreach (var fo in fe.FrameOrder)
 							{
-								if (fo.Kind == 0) { ops.Add((0, fe.SolidBuf, fo.Count, (nint)(fo.RelStart * 6 * sizeof(float)), false, fo.Clip, fo.ClipBg)); }
-								else if (fo.Kind == 5) { ops.Add((5, fe.RrectBuf, fo.Count, (nint)(fo.RelStart * 22 * sizeof(float)), false, fo.Clip, fo.ClipBg)); }
+								if (fo.Kind == 0) { ops.Add((0, 1, fo.Count, (nint)fo.ByteOff, false, fo.Clip, fo.ClipBg)); }
+								else if (fo.Kind == 5) { ops.Add((5, 1, fo.Count, (nint)fo.ByteOff, false, fo.Clip, fo.ClipBg)); }
 								else { ops.Add(fo.NonSolid); }
 							}
 							break;
@@ -3187,6 +3323,25 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					_d.Profiler?.DrawKind(0);
 					break;
 				}
+				case 0 when b0 == 1:
+				{
+					// Resident SOLID SLAB (b1 = absolute byte offset). Coalesce a byte-contiguous run sharing clip+bindgroup.
+					int byteOff = (int)b1; uint count = u0;
+					while (oi + 1 < ops.Count)
+					{
+						var nx = ops[oi + 1];
+						if (nx.kind != 0 || nx.b0 != 1 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+							|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 6 * sizeof(float))) { break; }
+						count += nx.u0; oi++; _d.Profiler?.Coalesced(1);
+					}
+					wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
+					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
+					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.SolidSlab.Buf, (nuint)byteOff, (nuint)(count * 6 * sizeof(float)));
+					wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
+					WebGpuTrace.Draw("solid", count);
+					_d.Profiler?.DrawKind(0);
+					break;
+				}
 				case 0:
 					// b0 = vertex buffer (private/immediate or a resident frame-solid buffer); b1 = byte offset into it.
 					wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
@@ -3250,6 +3405,25 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					wgpuRenderPassEncoderSetPipeline(pass, _d.RrPipe);
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, rrectBuf, (nuint)(startVert * 22 * sizeof(float)), (nuint)(count * 22 * sizeof(float)));
+					wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
+					WebGpuTrace.Draw("rrect", count);
+					_d.Profiler?.DrawKind(6);
+					break;
+				}
+				case 5 when b0 == 1:
+				{
+					// Resident RRECT SLAB (b1 = absolute byte offset). Coalesce byte-contiguous same-clip runs.
+					int byteOff = (int)b1; uint count = u0;
+					while (oi + 1 < ops.Count)
+					{
+						var nx = ops[oi + 1];
+						if (nx.kind != 5 || nx.b0 != 1 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+							|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 22 * sizeof(float))) { break; }
+						count += nx.u0; oi++; _d.Profiler?.Coalesced(1);
+					}
+					wgpuRenderPassEncoderSetPipeline(pass, _d.RrPipe);
+					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
+					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.RrectSlab.Buf, (nuint)byteOff, (nuint)(count * 22 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
 					WebGpuTrace.Draw("rrect", count);
 					_d.Profiler?.DrawKind(6);
