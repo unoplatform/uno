@@ -521,6 +521,19 @@ if (WebGpuTrace.Enabled)
 	Trace("mask-layer (DstIn)", r => { r.SaveLayer(); r.DrawRect(new Rect(0, 0, 64, 64), red, false); r.SaveLayer(BlendMode.DstIn); r.DrawRect(new Rect(16, 16, 32, 32), WColor.FromArgb(255, 255, 255, 255), false); r.Restore(); r.Restore(); });
 	Trace("shadow (coverage+blur+composite)", r => r.DrawShadow(shRect, WColor.FromArgb(255, 255, 0, 0), 4f, 4f, false));
 	Trace("backdrop-acrylic (translucent)", r => { r.DrawRect(new Rect(24, 24, 16, 16), red, false); r.ClipRect(new Rect(0, 0, 64, 64)); r.DrawEffectBackdrop(acrylic, 1f); });
+
+	// MOVING-VISUAL (temporal): a cached child recording replayed at two transforms across two frames. The geometry
+	// cache should BUILD once (frame 1); the moved frame currently traces geometry-rebuild(transform-changed) — under
+	// arena (#22) that must collapse to geometry-reuse (a transform-uniform re-stamp), matching ramez's validated
+	// build-once stream. This UPLOAD line is the calibration target for the arena/slab/dirty perf features.
+	var mvSurface = new WebGpuRenderSurface(dev, 64, 64);
+	var mvPresent = new WebGpuPresentSession(dev, mvSurface);
+	mvPresent.Clear(WColor.FromArgb(255, 0, 0, 0));
+	var mvChild = new WebGpuCommandRecorder(); mvChild.DrawRect(new Rect(0, 0, 20, 20), red, false); var mvChildData = mvChild.Finish();
+	var mvF1 = new WebGpuCommandRecorder(); mvF1.Replay(mvChildData);
+	var mvF2 = new WebGpuCommandRecorder(); mvF2.Translate(24, 0); mvF2.Replay(mvChildData);
+	Console.WriteLine("--- TRACE moving-visual frame1 (build) ---"); mvPresent.Replay(mvF1.Finish()); Console.Write(WebGpuTrace.Dump());
+	Console.WriteLine("--- TRACE moving-visual frame2 (moved) ---"); mvPresent.Replay(mvF2.Finish()); Console.Write(WebGpuTrace.Dump());
 	Console.WriteLine("================================================\n");
 }
 
