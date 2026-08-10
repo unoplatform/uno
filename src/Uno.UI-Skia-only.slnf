@@ -80,10 +80,10 @@
       "Uno.UI.XamlHost\\Uno.UI.XamlHost.csproj",
       "Uno.UI\\Uno.UI.csproj",
       "Uno.WinAppSDKSyncGenerator\\Uno.WinAppSDKSyncGenerator.csproj",
-      "Uno.WinRT\\Uno.WinRT.netcoremobile.csproj",
-      "Uno.WinRT\\Uno.WinRT.Reference.csproj",
-      "Uno.WinRT\\Uno.WinRT.Skia.csproj",
-      "Uno.WinRT\\Uno.WinRT.Wasm.csproj"
+      "Uno\\Uno.netcoremobile.csproj",
+      "Uno\\Uno.Reference.csproj",
+      "Uno\\Uno.Skia.csproj",
+      "Uno\\Uno.Wasm.csproj"
     ]
   }
 }

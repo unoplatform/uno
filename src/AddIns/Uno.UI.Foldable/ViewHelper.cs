@@ -33,7 +33,7 @@ internal static class ViewHelperInternal
 
 	internal static double LogicalToPhysicalPixels(double value)
 	{
-		// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.WinRT
+		// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.dll
 		if (double.IsNaN(value))
 		{
 			return 0;

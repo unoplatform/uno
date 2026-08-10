@@ -22,11 +22,11 @@ internal static partial class UnoAssemblyHelper
 				[TFMPrevious, TFMCurrent]
 			)),
 			.. LoadAssemblies(GetBinDirectory(
-				"Uno.WinRT",
-				"Uno.WinRT.dll",
+				"Uno",
+				"Uno.dll",
 				[
-					"Uno.WinRT.Skia",
-					"Uno.WinRT.Reference",
+					"Uno.Skia",
+					"Uno.Reference",
 				],
 				[TFMPrevious, TFMCurrent]
 			)),

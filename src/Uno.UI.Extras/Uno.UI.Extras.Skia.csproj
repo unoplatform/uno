@@ -41,7 +41,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj">
 		</ProjectReference>
-		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Reference.csproj">
+		<ProjectReference Include="..\Uno\Uno.Reference.csproj">
 		</ProjectReference>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj">
 		</ProjectReference>

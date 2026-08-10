@@ -870,7 +870,7 @@ VirtualKey get_virtual_key(unsigned short keyCode)
     }
 }
 
-// FIXME: based on uno/src/Uno.WinRT/System/VirtualKeyHelper.macOS.cs where only Shift and Control are considered ?!?
+// FIXME: based on uno/src/Uno/System/VirtualKeyHelper.macOS.cs where only Shift and Control are considered ?!?
 // https://learn.microsoft.com/en-us/uwp/api/windows.system.virtualkeymodifiers?view=winrt-22621
 VirtualKeyModifiers get_modifiers(NSEventModifierFlags mods)
 {

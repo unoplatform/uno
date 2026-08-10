@@ -1,4 +1,4 @@
-// This file is included in both Uno.WinRT and Uno.UI
+// This file is included in both Uno.dll and Uno.UI
 #nullable enable
 
 using System;

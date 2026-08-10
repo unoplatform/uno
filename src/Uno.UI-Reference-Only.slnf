@@ -14,7 +14,7 @@
       "Uno.UI.RemoteControl.Messaging\\Uno.UI.RemoteControl.Messaging.csproj",
       "Uno.WinAppSDKSyncGenerator.References\\Uno.WinAppSDKSyncGenerator.References.csproj",
       "Uno.WinAppSDKSyncGenerator\\Uno.WinAppSDKSyncGenerator.csproj",
-      "Uno.WinRT\\Uno.WinRT.Reference.csproj"
+      "Uno\\Uno.Reference.csproj"
     ]
   }
 }

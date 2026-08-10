@@ -19,7 +19,7 @@
       "Uno.UI.RemoteControl.ServerCore\\Uno.UI.RemoteControl.ServerCore.csproj",
       "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
       "Uno.UI.DevServer.Cli\\Uno.UI.DevServer.Cli.csproj",
-      "Uno.WinRT\\Uno.WinRT.Reference.csproj"
+      "Uno\\Uno.Reference.csproj"
     ]
   }
 }
