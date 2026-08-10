@@ -188,6 +188,9 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public IntPtr CoverClipBgl;
 	public IntPtr ImageClipBgl;
 	public IntPtr GradClipBgl;
+	// Explicit SHARED ClipU layout: solid/cover/stencil use one pipeline layout so a single ClipU bind group binds to
+	// all three (auto-derived layouts are pipeline-exclusive — that blocked arena'ing the path stencil+cover pair).
+	public IntPtr ClipBgl;
 	public IntPtr Smp;
 
 	// Gradient stops are evaluated analytically in-shader (exact, unlike a quantised LUT). The cap sizes the colour
@@ -472,8 +475,11 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 }
 @fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy, clip)); }";
 
+	// Stencil pass (winding only, colour masked). Binds the SHARED ClipU at group 0 for the arena vertex xform so a
+	// moved path's fan follows the re-stamped transform; identity for immediate/non-arena draws (fan already NDC).
 	private const string PosOnlyWgsl = @"
-@vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return vec4<f32>(pos, 0.0, 1.0); }
+@group(0) @binding(0) var<uniform> clip: ClipU;
+@vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return xformPos(clip, pos); }
 @fragment fn fs() -> @location(0) vec4<f32> { return vec4<f32>(0.0, 0.0, 0.0, 0.0); }";
 
 	private IntPtr Module(string wgsl)
@@ -487,12 +493,30 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 	private static WGPUStencilFaceState Face(WGPUCompareFunction cmp, WGPUStencilOperation pass)
 		=> new() { Compare = cmp, FailOp = WGPUStencilOperation.Keep, DepthFailOp = WGPUStencilOperation.Keep, PassOp = pass };
 
+	// Explicit ClipU bind-group layout (one uniform at binding 0, read by vertex xformPos + fragment clipCov) wrapped
+	// in a pipeline layout shared by solid/cover/stencil, so one ClipU bind group binds to all three.
+	private IntPtr MakeClipPipeLayout()
+	{
+		var e = new WGPUBindGroupLayoutEntry
+		{
+			Binding = 0,
+			Visibility = WGPUShaderStage.Vertex | WGPUShaderStage.Fragment,
+			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.Uniform, MinBindingSize = 224 },
+		};
+		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 1, Entries = &e };
+		ClipBgl = wgpuDeviceCreateBindGroupLayout(Dev, &bgld);
+		var bgl = ClipBgl;
+		var pld = new WGPUPipelineLayoutDescriptor { BindGroupLayoutCount = 1, BindGroupLayouts = (IntPtr)(&bgl) };
+		return wgpuDeviceCreatePipelineLayout(Dev, &pld);
+	}
+
 	private void CreatePipelines()
 	{
 		var colored = Module(ClipStructFn + ColoredWgsl);
-		var posOnly = Module(PosOnlyWgsl);
+		var posOnly = Module(ClipStructFn + PosOnlyWgsl);
 		var vs = SV("vs");
 		var fs = SV("fs");
+		var clipLayout = MakeClipPipeLayout();
 
 		var blend = new WGPUBlendState
 		{
@@ -504,12 +528,13 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 		// i.e. inside the clip or where no clip is active). The fan-stencil pipelines keep DepthCompare=Always
 		// (winding is independent of the clip; the clip applies at the colour-writing cover/solid/image/gradient).
 		var keep = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
-		SolidPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, keep, keep, 0x00, 0x00, WGPUCompareFunction.GreaterEqual);
-		StencilEvenOdd = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), 0xFF, 0xFF);
-		StencilNonZero = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.IncrementWrap), Face(WGPUCompareFunction.Always, WGPUStencilOperation.DecrementWrap), 0xFF, 0xFF);
-		CoverPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), 0xFF, 0xFF, WGPUCompareFunction.GreaterEqual);
-		SolidClipBgl = wgpuRenderPipelineGetBindGroupLayout(SolidPipe, 0);
-		CoverClipBgl = wgpuRenderPipelineGetBindGroupLayout(CoverPipe, 0);
+		SolidPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, keep, keep, 0x00, 0x00, WGPUCompareFunction.GreaterEqual, layout: clipLayout);
+		StencilEvenOdd = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), 0xFF, 0xFF, layout: clipLayout);
+		StencilNonZero = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.IncrementWrap), Face(WGPUCompareFunction.Always, WGPUStencilOperation.DecrementWrap), 0xFF, 0xFF, layout: clipLayout);
+		CoverPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), 0xFF, 0xFF, WGPUCompareFunction.GreaterEqual, layout: clipLayout);
+		// All three now share the one explicit ClipU layout — a ClipU bind group made with ClipBgl binds to any of them.
+		SolidClipBgl = ClipBgl;
+		CoverClipBgl = ClipBgl;
 		CreateClipDepthPipelines();
 		CreateImagePipeline();
 		CreateGradientPipeline(&blend);
@@ -796,7 +821,7 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 		Smp = wgpuDeviceCreateSampler(Dev, &sd);
 	}
 
-	private IntPtr MakePipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, bool colorWrite, bool colorAttrs, WGPUBlendState* blend, WGPUStencilFaceState front, WGPUStencilFaceState back, uint stencilWrite, uint stencilRead, WGPUCompareFunction depthCompare = WGPUCompareFunction.Always, bool depthWrite = false)
+	private IntPtr MakePipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, bool colorWrite, bool colorAttrs, WGPUBlendState* blend, WGPUStencilFaceState front, WGPUStencilFaceState back, uint stencilWrite, uint stencilRead, WGPUCompareFunction depthCompare = WGPUCompareFunction.Always, bool depthWrite = false, IntPtr layout = default)
 	{
 		var attrs = stackalloc WGPUVertexAttribute[2];
 		attrs[0] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
@@ -821,7 +846,7 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 			Vertex = vsState, Fragment = &fsState, DepthStencil = &ds,
 			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
 			Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
-			Layout = IntPtr.Zero,
+			Layout = layout,
 		};
 		return wgpuDeviceCreateRenderPipeline(Dev, &pd);
 	}
@@ -2220,6 +2245,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
 		WebGpuTrace.Pass("shadow-coverage", sw, sh2, _d.MsaaSamples, true);
 		wgpuRenderPassEncoderSetPipeline(pass, sh.EvenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
+		wgpuRenderPassEncoderSetBindGroup(pass, 0, MakeClipBg(_d.ClipBgl, default), 0, (uint*)null);   // identity xform (shadow fan already NDC)
 		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanNdc.Length * sizeof(float)));
 		wgpuRenderPassEncoderDraw(pass, (uint)(fanNdc.Length / 2), 1, 0, 0);
 		WebGpuTrace.Draw(sh.EvenOdd ? "shadow-stencil-eo" : "shadow-stencil-nz", (uint)(fanNdc.Length / 2));
@@ -2465,6 +2491,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		for (int i = 0; i < fan.Length; i += 2) { var n = Ndc(new Vector2(fan[i], fan[i + 1])); _scratch.Add(n.X); _scratch.Add(n.Y); }
 		var fanBuf = MakeBuffer(_scratch);
 		wgpuRenderPassEncoderSetPipeline(pass, next.PathEvenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
+		wgpuRenderPassEncoderSetBindGroup(pass, 0, MakeClipBg(_d.ClipBgl, default), 0, (uint*)null);   // identity xform (clip fan already NDC)
 		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(_scratch.Count * sizeof(float)));
 		wgpuRenderPassEncoderDraw(pass, (uint)(_scratch.Count / 2), 1, 0, 0);
 		WebGpuTrace.Draw(next.PathEvenOdd ? "clip-stencil-eo" : "clip-stencil-nz", (uint)(_scratch.Count / 2));
@@ -2759,6 +2786,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					break;
 				case 1:
 					wgpuRenderPassEncoderSetPipeline(pass, flag ? _d.StencilEvenOdd : _d.StencilNonZero);
+					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);   // shared ClipU: xform for the fan (identity unless arena'd)
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b0, 0, (nuint)(u0 * 2 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, u0, 1, 0, 0);
 					WebGpuTrace.Draw(flag ? "path-stencil-eo" : "path-stencil-nz", u0);
