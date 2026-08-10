@@ -1,4 +1,6 @@
-﻿#nullable enable
+using SkiaSharp;
+using Uno.UI.Composition;
+#nullable enable
 
 namespace Microsoft.UI.Composition
 {
@@ -33,5 +35,20 @@ namespace Microsoft.UI.Composition
 		}
 
 		partial void OnSourceChangedPartial(Visual? source);
+
+		internal override SKPath? Paint(in PaintingSession session)
+		{
+			base.Paint(in session);
+
+			if (Source is not null && session.Canvas is { } canvas)
+			{
+				Source.RenderRootVisual(canvas, null);
+			}
+
+			return null;
+		}
+
+		internal override bool CanPaint() => Source?.CanPaint() ?? false;
+		internal override bool RequiresRepaintOnEveryFrame => true;
 	}
 }

@@ -194,7 +194,7 @@ namespace Uno.WinAppSDKSyncGenerator
 			// surface comes from Uno.UWP instead.
 			_netstdReferenceCompilation = await LoadProject($@"{platformProject}.Reference.csproj", "net10.0");
 			_wasmCompilation = await LoadProject($@"{platformProject}.Wasm.csproj", "net10.0");
-			_skiaCompilation = await LoadProject($@"{topProject}.Skia.csproj", "net10.0");
+			_skiaCompilation = await LoadProject($@"{topProject}.csproj", "net10.0");
 
 			_iOSBaseSymbol = _iOSCompilation.GetTypeByMetadataName("UIKit.UIView");
 			_tvOSBaseSymbol = _tvOSCompilation.GetTypeByMetadataName("UIKit.UIView");

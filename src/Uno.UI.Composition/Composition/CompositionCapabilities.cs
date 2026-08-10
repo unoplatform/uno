@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -20,5 +20,9 @@ namespace Microsoft.UI.Composition
 		}
 
 		public static CompositionCapabilities GetForCurrentView() => new CompositionCapabilities(Compositor.GetSharedCompositor());
+
+		public bool AreEffectsSupported() => true;
+
+		public bool AreEffectsFast() => _compositor?.IsSoftwareRenderer is not true;
 	}
 }

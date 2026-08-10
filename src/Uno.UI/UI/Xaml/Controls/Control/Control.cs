@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Uno.UI;
 using System.Linq;
 using Microsoft.UI.Xaml.Input;
@@ -1370,5 +1370,21 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal override bool CanHaveChildren() => true;
+
+		internal static Action<Control, bool> OnIsFocusableChangedCallback { get; set; }
+
+		public Control()
+		{
+			InitializeControl();
+		}
+
+		partial void OnIsFocusableChanged()
+		{
+			if (OnIsFocusableChangedCallback is { } callback)
+			{
+				var isFocusable = IsFocusable && !IsDelegatingFocusToTemplateChild();
+				callback.Invoke(this, isFocusable);
+			}
+		}
 	}
 }

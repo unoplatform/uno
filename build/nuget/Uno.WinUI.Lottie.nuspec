@@ -95,8 +95,8 @@
 	</metadata>
 	<files>
 		<file src="..\..\src\Common\uno.png" target="/" />
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\net10.0\Uno.UI.Lottie.*" target="lib\net10.0" />
-		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie.Skia\Release\net11.0\Uno.UI.Lottie.*" target="lib\net11.0" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie\Release\net10.0\Uno.UI.Lottie.*" target="lib\net10.0" />
+		<file src="..\..\src\AddIns\Uno.UI.Lottie\Bin\Uno.UI.Lottie\Release\net11.0\Uno.UI.Lottie.*" target="lib\net11.0" />
 
 		<!-- Build targets -->
 		<file src="..\..\src\AddIns\Uno.UI.Lottie\buildTransitive\*" target="buildTransitive" />
