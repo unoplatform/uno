@@ -3,13 +3,13 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleName</key>
-	<string>SamplesApp.Skia.Generic</string>
+	<string>SamplesApp</string>
 	<key>CFBundleDisplayName</key>
 	<string>Uno Samples (Skia)</string>
 	<key>CFBundleIdentifier</key>
-	<string>uno.platform.samplesapp.skia.generic</string>
+	<string>uno.platform.samplesapp.skia</string>
 	<key>CFBundleExecutable</key>
-	<string>SamplesApp.Skia.Generic</string>
+	<string>SamplesApp</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleInfoDictionaryVersion</key>
