@@ -3,7 +3,6 @@
 using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using MuxTextBox = Microsoft.UI.Xaml.Controls.TextBox;
 
 namespace Uno.UI.Xaml.Controls.Extensions;
 
@@ -24,11 +23,11 @@ internal interface IOverlayTextBoxView
 	(int start, int length) SelectionBeforeKeyDown { get; }
 
 	/// <summary>
-	/// Returns a value indicating whether this TextBoxView is compatible with the given TextBox state.
+	/// Returns a value indicating whether this view is compatible with the given engine state.
 	/// </summary>
-	/// <param name="textBox">TextBox.</param>
+	/// <param name="core">The text-input engine.</param>
 	/// <returns>True if compatible.</returns>
-	bool IsCompatible(MuxTextBox textBox);
+	bool IsCompatible(TextBoxCore core);
 
 	void SetFocus();
 
@@ -42,7 +41,7 @@ internal interface IOverlayTextBoxView
 
 	void SetSize(double width, double height);
 
-	void UpdateProperties(MuxTextBox textBox);
+	void UpdateProperties(TextBoxCore core);
 
 	IDisposable ObserveTextChanges(EventHandler onChanged);
 }

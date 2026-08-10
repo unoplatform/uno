@@ -85,6 +85,12 @@ internal interface ITextBoxHost
 	/// </summary>
 	char PasswordChar { get; }
 
+	/// <summary>
+	/// Whether the password is displayed as cleartext by configuration, which the native input types need
+	/// so they do not additionally mask it. A text box answers <c>false</c>.
+	/// </summary>
+	bool IsPasswordRevealed { get; }
+
 	bool IsPointerOver { get; }
 
 	int MaxLength { get; }
@@ -111,6 +117,8 @@ internal interface ITextBoxHost
 	DataTemplate? HeaderTemplate { get; }
 
 	object? Description { get; }
+
+	string? PlaceholderText { get; }
 
 	FlyoutBase? SelectionFlyout { get; }
 

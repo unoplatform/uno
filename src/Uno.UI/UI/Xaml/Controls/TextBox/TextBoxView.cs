@@ -66,8 +66,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal TextBoxCore? Core => _core.TryGetTarget<TextBoxCore>(out var core) ? core : null;
 
-		public TextBox? TextBox => Core?.Owner as TextBox;
-
 		internal int GetSelectionStart() => _overlayTextBoxViewExtension?.GetSelectionStart() ?? 0;
 
 		internal int GetSelectionLength() => _overlayTextBoxViewExtension?.GetSelectionLength() ?? 0;

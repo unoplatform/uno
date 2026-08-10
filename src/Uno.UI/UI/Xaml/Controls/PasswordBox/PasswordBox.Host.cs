@@ -64,6 +64,8 @@ partial class PasswordBox : ITextBoxHost
 
 	object? ITextBoxHost.Description => Description;
 
+	string? ITextBoxHost.PlaceholderText => PlaceholderText;
+
 	InputReturnType ITextBoxHost.InputReturnType => TextBoxExtensions.GetInputReturnType(this);
 
 	// The reveal button, not a delete button — which is why this stays control-owned.
@@ -71,6 +73,8 @@ partial class PasswordBox : ITextBoxHost
 
 	char ITextBoxHost.PasswordChar
 		=> string.IsNullOrEmpty(PasswordChar) ? DefaultPasswordChar[0] : PasswordChar[0];
+
+	bool ITextBoxHost.IsPasswordRevealed => PasswordRevealMode == PasswordRevealMode.Visible;
 
 	void ITextBoxHost.UpdateButtonStates() => UpdateButtonStates();
 

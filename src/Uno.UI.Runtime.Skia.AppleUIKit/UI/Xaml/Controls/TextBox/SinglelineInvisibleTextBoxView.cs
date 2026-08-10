@@ -82,7 +82,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 		void_objc_msgSend_bool(Handle, s_setAllowsNumberPadPopoverSelector.Handle, false);
 	}
 
-	public bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBox textBox) => !textBox.AcceptsReturn;
+	public bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBoxCore core) => !core.AcceptsReturn;
 
 	public override CGRect GetCaretRectForPosition(UITextPosition? position)
 		=> InvisibleTextBoxViewExtension.IsFloatingNumericKeypad(KeyboardType) ? Bounds : base.GetCaretRectForPosition(position);
@@ -102,7 +102,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 	private void HandlePaste(Action baseAction)
 	{
 		var args = new TextControlPasteEventArgs();
-		TextBoxViewExtension?.Owner.TextBox?.RaisePaste(args);
+		TextBoxViewExtension?.Owner.Core?.RaisePaste(args);
 		if (!args.Handled)
 		{
 			baseAction.Invoke();

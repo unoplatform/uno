@@ -151,7 +151,7 @@ internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
 	/// </summary>
 	internal Rect GetCaretRect()
 	{
-		if (_activeTextBox is { TextBoxView.DisplayBlock.ParsedText: { } parsedText, XamlRoot: { } })
+		if (_activeTextBox is { TextBoxView.DisplayBlock.ParsedText: { } parsedText, Owner.XamlRoot: { } })
 		{
 			var selEnd = _activeTextBox.SelectionStart + _activeTextBox.SelectionLength;
 			var caretRect = parsedText.GetRectForIndex(selEnd);

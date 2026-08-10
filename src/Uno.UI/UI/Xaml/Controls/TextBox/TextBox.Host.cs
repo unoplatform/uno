@@ -40,6 +40,8 @@ partial class TextBox : ITextBoxHost
 	// Never read: only the masking path asks, and only when IsPassword is set.
 	char ITextBoxHost.PasswordChar => '\0';
 
+	bool ITextBoxHost.IsPasswordRevealed => false;
+
 	int ITextBoxHost.MaxLength => MaxLength;
 
 	InputScope ITextBoxHost.InputScope => InputScope;
@@ -61,6 +63,8 @@ partial class TextBox : ITextBoxHost
 	DataTemplate? ITextBoxHost.HeaderTemplate => HeaderTemplate;
 
 	object? ITextBoxHost.Description => Description;
+
+	string? ITextBoxHost.PlaceholderText => PlaceholderText;
 
 	InputReturnType ITextBoxHost.InputReturnType => TextBoxExtensions.GetInputReturnType(this);
 

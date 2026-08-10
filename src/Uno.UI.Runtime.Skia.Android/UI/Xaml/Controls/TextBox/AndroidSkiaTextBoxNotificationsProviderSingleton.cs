@@ -10,8 +10,8 @@ namespace Uno.UI.Runtime.Skia.Android;
 
 internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBoxNotificationsProviderSingleton
 {
-	internal List<TextBox> LiveTextBoxes { get; } = new();
-	internal Dictionary<int, TextBox> LiveTextBoxesMap { get; } = new();
+	internal List<TextBoxCore> LiveTextBoxes { get; } = new();
+	internal Dictionary<int, TextBoxCore> LiveTextBoxesMap { get; } = new();
 
 	public static AndroidSkiaTextBoxNotificationsProviderSingleton Instance { get; } = new AndroidSkiaTextBoxNotificationsProviderSingleton();
 
@@ -91,11 +91,12 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 	{
 	}
 
-	private static bool CouldRequireKeyboard(FrameworkElement? element)
+	private static bool CouldRequireKeyboard(object? element)
 	{
 		return element switch
 		{
 			TextBoxCore core => !core.IsReadOnly,
+			ITextBoxHost host => !host.Core.IsReadOnly,
 			AutoSuggestBox or NumberBox => true,
 			_ => false,
 		};

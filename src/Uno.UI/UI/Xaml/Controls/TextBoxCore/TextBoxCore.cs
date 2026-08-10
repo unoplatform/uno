@@ -58,9 +58,9 @@ internal sealed partial class TextBoxCore
 		set => _host.TextValue = value;
 	}
 
-	private bool IsReadOnly => _host.IsReadOnly;
+	internal bool IsReadOnly => _host.IsReadOnly;
 
-	private bool AcceptsReturn => _host.AcceptsReturn;
+	internal bool AcceptsReturn => _host.AcceptsReturn;
 
 	internal TextWrapping TextWrapping => _host.TextWrapping;
 
@@ -70,15 +70,22 @@ internal sealed partial class TextBoxCore
 
 	internal bool IsPassword => _host.IsPassword;
 
-	private int MaxLength => _host.MaxLength;
+	internal bool IsPasswordRevealed => _host.IsPasswordRevealed;
 
-	private InputScope InputScope => _host.InputScope;
+	internal int MaxLength => _host.MaxLength;
+
+	internal InputScope InputScope => _host.InputScope;
 
 	internal TextAlignment TextAlignment => _host.TextAlignment;
 
 	internal bool IsTextAlignmentExplicitlySet => _host.IsTextAlignmentExplicitlySet;
 
-	private CharacterCasing CharacterCasing => _host.CharacterCasing;
+#if !IS_UNIT_TESTS
+	// The native overlay raises this on the control's behalf, so it needs a way through the engine.
+	internal void RaisePaste(TextControlPasteEventArgs args) => _host.RaisePaste(args);
+#endif
+
+	internal CharacterCasing CharacterCasing => _host.CharacterCasing;
 
 	private bool IsTextPredictionEnabled => _host.IsTextPredictionEnabled;
 
@@ -89,6 +96,8 @@ internal sealed partial class TextBoxCore
 	private DataTemplate? HeaderTemplate => _host.HeaderTemplate;
 
 	private object? Description => _host.Description;
+
+	internal string? PlaceholderText => _host.PlaceholderText;
 
 	private FlyoutBase? SelectionFlyout => _host.SelectionFlyout;
 
@@ -403,8 +412,15 @@ internal sealed partial class TextBoxCore
 		{
 			SelectPartial(start, length);
 			_host.RaiseSelectionChanged();
+			SelectionChanged?.Invoke(this, new RoutedEventArgs(_host.Owner));
 		}
 	}
+
+	/// <summary>
+	/// Raised alongside the control's own selection-changed event, for the platform runtimes that track
+	/// selection through the engine instead of a control-typed event.
+	/// </summary>
+	internal event EventHandler<RoutedEventArgs>? SelectionChanged;
 
 	internal void SelectAll() => SelectAllPartial();
 

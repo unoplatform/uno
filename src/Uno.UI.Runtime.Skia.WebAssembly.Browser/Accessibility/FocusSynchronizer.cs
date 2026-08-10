@@ -89,7 +89,7 @@ internal sealed partial class FocusSynchronizer
 
 			// If a TextBox was focused before accessibility was enabled the hidden native
 			// <input> overlay is still active. Detach it so the semantic <input> owns input.
-			if (focusedElement is TextBox)
+			if (focusedElement is ITextBoxHost)
 			{
 				BrowserInvisibleTextBoxViewExtension.DetachNativeInputPreservingFocus();
 			}
