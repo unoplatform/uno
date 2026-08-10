@@ -25,6 +25,10 @@ namespace Microsoft.UI.Composition
 		// canvas, matching WinUI's CompositionSpriteShape).
 		private Matrix3x2 _geometryTransform = Matrix3x2.Identity;
 
+		// Set by BorderVisual for a rounded-rect background: lets the fill go through the backend's analytic
+		// DrawRoundedRect (one SDF quad) instead of a tessellated path. Null → unchanged path behaviour.
+		internal (Rect Rect, Vector4 Radii)? RoundedRectFillHint { get; set; }
+
 		/// <summary>
 		/// This is largely a hack that's needed for MUX.Shapes.Path with Data set to a PathGeometry that has some
 		/// figures with IsFilled = False. CompositionSpriteShapes don't have the concept of a "selectively filled
@@ -89,13 +93,19 @@ namespace Microsoft.UI.Composition
 					// directly. Clip-to-shape + fill-rect is equivalent but forces a per-shape clip — a coverage
 					// offscreen on the WebGPU backend, ruinous for shape-heavy UI (list items, icons, charts). Only a
 					// non-solid brush (gradient/image/surface) needs clip-to-shape + paint-bounds.
+					// A rounded-rect background (the RoundedRectFillHint, set by BorderVisual) fills analytically as ONE
+					// SDF quad on backends that support it — instead of a tessellated path (stencil + cover). Only for a
+					// solid colour with an identity geometry transform; anything else keeps the path.
+					var rrHint = _geometryTransform.IsIdentity ? RoundedRectFillHint : null;
 					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
-						session.Session.DrawPath(fillGeometry, WithOpacity(colorFromTransition, session.Opacity), antialias: true);
+						if (rrHint is { } h) { session.Session.DrawRoundedRect(h.Rect, h.Radii, WithOpacity(colorFromTransition, session.Opacity), antialias: true); }
+						else { session.Session.DrawPath(fillGeometry, WithOpacity(colorFromTransition, session.Opacity), antialias: true); }
 					}
 					else if (fill is CompositionColorBrush fillColor && fill.CanPaint())
 					{
-						session.Session.DrawPath(fillGeometry, WithOpacity(fillColor.Color, session.Opacity), antialias: true);
+						if (rrHint is { } h) { session.Session.DrawRoundedRect(h.Rect, h.Radii, WithOpacity(fillColor.Color, session.Opacity), antialias: true); }
+						else { session.Session.DrawPath(fillGeometry, WithOpacity(fillColor.Color, session.Opacity), antialias: true); }
 					}
 					else
 					{
