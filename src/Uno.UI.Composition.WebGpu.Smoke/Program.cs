@@ -530,6 +530,24 @@ Check("many-stop gradient: right blue (stops 16..19 not clamped away)", manyRigh
 	Check("arena-clip: moved clip corner masked (finv correct)", ccCorner.r < 40 && ccCorner.g < 40 && ccCorner.b < 40, ccCorner);
 }
 
+// 18c) ARENA phase-2 (gradient) — a gradient-filled child replayed translated. The gradient must MOVE with the
+//      geometry (finv maps the moved fragment to local for the gradient eval), not stay anchored at the origin.
+{
+	var gSurface = new WebGpuRenderSurface(dev, 64, 64);
+	var gPresent = new WebGpuPresentSession(dev, gSurface);
+	gPresent.Clear(WColor.FromArgb(255, 0, 0, 0));
+	var gBlue = WColor.FromArgb(255, 0, 0, 255);
+	var gArena = new WebGpuShader { Radial = false, P0 = new Vector2(0, 0), P1 = new Vector2(20, 0), Colors = new[] { red, gBlue }, Stops = new[] { 0f, 1f }, TileMode = GradientTileMode.Clamp, LocalMatrix = Matrix3x2.Identity };
+	var gChild = new WebGpuCommandRecorder(); gChild.DrawRect(new Rect(0, 0, 20, 20), gArena, false); var gChildData = gChild.Finish();
+	var gf1 = new WebGpuCommandRecorder(); gf1.Replay(gChildData); gPresent.Replay(gf1.Finish());
+	var gf2 = new WebGpuCommandRecorder(); gf2.Translate(30, 0); gf2.Replay(gChildData); gPresent.Replay(gf2.Finish());
+	var gpx = dev.ReadPixelsRgba(gSurface);
+	var glLeft = At(gpx, 32, 10);    // moved local x≈2 → red end
+	var glRight = At(gpx, 48, 10);   // moved local x≈18 → blue end
+	Check("arena-gradient: moved left edge red (finv moves the gradient)", glLeft.r > 120 && glLeft.b < 130, glLeft);
+	Check("arena-gradient: moved right edge blue", glRight.b > 120 && glRight.r < 130, glRight);
+}
+
 // ---- Ordered GPU-command TRACE (UNO_WEBGPU_TRACE=1) ----
 // Dumps exactly what each primitive submits to the GPU (passes, pipelines, draws), in order, so it can be diffed
 // against the original ramez/webgpu-experiment backend's submission for the same primitive. Not a pass/fail check.
