@@ -513,6 +513,23 @@ Check("many-stop gradient: right blue (stops 16..19 not clamped away)", manyRigh
 	Check("arena: origin position vacated (black)", amOld.r < 40 && amOld.g < 40 && amOld.b < 40, amOld);
 }
 
+// 18b) ARENA phase-2 (clipped) — a CLIPPED child (rounded-rect clip + fill) replayed at two transforms. Must reuse
+//      geometry AND keep the clip correct at the MOVED position: finv maps the moved fragment back to the
+//      recording's own space for clipCov. If finv were wrong, the mask would land at the origin, not the moved spot.
+{
+	var cSurface = new WebGpuRenderSurface(dev, 64, 64);
+	var cPresent = new WebGpuPresentSession(dev, cSurface);
+	cPresent.Clear(WColor.FromArgb(255, 0, 0, 0));
+	var cChild = new WebGpuCommandRecorder(); cChild.ClipRoundRect(Rounded(0, 0, 20, 20, 10)); cChild.DrawRect(new Rect(0, 0, 20, 20), red, false); var cChildData = cChild.Finish();
+	var cf1 = new WebGpuCommandRecorder(); cf1.Replay(cChildData); cPresent.Replay(cf1.Finish());
+	var cf2 = new WebGpuCommandRecorder(); cf2.Translate(30, 30); cf2.Replay(cChildData); cPresent.Replay(cf2.Finish());
+	var cpx = dev.ReadPixelsRgba(cSurface);
+	var ccCenter = At(cpx, 40, 40);   // circle center at moved (30,30)+(10,10) → red
+	var ccCorner = At(cpx, 31, 31);   // moved top-left corner, outside the r=10 arc → masked (black)
+	Check("arena-clip: moved clipped rect center red", ccCenter.r > 200 && ccCenter.g < 60, ccCenter);
+	Check("arena-clip: moved clip corner masked (finv correct)", ccCorner.r < 40 && ccCorner.g < 40 && ccCorner.b < 40, ccCorner);
+}
+
 // ---- Ordered GPU-command TRACE (UNO_WEBGPU_TRACE=1) ----
 // Dumps exactly what each primitive submits to the GPU (passes, pipelines, draws), in order, so it can be diffed
 // against the original ramez/webgpu-experiment backend's submission for the same primitive. Not a pass/fail check.

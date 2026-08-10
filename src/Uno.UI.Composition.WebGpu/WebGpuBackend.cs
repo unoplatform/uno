@@ -407,7 +407,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 // rects[i]/radii[i] are the nested rounded-rect clips (device space), ANDed together; ex[i]>0.5 = Difference
 // (keep outside). meta.x = active count. Arbitrary path clips are applied via the shared depth buffer as an in-pass
 // mask (see the main-pass clip protocol), not sampled here — so clipCov only carries the analytic rounded-rects.
-struct ClipU { rects: array<vec4<f32>, 4>, radii: array<vec4<f32>, 4>, ex: vec4<f32>, ctrl: vec4<f32>, size: vec4<f32>, xform: vec4<f32>, xoff: vec4<f32> };
+struct ClipU { rects: array<vec4<f32>, 4>, radii: array<vec4<f32>, 4>, ex: vec4<f32>, ctrl: vec4<f32>, size: vec4<f32>, xform: vec4<f32>, xoff: vec4<f32>, finv: vec4<f32> };
 // Arena transform: verts are stored in the recording's own (identity-baked) NDC space; xform (an NDC->NDC affine,
 // M = xform.xyzw = [m00 m01 m10 m11], t = xoff.xy) maps them to the replay transform. Identity for immediate draws;
 // re-stamped (a single uniform write) when a cached visual moves, so its geometry is reused, not rebuilt.
@@ -415,7 +415,11 @@ fn xformPos(clip: ClipU, pos: vec2<f32>) -> vec4<f32> {
   return vec4<f32>(clip.xform.x * pos.x + clip.xform.y * pos.y + clip.xoff.x,
                    clip.xform.z * pos.x + clip.xform.w * pos.y + clip.xoff.y, 0.0, 1.0);
 }
-fn clipCov(fc: vec2<f32>, clip: ClipU) -> f32 {
+fn clipCov(fcRaw: vec2<f32>, clip: ClipU) -> f32 {
+  // finv maps the (moved) device fragment position back to the recording's own space so a clip baked at identity
+  // stays correct after an arena transform re-stamp (finv + xoff.zw = the inverse device affine). Identity = no-op.
+  let fc = vec2<f32>(clip.finv.x * fcRaw.x + clip.finv.z * fcRaw.y + clip.xoff.z,
+                     clip.finv.y * fcRaw.x + clip.finv.w * fcRaw.y + clip.xoff.w);
   var cov = 1.0;
   let n = i32(clip.ctrl.x);
   for (var i = 0; i < n; i = i + 1) {
@@ -2042,7 +2046,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// done before the next — no builder holds the scratch across a nested RenderInto. _clipU backs MakeClipBg's
 	// lookup; a bind-group cache MISS clones it before storing.
 	private readonly List<float> _scratch = new();
-	private readonly float[] _clipU = new float[52];   // ClipU: rects[4]+radii[4] (32) + ex + ctrl + size + xform + xoff = 208B
+	private readonly float[] _clipU = new float[56];   // ClipU: rects[4]+radii[4] + ex+ctrl+size+xform+xoff+finv = 224B
 
 	// Pool of per-RenderInto op lists so a static frame's rebuild doesn't allocate the (large ClipData) op array
 	// every present. A stack (not one field) keeps it correct under the recursive nested-layer RenderInto — each
@@ -2121,10 +2125,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	// The clip bind group for a command: just the ClipU uniform (rounded-rect + surface size). Arbitrary path clips
 	// are applied via the shared depth mask in the main pass, not sampled here, so there is no coverage texture.
-	private IntPtr MakeClipBg(IntPtr bgl, ClipData cd, OwnedResources owned = null, Matrix3x2 xform = default)
+	private IntPtr MakeClipBg(IntPtr bgl, ClipData cd, OwnedResources owned = null, Matrix3x2 xform = default, Matrix3x2 finv = default)
 	{
 		if (xform == default) { xform = Matrix3x2.Identity; }   // default(Matrix3x2) is all-zero; treat as identity
-		const int ClipUBytes = 208;   // rects[4]+radii[4] (128) + ex + ctrl + size + xform + xoff (16 each); match the WGSL struct
+		if (finv == default) { finv = Matrix3x2.Identity; }
+		const int ClipUBytes = 224;   // rects[4]+radii[4] (128) + ex + ctrl + size + xform + xoff (16 each); match the WGSL struct
 		var cu = _clipU;
 		System.Array.Clear(cu);
 		var rounds = cd.Rounds;
@@ -2141,7 +2146,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		cu[40] = _s.Width; cu[41] = _s.Height;   // size
 		// xform maps stored (identity-baked) NDC verts to the replay NDC: px = M11*x + M21*y + M31, py = M12*x + M22*y + M32.
 		cu[44] = xform.M11; cu[45] = xform.M21; cu[46] = xform.M12; cu[47] = xform.M22;
-		cu[48] = xform.M31; cu[49] = xform.M32;   // xoff (NDC translation)
+		cu[48] = xform.M31; cu[49] = xform.M32;   // xoff.xy (NDC translation)
+		// finv maps the device fragment position back to the recording's own space (inverse device affine) so a clip
+		// baked at identity is correct after the move. Identity => clipCov sees fc unchanged. finv 2x2 in `finv`,
+		// finv translation in xoff.zw (px = fM11*x + fM21*y + fM31, py = fM12*x + fM22*y + fM32).
+		cu[50] = finv.M31; cu[51] = finv.M32;
+		cu[52] = finv.M11; cu[53] = finv.M12; cu[54] = finv.M21; cu[55] = finv.M22;
 
 		// The ClipU depends only on (layout, these floats) — identical across frames for static chrome — so reuse a
 		// cached bind group. Now that path clips carry no per-frame coverage texture, every clip is cacheable.
@@ -2298,7 +2308,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		for (int i = 0; i < cmds.Count; i++)
 		{
 			var c = cmds[i];
-			if (c is not (RectCommand or ImageCmd) || !c.Clip.IsNone) { return false; }
+			// Solid/image only (paths use a stencil pass with no xform; gradients read device fc for their geometry).
+			// A rect/rounded clip is fine — clipCov maps fc back to local via finv; a PATH clip uses the depth mask
+			// (no finv) so it's excluded.
+			if (c is not (RectCommand or ImageCmd) || c.Clip.PathFan is not null) { return false; }
 		}
 		return cmds.Count > 0;
 	}
@@ -2512,11 +2525,27 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							else { WebGpuTrace.Upload("geometry-reuse(cache-hit)", 0); }
 							entry.Used = true;
 							var xf = ArenaXform(rr.Transform);
+							// finv = inverse device affine, so clipCov maps the moved fragment back to the recording's
+							// own space where the (identity-baked) clip lives.
+							var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
+							Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
+							Vector2 MoveP(float x, float y) => new(x * t2.M11 + y * t2.M21 + t2.M31, x * t2.M12 + y * t2.M22 + t2.M32);
 							foreach (var op in entry.Ops)
 							{
 								var abgl = op.kind == 2 ? _d.ImageClipBgl : _d.SolidClipBgl;
-								var aClipBg = MakeClipBg(abgl, op.clip, null, xf);
-								ops.Add((op.kind, op.b0, op.u0, op.b1, op.flag, op.clip, (nint)aClipBg));
+								// clipCov reads the LOCAL rounded shape (finv maps fc back to it); the SCISSOR is device-space
+								// so its Aabb must follow the move — transform the (finite) clip Aabb by the replay transform.
+								var scissorClip = op.clip;
+								var ab = op.clip.Aabb;
+								if (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f)
+								{
+									var p0 = MoveP(ab.X, ab.Y); var p1 = MoveP(ab.Z, ab.Y); var p2 = MoveP(ab.Z, ab.W); var p3 = MoveP(ab.X, ab.W);
+									scissorClip.Aabb = new Vector4(
+										MathF.Min(MathF.Min(p0.X, p1.X), MathF.Min(p2.X, p3.X)), MathF.Min(MathF.Min(p0.Y, p1.Y), MathF.Min(p2.Y, p3.Y)),
+										MathF.Max(MathF.Max(p0.X, p1.X), MathF.Max(p2.X, p3.X)), MathF.Max(MathF.Max(p0.Y, p1.Y), MathF.Max(p2.Y, p3.Y)));
+								}
+								var aClipBg = MakeClipBg(abgl, op.clip, null, xf, finv);
+								ops.Add((op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, (nint)aClipBg));
 							}
 							break;
 						}
