@@ -64,7 +64,7 @@
 		<!-- 
 			This target suppresses unavailable targets for the current system.
 
-			As of 2024-03-21, iOS/Catalyst are not supported on Linux, and Windows is not supported on non-Windows systems.      
+			As of 2024-03-21, iOS/tvOS are not supported on Linux, and Windows is not supported on non-Windows systems.
 		-->
 
 		<ItemGroup>

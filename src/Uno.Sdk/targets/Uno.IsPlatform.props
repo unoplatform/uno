@@ -8,7 +8,6 @@
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
 			<PropertyGroup>
 				<IsAppleUIKit>true</IsAppleUIKit>
-				<IsIOSOrCatalyst>true</IsIOSOrCatalyst>
 				<IsIOS>true</IsIOS>
 			</PropertyGroup>
 		</When>

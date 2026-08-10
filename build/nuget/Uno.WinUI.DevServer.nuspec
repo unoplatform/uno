@@ -30,14 +30,6 @@
 
 			</group>
 
-			<!-- net10.0-maccatalyst26.0 -->
-			<group targetFramework="net10.0-maccatalyst26.0">
-				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
-				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
-
-				<dependency id="Newtonsoft.Json" version="13.0.3" />
-			</group>
-
 			<!-- net10.0-android -->
 			<group targetFramework="net10.0-android">
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
@@ -57,14 +49,6 @@
 				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
 
-			</group>
-
-			<!-- net11.0-maccatalyst26.0 -->
-			<group targetFramework="net11.0-maccatalyst26.5">
-				<dependency id="Uno.WinUI" version="1.29.0-dev.93" />
-				<dependency id="Uno.WinUI.DevServer.Messaging" version="1.29.0-dev.93" />
-
-				<dependency id="Newtonsoft.Json" version="13.0.3" />
 			</group>
 
 			<!-- net11.0-android -->
