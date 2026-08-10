@@ -1,5 +1,8 @@
 <Project>
 	<PropertyGroup>
+		<!-- The suffix tests below are a proxy for "platform-agnostic project". A project whose file name
+		     carries no such suffix must set UnoDisableTargetFrameworkPlatformOverride itself, before
+		     importing this file, or it will pull platform TFMs and fail to satisfy no-platform consumers. -->
 		<_ShouldUseNoPlatformOverride>false</_ShouldUseNoPlatformOverride>
 		<_ShouldUseNoPlatformOverride Condition="
 			$(MSBuildProjectFile.EndsWith('.Skia.csproj')) 
