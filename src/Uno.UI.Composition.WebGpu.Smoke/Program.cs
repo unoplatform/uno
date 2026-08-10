@@ -626,6 +626,32 @@ Check("many-stop gradient: right blue (stops 16..19 not clamped away)", manyRigh
 	}
 }
 
+// 19) DPI SCALE — a logical 20x20 rect replayed through present.Save/Scale(2)/Replay/Restore must fill the 40x40
+//     PHYSICAL region. This is the 1.5x-DPI bug: WebGpuPresentSession.Scale was an empty stub, so the composition's
+//     RasterizationScale (applied via the neutral session) was dropped and content rendered at logical size.
+{
+	var dSurf = new WebGpuRenderSurface(dev, 64, 64);
+	var dPres = new WebGpuPresentSession(dev, dSurf);
+	var dRec = new WebGpuCommandRecorder(); dRec.DrawRect(new Rect(0, 0, 20, 20), red, false); var dData = dRec.Finish();
+	dPres.Save();
+	dPres.Scale(2f, 2f);
+	dPres.Clear(WColor.FromArgb(255, 0, 0, 0));
+	dPres.Replay(dData);
+	dPres.Restore();
+	var dpx = dev.ReadPixelsRgba(dSurf);
+	var dIn = At(dpx, 34, 34);    // inside the 2x-scaled rect (0..40) → red
+	var dOut = At(dpx, 50, 50);   // past 40 → black
+	Check("dpi-scale: present.Scale(2) fills the 2x region (red at 34,34)", dIn.r > 200 && dIn.g < 60, dIn);
+	Check("dpi-scale: outside the scaled region black (50,50)", dOut.r < 40 && dOut.g < 40 && dOut.b < 40, dOut);
+	// And Restore() must pop the scale so the next unscaled replay is 1x again.
+	var dSurf2 = new WebGpuRenderSurface(dev, 64, 64);
+	var dPres2 = new WebGpuPresentSession(dev, dSurf2);
+	dPres2.Clear(WColor.FromArgb(255, 0, 0, 0)); dPres2.Replay(dData);
+	var dpx2 = dev.ReadPixelsRgba(dSurf2);
+	var dUnscaledOut = At(dpx2, 30, 30);   // no scale → rect is only 0..20 → (30,30) black
+	Check("dpi-scale: unscaled replay is 1x (black at 30,30)", dUnscaledOut.r < 40 && dUnscaledOut.g < 40, dUnscaledOut);
+}
+
 // ---- Ordered GPU-command TRACE (UNO_WEBGPU_TRACE=1) ----
 // Dumps exactly what each primitive submits to the GPU (passes, pipelines, draws), in order, so it can be diffed
 // against the original ramez/webgpu-experiment backend's submission for the same primitive. Not a pass/fail check.

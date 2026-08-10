@@ -2021,6 +2021,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private readonly WebGpuDevice _d;
 	private readonly WebGpuRenderSurface _s;
 	private WColor? _presentClear;
+	// Root scale (DPI) applied to the whole replayed frame. The composition records in LOGICAL coords and applies the
+	// RasterizationScale through the neutral session (Save→Scale→Replay→Restore); this session must honour it or
+	// content renders at logical size on a physical-size surface (the 1.5x-DPI bug). Bracketed by Save/Restore.
+	private Vector2 _presentScale = Vector2.One;
+	private readonly System.Collections.Generic.Stack<Vector2> _presentScaleStack = new();
 	// The single command encoder for the whole frame. Every pass (offscreen coverage/blur/layer + the main pass)
 	// records into it and it's submitted once — so wgpu barriers offscreen resolve->sample automatically, without
 	// the cross-submission resolve hazard (which previously needed a full-texture readback flush to work around).
@@ -2317,7 +2322,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			var tBf = WebGpuProfiler.T();
 			_d.BeginFrameResources();   // reclaim last frame's pooled textures/buffers + release its bind groups
 			pr?.BeginFrameT(tBf);
-			RunFrame(rd.Commands, _presentClear ?? rd.ClearColor);
+			// Apply the root DPI scale to the whole (logical-coord) frame. Nested retained recordings keep their
+			// command-list reference (only their Transform gains the scale) so the geometry cache still hits.
+			var cmds = (_presentScale.X == 1f && _presentScale.Y == 1f)
+				? rd.Commands
+				: WebGpuCommandRecorder.TransformFor(rd.Commands, Matrix4x4.CreateScale(_presentScale.X, _presentScale.Y, 1f), ClipData.None);
+			RunFrame(cmds, _presentClear ?? rd.ClearColor);
 			pr?.Replayed(tReplay);
 		}
 	}
@@ -2895,11 +2905,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	public void SetMatrix(in Matrix4x4 matrix) { }
 	public void Concat(in Matrix4x4 matrix) { }
 	public void Translate(float dx, float dy) { }
-	public void Scale(float sx, float sy) { }
-	public int Save() => 0;
-	public int SaveCount => 0;
-	public void Restore() { }
-	public void RestoreToCount(int count) { }
+	public void Scale(float sx, float sy) => _presentScale = new Vector2(_presentScale.X * sx, _presentScale.Y * sy);
+	public int Save() { _presentScaleStack.Push(_presentScale); return _presentScaleStack.Count; }
+	public int SaveCount => _presentScaleStack.Count;
+	public void Restore() { if (_presentScaleStack.Count > 0) { _presentScale = _presentScaleStack.Pop(); } }
+	public void RestoreToCount(int count) { while (_presentScaleStack.Count > count) { Restore(); } }
 	public void SaveLayer(bool antialias = false) { }
 	public void SaveLayer(IColorFilter colorFilter, bool antialias = false) { }
 	public void SaveLayer(BlendMode blendMode, bool antialias = false) { }
