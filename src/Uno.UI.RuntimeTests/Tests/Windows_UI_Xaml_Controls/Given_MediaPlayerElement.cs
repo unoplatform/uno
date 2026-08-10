@@ -17,6 +17,7 @@ using Uno.Media.Playback;
 using _MediaPlayer = Windows.Media.Playback.MediaPlayer; // alias to avoid same name root namespace from ios/macos
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
+
 [TestClass]
 [RunsOnUIThread]
 [PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
