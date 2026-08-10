@@ -2446,16 +2446,22 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// The per-visual GPU-geometry cache (slab/scroll), keyed by the recording's immutable command
 					// list. Build once; reuse while it's replayed at the same transform/clip. A stale entry (moved
 					// visual) is deferred-released and rebuilt. Entries not referenced any frame are evicted.
-					if (!_d.GeometryCache.TryGetValue(rr.Commands, out var entry) || entry.Transform != rr.Transform || !ClipDataEquals(entry.Clip, rr.Clip))
-					{
-						if (entry is not null) { _d.DeferRelease(entry.Owned); }
-						var owned = new OwnedResources();
-						var cachedOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
-						foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { BuildSimpleOp(tc, cachedOps, owned); }
-						entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip };
-						_d.GeometryCache[rr.Commands] = entry;
-					}
-					entry.Used = true;
+					var miss = !_d.GeometryCache.TryGetValue(rr.Commands, out var entry);
+						var transformChanged = !miss && entry.Transform != rr.Transform;
+						if (miss || transformChanged || !ClipDataEquals(entry.Clip, rr.Clip))
+						{
+							if (entry is not null) { _d.DeferRelease(entry.Owned); }
+							var owned = new OwnedResources();
+							var cachedOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
+							foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { BuildSimpleOp(tc, cachedOps, owned); }
+							entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip };
+							_d.GeometryCache[rr.Commands] = entry;
+							// Rebuild signal: transform-only changes SHOULD become a uniform re-stamp under arena (#22),
+							// not a full geometry rebuild — this UPLOAD line is what a moved-visual multi-frame trace watches.
+							WebGpuTrace.Upload(transformChanged ? "geometry-rebuild(transform-changed)" : "geometry-build(new)", cachedOps.Count);
+						}
+						else { WebGpuTrace.Upload("geometry-reuse(cache-hit)", 0); }
+						entry.Used = true;
 					// Splice the cached draw-ops straight into this frame's op list — replayed by direct encoding in
 					// the main pass, NOT a render bundle (ExecuteBundles measured ~6x slower on wgpu-native, and forces
 					// a scissor reset; direct replay keeps each op's scissor). Buffers/bind groups persist in `owned`.
