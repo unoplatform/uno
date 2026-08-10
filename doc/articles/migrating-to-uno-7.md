@@ -95,7 +95,6 @@ on macOS with Skia rendering. To migrate:
 > still pulls a library compiled against Uno 6.x can end up with every `Windows.*` type
 > defined twice, which surfaces as ambiguous-type errors rather than a missing reference.
 > Recompile every dependent library against 7.0 rather than mixing majors.
-
 > [!NOTE]
 > Referencing `Uno.WinUI.WebAssembly` (or the older `Uno.WinUI.Runtime.WebAssembly`)
 > alongside the Skia browser head raises the `UNOB0017` build diagnostic. Removing the
