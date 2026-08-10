@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
@@ -42,6 +43,7 @@ namespace SamplesApp.Droid
 		protected override void OnCreate(Bundle bundle)
 		{
 			AndroidX.Core.SplashScreen.SplashScreen.InstallSplashScreen(this);
+			global::UITests.Windows_UI_Notifications.AppNotificationManagerSample.ConfigurePermissionRequest(RequestNotificationPermissionAsync);
 
 			var externalFilesDir = Microsoft.UI.Xaml.NativeApplication.Context.GetExternalFilesDir(null);
 			if (externalFilesDir != null)
@@ -72,6 +74,12 @@ namespace SamplesApp.Droid
 
 			base.OnCreate(bundle);
 		}
+
+		private static Task<bool> RequestNotificationPermissionAsync()
+			=> Build.VERSION.SdkInt < BuildVersionCodes.Tiramisu
+				? Task.FromResult(true)
+				: Windows.Extensions.PermissionsHelper.TryGetPermission(CancellationToken.None, "android.permission.POST_NOTIFICATIONS");
+
 		// Required for the MSAL sample "MsalLoginAndGraph"
 		protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
 		{
