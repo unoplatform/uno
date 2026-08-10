@@ -71,7 +71,7 @@ These load **automatically** when you touch matching files — you don't invoke 
 ### Key Source Directories
 
 - `src/Uno.UI/` - Core UI framework (WinUI controls, layout, XAML runtime)
-- `src/Uno.WinRT/` - Non-UI WinRT APIs (platform-specific assemblies)
+- `src/Uno/` - Non-UI WinRT APIs (platform-specific assemblies)
 - `src/Uno.Foundation/` - Foundation APIs (platform-specific assemblies)
 - `src/Uno.UI.Runtime.Skia.*/` - Skia platform runtimes
 - `src/SourceGenerators/` - XAML parser, DependencyProperty generator
@@ -323,7 +323,7 @@ A GitHub Actions workflow enforces formatting on PRs that touch SamplesApp XAML 
 
 ### Implementing New WinUI Features
 
-1. Find generated stub: `src/Uno.WinRT/Generated/3.0.0.0/Windows.*/ClassName.cs`
+1. Find generated stub: `src/Uno/Generated/3.0.0.0/Windows.*/ClassName.cs`
 2. Copy to non-generated location
 3. Remove implemented platforms from `[NotImplemented]` attribute
 4. Use platform suffix for platform-specific files
