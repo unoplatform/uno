@@ -81,6 +81,14 @@ namespace Microsoft.UI.Composition
 		private static global::Windows.UI.Color WithOpacity(global::Windows.UI.Color c, float opacity)
 			=> opacity >= 1f ? c : global::Windows.UI.Color.FromArgb((byte)(c.A * opacity), c.R, c.G, c.B);
 
+		// radii = (TopLeft, TopRight, BottomRight, BottomLeft) scalars → a RoundRectangle with circular corners.
+		private static RoundRectangle ToRoundRect(Rect rect, Vector4 radii) => new()
+		{
+			Rect = rect,
+			TopLeft = new Vector2(radii.X, radii.X), TopRight = new Vector2(radii.Y, radii.Y),
+			BottomRight = new Vector2(radii.Z, radii.Z), BottomLeft = new Vector2(radii.W, radii.W),
+		};
+
 		internal override void Paint(in Visual.PaintingSession session)
 		{
 			if (_geometryWithTransformations is { } geometryWithTransformations)
@@ -109,8 +117,12 @@ namespace Microsoft.UI.Composition
 					}
 					else
 					{
+						// A non-solid brush (gradient/image/effect) paints by clipping to the shape then filling its
+						// bounds. When the shape is a rounded rect (the hint), clip ANALYTICALLY (ClipRoundRect, 0
+						// draws) instead of a tessellated path clip (stencil + depth draws per visual).
 						session.Session.Save();
-						session.Session.ClipPath(fillGeometry, antialias: true);
+						if (rrHint is { } hc) { session.Session.ClipRoundRect(ToRoundRect(hc.Rect, hc.Radii), antialias: true); }
+						else { session.Session.ClipPath(fillGeometry, antialias: true); }
 						fill.TryPaint(session.Session, session.Opacity, finalFillGeometryWithTransformations.Bounds);
 						session.Session.Restore();
 					}
