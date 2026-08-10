@@ -1,23 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 
 using Android.App;
-using Android.Content;
 using Android.OS;
 using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-using Microsoft.UI.Xaml.Media;
-using Windows.Foundation.Metadata;
-using Uno.Extensions;
-using Windows.ApplicationModel.Activation;
-using Microsoft.Extensions.Logging;
-using Windows.UI.StartScreen;
-using Java.Interop;
-using Uno.UI.Runtime.Skia.Android;
 using Microsoft.UI.Xaml;
 using Windows.Services.Store.Internal;
 using Uno.Foundation.Extensibility;

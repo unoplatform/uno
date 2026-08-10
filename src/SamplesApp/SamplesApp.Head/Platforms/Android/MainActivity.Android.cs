@@ -1,16 +1,10 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Threading;
 using Android.App;
-using Android.Content.PM;
 using Android.OS;
 using Android.Views;
-using Java.Interop;
 using Microsoft.Identity.Client;
 using Microsoft.UI.Xaml;
-using Uno.UI;
-using Windows.UI.ViewManagement;
 
 namespace SamplesApp.Droid
 {
