@@ -19,11 +19,13 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 /// Opt in with UNO_WEBGPU. Not toolchain-validated on Linux CI — needs an Apple device build (and the wgpu-native
 /// iOS static lib linked via wgpu-native.targets, so <c>DllImport("webgpu")</c> resolves to the main program).
 /// </summary>
-internal sealed class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderView
+internal sealed partial class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderView
 {
 	private RootViewController? _owner;
 	private WebGpuSwapChainContext? _context;
-	private CADisplayLink? _link;
+	private readonly CADisplayLink _link;
+	private readonly nint _fps;
+	private readonly float _scale;
 	private Thread? _renderThread;
 	private bool _rendererInstalled;
 
@@ -39,6 +41,12 @@ internal sealed class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderView
 		// pixels; the view's Bounds are in points).
 		ContentScaleFactor = UIScreen.MainScreen.Scale;
 		MetalLayer.ContentsScale = UIScreen.MainScreen.Scale;
+
+		// UIKit APIs are UI-thread-checked: create the link and read the display rate/scale here, not on the
+		// render thread (EnsureContext runs there).
+		_link = CADisplayLink.Create(OnDisplayLink);
+		_fps = UIScreen.MainScreen.MaximumFramesPerSecond;
+		_scale = (float)UIScreen.MainScreen.Scale;
 
 		StartRenderThread();
 	}
@@ -63,16 +71,14 @@ internal sealed class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderView
 			currentThread.QualityOfService = NSQualityOfService.UserInteractive;
 			currentThread.Name = "UnoSKWebGpuMetalViewRenderThread";
 
-			_link = CADisplayLink.Create(OnDisplayLink);
-			var fps = UIScreen.MainScreen.MaximumFramesPerSecond;
 			if (UIDevice.CurrentDevice.CheckSystemVersion(15, 0))
 			{
-				_link.PreferredFrameRateRange = new CAFrameRateRange { Minimum = 30, Preferred = fps, Maximum = fps };
+				_link.PreferredFrameRateRange = new CAFrameRateRange { Minimum = 30, Preferred = _fps, Maximum = _fps };
 			}
 			else
 			{
 #pragma warning disable CA1422 // Validate platform compatibility
-				_link.PreferredFramesPerSecond = fps;
+				_link.PreferredFramesPerSecond = _fps;
 #pragma warning restore CA1422
 			}
 
@@ -119,12 +125,18 @@ internal sealed class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderView
 		}
 
 		var layerHandle = (IntPtr)MetalLayer.Handle;
+		WebGpuDevice.RasterizationScale = _scale;
 		_context = new WebGpuSwapChainContext(
 			WGPUTextureFormat.BGRA8Unorm,
 			inst => WebGpuSwapChainContext.CreateMetalSurface(inst, layerHandle));
 
 		if (!_rendererInstalled)
 		{
+			// Pair the WebGPU renderer with the WebGPU drawing factory so images, gradient shaders, color glyphs,
+			// nine-slice, SVG and RenderTargetBitmap are GPU-resident WebGPU resources (not Skia objects the WebGPU
+			// recorder drops). Geometry/decode still delegate to the previous (Skia) factory.
+			Uno.UI.Composition.Drawing.DrawingFactory.Register(
+				new WebGpuDrawingFactory(_context.Device, Uno.UI.Composition.Drawing.DrawingFactory.Current));
 			Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = new WebGpuRenderer(_context.Device);
 			_rendererInstalled = true;
 			this.Log().Info("Neutral graphics pipeline active: WebGpu context via WebGpuRenderer (AppleUIKit).");
@@ -145,8 +157,7 @@ internal sealed class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderView
 	{
 		if (disposing)
 		{
-			_link?.Invalidate();
-			_link = null;
+			_link.Invalidate();
 			_context?.Dispose();
 			_context = null;
 		}
