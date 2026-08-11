@@ -51,7 +51,7 @@
 		<!-- True for every non-WinUI TFM (desktop/wasm/android/ios/tvos) — gates the Skia framework refs. -->
 		<_IsSkiaTfm Condition="'$(_Platform)' != 'windows'">true</_IsSkiaTfm>
 		<!-- Apple UIKit (iOS + tvOS; no MacCatalyst). NOTE: these TFMs require macOS to build — not
-		     compile-validated on Windows. Wiring mirrors the old netcoremobile head's apple <When> blocks. -->
+		     compile-validated on Windows. -->
 		<_IsUIKit Condition="'$(_Platform)' == 'ios' OR '$(_Platform)' == 'tvos'">true</_IsUIKit>
 
 		<!-- Keep full exception strings in release, as the current heads do -->
@@ -72,7 +72,7 @@
 		<!--
 		NU1703 (transitive package binds to the deprecated MonoAndroid framework) is raised by restore,
 		which resolves before the per-TFM property groups apply, so it must be suppressed unconditionally
-		— TreatWarningsAsErrors would otherwise fail the android restore. Matches the netcoremobile head.
+		— TreatWarningsAsErrors would otherwise fail the android restore.
 		-->
 		<NoWarn>$(NoWarn);NU1703</NoWarn>
 
@@ -260,7 +260,7 @@
 	<PropertyGroup Condition="'$(_Platform)' == 'android'">
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
 		<DefineConstants Condition=" '$(UseMonoRuntime)' == 'false' ">$(DefineConstants);RUNTIME_CORECLR</DefineConstants>
-		<!-- Pin the shrinker, as the netcoremobile head does. Left unset, R8 9.1.31 crashes with
+		<!-- Pin the shrinker. Left unset, R8 9.1.31 crashes with
 		     an NPE in its API-model database while desugaring androidx.core. -->
 		<AndroidLinkTool Condition="'$(DoNotSetAndroidLinkTool)' != 'true'">r8</AndroidLinkTool>
 		<!-- apk (not aab) so the runtime-test harness can deploy to emulators -->
@@ -297,7 +297,7 @@
 	<Import Condition="'$(_Platform)' == 'android'" Project="..\..\Uno.UI.Runtime.Skia.Android\build\*.Runtime.Skia.Android.targets" />
 
 	<!-- ==================== iOS + tvOS (AppleUIKit + Skia) — REQUIRES macOS to build ==================== -->
-	<!-- Mirrors the old SamplesApp.Skia.netcoremobile apple <When> blocks. Samples come from the
+	<!-- Samples come from the
 	     SamplesApp.Skia base lib (referenced for all Skia TFMs above). Not compile-validated on Windows. -->
 	<ItemGroup Condition="'$(_IsUIKit)' == 'true'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
@@ -308,7 +308,7 @@
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(_IsUIKit)' == 'true'">
-		<!-- 13.0 is the floor the .NET 11 iOS/tvOS SDKs enforce, and what netcoremobile targets -->
+		<!-- 13.0 is the floor the .NET 11 iOS/tvOS SDKs enforce -->
 		<SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
 		<!-- iOS 17 compatibility -->
 		<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>

@@ -49,16 +49,16 @@ Choose **Skia WASM** only when:
 
 **CRITICAL**: Set timeout to 15+ minutes. **NEVER cancel builds.**
 
-The default build commands below pass `-p:UnoFastDevBuild=true` (disables analyzers for local iteration — has no effect on CI) and `-p:UnoTargetFrameworkOverride=net10.0` (skips the redundant net9.0 cross-targeted output for Skia libraries). Combined, these cut a clean `SamplesApp.Skia.Generic` build from ~3:23 → ~1:59 and a Uno.UI-incremental rebuild from ~2:23 → ~0:58 on a 32-core Windows machine. Omit both flags if the user requested `strict` mode (see Phase 0).
+The default build commands below pass `-p:UnoFastDevBuild=true` (disables analyzers for local iteration — has no effect on CI) and `-p:UnoTargetFrameworkOverride=net11.0-desktop` (skips the redundant cross-targeted output for Skia libraries). Combined, these cut a clean `SamplesApp` desktop build from ~3:23 → ~1:59 and a Uno.UI-incremental rebuild from ~2:23 → ~0:58 on a 32-core Windows machine. Omit both flags if the user requested `strict` mode (see Phase 0).
 
 #### Skia Desktop (default)
 ```bash
-dotnet build src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net10.0 -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net10.0
+dotnet build src/SamplesApp/SamplesApp/SamplesApp.csproj -c Release -f net11.0-desktop -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net11.0-desktop
 ```
 
 #### Skia WASM
 ```bash
-dotnet publish src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Release -f net10.0 -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net10.0
+dotnet publish src/SamplesApp/SamplesApp/SamplesApp.csproj -c Release -f net11.0-browserwasm -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net11.0-browserwasm
 ```
 
 Note: WASM requires `publish` (not just `build`) to produce the static web assets needed for hosting.
@@ -105,13 +105,13 @@ If running specific tests (not all tests):
 
 Navigate to the build output and execute:
 ```bash
-cd src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net10.0
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
+cd src/SamplesApp/SamplesApp/bin/Release/net11.0-desktop
+dotnet SamplesApp.dll --runtime-tests=test-results.xml
 ```
 
 If running filtered tests, set the env var first:
 ```bash
-export UITEST_RUNTIME_TESTS_FILTER=$(echo -n "fully.qualified.TestName" | base64) && cd src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net10.0 && dotnet SamplesApp.Skia.Generic.dll --runtime-tests=test-results.xml
+export UITEST_RUNTIME_TESTS_FILTER=$(echo -n "fully.qualified.TestName" | base64) && cd src/SamplesApp/SamplesApp/bin/Release/net11.0-desktop && dotnet SamplesApp.dll --runtime-tests=test-results.xml
 ```
 
 Results are output in NUnit XML format to `test-results.xml` (relative to CWD).
@@ -122,7 +122,7 @@ WASM tests run in a browser. The published app is served over HTTP, and test par
 
 **Step 1: Locate the publish output**
 ```bash
-PUBLISH_DIR="src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/bin/Release/net10.0/publish/wwwroot"
+PUBLISH_DIR="src/SamplesApp/SamplesApp/bin/Release/net11.0-browserwasm/publish/wwwroot"
 ```
 
 **Step 2: Start the HTTP file server and the file-creation companion server**
@@ -220,9 +220,9 @@ kill $HTTP_PID $COMPANION_PID 2>/dev/null || true
 
 | | Skia Desktop | Skia WASM |
 |-|-------------|-----------|
-| **Project** | `SamplesApp.Skia.Generic` | `SamplesApp.Skia.WebAssembly.Browser` |
+| **Project** | `SamplesApp` (`net11.0-desktop`) | `SamplesApp` (`net11.0-browserwasm`) |
 | **Build command** | `dotnet build ... -c Release -f net10.0 -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net10.0` | `dotnet publish ... -c Release -f net10.0 -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net10.0` |
-| **Run method** | `dotnet SamplesApp.Skia.Generic.dll --runtime-tests=...` | Browser navigates to URL with query params |
+| **Run method** | `dotnet SamplesApp.dll --runtime-tests=...` | Browser navigates to URL with query params |
 | **Filter delivery** | `UITEST_RUNTIME_TESTS_FILTER` env var | `--runtime-test-filter` URL query param |
 | **Base64 `=` handling** | Standard base64 | Replace `=` with `!` before URL-encoding |
 | **Results delivery** | Written directly to disk | Written via companion HTTP server on port+1 |
