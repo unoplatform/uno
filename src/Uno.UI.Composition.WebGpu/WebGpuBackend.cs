@@ -86,7 +86,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		// the used-flags for this frame.
 		_evict.Clear();
 		foreach (var kv in GeometryCache) { if (!kv.Value.Used) { _evict.Add(kv.Key); } else { kv.Value.Used = false; } }
-		foreach (var k in _evict) { DeferRelease(GeometryCache[k].Owned); GeometryCache.Remove(k); }
+		foreach (var k in _evict) { DeferRelease(GeometryCache[k].Owned); DeferRelease(GeometryCache[k].StampOwned); GeometryCache.Remove(k); }
 	}
 
 	// Diagnostic (UNO_RENDER_PERF): per-frame render CPU time + bind-group/buffer creates, logged from RunFrame.
@@ -1548,6 +1548,13 @@ internal sealed unsafe class WebGpuGeometryCache
 	// re-tessellation, or allocation (that was ~60ms + 26MB/frame at 500 visuals).
 	public long SlabId;       // stable id for this recording's slices in the shared solid/rrect slabs
 	public List<FrameOp> FrameOrder;
+	// Arena stamp memo: the per-op clip bind groups + device scissors for a given replay transform depend only on
+	// that transform, so cache the fully-stamped ops (built with StampOwned) and reuse them verbatim while the
+	// transform is unchanged — a STATIC arena visual then costs one AddRange/frame, no per-op MakeClipBg.
+	public List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> StampedOps;
+	public OwnedResources StampOwned;
+	public Matrix4x4 StampXform;
+	public bool HasStamp;
 }
 
 // Per-visual STABLE slice allocator over a persistent per-kind vertex buffer (ported from ramez's
@@ -3065,7 +3072,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						{
 							if (miss || !entry.Arena)
 							{
-								if (entry is not null) { _d.DeferRelease(entry.Owned); }
+								if (entry is not null) { _d.DeferRelease(entry.Owned); _d.DeferRelease(entry.StampOwned); }
 								var aOwned = new OwnedResources();
 								var aOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
 								var aList = new List<WebGpuCommand>();
@@ -3077,6 +3084,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							}
 							else { WebGpuTrace.Upload("geometry-reuse(cache-hit)", 0); }
 							entry.Used = true;
+							if (!entry.HasStamp || entry.StampXform != rr.Transform)
+							{
+							if (entry.StampOwned is not null) { _d.DeferRelease(entry.StampOwned); }
+							var stampOwned = new OwnedResources();
+							var stamped = new List<(int, nint, uint, nint, bool, ClipData, nint)>(entry.Ops.Count);
 							var xf = ArenaXform(rr.Transform);
 							// finv = inverse device affine, so clipCov maps the moved fragment back to the recording's
 							// own space where the (identity-baked) clip lives.
@@ -3097,9 +3109,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 										MathF.Min(MathF.Min(p0.X, p1.X), MathF.Min(p2.X, p3.X)), MathF.Min(MathF.Min(p0.Y, p1.Y), MathF.Min(p2.Y, p3.Y)),
 										MathF.Max(MathF.Max(p0.X, p1.X), MathF.Max(p2.X, p3.X)), MathF.Max(MathF.Max(p0.Y, p1.Y), MathF.Max(p2.Y, p3.Y)));
 								}
-								var aClipBg = MakeClipBg(abgl, op.clip, null, xf, finv);
-								ops.Add((op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, (nint)aClipBg));
+								var aClipBg = MakeClipBg(abgl, op.clip, stampOwned, xf, finv);
+								stamped.Add((op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, (nint)aClipBg));
 							}
+							entry.StampOwned = stampOwned; entry.StampedOps = stamped; entry.StampXform = rr.Transform; entry.HasStamp = true;
+							}
+							ops.AddRange(entry.StampedOps);
 							break;
 						}
 						var transformChanged = !miss && entry.Transform != rr.Transform;
