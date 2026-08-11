@@ -117,7 +117,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			global::Uno.UI.Composition.WebGpu.WebGpuDevice.RasterizationScale = (float)(RasterizationScale == 0 ? 1 : RasterizationScale);
 			var context = new global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext(
 				global::Uno.WebGpu.Native.WGPUTextureFormat.BGRA8Unorm,
-				inst => global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext.CreateHwndSurface(inst, Win32Helper.GetHInstance(), _hwnd));
+				inst => global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext.CreateHwndSurface(inst, Win32Helper.GetModuleHInstance(), _hwnd));
 			_webgpuContext = context;
 			// Pair the WebGPU renderer with the WebGPU drawing factory so images, gradient shaders, color glyphs,
 			// nine-slice, SVG and RenderTargetBitmap are GPU-resident WebGPU resources (not Skia objects the WebGPU
