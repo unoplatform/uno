@@ -332,6 +332,20 @@ var bdEdge = At(pBd, 45, 32);     // 5px past the sharp edge → blur spread →
 Check("backdrop: center still red-ish (blurred)", bdCenter.r > 80, bdCenter);
 Check("backdrop: blur spreads content past the edge", bdEdge.r > 15 && bdEdge.r < bdCenter.r, (bdEdge, bdCenter));
 
+// 16a-2) TWO STACKED BACKDROPS — exercises encode-time pass-SEGMENTING firing MORE THAN ONCE in a frame (the O(n)
+//        acrylic path: each backdrop ends+reopens the main pass and samples the framebuffer resolved so far, with
+//        NO command-prefix re-render). Both segments must composite correctly; the second blurs the first's result.
+var acr2 = new WebGpuEffectFilter { SigmaX = 4, SigmaY = 4, Color = WColor.FromArgb(0, 0, 0, 0) };
+var pBd2 = Render(r =>
+{
+	r.DrawRect(new Rect(24, 24, 16, 16), red, false);
+	r.ClipRect(new Rect(0, 0, 64, 64));
+	r.DrawEffectBackdrop(acr2, 1f);   // segment 1: blur the red block
+	r.DrawEffectBackdrop(acr2, 1f);   // segment 2: blur the (already blurred) result — pass ended+reopened twice
+});
+var bd2 = At(pBd2, 32, 32);
+Check("two-backdrops: both pass-segments composite (center still red-ish)", bd2.r > 60, bd2);
+
 // 16c) ACRYLIC PROCEDURAL NOISE — luminosity fills the region with a flat colour; the grain (Noise) must add
 //      per-pixel variation. Over a flat gray backdrop with opaque gray luminosity the region is uniform WITHOUT
 //      noise (variance ~0) and speckled WITH it. Fail-before (Noise=0 → flat) / pass-after (Noise>0 → spread).
