@@ -2706,8 +2706,28 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 	}
 
+	// VALUE equality: the rounded/path clip arrays are re-allocated every frame (copy-on-write Push / ClipCompose),
+	// so a reference compare reports a stable clip as "changed" every frame -> a needless per-frame geometry rebuild
+	// for every clipped cached recording (was the button scene's dominant CPU cost, ~100 rebuilds/frame). Compare by
+	// content instead - far cheaper than the rebuild it prevents (Rounds is <=4 elements; the fan only when both have one).
 	private static bool ClipDataEquals(in ClipData a, in ClipData b)
-		=> a.Aabb == b.Aabb && ReferenceEquals(a.Rounds, b.Rounds) && ReferenceEquals(a.PathFan, b.PathFan);
+	{
+		if (a.Aabb != b.Aabb) { return false; }
+		int an = a.Rounds?.Length ?? 0, bn = b.Rounds?.Length ?? 0;
+		if (an != bn) { return false; }
+		for (int i = 0; i < an; i++)
+		{
+			var x = a.Rounds[i]; var y = b.Rounds[i];
+			if (x.Rect != y.Rect || x.Radii != y.Radii || x.RadiiY != y.RadiiY || x.Exclude != y.Exclude) { return false; }
+		}
+		if ((a.PathFan is null) != (b.PathFan is null)) { return false; }
+		if (a.PathFan is { } fa && b.PathFan is { } fb)
+		{
+			if (a.PathEvenOdd != b.PathEvenOdd || a.PathExclude != b.PathExclude) { return false; }
+			if (!((ReadOnlySpan<float>)fa).SequenceEqual(fb)) { return false; }
+		}
+		return true;
+	}
 
 	// A recording is arena-safe when every draw is a solid rect or image with no clip: then the fragment shader
 	// doesn't depend on device position, so its geometry can be baked once in the recording's own space and moved by
