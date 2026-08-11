@@ -88,6 +88,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaFrameBuffer)]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23967")]
+		// Backstop for the storage calls below, which the inner WaitAsync does not cover.
+		[Timeout(60000)]
 		public async Task When_MsAppData()
 		{
 			var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
@@ -103,8 +105,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			TaskCompletionSource<bool> tcs = new();
 			sut.ImageOpened += (s, e) => tcs.TrySetResult(true);
+			sut.ImageFailed += (s, e) => tcs.TrySetException(new Exception($"Image failed to load: {e.ErrorMessage}"));
 
-			await tcs.Task;
+			// Neither event fires on some Skia legs (#23967). Without a timeout the bare await
+			// hangs until the 60-minute job cap, which loses the results file for the whole suite.
+			await tcs.Task.WaitAsync(TimeSpan.FromSeconds(30));
 		}
 #endif
 
