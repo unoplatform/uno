@@ -2305,10 +2305,11 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	public IRenderData Finish() => _data;
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
 
-	// Whether a recording can be GPU-geometry-cached: only simple primitives (rect/path/image/gradient) with no
-	// path (PathFan) clip. A path clip uses the in-pass depth mask, redrawn every frame (fill+stencil+cover), so
-	// caching the recording doesn't remove that per-frame cost — and it churns clip transitions; measured a net
-	// regression on shape-heavy UI. Analytic (rounded/annulus) clips carry no PathFan and stay cacheable. Memoized.
+	// Whether a recording can be GPU-geometry-cached: only simple primitives (rect/rrect/path/image/gradient). PATH
+	// (PathFan) clips ARE cacheable — their fan is residentized (ResidentizeFan) so it isn't re-tessellated per frame,
+	// and only the (cheap, bbox-scissored) in-pass depth-mask draw repeats. This was a regression under the old
+	// reference-equality ClipDataEquals (cached path-clip recordings always looked stale → rebuilt every frame); the
+	// value-compare fix + resident fan made it a win (see RUNNING-CONTEXT §17/§21). Memoized.
 	internal static bool IsCacheable(WebGpuRenderData d)
 	{
 		if (d.Cacheable is { } memo) { return memo; }
