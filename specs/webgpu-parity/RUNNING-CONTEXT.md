@@ -1436,3 +1436,55 @@ runtime tests / RenderTargetBitmap (WebGpuBackend.ReadPixelsRgba works off-brows
 NEXT: (a) deeper macOS parity — run the runtime-tests suite with UNO_WEBGPU=1 and/or side-by-side vs Skia/Metal;
 (b) iOS (handoff §6): install ios workload, build netcoremobile head, expect native-link fixups in
 _ProvisionWgpuNativeIos.
+
+## 41. iOS WebGPU RENDERS on simulator (runtime-validated, screenshots) — 4 fixes; factory-registration gap also fixed on macOS
+
+iOS simulator (iPhone 16 Pro, iOS 18.6, iossimulator-arm64) now renders SamplesApp via WebGPU, visually matching the
+Skia/Metal baseline (side-by-side simctl screenshots) including the PNG logo image. `[webgpu] backend init — msaa=1x
+scale=3`, surface 1206x2622 BGRA8Unorm (non-sRGB) present=Fifo, `TEX #3 ImageTexture.upload` proves the image path.
+
+FIXES, in the order the build/run loop surfaced them (commits 5539c3b7cf, dd17782017):
+ 1. BUILD `wgpu-native.targets`: Apple SDK (Xamarin.MacDev.Tasks) shadows MSBuild's built-in Unzip with an
+    incompatible task -> MSB4064. Register the built-in via
+    `<UsingTask TaskName="Microsoft.Build.Tasks.Unzip" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll"/>`
+    and invoke `<Microsoft.Build.Tasks.Unzip .../>` fully-qualified.
+ 2. BUILD `wgpu-native.targets`: host-OS asset fallback fired on ios/tvos (TPI guard was android-only) -> the DESKTOP
+    macOS dylib would leak into Apple bundles (same class as §33). Precomputed `_WgpuHostFallbackAllowed`
+    (false for android/ios/tvos/maccatalyst) now guards all four fallbacks.
+ 3. BUILD `wgpu-native.targets` (2 sub-issues, found via binlog):
+    a. @(NativeReference) added too late — the Apple SDK's `_SanitizeNativeReferences` (dep of
+       `_ExpandNativeReferences`) reads it BEFORE BeforeBuild-scheduled targets run. `_ProvisionWgpuNativeIos`
+       BeforeTargets now includes `_SanitizeNativeReferences;_ExpandNativeReferences`.
+    b. Even force_load'ed, wgpu symbols were stripped from the executable: the link passes
+       `-dead_strip -exported_symbols_list mtouch-symbols.list`, and that list only gets __Internal DllImport scans —
+       ours say DllImport("webgpu") resolved at runtime via GetMainProgramHandle = dlsym(main image) = EXPORTED
+       symbols only. Fix: `nm -gUj` the archive at provision time -> declare all 228 wgpu* as
+       `@(ReferenceNativeSymbol SymbolType=Function)` (the SDK's supported escape hatch; verified they land in
+       mtouch-symbols.list and `nm -gU` of the app shows all 228; binary 11.5MB -> 18.6MB).
+    GOTCHA: the unzipped .a carries the zip's OLD mtime -> `_LinkNativeExecutable` up-to-date check may skip the
+    relink after provisioning changes; `touch` the .a or clean bin/obj of the head.
+ 4. RUNTIME `UnoSKWebGpuMetalView`: (a) needs `partial` (ObjC binding generator emits a counterpart); (b) UIKit
+    thread-affinity — `UIScreen.MainScreen`(fps/scale) and `CADisplayLink.Create` moved to the ctor; the render
+    thread only sets the frame-rate range and runs the loop (mirrors UnoSKMetalView). UIKitThreadAccessException
+    crashed the app at startup otherwise.
+ 5. RUNTIME, THE BIG ONE (applies to macOS too — fixed both): images (PNG logo, SVG, color glyphs) silently didn't
+    render because the Apple wiring never registered the WebGPU drawing factory. `WebGpuCommandRecorder.DrawImage`
+    no-ops unless the texture is a WebGpuImageTexture (WebGpuBackend.cs ~2251), and without
+    `DrawingFactory.Register(new WebGpuDrawingFactory(device, DrawingFactory.Current))` images stay Skia objects.
+    Win32/WASM do this (Win32WindowWrapper.cs ~126, BrowserRenderer.cs ~87); §37/§38 missed it. Also mirror Win32's
+    `WebGpuDevice.RasterizationScale = scale` BEFORE creating the context (iOS was scale=1 on a 3x screen; with
+    scale set, backend picks msaa 1x per its DPI-aware default). macOS side is COMPILE-validated only — §40's
+    visual pass predates this fix, so macOS needs a quick re-run to confirm the logo/images now draw there too.
+
+REMAINING (iOS):
+ - Detail-pane header icons (chevron/star/gear — AnimatedIcon/AnimatedVisuals territory) still don't render under
+   WebGPU while the Skia baseline shows them. Likely a shared-backend gap (composition-surface/Lottie-style content
+   handed to the recorder as Skia objects), NOT Apple glue — check whether desktop WebGPU heads show the same gap.
+ - UIKit assert in the log: "Modifying properties of a view's layer off the main thread" — wgpu configures the
+   CAMetalLayer from the render thread. Non-fatal on simulator; consider marshaling the first Configure or
+   pre-configuring the layer on the main thread.
+ - Physical-device run (ios-arm64 slice) not attempted; needs signing.
+
+RUN RECIPE (simulator): build with `-f net10.0-ios -p:RuntimeIdentifier=iossimulator-arm64`; `xcrun simctl install
+<udid> .../SamplesApp.app`; `SIMCTL_CHILD_UNO_WEBGPU=1 xcrun simctl launch <udid> uno.platform.samplesapp.skia`
+(SIMCTL_CHILD_* injects env — no local code hack needed); `xcrun simctl io <udid> screenshot x.png` (no TCC issues).
