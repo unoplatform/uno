@@ -129,6 +129,18 @@
 				<!--<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />-->
 				<PackageReference Include="SkiaSharp" />
 				<PackageReference Include="SkiaSharp.NativeAssets.TvOS" />
+
+				<!--
+				AwesomeAssertions annotates its API with JetBrains.Annotations but does not
+				declare a package dependency on it, so the assembly is absent from the graph.
+				tvOS is the only head that does a full AOT pass, and the AOT compiler bails on
+				the resulting loader error:
+				  Failed to load custom attributes from AwesomeAssertions.AssertionEngine:ResetToDefaults()
+				  due to Could not load file or assembly 'JetBrains.Annotations'
+				  FullAOT cannot continue if there are loader errors.
+				Referencing it explicitly makes the custom attributes resolvable.
+				-->
+				<PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
 			</ItemGroup>
 
 			<!-- The .NET SDK's default item glob (EnableDefaultNoneItems) auto-includes

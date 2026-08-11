@@ -151,9 +151,13 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_mainController.VisibleBoundsChanged +=
 			() => RaiseNativeSizeChanged();
 
+#if !__TVOS__
+		// tvOS has no status bar, and StatusBar.GetForCurrentView() is [NotImplemented]
+		// there, so it would throw during window creation.
 		var statusBar = StatusBar.GetForCurrentView();
 		statusBar.Showing += (o, e) => RaiseNativeSizeChanged();
 		statusBar.Hiding += (o, e) => RaiseNativeSizeChanged();
+#endif
 
 		RaiseNativeSizeChanged();
 	}
