@@ -2132,7 +2132,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
 
 	// Whether a recording can be GPU-geometry-cached: only simple primitives (rect/path/image/gradient) with no
-	// path clip (its coverage texture is per-frame pooled, so a cached bind group would dangle). Memoized.
+	// path (PathFan) clip. A path clip uses the in-pass depth mask, redrawn every frame (fill+stencil+cover), so
+	// caching the recording doesn't remove that per-frame cost — and it churns clip transitions; measured a net
+	// regression on shape-heavy UI. Analytic (rounded/annulus) clips carry no PathFan and stay cacheable. Memoized.
 	internal static bool IsCacheable(WebGpuRenderData d)
 	{
 		if (d.Cacheable is { } memo) { return memo; }
