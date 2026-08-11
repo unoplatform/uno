@@ -57,6 +57,9 @@ namespace Microsoft.UI.Xaml
 			{
 				if (_wrapper is null)
 				{
+					// TODO #13827: adopting the wrapper through the ambient current window makes this
+					// binding per-activity rather than per-window. Replacing it needs an explicit
+					// activity<->window binding, which lands with the live second-activity work.
 					// SupportsMultipleWindows is false, so there is a single window: on re-creation
 					// reuse the wrapper already bound to it rather than orphaning it.
 					_wrapper = Microsoft.UI.Xaml.Window.CurrentSafe?.NativeWrapper as NativeWindowWrapper
@@ -116,7 +119,11 @@ namespace Microsoft.UI.Xaml
 			// Cannot call this in ctor: see
 			// https://stackoverflow.com/questions/10593022/monodroid-error-when-calling-constructor-of-custom-view-twodscrollview#10603714
 			RaiseConfigurationChanges();
-			SimpleOrientationSensor.GetDefault()!.OrientationChanged += OnSensorOrientationChanged;
+
+			// OnAttachedToWindow can run more than once per activity, so keep the subscription single.
+			var orientationSensor = SimpleOrientationSensor.GetDefault()!;
+			orientationSensor.OrientationChanged -= OnSensorOrientationChanged;
+			orientationSensor.OrientationChanged += OnSensorOrientationChanged;
 
 			// Note: Deep-linking will cause a new instance of this Activity and its DecorView to be created.
 			// This means any event handlers or listeners attached to these objects in previous instances will not be present.
@@ -277,11 +284,10 @@ namespace Microsoft.UI.Xaml
 
 		protected override void OnStart()
 		{
-			base.OnStart();
-
-			// OnStart gets fired either after onCreate (first launch) or after onRestart
-			// (go out of app then back again). We only want to do this once, hence
-			// the flag.
+			// The render stack must exist before base.OnStart(): that call synchronously reaches
+			// Application.Start -> OnLaunched -> CreateWindow, after which the host is registered
+			// and InvalidateRender() can run against RelativeLayout. This state is per-activity, so
+			// unlike the previous process-wide stack it is null again on every re-creation.
 			if (!_started)
 			{
 				_started = true;
@@ -304,10 +310,12 @@ namespace Microsoft.UI.Xaml
 				RelativeLayout.AddView(NativeLayerHost);
 			}
 
+			base.OnStart();
+
 			// On activity re-creation (deep-link, process restore) the managed Window already
 			// exists with its content loaded, but CreateWindow won't run again for this new
 			// activity. Attach this activity's freshly-built surface and reactivate the window.
-			if (!_isContentViewSet && Microsoft.UI.Xaml.Window.CurrentSafe is { RootElement: not null } existingWindow)
+			if (!_isContentViewSet && Wrapper.Window is { RootElement: not null } existingWindow)
 			{
 				EnsureContentView();
 				_renderView?.ResetRendererContext();
@@ -413,14 +421,28 @@ namespace Microsoft.UI.Xaml
 			LayoutProvider.KeyboardChanged -= OnKeyboardChanged;
 			LayoutProvider.InsetsChanged -= OnInsetsChanged;
 
+			// These are subscribed on process-wide singletons, so a missing -= keeps this activity
+			// (and its render stack) alive for the life of the process, once per re-creation.
+			_inputPane.Showing -= OnInputPaneVisibilityChanged;
+			_inputPane.Hiding -= OnInputPaneVisibilityChanged;
+			SimpleOrientationSensor.GetDefault()!.OrientationChanged -= OnSensorOrientationChanged;
+
 			CleanupBackPressedCallback();
 
-			// Only signal the managed window as closing when this activity is genuinely finishing.
-			// On configuration-change re-creation the window survives and is taken over by the new
-			// activity, so raising Closing here would be spurious.
-			if (IsFinishing)
+			// The render stack is per-activity and the peer finalizer never runs the managed
+			// dispose path, so the GL/Vulkan context has to be released explicitly.
+			_renderView?.TeardownRenderer();
+			_renderView = null;
+			_renderViewAsView = null;
+			_nativeLayerHost = null;
+
+			// Only signal the managed window as closing when this activity is not being re-created
+			// and still owns the window. IsChangingConfigurations — not IsFinishing — is the
+			// complement of "being re-created": a finishing activity is also the one replaced by
+			// the StartActivity/Finish restart idiom, where the successor already took the wrapper.
+			if (!IsChangingConfigurations && _wrapper is { } wrapper && ReferenceEquals(wrapper.CurrentActivity, this))
 			{
-				Wrapper.OnNativeClosed();
+				wrapper.OnNativeClosed();
 			}
 		}
 

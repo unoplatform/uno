@@ -209,7 +209,13 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 			{
 				var compositionTarget = _activity.RootElement?.Visual.CompositionTarget as CompositionTarget;
 				if (compositionTarget == null)
+				{
+					// OnNativePlatformFrameRequested is the only thing that clears the target's
+					// RenderRequested flag, so dropping the frame outright would make every later
+					// RequestNewFrame a no-op. Re-arm so the loop retries once the window is ready.
+					_renderRequested = true;
 					return;
+				}
 
 				var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(
 					skSurface.Canvas,
@@ -301,20 +307,31 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 
 	#endregion
 
+	public void TeardownRenderer()
+	{
+		if (_disposed)
+		{
+			return;
+		}
+
+		_disposed = true;
+		_renderEvent.Set();
+		_renderThread?.Join(TimeSpan.FromSeconds(2));
+		_renderThread = null;
+		_vulkanContext.Dispose();
+		if (_nativeWindow != IntPtr.Zero)
+		{
+			ANativeWindow_release(_nativeWindow);
+			_nativeWindow = IntPtr.Zero;
+		}
+		_renderEvent.Dispose();
+	}
+
 	protected override void Dispose(bool disposing)
 	{
 		if (disposing)
 		{
-			_disposed = true;
-			_renderEvent.Set();
-			_renderThread?.Join(TimeSpan.FromSeconds(2));
-			_vulkanContext.Dispose();
-			if (_nativeWindow != IntPtr.Zero)
-			{
-				ANativeWindow_release(_nativeWindow);
-				_nativeWindow = IntPtr.Zero;
-			}
-			_renderEvent.Dispose();
+			TeardownRenderer();
 		}
 		base.Dispose(disposing);
 	}
