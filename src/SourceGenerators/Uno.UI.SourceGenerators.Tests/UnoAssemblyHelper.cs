@@ -16,7 +16,7 @@ internal static partial class UnoAssemblyHelper
 				"Uno.UI",
 				"Uno.UI.dll",
 				[
-					"Uno.UI.Skia",
+					"Uno.UI",
 					"Uno.UI.Reference",
 				],
 				[TFMPrevious, TFMCurrent]
@@ -43,7 +43,7 @@ internal static partial class UnoAssemblyHelper
 				"Uno.UI.Composition",
 				"Uno.UI.Composition.dll",
 				[
-					"Uno.UI.Composition.Skia",
+					"Uno.UI.Composition",
 					"Uno.UI.Composition.Reference",
 				],
 				[TFMPrevious, TFMCurrent]
@@ -121,6 +121,6 @@ partial class UnoAssemblyHelper
 #else
 		"Release";
 #endif
-	private const string TFMPrevious = "net9.0";
-	private const string TFMCurrent = "net10.0";
+	private const string TFMPrevious = "net10.0";
+	private const string TFMCurrent = "net11.0";
 }

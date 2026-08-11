@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference ScrollControllerPanRequestedEventArgs.cpp, ScrollControllerPanRequestedEventArgs.h, tag winui3/release/1.4.2
 
-using Windows.UI.Input;
+using Microsoft.UI.Input;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 

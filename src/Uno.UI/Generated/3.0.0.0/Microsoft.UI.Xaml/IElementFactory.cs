@@ -3,15 +3,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IElementFactory
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		global::Microsoft.UI.Xaml.UIElement GetElement(global::Microsoft.UI.Xaml.ElementFactoryGetArgs args);
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		void RecycleElement(global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs args);
 #endif
 	}

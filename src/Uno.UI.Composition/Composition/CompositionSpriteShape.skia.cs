@@ -80,6 +80,94 @@ namespace Microsoft.UI.Composition
 
 		internal override bool CanPaint() => (FillBrush?.CanPaint() ?? false) || (StrokeBrush?.CanPaint() ?? false);
 
+		internal bool TryGetRenderBounds(out SKRect bounds)
+		{
+			bounds = default;
+			var any = false;
+
+			if ((FillBrush?.CanPaint() ?? false) && _fillGeometryWithTransformations is { } fillGeometry)
+			{
+				bounds = fillGeometry.Bounds;
+				any = true;
+			}
+
+			if ((StrokeBrush?.CanPaint() ?? false) && StrokeThickness > 0 && _geometryWithTransformations is { } strokeGeometry)
+			{
+				var strokeBounds = strokeGeometry.Bounds;
+				strokeBounds.Inflate(StrokeThickness, StrokeThickness);
+				bounds = any ? SKRect.Union(bounds, strokeBounds) : strokeBounds;
+				any = true;
+			}
+
+			if (any)
+			{
+				var m = GetRenderTransform();
+				if (!m.IsIdentity)
+				{
+					bounds = m.MapRect(bounds);
+				}
+			}
+
+			return any;
+		}
+
+		private static readonly SKPaint _spareRenderPathStrokePaint = new SKPaint { Style = SKPaintStyle.Stroke, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
+		private static readonly SKPathBuilder _spareRenderPathStrokeBuilder = new();
+		private static readonly SKPathBuilder _spareRenderPathShapeBuilder = new();
+
+		// The transform CompositionShape.Render applies to the canvas before painting the geometry: the shape's
+		// Offset followed by its CombinedTransformMatrix (Scale/Rotation/TransformMatrix around CenterPoint).
+		// GetRenderPath/TryGetRenderBounds must apply it too so the damage geometry matches the painted pixels.
+		private SKMatrix GetRenderTransform()
+		{
+			var m = SKMatrix.CreateTranslation(Offset.X, Offset.Y);
+			var transform = CombinedTransformMatrix;
+			if (!transform.IsIdentity)
+			{
+				m = SKMatrix.Concat(m, transform.ToSKMatrix());
+			}
+			return m;
+		}
+
+		// Appends the exact geometry this shape draws to <paramref name="dst"/>; returns false when it draws nothing.
+		internal bool GetRenderPath(SKPathBuilder dst)
+		{
+			var shapeBuilder = _spareRenderPathShapeBuilder;
+			shapeBuilder.Reset();
+			var any = false;
+
+			if ((FillBrush?.CanPaint() ?? false) && _fillGeometryWithTransformations is { } fillGeometry)
+			{
+				shapeBuilder.AddPath(fillGeometry.Geometry, SKPathAddMode.Append);
+				any = true;
+			}
+
+			if ((StrokeBrush?.CanPaint() ?? false) && StrokeThickness > 0 && _geometryWithTransformations is { } strokeGeometry)
+			{
+				_spareRenderPathStrokePaint.StrokeWidth = StrokeThickness;
+				_spareRenderPathStrokeBuilder.Reset();
+				_spareRenderPathStrokePaint.GetFillPath(strokeGeometry.Geometry, _spareRenderPathStrokeBuilder);
+				using var strokePath = _spareRenderPathStrokeBuilder.Detach();
+				shapeBuilder.AddPath(strokePath, SKPathAddMode.Append);
+				any = true;
+			}
+
+			if (!any)
+			{
+				return false;
+			}
+
+			var m = GetRenderTransform();
+			using var shapePath = shapeBuilder.Detach();
+			if (!m.IsIdentity)
+			{
+				shapePath.Transform(m);
+			}
+
+			dst.AddPath(shapePath, SKPathAddMode.Append);
+			return true;
+		}
+
 		private static readonly SKPaint _sparePaint = new SKPaint();
 		private static readonly SKPathBuilder _sparePathBuilder = new();
 

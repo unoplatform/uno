@@ -2219,7 +2219,7 @@ partial class ComboBox
 	{
 		var pointerDeviceType = args.PointerDeviceType;
 
-		if (m_selectAllOnTouch && pointerDeviceType == PointerDeviceType.Touch && m_tpEditableTextPart is not null)
+		if (m_selectAllOnTouch && pointerDeviceType == global::Microsoft.UI.Input.PointerDeviceType.Touch && m_tpEditableTextPart is not null)
 		{
 			m_tpEditableTextPart.SelectAll();
 		}

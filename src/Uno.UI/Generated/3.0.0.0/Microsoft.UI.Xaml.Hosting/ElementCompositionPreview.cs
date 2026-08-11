@@ -3,50 +3,44 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Hosting
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ElementCompositionPreview
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.GetElementVisual(Microsoft.UI.Xaml.UIElement)
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Composition.Visual GetElementChildVisual(global::Microsoft.UI.Xaml.UIElement element)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.ElementCompositionPreview", "GetElementChildVisual(UIElement element)");
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.SetElementChildVisual(Microsoft.UI.Xaml.UIElement, Microsoft.UI.Composition.Visual)
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Composition.CompositionPropertySet GetScrollViewerManipulationPropertySet(global::Microsoft.UI.Xaml.Controls.ScrollViewer scrollViewer)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.ElementCompositionPreview", "GetScrollViewerManipulationPropertySet(ScrollViewer scrollViewer)");
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetImplicitShowAnimation(global::Microsoft.UI.Xaml.UIElement element, global::Microsoft.UI.Composition.ICompositionAnimationBase animation)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.ElementCompositionPreview", "SetImplicitShowAnimation(UIElement element, ICompositionAnimationBase animation)");
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetImplicitHideAnimation(global::Microsoft.UI.Xaml.UIElement element, global::Microsoft.UI.Composition.ICompositionAnimationBase animation)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.ElementCompositionPreview", "SetImplicitHideAnimation(UIElement element, ICompositionAnimationBase animation)");
 		}
 #endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static void SetIsTranslationEnabled(global::Microsoft.UI.Xaml.UIElement element, bool value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.ElementCompositionPreview", "SetIsTranslationEnabled(UIElement element, bool value)");
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+		// Skipping already declared method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.SetIsTranslationEnabled(Microsoft.UI.Xaml.UIElement, bool)
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Composition.CompositionPropertySet GetPointerPositionPropertySet(global::Microsoft.UI.Xaml.UIElement targetElement)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.ElementCompositionPreview", "GetPointerPositionPropertySet(UIElement targetElement)");

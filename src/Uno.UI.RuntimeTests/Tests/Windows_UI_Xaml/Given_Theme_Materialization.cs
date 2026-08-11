@@ -1043,9 +1043,12 @@ public class Given_Theme_Materialization
 	[TestMethod]
 	public void When_Phase4_Global_Theme_Stack_Removed_Guard()
 	{
-		// tests.md §B: Phase 4 deleted the process-global requested-theme stack and the band-aid push API.
-		// This reflection guard fails if PushRequestedThemeForSubTree (or the _requestedThemeForSubTree stack)
-		// is reintroduced — preventing a regression back to global-ambient theme selection. Sibling/context
+		// tests.md §B: Phase 4 deleted the process-global requested-theme stack and the internal band-aid
+		// push API. This reflection guard fails if the internal PushRequestedThemeForSubTree feeder (or the
+		// Themes._requestedThemeForSubTree stack) is reintroduced — preventing a regression back to
+		// global-ambient theme selection. The public PushRequestedThemeForSubTreeByName is intentionally
+		// kept: it is the sanctioned owner-less scope over the core requested-theme-for-subtree slot for
+		// external markup packages, not the removed global stack (see ResourceDictionary). Sibling/context
 		// isolation without the stack is covered by Given_ElementTheme's "Context Isolation" tests; non-FE
 		// owner theming by When_ThemeResource_On_NonFE_DependencyObject_*.
 		const BindingFlags allStatic = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
@@ -1053,14 +1056,72 @@ public class Given_Theme_Materialization
 
 		var resourceDictionary = typeof(ResourceDictionary);
 		Assert.IsNull(resourceDictionary.GetMethod("PushRequestedThemeForSubTree", allStatic),
-			"ResourceDictionary.PushRequestedThemeForSubTree must not be reintroduced (Phase 4 removed the global theme stack).");
-		Assert.IsNull(resourceDictionary.GetMethod("PushRequestedThemeForSubTreeByName", allStatic),
-			"ResourceDictionary.PushRequestedThemeForSubTreeByName must not be reintroduced.");
+			"ResourceDictionary.PushRequestedThemeForSubTree (internal band-aid feeder) must not be reintroduced.");
 
 		var themes = resourceDictionary.GetNestedType("Themes", BindingFlags.NonPublic);
 		Assert.IsNotNull(themes, "ResourceDictionary.Themes should still exist (it holds the app-level Active theme).");
 		Assert.IsNull(themes.GetField("_requestedThemeForSubTree", allMembers),
 			"Themes._requestedThemeForSubTree stack must not be reintroduced.");
+	}
+
+	// ---- Public by-name theme scope bridge (Uno.Extensions.Markup / C# Markup contract) ----
+
+	[TestMethod]
+	// Native (non-enhanced-lifecycle) targets do not read the core requested-theme-for-subtree slot, so the
+	// bridge is a balanced no-op there; the resolution-outcome assertions only hold on enhanced targets.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	public async Task When_PushRequestedThemeForSubTreeByName_Scopes_Resolution()
+	{
+		// Contract for external markup packages (Uno.Extensions.Markup / C# Markup): a balanced
+		// Push/PopRequestedThemeForSubTreeByName scopes {ThemeResource} resolution to the named base theme
+		// for an owner-less lookup, and nests LIFO. The theming rewrite (uno#23416) removed this public API;
+		// this guards the re-exposed bridge over the core requested-theme-for-subtree slot.
+		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Light);
+		await WindowHelper.WaitForIdle();
+
+		var dict = (ResourceDictionary)XamlReader.Load(
+			"""
+			<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<ResourceDictionary.ThemeDictionaries>
+					<ResourceDictionary x:Key="Light">
+						<SolidColorBrush x:Key="SentinelBrush" Color="#FF111111" />
+					</ResourceDictionary>
+					<ResourceDictionary x:Key="Dark">
+						<SolidColorBrush x:Key="SentinelBrush" Color="#FFEEEEEE" />
+					</ResourceDictionary>
+				</ResourceDictionary.ThemeDictionaries>
+			</ResourceDictionary>
+			""");
+
+		static Color? Sentinel(ResourceDictionary d)
+			=> d.TryGetValue("SentinelBrush", out var v) && v is SolidColorBrush b ? (Color?)b.Color : null;
+
+		Assert.AreEqual(LightSentinel, Sentinel(dict), "Baseline (no scope) resolves the app Light theme.");
+
+		ResourceDictionary.PushRequestedThemeForSubTreeByName("Dark");
+		try
+		{
+			Assert.AreEqual(DarkSentinel, Sentinel(dict), "A Dark scope selects the Dark sub-dictionary.");
+
+			ResourceDictionary.PushRequestedThemeForSubTreeByName("Light");
+			try
+			{
+				Assert.AreEqual(LightSentinel, Sentinel(dict), "A nested Light scope selects Light.");
+			}
+			finally
+			{
+				ResourceDictionary.PopRequestedThemeForSubTreeByName();
+			}
+
+			Assert.AreEqual(DarkSentinel, Sentinel(dict), "Popping the nested scope restores the outer Dark scope.");
+		}
+		finally
+		{
+			ResourceDictionary.PopRequestedThemeForSubTreeByName();
+		}
+
+		Assert.AreEqual(LightSentinel, Sentinel(dict), "Popping the last scope restores the app Light theme.");
 	}
 #endif
 

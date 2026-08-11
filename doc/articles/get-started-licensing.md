@@ -92,7 +92,7 @@ If you’ve already set up **JetBrains Rider** by following the [Get Started on 
 
 ### Uno Platform Studio Pro 15-Day Trial
 
-When you create a free **Community** account, **Uno Platform Studio** includes a 15-day trial of **Uno Platform Studio Pro**. The trial unlocks the full Pro toolset, including the **[Uno Platform Studio App](xref:Uno.PlatformStudio.GetStarted)**, **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**, and the **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**. If your **Uno Platform Studio Pro** trial has expired, you’ll have the option to extend it directly from the Uno Platform Studio window, or, if you’re ready to upgrade, simply click **Purchase Now**. This will take you to the Uno Platform website, where you can choose your subscription plan and the number of licenses you need.
+When you create a free **Community** account, **Uno Platform Studio** includes a 15-day trial of **Uno Platform Studio Pro**. The trial unlocks the full Pro toolset, including the **[Uno Platform Studio App](xref:Uno.PlatformStudio.GetStarted)** and **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**. If your **Uno Platform Studio Pro** trial has expired, you’ll have the option to extend it directly from the Uno Platform Studio window, or, if you’re ready to upgrade, simply click **Purchase Now**. This will take you to the Uno Platform website, where you can choose your subscription plan and the number of licenses you need.
 
 ## Getting a Uno Platform Studio Pro License
 
@@ -101,8 +101,6 @@ When you create a free **Community** account, **Uno Platform Studio** includes a
 - **[Uno Platform Studio App](xref:Uno.PlatformStudio.GetStarted)**: Go from a prompt to a working, cross-platform Uno Platform app in minutes. Start from a description (or one of the curated samples in the Gallery), watch the app build live thanks to Hot Reload, refine it through the conversation panel, then export to your preferred IDE or CLI to keep building. App generation is powered by the **[Uno Platform Studio Agent](xref:Uno.PlatformStudio.Agent)**. [Get started](xref:Uno.PlatformStudio.GetStarted)
 
 - **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**: The industry-first, patented, runtime visual designer for cross-platform .NET applications. Hot Design<sup>®</sup> transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
-
-- **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**: An AI-powered assistant designed for rapid UX/UI creation and enhancement within your running app. It leverages your data contexts and live previews to help you design, refine, and interact with user interfaces in real time. [Learn more](xref:Uno.HotDesign.Agent)
 
 - **[Design-to-Code](xref:Uno.Figma.GetStarted)**: Generate ready-to-use, well-structured XAML or C# Markup directly from your Figma designs with one click, completely eliminating manual design handoff. [Get started](xref:Uno.Figma.GetStarted)
 

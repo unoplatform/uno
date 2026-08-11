@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -8,18 +8,21 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Media.Animation;
-using System.Collections;
 using System.Linq;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Uno;
 
 using View = Microsoft.UI.Xaml.UIElement;
+using Uno.UI.Controls;
+using Windows.Foundation;
+using Uno.Disposables;
+using System.Runtime.CompilerServices;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Content))]
-	public partial class ContentControl : Control, IEnumerable
+	public partial class ContentControl : Control
 	{
 		private View? _contentTemplateRoot;
 
@@ -517,5 +520,19 @@ namespace Microsoft.UI.Xaml.Controls
 				ContentTemplateRoot = null;
 			}
 		}
+
+#nullable disable
+		partial void RegisterContentTemplateRoot()
+		{
+			AddChild(ContentTemplateRoot);
+		}
+
+		partial void UnregisterContentTemplateRoot()
+		{
+			RemoveChild(ContentTemplateRoot);
+		}
+
+		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
+#nullable enable
 	}
 }

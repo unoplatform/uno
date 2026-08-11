@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Windows.Storage;
-using Uno;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using System.Collections.Generic;
@@ -41,11 +40,8 @@ public static partial class ApplicationLanguages
 				typeof(ApplicationLanguages).Log().LogDebug($"PLO: {_primaryLanguageOverride} -> {value}");
 				_primaryLanguageOverride = value;
 
+				// Only the language list follows immediately; the culture is applied on the next app start, as on WinUI.
 				ApplyLanguages();
-				if (WinRTFeatureConfiguration.ApplicationLanguages.UseLegacyPrimaryLanguageOverride)
-				{
-					ApplyCulture();
-				}
 
 #if !IS_UNIT_TESTS
 				ApplicationData.Current.LocalSettings.Values[PrimaryLanguageOverrideSettingKey] = _primaryLanguageOverride;

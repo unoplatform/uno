@@ -3,29 +3,29 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class FrameworkElement
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ActualHeightProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ActualHeight), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ActualThemeProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ActualTheme), typeof(global::Microsoft.UI.Xaml.ElementTheme),
 			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.ElementTheme)));
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ActualWidthProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ActualWidth), typeof(double),
@@ -42,8 +42,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property FocusVisualSecondaryThicknessProperty
 		// Skipping already declared property HeightProperty
 		// Skipping already declared property HorizontalAlignmentProperty
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty LanguageProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Language), typeof(string),
@@ -55,14 +55,7 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property MaxWidthProperty
 		// Skipping already declared property MinHeightProperty
 		// Skipping already declared property MinWidthProperty
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty NameProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Name), typeof(string),
-			typeof(global::Microsoft.UI.Xaml.FrameworkElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
-#endif
+		// Skipping already declared property NameProperty
 		// Skipping already declared property RequestedThemeProperty
 		// Skipping already declared property StyleProperty
 		// Skipping already declared property TagProperty
@@ -83,8 +76,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Height
 		// Skipping already declared property HorizontalAlignment
 		// Skipping already declared property IsLoaded
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public string Language
 		{
 			get
@@ -113,8 +106,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Width
 		// Skipping already declared method Microsoft.UI.Xaml.FrameworkElement.FrameworkElement()
 		// Forced skipping of method Microsoft.UI.Xaml.FrameworkElement.FrameworkElement()
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static void DeferTree(global::Microsoft.UI.Xaml.DependencyObject element)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.FrameworkElement", "DeferTree(DependencyObject element)");

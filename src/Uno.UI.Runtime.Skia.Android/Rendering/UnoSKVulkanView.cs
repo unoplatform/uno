@@ -37,9 +37,15 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 	private readonly ManualResetEventSlim _renderEvent = new(false);
 	private readonly object _renderLock = new();
 	private IntPtr _nativeWindow; // Must stay alive while Vulkan surfaces reference it
+	private readonly AndroidVulkanSurfaceFactory _surfaceFactory = new();
 
 	public UnoSKVulkanView(Context context) : base(context)
 	{
+		// Create the window-independent Vulkan resources (instance, device, GRContext) right away:
+		// this throws when the driver is unusable, letting the caller fall back to the OpenGL ES view.
+		// The window-scoped part (swapchain) is completed on the render thread once a surface exists.
+		_vulkanContext.InitializeDevice(_surfaceFactory);
+
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
 		ViewCompat.SetAccessibilityDelegate(this, ExploreByTouchHelper);
@@ -52,6 +58,8 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 
 		SetWillNotDraw(false);
 		Holder!.AddCallback(this);
+
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = false;
 	}
 
 	public void InvalidateRender()
@@ -113,8 +121,9 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 		_renderThread?.Join(TimeSpan.FromSeconds(2));
 		_renderThread = null;
 
-		// Dispose Vulkan context first, then release the native window
-		_vulkanContext.Dispose();
+		// Dispose the window-scoped Vulkan resources first (the device and GRContext are kept
+		// for the next surface), then release the native window
+		_vulkanContext.DisposeSurfaceResources();
 
 		if (_nativeWindow != IntPtr.Zero)
 		{
@@ -133,7 +142,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 
 		try
 		{
-			// Initialize Vulkan on the render thread
+			// Complete the window-scoped Vulkan initialization on the render thread
 			InitializeVulkan(holder);
 
 			while (_surfaceReady && !_disposed)
@@ -171,13 +180,13 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 		_nativeWindow = ANativeWindow_fromSurface(
 			JNIEnv.Handle,
 			surface.Handle);
+		GC.KeepAlive(surface);
 
 		if (_nativeWindow == IntPtr.Zero)
 			throw new InvalidOperationException("Failed to get ANativeWindow from Surface");
 
 		var rect = holder.SurfaceFrame;
-		var factory = new AndroidVulkanSurfaceFactory();
-		_vulkanContext.Initialize(factory, _nativeWindow, rect!.Width(), rect.Height());
+		_vulkanContext.InitializeSurface(_nativeWindow, rect!.Width(), rect.Height());
 
 		var (deviceName, driverVersion) = _vulkanContext.GetDeviceInfo();
 		if (this.Log().IsEnabled(LogLevel.Information))

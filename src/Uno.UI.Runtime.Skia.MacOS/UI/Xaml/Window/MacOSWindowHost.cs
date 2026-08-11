@@ -1,4 +1,8 @@
 using System.ComponentModel;
+using Microsoft.UI.Input;
+using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
+using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
+using KeyEventArgs = global::Windows.UI.Core.KeyEventArgs;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Microsoft.UI.Windowing;
@@ -17,7 +21,6 @@ using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Input;
 using Microsoft.UI.Xaml.Media;
 using Window = Microsoft.UI.Xaml.Window;
 
@@ -33,6 +36,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private readonly GRContext? _context;
 	private SKBitmap? _bitmap;
 	private SKSurface? _surface;
+	private readonly RetainedLayer _retainedLayer = new();
 	private int _rowBytes;
 	private bool _initializationCompleted;
 	private string? _lastSvgClipPath;
@@ -103,15 +107,15 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		// we can't cache anything since the texture will be different on next calls
-		GRBackendRenderTarget? target = null;
-		SKSurface? surface = null;
-		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(null, size =>
+		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(
+			_retainedLayer.Surface?.Canvas,
+			size => _retainedLayer.EnsureSurface(_context!, (int)size.Width, (int)size.Height, SKColors.Transparent).Canvas);
+
+		using (var target = new GRBackendRenderTarget((int)nativeWidth, (int)nativeHeight, new GRMtlTextureInfo(texture)))
+		using (var swapchainSurface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888))
 		{
-			target = new GRBackendRenderTarget((int)size.Width, (int)size.Height, new GRMtlTextureInfo(texture));
-			surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
-			return surface.Canvas;
-		});
+			_retainedLayer.Present(swapchainSurface);
+		}
 
 		var clip = nativeElementClipPath.IsEmpty ? null : nativeElementClipPath.ToSvgPathData();
 		if (clip != _lastSvgClipPath)
@@ -125,8 +129,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		}
 
 		_context?.Flush();
-		target?.Dispose();
-		surface?.Dispose();
 	}
 
 	private unsafe void SoftDraw(double nativeWidth, double nativeHeight, nint* data, int* rowBytes, int* size)
@@ -150,7 +152,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(null, size =>
+		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
 		{
 			_bitmap?.Dispose();
 			_surface?.Dispose();
@@ -236,7 +238,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		// Sticky active-owner tracking (FR-007, research Decision 3): update on
 		// Activated (WA_ACTIVE / NSWindowDidBecomeMainNotification analog), never
 		// clear on Deactivated.
-		if (args.WindowActivationState != Windows.UI.Core.CoreWindowActivationState.Deactivated &&
+		if (args.WindowActivationState != Microsoft.UI.Xaml.WindowActivationState.Deactivated &&
 			_accessibility is not null)
 		{
 			AccessibilityRouter.SetActive(this);

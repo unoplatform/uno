@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CompositionTarget
@@ -15,16 +15,16 @@ namespace Microsoft.UI.Xaml.Media
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.Rendering.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.SurfaceContentsLost.add
 		// Forced skipping of method Microsoft.UI.Xaml.Media.CompositionTarget.SurfaceContentsLost.remove
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static event global::System.EventHandler<global::Microsoft.UI.Xaml.Media.RenderedEventArgs> Rendered
 		{
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.CompositionTarget", "event Rendered");
 			}
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.CompositionTarget", "event Rendered");
@@ -32,16 +32,16 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #endif
 		// Skipping already declared event Microsoft.UI.Xaml.Media.CompositionTarget.Rendering
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static event global::System.EventHandler<object> SurfaceContentsLost
 		{
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.CompositionTarget", "event SurfaceContentsLost");
 			}
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.CompositionTarget", "event SurfaceContentsLost");

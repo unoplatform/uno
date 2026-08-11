@@ -412,9 +412,9 @@ namespace Microsoft.UI.Xaml
 		{
 			var precedence = dependencyObject.GetCurrentHighestValuePrecedence(property);
 			// TODO: Bring this closer to CFrameworkElement::IsPropertySetByStyle from WinUI.
-			if (precedence is DependencyPropertyValuePrecedences.DefaultStyle or DependencyPropertyValuePrecedences.ImplicitStyle or DependencyPropertyValuePrecedences.ExplicitStyle)
+			if (precedence is DependencyPropertyValuePrecedences.BuiltInStyle or DependencyPropertyValuePrecedences.Style)
 			{
-				return DependencyPropertyValuePrecedences.ExplicitStyle;
+				return DependencyPropertyValuePrecedences.Style;
 			}
 			else if (precedence == DependencyPropertyValuePrecedences.DefaultValue)
 			{

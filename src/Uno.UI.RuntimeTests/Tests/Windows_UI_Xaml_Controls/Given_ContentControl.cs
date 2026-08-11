@@ -249,6 +249,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_Default_ContentAlignment_Is_Center()
+		{
+			// Guards the WinUI-correct Center/Center default after the removal of the
+			// UseLegacyContentAlignment flag, which used to opt into a Left/Top default (BC45).
+			var sut = new ContentControl();
+
+			Assert.AreEqual(HorizontalAlignment.Center, sut.HorizontalContentAlignment);
+			Assert.AreEqual(VerticalAlignment.Center, sut.VerticalContentAlignment);
+		}
+
 		private class SignInViewModel
 		{
 			public string UserName { get; set; } = "Steve";

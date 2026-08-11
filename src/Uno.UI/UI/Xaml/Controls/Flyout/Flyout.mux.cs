@@ -5,7 +5,6 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class Flyout
 {
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	internal override void Enter(DependencyObject pNamescopeOwner, EnterParams @params)
 	{
 		base.Enter(pNamescopeOwner, @params);
@@ -45,5 +44,4 @@ partial class Flyout
 			content.Leave(newParams);
 		}
 	}
-#endif
 }

@@ -124,7 +124,7 @@ public class Given_DiscoveryIssueMapper
 			UnoSdkPath = "/nuget/uno.sdk/5.5.100",
 			PackagesJsonPath = null,
 			DotNetVersion = "10.0.100",
-			DotNetTfm = "net10.0",
+			DotNetTfm = "net11.0",
 		};
 
 		var issues = DiscoveryIssueMapper.MapDiscoveryIssues(discovery);
@@ -146,7 +146,7 @@ public class Given_DiscoveryIssueMapper
 			DevServerPackageVersion = "5.5.100",
 			DevServerPackagePath = null,
 			DotNetVersion = "10.0.100",
-			DotNetTfm = "net10.0",
+			DotNetTfm = "net11.0",
 		};
 
 		var issues = DiscoveryIssueMapper.MapDiscoveryIssues(discovery);
@@ -169,7 +169,7 @@ public class Given_DiscoveryIssueMapper
 			DevServerPackageVersion = "5.5.100",
 			DevServerPackagePath = "/nuget/uno.winui.devserver/5.5.100",
 			DotNetVersion = "10.0.100",
-			DotNetTfm = "net10.0",
+			DotNetTfm = "net11.0",
 			HostPath = null,
 		};
 
@@ -211,8 +211,8 @@ public class Given_DiscoveryIssueMapper
 			DevServerPackageVersion = "5.5.100",
 			DevServerPackagePath = "/nuget/uno.winui.devserver/5.5.100",
 			DotNetVersion = "10.0.100",
-			DotNetTfm = "net10.0",
-			HostPath = "/nuget/uno.winui.devserver/5.5.100/tools/rc/host/net10.0/Uno.UI.RemoteControl.Host.dll",
+			DotNetTfm = "net11.0",
+			HostPath = "/nuget/uno.winui.devserver/5.5.100/tools/rc/host/net11.0/Uno.UI.RemoteControl.Host.dll",
 		};
 
 		var issues = DiscoveryIssueMapper.MapDiscoveryIssues(discovery);
@@ -258,8 +258,8 @@ public class Given_DiscoveryIssueMapper
 			DevServerPackageVersion = "5.5.100",
 			DevServerPackagePath = "/nuget/uno.winui.devserver/5.5.100",
 			DotNetVersion = "10.0.100",
-			DotNetTfm = "net10.0",
-			HostPath = "/nuget/uno.winui.devserver/5.5.100/tools/rc/host/net10.0/Host.dll",
+			DotNetTfm = "net11.0",
+			HostPath = "/nuget/uno.winui.devserver/5.5.100/tools/rc/host/net11.0/Host.dll",
 			SettingsPackageVersion = "1.2.3",
 			SettingsPackagePath = null,
 		};
@@ -285,8 +285,8 @@ public class Given_DiscoveryIssueMapper
 			DevServerPackageVersion = "5.5.100",
 			DevServerPackagePath = "/nuget/uno.winui.devserver/5.5.100",
 			DotNetVersion = "10.0.100",
-			DotNetTfm = "net10.0",
-			HostPath = "/nuget/uno.winui.devserver/5.5.100/tools/rc/host/net10.0/Host.dll",
+			DotNetTfm = "net11.0",
+			HostPath = "/nuget/uno.winui.devserver/5.5.100/tools/rc/host/net11.0/Host.dll",
 			AddInDiscoveryFailed = true,
 		};
 
@@ -326,7 +326,7 @@ public class Given_DiscoveryIssueMapper
 			DevServerPackageVersion = "5.5.100",
 			DevServerPackagePath = null, // Fatal
 			DotNetVersion = "10.0.100",
-			DotNetTfm = "net10.0",
+			DotNetTfm = "net11.0",
 			SettingsPackageVersion = "1.2.3",
 			SettingsPackagePath = null, // Warning
 			AddInDiscoveryFailed = true, // Warning

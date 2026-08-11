@@ -149,11 +149,7 @@
 
                 <StackPanel>
                     <TextBlock Text="Vanilla style" />
-                    <Button
-                        android:Style="{StaticResource AndroidButtonStyle}"
-                        ios:Style="{StaticResource iOSButtonStyle}"
-                        Command="{Binding [AlternateEnableCommand]}"
-                        Content="{Binding [MyData]}" />
+                    <Button Command="{Binding [AlternateEnableCommand]}" Content="{Binding [MyData]}" />
                     <TextBlock Text="UWA style" />
                     <Button Command="{Binding [AlternateEnableCommand]}" Content="{Binding [MyData]}" />
                     <TextBlock Text="LabelButtonStyle style" />

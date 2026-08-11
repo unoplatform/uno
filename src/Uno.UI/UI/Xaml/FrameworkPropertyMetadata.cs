@@ -166,9 +166,7 @@ namespace Microsoft.UI.Xaml
 
 		internal bool IsPropMethodCall => PropMethodCall is not null;
 
-		// Kept for binary compat only.
-		// This property should be removed, and the whole FrameworkPropertyMetadata should be internal.
-		public UpdateSourceTrigger DefaultUpdateSourceTrigger
+		internal UpdateSourceTrigger DefaultUpdateSourceTrigger
 		{
 			get
 			{

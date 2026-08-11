@@ -604,12 +604,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (_isUiAutomationMappingEnabled)
 				{
 					w.AppendLineIndented("global::Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled = true;");
-
-					if (_isWasm)
-					{
-						// When automation mapping is enabled, remove the element ID from the ToString so test screenshots stay the same.
-						w.AppendLineIndented("global::Uno.UI.FeatureConfiguration.UIElement.RenderToStringWithId = false;");
-					}
 				}
 
 				AttachUnhandledExceptionHandler();
@@ -1628,7 +1622,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var key = GetDictionaryResourceKey(resource);
 
-				if (key == null || IsNativeStyle(resource))
+				if (key == null)
 				{
 					continue;
 				}
@@ -1652,7 +1646,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var key = GetDictionaryResourceKey(resource);
 
-				if (key == null || IsNativeStyle(resource))
+				if (key == null)
 				{
 					continue;
 				}
@@ -1803,14 +1797,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var implicitKey = GetImplicitDictionaryResourceKey(style);
 					if (SymbolEqualityComparer.Default.Equals(targetType.ContainingAssembly, _metadataHelper.Compilation.Assembly))
 					{
-						var isNativeStyle = IsNativeStyle(style);
-
 						using (TrySingleLineIfForLinkerHint(writer, style))
 						{
-							writer.AppendLineInvariantIndented("global::Microsoft.UI.Xaml.Style.RegisterDefaultStyleForType({0}, {1}, /*isNativeStyle:*/{2});",
+							writer.AppendLineInvariantIndented("global::Microsoft.UI.Xaml.Style.RegisterDefaultStyleForType({0}, {1});",
 										implicitKey,
-										SingletonInstanceAccess,
-										isNativeStyle.ToString().ToLowerInvariant()
+										SingletonInstanceAccess
 									);
 						}
 					}
@@ -1823,13 +1814,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			return true;
 		}
-
-		/// <summary>
-		/// Determines if the provided object is setting the "IsNativeStyle" property, used in
-		/// conjuction with "FeatureConfiguration.Style.UseUWPDefaultStyles"
-		/// </summary>
-		private bool IsNativeStyle(XamlObjectDefinition style)
-			=> string.Equals(style.Members.FirstOrDefault(m => m.Member.Name == "IsNativeStyle")?.Value as string, "True", StringComparison.OrdinalIgnoreCase);
 
 		/// <summary>
 		/// Initialize a new ResourceDictionary instance and populate its items and properties.
@@ -2018,8 +2002,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private bool HasMarkupExtension(XamlMemberDefinition? valueNode)
 		{
-			// Return false if the Owner is a custom markup extension
-			if (valueNode == null || IsCustomMarkupExtensionType(valueNode.Owner?.Type))
+			// Return false if the Owner is a custom markup extension. The owner is an element, so the
+			// "Extension" suffix must not apply here — otherwise a control with a companion
+			// "<Name>Extension" markup extension in the same namespace is misdetected as one and its
+			// bindings are dropped (https://github.com/unoplatform/uno/issues/21992).
+			if (valueNode == null || IsCustomMarkupExtensionType(valueNode.Owner?.Type, allowExtensionSuffix: false))
 			{
 				return false;
 			}
@@ -2123,8 +2110,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return false;
 		}
 
+		// Pass allowExtensionSuffix: false when resolving an element type (e.g. the owner of a member);
+		// the "Extension" suffix fallback is only valid for markup-extension usages (`{local:Foo}`).
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private INamedTypeSymbol? GetMarkupExtensionType(XamlType? xamlType)
+		private INamedTypeSymbol? GetMarkupExtensionType(XamlType? xamlType, bool allowExtensionSuffix = true)
 		{
 			if (xamlType == null)
 			{
@@ -2140,8 +2129,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// In this case, we go through this code path as it's much more efficient than FindType.
 				var baseTypeString = $"{ns}.{xamlType.Name}";
 
-				// Try finding the type with "Extension" suffix first, then without
-				return FindMarkupExtensionType(baseTypeString + "Extension") ?? FindMarkupExtensionType(baseTypeString);
+				if (allowExtensionSuffix)
+				{
+					// Try finding the type with "Extension" suffix first, then without
+					return FindMarkupExtensionType(baseTypeString + "Extension") ?? FindMarkupExtensionType(baseTypeString);
+				}
+
+				return FindMarkupExtensionType(baseTypeString);
 			}
 
 			// When implicit XAML namespaces are enabled, mirror the element-type resolution
@@ -2156,7 +2150,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (_globalClrNamespaces.Length > 0
 					&& (trimmedNamespace == XamlConstants.PresentationXamlXmlNamespace || string.IsNullOrEmpty(trimmedNamespace)))
 				{
-					if (FindMarkupExtensionTypeInNamespacesWithAmbiguityCheck(xamlType.Name, _globalClrNamespaces) is INamedTypeSymbol globalResult)
+					if (FindMarkupExtensionTypeInNamespacesWithAmbiguityCheck(xamlType.Name, _globalClrNamespaces, allowExtensionSuffix) is INamedTypeSymbol globalResult)
 					{
 						return globalResult;
 					}
@@ -2167,7 +2161,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (_allXmlnsDefinitions != null
 					&& !_knownNamespaces.ContainsKey(trimmedNamespace)
 					&& _allXmlnsDefinitions.TryGetValue(trimmedNamespace, out var xmlnsDefNamespaces)
-					&& FindMarkupExtensionTypeInNamespaces(xamlType.Name, xmlnsDefNamespaces) is INamedTypeSymbol xmlnsDefResult)
+					&& FindMarkupExtensionTypeInNamespaces(xamlType.Name, xmlnsDefNamespaces, allowExtensionSuffix) is INamedTypeSymbol xmlnsDefResult)
 				{
 					return xmlnsDefResult;
 				}
@@ -2183,11 +2177,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return _metadataHelper.FindTypeByFullName(fullTypeName) is INamedTypeSymbol type && type.Is(Generation.MarkupExtensionSymbol.Value) ? type : null;
 		}
 
-		private INamedTypeSymbol? FindMarkupExtensionTypeInNamespaces(string name, string[] namespaces)
+		private INamedTypeSymbol? FindMarkupExtensionTypeInNamespaces(string name, string[] namespaces, bool allowExtensionSuffix = true)
 		{
 			foreach (var @namespace in namespaces)
 			{
-				if (FindMarkupExtensionType($"{@namespace}.{name}Extension") is INamedTypeSymbol withSuffix)
+				if (allowExtensionSuffix && FindMarkupExtensionType($"{@namespace}.{name}Extension") is INamedTypeSymbol withSuffix)
 				{
 					return withSuffix;
 				}
@@ -2201,7 +2195,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return null;
 		}
 
-		private INamedTypeSymbol? FindMarkupExtensionTypeInNamespacesWithAmbiguityCheck(string name, string[] namespaces)
+		private INamedTypeSymbol? FindMarkupExtensionTypeInNamespacesWithAmbiguityCheck(string name, string[] namespaces, bool allowExtensionSuffix = true)
 		{
 			INamedTypeSymbol? firstMatch = null;
 			string? firstNamespace = null;
@@ -2209,7 +2203,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var @namespace in namespaces)
 			{
-				var match = FindMarkupExtensionType($"{@namespace}.{name}Extension")
+				var match = (allowExtensionSuffix ? FindMarkupExtensionType($"{@namespace}.{name}Extension") : null)
 					?? FindMarkupExtensionType($"{@namespace}.{name}");
 
 				if (match is not null)
@@ -2245,9 +2239,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return firstMatch;
 		}
 
-		private bool IsCustomMarkupExtensionType(XamlType? xamlType) =>
+		private bool IsCustomMarkupExtensionType(XamlType? xamlType, bool allowExtensionSuffix = true) =>
 			// Determine if the type is a custom markup extension
-			GetMarkupExtensionType(xamlType) != null;
+			GetMarkupExtensionType(xamlType, allowExtensionSuffix) != null;
 
 		private bool IsXamlTypeConverter(INamedTypeSymbol? symbol)
 		{
@@ -6080,7 +6074,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								else
 								{
 									if (IsRelevantNamespace(member?.Member?.PreferredXamlNamespace)
-										&& IsRelevantProperty(member?.Member, objectDefinition))
+										&& IsRelevantProperty(member?.Member))
 									{
 										GenerateError(
 											writer,

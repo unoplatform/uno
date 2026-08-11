@@ -356,21 +356,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		private Type? SourceFindType(string? name)
 		{
 			static string? GetFullyQualifiedName(NamespaceDeclaration? ns, string nonQualifiedName)
-			{
-				if (ns != null)
-				{
-					var nsName = ns.Namespace.TrimStart("using:");
-
-					if (nsName.StartsWith("clr-namespace:", StringComparison.Ordinal))
-					{
-						nsName = nsName.Split(';')[0].TrimStart("clr-namespace:");
-					}
-
-					return nsName + "." + nonQualifiedName;
-				}
-
-				return null;
-			}
+				=> ns is null ? null : ns.Namespace.TrimStart("using:") + "." + nonQualifiedName;
 
 			if (name == null)
 			{
@@ -415,7 +401,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					}
 				}
 
-				// The default namespace for the XAML snippet may be non-standard (starting with using: or clr-namespace:)
+				// The default namespace for the XAML snippet may be non-standard (starting with using:)
 				name = GetFullyQualifiedName(defaultXmlNamespaceDeclaration, name);
 			}
 

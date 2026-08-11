@@ -3,15 +3,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IAnimatedVisual2 : global::Microsoft.UI.Xaml.Controls.IAnimatedVisual, global::System.IDisposable
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		void CreateAnimations();
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		void DestroyAnimations();
 #endif
 	}

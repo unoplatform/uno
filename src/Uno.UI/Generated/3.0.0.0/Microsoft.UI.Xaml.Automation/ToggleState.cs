@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if false || false
+#if false
 	public enum ToggleState
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.ToggleState.Off

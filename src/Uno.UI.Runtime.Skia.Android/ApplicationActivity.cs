@@ -304,6 +304,9 @@ namespace Microsoft.UI.Xaml
 				}
 				else
 				{
+					// Vulkan feature flags are static device configuration and can be declared even when
+					// the driver cannot actually render (common on emulators) — the view constructor
+					// creates the Vulkan device and throws when the driver is unusable.
 					try
 					{
 						return new UnoSKVulkanView(this);
