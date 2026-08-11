@@ -423,7 +423,8 @@ public sealed unsafe class WebGpuDevice : IDisposable
 // rects[i]/radii[i] are the nested rounded-rect clips (device space), ANDed together; ex[i]>0.5 = Difference
 // (keep outside). meta.x = active count. Arbitrary path clips are applied via the shared depth buffer as an in-pass
 // mask (see the main-pass clip protocol), not sampled here — so clipCov only carries the analytic rounded-rects.
-struct ClipU { rects: array<vec4<f32>, 4>, radii: array<vec4<f32>, 4>, ex: vec4<f32>, ctrl: vec4<f32>, size: vec4<f32>, xform: vec4<f32>, xoff: vec4<f32>, finv: vec4<f32> };
+// radii = per-corner X radius (TL,TR,BR,BL); radiiY = per-corner Y radius (elliptical corners; == radii for circular).
+struct ClipU { rects: array<vec4<f32>, 4>, radii: array<vec4<f32>, 4>, ex: vec4<f32>, ctrl: vec4<f32>, size: vec4<f32>, xform: vec4<f32>, xoff: vec4<f32>, finv: vec4<f32>, radiiY: array<vec4<f32>, 4> };
 // Arena transform: verts are stored in the recording's own (identity-baked) NDC space; xform (an NDC->NDC affine,
 // M = xform.xyzw = [m00 m01 m10 m11], t = xoff.xy) maps them to the replay transform. Identity for immediate draws;
 // re-stamped (a single uniform write) when a cached visual moves, so its geometry is reused, not rebuilt.
@@ -438,15 +439,23 @@ fn finvMap(clip: ClipU, fcRaw: vec2<f32>) -> vec2<f32> {
                    clip.finv.y * fcRaw.x + clip.finv.w * fcRaw.y + clip.xoff.w);
 }
 // Coverage of one rounded-rect clip (rl = L,T,R,B; rad4 = per-corner radii; ex>0.5 = Difference/keep-outside).
-fn roundCov(fc: vec2<f32>, rl: vec4<f32>, rad4: vec4<f32>, ex: f32) -> f32 {
+fn roundCov(fc: vec2<f32>, rl: vec4<f32>, radX: vec4<f32>, radY: vec4<f32>, ex: f32) -> f32 {
   let c = vec2<f32>((rl.x + rl.z) * 0.5, (rl.y + rl.w) * 0.5);
   let h = vec2<f32>((rl.z - rl.x) * 0.5, (rl.w - rl.y) * 0.5);
   let lp = fc - c;
-  let rTop = select(rad4.x, rad4.y, lp.x > 0.0);
-  let rBot = select(rad4.w, rad4.z, lp.x > 0.0);
-  let rad = select(rTop, rBot, lp.y > 0.0);
-  let q = abs(lp) - h + vec2<f32>(rad, rad);
-  let d = min(max(q.x, q.y), 0.0) + length(max(q, vec2<f32>(0.0, 0.0))) - rad;
+  let rx = select(select(radX.x, radX.y, lp.x > 0.0), select(radX.w, radX.z, lp.x > 0.0), lp.y > 0.0);
+  let ry = select(select(radY.x, radY.y, lp.x > 0.0), select(radY.w, radY.z, lp.x > 0.0), lp.y > 0.0);
+  let r = vec2<f32>(rx, ry);
+  // Elliptical corner via a first-order (gradient-normalised) implicit-ellipse distance. Degenerates EXACTLY to the
+  // circular rounded-box SDF when rx == ry (and to a sharp box when r == 0), so circular clips are unchanged.
+  let q = abs(lp) - h + r;
+  let outside = max(q, vec2<f32>(0.0, 0.0));
+  let rg = max(r, vec2<f32>(1e-6, 1e-6));
+  let e = outside / rg;
+  let el = length(e);
+  let grad = length(outside / (rg * rg)) / max(el, 1e-6);
+  let dCorner = (el - 1.0) / max(grad, 1e-6);
+  let d = min(max(q.x, q.y), 0.0) + dCorner;
   let rr = clamp(0.5 - d, 0.0, 1.0);
   return select(rr, 1.0 - rr, ex > 0.5);
 }
@@ -457,10 +466,10 @@ fn clipCov(fcRaw: vec2<f32>, clip: ClipU) -> f32 {
   // Unrolled with STATIC array indices (n is 1..4). A dynamic uniform-array index (clip.rects[i]) is a GPU perf
   // cliff on some drivers; the common single-clip case (n==1) must cost what the old single-rect clipCov did.
   let fc = finvMap(clip, fcRaw);
-  var cov = roundCov(fc, clip.rects[0], clip.radii[0], clip.ex.x);
-  if (n > 1) { cov = cov * roundCov(fc, clip.rects[1], clip.radii[1], clip.ex.y); }
-  if (n > 2) { cov = cov * roundCov(fc, clip.rects[2], clip.radii[2], clip.ex.z); }
-  if (n > 3) { cov = cov * roundCov(fc, clip.rects[3], clip.radii[3], clip.ex.w); }
+  var cov = roundCov(fc, clip.rects[0], clip.radii[0], clip.radiiY[0], clip.ex.x);
+  if (n > 1) { cov = cov * roundCov(fc, clip.rects[1], clip.radii[1], clip.radiiY[1], clip.ex.y); }
+  if (n > 2) { cov = cov * roundCov(fc, clip.rects[2], clip.radii[2], clip.radiiY[2], clip.ex.z); }
+  if (n > 3) { cov = cov * roundCov(fc, clip.rects[3], clip.radii[3], clip.radiiY[3], clip.ex.w); }
   return cov;
 }
 ";
@@ -514,7 +523,7 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 		{
 			Binding = 0,
 			Visibility = WGPUShaderStage.Vertex | WGPUShaderStage.Fragment,
-			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.Uniform, MinBindingSize = 224 },
+			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.Uniform, MinBindingSize = 288 },
 		};
 		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 1, Entries = &e };
 		ClipBgl = wgpuDeviceCreateBindGroupLayout(Dev, &bgld);
@@ -1383,7 +1392,8 @@ public sealed unsafe class WebGpuRenderSurface : IRenderTarget
 internal struct RoundClip
 {
 	public Vector4 Rect;    // device rounded-rect L,T,R,B
-	public Vector4 Radii;   // per-corner radius (TL,TR,BR,BL), device px
+	public Vector4 Radii;   // per-corner X radius (TL,TR,BR,BL), device px
+	public Vector4 RadiiY;  // per-corner Y radius (elliptical corners; equals Radii for circular)
 	public bool Exclude;    // Difference op: keep the area OUTSIDE the rounded rect (PushClipExclude) rather than inside
 }
 
@@ -1804,14 +1814,17 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
 	{
 		var aabb = DeviceAabb(roundRect.Rect);
-		// Device-space, axis-aligned rounded rect (exact under scale/translate). Per-corner radius uses X, scaled
-		// by the matrix's X-axis length; a full rotation would need clip-local eval (falls back to the AABB below).
-		var s = new Vector2(_m.M11, _m.M12).Length();
+		// Device-space, axis-aligned rounded rect (exact under scale/translate). Per-corner radii carry BOTH axes
+		// (elliptical corners), each axis scaled by the matrix's corresponding axis length; a full rotation would need
+		// clip-local eval (falls back to the AABB below).
+		var sx = new Vector2(_m.M11, _m.M12).Length();
+		var sy = new Vector2(_m.M21, _m.M22).Length();
 		var exclude = operation == ClipOperation.Difference;
 		var rc = new RoundClip
 		{
 			Rect = aabb,
-			Radii = new Vector4(roundRect.TopLeft.X * s, roundRect.TopRight.X * s, roundRect.BottomRight.X * s, roundRect.BottomLeft.X * s),
+			Radii = new Vector4(roundRect.TopLeft.X * sx, roundRect.TopRight.X * sx, roundRect.BottomRight.X * sx, roundRect.BottomLeft.X * sx),
+			RadiiY = new Vector4(roundRect.TopLeft.Y * sy, roundRect.TopRight.Y * sy, roundRect.BottomRight.Y * sy, roundRect.BottomLeft.Y * sy),
 			Exclude = exclude,
 		};
 		// Nested rounded clips stack (all ANDed in clipCov) instead of the innermost overwriting the outer.
@@ -2264,13 +2277,15 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		// Child rounded clips AND with the parent's; transform each rect and scale radii by the replay matrix.
 		if (c.Rounds is { Length: > 0 } rounds)
 		{
-			var s = new Vector2(_m.M11, _m.M12).Length();
+			var sx = new Vector2(_m.M11, _m.M12).Length();
+			var sy = new Vector2(_m.M21, _m.M22).Length();
 			foreach (var src in rounds)
 			{
 				result.Rounds = ClipData.Push(result.Rounds, new RoundClip
 				{
 					Rect = TransformedAabb(src.Rect, t),
-					Radii = src.Radii * s,
+					Radii = src.Radii * sx,
+					RadiiY = src.RadiiY * sy,
 					Exclude = src.Exclude,
 				});
 			}
@@ -2365,7 +2380,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// done before the next — no builder holds the scratch across a nested RenderInto. _clipU backs MakeClipBg's
 	// lookup; a bind-group cache MISS clones it before storing.
 	private readonly List<float> _scratch = new();
-	private readonly float[] _clipU = new float[56];   // ClipU: rects[4]+radii[4] + ex+ctrl+size+xform+xoff+finv = 224B
+	private readonly float[] _clipU = new float[72];   // ClipU: rects[4]+radii[4] + ex+ctrl+size+xform+xoff+finv + radiiY[4] = 288B
 
 	// Pool of per-RenderInto op lists so a static frame's rebuild doesn't allocate the (large ClipData) op array
 	// every present. A stack (not one field) keeps it correct under the recursive nested-layer RenderInto — each
@@ -2489,7 +2504,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	{
 		if (xform == default) { xform = Matrix3x2.Identity; }   // default(Matrix3x2) is all-zero; treat as identity
 		if (finv == default) { finv = Matrix3x2.Identity; }
-		const int ClipUBytes = 224;   // rects[4]+radii[4] (128) + ex + ctrl + size + xform + xoff (16 each); match the WGSL struct
+		const int ClipUBytes = 288;   // rects[4]+radii[4] (128) + ex+ctrl+size+xform+xoff+finv (96) + radiiY[4] (64); match the WGSL struct
 		var cu = _clipU;
 		System.Array.Clear(cu);
 		var rounds = cd.Rounds;
@@ -2499,7 +2514,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		{
 			var rc = rounds[i];
 			cu[i * 4 + 0] = rc.Rect.X; cu[i * 4 + 1] = rc.Rect.Y; cu[i * 4 + 2] = rc.Rect.Z; cu[i * 4 + 3] = rc.Rect.W;   // rects[i]
-			cu[16 + i * 4 + 0] = rc.Radii.X; cu[16 + i * 4 + 1] = rc.Radii.Y; cu[16 + i * 4 + 2] = rc.Radii.Z; cu[16 + i * 4 + 3] = rc.Radii.W;   // radii[i]
+			cu[16 + i * 4 + 0] = rc.Radii.X; cu[16 + i * 4 + 1] = rc.Radii.Y; cu[16 + i * 4 + 2] = rc.Radii.Z; cu[16 + i * 4 + 3] = rc.Radii.W;   // radii[i] (X)
+			cu[56 + i * 4 + 0] = rc.RadiiY.X; cu[56 + i * 4 + 1] = rc.RadiiY.Y; cu[56 + i * 4 + 2] = rc.RadiiY.Z; cu[56 + i * 4 + 3] = rc.RadiiY.W;   // radiiY[i]
 			cu[32 + i] = rc.Exclude ? 1f : 0f;   // ex[i]
 		}
 		cu[36] = n;                              // ctrl.x = active count
