@@ -25,6 +25,13 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public IntPtr StencilEvenOdd;
 	public IntPtr StencilNonZero;
 	public IntPtr CoverPipe;
+	// Transform-table path-fill pipelines (device verts + per-vertex slot index). XformBgl = group 0 (storage
+	// table); CoverTableClipBgl = the cover variant's group 1 (ClipU). Solid/clip-fans/shadows stay on the NDC pipes.
+	public IntPtr StencilTableEO;
+	public IntPtr StencilTableNZ;
+	public IntPtr CoverTablePipe;
+	public IntPtr XformBgl;
+	public IntPtr CoverTableClipBgl;
 	// In-pass path-clip depth mask: instead of an offscreen coverage texture per clip, stencil the clip fan into
 	// the shared depth buffer inside the main pass (depth=0 inside the clip, 1 outside) and let content depth-test
 	// against it (GreaterEqual). Fullscreen depth writers (bbox-scissored): SetN clears the region to N; CoverN
@@ -66,6 +73,16 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	private readonly System.Collections.Concurrent.ConcurrentQueue<WebGpuGeometryCache> _pendingCompiled = new();
 	internal void DeferCompiledRelease(WebGpuGeometryCache c) => _pendingCompiled.Enqueue(c);
 
+	// Transform-table slot allocator (render-thread only). Each cached path-fill recording owns a STABLE slot — an
+	// index into the per-frame _xforms storage buffer. Its device verts bake that index once; the slot's local->NDC
+	// affine is rewritten every frame it draws, so a move/resize/DPI change touches only the table, never the verts.
+	// A disposed recording's slot is recycled when its compiled state drains below (render thread), so alloc/free are
+	// unsynchronized. XformSlotHigh is the high-water count (the per-frame table's resident region size).
+	public int XformSlotHigh;
+	private readonly System.Collections.Generic.Stack<int> _freeXformSlots = new();
+	public int AllocXformSlot() => _freeXformSlots.Count > 0 ? _freeXformSlots.Pop() : XformSlotHigh++;
+	public void FreeXformSlot(int slot) { if (slot >= 0) { _freeXformSlots.Push(slot); } }
+
 	// Per-frame bind groups reference the frame's pooled buffers, so they're released at the next frame start once
 	// the previous frame's GPU work has completed (present DevicePolls). A cached recording's persistent resources
 	// released mid-frame (cache miss) are deferred the same way, since ops already emitted this frame still use
@@ -86,7 +103,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 
 		// Free compiled draw-lists whose owning recording was disposed (their slab slices are reclaimed separately by
 		// each slab's RetainOnly, since a disposed recording is never replayed → never marked live).
-		while (_pendingCompiled.TryDequeue(out var c)) { DeferRelease(c.Owned); DeferRelease(c.StampOwned); }
+		while (_pendingCompiled.TryDequeue(out var c)) { DeferRelease(c.Owned); DeferRelease(c.StampOwned); if (c.XformSlot >= 0) { _freeXformSlots.Push(c.XformSlot); } }
 	}
 
 	// Diagnostic (UNO_RENDER_PERF): per-frame render CPU time + bind-group/buffer creates, logged from RunFrame.
@@ -534,6 +551,30 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 @vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return xformPos(clip, pos); }
 @fragment fn fs() -> @location(0) vec4<f32> { return vec4<f32>(0.0, 0.0, 0.0, 0.0); }";
 
+	// TRANSFORM-TABLE variants (path fills only). Vertices are recorded-DEVICE space + a per-vertex slot index into
+	// a read-only storage buffer of local->NDC affines (a=ax,ay,az,aw  b=bx,by,_,_) that fold the replay transform
+	// AND the device->NDC projection. Recomputing a (tiny) entry per frame repositions a moved/resized visual without
+	// re-baking or re-tessellating its fan — so a scroll or a window resize touches only the table, not the verts.
+	private const string StencilTableWgsl = @"
+struct Xf { a: vec4<f32>, b: vec4<f32> };
+@group(0) @binding(0) var<storage, read> xf: array<Xf>;
+@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) ti: u32) -> @builtin(position) vec4<f32> {
+  let t = xf[ti];
+  return vec4<f32>(pos.x * t.a.x + pos.y * t.a.y + t.a.z, pos.x * t.a.w + pos.y * t.b.x + t.b.y, 0.0, 1.0);
+}
+@fragment fn fs() -> @location(0) vec4<f32> { return vec4<f32>(0.0, 0.0, 0.0, 0.0); }";
+
+	private const string CoverTableWgsl = @"
+struct Xf { a: vec4<f32>, b: vec4<f32> };
+@group(0) @binding(0) var<storage, read> xf: array<Xf>;
+@group(1) @binding(0) var<uniform> clip: ClipU;
+struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
+@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) col: vec4<f32>, @location(2) ti: u32) -> VOut {
+  let t = xf[ti];
+  var o: VOut; o.p = vec4<f32>(pos.x * t.a.x + pos.y * t.a.y + t.a.z, pos.x * t.a.w + pos.y * t.b.x + t.b.y, 0.0, 1.0); o.c = col; return o;
+}
+@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy, clip)); }";
+
 	private IntPtr Module(string wgsl)
 	{
 		var code = SV(wgsl);
@@ -587,6 +628,7 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 		// All three now share the one explicit ClipU layout — a ClipU bind group made with ClipBgl binds to any of them.
 		SolidClipBgl = ClipBgl;
 		CoverClipBgl = ClipBgl;
+		CreatePathTablePipelines(&blend);
 		CreateClipDepthPipelines();
 		CreateImagePipeline();
 		CreateGradientPipeline(&blend);
@@ -942,6 +984,66 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 		var ds = new WGPUDepthStencilState
 		{
 			Format = DepthStencilFormat, DepthWriteEnabled = depthWrite ? WGPUOptionalBool.True : WGPUOptionalBool.False, DepthCompare = depthCompare,
+			StencilFront = front, StencilBack = back, StencilReadMask = stencilRead, StencilWriteMask = stencilWrite,
+		};
+		var pd = new WGPURenderPipelineDescriptor
+		{
+			Vertex = vsState, Fragment = &fsState, DepthStencil = &ds,
+			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
+			Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
+			Layout = layout,
+		};
+		return wgpuDeviceCreateRenderPipeline(Dev, &pd);
+	}
+
+	// Transform-table path-fill pipelines: device-space verts + a per-vertex Uint32 slot index (last attribute).
+	// Auto-layout (Layout=0) so wgpu derives group 0 (storage table) and, for cover, group 1 (ClipU) from the WGSL.
+	private void CreatePathTablePipelines(WGPUBlendState* blend)
+	{
+		// Explicit BGLs so the cover's group 1 IS the shared ClipBgl — existing ClipU bind groups (immediate + the
+		// arena re-stamp) bind to the table cover unchanged. Group 0 = the read-only storage transform table.
+		var se = new WGPUBindGroupLayoutEntry { Binding = 0, Visibility = WGPUShaderStage.Vertex, Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.ReadOnlyStorage } };
+		var sbgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 1, Entries = &se };
+		XformBgl = wgpuDeviceCreateBindGroupLayout(Dev, &sbgld);
+		CoverTableClipBgl = ClipBgl;
+		var stencilBgls = stackalloc IntPtr[1] { XformBgl };
+		var stencilPld = new WGPUPipelineLayoutDescriptor { BindGroupLayoutCount = 1, BindGroupLayouts = (IntPtr)stencilBgls };
+		var stencilLayout = wgpuDeviceCreatePipelineLayout(Dev, &stencilPld);
+		var coverBgls = stackalloc IntPtr[2] { XformBgl, ClipBgl };
+		var coverPld = new WGPUPipelineLayoutDescriptor { BindGroupLayoutCount = 2, BindGroupLayouts = (IntPtr)coverBgls };
+		var coverLayout = wgpuDeviceCreatePipelineLayout(Dev, &coverPld);
+
+		var stencilMod = Module(StencilTableWgsl);
+		var coverMod = Module(ClipStructFn + CoverTableWgsl);
+		var vs = SV("vs"); var fs = SV("fs");
+		StencilTableEO = MakeTablePipe(stencilMod, vs, fs, colorWrite: false, colorAttrs: false, blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), 0xFF, 0xFF, WGPUCompareFunction.Always, stencilLayout);
+		StencilTableNZ = MakeTablePipe(stencilMod, vs, fs, colorWrite: false, colorAttrs: false, blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.IncrementWrap), Face(WGPUCompareFunction.Always, WGPUStencilOperation.DecrementWrap), 0xFF, 0xFF, WGPUCompareFunction.Always, stencilLayout);
+		CoverTablePipe = MakeTablePipe(coverMod, vs, fs, colorWrite: true, colorAttrs: true, blend, Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), 0xFF, 0xFF, WGPUCompareFunction.GreaterEqual, coverLayout);
+	}
+
+	private IntPtr MakeTablePipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, bool colorWrite, bool colorAttrs, WGPUBlendState* blend, WGPUStencilFaceState front, WGPUStencilFaceState back, uint stencilWrite, uint stencilRead, WGPUCompareFunction depthCompare, IntPtr layout)
+	{
+		var attrs = stackalloc WGPUVertexAttribute[3];
+		attrs[0] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
+		ulong stride; uint attrCount;
+		if (colorAttrs)
+		{
+			attrs[1] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x4, Offset = 8, ShaderLocation = 1 };
+			attrs[2] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Uint32, Offset = 24, ShaderLocation = 2 };
+			stride = 28; attrCount = 3;
+		}
+		else
+		{
+			attrs[1] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Uint32, Offset = 8, ShaderLocation = 1 };
+			stride = 12; attrCount = 2;
+		}
+		var vbl = new WGPUVertexBufferLayout { ArrayStride = stride, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = attrCount, Attributes = attrs };
+		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
+		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = colorWrite ? WGPUColorWriteMask.All : 0 };
+		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
+		var ds = new WGPUDepthStencilState
+		{
+			Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = depthCompare,
 			StencilFront = front, StencilBack = back, StencilReadMask = stencilRead, StencilWriteMask = stencilWrite,
 		};
 		var pd = new WGPURenderPipelineDescriptor
@@ -1600,6 +1702,11 @@ internal sealed unsafe class WebGpuGeometryCache
 	// (window resize) makes the cached NDC stale — rebuild when the current surface differs. Without this, cached
 	// recordings replay old-size NDC into the resized surface and look stretched.
 	public int BuiltW, BuiltH;
+	// Stable transform-table slot for this recording's path-fill (kind 1) geometry: its fan/cover verts are stored in
+	// recorded-device space and bake this slot as a per-vertex index; the slot's local->NDC affine is rewritten each
+	// frame (folding the replay transform + current device->NDC projection), so resize/move never re-bakes the verts.
+	// -1 until the recording first builds a path fill. Returned to the device free-list when this cache is released.
+	public int XformSlot = -1;
 	// Arena entry: Ops geometry is baked in the recording's OWN (identity) NDC space; a moved replay re-stamps a
 	// transform uniform (xform) on the per-op clip bind groups and reuses the vertex buffers instead of rebuilding.
 	public bool Arena;
@@ -2459,6 +2566,40 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		_opsPool.Push(ops);
 	}
 
+	// Per-pass transform table (path fills). 8 floats/slot = a local->NDC affine (a=ax,ay,az,aw  b=bx,by,_,_) folding
+	// an extra transform R and the current device->NDC projection. Indexed by a per-recording stable slot baked into
+	// the fan/cover verts; rewritten every frame the recording draws, so resize/move/DPI touches only this table, not
+	// the (recorded-device or, for arena, local-space) verts. `_xforms` is per-RenderInto (saved/restored around the
+	// recursive nested-layer render); transient (immediate-draw) slots are freed at the pass's end.
+	private List<float> _xforms;
+	private readonly Stack<List<float>> _xformsPool = new();
+	private List<int> _xformTransient;
+	private readonly Stack<List<int>> _xformTransientPool = new();
+	private List<float> RentXforms() => _xformsPool.Count > 0 ? _xformsPool.Pop() : new(64);
+	private List<int> RentTransient() => _xformTransientPool.Count > 0 ? _xformTransientPool.Pop() : new(16);
+
+	// Writes `slot`'s local->NDC affine into `_xforms` (growing it), composing R (Identity for recorded-device verts;
+	// the replay transform for arena local-space verts) with the current surface's device->NDC map.
+	private void WriteXform(int slot, Matrix4x4 r)
+	{
+		int need = (slot + 1) * 8;
+		while (_xforms.Count < need) { _xforms.Add(0f); }
+		float w = _s.Width, h = _s.Height;
+		int o = slot * 8;
+		_xforms[o + 0] = 2f * r.M11 / w; _xforms[o + 1] = 2f * r.M21 / w; _xforms[o + 2] = 2f * r.M41 / w - 1f; _xforms[o + 3] = -2f * r.M12 / h;
+		_xforms[o + 4] = -2f * r.M22 / h; _xforms[o + 5] = 1f - 2f * r.M42 / h; _xforms[o + 6] = 0f; _xforms[o + 7] = 0f;
+	}
+
+	// A per-frame transform slot for an immediate (non-cached) path fill: allocated from the shared allocator, its
+	// projection entry written now (immediate build == draw), and returned to the free-list when the pass ends.
+	private int AllocTransientPathSlot()
+	{
+		int slot = _d.AllocXformSlot();
+		_xformTransient.Add(slot);
+		WriteXform(slot, Matrix4x4.Identity);
+		return slot;
+	}
+
 	// Per-pass shared SOLID vertex buffer (ramez arena baseline): every device-space solid run — immediate draws AND
 	// solid-only cached recordings — appends its 6-float verts here in op order, so adjacent solid ops sharing a clip
 	// occupy a CONTIGUOUS range and the emit loop coalesces them into ONE draw (cross-visual, not just within one
@@ -2529,6 +2670,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	{
 		var n = Ndc(dev);
 		_scratch.Add(n.X); _scratch.Add(n.Y); _scratch.Add(r); _scratch.Add(g); _scratch.Add(b); _scratch.Add(a);
+	}
+
+	// Table-path cover vertex: recorded-DEVICE pos + colour + the transform SLOT (raw u32 bits in a float slot). No
+	// Ndc — the vertex shader applies xf[slot] (device->NDC, folding the replay transform + current projection).
+	private void PushVertT(Vector2 dev, float r, float g, float b, float a, float slotBits)
+	{
+		_scratch.Add(dev.X); _scratch.Add(dev.Y); _scratch.Add(r); _scratch.Add(g); _scratch.Add(b); _scratch.Add(a); _scratch.Add(slotBits);
 	}
 
 	private IntPtr MakeUniform(int byteSize)
@@ -2819,8 +2967,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// BuildSimpleOp path did not coalesce, so every cached visual emitted a draw per rect (a major draw-count source
 	// on Intel, where per-draw overhead dominates — see the RenderDoc capture). Coalesced rects share a clip so they
 	// share the arena xform (one clip bind group), staying correct under re-stamp.
-	private void BuildCoalesced(List<WebGpuCommand> cmds, List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops, OwnedResources owned)
+	private void BuildCoalesced(List<WebGpuCommand> cmds, List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops, OwnedResources owned, int pathSlot)
 	{
+		float slotBits = System.BitConverter.Int32BitsToSingle(pathSlot);
 		for (int ci = 0; ci < cmds.Count; ci++)
 		{
 			if (cmds[ci] is RectCommand rc0)
@@ -2851,22 +3000,22 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					&& pfj.Color.R == pf0.Color.R && pfj.Color.G == pf0.Color.G && pfj.Color.B == pf0.Color.B && pfj.Color.A == pf0.Color.A
 					&& ClipDataEquals(pfj.Clip, pf0.Clip))
 				{
-					for (int i = 0; i < pfj.FanDevice.Length; i += 2) { var n = Ndc(new Vector2(pfj.FanDevice[i], pfj.FanDevice[i + 1])); _scratch.Add(n.X); _scratch.Add(n.Y); }
+					for (int i = 0; i < pfj.FanDevice.Length; i += 2) { _scratch.Add(pfj.FanDevice[i]); _scratch.Add(pfj.FanDevice[i + 1]); _scratch.Add(slotBits); }
 					bbMin = Vector2.Min(bbMin, pfj.BbMin); bbMax = Vector2.Max(bbMax, pfj.BbMax);
 					j++;
 				}
 				var fanBuf = Vbuf(_scratch, owned);
-				uint fanCount = (uint)(_scratch.Count / 2);
+				uint fanCount = (uint)(_scratch.Count / 3);
 				float pr = pf0.Color.R / 255f, pg = pf0.Color.G / 255f, pb = pf0.Color.B / 255f, pa = pf0.Color.A / 255f;
 				_scratch.Clear();
 				var tl = bbMin; var br = bbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
-				PushVert(tl, pr, pg, pb, pa); PushVert(tr, pr, pg, pb, pa); PushVert(br, pr, pg, pb, pa);
-				PushVert(tl, pr, pg, pb, pa); PushVert(br, pr, pg, pb, pa); PushVert(bl, pr, pg, pb, pa);
+				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(tr, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits);
+				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits); PushVertT(bl, pr, pg, pb, pa, slotBits);
 				var covBuf = Vbuf(_scratch, owned);
 				ops.Add((1, (nint)fanBuf, fanCount, (nint)covBuf, false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, owned)));
 				ci = j - 1;
 			}
-			else { BuildSimpleOp(cmds[ci], ops, owned); }
+			else { BuildSimpleOp(cmds[ci], ops, owned, pathSlot); }
 		}
 	}
 
@@ -2884,7 +3033,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		return op;
 	}
 
-	private void BuildSimpleOp(WebGpuCommand cmd, List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops, OwnedResources owned)
+	private void BuildSimpleOp(WebGpuCommand cmd, List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops, OwnedResources owned, int pathSlot)
 	{
 		switch (cmd)
 		{
@@ -2899,14 +3048,15 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			}
 			case PathFill pf:
 			{
+				float slotBits = System.BitConverter.Int32BitsToSingle(pathSlot);
 				_scratch.Clear();
-				for (int i = 0; i < pf.FanDevice.Length; i += 2) { var n = Ndc(new Vector2(pf.FanDevice[i], pf.FanDevice[i + 1])); _scratch.Add(n.X); _scratch.Add(n.Y); }
+				for (int i = 0; i < pf.FanDevice.Length; i += 2) { _scratch.Add(pf.FanDevice[i]); _scratch.Add(pf.FanDevice[i + 1]); _scratch.Add(slotBits); }
 				var fanBuf = Vbuf(_scratch, owned);
 				float pr = pf.Color.R / 255f, pg = pf.Color.G / 255f, pb = pf.Color.B / 255f, pa = pf.Color.A / 255f;
 				_scratch.Clear();
 				var tl = pf.BbMin; var br = pf.BbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
-				PushVert(tl, pr, pg, pb, pa); PushVert(tr, pr, pg, pb, pa); PushVert(br, pr, pg, pb, pa);
-				PushVert(tl, pr, pg, pb, pa); PushVert(br, pr, pg, pb, pa); PushVert(bl, pr, pg, pb, pa);
+				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(tr, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits);
+				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits); PushVertT(bl, pr, pg, pb, pa, slotBits);
 				var covBuf = Vbuf(_scratch, owned);
 				var clipBg = MakeClipBg(_d.CoverClipBgl, pf.Clip, owned);
 				ops.Add((1, (nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)covBuf, pf.EvenOdd, pf.Clip, (nint)clipBg));
@@ -3040,6 +3190,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var ops = RentOps();
 		var solid = RentSolid();
 		var rrect = RentRrect();
+		// Per-pass transform table (path fills). Saved/restored around the recursive nested-layer RenderInto so each
+		// pass builds and uploads its own. Transient (immediate-draw) slots are collected here and freed at pass end.
+		var savedXforms = _xforms; var savedTransient = _xformTransient;
+		_xforms = RentXforms(); _xforms.Clear();
+		_xformTransient = RentTransient(); _xformTransient.Clear();
 		// Recordings emitted so far in THIS pass. A recording replayed more than once in one frame (same command
 		// list at different transforms) can't share its single resident slab slice — see the frame-solid branch.
 		var frameEmitted = new HashSet<List<WebGpuCommand>>(System.Collections.Generic.ReferenceEqualityComparer.Instance);
@@ -3064,9 +3219,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					break;
 				}
 				case PathFill:
+					BuildSimpleOp(cmd, ops, null, AllocTransientPathSlot());   // pooled (per-frame); transient table slot
+					break;
 				case ImageCmd:
 				case GradientCmd:
-					BuildSimpleOp(cmd, ops, null);   // pooled (per-frame)
+					BuildSimpleOp(cmd, ops, null, -1);   // pooled (per-frame)
 					break;
 				case RoundedRectCmd rri:
 				{
@@ -3110,6 +3267,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								var tmp = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
 								var tcmds = new List<WebGpuCommand>();
 								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { tcmds.Add(tc); }
+								// One stable transform-table slot for this recording's device-space path fills (reused on
+								// rebuild; transient for a repeat emission). Verts are final-device here, so the slot's entry
+								// is the pure device->NDC projection, rewritten per frame at emit.
+								bool fHasPath = false; foreach (var c in tcmds) { if (c is PathFill) { fHasPath = true; break; } }
+								int fSlot = fHasPath ? ((!repeat && fe is not null && fe.XformSlot >= 0) ? fe.XformSlot : _d.AllocXformSlot()) : -1;
+								if (fHasPath && repeat) { _xformTransient.Add(fSlot); }
 								for (int ti = 0; ti < tcmds.Count; ti++)
 								{
 									var tc = tcmds[ti];
@@ -3139,7 +3302,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									else
 									{
 										tmp.Clear();
-										BuildSimpleOp(tc, tmp, fOwned);
+										BuildSimpleOp(tc, tmp, fOwned, fSlot);
 										foreach (var o in tmp) { order.Add(new FrameOp { Kind = -1, NonSolid = ResidentizeFan(o, fOwned) }); }
 									}
 								}
@@ -3157,13 +3320,16 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									if (fo.Kind == 0) { fo.ByteOff += sBase; order[oi2] = fo; }
 									else if (fo.Kind == 5) { fo.ByteOff += rBase; order[oi2] = fo; }
 								}
-								fe = new WebGpuGeometryCache { FrameSolid = true, SlabId = id, FrameOrder = order, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height };
+								fe = new WebGpuGeometryCache { FrameSolid = true, SlabId = id, FrameOrder = order, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = fSlot };
 								// A repeat emission is not cached (its slice is transient); free its bind groups next frame.
 								if (repeat) { _d.DeferRelease(fOwned); }
 								else { fe.Device = _d; rr.Data.Compiled = fe; }
 								WebGpuTrace.Upload("geometry-build(frame-solid)", order.Count);
 							}
 							else { WebGpuTrace.Upload("geometry-reuse(frame-solid)", 0); _d.SolidSlab.MarkLive(fe.SlabId); _d.RrectSlab.MarkLive(fe.SlabId); }
+							// Rewrite this recording's path-fill transform entry every frame (device verts => pure current
+							// projection), so a window resize repositions its glyphs via the table with no re-tessellation.
+							if (fe.XformSlot >= 0) { WriteXform(fe.XformSlot, Matrix4x4.Identity); }
 							// Per frame: re-emit ops drawing from the RESIDENT shared slabs (b0=1 => solid slab / rrect slab;
 							// b1 = absolute slab byte offset). No append, no upload, no re-tessellation on a cache hit.
 							foreach (var fo in fe.FrameOrder)
@@ -3184,6 +3350,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// and REUSES the vertex buffers instead of rebuilding. Moving-visual trace: moved frame => reuse.
 						if (rr.Clip.IsNone && IsArenaSafe(rr.Commands))
 						{
+							// Stable path-fill transform slot: arena verts are in the recording's OWN (identity) space, so
+							// the slot's entry folds the replay transform + projection — written per frame below, so a
+							// move OR resize repositions the fan/cover via the table with no re-stamp and no re-bake.
+							int aSlot = (miss || entry is null) ? -1 : entry.XformSlot;
 							if (miss || !entry.Arena || entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height)
 							{
 								if (entry is not null) { _d.DeferRelease(entry.Owned); _d.DeferRelease(entry.StampOwned); }
@@ -3191,13 +3361,18 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								var aOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
 								var aList = new List<WebGpuCommand>();
 								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None)) { aList.Add(tc); }
-								BuildCoalesced(aList, aOps, aOwned);
+								bool aHasPath = false; foreach (var c in aList) { if (c is PathFill) { aHasPath = true; break; } }
+								if (aHasPath && aSlot < 0) { aSlot = _d.AllocXformSlot(); }
+								BuildCoalesced(aList, aOps, aOwned, aSlot);
 									for (int _ri = 0; _ri < aOps.Count; _ri++) { aOps[_ri] = ResidentizeFan(aOps[_ri], aOwned); }
-								entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height };
+								entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot };
 								rr.Data.Compiled = entry;
 								WebGpuTrace.Upload("geometry-build(new,arena)", aOps.Count);
 							}
 							else { WebGpuTrace.Upload("geometry-reuse(cache-hit)", 0); }
+							// Per frame (even on a cache/stamp hit): the identity-space verts map to the current replay
+							// transform + surface projection via this one table entry — the whole arena move/resize path.
+							if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, rr.Transform); }
 							if (!entry.HasStamp || entry.StampXform != rr.Transform)
 							{
 							if (entry.StampOwned is not null) { _d.DeferRelease(entry.StampOwned); }
@@ -3232,6 +3407,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							break;
 						}
 						var transformChanged = !miss && entry.Transform != rr.Transform;
+						int cSlot = (miss || entry is null) ? -1 : entry.XformSlot;
 						if (miss || transformChanged || entry.Arena || entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height || !ClipDataEquals(entry.Clip, rr.Clip))
 						{
 							if (entry is not null) { _d.DeferRelease(entry.Owned); }
@@ -3239,15 +3415,20 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							var cachedOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
 							var cList = new List<WebGpuCommand>();
 							foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { cList.Add(tc); }
-							BuildCoalesced(cList, cachedOps, owned);
+							bool cHasPath = false; foreach (var c in cList) { if (c is PathFill) { cHasPath = true; break; } }
+							if (cHasPath && cSlot < 0) { cSlot = _d.AllocXformSlot(); }
+							BuildCoalesced(cList, cachedOps, owned, cSlot);
 							for (int _ri = 0; _ri < cachedOps.Count; _ri++) { cachedOps[_ri] = ResidentizeFan(cachedOps[_ri], owned); }
-							entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height };
+							entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = cSlot };
 							rr.Data.Compiled = entry;
 							// Rebuild signal: transform-only changes SHOULD become a uniform re-stamp under arena (#22),
 							// not a full geometry rebuild — this UPLOAD line is what a moved-visual multi-frame trace watches.
 							WebGpuTrace.Upload(transformChanged ? "geometry-rebuild(transform-changed)" : "geometry-build(new)", cachedOps.Count);
 						}
 						else { WebGpuTrace.Upload("geometry-reuse(cache-hit)", 0); }
+						// Device-space verts => the slot's entry is the pure current projection (rewritten per frame so a
+						// resize repositions the path fills via the table without re-baking).
+						if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, Matrix4x4.Identity); }
 					// Splice the cached draw-ops straight into this frame's op list — replayed by direct encoding in
 					// the main pass, NOT a render bundle (ExecuteBundles measured ~6x slower on wgpu-native, and forces
 					// a scissor reset; direct replay keeps each op's scissor). Buffers/bind groups persist in `owned`.
@@ -3379,6 +3560,20 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		nint solidBuf = solid.Count > 0 ? (nint)MakeBuffer(solid) : IntPtr.Zero;
 		nint rrectBuf = rrect.Count > 0 ? (nint)MakeBuffer(rrect) : IntPtr.Zero;
 
+		// Upload this pass's transform table + one read-only storage bind group (group 0 of the path-fill pipelines).
+		// Every drawn path recording wrote its slot's local->NDC affine above; a pass with no path fills skips this.
+		nint xformBg = IntPtr.Zero;
+		if (_xforms.Count > 0)
+		{
+			int xbytes = _xforms.Count * sizeof(float);
+			var xbuf = _d.BufferPool.Rent(xbytes, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
+			var xspan = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_xforms);
+			fixed (float* xp = xspan) { wgpuQueueWriteBuffer(_d.Q, xbuf, 0, (IntPtr)xp, (nuint)xbytes); }
+			var xe = new WGPUBindGroupEntry { Binding = 0, Buffer = xbuf, Offset = 0, Size = (nuint)xbytes };
+			var xbgd = new WGPUBindGroupDescriptor { Layout = _d.XformBgl, EntryCount = 1, Entries = &xe };
+			xformBg = (nint)_d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &xbgd));
+		}
+
 		var ca = new WGPURenderPassColorAttachment
 		{
 			// Render into the multisampled color and resolve into the single-sample target texture.
@@ -3481,15 +3676,19 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					_d.Profiler?.DrawKind(0);
 					break;
 				case 1:
-					wgpuRenderPassEncoderSetPipeline(pass, flag ? _d.StencilEvenOdd : _d.StencilNonZero);
-					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);   // shared ClipU: xform for the fan (identity unless arena'd)
-					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b0, 0, (nuint)(u0 * 2 * sizeof(float)));
+					// Path fill via the transform table: fan verts = device pos + slot index (stride 3); cover verts =
+					// device pos + colour + slot index (stride 7). Group 0 = storage table (positions the verts);
+					// group 1 (cover) = ClipU (analytic clip coverage). Table entries were written during op-build.
+					wgpuRenderPassEncoderSetPipeline(pass, flag ? _d.StencilTableEO : _d.StencilTableNZ);
+					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)xformBg, 0, (uint*)null);
+					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b0, 0, (nuint)(u0 * 3 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, u0, 1, 0, 0);
 					WebGpuTrace.Draw(flag ? "path-stencil-eo" : "path-stencil-nz", u0);
-					wgpuRenderPassEncoderSetPipeline(pass, _d.CoverPipe);
-					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
+					wgpuRenderPassEncoderSetPipeline(pass, _d.CoverTablePipe);
+					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)xformBg, 0, (uint*)null);
+					wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetStencilReference(pass, 0);
-					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(36 * sizeof(float)));
+					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(42 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
 					WebGpuTrace.Draw("path-cover", 6);
 					_d.Profiler?.DrawKind(1);
@@ -3579,6 +3778,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		ReturnOps(ops);   // ops are fully encoded into the pass now — recycle the list
 		ReturnSolid(solid);
 		ReturnRrect(rrect);
+		// Return this pass's transient (immediate-draw) transform slots to the free-list and recycle the table lists,
+		// then restore the enclosing pass's table (nested-layer render).
+		foreach (var s in _xformTransient) { _d.FreeXformSlot(s); }
+		_xforms.Clear(); _xformsPool.Push(_xforms); _xformTransient.Clear(); _xformTransientPool.Push(_xformTransient);
+		_xforms = savedXforms; _xformTransient = savedTransient;
 	}
 
 	// Immediate-mode drawing forwards to the overlay recorder; Scale/Save/Restore additionally drive the frame's
