@@ -7,9 +7,10 @@
 		<WgpuNativeCacheDir>$(MSBuildThisFileDirectory)obj\wgpu-native\$(WgpuNativeVersion)\</WgpuNativeCacheDir>
 	</PropertyGroup>
 
-	<Target Name="ProvisionWgpuNative" AfterTargets="Build">
-		<!-- Pick the native by the target RuntimeIdentifier when set (so a cross-publish, e.g. Linux -> win-x64,
-		     gets the right binary), else fall back to the build host OS/arch. -->
+	<!-- Pick the native by the target RuntimeIdentifier when set (so a cross-publish, e.g. Linux -> win-x64, gets the
+	     right binary), else fall back to the build host OS/arch. Target-scoped properties persist once this runs, so
+	     both the build-copy and the publish-item targets below can depend on it. -->
+	<Target Name="_SelectWgpuAsset">
 		<PropertyGroup Condition="$(RuntimeIdentifier.StartsWith('win'))">
 			<_WgpuAsset>wgpu-windows-x86_64-msvc-release.zip</_WgpuAsset>
 			<_WgpuNativeFile>wgpu_native.dll</_WgpuNativeFile>
@@ -43,17 +44,40 @@
 			<_WgpuAsset>wgpu-macos-x86_64-release.zip</_WgpuAsset>
 			<_WgpuNativeFile>libwgpu_native.dylib</_WgpuNativeFile>
 		</PropertyGroup>
+	</Target>
 
-		<Message Importance="high" Text="ProvisionWgpuNative: asset=$(_WgpuAsset) -> $(OutDir)" />
+	<!-- Download + unzip the pinned release into the obj cache (once; OS-agnostic HTTP + unzip, so cross-provisioning
+	     the Windows dll from a Linux host works). No target-level Condition on $(_WgpuAsset): a target's Condition is
+	     evaluated BEFORE its DependsOnTargets run, so it would still be empty here — the task-level conditions below
+	     (evaluated after _SelectWgpuAsset has run) are the correct guard. -->
+	<Target Name="_FetchWgpuNative" DependsOnTargets="_SelectWgpuAsset">
 		<MakeDir Directories="$(WgpuNativeCacheDir)" Condition="'$(_WgpuAsset)' != ''" />
 		<DownloadFile Condition="'$(_WgpuAsset)' != '' And !Exists('$(WgpuNativeCacheDir)$(_WgpuAsset)')"
 			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/$(_WgpuAsset)"
 			DestinationFolder="$(WgpuNativeCacheDir)" Retries="3" />
 		<Unzip Condition="'$(_WgpuAsset)' != '' And !Exists('$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)')"
 			SourceFiles="$(WgpuNativeCacheDir)$(_WgpuAsset)" DestinationFolder="$(WgpuNativeCacheDir)" />
-		<!-- Guard on OutDir: this target runs AfterTargets=Build, which also fires in an outer multi-TFM build pass
-		     where OutDir is empty — an unguarded Copy then throws MSB3023 (no destination). -->
+	</Target>
+
+	<!-- Run-from-build: drop the native next to the build output so the DllImportResolver finds it when running the
+	     app straight out of bin/. Guard on OutDir (AfterTargets=Build also fires in the outer multi-TFM pass where
+	     OutDir is empty → an unguarded Copy throws MSB3023). -->
+	<Target Name="ProvisionWgpuNative" AfterTargets="Build" DependsOnTargets="_FetchWgpuNative">
+		<Message Importance="high" Text="ProvisionWgpuNative: asset=$(_WgpuAsset) -> $(OutDir)" />
 		<Copy Condition="'$(_WgpuAsset)' != '' And '$(OutDir)' != ''"
 			SourceFiles="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+	</Target>
+
+	<!-- Publish: register the native as a real publish item so `dotnet publish` (incl. `-o <dir>` and self-contained)
+	     copies it to the publish root. A loose file in OutDir is NOT a tracked publish item, so it would otherwise be
+	     dropped from the published output (the DllNotFound the WebGPU head hit on Windows). AfterTargets so it appends
+	     to the ResolvedFileToPublish that ComputeFilesToPublish just built, before the copy targets consume it. -->
+	<Target Name="_AddWgpuNativeToPublish" AfterTargets="ComputeFilesToPublish" DependsOnTargets="_FetchWgpuNative">
+		<ItemGroup>
+			<ResolvedFileToPublish Include="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" Condition="'$(_WgpuNativeFile)' != ''">
+				<RelativePath>$(_WgpuNativeFile)</RelativePath>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			</ResolvedFileToPublish>
+		</ItemGroup>
 	</Target>
 </Project>
