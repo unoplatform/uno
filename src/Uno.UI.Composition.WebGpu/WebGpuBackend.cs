@@ -59,10 +59,12 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	// Transient image textures whose owning IRenderData was disposed; drained (GPU-released) at the next frame start.
 	// Concurrent because a frame is disposed on the UI thread while BeginFrameResources runs on the render thread.
 	private readonly System.Collections.Concurrent.ConcurrentQueue<(nint view, nint tex)> _pendingTextures = new();
-	// Per-visual GPU geometry cache, keyed by the recording's immutable command list (reference identity). Owned
-	// by the render thread; entries not referenced in a frame are evicted (their recording is gone).
-	internal readonly System.Collections.Generic.Dictionary<System.Collections.Generic.List<WebGpuCommand>, WebGpuGeometryCache> GeometryCache = new(System.Collections.Generic.ReferenceEqualityComparer.Instance);
-	private readonly System.Collections.Generic.List<System.Collections.Generic.List<WebGpuCommand>> _evict = new();
+	// Per-recording compiled GPU draw-list. It lives ON the recording's WebGpuRenderData (IRenderData is, by its own
+	// contract, "backend-defined retained state"), built once and replayed cheaply — no global cache, no per-frame
+	// eviction scan. When the owning IRenderData is disposed (UI thread, on a content change), its compiled state is
+	// enqueued here and freed on the render thread at the next BeginFrameResources (concurrent, like _pendingTextures).
+	private readonly System.Collections.Concurrent.ConcurrentQueue<WebGpuGeometryCache> _pendingCompiled = new();
+	internal void DeferCompiledRelease(WebGpuGeometryCache c) => _pendingCompiled.Enqueue(c);
 
 	// Per-frame bind groups reference the frame's pooled buffers, so they're released at the next frame start once
 	// the previous frame's GPU work has completed (present DevicePolls). A cached recording's persistent resources
@@ -82,11 +84,9 @@ public sealed unsafe class WebGpuDevice : IDisposable
 
 		EvictStaleBindGroups();
 
-		// Evict geometry-cache entries not referenced in the previous frame (their recording is gone); then arm
-		// the used-flags for this frame.
-		_evict.Clear();
-		foreach (var kv in GeometryCache) { if (!kv.Value.Used) { _evict.Add(kv.Key); } else { kv.Value.Used = false; } }
-		foreach (var k in _evict) { DeferRelease(GeometryCache[k].Owned); DeferRelease(GeometryCache[k].StampOwned); GeometryCache.Remove(k); }
+		// Free compiled draw-lists whose owning recording was disposed (their slab slices are reclaimed separately by
+		// each slab's RetainOnly, since a disposed recording is never replayed → never marked live).
+		while (_pendingCompiled.TryDequeue(out var c)) { DeferRelease(c.Owned); DeferRelease(c.StampOwned); }
 	}
 
 	// Diagnostic (UNO_RENDER_PERF): per-frame render CPU time + bind-group/buffer creates, logged from RunFrame.
@@ -1519,12 +1519,14 @@ internal sealed class BackdropCmd : WebGpuCommand
 	public float Opacity;
 }
 
-// A deferred replay of a cacheable child recording under a transform+clip. Captures the child's IMMUTABLE
-// command-list reference (not the recording): the frame is presented on the render thread while the main thread
-// may Dispose the recording — Dispose only nulls the recording's field, so the captured list stays valid. The
-// GPU geometry cache lives on the render-thread device, keyed by this list (the per-visual slab/scroll win).
+// A deferred replay of a cacheable child recording under a transform+clip. Captures BOTH the recording
+// (WebGpuRenderData, which owns its compiled GPU draw-list — the persistent retained state) and its immutable
+// command-list reference. The list is captured directly so a build survives the recording's Dispose (which only
+// nulls Commands + defers the compiled state's GPU free to the render thread); the frame presents on the render
+// thread while the main thread may Dispose the recording.
 internal sealed class ReplayRefCmd : WebGpuCommand
 {
+	public WebGpuRenderData Data;
 	public System.Collections.Generic.List<WebGpuCommand> Commands;
 	public System.Numerics.Matrix4x4 Transform;
 }
@@ -1544,7 +1546,9 @@ internal sealed unsafe class WebGpuGeometryCache
 	public OwnedResources Owned;
 	public Matrix4x4 Transform;
 	public ClipData Clip;
-	public bool Used;
+	// Back-reference to the owning device so the recording's Dispose (UI thread) can enqueue this for a render-thread
+	// free. Set at build time (render thread).
+	public WebGpuDevice Device;
 	// Arena entry: Ops geometry is baked in the recording's OWN (identity) NDC space; a moved replay re-stamps a
 	// transform uniform (xform) on the per-op clip bind groups and reuses the vertex buffers instead of rebuilding.
 	public bool Arena;
@@ -1722,6 +1726,10 @@ public sealed class WebGpuRenderData : IRenderData
 	internal List<WebGpuCommand> Commands = new();
 	internal WColor? ClearColor;
 	internal bool? Cacheable;   // memoized: all commands are simple primitives with no path clip
+	// The compiled GPU draw-list for this recording (the persistent retained state IRenderData is contracted to hold):
+	// built once on the render thread at first replay, reused every frame, freed (deferred to the render thread) when
+	// this recording is disposed. Written by the render thread, taken by the UI thread's Dispose — via Interlocked.
+	internal WebGpuGeometryCache Compiled;
 	// Transient image textures recorded into this frame that the caller disposed while recording (e.g. the one-shot
 	// texture CompositionNineGridBrush uploads). We keep them alive for every present of this recording, then release
 	// their GPU resources here at Dispose — resident textures (surface-owned) are left untouched (DisposeRequested=false).
@@ -1732,6 +1740,10 @@ public sealed class WebGpuRenderData : IRenderData
 	public void Dispose()
 	{
 		if (Textures is { } textures) { foreach (var t in textures) { if (t.DisposeRequested) { t.ReleaseDeferred(); } } }
+		// Hand the compiled draw-list's GPU resources to the render thread for a deferred free (an in-flight frame may
+		// still reference them). Interlocked so a concurrent render-thread rebuild can't leak or double-free it.
+		var c = System.Threading.Interlocked.Exchange(ref Compiled, null);
+		if (c is { Device: { } dev }) { dev.DeferCompiledRelease(c); }
 		Commands = null;
 	}
 }
@@ -2165,7 +2177,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	{
 		if (data is WebGpuRenderData cacheable && IsCacheable(cacheable))
 		{
-			_target.Add(new ReplayRefCmd { Commands = cacheable.Commands, Transform = _m, Clip = _clip });
+			_target.Add(new ReplayRefCmd { Data = cacheable, Commands = cacheable.Commands, Transform = _m, Clip = _clip });
 			return;
 		}
 		ReplayInline(data);
@@ -2252,7 +2264,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					break;
 				case ReplayRefCmd rr:
 					// Compose this replay's transform/clip onto the ref so the present still caches it.
-					_target.Add(new ReplayRefCmd { Commands = rr.Commands, Transform = rr.Transform * _m, Clip = ClipCompose(rr.Clip, T) });
+					_target.Add(new ReplayRefCmd { Data = rr.Data, Commands = rr.Commands, Transform = rr.Transform * _m, Clip = ClipCompose(rr.Clip, T) });
 					break;
 			}
 		}
@@ -3001,7 +3013,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							if (repeat) { fMiss = true; fStale = false; }
 							else
 							{
-								fMiss = !_d.GeometryCache.TryGetValue(rr.Commands, out fe);
+								fe = rr.Data.Compiled;
+									fMiss = fe is null;
 								fStale = !fMiss && (!fe.FrameSolid || fe.FrameOrder is null || fe.Transform != rr.Transform || !ClipDataEquals(fe.Clip, rr.Clip));
 							}
 							if (fMiss || fStale)
@@ -3061,14 +3074,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									if (fo.Kind == 0) { fo.ByteOff += sBase; order[oi2] = fo; }
 									else if (fo.Kind == 5) { fo.ByteOff += rBase; order[oi2] = fo; }
 								}
-								fe = new WebGpuGeometryCache { FrameSolid = true, SlabId = id, FrameOrder = order, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip };
+								fe = new WebGpuGeometryCache { FrameSolid = true, SlabId = id, FrameOrder = order, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip, Device = _d };
 								// A repeat emission is not cached (its slice is transient); free its bind groups next frame.
 								if (repeat) { _d.DeferRelease(fOwned); }
-								else { _d.GeometryCache[rr.Commands] = fe; }
+								else { fe.Device = _d; rr.Data.Compiled = fe; }
 								WebGpuTrace.Upload("geometry-build(frame-solid)", order.Count);
 							}
 							else { WebGpuTrace.Upload("geometry-reuse(frame-solid)", 0); _d.SolidSlab.MarkLive(fe.SlabId); _d.RrectSlab.MarkLive(fe.SlabId); }
-							fe.Used = true;
 							// Per frame: re-emit ops drawing from the RESIDENT shared slabs (b0=1 => solid slab / rrect slab;
 							// b1 = absolute slab byte offset). No append, no upload, no re-tessellation on a cache hit.
 							foreach (var fo in fe.FrameOrder)
@@ -3082,7 +3094,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// The per-visual GPU-geometry cache (slab/scroll), keyed by the recording's immutable command
 					// list. Build once; reuse while it's replayed at the same transform/clip. A stale entry (moved
 					// visual) is deferred-released and rebuilt. Entries not referenced any frame are evicted.
-					var miss = !_d.GeometryCache.TryGetValue(rr.Commands, out var entry);
+					var entry = rr.Data.Compiled;
+						var miss = entry is null;
 						// ARENA (#22): a transform-safe recording (solid/image, no clip) bakes its geometry ONCE in its
 						// own identity NDC space; a moved replay re-stamps the vertex xform on the per-op clip bind groups
 						// and REUSES the vertex buffers instead of rebuilding. Moving-visual trace: moved frame => reuse.
@@ -3096,12 +3109,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								var aList = new List<WebGpuCommand>();
 								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None)) { aList.Add(tc); }
 								BuildCoalesced(aList, aOps, aOwned);
-								entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true };
-								_d.GeometryCache[rr.Commands] = entry;
+								entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, Device = _d };
+								rr.Data.Compiled = entry;
 								WebGpuTrace.Upload("geometry-build(new,arena)", aOps.Count);
 							}
 							else { WebGpuTrace.Upload("geometry-reuse(cache-hit)", 0); }
-							entry.Used = true;
 							if (!entry.HasStamp || entry.StampXform != rr.Transform)
 							{
 							if (entry.StampOwned is not null) { _d.DeferRelease(entry.StampOwned); }
@@ -3144,14 +3156,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							var cList = new List<WebGpuCommand>();
 							foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { cList.Add(tc); }
 							BuildCoalesced(cList, cachedOps, owned);
-							entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip };
-							_d.GeometryCache[rr.Commands] = entry;
+							entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip, Device = _d };
+							rr.Data.Compiled = entry;
 							// Rebuild signal: transform-only changes SHOULD become a uniform re-stamp under arena (#22),
 							// not a full geometry rebuild — this UPLOAD line is what a moved-visual multi-frame trace watches.
 							WebGpuTrace.Upload(transformChanged ? "geometry-rebuild(transform-changed)" : "geometry-build(new)", cachedOps.Count);
 						}
 						else { WebGpuTrace.Upload("geometry-reuse(cache-hit)", 0); }
-						entry.Used = true;
 					// Splice the cached draw-ops straight into this frame's op list — replayed by direct encoding in
 					// the main pass, NOT a render bundle (ExecuteBundles measured ~6x slower on wgpu-native, and forces
 					// a scissor reset; direct replay keeps each op's scissor). Buffers/bind groups persist in `owned`.
