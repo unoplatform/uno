@@ -11,16 +11,20 @@ per-window ownership pattern the Skia desktop runtimes (Win32/X11/macOS) and the
 Apple UIKit runtime already use, making the architecture **multi-window-ready**.
 
 **In scope (this work):**
-- Per-window `NativeWindowWrapper` instances (one per `Window`/`XamlRoot`), not a singleton.
+- `NativeWindowWrapper` instances bound to the activity driving a window, not a `Lazy<>`
+  singleton. Note this lands as **per-activity**, not yet strictly per-`Window`: the activity
+  still adopts the wrapper through the ambient current window, because an explicit
+  activity⇄window binding needs the lifecycle orchestration deferred below. Marked `TODO #13827`.
 - Per-window render stack on `ApplicationActivity` (render view, native-layer host,
   root layout) — instance state, not `static`.
 - A per-window `IXamlRootHost` that resolves its own `RootElement`, render view and
   input sources instead of reaching `Window.Current` / `ApplicationActivity.Instance`.
 - Per-window input sources (pointer + keyboard), resolved from the host (the Win32 pattern).
-- `ContextHelper` **split + foreground fallback**: an explicit app-global
-  `ApplicationContext`, and `Current` that tracks the *foreground* activity via the
-  existing `BaseActivity` registry (fixing today's sticky "last-ever-set" behaviour)
-  and falls back to the application context.
+- `ContextHelper` **split**: an explicit app-global `ApplicationContext`, and `Current` that
+  tracks the *foreground* activity via the existing `BaseActivity` registry (fixing today's
+  sticky "last-ever-set" behaviour). `Current` stays **activity-scoped and does not fall back
+  to the application context** — falling back would break the `(Activity)Current` hard-casts and
+  `Current == null` guards in existing callers — and is typed `Context?` to say so honestly.
 
 **Out of scope (deliberate follow-ups):**
 - Flipping `SupportsMultipleWindows` to `true` and driving a *live* second Activity —
@@ -72,13 +76,13 @@ consolidation; the `Uno.UWP`/`Uno.Foundation` Android assemblies must keep compi
   activity/render view via `XamlRoot → XamlRootMap.GetHostForRoot → host`.
 - Input sources registered `ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource), host => …)`.
 - `ContextHelper`: `ApplicationContext` (app-global) + `Current` = foreground activity
-  (registry-backed) with app-context fallback.
+  (registry-backed), typed `Context?`, no app-context fallback.
 
 ## Phases (each compiles for `net10.0-android`; committed separately)
 
-1. **ContextHelper split + foreground fallback.** `ContextHelper.ApplicationContext`;
-   faithful foreground tracking driven from `BaseActivity` (`SetAsCurrent`/`ResignCurrent`
-   repoint to the next live activity or app context). Unit-testable in isolation.
+1. **ContextHelper split.** `ContextHelper.ApplicationContext`; faithful foreground tracking
+   driven from `BaseActivity` (`SetAsCurrent`/`ResignCurrent` repoint to the next live activity
+   only, so single-window keeps last-activity behaviour).
 2. **Per-window host.** `AndroidSkiaXamlRootHost` captures its `Window` + `ApplicationActivity`;
    `RootElement`/`InvalidateRender` become per-window; `AndroidSkiaWindowFactory` wires owner.
 3. **Per-window wrapper.** `NativeWindowWrapper.Android` singleton → instance bound to its
@@ -97,8 +101,11 @@ consolidation; the `Uno.UWP`/`Uno.Foundation` Android assemblies must keep compi
   after each phase (the only assembly that compiles `__ANDROID__` Skia code).
 - **Unit:** the foreground-repoint and context-split logic lives on Android types
   (`BaseActivity : AppCompatActivity`, `Android.Content.Context`) that the net-based
-  `Uno.UI.UnitTests` cannot instantiate, so it is not unit-testable off-device. The
-  `XamlRoot→host` resolution is exercisable only under the Android runtime.
+  `Uno.UI.UnitTests` cannot instantiate, so it is not unit-testable off-device.
+- **Runtime tests:** the `XamlRoot→host` resolution *is* coverable — CI runs an Android Skia
+  runtime-test lane (`build/ci/tests/.azure-devops-tests-android-skia.yml`), so
+  `Given_AndroidSkiaXamlRootHost` asserts host registration, activity resolution and per-window
+  input-source identity under `[PlatformCondition(… RuntimeTestPlatforms.SkiaAndroid)]`.
 - **Runtime:** single-window smoke on an emulator/device — **not executed in the dev
   environment used for this change** (no reachable emulator/adb). Run with:
   `cd src/SamplesApp/SamplesApp.Skia.netcoremobile/Android && dotnet run -f net10.0-android`.
