@@ -32,6 +32,16 @@ internal static class WebGpuLoader
 			return IntPtr.Zero;
 		}
 
+		// iOS/tvOS (and any statically-linked host): wgpu-native is a static lib linked into the app, not a
+		// loadable dylib — Apple platforms forbid dlopen'ing arbitrary dylibs. Its symbols live in the main
+		// program image, so resolve "webgpu" to the main-program handle. (Requires the build to link the
+		// wgpu-native xcframework with force-load; see wgpu-native.targets iOS provisioning.)
+		if (OperatingSystem.IsIOS() || OperatingSystem.IsTvOS() || OperatingSystem.IsMacCatalyst())
+		{
+			try { return NativeLibrary.GetMainProgramHandle(); }
+			catch { /* fall through to the file-based candidates below */ }
+		}
+
 		foreach (var candidate in Candidates(assembly))
 		{
 			if (NativeLibrary.TryLoad(candidate, out var handle))

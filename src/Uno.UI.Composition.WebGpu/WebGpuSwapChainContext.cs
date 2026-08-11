@@ -31,6 +31,7 @@ public sealed unsafe class WebGpuSwapChainContext : IGraphicsContext, IWebGpuDev
 	private IntPtr _blitModule;
 	private IntPtr _blitPipe;
 	private IntPtr _blitBgl;
+	private WGPUTextureFormat _blitFormat;   // the swapchain format _blitPipe was built for (rebuild if it changes)
 
 	private const string BlitWgsl = @"
 @group(0) @binding(0) var t: texture_2d<f32>;
@@ -42,6 +43,28 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
   var o: VO; o.p = vec4<f32>(p, 0.0, 1.0); o.uv = vec2<f32>((p.x + 1.0) * 0.5, (1.0 - p.y) * 0.5); return o;
 }
 @fragment fn fs(i: VO) -> @location(0) vec4<f32> { return textureSampleLevel(t, s, i.uv, 0.0); }";
+
+	// Same blit, but for an *_Srgb swapchain format. The scene's colours are already sRGB-encoded in the plain-UNORM
+	// offscreen; an sRGB render target would apply linear->sRGB a SECOND time on store (washed-out output, broken
+	// acrylic). Pre-decode sRGB->linear here so the target's automatic re-encode reproduces the original value
+	// (alpha is linear in sRGB formats — pass it through). Reproduces the desktop straight-copy result.
+	private const string BlitWgslSrgb = @"
+@group(0) @binding(0) var t: texture_2d<f32>;
+@group(0) @binding(1) var s: sampler;
+struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
+@vertex fn vs(@builtin(vertex_index) i: u32) -> VO {
+  var pts = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
+  let p = pts[i];
+  var o: VO; o.p = vec4<f32>(p, 0.0, 1.0); o.uv = vec2<f32>((p.x + 1.0) * 0.5, (1.0 - p.y) * 0.5); return o;
+}
+fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 0.055) / 1.055, 2.4); }
+@fragment fn fs(i: VO) -> @location(0) vec4<f32> {
+  let c = textureSampleLevel(t, s, i.uv, 0.0);
+  return vec4<f32>(s2l(c.r), s2l(c.g), s2l(c.b), c.a);
+}";
+
+	private static bool IsSrgb(WGPUTextureFormat f)
+		=> f == WGPUTextureFormat.RGBA8UnormSrgb || f == WGPUTextureFormat.BGRA8UnormSrgb;
 
 	/// <param name="createSurface">Builds the wgpu surface for the platform window, given the instance handle
 	/// (use one of the CreateXxxSurface factories).</param>
@@ -132,11 +155,14 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 
 	private void EnsureBlitPipeline()
 	{
-		if (_blitPipe != IntPtr.Zero)
+		if (_blitPipe != IntPtr.Zero && _blitFormat == _surfaceFormat)
 		{
 			return;
 		}
-		var code = Utf8(BlitWgsl);
+		if (_blitPipe != IntPtr.Zero) { wgpuRenderPipelineRelease(_blitPipe); _blitPipe = IntPtr.Zero; }
+		if (_blitModule != IntPtr.Zero) { wgpuShaderModuleRelease(_blitModule); _blitModule = IntPtr.Zero; }
+		_blitFormat = _surfaceFormat;
+		var code = Utf8(IsSrgb(_surfaceFormat) ? BlitWgslSrgb : BlitWgsl);
 		var wgsl = new WGPUShaderSourceWGSL { Chain = new WGPUChainedStruct { SType = WGPUSType.ShaderSourceWGSL }, Code = code };
 		var smd = new WGPUShaderModuleDescriptor { NextInChain = (WGPUChainedStruct*)&wgsl };
 		_blitModule = wgpuDeviceCreateShaderModule(_device.Dev, &smd);
@@ -196,6 +222,9 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 		bool supported = false;
 		for (nuint i = 0; i < caps.FormatCount; i++) { if (caps.Formats[i] == _surfaceFormat) { supported = true; break; } }
 		if (!supported && caps.FormatCount > 0) { _surfaceFormat = caps.Formats[0]; }
+		// Keep the driver's preferred format (forcing a different one can make wgpuSurfaceConfigure panic on some
+		// Android drivers). If it's an *_Srgb format, the present blit compensates for the target's automatic
+		// linear->sRGB re-encode by decoding in-shader — see EnsureBlitPipeline / _surfaceIsSrgb.
 		var alphaMode = caps.AlphaModeCount > 0 ? caps.AlphaModes[0] : WGPUCompositeAlphaMode.Auto;
 
 		// Present mode: Fifo (vsync) by default. UNO_WEBGPU_PRESENT=mailbox|immediate|fiforelaxed opts into a

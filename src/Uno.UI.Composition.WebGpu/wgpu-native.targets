@@ -11,6 +11,9 @@
 	     right binary), else fall back to the build host OS/arch. Target-scoped properties persist once this runs, so
 	     both the build-copy and the publish-item targets below can depend on it. -->
 	<Target Name="_SelectWgpuAsset">
+		<PropertyGroup>
+			<_WgpuTpi>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</_WgpuTpi>
+		</PropertyGroup>
 		<PropertyGroup Condition="$(RuntimeIdentifier.StartsWith('win'))">
 			<_WgpuAsset>wgpu-windows-x86_64-msvc-release.zip</_WgpuAsset>
 			<_WgpuNativeFile>wgpu_native.dll</_WgpuNativeFile>
@@ -28,19 +31,23 @@
 			<_WgpuNativeFile>libwgpu_native.dylib</_WgpuNativeFile>
 		</PropertyGroup>
 
-		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('Linux'))">
+		<!-- Host-OS fallbacks (no RID). These MUST NOT engage on an Android head: it imports this .targets too, and
+		     Android is multi-ABI via _ProvisionWgpuNativeAndroid / @(AndroidNativeLibrary). Without the android exclusion
+		     the Linux/Windows host .so leaks into the head's OutDir and gets packaged into every APK lib/<abi>/, shadowing
+		     the real bionic per-ABI binaries (dlopen then fails: the desktop .so needs glibc's libdl.so.2). -->
+		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('Linux')) And '$(_WgpuTpi)' != 'android'">
 			<_WgpuAsset>wgpu-linux-x86_64-release.zip</_WgpuAsset>
 			<_WgpuNativeFile>libwgpu_native.so</_WgpuNativeFile>
 		</PropertyGroup>
-		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('Windows'))">
+		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('Windows')) And '$(_WgpuTpi)' != 'android'">
 			<_WgpuAsset>wgpu-windows-x86_64-msvc-release.zip</_WgpuAsset>
 			<_WgpuNativeFile>wgpu_native.dll</_WgpuNativeFile>
 		</PropertyGroup>
-		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('OSX')) And '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'Arm64'">
+		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('OSX')) And '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'Arm64' And '$(_WgpuTpi)' != 'android'">
 			<_WgpuAsset>wgpu-macos-aarch64-release.zip</_WgpuAsset>
 			<_WgpuNativeFile>libwgpu_native.dylib</_WgpuNativeFile>
 		</PropertyGroup>
-		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('OSX')) And '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'X64'">
+		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('OSX')) And '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'X64' And '$(_WgpuTpi)' != 'android'">
 			<_WgpuAsset>wgpu-macos-x86_64-release.zip</_WgpuAsset>
 			<_WgpuNativeFile>libwgpu_native.dylib</_WgpuNativeFile>
 		</PropertyGroup>
@@ -61,10 +68,12 @@
 
 	<!-- Run-from-build: drop the native next to the build output so the DllImportResolver finds it when running the
 	     app straight out of bin/. Guard on OutDir (AfterTargets=Build also fires in the outer multi-TFM pass where
-	     OutDir is empty → an unguarded Copy throws MSB3023). -->
+	     OutDir is empty → an unguarded Copy throws MSB3023). Only for app heads (OutputType != Library): a referenced
+	     library would otherwise leave a loose desktop .so next to its dll, which .NET-Android harvests transitively and
+	     packs into every APK lib/<abi>/, shadowing the real per-ABI bionic binaries (dlopen then fails on libdl.so.2). -->
 	<Target Name="ProvisionWgpuNative" AfterTargets="Build" DependsOnTargets="_FetchWgpuNative">
-		<Message Importance="high" Text="ProvisionWgpuNative: asset=$(_WgpuAsset) -> $(OutDir)" />
-		<Copy Condition="'$(_WgpuAsset)' != '' And '$(OutDir)' != ''"
+		<Message Importance="high" Text="ProvisionWgpuNative: asset=$(_WgpuAsset) outputType=$(OutputType) -> $(OutDir)" />
+		<Copy Condition="'$(_WgpuAsset)' != '' And '$(OutDir)' != '' And '$(OutputType)' != 'Library'"
 			SourceFiles="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
 	</Target>
 
@@ -105,6 +114,43 @@
 			<AndroidNativeLibrary Include="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\lib\libwgpu_native.so">
 				<Abi>%(_WgpuAndroidAbi.Abi)</Abi>
 			</AndroidNativeLibrary>
+		</ItemGroup>
+	</Target>
+
+	<!-- iOS/tvOS is STATIC-linked: Apple forbids dlopen'ing arbitrary dylibs, so wgpu-native ships a static
+	     libwgpu_native.a per slice. Link it into the app with @(NativeReference Kind=Static ForceLoad=true) so its
+	     symbols land in the main program image; WebGpuLoader.Resolve then returns NativeLibrary.GetMainProgramHandle()
+	     for "webgpu". Pick the slice by RuntimeIdentifier (device vs simulator, arm64 vs x64). Import this .targets
+	     into the iOS app head. BEST-EFFORT / UNVALIDATED (authored on Linux): verify on a Mac that (a) the release zip
+	     lays the archive at lib/libwgpu_native.a, and (b) the Rust static lib's system deps are satisfied — the iOS
+	     workload auto-links Metal/Foundation/QuartzCore, but wgpu may additionally need libc++/libresolv; add
+	     @(NativeReference Include="c++") / frameworks here if the link fails with undefined symbols.
+	     Asset names confirmed at v29.0.1.1: wgpu-ios-aarch64-release, wgpu-ios-aarch64-simulator-release,
+	     wgpu-ios-x86_64-simulator-release. -->
+	<Target Name="_ProvisionWgpuNativeIos"
+			BeforeTargets="_ResolveAssemblies;BeforeBuild"
+			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">
+		<PropertyGroup>
+			<_WgpuIosSlice Condition="'$(RuntimeIdentifier)' == 'ios-arm64'">aarch64</_WgpuIosSlice>
+			<_WgpuIosSlice Condition="'$(RuntimeIdentifier)' == 'iossimulator-arm64'">aarch64-simulator</_WgpuIosSlice>
+			<_WgpuIosSlice Condition="'$(RuntimeIdentifier)' == 'iossimulator-x64'">x86_64-simulator</_WgpuIosSlice>
+			<!-- Default to the device slice when the RID isn't set yet (outer restore/build pass). -->
+			<_WgpuIosSlice Condition="'$(_WgpuIosSlice)' == ''">aarch64</_WgpuIosSlice>
+			<_WgpuIosZip>wgpu-ios-$(_WgpuIosSlice)-release.zip</_WgpuIosZip>
+			<_WgpuIosDir>$(WgpuNativeCacheDir)ios\$(_WgpuIosSlice)\</_WgpuIosDir>
+		</PropertyGroup>
+		<MakeDir Directories="$(_WgpuIosDir)" />
+		<DownloadFile Condition="!Exists('$(_WgpuIosDir)$(_WgpuIosZip)')"
+			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/$(_WgpuIosZip)"
+			DestinationFolder="$(_WgpuIosDir)" Retries="3" />
+		<Unzip Condition="!Exists('$(_WgpuIosDir)lib\libwgpu_native.a')"
+			SourceFiles="$(_WgpuIosDir)$(_WgpuIosZip)" DestinationFolder="$(_WgpuIosDir)" />
+		<ItemGroup>
+			<NativeReference Include="$(_WgpuIosDir)lib\libwgpu_native.a">
+				<Kind>Static</Kind>
+				<ForceLoad>True</ForceLoad>
+				<SmartLink>False</SmartLink>
+			</NativeReference>
 		</ItemGroup>
 	</Target>
 </Project>
