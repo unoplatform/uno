@@ -22,11 +22,11 @@ namespace Uno.UI
 		/// specific window's activity should resolve it from that window's <see cref="XamlRoot"/>
 		/// rather than relying on this ambient value.
 		/// </remarks>
-		public static Android.Content.Context Current
+		public static Android.Content.Context? Current
 		{
 			get
 			{
-				if (_current is null)
+				if (_current is null && typeof(ContextHelper).Log().IsEnabled(LogLevel.Warning))
 				{
 					typeof(ContextHelper)
 						.Log()
@@ -36,7 +36,7 @@ namespace Uno.UI
 							"is deriving from Microsoft.UI.Xaml.ApplicationActivity.");
 				}
 
-				return _current!;
+				return _current;
 			}
 			set => _current = value;
 		}
