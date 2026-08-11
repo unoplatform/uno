@@ -143,9 +143,7 @@ internal sealed partial class TextBoxCore
 
 	private GeneralTransform TransformToVisual(UIElement visual) => _host.Owner.TransformToVisual(visual);
 
-	// Platform hooks. These are declared here rather than in TextBoxCore.skia.cs so the Reference
-	// flavor, which compiles no implementation for them, elides the calls instead of failing to build.
-	// Keep them `partial void` for that reason: an `internal` partial would require an implementation.
+	// Platform hooks, implemented in TextBoxCore.Input.cs.
 	partial void OnUnloadedPartial();
 	partial void SetInputReturnTypePlatform(InputReturnType inputReturnType);
 	partial void OnTextChangedPartial();
@@ -286,14 +284,7 @@ internal sealed partial class TextBoxCore
 		_wasTemplateRecycled = true;
 	}
 
-	internal void OnPostKeyDown(KeyRoutedEventArgs args)
-	{
-#if __SKIA__
-		OnKeyDownSkia(args);
-#else
-		OnKeyDownNonSkia(args);
-#endif
-	}
+	internal void OnPostKeyDown(KeyRoutedEventArgs args) => OnKeyDownSkia(args);
 
 	internal void OnPointerPressed(PointerRoutedEventArgs args)
 	{
@@ -897,51 +888,6 @@ internal sealed partial class TextBoxCore
 		}
 
 		UpdateVisualState();
-	}
-
-	private void OnKeyDownNonSkia(KeyRoutedEventArgs args)
-	{
-		var selectionStart = SelectionStart;
-
-		// Note: On windows only keys that are "moving the cursor" are handled
-		//		 AND ** only KeyDown ** is handled (not KeyUp)
-		switch (args.Key)
-		{
-			case VirtualKey.Up:
-				if (AcceptsReturn)
-				{
-					args.Handled = true;
-				}
-				break;
-			case VirtualKey.Down:
-				if (selectionStart != Text.Length)
-				{
-					SelectionStart = Text.Length;
-					args.Handled = true;
-				}
-				if (AcceptsReturn)
-				{
-					args.Handled = true;
-				}
-				break;
-			case VirtualKey.Left:
-				if (selectionStart != 0)
-				{
-					args.Handled = true;
-				}
-				break;
-			case VirtualKey.Right:
-				if (selectionStart != Text.Length)
-				{
-					args.Handled = true;
-				}
-				break;
-			case VirtualKey.Home:
-			case VirtualKey.End:
-				args.Handled = true;
-				break;
-		}
-
 	}
 
 #if __SKIA__
