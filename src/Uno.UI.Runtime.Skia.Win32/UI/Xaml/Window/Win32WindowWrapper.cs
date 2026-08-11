@@ -111,6 +111,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			// EXPERIMENTAL: WebGPU on an HWND swapchain via the neutral backend. Renders through the shared
 			// WebGpuSwapChainContext (same code path validated on X11); presents via wgpuSurfacePresent in
 			// Win32WebGpuRenderer.CopyPixels. Not runtime-validated on Linux CI — needs a real Windows GPU.
+			// Give the backend the DPI scale BEFORE it creates the device, so its MSAA default matches the reference
+			// branch (DPI-aware: 1x at >=200%). Set once at bring-up; a later DPI change is rare and re-picks on the
+			// next device create.
+			global::Uno.UI.Composition.WebGpu.WebGpuDevice.RasterizationScale = (float)(RasterizationScale == 0 ? 1 : RasterizationScale);
 			var context = new global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext(
 				global::Uno.WebGpu.Native.WGPUTextureFormat.BGRA8Unorm,
 				inst => global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext.CreateHwndSurface(inst, Win32Helper.GetHInstance(), _hwnd));
