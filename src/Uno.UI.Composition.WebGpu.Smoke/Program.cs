@@ -403,6 +403,28 @@ foreach (var (label, px) in new[] { ("frame1", pRet1), ("frame2", pRet2) })
 	Check($"retained {label}: gap black", mid.r < 40 && mid.g < 40 && mid.b < 40, mid);
 }
 
+// 18b) RESIZE INVALIDATION — the SAME cached recording replayed into surfaces of DIFFERENT sizes must re-bake its
+//      NDC verts for the new size, not reuse the old-size NDC (which stretches it — the window-resize bug). Verts
+//      are CPU-NDC'd (pos/size), so the geometry cache must invalidate on a surface-size change.
+byte[] RenderFrameAtSize(int size, Action<WebGpuCommandRecorder> frame)
+{
+	var surface = new WebGpuRenderSurface(dev, size, size);
+	var rec = new WebGpuCommandRecorder(); frame(rec);
+	var present = new WebGpuPresentSession(dev, surface);
+	present.Clear(WColor.FromArgb(255, 0, 0, 0));
+	present.Replay(rec.Finish());
+	return dev.ReadPixelsRgba(surface);
+}
+(int r, int g, int b, int a) AtW(byte[] px, int x, int y, int w) { int i = (y * w + x) * 4; return (px[i], px[i + 1], px[i + 2], px[i + 3]); }
+var szChild = new WebGpuCommandRecorder(); szChild.DrawRect(new Rect(0, 0, 32, 32), red, false); var szData = szChild.Finish();
+Action<WebGpuCommandRecorder> szFrame = r => r.Replay(szData);
+var _ = RenderFrameAtSize(64, szFrame);           // builds szData's cache at 64px: logical (0,0,32,32) = top-left quadrant
+var pSmall = RenderFrameAtSize(32, szFrame);      // SAME recording at 32px: must re-bake so the rect fills the whole surface
+var szFar = AtW(pSmall, 24, 24, 32);              // far corner: red only if re-baked at 32; stale 64px NDC leaves it black
+var szNear = AtW(pSmall, 8, 8, 32);
+Check("resize: cached recording re-baked for new surface size (far corner red)", szFar.r > 200 && szFar.g < 60, szFar);
+Check("resize: near corner red", szNear.r > 200 && szNear.g < 60, szNear);
+
 // 19) DRAW COALESCING — three same-clip rects in one frame coalesce into a single draw; all must render.
 var pCo = Render(r =>
 {
