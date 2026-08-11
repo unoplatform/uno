@@ -86,8 +86,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 #if __SKIA__ // Not yet supported on the other platforms (https://github.com/unoplatform/uno/issues/8909)
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaFrameBuffer)]
+		// The ms-appdata load never completes on Skia Linux, and the awaited TCS has no timeout, so the job hangs to its limit (#23967).
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaFrameBuffer | RuntimeTestPlatforms.SkiaX11)]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23967")]
+		// Backstop for the storage calls below, which the inner WaitAsync does not cover.
+		[Timeout(60000)]
 		public async Task When_MsAppData()
 		{
 			var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
@@ -103,8 +106,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			TaskCompletionSource<bool> tcs = new();
 			sut.ImageOpened += (s, e) => tcs.TrySetResult(true);
+			sut.ImageFailed += (s, e) => tcs.TrySetException(new Exception($"Image failed to load: {e.ErrorMessage}"));
 
-			await tcs.Task;
+			// Neither event fires on some Skia legs (#23967). Without a timeout the bare await
+			// hangs until the 60-minute job cap, which loses the results file for the whole suite.
+			await tcs.Task.WaitAsync(TimeSpan.FromSeconds(30));
 		}
 #endif
 
@@ -172,7 +178,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaFrameBuffer)]
+		// Same Skia Linux hang as When_MsAppData (#23967): never reached in CI, but it awaits the same unbounded TCS.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaFrameBuffer | RuntimeTestPlatforms.SkiaX11)]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23967")]
 		public async Task When_MsAppData_StreamDisposed_FileNotLocked()
 		{
