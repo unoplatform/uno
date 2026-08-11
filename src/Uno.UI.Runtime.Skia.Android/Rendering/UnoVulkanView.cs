@@ -252,6 +252,10 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		var compositionTarget = _activity.RootElement?.Visual.CompositionTarget as CompositionTarget;
 		if (compositionTarget is null)
 		{
+			// OnNativePlatformFrameRequested is the only thing that clears the target's
+			// RenderRequested flag, so dropping the frame outright would make every later
+			// RequestNewFrame a no-op. Re-arm so the loop retries once the window is ready.
+			_renderRequested = true;
 			return;
 		}
 
@@ -353,27 +357,38 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 
 	#endregion
 
+	public void TeardownRenderer()
+	{
+		if (_disposed)
+		{
+			return;
+		}
+
+		_disposed = true;
+		_renderEvent.Set();
+		_renderThread?.Join(TimeSpan.FromSeconds(2));
+		_renderThread = null;
+		// Strictly innermost-first: the backend's GRContext-Vulkan owns pipelines and pools built on the
+		// swapchain, which in turn is built on the device — vkDestroyDevice must be last.
+		(_renderer as IDisposable)?.Dispose();
+		_renderer = null;
+		_context?.Dispose();
+		_context = null;
+		// Releases the retained instance and device kept alive across surface re-creations.
+		_vulkanContext.Dispose();
+		if (_nativeWindow != IntPtr.Zero)
+		{
+			ANativeWindow_release(_nativeWindow);
+			_nativeWindow = IntPtr.Zero;
+		}
+		_renderEvent.Dispose();
+	}
+
 	protected override void Dispose(bool disposing)
 	{
 		if (disposing)
 		{
-			_disposed = true;
-			_renderEvent.Set();
-			_renderThread?.Join(TimeSpan.FromSeconds(2));
-			// Strictly innermost-first: the backend's GRContext-Vulkan owns pipelines and pools built on the
-			// swapchain, which in turn is built on the device — vkDestroyDevice must be last.
-			(_renderer as IDisposable)?.Dispose();
-			_renderer = null;
-			_context?.Dispose();
-			_context = null;
-			// Releases the retained instance and device kept alive across surface re-creations.
-			_vulkanContext.Dispose();
-			if (_nativeWindow != IntPtr.Zero)
-			{
-				ANativeWindow_release(_nativeWindow);
-				_nativeWindow = IntPtr.Zero;
-			}
-			_renderEvent.Dispose();
+			TeardownRenderer();
 		}
 		base.Dispose(disposing);
 	}
