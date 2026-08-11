@@ -1710,6 +1710,10 @@ internal sealed unsafe class WebGpuGeometryCache
 	// Arena entry: Ops geometry is baked in the recording's OWN (identity) NDC space; a moved replay re-stamps a
 	// transform uniform (xform) on the per-op clip bind groups and reuses the vertex buffers instead of rebuilding.
 	public bool Arena;
+	// All ops are path fills (kind 1) — their verts are device-space + the transform table, so the recording is fully
+	// surface-size-independent: a resize repositions them via the per-frame table entry and needs NO rebuild (unlike
+	// a mixed entry whose solid/rrect verts are NDC-baked). Lets the arena resize-staleness skip pure-path entries.
+	public bool PurePath;
 	// Frame-solid entry (recording contains solids): only its NON-solid ops (paths/images/gradients, device space)
 	// are cached here; its solids are re-appended into the shared per-pass buffer each frame so they coalesce across
 	// visuals; the ordered emit list (FrameOrder) interleaves them with cached non-solid ops in draw order.
@@ -3354,18 +3358,22 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							// the slot's entry folds the replay transform + projection — written per frame below, so a
 							// move OR resize repositions the fan/cover via the table with no re-stamp and no re-bake.
 							int aSlot = (miss || entry is null) ? -1 : entry.XformSlot;
-							if (miss || !entry.Arena || entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height)
+							// A pure-path arena entry is surface-size-independent (device verts + table), so a resize is
+							// handled by the per-frame table write below with NO rebuild; a mixed entry's NDC-baked solids
+							// still force a size rebuild.
+							bool aSizeChanged = entry is not null && (entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height);
+							if (miss || !entry.Arena || (aSizeChanged && !entry.PurePath))
 							{
 								if (entry is not null) { _d.DeferRelease(entry.Owned); _d.DeferRelease(entry.StampOwned); }
 								var aOwned = new OwnedResources();
 								var aOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
 								var aList = new List<WebGpuCommand>();
 								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None)) { aList.Add(tc); }
-								bool aHasPath = false; foreach (var c in aList) { if (c is PathFill) { aHasPath = true; break; } }
+								bool aHasPath = false, aPure = aList.Count > 0; foreach (var c in aList) { if (c is PathFill) { aHasPath = true; } else { aPure = false; } }
 								if (aHasPath && aSlot < 0) { aSlot = _d.AllocXformSlot(); }
 								BuildCoalesced(aList, aOps, aOwned, aSlot);
 									for (int _ri = 0; _ri < aOps.Count; _ri++) { aOps[_ri] = ResidentizeFan(aOps[_ri], aOwned); }
-								entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot };
+								entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, PurePath = aPure, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot };
 								rr.Data.Compiled = entry;
 								WebGpuTrace.Upload("geometry-build(new,arena)", aOps.Count);
 							}
