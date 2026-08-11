@@ -108,10 +108,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	{
 		_nativeWindow = nativeWindow;
 
-#if __MACCATALYST__
-		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
-#endif
-
 		// Must run synchronously with UnoUIApplicationDelegate.FinishedLaunching for the initial
 		// window, otherwise a black screen may appear before the first frame is drawn. ALC-hosted
 		// windows are skipped because this calls MakeKeyAndVisible eagerly, which would cover the
