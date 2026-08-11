@@ -80,4 +80,31 @@
 			</ResolvedFileToPublish>
 		</ItemGroup>
 	</Target>
+
+	<!-- Android is multi-ABI: fetch libwgpu_native.so for every ABI and add each as an @(AndroidNativeLibrary) with
+	     its Abi so the .NET-Android build packs it into the APK's lib/<abi>/. The DllImportResolver's bare-name
+	     "libwgpu_native.so" then resolves via the Android loader. Import this .targets into the android app head so
+	     the items land in the APK build. Runs before assembly resolution so the native-lib collection sees them. -->
+	<Target Name="_ProvisionWgpuNativeAndroid"
+			BeforeTargets="_ResolveAssemblies;_ConvertResourcesCases;BeforeBuild"
+			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<ItemGroup>
+			<_WgpuAndroidAbi Include="aarch64"><Abi>arm64-v8a</Abi></_WgpuAndroidAbi>
+			<_WgpuAndroidAbi Include="armv7"><Abi>armeabi-v7a</Abi></_WgpuAndroidAbi>
+			<_WgpuAndroidAbi Include="x86_64"><Abi>x86_64</Abi></_WgpuAndroidAbi>
+			<_WgpuAndroidAbi Include="i686"><Abi>x86</Abi></_WgpuAndroidAbi>
+		</ItemGroup>
+		<MakeDir Directories="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\" />
+		<DownloadFile Condition="!Exists('$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip')"
+			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip"
+			DestinationFolder="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\" Retries="3" />
+		<Unzip Condition="!Exists('$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\lib\libwgpu_native.so')"
+			SourceFiles="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip"
+			DestinationFolder="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\" />
+		<ItemGroup>
+			<AndroidNativeLibrary Include="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\lib\libwgpu_native.so">
+				<Abi>%(_WgpuAndroidAbi.Abi)</Abi>
+			</AndroidNativeLibrary>
+		</ItemGroup>
+	</Target>
 </Project>

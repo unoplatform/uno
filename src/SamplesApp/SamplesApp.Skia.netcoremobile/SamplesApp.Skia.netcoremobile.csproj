@@ -316,6 +316,9 @@
 	<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'" Project="..\..\Uno.UI.Runtime.Skia.Android\build\*.Runtime.Skia.Android.props" />
 	<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'" Project="..\..\Uno.UI.Runtime.Skia.Android\build\*.Runtime.Skia.Android.targets" />
 
+	<!-- Package the multi-ABI wgpu-native .so into the APK so the WebGPU backend's DllImportResolver finds it. -->
+	<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'" Project="..\..\Uno.UI.Composition.WebGpu\wgpu-native.targets" />
+
 	<Import Condition="$(IsUIKit)=='true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.props" />
 	<Import Condition="$(IsUIKit)=='true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.targets" />
 
