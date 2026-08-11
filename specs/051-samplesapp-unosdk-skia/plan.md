@@ -510,24 +510,11 @@ git commit -m "ci: Build and runtime-test desktop Skia via the consolidated head
 **Exit criterion:** the solution, filters, and all CI reference only the consolidated head; the repo builds and all stages pass.
 
 - [x] **Task 6.1:** Deleted `SamplesApp.Skia.Generic/`, `SamplesApp.Skia.WebAssembly.Browser/`, `SamplesApp.Skia.netcoremobile/`, `SamplesApp.Windows/`, plus the orphaned `SamplesApp.Wasm.UITests/` node project. Entries removed from `Uno.UI.slnx` and `Uno.UI-Skia-only.slnf`.
-- [x] **Task 6.2:** `SamplesApp.Skia` (base lib) **stays** — it is what lets the samples compile once as generic Skia for every Skia TFM. See "The base library is not removable yet" below.
+- [x] **Task 6.2:** `SamplesApp.Skia` (base lib) **removed** — see Phase 7 below.
 - [x] **Task 6.3:** Retargeted the remaining consumers: the `Package.appxmanifest` embedded by the base lib, the three RuntimeTests helper apps' `_UnoBaseReferenceBinPath`, the gitpod wasm scripts, the CodeQL build step, and the `add-sample` / `runtime-tests` / `winui-runtime-tests` skills. Dropped the now-dead `InternalsVisibleTo` grants for the two deleted Skia heads.
 - [x] **Task 6.4:** desktop, browserwasm, android (`dotnet build`) and windows (`MSBuild.exe`) all build clean.
 - [ ] **Task 6.5 (optional):** Rename `SamplesApp` → final name if desired; update `.slnf` and CI paths in one commit.
 
-### The base library is not removable yet
-
-`SamplesApp.Skia` compiles the samples **once**, as generic Skia (`UnoRuntimeIdentifier=Skia`, `__SKIA__`,
-`UNO_REFERENCE_API`). The head cannot do that job itself, because on the mobile TFMs it compiles in *native*
-mode — measured, `net11.0-android` gets `__ANDROID__;__UNO_SKIA__;__UNO_SKIA_ANDROID__` and **not** `__SKIA__`
-— which is required for its own `Main.Android.cs` / `Main.iOS.cs` entry points. One assembly cannot be both.
-
-The visible cost is that platform symbols are inert in sample pages: 26 files carry `#if __ANDROID__`,
-22 `__APPLE_UIKIT__` and 27 `__WASM__`, and none of those branches is ever compiled — the samples only ever
-build as Skia (base lib) and WinUI (head, windows TFM, where `WINAPPSDK` does work). Making them live means
-inlining the samples into the head on every TFM, which needs the head's entry points moved off the
-`.Android.cs`/`.iOS.cs` suffixes so `UnoRuntimeIdentifier=Skia` can be set on mobile too. That is its own
-change; tracked separately.
 
 ---
 
@@ -707,3 +694,63 @@ roots it, the same way the netcoremobile head did.
 below the `Sdk.props` import at the top: `src/Directory.Build.props` sets
 `EnableAutomaticXamlPageInclusion=true` during that import and `Benchmarks.Shared.projitems` sets it back to
 `false`, so whichever is evaluated last in the property pass wins.
+
+---
+
+## Phase 7 — Remove the SamplesApp.Skia indirection
+
+**Exit criterion:** the samples compile into the head on every target, with their platform `#if` branches
+live, and the base library is gone.
+
+- [x] **Task 7.1:** Set `UnoRuntimeIdentifier=Skia` for every non-WinUI target, not just desktop and
+  browserwasm.
+- [x] **Task 7.2:** Import the shared content (`SamplesApp.Shared.props`, `SamplesApp.Samples.props`,
+  `SamplesApp.UnitTests.Shared.props`, `Benchmarks.Shared.projitems`, `SamplesApp.UnitTests.targets`)
+  unconditionally, plus `sourcegenerators.local.props` for the Skia targets, and carry over the base
+  library's `SupportsFontManifest` / `UnoXamlResourcesTrimming` / `SynthesizeLinkMetadata` /
+  `SkipIcuDataInitializerGenerator` properties.
+- [x] **Task 7.3:** Fix the code the dead guards had been hiding (see below).
+- [x] **Task 7.4:** Delete `SamplesApp.Skia`; drop the eight `InternalsVisibleTo("SamplesApp.Skia")` grants,
+  the three runtime assembly-name literals, the wasm `LinkerConfig` root and the
+  `UnoDisableHotRestartHelperGeneration` opt-out.
+
+### The blocker that turned out not to exist
+
+Phase 6 recorded that the head could not compile the samples itself, because its mobile targets build in
+*native* mode for their own `.Android.cs` / `.iOS.cs` entry points. That was wrong, and the csproj comment
+asserting it was wrong in the same way its `UnoRuntimeIdentifier` comment had been.
+
+Measured: with `UnoRuntimeIdentifier=Skia` on `net11.0-android`, `DefineConstants` carries `__SKIA__`,
+`__CROSSRUNTIME__` **and** `__ANDROID__`/`__UNO_SKIA_ANDROID__` together, and `Main.Android.cs`,
+`MainActivity.Android.cs` and `AssemblyInfo.Android.cs` are all still in `Compile`. The file suffixes are
+excluded on `$(IsAndroid)` / `$(IsAppleUIKit)`, which are independent of the runtime identifier.
+
+### What the live guards surfaced
+
+The samples had never been compiled with a platform symbol other than `__SKIA__`/`WINAPPSDK`, so every
+`#if __ANDROID__` (26 files), `#if __APPLE_UIKIT__` (22) and `#if __WASM__` (27) branch was dead code. Turning
+them on cost **one** file on desktop and **nine** on android — all of it native-Views-era code orphaned by
+the native rendering drop:
+
+| Sample | Problem |
+|---|---|
+| `NativeView` + `UIElement_Native_Child` | built a native Android `ScrollView` via Uno.UI's native-Views extensions — removed |
+| `WebView_Input_Keyboard_Insets` | ~195 lines of native Android view code behind an otherwise empty `Control` — removed |
+| `SplitViewBehavior` | `BindableDrawerLayout` fallback — branch removed |
+| `TextBox_Formatting_Flicker` | native `IInputFilter` on `TextBoxView` — branch removed |
+| `TextBlock_TextWrapping_PR1954_EdgeCase` | reflected into `TextBlock`'s native `LayoutBuilder` — branch removed |
+| `Textbox_Keyboard_AutoFocus` | native focus paths whose cross-platform `#else` already worked — collapsed |
+| `ElevatedView_Tester`, `SequentialAnimationsPage` | `new` hiding native `View` members that no longer exist |
+| `FileSavePicker_LargeFileWrite` | WASM-only picker API gated on `__CROSSRUNTIME__`, which mobile now defines while referencing the netcoremobile flavour of `Uno.UWP` that lacks it — retargeted to `__WASM__` |
+| 3 × `WebView2_*` | unqualified `WebView2`; the desktop target references the `Microsoft.Web.WebView2` package, which puts a **global** `WebView2` namespace in scope. A using-alias cannot fix this (CS0576) — the type is qualified instead |
+
+### Watch-outs recorded for next time
+
+- `Uno.UI.RuntimeTests` globs `Tests/**/*.cs`, which swallows the nested `AlcApp` / `HRApp` / `HRUnoLib`
+  `obj` folders once they have been built (CS0579). The repo-wide `DefaultItemExcludes` is `obj/**`,
+  relative to the project directory, so it does not cover them. Now excluded explicitly.
+- `RuntimeTestsApp` derived the islands assembly name by prefixing `"UnoIslands"` onto the samples assembly
+  name, which only produced `UnoIslandsSamplesApp.Skia` while the samples assembly still carried the
+  `.Skia` suffix. Named explicitly now.
+- iOS and tvOS cannot be built on Windows, so their `__APPLE_UIKIT__` branches compile for the first time on
+  CI. Expect the same class of fallout there.
