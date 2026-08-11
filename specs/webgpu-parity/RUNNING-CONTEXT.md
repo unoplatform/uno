@@ -992,3 +992,384 @@ REAL REMAINING WORK:
 - **Runtime-DPI MSAA re-adapt** — needs Win32-host device recreation on a DPI change; not reproducible headless.
 - **Glyph-winding vs WinUI** — neutral honours FillRule (nz), ramez hardcodes eo; author a WinUI-parity runtime test
   to confirm neutral is the correct one.
+
+## 25. Session 2026-08-11 (cont.) — winding parity confirmed; remaining items are architectural
+
+**Fill-rule (winding) parity CONFIRMED + committed (`8fcc838fb4`).** New runtime test Given_Path_FillRule (nested
+same-wound rects: NonZero fills the inner region, EvenOdd holes it). Ran on BOTH backends headless (Xvfb+lavapipe):
+WebGPU 2/2 pass, Skia 2/2 pass — identical → WebGPU honours FillRule (nonzero stencil Inc/DecWrap) at parity with
+Skia and the WinUI target. §17's "verify winding vs WinUI" is resolved. (Aside: the path-markup F0/F1 prefix via
+`XamlBindingHelper.ConvertValue(typeof(Geometry), ...)` did NOT propagate the fill rule — a minor core/markup quirk,
+not a renderer bug; the test builds the geometry programmatically with an explicit FillRule to sidestep it.)
+
+**The remaining backlog items are all LARGE architectural changes (documented here so they can be done as focused,
+validated efforts rather than rushed onto the fresh transform-table hot path):**
+
+- **Cross-visual glyph coalescing** — merge same-colour+same-clip glyph runs ACROSS recordings into one stencil+cover.
+  Blocker: the per-op tuple `(kind,b0,u0,b1,flag,clip,clipBg)` can't hold what a coalesced glyph needs — a shared
+  glyph-fan-slab offset AND a cover ref AND the colour (colour is needed so overlapping runs coalesce safely; without
+  it, only non-overlapping runs are correct). Clean form = refactor the 7-tuple to a named `struct Op` (~30 sites),
+  add a glyph fan slab (analog of the solid slab), coalesce contiguous same-colour+clip fan ranges → one stencil, one
+  cover over the clip AABB. Frame-solid glyphs are the clean case (all device-baked, R=Identity projection slot, so
+  they share the projection). Headless-validatable (a multi-visual same-colour text scene → fewer draws, same px).
+  Est: substantial (struct refactor + slab + coalescing + validation).
+
+- **Acrylic/backdrop O(n²) prefix re-render (#17)** — each acrylic re-renders the whole prefix into an offscreen to
+  capture what's behind it → O(n²) for stacked acrylics. Fix = sample the already-rendered content instead. Blocker:
+  the single-MSAA-pass model can't `LoadOp.Load` the in-progress pass, so this needs the RESOLVE-THEN-SAMPLE
+  rearchitecture (resolve the main pass to a sampled texture mid-frame, sample the acrylic region, blur, composite).
+  Touches the core RenderInto pass model. Smoke CAN validate acrylic pixels on lavapipe (offscreen readback), so it
+  IS headless-validatable — the blocker is architectural, not validation. Est: large (core pass-model change).
+
+- **Bounds-sized offscreens (#14)** — layer/backdrop offscreens are full-window; size them to the content bounds.
+  Same resolve-then-sample dependency (Ndc/scissor parameterised by target origin+size). Est: large; pairs with #17.
+
+- **Runtime-DPI MSAA re-adapt** — MSAA count is baked at device init; a window moving to a different-DPI monitor
+  won't re-pick. This is a QUALITY nicety, NOT correctness (rendering is correct at any MSAA count), and it needs
+  Win32-host device/pipeline recreation on a DPI change (invasive, host-side, not reproducible headless). DISPOSITION:
+  deferred as low-value + unvalidatable-here; documented, not implemented.
+
+**Delivered this session (all committed):** transform table (#28), pure-path resize-skip, IsCacheable comment fix,
+Win32 native-publish crash fix, winding parity test; verified+closed 5 stale tasks (#19/#20/#31 + immediate-clip cache
++ color glyphs); reconciled the whole backlog (§24). The four items above are the genuine remaining work, each a
+dedicated architectural effort.
+
+## 26. Session 2026-08-11 (cont.) — "continue everything": struct refactor landed; parity re-scoped against evidence
+
+**Struct refactor DONE (`9b202e6b00`, 94/94).** Promoted the per-pass draw-op 7-tuple to `struct DrawOp` (Deconstruct
+keeps `var (kind,...) = op` + `.kind` access unchanged; dormant `Color`/`GlyphFanStart` fields added). Behavior-neutral
+foundation for glyph coalescing. (Two mechanical-replace foot-guns fixed: the ctor param list matched the tuple
+string; `List<nint>.Add((nint)x)` casts + the slab `_free.Add((off,cap))` 2-tuples were wrongly wrapped.)
+
+**Re-scoped the remaining "deferred" items against ACTUAL ramez-parity evidence:**
+- **Cross-visual glyph coalescing — NOT a ramez gap.** The §17 GPU-command diff shows neutral AND ramez emit the SAME
+  glyph draw counts (112 stencil / 112 cover, both). Ramez's transform table POSITIONS glyphs; it does not coalesce
+  glyph draws across visuals. So this is a speculative optimization, not a divergence — and its value is limited
+  (only same-clip cross-visual runs coalesce; per-item-clipped list text wouldn't). Foundation (DrawOp) is in place if
+  we ever want it; not pursued as parity.
+- **Bounds-sized offscreens (#14) — NOT a ramez gap.** The OOM audit recorded "ramez never bounds-sized layers
+  either." A neutral-only VRAM optimization, not a divergence.
+- **Runtime-DPI MSAA — minor quality nicety, NOT correctness** (rendering is correct at any MSAA count) and needs
+  Win32-host device recreation on DPI change (invasive, unvalidatable headless). Disposed.
+- **Acrylic/backdrop O(n²) (#17) — the ONE real remaining ramez divergence.** RenderInto's BackdropCmd case
+  (line ~3554) does `RenderInto(cmds.GetRange(0, ci), bd)` — re-renders the WHOLE prefix per backdrop → O(n²) for
+  stacked acrylics; ramez samples the resolved target. FIX PLAN (incremental base): keep ONE persistent per-frame
+  backdrop-base surface that STORES its MSAA (like the on-window target, so LoadOp.Load is valid), and at each
+  backdrop render only [prevCi, ci) onto it with load:true (RenderInto already has a `load` param) instead of
+  [0, ci) — each command rendered once → O(n). Subtlety: a BackdropCmd inside the incremental range still nests
+  (backdrops-behind-backdrops), and the base lifecycle + prevCi must be tracked across backdrops within one
+  RenderInto. Bounded to the backdrop path but hits the single-MSAA-pass/load constraint, so it warrants a focused
+  effort with REAL-GPU acrylic validation (the lavapipe smoke validates backdrop pixels, but stacked-acrylic perf +
+  the persistent-MSAA-base load path are best confirmed on real HW).
+
+## 27. Correction to §26 — acrylic O(n²) needs pass-segmenting, NOT an incremental base
+
+Attempted the §26 "incremental base" plan (render only [prevCi, ci) onto a persistent-MSAA base with load:true).
+It is INCORRECT: the command stream is STATEFUL (Save/Restore/Scale/Clip push-pop), so a mid-range replay [prevCi, ci)
+loses the transform/clip stack accumulated in [0, prevCi) — which is exactly why the current code replays [0, ci)
+from the start (correct but O(n²)). Ramez avoids O(n²) not by cheaper replay but by sampling the RESOLVED FRAMEBUFFER
+(pixels already rendered), not by re-replaying commands.
+
+So the correct fix = PASS-SEGMENTING at encode time: the ops are already resolved to device space, so split the ENCODE
+(not the command replay) at each backdrop op — encode ops[0..backdrop) into pass 1, resolve to a sampleable texture,
+let the backdrop sample+blur+composite it, then continue encoding the rest in a follow-up pass (load). Each op encoded
+once, transform/clip state preserved (baked in the ops) → O(n) + correct. This restructures WHEN the backdrop resolves
+(build-time nested RenderInto → encode-time segment resolve) — a real core change to RenderInto's single-pass encode,
+warranting a dedicated effort + real-GPU acrylic validation. It is the ONLY remaining true ramez divergence.
+
+## 28. Acrylic O(n²) FIXED via pass-segmenting (`18739d8cc8`) — the last real ramez divergence
+
+Implemented the §27 plan. BackdropCmd on a segmentable (non-pooled, MSAA-storing) target now emits a kind-6 marker
+instead of re-rendering the prefix. At encode, kind-6 ENDS the main pass (its MSAA resolves into target.View = the
+content behind the backdrop), blurs that, REOPENS the pass with LoadOp.Load, composites the blurred backdrop + tint
+over the effect region, and continues — each command encoded once (O(n)). Pooled offscreens keep the prefix-rerender
+fallback. Smoke 95/95 incl. a new two-backdrop scene (pass ended+reopened twice in one frame). All real ramez
+divergences are now closed.
+
+**Remaining "todos" are confirmed NON-ramez-gaps / minor, poor ROI vs regression risk to the now-parity-complete
+backend:** glyph coalescing (§17 shows identical glyph counts to ramez — not a gap; limited value since per-item clips
+don't share clipBg), bounds-sized LAYER offscreens (ramez didn't; and the backdrop — the main offscreen consumer — is
+now segmented away; needs an Ndc-origin + composite-region/pipeline change), runtime-DPI MSAA (quality nicety, needs
+Win32-host device recreation, unvalidatable headless). Each touches the fresh transform-table / composite pipeline /
+host device lifecycle for secondary gains.
+
+## 29. WASM/Dawn black-screen — WGSL uniformity portability bug (`0e21e19196`)
+
+First real-GPU WASM test: WebGPU initialized (secure-context via localhost) but the canvas was BLACK. Console showed
+ONE WGSL parse error at device init:
+  "'fwidth' must only be called from uniform control flow"
+in the analytic rounded-rect fill shader: `if (i.ihalf.x >= 0.0) { ... fwidth(di) ... }`. Dawn (browser WebGPU)
+STRICTLY enforces WGSL's rule that derivative fns (fwidth/dpdx/dpdy) and implicit-LOD textureSample run only in
+UNIFORM control flow; wgpu-native (desktop/lavapipe) tolerated it. The invalid shader → invalid RrPipe → cascaded
+(invalid pipeline → bind group → command buffer → Queue.Submit fails) → the whole frame failed → black.
+
+FIX: hoist `di = sdRR(...)` + `aai = fwidth(di)` OUT of the `if` (uniform control flow); only APPLY the coverage
+inside the `if`. Visually identical; desktop smoke 95/95 (rrect + border-ring unchanged).
+
+**Durable lesson for the Dawn/WASM target:** wgpu-native is lenient about WGSL uniformity; Dawn is strict. Any
+derivative (fwidth/dpdx/dpdy) or implicit-LOD `textureSample` inside an `if`/loop compiles on desktop but breaks the
+whole frame on WASM. Audited all shaders: the two `fwidth` (rrect) + the one `textureSample` (image) were the only
+derivative/implicit-sample calls; the image one is already at fragment top-level (uniform). Now Dawn-clean. Note the
+CASCADE — a single invalid pipeline blacks out the entire canvas, so a lone shader error reads as "nothing renders."
+
+WASM wiring status: complete + accurate. Publish links clean with the full current backend (transform table,
+pass-segmenting, struct refactor) + no new stubs; JS device-init requests default limits (storage-in-vertex OK);
+browser target is non-pooled so acrylic pass-segmenting applies. One local-only test-build tweak: WASM head didn't
+default UNO_WEBGPU, so the published app ran WebGL/Skia — forced UNO_WEBGPU=1 in Program.cs (local-only) for the zip.
+
+## 30. Android WebGPU — wiring completed (`02e66b7854`); APK build gated on the mobile-restore context
+
+Pivoted to Android. Existing pieces: `UnoSKWebGpuView` (SurfaceView → ANativeWindow → WebGpuSwapChainContext.
+CreateAndroidSurface → wgpuSurfacePresent) + `ApplicationActivity.CreateRenderView` opt-in on UNO_WEBGPU. Missing
+piece (now added): the native library was never packaged, so wgpuCreateInstance would DllNotFound.
+
+ADDED: `_ProvisionWgpuNativeAndroid` in wgpu-native.targets — fetches wgpu-android-{aarch64,armv7,x86_64,i686}-
+release.zip and adds each libwgpu_native.so as @(AndroidNativeLibrary) with its Abi (arm64-v8a/armeabi-v7a/x86_64/
+x86); imported into the netcoremobile head for android so it reaches the APK's lib/<abi>/. The DllImportResolver's
+bare "libwgpu_native.so" resolves via the Android loader. UNO_WEBGPU=1 defaulted in Main.Android.cs (LOCAL-ONLY) for
+the test build. Backend (transform table, pass-segmenting, WGSL fwidth fix, struct refactor) applies as-is — Android
+uses wgpu-native (lenient like desktop; the fwidth fix is still correct + spec-compliant).
+
+BLOCKED HERE (unchanged container limitation, NOT WebGPU): the netcoremobile android build fails at RESTORE with
+NU1201 — Uno.UI.Composition.Skia resolves as net10.0-android36.0-only while net10.0 consumers (SamplesApp.Skia,
+RemoteControl, FluentTheme, …) want net10.0. Pre-existing mobile cross-targeting/restore-graph issue; the base host
+doesn't build standalone in a plain Linux container (needs the CI/mobile restore context). So NO APK can be produced
+or validated here.
+
+STILL NEEDS a real mobile build + device to confirm: (a) the @(AndroidNativeLibrary) hook actually packs the .so into
+the APK (chose BeforeTargets=_ResolveAssemblies; unverified without a mobile build), (b) on-device swapchain present
+via ANativeWindow, (c) that the device's Vulkan/wgpu adapter supports the requested surface format + MSAA. Wiring is
+otherwise complete + the targets XML validated (backend build sees _ProvisionWgpuNativeAndroid). Build in CI or a
+Windows/macOS mobile-dev setup: `dotnet build SamplesApp.Skia.netcoremobile -f net10.0-android -c Release`.
+
+## 31. Android APK BUILT + wgpu-native packaged — mobile-restore root cause fixed
+
+Fixed the mobile build in-container and produced a working WebGPU APK.
+
+ROOT CAUSE of the NU1201 (not what §30 assumed): `Uno.UI.Composition.Skia/Uno.UI.Composition.SkiaBackend.csproj`
+(assembly `Uno.UI.Composition.Skia` — the name the error prints) is a GENERIC SkiaSharp backend, but its FILE ends
+`.SkiaBackend.csproj`, so it missed targetframework-override.props's `.Skia.csproj` auto-noplatform rule and, under
+`-p:UnoTargetFrameworkOverride=net10.0-android`, cross-targeted to net10.0-android36.0. Every net10.0 consumer
+(RemoteControl.Skia, FluentTheme.v1/v2.Skia, Lottie/Toolkit/Runtime.Skia, SamplesApp.Skia) then failed NU1201.
+FIX (`2b1c3673fb`): `<UnoDisableTargetFrameworkPlatformOverride>true</...>` on SkiaBackend.csproj (mirrors the
+Composition.Drawing fix) → stays net10.0. Diagnosis: `.Skia.csproj`/`.Wasm.csproj`/`.Reference.csproj` OR the flag
+trip `_ShouldUseNoPlatformOverride`; a Skia backend whose filename doesn't match the pattern needs the flag.
+
+BUILD INVOCATION: `dotnet build SamplesApp.Skia.netcoremobile -c Debug -p:UnoTargetFrameworkOverride=net10.0-android`
+— override ONLY, NO `-f net10.0-android` (the head honors the override → single net10.0-android; `-f` sets a global
+TargetFramework that leaks onto the generic projects and re-breaks them). NetCurrent=net11.0, NetPrevious=net10.0, so
+`net10.0-android`.StartsWith(NetPrevious) → generic projects resolve net10.0.
+
+Two LATENT compile bugs in the never-compiled Android WebGPU opt-in (fixed): `Environment` in
+ApplicationActivity.CreateRenderView was ambiguous (Android.OS vs System) AND `System` binds to Microsoft.UI.System
+in that file → use `global::System.Environment` (`7301c11462`). Same in Main.Android.cs (local-only env default).
+
+RESULT: `uno.platform.samplesapp.skia-Signed.apk` (49MB, debug-signed) built; verified it contains
+lib/arm64-v8a/libwgpu_native.so + lib/x86_64/libwgpu_native.so (9.3MB each) — real devices + emulators. Delivered as
+SamplesApp-Android-WebGpu.apk. UNO_WEBGPU=1 baked (local-only Main.Android.cs). CAVEATS to verify on a device:
+(a) XA0141 — wgpu-native's .so is NOT 16KB-page-aligned → loads on Android <16, may fail on Android 16+ (upstream
+wgpu-native limitation); (b) on-device ANativeWindow swapchain present + the device's Vulkan/wgpu adapter support are
+unvalidated headless. The build + packaging path is now proven; on-device render is the user's confirmation.
+
+## 32. Android startup crash was Fast Deployment, not WebGPU — rebuild with EmbedAssembliesIntoApk
+
+First on-device run aborted at startup with:
+  F monodroid: No assemblies found in '.../files/.__override__/x86_64' ... Assuming this is part of Fast Deployment. Exiting...
+Not WebGPU, not our wiring — the Debug build defaults to Fast Deployment (EmbedAssembliesIntoApk=false), so the
+managed assemblies live outside the APK and are meant to be pushed by `dotnet run`/the IDE. A hand-off APK installed
+with `adb install` has no assemblies -> abort before any app code runs. FIX for a distributable APK:
+`-p:EmbedAssembliesIntoApk=true` (Debug) — rebuilt 49MB -> 194MB, assemblies embedded (assembly-store blob, not loose
+.dll). Native still fine: extractNativeLibs=true and every lib/<abi>/*.so (runtime + libwgpu_native.so) is DEFLATED
+and extracted on install, so libwgpu_native.so loads like libmonosgen. The "lib/ MUST be STORED" note was about the
+Fast-Deployment assembly entries, moot once embedded. Delivered SamplesApp-Android-WebGpu.apk (194MB, self-contained).
+Build cmd for a hand-off APK:
+  dotnet build SamplesApp.Skia.netcoremobile -c Debug -p:UnoTargetFrameworkOverride=net10.0-android -p:EmbedAssembliesIntoApk=true
+
+## 33. Android black screen — wrong-ABI wgpu-native leaked into the APK (`wgpu-native.targets`)
+
+Second on-device run: app STARTS and runs (assemblies + managed init all fine), but black screen. logcat:
+  E monodroid-assembly: Could not load '.../lib/x86_64/libwgpu_native.so'. dlopen failed:
+    library "libdl.so.2" not found: needed by .../libwgpu_native.so
+  fail: UnoSKWebGpuView render thread failed -> System.DllNotFoundException: webgpu
+    at WebGpuDevice..ctor -> WebGpuSwapChainContext..ctor -> UnoSKWebGpuView.InitializeWebGpu
+
+DIAGNOSIS (decisive, by readelf on the APK): `libdl.so.2` is the GLIBC/Linux soname; a real Android/bionic .so
+needs unversioned `libdl.so`. The .so packed into BOTH lib/arm64-v8a/ and lib/x86_64/ was byte-identical
+(9330952, machine "Advanced Micro Devices X86-64") = the DESKTOP Linux libwgpu_native.so, not the per-ABI Android
+binaries. The correct bionic binaries WERE downloaded (obj/wgpu-native/.../android/<abi>/lib/: AArch64 10208408,
+ARM 6953740, x86_64 9734152, i686 10115096, all NEEDED libdl.so/libc.so) but never made it into the APK.
+
+ROOT CAUSE (two leak sources, both in wgpu-native.targets, both fixed):
+  1. `_SelectWgpuAsset` host-OS fallbacks fire on an Android head too (building on Linux -> IsOSPlatform('Linux')),
+     selecting the Linux asset; `ProvisionWgpuNative` (AfterTargets=Build) then copies it into the head OutDir.
+  2. The .targets is ALSO imported by the WebGpu LIBRARY (Uno.UI.Composition.WebGpu, net10.0 generic). Its own
+     `ProvisionWgpuNative` drops the Linux .so next to its dll in bin/Debug/net10.0/. .NET-Android HARVESTS loose
+     `.so` from referenced-project output dirs transitively and fans the single (ABI-less) desktop .so across every
+     packaged ABI, SHADOWING the correct @(AndroidNativeLibrary) per-ABI items.
+
+FIX (both durable, in wgpu-native.targets):
+  - Precompute `_WgpuTpi = GetTargetPlatformIdentifier($(TargetFramework))`; add `And '$(_WgpuTpi)' != 'android'`
+    to all four host-OS fallback PropertyGroups in `_SelectWgpuAsset`. (Inline `'$([MSBuild]::...(...))'` in a
+    Condition is an MSB4092 nested-quote error — must go through a property.) On an Android head `_WgpuAsset` now
+    stays empty -> _Fetch/Provision/_AddToPublish all no-op (already guarded on non-empty). Only
+    `_ProvisionWgpuNativeAndroid` contributes (correct per-ABI @(AndroidNativeLibrary) with %(Abi)).
+  - Gate the loose `ProvisionWgpuNative` Copy to app heads only: `And '$(OutputType)' != 'Library'`. Heads are
+    OutputType=Exe (verified: Generic/netcoremobile/WebAssembly.Browser); the library defaults to Library. Desktop
+    run-from-build still gets its .so from the head's own import; the library stops emitting a harvestable .so.
+
+GOTCHA when rebuilding to verify: `rm -rf bin/*android*` does NOT match bin/Debug/net10.0-android (Debug has no
+"android" in it), so a stale leaked .so survives and the packaging up-to-date check skips repackaging (APK stays
+byte-identical). Must `rm -rf bin/Debug/net10.0-android obj/Debug/net10.0-android` (and the library's
+bin/Debug/net10.0/libwgpu_native.so) then rebuild. Confirm with `readelf -h` on lib/<abi>/libwgpu_native.so in the
+APK: arm64-v8a must be AArch64 (10208408) + NEEDED libdl.so, x86_64 must be x86-64 (9734152) + NEEDED libdl.so.
+Only arm64-v8a + x86_64 are packaged (head default AndroidSupportedAbis) — matches emulator (x86_64) + devices (arm64).
+Redelivered SamplesApp-Android-WebGpu.apk (194044040 bytes, 20:09) with correct bionic libs.
+
+## 34. Android: packaging FIXED — WebGPU now inits on-device; new crash is in wgpu-native queue_write_buffer (emulator Vulkan)
+
+After §33 the correct bionic libs load and WebGPU comes up on Android (emulator sdk_gphone64_x86_64, Android 16):
+  [webgpu] backend init — pipeline=True msaa=4x scale=1 colorFormat=BGRA8Unorm
+  Neutral graphics pipeline active: WebGpu context via WebGpuRenderer (Android).
+  [webgpu] TEX #2 Surface.msaa 2560x1600 x4 ; surface 2560x1600 format=RGBA8UnormSrgb present=Fifo
+No more DllNotFound. So the packaging task is DONE.
+
+NEW crash (distinct, deeper), on the FIRST buffer write of the FIRST frame:
+  F libc: SIGSEGV SEGV_ACCERR tid UnoWebGpuRender
+  #00 memmove+270 libc.so
+  #01 wgpu_core::device::queue::Queue::write_buffer
+  #02 wgpuQueueWriteBuffer+80  (libwgpu_native.so)
+  #03 libmonosgen (our WriteBuffer p/invoke)
+Registers: memmove(dst=0x7c94fc5b99d0, src=rsi=0x954d58d8, n=0x96c=2412). Fault on DST (SEGV_ACCERR = ran off a
+mapped region). src low-address is NOT truncation — Mono maps the managed heap in the low 4GB on Android, so a
+`fixed` pointer legitimately looks like 0x954d58d8.
+
+RULED OUT as our bug:
+ - P/Invoke sig is correct and identical to desktop x86_64 (which works): wgpuQueueWriteBuffer(IntPtr queue, IntPtr
+   buffer, ulong bufferOffset, IntPtr data, nuint size). WebGpuInterop.cs:1771.
+ - The slab path (WebGpuBackend.cs:1848-1850) creates Buf at Size = capVerts*stride*4 with Vertex|CopyDst and writes
+   exactly needFloats*4 = same size. dst size == write size.
+ - Pooled-buffer reuse (UNO_WEBGPU_PIPELINE) is irrelevant: this is frame 0's first write, no pool exists yet.
+ - An over-large write would be caught by wgpu-core validation (error callback), not SIGSEGV — so it's not a
+   size-vs-buffer mismatch on our side.
+
+LEADING HYPOTHESIS: wgpu-native v29 queue_write_buffer staging memmove faults on the EMULATOR's Vulkan. The emulator
+uses host-passthrough/software Vulkan (logcat: MESA "Failed to open rendernode", vulkan layer search, gfxstream) — a
+known-flaky target. Most decisive next test: a PHYSICAL arm64 device (real Adreno/Mali driver). If it renders there,
+this is an emulator-driver issue, not our code.
+IF it also crashes on a physical device, next steps: (a) capture the wgpu uncaptured-error log around the first write;
+(b) try mapAtCreation + a manual staging copy instead of queueWriteBuffer for the first vertex upload; (c) bisect
+wgpu-native version. Not attempted here (no Android runtime available to this session).
+
+## 35. Android renders but colours washed out / light UI invisible — sRGB surface double-gamma (FIX in WebGpuSwapChainContext)
+
+Symptoms on-device: acrylic broken, backgrounds "super weird"; playground page nearly all-white with no visible TextBox
+chrome; pressing the TextBox shows a greyish box.
+
+ROOT CAUSE: surface-format fallback picked an *_Srgb format. WebGpuSwapChainContext.Configure() set _surfaceFormat =
+device.ColorFormat (BGRA8Unorm), and when that wasn't in the Android surface caps it fell back to caps.Formats[0] =
+RGBA8UnormSrgb. The scene renders already-sRGB-encoded colours into a plain-UNORM offscreen (no gamma, matching
+reference/desktop); the present blit then writes those into the *_Srgb swapchain image, which re-encodes linear->sRGB
+a SECOND time. Double gamma pushes light values toward white: light-gray TextBox borders/white fills (~0.9) -> ~0.96
+(invisible on white), while a pressed medium-gray (~0.6) -> ~0.8 stays visible ("greyish box on press"). Also breaks
+acrylic blur/tint blending. Desktop/WASM surfaces are BGRA8Unorm (non-sRGB) so it never showed there.
+
+FIX: in the !supported fallback, prefer a non-sRGB 8-bit UNORM (RGBA8Unorm or BGRA8Unorm) from caps before
+caps.Formats[0]. Straight-copy blit, no re-encode. (WebGpuSwapChainContext.cs Configure.)
+
+SEPARATE, ORTHOGONAL (NOT WebGPU): fonts fail to load on this Android build ->
+  "Failed to load font manifest ms-appx:///Uno.Fonts.OpenSans/Fonts/OpenSans.ttf:
+   System.Text.Json.JsonException: The input does not contain any JSON tokens" (empty manifest stream), and
+  "Failed to load FontEntry ... uno-fluentui-assets.ttf".
+This is asset/manifest resolution on Skia-Android (would affect the non-WebGPU Android build too), so all text is
+missing -> compounds the "blank page" look. Track/fix separately from the WebGPU port.
+
+## 36. Correction to §35 — DON'T force the surface format; decode sRGB in the blit shader instead
+
+The §35 fix (prefer a non-sRGB surface format in the caps fallback) CRASHED on a physical Android device at startup:
+forcing wgpuSurfaceConfigure to a format other than the driver's preferred one makes wgpu-native panic (Rust
+abort -> hard SIGSEGV/abort, NOT the non-fatal uncaptured-error callback) on some drivers. Reverted.
+
+CORRECT FIX (WebGpuSwapChainContext.cs): keep the driver's preferred _surfaceFormat (incl. *_Srgb) untouched, and
+compensate for the sRGB target's automatic linear->sRGB re-encode inside the present blit. Added BlitWgslSrgb, a blit
+variant that pre-decodes sRGB->linear (`s2l` per RGB channel, alpha passthrough) so store re-encode reproduces the
+original already-encoded value == desktop straight-copy result. EnsureBlitPipeline picks BlitWgslSrgb when
+IsSrgb(_surfaceFormat), else the plain copy; _blitFormat tracks the built format and rebuilds the pipeline if a
+reconfigure changes it. No surface-config change => no driver panic. Verified the WebGpu project + APK compile clean.
+
+## 37. Apple targets (iOS/tvOS + macOS) WebGPU wiring — iOS managed path DONE (unvalidated), native/build blockers remain
+
+Android was pure-managed (wgpu-native ships a dlopen'able .so; managed code owns the ANativeWindow). Apple is NOT:
+wgpu-native ships iOS as a STATIC lib (xcframework) — iOS forbids dlopen of arbitrary dylibs — and on macOS the native
+libUnoNativeMac owns the CAMetalLayer/drawable/render-loop (managed code only gets a per-frame MTLTexture).
+
+DONE this session (managed, compile-UNVALIDATED — no Apple toolchain/iOS workload on the Linux box; needs a Mac):
+ - WebGpuLoader.Resolve: on iOS/tvOS/MacCatalyst resolve "webgpu" to NativeLibrary.GetMainProgramHandle() (static
+   link — symbols live in the main image), before the file-based dylib candidates.
+ - New Uno.UI.Runtime.Skia.AppleUIKit/Rendering/UnoSKWebGpuMetalView.cs: UIView whose layerClass=CAMetalLayer; a
+   CADisplayLink render loop (background NSRunLoop thread, mirrors UnoSKMetalView) drives the neutral seam:
+   WebGpuSwapChainContext(BGRA8Unorm, CreateMetalSurface(inst, (IntPtr)MetalLayer.Handle)); sets
+   CompositionTarget.Renderer = new WebGpuRenderer(ctx.Device); LayoutSubviews keeps CAMetalLayer.DrawableSize in px.
+ - New IAppleUIKitRenderView (SetOwner/QueueRender); UnoSKMetalView now implements it (explicit SetOwner).
+ - RootViewController: field _skCanvasView -> _renderView (interface); Initialize branches on UNO_WEBGPU (1/true/
+   swapchain) to build UnoSKWebGpuMetalView else UnoSKMetalView; InvalidateRender -> _renderView.QueueRender; new
+   OnWebGpuFrameRequested(ctx) = OnNativePlatformFrameRequested(null, size => ctx.AcquireRenderTarget) + ctx.Present()
+   + UpdateNativeClipping (mirrors Android UnoSKWebGpuView.RenderFrame).
+ - AppleUIKit csproj: ProjectReference to Uno.UI.Composition.WebGpu.
+
+REMAINING BLOCKERS (need Apple toolchain / native rebuild — NOT doable from this Linux env):
+ 1. iOS static-lib provisioning+linking (build system): wgpu-native.targets only knows win/linux/mac/android. Add an
+    iOS path that fetches the wgpu-native iOS xcframework (static libwgpu_native.a for ios-arm64 + ios-sim) and links
+    it into the APP HEAD as @(NativeReference Kind=Static, ForceLoad=true) so the symbols land in the main program
+    image (GetMainProgramHandle finds them). Import it in the netcoremobile head under a
+    GetTargetPlatformIdentifier(...)=='ios' condition (parallel to the existing =='android' import). Confirm the exact
+    wgpu-native release asset name/layout for iOS at pin v29.0.1.1.
+ 2. macOS native change (Obj-C, in libUnoNativeMac — a prebuilt binary): the managed MacOSWindowHost only receives an
+    MTLTexture via the MetalDraw callback; wgpu needs to own a CAMetalLayer + acquire/present. Options: (a) add a
+    native export uno_window_get_metal_layer(handle)->CAMetalLayer* and a mode where the native side stops its own
+    Metal draw and lets wgpu present on that layer; then wire a MacOSWebGpu path using CreateMetalSurface. (b) import
+    the provided MTLTexture into wgpu (not in wgpu-native's stable webgpu.h API — likely needs a wgpu-native patch).
+    Either way requires rebuilding libUnoNativeMac. Managed side left as-is (no macOS WebGPU branch added yet).
+
+VALIDATION: none of the above compiles/runs here (iOS workload absent: "Microsoft.iOS.Sdk ... do not exist"; iOS link
+needs macOS). Treat as a first cut for on-device iteration on a Mac, like the Android loop. Build/run recipe once on a
+Mac: install ios workload, add the iOS xcframework provisioning (#1), then
+`dotnet build SamplesApp.Skia.netcoremobile -f net10.0-ios -p:UNO_WEBGPU=1` (env UNO_WEBGPU set in the head like Android)
+and deploy to a device.
+
+## 38. Apple best-effort wiring AUTHORED (macOS managed compiles clean; native .m + iOS link need a Mac)
+
+macOS (native source is in-repo: Uno.UI.Runtime.Skia.MacOS/UnoNativeMac — rebuild in Xcode on the Mac):
+ - Native UNOMetalViewDelegate.h/.m: added `@property BOOL webgpuMode`; drawInMTKView, when webgpuMode, SKIPS
+   currentDrawable/presentDrawable and just ticks managed code with texture=NULL (wgpu owns the layer's drawables).
+ - Native UNOWindow.h/.m: added `void* uno_window_get_metal_layer(UNOWindow*)` (returns the MTKView's CAMetalLayer)
+   and `void uno_window_set_webgpu_mode(UNOWindow*, bool)`.
+ - Managed NativeUno.cs: LibraryImport decls for both.
+ - Managed MacOSWindowHost.cs: ctor, under RenderSurfaceType.Metal + UNO_WEBGPU, gets the layer, builds
+   WebGpuSwapChainContext(BGRA8Unorm, CreateMetalSurface(inst, layer)), sets CompositionTarget.Renderer =
+   WebGpuRenderer, calls uno_window_set_webgpu_mode(true), skips GRContext. MetalDraw: when _webgpuContext != null,
+   routes to the neutral seam (OnNativePlatformFrameRequested(null, size => AcquireRenderTarget) + Present()) +
+   uno_window_clip_svg, returns before the Skia/MTLTexture path.
+ - Build side DONE: SamplesApp.Skia.Generic (the macOS head) already imports wgpu-native.targets (osx-arm64/osx-x64
+   dylib provisioned next to the .app) and references the MacOS runtime, which now references Uno.UI.Composition.WebGpu.
+ - COMPILE-VALIDATED (managed): `dotnet build Uno.UI.Runtime.Skia.MacOS -p:UnoTargetFrameworkOverride=net10.0` => 0
+   errors on Linux. The native .m changes are NOT compiled here (need Xcode on macOS).
+
+iOS/tvOS (all unvalidated — no Apple toolchain/iOS workload on Linux; link needs macOS):
+ - wgpu-native.targets: new _ProvisionWgpuNativeIos fetches the static libwgpu_native.a slice by RID
+   (ios-arm64 -> aarch64, iossimulator-arm64 -> aarch64-simulator, iossimulator-x64 -> x86_64-simulator; assets
+   confirmed at v29.0.1.1) and adds it as @(NativeReference Kind=Static ForceLoad=True SmartLink=False).
+ - SamplesApp.Skia.netcoremobile head: imports wgpu-native.targets under ios/tvos too.
+ - (from §37) WebGpuLoader GetMainProgramHandle on Apple; UnoSKWebGpuMetalView; IAppleUIKitRenderView;
+   RootViewController opt-in + OnWebGpuFrameRequested; AppleUIKit csproj references the WebGpu backend.
+
+MAC BUILD/RUN:
+ macOS: (1) rebuild libUnoNativeMac in Xcode (UnoNativeMac.xcodeproj) and drop the new dylib where the runtime picks
+   it up; (2) `dotnet build SamplesApp.Skia.Generic -f net10.0` on the Mac; (3) launch with UNO_WEBGPU=1 in the
+   environment (or add a local-only default like Main.Android.cs). Watch for "WebGpu context via WebGpuRenderer (macOS)".
+ iOS: install the ios workload; `dotnet build SamplesApp.Skia.netcoremobile -f net10.0-ios` (device RID ios-arm64);
+   if the link fails with undefined symbols, add the missing frameworks/libc++ as @(NativeReference) in
+   _ProvisionWgpuNativeIos. Set UNO_WEBGPU=1.
+
+LIKELY FOLLOW-UPS ON THE MAC: CAMetalLayer.device/pixelFormat contention between MTKView and wgpu (wgpu reconfigures
+the layer each frame — watch for a validation error or a blank layer); the same sRGB/gamma question as Android/desktop
+(the surface format wgpu picks for the CAMetalLayer — check the "[webgpu] surface ... format=" line).
