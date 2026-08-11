@@ -31,7 +31,7 @@ jobs:
   - task: CopyFiles@2
     displayName: 'Copy Generated Android APK'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp/bin/SamplesApp/Release/$(netCurrentTargetFramework)-android/publish
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp/bin/Release/$(netCurrentTargetFramework)-android/publish
       Contents: 'uno.platform.samplesapp.skia-Signed.apk'
       TargetFolder: $(build.artifactstagingdirectory)/android
       CleanTargetFolder: false

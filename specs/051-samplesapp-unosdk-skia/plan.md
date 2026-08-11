@@ -40,7 +40,6 @@
 
 **Modified files:**
 - ~~`global.json`~~ — no longer modified; the head imports Uno.Sdk by path, so there is no SDK version to pin.
-- `src/Directory.Build.props` — register head in `_AdjustedOutputProjects`.
 - `src/Uno.UI-Skia-only.slnf` — add (P1) then remove old heads (P6).
 - `build/ci/tests/*.yml`, `build/ci/publish/*.yml`, `build/test-scripts/*.{ps1,sh}` — repoint per target (P1–P5), delete dead ones (P6). Includes `.azure-devops-tests-winappsdk.yml` (P3).
 
@@ -300,29 +299,18 @@ git add src/SamplesApp/SamplesApp/
 git commit -m "feat: Add desktop-only Uno.Sdk SamplesApp head skeleton (P0 spike)"
 ```
 
-### Task 0.4: Register the head for isolated output paths
+### Task 0.4: Confirm the default output paths
 
-**Files:**
-- Modify: `src/Directory.Build.props` (the `_AdjustedOutputProjects` ItemGroup)
+The head deliberately gets **no** `_AdjustedOutputProjects` entry. That list drives
+`BaseOutputPath=bin\$(MSBuildProjectName)` for folders holding several project variants
+(`Uno.UI.Skia.csproj` + `Uno.UI.Reference.csproj`); this head is the only project in its folder, and
+`Microsoft.NET.DefaultOutputPaths.targets` already appends `$(TargetFramework)` to `bin` and `obj`, so the
+six TFMs cannot collide on their own.
 
-- [ ] **Step 1: Add the head**
-
-In `src/Directory.Build.props`, add to `_AdjustedOutputProjects` (matching existing entries' form):
-```xml
-<_AdjustedOutputProjects Include="SamplesApp" />
-```
-
-- [ ] **Step 2: Rebuild and confirm isolated output**
+- [ ] **Step 1: Build and confirm the default layout**
 
 Run: `dotnet build src/SamplesApp/SamplesApp/SamplesApp.csproj -p:UnoTargetFrameworkOverride=net10.0-desktop -p:UnoFastDevBuild=true`
-Expected: SUCCESS; output under `src/SamplesApp/SamplesApp/bin/SamplesApp/...` (no collision warnings).
-
-- [ ] **Step 3: Commit**
-
-```bash
-git add src/Directory.Build.props
-git commit -m "build: Register SamplesApp in _AdjustedOutputProjects"
-```
+Expected: SUCCESS; output under `src/SamplesApp/SamplesApp/bin/<Config>/<TFM>/`, one folder per TFM.
 
 ---
 
@@ -427,7 +415,7 @@ git commit -m "feat: Migrate desktop assets, manifest and macOS bundle target to
 
 ```bash
 dotnet build src/SamplesApp/SamplesApp/SamplesApp.csproj -c Release -p:UnoTargetFrameworkOverride=net10.0-desktop
-dotnet src/SamplesApp/SamplesApp/bin/SamplesApp/Release/net10.0-desktop/SamplesApp.dll --runtime-tests=$(pwd)/rt-results.xml
+dotnet src/SamplesApp/SamplesApp/bin/Release/net10.0-desktop/SamplesApp.dll --runtime-tests=$(pwd)/rt-results.xml
 ```
 Expected: `rt-results.xml` produced; pass rate matches the current `SamplesApp.Skia.Generic` baseline. **Runtime validation** — record pass/fail counts.
 
@@ -525,7 +513,7 @@ git commit -m "ci: Build and runtime-test desktop Skia via the consolidated head
 - [ ] **Task 6.2:** Check `SamplesApp.Skia` (base lib) consumers (`grep -rl "SamplesApp.Skia.csproj" --include=*.csproj src/`). Delete if none; else leave + note why.
 - [ ] **Task 6.3:** Remove dead CI scripts/stages referencing old head names; remove old heads from `_AdjustedOutputProjects` if present.
 - [ ] **Task 6.4:** Full Skia solution build + a desktop runtime-test run + a WinAppSDK build to confirm no regressions. Commit.
-- [ ] **Task 6.5 (optional):** Rename `SamplesApp` → final name if desired; update `_AdjustedOutputProjects`, `.slnf`, CI paths in one commit.
+- [ ] **Task 6.5 (optional):** Rename `SamplesApp` → final name if desired; update `.slnf` and CI paths in one commit.
 
 ---
 

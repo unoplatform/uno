@@ -54,7 +54,7 @@ jobs:
     displayName: 'Publish WebAssembly Binaries'
     retryCountOnTaskFailure: 3
     inputs:
-      targetPath: $(Build.SourcesDirectory)/src/SamplesApp/SamplesApp/bin/SamplesApp/Release/$(netCurrentTargetFramework)-browserwasm/publish/wwwroot
+      targetPath: $(Build.SourcesDirectory)/src/SamplesApp/SamplesApp/bin/Release/$(netCurrentTargetFramework)-browserwasm/publish/wwwroot
       artifactName: $(SamplesAppArtifactName)
 
   - task: PublishBuildArtifacts@1

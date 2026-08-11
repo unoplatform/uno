@@ -156,7 +156,7 @@ Adopt the `Uno.Sdk` single-project `Platforms/` layout, consolidating today's pe
 
 ## 8. Build-system integration
 
-- **Register** the head in `_AdjustedOutputProjects` (`src/Directory.Build.props`) for isolated multi-TFM output.
+- **No `_AdjustedOutputProjects` entry.** That list exists for sibling project variants sharing one folder (`Uno.UI.Skia.csproj` + `Uno.UI.Reference.csproj`); the head is alone in its folder, and the .NET SDK already appends the TFM to `bin`/`obj`. The head builds to the default `bin/<Config>/<TFM>/`.
 - **`targetframework-override` interaction:** the head must respond to `UnoTargetFrameworkOverride` so a single TFM can be built in isolation (CI passes e.g. `net10.0-android`, `net10.0-windows10.0.19041.0`).
 - **Top risk — `Directory.Build` × `Uno.Sdk` layering (gating spike P0):** the repo's src-wide `Directory.Build.props/.targets` + `Uno.CrossTargetting.targets` assume `Microsoft.NET.Sdk`. Layering `Uno.Sdk` can double-apply platform symbols, suffix exclusion, version pinning, TFM override. P0 proves a desktop-only slice before widening. Mitigations: opting the head out of specific repo targets, or relying on Uno.Sdk's `CustomAfterDirectoryBuildProps` ordering.
 - `PreBuildUnoUITasks` / `Uno.UI.Tasks` shadow-build preserved.

@@ -48,7 +48,7 @@ jobs:
     displayName: 'Publish Generic Binaries'
     retryCountOnTaskFailure: 3
     inputs:
-      targetPath: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp\bin\SamplesApp\Release\$(netCurrentTargetFramework)-desktop
+      targetPath: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp\bin\Release\$(netCurrentTargetFramework)-desktop
       artifactName: samplesapp-desktop-skia
 
   - task: PublishBuildArtifacts@1

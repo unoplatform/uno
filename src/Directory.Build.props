@@ -155,8 +155,6 @@
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.WinUI.Graphics2DSK.Crossruntime.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.WinUI.Graphics2DSK.Windows.csproj</_AdjustedOutputProjects>
-
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);SamplesApp.csproj</_AdjustedOutputProjects>
 	</PropertyGroup>
 
 	<PropertyGroup>
