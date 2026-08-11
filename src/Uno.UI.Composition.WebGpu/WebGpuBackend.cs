@@ -3224,6 +3224,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// Recordings emitted so far in THIS pass. A recording replayed more than once in one frame (same command
 		// list at different transforms) can't share its single resident slab slice — see the frame-solid branch.
 		var frameEmitted = new HashSet<List<WebGpuCommand>>(System.Collections.Generic.ReferenceEqualityComparer.Instance);
+		// Backdrops deferred to encode-time pass-segmenting (kind-6 op): each samples the framebuffer resolved SO FAR
+		// (content behind it) instead of re-rendering the whole command prefix here — O(n) vs the old O(n^2).
+		var backdrops = new List<BackdropCmd>();
 		for (int ci = 0; ci < cmds.Count; ci++)
 		{
 			var cmd = cmds[ci];
@@ -3547,6 +3550,17 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				}
 				case BackdropCmd bk:
 				{
+					// Segmentable target (non-pooled: stores its MSAA, so a follow-up pass can LoadOp.Load it): defer to
+					// encode-time pass-segmenting. A kind-6 marker splits the main pass here — the backdrop samples the
+					// framebuffer RESOLVED SO FAR (the content behind it), no prefix re-render. O(n) vs the old O(n^2).
+					if (!target.Pooled)
+					{
+						int bi = backdrops.Count; backdrops.Add(bk);
+						ops.Add(new DrawOp(6, 0, 0, (nint)bi, false, bk.Clip, 0));
+						break;
+					}
+					// Pooled offscreen (nested layer) can't reload its discarded MSAA to continue after a resolve, so
+					// fall back to re-rendering the prefix here.
 					// Capture the content drawn so far (this frame's backdrop), blur it, and draw it clipped to the
 					// effect region; then a tint overlay. Simplified acrylic = blurred backdrop + tint.
 					var bd = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
@@ -3748,6 +3762,76 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					WebGpuTrace.Draw(u0 == 1 ? "composite-dstin" : "composite-srcover", 3);
 					_d.Profiler?.DrawKind(4);
 					break;
+				case 6:
+				{
+					// Backdrop pass-segment (acrylic O(n) path): END this segment so its MSAA resolves into target.View
+					// (the content BEHIND the backdrop), blur that, REOPEN the pass loading the content back, and
+					// composite the blurred backdrop + tint over the effect region. Subsequent ops draw on top in the
+					// reopened pass. No prefix re-render — each command is encoded once.
+					var bk = backdrops[(int)b1];
+					wgpuRenderPassEncoderEnd(pass);
+					var bblur = BlurPyramid(target.View, _s.Width, _s.Height, bk.Effect.SigmaX, bk.Effect.SigmaY);
+					var ca6 = new WGPURenderPassColorAttachment
+					{
+						DepthSlice = uint.MaxValue,
+						View = target.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero,
+						LoadOp = WGPULoadOp.Load, StoreOp = (_d.MsaaSamples > 1 && target.Pooled) ? WGPUStoreOp.Discard : WGPUStoreOp.Store,
+					};
+					var dsa6 = new WGPURenderPassDepthStencilAttachment
+					{
+						View = target.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f,
+						StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0,
+					};
+					var rp6 = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca6, DepthStencilAttachment = &dsa6 };
+					pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp6);
+					WebGpuTrace.Pass("backdrop-segment", target.Width, target.Height, _d.MsaaSamples, true);
+					lastX = lastY = lastW = lastH = -1; curFan = null; curAabb = default;   // fresh pass: reset scissor + clip mask
+					if (TryScissor(bk.Clip.Aabb, out var bsx, out var bsy, out var bsw, out var bsh))
+					{
+						wgpuRenderPassEncoderSetScissorRect(pass, (uint)bsx, (uint)bsy, (uint)bsw, (uint)bsh);
+						lastX = bsx; lastY = bsy; lastW = bsw; lastH = bsh;
+						// Acrylic composite: blurred backdrop image (lum/noise/opacity baked via the 112B uniform).
+						var bubuf = MakeUniform(112);
+						var bop = stackalloc float[28]; bop[0] = bk.Opacity; bop[3] = 1f; var lum = bk.Effect.LumColor; bop[4] = lum.R / 255f; bop[5] = lum.G / 255f; bop[6] = lum.B / 255f; bop[7] = lum.A / 255f; bop[24] = bk.Effect.Noise;
+						wgpuQueueWriteBuffer(_d.Q, bubuf, 0, (IntPtr)bop, 112);
+						var bde = stackalloc WGPUBindGroupEntry[3];
+						bde[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = bblur };
+						bde[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+						bde[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = bubuf, Offset = 0, Size = 112 };
+						var bdbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = bde };
+						var bdbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bdbgd));
+						var bq = new float[24];
+						void BQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); bq[idx] = n.X; bq[idx + 1] = n.Y; bq[idx + 2] = u; bq[idx + 3] = vv; }
+						BQV(0, new Vector2(0, 0), 0, 0); BQV(4, new Vector2(_s.Width, 0), 1, 0); BQV(8, new Vector2(_s.Width, _s.Height), 1, 1);
+						BQV(12, new Vector2(0, 0), 0, 0); BQV(16, new Vector2(_s.Width, _s.Height), 1, 1); BQV(20, new Vector2(0, _s.Height), 0, 1);
+						var bqbuf = MakeBuffer(bq);
+						var bclipBg = MakeClipBg(_d.ImageClipBgl, bk.Clip);
+						wgpuRenderPassEncoderSetPipeline(pass, _d.ImagePipe);
+						wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bdbg, 0, (uint*)null);
+						wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)bclipBg, 0, (uint*)null);
+						wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)bqbuf, 0, (nuint)(24 * sizeof(float)));
+						wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
+						WebGpuTrace.Draw("backdrop", 6);
+						// Tint overlay (skip A==0).
+						if (bk.Effect.Color.A != 0)
+						{
+							var col = bk.Effect.Color; var tcx = col.R / 255f; var tcy = col.G / 255f; var tcz = col.B / 255f; var tcw = col.A / 255f;
+							var tv = new System.Collections.Generic.List<float>();
+							void TV(float x, float y) { var n = Ndc(new Vector2(x, y)); tv.Add(n.X); tv.Add(n.Y); tv.Add(tcx); tv.Add(tcy); tv.Add(tcz); tv.Add(tcw); }
+							var a = bk.Clip.Aabb;
+							TV(a.X, a.Y); TV(a.Z, a.Y); TV(a.Z, a.W); TV(a.X, a.Y); TV(a.Z, a.W); TV(a.X, a.W);
+							var tvbuf = MakeBuffer(tv);
+							var tclipBg = MakeClipBg(_d.SolidClipBgl, bk.Clip);
+							wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
+							wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)tclipBg, 0, (uint*)null);
+							wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)tvbuf, 0, (nuint)(36 * sizeof(float)));
+							wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
+							WebGpuTrace.Draw("backdrop-tint", 6);
+						}
+					}
+					_d.Profiler?.OsBackdrop(0);   // segmented: 0 prefix commands re-rendered
+					break;
+				}
 				case 5 when b0 == 0:
 				{
 					// Shared rrect buffer (b1=start vert, u0=6). COALESCE the run of following rrect ops sharing this
