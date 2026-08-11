@@ -222,6 +222,10 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	// Bgra8Unorm). UNO_WEBGPU_MSAA=4 forces 4x. (1x/no-MSAA would need a separate no-resolve path — not wired.)
 	public uint MsaaSamples { get; private set; } = 4;
 
+	// DPI/rasterization scale (physical px per logical px), set by the platform host BEFORE the device is created so
+	// PickSampleCount can pick a DPI-aware MSAA count matching the reference branch. 1.0 until the host sets it.
+	public static float RasterizationScale = 1f;
+
 	// TEMP DIAGNOSTIC (Win32 OOM): log + clamp every texture extent so an absurd size (e.g. a bad DPI/bounds
 	// computation) is visible in the console and doesn't hard-abort wgpu with "Not enough memory". Remove once
 	// the Win32 texture-allocation crash is root-caused.
@@ -320,7 +324,13 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		// The browser (Dawn) init is async and can't synchronously pump the error-scope callback (no JS event-loop
 		// yield), so skip the probe there and take the spec-guaranteed 4x. Desktop probes for 2x.
 		if (OperatingSystem.IsBrowser()) { return 4; }
-		return SupportsSampleCount(2) ? 2u : 4u;
+		// DEFAULT matches the reference (webgpu) branch: DPI-AWARE — 1x at >=200% (no MSAA/resolve; the resolve cost
+		// scales with physical pixels and blows the budget on high-DPI), 2x at 100-200%, 4x at 100%. The host sets
+		// RasterizationScale before the device is created; unset (1.0) => 4x, the reference's 100%-DPI default.
+		var scale = RasterizationScale;
+		if (scale >= 2f) { return 1u; }
+		if (scale > 1f) { return SupportsSampleCount(2) ? 2u : 4u; }
+		return 4u;
 	}
 
 	// Probes whether a sample count is valid for the colour format WITHOUT aborting: an unsupported count raises a

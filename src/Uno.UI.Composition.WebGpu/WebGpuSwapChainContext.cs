@@ -198,6 +198,22 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 		if (!supported && caps.FormatCount > 0) { _surfaceFormat = caps.Formats[0]; }
 		var alphaMode = caps.AlphaModeCount > 0 ? caps.AlphaModes[0] : WGPUCompositeAlphaMode.Auto;
 
+		// Present mode: Fifo (vsync) by default. UNO_WEBGPU_PRESENT=mailbox|immediate|fiforelaxed opts into a
+		// non-blocking mode (validated against surface caps) — Fifo's SurfaceGetCurrentTexture blocks on vsync and
+		// spikes the per-frame acquire; a non-Fifo mode lets the frame run unthrottled (matches the reference host).
+		var presentMode = WGPUPresentMode.Fifo;
+		var envPm = System.Environment.GetEnvironmentVariable("UNO_WEBGPU_PRESENT");
+		if (!string.IsNullOrEmpty(envPm))
+		{
+			var want = envPm.ToLowerInvariant() switch
+			{
+				"mailbox" => WGPUPresentMode.Mailbox,
+				"immediate" => WGPUPresentMode.Immediate,
+				"fiforelaxed" => WGPUPresentMode.FifoRelaxed,
+				_ => WGPUPresentMode.Fifo,
+			};
+			for (nuint i = 0; i < caps.PresentModeCount; i++) { if (caps.PresentModes[i] == want) { presentMode = want; break; } }
+		}
 		var cfg = new WGPUSurfaceConfiguration
 		{
 			Device = _device.Dev,
@@ -205,10 +221,11 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 			Usage = WGPUTextureUsage.RenderAttachment,
 			Width = (uint)width,
 			Height = (uint)height,
-			PresentMode = WGPUPresentMode.Fifo,
+			PresentMode = presentMode,
 			AlphaMode = alphaMode,
 		};
 		wgpuSurfaceConfigure(_surface, &cfg);
+		System.Console.WriteLine($"[webgpu] surface {width}x{height} format={_surfaceFormat} present={presentMode}");
 		_configured = true;
 	}
 
