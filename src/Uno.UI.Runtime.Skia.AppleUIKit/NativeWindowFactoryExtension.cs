@@ -59,8 +59,7 @@ internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 		}
 
 		if (OperatingSystem.IsIOSVersionAtLeast(17, 0) ||
-			OperatingSystem.IsTvOSVersionAtLeast(17, 0) ||
-			OperatingSystem.IsMacCatalystVersionAtLeast(17, 0))
+			OperatingSystem.IsTvOSVersionAtLeast(17, 0))
 		{
 			var request = UISceneSessionActivationRequest.Create();
 			request.UserActivity = userActivity;
