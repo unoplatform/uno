@@ -3,10 +3,10 @@
 	This project exists ONLY to give Visual Studio Solution Explorer a real
 	project node for the SamplesApp.Samples folder, so that "Add → New Item"
 	creates files directly under this folder (rather than in a consumer head
-	with a Link redirect). The samples are actually compiled into each
-	SamplesApp head (SamplesApp.Skia, SamplesApp.Wasm, SamplesApp.Windows,
-	SamplesApp.netcoremobile, UnoIslandsSamplesApp.Skia) via the
-	SamplesApp.Samples.props import. This csproj does not build.
+	with a Link redirect). The samples are actually compiled via the
+	SamplesApp.Samples.props import — into SamplesApp.Skia for every Skia
+	target, into the SamplesApp head directly for WinUI, and into
+	UnoIslandsSamplesApp.Skia. This csproj does not build.
 	-->
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
