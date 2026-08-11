@@ -860,7 +860,11 @@ fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
 @fragment fn fs(i: VSOut) -> @location(0) vec4<f32> {
   let d = sdRR(i.p, i.hf, i.radii); let aa = max(fwidth(d), 1e-4);
   var cov = 1.0 - smoothstep(-aa, aa, d);
-  if (i.ihalf.x >= 0.0) { let di = sdRR(i.p - i.icenter, i.ihalf, i.iradii); let aai = max(fwidth(di), 1e-4); cov = cov * smoothstep(-aai, aai, di); }
+  // Compute the inner-rrect SDF + its screen-space derivative in UNIFORM control flow (outside the `if`): WGSL
+  // forbids fwidth/derivatives inside non-uniform control flow, and Dawn (browser WebGPU) enforces this strictly
+  // even though wgpu-native (desktop) tolerated it. The result is only APPLIED when an inner rect is present.
+  let di = sdRR(i.p - i.icenter, i.ihalf, i.iradii); let aai = max(fwidth(di), 1e-4);
+  if (i.ihalf.x >= 0.0) { cov = cov * smoothstep(-aai, aai, di); }
   cov = cov * clipCov(i.pos.xy, clip);
   return vec4<f32>(i.col.rgb, i.col.a * cov);
 }";
