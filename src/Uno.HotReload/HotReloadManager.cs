@@ -256,7 +256,18 @@ public sealed class HotReloadManager : IDisposable
 			_tracker.Output($"Found {updates.Length} metadata updates after {sw.Elapsed}");
 
 			// Emit (EnC) diagnostics carry on every outcome of this branch; deltas are populated on Success only.
-			diagnostics = emitDiagnostics;
+			//
+			// The suppressed generator errors carry too. Suppressing them keeps hot reload running (that is
+			// the point), but they remain the reason the generated code is stale, and for the file the user
+			// just edited they are the ONLY actionable message: invalid XAML reports UXAML0001 here, while
+			// the emit sees a degraded generated tree and reports something like ENC0020 naming a generated
+			// member the user never wrote. Reporting them to the console alone left consumers with the
+			// misleading half.
+			//
+			// No dedup needed, unlike the compilation-error case below: generator diagnostics never appear in
+			// compilation.GetDiagnostics(), so they cannot already be present in emitDiagnostics. They are
+			// also already scoped to the change set's projects via auditedProjects.
+			diagnostics = emitDiagnostics.AddRange(generatorErrors);
 
 			switch (rudeEdits.IsEmpty, updates.IsEmpty)
 			{
