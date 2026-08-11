@@ -226,6 +226,10 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	// PickSampleCount can pick a DPI-aware MSAA count matching the reference branch. 1.0 until the host sets it.
 	public static float RasterizationScale = 1f;
 
+	// True when the device enabled wgpu-native's TextureAdapterSpecificFormatFeatures — required for 2x MSAA on
+	// formats like BGRA8/RGBA8 (else 2x fails validation). Gates whether PickSampleCount may choose 2x.
+	public bool HasFormatFeatures;
+
 	// TEMP DIAGNOSTIC (Win32 OOM): log + clamp every texture extent so an absurd size (e.g. a bad DPI/bounds
 	// computation) is visible in the console and doesn't hard-abort wgpu with "Not enough memory". Remove once
 	// the Win32 texture-allocation crash is root-caused.
@@ -264,6 +268,14 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		var dbox = new IntPtr[1];
 		var dh = GCHandle.Alloc(dbox);
 		var ddesc = new WGPUDeviceDescriptor();
+		// Request wgpu-native's TextureAdapterSpecificFormatFeatures when the adapter has it — WITHOUT it, MSAA sample
+		// counts that aren't spec-guaranteed for the format (2x for BGRA8/RGBA8) fail validation and the uncaptured-
+		// error handler panics; WITH it, 2x works (so the DPI-aware default's 2x tier at 125-200% DPI is usable). The
+		// reference (webgpu) branch requests this too. Kept on the stack for the synchronous request below.
+		WGPUFeatureName* feats = stackalloc WGPUFeatureName[1];
+		var fmtFeat = (WGPUFeatureName)WGPUNativeFeature.TextureAdapterSpecificFormatFeatures;
+		HasFormatFeatures = wgpuAdapterHasFeature(Adapter, fmtFeat) != 0;
+		if (HasFormatFeatures) { feats[0] = fmtFeat; ddesc.RequiredFeatures = feats; ddesc.RequiredFeatureCount = 1; }
 		wgpuAdapterRequestDevice(Adapter, &ddesc, new WGPURequestDeviceCallbackInfo
 		{
 			Mode = WGPUCallbackMode.AllowProcessEvents,
@@ -307,7 +319,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		if (WebGpuProfiler.Enabled) { Profiler = new WebGpuProfiler(); }
 		// Startup marker (always logged): confirms this build is current + reports the profiler/pipeline/MSAA state,
 		// so a missing profiler line can be told apart from a stale build or the flag not being read.
-		System.Console.WriteLine($"[webgpu] backend init — UNO_WEBGPU_PROFILE={WebGpuProfiler.Enabled} pipeline={Pipeline} msaa={MsaaSamples}x colorFormat={ColorFormat}");
+		System.Console.WriteLine($"[webgpu] backend init — UNO_WEBGPU_PROFILE={WebGpuProfiler.Enabled} pipeline={Pipeline} msaa={MsaaSamples}x scale={RasterizationScale} fmtFeatures={HasFormatFeatures} colorFormat={ColorFormat}");
 	}
 
 	// MSAA sample count. UNO_WEBGPU_MSAA=1|2|4 forces a count (bypassing the probe): 2 forces 2x even where the
@@ -320,7 +332,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		var env = Environment.GetEnvironmentVariable("UNO_WEBGPU_MSAA");
 		if (env == "4") { return 4; }
 		if (env == "1") { return 1; }   // no-resolve 1x: passes render straight into the single-sample view (see WebGpuRenderSurface)
-		if (env == "2") { return 2; }   // force 2x, bypassing the probe (for drivers that reject the probe but accept 2x)
+		if (env == "2") { return HasFormatFeatures && SupportsSampleCount(2) ? 2u : 4u; }   // 2x needs the format feature (else validation panics)
 		// The browser (Dawn) init is async and can't synchronously pump the error-scope callback (no JS event-loop
 		// yield), so skip the probe there and take the spec-guaranteed 4x. Desktop probes for 2x.
 		if (OperatingSystem.IsBrowser()) { return 4; }
@@ -329,7 +341,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		// RasterizationScale before the device is created; unset (1.0) => 4x, the reference's 100%-DPI default.
 		var scale = RasterizationScale;
 		if (scale >= 2f) { return 1u; }
-		if (scale > 1f) { return SupportsSampleCount(2) ? 2u : 4u; }
+		if (scale > 1f) { return HasFormatFeatures && SupportsSampleCount(2) ? 2u : 4u; }
 		return 4u;
 	}
 
