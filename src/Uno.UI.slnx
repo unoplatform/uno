@@ -116,20 +116,6 @@
     <Project Path="SamplesApp/SamplesApp/SamplesApp.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
-    <Project Path="SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
-    </Project>
-    <Project Path="SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj">
-      <BuildDependency Project="Uno.WinRT/Uno.WinRT.netcoremobile.csproj" />
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-      <Deploy Solution="Debug|Any CPU" />
-      <Deploy Solution="Debug|iPhoneSimulator" />
-    </Project>
-    <Project Path="SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj">
-      <BuildDependency Project="Uno.UI.Dispatching/Uno.UI.Dispatching.Wasm.csproj" />
-      <BuildDependency Project="Uno.WinRT/Uno.WinRT.Wasm.csproj" />
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="SamplesApp/SamplesApp.Skia/SamplesApp.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
@@ -141,28 +127,6 @@
     <Project Path="SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Build Solution="Release_NoSamples|Any CPU" Project="false" />
-    </Project>
-    <Project Path="SamplesApp/SamplesApp.Wasm.UITests/SamplesApp.Wasm.UITests.njsproj" Id="b4c15c47-85e2-444e-b9f3-d970e35601a9">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-      <Platform Project="AnyCPU" />
-      <Build Solution="*|ARM" />
-      <Build Solution="*|iPhone" />
-      <Build Solution="*|iPhoneSimulator" />
-      <Build Solution="*|x64" />
-      <Build Solution="*|x86" />
-      <Build Solution="Debug|Any CPU" />
-      <Build Solution="Release|Any CPU" />
-    </Project>
-    <Project Path="SamplesApp/SamplesApp.Windows/SamplesApp.Windows.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-      <Platform Solution="*|Any CPU" Project="x64" />
-      <Platform Solution="*|ARM" Project="x64" />
-      <Platform Solution="*|ARM64" Project="ARM64" />
-      <Platform Solution="*|iPhone" Project="x64" />
-      <Platform Solution="*|iPhoneSimulator" Project="x64" />
-      <Platform Solution="*|x64" Project="x64" />
-      <Platform Solution="*|x86" Project="x86" />
-      <Deploy />
     </Project>
     <Project Path="SamplesApp/SamplesApp.Samples/SamplesApp.Samples.csproj">
       <Build Project="false" />
