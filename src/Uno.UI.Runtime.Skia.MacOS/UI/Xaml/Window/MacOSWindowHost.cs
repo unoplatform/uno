@@ -65,9 +65,16 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 					var layer = NativeUno.uno_window_get_metal_layer(_nativeWindow.Handle);
 					if (layer != 0)
 					{
+						var scale = _displayInformation.RawPixelsPerViewPixel;
+						WebGpuDevice.RasterizationScale = (float)(scale == 0 ? 1 : scale);
 						_webgpuContext = new WebGpuSwapChainContext(
 							WGPUTextureFormat.BGRA8Unorm,
 							inst => WebGpuSwapChainContext.CreateMetalSurface(inst, layer));
+						// Pair the WebGPU renderer with the WebGPU drawing factory so images, gradient shaders, color
+						// glyphs, nine-slice, SVG and RenderTargetBitmap are GPU-resident WebGPU resources (not Skia
+						// objects the WebGPU recorder drops). Geometry/decode still delegate to the previous factory.
+						Uno.UI.Composition.Drawing.DrawingFactory.Register(
+							new WebGpuDrawingFactory(_webgpuContext.Device, Uno.UI.Composition.Drawing.DrawingFactory.Current));
 						CompositionTarget.Renderer = new WebGpuRenderer(_webgpuContext.Device);
 						NativeUno.uno_window_set_webgpu_mode(_nativeWindow.Handle, true);
 						if (this.Log().IsEnabled(LogLevel.Information))
