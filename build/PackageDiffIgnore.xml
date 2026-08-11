@@ -3306,6 +3306,8 @@
 		  <Member fullName="System.Void Windows.Media.SpeechRecognition.SpeechRecognitionResult.set_Text(System.String value)" reason="SpeechRecognitionResult.Text setter made internal (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Windows.Media.SpeechRecognition.SpeechRecognitionResult.set_RawConfidence(System.Double value)" reason="SpeechRecognitionResult.RawConfidence setter made internal (breaking changes for 7.0, uno#8339)" />
 
+		  <!-- UriExtensions.IsLocalResource renamed: the name said "local resource" but the check is ms-appx, three lines from the ms-resource helpers it was confused with. -->
+		  <Member fullName="System.Boolean Uno.Extensions.UriExtensions.IsLocalResource(System.Uri uri)" reason="Renamed to IsMsAppx (BC51, breaking changes for 7.0)" />
 	  </Methods>
 	  <Events>
 		  <!-- ====================================================================== -->

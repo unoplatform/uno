@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.UI.Composition;
+using Uno.UI.Xaml;
 using Windows.Graphics.Display;
 using Uno.UI.Dispatching;
 using Uno.Helpers;
@@ -56,6 +57,11 @@ namespace Microsoft.UI.Xaml.Media
 
 		private static LoadedImageSurface StartLoadFromUri(Uri uri, int? width, int? height)
 		{
+			if (uri is not null)
+			{
+				uri = XamlFilePathHelper.NormalizeMsResourceFilesUri(uri);
+			}
+
 			var retVal = new LoadedImageSurface(async (LoadedImageSurface imgSurf) =>
 			{
 				if (uri is not null)
