@@ -18,6 +18,14 @@ internal static class Win32Helper
 {
 	public static HINSTANCE GetHInstance() => new(Process.GetCurrentProcess().Handle);
 
+	[DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
+	private static extern IntPtr GetModuleHandle(string? lpModuleName);
+
+	// The real module HINSTANCE of the .exe. Correct for wgpu/Vulkan Win32 surface sources
+	// (VK_KHR_win32_surface / WGPUSurfaceSourceWindowsHWND expect the module handle, not the process handle that
+	// GetHInstance returns — the process handle happens to work for DXGI but is wrong on the Vulkan path).
+	public static HINSTANCE GetModuleHInstance() => new(GetModuleHandle(null));
+
 	public static string GetErrorMessage() => GetErrorMessage((uint)Marshal.GetLastWin32Error());
 
 	public static unsafe string GetErrorMessage(uint errorCode)
