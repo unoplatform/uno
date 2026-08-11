@@ -4,7 +4,9 @@ namespace Uno.UI.Runtime.Skia {
 		private containerElement: HTMLDivElement;
 		private canvasElement: HTMLCanvasElement;
 		private onResize: any;
+		private onViewportOcclusionChanged: any;
 		private owner: any;
+		private lastReportedOcclusion: number = -1;
 		private static readonly unoPersistentLoaderClassName = "uno-persistent-loader";
 		private static readonly loadingElementId = "uno-loading";
 		private static readonly unoKeepLoaderClassName = "uno-keep-loader";
@@ -37,6 +39,7 @@ namespace Uno.UI.Runtime.Skia {
 
 		private async build() {
 			WebAssemblyWindowWrapper.assemblyExports = await (<any>window).Module.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser");
+<<<<<<< HEAD
 
 			if (WebAssemblyThreading.isThreadingEnabled()) {
 				this.onResize = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnResizeAsync;
@@ -44,6 +47,10 @@ namespace Uno.UI.Runtime.Skia {
 			else {
 				this.onResize = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnResize;
 			}
+=======
+			this.onResize = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnResize;
+			this.onViewportOcclusionChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnViewportOcclusionChanged;
+>>>>>>> origin/master
 
 			this.containerElement = (document.getElementById("uno-body") as HTMLDivElement);
 
@@ -56,7 +63,7 @@ namespace Uno.UI.Runtime.Skia {
 			}
 
 			this.canvasElement = document.createElement("canvas");
-			this.canvasElement.id = "uno-canvas";
+			this.canvasElement.id = UnoDomIds.canvas;
 			this.canvasElement.setAttribute("aria-hidden", "true");
 			this.containerElement.appendChild(this.canvasElement);
 
@@ -69,7 +76,46 @@ namespace Uno.UI.Runtime.Skia {
 				x.preventDefault();
 			})
 
+			// The on-screen keyboard shrinks the visual viewport without firing window "resize",
+			// so track it separately to report keyboard occlusion to the InputPane (issue 3).
+			if (window.visualViewport) {
+				window.visualViewport.addEventListener("resize", () => this.reportKeyboardOcclusion());
+				window.visualViewport.addEventListener("scroll", () => this.reportKeyboardOcclusion());
+			}
+
 			this.resize();
+		}
+
+		// Reports how much of the viewport the on-screen keyboard occludes, in the same CSS pixels
+		// as the window bounds. Gated on the invisible text input (#uno-input) being the active
+		// element: the soft keyboard is only up during text entry, so viewport changes at any other
+		// time (e.g. the mobile address bar collapsing) are deliberately reported as no occlusion.
+		private reportKeyboardOcclusion() {
+			const viewport = window.visualViewport;
+			if (!viewport || !this.onViewportOcclusionChanged) {
+				return;
+			}
+
+			// Check focus before touching layout: visualViewport scroll/resize fires per frame during
+			// momentum scroll and keyboard animation, and getBoundingClientRect forces a reflow. When
+			// no text input is focused there is no keyboard, so skip the reflow entirely and report a
+			// single zero only if the last report was non-zero.
+			if (document.activeElement?.id !== UnoDomIds.input) {
+				if (this.lastReportedOcclusion !== 0) {
+					this.lastReportedOcclusion = 0;
+					this.onViewportOcclusionChanged(this.owner, 0, 0, 0);
+				}
+				return;
+			}
+
+			const layout = document.documentElement.getBoundingClientRect();
+			const occludedHeight = Math.max(0, layout.height - viewport.height - viewport.offsetTop);
+			if (occludedHeight === this.lastReportedOcclusion) {
+				return;
+			}
+
+			this.lastReportedOcclusion = occludedHeight;
+			this.onViewportOcclusionChanged(this.owner, layout.width, layout.height, occludedHeight);
 		}
 
 		public static removeLoading() {

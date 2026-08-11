@@ -4,6 +4,7 @@ using System;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Uno.Foundation.Logging;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 {
 	private static WebAssemblyWindowWrapper? _instance;
 	private DisplayInformation? _displayInformation;
+	private InputPane? _inputPane;
 
 	internal static WebAssemblyWindowWrapper Instance => _instance!;
 
@@ -37,6 +39,7 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		_instance._displayInformation = DisplayInformation.GetForCurrentView();
 		_instance.RasterizationScale = (float)_instance._displayInformation.RawPixelsPerViewPixel;
 		_instance._displayInformation.DpiChanged += (_, _) => _instance.RasterizationScale = (float)_instance._displayInformation.RawPixelsPerViewPixel;
+		_instance._inputPane = InputPane.GetForCurrentView();
 	}
 
 	private WebAssemblyWindowWrapper()
@@ -94,12 +97,42 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		}
 	}
 
+<<<<<<< HEAD
 	[JSExport]
 	private static Task OnResizeAsync([JSMarshalAs<JSType.Any>] object instance, double width, double height, float scale)
 	{
 		OnResize(instance, width, height, scale);
 
 		return Task.CompletedTask;
+=======
+	// Fed from a visualViewport listener on the JS side. occludedHeight is the height (in the
+	// same logical/CSS pixels as the window bounds) the on-screen keyboard covers at the bottom
+	// of the viewport, already gated on the invisible text input being focused, so browser-chrome
+	// resizes don't reach here. Setting OccludedRect is what drives the shared Skia bring-into-view
+	// path (InputPane.OnOccludedRectChanged -> EnsureFocusedElementInViewPartial).
+	[JSExport]
+	private static void OnViewportOcclusionChanged([JSMarshalAs<JSType.Any>] object instance, double viewportWidth, double viewportHeight, double occludedHeight)
+	{
+		try
+		{
+			if (instance is WebAssemblyWindowWrapper wrapper && wrapper._inputPane is { } inputPane)
+			{
+				inputPane.OccludedRect = occludedHeight > 0
+					? new Rect(0, viewportHeight - occludedHeight, viewportWidth, occludedHeight)
+					: new Rect(0, 0, 0, 0);
+
+				if (wrapper.Log().IsEnabled(LogLevel.Trace))
+				{
+					wrapper.Log().Trace($"OnViewportOcclusionChanged: occludedHeight={occludedHeight}, OccludedRect={inputPane.OccludedRect}");
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			// A managed exception must not cross back into the JS DOM-event callback.
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+>>>>>>> origin/master
 	}
 
 	protected override void ShowCore()
