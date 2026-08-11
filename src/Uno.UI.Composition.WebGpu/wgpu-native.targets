@@ -7,12 +7,21 @@
 		<WgpuNativeCacheDir>$(MSBuildThisFileDirectory)obj\wgpu-native\$(WgpuNativeVersion)\</WgpuNativeCacheDir>
 	</PropertyGroup>
 
+	<!-- The Apple mobile SDKs (Xamarin.MacDev.Tasks) register their own "Unzip" task with different parameters,
+	     shadowing MSBuild's built-in. Register the built-in under its full name and invoke it fully-qualified. -->
+	<UsingTask TaskName="Microsoft.Build.Tasks.Unzip" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll" />
+
 	<!-- Pick the native by the target RuntimeIdentifier when set (so a cross-publish, e.g. Linux -> win-x64, gets the
 	     right binary), else fall back to the build host OS/arch. Target-scoped properties persist once this runs, so
 	     both the build-copy and the publish-item targets below can depend on it. -->
 	<Target Name="_SelectWgpuAsset">
 		<PropertyGroup>
 			<_WgpuTpi>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</_WgpuTpi>
+			<!-- TPIs with dedicated provisioning (Android per-ABI .so, iOS/tvOS static .a) must never take the
+			     host-OS desktop fallback: the desktop binary would leak into the app package (see the Android
+			     libdl.so.2 incident) or double-provision next to the static link. -->
+			<_WgpuHostFallbackAllowed>true</_WgpuHostFallbackAllowed>
+			<_WgpuHostFallbackAllowed Condition="'$(_WgpuTpi)' == 'android' Or '$(_WgpuTpi)' == 'ios' Or '$(_WgpuTpi)' == 'tvos' Or '$(_WgpuTpi)' == 'maccatalyst'">false</_WgpuHostFallbackAllowed>
 		</PropertyGroup>
 		<PropertyGroup Condition="$(RuntimeIdentifier.StartsWith('win'))">
 			<_WgpuAsset>wgpu-windows-x86_64-msvc-release.zip</_WgpuAsset>
@@ -35,19 +44,19 @@
 		     Android is multi-ABI via _ProvisionWgpuNativeAndroid / @(AndroidNativeLibrary). Without the android exclusion
 		     the Linux/Windows host .so leaks into the head's OutDir and gets packaged into every APK lib/<abi>/, shadowing
 		     the real bionic per-ABI binaries (dlopen then fails: the desktop .so needs glibc's libdl.so.2). -->
-		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('Linux')) And '$(_WgpuTpi)' != 'android'">
+		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('Linux')) And '$(_WgpuHostFallbackAllowed)' == 'true'">
 			<_WgpuAsset>wgpu-linux-x86_64-release.zip</_WgpuAsset>
 			<_WgpuNativeFile>libwgpu_native.so</_WgpuNativeFile>
 		</PropertyGroup>
-		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('Windows')) And '$(_WgpuTpi)' != 'android'">
+		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('Windows')) And '$(_WgpuHostFallbackAllowed)' == 'true'">
 			<_WgpuAsset>wgpu-windows-x86_64-msvc-release.zip</_WgpuAsset>
 			<_WgpuNativeFile>wgpu_native.dll</_WgpuNativeFile>
 		</PropertyGroup>
-		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('OSX')) And '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'Arm64' And '$(_WgpuTpi)' != 'android'">
+		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('OSX')) And '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'Arm64' And '$(_WgpuHostFallbackAllowed)' == 'true'">
 			<_WgpuAsset>wgpu-macos-aarch64-release.zip</_WgpuAsset>
 			<_WgpuNativeFile>libwgpu_native.dylib</_WgpuNativeFile>
 		</PropertyGroup>
-		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('OSX')) And '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'X64' And '$(_WgpuTpi)' != 'android'">
+		<PropertyGroup Condition="'$(_WgpuAsset)' == '' And $([MSBuild]::IsOSPlatform('OSX')) And '$([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture)' == 'X64' And '$(_WgpuHostFallbackAllowed)' == 'true'">
 			<_WgpuAsset>wgpu-macos-x86_64-release.zip</_WgpuAsset>
 			<_WgpuNativeFile>libwgpu_native.dylib</_WgpuNativeFile>
 		</PropertyGroup>
@@ -62,7 +71,7 @@
 		<DownloadFile Condition="'$(_WgpuAsset)' != '' And !Exists('$(WgpuNativeCacheDir)$(_WgpuAsset)')"
 			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/$(_WgpuAsset)"
 			DestinationFolder="$(WgpuNativeCacheDir)" Retries="3" />
-		<Unzip Condition="'$(_WgpuAsset)' != '' And !Exists('$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)')"
+		<Microsoft.Build.Tasks.Unzip Condition="'$(_WgpuAsset)' != '' And !Exists('$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)')"
 			SourceFiles="$(WgpuNativeCacheDir)$(_WgpuAsset)" DestinationFolder="$(WgpuNativeCacheDir)" />
 	</Target>
 
@@ -107,7 +116,7 @@
 		<DownloadFile Condition="!Exists('$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip')"
 			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip"
 			DestinationFolder="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\" Retries="3" />
-		<Unzip Condition="!Exists('$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\lib\libwgpu_native.so')"
+		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\lib\libwgpu_native.so')"
 			SourceFiles="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\wgpu-android-%(_WgpuAndroidAbi.Identity)-release.zip"
 			DestinationFolder="$(WgpuNativeCacheDir)android\%(_WgpuAndroidAbi.Identity)\" />
 		<ItemGroup>
@@ -127,8 +136,11 @@
 	     @(NativeReference Include="c++") / frameworks here if the link fails with undefined symbols.
 	     Asset names confirmed at v29.0.1.1: wgpu-ios-aarch64-release, wgpu-ios-aarch64-simulator-release,
 	     wgpu-ios-x86_64-simulator-release. -->
+	<!-- BeforeTargets must include _SanitizeNativeReferences: that's the first Apple-SDK target to read
+	     @(NativeReference) (feeding _ExpandNativeReferences); items added only before BeforeBuild arrive too late
+	     and the static lib silently never reaches the native link. -->
 	<Target Name="_ProvisionWgpuNativeIos"
-			BeforeTargets="_ResolveAssemblies;BeforeBuild"
+			BeforeTargets="_SanitizeNativeReferences;_ExpandNativeReferences;_ResolveAssemblies;BeforeBuild"
 			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">
 		<PropertyGroup>
 			<_WgpuIosSlice Condition="'$(RuntimeIdentifier)' == 'ios-arm64'">aarch64</_WgpuIosSlice>
@@ -143,7 +155,7 @@
 		<DownloadFile Condition="!Exists('$(_WgpuIosDir)$(_WgpuIosZip)')"
 			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/$(_WgpuIosZip)"
 			DestinationFolder="$(_WgpuIosDir)" Retries="3" />
-		<Unzip Condition="!Exists('$(_WgpuIosDir)lib\libwgpu_native.a')"
+		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(_WgpuIosDir)lib\libwgpu_native.a')"
 			SourceFiles="$(_WgpuIosDir)$(_WgpuIosZip)" DestinationFolder="$(_WgpuIosDir)" />
 		<ItemGroup>
 			<NativeReference Include="$(_WgpuIosDir)lib\libwgpu_native.a">
@@ -151,6 +163,20 @@
 				<ForceLoad>True</ForceLoad>
 				<SmartLink>False</SmartLink>
 			</NativeReference>
+		</ItemGroup>
+		<!-- The final link uses -dead_strip and -exported_symbols_list (mtouch-symbols.list): a force_load'ed static
+		     lib's symbols are NOT exported unless listed, and the SDK's automatic list only covers __Internal
+		     DllImports — ours say "webgpu" and resolve at runtime through NativeLibrary.GetMainProgramHandle(),
+		     i.e. dlsym on the main image, which only sees EXPORTED symbols. Enumerate the archive's public wgpu*
+		     symbols (macOS `nm`; iOS links only happen with an Apple toolchain) and declare them as
+		     @(ReferenceNativeSymbol) so the bundler exports them. -->
+		<Exec Condition="$([MSBuild]::IsOSPlatform('OSX')) And !Exists('$(_WgpuIosDir)wgpu.symbols')"
+			Command="nm -gUj '$(_WgpuIosDir)lib/libwgpu_native.a' 2>/dev/null | grep '^_wgpu' | sed 's/^_//' | sort -u &gt; '$(_WgpuIosDir)wgpu.symbols'" />
+		<ReadLinesFromFile File="$(_WgpuIosDir)wgpu.symbols" Condition="Exists('$(_WgpuIosDir)wgpu.symbols')">
+			<Output TaskParameter="Lines" ItemName="_WgpuExportedSymbol" />
+		</ReadLinesFromFile>
+		<ItemGroup>
+			<ReferenceNativeSymbol Include="@(_WgpuExportedSymbol)" SymbolType="Function" />
 		</ItemGroup>
 	</Target>
 </Project>
