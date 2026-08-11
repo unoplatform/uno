@@ -29,6 +29,10 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 	public UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 	public TextInputPlugin TextInputPlugin { get; }
 
+	// Matches the Vulkan render loop's wake interval, so both backends retry a skipped frame
+	// at the same cadence while the window isn't ready.
+	private const long RenderRetryDelayMs = 100;
+
 	private readonly ApplicationActivity _activity;
 	private readonly InternalRenderer _renderer;
 
@@ -37,7 +41,7 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 		_activity = activity;
 		SetEGLContextClientVersion(2);
 		SetEGLConfigChooser(8, 8, 8, 8, 0, 8);
-		SetRenderer(_renderer = new InternalRenderer(activity));
+		SetRenderer(_renderer = new InternalRenderer(this));
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
 		ViewCompat.SetAccessibilityDelegate(this, ExploreByTouchHelper);
@@ -57,6 +61,12 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 	public void ResetRendererContext()
 	{
 		_renderer.ResetContext();
+	}
+
+	public void TeardownRenderer()
+	{
+		_renderer.ResetContext();
+		_renderer.Dispose();
 	}
 
 	public void InvalidateRender()
@@ -140,9 +150,10 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 	// Copied from https://github.com/mono/SkiaSharp/blob/main/source/SkiaSharp.Views/SkiaSharp.Views/Platform/Android/SKGLSurfaceView.cs
 	// and modified to also add rendering without OpenGL
-	private class InternalRenderer(ApplicationActivity activity) : Java.Lang.Object, IRenderer
+	private class InternalRenderer(UnoCanvasView view) : Java.Lang.Object, IRenderer
 	{
-		private readonly ApplicationActivity _activity = activity;
+		private readonly UnoCanvasView _view = view;
+		private readonly ApplicationActivity _activity = view._activity;
 
 		private ISwapChain? _context;
 		private IDrawingFactory? _renderer;
@@ -161,7 +172,12 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 			if (_activity.RootElement?.Visual.CompositionTarget is not CompositionTarget compositionTarget)
 			{
-				// The window isn't ready (e.g. mid teardown during activity re-creation); skip the frame.
+				// The window isn't ready (e.g. mid teardown during activity re-creation). Skipping is
+				// only safe if we re-arm: OnNativePlatformFrameRequested below is the only thing that
+				// clears the target's RenderRequested flag, so a bare return would make every later
+				// RequestNewFrame a no-op and the window would never repaint again. RenderMode is
+				// WhenDirty, so re-request on a delay rather than spinning the GL thread.
+				_view.PostDelayed(_view.RequestRender, RenderRetryDelayMs);
 				return;
 			}
 
