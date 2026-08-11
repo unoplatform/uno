@@ -297,7 +297,8 @@ namespace Microsoft.UI.Xaml
 		private IUnoSkiaRenderView CreateRenderView()
 		{
 			// EXPERIMENTAL: WebGPU on an ANativeWindow swapchain via the neutral backend (opt in with UNO_WEBGPU).
-			if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "swapchain")
+			// Fully-qualify System.Environment — 'Environment' is ambiguous with Android.OS.Environment here.
+			if (global::System.Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "swapchain")
 			{
 				try
 				{
