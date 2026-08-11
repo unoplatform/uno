@@ -34,7 +34,6 @@
         │ net10.0-ios or net11.0-ios                                 │ .NET 10/11 iOS Skia            │ Uno.UI-Skia-only.slnf      │
         │ net10.0-tvos or net11.0-tvos                               │ .NET 10/11 tvOS Skia           │ Uno.UI-Skia-only.slnf      │
         │ net10.0-android or net11.0-android                         │ .NET 10/11 Android Skia        │ Uno.UI-Skia-only.slnf      │
-        │ net10.0-maccatalyst or net11.0-maccatalyst                 │ .NET 10/11 macOS Catalyst Skia │ Uno.UI-Skia-only.slnf      │
         │ net10.0 or net11.0                                         │ Reference API (WinRT layer)    │ Uno.UI-Reference-Only.slnf │
         │ net10.0 or net11.0                                         │ Uno.UI.Tests                   │ Uno.UI-UnitTests-only.slnf │
         └────────────────────────────────────────────────────────────┴────────────────────────────────┴────────────────────────────┘

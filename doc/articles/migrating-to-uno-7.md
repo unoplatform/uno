@@ -5,8 +5,9 @@ uid: Uno.Development.MigratingToUno7
 # Migrating to Uno Platform 7.0 — Skia-only rendering
 
 Uno Platform 7.0 removes the **native UI rendering backends** (native Android Views,
-native iOS/tvOS/macCatalyst UIKit, and the native WebAssembly DOM renderer) and makes
-**Skia the single, implicit rendering engine on every target**.
+native iOS/tvOS UIKit, and the native WebAssembly DOM renderer) and makes
+**Skia the single, implicit rendering engine on every target**. It also removes the
+**Mac Catalyst** target framework entirely.
 
 Skia already runs on every platform — desktop (Win32, WPF, X11, GTK, macOS, FrameBuffer),
 Skia-on-Android, Skia-on-iOS, and Skia-on-WebAssembly. In 7.0 it becomes the *only* UI
@@ -14,7 +15,9 @@ rendering path: a `UIElement` is a plain managed object backed by a `Composition
 on all platforms, drawn into a single Skia surface.
 
 This does **not** drop platform support: Android, iOS, macOS, Windows, Linux, and
-WebAssembly all remain supported — they now all render with Skia.
+WebAssembly all remain supported — they now all render with Skia. The one exception is
+**Mac Catalyst**, which is removed as a target framework; macOS is served by the
+`net10.0-desktop` head.
 
 > [!IMPORTANT]
 > This is a hard removal in a single major version — there is no `[Obsolete]` interim.
@@ -27,6 +30,7 @@ WebAssembly all remain supported — they now all render with Skia.
 - Apps that used the **native WebAssembly DOM** renderer (`Uno.WinUI.WebAssembly`).
 - Code that referenced native rendering types, native element hosting, or native-only
   `FeatureConfiguration` flags (see below).
+- Apps that still build a **Mac Catalyst** (`net*-maccatalyst`) head.
 
 Apps already running on Skia on every target need only recompile against 7.0 and remove
 native bootstrap/heads.
@@ -37,7 +41,7 @@ native bootstrap/heads.
 
 The `NativeRenderer` Uno Feature and the renderer-selection logic are gone — Skia is
 always used. `skiarenderer` is now implicit and mandatory for
-`android`/`ios`/`tvos`/`maccatalyst`; it is kept as a no-op for back-compat, so you can
+`android`/`ios`/`tvos`; it is kept as a no-op for back-compat, so you can
 leave `<UnoFeatures>skiarenderer</UnoFeatures>` in place or remove it — either way Skia
 renders.
 
@@ -48,6 +52,27 @@ If your project was created before Uno Platform 6.0 and still selects a renderer
 the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6) first to move to the
 Uno.SDK single-project model.
 
+### Mac Catalyst is removed
+
+The `net*-maccatalyst` target framework is no longer supported. The `Uno.Sdk` no longer
+produces a Mac Catalyst head: `maccatalyst` is not a recognized `TargetFramework`, the
+`Platforms/MacCatalyst/` folder is no longer picked up, and the `MacCatalystProjectFolder`
+property is gone. The `__MACCATALYST__` conditional symbol is never defined, and the
+`.iOS.cs`, `.UIKit.cs`, and `.Apple.cs` file suffixes now apply only to `net10.0-ios` and
+`net10.0-tvos`.
+
+macOS remains a fully supported target through the **`net10.0-desktop`** head, which runs
+on macOS with Skia rendering. To migrate:
+
+1. Remove `net*-maccatalyst` from `<TargetFrameworks>` in every project.
+2. Add `net10.0-desktop` if the solution does not already have a desktop head.
+3. Move anything still needed from `Platforms/MacCatalyst/` to `Platforms/Desktop/`, and
+   drop the Catalyst `Info.plist` and `Entitlements.plist`.
+4. Replace `#if __MACCATALYST__` blocks with `#if __DESKTOP__`, or with an
+   `OperatingSystem.IsMacOS()` runtime check.
+5. Publish with the [macOS desktop packaging](xref:uno.publishing.desktop.macos) flow
+   instead of the Mac Catalyst one.
+
 ### Packages
 
 | Removed / changed | Migration |
@@ -57,7 +82,7 @@ Uno.SDK single-project model.
 | `Uno.UI.BindingHelper.Android` assembly removed | Remove the reference; Skia-on-Android needs no Java/JNI binding. |
 | `Uno.UniversalImageLoader` no longer injected (Android) | Skia handles image loading internally. If you initialized it manually, remove the `ConfigureUniversalImageLoader();` call. |
 | `Uno.UI.Maps` AddIn removed | The native Google Maps control has no core Skia equivalent — use a third-party/Skia map or custom rendering. |
-| `Uno.WinUI` UI assemblies for `net*-android/ios/tvos/maccatalyst` are now the Skia binaries | Same TFM string, but binary-incompatible with previously native-built consumers. Recompile all libraries against 7.0 and remove native bootstrap. |
+| `Uno.WinUI` UI assemblies for `net*-android/ios/tvos` are now the Skia binaries | Same TFM string, but binary-incompatible with previously native-built consumers. Recompile all libraries against 7.0 and remove native bootstrap. |
 | `Xamarin.AndroidX.*` transitive deps removed (AppCompat, RecyclerView, Activity, Browser, SwipeRefreshLayout) | If *your own* code uses AndroidX, add explicit `PackageReference`s. |
 
 > [!NOTE]
@@ -307,16 +332,18 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 
 1. Remove `<UnoFeatures>skiarenderer</UnoFeatures>` (now implicit) — and any native-only
    feature switches.
-2. Recompile **every** Uno-dependent library against 7.0.
-3. Remove references to the deleted assemblies/types and to native element hosting.
-4. Delete native-only `FeatureConfiguration` calls.
-5. Replace the WASM DOM head with the Skia WebAssembly Browser head; remove any DOM/CSS
+2. Retarget any `net*-maccatalyst` head to `net10.0-desktop` and delete
+   `Platforms/MacCatalyst/`.
+3. Recompile **every** Uno-dependent library against 7.0.
+4. Remove references to the deleted assemblies/types and to native element hosting.
+5. Delete native-only `FeatureConfiguration` calls.
+6. Replace the WASM DOM head with the Skia WebAssembly Browser head; remove any DOM/CSS
    customization and `HtmlElement` usage.
-6. Remove manual `ConfigureUniversalImageLoader();` (Android) and other native bootstrap.
-7. Convert every `xmlns:…="clr-namespace:…"` declaration in your XAML to the `using:` form.
-8. Convert the Android `Application` class to override `CreateHost()` instead of passing an
+7. Remove manual `ConfigureUniversalImageLoader();` (Android) and other native bootstrap.
+8. Convert every `xmlns:…="clr-namespace:…"` declaration in your XAML to the `using:` form.
+9. Convert the Android `Application` class to override `CreateHost()` instead of passing an
    `AppBuilder` delegate to the base constructor.
-9. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+10. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)

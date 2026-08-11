@@ -184,22 +184,18 @@
 		<file src="Uno.WinUI.targets" target="buildTransitive\net10.0-android36.0" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net10.0-ios26.0" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net10.0-tvos26.0" />
-		<file src="Uno.WinUI.targets" target="buildTransitive\net10.0-maccatalyst26.0" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net11.0-android37.0" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net11.0-ios26.5" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net11.0-tvos26.5" />
-		<file src="Uno.WinUI.targets" target="buildTransitive\net11.0-maccatalyst26.5" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net11.0-windows" />
 
 		<file src="Uno.WinUI.props" target="buildTransitive\net10.0" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net10.0-android36.0" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net10.0-ios26.0" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net10.0-tvos26.0" />
-		<file src="Uno.WinUI.props" target="buildTransitive\net10.0-maccatalyst26.0" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net11.0-android37.0" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net11.0-ios26.5" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net11.0-tvos26.5" />
-		<file src="Uno.WinUI.props" target="buildTransitive\net11.0-maccatalyst26.5" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net11.0-windows" />
 
 		<file src="uno.winui.cross-runtime.targets" target="buildTransitive" />

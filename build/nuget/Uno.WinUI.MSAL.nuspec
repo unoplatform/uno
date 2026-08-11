@@ -38,10 +38,6 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
 			</group>
-			<group targetFramework="net10.0-maccatalyst26.0">
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Microsoft.Identity.Client" version="4.72.1" />
-			</group>
 			<group targetFramework="net11.0-android37.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
@@ -51,10 +47,6 @@
 				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
 			</group>
 			<group targetFramework="net11.0-tvos26.5">
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
-			</group>
-			<group targetFramework="net11.0-maccatalyst26.5">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Microsoft.Identity.Client" version="4.61.3" />
 			</group>
@@ -78,12 +70,10 @@
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net10.0-android\Uno.UI.MSAL.*" target="lib\net10.0-android" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net10.0-ios26.0\Uno.UI.MSAL.*" target="lib\net10.0-ios26.0" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net10.0-tvos26.0\Uno.UI.MSAL.*" target="lib\net10.0-tvos26.0" />
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net10.0-maccatalyst26.0\Uno.UI.MSAL.*" target="lib\net10.0-maccatalyst26.0" />
 
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net11.0-android\Uno.UI.MSAL.*" target="lib\net11.0-android" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net11.0-ios26.5\Uno.UI.MSAL.*" target="lib\net11.0-ios26.5" />
 		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net11.0-tvos26.5\Uno.UI.MSAL.*" target="lib\net11.0-tvos26.5" />
-		<file src="..\..\src\AddIns\Uno.UI.MSAL\bin\Uno.UI.MSAL.netcoremobile\Release\net11.0-maccatalyst26.5\Uno.UI.MSAL.*" target="lib\net11.0-maccatalyst26.5" />
 
 	</files>
 

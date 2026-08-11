@@ -59,15 +59,7 @@
 		},
 		"tvOSProjectFolder": {
 			"type": "folder-with-slash",
-			"description": "The folder containing the Mac Catalyst-specific files for this project."
-		},
-		"MacCatalystProjectFolder": {
-			"type": "folder-with-slash",
-			"description": "The folder containing the Mac Catalyst-specific files for this project."
-		},
-		"MacOSProjectFolder": {
-			"type": "folder-with-slash",
-			"description": "The folder containing the macOS-specific files for this project."
+			"description": "The folder containing the tvOS-specific files for this project."
 		},
 		"DesktopProjectFolder": {
 			"type": "folder-with-slash",
