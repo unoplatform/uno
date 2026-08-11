@@ -509,11 +509,25 @@ git commit -m "ci: Build and runtime-test desktop Skia via the consolidated head
 
 **Exit criterion:** the solution, filters, and all CI reference only the consolidated head; the repo builds and all stages pass.
 
-- [ ] **Task 6.1:** Delete `SamplesApp.Skia.Generic/`, `SamplesApp.Skia.WebAssembly.Browser/`, `SamplesApp.Skia.netcoremobile/`, `SamplesApp.Windows/`. Remove their entries from `Uno.UI-Skia-only.slnf` / any `.sln`.
-- [ ] **Task 6.2:** Check `SamplesApp.Skia` (base lib) consumers (`grep -rl "SamplesApp.Skia.csproj" --include=*.csproj src/`). Delete if none; else leave + note why.
-- [ ] **Task 6.3:** Remove dead CI scripts/stages referencing old head names; remove old heads from `_AdjustedOutputProjects` if present.
-- [ ] **Task 6.4:** Full Skia solution build + a desktop runtime-test run + a WinAppSDK build to confirm no regressions. Commit.
+- [x] **Task 6.1:** Deleted `SamplesApp.Skia.Generic/`, `SamplesApp.Skia.WebAssembly.Browser/`, `SamplesApp.Skia.netcoremobile/`, `SamplesApp.Windows/`, plus the orphaned `SamplesApp.Wasm.UITests/` node project. Entries removed from `Uno.UI.slnx` and `Uno.UI-Skia-only.slnf`.
+- [x] **Task 6.2:** `SamplesApp.Skia` (base lib) **stays** — it is what lets the samples compile once as generic Skia for every Skia TFM. See "The base library is not removable yet" below.
+- [x] **Task 6.3:** Retargeted the remaining consumers: the `Package.appxmanifest` embedded by the base lib, the three RuntimeTests helper apps' `_UnoBaseReferenceBinPath`, the gitpod wasm scripts, the CodeQL build step, and the `add-sample` / `runtime-tests` / `winui-runtime-tests` skills. Dropped the now-dead `InternalsVisibleTo` grants for the two deleted Skia heads.
+- [x] **Task 6.4:** desktop, browserwasm, android (`dotnet build`) and windows (`MSBuild.exe`) all build clean.
 - [ ] **Task 6.5 (optional):** Rename `SamplesApp` → final name if desired; update `.slnf` and CI paths in one commit.
+
+### The base library is not removable yet
+
+`SamplesApp.Skia` compiles the samples **once**, as generic Skia (`UnoRuntimeIdentifier=Skia`, `__SKIA__`,
+`UNO_REFERENCE_API`). The head cannot do that job itself, because on the mobile TFMs it compiles in *native*
+mode — measured, `net11.0-android` gets `__ANDROID__;__UNO_SKIA__;__UNO_SKIA_ANDROID__` and **not** `__SKIA__`
+— which is required for its own `Main.Android.cs` / `Main.iOS.cs` entry points. One assembly cannot be both.
+
+The visible cost is that platform symbols are inert in sample pages: 26 files carry `#if __ANDROID__`,
+22 `__APPLE_UIKIT__` and 27 `__WASM__`, and none of those branches is ever compiled — the samples only ever
+build as Skia (base lib) and WinUI (head, windows TFM, where `WINAPPSDK` does work). Making them live means
+inlining the samples into the head on every TFM, which needs the head's entry points moved off the
+`.Android.cs`/`.iOS.cs` suffixes so `UnoRuntimeIdentifier=Skia` can be set on mobile too. That is its own
+change; tracked separately.
 
 ---
 
