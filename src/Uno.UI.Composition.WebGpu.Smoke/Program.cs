@@ -158,6 +158,23 @@ var nestCenter = At(pNest, 32, 32);   // inside both → red
 Check("nested-rounded: outer corner still masked (black)", nestCorner.r < 40 && nestCorner.g < 40 && nestCorner.b < 40, nestCorner);
 Check("nested-rounded: center painted (red)", nestCenter.r > 200 && nestCenter.g < 60, nestCenter);
 
+// 7d) ELLIPTICAL rounded-rect clip — corners with rx != ry (rx=24, ry=8). The TL corner-arc centre is (32,16);
+//     a point is inside iff (dx/24)^2 + (dy/8)^2 <= 1. Points chosen to sit clearly inside/outside the ELLIPSE
+//     (a circle of either radius would classify them differently), so this only passes with per-axis radii.
+var ellip = new RoundRectangle
+{
+	Rect = new Rect(8, 8, 48, 48),
+	TopLeft = new Vector2(24, 8), TopRight = new Vector2(24, 8),
+	BottomRight = new Vector2(24, 8), BottomLeft = new Vector2(24, 8),
+};
+var pEllip = Render(r => { r.ClipRoundRect(ellip); r.DrawRect(new Rect(0, 0, 64, 64), red, false); });
+var elIn = At(pEllip, 16, 13);    // TL: (dx,dy)=(-16,-3) → (16/24)^2+(3/8)^2=0.59 <1 → inside → red
+var elOut = At(pEllip, 11, 10);   // TL: (dx,dy)=(-21,-6) → (21/24)^2+(6/8)^2=1.33 >1 → outside → black
+var elCenter = At(pEllip, 32, 32);
+Check("elliptical-clip: inside ellipse painted (red)", elIn.r > 200 && elIn.g < 60, elIn);
+Check("elliptical-clip: outside ellipse masked (black)", elOut.r < 40 && elOut.g < 40 && elOut.b < 40, elOut);
+Check("elliptical-clip: center painted (red)", elCenter.r > 200 && elCenter.g < 60, elCenter);
+
 // 8) CROSS-BACKEND AGREEMENT — render the SAME neutral scene (black bg + green managed-geometry triangle)
 //    through the Skia backend and the WebGPU backend, and assert both classify every unambiguous pixel the same.
 var black = WColor.FromArgb(255, 0, 0, 0);
