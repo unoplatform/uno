@@ -11,7 +11,7 @@ internal interface IImeTextBoxExtension
 	/// Called when the TextBox gains focus. The platform should prepare
 	/// IME context for the given TextBox.
 	/// </summary>
-	void StartImeSession(TextBox textBox);
+	void StartImeSession(TextBoxCore core);
 
 	/// <summary>
 	/// Called when the TextBox loses focus. The platform should clean up

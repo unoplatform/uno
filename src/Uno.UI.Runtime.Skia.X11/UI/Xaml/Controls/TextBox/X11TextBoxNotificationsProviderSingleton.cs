@@ -18,17 +18,17 @@ internal sealed class X11TextBoxNotificationsProviderSingleton : ITextBoxNotific
 	{
 	}
 
-	public void OnFocused(TextBox textBox) => X11ImeTextBoxExtension.Instance.UpdateSpotLocationFromTextBox(textBox);
+	public void OnFocused(TextBoxCore core) => X11ImeTextBoxExtension.Instance.UpdateSpotLocationFromTextBox(core);
 
-	public void OnUnfocused(TextBox textBox)
+	public void OnUnfocused(TextBoxCore core)
 	{
 	}
 
-	public void OnEnteredVisualTree(TextBox textBox)
+	public void OnEnteredVisualTree(TextBoxCore core)
 	{
 	}
 
-	public void OnLeaveVisualTree(TextBox textBox)
+	public void OnLeaveVisualTree(TextBoxCore core)
 	{
 	}
 
@@ -36,7 +36,7 @@ internal sealed class X11TextBoxNotificationsProviderSingleton : ITextBoxNotific
 	{
 	}
 
-	public void NotifyValueChanged(TextBox textBox) => X11ImeTextBoxExtension.Instance.UpdateSpotLocationFromTextBox(textBox);
+	public void NotifyValueChanged(TextBoxCore core) => X11ImeTextBoxExtension.Instance.UpdateSpotLocationFromTextBox(core);
 
-	public void NotifySelectionChanged(TextBox textBox) => X11ImeTextBoxExtension.Instance.UpdateSpotLocationFromTextBox(textBox);
+	public void NotifySelectionChanged(TextBoxCore core) => X11ImeTextBoxExtension.Instance.UpdateSpotLocationFromTextBox(core);
 }

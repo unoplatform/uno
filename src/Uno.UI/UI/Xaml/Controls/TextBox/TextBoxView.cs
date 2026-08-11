@@ -21,21 +21,21 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private readonly IOverlayTextBoxViewExtension? _overlayTextBoxViewExtension;
 
-		private readonly ManagedWeakReference _textBox;
+		private readonly ManagedWeakReference _core;
 		private bool _isPasswordRevealed;
 		private static readonly bool _useInvisibleNativeTextView = OperatingSystem.IsBrowser() || DeviceTargetHelper.IsUIKit();
 
-		public TextBoxView(TextBox textBox)
+		public TextBoxView(TextBoxCore core)
 		{
-			_textBox = WeakReferencePool.RentWeakReference(this, textBox);
-			IsPasswordBox = textBox is PasswordBox;
+			_core = WeakReferencePool.RentWeakReference(this, core);
+			IsPasswordBox = core.IsPassword;
 
 			DisplayBlock = new TextBlock
 			{
 				MinWidth = TextBlock.CaretThickness,
 				Style = null, // Prevent inheriting TextBlock styles
-				OwningTextBox = textBox,
-				IsSpellCheckEnabled = textBox.IsSpellCheckEnabled
+				OwningTextBox = core.Owner as TextBox,
+				IsSpellCheckEnabled = core.IsSpellCheckEnabled
 			};
 
 			// The DisplayBlock is an internal rendering detail; its text content
@@ -64,7 +64,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal IOverlayTextBoxViewExtension? Extension => _overlayTextBoxViewExtension;
 
-		public TextBox? TextBox => _textBox.TryGetTarget<TextBox>(out var textBox) ? textBox : null;
+		internal TextBoxCore? Core => _core.TryGetTarget<TextBoxCore>(out var core) ? core : null;
+
+		public TextBox? TextBox => Core?.Owner as TextBox;
 
 		internal int GetSelectionStart() => _overlayTextBoxViewExtension?.GetSelectionStart() ?? 0;
 

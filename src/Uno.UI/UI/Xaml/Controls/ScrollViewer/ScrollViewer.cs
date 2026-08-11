@@ -1920,7 +1920,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal partial bool ShouldSnapToTouchTextBox()
 		{
-			return XamlRoot is not null && FocusManager.GetFocusedElement(XamlRoot) is TextBox { CaretMode: TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing or TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing } textBox && textBox.FindFirstParent<ScrollViewer>() == this;
+			return XamlRoot is not null && FocusManager.GetFocusedElement(XamlRoot) is TextBox { CaretMode: TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing or TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing } textBox && textBox.FindFirstParent<ScrollViewer>() == this;
 		}
 
 		partial void OnZoomModeChangedPartial(ZoomMode zoomMode)

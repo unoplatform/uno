@@ -8,11 +8,11 @@ using Uno.UI.Xaml.Controls.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class TextBox
+internal sealed partial class TextBoxCore
 {
 	private static IImeTextBoxExtension? _imeExtension;
 
-	private static TextBox? _activeImeTextBox;
+	private static TextBoxCore? _activeImeTextBox;
 	private bool _isComposing;
 	private bool _platformTextApplyInProgress;
 	// True when the current composition session has the platform applying text directly
@@ -25,9 +25,6 @@ public partial class TextBox
 
 	internal bool ShouldSwallowKeyDuringComposition => _isComposing && !_compositionAppliedByPlatform;
 
-	public event TypedEventHandler<TextBox, TextCompositionStartedEventArgs>? TextCompositionStarted;
-	public event TypedEventHandler<TextBox, TextCompositionChangedEventArgs>? TextCompositionChanged;
-	public event TypedEventHandler<TextBox, TextCompositionEndedEventArgs>? TextCompositionEnded;
 
 	internal bool IsComposing => _isComposing;
 	internal int CompositionStartIndex => _compositionStartIndex;
@@ -60,7 +57,7 @@ public partial class TextBox
 		// must not be processed as composition text, even if the extension
 		// no-ops for PasswordBox (any later global composition event would
 		// otherwise be forwarded to this PasswordBox via _activeImeTextBox).
-		if (this is PasswordBox)
+		if (_host.IsPassword)
 		{
 			return;
 		}
@@ -73,7 +70,7 @@ public partial class TextBox
 	{
 		// Symmetric with StartImeSession — PasswordBoxes never activate the
 		// IME session, so don't tear it down (which would clobber _activeImeTextBox).
-		if (this is PasswordBox)
+		if (_host.IsPassword)
 		{
 			return;
 		}
@@ -95,7 +92,7 @@ public partial class TextBox
 			_compositionStartIndex = 0;
 			_compositionResolvedLength = 0;
 
-			TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length));
+			_host.RaiseTextCompositionEnded(new TextCompositionEndedEventArgs(startIndex, length));
 			InvalidateTextBoxRender();
 		}
 	}
@@ -114,7 +111,7 @@ public partial class TextBox
 		_compositionLength = SelectionLength;
 		_compositionResolvedLength = 0;
 
-		TextCompositionStarted?.Invoke(this, new TextCompositionStartedEventArgs(_compositionStartIndex, _compositionLength));
+		_host.RaiseTextCompositionStarted(new TextCompositionStartedEventArgs(_compositionStartIndex, _compositionLength));
 	}
 
 	private void OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied)
@@ -142,7 +139,7 @@ public partial class TextBox
 		_compositionLength = compositionText.Length;
 		_compositionResolvedLength = resolvedLength;
 
-		TextCompositionChanged?.Invoke(this, new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength));
+		_host.RaiseTextCompositionChanged(new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength));
 		InvalidateTextBoxRender();
 	}
 
@@ -167,7 +164,7 @@ public partial class TextBox
 		_compositionStartIndex = 0;
 		_compositionResolvedLength = 0;
 
-		TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, committedLength));
+		_host.RaiseTextCompositionEnded(new TextCompositionEndedEventArgs(startIndex, committedLength));
 		InvalidateTextBoxRender();
 	}
 
@@ -189,7 +186,7 @@ public partial class TextBox
 		_compositionStartIndex = 0;
 		_compositionResolvedLength = 0;
 
-		TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length));
+		_host.RaiseTextCompositionEnded(new TextCompositionEndedEventArgs(startIndex, length));
 		InvalidateTextBoxRender();
 	}
 
@@ -255,7 +252,7 @@ public partial class TextBox
 		// End and restart the session so that further IME input still works
 		// while the active TextBox reference stays in sync.
 		_imeExtension?.EndImeSession();
-		TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length));
+		_host.RaiseTextCompositionEnded(new TextCompositionEndedEventArgs(startIndex, length));
 		InvalidateTextBoxRender();
 
 		// Restart the IME session so the user can continue typing with IME.
