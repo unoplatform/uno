@@ -1373,3 +1373,36 @@ MAC BUILD/RUN:
 LIKELY FOLLOW-UPS ON THE MAC: CAMetalLayer.device/pixelFormat contention between MTKView and wgpu (wgpu reconfigures
 the layer each frame — watch for a validation error or a blank layer); the same sRGB/gamma question as Android/desktop
 (the surface format wgpu picks for the CAMetalLayer — check the "[webgpu] surface ... format=" line).
+
+## 39. macOS session: native dylib + head BUILD DONE; runtime blocked — no Aqua session (SSH-only Mac)
+
+First session on an actual Mac (macOS 15.6 / Darwin 24.6, Xcode 26.1.1, .NET 10.0.109). Progress per the handoff §4:
+
+DONE (validated):
+ - Native rebuild: `UnoNativeMac/build.sh build-for-testing -scheme UnoNativeMac` builds clean (Xcode 26.1 SDK,
+   warnings only). `nm -gU build/Debug/libUnoNativeMac.dylib` shows BOTH new exports:
+   `_uno_window_get_metal_layer`, `_uno_window_set_webgpu_mode`. NOTE: the managed build triggers this
+   automatically — `Uno.UI.Runtime.Skia.MacOS.csproj` target `BuildUnoNativeMac` (BeforeTargets=CoreCompile,
+   OSX-only) runs build.sh; no manual Xcode step needed.
+ - Head build: `dotnet build SamplesApp.Skia.Generic -c Debug -f net10.0 -p:UnoFastDevBuild=true
+   -p:UnoTargetFrameworkOverride=net10.0` => 0 errors (~1:30). The head's own `BuildUnoNativeMac` target copies
+   `UnoNativeMac/build/Debug/libUnoNativeMac.dylib` into `bin/Debug/net10.0/runtimes/osx/native/` — verified the
+   deployed dylib is the fresh one (timestamp + nm). `libwgpu_native.dylib` (osx) provisioned at bin root as expected.
+
+BLOCKED (environment, NOT code): app launch stalls before creating any window, with or without UNO_WEBGPU.
+ SIGNATURE: exactly 3 stderr lines (`uno_app_initialize: Created default menu…`, `uno_app_initialize Metal requested
+ true available true`, `NSXPCSharedListener … 'ClientCallsAuxiliary': Connection interrupted`) then silence; process
+ alive, main thread idle in -[NSApplication run]; `UNOApplicationDelegate.applicationDidFinishLaunching` (DEBUG NSLog)
+ NEVER fires, so the managed start callback that creates the window never runs; libwgpu_native never even loads.
+ ROOT CAUSE: this session is SSH-only — `who` shows only ttys000 (remote), /dev/console owner is root (login window),
+ `launchctl managername` = Background. With no Aqua session, NSApplication cannot complete launching (no WindowServer
+ connection), so didFinishLaunching never posts. Broken invariant: GUI app run in a non-Aqua launchd session.
+ Sandboxing was ruled out (identical behavior with the shell sandbox disabled). Diagnosed via `sample` (native) +
+ `dotnet-stack report` (managed: main thread parked in MacSkiaHost.RunLoop, everything else idle waits).
+
+NEXT (needs a human): log into the Mac's desktop (locally or Screen Sharing) so an Aqua session exists for uid 502,
+then from a terminal IN that session (or ssh + `launchctl asuser $(id -u) …` once the GUI session exists):
+  UNO_WEBGPU=1 dotnet src/SamplesApp/SamplesApp.Skia.Generic/bin/Debug/net10.0/SamplesApp.Skia.Generic.dll
+Success = `Neutral graphics pipeline active: WebGpu context via WebGpuRenderer (macOS).` + `[webgpu] backend init` +
+`[webgpu] surface … format=…` lines, then judge visuals vs the non-WebGPU run (see handoff §5 for the sRGB and
+MTKView-contention watchpoints). Everything up to launch is verified on this Mac.
