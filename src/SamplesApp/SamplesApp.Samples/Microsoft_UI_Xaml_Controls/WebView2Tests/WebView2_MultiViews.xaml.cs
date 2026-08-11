@@ -35,7 +35,7 @@ public sealed partial class WebView2_MultiViews : Page
 			Text = url,
 		};
 
-		var webView = new WebView2()
+		var webView = new Microsoft.UI.Xaml.Controls.WebView2()
 		{
 			Source = new Uri(url),
 		};
