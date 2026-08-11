@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Globalization;
@@ -63,7 +63,7 @@ namespace Windows.Storage
 				{
 					if (DrawableHelper.FindResourceIdFromPath(path, logFailure: false) is { } resourceId)
 					{
-						return ContextHelper.Current.Resources!.OpenRawResource(resourceId);
+						return ContextHelper.Current!.Resources!.OpenRawResource(resourceId);
 					}
 					else
 					{
@@ -89,7 +89,7 @@ namespace Windows.Storage
 				var packageVersion = ApplicationModel.Package.Current.Id.Version;
 
 				_currentAppID =
-					ContextHelper.Current.GetType().Assembly.GetModules().First().ModuleVersionId.ToString()
+					ContextHelper.Current!.GetType().Assembly.GetModules().First().ModuleVersionId.ToString()
 					+ $"_{packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}";
 			}
 		}
