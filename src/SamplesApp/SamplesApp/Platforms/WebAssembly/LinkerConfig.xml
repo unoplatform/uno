@@ -1,6 +1,6 @@
 ﻿<linker>
   <assembly fullname="SamplesApp" />
-  <assembly fullname="SamplesApp.Skia" />
+  <assembly fullname="SamplesApp" />
   <assembly fullname="Uno.UI" />
   <assembly fullname="Uno.UI.Wasm.Tests" />
   <assembly fullname="Microsoft.Graph" />
