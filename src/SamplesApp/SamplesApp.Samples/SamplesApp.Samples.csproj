@@ -4,9 +4,8 @@
 	project node for the SamplesApp.Samples folder, so that "Add → New Item"
 	creates files directly under this folder (rather than in a consumer head
 	with a Link redirect). The samples are actually compiled via the
-	SamplesApp.Samples.props import — into SamplesApp.Skia for every Skia
-	target, into the SamplesApp head directly for WinUI, and into
-	UnoIslandsSamplesApp.Skia. This csproj does not build.
+	SamplesApp.Samples.props import — into the SamplesApp head for every target,
+	and into UnoIslandsSamplesApp.Skia. This csproj does not build.
 	-->
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>

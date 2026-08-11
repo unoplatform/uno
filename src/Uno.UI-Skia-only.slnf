@@ -20,7 +20,6 @@
       "SamplesApp\\SamplesApp.Samples\\SamplesApp.Samples.csproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.csproj",
       "SamplesApp\\SamplesApp.UnitTests.Shared\\SamplesApp.UnitTests.Shared.csproj",
-      "SamplesApp\\SamplesApp.Skia\\SamplesApp.Skia.csproj",
       "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",
       "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
       "SamplesApp\\UnoIslands.Shared\\UnoIslands.Shared.shproj",

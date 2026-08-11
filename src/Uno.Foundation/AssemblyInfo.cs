@@ -33,7 +33,6 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
 [assembly: InternalsVisibleTo("Uno.UI.DualScreen")]
 [assembly: InternalsVisibleTo("Uno.UI.DualScreen.netcoremobile")]
-[assembly: InternalsVisibleTo("SamplesApp.Skia")]
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.iOS")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]
