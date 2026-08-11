@@ -20,7 +20,7 @@
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">iossimulator-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">tvossimulator-x64</RuntimeIdentifier>
 
-		<!-- Override RuntimeIdentifir specifically for smaller builds -->
+		<!-- Override RuntimeIdentifier specifically for smaller builds -->
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!=''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
 
 		<!--
