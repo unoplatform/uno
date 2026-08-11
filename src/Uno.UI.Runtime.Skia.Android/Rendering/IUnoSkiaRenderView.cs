@@ -8,6 +8,14 @@ internal interface IUnoSkiaRenderView
 {
 	void InvalidateRender();
 	void ResetRendererContext();
+
+	/// <summary>
+	/// Releases the GPU resources backing this view. Required on activity teardown: the peer
+	/// finalizer never runs <c>Dispose(disposing: true)</c>, so without this each re-created
+	/// activity strands its GL/Vulkan context.
+	/// </summary>
+	void TeardownRenderer();
+
 	UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 	TextInputPlugin TextInputPlugin { get; }
 }
