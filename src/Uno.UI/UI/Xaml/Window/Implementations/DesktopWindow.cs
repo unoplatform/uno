@@ -29,9 +29,12 @@ internal class DesktopWindow : BaseWindowImplementation
 		_windowChrome = new WindowChrome(Window);
 		_windowChrome.ApplyStylingForMinMaxCloseButtons();
 		_desktopWindowXamlSource = new DesktopWindowXamlSource();
+		// Must run before the native window is created: it is what makes the content root
+		// resolve its owner window, which secondary windows need while initializing (e.g. to
+		// pick their own CoreDragDropManager rather than the main window's).
+		_desktopWindowXamlSource.AttachToWindow(Window);
 		_desktopWindowXamlSource.Content = _windowChrome;
 		base.Initialize();
-		_desktopWindowXamlSource.AttachToWindow(Window);
 	}
 
 	/// <summary>
