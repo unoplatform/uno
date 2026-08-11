@@ -276,6 +276,12 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		var fmtFeat = (WGPUFeatureName)WGPUNativeFeature.TextureAdapterSpecificFormatFeatures;
 		HasFormatFeatures = wgpuAdapterHasFeature(Adapter, fmtFeat) != 0;
 		if (HasFormatFeatures) { feats[0] = fmtFeat; ddesc.RequiredFeatures = feats; ddesc.RequiredFeatureCount = 1; }
+		// Install a non-fatal uncaptured-error handler (matching the reference host): without one, wgpu's default
+		// handler PANICS the whole process on any validation/OOM error. Log and continue instead.
+		ddesc.UncapturedErrorCallbackInfo = new WGPUUncapturedErrorCallbackInfo
+		{
+			Callback = (IntPtr)(delegate* unmanaged[Cdecl]<IntPtr, WGPUErrorType, WGPUStringView, IntPtr, IntPtr, void>)&OnUncapturedError,
+		};
 		wgpuAdapterRequestDevice(Adapter, &ddesc, new WGPURequestDeviceCallbackInfo
 		{
 			Mode = WGPUCallbackMode.AllowProcessEvents,
@@ -959,6 +965,18 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void OnDevice(WGPURequestDeviceStatus status, IntPtr device, WGPUStringView message, IntPtr u1, IntPtr u2)
 		=> ((IntPtr[])GCHandle.FromIntPtr(u1).Target!)[0] = device;
+
+	// Non-fatal device error handler: wgpu's DEFAULT uncaptured-error handler panics the process, which turned any
+	// stray validation error (e.g. an unsupported MSAA count) into a hard crash. Log and keep running like the
+	// reference host. Static + [UnmanagedCallersOnly] so the pointer stays valid for the device's lifetime.
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnUncapturedError(IntPtr device, WGPUErrorType type, WGPUStringView message, IntPtr u1, IntPtr u2)
+	{
+		var msg = message.Data != IntPtr.Zero && message.Length > 0
+			? System.Runtime.InteropServices.Marshal.PtrToStringUTF8(message.Data, (int)message.Length)
+			: "";
+		System.Console.Error.WriteLine($"[webgpu] uncaptured error ({type}): {msg}");
+	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	private static void OnMap(WGPUMapAsyncStatus status, WGPUStringView message, IntPtr u1, IntPtr u2)
