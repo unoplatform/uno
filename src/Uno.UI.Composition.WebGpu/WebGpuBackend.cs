@@ -2165,7 +2165,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		bool ok = d.Commands.Count > 0;
 		foreach (var c in d.Commands)
 		{
-			if (c is not (RectCommand or RoundedRectCmd or PathFill or ImageCmd or GradientCmd) || c.Clip.PathFan is not null) { ok = false; break; }
+			if (c is not (RectCommand or RoundedRectCmd or PathFill or ImageCmd or GradientCmd)) { ok = false; break; }
 		}
 		d.Cacheable = ok;
 		return ok;
