@@ -311,5 +311,26 @@
 	  <CodesignProvision>VS: WildCard Development</CodesignProvision>
 	</PropertyGroup>
 
+	<!--
+	Microsoft.Identity.Client ships no tvOS asset (only net8.0, net8.0-ios18.0,
+	net8.0-android34.0, net462, net472, netstandard2.0), so a net10.0-tvos head resolves
+	the desktop lib/net8.0 assembly. That assembly carries
+	Microsoft.Identity.Client.Platforms.Features.DesktopOs.LibSystem, which P/Invokes
+	dlopen/dlsym through "/System/Library/Frameworks/System.framework/System" - a legacy
+	framework that exists only on macOS. Xamarin.Shared.Sdk.targets derives the native
+	framework list from DllImport paths, so that turns into "-framework System" and the
+	link fails with "ld: framework 'System' not found".
+
+	The code path is unreachable on tvOS, so drop the framework from the native link.
+	This mirrors how the Apple SDK itself removes BrowserEngineKit
+	(Xamarin.Shared.Sdk.targets, _ComputeLinkNativeExecutableInputs).
+	-->
+	<Target Name="_UnoRemoveMissingSystemFrameworkOnTvOS"
+			AfterTargets="_ComputeLinkNativeExecutableInputs"
+			Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos' ">
+		<ItemGroup>
+			<_NativeExecutableFrameworks Remove="System" />
+		</ItemGroup>
+	</Target>
 
 </Project>
