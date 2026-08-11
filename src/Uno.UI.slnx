@@ -113,6 +113,9 @@
   </Folder>
   <Folder Name="/SamplesApp/">
     <Project Path="SamplesApp/Benchmarks.Shared/SamplesApp.Benchmarks.shproj" />
+    <Project Path="SamplesApp/SamplesApp/SamplesApp.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
     <Project Path="SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
