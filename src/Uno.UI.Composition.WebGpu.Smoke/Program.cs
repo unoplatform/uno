@@ -425,6 +425,26 @@ var szNear = AtW(pSmall, 8, 8, 32);
 Check("resize: cached recording re-baked for new surface size (far corner red)", szFar.r > 200 && szFar.g < 60, szFar);
 Check("resize: near corner red", szNear.r > 200 && szNear.g < 60, szNear);
 
+// 18b-2) ARENA PURE-PATH RESIZE — a pure-path (device verts + transform table) arena recording replayed into a
+//        SMALLER surface must reposition via the per-frame table entry (current projection) with NO geometry rebuild.
+//        Proves the table supersedes the CPU-NDC bake for path fills: the triangle lands correctly at both sizes
+//        even though the arena entry (built at 64px) is reused verbatim at 32px.
+{
+	var rtb = new ManagedDrawingFactory().CreatePathBuilder();
+	rtb.MoveTo(new Vector2(0, 0)); rtb.LineTo(new Vector2(16, 0)); rtb.LineTo(new Vector2(0, 16)); rtb.Close();
+	using var rTri = rtb.Build();
+	var rTriRec = new WebGpuCommandRecorder(); rTriRec.DrawPath(rTri, green, false); var rTriData = rTriRec.Finish();
+	Action<WebGpuCommandRecorder> rFrame = r => r.Replay(rTriData);
+	var rBig = RenderFrameAtSize(64, rFrame);      // builds the pure-path arena cache at 64px
+	var rSmall = RenderFrameAtSize(32, rFrame);    // SAME recording at 32px: table projection repositions, no rebuild
+	var rIn = AtW(rSmall, 4, 4, 32);               // inside the triangle at 32px
+	var rOut = AtW(rSmall, 28, 28, 32);            // far corner at 32px, outside the triangle
+	var rBigIn = AtW(rBig, 4, 4, 64);
+	Check("arena-path resize: triangle lands inside at 32px (green, table-driven)", rIn.g > 150 && rIn.r < 100, rIn);
+	Check("arena-path resize: far corner outside triangle (black)", rOut.r < 40 && rOut.g < 40, rOut);
+	Check("arena-path resize: still correct at 64px (green)", rBigIn.g > 150 && rBigIn.r < 100, rBigIn);
+}
+
 // 19) DRAW COALESCING — three same-clip rects in one frame coalesce into a single draw; all must render.
 var pCo = Render(r =>
 {
