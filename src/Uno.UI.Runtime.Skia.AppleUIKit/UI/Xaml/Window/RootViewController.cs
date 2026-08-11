@@ -18,13 +18,14 @@ using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Uno.UI.Dispatching;
 using System.Threading;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Composition.WebGpu;
 using SkiaCanvas = Uno.UI.Runtime.Skia.AppleUIKit.UnoSKMetalView;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 internal class RootViewController : UINavigationController, IAppleUIKitXamlRootHost
 {
-	private SkiaCanvas? _skCanvasView;
+	private IAppleUIKitRenderView? _renderView;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
 	private UIView? _topViewLayer;
@@ -68,11 +69,26 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		_textInputLayer.UserInteractionEnabled = false;
 		view.AddSubview(_textInputLayer);
 
-		_skCanvasView = new SkiaCanvas();
-		_skCanvasView.SetOwner(this);
-		_skCanvasView.Frame = view.Bounds;
-		_skCanvasView.AutoresizingMask = UIViewAutoresizing.All;
-		view.AddSubview(_skCanvasView);
+		// EXPERIMENTAL: WebGPU on a CAMetalLayer swapchain via the neutral backend (opt in with UNO_WEBGPU),
+		// mirroring the Android UnoSKWebGpuView. Otherwise the default Skia-on-Metal view.
+		UIView renderView;
+		if (global::System.Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "swapchain")
+		{
+			var webgpuView = new UnoSKWebGpuMetalView();
+			webgpuView.SetOwner(this);
+			_renderView = webgpuView;
+			renderView = webgpuView;
+		}
+		else
+		{
+			var skiaView = new SkiaCanvas();
+			skiaView.SetOwner(this);
+			_renderView = skiaView;
+			renderView = skiaView;
+		}
+		renderView.Frame = view.Bounds;
+		renderView.AutoresizingMask = UIViewAutoresizing.All;
+		view.AddSubview(renderView);
 
 		_topViewLayer = new TopViewLayer();
 		_topViewLayer.Frame = view.Bounds;
@@ -115,6 +131,22 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	internal void OnRenderFrameRequested(SKCanvas canvas)
 	{
 		var clipGeometry = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(new SkiaRenderTarget(canvas), _ => new SkiaRenderTarget(canvas));
+
+		if (clipGeometry is not null)
+		{
+			using var clipLease = SkiaGeometryInterop.Lease(clipGeometry);
+			UpdateNativeClipping(clipLease.Path);
+		}
+	}
+
+	// WebGPU render path (UnoSKWebGpuMetalView): the neutral backend renders + resolves into the swapchain image via
+	// AcquireRenderTarget, then Present() blits + presents. Mirrors the Android UnoSKWebGpuView frame.
+	internal void OnWebGpuFrameRequested(WebGpuSwapChainContext context)
+	{
+		var clipGeometry = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(
+			null,
+			size => context.AcquireRenderTarget((int)size.Width, (int)size.Height));
+		context.Present();
 
 		if (clipGeometry is not null)
 		{
@@ -273,7 +305,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	public void InvalidateRender()
 	{
-		_skCanvasView?.QueueRender();
+		_renderView?.QueueRender();
 	}
 
 	public UIElement? RootElement => _xamlRoot?.VisualTree.RootElement;

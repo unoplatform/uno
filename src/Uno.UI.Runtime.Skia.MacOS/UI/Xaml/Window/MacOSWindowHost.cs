@@ -20,6 +20,8 @@ using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Composition.WebGpu;
+using Uno.WebGpu.Native;
 using Window = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
@@ -32,6 +34,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private readonly XamlRoot _xamlRoot;
 	private readonly DisplayInformation _displayInformation;
 	private readonly GRContext? _context;
+	private readonly WebGpuSwapChainContext? _webgpuContext; // EXPERIMENTAL: non-null when UNO_WEBGPU owns the Metal layer
 	private SKBitmap? _bitmap;
 	private SKSurface? _surface;
 	private int _rowBytes;
@@ -54,6 +57,32 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		switch (host.RenderSurfaceType)
 		{
 			case RenderSurfaceType.Metal:
+				// EXPERIMENTAL: WebGPU on the view's CAMetalLayer via the neutral backend (opt in with UNO_WEBGPU),
+				// mirroring Android/AppleUIKit. wgpu owns acquire+present; the native drawInMTKView is switched to a
+				// tick-only mode (uno_window_set_webgpu_mode) so it doesn't contend for the layer's drawables.
+				if (global::System.Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "swapchain")
+				{
+					var layer = NativeUno.uno_window_get_metal_layer(_nativeWindow.Handle);
+					if (layer != 0)
+					{
+						_webgpuContext = new WebGpuSwapChainContext(
+							WGPUTextureFormat.BGRA8Unorm,
+							inst => WebGpuSwapChainContext.CreateMetalSurface(inst, layer));
+						CompositionTarget.Renderer = new WebGpuRenderer(_webgpuContext.Device);
+						NativeUno.uno_window_set_webgpu_mode(_nativeWindow.Handle, true);
+						if (this.Log().IsEnabled(LogLevel.Information))
+						{
+							this.Log().Info("Neutral graphics pipeline active: WebGpu context via WebGpuRenderer (macOS).");
+						}
+						break;
+					}
+
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn("UNO_WEBGPU set but the window has no Metal layer; falling back to Skia/Metal.");
+					}
+				}
+
 				NativeUno.uno_window_get_metal_handles(_nativeWindow.Handle, out var device, out var queue);
 				var ctx = new GRMtlBackendContext()
 				{
@@ -102,6 +131,28 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			{
 				return; // not yet...
 			}
+		}
+
+		// EXPERIMENTAL WebGPU: the native side ticks us with texture == 0; drive the wgpu swapchain on the CAMetalLayer
+		// through the neutral seam (AcquireRenderTarget + Present) instead of wrapping a native MTLTexture in Skia.
+		if (_webgpuContext is { } webgpu)
+		{
+			var webgpuClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(
+				null,
+				size => webgpu.AcquireRenderTarget((int)size.Width, (int)size.Height));
+			webgpu.Present();
+
+			string? webgpuClip = null;
+			if (!webgpuClipPath.IsEmpty)
+			{
+				using var clipLease = SkiaGeometryInterop.Lease(webgpuClipPath);
+				webgpuClip = clipLease.Path.ToSvgPathData();
+			}
+			if (webgpuClip != _lastSvgClipPath && NativeUno.uno_window_clip_svg(_nativeWindow.Handle, webgpuClip))
+			{
+				_lastSvgClipPath = webgpuClip;
+			}
+			return;
 		}
 
 		// we can't cache anything since the texture will be different on next calls

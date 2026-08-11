@@ -1023,6 +1023,28 @@ void uno_window_get_metal_handles(UNOWindow* window, void** device, void** queue
 #endif
 }
 
+void* uno_window_get_metal_layer(UNOWindow* window)
+{
+    NSView* view = window.renderingView;
+    if ([view isKindOfClass:[MTKView class]])
+    {
+        // MTKView's backing layer is a CAMetalLayer — hand it to the managed WebGPU backend for CreateMetalSurface.
+        return (__bridge void *)(view.layer);
+    }
+    return NULL;
+}
+
+void uno_window_set_webgpu_mode(UNOWindow* window, bool enabled)
+{
+    if (window.metalViewDelegate != nil)
+    {
+        window.metalViewDelegate.webgpuMode = enabled;
+    }
+#if DEBUG
+    NSLog(@"uno_window_set_webgpu_mode %p -> %s", window, enabled ? "true" : "false");
+#endif
+}
+
 CGFloat readNextCoord(const char *svg, int *position, long length)
 {
     CGFloat result = NAN;

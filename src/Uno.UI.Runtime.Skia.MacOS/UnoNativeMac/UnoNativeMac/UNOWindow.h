@@ -345,6 +345,14 @@ void uno_set_window_close_callbacks(window_should_close_fn_ptr shouldClose, wind
 
 void uno_window_get_metal_handles(UNOWindow* window, void*_Nonnull* _Nonnull device, void*_Nonnull* _Nonnull queue);
 
+// EXPERIMENTAL WebGPU: returns the rendering MTKView's CAMetalLayer so the managed WebGPU backend can create a wgpu
+// surface on it (CreateMetalSurface). Returns NULL if the window has no Metal rendering view.
+void* _Nullable uno_window_get_metal_layer(UNOWindow* window);
+
+// EXPERIMENTAL WebGPU: toggles WebGPU ownership of the view's CAMetalLayer. When enabled, drawInMTKView stops
+// acquiring/presenting its own drawable and only ticks managed code, which drives the wgpu swapchain.
+void uno_window_set_webgpu_mode(UNOWindow* window, bool enabled);
+
 typedef void (*window_did_change_screen_fn_ptr)(NSWindow* window, uint32 width, uint32 height, CGFloat backingScaleFactor);
 window_did_change_screen_fn_ptr uno_get_window_did_change_screen_callback(void);
 
