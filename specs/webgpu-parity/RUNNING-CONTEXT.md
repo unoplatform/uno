@@ -1406,3 +1406,33 @@ then from a terminal IN that session (or ssh + `launchctl asuser $(id -u) …` o
 Success = `Neutral graphics pipeline active: WebGpu context via WebGpuRenderer (macOS).` + `[webgpu] backend init` +
 `[webgpu] surface … format=…` lines, then judge visuals vs the non-WebGPU run (see handoff §5 for the sRGB and
 MTKView-contention watchpoints). Everything up to launch is verified on this Mac.
+
+## 40. macOS WebGPU RENDERS CORRECTLY (runtime-validated, human-confirmed) — Android breakage is Android-specific
+
+After GUI login unblocked §39, `UNO_WEBGPU=1 dotnet …/SamplesApp.Skia.Generic.dll` on the Mac:
+ - `[webgpu] backend init — pipeline=True msaa=4x scale=1 colorFormat=BGRA8Unorm`
+ - `uno_window_set_webgpu_mode … -> true` (native MTKView switched to tick-only mode)
+ - `Neutral graphics pipeline active: WebGpu context via WebGpuRenderer (macOS).`
+ - `[webgpu] surface 1024x768 format=BGRA8Unorm present=Fifo` — NON-sRGB surface, so the Android §35/§36 gamma
+   problem does not arise on macOS (plain straight-copy blit path).
+ - Surface msaa/depth textures recreated 3x during startup (same size each time), then stable — startup settling,
+   not per-frame reconfigure. No wgpu validation errors, no uncaptured-error output, frames tick per invalidate
+   (drawInMTKView → OnNativePlatformFrameRequested → AcquireRenderTarget → Present).
+ - VISUAL: user confirmed over Screen Sharing the app RENDERS CORRECTLY (normal text/controls/colors).
+
+IMPLICATION (handoff §5 decision point): macOS runs the SAME WebGpuBackend scene rendering as Android but renders
+correctly ⇒ the Android on-screen breakage is in Android-specific glue (surface/present/ANativeWindow path, or the
+emulator driver per §34), NOT in the shared backend.
+
+MTKView contention: none observed — the §38 tick-only design (skip currentDrawable/presentDrawable when webgpuMode)
+is sufficient; no paused/enableSetNeedsDisplay tweaks needed.
+
+Screenshot-from-SSH gotcha (for future sessions): screencapture/CGWindowList image APIs from the SSH context are
+TCC-blind (Screen Recording not granted) — captures silently contain ONLY the wallpaper (no menu bar/windows) and
+per-window capture fails "could not create image from window" (window reports kCGWindowSharingState=0). Don't
+misread that as "app renders nothing". Validate visuals via the human on Screen Sharing, or later objectively via
+runtime tests / RenderTargetBitmap (WebGpuBackend.ReadPixelsRgba works off-browser).
+
+NEXT: (a) deeper macOS parity — run the runtime-tests suite with UNO_WEBGPU=1 and/or side-by-side vs Skia/Metal;
+(b) iOS (handoff §6): install ios workload, build netcoremobile head, expect native-link fixups in
+_ProvisionWgpuNativeIos.
