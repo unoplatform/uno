@@ -24,7 +24,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]
 [assembly: InternalsVisibleTo("SamplesApp.macOS")]
-[assembly: InternalsVisibleTo("SamplesApp.Skia")]
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
 

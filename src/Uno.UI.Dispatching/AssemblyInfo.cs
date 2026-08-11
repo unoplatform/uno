@@ -25,7 +25,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]
 [assembly: InternalsVisibleTo("SamplesApp.macOS")]
-[assembly: InternalsVisibleTo("SamplesApp.Skia")]
 
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]
 

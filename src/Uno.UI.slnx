@@ -116,9 +116,6 @@
     <Project Path="SamplesApp/SamplesApp/SamplesApp.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
-    <Project Path="SamplesApp/SamplesApp.Skia/SamplesApp.Skia.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="SamplesApp/SamplesApp.UITests.Generator/Uno.Samples.UITest.Generator.csproj">
       <BuildDependency Project="SourceGenerators/Uno.UI.SourceGenerators/Uno.UI.SourceGenerators.csproj" />
       <BuildDependency Project="SourceGenerators/Uno.UI.Tasks/Uno.UI.Tasks.csproj" />

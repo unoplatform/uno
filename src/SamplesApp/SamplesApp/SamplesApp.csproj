@@ -78,12 +78,6 @@
 		<!-- Trimmer warnings the wasm and android trimming passes both raise. To remove as they are fixed. -->
 		<_UnoTrimmingNoWarn>IL2026;IL2057;IL2062;IL2065;IL2067;IL2070;IL2072;IL2075;IL2077;IL2080;IL2104;IL2111;IL2122</_UnoTrimmingNoWarn>
 
-		<!--
-		The App/ApplicationDefinition lives in the SamplesApp.Skia base lib, not here, so the
-		hot-restart helper generator has nothing to bind to and fails the build with Uno0005.
-		Only android imports the generators, so scope it there rather than setting it globally.
-		-->
-		<UnoDisableHotRestartHelperGeneration Condition="'$(_Platform)' == 'android'">true</UnoDisableHotRestartHelperGeneration>
 	</PropertyGroup>
 
 	<!-- ==================== Framework via ProjectReference ==================== -->
@@ -296,8 +290,7 @@
 	<Import Condition="'$(_Platform)' == 'android'" Project="..\..\Uno.UI.Runtime.Skia.Android\build\*.Runtime.Skia.Android.targets" />
 
 	<!-- ==================== iOS + tvOS (AppleUIKit + Skia) — REQUIRES macOS to build ==================== -->
-	<!-- Samples come from the
-	     SamplesApp.Skia base lib (referenced for all Skia TFMs above). Not compile-validated on Windows. -->
+	<!-- Not compile-validated on Windows. -->
 	<ItemGroup Condition="'$(_IsUIKit)' == 'true'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.netcoremobile.csproj" />

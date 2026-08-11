@@ -18,7 +18,6 @@ using Uno.UI.Graphics;
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]
 [assembly: InternalsVisibleTo("SamplesApp.macOS")]
-[assembly: InternalsVisibleTo("SamplesApp.Skia")]
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme")]
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme.v1")]
