@@ -10,6 +10,8 @@ using Uno.Devices.Sensors;
 using Uno.UI.Foldable;
 using Windows.UI.ViewManagement;
 using Uno.UI;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.Android;
 
 [assembly: UsesFeature("android.software.leanback", Required = false)]
 [assembly: UsesFeature("android.hardware.touchscreen", Required = false)]
@@ -27,7 +29,7 @@ namespace SamplesApp.Droid
 	public class Application : NativeApplication
 	{
 		public Application(IntPtr javaReference, JniHandleOwnership transfer)
-			: base(() => new App(), javaReference, transfer)
+			: base(javaReference, transfer)
 		{
 			// Copyright 2017 The Chromium Authors. All rights reserved.
 			//
@@ -83,6 +85,12 @@ namespace SamplesApp.Droid
 				FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid = false;
 			}
 		}
+
+		protected override UnoPlatformHost CreateHost() =>
+			UnoPlatformHostBuilder.Create()
+				.App(() => new App())
+				.UseAndroid()
+				.Build();
 
 		public override void OnCreate()
 		{
