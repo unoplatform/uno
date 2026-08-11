@@ -549,3 +549,147 @@ git commit -m "ci: Build and runtime-test desktop Skia via the consolidated head
 **Placeholder scan:** P0/P1 carry concrete code/commands. P2–P6/P-implicit are task-level per the "Plan structure note" — each names exact files, refs, and a runnable verification, with source-of-truth csprojs to mirror. The one soft spot (`UnoApplicationShim` in 0.3 Step 2) has an explicit fallback.
 
 **Type/name consistency:** sentinel `255.255.255-dev` (0.1↔0.2); head name `SamplesApp` + `AssemblyName=SamplesApp` consistent throughout (renamed from earlier `.Skia.Head`); switch `SamplesAppUseImplicitPackages` toggling **both** `DisableImplicitUnoPackages` and `DisableImplicitUnoWinAppSdkPackages` identical in spec §3/§4 and plan 0.3/1.1/PI.*; windows TFM via `$(NetCurrentWinAppSDK)` consistent; artifact `samplesapp-desktop-skia` preserved (1.6). ✓
+
+---
+
+## Appendix — Head wiring rationale
+
+The long-form reasoning behind the non-obvious lines in
+`src/SamplesApp/SamplesApp/SamplesApp.csproj`. The project file itself keeps a one-line *why* at each site
+and points here.
+
+### Uno.Sdk is imported by path, not via `Sdk="Uno.Sdk.Private"`
+
+An `Sdk` attribute resolves through NuGet at *evaluation* time, so a fresh clone could not load the project
+at all until the SDK had been packed into a local feed — it would not open in Visual Studio, and
+`dotnet restore` would fail before it could build the SDK. A plain `Import` needs no package, no version
+pin and no bootstrap step. The source tree already has the layout `Sdk.props` expects: it locates its
+targets via `$(MSBuildThisFileDirectory)..\targets`, and `src\Uno.Sdk\{Sdk,targets}` are siblings.
+`Sdk.props` must stay the first import and `Sdk.targets` the last, replacing the implicit top and bottom
+imports the attribute form would have added.
+
+### TargetFrameworks ordering and the Apple platform versions
+
+Desktop is deliberately not first (UNOB0011), which keeps Visual Studio multi-target debugging working.
+
+iOS and tvOS carry the explicit `$(NetCurrentAppleOSVersion)` platform version, matching
+`$(NetCurrentNetCoreMobile)` and the heads this replaces, rather than letting the workload pick its
+default. CI is unaffected: it always passes `UnoTargetFrameworkOverride`, and
+`targetframework-override.props` keeps `Exe` projects on the unversioned moniker, so artifact paths stay
+`bin/…/$(NetCurrent)-ios`.
+
+### The windows TargetFramework collapse
+
+Windows MSIX is built with `MSBuild.exe /t:Publish`, not `dotnet -f`. A single-valued but still *plural*
+`<TargetFrameworks>` routes `Publish` through the cross-targeting outer build, which rejects it
+(NETSDK1129). The head therefore collapses to a single `TargetFramework` for the windows override so
+`Publish` runs the inner build directly. It is scoped to this project rather than passed as a global
+`/p:TargetFramework`, which would also force the TFM onto dependencies such as the netstandard2.0
+`Uno.UI.Tasks` pre-build (CS0234).
+
+Because `TargetFramework` is assigned by the project rather than supplied as a global property, it is empty
+until that point. Everything reading it must come below.
+
+### `$(_Platform)`, and why Uno.Sdk's `Is*` properties cannot replace it
+
+`$(_Platform)` is computed once, below the collapse, and every platform gate keys off it.
+
+Uno.Sdk's `$(IsAndroid)` / `$(IsWinAppSdk)` / … are not usable here. `Uno.IsPlatform.Before.props` defaults
+them all to `false`, and `Uno.IsPlatform.props` — reached through `$(CustomAfterDirectoryBuildProps)` during
+the `Sdk.props` import at the top of the file — evaluates while `$(TargetFramework)` is still empty on the
+windows override path. The corrected values only arrive with `Uno.Common.*.targets` at the bottom, after
+every `PropertyGroup` condition in the project body has already been evaluated.
+
+Measured: hoisting the `$(_Platform)` declaration above the collapse makes the WinAppSDK publish resolve
+`AssemblyName` to `SamplesApp` instead of `SamplesApp.Windows`, and `_IsSkiaTfm` to `true`, pulling 14
+`ProjectReference`s into the native WinUI build instead of 6.
+
+### The WinUI assembly is named `SamplesApp.Windows`
+
+On WinUI the assembly keeps the old `SamplesApp.Windows` head's name, which is deliberately *not* in the
+`Uno.UI.Toolkit` / `Uno.Foundation` `InternalsVisibleTo` lists. That keeps `Toolkit.Windows`'s self-linked
+*internal* helpers (`AsyncLock`, `EnumerableExtensions`, `DependencyObjectExtensions`) invisible, so the
+head uses the public Uno Platform Core extension package APIs instead and there is no duplicate-type
+collision. On Skia the `SamplesApp` name keeps the `InternalsVisibleTo` grants the shared code relies on —
+nine of them across the framework key off that exact string, so a rename must not change it silently.
+
+### `UnoRuntimeIdentifier`
+
+`Uno.Common.Desktop.targets` sets `UnoRuntimeIdentifier=Skia` for the desktop TFM, but nothing in Uno.Sdk
+sets it for browserwasm — the head is the only source there. Without it, `Uno.CrossTargeting.targets`
+removes the `.skia.cs` variants and drops `__SKIA__`/`__CROSSRUNTIME__`, and XAML conditional namespaces
+such as `xmlns:skia="http://uno.ui/skia"` stop being recognized.
+
+It must stay empty on android/ios/tvos so cross-targeting picks the native `.Android.cs` / `.iOS.cs` /
+`.UIKit.cs` variants instead — Skia rendering there comes from the `Runtime.Skia.*` runtime. On WinUI it
+stays empty (native rendering).
+
+### `PreBuildUnoUITasks` is skipped on windows
+
+The shadow build of `Uno.UI.Tasks` runs for the Skia TFMs on CI and clean builds, as the old Skia heads
+did. It is skipped on windows, like the old `SamplesApp.Windows` head: that TFM neither imports
+`Uno.UI.Tasks.targets` nor runs the Uno Platform generators, and building the netstandard2.0 tools under
+the WinAppSDK `MSBuild.exe` environment fails to resolve their framework references (CS0518/CS0012).
+
+### Bundled asset paths on android, iOS and tvOS
+
+WebView2 maps a virtual host to the bundled `WebContent` folder (`Given_WebView2.When_LocalFolder_File`).
+On android the `Link` must sit under `$(MonoAndroidAssetsPrefix)`, which Uno.Sdk sets to
+`$(AndroidProjectFolder)Assets` — `Platforms\Android\Assets` here, not the bare `Assets` the old
+netcoremobile layout used.
+
+The same shape applies on iOS and tvOS for a different reason: the .NET iOS/tvOS toolchain reserves the
+top-level bundle folder name `Resources` (`_CollectBundleResources` errors on it), so the `Link` is
+prefixed with `$(iOSProjectFolder)` — `Platforms\iOS` here. Matching the SDK's folder is what makes the
+bundled path resolvable, exactly as `MonoAndroidAssetsPrefix` does on android.
+
+### Importing `Uno.UI.Tasks.targets` and the source generators explicitly
+
+WASM and mobile need the head's directly-referenced content — the `Uno.UI.RuntimeTests` assets and fonts —
+bundled into the app. `Uno.UI.Tasks.targets` retargets `Content` into the wasm ms-appx manifest,
+`AndroidAsset`s, and iOS/tvOS `BundleResource`s via its `_UnoUnderlyingPlatform` logic. Because the
+framework projects come from source via `ProjectReference` (`DisableImplicitUnoPackages`), it is not
+imported transitively the way a package reference would bring it in — hence the explicit import. Desktop is
+excluded: it loads ms-appx straight from the flat output directory.
+
+Android additionally needs the Uno Platform generators: `AndroidResourcesGenerator` emits the
+`DrawableHelper.SetDrawableResolver` call, without which every ms-appx local asset lookup throws
+"Drawable resources were not initialized" at runtime. It is scoped to android rather than all of mobile —
+that generator is android-only, and iOS/tvOS resolve their assets without it.
+
+**Ordering constraint.** The `Runtime.Skia.Android` build fragment sets `UnoUIRuntimeIdentifier=Skia`, and
+the source-generator props read it to choose `XamarinProjectType=skia` over `android`. The fragment import
+must therefore stay above the generator import; reversing them produces wrong output rather than a build
+error.
+
+### Publish validation is desktop and wasm only
+
+The published-font check is only meaningful on desktop and browserwasm, whose publish lays package content
+out flat under `$(PublishDir)` — this is where the original Skia.Generic and WebAssembly heads ran it.
+Android and iOS bundle assets inside the APK or `.app`, so a flat-path check can never pass there, and the
+old netcoremobile head never ran it.
+
+### Content sourcing: base library on Skia, inlined on WinUI
+
+The Skia TFMs (desktop/wasm/android/ios/tvos) reference the generic-Skia `SamplesApp.Skia` library, which
+compiles the samples **once** as Skia (`__SKIA__`, the Skia branches). This is what every old Skia head
+did, and it is why mobile works: inlining would compile the samples with the native platform symbol
+(`__ANDROID__`/`__APPLE_UIKIT__`) and pull in native-only types — `BindableButtonEx`, for example — that
+are not present in the Skia build of `Uno.UI`. The base library provides `App`, the samples, the unit tests
+and the benchmarks, plus the XAML and dependency-property generators.
+
+WinUI/WinAppSDK cannot reference it: the base library is compiled against Uno Platform's
+`Microsoft.UI.Xaml`, a different type identity than the real WinAppSDK WinUI. So windows inlines the shared
+content and lets the real WinUI XAML compiler build it, as the old `SamplesApp.Windows` head did, with no
+Uno Platform source generators involved.
+
+The samples, tests and their `[Bindable]`/attached-property types all live in the base library, and nothing
+in the head references them statically, so the trimmer would drop them and the generated
+`Uno.*.Descriptor.xml` files would then fail to resolve under NativeAOT (IL2008). `TrimmerRootAssembly`
+roots it, the same way the netcoremobile head did.
+
+**Ordering constraint.** The shared-content imports at the bottom (`SamplesApp.Shared.props`,
+`SamplesApp.Samples.props`, `SamplesApp.UnitTests.Shared.props`, `Benchmarks.Shared.projitems`) must stay
+below the `Sdk.props` import at the top: `src/Directory.Build.props` sets
+`EnableAutomaticXamlPageInclusion=true` during that import and `Benchmarks.Shared.projitems` sets it back to
+`false`, so whichever is evaluated last in the property pass wins.

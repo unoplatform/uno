@@ -1,25 +1,14 @@
 <Project>
 	<!--
-	Uno.Sdk is imported by path instead of via Sdk="Uno.Sdk.Private". An Sdk attribute resolves through
-	NuGet at *evaluation* time, so a fresh clone could not even load this project until the SDK had been
-	packed into a local feed. A plain Import needs no package, no version pin and no bootstrap step.
-	The source tree already has the layout Sdk.props expects: it locates its targets via
-	$(MSBuildThisFileDirectory)..\targets, and src\Uno.Sdk\{Sdk,targets} are siblings.
+	Uno.Sdk is imported by path rather than via Sdk="Uno.Sdk.Private": an Sdk attribute resolves through
+	NuGet at evaluation time, so a fresh clone could not load this project until the SDK had been packed.
+	Rationale for the non-obvious wiring in this file: specs/051-samplesapp-unosdk-skia/plan.md.
 	-->
 	<Import Project="$(MSBuildThisFileDirectory)..\..\Uno.Sdk\Sdk\Sdk.props" />
 
 	<PropertyGroup>
-		<!--
-		Desktop intentionally not first (UNOB0011): keeps VS multi-target debugging working.
-		The windows duplicate-internal collision is resolved by naming the WinUI assembly
-		"SamplesApp.Windows" (no Toolkit/Foundation IVT) — see AssemblyName below.
-
-		iOS/tvOS carry the explicit $(NetCurrentAppleOSVersion) platform version, matching
-		$(NetCurrentNetCoreMobile) and the heads this replaces, instead of letting the workload
-		pick the default. CI is unaffected: it always passes UnoTargetFrameworkOverride, and
-		targetframework-override.props keeps Exe projects on the unversioned moniker, so the
-		artifact paths stay bin/…/$(NetCurrent)-ios.
-		-->
+		<!-- Desktop deliberately not first (UNOB0011): keeps VS multi-target debugging working. iOS/tvOS
+		     carry the explicit platform version to match $(NetCurrentNetCoreMobile). -->
 		<TargetFrameworks>$(NetCurrent)-browserwasm;$(NetCurrentWinAppSDK);$(NetCurrent)-android;$(NetCurrent)-ios$(NetCurrentAppleOSVersion);$(NetCurrent)-tvos$(NetCurrentAppleOSVersion);$(NetCurrent)-desktop</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
@@ -28,15 +17,10 @@
 	<Import Project="..\..\targetframework-override.props" />
 
 	<!--
-	Windows MSIX is built with MSBuild.exe /t:Publish (no `dotnet -f`). A single-valued but still
-	*plural* <TargetFrameworks> routes Publish through the cross-targeting outer build, which rejects
-	it (NETSDK1129). Collapse the head to a single TargetFramework for the windows override so Publish
-	runs the inner build directly. Scope it to THIS project (not a global /p:TargetFramework, which
-	would also force the TFM onto dependencies like the netstandard2.0 Uno.UI.Tasks pre-build → CS0234).
-
-	Here TargetFramework is set by the project, not passed in as a global property, so it is empty until
-	this point. MSBuild evaluates properties in document order: everything reading $(TargetFramework)
-	must therefore come below, or it silently sees an empty TFM.
+	Windows MSIX is built with MSBuild.exe /t:Publish, and a single-valued but still *plural*
+	<TargetFrameworks> routes Publish through the cross-targeting outer build, which rejects it
+	(NETSDK1129). Collapsing to a single TargetFramework here is what makes $(TargetFramework)
+	non-empty, so everything that reads it must come below this point.
 	-->
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(UnoTargetFrameworkOverride)')) == 'windows'">
 		<TargetFramework>$(UnoTargetFrameworkOverride)</TargetFramework>
@@ -44,38 +28,23 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<!--
-		Every platform gate below keys off this. It must be computed here, below the windows collapse
-		above, so it reflects the final TFM. Uno.Sdk's own $(IsAndroid)/$(IsWinAppSdk)/… are not usable
-		for that: Uno.IsPlatform.Before.props defaults them to false during the Sdk.props import at the
-		top of this file, and the corrected values only arrive with Uno.Common.*.targets at the bottom —
-		after every PropertyGroup condition in this file has already been evaluated.
-		-->
+		<!-- Every platform gate below keys off this. It must stay below the windows collapse above, and
+		     cannot be Uno.Sdk's $(IsAndroid)/$(IsWinAppSdk)/… — those still read false at this point. -->
 		<_Platform>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</_Platform>
 
 		<OutputType Condition="'$(_Platform)' == 'windows'">WinExe</OutputType>
 		<UnoSingleProject>true</UnoSingleProject>
-		<!-- Redundant with the project name, but kept explicit: nine InternalsVisibleTo("SamplesApp")
-		     grants across the framework key off this exact name, so a future project rename must not
-		     change it silently. -->
+		<!-- Explicit because nine InternalsVisibleTo("SamplesApp") grants key off this exact name. -->
 		<AssemblyName>SamplesApp</AssemblyName>
-		<!--
-		On WinUI the assembly is named like the old SamplesApp.Windows head, which is deliberately
-		NOT in the Uno.UI.Toolkit / Uno.Foundation InternalsVisibleTo lists. That keeps Toolkit.Windows's
-		self-linked *internal* helpers (AsyncLock, EnumerableExtensions, DependencyObjectExtensions)
-		invisible, so the head uses the public Uno.Core.Extensions package APIs instead and there's no
-		duplicate-type collision. (On Skia the "SamplesApp" name keeps the IVT the shared code relies on.)
-		-->
+		<!-- WinUI keeps the old head's name, which is deliberately absent from the Uno.UI.Toolkit /
+		     Uno.Foundation IVT lists — that is what avoids the duplicate-type collision there. -->
 		<AssemblyName Condition="'$(_Platform)' == 'windows'">SamplesApp.Windows</AssemblyName>
 
 		<!--
-		Set Skia early (before the source-generator props evaluate) so XAML conditional namespaces
-		like xmlns:skia="http://uno.ui/skia" are recognized and .skia.cs files are included. Uno.Sdk
-		also sets it, but in .targets (too late for Uno.UI.SourceGenerators.props / Uno.CrossTargetting).
-		ONLY for desktop + browserwasm (generic netX Skia, which use .skia.cs). On android/ios/tvos it
-		must stay empty here so Uno.CrossTargetting picks the native .Android.cs/.iOS.cs/.UIKit.cs file
-		variants (Skia rendering still comes from the Runtime.Skia.* runtime, set later) — matching the
-		old netcoremobile head. On WinUI it stays empty (native rendering).
+		Uno.Sdk sets UnoRuntimeIdentifier=Skia for desktop (Uno.Common.Desktop.targets) but not for
+		browserwasm, where this is the only source — without it Uno.CrossTargetting drops the .skia.cs
+		variants and __SKIA__. It must stay empty on android/ios/tvos so the native file suffixes win,
+		and on WinUI (native rendering).
 		-->
 		<_IsDesktopOrWasm Condition="'$(_Platform)' == 'desktop' OR '$(_Platform)' == 'browserwasm'">true</_IsDesktopOrWasm>
 		<UnoRuntimeIdentifier Condition="'$(UnoRuntimeIdentifier)' == '' AND '$(_IsDesktopOrWasm)' == 'true'">Skia</UnoRuntimeIdentifier>
@@ -96,12 +65,8 @@
 		<DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>
 		<DisableImplicitUnoWinAppSdkPackages>true</DisableImplicitUnoWinAppSdkPackages>
 
-		<!--
-		Build the Uno.UI.Tasks shadow assembly first (CI / clean builds), as the Skia heads do.
-		Skipped on windows, like SamplesApp.Windows: that TFM neither imports Uno.UI.Tasks.targets
-		nor runs the Uno generators, and building the netstandard2.0 tools under the WinAppSDK
-		MSBuild.exe environment fails to resolve their framework references (CS0518/CS0012).
-		-->
+		<!-- Shadow-build Uno.UI.Tasks first on CI / clean builds. Skipped on windows: building the
+		     netstandard2.0 tools under the WinAppSDK MSBuild.exe environment fails (CS0518/CS0012). -->
 		<PreBuildUnoUITasks Condition="'$(BuildingInsideVisualStudio)'=='' AND '$(_IsSkiaTfm)' == 'true'">true</PreBuildUnoUITasks>
 
 		<!--
@@ -319,12 +284,8 @@
 	<ItemGroup Condition="'$(_Platform)' == 'android'">
 		<AndroidAsset Include="Platforms\Android\Assets\sound.mp3" Link="Assets\sound.mp3" />
 		<AndroidAsset Include="Platforms\Android\Assets\Lottie\**\*.json" Link="Assets\Lottie\%(RecursiveDir)%(Filename)%(Extension)" />
-		<!--
-		WebView2 maps a virtual host to this folder (Given_WebView2.When_LocalFolder_File);
-		iOS/tvOS get the same files as BundleResource below. The Link must sit under
-		$(MonoAndroidAssetsPrefix), which Uno.Sdk sets to $(AndroidProjectFolder)Assets —
-		Platforms\Android\Assets here, not the bare Assets netcoremobile's layout uses.
-		-->
+		<!-- WebView2 maps a virtual host to this folder (Given_WebView2.When_LocalFolder_File). The Link
+		     must sit under $(MonoAndroidAssetsPrefix), i.e. Platforms\Android\Assets, not a bare Assets. -->
 		<AndroidAsset Include="..\LinkedFiles\WebContent\css\site.css" Link="Platforms\Android\Assets\WebContent\css\site.css" />
 		<AndroidAsset Include="..\LinkedFiles\WebContent\index.html" Link="Platforms\Android\Assets\WebContent\index.html" />
 		<AndroidAsset Include="..\LinkedFiles\WebContent\js\site.js" Link="Platforms\Android\Assets\WebContent\js\site.js" />
@@ -357,11 +318,8 @@
 		<MtouchInterpreter>all</MtouchInterpreter>
 	</PropertyGroup>
 
-	<!-- iOS/tvOS bundle the WebView2 test content. The .NET iOS/tvOS toolchain reserves the
-	     top-level bundle folder name 'Resources' (_CollectBundleResources errors on it), so the Link
-	     is prefixed with the platform folder — $(iOSProjectFolder), i.e. Platforms\iOS here, not the
-	     bare iOS netcoremobile's layout uses. Matching the SDK's folder is what makes the bundled
-	     path resolvable, exactly as MonoAndroidAssetsPrefix does on android. -->
+	<!-- The .NET iOS/tvOS toolchain reserves the top-level bundle folder name 'Resources'
+	     (_CollectBundleResources errors on it), so the Link is prefixed with $(iOSProjectFolder). -->
 	<ItemGroup Condition="'$(_Platform)' == 'ios'">
 		<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="Platforms\iOS\Resources\WebContent\css\site.css" />
 		<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="Platforms\iOS\Resources\WebContent\index.html" />
@@ -394,13 +352,10 @@
 	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.targets" />
 
 	<!--
-	WASM + mobile: bundle the head's directly-referenced content (the Uno.UI.RuntimeTests test
-	assets/fonts) into the app. Uno.UI.Tasks.targets retargets Content into the wasm ms-appx
-	manifest, AndroidAssets, and iOS/tvOS BundleResources (see its _UnoUnderlyingPlatform logic).
-	The framework projects are referenced from source (DisableImplicitUnoPackages), so this isn't
-	imported transitively the way a package reference would — import it explicitly, as the old
-	per-platform heads got it. Excluded on desktop, which loads ms-appx straight from the flat
-	output dir (and where the runtime image tests already pass). Windows uses native WinUI.
+	WASM + mobile: Uno.UI.Tasks.targets retargets the head's Content (the Uno.UI.RuntimeTests assets
+	and fonts) into the wasm ms-appx manifest, AndroidAssets and iOS/tvOS BundleResources. Referencing
+	the framework from source means it does not arrive transitively, so import it explicitly. Desktop
+	is excluded — it loads ms-appx straight from the flat output dir.
 	-->
 	<PropertyGroup Condition="'$(_IsSkiaTfm)' == 'true' AND '$(_Platform)' != 'desktop'">
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
@@ -409,11 +364,10 @@
 	        Condition="'$(_IsSkiaTfm)' == 'true' AND '$(_Platform)' != 'desktop' AND '$(SkipUnoResourceGeneration)' == ''" />
 
 	<!--
-	Android needs the Uno generators: AndroidResourcesGenerator emits the
-	DrawableHelper.SetDrawableResolver call, and without it every ms-appx local asset lookup
-	throws "Drawable resources were not initialized" at runtime. Scoped to android rather than
-	all of mobile — that generator is android-only, and iOS/tvOS resolve their assets without it.
-	Only the generators half is imported; the tasks half is already above.
+	Android needs AndroidResourcesGenerator to emit the DrawableHelper.SetDrawableResolver call —
+	without it every ms-appx local asset lookup throws "Drawable resources were not initialized" at
+	runtime. Must stay below the Runtime.Skia.Android import above, which sets UnoUIRuntimeIdentifier=Skia
+	for the generators to read; reversed, they pick XamarinProjectType=android and emit wrong output.
 	-->
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props"
 	        Condition="'$(_Platform)' == 'android'" />
@@ -488,10 +442,8 @@
 		</AssemblyAttribute>
 	</ItemGroup>
 
-	<!-- Desktop: stage the macOS native host dylib into runtimes/osx/native so the published
-	     desktop artifact (built on Windows, run on macOS agents) can dlopen it. The dylib comes
-	     from the downloaded native-assets-macos artifact, not the ProjectReference, so it must be
-	     copied explicitly — mirrors the old Skia.Generic head's BuildUnoNativeMac target. -->
+	<!-- Stage the macOS native host dylib so the desktop artifact (built on Windows, run on macOS
+	     agents) can dlopen it. It comes from the native-assets-macos artifact, not a ProjectReference. -->
 	<PropertyGroup Condition="'$(_Platform)' == 'desktop'">
 		<_libUnoNativeMacPath>$(MSBuildThisFileDirectory)..\..\Uno.UI.Runtime.Skia.MacOS\UnoNativeMac\build\$(Configuration)\libUnoNativeMac.dylib</_libUnoNativeMacPath>
 	</PropertyGroup>
@@ -502,9 +454,8 @@
 
 	<!--
 	Fail the publish if the runtime-test fonts didn't make it into the output. Only meaningful on
-	desktop + browserwasm, whose publish lays package content out flat under $(PublishDir) (this is
-	where the original Skia.Generic/WebAssembly heads ran it). Android/iOS bundle assets inside the
-	APK/.app, so this flat-path check can never pass there — and the old netcoremobile head never ran it.
+	desktop + browserwasm, whose publish lays package content out flat under $(PublishDir). Android and
+	iOS bundle assets inside the APK/.app, so a flat-path check can never pass there.
 	-->
 	<Target Name="_ValidatePublishedItems" AfterTargets="Publish" Condition="'$(_Platform)' == 'desktop' OR '$(_Platform)' == 'browserwasm'">
 		<ItemGroup>
@@ -536,29 +487,21 @@
 
 	<!-- ==================== Shared content (samples, tests, benchmarks) ==================== -->
 	<!--
-	Content sourcing:
-	  - Skia TFMs (desktop/wasm/android/ios/tvos): reference the generic-Skia SamplesApp.Skia library,
-	    which compiles the samples ONCE as Skia (__SKIA__, the Skia/#else branches). This is what every
-	    old Skia head did, and it's why mobile works: inlining would compile samples with the native
-	    platform symbol (__ANDROID__/__APPLE_UIKIT__) and pull native-only types (e.g. BindableButtonEx)
-	    that aren't in Uno.UI.Skia. The base lib provides App, samples, unit tests and benchmarks + the
-	    Uno XAML/DP source generators.
-	  - WinUI/WinAppSDK: the base lib is compiled against Uno's Microsoft.UI.Xaml (Uno.UI.Skia), a
-	    different type identity than the real WinAppSDK WinUI, so windows can't reference it. It inlines
-	    the shared content and lets the real WinUI XAML compiler build it (as the old SamplesApp.Windows
-	    head did) — no Uno source generators here.
+	Skia TFMs consume the samples from the generic-Skia SamplesApp.Skia library, which compiles them
+	once as Skia; inlining would compile them with the native platform symbol and pull in native-only
+	types absent from the Skia build. WinUI cannot reference that library — it is built against Uno
+	Platform's Microsoft.UI.Xaml, a different type identity — so windows inlines the shared content
+	below and lets the real WinUI XAML compiler build it.
 	-->
 	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true'">
 		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
-		<!--
-		The samples, tests and their [Bindable]/attached-property types all live in the base lib,
-		and nothing in the head references them statically. Without rooting it the trimmer drops
-		them, and the generated Uno.*.Descriptor.xml files then fail to resolve under NativeAOT
-		(IL2008). netcoremobile roots it the same way.
-		-->
+		<!-- Nothing in the head references the samples statically, so the trimmer would drop them and
+		     the generated Uno.*.Descriptor.xml would fail to resolve under NativeAOT (IL2008). -->
 		<TrimmerRootAssembly Include="SamplesApp.Skia" RootMode="All" />
 	</ItemGroup>
 
+	<!-- Must stay below the Sdk.props import at the top: Directory.Build.props sets
+	     EnableAutomaticXamlPageInclusion=true there and Benchmarks.Shared.projitems sets it back. -->
 	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.props" Condition="'$(_IsSkiaTfm)' != 'true'" />
 	<Import Project="..\SamplesApp.Samples\SamplesApp.Samples.props" Condition="'$(_IsSkiaTfm)' != 'true'" />
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.props" Condition="'$(_IsSkiaTfm)' != 'true'" />
