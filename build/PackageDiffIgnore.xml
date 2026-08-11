@@ -2356,6 +2356,8 @@
 		  <Member fullName="Uno.UI.Runtime.Skia.Android.AndroidHost" reason="AndroidHost reduced to internal; use UseAndroid() on the host builder (breaking changes for 7.0)" />
 		  <!-- Legacy WinRTFeatureConfiguration holder removed with its sole flag (accessors paired in <Properties>/<Methods> below). -->
 		  <Member fullName="Uno.WinRTFeatureConfiguration/ApplicationLanguages" reason="Removed empty WinRTFeatureConfiguration.ApplicationLanguages holder after deleting UseLegacyPrimaryLanguageOverride (BC50, breaking changes for 7.0)" />
+		  <!-- Skia-Android de-singletoning: this Java listener is constructed by the host with its owning activity and was never usable by app code, which had no way to supply one. -->
+		  <Member fullName="Uno.UI.OnSystemUiVisibilityChangeListener" reason="OnSystemUiVisibilityChangeListener reduced to internal; it is bound to the activity that owns the window (breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->

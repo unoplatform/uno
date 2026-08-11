@@ -451,6 +451,23 @@ Two related behavior changes:
 
 See [Customizing the `Application` class on Android](xref:Uno.Features.CustomizingAndroidApplication).
 
+### Android context APIs
+
+Skia-on-Android no longer keeps the window, its render stack, or its input sources in
+process-wide statics, so the ambient Android context APIs changed shape:
+
+- **`Uno.UI.ContextHelper.Current` is now typed `Android.Content.Context?`.** It has always been
+  able to be `null` — before any activity is created — but the property was annotated non-null,
+  so the compiler never surfaced it. Code that dereferences it directly will now warn under
+  nullable reference types. Guard it, or use the new `ContextHelper.ApplicationContext` when a
+  process-wide context is all that is needed (system services, resources, package info).
+- **`Uno.UI.ContextHelper.Current` now tracks the foreground activity.** It previously kept the
+  last activity ever assigned, including one that had already been destroyed. Code relying on
+  reading a stale activity after teardown should resolve the activity from the relevant window's
+  `XamlRoot` instead.
+- **`Uno.UI.OnSystemUiVisibilityChangeListener` is now `internal`.** It is constructed by the host
+  with the activity that owns the window; app code had no way to supply one.
+
 ### Templates and project heads
 
 New apps get Skia heads only. Existing apps should drop native `*.Mobile` / native
