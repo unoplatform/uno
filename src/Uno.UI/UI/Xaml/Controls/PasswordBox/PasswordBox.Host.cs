@@ -58,6 +58,10 @@ partial class PasswordBox : ITextBoxHost
 
 	SolidColorBrush ITextBoxHost.SelectionHighlightColor => SelectionHighlightColor;
 
+	// Explicit, like TextBox's: an implicit implementation would make the public getter
+	// virtual, which the package diff reports as a binary break on an existing member.
+	FlyoutBase? ITextBoxHost.SelectionFlyout => SelectionFlyout;
+
 	object? ITextBoxHost.Header => Header;
 
 	DataTemplate? ITextBoxHost.HeaderTemplate => HeaderTemplate;
