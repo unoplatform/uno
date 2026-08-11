@@ -48,7 +48,7 @@ namespace Windows.Devices.Sensors
 			{
 				if (_defaultDeviceOrientation == Orientation.Undefined)
 				{
-					var context = ContextHelper.Current;
+					var context = ContextHelper.Current!;
 
 					if (context != null)
 					{
@@ -78,7 +78,7 @@ namespace Windows.Devices.Sensors
 		partial void Initialize()
 		{
 			var mainLooper = Looper.MainLooper;
-			var context = ContextHelper.Current;
+			var context = ContextHelper.Current!;
 
 			// Thread pool is used to avoid startup
 			// cost of threads creation.
@@ -121,7 +121,7 @@ namespace Windows.Devices.Sensors
 		partial void StartListeningOrientationChanged()
 		{
 			var mainLooper = Looper.MainLooper;
-			var context = ContextHelper.Current;
+			var context = ContextHelper.Current!;
 
 			// Thread pool is used to avoid startup
 			// cost of threads creation.
@@ -164,7 +164,7 @@ namespace Windows.Devices.Sensors
 
 		partial void StopListeningOrientationChanged()
 		{
-			var context = ContextHelper.Current;
+			var context = ContextHelper.Current!;
 
 			if (Application.Context.GetSystemService(Context.SensorService) is SensorManager sensorManager)
 			{
@@ -278,7 +278,7 @@ namespace Windows.Devices.Sensors
 			{
 				try
 				{
-					return Settings.System.GetInt(ContextHelper.Current.ContentResolver, Settings.System.AccelerometerRotation, 0) == 1;
+					return Settings.System.GetInt(ContextHelper.Current!.ContentResolver, Settings.System.AccelerometerRotation, 0) == 1;
 				}
 				catch (SettingNotFoundException)
 				{
@@ -309,7 +309,7 @@ namespace Windows.Devices.Sensors
 		{
 			private Action<int> _orientationChanged;
 
-			public SimpleOrientationEventListener(Action<int> orientationChanged) : base(ContextHelper.Current, SensorDelay.Normal)
+			public SimpleOrientationEventListener(Action<int> orientationChanged) : base(ContextHelper.Current!, SensorDelay.Normal)
 			{
 				_orientationChanged = orientationChanged;
 			}
