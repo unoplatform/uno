@@ -140,26 +140,6 @@ namespace Uno.UI.Samples.Behaviors
 			}
 			#endregion
 
-			#region BindableDrawerLayout
-#if __ANDROID__
-			//This handles if projects still use BindableDrawerLayout for android.
-			var bindableDrawer = element.FindFirstParent<BindableDrawerLayout>();
-
-			if (bindableDrawer != null)
-			{
-				if (bindableDrawer.IsLeftPaneOpen && GetCloseOnClick(element))
-				{
-					bindableDrawer.IsLeftPaneOpen = false;
-				}
-				else if (!bindableDrawer.IsLeftPaneOpen && GetOpenOnClick(element))
-				{
-					bindableDrawer.IsLeftPaneOpen = true;
-				}
-
-				return;
-			}
-#endif
-			#endregion
 		}
 	}
 }

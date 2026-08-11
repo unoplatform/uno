@@ -41,15 +41,14 @@
 		<AssemblyName Condition="'$(_Platform)' == 'windows'">SamplesApp.Windows</AssemblyName>
 
 		<!--
-		Uno.Sdk sets UnoRuntimeIdentifier=Skia for desktop (Uno.Common.Desktop.targets) but not for
-		browserwasm, where this is the only source — without it Uno.CrossTargetting drops the .skia.cs
-		variants and __SKIA__. It must stay empty on android/ios/tvos so the native file suffixes win,
-		and on WinUI (native rendering).
+		Every non-WinUI TFM renders with Skia, so the runtime identifier is Skia on all of them. That is
+		what defines __SKIA__ (Uno.CrossTargetting.targets) and includes the .skia.cs variants. The
+		platform file suffixes are gated on $(IsAndroid)/$(IsAppleUIKit), not on this, so the head's own
+		.Android.cs/.iOS.cs entry points are still compiled. WinUI leaves it empty (native rendering).
 		-->
-		<_IsDesktopOrWasm Condition="'$(_Platform)' == 'desktop' OR '$(_Platform)' == 'browserwasm'">true</_IsDesktopOrWasm>
-		<UnoRuntimeIdentifier Condition="'$(UnoRuntimeIdentifier)' == '' AND '$(_IsDesktopOrWasm)' == 'true'">Skia</UnoRuntimeIdentifier>
 		<!-- True for every non-WinUI TFM (desktop/wasm/android/ios/tvos) — gates the Skia framework refs. -->
 		<_IsSkiaTfm Condition="'$(_Platform)' != 'windows'">true</_IsSkiaTfm>
+		<UnoRuntimeIdentifier Condition="'$(UnoRuntimeIdentifier)' == '' AND '$(_IsSkiaTfm)' == 'true'">Skia</UnoRuntimeIdentifier>
 		<!-- Apple UIKit (iOS + tvOS; no MacCatalyst). NOTE: these TFMs require macOS to build — not
 		     compile-validated on Windows. -->
 		<_IsUIKit Condition="'$(_Platform)' == 'ios' OR '$(_Platform)' == 'tvos'">true</_IsUIKit>
@@ -527,26 +526,38 @@
 
 	<!-- ==================== Shared content (samples, tests, benchmarks) ==================== -->
 	<!--
-	Skia TFMs consume the samples from the generic-Skia SamplesApp.Skia library, which compiles them
-	once as Skia; inlining would compile them with the native platform symbol and pull in native-only
-	types absent from the Skia build. WinUI cannot reference that library — it is built against Uno
-	Platform's Microsoft.UI.Xaml, a different type identity — so windows inlines the shared content
-	below and lets the real WinUI XAML compiler build it.
+	The samples, unit tests and benchmarks compile directly into the head on every TFM, so each one
+	builds with its own platform symbols — #if __ANDROID__ / __APPLE_UIKIT__ / __WASM__ / WINAPPSDK
+	in a sample page is live, which it was not while the Skia targets shared one pre-compiled library.
 	-->
+	<PropertyGroup Condition="'$(_IsSkiaTfm)' == 'true'">
+		<!-- In external apps these flow from the NuGet package props -->
+		<SupportsFontManifest>true</SupportsFontManifest>
+		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
+		<UnoXamlResourcesUpriTrimming>true</UnoXamlResourcesUpriTrimming>
+		<!-- Workaround for https://github.com/unoplatform/uno/discussions/5007 -->
+		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
+		<SkipIcuDataInitializerGenerator>true</SkipIcuDataInitializerGenerator>
+	</PropertyGroup>
 	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true'">
-		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
-		<!-- Nothing in the head references the samples statically, so the trimmer would drop them and
-		     the generated Uno.*.Descriptor.xml would fail to resolve under NativeAOT (IL2008). -->
-		<TrimmerRootAssembly Include="SamplesApp.Skia" RootMode="All" />
+		<CompilerVisibleProperty Include="SkipIcuDataInitializerGenerator" />
 	</ItemGroup>
+
+	<!-- The XAML and DependencyProperty generators, which the samples need on every Skia TFM. WinUI is
+	     excluded: it uses the real WinUI XAML compiler. -->
+	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" Condition="'$(_IsSkiaTfm)' == 'true'" />
 
 	<!-- Must stay below the Sdk.props import at the top: Directory.Build.props sets
 	     EnableAutomaticXamlPageInclusion=true there and Benchmarks.Shared.projitems sets it back. -->
-	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.props" Condition="'$(_IsSkiaTfm)' != 'true'" />
-	<Import Project="..\SamplesApp.Samples\SamplesApp.Samples.props" Condition="'$(_IsSkiaTfm)' != 'true'" />
-	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.props" Condition="'$(_IsSkiaTfm)' != 'true'" />
-	<Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" Condition="'$(_IsSkiaTfm)' != 'true'" />
-	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" Condition="'$(_IsSkiaTfm)' != 'true'" />
+	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.props" />
+	<Import Project="..\SamplesApp.Samples\SamplesApp.Samples.props" />
+	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.props" />
+	<Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" />
+	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
+
+	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true'">
+		<Content Update="@(Content)" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
 
 	<!-- Must stay last: replaces the implicit bottom import an Sdk attribute would have added. -->
 	<Import Project="$(MSBuildThisFileDirectory)..\..\Uno.Sdk\Sdk\Sdk.targets" />
