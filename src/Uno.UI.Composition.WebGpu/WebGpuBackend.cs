@@ -255,6 +255,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		for (int i = 0; i < 1000 && abox[0] == IntPtr.Zero; i++) { wgpuInstanceProcessEvents(Inst); }
 		Adapter = abox[0];
 		ah.Free();
+		if (Adapter == IntPtr.Zero) { throw new InvalidOperationException("WebGPU: wgpuInstanceRequestAdapter returned no adapter (no compatible GPU/driver, or the callback never fired)."); }
 
 		var dbox = new IntPtr[1];
 		var dh = GCHandle.Alloc(dbox);
@@ -268,6 +269,7 @@ public sealed unsafe class WebGpuDevice : IDisposable
 		for (int i = 0; i < 1000 && dbox[0] == IntPtr.Zero; i++) { wgpuInstanceProcessEvents(Inst); }
 		Dev = dbox[0];
 		dh.Free();
+		if (Dev == IntPtr.Zero) { throw new InvalidOperationException("WebGPU: wgpuAdapterRequestDevice returned no device."); }
 
 		FinishInit();
 	}
