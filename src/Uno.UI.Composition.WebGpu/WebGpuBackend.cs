@@ -1596,6 +1596,10 @@ internal sealed unsafe class WebGpuGeometryCache
 	// Back-reference to the owning device so the recording's Dispose (UI thread) can enqueue this for a render-thread
 	// free. Set at build time (render thread).
 	public WebGpuDevice Device;
+	// Surface size (px) the geometry's NDC verts were baked for. Verts are CPU-NDC'd (pos/size), so a size change
+	// (window resize) makes the cached NDC stale — rebuild when the current surface differs. Without this, cached
+	// recordings replay old-size NDC into the resized surface and look stretched.
+	public int BuiltW, BuiltH;
 	// Arena entry: Ops geometry is baked in the recording's OWN (identity) NDC space; a moved replay re-stamps a
 	// transform uniform (xform) on the per-op clip bind groups and reuses the vertex buffers instead of rebuilding.
 	public bool Arena;
@@ -3094,7 +3098,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							{
 								fe = rr.Data.Compiled;
 									fMiss = fe is null;
-								fStale = !fMiss && (!fe.FrameSolid || fe.FrameOrder is null || fe.Transform != rr.Transform || !ClipDataEquals(fe.Clip, rr.Clip));
+								fStale = !fMiss && (!fe.FrameSolid || fe.FrameOrder is null || fe.Transform != rr.Transform || fe.BuiltW != (int)_s.Width || fe.BuiltH != (int)_s.Height || !ClipDataEquals(fe.Clip, rr.Clip));
 							}
 							if (fMiss || fStale)
 							{
@@ -3153,7 +3157,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									if (fo.Kind == 0) { fo.ByteOff += sBase; order[oi2] = fo; }
 									else if (fo.Kind == 5) { fo.ByteOff += rBase; order[oi2] = fo; }
 								}
-								fe = new WebGpuGeometryCache { FrameSolid = true, SlabId = id, FrameOrder = order, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip, Device = _d };
+								fe = new WebGpuGeometryCache { FrameSolid = true, SlabId = id, FrameOrder = order, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height };
 								// A repeat emission is not cached (its slice is transient); free its bind groups next frame.
 								if (repeat) { _d.DeferRelease(fOwned); }
 								else { fe.Device = _d; rr.Data.Compiled = fe; }
@@ -3180,7 +3184,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// and REUSES the vertex buffers instead of rebuilding. Moving-visual trace: moved frame => reuse.
 						if (rr.Clip.IsNone && IsArenaSafe(rr.Commands))
 						{
-							if (miss || !entry.Arena)
+							if (miss || !entry.Arena || entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height)
 							{
 								if (entry is not null) { _d.DeferRelease(entry.Owned); _d.DeferRelease(entry.StampOwned); }
 								var aOwned = new OwnedResources();
@@ -3189,7 +3193,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None)) { aList.Add(tc); }
 								BuildCoalesced(aList, aOps, aOwned);
 									for (int _ri = 0; _ri < aOps.Count; _ri++) { aOps[_ri] = ResidentizeFan(aOps[_ri], aOwned); }
-								entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, Device = _d };
+								entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height };
 								rr.Data.Compiled = entry;
 								WebGpuTrace.Upload("geometry-build(new,arena)", aOps.Count);
 							}
@@ -3228,7 +3232,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							break;
 						}
 						var transformChanged = !miss && entry.Transform != rr.Transform;
-						if (miss || transformChanged || entry.Arena || !ClipDataEquals(entry.Clip, rr.Clip))
+						if (miss || transformChanged || entry.Arena || entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height || !ClipDataEquals(entry.Clip, rr.Clip))
 						{
 							if (entry is not null) { _d.DeferRelease(entry.Owned); }
 							var owned = new OwnedResources();
@@ -3237,7 +3241,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { cList.Add(tc); }
 							BuildCoalesced(cList, cachedOps, owned);
 							for (int _ri = 0; _ri < cachedOps.Count; _ri++) { cachedOps[_ri] = ResidentizeFan(cachedOps[_ri], owned); }
-							entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip, Device = _d };
+							entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height };
 							rr.Data.Compiled = entry;
 							// Rebuild signal: transform-only changes SHOULD become a uniform re-stamp under arena (#22),
 							// not a full geometry rebuild — this UPLOAD line is what a moved-visual multi-frame trace watches.
