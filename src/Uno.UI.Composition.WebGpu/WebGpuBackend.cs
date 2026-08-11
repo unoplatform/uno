@@ -1688,10 +1688,31 @@ internal sealed class OwnedResources
 	public System.Collections.Generic.List<nint> BindGroups = new();
 }
 
+// One draw op in a pass's ordered list. Was a 7-tuple; promoted to a struct so glyph coalescing can carry the extra
+// fields (a shared glyph-fan-buffer start + the fill colour) without threading a wider tuple through ~30 sites. The
+// lowercase field names + Deconstruct keep the existing `var (kind, b0, ...) = op` destructuring and `.kind`/`.b0`
+// access working unchanged. kind: 0=rect 1=path 2=image 3=gradient 5=rrect. For a coalesced-glyph path op (kind 1),
+// GlyphFanStart>=0 marks the fan as living in the pass's shared glyph buffer at that start vertex (b0 unused),
+// and Color is the run colour (coalescing merges same-Color+same-clip stencils).
+internal struct DrawOp
+{
+	public int kind; public nint b0; public uint u0; public nint b1; public bool flag; public ClipData clip; public nint clipBg;
+	public uint Color; public int GlyphFanStart;
+	public DrawOp(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)
+	{
+		this.kind = kind; this.b0 = b0; this.u0 = u0; this.b1 = b1; this.flag = flag; this.clip = clip; this.clipBg = clipBg;
+		Color = 0; GlyphFanStart = -1;
+	}
+	public readonly void Deconstruct(out int kind, out nint b0, out uint u0, out nint b1, out bool flag, out ClipData clip, out nint clipBg)
+	{
+		kind = this.kind; b0 = this.b0; u0 = this.u0; b1 = this.b1; flag = this.flag; clip = this.clip; clipBg = this.clipBg;
+	}
+}
+
 // A recording's cached GPU geometry, owned by the render-thread device and keyed by the immutable command list.
 internal sealed unsafe class WebGpuGeometryCache
 {
-	public List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> Ops;
+	public List<DrawOp> Ops;
 	public OwnedResources Owned;
 	public Matrix4x4 Transform;
 	public ClipData Clip;
@@ -1727,7 +1748,7 @@ internal sealed unsafe class WebGpuGeometryCache
 	// Arena stamp memo: the per-op clip bind groups + device scissors for a given replay transform depend only on
 	// that transform, so cache the fully-stamped ops (built with StampOwned) and reuse them verbatim while the
 	// transform is unchanged — a STATIC arena visual then costs one AddRange/frame, no per-op MakeClipBg.
-	public List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> StampedOps;
+	public List<DrawOp> StampedOps;
 	public OwnedResources StampOwned;
 	public Matrix4x4 StampXform;
 	public bool HasStamp;
@@ -1843,7 +1864,7 @@ internal struct FrameOp
 	public uint Count;        // vertex count (solid/rrect)
 	public ClipData Clip;
 	public nint ClipBg;
-	public (int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg) NonSolid;
+	public DrawOp NonSolid;
 }
 
 // Backend-created gradient shader handle. The WebGPU backend mints its own (rather than delegating to Skia) so
@@ -2562,10 +2583,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// Pool of per-RenderInto op lists so a static frame's rebuild doesn't allocate the (large ClipData) op array
 	// every present. A stack (not one field) keeps it correct under the recursive nested-layer RenderInto — each
 	// level rents its own list and returns it when done.
-	private readonly Stack<List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)>> _opsPool = new();
-	private List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> RentOps()
+	private readonly Stack<List<DrawOp>> _opsPool = new();
+	private List<DrawOp> RentOps()
 		=> _opsPool.Count > 0 ? _opsPool.Pop() : new(256);
-	private void ReturnOps(List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops)
+	private void ReturnOps(List<DrawOp> ops)
 	{
 		ops.Clear();   // drops the captured ClipData/PathFan refs; keeps the backing array for reuse
 		_opsPool.Push(ops);
@@ -2972,7 +2993,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// BuildSimpleOp path did not coalesce, so every cached visual emitted a draw per rect (a major draw-count source
 	// on Intel, where per-draw overhead dominates — see the RenderDoc capture). Coalesced rects share a clip so they
 	// share the arena xform (one clip bind group), staying correct under re-stamp.
-	private void BuildCoalesced(List<WebGpuCommand> cmds, List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops, OwnedResources owned, int pathSlot)
+	private void BuildCoalesced(List<WebGpuCommand> cmds, List<DrawOp> ops, OwnedResources owned, int pathSlot)
 	{
 		float slotBits = System.BitConverter.Int32BitsToSingle(pathSlot);
 		for (int ci = 0; ci < cmds.Count; ci++)
@@ -2989,7 +3010,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					j++;
 				}
 				var rvb = Vbuf(_scratch, owned);
-				ops.Add((0, (nint)rvb, (uint)((j - ci) * 6), 0, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, owned)));
+				ops.Add(new DrawOp(0, (nint)rvb, (uint)((j - ci) * 6), 0, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, owned)));
 				ci = j - 1;
 			}
 			else if (cmds[ci] is PathFill pf0 && !pf0.EvenOdd)
@@ -3017,7 +3038,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(tr, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits);
 				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits); PushVertT(bl, pr, pg, pb, pa, slotBits);
 				var covBuf = Vbuf(_scratch, owned);
-				ops.Add((1, (nint)fanBuf, fanCount, (nint)covBuf, false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, owned)));
+				ops.Add(new DrawOp(1, (nint)fanBuf, fanCount, (nint)covBuf, false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, owned)));
 				ci = j - 1;
 			}
 			else { BuildSimpleOp(cmds[ci], ops, owned, pathSlot); }
@@ -3026,7 +3047,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	// Builds the draw-op(s) for a simple primitive (rect/path/image/gradient) into `ops`, allocating GPU resources
 	// pooled (owned == null, per-frame) or persistent (owned != null, a cached recording's geometry).
-	private (int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg) ResidentizeFan((int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg) op, OwnedResources owned)
+	private DrawOp ResidentizeFan(DrawOp op, OwnedResources owned)
 	{
 		if (owned is not null && op.clip.PathFan is { } fan && op.clip.FanBuf == 0)
 		{
@@ -3038,7 +3059,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		return op;
 	}
 
-	private void BuildSimpleOp(WebGpuCommand cmd, List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops, OwnedResources owned, int pathSlot)
+	private void BuildSimpleOp(WebGpuCommand cmd, List<DrawOp> ops, OwnedResources owned, int pathSlot)
 	{
 		switch (cmd)
 		{
@@ -3048,7 +3069,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				var v = new List<float>();
 				void V(Vector2 p) { var n = Ndc(p); v.Add(n.X); v.Add(n.Y); v.Add(c.X); v.Add(c.Y); v.Add(c.Z); v.Add(c.W); }
 				V(rc.P0); V(rc.P1); V(rc.P2); V(rc.P0); V(rc.P2); V(rc.P3);
-				ops.Add((0, (nint)Vbuf(v.ToArray(), owned), 6, 0, false, rc.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc.Clip, owned)));
+				ops.Add(new DrawOp(0, (nint)Vbuf(v.ToArray(), owned), 6, 0, false, rc.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc.Clip, owned)));
 				break;
 			}
 			case PathFill pf:
@@ -3064,7 +3085,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits); PushVertT(bl, pr, pg, pb, pa, slotBits);
 				var covBuf = Vbuf(_scratch, owned);
 				var clipBg = MakeClipBg(_d.CoverClipBgl, pf.Clip, owned);
-				ops.Add((1, (nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)covBuf, pf.EvenOdd, pf.Clip, (nint)clipBg));
+				ops.Add(new DrawOp(1, (nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)covBuf, pf.EvenOdd, pf.Clip, (nint)clipBg));
 				break;
 			}
 			case ImageCmd im:
@@ -3093,7 +3114,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				var q = new float[24];
 				void QV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); q[idx] = n.X; q[idx + 1] = n.Y; q[idx + 2] = u; q[idx + 3] = vv; }
 				QV(0, im.P0, im.U0, im.V0); QV(4, im.P1, im.U1, im.V0); QV(8, im.P2, im.U1, im.V1); QV(12, im.P0, im.U0, im.V0); QV(16, im.P2, im.U1, im.V1); QV(20, im.P3, im.U0, im.V1);
-				ops.Add((2, (nint)bg, 0, (nint)Vbuf(q, owned), false, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip, owned)));
+				ops.Add(new DrawOp(2, (nint)bg, 0, (nint)Vbuf(q, owned), false, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip, owned)));
 				break;
 			}
 			case GradientCmd gc:
@@ -3126,7 +3147,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				var gq = new float[12];
 				void GV(int idx, Vector2 pos) { var n = Ndc(pos); gq[idx] = n.X; gq[idx + 1] = n.Y; }
 				GV(0, gc.P0); GV(2, gc.P1); GV(4, gc.P2); GV(6, gc.P0); GV(8, gc.P2); GV(10, gc.P3);
-				ops.Add((3, (nint)gbg, 0, (nint)Vbuf(gq, owned), false, gc.Clip, (nint)MakeClipBg(_d.GradClipBgl, gc.Clip, owned)));
+				ops.Add(new DrawOp(3, (nint)gbg, 0, (nint)Vbuf(gq, owned), false, gc.Clip, (nint)MakeClipBg(_d.GradClipBgl, gc.Clip, owned)));
 				break;
 			}
 			case RoundedRectCmd rrc:
@@ -3137,7 +3158,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				AppendRrect(tmp, rrc);
 				var buf = Vbuf(tmp, owned);
 				ReturnRrect(tmp);
-				ops.Add((5, (nint)buf, 6, 0, false, rrc.Clip, (nint)MakeClipBg(_d.RrClipBgl, rrc.Clip, owned)));
+				ops.Add(new DrawOp(5, (nint)buf, 6, 0, false, rrc.Clip, (nint)MakeClipBg(_d.RrClipBgl, rrc.Clip, owned)));
 				break;
 			}
 		}
@@ -3219,7 +3240,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						AppendSolidRect(solid, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
 						j++;
 					}
-					ops.Add((0, 0, (uint)((j - ci) * 6), (nint)start, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip)));
+					ops.Add(new DrawOp(0, 0, (uint)((j - ci) * 6), (nint)start, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip)));
 					ci = j - 1;   // the for-loop's ci++ advances past the run
 					break;
 				}
@@ -3235,7 +3256,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// Shared rrect buffer (b0==0, b1=start vert): adjacent same-clip rrects coalesce in the emit loop.
 					int st = rrect.Count / 22;
 					AppendRrect(rrect, rri);
-					ops.Add((5, 0, 6, (nint)st, false, rri.Clip, (nint)MakeClipBg(_d.RrClipBgl, rri.Clip)));
+					ops.Add(new DrawOp(5, 0, 6, (nint)st, false, rri.Clip, (nint)MakeClipBg(_d.RrClipBgl, rri.Clip)));
 					break;
 				}
 				case ReplayRefCmd rr:
@@ -3269,7 +3290,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								if (fe is not null) { _d.DeferRelease(fe.Owned); }
 								var fOwned = new OwnedResources();
 								var sv = new List<float>(); var rv = new List<float>(); var order = new List<FrameOp>();
-								var tmp = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
+								var tmp = new List<DrawOp>();
 								var tcmds = new List<WebGpuCommand>();
 								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { tcmds.Add(tc); }
 								// One stable transform-table slot for this recording's device-space path fills (reused on
@@ -3339,8 +3360,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							// b1 = absolute slab byte offset). No append, no upload, no re-tessellation on a cache hit.
 							foreach (var fo in fe.FrameOrder)
 							{
-								if (fo.Kind == 0) { ops.Add((0, 1, fo.Count, (nint)fo.ByteOff, false, fo.Clip, fo.ClipBg)); }
-								else if (fo.Kind == 5) { ops.Add((5, 1, fo.Count, (nint)fo.ByteOff, false, fo.Clip, fo.ClipBg)); }
+								if (fo.Kind == 0) { ops.Add(new DrawOp(0, 1, fo.Count, (nint)fo.ByteOff, false, fo.Clip, fo.ClipBg)); }
+								else if (fo.Kind == 5) { ops.Add(new DrawOp(5, 1, fo.Count, (nint)fo.ByteOff, false, fo.Clip, fo.ClipBg)); }
 								else { ops.Add(fo.NonSolid); }
 							}
 							break;
@@ -3367,7 +3388,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							{
 								if (entry is not null) { _d.DeferRelease(entry.Owned); _d.DeferRelease(entry.StampOwned); }
 								var aOwned = new OwnedResources();
-								var aOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
+								var aOps = new List<DrawOp>();
 								var aList = new List<WebGpuCommand>();
 								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None)) { aList.Add(tc); }
 								bool aHasPath = false, aPure = aList.Count > 0; foreach (var c in aList) { if (c is PathFill) { aHasPath = true; } else { aPure = false; } }
@@ -3386,7 +3407,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							{
 							if (entry.StampOwned is not null) { _d.DeferRelease(entry.StampOwned); }
 							var stampOwned = new OwnedResources();
-							var stamped = new List<(int, nint, uint, nint, bool, ClipData, nint)>(entry.Ops.Count);
+							var stamped = new List<DrawOp>(entry.Ops.Count);
 							var xf = ArenaXform(rr.Transform);
 							// finv = inverse device affine, so clipCov maps the moved fragment back to the recording's
 							// own space where the (identity-baked) clip lives.
@@ -3408,7 +3429,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 										MathF.Max(MathF.Max(p0.X, p1.X), MathF.Max(p2.X, p3.X)), MathF.Max(MathF.Max(p0.Y, p1.Y), MathF.Max(p2.Y, p3.Y)));
 								}
 								var aClipBg = MakeClipBg(abgl, op.clip, stampOwned, xf, finv);
-								stamped.Add((op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, (nint)aClipBg));
+								stamped.Add(new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, (nint)aClipBg));
 							}
 							entry.StampOwned = stampOwned; entry.StampedOps = stamped; entry.StampXform = rr.Transform; entry.HasStamp = true;
 							}
@@ -3421,7 +3442,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						{
 							if (entry is not null) { _d.DeferRelease(entry.Owned); }
 							var owned = new OwnedResources();
-							var cachedOps = new List<(int, nint, uint, nint, bool, ClipData, nint)>();
+							var cachedOps = new List<DrawOp>();
 							var cList = new List<WebGpuCommand>();
 							foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { cList.Add(tc); }
 							bool cHasPath = false; foreach (var c in cList) { if (c is PathFill) { cHasPath = true; break; } }
@@ -3464,7 +3485,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					void SQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); sq[idx] = n.X; sq[idx + 1] = n.Y; sq[idx + 2] = u; sq[idx + 3] = vv; }
 					var o0 = origin; var o1 = origin + new Vector2(size.X, 0); var o2 = origin + size; var o3 = origin + new Vector2(0, size.Y);
 					SQV(0, o0, 0, 0); SQV(4, o1, 1, 0); SQV(8, o2, 1, 1); SQV(12, o0, 0, 0); SQV(16, o2, 1, 1); SQV(20, o3, 0, 1);
-					ops.Add((2, (nint)sbg, 0, (nint)MakeBuffer(sq), false, sh.Clip, (nint)MakeClipBg(_d.ImageClipBgl, sh.Clip)));
+					ops.Add(new DrawOp(2, (nint)sbg, 0, (nint)MakeBuffer(sq), false, sh.Clip, (nint)MakeClipBg(_d.ImageClipBgl, sh.Clip)));
 					break;
 				}
 				case LayerCmd lyr:
@@ -3500,7 +3521,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						var off = new Vector2(fx.Dx, fx.Dy);
 						FQV(0, new Vector2(0, 0) + off, 0, 0); FQV(4, new Vector2(_s.Width, 0) + off, 1, 0); FQV(8, new Vector2(_s.Width, _s.Height) + off, 1, 1);
 						FQV(12, new Vector2(0, 0) + off, 0, 0); FQV(16, new Vector2(_s.Width, _s.Height) + off, 1, 1); FQV(20, new Vector2(0, _s.Height) + off, 0, 1);
-						ops.Add((2, (nint)sfbg, 0, (nint)MakeBuffer(fq), false, lyr.Clip, (nint)MakeClipBg(_d.ImageClipBgl, lyr.Clip)));
+						ops.Add(new DrawOp(2, (nint)sfbg, 0, (nint)MakeBuffer(fq), false, lyr.Clip, (nint)MakeClipBg(_d.ImageClipBgl, lyr.Clip)));
 					}
 
 					var cu = new float[24];
@@ -3521,7 +3542,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					lentries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = lubuf, Offset = 0, Size = 96 };
 					var lbgd = new WGPUBindGroupDescriptor { Layout = lyr.CompositeMode == 1 ? _d.CompositeDstInBgl : _d.CompositeBgl, EntryCount = 3, Entries = lentries };
 					var lbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &lbgd));
-					ops.Add((4, (nint)lbg, (uint)lyr.CompositeMode, 0, false, lyr.Clip, 0));
+					ops.Add(new DrawOp(4, (nint)lbg, (uint)lyr.CompositeMode, 0, false, lyr.Clip, 0));
 					break;
 				}
 				case BackdropCmd bk:
@@ -3545,7 +3566,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					void BQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); bq[idx] = n.X; bq[idx + 1] = n.Y; bq[idx + 2] = u; bq[idx + 3] = vv; }
 					BQV(0, new Vector2(0, 0), 0, 0); BQV(4, new Vector2(_s.Width, 0), 1, 0); BQV(8, new Vector2(_s.Width, _s.Height), 1, 1);
 					BQV(12, new Vector2(0, 0), 0, 0); BQV(16, new Vector2(_s.Width, _s.Height), 1, 1); BQV(20, new Vector2(0, _s.Height), 0, 1);
-					ops.Add((2, (nint)bdbg, 0, (nint)MakeBuffer(bq), false, bk.Clip, (nint)MakeClipBg(_d.ImageClipBgl, bk.Clip)));
+					ops.Add(new DrawOp(2, (nint)bdbg, 0, (nint)MakeBuffer(bq), false, bk.Clip, (nint)MakeClipBg(_d.ImageClipBgl, bk.Clip)));
 					// Acrylic recipe over the blurred backdrop: SrcOver the luminosity colour (== mix(blurred, lum.rgb,
 					// lum.a)), then SrcOver the tint. Both fill the effect region (clip AABB). A=0 colours are skipped.
 					void Overlay(WColor col)
@@ -3556,7 +3577,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						void TV(float x, float y) { var n = Ndc(new Vector2(x, y)); tv.Add(n.X); tv.Add(n.Y); tv.Add(tc.X); tv.Add(tc.Y); tv.Add(tc.Z); tv.Add(tc.W); }
 						var a = bk.Clip.Aabb;
 						TV(a.X, a.Y); TV(a.Z, a.Y); TV(a.Z, a.W); TV(a.X, a.Y); TV(a.Z, a.W); TV(a.X, a.W);
-						ops.Add((0, (nint)MakeBuffer(tv.ToArray()), 6, 0, false, bk.Clip, (nint)MakeClipBg(_d.SolidClipBgl, bk.Clip)));
+						ops.Add(new DrawOp(0, (nint)MakeBuffer(tv.ToArray()), 6, 0, false, bk.Clip, (nint)MakeClipBg(_d.SolidClipBgl, bk.Clip)));
 					}
 					// luminosity + grain are baked into the acrylic composite above; only the tint overlay remains
 					Overlay(bk.Effect.Color);
