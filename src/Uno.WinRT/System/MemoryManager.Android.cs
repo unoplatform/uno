@@ -52,7 +52,7 @@ namespace Windows.System
 				_appMemoryUsage = (ulong)totalMemory;
 
 				_memoryInfo ??= new ActivityManager.MemoryInfo();
-				ActivityManager.FromContext(ContextHelper.Current)?.GetMemoryInfo(_memoryInfo);
+				ActivityManager.FromContext(ContextHelper.Current!)?.GetMemoryInfo(_memoryInfo);
 
 				_appMemoryUsageLimit = _appMemoryUsage + (ulong)_memoryInfo.AvailMem - (ulong)_memoryInfo.Threshold;
 			}
