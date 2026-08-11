@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<!--
+	Microsoft.Identity.Client ships no tvOS asset (only net462, net472, net8.0,
+	net8.0-android34.0, net8.0-ios18.0 and netstandard2.0), so a tvOS head resolves the
+	desktop lib/net8.0 assembly. That assembly carries
+	Microsoft.Identity.Client.Platforms.Features.DesktopOs.LibSystem, whose dlopen/dlsym
+	P/Invokes name the module "/System/Library/Frameworks/System.framework/System" - a
+	framework that exists only on macOS.
+
+	The Apple SDK derives -framework arguments from P/Invoke module references
+	(Xamarin.Bundler.Assembly.ComputeLinkerFlags: a module name containing ".framework/"
+	becomes AddFramework(...)), so the native link is asked for "-framework System" and
+	fails with "ld: framework 'System' not found".
+
+	The DesktopOs code path is unreachable on tvOS, and dlopen/dlsym are exported by the
+	always-linked libSystem regardless, so the framework is simply dropped from the link.
+	This mirrors how the Apple SDK itself removes BrowserEngineKit in
+	_ComputeLinkNativeExecutableInputs.
+
+	Upstream: https://github.com/dotnet/macios/issues/17980 (ruled a package bug, not an
+	SDK bug). Remove this workaround once Microsoft.Identity.Client ships a tvOS asset or
+	stops naming System.framework on non-macOS targets.
+
+	Set UnoDisableMSALTvOSSystemFrameworkWorkaround=true to opt out.
+	-->
+	<Target Name="_UnoRemoveMissingSystemFrameworkOnTvOS"
+			AfterTargets="_ComputeLinkNativeExecutableInputs"
+			Condition=" '$(IsUnoHead)' == 'true'
+				and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'
+				and '$(UnoDisableMSALTvOSSystemFrameworkWorkaround)' != 'true' ">
+		<ItemGroup>
+			<_NativeExecutableFrameworks Remove="System" />
+		</ItemGroup>
+	</Target>
+</Project>
