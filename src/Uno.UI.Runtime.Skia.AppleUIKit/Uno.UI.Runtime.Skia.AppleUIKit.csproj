@@ -68,6 +68,10 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj" />
+		<!-- EXPERIMENTAL WebGPU render path (UnoSKWebGpuMetalView, opt-in via UNO_WEBGPU). The wgpu-native iOS static
+		     library must be linked by the app head (see wgpu-native.targets iOS provisioning) so DllImport("webgpu")
+		     resolves to the main program (WebGpuLoader.GetMainProgramHandle). -->
+		<ProjectReference Include="..\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

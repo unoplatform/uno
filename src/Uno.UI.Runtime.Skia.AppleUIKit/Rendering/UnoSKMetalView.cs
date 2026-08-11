@@ -16,7 +16,7 @@ using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit
 {
-	internal sealed partial class UnoSKMetalView : MTKView, IMTKViewDelegate
+	internal sealed partial class UnoSKMetalView : MTKView, IMTKViewDelegate, IAppleUIKitRenderView
 	{
 		private readonly GRContext? _context;
 		private readonly IMTLCommandQueue? _queue;
@@ -122,6 +122,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		}
 
 		internal void SetOwner(RootViewController owner) => _owner = owner;
+
+		void IAppleUIKitRenderView.SetOwner(RootViewController owner) => SetOwner(owner);
 
 		public void QueueRender()
 		{

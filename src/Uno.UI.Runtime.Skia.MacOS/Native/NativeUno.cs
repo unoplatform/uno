@@ -332,6 +332,14 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_get_metal_handles(nint window, out nint device, out nint queue);
 
+	// EXPERIMENTAL WebGPU: the rendering MTKView's CAMetalLayer (for CreateMetalSurface); 0 if no Metal view.
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_window_get_metal_layer(nint window);
+
+	// EXPERIMENTAL WebGPU: hand CAMetalLayer ownership to wgpu (native drawInMTKView stops presenting its own drawable).
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_set_webgpu_mode(nint window, [MarshalAs(UnmanagedType.I1)] bool enabled);
+
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_move(nint window, double x, double y);
 
