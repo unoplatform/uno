@@ -1433,6 +1433,11 @@ internal struct ClipData
 	public float[] PathFan;
 	public bool PathEvenOdd;
 	public bool PathExclude;   // Difference op for the path clip
+	// RESIDENT clip-fan buffer: a CACHED recording's fan is stable, so its NDC vertex buffer is uploaded ONCE
+	// (into owned) and reused every frame instead of re-tessellated + re-uploaded per frame in ApplyDepthClip.
+	// 0 = not resident. FanW/FanH = surface size it was baked for (invalidated on resize).
+	public nint FanBuf;
+	public int FanW, FanH;
 	public static ClipData None => new() { Aabb = new Vector4(-1e9f, -1e9f, 1e9f, 1e9f) };
 
 	// No clip at all: infinite scissor, no rounded shapes, no path mask. (Arena re-stamp is only correct when the
@@ -2845,6 +2850,18 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	// Builds the draw-op(s) for a simple primitive (rect/path/image/gradient) into `ops`, allocating GPU resources
 	// pooled (owned == null, per-frame) or persistent (owned != null, a cached recording's geometry).
+	private (int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg) ResidentizeFan((int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg) op, OwnedResources owned)
+	{
+		if (owned is not null && op.clip.PathFan is { } fan && op.clip.FanBuf == 0)
+		{
+			_scratch.Clear();
+			for (int j = 0; j < fan.Length; j += 2) { var n = Ndc(new Vector2(fan[j], fan[j + 1])); _scratch.Add(n.X); _scratch.Add(n.Y); }
+			var c = op.clip; c.FanBuf = (nint)Vbuf(_scratch, owned); c.FanW = (int)_s.Width; c.FanH = (int)_s.Height;
+			op.clip = c;
+		}
+		return op;
+	}
+
 	private void BuildSimpleOp(WebGpuCommand cmd, List<(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)> ops, OwnedResources owned)
 	{
 		switch (cmd)
@@ -2973,13 +2990,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
 		WebGpuTrace.Draw(excl ? "clipdepth-set0(fill)" : "clipdepth-set1(fill)", 3);
 		// 2) stencil the clip fan (winding) in full-window NDC.
-		_scratch.Clear();
-		for (int i = 0; i < fan.Length; i += 2) { var n = Ndc(new Vector2(fan[i], fan[i + 1])); _scratch.Add(n.X); _scratch.Add(n.Y); }
-		var fanBuf = MakeBuffer(_scratch);
+		IntPtr fanBuf; int fanVerts;
+		if (next.FanBuf != 0 && next.FanW == (int)_s.Width && next.FanH == (int)_s.Height) { fanBuf = (IntPtr)next.FanBuf; fanVerts = fan.Length / 2; }
+		else { _scratch.Clear(); for (int i = 0; i < fan.Length; i += 2) { var n = Ndc(new Vector2(fan[i], fan[i + 1])); _scratch.Add(n.X); _scratch.Add(n.Y); } fanBuf = MakeBuffer(_scratch); fanVerts = _scratch.Count / 2; }
 		wgpuRenderPassEncoderSetPipeline(pass, next.PathEvenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
 		wgpuRenderPassEncoderSetBindGroup(pass, 0, MakeClipBg(_d.ClipBgl, default), 0, (uint*)null);   // identity xform (clip fan already NDC)
-		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(_scratch.Count * sizeof(float)));
-		wgpuRenderPassEncoderDraw(pass, (uint)(_scratch.Count / 2), 1, 0, 0);
+		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanVerts * 2 * sizeof(float)));
+		wgpuRenderPassEncoderDraw(pass, (uint)fanVerts, 1, 0, 0);
 		WebGpuTrace.Draw(next.PathEvenOdd ? "clip-stencil-eo" : "clip-stencil-nz", (uint)(_scratch.Count / 2));
 		// 3) cover: write the "kept" depth (intersect: 0 inside the shape; exclude: 1) where the stencil is set,
 		// and reset the stencil to 0 (PassOp=Zero) so the next fill/clip starts clean.
@@ -3101,7 +3118,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									{
 										tmp.Clear();
 										BuildSimpleOp(tc, tmp, fOwned);
-										foreach (var o in tmp) { order.Add(new FrameOp { Kind = -1, NonSolid = o }); }
+										foreach (var o in tmp) { order.Add(new FrameOp { Kind = -1, NonSolid = ResidentizeFan(o, fOwned) }); }
 									}
 								}
 								// Write the extracted verts into this recording's STABLE slices in the SHARED slabs (uploads
@@ -3153,6 +3170,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								var aList = new List<WebGpuCommand>();
 								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None)) { aList.Add(tc); }
 								BuildCoalesced(aList, aOps, aOwned);
+									for (int _ri = 0; _ri < aOps.Count; _ri++) { aOps[_ri] = ResidentizeFan(aOps[_ri], aOwned); }
 								entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, Device = _d };
 								rr.Data.Compiled = entry;
 								WebGpuTrace.Upload("geometry-build(new,arena)", aOps.Count);
@@ -3200,6 +3218,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							var cList = new List<WebGpuCommand>();
 							foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { cList.Add(tc); }
 							BuildCoalesced(cList, cachedOps, owned);
+							for (int _ri = 0; _ri < cachedOps.Count; _ri++) { cachedOps[_ri] = ResidentizeFan(cachedOps[_ri], owned); }
 							entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip, Device = _d };
 							rr.Data.Compiled = entry;
 							// Rebuild signal: transform-only changes SHOULD become a uniform re-stamp under arena (#22),
