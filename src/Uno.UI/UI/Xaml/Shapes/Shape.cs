@@ -288,9 +288,5 @@ namespace Microsoft.UI.Xaml.Shapes
 #endif
 				;
 
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-		{
-			// Don't call base, we need to keep UIView.BackgroundColor set to transparent
-		}
 	}
 }

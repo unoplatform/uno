@@ -58,3 +58,24 @@ Correct fix = per-file 3-way reconcile: fold our neutral (SkiaSharp-free) logic 
 and delete the duplicate .skia.cs. Hot spots (by error count): TextBlock (184 — our HarfBuzz managed-text rewrite
 vs upstream), Application (30), BitmapImage (20), TextBox (8), Shape (2). This is a deep reconcile of the managed-
 text/imaging subsystems and needs the author's knowledge of the managed-text rewrite.
+
+## Build-convergence API reconciliations (small fixes to reach green)
+- IsLocalResource -> IsMsAppx: applied upstream's Uri-extension rename in BitmapImage.skia.cs.
+- FeatureConfiguration.SkipVisualTreePainting: upstream test optimization delegating to Compositor.SkipVisualTreePainting
+  (absent in our neutral Compositor) -> made a no-op. Re-add if the test-paint-skip optimization is wanted.
+- TextBox.pointers.cs: upstream-new file referencing TouchSelectionConvention/TextVisual (not in our TextBox model)
+  -> deleted; our TextBox.skia.cs handles pointers. Verify touch text-selection behavior.
+- TextVisual.skia.cs: our neutral text visual (merge had dropped it) -> restored.
+
+## FINAL: build GREEN
+SamplesApp.Skia.Generic (Skia + WebGPU backends) builds with 0 errors after the full merge.
+Additional host/test reconciliations applied to reach green:
+- MacOSWindowHost: PointerPoint/PointerPointProperties -> Microsoft.UI.Input (settable), PointerEventArgs/
+  KeyEventArgs aliased to Windows.UI.Core, PointerDeviceType aliased to Windows.Devices.Input,
+  WindowActivationState -> Microsoft.UI.Xaml.WindowActivationState. (matches X11's input pattern)
+- X11XamlRootHost, Given_CompositionSpriteShape, Given_TextBox, GLCanvasElement: restored our neutral versions.
+- Graphics2DSK re-refs Graphics3DGL; Graphics3DGL gets a SkiaSharp ref (addins may use SkiaSharp).
+- RuntimeTests.Skia.csproj: GenerateTargetFrameworkAttribute=false (CS0579 duplicate from custom obj path).
+- Given_Path_FillRule: Path alias (System.IO.Path vs Shapes.Path ambiguity).
+- Given_TextBox: StackPanel collection-init -> .Children.Add.
+NOTE: Only the Skia desktop head is build-verified. WASM/Android/iOS heads + runtime behaviour NOT yet verified.

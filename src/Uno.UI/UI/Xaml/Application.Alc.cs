@@ -94,8 +94,11 @@ partial class Application
 			return;
 		}
 
-#if __SKIA__
-		// Close all windows belonging to secondary ALCs. ALC app hosting only exists on Skia.
+#if __SKIA__ || __WASM__
+		// Close all windows belonging to secondary ALCs.
+		// ALC app loading only happens on Skia and WASM; on native platforms
+		// (iOS, Android, macCatalyst) Window maps to the native window type
+		// which doesn't have the ALC partial.
 		Window.CloseAlcWindows();
 #endif
 
@@ -135,6 +138,7 @@ partial class Application
 		}
 	}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 	/// <summary>
 	/// Returns the <see cref="Application"/> that owns <paramref name="contentRoot"/>. The owner window's
 	/// <see cref="Window.OwnerAssemblyLoadContext"/> — tagged at construction with the ALC of the code
@@ -176,6 +180,7 @@ partial class Application
 			? (alcTheme == ApplicationTheme.Dark ? Theme.Dark : Theme.Light)
 				| global::Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetHighContrastTheme()
 			: global::Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetTheme();
+#endif
 
 	/// <summary>
 	/// The explicit <see cref="ApplicationTheme"/> of a secondary-ALC application, if set.
@@ -207,8 +212,9 @@ partial class Application
 		var previousTheme = RequestedTheme;
 		_alcRequestedTheme = explicitTheme;
 
-#if __SKIA__
-		// ALC app hosting only exists on Skia (see ExitAlcApplication).
+#if __SKIA__ || __WASM__
+		// ALC app hosting only exists on Skia and WASM (see ExitAlcApplication); on native platforms
+		// Window maps to the native window type which doesn't have the ALC partial.
 		Window.ApplyAlcRequestedTheme(this, AlcElementTheme);
 #endif
 
@@ -449,7 +455,9 @@ partial class Application
 
 	private static void ClearCollectibleResourceAssociations()
 	{
+#if !__NETSTD_REFERENCE__
 		Uno.UI.GlobalStaticResources.MasterDictionary.ClearCollectibleAssociatedParents();
+#endif
 		_current?.Resources?.ClearCollectibleAssociatedParents();
 	}
 

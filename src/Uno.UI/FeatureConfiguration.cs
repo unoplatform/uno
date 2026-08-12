@@ -600,13 +600,9 @@ namespace Uno.UI
 			/// </summary>
 			public static bool SkipVisualTreePainting
 			{
-#if __SKIA__
-				get => Compositor.SkipVisualTreePainting;
-				set => Compositor.SkipVisualTreePainting = value;
-#else
+				// Our neutral Compositor does not implement visual-tree paint-skipping; no-op (see merge flags).
 				get => false;
 				set { }
-#endif
 			}
 
 			/// <summary>
