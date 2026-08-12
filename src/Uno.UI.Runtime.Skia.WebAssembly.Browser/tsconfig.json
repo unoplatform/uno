@@ -15,6 +15,7 @@
 	"include": [
 		"../Uno.UI/ts/types/**/*",
 		"../Uno.UI/ts/Windows/UI/Xaml/Controls/WebView.ts",
+		"../Uno.UI.Composition.WebGpu/ts/Runtime/WebGpuInit.ts",
 		"ts/**/*",
 		"tsBindings/**/*"
 	]
