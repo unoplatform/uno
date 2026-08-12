@@ -79,7 +79,7 @@ public partial class PathKeyFrameAnimation : KeyFrameAnimation
 	// equal structure). 'amount' runs 0..1 from 'from' to 'to'.
 	private static SKPath? TryMorph(SKPath from, SKPath to, float amount)
 	{
-		var result = new SKPath { FillType = from.FillType };
+		using var builder = new SKPathBuilder { FillType = from.FillType };
 		using var fromIt = from.CreateRawIterator();
 		using var toIt = to.CreateRawIterator();
 		var fp = new SKPoint[4];
@@ -91,32 +91,31 @@ public partial class PathKeyFrameAnimation : KeyFrameAnimation
 			var vt = toIt.Next(tp);
 			if (vf != vt)
 			{
-				result.Dispose();
 				return null;
 			}
 
 			switch (vf)
 			{
 				case SKPathVerb.Move:
-					result.MoveTo(Mix(fp[0], tp[0], amount));
+					builder.MoveTo(Mix(fp[0], tp[0], amount));
 					break;
 				case SKPathVerb.Line:
-					result.LineTo(Mix(fp[1], tp[1], amount));
+					builder.LineTo(Mix(fp[1], tp[1], amount));
 					break;
 				case SKPathVerb.Quad:
-					result.QuadTo(Mix(fp[1], tp[1], amount), Mix(fp[2], tp[2], amount));
+					builder.QuadTo(Mix(fp[1], tp[1], amount), Mix(fp[2], tp[2], amount));
 					break;
 				case SKPathVerb.Conic:
-					result.ConicTo(Mix(fp[1], tp[1], amount), Mix(fp[2], tp[2], amount), fromIt.ConicWeight());
+					builder.ConicTo(Mix(fp[1], tp[1], amount), Mix(fp[2], tp[2], amount), fromIt.ConicWeight());
 					break;
 				case SKPathVerb.Cubic:
-					result.CubicTo(Mix(fp[1], tp[1], amount), Mix(fp[2], tp[2], amount), Mix(fp[3], tp[3], amount));
+					builder.CubicTo(Mix(fp[1], tp[1], amount), Mix(fp[2], tp[2], amount), Mix(fp[3], tp[3], amount));
 					break;
 				case SKPathVerb.Close:
-					result.Close();
+					builder.Close();
 					break;
 				case SKPathVerb.Done:
-					return result;
+					return builder.Detach();
 			}
 		}
 	}
