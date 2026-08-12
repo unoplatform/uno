@@ -405,7 +405,7 @@ for m in re.finditer(r'<test-case\s+name=\"([^\"]+)\"[^>]*result=\"(\w+)\"', con
 
 ### Key Files
 - **Project**: `src/SamplesApp/SamplesApp/SamplesApp.csproj`
-- **App manifest**: `src/SamplesApp/SamplesApp/Platforms/Windows/Package.appxmanifest`
+- **App manifest**: `src/SamplesApp/SamplesApp/Package.appxmanifest`
 - **CI YAML**: `build/ci/tests/.azure-devops-tests-winappsdk.yml`
 - **CI test script**: `build/test-scripts/run-winui-runtime-tests.ps1`
 - **Entry point**: `src/SamplesApp/SamplesApp.Shared/App.Tests.cs`

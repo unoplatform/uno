@@ -436,7 +436,7 @@
 		<ApplicationManifest>Platforms\Windows\app.manifest</ApplicationManifest>
 	</PropertyGroup>
 	<ItemGroup Condition="'$(_Platform)' == 'windows'">
-		<AppxManifest Include="Platforms\Windows\Package.appxmanifest">
+		<AppxManifest Include="Package.appxmanifest">
 			<SubType>Designer</SubType>
 		</AppxManifest>
 		<Content Include="Platforms\Windows\Assets\*.png" Link="Assets\%(Filename)%(Extension)" />
@@ -455,9 +455,17 @@
 
 	<!-- ==================== App identity / icons / manifests ==================== -->
 
-	<!-- App identity manifest read at runtime by SamplesApp on Skia (windows uses the real MSIX manifest) -->
+	<!--
+	App identity manifest read at runtime by SamplesApp on Skia (windows uses the real MSIX manifest).
+	It sits at the project root, where every Uno single-project template keeps it, and NOT under
+	Platforms\Windows: the SDK treats each Platforms\<platform>\ folder as belonging to that platform
+	alone and removes it from every item group on the other target frameworks
+	(RemoveUnoSingleProjectPlatformFiles), so an embed from there silently vanishes off windows and
+	Package.Current.DisplayName comes back empty. LogicalName is required — the lookup is by that
+	exact name, whereas the default would be prefixed with the root namespace.
+	-->
 	<ItemGroup Condition="'$(_Platform)' != 'windows'">
-		<EmbeddedResource Include="Platforms\Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+		<EmbeddedResource Include="Package.appxmanifest" LogicalName="Package.appxmanifest" />
 	</ItemGroup>
 
 	<!--
