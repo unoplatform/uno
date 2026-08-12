@@ -132,8 +132,6 @@ internal static class X11GraphicsContextFactory
 				=> new global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext(
 					global::Uno.WebGpu.Native.WGPUTextureFormat.BGRA8Unorm,
 					inst => global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext.CreateXlibSurface(inst, gpu.X11Window.Display, (ulong)gpu.X11Window.Window)),
-			// Vulkan on-window via the shared VulkanContext (throws if Vulkan is unavailable → falls through).
-			GraphicsContextKind.Vulkan when window is X11GraphicsNativeWindow vk => new X11VulkanGraphicsContext(vk.X11Window),
 			GraphicsContextKind.Software => new X11SoftwareGraphicsContext(window),
 			_ => null,
 		};
