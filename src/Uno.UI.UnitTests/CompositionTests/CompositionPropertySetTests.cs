@@ -1,10 +1,10 @@
 using System;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.Interactions;
+using Microsoft.UI.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SkiaSharp;
 using Uno.UI.Composition;
-using Windows.UI.Input;
 
 namespace Uno.UI.Tests.CompositionTests;
 
