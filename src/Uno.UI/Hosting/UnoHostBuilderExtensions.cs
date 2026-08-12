@@ -1,11 +1,66 @@
 ﻿#nullable enable
 
 using System;
+using Uno.UI.Composition.Drawing;
 
 namespace Uno.UI.Hosting;
 
 public static class UnoPlatformHostBuilderExtensions
 {
+	/// <summary>
+	/// Registers the app's graphics backend — the render backend and its base drawing/geometry factory, which are
+	/// one unit (a renderer without its drawing factory, or vice-versa, is meaningless). The render backend
+	/// announces the context kinds it supports (<see cref="IGraphicsProvider.PreferredContexts"/>); the framework
+	/// creates a matching context internally (synchronously or asynchronously) and hands it to the backend — the app
+	/// never wires a context factory. The drawing factory produces the neutral geometry the render backend consumes.
+	/// </summary>
+	public static IUnoPlatformHostBuilder GraphicsBackend(this IUnoPlatformHostBuilder builder, IGraphicsProvider renderBackend, IDrawingFactory drawingBackend)
+	{
+		ArgumentNullException.ThrowIfNull(renderBackend);
+		ArgumentNullException.ThrowIfNull(drawingBackend);
+		builder.AddDrawingRegistration(() =>
+		{
+			// Register the base drawing factory first so it exists before the render backend's context is negotiated
+			// (the backend decorates it — e.g. WebGPU wraps it for GPU-resident images while delegating geometry).
+			DrawingFactory.Register(drawingBackend);
+			GraphicsRegistry.Register(new[] { renderBackend });
+		});
+		return builder;
+	}
+
+	/// <summary>
+	/// Registers a self-contained graphics backend whose render backend produces its own drawing factory (e.g. the
+	/// Skia backend), so no separate base factory is supplied. See <see cref="GraphicsBackend(IUnoPlatformHostBuilder, IGraphicsProvider, IDrawingFactory)"/>.
+	/// </summary>
+	public static IUnoPlatformHostBuilder GraphicsBackend(this IUnoPlatformHostBuilder builder, IGraphicsProvider renderBackend)
+	{
+		ArgumentNullException.ThrowIfNull(renderBackend);
+		builder.AddDrawingRegistration(() => GraphicsRegistry.Register(new[] { renderBackend }));
+		return builder;
+	}
+
+	/// <summary>
+	/// Registers the font resolver — a render-independent content seam (family/style/bytes/codepoint → glyph
+	/// outlines). Independent of the graphics backend, like <see cref="ImageDecoder"/>.
+	/// </summary>
+	public static IUnoPlatformHostBuilder FontProvider(this IUnoPlatformHostBuilder builder, IFontProvider provider)
+	{
+		ArgumentNullException.ThrowIfNull(provider);
+		builder.AddDrawingRegistration(() => Uno.UI.Composition.Drawing.FontProvider.Current = provider);
+		return builder;
+	}
+
+	/// <summary>
+	/// Registers the image decoder — a render-independent content seam (encoded bytes → neutral pixels). Independent
+	/// of the graphics backend, like <see cref="FontProvider"/>.
+	/// </summary>
+	public static IUnoPlatformHostBuilder ImageDecoder(this IUnoPlatformHostBuilder builder, IImageDecoder decoder)
+	{
+		ArgumentNullException.ThrowIfNull(decoder);
+		builder.AddDrawingRegistration(() => Uno.UI.Composition.Drawing.ImageDecoder.Current = decoder);
+		return builder;
+	}
+
 	/// <summary>
 	/// Provides an <see cref="Microsoft.UI.Xaml.Application"/> instance to use when starting the app.
 	/// </summary>
