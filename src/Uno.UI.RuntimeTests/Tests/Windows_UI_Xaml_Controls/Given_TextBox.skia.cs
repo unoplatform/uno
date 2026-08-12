@@ -25,6 +25,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Input.Preview.Injection;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
@@ -5145,7 +5146,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("", SUT.SelectedText);
-			Assert.AreEqual(expectedCaret, SUT.CaretMode);
+			// The thumbless iOS caret blinks on a 500 ms timer, so sampling CaretMode once fails when the assert
+			// lands on the hidden half; the thumbed Android mode stops the timer and matches immediately.
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == expectedCaret,
+				timeoutMS: 3000,
+				message: $"tap should settle the caret in {expectedCaret}");
 		}
 
 		// Native iOS/Android: a double-tap selects the word under the tap.
@@ -5591,12 +5597,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("", SUT.SelectedText, "there is nothing to select in an empty box");
-			Assert.AreEqual(
-				convention == TextBox.TouchTextSelectionConvention.Android
-					? TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing
-					: TextBox.CaretDisplayMode.ThumblessCaretShowing,
-				SUT.CaretMode,
-				"the gesture should leave the convention's collapsed caret");
+			// The thumbless iOS caret blinks on a 500 ms timer, so it can be mid-blink by the time the flyout opens.
+			var expectedCaret = convention == TextBox.TouchTextSelectionConvention.Android
+				? TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing
+				: TextBox.CaretDisplayMode.ThumblessCaretShowing;
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == expectedCaret,
+				timeoutMS: 3000,
+				message: $"the gesture should leave the convention's collapsed caret ({expectedCaret})");
 
 			if (SUT.SelectionFlyout is not TextCommandBarFlyout flyout)
 			{
@@ -7109,6 +7117,266 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_IME_Direct_Commit_Without_Composition()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "ab" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SelectionStart = 1;
+			await WindowHelper.WaitForIdle();
+
+			// An Alt+numpad code on Win32 (or a single-key IME commit on X11/macOS) is
+			// delivered as Started → Completed → Ended with no intermediate updates.
+			fake.SimulateDirectCommit("š");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("ašb", SUT.Text);
+			Assert.AreEqual(2, SUT.SelectionStart);
+			Assert.IsFalse(SUT.IsComposing);
+
+			// A direct commit replaces the active selection, like regular typing.
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+			fake.SimulateDirectCommit("é");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("é", SUT.Text);
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Direct_Commit_ReadOnly()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "ab", IsReadOnly = true };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateDirectCommit("š");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("ab", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Direct_Commit_Without_Focused_TextBox()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "ab" };
+			var button = new Button { Content = "other" };
+			WindowHelper.WindowContent = new StackPanel { Children = { SUT, button } };
+			await WindowHelper.WaitForLoaded(SUT);
+			button.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateDirectCommit("š");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("ab", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22254")]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+		public async Task When_Win32_AltCode_Char_Arrives_On_KeyUp()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var compositionEvents = 0;
+			SUT.TextCompositionStarted += (_, _) => compositionEvents++;
+			SUT.TextCompositionEnded += (_, _) => compositionEvents++;
+
+			CharacterReceivedRoutedEventArgs characterReceivedArgs = null;
+			SUT.AddHandler(
+				UIElement.CharacterReceivedEvent,
+				new TypedEventHandler<UIElement, CharacterReceivedRoutedEventArgs>((_, e) => characterReceivedArgs = e),
+				handledEventsToo: true);
+
+			var hwnd = ((Uno.UI.NativeElementHosting.Win32NativeWindow)WindowHelper.CurrentTestWindow.NativeWindow!).Hwnd;
+
+			// An Alt+numpad code (e.g. Alt+0154 → 'š') reaches the app as a WM_CHAR that
+			// TranslateMessage queues behind the Alt key-up, not behind a keydown. Post that
+			// exact message pair so the real WndProc/event-loop path handles it.
+			const uint WM_KEYUP = 0x0101;
+			const uint WM_CHAR = 0x0102;
+			const nuint VK_MENU = 0x12;
+			PostMessage(hwnd, WM_KEYUP, VK_MENU, 0);
+			PostMessage(hwnd, WM_CHAR, 'š', 0);
+
+			await WindowHelper.WaitFor(() => SUT.Text.Length > 0);
+			Assert.AreEqual("š", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+
+			// The character is delivered through CharacterReceived, not through a fake IME composition.
+			Assert.AreEqual(0, compositionEvents);
+			Assert.IsNotNull(characterReceivedArgs);
+			Assert.AreEqual('š', characterReceivedArgs.Character);
+			Assert.IsTrue(characterReceivedArgs.KeyStatus.IsKeyReleased);
+			Assert.IsTrue(characterReceivedArgs.Handled);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22254")]
+		public async Task When_CharacterReceived_On_KeyRelease_Inserts()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Text = "ab" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SelectionStart = 1;
+			await WindowHelper.WaitForIdle();
+
+			var compositionEvents = 0;
+			SUT.TextCompositionStarted += (_, _) => compositionEvents++;
+			SUT.TextCompositionEnded += (_, _) => compositionEvents++;
+
+			// A character composed on a key release (Windows Alt+numpad code) arrives without
+			// an associated keydown; TextBox inserts it from CharacterReceived.
+			var args = new CharacterReceivedRoutedEventArgs(SUT, 'š', new CorePhysicalKeyStatus { IsKeyReleased = true, RepeatCount = 1 });
+			SUT.SafeRaiseEvent(UIElement.CharacterReceivedEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("ašb", SUT.Text);
+			Assert.AreEqual(2, SUT.SelectionStart);
+			Assert.IsTrue(args.Handled);
+			Assert.AreEqual(0, compositionEvents);
+
+			// A key-release character replaces the active selection, like regular typing.
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.CharacterReceivedEvent, new CharacterReceivedRoutedEventArgs(SUT, 'é', new CorePhysicalKeyStatus { IsKeyReleased = true, RepeatCount = 1 }));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("é", SUT.Text);
+			Assert.AreEqual(1, SUT.SelectionStart);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22254")]
+		public async Task When_CharacterReceived_On_KeyRelease_ReadOnly()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox { Text = "ab", IsReadOnly = true };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var args = new CharacterReceivedRoutedEventArgs(SUT, 'š', new CorePhysicalKeyStatus { IsKeyReleased = true, RepeatCount = 1 });
+			SUT.SafeRaiseEvent(UIElement.CharacterReceivedEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("ab", SUT.Text);
+			Assert.IsFalse(args.Handled);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22254")]
+		public async Task When_CharacterReceived_On_KeyRelease_PasswordBox()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new PasswordBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Alt+numpad codes work in PasswordBox on WinUI; CharacterReceived doesn't depend
+			// on an IME session, so the same path serves PasswordBox.
+			SUT.SafeRaiseEvent(UIElement.CharacterReceivedEvent, new CharacterReceivedRoutedEventArgs(SUT, 'š', new CorePhysicalKeyStatus { IsKeyReleased = true, RepeatCount = 1 }));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("š", SUT.Password);
+		}
+
+		[TestMethod]
+		public async Task When_CharacterReceived_On_KeyPress_Does_Not_Insert()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// Characters delivered with a key press are inserted by the KeyDown path; the
+			// CharacterReceived class handler must not insert them a second time.
+			var args = new CharacterReceivedRoutedEventArgs(SUT, 'a', new CorePhysicalKeyStatus { RepeatCount = 1 });
+			SUT.SafeRaiseEvent(UIElement.CharacterReceivedEvent, args);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("", SUT.Text);
+			Assert.IsFalse(args.Handled);
+		}
+
+		[TestMethod]
+		public async Task When_Typing_Raises_CharacterReceived_After_KeyDown()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var sequence = new List<string>();
+			SUT.AddHandler(
+				UIElement.KeyDownEvent,
+				new KeyEventHandler((_, _) => sequence.Add("KeyDown")),
+				handledEventsToo: true);
+			SUT.AddHandler(
+				UIElement.CharacterReceivedEvent,
+				new TypedEventHandler<UIElement, CharacterReceivedRoutedEventArgs>((_, e) => sequence.Add($"CharacterReceived:{e.Character}")),
+				handledEventsToo: true);
+
+			var keyboard = WindowHelper.XamlRoot.VisualTree.ContentRoot.InputManager.Keyboard;
+			keyboard.OnKeyTestingOnly(new KeyEventArgs("test", VirtualKey.A, VirtualKeyModifiers.None, new CorePhysicalKeyStatus(), unicodeKey: 'a'), true);
+			await WindowHelper.WaitForIdle();
+			keyboard.OnKeyTestingOnly(new KeyEventArgs("test", VirtualKey.A, VirtualKeyModifiers.None, new CorePhysicalKeyStatus(), unicodeKey: 'a'), false);
+			await WindowHelper.WaitForIdle();
+
+			// The character is inserted exactly once (by the KeyDown path), and CharacterReceived
+			// is raised after KeyDown, matching the WM_KEYDOWN → WM_CHAR ordering on Windows.
+			Assert.AreEqual("a", SUT.Text);
+			CollectionAssert.AreEqual(new[] { "KeyDown", "CharacterReceived:a" }, sequence);
+		}
+
+		[DllImport("user32.dll", CharSet = CharSet.Unicode)]
+		private static extern bool PostMessage(nint hWnd, uint msg, nuint wParam, nint lParam);
+
+		[TestMethod]
 		public async Task When_IME_Composition_Cancelled()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -7649,6 +7917,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 						cursorPosition,
 						resolvedLength,
 						textAlreadyApplied));
+			}
+
+			public void SimulateDirectCommit(string text)
+			{
+				CompositionStarted?.Invoke(this, EventArgs.Empty);
+				CompositionCompleted?.Invoke(this, new ImeCompositionEventArgs(text));
+				CompositionEnded?.Invoke(this, EventArgs.Empty);
 			}
 
 			public void SimulateCompositionCancel()
