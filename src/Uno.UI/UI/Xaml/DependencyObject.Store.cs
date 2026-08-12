@@ -1969,11 +1969,15 @@ namespace Microsoft.UI.Xaml
 				if (frameworkPropertyMetadata.Options.HasInherits())
 				{
 					var localChildrenStores = _childrenStores;
-					for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+					if (localChildrenStores.Count > 0)
 					{
-						// SelfWeakReference is minted lazily here: a leaf object with no inheriting
-						// children never reaches this and so never rents a weak self-handle.
-						CallChildCallback(localChildrenStores[storeIndex], SelfWeakReference, property, newValue);
+						// Minted only once we know there is an inheriting child: a leaf object never
+						// reaches this and so never rents a weak self-handle.
+						var instanceRef = SelfWeakReference;
+						for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+						{
+							CallChildCallback(localChildrenStores[storeIndex], instanceRef, property, newValue);
+						}
 					}
 				}
 			}
@@ -2028,10 +2032,14 @@ namespace Microsoft.UI.Xaml
 
 			// Raise the property change for generic handlers
 			var currentCallbacks = _genericCallbacks.Data;
-			for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
+			if (currentCallbacks.Length > 0)
 			{
-				var callback = currentCallbacks[callbackIndex];
-				callback.Invoke(SelfWeakReference, property, eventArgs);
+				var instanceRef = SelfWeakReference;
+				for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
+				{
+					var callback = currentCallbacks[callbackIndex];
+					callback.Invoke(instanceRef, property, eventArgs);
+				}
 			}
 
 			// Cleanup to avoid leaks
