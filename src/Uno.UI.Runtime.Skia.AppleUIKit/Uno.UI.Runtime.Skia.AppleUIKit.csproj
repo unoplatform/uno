@@ -70,8 +70,6 @@
 		     library must be linked by the app head (see wgpu-native.targets iOS provisioning) so DllImport("webgpu")
 		     resolves to the main program (WebGpuLoader.GetMainProgramHandle). -->
 		<ProjectReference Include="..\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" />
-		<!-- The framework no longer provides the Skia backend transitively; this Skia host references it directly. -->
-		<ProjectReference Include="..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
