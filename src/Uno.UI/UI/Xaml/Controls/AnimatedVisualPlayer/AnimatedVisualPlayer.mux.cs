@@ -344,6 +344,9 @@ partial class AnimatedVisualPlayer
 		public Task Task => m_taskCompletionSource.Task;
 	}
 
+	/// <summary>
+	/// Initializes a new instance of the AnimatedVisualPlayer class.
+	/// </summary>
 	public AnimatedVisualPlayer()
 	{
 		// __RP_Marker_ClassById(RuntimeProfiler::ProfId_AnimatedVisualPlayer);
@@ -604,6 +607,9 @@ partial class AnimatedVisualPlayer
 
 	// Public API.
 	// Pauses the currently playing animated visual, or does nothing if no play is underway.
+	/// <summary>
+	/// Pauses the currently playing animated visual, or does nothing if no play is underway.
+	/// </summary>
 	public void Pause()
 	{
 		if (m_nowPlaying is not null)
@@ -613,6 +619,18 @@ partial class AnimatedVisualPlayer
 	}
 
 	// Public API.
+	/// <summary>
+	/// Starts playing the loaded animated visual, or does nothing if no animated visual is loaded.
+	/// </summary>
+	/// <param name="fromProgress">The point from which to start the animation, as a value from 0 to 1.</param>
+	/// <param name="toProgress">The point at which to finish the animation, as a value from 0 to 1.</param>
+	/// <param name="looped">If <c>true</c>, the animation loops continuously between <paramref name="fromProgress"/> and <paramref name="toProgress"/>. If <c>false</c>, the animation plays once then stops.</param>
+	/// <returns>An async action that is completed when the play is stopped or, if <paramref name="looped"/> is not set, when the play reaches <paramref name="toProgress"/>.</returns>
+	/// <remarks>
+	/// If <paramref name="toProgress"/> is less than <paramref name="fromProgress"/>, the animated visual will
+	/// play from <paramref name="fromProgress"/> to the end, then play from the beginning until it reaches
+	/// <paramref name="toProgress"/>. To play an animated visual in reverse, set the playback rate to a negative value.
+	/// </remarks>
 	public IAsyncAction PlayAsync(double fromProgress, double toProgress, bool looped)
 	{
 		return PlayAsyncCore().AsAsyncAction();
@@ -692,6 +710,10 @@ partial class AnimatedVisualPlayer
 	}
 
 	// Public API.
+	/// <summary>
+	/// Resumes the currently paused animated visual, or does nothing if there is no animated visual
+	/// loaded or the animated visual is not paused.
+	/// </summary>
 	public void Resume()
 	{
 		if (m_nowPlaying is not null)
@@ -702,6 +724,12 @@ partial class AnimatedVisualPlayer
 
 	// Public API.
 	// REENTRANCE SIDE EFFECT: IsPlaying DP via m_nowPlaying->Complete() or InsertScalar iff m_nowPlaying.
+	/// <summary>
+	/// Moves the progress of the animated visual to the given value, or does nothing if no animated
+	/// visual is loaded.
+	/// </summary>
+	/// <param name="progress">A value from 0 to 1 that represents the progress of the animated visual.</param>
+	/// <remarks>If the animated visual was playing it will behave as if Stop was called first.</remarks>
 	public void SetProgress(double progress)
 	{
 		// Make sure that animations are created.
@@ -735,6 +763,9 @@ partial class AnimatedVisualPlayer
 
 	// Public API.
 	// REENTRANCE SIDE EFFECT: IsPlaying DP via SetProgress(...) or InsertScalar iff m_nowPlaying.
+	/// <summary>
+	/// Stops the current play, or does nothing if no play is underway.
+	/// </summary>
 	public void Stop()
 	{
 		if (m_nowPlaying is not null)

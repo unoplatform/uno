@@ -28,6 +28,9 @@ namespace CommunityToolkit.WinUI.Lottie
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 #endif
 {
+	/// <summary>
+	/// Base class for animated visual sources that render Lottie JSON animations.
+	/// </summary>
 	public abstract partial class LottieVisualSourceBase : DependencyObject, IAnimatedVisualSource, IAnimatedVisualSource3, IDynamicAnimatedVisualSource, IAnimatedVisualSourceWithUri
 	{
 		public delegate void UpdatedAnimation(string animationJson, string cacheKey);
@@ -94,11 +97,27 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			};
 		}
 
+		/// <summary>
+		/// Occurs when the animated visual previously provided by this source should be discarded.
+		/// </summary>
 		public event TypedEventHandler<IDynamicAnimatedVisualSource, object>? AnimatedVisualInvalidated;
 
+		/// <summary>
+		/// Attempts to create an animated visual.
+		/// </summary>
+		/// <param name="compositor">The compositor for the animated visual.</param>
+		/// <param name="diagnostics">The diagnostics information about the attempt to create an animated visual.</param>
+		/// <returns>An animated visual that can be used by other objects.</returns>
 		public IAnimatedVisual? TryCreateAnimatedVisual(Compositor compositor, out object diagnostics)
 			=> TryCreateAnimatedVisualCore(compositor, out diagnostics, createAnimations: true);
 
+		/// <summary>
+		/// Attempts to create an animated visual.
+		/// </summary>
+		/// <param name="compositor">The compositor for the animated visual.</param>
+		/// <param name="diagnostics">The diagnostics information about the attempt to create an animated visual.</param>
+		/// <param name="createAnimations"><c>true</c> to create the animations; otherwise, <c>false</c>.</param>
+		/// <returns>An animated visual that can be used by other objects.</returns>
 		public IAnimatedVisual2? TryCreateAnimatedVisual(Compositor compositor, out object diagnostics, bool createAnimations)
 			=> TryCreateAnimatedVisualCore(compositor, out diagnostics, createAnimations);
 
@@ -452,24 +471,45 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				});
 		}
 
+		/// <summary>
+		/// The subscription returned by <see cref="LoadAndObserveAnimationData"/> when the load is
+		/// asynchronous, exposing the initial load task so callers can await first paint.
+		/// </summary>
 		protected sealed class AnimationDataLoadSubscription : IDisposable
 		{
 			private Action? _dispose;
 
+			/// <summary>
+			/// Initializes a new instance of the AnimationDataLoadSubscription class.
+			/// </summary>
+			/// <param name="initialLoad">A task that completes when the first animation payload has been loaded.</param>
+			/// <param name="dispose">The action invoked once when the subscription is disposed.</param>
 			public AnimationDataLoadSubscription(Task initialLoad, Action dispose)
 			{
 				InitialLoad = initialLoad;
 				_dispose = dispose;
 			}
 
+			/// <summary>
+			/// Gets a task that completes when the first animation payload has been loaded.
+			/// </summary>
 			public Task InitialLoad { get; }
 
+			/// <summary>
+			/// Cancels the load and releases the subscription. Subsequent calls do nothing.
+			/// </summary>
 			public void Dispose()
 			{
 				Interlocked.Exchange(ref _dispose, null)?.Invoke();
 			}
 		}
 
+		/// <summary>
+		/// Reads a Lottie JSON payload from a stream, disposing the stream when done.
+		/// </summary>
+		/// <param name="sourceJson">The stream containing the Lottie JSON payload. It is disposed by this method.</param>
+		/// <param name="cancellationToken">A token that cancels the read.</param>
+		/// <returns>The Lottie JSON payload, with any byte-order mark removed.</returns>
 		protected static async Task<string> ReadAnimationJsonAsync(IInputStream sourceJson, CancellationToken cancellationToken)
 		{
 			using var _ = sourceJson;
