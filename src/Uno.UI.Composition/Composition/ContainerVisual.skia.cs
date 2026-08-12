@@ -7,7 +7,6 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using Windows.Foundation;
 using Uno.Extensions;
-using Uno.UI.Composition;
 using Uno.UI.Composition.Drawing;
 
 
@@ -48,17 +47,11 @@ public partial class ContainerVisual : Visual
 			if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Reset
 				&& e.OldItems is not null)
 			{
-				var target = CompositionTarget;
 				foreach (var i in e.OldItems)
 				{
 					if (i is CompositionObject compositionObject)
 					{
 						compositionObject.StopAllAnimations();
-					}
-
-					if (target is not null && i is Visual removedVisual)
-					{
-						removedVisual.DamageLastRenderedRegion(target);
 					}
 				}
 			}
@@ -175,15 +168,6 @@ public partial class ContainerVisual : Visual
 		}
 
 		return false;
-	}
-
-	internal override void DamageLastRenderedRegion(ICompositionTarget target)
-	{
-		base.DamageLastRenderedRegion(target);
-		foreach (var child in Children.InnerList)
-		{
-			child.DamageLastRenderedRegion(target);
-		}
 	}
 
 	internal override int GetSubTreeVisualCount()

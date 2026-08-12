@@ -1,0 +1,10 @@
+--- TRACE full-ui (ramez: 10 solid rows + 6 mixed cards) ---
+PASS main
+  DRAW solid v=66
+  DRAW solid v=6
+  DRAW solid v=6
+  DRAW solid v=6
+  DRAW solid v=6
+  DRAW solid v=6
+PASS end
+================================================================

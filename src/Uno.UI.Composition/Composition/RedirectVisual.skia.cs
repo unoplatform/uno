@@ -6,7 +6,7 @@ namespace Microsoft.UI.Composition
 {
 	public partial class RedirectVisual : ContainerVisual
 	{
-		internal override SKPath? Paint(in PaintingSession session)
+		internal override void Paint(in PaintingSession session)
 		{
 			base.Paint(in session);
 
@@ -14,8 +14,6 @@ namespace Microsoft.UI.Composition
 			{
 				Source.RenderRootVisual(session.Session, null);
 			}
-
-			return null;
 		}
 
 		internal override bool CanPaint() => Source?.CanPaint() ?? false;
