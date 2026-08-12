@@ -17,6 +17,20 @@
 	<Import Project="..\..\targetframework-override.props" />
 
 	<!--
+	Every TFM this head declares carries a platform, so unlike the library layer it needs the full
+	override value: put back the desktop/browserwasm moniker the import above strips, and map a
+	platform-less override onto desktop. Left bare, $(_Platform) below resolves to empty and every
+	platform gate switches off, silently dropping the runtime and the WinRT assemblies. net10.0 was
+	unambiguous only while desktop and wasm were separate projects — use net10.0-browserwasm for wasm.
+	The .NET version is whatever the override asked for, so head and libraries stay on one TFM.
+	-->
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)' != ''">
+		<_HeadOverridePlatform>$([MSBuild]::GetTargetPlatformIdentifier('$(UnoTargetFrameworkOverride)'))</_HeadOverridePlatform>
+		<TargetFrameworks Condition="'$(_HeadOverridePlatform)' == ''">$(UnoTargetFrameworkOverride)-desktop</TargetFrameworks>
+		<TargetFrameworks Condition="'$(_HeadOverridePlatform)' == 'desktop' OR '$(_HeadOverridePlatform)' == 'browserwasm'">$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<!--
 	Windows MSIX is built with MSBuild.exe /t:Publish, and a single-valued but still *plural*
 	<TargetFrameworks> routes Publish through the cross-targeting outer build, which rejects it
 	(NETSDK1129). Collapsing to a single TargetFramework here is what makes $(TargetFramework)
