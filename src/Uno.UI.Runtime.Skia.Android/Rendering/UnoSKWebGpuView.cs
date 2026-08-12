@@ -179,7 +179,7 @@ internal sealed partial class UnoSKWebGpuView : SurfaceView, ISurfaceHolderCallb
 			size => context.AcquireRenderTarget((int)size.Width, (int)size.Height));
 		context.Present();
 
-		ApplicationActivity.NativeLayerHost!.Path = SkiaGeometryInterop.ToSKPath(nativeClipPath);
+		ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
 	}
 
 	#endregion

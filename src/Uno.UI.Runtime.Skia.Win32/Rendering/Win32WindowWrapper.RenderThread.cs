@@ -1,3 +1,4 @@
+using Uno.UI.Composition.Drawing;
 using System;
 using System.Threading;
 using SkiaSharp;
@@ -17,14 +18,14 @@ internal partial class Win32WindowWrapper
 		private readonly AutoResetEvent _frameSignal = new(false);
 		private readonly ManualResetEventSlim _presentedEvent = new(false);
 		private readonly IRenderer _renderer;
-		private readonly Func<(SKPath clipPath, int width, int height)?> _drawFrame;
-		private readonly Action<SKPath> _onClipPathUpdated;
+		private readonly Func<(IGeometry clipPath, int width, int height)?> _drawFrame;
+		private readonly Action<IGeometry> _onClipPathUpdated;
 		private volatile bool _disposed;
 
 		internal RenderThread(
 			IRenderer renderer,
-			Func<(SKPath, int, int)?> drawFrame,
-			Action<SKPath> onClipPathUpdated)
+			Func<(IGeometry, int, int)?> drawFrame,
+			Action<IGeometry> onClipPathUpdated)
 		{
 			_renderer = renderer;
 			_drawFrame = drawFrame;

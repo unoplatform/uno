@@ -17,6 +17,7 @@ using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
 using Uno.UI.Runtime.Skia.Android;
 using Uno.UI.Xaml.Controls;
@@ -166,7 +167,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var nativelyHandled = false;
-			if (_nativeLayerHost?.Path.Contains(ev.GetX(), ev.GetY()) ?? false)
+			if (_nativeLayerHost?.Path?.FillContains(new global::System.Numerics.Vector2(ev.GetX(), ev.GetY())) ?? false)
 			{
 				// We don't call the base method if NativeLayerHost.Path doesn't contain (X, Y).
 				// This is due to the way Android handles hit-testing with Canvas.ClipPath, where even if the ClipPath
@@ -193,7 +194,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var nativelyHandled = false;
-			if (_nativeLayerHost?.Path.Contains(ev.GetX(), ev.GetY()) ?? false)
+			if (_nativeLayerHost?.Path?.FillContains(new global::System.Numerics.Vector2(ev.GetX(), ev.GetY())) ?? false)
 			{
 				// We don't call the base method if NativeLayerHost.Path doesn't contain (X, Y).
 				// This is due to the way Android handles hit-testing with Canvas.ClipPath, where even if the ClipPath
@@ -504,7 +505,7 @@ namespace Microsoft.UI.Xaml
 
 		internal partial class ClippedRelativeLayout : RelativeLayout
 		{
-			private SKPath _path = new SKPath();
+			private IGeometry? _path;
 			private Path _androidPath = new Path();
 			private string _svgClipPath = "";
 
@@ -513,24 +514,23 @@ namespace Microsoft.UI.Xaml
 				SetWillNotDraw(false);
 			}
 
-			public SKPath Path
+			// Neutral clip geometry (was SKPath): the native clip is driven through the backend-agnostic IGeometry
+			// seam — SVG path data + fill rule for the Android clip path, FillContains for hit-testing.
+			public IGeometry? Path
 			{
 				get => _path;
 				set
 				{
-					var svgClipPath = value.ToSvgPathData();
+					var svgClipPath = value?.ToSvgPathData() ?? "";
 					if (_svgClipPath != svgClipPath)
 					{
 						_path = value;
 						_svgClipPath = svgClipPath;
 						_androidPath = PathParser.CreatePathFromPathData(_svgClipPath)!;
-						_androidPath.SetFillType(value.FillType switch
+						_androidPath.SetFillType((value?.FillRule ?? GeometryFillRule.NonZero) switch
 						{
-							SKPathFillType.Winding => APath.FillType.Winding!,
-							SKPathFillType.EvenOdd => APath.FillType.EvenOdd!,
-							SKPathFillType.InverseWinding => APath.FillType.InverseWinding!,
-							SKPathFillType.InverseEvenOdd => APath.FillType.InverseEvenOdd!,
-							_ => throw new ArgumentOutOfRangeException()
+							GeometryFillRule.EvenOdd => APath.FillType.EvenOdd!,
+							_ => APath.FillType.Winding!,
 						});
 						Invalidate();
 					}
