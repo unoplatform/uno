@@ -27,6 +27,9 @@ public interface INativeWindow
 	/// <summary>The display (DPI) scale of the window; a provider that sizes its swapchain/targets in physical pixels uses it. Defaults to 1.</summary>
 	float RasterizationScale => 1f;
 
+	/// <summary>A string surface identifier where the windowing system names its surface rather than using a numeric handle — the browser canvas element id for WASM. Null elsewhere (the numeric <see cref="Handle"/> suffices).</summary>
+	string? SurfaceId => null;
+
 	/// <summary>Raised when the window is resized; providers reconfigure their swapchain in response.</summary>
 	event EventHandler? Resized;
 }
