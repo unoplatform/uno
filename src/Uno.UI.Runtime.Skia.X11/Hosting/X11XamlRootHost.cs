@@ -438,12 +438,11 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		var webgpuMode = Environment.GetEnvironmentVariable("UNO_WEBGPU");
 		if (_renderer is null && webgpuMode is "neutral" or "1" or "true" or "swapchain")
 		{
-			// On-window WebGPU through the neutral pluggable pipeline: register the WebGPU provider (preferred)
-			// with a Skia software fallback, and let GraphicsRegistry negotiate the wgpu swapchain context.
+				// On-window WebGPU through the neutral pluggable pipeline. The backend providers (WebGPU preferred,
+				// Skia software fallback) are registered by the composition root (the app), not the host.
 			try
 			{
 				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-				GraphicsRegistry.Register(new IGraphicsProvider[] { new Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider(), new SkiaGraphicsProvider() });
 				_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, new[] { GraphicsContextKind.WebGpu, GraphicsContextKind.Software });
 			}
 			catch (Exception e)

@@ -45,6 +45,23 @@ namespace SkiaSharpExample
 			global::Uno.UI.Composition.Drawing.ManagedBackend.Register();
 #endif
 
+#if UNO_DRAWING_WEBGPU
+			// Composition root: when the WebGPU head is active, register WebGPU as the preferred backend in the
+			// neutral graphics pipeline (with a Skia software fallback when the Skia backend is present). Provider
+			// selection lives here, not in the host.
+			if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is "neutral" or "1" or "true" or "swapchain")
+			{
+				var providers = new System.Collections.Generic.List<global::Uno.UI.Composition.Drawing.IGraphicsProvider>
+				{
+					new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider(),
+				};
+#if UNO_DRAWING_SKIA
+				providers.Add(new global::Uno.UI.Composition.Drawing.SkiaGraphicsProvider());
+#endif
+				global::Uno.UI.Composition.Drawing.GraphicsRegistry.Register(providers);
+			}
+#endif
+
 			UnoPlatformHost? host = default;
 			var builder = UnoPlatformHostBuilder.Create()
 				.App(() => _app = new SamplesApp.App())
