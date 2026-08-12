@@ -478,7 +478,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			return await ReadAnimationJsonAsync(stream, stream.CanSeek ? stream.Length : null, cancellationToken);
 		}
 
-		protected static async Task<string> ReadAnimationJsonAsync(Stream sourceJson, long? knownLength, CancellationToken cancellationToken)
+		private static async Task<string> ReadAnimationJsonAsync(Stream sourceJson, long? knownLength, CancellationToken cancellationToken)
 		{
 			if (knownLength is > MaxAnimationJsonBytes)
 			{

@@ -2777,6 +2777,7 @@
 		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.SetProgress(System.Double progress)" reason="Removed legacy source-driven Lottie playback API (breaking changes for 7.0)" />
 		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Load()" reason="Removed legacy source-driven Lottie lifecycle API (breaking changes for 7.0)" />
 		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Unload()" reason="Removed legacy source-driven Lottie lifecycle API (breaking changes for 7.0)" />
+		  <Member fullName="Windows.Foundation.Size CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Measure(Windows.Foundation.Size availableSize)" reason="Removed legacy source-driven Lottie measure API (breaking changes for 7.0)" />
 		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Update(Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Removed legacy source-driven Lottie update API (breaking changes for 7.0)" />
 
 		  <!-- Android head aligned on UnoPlatformHostBuilder (paired with the removed types above). -->
