@@ -1,32 +1,22 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices.JavaScript;
-using SkiaSharp;
 using Uno.Foundation.Logging;
+using Uno.UI.Composition.Drawing;
 
 namespace Uno.UI.Runtime.Skia;
 
+// Neutral WebGL renderer: makes the emscripten WebGL context current and hands the backend a neutral
+// IGLRenderTarget (the canvas default framebuffer). The Skia backend builds its GRContext-GL against the
+// current context. No Skia/GR type lives here.
 internal partial class WebGlBrowserRenderer : IBrowserRenderer
 {
 	private record struct JsInfo(JSObject NativeInstance, uint FboId, int Stencil, int Samples, int Depth);
 
 	private readonly JsInfo _jsInfo;
 
-	private const int ResourceCacheBytes = 256 * 1024 * 1024; // 256 MB
-	private const SKColorType ColorType = SKColorType.Rgba8888;
-	private const GRSurfaceOrigin SurfaceOrigin = GRSurfaceOrigin.BottomLeft;
-
-	private readonly GRContext _context;
-
-	private GRBackendRenderTarget? _renderTarget;
-	private SKSurface? _surface;
-
 	private WebGlBrowserRenderer(JsInfo jsInfo)
 	{
 		_jsInfo = jsInfo;
-		var glInterface = GRGlInterface.Create();
-		_context = GRContext.CreateGl(glInterface);
-
-		_context.SetResourceCacheLimit(ResourceCacheBytes);
 	}
 
 	public static bool TryCreate([NotNullWhen(true)] out WebGlBrowserRenderer? renderer)
@@ -56,23 +46,23 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 
 	public void MakeCurrent() => NativeMethods.MakeCurrent(_jsInfo.NativeInstance);
 
-	public SKCanvas Resize(int width, int height)
-	{
-		var glInfo = new GRGlFramebufferInfo(_jsInfo.FboId, ColorType.ToGlSizedFormat());
+	public IRenderTarget Resize(int width, int height)
+		=> new WebGlRenderTarget(_jsInfo.FboId, _jsInfo.Samples, _jsInfo.Stencil, width, height);
 
-		_surface?.Dispose();
-		_surface = null;
-
-		_renderTarget?.Dispose();
-		_renderTarget = new GRBackendRenderTarget(width, height, _jsInfo.Samples, _jsInfo.Stencil, glInfo);
-
-		_surface = SKSurface.Create(_context, _renderTarget, SurfaceOrigin, ColorType);
-		return _surface.Canvas;
-	}
-
-	public void Flush() => _context.Flush();
+	public void Flush() { }
 
 	public bool NeedsForceResize() => false;
+
+	private sealed class WebGlRenderTarget(uint framebufferId, int sampleCount, int stencilBits, int width, int height) : IGLRenderTarget
+	{
+		public uint FramebufferId => framebufferId;
+		public int SampleCount => sampleCount;
+		public int StencilBits => stencilBits;
+		public int Width => width;
+		public int Height => height;
+		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
+		public void Dispose() { }
+	}
 
 	private static partial class NativeMethods
 	{
