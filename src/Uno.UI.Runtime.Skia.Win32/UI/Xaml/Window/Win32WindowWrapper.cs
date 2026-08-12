@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.Composition.Drawing;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -12,7 +13,6 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
@@ -58,7 +58,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private Win32Accessibility? _accessibility;
 	private bool _rendererDisposed;
 	private IDisposable? _backgroundDisposable;
-	private SKColor _background;
 	private bool _forcePaintOnNextEraseBkgndOrNcPaint = true;
 
 	private string? _iconPath;
@@ -129,14 +128,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 		else
 		{
-			_renderer = FeatureConfiguration.Rendering.UseVulkanOnWin32
-				? (IRenderer?)VulkanRenderer.TryCreateVulkanRenderer(_hwnd)
-					?? (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
-						? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
-						: new SoftwareRenderer(_hwnd))
-				: FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
-					? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
-					: new SoftwareRenderer(_hwnd);
+			// Skia GPU path is OpenGL (neutral IGLRenderTarget) with a software fallback; the modern GPU path is
+			// WebGPU (above). The former Vulkan-on-Skia renderer was removed — it was the last host-owned SKSurface;
+			// OpenGL covers Skia GPU rendering and keeps the host free of any Skia type.
+			_renderer = (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true)
+				? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
+				: new SoftwareRenderer(_hwnd);
 		}
 
 		InitializeRenderThread();
@@ -548,10 +545,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// race an in-flight present.
 		_renderThread?.Dispose();
 		_renderThread = null;
-		// Dispose the cached SKSurface before the renderer: on Vulkan it references GPU resources
-		// owned by _renderer (see Win32WindowWrapper.Rendering.Vulkan.cs).
-		_surface?.Dispose();
-		_surface = null;
+		// Dispose the cached render target before the renderer (it may reference renderer-owned resources).
+		_renderTarget?.Dispose();
+		_renderTarget = null;
 		_renderer.Dispose();
 		_rendererDisposed = true;
 		_backgroundDisposable?.Dispose();
@@ -784,24 +780,16 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			return;
 		}
 
-		var image = SKImage.FromEncodedData(iconPath);
-		if (image is null)
-		{
-			this.LogError()?.Error($"Couldn't load icon file [{iconPath}].");
-			return;
-		}
-		using var imageDisposable = new DisposableStruct<SKImage>(static image => image.Dispose(), image);
-
 		// Destroy existing icons before creating new ones
 		DestroyIcons();
 
 		// Create small icon (16px base) for titlebar and window list
 		var smallIconSize = GetScaledIconSize(16);
-		_smallIcon = CreateIconFromImage(image, smallIconSize);
+		_smallIcon = CreateIconFromFile(iconPath, smallIconSize);
 
 		// Create big icon (24px on Win10+, 32px on older) for taskbar and Alt+Tab
 		var bigIconSize = GetScaledIconSize(s_taskbarIconSize);
-		_bigIcon = CreateIconFromImage(image, bigIconSize);
+		_bigIcon = CreateIconFromFile(iconPath, bigIconSize);
 
 		if (_smallIcon != HICON.Null)
 		{
@@ -822,48 +810,48 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		return (int)(baseSize * scale);
 	}
 
-	private unsafe HICON CreateIconFromImage(SKImage source, int targetSize)
+	private unsafe HICON CreateIconFromFile(string iconPath, int targetSize)
 	{
-		// Scale the source image to the target size
-		using var scaledBitmap = new SKBitmap(targetSize, targetSize);
-		using var canvas = new SKCanvas(scaledBitmap);
-		canvas.Clear(SKColors.Transparent);
-
-		using var paint = new SKPaint
+		// Decode + scale through the neutral image-decoder seam (no Skia): the managed decoder resamples to the
+		// target size and returns BGRA (premultiplied), which is exactly the icon color bitmap format.
+		using var fileStream = File.OpenRead(iconPath);
+		if (!ImageDecoder.Current.TryDecode(fileStream, targetSize, targetSize, out var frames) || frames.Frames.Count == 0)
 		{
-			IsAntialias = true
-		};
+			this.LogError()?.Error($"Couldn't decode icon file [{iconPath}].");
+			return HICON.Null;
+		}
+		using var _framesDisposable = frames;
 
-		var destRect = new SKRect(0, 0, targetSize, targetSize);
-		var sampling = new SKSamplingOptions(SKCubicResampler.Mitchell);
-		canvas.DrawImage(source, destRect, sampling, paint);
+		var image = frames.Frames[0];
+		var w = image.PixelWidth;
+		var h = image.PixelHeight;
+		var bgra = new byte[w * h * 4];
+		image.CopyPixels(bgra);
 
-		var maskLength = targetSize * (targetSize + 7) / 8;
-		var imageSize = targetSize * targetSize * Marshal.SizeOf<uint>();
+		var maskLength = w * (h + 7) / 8;
+		var imageSize = w * h * Marshal.SizeOf<uint>();
 		var iconLength = Marshal.SizeOf<BITMAPINFOHEADER>() + imageSize + maskLength;
 		var presBits = stackalloc byte[iconLength];
 
 		var bmi = (BITMAPINFOHEADER*)presBits;
 		bmi->biSize = (uint)Marshal.SizeOf<BITMAPINFOHEADER>();
-		bmi->biWidth = targetSize;
-		bmi->biHeight = targetSize * 2; // the multiplication by 2 is unexplainable, it seems to draw only half the image without the multiplication
+		bmi->biWidth = w;
+		bmi->biHeight = h * 2; // color bitmap + AND mask stacked; the icon's biHeight is 2x the image height
 		bmi->biPlanes = 1;
 		bmi->biBitCount = 32;
 		bmi->biCompression = /* BI_RGB */ 0x0000;
 
-		// Write the pixels upside down into the bitmap buffer
-		var info = new SKImageInfo(targetSize, targetSize, SKColorType.Bgra8888);
-		using (var surface = SKSurface.Create(info))
+		// Write the BGRA pixels bottom-up (DIB origin is bottom-left) into the color bitmap.
+		var dst = presBits + Marshal.SizeOf<BITMAPINFOHEADER>();
+		var stride = w * 4;
+		for (int row = 0; row < h; row++)
 		{
-			var surfaceCanvas = surface.Canvas;
-			surfaceCanvas.Translate(0, targetSize);
-			surfaceCanvas.Scale(1, -1);
-			using var scaledImage = SKImage.FromBitmap(scaledBitmap);
-			surfaceCanvas.DrawImage(scaledImage, 0, 0, SKSamplingOptions.Default, null);
-			surface.Snapshot().ReadPixels(info, (IntPtr)(presBits + Marshal.SizeOf<BITMAPINFOHEADER>()));
+			var srcOffset = row * stride;
+			var dstOffset = (h - 1 - row) * stride;
+			Marshal.Copy(bgra, srcOffset, (IntPtr)(dst + dstOffset), stride);
 		}
 
-		// Write the mask
+		// Write the AND mask (fully opaque; alpha in the 32-bit color bitmap carries transparency).
 		new Span<byte>(presBits + iconLength - maskLength, maskLength).Fill(0xFF);
 
 		var hIcon = PInvoke.CreateIconFromResource(presBits, (uint)iconLength, true, 0x00030000);
@@ -930,7 +918,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	{
 		if (_window?.Background is Microsoft.UI.Xaml.Media.SolidColorBrush brush)
 		{
-			_background = new SKColor(brush.Color.AsUInt32());
+			_ = brush; // window background handled by the composition tree; nothing host-side to store
 		}
 		else if (_window?.Background is not null)
 		{

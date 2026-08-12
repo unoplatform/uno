@@ -27,7 +27,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using SkiaSharp;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -655,28 +654,29 @@ partial class Win32ClipboardExtension // to clipboard
 		}
 		else
 		{
-			// Unknown image format — decode via SkiaSharp and convert to CF_DIB
-			using var skBitmap = SKBitmap.Decode(bytes);
-			if (skBitmap is null)
+			// Unknown image format — decode via the neutral image-decoder seam (no Skia) and convert to CF_DIB.
+			if (!global::Uno.UI.Composition.Drawing.ImageDecoder.Current.TryDecode(new MemoryStream(bytes, writable: false), null, null, out var frames)
+				|| frames.Frames.Count == 0)
 			{
-				typeof(Win32ClipboardExtension).LogError()?.Error("SetBitmap: SkiaSharp failed to decode image.");
+				typeof(Win32ClipboardExtension).LogError()?.Error("SetBitmap: failed to decode image.");
 				return;
 			}
+			using var _framesDisposable = frames;
 
-			// Ensure BGRA8888 so pixel layout matches what CF_DIB BI_RGB 32bpp expects (BGRX, alpha ignored)
-			using var bgra = skBitmap.ColorType == SKColorType.Bgra8888
-				? null
-				: skBitmap.Copy(SKColorType.Bgra8888);
-			var src = bgra ?? skBitmap;
-
-			var width = src.Width;
-			var height = src.Height;
+			var img = frames.Frames[0];
+			var width = img.PixelWidth;
+			var height = img.PixelHeight;
 			var stride = width * 4;
+			// Neutral pixels are BGRA (matches CF_DIB BI_RGB 32bpp BGRX; alpha ignored by CF_DIB).
+			var srcBgra = new byte[stride * height];
+			img.CopyPixels(srcBgra);
+
 			var headerSize = Marshal.SizeOf<BITMAPINFOHEADER>();
 			var pixelDataSize = stride * height;
 			var dib = new byte[headerSize + pixelDataSize];
 
 			fixed (byte* pDib = dib)
+			fixed (byte* pixelSrc = srcBgra)
 			{
 				var header = (BITMAPINFOHEADER*)pDib;
 				header->biSize = (uint)headerSize;
@@ -687,8 +687,7 @@ partial class Win32ClipboardExtension // to clipboard
 				header->biCompression = 0; // BI_RGB
 				header->biSizeImage = (uint)pixelDataSize;
 
-				// SkiaSharp rows are top-down; CF_DIB with positive biHeight expects bottom-up
-				var pixelSrc = (byte*)src.GetPixels();
+				// Decoded rows are top-down; CF_DIB with positive biHeight expects bottom-up.
 				var pixelDst = pDib + headerSize;
 				for (var row = 0; row < height; row++)
 				{

@@ -6,13 +6,16 @@ using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.Graphics.OpenGL;
-using SkiaSharp;
 using Uno.Foundation.Logging;
+using Uno.UI.Composition.Drawing;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper
 {
+	// Neutral OpenGL renderer: owns the WGL context + SwapBuffers, and hands the backend a neutral
+	// IGLRenderTarget (default framebuffer + sample/stencil). The Skia backend builds its GRContext-GL
+	// against the current context — no Skia/GR type lives here.
 	private class GlRenderer : IRenderer
 	{
 		[UnmanagedFunctionPointer(CallingConvention.Winapi)]
@@ -21,21 +24,16 @@ internal partial class Win32WindowWrapper
 		private readonly HWND _hwnd;
 		private readonly HDC _hdc;
 		private HGLRC _glContext; // recreated when window is extended into titlebar
-		private readonly GRGlInterface _grGlInterface;
-		private GRContext _grContext; // recreated when window is extended into titlebar
-		private GRBackendRenderTarget? _renderTarget; // recreated on size updates
 		private Win32Helper.WglCurrentContextDisposable? _paintDisposable;
 		// Non-null only when honoring a fixed FrameRate (SetFrameRateAsScreenRefreshRate = false);
 		// otherwise wglSwapInterval(1) blocks SwapBuffers at the display refresh and paces the loop.
 		private readonly Win32RenderPacer? _pacer;
 
-		private GlRenderer(HWND hwnd, HDC hdc, HGLRC glContext, GRGlInterface grGlInterface, GRContext grContext, Win32RenderPacer? pacer)
+		private GlRenderer(HWND hwnd, HDC hdc, HGLRC glContext, Win32RenderPacer? pacer)
 		{
 			_hwnd = hwnd;
 			_hdc = hdc;
 			_glContext = glContext;
-			_grGlInterface = grGlInterface;
-			_grContext = grContext;
 			_pacer = pacer;
 		}
 
@@ -45,7 +43,7 @@ internal partial class Win32WindowWrapper
 			if (hdc == IntPtr.Zero)
 			{
 				typeof(GlRenderer).LogError()?.Error($"{nameof(PInvoke.GetDC)} failed: {Win32Helper.GetErrorMessage()}");
-				ReleaseGlContext(hwnd, hdc, HGLRC.Null, null, null, null);
+				ReleaseGlContext(hwnd, hdc, HGLRC.Null);
 				return null;
 			}
 
@@ -70,7 +68,7 @@ internal partial class Win32WindowWrapper
 			if (pixelFormat == 0)
 			{
 				typeof(GlRenderer).LogError()?.Error($"{nameof(PInvoke.ChoosePixelFormat)} failed: {Win32Helper.GetErrorMessage()}");
-				ReleaseGlContext(hwnd, hdc, HGLRC.Null, null, null, null);
+				ReleaseGlContext(hwnd, hdc, HGLRC.Null);
 				return null;
 			}
 
@@ -87,7 +85,7 @@ internal partial class Win32WindowWrapper
 			if (!PInvoke.SetPixelFormat(hdc, pixelFormat, pfd))
 			{
 				typeof(GlRenderer).LogError()?.Error($"{nameof(PInvoke.SetPixelFormat)} failed: {Win32Helper.GetErrorMessage()}");
-				ReleaseGlContext(hwnd, hdc, HGLRC.Null, null, null, null);
+				ReleaseGlContext(hwnd, hdc, HGLRC.Null);
 				return null;
 			}
 
@@ -97,7 +95,7 @@ internal partial class Win32WindowWrapper
 			if (glContext == HGLRC.Null)
 			{
 				typeof(GlRenderer).LogError()?.Error($"{nameof(PInvoke.wglCreateContext)} failed: {Win32Helper.GetErrorMessage()}");
-				ReleaseGlContext(hwnd, hdc, HGLRC.Null, null, null, null);
+				ReleaseGlContext(hwnd, hdc, HGLRC.Null);
 				return null;
 			}
 
@@ -117,22 +115,6 @@ internal partial class Win32WindowWrapper
 			// the timer pace the loop instead.
 			SetSwapInterval(followRefreshRate ? 1 : 0);
 
-			var grGlInterface = GRGlInterface.Create();
-
-			if (grGlInterface is null)
-			{
-				typeof(GlRenderer).LogError()?.Error("OpenGL is not supported in this system (Cannot create GRGlInterface)");
-				ReleaseGlContext(hwnd, hdc, glContext, null, null, null);
-				return null;
-			}
-
-			if (GRContext.CreateGl(grGlInterface) is not { } grContext)
-			{
-				typeof(GlRenderer).LogError()?.Error("OpenGL is not supported in this system (failed to create GRContext)");
-				ReleaseGlContext(hwnd, hdc, glContext, grGlInterface, null, null);
-				return null;
-			}
-
 			// Detach the GL context from the calling thread so the render thread can make it
 			// current later (WglCurrentContextDisposable doesn't restore to "no context").
 			if (!PInvoke.wglMakeCurrent(default, HGLRC.Null))
@@ -143,7 +125,7 @@ internal partial class Win32WindowWrapper
 			var pacer = followRefreshRate
 				? null
 				: new Win32RenderPacer(FeatureConfiguration.CompositionTarget.FrameRate, followRefreshRate: false);
-			return new GlRenderer(hwnd, hdc, glContext, grGlInterface, grContext, pacer);
+			return new GlRenderer(hwnd, hdc, glContext, pacer);
 		}
 
 		// Sets the GL swap interval: 1 blocks SwapBuffers until the next display refresh (vsync),
@@ -164,12 +146,8 @@ internal partial class Win32WindowWrapper
 			}
 		}
 
-		private static void ReleaseGlContext(HWND hwnd, HDC hdc, HGLRC glContext, GRGlInterface? grGlInterface, GRContext? grContext, GRBackendRenderTarget? renderTarget)
+		private static void ReleaseGlContext(HWND hwnd, HDC hdc, HGLRC glContext)
 		{
-			renderTarget?.Dispose();
-			grContext?.Dispose();
-			grGlInterface?.Dispose();
-
 			if (glContext != HGLRC.Null)
 			{
 				var success = PInvoke.wglDeleteContext(glContext);
@@ -196,18 +174,16 @@ internal partial class Win32WindowWrapper
 			_paintDisposable = null;
 		}
 
-		SKSurface IRenderer.UpdateSize(int width, int height)
+		IRenderTarget IRenderer.UpdateSize(int width, int height)
 		{
-			using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(_hdc, _glContext);
-
+			// The GL context is already current (StartPaint). Read the default framebuffer + its sample/stencil
+			// counts and hand a neutral target; the Skia backend builds GRContext-GL against the current context.
 			int framebuffer = default, stencil = default, samples = default;
 			PInvoke.glGetIntegerv(/* GL_FRAMEBUFFER_BINDING */ 0x8CA6, ref framebuffer);
 			PInvoke.glGetIntegerv(/* GL_STENCIL_BITS */ 0x0D57, ref stencil);
 			PInvoke.glGetIntegerv(/* GL_SAMPLES */ 0x80A9, ref samples);
 
-			_renderTarget?.Dispose();
-			_renderTarget = new GRBackendRenderTarget(width, height, samples, stencil, new GRGlFramebufferInfo((uint)framebuffer, SKColorType.Rgba8888.ToGlSizedFormat()));
-			return SKSurface.Create(_grContext, _renderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888); // BottomLeft to match GL's origin
+			return new Win32GLRenderTarget((uint)framebuffer, samples, stencil, Math.Max(1, width), Math.Max(1, height));
 		}
 
 		void IRenderer.CopyPixels(int width, int height)
@@ -227,15 +203,12 @@ internal partial class Win32WindowWrapper
 		void IDisposable.Dispose()
 		{
 			_pacer?.Dispose();
-			ReleaseGlContext(_hwnd, _hdc, _glContext, _grGlInterface, _grContext, _renderTarget);
+			ReleaseGlContext(_hwnd, _hdc, _glContext);
 		}
 
 		void IRenderer.Reinitialize()
 		{
-			ReleaseGlContext(_hwnd, new HDC(IntPtr.Zero), _glContext, null, _grContext, _renderTarget);
-			// ReleaseGlContext disposed the render target; null it so the next UpdateSize (which
-			// recreates it) doesn't dispose the same instance again.
-			_renderTarget = null;
+			ReleaseGlContext(_hwnd, new HDC(IntPtr.Zero), _glContext);
 			_glContext = PInvoke.wglCreateContext(_hdc);
 			if (_glContext == HGLRC.Null)
 			{
@@ -244,16 +217,22 @@ internal partial class Win32WindowWrapper
 			}
 			using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(_hdc, _glContext);
 			SetSwapInterval(_pacer is null ? 1 : 0);
-			if (GRContext.CreateGl(_grGlInterface) is not { } grContext)
-			{
-				typeof(GlRenderer).LogError()?.Error($"{nameof(GRContext)}.{nameof(GRContext.CreateGl)} failed during {nameof(IRenderer.Reinitialize)}.");
-				return;
-			}
-			_grContext = grContext;
 		}
 
 		// Following the refresh: swap interval 1 paces SwapBuffers, nothing to retarget. Fixed
 		// FrameRate uses a static timer rate. UpdateRefreshRate only fires in the former case.
 		void IRenderer.UpdateRefreshRate(double fps) { }
+
+		// BottomLeft origin (GL) is handled by the backend for an IGLRenderTarget.
+		private sealed class Win32GLRenderTarget(uint framebufferId, int sampleCount, int stencilBits, int width, int height) : IGLRenderTarget
+		{
+			public uint FramebufferId => framebufferId;
+			public int SampleCount => sampleCount;
+			public int StencilBits => stencilBits;
+			public int Width => width;
+			public int Height => height;
+			public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
+			public void Dispose() { }
+		}
 	}
 }

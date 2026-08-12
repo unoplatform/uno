@@ -1,8 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
-using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Composition.Drawing;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
@@ -31,7 +31,7 @@ internal partial class Win32WindowWrapper
 		public void StartPaint() { }
 		public void EndPaint() { }
 
-		unsafe SKSurface IRenderer.UpdateSize(int width, int height)
+		unsafe IRenderTarget IRenderer.UpdateSize(int width, int height)
 		{
 			if (_hBitmap != HBITMAP.Null)
 			{
@@ -58,7 +58,18 @@ internal partial class Win32WindowWrapper
 				throw new InvalidOperationException($"{nameof(PInvoke.CreateDIBSection)} failed: {Win32Helper.GetErrorMessage()}");
 			}
 
-			return SKSurface.Create(new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul), (IntPtr)bits);
+			// Hand the CPU framebuffer to the backend as a neutral target; the Skia backend wraps it as its surface.
+			return new Win32SoftwareRenderTarget((nint)bits, width * 4, width, height);
+		}
+
+		private sealed class Win32SoftwareRenderTarget(nint pixels, int rowBytes, int width, int height) : ISoftwareRenderTarget
+		{
+			public nint Pixels => pixels;
+			public int RowBytes => rowBytes;
+			public int Width => width;
+			public int Height => height;
+			public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Bgra8888;
+			public void Dispose() { }
 		}
 
 		void IRenderer.CopyPixels(int width, int height)
