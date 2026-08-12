@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Graphics.Canvas;
 
-internal interface ICanvasResourceCreator
+public interface ICanvasResourceCreator
 {
 	CanvasDevice Device { get; }
 }
