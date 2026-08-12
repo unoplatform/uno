@@ -1,0 +1,90 @@
+#nullable enable
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+
+namespace Uno.UI.Composition.Drawing;
+
+/// <summary>
+/// SkiaSharp-free <see cref="IImageDecoder"/>: decodes via <see cref="ManagedImageDecoder"/> and wraps the result
+/// as managed, byte[]-backed <see cref="IImage"/>/<see cref="IImageFrames"/> — no Skia object is ever created. Used
+/// when <see cref="DrawingBackendOptions.UseManagedImageDecoder"/> is set so an image-bearing app can run with no
+/// native libSkiaSharp. Formats the managed decoder can't handle return false (there is no Skia fallback here).
+/// </summary>
+public sealed class ManagedImageDecoderBackend : IImageDecoder
+{
+	public bool TryDecode(Stream stream, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out IImageFrames? frames)
+	{
+		var bytes = ReadAllBytes(stream);
+		if (ManagedImageDecoder.TryDecode(bytes, targetWidth, targetHeight, out var decoded))
+		{
+			var images = new IImage[decoded.Frames.Length];
+			for (var i = 0; i < images.Length; i++)
+			{
+				images[i] = new ManagedImage(decoded.Width, decoded.Height, decoded.Frames[i]);
+			}
+
+			frames = new ManagedImageFrames(images, decoded.DurationsMs);
+			return true;
+		}
+
+		frames = null;
+		return false;
+	}
+
+	public IImage CreateImage(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
+		=> new ManagedImage(pixelWidth, pixelHeight, bgraPremul.ToArray());
+
+	public IImageFrames CreateFrames(IImage image)
+		=> new ManagedImageFrames(new[] { image }, new[] { 0 });
+
+	private static byte[] ReadAllBytes(Stream stream)
+	{
+		if (stream is MemoryStream ms)
+		{
+			return ms.ToArray();
+		}
+
+		using var buffer = new MemoryStream();
+		stream.CopyTo(buffer);
+		return buffer.ToArray();
+	}
+}
+
+/// <summary>A managed, byte[]-backed <see cref="IImage"/>. Pixels are BGRA8888 premultiplied, tightly packed.</summary>
+internal sealed class ManagedImage : IImage
+{
+	private readonly byte[] _bgraPremul;
+
+	public ManagedImage(int pixelWidth, int pixelHeight, byte[] bgraPremul)
+	{
+		PixelWidth = pixelWidth;
+		PixelHeight = pixelHeight;
+		_bgraPremul = bgraPremul;
+	}
+
+	public int PixelWidth { get; }
+
+	public int PixelHeight { get; }
+
+	public void CopyPixels(Span<byte> destination)
+		=> _bgraPremul.AsSpan(0, Math.Min(_bgraPremul.Length, destination.Length)).CopyTo(destination);
+}
+
+/// <summary>A managed <see cref="IImageFrames"/> backed by <see cref="ManagedImage"/>s (nothing native to release).</summary>
+internal sealed class ManagedImageFrames : IImageFrames
+{
+	public ManagedImageFrames(IReadOnlyList<IImage> frames, IReadOnlyList<int> durationsMs)
+	{
+		Frames = frames;
+		DurationsMs = durationsMs;
+	}
+
+	public IReadOnlyList<IImage> Frames { get; }
+
+	public IReadOnlyList<int> DurationsMs { get; }
+
+	public void Dispose() { }
+}
