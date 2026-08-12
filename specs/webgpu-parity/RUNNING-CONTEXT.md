@@ -5,7 +5,20 @@ compaction keeps dropping hard-won state; this doc is written to survive it, and
 **full transcript** (`~/.claude/projects/-workspace-uno/*.jsonl`, ~469 human turns) because the memory files are a
 lossy summary. **Update it as we go.** Complements the memory files (see "Pointers").
 
-Last updated: 2026-08-10.
+Last updated: 2026-08-12.
+
+> **2026-08-12 — WASM WebGPU verified post-merge (PASS).** After the `feature/breakingchanges` merge,
+> the neutral WebGPU backend renders the full SamplesApp UI on the WebAssembly head. Headless proof via
+> the built-in `UNO_WEBGPU_READBACK=1` offscreen readback: full opaque frame, luminance 26..253 (real UI,
+> not a flat clear), varying per frame, with an image texture uploaded+drawn. Root cause of the earlier
+> "blank" symptom: on WASM the WebGPU device imports **async**, so Skia records the first frames before
+> `CompositionTarget.Renderer` is swapped; the backend-typed retained recordings (`_lastRenderedFrame` +
+> per-visual `_content`/`_childrenContent`) are then dropped by the WebGPU recorder/present guards
+> (`is not WebGpuRenderData`). Fix `9ede62cca4`: the `Renderer` setter invalidates all recordings +
+> recursively re-records the tree under the new backend. Evidence: `evidence/wasm-webgpu-verification.md`.
+> Visible on-canvas compositing is unverifiable under headless SwiftShader (needs real-GPU browser); the
+> offscreen render — the pre-merge bar — is intact. NOTE: `WebGpuTrace.Dump()` is only called by the Smoke
+> test, never the head, so "no DRAW/PASS lines in the head console" ≠ "no draws" — use the readback.
 
 ---
 
