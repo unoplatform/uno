@@ -2305,7 +2305,7 @@
 		  <Member fullName="Uno.Extensions.Vector2Extensions" reason="Removed redundant Uno.Extensions.Vector2Extensions (BC72, breaking changes for 7.0)" />
 
 		  <!-- DependencyObject as class (BC26): DependencyObjectStore folded into DependencyObject and IDependencyObjectStoreProvider removed. Both were Uno-only, not part of the WinUI surface. -->
-		  <Member fullName="Microsoft\.UI\.Xaml\.DependencyObjectStore.*" reason="DependencyObject as class: store dissolved into DependencyObject" isRegex="true" />
+		  <Member fullName="^Microsoft\.UI\.Xaml\.DependencyObjectStore([/+].+)?$" reason="DependencyObject as class: store dissolved into DependencyObject" isRegex="true" />
 		  <Member fullName="Microsoft.UI.Xaml.IDependencyObjectStoreProvider" reason="DependencyObject as class: provider indirection removed" />
 
 		  <!-- Microsoft.UI.Input.PointerPoint family relocated from Uno.UI to Uno.UWP (BC41, breaking changes for 7.0); the types read as removed from their former assembly. -->
@@ -2417,7 +2417,7 @@
 		  <!-- END WinUI sync (Category D): enum constant removals -->
 
 		  <!-- DependencyObject as class (BC26): fields of the removed DependencyObjectStore (incl. its nested TraceProvider). -->
-		  <Member fullName=".+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
+		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+$" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
 
 		  <!-- Duration.TimeSpan public field removed; WinUI exposes TimeSpan as a get-only property (paired accessor is emitted by the property, not a field). -->
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Made Duration.TimeSpan read-only to match WinUI (breaking changes for 7.0, uno#8339)" />
@@ -2670,8 +2670,8 @@
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.Animation\.ColorKeyFrameCollection(::|\.)(Size|Count|IsReadOnly|Item)\(.*\)" reason="Removed ColorKeyFrameCollection binary-compat shadow members; provided by base DependencyObjectCollection&lt;T&gt; (BC67, breaking changes for 7.0)" isRegex="true" />
 
 		  <!-- DependencyObject as class (BC26): properties of the removed DependencyObjectStore / IDependencyObjectStoreProvider. -->
-		  <Member fullName=".+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
-		  <Member fullName=".+ Microsoft\.UI\.Xaml\.IDependencyObjectStoreProvider(::|\.).+" reason="DependencyObject as class: IDependencyObjectStoreProvider removed" isRegex="true" />
+		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+$" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
+		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.IDependencyObjectStoreProvider(::|\.).+$" reason="DependencyObject as class: IDependencyObjectStoreProvider removed" isRegex="true" />
 
 		  <!-- WindowActivatedEventArgs.WindowActivationState retyped from the Uno-only Windows.UI.Core.CoreWindowActivationState to the WinUI Microsoft.UI.Xaml.WindowActivationState; the old-typed property reads as removed (getter accessor paired in <Methods> below). -->
 		  <Member fullName="Windows.UI.Core.CoreWindowActivationState Microsoft.UI.Xaml.WindowActivatedEventArgs::WindowActivationState()" reason="Retyped WindowActivationState to Microsoft.UI.Xaml.WindowActivationState (BC13, breaking changes for 7.0)" />
@@ -3245,8 +3245,8 @@
 		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.FrameworkElement.AdjustArrange(Windows.Foundation.Size finalSize)" reason="Removed no-op AdjustArrange (BC70, breaking changes for 7.0)" />
 
 		  <!-- DependencyObject as class (BC26): methods of the removed DependencyObjectStore / IDependencyObjectStoreProvider. -->
-		  <Member fullName=".+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
-		  <Member fullName=".+ Microsoft\.UI\.Xaml\.IDependencyObjectStoreProvider(::|\.).+" reason="DependencyObject as class: IDependencyObjectStoreProvider removed" isRegex="true" />
+		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+$" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
+		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.IDependencyObjectStoreProvider(::|\.).+$" reason="DependencyObject as class: IDependencyObjectStoreProvider removed" isRegex="true" />
 
 		  <!-- WindowActivatedEventArgs.WindowActivationState getter accessor retyped from the Uno-only Windows.UI.Core.CoreWindowActivationState to the WinUI Microsoft.UI.Xaml.WindowActivationState; the old-typed getter reads as removed (property paired in <Properties> above). -->
 		  <Member fullName="Windows.UI.Core.CoreWindowActivationState Microsoft.UI.Xaml.WindowActivatedEventArgs.get_WindowActivationState()" reason="Retyped WindowActivationState to Microsoft.UI.Xaml.WindowActivationState (BC13, breaking changes for 7.0)" />
