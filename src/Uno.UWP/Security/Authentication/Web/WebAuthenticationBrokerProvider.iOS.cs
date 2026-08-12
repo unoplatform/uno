@@ -30,36 +30,11 @@ namespace Uno.AuthenticationBroker
 		{
 			var tcs = new TaskCompletionSource<WebAuthenticationResult>();
 
+			// TrySetResult: the session can invoke the callback more than once (e.g. a late
+			// completion racing the Cancel() below), and throwing from this native
+			// trampoline is an unrecoverable NSException.
 			void AuthSessionCallback(NSUrl? callbackUrl, NSError? error)
-			{
-				if (error != null)
-				{
-					if ((error.Domain == asWebAuthenticationSessionErrorDomain &&
-						error.Code == asWebAuthenticationSessionErrorCodeCanceledLogin)
-#if __IOS__
-						|| (error.Domain == sfAuthenticationErrorDomain &&
-							error.Code == sfAuthenticationErrorCanceledLogin)
-#endif
-						)
-					{
-						tcs.SetResult(new WebAuthenticationResult(
-							null,
-							0,
-							WebAuthenticationStatus.UserCancel));
-					}
-					tcs.SetResult(new WebAuthenticationResult(
-						error.ToString(),
-						0,
-						WebAuthenticationStatus.ErrorHttp));
-				}
-				else
-				{
-					tcs.SetResult(new WebAuthenticationResult(
-						callbackUrl?.AbsoluteString,
-						0,
-						WebAuthenticationStatus.Success));
-				}
-			}
+				=> tcs.TrySetResult(CreateResult(callbackUrl, error));
 
 			IDisposable? was = default;
 
@@ -167,6 +142,39 @@ namespace Uno.AuthenticationBroker
 				Cancel();
 			}
 		}
+
+		internal static WebAuthenticationResult CreateResult(NSUrl? callbackUrl, NSError? error)
+		{
+			if (error is null)
+			{
+				return new WebAuthenticationResult(
+					callbackUrl?.AbsoluteString,
+					0,
+					WebAuthenticationStatus.Success);
+			}
+
+			if (IsUserCanceledLogin(error))
+			{
+				return new WebAuthenticationResult(
+					null,
+					0,
+					WebAuthenticationStatus.UserCancel);
+			}
+
+			return new WebAuthenticationResult(
+				error.ToString(),
+				0,
+				WebAuthenticationStatus.ErrorHttp);
+		}
+
+		private static bool IsUserCanceledLogin(NSError error)
+			=> (error.Domain == asWebAuthenticationSessionErrorDomain &&
+				error.Code == asWebAuthenticationSessionErrorCodeCanceledLogin)
+#if __IOS__
+				|| (error.Domain == sfAuthenticationErrorDomain &&
+					error.Code == sfAuthenticationErrorCanceledLogin)
+#endif
+				;
 
 		private class PresentationContextProviderToSharedKeyWindow : NSObject, IASWebAuthenticationPresentationContextProviding
 		{
