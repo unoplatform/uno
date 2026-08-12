@@ -16,8 +16,8 @@ internal partial class Win32WindowWrapper
 
 	/// <summary>EXPERIMENTAL opt-in (Win32RenderingBackend.WebGpu). Set before the window is created.</summary>
 	internal static bool PreferWebGpu;
-	// Non-null when the WebGPU backend is active: renders through the shared swapchain context instead of an SKSurface.
-	private global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext? _webgpuContext;
+	// Non-null when a GPU backend context (e.g. WebGPU) is active: renders through the neutral context instead of an SKSurface.
+	private IGraphicsContext? _webgpuContext;
 
 	public event EventHandler<IGeometry>? RenderingNegativePathReevaluated; // not necessarily changed
 
@@ -63,15 +63,11 @@ internal partial class Win32WindowWrapper
 
 		if (_webgpuContext is { } webgpu)
 		{
-			// WebGPU renders into the HWND swapchain (no SKSurface). Present happens in Win32WebGpuRenderer.CopyPixels.
-			// Bracket the profiler frame here (record+replay); FrameEnd is in the swapchain Present (CopyPixels).
-			var prof = webgpu.Device.Profiler;
-			prof?.FrameStart();
-			var tReq = global::Uno.UI.Composition.WebGpu.WebGpuProfiler.T();
+			// GPU backend renders into the HWND swapchain through the neutral context (no SKSurface, no WebGPU type
+			// here). Present happens in Win32WebGpuRenderer.CopyPixels; profiler bracketing lives in the backend.
 			var webgpuClip = ct.OnNativePlatformFrameRequested(
 				null,
 				size => webgpu.AcquireRenderTarget((int)size.Width, (int)size.Height));
-			prof?.FrameRequested(tReq);
 			if (!PInvoke.GetClientRect(_hwnd, out RECT webgpuRect))
 			{
 				this.LogError()?.Error($"{nameof(PInvoke.GetClientRect)} failed: {Win32Helper.GetErrorMessage()}");
@@ -110,9 +106,9 @@ internal partial class Win32WindowWrapper
 	/// </summary>
 	private sealed class Win32WebGpuRenderer : IRenderer
 	{
-		private readonly global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext _context;
+		private readonly IGraphicsContext _context;
 
-		public Win32WebGpuRenderer(global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext context) => _context = context;
+		public Win32WebGpuRenderer(IGraphicsContext context) => _context = context;
 
 		public void StartPaint() { }
 		public void EndPaint() { }

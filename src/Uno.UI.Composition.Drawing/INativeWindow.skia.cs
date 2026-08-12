@@ -24,6 +24,9 @@ public interface INativeWindow
 
 	int Height { get; }
 
+	/// <summary>The display (DPI) scale of the window; a provider that sizes its swapchain/targets in physical pixels uses it. Defaults to 1.</summary>
+	float RasterizationScale => 1f;
+
 	/// <summary>Raised when the window is resized; providers reconfigure their swapchain in response.</summary>
 	event EventHandler? Resized;
 }

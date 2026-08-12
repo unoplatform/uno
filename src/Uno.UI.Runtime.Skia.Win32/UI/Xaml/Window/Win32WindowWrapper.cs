@@ -107,24 +107,16 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		var webgpuEnv = Environment.GetEnvironmentVariable("UNO_WEBGPU");
 		if (PreferWebGpu || webgpuEnv is "1" or "true" or "swapchain")
 		{
-			// EXPERIMENTAL: WebGPU on an HWND swapchain via the neutral backend. Renders through the shared
-			// WebGpuSwapChainContext (same code path validated on X11); presents via wgpuSurfacePresent in
-			// Win32WebGpuRenderer.CopyPixels. Not runtime-validated on Linux CI — needs a real Windows GPU.
-			// Give the backend the DPI scale BEFORE it creates the device, so its MSAA default matches the reference
-			// branch (DPI-aware: 1x at >=200%). Set once at bring-up; a later DPI change is rare and re-picks on the
-			// next device create.
-			global::Uno.UI.Composition.WebGpu.WebGpuDevice.RasterizationScale = (float)(RasterizationScale == 0 ? 1 : RasterizationScale);
-			var context = new global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext(
-				global::Uno.WebGpu.Native.WGPUTextureFormat.BGRA8Unorm,
-				inst => global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext.CreateHwndSurface(inst, Win32Helper.GetModuleHInstance(), _hwnd));
-			_webgpuContext = context;
-			// Pair the WebGPU renderer with the WebGPU drawing factory so images, gradient shaders, color glyphs,
-			// nine-slice, SVG and RenderTargetBitmap are GPU-resident WebGPU resources (not Skia objects the WebGPU
-			// recorder drops). Geometry/decode still delegate to the previous (Skia) factory.
-			global::Uno.UI.Composition.Drawing.DrawingFactory.Register(
-				new global::Uno.UI.Composition.WebGpu.WebGpuDrawingFactory(context.Device, global::Uno.UI.Composition.Drawing.DrawingFactory.Current));
-			Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = new global::Uno.UI.Composition.WebGpu.WebGpuRenderer(context.Device);
-			_renderer = new Win32WebGpuRenderer(context);
+			// EXPERIMENTAL: WebGPU on an HWND swapchain. The host references no WebGPU type — it hands the neutral
+			// window (HWND/HINSTANCE + DPI scale) to the pluggable pipeline; the app-registered WebGPU provider
+			// builds the surface + device and mints the (factory, renderer) pair. Present is in Win32WebGpuRenderer.
+			// Not runtime-validated on Linux CI — needs a real Windows GPU.
+			var scale = (float)(RasterizationScale == 0 ? 1 : RasterizationScale);
+			var nativeWindow = new Win32GraphicsNativeWindow(_hwnd, Win32Helper.GetModuleHInstance(), 0, 0, scale);
+			var init = GraphicsRegistry.Initialize(nativeWindow, new[] { GraphicsContextKind.WebGpu });
+			_webgpuContext = init.Context;
+			CompositionTarget.Renderer = init.Renderer;
+			_renderer = new Win32WebGpuRenderer(init.Context);
 		}
 		else
 		{
