@@ -648,8 +648,8 @@ namespace Microsoft.UI.Xaml
 
 					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
-						var name = (SelfWeakReference.Target as IFrameworkElement)?.Name ?? SelfWeakReference.Target?.GetType().Name;
-						var hashCode = SelfWeakReference.Target?.GetHashCode();
+						var name = (this as IFrameworkElement)?.Name ?? GetType().Name;
+						var hashCode = GetHashCode();
 
 						this.Log().Debug(
 							$"SetValue on [{name}/{hashCode:X8}] for [{property.Name}] to [{newValue}] (req:{value} reqp:{precedence} p:{previousValue} pp:{previousPrecedence} np:{newPrecedence})"
@@ -941,7 +941,7 @@ namespace Microsoft.UI.Xaml
 			if (FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite)
 			{
 				var isFrameworkElement = _originalObjectType.Is(typeof(FrameworkElement));
-				var isMixinFrameworkElement = SelfWeakReference.Target is IFrameworkElement && !isFrameworkElement;
+				var isMixinFrameworkElement = this is IFrameworkElement && !isFrameworkElement;
 
 				if (
 					!_originalObjectType.Is(property.OwnerType)
