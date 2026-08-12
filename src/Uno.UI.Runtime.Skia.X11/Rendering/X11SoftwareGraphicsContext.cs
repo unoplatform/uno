@@ -127,11 +127,8 @@ internal static class X11GraphicsContextFactory
 				=> new X11OpenGLGraphicsContext(gl.X11Window),
 			// EGL/GLES works on a plain window (no GLX visual needed); returns null → falls to software if EGL is unavailable.
 			GraphicsContextKind.OpenGLES when window is X11GraphicsNativeWindow gles => new X11EGLGraphicsContext(gles.X11Window),
-			// WebGPU on-window via a wgpu Xlib swapchain (throws if WSI is unavailable → negotiation falls through).
-			GraphicsContextKind.WebGpu when window is X11GraphicsNativeWindow gpu
-				=> new global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext(
-					global::Uno.WebGpu.Native.WGPUTextureFormat.BGRA8Unorm,
-					inst => global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext.CreateXlibSurface(inst, gpu.X11Window.Display, (ulong)gpu.X11Window.Window)),
+			// WebGPU is built by the WebGpuGraphicsProvider directly from the neutral INativeWindow (X11 handles),
+			// so the host references no WebGPU type here.
 			GraphicsContextKind.Software => new X11SoftwareGraphicsContext(window),
 			_ => null,
 		};

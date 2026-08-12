@@ -96,10 +96,9 @@ public static class GraphicsRegistry
 				"list (e.g. new[] { new SkiaGraphicsProvider() }) during app initialization.");
 		}
 
-		var factory = ContextFactory
-			?? throw new InvalidOperationException(
-				"No GraphicsRegistry.ContextFactory set. The Uno graphics layer must install the concrete " +
-				"context factory before Initialize is called.");
+		// The host's context factory builds host-specific contexts (GL/EGL/software for the Skia backend). It's
+		// optional: a backend that self-creates its context from the neutral window (WebGPU) needs no factory.
+		var factory = ContextFactory;
 
 		var attempts = new StringBuilder();
 		foreach (var backend in backends)
@@ -115,7 +114,10 @@ public static class GraphicsRegistry
 				IGraphicsContext? context = null;
 				try
 				{
-					context = factory(kind, window, backend.Requirements);
+					// Prefer a backend that builds its own surface from the neutral window (no host→backend coupling);
+					// otherwise ask the host's context factory (Skia's host-specific GL/software contexts).
+					context = backend.TryCreateContext(kind, window)
+						?? (factory is null ? null : factory(kind, window, backend.Requirements));
 				}
 				catch (Exception e)
 				{
