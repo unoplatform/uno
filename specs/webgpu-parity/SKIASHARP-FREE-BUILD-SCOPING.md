@@ -121,3 +121,50 @@ native lib" into "builds without the managed assembly" for one head — the real
 Estimated effort for the first slice: Phase A ~1–2 focused sessions (startup/renderer indirection + keep Skia default
 green), Phase B/X11 ~1 session (property + file guards + managed-engine defaults + CI assert). Clipboard-image and
 BitmapEncoder guarded (not implemented) in this slice.
+
+---
+
+## 7. Progress — Phase A DONE (framework decoupled + app-level flags), runtime-validated
+
+Decision taken (user): **explicit app registration** — Uno.UI is backend-agnostic and packaged once; the app/head
+registers a backend under app-level build flags. Implemented + validated headless on Linux/X11 (commit follows §6).
+
+Done:
+- **Uno.UI decoupled** from the Skia backend assembly:
+  - `Application.StartPartial` no longer calls `SkiaBackend.Register()` (the app entry does).
+  - `CompositionTarget.Renderer` default now resolves via the neutral `DrawingRegistration.DefaultRenderer`
+    (set by `SkiaBackend.Register`) instead of `new SkiaRenderer()`. Uno.UI references no backend type.
+  - Dropped the `SkiaBackend` ProjectReference from `Uno.UI.Skia.csproj`.
+- **New neutral pieces**: `DrawingRegistration.DefaultRenderer` (Drawing seam); `ManagedBackend.Register()`
+  (managed factory + decoder + font provider) for the SkiaSharp-free app path; `DrawingFactory.RegisterDefault`
+  (register-if-absent).
+- **Module-init fix (the key runtime enabler)**: `SkiaDrawingFactory`'s `[ModuleInitializer]` now uses
+  `RegisterDefault`, so even though the Skia assembly is still in the closure (hosts reference it), its
+  self-registration no longer clobbers an explicit `ManagedBackend.Register()`. This is what lets the app-level flag
+  actually pick managed at runtime without gating the hosts yet.
+- **App-level build flags** on `SamplesApp.Skia.Generic`: `UnoDrawingBackendSkia` / `UnoDrawingBackendWebGpu`
+  (both default `true` = current behavior). They conditionally add the backend ProjectReferences and define
+  `UNO_DRAWING_SKIA` / `UNO_DRAWING_WEBGPU`, which gate the `#if` registration in `Program.cs`.
+- **Hosts + RuntimeTests** now reference the Skia backend directly (X11/Win32/MacOS/LinuxFB + RuntimeTests), since
+  Uno.UI no longer provides it transitively.
+
+Validated (headless Linux/X11, lavapipe):
+- DEFAULT (`UnoDrawingBackendSkia=true`): builds green, renders (154 draws/frame), no "no backend" errors.
+- SKIA-OFF (`-p:UnoDrawingBackendSkia=false`): builds green; runs on **ManagedBackend + WebGPU**; with every
+  `libSkiaSharp.*` deleted it renders (surface + managed-decoded `ImageTexture.upload`) with **zero Skia touch**,
+  no abort. i.e. the app-level flag now yields a **runtime** Skia-free app.
+
+## 8. Remaining for a Skia-free CLOSURE ON DISK (Phase B) — beyond runtime
+
+The `-p:UnoDrawingBackendSkia=false` app is Skia-free at RUNTIME, but `SkiaSharp.dll` / `Uno.UI.Composition.Skia.dll`
+are **still in the output** because the Skia runtime hosts (X11/Win32/MacOS/LinuxFB) reference the backend
+unconditionally (they use `SkiaGeometryInterop` for native-clip SVG and register `SkiaGraphicsProvider` as a WebGPU
+fallback). To drop them from disk (true "builds without SkiaSharp"):
+1. Gate the hosts' Skia usage behind the same flags (host-level `#if`/conditional refs): the `SkiaGraphicsProvider`
+   fallback and the `.Rendering.{Software,OpenGl,Vulkan}` Skia surfaces.
+2. Provide a **managed geometry → SVG-path** converter so the native-clip path (`SkiaGeometryInterop.Lease(...)
+   .ToSvgPathData()`) has a Skia-free equivalent, OR route clip via a neutral seam.
+3. `Uno.UWP` imaging (`Color`/`SoftwareBitmap`/`BitmapEncoder` — 4 files): managed PNG encode or guard.
+4. Add a CI assembly-scan assert (no `SkiaSharp.dll` in the `UnoDrawingBackendSkia=false` publish closure).
+Contradiction to note: "flags only on SamplesApp" can't achieve an on-disk Skia-free closure while the shared hosts
+drag the backend — Phase B necessarily extends the flags to the hosts (or gates their Skia code paths).
