@@ -114,6 +114,25 @@ public partial class CoreWebView2
 		}
 	}
 
+	/// <summary>
+	/// Resolves an optional capability of the native WebView, or throws describing why it is unavailable.
+	/// </summary>
+	internal T RequireCapability<T>(string typeName, string memberName)
+		where T : class
+		=> _nativeWebView as T ?? throw CapabilityUnavailable(typeName, memberName);
+
+	/// <summary>
+	/// Builds the exception for a capability the native WebView cannot serve, distinguishing "not initialized
+	/// yet" from "this platform does not implement it". The latter reproduces the generated stub exactly, so
+	/// platforms that do not opt in keep their current behaviour and not-implemented reporting.
+	/// </summary>
+	internal Exception CapabilityUnavailable(string typeName, string memberName)
+		=> _nativeWebView is null
+			? new InvalidOperationException(
+				$"The native WebView is not initialized, so {typeName}.{memberName} is unavailable. " +
+				"Await WebView2.EnsureCoreWebView2Async() before using this member.")
+			: global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException(typeName, memberName);
+
 	internal void NavigateWithHttpRequestMessage(global::Windows.Web.Http.HttpRequestMessage requestMessage)
 	{
 		if (requestMessage?.RequestUri is null)
