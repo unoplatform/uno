@@ -16,6 +16,10 @@ internal sealed class SkiaRenderer : IRenderer, IDisposable
 	private int _glWidth;
 	private int _glHeight;
 
+	// Metal state (built lazily on the first Metal present from the host's device/queue; per-renderer). The
+	// per-frame texture changes, so the render target + surface are recreated each present; the GRContext is cached.
+	private GRContext? _metalContext;
+
 	public ICommandRecorder BeginFrame() => SkiaDrawingSession.StartRecording();
 
 	// Wraps whatever target the active context handed over. A host that already owns an SKCanvas passes a
@@ -27,8 +31,24 @@ internal sealed class SkiaRenderer : IRenderer, IDisposable
 			SkiaRenderTarget skia => new SkiaPresentSession(skia.Canvas),
 			ISoftwareRenderTarget software => SkiaPresentSession.ForSoftware(software),
 			IGLRenderTarget gl => PresentForGL(gl),
+			IMetalRenderTarget metal => PresentForMetal(metal),
 			_ => throw new NotSupportedException($"The Skia backend cannot present onto a render target of type {target.GetType().Name}."),
 		};
+
+	// The host hands the per-frame MTLTexture (+ its device/queue); build/reuse a GRContext-Metal and wrap the
+	// texture as an SKSurface to compose into. Present flushes the GRContext so the render lands in the texture
+	// before the host commits/presents the drawable. Recreated each frame (the texture differs per call).
+	private IPresentSession PresentForMetal(IMetalRenderTarget metal)
+	{
+		_metalContext ??= GRContext.CreateMetal(new GRMtlBackendContext { DeviceHandle = metal.Device, QueueHandle = metal.Queue })
+			?? throw new NotSupportedException("Failed to create a Metal GRContext.");
+
+		var target = new GRBackendRenderTarget(metal.Width, metal.Height, new GRMtlTextureInfo(metal.Texture));
+		var surface = SKSurface.Create(_metalContext, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
+		// The render target descriptor is consumed by SKSurface.Create; the surface is disposed on present.
+		target.Dispose();
+		return SkiaPresentSession.ForGpuTexture(surface, _metalContext);
+	}
 
 	// The host has made its GL context current; build/reuse a GRContext-GL and an SKSurface over the window
 	// framebuffer, then compose into its (borrowed, cached-across-frames) canvas. The context swaps on present.
