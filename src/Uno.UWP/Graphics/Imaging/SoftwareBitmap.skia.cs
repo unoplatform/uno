@@ -1,148 +1,98 @@
-﻿using System;
-using SkiaSharp;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Runtime.InteropServices;
+#nullable enable
 
+using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace Windows.Graphics.Imaging
 {
-	static class SoftwareBitmapExtensions
-	{
-		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static SKColorType ToSKColorType(this BitmapPixelFormat format) =>
-			format switch
-			{
-				BitmapPixelFormat.Unknown => SKColorType.Unknown,
-				BitmapPixelFormat.Rgba16 => SKColorType.Rgba16161616,
-				BitmapPixelFormat.Rgba8 => SKColorType.Rgba8888,
-				BitmapPixelFormat.Gray8 => SKColorType.Gray8,
-				BitmapPixelFormat.Bgra8 => SKColorType.Bgra8888,
-				_ => throw new global::System.NotSupportedException(nameof(format))
-			};
-
-		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static BitmapPixelFormat ToBitmapPixelFormat(this SKColorType format) =>
-			format switch
-			{
-				SKColorType.Unknown => BitmapPixelFormat.Unknown,
-				SKColorType.Rgba16161616 => BitmapPixelFormat.Rgba16,
-				SKColorType.Rgba8888 => BitmapPixelFormat.Rgba8,
-				SKColorType.Gray8 => BitmapPixelFormat.Gray8,
-				SKColorType.Bgra8888 => BitmapPixelFormat.Bgra8,
-				_ => throw new global::System.NotSupportedException(nameof(format))
-			};
-
-		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static SKAlphaType ToSKAlphaType(this global::Windows.Graphics.Imaging.BitmapAlphaMode alpha) =>
-			alpha switch
-			{
-				BitmapAlphaMode.Ignore => SKAlphaType.Opaque,
-				BitmapAlphaMode.Straight => SKAlphaType.Unpremul,
-				BitmapAlphaMode.Premultiplied => SKAlphaType.Premul,
-				_ => throw new global::System.NotSupportedException(nameof(alpha))
-			};
-
-		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static BitmapAlphaMode ToBitmapAlphaMode(this SKAlphaType alpha) =>
-			alpha switch
-			{
-				SKAlphaType.Opaque => BitmapAlphaMode.Ignore,
-				SKAlphaType.Unpremul => BitmapAlphaMode.Straight,
-				SKAlphaType.Premul => BitmapAlphaMode.Premultiplied,
-				_ => throw new global::System.NotSupportedException(nameof(alpha))
-			};
-	}
-
 	partial class SoftwareBitmap : IDisposable
 	{
-		private readonly SKBitmap _bitmap;
+		private byte[] _pixels;
+		private readonly int _width;
+		private readonly int _height;
+		private readonly BitmapPixelFormat _format;
+		private readonly BitmapAlphaMode _alpha;
 
-		internal SoftwareBitmap(SKBitmap bitmap, bool isReadOnly = false)
+		internal SoftwareBitmap(byte[] pixels, int width, int height, BitmapPixelFormat format, BitmapAlphaMode alpha, bool isReadOnly = false)
 		{
-			_bitmap = bitmap;
+			_pixels = pixels;
+			_width = width;
+			_height = height;
+			_format = format;
+			_alpha = alpha;
 			IsReadOnly = isReadOnly;
 		}
 
-		public SoftwareBitmap(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height)
+		public SoftwareBitmap(BitmapPixelFormat format, int width, int height)
+			: this(format, width, height, BitmapAlphaMode.Premultiplied)
 		{
-			var info = new SKImageInfo(width, height, format.ToSKColorType());
-			_bitmap = new SKBitmap(info);
 		}
 
-		public SoftwareBitmap(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height, global::Windows.Graphics.Imaging.BitmapAlphaMode alpha)
+		public SoftwareBitmap(BitmapPixelFormat format, int width, int height, BitmapAlphaMode alpha)
+			: this(new byte[GetByteCount(format, width, height)], width, height, format, alpha)
 		{
-			var info = new SKImageInfo(width, height, format.ToSKColorType(), alpha.ToSKAlphaType());
-			_bitmap = new SKBitmap(info);
 		}
 
-		public BitmapAlphaMode BitmapAlphaMode =>
-			_bitmap.AlphaType.ToBitmapAlphaMode();
+		private static int GetBytesPerPixel(BitmapPixelFormat format) =>
+			format switch
+			{
+				BitmapPixelFormat.Rgba16 => 8,
+				BitmapPixelFormat.Rgba8 => 4,
+				BitmapPixelFormat.Bgra8 => 4,
+				BitmapPixelFormat.Gray8 => 1,
+				_ => throw new NotSupportedException(nameof(format))
+			};
 
-		public BitmapPixelFormat BitmapPixelFormat =>
-			_bitmap.ColorType.ToBitmapPixelFormat();
+		private static int GetByteCount(BitmapPixelFormat format, int width, int height)
+			=> GetBytesPerPixel(format) * width * height;
+
+		public BitmapAlphaMode BitmapAlphaMode => _alpha;
+
+		public BitmapPixelFormat BitmapPixelFormat => _format;
 
 		public bool IsReadOnly { get; }
 
-		public int PixelHeight =>
-			_bitmap.Height;
+		public int PixelHeight => _height;
 
-		public int PixelWidth =>
-			_bitmap.Width;
+		public int PixelWidth => _width;
 
-		internal SKBitmap Bitmap => _bitmap;
+		internal byte[] Pixels => _pixels;
+
+		internal int RowBytes => GetBytesPerPixel(_format) * _width;
 
 		public SoftwareBitmap GetReadOnlyView() =>
-			new SoftwareBitmap(_bitmap, true);
+			new SoftwareBitmap(_pixels, _width, _height, _format, _alpha, true);
 
 		public void CopyTo(SoftwareBitmap bitmap)
 		{
 			if (bitmap.IsReadOnly)
 			{
-				throw new ArgumentException("Destionanion is ReadOnly", nameof(bitmap));
+				throw new ArgumentException("Destination is ReadOnly", nameof(bitmap));
 			}
-			using var canvas = new SKCanvas(bitmap._bitmap);
-			canvas.DrawBitmap(_bitmap, 0, 0, SKSamplingOptions.Default, null);
-			canvas.Flush();
+			if (bitmap._width != _width || bitmap._height != _height || bitmap._format != _format)
+			{
+				throw new NotSupportedException("SoftwareBitmap.CopyTo requires matching dimensions and pixel format.");
+			}
+			Buffer.BlockCopy(_pixels, 0, bitmap._pixels, 0, Math.Min(_pixels.Length, bitmap._pixels.Length));
 		}
 
 		public static SoftwareBitmap Copy(SoftwareBitmap source) =>
-			new SoftwareBitmap(source._bitmap.Copy(), false);
+			new SoftwareBitmap((byte[])source._pixels.Clone(), source._width, source._height, source._format, source._alpha);
 
-		public static global::Windows.Graphics.Imaging.SoftwareBitmap CreateCopyFromBuffer(global::Windows.Storage.Streams.IBuffer source, global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height)
+		public static SoftwareBitmap CreateCopyFromBuffer(global::Windows.Storage.Streams.IBuffer source, BitmapPixelFormat format, int width, int height)
+			=> CreateCopyFromBuffer(source, format, width, height, BitmapAlphaMode.Premultiplied);
+
+		public static SoftwareBitmap CreateCopyFromBuffer(global::Windows.Storage.Streams.IBuffer source, BitmapPixelFormat format, int width, int height, BitmapAlphaMode alpha)
 		{
-			return CreateCopyFromBuffer(source, format, width, height, global::Windows.Graphics.Imaging.BitmapAlphaMode.Premultiplied);
-		}
-		public static global::Windows.Graphics.Imaging.SoftwareBitmap CreateCopyFromBuffer(global::Windows.Storage.Streams.IBuffer source, global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height, global::Windows.Graphics.Imaging.BitmapAlphaMode alpha)
-		{
-			// Get pixels
-			var pixelArray = source.ToArray();
-			var info = new SKImageInfo(width, height, format.ToSKColorType(), alpha.ToSKAlphaType());
-
-			// create an empty bitmap
-			var destination = new SKBitmap();
-
-			// pin the managed array so that the GC doesn't move it
-			var gcHandle = GCHandle.Alloc(pixelArray, GCHandleType.Pinned);
-
-			// install the pixels with the color type of the pixel data
-
-			var success = destination.
-				InstallPixels(info
-				, gcHandle.AddrOfPinnedObject()
-				, info.RowBytes
-				, (address, context) => ((GCHandle)context).Free(), gcHandle);
-
-			if (!success)
+			var pixels = source.ToArray();
+			var expected = GetByteCount(format, width, height);
+			if (pixels.Length < expected)
 			{
 				throw new ArgumentException($"The pixel format of {nameof(source)} is not {format}.", nameof(source));
 			}
-
-			return new SoftwareBitmap(destination);
+			return new SoftwareBitmap(pixels, width, height, format, alpha);
 		}
 
-		public void Dispose()
-		{
-			_bitmap?.Dispose();
-		}
+		public void Dispose() => _pixels = Array.Empty<byte>();
 	}
 }

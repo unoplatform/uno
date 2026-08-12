@@ -6,8 +6,6 @@ using Android.Graphics;
 #elif __APPLE_UIKIT__
 using Foundation;
 using UIKit;
-#elif __SKIA__
-using SkiaSharp;
 #endif
 
 namespace Windows.Graphics.Imaging;
@@ -53,14 +51,14 @@ partial class BitmapEncoder
 			{PngEncoderId, AsPNG},
 		};
 #elif __SKIA__
-	private static readonly IDictionary<Guid, SKEncodedImageFormat> _encoderMap =
-		new Dictionary<Guid, SKEncodedImageFormat>()
+	private static readonly IDictionary<Guid, BitmapEncoderFormat> _encoderMap =
+		new Dictionary<Guid, BitmapEncoderFormat>()
 		{
-			{BmpEncoderId, SKEncodedImageFormat.Bmp},
-			{GifEncoderId, SKEncodedImageFormat.Gif},
-			{JpegEncoderId, SKEncodedImageFormat.Jpeg},
-			{PngEncoderId, SKEncodedImageFormat.Png},
-			{HeifEncoderId, SKEncodedImageFormat.Heif},
+			{BmpEncoderId, BitmapEncoderFormat.Bmp},
+			{GifEncoderId, BitmapEncoderFormat.Gif},
+			{JpegEncoderId, BitmapEncoderFormat.Jpeg},
+			{PngEncoderId, BitmapEncoderFormat.Png},
+			{HeifEncoderId, BitmapEncoderFormat.Heif},
 		};
 #endif
 }
