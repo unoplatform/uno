@@ -1764,3 +1764,32 @@ context factory (in the WebGPU project) does the JS device import + canvas surfa
 `WebGpuBrowserGraphicsContext : IGraphicsContext, IWebGpuDeviceContext` — consumable by Uno's provider or a user's.
 
 Until then, the WASM host is unchanged (still references the WebGPU project, still builds + works) — nothing broken.
+
+---
+
+## 50. WASM WebGPU glue moved into the WebGPU project — ALL 6 hosts now WebGPU-decoupled
+
+Corrected §49's overstated "blocker" (I was wrong): the emdawnwebgpu `__postset` native patch was already in the
+WebGPU project (`wgpu-wasm.targets`), and `[JSImport]`+TypeScript in a generic Skia assembly is routine (Uno.UI
+does it) — same TFM as the host. So approach B was mechanical, not blocked.
+
+Done (approach B):
+- Moved `WebGpuJsInterop` (`[JSImport]` device import + JS readback), `WebGpuBrowserGraphicsContext` (canvas-surface
+  `IGraphicsContext`/`IWebGpuDeviceContext`), and `ts/Runtime/WebGpuInit.ts` into `Uno.UI.Composition.WebGpu`.
+- The WASM host keeps *compiling* the `.ts` into its JS bundle via a `TypeScriptCompile` file-include (mirrors its
+  existing `..\Uno.UI\ts\...\WebView.ts` include) — JS-bundle mechanism unchanged, `globalThis.Uno.UI.Runtime.Skia.
+  WebGpuInit` still populated; `[JSImport]` strings unchanged.
+- `WebGpuContextFactory` is now async and branches on `NativeWindowKind`: native (X11/Win32/Android/Metal) create the
+  wgpu surface synchronously (task completes inline); `Wasm` does the async JS device import + canvas surface +
+  readback hook → `WebGpuBrowserGraphicsContext`. Registered via `RegisterAsyncContextFactory`; still the "GPU-API"
+  half, independent of the render backend (device exposed via `IWebGpuDeviceContext`).
+- WASM host `BrowserRenderer` hands a neutral `WasmGraphicsNativeWindow { Kind=Wasm, SurfaceId=canvasId }` to
+  `GraphicsRegistry.InitializeAsync` and takes context+renderer from the app-registered provider; WebGPU project
+  reference removed. `SamplesApp` WASM registers the factory + provider (app-level, gated on `UNO_WEBGPU`).
+
+**All 6 Skia hosts now reference NO WebGPU project and use NO WebGPU type** (X11/Win32/macOS/Android/AppleUIKit/WASM);
+verified. WebGPU is a separately-referenceable backend + context factory the app toggles — mirroring Skia.
+
+Validation: WebGPU project + WASM host + Generic head compile. Desktop runtime re-validated on X11 (Skia + WebGPU
+both render through the now-async factory via the sync `Initialize` wrapper). **WASM browser runtime validation is the
+user's** — no headless WebGPU here (no browser binary / Playwright). Commit `88a069a970`.
