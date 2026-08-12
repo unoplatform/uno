@@ -11,7 +11,7 @@ namespace Uno.UI.Composition.Drawing;
 /// SkiaSharp-free <see cref="IFontProvider"/>: indexes the operating system's installed fonts by parsing each
 /// face's <c>name</c>/<c>OS-2</c>/<c>head</c> tables, matches a family/style request against that index using a
 /// CSS-style nearest-weight score, and produces <see cref="ManagedFont"/> handles. Codepoint fallback scans the
-/// indexed faces' <c>cmap</c>s for coverage. Enabled via <see cref="DrawingBackendOptions.UseManagedFonts"/>.
+/// indexed faces' <c>cmap</c>s for coverage. Register as <see cref="FontProvider.Current"/> to use it.
 /// </summary>
 /// <remarks>
 /// This is the option-A "managed system-font lookup": correct and fully portable, but it re-implements OS font
@@ -19,7 +19,7 @@ namespace Uno.UI.Composition.Drawing;
 /// The index is built lazily on first use (reads font-file headers once). On platforms with no enumerable system
 /// fonts (iOS sandbox, the browser), the index is empty; pass a <c>bundledDefaultFont</c> so the provider still
 /// has a guaranteed default face. Registered as any other <see cref="IFontProvider"/> via
-/// <see cref="DrawingBackendOptions.FontProvider"/>.
+/// <see cref="FontProvider.Current"/>.
 /// </remarks>
 public sealed class ManagedFontProvider : IFontProvider
 {

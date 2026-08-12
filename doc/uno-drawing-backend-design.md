@@ -474,9 +474,10 @@ its device wrap once (see N).
 ```csharp
 public interface IDrawingFactory
 {
-    // geometry — the renderer's NATIVE representation (fast path; managed geometry is the neutral opt-in)
+    // geometry — the renderer must be able to consume the type this produces (kept on the backend, not a neutral seam)
     IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder();
     IPathBuilder CreatePathBuilder();
+    IGeometry CreateRectangleGeometry(Rect rect);
     // opaque paint — matched, downcast by the renderer
     IShader CreateLinearGradientShader(...); IShader CreateRadialGradientShader(...);
     IColorFilter CreateBlendModeColorFilter(Color color, BlendMode mode);
@@ -619,7 +620,8 @@ build (null), first survivor wins. `Initialize` is shared; only the `IGraphicsCo
 **Composition-root inputs (pluggable choices, set independently):**
 ```csharp
 GraphicsRegistry.Register(new IGraphicsProvider[] { new SkiaGraphicsProvider() });   // renderer(s)
-ImageDecoder.Current = new ManagedImageDecoder();                                 // or Skia / platform codec
+DrawingFactory.Register(new SkiaManagedGeometryDrawingFactory());                    // any path implementor = a backend
+ImageDecoder.Current = new ManagedImageDecoderBackend();                             // or Skia / platform codec
 FontProvider.Current  = new ManagedFontProvider();                                  // or Skia / CoreText / DirectWrite
 ```
 **`Initialize`-derived outputs (never user-assigned):**
@@ -628,9 +630,14 @@ DrawingFactory.Current           // winning session's IDrawingFactory
 CompositionTarget.Renderer  // winning session's IRenderer
 ```
 
-`DrawingBackendOptions` is gone — its `FontManager` and `UNO_MANAGED_*` toggles are now first-class per-seam
-registrations. Unset seams **throw** (no hidden default). All process-global today = one renderer/decoder/font
-manager per process (multi-window-different-providers → per-target, deferred).
+`DrawingBackendOptions` is gone — its font resolver and `UNO_MANAGED_*` toggles are now first-class registrations,
+each accepting **any** implementor rather than a skia-vs-managed flag. Image decode and font resolution are
+backend-independent seams (`ImageDecoder.Current` / `FontProvider.Current`, any implementor). **Geometry is not** —
+the renderer must understand the geometry type it draws, so geometry stays on `IDrawingFactory`; a custom path
+implementor is a custom `IDrawingFactory` you `Register` (e.g. `SkiaManagedGeometryDrawingFactory` = managed
+geometry + Skia pixels). A backend's `Register()` installs each seam as a register-if-absent default, so an app that
+registered its own first wins. Unset seams **throw** (no hidden default). All process-global today = one
+renderer/decoder/font-provider/drawing-factory per process (multi-window-different-providers → per-target, deferred).
 
 ---
 

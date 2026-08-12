@@ -20,6 +20,12 @@ namespace SkiaSharpExample
 		[STAThread]
 		public static void Main(string[] args)
 		{
+			// LOCAL-ONLY (do not commit): default WebGPU head + profiler on for the handed-over build.
+			foreach (var kv in new[] { ("UNO_WEBGPU", "1"), ("UNO_WEBGPU_PROFILE", "1") })
+			{
+				if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(kv.Item1))) { Environment.SetEnvironmentVariable(kv.Item1, kv.Item2); }
+			}
+
 			// Ensures that we're loading the Skia assemblies properly
 			// as we're manipulating the output based on _UnoOverrideReferenceCopyLocalPaths
 			// and _UnoAdjustUserRuntimeAssembly to avoid getting reference assemblies in the
@@ -95,24 +101,30 @@ namespace SkiaSharpExample
 			host.Run();
 		}
 
-		// Dev/test affordance: let the host opt into the SkiaSharp-free managed engines via environment
-		// variables. Backend selection lives in DrawingBackendOptions (init options); the framework itself no
-		// longer reads these variables — only this host does, as a convenience for exercising managed mode.
+		// Dev/test affordance: let the host opt into the SkiaSharp-free managed engines via environment variables.
+		// Image decode and font resolution are backend-independent seams an app registers any implementor on
+		// (ImageDecoder / FontProvider); geometry lives on the drawing backend, so opting into managed geometry means
+		// registering a path-implementor backend (SkiaManagedGeometryDrawingFactory — managed geometry, Skia pixels).
+		// Runs before the backend's Register(), which installs its own defaults only where nothing was registered.
 		private static void ApplyManagedBackendOptions()
 		{
 			if (Environment.GetEnvironmentVariable("UNO_MANAGED_FONTS") is "1" or "true")
 			{
-				Uno.UI.Composition.Drawing.DrawingBackendOptions.FontProvider = new Uno.UI.Composition.Drawing.ManagedFontProvider();
+				Uno.UI.Composition.Drawing.FontProvider.Current = new Uno.UI.Composition.Drawing.ManagedFontProvider();
 			}
 
+#if UNO_DRAWING_SKIA
+			// Only meaningful with the Skia backend (managed geometry, Skia pixels). The managed/WebGPU heads already
+			// mint managed geometry through ManagedDrawingFactory, so there is nothing to toggle there.
 			if (Environment.GetEnvironmentVariable("UNO_MANAGED_GEOMETRY") is "1" or "true")
 			{
-				Uno.UI.Composition.Drawing.DrawingBackendOptions.UseManagedGeometry = true;
+				Uno.UI.Composition.Drawing.DrawingFactory.Register(new Uno.UI.Composition.Drawing.SkiaManagedGeometryDrawingFactory());
 			}
+#endif
 
 			if (Environment.GetEnvironmentVariable("UNO_MANAGED_IMAGE_DECODER") is "1" or "true")
 			{
-				Uno.UI.Composition.Drawing.DrawingBackendOptions.UseManagedImageDecoder = true;
+				Uno.UI.Composition.Drawing.ImageDecoder.Current = new Uno.UI.Composition.Drawing.ManagedImageDecoderBackend();
 			}
 		}
 

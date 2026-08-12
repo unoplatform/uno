@@ -9,9 +9,9 @@ namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
 /// SkiaSharp-free <see cref="IImageDecoder"/>: decodes via <see cref="ManagedImageDecoder"/> and wraps the result
-/// as managed, byte[]-backed <see cref="IImage"/>/<see cref="IImageFrames"/> — no Skia object is ever created. Used
-/// when <see cref="DrawingBackendOptions.UseManagedImageDecoder"/> is set so an image-bearing app can run with no
-/// native libSkiaSharp. Formats the managed decoder can't handle return false (there is no Skia fallback here).
+/// as managed, byte[]-backed <see cref="IImage"/>/<see cref="IImageFrames"/> — no Skia object is ever created.
+/// Register as <see cref="ImageDecoder.Current"/> so an image-bearing app can run with no native libSkiaSharp.
+/// Formats the managed decoder can't handle return false (there is no Skia fallback here).
 /// </summary>
 public sealed class ManagedImageDecoderBackend : IImageDecoder
 {

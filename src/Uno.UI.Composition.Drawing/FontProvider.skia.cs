@@ -28,4 +28,11 @@ public static class FontProvider
 		}
 		set => _current = value;
 	}
+
+	/// <summary>
+	/// Registers <paramref name="provider"/> only if none is registered yet, so a backend's default never clobbers a
+	/// resolver an app registered explicitly (via <see cref="Current"/>) before backend initialization.
+	/// </summary>
+	public static void RegisterDefault(IFontProvider provider)
+		=> _current ??= provider ?? throw new ArgumentNullException(nameof(provider));
 }
