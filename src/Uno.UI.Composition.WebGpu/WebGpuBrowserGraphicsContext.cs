@@ -3,11 +3,10 @@
 using System;
 using System.Runtime.InteropServices;
 using Uno.UI.Composition.Drawing;
-using Uno.UI.Composition.WebGpu;
 using Uno.WebGpu.Native;
 using static Uno.WebGpu.Native.WGPU;
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Composition.WebGpu;
 
 /// <summary>
 /// On-canvas WebGPU <see cref="IGraphicsContext"/> for the browser: owns a <see cref="WebGpuDevice"/> and a wgpu

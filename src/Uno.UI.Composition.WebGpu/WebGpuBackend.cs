@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Uno.WebGpu.Native;
 using static Uno.WebGpu.Native.WGPU;
 using Uno.UI.Composition.Drawing;
@@ -3996,11 +3997,21 @@ public sealed class WebGpuGraphicsProvider : IGraphicsProvider
 public static class WebGpuContextFactory
 {
 	/// <summary>Registers this factory as the WebGPU context/window creator in the neutral pipeline.</summary>
-	public static void Register() => GraphicsRegistry.RegisterContextFactory(GraphicsContextKind.WebGpu, Create);
+	public static void Register() => GraphicsRegistry.RegisterAsyncContextFactory(GraphicsContextKind.WebGpu, CreateAsync);
 
-	/// <summary>Builds a WebGPU on-window swapchain context from the neutral window's tagged native handles.</summary>
-	public static IGraphicsContext Create(INativeWindow window)
+	/// <summary>
+	/// Builds a WebGPU on-window context from the neutral window. Native windowing systems (X11/Win32/Android/Metal)
+	/// create a wgpu surface synchronously (the task completes inline); the browser (Kind=Wasm) imports the device
+	/// from JS asynchronously — hence the async signature. Independent of any render backend: the returned context
+	/// exposes the device via IWebGpuDeviceContext, consumable by Uno's WebGpuGraphicsProvider or a user's own.
+	/// </summary>
+	public static async Task<IGraphicsContext> CreateAsync(INativeWindow window)
 	{
+		if (window.Kind == NativeWindowKind.Wasm)
+		{
+			return await CreateBrowserContextAsync(window);
+		}
+
 		Func<IntPtr, IntPtr> createSurface = window.Kind switch
 		{
 			NativeWindowKind.X11 => inst => WebGpuSwapChainContext.CreateXlibSurface(inst, window.Display, (ulong)window.Handle),
@@ -4018,6 +4029,25 @@ public static class WebGpuContextFactory
 		// Set before the swapchain context creates the device (it reads this for its DPI-scaled targets).
 		WebGpuDevice.RasterizationScale = window.RasterizationScale <= 0 ? 1f : window.RasterizationScale;
 		return new WebGpuSwapChainContext(WGPUTextureFormat.BGRA8Unorm, createSurface);
+	}
+
+	// Browser bring-up: create the device in JavaScript (navigator.gpu) and import it into emdawnwebgpu's C handle
+	// table — the in-WASM wgpuInstanceProcessEvents pump hangs when driven from a managed call stack. Install the
+	// JS readback hook (GPU->CPU can't block the browser thread) and wrap the canvas surface. All WASM-only glue
+	// lives here in the WebGPU project (context/window factory half), so the host references no WebGPU type.
+	private static async Task<IGraphicsContext> CreateBrowserContextAsync(INativeWindow window)
+	{
+		var inst = WebGpuDevice.CreateInstancePtr();
+		var devPtr = await WebGpuJsInterop.CreateImportedDeviceAsync((int)inst);
+		if (devPtr == 0)
+		{
+			return null;
+		}
+
+		var device = WebGpuDevice.FromImported(WGPUTextureFormat.RGBA8Unorm, inst, (IntPtr)devPtr);
+		WebGpuDevice.BrowserReadbackAsync = async (buf, len) =>
+			Convert.FromBase64String(await WebGpuJsInterop.MapReadBase64Async((int)buf, len));
+		return new WebGpuBrowserGraphicsContext(device, window.SurfaceId ?? "");
 	}
 }
 

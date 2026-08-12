@@ -45,7 +45,6 @@
 		<ProjectReference Include="..\Uno.Foundation.Runtime.WebAssembly\Uno.Foundation.Runtime.WebAssembly.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Wasm.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj" />
-		<ProjectReference Include="..\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -66,6 +65,9 @@
 
 		<TypeScriptCompile Include="..\Uno.UI\ts\Windows\UI\Xaml\Controls\WebView.ts">
 			<Link>ts\Runtime\WebView.ts</Link>
+		</TypeScriptCompile>
+		<TypeScriptCompile Include="..\Uno.UI.Composition.WebGpu\ts\Runtime\WebGpuInit.ts">
+			<Link>ts\Runtime\WebGpuInit.ts</Link>
 		</TypeScriptCompile>
 
 		<UpToDateCheckInput Include="ts\**\*" />
