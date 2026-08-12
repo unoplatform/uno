@@ -1697,3 +1697,37 @@ reflection-only and adds no reference.
 Also fixed this pass: commit `6bf9d65b8c` had only captured the `Color.skia.cs` deletion (its `git add` aborted on the
 deleted-file pathspec), so the real Uno.UWP neutralization had never landed and the pushed `Uno.UWP` still referenced
 SkiaSharp. Now committed + verified against HEAD (0 refs).
+
+---
+
+## 48. WebGPU decoupled like Skia — context/window factory split from the render backend; 5/6 hosts converted
+
+User: WebGPU should be like Skia — separate projects referenced at the app level; and crucially "a webgpu
+context/window factory usable WITHOUT our webgpu backend — a user can register their own render backend that uses
+webgpu." Implemented that separation:
+
+- **Context/window factory (GPU-API half):** `WebGpuContextFactory.Register()` →
+  `GraphicsRegistry.RegisterContextFactory(WebGpu, …)` builds the on-window swapchain context (surface + device)
+  from the neutral `INativeWindow` (surface per `NativeWindowKind`: X11/Win32/Android/Metal). The context exposes
+  the device via `IWebGpuDeviceContext`.
+- **Render backend (optional):** `WebGpuGraphicsProvider.CreateGraphics(context)` mints Uno's `WebGpuRenderer` +
+  `WebGpuDrawingFactory` from that device. A user can instead register their OWN `IGraphicsProvider` whose
+  `CreateGraphics` reads the device off `IWebGpuDeviceContext` and returns their renderer — the context factory does
+  not force Uno's renderer. (Earlier bundling — `IGraphicsProvider.TryCreateContext` — was reverted.)
+- `GraphicsRegistry.Initialize`: per kind, prefers a registered context factory, else the host `ContextFactory`
+  (Skia's host-specific GL/software); the host factory is now optional. New `INativeWindow.RasterizationScale`
+  default member carries DPI to the provider.
+
+**Hosts converted (no WebGPU project reference; they hand a neutral INativeWindow to GraphicsRegistry.Initialize
+and take the context+renderer from the app-registered provider):** X11 (runtime-validated: WebGPU renders via the
+independent context factory, and default Skia still renders), Win32 (compile), macOS (compile), Android (compile
+net10.0-android), AppleUIKit (mirrors macOS; no Apple workload here — needs a Mac build).
+
+**Remaining: WASM.** Outlier — the device is imported from browser JS (`WebGpuJsInterop.CreateImportedDeviceAsync`
++ `WebGpuDevice.FromImported`), the context is an emdawnwebgpu canvas surface, and GPU→CPU readback routes through
+JS (`WebGpuDevice.BrowserReadbackAsync`). This doesn't fit the `INativeWindow → surface → device` flow and needs a
+dedicated neutral seam (imported-device pointer + canvas id + async readback hook), plus browser validation. WASM
+still references the WebGPU project for now (unchanged, still compiles).
+
+Commits: neutral seam + X11 `2ce3d04f6e`, Win32 `1dfc99b51d`, macOS+Android `b8e7b14ca5`, context/backend split
+`b8e1e1bd80`, AppleUIKit `d75660cd30`.
