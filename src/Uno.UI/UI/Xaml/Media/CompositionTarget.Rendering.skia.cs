@@ -56,6 +56,11 @@ public partial class CompositionTarget
 		}
 	}
 
+	// Non-throwing peek at renderer availability. False while a declared graphics backend is still initializing
+	// asynchronously (e.g. the WASM/WebGPU device import replacing no default): there is deliberately no implicit
+	// Skia fallback renderer, so Render() must SKIP the frame rather than force the throwing Renderer getter.
+	private static bool HasRenderer => _renderer is not null || DrawingRegistration.DefaultRenderer is not null;
+
 	private static void InvalidateAllRecordings()
 	{
 		foreach (var kvp in _targets)
@@ -149,6 +154,14 @@ public partial class CompositionTarget
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} begins with timestamp {Stopwatch.GetTimestamp()}");
 
 		NativeDispatcher.CheckThreadAccess();
+
+		if (!HasRenderer)
+		{
+			// The declared graphics backend hasn't finished initializing (async WebGPU device import on WASM). Skip
+			// this frame instead of falling back to another backend; a fresh frame is requested once the head installs
+			// CompositionTarget.Renderer (see InitWebGpuAsync / InvalidateAllRecordings), so the tree records under it.
+			return;
+		}
 
 		var rootElement = ContentRoot.VisualTree.RootElement;
 		var bounds = ContentRoot.VisualTree.Size;
