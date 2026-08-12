@@ -42,7 +42,10 @@ internal class AsyncAction : IAsyncAction, IAsyncActionInternal
 		set
 		{
 			_status = value;
-			_onCompleted?.Invoke(this, AsyncStatus.Error);
+
+			// Note: No need to check if the 'value' is a final state, the 'Started' state is set in ctor,
+			//       i.e. before the '_onCompleted' is being set.
+			_onCompleted?.Invoke(this, value);
 		}
 	}
 
@@ -50,7 +53,7 @@ internal class AsyncAction : IAsyncAction, IAsyncActionInternal
 
 	public void Close() => _cancellationTokenSource.Cancel();
 
-	public void GetResults() => _task.Wait();
+	public void GetResults() => _task.GetAwaiter().GetResult();
 
 	private async Task BuildTaskAsync(Func<CancellationToken, Task> taskBuilder)
 	{

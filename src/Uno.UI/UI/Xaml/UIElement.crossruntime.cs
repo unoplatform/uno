@@ -25,6 +25,10 @@ namespace Microsoft.UI.Xaml
 	{
 		internal bool IsActiveInVisualTree { get; private set; }
 
+		private Microsoft.UI.Composition.Compositor _elementVisualCompositor;
+		private protected Microsoft.UI.Composition.Compositor ElementVisualCompositor
+			=> _elementVisualCompositor ?? Microsoft.UI.Composition.Compositor.GetSharedCompositor();
+
 		private static protected readonly Logger _log = typeof(UIElement).Log();
 		private static protected readonly Logger _logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
 		private static protected readonly Logger _logTrace = _log.IsEnabled(LogLevel.Trace) ? _log : null;

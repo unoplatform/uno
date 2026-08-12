@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IAnimatedVisualSource

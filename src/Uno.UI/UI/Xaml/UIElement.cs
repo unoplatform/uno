@@ -65,6 +65,7 @@ namespace Microsoft.UI.Xaml
 		private string _uid;
 
 		private Vector3 _translation = Vector3.Zero;
+		internal bool HasCompositionChildVisual { get; set; }
 
 		private InputCursor _protectedCursor;
 		private SerialDisposable _disposedEventDisposable = new();
@@ -1639,7 +1640,18 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private protected virtual ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateContainerVisual();
+		private protected virtual ContainerVisual CreateElementVisual()
+			=> ElementVisualCompositor.CreateContainerVisual();
+
+		internal void SetElementVisualCompositor(Compositor compositor)
+		{
+			if (_visual is not null)
+			{
+				throw new InvalidOperationException("The element visual has already been created.");
+			}
+
+			_elementVisualCompositor = compositor;
+		}
 
 		internal static Action<UIElement, UIElement, int?> ExternalOnChildAdded { get; set; }
 		internal static Action<UIElement, UIElement> ExternalOnChildRemoved { get; set; }

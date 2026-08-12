@@ -2695,6 +2695,27 @@
 
 	  </Properties>
 	  <Methods>
+		  <!-- Uno's legacy source-driven AnimatedVisualPlayer contract was removed in favor of WinUI's composition visual source contract. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Update(Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Load()" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Unload()" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Play(System.Double fromProgress, System.Double toProgress, System.Boolean looped)" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Stop()" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Pause()" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Resume()" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.SetProgress(System.Double progress)" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Measure(Windows.Foundation.Size availableSize)" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+
+		  <!-- Legacy source-driven Lottie methods were removed with the AnimatedVisualPlayer WinUI port. -->
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Play(System.Double fromProgress, System.Double toProgress, System.Boolean looped)" reason="Removed legacy source-driven Lottie playback API (breaking changes for 7.0)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Stop()" reason="Removed legacy source-driven Lottie playback API (breaking changes for 7.0)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Pause()" reason="Removed legacy source-driven Lottie playback API (breaking changes for 7.0)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Resume()" reason="Removed legacy source-driven Lottie playback API (breaking changes for 7.0)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.SetProgress(System.Double progress)" reason="Removed legacy source-driven Lottie playback API (breaking changes for 7.0)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Load()" reason="Removed legacy source-driven Lottie lifecycle API (breaking changes for 7.0)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Unload()" reason="Removed legacy source-driven Lottie lifecycle API (breaking changes for 7.0)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Update(Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Removed legacy source-driven Lottie update API (breaking changes for 7.0)" />
+
 		  <!-- Android head aligned on UnoPlatformHostBuilder (paired with the removed types above). -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.NativeApplication..ctor(Microsoft.UI.Xaml.NativeApplication/AppBuilder appBuilder, System.IntPtr javaReference, Android.Runtime.JniHandleOwnership transfer)" reason="Replaced by the (IntPtr, JniHandleOwnership) ctor plus a CreateHost() override (breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.Runtime.Skia.Android.AndroidHost..ctor(System.Func`1&lt;Microsoft.UI.Xaml.Application&gt; appBuilder)" reason="AndroidHost reduced to internal; use UseAndroid() on the host builder (breaking changes for 7.0)" />
