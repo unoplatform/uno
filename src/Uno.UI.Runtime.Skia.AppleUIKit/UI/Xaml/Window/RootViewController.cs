@@ -134,8 +134,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 		if (clipGeometry is not null)
 		{
-			using var clipLease = SkiaGeometryInterop.Lease(clipGeometry);
-			UpdateNativeClipping(clipLease.Path);
+			UpdateNativeClipping(clipGeometry);
 		}
 	}
 
@@ -150,17 +149,16 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 		if (clipGeometry is not null)
 		{
-			using var clipLease = SkiaGeometryInterop.Lease(clipGeometry);
-			UpdateNativeClipping(clipLease.Path);
+			UpdateNativeClipping(clipGeometry);
 		}
 	}
 
-	private void UpdateNativeClipping(SKPath path)
+	private void UpdateNativeClipping(IGeometry geometry)
 	{
 		string? svgPath = null;
-		if (!path.IsEmpty)
+		if (!geometry.IsEmpty)
 		{
-			svgPath = path.ToSvgPathData();
+			svgPath = geometry.ToSvgPathData();
 		}
 
 		if (svgPath != _lastSvgClipPath)
