@@ -47,8 +47,8 @@ public static class GraphicsRegistry
 {
 	private static readonly object _gate = new();
 	private static IReadOnlyList<IGraphicsProvider> _backends = Array.Empty<IGraphicsProvider>();
-	private static readonly Dictionary<GraphicsContextKind, Func<INativeWindow, IGraphicsContext?>> _contextFactories = new();
-	private static readonly Dictionary<GraphicsContextKind, Func<INativeWindow, Task<IGraphicsContext?>>> _asyncContextFactories = new();
+	// One (uniformly async) per-kind context factory store; a synchronous factory is held as an already-completed task.
+	private static readonly Dictionary<GraphicsContextKind, Func<INativeWindow, Task<IGraphicsContext?>>> _contextFactories = new();
 
 	/// <summary>
 	/// The concrete context factory (set once by the Uno graphics layer). Core stays free of GPU-API libraries;
@@ -68,21 +68,21 @@ public static class GraphicsRegistry
 		ArgumentNullException.ThrowIfNull(factory);
 		lock (_gate)
 		{
-			_contextFactories[kind] = factory;
+			_contextFactories[kind] = window => Task.FromResult(factory(window));
 		}
 	}
 
 	/// <summary>
 	/// Like <see cref="RegisterContextFactory"/> but asynchronous — for a context whose device bring-up can't run
 	/// synchronously (WASM/WebGPU: the device is imported from browser JS and the JS thread must not be blocked).
-	/// Consumed by <see cref="InitializeAsync"/> and takes precedence over the sync factories for that kind.
+	/// Such a kind must be negotiated with <see cref="InitializeAsync"/>, not the synchronous <see cref="Initialize"/>.
 	/// </summary>
 	public static void RegisterAsyncContextFactory(GraphicsContextKind kind, Func<INativeWindow, Task<IGraphicsContext?>> factory)
 	{
 		ArgumentNullException.ThrowIfNull(factory);
 		lock (_gate)
 		{
-			_asyncContextFactories[kind] = factory;
+			_contextFactories[kind] = factory;
 		}
 	}
 
@@ -112,92 +112,19 @@ public static class GraphicsRegistry
 	/// the outcome (e.g. <c>[Software]</c> to force the CPU path, or <c>[OpenGLES, Software]</c> to prefer GLES).
 	/// When null, each backend's own <see cref="IGraphicsProvider.PreferredContexts"/> order is used.
 	/// </param>
+	/// <summary>
+	/// Synchronous entry for hosts whose context factories all complete synchronously (every backend except the
+	/// WASM/WebGPU async device import). The negotiation runs the same async core; because those factories return
+	/// already-completed tasks it finishes inline, so this neither blocks nor deadlocks. A kind registered via
+	/// <see cref="RegisterAsyncContextFactory"/> must be negotiated with <see cref="InitializeAsync"/> instead.
+	/// </summary>
 	public static GraphicsInitialization Initialize(INativeWindow window, IReadOnlyList<GraphicsContextKind>? preferredKinds = null)
-	{
-		ArgumentNullException.ThrowIfNull(window);
-
-		IReadOnlyList<IGraphicsProvider> backends;
-		lock (_gate)
-		{
-			backends = _backends;
-		}
-
-		if (backends.Count == 0)
-		{
-			throw new InvalidOperationException(
-				"No graphics backend registered. Call GraphicsRegistry.Register(...) with an ordered backend " +
-				"list (e.g. new[] { new SkiaGraphicsProvider() }) during app initialization.");
-		}
-
-		// The host's context factory builds host-specific contexts (GL/EGL/software for the Skia backend). It's
-		// optional: a backend that self-creates its context from the neutral window (WebGPU) needs no factory.
-		var factory = ContextFactory;
-
-		var attempts = new StringBuilder();
-		foreach (var backend in backends)
-		{
-			// Host override (if any) steers the order but can only select from what the backend supports;
-			// otherwise the backend's own preference order stands.
-			var kinds = preferredKinds is null
-				? backend.PreferredContexts
-				: preferredKinds.Where(backend.PreferredContexts.Contains).ToArray();
-
-			foreach (var kind in kinds)
-			{
-				Func<INativeWindow, IGraphicsContext?>? kindFactory;
-				lock (_gate)
-				{
-					_contextFactories.TryGetValue(kind, out kindFactory);
-				}
-
-				IGraphicsContext? context = null;
-				try
-				{
-					// Prefer a stand-alone context factory registered for this kind (e.g. the WebGPU context/window
-					// factory, independent of any renderer); otherwise the host's factory (Skia's GL/software contexts).
-					context = kindFactory?.Invoke(window)
-						?? (factory is null ? null : factory(kind, window, backend.Requirements));
-				}
-				catch (Exception e)
-				{
-					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: context factory threw ({e.GetType().Name})");
-					if (typeof(GraphicsRegistry).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-					{
-						typeof(GraphicsRegistry).Log().Debug($"Graphics negotiation: {backend.GetType().Name}/{kind} context factory threw: {e}");
-					}
-					continue;
-				}
-
-				if (context is null)
-				{
-					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: context unavailable or requirements unmet");
-					continue;
-				}
-
-				try
-				{
-					var graphics = backend.CreateGraphics(context);
-					DrawingFactory.Register(graphics.DrawingFactory);
-					return new GraphicsInitialization(backend, context, graphics);
-				}
-				catch (Exception e)
-				{
-					// A backend that can't stand up on a created context is treated like a context failure:
-					// dispose and continue the walk rather than hard-failing.
-					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: CreateGraphics threw ({e.GetType().Name})");
-					context.Dispose();
-				}
-			}
-		}
-
-		throw new InvalidOperationException(
-			$"No registered backend could initialize on this host. Attempts:{attempts}");
-	}
+		=> InitializeAsync(window, preferredKinds).GetAwaiter().GetResult();
 
 	/// <summary>
-	/// Asynchronous counterpart to <see cref="Initialize"/> for hosts whose context must be created asynchronously
-	/// (WASM/WebGPU: the JS device import can't block the browser thread). Prefers an async context factory
-	/// registered for the kind, then the sync context factory, then the host <see cref="ContextFactory"/>.
+	/// Negotiates a backend + context for the window: for each backend's preferred kinds (optionally filtered by
+	/// <paramref name="preferredKinds"/>), builds the context via the registered per-kind factory (else the host
+	/// <see cref="ContextFactory"/>) and, on success, mints and installs the matched <see cref="Graphics"/> pair.
 	/// </summary>
 	public static async Task<GraphicsInitialization> InitializeAsync(INativeWindow window, IReadOnlyList<GraphicsContextKind>? preferredKinds = null)
 	{
@@ -225,20 +152,20 @@ public static class GraphicsRegistry
 
 			foreach (var kind in kinds)
 			{
-				Func<INativeWindow, Task<IGraphicsContext?>>? asyncFactory;
-				Func<INativeWindow, IGraphicsContext?>? kindFactory;
+				Func<INativeWindow, Task<IGraphicsContext?>>? kindFactory;
 				lock (_gate)
 				{
-					_asyncContextFactories.TryGetValue(kind, out asyncFactory);
 					_contextFactories.TryGetValue(kind, out kindFactory);
 				}
 
 				IGraphicsContext? context = null;
 				try
 				{
-					context = asyncFactory is not null
-						? await asyncFactory(window).ConfigureAwait(true)
-						: kindFactory?.Invoke(window) ?? (factory is null ? null : factory(kind, window, backend.Requirements));
+					// A registered per-kind factory (e.g. the WebGPU context/window factory, independent of any
+					// renderer) wins; otherwise the host's factory (Skia's host-specific GL/software contexts).
+					context = kindFactory is not null
+						? await kindFactory(window).ConfigureAwait(true)
+						: factory is null ? null : factory(kind, window, backend.Requirements);
 				}
 				catch (Exception e)
 				{
