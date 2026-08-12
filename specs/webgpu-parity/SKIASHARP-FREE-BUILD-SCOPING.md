@@ -168,3 +168,25 @@ fallback). To drop them from disk (true "builds without SkiaSharp"):
 4. Add a CI assembly-scan assert (no `SkiaSharp.dll` in the `UnoDrawingBackendSkia=false` publish closure).
 Contradiction to note: "flags only on SamplesApp" can't achieve an on-disk Skia-free closure while the shared hosts
 drag the backend — Phase B necessarily extends the flags to the hosts (or gates their Skia code paths).
+
+
+## 9. Correction — the hosts' backend coupling (accurate audit 2026-08-12)
+
+Clarification (a claim earlier in this doc under-counted). Every Skia host references the SkiaBackend ASSEMBLY, for
+two distinct reasons — the render *pipeline* (IRenderer/GraphicsRegistry/IDrawingSession/IGeometry) is neutral, but:
+
+1. CONCRETE SKIA RENDER PATH (compiled in; NOT executed on WebGPU): SkiaRenderTarget, Color.ToSKColor, Point.ToSkia,
+   the software/Vulkan/GL surfaces feeding SkiaRenderer. Sites: X11 X11VulkanGraphicsContext, LinuxFB
+   FrameBufferRenderer, Android UnoSKVulkanView/UnoSKCanvasView, Win32 render surfaces.
+2. NATIVE-ELEMENT CLIPPING via SkiaGeometryInterop (IGeometry -> SKPath -> SVG/native clip) — RUNS ON THE WEBGPU PATH.
+   Sites: Win32 (ToSKPath), MacOS (Lease), AppleUIKit (Lease), Android UnoSKWebGpuView.cs:182 (ToSKPath). Plus X11's
+   SkiaGraphicsProvider fallback entry.
+
+So the two concrete Phase-B pieces:
+ - (2) THE cross-cutting one: add a neutral IGeometry -> SVG-path emitter (ManagedGeometry already holds lines+cubics;
+   trivial + Skia-free) and route native clipping through it. Removes the WebGPU-path backend coupling in ALL hosts.
+ - (1) per-host + flag-gated: don't compile the Skia render surfaces in a WebGPU-only build.
+
+Also note: the Uno.UI decoupling (commit 8eadfe3066) broke the MOBILE heads' compile (AppleUIKit/Android use
+SkiaGeometryInterop and previously got the backend transitively via Uno.UI) — they need a direct SkiaBackend ref (or
+the neutral emitter). Only the desktop/Generic head was built/validated this session.
