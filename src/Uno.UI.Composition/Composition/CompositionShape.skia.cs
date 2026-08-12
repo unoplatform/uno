@@ -26,7 +26,7 @@ public partial class CompositionShape
 		switch (propertyName)
 		{
 			case nameof(TransformMatrix) or nameof(Scale) or nameof(RotationAngle) or nameof(CenterPoint):
-				var transform = TransformMatrix;
+				var transform = Matrix3x2.Identity;
 
 				if (Scale != Vector2.One)
 				{
@@ -38,7 +38,12 @@ public partial class CompositionShape
 					transform *= Matrix3x2.CreateRotation(RotationAngle, CenterPoint);
 				}
 
-				CombinedTransformMatrix = transform;
+				// TransformMatrix is applied last, so Scale and RotationAngle act in the shape's own space.
+					// LottieGen relies on this: it fuses a layer's offset and scale into TransformMatrix and
+					// leaves rotation animated, which only spins in place if rotation precedes the offset.
+					transform *= TransformMatrix;
+
+					CombinedTransformMatrix = transform;
 				break;
 		}
 	}
