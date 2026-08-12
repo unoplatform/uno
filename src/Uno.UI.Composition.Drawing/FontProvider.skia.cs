@@ -16,8 +16,16 @@ public static class FontProvider
 
 	public static IFontProvider Current
 	{
-		get => _current ?? throw new InvalidOperationException(
-			"No IFontProvider registered. Set FontProvider.Current during app initialization (the Skia head does this in SkiaBackend.Register).");
+		get
+		{
+			if (_current is null)
+			{
+				DrawingBackendFallback.EnsureRegistered();
+			}
+
+			return _current ?? throw new InvalidOperationException(
+				"No IFontProvider registered. Set FontProvider.Current during app initialization (the Skia head does this in SkiaBackend.Register).");
+		}
 		set => _current = value;
 	}
 }

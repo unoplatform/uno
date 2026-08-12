@@ -10,6 +10,22 @@ namespace Uno.UI.Composition.Drawing;
 /// </summary>
 public static class DrawingRegistration
 {
+	private static IRenderer? _defaultRenderer;
+
 	/// <summary>The backend-provided default <see cref="IRenderer"/>, or <c>null</c> if no backend registered one.</summary>
-	public static IRenderer? DefaultRenderer { get; set; }
+	public static IRenderer? DefaultRenderer
+	{
+		get
+		{
+			if (_defaultRenderer is null)
+			{
+				// Nothing registered explicitly: light up the Skia backend by default if it's present (reflection,
+				// no compile-time dependency). WebGPU heads install their own renderer and never reach here.
+				DrawingBackendFallback.EnsureRegistered();
+			}
+
+			return _defaultRenderer;
+		}
+		set => _defaultRenderer = value;
+	}
 }
