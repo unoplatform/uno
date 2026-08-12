@@ -13,10 +13,13 @@ namespace Microsoft.UI.Xaml
 	/// </summary>
 	partial class DependencyPropertyDetailsCollection : IDisposable
 	{
-		// The owning DependencyObject is held strongly: the collection is private to that DO, so the
-		// DO <-> collection cycle is collected together by the tracing GC. Holding it strongly avoids
-		// renting a pooled weak self-handle (ManagedGCHandle) per DependencyObject.
-		private readonly object _owner;
+		// The owning DependencyObject is held strongly, which is safe only because this collection never
+		// escapes it: the DO <-> collection cycle is then unreachable as a unit and the tracing GC
+		// collects it whole. Holding it strongly avoids renting a pooled weak self-handle
+		// (ManagedGCHandle) per DependencyObject.
+		// INVARIANT: never store this collection, or a closure capturing it, outside the owning
+		// DependencyObject. Doing so would transitively pin the owner and every object it references.
+		private readonly DependencyObject _owner;
 		// Null when the owner is not a FrameworkElement (DataContext is FrameworkElement-only).
 		private readonly DependencyProperty? _dataContextProperty;
 		private DependencyPropertyDetails? _dataContextPropertyDetails;
@@ -31,12 +34,12 @@ namespace Microsoft.UI.Xaml
 
 		private const int BucketSize = 16;
 
-		private object? Owner => _owner;
+		private DependencyObject Owner => _owner;
 
 		/// <summary>
 		/// Creates an instance using the specified DependencyObject <see cref="Type"/>
 		/// </summary>
-		public DependencyPropertyDetailsCollection(object owner, DependencyProperty? dataContextProperty)
+		public DependencyPropertyDetailsCollection(DependencyObject owner, DependencyProperty? dataContextProperty)
 		{
 			_owner = owner;
 
