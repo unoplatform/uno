@@ -39,5 +39,10 @@ public static class SkiaBackend
 		// available backend. A host that drives the neutral loop (GraphicsRegistry.Initialize) picks it up; swap
 		// this list to run a different backend. The choice lives here, not in the render loop or the host.
 		GraphicsRegistry.Register(new IGraphicsProvider[] { new SkiaGraphicsProvider() });
+
+		// The framework (Uno.UI) is backend-agnostic and no longer defaults CompositionTarget.Renderer to a Skia
+		// type. Provide the Skia renderer as the neutral default so heads that don't install their own renderer
+		// (e.g. the native Skia render path) still render; WebGPU heads override CompositionTarget.Renderer directly.
+		DrawingRegistration.DefaultRenderer = new SkiaRenderer();
 	}
 }

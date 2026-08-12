@@ -105,9 +105,11 @@ namespace Microsoft.UI.Xaml
 		{
 			_startInvoked = true;
 
-			// Install the Skia drawing backend before any layout/font resolution reaches DrawingFactory.Current
-			// (the backend now lives in a separate assembly, so it no longer self-registers on Composition load).
-			global::Uno.UI.Composition.Skia.SkiaBackend.Register();
+			// The framework is backend-agnostic and packaged once: it does NOT install a drawing backend. The app
+			// entry registers one before Application.Start reaches the first layout/font resolution through
+			// DrawingFactory.Current — Uno.UI.Composition.Skia.SkiaBackend.Register() for a Skia build, or
+			// Uno.UI.Composition.Drawing.ManagedBackend.Register() for a SkiaSharp-free build. Missing registration
+			// surfaces as a clear DrawingFactory.Current "no backend registered" exception.
 
 			SynchronizationContext.SetSynchronizationContext(NativeDispatcher.Main.SynchronizationContext);
 

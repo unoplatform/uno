@@ -53,6 +53,8 @@
 		<!-- EXPERIMENTAL WebGPU render path (UNO_WEBGPU): drives a wgpu swapchain on the window's CAMetalLayer. The
 		     wgpu-native macOS dylib is provisioned next to the app head by wgpu-native.targets (osx-arm64/osx-x64). -->
 		<ProjectReference Include="..\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" />
+		<!-- The framework no longer provides the Skia backend transitively; this Skia host references it directly (uses SkiaGeometryInterop / SkiaGraphicsProvider). -->
+		<ProjectReference Include="..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
