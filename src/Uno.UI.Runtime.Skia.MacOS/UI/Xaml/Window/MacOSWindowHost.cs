@@ -152,8 +152,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			string? webgpuClip = null;
 			if (!webgpuClipPath.IsEmpty)
 			{
-				using var clipLease = SkiaGeometryInterop.Lease(webgpuClipPath);
-				webgpuClip = clipLease.Path.ToSvgPathData();
+				webgpuClip = webgpuClipPath.ToSvgPathData();
 			}
 			if (webgpuClip != _lastSvgClipPath && NativeUno.uno_window_clip_svg(_nativeWindow.Handle, webgpuClip))
 			{
@@ -175,8 +174,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		string? clip = null;
 		if (!nativeElementClipPath.IsEmpty)
 		{
-			using var clipLease = SkiaGeometryInterop.Lease(nativeElementClipPath);
-			clip = clipLease.Path.ToSvgPathData();
+			clip = nativeElementClipPath.ToSvgPathData();
 		}
 		if (clip != _lastSvgClipPath)
 		{
@@ -229,8 +227,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		string? clip = null;
 		if (!nativeElementClipPath.IsEmpty)
 		{
-			using var clipLease = SkiaGeometryInterop.Lease(nativeElementClipPath);
-			clip = clipLease.Path.ToSvgPathData();
+			clip = nativeElementClipPath.ToSvgPathData();
 		}
 		if (clip != _lastSvgClipPath)
 		{
