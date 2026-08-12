@@ -3,20 +3,42 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input
 {
-#if false || false || false || false || false || false
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	public enum PointerUpdateKind
 	{
-		// Skipping already declared field Windows.UI.Input.PointerUpdateKind.Other
-		// Skipping already declared field Windows.UI.Input.PointerUpdateKind.LeftButtonPressed
-		// Skipping already declared field Windows.UI.Input.PointerUpdateKind.LeftButtonReleased
-		// Skipping already declared field Windows.UI.Input.PointerUpdateKind.RightButtonPressed
-		// Skipping already declared field Windows.UI.Input.PointerUpdateKind.RightButtonReleased
-		// Skipping already declared field Windows.UI.Input.PointerUpdateKind.MiddleButtonPressed
-		// Skipping already declared field Windows.UI.Input.PointerUpdateKind.MiddleButtonReleased
-		// Skipping already declared field Windows.UI.Input.PointerUpdateKind.XButton1Pressed
-		// Skipping already declared field Windows.UI.Input.PointerUpdateKind.XButton1Released
-		// Skipping already declared field Windows.UI.Input.PointerUpdateKind.XButton2Pressed
-		// Skipping already declared field Windows.UI.Input.PointerUpdateKind.XButton2Released
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		Other = 0,
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		LeftButtonPressed = 1,
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		LeftButtonReleased = 2,
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		RightButtonPressed = 3,
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		RightButtonReleased = 4,
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		MiddleButtonPressed = 5,
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		MiddleButtonReleased = 6,
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		XButton1Pressed = 7,
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		XButton1Released = 8,
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		XButton2Pressed = 9,
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		XButton2Released = 10,
+#endif
 	}
 #endif
 }

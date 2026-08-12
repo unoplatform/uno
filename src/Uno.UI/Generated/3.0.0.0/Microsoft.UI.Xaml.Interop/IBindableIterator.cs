@@ -3,24 +3,24 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Interop
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IBindableIterator
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		object Current
 		{
 			get;
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		bool HasCurrent
 		{
 			get;
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		bool MoveNext();
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Interop.IBindableIterator.Current.get

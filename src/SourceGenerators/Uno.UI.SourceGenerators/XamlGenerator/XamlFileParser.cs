@@ -166,6 +166,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						error);
 				}
 
+				if (ctx.HasClrNamespaceDeclarations)
+				{
+					ctx.ReportUnsupportedClrNamespaces(XamlNamespaceValidation.GetRootIgnorablePrefixes(xamlFileDefinition.Content));
+				}
+
 				xamlFileDefinition = xamlFileDefinition with
 				{
 					ParsingErrors = ctx.GetErrors()
@@ -468,6 +473,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					case XamlNodeType.NamespaceDeclaration:
 						xamlFile.Namespaces.Add(reader.Namespace);
+						TrackClrNamespaceDeclaration(reader, ref ctx);
 						break;
 
 					default:
@@ -475,6 +481,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 			while (reader.Read());
+		}
+
+		/// <summary>
+		/// Records a <c>clr-namespace:</c> declaration for later validation. Reporting is deferred because
+		/// the reader yields namespace nodes before the element's <c>mc:Ignorable</c> attribute is read.
+		/// </summary>
+		private static void TrackClrNamespaceDeclaration(XamlXmlReader reader, ref XamlFileParserContext ctx)
+		{
+			if (reader.Namespace is { } declaration && XamlNamespaceValidation.IsClrNamespace(declaration.Namespace))
+			{
+				ctx.TrackClrNamespaceDeclaration(declaration.Prefix, declaration.Namespace, reader.LineNumber, reader.LinePosition);
+			}
 		}
 
 		private void WriteState(XamlXmlReader reader)
@@ -619,6 +637,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						lastWasLiteralInline = false;
 						lastWasTrimSurroundingWhiteSpace = false;
 						(namespaces ??= new List<NamespaceDeclaration>()).Add(reader.Namespace);
+						TrackClrNamespaceDeclaration(reader, ref ctx);
 						// Skip
 						break;
 

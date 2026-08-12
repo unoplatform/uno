@@ -1,5 +1,4 @@
-﻿#if !__NETSTD_REFERENCE__
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Controls;
@@ -488,4 +487,3 @@ namespace Microsoft.UI.Xaml
 		}
 	}
 }
-#endif

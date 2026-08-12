@@ -2,14 +2,14 @@
   <PropertyGroup>
     <OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
     <OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net11.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup Condition="exists('..\UnoAppWinUILinuxValidation.Windows')">
     <EmbeddedResource Include="..\UnoAppWinUILinuxValidation.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
     <Content Include="..\UnoAppWinUILinuxValidation.Windows\Images\StoreLogo.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Uno.WinUI.Skia.Linux.FrameBuffer" Version="$(NBGV_SemVer2)" />
+    <PackageReference Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" Version="$(NBGV_SemVer2)" />
     <PackageReference Include="Uno.WinUI.DevServer" Version="$(NBGV_SemVer2)" Condition="'$(Configuration)'=='Debug'" />
     <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="$(NBGV_SemVer2)" />
     <PackageReference Include="Uno.WinUI.Lottie" Version="$(NBGV_SemVer2)" />

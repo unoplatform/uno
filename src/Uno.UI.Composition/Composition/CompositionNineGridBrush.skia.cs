@@ -10,6 +10,7 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionNineGridBrush : CompositionBrush
 	{
 		internal override bool RequiresRepaintOnEveryFrame => Source?.RequiresRepaintOnEveryFrame ?? false;
+		internal override float DamageRegionSamplingMargin => Source?.DamageRegionSamplingMargin ?? 0;
 
 		internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 		{

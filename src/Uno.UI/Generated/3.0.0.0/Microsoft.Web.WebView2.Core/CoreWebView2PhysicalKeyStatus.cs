@@ -3,36 +3,36 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct CoreWebView2PhysicalKeyStatus
 	{
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus.CoreWebView2PhysicalKeyStatus()
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public CoreWebView2PhysicalKeyStatus(uint _RepeatCount, uint _ScanCode, int _IsExtendedKey, int _IsMenuKeyDown, int _WasKeyDown, int _IsKeyReleased)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus", "CoreWebView2PhysicalKeyStatus(uint _RepeatCount, uint _ScanCode, int _IsExtendedKey, int _IsMenuKeyDown, int _WasKeyDown, int _IsKeyReleased)");
 		}
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus.CoreWebView2PhysicalKeyStatus(uint, uint, int, int, int, int)
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public uint RepeatCount;
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public uint ScanCode;
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public int IsExtendedKey;
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public int IsMenuKeyDown;
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public int WasKeyDown;
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public int IsKeyReleased;
 #endif
 	}

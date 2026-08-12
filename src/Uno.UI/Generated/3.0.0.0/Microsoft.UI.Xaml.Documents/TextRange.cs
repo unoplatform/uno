@@ -3,14 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Documents
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct TextRange
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.TextRange.TextRange()
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public TextRange(int _StartIndex, int _Length)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Documents.TextRange", "TextRange(int _StartIndex, int _Length)");

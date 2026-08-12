@@ -158,7 +158,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			RectAssert.AreEqual(expected, bounds);
 
 			GetHitTestability getHitTestability = null;
-			getHitTestability = element => (element as FrameworkElement)?.Background != null ? (element.GetHitTestVisibility(), getHitTestability) : (HitTestability.Invisible, getHitTestability);
+			getHitTestability = element =>
+			{
+				var background = element switch
+				{
+					Border border => border.Background,
+					Panel panel => panel.Background,
+					ContentPresenter presenter => presenter.Background,
+					Control control => control.Background,
+					_ => null
+				};
+				return background != null ? (element.GetHitTestVisibility(), getHitTestability) : (HitTestability.Invisible, getHitTestability);
+			};
 
 			foreach (var point in GetPointsInside(bounds, perimeterOffset: 5))
 			{

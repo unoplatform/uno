@@ -1,8 +1,0 @@
-<Project>
-	<!-- NOTE: We should ONLY add workarounds to MtouchExtraArgs IF they have not already been set by the user's project -->
-	<PropertyGroup>
-		<!-- Debugger workaround https://github.com/dotnet/maui-samples/blob/8aa6b8780b12e97b157514c3bdc54bb4a13001cd/HelloMacCatalyst/HelloMacCatalyst.csproj#L7 -->
-		<!-- <MtouchExtraArgs Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">$(MtouchExtraArgs) -setenv:MONO_THREADS_SUSPEND=preemptive</MtouchExtraArgs> -->
-		<MtouchExtraArgs Condition="!$(MtouchExtraArgs.ToLowerInvariant().Contains('--setenv=mono_gc_params=')) and $(DisableXamarinDebug_Workaround) != 'true'">$(MtouchExtraArgs) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
-	</PropertyGroup>
-</Project>

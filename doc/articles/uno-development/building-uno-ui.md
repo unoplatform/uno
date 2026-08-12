@@ -96,13 +96,15 @@ Here are some tips when building the Uno solution and failures happen:
 
 ## Other build-related topics
 
-### Building the reference assemblies for Skia and WebAssembly
+### Building the reference assemblies for the WinRT layer
 
-Skia and WebAssembly+Native use a custom bait-and-switch technique for assemblies for which the `netX.0` target framework assemblies (called reference assemblies) found in NuGet packages (`lib` folder) are only used for building applications. At the end of a head build, those reference assemblies are replaced by public API compatible assemblies located in the `uno-runtime\[target-framework]` folder of NuGet packages.
+`Uno`, `Uno.Foundation` and `Uno.UI.Dispatching` use a bait-and-switch technique: the `netX.0` assemblies found in the `lib` folder of their NuGet packages (called reference assemblies) are only used for building applications. At the end of a head build, they are replaced by public API compatible assemblies located in the `uno-runtime\[target-framework]` folder.
 
-When developing a feature using solution filters, if new public APIs are added, building the Uno.UI solution will not update the reference assemblies, causing applications or libraries using the overridden NuGet cache to be unable to use those newly added APIs.
+The UI assemblies — `Uno.UI`, `Uno.UI.Composition` and the packages built on them — do not take part in this. Their `lib` folder carries the Skia build directly, so building the `Uno.UI` project is enough to update what applications compile against.
 
-In order to update those reference assemblies, set `<UnoTargetFrameworkOverride>...</UnoTargetFrameworkOverride>` to `netX.0`, then open the `Uno.UI-Reference-Only.slnf` filter. You can now build the `Uno.UI` project. Doing this will generate the proper assemblies with the new APIs to be used in applications or libraries using the NuGet cache override.
+When developing a WinRT-layer feature using solution filters, if new public APIs are added, building the Uno.UI solution will not update the reference assemblies, causing applications or libraries using the overridden NuGet cache to be unable to use those newly added APIs.
+
+In order to update those reference assemblies, set `<UnoTargetFrameworkOverride>...</UnoTargetFrameworkOverride>` to `netX.0`, then open the `Uno.UI-Reference-Only.slnf` filter. You can now build the `Uno` project. Doing this will generate the proper assemblies with the new APIs to be used in applications or libraries using the NuGet cache override.
 
 ### Using the Package Diff tool
 

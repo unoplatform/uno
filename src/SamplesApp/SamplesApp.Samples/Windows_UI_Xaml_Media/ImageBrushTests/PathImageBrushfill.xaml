@@ -9,7 +9,6 @@
     xmlns:local="using:Uno.UI.Samples.UITests"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:not_ios="http://uno.ui/not_ios"
-    xmlns:shapes="clr-namespace:Microsoft.UI.Xaml.Shapes;assembly=Uno"
     xmlns:u="using:Uno.UI.Samples.Controls"
     xmlns:uBehaviors="using:Uno.UI.Samples.Behaviors"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"

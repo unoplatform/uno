@@ -147,12 +147,6 @@
         <controls:SampleControl.SampleContent>
             <DataTemplate>
                 <StackPanel>
-                    <TextBlock Text="Native style" />
-                    <Button
-                        android:Style="{StaticResource AndroidButtonStyle}"
-                        ios:Style="{StaticResource iOSButtonStyle}"
-                        Command="{Binding [SampleCommand]}"
-                        Content="{Binding [MyData]}" />
                     <TextBlock Text="UWA style" />
                     <Button Command="{Binding [SampleCommand]}" Content="{Binding [MyData]}" />
                     <TextBlock Text="LabelButtonStyle style" />

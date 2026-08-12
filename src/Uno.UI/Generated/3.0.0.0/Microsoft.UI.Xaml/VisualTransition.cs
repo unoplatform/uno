@@ -3,15 +3,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class VisualTransition : global::Microsoft.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property From
 		// Skipping already declared property GeneratedDuration
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Media.Animation.EasingFunctionBase GeneratedEasingFunction
 		{
 			get

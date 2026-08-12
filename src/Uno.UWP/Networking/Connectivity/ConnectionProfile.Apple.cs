@@ -1,5 +1,5 @@
 using Uno.Networking.Connectivity.Internal;
-#if __IOS__ && !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13931
+#if __IOS__
 using CoreTelephony;
 #endif
 
@@ -30,7 +30,7 @@ namespace Windows.Networking.Connectivity
 		private NetworkConnectivityLevel GetNetworkConnectivityLevelImpl()
 		{
 			var mobileDataRestricted = false;
-#if __IOS__ && !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13931
+#if __IOS__
 			mobileDataRestricted = NetworkInformation.CellularData.RestrictedState == CTCellularDataRestrictedState.Restricted;
 #endif
 			var internetStatus = Reachability.InternetConnectionStatus();

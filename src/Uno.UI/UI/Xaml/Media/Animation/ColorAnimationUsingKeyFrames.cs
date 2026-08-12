@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -426,5 +426,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 
 		IEnumerable IKeyFramesProvider.GetKeyFrames() => KeyFrames;
+
+		private bool ReportEachFrame() => true;
+
+		partial void OnFrame(IValueAnimator currentAnimator)
+		{
+			SetValue(currentAnimator.AnimatedValue);
+		}
 	}
 }

@@ -895,7 +895,7 @@ namespace Microsoft.UI.Xaml
 		private async Task<DataPackageOperation> StartDragAsyncCore(PointerPoint pointer, PointerRoutedEventArgs ptArgs, CancellationToken ct)
 		{
 			ptArgs ??= PointerRoutedEventArgs.LastPointerEvent;
-			if (ptArgs is null || ptArgs.Pointer.PointerDeviceType != pointer.PointerDeviceType)
+			if (ptArgs is null || ptArgs.Pointer.PointerDeviceType != (global::Microsoft.UI.Input.PointerDeviceType)pointer.PointerDeviceType)
 			{
 				// Fairly impossible case ...
 				return DataPackageOperation.None;
@@ -951,14 +951,11 @@ namespace Microsoft.UI.Xaml
 				//		 so we provide the ActualSize to request the image to be scaled back in logical pixels.
 
 				var target = new RenderTargetBitmap();
-#if __SKIA__
-				// RenderAsync completes during a later render pass; the drag visual must instead be
-				// captured without yielding so DragStarted/DragEnter below still fire synchronously
-				// within the DragStarting sequence (matching WinUI).
-				target.RenderSync(this, (int)ActualSize.X, (int)ActualSize.Y);
-#else
-				await target.RenderAsync(this, (int)ActualSize.X, (int)ActualSize.Y);
-#endif
+				// Deliberately not awaited: on Skia the render completes during a later render pass,
+				// and yielding here would break the synchronous DragStarting → DragStarted →
+				// DragEnter/DragOver sequence (matching WinUI). The drag view redraws itself when
+				// the bitmap's pixels arrive (InvalidateSource).
+				_ = target.RenderAsync(this, (int)ActualSize.X, (int)ActualSize.Y);
 
 				routedArgs.DragUI.Content = target;
 				routedArgs.DragUI.Anchor = -ptPosition;
@@ -1596,6 +1593,9 @@ namespace Microsoft.UI.Xaml
 		internal void ReleasePointerCapture(global::Windows.Devices.Input.PointerIdentifier pointer, bool muteEvent = false, PointerCaptureKind kinds = PointerCaptureKind.Explicit)
 		{
 			if (!Release(pointer, kinds, muteEvent: muteEvent)
+				// Release reports whether the CaptureLost event was raised, so it's always false when muted:
+				// don't log the misleading "not captured" trace for a successful muted release.
+				&& !muteEvent
 				&& this.Log().IsEnabled(LogLevel.Information))
 			{
 				this.Log().Info($"{this}: Cannot release pointer {pointer}: not captured by this control.");

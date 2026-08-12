@@ -5,8 +5,8 @@
 		<DefaultItemExcludes Condition="!$(DefaultItemExcludes.Contains('bin/**'))">$(DefaultItemExcludes);bin/**</DefaultItemExcludes>
 		<DefaultItemExcludes Condition="!$(DefaultItemExcludes.Contains('obj/**'))">$(DefaultItemExcludes);obj/**</DefaultItemExcludes>
 
-		<!-- Exclude the Stories folder when in Optimize (aka Release) build configuration -->
-		<DefaultItemExcludes Condition=" '$(Optimize)' == 'true' AND '$(HotDesignStoriesFolder)' != '' ">$(DefaultItemExcludes);$(HotDesignStoriesFolder)/**</DefaultItemExcludes>
+		<!-- Exclude the previews folder when in Optimize (aka Release) build configuration -->
+		<DefaultItemExcludes Condition=" '$(Optimize)' == 'true' AND '$(HotDesignPreviewsFolder)' != '' ">$(DefaultItemExcludes);$(HotDesignPreviewsFolder)/**</DefaultItemExcludes>
 	</PropertyGroup>
 
 	<!-- Default Includes-->

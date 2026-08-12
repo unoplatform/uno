@@ -200,4 +200,81 @@ public class Given_MarkupExtension
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task TestControlAndCompanionExtensionInSameNamespace()
+	{
+		// https://github.com/unoplatform/uno/issues/21992
+		// A control (MyControl) and a companion markup extension (MyControlExtension) in the same
+		// namespace must not be confused. Element syntax binds the control, so the x:Bind on its
+		// property must be generated; brace syntax must still resolve the MyControlExtension.
+		var xamlFile = new XamlFile("MainPage.xaml", """
+			<Page
+				x:Class="TestRepro.MainPage"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:local="using:TestRepro"
+				xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				mc:Ignorable="d">
+
+				<StackPanel>
+					<!-- Element syntax: MyControl is a control, so the x:Bind must be generated -->
+					<local:MyControl MyProperty="{x:Bind Icon}" />
+					<!-- Brace syntax: still resolves the companion MyControlExtension markup extension -->
+					<TextBlock Tag="{local:MyControl Value=FromExtension}" />
+				</StackPanel>
+			</Page>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml.Markup;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+
+							public string Icon => "TestIcon";
+						}
+
+						public partial class MyControl : Control
+						{
+							public string MyProperty
+							{
+								get => (string)GetValue(MyPropertyProperty);
+								set => SetValue(MyPropertyProperty, value);
+							}
+
+							public static readonly DependencyProperty MyPropertyProperty =
+								DependencyProperty.Register(nameof(MyProperty), typeof(string), typeof(MyControl), new PropertyMetadata("Default"));
+						}
+
+						[MarkupExtensionReturnType(ReturnType = typeof(MyControl))]
+						public partial class MyControlExtension : MarkupExtension
+						{
+							public string Value { get; set; }
+
+							protected override object ProvideValue() => new MyControl { MyProperty = Value };
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }

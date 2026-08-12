@@ -3,22 +3,22 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class NonVirtualizingLayout : global::Microsoft.UI.Xaml.Controls.Layout
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.NonVirtualizingLayout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.NonVirtualizingLayout()
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		protected virtual void InitializeForContextCore(global::Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext context)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.NonVirtualizingLayout", "InitializeForContextCore(NonVirtualizingLayoutContext context)");
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		protected virtual void UninitializeForContextCore(global::Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext context)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.NonVirtualizingLayout", "UninitializeForContextCore(NonVirtualizingLayoutContext context)");

@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition.Scenes
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ScenePbrMaterial : global::Microsoft.UI.Composition.Scenes.SceneMaterial
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public float AlphaCutoff
 		{
 			get
@@ -22,8 +22,8 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Composition.Scenes.SceneAlphaMode AlphaMode
 		{
 			get
@@ -36,8 +36,8 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::System.Numerics.Vector3 EmissiveFactor
 		{
 			get
@@ -50,8 +50,8 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Composition.Scenes.SceneMaterialInput EmissiveInput
 		{
 			get
@@ -64,8 +64,8 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsDoubleSided
 		{
 			get
@@ -78,8 +78,8 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Composition.Scenes.SceneMaterialInput NormalInput
 		{
 			get
@@ -92,8 +92,8 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public float NormalScale
 		{
 			get
@@ -106,8 +106,8 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Composition.Scenes.SceneMaterialInput OcclusionInput
 		{
 			get
@@ -120,8 +120,8 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public float OcclusionStrength
 		{
 			get

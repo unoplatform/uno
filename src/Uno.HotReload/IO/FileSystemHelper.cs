@@ -39,13 +39,20 @@ internal static class FileSystemHelper
 
 		var tcs = new TaskCompletionSource();
 		using var watcher = new FileSystemWatcher(dir.FullName);
-		watcher.Changed += (snd, e) =>
+
+		// Watch both Changed (edits to an existing file) and Created (a fresh file, e.g. Hot Design
+		// adding a page): some platforms only raise Created on creation, so subscribing to Changed
+		// alone would never resolve and always wait the full timeout below.
+		void OnFileEvent(object snd, FileSystemEventArgs e)
 		{
 			if (e.FullPath.Equals(file.FullName, StringComparison.OrdinalIgnoreCase))
 			{
 				tcs.TrySetResult();
 			}
-		};
+		}
+
+		watcher.Changed += OnFileEvent;
+		watcher.Created += OnFileEvent;
 		watcher.EnableRaisingEvents = true;
 
 		if (await Task.WhenAny(tcs.Task, Task.Delay(TimeSpan.FromSeconds(5))) != tcs.Task)

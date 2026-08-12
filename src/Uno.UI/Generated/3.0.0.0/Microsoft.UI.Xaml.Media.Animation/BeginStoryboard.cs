@@ -4,7 +4,7 @@
 namespace Microsoft.UI.Xaml.Media.Animation
 {
 	[global::Microsoft.UI.Xaml.Markup.ContentPropertyAttribute(Name = "Storyboard")]
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class BeginStoryboard : global::Microsoft.UI.Xaml.TriggerAction

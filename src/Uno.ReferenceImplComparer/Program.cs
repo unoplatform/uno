@@ -27,11 +27,22 @@ namespace Uno.ReferenceImplComparer
 
 			foreach (var targetFramework in referenceTargetFrameworks)
 			{
-				foreach (var assembly in Directory.GetFiles(Path.Combine(filePath, "lib", targetFramework), "*.dll"))
+				var libDirectory = Path.Combine(filePath, "lib", targetFramework);
+				var runtimeDirectory = Path.Combine(filePath, "uno-runtime", targetFramework);
+
+				// A package that ships a single assembly per target framework has no runtime flavor
+				// to compare against, and not every package covers every target framework.
+				if (!Directory.Exists(libDirectory) || !Directory.Exists(runtimeDirectory))
+				{
+					Console.WriteLine($"Skipping {targetFramework} (no reference/runtime pair to compare)");
+					continue;
+				}
+
+				foreach (var assembly in Directory.GetFiles(libDirectory, "*.dll"))
 				{
 					var referenceAssemblyDefinition = ReadAssemblyDefinition(assembly);
 
-					foreach (var runtimeAssembly in Directory.GetFiles(Path.Combine(filePath, "uno-runtime", targetFramework), Path.GetFileName(assembly), SearchOption.AllDirectories))
+					foreach (var runtimeAssembly in Directory.GetFiles(runtimeDirectory, Path.GetFileName(assembly), SearchOption.AllDirectories))
 					{
 						var identifier = $"{Path.GetFileName(runtimeAssembly)}/{Path.GetFileName(Path.GetDirectoryName(runtimeAssembly))}";
 						Console.WriteLine($"Validating {identifier} ({runtimeAssembly})");

@@ -1,7 +1,5 @@
 #!/bin/bash
 
-pushd $GITPOD_REPO_ROOT/src/SamplesApp/SamplesApp.Wasm
+WWWROOT=$(ls -d $GITPOD_REPO_ROOT/src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/bin/Debug/*/publish/wwwroot | head -1)
 
-dotnet $NUGET_PACKAGES/uno.wasm.bootstrap.devserver/*/tools/server/dotnet-unowasm.dll serve --urls=http://*:8000 --pathbase $GITPOD_REPO_ROOT/src/SamplesApp/SamplesApp.Wasm/bin/Debug/netstandard2.0/dist
-
-popd
+python3 -m http.server 8000 -d "$WWWROOT"

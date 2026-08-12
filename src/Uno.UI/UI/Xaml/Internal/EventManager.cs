@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 
 using System;
 using System.Collections.Generic;
@@ -135,4 +134,3 @@ internal sealed partial class EventManager
 	}
 }
 
-#endif

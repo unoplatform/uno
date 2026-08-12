@@ -693,7 +693,6 @@ namespace Microsoft.UI.Xaml
 
 					RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 					// MUX Reference: CDependencyObject::UpdateEffectiveValue — PropertySystem.cpp:1893-1898,
 					// commit fc2f82117: after a direct SetValue is applied (and its theme reference cleared
 					// above), notify the new value of the theme that was applied to the property owner, so a
@@ -717,7 +716,6 @@ namespace Microsoft.UI.Xaml
 					{
 						NotifyPropertyValueOfThemeChange(property, newValue);
 					}
-#endif
 				}
 				finally
 				{
@@ -1975,7 +1973,6 @@ namespace Microsoft.UI.Xaml
 			bool bypassesPropagation = false
 		)
 		{
-			//var propertyChangedParams = new PropertyChangedParams(property, previousValue, newValue);
 			var propertyMetadata = property.Metadata;
 
 			// We can reuse the weak reference, otherwise capture the weak reference to this instance.
@@ -2116,7 +2113,6 @@ namespace Microsoft.UI.Xaml
 			{
 				previousObject.SetParent(null);
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				// MUX Reference: CDependencyObject::LeaveEffectiveValue (PropertySystem.cpp:1355-1403,
 				// commit fc2f82117) — a DO value replaced on a live owner leaves the tree at set-time.
 				// TODO Uno: WinUI gates on pDP->IsVisualTreeProperty(); Uno's closest curated equivalent
@@ -2125,14 +2121,12 @@ namespace Microsoft.UI.Xaml
 				{
 					LeaveObjectProperty(previousObject, null, new Uno.UI.Xaml.LeaveParams(isLive: true));
 				}
-#endif
 			}
 
 			if (newValue is DependencyObject newObject)
 			{
 				newObject.SetParent(actualInstanceAlias);
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				// MUX Reference: CDependencyObject::EnterEffectiveValue (PropertySystem.cpp:1093-1161,
 				// commit fc2f82117) — a DO assigned to a visual-tree property of a live owner enters the
 				// tree at set-time (isLive = IsActive()), so it carries a theme before any of its
@@ -2142,7 +2136,6 @@ namespace Microsoft.UI.Xaml
 				{
 					EnterObjectProperty(newObject, null, new Uno.UI.Xaml.EnterParams(isLive: true));
 				}
-#endif
 			}
 		}
 
@@ -2219,21 +2212,19 @@ namespace Microsoft.UI.Xaml
 		private void ReevaluateBaseValue(DependencyPropertyDetails propertyDetails)
 		{
 			// When local value or style value are cleared, we want to re-evaluate base value and set the value with the right precedence.
-			// The new base value will either be Style (explicit or implicit) or DefaultStyle (aka built-in style)
+			// The new base value will either be an applied style (explicit or implicit) or the built-in style.
 			var actualInstance = ActualInstance;
 			if (actualInstance is FrameworkElement fe &&
 				fe.TryGetValueFromStyle(propertyDetails.Property, out var valueFromStyle) &&
 				valueFromStyle != DependencyProperty.UnsetValue)
 			{
-				// NOTE: ExplicitStyle here actually means ExplicitOrImplicitStyle. This will be fixed with https://github.com/unoplatform/uno/pull/15684/
-				SetValueInternal(valueFromStyle, DependencyPropertyValuePrecedences.ExplicitStyle, propertyDetails);
+				SetValueInternal(valueFromStyle, DependencyPropertyValuePrecedences.Style, propertyDetails);
 			}
 			else if (actualInstance is Control control &&
 				control.TryGetValueFromBuiltInStyle(propertyDetails.Property, out var valueFromBuiltInStyle) &&
 				valueFromBuiltInStyle != DependencyProperty.UnsetValue)
 			{
-				// NOTE: ImplicitStyle here actually means DefaultStyle. This will be fixed with https://github.com/unoplatform/uno/pull/15684/
-				SetValueInternal(valueFromBuiltInStyle, DependencyPropertyValuePrecedences.ImplicitStyle, propertyDetails);
+				SetValueInternal(valueFromBuiltInStyle, DependencyPropertyValuePrecedences.BuiltInStyle, propertyDetails);
 			}
 		}
 
@@ -2263,9 +2254,8 @@ namespace Microsoft.UI.Xaml
 			// TODO Uno Specific: The check is a bit different in WinUI, but should have the same effect.
 			bool hasLocalValue = !(
 				precedence == DependencyPropertyValuePrecedences.DefaultValue ||
-				precedence == DependencyPropertyValuePrecedences.DefaultStyle ||
-				precedence == DependencyPropertyValuePrecedences.ExplicitStyle ||
-				precedence == DependencyPropertyValuePrecedences.ImplicitStyle);
+				precedence == DependencyPropertyValuePrecedences.BuiltInStyle ||
+				precedence == DependencyPropertyValuePrecedences.Style);
 
 			return hasLocalValue;
 		}

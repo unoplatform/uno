@@ -4,16 +4,16 @@
 namespace Microsoft.UI.Xaml
 {
 	[global::System.FlagsAttribute]
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum Vector3TransitionComponents : uint
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		X = 1,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Y = 2,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Z = 4,
 #endif
 	}

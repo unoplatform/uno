@@ -151,7 +151,7 @@ This situation is due to an MSBuild property overriding bug found in the .NET SD
 
 ### UNOB0017: A reference to either Uno.WinUI.Runtime.WebAssembly or Uno.WinUI.WebAssembly has been detected
 
-When the `SkiaRenderer` feature is enabled, the `Uno.WinUI.Runtime.WebAssembly` and `Uno.WinUI.WebAssembly` packages must not be referenced directly.
+The `Uno.WinUI.Runtime.WebAssembly` and `Uno.WinUI.WebAssembly` packages must not be referenced directly alongside the Skia browser head. Removing the explicit reference resolves the diagnostic.
 
 This is generally a package authoring error, make sure to open an issue in the Uno Platform repository to report the problem.
 
@@ -162,6 +162,22 @@ On macOS code signing will fail if the project's output is located inside a dire
 ref: https://developer.apple.com/library/archive/qa/qa1940/_index.html
 
 Solution: Move your Uno solution/project(s) to a different location, one that is not backed up by iCloud.
+
+### UNOB0019: The DevServer package cannot be used with optimized builds
+
+The DevServer package (Uno.WinUI.DevServer or Uno.UI.DevServer) is intended for development builds only and provides features such as Hot Reload and Remote Control debugging. These features should not be included in optimized/release builds.
+
+To fix this issue:
+
+- If you're building for release, remove the `PackageReference` to `Uno.WinUI.DevServer` or `Uno.UI.DevServer` from your project file
+- If you need to keep the package reference, set `<Optimize>false</Optimize>` in your project configuration
+- Consider using conditional package references that only include DevServer in Debug configuration:
+
+```xml
+<ItemGroup Condition="'$(Configuration)' == 'Debug'">
+  <PackageReference Include="Uno.WinUI.DevServer" Version="X.X.X" />
+</ItemGroup>
+```
 
 ## Compiler Errors
 
@@ -209,6 +225,21 @@ window.EnableHotReload();
 ### UNOX0001
 
 The `ProgressRing` control [needs an additional Lottie](xref:Uno.Features.Lottie) dependency to be enabled.
+
+### UXAML0006
+
+**The 'clr-namespace:' XAML namespace form is not supported**
+
+WinUI only supports the `using:` xmlns form. The WPF/Silverlight `clr-namespace:` form was accepted by Uno before version 7.0 and is now an error.
+
+```diff
+- xmlns:local="clr-namespace:MyApp.Controls;assembly=MyLib"
++ xmlns:local="using:MyApp.Controls"
+```
+
+The assembly is inferred from the compilation, so the `;assembly=` token has no replacement — drop it. The declaration is rejected even when its prefix is never used; the only exemption is a prefix listed in `mc:Ignorable` on the root element.
+
+The same rule is enforced at run time by `XamlReader.Load` and Hot Reload, which throw a `XamlParseException`.
 
 ## VS Code Errors
 

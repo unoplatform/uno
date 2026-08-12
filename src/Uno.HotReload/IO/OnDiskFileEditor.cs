@@ -54,6 +54,13 @@ public class OnDiskFileEditor(IReporter? reporter = null) : IFileEditor
 			return (FileUpdateResult.FileNotFound, $"Requested file '{edit.FilePath}' does not exist.");
 		}
 
+		// A file creation may target a folder that does not exist yet (e.g. Hot Design creating a
+		// page in a new directory); File.WriteAllTextAsync does not create it.
+		if (edit.IsCreateDeleteAllowed && Path.GetDirectoryName(edit.FilePath) is { Length: > 0 } directory)
+		{
+			Directory.CreateDirectory(directory);
+		}
+
 		var effectiveUpdate = FileSystemHelper.WaitForFileUpdated(edit.FilePath, reporter);
 		await File.WriteAllTextAsync(edit.FilePath, edit.NewText!);
 		await effectiveUpdate;

@@ -562,15 +562,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		public Rect GetBoundingRectangle()
 		{
-			Rect localRect = new Rect(0, 0, 0, 0);
-
-			if (m_inputTarget is FrameworkElement inputTarget)
+			if (m_inputTarget is not FrameworkElement inputTarget)
 			{
-				localRect.Width = inputTarget.ActualWidth;
-				localRect.Height = inputTarget.ActualHeight;
+				return default;
 			}
 
-			var globalBounds = TransformToVisual(null).TransformBounds(localRect);
+#if __SKIA__
+			var globalBounds = inputTarget.GetGlobalBoundsWithOptions(
+				ignoreClipping: false,
+				ignoreClippingOnScrollContentPresenters: false,
+				useTargetInformation: false);
+#else
+			var localRect = new Rect(0, 0, inputTarget.ActualWidth, inputTarget.ActualHeight);
+			var globalBounds = inputTarget.TransformToVisual(null).TransformBounds(localRect);
+#endif
 			return SharedHelpers.ConvertDipsToPhysical(this, globalBounds);
 		}
 

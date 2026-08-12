@@ -122,10 +122,9 @@ Combined impact on `SamplesApp.Skia.Generic` (Windows, 32-core, warm NuGet cache
 
 | Platform | Solution Filter |
 |----------|-----------------|
-| WebAssembly | `Uno.UI-Wasm-only.slnf` |
-| Skia (Desktop) | `Uno.UI-Skia-only.slnf` |
-| Mobile (Android/iOS) | `Uno.UI-netcore-mobile-only.slnf` |
+| Skia (Desktop, WebAssembly, Android, iOS) | `Uno.UI-Skia-only.slnf` |
 | Windows | `Uno.UI-Windows-only.slnf` |
+| Reference API | `Uno.UI-Reference-Only.slnf` |
 | Unit Tests | `Uno.UI-UnitTests-only.slnf` |
 
 **4. Build commands:**
@@ -176,7 +175,7 @@ On Android/iOS, `DependencyObject` is an **interface** (not base class) since `U
 
 ### Project Organization
 
-Most libraries have 5 variants: Reference, Skia, WebAssembly, NetCoreMobile, Tests.
+The WinRT layer (`Uno.UWP`, `Uno.Foundation`, `Uno.UI.Dispatching`) keeps per-platform variants: Reference, Skia, WebAssembly, NetCoreMobile. From `Uno.UI` upwards the UI layer ships a single Skia build, which also serves as the compile reference — there is no `.Reference` variant of those projects.
 
 ### Runtime Target Selection
 
@@ -222,7 +221,7 @@ Run these after making changes:
 2. **Unit tests**: `dotnet test Uno.UI.UnitTests/Uno.UI.UnitTests.csproj --no-build`
 3. **Runtime tests** (UI changes): Use `/runtime-tests` skill (Skia Desktop default, pass test class/method name as argument)
 4. **WinUI parity** (validate against native WinUI): Use `/winui-runtime-tests` skill
-5. **Sample app** (visual changes): `cd src/SamplesApp/SamplesApp.Wasm && dotnet run`
+5. **Sample app** (visual changes): `cd src/SamplesApp/SamplesApp.Skia.Generic && dotnet run`
 6. **XAML formatting** (SamplesApp changes): `dotnet xstyler -d src/SamplesApp -r`
 
 ### SamplesApp: Add XAML files

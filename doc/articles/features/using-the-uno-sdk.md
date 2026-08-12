@@ -79,7 +79,7 @@ Here are the supported features:
 | `Serialization`      | Adds support for [Serialization](xref:Uno.Extensions.Serialization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                         |
 | `SimpleTheme`        | Adds support for the [Simple Design Theme](xref:Uno.Themes.Simple.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the Simple Design Toolkit library.                                                    |
 | `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp).                                                                                                                                                                           |
-| `SkiaRenderer`       | Adds support for using Skia as the graphics rendering engine. For more details, see [Skia Rendering documentation](xref:uno.features.renderer.skia).                                                                                               |
+| `SkiaRenderer`       | No-op, kept for backwards compatibility. Skia is always used as the graphics rendering engine on Uno Platform targets. The WinAppSDK target is not provided by Uno Platform and always renders natively with WinUI. For more details, see [Skia Rendering documentation](xref:uno.features.renderer.skia). |
 | `SpellChecking`      | Adds support for [spell-checking](xref:Uno.Features.SpellChecking) in TextBox controls on all Skia-based targets via [Uno.WinUI.SpellChecking](https://www.nuget.org/packages/Uno.WinUI.SpellChecking).                                    |
 | `Storage`            | Adds support for [Storage](xref:Uno.Extensions.Storage.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
 | `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, and Android. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
@@ -270,7 +270,7 @@ By default, the Uno.Sdk specifies a set of OS Platform versions, as follows:
 
 | Target | `SupportedOSPlatformVersion` |
 |--------|----------------------------|
-| Android | 21 |
+| Android | 24 |
 | iOS | 14.2 |
 | macOS | 10.14 |
 | tvOS  | 14.2 |
@@ -282,7 +282,7 @@ You can set this property in a `Choose` MSBuild block in order to alter its valu
  <Choose>
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
       <PropertyGroup>
-        <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
       </PropertyGroup>
     </When>
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
@@ -399,13 +399,11 @@ In addition to the per-file suffixes described above, the Uno.Sdk recognizes a s
 | `Platforms/Android/` | `*-android` | `Main.Android.cs`, `AndroidManifest.xml`, Android resources |
 | `Platforms/iOS/` | `*-ios` | `Main.iOS.cs`, `Info.plist`, `Entitlements.plist`, `PrivacyInfo.xcprivacy` |
 | `Platforms/tvOS/` | `*-tvos` | tvOS-specific entry point and resources |
-| `Platforms/MacCatalyst/` | `*-maccatalyst` | Mac Catalyst entry point, `Info.plist`, `Entitlements.plist` |
-| `Platforms/MacOS/` | `*-macos` | macOS entry point, `Info.plist`, `Entitlements.plist` |
 | `Platforms/Desktop/` | `*-desktop` | `Program.cs` with the `UnoPlatformHostBuilder` configuration |
 | `Platforms/Wasm/` (or `Platforms/WebAssembly/`) | `*-browserwasm` | `Program.cs`, `wwwroot/`, `manifest.webmanifest` |
 | `Platforms/Windows/` | `*-windows10.*` | `Package.appxmanifest`, `app.manifest`, splash screens, tile/app-icon PNGs referenced by the manifest |
 
-The location of each folder can be overridden via the matching MSBuild property if your project uses a different layout: `PlatformsProjectFolder`, `AndroidProjectFolder`, `iOSProjectFolder`, `tvOSProjectFolder`, `MacCatalystProjectFolder`, `MacOSProjectFolder`, `DesktopProjectFolder`, `WasmProjectFolder`, `WindowsProjectFolder`.
+The location of each folder can be overridden via the matching MSBuild property if your project uses a different layout: `PlatformsProjectFolder`, `AndroidProjectFolder`, `iOSProjectFolder`, `tvOSProjectFolder`, `DesktopProjectFolder`, `WasmProjectFolder`, `WindowsProjectFolder`.
 
 ## Apple Privacy Manifest Support
 

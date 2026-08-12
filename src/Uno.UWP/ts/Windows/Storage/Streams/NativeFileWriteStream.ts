@@ -4,7 +4,6 @@
 		private static _streamMap: Map<string, NativeFileWriteStream> = new Map<string, NativeFileWriteStream>();
 
 		private _stream: FileSystemWritableFileStream;
-		private _buffer: Uint8Array;
 
 		private constructor(stream: FileSystemWritableFileStream) {
 			this._stream = stream;
@@ -46,21 +45,16 @@
 			return false;
 		}
 
-		public static async writeAsync(streamId: string, dataArrayPointer: number, offset: number, count: number, position: number): Promise<string> {			
+		public static async writeAsync(streamId: string, dataArrayPointer: number, offset: number, count: number, position: number): Promise<string> {
 			const instance = NativeFileWriteStream._streamMap.get(streamId);
 
-			if (!instance._buffer || instance._buffer.length < count) {
-				instance._buffer = new Uint8Array(count);
-			}
-
-			var clampedArray = new Uint8Array(count);
-			for (var i = 0; i < count; i++) {
-				clampedArray[i] = Module.HEAPU8[dataArrayPointer + i + offset];
-			}
+			// Copy out of the WASM heap in a single operation. The copy must not alias
+			// Module.HEAPU8 - the heap may grow (and detach the buffer) during the await below.
+			const data = Module.HEAPU8.slice(dataArrayPointer + offset, dataArrayPointer + offset + count);
 
 			await instance._stream.write({
 				type: 'write',
-				data: clampedArray.subarray(0, count).buffer,
+				data: data.buffer,
 				position: position
 			})
 			return "";

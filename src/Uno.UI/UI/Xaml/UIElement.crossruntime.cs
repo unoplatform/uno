@@ -25,6 +25,10 @@ namespace Microsoft.UI.Xaml
 	{
 		internal bool IsActiveInVisualTree { get; private set; }
 
+		private Microsoft.UI.Composition.Compositor _elementVisualCompositor;
+		private protected Microsoft.UI.Composition.Compositor ElementVisualCompositor
+			=> _elementVisualCompositor ?? Microsoft.UI.Composition.Compositor.GetSharedCompositor();
+
 		private static protected readonly Logger _log = typeof(UIElement).Log();
 		private static protected readonly Logger _logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
 		private static protected readonly Logger _logTrace = _log.IsEnabled(LogLevel.Trace) ? _log : null;
@@ -90,7 +94,7 @@ namespace Microsoft.UI.Xaml
 			UpdateHitTest();
 		}
 
-#if __SKIA__ || __WASM__
+#if __SKIA__
 		private void OnChildAdded(UIElement child)
 		{
 			if (!child._isFrameworkElement)
@@ -105,14 +109,12 @@ namespace Microsoft.UI.Xaml
 					this.Log().Debug($"{this.GetDebugName()}: Inconsistent state: child {child} is already loaded (OnChildAdded). Common cause for this is an exception during Unloaded handling.");
 				}
 			}
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			else if (child.IsActiveInVisualTree)
 			{
 				var context = this.GetContext();
 				var eventManager = context.EventManager;
 				eventManager.RequestRaiseLoadedEventOnNextTick();
 			}
-#endif
 		}
 
 		private void OnChildRemoved(UIElement child)
@@ -120,17 +122,14 @@ namespace Microsoft.UI.Xaml
 			child.Shutdown();
 			(child as IDependencyObjectStoreProvider)?.Store.ClearInheritedDataContext();
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			var leaveParams = new LeaveParams(IsActiveInVisualTree);
 			child.Leave(leaveParams);
-#endif
 		}
 #endif
 
 		internal Point GetPosition(Point position, UIElement relativeTo)
 			=> TransformToVisual(relativeTo).TransformPoint(position);
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		private void ChildEnter(UIElement child, EnterParams @params)
 		{
 			// Uno TODO: WinUI has much more complex logic than this.
@@ -152,7 +151,6 @@ namespace Microsoft.UI.Xaml
 				child.Enter(@params, int.MinValue);
 			}
 		}
-#endif
 
 #if DEBUG
 

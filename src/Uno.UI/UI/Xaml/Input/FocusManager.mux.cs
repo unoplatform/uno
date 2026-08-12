@@ -236,7 +236,14 @@ namespace Microsoft.UI.Xaml.Input
 		/// Original code checks for "shutting down", which is not supported in Uno,
 		/// so we always go through UpdateFocus.
 		/// </remarks>
-		internal void ClearFocus() => UpdateFocus(new FocusMovement(null, FocusNavigationDirection.None, FocusState.Unfocused));
+		internal void ClearFocus(bool canCancel = true)
+		{
+			var movement = new FocusMovement(null, FocusNavigationDirection.None, FocusState.Unfocused)
+			{
+				CanCancel = canCancel
+			};
+			UpdateFocus(movement);
+		}
 
 		/// <summary>
 		/// Releases resources held by FocusManager's FocusRectManager. These
@@ -2682,7 +2689,9 @@ namespace Microsoft.UI.Xaml.Input
 					GettingFocus?.Invoke(null, (args as GettingFocusEventArgs)!);
 				}
 
-				finalGettingFocusElement = args.NewFocusedElement;
+				finalGettingFocusElement = _currentFocusOperationCancellable
+					? args.NewFocusedElement
+					: gettingFocusElement;
 
 				// Check if :
 				// 1. Focus was redirected
@@ -2712,7 +2721,7 @@ namespace Microsoft.UI.Xaml.Input
 				//2. The focus target is the same as the old focused element
 				//3. The focus was redirected to null
 				//4. The focus target after a redirection is not focusable and has no focusable children
-				if (args.Cancel
+				if ((_currentFocusOperationCancellable && args.Cancel)
 					|| (finalGettingFocusElement == losingFocusElement)
 					|| (gettingFocusElement != null && (finalGettingFocusElement == null)))
 				{

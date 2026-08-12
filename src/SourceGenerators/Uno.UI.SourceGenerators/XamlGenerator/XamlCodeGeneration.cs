@@ -723,20 +723,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			// Try "using:" or "clr-namespace:" prefixed namespaces
+			// Try "using:" prefixed namespaces
 			var nsName = trimmedNamespace;
 			if (nsName.StartsWith("using:", StringComparison.Ordinal))
 			{
 				nsName = nsName.Substring("using:".Length);
-			}
-			else if (nsName.StartsWith("clr-namespace:", StringComparison.Ordinal))
-			{
-				nsName = nsName.Substring("clr-namespace:".Length);
-				var semiIndex = nsName.IndexOf(';');
-				if (semiIndex > 0)
-				{
-					nsName = nsName.Substring(0, semiIndex);
-				}
 			}
 
 			return _metadataHelper.FindTypeByFullName(nsName + "." + xamlType.Name) as INamedTypeSymbol;
@@ -785,7 +776,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			foreach (var exception in Flatten(e))
 			{
 				var diagnostic = Diagnostic.Create(
-					XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
+					(exception as XamlParsingException)?.Descriptor ?? XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
 					GetExceptionFileLocation(exception),
 					exception.Message);
 
@@ -1094,14 +1085,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								// We leave context null because local resources should be found through Application.Resources
 								// Pass ALC to support secondary ALC scenarios
-								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.LocalResourcePrefix}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary, {filePath}, __alc);");
+								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.MsResourceFilesPrefix}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary, {filePath}, __alc);");
 								// Local resources can also be found through the ms-appx:/// prefix
 								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.AppXIdentifier}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary, null, __alc);");
 							}
 							else
 							{
 								// Standard registration without ALC support
-								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.LocalResourcePrefix}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary, {filePath});");
+								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.MsResourceFilesPrefix}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary, {filePath});");
 								// Local resources can also be found through the ms-appx:/// prefix
 								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.AppXIdentifier}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary);");
 							}

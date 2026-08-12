@@ -80,7 +80,7 @@ namespace Windows.UI.Input
 			Owner = owner;
 		}
 
-		public void ProcessDownEvent(PointerPoint value)
+		public void ProcessDownEvent(global::Microsoft.UI.Input.PointerPoint value)
 		{
 			// Sanity validation. This is pretty important as the Gesture now has an internal state for the Holding state.
 			if (_gestures.TryGetValue(value.Pointer, out var previousGesture))
@@ -113,7 +113,7 @@ namespace Windows.UI.Input
 			}
 		}
 
-		public void ProcessMoveEvents(IList<PointerPoint> value)
+		public void ProcessMoveEvents(IList<global::Microsoft.UI.Input.PointerPoint> value)
 		{
 			// Even if the pointer was considered as irrelevant, we still buffer it as it is part of the user interaction
 			// and we should considered it for the gesture recognition when processing the up.
@@ -136,14 +136,14 @@ namespace Windows.UI.Input
 
 		// Manipulation <Completed|InertiaStaring> has to be raised BEFORE the pointer up
 		// The allows users to update the manipulation before anything else.
-		internal void ProcessBeforeUpEvent(PointerPoint value, bool isRelevant)
+		internal void ProcessBeforeUpEvent(global::Microsoft.UI.Input.PointerPoint value, bool isRelevant)
 		{
 			_manipulation?.Remove(value);
 		}
 
-		public void ProcessUpEvent(PointerPoint value) => ProcessUpEvent(value, true);
+		public void ProcessUpEvent(global::Microsoft.UI.Input.PointerPoint value) => ProcessUpEvent(value, true);
 
-		internal void ProcessUpEvent(PointerPoint value, bool isRelevant)
+		internal void ProcessUpEvent(global::Microsoft.UI.Input.PointerPoint value, bool isRelevant)
 		{
 			if (_gestures.Remove(value.Pointer, out var gesture))
 			{
@@ -236,7 +236,7 @@ namespace Windows.UI.Input
 		public event TypedEventHandler<GestureRecognizer, RightTappedEventArgs> RightTapped;
 		public event TypedEventHandler<GestureRecognizer, HoldingEventArgs> Holding;
 
-		public bool CanBeDoubleTap(PointerPoint value)
+		public bool CanBeDoubleTap(global::Microsoft.UI.Input.PointerPoint value)
 			=> _gestureSettings.HasFlag(GestureSettings.DoubleTap) && Gesture.IsMultiTapGesture(_lastSingleTap, value);
 		#endregion
 
@@ -248,13 +248,13 @@ namespace Windows.UI.Input
 		public event TypedEventHandler<GestureRecognizer, DraggingEventArgs> Dragging;
 		#endregion
 
-		private delegate bool CheckButton(PointerPoint point);
+		private delegate bool CheckButton(global::Microsoft.UI.Input.PointerPoint point);
 
-		private static readonly CheckButton LeftButton = (PointerPoint point) => point.Properties.IsLeftButtonPressed;
-		private static readonly CheckButton RightButton = (PointerPoint point) => point.Properties.IsRightButtonPressed;
-		private static readonly CheckButton BarrelButton = (PointerPoint point) => point.Properties.IsBarrelButtonPressed;
+		private static readonly CheckButton LeftButton = (global::Microsoft.UI.Input.PointerPoint point) => point.Properties.IsLeftButtonPressed;
+		private static readonly CheckButton RightButton = (global::Microsoft.UI.Input.PointerPoint point) => point.Properties.IsRightButtonPressed;
+		private static readonly CheckButton BarrelButton = (global::Microsoft.UI.Input.PointerPoint point) => point.Properties.IsBarrelButtonPressed;
 
-		private static ulong GetPointerIdentifier(PointerPoint point)
+		private static ulong GetPointerIdentifier(global::Microsoft.UI.Input.PointerPoint point)
 		{
 			// For mouse, the PointerId is the same, no matter the button pressed.
 			// The only thing that changes are flags in the properties.

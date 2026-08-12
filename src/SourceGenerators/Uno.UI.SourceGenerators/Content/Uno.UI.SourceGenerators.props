@@ -13,7 +13,7 @@
 		<_IsAndroid Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">true</_IsAndroid>
 		<_IsAndroid Condition="'$(_IsAndroid)' == ''">false</_IsAndroid>
 
-		<_IsIOS Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">true</_IsIOS>
+		<_IsIOS Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">true</_IsIOS>
 		<_IsIOS Condition="'$(_IsIOS)' == ''">false</_IsIOS>
 
 		<_IsTvOS Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">true</_IsTvOS>

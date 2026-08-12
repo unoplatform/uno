@@ -156,7 +156,6 @@ namespace Microsoft.UI.Xaml
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeFirstChild(finalSize);
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal override void EnterImpl(EnterParams @params, int depth)
 		{
 			// the base impl would cause immediately materialization by loading this stub
@@ -167,7 +166,6 @@ namespace Microsoft.UI.Xaml
 		{
 			// do nothing
 		}
-#endif
 
 		private protected override void OnLoaded()
 		{

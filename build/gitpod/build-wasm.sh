@@ -4,4 +4,6 @@ export NUGET_PACKAGES=/workspace/.nuget
 
 GITPOD_HOSTNAME=`echo $GITPOD_WORKSPACE_URL | sed -s 's/https:\/\///g'`
 
-dotnet build /bl src/Uno.UI-Wasm-only.slnf /p:UnoTargetFrameworkOverride=net10.0 /p:EnableWindowsTargeting=true /p:UnoRemoteControlPort=443 "/p:UnoRemoteControlHost=53487-$GITPOD_HOSTNAME"
+# The browser target runs on Skia; publishing the head produces the wwwroot that
+# serve-sampleapp-wasm.sh serves.
+dotnet publish /bl src/SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj -c Debug /p:EnableWindowsTargeting=true /p:UnoRemoteControlPort=443 "/p:UnoRemoteControlHost=53487-$GITPOD_HOSTNAME"

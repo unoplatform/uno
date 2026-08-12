@@ -61,7 +61,7 @@ namespace Uno.UI.Samples.Controls
 			base.OnDataContextChanged();
 
 			// Workaround to #10396: The DataContext of ContentTemplate should be ContentControl.DataContext if ContentControl.Content is not set.
-			this.SetValue(ContentProperty, DataContext, DependencyPropertyValuePrecedences.DefaultStyle);
+			this.SetValue(ContentProperty, DataContext, DependencyPropertyValuePrecedences.BuiltInStyle);
 		}
 #endif
 	}

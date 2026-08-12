@@ -9,7 +9,6 @@
     xmlns:local="using:Uno.UI.Samples.UITests"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:not_ios="http://nventive.com/not_ios"
-    xmlns:shapes="clr-namespace:Uno.UI.Xaml.Shapes;assembly=nVentive.Umbrella"
     xmlns:u="using:Uno.UI.Samples.Controls"
     xmlns:uBehaviors="using:Uno.UI.Samples.Behaviors"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"

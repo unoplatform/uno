@@ -4,6 +4,7 @@ exclude_paths:
   - 'src/SamplesApp/**'
   - '**/tsBindings/*.ts'
   - 'doc/**'
+  - 'specs/**'
   - 'src/Uno.UI/UI/Xaml/Controls/Repeater/**'
   - 'src/Uno.UI/UI/Xaml/Controls/CalendarView/**'
   - 'src/Uno.UI/DirectUI/**'

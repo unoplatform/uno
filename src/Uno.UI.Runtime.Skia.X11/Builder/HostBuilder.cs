@@ -18,6 +18,9 @@ public static class HostBuilder
 
 	public static IUnoPlatformHostBuilder UseX11(this IUnoPlatformHostBuilder builder, Action<X11HostBuilder> action)
 	{
+		// Eager: AddHostBuilder defers the callback, so a null would only fault when the host is built.
+		ArgumentNullException.ThrowIfNull(action);
+
 		builder.AddHostBuilder(() =>
 		{
 			var x11Builder = new X11HostBuilder();

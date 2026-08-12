@@ -166,15 +166,14 @@ internal static class DependencyPropertyHelper
 		if (obj is FrameworkElement fe && fe.TryGetValueFromStyle(dependencyProperty, out var valueFromStyle))
 		{
 			// .TryGetValueFromStyle() will return false if the value is UnsetValue
-			return (valueFromStyle, DependencyPropertyValuePrecedences.ExplicitStyle);
+			return (valueFromStyle, DependencyPropertyValuePrecedences.Style);
 		}
 
 		// 2nd: Check built-in style value, if any
-		if (obj is Control control && control.TryGetValueFromBuiltInStyle(dependencyProperty, out var valueFromImplicitStyle))
+		if (obj is Control control && control.TryGetValueFromBuiltInStyle(dependencyProperty, out var valueFromBuiltInStyle))
 		{
 			// .TryGetValueFromBuiltInStyle() will return false if the value is UnsetValue
-			// NOTE: ExplicitStyle here actually means ExplicitOrImplicitStyle. This will be fixed with https://github.com/unoplatform/uno/pull/15684/
-			return (valueFromImplicitStyle, DependencyPropertyValuePrecedences.ImplicitStyle);
+			return (valueFromBuiltInStyle, DependencyPropertyValuePrecedences.BuiltInStyle);
 		}
 
 		if (obj is IDependencyObjectStoreProvider { Store: { } store })

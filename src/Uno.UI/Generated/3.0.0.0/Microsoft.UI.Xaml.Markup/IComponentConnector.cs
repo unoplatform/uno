@@ -3,15 +3,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Markup
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IComponentConnector
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		void Connect(int connectionId, object target);
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		global::Microsoft.UI.Xaml.Markup.IComponentConnector GetBindingConnector(int connectionId, object target);
 #endif
 	}

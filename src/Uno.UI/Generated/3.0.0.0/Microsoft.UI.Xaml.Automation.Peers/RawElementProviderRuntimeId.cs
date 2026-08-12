@@ -3,14 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct RawElementProviderRuntimeId
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId.RawElementProviderRuntimeId()
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public RawElementProviderRuntimeId(uint _Part1, uint _Part2)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId", "RawElementProviderRuntimeId(uint _Part1, uint _Part2)");

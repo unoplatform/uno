@@ -210,10 +210,32 @@ namespace Microsoft.UI.Composition
 		public Vector4KeyFrameAnimation CreateVector4KeyFrameAnimation()
 			=> new Vector4KeyFrameAnimation(this);
 
-		// Uno currently does not buffer composition commits, so RequestCommitAsync completes immediately.
-		// This still satisfies callers that schedule cleanup work after a commit fence (e.g. AnimatedVisualPlayer).
+		public AnimationController CreateAnimationController()
+			=> new AnimationController(this);
+
 		public IAsyncAction RequestCommitAsync()
-			=> Task.CompletedTask.AsAsyncAction();
+			=> RequestCommitAsyncCore().AsAsyncAction();
+
+		private Task RequestCommitAsyncCore()
+		{
+			var tcs = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
+			var batch = CreateScopedBatch(CompositionBatchTypes.None);
+			TypedEventHandler<object, CompositionBatchCompletedEventArgs>? handler = null;
+			handler = (_, _) =>
+			{
+				if (handler is not null)
+				{
+					batch.Completed -= handler;
+				}
+
+				tcs.TrySetResult(null);
+			};
+
+			batch.Completed += handler;
+			batch.End();
+
+			return tcs.Task;
+		}
 
 		// Tracks the active CompositionScopedBatch stack. CompositionScopedBatch hooks animations
 		// started while a batch is active so its Completed event fires when those animations

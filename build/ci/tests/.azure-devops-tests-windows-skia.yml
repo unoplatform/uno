@@ -43,7 +43,7 @@ jobs:
 
   - script: |
         cd $(SamplesAppArtifactPath)
-        dotnet SamplesApp.Skia.Generic.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-windows-screenshots
+        dotnet SamplesApp.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-windows-screenshots
 
     displayName: Run Snapshot Tests
 

@@ -1,4 +1,8 @@
-﻿using Microsoft.UI.Xaml.Markup;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference ScrollView.idl, commit b8cfb8490
+
+using Microsoft.UI.Xaml.Markup;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -22,4 +26,8 @@ public partial class ScrollView : Control
 	public event TypedEventHandler<ScrollView, ScrollingZoomCompletedEventArgs> ZoomCompleted;
 	public event TypedEventHandler<ScrollView, ScrollingBringingIntoViewEventArgs> BringingIntoView;
 	public event TypedEventHandler<ScrollView, ScrollingAnchorRequestedEventArgs> AnchorRequested;
+
+	public event TypedEventHandler<ScrollView, ScrollingScrollStartingEventArgs> ScrollStarting;
+
+	public event TypedEventHandler<ScrollView, ScrollingZoomStartingEventArgs> ZoomStarting;
 }

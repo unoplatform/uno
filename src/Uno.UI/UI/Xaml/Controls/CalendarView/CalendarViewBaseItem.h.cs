@@ -24,7 +24,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 			// Uno only
 			Initialize_CalendarViewBaseItemChrome();
-#if !__NETSTD_REFERENCE__
 			this.Loaded += (_, _) =>
 			{
 #if !UNO_HAS_BORDER_VISUAL
@@ -34,7 +33,6 @@ namespace Microsoft.UI.Xaml.Controls
 				EnterImpl();
 #endif
 			};
-#endif
 		}
 
 

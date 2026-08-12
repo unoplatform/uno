@@ -97,6 +97,13 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 		_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId));
 	}
 
+	internal override void TryUpdateScale(float value, Vector3 centerPoint, int requestId)
+	{
+		value = Math.Clamp(value, _interactionTracker.MinScale, _interactionTracker.MaxScale);
+		_interactionTracker.SetScale(value, centerPoint, requestId);
+		_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId));
+	}
+
 	public override void Dispose()
 	{
 		_handler.Stop();

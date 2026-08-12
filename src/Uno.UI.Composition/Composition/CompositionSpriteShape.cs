@@ -98,7 +98,7 @@ namespace Microsoft.UI.Composition
 		public CompositionStrokeDashArray? StrokeDashArray
 		{
 			get => _strokeDashArray;
-			set => SetProperty(ref _strokeDashArray, value);
+			internal set => SetProperty(ref _strokeDashArray, value);
 		}
 
 		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)

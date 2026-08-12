@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls.AnimatedVisuals
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class AnimatedChevronUpDownSmallVisualSource : global::Microsoft.UI.Xaml.Controls.IAnimatedVisualSource, global::Microsoft.UI.Xaml.Controls.IAnimatedVisualSource2

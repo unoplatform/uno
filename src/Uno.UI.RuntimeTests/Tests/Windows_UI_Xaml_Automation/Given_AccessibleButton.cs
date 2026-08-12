@@ -6,8 +6,11 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation;
+using static Private.Infrastructure.TestServices;
 
 #if HAS_UNO
 using Uno.UI.Runtime.Skia;
@@ -293,10 +296,76 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual("Submit Form", GetSemanticAttribute(button, "aria-label"), "A Button's AutomationProperties.Name must surface as aria-label on the DOM node.");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23802")]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Button_With_PathIcon_And_AutomationName_Then_Dom_AriaLabel_Is_Set()
+		{
+			var button = new Button
+			{
+				Width = 48,
+				Height = 48,
+				Content = new PathIcon { Data = new RectangleGeometry { Rect = new Rect(0, 0, 12, 12) } },
+			};
+			AutomationProperties.SetName(button, "Refresh");
 
+			try
+			{
+				await UITestHelper.Load(button);
+				button.GetOrCreateAutomationPeer();
 
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => SemanticElementExists(button), timeoutMS: 5000, message: "Timed out waiting for the icon button semantic element to be created.");
+				await UITestHelper.WaitFor(
+					() => SemanticElementHasNonEmptyBounds(button),
+					timeoutMS: 5000,
+					message: "Timed out waiting for the icon button semantic element to receive non-zero bounds.");
 
+				Assert.AreEqual("button", GetSemanticElementTagName(button), "An icon-only Button must emit a native <button> semantic element.");
+				Assert.AreEqual("Refresh", GetSemanticAttribute(button, "aria-label"), "An icon-only Button's AutomationProperties.Name must surface as aria-label on the DOM node.");
+				Assert.IsTrue(SemanticElementHasNonEmptyBounds(button), "The semantic Button must have non-zero bounds so assistive technology can locate it.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23802")]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Button_With_PathIcon_Gets_AutomationName_Then_Dom_AriaLabel_Is_Updated()
+		{
+			var button = new Button
+			{
+				Width = 48,
+				Height = 48,
+				Content = new PathIcon { Data = new RectangleGeometry { Rect = new Rect(0, 0, 12, 12) } },
+			};
+
+			try
+			{
+				await UITestHelper.Load(button);
+				button.GetOrCreateAutomationPeer();
+
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => SemanticElementExists(button), timeoutMS: 5000, message: "Timed out waiting for the unnamed icon button semantic element to be created.");
+
+				Assert.IsFalse(SemanticElementHasAttribute(button, "aria-label"), "An unnamed icon-only Button must not emit aria-label.");
+
+				AutomationProperties.SetName(button, "Refresh");
+				await UITestHelper.WaitFor(
+					() => GetSemanticAttribute(button, "aria-label") == "Refresh",
+					timeoutMS: 5000,
+					message: "Timed out waiting for the icon button aria-label to update.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 
 #endif
 

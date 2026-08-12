@@ -2,7 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Common;
@@ -508,6 +510,283 @@ public class ScrollViewTests : MUXApiTestBase
 				Verify.AreEqual(scrollView.CurrentAnchor, scrollPresenter.CurrentAnchor);
 			});
 		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23688")]
+	[TestProperty("Description", "Verifies ScrollView forwards ScrollPresenter ScrollStarting args.")]
+	public async Task VerifyScrollStartingForwarding()
+	{
+		ScrollView scrollView = null;
+		Rectangle rectangleScrollViewContent = null;
+		UnoAutoResetEvent scrollViewLoadedEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent scrollViewScrollCompletedEvent = new UnoAutoResetEvent(false);
+		uint scrollStartingCount = 0u;
+		int scrollStartingCorrelationId = -1;
+		int scrollCompletedCorrelationId = -1;
+		int operationCorrelationId = -1;
+		double scrollStartingHorizontalOffset = 0.0;
+		double scrollStartingVerticalOffset = 0.0;
+		float scrollStartingZoomFactor = 0.0f;
+
+		RunOnUIThread.Execute(() =>
+		{
+			rectangleScrollViewContent = new Rectangle();
+			scrollView = new ScrollView();
+
+			SetupDefaultUI(scrollView, rectangleScrollViewContent, scrollViewLoadedEvent);
+
+			scrollView.ScrollStarting += (sender, args) =>
+			{
+				Log.Comment($"ScrollStarting scrollStartingCount={++scrollStartingCount} - HorizontalOffset={args.HorizontalOffset}, VerticalOffset={args.VerticalOffset}, ZoomFactor={args.ZoomFactor}");
+				Verify.AreSame(scrollView, sender);
+				scrollStartingCorrelationId = args.CorrelationId;
+				scrollStartingHorizontalOffset = args.HorizontalOffset;
+				scrollStartingVerticalOffset = args.VerticalOffset;
+				scrollStartingZoomFactor = args.ZoomFactor;
+			};
+
+			scrollView.ScrollCompleted += (sender, args) =>
+			{
+				Log.Comment($"ScrollCompleted CorrelationId={args.CorrelationId}");
+				Verify.AreSame(scrollView, sender);
+				scrollCompletedCorrelationId = args.CorrelationId;
+				scrollViewScrollCompletedEvent.Set();
+			};
+		});
+
+		await WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
+
+		RunOnUIThread.Execute(() =>
+		{
+			operationCorrelationId = scrollView.ScrollTo(
+				60.0,
+				70.0,
+				new ScrollingScrollOptions(ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore));
+
+			if (operationCorrelationId == -1)
+			{
+				scrollViewScrollCompletedEvent.Set();
+			}
+		});
+
+		await WaitForEvent("Waiting for ScrollCompleted event", scrollViewScrollCompletedEvent);
+
+		RunOnUIThread.Execute(() =>
+		{
+			Verify.AreEqual(1u, scrollStartingCount);
+			Verify.AreEqual(operationCorrelationId, scrollStartingCorrelationId);
+			Verify.AreEqual(operationCorrelationId, scrollCompletedCorrelationId);
+			Verify.AreEqual(60.0, scrollStartingHorizontalOffset);
+			Verify.AreEqual(70.0, scrollStartingVerticalOffset);
+			Verify.AreEqual(1.0f, scrollStartingZoomFactor);
+		});
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23688")]
+	[TestProperty("Description", "Verifies ScrollView forwards ScrollPresenter ZoomStarting args.")]
+	public async Task VerifyZoomStartingForwarding()
+	{
+		ScrollView scrollView = null;
+		Rectangle rectangleScrollViewContent = null;
+		UnoAutoResetEvent scrollViewLoadedEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent scrollViewZoomCompletedEvent = new UnoAutoResetEvent(false);
+		uint zoomStartingCount = 0u;
+		int zoomStartingCorrelationId = -1;
+		int zoomCompletedCorrelationId = -1;
+		int operationCorrelationId = -1;
+		double zoomStartingHorizontalOffset = 0.0;
+		double zoomStartingVerticalOffset = 0.0;
+		float zoomStartingZoomFactor = 0.0f;
+
+		RunOnUIThread.Execute(() =>
+		{
+			rectangleScrollViewContent = new Rectangle();
+			scrollView = new ScrollView();
+
+			SetupDefaultUI(scrollView, rectangleScrollViewContent, scrollViewLoadedEvent);
+
+			scrollView.ZoomStarting += (sender, args) =>
+			{
+				Log.Comment($"ZoomStarting zoomStartingCount={++zoomStartingCount} - HorizontalOffset={args.HorizontalOffset}, VerticalOffset={args.VerticalOffset}, ZoomFactor={args.ZoomFactor}");
+				Verify.AreSame(scrollView, sender);
+				zoomStartingCorrelationId = args.CorrelationId;
+				zoomStartingHorizontalOffset = args.HorizontalOffset;
+				zoomStartingVerticalOffset = args.VerticalOffset;
+				zoomStartingZoomFactor = args.ZoomFactor;
+			};
+
+			scrollView.ZoomCompleted += (sender, args) =>
+			{
+				Log.Comment($"ZoomCompleted CorrelationId={args.CorrelationId}");
+				Verify.AreSame(scrollView, sender);
+				zoomCompletedCorrelationId = args.CorrelationId;
+				scrollViewZoomCompletedEvent.Set();
+			};
+		});
+
+		await WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
+
+		RunOnUIThread.Execute(() =>
+		{
+			operationCorrelationId = scrollView.ZoomTo(
+				2.0f,
+				global::System.Numerics.Vector2.Zero,
+				new ScrollingZoomOptions(ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore));
+
+			if (operationCorrelationId == -1)
+			{
+				scrollViewZoomCompletedEvent.Set();
+			}
+		});
+
+		await WaitForEvent("Waiting for ZoomCompleted event", scrollViewZoomCompletedEvent);
+
+		RunOnUIThread.Execute(() =>
+		{
+			Verify.AreEqual(1u, zoomStartingCount);
+			Verify.AreEqual(operationCorrelationId, zoomStartingCorrelationId);
+			Verify.AreEqual(operationCorrelationId, zoomCompletedCorrelationId);
+			Verify.AreEqual(0.0, zoomStartingHorizontalOffset);
+			Verify.AreEqual(0.0, zoomStartingVerticalOffset);
+			Verify.AreEqual(2.0f, zoomStartingZoomFactor);
+		});
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23688")]
+	[TestProperty("Description", "Verifies successive ScrollBy requests expose the anticipated final offsets.")]
+	public async Task VerifySuccessiveScrollStartingValues()
+	{
+		ScrollView scrollView = null;
+		Rectangle rectangleScrollViewContent = null;
+		UnoAutoResetEvent scrollViewLoadedEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent scrollViewScrollCompletedEvent = new UnoAutoResetEvent(false);
+		List<int> scrollStartingCorrelationIds = new();
+		List<double> scrollStartingHorizontalOffsets = new();
+		List<double> scrollStartingVerticalOffsets = new();
+		List<int> scrollCompletedCorrelationIds = new();
+		int firstOperationCorrelationId = -1;
+		int secondOperationCorrelationId = -1;
+
+		RunOnUIThread.Execute(() =>
+		{
+			rectangleScrollViewContent = new Rectangle();
+			scrollView = new ScrollView();
+
+			SetupDefaultUI(scrollView, rectangleScrollViewContent, scrollViewLoadedEvent);
+
+			scrollView.ScrollStarting += (sender, args) =>
+			{
+				Verify.AreSame(scrollView, sender);
+				scrollStartingCorrelationIds.Add(args.CorrelationId);
+				scrollStartingHorizontalOffsets.Add(args.HorizontalOffset);
+				scrollStartingVerticalOffsets.Add(args.VerticalOffset);
+			};
+
+			scrollView.ScrollCompleted += (sender, args) =>
+			{
+				Verify.AreSame(scrollView, sender);
+				scrollCompletedCorrelationIds.Add(args.CorrelationId);
+				if (scrollCompletedCorrelationIds.Count == 2)
+				{
+					scrollViewScrollCompletedEvent.Set();
+				}
+			};
+		});
+
+		await WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
+
+		RunOnUIThread.Execute(() =>
+		{
+			var options = new ScrollingScrollOptions(ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+			firstOperationCorrelationId = scrollView.ScrollBy(10.0, 20.0, options);
+			secondOperationCorrelationId = scrollView.ScrollBy(5.0, 7.0, options);
+		});
+
+		await WaitForEvent("Waiting for ScrollCompleted events", scrollViewScrollCompletedEvent);
+
+		RunOnUIThread.Execute(() =>
+		{
+			Verify.AreEqual(2, scrollStartingCorrelationIds.Count);
+			Verify.AreEqual(firstOperationCorrelationId, scrollStartingCorrelationIds[0]);
+			Verify.AreEqual(secondOperationCorrelationId, scrollStartingCorrelationIds[1]);
+			Verify.AreEqual(10.0, scrollStartingHorizontalOffsets[0]);
+			Verify.AreEqual(20.0, scrollStartingVerticalOffsets[0]);
+			Verify.AreEqual(15.0, scrollStartingHorizontalOffsets[1]);
+			Verify.AreEqual(27.0, scrollStartingVerticalOffsets[1]);
+			Verify.AreEqual(2, scrollCompletedCorrelationIds.Count);
+			Verify.AreEqual(firstOperationCorrelationId, scrollCompletedCorrelationIds[0]);
+			Verify.AreEqual(secondOperationCorrelationId, scrollCompletedCorrelationIds[1]);
+			Verify.AreEqual(15.0, scrollView.HorizontalOffset);
+			Verify.AreEqual(27.0, scrollView.VerticalOffset);
+		});
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23688")]
+	[TestProperty("Description", "Verifies successive ZoomBy requests expose the anticipated final zoom factor.")]
+	public async Task VerifySuccessiveZoomStartingValues()
+	{
+		ScrollView scrollView = null;
+		Rectangle rectangleScrollViewContent = null;
+		UnoAutoResetEvent scrollViewLoadedEvent = new UnoAutoResetEvent(false);
+		UnoAutoResetEvent scrollViewZoomCompletedEvent = new UnoAutoResetEvent(false);
+		List<int> zoomStartingCorrelationIds = new();
+		List<float> zoomStartingZoomFactors = new();
+		List<int> zoomCompletedCorrelationIds = new();
+		int firstOperationCorrelationId = -1;
+		int secondOperationCorrelationId = -1;
+
+		RunOnUIThread.Execute(() =>
+		{
+			rectangleScrollViewContent = new Rectangle();
+			scrollView = new ScrollView();
+
+			SetupDefaultUI(scrollView, rectangleScrollViewContent, scrollViewLoadedEvent);
+
+			scrollView.ZoomStarting += (sender, args) =>
+			{
+				Verify.AreSame(scrollView, sender);
+				zoomStartingCorrelationIds.Add(args.CorrelationId);
+				zoomStartingZoomFactors.Add(args.ZoomFactor);
+			};
+
+			scrollView.ZoomCompleted += (sender, args) =>
+			{
+				Verify.AreSame(scrollView, sender);
+				zoomCompletedCorrelationIds.Add(args.CorrelationId);
+				if (zoomCompletedCorrelationIds.Count == 2)
+				{
+					scrollViewZoomCompletedEvent.Set();
+				}
+			};
+		});
+
+		await WaitForEvent("Waiting for Loaded event", scrollViewLoadedEvent);
+
+		RunOnUIThread.Execute(() =>
+		{
+			var options = new ScrollingZoomOptions(ScrollingAnimationMode.Disabled, ScrollingSnapPointsMode.Ignore);
+			firstOperationCorrelationId = scrollView.ZoomBy(1.0f, Vector2.Zero, options);
+			secondOperationCorrelationId = scrollView.ZoomBy(1.0f, Vector2.Zero, options);
+		});
+
+		await WaitForEvent("Waiting for ZoomCompleted events", scrollViewZoomCompletedEvent);
+
+		RunOnUIThread.Execute(() =>
+		{
+			Verify.AreEqual(2, zoomStartingCorrelationIds.Count);
+			Verify.AreEqual(firstOperationCorrelationId, zoomStartingCorrelationIds[0]);
+			Verify.AreEqual(secondOperationCorrelationId, zoomStartingCorrelationIds[1]);
+			Verify.AreEqual(2.0f, zoomStartingZoomFactors[0]);
+			Verify.AreEqual(3.0f, zoomStartingZoomFactors[1]);
+			Verify.AreEqual(2, zoomCompletedCorrelationIds.Count);
+			Verify.AreEqual(firstOperationCorrelationId, zoomCompletedCorrelationIds[0]);
+			Verify.AreEqual(secondOperationCorrelationId, zoomCompletedCorrelationIds[1]);
+			Verify.AreEqual(3.0f, scrollView.ZoomFactor);
+		});
 	}
 
 	private void SetupDefaultUI(

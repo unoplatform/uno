@@ -1841,20 +1841,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Rectangle source, target;
 			var sp = new StackPanel
 			{
-				(source = new Rectangle
+				Children =
 				{
-					Width = 100,
-					Height = 100,
-					Fill = new SolidColorBrush(Microsoft.UI.Colors.LightCoral),
-					CanDrag = true
-				}),
-				(target = new Rectangle
-				{
-					Width = 100,
-					Height = 100,
-					Fill = new SolidColorBrush(Microsoft.UI.Colors.LightCoral),
-					AllowDrop = true
-				})
+					(source = new Rectangle
+					{
+						Width = 100,
+						Height = 100,
+						Fill = new SolidColorBrush(Microsoft.UI.Colors.LightCoral),
+						CanDrag = true
+					}),
+					(target = new Rectangle
+					{
+						Width = 100,
+						Height = 100,
+						Fill = new SolidColorBrush(Microsoft.UI.Colors.LightCoral),
+						AllowDrop = true
+					})
+				}
 			};
 
 			target.Drop += (_, _) => dropCount++;

@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Input
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class KeyRoutedEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public string DeviceId
 		{
 			get

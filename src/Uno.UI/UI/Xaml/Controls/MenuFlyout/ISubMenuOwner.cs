@@ -2,7 +2,7 @@
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial interface ISubMenuOwner
+internal partial interface ISubMenuOwner
 {
 	void PrepareSubMenu();
 

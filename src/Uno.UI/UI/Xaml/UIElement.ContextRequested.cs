@@ -43,10 +43,14 @@ partial class UIElement
 		ContextRequestedEventArgs args)
 	{
 #if __SKIA__
-		if (sender is TextBlock { OwningTextBox: { } ownerTextBox })
+		if (sender is TextBlock { OwningTextBox: not null })
 		{
-			sender = ownerTextBox;
-			contextFlyoutObject = ownerTextBox;
+			// This is the inner DisplayBlock of a TextBox/PasswordBox. Showing the owning control's
+			// flyout here (as the DisplayBlock's ContextRequested class handler) would compute its
+			// commands before the control commits its touch selection: on a mobile long-press the word
+			// is selected by TextBox.OnContextRequestedImpl, which runs later as the same event bubbles
+			// up. Defer to that handler so the flyout reflects the final selection (Cut/Copy included).
+			return;
 		}
 #endif
 		if (sender is not UIElement uiElement)

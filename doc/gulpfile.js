@@ -24,7 +24,11 @@ function styles(done) {
     src([`${assets}/**/*.scss`, `${assets}/**/*.sass`])
         .pipe(sourcemaps.init())
         .pipe(
-            sass({includePaths: ['./node_modules/'], outputStyle: output}).on(
+            // charset: false is required because these stylesheets are concatenated below.
+            // Sass prepends a BOM to any compressed output containing non-ASCII characters
+            // (navbar.scss has a FontAwesome glyph), which is only valid at the start of a
+            // file — mid-file it invalidates the rule that follows it.
+            sass({includePaths: ['./node_modules/'], outputStyle: output, charset: false}).on(
                 'error',
                 sass.logError
             )

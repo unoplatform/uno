@@ -3,12 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Markup
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IXamlBindScopeDiagnostics
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		void Disable(int lineNumber, int columnNumber);
 #endif
 	}

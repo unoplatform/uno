@@ -1,22 +1,22 @@
-﻿using System;
+using System;
+using System.Buffers;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Uno;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Uno;
-using Uno.Disposables;
-using Uno.Foundation.Logging;
-using Uno.Extensions;
-using Uno.Helpers;
-using System.Diagnostics;
 
 #if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
@@ -28,15 +28,29 @@ namespace CommunityToolkit.WinUI.Lottie
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 #endif
 {
-	public abstract partial class LottieVisualSourceBase : DependencyObject, IAnimatedVisualSource, IAnimatedVisualSourceWithUri
+	public abstract partial class LottieVisualSourceBase : DependencyObject, IAnimatedVisualSource, IAnimatedVisualSource3, IDynamicAnimatedVisualSource, IAnimatedVisualSourceWithUri
 	{
 		public delegate void UpdatedAnimation(string animationJson, string cacheKey);
 
-#if HAS_SKOTTIE || __WASM__
-		private static HttpClient? _httpClient;
-#endif
+		private const int MaxAnimationJsonBytes = 4 * 1024 * 1024;
+		private const int DefaultReadBufferSize = 80 * 1024;
 
-		private AnimatedVisualPlayer? _player;
+		private static HttpClient? _httpClient;
+
+		private readonly object _stateGate = new();
+		private readonly SerialDisposable _loadRevoker = new();
+		private readonly SerialDisposable _animationDataSubscription = new();
+
+		private DispatcherQueue? _dispatcherQueue;
+		private Uri? _requestedSource;
+		private string? _animationJson;
+		private object? _diagnostics;
+		private int _loadVersion;
+		private bool _hasLoadFailure;
+		private bool _isLoading;
+		private bool _hasPendingAnimatedVisualInvalidation;
+		private Task _pendingAnimatedVisualInvalidation = Task.CompletedTask;
+		private Task _currentLoadTask = Task.CompletedTask;
 
 		public static DependencyProperty UriSourceProperty { get; } = DependencyProperty.Register(
 			"UriSource",
@@ -47,7 +61,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
 				OnUriSourceChanged));
 
-		Uri IAnimatedVisualSourceWithUri.UriSource { get => UriSource; set => UriSource = value; }
+		Uri IAnimatedVisualSourceWithUri.UriSource
+		{
+			get => UriSource;
+			set => UriSource = value;
+		}
 
 		public Uri UriSource
 		{
@@ -68,93 +86,346 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		[NotImplemented]
 		public static LottieVisualSource CreateFromString(string uri)
 		{
-			throw new NotImplementedException();
+			ArgumentException.ThrowIfNullOrWhiteSpace(uri);
+
+			return new LottieVisualSource
+			{
+				UriSource = new Uri(uri, UriKind.RelativeOrAbsolute)
+			};
 		}
 
-#if HAS_UNO_WINUI
-		[NotImplemented]
-		public IAnimatedVisual TryCreateAnimatedVisual(Microsoft.UI.Composition.Compositor compositor, out object diagnostics)
+		public event TypedEventHandler<IDynamicAnimatedVisualSource, object>? AnimatedVisualInvalidated;
+
+		public IAnimatedVisual? TryCreateAnimatedVisual(Compositor compositor, out object diagnostics)
+			=> TryCreateAnimatedVisualCore(compositor, out diagnostics, createAnimations: true);
+
+		public IAnimatedVisual2? TryCreateAnimatedVisual(Compositor compositor, out object diagnostics, bool createAnimations)
+			=> TryCreateAnimatedVisualCore(compositor, out diagnostics, createAnimations);
+
+		private IAnimatedVisual2? TryCreateAnimatedVisualCore(Compositor compositor, out object diagnostics, bool createAnimations)
 		{
-			throw new NotImplementedException();
+			_dispatcherQueue ??= DispatcherQueue.GetForCurrentThread();
+
+			EnsureLoadRequested();
+
+			string? animationJson;
+			object? currentDiagnostics;
+			bool hasLoadFailure;
+			lock (_stateGate)
+			{
+				animationJson = _animationJson;
+				currentDiagnostics = _diagnostics;
+				hasLoadFailure = _hasLoadFailure;
+			}
+
+			diagnostics = currentDiagnostics!;
+
+			if (animationJson is null)
+			{
+				return hasLoadFailure ? null : CreatePendingAnimatedVisual(compositor);
+			}
+
+			return TryCreateAnimatedVisualFromJson(compositor, animationJson, createAnimations, out diagnostics);
 		}
-#endif
 
 		private static void OnUriSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
 			if (sender is LottieVisualSourceBase source)
 			{
-				source.Update(source._player);
+				source.OnUriSourceChanged();
 			}
 		}
 
 		public Task SetSourceAsync(Uri sourceUri)
 		{
+			var previousSource = UriSource;
 			UriSource = sourceUri;
 
-			// TODO: this method should not return before the animation is ready.
-
-			return Task.CompletedTask;
-		}
-
-
-#if !(__WASM__ || HAS_SKOTTIE)
-		public void Play(double fromProgress, double toProgress, bool looped)
-			=> ThrowNotImplementedOnNonTestPlatforms();
-
-		public void Stop()
-			=> ThrowNotImplementedOnNonTestPlatforms();
-
-		public void Pause()
-			=> ThrowNotImplementedOnNonTestPlatforms();
-
-		public void Resume()
-			=> ThrowNotImplementedOnNonTestPlatforms();
-
-		public void SetProgress(double progress)
-			=> ThrowNotImplementedOnNonTestPlatforms();
-
-		public void Load()
-			=> ThrowNotImplementedOnNonTestPlatforms();
-
-		public void Unload()
-			=> ThrowNotImplementedOnNonTestPlatforms();
-
-		private static void ThrowNotImplementedOnNonTestPlatforms()
-		{
-#if !IS_UNIT_TESTS
-			throw new NotImplementedException();
-#endif
-		}
-
-		public Size Measure(Size availableSize)
-		{
-			throw new NotImplementedException();
-		}
-
-#pragma warning disable CA1805 // Do not initialize unnecessarily
-		private readonly Size CompositionSize = default;
-#pragma warning restore CA1805 // Do not initialize unnecessarily
-
-		private Task InnerUpdate(CancellationToken ct)
-		{
-			ThrowNotImplementedOnNonTestPlatforms();
-			return Task.CompletedTask;
-		}
-#endif
-
-		private readonly SerialDisposable _updateDisposable = new SerialDisposable();
-
-		public void Update(AnimatedVisualPlayer? player)
-		{
-			_updateDisposable.Disposable = null;
-
-			_player = player;
-			if (_player != null)
+			if (previousSource is { } previous && previous.Equals(sourceUri))
 			{
-				var cts = new CancellationDisposable();
-				_updateDisposable.Disposable = cts;
-				var t = InnerUpdate(cts.Token);
+				_currentLoadTask = RequestLoad(sourceUri, forceReload: true, raiseInvalidation: true);
 			}
+
+			return _currentLoadTask;
+		}
+
+		private void OnUriSourceChanged()
+		{
+			_currentLoadTask = RequestLoad(UriSource, forceReload: false, raiseInvalidation: true);
+		}
+
+		private void EnsureLoadRequested()
+		{
+			_currentLoadTask = RequestLoad(UriSource, forceReload: false, raiseInvalidation: false);
+		}
+
+		private Task RequestLoad(Uri? sourceUri, bool forceReload, bool raiseInvalidation)
+		{
+			if (sourceUri is null)
+			{
+				ClearLoadState();
+				if (raiseInvalidation)
+				{
+					RaiseAnimatedVisualInvalidated();
+				}
+
+				return Task.CompletedTask;
+			}
+
+			lock (_stateGate)
+			{
+				if (!forceReload
+					&& _requestedSource is { } requestedSource
+					&& requestedSource.Equals(sourceUri)
+					&& (_isLoading || _animationJson is not null || _hasLoadFailure))
+				{
+					return _currentLoadTask;
+				}
+			}
+
+			StartLoad(sourceUri);
+
+			if (raiseInvalidation)
+			{
+				RaiseAnimatedVisualInvalidated();
+			}
+
+			return _currentLoadTask;
+		}
+
+		private void StartLoad(Uri sourceUri)
+		{
+			_loadRevoker.Disposable = null;
+			_animationDataSubscription.Disposable = null;
+
+			CancellationToken cancellationToken;
+			int loadVersion;
+			var cts = new CancellationTokenSource();
+
+			lock (_stateGate)
+			{
+				_requestedSource = sourceUri;
+				_animationJson = null;
+				_diagnostics = null;
+				_hasLoadFailure = false;
+				_isLoading = true;
+				loadVersion = ++_loadVersion;
+
+				_loadRevoker.Disposable = Disposable.Create(() =>
+				{
+					cts.Cancel();
+					cts.Dispose();
+				});
+				cancellationToken = cts.Token;
+			}
+
+			_currentLoadTask = LoadAnimationAsync(sourceUri, loadVersion, cancellationToken);
+		}
+
+		private void ClearLoadState()
+		{
+			_loadRevoker.Disposable = null;
+			_animationDataSubscription.Disposable = null;
+
+			lock (_stateGate)
+			{
+				_hasPendingAnimatedVisualInvalidation = false;
+				_pendingAnimatedVisualInvalidation = Task.CompletedTask;
+				_requestedSource = null;
+				_animationJson = null;
+				_diagnostics = null;
+				_hasLoadFailure = false;
+				_isLoading = false;
+			}
+		}
+
+		private async Task LoadAnimationAsync(Uri sourceUri, int loadVersion, CancellationToken cancellationToken)
+		{
+			IDisposable? loadSubscription = null;
+			try
+			{
+				using var jsonSource = await TryOpenJsonSourceAsync(sourceUri, cancellationToken);
+				if (jsonSource is null)
+				{
+					await PublishLoadFailure(sourceUri, loadVersion, new NotSupportedException($"Failed to load animation: {RedactUri(sourceUri)}"));
+					return;
+				}
+
+				var initialUpdateObserved = 0;
+				Task initialInvalidation = Task.CompletedTask;
+				void OnAnimationUpdated(string updatedJson, string updatedCacheKey)
+				{
+					if (!IsCurrentLoad(sourceUri, loadVersion))
+					{
+						return;
+					}
+
+					initialInvalidation = OnAnimationDataChanged(sourceUri, loadVersion, updatedJson, updatedCacheKey);
+					Interlocked.Exchange(ref initialUpdateObserved, 1);
+				}
+
+				loadSubscription = LoadAndObserveAnimationData(
+					jsonSource.Stream,
+					jsonSource.CacheKey,
+					OnAnimationUpdated);
+
+				if (loadSubscription is AnimationDataLoadSubscription asyncLoad)
+				{
+					await asyncLoad.InitialLoad.WaitAsync(cancellationToken);
+				}
+
+				if (!IsCurrentLoad(sourceUri, loadVersion))
+				{
+					loadSubscription?.Dispose();
+					return;
+				}
+
+				if (Interlocked.CompareExchange(ref initialUpdateObserved, 0, 0) == 0)
+				{
+					loadSubscription?.Dispose();
+					await PublishLoadFailure(sourceUri, loadVersion, new InvalidOperationException("The animation source did not publish an initial payload."));
+					return;
+				}
+
+				_animationDataSubscription.Disposable = loadSubscription;
+				loadSubscription = null;
+				await initialInvalidation;
+			}
+			catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+			{
+			}
+			catch (Exception e)
+			{
+				await PublishLoadFailure(sourceUri, loadVersion, e);
+			}
+			finally
+			{
+				loadSubscription?.Dispose();
+			}
+		}
+
+		private bool IsCurrentLoad(Uri sourceUri, int loadVersion)
+		{
+			lock (_stateGate)
+			{
+				return _requestedSource is { } requestedSource
+					&& requestedSource.Equals(sourceUri)
+					&& loadVersion == _loadVersion;
+			}
+		}
+
+		private Task OnAnimationDataChanged(Uri sourceUri, int loadVersion, string updatedJson, string updatedCacheKey)
+		{
+			lock (_stateGate)
+			{
+				if (_requestedSource is not { } requestedSource
+					|| !requestedSource.Equals(sourceUri)
+					|| loadVersion != _loadVersion)
+				{
+					return Task.CompletedTask;
+				}
+
+				_animationJson = updatedJson;
+				_diagnostics = null;
+				_hasLoadFailure = false;
+				_isLoading = false;
+			}
+
+			return RaiseAnimatedVisualInvalidatedAsync();
+		}
+
+		private async Task PublishLoadFailure(Uri sourceUri, int loadVersion, Exception error)
+		{
+			lock (_stateGate)
+			{
+				if (_requestedSource is not { } requestedSource
+					|| !requestedSource.Equals(sourceUri)
+					|| loadVersion != _loadVersion)
+				{
+					return;
+				}
+
+				_animationJson = null;
+				_diagnostics = error;
+				_hasLoadFailure = true;
+				_isLoading = false;
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Failed to load animation: {RedactUri(sourceUri)}", error);
+			}
+
+			await RaiseAnimatedVisualInvalidatedAsync();
+		}
+
+		private void RaiseAnimatedVisualInvalidated()
+			=> _ = RaiseAnimatedVisualInvalidatedAsync();
+
+		private Task RaiseAnimatedVisualInvalidatedAsync()
+		{
+			if (_dispatcherQueue is { HasThreadAccess: true })
+			{
+				RaiseAnimatedVisualInvalidatedCore();
+				return Task.CompletedTask;
+			}
+			else if (_dispatcherQueue is { } dispatcherQueue)
+			{
+				TaskCompletionSource<object?> completion;
+				lock (_stateGate)
+				{
+					if (_hasPendingAnimatedVisualInvalidation)
+					{
+						return _pendingAnimatedVisualInvalidation;
+					}
+
+					completion = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
+					_pendingAnimatedVisualInvalidation = completion.Task;
+					_hasPendingAnimatedVisualInvalidation = true;
+				}
+
+				if (!dispatcherQueue.TryEnqueue(() =>
+				{
+					try
+					{
+						RaiseAnimatedVisualInvalidatedCore();
+						completion.TrySetResult(null);
+					}
+					catch (Exception error)
+					{
+						completion.TrySetException(error);
+					}
+				}))
+				{
+					lock (_stateGate)
+					{
+						_hasPendingAnimatedVisualInvalidation = false;
+						_pendingAnimatedVisualInvalidation = Task.CompletedTask;
+					}
+					completion.TrySetException(new InvalidOperationException($"Failed to enqueue {nameof(AnimatedVisualInvalidated)}."));
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn($"Failed to enqueue {nameof(AnimatedVisualInvalidated)} for {RedactUri(UriSource)}. The notification will be retried when the source is next used on the UI thread.");
+					}
+				}
+
+				return completion.Task;
+			}
+			else
+			{
+				RaiseAnimatedVisualInvalidatedCore();
+				return Task.CompletedTask;
+			}
+		}
+
+		private void RaiseAnimatedVisualInvalidatedCore()
+		{
+			lock (_stateGate)
+			{
+				_hasPendingAnimatedVisualInvalidation = false;
+				_pendingAnimatedVisualInvalidation = Task.CompletedTask;
+			}
+			AnimatedVisualInvalidated?.Invoke(this, null!);
 		}
 
 		/// <summary>
@@ -172,109 +443,128 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			var cts = new CancellationTokenSource();
 
-			async Task Load(CancellationToken ct)
-			{
-				string json;
-				using (var reader = new StreamReader(sourceJson.AsStreamForRead(0)))
+			return new AnimationDataLoadSubscription(
+				LoadAnimationJsonAsync(sourceJson, sourceCacheKey, updateCallback, cts.Token),
+				() =>
 				{
-					json = await reader.ReadToEndAsync();
-				}
-
-				// close the input stream
-				sourceJson.Dispose();
-
-				// load the stream (not dynamic: won't produce another version)
-				updateCallback(json, sourceCacheKey);
-			}
-
-			var t = Load(cts.Token);
-
-			return Disposable.Create(() =>
-			{
-				cts.Cancel();
-				cts.Dispose();
-			});
+					cts.Cancel();
+					cts.Dispose();
+				});
 		}
 
-#if HAS_SKOTTIE
-		private void SetIsPlaying(bool isPlaying) => _player?.SetValue(AnimatedVisualPlayer.IsPlayingProperty, isPlaying);
-#endif
-
-		Size IAnimatedVisualSource.Measure(Size availableSize)
+		protected sealed class AnimationDataLoadSubscription : IDisposable
 		{
-			if (_player == null)
+			private Action? _dispose;
+
+			public AnimationDataLoadSubscription(Task initialLoad, Action dispose)
 			{
-				return default;
+				InitialLoad = initialLoad;
+				_dispose = dispose;
 			}
 
-			var compositionSize = CompositionSize;
-			if (compositionSize == default)
+			public Task InitialLoad { get; }
+
+			public void Dispose()
 			{
-				return default;
+				Interlocked.Exchange(ref _dispose, null)?.Invoke();
 			}
-
-			var stretch = _player.Stretch;
-
-			if (stretch == Stretch.None)
-			{
-				return compositionSize;
-			}
-
-			var availableWidth = availableSize.Width;
-			var availableHeight = availableSize.Height;
-
-			var resultSize = availableSize;
-
-			if (double.IsInfinity(availableWidth))
-			{
-				if (double.IsInfinity(availableHeight))
-				{
-					return compositionSize;
-				}
-
-				resultSize = new Size(availableHeight * compositionSize.Width / compositionSize.Height, availableHeight);
-			}
-
-			if (double.IsInfinity(availableHeight))
-			{
-				resultSize = new Size(availableWidth, availableWidth * compositionSize.Height / compositionSize.Width);
-			}
-
-			InnerMeasure(resultSize);
-
-			return resultSize;
 		}
 
-		partial void InnerMeasure(Size size);
-
-#if HAS_SKOTTIE || __WASM__
-		private async Task<IInputStream?> TryLoadDownloadJson(Uri uri, CancellationToken ct)
+		protected static async Task<string> ReadAnimationJsonAsync(IInputStream sourceJson, CancellationToken cancellationToken)
 		{
-			if (TryLoadEmbeddedJson(uri, ct) is { } json)
+			using var _ = sourceJson;
+			using var stream = sourceJson.AsStreamForRead(0);
+
+			return await ReadAnimationJsonAsync(stream, stream.CanSeek ? stream.Length : null, cancellationToken);
+		}
+
+		protected static async Task<string> ReadAnimationJsonAsync(Stream sourceJson, long? knownLength, CancellationToken cancellationToken)
+		{
+			if (knownLength is > MaxAnimationJsonBytes)
 			{
-				return json;
+				throw new InvalidDataException($"Animation JSON exceeds the maximum supported size of {MaxAnimationJsonBytes} bytes.");
 			}
 
-			if (uri.IsLocalResource())
+			using var bufferStream = knownLength is > 0 and <= MaxAnimationJsonBytes
+				? new MemoryStream((int)knownLength.Value)
+				: new MemoryStream();
+
+			var buffer = ArrayPool<byte>.Shared.Rent(DefaultReadBufferSize);
+			var totalRead = 0;
+
+			try
+			{
+				while (true)
+				{
+					var read = await sourceJson.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken);
+					if (read == 0)
+					{
+						break;
+					}
+
+					totalRead += read;
+					if (totalRead > MaxAnimationJsonBytes)
+					{
+						throw new InvalidDataException($"Animation JSON exceeds the maximum supported size of {MaxAnimationJsonBytes} bytes.");
+					}
+
+					bufferStream.Write(buffer, 0, read);
+				}
+			}
+			finally
+			{
+				ArrayPool<byte>.Shared.Return(buffer);
+			}
+
+			if (bufferStream.Length < 2)
+			{
+				throw new InvalidDataException("Animation JSON payload is empty.");
+			}
+
+			var json = Encoding.UTF8.GetString(bufferStream.GetBuffer(), 0, (int)bufferStream.Length);
+			return json.Length > 0 && json[0] == '\uFEFF'
+				? json[1..]
+				: json;
+		}
+
+		private async Task LoadAnimationJsonAsync(
+			IInputStream sourceJson,
+			string sourceCacheKey,
+			UpdatedAnimation updateCallback,
+			CancellationToken cancellationToken)
+		{
+			var json = await ReadAnimationJsonAsync(sourceJson, cancellationToken);
+			cancellationToken.ThrowIfCancellationRequested();
+			updateCallback(json, sourceCacheKey);
+		}
+
+		private partial IAnimatedVisual2 CreatePendingAnimatedVisual(Compositor compositor);
+		private partial IAnimatedVisual2? TryCreateAnimatedVisualFromJson(Compositor compositor, string animationJson, bool createAnimations, out object diagnostics);
+
+		private async Task<JsonStreamSource?> TryOpenJsonSourceAsync(Uri uri, CancellationToken ct)
+		{
+			if (TryLoadEmbeddedJson(uri) is { } embedded)
+			{
+				return new JsonStreamSource(embedded, uri.OriginalString);
+			}
+
+			if (uri.IsMsAppx())
 			{
 				var file = await StorageFile.GetFileFromApplicationUriAsync(uri).AsTask(ct);
 				var value = await file.OpenAsync(FileAccessMode.Read).AsTask(ct);
 
-				return value;
+				return new JsonStreamSource(value, uri.OriginalString);
 			}
-			else if (uri.IsAppData())
+
+			if (uri.IsAppData())
 			{
-				var fileStream = File.OpenRead(AppDataUriEvaluator.ToPath(uri));
-
-				return fileStream.AsInputStream();
+				return new JsonStreamSource(OpenValidatedAppDataStream(uri).AsInputStream(), uri.OriginalString);
 			}
 
-			return IsPayloadNeedsToBeUpdated
-				? await DownloadJsonFromUri(uri, ct)
-				: null;
+			return await DownloadJsonFromUri(uri, ct);
 		}
 
-		private IInputStream? TryLoadEmbeddedJson(Uri uri, CancellationToken ct)
+		private IInputStream? TryLoadEmbeddedJson(Uri uri)
 		{
 			if (uri.Scheme != "embedded")
 			{
@@ -300,32 +590,153 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				{
 					this.Log().Warn($"Unable to find embedded resource named '{resourceName}' to load.");
 				}
+
 				return null;
 			}
 
 			return stream.AsInputStream();
 		}
 
-		private async Task<IInputStream?> DownloadJsonFromUri(Uri uri, CancellationToken ct)
+		private async Task<JsonStreamSource?> DownloadJsonFromUri(Uri uri, CancellationToken ct)
 		{
 			_httpClient ??= new HttpClient();
 
-			using var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, ct);
+			var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseHeadersRead, ct);
 
 			if (!response.IsSuccessStatusCode)
 			{
+				response.Dispose();
 				return null;
 			}
 
-			if (response.Content.Headers.ContentLength is { } length && length < 2)
+			if (response.Content.Headers.ContentLength is { } length)
 			{
-				return null;
+				if (length < 2)
+				{
+					response.Dispose();
+					return null;
+				}
+
+				if (length > MaxAnimationJsonBytes)
+				{
+					response.Dispose();
+					throw new InvalidDataException($"Animation JSON exceeds the maximum supported size of {MaxAnimationJsonBytes} bytes.");
+				}
 			}
 
-			var stream = await response.Content.ReadAsStreamAsync();
+			var stream = await response.Content.ReadAsStreamAsync(ct);
+			if (ct.IsCancellationRequested)
+			{
+				response.Dispose();
+				ct.ThrowIfCancellationRequested();
+			}
 
-			return stream.AsInputStream();
+			return new JsonStreamSource(stream.AsInputStream(), uri.OriginalString, response);
 		}
-#endif
+
+		private static Stream OpenValidatedAppDataStream(Uri uri)
+		{
+			var (declaredRoot, relativePath) = GetAppDataPath(uri);
+			var canonicalRoot = Path.GetFullPath(declaredRoot);
+			var candidatePath = Path.GetFullPath(Path.Combine(canonicalRoot, relativePath));
+			var canonicalRootWithSeparator = canonicalRoot.EndsWith(Path.DirectorySeparatorChar)
+				? canonicalRoot
+				: canonicalRoot + Path.DirectorySeparatorChar;
+
+			if (!candidatePath.Equals(canonicalRoot, StringComparison.OrdinalIgnoreCase)
+				&& !candidatePath.StartsWith(canonicalRootWithSeparator, StringComparison.OrdinalIgnoreCase))
+			{
+				throw new UnauthorizedAccessException($"The animation source '{RedactUri(uri)}' resolved outside of the declared appdata root.");
+			}
+
+			return File.OpenRead(candidatePath);
+		}
+
+		private static (string RootPath, string RelativePath) GetAppDataPath(Uri uri)
+		{
+			var original = uri.OriginalString;
+			var schemeSeparatorIndex = original.IndexOf("://", StringComparison.Ordinal);
+			if (schemeSeparatorIndex < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(uri), "URI must point to local, roaming or temp folder");
+			}
+
+			var afterScheme = original[(schemeSeparatorIndex + 3)..];
+			var firstSlashIndex = afterScheme.IndexOf('/');
+			if (firstSlashIndex < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(uri), "URI must point to local, roaming or temp folder");
+			}
+
+			var rawPath = afterScheme[firstSlashIndex..];
+			var queryIndex = rawPath.IndexOfAny(['?', '#']);
+			if (queryIndex >= 0)
+			{
+				rawPath = rawPath[..queryIndex];
+			}
+			rawPath = Uri.UnescapeDataString(rawPath);
+
+			var segments = rawPath.TrimStart('/', '\\').Split(['/', '\\'], 2, StringSplitOptions.RemoveEmptyEntries);
+			if (segments.Length == 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(uri), "URI must point to local, roaming or temp folder");
+			}
+
+			var rootPath = segments[0].ToLowerInvariant() switch
+			{
+				"local" => ApplicationData.Current.LocalFolder.Path,
+				"roaming" => ApplicationData.Current.RoamingFolder.Path,
+				"temp" => ApplicationData.Current.TemporaryFolder.Path,
+				_ => throw new ArgumentOutOfRangeException(nameof(uri), "URI must point to local, roaming or temp folder")
+			};
+			var relativePath = segments.Length > 1 ? segments[1] : string.Empty;
+
+			return (rootPath, relativePath);
+		}
+
+		internal static string RedactUri(Uri? uri)
+		{
+			if (uri is null)
+			{
+				return "<null>";
+			}
+
+			if (!uri.IsAbsoluteUri)
+			{
+				return uri.OriginalString;
+			}
+
+			var builder = new UriBuilder(uri)
+			{
+				Query = string.Empty,
+				Fragment = string.Empty,
+				UserName = string.Empty,
+				Password = string.Empty
+			};
+
+			return builder.Uri.GetLeftPart(UriPartial.Path);
+		}
+
+		private sealed class JsonStreamSource : IDisposable
+		{
+			private readonly IDisposable? _lease;
+
+			public JsonStreamSource(IInputStream stream, string cacheKey, IDisposable? lease = null)
+			{
+				Stream = stream;
+				CacheKey = cacheKey;
+				_lease = lease;
+			}
+
+			public IInputStream Stream { get; }
+
+			public string CacheKey { get; }
+
+			public void Dispose()
+			{
+				Stream.Dispose();
+				_lease?.Dispose();
+			}
+		}
 	}
 }

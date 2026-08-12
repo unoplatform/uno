@@ -39,7 +39,7 @@
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj">
+		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj">
 		</ProjectReference>
 		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj">
 		</ProjectReference>

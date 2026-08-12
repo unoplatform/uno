@@ -27,15 +27,6 @@ public partial class NavigationViewItemHeader : NavigationViewItemBase
 
 	protected override void OnApplyTemplate()
 	{
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle),
-		// so the parent NavigationView may not be set yet; postpone and reapply once it is.
-		if (GetNavigationView() is null)
-		{
-			// Postpone template application for later
-			return;
-		}
-#endif
 
 		var splitView = GetSplitView();
 		if (splitView != null)
@@ -64,9 +55,6 @@ public partial class NavigationViewItemHeader : NavigationViewItemBase
 		var visual = ElementCompositionPreview.GetElementVisual(this);
 		NavigationView.CreateAndAttachHeaderAnimation(visual);
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		_fullyInitialized = true;
-#endif
 	}
 
 	private void OnSplitViewPropertyChanged(DependencyObject sender, DependencyProperty args)

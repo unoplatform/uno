@@ -10,6 +10,8 @@
 
 > **Relationship to the 7.0 release.** Native rendering removal is the centerpiece of Uno 7.0. A separately-curated set of additional 7.0 breaking changes is tracked outside this document; this spec is the source of truth for the breaking changes **caused by native rendering removal**. Where the two overlap, this spec governs the native-removal mechanics.
 
+> **Amendment — packaging layout for the UI layer.** §7 below prescribes collapsing to the Reference (`lib/netX.0`) + `uno-runtime/.../skia` layout. That has since been narrowed: with the DOM runtime gone, `skia` was the only remaining replacement for the UI assemblies, so the UI layer now ships the Skia build directly in `lib/` and has no `uno-runtime` folder at all. The bait-and-switch is retained only for `Uno`, `Uno.Foundation` and `Uno.UI.Dispatching`, which still ship both a `skia` and a `webassembly` flavor and act as the union compile surface that keeps `Uno.UI` platform-agnostic. `Uno.UI-Reference-Only.slnf` survives and still builds those three, so the §10 compile gate is unchanged.
+
 ---
 
 ## 1. Summary

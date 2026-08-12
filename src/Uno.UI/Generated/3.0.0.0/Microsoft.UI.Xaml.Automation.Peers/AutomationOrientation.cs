@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if false || false
+#if false
 	public enum AutomationOrientation
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.Peers.AutomationOrientation.None

@@ -3,10 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition.Scenes
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum SceneComponentType
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		MeshRendererComponent = 0,
 #endif
 	}

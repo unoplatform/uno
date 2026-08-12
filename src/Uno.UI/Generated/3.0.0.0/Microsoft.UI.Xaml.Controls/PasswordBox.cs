@@ -3,19 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class PasswordBox
 	{
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty CanPasteClipboardContentProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(CanPasteClipboardContent), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.PasswordBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
+		// Skipping already declared property CanPasteClipboardContentProperty
 		// Skipping already declared property DescriptionProperty
 		// Skipping already declared property HeaderProperty
 		// Skipping already declared property HeaderTemplateProperty
@@ -26,41 +19,25 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property PasswordProperty
 		// Skipping already declared property PasswordRevealModeProperty
 		// Skipping already declared property PlaceholderTextProperty
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.PasswordBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty SelectionFlyoutProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionFlyout), typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase),
-			typeof(global::Microsoft.UI.Xaml.Controls.PasswordBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)));
-#endif
+		// Skipping already declared property SelectionFlyoutProperty
 		// Skipping already declared property SelectionHighlightColorProperty
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(TextReadingOrder), typeof(global::Microsoft.UI.Xaml.TextReadingOrder),
 			typeof(global::Microsoft.UI.Xaml.Controls.PasswordBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.TextReadingOrder)));
 #endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public bool CanPasteClipboardContent
-		{
-			get
-			{
-				return (bool)this.GetValue(CanPasteClipboardContentProperty);
-			}
-		}
-#endif
+		// Skipping already declared property CanPasteClipboardContent
 		// Skipping already declared property Description
 		// Skipping already declared property Header
 		// Skipping already declared property HeaderTemplate
@@ -71,8 +48,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property PasswordChar
 		// Skipping already declared property PasswordRevealMode
 		// Skipping already declared property PlaceholderText
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public bool PreventKeyboardDisplayOnProgrammaticFocus
 		{
 			get
@@ -85,23 +62,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase SelectionFlyout
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)this.GetValue(SelectionFlyoutProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionFlyoutProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property SelectionFlyout
 		// Skipping already declared property SelectionHighlightColor
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.TextReadingOrder TextReadingOrder
 		{
 			get
@@ -170,33 +134,18 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.SelectionHighlightColor.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.TextReadingOrder.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PasswordBox.TextReadingOrder.set
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public event global::Microsoft.UI.Xaml.Controls.ContextMenuOpeningEventHandler ContextMenuOpening
-		{
-			[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.PasswordBox", "event ContextMenuOpening");
-			}
-			[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.PasswordBox", "event ContextMenuOpening");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.PasswordBox.ContextMenuOpening
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.PasswordBox.PasswordChanged
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.PasswordBox, global::Microsoft.UI.Xaml.Controls.PasswordBoxPasswordChangingEventArgs> PasswordChanging
 		{
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.PasswordBox", "event PasswordChanging");
 			}
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.PasswordBox", "event PasswordChanging");

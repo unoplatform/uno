@@ -3,14 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2HttpHeadersCollectionIterator : global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, string>>, global::System.Collections.IEnumerator, global::System.IDisposable
 	{
 		// Skipping already declared property Current
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		object global::System.Collections.IEnumerator.Current
 		{
 			get
@@ -20,15 +20,15 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator.MoveNext()
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public void Reset()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator", "Reset()");
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator", "Dispose()");

@@ -48,13 +48,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-#if __ANDROID__
-				return this.FindFirstChild<Uno.UI.Controls.BindableSwitchCompat>() != null;
-#elif __APPLE_UIKIT__
-				return this.FindFirstChild<Uno.UI.Views.Controls.BindableUISwitch>() != null;
-#else
 				return false;
-#endif
 			}
 		}
 #endif
@@ -197,7 +191,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public ToggleSwitchTemplateSettings TemplateSettings { get; private set; }
 
-		public void OnTemplateRecycled()
+		void IFrameworkTemplatePoolAware.OnTemplateRecycled()
 		{
 			try
 			{

@@ -24,11 +24,11 @@
 		<None Include="**\*.reference.cs" Exclude="bin\**\*.reference.cs;obj\**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
 		<Compile Remove="**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
 
-		<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
-		<Compile Remove="**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
+		<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" Condition="!$(IsIOS)" />
+		<Compile Remove="**\*.iOS.cs" Condition="!$(IsIOS)" />
 
-		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" Condition="!$(IsIOSOrCatalyst)" />
-		<Compile Remove="**\*.iOSmacOS.cs" Condition="!$(IsIOSOrCatalyst)" />
+		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" Condition="!$(IsIOS)" />
+		<Compile Remove="**\*.iOSmacOS.cs" Condition="!$(IsIOS)" />
 		
 		<None Include="**\*.tvOS.cs" Exclude="bin\**\*.tvOS.cs;obj\**\*.tvOS.cs" Condition="!$(IsTvOS)" />
 		<Compile Remove="**\*.tvOS.cs" Condition="!$(IsTvOS)" />

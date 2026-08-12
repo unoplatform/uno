@@ -6,8 +6,6 @@
 
 * [How to add a splash screen](../splash-screen.md)
 
-* [How to use native Frame navigation](../guides/native-frame-nav-tutorial.md)
-
 * [How to consume a web API](../howto-consume-webservices.md)
 
 * [How to localize text resources](../guides/localization.md)

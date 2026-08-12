@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// </summary>
 		internal bool CanRevertState { get; set; } = true;
 
-		public void OnTemplateRecycled()
+		void IFrameworkTemplatePoolAware.OnTemplateRecycled()
 		{
 			try
 			{

@@ -1,4 +1,6 @@
-﻿using System;
+#nullable enable
+
+using System;
 
 // Keep this using in place until UWP support is dropped.
 using Microsoft.UI.Xaml.Controls;
@@ -9,6 +11,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		IAnimatedVisualSource CreateFromLottieAsset(Uri sourceFile);
 		IThemableAnimatedVisualSource CreateThemableFromLottieAsset(Uri sourceFile);
-		public bool TryCreateThemableFromAnimatedVisualSource(IAnimatedVisualSource animatedVisualSource, out IThemableAnimatedVisualSource themableAnimatedVisualSource);
+		public bool TryCreateThemableFromAnimatedVisualSource(IAnimatedVisualSource animatedVisualSource, out IThemableAnimatedVisualSource? themableAnimatedVisualSource);
 	}
 }

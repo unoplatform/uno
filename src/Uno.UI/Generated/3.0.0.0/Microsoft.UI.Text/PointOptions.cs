@@ -4,31 +4,31 @@
 namespace Microsoft.UI.Text
 {
 	[global::System.FlagsAttribute]
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum PointOptions : uint
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		None = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		IncludeInset = 1,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Start = 32,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		ClientCoordinates = 256,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		AllowOffClient = 512,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Transform = 1024,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		NoHorizontalScroll = 65536,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		NoVerticalScroll = 262144,
 #endif
 	}

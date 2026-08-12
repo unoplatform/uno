@@ -136,8 +136,7 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 				}
 				else if (ReferenceAssemblies.Packages.Any(p =>
 					p.Id.StartsWith("Microsoft.iOS.Ref", StringComparison.OrdinalIgnoreCase) ||
-					p.Id.StartsWith("Microsoft.tvOS.Ref", StringComparison.OrdinalIgnoreCase) ||
-					p.Id.StartsWith("Microsoft.MacCatalyst.Ref", StringComparison.OrdinalIgnoreCase)))
+					p.Id.StartsWith("Microsoft.tvOS.Ref", StringComparison.OrdinalIgnoreCase)))
 				{
 					includeXamlNamespaces = "ios,not_android,not_wasm,not_skia,not_netstdref";
 					excludeXamlNamespaces = "android,wasm,skia,not_ios";

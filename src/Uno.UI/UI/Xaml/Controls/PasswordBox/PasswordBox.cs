@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -343,6 +344,37 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			add => base.Paste += value;
 			remove => base.Paste -= value;
+		}
+
+		partial void OnPasswordCharChangedPartial(DependencyPropertyChangedEventArgs e)
+		{
+			if (string.IsNullOrEmpty(PasswordChar) || PasswordChar.Length != 1)
+			{
+				throw new ArgumentException("PasswordChar must be a single character string.");
+			}
+
+			// Force display update to refresh the password character
+			TextBoxView?.UpdateDisplayBlockText(Text);
+		}
+
+		partial void SetPasswordRevealState(PasswordRevealState state) => TextBoxView?.SetPasswordRevealState(state);
+
+		public new FlyoutBase SelectionFlyout
+		{
+			get => base.SelectionFlyout;
+			set => base.SelectionFlyout = value;
+		}
+
+		public static new DependencyProperty SelectionFlyoutProperty => TextBox.SelectionFlyoutProperty;
+
+		public static new DependencyProperty CanPasteClipboardContentProperty => TextBox.CanPasteClipboardContentProperty;
+
+		public new bool CanPasteClipboardContent => base.CanPasteClipboardContent;
+
+		public new event ContextMenuOpeningEventHandler ContextMenuOpening
+		{
+			add => base.ContextMenuOpening += value;
+			remove => base.ContextMenuOpening -= value;
 		}
 #endif
 	}

@@ -1,12 +1,6 @@
-﻿using System.IO;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Uno.Foundation;
-using Uno.Storage.Internal;
 using Windows.Storage.Provider;
-
-using NativeMethods = __Windows.Storage.Pickers.FileSavePicker.NativeMethods;
 
 namespace Windows.Storage
 {
@@ -14,27 +8,14 @@ namespace Windows.Storage
 	{
 		private static async Task<FileUpdateStatus> CompleteUpdatesTaskAsync(IStorageFile file, CancellationToken token)
 		{
-			if (file is StorageFile storageFile && storageFile.Provider == StorageProviders.WasmDownloadPicker)
+			// Triggering the download is a user-visible side effect - don't start one for a cancelled commit.
+			token.ThrowIfCancellationRequested();
+
+			if (file is StorageFile { Implementation: StorageFile.DownloadPickerStorageFile downloadFile })
 			{
-				var stream = await file.OpenStreamForReadAsync();
-				byte[] data;
-
-				using (var reader = new BinaryReader(stream))
-				{
-					data = reader.ReadBytes((int)stream.Length);
-				}
-
-				var gch = GCHandle.Alloc(data, GCHandleType.Pinned);
-				var pinnedData = gch.AddrOfPinnedObject();
-
-				try
-				{
-					NativeMethods.SaveAs(file.Name, pinnedData, data.Length);
-				}
-				finally
-				{
-					gch.Free();
-				}
+				// The content is handed to the browser JS-side, without materializing
+				// the payload in managed memory.
+				await downloadFile.TriggerDownloadAsync();
 			}
 
 			return FileUpdateStatus.Complete;

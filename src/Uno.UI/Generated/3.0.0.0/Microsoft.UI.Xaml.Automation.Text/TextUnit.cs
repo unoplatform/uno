@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Text
 {
-#if false || false
+#if false
 	public enum TextUnit
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Automation.Text.TextUnit.Character

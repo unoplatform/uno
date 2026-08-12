@@ -114,15 +114,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// TODO: Revisit if this can use SizeChanged += (_, _) => OnControlsBoundsChanged(); on all platforms.
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal override void AfterArrange()
 		{
 			base.AfterArrange();
-#else
-		internal override void OnLayoutUpdated()
-		{
-			base.OnLayoutUpdated();
-#endif
 			OnControlsBoundsChanged();
 		}
 

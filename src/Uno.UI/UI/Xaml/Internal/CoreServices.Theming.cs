@@ -6,12 +6,10 @@
 #nullable enable
 
 using Microsoft.UI.Xaml;
-#if UNO_HAS_ENHANCED_LIFECYCLE
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Data;
 using Uno.UI;
 using Uno.UI.Xaml.Media;
-#endif
 
 namespace Uno.UI.Xaml.Core;
 
@@ -58,7 +56,6 @@ internal partial class CoreServices
 	/// </summary>
 	internal bool HasThemeEverChanged { get; private set; }
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	// MUX Reference: CCoreServices::m_elementsWithThemeChangedListener — corep.h:2320,
 	//   containers::vector_map<CFrameworkElement*, unsigned int>
 	// Elements with at least one ActualThemeChanged subscription, ref-counted per subscription, so
@@ -102,9 +99,7 @@ internal partial class CoreServices
 			_elementsWithThemeChangedListener.Remove(fe);
 		}
 	}
-#endif
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	//------------------------------------------------------------------------
 	//
 	//  Method:   NotifyThemeChange
@@ -259,14 +254,6 @@ internal partial class CoreServices
 			IsSwitchingTheme = false;
 		}
 	}
-#else
-	// Native (non-enhanced-lifecycle) targets keep their Application-driven theme flow
-	// (Application.OnRequestedThemeChanged → OnResourcesChanged); the FrameworkTheming
-	// notify callback is inert there.
-	private void NotifyThemeChange()
-	{
-	}
-#endif
 
 	/// <summary>
 	/// Looks up a top-level (system or application) resource by key; an Application.Resources

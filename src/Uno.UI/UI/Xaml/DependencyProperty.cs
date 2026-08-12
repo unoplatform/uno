@@ -610,18 +610,6 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			if (this == DoubleAnimation.ToProperty)
-			{
-				if (referenceObject is FadeInThemeAnimation)
-				{
-					return Uno.UI.Helpers.Boxes.NullableDoubleBoxes.One;
-				}
-				else if (referenceObject is FadeOutThemeAnimation)
-				{
-					return Uno.UI.Helpers.Boxes.NullableDoubleBoxes.Zero;
-				}
-			}
-
 			if (_ownerTypeMetadata.CreateDefaultValueCallback != null)
 			{
 				return _ownerTypeMetadata.CreateDefaultValueCallback();

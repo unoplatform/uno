@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Printing
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum PreviewPageCountType
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Final = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Intermediate = 1,
 #endif
 	}

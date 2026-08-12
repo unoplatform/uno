@@ -6,7 +6,7 @@
 
 namespace Test
 {
-	public partial class RD : global::Microsoft.UI.Xaml.ResourceDictionary
+	public sealed partial class RD : global::Microsoft.UI.Xaml.ResourceDictionary
 	{
 		public RD()
 		{

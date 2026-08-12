@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class SplitMenuFlyoutItemAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider, global::Microsoft.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Automation.ExpandCollapseState ExpandCollapseState
 		{
 			get
@@ -18,8 +18,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public SplitMenuFlyoutItemAutomationPeer(global::Microsoft.UI.Xaml.Controls.SplitMenuFlyoutItem owner) : base(owner)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.SplitMenuFlyoutItemAutomationPeer", "SplitMenuFlyoutItemAutomationPeer(SplitMenuFlyoutItem owner)");
@@ -27,15 +27,15 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.SplitMenuFlyoutItemAutomationPeer.SplitMenuFlyoutItemAutomationPeer(Microsoft.UI.Xaml.Controls.SplitMenuFlyoutItem)
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SplitMenuFlyoutItemAutomationPeer.Invoke()
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public void Collapse()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.SplitMenuFlyoutItemAutomationPeer", "Collapse()");
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public void Expand()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.SplitMenuFlyoutItemAutomationPeer", "Expand()");

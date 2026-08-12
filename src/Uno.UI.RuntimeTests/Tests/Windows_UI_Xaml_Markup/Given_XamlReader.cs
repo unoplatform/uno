@@ -42,6 +42,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		}
 
 		[TestMethod]
+		public void When_Xmlns_ClrNamespace()
+		{
+			// WinUI only supports the "using:" form; the WPF-style "clr-namespace:" is rejected (BC42).
+			Assert.ThrowsExactly<XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load("""
+				<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:local="clr-namespace:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup" />
+				"""));
+		}
+
+		[TestMethod]
+		public void When_Xmlns_ClrNamespace_Ignorable()
+		{
+			var border = Microsoft.UI.Xaml.Markup.XamlReader.Load("""
+				<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+						xmlns:d="clr-namespace:Uno.UI.RuntimeTests.DesignTime"
+						mc:Ignorable="d" />
+				""");
+
+			Assert.IsInstanceOfType<Border>(border);
+		}
+
+		[TestMethod]
 		public void When_PointCollection()
 		{
 			var polygon = (Polygon)Microsoft.UI.Xaml.Markup.XamlReader.Load("""

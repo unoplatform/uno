@@ -3,33 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Documents
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class Run : global::Microsoft.UI.Xaml.Documents.Inline
 	{
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty FlowDirectionProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(FlowDirection), typeof(global::Microsoft.UI.Xaml.FlowDirection),
-			typeof(global::Microsoft.UI.Xaml.Documents.Run),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.FlowDirection)));
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.FlowDirection FlowDirection
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.FlowDirection)this.GetValue(FlowDirectionProperty);
-			}
-			set
-			{
-				this.SetValue(FlowDirectionProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property FlowDirectionProperty
+		// Skipping already declared property FlowDirection
 		// Skipping already declared property Text
 		// Skipping already declared method Microsoft.UI.Xaml.Documents.Run.Run()
 		// Forced skipping of method Microsoft.UI.Xaml.Documents.Run.Run()

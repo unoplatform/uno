@@ -70,22 +70,22 @@ namespace Uno.Storage.Streams.Internal
 
 		public override void SetLength(long value)
 		{
-			if (value < Length)
+			ArgumentOutOfRangeException.ThrowIfNegative(value);
+
+			// The File System Access truncate() also extends the file, zero-padded.
+			_pendingTasks.Enqueue(async () =>
 			{
-				_pendingTasks.Enqueue(async () =>
-				{
-					await TruncateAsync(value);
-				});
-			}
-			else
-			{
-				_pendingTasks.Enqueue(async () =>
-				{
-					await WriteAsync(new byte[] { 0 }, 0, 1);
-				});
-			}
+				await TruncateAsync(value);
+			});
 
 			_length = value;
+
+			// Truncating below the cursor moves it to the new end, as other streams do,
+			// so a following write appends instead of leaving a zero-filled gap.
+			if (Position > value)
+			{
+				Position = value;
+			}
 		}
 
 		public override void Write(byte[] buffer, int offset, int count)
@@ -106,7 +106,7 @@ namespace Uno.Storage.Streams.Internal
 
 				await NativeMethods.WriteAsync(_streamId.ToString(), pinnedData, offset, count, Position);
 
-				_length += Math.Max(Position + count, Length);
+				_length = Math.Max(Position + count, Length);
 				Position += count;
 			}
 			finally
@@ -141,8 +141,9 @@ namespace Uno.Storage.Streams.Internal
 
 		private async Task ProcessPendingAsync()
 		{
-			var currentTasks = _pendingTasks.ToArray();
-			foreach (var pendingTask in currentTasks)
+			// Dequeue before running: the queued operations call back into this method,
+			// so leaving them queued would replay them and recurse indefinitely.
+			while (_pendingTasks.TryDequeue(out var pendingTask))
 			{
 				await pendingTask();
 			}

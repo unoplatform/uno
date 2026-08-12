@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class LoopingSelectorItemDataAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.AutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IVirtualizedItemProvider
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public void Realize()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.LoopingSelectorItemDataAutomationPeer", "Realize()");

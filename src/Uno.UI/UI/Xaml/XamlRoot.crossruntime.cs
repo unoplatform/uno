@@ -14,17 +14,13 @@ public sealed partial class XamlRoot
 	internal void InvalidateMeasure()
 	{
 		VisualTree.RootElement.InvalidateMeasure();
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		CoreServices.RequestAdditionalFrame();
-#endif
 	}
 
 	internal void InvalidateArrange()
 	{
 		VisualTree.RootElement.InvalidateArrange();
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		CoreServices.RequestAdditionalFrame();
-#endif
 	}
 
 	/// <summary>

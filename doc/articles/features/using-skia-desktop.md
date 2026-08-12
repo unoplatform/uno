@@ -112,20 +112,6 @@ Each platform exposes its own `RenderingBackend` enum with only the backends it 
 
 Alternatively, you can use `FeatureConfiguration.Rendering` flags for backwards compatibility. The builder API takes precedence when both are used.
 
-## Windows Specifics
-
-### RDP Hardware Acceleration
-
-The Uno Platform Skia Desktop runtime on Windows uses a WPF shell internally. By default, Uno Platform enables RDP hardware acceleration in order to get good performance, yet this feature is disabled by default in standard WPF apps with .NET 8.
-
-If you're having issues with the Windows support for Skia Desktop over RDP, add the following to your project:
-
-```xml
-<ItemGroup>
-    <RuntimeHostConfigurationOption Include="Switch.System.Windows.Media.EnableHardwareAccelerationInRdp" Value="false" />
-</ItemGroup>
-```
-
 ## X11 Specifics
 
 When running using X11 Wayland compatibility (e.g. recent Ubuntu releases), DPI scaling cannot be determined in a reliable way. In order to specify the scaling to be used by Uno Platform, set the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable. The default value is `1.0`.
@@ -135,6 +121,7 @@ The X11 support uses DBus for various interactions with the system, such as file
 ## .NET Native AOT support
 
 Building an Uno Platform Skia Desktop app with .NET (7+) Native AOT requires Uno Platform 4.7 (or later).
+[Uno Platform 6.6 improves support for .NET Native AOT](xref:Uno.Features.NativeAOT).
 
 To build an app with this feature enabled:
 
@@ -146,7 +133,7 @@ To build an app with this feature enabled:
    </PropertyGroup>
    ```
 
-1. Add the following items in your `.csproj`:
+1. When using Uno Platform before Uno Platform 6.6, add the following items in your `.csproj`:
 
    ```xml
    <ItemGroup>

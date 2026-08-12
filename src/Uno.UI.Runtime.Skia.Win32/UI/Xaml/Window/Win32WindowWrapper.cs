@@ -128,6 +128,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				: new SoftwareRenderer(_hwnd);
 		}
 
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = _renderer.IsSoftware();
+
 		InitializeRenderThread();
 
 		RegisterForBackgroundColor();

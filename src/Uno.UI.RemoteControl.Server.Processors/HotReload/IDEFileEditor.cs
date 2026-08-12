@@ -9,6 +9,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload;
 /// <see cref="IFileEditor"/> implementation that delegates file updates to the IDE (e.g. Visual Studio)
 /// for operations it supports, and falls back to an inner <see cref="IFileEditor"/> for others (e.g. delete).
 /// </summary>
+[Obsolete("Replaced by IdeFileUpdater (spec 052): per-file IDE round-trips let Visual Studio evaluate EnC on intermediate states. Kept only for the 'hot-reload-ide-updater=false' escape hatch and will be removed once the batched path has soaked.")]
 internal class IDEFileEditor(
 	Func<string, string, bool, ValueTask<(bool IsSuccess, string? Error)>> updateFileInIde,
 	IFileEditor inner) : IFileEditor

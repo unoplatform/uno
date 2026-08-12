@@ -37,4 +37,13 @@ public record SolutionUpdateResult(
 	/// </summary>
 	public SolutionUpdateResult(Solution solution, ChangeSet ignoredChanges)
 		: this(solution, ignoredChanges, []) { }
+
+	/// <summary>
+	/// The subset of the input <see cref="ChangeSet"/> whose on-disk content was found
+	/// byte-identical to the solution's current content and was therefore not re-applied
+	/// (e.g. a trailing file-system event re-observing a file the pipeline just applied).
+	/// Unlike <see cref="IgnoredChanges"/>, these entries were consumed — their content is
+	/// in the solution; they are surfaced for diagnosability only.
+	/// </summary>
+	public ChangeSet UpToDateChanges { get; init; } = ChangeSet.Empty;
 }

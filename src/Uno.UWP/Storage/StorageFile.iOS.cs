@@ -84,7 +84,7 @@ namespace Windows.Storage
 
 			public override Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
 			{
-				Func<Stream> streamBuilder = () => File.Open(Path, FileMode.Open, ToFileAccess(accessMode), ToFileShare(options));
+				Func<Stream> streamBuilder = () => File.Open(Path, ToFileMode(accessMode), ToFileAccess(accessMode), ToFileShare(options));
 				var streamWrapper = new SecurityScopeStreamWrapper(_nsUrl, streamBuilder);
 				return Task.FromResult<Stream>(streamWrapper);
 			}

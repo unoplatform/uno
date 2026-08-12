@@ -27,9 +27,9 @@ sudo chmod a+rw /dev/fb* 2>/dev/null || true
 
 cd $SamplesAppArtifactPath
 if [ "$USE_XVFB" = "true" ]; then
-	xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE' || true # sometimes we crash during app shutdown, so we're forcing a 0 exit code
+	xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.dll --runtime-tests=$TEST_RESULTS_FILE' || true # sometimes we crash during app shutdown, so we're forcing a 0 exit code
 else
-	dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE || true
+	dotnet SamplesApp.dll --runtime-tests=$TEST_RESULTS_FILE || true
 fi
 
 ## Export the failed tests list for reuse in a pipeline retry

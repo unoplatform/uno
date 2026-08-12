@@ -24,11 +24,7 @@ using Uno.Extensions;
 
 using View = Microsoft.UI.Xaml.UIElement;
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
-#else
-using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.IScrollContentPresenter;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {

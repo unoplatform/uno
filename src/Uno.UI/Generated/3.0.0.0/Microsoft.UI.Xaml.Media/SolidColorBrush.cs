@@ -4,7 +4,7 @@
 namespace Microsoft.UI.Xaml.Media
 {
 	[global::Microsoft.UI.Xaml.Markup.ContentPropertyAttribute(Name = "Color")]
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class SolidColorBrush : global::Microsoft.UI.Xaml.Media.Brush

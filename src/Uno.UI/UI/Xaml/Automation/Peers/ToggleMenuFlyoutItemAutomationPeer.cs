@@ -23,6 +23,12 @@ public partial class ToggleMenuFlyoutItemAutomationPeer : FrameworkElementAutoma
 	{
 	}
 
+	// RadioMenuFlyoutItem is not a ToggleMenuFlyoutItem in Uno (it derives from MenuFlyoutItem to match
+	// the public WinUI base), but exposes the same toggle automation surface, so it reuses this peer.
+	internal ToggleMenuFlyoutItemAutomationPeer(MenuFlyoutItem owner) : base(owner)
+	{
+	}
+
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
 		if (patternInterface == PatternInterface.Toggle)
@@ -44,8 +50,8 @@ public partial class ToggleMenuFlyoutItemAutomationPeer : FrameworkElementAutoma
 		if (string.IsNullOrEmpty(returnValue))
 		{
 			// If AutomationProperties.AcceleratorKey hasn't been set, then return the value of our KeyboardAcceleratorTextOverride property.
-			var ownerAsToggleMenuFlyoutItem = (ToggleMenuFlyoutItem)Owner;
-			var keyboardAcceleratorTextOverride = ownerAsToggleMenuFlyoutItem.KeyboardAcceleratorTextOverride;
+			var ownerAsMenuFlyoutItem = (MenuFlyoutItem)Owner;
+			var keyboardAcceleratorTextOverride = ownerAsMenuFlyoutItem.KeyboardAcceleratorTextOverride;
 			returnValue = GetTrimmedKeyboardAcceleratorTextOverride(keyboardAcceleratorTextOverride);
 		}
 
@@ -91,7 +97,7 @@ public partial class ToggleMenuFlyoutItemAutomationPeer : FrameworkElementAutoma
 			throw new ElementNotEnabledException();
 		}
 
-		((ToggleMenuFlyoutItem)Owner).Invoke();
+		((MenuFlyoutItem)Owner).Invoke();
 	}
 
 	/// <summary>
@@ -101,7 +107,12 @@ public partial class ToggleMenuFlyoutItemAutomationPeer : FrameworkElementAutoma
 	{
 		get
 		{
-			var isChecked = ((ToggleMenuFlyoutItem)Owner).IsChecked;
+			var isChecked = Owner switch
+			{
+				ToggleMenuFlyoutItem toggleItem => toggleItem.IsChecked,
+				RadioMenuFlyoutItem radioItem => radioItem.IsChecked,
+				_ => false,
+			};
 			return isChecked ? Automation.ToggleState.On : Automation.ToggleState.Off;
 		}
 	}

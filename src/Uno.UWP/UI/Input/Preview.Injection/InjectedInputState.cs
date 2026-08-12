@@ -7,7 +7,12 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
 
+
 namespace Windows.UI.Input.Preview.Injection;
+
+using PointerPoint = global::Microsoft.UI.Input.PointerPoint;
+using PointerPointProperties = global::Microsoft.UI.Input.PointerPointProperties;
+using PointerUpdateKind = global::Microsoft.UI.Input.PointerUpdateKind;
 
 internal class InjectedInputState
 {
@@ -29,7 +34,7 @@ internal class InjectedInputState
 
 	public Point Position { get; set; }
 
-	public PointerPointProperties Properties { get; set; } = new();
+	public global::Microsoft.UI.Input.PointerPointProperties Properties { get; set; } = new();
 
 	public void StartNewSequence(bool initial = false)
 	{

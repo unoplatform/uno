@@ -171,7 +171,7 @@ namespace Windows.Media.Playback
 				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
 			}
 
-			if (uri.IsLocalResource())
+			if (uri.IsMsAppx())
 			{
 				var filename = uri.PathAndQuery.TrimStart('/');
 				var afd = Application.Context.Assets.OpenFd(filename);

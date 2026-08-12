@@ -261,7 +261,7 @@ public class Given_StartCommandHandler
 	{
 		var spawns = new List<ProcessStartInfo>();
 		var results = new Queue<DirectSpawnResult>([
-			new DirectSpawnResult(1, DirectSpawnFailure.DiedBeforeReady, -532462766, "Unhandled exception. FileNotFoundException: System.Text.Encodings.Web"),
+			new DirectSpawnResult(1, DirectSpawnFailure.DiedBeforeReady, -532462766),
 			DirectSpawnResult.Ready,
 		]);
 
@@ -295,7 +295,7 @@ public class Given_StartCommandHandler
 			onSpawnProcess: _ =>
 			{
 				spawnCount++;
-				return Task.FromResult(new DirectSpawnResult(1, DirectSpawnFailure.DiedBeforeReady, -1, "boom"));
+				return Task.FromResult(new DirectSpawnResult(1, DirectSpawnFailure.DiedBeforeReady, -1));
 			});
 
 		var exitCode = await handler.RunAsync(
@@ -317,7 +317,7 @@ public class Given_StartCommandHandler
 			onSpawnProcess: _ =>
 			{
 				spawnCount++;
-				return Task.FromResult(new DirectSpawnResult(1, DirectSpawnFailure.DiedBeforeReady, -1, "boom"));
+				return Task.FromResult(new DirectSpawnResult(1, DirectSpawnFailure.DiedBeforeReady, -1));
 			});
 
 		var exitCode = await handler.RunAsync(
@@ -339,7 +339,7 @@ public class Given_StartCommandHandler
 			onSpawnProcess: _ =>
 			{
 				spawnCount++;
-				return Task.FromResult(new DirectSpawnResult(1, DirectSpawnFailure.ReadinessTimeout, null, ""));
+				return Task.FromResult(new DirectSpawnResult(1, DirectSpawnFailure.ReadinessTimeout, null));
 			});
 
 		var exitCode = await handler.RunAsync(
@@ -365,7 +365,7 @@ public class Given_StartCommandHandler
 	{
 		var failure = (DirectSpawnFailure)failureKind;
 		var result = new DirectSpawnResult(
-			failure == DirectSpawnFailure.None ? 0 : 1, failure, null, "");
+			failure == DirectSpawnFailure.None ? 0 : 1, failure, null);
 
 		StartCommandHandler.ShouldRetryInSafeMode(result, addins, solution)
 			.Should().Be(expected);

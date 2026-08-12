@@ -3,24 +3,24 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Markup
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct XmlnsDefinition
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XmlnsDefinition.XmlnsDefinition()
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public XmlnsDefinition(string _XmlNamespace, string _Namespace)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Markup.XmlnsDefinition", "XmlnsDefinition(string _XmlNamespace, string _Namespace)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XmlnsDefinition.XmlnsDefinition(string, string)
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public string XmlNamespace;
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public string Namespace;
 #endif
 	}

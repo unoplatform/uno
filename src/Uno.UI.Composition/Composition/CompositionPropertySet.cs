@@ -22,23 +22,23 @@ namespace Microsoft.UI.Composition
 		// referencing the owner (e.g. `_.Progress`) re-evaluate when the property set changes.
 		internal CompositionObject? Owner { get; set; }
 
-		public void InsertColor(string propertyName, Color value) => SetValue(propertyName, value);
+		public void InsertColor(string propertyName, Color value) => SetValue(propertyName, value, stopAnimation: true);
 
-		public void InsertMatrix3x2(string propertyName, Matrix3x2 value) => SetValue(propertyName, value);
+		public void InsertMatrix3x2(string propertyName, Matrix3x2 value) => SetValue(propertyName, value, stopAnimation: true);
 
-		public void InsertMatrix4x4(string propertyName, Matrix4x4 value) => SetValue(propertyName, value);
+		public void InsertMatrix4x4(string propertyName, Matrix4x4 value) => SetValue(propertyName, value, stopAnimation: true);
 
-		public void InsertQuaternion(string propertyName, Quaternion value) => SetValue(propertyName, value);
+		public void InsertQuaternion(string propertyName, Quaternion value) => SetValue(propertyName, value, stopAnimation: true);
 
-		public void InsertScalar(string propertyName, float value) => SetValue(propertyName, value);
+		public void InsertScalar(string propertyName, float value) => SetValue(propertyName, value, stopAnimation: true);
 
-		public void InsertVector2(string propertyName, Vector2 value) => SetValue(propertyName, value);
+		public void InsertVector2(string propertyName, Vector2 value) => SetValue(propertyName, value, stopAnimation: true);
 
-		public void InsertVector3(string propertyName, Vector3 value) => SetValue(propertyName, value);
+		public void InsertVector3(string propertyName, Vector3 value) => SetValue(propertyName, value, stopAnimation: true);
 
-		public void InsertVector4(string propertyName, Vector4 value) => SetValue(propertyName, value);
+		public void InsertVector4(string propertyName, Vector4 value) => SetValue(propertyName, value, stopAnimation: true);
 
-		public void InsertBoolean(string propertyName, bool value) => SetValue(propertyName, value);
+		public void InsertBoolean(string propertyName, bool value) => SetValue(propertyName, value, stopAnimation: true);
 
 		public CompositionGetValueStatus TryGetColor(string propertyName, out Color value) => TryGetValue(propertyName, out value);
 
@@ -79,9 +79,18 @@ namespace Microsoft.UI.Composition
 			return _properties.TryGetValue(propertyName, out value);
 		}
 
-		private void SetValue<T>(string propertyName, T value)
+		internal void SetValueFromAnimation<T>(string propertyName, T value)
+			where T : struct
+			=> SetValue(propertyName, value, stopAnimation: false);
+
+		private void SetValue<T>(string propertyName, T value, bool stopAnimation)
 			where T : struct
 		{
+			if (stopAnimation)
+			{
+				StopAnimation(propertyName);
+			}
+
 			if (_properties.TryGetValue(propertyName, out var existingValue))
 			{
 				if (existingValue is not T _)

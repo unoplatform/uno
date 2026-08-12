@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 
 using System;
 using System.Buffers;
@@ -159,4 +158,3 @@ internal sealed partial class EventManager
 	}
 }
 
-#endif

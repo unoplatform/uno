@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class Image
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty NineGridProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(NineGrid), typeof(global::Microsoft.UI.Xaml.Thickness),
@@ -18,8 +18,8 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property SourceProperty
 		// Skipping already declared property StretchProperty
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Thickness NineGrid
 		{
 			get
@@ -39,20 +39,14 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.NineGridProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.SourceProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.StretchProperty.get
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Windows.Media.Casting.CastingSource GetAsCastingSource()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Image", "GetAsCastingSource()");
 		}
 #endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Composition.CompositionBrush GetAlphaMask()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Image", "GetAlphaMask()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Image.GetAlphaMask()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.ImageFailed.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.ImageFailed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Image.ImageOpened.add

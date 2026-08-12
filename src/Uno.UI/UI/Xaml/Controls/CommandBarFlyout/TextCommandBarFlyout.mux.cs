@@ -28,7 +28,14 @@ partial class TextCommandBarFlyout
 		//__RP_Marker_ClassById(RuntimeProfiler.ProfId_TextCommandBarFlyout);
 		m_dispatcherHelper = new DispatcherHelper(this);
 
-		Opening += (s, e) => UpdateButtons();
+		Opening += (s, e) =>
+		{
+			// Uno specific: capture the show mode now, before CommandBarFlyout's CommandBar.Opened handler
+			// flips a Transient flyout to Standard on expand. Only a context menu opens Standard from the start.
+			m_openedAsContextMenu = ShowMode == FlyoutShowMode.Standard;
+			m_openedByTouch = WasOpenedByTouch;
+			UpdateButtons();
+		};
 
 		Opened += (s, e) =>
 		{
@@ -220,6 +227,16 @@ partial class TextCommandBarFlyout
 
 			void onProofingButtonLoaded(object sender, object eventArgs)
 			{
+				// Uno specific: suppress the auto-open only for a touch-driven selection flyout. There the
+				// proofing button loads only once the user taps the overflow, and auto-opening the submenu
+				// would hijack that tap. A context menu (Standard show mode) still auto-opens, and pen/mouse
+				// keep the WinUI default. The show mode is read from the value captured at open time because
+				// the CommandBar's Opened handler flips the live ShowMode to Standard on expand.
+				if (!m_openedAsContextMenu && m_openedByTouch)
+				{
+					return;
+				}
+
 				// If we have a proofing menu, we'll start with it open by invoking the button
 				// as soon as the CommandBar opening animation completes.
 				// We invoke the button instead of just showing the flyout to make the button
@@ -336,17 +353,69 @@ partial class TextCommandBarFlyout
 
 		addButtonToCommandsIfPresent(TextControlButtons.Undo, SecondaryCommands);
 		addButtonToCommandsIfPresent(TextControlButtons.Redo, SecondaryCommands);
-		addButtonToCommandsIfPresent(TextControlButtons.SelectAll, SecondaryCommands);
+
+		// Uno specific: on a touch/pen insertion-caret flyout (no selection), Select All is the only command with an
+		// empty clipboard — and a transient flyout with no primary command self-hides (see the Opened handler). Put
+		// it in the primary bar there so tapping the insertion handle always opens a usable flyout.
+
+		var commandListForSelectAll = InputDevicePrefersPrimaryCommands && Target is TextBox { SelectionLength: 0 } and not PasswordBox
+			? PrimaryCommands
+			: SecondaryCommands;
+		if ((buttonsToAdd & TextControlButtons.SelectAll) != TextControlButtons.None &&
+			GetButton(TextControlButtons.SelectAll) is AppBarButton selectAllButton)
+		{
+			// In the primary bar Select All is shown like Cut/Copy/Paste (icon + label), so restore the icon its
+			// command clears (see GetButton). The button instance is cached and reused, so reuse the existing icon
+			// (allocate only once) in the primary bar and clear it again when it routes back to the text-only overflow.
+			if (commandListForSelectAll == PrimaryCommands)
+			{
+				selectAllButton.Icon ??= new SymbolIcon(Symbol.SelectAll);
+			}
+			else
+			{
+				selectAllButton.Icon = null;
+			}
+		}
+		addButtonToCommandsIfPresent(TextControlButtons.SelectAll, commandListForSelectAll);
+
+		// Uno specific: the command bar shows the overflow ("...") button whenever its primary bar is taller than the
+		// compact height (i.e. its buttons carry labels), even with nothing in the overflow — which dangles a "..." over
+		// an empty menu on the label-carrying touch/pen selection flyout (most visibly the touch insertion-caret flyout,
+		// where Select All is promoted to the primary bar and nothing is secondary). For that touch/pen UX, gate the
+		// overflow button on the actual secondary-command count; keep WinUI's default (Auto) for mouse/keyboard.
+		if (m_commandBar is { } commandBar)
+		{
+			commandBar.OverflowButtonVisibility = InputDevicePrefersPrimaryCommands && SecondaryCommands.Count == 0
+				? CommandBarOverflowButtonVisibility.Collapsed
+				: CommandBarOverflowButtonVisibility.Auto;
+		}
 	}
 
-	private TextControlButtons GetButtonsToAdd()
+	// Uno specific: a transient flyout whose primary bar would be empty hides itself the moment it opens (see the
+	// Opened handler), which flashes an empty popup. Let a touch/pen caller ask up-front whether it is worth opening.
+	// The primary-bar routing mirrors UpdateButtons for InputDevicePrefersPrimaryCommands, which is only assigned once
+	// the flyout is opening - hence passing the touch/pen preference explicitly so both agree on the command set.
+	internal bool HasTouchPrimaryCommandsFor(FrameworkElement target)
+	{
+		var primaryBarButtons = TextControlButtons.Cut | TextControlButtons.Copy | TextControlButtons.Paste
+			| TextControlButtons.Bold | TextControlButtons.Italic | TextControlButtons.Underline;
+		if (target is TextBox { SelectionLength: 0 } and not PasswordBox)
+		{
+			primaryBarButtons |= TextControlButtons.SelectAll;
+		}
+
+		return (GetButtonsToAdd(target, prefersPrimaryCommands: true) & primaryBarButtons) != TextControlButtons.None;
+	}
+
+	private TextControlButtons GetButtonsToAdd() => GetButtonsToAdd(Target, InputDevicePrefersPrimaryCommands);
+
+	private TextControlButtons GetButtonsToAdd(FrameworkElement target, bool prefersPrimaryCommands)
 	{
 		TextControlButtons buttonsToAdd = TextControlButtons.None;
-		var target = Target;
 
 		if (target is TextBox textBoxTarget and not PasswordBox) // PasswordBox derives from TextBox in Uno Platform
 		{
-			buttonsToAdd = GetTextBoxButtonsToAdd(textBoxTarget);
+			buttonsToAdd = GetTextBoxButtonsToAdd(textBoxTarget, prefersPrimaryCommands);
 		}
 		else if (target is TextBlock textBlockTarget)
 		{
@@ -375,7 +444,7 @@ partial class TextCommandBarFlyout
 		return buttonsToAdd;
 	}
 
-	private TextControlButtons GetTextBoxButtonsToAdd(TextBox textBox)
+	private TextControlButtons GetTextBoxButtonsToAdd(TextBox textBox, bool prefersPrimaryCommands)
 	{
 		TextControlButtons buttonsToAdd = TextControlButtons.None;
 
@@ -407,7 +476,9 @@ partial class TextCommandBarFlyout
 			buttonsToAdd |= TextControlButtons.Copy;
 		}
 
-		if (textBox.Text.Length > 0)
+		// Uno specific: on touch/pen Select All stays available even with no text, so a touch gesture on an empty box
+		// always has a command and opens a usable flyout. WinUI drops it there (nothing to select).
+		if (textBox.Text.Length > 0 || prefersPrimaryCommands)
 		{
 			buttonsToAdd |= TextControlButtons.SelectAll;
 		}
@@ -536,6 +607,19 @@ partial class TextCommandBarFlyout
 		return wasFound;
 	}
 
+	// Uno specific: CommandBarFlyout only closes itself when a *secondary* command is invoked (MUX extends that to the
+	// proofing menu - "interactions with any proofing menu element ... close the entire flyout, same as interactions
+	// with secondary commands"), never for the primary bar - where UpdateButtons puts Cut/Copy/Paste for a touch/pen
+	// flyout, and only there. Close it in that case too, so it doesn't linger over the text after the command ran.
+	// The device check is redundant with the primary-bar membership, but keeps the touch/pen scope explicit here.
+	private void HideAfterPrimaryBarInvoke(TextControlButtons button)
+	{
+		if (IsButtonInPrimaryCommands(button) && InputDevicePrefersPrimaryCommands)
+		{
+			Hide();
+		}
+	}
+
 	private void ExecuteCutCommand()
 	{
 		var target = Target;
@@ -562,10 +646,7 @@ partial class TextCommandBarFlyout
 			// if the app isn't the foreground window when we try to execute a clipboard operation.			
 		}
 
-		if (IsButtonInPrimaryCommands(TextControlButtons.Cut))
-		{
-			UpdateButtons();
-		}
+		HideAfterPrimaryBarInvoke(TextControlButtons.Cut);
 	}
 
 	private void ExecuteCopyCommand()
@@ -614,10 +695,7 @@ partial class TextCommandBarFlyout
 			// if the app isn't the foreground window when we try to execute a clipboard operation.
 		}
 
-		if (IsButtonInPrimaryCommands(TextControlButtons.Copy))
-		{
-			UpdateButtons();
-		}
+		HideAfterPrimaryBarInvoke(TextControlButtons.Copy);
 	}
 
 	private void ExecutePasteCommand()
@@ -650,10 +728,7 @@ partial class TextCommandBarFlyout
 			// if the app isn't the foreground window when we try to execute a clipboard operation.
 		}
 
-		if (IsButtonInPrimaryCommands(TextControlButtons.Paste))
-		{
-			UpdateButtons();
-		}
+		HideAfterPrimaryBarInvoke(TextControlButtons.Paste);
 	}
 
 	private void ExecuteBoldCommand()
@@ -815,10 +890,34 @@ partial class TextCommandBarFlyout
 		}
 	}
 
+	// Uno specific: a command button promoted to the primary bar of a transient touch/pen selection flyout can be hosted
+	// directly under the command bar instead of its PrimaryItemsControl, so the implicit CommandBarFlyoutAppBarButtonStyle
+	// never reaches it and its text label stays collapsed. Assign it explicitly so the button always carries the flyout
+	// template (which drives both the primary-bar label and the overflow layout) regardless of where it is hosted.
+	private static void ApplyCommandBarFlyoutButtonStyle(AppBarButton button)
+	{
+		if (Application.Current?.Resources.TryGetValue("CommandBarFlyoutAppBarButtonStyle", out var flyoutButtonStyle) == true &&
+			flyoutButtonStyle is Style style)
+		{
+			button.Style = style;
+		}
+	}
+
 	private ICommandBarElement GetButton(TextControlButtons textControlButton)
 	{
 		if (m_buttons.TryGetValue(textControlButton, out var result))
 		{
+			// Uno specific: CommandBarOverflowPresenter.ClearContainerForItemOverride clears an item's Style when it
+			// leaves the overflow, wiping the flyout style assigned at creation. Re-apply it to a cached button before
+			// it is (re)realized in the primary bar so it carries the flyout template (with PrimaryLabelStates) - a
+			// no-op when already styled. Without this, a button that transited overflow->primary (e.g. Select All after
+			// the "..." overflow is opened over a full selection, then promoted on caret-collapse) falls back to the
+			// default AppBarButton template and its text label stays collapsed.
+			if (result is AppBarButton cachedButton &&
+				textControlButton is TextControlButtons.Cut or TextControlButtons.Copy or TextControlButtons.Paste or TextControlButtons.SelectAll)
+			{
+				ApplyCommandBarFlyoutButtonStyle(cachedButton);
+			}
 			return result;
 		}
 		else
@@ -832,6 +931,7 @@ partial class TextCommandBarFlyout
 
 						InitializeButtonWithUICommand(button, new StandardUICommand(StandardUICommandKind.Cut), executeFunc);
 
+						ApplyCommandBarFlyoutButtonStyle(button);
 						m_buttons[TextControlButtons.Cut] = button;
 						return button;
 					}
@@ -842,6 +942,7 @@ partial class TextCommandBarFlyout
 
 						InitializeButtonWithUICommand(button, new StandardUICommand(StandardUICommandKind.Copy), executeFunc);
 
+						ApplyCommandBarFlyoutButtonStyle(button);
 						m_buttons[TextControlButtons.Copy] = button;
 						return button;
 					}
@@ -852,6 +953,7 @@ partial class TextCommandBarFlyout
 
 						InitializeButtonWithUICommand(button, new StandardUICommand(StandardUICommandKind.Paste), executeFunc);
 
+						ApplyCommandBarFlyoutButtonStyle(button);
 						m_buttons[TextControlButtons.Paste] = button;
 						return button;
 					}
@@ -928,6 +1030,8 @@ partial class TextCommandBarFlyout
 						command.IconSource = null;
 
 						InitializeButtonWithUICommand(button, command, executeFunc);
+
+						ApplyCommandBarFlyoutButtonStyle(button);
 
 						m_buttons[TextControlButtons.SelectAll] = button;
 						return button;

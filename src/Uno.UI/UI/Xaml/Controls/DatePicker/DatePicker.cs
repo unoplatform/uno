@@ -231,7 +231,7 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						CoreWindowActivationState state =
 							CoreWindowActivationState.CodeActivated;
-						state = (args.WindowActivationState);
+						state = (CoreWindowActivationState)args.WindowActivationState;
 
 						if (state == CoreWindowActivationState.CodeActivated
 							|| state == CoreWindowActivationState.PointerActivated)

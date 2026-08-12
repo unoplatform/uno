@@ -3,14 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class MenuFlyoutPresenter : global::Microsoft.UI.Xaml.Controls.ItemsControl
 	{
 		// Skipping already declared property IsDefaultShadowEnabledProperty
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty SystemBackdropProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(SystemBackdrop), typeof(global::Microsoft.UI.Xaml.Media.SystemBackdrop),
@@ -18,8 +18,8 @@ namespace Microsoft.UI.Xaml.Controls
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.SystemBackdrop)));
 #endif
 		// Skipping already declared property IsDefaultShadowEnabled
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Media.SystemBackdrop SystemBackdrop
 		{
 			get

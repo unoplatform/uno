@@ -22,4 +22,7 @@ internal partial class CompositionBrushWrapper : CompositionBrush
 
 	internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds) => _wrappedBrush?.TryPaint(session, opacity, bounds) ?? true;
 	internal override bool CanPaint() => WrappedBrush?.CanPaint() ?? false;
+
+	internal override bool RequiresRepaintOnEveryFrame => WrappedBrush?.RequiresRepaintOnEveryFrame ?? false;
+	internal override float DamageRegionSamplingMargin => WrappedBrush?.DamageRegionSamplingMargin ?? 0;
 }

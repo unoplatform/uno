@@ -6,7 +6,12 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 
+
 namespace Windows.UI.Input.Preview.Injection;
+
+using PointerPoint = global::Microsoft.UI.Input.PointerPoint;
+using PointerPointProperties = global::Microsoft.UI.Input.PointerPointProperties;
+using PointerUpdateKind = global::Microsoft.UI.Input.PointerUpdateKind;
 
 public partial struct InjectedInputPointerInfo
 {
@@ -73,7 +78,7 @@ public partial struct InjectedInputPointerInfo
 		}
 
 		properties.PointerUpdateKind = update;
-		if (state.Type is PointerDeviceType.Pen)
+		if (state.Type is global::Windows.Devices.Input.PointerDeviceType.Pen)
 		{
 			properties.IsBarrelButtonPressed = properties.IsRightButtonPressed;
 		}

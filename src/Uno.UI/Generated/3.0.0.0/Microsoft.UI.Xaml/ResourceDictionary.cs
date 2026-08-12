@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ResourceDictionary : global::Microsoft.UI.Xaml.DependencyObject, global::System.Collections.Generic.IDictionary<object, object>, global::System.Collections.Generic.ICollection<global::System.Collections.Generic.KeyValuePair<object, object>>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<object, object>>, global::System.Collections.IEnumerable

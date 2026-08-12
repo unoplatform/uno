@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -85,16 +84,12 @@ namespace Windows.Storage.Pickers
 			return acceptTypes.ToArray();
 		}
 
-		private async Task<StorageFile?> DownloadPickerPickSaveFileAsync(CancellationToken token)
+		private Task<StorageFile?> DownloadPickerPickSaveFileAsync(CancellationToken token)
 		{
+			token.ThrowIfCancellationRequested();
+
 			if (SuggestedSaveFile == null)
 			{
-				var temporaryFolder = ApplicationData.Current.LocalCacheFolder;
-				if (!Directory.Exists(temporaryFolder.Path))
-				{
-					await temporaryFolder.MakePersistentAsync();
-				}
-
 				if (string.IsNullOrEmpty(SuggestedFileName))
 				{
 					SuggestedFileName = Guid.NewGuid().ToString();
@@ -104,10 +99,12 @@ namespace Windows.Storage.Pickers
 
 				// The mime type is chosen by the extension, and we cannot reliably send multiple mime type in the browser
 				var fileName = SuggestedFileName + extension;
-				SuggestedSaveFile = await temporaryFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-				SuggestedSaveFile.ProviderOverride = StorageProviders.WasmDownloadPicker;
+
+				// The content is staged in a chunked JS-side buffer rather than a file in the
+				// in-memory filesystem, to keep large payloads off the tab's memory ceilings.
+				SuggestedSaveFile = StorageFile.GetForDownloadPicker(fileName);
 			}
-			return SuggestedSaveFile;
+			return Task.FromResult<StorageFile?>(SuggestedSaveFile);
 		}
 	}
 }

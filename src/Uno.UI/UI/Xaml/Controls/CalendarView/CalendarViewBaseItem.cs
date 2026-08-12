@@ -152,7 +152,6 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateTextBlockForeground();
 		}
 
-#if !__NETSTD_REFERENCE__
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		private protected override void EnterImpl(bool live)
@@ -176,7 +175,6 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateRender();
 		}
 
-#endif
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private protected CCalendarViewBaseItemChrome GetHandle() => this;
 

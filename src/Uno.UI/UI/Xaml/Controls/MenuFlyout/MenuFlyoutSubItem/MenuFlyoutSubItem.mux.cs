@@ -9,7 +9,6 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class MenuFlyoutSubItem
 {
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	// MUX Reference: CMenuFlyoutSubItem::EnterImpl in MenuFlyoutSubItem.cpp
 	internal override void EnterImpl(EnterParams @params, int depth)
 	{
@@ -23,7 +22,6 @@ partial class MenuFlyoutSubItem
 		base.LeaveImpl(@params);
 		MenuFlyout.KeyboardAcceleratorFlyoutItemLeave(this, this, MenuFlyoutSubItem.ItemsProperty, @params);
 	}
-#endif
 
 #if !UNO_HAS_ENHANCED_LIFECYCLE && !__NETSTD_REFERENCE__
 	// Uno specific fallback for platforms without enhanced lifecycle (Android/iOS native).

@@ -15,8 +15,8 @@ internal static partial class PlatformImageHelpers
 		// When using ms-appx on Wasm native, we get the uri as /path/to/image.png
 		// For now, we handle both cases here.
 		// However, we should align both callers to always use the same format.
-		var isLocalResource = uri.IsLocalResource();
-		var path = isLocalResource ? uri.PathAndQuery.TrimStart("/") : uri.OriginalString;
+		var isMsAppx = uri.IsMsAppx();
+		var path = isMsAppx ? uri.PathAndQuery.TrimStart("/") : uri.OriginalString;
 
 		if (!string.IsNullOrEmpty(path))
 		{
@@ -46,7 +46,7 @@ internal static partial class PlatformImageHelpers
 
 					if (assets.Contains(filePath))
 					{
-						if (isLocalResource)
+						if (isMsAppx)
 						{
 							// This is the case for Wasm Skia.
 							return $"ms-appx:///{directory}/{filename}.scale-{probeScale}{extension}";
@@ -60,7 +60,7 @@ internal static partial class PlatformImageHelpers
 				}
 			}
 
-			if (isLocalResource)
+			if (isMsAppx)
 			{
 				return uri.OriginalString;
 			}

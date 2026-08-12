@@ -46,14 +46,38 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private readonly IRemoteControlServer _remoteControlServer;
 		private readonly ITelemetry _telemetry;
 		private readonly HotReloadTracker _tracker;
-		private FileUpdater _fileUpdater;
+		private readonly WorkspaceGatedFileUpdater _fileUpdater;
 
 		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer, ITelemetry<ServerHotReloadProcessor> telemetry)
 		{
 			_remoteControlServer = remoteControlServer;
 			_telemetry = telemetry;
 			_tracker = new(async (status, ct) => await _remoteControlServer.SendFrame(new HotReloadStatusMessage(status)), ct => RequestHotReloadToIde(), _reporter);
-			_fileUpdater = CreateFileUpdater(isRunningInsideVisualStudio: false, hotReloadInfoPath: null);
+
+			// Update requests are gated on the workspace lifecycle: queued while the baseline is being
+			// captured, pass-through when hot reload is IDE-driven (no workspace), failed with an explicit
+			// error when the workspace will not become available. See spec 050.
+			_fileUpdater = new WorkspaceGatedFileUpdater(
+				CreateFileUpdater(isRunningInsideVisualStudio: false, hotReloadInfoPath: null),
+				GetUpdateFileQueueTimeout(),
+				_reporter,
+				OnUpdateGateEvent);
+		}
+
+		private TimeSpan? GetUpdateFileQueueTimeout()
+			=> int.TryParse(_remoteControlServer.GetServerConfiguration("update-file-queue-timeout"), out var seconds) && seconds > 0
+				? TimeSpan.FromSeconds(seconds)
+				: null; // WorkspaceGatedFileUpdater.DefaultQueueTimeout
+
+		private void OnUpdateGateEvent(WorkspaceGateEvent evt)
+		{
+			var measurements = new Dictionary<string, double> { ["QueueLength"] = evt.QueueLength };
+			if (evt.WaitDuration is { } wait)
+			{
+				measurements["WaitDurationMs"] = wait.TotalMilliseconds;
+			}
+
+			_telemetry.TrackEvent($"update-{evt.Kind}", properties: null, measurements);
 		}
 
 		public string Scope => WellKnownScopes.HotReload;
@@ -73,12 +97,43 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			_isRunningInsideVisualStudio = config.MSBuildProperties.TryGetValue("BuildingInsideVisualStudio", out var isVsRaw)
 				&& isVsRaw.Equals("true", StringComparison.OrdinalIgnoreCase);
 
-			_fileUpdater = CreateFileUpdater(_isRunningInsideVisualStudio, config.HotReloadInfoPath);
+			// Only the decorated updater is replaced: the gate (queued requests, lifecycle state) survives re-configuration.
+			_fileUpdater.Inner = CreateFileUpdater(_isRunningInsideVisualStudio, config.HotReloadInfoPath);
 		}
 
 		private FileUpdater CreateFileUpdater(bool isRunningInsideVisualStudio, string? hotReloadInfoPath)
 		{
 			var onDisk = new OnDiskFileEditor(_reporter);
+			var infoFile = new HotReloadInfoFile(hotReloadInfoPath, _reporter);
+			Func<ValueTask> requestHotReload = async () => { await RequestHotReloadToIde(); };
+
+			// Escape hatch for the batched IDE update path (spec 052) — set the
+			// "hot-reload-ide-updater" server configuration to "false" to restore the legacy
+			// per-file UpdateFileIdeMessage flow.
+			var useBatchedIdeUpdates = !"false".Equals(_remoteControlServer.GetServerConfiguration("hot-reload-ide-updater"), StringComparison.OrdinalIgnoreCase);
+
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().LogInformation($"HotReload file updater: {(isRunningInsideVisualStudio && useBatchedIdeUpdates ? "batched IDE updates (spec 052)" : $"legacy per-file path (isRunningInsideVisualStudio={isRunningInsideVisualStudio}, hot-reload-ide-updater={useBatchedIdeUpdates})")}.");
+			}
+
+			if (isRunningInsideVisualStudio && useBatchedIdeUpdates)
+			{
+				return new IdeFileUpdater(
+					onDisk,
+					_solutionWatchersGate,
+					_tracker,
+					infoFile,
+					requestHotReload,
+					async message =>
+					{
+						var result = await SendAndWaitForResult(message);
+						return (result.IsSuccess, result.Error);
+					},
+					GetNextIdeCorrelationId);
+			}
+
+#pragma warning disable CS0618 // IDEFileEditor is the legacy escape-hatch path (spec 052)
 			IFileEditor editor = isRunningInsideVisualStudio
 				? new IDEFileEditor(
 					async (filePath, newText, saveToDisk) =>
@@ -88,13 +143,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					},
 					onDisk)
 				: onDisk;
+#pragma warning restore CS0618
 
 			return new FileUpdater(
 				editor,
 				_solutionWatchersGate,
 				_tracker,
-				new HotReloadInfoFile(hotReloadInfoPath, _reporter),
-				async () => { await RequestHotReloadToIde(); });
+				infoFile,
+				requestHotReload);
 		}
 
 		public async Task ProcessFrame(Frame frame)
@@ -265,6 +321,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				else
 				{
 					// We are relying on IDE, we won't have any other hot-reload initialization steps.
+					// Report NoWorkspace *before* awaiting Notify so an UpdateFile racing this window
+					// passes through immediately (strict IDE-driven pass-through) instead of being queued.
+					_fileUpdater.ReportWorkspaceState(HotReloadWorkspaceState.NoWorkspace);
 					await Notify(HotReloadEvent.Ready);
 					this.Log().LogDebug("Metadata updater **NOT** initialized.");
 				}
@@ -283,7 +342,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async Task SafeNotifyMetadataInitializationFailed(Exception? ex = null)
 		{
-			var errorMessage = ex?.Message ?? ex?.ToString();
+			var errorMessage = ex?.Message;
+
+			// Terminal for this connection: fail queued and future update requests instead of queuing forever.
+			_fileUpdater.ReportWorkspaceState(HotReloadWorkspaceState.Failed);
 
 			try
 			{
@@ -337,6 +399,18 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		private async ValueTask<bool> RequestHotReloadToIde()
 		{
+			// Only Visual Studio handles the explicit force-hot-reload request. Other IDEs (VS Code,
+			// Rider) register no callback for ForceHotReloadIdeMessage, so sending it there only logs a
+			// "no callback" error on the IDE side and blocks here until the IDE-result timeout — and they
+			// drive hot reload through the dev-server's own pipeline anyway. Outside VS this is a no-op:
+			// no request is sent and no ProcessingFiles is reported, and we return false so the
+			// no-changes auto-retry (HotReloadOperation) completes the operation instead of deferring
+			// while waiting for an IDE acknowledgement that will never come.
+			if (!_isRunningInsideVisualStudio)
+			{
+				return false;
+			}
+
 			var result = await SendAndWaitForResult(new ForceHotReloadIdeMessage(GetNextIdeCorrelationId()));
 
 			if (result.IsSuccess)
@@ -402,6 +476,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		public void Dispose()
 		{
+			_fileUpdater.ReportWorkspaceState(HotReloadWorkspaceState.Disposed);
 			_ct.Cancel();
 			_workspace?.Ct.Cancel();
 		}

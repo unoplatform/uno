@@ -275,7 +275,7 @@ partial class Window
 			throw new InvalidOperationException("Cannot activate a closed window.");
 		}
 
-		_windowImplementation.RaiseActivated(new WindowActivatedEventArgs(CoreWindowActivationState.CodeActivated));
+		_windowImplementation.RaiseActivated(new WindowActivatedEventArgs(WindowActivationState.CodeActivated));
 	}
 
 	/// <summary>
@@ -466,6 +466,16 @@ partial class Window
 	/// Gets whether this window is operating in ALC mode.
 	/// </summary>
 	internal bool IsAlcWindow => _isWindowFromSecondaryAlc || _alcState is not null;
+
+	/// <summary>
+	/// True for a hosted secondary-ALC window on macOS. <see cref="Uno.UI.Xaml.Controls.DesktopWindow.Initialize"/>
+	/// skips native window creation in this case (it would collide with MacOSWindowHost's native-window
+	/// registration), so the window has no native backing — callers that depend on one must skip their work
+	/// too (the native window itself, and the DisplayInformation registration whose macOS extension subscribes
+	/// to <c>MacOSWindowNative.NativeWindowReady</c> and would never unsubscribe).
+	/// </summary>
+	internal bool IsMacOSHostedAlcWindow
+		=> OperatingSystem.IsMacOS() && ContentHostOverride is not null && IsAlcWindow;
 
 	/// <summary>
 	/// Checks if the given content element is from a secondary AssemblyLoadContext.

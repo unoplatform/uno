@@ -1,5 +1,6 @@
 #nullable enable
 
+using Microsoft.UI.Input;
 using System;
 using Windows.Devices.Input;
 
@@ -7,7 +8,6 @@ using Uno.Extensions;
 using Uno.UI.Core;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Input;
 using Uno.Foundation.Logging;
 using Windows.UI.ViewManagement;
 

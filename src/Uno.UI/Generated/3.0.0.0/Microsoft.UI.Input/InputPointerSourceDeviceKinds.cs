@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if false || false
+#if false
 	public enum InputPointerSourceDeviceKinds : uint
 	{
 		// Skipping already declared field Microsoft.UI.Input.InputPointerSourceDeviceKinds.None

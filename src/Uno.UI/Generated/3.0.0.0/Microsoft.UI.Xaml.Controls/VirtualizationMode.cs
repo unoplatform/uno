@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum VirtualizationMode
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Standard = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Recycling = 1,
 #endif
 	}

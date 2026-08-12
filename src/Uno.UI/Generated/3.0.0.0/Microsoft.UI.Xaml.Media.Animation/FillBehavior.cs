@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-#if false || false
+#if false
 	public enum FillBehavior
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Media.Animation.FillBehavior.HoldEnd

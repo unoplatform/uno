@@ -5,7 +5,6 @@
 
 	<TargetFrameworks Condition="'$(TargetFrameworks)'=='$(NetPrevious)-ios' and '$(OutputType)'!='Exe'">$(NetPrevious)-ios$(NetPreviousAppleOSVersion)</TargetFrameworks>
 	<TargetFrameworks Condition="'$(TargetFrameworks)'=='$(NetPrevious)-tvos' and '$(OutputType)'!='Exe'">$(NetPrevious)-tvos$(NetPreviousAppleOSVersion)</TargetFrameworks>
-	<TargetFrameworks Condition="'$(TargetFrameworks)'=='$(NetPrevious)-maccatalyst' and '$(OutputType)'!='Exe'">$(NetPrevious)-maccatalyst$(NetPreviousAppleOSVersion)</TargetFrameworks>
   </PropertyGroup>
 
 </Project>
