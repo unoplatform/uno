@@ -272,7 +272,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(nameof(RichEditBox), peer.GetClassName());
 				Assert.AreEqual(AutomationControlType.Edit, peer.GetAutomationControlType());
 				Assert.IsNull(peer.GetPattern(PatternInterface.Value));
+#if HAS_UNO
+				Assert.AreSame(peer.GetPattern(PatternInterface.Text), peer.GetPattern(PatternInterface.TextEdit));
+#else
 				Assert.IsNull(peer.GetPattern(PatternInterface.TextEdit));
+#endif
 			}
 			finally
 			{
