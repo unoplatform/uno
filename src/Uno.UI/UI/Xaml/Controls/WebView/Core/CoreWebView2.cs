@@ -634,7 +634,7 @@ public partial class CoreWebView2
 		DocumentTitleChanged?.Invoke(this, null);
 	}
 
-	internal void RaiseNavigationStarting(object? navigationData, out bool cancel)
+	internal void RaiseNavigationStarting(object? navigationData, out bool cancel, ulong? navigationId = null)
 	{
 		string? uriString = null;
 		if (navigationData is Uri uri)
@@ -649,8 +649,13 @@ public partial class CoreWebView2
 			uriString = string.Format(CultureInfo.InvariantCulture, DataUriFormatString, base64String);
 		}
 
-		var newNavigationId = Interlocked.Increment(ref _navigationId);
-		var args = new CoreWebView2NavigationStartingEventArgs((ulong)newNavigationId, uriString);
+		var actualNavigationId = navigationId ?? (ulong)Interlocked.Increment(ref _navigationId);
+		if (navigationId.HasValue)
+		{
+			Interlocked.Exchange(ref _navigationId, unchecked((long)actualNavigationId));
+		}
+
+		var args = new CoreWebView2NavigationStartingEventArgs(actualNavigationId, uriString);
 		NavigationStarting?.Invoke(this, args);
 
 		cancel = args.Cancel;
@@ -664,14 +669,27 @@ public partial class CoreWebView2
 		handled = args.Handled;
 	}
 
-	internal void RaiseNavigationCompleted(Uri? uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus, bool shouldSetSource = true)
+	internal void RaiseNavigationCompleted(
+		Uri? uri,
+		bool isSuccess,
+		int httpStatusCode,
+		CoreWebView2WebErrorStatus errorStatus,
+		bool shouldSetSource = true,
+		ulong? navigationId = null)
 	{
 		if (shouldSetSource)
 		{
 			Source = (uri ?? BlankUri).ToString();
 		}
 
-		NavigationCompleted?.Invoke(this, new CoreWebView2NavigationCompletedEventArgs((ulong)_navigationId, uri, isSuccess, httpStatusCode, errorStatus));
+		NavigationCompleted?.Invoke(
+			this,
+			new CoreWebView2NavigationCompletedEventArgs(
+				navigationId ?? (ulong)_navigationId,
+				uri,
+				isSuccess,
+				httpStatusCode,
+				errorStatus));
 	}
 
 	internal void RaiseHistoryChanged() => HistoryChanged?.Invoke(this, null);

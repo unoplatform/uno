@@ -290,6 +290,8 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 	{
 		e.get_Uri(out var uriPwstr).ThrowOnError();
 		var uriString = uriPwstr.ToString();
+		ulong navigationId = default;
+		e.get_NavigationId(ref navigationId).ThrowOnError();
 
 		if (uriString is null)
 		{
@@ -299,11 +301,11 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 		bool cancel;
 		if (Uri.TryCreate(uriString, UriKind.RelativeOrAbsolute, out var uri))
 		{
-			_coreWebView.RaiseNavigationStarting(uri, out cancel);
+			_coreWebView.RaiseNavigationStarting(uri, out cancel, navigationId);
 		}
 		else
 		{
-			_coreWebView.RaiseNavigationStarting(uriString, out cancel);
+			_coreWebView.RaiseNavigationStarting(uriString, out cancel, navigationId);
 		}
 
 		BOOL canGoBack = default;
@@ -314,8 +316,6 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 
 		e.put_Cancel(cancel ? BOOL.TRUE : BOOL.FALSE).ThrowOnError();
 
-		ulong navigationId = default;
-		e.get_NavigationId(ref navigationId).ThrowOnError();
 		_navigationIdToUriMap[navigationId] = uriString;
 	}
 
@@ -351,11 +351,23 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 			{
 				_coreWebView.RaiseUnsupportedUriSchemeIdentified(uri, out _);
 			}
-			_coreWebView.RaiseNavigationCompleted(uri, isSuccess.Value != 0, httpStatusCode, (CoreWebView2WebErrorStatus)(int)webErrorStatus, shouldSetSource: false);
+			_coreWebView.RaiseNavigationCompleted(
+				uri,
+				isSuccess.Value != 0,
+				httpStatusCode,
+				(CoreWebView2WebErrorStatus)(int)webErrorStatus,
+				shouldSetSource: false,
+				navigationId: navigationId);
 		}
 		else
 		{
-			_coreWebView.RaiseNavigationCompleted(null, isSuccess.Value != 0, httpStatusCode, (CoreWebView2WebErrorStatus)(int)webErrorStatus, shouldSetSource: false);
+			_coreWebView.RaiseNavigationCompleted(
+				null,
+				isSuccess.Value != 0,
+				httpStatusCode,
+				(CoreWebView2WebErrorStatus)(int)webErrorStatus,
+				shouldSetSource: false,
+				navigationId: navigationId);
 		}
 	}
 

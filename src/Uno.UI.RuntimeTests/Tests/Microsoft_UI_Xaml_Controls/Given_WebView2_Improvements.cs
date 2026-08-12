@@ -410,7 +410,7 @@ public class Given_WebView2_Improvements
 		Assert.IsFalse((await manager.GetCookiesAsync("https://example.com/other")).Any(item => item.Name == name));
 
 		manager.DeleteCookie(cookie);
-		Assert.IsFalse((await manager.GetCookiesAsync("https://example.com/scope/page")).Any(item => item.Name == name));
+		await WaitForCookieDeletionAsync(manager, "https://example.com/scope/page", name);
 	}
 
 	[TestMethod]
@@ -603,5 +603,20 @@ public class Given_WebView2_Improvements
 		await webView.EnsureCoreWebView2Async();
 		await TestServices.WindowHelper.WaitForIdle();
 		return webView;
+	}
+
+	private static async Task WaitForCookieDeletionAsync(CoreWebView2CookieManager manager, string uri, string name)
+	{
+		for (var attempt = 0; attempt < 100; attempt++)
+		{
+			if (!(await manager.GetCookiesAsync(uri)).Any(item => item.Name == name))
+			{
+				return;
+			}
+
+			await Task.Delay(50);
+		}
+
+		Assert.Fail($"Cookie '{name}' was not deleted within 5 seconds.");
 	}
 }
