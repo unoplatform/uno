@@ -13,16 +13,14 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
-using Uno.UI.Composition.WebGpu;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
-using Uno.WebGpu.Native;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
 /// <summary>
 /// EXPERIMENTAL WebGPU-backed rendering view for Android, mirroring <see cref="UnoSKVulkanView"/>: a SurfaceView
-/// whose ANativeWindow drives a wgpu swapchain through the shared <see cref="WebGpuSwapChainContext"/>
+/// whose ANativeWindow drives a wgpu swapchain through the neutral graphics pipeline
 /// (CreateAndroidSurface). Present is wgpuSurfacePresent — the same native-swapchain path validated on X11.
 /// Not runtime-validated on Linux CI (needs an Android device/emulator with a WebGPU-capable adapter).
 /// </summary>
@@ -31,7 +29,7 @@ internal sealed partial class UnoSKWebGpuView : SurfaceView, ISurfaceHolderCallb
 	public UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 	public TextInputPlugin TextInputPlugin { get; }
 
-	private WebGpuSwapChainContext? _context;
+	private global::Uno.UI.Composition.Drawing.IGraphicsContext? _context;
 	private Thread? _renderThread;
 	private volatile bool _renderRequested;
 	private volatile bool _surfaceReady;
@@ -151,11 +149,13 @@ internal sealed partial class UnoSKWebGpuView : SurfaceView, ISurfaceHolderCallb
 		_width = rect.Width();
 		_height = rect.Height();
 
-		var window = _nativeWindow;
-		_context = new WebGpuSwapChainContext(
-			WGPUTextureFormat.BGRA8Unorm,
-			inst => WebGpuSwapChainContext.CreateAndroidSurface(inst, window));
-		Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = new WebGpuRenderer(_context.Device);
+		// The host references no WebGPU type — it hands the neutral Android window to the pluggable pipeline;
+		// the app-registered WebGPU provider builds the surface + device and mints the (factory, renderer) pair.
+		var nativeWindow = new AndroidGraphicsNativeWindow(_nativeWindow, _width, _height);
+		var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize(
+			nativeWindow, new[] { global::Uno.UI.Composition.Drawing.GraphicsContextKind.WebGpu });
+		_context = init.Context;
+		Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = init.Renderer;
 
 		this.Log().Info("Neutral graphics pipeline active: WebGpu context via WebGpuRenderer (Android).");
 	}
