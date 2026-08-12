@@ -205,6 +205,74 @@ public App()
 }
 ```
 
+## Querying the environment and the profile (Windows)
+
+On Windows (Skia Desktop) a subset of `CoreWebView2Environment` and `CoreWebView2Profile` is implemented. On every other target these members throw `NotImplementedException`, as they did before.
+
+> [!NOTE]
+> This is implemented by the default WebView2 backend, which requires .NET 10 or later. An app targeting .NET 9, or one that opts into the other backend with `UNO_WEBVIEW2_BACKEND=microsoft.web.webview2`, keeps the previous `NotImplementedException` behavior.
+
+### Which browser is installed
+
+`CoreWebView2Environment.GetAvailableBrowserVersionString` and `CompareBrowserVersionString` are static and need no `WebView2` at all, so they can be used as a preflight check before showing any web content:
+
+```csharp
+try
+{
+    var version = CoreWebView2Environment.GetAvailableBrowserVersionString();
+    var isRecentEnough = CoreWebView2Environment.CompareBrowserVersionString(version, "110.0.0.0") >= 0;
+}
+catch (FileNotFoundException)
+{
+    // No WebView2 Runtime is installed.
+}
+```
+
+Passing a `browserExecutableFolder` is authoritative: if no browser is found there, the call fails rather than falling back to the installed one. The version string carries a channel suffix on non-stable channels (for example `120.0.2210.91 beta`), so parse only the leading token. Note that these are static members, resolved through the Skia host — call them after the application host has started.
+
+The overload taking `CoreWebView2EnvironmentOptions` is **not** implemented, because that options type is itself unimplemented and could not be honored.
+
+### Environment and profile of a running WebView2
+
+`CoreWebView2.Environment`, `CoreWebView2.Profile` and `CoreWebView2.BrowserProcessId` become available once the WebView is initialized:
+
+```csharp
+await webView.EnsureCoreWebView2Async();
+
+var environment = webView.CoreWebView2.Environment;
+// environment.BrowserVersionString, environment.UserDataFolder, environment.FailureReportFolderPath
+// environment.GetProcessInfos() returns a snapshot of the browser, renderer and GPU processes.
+
+var profile = webView.CoreWebView2.Profile;
+// profile.ProfileName, profile.ProfilePath, profile.IsInPrivateModeEnabled,
+// profile.DefaultDownloadFolderPath, profile.PreferredColorScheme
+```
+
+`FailureReportFolderPath` is created lazily by the browser, so the directory may not exist yet.
+
+> [!NOTE]
+> `ProfileName` is currently always empty on Windows. Uno creates the WebView without controller options, so no profile name is requested — the profile still resolves to the default one, and `ProfilePath` (a directory under `UserDataFolder`) is the reliable way to identify it.
+
+### Clearing browsing data
+
+`ClearBrowsingDataAsync` removes stored state for the profile, which is what a sign-out flow usually needs:
+
+```csharp
+// Everything the profile holds.
+await webView.CoreWebView2.Profile.ClearBrowsingDataAsync();
+
+// Just cookies. AllSite and AllProfile include cookies too.
+await webView.CoreWebView2.Profile.ClearBrowsingDataAsync(CoreWebView2BrowsingDataKinds.Cookies);
+
+// Only what was created in the last hour.
+await webView.CoreWebView2.Profile.ClearBrowsingDataAsync(
+    CoreWebView2BrowsingDataKinds.Cookies,
+    DateTimeOffset.UtcNow.AddHours(-1),
+    DateTimeOffset.UtcNow);
+```
+
+Clearing a large profile can take several seconds and the displayed content may reload underneath. `CoreWebView2CookieManager` is not implemented, so reading cookies or deleting an individual cookie by name is not available — only bulk clearing.
+
 ## Linux specifics
 
 In order to use WebView2 on Linux, you'll need to install `libwebkit2gtk` and `libgtk3-0`:
