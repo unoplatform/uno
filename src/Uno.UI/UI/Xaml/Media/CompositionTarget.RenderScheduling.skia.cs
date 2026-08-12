@@ -163,7 +163,7 @@ public partial class CompositionTarget
 	/// be called once per <see cref="IXamlRootHost.InvalidateRender"/> call, but the contract allows any number
 	/// of repeated calls, even if no new invalidations are requested.
 	/// </summary>
-	internal IGeometry OnNativePlatformFrameRequested(IRenderTarget? target, Func<Size, IRenderTarget> resizeFunc)
+	internal IGeometry OnNativePlatformFrameRequested(IRenderTarget? target, Func<Size, IRenderTarget> resizeFunc, global::System.Numerics.Matrix4x4? rootTransform = null, Action<IDrawingSession>? overlay = null)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnNativePlatformFrameRequested)}");
 
@@ -172,7 +172,7 @@ public partial class CompositionTarget
 			NativeDispatcher.Main.EnqueueRender(this, EnqueueRenderCallback);
 		}
 
-		return Draw(target, resizeFunc);
+		return Draw(target, resizeFunc, rootTransform, overlay);
 	}
 
 	internal void OnRenderFrameOpportunity()
