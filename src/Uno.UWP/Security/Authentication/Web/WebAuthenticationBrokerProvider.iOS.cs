@@ -28,7 +28,10 @@ namespace Uno.AuthenticationBroker
 			Uri callbackUri,
 			CancellationToken ct)
 		{
-			var tcs = new TaskCompletionSource<WebAuthenticationResult>();
+			// RunContinuationsAsynchronously so completing the task never runs the awaiter's
+			// finally inline on the native trampoline, which would Cancel() and Dispose() the
+			// session from inside its own completion handler.
+			var tcs = new TaskCompletionSource<WebAuthenticationResult>(TaskCreationOptions.RunContinuationsAsynchronously);
 
 			// TrySetResult: the session can invoke the callback more than once (e.g. a late
 			// completion racing the Cancel() below), and throwing from this native
