@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
-using SkiaSharp;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
@@ -33,11 +32,13 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private readonly Window _winUIWindow;
 	private readonly XamlRoot _xamlRoot;
 	private readonly DisplayInformation _displayInformation;
-	private readonly GRContext? _context;
 	private readonly WebGpuSwapChainContext? _webgpuContext; // EXPERIMENTAL: non-null when UNO_WEBGPU owns the Metal layer
-	private SKBitmap? _bitmap;
-	private SKSurface? _surface;
-	private int _rowBytes;
+	private nint _metalDevice;
+	private nint _metalQueue;
+	// Software framebuffer handed to the backend as a neutral ISoftwareRenderTarget (BGRA); the host owns the buffer.
+	private nint _softwareBuffer;
+	private int _softwareWidth;
+	private int _softwareHeight;
 	private bool _initializationCompleted;
 	private string? _lastSvgClipPath;
 	private Size _nativeWindowSize;
@@ -90,13 +91,9 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 					}
 				}
 
-				NativeUno.uno_window_get_metal_handles(_nativeWindow.Handle, out var device, out var queue);
-				var ctx = new GRMtlBackendContext()
-				{
-					DeviceHandle = device,
-					QueueHandle = queue,
-				};
-				_context = GRContext.CreateMetal(ctx);
+				// Skia-on-Metal via the neutral seam: the host only holds the device/queue and hands the per-frame
+				// texture as an IMetalRenderTarget; the Skia backend owns the GRContext-Metal + surface. No Skia here.
+				NativeUno.uno_window_get_metal_handles(_nativeWindow.Handle, out _metalDevice, out _metalQueue);
 				break;
 			case RenderSurfaceType.Software:
 				break;
@@ -161,15 +158,11 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			return;
 		}
 
-		// we can't cache anything since the texture will be different on next calls
-		GRBackendRenderTarget? target = null;
-		SKSurface? surface = null;
-		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(null, size =>
-		{
-			target = new GRBackendRenderTarget((int)size.Width, (int)size.Height, new GRMtlTextureInfo(texture));
-			surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
-			return new SkiaRenderTarget(surface.Canvas);
-		});
+		// The texture differs per call; hand a fresh neutral IMetalRenderTarget each frame. The Skia backend builds
+		// its GRContext-Metal + surface and flushes on present — no Skia type in the host.
+		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(
+			null,
+			size => new MacOSMetalRenderTarget(texture, _metalDevice, _metalQueue, (int)size.Width, (int)size.Height));
 
 		string? clip = null;
 		if (!nativeElementClipPath.IsEmpty)
@@ -185,10 +178,17 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				_lastSvgClipPath = clip;
 			}
 		}
+	}
 
-		_context?.Flush();
-		target?.Dispose();
-		surface?.Dispose();
+	private sealed class MacOSMetalRenderTarget(nint texture, nint device, nint queue, int width, int height) : IMetalRenderTarget
+	{
+		public nint Texture => texture;
+		public nint Device => device;
+		public nint Queue => queue;
+		public int Width => width;
+		public int Height => height;
+		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
+		public void Dispose() { }
 	}
 
 	private unsafe void SoftDraw(double nativeWidth, double nativeHeight, nint* data, int* rowBytes, int* size)
@@ -212,16 +212,22 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
+		// Hand the backend a neutral CPU framebuffer (host-owned buffer); the Skia backend wraps it as its surface.
 		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(null, size =>
 		{
-			_bitmap?.Dispose();
-			_surface?.Dispose();
-
-			var info = new SKImageInfo((int)size.Width, (int)size.Height, SKColorType.Rgba8888, SKAlphaType.Premul);
-			_bitmap = new SKBitmap(info);
-			_surface = SKSurface.Create(info, _bitmap.GetPixels());
-			_rowBytes = info.RowBytes;
-			return new SkiaRenderTarget(_surface.Canvas);
+			var w = (int)size.Width;
+			var h = (int)size.Height;
+			if (_softwareBuffer == 0 || w != _softwareWidth || h != _softwareHeight)
+			{
+				if (_softwareBuffer != 0)
+				{
+					Marshal.FreeHGlobal(_softwareBuffer);
+				}
+				_softwareWidth = w;
+				_softwareHeight = h;
+				_softwareBuffer = Marshal.AllocHGlobal(w * h * 4);
+			}
+			return new MacOSSoftwareRenderTarget(_softwareBuffer, w * 4, w, h);
 		});
 
 		string? clip = null;
@@ -239,12 +245,22 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		if (_bitmap is not null)
+		if (_softwareBuffer != 0)
 		{
-			*data = _bitmap.GetPixels(out var bitmapSize);
-			*size = (int)bitmapSize;
-			*rowBytes = _rowBytes;
+			*data = _softwareBuffer;
+			*size = _softwareWidth * _softwareHeight * 4;
+			*rowBytes = _softwareWidth * 4;
 		}
+	}
+
+	private sealed class MacOSSoftwareRenderTarget(nint pixels, int rowBytes, int width, int height) : ISoftwareRenderTarget
+	{
+		public nint Pixels => pixels;
+		public int RowBytes => rowBytes;
+		public int Width => width;
+		public int Height => height;
+		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
+		public void Dispose() { }
 	}
 
 	// Window management
@@ -253,10 +269,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	public static unsafe void Register()
 	{
-		// From managed code this will load `libSkiaSharp` from `netX0/runtimes/osx/native/libSkiaSharp.dylib` so
-		// `libUnoNativeMac.dylib` will find it already available and won't try to load it from `@rpath/libSkiaSharp.dylib`
-		NativeSkia.gr_direct_context_make_metal(0, 0);
-
 		NativeUno.uno_set_drawing_callbacks(&MetalDraw, &SoftDraw, &Resize);
 
 		NativeUno.uno_set_window_events_callbacks(&OnRawKeyDown, &OnRawKeyUp, &OnMouseEvent, &OnMoveEvent, &Resize);
