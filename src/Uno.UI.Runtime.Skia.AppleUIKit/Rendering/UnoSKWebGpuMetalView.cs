@@ -6,23 +6,21 @@ using Foundation;
 using ObjCRuntime;
 using UIKit;
 using Uno.Foundation.Logging;
-using Uno.UI.Composition.WebGpu;
-using Uno.WebGpu.Native;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 /// <summary>
 /// EXPERIMENTAL WebGPU-backed render view for AppleUIKit (iOS/tvOS), mirroring the Android <c>UnoSKWebGpuView</c>:
 /// a <c>UIView</c> whose backing <see cref="CAMetalLayer"/> drives a wgpu swapchain through the shared
-/// <see cref="WebGpuSwapChainContext"/> (CreateMetalSurface). Present is wgpuSurfacePresent, and the scene is drawn
-/// through the neutral <c>CompositionTarget.OnNativePlatformFrameRequested</c> seam + <see cref="WebGpuRenderer"/>.
+/// wgpu swapchain over its CAMetalLayer. Present is wgpuSurfacePresent, and the scene is drawn through the
+/// neutral <c>CompositionTarget.OnNativePlatformFrameRequested</c> seam via the app-registered WebGPU pipeline.
 /// Opt in with UNO_WEBGPU. Not toolchain-validated on Linux CI — needs an Apple device build (and the wgpu-native
 /// iOS static lib linked via wgpu-native.targets, so <c>DllImport("webgpu")</c> resolves to the main program).
 /// </summary>
 internal sealed partial class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderView
 {
 	private RootViewController? _owner;
-	private WebGpuSwapChainContext? _context;
+	private global::Uno.UI.Composition.Drawing.IGraphicsContext? _context;
 	private readonly CADisplayLink _link;
 	private readonly nint _fps;
 	private readonly float _scale;
@@ -124,22 +122,20 @@ internal sealed partial class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderVi
 			return;
 		}
 
+		// The host references no WebGPU type — it hands the neutral Metal-layer window (+ DPI scale) to the
+		// pluggable pipeline; the app-registered WebGPU provider builds the surface + device and mints the
+		// (factory, renderer) pair.
 		var layerHandle = (IntPtr)MetalLayer.Handle;
-		WebGpuDevice.RasterizationScale = _scale;
-		_context = new WebGpuSwapChainContext(
-			WGPUTextureFormat.BGRA8Unorm,
-			inst => WebGpuSwapChainContext.CreateMetalSurface(inst, layerHandle));
+		var nativeWindow = new AppleMetalGraphicsNativeWindow(layerHandle, _scale);
+		var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize(
+			nativeWindow, new[] { global::Uno.UI.Composition.Drawing.GraphicsContextKind.WebGpu });
+		_context = init.Context;
 
 		if (!_rendererInstalled)
 		{
-			// Pair the WebGPU renderer with the WebGPU drawing factory so images, gradient shaders, color glyphs,
-			// nine-slice, SVG and RenderTargetBitmap are GPU-resident WebGPU resources (not Skia objects the WebGPU
-			// recorder drops). Geometry/decode still delegate to the previous (Skia) factory.
-			Uno.UI.Composition.Drawing.DrawingFactory.Register(
-				new WebGpuDrawingFactory(_context.Device, Uno.UI.Composition.Drawing.DrawingFactory.Current));
-			Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = new WebGpuRenderer(_context.Device);
+			Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = init.Renderer;
 			_rendererInstalled = true;
-			this.Log().Info("Neutral graphics pipeline active: WebGpu context via WebGpuRenderer (AppleUIKit).");
+			this.Log().Info("Neutral graphics pipeline active: WebGpu context via the neutral pipeline (AppleUIKit).");
 		}
 	}
 
