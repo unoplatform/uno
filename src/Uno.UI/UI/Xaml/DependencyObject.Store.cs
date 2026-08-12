@@ -57,8 +57,6 @@ namespace Microsoft.UI.Xaml
 
 		private static readonly IEventProvider _trace = Tracing.Get(DependencyObjectTraceProvider.Id);
 
-		private bool _isDisposed;
-
 		private readonly DependencyPropertyDetailsCollection _properties;
 		private ResourceBindingCollection? _resourceBindings;
 		private ThemeResourceMap? _themeResources;
@@ -99,8 +97,6 @@ namespace Microsoft.UI.Xaml
 		/// The theme last to apply theme bindings on this object and its children.
 		/// </summary>
 		private SpecializedResourceDictionary.ResourceKey? _themeLastUsed;
-
-		internal bool IsDisposed => _isDisposed;
 
 		private InheritedPropertiesDisposable? InheritedProperties
 		{
@@ -238,13 +234,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		// EXPERIMENT (dev/mazi/dostore-nofinalizer): the finalizer is intentionally removed to take
-		// DependencyObject off the finalization queue. It is not load-bearing — pooled weak handles are
-		// freed by ManagedGCHandle's own finalizer; BinderDispose only recycled pooled weak refs/arrays.
-		// BinderDispose is kept (now unreferenced) so this is the ONLY behavioral diff vs the base.
-		// Consequence: nothing sets _isDisposed any more, so IsDisposed stays false and its callers
-		// (EventManager/CustomEventManager) are inert. They are kept for the same reason; if this
-		// experiment is promoted, drop BinderDispose, _gate, IsDisposed and its guards together.
+		// DependencyObject is deliberately not finalizable: it is the most-instantiated type in the
+		// framework, and nothing it owns needs finalization. The pooled weak handles it rents are freed
+		// by ManagedGCHandle's own finalizer, and the property details it holds are plain managed state.
 
 		/// <summary>
 		/// Determines if the dependency object automatically registers for inherited

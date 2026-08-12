@@ -33,7 +33,6 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class DependencyObject
 	{
-		private readonly object _gate = new object();
 
 		private object? _associatedParent; // see note in AssociateParent(object)
 
@@ -220,44 +219,6 @@ namespace Microsoft.UI.Xaml
 		{
 			_bindingsSuspended = false;
 			_properties.ResumeBindings();
-		}
-
-		// Currently unreferenced: the finalizer that called this was removed. Kept (with _gate) so the
-		// finalizer removal stays the only behavioral diff — see the EXPERIMENT note in DependencyObject.Store.cs.
-		private void BinderDispose()
-		{
-			lock (_gate)
-			{
-				// Guard the dispose against concurrent invocation.
-				if (_isDisposed)
-				{
-					return;
-				}
-
-				_isDisposed = true;
-			}
-
-			_properties.Dispose();
-			_childrenBindableMap?.Dispose();
-			_mentoredChildrenMap?.Dispose();
-
-			if (_mentorRef is not null)
-			{
-				WeakReferencePool.ReturnWeakReference(this, _mentorRef);
-				_mentorRef = null;
-			}
-
-			if (_mentoredChildren is not null)
-			{
-				for (int i = 0; i < _mentoredChildren.Count; i++)
-				{
-					if (_mentoredChildren[i] is { } childRef)
-					{
-						WeakReferencePool.ReturnWeakReference(this, childRef);
-					}
-				}
-				_mentoredChildren = null;
-			}
 		}
 
 		private void OnDataContextChanged(object? providedDataContext, object? actualDataContext, DependencyPropertyValuePrecedences precedence)
