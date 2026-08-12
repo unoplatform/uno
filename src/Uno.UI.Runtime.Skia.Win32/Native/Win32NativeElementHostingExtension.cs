@@ -1,3 +1,5 @@
+using System.Numerics;
+using Uno.UI.Composition.Drawing;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Microsoft.UI.Xaml;
@@ -16,7 +18,6 @@ using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.Graphics.GdiPlus;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Microsoft.UI.Composition;
-using SkiaSharp;
 using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 
@@ -25,14 +26,12 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
-	private static readonly SKPoint[] _conicPoints = new SKPoint[32 * 3]; // 3 points per quad
 
 	// All currently-attached extensions across all hosts. Filtered by XamlRoot when we need
 	// to find a child's siblings to compute its z-order anchor.
 	private static readonly List<Win32NativeElementHostingExtension> _attached = new();
 
 	private readonly ContentPresenter _presenter;
-	private readonly SKPath _tempPath = new();
 	private Rect _lastArrangeRect;
 	private Rect _pendingArrangeRect;
 	private bool _arrangePending;
@@ -108,7 +107,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RenderingNegativePathReevaluated += OnRenderingNegativePathReevaluated;
 	}
 
-	private unsafe void OnRenderingNegativePathReevaluated(object? sender, SKPath path)
+	private unsafe void OnRenderingNegativePathReevaluated(object? sender, IGeometry path)
 	{
 		Debug.Assert(Uno.UI.Dispatching.NativeDispatcher.Main.HasThreadAccess,
 			$"{nameof(OnRenderingNegativePathReevaluated)} must run on the UI thread.");
@@ -205,20 +204,53 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		}
 	}
 
-	private static SKPath CreateRectPath(SKRect rect)
+	// Feeds a neutral geometry's flattened contours into a GDI+ path as line-only figures (each contour closed).
+	private sealed unsafe class GdiPathSink : IFlattenedPathSink
 	{
-		var builder = new SKPathBuilder();
-		builder.AddRect(rect);
-		return builder.Detach();
+		private readonly GpPath* _gpPath;
+		private Vector2 _last;
+
+		public GdiPathSink(GpPath* gpPath) => _gpPath = gpPath;
+
+		public Status? Error { get; private set; }
+
+		public void BeginContour(Vector2 start) => _last = start;
+
+		public void LineTo(Vector2 point)
+		{
+			if (Error is null)
+			{
+				var status = PInvoke.GdipAddPathLine(_gpPath, _last.X, _last.Y, point.X, point.Y);
+				if (status != Status.Ok)
+				{
+					Error = status;
+				}
+			}
+			_last = point;
+		}
+
+		public void EndContour(bool closed)
+		{
+			if (Error is null)
+			{
+				var status = PInvoke.GdipClosePathFigure(_gpPath);
+				if (status != Status.Ok)
+				{
+					Error = status;
+				}
+			}
+		}
 	}
 
-	private unsafe void ApplyClipPath(SKPath path)
+	private unsafe void ApplyClipPath(IGeometry path)
 	{
-		using var rectPath = CreateRectPath(_lastArrangeRect.ToSKRect());
-		path.Op(rectPath, SKPathOp.Intersect, _tempPath);
-		_tempPath.Transform(SKMatrix.CreateTranslation((float)-_lastArrangeRect.X, (float)-_lastArrangeRect.Y));
+		// Neutral clip: intersect with the arrange rect and translate to local, all through the IGeometry seam
+		// (was a Skia path op + matrix). The host stays backend-agnostic — no Skia types.
+		using var rectGeometry = DrawingFactory.Current.CreateRectangleGeometry(_lastArrangeRect);
+		using var intersected = path.Combine(rectGeometry, GeometryCombineMode.Intersect);
+		using var localClip = intersected.Transform(Matrix3x2.CreateTranslation((float)-_lastArrangeRect.X, (float)-_lastArrangeRect.Y));
 
-		if (_tempPath.ToSvgPathData() is var svgPathData && svgPathData == _lastFinalSvgClipPath && !_lastClipHrgn.IsNull)
+		if (localClip.ToSvgPathData() is var svgPathData && svgPathData == _lastFinalSvgClipPath && !_lastClipHrgn.IsNull)
 		{
 			SetHrgnAndCache(this, _lastClipHrgn);
 			return;
@@ -226,93 +258,22 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 		_lastFinalSvgClipPath = svgPathData;
 
-		Debug.Assert(_tempPath.FillType is SKPathFillType.Winding or SKPathFillType.EvenOdd);
 		GpPath* gpPath = null;
-		var status = PInvoke.GdipCreatePath(_tempPath.FillType is SKPathFillType.Winding ? FillMode.FillModeWinding : FillMode.FillModeAlternate, ref gpPath);
+		var status = PInvoke.GdipCreatePath(localClip.FillRule == GeometryFillRule.EvenOdd ? FillMode.FillModeAlternate : FillMode.FillModeWinding, ref gpPath);
 		if (status != Status.Ok)
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.GdipCreatePath)} failed: {status}");
 			return;
 		}
 
-		var iter = _tempPath.CreateIterator(forceClose: true);
-		SKPathVerb verb = default;
-		var points = stackalloc SKPoint[4];
-		var pointSpan = new Span<SKPoint>(points, 4);
-		while (verb != SKPathVerb.Done)
+		// StreamFlattened subdivides curves to polylines, so the GDI+ path is line-only figures (a window region
+		// is polygonal regardless). Each contour is closed to form a fillable figure.
+		var sink = new GdiPathSink(gpPath);
+		localClip.StreamFlattened(sink);
+		if (sink.Error is { } err)
 		{
-			verb = iter.Next(pointSpan);
-			switch (verb)
-			{
-				case SKPathVerb.Move:
-					break;
-				case SKPathVerb.Line:
-					status = PInvoke.GdipAddPathLine(gpPath, pointSpan[0].X, pointSpan[0].Y, pointSpan[1].X, pointSpan[1].Y);
-					if (status != Status.Ok)
-					{
-						this.LogError()?.Error($"{nameof(PInvoke.GdipAddPathLine)} failed: {status}");
-						return;
-					}
-					break;
-				case SKPathVerb.Quad:
-					{
-						// quadratic to cubic bézier
-						var controlPoint1 = pointSpan[0] + new SKPoint((pointSpan[1].X - pointSpan[0].X) * 2 / 3, (pointSpan[1].Y - pointSpan[0].Y) * 2 / 3);
-						var controlPoint2 = pointSpan[2] + new SKPoint((pointSpan[1].X - pointSpan[2].X) * 2 / 3, (pointSpan[1].Y - pointSpan[2].Y) * 2 / 3);
-						status = PInvoke.GdipAddPathBezier(gpPath, pointSpan[0].X, pointSpan[0].Y, controlPoint1.X, controlPoint1.Y, controlPoint2.X, controlPoint2.Y, pointSpan[2].X, pointSpan[2].Y);
-						if (status != Status.Ok)
-						{
-							this.LogError()?.Error($"{nameof(PInvoke.GdipAddPathBezier)} failed: {status}");
-							return;
-						}
-					}
-					break;
-				case SKPathVerb.Conic:
-					// https://api.skia.org/classSkPath.html
-					// "conic weight determines the amount of influence conic control point has on the curve. w less than one represents an elliptical section. w greater than one represents a hyperbolic section. w equal to one represents a parabolic section."
-					// "Two quad curves are sufficient to approximate an elliptical conic with a sweep of up to 90 degrees; in this case, set pow2 to one."
-					var conicWeight = iter.ConicWeight();
-					var quads = SKPath.ConvertConicToQuads(pointSpan[0], pointSpan[1], pointSpan[2], conicWeight, _conicPoints, conicWeight < 1 ? 1 : 5);
-					for (int i = 0; i < quads; i++)
-					{
-						// https://api.skia.org/classSkPath.html
-						// "Every third point in array shares last SkPoint of previous quad and first SkPoint of next quad"
-						// In other words, if you have 2 quads, you will get 5 points: Q0_0 Q0_1 (Q0_2/Q1_0) Q1_1 Q1_2
-						var p0 = _conicPoints[2 * i];
-						var p1 = _conicPoints[2 * i + 1];
-						var p2 = _conicPoints[2 * i + 2];
-						// quadratic to cubic bézier
-						var controlPoint1 = p0 + new SKPoint((p1.X - p0.X) * 2 / 3, (p1.Y - p0.Y) * 2 / 3);
-						var controlPoint2 = p2 + new SKPoint((p1.X - p2.X) * 2 / 3, (p1.Y - p2.Y) * 2 / 3);
-						status = PInvoke.GdipAddPathBezier(gpPath, p0.X, p0.Y, controlPoint1.X, controlPoint1.Y, controlPoint2.X, controlPoint2.Y, p2.X, p2.Y);
-						if (status != Status.Ok)
-						{
-							this.LogError()?.Error($"{nameof(PInvoke.GdipAddPathBezier)} failed: {status}");
-							return;
-						}
-					}
-					break;
-				case SKPathVerb.Cubic:
-					status = PInvoke.GdipAddPathBezier(gpPath, pointSpan[0].X, pointSpan[0].Y, pointSpan[1].X, pointSpan[1].Y, pointSpan[2].X, pointSpan[2].Y, pointSpan[3].X, pointSpan[3].Y);
-					if (status != Status.Ok)
-					{
-						this.LogError()?.Error($"{nameof(PInvoke.GdipAddPathBezier)} failed: {status}");
-						return;
-					}
-					break;
-				case SKPathVerb.Close:
-					status = PInvoke.GdipClosePathFigure(gpPath);
-					if (status != Status.Ok)
-					{
-						this.LogError()?.Error($"{nameof(PInvoke.GdipClosePathFigure)} failed: {status}");
-						return;
-					}
-					break;
-				case SKPathVerb.Done:
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
+			this.LogError()?.Error($"Building the GDI+ clip path failed: {err}");
+			return;
 		}
 
 		GpRegion* region = default;

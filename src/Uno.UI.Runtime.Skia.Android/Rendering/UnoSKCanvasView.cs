@@ -205,7 +205,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 				return new SkiaRenderTarget(surface!.Canvas);
 			});
 
-			ApplicationActivity.NativeLayerHost!.Path = SkiaGeometryInterop.ToSKPath(nativeClipPath);
+			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
 
 			if (!_hardwareAccelerated && _glBackedSurface is not null)
 			{

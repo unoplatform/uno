@@ -20,7 +20,7 @@ internal partial class Win32WindowWrapper
 	// Non-null when the WebGPU backend is active: renders through the shared swapchain context instead of an SKSurface.
 	private global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext? _webgpuContext;
 
-	public event EventHandler<SKPath>? RenderingNegativePathReevaluated; // not necessarily changed
+	public event EventHandler<IGeometry>? RenderingNegativePathReevaluated; // not necessarily changed
 
 	// Wake the render thread directly rather than via InvalidateRect/WM_PAINT. A synthesized
 	// WM_PAINT is the lowest-priority Win32 message, so the dispatcher's own posted messages
@@ -54,7 +54,7 @@ internal partial class Win32WindowWrapper
 	/// path and client dimensions for CopyPixels, or null when there is no frame to present
 	/// yet (avoids presenting an uninitialised back buffer before the first render).
 	/// </summary>
-	private unsafe (SKPath clipPath, int width, int height)? DrawFrame()
+	private unsafe (IGeometry clipPath, int width, int height)? DrawFrame()
 	{
 		var ct = ((IXamlRootHost)this).RootElement?.Visual.CompositionTarget as CompositionTarget;
 		if (ct is null || _rendererDisposed)
@@ -78,7 +78,7 @@ internal partial class Win32WindowWrapper
 				this.LogError()?.Error($"{nameof(PInvoke.GetClientRect)} failed: {Win32Helper.GetErrorMessage()}");
 				return null;
 			}
-			return (SkiaGeometryInterop.ToSKPath(webgpuClip), webgpuRect.Width, webgpuRect.Height);
+			return (webgpuClip, webgpuRect.Width, webgpuRect.Height);
 		}
 
 		var clipGeometry = ct.OnNativePlatformFrameRequested(_surface is null ? null : new SkiaRenderTarget(_surface.Canvas), size =>
@@ -101,7 +101,7 @@ internal partial class Win32WindowWrapper
 			return null;
 		}
 
-		return (SkiaGeometryInterop.ToSKPath(clipGeometry), clientRect.Width, clientRect.Height);
+		return (clipGeometry, clientRect.Width, clientRect.Height);
 	}
 
 	/// <summary>
