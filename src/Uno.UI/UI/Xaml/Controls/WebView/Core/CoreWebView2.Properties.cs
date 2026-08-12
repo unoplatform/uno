@@ -1,11 +1,58 @@
 ﻿using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.Web.WebView2.Core;
 #pragma warning disable CS0067 // TODO:MZ: Undo this
 public partial class CoreWebView2
 {
+	private const string CoreWebView2TypeName = "Microsoft.Web.WebView2.Core.CoreWebView2";
+
 	private string _source = "";
+	private CoreWebView2Profile _profile;
+	private CoreWebView2Environment _environment;
+
+	/// <summary>
+	/// Gets the process ID of the browser process that hosts the WebView.
+	/// </summary>
+	public uint BrowserProcessId
+		=> RequireCapability<ISupportsWebViewEnvironmentInfo>(CoreWebView2TypeName, nameof(BrowserProcessId)).BrowserProcessId;
+
+	/// <summary>
+	/// Gets the CoreWebView2Environment this CoreWebView2 was created from.
+	/// </summary>
+	public CoreWebView2Environment Environment
+	{
+		get
+		{
+			if (_nativeWebView is not ISupportsWebViewEnvironmentInfo)
+			{
+				throw CapabilityUnavailable(CoreWebView2TypeName, nameof(Environment));
+			}
+
+			return _environment ??= new CoreWebView2Environment(this);
+		}
+	}
+
+	/// <summary>
+	/// Gets the profile this CoreWebView2 is running under.
+	/// </summary>
+	/// <remarks>
+	/// A platform may implement profile metadata, browsing-data clearing, or both, so the facade is handed out
+	/// when either is available and the individual members report what is missing.
+	/// </remarks>
+	public CoreWebView2Profile Profile
+	{
+		get
+		{
+			if (_nativeWebView is not (ISupportsWebViewProfile or ISupportsBrowsingDataClearing))
+			{
+				throw CapabilityUnavailable(CoreWebView2TypeName, nameof(Profile));
+			}
+
+			return _profile ??= new CoreWebView2Profile(this);
+		}
+	}
 
 	/// <summary>
 	/// True if the WebView is able to navigate to a previous page in the navigation history.
