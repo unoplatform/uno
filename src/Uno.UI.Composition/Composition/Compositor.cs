@@ -218,9 +218,17 @@ namespace Microsoft.UI.Composition
 		public Vector4KeyFrameAnimation CreateVector4KeyFrameAnimation()
 			=> new Vector4KeyFrameAnimation(this);
 
+		/// <summary>
+		/// Creates an instance of AnimationController.
+		/// </summary>
+		/// <returns>The created AnimationController object.</returns>
 		public AnimationController CreateAnimationController()
 			=> new AnimationController(this);
 
+		/// <summary>
+		/// Attempts to initiate a commit cycle asynchronously.
+		/// </summary>
+		/// <returns>An asynchronous action.</returns>
 		public IAsyncAction RequestCommitAsync()
 			=> RequestCommitAsyncCore().AsAsyncAction();
 
