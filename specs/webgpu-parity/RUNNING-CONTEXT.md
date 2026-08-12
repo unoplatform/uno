@@ -1731,3 +1731,36 @@ still references the WebGPU project for now (unchanged, still compiles).
 
 Commits: neutral seam + X11 `2ce3d04f6e`, Win32 `1dfc99b51d`, macOS+Android `b8e7b14ca5`, context/backend split
 `b8e1e1bd80`, AppleUIKit `d75660cd30`.
+
+---
+
+## 49. WASM WebGPU decoupling — neutral async seam landed; glue-move blocked on WASM build infra (handoff)
+
+Chose approach B (move the WASM WebGPU glue into the WebGPU project's context-factory layer, keeping device/context
+creation as the "GPU-API" half so an external backend can reuse it without Uno's renderer). Landed the neutral
+foundation; the physical glue-move needs a browser/emscripten WASM build to develop + validate, so it's handed off.
+
+**Done (committed, compile-validated via the Generic head):**
+- `GraphicsRegistry.RegisterAsyncContextFactory` + `InitializeAsync` — async counterpart to Initialize (WASM device
+  bring-up is async and must not block the browser JS thread). Prefers an async context factory for the kind, then
+  the sync factory, then the host ContextFactory.
+- `INativeWindow.SurfaceId` (default member) — string surface identifier = the browser canvas element id on WASM,
+  null elsewhere. Lets the WASM host pass the canvas id through the neutral window.
+
+**Blocked / handoff (needs the user's browser-capable WASM setup):** moving `WebGpuJsInterop` (`[JSImport]` →
+`globalThis.Uno.UI.Runtime.Skia.WebGpuInit.*`), `WebGpuBrowserGraphicsContext`, and `ts/Runtime/WebGpuInit.ts` from
+the WASM host into `Uno.UI.Composition.WebGpu`. Why it can't be done blind here:
+- The `[JSImport]` module is TypeScript compiled by `Microsoft.TypeScript.MSBuild` and embedded **by the WASM host**;
+  the WebGPU project (net10.0 generic) has no TS/JS-module pipeline. Relocating it means adding TS build + JS-module
+  embedding + `globalThis` registration to the WebGPU project.
+- `WebGpuInit.ts` grafts the JS `GPUDevice` into emdawnwebgpu's C handle table via `Module.unoWebGpuImportDevice`,
+  installed by an **emdawnwebgpu `__postset` emscripten patch** tied to the WASM host's native-asset build.
+- Wrong JS-module loading fails silently at browser runtime — not catchable in a compile-only Linux env.
+
+**Target shape once moved (the async seam is ready for it):** WASM host builds `INativeWindow{ Kind=Wasm,
+SurfaceId=canvasId }`, `await`s `GraphicsRegistry.InitializeAsync(window, [WebGpu])`, sets
+`CompositionTarget.Renderer = init.Renderer`, and drops the WebGPU project reference. The registered async WASM
+context factory (in the WebGPU project) does the JS device import + canvas surface + readback hook and returns a
+`WebGpuBrowserGraphicsContext : IGraphicsContext, IWebGpuDeviceContext` — consumable by Uno's provider or a user's.
+
+Until then, the WASM host is unchanged (still references the WebGPU project, still builds + works) — nothing broken.
