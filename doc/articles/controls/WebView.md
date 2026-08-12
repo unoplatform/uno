@@ -210,7 +210,7 @@ public App()
 On Windows (Skia Desktop) a subset of `CoreWebView2Environment` and `CoreWebView2Profile` is implemented. On every other target these members throw `NotImplementedException`, as they did before.
 
 > [!NOTE]
-> This is implemented by the default WebView2 backend, which requires .NET 10 or later. An app targeting .NET 9, or one that opts into the other backend with `UNO_WEBVIEW2_BACKEND=microsoft.web.webview2`, keeps the previous `NotImplementedException` behavior.
+> This requires .NET 10 or later. An app targeting .NET 9 keeps the previous `NotImplementedException` behavior for all of the members below.
 
 ### Which browser is installed
 
@@ -249,6 +249,9 @@ var profile = webView.CoreWebView2.Profile;
 ```
 
 `FailureReportFolderPath` is created lazily by the browser, so the directory may not exist yet.
+
+> [!NOTE]
+> Unlike the static members above, these three are provided by the default WebView2 backend only. An app that opts into the other backend with `UNO_WEBVIEW2_BACKEND=microsoft.web.webview2` gets `NotImplementedException` from them.
 
 > [!NOTE]
 > `ProfileName` is currently always empty on Windows. Uno creates the WebView without controller options, so no profile name is requested — the profile still resolves to the default one, and `ProfilePath` (a directory under `UserDataFolder`) is the reliable way to identify it.
