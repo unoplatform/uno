@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Composition.Drawing;
@@ -47,6 +48,7 @@ public static class GraphicsRegistry
 	private static readonly object _gate = new();
 	private static IReadOnlyList<IGraphicsProvider> _backends = Array.Empty<IGraphicsProvider>();
 	private static readonly Dictionary<GraphicsContextKind, Func<INativeWindow, IGraphicsContext?>> _contextFactories = new();
+	private static readonly Dictionary<GraphicsContextKind, Func<INativeWindow, Task<IGraphicsContext?>>> _asyncContextFactories = new();
 
 	/// <summary>
 	/// The concrete context factory (set once by the Uno graphics layer). Core stays free of GPU-API libraries;
@@ -67,6 +69,20 @@ public static class GraphicsRegistry
 		lock (_gate)
 		{
 			_contextFactories[kind] = factory;
+		}
+	}
+
+	/// <summary>
+	/// Like <see cref="RegisterContextFactory"/> but asynchronous — for a context whose device bring-up can't run
+	/// synchronously (WASM/WebGPU: the device is imported from browser JS and the JS thread must not be blocked).
+	/// Consumed by <see cref="InitializeAsync"/> and takes precedence over the sync factories for that kind.
+	/// </summary>
+	public static void RegisterAsyncContextFactory(GraphicsContextKind kind, Func<INativeWindow, Task<IGraphicsContext?>> factory)
+	{
+		ArgumentNullException.ThrowIfNull(factory);
+		lock (_gate)
+		{
+			_asyncContextFactories[kind] = factory;
 		}
 	}
 
@@ -168,6 +184,86 @@ public static class GraphicsRegistry
 				{
 					// A backend that can't stand up on a created context is treated like a context failure:
 					// dispose and continue the walk rather than hard-failing.
+					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: CreateGraphics threw ({e.GetType().Name})");
+					context.Dispose();
+				}
+			}
+		}
+
+		throw new InvalidOperationException(
+			$"No registered backend could initialize on this host. Attempts:{attempts}");
+	}
+
+	/// <summary>
+	/// Asynchronous counterpart to <see cref="Initialize"/> for hosts whose context must be created asynchronously
+	/// (WASM/WebGPU: the JS device import can't block the browser thread). Prefers an async context factory
+	/// registered for the kind, then the sync context factory, then the host <see cref="ContextFactory"/>.
+	/// </summary>
+	public static async Task<GraphicsInitialization> InitializeAsync(INativeWindow window, IReadOnlyList<GraphicsContextKind>? preferredKinds = null)
+	{
+		ArgumentNullException.ThrowIfNull(window);
+
+		IReadOnlyList<IGraphicsProvider> backends;
+		lock (_gate)
+		{
+			backends = _backends;
+		}
+
+		if (backends.Count == 0)
+		{
+			throw new InvalidOperationException(
+				"No graphics backend registered. Call GraphicsRegistry.Register(...) during app initialization.");
+		}
+
+		var factory = ContextFactory;
+		var attempts = new StringBuilder();
+		foreach (var backend in backends)
+		{
+			var kinds = preferredKinds is null
+				? backend.PreferredContexts
+				: preferredKinds.Where(backend.PreferredContexts.Contains).ToArray();
+
+			foreach (var kind in kinds)
+			{
+				Func<INativeWindow, Task<IGraphicsContext?>>? asyncFactory;
+				Func<INativeWindow, IGraphicsContext?>? kindFactory;
+				lock (_gate)
+				{
+					_asyncContextFactories.TryGetValue(kind, out asyncFactory);
+					_contextFactories.TryGetValue(kind, out kindFactory);
+				}
+
+				IGraphicsContext? context = null;
+				try
+				{
+					context = asyncFactory is not null
+						? await asyncFactory(window).ConfigureAwait(true)
+						: kindFactory?.Invoke(window) ?? (factory is null ? null : factory(kind, window, backend.Requirements));
+				}
+				catch (Exception e)
+				{
+					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: context factory threw ({e.GetType().Name})");
+					if (typeof(GraphicsRegistry).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					{
+						typeof(GraphicsRegistry).Log().Debug($"Graphics negotiation: {backend.GetType().Name}/{kind} context factory threw: {e}");
+					}
+					continue;
+				}
+
+				if (context is null)
+				{
+					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: context unavailable or requirements unmet");
+					continue;
+				}
+
+				try
+				{
+					var graphics = backend.CreateGraphics(context);
+					DrawingFactory.Register(graphics.DrawingFactory);
+					return new GraphicsInitialization(backend, context, graphics);
+				}
+				catch (Exception e)
+				{
 					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: CreateGraphics threw ({e.GetType().Name})");
 					context.Dispose();
 				}
