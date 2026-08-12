@@ -1671,3 +1671,29 @@ SkiaBackend, NO Skia add-ins, NO RuntimeTests. Built `-c Debug -f net10.0`:
 Build it yourself: `dotnet build src/SkiaFreeProof/SkiaFreeProof.csproj -c Debug -f net10.0 -p:UnoTargetFrameworkOverride=net10.0`
 then `find src/SkiaFreeProof/bin/Debug/net10.0 -iname "*skiasharp*"` (empty). To render:
 `DISPLAY=:99 VK_ICD_FILENAMES=…/lvp_icd.json LD_LIBRARY_PATH=. UNO_WEBGPU=1 dotnet SkiaFreeProof.dll`.
+
+---
+
+## 47. Reflection fallback: auto-register the Skia backend when present (upgrade-safe, no compile dependency)
+
+Backward-compat mechanism so existing apps don't break on upgrade while the framework keeps NO compile-time SkiaSharp
+dependency. `DrawingBackendFallback.EnsureRegistered()` (in the neutral `Uno.UI.Composition.Drawing`) runs once, the
+first time the framework needs a backend and none was registered, and invokes `Uno.UI.Composition.Skia.SkiaBackend.
+Register()` **purely by reflection** (`Type.GetType("…SkiaBackend, Uno.UI.Composition.Skia")`). One call wires the
+whole Skia backend (drawing factory, SkiaFontProvider, image decoder, encoder, default renderer, graphics provider).
+
+- If the backend assembly is present (the app still references SkiaSharp) → auto-registered, app renders unchanged.
+- If not (a managed/WebGPU skia-free head) → `Type.GetType` returns null → no-op; the app registers its own backend.
+- Never clobbers an explicit `SkiaBackend.Register()` / `ManagedBackend.Register()` (fires only on the null path).
+
+Triggered from the null path of `DrawingFactory.Current`, `DrawingRegistration.DefaultRenderer`, `FontProvider.Current`
+and `ImageDecoder.Current` (whichever the frame hits first), guarded to run at most once.
+
+**Runtime-validated (X11):** a proof head referencing the SkiaBackend assembly but registering NOTHING printed
+`DrawingFactory resolves to => Uno.UI.Composition.Drawing.SkiaDrawingFactory` and rendered with no crash. The clean
+`SkiaFreeProof` (no backend ref, managed+WebGPU) still emits ZERO SkiaSharp in its output — the fallback is
+reflection-only and adds no reference.
+
+Also fixed this pass: commit `6bf9d65b8c` had only captured the `Color.skia.cs` deletion (its `git add` aborted on the
+deleted-file pathspec), so the real Uno.UWP neutralization had never landed and the pushed `Uno.UWP` still referenced
+SkiaSharp. Now committed + verified against HEAD (0 refs).
