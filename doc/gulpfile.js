@@ -24,7 +24,11 @@ function styles(done) {
     src([`${assets}/**/*.scss`, `${assets}/**/*.sass`])
         .pipe(sourcemaps.init())
         .pipe(
-            sass({includePaths: ['./node_modules/'], outputStyle: output}).on(
+            // charset: false is required because these stylesheets are concatenated below.
+            // Sass prepends a BOM to any compressed output containing non-ASCII characters
+            // (navbar.scss has a FontAwesome glyph), which is only valid at the start of a
+            // file — mid-file it invalidates the rule that follows it.
+            sass({includePaths: ['./node_modules/'], outputStyle: output, charset: false}).on(
                 'error',
                 sass.logError
             )
@@ -72,7 +76,8 @@ function scripts(done) {
         `!${assets}/styles/*.js`,
         `!${assets}/conceptual.html.primary.js`,
         `!${assets}/main.js`,
-        `!${assets}/vendor/*.js`])
+        `!${assets}/vendor/*.js`,
+        `!${assets}/**/*.test.js`]) // test files are Node-only (require()); never bundle them into the browser script
         .pipe(sourcemaps.init())
         .pipe(uglify())
         .pipe(concat('docfx.js'))
@@ -92,7 +97,7 @@ function watch() {
         .on('change', browserSync.reload);
 
     // Watch javascript files
-    gulpwatch([`${assets}/**/*.js`, `!${assets}/styles/*.js`], series([scripts, docfx]))
+    gulpwatch([`${assets}/**/*.js`, `!${assets}/styles/*.js`, `!${assets}/**/*.test.js`], series([scripts, docfx]))
         .on('change', browserSync.reload);
 }
 
@@ -127,6 +132,9 @@ exports.build = build;
 exports.default = series(build, run);
 
 exports.clean = series(clean);
+
+// Rebuild only the JS bundle (styles/docfx.js, styles/main.js) from source.
+exports.scripts = scripts;
 
 exports.debug = series(build, run);
 

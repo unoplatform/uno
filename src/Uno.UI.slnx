@@ -427,6 +427,9 @@
     <Project Path="Uno.UI.Runtime.Skia.Linux.FrameBuffer/Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
+    <Project Path="Uno.UI.Runtime.Skia.Headless/Uno.UI.Runtime.Skia.Headless.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
     <Project Path="Uno.UI.Runtime.Skia.MacOS/Uno.UI.Runtime.Skia.MacOS.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>

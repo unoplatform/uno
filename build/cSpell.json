@@ -57,6 +57,7 @@
 	"hotswap",
 	"Inlines",
 	"Junie",
+	"Kimi",
 	"Kiro",
 	"keychain",
 	"laggy",
@@ -245,7 +246,8 @@
 	"settingscard",
 	"trackpad",
 	"COEP",
-	"TFMs"
+	"TFMs",
+	"dedup"
   ],
   "patterns": [
 	{

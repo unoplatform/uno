@@ -4,7 +4,7 @@ uid: Uno.GetStarted.Licensing
 
 # Sign in with Uno Platform
 
-Sign in with your Uno Platform account directly in your favorite IDE (Visual Studio, VS Code, or Rider), to unlock powerful tools like Hot Reload, helping you speed up development. With a single registration, you also get early access to new features and the opportunity to connect with the Uno Platform community to share feedback and network.
+Sign in with your Uno Platform account directly in your favorite IDE (Visual Studio, VS Code, or Rider). With a single registration, you also get early access to new features and the opportunity to connect with the Uno Platform community to share feedback and network.
 
 ## Create your account
 
@@ -86,36 +86,34 @@ If you’ve already set up **JetBrains Rider** by following the [Get Started on 
 
    ![Uno Platform Studio Window Welcome](Assets/uno-studio-welcome.png)
 
-2. After signing in (or creating your account), return to the Uno Platform Studio window. You’ll now see your account and subscription details displayed. Your subscription type (Community or Pro) determines which products you can access. From the overflow menu (...), you can access additional resources, refresh your account information, or sign out.
+2. After signing in (or creating your account), return to the Uno Platform Studio window. You’ll now see your account and subscription details displayed. Your subscription type (Community, Pro, or Business) determines which products you can access. From the overflow menu (...), you can access additional resources, refresh your account information, or sign out.
 
    ![Uno Platform Studio Window Main](Assets/uno-studio-main.png)
 
-### Uno Platform Studio Pro 15-Day Trial
+### Uno Platform Studio Business 15-Day Trial
 
-When you create a free **Community** account, **Uno Platform Studio** includes a 15-day trial of **Uno Platform Studio Pro**. The trial unlocks the full Pro toolset, including the **[Uno Platform Studio App](xref:Uno.PlatformStudio.GetStarted)**, **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**, and the **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**. If your **Uno Platform Studio Pro** trial has expired, you’ll have the option to extend it directly from the Uno Platform Studio window, or, if you’re ready to upgrade, simply click **Purchase Now**. This will take you to the Uno Platform website, where you can choose your subscription plan and the number of licenses you need.
+When you create a free **Community** account, **Uno Platform Studio** includes a 15-day trial of **Uno Platform Studio Business**. The trial unlocks the full Business toolset, including the **[Uno Platform Studio App](xref:Uno.PlatformStudio.GetStarted)** and **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**. If your **Uno Platform Studio Business** trial has expired, you’ll have the option to extend it directly from the Uno Platform Studio window, or, if you’re ready to upgrade, simply click **Purchase Now**. This will take you to the Uno Platform website, where you can choose your subscription plan and the number of licenses you need.
 
-## Getting a Uno Platform Studio Pro License
+## Getting a Uno Platform Studio License
 
-**Uno Platform Studio** revolutionizes how developers design, build, and iterate on their applications. A **Uno Platform Studio Pro** license unlocks the full suite of purpose-built tools that streamline your workflow:
+**Uno Platform Studio** revolutionizes how developers design, build, and iterate on their applications. A **Uno Platform Studio** license unlocks the full suite of purpose-built tools that streamline your workflow:
 
 - **[Uno Platform Studio App](xref:Uno.PlatformStudio.GetStarted)**: Go from a prompt to a working, cross-platform Uno Platform app in minutes. Start from a description (or one of the curated samples in the Gallery), watch the app build live thanks to Hot Reload, refine it through the conversation panel, then export to your preferred IDE or CLI to keep building. App generation is powered by the **[Uno Platform Studio Agent](xref:Uno.PlatformStudio.Agent)**. [Get started](xref:Uno.PlatformStudio.GetStarted)
 
 - **[Hot Design<sup>®</sup>](xref:Uno.HotDesign.Overview)**: The industry-first, patented, runtime visual designer for cross-platform .NET applications. Hot Design<sup>®</sup> transforms your running app into a Designer, from any IDE, on any OS, to create polished interfaces with ease. [Get started](xref:Uno.HotDesign.GetStarted.Guide)
 
-- **[Hot Design<sup>®</sup> Agent](xref:Uno.HotDesign.Agent)**: An AI-powered assistant designed for rapid UX/UI creation and enhancement within your running app. It leverages your data contexts and live previews to help you design, refine, and interact with user interfaces in real time. [Learn more](xref:Uno.HotDesign.Agent)
-
 - **[Design-to-Code](xref:Uno.Figma.GetStarted)**: Generate ready-to-use, well-structured XAML or C# Markup directly from your Figma designs with one click, completely eliminating manual design handoff. [Get started](xref:Uno.Figma.GetStarted)
 
 The free **Community** plan already includes core productivity tools, such as **[Hot Reload](xref:Uno.Platform.Studio.HotReload.Overview)**, the Uno Toolkit, and unlimited access to the **[Uno Platform MCPs](xref:Uno.Features.Uno.MCPs)**, so you can be productive before you upgrade.
 
-Check out [Compare Uno Platform Studio Community vs Pro plan](https://platform.uno/select-subscription/) to see exactly what is included in each plan and what you gain by upgrading.
+Check out [Compare Uno Platform Studio plans](https://platform.uno/select-subscription/) to see exactly what is included in each plan and what you gain by upgrading.
 
 > [!IMPORTANT]
-> Uno Platform itself remains open-source and free under Apache 2.0. The Pro subscription is specifically for Uno Platform Studio features.
+> Uno Platform itself remains open-source and free under Apache 2.0. The Pro and Business subscriptions are specifically for Uno Platform Studio features.
 
 ![Uno Platform Studio compare](Assets/uno-studio-plans-compare.png)
 
-### Purchase a Pro License
+### Purchase a Pro or Business License
 
 1. Visit [platform.uno/select-subscription](https://platform.uno/select-subscription/) to view subscription options and current pricing.
 1. Choose your preferred billing cycle (monthly or yearly).
@@ -126,7 +124,7 @@ Check out [Compare Uno Platform Studio Community vs Pro plan](https://platform.u
 
 ### Special Pricing
 
-- **Students, educators, and open-source maintainers**: Qualify for complimentary Pro licenses upon verification. Contact [info@platform.uno](mailto:info@platform.uno) to get started.
+- **Students, educators, and open-source maintainers**: Qualify for complimentary Pro or Business licenses upon verification. Contact [info@platform.uno](mailto:info@platform.uno) to get started.
 - **Enterprise/Custom Quotes**: Enterprise customers can arrange purchase orders and invoicing. Contact [info@platform.uno](mailto:info@platform.uno) for customized licensing.
 
 ### Subscription Management
@@ -135,19 +133,19 @@ Check out [Compare Uno Platform Studio Community vs Pro plan](https://platform.u
 - **Billing**: Invoices are sent to your registered email address. You can switch between monthly and yearly billing at any time, with no immediate charge.
 - **License management**: Add or remove seats at any time, and transfer seats between team members from the License Manager in your account dashboard. Licenses added mid-cycle are prorated, and removed licenses take effect immediately with charges adjusted at your next renewal.
 
-## Assigning a Uno Platform Studio Pro License
+## Assigning a Uno Platform Studio License
 
-Once you have purchased a Uno Platform Studio Pro subscription, you may need to assign or activate your license:
+Once you have purchased a Uno Platform Studio subscription, you may need to assign or activate your license:
 
 ### Activating Your License After Purchase
 
-1. After purchasing your Pro subscription, you should receive a confirmation email with your license details.
+1. After purchasing your subscription, you should receive a confirmation email with your license details.
 
 1. Sign in to your IDE following the steps in the "Sign in to your IDE of choice" section above.
 
 1. In the Uno Platform Studio window, click **Refresh** to update your license status.
 
-1. Your Pro features should now be available.
+1. Your plan features should now be available.
 
 ### Checking License Status
 
@@ -190,13 +188,13 @@ If you encounter issues during the subscription or licensing process:
    - Use the **Refresh** button in Uno Platform Studio
    - Sign out and sign in again to your IDE
 
-1. **Uno Platform Studio Pro Trial Expired**:
+1. **Uno Platform Studio Trial Expired**:
    - The 15-day trial is automatically included with Community accounts
-   - After expiration, upgrade to Pro to continue using Uno Platform Studio Pro features
+   - After expiration, upgrade to Pro or Business plans to continue using Uno Platform Studio features
    - Visit [platform.uno/select-subscription](https://platform.uno/select-subscription/) to upgrade
 
 1. **Support**:
-   - Pro support covers Uno Platform Studio features only
+   - Pro and Business support covers Uno Platform Studio features only
    - For general support, visit [GitHub Discussions](https://github.com/unoplatform/uno/discussions) or [Discord](https://www.platform.uno/discord)
    - [Paid support](https://platform.uno/contact/) available for enterprise needs
 

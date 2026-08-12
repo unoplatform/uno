@@ -14,6 +14,17 @@ internal sealed class RecordingReporter : IReporter
 	private readonly List<string> _errors = [];
 	private readonly Lock _gate = new();
 
+	public IReadOnlyList<string> VerboseMessages
+	{
+		get
+		{
+			lock (_gate)
+			{
+				return [.. _verbose];
+			}
+		}
+	}
+
 	public IReadOnlyList<string> Outputs
 	{
 		get

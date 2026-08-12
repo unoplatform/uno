@@ -104,6 +104,36 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		private FileUpdater CreateFileUpdater(bool isRunningInsideVisualStudio, string? hotReloadInfoPath)
 		{
 			var onDisk = new OnDiskFileEditor(_reporter);
+			var infoFile = new HotReloadInfoFile(hotReloadInfoPath, _reporter);
+			Func<ValueTask> requestHotReload = async () => { await RequestHotReloadToIde(); };
+
+			// Escape hatch for the batched IDE update path (spec 052) — set the
+			// "hot-reload-ide-updater" server configuration to "false" to restore the legacy
+			// per-file UpdateFileIdeMessage flow.
+			var useBatchedIdeUpdates = !"false".Equals(_remoteControlServer.GetServerConfiguration("hot-reload-ide-updater"), StringComparison.OrdinalIgnoreCase);
+
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().LogInformation($"HotReload file updater: {(isRunningInsideVisualStudio && useBatchedIdeUpdates ? "batched IDE updates (spec 052)" : $"legacy per-file path (isRunningInsideVisualStudio={isRunningInsideVisualStudio}, hot-reload-ide-updater={useBatchedIdeUpdates})")}.");
+			}
+
+			if (isRunningInsideVisualStudio && useBatchedIdeUpdates)
+			{
+				return new IdeFileUpdater(
+					onDisk,
+					_solutionWatchersGate,
+					_tracker,
+					infoFile,
+					requestHotReload,
+					async message =>
+					{
+						var result = await SendAndWaitForResult(message);
+						return (result.IsSuccess, result.Error);
+					},
+					GetNextIdeCorrelationId);
+			}
+
+#pragma warning disable CS0618 // IDEFileEditor is the legacy escape-hatch path (spec 052)
 			IFileEditor editor = isRunningInsideVisualStudio
 				? new IDEFileEditor(
 					async (filePath, newText, saveToDisk) =>
@@ -113,13 +143,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					},
 					onDisk)
 				: onDisk;
+#pragma warning restore CS0618
 
 			return new FileUpdater(
 				editor,
 				_solutionWatchersGate,
 				_tracker,
-				new HotReloadInfoFile(hotReloadInfoPath, _reporter),
-				async () => { await RequestHotReloadToIde(); });
+				infoFile,
+				requestHotReload);
 		}
 
 		public async Task ProcessFrame(Frame frame)
