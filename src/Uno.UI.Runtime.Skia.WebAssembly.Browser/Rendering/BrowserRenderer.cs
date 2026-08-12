@@ -4,7 +4,6 @@ using Uno.UI.Composition.Drawing;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition.WebGpu;
 using Uno.UI.Hosting;
@@ -25,7 +24,7 @@ internal partial class BrowserRenderer
 	private WebGpuBrowserGraphicsContext? _webgpuContext;
 
 	private int _renderCount;
-	private SKCanvas? _canvas;
+	private IRenderTarget? _renderTarget;
 	private bool _pendingInvalidate;
 
 	public BrowserRenderer(IXamlRootHost host, bool forceSoftwareRendering)
@@ -169,18 +168,19 @@ internal partial class BrowserRenderer
 
 		if (_renderer.NeedsForceResize())
 		{
-			_canvas?.Dispose();
-			_canvas = null;
+			_renderTarget?.Dispose();
+			_renderTarget = null;
 		}
 
-		var currentClipPath = compositionTarget.OnNativePlatformFrameRequested(_canvas is null ? null : new SkiaRenderTarget(_canvas), size =>
+		var currentClipPath = compositionTarget.OnNativePlatformFrameRequested(_renderTarget, size =>
 		{
-			return new SkiaRenderTarget(_canvas = _renderer.Resize((int)size.Width, (int)size.Height));
+			_renderTarget?.Dispose();
+			return _renderTarget = _renderer.Resize((int)size.Width, (int)size.Height);
 		});
 
-		if (_canvas is not null)
+		if (_renderTarget is not null)
 		{
-			_canvas.Flush();
+			// The Skia backend flushed its surface; present the buffer (GL flush / software blit).
 			_renderer.Flush();
 		}
 
@@ -197,8 +197,7 @@ internal partial class BrowserRenderer
 		string path, fillType;
 		if (!currentClipPath.IsEmpty)
 		{
-			using var clipLease = SkiaGeometryInterop.Lease(currentClipPath);
-			path = clipLease.Path.ToSvgPathData();
+			path = currentClipPath.ToSvgPathData();
 			fillType = currentClipPath.FillRule == GeometryFillRule.EvenOdd ? "evenodd" : "nonzero";
 		}
 		else
