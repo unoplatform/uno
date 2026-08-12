@@ -14,11 +14,23 @@ public static class DrawingFactory
 	private static IDrawingFactory? _current;
 
 	/// <summary>The active drawing backend.</summary>
-	/// <exception cref="InvalidOperationException">No backend has been registered yet.</exception>
+	/// <exception cref="InvalidOperationException">No backend has been registered and none could be auto-registered.</exception>
 	public static IDrawingFactory Current
-		=> _current ?? throw new InvalidOperationException(
-			"No IDrawingFactory has been registered. The Skia backend registers itself when its assembly " +
-			"loads; a host using a different backend must call DrawingFactory.Register(...) during initialization.");
+	{
+		get
+		{
+			if (_current is null)
+			{
+				// Nothing registered explicitly: light up the Skia backend by default if it's present (reflection,
+				// no compile-time dependency). A SkiaSharp-free head registers its backend explicitly before here.
+				DrawingBackendFallback.EnsureRegistered();
+			}
+
+			return _current ?? throw new InvalidOperationException(
+				"No IDrawingFactory has been registered. Reference the Skia backend (it auto-registers when present) " +
+				"or call DrawingFactory.Register(...) / ManagedBackend.Register() during initialization.");
+		}
+	}
 
 	/// <summary>Registers the active drawing backend. Intended to be called during host/backend initialization.</summary>
 	public static void Register(IDrawingFactory backend)

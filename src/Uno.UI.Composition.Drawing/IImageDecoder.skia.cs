@@ -38,8 +38,16 @@ public static class ImageDecoder
 
 	public static IImageDecoder Current
 	{
-		get => _current ?? throw new InvalidOperationException(
-			"No IImageDecoder registered. Set ImageDecoder.Current during app initialization (the Skia head does this in SkiaBackend.Register).");
+		get
+		{
+			if (_current is null)
+			{
+				DrawingBackendFallback.EnsureRegistered();
+			}
+
+			return _current ?? throw new InvalidOperationException(
+				"No IImageDecoder registered. Set ImageDecoder.Current during app initialization (the Skia head does this in SkiaBackend.Register).");
+		}
 		set => _current = value;
 	}
 }
