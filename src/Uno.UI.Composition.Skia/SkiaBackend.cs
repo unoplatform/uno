@@ -35,6 +35,9 @@ public static class SkiaBackend
 		// SkiaDrawingSession; the public 2dsk package resolves it through the neutral factory abstraction.
 		ApiExtensibility.Register(typeof(SKCanvasVisualBaseFactory), _ => new SKCanvasVisualFactory());
 
+		// BitmapEncoder (Uno.UWP) is imaging-library-agnostic and resolves its encoder through this seam.
+		ApiExtensibility.Register(typeof(global::Windows.Graphics.Imaging.IImageEncoderExtension), _ => new SkiaImageEncoderExtension());
+
 		// Composition-root backend selection for the pluggable graphics pipeline: register Skia as the
 		// available backend. A host that drives the neutral loop (GraphicsRegistry.Initialize) picks it up; swap
 		// this list to run a different backend. The choice lives here, not in the render loop or the host.
