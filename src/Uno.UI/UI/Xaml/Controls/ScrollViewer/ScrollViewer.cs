@@ -1888,7 +1888,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (Presenter is not null && ShouldSnapToTouchTextBox())
 			{
-				var textBox = (TextBox)FocusManager.GetFocusedElement(XamlRoot!)!;
+				var textBox = ((ITextBoxHost)FocusManager.GetFocusedElement(XamlRoot!)!).Owner;
 				var textBoxToPresenter = textBox.TransformToVisual(Presenter.FindFirstChild()).TransformBounds(new Rect(0, 0, textBox.ActualWidth, textBox.ActualHeight));
 				if (verticalOffset.HasValue)
 				{
@@ -1920,7 +1920,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal partial bool ShouldSnapToTouchTextBox()
 		{
-			return XamlRoot is not null && FocusManager.GetFocusedElement(XamlRoot) is TextBox { CaretMode: TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing or TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing } textBox && textBox.FindFirstParent<ScrollViewer>() == this;
+			return XamlRoot is not null && FocusManager.GetFocusedElement(XamlRoot) is ITextBoxHost { Core.CaretMode: TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing or TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing } host && host.Owner.FindFirstParent<ScrollViewer>() == this;
 		}
 
 		partial void OnZoomModeChangedPartial(ZoomMode zoomMode)

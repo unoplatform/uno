@@ -25,9 +25,9 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 	public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
 	public event EventHandler? CompositionEnded;
 
-	public void StartImeSession(TextBox textBox)
+	public void StartImeSession(TextBoxCore core)
 	{
-		if (textBox is PasswordBox)
+		if (core.IsPassword)
 		{
 			return;
 		}

@@ -269,6 +269,30 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
   `RepeatBehavior`, `FillBehavior`) are unchanged. Set only `TargetName` (as the built-in
   styles do); the fade always animates `Opacity` to its fixed target (1 for fade-in, 0 for
   fade-out).
+- **`PasswordBox`** now derives directly from **`Control`** (matching WinUI) instead of
+  `TextBox`, and `is TextBox` is no longer `true` for a password box. The `TextBox`-only
+  surface it used to inherit is gone — `Text`, `TextChanged`, `TextChanging`,
+  `BeforeTextChanging`, `SelectedText`, `SelectionStart`, `SelectionLength`, `IsReadOnly`,
+  `AcceptsReturn`, `TextWrapping`, `TextAlignment`, `IsSpellCheckEnabled`,
+  `CanUndo`/`CanRedo`, `Undo()`/`Redo()`,
+  `CopySelectionToClipboard()`/`CutSelectionToClipboard()`, and `ProofingMenuFlyout`. None of
+  these exists on WinUI's `PasswordBox`, so code written against WinUI is unaffected. Use
+  **`Password`** to read or write the value and **`PasswordChanged`** in place of
+  `TextChanged`; the password is no longer reachable as text. Everything WinUI does expose —
+  `PasswordChar`, `PasswordRevealMode`, `Header`, `HeaderTemplate`, `PlaceholderText`,
+  `Description`, `InputScope`, `SelectionHighlightColor`, `SelectionFlyout`,
+  `CanPasteClipboardContent`, `ContextMenuOpening`, `Paste`, `SelectAll()`,
+  `PasteFromClipboard()` — behaves as before; it is declared on `PasswordBox` itself now
+  rather than inherited. `MaxLength` now limits `Password` directly: it previously applied
+  only through the inherited `Text` mirror, so an over-long value assigned to `Password` was
+  accepted while the mirror rejected it.
+
+  **`BeforeTextChanging` has no replacement.** `PasswordChanging` remains unimplemented, and
+  its `PasswordBoxPasswordChangingEventArgs` carries no `Cancel` member, so it would not
+  substitute even once implemented — nothing can veto password input. Bound the length with
+  `MaxLength` and validate after the fact in `PasswordChanged`. Dropping the inherited
+  `IsSpellCheckEnabled` also stops a password box spell-checking its own masked text, which
+  removes the squiggly underline it used to draw.
 
 ### XAML changes
 

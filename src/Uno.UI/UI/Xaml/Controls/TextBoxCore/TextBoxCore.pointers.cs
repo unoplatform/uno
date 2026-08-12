@@ -13,7 +13,7 @@ using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class TextBox
+internal sealed partial class TextBoxCore
 {
 	/// <summary>
 	/// point is null before first press. repeatedPresses counts consecutive multi-taps for both Mouse
@@ -28,9 +28,8 @@ public partial class TextBox
 	// follows the finger until release. See BeginTouchCaretDrag / OnContextRequestedImpl.
 	private bool _touchCaretDrag;
 
-	protected override void OnPointerMoved(PointerRoutedEventArgs e)
+	internal void OnPointerMoved(PointerRoutedEventArgs e)
 	{
-		base.OnPointerMoved(e);
 		e.Handled = true;
 
 		if (!HasPointerCapture)
@@ -89,10 +88,8 @@ public partial class TextBox
 		}
 	}
 
-	protected override void OnRightTapped(RightTappedRoutedEventArgs e)
+	internal void OnRightTapped(RightTappedRoutedEventArgs e)
 	{
-		base.OnRightTapped(e);
-
 		var displayBlock = TextBoxView.DisplayBlock;
 		var position = e.GetPosition(displayBlock);
 
@@ -227,7 +224,7 @@ public partial class TextBox
 		{
 			if (isMobileMultiTap)
 			{
-				HandleEmptyTextTouchGesture(args.GetCurrentPoint(this).Position);
+				HandleEmptyTextTouchGesture(args.GetCurrentPoint(Owner).Position);
 			}
 			else if (TouchSelectionConvention != TouchTextSelectionConvention.Desktop)
 			{
@@ -251,7 +248,7 @@ public partial class TextBox
 		}
 		// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (line 2088)
 		// OnPointerReleased - queue SelectionFlyout visibility update after pointer release
-		QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, args.GetCurrentPoint(this).Position);
+		QueueUpdateSelectionFlyoutVisibility(PointerDeviceType.Touch, args.GetCurrentPoint(Owner).Position);
 	}
 
 	// Native iOS/Android pop the text flyout (Paste) over an empty field on a double-tap or a long-press. There is
@@ -263,7 +260,7 @@ public partial class TextBox
 		// A TextBox always carries Select All in the touch primary bar, but a PasswordBox keeps its Select All in the
 		// overflow (and only with a password), so an empty one with an empty clipboard has no primary command at all.
 		// Opening the flyout then would only flash an empty popup before it self-hides.
-		if (SelectionFlyout is TextCommandBarFlyout flyout && !flyout.HasTouchPrimaryCommandsFor(this))
+		if (SelectionFlyout is TextCommandBarFlyout flyout && !flyout.HasTouchPrimaryCommandsFor(Owner))
 		{
 			return;
 		}
@@ -340,13 +337,14 @@ public partial class TextBox
 	// Android selects the word under the press (the selection toolbar then appears via the selection
 	// flyout); iOS starts dragging the caret; an empty field has neither, and just opens the flyout.
 	// Mouse/pen right-click and the Desktop convention keep the default context flyout.
-	private protected override void OnContextRequestedImpl(ContextRequestedEventArgs args)
+	// Returns whether the gesture was consumed; the host falls back to base handling when it wasn't.
+	internal bool OnContextRequestedImpl(ContextRequestedEventArgs args)
 	{
 		if (args.IsTouchInput
 			&& TouchSelectionConvention != TouchTextSelectionConvention.Desktop
 			&& args.TryGetPosition(TextBoxView.DisplayBlock, out var displayBlockPoint))
 		{
-			args.TryGetPosition(this, out var textBoxPoint);
+			args.TryGetPosition(Owner, out var textBoxPoint);
 
 			if (Text.IsNullOrEmpty())
 			{
@@ -374,10 +372,10 @@ public partial class TextBox
 			// (finger moves during the caret-drag / after word-select) spuriously cancel a non-existent menu.
 			args.PreventContextMenuOnHolding = true;
 
-			return;
+			return true;
 		}
 
-		base.OnContextRequestedImpl(args);
+		return false;
 	}
 
 	// iOS long-press: place the caret at the press point and capture the pointer so the caret follows
@@ -400,9 +398,8 @@ public partial class TextBox
 		_touchCaretDrag = false;
 	}
 
-	protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs args)
+	internal void OnDoubleTapped(DoubleTappedRoutedEventArgs args)
 	{
-		base.OnDoubleTapped(args);
 		args.Handled = true;
 	}
 }
