@@ -1604,3 +1604,34 @@ Android (net10.0-android) + WASM + Win32 + LinuxFB host libs compile clean (the 
 neutral interfaces — is the remaining composition-root + Uno.Sdk/packaging step: the app/SDK must then register the
 backend + providers and ship native assets for every consuming app (X11 also still instantiates `SkiaGraphicsProvider`
 for its WebGPU/Skia negotiation). That path can't be validated against a real consuming-app NuGet build here.
+
+---
+
+## 45. Hosts carry ZERO Skia — SkiaBackend ProjectReference removed; app is the sole composition root
+
+User: "continue until the hosts don't carry any skia." Done. No `Uno.UI.Runtime.Skia.*` host references the
+`Uno.UI.Composition.SkiaBackend` project (or any SkiaSharp package) — verified: 0 SkiaSharp package refs, 0 SkiaBackend
+project refs, 0 SkiaSharp `using`, 0 backend-assembly types in host code. Hosts depend only on the neutral
+`Uno.UI.Composition.Drawing` interfaces (via Uno.UI) and, where used, the WebGpu backend (not SkiaSharp).
+
+The one remaining host→backend code coupling was **X11's `new SkiaGraphicsProvider()`** (its WebGPU-mode provider
+registration). Moved to the composition root: `SamplesApp.Skia.Generic/Program.cs` now registers the graphics-provider
+preference list (`[WebGpuGraphicsProvider, SkiaGraphicsProvider]`) when the WebGPU head is active; the host only
+negotiates context kinds via `GraphicsRegistry`. `SkiaBackend.Register()` (app) already registered `[Skia]` for the
+default path + set `DrawingRegistration.DefaultRenderer`.
+
+Why in-repo SamplesApp still gets the backend without the host ref: `SamplesApp.Skia` → `Uno.UI.RuntimeTests.Skia` →
+`SkiaBackend` (transitive), plus Generic's own conditional direct ref + `SkiaBackend.Register()`. `Uno.UI` itself
+references only the **neutral** `Uno.UI.Composition` (the SkiaBackend ref there is commented out).
+
+**Runtime-validated (X11 headless, both modes):** default **Skia** mode renders (SkiaBackend.Register → DefaultRenderer
++ `[Skia]` provider, GLX path) and **WebGPU** mode renders (`[webgpu] backend init`, app-registered `[WebGpu, Skia]`
+providers, wgpu negotiation with Skia software fallback) — the RenderTargetBitmap not-flipped test passes in each. All
+7 host libraries compile without the backend reference (X11/Win32/MacOS/AppleUIKit/Android/WASM/LinuxFB).
+
+**Remaining follow-up (packaging — the user's env/decision, can't validate here):** consuming apps previously got the
+backend transitively through the host NuGet packages. With that gone, the Uno.Sdk / Uno.WinUI meta-package must now
+bring the SkiaBackend package (and native assets) to Skia app targets, and app templates must register a backend at
+startup (as SamplesApp.Skia.Generic does) — mirror `SkiaBackend.Register()` + the provider registration. The mobile/
+WASM SamplesApp heads only register a renderer via the WebGPU host path today; wiring their Skia-mode registration is
+the same app-composition-root task.
