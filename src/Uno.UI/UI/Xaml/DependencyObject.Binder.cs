@@ -358,7 +358,7 @@ namespace Microsoft.UI.Xaml
 			=> new object?[] { GetHashCode(), _originalObjectType?.ToString() };
 
 
-		public void SetBinding(object target, string dependencyProperty, BindingBase binding)
+		internal void SetBindingInternal(object target, string dependencyProperty, BindingBase binding)
 		{
 			TryRegisterInheritedProperties(force: true);
 
@@ -377,7 +377,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="dependencyProperty">The dependency property to bind</param>
 		/// <param name="binding">The binding expression</param>
-		public void SetBinding(DependencyProperty dependencyProperty, BindingBase binding)
+		internal void SetBindingInternal(DependencyProperty dependencyProperty, BindingBase binding)
 		{
 			TryRegisterInheritedProperties(force: true);
 
@@ -417,7 +417,7 @@ namespace Microsoft.UI.Xaml
 			SetBinding(dependencyProperty, binding);
 		}
 
-		public void SetBinding(string dependencyProperty, BindingBase binding)
+		internal void SetBindingInternal(string dependencyProperty, BindingBase binding)
 		{
 			TryRegisterInheritedProperties(force: true);
 
@@ -499,7 +499,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		public void SetBindingValue(object value, [CallerMemberName] string? propertyName = null)
+		internal void SetBindingValueInternal(object value, string? propertyName)
 		{
 			var property = DependencyProperty.GetProperty(_originalObjectType, propertyName);
 
@@ -929,11 +929,11 @@ namespace Microsoft.UI.Xaml
 
 		#endregion
 
-		public BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
+		internal BindingExpression? GetBindingExpressionInternal(DependencyProperty dependencyProperty)
 			=> _properties.GetBindingExpression(dependencyProperty);
 
 		internal Microsoft.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty)
-			=> GetBindingExpression(dependencyProperty)?.ParentBinding;
+			=> GetBindingExpressionInternal(dependencyProperty)?.ParentBinding;
 
 		internal bool IsPropertyTemplateBound(DependencyProperty dependencyProperty)
 			=> _properties.IsPropertyTemplateBound(dependencyProperty);

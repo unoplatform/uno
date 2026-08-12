@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml
 
 		public bool IsStoreInitialized => true;
 
-		// Public property-system API. These stay in this nullable-oblivious file so their signatures
+		// Public property-system and binder API. These stay in this nullable-oblivious file so their signatures
 		// match the historical (interface-era) public surface exactly; the implementations live on the
 		// nullable-annotated DependencyObject.*.cs partials.
 		public object GetValue(DependencyProperty dp) => GetValueInternal(dp);
@@ -47,6 +47,21 @@ namespace Microsoft.UI.Xaml
 		public long RegisterPropertyChangedCallback(DependencyProperty dp, DependencyPropertyChangedCallback callback) => RegisterPropertyChangedCallbackInternal(dp, callback);
 
 		public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) => UnregisterPropertyChangedCallbackInternal(dp, token);
+
+		public void SetBinding(object target, string dependencyProperty, BindingBase binding) => SetBindingInternal(target, dependencyProperty, binding);
+
+		/// <summary>
+		/// Set a binding using a regular or attached DependencyProperty
+		/// </summary>
+		/// <param name="dependencyProperty">The dependency property to bind</param>
+		/// <param name="binding">The binding expression</param>
+		public void SetBinding(DependencyProperty dependencyProperty, BindingBase binding) => SetBindingInternal(dependencyProperty, binding);
+
+		public void SetBinding(string dependencyProperty, BindingBase binding) => SetBindingInternal(dependencyProperty, binding);
+
+		public void SetBindingValue(object value, [CallerMemberName] string propertyName = null) => SetBindingValueInternal(value, propertyName);
+
+		public BindingExpression GetBindingExpression(DependencyProperty dependencyProperty) => GetBindingExpressionInternal(dependencyProperty);
 
 		internal ManagedWeakReference SelfWeakReference => _selfWeakReference ??= WeakReferencePool.RentSelfWeakReference(this);
 
