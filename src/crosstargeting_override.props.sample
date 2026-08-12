@@ -30,13 +30,21 @@
         │ UnoTargetFrameworkOverride                                 │ Platform                       │ Solution filter file       │
         ├────────────────────────────────────────────────────────────┼────────────────────────────────┼────────────────────────────┤
         │ net10.0-windows10.0.19041.0 or net11.0-windows10.0.19041.0 │ Windows                        │ Uno.UI-Windows-only.slnf   │
-        │ net10.0 or net11.0                                         │ Skia (Desktop, WebAssembly)    │ Uno.UI-Skia-only.slnf      │
+        │ net10.0 or net11.0                                         │ Skia Desktop                   │ Uno.UI-Skia-only.slnf      │
+        │ net10.0-desktop or net11.0-desktop                         │ Skia Desktop (explicit)        │ Uno.UI-Skia-only.slnf      │
+        │ net10.0-browserwasm or net11.0-browserwasm                 │ Skia WebAssembly               │ Uno.UI-Skia-only.slnf      │
         │ net10.0-ios or net11.0-ios                                 │ .NET 10/11 iOS Skia            │ Uno.UI-Skia-only.slnf      │
         │ net10.0-tvos or net11.0-tvos                               │ .NET 10/11 tvOS Skia           │ Uno.UI-Skia-only.slnf      │
         │ net10.0-android or net11.0-android                         │ .NET 10/11 Android Skia        │ Uno.UI-Skia-only.slnf      │
         │ net10.0 or net11.0                                         │ Reference API (WinRT layer)    │ Uno.UI-Reference-Only.slnf │
         │ net10.0 or net11.0                                         │ Uno.UI.Tests                   │ Uno.UI-UnitTests-only.slnf │
         └────────────────────────────────────────────────────────────┴────────────────────────────────┴────────────────────────────┘
+
+        The 'desktop' and 'browserwasm' monikers only exist on the SamplesApp head, which is the one
+        project whose every target framework carries a platform; the libraries drop the moniker and
+        build the plain target framework. Because desktop and WebAssembly are now a single head
+        rather than two projects, a plain net10.0/net11.0 builds it as desktop — pick
+        net10.0-browserwasm to get WebAssembly instead.
 
         Only one target can be built, and the corresponding solution filter file must
         be loaded in Visual Studio (see next to Uno.UI.slnx).
