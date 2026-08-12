@@ -20,14 +20,6 @@ public interface IGraphicsProvider
 
 	/// <summary>Mints the matched (factory, renderer) pair bound to a successfully-created <paramref name="context"/>. Both are device-bound so they're created together; the factory is installed as <see cref="DrawingFactory.Current"/> when this backend wins negotiation.</summary>
 	Graphics CreateGraphics(IGraphicsContext context);
-
-	/// <summary>
-	/// Lets a backend create its own context for <paramref name="kind"/> directly from the neutral
-	/// <see cref="INativeWindow"/> (all it needs is the tagged native handles), so the host never references the
-	/// backend to build a surface. Returns <see langword="null"/> to defer to the host's
-	/// <see cref="GraphicsRegistry.ContextFactory"/> (e.g. Skia's GL/software contexts, which are host-specific).
-	/// </summary>
-	IGraphicsContext? TryCreateContext(GraphicsContextKind kind, INativeWindow window) => null;
 }
 
 /// <summary>

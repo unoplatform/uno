@@ -51,6 +51,9 @@ namespace SkiaSharpExample
 			// selection lives here, not in the host.
 			if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is "neutral" or "1" or "true" or "swapchain")
 			{
+				// The WebGPU context/window factory (GPU-API half) is registered independently of the render
+				// backend, so it could also feed a user's own WebGPU renderer.
+				global::Uno.UI.Composition.WebGpu.WebGpuContextFactory.Register();
 				var providers = new System.Collections.Generic.List<global::Uno.UI.Composition.Drawing.IGraphicsProvider>
 				{
 					new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider(),

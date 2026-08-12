@@ -46,12 +46,29 @@ public static class GraphicsRegistry
 {
 	private static readonly object _gate = new();
 	private static IReadOnlyList<IGraphicsProvider> _backends = Array.Empty<IGraphicsProvider>();
+	private static readonly Dictionary<GraphicsContextKind, Func<INativeWindow, IGraphicsContext?>> _contextFactories = new();
 
 	/// <summary>
 	/// The concrete context factory (set once by the Uno graphics layer). Core stays free of GPU-API libraries;
 	/// this single seam reaches the graphics layer that concretely creates each known context kind.
 	/// </summary>
 	public static GraphicsContextFactory? ContextFactory { get; set; }
+
+	/// <summary>
+	/// Registers a stand-alone factory that builds the on-window context (surface + device) for a context
+	/// <paramref name="kind"/> from the neutral <see cref="INativeWindow"/>. This is the "GPU-API" half — separate
+	/// from any render backend — so WebGPU context/window creation can be referenced on its own and consumed by
+	/// <em>any</em> registered <see cref="IGraphicsProvider"/> (Uno's WebGPU renderer, or a user's own). Takes
+	/// precedence over <see cref="ContextFactory"/> for that kind.
+	/// </summary>
+	public static void RegisterContextFactory(GraphicsContextKind kind, Func<INativeWindow, IGraphicsContext?> factory)
+	{
+		ArgumentNullException.ThrowIfNull(factory);
+		lock (_gate)
+		{
+			_contextFactories[kind] = factory;
+		}
+	}
 
 	/// <summary>
 	/// Registers the app's backend preference, most-preferred first. Uniform across every platform (there is
@@ -111,12 +128,18 @@ public static class GraphicsRegistry
 
 			foreach (var kind in kinds)
 			{
+				Func<INativeWindow, IGraphicsContext?>? kindFactory;
+				lock (_gate)
+				{
+					_contextFactories.TryGetValue(kind, out kindFactory);
+				}
+
 				IGraphicsContext? context = null;
 				try
 				{
-					// Prefer a backend that builds its own surface from the neutral window (no host→backend coupling);
-					// otherwise ask the host's context factory (Skia's host-specific GL/software contexts).
-					context = backend.TryCreateContext(kind, window)
+					// Prefer a stand-alone context factory registered for this kind (e.g. the WebGPU context/window
+					// factory, independent of any renderer); otherwise the host's factory (Skia's GL/software contexts).
+					context = kindFactory?.Invoke(window)
 						?? (factory is null ? null : factory(kind, window, backend.Requirements));
 				}
 				catch (Exception e)

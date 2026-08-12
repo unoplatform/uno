@@ -12,6 +12,8 @@ internal static class Program
 		// SkiaSharp-free composition root: managed drawing engines (fonts/geometry/image decode) + the WebGPU GPU
 		// backend. No Skia backend is registered or referenced.
 		ManagedBackend.Register();
+		// The WebGPU context/window factory (GPU-API half) is registered independently of the render backend.
+		global::Uno.UI.Composition.WebGpu.WebGpuContextFactory.Register();
 		GraphicsRegistry.Register(new IGraphicsProvider[]
 		{
 			new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider(),

@@ -3983,17 +3983,24 @@ public sealed class WebGpuGraphicsProvider : IGraphicsProvider
 		var device = ((IWebGpuDeviceContext)context).Device;
 		return new(new WebGpuDrawingFactory(device, DrawingFactory.Current), new WebGpuRenderer(device));
 	}
+}
 
-	// Build the on-window WebGPU swapchain context from the neutral window's tagged native handles, so the host
-	// contributes only an INativeWindow and never references this backend. The wgpu surface constructor per
-	// windowing system lives in the backend (WebGpuSwapChainContext.Create*Surface).
-	public IGraphicsContext TryCreateContext(GraphicsContextKind kind, INativeWindow window)
+/// <summary>
+/// The WebGPU "GPU-API" half: builds the on-window WebGPU swapchain context (surface + device) from the neutral
+/// <see cref="INativeWindow"/>, independent of any render backend. Register it (<see cref="Register"/>) so a host
+/// only contributes an <see cref="INativeWindow"/> and never references WebGPU; the resulting context exposes the
+/// device via <see cref="IWebGpuDeviceContext"/>, so it can be consumed by Uno's <see cref="WebGpuGraphicsProvider"/>
+/// OR by a user's own <see cref="IGraphicsProvider"/> that renders on WebGPU — using this factory does not force
+/// Uno's WebGPU renderer.
+/// </summary>
+public static class WebGpuContextFactory
+{
+	/// <summary>Registers this factory as the WebGPU context/window creator in the neutral pipeline.</summary>
+	public static void Register() => GraphicsRegistry.RegisterContextFactory(GraphicsContextKind.WebGpu, Create);
+
+	/// <summary>Builds a WebGPU on-window swapchain context from the neutral window's tagged native handles.</summary>
+	public static IGraphicsContext Create(INativeWindow window)
 	{
-		if (kind != GraphicsContextKind.WebGpu)
-		{
-			return null;
-		}
-
 		Func<IntPtr, IntPtr> createSurface = window.Kind switch
 		{
 			NativeWindowKind.X11 => inst => WebGpuSwapChainContext.CreateXlibSurface(inst, window.Display, (ulong)window.Handle),
