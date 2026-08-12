@@ -37,6 +37,12 @@ partial class AnimatedVisualPlayer
 			m_toProgress = toProgress;
 			m_looped = looped;
 
+			// Save the play duration as time.
+			// If toProgress is less than fromProgress the animation will wrap around,
+			// so the time is calculated as fromProgress..end + start..toProgress.
+			var durationAsProgress = fromProgress > toProgress ? ((1 - fromProgress) + toProgress) : (toProgress - fromProgress);
+			// NOTE: this relies on the Duration() being set on the owner.
+			m_playDuration = TimeSpan.FromTicks((long)(owner.Duration.Ticks * durationAsProgress));
 		}
 
 		public float FromProgress()
@@ -53,15 +59,18 @@ partial class AnimatedVisualPlayer
 			MUX_ASSERT(m_controller is null);
 			var owner = m_owner!;
 
-			// Save the play duration as time.
-			// If toProgress is less than fromProgress the animation will wrap around,
-			// so the time is calculated as fromProgress..end + start..toProgress.
-			var durationAsProgress = m_fromProgress > m_toProgress ? ((1 - m_fromProgress) + m_toProgress) : (m_toProgress - m_fromProgress);
-			// NOTE: this relies on the Duration() being set on the owner.
-			var playDuration = TimeSpan.FromTicks((long)(owner.Duration.Ticks * durationAsProgress));
+			// TODO Uno: WinUI computes m_playDuration once in the AnimationPlay ctor (cpp:22-27), relying on
+			// Duration() already being set. Uno's animated-visual sources load asynchronously, so a PlayAsync()
+			// issued before the source resolves carries a zero duration and would self-complete through the
+			// <20ms fast path below. Recompute only in that case; every path WinUI exercises is unchanged.
+			if (m_playDuration == TimeSpan.Zero)
+			{
+				var durationAsProgress = m_fromProgress > m_toProgress ? ((1 - m_fromProgress) + m_toProgress) : (m_toProgress - m_fromProgress);
+				m_playDuration = TimeSpan.FromTicks((long)(owner.Duration.Ticks * durationAsProgress));
+			}
 
 			// If the duration is really short (< 20ms) don't bother trying to animate.
-			if (playDuration < TimeSpan.FromMilliseconds(20))
+			if (m_playDuration < TimeSpan.FromMilliseconds(20))
 			{
 				// Nothing to play. Jump to the from position.
 				// This will have the side effect of completing this play immediately.
@@ -74,7 +83,7 @@ partial class AnimatedVisualPlayer
 				// Create an animation to drive the Progress property.
 				var compositor = owner.m_progressPropertySet.Compositor;
 				var animation = compositor.CreateScalarKeyFrameAnimation();
-				animation.Duration = playDuration;
+				animation.Duration = m_playDuration;
 				var linearEasing = compositor.CreateLinearEasingFunction();
 
 				// Play from fromProgress.

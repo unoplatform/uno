@@ -76,12 +76,12 @@ public partial class AnimationController : CompositionObject
 	/// <summary>
 	/// Gets the minimum playback rate supported by the controller.
 	/// </summary>
-	public static float MinPlaybackRate => float.MinValue;
+	public static float MinPlaybackRate => -16f;
 
 	/// <summary>
 	/// Gets the maximum playback rate supported by the controller.
 	/// </summary>
-	public static float MaxPlaybackRate => float.MaxValue;
+	public static float MaxPlaybackRate => 16f;
 
 	public float PlaybackRate
 	{
