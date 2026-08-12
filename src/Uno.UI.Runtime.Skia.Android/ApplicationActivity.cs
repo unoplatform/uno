@@ -13,7 +13,6 @@ using Android.Widget;
 using AndroidX.Activity;
 using AndroidX.Core.Graphics;
 using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI;
@@ -311,28 +310,9 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			if (FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid)
-			{
-				if (!PackageManager?.HasSystemFeature(PackageManager.FeatureVulkanHardwareLevel) ?? true)
-				{
-					typeof(ApplicationActivity).Log().Warn($"Device does not support Vulkan. Falling back to OpenGL ES.");
-				}
-				else
-				{
-					try
-					{
-						return new UnoSKVulkanView(this);
-					}
-					catch (Exception ex)
-					{
-						if (typeof(ApplicationActivity).Log().IsEnabled(LogLevel.Warning))
-						{
-							typeof(ApplicationActivity).Log().Warn($"Vulkan rendering not available: {ex.Message}. Falling back to OpenGL ES.");
-						}
-					}
-				}
-			}
-
+			// Skia GPU rendering uses OpenGL ES (neutral IGLRenderTarget); the modern GPU path is WebGPU (above).
+			// The Vulkan-on-Skia view was removed — it was host-owned SKSurface; GLES covers Skia GPU rendering
+			// and keeps the host free of any Skia type.
 			return new UnoSKCanvasView(this);
 		}
 

@@ -11,7 +11,6 @@ using Android.Views.InputMethods;
 using AndroidX.Core.View;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Composition.WebGpu;
