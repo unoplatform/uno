@@ -3,21 +3,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class MicaBackdrop : global::Microsoft.UI.Xaml.Media.SystemBackdrop
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty KindProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Kind), typeof(global::Microsoft.UI.Composition.SystemBackdrops.MicaKind),
 			typeof(global::Microsoft.UI.Xaml.Media.MicaBackdrop),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Composition.SystemBackdrops.MicaKind)));
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Composition.SystemBackdrops.MicaKind Kind
 		{
 			get

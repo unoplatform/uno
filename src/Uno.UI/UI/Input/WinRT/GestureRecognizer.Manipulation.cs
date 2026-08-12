@@ -99,7 +99,7 @@ namespace Windows.UI.Input
 			public bool IsScaleEnabled => _isScaleEnabled;
 			public bool IsDraggingEnabled => _isDraggingEnable;
 
-			internal static void AddPointer(GestureRecognizer recognizer, PointerPoint pointer)
+			internal static void AddPointer(GestureRecognizer recognizer, global::Microsoft.UI.Input.PointerPoint pointer)
 			{
 				var current = recognizer._manipulation;
 				if (current != null)
@@ -127,7 +127,7 @@ namespace Windows.UI.Input
 				}
 			}
 
-			private Manipulation(GestureRecognizer recognizer, PointerPoint pointer1)
+			private Manipulation(GestureRecognizer recognizer, global::Microsoft.UI.Input.PointerPoint pointer1)
 			{
 				_recognizer = recognizer;
 				_deviceType = (PointerDeviceType)pointer1.PointerDevice.PointerDeviceType;
@@ -193,7 +193,7 @@ namespace Windows.UI.Input
 					&& _deviceType == (PointerDeviceType)pointer.Type
 					&& _origins.ContainsPointer(pointer.Id);
 
-			private bool TryAdd(PointerPoint point)
+			private bool TryAdd(global::Microsoft.UI.Input.PointerPoint point)
 			{
 				if (point.Pointer == _origins.Pointer1.Pointer)
 				{
@@ -228,7 +228,7 @@ namespace Windows.UI.Input
 				return true;
 			}
 
-			public void Update(IList<PointerPoint> updated)
+			public void Update(IList<global::Microsoft.UI.Input.PointerPoint> updated)
 			{
 				if (_status >= ManipulationStatus.Inertia)
 				{
@@ -251,7 +251,7 @@ namespace Windows.UI.Input
 				}
 			}
 
-			public void Remove(PointerPoint removed)
+			public void Remove(global::Microsoft.UI.Input.PointerPoint removed)
 			{
 				if (_status >= ManipulationStatus.Inertia)
 				{
@@ -728,11 +728,11 @@ namespace Windows.UI.Input
 			}
 
 			#region Patch pointer events
-			private void PatchSuspiciousRemovedPointer(ref PointerPoint removed)
+			private void PatchSuspiciousRemovedPointer(ref global::Microsoft.UI.Input.PointerPoint removed)
 			{
 				if (OperatingSystem.IsAndroid() && _recognizer.PatchCases.HasFlag(Uno.UI.Input.GestureRecognizerSuspiciousCases.AndroidMotionUpAtInvalidLocation))
 				{
-					PointerPoint previous;
+					global::Microsoft.UI.Input.PointerPoint previous;
 					if (_currents.Pointer1.Pointer == removed.Pointer)
 					{
 						previous = _currents.Pointer1;
@@ -924,11 +924,11 @@ namespace Windows.UI.Input
 			);
 
 			// WARNING: This struct is ** MUTABLE **
-			private struct Points(PointerPoint pointer1)
+			private struct Points(global::Microsoft.UI.Input.PointerPoint pointer1)
 			{
-				public PointerPoint Pointer1 = pointer1;
+				public global::Microsoft.UI.Input.PointerPoint Pointer1 = pointer1;
 
-				public PointerPoint? Pointer2 = default;
+				public global::Microsoft.UI.Input.PointerPoint? Pointer2 = default;
 
 				public PointsState State { get; private set; } = new(
 					pointer1.Timestamp,
@@ -947,14 +947,14 @@ namespace Windows.UI.Input
 					=> Pointer1.PointerId == pointerId
 					|| (Pointer2 is not null && Pointer2.PointerId == pointerId);
 
-				public void SetPointer2(PointerPoint point)
+				public void SetPointer2(global::Microsoft.UI.Input.PointerPoint point)
 				{
 					Pointer2 = point;
 					Identifiers = [Pointer1.Pointer, Pointer2.Pointer];
 					State = ComputeState(point.Timestamp);
 				}
 
-				public bool TryUpdate(PointerPoint point)
+				public bool TryUpdate(global::Microsoft.UI.Input.PointerPoint point)
 				{
 					if (_stateHistory.IsDefault)
 					{
@@ -1013,7 +1013,7 @@ namespace Windows.UI.Input
 					}
 				}
 
-				public static implicit operator Points(PointerPoint pointer1)
+				public static implicit operator Points(global::Microsoft.UI.Input.PointerPoint pointer1)
 					=> new(pointer1);
 			}
 		}

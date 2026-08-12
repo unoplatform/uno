@@ -6,7 +6,12 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 
+
 namespace Windows.UI.Input.Preview.Injection;
+
+using PointerPoint = global::Microsoft.UI.Input.PointerPoint;
+using PointerPointProperties = global::Microsoft.UI.Input.PointerPointProperties;
+using PointerUpdateKind = global::Microsoft.UI.Input.PointerUpdateKind;
 
 public partial class InjectedInputMouseInfo
 {
@@ -105,7 +110,7 @@ public partial class InjectedInputMouseInfo
 		var point = new PointerPoint(
 			state.FrameId + TimeOffsetInMilliseconds,
 			timestampInMicroseconds,
-			PointerDevice.For(PointerDeviceType.Mouse),
+			PointerDevice.For(global::Windows.Devices.Input.PointerDeviceType.Mouse),
 			uint.MaxValue - 42, // Try to avoid conflict with the real mouse pointer
 			position,
 			position,

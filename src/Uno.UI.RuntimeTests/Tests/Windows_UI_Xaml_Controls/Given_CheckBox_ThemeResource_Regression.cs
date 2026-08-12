@@ -114,8 +114,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		// kahua-private#482: a control's PointerOver background applied through a VisualState.Setter whose value is a
-		// {ThemeResource} (the shape used by Kahua's flat icon buttons / DataGrid date cells) must resolve against the
+		// A control's PointerOver background applied through a VisualState.Setter whose value is a
+		// {ThemeResource} (e.g. a flat icon button / grid date cell) must resolve against the
 		// owner's inherited theme, not the application theme. Here the button lives in a Light-pinned Frame under a
 		// Dark application; the override resolves Blue in Light and Red in Default(Dark). Re-materialising the page
 		// through Frame navigation and re-entering PointerOver must keep the Light (Blue) value.
@@ -131,7 +131,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Application.Current.Resources.MergedDictionaries.Add(overrides);
 			try
 			{
-				// The Light pin lives on the Frame, mirroring Kahua's ThemeAssist RequestedTheme=Light on the root Frame.
+				// The Light pin lives on the Frame, mirroring a ThemeAssist-style RequestedTheme=Light on the root Frame.
 				var frame = new Frame { RequestedTheme = ElementTheme.Light };
 				await UITestHelper.Load(frame);
 
@@ -209,6 +209,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 
 				Application.Current.Resources.MergedDictionaries.Remove(overrides);
+			}
+		}
+
+		// A stock CheckBox drives its checked fill through a storyboard keyframe
+		// {ThemeResource CheckBoxCheckBackgroundFillChecked}. When that key is overridden at APPLICATION level
+		// via a StaticResource alias to a flat palette brush in a SIBLING app dictionary (see
+		// CheckBoxAppOverride{Palette,ThemeResources}), the keyframe must resolve the override on the theme leaf
+		// that MATCHES the application theme (app theme + content both Light). #23416 dropped the top-level
+		// re-pin, so the keyframe kept its parse-time pin to the stock control dictionary and reverted to the
+		// stock brush — the checked box rendered blank until a pointer-over repainted it. Assert the applied
+		// NormalRectangle.Fill DP (the reliable signal — the box centre shows the white check glyph either way).
+		// OverrideAccentBrush = #FF0062A9. (The non-matching leaf — Light-under-Dark — was never affected.)
+		[TestMethod]
+		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+		public async Task When_App_Override_Checked_Resolves_On_Matching_App_Theme_Leaf()
+		{
+			// SampleFont is aliased by the overrides dictionary (ContentControlThemeFontFamily); merge it plus the
+			// palette + overrides as app-level siblings (palette first so the StaticResource aliases resolve).
+			var stubs = new ResourceDictionary
+			{
+				["SampleFont"] = new Microsoft.UI.Xaml.Media.FontFamily("Segoe UI"),
+			};
+			var palette = new CheckBoxAppOverridePalette();
+			var overrides = new CheckBoxAppOverrideThemeResources();
+			Application.Current.Resources.MergedDictionaries.Add(stubs);
+			Application.Current.Resources.MergedDictionaries.Add(palette);
+			Application.Current.Resources.MergedDictionaries.Add(overrides);
+			try
+			{
+				using var _ = ThemeHelper.UseApplicationLightTheme();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var lightRoot = new Border { RequestedTheme = ElementTheme.Light };
+				var checkBox = new CheckBox { IsChecked = true, MinWidth = 0 };
+				lightRoot.Child = checkBox;
+				await UITestHelper.Load(lightRoot);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var box = checkBox.FindVisualChildByName("NormalRectangle") as Microsoft.UI.Xaml.Shapes.Shape;
+				Assert.IsNotNull(box, "NormalRectangle template part not found.");
+
+				var fill = box.Fill as Microsoft.UI.Xaml.Media.SolidColorBrush;
+				Assert.IsNotNull(fill, "Checked CheckBox NormalRectangle.Fill is not a SolidColorBrush (rendered blank — app-level keyframe override lost).");
+				var expected = Windows.UI.Color.FromArgb(0xFF, 0x00, 0x62, 0xA9);
+				Assert.AreEqual(expected, fill.Color,
+					$"Checked CheckBox fill should be the app-level override #FF0062A9 but was #{fill.Color.A:X2}{fill.Color.R:X2}{fill.Color.G:X2}{fill.Color.B:X2}.");
+			}
+			finally
+			{
+				Application.Current.Resources.MergedDictionaries.Remove(overrides);
+				Application.Current.Resources.MergedDictionaries.Remove(palette);
+				Application.Current.Resources.MergedDictionaries.Remove(stubs);
 			}
 		}
 

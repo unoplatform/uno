@@ -209,7 +209,7 @@ public partial class ComboBox : Selector
 		IsDropDownOpen = false;
 	}
 
-	protected virtual void OnIsDropDownOpenChanged(bool oldIsDropDownOpen, bool newIsDropDownOpen)
+	private protected virtual void OnIsDropDownOpenChanged(bool oldIsDropDownOpen, bool newIsDropDownOpen)
 	{
 		OnIsDropDownOpenChangedPartial(oldIsDropDownOpen, newIsDropDownOpen);
 		OnIsDropDownOpenChangedPartialNative(oldIsDropDownOpen, newIsDropDownOpen);

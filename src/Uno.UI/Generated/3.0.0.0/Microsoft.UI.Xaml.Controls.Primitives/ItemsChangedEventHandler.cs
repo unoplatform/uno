@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public delegate void ItemsChangedEventHandler(object sender, global::Microsoft.UI.Xaml.Controls.Primitives.ItemsChangedEventArgs e);
 #endif
 }

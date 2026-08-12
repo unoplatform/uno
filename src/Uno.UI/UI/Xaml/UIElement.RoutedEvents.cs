@@ -20,10 +20,6 @@ using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml
 {
 	/*
@@ -150,7 +146,7 @@ namespace Microsoft.UI.Xaml
 		/* ** */
 		internal /* ** */  static RoutedEvent DropCompletedEvent { get; } = new RoutedEvent(RoutedEventFlag.DropCompleted);
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
 		public static RoutedEvent PreviewKeyDownEvent { get; } = new RoutedEvent(RoutedEventFlag.PreviewKeyDown);
 
 		public static RoutedEvent PreviewKeyUpEvent { get; } = new RoutedEvent(RoutedEventFlag.PreviewKeyUp);
@@ -398,7 +394,7 @@ namespace Microsoft.UI.Xaml
 			remove => RemoveHandler(DropCompletedEvent, value);
 		}
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
 		public event KeyEventHandler PreviewKeyDown
 		{
 			add => AddHandler(PreviewKeyDownEvent, value, false);
@@ -605,9 +601,7 @@ namespace Microsoft.UI.Xaml
 #endif
 			global::System.Diagnostics.Debug.Assert(routedEvent.Flag is not RoutedEventFlag.None, $"Flag not defined for routed event {routedEvent.Name}.");
 
-#if !__WASM__
 			global::System.Diagnostics.Debug.Assert(!routedEvent.IsTunnelingEvent, $"Tunneling event {routedEvent.Name} should be raised through {nameof(RaiseTunnelingEvent)}");
-#endif
 
 			// TODO: This is just temporary workaround before proper
 			// keyboard event infrastructure is implemented everywhere
@@ -680,12 +674,6 @@ namespace Microsoft.UI.Xaml
 				// Sometimes, a PopupPanel will be a parent of an element's template (e.g. ComboBox)
 				// and the parent will not be PopupRoot. In that case, we shouldn't propagate to the element
 				parent = this.GetParent() as UIElement;
-
-#if __APPLE_UIKIT__ || __ANDROID__
-				// This is for safety (legacy support) and should be removed.
-				// A common issue is the managed parent being cleared before unload event raised.
-				parent ??= this.FindFirstParent<UIElement>();
-#endif
 			}
 			else
 			{
@@ -748,7 +736,7 @@ namespace Microsoft.UI.Xaml
 			if (args is KeyRoutedEventArgs keyArgs)
 			{
 				if (routedEvent == KeyDownEvent
-#if __WASM__ || __SKIA__
+#if __SKIA__
 					|| routedEvent == PreviewKeyDownEvent
 #endif
 					)
@@ -756,7 +744,7 @@ namespace Microsoft.UI.Xaml
 					KeyboardStateTracker.OnKeyDown(keyArgs.OriginalKey);
 				}
 				else if (routedEvent == KeyUpEvent
-#if __WASM__ || __SKIA__
+#if __SKIA__
 					|| routedEvent == PreviewKeyUpEvent
 #endif
 					)

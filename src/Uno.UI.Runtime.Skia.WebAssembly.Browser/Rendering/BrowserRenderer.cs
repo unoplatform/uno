@@ -56,6 +56,8 @@ internal partial class BrowserRenderer
 		{
 			throw new InvalidOperationException("Unable to create renderer");
 		}
+
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = _renderer is SoftwareBrowserRenderer;
 	}
 
 	private async Task InitWebGpuAsync()

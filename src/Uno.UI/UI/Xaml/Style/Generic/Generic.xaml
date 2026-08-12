@@ -6281,7 +6281,10 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="MediaPlayerElement">
-					<Grid x:Name="LayoutRoot">
+					<!-- LayoutRoot paints the (black) background so letterbox bars stay black now that
+					     MediaPlayerPresenter derives from FrameworkElement (which does not paint Background)
+					     instead of Border. -->
+					<Grid x:Name="LayoutRoot" Background="{TemplateBinding Background}">
 						<Border Background="Transparent" />
 						<Image x:Name="PosterImage"
 							   Visibility="Collapsed"

@@ -21,6 +21,6 @@
 	<Import Project="wgpu-native.targets" />
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
 	</ItemGroup>
 </Project>

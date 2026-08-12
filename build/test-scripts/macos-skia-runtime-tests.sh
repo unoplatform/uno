@@ -35,7 +35,7 @@ export DOTNET_CreateDumpDiagnostics=1
 export DOTNET_CreateDumpLogToFile="$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/createdump-macos.log"
 export DOTNET_EnableCrashReport=1
 
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE
+dotnet SamplesApp.dll --runtime-tests=$TEST_RESULTS_FILE
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool

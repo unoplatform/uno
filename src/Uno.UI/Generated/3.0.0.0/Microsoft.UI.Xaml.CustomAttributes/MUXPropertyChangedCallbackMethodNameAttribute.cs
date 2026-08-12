@@ -4,20 +4,20 @@
 namespace Microsoft.UI.Xaml.CustomAttributes
 {
 	[global::System.AttributeUsageAttribute(global::System.AttributeTargets.Delegate | global::System.AttributeTargets.Interface | global::System.AttributeTargets.Property | global::System.AttributeTargets.Method | global::System.AttributeTargets.Enum | global::System.AttributeTargets.Struct | global::System.AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class MUXPropertyChangedCallbackMethodNameAttribute : global::System.Attribute
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public MUXPropertyChangedCallbackMethodNameAttribute() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.CustomAttributes.MUXPropertyChangedCallbackMethodNameAttribute", "MUXPropertyChangedCallbackMethodNameAttribute()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.CustomAttributes.MUXPropertyChangedCallbackMethodNameAttribute.MUXPropertyChangedCallbackMethodNameAttribute()
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public string value;
 #endif
 	}

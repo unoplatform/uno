@@ -1,10 +1,11 @@
 ﻿using System;
 using Windows.Devices.Input;
+using Microsoft.UI.Input;
+using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
+using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Input;
 using Microsoft.UI.Xaml.Controls;
-using static Windows.UI.Input.PointerUpdateKind;
 using Uno.Foundation.Logging;
 using System.Runtime.InteropServices.JavaScript;
 
@@ -326,8 +327,8 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 			HtmlPointerButtonUpdate.Right => PointerUpdateKind.RightButtonReleased,
 			HtmlPointerButtonUpdate.X1 when props.IsXButton1Pressed => PointerUpdateKind.XButton1Pressed,
 			HtmlPointerButtonUpdate.X1 => PointerUpdateKind.XButton1Released,
-			HtmlPointerButtonUpdate.X2 when props.IsXButton2Pressed => PointerUpdateKind.XButton1Pressed,
-			HtmlPointerButtonUpdate.X2 => PointerUpdateKind.XButton1Released,
+			HtmlPointerButtonUpdate.X2 when props.IsXButton2Pressed => PointerUpdateKind.XButton2Pressed,
+			HtmlPointerButtonUpdate.X2 => PointerUpdateKind.XButton2Released,
 			_ => PointerUpdateKind.Other
 		};
 

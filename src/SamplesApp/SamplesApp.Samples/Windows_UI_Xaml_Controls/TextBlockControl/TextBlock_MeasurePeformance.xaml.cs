@@ -31,10 +31,6 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 
 		private void Bench_TextMeasure_SameText(object sender, object parms)
 		{
-#if __WASM__
-			Uno.UI.FeatureConfiguration.TextBlock.IsMeasureCacheEnabled = measureCacheEnabled.IsChecked.Value;
-#endif
-
 			var sw = Stopwatch.StartNew();
 
 			for (int i = 0; i < 300; i++)

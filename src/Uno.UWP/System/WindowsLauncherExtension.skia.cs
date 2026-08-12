@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Win32;
 using Windows.System;
 using Uno.Extensions.System;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.Extensions.System
 {
@@ -30,7 +31,23 @@ namespace Uno.UI.Runtime.Skia.Extensions.System
 				StartInfo = processStartInfo
 			};
 
-			return Task.FromResult(process.Start());
+			try
+			{
+				return Task.FromResult(process.Start());
+			}
+			catch (Exception ex)
+			{
+				// WinUI hands the URI to the shell and reports success even when nothing can open it -
+				// measured on WinAppSDK 1.7 for ms-resource, ms-appx and unregistered schemes alike.
+				// ShellExecute surfaces that failure synchronously here, so report the result WinUI
+				// reports rather than letting it escape into HyperlinkButton.OnClick, which is async void.
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning($"Could not launch URI '{uri}' - {ex.Message}");
+				}
+
+				return Task.FromResult(true);
+			}
 		}
 
 		public Task<LaunchQuerySupportStatus> QueryUriSupportAsync(Uri uri, LaunchQuerySupportType launchQuerySupportType)
