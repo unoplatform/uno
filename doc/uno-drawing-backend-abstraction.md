@@ -50,7 +50,8 @@ implementation classes and are never exposed on an interface.
 
 ### `IDrawingBackend` — the resource factory
 Manufactures the stateful handles that cross the boundary; also owns image decode/upload and offscreen
-rendering. Current surface:
+rendering. Geometry stays here (not a separate seam) because the renderer must understand the geometry type it
+draws — a custom path implementor is a custom `IDrawingFactory`. Current surface:
 
 ```csharp
 IPathBuilder CreatePathBuilder();
@@ -295,10 +296,10 @@ With it selected, the entire font path — resolution, metrics, coverage, shapin
 Skia-free (only the final geometry rasterization is the drawing backend's job). Validated: `Given_TextBlock`
 103/103 on the default Skia resolver *and* with the managed resolver (DejaVu resolved via managed lookup on Linux).
 
-**The resolver is pluggable by interface, not a managed-specific flag.** `DrawingBackendOptions.FontManager` is
-an `IFontManager?` — `null` means the backend's default (Skia for `SkiaDrawingBackend`), and a host assigns any
-implementation to override (`ManagedFontManager`, or a platform-specific one). This matters because
-`ManagedFontManager` — which discovers fonts by **enumerating filesystem font directories** — is the right
+**The resolver is pluggable by interface, not a managed-specific flag.** `FontProvider.Current` is an
+`IFontProvider` — an app assigns any implementation (`ManagedFontProvider`, or a platform-specific one), and a
+backend's `Register()` fills in its own default (Skia's resolver) only if the app registered nothing. This matters
+because `ManagedFontProvider` — which discovers fonts by **enumerating filesystem font directories** — is the right
 resolver only where that model holds:
 
 | Target | Filesystem fonts? | Managed resolver | What to use |
@@ -310,11 +311,14 @@ resolver only where that model holds:
 
 So on iOS and WASM the *managed filesystem* resolver can't see fonts; those platforms keep the default Skia
 resolver (SkiaSharp routes to CoreText on iOS and to bundled fonts on WASM) until a platform-native
-`IFontManager` (CoreText via `CTFontManager`; a bundled/browser resolver for WASM) is written and plugged in —
-exactly what the pluggable seam is for. **Backend selection moved off environment variables:**
-`DrawingBackendOptions` (`FontManager` + `UseManagedGeometry`/`UseManagedImageDecoder`), set by the host at
-init, replaces the former `UNO_MANAGED_*` toggles (the SamplesApp host bridges those env vars to the options as
-a dev/test affordance).
+`IFontProvider` (CoreText via `CTFontManager`; a bundled/browser resolver for WASM) is written and plugged in —
+exactly what the pluggable seam is for. **Backend selection moved off environment variables to registration:**
+`ImageDecoder.Current` and `FontProvider.Current` are backend-independent seams that accept **any** implementor;
+geometry lives on the drawing backend (the renderer must understand it), so a managed-geometry path implementor is
+a registered `IDrawingFactory` (`SkiaManagedGeometryDrawingFactory` = managed geometry + Skia pixels). There is no
+`DrawingBackendOptions` and no skia-vs-managed flag. An app registers what it wants before the backend's
+`Register()`, which installs its own defaults only where nothing was registered (the SamplesApp host bridges the
+former `UNO_MANAGED_*` env vars to these registrations as a dev/test affordance).
 
 ---
 

@@ -19,23 +19,12 @@ internal sealed class SkiaDrawingFactory : IDrawingFactory
 	[ModuleInitializer]
 	internal static void Register() => DrawingFactory.RegisterDefault(new SkiaDrawingFactory());
 
-	// Opt-in switch to build geometry through the SkiaSharp-free ManagedGeometry engine instead of SKPath,
-	// selected via DrawingBackendOptions.UseManagedGeometry at init.
-	private static bool _useManagedGeometry => DrawingBackendOptions.UseManagedGeometry;
+	public IPathBuilder CreatePathBuilder() => new SkiaPathBuilder();
 
-	public IPathBuilder CreatePathBuilder() => _useManagedGeometry ? new ManagedPathBuilder() : new SkiaPathBuilder();
-
-	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => _useManagedGeometry ? new ManagedPathBuilder() : new SkiaPathBuilder();
+	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => new SkiaPathBuilder();
 
 	public IGeometry CreateRectangleGeometry(Rect rect)
 	{
-		if (_useManagedGeometry)
-		{
-			var managed = new ManagedPathBuilder();
-			managed.AddRectangle(rect);
-			return managed.Build();
-		}
-
 		var builder = new SKPathBuilder();
 		builder.AddRect(rect.ToSKRect());
 		return new SkiaGeometrySource2D(builder.Detach());

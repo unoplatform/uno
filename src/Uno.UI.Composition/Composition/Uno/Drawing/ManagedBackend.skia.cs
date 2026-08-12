@@ -14,8 +14,13 @@ public static class ManagedBackend
 {
 	public static void Register()
 	{
+		// Force the managed (SkiaSharp-free) drawing backend, overriding any Skia default a module initializer may
+		// have installed when the Skia assembly is present in the closure. Geometry lives on the backend.
 		DrawingFactory.Register(new ManagedDrawingFactory());
-		ImageDecoder.Current = new ManagedImageDecoderBackend();
-		FontProvider.Current = DrawingBackendOptions.FontProvider ?? new ManagedFontProvider();
+
+		// Install the managed content seams as register-if-absent DEFAULTS so an app that registered its own
+		// implementor (any IImageDecoder / IFontProvider) before this call wins.
+		ImageDecoder.RegisterDefault(new ManagedImageDecoderBackend());
+		FontProvider.RegisterDefault(new ManagedFontProvider());
 	}
 }

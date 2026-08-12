@@ -182,9 +182,8 @@ namespace SamplesApp
 			}
 
 			var sw = Stopwatch.StartNew();
-#if WINAPPSDK && DEBUG
-			// this.DebugSettings.EnableFrameRateCounter = true;
-#endif
+			// BENCHMARK: frame-rate counter enabled for perf comparison.
+			this.DebugSettings.EnableFrameRateCounter = true;
 			AssertInitialWindowSize();
 
 
@@ -415,6 +414,23 @@ namespace SamplesApp
 
 			Console.WriteLine($"HandleLaunchArguments: {args}");
 
+			// LOCAL-ONLY (do not commit): dump the WebGPU command stream for a set of real samples so it can be
+			// diffed against the ramez backend. UNO_WEBGPU_SAMPLE_TRACE = a count (first-N samples, sorted by full
+			// name) or a ';'-separated list of sample full names.
+			if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("UNO_WEBGPU_SAMPLE_TRACE")))
+			{
+				RunWebGpuSampleTrace();
+				return;
+			}
+
+			// LOCAL-ONLY (do not commit): navigate to ONE sample and let it render continuously under the profiler
+			// (UNO_WEBGPU_PROFILE=1) for UNO_WEBGPU_HOLD_SECONDS, then exit — proves residency (upload/alloc -> ~0).
+			if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("UNO_WEBGPU_HOLD")))
+			{
+				RunWebGpuHold();
+				return;
+			}
+
 			if (HandleAutoScreenshots(args))
 			{
 				return;
@@ -440,6 +456,73 @@ namespace SamplesApp
 			{
 				vm.SetSelectedSample(CancellationToken.None, "_None", "Playground");
 			}
+		}
+
+		// LOCAL-ONLY (do not commit): navigate to each requested sample, let it render, and print its WebGPU command
+		// stream (via WebGpuTrace.Dump, reflected to avoid a project reference) with a delimiter, then exit. Mirrors
+		// the same harness added to the ramez tree so the two per-sample streams can be diffed line-by-line.
+		private void RunWebGpuHold()
+		{
+#if __SKIA__
+			var full = Environment.GetEnvironmentVariable("UNO_WEBGPU_HOLD") ?? "";
+			var secs = int.TryParse(Environment.GetEnvironmentVariable("UNO_WEBGPU_HOLD_SECONDS"), out var s) ? s : 8;
+			var dispatcher = UnitTestDispatcherCompat.From(MainWindow!);
+			_ = dispatcher.RunIdleAsync(_ => dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () =>
+			{
+				try
+				{
+					if (DebugSettings is { } ds) { ds.EnableFrameRateCounter = false; }
+					var vm = SampleControl.Presentation.SampleChooserViewModel.Instance;
+					var all = (vm.GetAllSamplesNames() ?? "").Split(';', StringSplitOptions.RemoveEmptyEntries);
+					var match = System.Array.Find(all, x => x.Contains(full, StringComparison.OrdinalIgnoreCase)) ?? full;
+					Console.WriteLine($"\n======== WEBGPU HOLD: {match} for {secs}s ========");
+					await vm.SetSelectedSample(CancellationToken.None, match);
+					await Task.Delay(TimeSpan.FromSeconds(secs));   // profiler prints steady-state lines while it renders
+					Console.WriteLine("======== WEBGPU HOLD DONE ========\n");
+				}
+				catch (Exception e) { Console.WriteLine($"hold error: {e}"); }
+				Environment.Exit(0);
+			}));
+#endif
+		}
+
+		private void RunWebGpuSampleTrace()
+		{
+#if __SKIA__
+			var spec = Environment.GetEnvironmentVariable("UNO_WEBGPU_SAMPLE_TRACE") ?? "";
+			var dispatcher = UnitTestDispatcherCompat.From(MainWindow!);
+			_ = dispatcher.RunIdleAsync(_ => dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, async () =>
+			{
+				try
+				{
+					// Keep the diagnostics FPS overlay OUT of the parity capture (it adds ~26 draws/frame now that the
+					// present session renders immediate content — it would inflate the neutral vs ramez draw diff).
+					if (DebugSettings is { } ds) { ds.EnableFrameRateCounter = false; }
+					var vm = SampleControl.Presentation.SampleChooserViewModel.Instance;
+					var all = (vm.GetAllSamplesNames() ?? "").Split(';', StringSplitOptions.RemoveEmptyEntries);
+					System.Array.Sort(all, System.StringComparer.Ordinal);
+					System.Collections.Generic.IEnumerable<string> names;
+					if (int.TryParse(spec, out var n)) { names = all.Length > n ? all[..n] : all; }
+					else { names = spec.Split(';', StringSplitOptions.RemoveEmptyEntries); }
+
+					var traceType = Type.GetType("Uno.UI.Composition.WebGpu.WebGpuTrace, Uno.UI.Composition.WebGpu");
+					var dump = traceType?.GetMethod("Dump");
+
+					Console.WriteLine("\n======== WEBGPU SAMPLE STREAM TRACE (neutral) ========");
+					foreach (var full in names)
+					{
+						try { await vm.SetSelectedSample(CancellationToken.None, full); }
+						catch (Exception e) { Console.WriteLine($"--- SAMPLE {full} --- SKIP ({e.GetType().Name})"); continue; }
+						await Task.Delay(700);   // let the render loop present the settled sample (its last frame is buffered)
+						Console.WriteLine($"--- SAMPLE {full} ---");
+						Console.Write((string?)dump?.Invoke(null, null) ?? "(no trace)\n");
+					}
+					Console.WriteLine("======================================================\n");
+				}
+				catch (Exception e) { Console.WriteLine($"sample-trace error: {e}"); }
+				Environment.Exit(0);
+			}));
+#endif
 		}
 
 		/// <summary>

@@ -50,4 +50,11 @@ public static class ImageDecoder
 		}
 		set => _current = value;
 	}
+
+	/// <summary>
+	/// Registers <paramref name="decoder"/> only if none is registered yet, so a backend's default never clobbers a
+	/// decoder an app registered explicitly (via <see cref="Current"/>) before backend initialization.
+	/// </summary>
+	public static void RegisterDefault(IImageDecoder decoder)
+		=> _current ??= decoder ?? throw new ArgumentNullException(nameof(decoder));
 }

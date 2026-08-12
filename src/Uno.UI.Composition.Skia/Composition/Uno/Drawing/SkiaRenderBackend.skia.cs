@@ -43,8 +43,9 @@ internal sealed class SkiaRenderer : IRenderer, IDisposable
 		_metalContext ??= GRContext.CreateMetal(new GRMtlBackendContext { DeviceHandle = metal.Device, QueueHandle = metal.Queue })
 			?? throw new NotSupportedException("Failed to create a Metal GRContext.");
 
+		var colorType = metal.ColorFormat == GraphicsColorFormat.Bgra8888 ? SKColorType.Bgra8888 : SKColorType.Rgba8888;
 		var target = new GRBackendRenderTarget(metal.Width, metal.Height, new GRMtlTextureInfo(metal.Texture));
-		var surface = SKSurface.Create(_metalContext, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
+		var surface = SKSurface.Create(_metalContext, target, GRSurfaceOrigin.TopLeft, colorType);
 		// The render target descriptor is consumed by SKSurface.Create; the surface is disposed on present.
 		target.Dispose();
 		return SkiaPresentSession.ForGpuTexture(surface, _metalContext);

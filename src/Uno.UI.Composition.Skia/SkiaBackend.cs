@@ -17,19 +17,16 @@ public static class SkiaBackend
 {
 	public static void Register()
 	{
-		// Calling into this assembly triggers its module initializers (they install the libSkiaSharp resolver
-		// and register the backend). Registering again here is idempotent and makes the intent explicit.
-		DrawingFactory.Register(new SkiaDrawingFactory());
+		// Calling into this assembly triggers its module initializers (they install the libSkiaSharp resolver and
+		// register the backend). Install the Skia drawing backend as a register-if-absent DEFAULT (geometry lives on
+		// the backend, so an app that registered its own IDrawingFactory path-implementor before this call wins).
+		DrawingFactory.RegisterDefault(new SkiaDrawingFactory());
 
-		// Image decoding is an independent, render-backend-agnostic seam. When managed decoding is selected, install
-		// the fully-managed backend (byte[]-backed IImage, no Skia object created) so an image-bearing app can run
-		// with no native libSkiaSharp; otherwise the Skia codec (which still tries the managed parse in front).
-		ImageDecoder.Current = DrawingBackendOptions.UseManagedImageDecoder
-			? new ManagedImageDecoderBackend()
-			: new SkiaImageDecoderBackend();
-
-		// Font resolution is likewise render-backend-independent; install the Skia resolver (or a host override).
-		FontProvider.Current = DrawingBackendOptions.FontProvider ?? new SkiaFontProvider();
+		// Image decoding and font resolution ARE backend-independent content seams: each is installed as a
+		// register-if-absent DEFAULT so an app that registered its own implementor (any IImageDecoder / IFontProvider
+		// — e.g. the SkiaSharp-free managed engines) before this call wins. Otherwise the Skia-backed defaults apply.
+		ImageDecoder.RegisterDefault(new SkiaImageDecoderBackend());
+		FontProvider.RegisterDefault(new SkiaFontProvider());
 
 		// The SKCanvasElement (raw-Skia) visual factory lives here because SKCanvasVisual reaches the concrete
 		// SkiaDrawingSession; the public 2dsk package resolves it through the neutral factory abstraction.

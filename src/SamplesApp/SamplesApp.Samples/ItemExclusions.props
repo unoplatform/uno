@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project>
 	<ItemGroup>
+		<Page Remove="$(MSBuildThisFileDirectory)Msal\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Msal\**" />
+
 		<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MapPresenter\**" />
 		<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MapPresenter\**" />
 		<None Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MapPresenter\**"

@@ -17,9 +17,12 @@ namespace Uno.UI.Composition.Drawing;
 /// <see cref="DrawingFactory.Register"/>.
 /// </summary>
 /// <remarks>
-/// This is the resource-factory half of the abstraction: it manufactures the stateful handles
-/// (geometry today; images, typefaces and shaders later) that cross the backend boundary. Transient draw
-/// configuration (paint) is passed inline on the drawing-session verbs instead of being manufactured here.
+/// This is the resource-factory half of the abstraction: it manufactures the stateful handles that cross the
+/// backend boundary — geometry (the renderer must be able to consume the type it produces), plus device-resident
+/// images, shaders and effect filters. Transient draw configuration (paint) is passed inline on the drawing-session
+/// verbs instead of being manufactured here. Content seams that ARE backend-independent — image decoding and font
+/// resolution — live separately (<see cref="ImageDecoder"/>, <see cref="FontProvider"/>); geometry stays here
+/// because the render backend has to understand the geometry it draws.
 /// </remarks>
 public interface IDrawingFactory
 {

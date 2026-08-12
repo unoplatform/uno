@@ -4182,7 +4182,7 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 
 	public IImageTexture CreateImageTexture(IImage image) => new WebGpuImageTexture(_device, image);
 
-	// Geometry is neutral — delegate to the inner factory (managed engine → no Skia; Skia → SKPath).
+	// Geometry is minted by the registered drawing backend — delegate to it (managed engine → no Skia; Skia → SKPath).
 	public IPathBuilder CreatePathBuilder() => _inner.CreatePathBuilder();
 	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => _inner.CreatePrimitiveGeometryBuilder();
 	public IGeometry CreateRectangleGeometry(Windows.Foundation.Rect rect) => _inner.CreateRectangleGeometry(rect);

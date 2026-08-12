@@ -53,6 +53,13 @@ namespace SamplesApp.Droid
 		public Application(IntPtr javaReference, JniHandleOwnership transfer)
 			: base(() => new App(), javaReference, transfer)
 		{
+			// LOCAL-ONLY (do not commit): force the WebGPU render view for the handed-over Android test build
+			// (ApplicationActivity.CreateRenderView opts in on UNO_WEBGPU). Runs before the activity creates its view.
+			if (string.IsNullOrEmpty(global::System.Environment.GetEnvironmentVariable("UNO_WEBGPU")))
+			{
+				global::System.Environment.SetEnvironmentVariable("UNO_WEBGPU", "1");
+			}
+
 			// Copyright 2017 The Chromium Authors. All rights reserved.
 			//
 			// 	Redistribution and use in source and binary forms, with or without
