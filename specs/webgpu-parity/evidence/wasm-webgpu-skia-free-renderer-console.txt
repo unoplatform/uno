@@ -1,0 +1,106 @@
+error: Failed to load resource: the server responded with a status of 404 (File not found)
+warning: MONO_WASM: The version of dotnet.runtime.js e2f47b0110ed922f21a1522da67279133ce28f32 is different from the version of dotnet.js 94ea82652cdd4e0f8046b5bd5becbd11461482ca!
+log: WGPU-DIAG: InitWebGpuAsync start
+log: WGPU-DIAG: window created, calling InitializeAsync
+log: WGPU-DIAG: CreateBrowserContextAsync — creating instance
+log: WGPU-DIAG: instance created, importing JS device
+debug: dbug: Uno.UI.Runtime.Skia.WebAssembly.Browser.WebAssemblyBrowserHost[0]
+      Display Information: ResolutionScale: Scale100Percent, LogicalDpi: 96, RawPixelsPerViewPixel: 1, DiagonalSizeInInches: , ScreenInRawPixels: 1024x768
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewTopPaneBackground
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warning: warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewContentBackground
+warning: warn: Microsoft.UI.Xaml.FrameworkTemplatePool[0]
+      Template pooling is disabled in this build of Uno Platform. See https://github.com/unoplatform/uno/issues/13969
+info: info: SampleControl.Presentation.SampleChooserViewModel[0]
+      Found 1414 sample(s) in 133 categories.
+log: HandleLaunchArguments: 
+log: Automated runtime tests args: 
+log: Automated runtime tests output file:  (UITEST_RUNTIME_TEST_GROUP: , UITEST_RUNTIME_TEST_GROUP_COUNT: , UITEST_RUNTIME_TESTS_FILTER: )
+log: Section changed: SamplesContent (GC Heap: 76.43 MB)
+log: Done loading 00:00:00.3486400
+log: WebGpuInit: imported device ptr=63878920
+log: WGPU-DIAG: CreateImportedDeviceAsync returned devPtr=63878920
+log: [webgpu] TEX #1 CreateColorTarget 1x1 x1
+log: [webgpu] backend init — UNO_WEBGPU_PROFILE=False pipeline=True msaa=4x scale=1 fmtFeatures=False colorFormat=RGBA8Unorm
+log: WGPU-DIAG: FromImported done (device + pipelines built)
+log: [webgpu] UNO-READBACK-ENABLED=1
+log: WGPU-DIAG: InitializeAsync returned
+log: [webgpu] TEX #2 Surface.msaa 1024x768 x4
+log: [webgpu] TEX #3 Surface.depth 1024x768 x4
+log: WebGpuInit.mapReadStats: opaque=786432 lumMin=26 lumMax=250
+log: [webgpu] UNO-READBACK 1024x768 opaquePixels=786432 (of 786432)
+warning: warn: SampleControl.Presentation.SampleChooserViewModel[0]
+      There is no file with name 'SampleChooserFileAddress.Samples.Favorites'.
+warning: warn: SampleControl.Presentation.SampleChooserViewModel[0]
+      There is no file with name 'SampleChooserFileAddress.Samples.LRU'.
+log: [webgpu] TEX #4 Surface.msaa 1000x740 x4
+log: [webgpu] TEX #5 Surface.depth 1000x740 x4
+warning: warn: SampleControl.Presentation.SampleChooserViewModel[0]
+      There is no file with name 'SampleChooserFileAddress.Samples.LRU'.
+log: [webgpu] TEX #6 ImageTexture.upload 64x64 x1
+log: [webgpu] TEX #7 Surface.msaa 1024x768 x4
+log: [webgpu] TEX #8 Surface.depth 1024x768 x4
+log: WebGpuInit.mapReadStats: opaque=786432 lumMin=26 lumMax=253
+log: [webgpu] UNO-READBACK 1024x768 opaquePixels=786432 (of 786432)
+log: WebGpuInit.mapReadStats: opaque=740000 lumMin=26 lumMax=255
+log: [webgpu] UNO-READBACK 1024x768 opaquePixels=740000 (of 786432)
+log: [webgpu] TEX #9 Pool.Rent 512x384 x1
+log: [webgpu] TEX #10 Pool.Rent 512x384 x1
+log: [webgpu] TEX #11 Pool.Rent 512x384 x1
+log: WebGpuInit.mapReadStats: opaque=786432 lumMin=25 lumMax=253
+log: [webgpu] UNO-READBACK 1024x768 opaquePixels=786432 (of 786432)
+log: WebGpuInit.mapReadStats: opaque=786432 lumMin=26 lumMax=253
+log: [webgpu] UNO-READBACK 1024x768 opaquePixels=786432 (of 786432)

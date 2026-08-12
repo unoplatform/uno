@@ -20,6 +20,23 @@ Last updated: 2026-08-12.
 > offscreen render — the pre-merge bar — is intact. NOTE: `WebGpuTrace.Dump()` is only called by the Smoke
 > test, never the head, so "no DRAW/PASS lines in the head console" ≠ "no draws" — use the readback.
 
+> **2026-08-12 (2) — WASM WebGPU is now SKIA-FREE at the renderer + geometry.** Made the implicit Skia
+> fallback **per-seam** (`02ef2e6b2d`): font provider + image decoder fall back to their Skia impls
+> independently; the graphics-backend (drawing-factory + renderer pair) falls back to Skia ONLY if no backend
+> was declared via `GraphicsRegistry.Register`. So a declared WebGPU head never gets an implicit Skia renderer
+> (that was the "Skia paints the first frames" leak). The WASM head now registers its base factory explicitly —
+> `DrawingFactory.Register(new ManagedDrawingFactory())` (Skia-free geometry); WebGPU decorates it (shaders/
+> textures/offscreen are the renderer's; geometry delegates to the base). `CompositionTarget.Render()` skips a
+> frame while no renderer is installed yet (`09a6270f4b`) instead of throwing. Result: renderer=WebGPU only,
+> geometry=managed (no Skia), font+image=Skia via per-seam fallback (managed font is metrics-only). Proven by
+> readback (opaque 786432, lum 26..255, per-frame variation). Evidence:
+> `evidence/wasm-webgpu-skia-free-renderer.md`.
+>
+> **BUILD GOTCHA (kept getting lost): the WASM WebGPU native is gated by `-p:UnoWebGpuWasm=true`.** Without it
+> `wgpu-wasm.targets` (Dawn/emdawnwebgpu) is not imported, `wgpuCreateInstance` throws `DllNotFoundException`,
+> and WebGPU silently never initializes. ALWAYS pass `-p:UnoWebGpuWasm=true` when publishing the WASM head for
+> WebGPU. (`ManagedDrawingFactory` is `public`; `SkiaDrawingFactory` is `internal`.)
+
 ---
 
 ## 0b. FAITHFULNESS GAPS (user tested the reference vs neutral — reference is fast AND correct)
