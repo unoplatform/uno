@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Uno.UI;
 using Uno.UI.Controls;
 using Uno.UI.DataBinding;
@@ -60,7 +61,20 @@ namespace Microsoft.UI.Xaml
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void SetBinding(string dependencyProperty, BindingBase binding) => SetBindingInternal(dependencyProperty, binding);
 
-		internal ManagedWeakReference SelfWeakReference => _selfWeakReference ??= WeakReferencePool.RentSelfWeakReference(this);
+		internal ManagedWeakReference SelfWeakReference
+		{
+			get
+			{
+				if (_selfWeakReference is null)
+				{
+					// Published atomically: consumers compare handle identity, and a losing racer's
+					// handle cannot be pooled back (it is a self reference), so it must not escape.
+					Interlocked.CompareExchange(ref _selfWeakReference, WeakReferencePool.RentSelfWeakReference(this), null);
+				}
+
+				return _selfWeakReference;
+			}
+		}
 
 		ManagedWeakReference IWeakReferenceProvider.WeakReference => SelfWeakReference;
 
