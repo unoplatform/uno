@@ -1,25 +1,21 @@
-using Uno.UI.Composition.Drawing;
 using System;
+using System.Numerics;
+using Windows.Foundation;
 using Windows.Graphics.Display;
-using Windows.Graphics.Interop.Direct2D;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
-using Uno.Foundation.Logging;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Hosting;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
-using Size = Windows.Foundation.Size;
+using Color = Windows.UI.Color;
+using CompositionTarget = Microsoft.UI.Xaml.Media.CompositionTarget;
 
 namespace Uno.UI.Runtime.Skia;
 
 internal abstract class FrameBufferRenderer
 {
 	protected readonly IXamlRootHost _host;
-	private readonly SKPaint _cursorPaint;
 	private readonly float _cursorRadius;
+	private readonly Color _cursorColor;
 	private readonly bool? _cursorVisible;
-	protected SKSurface? _surface;
-	private int _renderCount;
 	private bool _receivedMouseEvent;
 
 	public readonly record struct MouseIndicatorOptions(bool? ShowMouseCursor, float MouseCursorRadius, System.Drawing.Color MouseCursorColor);
@@ -27,8 +23,9 @@ internal abstract class FrameBufferRenderer
 	protected FrameBufferRenderer(IXamlRootHost host, MouseIndicatorOptions mouseIndicatorOptions)
 	{
 		_host = host;
-		_cursorPaint = new SKPaint { Color = mouseIndicatorOptions.MouseCursorColor.ToSKColor() };
 		_cursorRadius = mouseIndicatorOptions.MouseCursorRadius;
+		var c = mouseIndicatorOptions.MouseCursorColor;
+		_cursorColor = Color.FromArgb(c.A, c.R, c.G, c.B);
 		_cursorVisible = mouseIndicatorOptions.ShowMouseCursor;
 		_receivedMouseEvent = FrameBufferPointerInputSource.Instance.ReceivedMouseEvent;
 		FrameBufferPointerInputSource.Instance.MouseEventReceived += OnMouseEventReceived;
@@ -40,13 +37,11 @@ internal abstract class FrameBufferRenderer
 		_receivedMouseEvent = true;
 	}
 
+	/// <summary>The neutral render target the backend last composed into (recreated by <see cref="CreateTarget"/> on resize).</summary>
+	protected abstract IRenderTarget? CurrentTarget { get; }
+
 	protected void Render()
 	{
-		if (this.Log().IsEnabled(LogLevel.Trace))
-		{
-			this.Log().Trace($"Render {_renderCount++}");
-		}
-
 		if (_host.RootElement?.Visual.CompositionTarget is not CompositionTarget ct)
 		{
 			throw new Exception($"CompositionTarget is not set on the {nameof(IXamlRootHost)} at the point of rendering.");
@@ -57,46 +52,57 @@ internal abstract class FrameBufferRenderer
 		var orientation = FrameBufferWindowWrapper.Instance.Orientation;
 		var (degrees, transX, transY) = orientation switch
 		{
-			DisplayOrientations.None => (0, 0, 0),
-			DisplayOrientations.Landscape => (0, 0, 0),
-			DisplayOrientations.Portrait => (90, bounds.Height, 0),
+			DisplayOrientations.None => (0, 0d, 0d),
+			DisplayOrientations.Landscape => (0, 0d, 0d),
+			DisplayOrientations.Portrait => (90, bounds.Height, 0d),
 			DisplayOrientations.LandscapeFlipped => (180, bounds.Width, bounds.Height),
-			DisplayOrientations.PortraitFlipped => (-90, 0, bounds.Width),
+			DisplayOrientations.PortraitFlipped => (-90, 0d, bounds.Width),
 			_ => throw new ArgumentOutOfRangeException()
 		};
-		_surface?.Canvas.Save();
-		_surface?.Canvas.Translate(transX, transY);
-		_surface?.Canvas.RotateDegrees(degrees);
-		_surface?.Canvas.Clear(SKColors.Transparent);
 
-		ct.OnNativePlatformFrameRequested(_surface is null ? null : new SkiaRenderTarget(_surface.Canvas), size =>
-		{
-			_surface?.Dispose();
-			if (orientation is DisplayOrientations.Portrait or DisplayOrientations.PortraitFlipped)
+		var rootTransform = BuildOrientationMatrix(degrees, transX, transY);
+		Action<IDrawingSession>? overlay = (_cursorVisible ?? _receivedMouseEvent) ? DrawCursor : null;
+
+		ct.OnNativePlatformFrameRequested(
+			CurrentTarget,
+			size =>
 			{
-				size = new Size(size.Height, size.Width);
-			}
-			_surface = UpdateSize((int)size.Width, (int)size.Height);
-			_surface.Canvas.Save();
-			_surface.Canvas.Translate((float)transX, (float)transY);
-			_surface.Canvas.RotateDegrees(degrees);
-			_surface.Canvas.Clear(SKColors.Transparent);
-			return new SkiaRenderTarget(_surface.Canvas);
-		});
-		if (_cursorVisible ?? _receivedMouseEvent)
-		{
-			_surface?.Canvas.Scale(FrameBufferWindowWrapper.Instance.RasterizationScale);
-			_surface?.Canvas.DrawCircle(FrameBufferPointerInputSource.Instance.MousePosition.ToSkia(), _cursorRadius, _cursorPaint);
-		}
-		_surface?.Canvas.Restore();
-		_surface?.Flush();
+				if (orientation is DisplayOrientations.Portrait or DisplayOrientations.PortraitFlipped)
+				{
+					size = new Size(size.Height, size.Width);
+				}
+				return CreateTarget((int)size.Width, (int)size.Height);
+			},
+			rootTransform,
+			overlay);
+	}
+
+	private void DrawCursor(IDrawingSession session)
+	{
+		var p = FrameBufferPointerInputSource.Instance.MousePosition;
+		var r = _cursorRadius;
+		var rect = new Rect(p.X - r, p.Y - r, 2 * r, 2 * r);
+		session.DrawRoundedRect(rect, new Vector4(r, r, r, r), _cursorColor, antialias: true);
+	}
+
+	// Equivalent to a Skia canvas Translate(transX, transY) followed by RotateDegrees(degrees), packed into the
+	// 2D-affine slots the neutral session's Concat(Matrix4x4) reads (M11/M12/M21/M22 = rotation, M41/M42 = translation).
+	private static Matrix4x4 BuildOrientationMatrix(int degrees, double transX, double transY)
+	{
+		var m = Matrix3x2.CreateRotation((float)(degrees * Math.PI / 180.0)) * Matrix3x2.CreateTranslation((float)transX, (float)transY);
+		return new Matrix4x4(
+			m.M11, m.M12, 0, 0,
+			m.M21, m.M22, 0, 0,
+			/*  */ 0, /* */ 0, 1, 0,
+			m.M31, m.M32, 0, 1);
 	}
 
 	public abstract void InvalidateRender();
 
 	protected abstract IDisposable MakeCurrent();
 
-	protected abstract SKSurface UpdateSize(int width, int height);
+	/// <summary>Creates the neutral render target the backend composes into for the given (physical) size.</summary>
+	protected abstract IRenderTarget CreateTarget(int width, int height);
 
 	public virtual void Dispose() { }
 }
