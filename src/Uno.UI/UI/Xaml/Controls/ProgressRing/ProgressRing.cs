@@ -251,7 +251,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				_loadedAsset = LoadedAsset.Indeterminate;
-				_player.Source = IndeterminateSource ?? new AnimatedVisuals.ProgressRingIntdeterminate();
+				_player.Source = IndeterminateSource ?? new AnimatedVisuals.ProgressRingIndeterminate();
 			}
 			else
 			{
