@@ -3,7 +3,7 @@
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Composition.WebGpu;
 
 /// <summary>
 /// Browser WebGPU device bring-up done in JavaScript (see ts/Runtime/WebGpuInit.ts). The adapter/device are

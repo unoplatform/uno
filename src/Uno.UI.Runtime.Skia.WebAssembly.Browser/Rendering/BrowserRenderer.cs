@@ -5,9 +5,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
-using Uno.UI.Composition.WebGpu;
 using Uno.UI.Hosting;
-using Uno.WebGpu.Native;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -21,7 +19,7 @@ internal partial class BrowserRenderer
 	// On-canvas WebGPU path (opt-in via UNO_WEBGPU): the device is created asynchronously, so _webgpuContext is
 	// null until ready and frames re-arm meanwhile. Uses its own canvas surface (no Skia SKCanvas / WebGL context).
 	private readonly bool _webgpuRequested;
-	private WebGpuBrowserGraphicsContext? _webgpuContext;
+	private IGraphicsContext? _webgpuContext;
 
 	private int _renderCount;
 	private IRenderTarget? _renderTarget;
@@ -64,29 +62,15 @@ internal partial class BrowserRenderer
 	{
 		try
 		{
-			// Device bring-up is done in JS (navigator.gpu) and the JS GPUDevice is imported into emdawnwebgpu's
-			// handle table — the in-WASM wgpuInstanceProcessEvents pump hangs when driven from a managed call stack
-			// on the browser (see WebGpuInit.ts / WebGpuJsInterop). The canvas prefers rgba8unorm; match it so the
-			// surface, pipelines and canvas agree (no present-time BGRA->RGBA copy, unreliable on SwiftShader).
-			var inst = WebGpuDevice.CreateInstancePtr();
-			var devPtr = await WebGpuJsInterop.CreateImportedDeviceAsync((int)inst);
-			if (devPtr == 0)
-			{
-				throw new InvalidOperationException("WebGPU: JS-side device creation/import failed (see browser console).");
-			}
-			var device = WebGpuDevice.FromImported(WGPUTextureFormat.RGBA8Unorm, inst, (IntPtr)devPtr);
-			// GPU→CPU readback (SnapshotAsync / RenderTargetBitmap) can't block on the browser's JS thread, so route
-			// the buffer map through JS (mapAsync). Off-browser this hook stays null and a blocking poll is used.
-			// JS interop marshals the bytes as base64; decode to byte[] here.
-			WebGpuDevice.BrowserReadbackAsync = async (buf, len) =>
-				Convert.FromBase64String(await WebGpuJsInterop.MapReadBase64Async((int)buf, len));
-			// Pair the WebGPU renderer with the WebGPU drawing factory: images, gradient shaders, color glyphs,
-			// nine-slice, SVG and RenderTargetBitmap all become GPU-resident WebGPU resources instead of Skia
-			// objects the WebGPU recorder can't draw. Geometry/decode still delegate to the previous (Skia) factory.
-			Uno.UI.Composition.Drawing.DrawingFactory.Register(new WebGpuDrawingFactory(device, Uno.UI.Composition.Drawing.DrawingFactory.Current));
-			_webgpuContext = new WebGpuBrowserGraphicsContext(device, WebAssemblyWindowWrapper.Instance.CanvasId);
-			CompositionTarget.Renderer = new WebGpuRenderer(device);
-			this.Log().Info("Neutral graphics pipeline active: WebGpu context via WebGpuRenderer (browser).");
+			// The host references no WebGPU type: it hands the neutral browser window (canvas id) to the pluggable
+			// pipeline and the app-registered WebGPU context factory does the async JS device import + canvas surface
+			// (device bring-up runs in JS — the in-WASM event pump hangs from a managed call stack). InitializeAsync
+			// mints the context + renderer; the render loop drives the neutral IGraphicsContext.
+			var window = new WasmGraphicsNativeWindow(WebAssemblyWindowWrapper.Instance.CanvasId);
+			var init = await GraphicsRegistry.InitializeAsync(window, new[] { GraphicsContextKind.WebGpu });
+			_webgpuContext = init.Context;
+			CompositionTarget.Renderer = init.Renderer;
+			this.Log().Info("Neutral graphics pipeline active: WebGpu context via the neutral pipeline (browser).");
 			// Force a fresh record+present under the new renderer (the last frame was recorded by SkiaRenderer
 			// before the async switch and is skipped by the present session).
 			(_host.RootElement as Microsoft.UI.Xaml.UIElement)?.InvalidateArrange();
