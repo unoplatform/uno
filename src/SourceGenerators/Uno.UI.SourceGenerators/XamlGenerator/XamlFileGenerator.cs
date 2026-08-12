@@ -3238,7 +3238,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new XamlGenerationException($"The type '{objectDefinition.Type}' could not be found", objectDefinition);
 				}
 
-				using (var writer = CreateApplyBlock(outerwriter, objectDefinition))
+				var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(objectDefinition).isInside;
+#if USE_NEW_TP_CODEGEN
+				// Template members get their templated parent from the materializing template's settings, so the
+				// apply block needs access to it. Computed before the block so it can shape the callback signature.
+				var needsTemplatedParent = isInsideFrameworkTemplate
+					&& IsType(objectDefinitionType, Generation.DependencyObjectSymbol.Value);
+#else
+				var needsTemplatedParent = false;
+#endif
+
+				using (var writer = CreateApplyBlock(outerwriter, objectDefinition, passTemplateSettings: needsTemplatedParent))
 				{
 					XamlMemberDefinition? uidMember = null;
 					XamlMemberDefinition? nameMember = null;
@@ -3260,10 +3270,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendIndented(GenerateRootPhases(objectDefinition, writer.AppliedParameterName) ?? "");
 					}
 
-					var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(objectDefinition).isInside;
 #if USE_NEW_TP_CODEGEN
-					var isDependencyObject = IsType(objectDefinitionType, Generation.DependencyObjectSymbol.Value);
-					if (isInsideFrameworkTemplate && isDependencyObject)
+					if (needsTemplatedParent)
 					{
 						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetTemplatedParent({writer.AppliedParameterName}, __settings?.TemplatedParent);");
 						writer.AppendLineIndented($"__settings?.TemplateMemberCreatedCallback?.Invoke({writer.AppliedParameterName});");
@@ -4071,10 +4079,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			);
 		}
 
-		private XamlLazyApplyBlockIIndentedStringBuilder CreateApplyBlock(IIndentedStringBuilder writer, XamlObjectDefinition appliedObject)
-			=> CreateApplyBlock(writer, appliedObject, FindType(appliedObject.Type));
+		private XamlLazyApplyBlockIIndentedStringBuilder CreateApplyBlock(IIndentedStringBuilder writer, XamlObjectDefinition appliedObject, bool passTemplateSettings = false)
+			=> CreateApplyBlock(writer, appliedObject, FindType(appliedObject.Type), passTemplateSettings);
 
-		private XamlLazyApplyBlockIIndentedStringBuilder CreateApplyBlock(IIndentedStringBuilder writer, XamlObjectDefinition declaringObject, INamedTypeSymbol? appliedType)
+		private XamlLazyApplyBlockIIndentedStringBuilder CreateApplyBlock(IIndentedStringBuilder writer, XamlObjectDefinition declaringObject, INamedTypeSymbol? appliedType, bool passTemplateSettings = false)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 
@@ -4115,7 +4123,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				appliedType,
 				xamlApplyPrefix: appliedType != null && !_isHotReloadEnabled ? _fileUniqueId : null,
 				delegateType,
-				!_isTopLevelDictionary);
+				!_isTopLevelDictionary,
+				passTemplateSettings);
 		}
 
 		private void RegisterPartial(string format, params object[] values)
