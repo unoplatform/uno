@@ -19,8 +19,6 @@ using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Microsoft.UI.Xaml.Media;
-using Uno.UI.Composition.WebGpu;
-using Uno.WebGpu.Native;
 using Window = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
@@ -32,7 +30,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private readonly Window _winUIWindow;
 	private readonly XamlRoot _xamlRoot;
 	private readonly DisplayInformation _displayInformation;
-	private readonly WebGpuSwapChainContext? _webgpuContext; // EXPERIMENTAL: non-null when UNO_WEBGPU owns the Metal layer
+	private readonly Uno.UI.Composition.Drawing.IGraphicsContext? _webgpuContext; // EXPERIMENTAL: non-null when UNO_WEBGPU owns the Metal layer
 	private nint _metalDevice;
 	private nint _metalQueue;
 	// Software framebuffer handed to the backend as a neutral ISoftwareRenderTarget (BGRA); the host owns the buffer.
@@ -66,17 +64,15 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 					var layer = NativeUno.uno_window_get_metal_layer(_nativeWindow.Handle);
 					if (layer != 0)
 					{
-						var scale = _displayInformation.RawPixelsPerViewPixel;
-						WebGpuDevice.RasterizationScale = (float)(scale == 0 ? 1 : scale);
-						_webgpuContext = new WebGpuSwapChainContext(
-							WGPUTextureFormat.BGRA8Unorm,
-							inst => WebGpuSwapChainContext.CreateMetalSurface(inst, layer));
-						// Pair the WebGPU renderer with the WebGPU drawing factory so images, gradient shaders, color
-						// glyphs, nine-slice, SVG and RenderTargetBitmap are GPU-resident WebGPU resources (not Skia
-						// objects the WebGPU recorder drops). Geometry/decode still delegate to the previous factory.
-						Uno.UI.Composition.Drawing.DrawingFactory.Register(
-							new WebGpuDrawingFactory(_webgpuContext.Device, Uno.UI.Composition.Drawing.DrawingFactory.Current));
-						CompositionTarget.Renderer = new WebGpuRenderer(_webgpuContext.Device);
+						// The host references no WebGPU type — it hands the neutral Metal-layer window (+ DPI scale) to the
+						// pluggable pipeline; the app-registered WebGPU provider builds the surface + device and mints the
+						// (factory, renderer) pair. wgpu owns acquire+present.
+						var scale = (float)_displayInformation.RawPixelsPerViewPixel;
+						var webgpuWindow = new MacOSMetalGraphicsNativeWindow(layer, scale == 0 ? 1 : scale);
+						var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize(
+							webgpuWindow, new[] { global::Uno.UI.Composition.Drawing.GraphicsContextKind.WebGpu });
+						_webgpuContext = init.Context;
+						CompositionTarget.Renderer = init.Renderer;
 						NativeUno.uno_window_set_webgpu_mode(_nativeWindow.Handle, true);
 						if (this.Log().IsEnabled(LogLevel.Information))
 						{
