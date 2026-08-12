@@ -7,7 +7,6 @@ using Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using ObjCRuntime;
-using SkiaSharp;
 using UIKit;
 using Uno.Helpers.Theming;
 using Uno.UI.Helpers;
@@ -128,9 +127,9 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	public void SetXamlRoot(XamlRoot xamlRoot) => _xamlRoot = xamlRoot;
 
-	internal void OnRenderFrameRequested(SKCanvas canvas)
+	internal void OnRenderFrameRequested(IRenderTarget target)
 	{
-		var clipGeometry = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(new SkiaRenderTarget(canvas), _ => new SkiaRenderTarget(canvas));
+		var clipGeometry = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(target, _ => target);
 
 		if (clipGeometry is not null)
 		{

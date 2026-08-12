@@ -8,7 +8,6 @@ using Metal;
 using MetalKit;
 using Microsoft.Graphics.Display;
 using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
 using UIKit;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
@@ -18,7 +17,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 {
 	internal sealed partial class UnoSKMetalView : MTKView, IMTKViewDelegate, IAppleUIKitRenderView
 	{
-		private readonly GRContext? _context;
 		private readonly IMTLCommandQueue? _queue;
 
 		private RootViewController? _owner;
@@ -50,12 +48,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				return;
 			}
 
-			_context = GRContext.CreateMetal(new GRMtlBackendContext()
-			{
-				Device = device,
-				Queue = queue
-			});
-
+			// The Skia backend owns the GRContext-Metal (built from this device/queue via the neutral
+			// IMetalRenderTarget seam); the host only presents the drawable. No Skia type lives here.
 			_queue = queue;
 
 			ColorPixelFormat = MTLPixelFormat.BGRA8Unorm;
@@ -155,36 +149,29 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			var width = (int)size.Width;
 			var height = (int)size.Height;
 
-			SKSurface? surface = null;
-			SKCanvas? canvas = null;
+#if __TVOS__ // TODO: tvOS is not supported yet.
+			return;
+#else
 			ICAMetalDrawable? drawable = null;
 			IMTLCommandBuffer? commandBuffer = null;
 
 			try
 			{
-				// Defer the acquisition of the drawable
-#if __TVOS__ // TODO: tvOS is not supported yet.
-				surface = SKSurface.CreateNull(width, height);
-#else
-				surface = SKSurface.Create(_context, this, GRSurfaceOrigin.TopLeft, (int)SampleCount, SKColorType.Bgra8888);
-#endif
-
-				canvas = surface.Canvas;
-
-				_owner?.OnRenderFrameRequested(canvas);
-
-				// Flush
-				_context!.Flush(submit: true);
-
-				// Present
 				drawable = CurrentDrawable;
-
-				if (drawable != null)
+				if (drawable is null)
 				{
-					commandBuffer = _queue!.CommandBuffer()!;
-					commandBuffer.PresentDrawable(drawable);
-					commandBuffer.Commit();
+					return;
 				}
+
+				// Hand the drawable's texture (+ this view's device/queue) to the backend as a neutral
+				// IMetalRenderTarget; the Skia backend renders into it and flushes+submits its GRContext-Metal.
+				_owner?.OnRenderFrameRequested(new AppleMetalRenderTarget(
+					drawable.Texture.Handle, Device!.Handle, _queue!.Handle, width, height));
+
+				// Present the drawable.
+				commandBuffer = _queue!.CommandBuffer()!;
+				commandBuffer.PresentDrawable(drawable);
+				commandBuffer.Commit();
 			}
 			finally
 			{
@@ -192,9 +179,19 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				// See : https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/MTLBestPracticesGuide/Drawables.html
 				((IDisposable?)commandBuffer)?.Dispose();
 				((IDisposable?)drawable)?.Dispose();
-				((IDisposable?)canvas)?.Dispose();
-				((IDisposable?)surface)?.Dispose();
 			}
+#endif
+		}
+
+		private sealed class AppleMetalRenderTarget(nint texture, nint device, nint queue, int width, int height) : Uno.UI.Composition.Drawing.IMetalRenderTarget
+		{
+			public nint Texture => texture;
+			public nint Device => device;
+			public nint Queue => queue;
+			public int Width => width;
+			public int Height => height;
+			public Uno.UI.Composition.Drawing.GraphicsColorFormat ColorFormat => Uno.UI.Composition.Drawing.GraphicsColorFormat.Bgra8888;
+			public void Dispose() { }
 		}
 	}
 }
