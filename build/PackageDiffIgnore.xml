@@ -2669,6 +2669,10 @@
 		  <!-- ColorKeyFrameCollection carried a binary-compat 'new'-shadow block (Size/Count/IsReadOnly/indexer) that its zero-shadow siblings Double/ObjectKeyFrameCollection never had; the get-only base DependencyObjectCollection<T> members show through with identical behavior. Accessor methods are paired in <Methods> below. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.Animation\.ColorKeyFrameCollection(::|\.)(Size|Count|IsReadOnly|Item)\(.*\)" reason="Removed ColorKeyFrameCollection binary-compat shadow members; provided by base DependencyObjectCollection&lt;T&gt; (BC67, breaking changes for 7.0)" isRegex="true" />
 
+		  <!-- DependencyObject as class (BC26): Uno-only members demoted to internal. Recorded explicitly rather than
+		       relying on the declaring-type wildcards above, so the demotion stays documented if those are tightened. -->
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.DependencyObject::IsStoreInitialized()" reason="DependencyObject as class: removed, was a constant with no consumer (BC26, breaking changes for 7.0)" />
+
 		  <!-- DependencyObject as class (BC26): properties of the removed DependencyObjectStore / IDependencyObjectStoreProvider. -->
 		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+$" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
 		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.IDependencyObjectStoreProvider(::|\.).+$" reason="DependencyObject as class: IDependencyObjectStoreProvider removed" isRegex="true" />
@@ -3243,6 +3247,16 @@
 
 		  <!-- No-op AdjustArrange(Size) (always returned its input) declared on the internal IFrameworkElement; publicly surfaced only as this implicit implementation on FrameworkElement. The lone caller in the legacy Layouter path is inlined. -->
 		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.FrameworkElement.AdjustArrange(Windows.Foundation.Size finalSize)" reason="Removed no-op AdjustArrange (BC70, breaking changes for 7.0)" />
+
+		  <!-- DependencyObject as class (BC26): Uno-only members demoted to internal. Recorded explicitly rather than
+		       relying on the declaring-type wildcards above, so the demotion stays documented if those are tightened.
+		       The two SetBinding overloads the XAML generator emits into consuming assemblies stay public. -->
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.DependencyObject.get_IsStoreInitialized()" reason="DependencyObject as class: removed, was a constant with no consumer (BC26, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBinding(System.Object target, System.String dependencyProperty, Microsoft.UI.Xaml.Data.BindingBase binding)" reason="DependencyObject as class: demoted to internal, not emitted by the XAML generator and no consumer (BC26, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBindingValue(System.Object value, System.String propertyName)" reason="DependencyObject as class: demoted to internal, Uno-only binder plumbing (BC26, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Data.BindingExpression Microsoft.UI.Xaml.DependencyObject.GetBindingExpression(Microsoft.UI.Xaml.DependencyProperty dependencyProperty)" reason="DependencyObject as class: demoted to internal, Uno-only and absent from WinUI (BC26, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SuspendBindings()" reason="DependencyObject as class: demoted to internal, Uno-only binder plumbing (BC26, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.ResumeBindings()" reason="DependencyObject as class: demoted to internal, Uno-only binder plumbing (BC26, breaking changes for 7.0)" />
 
 		  <!-- DependencyObject as class (BC26): methods of the removed DependencyObjectStore / IDependencyObjectStoreProvider. -->
 		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+$" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />

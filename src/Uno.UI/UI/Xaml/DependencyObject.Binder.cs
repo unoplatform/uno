@@ -207,7 +207,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Suspends the processing the <see cref="DataContext"/> until <see cref="ResumeBindings"/> is called.
 		/// </summary>
-		public void SuspendBindings()
+		internal void SuspendBindings()
 		{
 			_bindingsSuspended = true;
 			_properties.SuspendBindings();
@@ -216,7 +216,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Restores the processing the <see cref="DataContext"/> after <see cref="SuspendBindings"/> was called.
 		/// </summary>
-		public void ResumeBindings()
+		internal void ResumeBindings()
 		{
 			_bindingsSuspended = false;
 			_properties.ResumeBindings();
@@ -358,7 +358,7 @@ namespace Microsoft.UI.Xaml
 			=> new object?[] { GetHashCode(), _originalObjectType?.ToString() };
 
 
-		internal void SetBindingInternal(object target, string dependencyProperty, BindingBase binding)
+		internal void SetBinding(object target, string dependencyProperty, BindingBase binding)
 		{
 			TryRegisterInheritedProperties(force: true);
 
@@ -499,7 +499,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal void SetBindingValueInternal(object value, string? propertyName)
+		internal void SetBindingValue(object value, [CallerMemberName] string? propertyName = null)
 		{
 			var property = DependencyProperty.GetProperty(_originalObjectType, propertyName);
 
@@ -929,11 +929,11 @@ namespace Microsoft.UI.Xaml
 
 		#endregion
 
-		internal BindingExpression? GetBindingExpressionInternal(DependencyProperty dependencyProperty)
+		internal BindingExpression? GetBindingExpression(DependencyProperty dependencyProperty)
 			=> _properties.GetBindingExpression(dependencyProperty);
 
 		internal Microsoft.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty)
-			=> GetBindingExpressionInternal(dependencyProperty)?.ParentBinding;
+			=> GetBindingExpression(dependencyProperty)?.ParentBinding;
 
 		internal bool IsPropertyTemplateBound(DependencyProperty dependencyProperty)
 			=> _properties.IsPropertyTemplateBound(dependencyProperty);

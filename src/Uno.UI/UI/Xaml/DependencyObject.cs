@@ -29,8 +29,6 @@ namespace Microsoft.UI.Xaml
 
 		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
 
-		public bool IsStoreInitialized => true;
-
 		// Public property-system and binder API. These stay in this nullable-oblivious file so their signatures
 		// match the historical (interface-era) public surface exactly; the implementations live on the
 		// nullable-annotated DependencyObject.*.cs partials.
@@ -48,8 +46,9 @@ namespace Microsoft.UI.Xaml
 
 		public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) => UnregisterPropertyChangedCallbackInternal(dp, token);
 
-		public void SetBinding(object target, string dependencyProperty, BindingBase binding) => SetBindingInternal(target, dependencyProperty, binding);
-
+		// Uno-only, but public because the XAML source generator emits calls to these into the
+		// consuming assembly (XamlFileGenerator emits the DependencyProperty overload for DPs and
+		// the string overload for the x:Bind/POCO path).
 		/// <summary>
 		/// Set a binding using a regular or attached DependencyProperty
 		/// </summary>
@@ -58,10 +57,6 @@ namespace Microsoft.UI.Xaml
 		public void SetBinding(DependencyProperty dependencyProperty, BindingBase binding) => SetBindingInternal(dependencyProperty, binding);
 
 		public void SetBinding(string dependencyProperty, BindingBase binding) => SetBindingInternal(dependencyProperty, binding);
-
-		public void SetBindingValue(object value, [CallerMemberName] string propertyName = null) => SetBindingValueInternal(value, propertyName);
-
-		public BindingExpression GetBindingExpression(DependencyProperty dependencyProperty) => GetBindingExpressionInternal(dependencyProperty);
 
 		internal ManagedWeakReference SelfWeakReference => _selfWeakReference ??= WeakReferencePool.RentSelfWeakReference(this);
 
