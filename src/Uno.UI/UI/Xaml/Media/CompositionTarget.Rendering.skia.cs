@@ -167,7 +167,7 @@ public partial class CompositionTarget
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}
 
-	private IGeometry Draw(IRenderTarget? target, Func<Size, IRenderTarget> resizeFunc)
+	private IGeometry Draw(IRenderTarget? target, Func<Size, IRenderTarget> resizeFunc, Matrix4x4? rootTransform = null, Action<IDrawingSession>? overlay = null)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 
@@ -216,6 +216,12 @@ public partial class CompositionTarget
 			{
 				// Scaling (DPI) is applied through the neutral session so it works for any backend.
 				present.Save();
+				// A host may impose an outermost transform (e.g. framebuffer display orientation) that must wrap
+				// the whole composition, applied before the DPI scale so content and scale rotate together.
+				if (rootTransform is { } rt)
+				{
+					present.Concat(rt);
+				}
 				if (rasterizationScale != 1)
 				{
 					present.Scale(rasterizationScale, rasterizationScale);
@@ -223,6 +229,9 @@ public partial class CompositionTarget
 				present.Clear(global::Windows.UI.Colors.Transparent);
 				present.Replay(lastRenderedFrame.frame);
 				_fpsHelper.DrawFps(present);
+				// A host overlay (e.g. the framebuffer software cursor) draws on top of the frame, under the same
+				// orientation + DPI transform as the content.
+				overlay?.Invoke(present);
 				present.Restore();
 			}
 
