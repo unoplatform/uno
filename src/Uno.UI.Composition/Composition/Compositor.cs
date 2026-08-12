@@ -60,6 +60,14 @@ namespace Microsoft.UI.Composition
 		public ScalarKeyFrameAnimation CreateScalarKeyFrameAnimation()
 			=> new ScalarKeyFrameAnimation(this);
 
+		public ColorKeyFrameAnimation CreateColorKeyFrameAnimation()
+			=> new ColorKeyFrameAnimation(this);
+
+#if __SKIA__
+		public PathKeyFrameAnimation CreatePathKeyFrameAnimation()
+			=> new PathKeyFrameAnimation(this);
+#endif
+
 		public CompositionScopedBatch CreateScopedBatch(CompositionBatchTypes batchType)
 			=> new CompositionScopedBatch(this, batchType);
 
