@@ -17,7 +17,6 @@ using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Uno.UI.Dispatching;
 using System.Threading;
 using Uno.UI.Xaml.Core;
-using Uno.UI.Composition.WebGpu;
 using SkiaCanvas = Uno.UI.Runtime.Skia.AppleUIKit.UnoSKMetalView;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
@@ -139,7 +138,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	// WebGPU render path (UnoSKWebGpuMetalView): the neutral backend renders + resolves into the swapchain image via
 	// AcquireRenderTarget, then Present() blits + presents. Mirrors the Android UnoSKWebGpuView frame.
-	internal void OnWebGpuFrameRequested(WebGpuSwapChainContext context)
+	internal void OnWebGpuFrameRequested(global::Uno.UI.Composition.Drawing.IGraphicsContext context)
 	{
 		var clipGeometry = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(
 			null,
