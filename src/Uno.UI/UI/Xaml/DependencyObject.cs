@@ -54,8 +54,10 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="dependencyProperty">The dependency property to bind</param>
 		/// <param name="binding">The binding expression</param>
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void SetBinding(DependencyProperty dependencyProperty, BindingBase binding) => SetBindingInternal(dependencyProperty, binding);
 
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void SetBinding(string dependencyProperty, BindingBase binding) => SetBindingInternal(dependencyProperty, binding);
 
 		internal ManagedWeakReference SelfWeakReference => _selfWeakReference ??= WeakReferencePool.RentSelfWeakReference(this);
