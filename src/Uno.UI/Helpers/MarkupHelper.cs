@@ -114,6 +114,17 @@ namespace Uno.UI.Helpers
 			=> WeakProperties.GetValue<TInstance>(target, propertyName);
 
 		/// <summary>
+		/// Assigns the templated parent of a member materialized from a <see cref="FrameworkTemplate"/>.
+		/// </summary>
+		/// <remarks>
+		/// Helper for XAML code generation. Generated XAML lives in the consuming app's assembly, which cannot
+		/// reach the internal <see cref="DependencyObject"/> accessors, so the generator routes through here.
+		/// </remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void SetTemplatedParent(DependencyObject target, DependencyObject? templatedParent)
+			=> target.SetTemplatedParent(templatedParent!);
+
+		/// <summary>
 		/// Helper for XAML code generation. Not intended to be used in apps outside of XAML generator.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]

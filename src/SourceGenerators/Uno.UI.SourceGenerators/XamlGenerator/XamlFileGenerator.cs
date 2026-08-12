@@ -3265,8 +3265,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var isDependencyObject = IsType(objectDefinitionType, Generation.DependencyObjectSymbol.Value);
 					if (isInsideFrameworkTemplate && isDependencyObject)
 					{
-						writer.AppendLineIndented($"{closureName}.SetTemplatedParent(__settings?.TemplatedParent);");
-						writer.AppendLineIndented($"__settings?.TemplateMemberCreatedCallback?.Invoke({closureName});");
+						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetTemplatedParent({writer.AppliedParameterName}, __settings?.TemplatedParent);");
+						writer.AppendLineIndented($"__settings?.TemplateMemberCreatedCallback?.Invoke({writer.AppliedParameterName});");
 					}
 #endif
 
