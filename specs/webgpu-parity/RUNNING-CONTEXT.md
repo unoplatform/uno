@@ -1568,3 +1568,39 @@ AppleUIKit/macOS/iOS not compilable here (no Apple workload) — user validates 
 **Note:** hosts still carry a `Uno.UI.Composition.SkiaBackend` *ProjectReference* (provides the default renderer via
 module-init/`DrawingRegistration`) — that's the packaged-default mechanism; host *code* is Skia-free. Removing the
 reference entirely is the app-composition-root story (SamplesApp build flags), deliberately out of scope here.
+
+---
+
+## 44. Framework + hosts are SkiaSharp-reference-free — only apps + skia-impl projects keep it
+
+User goal: "all but samplesapp and the specific skia-impl projects have [no] skiasharp references." Interpreted a
+"SkiaSharp reference" as a direct `<PackageReference Include="SkiaSharp*">` or real SkiaSharp *type* usage in code.
+
+**Keep set (allowed):** SamplesApp.* + app-like test projects (SolutionTemplate heads, RuntimeTests AlcApp/HRApp,
+WebGpu.Smoke, the `Uno.UI.RuntimeTests` pixel-assert helpers) + the **skia-impl projects**: `Uno.UI.Composition.Skia`
+(SkiaBackend) and the inherently-Skia add-ins `Uno.UI.Svg.Skia`, `Uno.UI.Lottie(.Skia/.Reference)`,
+`Uno.WinUI.Graphics2DSK.*` (the public `SKCanvasElement`/Skottie/Svg.Skia feature surfaces — Skia by definition).
+
+**Done this pass:**
+- **7 hosts** — dropped their direct `SkiaSharp` + `SkiaSharp.NativeAssets.*`/`.Views` package references. They render
+  through the neutral seam and pull managed SkiaSharp only transitively via the `SkiaBackend` ProjectReference (a
+  reference to an allowed skia-impl project); native assets come from the app + Uno.Sdk. HarfBuzzSharp (neutral text
+  shaping) retained. Removed the dead commented Android NativeAssets line.
+- **Uno.UWP** (`Uno.Skia`) — made the core WinRT assembly SkiaSharp-free (commit `feat(uno.uwp)`): `SoftwareBitmap`
+  (skia) is byte[]-backed with neutral pixel/alpha metadata (no SKBitmap); `BitmapEncoder` encodes through a new
+  `IImageEncoderExtension` seam resolved via `ApiExtensibility`, with the SkiaSharp encoder (`SkiaImageEncoderExtension`)
+  living in the backend and registered by `SkiaBackend.Register`; removed the unused public `Color`↔`SKColor` operators.
+
+**Verified SkiaSharp-free (code): Uno.UI, neutral Uno.UI.Composition, Uno.UWP, Uno.Foundation, Uno.UI.Dispatching, and
+all 7 `Uno.UI.Runtime.Skia.*` hosts.** A full sweep found only *comments/strings* mentioning SkiaSharp in those
+assemblies (e.g. XamlFileParser's conditional-XAML namespace detection, doc comments).
+
+**Validation:** SamplesApp.Skia.Generic builds+runs (X11); `Given_BitmapEncoder` 7/7 pass headless (encoder seam);
+Android (net10.0-android) + WASM + Win32 + LinuxFB host libs compile clean (the new non-suffixed
+`IImageEncoderExtension` compiles into every Uno.UWP variant).
+
+**Deliberately NOT done (needs the user's env / decisions):** hosts still carry the `SkiaBackend` *ProjectReference*
+(the packaged-default renderer + transitive managed SkiaSharp). Removing it entirely — so hosts reference *only*
+neutral interfaces — is the remaining composition-root + Uno.Sdk/packaging step: the app/SDK must then register the
+backend + providers and ship native assets for every consuming app (X11 also still instantiates `SkiaGraphicsProvider`
+for its WebGPU/Skia negotiation). That path can't be validated against a real consuming-app NuGet build here.
