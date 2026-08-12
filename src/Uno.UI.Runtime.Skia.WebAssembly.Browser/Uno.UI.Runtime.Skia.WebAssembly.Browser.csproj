@@ -32,9 +32,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.WebAssembly" />
-		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" PrivateAssets="all" />
 		<PackageReference Include="Uno.icu-wasm" />
