@@ -42,7 +42,7 @@ public static class ImageDecoder
 		{
 			if (_current is null)
 			{
-				DrawingBackendFallback.EnsureRegistered();
+				DrawingBackendFallback.EnsureImageDecoder();
 			}
 
 			return _current ?? throw new InvalidOperationException(

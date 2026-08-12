@@ -20,7 +20,7 @@ public static class FontProvider
 		{
 			if (_current is null)
 			{
-				DrawingBackendFallback.EnsureRegistered();
+				DrawingBackendFallback.EnsureFontProvider();
 			}
 
 			return _current ?? throw new InvalidOperationException(

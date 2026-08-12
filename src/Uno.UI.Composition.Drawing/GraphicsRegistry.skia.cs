@@ -100,6 +100,39 @@ public static class GraphicsRegistry
 	}
 
 	/// <summary>
+	/// Registers <paramref name="backendsInPreferenceOrder"/> only if no backend preference is set yet, so a
+	/// backend's implicit default (the Skia fallback) never clobbers a preference an app declared explicitly.
+	/// </summary>
+	public static void RegisterDefault(IReadOnlyList<IGraphicsProvider> backendsInPreferenceOrder)
+	{
+		ArgumentNullException.ThrowIfNull(backendsInPreferenceOrder);
+		lock (_gate)
+		{
+			if (_backends.Count == 0)
+			{
+				_backends = backendsInPreferenceOrder;
+			}
+		}
+	}
+
+	/// <summary>
+	/// True once the app has declared an explicit backend preference via <see cref="Register"/>. That declaration
+	/// owns backend selection even while the chosen backend is still initializing (e.g. the WASM/WebGPU async device
+	/// import), so the implicit Skia auto-registration (<see cref="DrawingBackendFallback"/>) must stay out — it must
+	/// not fill the pre-init window with SkiaSharp and clobber the app's choice.
+	/// </summary>
+	internal static bool HasRegisteredBackends
+	{
+		get
+		{
+			lock (_gate)
+			{
+				return _backends.Count > 0;
+			}
+		}
+	}
+
+	/// <summary>
 	/// Walks the registered backends in preference order and, for each, its preferred context kinds in order,
 	/// creating a context on demand until one succeeds. The first success wins: its factory is installed as
 	/// <see cref="DrawingFactory.Current"/> and a <see cref="GraphicsInitialization"/> is returned. Nothing is
