@@ -36,7 +36,50 @@ public partial class CompositionTarget
 			?? DrawingRegistration.DefaultRenderer
 			?? throw new global::System.InvalidOperationException(
 				"No IRenderer registered. The app entry must register a drawing backend (SkiaBackend.Register / ManagedBackend.Register) and/or the head must set CompositionTarget.Renderer before the first frame.");
-		set => _renderer = value;
+		set
+		{
+			// Invalidate on ANY change of the effective renderer, including the first assignment from the null
+			// field (the getter falls back to the default Skia renderer, so frames may already have been recorded
+			// with it before a head assigns WebGPU). NOTE the null guard is intentionally absent: on WebAssembly the
+			// WebGPU device imports asynchronously and this is the FIRST assignment to the field, yet Skia frames
+			// were already recorded via the default — those recordings can't be replayed by WebGPU.
+			var changed = !ReferenceEquals(_renderer, value);
+			_renderer = value;
+
+			// The retained frame (_lastRenderedFrame) and every visual's cached recording were produced by the
+			// previous backend and can't be replayed by the new one — the tree would render blank. Discard them and
+			// request a fresh frame so the whole tree re-records under the new renderer.
+			if (changed)
+			{
+				InvalidateAllRecordings();
+			}
+		}
+	}
+
+	private static void InvalidateAllRecordings()
+	{
+		foreach (var kvp in _targets)
+		{
+			var target = kvp.Key;
+
+			(IRenderData frame, IGeometry nativeElementClipPath)? staleFrame;
+			lock (target._frameGate)
+			{
+				staleFrame = target._lastRenderedFrame;
+				target._lastRenderedFrame = null;
+			}
+			if (staleFrame is { } sf)
+			{
+				sf.frame.Dispose();
+			}
+
+			if (target.ContentRoot?.VisualTree?.RootElement?.Visual is { } rootVisual)
+			{
+				rootVisual.InvalidatePaintRecursive();
+			}
+
+			((ICompositionTarget)target).RequestNewFrame();
+		}
 	}
 
 	private static readonly long _start = Stopwatch.GetTimestamp();
