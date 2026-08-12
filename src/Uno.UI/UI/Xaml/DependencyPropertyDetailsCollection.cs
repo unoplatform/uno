@@ -236,13 +236,5 @@ namespace Microsoft.UI.Xaml
 			// If _entries is null, it means we were already disposed. Gracefully return empty so that the caller doesn't have anything to do.
 			=> _entries ?? _empty;
 
-		// The owner is always held strongly now, so there is nothing to toggle.
-		internal void TryEnableHardReferences()
-		{
-		}
-
-		internal void DisableHardReferences()
-		{
-		}
 	}
 }

@@ -2294,8 +2294,6 @@ namespace Microsoft.UI.Xaml
 			if (FeatureConfiguration.DependencyObject.IsStoreHardReferenceEnabled)
 			{
 				_hardParentRef = Parent;
-
-				_properties.TryEnableHardReferences();
 			}
 		}
 
@@ -2307,8 +2305,6 @@ namespace Microsoft.UI.Xaml
 			if (FeatureConfiguration.DependencyObject.IsStoreHardReferenceEnabled)
 			{
 				_hardParentRef = null;
-
-				_properties.DisableHardReferences();
 			}
 		}
 
