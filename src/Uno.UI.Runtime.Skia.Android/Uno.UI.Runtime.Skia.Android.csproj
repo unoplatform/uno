@@ -74,8 +74,6 @@
 	<ItemGroup>
 		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
-		<!--<PackageReference Include="SkiaSharp.NativeAssets.Android" />
-		<PackageReference Include="HarfBuzzSharp.NativeAssets.Android" />-->
 	</ItemGroup>
 
 	<ItemGroup>
