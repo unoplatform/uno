@@ -457,28 +457,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				_renderer = null;
 			}
 		}
-		if (_renderer is null && FeatureConfiguration.Rendering.UseVulkanOnX11)
-		{
-			// Vulkan through the neutral pipeline: negotiate a Vulkan-only context (Skia GRContext on Vulkan). If
-			// Vulkan is unavailable the negotiation throws and we fall through to the OpenGL/GLX branch below (the
-			// override is Vulkan-only, no software fallback here, so GPU-preferring behavior is preserved).
-			try
-			{
-				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-				_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, new[] { GraphicsContextKind.Vulkan });
-			}
-			catch (Exception e)
-			{
-				this.Log().Info($"Vulkan rendering not available: {e.Message}. Falling back to OpenGL.");
-				if (_x11TopWindow is not null)
-				{
-					_ = XLib.XDestroyWindow(_x11TopWindow.Value.Display, _x11TopWindow.Value.Window);
-					_x11TopWindow = null;
-				}
-				_renderer = null;
-			}
-		}
-
 		if (_renderer is null && (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? true))
 		{
 			try
