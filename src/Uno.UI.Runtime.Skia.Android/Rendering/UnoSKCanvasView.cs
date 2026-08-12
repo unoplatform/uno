@@ -15,7 +15,6 @@ using AndroidX.Core.View;
 using Javax.Microedition.Khronos.Opengles;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
@@ -139,84 +138,28 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 	// and modified to also add rendering without OpenGL
 	private class InternalRenderer() : Java.Lang.Object, IRenderer
 	{
-		private const SKColorType ColorType = SKColorType.Rgba8888;
-		private const GRSurfaceOrigin SurfaceOrigin = GRSurfaceOrigin.BottomLeft;
-
-		private readonly bool _hardwareAccelerated = FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid;
-
-		private GRContext? _context;
-		private GRGlFramebufferInfo _glInfo;
-		private GRBackendRenderTarget? _renderTarget;
-
-		private SKSurface? _glBackedSurface;
-		private SKSurface? _softwareSurface;
+		private IGLRenderTarget? _renderTarget;
 
 		void IRenderer.OnDrawFrame(IGL10? gl)
 		{
 			GLES20.GlClear(GLES20.GlColorBufferBit | GLES20.GlDepthBufferBit | GLES20.GlStencilBufferBit);
 
-			// create the contexts if not done already
-			if (_context == null)
-			{
-				var glInterface = GRGlInterface.Create();
-				_context = GRContext.CreateGl(glInterface);
-			}
-
-			var surface = _hardwareAccelerated ? _glBackedSurface : _softwareSurface;
-			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(surface is null ? null : new SkiaRenderTarget(surface.Canvas),
-			size =>
-			{
-				// read the info from the buffer
-				var buffer = new int[3];
-				GLES20.GlGetIntegerv(GLES20.GlFramebufferBinding, buffer, 0);
-				GLES20.GlGetIntegerv(GLES20.GlStencilBits, buffer, 1);
-				GLES20.GlGetIntegerv(GLES20.GlSamples, buffer, 2);
-				var samples = buffer[2];
-				var maxSamples = _context.GetMaxSurfaceSampleCount(ColorType);
-				if (samples > maxSamples)
+			// Hand the backend a neutral IGLRenderTarget over the GLSurfaceView's default framebuffer; the Skia
+			// backend builds its GRContext-GL against the current GLES context. No Skia type lives here.
+			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(
+				_renderTarget,
+				size =>
 				{
-					samples = maxSamples;
-				}
+					var buffer = new int[3];
+					GLES20.GlGetIntegerv(GLES20.GlFramebufferBinding, buffer, 0);
+					GLES20.GlGetIntegerv(GLES20.GlStencilBits, buffer, 1);
+					GLES20.GlGetIntegerv(GLES20.GlSamples, buffer, 2);
 
-				_glInfo = new GRGlFramebufferInfo((uint)buffer[0], ColorType.ToGlSizedFormat());
-
-				// destroy the old surface
-				_glBackedSurface?.Dispose();
-				_softwareSurface?.Dispose();
-				_glBackedSurface = null;
-				_softwareSurface = null;
-
-				// re-create the render target
-				_renderTarget?.Dispose();
-				_renderTarget = new GRBackendRenderTarget((int)size.Width, (int)size.Height, samples, buffer[1], _glInfo);
-
-				if (_glBackedSurface == null)
-				{
-					_glBackedSurface = SKSurface.Create(_context, _renderTarget, SurfaceOrigin, ColorType);
-				}
-
-				if (!_hardwareAccelerated && _softwareSurface is null)
-				{
-					var info = new SKImageInfo((int)size.Width, (int)size.Height, ColorType);
-					_softwareSurface = SKSurface.Create(info);
-				}
-
-				surface = _hardwareAccelerated ? _glBackedSurface : _softwareSurface;
-				return new SkiaRenderTarget(surface!.Canvas);
-			});
+					_renderTarget = new AndroidGLRenderTarget((uint)buffer[0], buffer[2], buffer[1], (int)size.Width, (int)size.Height);
+					return _renderTarget;
+				});
 
 			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
-
-			if (!_hardwareAccelerated && _glBackedSurface is not null)
-			{
-				var glBackedCanvas = _glBackedSurface.Canvas;
-				glBackedCanvas.Clear(SKColors.Transparent);
-				glBackedCanvas.DrawSurface(_softwareSurface, 0, 0);
-				glBackedCanvas.Flush();
-			}
-			// else : we already drew directly on the OpenGL-backed canvas
-
-			_context!.Flush();
 		}
 
 		void IRenderer.OnSurfaceChanged(IGL10? gl, int width, int height)
@@ -239,14 +182,22 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 
 		private void FreeContext()
 		{
-			_glBackedSurface?.Dispose();
-			_glBackedSurface = null;
 			_renderTarget?.Dispose();
 			_renderTarget = null;
-			_context?.Dispose();
-			_context = null;
 		}
 
 		internal void ResetContext() => FreeContext();
+
+		// GLES default-framebuffer target; the backend builds GRContext-GL against the current context.
+		private sealed class AndroidGLRenderTarget(uint framebufferId, int sampleCount, int stencilBits, int width, int height) : IGLRenderTarget
+		{
+			public uint FramebufferId => framebufferId;
+			public int SampleCount => sampleCount;
+			public int StencilBits => stencilBits;
+			public int Width => width;
+			public int Height => height;
+			public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
+			public void Dispose() { }
+		}
 	}
 }
