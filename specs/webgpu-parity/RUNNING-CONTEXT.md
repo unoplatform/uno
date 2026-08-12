@@ -1488,3 +1488,42 @@ REMAINING (iOS):
 RUN RECIPE (simulator): build with `-f net10.0-ios -p:RuntimeIdentifier=iossimulator-arm64`; `xcrun simctl install
 <udid> .../SamplesApp.app`; `SIMCTL_CHILD_UNO_WEBGPU=1 xcrun simctl launch <udid> uno.platform.samplesapp.skia`
 (SIMCTL_CHILD_* injects env — no local code hack needed); `xcrun simctl io <udid> screenshot x.png` (no TCC issues).
+
+## 42. SkiaSharp-free SamplesApp PROVEN on Linux/X11 (no libSkiaSharp.so loaded) — managed image path closed
+
+GOAL: build/run SamplesApp with NO native libSkiaSharp at all, to prove the WebGPU + managed stack is genuinely
+SkiaSharp-free. Method: WebGPU head + all managed engines on, then physically remove every libSkiaSharp copy from the
+build output and run — any native-Skia call then surfaces as a DllNotFound we can chase.
+
+SETUP (Linux, headless): SamplesApp.Skia.Generic (X11 host has the WebGpu render path via WebGpuGraphicsProvider);
+env UNO_WEBGPU=1 UNO_MANAGED_FONTS=1 UNO_MANAGED_GEOMETRY=1 UNO_MANAGED_IMAGE_DECODER=1;
+DISPLAY=:99 (Xvfb) VK_ICD_FILENAMES=lvp (lavapipe) LD_LIBRARY_PATH=. ; move all runtimes/*/native/libSkiaSharp.* aside.
+The managed stack already existed and is toggle-wired in Program.cs -> DrawingBackendOptions (FontProvider =
+ManagedFontProvider [TTF/CFF/COLR outline parser, HarfBuzz shaping only], UseManagedGeometry [ManagedPathBuilder/
+ManagedGeometry], UseManagedImageDecoder [ManagedImageDecoder PNG/GIF/BMP/JPEG/WebP-lossless]).
+
+TWO residual native-Skia calls found by iterating (both fixed, commit 8fbaa5fa53):
+ 1. X11 host SetWindowIcon -> SKCodec.Create to decode the app-logo PNG for _NET_WM_ICON. Not render path (window
+    chrome). Fixed: decode via the neutral ImageDecoder.Current.TryDecode seam + CopyPixels (BGRA premul), then
+    un-premultiply to spec ARGB. Dropped `using SkiaSharp`.
+ 2. THE SEAM BUG: ImageDecoder.Current was always SkiaImageDecoderBackend. Even with the managed decoder enabled it
+    decodes managed but then SkiaImageDecoderBackend.ToImageFrames wraps the pixels into a Skia-backed IImage
+    (SKImageInfo/SKImage) -> touches Skia on a "managed" decode. Fixed: new ManagedImageDecoderBackend (IImageDecoder)
+    wrapping DecodedImage as byte[]-backed managed IImage/IImageFrames (no SKImage); SkiaBackend.Register installs it
+    when UseManagedImageDecoder is set. The WebGPU image path already consumes IImage via CopyPixels (no Skia cast),
+    so ManagedImage flows end-to-end: LoadFromStream -> FrameProviderFactory -> CreateImageTexture -> CopyPixels ->
+    wgpuQueueWriteTexture.
+
+RESULT (runtime-validated, /tmp/skiafree-run3.log): with EVERY libSkiaSharp.* deleted, SamplesApp runs the full
+timeout, ZERO "SkiaSharp.*" type touches, ZERO DllNotFoundException, ZERO crashes. Renders ~150 draws/frame
+(`[webgpu] surface 1024x768 BGRA8Unorm`, S/RR/P/G counts) AND uploads a managed-decoded image to a WebGPU texture
+(`[webgpu] TEX #4 ImageTexture.upload 64x64`). This is the proof: the neutral seam + WebGPU + managed engines need no
+native Skia. (Unrelated background noise in the log: LibVLC missing libvlc.so — media-player addin, not rendering.)
+
+REMAINING for a fully Skia-FREE BUILD (vs run): the projects still PackageReference SkiaSharp (SkiaBackend.cs,
+SkiaFont/SkiaGeometry/etc. still compiled in and self-register via module initializers; the managed path just wins at
+runtime when toggled). Removing the managed SkiaSharp assembly reference entirely is a larger, separate step (guard the
+Skia backend types behind a build flavor / move them to an optional assembly). Also: managed decoder gaps remain for
+exotic color-glyph/image formats (CBDT/sbix/COLRv1/OT-SVG per §41 icons note); a sample using only those would still
+need a decoder. Next: (a) same libSkiaSharp-absent run on macOS/Win32/WASM heads; (b) scope the assembly-reference
+removal.
