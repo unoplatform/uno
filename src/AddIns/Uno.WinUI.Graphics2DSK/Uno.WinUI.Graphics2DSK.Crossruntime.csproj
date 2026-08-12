@@ -24,6 +24,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" PrivateAssets="all" />
 	</ItemGroup>
 	
 

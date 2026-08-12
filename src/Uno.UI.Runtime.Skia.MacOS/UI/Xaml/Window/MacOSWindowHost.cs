@@ -17,9 +17,12 @@ using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Media;
 using Window = Microsoft.UI.Xaml.Window;
+using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
+using KeyEventArgs = global::Windows.UI.Core.KeyEventArgs;
+using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -310,7 +313,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		// Sticky active-owner tracking (FR-007, research Decision 3): update on
 		// Activated (WA_ACTIVE / NSWindowDidBecomeMainNotification analog), never
 		// clear on Deactivated.
-		if (args.WindowActivationState != Windows.UI.Core.CoreWindowActivationState.Deactivated &&
+		if (args.WindowActivationState != Microsoft.UI.Xaml.WindowActivationState.Deactivated &&
 			_accessibility is not null)
 		{
 			AccessibilityRouter.SetActive(this);

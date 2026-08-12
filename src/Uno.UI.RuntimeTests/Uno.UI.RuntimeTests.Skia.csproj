@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
+		<!-- Avoid CS0579 duplicate TargetFrameworkAttribute from the custom intermediate path -->
+		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
