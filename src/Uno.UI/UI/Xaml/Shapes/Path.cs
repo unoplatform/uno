@@ -1,11 +1,12 @@
-﻿#nullable enable
+#nullable enable
 
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
-	public partial class Path
+	public partial class Path : Shape
 	{
 		#region Data
 
@@ -45,11 +46,36 @@ namespace Microsoft.UI.Xaml.Shapes
 			InvalidateMeasure();
 		}
 
+		private CompositionPathGeometry? _fillGeometry;
+
+		/// <inheritdoc />
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureAbsoluteShape(availableSize, GetPath());
+
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeAbsoluteShape(finalSize, GetPath());
+
+		private SkiaGeometrySource2D? GetPath() => Data?.GetGeometrySource2D();
+
+		private protected override void Render(SkiaGeometrySource2D? path, double? scaleX = null, double? scaleY = null, double? renderOriginX = null,
+			double? renderOriginY = null)
+		{
+			base.Render(path, scaleX, scaleY, renderOriginX, renderOriginY);
+
+			_fillGeometry ??= Visual.Compositor.CreatePathGeometry();
+			SpriteShape.FillGeometry = _fillGeometry;
+			if (Data?.GetTransformedFilledSKPath() is { } filledPath)
+			{
+				_fillGeometry.Path = new CompositionPath(new SkiaGeometrySource2D(filledPath));
+			}
+			else
+			{
+				_fillGeometry.Path = null;
+			}
+		}
+
 		#endregion
 
-#if __NETSTD_REFERENCE__
-		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
-		protected override Size ArrangeOverride(Size finalSize) => base.ArrangeOverride(finalSize);
-#endif
 	}
 }

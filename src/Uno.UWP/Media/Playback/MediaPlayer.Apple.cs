@@ -305,7 +305,7 @@ namespace Windows.Media.Playback
 				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart('/'));
 			}
 
-			if (uri.IsLocalResource())
+			if (uri.IsMsAppx())
 			{
 				var filePath = uri.PathAndQuery.TrimStart('/')
 				// UWP supports backward slash in path for directory separators

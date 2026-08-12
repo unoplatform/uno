@@ -24,9 +24,6 @@ public partial class Border : FrameworkElement
 {
 	public Border()
 	{
-#if !UNO_HAS_BORDER_VISUAL
-		BorderRenderer = new BorderLayerRenderer(this);
-#endif
 	}
 
 #if IS_UNIT_TESTS || __NETSTD_REFERENCE__
@@ -34,13 +31,8 @@ public partial class Border : FrameworkElement
 #endif
 	public BrushTransition BackgroundTransition { get; set; }
 
-#if !UNO_HAS_BORDER_VISUAL
-	internal BorderLayerRenderer BorderRenderer { get; }
-#endif
 
-#if UNO_HAS_BORDER_VISUAL
 	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
-#endif
 
 	protected override bool IsSimpleLayout => true;
 
@@ -67,7 +59,7 @@ public partial class Border : FrameworkElement
 		}
 	}
 
-	public static DependencyProperty ChildProperty { get; } =
+	internal static DependencyProperty ChildProperty { get; } =
 		DependencyProperty.Register(
 			nameof(Child),
 			typeof(UIElement),
@@ -116,11 +108,7 @@ public partial class Border : FrameworkElement
 
 	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateCornerRadius();
-#else
-		UpdateBorder();
-#endif
 	}
 
 	#endregion
@@ -185,11 +173,7 @@ public partial class Border : FrameworkElement
 
 	private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		// TODO: https://github.com/unoplatform/uno/issues/16705
-#else
-		UpdateBorder();
-#endif
 	}
 
 	#endregion
@@ -205,11 +189,7 @@ public partial class Border : FrameworkElement
 	}
 	private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackgroundSizing();
-#else
-		UpdateBorder();
-#endif
 		base.OnBackgroundSizingChangedInner(e);
 	}
 	#endregion
@@ -228,11 +208,7 @@ public partial class Border : FrameworkElement
 
 	private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBorderThickness();
-#else
-		UpdateBorder();
-#endif
 	}
 
 	#endregion
@@ -289,7 +265,6 @@ public partial class Border : FrameworkElement
 
 	private protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
 		BorderHelper.SetUpBrushTransitionIfAllowed(
 			(BorderVisual)this.Visual,
@@ -297,9 +272,6 @@ public partial class Border : FrameworkElement
 			e.NewValue as Brush,
 			this.BackgroundTransition,
 			((IDependencyObjectStoreProvider)this).Store.GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
-#else
-		UpdateBorder();
-#endif
 		OnBackgroundChangedPartial();
 	}
 
@@ -323,7 +295,4 @@ public partial class Border : FrameworkElement
 			;
 	}
 
-#if !UNO_HAS_BORDER_VISUAL
-	private void UpdateBorder() => BorderRenderer.Update();
-#endif
 }

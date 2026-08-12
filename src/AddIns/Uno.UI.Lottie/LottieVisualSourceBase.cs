@@ -548,7 +548,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				return new JsonStreamSource(embedded, uri.OriginalString);
 			}
 
-			if (uri.IsLocalResource())
+			if (uri.IsMsAppx())
 			{
 				var file = await StorageFile.GetFileFromApplicationUriAsync(uri).AsTask(ct);
 				var value = await file.OpenAsync(FileAccessMode.Read).AsTask(ct);

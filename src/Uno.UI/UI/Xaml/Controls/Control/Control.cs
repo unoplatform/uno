@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Uno.UI;
 using System.Linq;
 using Microsoft.UI.Xaml.Input;
@@ -25,7 +25,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private View _templatedRoot;
 		private bool _suppressIsEnabled;
 
-#if !__NETSTD_REFERENCE__
 		private void InitializeControl()
 		{
 			SubscribeToOverridenRoutedEvents();
@@ -34,7 +33,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			DefaultStyleKey = typeof(Control);
 		}
-#endif
 
 		// TODO: Should use DefaultStyleKeyProperty DP
 		protected object DefaultStyleKey { get; set; }
@@ -85,11 +83,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		partial void UnregisterSubView();
-
-		partial void RegisterSubView(View child);
-#endif
 
 		/// <summary>
 		/// Gets or sets the path to the resource file that contains the default style for the control.
@@ -225,7 +218,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected virtual void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			if (e.OldValue != e.NewValue)
 			{
 				// Reset the template bindings for this control
@@ -248,10 +240,6 @@ namespace Microsoft.UI.Xaml.Controls
 					//IFC(GetContext()->RemoveNameScope(this, Jupiter::NameScoping::NameScopeType::TemplateNameScope));
 				}
 			}
-#else
-			_updateTemplate = true;
-			SetUpdateControlTemplate();
-#endif
 		}
 
 		#endregion
@@ -271,45 +259,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 				CleanupView(_templatedRoot);
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				UnregisterSubView();
-#endif
 
 				_templatedRoot = value;
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				if (value != null)
-				{
-					RegisterSubView(value);
-
-					if (_templatedRoot != null)
-					{
-						RegisterContentTemplateRoot();
-
-						if (!IsLoaded)
-						{
-							// It's too soon the call the ".OnApplyTemplate" method: it should be invoked after the "Loading" event.
-
-							// Note: we however still allow if already 'IsLoading':
-							//
-							// If this child is added to its parent while this parent is 'IsLoading' itself (eg. loading its template),
-							// the parent will invoke the Loading on this child element (and the PostLoading which will "dequeue" the _applyTemplateShouldBeInvoked),
-							// which will set the 'IsLoading' flag.
-							//
-							// The parent will then apply its own style, which might set/change the template of this element (if data-bound or set using VisualState),
-							// which would end here and set this _applyTemplateShouldBeInvoked flag (if IsLoaded were not allowed!).
-							//
-							// The parent will then invoke the Loading on all its children, but as this child has already been flagged as 'IsLoading',
-							// it will be ignored and the 'PostLoading' won't be invokes a second time, driving the control to never "dequeue" the _applyTemplateShouldBeInvoked.
-							_applyTemplateShouldBeInvoked = true;
-						}
-						else
-						{
-							_applyTemplateShouldBeInvoked = false;
-							OnApplyTemplate();
-						}
-					}
-				}
-#endif
 			}
 		}
 
@@ -326,7 +277,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
-#if !__NETSTD_REFERENCE__
 		private void SubscribeToPostKeyDown()
 		{
 			if (GetIsEventOverrideImplemented(OnPostKeyDown))
@@ -470,13 +420,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			bool HasFlag(RoutedEventFlag implementedEvents, RoutedEventFlag flag) => (implementedEvents & flag) != 0;
 		}
-#endif
 
 		private protected override void OnLoaded()
 		{
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-			SetUpdateControlTemplate();
-#endif
 
 			base.OnLoaded();
 		}
@@ -501,7 +447,6 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeFirstChild(finalSize);
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		/// <summary>
 		/// Loads the relevant control template so that its parts can be referenced.
 		/// </summary>
@@ -511,7 +456,6 @@ namespace Microsoft.UI.Xaml.Controls
 			InvokeApplyTemplate(out var addedVisuals);
 			return addedVisuals;
 		}
-#endif
 
 		private protected override FrameworkTemplate GetTemplate() => Template;
 
@@ -584,19 +528,10 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnVisibilityChanged(oldValue, newValue);
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-			if (oldValue == Visibility.Collapsed && newValue == Visibility.Visible)
-			{
-				SetUpdateControlTemplate();
-			}
-#endif
 
 			OnIsFocusableChanged();
 		}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		partial void RegisterContentTemplateRoot();
-#endif
 
 		#region Foreground Dependency Property
 
@@ -1370,5 +1305,21 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal override bool CanHaveChildren() => true;
+
+		internal static Action<Control, bool> OnIsFocusableChangedCallback { get; set; }
+
+		public Control()
+		{
+			InitializeControl();
+		}
+
+		partial void OnIsFocusableChanged()
+		{
+			if (OnIsFocusableChangedCallback is { } callback)
+			{
+				var isFocusable = IsFocusable && !IsDelegatingFocusToTemplateChild();
+				callback.Invoke(this, isFocusable);
+			}
+		}
 	}
 }

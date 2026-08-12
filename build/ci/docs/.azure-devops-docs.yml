@@ -24,7 +24,7 @@ jobs:
   # GenerateDoc restores the sync-gen filter, which still contains the netcoremobile heads.
   - template: ../templates/dotnet-mobile-install-windows.yml
     parameters:
-      UnoCheckParameters: '--preview-major --tfm $(netCurrentTargetFramework)-ios --tfm $(netCurrentTargetFramework)-maccatalyst --tfm $(netCurrentTargetFramework)-android --tfm $(netCurrentTargetFramework)-tvos'
+      UnoCheckParameters: '--preview-major --tfm $(netCurrentTargetFramework)-ios --tfm $(netCurrentTargetFramework)-android --tfm $(netCurrentTargetFramework)-tvos'
 
   - template: ../templates/gitversion.yml
   - template: ../templates/jdk-setup.yml

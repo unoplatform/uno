@@ -28,7 +28,7 @@ namespace Windows.Storage.Streams
 					return await storageFile.OpenReadAsync();
 				}
 
-				if (uri.IsLocalResource())
+				if (uri.IsMsAppx())
 				{
 					var convertedPath =
 						Path.Combine(Package.Current.InstalledPath,

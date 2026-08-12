@@ -75,7 +75,6 @@ public partial class DependencyObjectStore
 	// The CDependencyObject::EnterImpl theme block (depends.cpp:1044-1069) and the enter-property
 	// walks are ported in DependencyObjectStore.mux.cs and DependencyObjectStore.PropertySystem.mux.cs.
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	#region Theme walk — WinUI: CDependencyObject::NotifyThemeChanged / NotifyThemeChangedCore (Theming.cpp lines 110-255)
 
 	// Uno-specific: transient context of the walk this object is currently processing. WinUI threads
@@ -209,7 +208,6 @@ public partial class DependencyObjectStore
 	}
 
 	#endregion
-#endif
 
 	#region Theme resource binding storage — WinUI: SetThemeResource / SetThemeResourceBinding (Theming.cpp lines 349-400)
 
@@ -357,7 +355,6 @@ public partial class DependencyObjectStore
 		Theme? ownerThemeOverride = null,
 		bool preferAppResourceOverride = false)
 	{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// MUX Reference: Theming.cpp:364-379 — SetThemeResourceBinding pushes the owner's theme onto
 		// the core requested-theme-for-subtree slot ("Push theme that resource lookup should use to
 		// get the property value") so the lookup — including any lazy materialization it triggers —
@@ -368,7 +365,6 @@ public partial class DependencyObjectStore
 		var core = Uno.UI.Xaml.Core.CoreServices.Instance;
 		var prevSlotTheme = Theme.None;
 		var popSlotTheme = false;
-#endif
 
 		try
 		{
@@ -388,7 +384,6 @@ public partial class DependencyObjectStore
 			// MUX: Theming.cpp:315-346 — UpdateThemeReference(CThemeResource*)
 			bool resolved = false;
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// Compute the owner's effective theme ONCE here — it feeds the slot scope below, the analog of
 			// WinUI's SetThemeResourceBinding pushing this->m_theme before resolving (Theming.cpp:368-376).
 			// Both the ancestor walk and the pinned-dict refresh resolve under that ambient.
@@ -411,7 +406,6 @@ public partial class DependencyObjectStore
 					popSlotTheme = true;
 				}
 			}
-#endif
 
 			// Phase A: Ancestor walk (WinUI: FindNextResolvedValueNoRef → ScopedResources::TraverseVisualTreeResources)
 			// If element is active, walk ancestor ResourceDictionaries to find the resource. This handles
@@ -438,7 +432,6 @@ public partial class DependencyObjectStore
 			// Phase B: Pinned dict fallback (WinUI: themeResource->RefreshValue())
 			// MUX: Theming.cpp:338-343 — "Call refresh if we're in a theme walk or the ref has been
 			// updated in the past *and* the value wasn't updated already by the tree lookup above."
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// Uno: the owner-theme override threaded by the re-resolution flows (the resource-context
 			// element's theme for a standalone resource DO whose own store theme is still None) is the
 			// transitional stand-in for the owner's established m_theme, so it participates in the
@@ -448,9 +441,6 @@ public partial class DependencyObjectStore
 					|| _theme != Theme.None
 					|| ownerThemeOverride is not null
 					|| !themeRef.IsValueFromInitialTheme))
-#else
-			if (!resolved)
-#endif
 			{
 				themeRef.RefreshValue(cache, preferAppResourceOverride);
 			}
@@ -505,13 +495,11 @@ public partial class DependencyObjectStore
 		}
 		finally
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// MUX: Theming.cpp:377-379 — scope-restore the slot.
 			if (popSlotTheme)
 			{
 				core.SetRequestedThemeForSubTree(prevSlotTheme);
 			}
-#endif
 		}
 	}
 
@@ -521,7 +509,6 @@ public partial class DependencyObjectStore
 
 	private bool _isUpdatingChildResourceBindings;
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	// Notifies new property value of theme change that was applied to the property owner.
 	/// <remarks>
 	/// MUX Reference: CDependencyObject::NotifyPropertyValueOfThemeChange — Theming.cpp:41-54.
@@ -538,7 +525,6 @@ public partial class DependencyObjectStore
 			provider.Store.NotifyThemeChanged(_theme);
 		}
 	}
-#endif
 
 	/// <summary>
 	/// Should this property be notified of theme change?
@@ -710,7 +696,6 @@ public partial class DependencyObjectStore
 	/// </remarks>
 	private void UpdateResourceBindingsIfNeeded(DependencyObject dependencyObject, ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
 	{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// MUX: Theming.cpp:218-221 / :242-244 — during a theme walk, property values are notified
 		// through the recursive per-child NotifyThemeChanged, which persists the child's own
 		// per-object theme, re-scopes the requested-theme-for-subtree slot, and early-outs when the
@@ -729,7 +714,6 @@ public partial class DependencyObjectStore
 
 			return;
 		}
-#endif
 
 		// propagate to non-FE DO
 		if (dependencyObject is not IFrameworkElement && dependencyObject is IDependencyObjectStoreProvider storeProvider)

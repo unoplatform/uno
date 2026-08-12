@@ -5,8 +5,9 @@ uid: Uno.Development.MigratingToUno7
 # Migrating to Uno Platform 7.0 — Skia-only rendering
 
 Uno Platform 7.0 removes the **native UI rendering backends** (native Android Views,
-native iOS/tvOS/macCatalyst UIKit, and the native WebAssembly DOM renderer) and makes
-**Skia the single, implicit rendering engine on every target**.
+native iOS/tvOS UIKit, and the native WebAssembly DOM renderer) and makes
+**Skia the single, implicit rendering engine on every target**. It also removes the
+**Mac Catalyst** target framework entirely.
 
 Skia already runs on every platform — desktop (Win32, WPF, X11, GTK, macOS, FrameBuffer),
 Skia-on-Android, Skia-on-iOS, and Skia-on-WebAssembly. In 7.0 it becomes the *only* UI
@@ -14,7 +15,9 @@ rendering path: a `UIElement` is a plain managed object backed by a `Composition
 on all platforms, drawn into a single Skia surface.
 
 This does **not** drop platform support: Android, iOS, macOS, Windows, Linux, and
-WebAssembly all remain supported — they now all render with Skia.
+WebAssembly all remain supported — they now all render with Skia. The one exception is
+**Mac Catalyst**, which is removed as a target framework; macOS is served by the
+`net10.0-desktop` head.
 
 > [!IMPORTANT]
 > This is a hard removal in a single major version — there is no `[Obsolete]` interim.
@@ -27,6 +30,7 @@ WebAssembly all remain supported — they now all render with Skia.
 - Apps that used the **native WebAssembly DOM** renderer (`Uno.WinUI.WebAssembly`).
 - Code that referenced native rendering types, native element hosting, or native-only
   `FeatureConfiguration` flags (see below).
+- Apps that still build a **Mac Catalyst** (`net*-maccatalyst`) head.
 
 Apps already running on Skia on every target need only recompile against 7.0 and remove
 native bootstrap/heads.
@@ -37,7 +41,7 @@ native bootstrap/heads.
 
 The `NativeRenderer` Uno Feature and the renderer-selection logic are gone — Skia is
 always used. `skiarenderer` is now implicit and mandatory for
-`android`/`ios`/`tvos`/`maccatalyst`; it is kept as a no-op for back-compat, so you can
+`android`/`ios`/`tvos`; it is kept as a no-op for back-compat, so you can
 leave `<UnoFeatures>skiarenderer</UnoFeatures>` in place or remove it — either way Skia
 renders.
 
@@ -48,6 +52,27 @@ If your project was created before Uno Platform 6.0 and still selects a renderer
 the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6) first to move to the
 Uno.SDK single-project model.
 
+### Mac Catalyst is removed
+
+The `net*-maccatalyst` target framework is no longer supported. The `Uno.Sdk` no longer
+produces a Mac Catalyst head: `maccatalyst` is not a recognized `TargetFramework`, the
+`Platforms/MacCatalyst/` folder is no longer picked up, and the `MacCatalystProjectFolder`
+property is gone. The `__MACCATALYST__` conditional symbol is never defined, and the
+`.iOS.cs`, `.UIKit.cs`, and `.Apple.cs` file suffixes now apply only to `net10.0-ios` and
+`net10.0-tvos`.
+
+macOS remains a fully supported target through the **`net10.0-desktop`** head, which runs
+on macOS with Skia rendering. To migrate:
+
+1. Remove `net*-maccatalyst` from `<TargetFrameworks>` in every project.
+2. Add `net10.0-desktop` if the solution does not already have a desktop head.
+3. Move anything still needed from `Platforms/MacCatalyst/` to `Platforms/Desktop/`, and
+   drop the Catalyst `Info.plist` and `Entitlements.plist`.
+4. Replace `#if __MACCATALYST__` blocks with `#if __DESKTOP__`, or with an
+   `OperatingSystem.IsMacOS()` runtime check.
+5. Publish with the [macOS desktop packaging](xref:uno.publishing.desktop.macos) flow
+   instead of the Mac Catalyst one.
+
 ### Packages
 
 | Removed / changed | Migration |
@@ -57,7 +82,7 @@ Uno.SDK single-project model.
 | `Uno.UI.BindingHelper.Android` assembly removed | Remove the reference; Skia-on-Android needs no Java/JNI binding. |
 | `Uno.UniversalImageLoader` no longer injected (Android) | Skia handles image loading internally. If you initialized it manually, remove the `ConfigureUniversalImageLoader();` call. |
 | `Uno.UI.Maps` AddIn removed | The native Google Maps control has no core Skia equivalent — use a third-party/Skia map or custom rendering. |
-| `Uno.WinUI` UI assemblies for `net*-android/ios/tvos/maccatalyst` are now the Skia binaries | Same TFM string, but binary-incompatible with previously native-built consumers. Recompile all libraries against 7.0 and remove native bootstrap. |
+| `Uno.WinUI` UI assemblies for `net*-android/ios/tvos` are now the Skia binaries | Same TFM string, but binary-incompatible with previously native-built consumers. Recompile all libraries against 7.0 and remove native bootstrap. |
 | `Xamarin.AndroidX.*` transitive deps removed (AppCompat, RecyclerView, Activity, Browser, SwipeRefreshLayout) | If *your own* code uses AndroidX, add explicit `PackageReference`s. |
 
 > [!NOTE]
@@ -83,9 +108,49 @@ Uno.SDK single-project model.
   `IShadowChildrenProvider`, `CompositorThread`,
   `Uno.UI.Composition.ICompositionRoot`. Use the WinUI control
   (`ListView`/`Frame`/`Popup`/…) — everything renders via Skia.
+- **Native flyout opt-in:** `FlyoutBase.UseNativePopup`, including its conditional-XAML forms
+  (`android:UseNativePopup` / `ios:UseNativePopup`). Remove the assignment — flyouts always use
+  the WinUI presentation. The two `Uno.UI.Toolkit` attached properties that only ever
+  customized that native iOS presentation go with it:
+  `MenuFlyoutItemExtensions.IsDestructive` (red "destructive" item text) and
+  `MenuFlyoutExtensions.CancelTextIosOverride` (custom cancel-button caption). Remove the
+  attributes; style the `MenuFlyoutItem` directly for a destructive look.
+  `UICommandExtensions.SetDestructive` / `UICommand.IsDestructive` are **not** removed —
+  those still drive the native iOS `MessageDialog`.
+- **Native default styles:** the whole `Generic.Native.xaml` dictionary is gone, so the
+  `NativeDefaultButton`, `NativeDefaultCheckBox`, `NativeDefaultCommandBar`,
+  `NativeDefaultAppBarButton`, `NativeDefaultFrame`, `NativeDefaultPivot`,
+  `NativeDefaultProgressBar`, `NativeDefaultSlider`, `NativeDefaultTextBox`,
+  `NativeDefaultToggleSwitch`, `NativeDefaultSplitViewOpenPaneLength`, `AndroidButtonStyle`,
+  `AndroidCheckBoxStyle`, `AndroidRadioButtonStyle`, `iOSButtonStyle`,
+  `IosPickerFlyoutTextButtonStyle`, `LeftDrawerSplitViewStyle`, and
+  `RightDrawerSplitViewStyle` resource keys no longer resolve. These styles templated native
+  views, so there is no Skia equivalent — drop the `Style="{StaticResource NativeDefault…}"`
+  and the control falls back to the WinUI default style it already used when no native style
+  was registered. `Uno.UI.Converters.UnoNativeDefaultProgressBarReverseBoolConverter` goes
+  with them.
+- **Native-style declaration:** the `not_win:IsNativeStyle="True"` attribute on a `Style` is no
+  longer recognized. A third-party dictionary that still carries it now **fails the XAML
+  build** instead of silently registering a second, native default style — remove the
+  attribute. The Uno-only
+  `Style.RegisterDefaultStyleForType(Type, IXamlResourceDictionaryProvider, bool)` also loses its
+  `isNative` parameter; it is `[EditorBrowsable(Never)]` and normally only called from
+  XAML-generated code, so rebuilding regenerates the correct call.
 - **Composition:** `Uno.CompositionConfiguration.Options.UseCompositorThread` (the Android
   RenderNode compositor thread). Remove the flag; Skia composition needs no dedicated
   native render thread.
+- **Deprecated UIKit disposal helper:** `Uno.Foundation.NSObjectExtensions.ValidateDispose`,
+  deprecated since Uno 5.x. Remove the call from your `NSObject`/`UIView` `Dispose`
+  overrides — Skia does not host native views, so there is nothing to validate.
+- **`Uno.Extensions.UriExtensions.IsLocalResource` is renamed to `IsMsAppx`.** Same behavior —
+  the predicate has always tested for the `ms-appx` scheme, which the old name did not say.
+  Rename the call; there is no forwarding shim.
+
+  ```diff
+  - if (uri.IsLocalResource())
+  + if (uri.IsMsAppx())
+  ```
+
 - **Legacy WebAssembly JavaScript interop:** `Uno.Foundation.Interop.IJSObject`,
   `IJSObjectMetadata`, `JSObjectHandle`, `JSObject`, and
   `WebAssemblyRuntime.InvokeJSWithInterop(FormattableString)` — the Uno-only
@@ -113,17 +178,47 @@ Skia/WinUI behavior:
 - **iOS:** `Image.LegacyIosAlignment`,
   `FrameworkElement.IOsAllowSuperviewNeedsLayoutWhileInLayoutSubViews`,
   `CommandBar.AllowNativePresenterContent`, `DatePicker.UseLegacyStyle`,
-  `TimePicker.UseLegacyStyle`.
+  `TimePicker.UseLegacyStyle`, `UIElement.FailOnNSObjectExtensionsValidateDispose`
+  (see `NSObjectExtensions.ValidateDispose` above).
 - **WebAssembly:** `Interop.ForceJavascriptInterop`, `UIElement.AssignDOMXamlName`,
-  `UIElement.AssignDOMXamlProperties`, `TextBlock.IsMeasureCacheEnabled`,
+  `UIElement.AssignDOMXamlProperties`, `UIElement.RenderToStringWithId`,
+  `TextBlock.IsMeasureCacheEnabled`, `Shape.WasmDelayUpdateUntilFirstArrange`,
+  `Shape.WasmCacheBBoxCalculationResult`, `Shape.WasmBBoxCacheSize`,
   `Cursors.UseHandForInteraction` (the "hand" cursor for interactive controls is
   now never used).
 - **Native (Android + iOS):** `ListViewBase.AnimateScrollIntoView`.
-- **Native styling:** `Style.UseUWPDefaultStyles`, `Style.ConfigureNativeFrameNavigation()`.
+- **Native styling:** the whole `Style` holder — `Style.UseUWPDefaultStyles`,
+  `Style.UseUWPDefaultStylesOverride`, `Style.SetUWPDefaultStylesOverride<TControl>()`, and
+  `Style.ConfigureNativeFrameNavigation()`. The WinUI default styles are now the only ones.
 - **Skia overlay:** `TextBox.UseOverlayOnSkia`.
 
 `WebView2.IsInspectable` is also removed; it was an obsolete alias, so switch to
 `WebView2.EnableDevTools` instead.
+
+The cross-platform `Control.UseLegacyContentAlignment` flag is also removed. It opted into the
+legacy Top/Left default for `HorizontalContentAlignment`/`VerticalContentAlignment`; the default is
+now always the WinUI-correct **Center/Center**. Apps that set it to `true` should instead set
+`HorizontalContentAlignment`/`VerticalContentAlignment` explicitly (via a `Style` or per control).
+
+The cross-platform `WinRTFeatureConfiguration.ApplicationLanguages.UseLegacyPrimaryLanguageOverride`
+flag is also removed. Unlike the flags above it defaulted to `true`, so this changes behavior for
+apps that never touched it: setting `Windows.Globalization.ApplicationLanguages.PrimaryLanguageOverride`
+no longer swaps `CultureInfo.CurrentCulture`/`CurrentUICulture` from inside the setter. The override
+is persisted and applied to the culture on the next app start, matching WinUI. Resource lookup
+(`x:Uid`, `ResourceLoader`) still follows the new value immediately, so localized strings keep
+updating once the affected pages reload.
+
+Apps that relied on the immediate culture swap — number, date, and currency formatting, or .NET
+resource lookup through `CurrentUICulture` — should set the culture themselves alongside the
+override:
+
+```csharp
+ApplicationLanguages.PrimaryLanguageOverride = language;
+
+var culture = new CultureInfo(language);
+CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = culture;
+CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
+```
 
 If a single codebase must target both pre-7.0 and 7.0, guard the calls with `#if`.
 
@@ -166,6 +261,129 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
   (`ImageBrush.StretchProperty`, `AlignmentXProperty`, `AlignmentYProperty`) still resolves
   via inheritance, and `is TileBrush` is now `true` for an `ImageBrush`. Instance usage
   (`imageBrush.Stretch`, XAML `Stretch="…"`) is unaffected.
+- **`FadeInThemeAnimation` / `FadeOutThemeAnimation`** now derive directly from `Timeline`
+  (matching WinUI) instead of Uno's `DoubleAnimation`. The `DoubleAnimation`-only members
+  they used to inherit — `From`, `To`, `By`, `EasingFunction`, and
+  `EnableDependentAnimation` — are gone; WinUI never exposed them on these theme
+  animations. `TargetName` and the `Timeline` members (`Duration`, `BeginTime`,
+  `RepeatBehavior`, `FillBehavior`) are unchanged. Set only `TargetName` (as the built-in
+  styles do); the fade always animates `Opacity` to its fixed target (1 for fade-in, 0 for
+  fade-out).
+
+### XAML changes
+
+- **The WPF-style `clr-namespace:` xmlns form is no longer accepted.** WinUI only supports
+  `using:`; Uno used to also accept `clr-namespace:MyApp.Controls;assembly=MyLib` and silently
+  strip the prefix and the `;assembly=` token. Replace each declaration with the `using:` form —
+  the assembly is inferred, so the `;assembly=` part is simply dropped:
+
+  ```diff
+  - xmlns:local="clr-namespace:MyApp.Controls;assembly=MyLib"
+  + xmlns:local="using:MyApp.Controls"
+  ```
+
+  This is enforced at **build time** (the `UXAML0006` diagnostic) and at **run time** by
+  `XamlReader.Load` and Hot Reload, which throw a `XamlParseException`. The declaration itself is
+  rejected whether or not the prefix is used, so unused `clr-namespace:` declarations must also be
+  removed — the only exemption is a prefix listed in `mc:Ignorable` on the root element.
+
+- **A relative URI on a `Uri`-typed property now compiles to `ms-resource:///Files/…`**, the MRT
+  local-resource form WinUI produces. Previously Uno emitted the relative string verbatim. This
+  affects custom `Uri` properties, `HyperlinkButton.NavigateUri`, `Hyperlink.NavigateUri`,
+  `BitmapIcon.UriSource`, `BitmapIconSource.UriSource`, `WebView2.Source`,
+  `MediaPlayerElement.Source`, `LottieVisualSource.UriSource`, and the `Uri` passed to
+  `RandomAccessStreamReference.CreateFromUri`:
+
+  ```diff
+    <BitmapIcon UriSource="Assets/icon.png" />
+  - // compiled value: Assets/icon.png
+  + // compiled value: ms-resource:///Files/Assets/icon.png
+  ```
+
+  The rewrite is a prefix concat that drops a leading `/` and ignores the folder of the XAML file
+  containing it, exactly as WinUI does. **Images declared in application XAML keep loading the same
+  asset** — Uno resolves `ms-resource:///Files/X` as `ms-appx:///X`. To keep a value verbatim, write
+  it as an explicit `ms-appx:///…` URI in XAML.
+
+  Only the four image sinks Uno already resolved as assets carry that mapping. The properties above
+  that never resolved a relative URI stay inert with the new value, exactly as they are on WinUI —
+  a hand-written `ms-resource:///Files/…` is treated the same as the compiler-generated form, since
+  that *is* the MRT local-file namespace and Uno ships no MRT to resolve it any other way.
+
+  Two changes go beyond the value you read back:
+
+  - **A relative value is now absolute at the point of use.** `WebView2.Source` with a relative value
+    used to throw `ArgumentException` while the page initialized; it now navigates a `ms-resource:` URI
+    no web view can service, so the failure is silent instead of loud. A `NavigateUri` written without
+    a scheme (`www.example.com`) likewise becomes `ms-resource:///Files/www.example.com` and reaches
+    the launcher as an unregistered scheme, and a relative `Control.DefaultStyleResourceUri` no longer
+    throws while resolving. Give these properties absolute URIs — `https://…`, `ms-appx:///…`.
+  - **In a library, relative URIs resolve differently per property type.** On an `ImageSource`-typed
+    property the value now carries the library's assembly prefix (`ms-appx:///MyLib/Assets/x.png`), so
+    a library's own assets resolve — but a library asset that previously resolved from the *consuming
+    app's* root no longer does. On a `Uri`-typed property the `ms-resource` form cannot express that
+    prefix, so it resolves against the app root; a library shipping assets for `BitmapIcon` must use
+    an explicit `ms-appx:///MyLib/…` URI.
+
+  Properties typed `ImageSource` are unaffected in shape but now resolve consistently: `Image.Source`,
+  `ImageBrush.ImageSource`, and custom `ImageSource` properties all resolve a relative URI against
+  the base URI. `ImageBrush.ImageSource` and custom `ImageSource` properties previously kept the
+  relative string. `ResourceDictionary.Source` is unchanged.
+
+  Two divergences from WinUI remain here, both deliberate:
+
+  - **The base URI is the assembly root, not the XAML file's folder.** `Assets/logo.png` written in
+    `Views/MainPage.xaml` resolves as `ms-appx:///Assets/logo.png` on Uno and
+    `ms-appx:///Views/Assets/logo.png` on WinUI. This predates the rewrite and is unchanged by it.
+  - **Svg assets keep the `ms-appx:///` form.** Measured on WinAppSDK 1.7, WinUI compiles every
+    relative svg URI to `ms-resource:///Files/…` — including one written on `Image.Source` rather
+    than on `SvgImageSource.UriSource`. Uno keeps `ms-appx:///`, because that form is resolved as an
+    asset path and so carries the assembly prefix a library's own svg assets need; the `ms-resource`
+    form resolves only against the application root.
+
+### Android head uses the host builder
+
+The Android head now builds its host through `UnoPlatformHostBuilder`, like every other target.
+`Microsoft.UI.Xaml.NativeApplication` is now `abstract`; its `AppBuilder` delegate type and the
+constructor taking one have been removed, replaced by an abstract `CreateHost()` method.
+
+```csharp
+// Before
+public class Application : Microsoft.UI.Xaml.NativeApplication
+{
+    public Application(IntPtr javaReference, JniHandleOwnership transfer)
+        : base(() => new App(), javaReference, transfer)
+    {
+    }
+}
+
+// After
+using Uno.UI.Hosting;
+
+public class Application : Microsoft.UI.Xaml.NativeApplication
+{
+    public Application(IntPtr javaReference, JniHandleOwnership transfer)
+        : base(javaReference, transfer)
+    {
+    }
+
+    protected override UnoPlatformHost CreateHost() =>
+        UnoPlatformHostBuilder.Create()
+            .App(() => new App())
+            .UseAndroid()
+            .Build();
+}
+```
+
+Two related behavior changes:
+
+- **Startup failures now propagate.** Previously an exception during Android host initialization
+  was written to the console and swallowed, leaving a blank screen. It is now logged and rethrown.
+  Apps with latent initialization failures that used to start degraded will now crash on launch.
+- **`Uno.UI.Runtime.Skia.Android.AndroidHost` is now `internal`.** Use `UseAndroid()` instead of
+  constructing it.
+
+See [Customizing the `Application` class on Android](xref:Uno.Features.CustomizingAndroidApplication).
 
 ### Templates and project heads
 
@@ -177,13 +395,18 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 
 1. Remove `<UnoFeatures>skiarenderer</UnoFeatures>` (now implicit) — and any native-only
    feature switches.
-2. Recompile **every** Uno-dependent library against 7.0.
-3. Remove references to the deleted assemblies/types and to native element hosting.
-4. Delete native-only `FeatureConfiguration` calls.
-5. Replace the WASM DOM head with the Skia WebAssembly Browser head; remove any DOM/CSS
+2. Retarget any `net*-maccatalyst` head to `net10.0-desktop` and delete
+   `Platforms/MacCatalyst/`.
+3. Recompile **every** Uno-dependent library against 7.0.
+4. Remove references to the deleted assemblies/types and to native element hosting.
+5. Delete native-only `FeatureConfiguration` calls.
+6. Replace the WASM DOM head with the Skia WebAssembly Browser head; remove any DOM/CSS
    customization and `HtmlElement` usage.
-6. Remove manual `ConfigureUniversalImageLoader();` (Android) and other native bootstrap.
-7. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+7. Remove manual `ConfigureUniversalImageLoader();` (Android) and other native bootstrap.
+8. Convert every `xmlns:…="clr-namespace:…"` declaration in your XAML to the `using:` form.
+9. Convert the Android `Application` class to override `CreateHost()` instead of passing an
+   `AppBuilder` delegate to the base constructor.
+10. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)

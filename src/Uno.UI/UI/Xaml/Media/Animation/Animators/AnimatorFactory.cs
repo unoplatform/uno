@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +7,7 @@ using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-	partial class AnimatorFactory
+	internal static partial class AnimatorFactory
 	{
 		/// <summary>
 		/// Creates the actual animator instance
@@ -36,5 +36,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			throw new NotSupportedException();
 		}
+
+		private static IValueAnimator CreateDouble(Timeline timeline, double startingValue, double targetValue)
+			=> new DispatcherDoubleAnimator(startingValue, targetValue);
+
+		private static IValueAnimator CreateColor(Timeline timeline, ColorOffset startingValue, ColorOffset targetValue)
+			=> new DispatcherColorAnimator(startingValue, targetValue);
 	}
 }

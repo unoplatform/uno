@@ -50,11 +50,6 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		public string OutputPath { get; set; } = "";
 
 		[Required]
-		public string UnoUIPackageBasePath { get; set; } = "";
-
-		public string UnoRuntimeIdentifier { get; set; } = "";
-
-		[Required]
 		public Microsoft.Build.Framework.ITaskItem[] TrimmerRootDescriptor { get; set; } = [];
 
 		[Required]
@@ -369,15 +364,10 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		{
 			if (ReferencePath != null)
 			{
-				var unoUIPackageBasePath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(UnoUIPackageBasePath)));
-
+				// Uno.WinUI ships the Skia build in lib/ with no uno-runtime folder to redirect to.
 				foreach (var referencePath in ReferencePath)
 				{
-					var isReferenceAssembly = referencePath.GetMetadata("PathInPackage")?.StartsWith("ref/", StringComparison.OrdinalIgnoreCase) ?? false;
-					var hasConcreteAssembly = isReferenceAssembly && ReferencePath.Any(innerReference => HasConcreteAssemblyForReferenceAssembly(innerReference, referencePath));
-
-					var name = Path.GetFileName(referencePath.ItemSpec);
-					_referencedAssemblies.Add(RewriteReferencePath(referencePath.ItemSpec, unoUIPackageBasePath, UnoRuntimeIdentifier));
+					_referencedAssemblies.Add(referencePath.ItemSpec);
 				}
 
 				var searchPaths = ReferencePath
@@ -392,45 +382,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 					_assemblyResolver.AddSearchDirectory(assembly);
 				}
 			}
-
-			string RewriteReferencePath(string referencePath, string unoUIPackageBasePath, string unoRuntimeIdentifier)
-			{
-				var separator = Path.DirectorySeparatorChar;
-				unoRuntimeIdentifier = unoRuntimeIdentifier.ToLowerInvariant();
-
-				var runtimeTargetFramework =
-					new Version(TargetFrameworkVersion) >= new Version("10.0")
-					? "net10.0"
-					: "netstandard2.0";
-
-				var isUnoRuntimeEnabled = (unoRuntimeIdentifier == "skia" || unoRuntimeIdentifier == "webassembly") &&
-						referencePath.StartsWith(unoUIPackageBasePath, StringComparison.Ordinal);
-
-				if (isUnoRuntimeEnabled)
-				{
-					var originalFolderPath = $"lib{separator}{runtimeTargetFramework}";
-					var preUno46FolderPart = $"uno-runtime{separator}{unoRuntimeIdentifier}";
-					var postUno46FolderPathPart = $"uno-runtime{separator}{runtimeTargetFramework}{separator}{unoRuntimeIdentifier}";
-
-					var post46Path = referencePath.Replace(originalFolderPath, postUno46FolderPathPart);
-					var pre46Path = referencePath.Replace(originalFolderPath, preUno46FolderPart);
-
-					if (File.Exists(post46Path))
-					{
-						return post46Path;
-					}
-					else if (File.Exists(pre46Path))
-					{
-						return pre46Path;
-					}
-				}
-
-				return referencePath;
-			}
 		}
-
-		private static bool HasConcreteAssemblyForReferenceAssembly(ITaskItem other, ITaskItem referenceAssembly)
-			=> Path.GetFileName(other.ItemSpec) == Path.GetFileName(referenceAssembly.ItemSpec) && (other.GetMetadata("PathInPackage")?.StartsWith("lib/", StringComparison.OrdinalIgnoreCase) ?? false);
 
 
 		private string AlignPath(string outputPath)

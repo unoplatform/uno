@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum AnimationIterationBehavior
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Count = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Forever = 1,
 #endif
 	}

@@ -3,14 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct ManipulationDelta
 	{
 		// Forced skipping of method Microsoft.UI.Input.ManipulationDelta.ManipulationDelta()
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public ManipulationDelta(global::Windows.Foundation.Point _Translation, float _Scale, float _Rotation, float _Expansion)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.ManipulationDelta", "ManipulationDelta(Point _Translation, float _Scale, float _Rotation, float _Expansion)");
