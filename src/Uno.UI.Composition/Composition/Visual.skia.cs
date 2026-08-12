@@ -240,6 +240,21 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		InvalidateParentChildrenPicture(false);
 	}
 
+	/// <summary>
+	/// Discards this visual's and its whole subtree's cached recordings. Used when the active
+	/// <see cref="Microsoft.UI.Xaml.Media.CompositionTarget"/> renderer changes (e.g. the WebGPU device is
+	/// imported asynchronously on WebAssembly, replacing the default Skia renderer): recordings retained by the
+	/// previous backend can't be replayed by the new one, so every visual must re-record under it.
+	/// </summary>
+	internal void InvalidatePaintRecursive()
+	{
+		InvalidatePaint();
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			child.InvalidatePaintRecursive();
+		}
+	}
+
 	internal void InvalidateParentChildrenPicture(bool includeSelf)
 	{
 		var parent = includeSelf ? this : Parent;
