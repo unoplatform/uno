@@ -48,9 +48,9 @@ namespace Microsoft.UI.Composition
 
 		/// <summary>Pixel size of the surface's content — from the current frame's <see cref="IImage"/>, or from a
 		/// directly-retained texture. Null when there is nothing to draw. Used by brushes for stretch/alignment.</summary>
-		internal System.Numerics.Vector2? Size =>
-			Image is { } img ? new System.Numerics.Vector2(img.PixelWidth, img.PixelHeight)
-			: _retainedTexture && _texture is { } tex ? new System.Numerics.Vector2(tex.PixelWidth, tex.PixelHeight)
+		internal global::System.Numerics.Vector2? Size =>
+			Image is { } img ? new global::System.Numerics.Vector2(img.PixelWidth, img.PixelHeight)
+			: _retainedTexture && _texture is { } tex ? new global::System.Numerics.Vector2(tex.PixelWidth, tex.PixelHeight)
 			: null;
 
 		/// <summary>

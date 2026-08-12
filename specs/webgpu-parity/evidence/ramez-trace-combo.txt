@@ -1,0 +1,104 @@
+======== GPU SUBMISSION TRACE (ramez/webgpu-experiment) ========
+--- TRACE rect (solid) ---
+PASS main
+  DRAW solid v=6
+PASS end
+--- TRACE rect x3 (coalesce) ---
+PASS main
+  DRAW solid v=18
+PASS end
+--- TRACE path (stencil-then-cover) ---
+PASS main
+PASS end
+--- TRACE gradient linear ---
+PASS main
+  DRAW gradient v=6
+PASS end
+--- TRACE gradient radial ---
+PASS main
+  DRAW gradient v=6
+PASS end
+--- TRACE image ---
+PASS main
+  DRAW image v=6
+PASS end
+--- TRACE clip-rect (scissor only) ---
+PASS main
+  DRAW solid v=6
+PASS end
+--- TRACE clip-rounded (depth mask) ---
+PASS main
+  DRAW clip-write(rounded/exclude depth) v=6
+  DRAW solid v=6
+  DRAW clip-clear(depth=0) v=3
+PASS end
+--- TRACE clip-path (depth mask) ---
+PASS main
+  DRAW clip-path-stencil-eo v=9
+  DRAW clip-path-cover(depth) v=3
+  DRAW solid v=6
+  DRAW clip-clear(depth=0) v=3
+PASS end
+--- TRACE save-layer opacity ---
+PASS offscreen:scene
+PASS end
+PASS offscreen:scene
+  DRAW solid v=6
+PASS end
+PASS offscreen:layer.comp
+  DRAW layer-composite v=6
+PASS end
+--- TRACE mask-layer ---
+PASS offscreen:scene
+PASS end
+PASS offscreen:scene
+  DRAW solid v=6
+PASS end
+PASS offscreen:scene
+  DRAW solid v=6
+PASS end
+PASS offscreen:mask.comp
+  DRAW mask-composite v=6
+PASS end
+--- TRACE shadow (coverage+blur+composite) ---
+PASS offscreen:scene
+PASS end
+PASS offscreen:scene
+  DRAW solid v=6
+PASS end
+PASS offscreen-ss:blur
+  DRAW blur v=3
+PASS end
+PASS offscreen-ss:blur
+  DRAW blur v=3
+PASS end
+PASS offscreen-ss:blur
+  DRAW blur v=3
+PASS end
+PASS offscreen:shadow.comp
+  DRAW shadow-composite v=6
+PASS end
+PASS offscreen:scene
+  DRAW solid v=6
+PASS end
+--- TRACE backdrop-acrylic (translucent) ---
+PASS offscreen:scene
+  DRAW solid v=6
+PASS end
+PASS offscreen-ss:blur
+  DRAW blur v=3
+PASS end
+PASS offscreen-ss:blur
+  DRAW blur v=3
+PASS end
+PASS offscreen-ss:blur
+  DRAW blur v=3
+PASS end
+PASS offscreen:backdrop.comp
+  DRAW backdrop-composite v=6
+PASS end
+PASS offscreen:scene
+  DRAW rrect v=6
+PASS end
+================================================================
+

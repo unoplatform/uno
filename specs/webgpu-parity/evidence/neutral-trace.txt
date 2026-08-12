@@ -1,0 +1,88 @@
+======== GPU SUBMISSION TRACE (neutral) ========
+--- TRACE rect (solid) ---
+PASS main 64x64 msaa=4 clear
+  DRAW solid v=6
+PASS end
+--- TRACE rect x3 (coalesce) ---
+PASS main 64x64 msaa=4 clear
+  DRAW solid v=18
+PASS end
+--- TRACE path (stencil-then-cover) ---
+PASS main 64x64 msaa=4 clear
+  DRAW path-stencil-nz v=3
+  DRAW path-cover v=6
+PASS end
+--- TRACE gradient linear ---
+PASS main 64x64 msaa=4 clear
+  DRAW gradient v=6
+PASS end
+--- TRACE gradient radial ---
+PASS main 64x64 msaa=4 clear
+  DRAW gradient v=6
+PASS end
+--- TRACE image ---
+PASS main 64x64 msaa=4 clear
+  DRAW image v=6
+PASS end
+--- TRACE clip-rect (scissor only) ---
+PASS main 64x64 msaa=4 clear
+  DRAW solid v=6
+PASS end
+--- TRACE clip-rounded (analytic SDF) ---
+PASS main 64x64 msaa=4 clear
+  DRAW solid v=6
+PASS end
+--- TRACE clip-path (depth mask) ---
+PASS main 64x64 msaa=4 clear
+  DRAW clipdepth-set1(fill) v=3
+  DRAW clip-stencil-nz v=3
+  DRAW clipdepth-cover0 v=3
+  DRAW solid v=6
+PASS end
+--- TRACE save-layer opacity ---
+PASS offscreen 64x64 msaa=4 clear
+  DRAW solid v=6
+PASS end
+PASS main 64x64 msaa=4 clear
+  DRAW composite-srcover v=3
+PASS end
+--- TRACE mask-layer (DstIn) ---
+PASS offscreen 64x64 msaa=4 clear
+  DRAW solid v=6
+PASS end
+PASS offscreen 64x64 msaa=4 clear
+  DRAW solid v=6
+  DRAW composite-dstin v=3
+PASS end
+PASS main 64x64 msaa=4 clear
+  DRAW composite-srcover v=3
+PASS end
+--- TRACE shadow (coverage+blur+composite) ---
+PASS shadow-coverage 52x52 msaa=4 clear
+  DRAW shadow-stencil-nz v=6
+  DRAW shadow-cover v=6
+PASS end
+PASS blur-h 0x0 msaa=1 clear
+  DRAW blur v=3
+PASS end
+PASS blur-v 0x0 msaa=1 clear
+  DRAW blur v=3
+PASS end
+PASS main 64x64 msaa=4 clear
+  DRAW image v=6
+PASS end
+--- TRACE backdrop-acrylic (translucent) ---
+PASS offscreen 64x64 msaa=4 clear
+  DRAW solid v=6
+PASS end
+PASS blur-h 0x0 msaa=1 clear
+  DRAW blur v=3
+PASS end
+PASS blur-v 0x0 msaa=1 clear
+  DRAW blur v=3
+PASS end
+PASS main 64x64 msaa=4 clear
+  DRAW solid v=6
+  DRAW image v=6
+PASS end
+================================================

@@ -1,0 +1,2630 @@
+
+===== HUMAN #0 (619c) =====
+The goal is to explore putting rendering behind an interface so that other rendering backends can be added other than skia. Avalonia is cloned in /workspace and it has a version of this (IDrawingContextImpl). Explore Avalonia's ideas and see what would be the appropriate shape for Uno. The initial idea I have is to make a list of the skiasharp calls we make and then create an interface that third parties can use to plug their own 2d graphics implementation (by default, we will use the existing skia rendering backend to implement this interface). But, it doesn't have to be that, I'm open to all ideas. Investigate
+
+===== HUMAN #1 (28c) =====
+we got interrupted. continue
+
+===== HUMAN #2 (451c) =====
+The goal is to let people experimenting with plugging their own backends. Let's try both ideas: see what SkiaSharp APIs drawing API we use and put an interface in front of it (things like SKPicture are not to be included in this interface, as they will be the skia impl of the interface. the interface should include drawing APIs, e.g. DrawPath, DrawRect, SaveLayer, stuff like that), and in parallel let's explore something more generic like Avalonia
+
+===== HUMAN #3 (210c) =====
+let's explore track 1 deeper, why is having various SKObjects a problem? You wrap at the entry point (e.g. you can have SKCanvas.DrawPath which takes an SKPaint object together into one method in the interface)
+
+===== HUMAN #4 (198c) =====
+the reallocation regressions is no bit deal, we will deal with that later with similar pooling shenanigans or whatever. the refined track 1 makes sense. let's explore implementing it in a new branch
+
+===== HUMAN #5 (227c) =====
+let's base the work over feature/breakingchanges instead of master as it already has Skiasharp v4 that uses SKPathBuilder instead of SKPath. After moving the work and checkign that things still work, let's rediscuss increment 2
+
+===== HUMAN #6 (40c) =====
+[1] it did not [2] what are the options?
+
+===== HUMAN #7 (161c) =====
+let's go with option B first. Effects can be interfaced away and should not depend on SkSL specifically, but should mirror the CompositionEffectBrush public API.
+
+===== HUMAN #8 (7c) =====
+do both
+
+===== HUMAN #9 (21c) =====
+install xvfb and test
+
+===== HUMAN #10 (49c) =====
+describe the interface that you settled on so far
+
+===== HUMAN #11 (177c) =====
+How is CreateOpacityColorFilter implemented? For opacity, we usually don't do a color filter, but thread the opacity through the draw calls directly so we don't pay for a layer.
+
+===== HUMAN #12 (72c) =====
+no, let's continue first with the rest of the api surface, what remains?
+
+===== HUMAN #13 (24c) =====
+let's do 1,2 and 3 first
+
+===== HUMAN #14 (36c) =====
+continue to 2 and 3 without stopping
+
+===== HUMAN #15 (18c) =====
+walk me through #4
+
+===== HUMAN #16 (214c) =====
+No, let's reverse the idea, it's the rendering backend that drives the render cycle and can store some data. That way, the render backend is free to structure things how it wants including display lists and caching
+
+===== HUMAN #17 (268c) =====
+It should be something similar to the backend being the one calling an agnostic version of RenderRootVisual, but the details of the walking should be the same as they are now (in Uno itself an unified), except that instead of using skia directly, it uses the interface
+
+===== HUMAN #18 (135c) =====
+The data retained inside each Visual is not necessarily a display list, it might some other metadata maintined by the rendering backend
+
+===== HUMAN #19 (22c) =====
+what is presentTarget?
+
+===== HUMAN #20 (49c) =====
+the two-phase/threading concerns are per backend.
+
+===== HUMAN #21 (142c) =====
+the two-phase/threading concerns are per backend. The default skia backend will go through the established CompositionTarget.Render/Draw cycle
+
+===== HUMAN #22 (386c) =====
+the two-phase/threading concerns are per backend. The default skia backend will go through the established two phase lifecycle. The boundary should be that the render backend receives invalidations when the visual tree has changes. the rendering backend is then responsible for sending a request to do a native invalidation and then receives vsync signals back from the native platform.
+
+===== HUMAN #23 (32c) =====
+do both 1 and 2 without stopping
+
+===== HUMAN #24 (30c) =====
+continue with full milestone 2
+
+===== HUMAN #25 (158c) =====
+Let's do a sidequest. Let's create an md document with the entire avalonia exposed abstraction, including the supporting interfaces like the ones for Geometry
+
+===== HUMAN #26 (57c) =====
+let's create a document of the abstraction we have so far
+
+===== HUMAN #27 (65c) =====
+let's create a document of the abstraction we have so far for uno
+
+===== HUMAN #28 (105c) =====
+let's create another file with a list of the skia functions we are using in Uno (in the composition area)
+
+===== HUMAN #29 (536c) =====
+going the route of replacing CompositionTarget was a mistake. Instead of having the render backend drive the render cycle, let's go back to the cycle being backend-agnostic. The backend will have to adhere to the two phase model. First phase is going to be on the UI thread and walks through the visual tree (the walk is not done by the backend, but by the logic currently in Visual.skia.cs) and drawing instructions are called on the given "drawing session". Then the backend will be called again to present when we get a vsync signal.
+
+===== HUMAN #30 (44c) =====
+show me the shape of the uno abstraction now
+
+===== HUMAN #31 (88c) =====
+IRenderBackend.Present is skia specific because of the SKCanvas. That needs to be fixed.
+
+===== HUMAN #32 (67c) =====
+Continue with the remaining skia-typed parts and make them non-skia
+
+===== HUMAN #33 (13c) =====
+yes, let's go
+
+===== HUMAN #34 (35c) =====
+let's do [1]. also for [2], you don
+
+===== HUMAN #35 (97c) =====
+let's do [1]. also for [2], you don't need an SKImageFilter DAG or SkSL, you can keep it generic.
+
+===== HUMAN #36 (13c) =====
+do #1 then #2
+
+===== HUMAN #37 (107c) =====
+we should have a SaveLayer-like agnositc method and then the subtree can be drawn after the SaveLayer call.
+
+===== HUMAN #38 (42c) =====
+what remains skia-specific in Composition?
+
+===== HUMAN #39 (11c) =====
+let's do #1
+
+===== HUMAN #40 (161c) =====
+How can we keep things like the SKPicture-per-visual optimization and the other optimizations in the skia implementation while moving to a skia-less composition?
+
+===== HUMAN #41 (427c) =====
+i don't want record/replay verbs in the abstraction, it's too specific. A third party backend implementor should not need to know about visuals or anything. The third party providers should just be able to replace skia's capabilities (e.g. the actual drawing commands like DrawRect and SaveLayer). We want to be able to provide that while still being able to do things like picture caching for our own internal implementations.
+
+===== HUMAN #42 (179c) =====
+let's avoid the generic caching. let's go with the capability advertising route but make it public and then third parties can decide if they want to implement something like that.
+
+===== HUMAN #43 (41c) =====
+does the picture collapsing also survive?
+
+===== HUMAN #44 (46c) =====
+what's remaining to make composition skia-less
+
+===== HUMAN #45 (34c) =====
+let's do the small cleanups first.
+
+===== HUMAN #46 (11c) =====
+let's do #7
+
+===== HUMAN #47 (252c) =====
+In the ApiExtensibility point, let's make it clearer. Instead of talking about internal interfaces, let's have a category for each interface to list the public side (what public APIs make sure of this interface) which a description of what is provides.
+
+===== HUMAN #48 (4c) =====
+yes.
+
+===== HUMAN #49 (28c) =====
+what other skia-isms remain?
+
+===== HUMAN #50 (67c) =====
+i'm talking about skia usages, not that some things are skia shaped
+
+===== HUMAN #51 (235c) =====
+decoding is not necessarily related to rendering. Skia happens to be used for both both image decoding and rendering, but we can keep image decoding not part of the abstraction for now and always use skia internally for image decoding.
+
+===== HUMAN #52 (71c) =====
+let's make the ninepatch neutral as well and then go intro the geometry
+
+===== HUMAN #53 (8c) =====
+continue
+
+===== HUMAN #54 (45c) =====
+casting to skpath cannot be allowed obviously
+
+===== HUMAN #55 (39c) =====
+what other skia remains in composition?
+
+===== HUMAN #56 (260c) =====
+for the "intentionally skia" section, skia is fine to handle non-rendering work like font and image decoding, but actually rendering these fonts and images needs to be in the neutral interface. we can later swap out skia for ageneric font and image libararies.
+
+===== HUMAN #57 (416c) =====
+add the neutral glyph-draw, but it shouldn't be about glyphs, it simply should be drawing paths (they happen to be paths of a glyph, but it doesn't matter). SKCanvasVisual is fine to stay skia-only. SkiaAcrylicBrush is an alternative acrylic implementation than the compositioneffectbrush-based default implementation. we don't need it if we effect brushes already work neutrally. Visual.skia.cs needs to be neutral.
+
+===== HUMAN #58 (3c) =====
+Yes
+
+===== HUMAN #59 (47c) =====
+walk me through the abstractions we have so far
+
+===== HUMAN #60 (146c) =====
+walk me through the abstractions we have so far one by one. let's follow a DAG-like sequence where we introduce new abstraction concepts as needed
+
+===== HUMAN #61 (23c) =====
+no, one by fucking one.
+
+===== HUMAN #62 (82c) =====
+why do we need both Bounds and TightBounds and what's the difference between them?
+
+===== HUMAN #63 (67c) =====
+is calling tightbounds multiple times on the same skpath expensive?
+
+===== HUMAN #64 (86c) =====
+let's drop Bounds and stick only to TightBounds (which can be renamed to just Bounds).
+
+===== HUMAN #65 (41c) =====
+let's take a look at those 2 dependencies
+
+===== HUMAN #66 (11c) =====
+let's unify
+
+===== HUMAN #67 (8c) =====
+let's go
+
+===== HUMAN #68 (88c) =====
+what is the interaction of calling a whole-primitive adder during an imperative sequence
+
+===== HUMAN #69 (84c) =====
+can we split the abstraction into two parts, the imperative and the whole-primitive?
+
+===== HUMAN #70 (15c) =====
+let's go 1 by 1
+
+===== HUMAN #71 (11c) =====
+next handle
+
+===== HUMAN #72 (4c) =====
+next
+
+===== HUMAN #73 (139c) =====
+PaintParams is getting weird. Why is there a colorfilter on the paintparams? just supply the filter directly on the calls that need it, no?
+
+===== HUMAN #74 (95c) =====
+the only issue is that it's not clear which fields in the paintparams will be use in each call?
+
+===== HUMAN #75 (96c) =====
+let's just make the drawing verbs take what they need directly instead of combiling in a struct.
+
+===== HUMAN #76 (8c) =====
+go ahead
+
+===== HUMAN #77 (55c) =====
+what does the maskfilter do when the shader is present?
+
+===== HUMAN #78 (112c) =====
+what does the maskfilter do when the shader is present? also color is meaningless if IShader is not null, right?
+
+===== HUMAN #79 (238c) =====
+let's create explicit overload for each scenario, let's not dump all the usuable parameters together in one overload. e.g. let's create an overload just for the shader without a color (the shader can put the alpha inside the shader logic)
+
+===== HUMAN #80 (24c) =====
+what does maskfilter do?
+
+===== HUMAN #81 (57c) =====
+what's the "alpha mask", you mean just the alpha channel?
+
+===== HUMAN #82 (131c) =====
+can we make the entire shadow one effect/verb and have the details of using a maskfilter done per backend? or would that be uglier?
+
+===== HUMAN #83 (12c) =====
+what is SDF?
+
+===== HUMAN #84 (154c) =====
+let's do the change then. Also, make a pass over the entire abstraction so far to see if there are similar changes like this that clean up the abstraction
+
+===== HUMAN #85 (13c) =====
+let's do both
+
+===== HUMAN #86 (14c) =====
+let's continue
+
+===== HUMAN #87 (126c) =====
+the idea of having a "recorder" session feels very skpicturerecorder-coded. Is there a cleaner way to have "retained" drawing?
+
+===== HUMAN #88 (200c) =====
+cullbounds can definitely be dropped, it's always set to infinite bounds. But also, what if there's a retained-mode backend like webgpu where we upload raw vertex buffers? would this shape work there?
+
+===== HUMAN #89 (21c) =====
+what would TState be?
+
+===== HUMAN #90 (3c) =====
+yes
+
+===== HUMAN #91 (24c) =====
+postPresent smells weird
+
+===== HUMAN #92 (170c) =====
+the fact that we're drawing to a backbuffer and not directly to the screen should not matter to the interface. shouldn't the overay drawing be included before presenting?
+
+===== HUMAN #93 (69c) =====
+how does fpshelper draw? does it use skia or the neutral abstraction?
+
+===== HUMAN #94 (28c) =====
+let's make it work neutrally
+
+===== HUMAN #95 (78c) =====
+let's make it work neutrally as if we were drawing some borders and textblocks
+
+===== HUMAN #96 (156c) =====
+let's now try to abstract image and font handling as well. Make sure to handle emojis in fonts that are not simple paths, but are like an image with colors.
+
+===== HUMAN #97 (12c) =====
+let's do [1]
+
+===== HUMAN #98 (80c) =====
+let's try validating with an alternative font backend using any ttf font library
+
+===== HUMAN #99 (63c) =====
+create a build running the alternative backend so I can test it
+
+===== HUMAN #100 (117c) =====
+Make the managed reader handle all scenarios and then create a build running the alternative backend so I can test it
+
+===== HUMAN #101 (79c) =====
+It works. stop writing unnecessary runtime tests. Let's go into image decoding.
+
+===== HUMAN #102 (112c) =====
+let's create a managed backend for image decoding as well. it should deal with all the common formats + gifs etc
+
+===== HUMAN #103 (86c) =====
+let's tighten the parity and add webp. make sure to have a build I can test in the end
+
+===== HUMAN #104 (86c) =====
+The framerate of BitmapImage_IsPlaying feels off. How often should the numbers change?
+
+===== HUMAN #105 (147c) =====
+Leave no gaps. The goal is to be able to drop skia entirely. The framerate of BitmapImage_IsPlaying feels off. How often should the numbers change?
+
+===== HUMAN #106 (22c) =====
+how does svg work now?
+
+===== HUMAN #107 (97c) =====
+let's do all [4] previous gaps and also do a amanged SVG parser that emits neutral draw commands.
+
+===== HUMAN #108 (266c) =====
+let's do all [4] previous gaps and also do a amanged SVG parser that emits neutral draw commands. SKCanvasElement can stay as is since it's a separate control in a separate package. but the core framework (including svg support) should no longer be dependent on skia
+
+===== HUMAN #109 (109c) =====
+Continue with all raster gaps but first, let's create a document summarizing the abstractions we have so far.
+
+===== HUMAN #110 (80c) =====
+keep working and stp pausing until all partial work has been done. leave no gaps
+
+===== HUMAN #111 (44c) =====
+have we been committing the work as we went?
+
+===== HUMAN #112 (185c) =====
+let's set VP8 on temporary hold. the goal now is to see what else is needed to make composition not reference skia at all (we can put the skia impl in a separate project). What remains?
+
+===== HUMAN #113 (201c) =====
+let's set VP8 on temporary hold (commit as wip). the goal now is to see what else is needed to make composition not reference skia at all (we can put the skia impl in a separate project). What remains?
+
+===== HUMAN #114 (139c) =====
+let's do B first. No internals visible to. we want the same treatment between our skia implementation and any other foreign implemenetation
+
+===== HUMAN #115 (12c) =====
+yes, proceed
+
+===== HUMAN #116 (21c) =====
+let's do [3] then [2]
+
+===== HUMAN #117 (23c) =====
+Uno.UI.Composition.Skia
+
+===== HUMAN #118 (286c) =====
+if there is still coupling and hard skia dependencies, let's work on those first. let's make sure there is a skia-less implementation for each abstraction. I have a webgpu rendering backend on another branch that I will give to you soon. In the meantime, what else can be made skia-less
+
+===== HUMAN #119 (41c) =====
+where's the geometry to segments methods?
+
+===== HUMAN #120 (160c) =====
+close the managed-geometry gaps. In the future, never leave gaps like this. only stop when the thing is fully working. where's the geometry to segments methods?
+
+===== HUMAN #121 (15c) =====
+what;s going on
+
+===== HUMAN #122 (23c) =====
+investigate the failure
+
+===== HUMAN #123 (372c) =====
+keep a pointer for this and then let's move on. The WebGPU backend was implemented in ramez/webgpu-experiment. Fetch it and copy it over to fit with the new abstractions. It was using some help from skia but now let's replace that with managed alternatives. The goal is to have a fully skia-less working setup. What else needs to be replaced? A bit one is related to text.
+
+===== HUMAN #124 (166c) =====
+yes, let's go. make sure that the eventual goal is not to have just skia and webgpu backend working, but any new backend can work in the same way without core changes
+
+===== HUMAN #125 (72c) =====
+Let's do all of them in sequence. Never stop until all 5 steps are done.
+
+===== HUMAN #126 (43c) =====
+let's go to host wiring and then round back
+
+===== HUMAN #127 (11c) =====
+what's SPI?
+
+===== HUMAN #128 (28c) =====
+explain the gradient problem
+
+===== HUMAN #129 (49c) =====
+skia should not be the factory, that's the issue.
+
+===== HUMAN #130 (180c) =====
+The main point is that each backend knows it's types. So the webgpu backend creates an IShader of a specific type that it knowns and that it can then cast back when received later.
+
+===== HUMAN #131 (76c) =====
+this looks good but why is there a "drawing backend" and a "render backend"?
+
+===== HUMAN #132 (65c) =====
+let's investigate 2 interfaces registered together vs 1 interface
+
+===== HUMAN #133 (147c) =====
+why is the drawing backend needed at assembly load? can't it be present only at the time of the would-be registration of the 2 interfaces together?
+
+===== HUMAN #134 (124c) =====
+you can't register at module load time anyway beacause the goal is that third parties can register their own implementations
+
+===== HUMAN #135 (59c) =====
+the registration should be done on the host builders, yeah?
+
+===== HUMAN #136 (167c) =====
+the existing renderingbackend options need to be removed since they were assuming skia. Let's include that in the interface summary doc that this is a breaking change.
+
+===== HUMAN #137 (61c) =====
+There was already a doc in uno-drawing-backend-abstraction.md
+
+===== HUMAN #138 (111c) =====
+how do you suggest the hosts register the backend? Specially that e.g. android doesn't even have a host builder
+
+===== HUMAN #139 (212c) =====
+let's not have the default thing since we might want to remove the skia depedency at some point to save on size. setting the backend should be done user-side. Let's have that mechanism be uniform across platforms
+
+===== HUMAN #140 (446c) =====
+let's talk the problem that you raised about the "graphics context" generation is specific per platform and might not work with all backends (e.g. a webgpu backend needs a webgpu context, while skia is happy to work with an opengl or a metal context). Investigate whether we can make it so that implementors of the abstraction we have don't have to bother themselves with dealing with graphics init. Take a look at what Avalonia does in this case
+
+===== HUMAN #141 (153c) =====
+let's make a webgpu context one of the provided graphics contexts along gl/gles vulkan and metal. Why are we talking about "surfaces" and not "contexts"?
+
+===== HUMAN #142 (483c) =====
+let's adjust this a bit. We don't create a list of "available contexts". It would be wasteful to init both a vulkan and a gl context. The backend should be asked to provide a list of graphics contexts it can work with in the order of preference. We can then attempt to create these contexts in order until one succeeds. If nothing succeeds, we are forced not to use that backend and move on to the next (in a similar list in the order of preference provided by the user during init).
+
+===== HUMAN #143 (23c) =====
+what about the surface?
+
+===== HUMAN #144 (113c) =====
+The backend should not be responsible for surface creation. Similar to context creation, it should be done by us.
+
+===== HUMAN #145 (192c) =====
+Since we draw to a texture and then blit to the window surface to benefit from dirty rectangles, can we keep the entire surface details internal and only hand the backend a texture to draw in?
+
+===== HUMAN #146 (473c) =====
+Yes, not universal. A wgpu context would deal with a wgpu texture, a gl context with a gl texture, etc. And actually, the texture vs surface discussion can be avoided entirely, no? Regardless of whether it's a surface or a texture, the drawing always happens against a "render target view" or something similar, so whether we internally decide to draw directly to a window surface view or to a texture view can be kept open without breaking the abstraction. Does that work?
+
+===== HUMAN #147 (593c) =====
+is it necessary that the backend knows that the previous contents are retained? Doesn't the clip (which is not backend dependent) already deal with this? drawing only happens in the clip region. The backend draws inside the clip regardless of whether things are retained or not, no? For the second point, it will be important for the backend implementation to declare the necessary capabilities it needs from the graphics API it supports (e.g. a backend can decide that it needs a stencil buffer of atleast a specific bit-length, these parameters are usually supplied in the context creation).
+
+===== HUMAN #148 (211c) =====
+let's clarify the declared capabilities point. The capabilities are declared so that the created context supports these capabilities, but the backend still needs to create it's own e.g. stencil buffers, correct?
+
+===== HUMAN #149 (105c) =====
+There's another point that needs dealing with: who drives the graphics pipeline, is it us or the backend?
+
+===== HUMAN #150 (51c) =====
+let's write this down in the md file and implement.
+
+===== HUMAN #151 (26c) =====
+why not headless testable?
+
+===== HUMAN #152 (28c) =====
+what is SkiaContextProvider?
+
+===== HUMAN #153 (329c) =====
+the "shared software device" can be a simple class containing a framebuffer pointer. each backend can wrap this buffer. There is also no reason I'm saying to have a context provider abstraction. Since this is uno-internal, we can concretize the creation of the limited set of apis we support (gl, gles, vulkan, metal, wgpu, etc.)
+
+===== HUMAN #154 (68c) =====
+how is this CompositionTarget wiring working with the webgpu backend
+
+===== HUMAN #155 (95c) =====
+let's continue working until the webgpu backend is really proven end to end with no skia stuff.
+
+===== HUMAN #156 (67c) =====
+let's fix the CompositionTarget loop first and then move on to text
+
+===== HUMAN #157 (57c) =====
+I thought the webgpu branch had support for many targets?
+
+===== HUMAN #158 (72c) =====
+let's do that as well as try to get a proper wgpu swapchain going on X11
+
+===== HUMAN #159 (159c) =====
+let's do that as well as try to get a proper wgpu swapchain going on X11. blind but mechanical edits are fine. We will test the other platforms at the very end
+
+===== HUMAN #160 (33c) =====
+commit as you go and then push on
+
+===== HUMAN #161 (95c) =====
+i thought the geometry/image formats where backend-specific? e.g. an image is usually a texture
+
+===== HUMAN #162 (113c) =====
+let's separate between the mere act of image decoding and actually storing the image in a backend specific format
+
+===== HUMAN #163 (94c) =====
+it might be cleaner for us to control the lifecycle of the texture instead of internal caching
+
+===== HUMAN #164 (170c) =====
+why are there methods on the igraphicscontext? i thought the context was just an intptr or something just for init. texture creation should be next to shader creation etc
+
+===== HUMAN #165 (2c) =====
+go
+
+===== HUMAN #166 (21c) =====
+let's do [1] then [3]
+
+===== HUMAN #167 (91c) =====
+let's do [1] then [3]. I'm stepping away, don't stop until both are fully done with no gaps
+
+===== HUMAN #168 (211c) =====
+for [1], good, but is there a reason for an IImage interface anymore? Can't it simply be a concrete simple class that has the image buffer along with its metadata? for [3], are there other shapers than harfbuzz?
+
+===== HUMAN #169 (333c) =====
+the important bit here is having 2 shapers so that we make sure our abstractions are solid. In reality, everyone will use harfbuzz. Alternatively, we might decide that it's not worth the effort and it's better not to abstract this out at all and keep the shaper an internal piece that is not externally overridable. let's investigate
+
+===== HUMAN #170 (141c) =====
+what about the text engine in UnicodeText? The segmentation, bidi, arranging, etc. Let's investigate if it's a good idea to abstract that out
+
+===== HUMAN #171 (126c) =====
+even if it's upstream of the render backend, we can investigate it's mertics separately. Is it a good idea or too much hassle?
+
+===== HUMAN #172 (72c) =====
+what about something like https://github.com/wieslawsoltes/PretextSharp?
+
+===== HUMAN #173 (202c) =====
+the goal isn't zero native dependencies. The goal is whether allowing other impls could be advantageous for perf or other things. what about something like https://github.com/wieslawsoltes/PretextSharp?
+
+===== HUMAN #174 (189c) =====
+no let's not commit. let's keep it to the side as not worth it for now and make sure it's mentioned in the md file. The important part here is that we need to make our text logic skia-less.
+
+===== HUMAN #175 (50c) =====
+what does skia provide right now to the text impl?
+
+===== HUMAN #176 (257c) =====
+the metrics should be part of the existing abstraction for font parsing/loading. same for glyph coverage. same for table providing. The value types already have either winui-public equivalents or already have abstractions like paths that are not IGeometries
+
+===== HUMAN #177 (20c) =====
+commit then continue
+
+===== HUMAN #178 (307c) =====
+drop the environment variable thing. Everything goes through the builders or some other way to set init options. let's do the font resolution / fallback work and at the same time implement a managed version that simply looks up system fonts. Feel free to cheat from skia's source code or Avalonia for ideas.
+
+===== HUMAN #179 (155c) =====
+It's not UseXX, but it should be UseIFont(some specific impl), it shouldn't be specific to ManagedFont, etc. For font lookup, what happens on wasm and ios?
+
+===== HUMAN #180 (29c) =====
+how would this work for wasm?
+
+===== HUMAN #181 (58c) =====
+that would require fetching all the fonts on startup. let'
+
+===== HUMAN #182 (216c) =====
+that would require fetching all the fonts on startup. let's not do that. let's park this for now and just make sure it doesn't crash on wasm or linux. Let's move on to the rest of "making it skia-less". what is next?
+
+===== HUMAN #183 (72c) =====
+I thought clippath was already implemented with AA in the webgpu branch?
+
+===== HUMAN #184 (173c) =====
+let's avoid the minimalness, port everything over accurately (the branch had some skia escapes, let's avoid those). This will also help us discover the parts that don't fit.
+
+===== HUMAN #185 (215c) =====
+let's avoid the minimalness, port everything over accurately (the branch had some skia escapes, let's avoid those). This will also help us discover the parts that don't fit. Test end to end with sampelsapp on webgpu
+
+===== HUMAN #186 (65c) =====
+which is currently referencing skia in composition and/or uno.ui?
+
+===== HUMAN #187 (99c) =====
+let's remove the SkiaSharp package references from composition and then work on neutralizing Uno.UI
+
+===== HUMAN #188 (59c) =====
+what do these D2D1 and IGraphicsEffectd2d1interop things do
+
+===== HUMAN #189 (61c) =====
+how are they internal? what's the public equivalent in WinUI?
+
+===== HUMAN #190 (95c) =====
+what the hell is win2d and why do we care about it? we only care about the public winui surface
+
+===== HUMAN #191 (18c) =====
+let's move on then
+
+===== HUMAN #192 (33c) =====
+let's take a look into uno.ui now
+
+===== HUMAN #193 (14c) =====
+explain tier 3
+
+===== HUMAN #194 (389c) =====
+[1] looks like it can be completely neutralized to use IGeometry everywhere instead of moving to SKPath casts at some point. [2] looks like bad design. What is GetGRContext used for? for [3] it can be split into 2 parts, the generic vulkan context creation, and then the skia-specific part on top that wraps it. The skia-specific part can live in composition (in the skia-specific project)
+
+===== HUMAN #195 (12c) =====
+let's do all
+
+===== HUMAN #196 (3c) =====
+go!
+
+===== HUMAN #197 (178c) =====
+Check WASM host lib build (task b9tlcc94v). If clean (or blocked by wasm-tools workload only), commit the [1] native-clip IGeometry increment, then start [3] VulkanContext split.
+
+===== HUMAN #198 (286c) =====
+All 8 review-panel agents should be done. Synthesize the consolidated report (severity-grouped, jerome as open questions), present verdict, and offer to apply fixes. Known so far: security flagged medium — unbounded/overflow allocation in SvgProvider.RenderToImage from remote SVG dims.
+
+===== HUMAN #199 (157c) =====
+what are the remaining 3 usages? SKCanvasVisual can move to the external 2dsk package. SkiaRenderHelper can become a neutral render helper that uses an IFont
+
+===== HUMAN #200 (60c) =====
+skcanvasvisual is internal, so wasn't IVT already necessary?
+
+===== HUMAN #201 (30c) =====
+then let's not move it to 2dsk
+
+===== HUMAN #202 (17c) =====
+what remains now?
+
+===== HUMAN #203 (43c) =====
+why are the runtime hosts referencing skia?
+
+===== HUMAN #204 (190c) =====
+we have already decided this. Uno supports certain gpu backends and deals with creating the context. the backend gets a context and deals with wrapping it (e.g. GRContext from a gl context).
+
+===== HUMAN #205 (109c) =====
+yes, and let's work on the context factory at the same time. I don't want to see anything with hardcoded skia
+
+===== HUMAN #206 (219c) =====
+we will do both the other kinds and migrating the other hosts in 1 shot without stopping, but let's walk through all the abstractions we created so far from the beginning so that we refine what we have before proceeding
+
+===== HUMAN #207 (51c) =====
+let's walk one by one in a topologically-sorted way
+
+===== HUMAN #208 (35c) =====
+no, reverse topological sort I mean
+
+===== HUMAN #209 (35c) =====
+give me the neutral version of this
+
+===== HUMAN #210 (217c) =====
+actually, I wonder if there's any value to making it neutral. The important part is that it hands all backend kinds uniformly through the interface, but each platform will need to call it in its platform-specific way.
+
+===== HUMAN #211 (38c) =====
+no problem with retyping 3 lines, next
+
+===== HUMAN #212 (13c) =====
+let's do (2).
+
+===== HUMAN #213 (178c) =====
+i don't have any visibility like this. give me the interfaces one by one from the ones that don't depend on anything all the way up. I need to see a full thing with a description
+
+===== HUMAN #214 (30c) =====
+too big, let's walk one by one
+
+===== HUMAN #215 (109c) =====
+third parties can technically add to it by creating their own contexts and then blitting to the software kind
+
+===== HUMAN #216 (122c) =====
+the mental model can stay the same, the blit-to-software is just a trick in case we theoretically need a new gpu api. next
+
+===== HUMAN #217 (16c) =====
+good as is, next
+
+===== HUMAN #218 (20c) =====
+requirements shouldn
+
+===== HUMAN #219 (222c) =====
+requirements shouldnt silently be ignored on software, they should fail loudly. and there needs to be a distinction between requirements and preferences. Some backends use a stencil buffer but can do without it in a pinch.
+
+===== HUMAN #220 (154c) =====
+it feels like the kind should be coupled to the requirements, i.e. different kinds that the backend supports might need different requirements/preferences
+
+===== HUMAN #221 (46c) =====
+why is this an interface and not just a class?
+
+===== HUMAN #222 (120c) =====
+no need for an abstract class, just make SoftwareRenderTarget a class. WHat are the other IRenderTarget implementations?
+
+===== HUMAN #223 (287c) =====
+i think I'm confused between 2 "render target" ideas. there's the idea of a render target that is specific to the gpu api, e.g. vulkan texture, or gl texture, or software framebuffer, etc. and then there's the backend-specific version that wraps it (e.g. skia can wrap the texture, etc.)
+
+===== HUMAN #224 (106c) =====
+this looks good. the only worry here is that recreating the backend-specific wrap every frame is expensive
+
+===== HUMAN #225 (16c) =====
+looks good, next
+
+===== HUMAN #226 (154c) =====
+I'm wondering if width and height should be supplied? what if we're rendering directly to the window? width and height are then decided by the window, no?
+
+===== HUMAN #227 (53c) =====
+good, but what are the implementors of this interface
+
+===== HUMAN #228 (112c) =====
+don't give me the current, give me the vision. once we're run, you'll spin until the vision is fully implemented
+
+===== HUMAN #229 (74c) =====
+why are you mentioning GRGLInterface when this is supposed to be skia-less
+
+===== HUMAN #230 (79c) =====
+why are these interfaces? why not GLGraphipcsContext and VulkanGraphicsCOntext?
+
+===== HUMAN #231 (24c) =====
+who calls CreateContext?
+
+===== HUMAN #232 (119c) =====
+doesn't the native window creation depend on the kind? e.g. if glx, the window itself needs to be created with glx, no?
+
+===== HUMAN #233 (86c) =====
+it's better if we combined the window with the graphics context as one creatble thing.
+
+===== HUMAN #234 (79c) =====
+the context doesn't own the window, it's just created as a pair with the window
+
+===== HUMAN #235 (156c) =====
+why the fuck is this so hard, CreateWindow should just return both the window and the context, there is no intermediate INativeWindow. holy fuck you're slow
+
+===== HUMAN #236 (36c) =====
+is INativeWindow empty in this case?
+
+===== HUMAN #237 (57c) =====
+we need to explain drawingbackend and renderbackend first
+
+===== HUMAN #238 (30c) =====
+why not have them be one thing
+
+===== HUMAN #239 (55c) =====
+fair but the word bind/binding doesnt mean anything hee
+
+===== HUMAN #240 (85c) =====
+isn't activate done separately for each host since each host supports different apis?
+
+===== HUMAN #241 (17c) =====
+makes sense, next
+
+===== HUMAN #242 (47c) =====
+explain in reverse order. idrawingsession first
+
+===== HUMAN #243 (190c) =====
+savecount and restoretocount feel unnecessary. clipoperation is always intersect. what if we're drawing a shader in a path? why do lines need a separate verb? why isn't shadow just a shader.
+
+===== HUMAN #244 (91c) =====
+what's the difference between ieffectfilter and ishader here? also, why rect but not rrect?
+
+===== HUMAN #245 (35c) =====
+what does IGraphicsEffect look like
+
+===== HUMAN #246 (143c) =====
+that's unworkable for a backend implementor. it needs to be straightforward and clear what the effect is. what effects do we currently support?
+
+===== HUMAN #247 (40c) =====
+good, but can we avoid the switch casts?
+
+===== HUMAN #248 (77c) =====
+shouldn't these 5x4 color matrices be color filters? the builder idea is good
+
+===== HUMAN #249 (165c) =====
+shouldn't these 5x4 color matrices be color filters? the builder idea is unnecessary. we know upfront what the full graph looks like, so no need to build it up again
+
+===== HUMAN #250 (35c) =====
+let's tall about IFlattenedPathSink
+
+===== HUMAN #251 (40c) =====
+why can't it be a simple list of points?
+
+===== HUMAN #252 (175c) =====
+we need to separate the image decoding abstraction from the rendering abstraction. a decoder can be supplied independently of the render backend and are completely independent
+
+===== HUMAN #253 (20c) =====
+what's GetFontTable?
+
+===== HUMAN #254 (88c) =====
+this is very ttf font coded (and harfbuzz-coded in general), why are these bytes needed?
+
+===== HUMAN #255 (124c) =====
+i'm a bit confused on why including the shaping in IFont is necessary. Why does shaping need info from the font file anyway?
+
+===== HUMAN #256 (75c) =====
+makes sense, so shaping goes in IFont, what does AppendColorGlyphImages do?
+
+===== HUMAN #257 (101c) =====
+this looks wonky as fuck. it should be one method returning a positioned glyph OR a positioned IImage
+
+===== HUMAN #258 (72c) =====
+why is CreateRectangleGeometry not part of the primitiveGeometryBuilder?
+
+===== HUMAN #259 (32c) =====
+let's remove it out indeed. next
+
+===== HUMAN #260 (64c) =====
+let's talk about text, what is overridable, what isn't, and why?
+
+===== HUMAN #261 (43c) =====
+why aren't the nonoverridables overridable?
+
+===== HUMAN #262 (131c) =====
+let's all all these details in one consolidated doc. Let's keep the dependency ordering where we incrementally introduce new types.
+
+===== HUMAN #263 (190c) =====
+implement it fully. I will not be attending, so never stop. continue spinning and use your best judgement until all teh abstractions are implemented fully with no skia escape hatches at all.
+
+===== HUMAN #264 (61c) =====
+why does CreateImageFrame return IImageFrames and not IImage?
+
+===== HUMAN #265 (209c) =====
+being disposable is not necessary. Let's just adjust the unnecessary IImageFrames. For retained rendering, there's the optional IRetainedRenderingSession and then there's IRenderBackend, what's the difference?
+
+===== HUMAN #266 (321c) =====
+the IRenderBackend version should not be recording and creating IRenderData, that's basically retaining. It should immediately be drawing and then flushing at the end. For IFont, AppendColorGlyphImages is misleading, we have already fucking decided this. images and glyph outlines should be unified together in one method
+
+===== HUMAN #267 (609c) =====
+We got feedback on the doc/design: the name of the abstractions are not great, we should avoid using the word "backend" for the render/drawing backends, and for others we should be using words like "factory" and "manager". For the doc, we need 2 things: we need to have high level "buckets" in a table, each one shows the current dependencies (which skia methods/ideas, others like harfbuzz, etc.), whether abstracting it will be a breaking change, whether we are deciding to abstract it or not: if yes, what the abstraction is, if not, why not. Finally, we should add a mermaid diagram to show the whole flow
+
+===== HUMAN #268 (45c) =====
+where's IFont and IFontManager in this table?
+
+===== HUMAN #269 (47c) =====
+no, no, IFont is one bucket, make it make sense
+
+===== HUMAN #270 (21c) =====
+show me the table now
+
+===== HUMAN #271 (85c) =====
+too many buckets, let's streamline these or move some of these to subsections instead
+
+===== HUMAN #272 (138c) =====
+what is this rasterizer point? doesn't the render backend know how to draw its primitives? rasterizing is not something we do on our side/
+
+===== HUMAN #273 (72c) =====
+rasterization doesn't even need mentioning. let's list the section again
+
+===== HUMAN #274 (84c) =====
+let's include the part about text, which part is abstracted and which is not and why
+
+===== HUMAN #275 (68c) =====
+let's include these in the big buckets, give me the full version now
+
+===== HUMAN #276 (96c) =====
+let's add another column for what existed before the abstraction: what skia APIs were used, etc.
+
+===== HUMAN #277 (57c) =====
+we are supposed to not have leaks anymore, what the fuck?
+
+===== HUMAN #278 (63c) =====
+let's write this table down and now show me the mermaid diagram
+
+===== HUMAN #279 (51c) =====
+open a png image of this, I can't read it like this
+
+===== HUMAN #280 (21c) =====
+move it to /workspace
+
+===== HUMAN #281 (47c) =====
+the drawing is just white, I don't see anything
+
+===== HUMAN #282 (156c) =====
+now it shows but looks terrible, a bunch of black weird areas. actually, the previous version was working in the claude link, but not when opening the html.
+
+===== HUMAN #283 (75c) =====
+why does AppHead do ImageDecoder.Current = ? why not use the host builders?
+
+===== HUMAN #284 (99c) =====
+let's adjust the diagram to show the user side of this, the internal plumbing is not important here
+
+===== HUMAN #285 (99c) =====
+no, no, let's go back, i meant to only change the Current =  thing to show the .Use version instead
+
+===== HUMAN #286 (97c) =====
+let's show the text lifecycle and the parts where it goes into ifont and the parts where it's not
+
+===== HUMAN #287 (105c) =====
+[Image: original 562x2988, displayed at 376x2000. Multiply coordinates by 1.49 to map to original image.]
+
+===== HUMAN #288 (20c) =====
+show it in the graph
+
+===== HUMAN #289 (23c) =====
+what's IDrawingFactory?
+
+===== HUMAN #290 (77c) =====
+I'm confused by the GraphicsSession.Factory/Renderer/etc thing, what is that?
+
+===== HUMAN #291 (119c) =====
+the word Session is weird as fuck, and Open doesn't mean anything here. .Factory is weird as well, maybe DrawingFactory
+
+===== HUMAN #292 (32c) =====
+"Activate" is a weird verb here.
+
+===== HUMAN #293 (145c) =====
+It feels like the visual tree walk should be wrapping the IDrawingFactory stuff, i.e. the method on IDrawingFactory are used during the walk, no?
+
+===== HUMAN #294 (115c) =====
+why are all the primitives (IImageTexture, IGeometry, etc.) going into IPresentSession instead of into IRenderData?
+
+===== HUMAN #295 (74c) =====
+let's show the retained path instead. Also, what does IGraphicsContext do?
+
+===== HUMAN #296 (107c) =====
+[Image: original 1568x2198, displayed at 1427x2000. Multiply coordinates by 1.10 to map to original image.]
+
+===== HUMAN #297 (143c) =====
+the arrows are wonky as fuck. how does Replay go into IPresentSessiom? and how does IPresentSession.Dispose go into IGraphicsContext, the fuck?
+
+===== HUMAN #298 (24c) =====
+what does target of mean
+
+===== HUMAN #299 (42c) =====
+Let's rename IFontManager to IFontProvider
+
+===== HUMAN #300 (65c) =====
+let's not continue working on realising the vision. what is left?
+
+===== HUMAN #301 (106c) =====
+why the fuck do we need a rasterizer, doesn't the backend implementor deal with that? what the actual fuck
+
+===== HUMAN #302 (151c) =====
+let's go then, use webgpu as the non-skia competitor when needed. we want 2 independent implementations for everything, one skia based, and one nonskia
+
+===== HUMAN #303 (148c) =====
+let's commit the work in the abstractions branch. stop waiting for me to tell you to "widen the coverage", i said FULLY implement, stop slacking off
+
+===== HUMAN #304 (51c) =====
+let's do the name. what is remaining in the vision?
+
+===== HUMAN #305 (41c) =====
+do all of these one shot without stopping
+
+===== HUMAN #306 (101c) =====
+you can verify x11 rendering headless using xvfb and fluxbox. back to work, stop slacking and push on
+
+===== HUMAN #307 (8c) =====
+continuw
+
+===== HUMAN #308 (21c) =====
+let's revisit [1] now
+
+===== HUMAN #309 (71c) =====
+why not create the context and window together to avoid all these kinds
+
+===== HUMAN #310 (99c) =====
+i still dont understand what the issue is. the renderer takes the created context and works with it
+
+===== HUMAN #311 (52c) =====
+yes kinds are needed, what's the blocking issue atm?
+
+===== HUMAN #312 (118c) =====
+we can keep the window creation the same and just do the negotiation right there. creating the context earlier is fine
+
+===== HUMAN #313 (48c) =====
+why did you stop to ask me? CONTINUE THE FUCK ON
+
+===== HUMAN #314 (103c) =====
+let's do all of it now including the present. you can verify in xvfb and I can double verify on my side
+
+===== HUMAN #315 (95c) =====
+DO NOT STOP SPINNING. I DO NOT CARE HOW BIG IT IS OR HOW RISKY. JUST DO THE WHOLE FUCKING THING
+
+===== HUMAN #316 (117c) =====
+the webgpu impl had a ton of optimizations. are we still able to make the same optimizations through the abstraction?
+
+===== HUMAN #317 (124c) =====
+do all the optimisations (except the glyph atlas). i told you to make a full faithful port, why are you picking and choosing
+
+===== HUMAN #318 (103c) =====
+do all 3 in sequence and do not stop. use best judgement. I'm stepping away. do not for any reason stop
+
+===== HUMAN #319 (39c) =====
+let's continue then, what work remains?
+
+===== HUMAN #320 (19c) =====
+nice list. let's go
+
+===== HUMAN #321 (1c) =====
+B
+
+===== HUMAN #322 (42c) =====
+continue with B2, it's fine, I will verify
+
+===== HUMAN #323 (42c) =====
+did you test the vulkan render headlessly?
+
+===== HUMAN #324 (85c) =====
+can you checkout the webgpu branch and double check that vulkan was faiing there too?
+
+===== HUMAN #325 (15c) =====
+let's discuss D
+
+===== HUMAN #326 (65c) =====
+the fuck? but we agreed on the vision? check the vision documents
+
+===== HUMAN #327 (169c) =====
+walk me through D. Isn't the only point just to find system fonts? The ManagedFont impl will be then able to decide what font has what name and supports which codepoints
+
+===== HUMAN #328 (167c) =====
+let's just match the skia-version for ios and wasm: on wasm, skia has a single basic font and then we rely on font fallback for the rest. for iOS, what was skia doing?
+
+===== HUMAN #329 (114c) =====
+the issue here is that using iOS APIs makes the implementation rely on the iOS tfm and that complicates the issue.
+
+===== HUMAN #330 (126c) =====
+But the IFontProvider will be registered in the host builder and it needs to be one interface that works on all platforms, no?
+
+===== HUMAN #331 (134c) =====
+no, this is fucking dumb. The entire point is that an external user can register their own IFontProvider, there is no ApiExtensibility
+
+===== HUMAN #332 (11c) =====
+ok continue
+
+===== HUMAN #333 (1c) =====
+C
+
+===== HUMAN #334 (58c) =====
+continue. what else remains for the vision to be complete?
+
+===== HUMAN #335 (16c) =====
+explain [2] more
+
+===== HUMAN #336 (42c) =====
+the interfaces could be directly in Uno.UI
+
+===== HUMAN #337 (64c) =====
+why didn't we hit this issue with other transitive dependencies?
+
+===== HUMAN #338 (44c) =====
+okay, then let's add the references directly
+
+===== HUMAN #339 (61c) =====
+android and wasm are buildable here. finish up all the wiring
+
+===== HUMAN #340 (209c) =====
+now, let's attempt to benchmark before and after, give me master builds and builds from this branch's assmeblies of uno's gallery and samplesapp. i will test on windows. let's make sure the frame counter is on
+
+===== HUMAN #341 (70c) =====
+just clone gallery yourselfin /workspace and let's swap the assemblies
+
+===== HUMAN #342 (71c) =====
+you can simply move the pinned version to be the latest 6.7 dev version
+
+===== HUMAN #343 (75c) =====
+don't run unonugetoverrideversion, just swap the assemblies by hand in /bin
+
+===== HUMAN #344 (144c) =====
+no, the latest 6.7 dev support SkiaSharpVersion == 4.148, you can then swap the assemblies. this is not a fucking discussion, just fucking do it
+
+===== HUMAN #345 (39c) =====
+can we work around the breaking change?
+
+===== HUMAN #346 (80c) =====
+how is "before" haing the neutral graphics pipeline active, did you hallucinate?
+
+===== HUMAN #347 (33c) =====
+is this ready to test on windows?
+
+===== HUMAN #348 (91c) =====
+let's turn off the damage regions optimization so that we can see the real before and after
+
+===== HUMAN #349 (33c) =====
+that's not the right optimization
+
+===== HUMAN #350 (45c) =====
+https://github.com/unoplatform/uno/pull/23526
+
+===== HUMAN #351 (186c) =====
+on my windows machine. the performance_1000buttons sample shows similar frame times between before and after, but at 700 buttons, the before stays on 29fps while after stays on 21-22 fps
+
+===== HUMAN #352 (68c) =====
+what implementation of webgpu are we using on desktop? wgpu or dawn?
+
+===== HUMAN #353 (43c) =====
+let's go back to work. what are we missing?
+
+===== HUMAN #354 (16c) =====
+where are we at?
+
+===== HUMAN #355 (58c) =====
+can you run headlessly? or does it not show the differece?
+
+===== HUMAN #356 (11c) =====
+where we at
+
+===== HUMAN #357 (58c) =====
+add whatever you need to log and I will test it on my side
+
+===== HUMAN #358 (20c) =====
+where's the binaries
+
+===== HUMAN #359 (52c) =====
+create the zip for me and put it in /workspace/bench
+
+===== HUMAN #360 (56c) =====
+create the zip for me and put it in /workspace/bench.zip
+
+===== HUMAN #361 (788c) =====
+PERF [BEFORE (legacy pipeline)] fps=30.0 wall=33.33ms record=0.164ms present=26.361ms cpuTotal=26.525ms walk=99 paint=1.0
+PERF [BEFORE (legacy pipeline)] fps=30.0 wall=33.34ms record=0.175ms present=26.342ms cpuTotal=26.517ms walk=99 paint=1.0
+PERF [AFTER (neutral pipeline)] fps=30.0 wall=33.35ms record=1.153ms present=22.211ms cpuTotal=23.363ms walk=1080 paint=1.0
+PERF [AFTER (neutral pipeline)] fps=30.0 wall=33.32ms record=0.194ms present=22.119ms cpuTotal=22.313ms walk=99 paint=1.0
+PERF [AFTER (neutral pipeline)] fps=29.8 wall=33.61ms record=0.220ms present=22.453ms cpuTotal=22.674ms walk=99 paint=1.0
+PERF [AFTER (neutral pipeline)] fps=29.6 wall=33.75ms record=0.204ms present=23.457ms cpuTotal=23.661ms walk=99 paint=1.0
+
+this is weird, how is after faster now, what the fuck
+
+===== HUMAN #362 (535c) =====
+nevermind, it was a fluke. I ran after again: PERF [AFTER (neutral pipeline)] fps=29.9 wall=33.48ms record=0.152ms present=26.573ms cpuTotal=26.725ms walk=99 paint=1.0
+PERF [AFTER (neutral pipeline)] fps=28.2 wall=35.41ms record=1.333ms present=27.497ms cpuTotal=28.830ms walk=1290 paint=1.3
+PERF [AFTER (neutral pipeline)] fps=30.0 wall=33.34ms record=0.162ms present=26.209ms cpuTotal=26.371ms walk=99 paint=1.0
+PERF [AFTER (neutral pipeline)] fps=30.0 wall=33.33ms record=0.174ms present=25.869ms cpuTotal=26.042ms walk=99 paint=1.0
+
+===== HUMAN #363 (2090c) =====
+I ran side-by-side now. PERF [AFTER (neutral pipeline)] fps=59.5 wall=16.82ms record=0.720ms present=6.696ms cpuTotal=7.416ms walk=424 paint=1.0
+PERF [AFTER (neutral pipeline)] fps=60.0 wall=16.65ms record=0.265ms present=6.415ms cpuTotal=6.680ms walk=99 paint=0.9
+PERF [AFTER (neutral pipeline)] fps=59.5 wall=16.81ms record=0.262ms present=6.484ms cpuTotal=6.746ms walk=99 paint=0.9
+PERF [AFTER (neutral pipeline)] fps=60.0 wall=16.66ms record=0.277ms present=6.873ms cpuTotal=7.150ms walk=99 paint=0.9
+PERF [AFTER (neutral pipeline)] fps=60.0 wall=16.67ms record=0.315ms present=6.861ms cpuTotal=7.176ms walk=99 paint=0.9
+PERF [AFTER (neutral pipeline)] fps=25.5 wall=39.24ms record=1.758ms present=16.754ms cpuTotal=18.512ms walk=1102 paint=24.3
+PERF [AFTER (neutral pipeline)] fps=19.9 wall=50.13ms record=0.811ms present=33.423ms cpuTotal=34.234ms walk=309 paint=1.0
+PERF [AFTER (neutral pipeline)] fps=20.1 wall=49.87ms record=0.272ms present=32.558ms cpuTotal=32.830ms walk=99 paint=1.0
+PERF [AFTER (neutral pipeline)] fps=20.3 wall=49.30ms record=0.279ms present=32.693ms cpuTotal=32.972ms walk=99 paint=1.0
+PERF [AFTER (neutral pipeline)] fps=20.3 wall=49.17ms record=0.273ms present=33.292ms cpuTotal=33.566ms walk=99 paint=1.0
+PERF [BEFORE (legacy pipeline)] fps=20.0 wall=49.95ms record=2.737ms present=26.638ms cpuTotal=29.375ms walk=1312 paint=24.3
+PERF [BEFORE (legacy pipeline)] fps=23.8 wall=42.08ms record=0.251ms present=31.933ms cpuTotal=32.184ms walk=99 paint=1.0
+PERF [BEFORE (legacy pipeline)] fps=23.6 wall=42.36ms record=0.245ms present=31.809ms cpuTotal=32.055ms walk=99 paint=1.0
+PERF [BEFORE (legacy pipeline)] fps=22.8 wall=43.88ms record=0.275ms present=31.824ms cpuTotal=32.099ms walk=99 paint=1.0
+PERF [BEFORE (legacy pipeline)] fps=23.4 wall=42.78ms record=0.266ms present=31.819ms cpuTotal=32.085ms walk=99 paint=1.0
+PERF [BEFORE (legacy pipeline)] fps=22.2 wall=45.02ms record=0.276ms present=32.035ms cpuTotal=32.311ms walk=99 paint=1.0
+
+also, I'm noticing that the text looks better after than before. the text is just generally more crisp / less faded
+
+===== HUMAN #364 (58c) =====
+ignore the 60 fps lines, these were before changing to 700
+
+===== HUMAN #365 (37c) =====
+let's investigate the text difference
+
+===== HUMAN #366 (67c) =====
+no, next. what is remaining in the general work towards our vision?
+
+===== HUMAN #367 (401c) =====
+the skiasharp-exposing API can be moved to be based off of GLCanvasElement which creates its own separate context so it can do as it pleases on a separate framebuffer and the pixels can be read as needed. that costs an extra framebuffer copy, but it's fine. let's do that and [1] before going into [3]. harfbuzz is fine to stay, everyone in the universe depends on harfbuzz. then we can move on to [5]
+
+===== HUMAN #368 (39c) =====
+why does Graphics3DGL need Skia at all?
+
+===== HUMAN #369 (37c) =====
+BorderVisual should not be skia-only.
+
+===== HUMAN #370 (287c) =====
+BorderVisual should not be skia-only. it was previously skia-only as well as most composition because the native targets (that got removed) didn't deal with that, so skia-only meant non-native-only. now that everything is behind a neutral abstraction, bordervisual should not be an issue
+
+===== HUMAN #371 (34c) =====
+let's go, being big is a non-issue
+
+===== HUMAN #372 (195c) =====
+let's go, being big is a non-issue. but first, what do we even really need to change? .skia to .crossruntime is fine but it's purely cosmetic. what REALLY needs to change for things to make sense
+
+===== HUMAN #373 (218c) =====
+again, you're missing that reference vs skia doesn't exist anymore. the existing "skia" assemblies (except the one that actually implements the skia composition backend) are already neutral. so what are you even doing?
+
+===== HUMAN #374 (50c) =====
+good. revert tangentm add reference and try it out
+
+===== HUMAN #375 (58c) =====
+make sure it actually works correctly headlessly with xvfb
+
+===== HUMAN #376 (7c) =====
+move on
+
+===== HUMAN #377 (93c) =====
+continue and then continue doing the same webgpu hookups on other targets (windows then wasm)
+
+===== HUMAN #378 (70c) =====
+fix [2] then proceed with the remaining work in the order you provided
+
+===== HUMAN #379 (132c) =====
+what's the deal with SKCanvasElement? it shouldn't be a big deal, it's like a writeable bitmap that reads out the opengl framebuffer
+
+===== HUMAN #380 (6c) =====
+fix it
+
+===== HUMAN #381 (44c) =====
+let's table the threading issue and continue
+
+===== HUMAN #382 (19c) =====
+commit and continue
+
+===== HUMAN #383 (29c) =====
+treat it as from-scratch then
+
+===== HUMAN #384 (107c) =====
+spin continuously until you get it fully functional with no gaps. no multi-part bullshit. do it fully. now.
+
+===== HUMAN #385 (84c) =====
+skiasharp on master already has emdawnwebgpu support for dotnet 10 which uses 3.1.56
+
+===== HUMAN #386 (60c) =====
+is there a modern silk.net version that uses the modern abi?
+
+===== HUMAN #387 (125c) =====
+then let's migrate to the modern ABI and discard silk.net. as always, always commit as you go so that we don't lose progress.
+
+===== HUMAN #388 (9c) =====
+tcontinue
+
+===== HUMAN #389 (74c) =====
+continue. stop checking in for "honesty". fuck your honesty. just continue
+
+===== HUMAN #390 (14c) =====
+good. continue
+
+===== HUMAN #391 (31c) =====
+why is "node' used at all here?
+
+===== HUMAN #392 (56c) =====
+we don't care about node. test in real headless chromium
+
+===== HUMAN #393 (60c) =====
+we don't care about node. continue in real headless chromium
+
+===== HUMAN #394 (6c) =====
+gogogo
+
+===== HUMAN #395 (5c) =====
+go on
+
+===== HUMAN #396 (96c) =====
+you can work on wasm samplesapp with dotnet run instead of dotnet publish, which is a lot slower
+
+===== HUMAN #397 (59c) =====
+continue with other targets and we will circle back to wasm
+
+===== HUMAN #398 (33c) =====
+do the wiring, i will test myself
+
+===== HUMAN #399 (32c) =====
+continue more. i will test later
+
+===== HUMAN #400 (88c) =====
+for android, feel free to install workloads. how can we make webgpu work on FrameBuffer?
+
+===== HUMAN #401 (126c) =====
+create me a build with detailed logs for both wasm and for windows and I will report back. create zips and tell me what to run
+
+===== HUMAN #402 (2349c) =====
+windows works but crashes after resizing the window. here's the crash trace. also, the perf is complete dogshit and there are so many visual inaccuracies. run the original webgpu branch against the current rendering abstraction branch and make sure they render the same and that all the details from the webgpu branch made it in, because at the moment rendering is both very incorrect and very slow.
+
+
+thread '<unnamed>' (20724) panicked at src\lib.rs:422:5:
+wgpu uncaptured error:
+Validation Error
+
+Caused by:
+  In wgpuDeviceCreateTexture
+    Not enough memory left.
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread '<unnamed>' (20724) panicked at library\core\src\panicking.rs:225:5:
+panic in a function that cannot unwind
+stack backtrace:
+   0:     0x7ff8b9b29052 - wgpuSetLogLevel
+   1:     0x7ff8b9b3522a - wgpuSetLogLevel
+   2:     0x7ff8b9b1f0fe - wgpuSetLogLevel
+   3:     0x7ff8b9b22775 - wgpuSetLogLevel
+   4:     0x7ff8b9b24bf9 - wgpuSetLogLevel
+   5:     0x7ff8b9b249e8 - wgpuSetLogLevel
+   6:     0x7ff8b9b2547b - wgpuSetLogLevel
+   7:     0x7ff8b9b252d2 - wgpuSetLogLevel
+   8:     0x7ff8b9b2297f - wgpuSetLogLevel
+   9:     0x7ff8b9b1d5ce - wgpuSetLogLevel
+  10:     0x7ff8b9b7fc85 - wgpuTextureViewSetLabel
+  11:     0x7ff8b9b7fbd3 - wgpuTextureViewSetLabel
+  12:     0x7ff8b9b7fe01 - wgpuTextureViewSetLabel
+  13:     0x7ff8b958f8d7 - <unknown>
+  14:     0x7ff99f9fbb00 - _CxxFrameHandler3
+  15:     0x7ff99f9e33c7 - is_exception_typeof
+  16:     0x7ff9bc1bf416 - RtlCaptureContext2
+  17:     0x7ff8b958f8b6 - <unknown>
+  18:     0x7ff8b9587d86 - <unknown>
+  19:     0x7ff8b95b3438 - wgpuDeviceCreateTexture
+  20:     0x7ff8a7d52f21 - <unknown>
+  21:     0x7ff8a7d1da55 - <unknown>
+  22:     0x7ff8a6ea9e6e - <unknown>
+  23:     0x7ff8a810480a - <unknown>
+  24:     0x7ff8a8100cd4 - <unknown>
+  25:     0x7ff8a683a729 - <unknown>
+  26:     0x7ff8e0ae628b - <unknown>
+  27:     0x7ff8e0aed7c4 - <unknown>
+  28:     0x7ff9051c36b3 - coreclr_set_error_writer
+  29:     0x7ff9050c2e82 - <unknown>
+  30:     0x7ff9051ac31f - coreclr_execute_assembly
+  31:     0x7ff9050e4842 - <unknown>
+  32:     0x7ff9050e475f - <unknown>
+  33:     0x7ff9050e4930 - <unknown>
+  34:     0x7ff9ba35e957 - BaseThreadInitThunk
+  35:     0x7ff9bc14ad6c - RtlUserThreadStart
+thread caused non-unwinding panic. aborting.
+
+===== HUMAN #403 (74c) =====
+did you do the visual comparison between the webgpu branch and our branch?
+
+===== HUMAN #404 (106c) =====
+[Image: original 2816x1111, displayed at 2000x789. Multiply coordinates by 1.41 to map to original image.]
+
+===== HUMAN #405 (167c) =====
+Skill /artifact-design was loaded earlier (see the invoked-skills reminder above); this is a NEW invocation — follow those instructions now, including any setup steps.
+
+===== HUMAN #406 (106c) =====
+[Image: original 3016x1187, displayed at 2000x787. Multiply coordinates by 1.51 to map to original image.]
+
+===== HUMAN #407 (106c) =====
+[Image: original 4818x1259, displayed at 2000x523. Multiply coordinates by 2.41 to map to original image.]
+
+===== HUMAN #408 (107c) =====
+continue spinning until the rendering is very accurate (very similar to the skia or original-webgpu output)
+
+===== HUMAN #409 (106c) =====
+[Image: original 2816x1170, displayed at 2000x831. Multiply coordinates by 1.41 to map to original image.]
+
+===== HUMAN #410 (100c) =====
+keep going. at the moment, how different is the webgpu output compared to the (correct) skia output?
+
+===== HUMAN #411 (14c) =====
+let's do all 3
+
+===== HUMAN #412 (56c) =====
+explain the bug simply to me bit by bit. don't info dump
+
+===== HUMAN #413 (89c) =====
+okay, then fix the root cause before thinking about changing the api or working around it
+
+===== HUMAN #414 (40c) =====
+how was it working on the webgpu branch?
+
+===== HUMAN #415 (24c) =====
+let's do the proper fix.
+
+===== HUMAN #416 (131c) =====
+yes, let's do the original webgpu version of this but also make it one-encoder properly, there is no need to have multiple encoders
+
+===== HUMAN #417 (106c) =====
+[Image: original 2560x1024, displayed at 2000x800. Multiply coordinates by 1.28 to map to original image.]
+
+===== HUMAN #418 (236c) =====
+on the webgpu branch, I remember having pretty good perf numbers but when testing our branch, the perf was bad. like using 1 encoder for the entire cycle, go and compare the branches and make sure simialr logic is used for both branches
+
+===== HUMAN #419 (222c) =====
+i remember the slab/arena not improving things or even making them worse, I don't remember. let's prune the high-confidence verdicts from this list and talk about the ones that are not clear and the ones that are env-gates
+
+===== HUMAN #420 (500c) =====
+don't info dumb. bit by bit instead. Also, I've went back in my history. I think this combination yielded the best performance (obviously some of these env vars are just profiling/logging, ignore them).
+
+$env:UNO_WEBGPU="1"; $env:UNO_WEBGPU_ARENA="1"; $env:UNO_WEBGPU_SLAB="1"; $env:UNO_WEBGPU_CACHE="1"; $env:UNO_WEBGPU_DIRTY="1"; $env:UNO_WEBGPU_COALESCE="1"; $env:UNO_RENDER_PERF="1"; $env:UNO_WEBGPU_GPUTIME="1"; $env:UNO_WEBGPU_NOTEXT="0"; $env:UNO_WEBGPU_MSAA="2"; $env:UNO_WEBGPU_GLYPHATLAS="1
+
+===== HUMAN #421 (127c) =====
+yes, drop MSAA and then implement the missing optimizations and turn them on by default, delete or turn off the rest by default
+
+===== HUMAN #422 (81c) =====
+continue and fix the xvfb issue. the webgpu branch I think didn't have this issue
+
+===== HUMAN #423 (204c) =====
+feel free to manufacture new samples to fit your testing. go once again and make sure our implementation at least matches the logic of the webgpu branch with the envvars I sent. then let's go back to wasm
+
+===== HUMAN #424 (46c) =====
+check whether the webgpu branch had this issue
+
+===== HUMAN #425 (129c) =====
+then check the skiasharp codebase. the graphite backend has some wasm setup based on webgpu. check if that runs and compare notes
+
+===== HUMAN #426 (131c) =====
+let's keep arena on the side so we don't forget it. what's the benefit of the js-side model and what is the model we currently use?
+
+===== HUMAN #427 (64c) =====
+does the skiasharp version use wgpuInstanceProcessEvents at all?
+
+===== HUMAN #428 (21c) =====
+let's do it their way
+
+===== HUMAN #429 (51c) =====
+yes on commit. explain your second question further
+
+===== HUMAN #430 (45c) =====
+why is there webgl at all on the webgpu path?
+
+===== HUMAN #431 (49c) =====
+investigate your previous route and the new route
+
+===== HUMAN #432 (65c) =====
+double check this by running the skiasharp graphite tests on wasm
+
+===== HUMAN #433 (68c) =====
+test the webgpu red clean thing in pure js without dotnet/uno at all
+
+===== HUMAN #434 (81c) =====
+maybe try firefox? it's really important to get a headless test environment going
+
+===== HUMAN #435 (152c) =====
+maybe try firefox? it's really important to get a headless test environment going. or maybe try offscreen rendering to a texture and reading the pixels?
+
+===== HUMAN #436 (166c) =====
+commit then continue. we're supposed to render offscreen first anyway to make use of damage regions. make sure the wasm version is fully working on different samples.
+
+===== HUMAN #437 (27c) =====
+what is remaining? continue
+
+===== HUMAN #438 (34c) =====
+why does rtb need separate wiring?
+
+===== HUMAN #439 (122c) =====
+does this mean that the abstraction needs to be redesigned to be async? it's supposed to be one abstraction for al targets
+
+===== HUMAN #440 (165c) =====
+does this mean that the abstraction needs to be redesigned to be async? it's supposed to be one abstraction for al targets. or this part not part of the abstraction?
+
+===== HUMAN #441 (104c) =====
+I thought IImage is supposed to be cpu pixels? i thought it was IImageTExture that was abckend-specific?
+
+===== HUMAN #442 (14c) =====
+good, continue
+
+===== HUMAN #443 (47c) =====
+svg can have a retained source. implement all 3
+
+===== HUMAN #444 (81c) =====
+what the fuck? stop fucking around. webgpu properly on wasm, what the actual fuck
+
+===== HUMAN #445 (157c) =====
+the msal build exclusion should not be commited, only keep it locally. what other work remains? sidetask: let's create a windows build with webgpu to test it
+
+===== HUMAN #446 (20c) =====
+put it in /workspace
+
+===== HUMAN #447 (2164c) =====
+it dies on startup with webgpu. thread '<unnamed>' (27388) panicked at src\lib.rs:422:5:
+wgpu uncaptured error:
+Validation Error
+
+Caused by:
+  In wgpuDeviceCreateTexture
+    Not enough memory left.
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread '<unnamed>' (27388) panicked at library\core\src\panicking.rs:225:5:
+panic in a function that cannot unwind
+stack backtrace:
+   0:     0x7ff942769052 - wgpuSetLogLevel
+   1:     0x7ff94277522a - wgpuSetLogLevel
+   2:     0x7ff94275f0fe - wgpuSetLogLevel
+   3:     0x7ff942762775 - wgpuSetLogLevel
+   4:     0x7ff942764bf9 - wgpuSetLogLevel
+   5:     0x7ff9427649e8 - wgpuSetLogLevel
+   6:     0x7ff94276547b - wgpuSetLogLevel
+   7:     0x7ff9427652d2 - wgpuSetLogLevel
+   8:     0x7ff94276297f - wgpuSetLogLevel
+   9:     0x7ff94275d5ce - wgpuSetLogLevel
+  10:     0x7ff9427bfc85 - wgpuTextureViewSetLabel
+  11:     0x7ff9427bfbd3 - wgpuTextureViewSetLabel
+  12:     0x7ff9427bfe01 - wgpuTextureViewSetLabel
+  13:     0x7ff9421cf8d7 - <unknown>
+  14:     0x7ff99f9fbb00 - _CxxFrameHandler3
+  15:     0x7ff99f9e33c7 - is_exception_typeof
+  16:     0x7ff9bc1bf416 - RtlCaptureContext2
+  17:     0x7ff9421cf8b6 - <unknown>
+  18:     0x7ff9421c7d86 - <unknown>
+  19:     0x7ff9421f3438 - wgpuDeviceCreateTexture
+  20:     0x7ff8fde0aef7 - <unknown>
+  21:     0x7ff8fde0aaf8 - <unknown>
+  22:     0x7ff8fde09e87 - <unknown>
+  23:     0x7ff8fde09d29 - <unknown>
+  24:     0x7ff8fde09889 - <unknown>
+  25:     0x7ff8fde0540e - <unknown>
+  26:     0x7ff8fde04341 - <unknown>
+  27:     0x7ff8fde02513 - <unknown>
+  28:     0x7ff8fde015f4 - <unknown>
+  29:     0x7ff8fde00bde - <unknown>
+  30:     0x7ff8fda732a9 - <unknown>
+  31:     0x7ff95b42628b - <unknown>
+  32:     0x7ff95b42d7c4 - <unknown>
+  33:     0x7ff95c1336b3 - coreclr_set_error_writer
+  34:     0x7ff95c032e82 - <unknown>
+  35:     0x7ff95c11c31f - coreclr_execute_assembly
+  36:     0x7ff95c054842 - <unknown>
+  37:     0x7ff95c05475f - <unknown>
+  38:     0x7ff95c054930 - <unknown>
+  39:     0x7ff9ba35e957 - BaseThreadInitThunk
+  40:     0x7ff9bc14ad6c - RtlUserThreadStart
+thread caused non-unwinding panic. aborting.
+
+===== HUMAN #448 (19319c) =====
+PS C:\Users\RamezRagaa\Downloads\SamplesApp-Win32-WebGpu-win-x64> $env:UNO_WEBGPU="1";
+PS C:\Users\RamezRagaa\Downloads\SamplesApp-Win32-WebGpu-win-x64> .\SamplesApp.Skia.Generic.exe
+[000001449302fd20] imem demux error: Invalid get/release function pointers
+[00000144961a41f0] prefetch stream error: reading while paused (buggy demux?)
+warn: Uno.UI.Runtime.Skia.Win32.Win32TextScaleFactorExtension[0]
+      Failed to read TextScaleFactor from registry: The system cannot find the file specified.
+
+info: Uno.UI.Runtime.Skia.Win32.Win32WindowWrapper[0]
+      Loading icon file [C:\Users\RamezRagaa\Downloads\SamplesApp-Win32-WebGpu-win-x64\Assets\StoreLogo.png] from Package.appxmanifest file
+[webgpu] TEX #1 CreateColorTarget 1x1 x1
+dbug: Uno.UI.Runtime.Skia.Win32.Win32Accessibility[0]
+      [UIA] Win32Accessibility initialized for window 0x140414
+info: Uno.UI.Runtime.Skia.Win32.Win32Accessibility[0]
+      [UIA] Root provider created: element=XamlIslandRoot, peer=NULL, children count=4, window=0x140414
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewTopPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewContentBackground
+warn: Microsoft.UI.Xaml.FrameworkTemplatePool[0]
+      Template pooling is disabled in this build of Uno Platform. See https://github.com/unoplatform/uno/issues/13969
+info: SampleControl.Presentation.SampleChooserViewModel[0]
+      Found 1397 sample(s) in 131 categories.
+HandleLaunchArguments:
+Automated runtime tests args:
+Automated runtime tests output file:  (UITEST_RUNTIME_TEST_GROUP: , UITEST_RUNTIME_TEST_GROUP_COUNT: , UITEST_RUNTIME_TESTS_FILTER: )
+Section changed: SamplesContent (GC Heap: 22.94 MB)
+Done loading 00:00:00.8727857
+[webgpu] TEX #2 Surface.msaa 1514x1096 x4
+[webgpu] TEX #3 Surface.depth 1514x1096 x4
+[webgpu] TEX #4 Pool.Rent 1514x1096 x4
+[webgpu] TEX #5 Pool.Rent 1514x1096 x4
+[webgpu] TEX #6 Pool.Rent 1514x1096 x1
+[webgpu] TEX #7 Pool.Rent 1514x1096 x4
+[webgpu] TEX #8 Pool.Rent 1514x1096 x4
+[webgpu] TEX #9 Pool.Rent 1514x1096 x1
+warn: Uno.UI.Runtime.Skia.Win32.Win32WindowWrapper[0]
+      Timed out waiting for the next present during synchronous render; the window may be shown before the first frame is displayed.
+[webgpu] TEX #10 Pool.Rent 1514x1096 x4
+[webgpu] TEX #11 Pool.Rent 1514x1096 x4
+[webgpu] TEX #12 Pool.Rent 1514x1096 x1
+[webgpu] TEX #13 Pool.Rent 1514x1096 x4
+[webgpu] TEX #14 Pool.Rent 1514x1096 x4
+[webgpu] TEX #15 Pool.Rent 1514x1096 x1
+[webgpu] TEX #16 Pool.Rent 1514x1096 x4
+[webgpu] TEX #17 Pool.Rent 1514x1096 x4
+[webgpu] TEX #18 Pool.Rent 1514x1096 x1
+[webgpu] TEX #19 Pool.Rent 1514x1096 x4
+[webgpu] TEX #20 Pool.Rent 1514x1096 x4
+[webgpu] TEX #21 Pool.Rent 1514x1096 x1
+[webgpu] TEX #22 Pool.Rent 1514x1096 x4
+[webgpu] TEX #23 Pool.Rent 1514x1096 x4
+[webgpu] TEX #24 Pool.Rent 1514x1096 x1
+[webgpu] TEX #25 Pool.Rent 1514x1096 x4
+[webgpu] TEX #26 Pool.Rent 1514x1096 x4
+[webgpu] TEX #27 Pool.Rent 1514x1096 x1
+[webgpu] TEX #28 Pool.Rent 1514x1096 x4
+[webgpu] TEX #29 Pool.Rent 1514x1096 x4
+[webgpu] TEX #30 Pool.Rent 1514x1096 x1
+[webgpu] TEX #31 Pool.Rent 1514x1096 x4
+[webgpu] TEX #32 Pool.Rent 1514x1096 x4
+[webgpu] TEX #33 Pool.Rent 1514x1096 x1
+[webgpu] TEX #34 Pool.Rent 1514x1096 x4
+[webgpu] TEX #35 Pool.Rent 1514x1096 x4
+[webgpu] TEX #36 Pool.Rent 1514x1096 x1
+[webgpu] TEX #37 Pool.Rent 1514x1096 x4
+[webgpu] TEX #38 Pool.Rent 1514x1096 x4
+[webgpu] TEX #39 Pool.Rent 1514x1096 x1
+[webgpu] TEX #40 Pool.Rent 1514x1096 x4
+warn: Uno.UI.Runtime.Skia.Win32.Win32WindowWrapper[0]
+      Timed out waiting for the next present during synchronous render; the window may be shown before the first frame is displayed.
+[webgpu] TEX #41 Pool.Rent 1514x1096 x4
+[webgpu] TEX #42 Pool.Rent 1514x1096 x1
+[webgpu] TEX #43 Pool.Rent 1514x1096 x4
+[webgpu] TEX #44 Pool.Rent 1514x1096 x4
+[webgpu] TEX #45 Pool.Rent 1514x1096 x1
+[webgpu] TEX #46 Pool.Rent 1514x1096 x4
+[webgpu] TEX #47 Pool.Rent 1514x1096 x4
+[webgpu] TEX #48 Pool.Rent 1514x1096 x1
+[webgpu] TEX #49 Pool.Rent 1514x1096 x4
+[webgpu] TEX #50 Pool.Rent 1514x1096 x4
+[webgpu] TEX #51 Pool.Rent 1514x1096 x1
+[webgpu] TEX #52 Pool.Rent 1514x1096 x4
+[webgpu] TEX #53 Pool.Rent 1514x1096 x4
+[webgpu] TEX #54 Pool.Rent 1514x1096 x1
+warn: SampleControl.Presentation.SampleChooserViewModel[0]
+      There is no file with name 'SampleChooserFileAddress.Samples.Favorites'.
+[webgpu] TEX #55 Pool.Rent 1514x1096 x4
+[webgpu] TEX #56 Pool.Rent 1514x1096 x4
+[webgpu] TEX #57 Pool.Rent 1514x1096 x1
+[webgpu] TEX #58 Pool.Rent 1514x1096 x4
+[webgpu] TEX #59 Pool.Rent 1514x1096 x4
+[webgpu] TEX #60 Pool.Rent 1514x1096 x1
+[webgpu] TEX #61 Pool.Rent 1514x1096 x4
+[webgpu] TEX #62 Pool.Rent 1514x1096 x4
+[webgpu] TEX #63 Pool.Rent 1514x1096 x1
+[webgpu] TEX #64 Pool.Rent 1514x1096 x4
+[webgpu] TEX #65 Pool.Rent 1514x1096 x4
+[webgpu] TEX #66 Pool.Rent 1514x1096 x1
+[webgpu] TEX #67 Pool.Rent 1514x1096 x4
+[webgpu] TEX #68 Pool.Rent 1514x1096 x4
+[webgpu] TEX #69 Pool.Rent 1514x1096 x1
+[webgpu] TEX #70 Pool.Rent 1514x1096 x4
+[webgpu] TEX #71 Pool.Rent 1514x1096 x4
+[webgpu] TEX #72 Pool.Rent 1514x1096 x1
+[webgpu] TEX #73 Pool.Rent 1514x1096 x4
+[webgpu] TEX #74 Pool.Rent 1514x1096 x4
+[webgpu] TEX #75 Pool.Rent 1514x1096 x1
+[webgpu] TEX #76 Pool.Rent 1514x1096 x4
+[webgpu] TEX #77 Pool.Rent 1514x1096 x4
+[webgpu] TEX #78 Pool.Rent 1514x1096 x1
+[webgpu] TEX #79 ImageTexture.upload 64x64 x1
+[webgpu] TEX #80 Pool.Rent 1514x1096 x4
+[webgpu] TEX #81 Pool.Rent 1514x1096 x4
+[webgpu] TEX #82 Pool.Rent 1514x1096 x1
+[webgpu] TEX #83 Pool.Rent 1514x1096 x4
+[webgpu] TEX #84 Pool.Rent 1514x1096 x4
+[webgpu] TEX #85 Pool.Rent 1514x1096 x1
+[webgpu] TEX #86 Pool.Rent 1514x1096 x4
+[webgpu] TEX #87 Pool.Rent 1514x1096 x4
+[webgpu] TEX #88 Pool.Rent 1514x1096 x1
+[webgpu] TEX #89 Pool.Rent 1514x1096 x4
+[webgpu] TEX #90 Pool.Rent 1514x1096 x4
+[webgpu] TEX #91 Pool.Rent 1514x1096 x1
+[webgpu] TEX #92 Pool.Rent 1514x1096 x4
+[webgpu] TEX #93 Pool.Rent 1514x1096 x4
+[webgpu] TEX #94 Pool.Rent 1514x1096 x1
+[webgpu] TEX #95 Pool.Rent 1514x1096 x4
+[webgpu] TEX #96 Pool.Rent 1514x1096 x4
+[webgpu] TEX #97 Pool.Rent 1514x1096 x1
+[webgpu] TEX #98 Pool.Rent 1514x1096 x4
+[webgpu] TEX #99 Pool.Rent 1514x1096 x4
+[webgpu] TEX #100 Pool.Rent 1514x1096 x1
+[webgpu] TEX #101 Pool.Rent 1514x1096 x4
+[webgpu] TEX #102 Pool.Rent 1514x1096 x4
+[webgpu] TEX #103 Pool.Rent 1514x1096 x1
+[webgpu] TEX #104 Pool.Rent 1514x1096 x4
+[webgpu] TEX #105 Pool.Rent 1514x1096 x4
+[webgpu] TEX #106 Pool.Rent 1514x1096 x1
+[webgpu] TEX #107 Pool.Rent 1514x1096 x4
+[webgpu] TEX #108 Pool.Rent 1514x1096 x4
+[webgpu] TEX #109 Pool.Rent 1514x1096 x1
+[webgpu] TEX #110 Pool.Rent 1514x1096 x4
+[webgpu] TEX #111 Pool.Rent 1514x1096 x4
+[webgpu] TEX #112 Pool.Rent 1514x1096 x1
+[webgpu] TEX #113 Pool.Rent 1514x1096 x4
+[webgpu] TEX #114 Pool.Rent 1514x1096 x4
+[webgpu] TEX #115 Pool.Rent 1514x1096 x1
+[webgpu] TEX #116 Pool.Rent 1514x1096 x4
+[webgpu] TEX #117 Pool.Rent 1514x1096 x4
+[webgpu] TEX #118 Pool.Rent 1514x1096 x1
+[webgpu] TEX #119 Pool.Rent 1514x1096 x4
+[webgpu] TEX #120 Pool.Rent 1514x1096 x4
+[webgpu] TEX #121 Pool.Rent 1514x1096 x1
+[webgpu] TEX #122 Pool.Rent 1514x1096 x4
+[webgpu] TEX #123 Pool.Rent 1514x1096 x4
+[webgpu] TEX #124 Pool.Rent 1514x1096 x1
+[webgpu] TEX #125 Pool.Rent 1514x1096 x4
+[webgpu] TEX #126 Pool.Rent 1514x1096 x4
+[webgpu] TEX #127 Pool.Rent 1514x1096 x1
+[webgpu] TEX #128 Pool.Rent 1514x1096 x4
+[webgpu] TEX #129 Pool.Rent 1514x1096 x4
+[webgpu] TEX #130 Pool.Rent 1514x1096 x1
+[webgpu] TEX #131 Pool.Rent 1514x1096 x4
+[webgpu] TEX #132 Pool.Rent 1514x1096 x4
+[webgpu] TEX #133 Pool.Rent 1514x1096 x1
+[webgpu] TEX #134 Pool.Rent 1514x1096 x4
+[webgpu] TEX #135 Pool.Rent 1514x1096 x4
+[webgpu] TEX #136 Pool.Rent 1514x1096 x1
+[webgpu] TEX #137 Pool.Rent 1514x1096 x4
+[webgpu] TEX #138 Pool.Rent 1514x1096 x4
+[webgpu] TEX #139 Pool.Rent 1514x1096 x1
+[webgpu] TEX #140 Pool.Rent 1514x1096 x4
+[webgpu] TEX #141 Pool.Rent 1514x1096 x4
+[webgpu] TEX #142 Pool.Rent 1514x1096 x1
+[webgpu] TEX #143 Pool.Rent 1514x1096 x4
+[webgpu] TEX #144 Pool.Rent 1514x1096 x4
+[webgpu] TEX #145 Pool.Rent 1514x1096 x1
+[webgpu] TEX #146 Pool.Rent 1514x1096 x4
+[webgpu] TEX #147 Pool.Rent 1514x1096 x4
+[webgpu] TEX #148 Pool.Rent 1514x1096 x1
+[webgpu] TEX #149 Pool.Rent 1514x1096 x4
+[webgpu] TEX #150 Pool.Rent 1514x1096 x4
+[webgpu] TEX #151 Pool.Rent 1514x1096 x1
+[webgpu] TEX #152 Pool.Rent 1514x1096 x4
+[webgpu] TEX #153 Pool.Rent 1514x1096 x4
+[webgpu] TEX #154 Pool.Rent 1514x1096 x1
+[webgpu] TEX #155 Pool.Rent 1514x1096 x4
+[webgpu] TEX #156 Pool.Rent 1514x1096 x4
+[webgpu] TEX #157 Pool.Rent 1514x1096 x1
+[webgpu] TEX #158 Pool.Rent 1514x1096 x4
+[webgpu] TEX #159 Pool.Rent 1514x1096 x4
+[webgpu] TEX #160 Pool.Rent 1514x1096 x1
+[webgpu] TEX #161 Pool.Rent 1514x1096 x4
+[webgpu] TEX #162 Pool.Rent 1514x1096 x4
+[webgpu] TEX #163 Pool.Rent 1514x1096 x1
+[webgpu] TEX #164 Pool.Rent 1514x1096 x4
+[webgpu] TEX #165 Pool.Rent 1514x1096 x4
+[webgpu] TEX #166 Pool.Rent 1514x1096 x1
+[webgpu] TEX #167 Pool.Rent 1514x1096 x4
+[webgpu] TEX #168 Pool.Rent 1514x1096 x4
+[webgpu] TEX #169 Pool.Rent 1514x1096 x1
+[webgpu] TEX #170 Pool.Rent 1514x1096 x4
+[webgpu] TEX #171 Pool.Rent 1514x1096 x4
+[webgpu] TEX #172 Pool.Rent 1514x1096 x1
+[webgpu] TEX #173 Pool.Rent 1514x1096 x4
+[webgpu] TEX #174 Pool.Rent 1514x1096 x4
+[webgpu] TEX #175 Pool.Rent 1514x1096 x1
+[webgpu] TEX #176 Pool.Rent 1514x1096 x4
+[webgpu] TEX #177 Pool.Rent 1514x1096 x4
+[webgpu] TEX #178 Pool.Rent 1514x1096 x1
+[webgpu] TEX #179 Pool.Rent 1514x1096 x4
+[webgpu] TEX #180 Pool.Rent 1514x1096 x4
+[webgpu] TEX #181 Pool.Rent 1514x1096 x1
+[webgpu] TEX #182 Pool.Rent 1514x1096 x4
+[webgpu] TEX #183 Pool.Rent 1514x1096 x4
+[webgpu] TEX #184 Pool.Rent 1514x1096 x1
+[webgpu] TEX #185 Pool.Rent 1514x1096 x4
+[webgpu] TEX #186 Pool.Rent 1514x1096 x4
+[webgpu] TEX #187 Pool.Rent 1514x1096 x1
+[webgpu] TEX #188 Pool.Rent 1514x1096 x4
+[webgpu] TEX #189 Pool.Rent 1514x1096 x4
+[webgpu] TEX #190 Pool.Rent 1514x1096 x1
+[webgpu] TEX #191 Pool.Rent 1514x1096 x4
+[webgpu] TEX #192 Pool.Rent 1514x1096 x4
+[webgpu] TEX #193 Pool.Rent 1514x1096 x1
+[webgpu] TEX #194 Pool.Rent 1514x1096 x4
+[webgpu] TEX #195 Pool.Rent 1514x1096 x4
+[webgpu] TEX #196 Pool.Rent 1514x1096 x1
+[webgpu] TEX #197 Pool.Rent 1514x1096 x4
+[webgpu] TEX #198 Pool.Rent 1514x1096 x4
+[webgpu] TEX #199 Pool.Rent 1514x1096 x1
+[webgpu] TEX #200 Pool.Rent 1514x1096 x4
+[webgpu] TEX #201 Pool.Rent 1514x1096 x4
+[webgpu] TEX #202 Pool.Rent 1514x1096 x1
+[webgpu] TEX #203 Pool.Rent 1514x1096 x4
+[webgpu] TEX #204 Pool.Rent 1514x1096 x4
+[webgpu] TEX #205 Pool.Rent 1514x1096 x1
+[webgpu] TEX #206 Pool.Rent 1514x1096 x4
+[webgpu] TEX #207 Pool.Rent 1514x1096 x4
+[webgpu] TEX #208 Pool.Rent 1514x1096 x1
+[webgpu] TEX #209 Pool.Rent 1514x1096 x4
+[webgpu] TEX #210 Pool.Rent 1514x1096 x4
+[webgpu] TEX #211 Pool.Rent 1514x1096 x1
+[webgpu] TEX #212 Pool.Rent 1514x1096 x4
+[webgpu] TEX #213 Pool.Rent 1514x1096 x4
+[webgpu] TEX #214 Pool.Rent 1514x1096 x1
+[webgpu] TEX #215 Pool.Rent 1514x1096 x4
+[webgpu] TEX #216 Pool.Rent 1514x1096 x4
+[webgpu] TEX #217 Pool.Rent 1514x1096 x1
+[webgpu] TEX #218 Pool.Rent 1514x1096 x4
+[webgpu] TEX #219 Pool.Rent 1514x1096 x4
+[webgpu] TEX #220 Pool.Rent 1514x1096 x1
+[webgpu] TEX #221 Pool.Rent 1514x1096 x4
+[webgpu] TEX #222 Pool.Rent 1514x1096 x4
+[webgpu] TEX #223 Pool.Rent 1514x1096 x1
+[webgpu] TEX #224 Pool.Rent 1514x1096 x4
+[webgpu] TEX #225 Pool.Rent 1514x1096 x4
+[webgpu] TEX #226 Pool.Rent 1514x1096 x1
+[webgpu] TEX #227 Pool.Rent 1514x1096 x4
+[webgpu] TEX #228 Pool.Rent 1514x1096 x4
+[webgpu] TEX #229 Pool.Rent 1514x1096 x1
+[webgpu] TEX #230 Pool.Rent 1514x1096 x4
+[webgpu] TEX #231 Pool.Rent 1514x1096 x4
+[webgpu] TEX #232 Pool.Rent 1514x1096 x1
+[webgpu] TEX #233 Pool.Rent 1514x1096 x4
+[webgpu] TEX #234 Pool.Rent 1514x1096 x4
+[webgpu] TEX #235 Pool.Rent 1514x1096 x1
+[webgpu] TEX #236 Pool.Rent 1514x1096 x4
+[webgpu] TEX #237 Pool.Rent 1514x1096 x4
+[webgpu] TEX #238 Pool.Rent 1514x1096 x1
+[webgpu] TEX #239 Pool.Rent 1514x1096 x4
+[webgpu] TEX #240 Pool.Rent 1514x1096 x4
+[webgpu] TEX #241 Pool.Rent 1514x1096 x1
+[webgpu] TEX #242 Pool.Rent 1514x1096 x4
+[webgpu] TEX #243 Pool.Rent 1514x1096 x4
+[webgpu] TEX #244 Pool.Rent 1514x1096 x1
+[webgpu] TEX #245 Pool.Rent 1514x1096 x4
+[webgpu] TEX #246 Pool.Rent 1514x1096 x4
+[webgpu] TEX #247 Pool.Rent 1514x1096 x1
+[webgpu] TEX #248 Pool.Rent 1514x1096 x4
+[webgpu] TEX #249 Pool.Rent 1514x1096 x4
+[webgpu] TEX #250 Pool.Rent 1514x1096 x1
+[webgpu] TEX #251 Pool.Rent 1514x1096 x4
+[webgpu] TEX #252 Pool.Rent 1514x1096 x4
+[webgpu] TEX #253 Pool.Rent 1514x1096 x1
+[webgpu] TEX #254 Pool.Rent 1514x1096 x4
+[webgpu] TEX #255 Pool.Rent 1514x1096 x4
+[webgpu] TEX #256 Pool.Rent 1514x1096 x1
+[webgpu] TEX #257 Pool.Rent 1514x1096 x4
+[webgpu] TEX #258 Pool.Rent 1514x1096 x4
+[webgpu] TEX #259 Pool.Rent 1514x1096 x1
+[webgpu] TEX #260 Pool.Rent 1514x1096 x4
+[webgpu] TEX #261 Pool.Rent 1514x1096 x4
+[webgpu] TEX #262 Pool.Rent 1514x1096 x1
+[webgpu] TEX #263 Pool.Rent 1514x1096 x4
+[webgpu] TEX #264 Pool.Rent 1514x1096 x4
+[webgpu] TEX #265 Pool.Rent 1514x1096 x1
+[webgpu] TEX #266 Pool.Rent 1514x1096 x4
+[webgpu] TEX #267 Pool.Rent 1514x1096 x4
+[webgpu] TEX #268 Pool.Rent 1514x1096 x1
+[webgpu] TEX #269 Pool.Rent 1514x1096 x4
+[webgpu] TEX #270 Pool.Rent 1514x1096 x4
+[webgpu] TEX #271 Pool.Rent 1514x1096 x1
+[webgpu] TEX #272 Pool.Rent 1514x1096 x4
+[webgpu] TEX #273 Pool.Rent 1514x1096 x4
+[webgpu] TEX #274 Pool.Rent 1514x1096 x1
+[webgpu] TEX #275 Pool.Rent 1514x1096 x4
+[webgpu] TEX #276 Pool.Rent 1514x1096 x4
+[webgpu] TEX #277 Pool.Rent 1514x1096 x1
+[webgpu] TEX #278 Pool.Rent 1514x1096 x4
+[webgpu] TEX #279 Pool.Rent 1514x1096 x4
+[webgpu] TEX #280 Pool.Rent 1514x1096 x1
+[webgpu] TEX #281 Pool.Rent 1514x1096 x4
+[webgpu] TEX #282 Pool.Rent 1514x1096 x4
+[webgpu] TEX #283 Pool.Rent 1514x1096 x1
+[webgpu] TEX #284 Pool.Rent 1514x1096 x4
+[webgpu] TEX #285 Pool.Rent 1514x1096 x4
+[webgpu] TEX #286 Pool.Rent 1514x1096 x1
+[webgpu] TEX #287 Pool.Rent 1514x1096 x4
+[webgpu] TEX #288 Pool.Rent 1514x1096 x4
+[webgpu] TEX #289 Pool.Rent 1514x1096 x1
+[webgpu] TEX #290 Pool.Rent 1514x1096 x4
+[webgpu] TEX #291 Pool.Rent 1514x1096 x4
+[webgpu] TEX #292 Pool.Rent 1514x1096 x1
+[webgpu] TEX #293 Pool.Rent 1514x1096 x4
+[webgpu] TEX #294 Pool.Rent 1514x1096 x4
+[webgpu] TEX #295 Pool.Rent 1514x1096 x1
+[webgpu] TEX #296 Pool.Rent 1514x1096 x4
+[webgpu] TEX #297 Pool.Rent 1514x1096 x4
+[webgpu] TEX #298 Pool.Rent 1514x1096 x1
+[webgpu] TEX #299 Pool.Rent 1514x1096 x4
+[webgpu] TEX #300 Pool.Rent 1514x1096 x4
+[webgpu] TEX #301 Pool.Rent 1514x1096 x1
+[webgpu] TEX #302 Pool.Rent 1514x1096 x4
+[webgpu] TEX #303 Pool.Rent 1514x1096 x4
+[webgpu] TEX #304 Pool.Rent 1514x1096 x1
+[webgpu] TEX #305 Pool.Rent 1514x1096 x4
+
+thread '<unnamed>' (13588) panicked at src\lib.rs:422:5:
+wgpu uncaptured error:
+Validation Error
+
+Caused by:
+  In wgpuDeviceCreateTexture
+    Not enough memory left.
+
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread '<unnamed>' (13588) panicked at library\core\src\panicking.rs:225:5:
+panic in a function that cannot unwind
+stack backtrace:
+   0:     0x7ff92f4e9052 - wgpuSetLogLevel
+   1:     0x7ff92f4f522a - wgpuSetLogLevel
+   2:     0x7ff92f4df0fe - wgpuSetLogLevel
+   3:     0x7ff92f4e2775 - wgpuSetLogLevel
+   4:     0x7ff92f4e4bf9 - wgpuSetLogLevel
+   5:     0x7ff92f4e49e8 - wgpuSetLogLevel
+   6:     0x7ff92f4e547b - wgpuSetLogLevel
+   7:     0x7ff92f4e52d2 - wgpuSetLogLevel
+   8:     0x7ff92f4e297f - wgpuSetLogLevel
+   9:     0x7ff92f4dd5ce - wgpuSetLogLevel
+  10:     0x7ff92f53fc85 - wgpuTextureViewSetLabel
+  11:     0x7ff92f53fbd3 - wgpuTextureViewSetLabel
+  12:     0x7ff92f53fe01 - wgpuTextureViewSetLabel
+  13:     0x7ff92ef4f8d7 - <unknown>
+  14:     0x7ff99f9fbb00 - _CxxFrameHandler3
+  15:     0x7ff99f9e33c7 - is_exception_typeof
+  16:     0x7ff9bc1bf416 - RtlCaptureContext2
+  17:     0x7ff92ef4f8b6 - <unknown>
+  18:     0x7ff92ef47d86 - <unknown>
+  19:     0x7ff92ef73438 - wgpuDeviceCreateTexture
+  20:     0x7ff8f0f7c5b2 - <unknown>
+  21:     0x7ff8f0f7c175 - <unknown>
+  22:     0x7ff8f0f7b66f - <unknown>
+  23:     0x7ff8f0f7b519 - <unknown>
+  24:     0x7ff8f0f7b06c - <unknown>
+  25:     0x7ff8f0f76d33 - <unknown>
+  26:     0x7ff8f0f764e5 - <unknown>
+  27:     0x7ff8f0f74f0a - <unknown>
+  28:     0x7ff8f0f73333 - <unknown>
+  29:     0x7ff8f0f72824 - <unknown>
+  30:     0x7ff8f0f71e0e - <unknown>
+  31:     0x7ff8f090b2f9 - <unknown>
+  32:     0x7ff9264e628b - <unknown>
+  33:     0x7ff9264ed7c4 - <unknown>
+  34:     0x7ff94f2836b3 - coreclr_set_error_writer
+  35:     0x7ff94f182e82 - <unknown>
+  36:     0x7ff94f26c31f - coreclr_execute_assembly
+  37:     0x7ff94f1a4842 - <unknown>
+  38:     0x7ff94f1a475f - <unknown>
+  39:     0x7ff94f1a4930 - <unknown>
+  40:     0x7ff9ba35e957 - BaseThreadInitThunk
+  41:     0x7ff9bc14ad6c - RtlUserThreadStart
+thread caused non-unwinding panic. aborting.
+
+===== HUMAN #449 (48c) =====
+let's verify first before continuing the reworks
+
+===== HUMAN #450 (211c) =====
+it doesn't crash anymore, but i don't think the swapchain is hooked up on the win32 backend. investigate that and continue with the rest of the reworks. don't stop spinning until both are done. I'm stepping away
+
+===== HUMAN #451 (124c) =====
+continue the reworks. the new webgpu abckend is still so much slower than the webgpu branch. it's so slow that it's unusable
+
+===== HUMAN #452 (122c) =====
+still incredibly slow. let's add profiling/logging. be extremely extremely detailed so we don't ahve to do multiple rounds
+
+===== HUMAN #453 (32c) =====
+i'm not seeing any profile lines
+
+===== HUMAN #454 (16665c) =====
+PS C:\Users\RamezRagaa\Downloads\SamplesApp-Win32-WebGpu-win-x64> .\SamplesApp.Skia.Generic.exe
+[000001dd87c97ee0] imem demux error: Invalid get/release function pointers
+[000001e58b3c7980] prefetch stream error: reading while paused (buggy demux?)
+warn: Uno.UI.Runtime.Skia.Win32.Win32TextScaleFactorExtension[0]
+      Failed to read TextScaleFactor from registry: The system cannot find the file specified.
+
+info: Uno.UI.Runtime.Skia.Win32.Win32WindowWrapper[0]
+      Loading icon file [C:\Users\RamezRagaa\Downloads\SamplesApp-Win32-WebGpu-win-x64\Assets\StoreLogo.png] from Package.appxmanifest file
+[webgpu] TEX #1 CreateColorTarget 1x1 x1
+[webgpu] backend init - UNO_WEBGPU_PROFILE=True pipeline=False msaa=4x colorFormat=BGRA8Unorm
+dbug: Uno.UI.Runtime.Skia.Win32.Win32Accessibility[0]
+      [UIA] Win32Accessibility initialized for window 0x5F09FA
+info: Uno.UI.Runtime.Skia.Win32.Win32Accessibility[0]
+      [UIA] Root provider created: element=XamlIslandRoot, peer=NULL, children count=4, window=0x5F09FA
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewTopPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewContentBackground
+warn: Microsoft.UI.Xaml.FrameworkTemplatePool[0]
+      Template pooling is disabled in this build of Uno Platform. See https://github.com/unoplatform/uno/issues/13969
+info: SampleControl.Presentation.SampleChooserViewModel[0]
+      Found 1397 sample(s) in 131 categories.
+HandleLaunchArguments:
+Automated runtime tests args:
+Automated runtime tests output file:  (UITEST_RUNTIME_TEST_GROUP: , UITEST_RUNTIME_TEST_GROUP_COUNT: , UITEST_RUNTIME_TESTS_FILTER: )
+Section changed: SamplesContent (GC Heap: 22.61 MB)
+Done loading 00:00:00.5766769
+[webgpu] TEX #2 Surface.msaa 1514x1096 x4
+[webgpu] TEX #3 Surface.depth 1514x1096 x4
+[webgpu] TEX #4 Pool.Rent 1514x1096 x4
+[webgpu] TEX #5 Pool.Rent 1514x1096 x4
+[webgpu] TEX #6 Pool.Rent 1514x1096 x1
+[webgpu] TEX #7 Pool.Rent 1514x1096 x1
+[webgpu] TEX #8 Pool.Rent 1514x1096 x1
+[webgpu] TEX #9 Pool.Rent 1514x1096 x1
+[webgpu] TEX #10 Pool.Rent 1514x1096 x1
+[webgpu] TEX #11 Pool.Rent 1514x1096 x1
+[webgpu] TEX #12 Pool.Rent 1514x1096 x1
+[webgpu] TEX #13 Pool.Rent 1514x1096 x1
+[webgpu] TEX #14 Pool.Rent 1514x1096 x1
+[webgpu] TEX #15 Pool.Rent 1514x1096 x1
+[webgpu] TEX #16 Pool.Rent 1514x1096 x1
+[webgpu] TEX #17 Pool.Rent 1514x1096 x1
+[webgpu] TEX #18 Pool.Rent 1514x1096 x1
+[webgpu] TEX #19 Pool.Rent 1514x1096 x1
+[webgpu] TEX #20 Pool.Rent 1514x1096 x1
+[webgpu] TEX #21 Pool.Rent 1514x1096 x1
+[webgpu] TEX #22 Pool.Rent 1514x1096 x1
+[webgpu] TEX #23 Pool.Rent 1514x1096 x1
+[webgpu] TEX #24 Pool.Rent 1514x1096 x1
+[webgpu] TEX #25 Pool.Rent 1514x1096 x1
+[webgpu] TEX #26 Pool.Rent 1514x1096 x1
+[webgpu] TEX #27 Pool.Rent 1514x1096 x1
+[webgpu] TEX #28 Pool.Rent 1514x1096 x1
+[webgpu] TEX #29 Pool.Rent 1514x1096 x1
+[webgpu] TEX #30 Pool.Rent 1514x1096 x1
+warn: Uno.UI.Runtime.Skia.Win32.Win32WindowWrapper[0]
+      Timed out waiting for the next present during synchronous render; the window may be shown before the first frame is displayed.
+warn: Uno.UI.Runtime.Skia.Win32.Win32WindowWrapper[0]
+      Timed out waiting for the next present during synchronous render; the window may be shown before the first frame is displayed.
+warn: SampleControl.Presentation.SampleChooserViewModel[0]
+      There is no file with name 'SampleChooserFileAddress.Samples.Favorites'.
+fail: Uno.UI.Runtime.Skia.Win32.Win32ClipboardExtension[0]
+      GetClipboardData failed: The operation completed successfully.
+
+[webgpu] TEX #31 ImageTexture.upload 64x64 x1
+[webgpu] TEX #32 Pool.Rent 1514x1096 x1
+[webgpu] TEX #33 Pool.Rent 1514x1096 x1
+[webgpu] TEX #34 Pool.Rent 1514x1096 x1
+[webgpu] TEX #35 Pool.Rent 1514x1096 x1
+[webgpu] TEX #36 Pool.Rent 1514x1096 x1
+[webgpu] TEX #37 Pool.Rent 1514x1096 x1
+[webgpu] TEX #38 Pool.Rent 1514x1096 x1
+[webgpu] TEX #39 Pool.Rent 1514x1096 x1
+[webgpu] TEX #40 Pool.Rent 1514x1096 x1
+[webgpu] TEX #41 Pool.Rent 1514x1096 x1
+[webgpu] TEX #42 Pool.Rent 1514x1096 x1
+[webgpu] TEX #43 Pool.Rent 1514x1096 x1
+[webgpu] TEX #44 Pool.Rent 1514x1096 x1
+[webgpu] TEX #45 Pool.Rent 1514x1096 x1
+[webgpu] TEX #46 Pool.Rent 1514x1096 x1
+[webgpu] TEX #47 Pool.Rent 1514x1096 x1
+[webgpu] TEX #48 Pool.Rent 1514x1096 x1
+[webgpu] TEX #49 Pool.Rent 1514x1096 x1
+[webgpu] TEX #50 Pool.Rent 1514x1096 x1
+[webgpu] TEX #51 Pool.Rent 1514x1096 x1
+[webgpu] TEX #52 Pool.Rent 1514x1096 x1
+[webgpu] TEX #53 Pool.Rent 1514x1096 x1
+[webgpu] TEX #54 Pool.Rent 1514x1096 x1
+[webgpu] TEX #55 Pool.Rent 1514x1096 x1
+[webgpu] TEX #56 Pool.Rent 1514x1096 x1
+[webgpu] TEX #57 Pool.Rent 1514x1096 x1
+[webgpu] TEX #58 Pool.Rent 1514x1096 x1
+[webgpu] TEX #59 Pool.Rent 1514x1096 x1
+[webgpu] TEX #60 Pool.Rent 1514x1096 x1
+[webgpu] TEX #61 Pool.Rent 1514x1096 x1
+[webgpu] TEX #62 Pool.Rent 1514x1096 x1
+[webgpu] TEX #63 Pool.Rent 1514x1096 x1
+[webgpu] TEX #64 Pool.Rent 1514x1096 x1
+[webgpu] TEX #65 Pool.Rent 1514x1096 x1
+[webgpu] TEX #66 Pool.Rent 1514x1096 x1
+[webgpu] TEX #67 Pool.Rent 1514x1096 x1
+[webgpu] TEX #68 Pool.Rent 1514x1096 x1
+[webgpu] TEX #69 Pool.Rent 1514x1096 x1
+[webgpu] TEX #70 Pool.Rent 1514x1096 x1
+[webgpu] TEX #71 Pool.Rent 1514x1096 x1
+[webgpu] TEX #72 Pool.Rent 1514x1096 x1
+[webgpu] TEX #73 Pool.Rent 1514x1096 x1
+[webgpu] TEX #74 Pool.Rent 1514x1096 x1
+[webgpu] TEX #75 Pool.Rent 1514x1096 x1
+[webgpu] TEX #76 Pool.Rent 1514x1096 x1
+[webgpu] TEX #77 Pool.Rent 1514x1096 x1
+[webgpu] TEX #78 Pool.Rent 1514x1096 x1
+[webgpu] TEX #79 Pool.Rent 1514x1096 x1
+[webgpu] TEX #80 Pool.Rent 1514x1096 x1
+[webgpu] TEX #81 Pool.Rent 1514x1096 x1
+[webgpu] TEX #82 Pool.Rent 1514x1096 x1
+[webgpu] TEX #83 Pool.Rent 1514x1096 x1
+[webgpu] TEX #84 Pool.Rent 1514x1096 x1
+[webgpu] TEX #85 Pool.Rent 1514x1096 x1
+[webgpu] TEX #86 Pool.Rent 1514x1096 x1
+[webgpu] TEX #87 Pool.Rent 1514x1096 x1
+[webgpu] TEX #88 Pool.Rent 1514x1096 x1
+[webgpu] TEX #89 Pool.Rent 1514x1096 x1
+[webgpu] TEX #90 Pool.Rent 1514x1096 x1
+[webgpu] TEX #91 Pool.Rent 1514x1096 x1
+[webgpu] TEX #92 Pool.Rent 1514x1096 x1
+[webgpu] TEX #93 Pool.Rent 1514x1096 x1
+[webgpu] TEX #94 Pool.Rent 1514x1096 x1
+[webgpu] TEX #95 Pool.Rent 1514x1096 x1
+[webgpu] TEX #96 Pool.Rent 1514x1096 x1
+[webgpu] TEX #97 Pool.Rent 1514x1096 x1
+[webgpu] TEX #98 Pool.Rent 1514x1096 x1
+[webgpu] TEX #99 Pool.Rent 1514x1096 x1
+[webgpu] TEX #100 Pool.Rent 1514x1096 x1
+[webgpu] TEX #101 Pool.Rent 1514x1096 x1
+[webgpu] TEX #102 Pool.Rent 1514x1096 x1
+[webgpu] TEX #103 Pool.Rent 1514x1096 x1
+[webgpu] TEX #104 Pool.Rent 1514x1096 x1
+[webgpu] TEX #105 Pool.Rent 1514x1096 x1
+[webgpu] TEX #106 Pool.Rent 1514x1096 x1
+[webgpu] TEX #107 Pool.Rent 1514x1096 x1
+[webgpu] TEX #108 Pool.Rent 1514x1096 x1
+[webgpu] TEX #109 Pool.Rent 1514x1096 x1
+[webgpu] TEX #110 Pool.Rent 1514x1096 x1
+[webgpu] TEX #111 Pool.Rent 1514x1096 x1
+[webgpu] TEX #112 Pool.Rent 1514x1096 x1
+[webgpu] TEX #113 Pool.Rent 1514x1096 x1
+[webgpu] TEX #114 Pool.Rent 1514x1096 x1
+[webgpu] TEX #115 Pool.Rent 1514x1096 x1
+[webgpu] TEX #116 Pool.Rent 1514x1096 x1
+[webgpu] TEX #117 Pool.Rent 1514x1096 x1
+[webgpu] TEX #118 Pool.Rent 1514x1096 x1
+[webgpu] TEX #119 Pool.Rent 1514x1096 x1
+[webgpu] TEX #120 Pool.Rent 1514x1096 x1
+[webgpu] TEX #121 Pool.Rent 1514x1096 x1
+[webgpu] TEX #122 Pool.Rent 1514x1096 x1
+[webgpu] TEX #123 Pool.Rent 1514x1096 x1
+[webgpu] TEX #124 Pool.Rent 1514x1096 x1
+[webgpu] TEX #125 Pool.Rent 1514x1096 x1
+[webgpu] TEX #126 Pool.Rent 1514x1096 x1
+[webgpu] TEX #127 Pool.Rent 1514x1096 x1
+[webgpu] TEX #128 Pool.Rent 1514x1096 x1
+[webgpu] TEX #129 Pool.Rent 1514x1096 x1
+[webgpu] TEX #130 Pool.Rent 1514x1096 x1
+[webgpu] TEX #131 Pool.Rent 1514x1096 x1
+[webgpu] TEX #132 Pool.Rent 1514x1096 x1
+[webgpu] TEX #133 Pool.Rent 1514x1096 x1
+[webgpu] TEX #134 Pool.Rent 1514x1096 x1
+[webgpu] TEX #135 Pool.Rent 1514x1096 x1
+[webgpu] TEX #136 Pool.Rent 1514x1096 x1
+[webgpu] TEX #137 Pool.Rent 1514x1096 x1
+[webgpu] TEX #138 Pool.Rent 1514x1096 x1
+[webgpu] TEX #139 Pool.Rent 1514x1096 x1
+[webgpu] TEX #140 Pool.Rent 1514x1096 x1
+[webgpu] TEX #141 Pool.Rent 1514x1096 x1
+[webgpu] TEX #142 Pool.Rent 1514x1096 x1
+[webgpu] TEX #143 Pool.Rent 1514x1096 x1
+[webgpu-profile] n=4 FRAME=264.88ms (~4fps: record=18.08 replay=245.95 present=0.85) | replay[beginFrame=0.53 render=46.24 submit=28.91 poll=170.13] present[acquire=0.08 blit=0.23 surface=0.12] | cnt/f: cmds=79 ops=79 draws=73 offscr=53(L0 B0 Cov53 Sh0) backdropReCmds=0 texCreate=34 rent=159 bg(hit=53 miss=0) bufNew=137 upload=43KB | gc: alloc=1232KB/f gen0=6 gen1=3 gen2=1 | peak: FRAME=558.16 render=114.29 poll=353.42 present=2.66
+[webgpu] TEX #144 Pool.Rent 1514x1096 x1
+[webgpu] TEX #145 Pool.Rent 1514x1096 x1
+[webgpu] TEX #146 Pool.Rent 1514x1096 x1
+[webgpu] TEX #147 Pool.Rent 1514x1096 x1
+[webgpu] TEX #148 Pool.Rent 1514x1096 x1
+[webgpu] TEX #149 Pool.Rent 1514x1096 x1
+[webgpu] TEX #150 Pool.Rent 1514x1096 x1
+[webgpu] TEX #151 Pool.Rent 1514x1096 x1
+[webgpu] TEX #152 Pool.Rent 1514x1096 x1
+[webgpu-profile] n=3 FRAME=420.90ms (~2fps: record=0.24 replay=420.46 present=0.21) | replay[beginFrame=0.40 render=16.98 submit=89.85 poll=313.22] present[acquire=0.02 blit=0.16 surface=0.02] | cnt/f: cmds=227 ops=227 draws=204 offscr=143(L0 B0 Cov143 Sh0) backdropReCmds=0 texCreate=3 rent=429 bg(hit=145 miss=1) bufNew=12 upload=158KB | gc: alloc=2243KB/f gen0=4 gen1=1 gen2=0 | peak: FRAME=451.25 render=26.01 poll=324.68 present=0.22
+[webgpu-profile] n=3 FRAME=339.47ms (~3fps: record=0.26 replay=338.99 present=0.22) | replay[beginFrame=0.49 render=10.74 submit=11.03 poll=316.72] present[acquire=0.02 blit=0.17 surface=0.02] | cnt/f: cmds=231 ops=231 draws=208 offscr=146(L0 B0 Cov146 Sh0) backdropReCmds=0 texCreate=0 rent=438 bg(hit=150 miss=0) bufNew=0 upload=165KB | gc: alloc=298KB/f gen0=1 gen1=0 gen2=0 | peak: FRAME=342.86 render=12.74 poll=321.33 present=0.23
+[webgpu-profile] n=3 FRAME=335.29ms (~3fps: record=0.33 replay=334.76 present=0.20) | replay[beginFrame=0.29 render=10.96 submit=4.16 poll=319.35] present[acquire=0.02 blit=0.15 surface=0.02] | cnt/f: cmds=231 ops=231 draws=208 offscr=146(L0 B0 Cov146 Sh0) backdropReCmds=0 texCreate=0 rent=438 bg(hit=150 miss=0) bufNew=0 upload=165KB | gc: alloc=298KB/f gen0=0 gen1=0 gen2=0 | peak: FRAME=350.53 render=18.68 poll=325.94 present=0.23
+[webgpu-profile] n=4 FRAME=338.68ms (~3fps: record=0.57 replay=337.88 present=0.23) | replay[beginFrame=0.24 render=5.64 submit=4.59 poll=327.40] present[acquire=0.03 blit=0.18 surface=0.02] | cnt/f: cmds=231 ops=231 draws=208 offscr=146(L0 B0 Cov146 Sh0) backdropReCmds=0 texCreate=0 rent=438 bg(hit=150 miss=0) bufNew=0 upload=165KB | gc: alloc=287KB/f gen0=1 gen1=0 gen2=0 | peak: FRAME=369.52 render=6.82 poll=357.14 present=0.29
+[webgpu-profile] n=3 FRAME=380.82ms (~3fps: record=0.28 replay=380.32 present=0.23) | replay[beginFrame=0.32 render=6.45 submit=5.13 poll=368.42] present[acquire=0.02 blit=0.18 surface=0.02] | cnt/f: cmds=231 ops=231 draws=208 offscr=146(L0 B0 Cov146 Sh0) backdropReCmds=0 texCreate=0 rent=438 bg(hit=150 miss=0) bufNew=0 upload=165KB | gc: alloc=287KB/f gen0=0 gen1=0 gen2=0 | peak: FRAME=397.26 render=7.39 poll=384.79 present=0.24
+[webgpu-profile] n=4 FRAME=317.06ms (~3fps: record=0.21 replay=316.66 present=0.19) | replay[beginFrame=0.26 render=5.44 submit=4.17 poll=306.78] present[acquire=0.02 blit=0.15 surface=0.02] | cnt/f: cmds=231 ops=231 draws=208 offscr=146(L0 B0 Cov146 Sh0) backdropReCmds=0 texCreate=0 rent=438 bg(hit=150 miss=0) bufNew=0 upload=165KB | gc: alloc=287KB/f gen0=1 gen1=0 gen2=0 | peak: FRAME=346.78 render=8.04 poll=333.05 present=0.20
+[webgpu-profile] n=4 FRAME=296.17ms (~3fps: record=0.19 replay=295.79 present=0.19) | replay[beginFrame=0.24 render=5.03 submit=3.67 poll=286.84] present[acquire=0.02 blit=0.15 surface=0.01] | cnt/f: cmds=231 ops=231 draws=208 offscr=146(L0 B0 Cov146 Sh0) backdropReCmds=0 texCreate=0 rent=438 bg(hit=150 miss=0) bufNew=0 upload=165KB | gc: alloc=287KB/f gen0=1 gen1=0 gen2=0 | peak: FRAME=302.46 render=5.80 poll=292.72 present=0.21
+[webgpu-profile] n=4 FRAME=304.45ms (~3fps: record=0.18 replay=304.09 present=0.18) | replay[beginFrame=0.25 render=5.26 submit=3.95 poll=294.62] present[acquire=0.02 blit=0.15 surface=0.01] | cnt/f: cmds=231 ops=231 draws=208 offscr=146(L0 B0 Cov146 Sh0) backdropReCmds=0 texCreate=0 rent=438 bg(hit=150 miss=0) bufNew=0 upload=165KB | gc: alloc=287KB/f gen0=1 gen1=0 gen2=0 | peak: FRAME=308.84 render=6.23 poll=300.07 present=0.19
+[webgpu-profile] n=4 FRAME=304.05ms (~3fps: record=0.22 replay=303.64 present=0.19) | replay[beginFrame=0.26 render=5.19 submit=3.69 poll=294.49] present[acquire=0.02 blit=0.15 surface=0.01] | cnt/f: cmds=231 ops=231 draws=208 offscr=146(L0 B0 Cov146 Sh0) backdropReCmds=0 texCreate=0 rent=438 bg(hit=150 miss=0) bufNew=0 upload=165KB | gc: alloc=287KB/f gen0=0 gen1=0 gen2=0 | peak: FRAME=309.56 render=6.58 poll=300.61 present=0.19
+[webgpu-profile] n=4 FRAME=302.54ms (~3fps: record=0.18 replay=302.17 present=0.18) | replay[beginFrame=0.22 render=5.20 submit=3.68 poll=293.07] present[acquire=0.02 blit=0.15 surface=0.01] | cnt/f: cmds=231 ops=231 draws=208 offscr=146(L0 B0 Cov146 Sh0) backdropReCmds=0 texCreate=0 rent=438 bg(hit=150 miss=0) bufNew=0 upload=165KB | gc: alloc=287KB/f gen0=1 gen1=0 gen2=0 | peak: FRAME=310.45 render=6.45 poll=300.47 present=0.19
+[webgpu-profile] n=4 FRAME=297.67ms (~3fps: record=0.16 replay=297.32 present=0.18) | replay[beginFrame=0.20 render=4.91 submit=3.61 poll=288.59] present[acquire=0.02 blit=0.15 surface=0.01] | cnt/f: cmds=231 ops=231 draws=208 offscr=146(L0 B0 Cov146 Sh0) backdropReCmds=0 texCreate=0 rent=438 bg(hit=150 miss=0) bufNew=0 upload=165KB | gc: alloc=287KB/f gen0=1 gen1=0 gen2=0 | peak: FRAME=300.41 render=5.51 poll=291.92 present=0.19
+[webgpu-profile] n=4 FRAME=308.10ms (~3fps: record=0.20 replay=307.71 present=0.19) | replay[beginFrame=0.20 render=5.12 submit=4.41 poll=297.98] present[acquire=0.02 blit=0.15 surface=0.01] | cnt/f: cmds=231 ops=231 draws=208 offscr=146(L0 B0 Cov146 Sh0) backdropReCmds=0 texCreate=0 rent=438 bg(hit=150 miss=0) bufNew=0 upload=165KB | gc: alloc=287KB/f gen0=0 gen1=0 gen2=0 | peak: FRAME=335.09 render=5.82 poll=322.69 present=0.20
+
+===== HUMAN #455 (39c) =====
+where we at? and how do I make msaa 2x?
+
+===== HUMAN #456 (17239c) =====
+PS C:\Users\RamezRagaa\Downloads\SamplesApp-Win32-WebGpu-win-x64> $env:UNO_WEBGPU_PROFILE="1";
+PS C:\Users\RamezRagaa\Downloads\SamplesApp-Win32-WebGpu-win-x64> $env:UNO_WEBGPU="1";
+PS C:\Users\RamezRagaa\Downloads\SamplesApp-Win32-WebGpu-win-x64> .\SamplesApp.Skia.Generic.exe
+[0000019d8e4e7ee0] imem demux error: Invalid get/release function pointers
+[000001a592327f80] prefetch stream error: reading while paused (buggy demux?)
+warn: Uno.UI.Runtime.Skia.Win32.Win32TextScaleFactorExtension[0]
+      Failed to read TextScaleFactor from registry: The system cannot find the file specified.
+
+info: Uno.UI.Runtime.Skia.Win32.Win32WindowWrapper[0]
+      Loading icon file [C:\Users\RamezRagaa\Downloads\SamplesApp-Win32-WebGpu-win-x64\Assets\StoreLogo.png] from Package.appxmanifest file
+[webgpu] TEX #1 CreateColorTarget 1x1 x1
+[webgpu] backend init - UNO_WEBGPU_PROFILE=True pipeline=False msaa=4x colorFormat=BGRA8Unorm
+dbug: Uno.UI.Runtime.Skia.Win32.Win32Accessibility[0]
+      [UIA] Win32Accessibility initialized for window 0x4030330
+info: Uno.UI.Runtime.Skia.Win32.Win32Accessibility[0]
+      [UIA] Root provider created: element=XamlIslandRoot, peer=NULL, children count=4, window=0x4030330
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource ControlCornerRadius
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewTopPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewExpandedPaneBackground
+warn: Uno.UI.ResourceResolver[0]
+      Couldn't statically resolve resource NavigationViewContentBackground
+warn: Microsoft.UI.Xaml.FrameworkTemplatePool[0]
+      Template pooling is disabled in this build of Uno Platform. See https://github.com/unoplatform/uno/issues/13969
+info: SampleControl.Presentation.SampleChooserViewModel[0]
+      Found 1397 sample(s) in 131 categories.
+HandleLaunchArguments:
+Automated runtime tests args:
+Automated runtime tests output file:  (UITEST_RUNTIME_TEST_GROUP: , UITEST_RUNTIME_TEST_GROUP_COUNT: , UITEST_RUNTIME_TESTS_FILTER: )
+Section changed: SamplesContent (GC Heap: 22.86 MB)
+Done loading 00:00:00.5643544
+[webgpu] TEX #2 Surface.msaa 1514x1096 x4
+[webgpu] TEX #3 Surface.depth 1514x1096 x4
+[webgpu] TEX #4 Pool.Rent 1010x731 x4
+[webgpu] TEX #5 Pool.Rent 1010x731 x4
+[webgpu] TEX #6 Pool.Rent 1010x731 x1
+[webgpu] TEX #7 Pool.Rent 1010x731 x1
+[webgpu] TEX #8 Pool.Rent 1010x731 x1
+[webgpu] TEX #9 Pool.Rent 1010x731 x1
+[webgpu] TEX #10 Pool.Rent 1002x48 x4
+[webgpu] TEX #11 Pool.Rent 1002x48 x4
+[webgpu] TEX #12 Pool.Rent 1002x48 x1
+[webgpu] TEX #13 Pool.Rent 48x48 x4
+[webgpu] TEX #14 Pool.Rent 48x48 x4
+[webgpu] TEX #15 Pool.Rent 48x48 x1
+[webgpu] TEX #16 Pool.Rent 41x40 x4
+[webgpu] TEX #17 Pool.Rent 41x40 x4
+[webgpu] TEX #18 Pool.Rent 41x40 x1
+[webgpu] TEX #19 Pool.Rent 21x20 x4
+[webgpu] TEX #20 Pool.Rent 21x20 x4
+[webgpu] TEX #21 Pool.Rent 21x20 x1
+[webgpu] TEX #22 Pool.Rent 21x20 x1
+[webgpu] TEX #23 Pool.Rent 41x40 x1
+[webgpu] TEX #24 Pool.Rent 41x40 x1
+[webgpu] TEX #25 Pool.Rent 41x40 x1
+[webgpu] TEX #26 Pool.Rent 41x40 x1
+[webgpu] TEX #27 Pool.Rent 41x40 x1
+[webgpu] TEX #28 Pool.Rent 41x40 x1
+[webgpu] TEX #29 Pool.Rent 41x40 x1
+[webgpu] TEX #30 Pool.Rent 41x40 x1
+[webgpu] TEX #31 Pool.Rent 41x40 x1
+[webgpu] TEX #32 Pool.Rent 41x40 x1
+[webgpu] TEX #33 Pool.Rent 41x40 x1
+[webgpu] TEX #34 Pool.Rent 41x40 x1
+[webgpu] TEX #35 Pool.Rent 41x40 x1
+[webgpu] TEX #36 Pool.Rent 21x48 x4
+[webgpu] TEX #37 Pool.Rent 21x48 x4
+[webgpu] TEX #38 Pool.Rent 21x48 x1
+[webgpu] TEX #39 Pool.Rent 21x48 x1
+[webgpu] TEX #40 Pool.Rent 1010x62 x4
+[webgpu] TEX #41 Pool.Rent 1010x62 x4
+[webgpu] TEX #42 Pool.Rent 1010x62 x1
+warn: Uno.UI.Runtime.Skia.Win32.Win32WindowWrapper[0]
+      Timed out waiting for the next present during synchronous render; the window may be shown before the first frame is displayed.
+warn: SampleControl.Presentation.SampleChooserViewModel[0]
+      There is no file with name 'SampleChooserFileAddress.Samples.Favorites'.
+fail: Uno.UI.Runtime.Skia.Win32.Win32ClipboardExtension[0]
+      GetClipboardData failed: The operation completed successfully.
+
+[webgpu] TEX #43 ImageTexture.upload 64x64 x1
+[webgpu] TEX #44 Pool.Rent 730x731 x4
+[webgpu] TEX #45 Pool.Rent 730x731 x4
+[webgpu] TEX #46 Pool.Rent 730x731 x1
+[webgpu] TEX #47 Pool.Rent 722x48 x4
+[webgpu] TEX #48 Pool.Rent 722x48 x4
+[webgpu] TEX #49 Pool.Rent 722x48 x1
+[webgpu] TEX #50 Pool.Rent 1x1 x4
+[webgpu] TEX #51 Pool.Rent 1x1 x4
+[webgpu] TEX #52 Pool.Rent 1x1 x1
+[webgpu] TEX #53 Pool.Rent 2x2 x4
+[webgpu] TEX #54 Pool.Rent 2x2 x4
+[webgpu] TEX #55 Pool.Rent 2x2 x1
+[webgpu] TEX #56 Pool.Rent 2x2 x1
+[webgpu] TEX #57 Pool.Rent 2x2 x1
+[webgpu] TEX #58 Pool.Rent 2x2 x1
+[webgpu] TEX #59 Pool.Rent 2x2 x1
+[webgpu] TEX #60 Pool.Rent 2x2 x1
+[webgpu] TEX #61 Pool.Rent 18x2 x4
+[webgpu] TEX #62 Pool.Rent 18x2 x4
+[webgpu] TEX #63 Pool.Rent 18x2 x1
+[webgpu] TEX #64 Pool.Rent 18x2 x1
+[webgpu] TEX #65 Pool.Rent 18x2 x1
+[webgpu] TEX #66 Pool.Rent 1x1 x1
+[webgpu] TEX #67 Pool.Rent 19x20 x4
+[webgpu] TEX #68 Pool.Rent 19x20 x4
+[webgpu] TEX #69 Pool.Rent 19x20 x1
+[webgpu] TEX #70 Pool.Rent 280x731 x4
+[webgpu] TEX #71 Pool.Rent 280x731 x4
+[webgpu] TEX #72 Pool.Rent 280x731 x1
+[webgpu] TEX #73 Pool.Rent 280x731 x1
+[webgpu] TEX #74 Pool.Rent 272x60 x4
+[webgpu] TEX #75 Pool.Rent 272x60 x4
+[webgpu] TEX #76 Pool.Rent 272x60 x1
+[webgpu] TEX #77 Pool.Rent 40x41 x4
+[webgpu] TEX #78 Pool.Rent 40x41 x4
+[webgpu] TEX #79 Pool.Rent 40x41 x1
+[webgpu] TEX #80 Pool.Rent 40x41 x1
+[webgpu] TEX #81 Pool.Rent 18x20 x4
+[webgpu] TEX #82 Pool.Rent 18x20 x4
+[webgpu] TEX #83 Pool.Rent 18x20 x1
+[webgpu] TEX #84 Pool.Rent 40x41 x1
+[webgpu] TEX #85 Pool.Rent 40x41 x1
+[webgpu] TEX #86 Pool.Rent 40x41 x1
+[webgpu] TEX #87 Pool.Rent 40x41 x1
+[webgpu] TEX #88 Pool.Rent 40x41 x1
+[webgpu] TEX #89 Pool.Rent 40x41 x1
+[webgpu] TEX #90 Pool.Rent 40x41 x1
+[webgpu] TEX #91 Pool.Rent 40x41 x1
+[webgpu] TEX #92 Pool.Rent 21x21 x4
+[webgpu] TEX #93 Pool.Rent 21x21 x4
+[webgpu] TEX #94 Pool.Rent 21x21 x1
+[webgpu] TEX #95 Pool.Rent 270x31 x4
+[webgpu] TEX #96 Pool.Rent 270x31 x4
+[webgpu] TEX #97 Pool.Rent 270x31 x1
+[webgpu] TEX #98 Pool.Rent 272x33 x4
+[webgpu] TEX #99 Pool.Rent 272x33 x4
+[webgpu] TEX #100 Pool.Rent 272x33 x1
+[webgpu] TEX #101 Pool.Rent 233x31 x4
+[webgpu] TEX #102 Pool.Rent 233x31 x4
+[webgpu] TEX #103 Pool.Rent 233x31 x1
+[webgpu] TEX #104 Pool.Rent 233x31 x1
+[webgpu] TEX #105 Pool.Rent 31x22 x4
+[webgpu] TEX #106 Pool.Rent 31x22 x4
+[webgpu] TEX #107 Pool.Rent 31x22 x1
+[webgpu] TEX #108 Pool.Rent 31x22 x1
+[webgpu] TEX #109 Pool.Rent 13x13 x4
+[webgpu] TEX #110 Pool.Rent 13x13 x4
+[webgpu] TEX #111 Pool.Rent 13x13 x1
+[webgpu] TEX #112 Pool.Rent 138x33 x4
+[webgpu] TEX #113 Pool.Rent 138x33 x4
+[webgpu] TEX #114 Pool.Rent 138x33 x1
+[webgpu] TEX #115 Pool.Rent 138x33 x1
+[webgpu] TEX #116 Pool.Rent 20x20 x4
+[webgpu] TEX #117 Pool.Rent 20x20 x4
+[webgpu] TEX #118 Pool.Rent 20x20 x1
+[webgpu] TEX #119 Pool.Rent 21x21 x1
+[webgpu] TEX #120 Pool.Rent 280x538 x4
+[webgpu] TEX #121 Pool.Rent 280x538 x4
+[webgpu] TEX #122 Pool.Rent 280x538 x1
+[webgpu] TEX #123 Pool.Rent 280x538 x1
+[webgpu] TEX #124 Pool.Rent 280x538 x1
+[webgpu] TEX #125 Pool.Rent 280x41 x4
+[webgpu] TEX #126 Pool.Rent 280x41 x4
+[webgpu] TEX #127 Pool.Rent 280x41 x1
+[webgpu] TEX #128 Pool.Rent 280x41 x1
+[webgpu] TEX #129 Pool.Rent 13x12 x4
+[webgpu] TEX #130 Pool.Rent 13x12 x4
+[webgpu] TEX #131 Pool.Rent 13x12 x1
+[webgpu] TEX #132 Pool.Rent 280x41 x1
+[webgpu] TEX #133 Pool.Rent 280x41 x1
+[webgpu] TEX #134 Pool.Rent 13x12 x1
+[webgpu] TEX #135 Pool.Rent 280x41 x1
+[webgpu] TEX #136 Pool.Rent 280x41 x1
+[webgpu] TEX #137 Pool.Rent 13x12 x1
+[webgpu] TEX #138 Pool.Rent 280x41 x1
+[webgpu] TEX #139 Pool.Rent 280x41 x1
+[webgpu] TEX #140 Pool.Rent 13x13 x1
+[webgpu] TEX #141 Pool.Rent 280x41 x1
+[webgpu] TEX #142 Pool.Rent 280x41 x1
+[webgpu] TEX #143 Pool.Rent 13x13 x1
+[webgpu] TEX #144 Pool.Rent 280x41 x1
+[webgpu] TEX #145 Pool.Rent 280x41 x1
+[webgpu] TEX #146 Pool.Rent 13x13 x1
+[webgpu] TEX #147 Pool.Rent 280x41 x1
+[webgpu] TEX #148 Pool.Rent 280x41 x1
+[webgpu] TEX #149 Pool.Rent 13x13 x1
+[webgpu] TEX #150 Pool.Rent 280x41 x1
+[webgpu] TEX #151 Pool.Rent 280x41 x1
+[webgpu] TEX #152 Pool.Rent 13x13 x1
+[webgpu] TEX #153 Pool.Rent 280x41 x1
+[webgpu] TEX #154 Pool.Rent 280x41 x1
+[webgpu] TEX #155 Pool.Rent 13x13 x1
+[webgpu] TEX #156 Pool.Rent 280x41 x1
+[webgpu] TEX #157 Pool.Rent 280x41 x1
+[webgpu] TEX #158 Pool.Rent 13x12 x1
+[webgpu] TEX #159 Pool.Rent 280x41 x1
+[webgpu] TEX #160 Pool.Rent 280x41 x1
+[webgpu] TEX #161 Pool.Rent 13x12 x1
+[webgpu] TEX #162 Pool.Rent 280x41 x1
+[webgpu] TEX #163 Pool.Rent 280x41 x1
+[webgpu] TEX #164 Pool.Rent 13x12 x1
+[webgpu] TEX #165 Pool.Rent 280x41 x1
+[webgpu] TEX #166 Pool.Rent 280x41 x1
+[webgpu] TEX #167 Pool.Rent 13x12 x1
+[webgpu] TEX #168 Pool.Rent 280x41 x1
+[webgpu] TEX #169 Pool.Rent 280x41 x1
+[webgpu] TEX #170 Pool.Rent 13x12 x1
+[webgpu] TEX #171 Pool.Rent 280x41 x1
+[webgpu] TEX #172 Pool.Rent 280x41 x1
+[webgpu] TEX #173 Pool.Rent 13x12 x1
+[webgpu] TEX #174 Pool.Rent 280x41 x1
+[webgpu] TEX #175 Pool.Rent 280x41 x1
+[webgpu] TEX #176 Pool.Rent 13x12 x1
+[webgpu] TEX #177 Pool.Rent 280x41 x1
+[webgpu] TEX #178 Pool.Rent 280x41 x1
+[webgpu] TEX #179 Pool.Rent 13x12 x1
+[webgpu] TEX #180 Pool.Rent 280x41 x1
+[webgpu] TEX #181 Pool.Rent 280x41 x1
+[webgpu] TEX #182 Pool.Rent 13x12 x1
+[webgpu] TEX #183 Pool.Rent 280x41 x1
+[webgpu] TEX #184 Pool.Rent 280x41 x1
+[webgpu] TEX #185 Pool.Rent 13x12 x1
+[webgpu] TEX #186 Pool.Rent 280x41 x1
+[webgpu] TEX #187 Pool.Rent 280x41 x1
+[webgpu] TEX #188 Pool.Rent 13x12 x1
+[webgpu] TEX #189 Pool.Rent 280x41 x1
+[webgpu] TEX #190 Pool.Rent 280x41 x1
+[webgpu] TEX #191 Pool.Rent 13x12 x1
+[webgpu] TEX #192 Pool.Rent 16x538 x4
+[webgpu] TEX #193 Pool.Rent 16x538 x4
+[webgpu] TEX #194 Pool.Rent 16x538 x1
+[webgpu] TEX #195 Pool.Rent 16x538 x1
+[webgpu] TEX #196 Pool.Rent 280x51 x4
+[webgpu] TEX #197 Pool.Rent 280x51 x4
+[webgpu] TEX #198 Pool.Rent 280x51 x1
+[webgpu] TEX #199 Pool.Rent 94x51 x4
+[webgpu] TEX #200 Pool.Rent 94x51 x4
+[webgpu] TEX #201 Pool.Rent 94x51 x1
+[webgpu] TEX #202 Pool.Rent 30x21 x4
+[webgpu] TEX #203 Pool.Rent 30x21 x4
+[webgpu] TEX #204 Pool.Rent 30x21 x1
+[webgpu] TEX #205 Pool.Rent 94x51 x1
+[webgpu] TEX #206 Pool.Rent 40x21 x4
+[webgpu] TEX #207 Pool.Rent 40x21 x4
+[webgpu] TEX #208 Pool.Rent 40x21 x1
+[webgpu] TEX #209 Pool.Rent 94x51 x1
+[webgpu] TEX #210 Pool.Rent 33x21 x4
+[webgpu] TEX #211 Pool.Rent 33x21 x4
+[webgpu] TEX #212 Pool.Rent 33x21 x1
+[webgpu] TEX #213 Pool.Rent 2x731 x4
+[webgpu] TEX #214 Pool.Rent 2x731 x4
+[webgpu] TEX #215 Pool.Rent 2x731 x1
+[webgpu] TEX #216 Pool.Rent 82x29 x4
+[webgpu] TEX #217 Pool.Rent 82x29 x4
+[webgpu] TEX #218 Pool.Rent 82x29 x1
+[webgpu] TEX #219 Pool.Rent 84x31 x4
+[webgpu] TEX #220 Pool.Rent 84x31 x4
+[webgpu] TEX #221 Pool.Rent 84x31 x1
+[webgpu] TEX #222 Pool.Rent 351x619 x4
+[webgpu] TEX #223 Pool.Rent 351x619 x4
+[webgpu] TEX #224 Pool.Rent 351x619 x1
+[webgpu] TEX #225 Pool.Rent 353x621 x4
+[webgpu] TEX #226 Pool.Rent 353x621 x4
+[webgpu] TEX #227 Pool.Rent 353x621 x1
+[webgpu] TEX #228 Pool.Rent 351x618 x4
+[webgpu] TEX #229 Pool.Rent 351x618 x4
+[webgpu] TEX #230 Pool.Rent 351x618 x1
+[webgpu] TEX #231 Pool.Rent 351x618 x1
+[webgpu] TEX #232 Pool.Rent 272x61 x4
+[webgpu] TEX #233 Pool.Rent 272x61 x4
+[webgpu] TEX #234 Pool.Rent 272x61 x1
+[webgpu] TEX #235 Pool.Rent 18x21 x4
+[webgpu] TEX #236 Pool.Rent 18x21 x4
+[webgpu] TEX #237 Pool.Rent 18x21 x1
+[webgpu] TEX #238 Pool.Rent 233x30 x4
+[webgpu] TEX #239 Pool.Rent 233x30 x4
+[webgpu] TEX #240 Pool.Rent 233x30 x1
+[webgpu] TEX #241 Pool.Rent 233x30 x1
+[webgpu] TEX #242 Pool.Rent 31x23 x4
+[webgpu] TEX #243 Pool.Rent 31x23 x4
+[webgpu] TEX #244 Pool.Rent 31x23 x1
+[webgpu] TEX #245 Pool.Rent 31x23 x1
+[webgpu] TEX #246 Pool.Rent 144x33 x4
+[webgpu] TEX #247 Pool.Rent 144x33 x4
+[webgpu] TEX #248 Pool.Rent 144x33 x1
+[webgpu] TEX #249 Pool.Rent 144x33 x1
+[webgpu] TEX #250 Pool.Rent 21x21 x1
+[webgpu] TEX #251 Pool.Rent 280x537 x4
+[webgpu] TEX #252 Pool.Rent 280x537 x4
+[webgpu] TEX #253 Pool.Rent 280x537 x1
+[webgpu] TEX #254 Pool.Rent 280x537 x1
+[webgpu] TEX #255 Pool.Rent 280x537 x1
+[webgpu] TEX #256 Pool.Rent 13x12 x1
+[webgpu] TEX #257 Pool.Rent 13x12 x1
+[webgpu] TEX #258 Pool.Rent 13x12 x1
+[webgpu] TEX #259 Pool.Rent 13x12 x1
+[webgpu] TEX #260 Pool.Rent 13x12 x1
+[webgpu] TEX #261 Pool.Rent 13x12 x1
+[webgpu] TEX #262 Pool.Rent 34x21 x4
+[webgpu] TEX #263 Pool.Rent 34x21 x4
+[webgpu] TEX #264 Pool.Rent 34x21 x1
+[webgpu] TEX #265 Pool.Rent 44x21 x4
+[webgpu] TEX #266 Pool.Rent 44x21 x4
+[webgpu] TEX #267 Pool.Rent 44x21 x1
+[webgpu] TEX #268 Pool.Rent 35x21 x4
+[webgpu] TEX #269 Pool.Rent 35x21 x4
+[webgpu] TEX #270 Pool.Rent 35x21 x1
+[webgpu-profile] n=6 FRAME=94.58ms (~11fps: record=5.97 replay=88.13 present=0.48) | replay[beginFrame=0.58 render=28.08 submit=30.51 poll=28.86] present[acquire=0.05 blit=0.18 surface=0.04] | cnt/f: cmds=127 ops=127 draws=115 offscr=81(L0 B0 Cov81 Sh0) backdropReCmds=0 texCreate=44 rent=245 bg(hit=82 miss=1) bufNew=94 upload=79KB | gc: alloc=1895KB/f gen0=10 gen1=4 gen2=1 | peak: FRAME=151.44 render=72.76 poll=36.90 present=1.89
+[webgpu] TEX #271 Pool.Rent 16x537 x4
+[webgpu] TEX #272 Pool.Rent 16x537 x4
+[webgpu] TEX #273 Pool.Rent 16x537 x1
+[webgpu] TEX #274 Pool.Rent 16x537 x1
+[webgpu] TEX #275 Pool.Rent 2x48 x4
+[webgpu] TEX #276 Pool.Rent 2x48 x4
+[webgpu] TEX #277 Pool.Rent 2x48 x1
+[webgpu] TEX #278 Pool.Rent 8x54 x4
+[webgpu] TEX #279 Pool.Rent 8x54 x4
+[webgpu] TEX #280 Pool.Rent 8x54 x1
+[webgpu-profile] n=20 FRAME=51.19ms (~20fps: record=0.22 replay=50.77 present=0.19) | replay[beginFrame=0.22 render=8.59 submit=7.33 poll=34.63] present[acquire=0.02 blit=0.16 surface=0.01] | cnt/f: cmds=230 ops=230 draws=207 offscr=145(L0 B0 Cov145 Sh0) backdropReCmds=0 texCreate=0 rent=437 bg(hit=149 miss=0) bufNew=0 upload=164KB | gc: alloc=301KB/f gen0=2 gen1=2 gen2=0 | peak: FRAME=106.57 render=18.68 poll=39.29 present=0.27
+[webgpu-profile] n=22 FRAME=46.55ms (~21fps: record=0.22 replay=46.12 present=0.20) | replay[beginFrame=0.24 render=7.02 submit=4.09 poll=34.77] present[acquire=0.02 blit=0.16 surface=0.02] | cnt/f: cmds=231 ops=231 draws=208 offscr=146(L0 B0 Cov146 Sh0) backdropReCmds=0 texCreate=0 rent=438 bg(hit=150 miss=0) bufNew=0 upload=165KB | gc: alloc=296KB/f gen0=3 gen1=3 gen2=0 | peak: FRAME=57.51 render=15.91 poll=40.69 present=0.27
+[webgpu] TEX #281 Pool.Rent 81x29 x4
+[webgpu] TEX #282 Pool.Rent 81x29 x4
+[webgpu] TEX #283 Pool.Rent 81x29 x1
+[webgpu] TEX #284 Pool.Rent 83x31 x4
+[webgpu] TEX #285 Pool.Rent 83x31 x4
+[webgpu] TEX #286 Pool.Rent 83x31 x1
+[webgpu-profile] n=22 FRAME=45.46ms (~22fps: record=0.18 replay=45.09 present=0.20) | replay[beginFrame=0.21 render=4.80 submit=3.89 poll=36.18] present[acquire=0.02 blit=0.16 surface=0.01] | cnt/f: cmds=231 ops=231 draws=208 offscr=146(L0 B0 Cov146 Sh0) backdropReCmds=0 texCreate=0 rent=438 bg(hit=150 miss=0) bufNew=0 upload=165KB | gc: alloc=297KB/f gen0=1 gen1=1 gen2=0 | peak: FRAME=58.94 render=6.72 poll=48.14 present=0.24
+
+===== HUMAN #457 (3488c) =====
+another page is really slow now. [webgpu-profile] n=17 FRAME=60.49ms (~17fps: record=0.16 replay=60.08 present=0.25) | replay[beginFrame=0.32 render=9.79 submit=8.95 poll=41.01] present[acquire=0.02 blit=0.20 surface=0.02] | cnt/f: cmds=352 ops=355 draws=353 offscr=242(L0 B0 Cov242 Sh0) backdropReCmds=0 texCreate=0 rent=726 bg(hit=344 miss=0) bufNew=0 upload=584KB | gc: alloc=857KB/f gen0=4 gen1=4 gen2=0 | peak: FRAME=73.33 render=14.37 poll=47.86 present=0.37
+[webgpu-profile] n=18 FRAME=57.44ms (~17fps: record=0.14 replay=57.06 present=0.24) | replay[beginFrame=0.31 render=9.29 submit=8.38 poll=39.08] present[acquire=0.02 blit=0.20 surface=0.01] | cnt/f: cmds=352 ops=355 draws=353 offscr=242(L0 B0 Cov242 Sh0) backdropReCmds=0 texCreate=0 rent=726 bg(hit=344 miss=0) bufNew=0 upload=584KB | gc: alloc=1010KB/f gen0=5 gen1=5 gen2=0 | peak: FRAME=63.32 render=14.80 poll=44.26 present=0.41
+[webgpu-profile] n=18 FRAME=56.08ms (~18fps: record=0.15 replay=55.69 present=0.24) | replay[beginFrame=0.33 render=8.98 submit=8.39 poll=37.98] present[acquire=0.02 blit=0.20 surface=0.02] | cnt/f: cmds=352 ops=355 draws=353 offscr=242(L0 B0 Cov242 Sh0) backdropReCmds=0 texCreate=0 rent=726 bg(hit=344 miss=0) bufNew=0 upload=584KB | gc: alloc=856KB/f gen0=5 gen1=5 gen2=0 | peak: FRAME=59.47 render=11.05 poll=39.98 present=0.37
+[webgpu-profile] n=19 FRAME=55.46ms (~18fps: record=0.13 replay=55.12 present=0.21) | replay[beginFrame=0.29 render=8.76 submit=8.43 poll=37.64] present[acquire=0.02 blit=0.16 surface=0.01] | cnt/f: cmds=352 ops=355 draws=353 offscr=242(L0 B0 Cov242 Sh0) backdropReCmds=0 texCreate=0 rent=726 bg(hit=344 miss=0) bufNew=0 upload=584KB | gc: alloc=855KB/f gen0=5 gen1=5 gen2=0 | peak: FRAME=61.31 render=11.03 poll=40.36 present=0.32
+[webgpu-profile] n=18 FRAME=55.75ms (~18fps: record=0.14 replay=55.39 present=0.22) | replay[beginFrame=0.43 render=9.02 submit=8.13 poll=37.82] present[acquire=0.02 blit=0.18 surface=0.01] | cnt/f: cmds=352 ops=355 draws=353 offscr=242(L0 B0 Cov242 Sh0) backdropReCmds=0 texCreate=0 rent=726 bg(hit=344 miss=0) bufNew=0 upload=584KB | gc: alloc=1006KB/f gen0=5 gen1=4 gen2=0 | peak: FRAME=62.03 render=15.22 poll=39.61 present=0.32
+[webgpu-profile] n=19 FRAME=55.30ms (~18fps: record=0.14 replay=54.96 present=0.21) | replay[beginFrame=0.56 render=8.39 submit=8.23 poll=37.78] present[acquire=0.02 blit=0.17 surface=0.01] | cnt/f: cmds=352 ops=355 draws=353 offscr=242(L0 B0 Cov242 Sh0) backdropReCmds=0 texCreate=0 rent=726 bg(hit=344 miss=0) bufNew=0 upload=584KB | gc: alloc=855KB/f gen0=4 gen1=4 gen2=0 | peak: FRAME=57.83 render=9.84 poll=40.03 present=0.32
+[webgpu-profile] n=18 FRAME=58.06ms (~17fps: record=0.16 replay=57.64 present=0.26) | replay[beginFrame=0.50 render=9.22 submit=8.37 poll=39.55] present[acquire=0.02 blit=0.21 surface=0.02] | cnt/f: cmds=352 ops=355 draws=353 offscr=242(L0 B0 Cov242 Sh0) backdropReCmds=0 texCreate=0 rent=726 bg(hit=344 miss=0) bufNew=0 upload=584KB | gc: alloc=856KB/f gen0=5 gen1=5 gen2=0 | peak: FRAME=71.64 render=19.70 poll=52.72 present=0.55
+[webgpu-profile] n=18 FRAME=55.74ms (~18fps: record=0.13 replay=55.39 present=0.21) | replay[beginFrame=0.59 render=8.51 submit=8.26 poll=38.03] present[acquire=0.02 blit=0.18 surface=0.01] | cnt/f: cmds=352 ops=355 draws=353 offscr=242(L0 B0 Cov242 Sh0) backdropReCmds=0 texCreate=0 rent=726 bg(hit=344 miss=0) bufNew=0 upload=584KB | gc: alloc=856KB/f gen0=4 gen1=4 gen2=0 | peak: FRAME=59.39 render=9.76 poll=40.23 present=0.33
+
+===== HUMAN #458 (69c) =====
+where is there a divergence here between neutral and original webgpu?
+
+===== HUMAN #459 (52c) =====
+i thought we make all the refactors from the audits?
+
+===== HUMAN #460 (157c) =====
+do the harness then do the full refactors. no stopping, I will be away. it is completely unaccetable to give up or stop for any reason until it's fully done.
+
+===== HUMAN #461 (4829c) =====
+Adjusted sample. will this be fixed by the rest of the refactors?
+
+[webgpu-profile] n=20 FRAME=50.10ms (~20fps: record=0.19 replay=49.69 present=0.21) | replay[beginFrame=0.30 render=15.74 submit=4.67 poll=28.99] present[acquire=0.02 blit=0.17 surface=0.01] | cnt/f: cmds=1544 ops=1552 draws=1552 offscr=0(L0 B0 Cov0 Sh0) backdropReCmds=0 texCreate=0 rent=0 bg(hit=1510 miss=0) bufNew=0 upload=2455KB | gc: alloc=441KB/f gen0=10 gen1=5 gen2=0 | peak: FRAME=54.19 render=20.05 poll=29.74 present=0.24
+[webgpu-profile] n=21 FRAME=49.90ms (~20fps: record=0.13 replay=49.57 present=0.20) | replay[beginFrame=0.11 render=15.84 submit=4.67 poll=28.95] present[acquire=0.02 blit=0.17 surface=0.01] | cnt/f: cmds=1544 ops=1552 draws=1552 offscr=0(L0 B0 Cov0 Sh0) backdropReCmds=0 texCreate=0 rent=0 bg(hit=1510 miss=0) bufNew=0 upload=2455KB | gc: alloc=441KB/f gen0=11 gen1=6 gen2=0 | peak: FRAME=54.43 render=19.15 poll=30.28 present=0.24
+[webgpu-profile] n=20 FRAME=49.99ms (~20fps: record=0.13 replay=49.67 present=0.20) | replay[beginFrame=0.11 render=15.84 submit=4.81 poll=28.91] present[acquire=0.02 blit=0.17 surface=0.01] | cnt/f: cmds=1544 ops=1552 draws=1552 offscr=0(L0 B0 Cov0 Sh0) backdropReCmds=0 texCreate=0 rent=0 bg(hit=1510 miss=0) bufNew=0 upload=2455KB | gc: alloc=441KB/f gen0=11 gen1=6 gen2=1 | peak: FRAME=53.04 render=19.38 poll=30.19 present=0.24
+[webgpu-profile] n=20 FRAME=50.18ms (~20fps: record=0.13 replay=49.84 present=0.21) | replay[beginFrame=0.11 render=15.99 submit=4.65 poll=29.09] present[acquire=0.02 blit=0.17 surface=0.01] | cnt/f: cmds=1544 ops=1552 draws=1552 offscr=0(L0 B0 Cov0 Sh0) backdropReCmds=0 texCreate=0 rent=0 bg(hit=1510 miss=0) bufNew=0 upload=2455KB | gc: alloc=441KB/f gen0=10 gen1=5 gen2=0 | peak: FRAME=53.40 render=19.24 poll=30.31 present=0.28
+[webgpu-profile] n=20 FRAME=50.48ms (~20fps: record=0.13 replay=50.15 present=0.21) | replay[beginFrame=0.16 render=15.63 submit=5.02 poll=29.34] present[acquire=0.02 blit=0.17 surface=0.01] | cnt/f: cmds=1544 ops=1552 draws=1552 offscr=0(L0 B0 Cov0 Sh0) backdropReCmds=0 texCreate=0 rent=0 bg(hit=1510 miss=0) bufNew=0 upload=2455KB | gc: alloc=441KB/f gen0=10 gen1=5 gen2=0 | peak: FRAME=52.87 render=18.61 poll=31.36 present=0.26
+[webgpu-profile] n=20 FRAME=50.43ms (~20fps: record=0.12 replay=50.11 present=0.20) | replay[beginFrame=0.10 render=16.15 submit=4.80 poll=29.06] present[acquire=0.02 blit=0.17 surface=0.01] | cnt/f: cmds=1544 ops=1552 draws=1552 offscr=0(L0 B0 Cov0 Sh0) backdropReCmds=0 texCreate=0 rent=0 bg(hit=1510 miss=0) bufNew=0 upload=2455KB | gc: alloc=441KB/f gen0=10 gen1=5 gen2=0 | peak: FRAME=53.93 render=19.34 poll=30.02 present=0.24
+[webgpu-profile] n=20 FRAME=51.08ms (~20fps: record=0.14 replay=50.71 present=0.23) | replay[beginFrame=0.10 render=16.15 submit=4.86 poll=29.59] present[acquire=0.03 blit=0.18 surface=0.01] | cnt/f: cmds=1544 ops=1552 draws=1552 offscr=0(L0 B0 Cov0 Sh0) backdropReCmds=0 texCreate=0 rent=0 bg(hit=1510 miss=0) bufNew=0 upload=2455KB | gc: alloc=441KB/f gen0=10 gen1=5 gen2=0 | peak: FRAME=53.84 render=19.27 poll=32.20 present=0.33
+[webgpu-profile] n=20 FRAME=50.94ms (~20fps: record=0.13 replay=50.60 present=0.21) | replay[beginFrame=0.15 render=16.43 submit=4.99 poll=29.03] present[acquire=0.02 blit=0.18 surface=0.01] | cnt/f: cmds=1544 ops=1552 draws=1552 offscr=0(L0 B0 Cov0 Sh0) backdropReCmds=0 texCreate=0 rent=0 bg(hit=1510 miss=0) bufNew=0 upload=2455KB | gc: alloc=441KB/f gen0=11 gen1=6 gen2=1 | peak: FRAME=56.63 render=22.23 poll=30.74 present=0.29
+[webgpu-profile] n=20 FRAME=50.74ms (~20fps: record=0.12 replay=50.42 present=0.20) | replay[beginFrame=0.10 render=16.39 submit=4.83 poll=29.10] present[acquire=0.02 blit=0.17 surface=0.01] | cnt/f: cmds=1544 ops=1552 draws=1552 offscr=0(L0 B0 Cov0 Sh0) backdropReCmds=0 texCreate=0 rent=0 bg(hit=1510 miss=0) bufNew=0 upload=2455KB | gc: alloc=441KB/f gen0=10 gen1=5 gen2=0 | peak: FRAME=53.15 render=18.90 poll=32.01 present=0.25
+[webgpu-profile] n=20 FRAME=51.53ms (~19fps: record=0.13 replay=51.18 present=0.21) | replay[beginFrame=0.10 render=16.64 submit=4.78 poll=29.66] present[acquire=0.02 blit=0.17 surface=0.01] | cnt/f: cmds=1544 ops=1552 draws=1552 offscr=0(L0 B0 Cov0 Sh0) backdropReCmds=0 texCreate=0 rent=0 bg(hit=1510 miss=0) bufNew=0 upload=2455KB | gc: alloc=441KB/f gen0=10 gen1=5 gen2=0 | peak: FRAME=62.35 render=25.09 poll=31.72 present=0.30
+[webgpu-profile] n=20 FRAME=51.82ms (~19fps: record=0.13 replay=51.48 present=0.21) | replay[beginFrame=0.09 render=17.16 submit=5.06 poll=29.16] present[acquire=0.02 blit=0.17 surface=0.02] | cnt/f: cmds=1544 ops=1552 draws=1552 offscr=0(L0 B0 Cov0 Sh0) backdropReCmds=0 texCreate=0 rent=0 bg(hit=1510 miss=0) bufNew=0 upload=2455KB | gc: alloc=441KB/f gen0=10 gen1=5 gen2=0 | peak: FRAME=59.71 render=25.18 poll=32.21 present=0.29
+
+===== HUMAN #462 (114c) =====
+after you're done with that, continue with all the remaining refactors even if they're a large effort. DO NOT STOP
+
+===== HUMAN #463 (139c) =====
+explain [1] to me. also, why did you do interleaved build+draw instead of all at once? did the interface abstractions restrict that design?
+
+===== HUMAN #464 (493c) =====
+"A recording whose transform/clip is unchanged is a pure cache hit: no vertex rebuild, no re-upload, ~no CPU. A moved or changed recording rebuilds and re-caches." even if the transform/clip is changed, the vertices of the drawing itself should not be reuploaded, no? the transform is supplied as a shader uniform. Another question: why are the vertices and other details not in the IRenderInfo itself? If I remember correctctly, the webgpu branch had all the details on the visual itself, no?
+
+===== HUMAN #465 (160c) =====
+but can't IRenderData be the way for the backend to store visual-specific details? it doesn't need to be on the visual itself, it can be on the IRenderData, no?
+
+===== HUMAN #466 (142c) =====
+ok, let's go. once again, compare the webgpu branch and our branch and make sure what is sent to the gpu is the same between the two branches.
+
+===== HUMAN #467 (151c) =====
+fix it and continue with comparing more samples and fix the disparities (unless they're fixes like the path winding difference, but double check that).
+
+===== HUMAN #468 (165c) =====
+do everything. once again: make sure that the end result is that the two branches end up with the same gpu command stream (with the envvars set as explained before).

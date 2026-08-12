@@ -1,0 +1,28 @@
+--- TRACE full-ui (neutral: 10 solid rows + 6 mixed cards) ---
+UPLOAD geometry-build(frame-solid) 1B
+UPLOAD geometry-build(frame-solid) 1B
+UPLOAD geometry-build(frame-solid) 1B
+UPLOAD geometry-build(frame-solid) 1B
+UPLOAD geometry-build(frame-solid) 1B
+UPLOAD geometry-build(frame-solid) 1B
+PASS main 256x256 msaa=4 clear
+  DRAW solid v=66
+  DRAW path-stencil-nz v=3
+  DRAW path-cover v=6
+  DRAW solid v=6
+  DRAW path-stencil-nz v=3
+  DRAW path-cover v=6
+  DRAW solid v=6
+  DRAW path-stencil-nz v=3
+  DRAW path-cover v=6
+  DRAW solid v=6
+  DRAW path-stencil-nz v=3
+  DRAW path-cover v=6
+  DRAW solid v=6
+  DRAW path-stencil-nz v=3
+  DRAW path-cover v=6
+  DRAW solid v=6
+  DRAW path-stencil-nz v=3
+  DRAW path-cover v=6
+PASS end
+================================================

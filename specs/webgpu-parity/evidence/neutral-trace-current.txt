@@ -1,0 +1,137 @@
+======== GPU SUBMISSION TRACE (neutral) ========
+[webgpu] TEX #101 Surface.color 64x64 x1
+[webgpu] TEX #102 Surface.msaa 64x64 x4
+[webgpu] TEX #103 Surface.depth 64x64 x4
+--- TRACE rect (solid) ---
+PASS main 64x64 msaa=4 clear
+  DRAW solid v=6
+PASS end
+[webgpu] TEX #104 Surface.color 64x64 x1
+[webgpu] TEX #105 Surface.msaa 64x64 x4
+[webgpu] TEX #106 Surface.depth 64x64 x4
+--- TRACE rect x3 (coalesce) ---
+PASS main 64x64 msaa=4 clear
+  DRAW solid v=18
+PASS end
+[webgpu] TEX #107 Surface.color 64x64 x1
+[webgpu] TEX #108 Surface.msaa 64x64 x4
+[webgpu] TEX #109 Surface.depth 64x64 x4
+--- TRACE path (stencil-then-cover) ---
+PASS main 64x64 msaa=4 clear
+  DRAW path-stencil-nz v=3
+  DRAW path-cover v=6
+PASS end
+[webgpu] TEX #110 Surface.color 64x64 x1
+[webgpu] TEX #111 Surface.msaa 64x64 x4
+[webgpu] TEX #112 Surface.depth 64x64 x4
+--- TRACE gradient linear ---
+PASS main 64x64 msaa=4 clear
+  DRAW gradient v=6
+PASS end
+[webgpu] TEX #113 Surface.color 64x64 x1
+[webgpu] TEX #114 Surface.msaa 64x64 x4
+[webgpu] TEX #115 Surface.depth 64x64 x4
+--- TRACE gradient radial ---
+PASS main 64x64 msaa=4 clear
+  DRAW gradient v=6
+PASS end
+[webgpu] TEX #116 Surface.color 64x64 x1
+[webgpu] TEX #117 Surface.msaa 64x64 x4
+[webgpu] TEX #118 Surface.depth 64x64 x4
+--- TRACE image ---
+PASS main 64x64 msaa=4 clear
+  DRAW image v=6
+PASS end
+[webgpu] TEX #119 Surface.color 64x64 x1
+[webgpu] TEX #120 Surface.msaa 64x64 x4
+[webgpu] TEX #121 Surface.depth 64x64 x4
+--- TRACE clip-rect (scissor only) ---
+PASS main 64x64 msaa=4 clear
+  DRAW solid v=6
+PASS end
+[webgpu] TEX #122 Surface.color 64x64 x1
+[webgpu] TEX #123 Surface.msaa 64x64 x4
+[webgpu] TEX #124 Surface.depth 64x64 x4
+--- TRACE clip-rounded (analytic SDF) ---
+PASS main 64x64 msaa=4 clear
+  DRAW solid v=6
+PASS end
+[webgpu] TEX #125 Surface.color 64x64 x1
+[webgpu] TEX #126 Surface.msaa 64x64 x4
+[webgpu] TEX #127 Surface.depth 64x64 x4
+--- TRACE clip-path (depth mask) ---
+PASS main 64x64 msaa=4 clear
+  DRAW clipdepth-set1(fill) v=3
+  DRAW clip-stencil-nz v=3
+  DRAW clipdepth-cover0 v=3
+  DRAW solid v=6
+PASS end
+[webgpu] TEX #128 Surface.color 64x64 x1
+[webgpu] TEX #129 Surface.msaa 64x64 x4
+[webgpu] TEX #130 Surface.depth 64x64 x4
+--- TRACE save-layer opacity ---
+PASS offscreen 64x64 msaa=4 clear
+  DRAW solid v=6
+PASS end
+PASS main 64x64 msaa=4 clear
+  DRAW composite-srcover v=3
+PASS end
+[webgpu] TEX #131 Surface.color 64x64 x1
+[webgpu] TEX #132 Surface.msaa 64x64 x4
+[webgpu] TEX #133 Surface.depth 64x64 x4
+[webgpu] TEX #134 Pool.Rent 64x64 x4
+[webgpu] TEX #135 Pool.Rent 64x64 x4
+[webgpu] TEX #136 Pool.Rent 64x64 x1
+--- TRACE mask-layer (DstIn) ---
+PASS offscreen 64x64 msaa=4 clear
+  DRAW solid v=6
+PASS end
+PASS offscreen 64x64 msaa=4 clear
+  DRAW solid v=6
+  DRAW composite-dstin v=3
+PASS end
+PASS main 64x64 msaa=4 clear
+  DRAW composite-srcover v=3
+PASS end
+[webgpu] TEX #137 Surface.color 64x64 x1
+[webgpu] TEX #138 Surface.msaa 64x64 x4
+[webgpu] TEX #139 Surface.depth 64x64 x4
+[webgpu] TEX #140 Pool.Rent 52x52 x4
+[webgpu] TEX #141 Pool.Rent 52x52 x4
+[webgpu] TEX #142 Pool.Rent 52x52 x1
+[webgpu] TEX #143 Pool.Rent 52x52 x1
+[webgpu] TEX #144 Pool.Rent 52x52 x1
+--- TRACE shadow (coverage+blur+composite) ---
+PASS shadow-coverage 52x52 msaa=4 clear
+  DRAW shadow-stencil-nz v=6
+  DRAW shadow-cover v=6
+PASS end
+PASS blur-h 0x0 msaa=1 clear
+  DRAW blur v=3
+PASS end
+PASS blur-v 0x0 msaa=1 clear
+  DRAW blur v=3
+PASS end
+PASS main 64x64 msaa=4 clear
+  DRAW image v=6
+PASS end
+[webgpu] TEX #145 Surface.color 64x64 x1
+[webgpu] TEX #146 Surface.msaa 64x64 x4
+[webgpu] TEX #147 Surface.depth 64x64 x4
+[webgpu] TEX #148 Pool.Rent 64x64 x1
+[webgpu] TEX #149 Pool.Rent 64x64 x1
+--- TRACE backdrop-acrylic (translucent) ---
+PASS offscreen 64x64 msaa=4 clear
+  DRAW solid v=6
+PASS end
+PASS blur-h 0x0 msaa=1 clear
+  DRAW blur v=3
+PASS end
+PASS blur-v 0x0 msaa=1 clear
+  DRAW blur v=3
+PASS end
+PASS main 64x64 msaa=4 clear
+  DRAW solid v=6
+  DRAW image v=6
+PASS end
+================================================
