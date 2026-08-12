@@ -21,8 +21,12 @@ public static class SkiaBackend
 		// and register the backend). Registering again here is idempotent and makes the intent explicit.
 		DrawingFactory.Register(new SkiaDrawingFactory());
 
-		// Image decoding is an independent, render-backend-agnostic seam; install the Skia decoder.
-		ImageDecoder.Current = new SkiaImageDecoderBackend();
+		// Image decoding is an independent, render-backend-agnostic seam. When managed decoding is selected, install
+		// the fully-managed backend (byte[]-backed IImage, no Skia object created) so an image-bearing app can run
+		// with no native libSkiaSharp; otherwise the Skia codec (which still tries the managed parse in front).
+		ImageDecoder.Current = DrawingBackendOptions.UseManagedImageDecoder
+			? new ManagedImageDecoderBackend()
+			: new SkiaImageDecoderBackend();
 
 		// Font resolution is likewise render-backend-independent; install the Skia resolver (or a host override).
 		FontProvider.Current = DrawingBackendOptions.FontProvider ?? new SkiaFontProvider();

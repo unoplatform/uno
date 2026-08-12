@@ -15,7 +15,6 @@ using Windows.UI.ViewManagement;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Microsoft.UI.Xaml;
-using SkiaSharp;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
@@ -234,19 +233,11 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		unsafe void SetIconFromFile(string iconPath)
 		{
+			// Decode through the neutral image-decoder seam (managed decoder when enabled, else the registered
+			// codec) rather than SkiaSharp directly — the X11 host has no other native-Skia dependency, so this
+			// keeps a WebGPU + managed build genuinely libSkiaSharp-free. Pixels come back BGRA premultiplied.
 			using var fileStream = File.OpenRead(iconPath);
-			using var codec = SKCodec.Create(fileStream);
-			if (codec is null)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"Unable to create an SKCodec instance for icon file {iconPath}.");
-				}
-				return;
-			}
-			using var bitmap = new SKBitmap(codec.Info.Width, codec.Info.Height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
-			var result = codec.GetPixels(bitmap.Info, bitmap.GetPixels());
-			if (result != SKCodecResult.Success)
+			if (!ImageDecoder.Current.TryDecode(fileStream, null, null, out var frames) || frames.Frames.Count == 0)
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
@@ -254,17 +245,32 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				}
 				return;
 			}
+			using var _framesDisposable = frames;
 
-			var pixels = bitmap.Pixels;
-			var data = Marshal.AllocHGlobal((pixels.Length + 2) * sizeof(IntPtr));
+			var image = frames.Frames[0];
+			var width = image.PixelWidth;
+			var height = image.PixelHeight;
+			var count = width * height;
+			var bgra = new byte[count * 4];
+			image.CopyPixels(bgra);
+
+			var data = Marshal.AllocHGlobal((count + 2) * sizeof(IntPtr));
 			using var _freeDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, data);
 
 			var ptr = (IntPtr*)data.ToPointer();
-			*(ptr++) = bitmap.Width;
-			*(ptr++) = bitmap.Height;
-			foreach (var pixel in bitmap.Pixels)
+			*(ptr++) = width;
+			*(ptr++) = height;
+			for (int i = 0; i < count; i++)
 			{
-				*(ptr++) = pixel.Alpha << 24 | pixel.Red << 16 | pixel.Green << 8 | pixel.Blue << 0;
+				// Source is BGRA premultiplied; _NET_WM_ICON wants non-premultiplied ARGB (0xAARRGGBB).
+				byte b = bgra[i * 4 + 0], g = bgra[i * 4 + 1], r = bgra[i * 4 + 2], a = bgra[i * 4 + 3];
+				if (a is not 0 and not 255)
+				{
+					r = (byte)Math.Min(255, r * 255 / a);
+					g = (byte)Math.Min(255, g * 255 / a);
+					b = (byte)Math.Min(255, b * 255 / a);
+				}
+				*(ptr++) = a << 24 | r << 16 | g << 8 | b << 0;
 			}
 
 			var display = RootX11Window.Display;
@@ -280,7 +286,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				32,
 				PropertyMode.Replace,
 				data,
-				pixels.Length + 2);
+				count + 2);
 
 			_ = XLib.XFlush(display);
 			_ = XLib.XSync(display, false); // wait until the pixels are actually copied
