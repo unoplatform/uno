@@ -1527,3 +1527,44 @@ Skia backend types behind a build flavor / move them to an optional assembly). A
 exotic color-glyph/image formats (CBDT/sbix/COLRv1/OT-SVG per §41 icons note); a sample using only those would still
 need a decoder. Next: (a) same libSkiaSharp-absent run on macOS/Win32/WASM heads; (b) scope the assembly-reference
 removal.
+
+---
+
+## 43. ALL Skia runtime hosts neutralized — zero SkiaSharp types in host code (pushed)
+
+Goal (user: "the hosts should not be skia at all. everything through the interfaces … FULLY DONE"): every
+`Uno.UI.Runtime.Skia.*` host renders through the neutral seam only. Swept + confirmed **0 SkiaSharp type usages** in
+host code across X11, Win32, MacOS, AppleUIKit, Android, WebAssembly.Browser, Linux.FrameBuffer (only Uno's own
+`UnoSKCanvasView`/`IUnoSkia…` class *names* contain the "SK" substring).
+
+Pattern per host: keep native plumbing (DIB/BitBlt, WGL/GLES/EGL swap, Metal drawable, GBM/DRM pageflip, framebuffer
+mmap), but hand the backend a neutral `IRenderTarget` — `ISoftwareRenderTarget` (CPU framebuffer), `IGLRenderTarget`
+(FBO + optional GLES proc loader), or `IMetalRenderTarget` (MTLTexture+device+queue). `SkiaRenderer.BeginPresent`
+demuxes to SKSurface/GRContext. Native clip uses `IGeometry.ToSvgPathData()`. Vulkan-on-Skia removed everywhere (GL
+substitutes; WebGPU is the modern GPU path) — deleted the three dead `*VulkanSurfaceFactory` + X11's Vulkan context.
+
+**Seam extension (§ additive, this pass):** `CompositionTarget.OnNativePlatformFrameRequested`/`Draw` gained optional
+`Matrix4x4? rootTransform` (outermost display-orientation transform, applied via `IDrawingSession.Concat` before the
+DPI scale) + `Action<IDrawingSession>? overlay` (post-composition draw). Only the **LinuxFrameBuffer** host uses them
+(display orientation + software mouse cursor) — every other host passes null, unchanged. This replaced LinuxFB's
+host-side `SKCanvas` orientation/cursor ops.
+
+**LinuxFB specifics:** software path composes into a neutral BGRA staging buffer then converts+blits to the
+framebuffer honoring its native layout (BGRA/RGBA/RGB565) — `FrameBufferDevice.PixelFormat` now returns a
+backend-neutral `FramebufferColorFormat` enum, not `SKColorType`. DRM/GL hands an `IGLRenderTarget` over the EGL
+default framebuffer (FBO 0, GLES proc loader = `EglHelper.EglGetProcAddress`); backend owns the GRContext-GLES.
+
+Commits (pushed to `ramez` `5814159935..bf646600c0`): win32 `b0048c4024`, android `89eaeeecee`, wasm `16725a54d0`,
+macos `0f3a154808`, appleuikit `cc3219a8e8`, seam `1e6a63412c`, x11 `2b4d9e85b1`, win32+android-vulkan-cleanup
+`1d70992074`, linuxfb `bf646600c0`.
+
+**Validation:** compile-clean on Generic/X11 (`net10.0`), Win32, Android (`net10.0-android`), LinuxFB. Runtime
+(X11 headless, Xvfb :99 + lavapipe): 20s window-present smoke crash-free (window path uses the modified `Draw`);
+`Given_RenderTargetBitmap.When_Render_Asymmetric_Content_Then_Not_Flipped` PASSES.
+`When_Render_Border_GetPixelsAsync` fails on a pre-existing RTB **alpha** mismatch (A 125→84) — confirmed unrelated:
+RTB uses `factory.RenderOffscreen`/`SnapshotAsync`, NOT the window-present `Draw` path I changed (tasks #6–8 RTB WIP).
+AppleUIKit/macOS/iOS not compilable here (no Apple workload) — user validates on Mac.
+
+**Note:** hosts still carry a `Uno.UI.Composition.SkiaBackend` *ProjectReference* (provides the default renderer via
+module-init/`DrawingRegistration`) — that's the packaged-default mechanism; host *code* is Skia-free. Removing the
+reference entirely is the app-composition-root story (SamplesApp build flags), deliberately out of scope here.
