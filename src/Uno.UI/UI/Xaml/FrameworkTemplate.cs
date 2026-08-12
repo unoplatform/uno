@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml
 	{
 		private readonly int _hashCode;
 		private readonly ManagedWeakReference? _ownerRef;
-		private const bool _isLegacyTemplate = true; // Tests fails if set to false, so we keep it true for now.
+		private const bool _isLegacyTemplate = false;
 
 		/// <summary>
 		/// XAML scope captured during template creation, used as context provider for resource resolution when materializing template content.

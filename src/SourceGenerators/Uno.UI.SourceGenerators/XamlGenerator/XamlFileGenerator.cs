@@ -1,5 +1,9 @@
 #nullable enable
 
+// Enables the per-member templated-parent assignment. Scratch-branch toggle: paired with
+// FrameworkTemplate._isLegacyTemplate = false, it replaces the ambient TemplatedParentScope.
+#define USE_NEW_TP_CODEGEN
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
