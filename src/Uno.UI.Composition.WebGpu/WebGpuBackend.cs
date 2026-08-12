@@ -3983,6 +3983,28 @@ public sealed class WebGpuGraphicsProvider : IGraphicsProvider
 		var device = ((IWebGpuDeviceContext)context).Device;
 		return new(new WebGpuDrawingFactory(device, DrawingFactory.Current), new WebGpuRenderer(device));
 	}
+
+	// Build the on-window WebGPU swapchain context from the neutral window's tagged native handles, so the host
+	// contributes only an INativeWindow and never references this backend. The wgpu surface constructor per
+	// windowing system lives in the backend (WebGpuSwapChainContext.Create*Surface).
+	public IGraphicsContext TryCreateContext(GraphicsContextKind kind, INativeWindow window)
+	{
+		if (kind != GraphicsContextKind.WebGpu)
+		{
+			return null;
+		}
+
+		Func<IntPtr, IntPtr> createSurface = window.Kind switch
+		{
+			NativeWindowKind.X11 => inst => WebGpuSwapChainContext.CreateXlibSurface(inst, window.Display, (ulong)window.Handle),
+			NativeWindowKind.Win32 => inst => WebGpuSwapChainContext.CreateHwndSurface(inst, window.Display, window.Handle),
+			NativeWindowKind.Android => inst => WebGpuSwapChainContext.CreateAndroidSurface(inst, window.Handle),
+			NativeWindowKind.Metal => inst => WebGpuSwapChainContext.CreateMetalSurface(inst, window.Handle),
+			_ => null,
+		};
+
+		return createSurface is null ? null : new WebGpuSwapChainContext(WGPUTextureFormat.BGRA8Unorm, createSurface);
+	}
 }
 
 // --- Device-bound factory (IImageTexture + eventual shaders) ---
