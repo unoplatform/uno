@@ -4003,7 +4003,14 @@ public sealed class WebGpuGraphicsProvider : IGraphicsProvider
 			_ => null,
 		};
 
-		return createSurface is null ? null : new WebGpuSwapChainContext(WGPUTextureFormat.BGRA8Unorm, createSurface);
+		if (createSurface is null)
+		{
+			return null;
+		}
+
+		// Set before the swapchain context creates the device (it reads this for its DPI-scaled targets).
+		WebGpuDevice.RasterizationScale = window.RasterizationScale <= 0 ? 1f : window.RasterizationScale;
+		return new WebGpuSwapChainContext(WGPUTextureFormat.BGRA8Unorm, createSurface);
 	}
 }
 
