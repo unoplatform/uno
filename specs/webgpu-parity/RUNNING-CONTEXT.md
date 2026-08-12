@@ -1635,3 +1635,39 @@ bring the SkiaBackend package (and native assets) to Skia app targets, and app t
 startup (as SamplesApp.Skia.Generic does) — mirror `SkiaBackend.Register()` + the provider registration. The mobile/
 WASM SamplesApp heads only register a renderer via the WebGPU host path today; wiring their Skia-mode registration is
 the same app-composition-root task.
+
+---
+
+## 46. PROOF: a real desktop app builds + runs SkiaSharp-free — full reference audit
+
+User: "make sure real apps don't have a real skiasharp dependency" + "build the desktop target with skia off,
+skiasharp not in the output." Runtime tests are allowed to keep SkiaSharp (pixel-assert helpers); the goal is that a
+**real app** carries no SkiaSharp.
+
+**Full SkiaSharp reference closure (comments stripped; the framework + all hosts are absent from it):**
+- *Direct package ref (14):* skia-impl — `Uno.UI.Composition.SkiaBackend`, `Uno.UI.Svg.Skia`, `Uno.UI.Lottie.Skia`,
+  `Uno.UI.Lottie.Reference`, `Uno.WinUI.Graphics2DSK.Crossruntime`, `Uno.WinUI.Graphics2DSK.Windows`; apps/tests —
+  `SamplesApp.Skia.Generic/.WebAssembly.Browser/.netcoremobile`, `SamplesApp.UITests`, `SolutionTemplate` ×2,
+  `AlcApp`, `HRApp.Skia`.
+- *Transitive only (7):* `SamplesApp.Skia` (→Graphics2DSK), `SamplesApp.Windows` (→Graphics2DSK.Windows),
+  `UnoIslands.Skia`/`UnoIslandsSamplesApp.Skia`, `Uno.UI.Composition.WebGpu.Smoke` (→SkiaBackend),
+  `Uno.UI.RuntimeTests.Skia` (→SkiaBackend), `Uno.UI.UnitTests` (→Lottie.Skia).
+- **Zero framework libraries and zero hosts** reach SkiaSharp.
+
+Note: SamplesApp is *not* a valid skia-free proof vehicle — it hard-depends on `Uno.UI.RuntimeTests` (which supplies
+`Private.Infrastructure`/`Uno.Testing`/`UnitTestDispatcherCompat` to the whole app) and RuntimeTests is intentionally
+Skia-coupled (pixel-perfect screenshot assertions). That coupling is fine — it's a test project, not an app.
+
+**The proof — `src/SkiaFreeProof/`** (new minimal desktop app head): references only the neutral framework
+(Uno.UI, Uno.UI.Composition, Uno.UWP, Uno.Foundation, Dispatching) + the Skia *platform* hosts (X11/Win32) + the
+WebGPU backend; registers `ManagedBackend` + a `WebGpuGraphicsProvider`. It references NO SkiaSharp package, NO
+SkiaBackend, NO Skia add-ins, NO RuntimeTests. Built `-c Debug -f net10.0`:
+- `find -iname "*skiasharp*"` in the output tree → **nothing**. `SkiaSharp.dll` absent; `libSkiaSharp` absent;
+  `Uno.UI.Composition.Skia.dll` (backend) absent. Present: the managed + WebGPU assemblies + `libwgpu_native.so`
+  (+ HarfBuzzSharp, the neutral text-shaping lib — not SkiaSharp).
+- Runs headless under WebGPU/lavapipe: `[webgpu] backend init`, no `DllNotFoundException`, no crash — a real app
+  builds AND renders SkiaSharp-free.
+
+Build it yourself: `dotnet build src/SkiaFreeProof/SkiaFreeProof.csproj -c Debug -f net10.0 -p:UnoTargetFrameworkOverride=net10.0`
+then `find src/SkiaFreeProof/bin/Debug/net10.0 -iname "*skiasharp*"` (empty). To render:
+`DISPLAY=:99 VK_ICD_FILENAMES=…/lvp_icd.json LD_LIBRARY_PATH=. UNO_WEBGPU=1 dotnet SkiaFreeProof.dll`.
