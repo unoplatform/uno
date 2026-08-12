@@ -35,6 +35,16 @@ namespace SkiaSharpExample
 
 			ApplyManagedBackendOptions();
 
+			// Install the drawing backend at the app entry (the framework is backend-agnostic and packaged once).
+			// Gated by the app-level build flags: UNO_DRAWING_SKIA installs the Skia backend (its default renderer +
+			// SKCanvasElement factory); otherwise the SkiaSharp-free managed backend is installed and the head's
+			// WebGPU render view provides the renderer. Must run before Application.Start reaches DrawingFactory.Current.
+#if UNO_DRAWING_SKIA
+			global::Uno.UI.Composition.Skia.SkiaBackend.Register();
+#else
+			global::Uno.UI.Composition.Drawing.ManagedBackend.Register();
+#endif
+
 			UnoPlatformHost? host = default;
 			var builder = UnoPlatformHostBuilder.Create()
 				.App(() => _app = new SamplesApp.App())

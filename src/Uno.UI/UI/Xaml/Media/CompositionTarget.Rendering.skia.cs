@@ -26,7 +26,18 @@ public partial class CompositionTarget
 	/// The active rendering backend that owns the frame record/present lifecycle. Defaults to the Skia
 	/// two-phase backend; a host/experiment can replace it before the first frame.
 	/// </summary>
-	internal static IRenderer Renderer { get; set; } = new SkiaRenderer();
+	// Backend-agnostic: the framework doesn't reference a concrete renderer. A head that installs its own renderer
+	// (e.g. WebGPU) sets this; otherwise it falls back to the registered backend's default (DrawingRegistration set
+	// by SkiaBackend.Register). Accessing it before any backend is registered throws a diagnosable error.
+	private static IRenderer? _renderer;
+	internal static IRenderer Renderer
+	{
+		get => _renderer
+			?? DrawingRegistration.DefaultRenderer
+			?? throw new global::System.InvalidOperationException(
+				"No IRenderer registered. The app entry must register a drawing backend (SkiaBackend.Register / ManagedBackend.Register) and/or the head must set CompositionTarget.Renderer before the first frame.");
+		set => _renderer = value;
+	}
 
 	private static readonly long _start = Stopwatch.GetTimestamp();
 	// We're using this table as a set with weakref keys. values are always null

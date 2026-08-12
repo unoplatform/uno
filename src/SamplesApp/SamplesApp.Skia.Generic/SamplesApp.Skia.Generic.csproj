@@ -9,6 +9,17 @@
 	<!-- Provision the modern-ABI wgpu-native next to the app so the WebGPU backend's DllImportResolver finds it. -->
 	<Import Project="..\..\Uno.UI.Composition.WebGpu\wgpu-native.targets" />
 
+	<!-- Drawing-backend build flags (app level; the framework is backend-agnostic and packaged once). Both default
+	     on = current behaviour. A build supplies the flags to pick backends, e.g. `-p:UnoDrawingBackendSkia=false`
+	     for a SkiaSharp-free app. The DefineConstants gate the #if registration in Program.cs. NOTE: a fully
+	     Skia-free closure additionally needs the Skia runtime hosts gated (they still reference the backend). -->
+	<PropertyGroup>
+		<UnoDrawingBackendSkia Condition="'$(UnoDrawingBackendSkia)'==''">true</UnoDrawingBackendSkia>
+		<UnoDrawingBackendWebGpu Condition="'$(UnoDrawingBackendWebGpu)'==''">true</UnoDrawingBackendWebGpu>
+		<DefineConstants Condition="'$(UnoDrawingBackendSkia)'=='true'">$(DefineConstants);UNO_DRAWING_SKIA</DefineConstants>
+		<DefineConstants Condition="'$(UnoDrawingBackendWebGpu)'=='true'">$(DefineConstants);UNO_DRAWING_WEBGPU</DefineConstants>
+	</PropertyGroup>
+
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 
@@ -80,6 +91,10 @@
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Win32\Uno.UI.Runtime.Skia.Win32.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Win32.Support\Uno.UI.Runtime.Skia.Win32.Support.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
+		<!-- Skia backend referenced only when the app opts into it (app-level flag); WebGpu backend is always
+		     available for the opt-in render path. The framework itself references neither. -->
+		<ProjectReference Include="..\..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" Condition="'$(UnoDrawingBackendSkia)'=='true'" />
+		<ProjectReference Include="..\..\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" Condition="'$(UnoDrawingBackendWebGpu)'=='true'" />
 		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.X11\Uno.UI.MediaPlayer.Skia.X11.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.Win32\Uno.UI.MediaPlayer.Skia.Win32.csproj" />

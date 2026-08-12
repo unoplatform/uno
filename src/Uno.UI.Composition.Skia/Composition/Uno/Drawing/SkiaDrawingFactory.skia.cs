@@ -12,10 +12,12 @@ namespace Uno.UI.Composition.Drawing;
 /// <summary>The default <see cref="IDrawingFactory"/>, backed by SkiaSharp.</summary>
 internal sealed class SkiaDrawingFactory : IDrawingFactory
 {
-	// Self-registers when this assembly loads, so the core never news-up a concrete backend. When the
-	// Skia backend becomes a separate assembly, this travels with it and registers on that assembly's load.
+	// Self-registers as the FALLBACK when this assembly loads, so consumers that don't register a backend
+	// explicitly still get Skia. Uses RegisterDefault (register-if-absent) so it never clobbers an explicit app
+	// registration — a SkiaSharp-free app registers the managed backend in its entry (which runs first), and this
+	// initializer must not override it even though the Skia assembly is still present in the closure.
 	[ModuleInitializer]
-	internal static void Register() => DrawingFactory.Register(new SkiaDrawingFactory());
+	internal static void Register() => DrawingFactory.RegisterDefault(new SkiaDrawingFactory());
 
 	// Opt-in switch to build geometry through the SkiaSharp-free ManagedGeometry engine instead of SKPath,
 	// selected via DrawingBackendOptions.UseManagedGeometry at init.
