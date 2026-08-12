@@ -1,7 +1,6 @@
 using Uno.UI.Composition.Drawing;
 using System;
 using System.Threading;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.Win32;

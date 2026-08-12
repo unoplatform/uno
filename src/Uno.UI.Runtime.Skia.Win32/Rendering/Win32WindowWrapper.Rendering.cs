@@ -3,7 +3,6 @@ using System;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
@@ -12,7 +11,7 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper
 {
-	private SKSurface? _surface;
+	private IRenderTarget? _renderTarget;
 	private RenderThread? _renderThread;
 
 	/// <summary>EXPERIMENTAL opt-in (Win32RenderingBackend.WebGpu). Set before the window is created.</summary>
@@ -32,8 +31,8 @@ internal partial class Win32WindowWrapper
 	private void ReinitializeRenderer()
 	{
 		_renderer.Reinitialize();
-		_surface?.Dispose();
-		_surface = null;
+		_renderTarget?.Dispose();
+		_renderTarget = null;
 	}
 
 	private void InitializeRenderThread()
@@ -81,16 +80,16 @@ internal partial class Win32WindowWrapper
 			return (webgpuClip, webgpuRect.Width, webgpuRect.Height);
 		}
 
-		var clipGeometry = ct.OnNativePlatformFrameRequested(_surface is null ? null : new SkiaRenderTarget(_surface.Canvas), size =>
+		var clipGeometry = ct.OnNativePlatformFrameRequested(_renderTarget, size =>
 		{
-			_surface?.Dispose();
-			_surface = _renderer.UpdateSize((int)size.Width, (int)size.Height);
-			return new SkiaRenderTarget(_surface.Canvas);
+			_renderTarget?.Dispose();
+			_renderTarget = _renderer.UpdateSize((int)size.Width, (int)size.Height);
+			return _renderTarget;
 		});
 
-		// _surface is created lazily inside resizeFunc; still null means the CompositionTarget
+		// _renderTarget is created lazily inside resizeFunc; still null means the CompositionTarget
 		// has not recorded anything yet — nothing to present.
-		if (_surface is null)
+		if (_renderTarget is null)
 		{
 			return null;
 		}
@@ -117,8 +116,8 @@ internal partial class Win32WindowWrapper
 
 		public void StartPaint() { }
 		public void EndPaint() { }
-		public SKSurface UpdateSize(int width, int height)
-			=> throw new NotSupportedException("The WebGPU renderer presents through the swapchain context, not an SKSurface.");
+		public IRenderTarget UpdateSize(int width, int height)
+			=> throw new NotSupportedException("The WebGPU renderer presents through the swapchain context, not a render target.");
 		public void CopyPixels(int width, int height) => _context.Present();
 		public bool IsSoftware() => false;
 		public void Reinitialize() { }
