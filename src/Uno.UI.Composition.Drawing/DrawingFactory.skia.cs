@@ -21,9 +21,10 @@ public static class DrawingFactory
 		{
 			if (_current is null)
 			{
-				// Nothing registered explicitly: light up the Skia backend by default if it's present (reflection,
-				// no compile-time dependency). A SkiaSharp-free head registers its backend explicitly before here.
-				DrawingBackendFallback.EnsureRegistered();
+				// The drawing factory is part of the graphics BACKEND (matched with the renderer): light up the Skia
+				// factory only if no backend was declared. A WebGPU/managed head owns this seam via its own backend
+				// and supplies the factory itself (possibly after async init) — never implicitly filled by Skia here.
+				DrawingBackendFallback.EnsureGraphicsBackend();
 			}
 
 			return _current ?? throw new InvalidOperationException(

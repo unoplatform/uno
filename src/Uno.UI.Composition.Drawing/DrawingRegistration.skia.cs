@@ -19,13 +19,19 @@ public static class DrawingRegistration
 		{
 			if (_defaultRenderer is null)
 			{
-				// Nothing registered explicitly: light up the Skia backend by default if it's present (reflection,
-				// no compile-time dependency). WebGPU heads install their own renderer and never reach here.
-				DrawingBackendFallback.EnsureRegistered();
+				// Nothing registered explicitly: light up ONLY the Skia graphics backend (renderer + its matched
+				// factory) by reflection if present — but not when a backend was declared (a WebGPU head owns this
+				// seam via GraphicsRegistry). Font/image content seams fall back independently, elsewhere.
+				DrawingBackendFallback.EnsureGraphicsBackend();
 			}
 
 			return _defaultRenderer;
 		}
 		set => _defaultRenderer = value;
 	}
+
+	/// <summary>Registers <paramref name="renderer"/> only if none is set — so the Skia fallback never clobbers a
+	/// renderer a head installed explicitly. Does not trigger the getter's implicit fallback.</summary>
+	public static void RegisterDefaultRenderer(IRenderer renderer)
+		=> _defaultRenderer ??= renderer;
 }
