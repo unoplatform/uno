@@ -58,9 +58,16 @@ Last updated: 2026-08-13.
 >   byte-identical, else uploads only `[lo..hi]`.
 > - **Gap 8:** `DrawEffectBackdrop` short-circuits on `A==255 || sigma<=0`.
 >
-> **Gap 4 (frame-solid solid/rrect re-tessellate on scroll)** — local-space verts + per-frame transform
-> restamp (mirroring the arena path) + `xformPos` added to the rrect shader — in progress. **Gap 3 (glyph
-> atlas)** deferred (needs a backend-neutral coverage-atlas rasterizer). Rejected non-gaps (frame-skip, render
+> **2026-08-13 (2) — gap 4 done (commit `8539f763ed`).** Frame-solid solid/rrect re-tessellate-on-scroll fixed:
+> `EmitFrameSolidLocal` stores LOCAL-space verts in the shared slabs (resident across frames) + `StampFrameClip`
+> rewrites only the per-op clip bind groups (`xf = ArenaXform(transform)`, `finv = inverse device affine`, session
+> clip folded in as a device scissor AABB) + the path-fill `XformSlot` per frame — mirroring the arena mechanism,
+> so a scroll rewrites transforms not verts. Rrect shader gained `xformPos(clip, cpos)` (identity-safe). Eligibility
+> gated to a plain-AABB/None session clip + no path child-clip; rounded/path session clips keep the device rebuild
+> (`fStale` also fires on `FrameLocal`). Cross-visual coalescing preserved (same-clip same-transform siblings still
+> collapse). Lavapipe-validated (no wgpu errors): static rrect scene, clipped ListView, per-frame-translating
+> animation. **All non-deferred perf-parity gaps (1,2,4,5,6,7,8) are now closed.** Only **gap 3 (glyph atlas)**
+> remains — deferred, needs a backend-neutral coverage-atlas rasterizer. Rejected non-gaps (frame-skip, render
 > bundles) were reference-REMOVED dead ends — don't re-add.
 
 ---
