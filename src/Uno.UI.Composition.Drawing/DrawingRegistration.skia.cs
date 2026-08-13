@@ -8,7 +8,7 @@ namespace Uno.UI.Composition.Drawing;
 /// during its <c>Register()</c> so <c>CompositionTarget.Renderer</c> can fall back to it for heads that don't install
 /// their own renderer explicitly (WebGPU heads set <c>CompositionTarget.Renderer</c> directly and win over this).
 /// </summary>
-public static class DrawingRegistration
+internal static class DrawingRegistration
 {
 	private static IRenderer? _defaultRenderer;
 
