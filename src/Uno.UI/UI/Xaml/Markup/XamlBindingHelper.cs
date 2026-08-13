@@ -56,6 +56,8 @@ namespace Microsoft.UI.Xaml.Markup
 			}
 		}
 
+		// Every setter below boxes its value; WinUI reaches the property system through a
+		// stack-allocated CValue instead. Tracked by https://github.com/unoplatform/uno/issues/24064.
 		public static void SetPropertyFromBoolean(object dependencyObject, DependencyProperty propertyToSet, bool value) =>
 			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);
 
