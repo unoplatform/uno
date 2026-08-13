@@ -35,9 +35,9 @@ namespace Microsoft.UI.Xaml
 		private DependencyProperty? _property;
 		private TargetPropertyPath? _target;
 
-		// This property is not part of the WinUI API, but is 
-		// required to determine if the value has a binding set
-		private static DependencyProperty InternalValueProperty { get; }
+		// Registered so that a binding can be set on Value; the property itself is
+		// not DP-backed, since a Setter value must survive being sealed.
+		public static DependencyProperty ValueProperty { get; }
 			= DependencyProperty.Register(
 				nameof(Value),
 				typeof(object),
@@ -197,7 +197,7 @@ namespace Microsoft.UI.Xaml
 
 		private void RefreshBindingPath()
 			// force binding value to re-evaluate the source and use converters
-			=> GetBindingExpression(InternalValueProperty)?.RefreshTarget();
+			=> GetBindingExpression(ValueProperty)?.RefreshTarget();
 
 		internal BindingPath? TryGetOrCreateBindingPath(IFrameworkElement owner)
 		{
