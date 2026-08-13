@@ -3376,6 +3376,10 @@
 
 		  <!-- UriExtensions.IsLocalResource renamed: the name said "local resource" but the check is ms-appx, three lines from the ms-resource helpers it was confused with. -->
 		  <Member fullName="System.Boolean Uno.Extensions.UriExtensions.IsLocalResource(System.Uri uri)" reason="Renamed to IsMsAppx (BC51, breaking changes for 7.0)" />
+
+		  <!-- Sync generator alignment: DataTemplate.LoadContent returns DependencyObject in WinUI, not UIElement. -->
+		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.DataTemplate.LoadContent()" reason="LoadContent returns DependencyObject to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.DataTemplate.LoadContent(Microsoft.UI.Xaml.DependencyObject templatedParent)" reason="LoadContent returns DependencyObject to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 	  </Methods>
 	  <Events>
 		  <!-- ====================================================================== -->

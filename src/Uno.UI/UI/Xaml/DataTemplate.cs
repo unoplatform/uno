@@ -33,10 +33,10 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 
-		public View? LoadContent() => ((IFrameworkTemplateInternal)this).LoadContent(templatedParent: null);
+		public DependencyObject? LoadContent() => ((IFrameworkTemplateInternal)this).LoadContent(templatedParent: null);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public View? LoadContent(DependencyObject templatedParent) => ((IFrameworkTemplateInternal)this).LoadContent(templatedParent);
+		public DependencyObject? LoadContent(DependencyObject templatedParent) => ((IFrameworkTemplateInternal)this).LoadContent(templatedParent);
 
 		internal View? LoadContentCached(DependencyObject? templatedParent = null) => base.LoadContentCachedCore(templatedParent);
 	}
