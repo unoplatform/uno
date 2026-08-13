@@ -28,9 +28,9 @@ partial class Given_FrameworkTemplate // tests
 	public void When_TemplatesHaveSameFactoryTarget_Then_AreEqual()
 	{
 		// Arrange
-		Func<UIElement?> factory = () => new Border();
-		var template1 = new FrameworkTemplate(factory);
-		var template2 = new FrameworkTemplate(factory);
+		Func<object?, TemplateMaterializationSettings, UIElement?> factory = (_, _) => new Border();
+		var template1 = new FrameworkTemplate(null, factory);
+		var template2 = new FrameworkTemplate(null, factory);
 
 		// Act & Assert
 		Assert.AreEqual(template1, template2);
@@ -41,9 +41,9 @@ partial class Given_FrameworkTemplate // tests
 	public void When_TemplatesHaveSameStaticFactoryTarget_Then_AreEqual()
 	{
 		// Arrange
-		static UIElement StaticLocalMethodFactory() => new Border();
-		var template1 = new FrameworkTemplate(StaticLocalMethodFactory);
-		var template2 = new FrameworkTemplate(StaticLocalMethodFactory);
+		static UIElement StaticLocalMethodFactory(object? owner, TemplateMaterializationSettings settings) => new Border();
+		var template1 = new FrameworkTemplate(null, StaticLocalMethodFactory);
+		var template2 = new FrameworkTemplate(null, StaticLocalMethodFactory);
 
 		// Act & Assert
 		Assert.AreEqual(template1, template2);
@@ -54,8 +54,8 @@ partial class Given_FrameworkTemplate // tests
 	public void When_TemplatesHaveDifferentFactories_Then_AreNotEqual()
 	{
 		// Arrange
-		var template1 = new FrameworkTemplate(() => new Border());
-		var template2 = new FrameworkTemplate(() => new TextBlock());
+		var template1 = new FrameworkTemplate(null, (_, _) => new Border());
+		var template2 = new FrameworkTemplate(null, (_, _) => new TextBlock());
 
 		// Act & Assert
 		Assert.AreNotEqual(template1, template2);
@@ -78,30 +78,14 @@ partial class Given_FrameworkTemplate // tests
 	}
 
 	[TestMethod]
-	public async Task InstancedLegacyFactory_ShouldNotLeak()
-	{
-		// Arrange
-		var setup = new XamlPageSetup();
-		var template = setup.GetTemplate(nameof(setup.InstancedLegacyBuilder));
-		var setupWR = new WeakReference(setup);
-
-		// Act
-		setup = null;
-		await TestHelper.TryWaitUntilCollected(setupWR);
-
-		// Assert
-		Assert.IsNull(setupWR.Target);
-	}
-
-	[TestMethod]
 	public async Task LambdaExpressionFactory1_ShouldNotBeCollected()
 	{
 		// Arrange
 		var context = new object();
-		Func<View?>? builder = () => new ContentPresenter { Content = context };
+		Func<object?, TemplateMaterializationSettings, View?>? builder = (_, _) => new ContentPresenter { Content = context };
 		Assert.IsNotNull(builder.Target, "The delegate is expected to have a target here");
 
-		var template = new DataTemplate(builder);
+		var template = new DataTemplate(null, builder);
 		var targetWR = new WeakReference(builder.Target);
 
 		// Act
@@ -120,10 +104,10 @@ partial class Given_FrameworkTemplate // tests
 	public async Task LambdaExpressionFactory2_ShouldNotBeCollected()
 	{
 		// Arrange
-		Func<View?>? builder = () => new Border();
+		Func<object?, TemplateMaterializationSettings, View?>? builder = (_, _) => new Border();
 		Assert.IsNotNull(builder.Target, "The delegate is expected to have a target here");
 
-		var template = new DataTemplate(builder);
+		var template = new DataTemplate(null, builder);
 		var targetWR = new WeakReference(builder.Target);
 
 		// Act
@@ -148,8 +132,6 @@ partial class Given_FrameworkTemplate
 			{
 				"InstancedBuilder" => new DataTemplate(owner: null, factory: InstancedBuilder),
 				"StaticBuilder" => new DataTemplate(owner: null, factory: StaticBuilder),
-				"InstancedLegacyBuilder" => new DataTemplate(factory: InstancedLegacyBuilder),
-				"StaticLegacyBuilder" => new DataTemplate(factory: StaticLegacyBuilder),
 
 				_ => throw new KeyNotFoundException(nameof(name)),
 			};
@@ -157,9 +139,6 @@ partial class Given_FrameworkTemplate
 
 		public View? InstancedBuilder(object? owner, TemplateMaterializationSettings settings) => new Border();
 		public static View? StaticBuilder(object? owner, TemplateMaterializationSettings settings) => new Border();
-
-		public View? InstancedLegacyBuilder() => new Border();
-		public static View? StaticLegacyBuilder() => new Border();
 	}
 }
 #endif

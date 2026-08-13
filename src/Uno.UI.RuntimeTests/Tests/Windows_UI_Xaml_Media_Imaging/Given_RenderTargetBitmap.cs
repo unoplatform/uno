@@ -205,7 +205,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 				Height = 500,
 				Content = ir = new ItemsRepeater
 				{
-					ItemTemplate = new DataTemplate(() => new Border
+					ItemTemplate = new DataTemplate(null, (_, _) => new Border
 					{
 						Height = 100,
 						Child = new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))

@@ -45,17 +45,6 @@ namespace Microsoft.UI.Xaml
 		protected FrameworkTemplate()
 			=> throw new NotSupportedException("Use the factory constructors");
 
-		public FrameworkTemplate(Func<View?>? factory)
-			: this(null, (Delegate?)factory)
-		{
-			// TODO: to be removed on next major update.
-			// This overload simply should not exist, since the materialized members do not have the tp injected.
-			// It can lead to issues like template-parent binding not working...
-			// Currently, it seems to be only used in unit tests & runtime tests.
-
-			SetViewFactory(factory, AdaptViewFactory);
-		}
-
 		public FrameworkTemplate(object? owner, Builder? factory)
 			: this(owner, (Delegate?)factory)
 		{
@@ -100,34 +89,6 @@ namespace Microsoft.UI.Xaml
 				null => null,
 			};
 			ViewFactoryInner = ViewFactory;
-		}
-
-		internal void SetViewFactory<TDelegate>(TDelegate? factory, Func<object?, TemplateMaterializationSettings, IDelegate<TDelegate>, View?> adapter)
-			where TDelegate : Delegate
-		{
-			if (factory is { })
-			{
-				// When the factory target is a top-level XAML class (e.g. Page, ResourceDictionary, ...) which commonly implements IWeakReferenceProvider,
-				// we wrap the delegate in a weak reference so that the template does not keep that object alive and cause memory leaks.
-				// When the target does not implement IWeakReferenceProvider (typically a compiler-generated closure class), we keep a strong
-				// reference via LiteralDelegate so the closure stays alive. If the factory doesn't have a target (no capture), we also use the literal
-				// delegate without additional overhead.
-				var inner = factory.Target is IWeakReferenceProvider
-					? DelegateHelper.CreateWeak(factory)
-					: DelegateHelper.CreateLiteral(factory) as IDelegate<TDelegate>;
-				// the adapted factory must not be a weak delegate, as we would lose the captures otherwise.
-				var adapted = DelegateHelper.CreateLiteral<Builder>(
-					(o, s) => adapter(o, s, inner)
-				);
-
-				ViewFactory = adapted;
-				ViewFactoryInner = inner;
-			}
-			else
-			{
-				ViewFactory = null;
-				ViewFactoryInner = null;
-			}
 		}
 
 		/// <summary>
@@ -210,11 +171,6 @@ namespace Microsoft.UI.Xaml
 		public string TemplateSource { get; init; }
 #endif
 
-		private static View? AdaptViewFactory(object? owner, TemplateMaterializationSettings settings, IDelegate<Func<View?>> del)
-		{
-			return del.Delegate?.Invoke();
-		}
-
 		internal class FrameworkTemplateEqualityComparer : IEqualityComparer<FrameworkTemplate>
 		{
 			public static readonly FrameworkTemplateEqualityComparer Default = new FrameworkTemplateEqualityComparer();
@@ -253,24 +209,6 @@ namespace Microsoft.UI.Xaml
 				handler,
 				(h, s, a) => (h as Action)?.Invoke()
 			);
-		}
-
-		internal bool UpdateFactory(Func<View?> value)
-		{
-			if (value?.Method != ViewFactoryInner?.Method)
-			{
-				SetViewFactory(value, AdaptViewFactory);
-
-				// Only invoke handlers if they exist for this instance
-				if (_templateUpdatedHandlers.TryGetValue(this, out var handlers))
-				{
-					handlers.Invoke(this, null);
-				}
-
-				return true;
-			}
-
-			return false;
 		}
 
 		internal bool UpdateFactory(Func<Builder?, Builder?> update)

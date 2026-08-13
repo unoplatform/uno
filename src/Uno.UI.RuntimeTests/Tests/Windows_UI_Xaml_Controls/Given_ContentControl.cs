@@ -239,7 +239,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Width = 100,
 				Height = 100,
 				Content = new TextBox(),
-				ContentTemplate = new DataTemplate(() => new TextBlock())
+				ContentTemplate = new DataTemplate(null, (_, _) => new TextBlock())
 			};
 
 			WindowHelper.WindowContent = sut;

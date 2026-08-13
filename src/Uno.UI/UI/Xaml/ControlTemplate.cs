@@ -11,12 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ControlTemplate : FrameworkTemplate
 	{
-		public ControlTemplate() : this(null) { }
-
-		public ControlTemplate(Func<View?>? factory)
-			: base(factory)
-		{
-		}
+		public ControlTemplate() : this(null, (Builder?)null) { }
 
 		/// <summary>
 		/// Build a ControlTemplate with an optional <paramref name="owner"/> to be provided during the call of <paramref name="factory"/>

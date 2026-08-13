@@ -11,12 +11,7 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class DataTemplate : FrameworkTemplate
 	{
-		public DataTemplate() : base(null) { }
-
-		public DataTemplate(Func<View?>? factory)
-			: base(factory)
-		{
-		}
+		public DataTemplate() : base(null, (Builder?)null) { }
 
 		/// <summary>
 		/// Build a DataTemplate with an optional <paramref name="owner"/> to be provided during the call of <paramref name="factory"/>

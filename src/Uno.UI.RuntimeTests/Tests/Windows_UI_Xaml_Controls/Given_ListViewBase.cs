@@ -1552,7 +1552,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -1599,7 +1599,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -1654,7 +1654,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
@@ -1715,7 +1715,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
@@ -1786,7 +1786,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var list = new ListView
 			{
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -2121,7 +2121,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -2189,7 +2189,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -2251,7 +2251,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -4411,7 +4411,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				ItemsSource = Enumerable.Range(0, NumberOfItems).Select(x => $"Item {x}").ToList(),
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -4492,7 +4492,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new ListView()
 			{
 				ItemContainerStyle = BasicContainerStyle,
-				HeaderTemplate = new DataTemplate(() =>
+				HeaderTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var s = new StackPanel
 					{
@@ -4685,7 +4685,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Height = 400,
 				ItemsSource = Enumerable.Range(0, 100).Select(i => $"item {i}" + new string('\n', random.Next(0, 5))).ToArray(),
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
@@ -5777,7 +5777,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 						new ListView
 						{
 							ItemsSource = Enumerable.Range(0, 200).Select(x => $"asd {x}"),
-							HeaderTemplate = new DataTemplate(() => new StackPanel
+							HeaderTemplate = new DataTemplate(null, (_, _) => new StackPanel
 							{
 								Children =
 								{

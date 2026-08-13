@@ -142,7 +142,7 @@ public class Given_ItemContainer
 		{
 			SelectionMode = ListViewSelectionMode.Single,
 			ItemsSource = Enumerable.Range(1, itemsCount).Select(i => $"Item{i}").ToArray(),
-			ItemTemplate = new DataTemplate(() =>
+			ItemTemplate = new DataTemplate(null, (_, _) =>
 			{
 				var textBlock = new TextBlock();
 				textBlock.SetBinding(TextBlock.TextProperty, new Binding());

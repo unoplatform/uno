@@ -272,7 +272,6 @@ private static void OnItemTemplateChanged(DependencyObject d, DependencyProperty
 - `IsDataTemplateDynamicUpdateEnabled`: Gets whether the feature is enabled via MSBuild configuration
 - `IsUpdateSubscriptionsEnabled`: Gets whether the system is enabled (requires `EnableUpdateSubscriptions()` call)
 - `UpdateDataTemplate(DataTemplate, Func<Func<object?, TemplateMaterializationSettings, UIElement?>?, Func<object?, TemplateMaterializationSettings, UIElement?>?>)`: Updates a template with a factory updater function
-- `UpdateDataTemplate(DataTemplate, Func<View?>)`: Updates a template with a simple view factory function
 - `SubscribeToTemplate(DependencyObject owner, DataTemplate? template, Action onUpdated)`: Preferred owner-based subscription; returns `bool` indicating success
 - `SubscribeToTemplate(DependencyObject owner, string slotKey, DataTemplate? template, Action onUpdated)`: Owner-based subscription with a named slot for multiple subscriptions per control; returns `bool` indicating success
 - `UnsubscribeFromTemplate(DependencyObject owner)`: Unsubscribes all owner-associated subscriptions
