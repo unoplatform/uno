@@ -4,9 +4,9 @@
 		<!-- This is a generic (SkiaSharp) backend used on ALL Skia platforms incl. Skia-on-Android, so it must stay
 		     net10.0 and NOT platform-cross-target under a mobile override — otherwise net10.0 consumers (RemoteControl,
 		     FluentTheme, SamplesApp.Skia, …) hit NU1201. The file ends ".SkiaBackend.csproj", so it misses the
-		     ".Skia.csproj" auto-noplatform rule in targetframework-override.props; set the flag explicitly (mirrors
-		     Uno.UI.Composition.Drawing). Must precede the import below, which reads it. -->
-		<UnoDisableTargetFrameworkPlatformOverride>true</UnoDisableTargetFrameworkPlatformOverride>
+		     ".Skia.csproj" auto-noplatform rule in targetframework-override.props; set the flag it reads explicitly
+		     (mirrors Uno.UI.Composition.Drawing). Must precede the import below, which reads it. -->
+		<UnoShouldUseNoPlatformOverride>true</UnoShouldUseNoPlatformOverride>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
