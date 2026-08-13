@@ -16,7 +16,6 @@ using Uno.UI.Graphics;
 [assembly: InternalsVisibleTo("Uno.UI.Svg")]
 [assembly: InternalsVisibleTo("Uno.UI.XamlHost")]
 [assembly: InternalsVisibleTo("SamplesApp")]
-[assembly: InternalsVisibleTo("SamplesApp.Droid")]
 [assembly: InternalsVisibleTo("SamplesApp.macOS")]
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme")]
@@ -41,7 +40,6 @@ using Uno.UI.Graphics;
 
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.MacOS")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Tizen")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Headless")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.X11")]

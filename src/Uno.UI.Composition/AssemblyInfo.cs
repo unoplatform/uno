@@ -12,7 +12,6 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Tizen")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Headless")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.WebAssembly.Browser")]
@@ -21,7 +20,6 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.Windows")]
-[assembly: InternalsVisibleTo("SamplesApp.Droid")]
 [assembly: InternalsVisibleTo("SamplesApp.macOS")]
 
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics2DSK")]
