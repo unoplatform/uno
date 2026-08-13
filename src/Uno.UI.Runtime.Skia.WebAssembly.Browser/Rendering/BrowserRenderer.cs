@@ -16,9 +16,10 @@ internal partial class BrowserRenderer
 	private readonly IBrowserRenderer? _renderer;
 	private JSObject? _nativeInstance;
 
-	// On-canvas WebGPU path (opt-in via UNO_WEBGPU): the device is created asynchronously, so _webgpuContext is
-	// null until ready and frames re-arm meanwhile. Uses its own canvas surface (no Skia SKCanvas / WebGL context).
-	private readonly bool _webgpuRequested;
+	// Neutral-pipeline path (used when the app registered a graphics backend through the host builder — e.g. WebGPU).
+	// Its context (device + canvas surface) is created asynchronously, so _webgpuContext is null until ready and
+	// frames re-arm meanwhile. Uses its own canvas surface (no Skia SKCanvas / WebGL context).
+	private readonly bool _neutralPipeline;
 	private IGraphicsContext? _webgpuContext;
 
 	private int _renderCount;
@@ -34,12 +35,13 @@ internal partial class BrowserRenderer
 
 		_host = host;
 
-		var webgpu = Environment.GetEnvironmentVariable("UNO_WEBGPU");
-		if (webgpu is "1" or "true" or "neutral" or "swapchain")
+		// The render path is chosen from what the app registered through the host builder, not an env var: a declared
+		// graphics backend (GraphicsRegistry) drives the neutral pipeline; otherwise fall back to the legacy WebGL /
+		// software Skia renderer. The neutral backend needs its own canvas context (can't coexist with a WebGL context
+		// on the same canvas), so we don't create the WebGl/Software renderer — kick off async init and render when ready.
+		if (GraphicsRegistry.HasRegisteredBackends)
 		{
-			// WebGPU needs its own canvas context (can't coexist with a WebGL context on the same canvas), so
-			// don't create the WebGl/Software renderer; kick off async device init and render once it's ready.
-			_webgpuRequested = true;
+			_neutralPipeline = true;
 			_ = InitWebGpuAsync();
 			return;
 		}
@@ -127,7 +129,7 @@ internal partial class BrowserRenderer
 			this.Log().Trace($"Render {_renderCount++}");
 		}
 
-		if (_webgpuRequested)
+		if (_neutralPipeline)
 		{
 			if (_webgpuContext is null)
 			{

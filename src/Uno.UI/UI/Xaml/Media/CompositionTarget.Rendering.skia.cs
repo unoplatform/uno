@@ -35,7 +35,7 @@ public partial class CompositionTarget
 		get => _renderer
 			?? DrawingRegistration.DefaultRenderer
 			?? throw new global::System.InvalidOperationException(
-				"No IRenderer registered. The app entry must register a drawing backend (SkiaBackend.Register / ManagedBackend.Register) and/or the head must set CompositionTarget.Renderer before the first frame.");
+				"No IRenderer registered. Register a graphics backend through the host builder (.GraphicsBackend) and/or the head must set CompositionTarget.Renderer before the first frame.");
 		set
 		{
 			// Invalidate on ANY change of the effective renderer, including the first assignment from the null

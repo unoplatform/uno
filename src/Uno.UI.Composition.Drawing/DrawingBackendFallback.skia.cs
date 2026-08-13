@@ -116,8 +116,10 @@ internal static class DrawingBackendFallback
 				_typeResolved = true;
 			}
 
+			// NonPublic: the per-seam registrars on SkiaBackend are internal (apps register through the host builder,
+			// not this backend directly); reflection reaches them across assemblies without a compile-time dependency.
 			_skiaBackendType
-				?.GetMethod(methodName, BindingFlags.Public | BindingFlags.Static, Type.EmptyTypes)
+				?.GetMethod(methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, Type.EmptyTypes)
 				?.Invoke(null, null);
 		}
 		catch (Exception e)

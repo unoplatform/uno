@@ -45,6 +45,17 @@ public static class UnoPlatformHostBuilderExtensions
 	}
 
 	/// <summary>
+	/// Registers the font fallback service — resolves a fallback font for codepoints the requested family can't
+	/// render. A text-layer content seam, registered here rather than via <c>FeatureConfiguration.Font.FallbackService</c>.
+	/// </summary>
+	public static IUnoPlatformHostBuilder FontFallbackService(this IUnoPlatformHostBuilder builder, global::Microsoft.UI.Xaml.Documents.TextFormatting.IFontFallbackService service)
+	{
+		ArgumentNullException.ThrowIfNull(service);
+		builder.AddDrawingRegistration(() => global::Uno.UI.FeatureConfiguration.Font.FallbackService = service);
+		return builder;
+	}
+
+	/// <summary>
 	/// Provides an <see cref="Microsoft.UI.Xaml.Application"/> instance to use when starting the app.
 	/// </summary>
 	/// <remarks>

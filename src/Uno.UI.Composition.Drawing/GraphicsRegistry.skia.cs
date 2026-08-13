@@ -116,12 +116,12 @@ public static class GraphicsRegistry
 	}
 
 	/// <summary>
-	/// True once the app has declared an explicit backend preference via <see cref="Register"/>. That declaration
-	/// owns backend selection even while the chosen backend is still initializing (e.g. the WASM/WebGPU async device
-	/// import), so the implicit Skia auto-registration (<see cref="DrawingBackendFallback"/>) must stay out — it must
-	/// not fill the pre-init window with SkiaSharp and clobber the app's choice.
+	/// True once the app has declared a graphics backend through the host builder (<see cref="Register"/>). A host
+	/// uses this to choose between the neutral pipeline (a backend was registered) and its legacy renderer, and the
+	/// implicit Skia auto-registration (<see cref="DrawingBackendFallback"/>) stays out of the seams a declared
+	/// backend owns — even while that backend is still initializing (e.g. the WASM/WebGPU async device import).
 	/// </summary>
-	internal static bool HasRegisteredBackends
+	public static bool HasRegisteredBackends
 	{
 		get
 		{
