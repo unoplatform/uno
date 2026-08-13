@@ -29,7 +29,14 @@ namespace Microsoft.UI.Xaml.Controls
 		public bool AcceptsReturn
 		{
 			get => (bool)GetValue(AcceptsReturnProperty);
-			set => SetValue(AcceptsReturnProperty, value);
+			set
+			{
+				if (value != AcceptsReturn)
+				{
+					InvalidatePendingInteractiveLineFeed();
+				}
+				SetValue(AcceptsReturnProperty, value);
+			}
 		}
 
 		/// <summary>
