@@ -107,13 +107,23 @@ void DrawEffectBackdrop(IEffectFilter filter, float opacity);
 Intent-over-technique: the interface says *what* (a shadow, a gradient fill, a faded image); the backend
 chooses *how* (mask filter, SDF, layer). Retained-mode concerns are deliberately **not** here.
 
-### Retained rendering (optional) — `IRetainedRenderingSession`
+### Retained rendering (optional native fast-path, always available) — `IRetainedRenderingSession`
 ```csharp
 ICommandRecorder CreateRecording();   // nested session captured as IRenderData
 void Replay(IRenderData data);
 ```
-`ICommandRecorder : IDrawingSession, IRetainedRenderingSession` adds `IRenderData Finish()`.
-`IRenderData : IDisposable` is the opaque recorded frame (Skia: an `SKPicture`).
+`ICommandRecorder : IDrawingSession` adds `IRenderData Finish()`. `IRenderData : IDisposable` is the opaque
+recorded frame (Skia: an `SKPicture`).
+
+`IRetainedRenderingSession` is **not** a required base of `ICommandRecorder`/`IPresentSession`: a backend
+implements it on its sessions only to expose efficient *native* recording (SKPicture, a GPU command buffer).
+Composition never touches a session's retained capability directly — it goes through
+`RetainedRenderingSession.For(session)`, which returns the backend's native capability when present and
+otherwise a **command-list fallback** that records the neutral `IDrawingSession` verbs and replays them on top
+of any session. So retention is *always* available and composition has no uncached branch. The fallback is a
+self-contained snapshot: it copies (owns) the geometry handed to each deferred draw — matching a native
+display list, since composition disposes transient geometries right after the draw — and frees them when the
+recording is disposed. On a backend that provides native retention the fallback is never instantiated.
 
 ---
 
@@ -125,8 +135,9 @@ Two-phase, driven by `CompositionTarget` (which keeps scheduling/vsync/threading
 ICommandRecorder BeginFrame();               // phase 1 (UI thread): tree walks into this; Finish() -> IRenderData
 IPresentSession BeginPresent(IRenderSurface target);   // phase 2 (vsync): compose a frame onto the target
 ```
-`IPresentSession : IDrawingSession, IRetainedRenderingSession, IDisposable` — the present-time session lets
-overlays (e.g. the FPS counter) compose *before* the frame is finalized; disposing it flushes/finalizes.
+`IPresentSession : IDrawingSession, IDisposable` — the present-time session lets overlays (e.g. the FPS
+counter) compose *before* the frame is finalized; disposing it flushes/finalizes. The recorded frame is
+replayed into it through `RetainedRenderingSession.For(present)` (native replay, or the command-list fallback).
 `IRenderSurface` is the opaque present target.
 
 ---

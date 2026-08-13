@@ -283,7 +283,7 @@ public partial class CompositionTarget
 					present.Scale(rasterizationScale, rasterizationScale);
 				}
 				present.Clear(global::Windows.UI.Colors.Transparent);
-				present.Replay(lastRenderedFrame.frame);
+				RetainedRenderingSession.For(present).Replay(lastRenderedFrame.frame);
 				_fpsHelper.DrawFps(present);
 				// A host overlay (e.g. the framebuffer software cursor) draws on top of the frame, under the same
 				// orientation + DPI transform as the content.
