@@ -116,9 +116,24 @@ namespace Microsoft.UI.Composition
 			if (inContour) { sink.EndContour(closed); }
 		}
 
+		// Curve-flattening tolerance (path units ≈ device px at typical scales). Matches SkiaSharp's default curve
+		// flatness so the stencil-fan tessellation density equals the reference's — a FIXED step count over-
+		// tessellated small glyph curves ~2x, doubling the stencil-fan vertex count on text-heavy UI.
+		private const float FlattenTolerance = 0.1f;
+
+		// Adaptive segment count: scales with the curve's control-point deviation from its chord (the flattening
+		// error bound), so tiny glyph curves cost ~2-4 segments and large curves get more. Clamped to [1, 24].
+		private static int Steps(float deviation, float denom)
+			=> Math.Clamp((int)MathF.Ceiling(MathF.Sqrt(deviation / (denom * FlattenTolerance))), 1, 24);
+
+		private static float Dist(float ax, float ay, float bx, float by)
+		{
+			var dx = ax - bx; var dy = ay - by; return MathF.Sqrt(dx * dx + dy * dy);
+		}
+
 		private static void FlattenQuad(IFlattenedPathSink sink, SKPoint p0, SKPoint c, SKPoint p1)
 		{
-			const int steps = 16;
+			var steps = Steps(Dist(c.X, c.Y, 0.5f * (p0.X + p1.X), 0.5f * (p0.Y + p1.Y)), 2f);
 			for (var i = 1; i <= steps; i++)
 			{
 				var t = i / (float)steps;
@@ -131,7 +146,7 @@ namespace Microsoft.UI.Composition
 
 		private static void FlattenConic(IFlattenedPathSink sink, SKPoint p0, SKPoint c, SKPoint p1, float w)
 		{
-			const int steps = 16;
+			var steps = Steps(Dist(c.X, c.Y, 0.5f * (p0.X + p1.X), 0.5f * (p0.Y + p1.Y)), 2f);
 			for (var i = 1; i <= steps; i++)
 			{
 				var t = i / (float)steps;
@@ -145,7 +160,9 @@ namespace Microsoft.UI.Composition
 
 		private static void FlattenCubic(IFlattenedPathSink sink, SKPoint p0, SKPoint c1, SKPoint c2, SKPoint p1)
 		{
-			const int steps = 24;
+			var d1 = Dist(c1.X, c1.Y, p0.X + (p1.X - p0.X) / 3f, p0.Y + (p1.Y - p0.Y) / 3f);
+			var d2 = Dist(c2.X, c2.Y, p0.X + 2f * (p1.X - p0.X) / 3f, p0.Y + 2f * (p1.Y - p0.Y) / 3f);
+			var steps = Steps(MathF.Max(d1, d2), 0.75f);
 			for (var i = 1; i <= steps; i++)
 			{
 				var t = i / (float)steps;
