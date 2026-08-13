@@ -2587,6 +2587,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private List<WebGpuCommand> _pendingCmds;
 	private WColor? _pendingClear;
 	private long _tReplayStart;
+	private static int _streamDumpFrame;
 	public WebGpuPresentSession(WebGpuDevice d, WebGpuRenderSurface s) { _d = d; _s = s; }
 
 	// Runs a frame: opens the shared encoder (if not already inside one), renders, then finishes+submits once.
@@ -4208,6 +4209,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				cmds.AddRange(od.Commands);
 			}
 			RunFrame(cmds, _pendingClear);
+			// Diagnostic (UNO_WEBGPU_TRACE=1): dump the frame's ordered GPU command stream (PASS/DRAW) every 120th
+			// frame, so a running scene's stream can be diffed against the reference branch. Off by default.
+			if (WebGpuTrace.Enabled && (++_streamDumpFrame % 120) == 1)
+			{
+				System.Console.Error.WriteLine($"===== WEBGPU-STREAM frame {_streamDumpFrame} =====\n{WebGpuTrace.Dump()}===== end WEBGPU-STREAM =====");
+				System.Console.Error.Flush();
+			}
 			_d.SolidSlab.EndFrame(); _d.RrectSlab.EndFrame();   // free slices of recordings not seen this frame
 			_d.Profiler?.Replayed(_tReplayStart);
 			_pendingCmds = null;
