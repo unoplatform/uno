@@ -10,3 +10,15 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition.WebGpu")]
+
+// The graphics negotiator (GraphicsRegistry, GraphicsInitialization, the GraphicsContextFactory delegate) is
+// framework host-plumbing, not third-party API — the Skia hosts set the context factory, negotiate, and read the
+// resulting renderer/context. The third-party backend SPI itself (IGraphicsProvider/IGraphicsContext/Graphics/
+// GraphicsContextKind/IDrawingFactory) stays public; only these host-facing negotiation types are internal + IVT'd.
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.X11")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.MacOS")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.WebAssembly.Browser")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.AppleUIKit")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Android")]

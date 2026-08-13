@@ -1,7 +1,6 @@
 #nullable enable
 
 using System.Numerics;
-using System.Runtime.CompilerServices;
 using Microsoft.UI.Composition;
 using SkiaSharp;
 using Windows.Foundation;
@@ -9,16 +8,14 @@ using Windows.UI;
 
 namespace Uno.UI.Composition.Drawing;
 
-/// <summary>The default <see cref="IDrawingFactory"/>, backed by SkiaSharp.</summary>
+/// <summary>
+/// The default <see cref="IDrawingFactory"/>, backed by SkiaSharp. Installed as <see cref="DrawingFactory.Current"/>
+/// only through negotiation — it is the factory the Skia provider (<see cref="SkiaGraphicsProvider"/>) carries, so
+/// when Skia wins negotiation the registry installs this. No module-initializer self-registration: the graphics
+/// backend is registered up front and the factory is set once, never as a load-time fallback later overwritten.
+/// </summary>
 internal sealed class SkiaDrawingFactory : IDrawingFactory
 {
-	// Self-registers as the FALLBACK when this assembly loads, so consumers that don't register a backend
-	// explicitly still get Skia. Uses RegisterDefault (register-if-absent) so it never clobbers an explicit app
-	// registration — a SkiaSharp-free app registers the managed backend in its entry (which runs first), and this
-	// initializer must not override it even though the Skia assembly is still present in the closure.
-	[ModuleInitializer]
-	internal static void Register() => DrawingFactory.RegisterDefault(new SkiaDrawingFactory());
-
 	public IPathBuilder CreatePathBuilder() => new SkiaPathBuilder();
 
 	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => new SkiaPathBuilder();

@@ -12,7 +12,7 @@ namespace Uno.UI.Composition.Drawing;
 /// The result of a successful <see cref="GraphicsRegistry.Initialize"/>: the winning provider, the context that
 /// was created for it, and the matched <see cref="Graphics"/> (factory + renderer) bound to that context.
 /// </summary>
-public readonly struct GraphicsInitialization
+internal readonly struct GraphicsInitialization
 {
 	public GraphicsInitialization(IGraphicsProvider provider, IGraphicsContext context, Graphics graphics)
 	{
@@ -38,7 +38,7 @@ public readonly struct GraphicsInitialization
 /// because one kind (WASM WebGpu) imports its device from JS and must not block the JS thread; every native host
 /// returns an already-completed task.
 /// </summary>
-public delegate Task<IGraphicsContext?> GraphicsContextFactory(GraphicsContextKind kind);
+internal delegate Task<IGraphicsContext?> GraphicsContextFactory(GraphicsContextKind kind);
 
 /// <summary>
 /// Process-wide registry and negotiator for pluggable graphics backends. The app registers its ordered backend
@@ -46,7 +46,7 @@ public delegate Task<IGraphicsContext?> GraphicsContextFactory(GraphicsContextKi
 /// <see cref="ContextFactory"/> that turns a kind into a window+context. The host calls <see cref="Initialize"/>
 /// once and negotiation binds the first kind the host can serve to the backend that accepts it.
 /// </summary>
-public static class GraphicsRegistry
+internal static class GraphicsRegistry
 {
 	private static readonly object _gate = new();
 	private static IReadOnlyList<IGraphicsProvider> _backends = Array.Empty<IGraphicsProvider>();
