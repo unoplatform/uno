@@ -9,8 +9,13 @@ public partial class CoreWebView2
 	private const string CoreWebView2TypeName = "Microsoft.Web.WebView2.Core.CoreWebView2";
 
 	private string _source = "";
-	private CoreWebView2Profile _profile;
-	private CoreWebView2Environment _environment;
+
+	// Scoped rather than file-wide: the events below are nullable-oblivious and flipping the whole file
+	// would annotate the public surface.
+#nullable enable
+	private CoreWebView2Profile? _profile;
+	private CoreWebView2Environment? _environment;
+#nullable restore
 
 	/// <summary>
 	/// Gets the process ID of the browser process that hosts the WebView.
