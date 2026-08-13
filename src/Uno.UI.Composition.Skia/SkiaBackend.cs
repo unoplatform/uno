@@ -36,16 +36,14 @@ public static class SkiaBackend
 	/// </summary>
 	internal static void RegisterDefaultGraphics()
 	{
-		// Geometry lives on the backend factory, so an app that registered its own IDrawingFactory path-implementor
-		// before this call wins.
-		DrawingFactory.RegisterDefault(new SkiaDrawingFactory());
-
 		// The SKCanvasElement (raw-Skia) visual factory lives here because SKCanvasVisual reaches the concrete
 		// SkiaDrawingSession; the public 2dsk package resolves it through the neutral factory abstraction.
 		ApiExtensibility.Register(typeof(SKCanvasVisualBaseFactory), _ => new SKCanvasVisualFactory());
 
 		// Composition-root backend selection for the pluggable graphics pipeline: register Skia as the available
-		// backend (register-if-absent — a head that declared its own provider list wins).
+		// backend (register-if-absent — a head that declared its own provider list wins). Negotiation
+		// (GraphicsRegistry.Initialize) then installs this provider's own drawing factory as DrawingFactory.Current;
+		// there is no separate DrawingFactory fallback (the provider carries the factory).
 		GraphicsRegistry.RegisterDefault(new IGraphicsProvider[] { new SkiaGraphicsProvider() });
 
 		// The framework (Uno.UI) is backend-agnostic and no longer defaults CompositionTarget.Renderer to a Skia
