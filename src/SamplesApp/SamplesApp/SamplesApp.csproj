@@ -89,7 +89,7 @@
 		-->
 		<NoWarn>$(NoWarn);NU1703</NoWarn>
 
-		<!-- Trimmer warnings the wasm and android trimming passes both raise. To remove as they are fixed. -->
+		<!-- Trimmer warnings the wasm, android and iOS/tvOS trimming passes raise. To remove as they are fixed. -->
 		<_UnoTrimmingNoWarn>IL2026;IL2057;IL2062;IL2065;IL2067;IL2070;IL2072;IL2075;IL2077;IL2080;IL2104;IL2111;IL2122</_UnoTrimmingNoWarn>
 
 	</PropertyGroup>
@@ -322,6 +322,8 @@
 		<MtouchUseLlvm>false</MtouchUseLlvm>
 		<UseInterpreter>true</UseInterpreter>
 		<MtouchInterpreter>all</MtouchInterpreter>
+		<!-- The samples compile into the head here, so this target now trims them too. -->
+		<NoWarn>$(NoWarn);$(_UnoTrimmingNoWarn)</NoWarn>
 	</PropertyGroup>
 
 	<!-- The .NET iOS/tvOS toolchain reserves the top-level bundle folder name 'Resources'
@@ -507,16 +509,30 @@
 	</Target>
 
 	<!--
-	Fail the publish if the runtime-test fonts didn't make it into the output. Only meaningful on
-	desktop + browserwasm, whose publish lays package content out flat under $(PublishDir). Android and
-	iOS bundle assets inside the APK/.app, so a flat-path check can never pass there.
+	Fail the publish if the runtime-test fonts didn't make it into the output. Desktop lays package
+	content out flat under $(PublishDir). Android and iOS bundle assets inside the APK/.app, so a
+	flat-path check can never pass there.
 	-->
-	<Target Name="_ValidatePublishedItems" AfterTargets="Publish" Condition="'$(_Platform)' == 'desktop' OR '$(_Platform)' == 'browserwasm'">
+	<Target Name="_ValidatePublishedItems" AfterTargets="Publish" Condition="'$(_Platform)' == 'desktop'">
 		<ItemGroup>
 			<_validationPath Include="Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf" />
 			<_validationPath Include="Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf" />
 		</ItemGroup>
 		<Error Condition="!exists('$(PublishDir)%(_validationPath.Identity)')" Text="Failed to find published file: %(_validationPath.Identity)" />
+	</Target>
+
+	<!--
+	Same check for wasm, which resolves ms-appx from wwwroot/package_<hash>/ (hash is content-derived,
+	hence the glob) under $(OutputPath) — that folder, not $(PublishDir), is what the site is served
+	from and what CI ships as the artifact.
+	-->
+	<Target Name="_ValidatePublishedWasmItems" AfterTargets="Publish" Condition="'$(_Platform)' == 'browserwasm'">
+		<ItemGroup>
+			<_publishedFluentFont Include="$(OutputPath)publish\wwwroot\package_*\Uno.Fonts.Fluent\Fonts\uno-fluentui-assets.ttf" />
+			<_publishedRuntimeTestFont Include="$(OutputPath)publish\wwwroot\package_*\Uno.UI.RuntimeTests\Assets\Fonts\uno-fluentui-assets-runtimetest01.ttf" />
+		</ItemGroup>
+		<Error Condition="'@(_publishedFluentFont)' == ''" Text="Failed to find published file: Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf" />
+		<Error Condition="'@(_publishedRuntimeTestFont)' == ''" Text="Failed to find published file: Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf" />
 	</Target>
 
 	<!--
@@ -549,6 +565,13 @@
 		<!-- In external apps these flow from the NuGet package props -->
 		<SupportsFontManifest>true</SupportsFontManifest>
 		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
+		<!--
+		An android app assembly has no managed entry point (Android.App.Application / MainActivity are
+		the entry), so the linker-hints pass cannot root it and ILLink fails with IL1034. Uno.GenerateAot
+		turns the property off for the same reason. It reaches android at all only because the samples
+		moved into the head; the previous mobile head never set it.
+		-->
+		<UnoXamlResourcesTrimming Condition="'$(_Platform)' == 'android'">false</UnoXamlResourcesTrimming>
 		<UnoXamlResourcesUpriTrimming>true</UnoXamlResourcesUpriTrimming>
 		<!-- Workaround for https://github.com/unoplatform/uno/discussions/5007 -->
 		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
