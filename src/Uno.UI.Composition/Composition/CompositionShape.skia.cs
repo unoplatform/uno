@@ -39,11 +39,11 @@ public partial class CompositionShape
 				}
 
 				// TransformMatrix is applied last, so Scale and RotationAngle act in the shape's own space.
-					// LottieGen relies on this: it fuses a layer's offset and scale into TransformMatrix and
-					// leaves rotation animated, which only spins in place if rotation precedes the offset.
-					transform *= TransformMatrix;
+				// LottieGen relies on this: it fuses a layer's offset and scale into TransformMatrix and
+				// leaves rotation animated, which only spins in place if rotation precedes the offset.
+				transform *= TransformMatrix;
 
-					CombinedTransformMatrix = transform;
+				CombinedTransformMatrix = transform;
 				break;
 		}
 	}

@@ -17,9 +17,8 @@ public class Given_CompositionGeometry
 	// CompositionRectangleGeometry did not expose Size/Offset as animatable properties, so evaluating
 	// the expression threw "Unable to get property 'Size'".
 	[TestMethod]
-#if !__SKIA__
-	[Ignore("ExpressionAnimation evaluation is Skia-only")]
-#endif
+	// WinUI evaluates expressions in the compositor process, so the animated Offset isn't readable back.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Rectangle_Size_Referenced_By_Expression()
 	{
 		var compositor = Compositor.GetSharedCompositor();

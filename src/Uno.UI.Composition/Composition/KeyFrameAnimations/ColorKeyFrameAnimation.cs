@@ -10,7 +10,6 @@ namespace Microsoft.UI.Composition;
 
 public partial class ColorKeyFrameAnimation : KeyFrameAnimation
 {
-#if !__APPLE_UIKIT__
 	private readonly SortedDictionary<float, AnimationKeyFrame<Color>> _keyFrames = new();
 
 	internal ColorKeyFrameAnimation(Compositor compositor) : base(compositor)
@@ -178,5 +177,4 @@ public partial class ColorKeyFrameAnimation : KeyFrameAnimation
 
 		return p;
 	}
-#endif
 }

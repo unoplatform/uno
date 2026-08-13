@@ -40,11 +40,9 @@ public partial class ExpressionAnimation : CompositionAnimation
 			throw new InvalidOperationException("Property 'Expression' should not be empty when starting an ExpressionAnimation");
 		}
 
-		// Parse the expression once and reuse the tree across every target this animation is
-		// started on. Re-parsing per Start would re-register the reference-parameter contexts each
-		// time (AnimationIdentifierNameSyntax.Evaluate calls AddContext once per tree), so a single
-		// referenced-object change would fan out to O(N^2) re-evaluations when the same animation is
-		// shared across N targets, and every extra registration would leak on teardown.
+		// Reuse the parse tree when Start runs again with an unchanged expression: re-parsing would
+		// re-register the reference-parameter contexts (Evaluate calls AddContext once per tree) and
+		// leak the previous registrations.
 		if (_parsedExpression is null || !string.Equals(_parsedExpressionText, Expression, StringComparison.Ordinal))
 		{
 			_parsedExpression?.Dispose();
@@ -71,8 +69,8 @@ public partial class ExpressionAnimation : CompositionAnimation
 	{
 		base.Stop();
 
-		// Only tear down the shared parse tree (whose Dispose removes the reference-parameter
-		// contexts) once the animation has been stopped on every target it was started on.
+		// Disposing the parse tree removes its reference-parameter contexts, so only tear it down
+		// once this instance is no longer started on any target.
 		if (StartedObjectCount == 0)
 		{
 			_parsedExpression?.Dispose();
