@@ -3,40 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class WindowVisibilityChangedEventArgs
 	{
-#if __SKIA__
-		internal WindowVisibilityChangedEventArgs()
-		{
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool Handled
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs", "Handled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs", "Handled");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool Visible
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs", "Visible");
-			}
-		}
-#endif
+		// Skipping already declared property Handled
+		// Skipping already declared property Visible
 		// Forced skipping of method Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs.Visible.get

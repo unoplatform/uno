@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Reflection;
@@ -216,7 +216,7 @@ partial class Window
 		}
 
 		state.IsVisible = true;
-		_windowImplementation.RaiseVisibilityChanged(new VisibilityChangedEventArgs { Visible = true });
+		_windowImplementation.RaiseVisibilityChanged(new WindowVisibilityChangedEventArgs(true));
 	}
 
 	/// <summary>
@@ -231,7 +231,7 @@ partial class Window
 		}
 
 		state.IsVisible = false;
-		_windowImplementation.RaiseVisibilityChanged(new VisibilityChangedEventArgs { Visible = false });
+		_windowImplementation.RaiseVisibilityChanged(new WindowVisibilityChangedEventArgs(false));
 	}
 
 	/// <summary>
@@ -327,7 +327,7 @@ partial class Window
 		if (state.IsVisible)
 		{
 			state.IsVisible = false;
-			_windowImplementation.RaiseVisibilityChanged(new VisibilityChangedEventArgs { Visible = false });
+			_windowImplementation.RaiseVisibilityChanged(new WindowVisibilityChangedEventArgs(false));
 		}
 
 		// Cleanup subscriptions

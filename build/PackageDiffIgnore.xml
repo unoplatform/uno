@@ -392,6 +392,14 @@
 		<Member fullName="System.Void Uno.UI.BaseActivity.add_PrepareOptionsPanel(System.EventHandler`1&lt;Uno.UI.BaseActivity/PrepareOptionsPanelEventArgs&gt; value)" reason="Not present in WinUI" />
 		<Member fullName="System.Void Uno.UI.BaseActivity.remove_PrepareOptionsPanel(System.EventHandler`1&lt;Uno.UI.BaseActivity/PrepareOptionsPanelEventArgs&gt; value)" reason="Not present in WinUI" />
 		<!-- END Android 13 breaking change -->
+
+		  <!-- Window event accessors retyped to TypedEventHandler; the old-typed accessors read as removed (events paired in <Events> below). -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.add_Activated(Microsoft.UI.Xaml.WindowActivatedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_Activated(Microsoft.UI.Xaml.WindowActivatedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.add_SizeChanged(Microsoft.UI.Xaml.WindowSizeChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_SizeChanged(Microsoft.UI.Xaml.WindowSizeChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.add_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 	  </Methods>
 	  <Events>
 		<!-- BEGIN Android 13 breaking change -->
@@ -2137,6 +2145,12 @@
 		  <Member fullName="Uno.UI.Toolkit.MenuFlyoutItemExtensions" reason="Removed MenuFlyoutItemExtensions; its IsDestructive attached property was read only by the native iOS MenuFlyout presentation (#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Toolkit.MenuFlyoutExtensions" reason="Removed MenuFlyoutExtensions; its CancelTextIosOverride attached property was read only by the native iOS MenuFlyout presentation (#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Control" reason="Removed empty FeatureConfiguration.Control holder after deleting UseLegacyContentAlignment (BC45, breaking changes for 7.0)" />
+		  <!-- Window's event handler delegates do not exist in WinUI; the events now use TypedEventHandler (#2089). -->
+		  <Member fullName="Microsoft.UI.Xaml.WindowActivatedEventHandler" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.WindowSizeChangedEventHandler" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.WindowClosedEventHandler" reason="Removed unused Uno-only delegate; WinUI has no such type (#2089, breaking changes for 7.0, uno#8339)" />
+
 		  <!-- Xaml-compat stub of the native-only Uno.UI.Maps addin, removed along with the addin itself (#2049, breaking changes for 7.0). -->
 		  <Member fullName="Uno.UI.Maps.MapResources" reason="Removed the Uno.UI.Toolkit Xaml-compat ResourceDictionary stub together with the native-only Uno.UI.Maps addin (#2049, breaking changes for 7.0)" />
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
@@ -3407,6 +3421,12 @@
 		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.DataTemplate.LoadContent(Microsoft.UI.Xaml.DependencyObject templatedParent)" reason="LoadContent returns DependencyObject to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 	  </Methods>
 	  <Events>
+		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->
+		  <!-- TypedEventHandler; the old-typed events read as removed (accessors paired in <Methods>). -->
+		  <Member fullName="Microsoft.UI.Xaml.WindowActivatedEventHandler Microsoft.UI.Xaml.Window::Activated" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.WindowSizeChangedEventHandler Microsoft.UI.Xaml.Window::SizeChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler Microsoft.UI.Xaml.Window::VisibilityChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+
 		  <!-- ====================================================================== -->
 		  <!-- BEGIN WinUI sync (Category B): shadow event removals.                  -->
 		  <!--                                                                        -->

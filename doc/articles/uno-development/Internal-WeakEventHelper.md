@@ -29,12 +29,12 @@ Here's a usage example:
  ```csharp
  private WeakEventHelper.WeakEventCollection? _sizeChangedHandlers;
 
- internal IDisposable RegisterSizeChangedEvent(WindowSizeChangedEventHandler handler)
+ internal IDisposable RegisterSizeChangedEvent(TypedEventHandler<object, WindowSizeChangedEventArgs> handler)
  {
   return WeakEventHelper.RegisterEvent(
    _sizeChangedHandlers ??= new(),
    handler,
-   (h, s, e) => (h as WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
+   (h, s, e) => (h as TypedEventHandler<object, WindowSizeChangedEventArgs>)?.Invoke(s, (WindowSizeChangedEventArgs)e)
   );
  }
 

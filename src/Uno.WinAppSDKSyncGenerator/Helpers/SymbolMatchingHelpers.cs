@@ -142,12 +142,6 @@ internal static class SymbolMatchingHelpers
 
 	private static bool AreEventsMatching(IEventSymbol uapEvent, IEventSymbol unoEvent)
 	{
-		if (uapEvent.ContainingType.Name == "Window")
-		{
-			// TODO: Match API with WinUI.
-			return true;
-		}
-
 		var result = AreMatchingCommon(uapEvent, unoEvent) && AreMatching(uapEvent.Type, unoEvent.Type);
 		return result;
 	}
