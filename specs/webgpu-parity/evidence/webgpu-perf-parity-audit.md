@@ -89,16 +89,17 @@ bundles) were reference-removed dead ends.
 - **Gap 7 (xform bind-group recreated every frame)** — DONE. `WebGpuDevice.EnsureXformBindGroup` keeps a persistent
   storage buffer (grown 1.5×) + a bind group cached by buffer identity, rebuilt only on growth. Only the main pass
   uses it; nested/pooled passes still rent transient buffers so their distinct tables never alias it within a frame.
+  HARDENING (2026-08-13): the outgrown buffer + bind group are now released via the DEFERRED path (`_pendingBuffers`/
+  `_pendingBindGroups`, freed at next frame start), not immediately — an immediate release could reclaim a resource
+  the prior in-flight frame's submitted commands still bind under pipelining.
 - **Gap 8 (opaque short-circuit)** — DONE. `DrawEffectBackdrop` now short-circuits on `Color.A == 255 || (sigma<=0)`.
-- **Gap 4 (solid-scroll)** — DONE. The frame-solid path now stores LOCAL-space solid/rrect verts in the shared
-  slabs (resident across frames) and, per frame, only rewrites the tiny per-op clip bind groups (`xf`/`finv` from
-  the replay transform, session-clip AABB folded in as a device scissor) + the path-fill transform-table slot —
-  mirroring the proven arena mechanism, so a scroll rewrites transforms, not verts. The rrect shader gained
-  `xformPos(clip, cpos)` (identity-safe for immediate/shared rrects). Eligibility is gated to a plain-AABB/None
-  session clip + no path child-clip (rounded/path session clips keep the device-space rebuild path). Cross-visual
-  coalescing is preserved: same-clip same-transform siblings (e.g. scrolling list items) still collapse to one draw.
-  Runtime-validated on lavapipe (build clean, no wgpu errors) across the static rrect scene, a clipped ListView,
-  and a per-frame-translating animation (the restamp branch).
+- **Gap 4 (solid-scroll)** — ATTEMPTED then REVERTED. The local-space frame-solid restamp (`EmitFrameSolidLocal`/
+  `StampFrameClip`) caused a scroll-triggered vertex-buffer use-after-free crash on real HW (`wgpu-core storage.rs:
+  Buffer[Id] does not exist` at `SetVertexBuffer`). A proven secondary bug: on scroll-out→in, the hit branch only
+  `MarkLive`d the slab slice and reused cached `FrameOrder` byte offsets that a culled-then-reclaimed slice can alias
+  (wrong-render, in-bounds because the slab only grows). Reverted (commit `cb4611e9cb`) to restore the proven
+  device-space frame-solid path, which self-heals on scroll (transform change → rebuild + re-`Put`). Still open; a
+  correct redo needs per-vertex transform-table slots for solids/rrects with careful buffer-lifetime handling.
 - **Gap 3 (glyph atlas)** — deferred to discussion (needs a backend-neutral coverage-atlas rasterizer).
 
 Runtime validation: desktop X11 head on lavapipe (`Xvfb :99`), MSAA on, both the acrylic/segmented path
