@@ -174,28 +174,28 @@ public class Given_ContainerVisual
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public async Task When_RetainedRendering_Disabled_Renders_Identically()
+	public async Task When_Retained_Fallback_Renders_Identically()
 	{
-		// The retained (SKPicture-cached) path and the immediate path a backend without the retained-recording
-		// capability would take must produce identical output. Render the same scene each way and compare.
+		// The backend's native retained path (SkiaSharp's SKPicture) and the command-list fallback a backend
+		// without native retention gets must produce identical output. Render the same scene each way and compare.
 		// The scene exercises per-visual paint, child rendering, corner clipping, and the non-analytic shadow
-		// fallback (gradient content + ThemeShadow) — all of which have a distinct uncached branch.
+		// fallback (gradient content + ThemeShadow) — all of which record and replay through the retained seam.
 		var retained = BuildRenderComparisonScene();
 		await UITestHelper.Load(retained);
 		var expected = await UITestHelper.ScreenShot(retained);
 
 		try
 		{
-			global::Microsoft.UI.Composition.Visual.DisableRetainedRendering = true;
-			var immediate = BuildRenderComparisonScene();
-			await UITestHelper.Load(immediate);
-			var actual = await UITestHelper.ScreenShot(immediate);
+			global::Microsoft.UI.Composition.Visual.ForceFallbackRetainedRendering = true;
+			var fallback = BuildRenderComparisonScene();
+			await UITestHelper.Load(fallback);
+			var actual = await UITestHelper.ScreenShot(fallback);
 
 			await ImageAssert.AreEqualAsync(actual, expected);
 		}
 		finally
 		{
-			global::Microsoft.UI.Composition.Visual.DisableRetainedRendering = false;
+			global::Microsoft.UI.Composition.Visual.ForceFallbackRetainedRendering = false;
 		}
 	}
 
@@ -219,7 +219,7 @@ public class Given_ContainerVisual
 			await TestServices.WindowHelper.WaitForIdle();
 			var expected = await UITestHelper.ScreenShot(collapsed);
 
-			global::Microsoft.UI.Composition.Visual.DisableRetainedRendering = true;
+			global::Microsoft.UI.Composition.Visual.ForceFallbackRetainedRendering = true;
 			var immediate = BuildRenderComparisonScene();
 			await UITestHelper.Load(immediate);
 			var actual = await UITestHelper.ScreenShot(immediate);
@@ -228,7 +228,7 @@ public class Given_ContainerVisual
 		}
 		finally
 		{
-			global::Microsoft.UI.Composition.Visual.DisableRetainedRendering = false;
+			global::Microsoft.UI.Composition.Visual.ForceFallbackRetainedRendering = false;
 			global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationFrameThreshold = origFrame;
 			global::Microsoft.UI.Composition.Visual.PictureCollapsingOptimizationVisualCountThreshold = origCount;
 		}

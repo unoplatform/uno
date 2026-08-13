@@ -304,7 +304,7 @@ public sealed class WebGpuRenderData : IRenderData
 	}
 }
 
-public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
+public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IRetainedRenderingSession, IFlattenedPathSink
 {
 	// A save frame carries the matrix/clip to restore. Layer frames additionally redirect emitted commands into
 	// a sub-list until Restore, which composites that sub-list (as a LayerCmd) back onto the parent.
@@ -874,7 +874,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	}
 }
 
-public sealed unsafe class WebGpuPresentSession : IPresentSession
+public sealed unsafe class WebGpuPresentSession : IPresentSession, IRetainedRenderingSession
 {
 	private readonly WebGpuDevice _d;
 	private readonly WebGpuRenderSurface _s;

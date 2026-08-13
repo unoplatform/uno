@@ -33,13 +33,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal static int PictureCollapsingOptimizationFrameThreshold { get; set; } = 50;
 	internal static int PictureCollapsingOptimizationVisualCountThreshold { get; set; } = 100;
 
-	/// <summary>Test seam: forces the immediate (uncached) render path even on a retained-capable backend.</summary>
-	internal static bool DisableRetainedRendering { get; set; }
+	/// <summary>Test seam: forces the command-list retained fallback even when the backend has native retention.</summary>
+	internal static bool ForceFallbackRetainedRendering { get; set; }
 
-	// Per-visual/subtree picture caching requires the backend session to advertise retained recording.
-	// A backend without it (or the test seam above) renders immediately, uncached.
-	private static IRetainedRenderingSession? AsRetained(IDrawingSession session)
-		=> DisableRetainedRendering ? null : session as IRetainedRenderingSession;
+	// Retention is always available: the backend's native IRetainedRenderingSession when it advertises one,
+	// otherwise a command-list fallback that records and replays the neutral verbs on any session.
+	private static IRetainedRenderingSession Retained(IDrawingSession session)
+		=> RetainedRenderingSession.For(session, ForceFallbackRetainedRendering);
 
 	private bool _enablePictureCollapsingOptimization;
 	private int _pictureCollapsingOptimizationFrameThreshold;
@@ -399,10 +399,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				PostPaintingClipStep(this, in session);
 				RenderChildrenStep(this, session, applyChildOptimization);
 			}
-			else if (AsRetained(session.Session) is { } retained)
+			else
 			{
 				// Non-analytic fallback: record the subtree once, then replay it twice — first through a
 				// drop-shadow-filtered layer (which composites the shadow), then directly (the content on top).
+				var retained = Retained(session.Session);
 				var recording = retained.CreateRecording();
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
@@ -421,20 +422,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				session.Session.Restore();
 
 				retained.Replay(renderData);
-			}
-			else
-			{
-				// Same fallback without retained recording: draw the subtree twice directly — into the
-				// drop-shadow-filtered layer (the shadow), then again on top (the content).
-				session.Session.SaveLayer(ShadowState.ShadowFilter);
-				PaintStep(this, session);
-				PostPaintingClipStep(this, in session);
-				RenderChildrenStep(this, session, applyChildOptimization);
-				session.Session.Restore();
-
-				PaintStep(this, session);
-				PostPaintingClipStep(this, in session);
-				RenderChildrenStep(this, session, applyChildOptimization);
+				renderData.Dispose();
 			}
 		}
 
@@ -445,13 +433,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #if DEBUG
 			var saveCount = session.Session.SaveCount;
 #endif
-			if (visual.RequiresRepaintOnEveryFrame || AsRetained(session.Session) is not { } retained)
+			if (visual.RequiresRepaintOnEveryFrame)
 			{
-				// Repaint-every-frame content, or a backend without retained recording: paint directly, uncached.
+				// Repaint-every-frame content (e.g. an effect brush over already-drawn area): paint directly, uncached.
 				visual.Paint(session);
 			}
 			else
 			{
+				var retained = Retained(session.Session);
 				if ((visual._flags & VisualFlags.PaintDirty) != 0)
 				{
 					visual._flags &= ~VisualFlags.PaintDirty;
@@ -480,17 +469,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization)
 		{
-			if (AsRetained(session.Session) is not { } retained)
-			{
-				// No retained recording: render children directly, without subtree caching/collapsing.
-				foreach (var child in visual.GetChildrenInRenderOrder())
-				{
-					child.Render(in session, applyChildOptimization);
-				}
-
-				return;
-			}
-
+			var retained = Retained(session.Session);
 			if (visual._childrenContent is { } childrenContent)
 			{
 				retained.Replay(childrenContent);
