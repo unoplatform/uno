@@ -103,6 +103,10 @@ namespace Microsoft.UI.Composition
 			internal set => SetProperty(ref _strokeDashArray, value);
 		}
 
+		// Lets callers skip work when no dash array was ever materialized, without forcing the
+		// lazy allocation the public getter performs.
+		internal CompositionStrokeDashArray? StrokeDashArrayOrDefault => _strokeDashArray;
+
 		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
 		{
 			if (propertyName.Equals(nameof(StrokeThickness), StringComparison.OrdinalIgnoreCase))

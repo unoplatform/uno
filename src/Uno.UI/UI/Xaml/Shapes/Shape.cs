@@ -365,7 +365,8 @@ namespace Microsoft.UI.Xaml.Shapes
 			var strokeDashArray = StrokeDashArray;
 			if (strokeDashArray is null)
 			{
-				_shape.StrokeDashArray.Clear();
+				// Don't touch the public getter — it would allocate a collection for every dash-less shape.
+				_shape.StrokeDashArrayOrDefault?.Clear();
 				return;
 			}
 

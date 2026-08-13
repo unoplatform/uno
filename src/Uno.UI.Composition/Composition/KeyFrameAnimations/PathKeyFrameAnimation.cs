@@ -106,6 +106,7 @@ public partial class PathKeyFrameAnimation : KeyFrameAnimation
 					builder.QuadTo(Mix(fp[1], tp[1], amount), Mix(fp[2], tp[2], amount));
 					break;
 				case SKPathVerb.Conic:
+					// Only topologically identical paths are morphed, so both conic weights match.
 					builder.ConicTo(Mix(fp[1], tp[1], amount), Mix(fp[2], tp[2], amount), fromIt.ConicWeight());
 					break;
 				case SKPathVerb.Cubic:
