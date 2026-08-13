@@ -1,0 +1,9 @@
+# Snapshot fixtures: preserve the bytes exactly as generated.
+#
+# These files are compared byte-for-byte against source-generator output, so they must not go
+# through the repository's `* text=auto` line-ending normalization: it stores them with LF, and a
+# checkout then materializes LF on Unix while the generators that produced them emit CRLF (a
+# generator shipped as a NuGet package bakes the newlines of its own sources at package build time,
+# so its output is CRLF on every host). Normalized fixtures therefore only ever matched on the
+# platform whose checkout happened to restore the original endings.
+* -text
