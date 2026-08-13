@@ -46,15 +46,15 @@ public static class ImageDecoder
 			}
 
 			return _current ?? throw new InvalidOperationException(
-				"No IImageDecoder registered. Set ImageDecoder.Current during app initialization (the Skia head does this in SkiaBackend.Register).");
+				"No IImageDecoder registered. Register an image decoder via the host builder (.ImageDecoder), or rely on the per-seam Skia fallback.");
 		}
-		set => _current = value;
+		internal set => _current = value;
 	}
 
 	/// <summary>
-	/// Registers <paramref name="decoder"/> only if none is registered yet, so a backend's default never clobbers a
-	/// decoder an app registered explicitly (via <see cref="Current"/>) before backend initialization.
+	/// Registers <paramref name="decoder"/> only if none is registered yet. Framework-internal (per-seam fallback);
+	/// app-side image-decoder registration goes through the host builder's .ImageDecoder extension.
 	/// </summary>
-	public static void RegisterDefault(IImageDecoder decoder)
+	internal static void RegisterDefault(IImageDecoder decoder)
 		=> _current ??= decoder ?? throw new ArgumentNullException(nameof(decoder));
 }

@@ -24,15 +24,15 @@ public static class FontProvider
 			}
 
 			return _current ?? throw new InvalidOperationException(
-				"No IFontProvider registered. Set FontProvider.Current during app initialization (the Skia head does this in SkiaBackend.Register).");
+				"No IFontProvider registered. Register a font provider via the host builder (.FontProvider), or rely on the per-seam Skia fallback.");
 		}
-		set => _current = value;
+		internal set => _current = value;
 	}
 
 	/// <summary>
-	/// Registers <paramref name="provider"/> only if none is registered yet, so a backend's default never clobbers a
-	/// resolver an app registered explicitly (via <see cref="Current"/>) before backend initialization.
+	/// Registers <paramref name="provider"/> only if none is registered yet. Framework-internal (per-seam fallback);
+	/// app-side font registration goes through the host builder's .FontProvider extension.
 	/// </summary>
-	public static void RegisterDefault(IFontProvider provider)
+	internal static void RegisterDefault(IFontProvider provider)
 		=> _current ??= provider ?? throw new ArgumentNullException(nameof(provider));
 }
