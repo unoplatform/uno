@@ -37,22 +37,10 @@ public class Given_CoreWebView2Environment
 	{
 		var missingFolder = Path.Combine(Path.GetTempPath(), "uno-webview2-missing-" + Guid.NewGuid().ToString("N"));
 
-		Exception caught = null;
-		try
-		{
-			CoreWebView2Environment.GetAvailableBrowserVersionString(missingFolder);
-		}
-		catch (Exception ex)
-		{
-			caught = ex;
-		}
-
 		// An explicit folder is authoritative: it must fail rather than fall back to the installed browser.
-		Assert.IsNotNull(caught, "Expected a missing browserExecutableFolder to fail.");
-
 		// The type is the contract, not an implementation detail: this is how an app detects a missing runtime,
 		// so it has to match what WinAppSDK surfaces for the same ERROR_FILE_NOT_FOUND.
-		Assert.IsInstanceOfType<FileNotFoundException>(caught, $"Got {caught.GetType().FullName}: {caught.Message}");
+		Assert.Throws<FileNotFoundException>(() => CoreWebView2Environment.GetAvailableBrowserVersionString(missingFolder));
 	}
 
 	[TestMethod]
@@ -77,6 +65,8 @@ public class Given_CoreWebView2Environment
 		}
 		catch (Exception ex)
 		{
+			// Deliberately broad: a missing runtime is FileNotFoundException, a missing loader DllNotFoundException,
+			// and a target without the extension NotImplementedException. All of them mean inconclusive, not failed.
 			failure = ex;
 		}
 
