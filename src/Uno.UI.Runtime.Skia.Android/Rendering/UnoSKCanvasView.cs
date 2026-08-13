@@ -138,26 +138,23 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 	// and modified to also add rendering without OpenGL
 	private class InternalRenderer() : Java.Lang.Object, IRenderer
 	{
-		private IGLRenderTarget? _renderTarget;
+		private IGraphicsContext? _context;
 
 		void IRenderer.OnDrawFrame(IGL10? gl)
 		{
 			GLES20.GlClear(GLES20.GlColorBufferBit | GLES20.GlDepthBufferBit | GLES20.GlStencilBufferBit);
 
-			// Hand the backend a neutral IGLRenderTarget over the GLSurfaceView's default framebuffer; the Skia
-			// backend builds its GRContext-GL against the current GLES context. No Skia type lives here.
-			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(
-				_renderTarget,
-				size =>
-				{
-					var buffer = new int[3];
-					GLES20.GlGetIntegerv(GLES20.GlFramebufferBinding, buffer, 0);
-					GLES20.GlGetIntegerv(GLES20.GlStencilBits, buffer, 1);
-					GLES20.GlGetIntegerv(GLES20.GlSamples, buffer, 2);
+			if (_context is null)
+			{
+				return; // context negotiated on OnSurfaceCreated; nothing to render before then
+			}
 
-					_renderTarget = new AndroidGLRenderTarget((uint)buffer[0], buffer[2], buffer[1], (int)size.Width, (int)size.Height);
-					return _renderTarget;
-				});
+			// The context wraps the GLSurfaceView's ambient EGL context; the backend (whichever won negotiation)
+			// renders into the default framebuffer and GLSurfaceView swaps implicitly (Present is a no-op).
+			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(
+				null,
+				size => _context.AcquireRenderTarget((int)size.Width, (int)size.Height));
+			_context.Present();
 
 			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
 		}
@@ -169,6 +166,17 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 
 		void IRenderer.OnSurfaceCreated(IGL10? gl, Javax.Microedition.Khronos.Egl.EGLConfig? config)
 		{
+			// GLSurfaceView has just created + made-current the EGL context on this (its own) render thread. Negotiate
+			// here so the backend's GRContext-GLES is built on the GL thread against the current context. The host
+			// names no backend; it only serves the GLES kind by wrapping the ambient context.
+			GraphicsRegistry.ContextFactory = kind => System.Threading.Tasks.Task.FromResult<IGraphicsContext?>(
+				kind == GraphicsContextKind.OpenGLES ? new AndroidGLGraphicsContext() : null);
+			var init = GraphicsRegistry.Initialize();
+			// OnSurfaceCreated fires again after a genuine EGL context loss (despite PreserveEGLContextOnPause);
+			// dispose the previous context before rebinding so re-negotiation doesn't leak it.
+			_context?.Dispose();
+			_context = init.Context;
+			Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = init.Renderer;
 		}
 
 		protected override void Dispose(bool disposing)
@@ -182,22 +190,10 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 
 		private void FreeContext()
 		{
-			_renderTarget?.Dispose();
-			_renderTarget = null;
+			_context?.Dispose();
+			_context = null;
 		}
 
 		internal void ResetContext() => FreeContext();
-
-		// GLES default-framebuffer target; the backend builds GRContext-GL against the current context.
-		private sealed class AndroidGLRenderTarget(uint framebufferId, int sampleCount, int stencilBits, int width, int height) : IGLRenderTarget
-		{
-			public uint FramebufferId => framebufferId;
-			public int SampleCount => sampleCount;
-			public int StencilBits => stencilBits;
-			public int Width => width;
-			public int Height => height;
-			public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
-			public void Dispose() { }
-		}
 	}
 }

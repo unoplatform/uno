@@ -1,20 +1,17 @@
 #nullable enable
 
 using System;
-using System.Collections.Generic;
 using Windows.UI;
 using Microsoft.UI.Xaml.Media;
-using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Hosting;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 /// <summary>
-/// Drives the shared render loop through the pluggable graphics pipeline, naming no GPU-library type. It
-/// installs the X11 context factory (Uno owns context creation), negotiates the registered backend via
-/// <see cref="GraphicsRegistry.Initialize"/>, and per frame acquires the context's target, records/presents the
-/// frame through the neutral loop, and asks the context to present. The backend wraps the acquired target.
+/// Drives the shared render loop over a negotiated <see cref="IGraphicsContext"/>, naming no GPU-library type.
+/// The host (X11XamlRootHost) owns the negotiation (it creates the window+context per kind); this renderer just
+/// acquires the context's target each frame, records/presents through the neutral loop, and presents.
 /// </summary>
 internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 {
@@ -23,26 +20,11 @@ internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 	private readonly IGraphicsContext _context;
 	private Color _background;
 
-	public X11SoftwareGraphicsRenderer(IXamlRootHost host, X11Window x11Window, IReadOnlyList<GraphicsContextKind>? preferredKinds = null)
+	public X11SoftwareGraphicsRenderer(IXamlRootHost host, X11Window x11Window, IGraphicsContext context)
 	{
 		_host = host;
 		_x11Window = x11Window;
-
-		// Uno owns context creation for the closed set of kinds; the X11 factory builds the negotiated context
-		// (software CPU-framebuffer, GLX, or EGL/GLES). No backend/GPU-library type is named here.
-		GraphicsRegistry.ContextFactory = X11GraphicsContextFactory.Create;
-
-		var (width, height) = GetWindowSize();
-		var activation = GraphicsRegistry.Initialize(new X11GraphicsNativeWindow(x11Window, width, height), preferredKinds);
-		_context = activation.Context;
-
-		if (this.Log().IsEnabled(LogLevel.Information))
-		{
-			this.Log().Info($"Neutral graphics pipeline active: {_context.Kind} context via {activation.Renderer.GetType().Name}.");
-		}
-
-		// Route the shared render loop through the negotiated backend (whichever was registered).
-		CompositionTarget.Renderer = activation.Renderer;
+		_context = context;
 	}
 
 	public void SetBackgroundColor(Color color) => _background = color;

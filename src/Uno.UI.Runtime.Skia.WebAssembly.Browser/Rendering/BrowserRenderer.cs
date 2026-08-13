@@ -13,17 +13,15 @@ internal partial class BrowserRenderer
 {
 	private readonly Stopwatch _renderStopwatch = new Stopwatch();
 	private readonly IXamlRootHost _host;
-	private readonly IBrowserRenderer? _renderer;
 	private JSObject? _nativeInstance;
 
-	// Neutral-pipeline path (used when the app registered a graphics backend through the host builder — e.g. WebGPU).
-	// Its context (device + canvas surface) is created asynchronously, so _webgpuContext is null until ready and
-	// frames re-arm meanwhile. Uses its own canvas surface (no Skia SKCanvas / WebGL context).
-	private readonly bool _neutralPipeline;
-	private IGraphicsContext? _webgpuContext;
+	// The negotiated graphics context (Skia WebGL/software or WebGPU). It is created asynchronously — the WebGPU
+	// device import runs in JS and the JS thread must not be blocked — so _context is null until ready and frames
+	// re-arm meanwhile. The host names no backend and owns no Skia SKCanvas.
+	private IGraphicsContext? _context;
+	private bool _initFailed;
 
 	private int _renderCount;
-	private IRenderTarget? _renderTarget;
 	private bool _pendingInvalidate;
 
 	public BrowserRenderer(IXamlRootHost host, bool forceSoftwareRendering)
@@ -35,54 +33,66 @@ internal partial class BrowserRenderer
 
 		_host = host;
 
-		// The render path is chosen from what the app registered through the host builder, not an env var: a declared
-		// graphics backend (GraphicsRegistry) drives the neutral pipeline; otherwise fall back to the legacy WebGL /
-		// software Skia renderer. The neutral backend needs its own canvas context (can't coexist with a WebGL context
-		// on the same canvas), so we don't create the WebGl/Software renderer — kick off async init and render when ready.
-		if (GraphicsRegistry.HasRegisteredBackends)
-		{
-			_neutralPipeline = true;
-			_ = InitWebGpuAsync();
-			return;
-		}
-
-		if (!forceSoftwareRendering && WebGlBrowserRenderer.TryCreate(out var webGlBrowserRenderer))
-		{
-			_renderer = webGlBrowserRenderer;
-		}
-		else if (SoftwareBrowserRenderer.TryCreate(out var softwareBrowserRenderer))
-		{
-			_renderer = softwareBrowserRenderer;
-		}
-		else
-		{
-			throw new InvalidOperationException("Unable to create renderer");
-		}
-
-		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = _renderer is SoftwareBrowserRenderer;
+		// Always negotiate through the pluggable pipeline: the app-registered backend (WebGPU), or the implicit Skia
+		// default lit up by negotiation when none was declared. Context creation is async (the WebGPU device import
+		// runs in JS), so kick it off and render once ready. The host names no backend and no GPU-API type.
+		_ = InitAsync(forceSoftwareRendering);
 	}
 
-	private async Task InitWebGpuAsync()
+	private async Task InitAsync(bool forceSoftwareRendering)
 	{
 		try
 		{
-			// The host references no WebGPU type: it hands the neutral browser window (canvas id) to the pluggable
-			// pipeline and the app-registered WebGPU context factory does the async JS device import + canvas surface
-			// (device bring-up runs in JS — the in-WASM event pump hangs from a managed call stack). InitializeAsync
-			// mints the context + renderer; the render loop drives the neutral IGraphicsContext.
-			var window = new WasmGraphicsNativeWindow(WebAssemblyWindowWrapper.Instance.CanvasId);
-			var init = await GraphicsRegistry.InitializeAsync(window, new[] { GraphicsContextKind.WebGpu });
-			_webgpuContext = init.Context;
+			// Only GPU-API context creation is browser-specific (CreateContextAsync owns the WebGL/2D-canvas contexts,
+			// and the WebGPU init helper builds the canvas WebGpu context); the app-registered backend owns the kind
+			// order (WebGPU → [WebGpu]; Skia → [OpenGLES, Software]). The host names no render backend.
+			GraphicsRegistry.ContextFactory = kind => CreateContextAsync(kind, forceSoftwareRendering);
+
+			var init = await GraphicsRegistry.InitializeAsync();
+			_context = init.Context;
 			CompositionTarget.Renderer = init.Renderer;
-			this.Log().Info("Neutral graphics pipeline active: WebGpu context via the neutral pipeline (browser).");
-			// Force a fresh record+present under the new renderer (the last frame was recorded by SkiaRenderer
-			// before the async switch and is skipped by the present session).
+			Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = init.Context.Kind == GraphicsContextKind.Software;
+
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().Info($"Neutral graphics pipeline active: {init.Context.Kind} context (browser).");
+			}
+
+			// Force a fresh record+present under the negotiated renderer (a frame recorded before the async switch
+			// completes is skipped by the present session).
 			(_host.RootElement as Microsoft.UI.Xaml.UIElement)?.InvalidateArrange();
-			InvalidateRender();   // device is ready — request a frame now
+			InvalidateRender();   // context is ready — request a frame now
 		}
 		catch (Exception e)
 		{
-			this.Log().Error($"WebGPU browser init failed: {e.Message}. No fallback (canvas context already claimed).");
+			// Terminal: nothing will ever set _context now, so stop re-arming the frame pump (RenderFrame would
+			// otherwise loop requestAnimationFrame forever with no further diagnostic).
+			_initFailed = true;
+			this.Log().Error($"Browser graphics init failed: {e.Message}.");
+		}
+	}
+
+	/// <summary>
+	/// The browser window+context creator for the neutral pipeline: WebGL (as OpenGLES) or the 2D-canvas software
+	/// context, or the WebGpu canvas context via the WebGPU project's init helper. WebGL is declined when the host
+	/// is configured for software. The host names no render backend.
+	/// </summary>
+	private async Task<IGraphicsContext?> CreateContextAsync(GraphicsContextKind kind, bool forceSoftwareRendering)
+	{
+		switch (kind)
+		{
+			case GraphicsContextKind.OpenGLES when !forceSoftwareRendering:
+				return WebGlBrowserRenderer.TryCreate(out var gl) ? new WasmGLGraphicsContext(gl) : null;
+			case GraphicsContextKind.Software:
+				return SoftwareBrowserRenderer.TryCreate(out var sw) ? new WasmSoftwareGraphicsContext(sw) : null;
+			case GraphicsContextKind.WebGpu:
+				// The WebGPU "init half" (WebGpuContext) is a lightweight, renderer-agnostic assembly the host
+				// references directly. Its emdawnwebgpu emscripten link is small (a browser-API bridge, a few hundred
+				// KB) and always linked for WASM via WebGpu.Init's targets, so the symbols are guaranteed present —
+				// no reflection, no opt-in-link fragility. The host never references the WebGPU renderer.
+				return await global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateWasmAsync(WebAssemblyWindowWrapper.Instance.CanvasId);
+			default:
+				return null;
 		}
 	}
 
@@ -129,49 +139,19 @@ internal partial class BrowserRenderer
 			this.Log().Trace($"Render {_renderCount++}");
 		}
 
-		if (_neutralPipeline)
+		if (_context is null)
 		{
-			if (_webgpuContext is null)
-			{
-				// Async device init not finished yet — re-arm so we render as soon as it's ready.
-				if (_nativeInstance is not null) { NativeMethods.Invalidate(_nativeInstance); }
-				return;
-			}
-
-			// Render into the offscreen resolve target, then Present() blits it into the canvas backbuffer.
-			var webgpuClip = compositionTarget.OnNativePlatformFrameRequested(
-				null,
-				size => _webgpuContext.AcquireRenderTarget((int)size.Width, (int)size.Height));
-			_webgpuContext.Present();
-			ApplyNativeElementClip(webgpuClip);
-
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace($"Render time (WebGPU): {_renderStopwatch.Elapsed}");
-			}
+			// Async context init not finished yet — re-arm so we render as soon as it's ready. If init failed
+			// terminally, stop re-arming (nothing will set _context).
+			if (!_initFailed && _nativeInstance is not null) { NativeMethods.Invalidate(_nativeInstance); }
 			return;
 		}
 
-		_renderer!.MakeCurrent();
-
-		if (_renderer.NeedsForceResize())
-		{
-			_renderTarget?.Dispose();
-			_renderTarget = null;
-		}
-
-		var currentClipPath = compositionTarget.OnNativePlatformFrameRequested(_renderTarget, size =>
-		{
-			_renderTarget?.Dispose();
-			return _renderTarget = _renderer.Resize((int)size.Width, (int)size.Height);
-		});
-
-		if (_renderTarget is not null)
-		{
-			// The Skia backend flushed its surface; present the buffer (GL flush / software blit).
-			_renderer.Flush();
-		}
-
+		// The context owns the surface/present; the backend (whichever won negotiation) wraps the acquired target.
+		var currentClipPath = compositionTarget.OnNativePlatformFrameRequested(
+			null,
+			size => _context.AcquireRenderTarget((int)size.Width, (int)size.Height));
+		_context.Present();
 		ApplyNativeElementClip(currentClipPath);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))

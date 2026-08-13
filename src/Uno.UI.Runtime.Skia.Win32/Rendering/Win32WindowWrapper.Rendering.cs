@@ -11,13 +11,14 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper
 {
-	private IRenderTarget? _renderTarget;
 	private RenderThread? _renderThread;
 
 	/// <summary>EXPERIMENTAL opt-in (Win32RenderingBackend.WebGpu). Set before the window is created.</summary>
 	internal static bool PreferWebGpu;
-	// Non-null when a GPU backend context (e.g. WebGPU) is active: renders through the neutral context instead of an SKSurface.
-	private IGraphicsContext? _webgpuContext;
+
+	// The negotiated graphics context (Skia GL/software or WebGPU) — the host names no backend and owns no
+	// SKSurface; it drives the neutral per-frame loop (AcquireRenderTarget → record/render → Present).
+	private IGraphicsContext _context = null!;
 
 	public event EventHandler<IGeometry>? RenderingNegativePathReevaluated; // not necessarily changed
 
@@ -28,17 +29,30 @@ internal partial class Win32WindowWrapper
 	// (resize/uncover/show) still arrive through WM_PAINT. SignalNewFrame coalesces bursts.
 	void IXamlRootHost.InvalidateRender() => _renderThread?.SignalNewFrame();
 
-	private void ReinitializeRenderer()
+	/// <summary>
+	/// The Win32 window+context creator for the neutral pipeline. The HWND is kind-agnostic and already created,
+	/// so it is reused for every kind. OpenGL returns null when WGL init fails (→ negotiation falls through to
+	/// Software) or when the host is configured for software; WebGpu is built via the WebGPU project's init helper.
+	/// The host names no render backend.
+	/// </summary>
+	private IGraphicsContext? CreateWindowAndContext(GraphicsContextKind kind)
 	{
-		_renderer.Reinitialize();
-		_renderTarget?.Dispose();
-		_renderTarget = null;
+		var scale = (float)(RasterizationScale == 0 ? 1 : RasterizationScale);
+		return kind switch
+		{
+			GraphicsContextKind.OpenGL => (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true)
+				? Win32OpenGLGraphicsContext.TryCreate(_hwnd)
+				: null,
+			GraphicsContextKind.Software => new Win32SoftwareGraphicsContext(_hwnd),
+			GraphicsContextKind.WebGpu => global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateWin32(_hwnd, Win32Helper.GetModuleHInstance(), scale),
+			_ => null,
+		};
 	}
 
 	private void InitializeRenderThread()
 	{
 		_renderThread = new RenderThread(
-			_renderer,
+			_context,
 			drawFrame: DrawFrame,
 			onClipPathUpdated: clipPath =>
 			{
@@ -49,43 +63,14 @@ internal partial class Win32WindowWrapper
 	}
 
 	/// <summary>
-	/// Called on the render thread. Replays the last recorded SKPicture and returns the clip
-	/// path and client dimensions for CopyPixels, or null when there is no frame to present
-	/// yet (avoids presenting an uninitialised back buffer before the first render).
+	/// Called on the render thread. Acquires the context's target for the current client size, records/renders
+	/// the frame through the neutral loop, and returns the clip path and client dimensions — or null when there
+	/// is no frame to present yet. The render thread presents the frame via <see cref="IGraphicsContext.Present"/>.
 	/// </summary>
-	private unsafe (IGeometry clipPath, int width, int height)? DrawFrame()
+	private (IGeometry clipPath, int width, int height)? DrawFrame()
 	{
 		var ct = ((IXamlRootHost)this).RootElement?.Visual.CompositionTarget as CompositionTarget;
 		if (ct is null || _rendererDisposed)
-		{
-			return null;
-		}
-
-		if (_webgpuContext is { } webgpu)
-		{
-			// GPU backend renders into the HWND swapchain through the neutral context (no SKSurface, no WebGPU type
-			// here). Present happens in Win32WebGpuRenderer.CopyPixels; profiler bracketing lives in the backend.
-			var webgpuClip = ct.OnNativePlatformFrameRequested(
-				null,
-				size => webgpu.AcquireRenderTarget((int)size.Width, (int)size.Height));
-			if (!PInvoke.GetClientRect(_hwnd, out RECT webgpuRect))
-			{
-				this.LogError()?.Error($"{nameof(PInvoke.GetClientRect)} failed: {Win32Helper.GetErrorMessage()}");
-				return null;
-			}
-			return (webgpuClip, webgpuRect.Width, webgpuRect.Height);
-		}
-
-		var clipGeometry = ct.OnNativePlatformFrameRequested(_renderTarget, size =>
-		{
-			_renderTarget?.Dispose();
-			_renderTarget = _renderer.UpdateSize((int)size.Width, (int)size.Height);
-			return _renderTarget;
-		});
-
-		// _renderTarget is created lazily inside resizeFunc; still null means the CompositionTarget
-		// has not recorded anything yet — nothing to present.
-		if (_renderTarget is null)
 		{
 			return null;
 		}
@@ -96,28 +81,15 @@ internal partial class Win32WindowWrapper
 			return null;
 		}
 
-		return (clipGeometry, clientRect.Width, clientRect.Height);
-	}
+		var width = clientRect.Width;
+		var height = clientRect.Height;
 
-	/// <summary>
-	/// Bridges the neutral WebGPU swapchain context to the Win32 render thread's <see cref="IRenderer"/> contract.
-	/// WebGPU renders through the context (not an SKSurface), so UpdateSize is unused; CopyPixels presents the
-	/// swapchain (wgpuSurfacePresent). EXPERIMENTAL — not runtime-validated on Linux CI (needs a real Windows GPU).
-	/// </summary>
-	private sealed class Win32WebGpuRenderer : IRenderer
-	{
-		private readonly IGraphicsContext _context;
+		// The context owns the surface/present; the backend (whichever won negotiation) wraps the acquired target.
+		var target = _context.AcquireRenderTarget(width, height);
+		var clipGeometry = ct.OnNativePlatformFrameRequested(
+			target,
+			size => _context.AcquireRenderTarget((int)size.Width, (int)size.Height));
 
-		public Win32WebGpuRenderer(IGraphicsContext context) => _context = context;
-
-		public void StartPaint() { }
-		public void EndPaint() { }
-		public IRenderTarget UpdateSize(int width, int height)
-			=> throw new NotSupportedException("The WebGPU renderer presents through the swapchain context, not a render target.");
-		public void CopyPixels(int width, int height) => _context.Present();
-		public bool IsSoftware() => false;
-		public void Reinitialize() { }
-		public void UpdateRefreshRate(double fps) { }
-		public void Dispose() => _context.Dispose();
+		return (clipGeometry, width, height);
 	}
 }

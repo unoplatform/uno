@@ -20,12 +20,10 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 internal sealed partial class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderView
 {
 	private RootViewController? _owner;
-	private global::Uno.UI.Composition.Drawing.IGraphicsContext? _context;
 	private readonly CADisplayLink _link;
 	private readonly nint _fps;
 	private readonly float _scale;
 	private Thread? _renderThread;
-	private bool _rendererInstalled;
 
 	[Export("layerClass")]
 	public static Class LayerClass() => new Class(typeof(CAMetalLayer));
@@ -106,8 +104,7 @@ internal sealed partial class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderVi
 				return;
 			}
 
-			EnsureContext();
-			_owner?.OnWebGpuFrameRequested(_context!);
+			_owner?.OnFrameRequested();
 		}
 		catch (Exception ex)
 		{
@@ -115,29 +112,13 @@ internal sealed partial class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderVi
 		}
 	}
 
-	private void EnsureContext()
-	{
-		if (_context is not null)
-		{
-			return;
-		}
-
-		// The host references no WebGPU type — it hands the neutral Metal-layer window (+ DPI scale) to the
-		// pluggable pipeline; the app-registered WebGPU provider builds the surface + device and mints the
-		// (factory, renderer) pair.
-		var layerHandle = (IntPtr)MetalLayer.Handle;
-		var nativeWindow = new AppleMetalGraphicsNativeWindow(layerHandle, _scale);
-		var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize(
-			nativeWindow, new[] { global::Uno.UI.Composition.Drawing.GraphicsContextKind.WebGpu });
-		_context = init.Context;
-
-		if (!_rendererInstalled)
-		{
-			Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = init.Renderer;
-			_rendererInstalled = true;
-			this.Log().Info("Neutral graphics pipeline active: WebGpu context via the neutral pipeline (AppleUIKit).");
-		}
-	}
+	/// <summary>
+	/// Creates the WebGpu swapchain context over this view's <c>CAMetalLayer</c> via the renderer-agnostic init helper
+	/// (referenced directly; the host never references the WebGPU renderer). The wgpu native/link ships only with an
+	/// app that opts into WebGPU, so a Skia-only app that never negotiates the WebGpu kind never loads it.
+	/// </summary>
+	internal global::Uno.UI.Composition.Drawing.IGraphicsContext CreateGraphicsContext()
+		=> global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateMetal((IntPtr)MetalLayer.Handle, _scale);
 
 	public override void LayoutSubviews()
 	{
@@ -154,8 +135,7 @@ internal sealed partial class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderVi
 		if (disposing)
 		{
 			_link.Invalidate();
-			_context?.Dispose();
-			_context = null;
+			// The negotiated context is owned/disposed by RootViewController.
 		}
 		base.Dispose(disposing);
 	}
