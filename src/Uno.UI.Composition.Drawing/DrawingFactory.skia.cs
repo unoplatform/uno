@@ -28,8 +28,8 @@ public static class DrawingFactory
 			}
 
 			return _current ?? throw new InvalidOperationException(
-				"No IDrawingFactory has been registered. Reference the Skia backend (it auto-registers when present) " +
-				"or call DrawingFactory.Register(...) / ManagedBackend.Register() during initialization.");
+				"No IDrawingFactory has been registered. Register a graphics backend through the host builder " +
+				"(.GraphicsBackend); the Skia backend also auto-registers its factory when its assembly is present.");
 		}
 	}
 

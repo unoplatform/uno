@@ -15,32 +15,18 @@ namespace Uno.UI.Composition.Skia;
 /// </summary>
 public static class SkiaBackend
 {
-	/// <summary>
-	/// Installs the whole SkiaSharp backend (every seam). Split into per-seam entry points so the implicit fallback
-	/// (<c>DrawingBackendFallback</c>) can light up ONLY the seam that is actually empty — e.g. a WebGPU head that
-	/// declared its own renderer still gets the Skia font/image defaults, but never the Skia renderer.
-	/// </summary>
-	public static void Register()
-	{
-		// Calling into this assembly triggers its module initializers (they install the libSkiaSharp resolver).
-		RegisterDefaultFontProvider();
-		RegisterDefaultImageDecoder();
-		RegisterImageEncoder();
-		RegisterDefaultGraphics();
-	}
-
-	/// <summary>Register-if-absent Skia font resolver — a render-independent content seam (an app that registered its
-	/// own <see cref="IFontProvider"/>, e.g. the managed engine, wins).</summary>
-	public static void RegisterDefaultFontProvider()
+	// Per-seam Skia defaults, invoked BY REFLECTION from DrawingBackendFallback (in the neutral Drawing assembly,
+	// which has no compile-time dependency on this backend) — one per empty seam, so a WebGPU head still gets the
+	// Skia font/image defaults but never the Skia renderer. They are internal: apps register through the host builder,
+	// never here. There is intentionally no public "install the whole backend" entry point.
+	internal static void RegisterDefaultFontProvider()
 		=> FontProvider.RegisterDefault(new SkiaFontProvider());
 
-	/// <summary>Register-if-absent Skia image decoder — a render-independent content seam (an app-registered
-	/// <see cref="IImageDecoder"/> wins).</summary>
-	public static void RegisterDefaultImageDecoder()
+	internal static void RegisterDefaultImageDecoder()
 		=> ImageDecoder.RegisterDefault(new SkiaImageDecoderBackend());
 
 	/// <summary>Registers the Skia image encoder for <c>BitmapEncoder</c> (Uno.UWP), an imaging-library-agnostic seam.</summary>
-	public static void RegisterImageEncoder()
+	internal static void RegisterImageEncoder()
 		=> ApiExtensibility.Register(typeof(global::Windows.Graphics.Imaging.IImageEncoderExtension), _ => new SkiaImageEncoderExtension());
 
 	/// <summary>
@@ -48,7 +34,7 @@ public static class SkiaBackend
 	/// SKCanvasElement factory. This is the seam a WebGPU/managed head OWNS by declaring its own backend, so the
 	/// implicit fallback only calls this when no backend was declared (see <c>DrawingBackendFallback</c>).
 	/// </summary>
-	public static void RegisterDefaultGraphics()
+	internal static void RegisterDefaultGraphics()
 	{
 		// Geometry lives on the backend factory, so an app that registered its own IDrawingFactory path-implementor
 		// before this call wins.

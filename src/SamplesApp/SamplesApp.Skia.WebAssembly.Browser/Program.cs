@@ -1,24 +1,17 @@
-﻿using Uno.UI.Hosting;
+using Uno.UI.Hosting;
 using Uno.UI.Composition.Drawing;
 
-// LOCAL-ONLY (do not commit): force the WebGPU-on-WASM head on so the handed-over test build renders via WebGPU
-// (BrowserRenderer opts in on UNO_WEBGPU). Must be set before the host builds the renderer. An existing value wins.
-if (string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("UNO_WEBGPU")))
-{
-	System.Environment.SetEnvironmentVariable("UNO_WEBGPU", "1");
-}
+var builder = UnoPlatformHostBuilder.Create()
+	.App(() => new SamplesApp.App())
+	.UseWebAssembly();
 
-// Composition root: when the WebGPU head is active, register the WebGPU context/window factory (GPU-API half,
-// independent of the renderer) + the WebGPU render backend provider. The host references neither.
+// Opt into the WebGPU render backend (over the managed, SkiaSharp-free geometry engine) when requested. The host
+// selects the render path from what's registered here — a declared backend drives the neutral pipeline; otherwise
+// the head uses the default Skia WebGL/software renderer. Requires publishing with -p:UnoWebGpuWasm=true so that
+// Dawn/emdawnwebgpu is linked.
 if (System.Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "neutral" or "swapchain")
 {
-	global::Uno.UI.Composition.WebGpu.WebGpuContextFactory.Register();
-	GraphicsRegistry.Register(new IGraphicsProvider[] { new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider() });
+	builder.GraphicsBackend(new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider(new ManagedDrawingFactory()));
 }
 
-var host = UnoPlatformHostBuilder.Create()
-	.App(() => new SamplesApp.App())
-	.UseWebAssembly()
-	.Build();
-
-await host.RunAsync();
+await builder.Build().RunAsync();
