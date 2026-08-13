@@ -6,9 +6,10 @@ namespace Windows.UI.Text
 {
 	public partial struct FontWeight
 	{
-		public FontWeight(ushort weight)
+		// Parameter name mirrors the WinAppSDK/CsWinRT metadata (enforced by the sync generator); keep as-is.
+		public FontWeight(ushort _Weight)
 		{
-			Weight = weight;
+			Weight = _Weight;
 		}
 
 		public ushort Weight;
