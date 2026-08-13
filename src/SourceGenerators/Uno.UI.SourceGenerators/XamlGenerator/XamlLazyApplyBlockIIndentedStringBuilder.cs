@@ -95,8 +95,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// __settings is passed the same way rather than captured, since this shape is a class-level
 					// method and the enclosing template's local is out of reach.
 					var settingsArg = _passTemplateSettings ? "__settings, " : "";
+					// Unannotated: generated files have no #nullable context, so a '?' here raises CS8669.
 					var settingsParameter = _passTemplateSettings
-						? ", global::Microsoft.UI.Xaml.TemplateMaterializationSettings? __settings"
+						? ", global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings"
 						: "";
 
 					_source.AppendIndented($".GenericApply(__that, __nameScope, {settingsArg}{_exposeContextMethod}");

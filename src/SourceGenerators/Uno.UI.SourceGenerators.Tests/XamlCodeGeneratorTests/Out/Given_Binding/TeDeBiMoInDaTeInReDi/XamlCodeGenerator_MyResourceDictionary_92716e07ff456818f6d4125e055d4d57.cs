@@ -92,6 +92,8 @@ namespace TestRepro
 						}
 						.MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_XamlApply((MyResourceDictionary_92716e07ff456818f6d4125e055d4d57XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 						{
+						global::Uno.UI.Helpers.MarkupHelper.SetTemplatedParent(__p1, __settings?.TemplatedParent);
+						__settings?.TemplateMemberCreatedCallback?.Invoke(__p1);
 						/* _isTopLevelDictionary:True */
 						__that._component_0 = __p1;
 						__nameScope.RegisterName("tb", __p1);
@@ -269,6 +271,8 @@ namespace MyProject.__Resources
 					}
 					.MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_XamlApply((MyResourceDictionary_92716e07ff456818f6d4125e055d4d57XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 					{
+					global::Uno.UI.Helpers.MarkupHelper.SetTemplatedParent(__p1, __settings?.TemplatedParent);
+					__settings?.TemplateMemberCreatedCallback?.Invoke(__p1);
 					/* _isTopLevelDictionary:True */
 					__that._component_0 = __p1;
 					__nameScope.RegisterName("tb", __p1);

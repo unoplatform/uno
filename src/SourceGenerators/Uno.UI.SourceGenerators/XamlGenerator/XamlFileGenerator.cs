@@ -1,9 +1,5 @@
 #nullable enable
 
-// Enables the per-member templated-parent assignment. Scratch-branch toggle: paired with
-// FrameworkTemplate._isLegacyTemplate = false, it replaces the ambient TemplatedParentScope.
-#define USE_NEW_TP_CODEGEN
-
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -3243,14 +3239,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(objectDefinition).isInside;
-#if USE_NEW_TP_CODEGEN
 				// Template members get their templated parent from the materializing template's settings, so the
 				// apply block needs access to it. Computed before the block so it can shape the callback signature.
 				var needsTemplatedParent = isInsideFrameworkTemplate
 					&& IsType(objectDefinitionType, Generation.DependencyObjectSymbol.Value);
-#else
-				var needsTemplatedParent = false;
-#endif
 
 				using (var writer = CreateApplyBlock(outerwriter, objectDefinition, passTemplateSettings: needsTemplatedParent))
 				{
@@ -3274,13 +3266,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendIndented(GenerateRootPhases(objectDefinition, writer.AppliedParameterName) ?? "");
 					}
 
-#if USE_NEW_TP_CODEGEN
 					if (needsTemplatedParent)
 					{
 						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetTemplatedParent({writer.AppliedParameterName}, __settings?.TemplatedParent);");
 						writer.AppendLineIndented($"__settings?.TemplateMemberCreatedCallback?.Invoke({writer.AppliedParameterName});");
 					}
-#endif
 
 					componentDefinition = CurrentScope.Components.FirstOrDefault(x => x.XamlObject == objectDefinition);
 					if (componentDefinition is { } || // element can also be register for component by a descendant DO as its resource provider

@@ -126,6 +126,8 @@ namespace TestRepro
 						}
 						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 						{
+						global::Uno.UI.Helpers.MarkupHelper.SetTemplatedParent(__p1, __settings?.TemplatedParent);
+						__settings?.TemplateMemberCreatedCallback?.Invoke(__p1);
 						__nameScope.RegisterName("RootBorder", __p1);
 						__that.RootBorder = __p1;
 						// Load False

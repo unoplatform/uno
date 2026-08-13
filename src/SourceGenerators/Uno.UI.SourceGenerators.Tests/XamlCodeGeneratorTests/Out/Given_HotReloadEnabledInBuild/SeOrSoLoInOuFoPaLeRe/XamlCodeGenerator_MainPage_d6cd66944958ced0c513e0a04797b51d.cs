@@ -244,7 +244,7 @@ namespace TestRepro
 										IsParsing = true,
 										// Source 0\MainPage.xaml (Line 15:10)
 									}
-									.GenericApply(__that, __nameScope, ApplyTo_Ξ0_StaPanΞ0_TexBlo)
+									.GenericApply(__that, __nameScope, __settings, ApplyTo_Ξ0_StaPanΞ0_TexBlo)
 								)
 								,
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -254,12 +254,12 @@ namespace TestRepro
 										Content = @"DoSomething",
 										// Source 0\MainPage.xaml (Line 16:10)
 									}
-									.GenericApply(__that, __nameScope, ApplyTo_Ξ0_StaPanΞ1_But)
+									.GenericApply(__that, __nameScope, __settings, ApplyTo_Ξ0_StaPanΞ1_But)
 								)
 								,
 							}
 						}
-						.GenericApply(__that, __nameScope, ApplyTo_Ξ0_StaPan)
+						.GenericApply(__that, __nameScope, __settings, ApplyTo_Ξ0_StaPan)
 					)
 					;
 					if (__rootInstance is FrameworkElement __fe)
@@ -291,8 +291,10 @@ namespace TestRepro
 					
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-				private void ApplyTo_Ξ0_StaPanΞ0_TexBlo(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, __Pag_ResΞ2_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+				private void ApplyTo_Ξ0_StaPanΞ0_TexBlo(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, __Pag_ResΞ2_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 				{
+					global::Uno.UI.Helpers.MarkupHelper.SetTemplatedParent(__p1, __settings?.TemplatedParent);
+					__settings?.TemplateMemberCreatedCallback?.Invoke(__p1);
 					__p1.SetBinding(
 						global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 						new Microsoft.UI.Xaml.Data.Binding()
@@ -306,8 +308,10 @@ namespace TestRepro
 
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-				private void ApplyTo_Ξ0_StaPanΞ1_But(global::Microsoft.UI.Xaml.Controls.Button __p1, __Pag_ResΞ2_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+				private void ApplyTo_Ξ0_StaPanΞ1_But(global::Microsoft.UI.Xaml.Controls.Button __p1, __Pag_ResΞ2_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 				{
+					global::Uno.UI.Helpers.MarkupHelper.SetTemplatedParent(__p1, __settings?.TemplatedParent);
+					__settings?.TemplateMemberCreatedCallback?.Invoke(__p1);
 					/* _isTopLevelDictionary:False */
 					__that._component_0 = __p1;
 					global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "MyCustomButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
@@ -317,8 +321,10 @@ namespace TestRepro
 
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-				private void ApplyTo_Ξ0_StaPan(global::Microsoft.UI.Xaml.Controls.StackPanel __p1, __Pag_ResΞ2_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+				private void ApplyTo_Ξ0_StaPan(global::Microsoft.UI.Xaml.Controls.StackPanel __p1, __Pag_ResΞ2_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 				{
+					global::Uno.UI.Helpers.MarkupHelper.SetTemplatedParent(__p1, __settings?.TemplatedParent);
+					__settings?.TemplateMemberCreatedCallback?.Invoke(__p1);
 					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 14, 8);
 					__p1.CreationComplete();
 				}

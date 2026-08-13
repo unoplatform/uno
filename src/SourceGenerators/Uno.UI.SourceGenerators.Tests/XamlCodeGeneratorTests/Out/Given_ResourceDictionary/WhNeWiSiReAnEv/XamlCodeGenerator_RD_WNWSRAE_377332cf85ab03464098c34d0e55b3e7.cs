@@ -134,6 +134,8 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 										}
 										.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 										{
+										global::Uno.UI.Helpers.MarkupHelper.SetTemplatedParent(__p1, __settings?.TemplatedParent);
+										__settings?.TemplateMemberCreatedCallback?.Invoke(__p1);
 										__p1.Add(
 											global::MyProject.GlobalStaticResources.__PreserveProperties(
 												new global::Microsoft.UI.Xaml.Controls.SwipeItem
@@ -142,6 +144,8 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 												}
 												.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 												{
+												global::Uno.UI.Helpers.MarkupHelper.SetTemplatedParent(__p1, __settings?.TemplatedParent);
+												__settings?.TemplateMemberCreatedCallback?.Invoke(__p1);
 												/* _isTopLevelDictionary:False */
 												__that._component_0 = __p1;
 												global::Microsoft.UI.Xaml.NameScope.SetNameScope(__that._component_0, __nameScope);
@@ -164,6 +168,8 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 						}
 						.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 						{
+						global::Uno.UI.Helpers.MarkupHelper.SetTemplatedParent(__p1, __settings?.TemplatedParent);
+						__settings?.TemplateMemberCreatedCallback?.Invoke(__p1);
 						/* _isTopLevelDictionary:False */
 						__that._component_1 = __p1;
 						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7);
