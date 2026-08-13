@@ -25,6 +25,7 @@ namespace Uno.UI.Runtime.Skia {
 		private static managedOnFocus: any;
 		private static managedOnBlur: any;
 		private static managedOnSentinelFocus: any;
+		private static managedResetForTesting: any;
 
 		private static managedIsAutoEnableAccessibility: () => boolean;
 
@@ -78,6 +79,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.managedOnFocus = accessibilityExports.OnFocus;
 			this.managedOnBlur = accessibilityExports.OnBlur;
 			this.managedOnSentinelFocus = accessibilityExports.OnFocusSentinel;
+			this.managedResetForTesting = accessibilityExports.ResetForTesting;
 
 			this.containerElement = document.getElementById("uno-body");
 
@@ -271,6 +273,30 @@ namespace Uno.UI.Runtime.Skia {
 		 */
 		public static isEnableAccessibilityButtonActive(): boolean {
 			return document.getElementById("uno-enable-accessibility") !== null;
+		}
+
+		public static resetForTesting(): void {
+			this.managedResetForTesting();
+		}
+
+		public static resetDomForTesting(): void {
+			this.focusSentinelStart?.remove();
+			this.focusSentinelEnd?.remove();
+			this.focusSentinelStart = null;
+			this.focusSentinelEnd = null;
+			this.isDepartingFocus = false;
+
+			if (this.semanticsRoot) {
+				while (this.semanticsRoot.firstChild) {
+					this.semanticsRoot.removeChild(this.semanticsRoot.firstChild);
+				}
+			}
+
+			if (!this.managedIsAutoEnableAccessibility()
+				&& this.enableAccessibilityButton
+				&& !this.enableAccessibilityButton.isConnected) {
+				this.containerElement.prepend(this.enableAccessibilityButton);
+			}
 		}
 
 		private static onEnableAccessibilityButtonClicked(evt: MouseEvent) {

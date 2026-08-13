@@ -423,7 +423,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			// by VirtualizedSemanticRegion via ContainerContentChanging/ElementPrepared.
 			// ComboBox dropdown items are realized as role="option" by the listbox region; recursing
 			// would also emit each item's content TextBlock as a standalone <p> (duplicate).
-			if (child is not ComboBoxItem &&
+			if (child is not (TextBox or PasswordBox or RichEditBox or ComboBoxItem) &&
 				(child is not (ListViewBase or ItemsRepeater) || !isChildSemantic))
 			{
 				// Recurse into children — if this element was skipped,
@@ -947,6 +947,57 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			focusManager.FocusObserver.FocusController.FocusDeparting -= @this.OnFocusDeparting;
 			focusManager.FocusObserver.FocusController.FocusDeparting += @this.OnFocusDeparting;
 		}
+	}
+
+	[JSExport]
+	public static void ResetForTesting()
+	{
+		var @this = Instance;
+		if (!@this.IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		if (@this._focusSearchRoot is { } rootElement)
+		{
+			var focusManager = global::Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(rootElement);
+			if (focusManager is not null)
+			{
+				focusManager.FocusObserver.FocusController.FocusDeparting -= @this.OnFocusDeparting;
+			}
+		}
+
+		@this._focusSynchronizer?.Uninitialize();
+		@this._focusSynchronizer = null;
+		@this._liveRegionManager?.ClearPending();
+		@this._liveRegionManager = null;
+
+		foreach (var region in @this._virtualizedRegions)
+		{
+			region.Dispose();
+		}
+		@this._virtualizedRegions.Clear();
+
+		lock (@this._updateLock)
+		{
+			@this._debounceTimer?.Dispose();
+			@this._debounceTimer = null;
+			@this._pendingUpdates.Clear();
+		}
+
+		@this._semanticParentMap.Clear();
+		@this._prunedHandles.Clear();
+		@this._pendingLabelledBy.Clear();
+		@this._onChildAddedDepth = 0;
+		@this._rootElementHandle = IntPtr.Zero;
+		@this._focusSearchRoot = null;
+		@this.ActiveModalScope = null;
+		@this._isCreatingAOM = false;
+		@this._isAccessibilityEnabled = false;
+
+		Control.OnIsFocusableChangedCallback = null;
+		FocusManager.SuppressNativeFocus = false;
+		NativeMethods.ResetDomForTesting();
 	}
 
 	[JSExport]
@@ -1709,6 +1760,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// (TryRealizeComboBoxItem above); don't recurse, or each item's content TextBlock would
 		// also emit as a standalone <p> alongside its option.
 		if (child is ComboBoxItem)
+		{
+			return;
+		}
+
+		// Native text inputs carry their value and selection directly. Their XAML template and
+		// RichEditBox text-object peers cannot be represented as descendants of <input>/<textarea>.
+		if (isSemantic && child is TextBox or PasswordBox or RichEditBox)
 		{
 			return;
 		}
@@ -2599,6 +2657,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.removeSemanticElement")]
 		internal static partial void RemoveSemanticElement(IntPtr parentHandle, IntPtr childHandle);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.resetDomForTesting")]
+		internal static partial void ResetDomForTesting();
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaLabel")]
 		internal static partial void UpdateAriaLabel(IntPtr handle, string automationId);
