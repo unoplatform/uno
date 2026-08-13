@@ -3444,6 +3444,10 @@
 		  <!-- BC01: only the framework materializes a template, so the settings ctor is internal. TemplatedParent stays public — an app-authored builder still reads the settings handed to it — but the member callback became an instance method (paired with the <Properties> entry above). -->
 		  <!-- BC01: nothing survives under the old name — the type moved to Uno.UI, its ctor is internal, and TemplateMemberCreatedCallback gave way to the OnMemberCreated instance method. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.TemplateMaterializationSettings(::|\.|/).+" reason="BC01: TemplateMaterializationSettings moved to Uno.UI and is framework-constructed (uno#18672, breaking changes for 7.0)" isRegex="true" />
+
+		  <!-- Sync generator alignment: DataTemplate.LoadContent returns DependencyObject in WinUI, not UIElement. -->
+		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.DataTemplate.LoadContent()" reason="LoadContent returns DependencyObject to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.DataTemplate.LoadContent(Microsoft.UI.Xaml.DependencyObject templatedParent)" reason="LoadContent returns DependencyObject to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 	  </Methods>
 	  <Events>
 		  <!-- ====================================================================== -->

@@ -763,50 +763,28 @@ namespace Uno.WinAppSDKSyncGenerator
 					// Skipped to include nullable annotations.
 					return true;
 
-				case "Windows.Foundation.Uri":
-				case BaseXamlNamespace + ".Input.ICommand":
 				case BaseXamlNamespace + ".Controls.UIElementCollection":
-					// Skipped because the reported interfaces are mismatched.
+					// UIElementCollection.GetEnumerator returns List<View>.Enumerator in Uno,
+					// where WinUI returns IEnumerator<UIElement>. Aligning it would allocate on
+					// every visual-tree enumeration, so the type stays skipped.
 					return true;
 
 				case BaseXamlNamespace + ".Media.FontFamily":
 				case BaseXamlNamespace + ".Controls.IconElement":
 				case BaseXamlNamespace + ".Data.ICollectionView":
-				case BaseXamlNamespace + ".Data.CollectionView":
 					// Skipped because the reported interfaces are mismatched.
 					return true;
 
 				case "Windows.UI.ViewManagement.InputPane":
 				case "Windows.UI.ViewManagement.InputPaneVisibilityEventArgs":
 				case "Windows.UI.ViewManagement.InputPaneInterop":
-					// Skipped because a dependency on FocusManager
-					return true;
-
-				case "Windows.ApplicationModel.Store.Preview.WebAuthenticationCoreManagerHelper":
-					// Skipped because a cross layer dependency to Windows.UI.Xaml
+					// Uno hosts InputPane in Uno.UI because it resolves the focused element through
+					// FocusManager, while GetNamespaceBasePath routes Windows.UI.ViewManagement stubs
+					// into Uno.UWP. The event args and interop types follow that placement.
 					return true;
 
 				case "Microsoft.UI.Xaml.Controls.XamlControlsResources":
 					// Skipped because the type is placed in the Uno.UI.FluentTheme assembly
-					return true;
-
-				case "Microsoft.UI.Xaml.Data.INotifyPropertyChanged":
-				case "Microsoft.UI.Xaml.Data.PropertyChangedEventArgs":
-				case "Microsoft.UI.Xaml.Data.PropertyChangedEventHandler":
-					// Skipped because the types are hidden from the projections in WinAppSDK
-					return true;
-
-				case "Windows.UI.Text.FontWeights":
-					// Skipped because the type not present WinAppSDK projection
-					return true;
-
-				case "Windows.UI.Colors":
-					// Skipped because the type not present WinAppSDK projection
-					return true;
-
-				case "Microsoft.Windows.ApplicationModel.DynamicDependency.Bootstrap":
-					// This class has a nested enum. So proper generation for nested types would be needed first.
-					// Also it's not clear if it's useful to generate it or not.
 					return true;
 
 				case "Windows.Devices.ILowLevelDevicesAggregateProvider":
