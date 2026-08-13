@@ -24,10 +24,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	[TestClass]
 	public class Given_AccessibleTextBox
 	{
-#if HAS_UNO
 		[TestCleanup]
-		public void DisableAccessibilityAfterTest() => DisableAccessibility();
+		public void Cleanup()
+		{
+			TestServices.WindowHelper.WindowContent = null;
+#if HAS_UNO
+			DisableAccessibility();
 #endif
+		}
 
 		/// <summary>
 		/// T046: Verifies that a focused textbox exposes its text value
@@ -345,28 +349,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				Text = "test"
 			};
 
-			await UITestHelper.Load(textBox);
-			textBox.Focus(FocusState.Programmatic);
-			textBox.Select(textBox.Text.Length, 0);
-			textBox.GetOrCreateAutomationPeer();
+			try
+			{
+				await UITestHelper.Load(textBox);
+				textBox.Focus(FocusState.Programmatic);
+				textBox.Select(textBox.Text.Length, 0);
+				textBox.GetOrCreateAutomationPeer();
 
-			EnableAccessibilityThroughDom();
-			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
-			await UITestHelper.WaitForIdle();
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
+				await UITestHelper.WaitForIdle();
 
-			Assert.AreEqual("test", GetSemanticTextBoxValue(textBox), "Semantic textbox should mirror the existing managed value when accessibility is enabled.");
-			Assert.AreEqual("4", GetSemanticTextBoxCaret(textBox), "Semantic textbox should inherit the managed caret position when created.");
-			// The hidden native <input> is detached asynchronously once the semantic textbox owns focus;
-			// poll for it instead of asserting synchronously, which raced on the slower WASM scheduler.
-			await UITestHelper.WaitFor(() => !HiddenNativeTextBoxExists(), timeoutMS: 5000,
-				message: "The hidden browser textbox should be detached once the semantic textbox owns focus.");
+				Assert.AreEqual("test", GetSemanticTextBoxValue(textBox), "Semantic textbox should mirror the existing managed value when accessibility is enabled.");
+				Assert.AreEqual("4", GetSemanticTextBoxCaret(textBox), "Semantic textbox should inherit the managed caret position when created.");
+				// The hidden native <input> is detached asynchronously once the semantic textbox owns focus;
+				// poll for it instead of asserting synchronously, which raced on the slower WASM scheduler.
+				await UITestHelper.WaitFor(() => !HiddenNativeTextBoxExists(), timeoutMS: 5000,
+					message: "The hidden browser textbox should be detached once the semantic textbox owns focus.");
 
-			TypeTextIntoSemanticTextBox(textBox, "test");
-			await UITestHelper.WaitForIdle();
+				TypeTextIntoSemanticTextBox(textBox, "test");
+				await UITestHelper.WaitForIdle();
 
-			Assert.AreEqual("testtest", textBox.Text, "Semantic typing should append at the current caret instead of inserting in reverse at the start.");
-			Assert.AreEqual("testtest", GetSemanticTextBoxValue(textBox), "Semantic textbox DOM value should stay aligned after appending text.");
-			Assert.AreEqual("8", GetSemanticTextBoxCaret(textBox), "Caret should remain at the end after appending to preexisting text.");
+				Assert.AreEqual("testtest", textBox.Text, "Semantic typing should append at the current caret instead of inserting in reverse at the start.");
+				Assert.AreEqual("testtest", GetSemanticTextBoxValue(textBox), "Semantic textbox DOM value should stay aligned after appending text.");
+				Assert.AreEqual("8", GetSemanticTextBoxCaret(textBox), "Caret should remain at the end after appending to preexisting text.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
 		}
 
 		/// <summary>

@@ -32,6 +32,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			InvokeBrowserJs("(function(){const button = document.getElementById('uno-enable-accessibility'); if (button) { button.click(); } return 'ok';})()");
 		}
 
+		public static void ResetAccessibilityThroughDom()
+		{
+			InvokeBrowserJs("(function(){globalThis.Uno.UI.Runtime.Skia.Accessibility.resetForTesting(); return 'ok';})()");
+		}
+
 		/// <summary>
 		/// Tears the semantic DOM down again. Accessibility would otherwise stay on for the rest of the
 		/// app, slowing down and changing the focus behavior of every test that runs after it.
