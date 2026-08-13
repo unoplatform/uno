@@ -19,8 +19,10 @@
 		<!-- Satisfy the static link of the wgpu-native-only imports Dawn doesn't export (ScanForPInvokes=false:
 		     this file is not itself a P/Invoke module). -->
 		<NativeFileReference Include="$(MSBuildThisFileDirectory)Native\wgpu_wasm_stubs.c" ScanForPInvokes="false" />
-		<!-- Activate the browser WebGPU render path at runtime (BrowserRenderer checks this env var). -->
-		<WasmShellMonoEnvironment Include="UNO_WEBGPU" Value="1" />
+		<!-- NOTE: the emdawnwebgpu bridge is small (a browser-API shim, a few hundred KB in the final .wasm) and is
+		     linked UNCONDITIONALLY so the host's direct WebGpuContext reference always resolves — no reflection, no
+		     opt-in-link fragility. Activating the WebGPU render path (the UNO_WEBGPU env) stays opt-in and is set by
+		     the app head, not here. -->
 	</ItemGroup>
 
 	<UsingTask TaskName="PatchEmdawnLibraryJs" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
