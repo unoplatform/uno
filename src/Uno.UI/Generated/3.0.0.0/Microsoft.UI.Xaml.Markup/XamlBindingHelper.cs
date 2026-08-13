@@ -50,27 +50,9 @@ namespace Microsoft.UI.Xaml.Markup
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlBindingHelper.SetPropertyFromByte(object, Microsoft.UI.Xaml.DependencyProperty, byte)
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlBindingHelper.SetPropertyFromUri(object, Microsoft.UI.Xaml.DependencyProperty, System.Uri)
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlBindingHelper.SetPropertyFromObject(object, Microsoft.UI.Xaml.DependencyProperty, object)
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static void SetPropertyFromThickness(object dependencyObject, global::Microsoft.UI.Xaml.DependencyProperty propertyToSet, global::Microsoft.UI.Xaml.Thickness value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Markup.XamlBindingHelper", "SetPropertyFromThickness(object dependencyObject, DependencyProperty propertyToSet, Thickness value)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static void SetPropertyFromCornerRadius(object dependencyObject, global::Microsoft.UI.Xaml.DependencyProperty propertyToSet, global::Microsoft.UI.Xaml.CornerRadius value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Markup.XamlBindingHelper", "SetPropertyFromCornerRadius(object dependencyObject, DependencyProperty propertyToSet, CornerRadius value)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static void SetPropertyFromColor(object dependencyObject, global::Microsoft.UI.Xaml.DependencyProperty propertyToSet, global::Windows.UI.Color value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Markup.XamlBindingHelper", "SetPropertyFromColor(object dependencyObject, DependencyProperty propertyToSet, Color value)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlBindingHelper.SetPropertyFromThickness(object, Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.Thickness)
+		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlBindingHelper.SetPropertyFromCornerRadius(object, Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.CornerRadius)
+		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlBindingHelper.SetPropertyFromColor(object, Microsoft.UI.Xaml.DependencyProperty, Windows.UI.Color)
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBindingHelper.DataTemplateComponentProperty.get
 	}
 }
