@@ -103,9 +103,10 @@ namespace Microsoft.UI.Composition
 			internal set => SetProperty(ref _strokeDashArray, value);
 		}
 
-		// Lets callers skip work when no dash array was ever materialized, without forcing the
-		// lazy allocation the public getter performs.
-		internal CompositionStrokeDashArray? StrokeDashArrayOrDefault => _strokeDashArray;
+		// Drops the dash array without going through the getter, which would allocate one just to
+		// clear it. Unlike CompositionStrokeDashArray.Clear() this also notifies, so a shape losing
+		// its dashes repaints.
+		internal void ClearStrokeDashArray() => SetProperty(ref _strokeDashArray, null);
 
 		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
 		{
