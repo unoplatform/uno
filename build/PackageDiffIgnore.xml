@@ -2426,6 +2426,28 @@
 		  <!-- Duration.TimeSpan public field removed; WinUI exposes TimeSpan as a get-only property (paired accessor is emitted by the property, not a field). -->
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Made Duration.TimeSpan read-only to match WinUI (breaking changes for 7.0, uno#8339)" />
 
+		  <!-- WinRT struct members are properties in WinUI, not fields: Thickness/CornerRadius expose get+set over -->
+		  <!-- private backing fields, GridLength exposes get-only. Uno projected them as public fields (#2082).    -->
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Thickness::Left" reason="Thickness.Left is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Thickness::Top" reason="Thickness.Top is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Thickness::Right" reason="Thickness.Right is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Thickness::Bottom" reason="Thickness.Bottom is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.CornerRadius::TopLeft" reason="CornerRadius.TopLeft is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.CornerRadius::TopRight" reason="CornerRadius.TopRight is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.CornerRadius::BottomRight" reason="CornerRadius.BottomRight is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.CornerRadius::BottomLeft" reason="CornerRadius.BottomLeft is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.GridLength::Value" reason="GridLength.Value is a get-only property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.GridUnitType Microsoft.UI.Xaml.GridLength::GridUnitType" reason="GridLength.GridUnitType is a get-only property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <!-- Uno.UI.Composition compiles the same Thickness/CornerRadius sources under its own namespace. -->
+		  <Member fullName="System.Double Uno.UI.Composition.Thickness::Left" reason="Thickness.Left is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Uno.UI.Composition.Thickness::Top" reason="Thickness.Top is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Uno.UI.Composition.Thickness::Right" reason="Thickness.Right is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Uno.UI.Composition.Thickness::Bottom" reason="Thickness.Bottom is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Uno.UI.Composition.CornerRadius::TopLeft" reason="CornerRadius.TopLeft is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Uno.UI.Composition.CornerRadius::TopRight" reason="CornerRadius.TopRight is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Uno.UI.Composition.CornerRadius::BottomRight" reason="CornerRadius.BottomRight is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Uno.UI.Composition.CornerRadius::BottomLeft" reason="CornerRadius.BottomLeft is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+
 		  <!-- Reference flavor folded into Skia: lib/ now carries the Skia build, so members that only the -->
 		  <!-- Reference compilation produced are gone. _fullyInitialized sat under !UNO_HAS_ENHANCED_LIFECYCLE, -->
 		  <!-- which Skia defines, so it never existed in the build lib/ now ships.                            -->
@@ -3376,6 +3398,9 @@
 
 		  <!-- UriExtensions.IsLocalResource renamed: the name said "local resource" but the check is ms-appx, three lines from the ms-resource helpers it was confused with. -->
 		  <Member fullName="System.Boolean Uno.Extensions.UriExtensions.IsLocalResource(System.Uri uri)" reason="Renamed to IsMsAppx (BC51, breaking changes for 7.0)" />
+
+		  <!-- Sync generator alignment: GridLength's second constructor parameter is named `type` in WinUI. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.GridLength..ctor(System.Double value, Microsoft.UI.Xaml.GridUnitType gridUnitType)" reason="GridLength constructor parameter renamed to `type` to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 
 		  <!-- Sync generator alignment: DataTemplate.LoadContent returns DependencyObject in WinUI, not UIElement. -->
 		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.DataTemplate.LoadContent()" reason="LoadContent returns DependencyObject to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
