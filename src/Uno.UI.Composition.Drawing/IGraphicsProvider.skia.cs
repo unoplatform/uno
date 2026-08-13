@@ -15,9 +15,6 @@ public interface IGraphicsProvider
 	/// <summary>The context kinds this backend can render on, most-preferred first. Negotiation tries them in order.</summary>
 	IReadOnlyList<GraphicsContextKind> PreferredContexts { get; }
 
-	/// <summary>What this backend needs from whatever context it is given (see <see cref="GraphicsRequirements"/>).</summary>
-	GraphicsRequirements Requirements { get; }
-
 	/// <summary>Mints the matched (factory, renderer) pair bound to a successfully-created <paramref name="context"/>. Both are device-bound so they're created together; the factory is installed as <see cref="DrawingFactory.Current"/> when this backend wins negotiation.</summary>
 	Graphics CreateGraphics(IGraphicsContext context);
 }

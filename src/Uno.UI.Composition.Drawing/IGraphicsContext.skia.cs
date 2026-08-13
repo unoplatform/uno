@@ -6,8 +6,8 @@ namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
 /// A live GPU-API connection/device (WebGPU Instance/Adapter/Device/Queue, a GL context, a
-/// <c>VkDevice</c>+queue, an <c>MTLDevice</c>). Created by the framework's per-kind provider from an
-/// <see cref="INativeWindow"/>; owns the swapchain/surface, present, and the dirty-rect blit internally.
+/// <c>VkDevice</c>+queue, an <c>MTLDevice</c>). Created by the host's <see cref="GraphicsContextFactory"/> for a
+/// negotiated kind; owns the window binding, swapchain/surface, present, and the dirty-rect blit internally.
 /// A backend consumes it (downcasting to its kind-specific type) to build pipelines and render targets.
 /// </summary>
 /// <summary>

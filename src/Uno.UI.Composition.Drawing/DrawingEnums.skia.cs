@@ -2,7 +2,7 @@
 
 namespace Uno.UI.Composition.Drawing;
 
-/// <summary>Stroke end-cap style. <see cref="Triangle"/> has no direct backend primitive and is simulated with custom cap geometry.</summary>
+/// <summary>Stroke end-cap style.</summary>
 public enum StrokeCap
 {
 	Butt,

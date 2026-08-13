@@ -7,9 +7,10 @@ namespace Uno.UI.Composition.Drawing;
 /// <summary>
 /// Holds the process-wide <see cref="IDrawingFactory"/>. The core has no built-in backend: an
 /// implementation registers itself via <see cref="Register"/> (the Skia backend does so on load), so the
-/// core never references a concrete backend.
+/// core never references a concrete backend. Framework-internal (IVT to the UI/composition/backend assemblies):
+/// a host reads the negotiated factory from its <see cref="GraphicsInitialization"/>, never this global.
 /// </summary>
-public static class DrawingFactory
+internal static class DrawingFactory
 {
 	private static IDrawingFactory? _current;
 
