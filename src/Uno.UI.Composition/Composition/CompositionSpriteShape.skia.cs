@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using Windows.Foundation;
@@ -275,7 +275,7 @@ namespace Microsoft.UI.Composition
 					geometryWithTransformations.GetFillPath(strokePaint, strokeFillBuilder);
 
 					// Add custom cap geometry for Triangle caps or different start/end caps
-					if (needsCustomCaps && StrokeDashArray is not { Count: > 0 })
+					if (needsCustomCaps && _strokeDashArray is not { Count: > 0 })
 					{
 						AddCustomCaps(strokeFillBuilder, geometryWithTransformations.Geometry, StrokeThickness, StrokeStartCap, StrokeEndCap);
 					}
@@ -451,7 +451,7 @@ namespace Microsoft.UI.Composition
 
 					geometryWithTransformations.GetFillPath(strokePaint, hitTestStrokeFillBuilder);
 
-					if (needsCustomCaps && StrokeDashArray is not { Count: > 0 })
+					if (needsCustomCaps && _strokeDashArray is not { Count: > 0 })
 					{
 						AddCustomCaps(hitTestStrokeFillBuilder, geometryWithTransformations.Geometry, StrokeThickness, StrokeStartCap, StrokeEndCap);
 					}
