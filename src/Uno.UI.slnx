@@ -247,6 +247,12 @@
     <Project Path="Uno.UI.Composition.Drawing/Uno.UI.Composition.Drawing.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
+    <Project Path="Uno.UI.Composition.WebGpu.Init/Uno.UI.Composition.WebGpu.Init.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
+    <Project Path="Uno.UI.Composition.WebGpu/Uno.UI.Composition.WebGpu.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
   </Folder>
   <Folder Name="/Uno.UI/DevServer/">
     <Project Path="Uno.UI.RemoteControl/Uno.UI.RemoteControl.csproj">
