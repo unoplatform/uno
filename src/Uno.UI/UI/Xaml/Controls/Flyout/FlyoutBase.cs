@@ -80,11 +80,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Propagates Enter to the flyout's content for keyboard accelerator registration.
 		/// Subclasses (Flyout, MenuFlyout) override to propagate to their specific content.
 		/// </summary>
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal new virtual void Enter(DependencyObject pNamescopeOwner, EnterParams @params)
-#else
-		internal virtual void Enter(DependencyObject pNamescopeOwner, EnterParams @params)
-#endif
 		{
 		}
 
@@ -92,11 +88,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Propagates Leave to the flyout's content for keyboard accelerator unregistration.
 		/// Subclasses (Flyout, MenuFlyout) override to propagate to their specific content.
 		/// </summary>
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal new virtual void Leave(DependencyObject pNamescopeOwner, LeaveParams @params)
-#else
-		internal virtual void Leave(DependencyObject pNamescopeOwner, LeaveParams @params)
-#endif
 		{
 		}
 

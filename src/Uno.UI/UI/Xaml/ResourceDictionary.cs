@@ -831,7 +831,9 @@ namespace Microsoft.UI.Xaml
 					if (themeSwitchOccurred)
 					{
 						// MUX: m_pActiveThemeDictionary->NotifyThemeChanged(m_activeTheme, highContrastChanged)
-						// (Resources.cpp:809-814); the theme walk lives on the store.
+						// (Resources.cpp:809-814). The DependencyObject cast is deliberate — it binds to the
+						// base notification, not the shadowing ResourceDictionary.NotifyThemeChanged below,
+						// preserving the target this call had when the walk lived on DependencyObjectStore.
 						((DependencyObject)_activeThemeDictionary).NotifyThemeChanged(_activeThemeValue, highContrastChanged);
 					}
 				}

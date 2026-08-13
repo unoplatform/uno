@@ -2,11 +2,8 @@
 {
 	public partial class StateTrigger : StateTriggerBase
 	{
-#if UNO_HAS_ENHANCED_LIFECYCLE
+		// Hides the internal DependencyObject.IsActive (live-tree state).
 		public new bool IsActive
-#else
-		public bool IsActive
-#endif
 		{
 			get => (bool)GetValue(IsActiveProperty);
 			set => SetValue(IsActiveProperty, value);

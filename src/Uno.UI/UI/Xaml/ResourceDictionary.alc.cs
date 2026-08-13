@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml
 		{
 			foreach (var value in _values.Values)
 			{
-				// A nested ResourceDictionary is itself an DependencyObject, so it must be
+				// A nested ResourceDictionary is itself a DependencyObject, so it must be
 				// matched FIRST and recursed into — otherwise it falls into the provider branch below and
 				// the associations held by its own values are never swept.
 				if (value is ResourceDictionary nested)
