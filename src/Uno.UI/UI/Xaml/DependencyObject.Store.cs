@@ -1495,7 +1495,6 @@ namespace Microsoft.UI.Xaml
 
 			// Subscribe to the parent's notifications
 			var inheritedPropertiesCallback = parentProvider
-				
 				.RegisterInheritedPropertyChangedCallback(this);
 
 			// Force propagation for inherited properties defined on the current instance.
