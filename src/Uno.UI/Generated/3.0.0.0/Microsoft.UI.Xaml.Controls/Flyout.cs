@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class Flyout
+	public partial class Flyout : global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase
 	{
 		// Skipping already declared property ContentProperty
 		// Skipping already declared property FlyoutPresenterStyleProperty

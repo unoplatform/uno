@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TextBox
+	public partial class TextBox : global::Microsoft.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property AcceptsReturnProperty
 		// Skipping already declared property CanPasteClipboardContentProperty

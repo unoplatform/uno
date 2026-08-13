@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class UIElement : global::Microsoft.UI.Composition.IAnimationObject, global::Microsoft.UI.Composition.IVisualElement, global::Microsoft.UI.Composition.IVisualElement2
+	public partial class UIElement : global::Microsoft.UI.Xaml.DependencyObject, global::Microsoft.UI.Composition.IAnimationObject, global::Microsoft.UI.Composition.IVisualElement, global::Microsoft.UI.Composition.IVisualElement2
 	{
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
