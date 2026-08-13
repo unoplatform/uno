@@ -90,9 +90,15 @@ bundles) were reference-removed dead ends.
   storage buffer (grown 1.5×) + a bind group cached by buffer identity, rebuilt only on growth. Only the main pass
   uses it; nested/pooled passes still rent transient buffers so their distinct tables never alias it within a frame.
 - **Gap 8 (opaque short-circuit)** — DONE. `DrawEffectBackdrop` now short-circuits on `Color.A == 255 || (sigma<=0)`.
-- **Gap 4 (solid-scroll)** — pending (separate large change: local-space + per-vertex transform-table slot for
-  solids/rrects, mirroring the neutral's own path-fill technique — preserves cross-visual coalescing because each
-  vertex carries its own slot).
+- **Gap 4 (solid-scroll)** — DONE. The frame-solid path now stores LOCAL-space solid/rrect verts in the shared
+  slabs (resident across frames) and, per frame, only rewrites the tiny per-op clip bind groups (`xf`/`finv` from
+  the replay transform, session-clip AABB folded in as a device scissor) + the path-fill transform-table slot —
+  mirroring the proven arena mechanism, so a scroll rewrites transforms, not verts. The rrect shader gained
+  `xformPos(clip, cpos)` (identity-safe for immediate/shared rrects). Eligibility is gated to a plain-AABB/None
+  session clip + no path child-clip (rounded/path session clips keep the device-space rebuild path). Cross-visual
+  coalescing is preserved: same-clip same-transform siblings (e.g. scrolling list items) still collapse to one draw.
+  Runtime-validated on lavapipe (build clean, no wgpu errors) across the static rrect scene, a clipped ListView,
+  and a per-frame-translating animation (the restamp branch).
 - **Gap 3 (glyph atlas)** — deferred to discussion (needs a backend-neutral coverage-atlas rasterizer).
 
 Runtime validation: desktop X11 head on lavapipe (`Xvfb :99`), MSAA on, both the acrylic/segmented path
