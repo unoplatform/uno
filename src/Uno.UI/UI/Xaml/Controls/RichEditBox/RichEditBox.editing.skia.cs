@@ -599,7 +599,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 
 					historyKind = global::Microsoft.UI.Text.TextHistoryKind.Typing;
-					armLineFeedCoalescing = key == '\r';
+					armLineFeedCoalescing = key == '\r' && !OperatingSystem.IsIOS() && !OperatingSystem.IsTvOS();
 					if (char.IsHighSurrogate(key))
 					{
 						_pendingHighSurrogate = key;
