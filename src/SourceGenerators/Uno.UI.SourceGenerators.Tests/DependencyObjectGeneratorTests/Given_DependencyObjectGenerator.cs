@@ -303,7 +303,7 @@ public class Given_DependencyObjectGenerator
 	 	}
 	 }
 	 
-	 """, Encoding.UTF8)) }
+	 """, Encoding.UTF8, SourceHashAlgorithm.Sha256)) }
 				}
 			},
 			ReferenceAssemblies = _refAsm,
