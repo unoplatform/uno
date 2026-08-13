@@ -72,14 +72,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared property FocusStateProperty
 		// Skipping already declared property GettingFocusEvent
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty HighContrastAdjustmentProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(HighContrastAdjustment), typeof(global::Microsoft.UI.Xaml.ElementHighContrastAdjustment),
-			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.ElementHighContrastAdjustment)));
-#endif
+		// Skipping already declared property HighContrastAdjustmentProperty
 		// Skipping already declared property HoldingEvent
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -303,20 +296,7 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared property FocusState
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Xaml.ElementHighContrastAdjustment HighContrastAdjustment
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.ElementHighContrastAdjustment)this.GetValue(HighContrastAdjustmentProperty);
-			}
-			set
-			{
-				this.SetValue(HighContrastAdjustmentProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property HighContrastAdjustment
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsAccessKeyScope

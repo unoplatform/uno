@@ -78,6 +78,21 @@ namespace Windows.UI.ViewManagement
 
 		public Color GetColorValue(UIColorType desiredColor)
 		{
+			if (SystemThemeHelper.HighContrastSystemColors is { } colors)
+			{
+				return desiredColor switch
+				{
+					UIColorType.Background => colors.WindowColor,
+					UIColorType.Foreground => colors.WindowTextColor,
+					_ => GetDefaultColorValue(desiredColor),
+				};
+			}
+
+			return GetDefaultColorValue(desiredColor);
+		}
+
+		private static Color GetDefaultColorValue(UIColorType desiredColor)
+		{
 			var systemTheme = SystemThemeHelper.SystemTheme;
 			return desiredColor switch
 			{

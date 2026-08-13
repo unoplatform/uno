@@ -110,6 +110,10 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnApplyTemplate();
 
 			_core.ApplyTemplate();
+
+#if __SKIA__
+			UpdateHighContrastBackgroundOverride();
+#endif
 		}
 
 		internal void OnInputReturnTypeChanged(InputReturnType inputReturnType, bool initial)
