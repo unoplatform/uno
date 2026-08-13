@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Text
@@ -166,9 +167,20 @@ namespace Microsoft.UI.Text
 
 		internal string ChangeCaseText(string text, global::Microsoft.UI.Text.LetterCase value)
 			=> ChangeCaseMapperForTesting?.Invoke(text, value)
-				?? (value == global::Microsoft.UI.Text.LetterCase.Upper
-					? text.ToUpperInvariant()
-					: text.ToLowerInvariant());
+				?? ChangeCaseInvariant(text, value);
+
+		private static string ChangeCaseInvariant(string text, global::Microsoft.UI.Text.LetterCase value)
+		{
+			var result = new StringBuilder(text.Length);
+			foreach (var rune in text.EnumerateRunes())
+			{
+				var mapped = value == global::Microsoft.UI.Text.LetterCase.Upper
+					? Rune.ToUpperInvariant(rune)
+					: Rune.ToLowerInvariant(rune);
+				result.Append(mapped.ToString());
+			}
+			return result.ToString();
+		}
 
 		internal int PendingRangeEditCount => _rangeEditLog.Count;
 
