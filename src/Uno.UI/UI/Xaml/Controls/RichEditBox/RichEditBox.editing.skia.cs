@@ -216,6 +216,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var pendingLineFeedSelectionVersion = _pendingInteractiveLineFeedSelectionVersion;
 			var pendingLineFeedInputStateVersion = _pendingInteractiveLineFeedInputStateVersion;
 			var previousInputStateVersion = _interactiveInputStateVersion;
+			var textChangingInvalidatedLineFeed = _textChangingInvalidatedLineFeed;
 			InvalidatePendingInteractiveLineFeed();
 			_textChangingInvalidatedLineFeed = false;
 
@@ -308,6 +309,7 @@ namespace Microsoft.UI.Xaml.Controls
 				pendingLineFeedTextVersion,
 				pendingLineFeedSelectionVersion,
 				pendingLineFeedInputStateVersion,
+				textChangingInvalidatedLineFeed,
 				previousInputStateVersion))
 			{
 				return;
@@ -497,6 +499,7 @@ namespace Microsoft.UI.Xaml.Controls
 			long pendingLineFeedTextVersion,
 			long pendingLineFeedSelectionVersion,
 			long pendingLineFeedInputStateVersion,
+			bool textChangingInvalidatedLineFeed,
 			long previousInputStateVersion)
 		{
 			var textLength = GetPlainTextLength();
@@ -575,6 +578,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 
 					if (key == '\n'
+						&& !textChangingInvalidatedLineFeed
 						&& start == end
 						&& pendingLineFeedPosition == start
 						&& pendingLineFeedTextVersion == Document.TextVersion
@@ -651,6 +655,7 @@ namespace Microsoft.UI.Xaml.Controls
 					== inputStateVersionBeforeSelection + (selectionWillChange ? 1 : 0);
 				if (armLineFeedCoalescing
 					&& insertedLength == 1
+					&& !textChangingInvalidatedLineFeed
 					&& !_textChangingInvalidatedLineFeed
 					&& inputStateVersionBeforeMutation == inputStateVersionBeforeSelection
 					&& selectionUpdateWasExpected
