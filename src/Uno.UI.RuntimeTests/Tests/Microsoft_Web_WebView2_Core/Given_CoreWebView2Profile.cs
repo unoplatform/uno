@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using Private.Infrastructure;
-using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_Web_WebView2_Core;
 
@@ -15,6 +14,10 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_Web_WebView2_Core;
 public class Given_CoreWebView2Profile
 {
 	private static readonly TimeSpan ClearBrowsingDataTimeout = TimeSpan.FromSeconds(30);
+
+	// The Win32 WebView2 constructor blocks the UI thread in a nested pump while the environment and
+	// controller are created; that cold start outlasts the 1s default on CI.
+	private const int LoadTimeoutMS = 10_000;
 
 	/// <summary>
 	/// Undoes the footprint <see cref="CreateCoreWebView2Async"/> leaves in the visual tree.
@@ -156,7 +159,10 @@ public class Given_CoreWebView2Profile
 		var webView = new WebView2 { Width = 200, Height = 200 };
 		border.Child = webView;
 
-		await UITestHelper.Load(border);
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border, timeoutMS: LoadTimeoutMS);
+		await TestServices.WindowHelper.WaitForIdle();
+
 		await webView.EnsureCoreWebView2Async();
 
 		Assert.IsNotNull(webView.CoreWebView2, "The CoreWebView2 was not initialized.");
