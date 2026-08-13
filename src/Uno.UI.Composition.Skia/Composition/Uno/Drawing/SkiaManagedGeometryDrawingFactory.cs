@@ -24,13 +24,6 @@ public sealed class SkiaManagedGeometryDrawingFactory : IDrawingFactory
 
 	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => new ManagedPathBuilder();
 
-	public IGeometry CreateRectangleGeometry(Rect rect)
-	{
-		var builder = new ManagedPathBuilder();
-		builder.AddRectangle(rect);
-		return builder.Build();
-	}
-
 	public IImageTexture RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render)
 		=> _skia.RenderOffscreen(pixelWidth, pixelHeight, render);
 

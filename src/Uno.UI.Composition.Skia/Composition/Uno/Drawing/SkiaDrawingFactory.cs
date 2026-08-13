@@ -20,13 +20,6 @@ internal sealed class SkiaDrawingFactory : IDrawingFactory
 
 	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => new SkiaPathBuilder();
 
-	public IGeometry CreateRectangleGeometry(Rect rect)
-	{
-		var builder = new SKPathBuilder();
-		builder.AddRect(rect.ToSKRect());
-		return new SkiaGeometrySource2D(builder.Detach());
-	}
-
 	public IImageTexture RenderOffscreen(int pixelWidth, int pixelHeight, System.Action<IDrawingSession> render)
 	{
 		var info = new SKImageInfo(pixelWidth, pixelHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul);

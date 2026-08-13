@@ -22,13 +22,6 @@ public sealed class ManagedDrawingFactory : IDrawingFactory
 
 	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => new ManagedPathBuilder();
 
-	public IGeometry CreateRectangleGeometry(Rect rect)
-	{
-		var builder = new ManagedPathBuilder();
-		builder.AddRectangle(rect);
-		return builder.Build();
-	}
-
 	public IImageTexture RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render)
 		=> throw new NotImplementedException("Managed offscreen rasterization is not yet implemented; requires a managed rasterizer.");
 
