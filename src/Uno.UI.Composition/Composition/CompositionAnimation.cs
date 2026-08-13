@@ -61,10 +61,9 @@ public partial class CompositionAnimation
 		set => _target = value ?? throw new ArgumentException();
 	}
 
-	// Targets this animation is currently started on. The same animation instance can be
-	// shared across multiple CompositionObjects (e.g. LottieGen's shared progress
-	// ExpressionAnimation started on many controllers), so we track every active target
-	// rather than only the last one — otherwise teardown only ever unregisters the last.
+	// Targets this animation is currently started on. Animations that don't snapshot on start
+	// (keyframe animations return themselves from CloneAnimation) can be shared across several
+	// CompositionObjects, so tracking only the last target would leak the earlier registrations.
 	private readonly List<CompositionObject> _startedObjects = new();
 
 	// The object this animation was last started on; resolves 'this.Target' in expression keyframes.
@@ -78,9 +77,7 @@ public partial class CompositionAnimation
 	{
 		AnimationTargetObject = compositionObject;
 		_startedObjects.Add(compositionObject);
-#if __SKIA__
 		Compositor.RegisterAnimation(this, compositionObject);
-#endif
 		return null;
 	}
 
@@ -96,9 +93,7 @@ public partial class CompositionAnimation
 		// Stop() carries no target — CompositionObject.StopAnimation calls it without one — and
 		// Start/Stop are balanced one-to-one per target, so unwind the most recent registration.
 		var index = _startedObjects.Count - 1;
-#if __SKIA__
 		Compositor.UnregisterAnimation(this, _startedObjects[index]);
-#endif
 		_startedObjects.RemoveAt(index);
 	}
 
