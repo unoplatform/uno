@@ -30,7 +30,7 @@ public partial class Given_MediaPlayerElement
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/13384")]
-	// The AVPlayer (macOS) and HTML5 (WASM) backends never leave Opening, so Paused is never reached.
+	// WASM (HTML5) never leaves Opening so Paused is unreachable; macOS (AVPlayer) times out at load.
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_MediaPlayerElement_NotAutoPlay_Source()
 	{
@@ -54,7 +54,7 @@ public partial class Given_MediaPlayerElement
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/13384")]
-	// Same as above: on Skia this waits for Paused, which the macOS and WASM backends never reach.
+	// The macOS (AVPlayer) and WASM (HTML5) backends never leave Opening, so the Paused wait below times out.
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_MediaPlayerElement_AutoPlay_Source()
 	{
