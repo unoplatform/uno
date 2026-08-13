@@ -22,5 +22,9 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
+		<!-- The renderer builds on the init half (device/context/bindings). The init half carries no native assets;
+		     this renderer project provisions them (wgpu-native.targets above), so they ship only with an app that
+		     references this renderer (i.e. opts into WebGPU). -->
+		<ProjectReference Include="..\Uno.UI.Composition.WebGpu.Init\Uno.UI.Composition.WebGpu.Init.csproj" />
 	</ItemGroup>
 </Project>

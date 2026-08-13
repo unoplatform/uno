@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<Import Project="../targetframework-override-noplatform.props" />
+
+	<PropertyGroup>
+		<AssemblyName>Uno.UI.Composition.WebGpu.Init</AssemblyName>
+		<RootNamespace>Uno.UI.Composition.WebGpu</RootNamespace>
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+		<Description>WebGPU "init half" for Uno Platform: the renderer-agnostic on-window context/surface/device creation (WebGpuContext) that a host references to serve the WebGpu context kind. Carries NO native assets — those ship with the WebGPU renderer package, referenced only by an app that opts into WebGPU.</Description>
+	</PropertyGroup>
+
+	<!-- NOTE: no wgpu-native.targets here. The init half only declares the P/Invoke bindings; the native binary is
+	     provisioned by the WebGPU renderer project (Uno.UI.Composition.WebGpu), which an app references only when it
+	     opts into WebGPU. A host referencing this init assembly therefore ships no wgpu native asset. -->
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
+	</ItemGroup>
+</Project>
