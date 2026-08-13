@@ -84,7 +84,7 @@ public class Given_ImplicitXamlNamespaces
 			GlobalConfigOverride = new()
 			{
 				{ "is_global", "true" },
-				{ "build_property.MSBuildProjectFullPath", "C:\\Project\\Project.csproj" },
+				{ "build_property.MSBuildProjectFullPath", "//Project/Project.csproj" },
 				{ "build_property.RootNamespace", "TestRepro" },
 				{ "build_property.UnoForceHotReloadCodeGen", "false" },
 				{ "build_property.UnoEnableXamlFuzzyMatching", "false" },
@@ -97,7 +97,8 @@ public class Given_ImplicitXamlNamespaces
 			DiagnosticResult.CompilerError("UXAML0005")
 				.WithArguments("The type 'SharedControl' was found in multiple global XAML namespaces: 'TestRepro.NsA', 'TestRepro.NsB'. Use an explicit xmlns prefix to disambiguate."),
 			DiagnosticResult.CompilerError("CS0246")
-				.WithSpan("Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\\MainPage_d6cd66944958ced0c513e0a04797b51d.cs", 54, 9, 54, 22)
+				// Path.Combine, not hardcoded '\': the generated document path uses the host separator.
+				.WithSpan(Path.Combine("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.cs"), 54, 9, 54, 22)
 				.WithArguments("SharedControl"),
 		]);
 
