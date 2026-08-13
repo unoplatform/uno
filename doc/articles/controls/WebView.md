@@ -252,8 +252,7 @@ var profile = webView.CoreWebView2.Profile;
 
 > [!NOTE]
 > Unlike the static members above, these three are provided by the default WebView2 backend only. An app that opts into the other backend with `UNO_WEBVIEW2_BACKEND=microsoft.web.webview2` gets `NotImplementedException` from them.
-
-> [!NOTE]
+>
 > `ProfileName` is currently always empty on Windows. Uno creates the WebView without controller options, so no profile name is requested — the profile still resolves to the default one, and `ProfilePath` (a directory under `UserDataFolder`) is the reliable way to identify it.
 
 ### Clearing browsing data
