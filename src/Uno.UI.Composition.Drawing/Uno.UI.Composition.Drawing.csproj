@@ -2,9 +2,11 @@
 	<PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 		<!-- The neutral drawing SPI is platform-agnostic (like the Skia/Wasm composition assemblies): keep it a
-		     generic netX.0 so mobile Skia hosts (net10.0-android/-ios) consume it via the generic TFM instead of
-		     forcing a platform TFM that mismatches its net10.0 consumers (e.g. Uno.UI.Composition.Skia). -->
-		<UnoDisableTargetFrameworkPlatformOverride>true</UnoDisableTargetFrameworkPlatformOverride>
+		     generic netX.0 so mobile Skia hosts (net10.0-android/-ios) consume it via the generic TFM instead of a
+		     platform TFM that mismatches its net10.0 consumers (e.g. Uno.UI.Composition.Skia). Set the flag the
+		     targetframework-override.props reads, so an explicit net10.0-android/-ios override keeps it generic —
+		     matching its sibling composition assemblies (Uno.UI.Composition, Uno.UI). Must precede the import below. -->
+		<UnoShouldUseNoPlatformOverride>true</UnoShouldUseNoPlatformOverride>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
