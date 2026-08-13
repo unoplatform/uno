@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FlipViewItem
+	public partial class FlipViewItem : global::Microsoft.UI.Xaml.Controls.Primitives.SelectorItem
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.FlipViewItem.FlipViewItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.FlipViewItem.FlipViewItem()

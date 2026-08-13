@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ListViewItem
+	public partial class ListViewItem : global::Microsoft.UI.Xaml.Controls.Primitives.SelectorItem
 	{
 		// Skipping already declared property TemplateSettings
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewItem.ListViewItem()

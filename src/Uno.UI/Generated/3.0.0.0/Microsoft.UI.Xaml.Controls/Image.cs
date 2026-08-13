@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class Image
+	public partial class Image : global::Microsoft.UI.Xaml.FrameworkElement
 	{
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]

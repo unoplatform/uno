@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ProgressBar
+	public partial class ProgressBar : global::Microsoft.UI.Xaml.Controls.Primitives.RangeBase
 	{
 		// Skipping already declared property IsIndeterminateProperty
 		// Skipping already declared property ShowErrorProperty
