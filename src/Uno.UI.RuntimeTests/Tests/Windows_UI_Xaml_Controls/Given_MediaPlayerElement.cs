@@ -30,6 +30,8 @@ public partial class Given_MediaPlayerElement
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/13384")]
+	// The AVPlayer (macOS) and HTML5 (WASM) backends never leave Opening, so Paused is never reached.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_MediaPlayerElement_NotAutoPlay_Source()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -52,6 +54,8 @@ public partial class Given_MediaPlayerElement
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/13384")]
+	// Same as above: on Skia this waits for Paused, which the macOS and WASM backends never reach.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_MediaPlayerElement_AutoPlay_Source()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -186,6 +190,8 @@ public partial class Given_MediaPlayerElement
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/13384")]
+	// Stop() never leaves Playing on the LibVLC backend: consistently on Win32, intermittently on X11.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
 	public async Task When_MediaPlayerElement_SetSource_Check_PlayStop()
 	{
 		CheckMediaPlayerExtensionAvailability();
