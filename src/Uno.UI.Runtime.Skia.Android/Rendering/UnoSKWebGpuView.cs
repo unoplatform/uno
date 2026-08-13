@@ -149,15 +149,21 @@ internal sealed partial class UnoSKWebGpuView : SurfaceView, ISurfaceHolderCallb
 		_width = rect.Width();
 		_height = rect.Height();
 
-		// The host references no WebGPU type — it hands the neutral Android window to the pluggable pipeline;
-		// the app-registered WebGPU provider builds the surface + device and mints the (factory, renderer) pair.
-		var nativeWindow = new AndroidGraphicsNativeWindow(_nativeWindow, _width, _height);
-		var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize(
-			nativeWindow, new[] { global::Uno.UI.Composition.Drawing.GraphicsContextKind.WebGpu });
+		// Neutral pipeline: this SurfaceView owns the ANativeWindow, so it serves the WebGpu kind by creating the
+		// WebGpu swapchain context via the renderer-agnostic init helper (referenced directly — Android resolves the
+		// wgpu P/Invoke at runtime, so a Skia-only app that never negotiates WebGpu never loads the native). The host
+		// names no render backend.
+		var nativeWindow = _nativeWindow;
+		global::Uno.UI.Composition.Drawing.GraphicsRegistry.ContextFactory =
+			kind => System.Threading.Tasks.Task.FromResult<global::Uno.UI.Composition.Drawing.IGraphicsContext?>(
+				kind == global::Uno.UI.Composition.Drawing.GraphicsContextKind.WebGpu
+					? global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateAndroid(nativeWindow, 1f)
+					: null);
+		var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize();
 		_context = init.Context;
 		Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = init.Renderer;
 
-		this.Log().Info("Neutral graphics pipeline active: WebGpu context via WebGpuRenderer (Android).");
+		this.Log().Info($"Neutral graphics pipeline active: {init.Context.Kind} context (Android).");
 	}
 
 	private void RenderFrame()

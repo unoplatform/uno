@@ -296,9 +296,12 @@ namespace Microsoft.UI.Xaml
 
 		private IUnoSkiaRenderView CreateRenderView()
 		{
-			// EXPERIMENTAL: WebGPU on an ANativeWindow swapchain via the neutral backend (opt in with UNO_WEBGPU).
-			// Fully-qualify System.Environment — 'Environment' is ambiguous with Android.OS.Environment here.
-			if (global::System.Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "swapchain")
+			// Pick the Android view class matching the registered backend's context kind — the host reads the neutral
+			// kind (never a backend type or env var). A plain SurfaceView serves the WebGpu swapchain (Uno owns the
+			// ANativeWindow + wgpu bring-up); a GLSurfaceView serves the GLES path (ambient EGL context, wrapped by
+			// AndroidGLGraphicsContext). Each view then negotiates its own context through the registry.
+			if (global::Uno.UI.Composition.Drawing.GraphicsRegistry.HasBackendPreferring(
+				global::Uno.UI.Composition.Drawing.GraphicsContextKind.WebGpu))
 			{
 				try
 				{
@@ -310,9 +313,6 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			// Skia GPU rendering uses OpenGL ES (neutral IGLRenderTarget); the modern GPU path is WebGPU (above).
-			// The Vulkan-on-Skia view was removed — it was host-owned SKSurface; GLES covers Skia GPU rendering
-			// and keeps the host free of any Skia type.
 			return new UnoSKCanvasView(this);
 		}
 

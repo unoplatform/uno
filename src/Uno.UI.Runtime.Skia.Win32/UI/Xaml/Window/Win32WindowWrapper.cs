@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -53,7 +54,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private static readonly Dictionary<HWND, Win32WindowWrapper> _hwndToWrapper = new();
 
 	private readonly HWND _hwnd;
-	private readonly IRenderer _renderer;
+
+	// The drawing factory of the negotiated backend. The host reads it (not the global DrawingFactory.Current)
+	// so native-element hosting composes clip geometry through the same factory the renderer uses.
+	internal IDrawingFactory GraphicsFactory { get; private set; } = null!;
 
 	private Win32Accessibility? _accessibility;
 	private bool _rendererDisposed;
@@ -104,31 +108,18 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Win32Host.RegisterWindow(_hwnd);
 
-		var webgpuEnv = Environment.GetEnvironmentVariable("UNO_WEBGPU");
-		if (PreferWebGpu || webgpuEnv is "1" or "true" or "swapchain")
-		{
-			// EXPERIMENTAL: WebGPU on an HWND swapchain. The host references no WebGPU type — it hands the neutral
-			// window (HWND/HINSTANCE + DPI scale) to the pluggable pipeline; the app-registered WebGPU provider
-			// builds the surface + device and mints the (factory, renderer) pair. Present is in Win32WebGpuRenderer.
-			// Not runtime-validated on Linux CI — needs a real Windows GPU.
-			var scale = (float)(RasterizationScale == 0 ? 1 : RasterizationScale);
-			var nativeWindow = new Win32GraphicsNativeWindow(_hwnd, Win32Helper.GetModuleHInstance(), 0, 0, scale);
-			var init = GraphicsRegistry.Initialize(nativeWindow, new[] { GraphicsContextKind.WebGpu });
-			_webgpuContext = init.Context;
-			CompositionTarget.Renderer = init.Renderer;
-			_renderer = new Win32WebGpuRenderer(init.Context);
-		}
-		else
-		{
-			// Skia GPU path is OpenGL (neutral IGLRenderTarget) with a software fallback; the modern GPU path is
-			// WebGPU (above). The former Vulkan-on-Skia renderer was removed — it was the last host-owned SKSurface;
-			// OpenGL covers Skia GPU rendering and keeps the host free of any Skia type.
-			_renderer = (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true)
-				? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
-				: new SoftwareRenderer(_hwnd);
-		}
+		// Neutral graphics pipeline: the host names no backend. It registers a per-kind window+context factory
+		// (CreateWindowAndContext, reusing the kind-agnostic HWND) and negotiates; the app-registered backend
+		// (Skia or WebGPU) owns the kind order. Only GPU-API context creation is Win32-specific (WGL/DIB, and the
+		// WebGPU init helper); the backend impl is transparent to the host.
+		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateWindowAndContext(kind));
 
-		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = _renderer.IsSoftware();
+		var init = GraphicsRegistry.Initialize();
+		_context = init.Context;
+		GraphicsFactory = init.Graphics.DrawingFactory;
+		CompositionTarget.Renderer = init.Renderer;
+
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = init.Context.Kind == GraphicsContextKind.Software;
 
 		InitializeRenderThread();
 
@@ -535,14 +526,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Win32Host.UnregisterWindow(_hwnd);
 		// Stop and join the render thread before touching its resources: once Dispose returns, the
-		// thread — the sole user of the renderer/surface — has exited, so freeing them here cannot
+		// thread — the sole user of the graphics context — has exited, so freeing it here cannot
 		// race an in-flight present.
 		_renderThread?.Dispose();
 		_renderThread = null;
-		// Dispose the cached render target before the renderer (it may reference renderer-owned resources).
-		_renderTarget?.Dispose();
-		_renderTarget = null;
-		_renderer.Dispose();
+		_context.Dispose();
 		_rendererDisposed = true;
 		_backgroundDisposable?.Dispose();
 		DestroyIcons();

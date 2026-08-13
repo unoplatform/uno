@@ -17,13 +17,14 @@ using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Uno.UI.Dispatching;
 using System.Threading;
 using Uno.UI.Xaml.Core;
-using SkiaCanvas = Uno.UI.Runtime.Skia.AppleUIKit.UnoSKMetalView;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 internal class RootViewController : UINavigationController, IAppleUIKitXamlRootHost
 {
 	private IAppleUIKitRenderView? _renderView;
+	// The negotiated graphics context (Skia-on-Metal or WebGPU-on-CAMetalLayer). The host names no backend.
+	private IGraphicsContext? _context;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
 	private UIView? _topViewLayer;
@@ -67,23 +68,16 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		_textInputLayer.UserInteractionEnabled = false;
 		view.AddSubview(_textInputLayer);
 
-		// EXPERIMENTAL: WebGPU on a CAMetalLayer swapchain via the neutral backend (opt in with UNO_WEBGPU),
-		// mirroring the Android UnoSKWebGpuView. Otherwise the default Skia-on-Metal view.
-		UIView renderView;
-		if (global::System.Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "swapchain")
-		{
-			var webgpuView = new UnoSKWebGpuMetalView();
-			webgpuView.SetOwner(this);
-			_renderView = webgpuView;
-			renderView = webgpuView;
-		}
-		else
-		{
-			var skiaView = new SkiaCanvas();
-			skiaView.SetOwner(this);
-			_renderView = skiaView;
-			renderView = skiaView;
-		}
+		// Neutral graphics pipeline: the host names no backend. It registers a per-kind window(view)+context factory
+		// and negotiates; the app-registered backend (Skia on Metal, or WebGPU on the CAMetalLayer) owns the kind
+		// order. The factory creates the render VIEW appropriate to the kind (an MTKView for Metal, a
+		// CAMetalLayer UIView for WebGpu) — the platform "window" here — and the matching context. No env fork.
+		GraphicsRegistry.ContextFactory = kind => System.Threading.Tasks.Task.FromResult(CreateRenderViewAndContext(kind));
+		var init = GraphicsRegistry.Initialize();
+		_context = init.Context;
+		CompositionTarget.Renderer = init.Renderer;
+
+		var renderView = (UIView)_renderView!;
 		renderView.Frame = view.Bounds;
 		renderView.AutoresizingMask = UIViewAutoresizing.All;
 		view.AddSubview(renderView);
@@ -126,9 +120,28 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	public void SetXamlRoot(XamlRoot xamlRoot) => _xamlRoot = xamlRoot;
 
-	internal void OnRenderFrameRequested(IRenderTarget target)
+	// The Skia-on-Metal view (UnoSKMetalView) supplies the per-frame drawable texture; push it into the negotiated
+	// Metal context (an IAppleNativeTextureSink), then render + present through the neutral loop. The MTKView commits
+	// the drawable itself, so the context's Present is a no-op.
+	internal void OnMetalFrame(nint texture)
 	{
-		var clipGeometry = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(target, _ => target);
+		(_context as IAppleNativeTextureSink)?.SetCurrentTexture(texture);
+		OnFrameRequested();
+	}
+
+	// The neutral per-frame loop over the negotiated context (Skia-on-Metal or WebGPU-on-CAMetalLayer). The host
+	// names no backend: it acquires the context's target, records/renders, and presents.
+	internal void OnFrameRequested()
+	{
+		if (_context is null)
+		{
+			return;
+		}
+
+		var clipGeometry = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(
+			null,
+			size => _context.AcquireRenderTarget((int)size.Width, (int)size.Height));
+		_context.Present();
 
 		if (clipGeometry is not null)
 		{
@@ -136,18 +149,22 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		}
 	}
 
-	// WebGPU render path (UnoSKWebGpuMetalView): the neutral backend renders + resolves into the swapchain image via
-	// AcquireRenderTarget, then Present() blits + presents. Mirrors the Android UnoSKWebGpuView frame.
-	internal void OnWebGpuFrameRequested(global::Uno.UI.Composition.Drawing.IGraphicsContext context)
+	private IGraphicsContext? CreateRenderViewAndContext(GraphicsContextKind kind)
 	{
-		var clipGeometry = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(
-			null,
-			size => context.AcquireRenderTarget((int)size.Width, (int)size.Height));
-		context.Present();
-
-		if (clipGeometry is not null)
+		switch (kind)
 		{
-			UpdateNativeClipping(clipGeometry);
+			case GraphicsContextKind.Metal:
+				var skiaView = new UnoSKMetalView();
+				skiaView.SetOwner(this);
+				_renderView = skiaView;
+				return skiaView.CreateGraphicsContext();
+			case GraphicsContextKind.WebGpu:
+				var webgpuView = new UnoSKWebGpuMetalView();
+				webgpuView.SetOwner(this);
+				_renderView = webgpuView;
+				return webgpuView.CreateGraphicsContext();
+			default:
+				return null;
 		}
 	}
 

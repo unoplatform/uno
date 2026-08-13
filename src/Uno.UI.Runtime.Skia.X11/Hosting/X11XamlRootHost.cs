@@ -427,94 +427,20 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_x11Window = CreateSoftwareRenderWindow(display, screen, size, rootXWindow);
 		var topWindowDisplay = XLib.XOpenDisplay(IntPtr.Zero);
 
-		// Neutral pluggable-pipeline path (Uno-created context + backend-wrapped target, no hardcoded Skia in
-		// the host). Opt-in while the remaining kinds migrate; "software" is the CPU-framebuffer path.
-		if (Environment.GetEnvironmentVariable("UNO_NEUTRAL_RENDER") is "software")
-		{
-			_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-			_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, new[] { GraphicsContextKind.Software });
-		}
+		// Neutral pluggable graphics pipeline: the host names no backend. It registers a per-kind window+context
+		// factory and negotiates; the registered backend (Skia, or WebGPU when the app registers it) owns the kind
+		// order. Only window+context creation per kind is X11-specific; the backend impl is transparent. The factory
+		// creates the RIGHT top window for the kind (GLX visual for OpenGL, a plain window otherwise), stores it in
+		// _x11TopWindow, and the whole rest of host init (input masks, XamlRoot, …) proceeds against it.
+		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateWindowAndContext(kind, topWindowDisplay, display, screen, size));
 
-		var webgpuMode = Environment.GetEnvironmentVariable("UNO_WEBGPU");
-		if (_renderer is null && webgpuMode is "neutral" or "1" or "true" or "swapchain")
+		var init = GraphicsRegistry.Initialize();
+		if (this.Log().IsEnabled(LogLevel.Information))
 		{
-				// On-window WebGPU through the neutral pluggable pipeline. The backend providers (WebGPU preferred,
-				// Skia software fallback) are registered by the composition root (the app), not the host.
-			try
-			{
-				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-				_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, new[] { GraphicsContextKind.WebGpu, GraphicsContextKind.Software });
-			}
-			catch (Exception e)
-			{
-				this.Log().Warn($"WebGPU rendering requested but unavailable: {e.Message}. Falling back.");
-				if (_x11TopWindow is not null)
-				{
-					_ = XLib.XDestroyWindow(_x11TopWindow.Value.Display, _x11TopWindow.Value.Window);
-					_x11TopWindow = null;
-				}
-				_renderer = null;
-			}
+			this.Log().Info($"Neutral graphics pipeline active: {init.Context.Kind} context via {init.Renderer.GetType().Name} (X11).");
 		}
-		if (_renderer is null && (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? true))
-		{
-			try
-			{
-				if (FeatureConfiguration.Rendering.PreferGLESOverGLOnX11)
-				{
-					_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-					_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, new[] { GraphicsContextKind.OpenGLES, GraphicsContextKind.Software });
-				}
-				else
-				{
-					_x11TopWindow = CreateGLXWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-					_ = XLib.XSync(display, false);
-					_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window);
-				}
-			}
-			catch (Exception e)
-			{
-				if (_x11TopWindow is not null)
-				{
-					_ = XLib.XDestroyWindow(_x11TopWindow.Value.Display, _x11TopWindow.Value.Window);
-					_x11TopWindow = null;
-				}
-				try
-				{
-					if (FeatureConfiguration.Rendering.PreferGLESOverGLOnX11)
-					{
-						_x11TopWindow = CreateGLXWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-						_ = XLib.XSync(display, false);
-						_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window);
-					}
-					else
-					{
-						this.Log().Info($"Attempted to create a GLX OpenGL context but failed with '{e.Message}'. Falling back to an EGL OpenGL ES context.");
-						_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-						_ = XLib.XSync(display, false);
-						_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, new[] { GraphicsContextKind.OpenGLES, GraphicsContextKind.Software });
-					}
-				}
-				catch (Exception e2)
-				{
-					this.Log().Info($"Second attempt at creating an OpenGL / OpenGL ES context failed with '{e2.Message}'. Falling back to software rendering.");
-					if (_x11TopWindow is null)
-					{
-						_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-					}
-					_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window);
-				}
-			}
-		}
-		if (_renderer is null)
-		{
-			this.Log().Info($"Forcing software rendering.");
-			if (_x11TopWindow is null)
-			{
-				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-			}
-			_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window);
-		}
+		_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, init.Context);
+		Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = init.Renderer;
 
 		// Only XI2.2 has touch events, and that's pretty much the only reason we're using XI2,
 		// so to make our assumptions simpler, we assume XI >= 2.2 or no XI at all.
@@ -546,6 +472,96 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 
 		_ = X11Helper.XClearWindow(RootX11Window.Display, RootX11Window.Window); // the root window is never drawn, just always blank
+	}
+
+	/// <summary>
+	/// The X11 window+context creator for the neutral pipeline: given a negotiated context kind, creates the top
+	/// render window appropriate to it (a GLX-visual window for <see cref="GraphicsContextKind.OpenGL"/>, a plain
+	/// window otherwise), stores it in <see cref="_x11TopWindow"/>, and returns the context — or null to decline
+	/// (host config opted out, or the API is unavailable), cleaning up any window it created so it's "as if never
+	/// attempted." The host names no render backend; WebGpu is created via the WebGPU project's init helper.
+	/// </summary>
+	private IGraphicsContext? CreateWindowAndContext(GraphicsContextKind kind, IntPtr topWindowDisplay, IntPtr display, int screen, Size size)
+	{
+		// Host render config, expressed as declining kinds (the backend owns the order, never the host).
+		var useOpenGL = FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? true;
+		var preferGles = FeatureConfiguration.Rendering.PreferGLESOverGLOnX11;
+
+		switch (kind)
+		{
+			case GraphicsContextKind.OpenGL:
+				if (!useOpenGL || preferGles)
+				{
+					return null; // decline → fall through to GLES / software
+				}
+				try
+				{
+					var glxWindow = CreateGLXWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+					_ = XLib.XSync(display, false);
+					if (glxWindow.glXInfo is null)
+					{
+						_ = XLib.XDestroyWindow(glxWindow.Display, glxWindow.Window);
+						return null;
+					}
+					_x11TopWindow = glxWindow;
+					return new X11OpenGLGraphicsContext(glxWindow);
+				}
+				catch (Exception e)
+				{
+					this.Log().Info($"GLX OpenGL context creation failed ({e.Message}); falling through.");
+					DestroyTopWindow();
+					return null;
+				}
+
+			case GraphicsContextKind.OpenGLES:
+				if (!useOpenGL)
+				{
+					return null;
+				}
+				try
+				{
+					_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+					_ = XLib.XSync(display, false);
+					return new X11EGLGraphicsContext(TopX11Window);
+				}
+				catch (Exception e)
+				{
+					this.Log().Info($"EGL OpenGL ES context creation failed ({e.Message}); falling through.");
+					DestroyTopWindow();
+					return null;
+				}
+
+			case GraphicsContextKind.WebGpu:
+				try
+				{
+					_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+					_ = XLib.XSync(display, false);
+					var scale = (float)(_wrapper.RasterizationScale <= 0 ? 1 : _wrapper.RasterizationScale);
+					return global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateX11(TopX11Window.Display, TopX11Window.Window, scale);
+				}
+				catch (Exception e)
+				{
+					this.Log().Warn($"WebGPU context creation failed ({e.Message}); falling through.");
+					DestroyTopWindow();
+					return null;
+				}
+
+			case GraphicsContextKind.Software:
+				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+				return new X11SoftwareGraphicsContext(TopX11Window);
+
+			default:
+				return null;
+		}
+	}
+
+	private void DestroyTopWindow()
+	{
+		if (_x11TopWindow is not null)
+		{
+			_ = XLib.XDestroyWindow(_x11TopWindow.Value.Display, _x11TopWindow.Value.Window);
+			_x11TopWindow = null;
+		}
 	}
 
 	// https://github.com/gamedevtech/X11OpenGLWindow/blob/4a3d55bb7aafd135670947f71bd2a3ee691d3fb3/README.md

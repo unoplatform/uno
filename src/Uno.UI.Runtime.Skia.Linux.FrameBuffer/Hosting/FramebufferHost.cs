@@ -208,7 +208,20 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 				_renderer = CreateSoftwareRenderer(mouseIndicatorOptions);
 			}
 
-			Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = _renderer is SoftwareRenderer;
+			// Route the backend renderer through the neutral registry (instead of the implicit Skia fallback), so a
+			// declared backend is honored. The FrameBuffer host has no WebGPU/Skia fork: the DRM-vs-fbdev choice above
+			// is the platform GPU-init, and the FrameBufferRenderer owns the frame loop + present (a DRM page-flip vsync
+			// loop that does not fit acquire/present), so the negotiated context is thin — it only names the kind.
+			var kind = _renderer is SoftwareRenderer
+				? global::Uno.UI.Composition.Drawing.GraphicsContextKind.Software
+				: global::Uno.UI.Composition.Drawing.GraphicsContextKind.OpenGLES;
+			global::Uno.UI.Composition.Drawing.GraphicsRegistry.ContextFactory =
+				k => System.Threading.Tasks.Task.FromResult<global::Uno.UI.Composition.Drawing.IGraphicsContext?>(
+					k == kind ? new FrameBufferGraphicsContext(kind) : null);
+			var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize();
+			Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = init.Renderer;
+			Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer =
+				init.Context.Kind == global::Uno.UI.Composition.Drawing.GraphicsContextKind.Software;
 
 			WUX.Application.Start(CreateApp);
 		}

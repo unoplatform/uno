@@ -8,25 +8,26 @@ namespace Uno.UI.Runtime.Skia.Win32;
 internal partial class Win32WindowWrapper
 {
 	/// <summary>
-	/// Dedicated render thread that owns Draw + CopyPixels (SwapBuffers/BitBlt), mirroring
-	/// WPF's milcore render thread. The UI thread records SKPictures and signals presents.
+	/// Dedicated render thread that owns the neutral draw + present, mirroring WPF's milcore render thread.
+	/// The UI thread records SKPictures and signals presents; this thread acquires the context's target,
+	/// renders through the neutral loop, and presents (SwapBuffers/BitBlt/swapchain present — may block for VSync).
 	/// </summary>
 	private sealed class RenderThread : IDisposable
 	{
 		private readonly Thread _thread;
 		private readonly AutoResetEvent _frameSignal = new(false);
 		private readonly ManualResetEventSlim _presentedEvent = new(false);
-		private readonly IRenderer _renderer;
+		private readonly IGraphicsContext _context;
 		private readonly Func<(IGeometry clipPath, int width, int height)?> _drawFrame;
 		private readonly Action<IGeometry> _onClipPathUpdated;
 		private volatile bool _disposed;
 
 		internal RenderThread(
-			IRenderer renderer,
+			IGraphicsContext context,
 			Func<(IGeometry, int, int)?> drawFrame,
 			Action<IGeometry> onClipPathUpdated)
 		{
-			_renderer = renderer;
+			_context = context;
 			_drawFrame = drawFrame;
 			_onClipPathUpdated = onClipPathUpdated;
 			_thread = new Thread(RenderLoop) { Name = "Uno Render Thread", IsBackground = true };
@@ -59,18 +60,14 @@ internal partial class Win32WindowWrapper
 					break;
 				}
 
-				var startPaintSucceeded = false;
 				try
 				{
-					_renderer.StartPaint();
-					startPaintSucceeded = true;
-
 					var result = _drawFrame();
 					if (result is { } frame)
 					{
-						var (clipPath, width, height) = frame;
+						var (clipPath, _, _) = frame;
 						_onClipPathUpdated(clipPath);
-						_renderer.CopyPixels(width, height); // SwapBuffers/BitBlt — may block for VSync
+						_context.Present(); // SwapBuffers/BitBlt/swapchain present — may block for VSync
 
 						_presentedEvent.Set();
 					}
@@ -78,13 +75,6 @@ internal partial class Win32WindowWrapper
 				catch (Exception ex)
 				{
 					typeof(RenderThread).LogError()?.Error($"Render thread error: {ex}");
-				}
-				finally
-				{
-					if (startPaintSucceeded)
-					{
-						_renderer.EndPaint();
-					}
 				}
 			}
 		}
@@ -94,8 +84,8 @@ internal partial class Win32WindowWrapper
 		/// primitives. The join is intentionally unbounded: the loop only delays observing
 		/// <see cref="_disposed"/> while a present is in flight, and a present completes in bounded
 		/// time (a vsync wait, or a GPU TDR reset for a hung present), so the thread always exits.
-		/// The caller must dispose the renderer and surface only after this returns — once the
-		/// thread, the sole user of those resources, is guaranteed stopped.
+		/// The caller must dispose the context only after this returns — once the thread, the sole
+		/// user of that resource, is guaranteed stopped.
 		/// </summary>
 		public void Dispose()
 		{

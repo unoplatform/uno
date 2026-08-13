@@ -154,6 +154,11 @@
 		</ItemGroup>
 	</Target>
 
-	<!-- Opt-in: link Dawn's emdawnwebgpu so the WebGPU backend runs on WASM (build with -p:UnoWebGpuWasm=true). -->
-	<Import Project="..\..\Uno.UI.Composition.WebGpu\wgpu-wasm.targets" Condition="'$(UnoWebGpuWasm)' == 'true'" />
+	<!-- The emdawnwebgpu bridge (small: a browser-WebGPU shim, a few hundred KB in the final .wasm) is always linked
+	     so the WASM host's direct WebGpuContext reference always resolves — no reflection. Activating the WebGPU render
+	     path stays opt-in: -p:UnoWebGpuWasm=true sets UNO_WEBGPU, which Program.cs reads to register the WebGPU backend. -->
+	<Import Project="..\..\Uno.UI.Composition.WebGpu.Init\wgpu-wasm.targets" />
+	<ItemGroup Condition="'$(UnoWebGpuWasm)' == 'true'">
+		<WasmShellMonoEnvironment Include="UNO_WEBGPU" Value="1" />
+	</ItemGroup>
 </Project>

@@ -26,10 +26,10 @@ internal sealed class X11SoftwareGraphicsContext : IGraphicsContext
 	private int _width;
 	private int _height;
 
-	public X11SoftwareGraphicsContext(INativeWindow window)
+	public X11SoftwareGraphicsContext(X11Window window)
 	{
 		_display = window.Display;
-		_window = window.Handle;
+		_window = window.Window;
 
 		using var lockDisposable = X11Helper.XLock(_display);
 		_gc = X11Helper.XCreateGC(_display, _window, 0, 0);
@@ -113,23 +113,4 @@ internal sealed class X11SoftwareGraphicsContext : IGraphicsContext
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Bgra8888;
 		public void Dispose() { }
 	}
-}
-
-/// <summary>The X11 context factory: creates a context of a supported kind from the host's window, or null.</summary>
-internal static class X11GraphicsContextFactory
-{
-	public static IGraphicsContext? Create(GraphicsContextKind kind, INativeWindow window, GraphicsRequirements requirements)
-		=> kind switch
-		{
-			// OpenGL is only creatable when the host made a GLX window (visual chosen at creation); otherwise
-			// negotiation falls through to the next kind (software).
-			GraphicsContextKind.OpenGL when window is X11GraphicsNativeWindow gl && gl.X11Window.glXInfo is not null
-				=> new X11OpenGLGraphicsContext(gl.X11Window),
-			// EGL/GLES works on a plain window (no GLX visual needed); returns null → falls to software if EGL is unavailable.
-			GraphicsContextKind.OpenGLES when window is X11GraphicsNativeWindow gles => new X11EGLGraphicsContext(gles.X11Window),
-			// WebGPU is built by the WebGpuGraphicsProvider directly from the neutral INativeWindow (X11 handles),
-			// so the host references no WebGPU type here.
-			GraphicsContextKind.Software => new X11SoftwareGraphicsContext(window),
-			_ => null,
-		};
 }

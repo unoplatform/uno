@@ -119,6 +119,13 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 		void IAppleUIKitRenderView.SetOwner(RootViewController owner) => SetOwner(owner);
 
+		/// <summary>
+		/// Creates the neutral Skia-on-Metal context bound to this view's device/queue. The per-frame drawable
+		/// texture is pushed each frame (see <see cref="IMTKViewDelegate.Draw"/>); the view commits the drawable.
+		/// </summary>
+		internal Uno.UI.Composition.Drawing.IGraphicsContext CreateGraphicsContext()
+			=> new AppleMetalGraphicsContext(Device!.Handle, _queue!.Handle);
+
 		public void QueueRender()
 		{
 			_link.Paused = false;
@@ -163,10 +170,9 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 					return;
 				}
 
-				// Hand the drawable's texture (+ this view's device/queue) to the backend as a neutral
-				// IMetalRenderTarget; the Skia backend renders into it and flushes+submits its GRContext-Metal.
-				_owner?.OnRenderFrameRequested(new AppleMetalRenderTarget(
-					drawable.Texture.Handle, Device!.Handle, _queue!.Handle, width, height));
+				// Push the drawable's texture into the negotiated Metal context and render through the neutral loop;
+				// the Skia backend flushes+submits its GRContext-Metal into that texture. The host names no backend.
+				_owner?.OnMetalFrame(drawable.Texture.Handle);
 
 				// Present the drawable.
 				commandBuffer = _queue!.CommandBuffer()!;
@@ -183,15 +189,5 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 #endif
 		}
 
-		private sealed class AppleMetalRenderTarget(nint texture, nint device, nint queue, int width, int height) : Uno.UI.Composition.Drawing.IMetalRenderTarget
-		{
-			public nint Texture => texture;
-			public nint Device => device;
-			public nint Queue => queue;
-			public int Width => width;
-			public int Height => height;
-			public Uno.UI.Composition.Drawing.GraphicsColorFormat ColorFormat => Uno.UI.Composition.Drawing.GraphicsColorFormat.Bgra8888;
-			public void Dispose() { }
-		}
 	}
 }

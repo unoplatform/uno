@@ -2,6 +2,7 @@ using Uno.UI.Composition.Drawing;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
@@ -33,13 +34,9 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private readonly Window _winUIWindow;
 	private readonly XamlRoot _xamlRoot;
 	private readonly DisplayInformation _displayInformation;
-	private readonly Uno.UI.Composition.Drawing.IGraphicsContext? _webgpuContext; // EXPERIMENTAL: non-null when UNO_WEBGPU owns the Metal layer
-	private nint _metalDevice;
-	private nint _metalQueue;
-	// Software framebuffer handed to the backend as a neutral ISoftwareRenderTarget (BGRA); the host owns the buffer.
-	private nint _softwareBuffer;
-	private int _softwareWidth;
-	private int _softwareHeight;
+	// The negotiated graphics context (Skia-on-Metal, software, or WebGPU on the CAMetalLayer). The host names no
+	// backend and owns no SKSurface; it drives the neutral per-frame loop from the native draw callbacks.
+	private IGraphicsContext _context = null!;
 	private bool _initializationCompleted;
 	private string? _lastSvgClipPath;
 	private Size _nativeWindowSize;
@@ -55,47 +52,54 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		// RegisterForBackgroundColor();
 
+		// Neutral graphics pipeline: the host names no backend. It registers a per-kind window+context factory
+		// (CreateContext) and negotiates; the app-registered backend (Skia or WebGPU) owns the kind order. Only
+		// GPU-API context creation is macOS-specific (the device/queue query and the WebGPU init helper); the
+		// backend impl is transparent to the host.
 		var host = MacSkiaHost.Current;
-		switch (host.RenderSurfaceType)
+		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateContext(kind, host.RenderSurfaceType));
+
+		var init = GraphicsRegistry.Initialize();
+		_context = init.Context;
+		CompositionTarget.Renderer = init.Renderer;
+
+		// A swapchain-owning context (WebGPU on the CAMetalLayer) drives the layer itself, so the native draw is
+		// switched to tick-only (uno_window_set_webgpu_mode) to avoid contending for the layer's drawables. A
+		// native-texture context (Skia-on-Metal, an IMacOSNativeTextureSink) leaves the native draw providing textures.
+		if (host.RenderSurfaceType != RenderSurfaceType.Software && _context is not IMacOSNativeTextureSink)
 		{
-			case RenderSurfaceType.Metal:
-				// EXPERIMENTAL: WebGPU on the view's CAMetalLayer via the neutral backend (opt in with UNO_WEBGPU),
-				// mirroring Android/AppleUIKit. wgpu owns acquire+present; the native drawInMTKView is switched to a
-				// tick-only mode (uno_window_set_webgpu_mode) so it doesn't contend for the layer's drawables.
-				if (global::System.Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "swapchain")
-				{
-					var layer = NativeUno.uno_window_get_metal_layer(_nativeWindow.Handle);
-					if (layer != 0)
-					{
-						// The host references no WebGPU type — it hands the neutral Metal-layer window (+ DPI scale) to the
-						// pluggable pipeline; the app-registered WebGPU provider builds the surface + device and mints the
-						// (factory, renderer) pair. wgpu owns acquire+present.
-						var scale = (float)_displayInformation.RawPixelsPerViewPixel;
-						var webgpuWindow = new MacOSMetalGraphicsNativeWindow(layer, scale == 0 ? 1 : scale);
-						var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize(
-							webgpuWindow, new[] { global::Uno.UI.Composition.Drawing.GraphicsContextKind.WebGpu });
-						_webgpuContext = init.Context;
-						CompositionTarget.Renderer = init.Renderer;
-						NativeUno.uno_window_set_webgpu_mode(_nativeWindow.Handle, true);
-						if (this.Log().IsEnabled(LogLevel.Information))
-						{
-							this.Log().Info("Neutral graphics pipeline active: WebGpu context via WebGpuRenderer (macOS).");
-						}
-						break;
-					}
+			NativeUno.uno_window_set_webgpu_mode(_nativeWindow.Handle, true);
+		}
 
-					if (this.Log().IsEnabled(LogLevel.Warning))
-					{
-						this.Log().Warn("UNO_WEBGPU set but the window has no Metal layer; falling back to Skia/Metal.");
-					}
-				}
+		if (this.Log().IsEnabled(LogLevel.Information))
+		{
+			this.Log().Info($"Neutral graphics pipeline active: {_context.Kind} context (macOS).");
+		}
+	}
 
-				// Skia-on-Metal via the neutral seam: the host only holds the device/queue and hands the per-frame
-				// texture as an IMetalRenderTarget; the Skia backend owns the GRContext-Metal + surface. No Skia here.
-				NativeUno.uno_window_get_metal_handles(_nativeWindow.Handle, out _metalDevice, out _metalQueue);
-				break;
-			case RenderSurfaceType.Software:
-				break;
+	/// <summary>
+	/// The macOS window+context creator for the neutral pipeline. Skia-on-Metal wraps the device/queue queried from
+	/// the NSWindow; software owns a CPU framebuffer; WebGpu is built from the view's CAMetalLayer via the WebGPU
+	/// project's init helper. The host declines the GPU kinds when configured for software; it names no render backend.
+	/// </summary>
+	private IGraphicsContext? CreateContext(GraphicsContextKind kind, RenderSurfaceType surfaceType)
+	{
+		var software = surfaceType == RenderSurfaceType.Software;
+		var scale = (float)_displayInformation.RawPixelsPerViewPixel;
+		if (scale <= 0) { scale = 1; }
+
+		switch (kind)
+		{
+			case GraphicsContextKind.Metal when !software:
+				NativeUno.uno_window_get_metal_handles(_nativeWindow.Handle, out var device, out var queue);
+				return new MacOSMetalGraphicsContext(device, queue);
+			case GraphicsContextKind.WebGpu when !software:
+				var layer = NativeUno.uno_window_get_metal_layer(_nativeWindow.Handle);
+				return layer == 0 ? null : global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateMetal(layer, scale);
+			case GraphicsContextKind.Software:
+				return new MacOSSoftwareGraphicsContext();
+			default:
+				return null;
 		}
 	}
 
@@ -136,32 +140,13 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		// EXPERIMENTAL WebGPU: the native side ticks us with texture == 0; drive the wgpu swapchain on the CAMetalLayer
-		// through the neutral seam (AcquireRenderTarget + Present) instead of wrapping a native MTLTexture in Skia.
-		if (_webgpuContext is { } webgpu)
-		{
-			var webgpuClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(
-				null,
-				size => webgpu.AcquireRenderTarget((int)size.Width, (int)size.Height));
-			webgpu.Present();
-
-			string? webgpuClip = null;
-			if (!webgpuClipPath.IsEmpty)
-			{
-				webgpuClip = webgpuClipPath.ToSvgPathData();
-			}
-			if (webgpuClip != _lastSvgClipPath && NativeUno.uno_window_clip_svg(_nativeWindow.Handle, webgpuClip))
-			{
-				_lastSvgClipPath = webgpuClip;
-			}
-			return;
-		}
-
-		// The texture differs per call; hand a fresh neutral IMetalRenderTarget each frame. The Skia backend builds
-		// its GRContext-Metal + surface and flushes on present — no Skia type in the host.
+		// The context owns the surface/present; a Skia-on-Metal context wraps the per-frame native texture (pushed
+		// via IMacOSNativeTextureSink), a WebGPU context ignores it and drives its own CAMetalLayer swapchain.
+		(_context as IMacOSNativeTextureSink)?.SetCurrentTexture(texture);
 		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(
 			null,
-			size => new MacOSMetalRenderTarget(texture, _metalDevice, _metalQueue, (int)size.Width, (int)size.Height));
+			size => _context.AcquireRenderTarget((int)size.Width, (int)size.Height));
+		_context.Present();
 
 		string? clip = null;
 		if (!nativeElementClipPath.IsEmpty)
@@ -177,17 +162,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				_lastSvgClipPath = clip;
 			}
 		}
-	}
-
-	private sealed class MacOSMetalRenderTarget(nint texture, nint device, nint queue, int width, int height) : IMetalRenderTarget
-	{
-		public nint Texture => texture;
-		public nint Device => device;
-		public nint Queue => queue;
-		public int Width => width;
-		public int Height => height;
-		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
-		public void Dispose() { }
 	}
 
 	private unsafe void SoftDraw(double nativeWidth, double nativeHeight, nint* data, int* rowBytes, int* size)
@@ -211,23 +185,15 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		// Hand the backend a neutral CPU framebuffer (host-owned buffer); the Skia backend wraps it as its surface.
+		// The context owns the CPU framebuffer; the Skia backend wraps the acquired target as its surface. After the
+		// frame is rendered, the buffer is read back out of the acquired target and handed to the native SoftDraw.
+		ISoftwareRenderTarget? softwareTarget = null;
 		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(null, size =>
 		{
-			var w = (int)size.Width;
-			var h = (int)size.Height;
-			if (_softwareBuffer == 0 || w != _softwareWidth || h != _softwareHeight)
-			{
-				if (_softwareBuffer != 0)
-				{
-					Marshal.FreeHGlobal(_softwareBuffer);
-				}
-				_softwareWidth = w;
-				_softwareHeight = h;
-				_softwareBuffer = Marshal.AllocHGlobal(w * h * 4);
-			}
-			return new MacOSSoftwareRenderTarget(_softwareBuffer, w * 4, w, h);
+			softwareTarget = (ISoftwareRenderTarget)_context.AcquireRenderTarget((int)size.Width, (int)size.Height);
+			return softwareTarget;
 		});
+		_context.Present();
 
 		string? clip = null;
 		if (!nativeElementClipPath.IsEmpty)
@@ -244,22 +210,12 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		if (_softwareBuffer != 0)
+		if (softwareTarget is not null)
 		{
-			*data = _softwareBuffer;
-			*size = _softwareWidth * _softwareHeight * 4;
-			*rowBytes = _softwareWidth * 4;
+			*data = softwareTarget.Pixels;
+			*size = softwareTarget.Height * softwareTarget.RowBytes;
+			*rowBytes = softwareTarget.RowBytes;
 		}
-	}
-
-	private sealed class MacOSSoftwareRenderTarget(nint pixels, int rowBytes, int width, int height) : ISoftwareRenderTarget
-	{
-		public nint Pixels => pixels;
-		public int RowBytes => rowBytes;
-		public int Width => width;
-		public int Height => height;
-		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
-		public void Dispose() { }
 	}
 
 	// Window management
