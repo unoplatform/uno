@@ -5,7 +5,7 @@ compaction keeps dropping hard-won state; this doc is written to survive it, and
 **full transcript** (`~/.claude/projects/-workspace-uno/*.jsonl`, ~469 human turns) because the memory files are a
 lossy summary. **Update it as we go.** Complements the memory files (see "Pointers").
 
-Last updated: 2026-08-12.
+Last updated: 2026-08-13.
 
 > **2026-08-12 — WASM WebGPU verified post-merge (PASS).** After the `feature/breakingchanges` merge,
 > the neutral WebGPU backend renders the full SamplesApp UI on the WebAssembly head. Headless proof via
@@ -36,6 +36,32 @@ Last updated: 2026-08-12.
 > `wgpu-wasm.targets` (Dawn/emdawnwebgpu) is not imported, `wgpuCreateInstance` throws `DllNotFoundException`,
 > and WebGPU silently never initializes. ALWAYS pass `-p:UnoWebGpuWasm=true` when publishing the WASM head for
 > WebGPU. (`ManagedDrawingFactory` is `public`; `SkiaDrawingFactory` is `internal`.)
+
+> **2026-08-13 — perf-parity audit gaps 1,2,5,6,7,8 fixed (commit `086605b82e`).** A focused work-done audit
+> (`evidence/webgpu-perf-parity-audit.md`, 8 ranked gaps) drove real fixes, all lavapipe-validated (no wgpu
+> errors) on the desktop X11 head + acrylic (`Brushes/BasicAcrylicBrushTest`) and fast-path (`Diag/WebGpuDiag`)
+> scenes, FPS overlay forced on to exercise the inlined-overlay concat:
+> - **Gap 1+2 (THE acrylic real-HW FPS regression):** backdrop blur was full-frame; now `BlurPyramidRegion`
+>   extracts the element AABB padded by `sigma+8` and blurs/composites only that sub-rect (both the pooled and
+>   the case-6 segmented paths); sigma-scaled downsample depth (`levels=clamp(round(log2(sigma/2)),1,5)`) + a
+>   fixed normalized 9-tap gaussian (`BlurWgsl`, `ctrl.x` downsample branch, `srcOrigin`/`srcScale` region
+>   remap). Runtime proof: acrylic blur pool textures are 223×270→111→55→27, not 1024×768.
+> - **Gap 6 (on-window MSAA StoreOp.Store tax):** the immediate overlay (FPS/diagnostics, host cursor) is now
+>   inlined into the frame command list and rendered in ONE pass at `WebGpuPresentSession.Dispose` (present
+>   render deferred from `Replay` via `_pendingCmds`/`_pendingClear`), mirroring the reference's inlined FPS
+>   image. No follow-up `LoadOp.Load` overlay pass ⇒ fast path (`backdrops.Count==0`) uses `StoreOp.Discard`;
+>   only a case-6 backdrop segment keeps `StoreOp.Store`.
+> - **Gap 7 (xform bind-group recreated every frame):** `WebGpuDevice.EnsureXformBindGroup` — persistent
+>   storage buffer (grown 1.5×) + bind group cached by buffer identity, rebuilt only on growth. Main pass only;
+>   nested/pooled passes keep renting transient buffers (no in-frame write aliasing).
+> - **Gap 5 (dirty upload):** `WebGpuSlab.Put` diffs each slice vs the CPU shadow — skips the write when
+>   byte-identical, else uploads only `[lo..hi]`.
+> - **Gap 8:** `DrawEffectBackdrop` short-circuits on `A==255 || sigma<=0`.
+>
+> **Gap 4 (frame-solid solid/rrect re-tessellate on scroll)** — local-space verts + per-frame transform
+> restamp (mirroring the arena path) + `xformPos` added to the rrect shader — in progress. **Gap 3 (glyph
+> atlas)** deferred (needs a backend-neutral coverage-atlas rasterizer). Rejected non-gaps (frame-skip, render
+> bundles) were reference-REMOVED dead ends — don't re-add.
 
 ---
 
