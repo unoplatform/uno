@@ -2163,9 +2163,9 @@ namespace Uno.WinAppSDKSyncGenerator
 			{
 				switch (property.Name)
 				{
-					// This is ignored until Value becomes an actual DP. Uno keeps the value in a
-					// field, and generating the stub would register "Value" on Setter a second
-					// time, throwing from the type initializer.
+					// This is ignored until Value becomes an actual DP, tracked by uno-private#2292.
+					// Uno keeps the value in a field, and generating the stub would register
+					// "Value" on Setter a second time, throwing from the type initializer.
 					case "ValueProperty":
 						return true;
 				}

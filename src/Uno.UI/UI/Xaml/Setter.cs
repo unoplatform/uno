@@ -38,6 +38,7 @@ namespace Microsoft.UI.Xaml
 		// Deliberately not named ValueProperty: the XAML generator treats a "<Name>Property"
 		// member as proof that Name is DP-backed, and would route Setter.Value through
 		// SetValue/SetBinding — but the value lives in _value, so it would be dropped.
+		// WinUI does back Value with a DP; aligning is tracked by uno-private#2292.
 		private static DependencyProperty InternalValueProperty { get; }
 			= DependencyProperty.Register(
 				nameof(Value),
