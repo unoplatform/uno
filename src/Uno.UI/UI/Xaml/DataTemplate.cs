@@ -1,9 +1,11 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.ComponentModel;
 
 using View = Microsoft.UI.Xaml.UIElement;
+// The template factory is exposed as a plain Func so no Uno-specific delegate type leaks into the public API.
+using Builder = System.Func<object?, Microsoft.UI.Xaml.TemplateMaterializationSettings, Microsoft.UI.Xaml.UIElement?>;
 
 namespace Microsoft.UI.Xaml
 {
@@ -21,7 +23,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="owner">The owner of the DataTemplate</param>
 		/// <param name="factory">The factory to be called to build the template content</param>
-		public DataTemplate(object? owner, NewFrameworkTemplateBuilder? factory)
+		public DataTemplate(object? owner, Builder? factory)
 			: base(owner, factory)
 		{
 		}

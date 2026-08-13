@@ -108,7 +108,7 @@ if (Resources["MyTemplate"] is DataTemplate template)
     Uno.UI.TemplateManager.UpdateDataTemplate(template, oldFactory =>
     {
         // Return a new factory that creates different content
-        return (NewFrameworkTemplateBuilder)((_, _) => new TextBlock { Text = "Advanced Update" });
+        return (Func<object?, TemplateMaterializationSettings, UIElement?>)((_, _) => new TextBlock { Text = "Advanced Update" });
     });
 }
 ```
@@ -271,7 +271,7 @@ private static void OnItemTemplateChanged(DependencyObject d, DependencyProperty
 - `EnableUpdateSubscriptions()`: Enables the dynamic template update system
 - `IsDataTemplateDynamicUpdateEnabled`: Gets whether the feature is enabled via MSBuild configuration
 - `IsUpdateSubscriptionsEnabled`: Gets whether the system is enabled (requires `EnableUpdateSubscriptions()` call)
-- `UpdateDataTemplate(DataTemplate, Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?>)`: Updates a template with a factory updater function
+- `UpdateDataTemplate(DataTemplate, Func<Func<object?, TemplateMaterializationSettings, UIElement?>?, Func<object?, TemplateMaterializationSettings, UIElement?>?>)`: Updates a template with a factory updater function
 - `UpdateDataTemplate(DataTemplate, Func<View?>)`: Updates a template with a simple view factory function
 - `SubscribeToTemplate(DependencyObject owner, DataTemplate? template, Action onUpdated)`: Preferred owner-based subscription; returns `bool` indicating success
 - `SubscribeToTemplate(DependencyObject owner, string slotKey, DataTemplate? template, Action onUpdated)`: Owner-based subscription with a named slot for multiple subscriptions per control; returns `bool` indicating success

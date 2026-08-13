@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -11,13 +11,11 @@ using Uno.UI.Helpers;
 
 using View = Microsoft.UI.Xaml.UIElement;
 
+// The template factory is exposed as a plain Func so no Uno-specific delegate type leaks into the public API.
+using Builder = System.Func<object?, Microsoft.UI.Xaml.TemplateMaterializationSettings, Microsoft.UI.Xaml.UIElement?>;
+
 namespace Microsoft.UI.Xaml
 {
-	/// <summary>
-	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>
-	/// </summary>
-	public delegate View? NewFrameworkTemplateBuilder(object? owner, TemplateMaterializationSettings settings);
-
 	[ContentProperty(Name = "Template")]
 	public partial class FrameworkTemplate : DependencyObject, IFrameworkTemplateInternal
 	{
@@ -37,10 +35,10 @@ namespace Microsoft.UI.Xaml
 		/// should remain unchanged. See Uno.UI.TemplateManager for details.
 		/// </summary>
 		/// <remarks>
-		/// This delegate may be wrapped to align its signature with <see cref="NewFrameworkTemplateBuilder"/>.
+		/// This delegate may be wrapped to align its signature with the template builder Func.
 		/// The original factory method can always be found in <see cref="ViewFactoryInner"/>.
 		/// </remarks>
-		internal IDelegate<NewFrameworkTemplateBuilder>? ViewFactory { get; private set; }
+		internal IDelegate<Builder>? ViewFactory { get; private set; }
 
 		internal IDelegate<Delegate>? ViewFactoryInner { get; private set; }
 
@@ -58,7 +56,7 @@ namespace Microsoft.UI.Xaml
 			SetViewFactory(factory, AdaptViewFactory);
 		}
 
-		public FrameworkTemplate(object? owner, NewFrameworkTemplateBuilder? factory)
+		public FrameworkTemplate(object? owner, Builder? factory)
 			: this(owner, (Delegate?)factory)
 		{
 			SetViewFactory(factory);
@@ -88,7 +86,7 @@ namespace Microsoft.UI.Xaml
 		/// Sets the view factory. Internal method to avoid unwanted changes from outside the framework.
 		/// </summary>
 		/// <param name="factory">The new factory to set</param>
-		internal void SetViewFactory(NewFrameworkTemplateBuilder? factory)
+		internal void SetViewFactory(Builder? factory)
 		{
 			// When the factory target is a top-level XAML class (e.g. Page, ResourceDictionary, ...) which commonly implements IWeakReferenceProvider,
 			// we wrap the delegate in a weak reference so that the template does not keep that object alive and cause memory leaks.
@@ -118,7 +116,7 @@ namespace Microsoft.UI.Xaml
 					? DelegateHelper.CreateWeak(factory)
 					: DelegateHelper.CreateLiteral(factory) as IDelegate<TDelegate>;
 				// the adapted factory must not be a weak delegate, as we would lose the captures otherwise.
-				var adapted = DelegateHelper.CreateLiteral<NewFrameworkTemplateBuilder>(
+				var adapted = DelegateHelper.CreateLiteral<Builder>(
 					(o, s) => adapter(o, s, inner)
 				);
 
@@ -275,7 +273,7 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 
-		internal bool UpdateFactory(Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?> update)
+		internal bool UpdateFactory(Func<Builder?, Builder?> update)
 		{
 			// Special case to update the factory without creating a new instance.
 			// A special mode is required for it to work and is activated directly in the Uno.UI.TemplateManager.
