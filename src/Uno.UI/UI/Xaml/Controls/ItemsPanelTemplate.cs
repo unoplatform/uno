@@ -27,12 +27,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-		public ItemsPanelTemplate(object? owner, FrameworkTemplateBuilder? factory)
-			: base(owner, factory)
-		{
-		}
-#endif
 	}
 }
 

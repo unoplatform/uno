@@ -125,15 +125,11 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		}
 
 
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-		// Regardless the setup, XamlReader still uses the new templated-parent impl, including the new framework-template.ctor.
-		// But because they are not referenced anywhere, they could be trimmed and leads to:
+		// The template ctors are only reached reflectively below, so they would otherwise be trimmed:
 		// > MissingMethodException: MissingConstructor_Name, Microsoft.UI.Xaml.DataTemplate
-		// note: This is only needed while we are still supporting legacy codegen. It can be safely deleted once we moved to the new setup.
 		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ControlTemplate))]
 		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(DataTemplate))]
 		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ItemsPanelTemplate))]
-#endif
 		private object? LoadObject(
 			XamlObjectDefinition? control,
 			object? rootInstance,

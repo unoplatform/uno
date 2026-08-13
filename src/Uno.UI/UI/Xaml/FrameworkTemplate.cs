@@ -16,11 +16,6 @@ namespace Microsoft.UI.Xaml
 	/// <summary>
 	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>
 	/// </summary>
-	public delegate View? FrameworkTemplateBuilder(object? owner);
-
-	/// <summary>
-	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>
-	/// </summary>
 	public delegate View? NewFrameworkTemplateBuilder(object? owner, TemplateMaterializationSettings settings);
 
 	[ContentProperty(Name = "Template")]
@@ -28,7 +23,6 @@ namespace Microsoft.UI.Xaml
 	{
 		private readonly int _hashCode;
 		private readonly ManagedWeakReference? _ownerRef;
-		private const bool _isLegacyTemplate = false;
 
 		/// <summary>
 		/// XAML scope captured during template creation, used as context provider for resource resolution when materializing template content.
@@ -54,7 +48,7 @@ namespace Microsoft.UI.Xaml
 			=> throw new NotSupportedException("Use the factory constructors");
 
 		public FrameworkTemplate(Func<View?>? factory)
-			: this(null, factory, true)
+			: this(null, (Delegate?)factory)
 		{
 			// TODO: to be removed on next major update.
 			// This overload simply should not exist, since the materialized members do not have the tp injected.
@@ -64,28 +58,15 @@ namespace Microsoft.UI.Xaml
 			SetViewFactory(factory, AdaptViewFactory);
 		}
 
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-		public FrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory)
-			: this(owner, factory, true)
-		{
-			// TODO: to be removed on next major update.
-
-			SetViewFactory(factory, AdaptFrameworkTemplateBuilder);
-		}
-#endif
-
 		public FrameworkTemplate(object? owner, NewFrameworkTemplateBuilder? factory)
-			: this(owner, factory, false)
+			: this(owner, (Delegate?)factory)
 		{
 			SetViewFactory(factory);
 		}
 
-		private FrameworkTemplate(object? owner, Delegate? rawFactory, bool legacy)
+		private FrameworkTemplate(object? owner, Delegate? rawFactory)
 		{
 			InitializeBinder();
-
-			// TODO: to restore; but, see note about _isLegacyTemplate first
-			//_isLegacyTemplate = legacy;
 
 			_ownerRef = WeakReferencePool.RentWeakReference(this, owner);
 
@@ -181,11 +162,8 @@ namespace Microsoft.UI.Xaml
 			try
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-				TemplatedParentScope.PushScope(templatedParent, _isLegacyTemplate);
-#endif
 
-				if (!FrameworkTemplatePool.IsPoolingEnabled || _isLegacyTemplate)
+				if (!FrameworkTemplatePool.IsPoolingEnabled)
 				{
 					var settings = new TemplateMaterializationSettings(templatedParent, null);
 
@@ -211,9 +189,6 @@ namespace Microsoft.UI.Xaml
 			}
 			finally
 			{
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-				TemplatedParentScope.PopScope();
-#endif
 				ResourceResolver.PopScope();
 			}
 		}
@@ -236,11 +211,6 @@ namespace Microsoft.UI.Xaml
 #if DEBUG
 		public string TemplateSource { get; init; }
 #endif
-
-		private static View? AdaptFrameworkTemplateBuilder(object? owner, TemplateMaterializationSettings settings, IDelegate<FrameworkTemplateBuilder> del)
-		{
-			return del.Delegate?.Invoke(owner);
-		}
 
 		private static View? AdaptViewFactory(object? owner, TemplateMaterializationSettings settings, IDelegate<Func<View?>> del)
 		{

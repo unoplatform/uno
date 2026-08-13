@@ -223,10 +223,6 @@ namespace Microsoft.UI.Xaml
 
 			_properties = new DependencyPropertyDetailsCollection(SelfWeakReference, _dataContextProperty);
 
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-			TemplatedParentScope.UpdateTemplatedParentIfNeeded(this, store: this);
-#endif
-
 			__InitializeBinder();
 
 			if (_trace.IsEnabled)

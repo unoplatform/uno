@@ -26,13 +26,6 @@ namespace Microsoft.UI.Xaml
 		{
 		}
 
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-		public DataTemplate(object? owner, FrameworkTemplateBuilder? factory)
-			: base(owner, factory)
-		{
-		}
-#endif
-
 		public View? LoadContent() => ((IFrameworkTemplateInternal)this).LoadContent(templatedParent: null);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
