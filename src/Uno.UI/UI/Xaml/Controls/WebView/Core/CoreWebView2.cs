@@ -130,7 +130,7 @@ public partial class CoreWebView2
 		=> _nativeWebView is null
 			? new InvalidOperationException(
 				$"The native WebView is not initialized, so {typeName}.{memberName} is unavailable. " +
-				"Await WebView2.EnsureCoreWebView2Async() before using this member.")
+				"Await the WebView2 control's EnsureCoreWebView2Async() before using this member.")
 			: global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException(typeName, memberName);
 
 	internal void NavigateWithHttpRequestMessage(global::Windows.Web.Http.HttpRequestMessage requestMessage)

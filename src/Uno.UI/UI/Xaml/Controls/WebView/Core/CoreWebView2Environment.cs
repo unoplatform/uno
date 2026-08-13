@@ -60,7 +60,7 @@ public partial class CoreWebView2Environment
 	/// A non-empty <paramref name="browserExecutableFolder"/> is authoritative: when no browser is found there,
 	/// the call fails rather than falling back to the installed one.
 	/// </remarks>
-	public static string GetAvailableBrowserVersionString(string browserExecutableFolder)
+	public static string GetAvailableBrowserVersionString(string? browserExecutableFolder)
 		=> Statics("GetAvailableBrowserVersionString(string browserExecutableFolder)")
 			.GetAvailableBrowserVersionString(browserExecutableFolder);
 
