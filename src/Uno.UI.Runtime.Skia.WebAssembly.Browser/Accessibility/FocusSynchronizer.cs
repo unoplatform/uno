@@ -61,6 +61,15 @@ internal sealed partial class FocusSynchronizer
 		SyncInitialFocus();
 	}
 
+	internal void Uninitialize()
+	{
+		FocusManager.GotFocus -= OnXamlGotFocus;
+		FocusManager.LostFocus -= OnXamlLostFocus;
+		_currentFocusedHandle = IntPtr.Zero;
+		_previousFocusedHandle = IntPtr.Zero;
+		_isSyncing = false;
+	}
+
 	/// <summary>
 	/// Undoes <see cref="Initialize"/> when accessibility is disabled.
 	/// </summary>
