@@ -61,9 +61,9 @@ public partial class CompositionAnimation
 		set => _target = value ?? throw new ArgumentException();
 	}
 
-	// Targets this animation is currently started on. Animations that don't snapshot on start
-	// (keyframe animations return themselves from CloneAnimation) can be shared across several
-	// CompositionObjects, so tracking only the last target would leak the earlier registrations.
+	// Targets this animation is currently started on; Stop() unwinds them in LIFO order.
+	// TODO Uno: sharing one keyframe animation across several live targets still throws in
+	// Compositor.RegisterAnimation, which keys running animations by instance rather than by target.
 	private readonly List<CompositionObject> _startedObjects = new();
 
 	// The object this animation was last started on; resolves 'this.Target' in expression keyframes.
