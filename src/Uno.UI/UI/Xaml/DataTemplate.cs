@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="owner">The owner of the DataTemplate</param>
 		/// <param name="factory">The factory to be called to build the template content</param>
-		public DataTemplate(object? owner, Builder? factory)
+		internal DataTemplate(object? owner, Builder? factory)
 			: base(owner, factory)
 		{
 		}

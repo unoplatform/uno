@@ -45,7 +45,7 @@ namespace Microsoft.UI.Xaml
 		protected FrameworkTemplate()
 			=> throw new NotSupportedException("Use the factory constructors");
 
-		public FrameworkTemplate(object? owner, Builder? factory)
+		internal FrameworkTemplate(object? owner, Builder? factory)
 			: this(owner, (Delegate?)factory)
 		{
 			SetViewFactory(factory);

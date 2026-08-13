@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="owner">The owner of the ControlTemplate</param>
 		/// <param name="factory">The factory to be called to build the template content</param>
-		public ControlTemplate(object? owner, Builder? factory)
+		internal ControlTemplate(object? owner, Builder? factory)
 			: base(owner, factory)
 		{
 		}

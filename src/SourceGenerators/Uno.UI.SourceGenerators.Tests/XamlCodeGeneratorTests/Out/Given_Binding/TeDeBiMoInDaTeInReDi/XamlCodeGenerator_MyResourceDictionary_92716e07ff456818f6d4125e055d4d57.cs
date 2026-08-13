@@ -47,7 +47,7 @@ namespace TestRepro
 			{
 				return 
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
-						new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_ResDicΞ0_DatTem)
+						global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(__ResourceOwner_1, Build_ResDicΞ0_DatTem)
 					)
 				;
 			}
@@ -202,7 +202,7 @@ namespace MyProject
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 			private object Get_1(object __ResourceOwner_1) =>
 				global::MyProject.GlobalStaticResources.__PreserveProperties(
-					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_ResDicΞ0_DatTem)
+					global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(__ResourceOwner_1, Build_ResDicΞ0_DatTem)
 				)
 				;
 

@@ -127,11 +127,6 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		}
 
 
-		// The template ctors are only reached reflectively below, so they would otherwise be trimmed:
-		// > MissingMethodException: MissingConstructor_Name, Microsoft.UI.Xaml.DataTemplate
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ControlTemplate))]
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(DataTemplate))]
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ItemsPanelTemplate))]
 		private object? LoadObject(
 			XamlObjectDefinition? control,
 			object? rootInstance,
@@ -235,7 +230,15 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				// reported even if we're not materializing the content explicitly.
 				ValidateContent(unknownContent?.Objects.FirstOrDefault());
 
-				var created = Activator.CreateInstance(type, /* owner: */null, /* factory: */builder)!;
+				// Constructed directly rather than reflectively: the builder ctors are internal, and a static
+				// reference also keeps them from being trimmed.
+				object created = type switch
+				{
+					_ when type == typeof(DataTemplate) => Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(null, builder),
+					_ when type == typeof(ControlTemplate) => Uno.UI.Helpers.MarkupHelper.CreateControlTemplate(null, builder),
+					_ when type == typeof(ItemsPanelTemplate) => Uno.UI.Helpers.MarkupHelper.CreateItemsPanelTemplate(null, builder),
+					_ => Activator.CreateInstance(type, /* owner: */null, /* factory: */builder)!,
+				};
 				TrySetContextualProperties(created, control);
 
 				foreach (var member in control.Members.Where(m => m != unknownContent && m != initializationMember))

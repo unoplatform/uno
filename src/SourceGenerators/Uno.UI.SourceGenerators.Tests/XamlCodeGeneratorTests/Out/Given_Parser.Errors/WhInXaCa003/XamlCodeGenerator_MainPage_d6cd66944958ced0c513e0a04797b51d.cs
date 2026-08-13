@@ -249,7 +249,7 @@ namespace TestRepro
 																HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Stretch,
 																VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Stretch,
 																ItemTemplate = 																global::MyProject.GlobalStaticResources.__PreserveProperties(
-																	new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_GriΞ1_GriΞ0_BorΞ0_GriΞ1_LisVie_IteTemΞ0_DatTem)
+																	global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(this, Build_PagΞ0_GriΞ1_GriΞ0_BorΞ0_GriΞ1_LisVie_IteTemΞ0_DatTem)
 																)
 																,
 																// Source 0\MainPage.xaml (Line 33:12)
@@ -359,7 +359,7 @@ namespace TestRepro
 																HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Stretch,
 																VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Stretch,
 																ItemTemplate = 																global::MyProject.GlobalStaticResources.__PreserveProperties(
-																	new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_GriΞ1_GriΞ1_BorΞ0_GriΞ1_LisVie_IteTemΞ0_DatTem)
+																	global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(this, Build_PagΞ0_GriΞ1_GriΞ1_BorΞ0_GriΞ1_LisVie_IteTemΞ0_DatTem)
 																)
 																,
 																// Source 0\MainPage.xaml (Line 72:12)

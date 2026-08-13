@@ -64,7 +64,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 								Name = "topLevel",
 								Tag = @"42",
 								ContentTemplate = 								global::MyProject.GlobalStaticResources.__PreserveProperties(
-									new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_GriΞ0_ConCon_ConTemΞ0_DatTem)
+									global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(this, Build_PagΞ0_GriΞ0_ConCon_ConTemΞ0_DatTem)
 								)
 								,
 								// Source 0\Binding_ElementName_In_Template.xaml (Line 11:4)

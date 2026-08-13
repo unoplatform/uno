@@ -56,7 +56,7 @@ namespace TestRepro
 					IsParsing = true,
 					Name = "root",
 					ContentTemplate = 					global::MyProject.GlobalStaticResources.__PreserveProperties(
-						new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_ConCon_ConTemΞ0_DatTem)
+						global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(this, Build_PagΞ0_ConCon_ConTemΞ0_DatTem)
 					)
 					,
 					// Source 0\MainPage.xaml (Line 5:6)

@@ -282,7 +282,7 @@ namespace TestRepro
 											IsParsing = true,
 											Name = "ActivitiesList",
 											ItemTemplate = 											global::MyProject.GlobalStaticResources.__PreserveProperties(
-												new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_GriΞ1_GriΞ0_LisVie_IteTemΞ0_DatTem)
+												global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(this, Build_PagΞ0_GriΞ1_GriΞ0_LisVie_IteTemΞ0_DatTem)
 											)
 											,
 											// Source 0\MainPage.xaml (Line 18:2)

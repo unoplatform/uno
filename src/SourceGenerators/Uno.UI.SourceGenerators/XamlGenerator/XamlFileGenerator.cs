@@ -6409,7 +6409,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 								"""));
 
-							writer.AppendIndented($"new {GetGlobalizedTypeName(fullTypeName)}({CurrentResourceOwnerName}, {buildMethod})");
+							// The builder ctors are internal, so generated code (which lives in the app assembly)
+							// goes through MarkupHelper. Unknown template types keep the ctor form.
+							var templateFactory = xamlObjectDefinition.Type.Name switch
+							{
+								"DataTemplate" or "ControlTemplate" or "ItemsPanelTemplate"
+									=> $"global::Uno.UI.Helpers.MarkupHelper.Create{xamlObjectDefinition.Type.Name}",
+								_ => $"new {GetGlobalizedTypeName(fullTypeName)}",
+							};
+
+							writer.AppendIndented($"{templateFactory}({CurrentResourceOwnerName}, {buildMethod})");
 						}
 
 						writer.AppendLine();

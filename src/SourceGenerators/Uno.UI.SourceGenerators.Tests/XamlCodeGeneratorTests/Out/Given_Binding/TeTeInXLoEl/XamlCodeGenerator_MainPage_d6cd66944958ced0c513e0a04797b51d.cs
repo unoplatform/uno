@@ -109,7 +109,7 @@ namespace TestRepro
 											IsParsing = true,
 											Name = "inner2",
 											Template = 											global::MyProject.GlobalStaticResources.__PreserveProperties(
-												new global::Microsoft.UI.Xaml.Controls.ControlTemplate(this, Build_PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem)
+												global::Uno.UI.Helpers.MarkupHelper.CreateControlTemplate(this, Build_PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem)
 											)
 											,
 											// Source 0\MainPage.xaml (Line 15:5)

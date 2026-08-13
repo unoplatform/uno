@@ -53,7 +53,7 @@ namespace TestRepro
 			{
 				return 
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
-						new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_Pag_ResΞ0_DatTem)
+						global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(__ResourceOwner_1, Build_Pag_ResΞ0_DatTem)
 						.GenericApply(__that, __nameScope, ApplyTo_Pag_ResΞ0_DatTem)
 					)
 				;
@@ -84,7 +84,7 @@ namespace TestRepro
 								IsParsing = true,
 								Name = "ButtonWithEmptyDataTemplate",
 								ContentTemplate = 								global::MyProject.GlobalStaticResources.__PreserveProperties(
-									new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem)
+									global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(this, Build_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem)
 									.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem)
 								)
 								,

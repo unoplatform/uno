@@ -53,7 +53,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 			{
 				return 
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
-						new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_Pag_ResΞ0_DatTem)
+						global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(__ResourceOwner_1, Build_Pag_ResΞ0_DatTem)
 					)
 				;
 			}

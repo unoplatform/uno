@@ -701,11 +701,11 @@ namespace TestRepro
 												{
 													IsParsing = true,
 													ItemsPanel = 													global::MyProject.GlobalStaticResources.__PreserveProperties(
-														new global::Microsoft.UI.Xaml.Controls.ItemsPanelTemplate(this, Build_PagΞ0_GriΞ1_ScrVieΞ0_StaPanΞ1_IteCon_ItePanΞ0_ItePanTem)
+														global::Uno.UI.Helpers.MarkupHelper.CreateItemsPanelTemplate(this, Build_PagΞ0_GriΞ1_ScrVieΞ0_StaPanΞ1_IteCon_ItePanΞ0_ItePanTem)
 													)
 													,
 													ItemTemplate = 													global::MyProject.GlobalStaticResources.__PreserveProperties(
-														new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_GriΞ1_ScrVieΞ0_StaPanΞ1_IteCon_IteTemΞ0_DatTem)
+														global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(this, Build_PagΞ0_GriΞ1_ScrVieΞ0_StaPanΞ1_IteCon_IteTemΞ0_DatTem)
 													)
 													,
 													// Source 0\MainPage.xaml (Line 57:10)
@@ -750,7 +750,7 @@ namespace TestRepro
 													IsParsing = true,
 													IsItemClickEnabled = true,
 													ItemTemplate = 													global::MyProject.GlobalStaticResources.__PreserveProperties(
-														new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_GriΞ1_ScrVieΞ0_StaPanΞ3_LisVie_IteTemΞ0_DatTem)
+														global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(this, Build_PagΞ0_GriΞ1_ScrVieΞ0_StaPanΞ3_LisVie_IteTemΞ0_DatTem)
 													)
 													,
 													// Source 0\MainPage.xaml (Line 79:10)

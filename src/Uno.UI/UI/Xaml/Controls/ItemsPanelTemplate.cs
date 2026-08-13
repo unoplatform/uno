@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="owner">The owner of the ItemsPanelTemplate</param>
 		/// <param name="factory">The factory to be called to build the template content</param>
-		public ItemsPanelTemplate(object? owner, Builder? factory)
+		internal ItemsPanelTemplate(object? owner, Builder? factory)
 			: base(owner, factory)
 		{
 		}
