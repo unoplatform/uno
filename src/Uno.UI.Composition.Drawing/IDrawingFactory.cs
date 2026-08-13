@@ -30,9 +30,6 @@ public interface IDrawingFactory
 	IPathBuilder CreatePathBuilder();
 	IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder();
 
-	/// <summary>Creates a rectangular geometry.</summary>
-	IGeometry CreateRectangleGeometry(Rect rect);
-
 	/// <summary>
 	/// Renders <paramref name="render"/> into a fresh transparent offscreen target of the given pixel size and
 	/// returns it as a backend-resident <see cref="IImageTexture"/> — the same currency the draw verbs consume

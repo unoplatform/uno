@@ -12,6 +12,11 @@ public interface IGeometryBuilder
 	/// <summary>The winding rule baked into the geometry at <see cref="Build"/> time. Defaults to <see cref="GeometryFillRule.NonZero"/>.</summary>
 	GeometryFillRule FillRule { get; set; }
 
-	/// <summary>Produces the geometry and resets the builder for reuse.</summary>
+	/// <summary>
+	/// Produces the geometry from the accumulated contours. This <em>resets</em> the builder — contours are
+	/// cleared and <see cref="FillRule"/> returns to its default — so the same instance can immediately be used
+	/// to build another, independent geometry. Callers may therefore cache and reuse one builder rather than
+	/// allocating a fresh one per geometry.
+	/// </summary>
 	IGeometry Build();
 }

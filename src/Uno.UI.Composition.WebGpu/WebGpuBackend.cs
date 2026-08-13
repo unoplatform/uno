@@ -2521,7 +2521,6 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 	// Geometry is minted by the registered drawing backend — delegate to it (managed engine → no Skia; Skia → SKPath).
 	public IPathBuilder CreatePathBuilder() => _inner.CreatePathBuilder();
 	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => _inner.CreatePrimitiveGeometryBuilder();
-	public IGeometry CreateRectangleGeometry(Windows.Foundation.Rect rect) => _inner.CreateRectangleGeometry(rect);
 
 	// Offscreen rasterization on the WebGPU device (record → present into a dedicated offscreen surface) and hand
 	// back the resolved color texture as a sampleable IImageTexture — no CPU read-back, so a nine-slice/glyph/SVG
