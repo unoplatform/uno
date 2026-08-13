@@ -175,12 +175,36 @@ namespace Microsoft.UI.Text
 			foreach (var rune in text.EnumerateRunes())
 			{
 				var mapped = value == global::Microsoft.UI.Text.LetterCase.Upper
-					? Rune.ToUpperInvariant(rune)
-					: Rune.ToLowerInvariant(rune);
+					? ToUpperInvariant(rune)
+					: ToLowerInvariant(rune);
 				result.Append(mapped.ToString());
 			}
 			return result.ToString();
 		}
+
+		private static Rune ToUpperInvariant(Rune rune)
+			=> rune.Value switch
+			{
+				>= 0x1F80 and <= 0x1F87 => new Rune(rune.Value + 0x08),
+				>= 0x1F90 and <= 0x1F97 => new Rune(rune.Value + 0x08),
+				>= 0x1FA0 and <= 0x1FA7 => new Rune(rune.Value + 0x08),
+				0x1FB3 => new Rune(0x1FBC),
+				0x1FC3 => new Rune(0x1FCC),
+				0x1FF3 => new Rune(0x1FFC),
+				_ => Rune.ToUpperInvariant(rune),
+			};
+
+		private static Rune ToLowerInvariant(Rune rune)
+			=> rune.Value switch
+			{
+				>= 0x1F88 and <= 0x1F8F => new Rune(rune.Value - 0x08),
+				>= 0x1F98 and <= 0x1F9F => new Rune(rune.Value - 0x08),
+				>= 0x1FA8 and <= 0x1FAF => new Rune(rune.Value - 0x08),
+				0x1FBC => new Rune(0x1FB3),
+				0x1FCC => new Rune(0x1FC3),
+				0x1FFC => new Rune(0x1FF3),
+				_ => Rune.ToLowerInvariant(rune),
+			};
 
 		internal int PendingRangeEditCount => _rangeEditLog.Count;
 
