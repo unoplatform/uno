@@ -32,6 +32,13 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public IntPtr StencilTableNZ;
 	public IntPtr CoverTablePipe;
 	public IntPtr XformBgl;
+	// Persistent storage buffer + cached bind group for the main pass's per-frame arena transform table (group 0 of
+	// the table path-fill pipelines). The table CONTENTS are rewritten every frame, but the buffer identity + bind
+	// group only change when the table grows, so the bind group survives across frames — sparing a CreateBuffer +
+	// CreateBindGroup on every path-fill frame. Bound at full capacity (the shader only indexes valid slots). Reused
+	// across frames safely because wgpuQueueWriteBuffer is queue-ordered after the prior frame's reads; only the main
+	// pass uses it (nested/pooled passes keep renting distinct transient buffers, so no in-frame write aliasing).
+	private IntPtr _xformBuf; private nuint _xformCap; private IntPtr _xformBg;
 	public IntPtr CoverTableClipBgl;
 	// In-pass path-clip depth mask: instead of an offscreen coverage texture per clip, stencil the clip fan into
 	// the shared depth buffer inside the main pass (depth=0 inside the clip, 1 outside) and let content depth-test
@@ -126,6 +133,35 @@ public sealed unsafe class WebGpuDevice : IDisposable
 	public double PerfAccumMs;
 
 	public IntPtr TrackBg(IntPtr bg) { PerfBgCreates++; _pendingBindGroups.Add((nint)bg); return bg; }
+
+	// Uploads the frame's transform table into the persistent storage buffer (grown 1.5× on demand) and returns a
+	// bind group cached by buffer identity — rebuilt only when the buffer reallocates. Only the main on-window pass
+	// calls this; nested/pooled passes rent transient buffers so concurrent in-frame writes never alias this one.
+	public IntPtr EnsureXformBindGroup(System.Collections.Generic.List<float> xforms)
+	{
+		int count = xforms.Count;
+		if (count == 0) { return IntPtr.Zero; }
+		nuint needed = (nuint)(count * sizeof(float));
+		if (_xformBuf == IntPtr.Zero || _xformCap < needed)
+		{
+			if (_xformBg != IntPtr.Zero) { wgpuBindGroupRelease(_xformBg); _xformBg = IntPtr.Zero; }
+			if (_xformBuf != IntPtr.Zero) { wgpuBufferRelease(_xformBuf); }
+			nuint cap = (needed + (needed >> 1) + (nuint)3) & ~(nuint)3;
+			var bd = new WGPUBufferDescriptor { Size = cap, Usage = WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst };
+			_xformBuf = wgpuDeviceCreateBuffer(Dev, &bd);
+			_xformCap = cap;
+		}
+		var span = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(xforms);
+		fixed (float* p = span) { wgpuQueueWriteBuffer(Q, _xformBuf, 0, (IntPtr)p, needed); }
+		if (_xformBg == IntPtr.Zero)
+		{
+			var e = new WGPUBindGroupEntry { Binding = 0, Buffer = _xformBuf, Offset = 0, Size = _xformCap };
+			var bgd = new WGPUBindGroupDescriptor { Layout = XformBgl, EntryCount = 1, Entries = &e };
+			_xformBg = wgpuDeviceCreateBindGroup(Dev, &bgd);
+			PerfBgCreates++;
+		}
+		return _xformBg;
+	}
 
 	// Cross-frame cache for content-identical bind groups whose resources are all persistent (the uniform buffer we
 	// own here + device-stable DummyTex/sampler) — i.e. non-path clips and gradients. Static UI chrome rebuilds the
@@ -743,7 +779,12 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 	// samples the source along `dir` with per-tap gaussian weights; radius = ceil(3*sigma). Two passes
 	// (dir = (1,0) then (0,1)) give a full 2D blur. Single-sample, no blend (overwrite), no depth/stencil.
 	private const string BlurWgsl = @"
-struct BU { dir: vec2<f32>, texel: vec2<f32>, sigma: f32, pad0: f32, pad1: f32, pad2: f32 };
+// ctrl.x > 0.5 => downsample (single linear tap = box-average the 2x2 source block, one pyramid level). Otherwise a
+// separable FIXED 9-tap gaussian (radius 4, sigma~2) — the requested blur radius is achieved by the pyramid DEPTH
+// (sigma-scaled downsample levels), not by a sigma-scaled tap count, so cost is constant instead of O(sigma). The
+// FIRST (extract) pass remaps into a sub-rect of the source via srcOrigin/srcScale so only the region behind the
+// acrylic element is ever processed; gaussian passes run at identity (srcOrigin=0, srcScale=1) on region textures.
+struct BU { dir: vec2<f32>, texel: vec2<f32>, ctrl: vec2<f32>, srcOrigin: vec2<f32>, srcScale: vec2<f32> };
 @group(0) @binding(0) var src: texture_2d<f32>;
 @group(0) @binding(1) var smp: sampler;
 @group(0) @binding(2) var<uniform> b: BU;
@@ -754,19 +795,15 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
   var o: VO; o.p = vec4<f32>(p, 0.0, 1.0); o.uv = vec2<f32>((p.x + 1.0) * 0.5, (1.0 - p.y) * 0.5); return o;
 }
 @fragment fn fs(i: VO) -> @location(0) vec4<f32> {
-  // pad0 > 0.5 => downsample: a single linear tap into a half-size target box-averages the 2x2 source block
-  // (pyramid level). Otherwise a separable gaussian tap-loop.
-  if (b.pad0 > 0.5) { return textureSampleLevel(src, smp, i.uv, 0.0); }
-  let sigma = max(b.sigma, 1e-4);
-  let r = i32(ceil(sigma * 3.0));
-  var sum = vec4<f32>(0.0);
-  var wsum = 0.0;
-  for (var k = -r; k <= r; k = k + 1) {
-    let w = exp(-0.5 * f32(k * k) / (sigma * sigma));
-    sum = sum + textureSampleLevel(src, smp, i.uv + b.dir * b.texel * f32(k), 0.0) * w;
-    wsum = wsum + w;
-  }
-  return sum / max(wsum, 1e-6);
+  let suv = b.srcOrigin + i.uv * b.srcScale;
+  if (b.ctrl.x > 0.5) { return textureSampleLevel(src, smp, suv, 0.0); }
+  let o1 = b.dir * b.texel; let o2 = o1 * 2.0; let o3 = o1 * 3.0; let o4 = o1 * 4.0;
+  var sum = textureSampleLevel(src, smp, suv, 0.0) * 0.204164;
+  sum = sum + (textureSampleLevel(src, smp, suv + o1, 0.0) + textureSampleLevel(src, smp, suv - o1, 0.0)) * 0.180174;
+  sum = sum + (textureSampleLevel(src, smp, suv + o2, 0.0) + textureSampleLevel(src, smp, suv - o2, 0.0)) * 0.123832;
+  sum = sum + (textureSampleLevel(src, smp, suv + o3, 0.0) + textureSampleLevel(src, smp, suv - o3, 0.0)) * 0.066282;
+  sum = sum + (textureSampleLevel(src, smp, suv + o4, 0.0) + textureSampleLevel(src, smp, suv - o4, 0.0)) * 0.027631;
+  return sum;
 }";
 
 	private void CreateBlurPipeline()
@@ -1103,6 +1140,8 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 	{
 		Pool?.Dispose();
 		BufferPool?.Dispose();
+		if (_xformBg != IntPtr.Zero) { wgpuBindGroupRelease(_xformBg); _xformBg = IntPtr.Zero; }
+		if (_xformBuf != IntPtr.Zero) { wgpuBufferRelease(_xformBuf); _xformBuf = IntPtr.Zero; }
 	}
 }
 
@@ -1828,8 +1867,9 @@ public sealed unsafe class WebGpuSlab
 	public void EndFrame() => _alloc.RetainOnly(_live);
 	public int ByteOffset(long id) => (_alloc.TryGet(id, out var s) ? s.Off : 0) * _stride * sizeof(float);
 
-	// Reserve/reuse `id`'s stable slice, write its verts to the CPU shadow, and upload ONLY the changed bytes
-	// (or the whole shadow if the buffer had to grow). Returns the slice's BYTE offset.
+	// Reserve/reuse `id`'s stable slice, and upload ONLY what changed: the whole shadow if the buffer had to grow,
+	// otherwise a dirty diff against the CPU shadow — skip the write entirely when byte-identical (static UI), else
+	// write only the changed [lo..hi] sub-range. Returns the slice's BYTE offset.
 	public int Put(long id, System.Collections.Generic.List<float> verts)
 	{
 		_live.Add(id);
@@ -1839,23 +1879,30 @@ public sealed unsafe class WebGpuSlab
 		int needFloats = capVerts * _stride;
 		if (_shadow.Count < needFloats) { System.Runtime.InteropServices.CollectionsMarshal.SetCount(_shadow, needFloats); }
 		var dst = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_shadow);
-		System.Runtime.InteropServices.CollectionsMarshal.AsSpan(verts).CopyTo(dst.Slice(voff * _stride, verts.Count));
+		var src = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(verts);
 		int byteOff = voff * _stride * sizeof(float);
+		int n = verts.Count;
+		var slot = dst.Slice(voff * _stride, n);
 		if (Buf == IntPtr.Zero || _bufVerts < capVerts)
 		{
 			// (Re)allocate the persistent buffer (1.5x headroom already in the allocator) and upload the whole shadow.
+			src.CopyTo(slot);
 			if (Buf != IntPtr.Zero) { _d.DeferReleaseBuffer(Buf); }
 			_bufVerts = capVerts;
 			var bd = new WGPUBufferDescriptor { Size = (nuint)(_bufVerts * _stride * sizeof(float)), Usage = WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst };
 			Buf = wgpuDeviceCreateBuffer(_d.Dev, &bd);
 			fixed (float* p = dst) { wgpuQueueWriteBuffer(_d.Q, Buf, 0, (IntPtr)p, (nuint)(needFloats * sizeof(float))); }
 			_d.Profiler?.Upload(needFloats * sizeof(float));
+			return byteOff;
 		}
-		else
-		{
-			fixed (float* p = &dst[voff * _stride]) { wgpuQueueWriteBuffer(_d.Q, Buf, (nuint)byteOff, (IntPtr)p, (nuint)(verts.Count * sizeof(float))); }
-			_d.Profiler?.Upload(verts.Count * sizeof(float));
-		}
+		// Dirty diff vs the shadow: first/last changed float. Identical → nothing to upload (the common static case).
+		int lo = 0; while (lo < n && slot[lo] == src[lo]) { lo++; }
+		if (lo == n) { return byteOff; }
+		int hi = n - 1; while (hi > lo && slot[hi] == src[hi]) { hi--; }
+		int len = hi - lo + 1;
+		src.Slice(lo, len).CopyTo(slot.Slice(lo, len));
+		fixed (float* p = &dst[voff * _stride + lo]) { wgpuQueueWriteBuffer(_d.Q, Buf, (nuint)(byteOff + lo * sizeof(float)), (IntPtr)p, (nuint)(len * sizeof(float))); }
+		_d.Profiler?.Upload(len * sizeof(float));
 		return byteOff;
 	}
 }
@@ -2312,10 +2359,11 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity)
 	{
 		if (filter is not WebGpuEffectFilter fx) { return; }
-		// Opaque acrylic: a fully-opaque tint completely covers the blurred backdrop, so skip the backdrop capture,
-		// full-window surface and gaussian blur entirely — just fill the effect region with the tint (the clip masks
-		// its rounded corners). Matches WinUI's opaque acrylic fallback and the original branch's short-circuit.
-		if (fx.Color.A == 255)
+		// Opaque acrylic OR a zero-blur acrylic: a fully-opaque tint completely covers the blurred backdrop, and a
+		// zero sigma makes the blur a no-op — either way skip the backdrop capture, full-window surface and gaussian
+		// blur entirely and just fill the effect region with the tint (the clip masks its rounded corners). Matches
+		// WinUI's opaque acrylic fallback and the reference's `isOpaque || blurSigma <= 0` short-circuit.
+		if (fx.Color.A == 255 || (fx.SigmaX <= 0f && fx.SigmaY <= 0f))
 		{
 			var a = _clip.Aabb;
 			_target.Add(new RectCommand
@@ -2524,6 +2572,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// like the Skia one, not a replay-only sink. State verbs (Save/Scale/clip/…) forward here too so the overlay
 	// honours the transform; Scale/Save/Restore additionally drive the frame's root DPI scale (_presentScale).
 	private readonly WebGpuCommandRecorder _overlay = new();
+	// The replayed frame's (DPI-scaled) commands + clear, captured at Replay and rendered ONCE at Dispose with the
+	// immediate-mode overlay appended as final top-most commands. Deferring lets the whole present be a single pass
+	// (no follow-up LoadOp.Load overlay pass), so the fast path's MSAA target resolves on-tile (StoreOp.Discard).
+	private List<WebGpuCommand> _pendingCmds;
+	private WColor? _pendingClear;
+	private long _tReplayStart;
 	public WebGpuPresentSession(WebGpuDevice d, WebGpuRenderSurface s) { _d = d; _s = s; }
 
 	// Runs a frame: opens the shared encoder (if not already inside one), renders, then finishes+submits once.
@@ -2847,30 +2901,53 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		return BlurPyramid(cov.View, sw, sh2, sh.SigmaX, sh.SigmaY);
 	}
 
-	// Blur pyramid (matches ramez's offscreen-ss:blur ×3): one 2x box-downsample, then a small separable gaussian
-	// H+V on the half-res level. The half-res result is sampled by UV in the composite (bilinear upscales it), so a
-	// large blur is cheap (small kernel on a small texture) and the pass stream is 3 blur passes, like the original.
-	private IntPtr BlurPyramid(IntPtr src, int w, int h, float sigmaX, float sigmaY)
+	// Blur pyramid over a REGION of `src`: extract the device-px rect (rx,ry,rw,rh) out of the fullW×fullH source
+	// into a sigma-scaled downsample pyramid (depth set by the requested blur radius), then a fixed 9-tap separable
+	// gaussian on the small top level. Returns the region-sized blurred view; the caller maps screen px -> region uv
+	// in the composite (bilinear upscales it). Only the region behind the acrylic element is ever processed, and the
+	// per-pass kernel is constant, so a large blur is a few tiny passes instead of a full-frame O(sigma) kernel.
+	private IntPtr BlurPyramidRegion(IntPtr src, int fullW, int fullH, float rx, float ry, float rw, float rh, float sigmaX, float sigmaY)
 	{
-		int dw = Math.Max(1, w / 2), dh = Math.Max(1, h / 2);
-		var down = _d.Pool.Rent(dw, dh, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
-		BlurPass(src, down, default, default, 0f, downsample: true);
-		var tmp = _d.Pool.Rent(dw, dh, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
-		BlurPass(down, tmp, new Vector2(1f, 0f), new Vector2(1f / dw, 0f), sigmaX * 0.5f);   // sigma halved with the resolution
-		var outv = _d.Pool.Rent(dw, dh, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
-		BlurPass(tmp, outv, new Vector2(0f, 1f), new Vector2(0f, 1f / dh), sigmaY * 0.5f);
-		return outv;
+		int iw = Math.Max(1, (int)MathF.Round(rw)), ih = Math.Max(1, (int)MathF.Round(rh));
+		float sigma = MathF.Max(sigmaX, sigmaY);
+		int levels = Math.Clamp((int)MathF.Round(MathF.Log2(MathF.Max(sigma, 1f) / 2f)), 1, 5);
+		while (levels > 1 && ((iw >> levels) < 4 || (ih >> levels) < 4)) { levels--; }
+
+		var origin = new Vector2(rx / fullW, ry / fullH);
+		var scale = new Vector2(rw / fullW, rh / fullH);
+		int cw = Math.Max(1, iw >> 1), ch = Math.Max(1, ih >> 1);
+		var cur = _d.Pool.Rent(cw, ch, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+		BlurPass(src, cur, default, default, downsample: true, origin, scale);   // extract sub-rect + downsample ×2
+		for (int l = 2; l <= levels; l++)
+		{
+			int nw = Math.Max(1, cw >> 1), nh = Math.Max(1, ch >> 1);
+			var nx = _d.Pool.Rent(nw, nh, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+			BlurPass(cur, nx, default, default, downsample: true, Vector2.Zero, Vector2.One);
+			cur = nx; cw = nw; ch = nh;
+		}
+		var hh = _d.Pool.Rent(cw, ch, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+		BlurPass(cur, hh, new Vector2(1f, 0f), new Vector2(1f / cw, 0f), downsample: false, Vector2.Zero, Vector2.One);
+		var vv = _d.Pool.Rent(cw, ch, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+		BlurPass(hh, vv, new Vector2(0f, 1f), new Vector2(0f, 1f / ch), downsample: false, Vector2.Zero, Vector2.One);
+		return vv;
 	}
 
-	private void BlurPass(IntPtr src, IntPtr dst, Vector2 dir, Vector2 texel, float sigma, bool downsample = false)
+	// Full-source blur (shadow coverage, already bbox-sized): the region IS the whole texture.
+	private IntPtr BlurPyramid(IntPtr src, int w, int h, float sigmaX, float sigmaY)
+		=> BlurPyramidRegion(src, w, h, 0f, 0f, w, h, sigmaX, sigmaY);
+
+	private void BlurPass(IntPtr src, IntPtr dst, Vector2 dir, Vector2 texel, bool downsample, Vector2 srcOrigin, Vector2 srcScale)
 	{
-		var bu = new float[8]; bu[0] = dir.X; bu[1] = dir.Y; bu[2] = texel.X; bu[3] = texel.Y; bu[4] = sigma; bu[5] = downsample ? 1f : 0f;
-		var ubuf = MakeUniform((int)32);
-		fixed (float* p = bu) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, 32); }
+		var bu = new float[12];
+		bu[0] = dir.X; bu[1] = dir.Y; bu[2] = texel.X; bu[3] = texel.Y;
+		bu[4] = downsample ? 1f : 0f; bu[5] = 0f;
+		bu[6] = srcOrigin.X; bu[7] = srcOrigin.Y; bu[8] = srcScale.X; bu[9] = srcScale.Y;
+		var ubuf = MakeUniform(48);
+		fixed (float* p = bu) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, 48); }
 		var entries = stackalloc WGPUBindGroupEntry[3];
 		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = src };
 		entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-		entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
+		entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 48 };
 		var bgd = new WGPUBindGroupDescriptor { Layout = _d.BlurBgl, EntryCount = 3, Entries = entries };
 		var bg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
 
@@ -2895,7 +2972,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		{
 			WebGpuTrace.Reset();
 			var pr = _d.Profiler;
-			var tReplay = WebGpuProfiler.T();
+			_tReplayStart = WebGpuProfiler.T();
 			pr?.Cmds(rd.Commands.Count);
 			var tBf = WebGpuProfiler.T();
 			_d.BeginFrameResources();   // reclaim last frame's pooled textures/buffers + release its bind groups
@@ -2903,12 +2980,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			pr?.BeginFrameT(tBf);
 			// Apply the root DPI scale to the whole (logical-coord) frame. Nested retained recordings keep their
 			// command-list reference (only their Transform gains the scale) so the geometry cache still hits.
-			var cmds = (_presentScale.X == 1f && _presentScale.Y == 1f)
+			// The actual render is deferred to Dispose so the immediate-mode overlay can be inlined (single pass).
+			_pendingCmds = (_presentScale.X == 1f && _presentScale.Y == 1f)
 				? rd.Commands
 				: WebGpuCommandRecorder.TransformFor(rd.Commands, Matrix4x4.CreateScale(_presentScale.X, _presentScale.Y, 1f), ClipData.None);
-			RunFrame(cmds, _presentClear ?? rd.ClearColor);
-			_d.SolidSlab.EndFrame(); _d.RrectSlab.EndFrame();   // free slices of recordings not seen this frame
-			pr?.Replayed(tReplay);
+			_pendingClear = _presentClear ?? rd.ClearColor;
 		}
 	}
 
@@ -3509,10 +3585,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// the content on top. Reuses the image path (SrcIn tint) for the shadow — same as DrawShadow.
 					if (lyr.ShadowEffect is { } fx)
 					{
-						var tmp = _d.Pool.Rent(_s.Width, _s.Height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
-						BlurPass(layerSurface.View, tmp, new Vector2(1f, 0f), new Vector2(1f / _s.Width, 0f), fx.SigmaX);
-						var blur = _d.Pool.Rent(_s.Width, _s.Height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
-						BlurPass(tmp, blur, new Vector2(0f, 1f), new Vector2(0f, 1f / _s.Height), fx.SigmaY);
+						var blur = BlurPyramid(layerSurface.View, _s.Width, _s.Height, fx.SigmaX, fx.SigmaY);
 						var subuf = MakeUniform((int)112);
 						var sop = stackalloc float[8];
 						sop[0] = 1f; sop[1] = 1f; sop[2] = 0; sop[3] = 0;
@@ -3571,8 +3644,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					var bd = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
 					_d.Profiler?.OsBackdrop(ci);   // ci = prefix commands re-rendered for this backdrop (the O(n^2) signal)
 					RenderInto(cmds.GetRange(0, ci), bd, clear);
-					var bblur = BlurPyramid(bd.View, _s.Width, _s.Height, bk.Effect.SigmaX, bk.Effect.SigmaY);   // 3-pass pyramid
-																				var bubuf = MakeUniform((int)112);
+					// Region-limit: blur only the element AABB padded by the blur reach, not the whole framebuffer.
+					float bkPad = MathF.Max(bk.Effect.SigmaX, bk.Effect.SigmaY) + 8f;
+					var bkAabb = bk.Clip.Aabb;
+					float brx = MathF.Max(0f, bkAabb.X - bkPad), bry = MathF.Max(0f, bkAabb.Y - bkPad);
+					float brw = MathF.Max(1f, MathF.Min(_s.Width, bkAabb.Z + bkPad) - brx), brh = MathF.Max(1f, MathF.Min(_s.Height, bkAabb.W + bkPad) - bry);
+					var bblur = BlurPyramidRegion(bd.View, _s.Width, _s.Height, brx, bry, brw, brh, bk.Effect.SigmaX, bk.Effect.SigmaY);
+					var bubuf = MakeUniform((int)112);
 					var bop = stackalloc float[28]; bop[0] = bk.Opacity; bop[3] = 1f; var lum = bk.Effect.LumColor; bop[4] = lum.R / 255f; bop[5] = lum.G / 255f; bop[6] = lum.B / 255f; bop[7] = lum.A / 255f; bop[24] = bk.Effect.Noise;
 					wgpuQueueWriteBuffer(_d.Q, bubuf, 0, (IntPtr)bop, 112);
 					var bde = stackalloc WGPUBindGroupEntry[3];
@@ -3583,8 +3661,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					var bdbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bdbgd));
 					var bq = new float[24];
 					void BQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); bq[idx] = n.X; bq[idx + 1] = n.Y; bq[idx + 2] = u; bq[idx + 3] = vv; }
-					BQV(0, new Vector2(0, 0), 0, 0); BQV(4, new Vector2(_s.Width, 0), 1, 0); BQV(8, new Vector2(_s.Width, _s.Height), 1, 1);
-					BQV(12, new Vector2(0, 0), 0, 0); BQV(16, new Vector2(_s.Width, _s.Height), 1, 1); BQV(20, new Vector2(0, _s.Height), 0, 1);
+					BQV(0, new Vector2(brx, bry), 0, 0); BQV(4, new Vector2(brx + brw, bry), 1, 0); BQV(8, new Vector2(brx + brw, bry + brh), 1, 1);
+					BQV(12, new Vector2(brx, bry), 0, 0); BQV(16, new Vector2(brx + brw, bry + brh), 1, 1); BQV(20, new Vector2(brx, bry + brh), 0, 1);
 					ops.Add(new DrawOp(2, (nint)bdbg, 0, (nint)MakeBuffer(bq), false, bk.Clip, (nint)MakeClipBg(_d.ImageClipBgl, bk.Clip)));
 					// Acrylic recipe over the blurred backdrop: SrcOver the luminosity colour (== mix(blurred, lum.rgb,
 					// lum.a)), then SrcOver the tint. Both fill the effect region (clip AABB). A=0 colours are skipped.
@@ -3614,13 +3692,23 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		nint xformBg = IntPtr.Zero;
 		if (_xforms.Count > 0)
 		{
-			int xbytes = _xforms.Count * sizeof(float);
-			var xbuf = _d.BufferPool.Rent(xbytes, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
-			var xspan = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_xforms);
-			fixed (float* xp = xspan) { wgpuQueueWriteBuffer(_d.Q, xbuf, 0, (IntPtr)xp, (nuint)xbytes); }
-			var xe = new WGPUBindGroupEntry { Binding = 0, Buffer = xbuf, Offset = 0, Size = (nuint)xbytes };
-			var xbgd = new WGPUBindGroupDescriptor { Layout = _d.XformBgl, EntryCount = 1, Entries = &xe };
-			xformBg = (nint)_d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &xbgd));
+			// Main on-window pass: persistent buffer + bind group cached across frames (rebuilt only on growth).
+			// Nested/pooled passes rent a transient buffer instead so their distinct tables never alias the main one
+			// within a single frame's submit (queue ordering only protects the persistent buffer across frames).
+			if (target == _s)
+			{
+				xformBg = _d.EnsureXformBindGroup(_xforms);
+			}
+			else
+			{
+				int xbytes = _xforms.Count * sizeof(float);
+				var xbuf = _d.BufferPool.Rent(xbytes, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
+				var xspan = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_xforms);
+				fixed (float* xp = xspan) { wgpuQueueWriteBuffer(_d.Q, xbuf, 0, (IntPtr)xp, (nuint)xbytes); }
+				var xe = new WGPUBindGroupEntry { Binding = 0, Buffer = xbuf, Offset = 0, Size = (nuint)xbytes };
+				var xbgd = new WGPUBindGroupDescriptor { Layout = _d.XformBgl, EntryCount = 1, Entries = &xe };
+				xformBg = (nint)_d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &xbgd));
+			}
 		}
 
 		var ca = new WGPURenderPassColorAttachment
@@ -3632,11 +3720,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			// afterwards (never sampled) to save the store bandwidth — target.View (sampled later) is unaffected.
 			DepthSlice = uint.MaxValue,
 			// 1x: render straight into the single-sample View (no resolve target), and Store it (it IS the result).
-			// load=true (overlay compositing over the replayed frame) preserves the existing colour via LoadOp.Load
-			// (valid at 1x, where MsaaColorView aliases the persistent View; an MSAA buffer can't be loaded).
-			// A pooled offscreen discards its MSAA after resolve (never reloaded); the dedicated on-window target
-			// STORES it so a follow-up overlay pass (load=true) can LoadOp.Load a valid multisampled buffer.
-			View = target.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero, LoadOp = load ? WGPULoadOp.Load : WGPULoadOp.Clear, StoreOp = (_d.MsaaSamples > 1 && target.Pooled) ? WGPUStoreOp.Discard : WGPUStoreOp.Store,
+			// MSAA store: the resolved target.View is all any later consumer (blit, backdrop sample) reads, so the
+			// multisampled buffer is Discarded after resolve — EXCEPT when a case-6 backdrop will segment this pass
+			// (it ends + reopens with LoadOp.Load, which requires the samples were Stored). The overlay is inlined
+			// into this same pass (see Dispose), so there is no follow-up load pass to keep the samples alive for.
+			View = target.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero, LoadOp = load ? WGPULoadOp.Load : WGPULoadOp.Clear, StoreOp = (_d.MsaaSamples > 1 && (target.Pooled || backdrops.Count == 0)) ? WGPUStoreOp.Discard : WGPUStoreOp.Store,
 			ClearValue = clear.HasValue ? new WGPUColor { R = clear.Value.R / 255.0, G = clear.Value.G / 255.0, B = clear.Value.B / 255.0, A = clear.Value.A / 255.0 } : default,
 		};
 		var dsa = new WGPURenderPassDepthStencilAttachment
@@ -3775,7 +3863,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// reopened pass. No prefix re-render — each command is encoded once.
 					var bk = backdrops[(int)b1];
 					wgpuRenderPassEncoderEnd(pass);
-					var bblur = BlurPyramid(target.View, _s.Width, _s.Height, bk.Effect.SigmaX, bk.Effect.SigmaY);
+					// Region-limit: blur only the element AABB padded by the blur reach, not the whole framebuffer.
+					float sPad = MathF.Max(bk.Effect.SigmaX, bk.Effect.SigmaY) + 8f;
+					var sAabb = bk.Clip.Aabb;
+					float srx = MathF.Max(0f, sAabb.X - sPad), sry = MathF.Max(0f, sAabb.Y - sPad);
+					float srw = MathF.Max(1f, MathF.Min(_s.Width, sAabb.Z + sPad) - srx), srh = MathF.Max(1f, MathF.Min(_s.Height, sAabb.W + sPad) - sry);
+					var bblur = BlurPyramidRegion(target.View, _s.Width, _s.Height, srx, sry, srw, srh, bk.Effect.SigmaX, bk.Effect.SigmaY);
 					var ca6 = new WGPURenderPassColorAttachment
 					{
 						DepthSlice = uint.MaxValue,
@@ -3807,8 +3900,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						var bdbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bdbgd));
 						var bq = new float[24];
 						void BQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); bq[idx] = n.X; bq[idx + 1] = n.Y; bq[idx + 2] = u; bq[idx + 3] = vv; }
-						BQV(0, new Vector2(0, 0), 0, 0); BQV(4, new Vector2(_s.Width, 0), 1, 0); BQV(8, new Vector2(_s.Width, _s.Height), 1, 1);
-						BQV(12, new Vector2(0, 0), 0, 0); BQV(16, new Vector2(_s.Width, _s.Height), 1, 1); BQV(20, new Vector2(0, _s.Height), 0, 1);
+						BQV(0, new Vector2(srx, sry), 0, 0); BQV(4, new Vector2(srx + srw, sry), 1, 0); BQV(8, new Vector2(srx + srw, sry + srh), 1, 1);
+						BQV(12, new Vector2(srx, sry), 0, 0); BQV(16, new Vector2(srx + srw, sry + srh), 1, 1); BQV(20, new Vector2(srx, sry + srh), 0, 1);
 						var bqbuf = MakeBuffer(bq);
 						var bclipBg = MakeClipBg(_d.ImageClipBgl, bk.Clip);
 						wgpuRenderPassEncoderSetPipeline(pass, _d.ImagePipe);
@@ -3937,12 +4030,30 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity) => _overlay.DrawEffectBackdrop(filter, opacity);
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
 
-	// Composite any immediate-mode overlay (e.g. the diagnostics FPS counter drawn after Replay) over the frame.
+	// Renders the deferred frame with the immediate-mode overlay (e.g. the diagnostics FPS counter drawn after Replay)
+	// appended as final, top-most commands. Doing it in ONE pass — rather than a follow-up LoadOp.Load overlay pass —
+	// is what lets the fast path's MSAA target resolve on-tile (StoreOp.Discard) instead of storing every sample every
+	// frame. Mirrors the reference, which composites its FPS panel into the draw list as a final image.
 	public void Dispose()
 	{
-		if (_overlay.Finish() is WebGpuRenderData od && od.Commands.Count > 0)
+		lock (_d.RenderGate)
 		{
-			lock (_d.RenderGate) { RunFrame(od.Commands, null, load: true); }
+			if (_pendingCmds is not { } main)
+			{
+				// No frame was replayed this present (e.g. a transitional frame during an async backend switch).
+				return;
+			}
+			var cmds = main;
+			if (_overlay.Finish() is WebGpuRenderData od && od.Commands.Count > 0)
+			{
+				cmds = new List<WebGpuCommand>(main.Count + od.Commands.Count);
+				cmds.AddRange(main);
+				cmds.AddRange(od.Commands);
+			}
+			RunFrame(cmds, _pendingClear);
+			_d.SolidSlab.EndFrame(); _d.RrectSlab.EndFrame();   // free slices of recordings not seen this frame
+			_d.Profiler?.Replayed(_tReplayStart);
+			_pendingCmds = null;
 		}
 	}
 }
