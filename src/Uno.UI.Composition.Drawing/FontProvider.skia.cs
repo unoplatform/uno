@@ -10,7 +10,7 @@ namespace Uno.UI.Composition.Drawing;
 /// production. Unset access throws (there is no hidden default); a platform head registers its font manager at
 /// startup (the Skia head does this in SkiaBackend.Register).
 /// </summary>
-public static class FontProvider
+internal static class FontProvider
 {
 	private static IFontProvider? _current;
 
