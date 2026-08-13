@@ -189,7 +189,7 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/13384")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24068")]
 	// Stop() intermittently fails to leave Playing on the LibVLC backend: failed in 2 of 3 CI builds on each.
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11)]
 	public async Task When_MediaPlayerElement_SetSource_Check_PlayStop()
