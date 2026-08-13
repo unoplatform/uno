@@ -44,6 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private long _pendingInteractiveLineFeedSelectionVersion = -1;
 		private long _pendingInteractiveLineFeedInputStateVersion = -1;
 		private long _interactiveInputStateVersion;
+		private bool _textChangingInvalidatedLineFeed;
 		private bool _isProcessingSelectionChanging;
 		private int _selectionSyncDeferralDepth;
 		private RichEditCaretDisplayMode _caretMode = RichEditCaretDisplayMode.ThumblessCaretHidden;
@@ -216,6 +217,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var pendingLineFeedInputStateVersion = _pendingInteractiveLineFeedInputStateVersion;
 			var previousInputStateVersion = _interactiveInputStateVersion;
 			InvalidatePendingInteractiveLineFeed();
+			_textChangingInvalidatedLineFeed = false;
 
 			if (_pendingHighSurrogate is not null
 				&& (args.UnicodeKey is not { } nextUnicode || !char.IsLowSurrogate(nextUnicode)))
@@ -599,7 +601,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 
 					historyKind = global::Microsoft.UI.Text.TextHistoryKind.Typing;
-					armLineFeedCoalescing = key == '\r' && !OperatingSystem.IsIOS() && !OperatingSystem.IsTvOS();
+					armLineFeedCoalescing = key == '\r';
 					if (char.IsHighSurrogate(key))
 					{
 						_pendingHighSurrogate = key;
@@ -649,6 +651,7 @@ namespace Microsoft.UI.Xaml.Controls
 					== inputStateVersionBeforeSelection + (selectionWillChange ? 1 : 0);
 				if (armLineFeedCoalescing
 					&& insertedLength == 1
+					&& !_textChangingInvalidatedLineFeed
 					&& inputStateVersionBeforeMutation == inputStateVersionBeforeSelection
 					&& selectionUpdateWasExpected
 					&& selectionVersionBeforeMutation == Document.SelectionChangeVersion

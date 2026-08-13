@@ -34,6 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (value != AcceptsReturn)
 				{
 					InvalidatePendingInteractiveLineFeed();
+					_textChangingInvalidatedLineFeed |= _isInvokingTextChanging;
 				}
 				SetValue(AcceptsReturnProperty, value);
 			}
