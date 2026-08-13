@@ -597,6 +597,21 @@
 		<Content Update="@(Content)" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
-	<!-- Must stay last: replaces the implicit bottom import an Sdk attribute would have added. -->
+	<!-- Must stay the last import: replaces the implicit bottom import an Sdk attribute would have added. -->
 	<Import Project="$(MSBuildThisFileDirectory)..\..\Uno.Sdk\Sdk\Sdk.targets" />
+
+	<!--
+	Uno.Resizetizer decides "is this a Skia app" from $(UnoRuntimeIdentifier) alone, which this head sets
+	on every non-WinUI TFM. On android and ios its platform branch and its skia branch therefore both
+	match, and the skia one is evaluated last, so UnoResizetizerPlatformType lands on 'wpf': android gets
+	no mipmap/* resources and aapt2 fails on the manifest's @mipmap/icon (APT2260), while ios silently
+	ships an icon.ico instead of an asset catalog. This has to sit below the import above, because that
+	is where the package's targets — and the property they overwrite — come from.
+	-->
+	<PropertyGroup Condition="'$(_Platform)' == 'android'">
+		<UnoResizetizerPlatformType>android</UnoResizetizerPlatformType>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(_Platform)' == 'ios'">
+		<UnoResizetizerPlatformType>ios</UnoResizetizerPlatformType>
+	</PropertyGroup>
 </Project>
