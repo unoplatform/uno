@@ -35,9 +35,10 @@ namespace Microsoft.UI.Xaml
 		private DependencyProperty? _property;
 		private TargetPropertyPath? _target;
 
-		// Registered so that a binding can be set on Value; the property itself is
-		// not DP-backed, since a Setter value must survive being sealed.
-		public static DependencyProperty ValueProperty { get; }
+		// Deliberately not named ValueProperty: the XAML generator treats a "<Name>Property"
+		// member as proof that Name is DP-backed, and would route Setter.Value through
+		// SetValue/SetBinding — but the value lives in _value, so it would be dropped.
+		private static DependencyProperty InternalValueProperty { get; }
 			= DependencyProperty.Register(
 				nameof(Value),
 				typeof(object),
@@ -197,7 +198,7 @@ namespace Microsoft.UI.Xaml
 
 		private void RefreshBindingPath()
 			// force binding value to re-evaluate the source and use converters
-			=> GetBindingExpression(ValueProperty)?.RefreshTarget();
+			=> GetBindingExpression(InternalValueProperty)?.RefreshTarget();
 
 		internal BindingPath? TryGetOrCreateBindingPath(IFrameworkElement owner)
 		{

@@ -8,7 +8,6 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class Setter : global::Microsoft.UI.Xaml.SetterBase
 	{
-		// Skipping already declared property ValueProperty
 		// Skipping already declared property Property
 		// Skipping already declared property Target
 		// Skipping already declared property Value

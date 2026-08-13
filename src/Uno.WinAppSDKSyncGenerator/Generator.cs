@@ -2159,6 +2159,18 @@ namespace Uno.WinAppSDKSyncGenerator
 				}
 			}
 
+			if (property.ContainingType.Name == "Setter")
+			{
+				switch (property.Name)
+				{
+					// This is ignored until Value becomes an actual DP. Uno keeps the value in a
+					// field, and generating the stub would register "Value" on Setter a second
+					// time, throwing from the type initializer.
+					case "ValueProperty":
+						return true;
+				}
+			}
+
 			if (property.ContainingType.Name == "RelativeSource")
 			{
 				switch (property.Name)
