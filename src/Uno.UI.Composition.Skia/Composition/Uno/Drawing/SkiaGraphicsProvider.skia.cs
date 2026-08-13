@@ -14,15 +14,28 @@ public sealed class SkiaGraphicsProvider : IGraphicsProvider
 	private readonly GraphicsContextKind[] _preferred;
 
 	public SkiaGraphicsProvider(params GraphicsContextKind[] preferred)
-		=> _preferred = preferred.Length > 0
+		: this(null, preferred)
+	{
+	}
+
+	/// <summary>
+	/// Creates the Skia backend over a specific drawing factory (e.g. <c>SkiaManagedGeometryDrawingFactory</c> for
+	/// managed geometry on Skia pixels). Defaults to a plain <see cref="SkiaDrawingFactory"/>. The provider owns its
+	/// drawing factory — it is not sourced from a global registration.
+	/// </summary>
+	public SkiaGraphicsProvider(IDrawingFactory? drawingFactory, params GraphicsContextKind[] preferred)
+	{
+		_preferred = preferred.Length > 0
 			? preferred
 			: new[] { GraphicsContextKind.OpenGL, GraphicsContextKind.OpenGLES, GraphicsContextKind.Vulkan, GraphicsContextKind.Software };
+		_drawing = drawingFactory ?? new SkiaDrawingFactory();
+	}
 
 	public IReadOnlyList<GraphicsContextKind> PreferredContexts => _preferred;
 
 	public GraphicsRequirements Requirements => new() { MinStencilBits = 8, PreferredColor = GraphicsColorFormat.Bgra8888 };
 
-	private readonly SkiaDrawingFactory _drawing = new();
+	private readonly IDrawingFactory _drawing;
 
 	public Graphics CreateGraphics(IGraphicsContext context) => new(_drawing, new SkiaRenderer());
 }

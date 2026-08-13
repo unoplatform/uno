@@ -63,7 +63,7 @@ public static class GraphicsRegistry
 	/// <em>any</em> registered <see cref="IGraphicsProvider"/> (Uno's WebGPU renderer, or a user's own). Takes
 	/// precedence over <see cref="ContextFactory"/> for that kind.
 	/// </summary>
-	public static void RegisterContextFactory(GraphicsContextKind kind, Func<INativeWindow, IGraphicsContext?> factory)
+	internal static void RegisterContextFactory(GraphicsContextKind kind, Func<INativeWindow, IGraphicsContext?> factory)
 	{
 		ArgumentNullException.ThrowIfNull(factory);
 		lock (_gate)
@@ -77,7 +77,7 @@ public static class GraphicsRegistry
 	/// synchronously (WASM/WebGPU: the device is imported from browser JS and the JS thread must not be blocked).
 	/// Such a kind must be negotiated with <see cref="InitializeAsync"/>, not the synchronous <see cref="Initialize"/>.
 	/// </summary>
-	public static void RegisterAsyncContextFactory(GraphicsContextKind kind, Func<INativeWindow, Task<IGraphicsContext?>> factory)
+	internal static void RegisterAsyncContextFactory(GraphicsContextKind kind, Func<INativeWindow, Task<IGraphicsContext?>> factory)
 	{
 		ArgumentNullException.ThrowIfNull(factory);
 		lock (_gate)
@@ -90,7 +90,7 @@ public static class GraphicsRegistry
 	/// Registers the app's backend preference, most-preferred first. Uniform across every platform (there is
 	/// no fluent-builder dependency and no default backend). Replaces any previous registration.
 	/// </summary>
-	public static void Register(IReadOnlyList<IGraphicsProvider> backendsInPreferenceOrder)
+	internal static void Register(IReadOnlyList<IGraphicsProvider> backendsInPreferenceOrder)
 	{
 		ArgumentNullException.ThrowIfNull(backendsInPreferenceOrder);
 		lock (_gate)
@@ -103,7 +103,7 @@ public static class GraphicsRegistry
 	/// Registers <paramref name="backendsInPreferenceOrder"/> only if no backend preference is set yet, so a
 	/// backend's implicit default (the Skia fallback) never clobbers a preference an app declared explicitly.
 	/// </summary>
-	public static void RegisterDefault(IReadOnlyList<IGraphicsProvider> backendsInPreferenceOrder)
+	internal static void RegisterDefault(IReadOnlyList<IGraphicsProvider> backendsInPreferenceOrder)
 	{
 		ArgumentNullException.ThrowIfNull(backendsInPreferenceOrder);
 		lock (_gate)

@@ -3972,33 +3972,39 @@ public interface IWebGpuDeviceContext
 public sealed class WebGpuGraphicsProvider : IGraphicsProvider
 {
 	private static readonly GraphicsContextKind[] _preferred = { GraphicsContextKind.WebGpu };
+	private readonly IDrawingFactory _geometry;
+
+	// WebGPU rasterizes on the GPU but does not tessellate paths or build geometry itself, so it composes over a
+	// geometry engine (e.g. the SkiaSharp-free ManagedDrawingFactory, or any IDrawingFactory). That dependency is
+	// WebGPU's own concern, satisfied here via the constructor — NOT a separate global drawing-factory registration
+	// on the app side. The app registers only this provider.
+	public WebGpuGraphicsProvider(IDrawingFactory geometry)
+		=> _geometry = geometry ?? throw new ArgumentNullException(nameof(geometry));
 
 	public IReadOnlyList<GraphicsContextKind> PreferredContexts => _preferred;
 
 	public GraphicsRequirements Requirements => new() { MinStencilBits = 8, PreferredColor = GraphicsColorFormat.Rgba8888 };
 
 	// The device is created by the host context (it owns the window swapchain); the device-bound WebGpu drawing
-	// factory wraps whatever factory is current so images become GPU-resident, and the WebGpu renderer draws.
+	// factory composes GPU-resident images/shaders over the injected geometry engine, and the WebGpu renderer draws.
 	public Uno.UI.Composition.Drawing.Graphics CreateGraphics(IGraphicsContext context)
 	{
 		var device = ((IWebGpuDeviceContext)context).Device;
-		return new(new WebGpuDrawingFactory(device, DrawingFactory.Current), new WebGpuRenderer(device));
+		return new(new WebGpuDrawingFactory(device, _geometry), new WebGpuRenderer(device));
 	}
 }
 
 /// <summary>
 /// The WebGPU "GPU-API" half: builds the on-window WebGPU swapchain context (surface + device) from the neutral
-/// <see cref="INativeWindow"/>, independent of any render backend. Register it (<see cref="Register"/>) so a host
-/// only contributes an <see cref="INativeWindow"/> and never references WebGPU; the resulting context exposes the
-/// device via <see cref="IWebGpuDeviceContext"/>, so it can be consumed by Uno's <see cref="WebGpuGraphicsProvider"/>
-/// OR by a user's own <see cref="IGraphicsProvider"/> that renders on WebGPU — using this factory does not force
-/// Uno's WebGPU renderer.
+/// <see cref="INativeWindow"/>, independent of any render backend, so a host only contributes an
+/// <see cref="INativeWindow"/> and never references WebGPU. It is self-registered into the framework's internal
+/// per-kind context registry by <see cref="WebGpuModuleInitializer"/> (loaded when the app constructs a
+/// <see cref="WebGpuGraphicsProvider"/>) — the app never wires a context factory. The resulting context exposes the
+/// device via <see cref="IWebGpuDeviceContext"/>, consumable by Uno's <see cref="WebGpuGraphicsProvider"/> or a
+/// user's own <see cref="IGraphicsProvider"/> that renders on WebGPU.
 /// </summary>
 public static class WebGpuContextFactory
 {
-	/// <summary>Registers this factory as the WebGPU context/window creator in the neutral pipeline.</summary>
-	public static void Register() => GraphicsRegistry.RegisterAsyncContextFactory(GraphicsContextKind.WebGpu, CreateAsync);
-
 	/// <summary>
 	/// Builds a WebGPU on-window context from the neutral window. Native windowing systems (X11/Win32/Android/Metal)
 	/// create a wgpu surface synchronously (the task completes inline); the browser (Kind=Wasm) imports the device

@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.IO;
@@ -6,6 +6,7 @@ using System.Runtime.Loader;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Win32;
@@ -20,12 +21,6 @@ namespace SkiaSharpExample
 		[STAThread]
 		public static void Main(string[] args)
 		{
-			// LOCAL-ONLY (do not commit): default WebGPU head + profiler on for the handed-over build.
-			foreach (var kv in new[] { ("UNO_WEBGPU", "1"), ("UNO_WEBGPU_PROFILE", "1") })
-			{
-				if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable(kv.Item1))) { Environment.SetEnvironmentVariable(kv.Item1, kv.Item2); }
-			}
-
 			// Ensures that we're loading the Skia assemblies properly
 			// as we're manipulating the output based on _UnoOverrideReferenceCopyLocalPaths
 			// and _UnoAdjustUserRuntimeAssembly to avoid getting reference assemblies in the
@@ -38,38 +33,6 @@ namespace SkiaSharpExample
 		private static void Run()
 		{
 			SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
-
-			ApplyManagedBackendOptions();
-
-			// Install the drawing backend at the app entry (the framework is backend-agnostic and packaged once).
-			// Gated by the app-level build flags: UNO_DRAWING_SKIA installs the Skia backend (its default renderer +
-			// SKCanvasElement factory); otherwise the SkiaSharp-free managed backend is installed and the head's
-			// WebGPU render view provides the renderer. Must run before Application.Start reaches DrawingFactory.Current.
-#if UNO_DRAWING_SKIA
-			global::Uno.UI.Composition.Skia.SkiaBackend.Register();
-#else
-			global::Uno.UI.Composition.Drawing.ManagedBackend.Register();
-#endif
-
-#if UNO_DRAWING_WEBGPU
-			// Composition root: when the WebGPU head is active, register WebGPU as the preferred backend in the
-			// neutral graphics pipeline (with a Skia software fallback when the Skia backend is present). Provider
-			// selection lives here, not in the host.
-			if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is "neutral" or "1" or "true" or "swapchain")
-			{
-				// The WebGPU context/window factory (GPU-API half) is registered independently of the render
-				// backend, so it could also feed a user's own WebGPU renderer.
-				global::Uno.UI.Composition.WebGpu.WebGpuContextFactory.Register();
-				var providers = new System.Collections.Generic.List<global::Uno.UI.Composition.Drawing.IGraphicsProvider>
-				{
-					new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider(),
-				};
-#if UNO_DRAWING_SKIA
-				providers.Add(new global::Uno.UI.Composition.Drawing.SkiaGraphicsProvider());
-#endif
-				global::Uno.UI.Composition.Drawing.GraphicsRegistry.Register(providers);
-			}
-#endif
 
 			UnoPlatformHost? host = default;
 			var builder = UnoPlatformHostBuilder.Create()
@@ -95,36 +58,50 @@ namespace SkiaSharpExample
 				.UseLinuxFrameBuffer(hostBuilder => hostBuilder.XkbKeymap(new(layout: "us,ara", options: "grp:alt_shift_toggle")))
 				.UseMacOS();
 
-			host = builder
-				.Build();
+			ConfigureDrawingBackend(builder);
+
+			host = builder.Build();
 
 			host.Run();
 		}
 
-		// Dev/test affordance: let the host opt into the SkiaSharp-free managed engines via environment variables.
-		// Image decode and font resolution are backend-independent seams an app registers any implementor on
-		// (ImageDecoder / FontProvider); geometry lives on the drawing backend, so opting into managed geometry means
-		// registering a path-implementor backend (SkiaManagedGeometryDrawingFactory — managed geometry, Skia pixels).
-		// Runs before the backend's Register(), which installs its own defaults only where nothing was registered.
-		private static void ApplyManagedBackendOptions()
+		// Composition root: the drawing/render backend and the independent content seams (font, image decode) are
+		// registered through the host builder — the app never calls the low-level static registrars. A backend is one
+		// unit that owns its renderer AND its drawing factory; a GPU backend (WebGPU) takes the geometry engine it
+		// needs via its own constructor, not a separate registration. Backend availability is gated by the app build
+		// flags (UNO_DRAWING_SKIA / UNO_DRAWING_WEBGPU); env vars pick among them and toggle the managed seams.
+		private static void ConfigureDrawingBackend(IUnoPlatformHostBuilder builder)
 		{
-			if (Environment.GetEnvironmentVariable("UNO_MANAGED_FONTS") is "1" or "true")
+#if UNO_DRAWING_WEBGPU
+			if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is "neutral" or "1" or "true" or "swapchain")
 			{
-				Uno.UI.Composition.Drawing.FontProvider.Current = new Uno.UI.Composition.Drawing.ManagedFontProvider();
+				// WebGPU renderer over the managed (SkiaSharp-free) geometry engine.
+				builder.GraphicsBackend(new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider(new ManagedDrawingFactory()));
+			}
+			else
+#endif
+			{
+#if UNO_DRAWING_SKIA
+				// Skia backend; UNO_MANAGED_GEOMETRY swaps in managed geometry rasterized on Skia pixels.
+				var geometry = Environment.GetEnvironmentVariable("UNO_MANAGED_GEOMETRY") is "1" or "true"
+					? new SkiaManagedGeometryDrawingFactory()
+					: (IDrawingFactory?)null;
+				builder.GraphicsBackend(new SkiaGraphicsProvider(geometry));
+#elif UNO_DRAWING_WEBGPU
+				// SkiaSharp-free build: WebGPU is the only renderer.
+				builder.GraphicsBackend(new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider(new ManagedDrawingFactory()));
+#endif
 			}
 
-#if UNO_DRAWING_SKIA
-			// Only meaningful with the Skia backend (managed geometry, Skia pixels). The managed/WebGPU heads already
-			// mint managed geometry through ManagedDrawingFactory, so there is nothing to toggle there.
-			if (Environment.GetEnvironmentVariable("UNO_MANAGED_GEOMETRY") is "1" or "true")
+			// Independent content seams (dev toggles). Left unset, they fall back per-seam to their Skia impls.
+			if (Environment.GetEnvironmentVariable("UNO_MANAGED_FONTS") is "1" or "true")
 			{
-				Uno.UI.Composition.Drawing.DrawingFactory.Register(new Uno.UI.Composition.Drawing.SkiaManagedGeometryDrawingFactory());
+				builder.FontProvider(new ManagedFontProvider());
 			}
-#endif
 
 			if (Environment.GetEnvironmentVariable("UNO_MANAGED_IMAGE_DECODER") is "1" or "true")
 			{
-				Uno.UI.Composition.Drawing.ImageDecoder.Current = new Uno.UI.Composition.Drawing.ManagedImageDecoderBackend();
+				builder.ImageDecoder(new ManagedImageDecoderBackend());
 			}
 		}
 

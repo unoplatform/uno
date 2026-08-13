@@ -8,29 +8,12 @@ namespace Uno.UI.Hosting;
 public static class UnoPlatformHostBuilderExtensions
 {
 	/// <summary>
-	/// Registers the app's graphics backend — the render backend and its base drawing/geometry factory, which are
-	/// one unit (a renderer without its drawing factory, or vice-versa, is meaningless). The render backend
-	/// announces the context kinds it supports (<see cref="IGraphicsProvider.PreferredContexts"/>); the framework
-	/// creates a matching context internally (synchronously or asynchronously) and hands it to the backend — the app
-	/// never wires a context factory. The drawing factory produces the neutral geometry the render backend consumes.
-	/// </summary>
-	public static IUnoPlatformHostBuilder GraphicsBackend(this IUnoPlatformHostBuilder builder, IGraphicsProvider renderBackend, IDrawingFactory drawingBackend)
-	{
-		ArgumentNullException.ThrowIfNull(renderBackend);
-		ArgumentNullException.ThrowIfNull(drawingBackend);
-		builder.AddDrawingRegistration(() =>
-		{
-			// Register the base drawing factory first so it exists before the render backend's context is negotiated
-			// (the backend decorates it — e.g. WebGPU wraps it for GPU-resident images while delegating geometry).
-			DrawingFactory.Register(drawingBackend);
-			GraphicsRegistry.Register(new[] { renderBackend });
-		});
-		return builder;
-	}
-
-	/// <summary>
-	/// Registers a self-contained graphics backend whose render backend produces its own drawing factory (e.g. the
-	/// Skia backend), so no separate base factory is supplied. See <see cref="GraphicsBackend(IUnoPlatformHostBuilder, IGraphicsProvider, IDrawingFactory)"/>.
+	/// Registers the app's graphics backend. A backend is a single unit that owns both its renderer and its drawing
+	/// factory: the provider announces the context kinds it supports (<see cref="IGraphicsProvider.PreferredContexts"/>),
+	/// the framework creates a matching context internally (synchronously or asynchronously) and hands it over, and the
+	/// provider mints the (drawing factory, renderer) pair from it. A backend that needs a geometry engine (e.g. WebGPU,
+	/// which rasterizes on the GPU but does not build paths) takes it via its own constructor — there is no separate
+	/// app-side drawing-factory registration and no context factory to wire.
 	/// </summary>
 	public static IUnoPlatformHostBuilder GraphicsBackend(this IUnoPlatformHostBuilder builder, IGraphicsProvider renderBackend)
 	{

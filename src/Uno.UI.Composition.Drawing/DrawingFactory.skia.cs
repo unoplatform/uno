@@ -33,15 +33,17 @@ public static class DrawingFactory
 		}
 	}
 
-	/// <summary>Registers the active drawing backend. Intended to be called during host/backend initialization.</summary>
-	public static void Register(IDrawingFactory backend)
+	/// <summary>
+	/// Registers the active drawing backend. Framework-internal: app-side registration goes through the host builder
+	/// (a graphics backend provider supplies its drawing factory), not this low-level entry.
+	/// </summary>
+	internal static void Register(IDrawingFactory backend)
 		=> _current = backend ?? throw new ArgumentNullException(nameof(backend));
 
 	/// <summary>
-	/// Registers <paramref name="backend"/> only if none is registered yet. Used by a backend's module-initializer
-	/// self-registration so it acts as a fallback for consumers that don't register explicitly, without clobbering
-	/// an explicit app registration (e.g. a SkiaSharp-free app that registered the managed backend in its entry).
+	/// Registers <paramref name="backend"/> only if none is registered yet. Framework-internal; used by a backend's
+	/// module-initializer self-registration so it acts as a fallback without clobbering an explicit registration.
 	/// </summary>
-	public static void RegisterDefault(IDrawingFactory backend)
+	internal static void RegisterDefault(IDrawingFactory backend)
 		=> _current ??= backend ?? throw new ArgumentNullException(nameof(backend));
 }

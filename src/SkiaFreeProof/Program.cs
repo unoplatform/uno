@@ -17,7 +17,7 @@ internal static class Program
 			.App(() => new App())
 			.UseX11()
 			.UseWin32()
-			.GraphicsBackend(new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider(), new ManagedDrawingFactory())
+			.GraphicsBackend(new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider(new ManagedDrawingFactory()))
 			.FontProvider(new ManagedFontProvider())
 			.ImageDecoder(new ManagedImageDecoderBackend())
 			.Build()

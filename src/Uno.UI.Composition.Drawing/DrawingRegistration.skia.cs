@@ -27,11 +27,11 @@ public static class DrawingRegistration
 
 			return _defaultRenderer;
 		}
-		set => _defaultRenderer = value;
+		internal set => _defaultRenderer = value;
 	}
 
 	/// <summary>Registers <paramref name="renderer"/> only if none is set — so the Skia fallback never clobbers a
-	/// renderer a head installed explicitly. Does not trigger the getter's implicit fallback.</summary>
-	public static void RegisterDefaultRenderer(IRenderer renderer)
+	/// renderer a head installed explicitly. Framework-internal; does not trigger the getter's implicit fallback.</summary>
+	internal static void RegisterDefaultRenderer(IRenderer renderer)
 		=> _defaultRenderer ??= renderer;
 }
