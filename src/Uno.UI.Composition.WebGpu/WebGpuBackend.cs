@@ -3632,56 +3632,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				}
 				case BackdropCmd bk:
 				{
-					// Segmentable target (non-pooled: stores its MSAA, so a follow-up pass can LoadOp.Load it): defer to
-					// encode-time pass-segmenting. A kind-6 marker splits the main pass here — the backdrop samples the
-					// framebuffer RESOLVED SO FAR (the content behind it), no prefix re-render. O(n) vs the old O(n^2).
-					if (!target.Pooled)
-					{
-						int bi = backdrops.Count; backdrops.Add(bk);
-						ops.Add(new DrawOp(6, 0, 0, (nint)bi, false, bk.Clip, 0));
-						break;
-					}
-					// Pooled offscreen (nested layer) can't reload its discarded MSAA to continue after a resolve, so
-					// fall back to re-rendering the prefix here.
-					// Capture the content drawn so far (this frame's backdrop), blur it, and draw it clipped to the
-					// effect region; then a tint overlay. Simplified acrylic = blurred backdrop + tint.
-					var bd = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
-					_d.Profiler?.OsBackdrop(ci);   // ci = prefix commands re-rendered for this backdrop (the O(n^2) signal)
-					RenderInto(cmds.GetRange(0, ci), bd, clear);
-					// Region-limit: blur only the element AABB padded by the blur reach, not the whole framebuffer.
-					float bkPad = MathF.Max(bk.Effect.SigmaX, bk.Effect.SigmaY) + 8f;
-					var bkAabb = bk.Clip.Aabb;
-					float brx = MathF.Max(0f, bkAabb.X - bkPad), bry = MathF.Max(0f, bkAabb.Y - bkPad);
-					float brw = MathF.Max(1f, MathF.Min(_s.Width, bkAabb.Z + bkPad) - brx), brh = MathF.Max(1f, MathF.Min(_s.Height, bkAabb.W + bkPad) - bry);
-					var bblur = BlurPyramidRegion(bd.View, _s.Width, _s.Height, brx, bry, brw, brh, bk.Effect.SigmaX, bk.Effect.SigmaY);
-					var bubuf = MakeUniform((int)112);
-					var bop = stackalloc float[28]; bop[0] = bk.Opacity; bop[3] = 1f; var lum = bk.Effect.LumColor; bop[4] = lum.R / 255f; bop[5] = lum.G / 255f; bop[6] = lum.B / 255f; bop[7] = lum.A / 255f; bop[24] = bk.Effect.Noise;
-					wgpuQueueWriteBuffer(_d.Q, bubuf, 0, (IntPtr)bop, 112);
-					var bde = stackalloc WGPUBindGroupEntry[3];
-					bde[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = bblur };
-					bde[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-					bde[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = bubuf, Offset = 0, Size = 112 };
-					var bdbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = bde };
-					var bdbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bdbgd));
-					var bq = new float[24];
-					void BQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); bq[idx] = n.X; bq[idx + 1] = n.Y; bq[idx + 2] = u; bq[idx + 3] = vv; }
-					BQV(0, new Vector2(brx, bry), 0, 0); BQV(4, new Vector2(brx + brw, bry), 1, 0); BQV(8, new Vector2(brx + brw, bry + brh), 1, 1);
-					BQV(12, new Vector2(brx, bry), 0, 0); BQV(16, new Vector2(brx + brw, bry + brh), 1, 1); BQV(20, new Vector2(brx, bry + brh), 0, 1);
-					ops.Add(new DrawOp(2, (nint)bdbg, 0, (nint)MakeBuffer(bq), false, bk.Clip, (nint)MakeClipBg(_d.ImageClipBgl, bk.Clip)));
-					// Acrylic recipe over the blurred backdrop: SrcOver the luminosity colour (== mix(blurred, lum.rgb,
-					// lum.a)), then SrcOver the tint. Both fill the effect region (clip AABB). A=0 colours are skipped.
-					void Overlay(WColor col)
-					{
-						if (col.A == 0) { return; }
-						var tc = new Vector4(col.R / 255f, col.G / 255f, col.B / 255f, col.A / 255f);
-						var tv = new List<float>();
-						void TV(float x, float y) { var n = Ndc(new Vector2(x, y)); tv.Add(n.X); tv.Add(n.Y); tv.Add(tc.X); tv.Add(tc.Y); tv.Add(tc.Z); tv.Add(tc.W); }
-						var a = bk.Clip.Aabb;
-						TV(a.X, a.Y); TV(a.Z, a.Y); TV(a.Z, a.W); TV(a.X, a.Y); TV(a.Z, a.W); TV(a.X, a.W);
-						ops.Add(new DrawOp(0, (nint)MakeBuffer(tv.ToArray()), 6, 0, false, bk.Clip, (nint)MakeClipBg(_d.SolidClipBgl, bk.Clip)));
-					}
-					// luminosity + grain are baked into the acrylic composite above; only the tint overlay remains
-					Overlay(bk.Effect.Color);
+					// Defer to encode-time pass-segmenting: a kind-6 marker splits THIS pass here so the backdrop samples the
+					// framebuffer RESOLVED SO FAR (the content behind it) in place — no offscreen, no prefix re-render. Works for
+					// the on-window target AND pooled layer targets: both store+reload their MSAA across the segment (see the
+					// main-pass + kind-6 StoreOp), so an acrylic inside a layer/flyout skips the full-window offscreen the old
+					// pooled fallback re-rendered per backdrop, and an empty prefix costs nothing (no separate blurred offscreen).
+					int bi = backdrops.Count; backdrops.Add(bk);
+					ops.Add(new DrawOp(6, 0, 0, (nint)bi, false, bk.Clip, 0));
 					break;
 				}
 			}
@@ -3728,7 +3685,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			// multisampled buffer is Discarded after resolve — EXCEPT when a case-6 backdrop will segment this pass
 			// (it ends + reopens with LoadOp.Load, which requires the samples were Stored). The overlay is inlined
 			// into this same pass (see Dispose), so there is no follow-up load pass to keep the samples alive for.
-			View = target.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero, LoadOp = load ? WGPULoadOp.Load : WGPULoadOp.Clear, StoreOp = (_d.MsaaSamples > 1 && (target.Pooled || backdrops.Count == 0)) ? WGPUStoreOp.Discard : WGPUStoreOp.Store,
+			View = target.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero, LoadOp = load ? WGPULoadOp.Load : WGPULoadOp.Clear, StoreOp = (_d.MsaaSamples > 1 && backdrops.Count == 0) ? WGPUStoreOp.Discard : WGPUStoreOp.Store,
 			ClearValue = clear.HasValue ? new WGPUColor { R = clear.Value.R / 255.0, G = clear.Value.G / 255.0, B = clear.Value.B / 255.0, A = clear.Value.A / 255.0 } : default,
 		};
 		var dsa = new WGPURenderPassDepthStencilAttachment
@@ -3877,7 +3834,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					{
 						DepthSlice = uint.MaxValue,
 						View = target.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero,
-						LoadOp = WGPULoadOp.Load, StoreOp = (_d.MsaaSamples > 1 && target.Pooled) ? WGPUStoreOp.Discard : WGPUStoreOp.Store,
+						LoadOp = WGPULoadOp.Load, StoreOp = WGPUStoreOp.Store,   // store: a following segment (next backdrop) reloads it; pooled layer targets segment too now
 					};
 					var dsa6 = new WGPURenderPassDepthStencilAttachment
 					{
