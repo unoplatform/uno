@@ -140,7 +140,7 @@ public class Given_HotReloadService
 		var scenarioFolder = Path.Combine(ScenariosFolder, name);
 		var scenarioFile = Path.Combine(scenarioFolder, "Scenario.json");
 
-		HotReloadWorkspace SUT = new(isDebugCompilation, isMono, useXamlReaderReload);
+		using HotReloadWorkspace SUT = new(isDebugCompilation, isMono, useXamlReaderReload);
 		List<HotReloadWorkspace.UpdateResult> results = new();
 
 		if (projects is not null)

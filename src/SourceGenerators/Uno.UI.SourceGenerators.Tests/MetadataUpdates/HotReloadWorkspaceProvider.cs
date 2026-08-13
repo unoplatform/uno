@@ -14,11 +14,12 @@ using Microsoft.CodeAnalysis.Operations;
 using Microsoft.CodeAnalysis.Text;
 using Uno.HotReload;
 using Uno.HotReload.Microsoft;
+using Uno.HotReload.Utils;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
 
 namespace Uno.UI.SourceGenerators.MetadataUpdates;
 
-internal class HotReloadWorkspace
+internal class HotReloadWorkspace : IDisposable
 {
 	public record UpdateResult(ImmutableArray<Diagnostic> Diagnostics, ImmutableArray<Update> MetadataUpdates);
 
@@ -47,6 +48,7 @@ internal class HotReloadWorkspace
 
 	private Solution? _currentSolution;
 	private WatchHotReloadService? _hotReloadService;
+	private AdhocWorkspace? _workspace;
 
 	public HotReloadWorkspace(bool isDebugCompilation, bool isMono, bool useXamlReaderReload)
 	{
@@ -198,7 +200,7 @@ internal class HotReloadWorkspace
 	{
 		TaskCompletionSource<bool> taskCompletionSource = new();
 
-		var workspace = new AdhocWorkspace();
+		var workspace = _workspace = new AdhocWorkspace();
 
 		void OnWorkspaceFailed(WorkspaceDiagnostic diagnostic)
 		{
@@ -271,10 +273,16 @@ internal class HotReloadWorkspace
 			// Build the analyzer document additional data information
 			var analyzerDocumentId = DocumentId.CreateNewId(project.Id);
 
+			// A host-native absolute path, NOT a hardcoded "C:\Project\…": the generator derives
+			// _projectDirectory from this with Path.GetDirectoryName, which returns "" for a
+			// drive-letter path on Unix — and an empty project directory then mangles every path
+			// it feeds (Substring(_projectDirectory.Length + 1) and friends), so no page is emitted.
+			var projectFullPath = Path.Combine(_baseWorkFolder, project.Name, $"{project.Name}.csproj");
+
 			// For now, there is no need to customize these for each test.
 			var globalConfigBuilder = new StringBuilder($"""
 				is_global = true
-				build_property.MSBuildProjectFullPath = C:\Project\{project.Name}.csproj
+				build_property.MSBuildProjectFullPath = {projectFullPath}
 				build_property.RootNamespace = {project.Name}
 				build_property.XamlSourceGeneratorTracingFolder = {_baseWorkFolder}
 				build_property.Configuration = {(_isDebugCompilation ? "Debug" : "Release")}
@@ -343,16 +351,15 @@ internal class HotReloadWorkspace
 
 				throw new InvalidOperationException($"Compilation errors: {string.Join("\n", errors)}");
 			}
-
-			var emitResult = c.Emit(
-				p.CompilationOutputInfo.AssemblyPath!,
-				pdbPath: Path.ChangeExtension(p.CompilationOutputInfo.AssemblyPath, ".pdb"));
-
-			if (!emitResult.Success)
-			{
-				throw new InvalidOperationException($"Emit errors: {string.Join("\n", emitResult.Diagnostics)}");
-			}
 		}
+
+		// Emit through the dev-server host's own helper rather than Compilation.Emit(pdbPath:):
+		// it writes an EMBEDDED pdb, whereas a separate .pdb defaults to the Windows format and
+		// needs the native DiaSymReader, which does not exist on Linux -- every project then fails
+		// with CS0041 "Unexpected error writing debug information -- Value cannot be null
+		// (Parameter 'type')". Using the helper also keeps the baseline this session starts from
+		// byte-identical to the one HotReloadManager captures in production.
+		(await currentSolution.EmitCompilationOutputAsync(ct)).EnsureSuccess();
 
 		var metadataUpdateCaps = (_isMono ? MonoCapsRaw : NetCoreCapsRaw).Split(" ");
 		var hotReloadService = new WatchHotReloadService(workspace.Services, metadataUpdateCaps);
@@ -434,6 +441,24 @@ internal class HotReloadWorkspace
 				.Where(f => !f.Contains(".Native", StringComparison.OrdinalIgnoreCase))
 				.Select(f => MetadataReference.CreateFromFile(f))
 				.ToArray();
+
+	/// <summary>
+	/// Releases the EnC session and the workspace of this scenario. Without it every scenario leaks
+	/// a full Roslyn workspace, its compilations and an open EnC session with its baselines: the
+	/// suite runs ~250 scenarios, and the accumulation gets the test host OOM-killed partway through
+	/// (it never completed a full run, so the results were silently partial).
+	/// </summary>
+	public void Dispose()
+	{
+		// EndSession throws when no session was started, and when called twice.
+		if (Interlocked.Exchange(ref _hotReloadService, null) is { } hotReloadService)
+		{
+			hotReloadService.EndSession();
+		}
+
+		Interlocked.Exchange(ref _workspace, null)?.Dispose();
+		_currentSolution = null;
+	}
 }
 
 sealed class MyGeneratorReference : AnalyzerReference
