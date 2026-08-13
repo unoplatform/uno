@@ -459,27 +459,40 @@ want real-GPU visual validation:
 
 ---
 
-## Backend registration & graphics negotiation (implemented; X11 GL/GLES/software neutral)
+## Backend registration & graphics negotiation (implemented; all Skia hosts neutral)
 
 This is the model the whole pluggable story hangs on. It has five moving parts — registration,
 negotiation, the host's contribution, the framework's contribution, and the per-frame contract —
 plus a clear answer to "who drives."
 
-> **Implementation status.** The negotiation is live under the vision naming (`GraphicsRegistry`,
-> `IGraphicsProvider`, `Graphics(IDrawingFactory, IRenderer)`, `IGraphicsContext`,
-> `GraphicsContextKind`). `SkiaBackend.Register` registers the one built-in pair (`SkiaGraphicsProvider`,
-> default kind order GL → GLES → software). On X11 the render-selection chain names **no** GPU-library
-> type: `X11SoftwareGraphicsRenderer` installs `X11GraphicsContextFactory` and calls
-> `GraphicsRegistry.Initialize`, which negotiates the context; the Skia backend wraps the acquired
-> neutral target (`ISoftwareRenderTarget` → CPU surface, `IGLRenderTarget` → `GRContext`-GL/GLES). A
-> host with one window type steers the outcome through `Initialize`'s optional neutral
-> **kind-preference override** (e.g. `[Software]`, `[OpenGLES, Software]`) — expressed in
-> `GraphicsContextKind` only, never a backend type. **Verified** headless (Xvfb): a render test passes
-> on both the default GLX (`OpenGL context`) and forced-software (`Software context`) paths, and the
-> WebGPU backend agrees pixel-for-pixel with Skia on the shared render seam. **WebGPU on-window is now live**
-> on X11 (validated headless via the shared `WebGpuSwapChainContext`), the browser, and Win32 (build-only) —
-> see "WebGPU backend — per-target status" above. **Remaining kind** — Vulkan (fails headless on lavapipe) —
-> awaits a real-GPU matrix before its X11 branch migrates and the `UseOpenGL*/UseVulkanOnX11`/`PreferGLESOverGLOnX11` knobs retire.
+> **Implementation status (seam v2 — the host owns per-kind window+context creation).** Every Skia
+> host — X11, Win32, macOS, WebAssembly, Linux.FrameBuffer, AppleUIKit, Android — is backend-agnostic.
+> The host's *entire* contribution is one delegate:
+> `GraphicsRegistry.ContextFactory = (GraphicsContextKind) => Task<IGraphicsContext?>`, which creates a
+> **window+context for the negotiated kind** (a fresh window when the kind needs one — e.g. an X11 GLX
+> visual; or the host's existing kind-agnostic window reused — e.g. a Win32 HWND), or returns `null` to
+> **decline** (unavailable, or the host's config opted out). The host switches purely on `kind` and
+> names no backend and no `UNO_WEBGPU`. **The backend owns the kind order** (`IGraphicsProvider.PreferredContexts`,
+> walked as-is); preference is expressed two neutral ways only — the app orders the provider's kinds via
+> its constructor (`new SkiaGraphicsProvider(GraphicsContextKind.Software)` forces software), and a host
+> *declines* kinds per its own config (Win32 `UseOpenGLOnWin32`, X11 `PreferGLESOverGLOnX11`, LinuxFB
+> `UseDRM`, WASM `forceSoftwareRendering`). Removed with the redesign: `INativeWindow`, `NativeWindowKind`,
+> `GraphicsRequirements`, the WebGPU self-registration, `Initialize`'s `(window, preferredKinds)` params.
+> `DrawingFactory` is now `internal`.
+>
+> **WebGPU** is split into a lightweight, host-referenced **`Uno.UI.Composition.WebGpu.Init`** (the
+> renderer-agnostic on-window `WebGpuContext.Create{Win32,X11,Metal,Android,WasmAsync}` + swapchain/device +
+> raw bindings; carries no desktop native asset) and the app-referenced renderer `Uno.UI.Composition.WebGpu`
+> (the pipelines + `wgpu-native.targets`). A host references only `Init` and calls `WebGpuContext.Create*`
+> directly (no reflection); the expensive desktop `wgpu-native` ships only when an app pulls the renderer,
+> while the small WASM emdawnwebgpu bridge (~a few hundred KB in the 12 MB runtime `.wasm`) is always linked
+> via `Init`'s targets so the WASM host's direct call always resolves.
+>
+> **Verified** here: X11 runtime-proven headless on lavapipe for **all four kinds** (`OpenGL`, `OpenGLES`,
+> `Software`, `WebGpu`), each negotiating and rendering. Win32/macOS/WASM/LinuxFB compile clean on Linux;
+> Android compiles (net10.0-android); the WASM app head links emdawnwebgpu clean without reflection. Per-platform
+> runtime (Win32/macOS/iOS/Android/WASM/DRM) is for on-device validation; AppleUIKit is unbuilt here only for lack
+> of the iOS workload. Vulkan on X11 still awaits a real-GPU matrix before its branch migrates.
 
 ### The two seams stay separate
 
@@ -712,12 +725,18 @@ inside each Skia host), and the record/present frame cycle. No SkiaSharp type ap
 no longer references SkiaSharp except the two items below — the Vulkan GPU subsystem was relocated wholesale
 from `Uno.UI` into the Skia backend assembly.
 
-**WebGPU backend native/ABI:** the experimental `Uno.UI.Composition.WebGpu` backend is bound to the **modern
-`webgpu.h` ABI** (no Silk.NET). The interop layer (`Native/WebGpuInterop.cs`) is generated by `Native/gen_webgpu.py`
-from the vendored, pinned `wgpu-native` headers; the native library itself is fetched at build (`wgpu-native.targets`,
-pinned to `v29.0.1.1`) and resolved through a `DllImportResolver` (`Native/WebGpuLoader.cs`). Async device/adapter/
-buffer-map use modern `CallbackInfo` + `wgpuInstanceProcessEvents`; strings cross as `WGPUStringView`. Runtime-proven
-headless on X11 + lavapipe (on-window swapchain via `UNO_WEBGPU=swapchain`). WASM (emdawnwebgpu) is the next target.
+**WebGPU backend native/ABI:** the experimental WebGPU backend is bound to the **modern `webgpu.h` ABI**
+(no Silk.NET) and is split across two assemblies. The renderer-agnostic **init half** — the interop layer
+(`Uno.UI.Composition.WebGpu.Init/Native/WebGpuInterop.cs`, generated by `gen_webgpu.py` from the vendored,
+pinned `wgpu-native` headers), the `DllImportResolver` (`WebGpuLoader.cs`), and the on-window
+`WebGpuContext.Create*` / swapchain / browser contexts — lives in **`Uno.UI.Composition.WebGpu.Init`**, which
+a *host* references directly (no native asset of its own). The **renderer** (`WebGpuBackend`, pipelines) plus
+the desktop native fetch (`wgpu-native.targets`, resolved through the init half's loader) stay in
+`Uno.UI.Composition.WebGpu`, referenced only by an app that opts into WebGPU. Async device/adapter/buffer-map
+use modern `CallbackInfo` + `wgpuInstanceProcessEvents`; strings cross as `WGPUStringView`. Runtime-proven
+headless on X11 + lavapipe (on-window swapchain via `UNO_WEBGPU=swapchain`). **WASM is live** (emdawnwebgpu,
+Dawn's `webgpu.h` emscripten port via `Uno.UI.Composition.WebGpu.Init/wgpu-wasm.targets`, always linked so the
+WASM host's direct `WebGpuContext` reference resolves; the browser device is imported from `navigator.gpu`).
 
 **Still Skia (the remaining path to fully dropping SkiaSharp):**
 1. **The rasterizer itself** — the default `IDrawingSession`/`RenderOffscreen` pixel work is SkiaSharp. A
