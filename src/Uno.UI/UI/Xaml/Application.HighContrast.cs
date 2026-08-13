@@ -24,7 +24,6 @@ public partial class Application
 
 	private void OnHighContrastAdjustmentChanged()
 	{
-#if __SKIA__
 		foreach (var contentRoot in Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator.ContentRoots)
 		{
 			if (contentRoot.VisualTree?.RootElement is UIElement root)
@@ -32,8 +31,6 @@ public partial class Application
 				root.NotifyApplicationHighContrastAdjustmentChangedCore();
 			}
 		}
-
-#endif
 	}
 }
 

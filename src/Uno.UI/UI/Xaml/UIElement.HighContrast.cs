@@ -83,14 +83,11 @@ public partial class UIElement
 		ElementHighContrastAdjustment oldValue,
 		ElementHighContrastAdjustment newValue)
 	{
-#if __SKIA__
 		UpdateHighContrastOpacityOverride();
-#endif
 	}
 
 	internal void NotifyApplicationHighContrastAdjustmentChangedCore()
 	{
-#if __SKIA__
 		if (HighContrastAdjustment == ElementHighContrastAdjustment.Application)
 		{
 			UpdateHighContrastOpacityOverride();
@@ -100,10 +97,8 @@ public partial class UIElement
 		{
 			child.NotifyApplicationHighContrastAdjustmentChangedCore();
 		}
-#endif
 	}
 
-#if __SKIA__
 	internal void UpdateHighContrastOpacityOverride(bool forceInvalidate = false)
 	{
 		var visual = Hosting.ElementCompositionPreview.GetElementVisual(this);
@@ -119,7 +114,6 @@ public partial class UIElement
 
 		(this as IHighContrastAdjustmentAware)?.OnHighContrastAdjustmentChanged();
 	}
-#endif
 }
 
 #endif
