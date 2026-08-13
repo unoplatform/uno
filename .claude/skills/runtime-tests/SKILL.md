@@ -221,7 +221,7 @@ kill $HTTP_PID $COMPANION_PID 2>/dev/null || true
 | | Skia Desktop | Skia WASM |
 |-|-------------|-----------|
 | **Project** | `SamplesApp` (`net11.0-desktop`) | `SamplesApp` (`net11.0-browserwasm`) |
-| **Build command** | `dotnet build ... -c Release -f net10.0 -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net10.0` | `dotnet publish ... -c Release -f net10.0 -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net10.0` |
+| **Build command** | `dotnet build ... -c Release -f net11.0-desktop -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net11.0-desktop` | `dotnet publish ... -c Release -f net11.0-browserwasm -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net11.0-browserwasm` |
 | **Run method** | `dotnet SamplesApp.dll --runtime-tests=...` | Browser navigates to URL with query params |
 | **Filter delivery** | `UITEST_RUNTIME_TESTS_FILTER` env var | `--runtime-test-filter` URL query param |
 | **Base64 `=` handling** | Standard base64 | Replace `=` with `!` before URL-encoding |
