@@ -2578,7 +2578,7 @@ partial class ComboBox
 			// isn't useful.
 			if (parent is null)
 			{
-				DependencyObject parentDO = current.TemplatedParent;
+				DependencyObject parentDO = current.GetTemplatedParent();
 				parent = parentDO;
 			}
 

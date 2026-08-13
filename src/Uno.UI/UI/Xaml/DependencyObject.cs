@@ -81,36 +81,5 @@ namespace Microsoft.UI.Xaml
 		private protected void InitializeBinder() { }
 
 		public override string ToString() => GetType().FullName;
-
-		#region TemplatedParent DependencyProperty // legacy api, should no longer to be used.
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public DependencyObject TemplatedParent
-		{
-			get => (DependencyObject)GetValue(TemplatedParentProperty);
-			set => SetValue(TemplatedParentProperty, value);
-		}
-
-		// Using a DependencyProperty as the backing store for TemplatedParent.  This enables animation, styling, binding, etc...
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[UnconditionalSuppressMessage("Trimming", "IL2111")]
-		public static DependencyProperty TemplatedParentProperty { get; } =
-			DependencyProperty.Register(
-				name: nameof(TemplatedParent),
-				propertyType: typeof(DependencyObject),
-				ownerType: typeof(DependencyObject),
-				typeMetadata: new FrameworkPropertyMetadata(
-					defaultValue: null,
-					options: /*FrameworkPropertyMetadataOptions.Inherits | */FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.WeakStorage,
-					propertyChangedCallback: (s, e) => ((DependencyObject)s).OnTemplatedParentChanged(e)
-				)
-			);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		internal protected virtual void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-		{
-		}
-
-		#endregion
 	}
 }
