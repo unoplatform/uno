@@ -73,7 +73,7 @@ namespace UITests.Windows_Devices.Haptics
 
 To add a new sample to the SamplesApp:
 
-1. Locate the folder corresponding to the control or class you want to create a sample for in `src/SamplesApp/SamplesApp.Samples/`. The folder structure is typically `Namespace_In_Snake_Case/ControlNameTests`.
+1. Locate the folder corresponding to the control or class you want to create a sample for in `src/SamplesApp/SamplesApp.Samples/`. Folders form a nested hierarchy mirroring the API namespace — the same layout as `src/Uno.UI` — so a `Button` sample lives under `Windows/UI/Xaml/Controls/Button/`. Note that the C# namespaces still use the older underscore form (`UITests.Shared.Windows_UI_Xaml_Controls.Button`), so copy the namespace from a neighboring sample rather than deriving it from the folder path.
 2. Create a new `UserControl` from the Visual Studio templates, with a meaningful name.
 3. Add your sample UI to the `UserControl`.
 4. Add the `[Uno.UI.Samples.Controls.Sample]` attribute to the class in the code-behind partial file. The XAML and code-behind are picked up automatically — no project registration required.
