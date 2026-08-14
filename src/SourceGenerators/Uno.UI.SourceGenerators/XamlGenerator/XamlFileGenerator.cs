@@ -3268,8 +3268,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (needsTemplatedParent)
 					{
-						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetTemplatedParent({writer.AppliedParameterName}, __settings?.TemplatedParent);");
-						writer.AppendLineIndented($"__settings?.TemplateMemberCreatedCallback?.Invoke({writer.AppliedParameterName});");
+						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated({writer.AppliedParameterName}, __settings);");
 					}
 
 					componentDefinition = CurrentScope.Components.FirstOrDefault(x => x.XamlObject == objectDefinition);

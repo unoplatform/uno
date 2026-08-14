@@ -154,8 +154,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 						}
 						.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 						{
-						global::Uno.UI.Helpers.MarkupHelper.SetTemplatedParent(__p1, __settings?.TemplatedParent);
-						__settings?.TemplateMemberCreatedCallback?.Invoke(__p1);
+						global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 						/* _isTopLevelDictionary:False */
 						__that._component_0 = __p1;
 						__nameScope.RegisterName("innerTextBlock", __p1);

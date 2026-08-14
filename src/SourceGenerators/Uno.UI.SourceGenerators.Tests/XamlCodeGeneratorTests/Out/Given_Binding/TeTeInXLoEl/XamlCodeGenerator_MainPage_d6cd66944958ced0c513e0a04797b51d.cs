@@ -354,8 +354,7 @@ namespace TestRepro
 									}
 									.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 									{
-									global::Uno.UI.Helpers.MarkupHelper.SetTemplatedParent(__p1, __settings?.TemplatedParent);
-									__settings?.TemplateMemberCreatedCallback?.Invoke(__p1);
+									global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 									__nameScope.RegisterName("gridInsideGridInsideTemplate", __p1);
 									__that.gridInsideGridInsideTemplate = __p1;
 									global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
@@ -368,8 +367,7 @@ namespace TestRepro
 						}
 						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 						{
-						global::Uno.UI.Helpers.MarkupHelper.SetTemplatedParent(__p1, __settings?.TemplatedParent);
-						__settings?.TemplateMemberCreatedCallback?.Invoke(__p1);
+						global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 						__nameScope.RegisterName("gridInsideTemplate", __p1);
 						__that.gridInsideTemplate = __p1;
 						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
