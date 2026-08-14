@@ -183,16 +183,29 @@ the backdrop bounds-clamping test. A screenshot parity harness (temporary, not c
 **byte-identical** (0 differing pixels) to the legacy path across 17 colour/transfer/transform/composite effects
 over a gradient source.
 
-### Remaining
+### Completed — full coverage, legacy interpreter deleted
 
-- Not yet neutralized (still routed to the legacy realization via the fallback): `BorderEffect` (its source-size
-  tiling doesn't map cleanly to the fixed-size `TextureInput` model — needs an intrinsic-size raster path) and the
-  six lighting effects (`Distant`/`Spot`/`Point` × `Diffuse`/`Specular`). Both are verbatim-portable; the only work
-  is the node/param plumbing (and, for Border, intrinsic-size rasterization).
-- Once the long-tail is neutralized, the legacy `CreateEffectFilter(IGraphicsEffect)` + `SkiaEffectFactory`'s D2D
-  reflection can be deleted; until then it is retained as the fallback + parity reference.
-- WebGPU realizes only the acrylic shape from the tree; other effects return null → the existing recipe fallback
-  (unchanged from before).
+- The six lighting effects are neutralized as one `LightingEffectNode` (kind discriminant + geometry the parser
+  pre-computes via the neutral `EffectHelpers`).
+- `BorderEffect` is modelled as an **edge-extend mode on `TextureInput`** (`EdgeExtend ExtendX/ExtendY`), not a
+  dedicated node — Border isn't a transform, it's how a source is sampled outside its rectangle. The parser
+  rasterizes the source at its intrinsic size; the fuser tiles/extends it (`CreateTile` / `CreateMatrixConvolution`).
+- The legacy path is **gone**: `IDrawingFactory.CreateEffectFilter(IGraphicsEffect, resolver, out hasBackdrop)` and
+  its Skia + WebGPU implementations, `SkiaEffectFactory` (the ~1500-line D2D interpreter), the dead
+  `SkiaEffectHelpers` mode maps, the `UNO_EFFECT_TREE` escape hatch, and the `ContainsUnsupported()` fallback branch
+  are all deleted. `EffectGraphParser` is the single place any Direct2D introspection happens.
+- The SPI is now just `IEffectFilter? CreateEffectFilter(EffectNode tree, Rect bounds)`; the drawing assembly no
+  longer references `IGraphicsEffect`. An `UnsupportedEffectNode` (unbound source / unknown future effect) degrades
+  to source-or-nothing.
+- WebGPU realizes the acrylic shape from the tree; other effects return null → the existing recipe fallback.
+
+Validated byte-identical (headless X11) to the pre-deletion legacy path across the full effect set — acrylic (runtime
+`Given_AcrylicBrush` 5/5), 17 colour/transfer/transform/composite effects, the six lighting effects, and Border.
+
+### Remaining (optional polish)
+
+- `IEffectSource` is still `public` in `Uno.UI.Composition.Drawing` although it's now only a parser-internal adapter
+  (the SPI no longer references it); it could move to `Uno.UI.Composition` as `internal`.
 
 ## Status (WIP)
 
