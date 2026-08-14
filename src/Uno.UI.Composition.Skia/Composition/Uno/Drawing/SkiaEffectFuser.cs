@@ -56,6 +56,31 @@ internal sealed class SkiaEffectFuser
 				return SKImageFilter.CreateColorFilter(SKColorFilter.CreateColorMatrix(cm.Matrix), source, bounds);
 			}
 
+			case ModulateEffectNode modulate:
+			{
+				var source = Fuse(modulate.Source, bounds);
+				if (source is null && !_isBackdrop)
+				{
+					return null;
+				}
+
+				_isBackdrop = false;
+				// Tint: per-channel multiply by the colour, clamped to [0,1] — matches the legacy Tint realization.
+				return SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(modulate.Color.ToSKColor(), SKBlendMode.Modulate), source, bounds);
+			}
+
+			case LuminanceToAlphaEffectNode luma:
+			{
+				var source = Fuse(luma.Source, bounds);
+				if (source is null && !_isBackdrop)
+				{
+					return null;
+				}
+
+				_isBackdrop = false;
+				return SKImageFilter.CreateColorFilter(SKColorFilter.CreateLumaColor(), source, bounds);
+			}
+
 			case BlurEffectNode blur:
 			{
 				var source = Fuse(blur.Source, bounds);

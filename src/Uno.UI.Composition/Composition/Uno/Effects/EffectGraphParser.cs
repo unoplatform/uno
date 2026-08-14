@@ -8,6 +8,7 @@ using Windows.Graphics.Effects;
 using Windows.Graphics.Effects.Interop;
 using Microsoft.UI.Composition;
 using Uno.Foundation.Logging;
+using Uno.UI.Composition;
 using Uno.UI.Composition.Drawing;
 
 namespace Uno.UI.Composition.Effects;
@@ -83,6 +84,11 @@ internal static class EffectGraphParser
 			e.GetNamedPropertyMapping(name, out var index, out _);
 			return e.GetProperty(index) ?? throw new InvalidOperationException($"Effect property '{name}' was null.");
 		}
+		(object Value, GraphicsEffectPropertyMapping Mapping) PropM(string name)
+		{
+			e.GetNamedPropertyMapping(name, out var index, out var mapping);
+			return (e.GetProperty(index) ?? throw new InvalidOperationException($"Effect property '{name}' was null."), mapping);
+		}
 
 		var type = EffectHelpers.GetEffectType(e.GetEffectId());
 		switch (type)
@@ -138,6 +144,96 @@ internal static class EffectGraphParser
 
 				return new CompositeEffectNode(sources, mode);
 			}
+
+			case EffectType.GrayscaleEffect:
+				return new ColorMatrixEffectNode(Src(0), new[]
+				{
+					0.21f, 0.72f, 0.07f, 0f, 0f,
+					0.21f, 0.72f, 0.07f, 0f, 0f,
+					0.21f, 0.72f, 0.07f, 0f, 0f,
+					0f,    0f,    0f,    1f, 0f,
+				});
+
+			case EffectType.InvertEffect:
+				return new ColorMatrixEffectNode(Src(0), new[]
+				{
+					-1f, 0f,  0f,  0f, 1f,
+					0f,  -1f, 0f,  0f, 1f,
+					0f,  0f,  -1f, 0f, 1f,
+					0f,  0f,  0f,  1f, 0f,
+				});
+
+			case EffectType.HueRotationEffect:
+			{
+				var (angleValue, angleMapping) = PropM("Angle");
+				var angle = (float)angleValue;
+				if (angleMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
+				{
+					angle *= 180.0f / MathF.PI;
+				}
+
+				return new ColorMatrixEffectNode(Src(0), new[]
+				{
+					0.2127f + MathF.Cos(angle) * 0.7873f - MathF.Sin(angle) * 0.2127f, 0.715f - MathF.Cos(angle) * 0.715f - MathF.Sin(angle) * 0.715f, 0.072f - MathF.Cos(angle) * 0.072f + MathF.Sin(angle) * 0.928f, 0f, 0f,
+					0.2127f - MathF.Cos(angle) * 0.213f + MathF.Sin(angle) * 0.143f,   0.715f + MathF.Cos(angle) * 0.285f + MathF.Sin(angle) * 0.140f, 0.072f - MathF.Cos(angle) * 0.072f - MathF.Sin(angle) * 0.283f, 0f, 0f,
+					0.2127f - MathF.Cos(angle) * 0.213f - MathF.Sin(angle) * 0.787f,   0.715f - MathF.Cos(angle) * 0.715f + MathF.Sin(angle) * 0.715f, 0.072f + MathF.Cos(angle) * 0.928f + MathF.Sin(angle) * 0.072f, 0f, 0f,
+					0f,                                                                0f,                                                            0f,                                                            1f, 0f,
+				});
+			}
+
+			case EffectType.ExposureEffect:
+			{
+				var multiplier = MathF.Pow(2.0f, (float)Prop("Exposure"));
+				return new ColorMatrixEffectNode(Src(0), new[]
+				{
+					multiplier, 0f,         0f,         0f, 0f,
+					0f,         multiplier, 0f,         0f, 0f,
+					0f,         0f,         multiplier, 0f, 0f,
+					0f,         0f,         0f,         1f, 0f,
+				});
+			}
+
+			case EffectType.SepiaEffect:
+			{
+				var intensity = (float)Prop("Intensity");
+				return new ColorMatrixEffectNode(Src(0), new[]
+				{
+					0.393f + 0.607f * (1 - intensity), 0.769f - 0.769f * (1 - intensity), 0.189f - 0.189f * (1 - intensity), 0f, 0f,
+					0.349f - 0.349f * (1 - intensity), 0.686f + 0.314f * (1 - intensity), 0.168f - 0.168f * (1 - intensity), 0f, 0f,
+					0.272f - 0.272f * (1 - intensity), 0.534f - 0.534f * (1 - intensity), 0.131f + 0.869f * (1 - intensity), 0f, 0f,
+					0f,                                0f,                                0f,                                1f, 0f,
+				});
+			}
+
+			case EffectType.TemperatureAndTintEffect:
+			{
+				var gains = TempAndTintHelpers.TempTintToGains((float)Prop("Temperature"), (float)Prop("Tint"));
+				return new ColorMatrixEffectNode(Src(0), new[]
+				{
+					gains.RedGain, 0f, 0f,             0f, 0f,
+					0f,            1f, 0f,             0f, 0f,
+					0f,            0f, gains.BlueGain, 0f, 0f,
+					0f,            0f, 0f,             1f, 0f,
+				});
+			}
+
+			case EffectType.SaturationEffect:
+			{
+				var saturation = MathF.Min((float)Prop("Saturation"), 2);
+				return new ColorMatrixEffectNode(Src(0), new[]
+				{
+					0.2126f + 0.7874f * saturation, 0.7152f - 0.7152f * saturation, 0.0722f - 0.0722f * saturation, 0f, 0f,
+					0.2126f - 0.2126f * saturation, 0.7152f + 0.2848f * saturation, 0.0722f - 0.0722f * saturation, 0f, 0f,
+					0.2126f - 0.2126f * saturation, 0.7152f - 0.7152f * saturation, 0.0722f + 0.9278f * saturation, 0f, 0f,
+					0f,                             0f,                             0f,                             1f, 0f,
+				});
+			}
+
+			case EffectType.TintEffect:
+				return new ModulateEffectNode(Src(0), (Color)Prop("Color"));
+
+			case EffectType.LuminanceToAlphaEffect:
+				return new LuminanceToAlphaEffectNode(Src(0));
 
 			default:
 			{
