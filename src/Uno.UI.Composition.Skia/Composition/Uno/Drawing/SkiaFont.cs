@@ -147,7 +147,7 @@ internal sealed class SkiaFont : IFont
 		return new HbBlob(handle.AddrOfPinnedObject(), bytes.Length, HarfBuzzSharp.MemoryMode.ReadOnly, handle.Free);
 	}
 
-	public IGeometry BuildGlyphRunOutline(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY)
+	public IGeometry BuildGlyphRunOutline(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<PositionedGlyphImage>? colorGlyphs = null)
 	{
 		var builder = new SKPathBuilder();
 
@@ -159,34 +159,15 @@ internal sealed class SkiaFont : IFont
 				glyphPath.Transform(SKMatrix.CreateTranslation(positions[i].X, positions[i].Y + baselineY));
 				builder.AddPath(glyphPath, SKPathAddMode.Append);
 			}
+			else if (colorGlyphs is not null && HasColorGlyphs
+				&& TryRasterizeColorGlyph(glyphs[i], positions[i].X, positions[i].Y + baselineY, out var image))
+			{
+				// Empty outline path == a colour glyph (or blank); rasterize it as a positioned image.
+				colorGlyphs.Add(image);
+			}
 		}
 
 		return new SkiaGeometrySource2D(builder.Detach());
-	}
-
-	public void AppendColorGlyphImages(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<PositionedGlyphImage> output)
-	{
-		if (!HasColorGlyphs)
-		{
-			return;
-		}
-
-		for (var i = 0; i < glyphs.Length; i++)
-		{
-			using (var glyphPath = _font.GetGlyphPath(glyphs[i]))
-			{
-				if (glyphPath is { IsEmpty: false })
-				{
-					// Outline glyph — already covered by BuildGlyphRunOutline.
-					continue;
-				}
-			}
-
-			if (TryRasterizeColorGlyph(glyphs[i], positions[i].X, positions[i].Y + baselineY, out var image))
-			{
-				output.Add(image);
-			}
-		}
 	}
 
 	private bool TryRasterizeColorGlyph(ushort glyph, float originX, float originY, out PositionedGlyphImage result)

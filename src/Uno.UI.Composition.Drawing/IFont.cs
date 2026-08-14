@@ -26,16 +26,15 @@ public interface IFont
 	GlyphRun Shape(ReadOnlySpan<char> text, TextDirection direction, bool enableLigatures = true);
 
 	/// <summary>
-	/// Builds the combined filled outline of the run's outline glyphs (color glyphs are excluded — draw those
-	/// via <see cref="AppendColorGlyphImages"/>). Each glyph is placed at its position, shifted by <paramref name="baselineY"/>.
+	/// Builds the combined filled outline of the run's outline glyphs and, when <paramref name="colorGlyphs"/> is
+	/// non-null, appends the run's colour glyphs to it as positioned images (colour glyphs are excluded from the
+	/// returned outline). Each glyph is placed at its position, shifted by <paramref name="baselineY"/>. Pass null for
+	/// <paramref name="colorGlyphs"/> to skip colour-glyph work (see <see cref="HasColorGlyphs"/>).
 	/// </summary>
-	IGeometry BuildGlyphRunOutline(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY);
+	IGeometry BuildGlyphRunOutline(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<PositionedGlyphImage>? colorGlyphs = null);
 
-	/// <summary>Whether the font may contain color glyphs; when false, callers can skip <see cref="AppendColorGlyphImages"/>.</summary>
+	/// <summary>Whether the font may contain color glyphs; when false, callers can pass null for the colour-glyph list.</summary>
 	bool HasColorGlyphs { get; }
-
-	/// <summary>Appends the run's color glyphs as positioned images (no-op when <see cref="HasColorGlyphs"/> is false).</summary>
-	void AppendColorGlyphImages(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<PositionedGlyphImage> output);
 
 	// --- Metrics (pixels at this font's size; SkiaSharp sign convention: Ascent <= 0 above the baseline,
 	//     Descent >= 0 below it, so line height = Descent - Ascent). ---
