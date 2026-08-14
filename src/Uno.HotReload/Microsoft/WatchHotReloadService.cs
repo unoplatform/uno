@@ -150,12 +150,8 @@ internal partial class WatchHotReloadService
 	/// Emits the deltas between <paramref name="solution"/> and the session baseline, and advances
 	/// that baseline only when deltas are actually produced.
 	/// </summary>
-	/// <returns>
-	/// The deltas to apply, the Edit-and-Continue diagnostics, and the names of the projects the
-	/// engine reports as un-updatable — a non-empty set means the application has to be rebuilt or
-	/// restarted before it matches its sources again.
-	/// </returns>
-	public Task<(ImmutableArray<Update> updates, ImmutableArray<Diagnostic> diagnostics, ImmutableArray<string> projectsRequiringRebuild)> EmitSolutionUpdateAsync(Solution solution, CancellationToken cancellationToken)
+	/// <returns>Everything the engine reports about the emit — see <see cref="HotReloadEmitResult"/>.</returns>
+	public Task<HotReloadEmitResult> EmitSolutionUpdateAsync(Solution solution, CancellationToken cancellationToken)
 	{
 		if (_engine is null)
 		{

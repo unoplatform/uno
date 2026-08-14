@@ -301,18 +301,28 @@ public sealed class HotReloadManager : IDisposable
 			var emitSolution = alignedSolution.WithSuppressedDiagnostics(generatorErrors);
 
 			// Compile the solution with those generator errors suppressed, and get deltas.
-			var (updates, emitDiagnostics, projectsRequiringRebuild) = await _watchService.EmitSolutionUpdateAsync(emitSolution, ct).ConfigureAwait(false);
+			var emit = await _watchService.EmitSolutionUpdateAsync(emitSolution, ct).ConfigureAwait(false);
+			var updates = emit.Deltas;
+			var emitDiagnostics = emit.Diagnostics;
+
+			_tracker.Verbose($"Emit status: {emit.Status}");
 
 			// A project the engine cannot update in place will NOT be brought back in line by any
 			// later delta: until it is rebuilt, the application keeps running the code it was built
 			// with while the sources say something else. Say so explicitly — the emit diagnostics
 			// name the rude edit only on the cycle that introduced it, so a session that carries on
 			// afterwards would otherwise look healthy while silently diverging.
-			if (!projectsRequiringRebuild.IsEmpty)
+			if (emit.RequiresRebuildOrRestart)
 			{
+				// Roslyn 4.x reports the situation without naming any project (see
+				// HotReloadEmitResult.RequiresRebuildOrRestart), so the subject stays generic there.
+				var subject = emit.ProjectsRequiringRebuildOrRestart is { IsEmpty: false } projects
+					? string.Join(", ", projects)
+					: "the application";
+
 				_tracker.Output(
-					$"Hot reload cannot update {string.Join(", ", projectsRequiringRebuild)}: the application must be " +
-					"rebuilt (or restarted) before it matches its sources again.");
+					$"Hot reload cannot update {subject}: it must be rebuilt (or restarted) before it matches " +
+					"its sources again.");
 			}
 			// emitDiagnostics currently includes semantic Warnings and Errors for types being updated. We want to limit rude edits to the class
 			// of unrecoverable errors that a user cannot fix and requires an app rebuild.

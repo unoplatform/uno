@@ -115,9 +115,7 @@ internal partial class WatchHotReloadService
 				noRunningProjects);
 		}
 
-		internal async Task<(ImmutableArray<Update> updates, ImmutableArray<Diagnostic> diagnostics, ImmutableArray<string> projectsRequiringRebuild)> EmitAsync(
-			Solution solution,
-			CancellationToken ct)
+		internal async Task<HotReloadEmitResult> EmitAsync(Solution solution, CancellationToken ct)
 		{
 			var sessionId = _sessionIdField.GetValue(_service)
 				?? throw new InvalidOperationException("The Edit-and-Continue session has not been started.");
@@ -132,13 +130,13 @@ internal partial class WatchHotReloadService
 
 			var resultsType = results.GetType();
 			var moduleUpdates = Property(resultsType, "ModuleUpdates").GetValue(results)!;
-			var status = Property(moduleUpdates.GetType(), "Status").GetValue(moduleUpdates)?.ToString();
+			var rawStatus = Property(moduleUpdates.GetType(), "Status").GetValue(moduleUpdates)?.ToString();
 			var diagnostics = (ImmutableArray<Diagnostic>)Method(resultsType, "GetAllDiagnostics").Invoke(results, null)!;
 
 			var emitted = ReadUpdates((IEnumerable)Property(moduleUpdates.GetType(), "Updates").GetValue(moduleUpdates)!);
 
-			// The wrapper's contract, preserved: an emit carrying errors hands out no delta.
-			var updates = diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)
+			// An emit carrying errors hands out no delta (the wrapper's contract, preserved).
+			var deltas = diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)
 				? ImmutableArray<Update>.Empty
 				: emitted;
 
@@ -147,40 +145,83 @@ internal partial class WatchHotReloadService
 			// only when the status is Ready (that is the condition the wrapper itself branches on),
 			// and leaving one pending makes EndSession throw "Pending update has not been committed
 			// or discarded" — so the Ready case must always resolve to one or the other.
-			if (string.Equals(status, "Ready", StringComparison.Ordinal))
+			if (string.Equals(rawStatus, "Ready", StringComparison.Ordinal))
 			{
-				(updates.IsEmpty ? _discard : _commit).Invoke(_encService, [sessionId]);
+				(deltas.IsEmpty ? _discard : _commit).Invoke(_encService, [sessionId]);
 			}
 
-			return (updates, diagnostics, ReadBlockedProjects(solution, results, resultsType));
+			return new HotReloadEmitResult
+			{
+				Status = rawStatus switch
+				{
+					"None" => HotReloadEmitStatus.NoChanges,
+					"Ready" => HotReloadEmitStatus.Ready,
+					"Blocked" => HotReloadEmitStatus.Blocked,
+					"RestartRequired" => HotReloadEmitStatus.RestartRequired,
+					_ => HotReloadEmitStatus.Unknown,
+				},
+				Deltas = deltas,
+				Diagnostics = diagnostics,
+				PersistentDiagnostics = ReadDiagnostics(results, resultsType, "GetPersistentDiagnostics"),
+				TransientDiagnostics = ReadDiagnostics(results, resultsType, "GetTransientDiagnostics"),
+				SyntaxError = resultsType.GetProperty("SyntaxError", AnyInstance)?.GetValue(results) as Diagnostic,
+				ProjectsToRebuild = ReadProjectNames(solution, results, resultsType, "ProjectsToRebuild"),
+				ProjectsToRestart = ReadProjectNames(solution, results, resultsType, "ProjectsToRestart"),
+				ProjectsToRedeploy = ReadProjectNames(solution, results, resultsType, "ProjectsToRedeploy"),
+			};
 		}
 
 		/// <summary>
-		/// Projects the engine says cannot be updated in place. <c>ProjectsToRebuild</c> is an
-		/// <c>ImmutableArray&lt;ProjectId&gt;</c> and <c>ProjectsToRestart</c> an array on 4.x but a
-		/// dictionary keyed by project on 5.x — enumerating either yields the projects (the entries of
-		/// a dictionary being keyed pairs), which is all this needs.
+		/// Reads one of the engine's diagnostic accessors, returning empty when the running Roslyn
+		/// does not have it (the persistent/transient split is 5.x only) — never a guess.
 		/// </summary>
-		private static ImmutableArray<string> ReadBlockedProjects(Solution solution, object results, Type resultsType)
+		/// <remarks>
+		/// <c>GetTransientDiagnostics</c> answers per-project pairs rather than a flat array; the
+		/// project is already carried by each diagnostic's location, so the pairs are flattened.
+		/// </remarks>
+		private static ImmutableArray<Diagnostic> ReadDiagnostics(object results, Type resultsType, string accessor)
 		{
+			if (resultsType.GetMethod(accessor, AnyInstance) is not { } method)
+			{
+				return ImmutableArray<Diagnostic>.Empty;
+			}
+
+			return method.Invoke(results, null) switch
+			{
+				ImmutableArray<Diagnostic> flat => flat,
+				// ValueTuple's Item2 is a FIELD, not a property.
+				IEnumerable pairs => pairs
+					.Cast<object>()
+					.SelectMany(pair => (ImmutableArray<Diagnostic>)Field(pair.GetType(), "Item2").GetValue(pair)!)
+					.ToImmutableArray(),
+				_ => ImmutableArray<Diagnostic>.Empty,
+			};
+		}
+
+		/// <summary>
+		/// Reads one of the engine's project sets as names. Shapes differ across the lines —
+		/// <c>ProjectsToRebuild</c> is an <c>ImmutableArray&lt;ProjectId&gt;</c> on both,
+		/// <c>ProjectsToRestart</c> an array on 4.x but a dictionary keyed by project on 5.x, and
+		/// <c>ProjectsToRedeploy</c> does not exist on 4.x — so each entry is read as either a
+		/// <see cref="ProjectId"/> or a keyed pair, and a missing accessor yields empty.
+		/// </summary>
+		private static ImmutableArray<string> ReadProjectNames(Solution solution, object results, Type resultsType, string accessor)
+		{
+			if (resultsType.GetProperty(accessor, AnyInstance)?.GetValue(results) is not IEnumerable projects)
+			{
+				return ImmutableArray<string>.Empty;
+			}
+
 			var names = ImmutableArray.CreateBuilder<string>();
 
-			foreach (var name in new[] { "ProjectsToRebuild", "ProjectsToRestart" })
+			foreach (var entry in projects)
 			{
-				if (resultsType.GetProperty(name, AnyInstance)?.GetValue(results) is not IEnumerable projects)
-				{
-					continue;
-				}
+				var id = entry as ProjectId
+					?? entry?.GetType().GetProperty("Key", AnyInstance)?.GetValue(entry) as ProjectId;
 
-				foreach (var entry in projects)
+				if (id is not null && solution.GetProject(id) is { Name: { } projectName } && !names.Contains(projectName))
 				{
-					var id = entry as ProjectId
-						?? entry?.GetType().GetProperty("Key", AnyInstance)?.GetValue(entry) as ProjectId;
-
-					if (id is not null && solution.GetProject(id) is { Name: { } projectName } && !names.Contains(projectName))
-					{
-						names.Add(projectName);
-					}
+					names.Add(projectName);
 				}
 			}
 
