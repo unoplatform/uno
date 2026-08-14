@@ -102,3 +102,19 @@ Already present and unchanged: `CreateColorMatrixColorFilter`, `CreateBlendModeC
 
 `Given_AcrylicBrush` (Skia desktop, GL and forced-software), `EffectBrushTests` screenshot parity, and per-effect
 runtime tests where they exist.
+
+## Status (WIP)
+
+- **Landed, green:** the primitive foundation (`LayerFilter`, neutral `SaveLayer(in LayerFilter)` /
+  `DrawEffectBackdrop(in LayerFilter)` on all backends, the effect blend modes) and the neutral evaluator
+  (`EffectGraphEvaluator`) — a direct `IGraphicsEffect` walk emitting drawing-session ops (backdrop blur, blend,
+  composite, colour matrix, colour source, brush paint). Both are additive and **not yet wired** — `TryPaint`
+  still uses `CreateEffectFilter`, so nothing is regressed.
+- **Blocked on parity, needs interactive pixel-debugging:** wiring `TryPaint` to the evaluator renders acrylic
+  3/5 — two small diffs remain: `When_Drawn` at RSMD ≈ 0.045 (threshold 0.04), in the tint/luminosity/noise
+  compositing (independent of the backdrop-blur impl), and `When_Backdrop_DoesNotSampleOutsideElementBounds` (a
+  corner-bleed of ≈41/255). The Skia `DrawEffectBackdrop(in LayerFilter)` also needs the backdrop blur bounded to
+  the element (a null-input backdrop blur ignores a `CropRect`; the SaveLayer `Bounds`/clip lever is the likely
+  fix). These need a visual diff to converge — not tractable headless-blind.
+- **Not started:** deleting `CreateEffectFilter`/`IEffectFilter`/`SkiaEffectFactory` (gated on evaluator parity),
+  and the WebGPU non-separable-blend shaders (`Color`/`Luminosity`) the evaluator's decomposed acrylic needs.
