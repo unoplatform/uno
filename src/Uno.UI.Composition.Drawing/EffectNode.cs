@@ -57,8 +57,7 @@ public sealed record ColorInput(Color Color) : EffectNode
 /// <summary>A sampled source: a brush/image/noise input Uno already rasterized to a backend texture via
 /// <see cref="IDrawingFactory.RenderOffscreen"/>, plus how it is sampled outside its own rectangle
 /// (<see cref="ExtendX"/>/<see cref="ExtendY"/> — D2D BorderEffect's edge behaviour; <see cref="EdgeExtend.None"/>
-/// is a plain finite image). Replaces the old <c>IEffectSource</c> brush leaf; Uno owns and disposes
-/// <see cref="Texture"/>.</summary>
+/// is a plain finite image). The brush/image leaf of the tree; Uno owns and disposes <see cref="Texture"/>.</summary>
 public sealed record TextureInput(IImageTexture Texture, EdgeExtend ExtendX = EdgeExtend.None, EdgeExtend ExtendY = EdgeExtend.None) : EffectNode
 {
 	public override IReadOnlyList<EffectNode> Children => System.Array.Empty<EffectNode>();

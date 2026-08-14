@@ -16,7 +16,7 @@ namespace Uno.UI.Composition.Effects;
 
 /// <summary>
 /// Parses a WinUI effect graph into the neutral <see cref="EffectNode"/> IR, resolving named source-parameters to
-/// <see cref="IEffectSource"/>. <b>All</b> Direct2D reflection — effect GUIDs, property name→index mapping, boxed
+/// their bound <see cref="CompositionBrush"/>. <b>All</b> Direct2D reflection — effect GUIDs, property name→index mapping, boxed
 /// property values, the recursive source walk — lives here, once. A render backend then <b>fuses</b> the typed tree
 /// and never interprets an <c>IGraphicsEffect</c>. Every non-backdrop brush input is pre-rasterized to a
 /// <see cref="TextureInput"/> here (via <see cref="IDrawingFactory.RenderOffscreen"/>), so the backend sees only a
@@ -28,26 +28,26 @@ internal static class EffectGraphParser
 	/// Parses <paramref name="effect"/> (a graph node or a source-parameter leaf) into an <see cref="EffectNode"/>
 	/// tree bounded by <paramref name="bounds"/> (the region non-backdrop sources are rasterized over).
 	/// </summary>
-	public static EffectNode Parse(object? effect, Rect bounds, Func<string, IEffectSource?> resolveSource)
+	public static EffectNode Parse(object? effect, Rect bounds, Func<string, CompositionBrush?> resolveSource)
 	{
 		switch (effect)
 		{
 			case CompositionEffectSourceParameter sourceParameter:
 			{
-				var source = resolveSource(sourceParameter.Name);
-				if (source is null)
+				var brush = resolveSource(sourceParameter.Name);
+				if (brush is null)
 				{
 					return new UnsupportedEffectNode($"unbound source '{sourceParameter.Name}'", null);
 				}
 
-				if (source.IsBackdrop)
+				if (brush is CompositionBackdropBrush)
 				{
 					return new BackdropInput();
 				}
 
 				// Non-backdrop brush/image/noise input: rasterize it to a backend texture once, so the backend never
 				// paints a compositor brush. The texture is placed back at the source's bounds by the fuser.
-				return RasterizeSource(source, bounds);
+				return RasterizeSource(brush, bounds);
 			}
 
 			case IGraphicsEffectD2D1Interop interop:
@@ -58,7 +58,7 @@ internal static class EffectGraphParser
 		}
 	}
 
-	private static TextureInput RasterizeSource(IEffectSource source, Rect bounds, Vector2? intrinsicSize = null, EdgeExtend extendX = EdgeExtend.None, EdgeExtend extendY = EdgeExtend.None)
+	private static TextureInput RasterizeSource(CompositionBrush source, Rect bounds, Vector2? intrinsicSize = null, EdgeExtend extendX = EdgeExtend.None, EdgeExtend extendY = EdgeExtend.None)
 	{
 		// A Border input is rasterized at its own intrinsic size (the repeating/extend unit); everything else is
 		// rasterized over the effect bounds.
@@ -74,13 +74,13 @@ internal static class EffectGraphParser
 				session.Translate(-(float)region.X, -(float)region.Y);
 			}
 
-			source.Paint(session, 1f, region);
+			source.TryPaint(session, 1f, region);
 		});
 
 		return new TextureInput(texture, extendX, extendY);
 	}
 
-	private static EffectNode ParseNode(IGraphicsEffectD2D1Interop e, Rect bounds, Func<string, IEffectSource?> resolveSource)
+	private static EffectNode ParseNode(IGraphicsEffectD2D1Interop e, Rect bounds, Func<string, CompositionBrush?> resolveSource)
 	{
 		EffectNode Src(uint i) => Parse(e.GetSource(i), bounds, resolveSource);
 		object Prop(string name)
@@ -335,9 +335,10 @@ internal static class EffectGraphParser
 				// there's no intrinsic size (nested effect / unsized brush), tiling degenerates over bounds — the
 				// legacy path did the same — so just pass the source through.
 				if (e.GetSource(0) is CompositionEffectSourceParameter sourceParameter
-					&& resolveSource(sourceParameter.Name) is { IsBackdrop: false, Size: { } size } borderSource)
+					&& resolveSource(sourceParameter.Name) is { } borderBrush and not CompositionBackdropBrush
+					&& (borderBrush as ISizedBrush)?.Size is { } size)
 				{
-					return RasterizeSource(borderSource, bounds, size, extendX, extendY);
+					return RasterizeSource(borderBrush, bounds, size, extendX, extendY);
 				}
 
 				return Src(0);
