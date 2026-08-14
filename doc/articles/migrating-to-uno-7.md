@@ -80,7 +80,8 @@ on macOS with Skia rendering. To migrate:
 | `Uno.WinUI.WebAssembly` package removed (and the older `Uno.WinUI.Runtime.WebAssembly`) | Use `Uno.WinUI.Runtime.Skia.WebAssembly.Browser`. The UI renders to a canvas; there is no DOM tree. With the `Uno.SDK`, the Skia browser head is referenced implicitly — there is nothing to add. |
 | `Uno.WinUI.Skia.X11`, `Uno.WinUI.Skia.MacOS`, and `Uno.WinUI.Skia.Linux.FrameBuffer` bootstrapper packages removed | These were empty meta-packages that only redirected to the real head. With the `Uno.SDK`, remove the reference — the matching `Uno.WinUI.Runtime.Skia.*` head is referenced implicitly for executable heads. For a hand-rolled (non-`Uno.SDK`) head, replace it with the corresponding `Uno.WinUI.Runtime.Skia.<variant>` package. |
 | `Uno.UI.BindingHelper.Android` assembly removed | Remove the reference; Skia-on-Android needs no Java/JNI binding. |
-| `Uno.UI.FluentTheme.v1` assembly removed | The Fluent Design **V1** styles were deleted several releases ago and the assembly has shipped empty since. `Uno.UI.FluentTheme` and `Uno.UI.FluentTheme.v2` are unchanged and are what `XamlControlsResources` has always loaded, so there is nothing to change unless you referenced the V1 types directly — see *Fluent Design V1 selection* under **Public API removed**. |
+| `Uno.UI.FluentTheme.v1` assembly removed | The Fluent Design **V1** styles were deleted several releases ago and the assembly has shipped empty since. `Uno.UI.FluentTheme` still ships and is what `XamlControlsResources` has always loaded, so there is nothing to change unless you referenced the V1 types directly — see *Fluent Design resource-version types* under **Public API removed**. |
+| `Uno.UI.FluentTheme.v2` assembly merged into `Uno.UI.FluentTheme` | With V1 gone there is a single set of Fluent styles, so the two assemblies were collapsed into one. All the styles ship in `Uno.UI.FluentTheme`; both assemblies come from the `Uno.WinUI` package, so no reference changes. Only a direct reference to the `Uno.UI.FluentTheme.v2` assembly, or to `XamlControlsResourcesV2`, needs updating. |
 | `Uno.UniversalImageLoader` no longer injected (Android) | Skia handles image loading internally. If you initialized it manually, remove the `ConfigureUniversalImageLoader();` call. |
 | `Uno.UI.Maps` AddIn removed | The native Google Maps control has no core Skia equivalent — use a third-party/Skia map or custom rendering. |
 | `Uno.WinUI` UI assemblies for `net*-android/ios/tvos` are now the Skia binaries | Same TFM string, but binary-incompatible with previously native-built consumers. Recompile all libraries against 7.0 and remove native bootstrap. |
@@ -202,21 +203,30 @@ The other namespaces carried by that assembly keep their names, so code using
   from `System.Runtime.InteropServices.JavaScript` — the recommended, source-generated path
   (thread-safe, CSP-compliant, no `eval`). The string-based `WebAssemblyRuntime.InvokeJS(string)`
   is *not* removed, but it is a legacy eval-based API and is not recommended for new code.
-- **Fluent Design V1 selection:** `Microsoft.UI.Xaml.Controls.XamlControlsResourcesV1`, the
-  `ControlsResourcesVersion` enum, and the `ControlsResourcesVersion` member on **both**
-  `XamlControlsResources` (a dependency property) and `XamlControlsResourcesV2` (an inert
-  `object` property that was never read). The V1 styles were deleted several releases ago, and
-  `XamlControlsResources` has loaded V2 regardless of this property ever since — so removing it
-  changes no visual behavior. Windows App SDK has no equivalent surface either. Drop the
-  assignment, in code or in XAML — on either type, a leftover attribute now fails the XAML build:
+- **Fluent Design resource-version types:** `Microsoft.UI.Xaml.Controls.XamlControlsResourcesV1`,
+  `Microsoft.UI.Xaml.Controls.XamlControlsResourcesV2`, the `ControlsResourcesVersion` enum, and
+  the `ControlsResourcesVersion` member on **both** `XamlControlsResources` (a dependency property)
+  and `XamlControlsResourcesV2` (an inert `object` property that was never read). None of this
+  existed in Windows App SDK — `XamlControlsResources` is the only Fluent resources type there, and
+  it now matches. Use it everywhere:
+
+  ```diff
+  - <XamlControlsResourcesV2 />
+  + <XamlControlsResources />
+  ```
+
+  The V1 styles were deleted several releases ago and `XamlControlsResources` has loaded V2
+  regardless of the property ever since, so none of this changes visual behavior. Drop any
+  `ControlsResourcesVersion` assignment, in code or in XAML — on either type, a leftover attribute
+  now fails the XAML build:
 
   ```diff
   - <XamlControlsResources ControlsResourcesVersion="Version2" />
   + <XamlControlsResources />
   ```
 
-  If you instantiated `XamlControlsResourcesV1` directly, replace it with `XamlControlsResources`.
-  The `Uno.UI.FluentTheme.v1` assembly is removed along with it.
+  The `Uno.UI.FluentTheme.v1` assembly is removed along with these types, and
+  `Uno.UI.FluentTheme.v2` is merged into `Uno.UI.FluentTheme` — see **Packages** above.
 
 ### `FeatureConfiguration` flags removed
 
@@ -422,6 +432,19 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
     than on `SvgImageSource.UriSource`. Uno keeps `ms-appx:///`, because that form is resolved as an
     asset path and so carries the assembly prefix a library's own svg assets need; the `ms-resource`
     form resolves only against the application root.
+
+- **The Fluent theme-resources dictionary is now `themeresources.xaml`**, matching WinUI. Its
+  `ms-appx:` URI changes accordingly, so a dictionary that merged the old path by hand no longer
+  resolves. Merging `XamlControlsResources` — the supported way to load the Fluent styles — is
+  unaffected, since it resolves the URI internally:
+
+  ```diff
+  - <ResourceDictionary Source="ms-appx:///Microsoft.UI.Xaml/Themes/themeresources_v2.xaml" />
+  + <ResourceDictionary Source="ms-appx:///Microsoft.UI.Xaml/Themes/themeresources.xaml" />
+  ```
+
+  The `_v2` suffix was an Uno-only artifact of the Fluent V1/V2 split; with V1 removed there is one
+  theme-resources dictionary, under the name WinUI itself uses.
 
 ### Android head uses the host builder
 
