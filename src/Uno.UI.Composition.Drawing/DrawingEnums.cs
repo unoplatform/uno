@@ -31,6 +31,21 @@ public enum BlendMode
 	DstIn,
 	DstOut,
 	SrcIn,
+	// Separable/non-separable blend modes used by effect graphs (BlendEffect / acrylic luminosity+colour).
+	Screen,
+	Darken,
+	Lighten,
+	ColorBurn,
+	ColorDodge,
+	Overlay,
+	SoftLight,
+	HardLight,
+	Difference,
+	Exclusion,
+	Hue,
+	Saturation,
+	Color,
+	Luminosity,
 }
 
 /// <summary>Image sampling quality for <see cref="IDrawingSession.DrawImage"/>.</summary>
