@@ -130,6 +130,32 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 		}
 	}
 
+	public void StreamSegments(IGeometrySink sink)
+	{
+		foreach (var contour in Contours)
+		{
+			if (contour.Segments.Count == 0)
+			{
+				continue;
+			}
+
+			sink.BeginFigure(contour.Start);
+			foreach (var seg in contour.Segments)
+			{
+				if (seg.Kind == ManagedSegmentKind.Line)
+				{
+					sink.LineTo(seg.End);
+				}
+				else
+				{
+					sink.CubicTo(seg.C1, seg.C2, seg.End);
+				}
+			}
+
+			sink.EndFigure(contour.Closed);
+		}
+	}
+
 	/// <summary>
 	/// Trims the outline to the arc-length fraction [<paramref name="trimStart"/>, <paramref name="trimEnd"/>]
 	/// of the concatenated contour length (Skia's normal <c>CreateTrim</c>). Contours are flattened, so the

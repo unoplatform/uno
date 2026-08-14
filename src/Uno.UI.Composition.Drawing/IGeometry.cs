@@ -47,10 +47,19 @@ public interface IGeometry : IDisposable
 
 	/// <summary>
 	/// Streams the geometry's outline to <paramref name="sink"/> as flattened polyline contours (curves
-	/// subdivided). This is the neutral "geometry → segments" readback a backend renderer needs to
-	/// tessellate/fill a path without knowing the concrete geometry type.
+	/// subdivided at a fixed local tolerance). The readback a tessellating backend (e.g. WebGPU) needs to fill a
+	/// path without a curve rasterizer. For a backend with its own rasterizer, prefer <see cref="StreamSegments"/>.
 	/// </summary>
 	void StreamFlattened(IFlattenedPathSink sink);
+
+	/// <summary>
+	/// Streams the geometry's outline to <paramref name="sink"/> as un-flattened path segments (curves preserved).
+	/// Unlike <see cref="StreamFlattened"/>, this keeps the béziers so a backend with its own curve rasterizer can
+	/// reconstruct a faithful native path and flatten at device resolution (smooth under any transform, correct
+	/// strokes). It is the neutral "geometry → path" readback that lets any backend consume any geometry without
+	/// knowing its concrete type. The fill rule travels separately on <see cref="FillRule"/>.
+	/// </summary>
+	void StreamSegments(IGeometrySink sink);
 }
 
 /// <summary>Receives flattened polyline contours from <see cref="IGeometry.StreamFlattened"/>.</summary>
@@ -64,4 +73,23 @@ public interface IFlattenedPathSink
 
 	/// <summary>Ends the current contour; <paramref name="closed"/> mirrors the source subpath's closed flag.</summary>
 	void EndContour(bool closed);
+}
+
+/// <summary>Receives un-flattened path segments (curves preserved) from <see cref="IGeometry.StreamSegments"/>.</summary>
+public interface IGeometrySink
+{
+	/// <summary>Starts a new figure at <paramref name="start"/>.</summary>
+	void BeginFigure(Vector2 start);
+
+	/// <summary>Adds a straight segment to <paramref name="point"/>.</summary>
+	void LineTo(Vector2 point);
+
+	/// <summary>Adds a quadratic bézier segment through <paramref name="control"/> to <paramref name="point"/>.</summary>
+	void QuadTo(Vector2 control, Vector2 point);
+
+	/// <summary>Adds a cubic bézier segment through <paramref name="control1"/>/<paramref name="control2"/> to <paramref name="point"/>.</summary>
+	void CubicTo(Vector2 control1, Vector2 control2, Vector2 point);
+
+	/// <summary>Ends the current figure; <paramref name="closed"/> mirrors the source subpath's closed flag.</summary>
+	void EndFigure(bool closed);
 }

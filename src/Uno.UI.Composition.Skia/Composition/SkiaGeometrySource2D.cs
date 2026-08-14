@@ -116,6 +116,58 @@ namespace Microsoft.UI.Composition
 			if (inContour) { sink.EndContour(closed); }
 		}
 
+		void IGeometry.StreamSegments(IGeometrySink sink)
+		{
+			using var it = _geometry.CreateIterator(false);
+			var pts = new SKPoint[4];
+			var inFigure = false;
+			var closed = false;
+			var current = default(SKPoint);
+			SKPathVerb verb;
+			while ((verb = it.Next(pts)) != SKPathVerb.Done)
+			{
+				switch (verb)
+				{
+					case SKPathVerb.Move:
+						if (inFigure) { sink.EndFigure(closed); }
+						sink.BeginFigure(new Vector2(pts[0].X, pts[0].Y));
+						current = pts[0];
+						inFigure = true;
+						closed = false;
+						break;
+					case SKPathVerb.Line:
+						sink.LineTo(new Vector2(pts[1].X, pts[1].Y));
+						current = pts[1];
+						break;
+					case SKPathVerb.Quad:
+						sink.QuadTo(new Vector2(pts[1].X, pts[1].Y), new Vector2(pts[2].X, pts[2].Y));
+						current = pts[2];
+						break;
+					case SKPathVerb.Conic:
+					{
+						// No neutral conic segment — convert to (exact) quads and emit those.
+						var quads = new SKPoint[5];
+						var count = SKPath.ConvertConicToQuads(current, pts[1], pts[2], it.ConicWeight(), quads, 1);
+						for (var i = 0; i < count; i++)
+						{
+							sink.QuadTo(new Vector2(quads[i * 2 + 1].X, quads[i * 2 + 1].Y), new Vector2(quads[i * 2 + 2].X, quads[i * 2 + 2].Y));
+						}
+						current = pts[2];
+						break;
+					}
+					case SKPathVerb.Cubic:
+						sink.CubicTo(new Vector2(pts[1].X, pts[1].Y), new Vector2(pts[2].X, pts[2].Y), new Vector2(pts[3].X, pts[3].Y));
+						current = pts[3];
+						break;
+					case SKPathVerb.Close:
+						closed = true;
+						break;
+				}
+			}
+
+			if (inFigure) { sink.EndFigure(closed); }
+		}
+
 		// Curve-flattening tolerance (path units ≈ device px at typical scales). Matches SkiaSharp's default curve
 		// flatness so the stencil-fan tessellation density equals the reference's — a FIXED step count over-
 		// tessellated small glyph curves ~2x, doubling the stencil-fan vertex count on text-heavy UI.
