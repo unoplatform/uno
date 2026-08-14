@@ -236,7 +236,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (_trace.IsEnabled)
 				{
-					_trace.WriteEventActivity(TraceProvider.CreateTemplate, EventOpcode.Send, new[] { template.ViewFactoryInner?.Method.DeclaringType?.FullName });
+					_trace.WriteEventActivity(TraceProvider.CreateTemplate, EventOpcode.Send, new[] { template.ViewFactory?.Method.DeclaringType?.FullName });
 				}
 
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -500,7 +500,7 @@ namespace Microsoft.UI.Xaml
 		private string GetTemplateDebugId(FrameworkTemplate? template)
 		{
 			// Grossly inefficient, should only be used for debug logging
-			if (template?.ViewFactoryInner?.Method is { } method &&
+			if (template?.ViewFactory?.Method is { } method &&
 				_templates.Keys.IndexOf(template) is { } index && index != -1)
 			{
 				return $"{index}({method.DeclaringType}.{method.Name})";

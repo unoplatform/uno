@@ -31,13 +31,7 @@ namespace Microsoft.UI.Xaml
 		/// scenarios (e.g., hot reload, design-time updates). Outside of this mode, the field
 		/// should remain unchanged. See Uno.UI.TemplateManager for details.
 		/// </summary>
-		/// <remarks>
-		/// This delegate may be wrapped to align its signature with <see cref="FrameworkTemplateBuilder"/>.
-		/// The original factory method can always be found in <see cref="ViewFactoryInner"/>.
-		/// </remarks>
 		internal IDelegate<FrameworkTemplateBuilder>? ViewFactory { get; private set; }
-
-		internal IDelegate<Delegate>? ViewFactoryInner { get; private set; }
 
 		protected FrameworkTemplate()
 			=> throw new NotSupportedException("Use the factory constructors");
@@ -85,7 +79,6 @@ namespace Microsoft.UI.Xaml
 				{ } => DelegateHelper.CreateLiteral(factory),
 				null => null,
 			};
-			ViewFactoryInner = ViewFactory;
 		}
 
 		/// <summary>
