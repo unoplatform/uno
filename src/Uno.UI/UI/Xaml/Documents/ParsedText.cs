@@ -885,33 +885,7 @@ internal readonly struct ParsedText : IParsedText
 		static void DrawText(FontDetails fontInfo, Span<Vector2> positions, Span<ushort> glyphs,
 			IDrawingSession drawingSession, float y, Color color)
 		{
-			var font = fontInfo.FontHandle;
-
-			var images = font.HasColorGlyphs ? new List<PositionedGlyphImage>() : null;
-			using (var outline = font.BuildGlyphRunOutline(glyphs, positions, y, images))
-			{
-				drawingSession.DrawPath(outline, color, antialias: true);
-			}
-
-			if (images is { Count: > 0 })
-			{
-				// Each glyph is already a backend texture (rendered offscreen, no readback). Draw them, then dispose
-				// the whole set in finally so a mid-loop throw can't leak GPU textures.
-				try
-				{
-					foreach (var g in images)
-					{
-						drawingSession.DrawImage(g.Image, g.X, g.Y, ImageSampling.Linear, antialias: true);
-					}
-				}
-				finally
-				{
-					foreach (var g in images)
-					{
-						g.Image.Dispose();
-					}
-				}
-			}
+			GlyphRunRenderer.Draw(drawingSession, fontInfo.FontHandle, glyphs, positions, y, color);
 		}
 	}
 

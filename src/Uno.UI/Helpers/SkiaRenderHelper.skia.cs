@@ -383,8 +383,7 @@ internal static class SkiaRenderHelper
 				penX += font.GetGlyphAdvance(glyph);
 			}
 
-			using var geometry = font.BuildGlyphRunOutline(glyphs, positions, 0f);
-			session.DrawPath(geometry, color, antialias: true);
+			Microsoft.UI.Xaml.Documents.GlyphRunRenderer.Draw(session, font, glyphs, positions, 0f, color);
 		}
 
 		private static void DrawSpeedometerIcon(IDrawingSession session, float x, float y)

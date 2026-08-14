@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using Windows.UI;
 
 namespace Uno.UI.Composition.Drawing;
 
@@ -26,15 +27,14 @@ public interface IFont
 	GlyphRun Shape(ReadOnlySpan<char> text, TextDirection direction, bool enableLigatures = true);
 
 	/// <summary>
-	/// Builds the combined filled outline of the run's outline glyphs and, when <paramref name="colorGlyphs"/> is
-	/// non-null, appends the run's colour glyphs to it as positioned images (colour glyphs are excluded from the
-	/// returned outline). Each glyph is placed at its position, shifted by <paramref name="baselineY"/>. Pass null for
-	/// <paramref name="colorGlyphs"/> to skip colour-glyph work (see <see cref="HasColorGlyphs"/>).
+	/// Turns a shaped run into a sequence of drawable elements, appended to <paramref name="elements"/> in draw order.
+	/// Each element is one of: a merged monochrome <see cref="GlyphOutline"/> (fill with the run's text colour), a
+	/// <see cref="GlyphColorLayers"/> colour glyph (fill each vector layer with its own colour), or a
+	/// <see cref="GlyphImage"/> colour glyph the font could only rasterize (neutral BGRA pixels the caller turns into
+	/// a texture). Each glyph is placed at its position, shifted by <paramref name="baselineY"/>. The caller owns and
+	/// disposes any <see cref="IGeometry"/> carried by the elements.
 	/// </summary>
-	IGeometry BuildGlyphRunOutline(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<PositionedGlyphImage>? colorGlyphs = null);
-
-	/// <summary>Whether the font may contain color glyphs; when false, callers can pass null for the colour-glyph list.</summary>
-	bool HasColorGlyphs { get; }
+	void BuildGlyphRun(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<GlyphRunElement> elements);
 
 	// --- Metrics (pixels at this font's size; SkiaSharp sign convention: Ascent <= 0 above the baseline,
 	//     Descent >= 0 below it, so line height = Descent - Ascent). ---
@@ -114,6 +114,24 @@ public enum TextDirection
 	RightToLeft,
 }
 
-/// <summary>A color glyph rasterized to a backend <see cref="IImageTexture"/> (owned by the caller — dispose after
-/// drawing), with the destination rectangle to draw it at.</summary>
-public readonly record struct PositionedGlyphImage(IImageTexture Image, float X, float Y, float Width, float Height);
+/// <summary>One drawable element of a shaped glyph run (see <see cref="IFont.BuildGlyphRun"/>): a monochrome outline,
+/// a vector colour glyph, or a rasterized colour glyph. The font never creates an <see cref="IImage"/> or a backend
+/// <see cref="IImageTexture"/>.</summary>
+public abstract record GlyphRunElement;
+
+/// <summary>The run's monochrome outline glyphs merged into one positioned geometry; fill with the run's text colour.
+/// The caller disposes <see cref="Outline"/>.</summary>
+public sealed record GlyphOutline(IGeometry Outline) : GlyphRunElement;
+
+/// <summary>A colour glyph as positioned vector layers (D2D COLR); fill each layer's geometry with its own colour, in
+/// order. The caller disposes each layer's geometry.</summary>
+public sealed record GlyphColorLayers(IReadOnlyList<GlyphColorLayer> Layers) : GlyphRunElement;
+
+/// <summary>One layer of a <see cref="GlyphColorLayers"/> colour glyph.</summary>
+public readonly record struct GlyphColorLayer(IGeometry Geometry, Color Color);
+
+/// <summary>A colour glyph the font could only rasterize: <see cref="Pixels"/> holds BGRA8888-premultiplied pixels of
+/// size <see cref="PixelWidth"/>×<see cref="PixelHeight"/>, to be drawn at (<see cref="X"/>, <see cref="Y"/>). The
+/// caller turns it into an image via the registered image decoder and uploads it to a texture — the font stays off
+/// the render backend.</summary>
+public sealed record GlyphImage(byte[] Pixels, int PixelWidth, int PixelHeight, float X, float Y) : GlyphRunElement;

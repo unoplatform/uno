@@ -147,7 +147,7 @@ internal sealed class SkiaFont : IFont
 		return new HbBlob(handle.AddrOfPinnedObject(), bytes.Length, HarfBuzzSharp.MemoryMode.ReadOnly, handle.Free);
 	}
 
-	public IGeometry BuildGlyphRunOutline(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<PositionedGlyphImage>? colorGlyphs = null)
+	public void BuildGlyphRun(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<GlyphRunElement> elements)
 	{
 		var builder = new SKPathBuilder();
 
@@ -159,20 +159,21 @@ internal sealed class SkiaFont : IFont
 				glyphPath.Transform(SKMatrix.CreateTranslation(positions[i].X, positions[i].Y + baselineY));
 				builder.AddPath(glyphPath, SKPathAddMode.Append);
 			}
-			else if (colorGlyphs is not null && HasColorGlyphs
+			else if (HasColorGlyphs
 				&& TryRasterizeColorGlyph(glyphs[i], positions[i].X, positions[i].Y + baselineY, out var image))
 			{
-				// Empty outline path == a colour glyph (or blank); rasterize it as a positioned image.
-				colorGlyphs.Add(image);
+				// Empty outline path == a colour glyph (or blank). SkiaSharp only rasterizes it, so hand the neutral
+				// pixels across the seam; the caller uploads them to a texture (the font stays off the backend).
+				elements.Add(image);
 			}
 		}
 
-		return new SkiaGeometrySource2D(builder.Detach());
+		elements.Add(new GlyphOutline(new SkiaGeometrySource2D(builder.Detach())));
 	}
 
-	private bool TryRasterizeColorGlyph(ushort glyph, float originX, float originY, out PositionedGlyphImage result)
+	private bool TryRasterizeColorGlyph(ushort glyph, float originX, float originY, out GlyphImage result)
 	{
-		result = default;
+		result = default!;
 
 		using var builder = new SKTextBlobBuilder();
 		builder.AddPositionedRun(new[] { glyph }, _font, new[] { new SKPoint(0, 0) });
@@ -199,7 +200,20 @@ internal sealed class SkiaFont : IFont
 		// Shift the glyph's ink from its baseline-relative bounds into [0,0]..[width,height].
 		surface.Canvas.DrawText(blob, -ink.Left, -ink.Top, paint);
 
-		result = new PositionedGlyphImage(new SkiaImageTexture(surface.Snapshot()), originX + ink.Left, originY + ink.Top, width, height);
+		// Read the rasterized glyph back to neutral BGRA8888-premultiplied pixels — the seam currency, not a texture.
+		var pixels = new byte[width * height * 4];
+		unsafe
+		{
+			fixed (byte* dst = pixels)
+			{
+				if (!surface.ReadPixels(info, (nint)dst, info.RowBytes, 0, 0))
+				{
+					return false;
+				}
+			}
+		}
+
+		result = new GlyphImage(pixels, width, height, originX + ink.Left, originY + ink.Top);
 		return true;
 	}
 

@@ -50,8 +50,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 					var glyph = new ushort[] { shaped[0] };
 					var position = new Vector2[] { Vector2.Zero };
 
-					using var alternativeOutline = managed.BuildGlyphRunOutline(glyph, position, 0f);
-					using var skiaOutline = skiaFont.BuildGlyphRunOutline(glyph, position, 0f);
+					using var alternativeOutline = BuildOutline(managed, glyph, position);
+					using var skiaOutline = BuildOutline(skiaFont, glyph, position);
 
 					var a = alternativeOutline.Bounds;
 					var s = skiaOutline.Bounds;
@@ -81,6 +81,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				Assert.IsTrue(matched >= 2, $"expected to validate several glyphs, only matched {matched}");
 				Assert.IsTrue(compositeMatched >= 1, "expected to validate at least one composite (accented) glyph");
 			}
+		}
+
+		// Extracts the monochrome outline from a run of (here, non-colour) glyphs; disposes any colour-layer geometry.
+		private static IGeometry BuildOutline(IFont font, ushort[] glyphs, Vector2[] positions)
+		{
+			var elements = new System.Collections.Generic.List<GlyphRunElement>();
+			font.BuildGlyphRun(glyphs, positions, 0f, elements);
+			IGeometry outline = null!;
+			foreach (var element in elements)
+			{
+				if (element is GlyphOutline o)
+				{
+					outline = o.Outline;
+				}
+				else if (element is GlyphColorLayers cl)
+				{
+					foreach (var layer in cl.Layers)
+					{
+						layer.Geometry.Dispose();
+					}
+				}
+			}
+
+			return outline;
 		}
 
 		private static bool TryFindGlyfFont(float size, out SKTypeface typeface, out ManagedFont managed)
