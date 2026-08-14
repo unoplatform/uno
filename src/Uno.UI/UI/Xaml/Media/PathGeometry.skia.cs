@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		private IGeometry BuildGeometry(bool skipUnfilled)
 		{
-			var builder = DrawingFactory.Current.CreatePathBuilder();
+			var builder = GeometryFactory.Current.CreatePathBuilder();
 			builder.FillRule = FillRule == FillRule.EvenOdd ? GeometryFillRule.EvenOdd : GeometryFillRule.NonZero;
 
 			foreach (PathFigure figure in Figures)

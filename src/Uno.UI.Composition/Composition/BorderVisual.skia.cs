@@ -335,7 +335,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 	private static IGeometry BuildRoundRectGeometry(RoundRectangle roundRect)
 	{
-		var builder = DrawingFactory.Current.CreatePrimitiveGeometryBuilder();
+		var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
 		builder.AddRoundedRectangle(roundRect.Rect, roundRect.TopLeft, roundRect.TopRight, roundRect.BottomRight, roundRect.BottomLeft);
 		return builder.Build();
 	}
@@ -462,7 +462,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 	private static IGeometry BuildRoundRectPath(Rect rect, NonUniformCornerRadius radii)
 	{
-		var builder = DrawingFactory.Current.CreatePrimitiveGeometryBuilder();
+		var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
 		if (radii.IsEmpty)
 		{
 			builder.AddRectangle(rect);
@@ -481,7 +481,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		NonUniformCornerRadius innerRadii)
 	{
 		// EvenOdd fill across the outer and inner contours yields the ring region (outer ∖ inner).
-		var builder = DrawingFactory.Current.CreatePrimitiveGeometryBuilder();
+		var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
 		builder.FillRule = GeometryFillRule.EvenOdd;
 
 		if (outerRadii.IsEmpty)

@@ -30,6 +30,7 @@ internal static class DrawingBackendFallback
 	private static bool _typeResolved;
 	private static bool _fontAttempted;
 	private static bool _imageDecoderAttempted;
+	private static bool _geometryAttempted;
 	private static bool _graphicsAttempted;
 
 	/// <summary>Lights up the Skia font provider if that seam is empty (a render-independent content seam).</summary>
@@ -69,6 +70,26 @@ internal static class DrawingBackendFallback
 
 			_imageDecoderAttempted = true;
 			Invoke("RegisterDefaultImageDecoder");
+		}
+	}
+
+	/// <summary>Lights up the Skia geometry engine if that seam is empty (a render-independent content seam).</summary>
+	public static void EnsureGeometryFactory()
+	{
+		if (Volatile.Read(ref _geometryAttempted))
+		{
+			return;
+		}
+
+		lock (_gate)
+		{
+			if (_geometryAttempted)
+			{
+				return;
+			}
+
+			_geometryAttempted = true;
+			Invoke("RegisterDefaultGeometryFactory");
 		}
 	}
 

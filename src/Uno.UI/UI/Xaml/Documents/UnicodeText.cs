@@ -904,7 +904,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					var amplitude = 2 * scale;
 					var yOffset = 2 * scale;
 
-					var p = DrawingFactory.Current.CreatePathBuilder();
+					var p = GeometryFactory.Current.CreatePathBuilder();
 					var underlineY = y + line.baselineOffset + yOffset;
 					var underlineLeftX = unalignedX + alignmentOffset;
 					var underlineRightX = underlineLeftX + cluster.Value.width;

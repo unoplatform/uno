@@ -11,7 +11,8 @@ var builder = UnoPlatformHostBuilder.Create()
 // Dawn/emdawnwebgpu is linked.
 if (System.Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "neutral" or "swapchain")
 {
-	builder.GraphicsBackend(new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider(new ManagedDrawingFactory()));
+	builder.GraphicsBackend(new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider());
+	builder.GeometryFactory(new ManagedGeometryFactory());
 }
 
 await builder.Build().RunAsync();

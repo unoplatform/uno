@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private IGeometry GetGeometry(Rect renderingArea)
 		{
-			var builder = DrawingFactory.Current.CreatePrimitiveGeometryBuilder();
+			var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
 			var center = new Vector2((float)(renderingArea.X + renderingArea.Width / 2), (float)(renderingArea.Y + renderingArea.Height / 2));
 			builder.AddEllipse(center, (float)(renderingArea.Width / 2), (float)(renderingArea.Height / 2));
 			return builder.Build();

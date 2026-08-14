@@ -2363,23 +2363,17 @@ public sealed class WebGpuRenderer : IRenderer
 public sealed class WebGpuGraphicsProvider : IGraphicsProvider
 {
 	private static readonly GraphicsContextKind[] _preferred = { GraphicsContextKind.WebGpu };
-	private readonly IDrawingFactory _geometry;
-
-	// WebGPU rasterizes on the GPU but does not tessellate paths or build geometry itself, so it composes over a
-	// geometry engine (e.g. the SkiaSharp-free ManagedDrawingFactory, or any IDrawingFactory). That dependency is
-	// WebGPU's own concern, satisfied here via the constructor — NOT a separate global drawing-factory registration
-	// on the app side. The app registers only this provider.
-	public WebGpuGraphicsProvider(IDrawingFactory geometry)
-		=> _geometry = geometry ?? throw new ArgumentNullException(nameof(geometry));
 
 	public IReadOnlyList<GraphicsContextKind> PreferredContexts => _preferred;
 
 	// The device is created by the host context (it owns the window swapchain); the device-bound WebGpu drawing
-	// factory composes GPU-resident images/shaders over the injected geometry engine, and the WebGpu renderer draws.
+	// factory manufactures GPU-resident images/shaders, and the WebGpu renderer draws. Geometry is a separate seam
+	// (GeometryFactory): WebGPU consumes whatever neutral IGeometry it's registered — it flattens everything — so a
+	// SkiaSharp-free app registers a ManagedGeometryFactory there rather than injecting it here.
 	public Uno.UI.Composition.Drawing.Graphics CreateGraphics(IGraphicsContext context)
 	{
 		var device = ((IWebGpuDeviceContext)context).Device;
-		return new(new WebGpuDrawingFactory(device, _geometry), new WebGpuRenderer(device));
+		return new(new WebGpuDrawingFactory(device), new WebGpuRenderer(device));
 	}
 }
 
@@ -2503,24 +2497,19 @@ internal sealed class WebGpuReadbackImage : IImage
 }
 
 /// <summary>
-/// The device-bound WebGPU resource factory. Textures, gradient shaders, color filters, the drop-shadow /
-/// backdrop-blur effect, and offscreen rasterization are all WebGPU-owned; only neutral geometry delegates to
-/// the inner factory. So paired with a managed inner (<see cref="ManagedDrawingFactory"/>) a WebGPU app links
-/// zero SkiaSharp for its drawing; paired with Skia it still works (geometry via SKPath, non-blur effects via
-/// the inner DAG). Font resolution/shaping and image decode are separate seams (FontProvider / ImageDecoder).
+/// The device-bound WebGPU resource factory: textures, gradient shaders, color filters, the drop-shadow /
+/// backdrop-blur effect, and offscreen rasterization are all WebGPU-owned. Geometry, font resolution/shaping and
+/// image decode are separate backend-independent seams (<see cref="GeometryFactory"/> / <see cref="FontProvider"/>
+/// / <see cref="ImageDecoder"/>); WebGPU consumes the neutral <see cref="IGeometry"/> it's registered by flattening
+/// it, so a SkiaSharp-free app registers a <see cref="ManagedGeometryFactory"/> and links zero SkiaSharp for drawing.
 /// </summary>
 public sealed class WebGpuDrawingFactory : IDrawingFactory
 {
 	private readonly WebGpuDevice _device;
-	private readonly IDrawingFactory _inner;
 
-	public WebGpuDrawingFactory(WebGpuDevice device, IDrawingFactory inner) { _device = device; _inner = inner; }
+	public WebGpuDrawingFactory(WebGpuDevice device) { _device = device; }
 
 	public IImageTexture CreateImageTexture(IImage image) => new WebGpuImageTexture(_device, image);
-
-	// Geometry is minted by the registered drawing backend — delegate to it (managed engine → no Skia; Skia → SKPath).
-	public IPathBuilder CreatePathBuilder() => _inner.CreatePathBuilder();
-	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => _inner.CreatePrimitiveGeometryBuilder();
 
 	// Offscreen rasterization on the WebGPU device (record → present into a dedicated offscreen surface) and hand
 	// back the resolved color texture as a sampleable IImageTexture — no CPU read-back, so a nine-slice/glyph/SVG

@@ -45,6 +45,18 @@ public static class UnoPlatformHostBuilderExtensions
 	}
 
 	/// <summary>
+	/// Registers the geometry engine — a render-independent seam (the path + primitive builders that mint
+	/// <see cref="IGeometry"/>). Independent of the graphics backend, like <see cref="FontProvider"/> /
+	/// <see cref="ImageDecoder"/>; the render backend consumes whatever neutral geometry it produces.
+	/// </summary>
+	public static IUnoPlatformHostBuilder GeometryFactory(this IUnoPlatformHostBuilder builder, IGeometryFactory factory)
+	{
+		ArgumentNullException.ThrowIfNull(factory);
+		builder.AddDrawingRegistration(() => Uno.UI.Composition.Drawing.GeometryFactory.Current = factory);
+		return builder;
+	}
+
+	/// <summary>
 	/// Provides an <see cref="Microsoft.UI.Xaml.Application"/> instance to use when starting the app.
 	/// </summary>
 	/// <remarks>

@@ -37,7 +37,7 @@ namespace Microsoft.UI.Composition
 				return true;
 			}
 
-			output.Add((DrawingFactory.Current.CreateRectangleGeometry(new Rect(0, 0, Size.X, Size.Y)), color.Color.A / 255f));
+			output.Add((GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, Size.X, Size.Y)), color.Color.A / 255f));
 			return true;
 		}
 	}

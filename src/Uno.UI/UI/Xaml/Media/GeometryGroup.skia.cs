@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Media
 	{
 		internal override IGeometry GetGeometry()
 		{
-			var builder = DrawingFactory.Current.CreatePrimitiveGeometryBuilder();
+			var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
 			builder.FillRule = FillRule == FillRule.EvenOdd ? GeometryFillRule.EvenOdd : GeometryFillRule.NonZero;
 
 			foreach (var geometry in Children)
