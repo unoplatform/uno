@@ -31,6 +31,12 @@ public enum BlendMode
 	DstIn,
 	DstOut,
 	SrcIn,
+	// Porter-Duff modes used by CompositeEffect.
+	DstOver,
+	SrcOut,
+	SrcATop,
+	DstATop,
+	Xor,
 	// Separable/non-separable blend modes used by effect graphs (BlendEffect / acrylic luminosity+colour).
 	Screen,
 	Darken,

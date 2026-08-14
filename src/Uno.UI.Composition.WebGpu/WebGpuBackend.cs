@@ -2616,4 +2616,51 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 		hasBackdropInput = false;
 		return null;
 	}
+
+	// Fuses the neutral EffectNode tree (Uno's parser output) into a backend filter. Like the legacy overload this
+	// only realizes the acrylic shape (a gaussian-blurred backdrop + tint/luminosity colours); any other tree returns
+	// null so CompositionEffectBrush falls back to the recipe path. Structure-matches the acrylic graph: the outer
+	// Blend's ColorInput foreground is the tint, the inner Blend's is the luminosity colour.
+	public IEffectFilter CreateEffectFilter(EffectNode tree, Rect bounds)
+	{
+		float sigma = 0f;
+		WColor tint = default, lum = default;
+		bool sawColorSource = false;
+		bool sawBackdrop = false;
+
+		void Walk(EffectNode node)
+		{
+			switch (node)
+			{
+				case BackdropInput:
+					sawBackdrop = true;
+					break;
+				case BlurEffectNode blur:
+					sigma = MathF.Max(sigma, blur.Sigma);
+					Walk(blur.Source);
+					break;
+				case BlendEffectNode blend:
+					if (blend.Foreground is ColorInput colorInput)
+					{
+						sawColorSource = true;
+						if (blend.Background is BlendEffectNode) { tint = colorInput.Color; } else { lum = colorInput.Color; }
+					}
+					Walk(blend.Background);
+					Walk(blend.Foreground);
+					break;
+				default:
+					foreach (var child in node.Children) { Walk(child); }
+					break;
+			}
+		}
+
+		Walk(tree);
+
+		if ((sigma > 0f || sawColorSource) && sawBackdrop)
+		{
+			return new WebGpuEffectFilter { SigmaX = sigma, SigmaY = sigma, Color = tint, LumColor = lum, Noise = 0.02f };
+		}
+
+		return null;
+	}
 }
