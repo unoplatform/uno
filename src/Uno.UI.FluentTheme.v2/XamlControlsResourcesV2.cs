@@ -102,7 +102,5 @@ namespace Microsoft.UI.Xaml.Controls
 		[NotImplemented]
 		public static DependencyProperty UseCompactResourcesProperty { get; } =
 			DependencyProperty.Register(nameof(UseCompactResources), typeof(bool), typeof(XamlControlsResourcesV2), new FrameworkPropertyMetadata(false));
-
-		public object ControlsResourcesVersion { get; set; }
 	}
 }

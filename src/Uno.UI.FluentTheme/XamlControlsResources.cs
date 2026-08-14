@@ -1,7 +1,5 @@
 ﻿using System;
 using Uno;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
@@ -10,10 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public sealed partial class XamlControlsResources : ResourceDictionary
 	{
-		private const ControlsResourcesVersion MaxSupportedResourcesVersion = ControlsResourcesVersion.Version2;
-
-		private static bool _isUsingResourcesVersion2 = true;
-
 		public XamlControlsResources()
 		{
 #if !__NETSTD_REFERENCE__
@@ -23,36 +17,13 @@ namespace Microsoft.UI.Xaml.Controls
 			Uno.UI.FluentTheme.GlobalStaticResources.Initialize();
 			Uno.UI.FluentTheme.GlobalStaticResources.RegisterDefaultStyles();
 			Uno.UI.FluentTheme.GlobalStaticResources.RegisterResourceDictionariesBySource();
-#endif
 
-			UpdateSource();
-		}
-
-		private void UpdateSource()
-		{
-			var requestedVersion = ControlsResourcesVersion;
-			if (ControlsResourcesVersion > MaxSupportedResourcesVersion)
-			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().LogWarning($"" +
-						$"WinUI resources version {ControlsResourcesVersion} is not supported " +
-						$"in Uno Platform yet. Falling back to {MaxSupportedResourcesVersion} styles.");
-				}
-				requestedVersion = MaxSupportedResourcesVersion;
-			}
-
-			requestedVersion = ControlsResourcesVersion.Version2; // Force version 2, as 1 is no longer supported
-
-#if !__NETSTD_REFERENCE__
 			Uno.UI.FluentTheme.v2.GlobalStaticResources.Initialize();
 			Uno.UI.FluentTheme.v2.GlobalStaticResources.RegisterDefaultStyles();
 			Uno.UI.FluentTheme.v2.GlobalStaticResources.RegisterResourceDictionariesBySource();
 #endif
 
-			Source = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.GetWinUIThemeResourceUrl((int)requestedVersion));
-
-			_isUsingResourcesVersion2 = requestedVersion == ControlsResourcesVersion.Version2;
+			Source = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.GetWinUIThemeResourceUrl(2));
 
 			// WinUI sets TintLuminosityOpacity programmatically on acrylic brushes
 			// because nullable doubles couldn't be set in XAML on older Windows versions.
@@ -129,20 +100,5 @@ namespace Microsoft.UI.Xaml.Controls
 		[NotImplemented]
 		public static DependencyProperty UseCompactResourcesProperty { get; } =
 			DependencyProperty.Register(nameof(UseCompactResources), typeof(bool), typeof(XamlControlsResources), new FrameworkPropertyMetadata(false));
-
-		public ControlsResourcesVersion ControlsResourcesVersion
-		{
-			get => (ControlsResourcesVersion)GetValue(ControlsResourcesVersionProperty);
-			set => SetValue(ControlsResourcesVersionProperty, value);
-		}
-
-		public static DependencyProperty ControlsResourcesVersionProperty { get; } =
-			DependencyProperty.Register(nameof(ControlsResourcesVersion), typeof(ControlsResourcesVersion), typeof(XamlControlsResources), new PropertyMetadata(ControlsResourcesVersion.Version2, OnControlsResourcesVersionChanged));
-
-		private static void OnControlsResourcesVersionChanged(DependencyObject owner, DependencyPropertyChangedEventArgs args)
-		{
-			var resources = owner as XamlControlsResources;
-			resources?.UpdateSource();
-		}
 	}
 }
