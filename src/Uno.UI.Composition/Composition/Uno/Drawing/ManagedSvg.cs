@@ -11,17 +11,18 @@ using Windows.UI;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// A SkiaSharp-free SVG engine: parses SVG markup and renders it through the neutral drawing abstraction
-/// (<see cref="IPathBuilder"/> geometry, <see cref="IDrawingSession"/> verbs, backend gradient shaders), so the
-/// core framework's SVG support no longer depends on Skia. Produces an <see cref="IImage"/> at a target size via
-/// <see cref="IDrawingFactory.RenderOffscreen"/>.
+/// A SkiaSharp-free SVG engine (the default <see cref="ISvgRenderer"/>/<see cref="ISvgDocument"/>): parses SVG
+/// markup and replays it through the neutral drawing abstraction (<see cref="IPathBuilder"/> geometry,
+/// <see cref="IDrawingSession"/> verbs, gradient shaders). It only issues neutral draw verbs into the session the
+/// caller supplies (an offscreen to rasterize, or a live session to draw directly); the caller owns the backend, so
+/// no Skia and no backend resource is created here.
 /// </summary>
 /// <remarks>
 /// Covers the common icon/illustration subset: svg/g/path/rect/circle/ellipse/line/polyline/polygon/use, fills and
 /// strokes (solid + linear/radial gradients), opacity, fill-rule, transforms, viewBox, and inline style. Not yet:
 /// text, clipPath/mask/filter/pattern, embedded images, external/CSS-class styling.
 /// </remarks>
-internal sealed class ManagedSvg
+internal sealed class ManagedSvg : ISvgDocument
 {
 	private readonly XElement _root;
 	private readonly Dictionary<string, XElement> _byId = new();
@@ -66,20 +67,22 @@ internal sealed class ManagedSvg
 		}
 	}
 
-	public IImageTexture Render(int pixelWidth, int pixelHeight)
+	// Replays the retained SVG into the caller's session. The caller supplies the session (an offscreen to rasterize,
+	// or a live session to draw directly) and thus owns any backend resource — the engine only issues neutral draw
+	// verbs. Bracketed in Save/Restore so the viewBox transform never leaks into a shared session.
+	public void Render(IDrawingSession session, Size targetSize)
 	{
-		return DrawingFactory.Current.RenderOffscreen(pixelWidth, pixelHeight, session =>
-		{
-			// Map the viewBox into the pixel target (uniform scale, centered — xMidYMid meet).
-			var sx = pixelWidth / (float)_viewBox.Width;
-			var sy = pixelHeight / (float)_viewBox.Height;
-			var scale = Math.Min(sx, sy);
-			var tx = (pixelWidth - (float)_viewBox.Width * scale) / 2f - (float)_viewBox.X * scale;
-			var ty = (pixelHeight - (float)_viewBox.Height * scale) / 2f - (float)_viewBox.Y * scale;
+		// Map the viewBox into the target (uniform scale, centered — xMidYMid meet).
+		var sx = (float)targetSize.Width / (float)_viewBox.Width;
+		var sy = (float)targetSize.Height / (float)_viewBox.Height;
+		var scale = Math.Min(sx, sy);
+		var tx = ((float)targetSize.Width - (float)_viewBox.Width * scale) / 2f - (float)_viewBox.X * scale;
+		var ty = ((float)targetSize.Height - (float)_viewBox.Height * scale) / 2f - (float)_viewBox.Y * scale;
 
-			session.Concat(ToMatrix4x4(new Matrix3x2(scale, 0, 0, scale, tx, ty)));
-			RenderChildren(session, _root, SvgStyle.Root);
-		});
+		var count = session.Save();
+		session.Concat(ToMatrix4x4(new Matrix3x2(scale, 0, 0, scale, tx, ty)));
+		RenderChildren(session, _root, SvgStyle.Root);
+		session.RestoreToCount(count);
 	}
 
 	private void RenderChildren(IDrawingSession session, XElement parent, SvgStyle inherited)
