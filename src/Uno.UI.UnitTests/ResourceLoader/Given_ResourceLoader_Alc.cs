@@ -321,15 +321,19 @@ public class Given_ResourceLoader_Alc
 	}
 
 	[TestMethod]
+	[Description(
+		"A .upri truncated mid key/value pair, registered while the loader context is unchanged (the " +
+		"full-reload branch), must leave no registration, no parsed marker and no partially merged " +
+		"value observable — not even the loader instance the failed parse would have created.")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23959")]
 	public void When_AddLookupAssembly_Truncated_Upri_Then_Throws_And_Partial_Value_Not_Observable()
 	{
 		// Issue scenario: a .upri with a VALID header that declares two key/value pairs, carries one
 		// complete pair, then truncates before the second. ProcessResourceFile used to merge each
-		// pair directly into the live loader as it read, so BinaryReader.ReadString throwing
-		// EndOfStreamException on the second pair left the FIRST pair's value observable even after
-		// the AddLookupAssembly rollback removed the registration and its parsed markers — an
-		// unregistered assembly's partially parsed resource value survived. A failed
-		// AddLookupAssembly must be fully transactional: no registration, marker, or value remains.
+		// pair directly into the live loader as it read, so failing on the second pair left the FIRST
+		// pair's value observable even after the AddLookupAssembly rollback removed the registration
+		// and its parsed markers — an unregistered assembly's partially parsed resource value
+		// survived. A failed AddLookupAssembly must be fully transactional.
 		const string defaultLanguage = "en";
 		const string uiTestResources = "Uno.UI.UnitTests/Resources";
 		const string truncatedLoaderName = "Uno.UI.Tests.TruncatedUpri/Resources";
@@ -361,13 +365,16 @@ public class Given_ResourceLoader_Alc
 				"Uno.UI.Tests.TruncatedUpri",
 				BuildTruncatedUpriPayload(truncatedLoaderName, defaultLanguage));
 
-			Assert.ThrowsExactly<EndOfStreamException>(
+			Assert.ThrowsExactly<InvalidDataException>(
 				() => _ResourceLoader.AddLookupAssembly(truncated),
-				"A .upri truncated in the middle of its declared pairs must surface BinaryReader's EndOfStreamException.");
+				"A .upri truncated in the middle of its declared pairs must surface as InvalidDataException naming the file — the contract ProcessResourceFile documents for malformed content.");
 
 			Assert.IsFalse(
 				_ResourceLoader.ContainsLookupAssembly(truncated),
 				"A failed registration must be rolled back.");
+			Assert.IsFalse(
+				_ResourceLoader.ContainsNamedLoader(truncatedLoaderName),
+				"The failed parse must not even create the truncated .upri's loader — a created loader proves the parse wrote into the live state. Checked before GetForCurrentView below, which creates it on purpose.");
 			Assert.AreEqual(
 				string.Empty,
 				_ResourceLoader.GetForCurrentView(truncatedLoaderName).GetString("TruncatedKey"),
@@ -388,6 +395,11 @@ public class Given_ResourceLoader_Alc
 	}
 
 	[TestMethod]
+	[Description(
+		"The same truncated .upri through AddLookupAssembly's OTHER branch — a changed loader context, " +
+		"where only the new assembly is parsed — must leave the live loaders completely untouched: no " +
+		"loader instance created and no value merged, pinning the single-assembly transactional parse.")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23959")]
 	public void When_AddLookupAssembly_Truncated_Upri_With_Changed_Context_Then_Live_Loaders_Untouched()
 	{
 		// Same truncated .upri as above, but through AddLookupAssembly's OTHER branch: when the
@@ -421,15 +433,18 @@ public class Given_ResourceLoader_Alc
 				"Uno.UI.Tests.TruncatedUpriChangedContext",
 				BuildTruncatedUpriPayload(truncatedLoaderName, "en"));
 
-			Assert.ThrowsExactly<EndOfStreamException>(
+			Assert.ThrowsExactly<InvalidDataException>(
 				() => _ResourceLoader.AddLookupAssembly(truncated),
-				"A .upri truncated in the middle of its declared pairs must surface BinaryReader's EndOfStreamException.");
+				"A .upri truncated in the middle of its declared pairs must surface as InvalidDataException naming the file — the contract ProcessResourceFile documents for malformed content.");
 
 			Assert.IsFalse(
 				_ResourceLoader.ContainsLookupAssembly(truncated),
 				"A failed registration must be rolled back.");
 			Assert.IsFalse(
-				TryGetMergedResource(truncatedLoaderName, "en", "TruncatedKey", out var leaked),
+				_ResourceLoader.ContainsNamedLoader(truncatedLoaderName),
+				"The failed single-assembly parse must not even CREATE the truncated .upri's loader. Absence (not just emptiness) is what pins this branch: were branch selection to regress to the full reload, its rebuild recovery would empty the loader but the instance would still exist.");
+			Assert.IsFalse(
+				_ResourceLoader.TryGetMergedResourceForTests(truncatedLoaderName, "en", "TruncatedKey", out var leaked),
 				$"The failed single-assembly parse must not leave any value in the live loaders (found '{leaked}').");
 		}
 		finally
@@ -464,30 +479,6 @@ public class Given_ResourceLoader_Alc
 		}
 
 		return payload.ToArray();
-	}
-
-	/// <summary>
-	/// Reads a merged resource value at the private per-loader dictionary seam
-	/// (<c>ResourceLoader._resources[culture][key]</c>) WITHOUT going through
-	/// <c>GetString</c> — which re-establishes the loader context (reloading, and thereby wiping,
-	/// the loaders when the culture changed) and would mask a leaked value.
-	/// </summary>
-	private static bool TryGetMergedResource(string loaderName, string culture, string key, out string? value)
-	{
-		value = null;
-
-		var loadersField = typeof(_ResourceLoader).GetField("_loaders", BindingFlags.Static | BindingFlags.NonPublic)
-			?? throw new InvalidOperationException("ResourceLoader._loaders field was not found.");
-		var loaders = (Dictionary<string, _ResourceLoader>)loadersField.GetValue(null)!;
-		if (!loaders.TryGetValue(loaderName, out var loader))
-		{
-			return false;
-		}
-
-		var resourcesField = typeof(_ResourceLoader).GetField("_resources", BindingFlags.Instance | BindingFlags.NonPublic)
-			?? throw new InvalidOperationException("ResourceLoader._resources field was not found.");
-		var resources = (Dictionary<string, Dictionary<string, string>>)resourcesField.GetValue(loader)!;
-		return resources.TryGetValue(culture, out var map) && map.TryGetValue(key, out value);
 	}
 
 	/// <summary>
