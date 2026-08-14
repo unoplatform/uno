@@ -20,11 +20,6 @@ namespace Microsoft.UI.Xaml.Controls
 			Uno.UI.FluentTheme.v2.GlobalStaticResources.RegisterResourceDictionariesBySource();
 #endif
 
-			UpdateSource();
-		}
-
-		private void UpdateSource()
-		{
 			Source = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.WinUIThemeResourceURL);
 
 			// WinUI sets TintLuminosityOpacity programmatically on acrylic brushes

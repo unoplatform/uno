@@ -51,5 +51,5 @@ one diff. No specific file paths from the change that triggered it.
 
 ## 2026-08-14 — Verify an issue's counted file references before planning around them
 - **Lens:** all
-- **Lesson:** BC71's issue text asserted "38 verified references" to `Uno.UI.FluentTheme.v1` in `Uno.WinUI.nuspec` (actual: 6), told us to prune `Uno.Sdk` `packages.json` and the implicit-package targets (zero hits anywhere under `src/Uno.Sdk/`), and `specs/050` listed four `.Skia`/`.Wasm`/`.Reference`/`.netcoremobile` csproj variants that had already been collapsed into one. All three came from a generated assessment (`_gen.py` / `assessments-raw.json`) captured against an older worktree.
-- **Apply:** Treat counts and file lists in a generated issue/spec as a starting query, not an inventory. Re-grep before sizing the work, and record the corrections in the PR so the next reader doesn't re-derive them.
+- **Lesson:** A rollup item's issue text overstated a packaging-reference count by 6x, named a subsystem to prune that had zero matching entries, and listed per-platform project variants that had already been collapsed into one. All three claims came from a generated assessment captured against an older worktree, and all three were wrong in the same direction — describing a repo state that no longer existed.
+- **Apply:** Treat counts and file lists in a generated issue or spec as a starting query, not an inventory. Re-grep before sizing the work, and record the corrections in the PR so the next reader doesn't re-derive them.

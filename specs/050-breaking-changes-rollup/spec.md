@@ -268,7 +268,10 @@ _Danger 3-4. Heavier multi-file changes: remove the legacy templated-parent mech
 - [x] **BC71** — Remove Fluent V1 public surface  `d2·M` · #14765
   - Hard-removed `XamlControlsResourcesV1`, the whole `ControlsResourcesVersion` enum, and `XamlControlsResources.ControlsResourcesVersion` (WinAppSDK has no such surface and V2 was already forced unconditionally), plus the `Uno.UI.FluentTheme.v1` project and its build/pack scaffolding. Collapsed the now-single-version theme-resource plumbing.
   - Files: `src/Uno.UI.FluentTheme.v1/` (deleted), `src/Uno.UI/UI/Xaml/Controls/ControlsResourcesVersion.cs`, `src/Uno.UI.FluentTheme/XamlControlsResources.cs`, `src/Uno.UI/UI/Xaml/XamlFilePathHelper.shared.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.cs`, `build/nuget/Uno.WinUI.nuspec`, `build/PackageDiffIgnore.xml`
-  - Follow-up: `XamlControlsResourcesV2` is itself a WinUI-2-era type with no WinAppSDK counterpart — worth its own BC assessment.
+  - Follow-ups (deliberately out of scope here): `XamlControlsResourcesV2` is itself a WinUI-2-era type with no WinAppSDK counterpart — worth its own BC assessment. With V1 gone it is also a near-clone of `XamlControlsResources` (same acrylic `TintLuminosityOpacity` table in both assemblies); de-duplicating means new `Uno.UI` internal surface, so it belongs with that assessment, not here. Separately, the MUX `*_v1.xaml` API-contract dictionaries under `src/Uno.UI/UI/Xaml/Controls/**` still compile into `Uno.UI` — unrelated to Fluent V1, but a payload question worth its own look.
+- [ ] **BC53** — Rename `Uno.UI.Toolkit` assembly/namespace ⚠️  `d4·M` · #12322
+  - **DECIDE the new assembly/namespace name.** Hard rename, no type-forwarders / xmlns alias (per hard-remove policy).
+  - Files: `src/Uno.UI.Toolkit/`, `src/Uno.UI.Toolkit/Uno.UI.Toolkit.Skia.csproj`, `src/Uno.UI.Toolkit/Uno.UI.Toolkit.Wasm.csproj`
 - [ ] **BC76** — Remove/internalize `Windows.UI.Input.*` (~173 types)  `d4·M` · #18875
   - Hard-remove the ~173 stub types. The **real** `InputInjector` family (test infra) -> move to `Microsoft.UI.Input.Preview.Injection` and update call sites.
   - Files: `src/Uno/Generated/3.0.0.0/Windows.UI.Input`, `src/Uno/Generated/3.0.0.0/Windows.UI.Input.Spatial`, `src/Uno/Generated/3.0.0.0/Windows.UI.Input.Inking`
