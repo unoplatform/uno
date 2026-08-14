@@ -37,12 +37,6 @@ namespace Microsoft.UI.Xaml
 			=> throw new NotSupportedException("Use the factory constructors");
 
 		internal FrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory)
-			: this(owner, (Delegate?)factory)
-		{
-			SetViewFactory(factory);
-		}
-
-		private FrameworkTemplate(object? owner, Delegate? rawFactory)
 		{
 			InitializeBinder();
 
@@ -50,16 +44,18 @@ namespace Microsoft.UI.Xaml
 
 			// Compute the hash for this template once, it will be used a lot
 			// in the ControlPool's internal dictionary.
-			_hashCode = HashCode.Combine(rawFactory?.Target, rawFactory?.Method);
+			_hashCode = HashCode.Combine(factory?.Target, factory?.Method);
 #if DEBUG
-			TemplateSource = $"{rawFactory?.Method.DeclaringType}.{rawFactory?.Method.Name}";
-			if (rawFactory?.Target is { })
+			TemplateSource = $"{factory?.Method.DeclaringType}.{factory?.Method.Name}";
+			if (factory?.Target is { })
 			{
-				TemplateSource += $", target={rawFactory.Target.GetType()}";
+				TemplateSource += $", target={factory.Target.GetType()}";
 			}
 #endif
 
 			_xamlScope = ResourceResolver.CurrentScope;
+
+			SetViewFactory(factory);
 		}
 
 		/// <summary>
