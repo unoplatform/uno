@@ -26,6 +26,6 @@ public sealed class Given_WatchHotReloadService_EngineShape
 		using var temp = new TempDirectory();
 		using var harness = await EnCHarness.CreateAsync(temp, ct);
 
-		harness.Watch.EngineShapeWarnings.Should().BeEmpty();
+		harness.Reporter.Warnings.Should().BeEmpty();
 	}
 }

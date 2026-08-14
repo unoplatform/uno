@@ -21,14 +21,6 @@ internal interface IWatchHotReloadService
 	Task<HotReloadEmitResult> EmitSolutionUpdateAsync(Solution solution, CancellationToken cancellationToken);
 
 	/// <summary>
-	/// Members of Roslyn's Edit-and-Continue engine that are present but whose shape could not be
-	/// read, so the corresponding <see cref="HotReloadEmitResult"/> values will always be empty.
-	/// Reported once, at session start: a member the running Roslyn line simply does not have is NOT
-	/// listed here (that is expected and documented on the result), only one that changed shape.
-	/// </summary>
-	ImmutableArray<string> EngineShapeWarnings { get; }
-
-	/// <summary>
 	/// Ends the underlying edit-and-continue session.
 	/// </summary>
 	void EndSession();

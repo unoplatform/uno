@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Host;
+using Uno.HotReload.Tracking;
 
 namespace Uno.HotReload.Microsoft;
 
@@ -32,7 +33,7 @@ internal partial class WatchHotReloadService
 	private readonly Action? _endSession;
 	private readonly object? _targetInstance;
 
-	public WatchHotReloadService(HostWorkspaceServices services, string[] metadataUpdateCapabilities)
+	public WatchHotReloadService(HostWorkspaceServices services, string[] metadataUpdateCapabilities, IReporter reporter)
 	{
 		if (Assembly.Load("Microsoft.CodeAnalysis.Features") is { } featuresAssembly)
 		{
@@ -63,6 +64,15 @@ internal partial class WatchHotReloadService
 				// for a rude edit. The engine is driven directly instead — see EnCEngine.
 				_engine = EnCEngine.Create(_targetInstance
 					?? throw new InvalidOperationException($"Failed to create {hotReloadServiceType.Name}."));
+
+				// A member of the engine that is present but no longer readable means part of the
+				// hot-reload information will be empty for the whole session; the only moment that is
+				// diagnosable is here, before anything depends on it. Absences that are simply the
+				// older Roslyn line not reporting something are not warned about — see EnCEngine.
+				foreach (var warning in _engine.ShapeWarnings)
+				{
+					reporter.Warn($"Hot reload cannot read part of Roslyn's Edit-and-Continue results: {warning}");
+				}
 
 				if (hotReloadServiceType.GetMethod(nameof(EndSession), Type.EmptyTypes) is { } endSessionMethod)
 				{
@@ -150,10 +160,6 @@ internal partial class WatchHotReloadService
 	/// Emits the deltas between <paramref name="solution"/> and the session baseline, and advances
 	/// that baseline only when deltas are actually produced.
 	/// </summary>
-	/// <inheritdoc />
-	public ImmutableArray<string> EngineShapeWarnings
-		=> _engine?.ShapeWarnings ?? ImmutableArray<string>.Empty;
-
 	/// <returns>Everything the engine reports about the emit — see <see cref="HotReloadEmitResult"/>.</returns>
 	public Task<HotReloadEmitResult> EmitSolutionUpdateAsync(Solution solution, CancellationToken cancellationToken)
 	{

@@ -85,7 +85,7 @@ public sealed class HotReloadManager : IDisposable
 			result.EnsureSuccess();
 		}
 
-		var watch = await WatchHotReloadService.CreateAsync(solution, metadataUpdateCapabilities, ct).ConfigureAwait(false);
+		var watch = await WatchHotReloadService.CreateAsync(solution, metadataUpdateCapabilities, tracker, ct).ConfigureAwait(false);
 
 		return new HotReloadManager(solution.Workspace, watch, handler, changesDetector, solutionUpdater, tracker, solution);
 	}
@@ -121,14 +121,6 @@ public sealed class HotReloadManager : IDisposable
 		_solutionUpdater = solutionUpdater;
 
 		CurrentSolution = initialSolution ?? innerWorkspace.CurrentSolution;
-
-		// Reported here rather than swallowed in the shim: a shape this host cannot read means some
-		// hot-reload information is silently missing for the whole session, and the only moment that
-		// is diagnosable is before anything depends on it.
-		foreach (var warning in watchService.EngineShapeWarnings)
-		{
-			_tracker.Warn($"Hot reload cannot read part of Roslyn's Edit-and-Continue results: {warning}");
-		}
 
 		// The reference set the EnC baseline of each project's module captures at session start;
 		// every emit is pinned back onto it (see the alignment step in ProcessSolutionChanged).

@@ -128,8 +128,6 @@ internal sealed class HotReloadManagerHarness : IDisposable
 	{
 		private int _calls;
 
-		public ImmutableArray<string> EngineShapeWarnings => ImmutableArray<string>.Empty;
-
 		public async Task<HotReloadEmitResult> EmitSolutionUpdateAsync(Solution solution, CancellationToken cancellationToken)
 		{
 			// The stub exists to drive the manager's orchestration; no test needs a project that

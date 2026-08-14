@@ -35,6 +35,12 @@ internal sealed class EnCHarness : IDisposable
 	public required DocumentId DocumentId { get; init; }
 
 	/// <summary>
+	/// Everything the session reported. The shim takes its reporter by constructor, so this is where
+	/// a test observes what it said (e.g. that no engine member became unreadable).
+	/// </summary>
+	public required RecordingReporter Reporter { get; init; }
+
+	/// <summary>
 	/// Whether disposing the harness ends the EnC session. Defaults to <see langword="true"/>
 	/// (shim-level tests drive <see cref="Watch"/> directly); tests that hand <see cref="Watch"/>
 	/// to a <see cref="HotReloadManager"/> must set this to <see langword="false"/> — the
@@ -106,7 +112,8 @@ internal sealed class EnCHarness : IDisposable
 		var emitted = await solution.EmitCompilationOutputAsync(ct);
 		emitted.EnsureSuccess();
 
-		var watch = await WatchHotReloadService.CreateAsync(solution, _capabilities, ct);
+		var reporter = new RecordingReporter();
+		var watch = await WatchHotReloadService.CreateAsync(solution, _capabilities, reporter, ct);
 
 		return new EnCHarness
 		{
@@ -115,6 +122,7 @@ internal sealed class EnCHarness : IDisposable
 			Solution = solution,
 			ProjectId = projectId,
 			DocumentId = documentId,
+			Reporter = reporter,
 		};
 	}
 
