@@ -57,6 +57,19 @@ public static class UnoPlatformHostBuilderExtensions
 	}
 
 	/// <summary>
+	/// Registers the SVG renderer — a render-independent content seam (SVG markup → a retained
+	/// <see cref="Uno.UI.Composition.Drawing.ISvgDocument"/> that replays through the neutral drawing session).
+	/// Independent of the graphics backend, like <see cref="FontProvider"/> / <see cref="ImageDecoder"/>; the
+	/// framework defaults to its managed engine when none is registered.
+	/// </summary>
+	public static IUnoPlatformHostBuilder SvgRenderer(this IUnoPlatformHostBuilder builder, Uno.UI.Composition.Drawing.ISvgRenderer renderer)
+	{
+		ArgumentNullException.ThrowIfNull(renderer);
+		builder.AddDrawingRegistration(() => Uno.UI.Composition.Drawing.SvgRenderer.Current = renderer);
+		return builder;
+	}
+
+	/// <summary>
 	/// Provides an <see cref="Microsoft.UI.Xaml.Application"/> instance to use when starting the app.
 	/// </summary>
 	/// <remarks>

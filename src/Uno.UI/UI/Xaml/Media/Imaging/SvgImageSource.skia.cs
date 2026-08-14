@@ -7,6 +7,7 @@ using Uno.Helpers;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Media;
 using Windows.Application­Model;
+using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Uno.UI.Composition.Drawing;
 
@@ -14,8 +15,8 @@ namespace Microsoft.UI.Xaml.Media.Imaging;
 
 partial class SvgImageSource
 {
-	// The SkiaSharp-free managed SVG engine; set when the markup parses (the primary, add-in-free path).
-	private ManagedSvg _managedSvg;
+	// The retained parsed SVG (from the registered ISvgRenderer); set when the markup parses.
+	private ISvgDocument _svgDocument;
 
 	private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 	{
@@ -26,16 +27,20 @@ partial class SvgImageSource
 				var imageData = task.Result;
 
 				// Primary path: render through the managed, backend-neutral SVG engine (no Skia dependency).
-				if (_managedSvg is { } managed)
+				if (_svgDocument is { } document)
 				{
 					var width = targetWidth is > 0 ? targetWidth.Value
 						: RasterizePixelWidth > 0 ? (int)Math.Ceiling(RasterizePixelWidth)
-						: (int)Math.Ceiling(managed.SourceSize.Width);
+						: (int)Math.Ceiling(document.SourceSize.Width);
 					var height = targetHeight is > 0 ? targetHeight.Value
 						: RasterizePixelHeight > 0 ? (int)Math.Ceiling(RasterizePixelHeight)
-						: (int)Math.Ceiling(managed.SourceSize.Height);
+						: (int)Math.Ceiling(document.SourceSize.Height);
+					var w = Math.Max(1, width);
+					var h = Math.Max(1, height);
 
-					var svgImage = managed.Render(Math.Max(1, width), Math.Max(1, height));
+					// The engine retains the parsed vector; we rasterize it at the display size here. This layer owns
+					// the backend, so RenderOffscreen lives on the caller side of the seam — the engine only draws.
+					var svgImage = DrawingFactory.Current.RenderOffscreen(w, h, s => document.Render(s, new Size(w, h)));
 					return ImageData.FromCompositionSurface(new CompositionImageSurface(svgImage));
 				}
 

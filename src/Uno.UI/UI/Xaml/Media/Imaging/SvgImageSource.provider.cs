@@ -46,10 +46,11 @@ partial class SvgImageSource
 			return ImageData.Empty;
 		}
 
-		// Primary: the managed, Skia-free SVG engine parses the markup.
-		if (Uno.UI.Composition.Drawing.ManagedSvg.TryParse(imageData.ByteArray, out var managed))
+		// Primary: the registered SVG renderer parses the markup (defaults to the managed, Skia-free engine).
+		var renderer = Uno.UI.Composition.Drawing.SvgRenderer.Current ??= new Uno.UI.Composition.Drawing.ManagedSvgRenderer();
+		if (renderer.Parse(imageData.ByteArray) is { } document)
 		{
-			_managedSvg = managed;
+			_svgDocument = document;
 			SourceLoaded?.Invoke(this, EventArgs.Empty);
 			return imageData;
 		}
@@ -65,9 +66,9 @@ partial class SvgImageSource
 
 	internal UIElement? GetCanvas() => _svgProvider?.GetCanvas();
 
-	internal bool IsParsed => _managedSvg is not null || (_svgProvider?.IsParsed ?? false);
+	internal bool IsParsed => _svgDocument is not null || (_svgProvider?.IsParsed ?? false);
 
-	internal Size SourceSize => _managedSvg?.SourceSize ?? _svgProvider?.SourceSize ?? default;
+	internal Size SourceSize => _svgDocument?.SourceSize ?? _svgProvider?.SourceSize ?? default;
 
 	private void OnSourceLoaded(object? sender, EventArgs e) => SourceLoaded?.Invoke(this, EventArgs.Empty);
 
