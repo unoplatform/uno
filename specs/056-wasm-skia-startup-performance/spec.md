@@ -2,9 +2,25 @@
 
 **Repo**: `uno` (Uno.UI.Runtime.Skia.WebAssembly.Browser, Uno.Sdk, Uno.Wasm.Bootstrap)
 **Created**: 2026-08-14
-**Status**: Draft — findings measured, remediation proposed
+**Status**: Active — findings measured, remediation under way
 **Scope**: `net10.0-browserwasm` + `UnoFeatures=SkiaRenderer`. The legacy DOM/"Native"
 WASM renderer is explicitly out of scope.
+
+### Requirement status
+
+| # | Requirement | Est. saving | Status |
+|---|---|---|---|
+| R1a | Drop CLDR `locales_tree` from the ICU data | 372 KB br | PR open (`Uno.icu-wasm`), draft — needs a CI build to validate |
+| R1b | Stop paying for word-break dictionaries at first paint | 2.02 MB br | Issue open, not started |
+| R2 | Do not gate splash removal on font preloading | ~270 ms perceived | Not started; fix together with R10 |
+| R3 | Preload only common font variants | ~2.4 MB br, −34 requests | **PR open** — implemented, unit-tested |
+| R4 | Make `WasmShellEnableIDBFS` opt-in | 971 KB raw | Not started |
+| R5 | Stop emitting DOM-renderer assets for Skia heads | 3 blocking requests | Not started |
+| R6 | Remove the extra hop before the runtime download | 1 RTT | Not started |
+| R7 | Do not gate `Main()` behind serial interop JS | 1 RTT + 57 KB br | Not started |
+| R8 | Defer eager theme-dictionary construction | part of 259 ms | Not started |
+| R9 | Register the service worker after first frame | contention | Not started |
+| R10 | Splash removal is latency-fragile | — | Needs triage |
 
 ## Overview & Objectives
 
@@ -56,6 +72,12 @@ removal is chained behind font preloading.
 | `System.Private.Xml` | 142 KB | — | +142 KB | Not shipped by Avalonia or Blazor |
 | Bootstrap JS + CSS | ~57 KB | ~10 KB | +47 KB | `require.js`, `uno-bootstrap.js`, legacy DOM CSS |
 | **Total transferred** | **11.87 MB** | **4.79 MB** | **+7.08 MB** | |
+
+The app-assembly row is almost entirely ICU. Compressing each segment of the embedded table
+separately (brotli q11) gives 2 020 KB of word-break dictionaries, 372 KB of CLDR locale
+bundles, 43 KB of break rules and 28 KB of root/pool — around 2 463 KB, against a measured
+2 499 KB for the whole assembly. The app's own IL and metadata are the remaining ~100 KB
+compressed (~495 KB raw). See R1.
 
 ## Requirements
 
@@ -191,9 +213,10 @@ Avalonia issues **zero** font requests: Inter ships as a manifest resource insid
 `Avalonia.Fonts.Inter.wasm` (`Avalonia.Fonts.Inter.csproj:6`, `<AvaloniaResource Include="Assets\*" />`)
 and arrives in the normal parallel assembly batch.
 
-### R3 — stop shipping the whole OpenSans family by default
+### R3 — stop preloading and shipping the whole OpenSans family by default
 
-**Severity: critical. Saves ~2.4 MB brotli and 36 HTTP requests.**
+**Severity: critical. Preload fix removes ~34 startup requests; trimming deployment saves
+a further ~2.4 MB brotli.**
 
 The blank template ships 32 OpenSans TTF variants (Condensed, SemiCondensed, every weight,
 every italic) plus the Fluent icon font — 6.0 MB raw / 2.6 MB brotli across 37 requests.
@@ -206,8 +229,33 @@ package_<hash>/Uno.Fonts.Fluent/Fonts/     uno-fluentui-assets.ttf   767 KB raw 
 `FontFamilyHelper.PreloadAllFontsInManifest` applies no filtering, so all of them are
 fetched at startup regardless of what the app references.
 
-Default the implicit font package to Regular + SemiBold and make the remaining variants
-opt-in. Preload only the weight/style the startup page actually references.
+There are two halves to this: what is **preloaded**, and what is **deployed**.
+
+**Preload — implemented.** `FeatureConfiguration.Font.PreloadedVariants` now drives
+preloading, typed as a `[Flags] FontPreloadVariants` enum rather than a boolean, so an app
+can name exactly what it wants resident before first paint:
+
+```csharp
+// default
+FontPreloadVariants.Normal | FontPreloadVariants.SemiBold | FontPreloadVariants.Bold
+
+FeatureConfiguration.Font.PreloadedVariants |= FontPreloadVariants.Italic;  // widen
+FeatureConfiguration.Font.PreloadedVariants = FontPreloadVariants.All;      // previous behaviour
+FeatureConfiguration.Font.PreloadedVariants = FontPreloadVariants.None;     // no preloading
+```
+
+Weight flags select upright, normal-width faces; `Italic` and `Condensed` widen the selection
+to those forms of the selected weights. Faces that are not preloaded load on first use, as
+they always did. `PreloadAllFontsInManifest` keeps its semantics and delegates with `All`.
+If a manifest declares none of the selected variants the full set is preloaded, so a family
+without an upright regular face is not left with nothing.
+
+Covered by `Given_FontPreloadVariants` in `Uno.UI.UnitTests`.
+
+**Deployment — not started.** The 32 faces are still copied to the output and named in the
+service worker's `offline_files` list, so they are still fetched on a first load even when
+not preloaded. Trimming what `Uno.Fonts.OpenSans` ships by default belongs in the fonts
+package, not here.
 
 ### R4 — make `WasmShellEnableIDBFS` opt-in
 
