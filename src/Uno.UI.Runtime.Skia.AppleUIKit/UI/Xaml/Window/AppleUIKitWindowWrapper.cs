@@ -47,6 +47,13 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		XamlRootMap.Register(xamlRoot, _mainController);
 		_mainController.View!.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
+
+		// Must precede ObserveOrientationAndSize, which raises an initial size change:
+		// without RasterizationScale the first SetSizes reports 0x0 pixels.
+		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
+		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
+		DispatchDpiChanged();
+
 		ObserveOrientationAndSize();
 
 		// This method needs to be called synchronously with `UnoSkiaAppDelegate.FinishedLaunching`
@@ -72,10 +79,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		UIKeyboard.Notifications.ObserveWillShow(OnKeyboardWillShow);
 		UIKeyboard.Notifications.ObserveWillHide(OnKeyboardWillHide);
 #endif
-
-		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
-		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
-		DispatchDpiChanged();
 	}
 
 	public static NativeWindowWrapper? Instance { get; private set; }
