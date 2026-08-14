@@ -48,7 +48,7 @@ removal is chained behind font preloading.
 
 | Component | Uno | Avalonia | Delta | Cause |
 |---|---:|---:|---:|---|
-| App assembly | 2 499 KB | 48 KB | +2 451 KB | 5.5 MB ICU blob embedded as a resource |
+| App assembly | 2 499 KB | 48 KB | +2 451 KB | 5.25 MB ICU table embedded as a resource |
 | Fonts (37 files vs 0) | 2 683 KB | 464 KB | +2 219 KB | Whole OpenSans family + Fluent icons over HTTP |
 | UI framework | 1 835 KB | 679 KB | +1 156 KB | `Uno.UI` vs `Avalonia.Base` + `Avalonia.Controls` |
 | Theme dictionary | 422 KB | 75 KB | +347 KB | `Uno.UI.FluentTheme.v2` vs `Avalonia.Themes.Fluent` |
@@ -62,9 +62,9 @@ removal is chained behind font preloading.
 Ordered by impact per unit of effort. R1–R5 are build-configuration changes that alter no
 public API and no WinUI behaviour.
 
-### R1 — stop embedding `icudt.dat` into `browserwasm` heads
+### R1 — shrink the embedded `icudt.dat`
 
-**Severity: critical. Saves ~2.45 MB brotli on the critical path.**
+**Severity: critical. ~1.5 MB of the 5.25 MB table is removable; the rest is required.**
 
 `Uno.icu.Common.targets` adds a 5,505,504-byte `icudt.dat` as an `EmbeddedResource` to any
 project where `IsUnoHead == True`, with no platform condition:
@@ -94,9 +94,37 @@ static library linked into `dotnet.native.wasm`
 opt-out), and the standard sharded `icudt_EFIGS/CJK/no_CJK.dat` files — the last of which
 are byte-identical to what Avalonia and Blazor ship.
 
-Condition the embedded resource off for `browserwasm`, where the native `unoicu.a` already
-provides the ICU entry points. Verify that `UnicodeText.ICU` resolution still succeeds
-against the native library alone before shipping.
+**The embedded resource cannot simply be removed.** `unoicu.a` supplies the ICU *code*, not
+its *data*: `UnicodeText.ICU.Init()` reads the manifest resource and hands it to
+`udata_setCommonData` on Browser, macOS and Windows alike
+(`src/Uno.UI/UI/Xaml/Documents/UnicodeText.ICU.cs:214-231`), throwing if it is absent.
+Dropping it would break text layout.
+
+The fix is to make the table smaller. Uno's ICU surface is narrow — `UnicodeText.ICU`
+declares only `ubidi_*`, `ubrk_*`, `uscript_getScript`, `udata_setCommonData` and the
+`u_getVersion`/`u_errorName` helpers, i.e. bidirectional text, break iteration and script
+properties. Parsing the package's table of contents (509 items) shows what the 5.25 MB
+actually holds:
+
+| Contents | Size | Needed |
+|---|---:|---|
+| `brkitr/` — break rules + CJK/SEA word dictionaries | 3.63 MB | **Yes**, used by `ubrk_*` |
+| Top-level locale `.res` — 469 CLDR bundles | 1.52 MB | **No** — date/number/currency formats and locale display names, which Uno never reads |
+| `root.res` / `pool.res` | 0.09 MB | Yes |
+
+Removing `locales_tree` from the ICU data filter
+(`Uno.icu-wasm`, `src/cldr_data/filters.json`) therefore drops ~1.5 MB (29%) without
+affecting break iteration or bidi. The `localeFilter` must be retained, because it also
+constrains which locales `brkitr_tree` emits.
+
+The `brkitr` dictionaries are the largest single block (`cjdict.dict` alone is 1.96 MB) but
+are what makes word and line breaking correct in Chinese, Japanese, Thai, Lao, Khmer and
+Burmese. They should not be dropped.
+
+Further reduction would require moving the data off the startup path entirely — for example
+shipping it as a lazily-fetched asset rather than an `EmbeddedResource`, so it is downloaded
+on first use of complex text rather than before `Main()`. That is a larger change, since
+`Init()` is synchronous.
 
 ### R2 — do not gate splash removal on font preloading
 
@@ -307,10 +335,9 @@ re-investigated.
 
 ## Sequencing
 
-**Phase 1 — build configuration (R1, R3, R4, R5, R9).** Estimated −5.0 MB brotli. No public
+**Phase 1 — build configuration (R1, R3, R4, R5, R9).** Estimated −3.5 MB brotli. No public
 API change, no WinUI behaviour change. Should take a blank app from 11.87 MB to roughly
-6.5 MB transferred — about 2.1 s of wire time at 20 Mbps — putting Uno within range of
-Avalonia on payload-bound loads without touching runtime code.
+8 MB transferred — about 1.5 s of wire time at 20 Mbps — without touching runtime code.
 
 **Phase 2 — boot sequence and first-frame gating (R2, R6, R7, R10).** Estimated −270 ms
 perceived and one round trip. Includes embedding the default font as a managed resource.
