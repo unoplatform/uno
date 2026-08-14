@@ -35,8 +35,8 @@ the evaluator is expressed entirely as **nested `SaveLayer` + draw** ops:
 | Graph node | Evaluator emits (all recorded / deferred) |
 |---|---|
 | `ColorSourceEffect(color)` | `DrawRect(bounds, color)` |
-| `GaussianBlur(backdrop)` | `SaveLayerBlurredBackdrop(sigma, clamp)` … `Restore` (layer starts from the blurred backdrop) |
-| `GaussianBlur(image)` | `SaveLayerBlurred(sigma, clamp)` … draw source … `Restore` (content blurred on restore) |
+| `GaussianBlur(backdrop)` | `DrawEffectBackdrop(blur, opacity)` (layer starts from the blurred backdrop) |
+| `GaussianBlur(image)` | `SaveLayer(blur)` … draw source … `Restore` (content blurred on restore) |
 | per-pixel colour (matrix) | `SaveLayer(colorFilter)` … draw source … `Restore`, or `DrawImage(src, colorFilter)` |
 | `Composite`/`Blend` | draw A; `SaveLayer(blendMode)` … draw B … `Restore` |
 | source-parameter → image brush | `source.Paint(session, opacity, bounds)` |
@@ -54,25 +54,31 @@ effect is a colour matrix (incl. the tint = `sample*color` diagonal), so a run m
 "one blurred-backdrop layer + tint + noise composite". Non-matrix colour (Gamma/Linear transfer curves) is the
 rare exception — compose via a backend colour-filter `Compose` or accept a boundary.
 
-## Backend primitives
+## Backend primitives — no new verbs, just a neutral layer-filter parameter
 
-Already present: `CreateColorMatrixColorFilter`, `CreateBlendModeColorFilter`, `SaveLayer(colorFilter)`,
-`SaveLayer(blendMode)`, `DrawImage(…, colorFilter)`, `DrawRect`, `RenderOffscreen`, `DrawShadow`.
+`SaveLayer` and `DrawEffectBackdrop` already have the deferred-layer shape; the only problem is their parameter is
+the opaque `IEffectFilter` (the backend-realized graph we delete). After the evaluator reduces colour →
+colour-filters and composite → blend-modes (both already `SaveLayer` overloads), the *only* filter ever applied to
+a layer is a **blur** (effects) or a **drop-shadow** (the non-analytic shadow path). Both are tiny neutral value
+descriptors. So we change the parameter, not the verb:
 
-New (small, deferred/recordable — replace the whole effect SPI):
+- `SaveLayer(IEffectFilter)` → `SaveLayer(in LayerFilter)` — a neutral descriptor: a blur (σx, σy, clamp) with an
+  optional offset + alpha-tint (a drop shadow *is* blur + offset + tint). Skia: `SaveLayer` with a blur/shadow
+  `SKImageFilter` in the restore paint. This absorbs both the effect content-blur and the drop-shadow.
+- `DrawEffectBackdrop(IEffectFilter, opacity)` → `DrawEffectBackdrop(in LayerFilter, opacity)` — the backdrop case
+  (only ever a blur). Skia: `SKCanvasSaveLayerRec.Backdrop = CreateBlur`.
 
-- **`SaveLayerBlurred(sigma, clamp)`** — the layer's *content* is blurred on `Restore`. Skia: `SaveLayer` with a
-  blur `SKImageFilter` in the restore paint.
-- **`SaveLayerBlurredBackdrop(sigma, clamp)`** — the layer starts from the *blurred backdrop* (the acrylic case).
-  Skia: `SKCanvasSaveLayerRec.Backdrop = CreateBlur`. Generalizes today's `DrawEffectBackdrop`.
-- **(optional) Compose colour filters** — for non-matrix transfer chains. Skia: `SKColorFilter.CreateCompose`.
+Already present and unchanged: `CreateColorMatrixColorFilter`, `CreateBlendModeColorFilter`,
+`SaveLayer(colorFilter)`, `SaveLayer(blendMode)`, `DrawImage(…, colorFilter)`, `DrawRect`, `RenderOffscreen`,
+`DrawShadow`. Optional: a colour-filter `Compose` for non-matrix transfer chains.
 
 ## Deleted
 
 - Backend SPI: `IDrawingFactory.CreateEffectFilter`, `CreateDropShadowFilter`, `IEffectFilter`, and all backend
-  consumption of `IGraphicsEffect` / `IGraphicsEffectD2D1Interop`.
+  consumption of `IGraphicsEffect` / `IGraphicsEffectD2D1Interop` — the drop-shadow params now flow straight into
+  the neutral `SaveLayer(in LayerFilter)` descriptor, and the effect graph is evaluated, never realized.
 - `SkiaEffectFactory` (~1,500 lines) and the WebGPU effect walk.
-- `IDrawingSession.SaveLayer(IEffectFilter)` / `DrawEffectBackdrop(IEffectFilter)` → the blur-layer primitives.
+- The `IEffectFilter` overloads of `SaveLayer` / `DrawEffectBackdrop` → the neutral `LayerFilter` overloads.
 
 ## Caveats
 
