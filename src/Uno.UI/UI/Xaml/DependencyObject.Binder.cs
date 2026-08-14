@@ -55,8 +55,8 @@ namespace Microsoft.UI.Xaml
 		private ManagedWeakReference? _templatedParentWeakRef;
 		internal ManagedWeakReference? GetTemplatedParentWeakRef() => _templatedParentWeakRef;
 
-		internal DependencyObject? GetTemplatedParent2() => _templatedParentWeakRef?.Target as DependencyObject;
-		internal void SetTemplatedParent2(DependencyObject parent) => _templatedParentWeakRef = (parent as IWeakReferenceProvider)?.WeakReference;
+		internal DependencyObject? GetTemplatedParent() => _templatedParentWeakRef?.Target as DependencyObject;
+		internal void SetTemplatedParent(DependencyObject? parent) => _templatedParentWeakRef = (parent as IWeakReferenceProvider)?.WeakReference;
 
 		private bool IsCandidateChild([NotNullWhen(true)] object? child)
 		{

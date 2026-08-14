@@ -2568,7 +2568,7 @@ partial class ComboBox
 				break;
 			}
 
-			DependencyObject parent = current.Parent;
+			DependencyObject? parent = current.Parent;
 
 			// Try querying for our templated parent if the logical
 			// parent is null to handle the case where our target
@@ -2578,7 +2578,7 @@ partial class ComboBox
 			// isn't useful.
 			if (parent is null)
 			{
-				DependencyObject parentDO = current.GetTemplatedParent();
+				DependencyObject? parentDO = current.GetTemplatedParent();
 				parent = parentDO;
 			}
 

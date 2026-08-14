@@ -117,7 +117,7 @@ namespace Uno.UI.Helpers
 		/// </remarks>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void SetTemplatedParent(DependencyObject target, DependencyObject? templatedParent)
-			=> target.SetTemplatedParent(templatedParent!);
+			=> target.SetTemplatedParent(templatedParent);
 
 		/// <summary>
 		/// Creates a <see cref="DataTemplate"/> from a factory.
