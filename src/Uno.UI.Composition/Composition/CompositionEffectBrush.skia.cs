@@ -63,7 +63,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 		// deferred leaf), then have the backend fuse it into one filter. hasBackdrop is a tree property, computed
 		// here — not reported by the backend. A null filter means the backend can't realize it (e.g. WebGPU for a
 		// per-pixel colour effect); TryPaint then falls back to the recipe path. Not an error.
-		_tree = EffectGraphParser.Parse(_effect, bounds, name => CompositionBrushEffectSource.From(GetSourceParameter(name)));
+		_tree = EffectGraphParser.Parse(_effect, bounds, GetSourceParameter);
 		_filter = DrawingFactory.Current.CreateEffectFilter(_tree, bounds);
 		HasBackdropBrushInput = _tree.ContainsBackdrop();
 		_currentBounds = bounds;
