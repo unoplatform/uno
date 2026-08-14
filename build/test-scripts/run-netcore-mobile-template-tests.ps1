@@ -173,7 +173,14 @@ $projects =
     # Android heads must build through `dotnet build`: the templates strip the android TFM
     # when MSBuildRuntimeType is 'Full'.
     @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net11.0-android"), @("macOS", "NetCore")),
-    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net11.0-android", $sdkFeatures), @("macOS", "NetCore")),
+
+    # The android head with the SDK features is disabled until Toolkit/Extensions ship builds
+    # against Uno 7.0. Their current android assemblies were compiled when DependencyObject was
+    # an interface, so those types list it in their interface list while deriving from Object.
+    # Now that it is a class carrying a finalizer, ILLink maps DependencyObject.Finalize as a base
+    # of Object.Finalize, which already is its base - MarkBaseMethods then recurses until the
+    # stack overflows. Those types cannot work on 7.0 regardless; they need a rebuild.
+    # @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net11.0-android", $sdkFeatures), @("macOS", "NetCore")),
 
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
     @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net11.0-windows10.0.19041"), @()),
