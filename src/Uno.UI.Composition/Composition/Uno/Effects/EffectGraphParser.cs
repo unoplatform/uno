@@ -389,9 +389,7 @@ internal static class EffectGraphParser
 		}
 	}
 
-	// Whole-image composite modes → neutral blend modes; the mapping mirrors SkiaEffectHelpers.ToSkia one-to-one so
-	// the two-hop (D2D→neutral→Skia) result equals the old one-hop realization. Unsupported modes fall back to
-	// SrcOver (matching the old backend's fallback).
+	// Whole-image composite modes → neutral blend modes. Unsupported modes fall back to SrcOver.
 	private static BlendMode MapComposite(D2D1CompositeMode mode) => mode switch
 	{
 		D2D1CompositeMode.SourceOver => BlendMode.SrcOver,
@@ -409,8 +407,7 @@ internal static class EffectGraphParser
 		_ => BlendMode.SrcOver,
 	};
 
-	// BlendEffect modes → neutral blend modes; mirrors SkiaEffectHelpers.ToSkia one-to-one. Modes with no neutral/Skia
-	// equivalent fall back to Multiply (matching the old backend's 0xFF fallback).
+	// BlendEffect modes → neutral blend modes. Modes with no neutral equivalent fall back to Multiply.
 	private static BlendMode MapBlend(D2D1BlendEffectMode mode) => mode switch
 	{
 		D2D1BlendEffectMode.Multiply => BlendMode.Multiply,

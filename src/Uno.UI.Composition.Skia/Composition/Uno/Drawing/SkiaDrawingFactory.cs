@@ -169,18 +169,6 @@ internal sealed class SkiaDrawingFactory : IDrawingFactory
 	public IColorFilter CreateColorMatrixColorFilter(float[] matrix)
 		=> new SkiaColorFilter(SKColorFilter.CreateColorMatrix(matrix));
 
-	public IEffectFilter? CreateEffectFilter(
-		global::Windows.Graphics.Effects.IGraphicsEffect effect,
-		Rect bounds,
-		System.Func<string, IEffectSource?> sourceResolver,
-		out bool hasBackdropInput)
-	{
-		var factory = new SkiaEffectFactory(sourceResolver);
-		var filter = factory.GenerateEffectFilter(effect, bounds.ToSKRect());
-		hasBackdropInput = factory.HasBackdropBrushInput;
-		return filter is null ? null : new SkiaEffectFilter(filter);
-	}
-
 	public IEffectFilter? CreateEffectFilter(EffectNode tree, Rect bounds)
 	{
 		var filter = new SkiaEffectFuser().Fuse(tree, bounds.ToSKRect());

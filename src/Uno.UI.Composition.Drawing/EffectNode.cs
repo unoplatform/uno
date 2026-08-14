@@ -23,10 +23,6 @@ public abstract record EffectNode
 	/// <summary>True when this subtree references the live backdrop — drives <c>RequiresRepaintOnEveryFrame</c>.</summary>
 	public bool ContainsBackdrop() => this is BackdropInput || Children.Any(c => c.ContainsBackdrop());
 
-	/// <summary>True when this subtree contains an effect Uno hasn't neutralized yet (an <see cref="UnsupportedEffectNode"/>).
-	/// The compositor routes such a graph through the legacy per-backend realization so nothing regresses.</summary>
-	public bool ContainsUnsupported() => this is UnsupportedEffectNode || Children.Any(c => c.ContainsUnsupported());
-
 	/// <summary>Every <see cref="TextureInput"/> in this subtree (the textures Uno owns and must dispose).</summary>
 	public IEnumerable<TextureInput> EnumerateTextures()
 	{
