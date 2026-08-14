@@ -457,6 +457,83 @@ public class Given_ResourceLoader_Alc
 		}
 	}
 
+	[TestMethod]
+	[Description(
+		"A .upri truncated BEFORE its declared resource count must surface the same documented " +
+		"InvalidDataException naming the file as one truncated mid pair — the count read must not sit " +
+		"outside the normalizing catch, or one truncation point leaks BinaryReader's context-free " +
+		"EndOfStreamException while every other one is named.")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23959")]
+	public void When_AddLookupAssembly_Upri_Truncated_Before_ResourceCount_Then_Throws_InvalidDataException()
+	{
+		const string defaultLanguage = "en";
+		const string truncatedLoaderName = "Uno.UI.Tests.CountTruncatedUpri/Resources";
+
+		var previousCulture = CultureInfo.CurrentUICulture;
+		var previousPlo = ApplicationLanguages.PrimaryLanguageOverride;
+		var previousDefault = _ResourceLoader.DefaultLanguage;
+
+		var collectibleAlc = new AssemblyLoadContext("Given_ResourceLoader_Alc.countTruncated", isCollectible: true);
+		try
+		{
+			CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+			ApplicationLanguages.PrimaryLanguageOverride = defaultLanguage;
+			_ResourceLoader.DefaultLanguage = defaultLanguage;
+
+			var truncated = LoadAssemblyWithUpri(
+				collectibleAlc,
+				"Uno.UI.Tests.CountTruncatedUpri",
+				BuildCountTruncatedUpriPayload(truncatedLoaderName, defaultLanguage));
+
+			var error = Assert.ThrowsExactly<InvalidDataException>(
+				() => _ResourceLoader.AddLookupAssembly(truncated),
+				"A .upri whose stream ends before its resource count is just as malformed as one ending mid pair, so it must surface as InvalidDataException too — not as the raw EndOfStreamException.");
+
+			Assert.IsTrue(
+				error.Message.Contains(truncatedLoaderName.Split('/')[0], StringComparison.Ordinal)
+					|| error.Message.Contains("resource count", StringComparison.Ordinal),
+				$"The message must identify the truncated file rather than being context-free (got '{error.Message}').");
+			Assert.IsInstanceOfType<EndOfStreamException>(
+				error.InnerException,
+				"The original EndOfStreamException must be preserved as the inner exception.");
+
+			Assert.IsFalse(
+				_ResourceLoader.ContainsLookupAssembly(truncated),
+				"A failed registration must be rolled back.");
+			Assert.IsFalse(
+				_ResourceLoader.ContainsNamedLoader(truncatedLoaderName),
+				"The failed parse must not create the truncated .upri's loader.");
+		}
+		finally
+		{
+			_ResourceLoader.ClearNonDefaultAlcAssemblies();
+			collectibleAlc.Unload();
+			CultureInfo.CurrentUICulture = previousCulture;
+			ApplicationLanguages.PrimaryLanguageOverride = previousPlo;
+			_ResourceLoader.DefaultLanguage = previousDefault;
+		}
+	}
+
+	/// <summary>
+	/// Builds a <c>.upri</c> payload with a valid header that truncates BEFORE its resource count,
+	/// so the failure lands on the <see cref="BinaryReader.ReadInt32"/> that reads the count rather
+	/// than on a pair.
+	/// </summary>
+	private static byte[] BuildCountTruncatedUpriPayload(string loaderName, string culture)
+	{
+		using var payload = new MemoryStream();
+		using (var writer = new BinaryWriter(payload, Encoding.UTF8, leaveOpen: true))
+		{
+			writer.Write("uno"u8); // magic
+			writer.Write(3); // version
+			writer.Write(loaderName);
+			writer.Write(culture);
+			// ...and the stream ends before the resource count.
+		}
+
+		return payload.ToArray();
+	}
+
 	/// <summary>
 	/// Builds a <c>.upri</c> payload with a valid header (magic, version 3, loader name, culture)
 	/// that declares TWO key/value pairs, carries one complete pair, then truncates — matching

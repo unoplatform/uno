@@ -533,10 +533,13 @@ partial class ResourceLoader
 				loaderResources[culture] = resources = new Dictionary<string, string>();
 			}
 
-			var resourceCount = reader.ReadInt32();
 			StringBuilder sb = new();
+			int? declaredCount = null;
 			try
 			{
+				var resourceCount = reader.ReadInt32();
+				declaredCount = resourceCount;
+
 				for (var i = 0; i < resourceCount; i++)
 				{
 					var key = reader.ReadString();
@@ -569,10 +572,15 @@ partial class ResourceLoader
 			}
 			catch (EndOfStreamException error)
 			{
-				// A stream that ends mid pair surfaces as BinaryReader's context-free
-				// EndOfStreamException; restate it as the documented InvalidDataException naming the
-				// file, like every other malformed-.upri case.
-				throw new InvalidDataException($"Truncated resource file {fileName}: it declares {resourceCount} resource(s) but the stream ended early.", error);
+				// A stream that ends anywhere in the entry list — mid pair, or inside the declared
+				// count itself — surfaces as BinaryReader's context-free EndOfStreamException;
+				// restate it as the documented InvalidDataException naming the file, like every
+				// other malformed-.upri case.
+				throw new InvalidDataException(
+					declaredCount is { } count
+						? $"Truncated resource file {fileName}: it declares {count} resource(s) but the stream ended early."
+						: $"Truncated resource file {fileName}: the stream ended before its resource count could be read.",
+					error);
 			}
 		}
 	}
