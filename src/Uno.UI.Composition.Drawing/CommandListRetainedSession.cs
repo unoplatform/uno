@@ -236,6 +236,14 @@ internal sealed class CommandListRecorder : ICommandRecorder, IRetainedRendering
 		_depth++;
 	}
 
+	public void SaveLayer(in LayerFilter filter)
+	{
+		var f = filter;
+		_commands.Add(ctx => ctx.Target.SaveLayer(f));
+		Push();
+		_depth++;
+	}
+
 	public void SaveLayer(IEffectFilter filter)
 	{
 		_commands.Add(ctx => ctx.Target.SaveLayer(filter));
@@ -325,4 +333,10 @@ internal sealed class CommandListRecorder : ICommandRecorder, IRetainedRendering
 
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity)
 		=> _commands.Add(ctx => ctx.Target.DrawEffectBackdrop(filter, opacity));
+
+	public void DrawEffectBackdrop(in LayerFilter blur, float opacity)
+	{
+		var b = blur;
+		_commands.Add(ctx => ctx.Target.DrawEffectBackdrop(b, opacity));
+	}
 }

@@ -82,6 +82,41 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 		opacityPaint?.Dispose();
 	}
 
+	public void SaveLayer(in LayerFilter filter)
+	{
+		SKImageFilter f = SKImageFilter.CreateBlur(filter.SigmaX, filter.SigmaY, filter.ClampEdge ? SKShaderTileMode.Clamp : SKShaderTileMode.Decal, null);
+		if (filter.Tint is { } tint)
+		{
+			// Drop shadow: tint the (blurred) content's alpha, then offset it.
+			f = SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(tint.ToSKColor(), SKBlendMode.Modulate), f);
+		}
+		if (filter.Offset != Vector2.Zero)
+		{
+			f = SKImageFilter.CreateOffset(filter.Offset.X, filter.Offset.Y, f);
+		}
+
+		using var paint = new SKPaint { ImageFilter = f };
+		_canvas.SaveLayer(paint);
+	}
+
+	public void DrawEffectBackdrop(in LayerFilter blur, float opacity)
+	{
+		var rec = new SKCanvasSaveLayerRec
+		{
+			Backdrop = SKImageFilter.CreateBlur(blur.SigmaX, blur.SigmaY, blur.ClampEdge ? SKShaderTileMode.Clamp : SKShaderTileMode.Decal, null),
+		};
+		SKPaint? opacityPaint = null;
+		if (opacity < 1)
+		{
+			opacityPaint = new SKPaint { Color = new SKColor(0xFF, 0xFF, 0xFF, (byte)(0xFF * opacity)) };
+			rec.Paint = opacityPaint;
+		}
+
+		_canvas.SaveLayer(rec);
+		_canvas.Restore();
+		opacityPaint?.Dispose();
+	}
+
 	public Matrix4x4 TotalMatrix => _canvas.TotalMatrix.ToMatrix4x4();
 
 	public void SetMatrix(in Matrix4x4 matrix)
@@ -376,6 +411,20 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 		BlendMode.DstIn => SKBlendMode.DstIn,
 		BlendMode.DstOut => SKBlendMode.DstOut,
 		BlendMode.SrcIn => SKBlendMode.SrcIn,
+		BlendMode.Screen => SKBlendMode.Screen,
+		BlendMode.Darken => SKBlendMode.Darken,
+		BlendMode.Lighten => SKBlendMode.Lighten,
+		BlendMode.ColorBurn => SKBlendMode.ColorBurn,
+		BlendMode.ColorDodge => SKBlendMode.ColorDodge,
+		BlendMode.Overlay => SKBlendMode.Overlay,
+		BlendMode.SoftLight => SKBlendMode.SoftLight,
+		BlendMode.HardLight => SKBlendMode.HardLight,
+		BlendMode.Difference => SKBlendMode.Difference,
+		BlendMode.Exclusion => SKBlendMode.Exclusion,
+		BlendMode.Hue => SKBlendMode.Hue,
+		BlendMode.Saturation => SKBlendMode.Saturation,
+		BlendMode.Color => SKBlendMode.Color,
+		BlendMode.Luminosity => SKBlendMode.Luminosity,
 		_ => SKBlendMode.SrcOver,
 	};
 
