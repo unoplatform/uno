@@ -2578,7 +2578,7 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 		{
 			switch (node)
 			{
-				case BackdropInput:
+				case SourceInput:
 					sawBackdrop = true;
 					break;
 				case BlurEffectNode blur:

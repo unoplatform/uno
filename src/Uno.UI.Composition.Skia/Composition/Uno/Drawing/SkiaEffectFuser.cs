@@ -9,31 +9,28 @@ namespace Uno.UI.Composition.Drawing;
 /// <summary>
 /// Fuses a neutral <see cref="EffectNode"/> tree into a single <see cref="SKImageFilter"/> DAG — the Skia backend's
 /// realization of <see cref="IDrawingFactory.CreateEffectFilter(EffectNode, Windows.Foundation.Rect)"/>. A
-/// <see cref="BackdropInput"/> fuses to a filter with a null (implicit) input, which
+/// <see cref="SourceInput"/> fuses to a filter with a null (implicit) input, which
 /// <see cref="SkiaDrawingSession.DrawEffectBackdrop(IEffectFilter, float)"/> feeds from the live backdrop via
-/// <c>SaveLayerRec.Backdrop</c>. The backdrop-flag dance mirrors the legacy <c>SkiaEffectFactory</c> generators so
+/// <c>SaveLayerRec.Backdrop</c>. The source-flag dance mirrors the legacy <c>SkiaEffectFactory</c> generators so
 /// output is identical.
 /// </summary>
 internal sealed class SkiaEffectFuser
 {
-	// Set when the current subtree resolved to the implicit backdrop leaf (a null child filter that means "the
-	// backdrop", not "failed to build"). A parent op keeps a null child in that case and clears the flag once consumed.
-	private bool _isBackdrop;
-
-	internal bool HasBackdrop { get; private set; }
+	// Set when the current subtree resolved to the implicit source leaf (a null child filter that means "the
+	// deferred source", not "failed to build"). A parent op keeps a null child in that case and clears the flag once consumed.
+	private bool _isSource;
 
 	internal SKImageFilter? Fuse(EffectNode node, SKRect bounds)
 	{
 		switch (node)
 		{
-			case BackdropInput:
-				_isBackdrop = true;
-				HasBackdrop = true;
+			case SourceInput:
+				_isSource = true;
 				return null;
 
 			case TextureInput texture:
 			{
-				_isBackdrop = false;
+				_isSource = false;
 				var img = ((SkiaImageTexture)texture.Texture).Image;
 				var src = new SKRect(0, 0, img.Width, img.Height);
 
@@ -64,24 +61,24 @@ internal sealed class SkiaEffectFuser
 			case ColorMatrixEffectNode cm:
 			{
 				var source = Fuse(cm.Source, bounds);
-				if (source is null && !_isBackdrop)
+				if (source is null && !_isSource)
 				{
 					return null;
 				}
 
-				_isBackdrop = false;
+				_isSource = false;
 				return SKImageFilter.CreateColorFilter(SKColorFilter.CreateColorMatrix(cm.Matrix), source, bounds);
 			}
 
 			case ModulateEffectNode modulate:
 			{
 				var source = Fuse(modulate.Source, bounds);
-				if (source is null && !_isBackdrop)
+				if (source is null && !_isSource)
 				{
 					return null;
 				}
 
-				_isBackdrop = false;
+				_isSource = false;
 				// Tint: per-channel multiply by the colour, clamped to [0,1] — matches the legacy Tint realization.
 				return SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(modulate.Color.ToSKColor(), SKBlendMode.Modulate), source, bounds);
 			}
@@ -89,24 +86,24 @@ internal sealed class SkiaEffectFuser
 			case LuminanceToAlphaEffectNode luma:
 			{
 				var source = Fuse(luma.Source, bounds);
-				if (source is null && !_isBackdrop)
+				if (source is null && !_isSource)
 				{
 					return null;
 				}
 
-				_isBackdrop = false;
+				_isSource = false;
 				return SKImageFilter.CreateColorFilter(SKColorFilter.CreateLumaColor(), source, bounds);
 			}
 
 			case ContrastEffectNode contrast:
 			{
 				var source = Fuse(contrast.Source, bounds);
-				if (source is null && !_isBackdrop)
+				if (source is null && !_isSource)
 				{
 					return null;
 				}
 
-				_isBackdrop = false;
+				_isSource = false;
 				var clamp = contrast.Clamp;
 				var shader =
 $$"""
@@ -170,12 +167,12 @@ $$"""
 			case LinearTransferEffectNode transfer:
 			{
 				var source = Fuse(transfer.Source, bounds);
-				if (source is null && !_isBackdrop)
+				if (source is null && !_isSource)
 				{
 					return null;
 				}
 
-				_isBackdrop = false;
+				_isSource = false;
 				var clamp = transfer.Clamp;
 				var shader =
 $$"""
@@ -244,12 +241,12 @@ $$"""
 			case GammaTransferEffectNode gamma:
 			{
 				var source = Fuse(gamma.Source, bounds);
-				if (source is null && !_isBackdrop)
+				if (source is null && !_isSource)
 				{
 					return null;
 				}
 
-				_isBackdrop = false;
+				_isSource = false;
 				var clamp = gamma.Clamp;
 				var shader =
 $$"""
@@ -326,12 +323,12 @@ $$"""
 			case Transform2DEffectNode transform:
 			{
 				var source = Fuse(transform.Source, bounds);
-				if (source is null && !_isBackdrop)
+				if (source is null && !_isSource)
 				{
 					return null;
 				}
 
-				_isBackdrop = false;
+				_isSource = false;
 				return SKImageFilter.CreateMerge(
 					(ReadOnlySpan<SKImageFilter>)[SKImageFilter.CreateMatrix(transform.Matrix.ToSKMatrix(), new SKSamplingOptions(SKCubicResampler.CatmullRom), source)],
 					bounds);
@@ -340,12 +337,12 @@ $$"""
 			case BlurEffectNode blur:
 			{
 				var source = Fuse(blur.Source, bounds);
-				if (source is null && !_isBackdrop)
+				if (source is null && !_isSource)
 				{
 					return null;
 				}
 
-				_isBackdrop = false;
+				_isSource = false;
 				return blur.ClampEdge
 					? SKImageFilter.CreateBlur(blur.Sigma, blur.Sigma, SKShaderTileMode.Clamp, source, bounds)
 					: SKImageFilter.CreateBlur(blur.Sigma, blur.Sigma, source, bounds);
@@ -354,18 +351,18 @@ $$"""
 			case BlendEffectNode blend:
 			{
 				var background = Fuse(blend.Background, bounds);
-				if (background is null && !_isBackdrop)
+				if (background is null && !_isSource)
 				{
 					return null;
 				}
 
 				var foreground = Fuse(blend.Foreground, bounds);
-				if (foreground is null && !_isBackdrop)
+				if (foreground is null && !_isSource)
 				{
 					return null;
 				}
 
-				_isBackdrop = false;
+				_isSource = false;
 				return SKImageFilter.CreateBlendMode(SkiaDrawingSession.ToSKBlendMode(blend.Mode), background, foreground, bounds);
 			}
 
@@ -377,22 +374,22 @@ $$"""
 				}
 
 				var current = Fuse(composite.Sources[0], bounds);
-				if (current is null && !_isBackdrop)
+				if (current is null && !_isSource)
 				{
 					return null;
 				}
 
-				_isBackdrop = false;
+				_isSource = false;
 				var mode = SkiaDrawingSession.ToSKBlendMode(composite.Mode);
 				for (var i = 1; i < composite.Sources.Count; i++)
 				{
 					var next = Fuse(composite.Sources[i], bounds);
-					if (next is not null && !_isBackdrop)
+					if (next is not null && !_isSource)
 					{
 						current = SKImageFilter.CreateBlendMode(mode, current, next, bounds);
 					}
 
-					_isBackdrop = false;
+					_isSource = false;
 				}
 
 				return current;
@@ -401,54 +398,54 @@ $$"""
 			case AlphaMaskEffectNode alphaMask:
 			{
 				var sourceFilter = Fuse(alphaMask.Source, bounds);
-				if (sourceFilter is null && !_isBackdrop)
+				if (sourceFilter is null && !_isSource)
 				{
 					return null;
 				}
 
 				var maskFilter = Fuse(alphaMask.Mask, bounds);
-				if (maskFilter is null && !_isBackdrop)
+				if (maskFilter is null && !_isSource)
 				{
 					return null;
 				}
 
-				_isBackdrop = false;
+				_isSource = false;
 				return SKImageFilter.CreateBlendMode(SKBlendMode.SrcIn, maskFilter, sourceFilter, bounds);
 			}
 
 			case ArithmeticCompositeEffectNode arithmetic:
 			{
 				var background = Fuse(arithmetic.Background, bounds);
-				if (background is null && !_isBackdrop)
+				if (background is null && !_isSource)
 				{
 					return null;
 				}
 
 				var foreground = Fuse(arithmetic.Foreground, bounds);
-				if (foreground is null && !_isBackdrop)
+				if (foreground is null && !_isSource)
 				{
 					return null;
 				}
 
-				_isBackdrop = false;
+				_isSource = false;
 				return SKImageFilter.CreateArithmetic(arithmetic.Multiply, arithmetic.Source1, arithmetic.Source2, arithmetic.Offset, false, background, foreground, bounds);
 			}
 
 			case CrossFadeEffectNode crossFade:
 			{
 				var filter1 = Fuse(crossFade.SourceB, bounds);
-				if (filter1 is null && !_isBackdrop)
+				if (filter1 is null && !_isSource)
 				{
 					return null;
 				}
 
 				var filter2 = Fuse(crossFade.SourceA, bounds);
-				if (filter2 is null && !_isBackdrop)
+				if (filter2 is null && !_isSource)
 				{
 					return null;
 				}
 
-				_isBackdrop = false;
+				_isSource = false;
 				var weight = crossFade.Weight;
 				if (weight <= 0.0f)
 				{
@@ -541,12 +538,12 @@ $$"""
 			case LightingEffectNode lighting:
 			{
 				var source = Fuse(lighting.Source, bounds);
-				if (source is null && !_isBackdrop)
+				if (source is null && !_isSource)
 				{
 					return null;
 				}
 
-				_isBackdrop = false;
+				_isSource = false;
 				var light = new SKPoint3(lighting.Light.X, lighting.Light.Y, lighting.Light.Z);
 				var target = new SKPoint3(lighting.Target.X, lighting.Target.Y, lighting.Target.Z);
 				var color = lighting.LightColor.ToSKColor();

@@ -11,8 +11,8 @@ namespace Uno.UI.Composition.Drawing;
 /// A neutral, closed effect-graph node — the intermediate representation Uno produces (internally, once) from a
 /// WinUI <see cref="Windows.Graphics.Effects.IGraphicsEffect"/> graph. A render backend <b>fuses</b> a tree of these
 /// into its own opaque <see cref="IEffectFilter"/> (<see cref="IDrawingFactory.CreateEffectFilter(EffectNode, Windows.Foundation.Rect)"/>);
-/// it never reflects over Direct2D. Every non-backdrop brush/image input is pre-rasterized to a
-/// <see cref="TextureInput"/> before the tree reaches the backend, so <see cref="BackdropInput"/> is the only
+/// it never reflects over Direct2D. Every static brush/image input is pre-rasterized to a
+/// <see cref="TextureInput"/> before the tree reaches the backend, so <see cref="SourceInput"/> is the only
 /// deferred (live-scene) leaf. See <c>specs/effects-neutralization/design.md</c>.
 /// </summary>
 public abstract record EffectNode
@@ -20,8 +20,10 @@ public abstract record EffectNode
 	/// <summary>The node's inputs, in graph order (empty for a leaf). Enables neutral tree walks.</summary>
 	public abstract IReadOnlyList<EffectNode> Children { get; }
 
-	/// <summary>True when this subtree references the live backdrop — drives <c>RequiresRepaintOnEveryFrame</c>.</summary>
-	public bool ContainsBackdrop() => this is BackdropInput || Children.Any(c => c.ContainsBackdrop());
+	/// <summary>True when this subtree has a deferred <see cref="SourceInput"/> — i.e. the effect samples the pixels the
+	/// applying verb feeds it. For an effect brush that source is the live backdrop, so this drives
+	/// <c>RequiresRepaintOnEveryFrame</c>.</summary>
+	public bool ContainsSourceInput() => this is SourceInput || Children.Any(c => c.ContainsSourceInput());
 
 	/// <summary>Every <see cref="TextureInput"/> in this subtree (the textures Uno owns and must dispose).</summary>
 	public IEnumerable<TextureInput> EnumerateTextures()
@@ -41,9 +43,10 @@ public abstract record EffectNode
 	}
 }
 
-/// <summary>The live already-composited scene behind the element (the acrylic/backdrop input). The one deferred leaf:
-/// its pixels don't exist until present, so a backend realizes it as the filter's implicit backdrop input.</summary>
-public sealed record BackdropInput : EffectNode
+/// <summary>The effect's deferred input — the pixels the applying verb supplies: the existing backdrop for
+/// <see cref="IDrawingSession.DrawEffectBackdrop"/>, or the drawn content for <see cref="IDrawingSession.SaveLayer(IEffectFilter)"/>.
+/// The one leaf whose pixels don't exist at record time, so a backend realizes it as the filter's implicit (null) input.</summary>
+public sealed record SourceInput : EffectNode
 {
 	public override IReadOnlyList<EffectNode> Children => System.Array.Empty<EffectNode>();
 }
