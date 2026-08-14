@@ -162,6 +162,38 @@ Parity is guaranteed by construction: the parser feeds the backend the same para
 the fuser builds the same `SKImageFilter`s — validated screenshot-for-screenshot against the old path before the
 old path is removed.
 
+### Status (implemented)
+
+Done and validated (Skia Desktop, headless X11/lavapipe):
+
+- `EffectNode` is public in `Uno.UI.Composition.Drawing`; `EffectGraphEvaluator` deleted; `IEffectSource`/brush
+  inputs are pre-rasterized to `TextureInput` via `RenderOffscreen`.
+- SPI `IDrawingFactory.CreateEffectFilter(EffectNode, Rect)` implemented by Skia (`SkiaEffectFuser` → one
+  `SKImageFilter` DAG, mirroring the legacy generators' backdrop-flag dance) and WebGPU (acrylic-shape extraction,
+  identical to its legacy path).
+- Parser neutralizes: GaussianBlur, ColorSource, Opacity, ColorMatrix, Blend, Composite, Grayscale, Invert,
+  HueRotation, Exposure, Sepia, TemperatureAndTint, Saturation, Tint, LuminanceToAlpha, Contrast, LinearTransfer,
+  GammaTransfer, Transform2D, CrossFade, AlphaMask, ArithmeticComposite, WhiteNoise.
+- `CompositionEffectBrush` uses the tree path **by default**; a graph containing an `UnsupportedEffectNode` falls
+  back to the legacy per-backend realization (no regression). `UNO_EFFECT_TREE=0` forces legacy (escape hatch).
+- `hasBackdrop` computed from the tree (`ContainsBackdrop`), not reported by the backend.
+
+Validation: `Given_AcrylicBrush` 5/5 on the default (tree) path — incl. `When_Drawn` 0.04 vs the WinUI reference and
+the backdrop bounds-clamping test. A screenshot parity harness (temporary, not committed) confirmed the tree path is
+**byte-identical** (0 differing pixels) to the legacy path across 17 colour/transfer/transform/composite effects
+over a gradient source.
+
+### Remaining
+
+- Not yet neutralized (still routed to the legacy realization via the fallback): `BorderEffect` (its source-size
+  tiling doesn't map cleanly to the fixed-size `TextureInput` model — needs an intrinsic-size raster path) and the
+  six lighting effects (`Distant`/`Spot`/`Point` × `Diffuse`/`Specular`). Both are verbatim-portable; the only work
+  is the node/param plumbing (and, for Border, intrinsic-size rasterization).
+- Once the long-tail is neutralized, the legacy `CreateEffectFilter(IGraphicsEffect)` + `SkiaEffectFactory`'s D2D
+  reflection can be deleted; until then it is retained as the fallback + parity reference.
+- WebGPU realizes only the acrylic shape from the tree; other effects return null → the existing recipe fallback
+  (unchanged from before).
+
 ## Status (WIP)
 
 - **Landed, green:** the primitive foundation (`LayerFilter`, neutral `SaveLayer(in LayerFilter)` /
