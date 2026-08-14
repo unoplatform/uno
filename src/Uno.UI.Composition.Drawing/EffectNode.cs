@@ -88,6 +88,19 @@ public sealed record BlendEffectNode(EffectNode Background, EffectNode Foregroun
 	public override IReadOnlyList<EffectNode> Children => new[] { Background, Foreground };
 }
 
+/// <summary>Per-channel multiply of <see cref="Source"/> by <see cref="Color"/> (D2D <c>TintEffect</c>, realized as a
+/// Modulate blend rather than a colour matrix so it runs identically on CPU and GPU).</summary>
+public sealed record ModulateEffectNode(EffectNode Source, Color Color) : EffectNode
+{
+	public override IReadOnlyList<EffectNode> Children => new[] { Source };
+}
+
+/// <summary>Replaces each pixel's alpha with its luminance (D2D <c>LuminanceToAlphaEffect</c>).</summary>
+public sealed record LuminanceToAlphaEffectNode(EffectNode Source) : EffectNode
+{
+	public override IReadOnlyList<EffectNode> Children => new[] { Source };
+}
+
 /// <summary>N inputs combined pairwise with a composite <see cref="Mode"/> (D2D <c>CompositeEffect</c>).</summary>
 public sealed record CompositeEffectNode(IReadOnlyList<EffectNode> Sources, BlendMode Mode) : EffectNode
 {
