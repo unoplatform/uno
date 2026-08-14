@@ -474,7 +474,7 @@ internal sealed class ManagedFont : IFont
 	public IGeometry BuildGlyphRunOutline(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY)
 	{
 		var scale = _pixelSize / _unitsPerEm;
-		var builder = DrawingFactory.Current.CreatePathBuilder();
+		var builder = GeometryFactory.Current.CreatePathBuilder();
 		for (var i = 0; i < glyphs.Length; i++)
 		{
 			if (HasColorGlyphs && _colr!.HasBaseGlyph(glyphs[i]))
@@ -522,7 +522,7 @@ internal sealed class ManagedFont : IFont
 		var bottom = float.MinValue;
 		foreach (var layer in layers)
 		{
-			var builder = DrawingFactory.Current.CreatePathBuilder();
+			var builder = GeometryFactory.Current.CreatePathBuilder();
 			EmitOutline(builder, layer.GlyphId, 0f, 0f, scale);
 			var geometry = builder.Build();
 			var b = geometry.Bounds;

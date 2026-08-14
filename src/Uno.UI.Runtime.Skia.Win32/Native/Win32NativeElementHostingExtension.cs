@@ -251,11 +251,9 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 	private unsafe void ApplyClipPath(IGeometry path)
 	{
 		// Neutral clip: intersect with the arrange rect and translate to local, all through the IGeometry seam
-		// (was a Skia path op + matrix). The host stays backend-agnostic — no Skia types. The drawing factory comes
-		// from the negotiated backend on the owning window (not the global DrawingFactory.Current), so the geometry
-		// is built by the same factory the renderer uses.
-		var graphicsFactory = ((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).GraphicsFactory;
-		using var rectGeometry = graphicsFactory.CreateRectangleGeometry(_lastArrangeRect);
+		// (was a Skia path op + matrix). The host stays backend-agnostic — no Skia types. Geometry comes from the
+		// global GeometryFactory seam (backend-independent); the renderer consumes whatever neutral geometry it gets.
+		using var rectGeometry = GeometryFactory.Current.CreateRectangleGeometry(_lastArrangeRect);
 		using var intersected = path.Combine(rectGeometry, GeometryCombineMode.Intersect);
 		using var localClip = intersected.Transform(Matrix3x2.CreateTranslation((float)-_lastArrangeRect.X, (float)-_lastArrangeRect.Y));
 

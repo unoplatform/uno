@@ -310,7 +310,7 @@ internal sealed class ManagedSvg
 
 		var x = Len(el, "x");
 		var y = Len(el, "y");
-		var b = DrawingFactory.Current.CreatePathBuilder();
+		var b = GeometryFactory.Current.CreatePathBuilder();
 		// (Rounded rx/ry omitted in v1 — sharp corners.)
 		b.MoveTo(new Vector2(x, y));
 		b.LineTo(new Vector2(x + w, y));
@@ -329,7 +329,7 @@ internal sealed class ManagedSvg
 
 		// Four cubic bezier quadrants (kappa).
 		const float k = 0.5522847498f;
-		var b = DrawingFactory.Current.CreatePathBuilder();
+		var b = GeometryFactory.Current.CreatePathBuilder();
 		b.MoveTo(new Vector2(cx + rx, cy));
 		b.CubicTo(new Vector2(cx + rx, cy + ry * k), new Vector2(cx + rx * k, cy + ry), new Vector2(cx, cy + ry));
 		b.CubicTo(new Vector2(cx - rx * k, cy + ry), new Vector2(cx - rx, cy + ry * k), new Vector2(cx - rx, cy));
@@ -346,7 +346,7 @@ internal sealed class ManagedSvg
 			return null;
 		}
 
-		var b = DrawingFactory.Current.CreatePathBuilder();
+		var b = GeometryFactory.Current.CreatePathBuilder();
 		b.MoveTo(new Vector2(pts[0], pts[1]));
 		for (var i = 2; i + 1 < pts.Length; i += 2)
 		{
@@ -368,7 +368,7 @@ internal sealed class ManagedSvg
 			return null;
 		}
 
-		var b = DrawingFactory.Current.CreatePathBuilder();
+		var b = GeometryFactory.Current.CreatePathBuilder();
 		new SvgPathParser(d, b).Parse();
 		return b.Build();
 	}

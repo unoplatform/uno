@@ -23,7 +23,7 @@ partial class RectangleClip
 			return null;
 		}
 
-		var builder = DrawingFactory.Current.CreatePrimitiveGeometryBuilder();
+		var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
 		builder.AddRoundedRectangle(bounds, _topLeftRadius, _topRightRadius, _bottomRightRadius, _bottomLeftRadius);
 		return builder.Build();
 	}

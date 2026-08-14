@@ -25,6 +25,9 @@ public static class SkiaBackend
 	internal static void RegisterDefaultImageDecoder()
 		=> ImageDecoder.RegisterDefault(new SkiaImageDecoderBackend());
 
+	internal static void RegisterDefaultGeometryFactory()
+		=> GeometryFactory.RegisterDefault(new SkiaGeometryFactory());
+
 	/// <summary>Registers the Skia image encoder for <c>BitmapEncoder</c> (Uno.UWP), an imaging-library-agnostic seam.</summary>
 	internal static void RegisterImageEncoder()
 		=> ApiExtensibility.Register(typeof(global::Windows.Graphics.Imaging.IImageEncoderExtension), _ => new SkiaImageEncoderExtension());

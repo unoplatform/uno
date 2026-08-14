@@ -26,7 +26,7 @@ internal static class SkiaRenderHelper
 
 	// This is used all the time, on all platforms but X11, when no native elements are present - DO NOT MODIFY
 	private static IGeometry? _emptyClipPath;
-	internal static IGeometry EmptyClipPath => _emptyClipPath ??= DrawingFactory.Current.CreatePrimitiveGeometryBuilder().Build();
+	internal static IGeometry EmptyClipPath => _emptyClipPath ??= GeometryFactory.Current.CreatePrimitiveGeometryBuilder().Build();
 
 	// This is used on X11, when no native elements are present - DO NOT MODIFY
 	private static float _invertedClipPathWidth;
@@ -57,8 +57,8 @@ internal static class SkiaRenderHelper
 	/// </summary>
 	private static (IGeometry nativeClipPath, List<Visual> nativeVisualsInZOrder) CalculateClippingPath(float width, float height, ContainerVisual rootVisual, bool invertPath)
 	{
-		var parentClip = DrawingFactory.Current.CreateRectangleGeometry(new Rect(0, 0, width, height));
-		var seedClip = DrawingFactory.Current.CreateRectangleGeometry(new Rect(0, 0, 0, 0));
+		var parentClip = GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, width, height));
+		var seedClip = GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, 0, 0));
 
 		var nativeVisualsInZOrder = new List<Visual>();
 		var accumulated = rootVisual.GetNativeViewPathAndZOrder(parentClip, seedClip, nativeVisualsInZOrder);
@@ -81,7 +81,7 @@ internal static class SkiaRenderHelper
 		}
 		else
 		{
-			using var rect = DrawingFactory.Current.CreateRectangleGeometry(new Rect(0, 0, width, height));
+			using var rect = GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, width, height));
 			var result = rect.Combine(EmptyClipPath, GeometryCombineMode.Difference);
 
 			_invertedClipPathWidth = width;
@@ -446,21 +446,21 @@ internal static class SkiaRenderHelper
 
 		private static IGeometry Ellipse(float cx, float cy, float r)
 		{
-			var builder = DrawingFactory.Current.CreatePrimitiveGeometryBuilder();
+			var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
 			builder.AddEllipse(new Vector2(cx, cy), r, r);
 			return builder.Build();
 		}
 
 		private static IGeometry Rectangle(Rect rect)
 		{
-			var builder = DrawingFactory.Current.CreatePrimitiveGeometryBuilder();
+			var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
 			builder.AddRectangle(rect);
 			return builder.Build();
 		}
 
 		private static IGeometry RoundedRectangle(Rect rect, float radius)
 		{
-			var builder = DrawingFactory.Current.CreatePrimitiveGeometryBuilder();
+			var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
 			builder.AddRoundedRectangle(rect, radius, radius);
 			return builder.Build();
 		}

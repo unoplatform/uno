@@ -16,10 +16,6 @@ namespace Uno.UI.Composition.Drawing;
 /// </summary>
 internal sealed class SkiaDrawingFactory : IDrawingFactory
 {
-	public IPathBuilder CreatePathBuilder() => new SkiaPathBuilder();
-
-	public IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder() => new SkiaPathBuilder();
-
 	public IImageTexture RenderOffscreen(int pixelWidth, int pixelHeight, System.Action<IDrawingSession> render)
 	{
 		var info = new SKImageInfo(pixelWidth, pixelHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul);

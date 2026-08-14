@@ -26,7 +26,7 @@ partial class InsetClip
 		}
 		if (_clipPath is null || _clipPath.Value.bounds != bounds)
 		{
-			_clipPath = (bounds, DrawingFactory.Current.CreateRectangleGeometry(bounds));
+			_clipPath = (bounds, GeometryFactory.Current.CreateRectangleGeometry(bounds));
 		}
 		return _clipPath.Value.path;
 	}

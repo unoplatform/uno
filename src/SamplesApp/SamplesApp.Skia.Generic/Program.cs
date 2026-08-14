@@ -75,21 +75,24 @@ namespace SkiaSharpExample
 #if UNO_DRAWING_WEBGPU
 			if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is "neutral" or "1" or "true" or "swapchain")
 			{
-				// WebGPU renderer over the managed (SkiaSharp-free) geometry engine.
-				builder.GraphicsBackend(new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider(new ManagedDrawingFactory()));
+				// WebGPU renderer; geometry is the managed (SkiaSharp-free) engine — WebGPU flattens it.
+				builder.GraphicsBackend(new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider());
+				builder.GeometryFactory(new ManagedGeometryFactory());
 			}
 			else
 #endif
 			{
 #if UNO_DRAWING_SKIA
-				// Skia backend; UNO_MANAGED_GEOMETRY swaps in managed geometry rasterized on Skia pixels.
-				var geometry = Environment.GetEnvironmentVariable("UNO_MANAGED_GEOMETRY") is "1" or "true"
-					? new SkiaManagedGeometryDrawingFactory()
-					: (IDrawingFactory?)null;
-				builder.GraphicsBackend(new SkiaGraphicsProvider(geometry));
+				builder.GraphicsBackend(new SkiaGraphicsProvider());
+				// UNO_MANAGED_GEOMETRY swaps the geometry seam to the managed engine (rasterized on Skia pixels).
+				if (Environment.GetEnvironmentVariable("UNO_MANAGED_GEOMETRY") is "1" or "true")
+				{
+					builder.GeometryFactory(new ManagedGeometryFactory());
+				}
 #elif UNO_DRAWING_WEBGPU
-				// SkiaSharp-free build: WebGPU is the only renderer.
-				builder.GraphicsBackend(new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider(new ManagedDrawingFactory()));
+				// SkiaSharp-free build: WebGPU is the only renderer, over the managed geometry engine.
+				builder.GraphicsBackend(new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider());
+				builder.GeometryFactory(new ManagedGeometryFactory());
 #endif
 			}
 

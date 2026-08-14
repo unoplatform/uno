@@ -17,19 +17,15 @@ namespace Uno.UI.Composition.Drawing;
 /// <see cref="DrawingFactory.Register"/>.
 /// </summary>
 /// <remarks>
-/// This is the resource-factory half of the abstraction: it manufactures the stateful handles that cross the
-/// backend boundary — geometry (the renderer must be able to consume the type it produces), plus device-resident
-/// images, shaders and effect filters. Transient draw configuration (paint) is passed inline on the drawing-session
-/// verbs instead of being manufactured here. Content seams that ARE backend-independent — image decoding and font
-/// resolution — live separately (<see cref="ImageDecoder"/>, <see cref="FontProvider"/>); geometry stays here
-/// because the render backend has to understand the geometry it draws.
+/// This is the device-bound resource half of the abstraction: it manufactures the stateful handles that cross the
+/// backend boundary and need the GPU/pixel device — images, shaders and effect filters. Transient draw configuration
+/// (paint) is passed inline on the drawing-session verbs instead of being manufactured here. The backend-independent
+/// seams live separately: geometry (<see cref="GeometryFactory"/>), image decoding (<see cref="ImageDecoder"/>) and
+/// font resolution (<see cref="FontProvider"/>). The render backend consumes the neutral <see cref="IGeometry"/>
+/// those produce, runtime-checking for the concrete types it knows to take a fast path.
 /// </remarks>
 public interface IDrawingFactory
 {
-	/// <summary>Creates a builder used to construct an <see cref="IGeometry"/>.</summary>
-	IPathBuilder CreatePathBuilder();
-	IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder();
-
 	/// <summary>
 	/// Renders <paramref name="render"/> into a fresh transparent offscreen target of the given pixel size and
 	/// returns it as a backend-resident <see cref="IImageTexture"/> — the same currency the draw verbs consume
