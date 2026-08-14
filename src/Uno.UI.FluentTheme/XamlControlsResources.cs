@@ -25,10 +25,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			Source = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.WinUIThemeResourceURL);
 
-			// WinUI sets TintLuminosityOpacity programmatically on acrylic brushes
-			// because nullable doubles couldn't be set in XAML on older Windows versions.
-			// Without these values, the luminosity layer uses a computed alpha that is
-			// far too low, causing acrylic to appear nearly opaque/dark.
+			// Our ported Fluent dictionaries omit the TintLuminosityOpacity that WinUI sets
+			// inline on these AcrylicBrush resources; without it the luminosity layer computes
+			// an alpha far too low and acrylic renders nearly opaque.
 			UpdateAcrylicBrushes();
 		}
 
