@@ -126,6 +126,30 @@ public sealed record Transform2DEffectNode(EffectNode Source, Matrix3x2 Matrix) 
 	public override IReadOnlyList<EffectNode> Children => new[] { Source };
 }
 
+/// <summary>D2D <c>CrossFadeEffect</c> — linear blend of two sources by <see cref="Weight"/> (0 = A, 1 = B).</summary>
+public sealed record CrossFadeEffectNode(EffectNode SourceA, EffectNode SourceB, float Weight) : EffectNode
+{
+	public override IReadOnlyList<EffectNode> Children => new[] { SourceA, SourceB };
+}
+
+/// <summary>D2D <c>AlphaMaskEffect</c> — <see cref="Source"/> shown through <see cref="Mask"/>'s alpha.</summary>
+public sealed record AlphaMaskEffectNode(EffectNode Source, EffectNode Mask) : EffectNode
+{
+	public override IReadOnlyList<EffectNode> Children => new[] { Source, Mask };
+}
+
+/// <summary>D2D <c>ArithmeticCompositeEffect</c> — <c>M·bg·fg + S1·bg + S2·fg + Offset</c>.</summary>
+public sealed record ArithmeticCompositeEffectNode(EffectNode Background, EffectNode Foreground, float Multiply, float Source1, float Source2, float Offset) : EffectNode
+{
+	public override IReadOnlyList<EffectNode> Children => new[] { Background, Foreground };
+}
+
+/// <summary>D2D <c>TurbulenceEffect</c>/white-noise — a procedural noise source (no inputs).</summary>
+public sealed record WhiteNoiseEffectNode(Vector2 Frequency, Vector2 Offset) : EffectNode
+{
+	public override IReadOnlyList<EffectNode> Children => System.Array.Empty<EffectNode>();
+}
+
 /// <summary>N inputs combined pairwise with a composite <see cref="Mode"/> (D2D <c>CompositeEffect</c>).</summary>
 public sealed record CompositeEffectNode(IReadOnlyList<EffectNode> Sources, BlendMode Mode) : EffectNode
 {
