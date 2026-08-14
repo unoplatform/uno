@@ -1,22 +1,28 @@
 ﻿<Project>
 
 	<PropertyGroup Condition="'$(IsCrossruntime)' == ''">
-		<IsCrossruntime>false</IsCrossruntime>
-		<IsCrossruntime Condition="'$(UnoRuntimeIdentifier)'=='Skia' or '$(UnoRuntimeIdentifier)'=='WebAssembly' or '$(UnoRuntimeIdentifier)'=='Reference'">true</IsCrossruntime>
+		<!--
+		Every target framework Uno Platform provides is rendered by Uno itself; only the WinAppSDK one is
+		rendered by WinUI. Note this does not name a drawing backend: Uno.UI compiles once and selects its
+		backend at runtime.
+		-->
+		<IsCrossruntime>true</IsCrossruntime>
+		<IsCrossruntime Condition="$(IsWinAppSdk)">false</IsCrossruntime>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="**\*.crossruntime.cs" Exclude="bin\**\*.crossruntime.cs;obj\**\*.crossruntime.cs" Condition="!$(IsCrossruntime)" />
 		<Compile Remove="**\*.crossruntime.cs" Condition="!$(IsCrossruntime)" />
 
-		<None Include="**\*.wasm.cs" Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
-		<Compile Remove="**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
+		<None Include="**\*.wasm.cs" Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs" Condition="!$(IsBrowserWasm)" />
+		<Compile Remove="**\*.wasm.cs" Condition="!$(IsBrowserWasm)" />
 
-		<None Include="**\*.browserwasm.cs" Exclude="bin\**\*.browserwasm.cs;obj\**\*.browserwasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
-		<Compile Remove="**\*.browserwasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly' AND '$(IsBrowserWasm)'!='true'" />
+		<None Include="**\*.browserwasm.cs" Exclude="bin\**\*.browserwasm.cs;obj\**\*.browserwasm.cs" Condition="!$(IsBrowserWasm)" />
+		<Compile Remove="**\*.browserwasm.cs" Condition="!$(IsBrowserWasm)" />
 
-		<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
-		<Compile Remove="**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
+		<!-- .skia.cs is the historical spelling of .crossruntime.cs and carries the same meaning. -->
+		<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" Condition="!$(IsCrossruntime)" />
+		<Compile Remove="**\*.skia.cs" Condition="!$(IsCrossruntime)" />
 
 		<None Include="**\*.desktop.cs" Exclude="bin\**\*.desktop.cs;obj\**\*.desktop.cs" Condition="!$(IsDesktop)" />
 		<Compile Remove="**\*.desktop.cs" Condition="!$(IsDesktop)" />
