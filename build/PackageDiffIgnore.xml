@@ -3386,10 +3386,8 @@
 		  <Member fullName="System\.Void Microsoft\.UI\.Xaml\.(Controls\.)?(FrameworkTemplate|DataTemplate|ControlTemplate|ItemsPanelTemplate)\.\.ctor\(.*(FrameworkTemplateBuilder|System\.Func).*\)" reason="BC01: template builder ctors removed/internalized; use Uno.UI.Helpers.MarkupHelper.Create* (uno#18672, breaking changes for 7.0)" isRegex="true" />
 		  <!-- BC01: TemplateManager dynamic-update overloads retyped/removed with the delegate change. -->
 		  <Member fullName="System\.Boolean Uno\.UI\.TemplateManager\.UpdateDataTemplate\(.*\)" reason="BC01: UpdateDataTemplate overloads retyped to the Func-based builder; the Func&lt;View&gt; overload is removed (uno#18672, breaking changes for 7.0)" isRegex="true" />
-		  <!-- BC01: vestigial TemplatedParent DP accessors (paired with the <Properties> entries above) and the no-op templated-parent API on DependencyObjectStore. -->
+		  <!-- BC01: vestigial TemplatedParent DP accessors (paired with the <Properties> entries above). The removed no-op SetTemplatedParent and the ignored-argument ctor sat on DependencyObjectStore, already covered by the BC26 DependencyObjectStore regexes. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.DependencyObject(::|\.)(get_TemplatedParent|set_TemplatedParent|get_TemplatedParentProperty|OnTemplatedParentChanged)\(.*\)" reason="BC01: vestigial TemplatedParent DP and its accessors removed (uno#18672, breaking changes for 7.0)" isRegex="true" />
-		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObjectStore.SetTemplatedParent(Microsoft.UI.Xaml.FrameworkElement templatedParent)" reason="BC01: removed public no-op that only existed to keep the legacy API shape (uno#18672, breaking changes for 7.0)" />
-		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObjectStore..ctor(System.Object originalObject, Microsoft.UI.Xaml.DependencyProperty dataContextProperty, Microsoft.UI.Xaml.DependencyProperty templatedParentProperty)" reason="BC01: removed ctor whose templatedParentProperty argument was ignored (uno#18672, breaking changes for 7.0)" />
 	  </Methods>
 	  <Events>
 		  <!-- ====================================================================== -->
