@@ -9,7 +9,6 @@ namespace Microsoft.UI.Composition;
 public partial class CompositionEffectBrush : CompositionBrush
 {
 	private Rect _currentBounds;
-	private bool? _currentCompMode;
 	private IEffectFilter? _filter;
 	private bool _hasBackdropBrushInput;
 
@@ -53,7 +52,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 	private void UpdateFilter(Rect bounds)
 	{
-		if (_currentBounds != bounds || _filter is null || Compositor.IsSoftwareRenderer != _currentCompMode)
+		if (_currentBounds != bounds || _filter is null)
 		{
 			_filter?.Dispose();
 			// A null filter means the backend can't realize this effect as a backdrop filter — TryPaint falls back
@@ -63,11 +62,9 @@ public partial class CompositionEffectBrush : CompositionBrush
 				bounds,
 				name => CompositionBrushEffectSource.From(GetSourceParameter(name)),
 				UseBackdropBlurClamp,
-				Compositor.IsSoftwareRenderer is true,
 				out var hasBackdropInput);
 			HasBackdropBrushInput = hasBackdropInput;
 			_currentBounds = bounds;
-			_currentCompMode = Compositor.IsSoftwareRenderer;
 		}
 	}
 

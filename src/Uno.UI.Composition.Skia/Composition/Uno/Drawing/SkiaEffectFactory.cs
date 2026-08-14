@@ -24,16 +24,14 @@ internal sealed class SkiaEffectFactory
 {
 	private readonly Func<string, IEffectSource?> _getSourceParameter;
 	private readonly bool _useBackdropBlurClamp;
-	private readonly bool _isSoftwareRenderer;
 
 	private bool _isCurrentInputBackdrop;
 	private bool _hasBackdropBrushInput;
 
-	internal SkiaEffectFactory(Func<string, IEffectSource?> getSourceParameter, bool useBackdropBlurClamp, bool isSoftwareRenderer)
+	internal SkiaEffectFactory(Func<string, IEffectSource?> getSourceParameter, bool useBackdropBlurClamp)
 	{
 		_getSourceParameter = getSourceParameter;
 		_useBackdropBlurClamp = useBackdropBlurClamp;
-		_isSoftwareRenderer = isSoftwareRenderer;
 	}
 
 	/// <summary>True when a <see cref="CompositionBackdropBrush"/> was referenced anywhere in the graph.</summary>
@@ -168,51 +166,15 @@ internal sealed class SkiaEffectFactory
 
 			_isCurrentInputBackdrop = false;
 
-			if (_isSoftwareRenderer is true)
-			{
-				if (sourceFilter is not null)
-				{
-					return sourceFilter;
-				}
-				else
-				{
-					return SKImageFilter.CreateOffset(0, 0, null, bounds);
-				}
-			}
-
 			// Note: ColorHdr isn't supported by Composition (as of 10.0.25941.1000)
 			effectInterop.GetNamedPropertyMapping("Color", out uint colorProp, out _);
-			effectInterop.GetNamedPropertyMapping("ClampOutput", out uint clampProp, out _);
-
 			Color color = (Color)(effectInterop.GetProperty(colorProp) ?? throw new InvalidOperationException("The effect property was null"));
-			bool clamp = clampProp != 0xFF ? (bool?)effectInterop.GetProperty(clampProp) ?? false : false;
 
-			string shader =
-$$"""
-				uniform shader input;
-				uniform vec4 color;
-
-				half4 main() 
-				{
-					return {{(clamp ? "clamp(" : String.Empty)}}sample(input) * color{{(clamp ? ", 0.0, 1.0)" : String.Empty)}};
-				}
-""";
-
-			SKRuntimeEffect runtimeEffect = SKRuntimeEffect.CreateShader(shader, out string errors);
-			if (errors is not null)
-			{
-				return null;
-			}
-
-			SKRuntimeEffectUniforms uniforms = new(runtimeEffect)
-			{
-				{ "color", new float[] { color.R * (1.0f / 255.0f), color.G * (1.0f / 255.0f), color.B * (1.0f / 255.0f), color.A * (1.0f / 255.0f) } }
-			};
-
-			SKRuntimeEffectChildren children = new(runtimeEffect);
-			children.Add("input", null);
-
-			return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter, bounds);
+			// Tint = per-channel multiply of the input by Color. A plain Modulate colour filter does this and, unlike
+			// an SkSL runtime shader, runs on both the GPU and the CPU (software) rasterizer. Its output is clamped to
+			// [0,1], which matches the non-HDR ClampOutput=true case; Composition doesn't support ColorHdr anyway.
+			return SKImageFilter.CreateColorFilter(
+				SKColorFilter.CreateBlendMode(color.ToSKColor(), SKBlendMode.Modulate), sourceFilter, bounds);
 		}
 
 		return null;
@@ -350,18 +312,6 @@ $$"""
 			}
 
 			_isCurrentInputBackdrop = false;
-
-			if (_isSoftwareRenderer is true)
-			{
-				if (sourceFilter is not null)
-				{
-					return sourceFilter;
-				}
-				else
-				{
-					return SKImageFilter.CreateOffset(0, 0, null, bounds);
-				}
-			}
 
 			effectInterop.GetNamedPropertyMapping("Contrast", out uint contrastProp, out _);
 			effectInterop.GetNamedPropertyMapping("ClampSource", out uint clampProp, out _);
@@ -550,22 +500,6 @@ $$"""
 
 			_isCurrentInputBackdrop = false;
 
-			if (_isSoftwareRenderer is true)
-			{
-				if (sourceFilter1 is not null)
-				{
-					return sourceFilter1;
-				}
-				else if (sourceFilter2 is not null)
-				{
-					return sourceFilter2;
-				}
-				else
-				{
-					return SKImageFilter.CreateOffset(0, 0, null, bounds);
-				}
-			}
-
 			effectInterop.GetNamedPropertyMapping("CrossFade", out uint crossfadeProp, out _);
 
 			float crossfade = (float)(effectInterop.GetProperty(crossfadeProp) ?? throw new InvalidOperationException("The effect property was null"));
@@ -653,18 +587,6 @@ $$"""
 			}
 
 			_isCurrentInputBackdrop = false;
-
-			if (_isSoftwareRenderer is true)
-			{
-				if (sourceFilter is not null)
-				{
-					return sourceFilter;
-				}
-				else
-				{
-					return SKImageFilter.CreateOffset(0, 0, null, bounds);
-				}
-			}
 
 			effectInterop.GetNamedPropertyMapping("RedOffset", out uint redOffsetProp, out _);
 			effectInterop.GetNamedPropertyMapping("RedSlope", out uint redSlopeProp, out _);
@@ -787,18 +709,6 @@ $$"""
 			}
 
 			_isCurrentInputBackdrop = false;
-
-			if (_isSoftwareRenderer is true)
-			{
-				if (sourceFilter is not null)
-				{
-					return sourceFilter;
-				}
-				else
-				{
-					return SKImageFilter.CreateOffset(0, 0, null, bounds);
-				}
-			}
 
 			effectInterop.GetNamedPropertyMapping("RedAmplitude", out uint redAmplitudeProp, out _);
 			effectInterop.GetNamedPropertyMapping("RedExponent", out uint redExponentProp, out _);
@@ -1400,11 +1310,6 @@ $$"""
 
 		if (effectInterop.GetPropertyCount() == 2)
 		{
-			if (_isSoftwareRenderer is true)
-			{
-				return SKImageFilter.CreateOffset(0, 0, null, bounds);
-			}
-
 			effectInterop.GetNamedPropertyMapping("Frequency", out uint frequencyProp, out _);
 			effectInterop.GetNamedPropertyMapping("Offset", out uint offsetProp, out _);
 
