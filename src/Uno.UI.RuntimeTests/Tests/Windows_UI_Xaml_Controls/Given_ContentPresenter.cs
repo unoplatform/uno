@@ -257,7 +257,7 @@ public partial class Given_ContentPresenter
 
 		static IEnumerable<string> Describe(object x)
 		{
-			//if ((x as IDependencyObjectStoreProvider)?.Store is { } dos)
+			//if ((x as DependencyObject)? is { } dos)
 			//{
 			//	yield return $"TP={PrettyPrint.FormatType(dos.GetTemplatedParent2())}";
 			//}

@@ -11,6 +11,7 @@ namespace Microsoft.UI.Xaml
 		internal ManagedWeakReference OwnerWeakReference { get; }
 
 		public AttachedDependencyObject(object owner)
+			: base(owner)
 		{
 			Owner = owner;
 			OwnerWeakReference = WeakReferencePool.RentWeakReference(this, owner);

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class DependencyObjectStore
+	public partial class DependencyObject
 	{
 		/// <summary>
 		/// Drops <see cref="_associatedParent"/> — and any DataContext it propagated into this store —
@@ -104,7 +104,7 @@ namespace Microsoft.UI.Xaml
 		// that parent's ALC. Entries are swept (associated parent cleared) when the ALC unloads,
 		// so a host-lifetime shared resource can never outlive-pin a secondary app's ALC.
 		// CWT-keyed by the ALC so the registry itself never extends the ALC's lifetime.
-		private static readonly global::System.Runtime.CompilerServices.ConditionalWeakTable<global::System.Runtime.Loader.AssemblyLoadContext, List<WeakReference<DependencyObjectStore>>> _collectibleParentAssociations = new();
+		private static readonly global::System.Runtime.CompilerServices.ConditionalWeakTable<global::System.Runtime.Loader.AssemblyLoadContext, List<WeakReference<DependencyObject>>> _collectibleParentAssociations = new();
 
 		private void RegisterCollectibleParentAssociation(object parent)
 		{
@@ -174,12 +174,12 @@ namespace Microsoft.UI.Xaml
 						global::Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(() => Sweep(unloading));
 					}
 				};
-				return new List<WeakReference<DependencyObjectStore>>();
+				return new List<WeakReference<DependencyObject>>();
 			});
 
 			lock (list)
 			{
-				list.Add(new WeakReference<DependencyObjectStore>(this));
+				list.Add(new WeakReference<DependencyObject>(this));
 			}
 		}
 	}

@@ -16,7 +16,8 @@ public partial class ProgressRing : Control
 	/// <summary>
 	/// Gets or sets a value that indicates whether the <see cref="ProgressRing"/> is showing progress.
 	/// </summary>
-	public bool IsActive
+	// Hides the internal DependencyObject.IsActive (live-tree state).
+	public new bool IsActive
 	{
 		get => (bool)GetValue(IsActiveProperty);
 		set => SetValue(IsActiveProperty, value);

@@ -59,12 +59,12 @@ namespace Microsoft.UI.Xaml
 
 		private static void OnStoryboardChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			if (args.OldValue is IDependencyObjectStoreProvider oldStoryboard)
+			if (args.OldValue is DependencyObject oldStoryboard)
 			{
 				oldStoryboard.SetParent(null);
 			}
 
-			if (args.NewValue is IDependencyObjectStoreProvider newStoryboard)
+			if (args.NewValue is DependencyObject newStoryboard)
 			{
 				newStoryboard.SetParent(dependencyObject);
 			}
