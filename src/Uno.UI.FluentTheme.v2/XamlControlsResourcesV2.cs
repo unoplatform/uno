@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateSource()
 		{
-			Source = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.GetWinUIThemeResourceUrl(2));
+			Source = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.WinUIThemeResourceURL);
 
 			// WinUI sets TintLuminosityOpacity programmatically on acrylic brushes
 			// because nullable doubles couldn't be set in XAML on older Windows versions.

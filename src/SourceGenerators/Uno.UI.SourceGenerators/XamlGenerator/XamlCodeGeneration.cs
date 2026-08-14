@@ -120,7 +120,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool IsUnoFluentAssembly
 			=> _defaultNamespace == "Uno.UI.FluentTheme" || _defaultNamespace.StartsWith("Uno.UI.FluentTheme.v", StringComparison.Ordinal);
 
-		private const string WinUIThemeResourcePathSuffixFormatString = "themeresources_v{0}.xaml";
 		private static string WinUICompactPathSuffix = Path.Combine("DensityStyles", "Compact.xaml");
 
 		internal Lazy<INamedTypeSymbol?> AssemblyMetadataSymbol { get; }
@@ -1039,10 +1038,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							else if (xamlFiles.Any() && IsUnoFluentAssembly)
 							{
 								// For Uno assembly, we expose WinUI resources using same uri as on Windows
-								for (int fluentVersion = 1; fluentVersion <= XamlConstants.MaxFluentResourcesVersion; fluentVersion++)
-								{
-									RegisterForFile(string.Format(CultureInfo.InvariantCulture, WinUIThemeResourcePathSuffixFormatString, fluentVersion), XamlFilePathHelper.GetWinUIThemeResourceUrl(fluentVersion));
-								}
+								RegisterForFile(XamlFilePathHelper.WinUIThemeResourceFileName, XamlFilePathHelper.WinUIThemeResourceURL);
 								RegisterForFile(WinUICompactPathSuffix, XamlFilePathHelper.WinUICompactURL);
 							}
 

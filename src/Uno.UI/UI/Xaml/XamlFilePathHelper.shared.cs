@@ -20,6 +20,8 @@ namespace Uno.UI.Xaml
 		private const string MsResourceFilesFolder = "Files/";
 		public const string MsResourceFilesPrefix = MSResourceIdentifier + MsResourceFilesFolder;
 		public const string WinUICompactURL = "Microsoft.UI.Xaml/DensityStyles/Compact.xaml";
+		public const string WinUIThemeResourceURL = "Microsoft.UI.Xaml/Themes/" + WinUIThemeResourceFileName;
+		public const string WinUIThemeResourceFileName = "themeresources_v2.xaml";
 
 #if !NETSTANDARD
 		/// <summary>
@@ -101,16 +103,6 @@ namespace Uno.UI.Xaml
 
 		internal static bool IsAbsolutePath(string relativeTargetPath) => relativeTargetPath.StartsWith(AppXIdentifier, StringComparison.Ordinal)
 			|| relativeTargetPath.StartsWith(MSResourceIdentifier, StringComparison.Ordinal);
-
-		internal static string GetWinUIThemeResourceUrl(int version)
-		{
-			return version switch
-			{
-				1 => "Microsoft.UI.Xaml/Themes/themeresources_v1.xaml",
-				2 => "Microsoft.UI.Xaml/Themes/themeresources_v2.xaml",
-				_ => throw new ArgumentOutOfRangeException(nameof(version), $"'version' must be between 1 and 2. Found {version}."),
-			};
-		}
 
 		private static string GetAbsolutePath(string originDirectory, string relativeTargetPath)
 		{
