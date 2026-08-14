@@ -64,6 +64,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		}));
 #endif
 
+		// Must precede SetNativeWindow, which starts observing size: without RasterizationScale
+		// the first SetSizes reports 0x0 pixels.
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
 		_displayInformation.DpiChanged += OnDpiChanged;
 		_subscriptions.Add(Disposable.Create(() => _displayInformation.DpiChanged -= OnDpiChanged));
