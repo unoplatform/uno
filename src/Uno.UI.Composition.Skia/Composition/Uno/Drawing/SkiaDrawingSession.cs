@@ -101,9 +101,13 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 
 	public void DrawEffectBackdrop(in LayerFilter blur, float opacity)
 	{
+		// Crop the backdrop blur to the element (the current clip) so it clamps at the element edge and doesn't read
+		// neighbouring pixels — matches the old path which passed the effect bounds as the blur's crop rect.
+		var clip = _canvas.LocalClipBounds;
 		var rec = new SKCanvasSaveLayerRec
 		{
-			Backdrop = SKImageFilter.CreateBlur(blur.SigmaX, blur.SigmaY, blur.ClampEdge ? SKShaderTileMode.Clamp : SKShaderTileMode.Decal, null),
+			Backdrop = SKImageFilter.CreateBlur(blur.SigmaX, blur.SigmaY, blur.ClampEdge ? SKShaderTileMode.Clamp : SKShaderTileMode.Decal, null, clip),
+			Bounds = clip,
 		};
 		SKPaint? opacityPaint = null;
 		if (opacity < 1)
