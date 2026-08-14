@@ -57,7 +57,6 @@
 			UnoUIRuntimeIdentifier="$(UnoUIRuntimeIdentifier.ToLowerInvariant())"
 			ResolvedCompileFileDefinitionsInput="@(ResolvedCompileFileDefinitions)"
 			RuntimeCopyLocalItemsInput="@(RuntimeCopyLocalItems)"
-			NuGetPackageRoot="$(NuGetPackageRoot)"
 			TargetFrameworkVersion="$(TargetFrameworkVersion)">
 			<Output TaskParameter="RuntimeCopyLocalItemsToAdd" ItemName="RuntimeCopyLocalItemsMerged2" />
 			<Output TaskParameter="RuntimeCopyLocalItemsToRemove" ItemName="_RuntimeCopyLocalItemsToRemove" />
@@ -92,6 +91,10 @@
 		<RuntimeAssetsValidatorTask_v0
 			UnoUIRuntimeIdentifier="$(UnoUIRuntimeIdentifier.ToLowerInvariant())"
 			UnoRuntimeIdentifier="$(UnoRuntimeIdentifier.ToLowerInvariant())"
+			UnoWinRTRuntimeIdentifier="$(UnoWinRTRuntimeIdentifier.ToLowerInvariant())"
+			NuGetPackageRoot="$(NuGetPackageRoot)"
+			ResolvedCompileFileDefinitionsInput="@(ResolvedCompileFileDefinitions)"
+			DisablePlatformAssetValidation="$(UnoDisableUNOB0020Validation)"
 			RuntimeCopyLocalItemsInput="@(RuntimeCopyLocalItems)">
 		</RuntimeAssetsValidatorTask_v0>
 	</Target>
