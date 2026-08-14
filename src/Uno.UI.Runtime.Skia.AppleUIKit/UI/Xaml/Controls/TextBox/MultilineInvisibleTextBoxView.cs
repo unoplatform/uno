@@ -113,7 +113,7 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 
 		if (_textBoxViewExtension?.GetTarget() is { } textBoxView)
 		{
-			textBoxView.ProcessNativeTextInput(Text);
+			textBoxView.ProcessNativeTextInput(this, Text);
 		}
 	}
 
@@ -146,7 +146,7 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 				NativeTextSelection.SetSelectedTextRange(SuperHandle, value);
 				if (!_settingSelectionFromManaged)
 				{
-					textBoxView.SyncSelectionToTextBox();
+					textBoxView.SyncSelectionToTextBox(this);
 				}
 			}
 		}

@@ -262,9 +262,9 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 	}
 
-	internal void SyncSelectionToTextBox()
+	internal void SyncSelectionToTextBox(IInvisibleTextBoxView source)
 	{
-		if (ImeHost is { } host)
+		if (ReferenceEquals(_textBoxView, source) && ImeHost is { } host)
 		{
 			var start = GetSelectionStart();
 			var length = GetSelectionLength();
@@ -272,8 +272,13 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 	}
 
-	internal void ProcessNativeTextInput(string? text)
+	internal void ProcessNativeTextInput(IInvisibleTextBoxView source, string? text)
 	{
+		if (!ReferenceEquals(_textBoxView, source))
+		{
+			return;
+		}
+
 		// During IME composition, text updates are managed by the shared
 		// TextBox.skia.cs composition handlers via IImeTextBoxExtension events.
 		// Suppress the normal text processing path to prevent double processing.

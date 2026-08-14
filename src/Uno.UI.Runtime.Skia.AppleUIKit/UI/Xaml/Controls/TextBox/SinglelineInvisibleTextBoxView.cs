@@ -146,7 +146,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 
 		if (_textBoxViewExtension?.GetTarget() is { } textBoxView)
 		{
-			textBoxView.ProcessNativeTextInput(Text);
+			textBoxView.ProcessNativeTextInput(this, Text);
 		}
 	}
 
@@ -228,7 +228,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 				NativeTextSelection.SetSelectedTextRange(SuperHandle, value);
 				if (!_settingSelectionFromManaged)
 				{
-					textBoxView.SyncSelectionToTextBox();
+					textBoxView.SyncSelectionToTextBox(this);
 				}
 			}
 		}
