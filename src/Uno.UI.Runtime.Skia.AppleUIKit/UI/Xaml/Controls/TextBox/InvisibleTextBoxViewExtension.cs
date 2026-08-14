@@ -240,7 +240,9 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		{
 			var previousView = _textBoxView;
 			var wasFirstResponder = previousView?.IsFirstResponder == true;
-			var inputText = GetNativeText() ?? host.Text;
+			// RichEditBox can recreate the UIKit editor from a synchronous TextChanging handler,
+			// before its native mirror has received the document mutation.
+			var inputText = host is RichEditBox ? host.Text : GetNativeText() ?? host.Text;
 			_textBoxView = CreateNativeView(host);
 			if (_textBoxView is UIView nativeView)
 			{
