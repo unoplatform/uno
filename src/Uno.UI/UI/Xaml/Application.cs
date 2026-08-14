@@ -898,7 +898,7 @@ namespace Microsoft.UI.Xaml
 				{
 					try
 					{
-						textFontManifestSuccess = await FontFamilyHelper.PreloadAllFontsInManifest(uri);
+						textFontManifestSuccess = await FontFamilyHelper.PreloadFontsInManifest(uri, FeatureConfiguration.Font.PreloadedVariants);
 						if (!textFontManifestSuccess)
 						{
 							typeof(Application).LogDebug()?.Debug($"Failed to load {nameof(FeatureConfiguration.Font.DefaultTextFontFamily)}=[{FeatureConfiguration.Font.DefaultTextFontFamily}] as a font manifest");

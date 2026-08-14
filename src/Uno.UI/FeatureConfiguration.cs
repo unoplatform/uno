@@ -184,6 +184,19 @@ namespace Uno.UI
 			public static string DefaultTextFontFamily { get; set; } = "Segoe UI";
 
 			/// <summary>
+			/// The variants of <see cref="DefaultTextFontFamily"/> preloaded at startup.
+			/// </summary>
+			/// <remarks>
+			/// Font families can declare dozens of weight/width/style combinations. On platforms that fetch
+			/// fonts individually (such as WebAssembly) each one is a separate request on the startup path,
+			/// so only the upright regular, semi-bold and bold faces are preloaded by default and the rest
+			/// load on first use. Use <see cref="FontPreloadVariants.All"/> to preload the whole family, or
+			/// <see cref="FontPreloadVariants.None"/> to preload nothing.
+			/// </remarks>
+			public static FontPreloadVariants PreloadedVariants { get; set; } =
+				FontPreloadVariants.Normal | FontPreloadVariants.SemiBold | FontPreloadVariants.Bold;
+
+			/// <summary>
 			/// Ignores text scale factor, resulting in a font size as dictated by the control.
 			/// </summary>
 			public static bool IgnoreTextScaleFactor { get; set; }
