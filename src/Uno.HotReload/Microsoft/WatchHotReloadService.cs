@@ -150,6 +150,10 @@ internal partial class WatchHotReloadService
 	/// Emits the deltas between <paramref name="solution"/> and the session baseline, and advances
 	/// that baseline only when deltas are actually produced.
 	/// </summary>
+	/// <inheritdoc />
+	public ImmutableArray<string> EngineShapeWarnings
+		=> _engine?.ShapeWarnings ?? ImmutableArray<string>.Empty;
+
 	/// <returns>Everything the engine reports about the emit — see <see cref="HotReloadEmitResult"/>.</returns>
 	public Task<HotReloadEmitResult> EmitSolutionUpdateAsync(Solution solution, CancellationToken cancellationToken)
 	{
