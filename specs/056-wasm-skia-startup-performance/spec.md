@@ -64,7 +64,7 @@ public API and no WinUI behaviour.
 
 ### R1 — shrink the embedded `icudt.dat`
 
-**Severity: critical. ~1.5 MB of the 5.25 MB table is removable; the rest is required.**
+**Severity: critical. 372 KB brotli is pure waste; a further 2.02 MB brotli is a feature paid for unconditionally.**
 
 `Uno.icu.Common.targets` adds a 5,505,504-byte `icudt.dat` as an `EmbeddedResource` to any
 project where `IsUnoHead == True`, with no platform condition:
@@ -103,28 +103,56 @@ Dropping it would break text layout.
 The fix is to make the table smaller. Uno's ICU surface is narrow — `UnicodeText.ICU`
 declares only `ubidi_*`, `ubrk_*`, `uscript_getScript`, `udata_setCommonData` and the
 `u_getVersion`/`u_errorName` helpers, i.e. bidirectional text, break iteration and script
-properties. Parsing the package's table of contents (509 items) shows what the 5.25 MB
-actually holds:
+properties. Parsing the package's table of contents (509 items) and compressing each segment
+at brotli quality 11 — what the publish pipeline uses — shows where the cost really sits:
 
-| Contents | Size | Needed |
-|---|---:|---|
-| `brkitr/` — break rules + CJK/SEA word dictionaries | 3.63 MB | **Yes**, used by `ubrk_*` |
-| Top-level locale `.res` — 469 CLDR bundles | 1.52 MB | **No** — date/number/currency formats and locale display names, which Uno never reads |
-| `root.res` / `pool.res` | 0.09 MB | Yes |
+| Segment | Raw | Brotli | Purpose |
+|---|---:|---:|---|
+| `brkitr/*.dict` | 2 996 064 | **2 020 023** | Dictionary word segmentation for Thai, Lao, Khmer, Burmese, CJK |
+| Top-level locale `.res` (469 CLDR bundles) | 1 594 336 | **372 499** | Date/number/currency formats, locale display names — never read by Uno |
+| `brkitr/*.brk` | 809 328 | 42 999 | UAX #14 break rules |
+| `root.res` / `pool.res` | 91 536 | 28 258 | |
 
-Removing `locales_tree` from the ICU data filter
-(`Uno.icu-wasm`, `src/cldr_data/filters.json`) therefore drops ~1.5 MB (29%) without
-affecting break iteration or bidi. The `localeFilter` must be retained, because it also
-constrains which locales `brkitr_tree` emits.
+Raw size is a poor guide here: the segments compress very differently. The dictionaries
+barely compress (33%) because they are already compact binary tries, and they alone are
+**82% of the compressed table**.
 
-The `brkitr` dictionaries are the largest single block (`cjdict.dict` alone is 1.96 MB) but
-are what makes word and line breaking correct in Chinese, Japanese, Thai, Lao, Khmer and
-Burmese. They should not be dropped.
+Two separate actions follow:
 
-Further reduction would require moving the data off the startup path entirely — for example
-shipping it as a lazily-fetched asset rather than an `EmbeddedResource`, so it is downloaded
-on first use of complex text rather than before `Main()`. That is a larger change, since
-`Init()` is synchronous.
+**R1a — drop `locales_tree`.** Removing it from the ICU data filter (`Uno.icu-wasm`,
+`src/cldr_data/filters.json`) saves **372 KB brotli** with no capability loss. The
+`localeFilter` must be retained, because it also constrains which locales `brkitr_tree`
+emits.
+
+**R1b — stop paying 2 MB for dictionaries on every first paint.** This is the larger prize
+and the harder change. The dictionaries should not be dropped — they are what makes word and
+line breaking correct in spaceless scripts — but they should not be an unconditional startup
+cost for an app that only renders Latin text. Options, in increasing order of effort: ship
+them as a separate asset fetched on first use of a script that needs them; make them opt-in
+via `UnoFeatures`; or subset them per language. All are complicated by `Init()` being
+synchronous and `udata_setCommonData` taking a single blob.
+
+### Why Avalonia does not have this problem
+
+Avalonia Browser links **no ICU at all**. It implements UAX #9 (bidi), UAX #14 (line
+breaking) and UAX #29 (grapheme/word segmentation) in managed C# over generated Unicode
+tries — `src/Avalonia.Base/Media/TextFormatting/Unicode/{BiDiAlgorithm,LineBreakEnumerator,
+GraphemeBreak,WordBreakEnumerator}.cs` plus ~796 KB of generated `*.trie.cs`. That data lives
+inside `Avalonia.Base.dll` (1 593 621 bytes raw / 439 171 brotli for the *entire* assembly),
+not duplicated into each app's own assembly — which is why the blank Avalonia app assembly is
+48 KB while Uno's is 2 499 KB.
+
+Avalonia has **no** dictionary-based segmentation, so Uno's text breaking is genuinely better
+for Thai, Lao, Khmer, Burmese and CJK. Setting the capability difference aside, the
+comparison is:
+
+- ~71 KB brotli (break rules + root/pool) — roughly at parity with Avalonia's trie approach
+- ~372 KB brotli of CLDR data — pure waste (R1a)
+- ~2 020 KB brotli of dictionaries — real capability Avalonia lacks, but paid unconditionally
+  at startup by every app (R1b)
+
+So Uno is not paying 2.5 MB to do what Avalonia does for free; it is paying ~0.07 MB for
+that, ~0.37 MB for nothing, and ~2.02 MB for a feature Avalonia does not offer at all.
 
 ### R2 — do not gate splash removal on font preloading
 
@@ -335,11 +363,12 @@ re-investigated.
 
 ## Sequencing
 
-**Phase 1 — build configuration (R1, R3, R4, R5, R9).** Estimated −3.5 MB brotli. No public
+**Phase 1 — build configuration (R1a, R3, R4, R5, R9).** Estimated −2.8 MB brotli. No public
 API change, no WinUI behaviour change. Should take a blank app from 11.87 MB to roughly
-8 MB transferred — about 1.5 s of wire time at 20 Mbps — without touching runtime code.
+9 MB transferred — about 1.1 s of wire time at 20 Mbps — without touching runtime code.
+R1b (lazy dictionaries) would remove a further 2.02 MB but needs a runtime change.
 
-**Phase 2 — boot sequence and first-frame gating (R2, R6, R7, R10).** Estimated −270 ms
+**Phase 2 — boot sequence and first-frame gating (R1b, R2, R6, R7, R10).** Estimated −270 ms
 perceived and one round trip. Includes embedding the default font as a managed resource.
 
 **Phase 3 — framework payload and managed startup (R8).** Reduce `Uno.UI`'s 1.8 MB brotli
