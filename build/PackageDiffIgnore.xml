@@ -2718,6 +2718,9 @@
 		  <!-- BC01: vestigial DependencyObject.TemplatedParent storage removed; it was never written and every reader saw null (accessors paired in <Methods> below). -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.DependencyObject::TemplatedParent()" reason="BC01: vestigial TemplatedParent DP removed, disjoint from the storage the framework uses (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.DependencyObject::TemplatedParentProperty()" reason="BC01: vestigial TemplatedParentProperty removed (uno#18672, breaking changes for 7.0)" />
+
+		  <!-- BC01: the per-member callback is now the TemplateMaterializationSettings.OnMemberCreated instance method, so the templated parent cannot be captured strongly (accessor paired in <Methods> below). -->
+		  <Member fullName="System.Action`1&lt;Microsoft.UI.Xaml.DependencyObject&gt; Microsoft.UI.Xaml.TemplateMaterializationSettings::TemplateMemberCreatedCallback()" reason="BC01: replaced by TemplateMaterializationSettings.OnMemberCreated (uno#18672, breaking changes for 7.0)" />
 	  </Properties>
 	  <Methods>
 		  <!-- Uno's legacy source-driven AnimatedVisualPlayer contract was removed in favor of WinUI's composition visual source contract. -->
@@ -3388,8 +3391,9 @@
 		  <Member fullName="System\.Boolean Uno\.UI\.TemplateManager\.UpdateDataTemplate\(.*\)" reason="BC01: UpdateDataTemplate overloads retyped to Uno.UI.FrameworkTemplateBuilder; the Func&lt;View&gt; overload is removed (uno#18672, breaking changes for 7.0)" isRegex="true" />
 		  <!-- BC01: vestigial TemplatedParent DP accessors (paired with the <Properties> entries above). The removed no-op SetTemplatedParent and the ignored-argument ctor sat on DependencyObjectStore, already covered by the BC26 DependencyObjectStore regexes. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.DependencyObject(::|\.)(get_TemplatedParent|set_TemplatedParent|get_TemplatedParentProperty|OnTemplatedParentChanged)\(.*\)" reason="BC01: vestigial TemplatedParent DP and its accessors removed (uno#18672, breaking changes for 7.0)" isRegex="true" />
-		  <!-- BC01: only the framework materializes a template, so the settings ctor is internal. The properties stay public -- an app-authored builder still reads the settings handed to it. -->
+		  <!-- BC01: only the framework materializes a template, so the settings ctor is internal. TemplatedParent stays public -- an app-authored builder still reads the settings handed to it -- but the member callback became an instance method (paired with the <Properties> entry above). -->
 		  <Member fullName="System\.Void Microsoft\.UI\.Xaml\.TemplateMaterializationSettings\.\.ctor\(.*\)" reason="BC01: TemplateMaterializationSettings is now constructed by the framework only (uno#18672, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.TemplateMaterializationSettings(::|\.)get_TemplateMemberCreatedCallback\(\)" reason="BC01: replaced by TemplateMaterializationSettings.OnMemberCreated (uno#18672, breaking changes for 7.0)" isRegex="true" />
 	  </Methods>
 	  <Events>
 		  <!-- ====================================================================== -->

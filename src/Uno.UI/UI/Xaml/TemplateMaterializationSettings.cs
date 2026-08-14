@@ -3,9 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Microsoft.UI.Xaml;
 
@@ -13,16 +10,34 @@ namespace Microsoft.UI.Xaml;
 public class TemplateMaterializationSettings
 {
 	private readonly WeakReference? _templatedParentWR;
+	private readonly List<DependencyObject>? _members;
 
 	public DependencyObject? TemplatedParent => _templatedParentWR?.Target as DependencyObject;
-	public Action<DependencyObject>? TemplateMemberCreatedCallback { get; }
 
-	internal TemplateMaterializationSettings(DependencyObject? TemplatedParent, Action<DependencyObject>? TemplateMemberCreatedCallback)
+	internal TemplateMaterializationSettings(DependencyObject? templatedParent, List<DependencyObject>? members)
 	{
-		if (TemplatedParent != null)
+		if (templatedParent != null)
 		{
-			_templatedParentWR = new(TemplatedParent);
+			_templatedParentWR = new(templatedParent);
 		}
-		this.TemplateMemberCreatedCallback = TemplateMemberCreatedCallback;
+
+		_members = members;
+	}
+
+	/// <summary>
+	/// Applies the materialization settings to a member created from the template.
+	/// </summary>
+	/// <remarks>
+	/// An instance method rather than a callback on purpose: members materialized after the builder returned
+	/// (a lazy <see cref="VisualState"/>, an unloaded x:Load element) capture these settings, so a delegate
+	/// closing over the templated parent would keep it alive for as long as the template content -- which
+	/// outlives it once the content is returned to the <see cref="FrameworkTemplatePool"/>. Reading the weak
+	/// reference on each call keeps that impossible by construction.
+	/// </remarks>
+	[EditorBrowsable(EditorBrowsableState.Never)]
+	public void OnMemberCreated(DependencyObject member)
+	{
+		member.SetTemplatedParent(TemplatedParent);
+		_members?.Add(member);
 	}
 }

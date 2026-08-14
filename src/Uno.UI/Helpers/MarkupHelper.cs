@@ -112,16 +112,12 @@ namespace Uno.UI.Helpers
 		/// Applies the materialization settings to a member created from a <see cref="FrameworkTemplate"/>.
 		/// </summary>
 		/// <remarks>
-		/// Helper for XAML code generation. Generated XAML lives in the consuming app's assembly, which cannot
-		/// reach the internal <see cref="DependencyObject"/> accessors, so the generator routes through here.
-		/// Called once per template member, so it is also the place to add materialization diagnostics.
+		/// Null-safe entry point for generated XAML; the behavior itself lives on the settings. Called once
+		/// per template member, so it is also the place to add materialization diagnostics.
 		/// </remarks>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void OnTemplateMemberCreated(DependencyObject target, TemplateMaterializationSettings? settings)
-		{
-			target.SetTemplatedParent(settings?.TemplatedParent);
-			settings?.TemplateMemberCreatedCallback?.Invoke(target);
-		}
+			=> settings?.OnMemberCreated(target);
 
 		/// <summary>
 		/// Creates a <see cref="DataTemplate"/> from a factory.

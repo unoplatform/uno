@@ -108,31 +108,20 @@ namespace Microsoft.UI.Xaml
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
 
-				if (!FrameworkTemplatePool.IsPoolingEnabled)
+				var members = FrameworkTemplatePool.IsPoolingEnabled ? new List<DependencyObject>() : null;
+				var settings = new TemplateMaterializationSettings(templatedParent, members);
+
+				var view = ViewFactory?.Delegate?.Invoke(_ownerRef?.Target, settings);
+
+				if (view is { } && members is { })
 				{
-					var settings = new TemplateMaterializationSettings(templatedParent, null);
-
-					var view = ViewFactory?.Delegate?.Invoke(_ownerRef?.Target, settings);
-
-					return view;
+					// TODO: impl recycling (tp update) for tracked template members, and extend the
+					// tracking to lazily materialized ones (x:Load, VisualState) -- those are created
+					// after the builder returns, so they never reach OnMemberCreated and are missing here.
+					FrameworkTemplatePool.Instance.TrackMaterializedTemplate(this, view, members);
 				}
-				else
-				{
-					var members = new List<DependencyObject>();
-					var settings = new TemplateMaterializationSettings(templatedParent, members.Add);
 
-					var view = ViewFactory?.Delegate?.Invoke(_ownerRef?.Target, settings);
-
-					if (view is { })
-					{
-						// TODO: impl recycling (tp update) for tracked template members, and extend the
-						// tracking to lazily materialized ones (x:Load, VisualState) -- those are created
-						// after the builder returns, so they never reach the callback and are missing here.
-						FrameworkTemplatePool.Instance.TrackMaterializedTemplate(this, view, members);
-					}
-
-					return view;
-				}
+				return view;
 			}
 			finally
 			{

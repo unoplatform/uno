@@ -152,11 +152,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					{
 						fe.SetBaseUri(fe.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
 					}
-					if (settings?.TemplatedParent is { } tp)
-					{
-						fe.SetTemplatedParent(tp);
-						settings.TemplateMemberCreatedCallback?.Invoke(fe);
-					}
+					settings?.OnMemberCreated(fe);
 				}
 			}
 
