@@ -250,9 +250,9 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
 
 - **`MediaPlayerPresenter`** now derives directly from **`FrameworkElement`** (matching
   WinUI) instead of `Border`, removing the extra `Border` level. The `Border`-only surface
-  it used to expose — `Child`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Padding`,
-  `BackgroundSizing`, `ChildTransitions` — is gone, and `is Border` is no longer `true` for
-  a presenter. The video surface is hosted internally, so playback and `Stretch` are
+  it used to expose — `Child`, `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`,
+  `Padding`, `BackgroundSizing`, `ChildTransitions` — is gone, and `is Border` is no longer
+  `true` for a presenter. The video surface is hosted internally, so playback and `Stretch` are
   unchanged. `MediaPlayerElement` sets its own `Background` (black) on the template root, so
   letterbox bars stay black.
 - **`ImageBrush`** now derives from a real **`TileBrush`** (`Brush → TileBrush →
