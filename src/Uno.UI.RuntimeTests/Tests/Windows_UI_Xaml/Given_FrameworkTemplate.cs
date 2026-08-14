@@ -28,7 +28,7 @@ partial class Given_FrameworkTemplate // tests
 	public void When_TemplatesHaveSameFactoryTarget_Then_AreEqual()
 	{
 		// Arrange
-		Func<object?, TemplateMaterializationSettings, UIElement?> factory = (_, _) => new Border();
+		FrameworkTemplateBuilder factory = (_, _) => new Border();
 		var template1 = new FrameworkTemplate(null, factory);
 		var template2 = new FrameworkTemplate(null, factory);
 
@@ -82,7 +82,7 @@ partial class Given_FrameworkTemplate // tests
 	{
 		// Arrange
 		var context = new object();
-		Func<object?, TemplateMaterializationSettings, View?>? builder = (_, _) => new ContentPresenter { Content = context };
+		FrameworkTemplateBuilder? builder = (_, _) => new ContentPresenter { Content = context };
 		Assert.IsNotNull(builder.Target, "The delegate is expected to have a target here");
 
 		var template = new DataTemplate(null, builder);
@@ -104,7 +104,7 @@ partial class Given_FrameworkTemplate // tests
 	public async Task LambdaExpressionFactory2_ShouldNotBeCollected()
 	{
 		// Arrange
-		Func<object?, TemplateMaterializationSettings, View?>? builder = (_, _) => new Border();
+		FrameworkTemplateBuilder? builder = (_, _) => new Border();
 		Assert.IsNotNull(builder.Target, "The delegate is expected to have a target here");
 
 		var template = new DataTemplate(null, builder);

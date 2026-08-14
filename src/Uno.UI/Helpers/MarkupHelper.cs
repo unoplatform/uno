@@ -14,9 +14,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 
-// The template factory is exposed as a plain Func so no Uno-specific delegate type leaks into the public API.
-using Builder = System.Func<object?, Microsoft.UI.Xaml.TemplateMaterializationSettings, Microsoft.UI.Xaml.UIElement?>;
-
 namespace Uno.UI.Helpers
 {
 	/// <summary>
@@ -130,19 +127,19 @@ namespace Uno.UI.Helpers
 		/// the consuming app's assembly -- reaches them through these helpers.
 		/// </remarks>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static DataTemplate CreateDataTemplate(object? owner, Builder? factory) => new(owner, factory);
+		public static DataTemplate CreateDataTemplate(object? owner, FrameworkTemplateBuilder? factory) => new(owner, factory);
 
 		/// <summary>
 		/// Creates a <see cref="ControlTemplate"/> from a factory. See <see cref="CreateDataTemplate"/>.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static ControlTemplate CreateControlTemplate(object? owner, Builder? factory) => new(owner, factory);
+		public static ControlTemplate CreateControlTemplate(object? owner, FrameworkTemplateBuilder? factory) => new(owner, factory);
 
 		/// <summary>
 		/// Creates an <see cref="ItemsPanelTemplate"/> from a factory. See <see cref="CreateDataTemplate"/>.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static ItemsPanelTemplate CreateItemsPanelTemplate(object? owner, Builder? factory) => new(owner, factory);
+		public static ItemsPanelTemplate CreateItemsPanelTemplate(object? owner, FrameworkTemplateBuilder? factory) => new(owner, factory);
 
 		/// <summary>
 		/// Helper for XAML code generation. Not intended to be used in apps outside of XAML generator.

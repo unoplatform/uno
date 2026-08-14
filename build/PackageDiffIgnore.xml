@@ -2358,7 +2358,7 @@
 		  <Member fullName="Uno.WinRTFeatureConfiguration/ApplicationLanguages" reason="Removed empty WinRTFeatureConfiguration.ApplicationLanguages holder after deleting UseLegacyPrimaryLanguageOverride (BC50, breaking changes for 7.0)" />
 		  <!-- BC01: legacy templated-parent mechanism removed; the template factory is now a plain System.Func (uno#18672, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.FrameworkTemplateBuilder" reason="BC01: legacy template builder delegate removed with the ambient TemplatedParentScope (uno#18672, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.UI.Xaml.NewFrameworkTemplateBuilder" reason="BC01: replaced by System.Func&lt;object, TemplateMaterializationSettings, UIElement&gt; so no Uno-specific delegate remains (uno#18672, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.NewFrameworkTemplateBuilder" reason="BC01: replaced by Uno.UI.FrameworkTemplateBuilder, declared next to TemplateManager instead of in the WinUI namespace (uno#18672, breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
@@ -3385,7 +3385,7 @@
 		  <!-- BC01: all template builder ctors removed from the public surface. WinUI exposes only the parameterless ctor; the builder overload is now internal and re-exposed via Uno.UI.Helpers.MarkupHelper.Create*. Regex covers FrameworkTemplate/DataTemplate/ControlTemplate/ItemsPanelTemplate across the legacy FrameworkTemplateBuilder, the NewFrameworkTemplateBuilder and the Func<View> shapes. -->
 		  <Member fullName="System\.Void Microsoft\.UI\.Xaml\.(Controls\.)?(FrameworkTemplate|DataTemplate|ControlTemplate|ItemsPanelTemplate)\.\.ctor\(.*(FrameworkTemplateBuilder|System\.Func).*\)" reason="BC01: template builder ctors removed/internalized; use Uno.UI.Helpers.MarkupHelper.Create* (uno#18672, breaking changes for 7.0)" isRegex="true" />
 		  <!-- BC01: TemplateManager dynamic-update overloads retyped/removed with the delegate change. -->
-		  <Member fullName="System\.Boolean Uno\.UI\.TemplateManager\.UpdateDataTemplate\(.*\)" reason="BC01: UpdateDataTemplate overloads retyped to the Func-based builder; the Func&lt;View&gt; overload is removed (uno#18672, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName="System\.Boolean Uno\.UI\.TemplateManager\.UpdateDataTemplate\(.*\)" reason="BC01: UpdateDataTemplate overloads retyped to Uno.UI.FrameworkTemplateBuilder; the Func&lt;View&gt; overload is removed (uno#18672, breaking changes for 7.0)" isRegex="true" />
 		  <!-- BC01: vestigial TemplatedParent DP accessors (paired with the <Properties> entries above). The removed no-op SetTemplatedParent and the ignored-argument ctor sat on DependencyObjectStore, already covered by the BC26 DependencyObjectStore regexes. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.DependencyObject(::|\.)(get_TemplatedParent|set_TemplatedParent|get_TemplatedParentProperty|OnTemplatedParentChanged)\(.*\)" reason="BC01: vestigial TemplatedParent DP and its accessors removed (uno#18672, breaking changes for 7.0)" isRegex="true" />
 	  </Methods>

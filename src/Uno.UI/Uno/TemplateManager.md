@@ -92,23 +92,23 @@ Uno.UI.TemplateManager.EnableUpdateSubscriptions();
 ### Update a DataTemplate
 
 ```csharp
-// Update a template's factory function (simple view factory)
+// Replace a template's builder, ignoring the current one
 if (Resources["MyTemplate"] is DataTemplate template)
 {
-    Uno.UI.TemplateManager.UpdateDataTemplate(template, () =>
+    Uno.UI.TemplateManager.UpdateDataTemplate(template, _ =>
     {
-        // Return new UI element - must be compatible with View type
-        return new TextBlock { Text = "Updated Content" };
+        // Return a new FrameworkTemplateBuilder; `settings` carries the templated parent
+        return (owner, settings) => new TextBlock { Text = "Updated Content" };
     });
 }
 
-// Alternative: Update using factory updater (advanced)
+// Alternative: build on top of the current builder
 if (Resources["MyTemplate"] is DataTemplate template)
 {
-    Uno.UI.TemplateManager.UpdateDataTemplate(template, oldFactory =>
+    Uno.UI.TemplateManager.UpdateDataTemplate(template, oldBuilder =>
     {
-        // Return a new factory that creates different content
-        return (Func<object?, TemplateMaterializationSettings, UIElement?>)((_, _) => new TextBlock { Text = "Advanced Update" });
+        return (owner, settings) => oldBuilder?.Invoke(owner, settings)
+            ?? new TextBlock { Text = "Advanced Update" };
     });
 }
 ```
@@ -271,7 +271,7 @@ private static void OnItemTemplateChanged(DependencyObject d, DependencyProperty
 - `EnableUpdateSubscriptions()`: Enables the dynamic template update system
 - `IsDataTemplateDynamicUpdateEnabled`: Gets whether the feature is enabled via MSBuild configuration
 - `IsUpdateSubscriptionsEnabled`: Gets whether the system is enabled (requires `EnableUpdateSubscriptions()` call)
-- `UpdateDataTemplate(DataTemplate, Func<Func<object?, TemplateMaterializationSettings, UIElement?>?, Func<object?, TemplateMaterializationSettings, UIElement?>?>)`: Updates a template with a factory updater function
+- `UpdateDataTemplate(DataTemplate, Func<FrameworkTemplateBuilder?, FrameworkTemplateBuilder?>)`: Updates a template with a factory updater function
 - `SubscribeToTemplate(DependencyObject owner, DataTemplate? template, Action onUpdated)`: Preferred owner-based subscription; returns `bool` indicating success
 - `SubscribeToTemplate(DependencyObject owner, string slotKey, DataTemplate? template, Action onUpdated)`: Owner-based subscription with a named slot for multiple subscriptions per control; returns `bool` indicating success
 - `UnsubscribeFromTemplate(DependencyObject owner)`: Unsubscribes all owner-associated subscriptions
@@ -305,18 +305,16 @@ public class TemplateHotReloader
                 var template = FindTemplateForFile(file);
                 if (template != null)
                 {
-                    // Use the simple view factory overload
-                    Uno.UI.TemplateManager.UpdateDataTemplate(template, () =>
+                    Uno.UI.TemplateManager.UpdateDataTemplate(template, _ =>
                     {
-                        var updatedElement = LoadUpdatedTemplate(file);
-                        return updatedElement; // Must return View? type
+                        return (owner, settings) => LoadUpdatedTemplate(file);
                     });
                 }
             }
         };
     }
     
-    private View? LoadUpdatedTemplate(string filePath)
+    private UIElement? LoadUpdatedTemplate(string filePath)
     {
         // Implementation to load and parse XAML file
         // Returns the root UI element

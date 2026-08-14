@@ -11,9 +11,6 @@ using Uno.UI.Helpers;
 
 using View = Microsoft.UI.Xaml.UIElement;
 
-// The template factory is exposed as a plain Func so no Uno-specific delegate type leaks into the public API.
-using Builder = System.Func<object?, Microsoft.UI.Xaml.TemplateMaterializationSettings, Microsoft.UI.Xaml.UIElement?>;
-
 namespace Microsoft.UI.Xaml
 {
 	[ContentProperty(Name = "Template")]
@@ -35,17 +32,17 @@ namespace Microsoft.UI.Xaml
 		/// should remain unchanged. See Uno.UI.TemplateManager for details.
 		/// </summary>
 		/// <remarks>
-		/// This delegate may be wrapped to align its signature with the template builder Func.
+		/// This delegate may be wrapped to align its signature with <see cref="FrameworkTemplateBuilder"/>.
 		/// The original factory method can always be found in <see cref="ViewFactoryInner"/>.
 		/// </remarks>
-		internal IDelegate<Builder>? ViewFactory { get; private set; }
+		internal IDelegate<FrameworkTemplateBuilder>? ViewFactory { get; private set; }
 
 		internal IDelegate<Delegate>? ViewFactoryInner { get; private set; }
 
 		protected FrameworkTemplate()
 			=> throw new NotSupportedException("Use the factory constructors");
 
-		internal FrameworkTemplate(object? owner, Builder? factory)
+		internal FrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory)
 			: this(owner, (Delegate?)factory)
 		{
 			SetViewFactory(factory);
@@ -75,7 +72,7 @@ namespace Microsoft.UI.Xaml
 		/// Sets the view factory. Internal method to avoid unwanted changes from outside the framework.
 		/// </summary>
 		/// <param name="factory">The new factory to set</param>
-		internal void SetViewFactory(Builder? factory)
+		internal void SetViewFactory(FrameworkTemplateBuilder? factory)
 		{
 			// When the factory target is a top-level XAML class (e.g. Page, ResourceDictionary, ...) which commonly implements IWeakReferenceProvider,
 			// we wrap the delegate in a weak reference so that the template does not keep that object alive and cause memory leaks.
@@ -211,7 +208,7 @@ namespace Microsoft.UI.Xaml
 			);
 		}
 
-		internal bool UpdateFactory(Func<Builder?, Builder?> update)
+		internal bool UpdateFactory(Func<FrameworkTemplateBuilder?, FrameworkTemplateBuilder?> update)
 		{
 			// Special case to update the factory without creating a new instance.
 			// A special mode is required for it to work and is activated directly in the Uno.UI.TemplateManager.

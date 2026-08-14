@@ -24,8 +24,6 @@ using Color = Windows.UI.Color;
 using System.Text;
 
 using _View = Microsoft.UI.Xaml.UIElement;
-// The template factory is exposed as a plain Func so no Uno-specific delegate type leaks into the public API.
-using Builder = System.Func<object?, Microsoft.UI.Xaml.TemplateMaterializationSettings, Microsoft.UI.Xaml.UIElement?>;
 
 namespace Microsoft.UI.Xaml.Markup.Reader
 {
@@ -219,7 +217,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 			if (type.Is<FrameworkTemplate>())
 			{
-				Builder builder = (o, s) =>
+				FrameworkTemplateBuilder builder = (o, s) =>
 				{
 					var contentOwner = unknownContent;
 

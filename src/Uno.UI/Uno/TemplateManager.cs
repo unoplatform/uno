@@ -4,8 +4,6 @@ using System;
 using Microsoft.UI.Xaml;
 
 using View = Microsoft.UI.Xaml.UIElement;
-// The template factory is exposed as a plain Func so no Uno-specific delegate type leaks into the public API.
-using Builder = System.Func<object?, Microsoft.UI.Xaml.TemplateMaterializationSettings, Microsoft.UI.Xaml.UIElement?>;
 
 namespace Uno.UI
 {
@@ -107,7 +105,7 @@ namespace Uno.UI
 		/// True if the template was updated successfully.
 		/// </returns>
 		public static bool UpdateDataTemplate(DataTemplate currentTemplate,
-			Func<Builder?, Builder?> factoryUpdater)
+			Func<FrameworkTemplateBuilder?, FrameworkTemplateBuilder?> factoryUpdater)
 		{
 			if (IsDataTemplateDynamicUpdateEnabled)
 			{
