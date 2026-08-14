@@ -76,6 +76,16 @@ public enum GradientTileMode
 	Mirror,
 }
 
+/// <summary>How a <see cref="EffectNode"/> texture input is sampled outside its own rectangle (D2D BorderEffect's
+/// edge behaviour). <see cref="None"/> — the default — is a plain finite image (transparent outside).</summary>
+public enum EdgeExtend
+{
+	None,
+	Clamp,
+	Wrap,
+	Mirror,
+}
+
 /// <summary>Winding rule used to fill a geometry.</summary>
 public enum GeometryFillRule
 {

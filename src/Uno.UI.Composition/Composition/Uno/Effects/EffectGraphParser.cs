@@ -58,23 +58,26 @@ internal static class EffectGraphParser
 		}
 	}
 
-	private static EffectNode RasterizeSource(IEffectSource source, Rect bounds)
+	private static TextureInput RasterizeSource(IEffectSource source, Rect bounds, Vector2? intrinsicSize = null, EdgeExtend extendX = EdgeExtend.None, EdgeExtend extendY = EdgeExtend.None)
 	{
-		var width = Math.Max(1, (int)Math.Ceiling(bounds.Width));
-		var height = Math.Max(1, (int)Math.Ceiling(bounds.Height));
+		// A Border input is rasterized at its own intrinsic size (the repeating/extend unit); everything else is
+		// rasterized over the effect bounds.
+		var region = intrinsicSize is { } size ? new Rect(0, 0, size.X, size.Y) : bounds;
+		var width = Math.Max(1, (int)Math.Ceiling(region.Width));
+		var height = Math.Max(1, (int)Math.Ceiling(region.Height));
 
 		var texture = DrawingFactory.Current.RenderOffscreen(width, height, session =>
 		{
-			// The source paints in bounds-space; translate so bounds' origin maps to the offscreen origin.
-			if (bounds.X != 0 || bounds.Y != 0)
+			// The source paints in region-space; translate so the region's origin maps to the offscreen origin.
+			if (region.X != 0 || region.Y != 0)
 			{
-				session.Translate(-(float)bounds.X, -(float)bounds.Y);
+				session.Translate(-(float)region.X, -(float)region.Y);
 			}
 
-			source.Paint(session, 1f, bounds);
+			source.Paint(session, 1f, region);
 		});
 
-		return new TextureInput(texture);
+		return new TextureInput(texture, extendX, extendY);
 	}
 
 	private static EffectNode ParseNode(IGraphicsEffectD2D1Interop e, Rect bounds, Func<string, IEffectSource?> resolveSource)
@@ -95,6 +98,13 @@ internal static class EffectGraphParser
 		{
 			e.GetNamedPropertyMapping(name, out var index, out _);
 			return index != 0xFF && e.GetProperty(index) is bool value && value;
+		}
+		// An angle property, converted radians→degrees when the effect declares that mapping (lighting helpers want degrees).
+		float Angle(string name)
+		{
+			var (value, mapping) = PropM(name);
+			var angle = (float)value;
+			return mapping == GraphicsEffectPropertyMapping.RadiansToDegrees ? angle * 180f / MathF.PI : angle;
 		}
 
 		var type = EffectHelpers.GetEffectType(e.GetEffectId());
@@ -315,6 +325,58 @@ internal static class EffectGraphParser
 			case EffectType.WhiteNoiseEffect:
 				return new WhiteNoiseEffectNode((Vector2)Prop("Frequency"), (Vector2)Prop("Offset"));
 
+			case EffectType.BorderEffect:
+			{
+				var extendX = MapEdge((D2D1BorderEdgeMode)(uint)Prop("ExtendX"));
+				var extendY = MapEdge((D2D1BorderEdgeMode)(uint)Prop("ExtendY"));
+
+				// Border extends its source to infinity via an edge rule; the repeating unit is the source's own
+				// rectangle, so rasterize it at intrinsic size and carry the extend modes on the texture leaf. When
+				// there's no intrinsic size (nested effect / unsized brush), tiling degenerates over bounds — the
+				// legacy path did the same — so just pass the source through.
+				if (e.GetSource(0) is CompositionEffectSourceParameter sourceParameter
+					&& resolveSource(sourceParameter.Name) is { IsBackdrop: false, Size: { } size } borderSource)
+				{
+					return RasterizeSource(borderSource, bounds, size, extendX, extendY);
+				}
+
+				return Src(0);
+			}
+
+			case EffectType.DistantDiffuseEffect:
+				return new LightingEffectNode(Src(0), LightingKind.DistantDiffuse,
+					EffectHelpers.GetLightVector(Angle("Azimuth"), Angle("Elevation")), default,
+					(Color)Prop("LightColor"), (float)Prop("DiffuseAmount"), 0f, 0f, 0f);
+
+			case EffectType.DistantSpecularEffect:
+				return new LightingEffectNode(Src(0), LightingKind.DistantSpecular,
+					EffectHelpers.GetLightVector(Angle("Azimuth"), Angle("Elevation")), default,
+					(Color)Prop("LightColor"), (float)Prop("SpecularAmount"), (float)Prop("SpecularExponent"), 0f, 0f);
+
+			case EffectType.SpotDiffuseEffect:
+			{
+				var position = (Vector3)Prop("LightPosition");
+				var target = EffectHelpers.CalculateLightTargetVector(position, (Vector3)Prop("LightTarget"));
+				return new LightingEffectNode(Src(0), LightingKind.SpotDiffuse, position, target,
+					(Color)Prop("LightColor"), (float)Prop("DiffuseAmount"), 0f, (float)Prop("Focus"), Angle("LimitingConeAngle"));
+			}
+
+			case EffectType.SpotSpecularEffect:
+			{
+				var position = (Vector3)Prop("LightPosition");
+				var target = EffectHelpers.CalculateLightTargetVector(position, (Vector3)Prop("LightTarget"));
+				return new LightingEffectNode(Src(0), LightingKind.SpotSpecular, position, target,
+					(Color)Prop("LightColor"), (float)Prop("SpecularAmount"), (float)Prop("SpecularExponent"), (float)Prop("Focus"), Angle("LimitingConeAngle"));
+			}
+
+			case EffectType.PointDiffuseEffect:
+				return new LightingEffectNode(Src(0), LightingKind.PointDiffuse, (Vector3)Prop("LightPosition"), default,
+					(Color)Prop("LightColor"), (float)Prop("DiffuseAmount"), 0f, 0f, 0f);
+
+			case EffectType.PointSpecularEffect:
+				return new LightingEffectNode(Src(0), LightingKind.PointSpecular, (Vector3)Prop("LightPosition"), default,
+					(Color)Prop("LightColor"), (float)Prop("SpecularAmount"), (float)Prop("SpecularExponent"), 0f, 0f);
+
 			default:
 			{
 				if (typeof(EffectGraphParser).Log().IsEnabled(LogLevel.Debug))
@@ -367,5 +429,13 @@ internal static class EffectGraphParser
 		D2D1BlendEffectMode.Color => BlendMode.Color,
 		D2D1BlendEffectMode.Luminosity => BlendMode.Luminosity,
 		_ => BlendMode.Multiply,
+	};
+
+	// BorderEffect edge modes → neutral texture-extend modes.
+	private static EdgeExtend MapEdge(D2D1BorderEdgeMode mode) => mode switch
+	{
+		D2D1BorderEdgeMode.Wrap => EdgeExtend.Wrap,
+		D2D1BorderEdgeMode.Mirror => EdgeExtend.Mirror,
+		_ => EdgeExtend.Clamp,
 	};
 }
