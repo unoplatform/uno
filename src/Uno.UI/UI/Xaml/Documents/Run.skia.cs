@@ -215,22 +215,13 @@ namespace Microsoft.UI.Xaml.Documents
 					// Skip the second line break char so it stays part of the same cluster as the first.
 					var shapedLength = lineBreakLength == 2 ? length - 1 : length;
 
-					// The direction is guessed by the shaper from the run's script (bidi itemization isn't done here
-					// yet — see the TODO above). Ligatures are disabled because a TextBox needs each source char to
-					// stay separately addressable (uno#15528, uno#16788).
-					var glyphRun = segmentFont.Shape(text.Slice(i, shapedLength), out var resolvedDirection, enableLigatures: false);
-					var direction = resolvedDirection is TextDirection.LeftToRight ? FlowDirection.LeftToRight : FlowDirection.RightToLeft;
-					if (direction == FlowDirection.LeftToRight &&
-						segments.Count > 0 && segments[segments.Count - 1].Direction == FlowDirection.RightToLeft &&
-						trailingSpaces + leadingSpaces == length)
-					{
-						// If the current segment consists of spaces only, it will be considered LeftToRight.
-						// But if the previous segment was RightToLeft, we want the current segment to also be RTL.
-						// This is quite hacky, it feels like GetRenderOrderedSegmentSpans is buggy and a real fix needs to go there.
-						direction = FlowDirection.RightToLeft;
-					}
-
-					var glyphs = GetGlyphs(glyphRun, i, resolvedDirection is TextDirection.RightToLeft);
+					// Legacy non-bidi path (superseded by UnicodeText): shape each segment in the run's own
+					// FlowDirection rather than resolving bidi. Ligatures are disabled because a TextBox needs each
+					// source char to stay separately addressable (uno#15528, uno#16788).
+					var direction = this.FlowDirection;
+					var textDirection = direction == FlowDirection.RightToLeft ? TextDirection.RightToLeft : TextDirection.LeftToRight;
+					var glyphRun = segmentFont.Shape(text.Slice(i, shapedLength), textDirection, enableLigatures: false);
+					var glyphs = GetGlyphs(glyphRun, i, textDirection is TextDirection.RightToLeft);
 
 					Debug.Assert(!(Text.AsSpan(i, length).Contains('\t')) || length == 1);
 					if (length == 1 && text[i] == '\t')
