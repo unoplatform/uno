@@ -171,7 +171,7 @@
 		<PackageReference Update="harfbuzzsharp.nativeassets.tvos" Version="$(HarfbuzzSharpVersion)" />
 
 		<PackageReference Condition=" '$(TargetFramework)' == '$(NetPrevious)' "  Update="Microsoft.Win32.SystemEvents" Version="10.0.9" />
-		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' "   Update="Microsoft.Win32.SystemEvents" Version="11.0.0-preview.6.26359.118" />
+		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' "   Update="Microsoft.Win32.SystemEvents" Version="11.0.0-preview.7.26381.103" />
 
 		<PackageReference Update="Svg.Skia" Version="3.0.6" />
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />

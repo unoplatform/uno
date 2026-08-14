@@ -143,7 +143,7 @@
 			"Microsoft.Extensions.Logging.Console"
 		],
 		"versionOverride": {
-			"net11.0": "11.0.0-preview.6.26359.118"
+			"net11.0": "11.0.0-preview.7.26381.103"
 		}
 	},
 	{
@@ -153,7 +153,7 @@
 			"Microsoft.Windows.Compatibility"
 		],
 		"versionOverride": {
-			"net11.0": "11.0.0-preview.6.26359.118"
+			"net11.0": "11.0.0-preview.7.26381.103"
 		}
 	},
 	{
@@ -342,7 +342,7 @@
 			"Microsoft.Maui.Graphics"
 		],
 		"versionOverride": {
-			"net11.0": "11.0.0-preview.6.26360.8"
+			"net11.0": "11.0.0-preview.7.26406.9"
 		}
 	},
 	{
