@@ -15,10 +15,10 @@ namespace Uno.UI.Composition.Drawing;
 /// <summary>
 /// An alternative, SkiaSharp-free <see cref="IFont"/> implementation: glyph outlines are read straight from the
 /// font's sfnt tables (TrueType <c>glyf</c> — simple and composite — and CFF/Type2 <c>CFF </c>) and emitted through
-/// the neutral <see cref="IPathBuilder"/>; color glyphs (<c>COLR</c>/<c>CPAL</c>) are composited from their colored
-/// layers into an <see cref="IImage"/> via <see cref="IDrawingFactory.RenderOffscreen"/>. No Skia is used for any of
-/// the outline/color work — this proves the font seam is genuinely backend-neutral, and lets the whole app render
-/// text through a non-Skia backend when toggled on (see <c>FontDetails.FontHandle</c>).
+/// the neutral <see cref="IPathBuilder"/>; color glyphs (<c>COLR</c>/<c>CPAL</c>) are emitted as positioned
+/// (geometry, colour) layers (a <c>GlyphColorLayers</c> run element) — no rasterization and no render backend. No
+/// Skia is used for any of the outline/color work — this proves the font seam is genuinely backend-neutral, and lets
+/// the whole app render text through a non-Skia backend when toggled on (see <c>FontDetails.FontHandle</c>).
 /// </summary>
 /// <remarks>
 /// Shaping (text -> glyph ids/positions) still happens upstream; this handle only turns a shaped run into drawable
