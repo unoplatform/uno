@@ -87,7 +87,6 @@ public interface IDrawingFactory
 	/// <param name="bounds">The bounds the effect is generated for.</param>
 	/// <param name="sourceResolver">Maps an effect source-parameter name to its bound input (<see cref="IEffectSource"/>), or null.</param>
 	/// <param name="useBackdropBlurClamp">Clamps backdrop blurs to the element's area (prevents edge bleeding).</param>
-	/// <param name="isSoftwareRenderer">Whether the compositor is currently using a software renderer.</param>
 	/// <param name="hasBackdropInput">Set to true when the graph references a backdrop source.</param>
 	/// <returns>The realized effect, or null when the graph resolves to nothing renderable.</returns>
 	IEffectFilter? CreateEffectFilter(
@@ -95,7 +94,6 @@ public interface IDrawingFactory
 		Rect bounds,
 		Func<string, IEffectSource?> sourceResolver,
 		bool useBackdropBlurClamp,
-		bool isSoftwareRenderer,
 		out bool hasBackdropInput);
 
 	/// <summary>
