@@ -35,10 +35,26 @@ internal sealed class SkiaEffectFuser
 			{
 				_isBackdrop = false;
 				var img = ((SkiaImageTexture)texture.Texture).Image;
-				// The source was rasterized in bounds-space at the offscreen origin; place it back at bounds.
 				var src = new SKRect(0, 0, img.Width, img.Height);
-				var dst = new SKRect(bounds.Left, bounds.Top, bounds.Left + img.Width, bounds.Top + img.Height);
-				return SKImageFilter.CreateImage(img, src, dst, new SKSamplingOptions(SKFilterMode.Linear));
+
+				if (texture.ExtendX == EdgeExtend.None && texture.ExtendY == EdgeExtend.None)
+				{
+					// Plain finite image: place it back at bounds (it was rasterized in bounds-space at the origin).
+					var dst = new SKRect(bounds.Left, bounds.Top, bounds.Left + img.Width, bounds.Top + img.Height);
+					return SKImageFilter.CreateImage(img, src, dst, new SKSamplingOptions(SKFilterMode.Linear));
+				}
+
+				// BorderEffect: extend the source's own rectangle to infinity per the edge mode; downstream sampling
+				// over `bounds` then sees the tiled/mirrored/clamped fill. Mirrors the legacy Border realization.
+				var imageFilter = SKImageFilter.CreateImage(img, src, src, new SKSamplingOptions(SKFilterMode.Linear));
+				var mode = PickExtend(texture.ExtendX, texture.ExtendY);
+				if (mode == SKShaderTileMode.Repeat)
+				{
+					return SKImageFilter.CreateTile(src, bounds, imageFilter);
+				}
+
+				ReadOnlySpan<float> identityKernel = [0, 0, 0, 0, 1, 0, 0, 0, 0];
+				return SKImageFilter.CreateMatrixConvolution(new SKSizeI(3, 3), identityKernel, 1f, 0f, new SKPointI(1, 1), mode, true, imageFilter, bounds);
 			}
 
 			case ColorInput color:
@@ -522,11 +538,48 @@ $$"""
 				return SKImageFilter.CreateShader(noiseEffect.ToShader(noiseUniforms), false, bounds);
 			}
 
+			case LightingEffectNode lighting:
+			{
+				var source = Fuse(lighting.Source, bounds);
+				if (source is null && !_isBackdrop)
+				{
+					return null;
+				}
+
+				_isBackdrop = false;
+				var light = new SKPoint3(lighting.Light.X, lighting.Light.Y, lighting.Light.Z);
+				var target = new SKPoint3(lighting.Target.X, lighting.Target.Y, lighting.Target.Z);
+				var color = lighting.LightColor.ToSKColor();
+				return lighting.Kind switch
+				{
+					LightingKind.DistantDiffuse => SKImageFilter.CreateDistantLitDiffuse(light, color, 1f, lighting.Amount, source, bounds),
+					LightingKind.DistantSpecular => SKImageFilter.CreateDistantLitSpecular(light, color, 1f, lighting.Amount, lighting.SpecularExponent, source, bounds),
+					LightingKind.SpotDiffuse => SKImageFilter.CreateSpotLitDiffuse(light, target, lighting.Focus, lighting.ConeAngle, color, 1f, lighting.Amount, source, bounds),
+					LightingKind.SpotSpecular => SKImageFilter.CreateSpotLitSpecular(light, target, lighting.SpecularExponent, lighting.ConeAngle, color, 1f, lighting.Amount, lighting.Focus, source, bounds),
+					LightingKind.PointDiffuse => SKImageFilter.CreatePointLitDiffuse(light, color, 1f, lighting.Amount, source, bounds),
+					LightingKind.PointSpecular => SKImageFilter.CreatePointLitSpecular(light, color, 1f, lighting.Amount, lighting.SpecularExponent, source, bounds),
+					_ => null,
+				};
+			}
+
 			case UnsupportedEffectNode unsupported:
 				return unsupported.Source is null ? null : Fuse(unsupported.Source, bounds);
 
 			default:
 				return null;
 		}
+	}
+
+	// Combines the two axis extend modes into one Skia tile mode, mirroring the legacy Border's "prefer the
+	// non-Clamp axis" behaviour (SkiaSharp can't yet apply independent X/Y modes).
+	private static SKShaderTileMode PickExtend(EdgeExtend x, EdgeExtend y)
+	{
+		var pick = x != y ? (x != EdgeExtend.Clamp ? x : y) : x;
+		return pick switch
+		{
+			EdgeExtend.Wrap => SKShaderTileMode.Repeat,
+			EdgeExtend.Mirror => SKShaderTileMode.Mirror,
+			_ => SKShaderTileMode.Clamp,
+		};
 	}
 }

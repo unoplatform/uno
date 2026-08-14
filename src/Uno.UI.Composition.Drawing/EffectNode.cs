@@ -58,10 +58,12 @@ public sealed record ColorInput(Color Color) : EffectNode
 	public override IReadOnlyList<EffectNode> Children => System.Array.Empty<EffectNode>();
 }
 
-/// <summary>A brush/image/noise input Uno already rasterized to a backend texture via
-/// <see cref="IDrawingFactory.RenderOffscreen"/>. Replaces the old <c>IEffectSource</c> brush leaf; Uno owns
-/// and disposes <see cref="Texture"/>.</summary>
-public sealed record TextureInput(IImageTexture Texture) : EffectNode
+/// <summary>A sampled source: a brush/image/noise input Uno already rasterized to a backend texture via
+/// <see cref="IDrawingFactory.RenderOffscreen"/>, plus how it is sampled outside its own rectangle
+/// (<see cref="ExtendX"/>/<see cref="ExtendY"/> — D2D BorderEffect's edge behaviour; <see cref="EdgeExtend.None"/>
+/// is a plain finite image). Replaces the old <c>IEffectSource</c> brush leaf; Uno owns and disposes
+/// <see cref="Texture"/>.</summary>
+public sealed record TextureInput(IImageTexture Texture, EdgeExtend ExtendX = EdgeExtend.None, EdgeExtend ExtendY = EdgeExtend.None) : EffectNode
 {
 	public override IReadOnlyList<EffectNode> Children => System.Array.Empty<EffectNode>();
 }
@@ -152,6 +154,38 @@ public sealed record ArithmeticCompositeEffectNode(EffectNode Background, Effect
 public sealed record WhiteNoiseEffectNode(Vector2 Frequency, Vector2 Offset) : EffectNode
 {
 	public override IReadOnlyList<EffectNode> Children => System.Array.Empty<EffectNode>();
+}
+
+/// <summary>Which D2D lighting effect a <see cref="LightingEffectNode"/> realizes.</summary>
+public enum LightingKind
+{
+	DistantDiffuse,
+	DistantSpecular,
+	SpotDiffuse,
+	SpotSpecular,
+	PointDiffuse,
+	PointSpecular,
+}
+
+/// <summary>
+/// D2D distant/spot/point diffuse/specular lighting over <see cref="Source"/>'s alpha as a height field. The parser
+/// pre-computes the light geometry (via the neutral <c>EffectHelpers</c>); each <see cref="LightingKind"/> reads only
+/// the fields it needs — <see cref="Light"/> (distant: light vector; point/spot: position), <see cref="Target"/>
+/// (spot only), <see cref="Amount"/> (diffuse Kd / specular Ks), <see cref="SpecularExponent"/> (specular),
+/// <see cref="Focus"/> and <see cref="ConeAngle"/> (spot).
+/// </summary>
+public sealed record LightingEffectNode(
+	EffectNode Source,
+	LightingKind Kind,
+	Vector3 Light,
+	Vector3 Target,
+	Color LightColor,
+	float Amount,
+	float SpecularExponent,
+	float Focus,
+	float ConeAngle) : EffectNode
+{
+	public override IReadOnlyList<EffectNode> Children => new[] { Source };
 }
 
 /// <summary>N inputs combined pairwise with a composite <see cref="Mode"/> (D2D <c>CompositeEffect</c>).</summary>
