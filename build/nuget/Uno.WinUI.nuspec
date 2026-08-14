@@ -71,7 +71,6 @@
 				<reference file="Uno.UI.Composition.dll" />
 				<reference file="Uno.UI.Extras.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
-				<reference file="Uno.UI.FluentTheme.v2.dll" />
 			</group>
 
 			<!-- .NET 11 -->
@@ -81,7 +80,6 @@
 				<reference file="Uno.UI.Composition.dll" />
 				<reference file="Uno.UI.Extras.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
-				<reference file="Uno.UI.FluentTheme.v2.dll" />
 			</group>
 
 			<!-- Windows -->
@@ -133,8 +131,6 @@
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme\Release\net11.0\Uno.UI.FluentTheme.dll" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme\Release\net11.0\Uno.UI.FluentTheme.pdb" target="lib\net11.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2\Release\net11.0\Uno.UI.FluentTheme.v2.dll" target="lib\net11.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2\Release\net11.0\Uno.UI.FluentTheme.v2.pdb" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Skia\Release\net11.0\Uno.UI.Extras.dll" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Skia\Release\net11.0\Uno.UI.Extras.pdb" target="lib\net11.0" />
 
@@ -148,8 +144,6 @@
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme\Release\net10.0\Uno.UI.FluentTheme.dll" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme\Release\net10.0\Uno.UI.FluentTheme.pdb" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2\Release\net10.0\Uno.UI.FluentTheme.v2.dll" target="lib\net10.0" />
-		<file src="..\..\src\Uno.UI.FluentTheme.v2\bin\Uno.UI.FluentTheme.v2\Release\net10.0\Uno.UI.FluentTheme.v2.pdb" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Skia\Release\net10.0\Uno.UI.Extras.dll" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Skia\Release\net10.0\Uno.UI.Extras.pdb" target="lib\net10.0" />
 

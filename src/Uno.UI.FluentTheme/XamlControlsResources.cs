@@ -17,10 +17,6 @@ namespace Microsoft.UI.Xaml.Controls
 			Uno.UI.FluentTheme.GlobalStaticResources.Initialize();
 			Uno.UI.FluentTheme.GlobalStaticResources.RegisterDefaultStyles();
 			Uno.UI.FluentTheme.GlobalStaticResources.RegisterResourceDictionariesBySource();
-
-			Uno.UI.FluentTheme.v2.GlobalStaticResources.Initialize();
-			Uno.UI.FluentTheme.v2.GlobalStaticResources.RegisterDefaultStyles();
-			Uno.UI.FluentTheme.v2.GlobalStaticResources.RegisterResourceDictionariesBySource();
 #endif
 
 			Source = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.WinUIThemeResourceURL);

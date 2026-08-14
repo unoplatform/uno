@@ -118,7 +118,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			=> _defaultNamespace == "Uno.UI";
 
 		private bool IsUnoFluentAssembly
-			=> _defaultNamespace == "Uno.UI.FluentTheme" || _defaultNamespace.StartsWith("Uno.UI.FluentTheme.v", StringComparison.Ordinal);
+			=> _defaultNamespace == "Uno.UI.FluentTheme";
 
 		private static string WinUICompactPathSuffix = Path.Combine("DensityStyles", "Compact.xaml");
 

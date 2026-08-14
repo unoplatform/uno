@@ -21,7 +21,6 @@ using Uno.UI.Graphics;
 [assembly: InternalsVisibleTo("SamplesApp.Skia")]
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme")]
-[assembly: InternalsVisibleTo("Uno.UI.FluentTheme.v2")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.X11")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.WebView.Skia.X11")]

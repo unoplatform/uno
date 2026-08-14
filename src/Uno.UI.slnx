@@ -262,9 +262,6 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/Fluent/">
-    <Project Path="Uno.UI.FluentTheme.v2/Uno.UI.FluentTheme.v2.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.FluentTheme/Uno.UI.FluentTheme.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>

@@ -20,7 +20,7 @@ namespace Uno.UI.Xaml
 		private const string MsResourceFilesFolder = "Files/";
 		public const string MsResourceFilesPrefix = MSResourceIdentifier + MsResourceFilesFolder;
 		public const string WinUICompactURL = "Microsoft.UI.Xaml/DensityStyles/Compact.xaml";
-		public const string WinUIThemeResourceFileName = "themeresources_v2.xaml";
+		public const string WinUIThemeResourceFileName = "themeresources.xaml";
 		public const string WinUIThemeResourceURL = "Microsoft.UI.Xaml/Themes/" + WinUIThemeResourceFileName;
 
 #if !NETSTANDARD
