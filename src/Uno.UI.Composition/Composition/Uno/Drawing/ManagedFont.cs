@@ -461,7 +461,7 @@ internal sealed class ManagedFont : IFont
 		return end > start && S16(_data, _glyf + start) < 0;
 	}
 
-	public IGeometry BuildGlyphRunOutline(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<PositionedGlyphImage>? colorGlyphs = null)
+	public void BuildGlyphRun(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<GlyphRunElement> elements)
 	{
 		var scale = _pixelSize / _unitsPerEm;
 		var builder = GeometryFactory.Current.CreatePathBuilder();
@@ -469,11 +469,10 @@ internal sealed class ManagedFont : IFont
 		{
 			if (HasColorGlyphs && _colr!.HasBaseGlyph(glyphs[i]))
 			{
-				// Colour glyph — rasterized as a positioned image below, excluded from the outline.
-				if (colorGlyphs is not null
-					&& TryRasterizeColorGlyph(glyphs[i], positions[i].X, positions[i].Y + baselineY, scale, out var image))
+				// Colour glyph — emitted as vector layers (no rasterization, no render backend), excluded from the outline.
+				if (TryBuildColorLayers(glyphs[i], positions[i].X, positions[i].Y + baselineY, scale, out var layers))
 				{
-					colorGlyphs.Add(image);
+					elements.Add(new GlyphColorLayers(layers));
 				}
 
 				continue;
@@ -483,70 +482,33 @@ internal sealed class ManagedFont : IFont
 			EmitOutline(builder, glyphs[i], positions[i].X, positions[i].Y + baselineY, scale);
 		}
 
-		return builder.Build();
+		elements.Add(new GlyphOutline(builder.Build()));
 	}
 
-	private bool TryRasterizeColorGlyph(ushort glyph, float originX, float originY, float scale, out PositionedGlyphImage result)
+	// COLR colour glyph → positioned (IGeometry, Color) layers built straight at the glyph origin. No rasterization
+	// and no render backend — the caller fills each layer with its colour.
+	private bool TryBuildColorLayers(ushort glyph, float originX, float originY, float scale, out IReadOnlyList<GlyphColorLayer> layers)
 	{
-		result = default;
-		if (!_colr!.TryGetLayers(glyph, out var layers))
+		layers = default!;
+		if (!_colr!.TryGetLayers(glyph, out var colrLayers))
 		{
 			return false;
 		}
 
-		// Build each layer's outline at the baseline origin, accumulate the ink bounds.
-		var built = new List<(IGeometry Geometry, Color Color)>(layers.Count);
-		var left = float.MaxValue;
-		var top = float.MaxValue;
-		var right = float.MinValue;
-		var bottom = float.MinValue;
-		foreach (var layer in layers)
+		var result = new List<GlyphColorLayer>(colrLayers.Count);
+		foreach (var layer in colrLayers)
 		{
 			var builder = GeometryFactory.Current.CreatePathBuilder();
-			EmitOutline(builder, layer.GlyphId, 0f, 0f, scale);
-			var geometry = builder.Build();
-			var b = geometry.Bounds;
-			if (b.Width > 0 && b.Height > 0)
-			{
-				left = Math.Min(left, (float)b.Left);
-				top = Math.Min(top, (float)b.Top);
-				right = Math.Max(right, (float)b.Right);
-				bottom = Math.Max(bottom, (float)b.Bottom);
-			}
-
-			built.Add((geometry, PaletteColor(layer.PaletteIndex)));
+			EmitOutline(builder, layer.GlyphId, originX, originY, scale);
+			result.Add(new GlyphColorLayer(builder.Build(), PaletteColor(layer.PaletteIndex)));
 		}
 
-		if (right <= left || bottom <= top)
+		if (result.Count == 0)
 		{
-			foreach (var (g, _) in built)
-			{
-				g.Dispose();
-			}
-
 			return false;
 		}
 
-		var width = (int)Math.Ceiling(right - left);
-		var height = (int)Math.Ceiling(bottom - top);
-		var shiftX = -left;
-		var shiftY = -top;
-
-		var image = DrawingFactory.Current.RenderOffscreen(width, height, session =>
-		{
-			session.Translate(shiftX, shiftY);
-			foreach (var (geometry, color) in built)
-			{
-				session.DrawPath(geometry, color, antialias: true);
-			}
-		});
-
-		foreach (var (g, _) in built)
-		{
-			g.Dispose();
-		}
-
-		result = new PositionedGlyphImage(image, originX + left, originY + top, width, height);
+		layers = result;
 		return true;
 	}
 

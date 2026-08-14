@@ -267,7 +267,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var positions = System.Runtime.InteropServices.MemoryMarshal.Cast<SkiaSharp.SKPoint, System.Numerics.Vector2>(
 				skFont.GetGlyphPositions(text, new SkiaSharp.SKPoint(0, 0)));
 			var font = new Uno.UI.Composition.Drawing.SkiaFont(skFont);
-			using var geometry = font.BuildGlyphRunOutline(glyphs, positions, 0f);
+			var elements = new System.Collections.Generic.List<Uno.UI.Composition.Drawing.GlyphRunElement>();
+			font.BuildGlyphRun(glyphs, positions, 0f, elements);
+			using var geometry = ((Uno.UI.Composition.Drawing.GlyphOutline)elements[^1]).Outline;
 			var bounds = geometry.Bounds;
 			Assert.IsTrue(bounds.Width > 0 && bounds.Height > 0, $"expected non-empty glyph geometry, got {bounds}");
 		}
@@ -299,16 +301,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				return; // matched a non-color font
 			}
 
-			var images = new System.Collections.Generic.List<Uno.UI.Composition.Drawing.PositionedGlyphImage>();
-			using (font.BuildGlyphRunOutline(glyphs, positions, 0f, images)) { }
+			var elements = new System.Collections.Generic.List<Uno.UI.Composition.Drawing.GlyphRunElement>();
+			font.BuildGlyphRun(glyphs, positions, 0f, elements);
 
-			Assert.IsTrue(images.Count > 0, "expected the color emoji glyph to rasterize to at least one image");
-			Assert.IsTrue(images[0].Width > 0 && images[0].Height > 0, "expected the rasterized glyph image to have a positive size");
-
-			foreach (var g in images)
+			var imageCount = 0;
+			foreach (var element in elements)
 			{
-				g.Image.Dispose();
+				if (element is Uno.UI.Composition.Drawing.GlyphImage image)
+				{
+					imageCount++;
+					Assert.IsTrue(image.PixelWidth > 0 && image.PixelHeight > 0, "expected the rasterized glyph image to have a positive size");
+				}
+				else if (element is Uno.UI.Composition.Drawing.GlyphOutline outline)
+				{
+					outline.Outline.Dispose();
+				}
 			}
+
+			Assert.IsTrue(imageCount > 0, "expected the color emoji glyph to rasterize to at least one image");
 		}
 #endif
 	}
