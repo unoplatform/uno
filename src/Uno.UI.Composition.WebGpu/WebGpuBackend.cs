@@ -362,7 +362,6 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IRetainedRe
 	}
 	public void SaveLayer(BlendMode blendMode, bool antialias = false) => PushLayer(blendMode == BlendMode.DstIn ? 1 : 0, null);
 	public void SaveLayer(IEffectFilter filter) => PushLayer(0, null, filter as WebGpuEffectFilter);
-	public void SaveLayer(in LayerFilter filter) => PushLayer(0, null, new WebGpuEffectFilter { SigmaX = filter.SigmaX, SigmaY = filter.SigmaY, Dx = filter.Offset.X, Dy = filter.Offset.Y, Color = filter.Tint ?? default });
 	// Device-space AABB of a mapped rect (its 4 corners), for the scissor / fast reject.
 	private Vector4 DeviceAabb(in Rect rect)
 	{
@@ -678,7 +677,6 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IRetainedRe
 			}
 		}
 	}
-	public void DrawEffectBackdrop(in LayerFilter blur, float opacity) => DrawEffectBackdrop(new WebGpuEffectFilter { SigmaX = blur.SigmaX, SigmaY = blur.SigmaY }, opacity);
 
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity)
 	{
@@ -2294,7 +2292,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession, IRetainedRend
 	public void SaveLayer(IColorFilter colorFilter, bool antialias = false) => _overlay.SaveLayer(colorFilter, antialias);
 	public void SaveLayer(BlendMode blendMode, bool antialias = false) => _overlay.SaveLayer(blendMode, antialias);
 	public void SaveLayer(IEffectFilter filter) => _overlay.SaveLayer(filter);
-	public void SaveLayer(in LayerFilter filter) => _overlay.SaveLayer(filter);
 	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) => _overlay.ClipRect(rect, operation, antialias);
 	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) => _overlay.ClipRoundRect(roundRect, operation, antialias);
 	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) => _overlay.ClipPath(geometry, operation, antialias);
@@ -2311,7 +2308,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession, IRetainedRend
 	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false) => _overlay.DrawImage(texture, x, y, sampling, colorFilter, antialias);
 	public void DrawImageNineSlice(IImageTexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false) => _overlay.DrawImageNineSlice(texture, centerSlice, destination, centerHollow, antialias);
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity) => _overlay.DrawEffectBackdrop(filter, opacity);
-	public void DrawEffectBackdrop(in LayerFilter blur, float opacity) => _overlay.DrawEffectBackdrop(blur, opacity);
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
 
 	// Renders the deferred frame with the immediate-mode overlay (e.g. the diagnostics FPS counter drawn after Replay)

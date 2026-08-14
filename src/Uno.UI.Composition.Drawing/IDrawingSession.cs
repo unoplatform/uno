@@ -53,12 +53,6 @@ public interface IDrawingSession
 	/// </summary>
 	void SaveLayer(IEffectFilter filter);
 
-	/// <summary>
-	/// Begins an offscreen layer whose content is blurred (and optionally offset/tinted — a drop shadow) by
-	/// <paramref name="filter"/> when the matching <see cref="Restore"/> composites it back.
-	/// </summary>
-	void SaveLayer(in LayerFilter filter);
-
 	void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false);
 
 	void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false);
@@ -122,10 +116,4 @@ public interface IDrawingSession
 	/// <paramref name="opacity"/>. Mirrors the WinUI effect-brush paint semantics.
 	/// </summary>
 	void DrawEffectBackdrop(IEffectFilter filter, float opacity);
-
-	/// <summary>
-	/// Composites the current surface's backdrop, blurred by <paramref name="blur"/> and modulated by
-	/// <paramref name="opacity"/>, onto the surface — the backdrop half of an effect brush (e.g. acrylic).
-	/// </summary>
-	void DrawEffectBackdrop(in LayerFilter blur, float opacity);
 }
