@@ -23,15 +23,13 @@ namespace Uno.UI.Composition.Drawing;
 internal sealed class SkiaEffectFactory
 {
 	private readonly Func<string, IEffectSource?> _getSourceParameter;
-	private readonly bool _useBackdropBlurClamp;
 
 	private bool _isCurrentInputBackdrop;
 	private bool _hasBackdropBrushInput;
 
-	internal SkiaEffectFactory(Func<string, IEffectSource?> getSourceParameter, bool useBackdropBlurClamp)
+	internal SkiaEffectFactory(Func<string, IEffectSource?> getSourceParameter)
 	{
 		_getSourceParameter = getSourceParameter;
-		_useBackdropBlurClamp = useBackdropBlurClamp;
 	}
 
 	/// <summary>True when a <see cref="CompositionBackdropBrush"/> was referenced anywhere in the graph.</summary>
@@ -49,21 +47,19 @@ internal sealed class SkiaEffectFactory
 
 			_isCurrentInputBackdrop = false;
 
-			// TODO: Support "Optimization" and "BorderMode" properties
+			// TODO: Support the "Optimization" property
 			effectInterop.GetNamedPropertyMapping("BlurAmount", out uint sigmaProp, out _);
 			float sigma = (float)(effectInterop.GetProperty(sigmaProp) ?? throw new InvalidOperationException("The effect property was null"));
 
-			if (_useBackdropBlurClamp)
-			{
-				// Use Clamp tile mode to prevent the blur from sampling outside the
-				// element's backdrop area. Without clamping, a backdrop blur will read
-				// pixels from surrounding elements (e.g. a black border), causing
-				// visible color bleeding (grey tint on what should be a white surface).
-				// Clamp repeats edge pixels, matching WinUI's backdrop blur behavior.
-				return SKImageFilter.CreateBlur(sigma, sigma, SKShaderTileMode.Clamp, sourceFilter, bounds);
-			}
+			// Edge behavior comes from the effect graph's BorderMode (WinUI's real knob; EffectBorderMode.Hard == 1).
+			// Hard clamps to the source edge so the blur can't sample past the element (no colour bleed from
+			// surrounding pixels — what a backdrop/acrylic blur wants); Soft lets it fade to transparent (the default).
+			effectInterop.GetNamedPropertyMapping("BorderMode", out uint borderProp, out _);
+			var hardBorder = effectInterop.GetProperty(borderProp) is uint borderMode && borderMode == 1;
 
-			return SKImageFilter.CreateBlur(sigma, sigma, sourceFilter, bounds);
+			return hardBorder
+				? SKImageFilter.CreateBlur(sigma, sigma, SKShaderTileMode.Clamp, sourceFilter, bounds)
+				: SKImageFilter.CreateBlur(sigma, sigma, sourceFilter, bounds);
 		}
 
 		return null;

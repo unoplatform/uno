@@ -142,8 +142,8 @@ public partial class AcrylicBrush
 		// Set noise image source
 		acrylicBrush.SetSourceParameter("Noise", _noiseBrush);
 
-		// Clamp the backdrop blur to prevent color bleeding from neighboring elements
-		acrylicBrush.UseBackdropBlurClamp = true;
+		// The backdrop blur clamps to the element edge (no colour bleed from neighbours) via the blur effect's
+		// BorderMode = Hard, set where the GaussianBlurEffect is built below.
 
 		// TODO: Composition properties aren't supported yet
 		/*acrylicBrush.Properties.InsertColor("TintColor.Color", tintColor);
