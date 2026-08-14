@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.Graphics.Effects;
@@ -88,6 +89,12 @@ internal static class EffectGraphParser
 		{
 			e.GetNamedPropertyMapping(name, out var index, out var mapping);
 			return (e.GetProperty(index) ?? throw new InvalidOperationException($"Effect property '{name}' was null."), mapping);
+		}
+		// Optional bool property (0xFF index == absent), defaulting false — mirrors the legacy ClampSource/ClampOutput reads.
+		bool PropBool(string name)
+		{
+			e.GetNamedPropertyMapping(name, out var index, out _);
+			return index != 0xFF && e.GetProperty(index) is bool value && value;
 		}
 
 		var type = EffectHelpers.GetEffectType(e.GetEffectId());
@@ -234,6 +241,35 @@ internal static class EffectGraphParser
 
 			case EffectType.LuminanceToAlphaEffect:
 				return new LuminanceToAlphaEffectNode(Src(0));
+
+			case EffectType.ContrastEffect:
+				return new ContrastEffectNode(Src(0), (float)Prop("Contrast"), PropBool("ClampSource"));
+
+			case EffectType.LinearTransferEffect:
+				return new LinearTransferEffectNode(
+					Src(0),
+					new[] { (float)Prop("RedOffset"), (float)Prop("GreenOffset"), (float)Prop("BlueOffset"), (float)Prop("AlphaOffset") },
+					new[] { (float)Prop("RedSlope"), (float)Prop("GreenSlope"), (float)Prop("BlueSlope"), (float)Prop("AlphaSlope") },
+					new[] { (bool)Prop("RedDisable"), (bool)Prop("GreenDisable"), (bool)Prop("BlueDisable"), (bool)Prop("AlphaDisable") },
+					PropBool("ClampOutput"));
+
+			case EffectType.GammaTransferEffect:
+				return new GammaTransferEffectNode(
+					Src(0),
+					new[] { (float)Prop("RedAmplitude"), (float)Prop("GreenAmplitude"), (float)Prop("BlueAmplitude"), (float)Prop("AlphaAmplitude") },
+					new[] { (float)Prop("RedExponent"), (float)Prop("GreenExponent"), (float)Prop("BlueExponent"), (float)Prop("AlphaExponent") },
+					new[] { (float)Prop("RedOffset"), (float)Prop("GreenOffset"), (float)Prop("BlueOffset"), (float)Prop("AlphaOffset") },
+					new[] { (bool)Prop("RedDisable"), (bool)Prop("GreenDisable"), (bool)Prop("BlueDisable"), (bool)Prop("AlphaDisable") },
+					PropBool("ClampOutput"));
+
+			case EffectType.Transform2DEffect:
+			{
+				var raw = Prop("TransformMatrix");
+				var matrix = raw is Matrix3x2 m3
+					? m3
+					: raw is float[] a && a.Length == 6 ? new Matrix3x2(a[0], a[1], a[2], a[3], a[4], a[5]) : Matrix3x2.Identity;
+				return new Transform2DEffectNode(Src(0), matrix);
+			}
 
 			default:
 			{

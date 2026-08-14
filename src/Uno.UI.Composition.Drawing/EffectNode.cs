@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Windows.UI;
 
 namespace Uno.UI.Composition.Drawing;
@@ -97,6 +98,30 @@ public sealed record ModulateEffectNode(EffectNode Source, Color Color) : Effect
 
 /// <summary>Replaces each pixel's alpha with its luminance (D2D <c>LuminanceToAlphaEffect</c>).</summary>
 public sealed record LuminanceToAlphaEffectNode(EffectNode Source) : EffectNode
+{
+	public override IReadOnlyList<EffectNode> Children => new[] { Source };
+}
+
+/// <summary>D2D <c>ContrastEffect</c> — a non-matrix per-pixel curve; the backend realizes it (e.g. via a shader).</summary>
+public sealed record ContrastEffectNode(EffectNode Source, float Contrast, bool Clamp) : EffectNode
+{
+	public override IReadOnlyList<EffectNode> Children => new[] { Source };
+}
+
+/// <summary>D2D <c>LinearTransferEffect</c> — per-channel <c>offset + value·slope</c>. Arrays are R,G,B,A order.</summary>
+public sealed record LinearTransferEffectNode(EffectNode Source, float[] Offsets, float[] Slopes, bool[] Disable, bool Clamp) : EffectNode
+{
+	public override IReadOnlyList<EffectNode> Children => new[] { Source };
+}
+
+/// <summary>D2D <c>GammaTransferEffect</c> — per-channel <c>amplitude·value^exponent + offset</c>. Arrays are R,G,B,A order.</summary>
+public sealed record GammaTransferEffectNode(EffectNode Source, float[] Amplitudes, float[] Exponents, float[] Offsets, bool[] Disable, bool Clamp) : EffectNode
+{
+	public override IReadOnlyList<EffectNode> Children => new[] { Source };
+}
+
+/// <summary>D2D <c>Transform2DEffect</c> — a 2D affine transform of the source.</summary>
+public sealed record Transform2DEffectNode(EffectNode Source, Matrix3x2 Matrix) : EffectNode
 {
 	public override IReadOnlyList<EffectNode> Children => new[] { Source };
 }

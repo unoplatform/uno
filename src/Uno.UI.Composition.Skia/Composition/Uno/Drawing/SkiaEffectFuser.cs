@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using SkiaSharp;
 using Microsoft.UI.Composition;
 
@@ -79,6 +80,245 @@ internal sealed class SkiaEffectFuser
 
 				_isBackdrop = false;
 				return SKImageFilter.CreateColorFilter(SKColorFilter.CreateLumaColor(), source, bounds);
+			}
+
+			case ContrastEffectNode contrast:
+			{
+				var source = Fuse(contrast.Source, bounds);
+				if (source is null && !_isBackdrop)
+				{
+					return null;
+				}
+
+				_isBackdrop = false;
+				var clamp = contrast.Clamp;
+				var shader =
+$$"""
+	uniform shader input;
+	uniform half contrastValue;
+
+	half4 Premultiply(half4 color)
+	{
+		color.rgb *= color.a;
+		return color;
+	}
+
+	half4 UnPremultiply(half4 color)
+	{
+		color.rgb = (color.a == 0) ? half3(0, 0, 0) : (color.rgb / color.a);
+		return color;
+	}
+
+	half4 Contrast(half4 color, half contrast)
+	{
+		color = UnPremultiply(color);
+
+		half s = 1 - (3.0 / 4.0) * contrast;
+		half c2 = s - 1;
+		half b2 = 4 - 3 * s;
+		half a2 = 2 * c2;
+		half b1 = s;
+		half a1 = -a2;
+
+		half3 lowResult = color.rgb * (color.rgb * a1 + b1);
+		half3 highResult = color.rgb * (color.rgb * a2 + b2) + c2;
+
+		half3 comparisonResult = half3(0.0);
+		comparisonResult.r = (color.rgb.r < 0.5) ? 1.0 : 0.0;
+		comparisonResult.g = (color.rgb.g < 0.5) ? 1.0 : 0.0;
+		comparisonResult.b = (color.rgb.b < 0.5) ? 1.0 : 0.0;
+
+		color.rgb = mix(lowResult, highResult, comparisonResult);
+
+		return Premultiply(color);
+	}
+
+	half4 main()
+	{
+		return Contrast({{(clamp ? "clamp(" : string.Empty)}}sample(input){{(clamp ? ", 0.0, 1.0)" : string.Empty)}}, contrastValue);
+	}
+""";
+
+				var runtimeEffect = SKRuntimeEffect.CreateShader(shader, out var errors);
+				if (errors is not null)
+				{
+					return null;
+				}
+
+				var uniforms = new SKRuntimeEffectUniforms(runtimeEffect) { { "contrastValue", contrast.Contrast } };
+				var children = new SKRuntimeEffectChildren(runtimeEffect);
+				children.Add("input", null);
+				return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), source, bounds);
+			}
+
+			case LinearTransferEffectNode transfer:
+			{
+				var source = Fuse(transfer.Source, bounds);
+				if (source is null && !_isBackdrop)
+				{
+					return null;
+				}
+
+				_isBackdrop = false;
+				var clamp = transfer.Clamp;
+				var shader =
+$$"""
+	uniform shader input;
+
+	uniform half redOffset;
+	uniform half redSlope;
+
+	uniform half greenOffset;
+	uniform half greenSlope;
+
+	uniform half blueOffset;
+	uniform half blueSlope;
+
+	uniform half alphaOffset;
+	uniform half alphaSlope;
+
+	half4 Premultiply(half4 color)
+	{
+		color.rgb *= color.a;
+		return color;
+	}
+
+	half4 UnPremultiply(half4 color)
+	{
+		color.rgb = (color.a == 0) ? half3(0, 0, 0) : (color.rgb / color.a);
+		return color;
+	}
+
+	half4 main()
+	{
+		half4 color = UnPremultiply(sample(input));
+		color = half4(
+			{{(transfer.Disable[0] ? "color.r" : "redOffset + color.r * redSlope")}},
+			{{(transfer.Disable[1] ? "color.g" : "greenOffset + color.g * greenSlope")}},
+			{{(transfer.Disable[2] ? "color.b" : "blueOffset + color.b * blueSlope")}},
+			{{(transfer.Disable[3] ? "color.a" : "alphaOffset + color.a * alphaSlope")}}
+		);
+
+		return {{(clamp ? "clamp(" : string.Empty)}}Premultiply(color){{(clamp ? ", 0.0, 1.0)" : string.Empty)}};
+	}
+""";
+
+				var runtimeEffect = SKRuntimeEffect.CreateShader(shader, out var errors);
+				if (errors is not null)
+				{
+					return null;
+				}
+
+				var uniforms = new SKRuntimeEffectUniforms(runtimeEffect)
+				{
+					{ "redOffset", transfer.Offsets[0] },
+					{ "redSlope", transfer.Slopes[0] },
+					{ "greenOffset", transfer.Offsets[1] },
+					{ "greenSlope", transfer.Slopes[1] },
+					{ "blueOffset", transfer.Offsets[2] },
+					{ "blueSlope", transfer.Slopes[2] },
+					{ "alphaOffset", transfer.Offsets[3] },
+					{ "alphaSlope", transfer.Slopes[3] },
+				};
+				var children = new SKRuntimeEffectChildren(runtimeEffect);
+				children.Add("input", null);
+				return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), source, bounds);
+			}
+
+			case GammaTransferEffectNode gamma:
+			{
+				var source = Fuse(gamma.Source, bounds);
+				if (source is null && !_isBackdrop)
+				{
+					return null;
+				}
+
+				_isBackdrop = false;
+				var clamp = gamma.Clamp;
+				var shader =
+$$"""
+	uniform shader input;
+
+	uniform half redAmplitude;
+	uniform half redExponent;
+	uniform half redOffset;
+
+	uniform half greenAmplitude;
+	uniform half greenExponent;
+	uniform half greenOffset;
+
+	uniform half blueAmplitude;
+	uniform half blueExponent;
+	uniform half blueOffset;
+
+	uniform half alphaAmplitude;
+	uniform half alphaExponent;
+	uniform half alphaOffset;
+
+	half4 Premultiply(half4 color)
+	{
+		color.rgb *= color.a;
+		return color;
+	}
+
+	half4 UnPremultiply(half4 color)
+	{
+		color.rgb = (color.a == 0) ? half3(0, 0, 0) : (color.rgb / color.a);
+		return color;
+	}
+
+	half4 main()
+	{
+		half4 color = UnPremultiply(sample(input));
+		color = half4(
+			{{(gamma.Disable[0] ? "color.r" : "redAmplitude * pow(abs(color.r), redExponent) + redOffset")}},
+			{{(gamma.Disable[1] ? "color.g" : "greenAmplitude * pow(abs(color.g), greenExponent) + greenOffset")}},
+			{{(gamma.Disable[2] ? "color.b" : "blueAmplitude * pow(abs(color.b), blueExponent) + blueOffset")}},
+			{{(gamma.Disable[3] ? "color.a" : "alphaAmplitude * pow(abs(color.a), alphaExponent) + alphaOffset")}}
+		);
+
+		return {{(clamp ? "clamp(" : string.Empty)}}Premultiply(color){{(clamp ? ", 0.0, 1.0)" : string.Empty)}};
+	}
+""";
+
+				var runtimeEffect = SKRuntimeEffect.CreateShader(shader, out var errors);
+				if (errors is not null)
+				{
+					return null;
+				}
+
+				var uniforms = new SKRuntimeEffectUniforms(runtimeEffect)
+				{
+					{ "redAmplitude", gamma.Amplitudes[0] },
+					{ "redExponent", gamma.Exponents[0] },
+					{ "redOffset", gamma.Offsets[0] },
+					{ "greenAmplitude", gamma.Amplitudes[1] },
+					{ "greenExponent", gamma.Exponents[1] },
+					{ "greenOffset", gamma.Offsets[1] },
+					{ "blueAmplitude", gamma.Amplitudes[2] },
+					{ "blueExponent", gamma.Exponents[2] },
+					{ "blueOffset", gamma.Offsets[2] },
+					{ "alphaAmplitude", gamma.Amplitudes[3] },
+					{ "alphaExponent", gamma.Exponents[3] },
+					{ "alphaOffset", gamma.Offsets[3] },
+				};
+				var children = new SKRuntimeEffectChildren(runtimeEffect);
+				children.Add("input", null);
+				return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), source, bounds);
+			}
+
+			case Transform2DEffectNode transform:
+			{
+				var source = Fuse(transform.Source, bounds);
+				if (source is null && !_isBackdrop)
+				{
+					return null;
+				}
+
+				_isBackdrop = false;
+				return SKImageFilter.CreateMerge(
+					(ReadOnlySpan<SKImageFilter>)[SKImageFilter.CreateMatrix(transform.Matrix.ToSKMatrix(), new SKSamplingOptions(SKCubicResampler.CatmullRom), source)],
+					bounds);
 			}
 
 			case BlurEffectNode blur:
