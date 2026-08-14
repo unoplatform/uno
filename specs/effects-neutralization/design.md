@@ -103,6 +103,38 @@ Already present and unchanged: `CreateColorMatrixColorFilter`, `CreateBlendModeC
 `Given_AcrylicBrush` (Skia desktop, GL and forced-software), `EffectBrushTests` screenshot parity, and per-effect
 runtime tests where they exist.
 
+## Resolution (adopted) — backend fuses the neutral tree
+
+The pure-decomposition evaluator (neutral layer emits independent drawing ops) is **abandoned**: a headless
+visual diff proved it can't reach parity, because **fusing non-separable blends over the backdrop is one combined
+operation** that can't be decomposed into independent session ops. So the backend must do the combining.
+
+Adopted shape — the `EffectNode` IR returns, but consumed by the **backend**, not evaluated by the neutral layer:
+
+```
+IGraphicsEffect --(Uno-internal parser, D2D reflection once)--> EffectNode tree --(backend fuses)--> IEffectFilter
+```
+
+- `CreateEffectFilter(EffectNode tree, …)` replaces `CreateEffectFilter(IGraphicsEffect …)`.
+- The Uno-internal parser (`EffectGraphParser`) turns the D2D graph into the neutral tree — the backend never sees
+  a GUID or a boxed property.
+- The backend **combines** the tree into its native representation (Skia → one `SKImageFilter` DAG applied as the
+  backdrop/layer filter, reusing today's `SKImageFilter`-building but reading params from tree nodes instead of D2D;
+  WebGPU → its baked path). Fusion happens in the backend, so parity holds.
+- `IEffectFilter` stays (the backend's fused result); `SaveLayer`/`DrawEffectBackdrop` keep applying it.
+- `EffectGraphEvaluator` (pure decomposition) is deleted.
+
+Net vs the original opaque-`IGraphicsEffect` SPI: the ~1,500-line per-backend **D2D interpreter** collapses to one
+neutral parser + a per-backend tree→native fuser (no D2D); both backends get a clean typed tree.
+
+### Remaining implementation
+
+1. Enrich `EffectNode` to carry every effect the backends support (params per node), not just the structural set.
+2. Change the SPI to `CreateEffectFilter(EffectNode, …)`; `CompositionEffectBrush` parses then calls it.
+3. Rewrite `SkiaEffectFactory` to fuse the tree (switch on node type, not D2D `EffectType`); validate acrylic +
+   `EffectBrushTests` parity (GL + software).
+4. Same for WebGPU; then delete the `IGraphicsEffect` consumption + `EffectGraphEvaluator`.
+
 ## Status (WIP)
 
 - **Landed, green:** the primitive foundation (`LayerFilter`, neutral `SaveLayer(in LayerFilter)` /
