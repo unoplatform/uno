@@ -382,6 +382,146 @@ $$"""
 				return current;
 			}
 
+			case AlphaMaskEffectNode alphaMask:
+			{
+				var sourceFilter = Fuse(alphaMask.Source, bounds);
+				if (sourceFilter is null && !_isBackdrop)
+				{
+					return null;
+				}
+
+				var maskFilter = Fuse(alphaMask.Mask, bounds);
+				if (maskFilter is null && !_isBackdrop)
+				{
+					return null;
+				}
+
+				_isBackdrop = false;
+				return SKImageFilter.CreateBlendMode(SKBlendMode.SrcIn, maskFilter, sourceFilter, bounds);
+			}
+
+			case ArithmeticCompositeEffectNode arithmetic:
+			{
+				var background = Fuse(arithmetic.Background, bounds);
+				if (background is null && !_isBackdrop)
+				{
+					return null;
+				}
+
+				var foreground = Fuse(arithmetic.Foreground, bounds);
+				if (foreground is null && !_isBackdrop)
+				{
+					return null;
+				}
+
+				_isBackdrop = false;
+				return SKImageFilter.CreateArithmetic(arithmetic.Multiply, arithmetic.Source1, arithmetic.Source2, arithmetic.Offset, false, background, foreground, bounds);
+			}
+
+			case CrossFadeEffectNode crossFade:
+			{
+				var filter1 = Fuse(crossFade.SourceB, bounds);
+				if (filter1 is null && !_isBackdrop)
+				{
+					return null;
+				}
+
+				var filter2 = Fuse(crossFade.SourceA, bounds);
+				if (filter2 is null && !_isBackdrop)
+				{
+					return null;
+				}
+
+				_isBackdrop = false;
+				var weight = crossFade.Weight;
+				if (weight <= 0.0f)
+				{
+					return filter1;
+				}
+
+				if (weight >= 1.0f)
+				{
+					return filter2;
+				}
+
+				var fbFilter = SKImageFilter.CreateColorFilter(SKColorFilter.CreateColorMatrix(
+					new[]
+					{
+						weight, 0f,     0f,     0f,     0f,
+						0f,     weight, 0f,     0f,     0f,
+						0f,     0f,     weight, 0f,     0f,
+						0f,     0f,     0f,     weight, 0f,
+					}), filter2);
+
+				var shader =
+"""
+	uniform shader input;
+	uniform half crossfade;
+
+	half4 main()
+	{
+		half4 inputColor = sample(input);
+		return inputColor - (inputColor * crossfade);
+	}
+""";
+
+				var crossFadeEffect = SKRuntimeEffect.CreateShader(shader, out var crossFadeErrors);
+				if (crossFadeErrors is not null)
+				{
+					return null;
+				}
+
+				var crossFadeUniforms = new SKRuntimeEffectUniforms(crossFadeEffect) { { "crossfade", weight } };
+				var crossFadeChildren = new SKRuntimeEffectChildren(crossFadeEffect);
+				crossFadeChildren.Add("input", null);
+				var amafFilter = SKImageFilter.CreateColorFilter(crossFadeEffect.ToColorFilter(crossFadeUniforms, crossFadeChildren), filter1);
+				return SKImageFilter.CreateBlendMode(SKBlendMode.Plus, fbFilter, amafFilter, bounds);
+			}
+
+			case WhiteNoiseEffectNode noise:
+			{
+				var shader =
+"""
+	uniform half2 frequency;
+	uniform half2 offset;
+
+	half Hash(half2 p)
+	{
+		return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x))));
+	}
+
+	half4 main(float2 coords)
+	{
+		float2 coord = coords * 0.81 * frequency + offset;
+		float2 px00 = floor(coord - 0.5) + 0.5;
+		float2 px11 = px00 + 1;
+		float2 px10 = float2(px11.x, px00.y);
+		float2 px01 = float2(px00.x, px11.y);
+		float2 factor = coord - px00;
+		float sample00 = Hash(px00);
+		float sample10 = Hash(px10);
+		float sample01 = Hash(px01);
+		float sample11 = Hash(px11);
+		float result = mix(mix(sample00, sample10, factor.x), mix(sample01, sample11, factor.x), factor.y);
+
+		return half4(result.xxx, 1);
+	}
+""";
+
+				var noiseEffect = SKRuntimeEffect.CreateShader(shader, out var noiseErrors);
+				if (noiseErrors is not null)
+				{
+					return null;
+				}
+
+				var noiseUniforms = new SKRuntimeEffectUniforms(noiseEffect)
+				{
+					{ "frequency", new[] { noise.Frequency.X, noise.Frequency.Y } },
+					{ "offset", new[] { noise.Offset.X, noise.Offset.Y } },
+				};
+				return SKImageFilter.CreateShader(noiseEffect.ToShader(noiseUniforms), false, bounds);
+			}
+
 			case UnsupportedEffectNode unsupported:
 				return unsupported.Source is null ? null : Fuse(unsupported.Source, bounds);
 

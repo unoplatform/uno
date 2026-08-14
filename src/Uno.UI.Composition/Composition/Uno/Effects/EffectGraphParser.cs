@@ -271,6 +271,50 @@ internal static class EffectGraphParser
 				return new Transform2DEffectNode(Src(0), matrix);
 			}
 
+			case EffectType.CrossFadeEffect:
+				return new CrossFadeEffectNode(Src(0), Src(1), (float)Prop("CrossFade"));
+
+			case EffectType.AlphaMaskEffect:
+				return new AlphaMaskEffectNode(Src(0), Src(1));
+
+			case EffectType.ArithmeticCompositeEffect:
+			{
+				// Coefficients arrive either as four scalar properties (0..3) or a single Coefficients float[4].
+				var multiply = e.GetProperty(0) as float?;
+				var source1 = e.GetProperty(1) as float?;
+				var source2 = e.GetProperty(2) as float?;
+				var offset = e.GetProperty(3) as float?;
+				if (multiply is null || source1 is null || source2 is null || offset is null)
+				{
+					var coefficients = e.GetProperty(0) as float[];
+					if (coefficients is null)
+					{
+						e.GetNamedPropertyMapping("Coefficients", out var coeffProp, out var coeffMapping);
+						if (coeffMapping == GraphicsEffectPropertyMapping.Direct)
+						{
+							coefficients = e.GetProperty(coeffProp) as float[];
+						}
+					}
+
+					if (coefficients is { Length: 4 })
+					{
+						multiply = coefficients[0];
+						source1 = coefficients[1];
+						source2 = coefficients[2];
+						offset = coefficients[3];
+					}
+					else
+					{
+						return new UnsupportedEffectNode("ArithmeticCompositeEffect", Src(0));
+					}
+				}
+
+				return new ArithmeticCompositeEffectNode(Src(0), Src(1), multiply.Value, source1.Value, source2.Value, offset.Value);
+			}
+
+			case EffectType.WhiteNoiseEffect:
+				return new WhiteNoiseEffectNode((Vector2)Prop("Frequency"), (Vector2)Prop("Offset"));
+
 			default:
 			{
 				if (typeof(EffectGraphParser).Log().IsEnabled(LogLevel.Debug))
