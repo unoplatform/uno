@@ -390,8 +390,8 @@ namespace Uno.UI.Runtime.Skia
 			public int Height => height;
 			public int SampleCount => samples;
 			public int StencilBits => stencil;
-			public bool IsGles => true;
-			public Func<string, nint>? GetProcAddress => static name => EglHelper.EglGetProcAddress(name);
+			public GLFlavor Flavor => GLFlavor.OpenGLES;
+			public Func<string, nint> GetProcAddress => static name => EglHelper.EglGetProcAddress(name);
 			public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
 			public void Dispose() { }
 		}
