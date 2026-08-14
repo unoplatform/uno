@@ -128,8 +128,14 @@ internal sealed class HotReloadManagerHarness : IDisposable
 	{
 		private int _calls;
 
-		public Task<(ImmutableArray<Update> updates, ImmutableArray<Diagnostic> diagnostics)> EmitSolutionUpdateAsync(Solution solution, CancellationToken cancellationToken)
-			=> onEmit(Interlocked.Increment(ref _calls));
+		public async Task<(ImmutableArray<Update> updates, ImmutableArray<Diagnostic> diagnostics, ImmutableArray<string> projectsRequiringRebuild)> EmitSolutionUpdateAsync(Solution solution, CancellationToken cancellationToken)
+		{
+			// The stub exists to drive the manager's orchestration; no test needs a project that
+			// cannot be updated, so the set is always empty here.
+			var (updates, diagnostics) = await onEmit(Interlocked.Increment(ref _calls)).ConfigureAwait(false);
+
+			return (updates, diagnostics, ImmutableArray<string>.Empty);
+		}
 
 		public void EndSession()
 		{

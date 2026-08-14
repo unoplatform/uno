@@ -43,7 +43,7 @@ public sealed class Given_WatchHotReloadService_References
 			.AddMetadataReference(harness.ProjectId, MetadataReference.CreateFromFile(newLib))
 			.WithDocumentText(harness.DocumentId, EnCHarness.AppText("Fresh.Info.Name"));
 
-		var (updates, diagnostics) = await harness.Watch.EmitSolutionUpdateAsync(changed, ct);
+		var (updates, diagnostics, _) = await harness.Watch.EmitSolutionUpdateAsync(changed, ct);
 
 		diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).Should().BeEmpty();
 		updates.Should().HaveCount(1, "the edit compiles against the added assembly and must produce a delta");
@@ -74,7 +74,7 @@ public sealed class Given_WatchHotReloadService_References
 			.WithProjectMetadataReferences(harness.ProjectId, rebound)
 			.WithDocumentText(harness.DocumentId, EnCHarness.AppText("\"v:\" + Conflict.Info.Version"));
 
-		var (updates, diagnostics) = await harness.Watch.EmitSolutionUpdateAsync(changed, ct);
+		var (updates, diagnostics, _) = await harness.Watch.EmitSolutionUpdateAsync(changed, ct);
 
 		updates.Should().BeEmpty();
 		diagnostics.Should().Contain(

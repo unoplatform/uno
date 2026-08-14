@@ -431,7 +431,7 @@ internal class HotReloadWorkspace : IDisposable
 			throw new InvalidOperationException($"Initialize must be called before Update");
 		}
 
-		var (updates, diagnostics) = await _hotReloadService.EmitSolutionUpdateAsync(_currentSolution, CancellationToken.None);
+		var (updates, diagnostics, _) = await _hotReloadService.EmitSolutionUpdateAsync(_currentSolution, CancellationToken.None);
 
 		return new(diagnostics, updates);
 	}

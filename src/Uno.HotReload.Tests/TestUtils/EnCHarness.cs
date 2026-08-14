@@ -53,7 +53,18 @@ internal sealed class EnCHarness : IDisposable
 	public static SourceText AppText(string expression)
 		=> SourceText.From(AppSource(expression), Encoding.UTF8);
 
-	public static async Task<EnCHarness> CreateAsync(TempDirectory temp, CancellationToken ct)
+	/// <summary>
+	/// Wraps a complete document body, for the tests that need a baseline shape
+	/// <see cref="AppSource"/> cannot express (a base type, several types, …).
+	/// </summary>
+	public static SourceText RawText(string source)
+		=> SourceText.From(source, Encoding.UTF8);
+
+	/// <param name="appSource">
+	/// The baseline content of the single document. Defaults to the ConflictLib-consuming shape used
+	/// by the reference-identity tests.
+	/// </param>
+	public static async Task<EnCHarness> CreateAsync(TempDirectory temp, CancellationToken ct, string? appSource = null)
 	{
 		var v1 = EmitLibrary(temp, "ConflictLib", "1.0.0.0", ConflictLibSource, subdir: "v1");
 
@@ -76,7 +87,7 @@ internal sealed class EnCHarness : IDisposable
 						documentId,
 						name: "App.cs",
 						loader: TextLoader.From(TextAndVersion.Create(
-							AppText("\"v\" + Conflict.Info.Version"),
+							appSource is null ? AppText("\"v\" + Conflict.Info.Version") : RawText(appSource),
 							VersionStamp.Create(),
 							appPath)),
 						filePath: appPath),
