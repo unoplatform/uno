@@ -1,0 +1,14 @@
+<Project>
+
+	<Import Project="..\Directory.Build.targets" />
+
+	<!--
+	The repository excludes the MSBuild runtime assets everywhere, which is correct for task assemblies but
+	leaves the test host unable to load Microsoft.Build.Framework when it drives a task in-process.
+	-->
+	<ItemGroup>
+		<PackageReference Update="Microsoft.Build.Framework" ExcludeAssets="" />
+		<PackageReference Update="Microsoft.Build.Utilities.Core" ExcludeAssets="" />
+	</ItemGroup>
+
+</Project>
