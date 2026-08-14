@@ -110,11 +110,20 @@ runtime tests where they exist.
   (`EffectGraphEvaluator`) — a direct `IGraphicsEffect` walk emitting drawing-session ops (backdrop blur, blend,
   composite, colour matrix, colour source, brush paint). Both are additive and **not yet wired** — `TryPaint`
   still uses `CreateEffectFilter`, so nothing is regressed.
-- **Blocked on parity, needs interactive pixel-debugging:** wiring `TryPaint` to the evaluator renders acrylic
-  3/5 — two small diffs remain: `When_Drawn` at RSMD ≈ 0.045 (threshold 0.04), in the tint/luminosity/noise
-  compositing (independent of the backdrop-blur impl), and `When_Backdrop_DoesNotSampleOutsideElementBounds` (a
-  corner-bleed of ≈41/255). The Skia `DrawEffectBackdrop(in LayerFilter)` also needs the backdrop blur bounded to
-  the element (a null-input backdrop blur ignores a `CropRect`; the SaveLayer `Bounds`/clip lever is the likely
-  fix). These need a visual diff to converge — not tractable headless-blind.
+- **Wired behind a toggle (`UNO_USE_EFFECT_EVALUATOR=1`, default off), blocked on one structural parity bug.**
+  A headless visual diff (dump the `When_Backdrop` screenshot to PPM both ways) pinned it precisely: the old
+  path fuses the *entire* acrylic graph (blur → luminosity blend → tint blend → composite noise) into **one**
+  `SKImageFilter` and applies it as a single `SaveLayerRec.Backdrop`; the decomposed evaluator uses
+  `DrawEffectBackdrop` (a `SaveLayerRec.Backdrop`) for the **blur alone** and layers the blends over the surface.
+  For a backdrop blur feeding **non-separable** blends (`Color`/`Luminosity`), those aren't pixel-equivalent: the
+  standalone backdrop blur bleeds neighbouring pixels (element renders grey-with-dark-edges 215/174 vs the
+  correct uniform 247), and cropping the blur (`CreateBlur` crop rect **or** `SaveLayerRec.Bounds`, both tried —
+  `LocalClipBounds` is correctly the element) does **not** stop it, because the backdrop the filter samples is the
+  whole surface regardless of the output crop. The blends themselves are equivalent (`SKImageFilter.CreateBlendMode
+  (mode, bg, fg)` ≡ draw bg + `SaveLayer(mode)` + draw fg), so the whole diff is this backdrop-input bleed.
+  **Fix direction:** the backdrop input must be bounded to the element *before* blurring (draw the captured
+  backdrop into a bounded picture, blur that — as the old `CreateEffectFilter` composed it), i.e. compose the
+  backdrop-blur (and possibly the whole backdrop sub-graph) into one `SaveLayerRec.Backdrop` filter rather than a
+  bare blur. That's a design step, not a one-liner.
 - **Not started:** deleting `CreateEffectFilter`/`IEffectFilter`/`SkiaEffectFactory` (gated on evaluator parity),
   and the WebGPU non-separable-blend shaders (`Color`/`Luminosity`) the evaluator's decomposed acrylic needs.

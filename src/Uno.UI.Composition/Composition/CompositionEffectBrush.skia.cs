@@ -22,6 +22,13 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 	internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 	{
+		if (Environment.GetEnvironmentVariable("UNO_USE_EFFECT_EVALUATOR") is "1")
+		{
+			HasBackdropBrushInput = Uno.UI.Composition.Effects.EffectGraphEvaluator.Evaluate(
+				_effect, session, name => CompositionBrushEffectSource.From(GetSourceParameter(name)), bounds, opacity);
+			return true;
+		}
+
 		UpdateFilter(bounds);
 		if (_filter is { } filter)
 		{
