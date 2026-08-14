@@ -6,7 +6,6 @@ using System.IO;
 using System.Numerics;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.Graphics.Effects;
 using Windows.UI;
 
 namespace Uno.UI.Composition.Drawing;
@@ -78,21 +77,6 @@ public interface IDrawingFactory
 
 	/// <summary>Creates a color filter from a 4x5 row-major color matrix (as used by grayscale/alpha-mask effects).</summary>
 	IColorFilter CreateColorMatrixColorFilter(float[] matrix);
-
-	/// <summary>
-	/// Realizes a neutral <see cref="IGraphicsEffect"/> graph into an opaque backend effect. Mirrors the
-	/// public <c>CompositionEffectBrush</c> graph rather than any backend-specific representation.
-	/// </summary>
-	/// <param name="effect">The root of the effect graph to realize.</param>
-	/// <param name="bounds">The bounds the effect is generated for.</param>
-	/// <param name="sourceResolver">Maps an effect source-parameter name to its bound input (<see cref="IEffectSource"/>), or null.</param>
-	/// <param name="hasBackdropInput">Set to true when the graph references a backdrop source.</param>
-	/// <returns>The realized effect, or null when the graph resolves to nothing renderable.</returns>
-	IEffectFilter? CreateEffectFilter(
-		IGraphicsEffect effect,
-		Rect bounds,
-		Func<string, IEffectSource?> sourceResolver,
-		out bool hasBackdropInput);
 
 	/// <summary>
 	/// Fuses a neutral <see cref="EffectNode"/> tree (produced by Uno's parser — brush inputs already rasterized to

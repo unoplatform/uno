@@ -1,6 +1,5 @@
 #nullable enable
 
-using System;
 using Windows.Foundation;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Composition.Effects;
@@ -9,12 +8,6 @@ namespace Microsoft.UI.Composition;
 
 public partial class CompositionEffectBrush : CompositionBrush
 {
-	// The neutral fused-tree path is the default: Uno parses the D2D graph into an EffectNode tree and the backend
-	// fuses it. A graph containing an effect Uno hasn't neutralized yet (an UnsupportedEffectNode) transparently
-	// falls back to the legacy per-backend realization, so nothing regresses. UNO_EFFECT_TREE=0 forces the legacy
-	// path for the whole brush (escape hatch).
-	private static readonly bool _forceLegacy = Environment.GetEnvironmentVariable("UNO_EFFECT_TREE") is "0";
-
 	private Rect _currentBounds;
 	private IEffectFilter? _filter;
 	private EffectNode? _tree;
@@ -66,34 +59,13 @@ public partial class CompositionEffectBrush : CompositionBrush
 		DisposeTree();
 		_filter?.Dispose();
 
-		if (!_forceLegacy)
-		{
-			// Parse the D2D graph once into a neutral tree (brush inputs rasterized to textures, backdrop left as a
-			// deferred leaf). A fully-neutralized graph is fused by the backend; a graph containing an effect we
-			// don't translate yet falls back to the legacy realization so nothing regresses. hasBackdrop is a tree
-			// property, computed here — not reported by the backend.
-			_tree = EffectGraphParser.Parse(_effect, bounds, name => CompositionBrushEffectSource.From(GetSourceParameter(name)));
-			if (!_tree.ContainsUnsupported())
-			{
-				_filter = DrawingFactory.Current.CreateEffectFilter(_tree, bounds);
-				HasBackdropBrushInput = _tree.ContainsBackdrop();
-				_currentBounds = bounds;
-				return;
-			}
-
-			// Unsupported effect present — discard the (unused) rasterized textures and take the legacy path.
-			DisposeTree();
-		}
-
-		// A null filter means the backend can't realize this effect as a backdrop filter — TryPaint falls back to
-		// the recipe path (a source + composed colour matrix). Not an error.
-		_filter = DrawingFactory.Current.CreateEffectFilter(
-			_effect,
-			bounds,
-			name => CompositionBrushEffectSource.From(GetSourceParameter(name)),
-			out var hasBackdropInput);
-		HasBackdropBrushInput = hasBackdropInput;
-
+		// Parse the D2D graph once into a neutral tree (brush inputs rasterized to textures, backdrop left as a
+		// deferred leaf), then have the backend fuse it into one filter. hasBackdrop is a tree property, computed
+		// here — not reported by the backend. A null filter means the backend can't realize it (e.g. WebGPU for a
+		// per-pixel colour effect); TryPaint then falls back to the recipe path. Not an error.
+		_tree = EffectGraphParser.Parse(_effect, bounds, name => CompositionBrushEffectSource.From(GetSourceParameter(name)));
+		_filter = DrawingFactory.Current.CreateEffectFilter(_tree, bounds);
+		HasBackdropBrushInput = _tree.ContainsBackdrop();
 		_currentBounds = bounds;
 	}
 

@@ -2562,65 +2562,11 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 	public IColorFilter CreateBlendModeColorFilter(WColor color, BlendMode mode) => new WebGpuColorFilter { IsBlendMode = true, Color = color, Mode = mode };
 	public IColorFilter CreateColorMatrixColorFilter(float[] matrix) => new WebGpuColorFilter { Matrix = matrix };
 	public IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, WColor color) => new WebGpuEffectFilter { Dx = dx, Dy = dy, SigmaX = sigmaX, SigmaY = sigmaY, Color = color };
-	public IEffectFilter CreateEffectFilter(Windows.Graphics.Effects.IGraphicsEffect effect, Windows.Foundation.Rect bounds, Func<string, Uno.UI.Composition.Drawing.IEffectSource> sourceResolver, out bool hasBackdropInput)
-	{
-		// Simplified realization: walk the graph for a GaussianBlur (the acrylic backdrop blur) and honor it as a
-		// backdrop blur + tint. Anything else falls back to the inner (Skia) factory. The full IGraphicsEffect DAG
-		// (noise, multi-stage blends) is not translated. GaussianBlurEffect GUID per EffectHelpers.
-		var blurGuid = new Guid("1FEB6D69-2FE6-4AC9-8C58-1D7F93E7A6A5");
-		float sigma = 0f;
-		WColor tint = default, lum = default;
-		bool sawColorSource = false;
-		bool sawBackdrop = false;
-		void Walk(object node)
-		{
-			// A leaf source parameter: resolve it and note whether it's the backdrop. Only a graph that actually
-			// samples the backdrop is an acrylic-style backdrop filter; a blur over a normal source (image/element)
-			// must NOT be hijacked into the backdrop path (it would capture+blur the whole frame prefix instead).
-			if (node is Microsoft.UI.Composition.CompositionEffectSourceParameter sp)
-			{
-				if (sourceResolver(sp.Name)?.IsBackdrop == true) { sawBackdrop = true; }
-				return;
-			}
-			if (node is IGraphicsEffectD2D1Interop io)
-			{
-				if (io.GetEffectId() == blurGuid)
-				{
-					io.GetNamedPropertyMapping("BlurAmount", out var idx, out _);
-					if (io.GetProperty(idx) is float f) { sigma = MathF.Max(sigma, f); }
-				}
-				// Acrylic bakes its tint/luminosity into named ColorSourceEffects ("TintColor"/"LuminosityColor").
-				// The tint is composited SrcOver on top; the luminosity is SrcOver over the blurred backdrop, which
-				// equals the original's mix(blurred, lum.rgb, lum.a) luminosity blend.
-				if (node is Windows.Graphics.Effects.IGraphicsEffect ge && ge.Name is "TintColor" or "LuminosityColor")
-				{
-					io.GetNamedPropertyMapping("Color", out var ci, out _);
-					if (io.GetProperty(ci) is WColor c)
-					{
-						sawColorSource = true;
-						if (ge.Name == "TintColor") { tint = c; } else { lum = c; }
-					}
-				}
-				for (uint i = 0; i < io.GetSourceCount(); i++) { if (io.GetSource(i) is { } s) { Walk(s); } }
-			}
-		}
-		Walk(effect);
-		if ((sigma > 0f || sawColorSource) && sawBackdrop)
-		{
-			hasBackdropInput = true;
-			return new WebGpuEffectFilter { SigmaX = sigma, SigmaY = sigma, Color = tint, LumColor = lum, Noise = 0.02f };
-		}
-		// A non-blur, non-acrylic effect (e.g. grayscale/hue/sepia on an image source): the WebGPU backend can't
-		// realize it as a backdrop filter. Return null so CompositionEffectBrush.TryPaint falls back to the recipe
-		// path — reduce to a source + composed 4×5 colour matrix and paint the source through a colour-matrix layer.
-		hasBackdropInput = false;
-		return null;
-	}
 
-	// Fuses the neutral EffectNode tree (Uno's parser output) into a backend filter. Like the legacy overload this
-	// only realizes the acrylic shape (a gaussian-blurred backdrop + tint/luminosity colours); any other tree returns
-	// null so CompositionEffectBrush falls back to the recipe path. Structure-matches the acrylic graph: the outer
-	// Blend's ColorInput foreground is the tint, the inner Blend's is the luminosity colour.
+	// Fuses the neutral EffectNode tree (Uno's parser output) into a backend filter. Only realizes the acrylic shape
+	// (a gaussian-blurred backdrop + tint/luminosity colours); any other tree returns null so CompositionEffectBrush
+	// falls back to the recipe path. Structure-matches the acrylic graph: the outer Blend's ColorInput foreground is
+	// the tint, the inner Blend's is the luminosity colour.
 	public IEffectFilter CreateEffectFilter(EffectNode tree, Rect bounds)
 	{
 		float sigma = 0f;
