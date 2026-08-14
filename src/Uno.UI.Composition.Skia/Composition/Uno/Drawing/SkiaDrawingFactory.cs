@@ -173,10 +173,9 @@ internal sealed class SkiaDrawingFactory : IDrawingFactory
 		global::Windows.Graphics.Effects.IGraphicsEffect effect,
 		Rect bounds,
 		System.Func<string, IEffectSource?> sourceResolver,
-		bool useBackdropBlurClamp,
 		out bool hasBackdropInput)
 	{
-		var factory = new SkiaEffectFactory(sourceResolver, useBackdropBlurClamp);
+		var factory = new SkiaEffectFactory(sourceResolver);
 		var filter = factory.GenerateEffectFilter(effect, bounds.ToSKRect());
 		hasBackdropInput = factory.HasBackdropBrushInput;
 		return filter is null ? null : new SkiaEffectFilter(filter);

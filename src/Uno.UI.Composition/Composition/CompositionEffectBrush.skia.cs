@@ -20,8 +20,6 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 	internal override bool RequiresRepaintOnEveryFrame => HasBackdropBrushInput;
 
-	internal bool UseBackdropBlurClamp { get; set; }
-
 	internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 	{
 		UpdateFilter(bounds);
@@ -61,7 +59,6 @@ public partial class CompositionEffectBrush : CompositionBrush
 				_effect,
 				bounds,
 				name => CompositionBrushEffectSource.From(GetSourceParameter(name)),
-				UseBackdropBlurClamp,
 				out var hasBackdropInput);
 			HasBackdropBrushInput = hasBackdropInput;
 			_currentBounds = bounds;
