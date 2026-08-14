@@ -121,6 +121,41 @@ The other namespaces carried by that assembly keep their names, so code using
 `DiagnosticsOverlay` (`Uno.Diagnostics.UI`), `FromJsonExtension` (`Uno.UI.Markup`) or
 `ColorExtensions` / `ImageHelper` (`Uno.Helpers`) needs no change.
 
+### Platform targeting in multi-targeted libraries
+
+A library that multi-targets `net10.0-ios`, `net10.0-android`, or `net10.0-tvos` alongside a plain `net10.0` now
+keeps its platform-specific asset on the matching application head. In 6.x those assets were replaced by the
+library's `netX.0` asset, so `#if __IOS__` and `#if __ANDROID__` blocks inside a library never ran and a `netX.0`
+target framework was mandatory. Both are no longer true: the `net10.0-ios` assembly is what an iOS head compiles
+against and deploys.
+
+Three related mechanisms now follow the target framework rather than an internal runtime identifier, for class
+libraries and application heads alike:
+
+| Mechanism | 6.x | 7.0 |
+|---|---|---|
+| `android:` / `ios:` / `wasm:` XAML prefixes | never applied — every target rendered with Skia, which won | apply on `net*-android` / `net*-ios` / `net*-browserwasm` |
+| `tvos:` and `desktop:` XAML prefixes | did not exist | apply on `net*-tvos` / `net*-desktop` |
+| `skia:` / `netstdref:` XAML prefixes | Uno targets, but not a plain `netX.0` library | every target framework except the WinAppSDK one |
+| `*.skia.cs`, `*.crossruntime.cs` | compiled only for `net*-desktop` | compiled for every target framework except the WinAppSDK one |
+| `__DESKTOP__` | application heads only | any `net*-desktop` project |
+
+What this means for an upgrade:
+
+- Re-test `#if`-guarded code and conditional XAML inside multi-targeted libraries. Code that was written under the
+  assumption that it was dead on mobile now executes. In particular `not_android:` and `not_ios:` no longer apply
+  on Android and iOS.
+- Rename a `*.skia.cs` file that was really desktop-only to `*.desktop.cs`. It now compiles on every Uno target.
+- Recompile every multi-targeted library against 7.0. Its `net*-ios`/`net*-android` assets are now deployed rather
+  than discarded, so a stale asset built against the 6.x binaries fails at run time instead of being silently
+  replaced. The build reports [UNOB0020](xref:Build.Solution.error-codes) when it can detect this.
+- Nothing to do if your libraries already ship a `netX.0` asset. It is still the asset used by the
+  `net10.0-desktop` and `net10.0-browserwasm` heads, and workarounds built for the 6.x behavior keep working.
+
+> [!NOTE]
+> `skia:` and `*.skia.cs` mean "drawn by Uno Platform rather than by WinUI". They do not name a drawing backend:
+> `Uno.UI` is compiled once and resolves its backend at run time.
+
 ### Public API removed
 
 - **Native base classes / identity:** `BindableView` (and `Bindable*` widget wrappers),
@@ -464,16 +499,18 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 2. Retarget any `net*-maccatalyst` head to `net10.0-desktop` and delete
    `Platforms/MacCatalyst/`.
 3. Recompile **every** Uno-dependent library against 7.0.
-4. Remove references to the deleted assemblies/types and to native element hosting.
-5. Delete native-only `FeatureConfiguration` calls.
-6. Replace the WASM DOM head with the Skia WebAssembly Browser head; remove any DOM/CSS
+4. Re-test `#if __IOS__` / `#if __ANDROID__` code and `ios:` / `android:` XAML inside multi-targeted libraries —
+   those assets are now deployed on mobile heads instead of being replaced by the `netX.0` asset.
+5. Remove references to the deleted assemblies/types and to native element hosting.
+6. Delete native-only `FeatureConfiguration` calls.
+7. Replace the WASM DOM head with the Skia WebAssembly Browser head; remove any DOM/CSS
    customization and `HtmlElement` usage.
-7. Remove manual `ConfigureUniversalImageLoader();` (Android) and other native bootstrap.
-8. Convert every `xmlns:…="clr-namespace:…"` declaration in your XAML to the `using:` form.
-9. Convert the Android `Application` class to override `CreateHost()` instead of passing an
+8. Remove manual `ConfigureUniversalImageLoader();` (Android) and other native bootstrap.
+9. Convert every `xmlns:…="clr-namespace:…"` declaration in your XAML to the `using:` form.
+10. Convert the Android `Application` class to override `CreateHost()` instead of passing an
    `AppBuilder` delegate to the base constructor.
-10. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to `Uno.UI.Extras`.
-11. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+11. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to `Uno.UI.Extras`.
+12. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
