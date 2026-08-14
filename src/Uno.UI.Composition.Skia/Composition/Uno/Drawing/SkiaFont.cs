@@ -65,21 +65,11 @@ internal sealed class SkiaFont : IFont
 	public string FamilyName => _font.Typeface?.FamilyName ?? string.Empty;
 
 	public GlyphRun Shape(ReadOnlySpan<char> text, TextDirection direction, bool enableLigatures = true)
-		=> ShapeCore(text, direction, enableLigatures, out _);
-
-	public GlyphRun Shape(ReadOnlySpan<char> text, out TextDirection resolvedDirection, bool enableLigatures = true)
-		=> ShapeCore(text, null, enableLigatures, out resolvedDirection);
-
-	private GlyphRun ShapeCore(ReadOnlySpan<char> text, TextDirection? direction, bool enableLigatures, out TextDirection resolvedDirection)
 	{
 		using var buffer = new HbBuffer();
 		buffer.AddUtf16(text);
-		buffer.GuessSegmentProperties();
-		if (direction is { } requested)
-		{
-			buffer.Direction = requested == TextDirection.RightToLeft ? HarfBuzzSharp.Direction.RightToLeft : HarfBuzzSharp.Direction.LeftToRight;
-		}
-		resolvedDirection = buffer.Direction == HarfBuzzSharp.Direction.RightToLeft ? TextDirection.RightToLeft : TextDirection.LeftToRight;
+		buffer.GuessSegmentProperties(); // sets the run's script/language for the shaper; direction is set explicitly below
+		buffer.Direction = direction == TextDirection.RightToLeft ? HarfBuzzSharp.Direction.RightToLeft : HarfBuzzSharp.Direction.LeftToRight;
 
 		if (enableLigatures)
 		{

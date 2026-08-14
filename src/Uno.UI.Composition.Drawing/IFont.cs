@@ -26,13 +26,6 @@ public interface IFont
 	GlyphRun Shape(ReadOnlySpan<char> text, TextDirection direction, bool enableLigatures = true);
 
 	/// <summary>
-	/// Shapes a run, letting the shaper guess the run's direction from its script (used by the segment itemizer that
-	/// hasn't resolved bidi itself) and reporting it back via <paramref name="resolvedDirection"/>. Otherwise
-	/// identical to <see cref="Shape(ReadOnlySpan{char}, TextDirection, bool)"/>.
-	/// </summary>
-	GlyphRun Shape(ReadOnlySpan<char> text, out TextDirection resolvedDirection, bool enableLigatures = true);
-
-	/// <summary>
 	/// Builds the combined filled outline of the run's outline glyphs (color glyphs are excluded — draw those
 	/// via <see cref="AppendColorGlyphImages"/>). Each glyph is placed at its position, shifted by <paramref name="baselineY"/>.
 	/// </summary>
