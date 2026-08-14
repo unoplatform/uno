@@ -235,6 +235,8 @@ internal sealed class Win32OpenGLGraphicsContext : IGraphicsContext, IWin32Paced
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
+		public GLFlavor Flavor => GLFlavor.OpenGL;
+		public Func<string, nint> GetProcAddress => Win32NativeOpenGLWrapper.GetProcAddressStatic;
 		public void Dispose() { }
 	}
 }

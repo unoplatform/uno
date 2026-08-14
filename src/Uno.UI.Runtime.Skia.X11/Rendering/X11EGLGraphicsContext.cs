@@ -85,8 +85,8 @@ internal sealed unsafe class X11EGLGraphicsContext : IGraphicsContext
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
-		public bool IsGles => true;
-		public Func<string, nint>? GetProcAddress => EglHelper.EglGetProcAddress;
+		public GLFlavor Flavor => GLFlavor.OpenGLES;
+		public Func<string, nint> GetProcAddress => EglHelper.EglGetProcAddress;
 		public void Dispose() { }
 	}
 }

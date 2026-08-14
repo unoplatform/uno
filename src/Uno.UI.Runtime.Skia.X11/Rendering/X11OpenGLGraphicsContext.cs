@@ -66,6 +66,8 @@ internal sealed class X11OpenGLGraphicsContext : IGraphicsContext
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
+		public GLFlavor Flavor => GLFlavor.OpenGL;
+		public Func<string, nint> GetProcAddress => X11NativeOpenGLWrapper.GetProcAddressStatic;
 		public void Dispose() { }
 	}
 }

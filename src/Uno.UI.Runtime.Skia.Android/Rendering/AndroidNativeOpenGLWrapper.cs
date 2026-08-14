@@ -103,19 +103,27 @@ internal class AndroidNativeOpenGLWrapper : INativeOpenGLWrapper
 		throw new InvalidOperationException($"A procedure named {proc} was not found in the GLES libraries.");
 	}
 
-	public bool TryGetProcAddress(string proc, out IntPtr addr)
+	// Non-throwing loader for the neutral IGLRenderTarget seam (returns 0 for a missing entry point, which is
+	// what a backend's extension probing expects). Core GLES comes from the dlsym'd libraries; eglGetProcAddress
+	// serves extensions.
+	internal static nint GetProcAddressStatic(string proc)
 	{
-		if (_libGLESv3.Value != IntPtr.Zero && NativeLibrary.TryGetExport(_libGLESv3.Value, proc, out addr))
+		if (_libGLESv3.Value != IntPtr.Zero && NativeLibrary.TryGetExport(_libGLESv3.Value, proc, out var addr))
 		{
-			return true;
+			return addr;
 		}
 
 		if (_libGLESv2.Value != IntPtr.Zero && NativeLibrary.TryGetExport(_libGLESv2.Value, proc, out addr))
 		{
-			return true;
+			return addr;
 		}
 
-		addr = eglGetProcAddress(proc);
+		return eglGetProcAddress(proc);
+	}
+
+	public bool TryGetProcAddress(string proc, out IntPtr addr)
+	{
+		addr = GetProcAddressStatic(proc);
 		return addr != IntPtr.Zero;
 	}
 

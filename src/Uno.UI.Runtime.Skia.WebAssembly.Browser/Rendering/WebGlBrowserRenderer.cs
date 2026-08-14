@@ -1,7 +1,9 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
+using Uno.UI.Runtime.Skia.WebAssembly.Browser.Graphics;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -61,6 +63,8 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
+		public GLFlavor Flavor => GLFlavor.WebGL;
+		public Func<string, nint> GetProcAddress => WasmGLFunctions.GetProcAddress;
 		public void Dispose() { }
 	}
 

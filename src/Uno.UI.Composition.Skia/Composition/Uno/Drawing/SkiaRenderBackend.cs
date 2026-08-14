@@ -55,10 +55,19 @@ internal sealed class SkiaRenderer : IRenderer, IDisposable
 	// framebuffer, then compose into its (borrowed, cached-across-frames) canvas. The context swaps on present.
 	private IPresentSession PresentForGL(IGLRenderTarget gl)
 	{
+		// GLES/WebGL: assemble the interface from the host's neutral proc loader (the seam mandates one, so this
+		// path is backend-agnostic). Desktop GL: SkiaSharp's proc-assembled interface (CreateOpenGl/Create(getProc))
+		// segfaults on Mesa/llvmpipe — validated with three loader variants — whereas its compiled-in native
+		// interface (Create()) renders correctly, so desktop GL uses that. The loader still rides the seam for any
+		// non-Skia backend; this is purely SkiaSharp's own desktop-GL assembly being unstable.
+		var loader = gl.GetProcAddress;
 		_glContext ??= GRContext.CreateGl(
-				(gl.IsGles && gl.GetProcAddress is { } loader
-					? GRGlInterface.CreateGles(name => loader(name))
-					: GRGlInterface.Create())
+				(gl.Flavor switch
+				{
+					GLFlavor.OpenGLES => GRGlInterface.CreateGles(name => loader(name)),
+					GLFlavor.WebGL => GRGlInterface.CreateWebGl(name => loader(name)),
+					_ => GRGlInterface.Create(),
+				})
 				?? throw new NotSupportedException("OpenGL is not available (GRGlInterface create failed)."))
 			?? throw new NotSupportedException("Failed to create an OpenGL GRContext.");
 

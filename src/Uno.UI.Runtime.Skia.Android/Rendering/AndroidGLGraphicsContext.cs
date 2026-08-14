@@ -1,6 +1,7 @@
 using System;
 using Android.Opengl;
 using Uno.UI.Composition.Drawing;
+using Uno.WinUI.Runtime.Skia.Android;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
@@ -44,6 +45,8 @@ internal sealed class AndroidGLGraphicsContext : IGraphicsContext
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
+		public GLFlavor Flavor => GLFlavor.OpenGLES;
+		public Func<string, nint> GetProcAddress => AndroidNativeOpenGLWrapper.GetProcAddressStatic;
 		public void Dispose() { }
 	}
 }
