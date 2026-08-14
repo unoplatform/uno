@@ -80,6 +80,7 @@ on macOS with Skia rendering. To migrate:
 | `Uno.WinUI.WebAssembly` package removed (and the older `Uno.WinUI.Runtime.WebAssembly`) | Use `Uno.WinUI.Runtime.Skia.WebAssembly.Browser`. The UI renders to a canvas; there is no DOM tree. With the `Uno.SDK`, the Skia browser head is referenced implicitly — there is nothing to add. |
 | `Uno.WinUI.Skia.X11`, `Uno.WinUI.Skia.MacOS`, and `Uno.WinUI.Skia.Linux.FrameBuffer` bootstrapper packages removed | These were empty meta-packages that only redirected to the real head. With the `Uno.SDK`, remove the reference — the matching `Uno.WinUI.Runtime.Skia.*` head is referenced implicitly for executable heads. For a hand-rolled (non-`Uno.SDK`) head, replace it with the corresponding `Uno.WinUI.Runtime.Skia.<variant>` package. |
 | `Uno.UI.BindingHelper.Android` assembly removed | Remove the reference; Skia-on-Android needs no Java/JNI binding. |
+| `Uno.UI.FluentTheme.v1` assembly removed | The Fluent Design **V1** styles were deleted several releases ago and the assembly has shipped empty since. Nothing to do — `Uno.UI.FluentTheme` and `Uno.UI.FluentTheme.v2` are unchanged and are what `XamlControlsResources` has always loaded. |
 | `Uno.UniversalImageLoader` no longer injected (Android) | Skia handles image loading internally. If you initialized it manually, remove the `ConfigureUniversalImageLoader();` call. |
 | `Uno.UI.Maps` AddIn removed | The native Google Maps control has no core Skia equivalent — use a third-party/Skia map or custom rendering. |
 | `Uno.WinUI` UI assemblies for `net*-android/ios/tvos` are now the Skia binaries | Same TFM string, but binary-incompatible with previously native-built consumers. Recompile all libraries against 7.0 and remove native bootstrap. |
@@ -201,6 +202,19 @@ The other namespaces carried by that assembly keep their names, so code using
   from `System.Runtime.InteropServices.JavaScript` — the recommended, source-generated path
   (thread-safe, CSP-compliant, no `eval`). The string-based `WebAssemblyRuntime.InvokeJS(string)`
   is *not* removed, but it is a legacy eval-based API and is not recommended for new code.
+- **Fluent Design V1 selection:** `Microsoft.UI.Xaml.Controls.XamlControlsResourcesV1`, the
+  `ControlsResourcesVersion` enum, and the `XamlControlsResources.ControlsResourcesVersion`
+  property/dependency property. The V1 styles were deleted several releases ago, and
+  `XamlControlsResources` has loaded V2 regardless of this property ever since — so removing it
+  changes no visual behavior. Windows App SDK has no equivalent surface either. Drop the
+  assignment, in code or in XAML:
+
+  ```diff
+  - <XamlControlsResources ControlsResourcesVersion="Version2" />
+  + <XamlControlsResources />
+  ```
+
+  If you instantiated `XamlControlsResourcesV1` directly, replace it with `XamlControlsResources`.
 
 ### `FeatureConfiguration` flags removed
 

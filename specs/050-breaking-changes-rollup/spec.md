@@ -262,12 +262,13 @@ _Danger 3-4. Heavier multi-file changes: remove the legacy templated-parent mech
 - [ ] **BC39** — Clean up `DependencyPropertyValuePrecedences` enum  `d2·M` · PR #15684
   - Hard-remove obsolete enum members (no `[EditorBrowsable]` aliases).
   - Files: `src/Uno.UI/UI/Xaml/DependencyPropertyValuePrecedences.cs`, `src/Uno.UI/UI/Xaml/DependencyObjectStore.cs`, `src/Uno.UI/UI/Xaml/Internal/DependencyPropertyHelper.cs`
-- [ ] **BC71** — Remove Fluent V1 public surface  `d2·M` · #14765
-  - Hard-remove `XamlControlsResourcesV1` + `ControlsResourcesVersion.Version1` + build/package scaffolding (V1 content is already gone).
-  - Files: `src/Uno.UI.FluentTheme.v1/XamlControlsResourcesV1.cs`, `src/Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Skia.csproj`, `src/Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Wasm.csproj`
 - [ ] **BC53** — Rename `Uno.UI.Toolkit` assembly/namespace -> **`Uno.UI.Extras`**  `d4·M` · #12322
   - Name decided. Hard rename, no type-forwarders / xmlns alias (per hard-remove policy). Only the `Uno.UI.Toolkit`, `.DevTools.*` and `.Extensions` namespaces move; `Uno.Diagnostics.UI`, `Uno.UI.Markup`, `Uno.Helpers`, `Uno.UI` and `Uno.UI.Maps` stay. See [spec 056](../056-assembly-renames/spec.md).
   - Files: `src/Uno.UI.Toolkit/`, `src/Uno.UI.Toolkit/Uno.UI.Toolkit.Skia.csproj`, `src/Uno.UI.Toolkit/Uno.UI.Toolkit.Windows.csproj`
+- [x] **BC71** — Remove Fluent V1 public surface  `d2·M` · #14765
+  - Hard-removed `XamlControlsResourcesV1`, the whole `ControlsResourcesVersion` enum, and `XamlControlsResources.ControlsResourcesVersion` (WinAppSDK has no such surface and V2 was already forced unconditionally), plus the `Uno.UI.FluentTheme.v1` project and its build/pack scaffolding. Collapsed the now-single-version theme-resource plumbing.
+  - Files: `src/Uno.UI.FluentTheme.v1/` (deleted), `src/Uno.UI/UI/Xaml/Controls/ControlsResourcesVersion.cs`, `src/Uno.UI.FluentTheme/XamlControlsResources.cs`, `src/Uno.UI/UI/Xaml/XamlFilePathHelper.shared.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.cs`, `build/nuget/Uno.WinUI.nuspec`, `build/PackageDiffIgnore.xml`
+  - Follow-up: `XamlControlsResourcesV2` is itself a WinUI-2-era type with no WinAppSDK counterpart — worth its own BC assessment.
 - [ ] **BC76** — Remove/internalize `Windows.UI.Input.*` (~173 types)  `d4·M` · #18875
   - Hard-remove the ~173 stub types. The **real** `InputInjector` family (test infra) -> move to `Microsoft.UI.Input.Preview.Injection` and update call sites.
   - Files: `src/Uno/Generated/3.0.0.0/Windows.UI.Input`, `src/Uno/Generated/3.0.0.0/Windows.UI.Input.Spatial`, `src/Uno/Generated/3.0.0.0/Windows.UI.Input.Inking`

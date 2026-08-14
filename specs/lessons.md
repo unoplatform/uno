@@ -48,3 +48,8 @@ one diff. No specific file paths from the change that triggered it.
 - **Lens:** all
 - **Lesson:** "Green on the other branch, red here" is not evidence the diff caused it when the branches build on different SDKs or TFMs — long-lived integration branches routinely carry a runtime bump the trunk doesn't. A failure was attributed to a branch's own commits until the two pipelines turned out to run different .NET versions.
 - **Apply:** When citing another branch's CI as a baseline, confirm both ran the same SDK/TFM first; otherwise say the comparison is confounded rather than drawing a causal conclusion.
+
+## 2026-08-14 — Verify an issue's counted file references before planning around them
+- **Lens:** all
+- **Lesson:** BC71's issue text asserted "38 verified references" to `Uno.UI.FluentTheme.v1` in `Uno.WinUI.nuspec` (actual: 6), told us to prune `Uno.Sdk` `packages.json` and the implicit-package targets (zero hits anywhere under `src/Uno.Sdk/`), and `specs/050` listed four `.Skia`/`.Wasm`/`.Reference`/`.netcoremobile` csproj variants that had already been collapsed into one. All three came from a generated assessment (`_gen.py` / `assessments-raw.json`) captured against an older worktree.
+- **Apply:** Treat counts and file lists in a generated issue/spec as a starting query, not an inventory. Re-grep before sizing the work, and record the corrections in the PR so the next reader doesn't re-derive them.
