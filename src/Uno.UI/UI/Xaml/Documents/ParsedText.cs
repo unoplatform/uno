@@ -887,15 +887,14 @@ internal readonly struct ParsedText : IParsedText
 		{
 			var font = fontInfo.FontHandle;
 
-			using (var outline = font.BuildGlyphRunOutline(glyphs, positions, y))
+			var images = font.HasColorGlyphs ? new List<PositionedGlyphImage>() : null;
+			using (var outline = font.BuildGlyphRunOutline(glyphs, positions, y, images))
 			{
 				drawingSession.DrawPath(outline, color, antialias: true);
 			}
 
-			if (font.HasColorGlyphs)
+			if (images is { Count: > 0 })
 			{
-				var images = new List<PositionedGlyphImage>();
-				font.AppendColorGlyphImages(glyphs, positions, y, images);
 				// Each glyph is already a backend texture (rendered offscreen, no readback). Draw them, then dispose
 				// the whole set in finally so a mid-loop throw can't leak GPU textures.
 				try

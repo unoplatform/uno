@@ -300,7 +300,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			}
 
 			var images = new System.Collections.Generic.List<Uno.UI.Composition.Drawing.PositionedGlyphImage>();
-			font.AppendColorGlyphImages(glyphs, positions, 0f, images);
+			using (font.BuildGlyphRunOutline(glyphs, positions, 0f, images)) { }
 
 			Assert.IsTrue(images.Count > 0, "expected the color emoji glyph to rasterize to at least one image");
 			Assert.IsTrue(images[0].Width > 0 && images[0].Height > 0, "expected the rasterized glyph image to have a positive size");

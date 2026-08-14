@@ -461,7 +461,7 @@ internal sealed class ManagedFont : IFont
 		return end > start && S16(_data, _glyf + start) < 0;
 	}
 
-	public IGeometry BuildGlyphRunOutline(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY)
+	public IGeometry BuildGlyphRunOutline(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<PositionedGlyphImage>? colorGlyphs = null)
 	{
 		var scale = _pixelSize / _unitsPerEm;
 		var builder = GeometryFactory.Current.CreatePathBuilder();
@@ -469,7 +469,14 @@ internal sealed class ManagedFont : IFont
 		{
 			if (HasColorGlyphs && _colr!.HasBaseGlyph(glyphs[i]))
 			{
-				continue; // drawn as a color image by AppendColorGlyphImages
+				// Colour glyph — rasterized as a positioned image below, excluded from the outline.
+				if (colorGlyphs is not null
+					&& TryRasterizeColorGlyph(glyphs[i], positions[i].X, positions[i].Y + baselineY, scale, out var image))
+				{
+					colorGlyphs.Add(image);
+				}
+
+				continue;
 			}
 
 			// Font units are Y-up with the origin at the baseline; screen space is Y-down.
@@ -477,23 +484,6 @@ internal sealed class ManagedFont : IFont
 		}
 
 		return builder.Build();
-	}
-
-	public void AppendColorGlyphImages(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<PositionedGlyphImage> output)
-	{
-		if (!HasColorGlyphs)
-		{
-			return;
-		}
-
-		var scale = _pixelSize / _unitsPerEm;
-		for (var i = 0; i < glyphs.Length; i++)
-		{
-			if (TryRasterizeColorGlyph(glyphs[i], positions[i].X, positions[i].Y + baselineY, scale, out var image))
-			{
-				output.Add(image);
-			}
-		}
 	}
 
 	private bool TryRasterizeColorGlyph(ushort glyph, float originX, float originY, float scale, out PositionedGlyphImage result)

@@ -966,15 +966,14 @@ internal readonly partial struct UnicodeText : IParsedText
 				var glyphSpan = CollectionsMarshal.AsSpan(glyphs);
 				var positionSpan = CollectionsMarshal.AsSpan(positions);
 
-				using (var outline = font.BuildGlyphRunOutline(glyphSpan, positionSpan, 0))
+				var images = font.HasColorGlyphs ? new List<PositionedGlyphImage>() : null;
+				using (var outline = font.BuildGlyphRunOutline(glyphSpan, positionSpan, 0, images))
 				{
 					drawingSession.DrawPath(outline, paintColor, antialias: true);
 				}
 
-				if (font.HasColorGlyphs)
+				if (images is { Count: > 0 })
 				{
-					var images = new List<PositionedGlyphImage>();
-					font.AppendColorGlyphImages(glyphSpan, positionSpan, 0, images);
 					// Each glyph is already a backend texture (rendered offscreen, no readback). Draw them, then
 					// dispose the whole set in finally so a mid-loop throw can't leak GPU textures.
 					try
