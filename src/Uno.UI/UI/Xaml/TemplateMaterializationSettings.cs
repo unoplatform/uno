@@ -17,7 +17,7 @@ public class TemplateMaterializationSettings
 	public DependencyObject? TemplatedParent => _templatedParentWR?.Target as DependencyObject;
 	public Action<DependencyObject>? TemplateMemberCreatedCallback { get; }
 
-	public TemplateMaterializationSettings(DependencyObject? TemplatedParent, Action<DependencyObject>? TemplateMemberCreatedCallback)
+	internal TemplateMaterializationSettings(DependencyObject? TemplatedParent, Action<DependencyObject>? TemplateMemberCreatedCallback)
 	{
 		if (TemplatedParent != null)
 		{

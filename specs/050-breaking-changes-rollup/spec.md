@@ -258,7 +258,7 @@ _Danger 3-4. Heavier multi-file changes: remove the legacy templated-parent mech
 
 - [x] **BC01** — Remove legacy templated-parent mechanism  `d3·L` · #18672
   - Hard-removed the ambient `TemplatedParentScope` (including its `DependencyObjectStore` ctor hook), both `ENABLE_LEGACY_*` symbols, both `Microsoft.UI.Xaml` builder delegates (`FrameworkTemplateBuilder` **and** `NewFrameworkTemplateBuilder`), every builder ctor (now internal behind `MarkupHelper.Create*`), the TP-less `Func<View?>` factories, and the vestigial `DependencyObject.TemplatedParent` DP.
-  - The surviving factory shape is `Uno.UI.FrameworkTemplateBuilder` — `(object? owner, TemplateMaterializationSettings settings) => UIElement?`, declared next to `TemplateManager` rather than in the WinUI namespace.
+  - The surviving factory shape is `Uno.UI.FrameworkTemplateBuilder` — `(object? owner, TemplateMaterializationSettings settings) => UIElement?`, declared next to `TemplateManager` rather than in the WinUI namespace. Its `settings` argument is now framework-constructed only (internal ctor); a builder still reads the properties.
   - The stated prerequisite ("fix the tests that force `_isLegacyTemplate=true`") was already moot: `_isLegacyTemplate` is a `private const` nothing assigns, and the suites pass with it `false`.
   - Files: `src/Uno.UI/UI/Xaml/FrameworkTemplate.cs`, `src/Uno.UI/UI/Xaml/TemplatedParentScope.cs` (deleted), `src/Uno.UI/UI/Xaml/ControlTemplate.cs`
 - [ ] **BC39** — Clean up `DependencyPropertyValuePrecedences` enum  `d2·M` · PR #15684
