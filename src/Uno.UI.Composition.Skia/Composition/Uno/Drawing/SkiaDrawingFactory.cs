@@ -181,6 +181,12 @@ internal sealed class SkiaDrawingFactory : IDrawingFactory
 		return filter is null ? null : new SkiaEffectFilter(filter);
 	}
 
+	public IEffectFilter? CreateEffectFilter(EffectNode tree, Rect bounds)
+	{
+		var filter = new SkiaEffectFuser().Fuse(tree, bounds.ToSKRect());
+		return filter is null ? null : new SkiaEffectFilter(filter);
+	}
+
 	public IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, Color color)
 		=> new SkiaEffectFilter(SKImageFilter.CreateOffset(dx, dy, SKImageFilter.CreateCompose(
 			SKImageFilter.CreateBlur(sigmaX, sigmaY),

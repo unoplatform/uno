@@ -127,13 +127,40 @@ IGraphicsEffect --(Uno-internal parser, D2D reflection once)--> EffectNode tree 
 Net vs the original opaque-`IGraphicsEffect` SPI: the ~1,500-line per-backend **D2D interpreter** collapses to one
 neutral parser + a per-backend tree→native fuser (no D2D); both backends get a clean typed tree.
 
-### Remaining implementation
+### Node set (final)
 
-1. Enrich `EffectNode` to carry every effect the backends support (params per node), not just the structural set.
-2. Change the SPI to `CreateEffectFilter(EffectNode, …)`; `CompositionEffectBrush` parses then calls it.
-3. Rewrite `SkiaEffectFactory` to fuse the tree (switch on node type, not D2D `EffectType`); validate acrylic +
-   `EffectBrushTests` parity (GL + software).
-4. Same for WebGPU; then delete the `IGraphicsEffect` consumption + `EffectGraphEvaluator`.
+`EffectNode` (public, in `Uno.UI.Composition.Drawing` so the backend SPI can take it):
+- Leaves: `BackdropInput` (deferred live scene — the only non-texture input); `ColorInput(Color)`;
+  `TextureInput(IImageTexture)` (a brush/image/noise input the neutral layer rasterized via `RenderOffscreen` at
+  parse time — replaces `IEffectSource`/`BrushInput`).
+- Ops: `ColorMatrixEffectNode(Source, float[] matrix)` (absorbs Opacity + every colour effect that is a 5×4
+  matrix — Grayscale/Invert/Saturation/Sepia/Hue/Contrast/Exposure/Temperature/Tint — the parser computes the
+  matrix); `BlurEffectNode(Source, σ, clampEdge)`; `BlendEffectNode(bg, fg, BlendMode)`;
+  `CompositeEffectNode(sources[], BlendMode)`.
+- Later, non-matrix ops as their own nodes (transfer curves, arithmetic-composite, cross-fade, border, noise,
+  lighting).
+
+`hasBackdrop` is **not** a parameter — the composition layer computes it from the tree
+(`tree.Any(n => n is BackdropInput)`) to drive `RequiresRepaintOnEveryFrame`. SPI:
+`IEffectFilter CreateEffectFilter(EffectNode tree, Rect bounds)`.
+
+### Steps
+
+1. Move `EffectNode` to `Uno.UI.Composition.Drawing` (public); add `TextureInput`; delete `EffectGraphEvaluator`.
+2. Parser: `IGraphicsEffect` → tree, rasterizing non-backdrop brush sources to `TextureInput` via `RenderOffscreen`.
+3. Add SPI `CreateEffectFilter(EffectNode, Rect)` **alongside** the old `(IGraphicsEffect,…)` (keep the old as the
+   parity reference); Skia + WebGPU + command-list fallback implement it.
+4. Skia fuser: tree → `SKImageFilter` (the existing `SkiaEffectFactory` building, reading node fields).
+5. `CompositionEffectBrush`: parse → `CreateEffectFilter(tree, bounds)` → `DrawEffectBackdrop(filter)` behind the
+   toggle; validate **pixel parity vs the old path** on `Given_AcrylicBrush` (GL + forced-software).
+6. WebGPU fuser: tree → `WebGpuEffectFilter`; validate the same.
+7. Broaden colour effects (matrices) for `EffectBrushTests` parity.
+8. Make the tree path the default; delete the old `CreateEffectFilter(IGraphicsEffect)` + `SkiaEffectFactory`'s
+   D2D reflection + `EffectGraphEvaluator`.
+
+Parity is guaranteed by construction: the parser feeds the backend the same params the old code read from D2D, and
+the fuser builds the same `SKImageFilter`s — validated screenshot-for-screenshot against the old path before the
+old path is removed.
 
 ## Status (WIP)
 
