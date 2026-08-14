@@ -65,7 +65,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 		// per-pixel colour effect); TryPaint then falls back to the recipe path. Not an error.
 		_tree = EffectGraphParser.Parse(_effect, bounds, GetSourceParameter);
 		_filter = DrawingFactory.Current.CreateEffectFilter(_tree, bounds);
-		HasBackdropBrushInput = _tree.ContainsBackdrop();
+		HasBackdropBrushInput = _tree.ContainsSourceInput();
 		_currentBounds = bounds;
 	}
 

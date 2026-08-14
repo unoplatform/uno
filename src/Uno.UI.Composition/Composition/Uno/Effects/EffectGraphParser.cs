@@ -42,7 +42,7 @@ internal static class EffectGraphParser
 
 				if (brush is CompositionBackdropBrush)
 				{
-					return new BackdropInput();
+					return new SourceInput();
 				}
 
 				// Non-backdrop brush/image/noise input: rasterize it to a backend texture once, so the backend never

@@ -80,7 +80,7 @@ public interface IDrawingFactory
 
 	/// <summary>
 	/// Fuses a neutral <see cref="EffectNode"/> tree (produced by Uno's parser — brush inputs already rasterized to
-	/// <see cref="TextureInput"/>, the backdrop left as <see cref="BackdropInput"/>) into an opaque backend
+	/// <see cref="TextureInput"/>, the backdrop left as <see cref="SourceInput"/>) into an opaque backend
 	/// <see cref="IEffectFilter"/>. The backend combines the whole tree into one native filter (e.g. a single
 	/// <c>SKImageFilter</c> DAG) so non-separable blends over the backdrop stay one fused operation. Returns null when
 	/// the backend can't realize the tree as a filter (the caller then falls back to the recipe path).
