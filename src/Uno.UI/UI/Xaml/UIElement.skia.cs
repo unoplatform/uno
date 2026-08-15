@@ -91,6 +91,13 @@ namespace Microsoft.UI.Xaml
 					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
 #endif
 					_visual.Owner = new WeakReference(this);
+
+					// Suppress painting until the first arrange gives this element a layout slot; see
+					// Visual.IsArrangePending. Set directly rather than through Visibility/IsVisible, which
+					// would raise property-changed and accessibility callbacks while the element is still
+					// being constructed. Only FrameworkElements reach ArrangeVisual (UIElement.Arrange
+					// returns early otherwise), so anything else must never be suppressed.
+					_visual.IsArrangePending = _isFrameworkElement && !IsFirstArrangeDone;
 				}
 
 				return _visual;
@@ -153,6 +160,14 @@ namespace Microsoft.UI.Xaml
 
 			// Reset to original (invalidated) state
 			child.ResetLayoutFlags();
+
+			// ResetLayoutFlags clears FirstArrangeDone, so the child has no layout slot under this parent
+			// until it is arranged again — re-suppress it, otherwise it would keep painting at its stale
+			// slot (or at the new parent's origin) in the meantime.
+			if (child._isFrameworkElement)
+			{
+				child.Visual.IsArrangePending = true;
+			}
 
 			if (IsMeasureDirtyPathDisabled)
 			{
@@ -310,6 +325,11 @@ namespace Microsoft.UI.Xaml
 		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
 			LayoutSlotWithMarginsAndAlignments = finalRect;
+
+			// This element now has a layout slot, so it may paint. Cleared before the no-change check
+			// below, which would otherwise leave a first arrange that happens to match the default rect
+			// permanently suppressed.
+			Visual.IsArrangePending = false;
 
 			var oldFinalRect = _lastFinalRect;
 			var oldClippedFrame = _lastClippedFrame;

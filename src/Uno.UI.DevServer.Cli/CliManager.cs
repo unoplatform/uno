@@ -355,6 +355,22 @@ internal class CliManager
 			return 1; // errors already logged
 		}
 
+		// `login --headless` runs the settings app as a CLI rather than opening its window. It prints the
+		// loopback redirect URI the sign-in has to complete on, and exits with a meaningful code. Both are
+		// lost on the windowed path below, which buffers the child's streams and treats "still running after
+		// the grace period" as success — so let the child own the console and wait for it to finish,
+		// forwarding its exit code without adding parent output that would interleave with the prompt.
+		if (originalArgs.Any(a => string.Equals(a, "--headless", StringComparison.OrdinalIgnoreCase)))
+		{
+			var headlessStartInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(
+				studioExecutable,
+				originalArgs,
+				workingDirectory,
+				redirectOutput: false);
+
+			return await DevServerProcessHelper.RunInteractiveProcessAsync(headlessStartInfo, _logger);
+		}
+
 		var startInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(studioExecutable, originalArgs, workingDirectory, redirectOutput: true);
 
 		var (exitCode, stdOut, stdErr) = await DevServerProcessHelper.RunGuiProcessAsync(startInfo, _logger, TimeSpan.FromSeconds(3));

@@ -227,6 +227,8 @@
         href: xref:Uno.Skia.Desktop
       - name: Linux Framebuffer
         href: features/using-linux-framebuffer.md
+      - name: Headless (offscreen)
+        href: features/using-skia-headless.md
       - name: Using Skia Desktop (macOS)
         href: xref:Uno.Skia.macOS
       - name: Vulkan Rendering Backend

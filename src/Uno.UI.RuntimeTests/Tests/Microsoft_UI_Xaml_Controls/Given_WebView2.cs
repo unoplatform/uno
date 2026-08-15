@@ -311,7 +311,7 @@ public class Given_WebView2
 	[Ignore("Crashes")]
 #endif
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit)] // Flaky on UIKit - #9080
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaUIKit)] // Flaky on UIKit - #9080
 	public async Task When_LocalFolder_File()
 	{
 		async Task Do()

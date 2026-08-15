@@ -1626,6 +1626,9 @@ namespace Microsoft.UI.Xaml
 		internal void ReleasePointerCapture(global::Windows.Devices.Input.PointerIdentifier pointer, bool muteEvent = false, PointerCaptureKind kinds = PointerCaptureKind.Explicit)
 		{
 			if (!Release(pointer, kinds, muteEvent: muteEvent)
+				// Release reports whether the CaptureLost event was raised, so it's always false when muted:
+				// don't log the misleading "not captured" trace for a successful muted release.
+				&& !muteEvent
 				&& this.Log().IsEnabled(LogLevel.Information))
 			{
 				this.Log().Info($"{this}: Cannot release pointer {pointer}: not captured by this control.");
