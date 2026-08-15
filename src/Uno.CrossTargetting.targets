@@ -31,17 +31,8 @@
 		<None Include="**\*.UIKit.cs" Exclude="bin\**\*.UIKit.cs;obj\**\*.UIKit.cs" Condition="!$(IsAppleUIKit)" />
 		<Compile Remove="**\*.UIKit.cs" Condition="!$(IsAppleUIKit)" />
 
-		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" Condition="!$(IsIOS)" />
-		<Compile Remove="**\*.iOSmacOS.cs" Condition="!$(IsIOS)" />
-
-		<None Include="**\*.Apple.cs" Exclude="bin\**\*.Apple.cs;obj\**\*.Apple.cs" Condition="!$(IsApple)" />
-		<Compile Remove="**\*.Apple.cs" Condition="!$(IsApple)" />
-
 		<None Include="**\*.Android.cs" Exclude="bin\**\*.Android.cs;obj\**\*.Android.cs" Condition="!$(IsAndroid)" />
 		<Compile Remove="**\*.Android.cs" Condition="!$(IsAndroid)" />
-
-		<None Include="**\*.Xamarin.cs" Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsApple)" />
-		<Compile Remove="**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsApple)" />
 	</ItemGroup>
 
 	<!--

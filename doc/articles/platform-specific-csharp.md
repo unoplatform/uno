@@ -111,10 +111,8 @@ Starting from Uno Platform 5.2, in project or class libraries using the `Uno.Sdk
 * `*.iOS.cs` is built only for `net10.0-ios`
 * `*.tvOS.cs` is built only for `net10.0-tvos`
 * `*.UIKit.cs` is built only for `net10.0-ios` and `net10.0-tvos`
-* `*.Apple.cs` is built only for `net10.0-ios` and `net10.0-tvos`
 * `*.Android.cs` is built only for `net10.0-android`
 * `*.WinAppSDK.cs` is built only for `net10.0-windows10` (eg. `net10.0-windows10.0.22621`)
-* `*.iOSmacOS.cs` is built only for `net10.0-ios`
 * `*.crossruntime.cs` and `*.skia.cs` are built for every target framework except `net10.0-windows10`
 
 `*.crossruntime.cs` and `*.skia.cs` are equivalent, and hold code for the target frameworks Uno Platform renders itself as opposed to the WinAppSDK one. Neither names a drawing backend: `Uno.UI` is compiled once and resolves its backend at run time.
@@ -123,7 +121,9 @@ Starting from Uno Platform 5.2, in project or class libraries using the `Uno.Sdk
 > Before Uno Platform 7.0, `*.skia.cs` and `*.crossruntime.cs` were built only for `net10.0-desktop`, which made `*.skia.cs` an alias of `*.desktop.cs`. A file that is genuinely desktop-only should be renamed to `*.desktop.cs`.
 
 > [!NOTE]
-> `*.reference.cs` is no longer built for any target framework and can be removed.
+> `*.reference.cs`, `*.iOSmacOS.cs` and `*.Apple.cs` are no longer recognized. `*.reference.cs` and
+> `*.iOSmacOS.cs` named build flavors that no longer exist and can be removed; rename `*.Apple.cs` to
+> `*.UIKit.cs`, which always had the identical rule.
 
 Using file name conventions allows for reducing the use of `#if` compiler directives.
 
