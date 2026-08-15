@@ -5,16 +5,12 @@ using System;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// A live GPU-API connection/device (WebGPU Instance/Adapter/Device/Queue, a GL context, a
-/// <c>VkDevice</c>+queue, an <c>MTLDevice</c>). Created by the host's <see cref="GraphicsContextFactory"/> for a
-/// negotiated kind; owns the window binding, swapchain/surface, present, and the dirty-rect blit internally.
-/// A backend consumes it (downcasting to its kind-specific type) to build pipelines and render targets.
-/// </summary>
-/// <summary>
-/// A thin init handle for a backend's GPU device/connection (instance/adapter/device/queue), produced by the
-/// context factory and passed to the matched backend pair to bind it to the device. It is not a resource
-/// factory — resource creation (textures, shaders, filters, …) lives on <see cref="IDrawingFactory"/>, and the
-/// frame render target is a render-side concern.
+/// The backend-facing GPU device handle for a negotiated kind (WebGPU Instance/Adapter/Device/Queue, a GL
+/// context, a <c>VkDevice</c>+queue, an <c>MTLDevice</c>+queue). Produced by the host's
+/// <see cref="GraphicsContextFactory"/> and handed to the matched backend, which downcasts it to its
+/// kind-specific device interface to bind. It is not a resource factory (that is <see cref="IDrawingFactory"/>);
+/// the per-frame acquire/present swapchain loop is the host-facing <see cref="ISwapChain"/>; the frame render
+/// target is a render-side concern.
 /// </summary>
 public interface IGraphicsContext : IDisposable
 {
