@@ -230,6 +230,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R)
 		{
 			var windowMetrics = activity.WindowManager?.CurrentWindowMetrics;
+			if (windowMetrics is null)
+			{
+				return default;
+			}
+
 			displaySize = new Size(windowMetrics.Bounds.Width(), windowMetrics.Bounds.Height());
 		}
 		else

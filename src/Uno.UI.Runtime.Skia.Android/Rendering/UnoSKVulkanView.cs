@@ -222,7 +222,10 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 					size => skSurface.Canvas);
 
 				// Update the native layer host clip path
-				_activity.NativeLayerHost!.Path = nativeClipPath;
+				if (_activity.NativeLayerHost is { } nativeLayerHost)
+				{
+					nativeLayerHost.Path = nativeClipPath;
+				}
 			});
 		}
 		catch (Exception ex)
