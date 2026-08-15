@@ -95,9 +95,6 @@ partial class InputManager
 
 			_reRouted = new ReRouted(routedArgs, from, to);
 
-#if HAS_NATIVE_IMPLICIT_POINTER_CAPTURE
-			UIElement.ReRoutePointerSequenceTo(to);
-#endif
 		}
 		#endregion
 

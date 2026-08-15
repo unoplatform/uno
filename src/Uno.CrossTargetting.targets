@@ -51,7 +51,6 @@
   - UNO_HAS_MANAGED_SCROLL_PRESENTER: Determines if the platforms supports managed scroll presenter which
 									  uses render transforms instead of native scroll feature (if any)
   - UNO_HAS_MANAGED_POINTERS: Determines if the pointer events are dispatched by uno instead of the system (if any).
-  - HAS_NATIVE_IMPLICIT_POINTER_CAPTURE: Indicate if the OS once a pointer is pressed, OS will send all pointer event to the same target (a.k.a. OriginalSource)
   - HAS_RENDER_TARGET_BITMAP : Determines if the render target bitmap is implemented (and can be used to take screenshot in runtime tests)
   - UNO_HAS_BORDER_VISUAL: Determine if borders are rendered using compostion APIs by Uno (or using native promitives)
   - HAS_COMPOSITION_API : Determines if teh composition APIs (i.e. UIElement.Visual) are supported or not.
@@ -79,11 +78,11 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsIOS)">
-		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE;HAS_RENDER_TARGET_BITMAP</DefineConstants>
+		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_RENDER_TARGET_BITMAP</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsTvOS)">
-		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE;HAS_RENDER_TARGET_BITMAP</DefineConstants>
+		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_RENDER_TARGET_BITMAP</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsAppleUIKit)">
@@ -91,7 +90,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsAndroid)">
-		<DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE;HAS_RENDER_TARGET_BITMAP</DefineConstants>
+		<DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN;HAS_RENDER_TARGET_BITMAP</DefineConstants>
 		<SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
