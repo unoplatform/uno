@@ -215,11 +215,13 @@ crash). E6 (Win32/Android Vulkan contexts) remains — mechanical mirrors of E5.
 
 - `UseOpenGLOnSkiaAndroid` set-but-never-read: Android `ApplicationActivity.CreateRenderView` only branched
   WebGpu-vs-GLES; setting it false was silently ignored. **PARTIAL:** the flag is now **non-silent** — when false,
-  `CreateRenderView` logs a clear warning and uses the GLES canvas view. **DEFERRED:** actually forcing software
-  needs a real Android software swapchain (a `SurfaceView` + `SurfaceHolder.LockCanvas` path with a per-pixel
-  BGRA→RGBA present, since the neutral `ISoftwareRenderTarget` is BGRA8888 but Android `Bitmap` is RGBA8888). That
-  is a new renderer with a channel-order correctness hazard that can't be validated without an Android device — not
-  shipped blind on a maintenance-only target. Tracked for on-device follow-up.
+  `CreateRenderView` logs a clear warning and uses the GLES canvas view. **REMAINING:** actually forcing software
+  needs an Android software swapchain — a `SurfaceView` + `SurfaceHolder.LockCanvas` path handing an
+  `ISoftwareRenderTarget`. There is **no channel-order blocker**: `ISoftwareRenderTarget` already carries
+  `ColorFormat`, and the Skia backend honors it (`SkiaPresentSession.ForSoftware` wraps the buffer as RGBA or BGRA
+  per that field), so the Android context can hand an **RGBA8888** target (Android `Bitmap`'s native order) with no
+  swizzle. (feature/breakingchanges did the equivalent inside the GLSurfaceView: render a CPU `SKSurface`, blit onto
+  the GL surface.) Compile-only until run on an Android device.
 
 ## Validation
 
