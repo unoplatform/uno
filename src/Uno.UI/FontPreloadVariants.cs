@@ -8,7 +8,8 @@ namespace Uno.UI;
 /// </summary>
 /// <remarks>
 /// Weight flags select upright, normal-width faces. <see cref="Italic"/> and <see cref="Condensed"/>
-/// widen that selection to the italic and condensed forms of the selected weights.
+/// widen that selection to the italic and non-normal-width forms of the selected weights. At least one
+/// weight flag is required: <see cref="Italic"/> or <see cref="Condensed"/> on their own preload nothing.
 /// </remarks>
 [Flags]
 public enum FontPreloadVariants
@@ -29,7 +30,7 @@ public enum FontPreloadVariants
 	/// <summary>Also preload the italic form of each selected weight.</summary>
 	Italic = 1 << 16,
 
-	/// <summary>Also preload the condensed and semi-condensed widths of each selected weight.</summary>
+	/// <summary>Also preload the non-normal widths (condensed and expanded) of each selected weight.</summary>
 	Condensed = 1 << 17,
 
 	/// <summary>Every variant declared by the font manifest.</summary>
