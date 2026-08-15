@@ -32,7 +32,6 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(WindowsPackageType)' == 'MSIX'">
-		<DefineConstants>$(DefineConstants);WINAPPSDK_PACKAGED</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
