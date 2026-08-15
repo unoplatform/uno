@@ -17,14 +17,18 @@ public sealed class SkiaGraphicsProvider :
 	// explicit order to the constructor (e.g. `new SkiaGraphicsProvider(GraphicsContextKind.Software)` to force
 	// software, or `{ OpenGLES, Software }` to prefer GLES); and a host declines kinds per its own config (Win32
 	// returns null for OpenGL when UseOpenGLOnWin32 is false, X11 for OpenGL when PreferGLESOverGLOnX11, etc.).
-	// The default order below prefers desktop GL, then GLES, Vulkan, Metal, then software.
+	// Default order: Vulkan first, then desktop GL, GLES, Metal, then software. This matches the historical
+	// per-host selection (feature/breakingchanges): X11/Win32 tried Vulkan first and fell back to GL, so Vulkan
+	// is the default on the GPU hosts that serve it (they decline it — return null — when their UseVulkanOnX/
+	// UseOpenGLOnX knobs say so, and negotiation falls through). Hosts that don't serve Vulkan (macOS→Metal,
+	// LinuxFB/WASM→GLES) decline it and the next kind they serve wins, so the order is safe for them too.
 	private readonly GraphicsContextKind[] _preferred;
 
 	public SkiaGraphicsProvider(params GraphicsContextKind[] preferred)
 	{
 		_preferred = preferred.Length > 0
 			? preferred
-			: new[] { GraphicsContextKind.OpenGL, GraphicsContextKind.OpenGLES, GraphicsContextKind.Vulkan, GraphicsContextKind.Metal, GraphicsContextKind.Software };
+			: new[] { GraphicsContextKind.Vulkan, GraphicsContextKind.OpenGL, GraphicsContextKind.OpenGLES, GraphicsContextKind.Metal, GraphicsContextKind.Software };
 	}
 
 	public IReadOnlyList<GraphicsContextKind> PreferredContexts => _preferred;

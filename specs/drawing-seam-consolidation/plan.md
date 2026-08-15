@@ -183,9 +183,19 @@ when false → falls through). **Validate on lavapipe** (`UNO_X11_RENDERER=Vulka
 - **Win32**: recreated `Vulkan/Win32VulkanSurfaceFactory` (`VK_KHR_win32_surface`), added
   `Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext` (HWND-based; size via `GetClientRect`), a gated
   `TryCreateVulkan()` arm in the `CreateWindowAndContext` switch (declines when `!UseVulkanOnWin32`, swallows
-  creation failure → falls through). Fixed the builder: `Win32RenderingBackend.Vulkan` now also sets
-  `UseOpenGLOnWin32=false` (was set-but-GL-still-won, so Vulkan was never reached). Default order is GL-first, so
-  Vulkan stays a fallback/opt-in — the Win32 default is unchanged.
+  creation failure → falls through). The builder's `Win32RenderingBackend.Vulkan` case only sets
+  `UseVulkanOnWin32=true` — Vulkan is first in the preference order (see below), so GL stays as the fall-back,
+  exactly as on feature/breakingchanges.
+
+**Vulkan-first defaults (match feature/breakingchanges).** The Skia provider's default `PreferredContexts` is
+`[Vulkan, OpenGL, OpenGLES, Metal, Software]` — Vulkan first. On breakingchanges each GPU host tried Vulkan first
+and fell back to GL (X11 `if (UseVulkanOnX11)` before GL; Win32 `UseVulkanOnWin32 ? Vulkan ?? GL ?? Software`;
+Android Vulkan view before the canvas view), all default-on. The neutral seam reproduces that with one shared
+order: a host serves Vulkan when its `UseVulkanOnX/UseOpenGLOnX` knobs allow and otherwise declines (→ falls
+through to GL); hosts that never serve Vulkan (macOS→Metal, LinuxFB/WASM→GLES) decline it harmlessly. No new
+env vars — the same `Use*` knobs, same defaults. **Runtime-validated on X11/lavapipe:** the default (no
+`UNO_X11_RENDERER`) now negotiates `Vulkan context via SkiaDrawingFactory` and renders (luma 0.75, non-blank);
+forcing `UNO_X11_RENDERER=OpenGL` still negotiates OpenGL (fall-back intact).
 - **Android**: recreated `Platform/Vulkan/AndroidVulkanSurfaceFactory` + `AndroidVulkanNativeInterop`
   (`VK_KHR_android_surface`), added `AndroidVulkanGraphicsContext` (ANativeWindow-based) and a neutral
   `UnoSKVulkanView : SurfaceView` (own render thread, serves the Vulkan kind via `ContextFactory` — mirrors
