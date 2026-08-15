@@ -142,7 +142,14 @@ have the same naming problem as `skia:` and go with the `skia` deprecation.
 
 | Symbol | Problem |
 |---|---|
-| `UNO_REFERENCE_API` | For consumers it means "the target framework has no platform identifier". Nothing to do with the Reference API, which no longer exists for the UI layer. Either rename with an alias, or document the real meaning |
+| `UNO_REFERENCE_API` | Nothing to do with the Reference API, which no longer exists for the UI layer. Either rename with an alias, or document the real meaning |
+
+**Resolved — documented, no new symbol.** Tracing the definitions corrected the premise above: every
+`Uno.WinUI.Runtime.Skia.*` package defines `UNO_REFERENCE_API`, including the Android, Apple UIKit and
+WebAssembly ones. It is therefore *not* "the target framework has no platform identifier" — it is the host axis,
+exactly the condition `HAS_UNO` already expresses. A new spelling would have been a third name for one condition,
+so `platform-specific-csharp.md` now documents `UNO_REFERENCE_API` as a legacy synonym of `HAS_UNO` and points
+new code at `HAS_UNO`.
 
 ## 5. Migration
 
