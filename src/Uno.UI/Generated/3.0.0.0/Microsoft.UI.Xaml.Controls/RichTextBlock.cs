@@ -58,16 +58,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property TextTrimmingProperty
 		// Skipping already declared property TextWrappingProperty
-#if false
-		[global::Uno.NotImplemented]
-		public double BaselineOffset
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlock", "BaselineOffset");
-			}
-		}
-#endif
+		// Skipping already declared property BaselineOffset
 		// Skipping already declared property Blocks
 		// Skipping already declared property CharacterSpacing
 		// Skipping already declared property ContentEnd

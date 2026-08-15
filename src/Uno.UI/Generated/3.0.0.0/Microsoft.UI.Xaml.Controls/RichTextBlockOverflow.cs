@@ -13,16 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property MaxLinesProperty
 		// Skipping already declared property OverflowContentTargetProperty
 		// Skipping already declared property PaddingProperty
-#if false
-		[global::Uno.NotImplemented]
-		public double BaselineOffset
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichTextBlockOverflow", "BaselineOffset");
-			}
-		}
-#endif
+		// Skipping already declared property BaselineOffset
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Documents.TextPointer ContentEnd
