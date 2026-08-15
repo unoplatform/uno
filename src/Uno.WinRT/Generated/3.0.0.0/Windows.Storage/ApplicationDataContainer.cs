@@ -6,7 +6,7 @@ namespace Windows.Storage
 #if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ApplicationDataContainer : global::System.IDisposable
+	public partial class ApplicationDataContainer
 	{
 		// Skipping already declared property Containers
 		// Skipping already declared property Locality
@@ -14,11 +14,9 @@ namespace Windows.Storage
 		// Skipping already declared property Values
 		// Skipping already declared method Windows.Storage.ApplicationDataContainer.CreateContainer(string, Windows.Storage.ApplicationDataCreateDisposition)
 		// Skipping already declared method Windows.Storage.ApplicationDataContainer.DeleteContainer(string)
-		// Skipping already declared method Windows.Storage.ApplicationDataContainer.Dispose()
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.Containers.get
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.Locality.get
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.Name.get
 		// Forced skipping of method Windows.Storage.ApplicationDataContainer.Values.get
-		// Processing: System.IDisposable
 	}
 }
