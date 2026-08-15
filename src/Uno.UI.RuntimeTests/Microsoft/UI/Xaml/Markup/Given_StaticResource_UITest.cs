@@ -14,6 +14,7 @@ public class Given_StaticResource_UITest : SampleControlUITestBase
 	// converter into Application.Current.Resources and assigns its own DataContext,
 	// so RunAsync (Activator.CreateInstance) yields a fully wired page.
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // RunAsync is only supported on Skia/WASM runtime hosts.
 	[DataRow("XAMLResource_Text", "This resource was registered in XAML", DisplayName = "XAML-declared resource")]
 	[DataRow("CSharpResource_Text", "This resource was registered in C#", DisplayName = "C#-registered resource")]
 	[DataRow("ConverterResource_Text", "Hello Converter!", DisplayName = "Converter resource")]
