@@ -481,6 +481,21 @@
 		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" Color="#ffffff" />
 	</ItemGroup>
 
+	<!--
+	Android resources must sit directly under mipmap-<dpi>\. Uno.Resizetizer builds the app icon
+	destination as <mipmap-dpi>\<the icon's project-relative folder>\<name>.png, and because the head
+	declares UnoRuntimeIdentifier=Skia the package's windows/skia targets also run on android, where
+	UpdatePathOfUnoIcon stamps Link=Assets\Icons\icon.svg onto the item. The generated file then lands
+	in mipmap-xxhdpi\Assets\Icons\icon.png and aapt2 rejects it with APT2144. Setting Link here keeps
+	that stamping away — both branches of UpdatePathOfUnoIcon skip items that already carry one — and
+	flattens the output to mipmap-<dpi>\icon.png, which is what @mipmap/icon resolves to.
+	Android only: on desktop the relative Link is what lays the scale-suffixed logos out under Assets\.
+	The resizetizer warns that UnoIcon.Link "will be ignored"; it is not, it is read as the output alias.
+	-->
+	<ItemGroup Condition="'$(_Platform)' == 'android'">
+		<UnoIcon Update="Assets\Icons\icon.svg" Link="icon.svg" />
+	</ItemGroup>
+
 	<!-- Win32 DPI-awareness manifest (desktop only; windows sets its own ApplicationManifest above) -->
 	<PropertyGroup Condition="'$(_Platform)' == 'desktop'">
 		<ApplicationManifest>app.manifest</ApplicationManifest>
