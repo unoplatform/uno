@@ -43,7 +43,7 @@ Choose **Skia WASM** only when:
 - The user explicitly asks for WASM/browser testing, OR
 - The bug or behavior is WASM-specific (e.g., DOM interaction, browser rendering, JS interop)
 
-**Strict mode**: If the user input contains the keyword `strict`, omit the `-p:UnoFastDevBuild=true` and `-p:UnoTargetFrameworkOverride=net10.0` flags from the build command in Phase 1 so the build runs with full CI-equivalent analyzer coverage and all cross-targeted TFMs. Use this only when verifying that a change still compiles cleanly under CI strictness — for normal iteration the default (fast) flags should be left on.
+**Strict mode**: If the user input contains the keyword `strict`, omit the `-p:UnoFastDevBuild=true` and `-p:UnoTargetFrameworkOverride=net11.0-desktop` flags from the build command in Phase 1 so the build runs with full CI-equivalent analyzer coverage and all cross-targeted TFMs. Use this only when verifying that a change still compiles cleanly under CI strictness — for normal iteration the default (fast) flags should be left on.
 
 ### Phase 1: Build the Test App
 

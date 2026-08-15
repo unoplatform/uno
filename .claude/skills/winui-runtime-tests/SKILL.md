@@ -126,7 +126,7 @@ If it's set to anything else (e.g., `net10.0` for Skia development), **change it
 **Symptoms of a wrong/missing override:**
 - `CS0535: does not implement interface member 'DependencyObject.XXX'` — Uno.UI.Skia is being built as a transitive dependency
 - `MSB4062: ResourcesGenerationTask_v0 could not be loaded` — Uno.UI.Tasks hasn't been built for the expected configuration
-- Hundreds of errors from `Uno.UI.csproj::TargetFramework=net9.0` — dead giveaway
+- Hundreds of errors from `Uno.UI.csproj::TargetFramework=net11.0` — dead giveaway
 
 #### 1d. Setup signing certificate (first time)
 
