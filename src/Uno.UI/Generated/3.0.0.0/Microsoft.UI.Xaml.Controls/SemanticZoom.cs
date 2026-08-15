@@ -6,8 +6,8 @@ namespace Microsoft.UI.Xaml.Controls
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
 	[global::Microsoft.UI.Xaml.Markup.ContentPropertyAttribute(Name = "ZoomedInView")]
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || false
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 #endif
 	public partial class SemanticZoom : global::Microsoft.UI.Xaml.Controls.Control
 	{
@@ -121,8 +121,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || false
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__")]
 		public SemanticZoom() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.SemanticZoom", "SemanticZoom()");
