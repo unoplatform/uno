@@ -102,10 +102,20 @@ public class Given_Path_UITest
 		_ => throw new System.NotSupportedException(style.ToString()),
 	};
 
-	private static PathFigure MakeFigure(Point start, params Point[] points) => new()
+	private static PathFigure MakeFigure(Point start, params Point[] points)
 	{
-		StartPoint = start,
-		IsClosed = true,
-		Segments = { new PolyLineSegment { Points = new PointCollection(points) } },
-	};
+		// PointCollection has no IEnumerable constructor on WinAppSDK, so fill it item by item.
+		PointCollection pointCollection = new();
+		foreach (var point in points)
+		{
+			pointCollection.Add(point);
+		}
+
+		return new PathFigure
+		{
+			StartPoint = start,
+			IsClosed = true,
+			Segments = { new PolyLineSegment { Points = pointCollection } },
+		};
+	}
 }
