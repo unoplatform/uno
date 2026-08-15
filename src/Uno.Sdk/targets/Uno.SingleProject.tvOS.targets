@@ -13,6 +13,14 @@
 		<CodesignEntitlements Condition=" Exists('$(tvOSProjectFolder)Entitlements-$(Configuration).plist') ">$(tvOSProjectFolder)Entitlements-$(Configuration).plist</CodesignEntitlements>
 	</PropertyGroup>
 
+	<ItemGroup Condition=" '$(UnoDisableMEDITrimmingWorkaround)' == '' ">
+		<!--
+		Workaround for tvOS requiring Microsoft.Extensions.DependencyInjection to be
+		excluded from linking on devices when logging is enabled
+		-->
+		<TrimmerRootAssembly Include="Microsoft.Extensions.DependencyInjection" />
+	</ItemGroup>
+
 	<ItemGroup Condition=" '$(EnableDefaultItems)' == 'true' ">
 		<None Include="$(tvOSProjectFolder)Info.plist" LogicalName="Info.plist" />
 
