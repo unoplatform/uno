@@ -8,7 +8,6 @@
 
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.XamlHost</AssemblyName>
-		<DefineConstants>$(DefineConstants);IS_UNO_UI_XamlHost_PROJECT</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup>

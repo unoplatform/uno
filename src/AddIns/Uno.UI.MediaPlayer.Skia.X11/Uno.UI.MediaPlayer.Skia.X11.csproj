@@ -9,7 +9,6 @@
 		<AssemblyName>Uno.UI.MediaPlayer.Skia.X11</AssemblyName>
 		<RootNamespace>Uno.UI.MediaPlayer.Skia.X11</RootNamespace>
 
-		<DefineConstants>$(DefineConstants);IS_MPE_X11</DefineConstants>
 
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<PackageId>Uno.WinUI.MediaPlayer.Skia.X11</PackageId>
