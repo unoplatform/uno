@@ -66,7 +66,6 @@ namespace Microsoft.UI.Composition
 
 		public void StartAnimation(string propertyName, CompositionAnimation animation)
 		{
-
 			// Snapshot the animation for this target (WinUI semantics). ExpressionAnimation clones so a
 			// reusable instance reconfigured per target (LottieGen's _reusableExpressionAnimation) stays
 			// bound to the reference parameters it had when started here; other animations share.
@@ -336,7 +335,6 @@ namespace Microsoft.UI.Composition
 				Dispatching.DispatcherQueue.Main.TryEnqueue(StopAllAnimations);
 			}
 		}
-
 
 		private protected bool SetProperty(ref bool field, bool value, [CallerMemberName] string? propertyName = null)
 		{
