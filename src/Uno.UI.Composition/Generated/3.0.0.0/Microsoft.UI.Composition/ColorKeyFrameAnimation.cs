@@ -8,8 +8,10 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class ColorKeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 	{
+		// Skipping already declared property InterpolationColorSpace
 		// Skipping already declared method Microsoft.UI.Composition.ColorKeyFrameAnimation.InsertKeyFrame(float, Windows.UI.Color)
 		// Skipping already declared method Microsoft.UI.Composition.ColorKeyFrameAnimation.InsertKeyFrame(float, Windows.UI.Color, Microsoft.UI.Composition.CompositionEasingFunction)
-		// Skipping already declared property Microsoft.UI.Composition.ColorKeyFrameAnimation.InterpolationColorSpace
+		// Forced skipping of method Microsoft.UI.Composition.ColorKeyFrameAnimation.InterpolationColorSpace.get
+		// Forced skipping of method Microsoft.UI.Composition.ColorKeyFrameAnimation.InterpolationColorSpace.set
 	}
 }
