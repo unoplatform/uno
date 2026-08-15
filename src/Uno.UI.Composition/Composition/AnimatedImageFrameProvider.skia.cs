@@ -10,7 +10,7 @@ namespace Microsoft.UI.Composition;
 
 internal sealed class AnimatedImageFrameProvider : IFrameProvider
 {
-	private readonly IImageFrames _frames;
+	private readonly ImageFrames _frames;
 	private readonly IReadOnlyList<int> _durations;
 	private readonly Timer? _timer;
 	private readonly Stopwatch? _stopwatch;
@@ -27,7 +27,7 @@ internal sealed class AnimatedImageFrameProvider : IFrameProvider
 	// So, if AnimatedImageFrameProvider holds onto onFrameChanged, the CompositionImageSurface is never GC'ed.
 	// That's why we make it a WeakReference.
 	// Note that CompositionImageSurface keeps an unused private field storing onFrameChanged so that it's not GC'ed early.
-	internal AnimatedImageFrameProvider(IImageFrames frames, Action onFrameChanged)
+	internal AnimatedImageFrameProvider(ImageFrames frames, Action onFrameChanged)
 	{
 		_frames = frames;
 		_durations = frames.DurationsMs;

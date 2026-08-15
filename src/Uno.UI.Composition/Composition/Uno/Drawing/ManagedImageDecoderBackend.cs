@@ -9,13 +9,13 @@ namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
 /// SkiaSharp-free <see cref="IImageDecoder"/>: decodes via <see cref="ManagedImageDecoder"/> and wraps the result
-/// as managed, byte[]-backed <see cref="IImage"/>/<see cref="IImageFrames"/> — no Skia object is ever created.
+/// as managed, byte[]-backed <see cref="IImage"/>/<see cref="ImageFrames"/> — no Skia object is ever created.
 /// Register as <see cref="ImageDecoder.Current"/> so an image-bearing app can run with no native libSkiaSharp.
 /// Formats the managed decoder can't handle return false (there is no Skia fallback here).
 /// </summary>
 public sealed class ManagedImageDecoderBackend : IImageDecoder
 {
-	public bool TryDecode(Stream stream, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out IImageFrames? frames)
+	public bool TryDecode(Stream stream, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out ImageFrames? frames)
 	{
 		var bytes = ReadAllBytes(stream);
 		if (ManagedImageDecoder.TryDecode(bytes, targetWidth, targetHeight, out var decoded))
@@ -26,7 +26,7 @@ public sealed class ManagedImageDecoderBackend : IImageDecoder
 				images[i] = new ManagedImage(decoded.Width, decoded.Height, decoded.Frames[i]);
 			}
 
-			frames = new ManagedImageFrames(images, decoded.DurationsMs);
+			frames = new ImageFrames(images, decoded.DurationsMs);
 			return true;
 		}
 
@@ -37,8 +37,8 @@ public sealed class ManagedImageDecoderBackend : IImageDecoder
 	public IImage CreateImage(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
 		=> new ManagedImage(pixelWidth, pixelHeight, bgraPremul.ToArray());
 
-	public IImageFrames CreateFrames(IImage image)
-		=> new ManagedImageFrames(new[] { image }, new[] { 0 });
+	public ImageFrames CreateFrames(IImage image)
+		=> new(new[] { image }, new[] { 0 });
 
 	private static byte[] ReadAllBytes(Stream stream)
 	{
@@ -71,20 +71,4 @@ internal sealed class ManagedImage : IImage
 
 	public void CopyPixels(Span<byte> destination)
 		=> _bgraPremul.AsSpan(0, Math.Min(_bgraPremul.Length, destination.Length)).CopyTo(destination);
-}
-
-/// <summary>A managed <see cref="IImageFrames"/> backed by <see cref="ManagedImage"/>s (nothing native to release).</summary>
-internal sealed class ManagedImageFrames : IImageFrames
-{
-	public ManagedImageFrames(IReadOnlyList<IImage> frames, IReadOnlyList<int> durationsMs)
-	{
-		Frames = frames;
-		DurationsMs = durationsMs;
-	}
-
-	public IReadOnlyList<IImage> Frames { get; }
-
-	public IReadOnlyList<int> DurationsMs { get; }
-
-	public void Dispose() { }
 }

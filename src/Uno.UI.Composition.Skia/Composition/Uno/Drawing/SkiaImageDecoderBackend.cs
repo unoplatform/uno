@@ -13,17 +13,8 @@ namespace Uno.UI.Composition.Drawing;
 /// </summary>
 internal sealed class SkiaImageDecoderBackend : IImageDecoder
 {
-	public bool TryDecode(Stream stream, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out IImageFrames? frames)
-	{
-		if (SkiaImageDecoder.TryDecode(stream, targetWidth, targetHeight, out var skiaFrames))
-		{
-			frames = skiaFrames;
-			return true;
-		}
-
-		frames = null;
-		return false;
-	}
+	public bool TryDecode(Stream stream, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out ImageFrames? frames)
+		=> SkiaImageDecoder.TryDecode(stream, targetWidth, targetHeight, out frames);
 
 	public IImage CreateImage(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
 	{
@@ -31,5 +22,5 @@ internal sealed class SkiaImageDecoderBackend : IImageDecoder
 		return new SkiaImage(SKImage.FromPixelCopy(info, bgraPremul));
 	}
 
-	public IImageFrames CreateFrames(IImage image) => SkiaImageFrames.FromImage(((SkiaImage)image).Image);
+	public ImageFrames CreateFrames(IImage image) => new(new[] { image }, new[] { 0 });
 }
