@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
+using Windows.Foundation;
 using Windows.UI;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -309,6 +310,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// ScrollViewer.Content == null implies ScrollViewer.ScrollableHeight == 0
 			Assert.AreEqual(0.0, scrollViewer.ScrollableHeight, 0.5, "ScrollableHeight after second Content=null");
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		public async Task ExtentSizeChanged_Reports_Width_And_Height()
+		{
+			var scrollViewer = new ScrollViewer
+			{
+				Width = 100,
+				Height = 100,
+				Content = new Border
+				{
+					Width = 300,
+					Height = 400,
+				},
+			};
+			Size? reportedSize = null;
+			scrollViewer.ExtentSizeChanged += (_, args) => reportedSize = args.NewSize;
+
+			TestServices.WindowHelper.WindowContent = scrollViewer;
+			await TestServices.WindowHelper.WaitForLoaded(scrollViewer);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(new Size(300, 400), reportedSize);
 		}
 
 		[TestMethod]
