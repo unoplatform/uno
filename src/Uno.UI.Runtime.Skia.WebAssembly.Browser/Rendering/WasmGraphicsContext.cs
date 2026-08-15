@@ -18,8 +18,6 @@ internal sealed class WasmGLGraphicsContext : ISwapChain, IGLDeviceContext
 
 	public GraphicsContextKind Kind => GraphicsContextKind.OpenGLES;
 
-	public bool IsLost => false;
-
 	public GLFlavor Flavor => GLFlavor.WebGL;
 	public Func<string, nint> GetProcAddress => global::Uno.UI.Runtime.Skia.WebAssembly.Browser.Graphics.WasmGLFunctions.GetProcAddress;
 
@@ -49,8 +47,6 @@ internal sealed class WasmSoftwareGraphicsContext : ISwapChain
 	public WasmSoftwareGraphicsContext(SoftwareBrowserRenderer renderer) => _renderer = renderer;
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Software;
-
-	public bool IsLost => false;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{

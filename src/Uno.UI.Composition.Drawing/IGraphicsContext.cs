@@ -19,9 +19,6 @@ namespace Uno.UI.Composition.Drawing;
 public interface IGraphicsContext : IDisposable
 {
 	GraphicsContextKind Kind { get; }
-
-	/// <summary>Whether the context has been lost (device removed, surface invalidated) and must be recreated.</summary>
-	bool IsLost { get; }
 }
 
 /// <summary>

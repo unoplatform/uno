@@ -37,8 +37,6 @@ internal sealed class MacOSMetalGraphicsContext : ISwapChain, IMacOSNativeTextur
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Metal;
 
-	public bool IsLost => false;
-
 	public nint Device => _device;
 	public nint Queue => _queue;
 
@@ -75,8 +73,6 @@ internal sealed class MacOSSoftwareGraphicsContext : ISwapChain
 	private int _height;
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Software;
-
-	public bool IsLost => false;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{

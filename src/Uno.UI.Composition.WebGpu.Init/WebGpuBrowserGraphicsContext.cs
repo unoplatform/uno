@@ -86,8 +86,6 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 	nint IWebGpuDeviceContext.Device => _device.Dev;
 	nint IWebGpuDeviceContext.Queue => _device.Q;
 	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
-	public bool IsLost => false;
-
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
 		width = Math.Max(1, width);

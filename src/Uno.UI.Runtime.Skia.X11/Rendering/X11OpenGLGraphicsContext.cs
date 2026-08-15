@@ -31,8 +31,6 @@ internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext
 
 	public GraphicsContextKind Kind => GraphicsContextKind.OpenGL;
 
-	public bool IsLost => false;
-
 	public GLFlavor Flavor => GLFlavor.OpenGL;
 	public Func<string, nint> GetProcAddress => X11NativeOpenGLWrapper.GetProcAddressStatic;
 

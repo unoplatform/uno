@@ -54,8 +54,6 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 
 	public GraphicsContextKind Kind => GraphicsContextKind.OpenGL;
 
-	public bool IsLost => false;
-
 	public GLFlavor Flavor => GLFlavor.OpenGL;
 	public Func<string, nint> GetProcAddress => Win32NativeOpenGLWrapper.GetProcAddressStatic;
 
@@ -268,8 +266,6 @@ internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedCont
 	}
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Software;
-
-	public bool IsLost => false;
 
 	public unsafe IRenderTarget AcquireRenderTarget(int width, int height)
 	{

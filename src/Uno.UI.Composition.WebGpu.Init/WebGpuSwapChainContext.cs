@@ -84,8 +84,6 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 	nint IWebGpuDeviceContext.Device => _device.Dev;
 	nint IWebGpuDeviceContext.Queue => _device.Q;
 	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
-	public bool IsLost => false;
-
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
 		width = Math.Max(1, width);

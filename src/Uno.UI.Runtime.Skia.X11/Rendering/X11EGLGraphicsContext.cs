@@ -41,8 +41,6 @@ internal sealed unsafe class X11EGLGraphicsContext : ISwapChain, IGLDeviceContex
 
 	public GraphicsContextKind Kind => GraphicsContextKind.OpenGLES;
 
-	public bool IsLost => false;
-
 	public GLFlavor Flavor => GLFlavor.OpenGLES;
 	public Func<string, nint> GetProcAddress => EglHelper.EglGetProcAddress;
 
