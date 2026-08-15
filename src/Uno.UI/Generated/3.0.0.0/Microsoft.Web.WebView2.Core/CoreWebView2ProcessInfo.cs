@@ -3,11 +3,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
+<<<<<<< HEAD
 #if __SKIA__ || __NETSTD_REFERENCE__
+=======
+#if false || false || false || false || false || false
+>>>>>>> origin/master
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2ProcessInfo
 	{
+<<<<<<< HEAD
 #if __SKIA__ || __NETSTD_REFERENCE__
 		internal CoreWebView2ProcessInfo()
 		{
@@ -33,6 +38,10 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+=======
+		// Skipping already declared property Kind
+		// Skipping already declared property ProcessId
+>>>>>>> origin/master
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessInfo.Kind.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessInfo.ProcessId.get
 	}

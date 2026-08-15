@@ -8,6 +8,7 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 	public partial class CoreWebView2
 	{
+<<<<<<< HEAD
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public uint BrowserProcessId
@@ -18,6 +19,9 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+=======
+		// Skipping already declared property BrowserProcessId
+>>>>>>> origin/master
 		// Skipping already declared property CanGoBack
 		// Skipping already declared property CanGoForward
 #if __SKIA__ || __NETSTD_REFERENCE__
@@ -69,6 +73,7 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Skipping already declared property DocumentTitle
+<<<<<<< HEAD
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2Environment Environment
@@ -81,6 +86,11 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+		// Skipping already declared property Environment
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+>>>>>>> origin/master
 		public string FaviconUri
 		{
 			get
@@ -167,6 +177,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2Profile Profile
@@ -177,6 +188,9 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+=======
+		// Skipping already declared property Profile
+>>>>>>> origin/master
 		// Skipping already declared property Settings
 		// Skipping already declared property Source
 #if __SKIA__ || __NETSTD_REFERENCE__

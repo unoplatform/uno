@@ -3,11 +3,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
+<<<<<<< HEAD
 #if __SKIA__ || __NETSTD_REFERENCE__
+=======
+#if false || false || false || false || false || false
+>>>>>>> origin/master
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2Environment
 	{
+<<<<<<< HEAD
 #if __SKIA__ || __NETSTD_REFERENCE__
 		internal CoreWebView2Environment()
 		{
@@ -45,6 +50,13 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+		// Skipping already declared property BrowserVersionString
+		// Skipping already declared property FailureReportFolderPath
+		// Skipping already declared property UserDataFolder
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+>>>>>>> origin/master
 		public static global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2Environment> CreateAsync()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateAsync()");
@@ -57,6 +69,7 @@ namespace Microsoft.Web.WebView2.Core
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateWithOptionsAsync(string browserExecutableFolder, string userDataFolder, CoreWebView2EnvironmentOptions options)");
 		}
 #endif
+<<<<<<< HEAD
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetAvailableBrowserVersionString()
@@ -80,6 +93,13 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.GetAvailableBrowserVersionString()
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.GetAvailableBrowserVersionString(string)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.CompareBrowserVersionString(string, string)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+>>>>>>> origin/master
 		public static string GetAvailableBrowserVersionString(string browserExecutableFolder, global::Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions options)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "GetAvailableBrowserVersionString(string browserExecutableFolder, CoreWebView2EnvironmentOptions options)");
@@ -157,6 +177,7 @@ namespace Microsoft.Web.WebView2.Core
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreatePrintSettings()");
 		}
 #endif
+<<<<<<< HEAD
 #if __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Microsoft.Web.WebView2.Core.CoreWebView2ProcessInfo> GetProcessInfos()
@@ -164,6 +185,9 @@ namespace Microsoft.Web.WebView2.Core
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "GetProcessInfos()");
 		}
 #endif
+=======
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.GetProcessInfos()
+>>>>>>> origin/master
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Environment.ProcessInfosChanged.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Environment.ProcessInfosChanged.remove
 #if __SKIA__ || __NETSTD_REFERENCE__
