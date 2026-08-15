@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public sealed partial class ScrollViewerViewChangingEventArgs
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__ || __WASM__ || __NETSTD_REFERENCE__
 		internal ScrollViewerViewChangingEventArgs() { }
 #endif
 
