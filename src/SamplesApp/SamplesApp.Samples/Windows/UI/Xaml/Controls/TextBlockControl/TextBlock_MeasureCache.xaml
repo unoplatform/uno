@@ -5,9 +5,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:wasm="http://uno.ui/wasm"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    mc:Ignorable="d wasm">
+    mc:Ignorable="d">
 
     <StackPanel Spacing="6">
         <TextBlock>This test only works on WASM.</TextBlock>
@@ -50,13 +49,5 @@
                 FontWeight="{Binding SelectedItem.Content, ElementName=fontWeight}"
                 Text="{Binding Text, ElementName=input}" />
         </Border>
-        <wasm:TextBlock>
-            <!--  Since this text is complex, it shouldn't influence the caching metrics  -->
-            (WASM ONLY) Cache: Hits=<Run x:Name="hits">0</Run>
-            , Misses=<Run x:Name="misses">0</Run>
-            .<LineBreak />
-            Size=<Run x:Name="width" />
-            x<Run x:Name="height" />
-        </wasm:TextBlock>
     </StackPanel>
 </Page>
