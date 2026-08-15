@@ -26,7 +26,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [TestClass]
 [RunsOnUIThread]
 [PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.NativeWinUI)]
-public class Given_SemanticZoom
+public partial class Given_SemanticZoom
 {
 	[TestMethod]
 	public async Task When_AutomationToggled_ChildrenFollowActiveView()
@@ -852,7 +852,7 @@ public class Given_SemanticZoom
 		return default;
 	}
 
-	private sealed class TestSemanticZoomView : ContentControl, ISemanticZoomInformation
+	private sealed partial class TestSemanticZoomView : ContentControl, ISemanticZoomInformation
 	{
 		private readonly string _name;
 		private readonly List<string> _calls;
