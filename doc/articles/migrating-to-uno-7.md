@@ -136,7 +136,7 @@ libraries and application heads alike:
 |---|---|---|
 | `android:` / `ios:` / `wasm:` XAML prefixes | never applied — every target rendered with Skia, which won | apply on `net*-android` / `net*-ios` / `net*-browserwasm` |
 | `tvos:` and `desktop:` XAML prefixes | did not exist | apply on `net*-tvos` / `net*-desktop` |
-| `skia:` / `netstdref:` XAML prefixes | Uno targets, but not a plain `netX.0` library | every target framework except the WinAppSDK one |
+| `winappsdk:` XAML prefix | spelled `win:` | `net*-windows10.x`; `win:` kept as a synonym |
 | `*.skia.cs`, `*.crossruntime.cs` | compiled only for `net*-desktop` | compiled for every target framework except the WinAppSDK one |
 | `__DESKTOP__` | application heads only | any `net*-desktop` project |
 | `__WASM__` | application heads, and libraries referencing the WebAssembly runtime package | any `net*-browserwasm` project |
@@ -154,8 +154,22 @@ What this means for an upgrade:
   `net10.0-desktop` and `net10.0-browserwasm` heads, and workarounds built for the 6.x behavior keep working.
 
 > [!NOTE]
-> `skia:` and `*.skia.cs` mean "drawn by Uno Platform rather than by WinUI". They do not name a drawing backend:
-> `Uno.UI` is compiled once and resolves its backend at run time.
+> `*.skia.cs` means "compiled by Uno Platform rather than by WinUI". It does not name a drawing backend: `Uno.UI`
+> is compiled once and resolves its backend at run time.
+
+#### Removed XAML prefixes
+
+Every conditional prefix is now named after a target framework, so the prefixes that named a renderer or a
+long-gone distinction are removed. Markup using them no longer resolves and must be rewritten:
+
+| Removed prefix | Replacement |
+|---|---|
+| `skia:`, `netstdref:` | `not_winappsdk:` |
+| `not_skia:`, `not_netstdref:` | `winappsdk:` |
+| `androidskia:`, `iosskia:`, `tvosskia:`, `wasmskia:` | `android:`, `ios:`, `tvos:`, `wasm:` |
+| `macos:` | `desktop:` |
+| `not_mux:` | drop the attribute — it dates from UWP support and never applied |
+| `xamarin:`, `legacy:` | drop the prefix |
 
 ### Public API removed
 

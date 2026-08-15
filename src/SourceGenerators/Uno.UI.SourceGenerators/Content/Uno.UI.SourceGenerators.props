@@ -37,8 +37,6 @@
 		<_IsWinAppSdkTarget Condition="$(TargetFramework.Contains('windows10')) OR $(TargetFramework.StartsWith('uap10.0'))">true</_IsWinAppSdkTarget>
 		<_IsWinAppSdkTarget Condition="'$(_IsWinAppSdkTarget)' == ''">false</_IsWinAppSdkTarget>
 
-		<_IsUnoRendered>true</_IsUnoRendered>
-		<_IsUnoRendered Condition="$(_IsWinAppSdkTarget)">false</_IsUnoRendered>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(ShouldRunGenerator)'=='true'">
@@ -143,57 +141,36 @@
 		The conditional prefixes follow the target framework, so a class library sees the same platform as an
 		application head built for the same target framework.
 		-->
-		<IncludeXamlNamespaces Condition="$(_IsAndroid)" Include="android;androidskia" />
-		<ExcludeXamlNamespaces Condition="$(_IsAndroid)" Include="not_android;not_androidskia" />
-		<IncludeXamlNamespaces Condition="!$(_IsAndroid)" Include="not_android;not_androidskia" />
-		<ExcludeXamlNamespaces Condition="!$(_IsAndroid)" Include="android;androidskia" />
+		<IncludeXamlNamespaces Condition="$(_IsAndroid)" Include="android" />
+		<ExcludeXamlNamespaces Condition="$(_IsAndroid)" Include="not_android" />
+		<IncludeXamlNamespaces Condition="!$(_IsAndroid)" Include="not_android" />
+		<ExcludeXamlNamespaces Condition="!$(_IsAndroid)" Include="android" />
 
-		<IncludeXamlNamespaces Condition="$(_IsIOS)" Include="ios;iosskia" />
-		<ExcludeXamlNamespaces Condition="$(_IsIOS)" Include="not_ios;not_iosskia" />
-		<IncludeXamlNamespaces Condition="!$(_IsIOS)" Include="not_ios;not_iosskia" />
-		<ExcludeXamlNamespaces Condition="!$(_IsIOS)" Include="ios;iosskia" />
+		<IncludeXamlNamespaces Condition="$(_IsIOS)" Include="ios" />
+		<ExcludeXamlNamespaces Condition="$(_IsIOS)" Include="not_ios" />
+		<IncludeXamlNamespaces Condition="!$(_IsIOS)" Include="not_ios" />
+		<ExcludeXamlNamespaces Condition="!$(_IsIOS)" Include="ios" />
 
-		<IncludeXamlNamespaces Condition="$(_IsTvOS)" Include="tvos;tvosskia" />
-		<ExcludeXamlNamespaces Condition="$(_IsTvOS)" Include="not_tvos;not_tvosskia" />
-		<IncludeXamlNamespaces Condition="!$(_IsTvOS)" Include="not_tvos;not_tvosskia" />
-		<ExcludeXamlNamespaces Condition="!$(_IsTvOS)" Include="tvos;tvosskia" />
+		<IncludeXamlNamespaces Condition="$(_IsTvOS)" Include="tvos" />
+		<ExcludeXamlNamespaces Condition="$(_IsTvOS)" Include="not_tvos" />
+		<IncludeXamlNamespaces Condition="!$(_IsTvOS)" Include="not_tvos" />
+		<ExcludeXamlNamespaces Condition="!$(_IsTvOS)" Include="tvos" />
 
 		<IncludeXamlNamespaces Condition="$(_IsDesktop)" Include="desktop" />
 		<ExcludeXamlNamespaces Condition="$(_IsDesktop)" Include="not_desktop" />
 		<IncludeXamlNamespaces Condition="!$(_IsDesktop)" Include="not_desktop" />
 		<ExcludeXamlNamespaces Condition="!$(_IsDesktop)" Include="desktop" />
 
-		<IncludeXamlNamespaces Condition="$(_IsBrowserWasm)" Include="wasm;wasmskia" />
-		<ExcludeXamlNamespaces Condition="$(_IsBrowserWasm)" Include="not_wasm;not_wasmskia" />
-		<IncludeXamlNamespaces Condition="!$(_IsBrowserWasm)" Include="not_wasm;not_wasmskia" />
-		<ExcludeXamlNamespaces Condition="!$(_IsBrowserWasm)" Include="wasm;wasmskia" />
+		<IncludeXamlNamespaces Condition="$(_IsBrowserWasm)" Include="wasm" />
+		<ExcludeXamlNamespaces Condition="$(_IsBrowserWasm)" Include="not_wasm" />
+		<IncludeXamlNamespaces Condition="!$(_IsBrowserWasm)" Include="not_wasm" />
+		<ExcludeXamlNamespaces Condition="!$(_IsBrowserWasm)" Include="wasm" />
 
-		<!--
-		skia and netstdref both now mean "drawn by Uno rather than by WinUI". They are kept under their
-		historical names, but they do not identify a drawing backend - see _IsUnoRendered above.
-		-->
-		<IncludeXamlNamespaces Condition="$(_IsUnoRendered)" Include="skia;netstdref" />
-		<ExcludeXamlNamespaces Condition="$(_IsUnoRendered)" Include="not_skia;not_netstdref" />
-		<IncludeXamlNamespaces Condition="!$(_IsUnoRendered)" Include="not_skia;not_netstdref" />
-		<ExcludeXamlNamespaces Condition="!$(_IsUnoRendered)" Include="skia;netstdref" />
-
-		<!-- macOS is only reachable through netX.0-desktop, which has its own prefix. -->
-		<ExcludeXamlNamespaces Include="macos" />
-		<IncludeXamlNamespaces Include="not_macos" />
-
-		<ExcludeXamlNamespaces Include="win" />
-		<!-- NOTE: not_mux is historical, for when Uno used to support both UWP and WinUI. -->
-		<!-- After UWP was dropped, not_mux namespace would be always excluded. -->
-		<!-- This could be cleaned up. -->
-		<ExcludeXamlNamespaces Include="not_mux" />
-
-		<!--
-			Those namespaces are to be *included* from the code generation,
-			regardless of their presence in the Ignorable section of a Xaml file.
-			-->
-		<IncludeXamlNamespaces Include="xamarin" />
-		<IncludeXamlNamespaces Include="not_win" />
-		<IncludeXamlNamespaces Include="legacy" />
+		<!-- win and not_win are the historical spelling of winappsdk and not_winappsdk. -->
+		<IncludeXamlNamespaces Condition="$(_IsWinAppSdkTarget)" Include="winappsdk;win" />
+		<ExcludeXamlNamespaces Condition="$(_IsWinAppSdkTarget)" Include="not_winappsdk;not_win" />
+		<IncludeXamlNamespaces Condition="!$(_IsWinAppSdkTarget)" Include="not_winappsdk;not_win" />
+		<ExcludeXamlNamespaces Condition="!$(_IsWinAppSdkTarget)" Include="winappsdk;win" />
 
 		<!--
 		A list of analyzer suppressions to include in every generated class.

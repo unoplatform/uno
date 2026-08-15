@@ -112,28 +112,14 @@ both.
 | `tvos` | `netX.0-tvos` | `http://uno.ui/tvos` | yes |
 | `desktop` | `netX.0-desktop` | `http://uno.ui/desktop` | yes |
 | `wasm` | `netX.0-browserwasm` | `http://uno.ui/wasm` | yes |
-| `skia` | every target framework except the WinAppSDK one | `http://uno.ui/skia` | yes |
-| `win` | `netX.0-windows10.x` (WinAppSDK) | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no |
+| `winappsdk` | `netX.0-windows10.x` (WinAppSDK) | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no |
 
-Each has a negated counterpart — `not_android`, `not_ios`, `not_tvos`, `not_desktop`, `not_wasm`, `not_skia`,
-`not_win` — which applies to every target framework the positive one does not. The negated prefixes use the default
-presentation namespace and do not need to be listed in `mc:Ignorable`.
+Each has a negated counterpart — `not_android`, `not_ios`, `not_tvos`, `not_desktop`, `not_wasm`, `not_winappsdk` —
+which applies to every target framework the positive one does not. The negated prefixes use the default
+presentation namespace and do not need to be listed in `mc:Ignorable`, with the exception of `not_winappsdk`, which
+the WinAppSDK XAML compiler cannot resolve.
 
-> [!NOTE]
-> `skia` means *rendered by Uno Platform rather than by WinUI*. It does not name a drawing backend: `Uno.UI` is
-> compiled once and selects its backend at run time, so no XAML prefix can identify one. `netstdref` is an older
-> spelling of `skia` and behaves identically.
-
-The following prefixes are kept for backwards compatibility and are exact synonyms of the target framework prefixes
-above. They date from when a platform could render either natively or with Skia, which is no longer the case.
-
-| Deprecated prefix | Equivalent to |
-|---|---|
-| `androidskia` | `android` |
-| `iosskia` | `ios` |
-| `tvosskia` | `tvos` |
-| `wasmskia` | `wasm` |
-| `netstdref` | `skia` |
+`win` and `not_win` are the historical spelling of `winappsdk` and `not_winappsdk` and behave identically.
 
 More visually:
 
@@ -144,11 +130,14 @@ More visually:
 | `tvos` | ✖ | ✖ | ✖ | ✔ | ✖ | ✖ | ✖ |
 | `desktop` | ✖ | ✖ | ✖ | ✖ | ✔ | ✖ | ✖ |
 | `wasm` | ✖ | ✖ | ✖ | ✖ | ✖ | ✔ | ✖ |
-| `skia` | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✖ |
-| `win` | ✖ | ✖ | ✖ | ✖ | ✖ | ✖ | ✔ |
+| `winappsdk` | ✖ | ✖ | ✖ | ✖ | ✖ | ✖ | ✔ |
 
-A project that targets a plain `netX.0` therefore sees no platform prefix at all — only `skia` and the negated
-forms. That is the correct behaviour for a target framework that carries no platform.
+A project that targets a plain `netX.0` therefore sees no positive prefix at all — only the negated forms. That is
+the correct behaviour for a target framework that carries no platform.
+
+> [!NOTE]
+> No prefix identifies a drawing backend. `Uno.UI` is compiled once and selects its backend at run time, so the
+> backend is not a compile-time condition and cannot be branched on in markup.
 
 ### XAML prefixes in cross-targeted libraries
 
