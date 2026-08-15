@@ -38,9 +38,6 @@ public partial class Border : FrameworkElement
 #endif
 	}
 
-#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-#endif
 	public BrushTransition BackgroundTransition { get; set; }
 
 

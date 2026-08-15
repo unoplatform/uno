@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml
 		{
 		}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE && !__NETSTD_REFERENCE__ // We rely on Enter/Leave with enhanced lifecycle instead of Loaded/Unloaded.
+#if !UNO_HAS_ENHANCED_LIFECYCLE // We rely on Enter/Leave with enhanced lifecycle instead of Loaded/Unloaded.
 		private partial void ReconfigureViewportPropagationPartial()
 			=> ReconfigureViewportPropagation();
 #endif

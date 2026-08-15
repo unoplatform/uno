@@ -1568,9 +1568,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal IEnumerable<DependencyObject> MaterializedContainers =>
 			GetItemsPanelChildren()
-#if !IS_UNIT_TESTS // TODO
 				.Prepend(_containerBeingPrepared) // we put it first, because it's the most likely to be requested
-#endif
 				.Trim()
 				.Distinct();
 

@@ -7,14 +7,14 @@ using Uno.Extensions;
 
 using Uno.Foundation.Logging;
 
-#if UNO_REFERENCE_API || IS_UNIT_TESTS
+#if UNO_REFERENCE_API
 using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Canvas
-#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+#if !__CROSSRUNTIME__
 		: ICustomClippingElement
 #endif
 	{

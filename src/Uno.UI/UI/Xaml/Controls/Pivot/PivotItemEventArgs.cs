@@ -3,7 +3,7 @@
 	[global::Uno.NotImplemented]
 	public partial class PivotItemEventArgs
 	{
-#if IS_UNIT_TESTS || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PivotItem Item
 		{
@@ -17,7 +17,7 @@
 			}
 		}
 #endif
-#if IS_UNIT_TESTS || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public PivotItemEventArgs()
 		{

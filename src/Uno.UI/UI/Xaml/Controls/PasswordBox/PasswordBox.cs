@@ -39,14 +39,12 @@ namespace Microsoft.UI.Xaml.Controls
 			_core.Initialize();
 		}
 
-#if !IS_UNIT_TESTS
 		/// <summary>
 		/// Occurs when content is pasted into the control.
 		/// </summary>
 		public event TextControlPasteEventHandler Paste;
 
 		internal void RaisePaste(TextControlPasteEventArgs args) => Paste?.Invoke(this, args);
-#endif
 
 		public void SelectAll() => _core.SelectAll();
 

@@ -25,9 +25,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 
-#if !IS_UNIT_TESTS
 using Uno.UI.Controls;
-#endif
 
 namespace Microsoft.UI.Xaml
 {
