@@ -4,7 +4,7 @@ using System.Linq;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 
-namespace Uno.UI.Samples.Tests.Windows_Storage
+namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 {
 	[TestClass]
 	public class Given_ApplicationDataContainer
@@ -914,6 +914,33 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			Assert.HasCount(1, SUT.Values);
 			Assert.Contains("rootSetting", SUT.Values.Keys);
 			Assert.AreEqual(1, SUT.Values.Keys.Count);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_Container_Name_Is_Null_Or_Empty()
+		{
+			// An empty name cannot round-trip through the persisted container list, so it is rejected up front
+			// rather than producing a container that disappears on the next launch.
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			Assert.ThrowsExactly<ArgumentNullException>(() => SUT.CreateContainer(null, ApplicationDataCreateDisposition.Always));
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.CreateContainer("", ApplicationDataCreateDisposition.Always));
+			Assert.ThrowsExactly<ArgumentNullException>(() => SUT.DeleteContainer(null));
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.DeleteContainer(""));
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_Setting_Key_Is_Null()
+		{
+			// A null key would otherwise address the container's own bookkeeping slot.
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			Assert.ThrowsExactly<ArgumentNullException>(() => SUT.Values[null] = "value");
+			Assert.ThrowsExactly<ArgumentNullException>(() => _ = SUT.Values[null]);
+			Assert.ThrowsExactly<ArgumentNullException>(() => SUT.Values.ContainsKey(null));
+			Assert.ThrowsExactly<ArgumentNullException>(() => SUT.Values.Remove(null));
 		}
 	}
 }

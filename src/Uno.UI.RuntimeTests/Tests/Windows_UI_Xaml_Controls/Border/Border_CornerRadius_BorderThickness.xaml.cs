@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Uno.UI.Samples;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;

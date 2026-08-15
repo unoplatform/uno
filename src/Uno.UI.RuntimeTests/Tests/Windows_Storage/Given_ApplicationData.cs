@@ -10,6 +10,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage;
 [TestClass]
 public class Given_ApplicationData
 {
+	private uint _originalVersion;
+
+	[TestInitialize]
+	public void Initialize() => _originalVersion = ApplicationData.Current.Version;
+
+	/// <summary>
+	/// The version is persisted, so a run that leaves it raised moves the baseline for every later run
+	/// on the same machine.
+	/// </summary>
+	[TestCleanup]
+	public async Task Cleanup() =>
+		await ApplicationData.Current.SetVersionAsync(_originalVersion, _ => { });
+
 	[TestMethod]
 	public async Task When_SetVersion()
 	{
@@ -40,7 +53,7 @@ public class Given_ApplicationData
 			setVersionRequest.DesiredVersion.Should().Be(desiredVersion);
 		}));
 
-		await TestServices.WindowHelper.WaitFor(() => ApplicationData.Current.Version == desiredVersion);
+		appData.Version.Should().Be(desiredVersion);
 	}
 
 	[TestMethod]
