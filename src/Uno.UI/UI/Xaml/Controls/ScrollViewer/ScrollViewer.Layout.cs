@@ -74,7 +74,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var vpHeight = (_presenter as IFrameworkElement)?.ActualHeight ?? ActualHeight;
 			var vpWidth = (_presenter as IFrameworkElement)?.ActualWidth ?? ActualWidth;
 
-			if (vpHeight == 0 || vpWidth == 0)
+			if (vpHeight <= 0 || vpWidth <= 0)
 			{
 				// Do not update properties if we don't have any valid size yet.
 				// This is useful essentially for the first size changed on the Content,

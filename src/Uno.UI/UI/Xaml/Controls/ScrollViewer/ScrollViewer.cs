@@ -120,10 +120,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override AutomationPeer OnCreateAutomationPeer() => new ScrollViewerAutomationPeer(this);
 
-		// Note: All DependencyProperty declarations have been moved to ScrollViewer.Properties.cs
-		// as a sideline foundation step. ScrollViewer.cs retains only behavioral logic and field state.
-
-
 		private readonly SerialDisposable _sizeChangedSubscription = new SerialDisposable();
 
 #pragma warning disable 649 // unused member for Unit tests
