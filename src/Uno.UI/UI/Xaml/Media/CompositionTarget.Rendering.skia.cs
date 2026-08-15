@@ -61,6 +61,20 @@ public partial class CompositionTarget
 	// Skia fallback renderer, so Render() must SKIP the frame rather than force the throwing Renderer getter.
 	private static bool HasRenderer => _renderer is not null || DrawingRegistration.DefaultRenderer is not null;
 
+	// Neutral→typed narrowing for phase-2 present: the fresh target is downcast to the kind it always is (the
+	// context bound at negotiation only yields that one type), and dispatched to the backend's typed
+	// IDrawingFactory<TTarget>.BeginPresent. The single cast is here, Uno-side; the backend surface stays typed.
+	private static IPresentSession BeginPresent(IDrawingFactory backend, IRenderTarget target)
+		=> target switch
+		{
+			IGLRenderTarget gl when backend is IDrawingFactory<IGLRenderTarget> b => b.BeginPresent(gl),
+			ISoftwareRenderTarget sw when backend is IDrawingFactory<ISoftwareRenderTarget> b => b.BeginPresent(sw),
+			IMetalRenderTarget m when backend is IDrawingFactory<IMetalRenderTarget> b => b.BeginPresent(m),
+			IWebGpuRenderTarget w when backend is IDrawingFactory<IWebGpuRenderTarget> b => b.BeginPresent(w),
+			_ => throw new global::System.NotSupportedException(
+				$"The active backend cannot present onto a render target of type {target.GetType().Name}."),
+		};
+
 	private static void InvalidateAllRecordings()
 	{
 		foreach (var kvp in _targets)
@@ -268,7 +282,7 @@ public partial class CompositionTarget
 			}
 
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
-			using (var present = Renderer.BeginPresent(target))
+			using (var present = BeginPresent(Renderer, target))
 			{
 				// Scaling (DPI) is applied through the neutral session so it works for any backend.
 				present.Save();

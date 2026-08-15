@@ -2510,7 +2510,7 @@ internal sealed class WebGpuReadbackImage : IImage
 /// / <see cref="ImageDecoder"/>); WebGPU consumes the neutral <see cref="IGeometry"/> it's registered by flattening
 /// it, so a SkiaSharp-free app registers a <see cref="ManagedGeometryFactory"/> and links zero SkiaSharp for drawing.
 /// </summary>
-public sealed class WebGpuDrawingFactory : IDrawingFactory
+public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 {
 	private readonly WebGpuDevice _device;
 
@@ -2518,7 +2518,9 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
 
-	public IPresentSession BeginPresent(IRenderTarget target) => new WebGpuPresentSession(_device, (WebGpuRenderSurface)target);
+	// The backend recognizes its own concrete surface behind the neutral IWebGpuRenderTarget (same assembly group,
+	// guaranteed by the bind-time gate) — a backend-owned self-cast, not a foreign downcast.
+	public IPresentSession BeginPresent(IWebGpuRenderTarget target) => new WebGpuPresentSession(_device, (WebGpuRenderSurface)target);
 
 	public IImageTexture CreateImageTexture(IImage image) => new WebGpuImageTexture(_device, image);
 
