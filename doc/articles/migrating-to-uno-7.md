@@ -91,6 +91,26 @@ on macOS with Skia rendering. To migrate:
 > alongside the Skia browser head raises the `UNOB0017` build diagnostic. Removing the
 > explicit reference resolves it.
 
+### `Uno.UI.Toolkit` is renamed to `Uno.UI.Extras`
+
+The `Uno.UI.Toolkit` assembly — which ships inside the `Uno.WinUI` package — was routinely
+mistaken for the separate [Uno Toolkit](xref:Toolkit.GettingStarted) product
+(`Uno.Toolkit.UI`); the two names are a word-order swap apart. It is now
+`Uno.UI.Extras`. Type names and behavior are unchanged, and there is **no** forwarding
+shim: the old namespaces stop resolving.
+
+| Before | After |
+|---|---|
+| `using Uno.UI.Toolkit;` | `using Uno.UI.Extras;` |
+| `using Uno.UI.Toolkit.Extensions;` | `using Uno.UI.Extras.Extensions;` |
+| `using Uno.UI.Toolkit.DevTools.Input;` (and `.DevTools.Xaml`) | `using Uno.UI.Extras.DevTools.Input;` |
+| `xmlns:toolkit="using:Uno.UI.Toolkit"` | `xmlns:extras="using:Uno.UI.Extras"` |
+
+The other namespaces carried by that assembly keep their names, so code using
+`DiagnosticsOverlay` (`Uno.Diagnostics.UI`), `FromJsonExtension` (`Uno.UI.Markup`),
+`ColorExtensions` / `ImageHelper` (`Uno.Helpers`) or `ViewHelper` (`Uno.UI`) needs no
+change.
+
 ### Public API removed
 
 - **Native base classes / identity:** `BindableView` (and `Bindable*` widget wrappers),
@@ -431,7 +451,8 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 8. Convert every `xmlns:…="clr-namespace:…"` declaration in your XAML to the `using:` form.
 9. Convert the Android `Application` class to override `CreateHost()` instead of passing an
    `AppBuilder` delegate to the base constructor.
-10. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+10. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to `Uno.UI.Extras`.
+11. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
