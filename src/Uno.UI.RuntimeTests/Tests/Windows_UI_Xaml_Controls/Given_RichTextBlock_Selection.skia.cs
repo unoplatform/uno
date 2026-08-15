@@ -95,16 +95,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				var start = SUT.SelectionStart;
 				var end = SUT.SelectionEnd;
-				Assert.IsNotNull(start);
-				Assert.IsNotNull(end);
+				if (start is null || end is null)
+				{
+					Assert.Fail($"SelectAll should produce non-null selection endpoints (start={start}, end={end})");
+					return;
+				}
+
 				Assert.IsTrue(end.Offset > start.Offset, "SelectAll should produce a non-empty selection");
 
 				// Force a re-measure; the page node/view must stay stable so the selection is preserved.
 				SUT.FontSize = 22;
 				await WindowHelper.WaitForIdle();
 
+				var remeasuredStart = SUT.SelectionStart;
+				var remeasuredEnd = SUT.SelectionEnd;
+				if (remeasuredStart is null || remeasuredEnd is null)
+				{
+					Assert.Fail($"Selection endpoints should stay non-null across a re-measure (start={remeasuredStart}, end={remeasuredEnd})");
+					return;
+				}
+
 				Assert.IsTrue(
-					SUT.SelectionEnd.Offset > SUT.SelectionStart.Offset,
+					remeasuredEnd.Offset > remeasuredStart.Offset,
 					"Selection should survive a re-measure (stable view identity)");
 			}
 			finally
@@ -134,14 +146,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				SUT.SelectAll();
 				await WindowHelper.WaitForIdle();
-				Assert.IsTrue(SUT.SelectionEnd.Offset > SUT.SelectionStart.Offset, "Precondition: non-empty selection");
+
+				var preChangeStart = SUT.SelectionStart;
+				var preChangeEnd = SUT.SelectionEnd;
+				if (preChangeStart is null || preChangeEnd is null)
+				{
+					Assert.Fail($"Precondition: SelectAll should produce non-null selection endpoints (start={preChangeStart}, end={preChangeEnd})");
+					return;
+				}
+
+				Assert.IsTrue(preChangeEnd.Offset > preChangeStart.Offset, "Precondition: non-empty selection");
 
 				run.FontSize = 22;
 				await WindowHelper.WaitForIdle();
 
+				var postChangeStart = SUT.SelectionStart;
+				var postChangeEnd = SUT.SelectionEnd;
+				if (postChangeStart is null || postChangeEnd is null)
+				{
+					Assert.Fail($"Selection endpoints should be non-null after a content change (start={postChangeStart}, end={postChangeEnd})");
+					return;
+				}
+
 				Assert.AreEqual(
-					SUT.SelectionStart.Offset,
-					SUT.SelectionEnd.Offset,
+					postChangeStart.Offset,
+					postChangeEnd.Offset,
 					"A locally set inline property is a content change and must clear the selection");
 			}
 			finally
@@ -163,7 +192,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				SUT.SelectAll();
 				await WindowHelper.WaitForIdle();
-				Assert.IsTrue(SUT.SelectionEnd.Offset > SUT.SelectionStart.Offset, "Precondition: non-empty selection");
+
+				var preChangeStart = SUT.SelectionStart;
+				var preChangeEnd = SUT.SelectionEnd;
+				if (preChangeStart is null || preChangeEnd is null)
+				{
+					Assert.Fail($"Precondition: SelectAll should produce non-null selection endpoints (start={preChangeStart}, end={preChangeEnd})");
+					return;
+				}
+
+				Assert.IsTrue(preChangeEnd.Offset > preChangeStart.Offset, "Precondition: non-empty selection");
 
 				// Mutating the content collapses the selection (CRichTextBlock::OnContentChanged Select(0,0)).
 				var extra = new Paragraph();
@@ -171,9 +209,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Blocks.Add(extra);
 				await WindowHelper.WaitForIdle();
 
+				var postChangeStart = SUT.SelectionStart;
+				var postChangeEnd = SUT.SelectionEnd;
+				if (postChangeStart is null || postChangeEnd is null)
+				{
+					Assert.Fail($"Selection endpoints should be non-null after a content change (start={postChangeStart}, end={postChangeEnd})");
+					return;
+				}
+
 				Assert.AreEqual(
-					SUT.SelectionStart.Offset,
-					SUT.SelectionEnd.Offset,
+					postChangeStart.Offset,
+					postChangeEnd.Offset,
 					"Selection should be cleared after content changes");
 				Assert.AreEqual(string.Empty, SUT.SelectedText, "SelectedText should be empty after content changes");
 			}
@@ -240,8 +286,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var near = SUT.GetPositionFromPoint(new Point(5, 8));
 				var far = SUT.GetPositionFromPoint(new Point(200, 8));
 
-				Assert.IsNotNull(near);
-				Assert.IsNotNull(far);
+				if (near is null || far is null)
+				{
+					Assert.Fail($"GetPositionFromPoint should return non-null positions (near={near}, far={far})");
+					return;
+				}
+
 				Assert.IsTrue(
 					far.Offset > near.Offset,
 					$"Hit-test should use live layout after ContentStart access (near {near.Offset}, far {far.Offset})");
