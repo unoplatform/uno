@@ -29,6 +29,10 @@
 		Every target Uno Platform provides is drawn by Uno itself; the WinAppSDK one is drawn by WinUI.
 		This is deliberately not a test for the drawing backend: Uno.UI compiles once and picks its backend
 		at runtime, so no compile-time symbol can name it.
+
+		These mirror $(IsAndroid) and friends from Uno.Sdk's Uno.IsPlatform.props on purpose: this file also
+		ships in the Uno.WinUI package, where the Uno.Sdk is not necessarily present. Keep the two in step.
+		windows10 is matched rather than GetTargetPlatformIdentifier because WPF shares that identifier.
 		-->
 		<_IsWinAppSdkTarget Condition="$(TargetFramework.Contains('windows10')) OR $(TargetFramework.StartsWith('uap10.0'))">true</_IsWinAppSdkTarget>
 		<_IsWinAppSdkTarget Condition="'$(_IsWinAppSdkTarget)' == ''">false</_IsWinAppSdkTarget>
