@@ -1,5 +1,4 @@
-﻿#if !SILVERLIGHT
-using System;
+﻿using System;
 using System.Reflection;
 using Uno.Extensions;
 using Microsoft.UI.Xaml.Controls;
@@ -428,4 +427,3 @@ namespace Microsoft.UI.Xaml
 		}
 	}
 }
-#endif
