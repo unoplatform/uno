@@ -1,5 +1,6 @@
-﻿using Uno.Helpers;
-using Windows.Foundation;
+﻿#nullable enable
+
+using Uno.Helpers;
 
 namespace Windows.Storage;
 
