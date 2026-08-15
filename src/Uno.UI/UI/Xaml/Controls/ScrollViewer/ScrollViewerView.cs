@@ -8,9 +8,11 @@ namespace Microsoft.UI.Xaml.Controls
 	// ScrollViewer's ViewChanging event. Plain value carrier — no behavior.
 	public sealed partial class ScrollViewerView
 	{
-#if __SKIA__
+#if __SKIA__ || __NETSTD_REFERENCE__
 		internal ScrollViewerView() { }
+#endif
 
+#if __SKIA__
 		internal ScrollViewerView(double horizontalOffset, double verticalOffset, float zoomFactor)
 		{
 			HorizontalOffset = horizontalOffset;

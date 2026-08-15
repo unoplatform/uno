@@ -6,9 +6,11 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public sealed partial class ScrollViewerViewChangingEventArgs
 	{
-#if __SKIA__
+#if __SKIA__ || __NETSTD_REFERENCE__
 		internal ScrollViewerViewChangingEventArgs() { }
+#endif
 
+#if __SKIA__
 		public ScrollViewerView NextView { get; internal set; }
 
 		public ScrollViewerView FinalView { get; internal set; }
