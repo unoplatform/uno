@@ -12,7 +12,7 @@ Those methods are built to have no effect on a platform that does not support th
 
 iOS can display `UICommand` to warn user the action will be "destructive". In that case, the button text is displayed in red.
 
-To set a `UICommand` as destructive, add the toolkit namespace to your code
+To set a `UICommand` as destructive, add the `Uno.UI.Extras` namespace to your code
 
 ```csharp
 using Uno.UI.Extras;

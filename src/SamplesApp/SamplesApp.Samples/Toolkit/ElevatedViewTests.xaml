@@ -3,8 +3,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:extras="using:Uno.UI.Extras"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:toolkit="using:Uno.UI.Extras"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
@@ -46,12 +46,12 @@
                     ElevatedView With Default Color
                 </TextBlock>
                 <Grid Padding="16">
-                    <toolkit:ElevatedView Background="Orange" Elevation="{Binding Value, ElementName=elevation1}">
+                    <extras:ElevatedView Background="Orange" Elevation="{Binding Value, ElementName=elevation1}">
                         <Rectangle
                             Width="60"
                             Height="60"
                             Fill="Red" />
-                    </toolkit:ElevatedView>
+                    </extras:ElevatedView>
                 </Grid>
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <Button
@@ -89,21 +89,21 @@
                     ElevatedView, some with rounded corners...
                 </TextBlock>
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <toolkit:ElevatedView
+                    <extras:ElevatedView
                         Width="60"
                         Height="60"
                         Background="Orange"
                         Elevation="{Binding Value, ElementName=elevation1}"
                         ShadowColor="{Binding Tag, ElementName=elevation1}" />
-                    <toolkit:ElevatedView
+                    <extras:ElevatedView
                         Width="60"
                         Height="60"
                         Background="Orange"
                         Elevation="{Binding Value, ElementName=elevation1}"
                         ShadowColor="{Binding Tag, ElementName=elevation1}">
                         <Rectangle Fill="Red" />
-                    </toolkit:ElevatedView>
-                    <toolkit:ElevatedView
+                    </extras:ElevatedView>
+                    <extras:ElevatedView
                         Width="60"
                         Height="60"
                         Background="Orange"
@@ -114,8 +114,8 @@
                             Fill="Red"
                             Stroke="Blue"
                             StrokeThickness="6" />
-                    </toolkit:ElevatedView>
-                    <toolkit:ElevatedView
+                    </extras:ElevatedView>
+                    <extras:ElevatedView
                         Width="60"
                         Height="60"
                         Background="Orange"
@@ -126,58 +126,58 @@
                             Fill="Red"
                             Stroke="Blue"
                             StrokeThickness="6" />
-                    </toolkit:ElevatedView>
+                    </extras:ElevatedView>
                 </StackPanel>
                 <TextBlock FontSize="15">
                     ElevatedView with Button in them...
                 </TextBlock>
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <toolkit:ElevatedView
+                    <extras:ElevatedView
                         VerticalAlignment="Top"
                         Background="Orange"
                         Elevation="{Binding Value, ElementName=elevation1}"
                         ShadowColor="{Binding Tag, ElementName=elevation1}">
                         <Button>Nice Elevated Button</Button>
-                    </toolkit:ElevatedView>
-                    <toolkit:ElevatedView
+                    </extras:ElevatedView>
+                    <extras:ElevatedView
                         Background="White"
                         Elevation="{Binding Value, ElementName=elevation1}"
                         ShadowColor="{Binding Tag, ElementName=elevation1}">
                         <Button Width="120" Height="120">
                             BIG BUTTON
                         </Button>
-                    </toolkit:ElevatedView>
+                    </extras:ElevatedView>
                 </StackPanel>
                 <TextBlock FontSize="15">
                     ElevatedView Without background (shouldn't be elevated)
                 </TextBlock>
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <toolkit:ElevatedView
+                    <extras:ElevatedView
                         Width="60"
                         Height="60"
                         Elevation="{Binding Value, ElementName=elevation1}"
                         ShadowColor="{Binding Tag, ElementName=elevation1}">
                         <Rectangle Fill="Red" />
-                    </toolkit:ElevatedView>
-                    <toolkit:ElevatedView
+                    </extras:ElevatedView>
+                    <extras:ElevatedView
                         Width="60"
                         Height="60"
                         CornerRadius="10,5,10,35"
                         Elevation="{Binding Value, ElementName=elevation1}"
                         ShadowColor="{Binding Tag, ElementName=elevation1}">
                         <Rectangle Fill="Red" />
-                    </toolkit:ElevatedView>
-                    <toolkit:ElevatedView
+                    </extras:ElevatedView>
+                    <extras:ElevatedView
                         VerticalAlignment="Top"
                         Elevation="{Binding Value, ElementName=elevation1}"
                         ShadowColor="{Binding Tag, ElementName=elevation1}">
                         <Button>Nice Elevated Button</Button>
-                    </toolkit:ElevatedView>
-                    <toolkit:ElevatedView Elevation="{Binding Value, ElementName=elevation1}" ShadowColor="{Binding Tag, ElementName=elevation1}">
+                    </extras:ElevatedView>
+                    <extras:ElevatedView Elevation="{Binding Value, ElementName=elevation1}" ShadowColor="{Binding Tag, ElementName=elevation1}">
                         <Button Width="120" Height="120">
                             BIG BUTTON
                         </Button>
-                    </toolkit:ElevatedView>
+                    </extras:ElevatedView>
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

@@ -30,9 +30,9 @@ Make sure to setup your environment first by [following our instructions](xref:U
         <Page x:Class="UnoLocalization.Page1"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-              xmlns:toolkit="using:Uno.UI.Extras">
+              xmlns:extras="using:Uno.UI.Extras">
 
-            <StackPanel toolkit:VisibleBoundsPadding.PaddingMask="Top">
+            <StackPanel extras:VisibleBoundsPadding.PaddingMask="Top">
                 <TextBlock x:Uid="Page1_Title" Text="Page one" FontSize="30" />
 
                 <Button x:Uid="Page1_GoBack" Content="Go back" Click="GoBack" />
@@ -52,9 +52,9 @@ Make sure to setup your environment first by [following our instructions](xref:U
         <Page x:Class="UnoLocalization.LanguageSettings"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-              xmlns:toolkit="using:Uno.UI.Extras">
+              xmlns:extras="using:Uno.UI.Extras">
 
-            <StackPanel toolkit:VisibleBoundsPadding.PaddingMask="Top">
+            <StackPanel extras:VisibleBoundsPadding.PaddingMask="Top">
                 <TextBlock x:Uid="LanguageSettings_Title" Text="Language Settings" FontSize="30" />
 
                 <Button Content="English" Click="SetAppLanguage" Tag="en" />
@@ -107,7 +107,7 @@ Make sure to setup your environment first by [following our instructions](xref:U
     * `MainPage.xaml`:
 
         ```xml
-        <StackPanel toolkit:VisibleBoundsPadding.PaddingMask="Top">
+        <StackPanel extras:VisibleBoundsPadding.PaddingMask="Top">
             <TextBlock x:Uid="MainPage_IntroText" Text="Hello, world!" Margin="20" FontSize="30" />
             <TextBlock x:Name="CodeBehindText" Text="This text will be replaced" />
 

@@ -21,8 +21,8 @@ The behavior can be placed on any control that provides a Padding property (e.g.
 <UserControl x:Class="Uno.UI.Samples.Controls.SampleChooserControl"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:toolkit="using:Uno.UI.Extras">
-    <Grid toolkit:VisibleBoundsPadding.PaddingMask="All">
+            xmlns:extras="using:Uno.UI.Extras">
+    <Grid extras:VisibleBoundsPadding.PaddingMask="All">
     </Grid>
 </UserControl>
 ```
@@ -46,8 +46,8 @@ Usage is as follows:
 <UserControl x:Class="Uno.UI.Samples.Controls.SampleChooserControl"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:toolkit="using:Uno.UI.Extras">
-    <Grid toolkit:VisibleBoundsPadding.PaddingMask="Bottom" />
+            xmlns:extras="using:Uno.UI.Extras">
+    <Grid extras:VisibleBoundsPadding.PaddingMask="Bottom" />
 </UserControl>
 ```
 

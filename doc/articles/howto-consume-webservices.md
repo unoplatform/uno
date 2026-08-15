@@ -890,7 +890,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels"
         xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
-        xmlns:toolkit="using:Uno.UI.Extras"
+        xmlns:extras="using:Uno.UI.Extras"
         mc:Ignorable="d"
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -898,7 +898,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
             <viewmodels:MainViewModel x:Name="ViewModel" />
         </Page.DataContext>
 
-        <Grid toolkit:VisibleBoundsPadding.PaddingMask="All">
+        <Grid extras:VisibleBoundsPadding.PaddingMask="All">
             <Grid Padding="12">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -935,12 +935,12 @@ In this task you will create the XAML for the UI and implement the bindings for 
         ...
         xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels"
         xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
-        xmlns:toolkit="using:Uno.UI.Extras"
+        xmlns:extras="using:Uno.UI.Extras"
         ...
     >
     ```
 
-    The Uno UI toolkit is added so that **toolkit:VisibleBoundsPadding** can be added - this ensures that the UI will adapt appropriately when the app is running on a device that has a "notch", etc.
+    `Uno.UI.Extras` is added so that **extras:VisibleBoundsPadding** can be added - this ensures that the UI will adapt appropriately when the app is running on a device that has a "notch", etc.
 
     Also note how the view-model **MainViewModel** is instantiated and assigned as the **DataContext**. The view-model can then be referred to as **ViewModel** in the `x:Bind` expressions you will add shortly.
 
@@ -1017,7 +1017,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels"
         xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
-        xmlns:toolkit="using:Uno.UI.Extras"
+        xmlns:extras="using:Uno.UI.Extras"
         mc:Ignorable="d"
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
