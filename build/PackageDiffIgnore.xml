@@ -392,14 +392,6 @@
 		<Member fullName="System.Void Uno.UI.BaseActivity.add_PrepareOptionsPanel(System.EventHandler`1&lt;Uno.UI.BaseActivity/PrepareOptionsPanelEventArgs&gt; value)" reason="Not present in WinUI" />
 		<Member fullName="System.Void Uno.UI.BaseActivity.remove_PrepareOptionsPanel(System.EventHandler`1&lt;Uno.UI.BaseActivity/PrepareOptionsPanelEventArgs&gt; value)" reason="Not present in WinUI" />
 		<!-- END Android 13 breaking change -->
-
-		  <!-- Window event accessors retyped to TypedEventHandler; the old-typed accessors read as removed (events paired in <Events> below). -->
-		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.add_Activated(Microsoft.UI.Xaml.WindowActivatedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
-		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_Activated(Microsoft.UI.Xaml.WindowActivatedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
-		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.add_SizeChanged(Microsoft.UI.Xaml.WindowSizeChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
-		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_SizeChanged(Microsoft.UI.Xaml.WindowSizeChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
-		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.add_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
-		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 	  </Methods>
 	  <Events>
 		<!-- BEGIN Android 13 breaking change -->
@@ -3419,6 +3411,14 @@
 		  <!-- Sync generator alignment: DataTemplate.LoadContent returns DependencyObject in WinUI, not UIElement. -->
 		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.DataTemplate.LoadContent()" reason="LoadContent returns DependencyObject to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.DataTemplate.LoadContent(Microsoft.UI.Xaml.DependencyObject templatedParent)" reason="LoadContent returns DependencyObject to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+
+		  <!-- Window event accessors retyped to TypedEventHandler; the old-typed accessors read as removed (events paired in <Events> below). -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.add_Activated(Microsoft.UI.Xaml.WindowActivatedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_Activated(Microsoft.UI.Xaml.WindowActivatedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.add_SizeChanged(Microsoft.UI.Xaml.WindowSizeChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_SizeChanged(Microsoft.UI.Xaml.WindowSizeChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.add_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->
