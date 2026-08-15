@@ -137,6 +137,7 @@ libraries and application heads alike:
 | `android:` / `ios:` / `wasm:` XAML prefixes | never applied — every target rendered with Skia, which won | apply on `net*-android` / `net*-ios` / `net*-browserwasm` |
 | `tvos:` and `desktop:` XAML prefixes | did not exist | apply on `net*-tvos` / `net*-desktop` |
 | `skia:` / `netstdref:` XAML prefixes | Uno targets, but not a plain `netX.0` library | every target framework except the WinAppSDK one |
+| `androidskia:` / `iosskia:` / `tvosskia:` / `wasmskia:` XAML prefixes | only on a Skia-rendered head of that platform | exact synonyms of `android:` / `ios:` / `tvos:` / `wasm:` |
 | `*.skia.cs`, `*.crossruntime.cs` | compiled only for `net*-desktop` | compiled for every target framework except the WinAppSDK one |
 | `__DESKTOP__` | application heads only | any `net*-desktop` project |
 | `__WASM__` | application heads, and libraries referencing the WebAssembly runtime package | any `net*-browserwasm` project |
@@ -147,6 +148,9 @@ What this means for an upgrade:
   assumption that it was dead on mobile now executes. In particular `not_android:` and `not_ios:` no longer apply
   on Android and iOS.
 - Rename a `*.skia.cs` file that was really desktop-only to `*.desktop.cs`. It now compiles on every Uno target.
+- Leave `androidskia:`, `iosskia:`, `tvosskia:` and `wasmskia:` markup as it is, or simplify it to the plain
+  platform prefix. The "Skia on this platform" distinction they used to draw no longer exists in 7.0, where every
+  Uno target is rendered by Uno Platform.
 - Recompile every multi-targeted library against 7.0. Its `net*-ios`/`net*-android` assets are now deployed rather
   than discarded, so a stale asset built against the 6.x binaries fails at run time instead of being silently
   replaced. The build reports [UNOB0020](xref:Build.Solution.error-codes) when it can detect this.
