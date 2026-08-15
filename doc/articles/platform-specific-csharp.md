@@ -62,6 +62,8 @@ The following conditional symbols are predefined for each Uno platform:
 | Desktop         | `__DESKTOP__`      | Only available in the `net10.0-desktop` target framework. |
 | Skia            | `__UNO_SKIA__`     | |
 | _Non-Windows_   | `__UNO__`          | To learn about symbols available when `__UNO__` is not present, see [below](xref:Uno.Development.PlatformSpecificCSharp#windows-specific-code) |
+| _Non-Windows_   | `HAS_UNO`          | Identical to `__UNO__`. This is the C# equivalent of the `not_winappsdk:` XAML prefix and of `*.crossruntime.cs` |
+| _Non-Windows_   | `UNO_REFERENCE_API`| Identical to `HAS_UNO`, under a legacy name. Despite the name it has nothing to do with reference assemblies, and it *is* defined on `net10.0-android` and `net10.0-ios`. Prefer `HAS_UNO` in new code |
 
 **Each symbol is only defined in the target framework that provides it.** In an application head, which targets `net10.0-ios`, `net10.0-android`, `net10.0-browserwasm`, and `net10.0-desktop` directly, `#if` blocks behave as described above.
 
