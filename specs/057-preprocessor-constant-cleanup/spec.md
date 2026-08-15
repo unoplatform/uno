@@ -95,11 +95,19 @@ Used in `#if`, never defined, naming a platform Uno no longer targets. Every one
 `SILVERLIGHT` (8), `DOTNET` (6), `METRO` (3), `WINPRT` (2), `__XAMARIN__` (2), `XAMARIN_ANDROID` (2),
 `WINDOWS_PHONE` (1), `WPF_APP` (1), `__UWP__` (1), `UAP10_0_19041` (1).
 
-Native-renderer leftovers in the same shape: `HAS_NATIVE_COMMANDBAR` (3), `IS_NATIVE_ELEMENT` (3),
-`SUPPORTS_NATIVE_DATEPICKER` (1).
+Native-renderer leftovers in the same shape: `HAS_NATIVE_COMMANDBAR` (3), `IS_NATIVE_ELEMENT` (3).
 
 These overlap the dead-`#if` sweep already tracked separately; they are listed here so the two efforts do not
 each assume the other covered them.
+
+> **Correction.** `SUPPORTS_NATIVE_DATEPICKER` was listed here and does not belong: it is not a leftover.
+> `NativeDatePickerFlyout` is live on Skia-Android through `ISkiaNativeDatePickerProviderExtension`, so the
+> branch it guards is a *reachable* path that an undefined symbol had switched off — `DatePicker` never
+> forwarded `UseNativeMinMaxDates` to the flyout, silently ignoring the property on the one target where it
+> means anything. Deleting the branch would have cemented the defect. This is the §3.1 category (a condition
+> that reads live and can never be true), not the §3.4 one, and it is the reason §3.4 must be read as a list of
+> candidates rather than a list of deletions: a symbol being undefined proves the branch is dead, not that the
+> code behind it was meant to be.
 
 ### 3.5 Keep — intentional, but currently undocumented as categories
 
@@ -126,8 +134,11 @@ each assume the other covered them.
 1. **Is a build-time guard wanted?** Once §3.3 has a reserved prefix, a check could fail the build on any `#if`
    symbol that is neither defined, file-local, SDK-provided, nor reserved. That is what would have caught
    `#if __ANDROID`. It needs an allow-list for vendored sources.
-2. **Do the vendored `System.Xaml.Tests` constants get touched?** Removing them diverges from upstream and makes
-   a future resync harder. Leaving them keeps six dead symbols.
+2. ~~**Do the vendored `System.Xaml.Tests` constants get touched?**~~ **Resolved — no.** Those sources are still
+   resynced from upstream, so `MONO`, `MULTIPLEX_OS`, `NET_4_0`, `NET_4_5`, `NET_4_6`, `WIN_PLATFORM`, the six
+   `DOTNET` branches and `WPF_APP` stay as they are. This is intentional, not an oversight: the cost of the six
+   dead symbols is lower than the cost of a noisier upstream merge. Any future automated check (decision 1) needs
+   `src/SourceGenerators/System.Xaml*` and `src/SourceGenerators/XamlGenerationTests` on its allow-list.
 3. **Are the developer diagnostic switches worth keeping in-tree at all**, or should they move behind a single
    documented `UNO_DIAGNOSTICS` switch? They are individually harmless but collectively a large share of the
    symbol surface.
