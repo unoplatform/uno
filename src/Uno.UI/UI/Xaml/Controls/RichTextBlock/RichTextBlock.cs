@@ -1,4 +1,6 @@
-﻿#pragma warning disable CS0109
+﻿#nullable enable
+
+#pragma warning disable CS0109
 
 using System;
 using System.Collections.Generic;
@@ -35,16 +37,16 @@ namespace Microsoft.UI.Xaml.Controls
 	[ContentProperty(Name = nameof(Blocks))]
 	public partial class RichTextBlock : FrameworkElement, IThemeChangeAware
 	{
-		private IDisposable _foregroundBrushChangedSubscription;
+		private IDisposable? _foregroundBrushChangedSubscription;
 
 #if !__WASM__
 		private bool _isPressed;
 		private Range _selectionOnPointerPressed;
 #endif
 
-		private Hyperlink _hyperlinkOver;
+		private Hyperlink? _hyperlinkOver;
 		private bool _subscribeToPointerEvents;
-		private Action _foregroundChanged;
+		private Action? _foregroundChanged;
 		private Range _selection;
 
 		internal Range Selection
@@ -400,9 +402,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly ObservableCollection<Hyperlink> _hyperlinks = new();
 
 		// CRichTextBlock::m_focusableChildrenCollection - lazily built, dropped on any content change.
-		private List<DependencyObject> _focusableChildrenCollection;
+		private List<DependencyObject>? _focusableChildrenCollection;
 
-		private void HyperlinksOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RecalculateSubscribeToPointerEvents();
+		private void HyperlinksOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) => RecalculateSubscribeToPointerEvents();
 
 		private void RecalculateSubscribeToPointerEvents()
 		{
@@ -516,7 +518,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private Hyperlink FindHyperlinkAt(PointerRoutedEventArgs e)
+		private Hyperlink? FindHyperlinkAt(PointerRoutedEventArgs e)
 		{
 #if __SKIA__
 			return FindHyperlinkAtSkia(e);
