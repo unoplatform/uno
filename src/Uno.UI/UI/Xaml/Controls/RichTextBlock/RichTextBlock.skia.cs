@@ -309,7 +309,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// Build highlighters for this paragraph (including selection)
 				var paragraphHighlighters = GetParagraphHighlighters(layout, p);
 
-				layout.ParsedText.Draw(session, null, paragraphHighlighters, compositionRange: null);
+				layout.ParsedText.Draw(this, session, null, paragraphHighlighters, compositionRange: null);
 
 				canvas.Restore();
 			}
