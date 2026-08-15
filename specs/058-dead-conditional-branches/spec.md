@@ -44,9 +44,17 @@ The symbols making conditionals **always false** — i.e. code that is never com
 | 13 | `NETFX_CORE` | **Delete.** UWP era |
 | 8 | `IS_UNO_COMPOSITION` | Keep — these sit in the files shared with `Uno.UI.Composition` |
 | 7 | `UNO_HAS_UIELEMENT_IMPLICIT_PINNING` | **Delete.** Not defined for Uno.UI |
-| 5 | `WASM_SKIA` | **Delete.** Defined only by a WebAssembly head |
-| 4 | `NETSTANDARD` | **Delete** |
-| 3 | `__ANDROID__`, 3 `WINUI` | **Delete.** Native platform symbols are otherwise already gone from Uno.UI |
+| 5 | `WASM_SKIA` | ~~Delete~~ — **keep, all sites are in shared files** |
+| 4 | `NETSTANDARD` | ~~Delete~~ — **keep, all sites are in shared files** |
+| 3 | `__ANDROID__`, 3 `WINUI` | ~~Delete~~ — **keep, all sites are in shared files** |
+
+> **Correction.** Four of the symbols above turned out to have *every* site inside the 41 files Uno.UI shares
+> with another project, where they are genuinely defined: `WASM_SKIA` and `__ANDROID__` in the WebView native
+> sources compiled by `Uno.UI.Runtime.Skia.WebAssembly.Browser` / `.Android` / `.AppleUIKit`, `NETSTANDARD` in the
+> sources compiled by `Uno.UI.SourceGenerators`, and `WINUI` in `VisibleBoundsPadding.cs`, compiled by
+> `Uno.UI.Toolkit.Windows`. Sweeping them would have deleted live code. The "always false" counts in this table
+> were computed for the `Uno.UI.csproj` compilation only, so they are correct *for that project* and wrong as a
+> deletion list — §1 input 2 is not an optional refinement, it decides the answer.
 | 26 + 15 + 11 + … | `ApplicableRangeType`, `MUX_PRERELEASE`, `MUX_DEBUG`, `TRACE_HIT_TESTING`, `PROFILE`, `MFSI_DEBUG`, `TICKBAR_DBG`, `CHECK_LAYOUTED`, `DBG`, `IsMouseWheelZoomDisabled`, … | **Keep** — ported-code parking, MUX conventions and developer diagnostics, per spec 057 |
 
 The symbols making conditionals **always true**:

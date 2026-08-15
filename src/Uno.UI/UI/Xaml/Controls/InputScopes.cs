@@ -3,13 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-#if NETFX_CORE
 using Microsoft.UI.Xaml.Input;
 using NativeInputScope = Microsoft.UI.Xaml.Input.InputScopeNameValue;
-#else
-using Microsoft.UI.Xaml.Input;
-using NativeInputScope = Microsoft.UI.Xaml.Input.InputScopeNameValue;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {

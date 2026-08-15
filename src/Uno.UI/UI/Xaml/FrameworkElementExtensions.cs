@@ -7,14 +7,7 @@ using Uno.UI;
 using System.Diagnostics.CodeAnalysis;
 
 
-#if NETFX_CORE
-using Microsoft.UI.Xaml;
-using IFrameworkElement = Microsoft.UI.Xaml.FrameworkElement;
-using IBinder = Microsoft.UI.Xaml.FrameworkElement;
 using Microsoft.UI.Xaml.Data;
-#else
-using Microsoft.UI.Xaml.Data;
-#endif
 
 namespace Microsoft.UI.Xaml
 {
@@ -22,11 +15,7 @@ namespace Microsoft.UI.Xaml
 	{
 		public static T Style<T>(this T element, Style style) where T : IFrameworkElement
 		{
-#if NETFX_CORE
-			style.ApplyTo(element);
-#else
 			element.Style = style;
-#endif
 			return element;
 		}
 
@@ -44,13 +33,7 @@ namespace Microsoft.UI.Xaml
 
 		public static T Binding<T>(this T element, string property, BindingBase binding) where T : DependencyObject
 		{
-#if NETFX_CORE
-			var dependencyProperty = GetDependencyProperty(element, property);
-
-			element.SetBinding(dependencyProperty, binding);
-#else
 			(element as DependencyObject).SetBinding(property, binding);
-#endif
 
 			return element;
 		}
