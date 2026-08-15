@@ -12,6 +12,10 @@ using Windows.Graphics.Interop.Direct2D;
 
 namespace Microsoft.Graphics.Canvas.Geometry;
 
+/// <summary>
+/// Represents a geometric shape - a rectangle, ellipse, group or arbitrary path - that can be drawn,
+/// filled, or used as the source of a <see cref="Microsoft.UI.Composition.CompositionPath"/>.
+/// </summary>
 public class CanvasGeometry : IDisposable, IGeometrySource2D, IGeometrySource2DInterop
 {
 	private ID2D1Geometry _geometry;
