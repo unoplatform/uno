@@ -27,7 +27,7 @@ public class Given_Popup_HVAlign_UITest
 		var popupContent = new Border
 		{
 			Width = 312,
-			Background = new SolidColorBrush(Windows.UI.Colors.Pink),
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Pink),
 			Child = new TextBlock { Margin = new Thickness(16), Text = "Asd" },
 		};
 
@@ -48,7 +48,7 @@ public class Given_Popup_HVAlign_UITest
 			Margin = new Thickness(40, 60, 0, 0),
 			HorizontalAlignment = HorizontalAlignment.Left,
 			VerticalAlignment = VerticalAlignment.Top,
-			Background = new SolidColorBrush(Windows.UI.Colors.SkyBlue),
+			Background = new SolidColorBrush(Microsoft.UI.Colors.SkyBlue),
 			Children = { popup },
 		};
 
