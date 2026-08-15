@@ -79,4 +79,52 @@ public class Given_FontPreloadVariants
 		Assert.IsTrue(FontFamilyHelper.IsVariantSelected(Font(350), Default));
 		Assert.IsFalse(FontFamilyHelper.IsVariantSelected(Font(350), FontPreloadVariants.Light));
 	}
+
+	[TestMethod]
+	public void When_Stretch_Is_Undefined_Then_Treated_As_Normal_Width()
+	{
+		// A manifest omitting font_stretch deserializes to Undefined, which describes a normal-width face.
+		Assert.IsTrue(FontFamilyHelper.IsVariantSelected(Font(FontWeights.Normal.Weight, FontStretch.Undefined), Default));
+	}
+
+	[TestMethod]
+	public void When_All_Then_Manifest_Is_Not_Filtered()
+	{
+		var fonts = new[] { Font(FontWeights.Thin.Weight, FontStretch.Condensed, FontStyle.Italic) };
+
+		Assert.AreSame(fonts, FontFamilyHelper.SelectVariants(fonts, FontPreloadVariants.All));
+	}
+
+	[TestMethod]
+	public void When_Some_Variants_Match_Then_Only_Those_Are_Selected()
+	{
+		var regular = Font(FontWeights.Normal.Weight);
+		var fonts = new[] { regular, Font(FontWeights.Thin.Weight), Font(FontWeights.Normal.Weight, style: FontStyle.Italic) };
+
+		var selected = FontFamilyHelper.SelectVariants(fonts, Default);
+
+		Assert.AreEqual(1, selected.Count);
+		Assert.AreSame(regular, selected[0]);
+	}
+
+	[TestMethod]
+	public void When_No_Variant_Matches_Then_Whole_Manifest_Is_Selected()
+	{
+		var fonts = new[] { Font(FontWeights.Thin.Weight), Font(FontWeights.Light.Weight) };
+
+		// A family with no upright regular/semi-bold/bold face must not be left with nothing preloaded.
+		Assert.AreSame(fonts, FontFamilyHelper.SelectVariants(fonts, Default));
+	}
+
+	[TestMethod]
+	public void When_No_Weight_Requested_Then_Nothing_Is_Selected()
+	{
+		var fonts = new[] { Font(FontWeights.Normal.Weight), Font(FontWeights.Bold.Weight, style: FontStyle.Italic) };
+
+		// Italic and Condensed only widen a weight selection; on their own they must preload nothing
+		// rather than match no face and fall back to the whole manifest.
+		Assert.IsFalse(FontFamilyHelper.SelectsAnyFace(FontPreloadVariants.Italic | FontPreloadVariants.Condensed));
+		Assert.AreEqual(0, FontFamilyHelper.SelectVariants(fonts, FontPreloadVariants.Italic | FontPreloadVariants.Condensed).Count);
+		Assert.AreEqual(0, FontFamilyHelper.SelectVariants(fonts, FontPreloadVariants.None).Count);
+	}
 }

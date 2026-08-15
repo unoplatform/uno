@@ -17,6 +17,14 @@ namespace Microsoft.UI.Xaml;
 
 internal static partial class FontFamilyHelper
 {
+	/// <summary>
+	/// The weight flags, i.e. the ones that can select a face on their own. <see cref="FontPreloadVariants.Italic"/>
+	/// and <see cref="FontPreloadVariants.Condensed"/> only widen an existing weight selection.
+	/// </summary>
+	private const FontPreloadVariants AnyWeight =
+		FontPreloadVariants.Thin | FontPreloadVariants.ExtraLight | FontPreloadVariants.Light |
+		FontPreloadVariants.Normal | FontPreloadVariants.Medium | FontPreloadVariants.SemiBold |
+		FontPreloadVariants.Bold | FontPreloadVariants.ExtraBold | FontPreloadVariants.Black;
 
 	/// <summary>
 	/// Pre-loads a font to minimize loading time and prevent potential text re-layouts.
@@ -58,8 +66,9 @@ internal static partial class FontFamilyHelper
 	/// </param>
 	internal static async Task<bool> PreloadFontsInManifest(Uri uri, FontPreloadVariants variants)
 	{
-		if (variants == FontPreloadVariants.None)
+		if (!SelectsAnyFace(variants))
 		{
+			// Nothing can be selected, so don't even fetch the manifest.
 			return true;
 		}
 
@@ -82,18 +91,33 @@ internal static partial class FontFamilyHelper
 			return false;
 		}
 
-		var fonts = (IEnumerable<FontInfo>)manifest.Fonts;
-		if (variants != FontPreloadVariants.All)
-		{
-			var selected = fonts.Where(font => IsVariantSelected(font, variants)).ToArray();
-			// A manifest declaring none of the selected variants would otherwise preload nothing at all.
-			fonts = selected.Length > 0 ? selected : fonts;
-		}
-
-		var tasks = fonts
+		var tasks = SelectVariants(manifest.Fonts, variants)
 			.Select(fontInfo => PreloadAsync(fontInfo.FamilyName, new FontWeight(fontInfo.FontWeight), fontInfo.FontStretch, fontInfo.FontStyle));
 
 		return await Task.WhenAll(tasks).ContinueWith(combinedTask => combinedTask.Result.All(t => t));
+	}
+
+	/// <summary>
+	/// Whether <paramref name="variants"/> can match a face at all. Covers <see cref="FontPreloadVariants.None"/>
+	/// as well as a width/style-only selection, which would otherwise match nothing and trip the fallback below.
+	/// </summary>
+	internal static bool SelectsAnyFace(FontPreloadVariants variants) => (variants & AnyWeight) != 0;
+
+	internal static IReadOnlyList<FontInfo> SelectVariants(IReadOnlyList<FontInfo> fonts, FontPreloadVariants variants)
+	{
+		if (!SelectsAnyFace(variants))
+		{
+			return Array.Empty<FontInfo>();
+		}
+
+		if (variants == FontPreloadVariants.All)
+		{
+			return fonts;
+		}
+
+		var selected = fonts.Where(font => IsVariantSelected(font, variants)).ToArray();
+		// A manifest declaring none of the selected variants would otherwise preload nothing at all.
+		return selected.Length > 0 ? selected : fonts;
 	}
 
 	internal static bool IsVariantSelected(FontInfo font, FontPreloadVariants variants)
@@ -103,7 +127,8 @@ internal static partial class FontFamilyHelper
 			return false;
 		}
 
-		if (font.FontStretch != FontStretch.Normal && !variants.HasFlag(FontPreloadVariants.Condensed))
+		// Undefined means the manifest omitted the width, which describes a normal-width face.
+		if (font.FontStretch is not (FontStretch.Normal or FontStretch.Undefined) && !variants.HasFlag(FontPreloadVariants.Condensed))
 		{
 			return false;
 		}
