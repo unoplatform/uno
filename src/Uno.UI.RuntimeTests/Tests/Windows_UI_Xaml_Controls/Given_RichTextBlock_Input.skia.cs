@@ -68,9 +68,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				var start = SUT.SelectionStart;
 				var end = SUT.SelectionEnd;
-				Assert.IsNotNull(start);
-				Assert.IsNotNull(end);
-				Assert.IsTrue(end!.Offset > start!.Offset, $"SelectionEnd ({end.Offset}) should be past SelectionStart ({start.Offset})");
+				if (start is null || end is null)
+				{
+					Assert.Fail($"A press-drag-release should produce non-null selection endpoints (start={start}, end={end})");
+					return;
+				}
+
+				Assert.IsTrue(end.Offset > start.Offset, $"SelectionEnd ({end.Offset}) should be past SelectionStart ({start.Offset})");
 			}
 			finally
 			{
@@ -145,9 +149,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsFalse(string.IsNullOrEmpty(SUT.SelectedText), "Shift+click should extend the selection to a non-empty range");
 				var start = SUT.SelectionStart;
 				var end = SUT.SelectionEnd;
-				Assert.IsNotNull(start);
-				Assert.IsNotNull(end);
-				Assert.IsTrue(end!.Offset > start!.Offset, $"Shift+click should extend past the anchor (start {start!.Offset}, end {end.Offset})");
+				if (start is null || end is null)
+				{
+					Assert.Fail($"Shift+click should produce non-null selection endpoints (start={start}, end={end})");
+					return;
+				}
+
+				Assert.IsTrue(end.Offset > start.Offset, $"Shift+click should extend past the anchor (start {start.Offset}, end {end.Offset})");
 			}
 			finally
 			{
