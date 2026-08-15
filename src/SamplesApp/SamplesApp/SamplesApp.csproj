@@ -326,6 +326,26 @@
 		<NoWarn>$(NoWarn);$(_UnoTrimmingNoWarn)</NoWarn>
 	</PropertyGroup>
 
+	<!--
+	Trimmer roots the removed netcoremobile head carried and this one has to keep: it rooted the whole
+	of Uno.UI through a LinkerConfig.xml and the samples assembly with RootMode=All, because both are
+	reached by reflection (XAML type resolution, the [Sample] scan) and neither is statically reachable
+	from the entry point. The samples now live in the head itself, so the root assembly is SamplesApp.
+	Android keeps its own copy of the descriptor under Platforms\Android; the SDK strips each
+	Platforms\<platform>\ folder from the other target frameworks, so it cannot be shared from there.
+	Note the generated descriptors in Uno.UI.Tasks (_UnoGenerateLinkerDescriptors) do not cover this —
+	they only run when PublishAot is true, and iOS/tvOS run interpreted here.
+	-->
+	<ItemGroup Condition="'$(_Platform)' == 'ios'">
+		<TrimmerRootDescriptor Include="Platforms\iOS\LinkerConfig.xml" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(_Platform)' == 'tvos'">
+		<TrimmerRootDescriptor Include="Platforms\tvOS\LinkerConfig.xml" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(_IsUIKit)' == 'true'">
+		<TrimmerRootAssembly Include="SamplesApp" RootMode="All" />
+	</ItemGroup>
+
 	<!-- The .NET iOS/tvOS toolchain reserves the top-level bundle folder name 'Resources'
 	     (_CollectBundleResources errors on it), so the Link is prefixed with $(iOSProjectFolder). -->
 	<ItemGroup Condition="'$(_Platform)' == 'ios'">
