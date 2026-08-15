@@ -49,7 +49,22 @@ public sealed partial class ApplicationDataContainer : IDisposable
 
 	internal string ContainerPath => _parent is null ? "" : _parent.ContainerPath + InternalSettingPrefix + Name + ContainerSeparator;
 
-	internal string GetSettingKey(string key) => ContainerPath + key;
+	/// <summary>
+	/// Maps a key, as the application sees it, to the key the settings store is addressed with.
+	/// </summary>
+	/// <remarks>
+	/// A null key would silently resolve to <see cref="ContainerPath"/> itself — the container's own bookkeeping
+	/// slot — so it is rejected here, at the single point every public settings API funnels through.
+	/// </remarks>
+	internal string GetSettingKey(string key)
+	{
+		if (key is null)
+		{
+			throw new ArgumentNullException(nameof(key));
+		}
+
+		return ContainerPath + key;
+	}
 
 	/// <summary>
 	/// Determines whether a key, relative to a container, is owned by Uno Platform rather than by the application.
@@ -61,8 +76,22 @@ public sealed partial class ApplicationDataContainer : IDisposable
 	/// <summary>
 	/// Container names take part in the key path, so they may not carry the code points reserved to it.
 	/// </summary>
+	/// <remarks>
+	/// An empty name is rejected too: it is indistinguishable from an empty slot in the persisted container list,
+	/// so such a container would not be found again after a restart.
+	/// </remarks>
 	private static void ValidateContainerName(string name)
 	{
+		if (name is null)
+		{
+			throw new ArgumentNullException(nameof(name));
+		}
+
+		if (name.Length == 0)
+		{
+			throw new ArgumentException("Container names may not be empty.", nameof(name));
+		}
+
 		if (name.Contains(ContainerSeparator, StringComparison.Ordinal) ||
 			name.StartsWith(InternalSettingPrefix, StringComparison.Ordinal))
 		{

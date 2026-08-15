@@ -1,8 +1,10 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Uno.Extensions.Specialized;
 using Uno.Storage;
 using Windows.Foundation.Collections;
 
@@ -31,7 +33,7 @@ public sealed partial class ApplicationDataContainerSettings : IPropertySet, IOb
 	/// the class implements IObservableMap. Uno Platform raises this event for consistency
 	/// with other IObservableMap implementations.
 	/// </remarks>
-	public event MapChangedEventHandler<string, object> MapChanged;
+	public event MapChangedEventHandler<string, object>? MapChanged;
 
 	/// <summary>
 	/// Gets or sets the value associated with the specified key.
@@ -40,7 +42,8 @@ public sealed partial class ApplicationDataContainerSettings : IPropertySet, IOb
 	/// <returns>The value associated with the specified key.</returns>
 	public object this[string key]
 	{
-		get => _nativeApplicationSettings[_container.GetSettingKey(key)];
+		// A key that is absent — or whose stored value cannot be read back — reads as null rather than throwing.
+		get => _nativeApplicationSettings[_container.GetSettingKey(key)]!;
 		set
 		{
 			var exists = ContainsKey(key);
@@ -73,10 +76,13 @@ public sealed partial class ApplicationDataContainerSettings : IPropertySet, IOb
 		.Select(k => k.Substring(_container.ContainerPath.Length))
 		.ToArray();
 
+	/// <remarks>
+	/// Unreadable entries are not filtered out: <see cref="Keys"/>, <see cref="Count"/>, this collection and the
+	/// enumerator all have to project the same set of keys. Dropping an entry here — but not from the enumerator —
+	/// would make <see cref="Count"/> disagree with <c>Values.Count</c>.
+	/// </remarks>
 	public ICollection<object> Values => GetFullPublicKeys()
-		.Select(k => _nativeApplicationSettings[k])
-		.Where(v => v != null)
-		.Cast<object>()
+		.Select(k => _nativeApplicationSettings[k]!)
 		.ToArray();
 
 	public void Add(string key, object value)
@@ -137,7 +143,7 @@ public sealed partial class ApplicationDataContainerSettings : IPropertySet, IOb
 
 	public bool Remove(KeyValuePair<string, object> item) => Remove(item.Key);
 
-	public bool TryGetValue(string key, out object value) =>
+	public bool TryGetValue(string key, [MaybeNullWhen(false)] out object value) =>
 		_nativeApplicationSettings.TryGetValue(_container.GetSettingKey(key), out value);
 
 	/// <summary>
@@ -164,7 +170,7 @@ public sealed partial class ApplicationDataContainerSettings : IPropertySet, IOb
 	internal void ClearIncludingInternal() =>
 		_nativeApplicationSettings.RemoveKeys(IsCurrentContainerInternalKey);
 
-	internal object GetInternalValue(string key) =>
+	internal object? GetInternalValue(string key) =>
 		_nativeApplicationSettings[_container.GetSettingKey(key)];
 
 	internal void SetInternalValue(string key, object value) =>
