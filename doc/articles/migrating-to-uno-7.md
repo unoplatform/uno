@@ -58,8 +58,7 @@ The `net*-maccatalyst` target framework is no longer supported. The `Uno.Sdk` no
 produces a Mac Catalyst head: `maccatalyst` is not a recognized `TargetFramework`, the
 `Platforms/MacCatalyst/` folder is no longer picked up, and the `MacCatalystProjectFolder`
 property is gone. The `__MACCATALYST__` conditional symbol is never defined, and the
-`.iOS.cs`, `.UIKit.cs`, and `.Apple.cs` file suffixes now apply only to `net10.0-ios` and
-`net10.0-tvos`.
+`.iOS.cs` and `.UIKit.cs` file suffixes now apply only to `net10.0-ios` and `net10.0-tvos`.
 
 macOS remains a fully supported target through the **`net10.0-desktop`** head, which runs
 on macOS with Skia rendering. To migrate:
@@ -172,6 +171,26 @@ long-gone distinction are removed. Markup using them no longer resolves and must
 | `macos:` | `desktop:` |
 | `not_mux:` | drop the attribute — it dates from UWP support and never applied |
 | `xamarin:`, `legacy:` | drop the prefix |
+
+#### Removed file suffixes
+
+| Removed suffix | Replacement |
+|---|---|
+| `*.Apple.cs` | `*.UIKit.cs` — the rule was always identical |
+| `*.reference.cs` | delete the file, or fold it into `*.crossruntime.cs`. It was gated on a build flavor an application never selected, so it compiled nowhere |
+| `*.iOSmacOS.cs` | `*.iOS.cs`. It named the native macOS target, removed in 7.0 |
+
+#### Removed preprocessor symbols
+
+`HAS_UNO_SKIA_WIN32`, `HAS_UNO_SKIA_X11`, `HAS_UNO_SKIA_MACOS`, `HAS_UNO_SKIA_LINUX_FB`,
+`HAS_UNO_SKIA_ANDROID`, `HAS_UNO_SKIA_APPLE_UIKIT`, `HAS_UNO_SKIA_HEADLESS`,
+`HAS_UNO_SKIA_WEBASSEMBLY_BROWSER` and their `__UNO_SKIA_*__` counterparts are gone
+([#17684](https://github.com/unoplatform/uno/issues/17684)).
+
+They read as a compile-time host discriminator but could never be one: the SDK references every desktop host
+package together, so all of them were defined at once in a `netX.0-desktop` head. Use
+`OperatingSystem.IsWindows()` / `IsLinux()` / `IsMacOS()`, which is the only check that can be correct for a
+target framework that runs on all three. `HAS_UNO_SKIA` and `__UNO_SKIA__` are unaffected.
 
 ### Public API removed
 

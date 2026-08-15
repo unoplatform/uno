@@ -455,8 +455,7 @@ By Default when using the Uno.Sdk you get the added benefit of default includes 
 | `*.Android.cs` | `netX.0-android` |
 | `*.iOS.cs` | `netX.0-ios` |
 | `*.tvOS.cs` | `netX.0-tvos` |
-| `*.UIKit.cs`, `*.Apple.cs` | `netX.0-ios` and `netX.0-tvos` |
-| `*.iOSmacOS.cs` | `netX.0-ios` |
+| `*.UIKit.cs` | `netX.0-ios` and `netX.0-tvos` |
 | `*.desktop.cs` | `netX.0-desktop` |
 | `*.wasm.cs`, `*.browserwasm.cs` | `netX.0-browserwasm` |
 | `*.WinAppSDK.cs` | `netX.0-windows10.x` |
@@ -469,7 +468,9 @@ By Default when using the Uno.Sdk you get the added benefit of default includes 
 > `*.skia.cs` an alias of `*.desktop.cs`. A file that is genuinely desktop-only should be renamed to `*.desktop.cs`.
 
 > [!NOTE]
-> `*.reference.cs` is no longer compiled for any target framework and can be removed.
+> `*.reference.cs`, `*.iOSmacOS.cs` and `*.Apple.cs` are no longer recognized. `*.reference.cs` and
+> `*.iOSmacOS.cs` named build flavors that no longer exist and can be removed; rename `*.Apple.cs` to
+> `*.UIKit.cs`, which always had the identical rule.
 
 As discussed above setting `EnableDefaultUnoItems` to false will disable these includes.
 
