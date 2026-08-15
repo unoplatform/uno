@@ -7,13 +7,13 @@ using Uno.UI.Composition.Drawing;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 /// <summary>
-/// Neutral OpenGL <see cref="IGraphicsContext"/> for X11 — names no GPU-library type. It makes the window's GLX
+/// Neutral OpenGL <see cref="ISwapChain"/> for X11 — names no GPU-library type. It makes the window's GLX
 /// context current and hands the renderer a neutral <see cref="IGLRenderTarget"/> (the window's default
 /// framebuffer + sample/stencil); the Skia backend builds its GRContext-GL against the current context.
 /// <see cref="Present"/> swaps buffers and releases current. Chosen by negotiation when the window was created
 /// with a GLX visual (see X11XamlRootHost.CreateGLXWindow); the software context is the fallback.
 /// </summary>
-internal sealed class X11OpenGLGraphicsContext : IGraphicsContext
+internal sealed class X11OpenGLGraphicsContext : ISwapChain
 {
 	private const uint DefaultFramebuffer = 0; // the GLX buffer created in X11XamlRootHost, rendered directly on screen
 

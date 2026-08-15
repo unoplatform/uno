@@ -18,7 +18,7 @@ internal partial class Win32WindowWrapper
 
 	// The negotiated graphics context (Skia GL/software or WebGPU) — the host names no backend and owns no
 	// SKSurface; it drives the neutral per-frame loop (AcquireRenderTarget → record/render → Present).
-	private IGraphicsContext _context = null!;
+	private ISwapChain _context = null!;
 
 	public event EventHandler<IGeometry>? RenderingNegativePathReevaluated; // not necessarily changed
 
@@ -35,7 +35,7 @@ internal partial class Win32WindowWrapper
 	/// Software) or when the host is configured for software; WebGpu is built via the WebGPU project's init helper.
 	/// The host names no render backend.
 	/// </summary>
-	private IGraphicsContext? CreateWindowAndContext(GraphicsContextKind kind)
+	private ISwapChain? CreateWindowAndContext(GraphicsContextKind kind)
 	{
 		var scale = (float)(RasterizationScale == 0 ? 1 : RasterizationScale);
 		return kind switch
@@ -65,7 +65,7 @@ internal partial class Win32WindowWrapper
 	/// <summary>
 	/// Called on the render thread. Acquires the context's target for the current client size, records/renders
 	/// the frame through the neutral loop, and returns the clip path and client dimensions — or null when there
-	/// is no frame to present yet. The render thread presents the frame via <see cref="IGraphicsContext.Present"/>.
+	/// is no frame to present yet. The render thread presents the frame via <see cref="ISwapChain.Present"/>.
 	/// </summary>
 	private (IGeometry clipPath, int width, int height)? DrawFrame()
 	{

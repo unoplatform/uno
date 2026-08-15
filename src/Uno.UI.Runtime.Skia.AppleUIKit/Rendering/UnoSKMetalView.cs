@@ -123,7 +123,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		/// Creates the neutral Skia-on-Metal context bound to this view's device/queue. The per-frame drawable
 		/// texture is pushed each frame (see <see cref="IMTKViewDelegate.Draw"/>); the view commits the drawable.
 		/// </summary>
-		internal Uno.UI.Composition.Drawing.IGraphicsContext CreateGraphicsContext()
+		internal Uno.UI.Composition.Drawing.ISwapChain CreateGraphicsContext()
 			=> new AppleMetalGraphicsContext(Device!.Handle, _queue!.Handle);
 
 		public void QueueRender()

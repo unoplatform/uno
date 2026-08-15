@@ -1669,7 +1669,7 @@ public static class WebGpuContext
 	private static float NormalizeScale(float scale) => scale <= 0 ? 1f : scale;
 
 	/// <summary>Win32 HWND swapchain context.</summary>
-	public static IGraphicsContext CreateWin32(nint hwnd, nint hinstance, float rasterizationScale)
+	public static ISwapChain CreateWin32(nint hwnd, nint hinstance, float rasterizationScale)
 	{
 		// Set before the swapchain context creates the device (it reads this for its DPI-scaled targets).
 		WebGpuDevice.RasterizationScale = NormalizeScale(rasterizationScale);
@@ -1677,21 +1677,21 @@ public static class WebGpuContext
 	}
 
 	/// <summary>X11 window swapchain context.</summary>
-	public static IGraphicsContext CreateX11(nint display, nint window, float rasterizationScale)
+	public static ISwapChain CreateX11(nint display, nint window, float rasterizationScale)
 	{
 		WebGpuDevice.RasterizationScale = NormalizeScale(rasterizationScale);
 		return new WebGpuSwapChainContext(WGPUTextureFormat.BGRA8Unorm, inst => WebGpuSwapChainContext.CreateXlibSurface(inst, display, (ulong)window));
 	}
 
 	/// <summary>Metal (<c>CAMetalLayer</c>) swapchain context — macOS and iOS/tvOS.</summary>
-	public static IGraphicsContext CreateMetal(nint caMetalLayer, float rasterizationScale)
+	public static ISwapChain CreateMetal(nint caMetalLayer, float rasterizationScale)
 	{
 		WebGpuDevice.RasterizationScale = NormalizeScale(rasterizationScale);
 		return new WebGpuSwapChainContext(WGPUTextureFormat.BGRA8Unorm, inst => WebGpuSwapChainContext.CreateMetalSurface(inst, caMetalLayer));
 	}
 
 	/// <summary>Android <c>ANativeWindow</c> swapchain context.</summary>
-	public static IGraphicsContext CreateAndroid(nint aNativeWindow, float rasterizationScale)
+	public static ISwapChain CreateAndroid(nint aNativeWindow, float rasterizationScale)
 	{
 		WebGpuDevice.RasterizationScale = NormalizeScale(rasterizationScale);
 		return new WebGpuSwapChainContext(WGPUTextureFormat.BGRA8Unorm, inst => WebGpuSwapChainContext.CreateAndroidSurface(inst, aNativeWindow));
@@ -1702,7 +1702,7 @@ public static class WebGpuContext
 	/// imported into emdawnwebgpu's C handle table — the in-WASM wgpuInstanceProcessEvents pump hangs when driven
 	/// from a managed call stack — and the JS thread must not be blocked. Returns null if the device import fails.
 	/// </summary>
-	public static async Task<IGraphicsContext> CreateWasmAsync(string canvasId)
+	public static async Task<ISwapChain> CreateWasmAsync(string canvasId)
 	{
 		var inst = WebGpuDevice.CreateInstancePtr();
 		var devPtr = await WebGpuJsInterop.CreateImportedDeviceAsync((int)inst);

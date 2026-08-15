@@ -18,12 +18,12 @@ internal interface IMacOSNativeTextureSink
 }
 
 /// <summary>
-/// Neutral Skia-on-Metal <see cref="IGraphicsContext"/> for macOS — holds the device/queue and wraps the
+/// Neutral Skia-on-Metal <see cref="ISwapChain"/> for macOS — holds the device/queue and wraps the
 /// per-frame native <c>MTLTexture</c> as an <see cref="IMetalRenderTarget"/>; the Skia backend builds its
 /// GRContext-Metal + surface and flushes. The native MTKView owns the drawable and commits, so
 /// <see cref="Present"/> is a no-op. Names no Skia type.
 /// </summary>
-internal sealed class MacOSMetalGraphicsContext : IGraphicsContext, IMacOSNativeTextureSink
+internal sealed class MacOSMetalGraphicsContext : ISwapChain, IMacOSNativeTextureSink
 {
 	private readonly nint _device;
 	private readonly nint _queue;
@@ -62,12 +62,12 @@ internal sealed class MacOSMetalGraphicsContext : IGraphicsContext, IMacOSNative
 }
 
 /// <summary>
-/// Neutral software (CPU-framebuffer) <see cref="IGraphicsContext"/> for macOS — owns a BGRA/RGBA buffer and
+/// Neutral software (CPU-framebuffer) <see cref="ISwapChain"/> for macOS — owns a BGRA/RGBA buffer and
 /// hands it to the backend as an <see cref="ISoftwareRenderTarget"/>; the Skia backend wraps it as its surface.
 /// The native <c>SoftDraw</c> callback reads the rendered buffer back out of the acquired target, so
 /// <see cref="Present"/> is a no-op.
 /// </summary>
-internal sealed class MacOSSoftwareGraphicsContext : IGraphicsContext
+internal sealed class MacOSSoftwareGraphicsContext : ISwapChain
 {
 	private nint _buffer;
 	private int _width;

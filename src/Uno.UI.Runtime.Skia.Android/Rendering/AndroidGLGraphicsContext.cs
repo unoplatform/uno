@@ -6,14 +6,14 @@ using Uno.WinUI.Runtime.Skia.Android;
 namespace Uno.UI.Runtime.Skia.Android;
 
 /// <summary>
-/// Neutral GLES <see cref="IGraphicsContext"/> for the Android Skia path. Uno does not own the GL device here —
+/// Neutral GLES <see cref="ISwapChain"/> for the Android Skia path. Uno does not own the GL device here —
 /// <c>GLSurfaceView</c> creates the EGL context, runs its own render thread, and swaps implicitly after
 /// <c>OnDrawFrame</c> returns. So this context WRAPS the ambient EGL context (already current on the GLSurfaceView
 /// render thread when acquired) and its <see cref="Present"/> is a no-op (GLSurfaceView calls <c>eglSwapBuffers</c>).
 /// This mirrors the browser WebGL context (also a framework-created context, framework-driven loop, implicit present)
 /// — see WasmGLGraphicsContext. The Skia backend builds its GRContext-GLES against the current context. Names no Skia type.
 /// </summary>
-internal sealed class AndroidGLGraphicsContext : IGraphicsContext
+internal sealed class AndroidGLGraphicsContext : ISwapChain
 {
 	public GraphicsContextKind Kind => GraphicsContextKind.OpenGLES;
 

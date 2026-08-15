@@ -9,7 +9,7 @@ using Uno.UI.Hosting;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 /// <summary>
-/// Drives the shared render loop over a negotiated <see cref="IGraphicsContext"/>, naming no GPU-library type.
+/// Drives the shared render loop over a negotiated <see cref="ISwapChain"/>, naming no GPU-library type.
 /// The host (X11XamlRootHost) owns the negotiation (it creates the window+context per kind); this renderer just
 /// acquires the context's target each frame, records/presents through the neutral loop, and presents.
 /// </summary>
@@ -17,10 +17,10 @@ internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 {
 	private readonly IXamlRootHost _host;
 	private readonly X11Window _x11Window;
-	private readonly IGraphicsContext _context;
+	private readonly ISwapChain _context;
 	private Color _background;
 
-	public X11SoftwareGraphicsRenderer(IXamlRootHost host, X11Window x11Window, IGraphicsContext context)
+	public X11SoftwareGraphicsRenderer(IXamlRootHost host, X11Window x11Window, ISwapChain context)
 	{
 		_host = host;
 		_x11Window = x11Window;

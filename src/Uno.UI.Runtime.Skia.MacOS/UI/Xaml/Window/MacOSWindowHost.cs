@@ -36,7 +36,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private readonly DisplayInformation _displayInformation;
 	// The negotiated graphics context (Skia-on-Metal, software, or WebGPU on the CAMetalLayer). The host names no
 	// backend and owns no SKSurface; it drives the neutral per-frame loop from the native draw callbacks.
-	private IGraphicsContext _context = null!;
+	private ISwapChain _context = null!;
 	private bool _initializationCompleted;
 	private string? _lastSvgClipPath;
 	private Size _nativeWindowSize;
@@ -82,7 +82,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	/// the NSWindow; software owns a CPU framebuffer; WebGpu is built from the view's CAMetalLayer via the WebGPU
 	/// project's init helper. The host declines the GPU kinds when configured for software; it names no render backend.
 	/// </summary>
-	private IGraphicsContext? CreateContext(GraphicsContextKind kind, RenderSurfaceType surfaceType)
+	private ISwapChain? CreateContext(GraphicsContextKind kind, RenderSurfaceType surfaceType)
 	{
 		var software = surfaceType == RenderSurfaceType.Software;
 		var scale = (float)_displayInformation.RawPixelsPerViewPixel;

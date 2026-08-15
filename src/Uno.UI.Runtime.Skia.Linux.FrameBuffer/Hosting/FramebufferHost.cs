@@ -216,7 +216,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 				? global::Uno.UI.Composition.Drawing.GraphicsContextKind.Software
 				: global::Uno.UI.Composition.Drawing.GraphicsContextKind.OpenGLES;
 			global::Uno.UI.Composition.Drawing.GraphicsRegistry.ContextFactory =
-				k => System.Threading.Tasks.Task.FromResult<global::Uno.UI.Composition.Drawing.IGraphicsContext?>(
+				k => System.Threading.Tasks.Task.FromResult<global::Uno.UI.Composition.Drawing.ISwapChain?>(
 					k == kind ? new FrameBufferGraphicsContext(kind) : null);
 			var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize();
 			Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = init.Renderer;

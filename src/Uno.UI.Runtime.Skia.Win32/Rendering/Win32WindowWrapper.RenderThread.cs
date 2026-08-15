@@ -17,13 +17,13 @@ internal partial class Win32WindowWrapper
 		private readonly Thread _thread;
 		private readonly AutoResetEvent _frameSignal = new(false);
 		private readonly ManualResetEventSlim _presentedEvent = new(false);
-		private readonly IGraphicsContext _context;
+		private readonly ISwapChain _context;
 		private readonly Func<(IGeometry clipPath, int width, int height)?> _drawFrame;
 		private readonly Action<IGeometry> _onClipPathUpdated;
 		private volatile bool _disposed;
 
 		internal RenderThread(
-			IGraphicsContext context,
+			ISwapChain context,
 			Func<(IGeometry, int, int)?> drawFrame,
 			Action<IGeometry> onClipPathUpdated)
 		{

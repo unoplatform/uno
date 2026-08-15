@@ -24,7 +24,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 {
 	private IAppleUIKitRenderView? _renderView;
 	// The negotiated graphics context (Skia-on-Metal or WebGPU-on-CAMetalLayer). The host names no backend.
-	private IGraphicsContext? _context;
+	private ISwapChain? _context;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
 	private UIView? _topViewLayer;
@@ -149,7 +149,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		}
 	}
 
-	private IGraphicsContext? CreateRenderViewAndContext(GraphicsContextKind kind)
+	private ISwapChain? CreateRenderViewAndContext(GraphicsContextKind kind)
 	{
 		switch (kind)
 		{

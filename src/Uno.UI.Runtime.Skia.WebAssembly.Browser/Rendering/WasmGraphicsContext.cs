@@ -6,11 +6,11 @@ using Uno.UI.Composition.Drawing;
 namespace Uno.UI.Runtime.Skia;
 
 /// <summary>
-/// Neutral WebGL <see cref="IGraphicsContext"/> for the browser — wraps the emscripten WebGL renderer, making its
+/// Neutral WebGL <see cref="ISwapChain"/> for the browser — wraps the emscripten WebGL renderer, making its
 /// context current on acquire and handing the backend a neutral <see cref="IGLRenderTarget"/> (the canvas default
 /// framebuffer). The Skia backend builds its GRContext-GL against the current context. Names no Skia type.
 /// </summary>
-internal sealed class WasmGLGraphicsContext : IGraphicsContext
+internal sealed class WasmGLGraphicsContext : ISwapChain
 {
 	private readonly WebGlBrowserRenderer _renderer;
 
@@ -32,11 +32,11 @@ internal sealed class WasmGLGraphicsContext : IGraphicsContext
 }
 
 /// <summary>
-/// Neutral software <see cref="IGraphicsContext"/> for the browser — wraps the 2D-canvas software renderer,
+/// Neutral software <see cref="ISwapChain"/> for the browser — wraps the 2D-canvas software renderer,
 /// handing the backend a neutral <see cref="ISoftwareRenderTarget"/> over the JS pixel buffer. The Skia backend
 /// wraps it as its surface; <see cref="Present"/> blits it to the canvas. Names no Skia type.
 /// </summary>
-internal sealed class WasmSoftwareGraphicsContext : IGraphicsContext
+internal sealed class WasmSoftwareGraphicsContext : ISwapChain
 {
 	private readonly SoftwareBrowserRenderer _renderer;
 	private IRenderTarget? _target;

@@ -8,13 +8,13 @@ using Uno.UI.Helpers;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 /// <summary>
-/// Neutral OpenGL ES <see cref="IGraphicsContext"/> for X11 — names no GPU-library type. It creates an EGL
+/// Neutral OpenGL ES <see cref="ISwapChain"/> for X11 — names no GPU-library type. It creates an EGL
 /// display/context/surface for the (plain) window, makes it current, and hands the renderer a neutral
 /// <see cref="IGLRenderTarget"/> flagged GLES with the EGL proc loader; the Skia backend builds its
 /// GRContext-GLES against it. <see cref="Present"/> swaps buffers and releases current. Chosen by negotiation
 /// when the host prefers OpenGL ES (e.g. the GLES branch), falling to software if EGL is unavailable.
 /// </summary>
-internal sealed unsafe class X11EGLGraphicsContext : IGraphicsContext
+internal sealed unsafe class X11EGLGraphicsContext : ISwapChain
 {
 	private const uint DefaultFramebuffer = 0;
 
