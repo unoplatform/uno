@@ -11,8 +11,8 @@ using Windows.UI;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>SkiaSharp-backed <see cref="IDrawingSession"/> wrapping an <see cref="SKCanvas"/>. Recordings
-/// (<see cref="SkiaCommandRecorder"/>) produce an SKPicture <see cref="SkiaRenderData"/> that replays back into
-/// one of these sessions via <see cref="SkiaRenderData.Replay"/>.</summary>
+/// (<see cref="SkiaCommandRecorder"/>) produce an SKPicture <see cref="SkiaRenderRecord"/> that replays back into
+/// one of these sessions via <see cref="SkiaRenderRecord.Replay"/>.</summary>
 internal class SkiaDrawingSession : IDrawingSession
 {
 	// Reused per drawing thread to avoid allocating a native SKPaint per draw. Each Build*Paint resets and
@@ -212,12 +212,12 @@ internal class SkiaDrawingSession : IDrawingSession
 	public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool antialias)
 		=> _canvas.DrawLine(p0.X, p0.Y, p1.X, p1.Y, StrokePaint(color, strokeWidth, antialias));
 
-	// Resolves an IImageTexture to an SKImage. Fast path: a SkiaImageTexture is used directly (owned=false).
+	// Resolves an ITexture to an SKImage. Fast path: a SkiaTexture is used directly (owned=false).
 	// Cross-backend fallback (e.g. a WebGPU texture reaching a Skia RenderTargetBitmap pass): read the neutral
 	// pixels and materialize a transient SKImage (owned=true → dispose after drawing).
-	private static unsafe SKImage ResolveImage(IImageTexture texture, out bool owned)
+	private static unsafe SKImage ResolveImage(ITexture texture, out bool owned)
 	{
-		if (texture is SkiaImageTexture s)
+		if (texture is SkiaTexture s)
 		{
 			owned = false;
 			return s.Image;
@@ -229,21 +229,21 @@ internal class SkiaDrawingSession : IDrawingSession
 		return SKImage.FromPixelCopy(info, buffer);
 	}
 
-	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, float opacity, bool antialias)
+	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, float opacity, bool antialias)
 	{
 		var image = ResolveImage(texture, out var owned);
 		_canvas.DrawImage(image, x, y, ToSK(sampling), ImagePaint(antialias, opacity, colorFilter: null));
 		if (owned) { image.Dispose(); }
 	}
 
-	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias)
+	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias)
 	{
 		var image = ResolveImage(texture, out var owned);
 		_canvas.DrawImage(image, x, y, ToSK(sampling), ImagePaint(antialias, opacity: 1f, colorFilter));
 		if (owned) { image.Dispose(); }
 	}
 
-	public void DrawImageNineSlice(IImageTexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias)
+	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias)
 	{
 		var skImage = ResolveImage(texture, out var owned);
 		var center = new SKRectI((int)centerSlice.Left, (int)centerSlice.Top, (int)centerSlice.Right, (int)centerSlice.Bottom);

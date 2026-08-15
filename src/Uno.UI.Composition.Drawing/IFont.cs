@@ -116,7 +116,7 @@ public enum TextDirection
 
 /// <summary>One drawable element of a shaped glyph run (see <see cref="IFont.BuildGlyphRun"/>): a monochrome outline,
 /// a vector colour glyph, or a rasterized colour glyph. The font never creates an <see cref="IImage"/> or a backend
-/// <see cref="IImageTexture"/>.</summary>
+/// <see cref="ITexture"/>.</summary>
 public abstract record GlyphRunElement;
 
 /// <summary>The run's monochrome outline glyphs merged into one positioned geometry; fill with the run's text colour.

@@ -71,12 +71,12 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	public readonly object RenderGate = new();
 	private readonly System.Collections.Generic.List<nint> _pendingBindGroups = new();
 	private readonly System.Collections.Generic.List<nint> _pendingBuffers = new();
-	// Transient image textures whose owning IRenderData was disposed; drained (GPU-released) at the next frame start.
+	// Transient image textures whose owning IRenderRecord was disposed; drained (GPU-released) at the next frame start.
 	// Concurrent because a frame is disposed on the UI thread while BeginFrameResources runs on the render thread.
 	private readonly System.Collections.Concurrent.ConcurrentQueue<(nint view, nint tex)> _pendingTextures = new();
-	// Per-recording compiled GPU draw-list. It lives ON the recording's WebGpuRenderData (IRenderData is, by its own
+	// Per-recording compiled GPU draw-list. It lives ON the recording's WebGpuRenderRecord (IRenderRecord is, by its own
 	// contract, "backend-defined retained state"), built once and replayed cheaply — no global cache, no per-frame
-	// eviction scan. When the owning IRenderData is disposed (UI thread, on a content change), its compiled state is
+	// eviction scan. When the owning IRenderRecord is disposed (UI thread, on a content change), its compiled state is
 	// enqueued here and freed on the render thread at the next BeginFrameResources (concurrent, like _pendingTextures).
 	// Decoupled from the renderer's WebGpuGeometryCache: the device only needs the GPU resources to free (two
 	// OwnedResources bags) + the transform-table slot to reclaim, so the queue carries those primitives — keeping
@@ -235,7 +235,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	// Queues a transient image texture's GPU release for the next frame start. A brush that uploads a one-shot
 	// texture (e.g. CompositionNineGridBrush) disposes it right after recording its draw, but the WebGPU draw is
 	// replayed at present (possibly across several presents of the same recording) — so the texture must live until
-	// its owning IRenderData is disposed. WebGpuRenderData.Dispose calls this; the actual free happens at the next
+	// its owning IRenderRecord is disposed. WebGpuRenderRecord.Dispose calls this; the actual free happens at the next
 	// BeginFrameResources, after the last present's submit+DevicePoll, like the per-frame bind groups/buffers.
 	internal void DeferTextureRelease(IntPtr view, IntPtr tex) => _pendingTextures.Enqueue(((nint)view, (nint)tex));
 
@@ -1537,7 +1537,7 @@ internal sealed unsafe class WebGpuRenderSurface : IWebGpuRenderTarget
 			: View;
 	}
 
-	// Hands the resolved single-sample color texture/view to a longer-lived owner (RenderOffscreen → IImageTexture)
+	// Hands the resolved single-sample color texture/view to a longer-lived owner (RenderOffscreen → ITexture)
 	// and nulls them here so Dispose releases only the (now-finished) MSAA + depth targets. Only valid on a
 	// resource-owning surface (the dedicated ctor), after the render has been submitted+resolved.
 	internal (IntPtr tex, IntPtr view) DetachColor()
@@ -1736,7 +1736,7 @@ internal static class WebGpuContext
 	}
 }
 
-// --- Device-bound factory (IImageTexture + eventual shaders) ---
+// --- Device-bound factory (ITexture + eventual shaders) ---
 
 /// <summary>A wgpu texture uploaded once from a neutral <see cref="IImage"/>'s pixels. Owned/disposed by the framework.</summary>
 

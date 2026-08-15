@@ -5,10 +5,10 @@ using SkiaSharp;
 
 namespace Uno.UI.Composition.Drawing;
 
-/// <summary>SkiaSharp-backed <see cref="IImageTexture"/> — an owned <see cref="SKImage"/> uploaded from neutral pixels.</summary>
-internal sealed class SkiaImageTexture : IImageTexture
+/// <summary>SkiaSharp-backed <see cref="ITexture"/> — an owned <see cref="SKImage"/> uploaded from neutral pixels.</summary>
+internal sealed class SkiaTexture : ITexture
 {
-	public SkiaImageTexture(SKImage image) => Image = image;
+	public SkiaTexture(SKImage image) => Image = image;
 
 	public SKImage Image { get; }
 

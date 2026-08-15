@@ -82,7 +82,7 @@ public partial class CompositionTarget
 		{
 			var target = kvp.Key;
 
-			(IRenderData frame, IGeometry nativeElementClipPath)? staleFrame;
+			(IRenderRecord frame, IGeometry nativeElementClipPath)? staleFrame;
 			lock (target._frameGate)
 			{
 				staleFrame = target._lastRenderedFrame;
@@ -126,7 +126,7 @@ public partial class CompositionTarget
 	private static IGeometry? _lastScaledNativeClipPath;
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
-	private (IRenderData frame, IGeometry nativeElementClipPath)? _lastRenderedFrame;
+	private (IRenderRecord frame, IGeometry nativeElementClipPath)? _lastRenderedFrame;
 	// only set and read under _xamlRootBoundsGate
 	private Size _xamlRootBounds;
 	// only set and read under _xamlRootBoundsGate
@@ -192,7 +192,7 @@ public partial class CompositionTarget
 			FrameRenderingOptions.invertNativeElementClipPath);
 		var frame = recording.Finish();
 		var renderedFrame = (frame, path);
-		var previousFrame = default((IRenderData frame, IGeometry path)?);
+		var previousFrame = default((IRenderRecord frame, IGeometry path)?);
 		lock (_frameGate)
 		{
 			previousFrame = _lastRenderedFrame;
@@ -242,7 +242,7 @@ public partial class CompositionTarget
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 
-		(IRenderData frame, IGeometry nativeElementClipPath)? lastRenderedFrameNullable;
+		(IRenderRecord frame, IGeometry nativeElementClipPath)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
 			lastRenderedFrameNullable = _lastRenderedFrame;
@@ -329,9 +329,9 @@ public partial class CompositionTarget
 	}
 
 
-	private void ReturnFrame((IRenderData frame, IGeometry path) frame)
+	private void ReturnFrame((IRenderRecord frame, IGeometry path) frame)
 	{
-		IRenderData? frameToDelete = null;
+		IRenderRecord? frameToDelete = null;
 
 		lock (_frameGate)
 		{

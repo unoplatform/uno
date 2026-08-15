@@ -27,27 +27,27 @@ public interface IDrawingFactory
 {
 	/// <summary>
 	/// Renders <paramref name="render"/> into a fresh transparent offscreen target of the given pixel size and
-	/// returns it as a backend-resident <see cref="IImageTexture"/> — the same currency the draw verbs consume
+	/// returns it as a backend-resident <see cref="ITexture"/> — the same currency the draw verbs consume
 	/// (<see cref="IDrawingSession.DrawImage"/>), so the result is sampled directly with no CPU round-trip. The
 	/// caller owns the returned texture and disposes it. To read the pixels back to the CPU (e.g.
 	/// RenderTargetBitmap), use <see cref="SnapshotAsync"/> — the only genuinely-async operation in the seam,
 	/// because a GPU→CPU read cannot block the browser's single JS thread.
 	/// </summary>
-	IImageTexture RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render);
+	ITexture RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render);
 
 	/// <summary>
 	/// Reads <paramref name="texture"/>'s pixels back to a neutral CPU <see cref="IImage"/> (BGRA8888 premultiplied).
 	/// Async because on a GPU backend the readback completes only when control yields to the event loop (on WASM a
 	/// synchronous poll would hang). The texture must have been produced by this factory; a foreign texture throws.
 	/// </summary>
-	Task<IImage> SnapshotAsync(IImageTexture texture);
+	Task<IImage> SnapshotAsync(ITexture texture);
 
 	/// <summary>
 	/// Uploads a neutral <see cref="IImage"/>'s pixels into a backend-specific GPU texture (see
-	/// <see cref="IImageTexture"/>). Done once; the caller owns and disposes the result. This is the "store"
+	/// <see cref="ITexture"/>). Done once; the caller owns and disposes the result. This is the "store"
 	/// half of images — decoding (neutral pixels) is separate, and lives in <see cref="IImageDecoder"/>.
 	/// </summary>
-	IImageTexture CreateImageTexture(IImage image);
+	ITexture CreateTexture(IImage image);
 
 	/// <summary>Creates a linear-gradient shader in the current coordinate space.</summary>
 	IShader CreateLinearGradientShader(
@@ -97,7 +97,7 @@ public interface IDrawingFactory
 
 	/// <summary>
 	/// Begins a recording — the session the render cycle records the visual tree (or a subtree) into;
-	/// <see cref="ICommandRecorder.Finish"/> yields the opaque <see cref="IRenderData"/>. The root frame is the
+	/// <see cref="ICommandRecorder.Finish"/> yields the opaque <see cref="IRenderRecord"/>. The root frame is the
 	/// first call. One factory for both the frame and nested recordings (was <c>IRenderer.BeginFrame</c> and the
 	/// per-session <c>CreateRecording</c>).
 	/// </summary>
@@ -116,7 +116,7 @@ public interface IDrawingFactory<in TTarget> : IDrawingFactory where TTarget : I
 {
 	/// <summary>
 	/// Phase 2: begins composing onto <paramref name="target"/>. The cycle replays a recorded frame
-	/// (<see cref="IRenderData.Replay"/>) and draws any overlay into the returned session, then disposes it to present.
+	/// (<see cref="IRenderRecord.Replay"/>) and draws any overlay into the returned session, then disposes it to present.
 	/// </summary>
 	IPresentSession BeginPresent(TTarget target);
 }
