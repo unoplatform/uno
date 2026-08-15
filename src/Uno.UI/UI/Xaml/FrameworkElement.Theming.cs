@@ -489,20 +489,22 @@ public partial class FrameworkElement
 			DependencyProperty? foregroundProperty = GetForegroundProperty();
 
 			// MUX Reference framework.cpp line 3423-3429:
-			// WinUI skips the entire freeze when Foreground is set locally or by style,
-			// relying on PullInheritedTextFormatting to propagate the styled value.
-			// In Uno, Foreground is an inherited DP, so children auto-cascade from
-			// the parent. We still need _themeForeground for children that don't
-			// inherit via DP (e.g., popup/template content), but we skip the SetValue
-			// to avoid overriding the styled value on THIS element.
-			bool skipSetValue = false;
+			// "If this element has a Foreground property and it is set locally, by style or
+			//  animated, there is nothing to do, because that value will be used."
+			// The explicit value cascades to children through DP inheritance, so the boundary
+			// must not freeze the theme's default foreground over it (e.g. the focused TextBox
+			// ContentElement with RequestedTheme=Light in NumberBox/ComboBox templates, #24021).
 			if (foregroundProperty is not null)
 			{
 				var precedence = this.GetCurrentHighestValuePrecedence(foregroundProperty);
 				if (precedence != DependencyPropertyValuePrecedences.DefaultValue
 					&& precedence != DependencyPropertyValuePrecedences.Inheritance)
 				{
-					skipSetValue = true;
+					// Clear a freeze from an earlier walk (when Foreground was still default)
+					// so the explicit value isn't blocked from cascading to children.
+					_isForegroundFrozen = false;
+					_themeForeground = null;
+					return;
 				}
 			}
 
@@ -535,14 +537,11 @@ public partial class FrameworkElement
 					"DefaultTextForegroundThemeBrush");
 				if (brush is not null)
 				{
-					// Always store for child inheritance (popup content, template children)
+					// Store for child inheritance (popup content, template children)
 					_themeForeground = brush;
 					_isForegroundFrozen = true;
 
-					// Only set the DP when Foreground isn't already set by a higher
-					// precedence (local/style). This matches WinUI's skip behavior
-					// while preserving _themeForeground for child propagation.
-					if (foregroundProperty is not null && !skipSetValue)
+					if (foregroundProperty is not null)
 					{
 						this.SetValue(
 							foregroundProperty, brush,
