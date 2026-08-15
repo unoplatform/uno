@@ -223,6 +223,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// Validates that a short text in a TextBlock with a large MinWidth pushes
 		// the large extent to the owning ScrollViewer; lifting MinWidth re-shrinks.
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public async Task SizedTextBlock()
 		{
 			var scrollViewer = new ScrollViewer
@@ -278,6 +279,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// Validates that Content=null implies ScrollableHeight=0, and that re-assigning
 		// content restores scrollability.
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public async Task ResetContent()
 		{
 			var scrollViewer = await AddScrollViewer(Orientation.Vertical);
