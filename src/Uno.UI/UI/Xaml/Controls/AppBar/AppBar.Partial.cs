@@ -29,9 +29,6 @@ using Microsoft.UI.Input;
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class AppBar : ContentControl
-#if HAS_NATIVE_COMMANDBAR
-		, ICustomClippingElement
-#endif
 	{
 		public event EventHandler<object>? Opened;
 		public event EventHandler<object>? Opening;
@@ -68,7 +65,6 @@ namespace Microsoft.UI.Xaml.Controls
 		FocusState m_onLoadFocusState;
 		//UIElement? m_layoutTransitionElement;
 		UIElement? m_overlayLayoutTransitionElement;
-		private bool _isNativeTemplate;
 		//UIElement m_parentElementForLTEs;
 #pragma warning restore CS0414
 #pragma warning restore CS0649
@@ -307,11 +303,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			GetTemplatePart("LayoutRoot", out m_tpLayoutRoot);
 
-#if HAS_NATIVE_COMMANDBAR
-			_isNativeTemplate = Uno.UI.Extensions.DependencyObjectExtensions
-				.FindFirstChild<NativeCommandBarPresenter?>(this) != null;
-#endif
-
 #if HAS_UNO
 			ReAttachTemplateEvents();
 #endif
@@ -357,19 +348,9 @@ namespace Microsoft.UI.Xaml.Controls
 			ReevaluateIsOverlayVisible();
 		}
 
-#if HAS_NATIVE_COMMANDBAR
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => !_isNativeTemplate;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
-#endif
-
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			var size = base.MeasureOverride(availableSize);
-
-			if (_isNativeTemplate)
-			{
-				return size;
-			}
 
 			if (m_Mode == AppBarMode.Top || m_Mode == AppBarMode.Bottom)
 			{
