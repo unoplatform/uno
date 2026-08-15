@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Uno.UI.Runtime.Skia.Vulkan.Interop;
 using Uno.UI.Runtime.Skia.Vulkan.UnmanagedInterop;
+using Uno.UI.Composition.Drawing;
 using SkiaSharp;
 
 namespace Uno.UI.Runtime.Skia.Vulkan;
@@ -19,21 +20,11 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	private VulkanDevice? _device;
 	private VulkanDisplay? _display;
 	private VulkanImage? _renderImage;
-	private GRContext? _grContext;
-	private GRVkExtensions? _vkExtensions;
 	private VulkanInstanceApi? _instanceApi;
 	private VulkanDeviceApi? _deviceApi;
 	private bool _disposed;
 	private IVulkanPlatformSurfaceFactory? _factory;
 	private IntPtr _nativeWindowHandle;
-
-	// Cached per-size Skia resources — reused across frames, only recreated on resize
-	private GRBackendRenderTarget? _cachedRenderTarget;
-	private SKSurface? _cachedSkSurface;
-
-	public GRContext? GrContext => _grContext;
-	public SKSurface? CachedSkSurface => _cachedSkSurface;
-	public bool IsInitialized => _grContext != null;
 
 	// IVulkanPlatformGraphicsContext implementation
 	public IVulkanDevice Device => _device!;
@@ -45,6 +36,39 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	public VkInstance InstanceHandle => new() { Handle = _instance!.Handle };
 	public VkQueue MainQueueHandle => new() { Handle = _device!.MainQueueHandle };
 	public uint GraphicsQueueFamilyIndex => _device!.GraphicsQueueFamilyIndex;
+
+	// --- Neutral device face (consumed by the host's IVulkanDeviceContext) ---
+	// The Skia GRContext lives in the Skia backend now; this subsystem is Vulkan-native only and just exposes the
+	// device details + the per-frame render image, so the backend builds its own GRContext-Vulkan over them.
+	public nint InstancePtr => _instance!.Handle;
+	public nint PhysicalDevicePtr => _device!.PhysicalDeviceHandle;
+	public nint DevicePtr => _device!.Handle;
+	public nint QueuePtr => _device!.MainQueueHandle;
+	public uint MaxApiVersion => VulkanHelpers.MakeVersion(1, 1, 0);
+	public string[] EnabledInstanceExtensions => _instance!.EnabledExtensions.ToArray();
+	public string[] EnabledDeviceExtensions => _device!.EnabledExtensions.ToArray();
+
+	// Vulkan get-proc: resolves a device proc when device != 0, else an instance proc (the GRVkBackendContext contract).
+	public nint GetProcAddress(string name, nint instance, nint device)
+	{
+		if (device != IntPtr.Zero)
+		{
+			var addr = _instance!.GetDeviceProcAddress(device, name);
+			if (addr != IntPtr.Zero) { return addr; }
+		}
+		if (instance != IntPtr.Zero)
+		{
+			var addr = _instance!.GetInstanceProcAddress(instance, name);
+			if (addr != IntPtr.Zero) { return addr; }
+		}
+		return _instance!.GetInstanceProcAddress(IntPtr.Zero, name);
+	}
+
+	/// <summary>Acquires the device lock for a frame (held across the backend's render + this context's present).</summary>
+	public IDisposable Lock() => _device!.Lock();
+
+	/// <summary>The intermediate render image described neutrally, for the backend to wrap as its surface.</summary>
+	public IVulkanRenderTarget CurrentRenderTarget => new VulkanRenderTarget(_renderImage!, _device!.GraphicsQueueFamilyIndex);
 
 	/// <summary>
 	/// Initialize the Vulkan context with a platform-specific surface factory and native window handle.
@@ -81,64 +105,11 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 			var platformSurface = new DirectVulkanSurface(nativeWindowHandle, new SKSizeI(width, height), factory);
 			_display = VulkanDisplay.CreateDisplay(this, platformSurface);
 
-			// Create intermediate render image (TransitionLayout submits commands, needs lock)
+			// Create intermediate render image (TransitionLayout submits commands, needs lock). The Skia backend
+			// builds its own GRContext-Vulkan over this image via the neutral IVulkanDeviceContext/RenderTarget.
 			_renderImage = new VulkanImage(this, _display.CommandBufferPool,
 				_display.SurfaceFormat.format, new SKSizeI(width, height));
-
-			// Create SkiaSharp Vulkan context
-			CreateGrContext();
 		}
-	}
-
-	private void CreateGrContext()
-	{
-		if (_device == null || _instance == null)
-			throw new InvalidOperationException("Vulkan device not initialized");
-
-		IntPtr GetProcAddressWrapper(string name, IntPtr instance, IntPtr device)
-		{
-			if (device != IntPtr.Zero)
-			{
-				var addr = _instance.GetDeviceProcAddress(device, name);
-				if (addr != IntPtr.Zero)
-					return addr;
-			}
-
-			if (instance != IntPtr.Zero)
-			{
-				var addr = _instance.GetInstanceProcAddress(instance, name);
-				if (addr != IntPtr.Zero)
-					return addr;
-			}
-
-			return _instance.GetInstanceProcAddress(IntPtr.Zero, name);
-		}
-
-		// SkiaSharp 4.x's newer Skia requires the enabled instance/device extensions and a max API version to be
-		// declared; without them GRContext.CreateVulkan returns null. (SkiaSharp 3.x tolerated an unpopulated context.)
-		var instanceExtensions = _instance.EnabledExtensions.ToArray();
-		var deviceExtensions = _device.EnabledExtensions.ToArray();
-		_vkExtensions = GRVkExtensions.Create(
-			GetProcAddressWrapper,
-			_device.Instance.Handle,
-			_device.PhysicalDeviceHandle,
-			instanceExtensions,
-			deviceExtensions);
-
-		var ctx = new GRVkBackendContext
-		{
-			VkInstance = _device.Instance.Handle,
-			VkPhysicalDevice = _device.PhysicalDeviceHandle,
-			VkDevice = _device.Handle,
-			VkQueue = _device.MainQueueHandle,
-			GraphicsQueueIndex = _device.GraphicsQueueFamilyIndex,
-			MaxAPIVersion = VulkanHelpers.MakeVersion(1, 1, 0),
-			Extensions = _vkExtensions,
-			GetProcedureAddress = GetProcAddressWrapper
-		};
-
-		_grContext = GRContext.CreateVulkan(ctx)
-			?? throw new VulkanException("Unable to create SkiaSharp GRContext from Vulkan device");
 	}
 
 	/// <summary>
@@ -153,9 +124,6 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		using (_device.Lock())
 		{
 			_deviceApi!.DeviceWaitIdle(DeviceHandle);
-
-			// Dispose cached Skia resources first (they reference the render image)
-			DisposeCachedSkiaSurface();
 
 			_renderImage?.Dispose();
 			_display.Dispose();
@@ -180,126 +148,10 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 			return;
 
 		_deviceApi!.DeviceWaitIdle(DeviceHandle);
-		DisposeCachedSkiaSurface();
 
 		_renderImage?.Dispose();
 		_renderImage = new VulkanImage(this, _display.CommandBufferPool,
 			_display.SurfaceFormat.format, new SKSizeI(width, height));
-		// _cachedSkSurface will be lazily recreated on next EnsureCachedSurface
-	}
-
-	/// <summary>
-	/// Render a complete frame: acquire lock, create SKSurface, invoke the render callback,
-	/// flush, blit to swapchain, and present — all within a single device lock scope.
-	/// The callback receives the SKSurface to render into.
-	/// </summary>
-	public bool RenderFrame(Action<SKSurface> renderCallback)
-	{
-		if (_display == null || _grContext == null || _renderImage == null || _device == null)
-			return false;
-
-		using (_device.Lock())
-		{
-			try
-			{
-				_display.EnsureSwapchainAvailable();
-				_grContext.ResetContext();
-
-				// Lazily create or reuse the cached SKSurface and render target
-				EnsureCachedSkiaSurface();
-
-				if (_cachedSkSurface == null)
-					return false;
-
-				// Invoke the Uno composition rendering callback
-				renderCallback(_cachedSkSurface);
-
-				// Flush Skia commands to the Vulkan intermediate image
-				_cachedSkSurface.Canvas.Flush();
-				_grContext.Flush();
-
-				// StartPresentation acquires next swapchain image and begins a command buffer
-				var commandBuffer = _display.StartPresentation();
-
-				// Blit intermediate render image to the swapchain image
-				_display.BlitImageToCurrentImage(commandBuffer, _renderImage);
-
-				// End presentation: transition to present layout, submit, and present
-				_display.EndPresentation(commandBuffer);
-
-				return true;
-			}
-			catch (VulkanException ex) when (
-				ex.Message.Contains("OUT_OF_DATE") ||
-				ex.Message.Contains("SUBOPTIMAL"))
-			{
-				return false;
-			}
-		}
-	}
-
-	private void EnsureCachedSkiaSurface()
-	{
-		if (_cachedSkSurface != null)
-			return;
-
-		var imageInfo = _renderImage!.ImageInfo;
-		var vkImageInfo = new GRVkImageInfo
-		{
-			CurrentQueueFamily = _device!.GraphicsQueueFamilyIndex,
-			Format = imageInfo.Format,
-			Image = (ulong)imageInfo.Handle,
-			ImageLayout = imageInfo.Layout,
-			ImageTiling = imageInfo.Tiling,
-			ImageUsageFlags = imageInfo.UsageFlags,
-			LevelCount = imageInfo.LevelCount,
-			SampleCount = imageInfo.SampleCount,
-			Protected = imageInfo.IsProtected,
-			Alloc = new GRVkAlloc
-			{
-				Memory = (ulong)imageInfo.MemoryHandle,
-				Size = imageInfo.MemorySize
-			}
-		};
-
-		_cachedRenderTarget = new GRBackendRenderTarget(imageInfo.PixelSize.Width, imageInfo.PixelSize.Height, vkImageInfo);
-		var colorType = OperatingSystem.IsAndroid() ? SKColorType.Rgba8888 : SKColorType.Bgra8888;
-		_cachedSkSurface = SKSurface.Create(_grContext!, _cachedRenderTarget,
-			GRSurfaceOrigin.TopLeft, colorType, SKColorSpace.CreateSrgb());
-	}
-
-	private void DisposeCachedSkiaSurface()
-	{
-		if (_device != null)
-		{
-			// Wait for GPU to finish all pending work before disposing Skia resources
-			_deviceApi?.DeviceWaitIdle(DeviceHandle);
-		}
-		_cachedSkSurface?.Dispose();
-		_cachedSkSurface = null;
-		_cachedRenderTarget?.Dispose();
-		_cachedRenderTarget = null;
-	}
-
-	/// <summary>
-	/// Invalidate the cached surface reference without disposing it.
-	/// Call when the caller has already disposed the SKSurface externally
-	/// (e.g., X11Renderer base class disposes _surface before calling UpdateSize).
-	/// </summary>
-	public void InvalidateCachedSurface()
-	{
-		_cachedSkSurface = null;
-		_cachedRenderTarget?.Dispose();
-		_cachedRenderTarget = null;
-	}
-
-	/// <summary>
-	/// Ensure the cached Skia surface is created. Call while holding the device lock.
-	/// Used by platforms (Win32) that use a split StartPaint/EndPaint pattern.
-	/// </summary>
-	public void EnsureCachedSurface()
-	{
-		EnsureCachedSkiaSurface();
 	}
 
 	/// <summary>
@@ -380,16 +232,8 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 			using (_device.Lock())
 			{
 				_deviceApi?.DeviceWaitIdle(DeviceHandle);
-				DisposeCachedSkiaSurface();
 			}
 		}
-
-		_grContext?.AbandonContext();
-		_grContext?.Dispose();
-		_grContext = null;
-
-		_vkExtensions?.Dispose();
-		_vkExtensions = null;
 
 		_renderImage?.Dispose();
 		_renderImage = null;
@@ -402,6 +246,36 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 
 		(_instance as IDisposable)?.Dispose();
 		_instance = null;
+	}
+
+	// Neutral view of the intermediate render image (the GRVkImageInfo inputs). Read at AcquireRenderTarget; the
+	// Skia backend wraps it as an SKSurface via a GRContext-Vulkan built from this context's device details.
+	private sealed class VulkanRenderTarget : IVulkanRenderTarget
+	{
+		private readonly VulkanImageInfo _info;
+		private readonly uint _queueFamily;
+
+		public VulkanRenderTarget(VulkanImage image, uint queueFamily)
+		{
+			_info = image.ImageInfo;
+			_queueFamily = queueFamily;
+		}
+
+		public ulong Image => (ulong)_info.Handle;
+		public ulong Memory => (ulong)_info.MemoryHandle;
+		public ulong MemorySize => _info.MemorySize;
+		public uint Format => _info.Format;
+		public uint ImageTiling => _info.Tiling;
+		public uint ImageLayout => _info.Layout;
+		public uint ImageUsageFlags => _info.UsageFlags;
+		public uint SampleCount => _info.SampleCount;
+		public uint LevelCount => _info.LevelCount;
+		public uint CurrentQueueFamily => _queueFamily;
+		public bool Protected => _info.IsProtected;
+		public int Width => _info.PixelSize.Width;
+		public int Height => _info.PixelSize.Height;
+		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Bgra8888;
+		public void Dispose() { }
 	}
 
 	/// <summary>

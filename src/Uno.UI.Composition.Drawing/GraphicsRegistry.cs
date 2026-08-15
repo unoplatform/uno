@@ -254,15 +254,17 @@ internal static class GraphicsRegistry
 			=> (provider as IGraphicsProvider<IGLDeviceContext>)?.CreateGraphics((IGLDeviceContext)context),
 		GraphicsContextKind.Metal
 			=> (provider as IGraphicsProvider<IMetalDeviceContext>)?.CreateGraphics((IMetalDeviceContext)context),
+		GraphicsContextKind.Vulkan
+			=> (provider as IGraphicsProvider<IVulkanDeviceContext>)?.CreateGraphics((IVulkanDeviceContext)context),
 		_ => (provider as IGraphicsProvider<IGraphicsContext>)?.CreateGraphics(context),
 	};
 
-	// The closed kind → typed-present capability mapping (kind ⇒ the IDrawingFactory<TTarget> a backend must
-	// implement). Vulkan is intentionally unmapped (no present path wired on this seam yet) → declined.
+	// The closed kind → typed-present capability mapping (kind ⇒ the IDrawingFactory<TTarget> a backend must implement).
 	private static bool CanPresent(GraphicsContextKind kind, IDrawingFactory backend) => kind switch
 	{
 		GraphicsContextKind.OpenGL or GraphicsContextKind.OpenGLES => backend is IDrawingFactory<IGLRenderTarget>,
 		GraphicsContextKind.Metal => backend is IDrawingFactory<IMetalRenderTarget>,
+		GraphicsContextKind.Vulkan => backend is IDrawingFactory<IVulkanRenderTarget>,
 		GraphicsContextKind.Software => backend is IDrawingFactory<ISoftwareRenderTarget>,
 		GraphicsContextKind.WebGpu => backend is IDrawingFactory<IWebGpuRenderTarget>,
 		_ => false,
