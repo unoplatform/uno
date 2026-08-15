@@ -602,7 +602,7 @@ partial class MetadataAPI // quick impl
 #if NET10_0_OR_GREATER
 		| DynamicallyAccessedMemberTypes.NonPublicFieldsWithInherited
 		| DynamicallyAccessedMemberTypes.NonPublicPropertiesWithInherited
-#endif  // NET10_0_OR_GREATER
+#endif // NET10_0_OR_GREATER
 		;
 
 	public static DependencyProperty TryGetDependencyPropertyByName(
