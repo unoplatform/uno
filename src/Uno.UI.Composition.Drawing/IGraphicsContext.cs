@@ -30,7 +30,7 @@ public interface IGraphicsContext : IDisposable
 /// (it consumes only the <see cref="IGraphicsContext"/> device handle, which it narrows to its own device
 /// interface); acquire/present are the host's window-swapchain concern, not the backend's.
 /// </summary>
-public interface ISwapChain : IGraphicsContext
+internal interface ISwapChain : IGraphicsContext
 {
 	/// <summary>Acquires the color target for the next frame (recreating the swapchain/framebuffer on resize).</summary>
 	IRenderTarget AcquireRenderTarget(int width, int height);

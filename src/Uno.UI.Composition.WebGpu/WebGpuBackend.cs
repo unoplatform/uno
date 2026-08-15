@@ -916,7 +916,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private WColor? _pendingClear;
 	private long _tReplayStart;
 	private static int _streamDumpFrame;
-	public WebGpuPresentSession(WebGpuDevice d, WebGpuRenderSurface s) { _d = d; _s = s; }
+	internal WebGpuPresentSession(WebGpuDevice d, WebGpuRenderSurface s) { _d = d; _s = s; }
 
 	// Runs a frame: opens the shared encoder (if not already inside one), renders, then finishes+submits once.
 	// load=true preserves the target's existing colour (LoadOp.Load) so an overlay composites over the frame.
@@ -2379,7 +2379,9 @@ public sealed class WebGpuGraphicsProvider : IGraphicsProvider<IGraphicsContext>
 	// SkiaSharp-free app registers a ManagedGeometryFactory there rather than injecting it here.
 	public IDrawingFactory CreateGraphics(IGraphicsContext context)
 	{
-		var device = ((IWebGpuDeviceContext)context).Device;
+		// Uno's renderer is coupled to the WebGpuDevice wrapper (built during init), so it takes it via the
+		// internal fast-path holder rather than the neutral IWebGpuDeviceContext handles.
+		var device = ((IWebGpuDeviceHolder)context).Device;
 		return new WebGpuDrawingFactory(device);
 	}
 }
@@ -2436,7 +2438,7 @@ public sealed unsafe class WebGpuImageTexture : IImageTexture
 		PixelHeight = height;
 	}
 
-	public WebGpuImageTexture(WebGpuDevice device, IImage image)
+	internal WebGpuImageTexture(WebGpuDevice device, IImage image)
 	{
 		_d = device;
 		_source = image;
@@ -2514,7 +2516,7 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 {
 	private readonly WebGpuDevice _device;
 
-	public WebGpuDrawingFactory(WebGpuDevice device) { _device = device; }
+	internal WebGpuDrawingFactory(WebGpuDevice device) { _device = device; }
 
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
 
