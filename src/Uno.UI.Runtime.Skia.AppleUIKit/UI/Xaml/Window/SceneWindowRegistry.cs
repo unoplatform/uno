@@ -17,7 +17,9 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 /// </remarks>
 internal static class SceneWindowRegistry
 {
-	internal const string ActivityType = "platform.uno.window";
+	// Reverse-DNS per Apple's convention for activity types. The activity never leaves the process
+	// (it is read back from UISceneConnectionOptions), so it needs no NSUserActivityTypes entry.
+	internal const string ActivityType = "uno.platform.window";
 	internal const string TokenKey = "uno-window-token";
 
 	private static readonly object _gate = new();
