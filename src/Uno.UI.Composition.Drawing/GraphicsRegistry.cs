@@ -256,6 +256,8 @@ internal static class GraphicsRegistry
 			=> (provider as IGraphicsProvider<IMetalDeviceContext>)?.CreateGraphics((IMetalDeviceContext)context),
 		GraphicsContextKind.Vulkan
 			=> (provider as IGraphicsProvider<IVulkanDeviceContext>)?.CreateGraphics((IVulkanDeviceContext)context),
+		GraphicsContextKind.WebGpu
+			=> (provider as IGraphicsProvider<IWebGpuDeviceContext>)?.CreateGraphics((IWebGpuDeviceContext)context),
 		_ => (provider as IGraphicsProvider<IGraphicsContext>)?.CreateGraphics(context),
 	};
 

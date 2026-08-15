@@ -11,7 +11,7 @@ namespace Uno.UI.Composition.WebGpu;
 /// emdawnwebgpu's C handle table — avoiding the in-WASM wgpuInstanceProcessEvents pump, which hangs when driven
 /// from a managed call stack on the browser.
 /// </summary>
-internal static partial class WebGpuJsInterop
+public static partial class WebGpuJsInterop
 {
 	/// <summary>Creates a WebGPU device in JS and imports it into the given wgpu instance. Returns the imported
 	/// WGPUDevice pointer, or 0 on failure.</summary>

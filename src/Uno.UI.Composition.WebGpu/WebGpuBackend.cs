@@ -2367,23 +2367,18 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 /// <summary>A host graphics context that owns a <see cref="WebGpuDevice"/> (e.g. an on-window swapchain context).
 /// Lets <see cref="WebGpuGraphicsProvider"/> obtain the device without naming the platform context type.</summary>
-public sealed class WebGpuGraphicsProvider : IGraphicsProvider<IGraphicsContext>
+public sealed class WebGpuGraphicsProvider : IGraphicsProvider<IWebGpuDeviceContext>
 {
 	private static readonly GraphicsContextKind[] _preferred = { GraphicsContextKind.WebGpu };
 
 	public IReadOnlyList<GraphicsContextKind> PreferredContexts => _preferred;
 
-	// The device is created by the host context (it owns the window swapchain); the device-bound WebGpu drawing
-	// factory manufactures GPU-resident images/shaders, and the WebGpu renderer draws. Geometry is a separate seam
-	// (GeometryFactory): WebGPU consumes whatever neutral IGeometry it's registered — it flattens everything — so a
-	// SkiaSharp-free app registers a ManagedGeometryFactory there rather than injecting it here.
-	public IDrawingFactory CreateGraphics(IGraphicsContext context)
-	{
-		// Uno's renderer is coupled to the WebGpuDevice wrapper (built during init), so it takes it via the
-		// internal fast-path holder rather than the neutral IWebGpuDeviceContext handles.
-		var device = ((IWebGpuDeviceHolder)context).Device;
-		return new WebGpuDrawingFactory(device);
-	}
+	// Builds the WebGPU render engine from the neutral device context the host created (raw wgpu handles + the
+	// host's colour format + MSAA count) — the exact seam a third-party WebGPU backend consumes. No privileged
+	// path into the host's internals. Geometry is a separate seam (GeometryFactory): WebGPU flattens everything, so
+	// a SkiaSharp-free app registers a ManagedGeometryFactory there rather than injecting it here.
+	public IDrawingFactory CreateGraphics(IWebGpuDeviceContext context)
+		=> new WebGpuDrawingFactory(new WebGpuDevice(context));
 }
 
 /// <summary>
@@ -2515,14 +2510,31 @@ internal sealed class WebGpuReadbackImage : IImage
 public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 {
 	private readonly WebGpuDevice _device;
+	// The main-pass surface the backend OWNS: the host hands only a single-sample resolve colour (the neutral
+	// IWebGpuRenderTarget); the backend allocates its own MSAA colour + depth (recreated on resize) and resolves
+	// into the host's colour — the same "backend brings its own depth/stencil" contract every other target follows.
+	private WebGpuRenderSurface _mainSurface;
+	private int _mainW, _mainH;
 
 	internal WebGpuDrawingFactory(WebGpuDevice device) { _device = device; }
 
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
 
-	// The backend recognizes its own concrete surface behind the neutral IWebGpuRenderTarget (same assembly group,
-	// guaranteed by the bind-time gate) — a backend-owned self-cast, not a foreign downcast.
-	public IPresentSession BeginPresent(IWebGpuRenderTarget target) => new WebGpuPresentSession(_device, (WebGpuRenderSurface)target);
+	public IPresentSession BeginPresent(IWebGpuRenderTarget target)
+	{
+		if (_mainSurface is null || _mainW != target.Width || _mainH != target.Height)
+		{
+			_mainSurface?.Dispose();
+			_mainSurface = new WebGpuRenderSurface(_device, target.Width, target.Height, externalColor: true);
+			_mainW = target.Width;
+			_mainH = target.Height;
+		}
+		// Point the backend surface at THIS frame's host resolve colour (host owns its lifetime; _ownsColor=false).
+		_mainSurface.View = target.ColorView;
+		_mainSurface.Tex = target.ColorTexture;
+		if (_device.MsaaSamples == 1) { _mainSurface.MsaaColorView = target.ColorView; }   // 1x: render straight into it
+		return new WebGpuPresentSession(_device, _mainSurface);
+	}
 
 	public ITexture CreateTexture(IImage image) => new WebGpuTexture(_device, image);
 
@@ -2558,10 +2570,9 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 			return new WebGpuReadbackImage(w, h, _device.ReadPixelsFromTex(t.Tex, w, h), srcBgra);
 		}
 
-		var hook = WebGpuDevice.BrowserReadbackAsync
-			?? throw new InvalidOperationException("WebGPU browser readback is not registered (see BrowserRenderer.InitWebGpuAsync).");
 		_device.EncodeCopyTexToReadbackBuffer(t.Tex, w, h, out var buf, out var total, out var padded);
-		var paddedBytes = await hook(buf, total);
+		// Browser GPU→CPU map must run off the JS event loop; the JS bridge lives in the host init assembly.
+		var paddedBytes = Convert.FromBase64String(await WebGpuJsInterop.MapReadBase64Async((int)buf, total));
 		_device.DestroyBuffer(buf);
 		return new WebGpuReadbackImage(w, h, WebGpuDevice.Unpad(paddedBytes, w, h, padded), srcBgra);
 	}
