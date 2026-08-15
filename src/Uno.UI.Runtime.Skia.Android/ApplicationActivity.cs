@@ -313,6 +313,30 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
+			// The builder's documented default (UseVulkan): a Vulkan SurfaceView when the device supports it,
+			// otherwise the canvas render view (GLES/software per UseOpenGL). Vulkan can fail at runtime, so a
+			// failed bring-up falls through to the canvas view rather than aborting.
+			if (FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid)
+			{
+				try
+				{
+					return new UnoSKVulkanView(this);
+				}
+				catch (Exception ex)
+				{
+					typeof(ApplicationActivity).Log().Warn($"Vulkan rendering not available: {ex.Message}. Falling back.");
+				}
+			}
+
+			// UseOpenGL(false) is meant to render the canvas view in software, but Android has no software swapchain
+			// yet (a SurfaceView + LockCanvas path with a BGRA→RGBA present, needing on-device validation). Until
+			// that exists, honor the flag by not silently ignoring it: warn and use the GLES canvas view.
+			if (!FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid)
+			{
+				typeof(ApplicationActivity).Log().Warn(
+					"UseOpenGL(false) requests software rendering, which is not implemented on Android; using the GLES canvas view.");
+			}
+
 			return new UnoSKCanvasView(this);
 		}
 

@@ -179,8 +179,20 @@ it (resize → `ResizeRenderImage`); `Present` → `VulkanContext.BlitAndPresent
 .CreateWindowAndContext`: `case Vulkan` (create the plain window + context), gated by `UseVulkanOnX11` (declined
 when false → falls through). **Validate on lavapipe** (`UNO_X11_RENDERER=Vulkan`).
 
-**E6 — Win32 + Android** mirror E5 (recreate `Win32VulkanSurfaceFactory`/`AndroidVulkanSurfaceFactory` +
-`*VulkanGraphicsContext` from git; wire `UseVulkanOnWin32`/`UseVulkanOnSkiaAndroid`). Compile-only here.
+**E6 — Win32 + Android** mirror E5. **DONE, compile-verified** (Win32 head + `net10.0-android` head build clean):
+- **Win32**: recreated `Vulkan/Win32VulkanSurfaceFactory` (`VK_KHR_win32_surface`), added
+  `Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext` (HWND-based; size via `GetClientRect`), a gated
+  `TryCreateVulkan()` arm in the `CreateWindowAndContext` switch (declines when `!UseVulkanOnWin32`, swallows
+  creation failure → falls through). Fixed the builder: `Win32RenderingBackend.Vulkan` now also sets
+  `UseOpenGLOnWin32=false` (was set-but-GL-still-won, so Vulkan was never reached). Default order is GL-first, so
+  Vulkan stays a fallback/opt-in — the Win32 default is unchanged.
+- **Android**: recreated `Platform/Vulkan/AndroidVulkanSurfaceFactory` + `AndroidVulkanNativeInterop`
+  (`VK_KHR_android_surface`), added `AndroidVulkanGraphicsContext` (ANativeWindow-based) and a neutral
+  `UnoSKVulkanView : SurfaceView` (own render thread, serves the Vulkan kind via `ContextFactory` — mirrors
+  `UnoSKWebGpuView`). `CreateRenderView` now honors the builder's **documented default** (`UseVulkan`): a Vulkan
+  SurfaceView when `UseVulkanOnSkiaAndroid`, with a try/catch fall-back to the canvas view. NOTE: this restores
+  Vulkan-as-default on Android (the Skia-free refactor had silently dropped it to GLES-default) — **runtime
+  behavior change, compile-only here; on-device validation required.**
 
 Note: `VulkanContext` lived in the `Uno.UI.Composition.Skia` **backend** assembly, which hosts must not
 reference — so E4 also **relocated** the whole `Vulkan/` subsystem to the shared host runtime
@@ -191,8 +203,13 @@ crash). E6 (Win32/Android Vulkan contexts) remains — mechanical mirrors of E5.
 
 ## Step F — audit follow-ups (non-Vulkan)
 
-- `UseOpenGLOnSkiaAndroid` set-but-never-read: Android `ApplicationActivity.CreateRenderView` only branches
-  WebGpu-vs-GLES; setting it false must force software. Wire it (compile-only; on-device validation handed off).
+- `UseOpenGLOnSkiaAndroid` set-but-never-read: Android `ApplicationActivity.CreateRenderView` only branched
+  WebGpu-vs-GLES; setting it false was silently ignored. **PARTIAL:** the flag is now **non-silent** — when false,
+  `CreateRenderView` logs a clear warning and uses the GLES canvas view. **DEFERRED:** actually forcing software
+  needs a real Android software swapchain (a `SurfaceView` + `SurfaceHolder.LockCanvas` path with a per-pixel
+  BGRA→RGBA present, since the neutral `ISoftwareRenderTarget` is BGRA8888 but Android `Bitmap` is RGBA8888). That
+  is a new renderer with a channel-order correctness hazard that can't be validated without an Android device — not
+  shipped blind on a maintenance-only target. Tracked for on-device follow-up.
 
 ## Validation
 
