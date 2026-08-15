@@ -99,28 +99,35 @@ internal sealed class DamageRegion : IDisposable
 	{
 		destination.Reset();
 
-		if (_hasRects)
+		// Detach() already emptied the builder, so a throw between here and Reset() would leave the
+		// region claiming rects it no longer holds. Reset unconditionally to keep the next frame sane.
+		try
 		{
-			using var rects = _rects.Detach();
-			rects.Transform(SKMatrix.Identity, destination);
-
-			if (!_exact.IsEmpty)
+			if (_hasRects)
 			{
-				destination.Op(_exact, SKPathOp.Union, destination);
+				using var rects = _rects.Detach();
+				rects.Transform(SKMatrix.Identity, destination);
+
+				if (!_exact.IsEmpty)
+				{
+					destination.Op(_exact, SKPathOp.Union, destination);
+				}
+			}
+			else if (!_exact.IsEmpty)
+			{
+				_exact.Transform(SKMatrix.Identity, destination);
+			}
+
+			if (!destination.IsEmpty && !clampTo.Contains(destination.Bounds))
+			{
+				using var frame = Microsoft.UI.Composition.SkiaExtensions.CreateRectPath(clampTo);
+				destination.Op(frame, SKPathOp.Intersect, destination);
 			}
 		}
-		else if (!_exact.IsEmpty)
+		finally
 		{
-			_exact.Transform(SKMatrix.Identity, destination);
+			Reset();
 		}
-
-		if (!destination.IsEmpty && !clampTo.Contains(destination.Bounds))
-		{
-			using var frame = Microsoft.UI.Composition.SkiaExtensions.CreateRectPath(clampTo);
-			destination.Op(frame, SKPathOp.Intersect, destination);
-		}
-
-		Reset();
 	}
 
 	public void Dispose()
