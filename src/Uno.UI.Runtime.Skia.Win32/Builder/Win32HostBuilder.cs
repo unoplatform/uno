@@ -50,8 +50,6 @@ public class Win32HostBuilder : IPlatformHostBuilder
 		{
 			case Win32RenderingBackend.Vulkan:
 				FeatureConfiguration.Rendering.UseVulkanOnWin32 = true;
-				// Disable GL so the Vulkan kind (later in the backend's preference order) is the one negotiated.
-				FeatureConfiguration.Rendering.UseOpenGLOnWin32 = false;
 				break;
 			case Win32RenderingBackend.OpenGL:
 				FeatureConfiguration.Rendering.UseVulkanOnWin32 = false;

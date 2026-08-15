@@ -76,8 +76,6 @@ public partial class X11HostBuilder : IPlatformHostBuilder
 		{
 			case X11RenderingBackend.Vulkan:
 				FeatureConfiguration.Rendering.UseVulkanOnX11 = true;
-				// Disable GL so the Vulkan kind (later in the backend's preference order) is the one negotiated.
-				FeatureConfiguration.Rendering.UseOpenGLOnX11 = false;
 				break;
 			case X11RenderingBackend.OpenGL:
 				FeatureConfiguration.Rendering.UseVulkanOnX11 = false;
