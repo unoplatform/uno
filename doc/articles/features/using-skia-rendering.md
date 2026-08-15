@@ -100,5 +100,7 @@ Providing a plain `net10.0` target framework is still recommended. It is the ass
 > [!TIP]
 > Multi-targeting is not required in order to vary behavior per platform. A single `net10.0` target framework can branch at run time with [`OperatingSystem.IsIOS()`](https://learn.microsoft.com/dotnet/api/system.operatingsystem.isios), `OperatingSystem.IsAndroid()`, and the other `OperatingSystem.IsXXX` methods. See [Platform-specific C# code](xref:Uno.Development.PlatformSpecificCSharp). Prefer a single target framework when the difference is behavioral, and add a platform target framework when the code needs types from a platform SDK, which a `net10.0` assembly cannot reference.
 
+<!-- -->
+
 > [!NOTE]
 > Uno Platform 6.x behaved differently. On iOS, Android, and tvOS heads the platform-specific asset of a multi-targeted library was replaced by its `netX.0` asset, so `#if` blocks in that asset never ran and a `netX.0` target framework was mandatory. Libraries written against that constraint, for example those that moved all platform code behind an interface implemented in the application head, continue to work unchanged. A library that has not been rebuilt for Uno Platform 7.0 now raises [UNOB0020](xref:Build.Solution.error-codes) when its platform-specific asset uses types that no longer exist.
