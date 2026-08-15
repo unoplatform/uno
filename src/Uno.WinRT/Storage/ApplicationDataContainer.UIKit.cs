@@ -25,6 +25,10 @@ namespace Windows.Storage
 			// in the same suite as the user data, so it must be filtered out of every public property set member.
 			private const string MigrationKey = "__uno_migrated";
 
+			// Cached native form of the sentinel key, so comparing it against the native dictionary keys
+			// never materializes a managed string per key.
+			private static readonly NSString _migrationKeyNative = new NSString(MigrationKey);
+
 			private static volatile bool _migrated;
 
 			public NSUserDefaultsPropertySet()
@@ -94,7 +98,18 @@ namespace Windows.Storage
 
 			private static bool IsInternalKey(string key) => key == MigrationKey;
 
-			private static bool IsInternalKey(NSObject key) => key?.ToString() == MigrationKey;
+			// Compares natively (isEqual:) rather than through NSString's implicit string conversion,
+			// which would allocate a managed string for every key of every enumeration.
+			private static bool IsInternalKey(NSObject key) => key is NSString nativeKey && nativeKey.IsEqual(_migrationKeyNative);
+
+			// The sentinel shares the suite with the user data, so writes must not be able to overwrite it.
+			private static void ThrowIfInternalKey(string key)
+			{
+				if (IsInternalKey(key))
+				{
+					throw new ArgumentException($"The key '{key}' is reserved for internal use.", nameof(key));
+				}
+			}
 
 			public object this[string key]
 			{
@@ -111,6 +126,8 @@ namespace Windows.Storage
 				}
 				set
 				{
+					ThrowIfInternalKey(key);
+
 					if (value != null)
 					{
 						var nativeObject = NSObject.FromObject(DataTypeSerializer.Serialize(value));
@@ -149,6 +166,8 @@ namespace Windows.Storage
 
 			public void Add(string key, object value)
 			{
+				ThrowIfInternalKey(key);
+
 				if (ContainsKey(key))
 				{
 					throw new ArgumentException("An item with the same key has already been added.");
