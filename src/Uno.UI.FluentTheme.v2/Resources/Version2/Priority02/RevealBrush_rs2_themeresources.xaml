@@ -4,7 +4,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:localMedia="using:Microsoft.UI.Xaml.Media"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
-    xmlns:not_mux="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
     >
@@ -52,189 +51,152 @@
             <!-- Background Brushes -->
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlTransparentRevealBackgroundBrush"
-                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundAltHighRevealBackgroundBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemAltHighColor}"
                 FallbackColor="{StaticResource SystemAltHighColor}" />
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccentRevealBackgroundBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
              <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent3RevealBackgroundBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColorDark3}"
                 FallbackColor="{ThemeResource SystemAccentColorDark3}"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent2RevealBackgroundBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColorDark2}"
                 FallbackColor="{ThemeResource SystemAccentColorDark2}"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListMediumRevealBackgroundBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListMediumColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListLowRevealBackgroundBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListLowColor}"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListMediumRevealListLowBackgroundBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColorDark2}"
                 FallbackColor="{ThemeResource SystemAccentColorDark3}"/>
 
             <!-- Border Brushes -->
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundAccentRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseHighRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseHighColor}"
                 FallbackColor="{StaticResource SystemBaseHighColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseLowRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumColor}"
                 FallbackColor="{StaticResource SystemBaseMediumColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumHighRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumHighColor}"
                 FallbackColor="{StaticResource SystemBaseMediumHighColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumLowRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeBlackHighRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealChromeBlackHighColor}"
                 FallbackColor="{StaticResource SystemChromeBlackHighColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeBlackMediumRevealChromeBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealChromeBlackMediumColor}"
                 FallbackColor="{StaticResource SystemChromeBlackMediumColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeMediumRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealChromeMediumColor}"
                 FallbackColor="{StaticResource SystemChromeMediumColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeMediumLowRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealChromeMediumLowColor}"
                 FallbackColor="{StaticResource SystemChromeMediumLowColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeWhiteRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealChromeWhiteColor}"
                 FallbackColor="{StaticResource SystemChromeWhiteColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlTransparentRevealListLowBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="Transparent"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundListLowRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListLowColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundListMediumRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealListMediumColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlTransparentRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlForegroundRevealTransparentBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundTransparentRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightTransparentRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightAltTransparentRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightAccentRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseHighRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseHighColor}"
                 FallbackColor="{StaticResource SystemBaseHighColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseLowRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumColor}"
                 FallbackColor="{StaticResource SystemBaseMediumColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumHighRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumHighColor}"
                 FallbackColor="{StaticResource SystemBaseMediumHighColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush"
-                not_mux:TargetTheme="Dark"
                 Color="{StaticResource SystemRevealBaseMediumLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
 
@@ -401,189 +363,152 @@
             <!-- Background Brushes -->
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundBaseLowRevealBackgroundBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlTransparentRevealBackgroundBrush"
-                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundAltHighRevealBackgroundBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemAltHighColor}"
                 FallbackColor="{StaticResource SystemAltHighColor}" />
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccentRevealBackgroundBrush"
-                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent3RevealBackgroundBrush"
-                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColorLight3}"
                 FallbackColor="{ThemeResource SystemAccentColorLight3}"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent2RevealBackgroundBrush"
-                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColorLight2}"
                 FallbackColor="{ThemeResource SystemAccentColorLight2}"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListMediumRevealBackgroundBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListMediumColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListLowRevealBackgroundBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListLowColor}"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlBackgroundBaseMediumLowRevealBaseLowBackgroundBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightBaseMediumLowRevealAccentBackgroundBrush"
-                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightListMediumRevealListLowBackgroundBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
             <localMedia:RevealBackgroundBrush
                 x:Key="SystemControlHighlightAccent3RevealAccent2BackgroundBrush"
-                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColorLight2}"
                 FallbackColor="{ThemeResource SystemAccentColorLight3}"/>
 
             <!-- Border Brushes -->
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundAccentRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseHighRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseHighColor}"
                 FallbackColor="{StaticResource SystemBaseHighColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseLowRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumColor}"
                 FallbackColor="{StaticResource SystemBaseMediumColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumHighRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumHighColor}"
                 FallbackColor="{StaticResource SystemBaseMediumHighColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundBaseMediumLowRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeBlackHighRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealChromeBlackHighColor}"
                 FallbackColor="{StaticResource SystemChromeBlackHighColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeBlackMediumRevealChromeBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealChromeBlackMediumColor}"
                 FallbackColor="{StaticResource SystemChromeBlackMediumColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeMediumRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealChromeMediumColor}"
                 FallbackColor="{StaticResource SystemChromeMediumColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeMediumLowRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealChromeMediumLowColor}"
                 FallbackColor="{StaticResource SystemChromeMediumLowColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundChromeWhiteRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealChromeWhiteColor}"
                 FallbackColor="{StaticResource SystemChromeWhiteColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlTransparentRevealListLowBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="Transparent"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundListLowRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListLowColor}"
                 FallbackColor="{StaticResource SystemListLowColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundListMediumRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealListMediumColor}"
                 FallbackColor="{StaticResource SystemListMediumColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlTransparentRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlForegroundRevealTransparentBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlBackgroundTransparentRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightTransparentRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightAltTransparentRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="Transparent"
                 FallbackColor="Transparent"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightAccentRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{ThemeResource SystemAccentColor}"
                 FallbackColor="{ThemeResource SystemAccentColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseHighRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseHighColor}"
                 FallbackColor="{StaticResource SystemBaseHighColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseLowRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseLowColor}"
                 FallbackColor="{StaticResource SystemBaseLowColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumColor}"
                 FallbackColor="{StaticResource SystemBaseMediumColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumHighRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumHighColor}"
                 FallbackColor="{StaticResource SystemBaseMediumHighColor}"/>
             <localMedia:RevealBorderBrush
                 x:Key="SystemControlHighlightBaseMediumLowRevealBorderBrush"
-                not_mux:TargetTheme="Light"
                 Color="{StaticResource SystemRevealBaseMediumLowColor}"
                 FallbackColor="{StaticResource SystemBaseMediumLowColor}"/>
 

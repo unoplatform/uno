@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:UITests.Windows_UI_Xaml.DragAndDrop"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:winappsdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d">
@@ -376,7 +376,7 @@
                 Click="ClearDragDropEventsButton_Click"
                 Content="Clear" />
         </Grid>
-        <not_skia:VisualStateManager.VisualStateGroups>
+        <winappsdk:VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="SmallState">
                     <VisualState.StateTriggers>
@@ -405,6 +405,6 @@
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
-        </not_skia:VisualStateManager.VisualStateGroups>
+        </winappsdk:VisualStateManager.VisualStateGroups>
     </Grid>
 </UserControl>
