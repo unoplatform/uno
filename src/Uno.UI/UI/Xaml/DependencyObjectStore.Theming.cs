@@ -397,12 +397,26 @@ public partial class DependencyObjectStore
 			// owner's own inheritance chain.
 			var ownerTheme = ownerThemeOverride ?? ThemeResolution.ResolveOwnerTheme(owner);
 
+			// A VisualState setter value comes from outside its target's subtree, so when the same
+			// state applied a RequestedTheme boundary onto the target, resolve the setter's
+			// {ThemeResource} under the surrounding ambient theme instead — even mid-walk, where
+			// the slot carries the boundary theme (#24021).
+			if (themeRef.SetterBindingPath is not null
+				&& GetVisualStateSetterResolutionTheme() is { } setterAmbientTheme)
+			{
+				prevSlotTheme = core.GetRequestedThemeForSubTree();
+				if (prevSlotTheme != Theming.GetBaseValue(setterAmbientTheme))
+				{
+					core.SetRequestedThemeForSubTree(setterAmbientTheme);
+					popSlotTheme = true;
+				}
+			}
 			// MUX: Theming.cpp:368-376 — "Push theme that resource lookup should use to get the
 			// property value": only OUTSIDE a theme walk (`!IsProcessingThemeWalk()`) and when the
 			// owner's base theme differs from the slot. During a walk the slot already carries the
 			// walk's theme (set in NotifyThemeChanged, Theming.cpp:137-149) while the owner's
 			// per-object theme is not yet persisted — pushing here would re-scope to the stale theme.
-			if (!IsProcessingThemeWalk)
+			else if (!IsProcessingThemeWalk)
 			{
 				prevSlotTheme = core.GetRequestedThemeForSubTree();
 				if (prevSlotTheme != Theming.GetBaseValue(ownerTheme))
@@ -513,6 +527,42 @@ public partial class DependencyObjectStore
 			}
 #endif
 		}
+	}
+
+	/// <summary>
+	/// Gets the theme a VisualState setter's {ThemeResource} value must resolve under when the
+	/// visual state itself applied a RequestedTheme boundary onto the setter's target, or null
+	/// to resolve under the target's own theme as usual.
+	/// </summary>
+	/// <remarks>
+	/// The setter lives outside its target's subtree (in the template's VisualStateGroups), so in
+	/// WinUI its resource reference never resolves under the target's RequestedTheme — e.g.
+	/// ComboBoxTextBoxStyle's Focused state sets both ContentElement.Foreground and
+	/// ContentElement.RequestedTheme=Light (#24021). Scoped to state-applied (Animations
+	/// precedence) boundaries only, so a XAML-authored RequestedTheme keeps Uno's element-level
+	/// theming semantics for setter targets.
+	/// </remarks>
+	internal Theme? GetVisualStateSetterResolutionTheme()
+	{
+		if (ActualInstance is not FrameworkElement fe
+			|| fe.RequestedTheme == ElementTheme.Default
+			|| GetCurrentHighestValuePrecedence(FrameworkElement.RequestedThemeProperty)
+				!= DependencyPropertyValuePrecedences.Animations)
+		{
+			return null;
+		}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		// The ambient theme surrounding the target: mid-walk the parent's persisted theme is
+		// stale (persisted only after its subtree completes) but its walk theme is current.
+		if (Parent is IDependencyObjectStoreProvider parentProvider
+			&& parentProvider.Store is { IsProcessingThemeWalk: true } parentStore)
+		{
+			return parentStore.WalkTheme;
+		}
+#endif
+
+		return ThemeResolution.ResolveOwnerTheme(Parent as DependencyObject);
 	}
 
 	#endregion
@@ -889,6 +939,13 @@ public partial class DependencyObjectStore
 		// The Light/Dark sub-dictionary is selected at the dictionary leaf by the ambient active theme —
 		// the owner's effective theme scoped onto the core requested-theme-for-subtree slot by
 		// UpdateResourceBindings (EnsureActiveThemeDictionary, Resources.cpp:764-768).
+
+		// Same VisualState-setter ambient rule as UpdateThemeReference (#24021): a state-applied
+		// value resolves outside the state-applied RequestedTheme boundary of its target.
+		using var setterAmbientScope = binding.SetterBindingPath is not null
+			&& GetVisualStateSetterResolutionTheme() is { } setterAmbientTheme
+				? Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(setterAmbientTheme)
+				: default;
 
 		// Note: we intentionally do NOT skip theme resource bindings here even though
 		// Phase 1 (UpdateAllThemeReferences) may have already resolved them. The Phase 2
