@@ -121,8 +121,7 @@ Starting from Uno Platform 5.2, in project or class libraries using the `Uno.Sdk
 
 > [!NOTE]
 > Before Uno Platform 7.0, `*.skia.cs` and `*.crossruntime.cs` were built only for `net10.0-desktop`, which made `*.skia.cs` an alias of `*.desktop.cs`. A file that is genuinely desktop-only should be renamed to `*.desktop.cs`.
-
-> [!NOTE]
+>
 > `*.reference.cs` is no longer built for any target framework and can be removed.
 
 Using file name conventions allows for reducing the use of `#if` compiler directives.

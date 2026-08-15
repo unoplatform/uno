@@ -467,8 +467,7 @@ By Default when using the Uno.Sdk you get the added benefit of default includes 
 > [!NOTE]
 > Before Uno Platform 7.0, `*.skia.cs` and `*.crossruntime.cs` were compiled only for `netX.0-desktop`, which made
 > `*.skia.cs` an alias of `*.desktop.cs`. A file that is genuinely desktop-only should be renamed to `*.desktop.cs`.
-
-> [!NOTE]
+>
 > `*.reference.cs` is no longer compiled for any target framework and can be removed.
 
 As discussed above setting `EnableDefaultUnoItems` to false will disable these includes.

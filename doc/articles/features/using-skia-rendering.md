@@ -95,10 +95,10 @@ A library that multi-targets `net10.0-ios`, `net10.0-android`, or `net10.0-tvos`
 
 This works because the Uno Platform UI assemblies are no longer flavored per platform. `Uno.WinUI` ships a single set of UI assemblies under `lib/netX.0`, and a `net10.0-ios` or `net10.0-android` library resolves that same set through the usual NuGet target framework fallback, so both link the same `Uno.UI`.
 
-Providing a plain `net10.0` target framework is still recommended. It is the asset consumed by the `net10.0-desktop` and `net10.0-browserwasm` heads, and by any consumer that does not build a platform-specific head. A library that ships only `net10.0-ios` and `net10.0-android` cannot be referenced from a desktop or WebAssembly head.
-
 > [!TIP]
 > Multi-targeting is not required in order to vary behavior per platform. A single `net10.0` target framework can branch at run time with [`OperatingSystem.IsIOS()`](https://learn.microsoft.com/dotnet/api/system.operatingsystem.isios), `OperatingSystem.IsAndroid()`, and the other `OperatingSystem.IsXXX` methods. See [Platform-specific C# code](xref:Uno.Development.PlatformSpecificCSharp). Prefer a single target framework when the difference is behavioral, and add a platform target framework when the code needs types from a platform SDK, which a `net10.0` assembly cannot reference.
+
+Providing a plain `net10.0` target framework is still recommended. It is the asset consumed by the `net10.0-desktop` and `net10.0-browserwasm` heads, and by any consumer that does not build a platform-specific head. A library that ships only `net10.0-ios` and `net10.0-android` cannot be referenced from a desktop or WebAssembly head.
 
 > [!NOTE]
 > Uno Platform 6.x behaved differently. On iOS, Android, and tvOS heads the platform-specific asset of a multi-targeted library was replaced by its `netX.0` asset, so `#if` blocks in that asset never ran and a `netX.0` target framework was mandatory. Libraries written against that constraint, for example those that moved all platform code behind an interface implemented in the application head, continue to work unchanged. A library that has not been rebuilt for Uno Platform 7.0 now raises [UNOB0020](xref:Build.Solution.error-codes) when its platform-specific asset uses types that no longer exist.
