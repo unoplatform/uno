@@ -15,6 +15,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data;
 public class Given_XBind_UITest : SampleControlUITestBase
 {
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // RunAsync is only supported on Skia/WASM runtime hosts.
 	public async Task When_Functions()
 	{
 		try
