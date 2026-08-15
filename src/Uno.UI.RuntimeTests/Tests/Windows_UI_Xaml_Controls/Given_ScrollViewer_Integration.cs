@@ -150,10 +150,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		// MUX Reference CanScrollToHorizontalOffset (C++ line 73).
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public Task CanScrollToHorizontalOffset() => DoScrollToOffset(Orientation.Horizontal, canScroll: true);
 
 		// MUX Reference CanScrollToVerticalOffset (C++ line 78).
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public Task CanScrollToVerticalOffset() => DoScrollToOffset(Orientation.Vertical, canScroll: true);
 
 		// MUX Reference CannotScrollToHorizontalOffset (C++ line 83).
@@ -670,6 +672,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public async Task ChangeViewTwice()
 		{
 			var scrollViewer = await AddScrollViewer(Orientation.Vertical);

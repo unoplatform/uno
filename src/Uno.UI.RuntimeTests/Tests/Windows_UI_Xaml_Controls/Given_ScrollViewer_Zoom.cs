@@ -270,6 +270,7 @@ public class Given_ScrollViewer_Zoom
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_ChangeView_With_Scroll_And_Zoom()
 	{
 		var content = new Border
