@@ -467,6 +467,8 @@ By Default when using the Uno.Sdk you get the added benefit of default includes 
 > Before Uno Platform 7.0, `*.skia.cs` and `*.crossruntime.cs` were compiled only for `netX.0-desktop`, which made
 > `*.skia.cs` an alias of `*.desktop.cs`. A file that is genuinely desktop-only should be renamed to `*.desktop.cs`.
 
+<!-- Separates two adjacent alerts, which markdownlint would otherwise read as one blockquote (MD028). -->
+
 > [!NOTE]
 > `*.reference.cs`, `*.iOSmacOS.cs` and `*.Apple.cs` are no longer recognized. `*.reference.cs` and
 > `*.iOSmacOS.cs` named build flavors that no longer exist and can be removed; rename `*.Apple.cs` to
