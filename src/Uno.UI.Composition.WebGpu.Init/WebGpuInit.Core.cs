@@ -16,7 +16,7 @@ using WColor = Windows.UI.Color;
 
 namespace Uno.UI.Composition.WebGpu;
 
-public sealed unsafe class WebGpuDevice : IDisposable
+internal sealed unsafe class WebGpuDevice : IDisposable
 {
 	public IntPtr Inst;
 	public IntPtr Adapter;
@@ -1321,7 +1321,7 @@ public sealed class WebGpuProfiler
 // temps). BeginFrame marks all entries free; Rent reuses a free entry matching the key or creates one — so a
 // steady-state frame allocates nothing. Every renter clears (LoadOp.Clear) before writing, so reuse is safe.
 // (These offscreens stay "in use" until the frame's main pass samples them; reuse happens across frames.)
-public sealed unsafe class WebGpuTexturePool : IDisposable
+internal sealed unsafe class WebGpuTexturePool : IDisposable
 {
 	private readonly WebGpuDevice _d;
 	private sealed class Entry { public IntPtr Tex; public IntPtr View; public int W, H, Samples; public WGPUTextureFormat Fmt; public WGPUTextureUsage Usage; public bool InUse; public int LastUsed; }
@@ -1408,7 +1408,7 @@ public sealed unsafe class WebGpuTexturePool : IDisposable
 // Transient GPU-buffer pool (vertex + uniform buffers). Like the texture pool: BeginFrame frees all; Rent
 // reuses a free buffer of the same usage with enough capacity or creates one, so a steady-state frame allocates
 // no buffers. Callers QueueWriteBuffer their data before use.
-public sealed unsafe class WebGpuBufferPool : IDisposable
+internal sealed unsafe class WebGpuBufferPool : IDisposable
 {
 	private readonly WebGpuDevice _d;
 	private sealed class Entry { public IntPtr Buf; public int Cap; public WGPUBufferUsage Usage; public bool InUse; }
@@ -1448,7 +1448,7 @@ public sealed unsafe class WebGpuBufferPool : IDisposable
 	}
 }
 
-public sealed unsafe class WebGpuRenderSurface : IWebGpuRenderTarget
+internal sealed unsafe class WebGpuRenderSurface : IWebGpuRenderTarget
 {
 	public IntPtr Tex;
 	public IntPtr View;              // single-sample resolve target (offscreen readback / swapchain image)
@@ -1597,7 +1597,7 @@ internal sealed class OwnedResources
 // GlyphFanStart>=0 marks the fan as living in the pass's shared glyph buffer at that start vertex (b0 unused),
 // and Color is the run colour (coalescing merges same-Color+same-clip stencils).
 
-public sealed unsafe class WebGpuSlab
+internal sealed unsafe class WebGpuSlab
 {
 	private readonly WebGpuDevice _d;
 	private readonly int _stride;                 // floats per vertex
@@ -1657,14 +1657,31 @@ public sealed unsafe class WebGpuSlab
 // One entry in a frame-solid recording's ordered emit list: a solid/rrect run (relative vert start into the
 // recording's cached SolidVerts/RrectVerts) or a spliced non-solid op (glyph/image/gradient).
 
-public interface IWebGpuDeviceContext
+/// <summary>
+/// The neutral WebGPU device face a backend reads to build its renderer — the raw wgpu handles (instance /
+/// adapter / device / queue). Public, neutral (only <c>nint</c> handles cross the seam), mirroring
+/// <see cref="Uno.UI.Composition.Drawing.IMetalDeviceContext"/>. The concrete init (context/swapchain/device
+/// wrapper) stays internal; Uno's own WebGPU renderer takes the wrapper via the internal
+/// <see cref="IWebGpuDeviceHolder"/> fast-path.
+/// </summary>
+public interface IWebGpuDeviceContext : Uno.UI.Composition.Drawing.IGraphicsContext
+{
+	nint Instance { get; }
+	nint Adapter { get; }
+	nint Device { get; }
+	nint Queue { get; }
+}
+
+/// <summary>Internal fast-path: hands Uno's WebGPU renderer the device wrapper it is coupled to (built during
+/// init). A third-party WebGPU backend instead consumes the neutral <see cref="IWebGpuDeviceContext"/> handles.</summary>
+internal interface IWebGpuDeviceHolder
 {
 	WebGpuDevice Device { get; }
 }
 
 /// <summary>The registerable WebGPU backend pair. Prefers a WebGPU context; needs an 8-bit stencil for path fills.</summary>
 
-public static class WebGpuContext
+internal static class WebGpuContext
 {
 	private static float NormalizeScale(float scale) => scale <= 0 ? 1f : scale;
 

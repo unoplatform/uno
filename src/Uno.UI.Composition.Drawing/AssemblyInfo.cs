@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition.WebGpu")]
+[assembly: InternalsVisibleTo("Uno.UI.Composition.WebGpu.Init")]
 
 // The graphics negotiator (GraphicsRegistry, GraphicsInitialization, the GraphicsContextFactory delegate) is
 // framework host-plumbing, not third-party API — the Skia hosts set the context factory, negotiate, and read the

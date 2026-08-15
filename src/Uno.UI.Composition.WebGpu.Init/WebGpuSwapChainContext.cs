@@ -11,7 +11,7 @@ using static Uno.WebGpu.Native.WGPU;
 
 namespace Uno.UI.Composition.WebGpu;
 
-public sealed unsafe class WebGpuSwapChainContext : ISwapChain, IWebGpuDeviceContext
+internal sealed unsafe class WebGpuSwapChainContext : ISwapChain, IWebGpuDeviceContext, IWebGpuDeviceHolder
 {
 	private readonly WebGpuDevice _device;
 	private IntPtr _surface;
@@ -78,7 +78,11 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		}
 	}
 
-	public WebGpuDevice Device => _device;
+	WebGpuDevice IWebGpuDeviceHolder.Device => _device;
+	nint IWebGpuDeviceContext.Instance => _device.Inst;
+	nint IWebGpuDeviceContext.Adapter => _device.Adapter;
+	nint IWebGpuDeviceContext.Device => _device.Dev;
+	nint IWebGpuDeviceContext.Queue => _device.Q;
 	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
 	public bool IsLost => false;
 

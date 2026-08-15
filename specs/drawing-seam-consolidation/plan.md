@@ -125,6 +125,43 @@ kind switch {
 ```
 Correct pairing is guaranteed by `PreferredContexts` (negotiation only asks a provider for kinds it declared).
 
+## Step D — make WebGpu init internal
+
+Directive: a third-party backend needs only the WebGpu faces `IWebGpuRenderTarget` + `IWebGpuDeviceContext`
+(public); the *init/creation/swapchain* machinery is internal (like the GL/Metal host contexts).
+- Internal: `ISwapChain` (host↔framework, not backend SPI), `WebGpuContext` (Create* host helpers),
+  `WebGpuSwapChainContext`, `WebGpuBrowserGraphicsContext` (already), `WebGpuRenderSurface`.
+- Public (backend seam): `IWebGpuRenderTarget`, `IWebGpuDeviceContext`, `WebGpuDevice` (the device the face
+  returns — kept public so `IWebGpuDeviceContext` can be).
+- IVT: `Drawing → …WebGpu.Init` (for `WebGpuSwapChainContext : ISwapChain`); `…WebGpu.Init → the 6 hosts`
+  that call `WebGpuContext.Create*` (X11/Win32/MacOS/WASM.Browser/Android/AppleUIKit).
+
+## Step E — restore Vulkan onto the neutral seam (audit P0)
+
+Vulkan was dropped (`2b4d9e85b1` et al.); the Skia-coupled `Uno.UI.Composition.Skia/Vulkan/VulkanContext` subsystem
+is orphaned-but-intact. Restore it as a *neutral* kind, matching GL/Metal (device on context, Skia builds the
+GRContext):
+- New neutral seam types (Drawing): `IVulkanDeviceContext : IGraphicsContext` (instance/physicalDevice/device/
+  queue + queue-family index + `GetProcAddress` + required extensions — all `nint`/`uint`/`Func`/`string[]`) and
+  `IVulkanRenderTarget : IRenderTarget` (the swapchain `VkImage` + format/layout/tiling/usage/sample/level for a
+  `GRVkImageInfo`).
+- Skia: `SkiaDrawingFactory : IDrawingFactory<IVulkanRenderTarget>`, `SkiaGraphicsProvider :
+  IGraphicsProvider<IVulkanDeviceContext>`; `PresentForVulkan` builds `GRContext.CreateVulkan(GRVkBackendContext)`
+  from the device context (cache it) + `GRBackendRenderTarget(GRVkImageInfo)` from the target. (SkiaSharp 4.148
+  Vulkan needs `GRVkExtensions` declared — known.)
+- `GraphicsRegistry`: add the `Vulkan => IGLVk…` narrowing + `CanPresent` arm.
+- X11 (validatable on lavapipe): `X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext` reusing the
+  `VulkanContext` subsystem for instance/device/swapchain creation (strip its GRContext/SKSurface parts — those
+  move to the Skia backend); recreate `X11VulkanSurfaceFactory` (VK_KHR_xlib_surface) from `2b4d9e85b1^`. Win32/
+  Android faithfully mirrored (compile-only; recover their surface factories from git).
+- Re-wire the dead flags: `UseVulkanOnX11/Win32/SkiaAndroid` gate declining the Vulkan kind (host returns null
+  when false), so `X11RenderingBackend.Vulkan` stops being a no-op.
+
+## Step F — audit follow-ups (non-Vulkan)
+
+- `UseOpenGLOnSkiaAndroid` set-but-never-read: Android `ApplicationActivity.CreateRenderView` only branches
+  WebGpu-vs-GLES; setting it false must force software. Wire it (compile-only; on-device validation handed off).
+
 ## Validation
 
 Compile: X11/Win32/macOS/Linux.FrameBuffer (via `SamplesApp.Skia.Generic`), Android (`net10.0-android`), WASM

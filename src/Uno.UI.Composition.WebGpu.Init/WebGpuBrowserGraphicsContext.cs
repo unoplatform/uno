@@ -19,7 +19,7 @@ namespace Uno.UI.Composition.WebGpu;
 /// does not composite on the browser's SwiftShader WebGPU adapter, whereas a plain texture-to-texture copy does;
 /// and the browser presents implicitly when control returns to the event loop (no wgpuSurfacePresent).
 /// </summary>
-internal sealed unsafe class WebGpuBrowserGraphicsContext : ISwapChain, IWebGpuDeviceContext
+internal sealed unsafe class WebGpuBrowserGraphicsContext : ISwapChain, IWebGpuDeviceContext, IWebGpuDeviceHolder
 {
 	private readonly WebGpuDevice _device;
 	private IntPtr _surface;
@@ -80,7 +80,11 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 	private static WGPUStringView Utf8(string s)
 		=> new() { Data = Marshal.StringToCoTaskMemUTF8(s), Length = (nuint)System.Text.Encoding.UTF8.GetByteCount(s) };
 
-	public WebGpuDevice Device => _device;
+	WebGpuDevice IWebGpuDeviceHolder.Device => _device;
+	nint IWebGpuDeviceContext.Instance => _device.Inst;
+	nint IWebGpuDeviceContext.Adapter => _device.Adapter;
+	nint IWebGpuDeviceContext.Device => _device.Dev;
+	nint IWebGpuDeviceContext.Queue => _device.Q;
 	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
 	public bool IsLost => false;
 
