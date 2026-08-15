@@ -94,4 +94,19 @@ public interface IDrawingFactory
 	/// content via <see cref="IDrawingSession.SaveLayer(IEffectFilter)"/>.
 	/// </summary>
 	IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, Color color);
+
+	/// <summary>
+	/// Begins a recording — the session the render cycle records the visual tree (or a subtree) into;
+	/// <see cref="ICommandRecorder.Finish"/> yields the opaque <see cref="IRenderData"/>. The root frame is the
+	/// first call. One factory for both the frame and nested recordings (was <c>IRenderer.BeginFrame</c> and the
+	/// per-session <c>CreateRecording</c>).
+	/// </summary>
+	ICommandRecorder CreateRecording();
+
+	/// <summary>
+	/// Phase 2: begins composing onto <paramref name="target"/>. The cycle replays a recorded frame
+	/// (<see cref="IRenderData.Replay"/>) and draws any overlay into the returned session, then disposes it to
+	/// present. Transitional non-generic form; the typed <c>IDrawingFactory&lt;TTarget&gt;</c> supersedes it.
+	/// </summary>
+	IPresentSession BeginPresent(IRenderTarget target);
 }

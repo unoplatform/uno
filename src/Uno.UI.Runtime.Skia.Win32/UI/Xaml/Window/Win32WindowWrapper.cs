@@ -116,7 +116,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		var init = GraphicsRegistry.Initialize();
 		_context = init.Context;
-		GraphicsFactory = init.Graphics.DrawingFactory;
+		GraphicsFactory = init.DrawingFactory;
 		CompositionTarget.Renderer = init.Renderer;
 
 		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = init.Context.Kind == GraphicsContextKind.Software;

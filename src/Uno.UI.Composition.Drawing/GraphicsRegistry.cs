@@ -10,23 +10,26 @@ namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
 /// The result of a successful <see cref="GraphicsRegistry.Initialize"/>: the winning provider, the context that
-/// was created for it, and the matched <see cref="Graphics"/> (factory + renderer) bound to that context.
+/// was created for it, and the single device-bound <see cref="IDrawingFactory"/> backend bound to that context
+/// (installed as <see cref="DrawingFactory.Current"/>).
 /// </summary>
 internal readonly struct GraphicsInitialization
 {
-	public GraphicsInitialization(IGraphicsProvider provider, IGraphicsContext context, Graphics graphics)
+	public GraphicsInitialization(IGraphicsProvider provider, IGraphicsContext context, IDrawingFactory backend)
 	{
 		Provider = provider;
 		Context = context;
-		Graphics = graphics;
+		Renderer = backend;
 	}
 
 	public IGraphicsProvider Provider { get; }
 	public IGraphicsContext Context { get; }
-	public Graphics Graphics { get; }
 
-	/// <summary>The renderer of the matched pair (convenience for <see cref="Graphics"/>.Renderer).</summary>
-	public IRenderer Renderer => Graphics.Renderer;
+	/// <summary>The backend — the host sets it as <c>CompositionTarget.Renderer</c>.</summary>
+	public IDrawingFactory Renderer { get; }
+
+	/// <summary>Alias for the backend (the drawing factory); the two are one object since the merge.</summary>
+	public IDrawingFactory DrawingFactory => Renderer;
 }
 
 /// <summary>
@@ -205,9 +208,9 @@ internal static class GraphicsRegistry
 
 				try
 				{
-					var graphics = backend.CreateGraphics(context);
-					DrawingFactory.Register(graphics.DrawingFactory);
-					return new GraphicsInitialization(backend, context, graphics);
+					var backendFactory = backend.CreateGraphics(context);
+					DrawingFactory.Register(backendFactory);
+					return new GraphicsInitialization(backend, context, backendFactory);
 				}
 				catch (Exception e)
 				{

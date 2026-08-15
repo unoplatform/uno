@@ -10,10 +10,10 @@ namespace Uno.UI.Composition.Drawing;
 /// </summary>
 internal static class DrawingRegistration
 {
-	private static IRenderer? _defaultRenderer;
+	private static IDrawingFactory? _defaultRenderer;
 
-	/// <summary>The backend-provided default <see cref="IRenderer"/>, or <c>null</c> if no backend registered one.</summary>
-	public static IRenderer? DefaultRenderer
+	/// <summary>The backend-provided default backend, or <c>null</c> if no backend registered one.</summary>
+	public static IDrawingFactory? DefaultRenderer
 	{
 		get
 		{
@@ -32,6 +32,6 @@ internal static class DrawingRegistration
 
 	/// <summary>Registers <paramref name="renderer"/> only if none is set — so the Skia fallback never clobbers a
 	/// renderer a head installed explicitly. Framework-internal; does not trigger the getter's implicit fallback.</summary>
-	internal static void RegisterDefaultRenderer(IRenderer renderer)
+	internal static void RegisterDefaultRenderer(IDrawingFactory renderer)
 		=> _defaultRenderer ??= renderer;
 }

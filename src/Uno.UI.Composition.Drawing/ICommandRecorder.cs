@@ -8,9 +8,8 @@ namespace Uno.UI.Composition.Drawing;
 /// (SKPicture, D3D/Vulkan/WebGPU command buffers), not specific to any backend.
 /// </summary>
 /// <remarks>
-/// A backend may also implement <see cref="IRetainedRenderingSession"/> on its recorder for efficient native
-/// nesting (composition obtains that capability through <c>RetainedRenderingSession.For</c>, which supplies a
-/// command-list fallback when the recorder does not) — so it is not a required base of this interface.
+/// Recordings nest naturally: recording a sub-tree yields an <see cref="IRenderData"/> whose
+/// <see cref="IRenderData.Replay"/> composes it into a parent recorder (also an <see cref="IDrawingSession"/>).
 /// </remarks>
 public interface ICommandRecorder : IDrawingSession
 {

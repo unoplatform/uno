@@ -26,5 +26,5 @@ public sealed class SkiaGraphicsProvider : IGraphicsProvider
 	public IReadOnlyList<GraphicsContextKind> PreferredContexts => _preferred;
 
 	// Geometry is a separate seam (GeometryFactory) — swap the geometry engine there, not on the graphics backend.
-	public Graphics CreateGraphics(IGraphicsContext context) => new(new SkiaDrawingFactory(), new SkiaRenderer());
+	public IDrawingFactory CreateGraphics(IGraphicsContext context) => new SkiaDrawingFactory();
 }
