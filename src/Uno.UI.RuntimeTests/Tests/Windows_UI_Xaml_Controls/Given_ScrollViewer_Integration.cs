@@ -312,6 +312,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0.0, scrollViewer.ScrollableHeight, 0.5, "ScrollableHeight after second Content=null");
 		}
 
+#if HAS_UNO
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public async Task ExtentSizeChanged_Reports_Width_And_Height()
@@ -335,7 +336,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(new Size(300, 400), reportedSize);
 		}
-
+#endif
 		[TestMethod]
 		public async Task ViewChangeEventsAreCorrect()
 		{
