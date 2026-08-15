@@ -22,7 +22,7 @@ internal sealed class ReplayContext
 }
 
 /// <summary>Opaque retained frame produced by <see cref="CommandListRecorder"/>: the recorded verb list.</summary>
-internal sealed class CommandList : IRenderData
+internal sealed class CommandList : IRenderRecord
 {
 	private List<Action<ReplayContext>>? _commands;
 	// Geometry snapshots the recording owns (the composition disposes the originals right after the draw call,
@@ -104,7 +104,7 @@ internal sealed class CommandListRecorder : ICommandRecorder
 		}
 	}
 
-	public IRenderData Finish() => new CommandList(_commands, _ownedGeometries);
+	public IRenderRecord Finish() => new CommandList(_commands, _ownedGeometries);
 
 	public Matrix4x4 TotalMatrix => _matrix;
 
@@ -259,13 +259,13 @@ internal sealed class CommandListRecorder : ICommandRecorder
 	public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool antialias = false)
 		=> _commands.Add(ctx => ctx.Target.DrawLine(p0, p1, color, strokeWidth, antialias));
 
-	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false)
+	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false)
 		=> _commands.Add(ctx => ctx.Target.DrawImage(texture, x, y, sampling, opacity, antialias));
 
-	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false)
+	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false)
 		=> _commands.Add(ctx => ctx.Target.DrawImage(texture, x, y, sampling, colorFilter, antialias));
 
-	public void DrawImageNineSlice(IImageTexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false)
+	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false)
 	{
 		var c = centerSlice;
 		var d = destination;

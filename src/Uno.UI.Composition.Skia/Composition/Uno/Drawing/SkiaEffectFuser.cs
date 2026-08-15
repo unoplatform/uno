@@ -31,7 +31,7 @@ internal sealed class SkiaEffectFuser
 			case TextureInput texture:
 			{
 				_isSource = false;
-				var img = ((SkiaImageTexture)texture.Texture).Image;
+				var img = ((SkiaTexture)texture.Texture).Image;
 				var src = new SKRect(0, 0, img.Width, img.Height);
 
 				if (texture.ExtendX == EdgeExtend.None && texture.ExtendY == EdgeExtend.None)

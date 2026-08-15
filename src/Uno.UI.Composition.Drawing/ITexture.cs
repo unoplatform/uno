@@ -11,7 +11,7 @@ namespace Uno.UI.Composition.Drawing;
 /// drawn. Its lifetime is owned by the framework (the composition resource that holds the image) and released
 /// deterministically via <see cref="IDisposable.Dispose"/> — no GC-driven texture caching.
 /// </summary>
-public interface IImageTexture : IDisposable
+public interface ITexture : IDisposable
 {
 	int PixelWidth { get; }
 

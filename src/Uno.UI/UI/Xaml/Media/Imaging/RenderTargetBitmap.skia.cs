@@ -95,7 +95,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		// Renders the element into an offscreen backend texture at the target pixel size. The caller owns the
 		// returned texture and reads it back — synchronously (RenderToBuffer) or asynchronously (RenderToBufferAsync).
-		private static IImageTexture RenderToTexture(IDrawingFactory factory, ContainerVisual visual, (double Dpi, int Width, int Height, int TargetWidth, int TargetHeight, int ByteCount, UnmanagedArrayOfBytes Buffer) render)
+		private static ITexture RenderToTexture(IDrawingFactory factory, ContainerVisual visual, (double Dpi, int Width, int Height, int TargetWidth, int TargetHeight, int ByteCount, UnmanagedArrayOfBytes Buffer) render)
 		{
 			var compositor = Compositor.GetSharedCompositor();
 			var previousCompMode = compositor.IsSoftwareRenderer;
@@ -149,7 +149,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			return (render.ByteCount, render.TargetWidth, render.TargetHeight);
 		}
 
-		private static unsafe void CopyPixelsTo(IImageTexture texture, IntPtr destination, int byteCount)
+		private static unsafe void CopyPixelsTo(ITexture texture, IntPtr destination, int byteCount)
 			=> texture.CopyPixels(new Span<byte>((void*)destination, byteCount));
 
 		private static unsafe void CopyPixelsTo(IImage image, IntPtr destination, int byteCount)

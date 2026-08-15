@@ -37,7 +37,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal static bool ForceFallbackRetainedRendering { get; set; }
 
 	// Retention is always available: the registered backend's native recorder, or the neutral command-list
-	// fallback (also forced by the ForceFallbackRetainedRendering test seam). Replay is on the IRenderData
+	// fallback (also forced by the ForceFallbackRetainedRendering test seam). Replay is on the IRenderRecord
 	// (data.Replay(session)); a native recording only replays into its own backend's session, the command-list
 	// fallback into any.
 	private static ICommandRecorder CreateRecording()
@@ -53,8 +53,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private (Matrix4x4 matrix, bool isLocalMatrixIdentity) _totalMatrix = (Matrix4x4.Identity, true);
 	// Opaque per-visual retained state owned by the rendering backend (Skia: an SKPicture). _content is
 	// this visual's own painted content; _childrenContent is a collapsed subtree cache.
-	private IRenderData? _content;
-	private IRenderData? _childrenContent;
+	private IRenderRecord? _content;
+	private IRenderRecord? _childrenContent;
 	private int _framesSinceSubtreeNotChanged;
 
 	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty | VisualFlags.ChildrenSKPictureInvalid;
@@ -409,7 +409,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
 				_factory.CreateInstance(this, recording, ref rootTransform, session.Opacity, out var childSession);
-				IRenderData renderData;
+				IRenderRecord renderData;
 				using (childSession)
 				{
 					PaintStep(this, childSession);

@@ -5,10 +5,10 @@ using SkiaSharp;
 
 namespace Uno.UI.Composition.Drawing;
 
-/// <summary>SkiaSharp-backed <see cref="IRenderData"/> holding a native <c>SKPicture</c> handle.</summary>
-internal sealed class SkiaRenderData : IRenderData
+/// <summary>SkiaSharp-backed <see cref="IRenderRecord"/> holding a native <c>SKPicture</c> handle.</summary>
+internal sealed class SkiaRenderRecord : IRenderRecord
 {
-	public SkiaRenderData(IntPtr picture) => Picture = picture;
+	public SkiaRenderRecord(IntPtr picture) => Picture = picture;
 
 	/// <summary>The native <c>SKPicture</c> handle (may be <see cref="IntPtr.Zero"/> if nothing was recorded).</summary>
 	public IntPtr Picture { get; private set; }

@@ -41,7 +41,7 @@ namespace Microsoft.UI.Composition
 		public IImage? Image => FrameProvider?.CurrentImage;
 
 		private IImage? _texturedImage;
-		private IImageTexture? _texture;
+		private ITexture? _texture;
 		// When true, this surface retains a backend texture directly (e.g. a rendered SVG) with no CPU IImage /
 		// decoder frame behind it; GetTexture returns it as-is and it is disposed with the surface.
 		private readonly bool _retainedTexture;
@@ -57,7 +57,7 @@ namespace Microsoft.UI.Composition
 		/// The framework-owned GPU texture for the current frame's image, created once via the active backend
 		/// factory and reused across frames (recreated only when the frame changes). Disposed with the surface.
 		/// </summary>
-		internal IImageTexture? GetTexture()
+		internal ITexture? GetTexture()
 		{
 			// A directly-retained texture (e.g. rendered SVG) is already backend-resident — return it as-is,
 			// no derive-from-IImage / no readback. Its lifetime is the surface's.
@@ -75,7 +75,7 @@ namespace Microsoft.UI.Composition
 			if (!ReferenceEquals(img, _texturedImage))
 			{
 				DisposeTexture();
-				_texture = DrawingFactory.Current.CreateImageTexture(img);
+				_texture = DrawingFactory.Current.CreateTexture(img);
 				_texturedImage = img;
 			}
 			return _texture;
@@ -97,7 +97,7 @@ namespace Microsoft.UI.Composition
 
 		/// <summary>Wraps a backend-resident texture (e.g. a rendered SVG) as a retained surface, with no CPU
 		/// IImage / decoder frame behind it. The surface owns the texture and disposes it deterministically.</summary>
-		internal CompositionImageSurface(IImageTexture texture)
+		internal CompositionImageSurface(ITexture texture)
 		{
 			_texture = texture;
 			_retainedTexture = true;

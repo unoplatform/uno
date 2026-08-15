@@ -222,7 +222,7 @@ internal static class SkiaRenderHelper
 		}
 
 		/// <summary>
-		/// Called from CompositionTarget.Render after a freshly-recorded frame (IRenderData) has been
+		/// Called from CompositionTarget.Render after a freshly-recorded frame (IRenderRecord) has been
 		/// swapped into _lastRenderedFrame. Stamps the moment the picture became ready. If the
 		/// previous generation was never consumed by Draw before this new recording starts,
 		/// that previous CPU work is wasted — count it as "drawn-but-not-presented".

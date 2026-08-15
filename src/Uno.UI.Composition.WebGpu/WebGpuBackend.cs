@@ -105,7 +105,7 @@ internal sealed class PathFill : WebGpuCommand
 internal sealed unsafe class ImageCmd : WebGpuCommand
 {
 	public Vector2 P0, P1, P2, P3;
-	public IntPtr View;   // the pre-uploaded WebGpuImageTexture view (no per-frame upload)
+	public IntPtr View;   // the pre-uploaded WebGpuTexture view (no per-frame upload)
 	public int W, H;
 	public float Opacity;
 	public float U0, V0, U1 = 1f, V1 = 1f;   // source UV sub-rect (whole texture by default)
@@ -152,13 +152,13 @@ internal sealed class BackdropCmd : WebGpuCommand
 }
 
 // A deferred replay of a cacheable child recording under a transform+clip. Captures BOTH the recording
-// (WebGpuRenderData, which owns its compiled GPU draw-list — the persistent retained state) and its immutable
+// (WebGpuRenderRecord, which owns its compiled GPU draw-list — the persistent retained state) and its immutable
 // command-list reference. The list is captured directly so a build survives the recording's Dispose (which only
 // nulls Commands + defers the compiled state's GPU free to the render thread); the frame presents on the render
 // thread while the main thread may Dispose the recording.
 internal sealed class ReplayRefCmd : WebGpuCommand
 {
-	public WebGpuRenderData Data;
+	public WebGpuRenderRecord Data;
 	public System.Collections.Generic.List<WebGpuCommand> Commands;
 	public System.Numerics.Matrix4x4 Transform;
 }
@@ -277,19 +277,19 @@ public sealed class WebGpuEffectFilter : IEffectFilter
 	public void Dispose() { }
 }
 
-public sealed class WebGpuRenderData : IRenderData
+public sealed class WebGpuRenderRecord : IRenderRecord
 {
 	internal List<WebGpuCommand> Commands = new();
 	internal WColor? ClearColor;
 	internal bool? Cacheable;   // memoized: all commands are simple primitives with no path clip
-	// The compiled GPU draw-list for this recording (the persistent retained state IRenderData is contracted to hold):
+	// The compiled GPU draw-list for this recording (the persistent retained state IRenderRecord is contracted to hold):
 	// built once on the render thread at first replay, reused every frame, freed (deferred to the render thread) when
 	// this recording is disposed. Written by the render thread, taken by the UI thread's Dispose — via Interlocked.
 	internal WebGpuGeometryCache Compiled;
 	// Transient image textures recorded into this frame that the caller disposed while recording (e.g. the one-shot
 	// texture CompositionNineGridBrush uploads). We keep them alive for every present of this recording, then release
 	// their GPU resources here at Dispose — resident textures (surface-owned) are left untouched (DisposeRequested=false).
-	internal List<WebGpuImageTexture> Textures;
+	internal List<WebGpuTexture> Textures;
 
 	// Backend-bound: dispatches to the WebGpu session that must consume it (guaranteed same-backend by the single
 	// registered backend). A recorder nests it (deferred ReplayRef / inline transform); a present session encodes
@@ -329,7 +329,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	private Matrix4x4 _m = Matrix4x4.Identity;
 	private ClipData _clip = ClipData.None;
 	private float[] _pendingColorMatrix;   // active effect colour matrix, applied per DrawImage in the image shader
-	private readonly WebGpuRenderData _data = new();
+	private readonly WebGpuRenderRecord _data = new();
 	private List<WebGpuCommand> _target;   // current emit target (root command list, or a layer's list)
 
 	public WebGpuCommandRecorder() => _target = _data.Commands;
@@ -629,19 +629,19 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	}
 	// Keep a texture recorded into this frame alive for the frame's lifetime (it may be a one-shot texture the
 	// caller disposes right after recording — e.g. CompositionNineGridBrush; the draw is replayed later at present).
-	private void TrackTexture(WebGpuImageTexture t) => (_data.Textures ??= new()).Add(t);
+	private void TrackTexture(WebGpuTexture t) => (_data.Textures ??= new()).Add(t);
 
-	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false)
+	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false)
 	{
-		if (texture is not WebGpuImageTexture t) { return; }
+		if (texture is not WebGpuTexture t) { return; }
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
 		TrackTexture(t);
 		// No per-frame upload — the texture is already resident; record its view for the present pass.
 		_target.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = opacity, ColorMatrix = _pendingColorMatrix, Clip = _clip });
 	}
-	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false)
+	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false)
 	{
-		if (texture is not WebGpuImageTexture t) { return; }
+		if (texture is not WebGpuTexture t) { return; }
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
 		TrackTexture(t);
 		// A 4x5 colour-matrix filter (e.g. MonochromeColor / effect brush): apply it in the image shader.
@@ -662,9 +662,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			? (1, new Vector4(f.Color.R / 255f, f.Color.G / 255f, f.Color.B / 255f, f.Color.A / 255f))
 			: (0, default);
 
-	public void DrawImageNineSlice(IImageTexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false)
+	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false)
 	{
-		if (texture is not WebGpuImageTexture t) { return; }
+		if (texture is not WebGpuTexture t) { return; }
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
 		TrackTexture(t);
 
@@ -714,14 +714,14 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		_target.Add(new BackdropCmd { Effect = fx, Opacity = opacity, Clip = _clip });
 	}
 
-	public IRenderData Finish() => _data;
+	public IRenderRecord Finish() => _data;
 
 	// Whether a recording can be GPU-geometry-cached: only simple primitives (rect/rrect/path/image/gradient). PATH
 	// (PathFan) clips ARE cacheable — their fan is residentized (ResidentizeFan) so it isn't re-tessellated per frame,
 	// and only the (cheap, bbox-scissored) in-pass depth-mask draw repeats. This was a regression under the old
 	// reference-equality ClipDataEquals (cached path-clip recordings always looked stale → rebuilt every frame); the
 	// value-compare fix + resident fan made it a win (see RUNNING-CONTEXT §17/§21). Memoized.
-	internal static bool IsCacheable(WebGpuRenderData d)
+	internal static bool IsCacheable(WebGpuRenderRecord d)
 	{
 		if (d.Cacheable is { } memo) { return memo; }
 		bool ok = d.Commands.Count > 0;
@@ -740,16 +740,16 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		var rec = new WebGpuCommandRecorder();
 		rec._m = transform;
 		rec._clip = clip;
-		rec.ReplayInline(new WebGpuRenderData { Commands = commands });
+		rec.ReplayInline(new WebGpuRenderRecord { Commands = commands });
 		return rec._data.Commands;
 	}
 
 	// Retained sub-recordings (SKPicture equivalent) are recorded at identity; replaying one bakes in the target
 	// session's current matrix + clip. A cacheable recording is deferred as a ReplayRef capturing its immutable
 	// command list (the present caches its GPU geometry); otherwise its commands are transformed inline.
-	public void Replay(IRenderData data)
+	public void Replay(IRenderRecord data)
 	{
-		if (data is WebGpuRenderData cacheable && IsCacheable(cacheable))
+		if (data is WebGpuRenderRecord cacheable && IsCacheable(cacheable))
 		{
 			_target.Add(new ReplayRefCmd { Data = cacheable, Commands = cacheable.Commands, Transform = _m, Clip = _clip });
 			return;
@@ -757,9 +757,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		ReplayInline(data);
 	}
 
-	private void ReplayInline(IRenderData data)
+	private void ReplayInline(IRenderRecord data)
 	{
-		if (data is not WebGpuRenderData d) { return; }
+		if (data is not WebGpuRenderRecord d) { return; }
 		Vector2 T(Vector2 p) => new(p.X * _m.M11 + p.Y * _m.M21 + _m.M41, p.X * _m.M12 + p.Y * _m.M22 + _m.M42);
 		foreach (var cmd in d.Commands)
 		{
@@ -829,7 +829,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					var saved = _target;
 					var layerList = new List<WebGpuCommand>();
 					_target = layerList;
-					Replay(new WebGpuRenderData { Commands = lyr.Commands });   // recursively transform sub-commands
+					Replay(new WebGpuRenderRecord { Commands = lyr.Commands });   // recursively transform sub-commands
 					_target = saved;
 					_target.Add(new LayerCmd { Commands = layerList, CompositeMode = lyr.CompositeMode, ColorMatrix = lyr.ColorMatrix, ShadowEffect = lyr.ShadowEffect, Clip = ClipCompose(lyr.Clip, T) });
 					break;
@@ -1301,11 +1301,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		WebGpuTrace.PassEnd();
 	}
 
-	public void Replay(IRenderData data)
+	public void Replay(IRenderRecord data)
 	{
 		// During an async backend switch (e.g. the browser's on-canvas WebGPU init) a frame recorded by the
 		// previous renderer can reach us; skip it rather than mis-cast — the next frame is recorded by this backend.
-		if (data is not WebGpuRenderData rd) { return; }
+		if (data is not WebGpuRenderRecord rd) { return; }
 		lock (_d.RenderGate)
 		{
 			WebGpuTrace.Reset();
@@ -1329,9 +1329,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// Renders WITHOUT the per-frame reset — for a nested offscreen render (RenderOffscreen) that may run inside an
 	// enclosing frame; resetting the shared pools mid-frame would free the enclosing frame's in-flight resources.
 	// The gate is reentrant, so a nested call inside an enclosing Replay is safe; an independent call is serialized.
-	public void ReplayNested(IRenderData data)
+	public void ReplayNested(IRenderRecord data)
 	{
-		if (data is not WebGpuRenderData rd) { return; }
+		if (data is not WebGpuRenderRecord rd) { return; }
 		lock (_d.RenderGate)
 		{
 			RunFrame(rd.Commands, _presentClear ?? rd.ClearColor);
@@ -2319,9 +2319,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	public void DrawShadow(IGeometry silhouette, WColor color, float sigmaX, float sigmaY, bool additive, bool antialias = false) => _overlay.DrawShadow(silhouette, color, sigmaX, sigmaY, additive, antialias);
 	public void StrokePath(IGeometry geometry, WColor color, float strokeWidth, bool antialias = false) => _overlay.StrokePath(geometry, color, strokeWidth, antialias);
 	public void DrawLine(Vector2 p0, Vector2 p1, WColor color, float strokeWidth, bool antialias = false) => _overlay.DrawLine(p0, p1, color, strokeWidth, antialias);
-	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false) => _overlay.DrawImage(texture, x, y, sampling, opacity, antialias);
-	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false) => _overlay.DrawImage(texture, x, y, sampling, colorFilter, antialias);
-	public void DrawImageNineSlice(IImageTexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false) => _overlay.DrawImageNineSlice(texture, centerSlice, destination, centerHollow, antialias);
+	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false) => _overlay.DrawImage(texture, x, y, sampling, opacity, antialias);
+	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false) => _overlay.DrawImage(texture, x, y, sampling, colorFilter, antialias);
+	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false) => _overlay.DrawImageNineSlice(texture, centerSlice, destination, centerHollow, antialias);
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity) => _overlay.DrawEffectBackdrop(filter, opacity);
 
 	// Renders the deferred frame with the immediate-mode overlay (e.g. the diagnostics FPS counter drawn after Replay)
@@ -2338,7 +2338,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				return;
 			}
 			var cmds = main;
-			if (_overlay.Finish() is WebGpuRenderData od && od.Commands.Count > 0)
+			if (_overlay.Finish() is WebGpuRenderRecord od && od.Commands.Count > 0)
 			{
 				cmds = new List<WebGpuCommand>(main.Count + od.Commands.Count);
 				cmds.AddRange(main);
@@ -2393,7 +2393,7 @@ public sealed class WebGpuGraphicsProvider : IGraphicsProvider<IGraphicsContext>
 /// context exposes its device via <see cref="IWebGpuDeviceContext"/>, consumed by <see cref="WebGpuGraphicsProvider"/>
 /// (or a user's own WebGPU-rendering <see cref="IGraphicsProvider"/>).
 /// </summary>
-public sealed unsafe class WebGpuImageTexture : IImageTexture
+public sealed unsafe class WebGpuTexture : ITexture
 {
 	private readonly WebGpuDevice _d;
 	private readonly IImage _source; // set when uploaded from a CPU IImage; null for an adopted offscreen texture
@@ -2428,7 +2428,7 @@ public sealed unsafe class WebGpuImageTexture : IImageTexture
 
 	// Adopts an already-rendered offscreen texture (from RenderOffscreen) as a sampleable, disposable handle —
 	// no upload, no readback. Deferred release is shared with the upload path (DisposeRequested/ReleaseDeferred).
-	internal WebGpuImageTexture(WebGpuDevice device, IntPtr tex, IntPtr view, int width, int height)
+	internal WebGpuTexture(WebGpuDevice device, IntPtr tex, IntPtr view, int width, int height)
 	{
 		_d = device;
 		_source = null;
@@ -2438,7 +2438,7 @@ public sealed unsafe class WebGpuImageTexture : IImageTexture
 		PixelHeight = height;
 	}
 
-	internal WebGpuImageTexture(WebGpuDevice device, IImage image)
+	internal WebGpuTexture(WebGpuDevice device, IImage image)
 	{
 		_d = device;
 		_source = image;
@@ -2474,12 +2474,12 @@ public sealed unsafe class WebGpuImageTexture : IImageTexture
 	}
 
 	// A transient texture (e.g. CompositionNineGridBrush) is disposed right after recording its draw, but the WebGPU
-	// draw is replayed later at present. So Dispose only marks intent; the owning WebGpuRenderData releases the GPU
+	// draw is replayed later at present. So Dispose only marks intent; the owning WebGpuRenderRecord releases the GPU
 	// resources when it's disposed (after its last present), keeping the view alive for every replay in between.
 	internal bool DisposeRequested { get; private set; }
 	public void Dispose() => DisposeRequested = true;
 
-	// Called by WebGpuRenderData.Dispose for each texture it recorded. Idempotent: a texture referenced by several
+	// Called by WebGpuRenderRecord.Dispose for each texture it recorded. Idempotent: a texture referenced by several
 	// in-flight recordings is released only once (whichever disposes last finds the handles already cleared).
 	internal void ReleaseDeferred()
 	{
@@ -2524,12 +2524,12 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 	// guaranteed by the bind-time gate) — a backend-owned self-cast, not a foreign downcast.
 	public IPresentSession BeginPresent(IWebGpuRenderTarget target) => new WebGpuPresentSession(_device, (WebGpuRenderSurface)target);
 
-	public IImageTexture CreateImageTexture(IImage image) => new WebGpuImageTexture(_device, image);
+	public ITexture CreateTexture(IImage image) => new WebGpuTexture(_device, image);
 
 	// Offscreen rasterization on the WebGPU device (record → present into a dedicated offscreen surface) and hand
-	// back the resolved color texture as a sampleable IImageTexture — no CPU read-back, so a nine-slice/glyph/SVG
+	// back the resolved color texture as a sampleable ITexture — no CPU read-back, so a nine-slice/glyph/SVG
 	// consumer draws it straight. CPU pixels (RenderTargetBitmap) come from SnapshotAsync instead.
-	public IImageTexture RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render)
+	public ITexture RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render)
 	{
 		var recorder = new WebGpuCommandRecorder();
 		render(recorder);
@@ -2539,14 +2539,14 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 		// Take ownership of the resolved color texture; dispose releases only the (finished) MSAA + depth targets.
 		var (tex, view) = surface.DetachColor();
 		surface.Dispose();
-		return new WebGpuImageTexture(_device, tex, view, pixelWidth, pixelHeight);
+		return new WebGpuTexture(_device, tex, view, pixelWidth, pixelHeight);
 	}
 
 	// GPU→CPU read of a texture produced by this factory. Off-browser a native thread drives the map (blocking);
 	// on the browser the map must run off the JS event loop, so the copy is encoded here and mapped in JS.
-	public async System.Threading.Tasks.Task<IImage> SnapshotAsync(IImageTexture texture)
+	public async System.Threading.Tasks.Task<IImage> SnapshotAsync(ITexture texture)
 	{
-		if (texture is not WebGpuImageTexture t)
+		if (texture is not WebGpuTexture t)
 		{
 			throw new ArgumentException("Texture was not produced by WebGpuDrawingFactory.", nameof(texture));
 		}

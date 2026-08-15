@@ -185,7 +185,7 @@ internal sealed class SkiaDrawingFactory :
 		_metalContext?.Dispose();
 	}
 
-	public IImageTexture RenderOffscreen(int pixelWidth, int pixelHeight, System.Action<IDrawingSession> render)
+	public ITexture RenderOffscreen(int pixelWidth, int pixelHeight, System.Action<IDrawingSession> render)
 	{
 		var info = new SKImageInfo(pixelWidth, pixelHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 		using var surface = SKSurface.Create(info);
@@ -193,13 +193,13 @@ internal sealed class SkiaDrawingFactory :
 		render(new SkiaDrawingSession(surface.Canvas));
 		// Snapshot detaches from the surface (copy-on-write), so the returned texture outlives it. On Skia an
 		// SKImage is already the sampleable form, so there is no readback here.
-		return new SkiaImageTexture(surface.Snapshot());
+		return new SkiaTexture(surface.Snapshot());
 	}
 
 	// Skia rasterizes on the CPU, so the readback is synchronous — return an already-completed task.
-	public System.Threading.Tasks.Task<IImage> SnapshotAsync(IImageTexture texture)
+	public System.Threading.Tasks.Task<IImage> SnapshotAsync(ITexture texture)
 	{
-		if (texture is not SkiaImageTexture skia)
+		if (texture is not SkiaTexture skia)
 		{
 			throw new System.ArgumentException("Texture was not produced by SkiaDrawingFactory.", nameof(texture));
 		}
@@ -207,12 +207,12 @@ internal sealed class SkiaDrawingFactory :
 		return System.Threading.Tasks.Task.FromResult<IImage>(new SkiaImage(skia.Image));
 	}
 
-	public IImageTexture CreateImageTexture(IImage image)
+	public ITexture CreateTexture(IImage image)
 	{
 		var info = new SKImageInfo(image.PixelWidth, image.PixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
 		var pixels = new byte[image.PixelWidth * image.PixelHeight * 4];
 		image.CopyPixels(pixels);
-		return new SkiaImageTexture(SKImage.FromPixelCopy(info, pixels));
+		return new SkiaTexture(SKImage.FromPixelCopy(info, pixels));
 	}
 
 	public IShader CreateLinearGradientShader(
