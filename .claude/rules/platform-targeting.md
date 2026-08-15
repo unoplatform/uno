@@ -6,6 +6,11 @@ paths:
 
 # Platform targeting (Uno)
 
+> **Scope: this rule covers the Uno repository's own projects**, which use `src/Uno.CrossTargetting.targets`. The
+> consumer-facing vocabulary shipped in `Uno.Sdk` / `Uno.WinUI` is target-framework driven and differs — see
+> `doc/articles/platform-specific-csharp.md`, `doc/articles/platform-specific-xaml.md`, and the proposal in
+> `specs/056-platform-targeting-vocabulary/spec.md`.
+
 Preprocessor symbols and file-suffix exclusion are injected by `src/Uno.CrossTargetting.targets` from `UnoRuntimeIdentifier` / `TargetPlatformIdentifier` — **never** set platform `DefineConstants` or `Compile Remove` for suffixes in a `.csproj`. Symbols are **mutually exclusive per build**: a single compilation never has both `__SKIA__` and `__WASM__`.
 
 Current symbols: `__ANDROID__`, `__APPLE_UIKIT__` (iOS/tvOS), `__WASM__`, `__SKIA__`, `__NETSTD_REFERENCE__` / `UNO_REFERENCE_API`, `__CROSSRUNTIME__` (true for Skia, WebAssembly, Reference).
