@@ -579,6 +579,35 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var compositor = visual.Compositor;
 				var easing = CompositionEasingFunction.CreatePowerEasingFunction(compositor, CompositionEasingFunctionMode.Out, 10);
+				var isOffsetChanging = Vector2.DistanceSquared(visual.AnchorPoint, target) > 0.0001f;
+				var isZoomChanging = Math.Abs(visual.Scale.X - zoom) > 0.0001f;
+
+				if (!isOffsetChanging && isZoomChanging)
+				{
+					var zoomAnimation = compositor.CreateVector3KeyFrameAnimation();
+					zoomAnimation.InsertKeyFrame(1.0f, targetScale, easing);
+					zoomAnimation.Duration = TimeSpan.FromMilliseconds(300);
+
+					void OnZoomFrame(CompositionAnimation? _)
+					{
+						NotifyProgrammaticManipulationDelta(horizontalOffset, verticalOffset, visual.Scale.X);
+						Updated(horizontalOffset, verticalOffset, true);
+					}
+
+					void OnZoomStopped(object? _, EventArgs __)
+					{
+						zoomAnimation.AnimationFrame -= OnZoomFrame;
+						zoomAnimation.Stopped -= OnZoomStopped;
+						NotifyProgrammaticManipulationDelta(horizontalOffset, verticalOffset, visual.Scale.X);
+						Updated(horizontalOffset, verticalOffset, false);
+						CompleteProgrammaticManipulation();
+					}
+
+					zoomAnimation.AnimationFrame += OnZoomFrame;
+					zoomAnimation.Stopped += OnZoomStopped;
+					visual.StartAnimation(nameof(Visual.Scale), zoomAnimation);
+					return;
+				}
 
 				// Scroll offset animation
 				var scrollAnimation = compositor.CreateVector2KeyFrameAnimation();
@@ -613,7 +642,7 @@ namespace Microsoft.UI.Xaml.Controls
 				visual.StartAnimation(nameof(Visual.AnchorPoint), scrollAnimation);
 
 				// Zoom animation (if zoom is changing)
-				if (Math.Abs(visual.Scale.X - zoom) > 0.0001f)
+				if (isZoomChanging)
 				{
 					var zoomAnimation = compositor.CreateVector3KeyFrameAnimation();
 					zoomAnimation.InsertKeyFrame(1.0f, targetScale, easing);

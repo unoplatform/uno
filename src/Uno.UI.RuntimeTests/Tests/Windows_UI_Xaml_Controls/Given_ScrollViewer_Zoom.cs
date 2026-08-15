@@ -18,6 +18,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_ScrollViewer_Zoom
 {
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_ControlPlusMinus_ZoomsByWinUIStep()
 	{
 		var sut = new ScrollViewer
@@ -33,10 +34,23 @@ public class Given_ScrollViewer_Zoom
 		var manipulationCompleted = 0;
 		sut.DirectManipulationStarted += (_, _) => manipulationStarted++;
 		sut.DirectManipulationCompleted += (_, _) => manipulationCompleted++;
+		var zoomInKeySeen = false;
+		var zoomInKeyHandled = false;
+		sut.AddHandler(Microsoft.UI.Xaml.UIElement.KeyDownEvent, new Microsoft.UI.Xaml.Input.KeyEventHandler((_, args) =>
+		{
+			if (args.Key == Windows.System.VirtualKey.Add)
+			{
+				zoomInKeySeen = true;
+				zoomInKeyHandled = args.Handled;
+			}
+		}), handledEventsToo: true);
 
 		await UITestHelper.Load(sut, element => element.IsLoaded);
+		await TestServices.WindowHelper.WaitForIdle();
 
 		await KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_+#$u$_+#$u$_ctrl", sut);
+		Assert.IsTrue(zoomInKeySeen);
+		Assert.IsTrue(zoomInKeyHandled);
 		await TestServices.WindowHelper.WaitFor(() => sut.ZoomFactor > 1.0f);
 		await TestServices.WindowHelper.WaitFor(() => manipulationCompleted > 0);
 		Assert.AreEqual(1.1f, sut.ZoomFactor, 0.01f);
