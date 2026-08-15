@@ -544,7 +544,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					foreach (var inline in paragraph.Inlines)
 					{
-						((IDependencyObjectStoreProvider)inline).Store.UpdateResourceBindings(updateReason, resourceContextProvider: this);
+						((DependencyObject)inline).UpdateResourceBindings(updateReason, resourceContextProvider: this);
 					}
 				}
 			}
