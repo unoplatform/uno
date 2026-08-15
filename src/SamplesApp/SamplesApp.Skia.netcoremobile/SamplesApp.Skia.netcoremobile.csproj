@@ -143,19 +143,13 @@
 				<PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
 			</ItemGroup>
 
-			<!-- The .NET SDK's default item glob (EnableDefaultNoneItems) auto-includes
-			     ALL files in the project tree, so iOS/Info.plist and MacCatalyst/Info.plist
-			     are present as None items even when targeting tvOS. Rider reads every
-			     included Info.plist to check UIDeviceFamily and flags the project as
-			     "requires iPhone, iPad" when it finds UIDeviceFamily=[1,2] in those files.
-			     Explicitly removing them here keeps only tvOS/Info.plist visible. -->
+			<!-- Auto-included by the default None glob; Rider then reads their UIDeviceFamily and mislabels the project as iPhone/iPad. -->
 			<ItemGroup>
 				<None Remove="iOS\Info.plist" />
 				<None Remove="MacCatalyst\Info.plist" />
 			</ItemGroup>
 
 			<PropertyGroup>
-				<MtouchUseLlvm>true</MtouchUseLlvm>
 				<SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
 
 				<!-- iOS 17 compatibility -->
