@@ -61,13 +61,24 @@ public class StoreContextExtension : IStoreContextExtension
 
 		public void OnComplete(Xamarin.Google.Android.Play.Core.Tasks.Task task)
 		{
-			var context = ContextHelper.Current;
-			var activity = (Activity)context;
-
 			if (!task.IsSuccessful || _forceReturn)
 			{
 				_inAppRateTcs?.TrySetResult(new(_forceReturn ? StoreRateAndReviewStatus.Succeeded : StoreRateAndReviewStatus.Error));
 				_launchTask?.Dispose();
+
+				return;
+			}
+
+			// The review flow must be hosted by the foreground activity, which may be gone by the
+			// time the request completes (backgrounded app, activity re-creation).
+			if (ContextHelper.Current is not Activity activity)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError("Cannot launch the in-app review flow, no foreground activity is available.");
+				}
+
+				_inAppRateTcs?.TrySetResult(new(StoreRateAndReviewStatus.Error));
 
 				return;
 			}
