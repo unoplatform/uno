@@ -1448,7 +1448,7 @@ public sealed unsafe class WebGpuBufferPool : IDisposable
 	}
 }
 
-public sealed unsafe class WebGpuRenderSurface : IRenderTarget
+public sealed unsafe class WebGpuRenderSurface : IWebGpuRenderTarget
 {
 	public IntPtr Tex;
 	public IntPtr View;              // single-sample resolve target (offscreen readback / swapchain image)

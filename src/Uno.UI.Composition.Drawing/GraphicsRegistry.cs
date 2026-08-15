@@ -209,6 +209,19 @@ internal static class GraphicsRegistry
 				try
 				{
 					var backendFactory = backend.CreateGraphics(context);
+
+					// Capability gate: the backend must implement the typed IDrawingFactory<TTarget> matching this
+					// kind, else it could win a kind it can't present (crashing at the first frame). Declining here
+					// falls negotiation through to the next kind. This is also where the closed kind→target-type
+					// mapping lives — one place, Uno-side.
+					if (!CanPresent(kind, backendFactory))
+					{
+						attempts.Append($"\n  - {backend.GetType().Name}/{kind}: backend does not implement IDrawingFactory<T> for this kind");
+						(backendFactory as IDisposable)?.Dispose();
+						context.Dispose();
+						continue;
+					}
+
 					DrawingFactory.Register(backendFactory);
 					return new GraphicsInitialization(backend, context, backendFactory);
 				}
@@ -223,4 +236,15 @@ internal static class GraphicsRegistry
 		throw new InvalidOperationException(
 			$"No registered backend could initialize on this host. Attempts:{attempts}");
 	}
+
+	// The closed kind → typed-present capability mapping (kind ⇒ the IDrawingFactory<TTarget> a backend must
+	// implement). Vulkan is intentionally unmapped (no present path wired on this seam yet) → declined.
+	private static bool CanPresent(GraphicsContextKind kind, IDrawingFactory backend) => kind switch
+	{
+		GraphicsContextKind.OpenGL or GraphicsContextKind.OpenGLES => backend is IDrawingFactory<IGLRenderTarget>,
+		GraphicsContextKind.Metal => backend is IDrawingFactory<IMetalRenderTarget>,
+		GraphicsContextKind.Software => backend is IDrawingFactory<ISoftwareRenderTarget>,
+		GraphicsContextKind.WebGpu => backend is IDrawingFactory<IWebGpuRenderTarget>,
+		_ => false,
+	};
 }

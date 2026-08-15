@@ -14,7 +14,11 @@ namespace Uno.UI.Composition.Drawing;
 /// when Skia wins negotiation the registry installs this. No module-initializer self-registration: the graphics
 /// backend is registered up front and the factory is set once, never as a load-time fallback later overwritten.
 /// </summary>
-internal sealed class SkiaDrawingFactory : IDrawingFactory, System.IDisposable
+internal sealed class SkiaDrawingFactory :
+	IDrawingFactory<IGLRenderTarget>,
+	IDrawingFactory<ISoftwareRenderTarget>,
+	IDrawingFactory<IMetalRenderTarget>,
+	System.IDisposable
 {
 	// GL state (built lazily on the first GL present, once the host's GL context is current; per backend
 	// instance, i.e. per graphics context). Null for the software / host-canvas cases.
@@ -30,18 +34,14 @@ internal sealed class SkiaDrawingFactory : IDrawingFactory, System.IDisposable
 
 	public ICommandRecorder CreateRecording() => SkiaDrawingSession.StartRecording();
 
-	// Wraps whatever target the active context handed over. A neutral context (Uno's context factory) hands a
-	// kind-specific target the Skia backend wraps here — CPU framebuffer → SKSurface over pixels; GL framebuffer
-	// → GRContext-GL; Metal texture → GRContext-Metal.
-	public IPresentSession BeginPresent(IRenderTarget target)
-		=> target switch
-		{
-			SkiaRenderTarget skia => new SkiaPresentSession(skia.Canvas),
-			ISoftwareRenderTarget software => SkiaPresentSession.ForSoftware(software),
-			IGLRenderTarget gl => PresentForGL(gl),
-			IMetalRenderTarget metal => PresentForMetal(metal),
-			_ => throw new System.NotSupportedException($"The Skia backend cannot present onto a render target of type {target.GetType().Name}."),
-		};
+	// Typed present per kind the Skia backend serves — the target arrives already narrowed, so there is no
+	// cast/switch here. CPU framebuffer → SKSurface over pixels; GL framebuffer → GRContext-GL; Metal texture →
+	// GRContext-Metal.
+	public IPresentSession BeginPresent(IGLRenderTarget target) => PresentForGL(target);
+
+	public IPresentSession BeginPresent(ISoftwareRenderTarget target) => SkiaPresentSession.ForSoftware(target);
+
+	public IPresentSession BeginPresent(IMetalRenderTarget target) => PresentForMetal(target);
 
 	// The host hands the per-frame MTLTexture (+ its device/queue); build/reuse a GRContext-Metal and wrap the
 	// texture as an SKSurface to compose into. Present flushes the GRContext so the render lands in the texture

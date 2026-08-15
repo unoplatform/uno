@@ -102,11 +102,21 @@ public interface IDrawingFactory
 	/// per-session <c>CreateRecording</c>).
 	/// </summary>
 	ICommandRecorder CreateRecording();
+}
 
+/// <summary>
+/// The present half of a backend, typed to the render-target kind it composes onto. A backend implements one
+/// instantiation per kind it serves (Skia: <see cref="IGLRenderTarget"/> / <see cref="IMetalRenderTarget"/> /
+/// <see cref="ISoftwareRenderTarget"/>; WebGPU: <see cref="IWebGpuRenderTarget"/>). The target arrives already
+/// typed — the backend never casts or type-switches a neutral <see cref="IRenderTarget"/>. The framework does
+/// the neutral→typed narrowing (a single Uno-side cast) and gates negotiation on which instantiations a backend
+/// implements, so a backend can't win a kind it can't present.
+/// </summary>
+public interface IDrawingFactory<in TTarget> : IDrawingFactory where TTarget : IRenderTarget
+{
 	/// <summary>
 	/// Phase 2: begins composing onto <paramref name="target"/>. The cycle replays a recorded frame
-	/// (<see cref="IRenderData.Replay"/>) and draws any overlay into the returned session, then disposes it to
-	/// present. Transitional non-generic form; the typed <c>IDrawingFactory&lt;TTarget&gt;</c> supersedes it.
+	/// (<see cref="IRenderData.Replay"/>) and draws any overlay into the returned session, then disposes it to present.
 	/// </summary>
-	IPresentSession BeginPresent(IRenderTarget target);
+	IPresentSession BeginPresent(TTarget target);
 }
