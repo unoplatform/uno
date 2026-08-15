@@ -1,5 +1,12 @@
 # Drawing-seam consolidation
 
+> **STATUS: DONE.** Step A `7f2030a9e2`, Step B `9092b38541` (GL-loader prereq `89c6c0bbfb`). Built: desktop
+> (X11/Win32/macOS/Linux.FrameBuffer), Android (`net10.0-android`), WASM (`net10.0`), WebGpu. Runtime-validated
+> on X11/lavapipe (OpenGL/OpenGLES/Software render identically, no crash). WebGpu + Win32/macOS/Android/iOS
+> runtime handed off. Follow-up: wire Vulkan (`IVulkanRenderTarget` + arm); refresh
+> `doc/uno-drawing-backend-abstraction.md`.
+
+
 Consolidates the pluggable-backend seam in `Uno.UI.Composition.Drawing` after a design review. Goal: a
 render backend is a **single, device-bound object** whose surface is **fully typed — no casts, no type
 switches, nothing pretending to be neutral that isn't**. Every unavoidable runtime cast is confined to Uno
