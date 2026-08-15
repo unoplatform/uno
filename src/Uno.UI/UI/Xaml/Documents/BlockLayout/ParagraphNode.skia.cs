@@ -735,6 +735,14 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 		// DrawingContext should be created and cleared in Arrange.
 		MUX_ASSERT(m_pDrawingContext != null);
 		pTextDrawingContext = ((ParagraphDrawingContext)m_pDrawingContext!).GetTextDrawingContext();
+		if (pTextDrawingContext is null)
+		{
+			// TODO Uno (Stage 6/8): the WinUI D2DTextDrawingContext line recorder is not ported yet, so
+			// GetTextDrawingContext() always returns null and rendering goes through ParsedText.Draw.
+			// Bail out instead of dereferencing it; drop this guard once the recorder lands.
+			return;
+		}
+
 		pTextDrawingContext.Clear();
 
 		pTextDrawingContext.SetIsColorFontEnabled(isColorFontEnabled);
