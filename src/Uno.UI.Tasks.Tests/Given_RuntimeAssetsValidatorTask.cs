@@ -13,9 +13,10 @@ public class Given_RuntimeAssetsValidatorTask
 	private static (RuntimeAssetsValidatorTask_v0 Task, RecordingBuildEngine Engine) CreateTask(
 		PackageCacheFixture fixture,
 		string asset,
-		string winRTRuntimeIdentifier = "android",
+		string targetPlatformIdentifier = "android",
 		bool resolveUnoUI = true,
-		bool disablePlatformAssetValidation = false)
+		bool disablePlatformAssetValidation = false,
+		string? nuGetPackageRoot = null)
 	{
 		var engine = new RecordingBuildEngine();
 		var unoUI = fixture.AddUnoUI(PresentType);
@@ -25,8 +26,9 @@ public class Given_RuntimeAssetsValidatorTask
 			BuildEngine = engine,
 			UnoRuntimeIdentifier = "",
 			UnoUIRuntimeIdentifier = "skia",
-			UnoWinRTRuntimeIdentifier = winRTRuntimeIdentifier,
-			NuGetPackageRoot = fixture.NuGetPackageRoot,
+			UnoWinRTRuntimeIdentifier = "",
+			TargetPlatformIdentifier = targetPlatformIdentifier,
+			NuGetPackageRoot = nuGetPackageRoot ?? fixture.NuGetPackageRoot,
 			DisablePlatformAssetValidation = disablePlatformAssetValidation,
 			ResolvedCompileFileDefinitionsInput = resolveUnoUI ? [PackageCacheFixture.Item(unoUI)] : [],
 			RuntimeCopyLocalItemsInput = [PackageCacheFixture.Item(asset, ("NuGetPackageId", "Sample.Lib"))],
@@ -85,7 +87,7 @@ public class Given_RuntimeAssetsValidatorTask
 		using var fixture = new PackageCacheFixture(nameof(When_Head_Is_Not_Mobile_Then_No_Warning));
 		var asset = fixture.AddPackage("Sample.Lib", "1.0.0", "net10.0-android35.0", "net10.0", [RemovedType]);
 
-		var (task, engine) = CreateTask(fixture, asset, winRTRuntimeIdentifier: "webassembly");
+		var (task, engine) = CreateTask(fixture, asset, targetPlatformIdentifier: "browserwasm");
 		task.Execute().Should().BeTrue();
 
 		Unob0020(engine).Should().BeNull();
@@ -114,6 +116,19 @@ public class Given_RuntimeAssetsValidatorTask
 		task.Execute().Should().BeTrue();
 
 		Unob0020(engine).Should().BeNull();
+	}
+
+	[TestMethod]
+	public void When_NuGetPackageRoot_Is_Unset_Then_No_Warning()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_NuGetPackageRoot_Is_Unset_Then_No_Warning));
+		var asset = fixture.AddPackage("Sample.Lib", "1.0.0", "net10.0-android35.0", "net10.0", [RemovedType]);
+
+		var (task, engine) = CreateTask(fixture, asset, nuGetPackageRoot: "");
+		task.Execute().Should().BeTrue();
+
+		Unob0020(engine).Should().BeNull();
+		engine.Errors.Should().BeEmpty();
 	}
 
 	[TestMethod]
