@@ -94,6 +94,9 @@ on macOS with Skia rendering. To migrate:
 > Uno 6.x can no longer bind: its references into `Uno.UI.Toolkit` resolve to nothing and the
 > build fails with `CS0012`. Recompile every dependent library against 7.0 rather than mixing
 > majors.
+
+<!-- Separates the two alerts: one alert per blockquote, without an MD028 blank-line-only gap. -->
+
 > [!NOTE]
 > Referencing `Uno.WinUI.WebAssembly` (or the older `Uno.WinUI.Runtime.WebAssembly`)
 > alongside the Skia browser head raises the `UNOB0017` build diagnostic. Removing the
