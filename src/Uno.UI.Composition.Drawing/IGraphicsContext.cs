@@ -22,7 +22,16 @@ public interface IGraphicsContext : IDisposable
 
 	/// <summary>Whether the context has been lost (device removed, surface invalidated) and must be recreated.</summary>
 	bool IsLost { get; }
+}
 
+/// <summary>
+/// The host swapchain half of a graphics context: the per-frame acquire/present loop the host drives. This is a
+/// <em>host-facing</em> seam — the framework's kind-neutral render loop uses it. A render backend never sees it
+/// (it consumes only the <see cref="IGraphicsContext"/> device handle, which it narrows to its own device
+/// interface); acquire/present are the host's window-swapchain concern, not the backend's.
+/// </summary>
+public interface ISwapChain : IGraphicsContext
+{
 	/// <summary>Acquires the color target for the next frame (recreating the swapchain/framebuffer on resize).</summary>
 	IRenderTarget AcquireRenderTarget(int width, int height);
 

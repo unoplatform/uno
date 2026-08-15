@@ -138,7 +138,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 	// and modified to also add rendering without OpenGL
 	private class InternalRenderer() : Java.Lang.Object, IRenderer
 	{
-		private IGraphicsContext? _context;
+		private ISwapChain? _context;
 
 		void IRenderer.OnDrawFrame(IGL10? gl)
 		{
@@ -169,7 +169,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 			// GLSurfaceView has just created + made-current the EGL context on this (its own) render thread. Negotiate
 			// here so the backend's GRContext-GLES is built on the GL thread against the current context. The host
 			// names no backend; it only serves the GLES kind by wrapping the ambient context.
-			GraphicsRegistry.ContextFactory = kind => System.Threading.Tasks.Task.FromResult<IGraphicsContext?>(
+			GraphicsRegistry.ContextFactory = kind => System.Threading.Tasks.Task.FromResult<ISwapChain?>(
 				kind == GraphicsContextKind.OpenGLES ? new AndroidGLGraphicsContext() : null);
 			var init = GraphicsRegistry.Initialize();
 			// OnSurfaceCreated fires again after a genuine EGL context loss (despite PreserveEGLContextOnPause);

@@ -481,7 +481,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	/// (host config opted out, or the API is unavailable), cleaning up any window it created so it's "as if never
 	/// attempted." The host names no render backend; WebGpu is created via the WebGPU project's init helper.
 	/// </summary>
-	private IGraphicsContext? CreateWindowAndContext(GraphicsContextKind kind, IntPtr topWindowDisplay, IntPtr display, int screen, Size size)
+	private ISwapChain? CreateWindowAndContext(GraphicsContextKind kind, IntPtr topWindowDisplay, IntPtr display, int screen, Size size)
 	{
 		// Host render config, expressed as declining kinds (the backend owns the order, never the host).
 		var useOpenGL = FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? true;

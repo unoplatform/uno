@@ -12,7 +12,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 /// <c>XPutImage</c> — while naming no Skia type. The matched backend wraps the handed-over
 /// <see cref="ISoftwareRenderTarget"/> into its own surface to render into.
 /// </summary>
-internal sealed class X11SoftwareGraphicsContext : IGraphicsContext
+internal sealed class X11SoftwareGraphicsContext : ISwapChain
 {
 	private const int BitmapPad = 32;
 

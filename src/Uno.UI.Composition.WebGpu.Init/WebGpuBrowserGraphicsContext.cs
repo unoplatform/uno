@@ -9,7 +9,7 @@ using static Uno.WebGpu.Native.WGPU;
 namespace Uno.UI.Composition.WebGpu;
 
 /// <summary>
-/// On-canvas WebGPU <see cref="IGraphicsContext"/> for the browser: owns a <see cref="WebGpuDevice"/> and a wgpu
+/// On-canvas WebGPU <see cref="ISwapChain"/> for the browser: owns a <see cref="WebGpuDevice"/> and a wgpu
 /// surface bound to the HTML &lt;canvas&gt; (via emdawnwebgpu's canvas-selector source). The device is created in
 /// JavaScript (navigator.gpu) and imported into the wgpu handle table by the caller (BrowserRenderer /
 /// WebGpuJsInterop), then handed to the constructor.
@@ -19,7 +19,7 @@ namespace Uno.UI.Composition.WebGpu;
 /// does not composite on the browser's SwiftShader WebGPU adapter, whereas a plain texture-to-texture copy does;
 /// and the browser presents implicitly when control returns to the event loop (no wgpuSurfacePresent).
 /// </summary>
-internal sealed unsafe class WebGpuBrowserGraphicsContext : IGraphicsContext, IWebGpuDeviceContext
+internal sealed unsafe class WebGpuBrowserGraphicsContext : ISwapChain, IWebGpuDeviceContext
 {
 	private readonly WebGpuDevice _device;
 	private IntPtr _surface;

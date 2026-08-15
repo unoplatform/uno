@@ -11,7 +11,7 @@ using static Uno.WebGpu.Native.WGPU;
 
 namespace Uno.UI.Composition.WebGpu;
 
-public sealed unsafe class WebGpuSwapChainContext : IGraphicsContext, IWebGpuDeviceContext
+public sealed unsafe class WebGpuSwapChainContext : ISwapChain, IWebGpuDeviceContext
 {
 	private readonly WebGpuDevice _device;
 	private IntPtr _surface;

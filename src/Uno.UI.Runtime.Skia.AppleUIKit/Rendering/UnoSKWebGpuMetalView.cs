@@ -117,7 +117,7 @@ internal sealed partial class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderVi
 	/// (referenced directly; the host never references the WebGPU renderer). The wgpu native/link ships only with an
 	/// app that opts into WebGPU, so a Skia-only app that never negotiates the WebGpu kind never loads it.
 	/// </summary>
-	internal global::Uno.UI.Composition.Drawing.IGraphicsContext CreateGraphicsContext()
+	internal global::Uno.UI.Composition.Drawing.ISwapChain CreateGraphicsContext()
 		=> global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateMetal((IntPtr)MetalLayer.Handle, _scale);
 
 	public override void LayoutSubviews()

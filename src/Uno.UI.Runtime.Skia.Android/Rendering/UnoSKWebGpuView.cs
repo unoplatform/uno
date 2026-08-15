@@ -29,7 +29,7 @@ internal sealed partial class UnoSKWebGpuView : SurfaceView, ISurfaceHolderCallb
 	public UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 	public TextInputPlugin TextInputPlugin { get; }
 
-	private global::Uno.UI.Composition.Drawing.IGraphicsContext? _context;
+	private global::Uno.UI.Composition.Drawing.ISwapChain? _context;
 	private Thread? _renderThread;
 	private volatile bool _renderRequested;
 	private volatile bool _surfaceReady;
@@ -155,7 +155,7 @@ internal sealed partial class UnoSKWebGpuView : SurfaceView, ISurfaceHolderCallb
 		// names no render backend.
 		var nativeWindow = _nativeWindow;
 		global::Uno.UI.Composition.Drawing.GraphicsRegistry.ContextFactory =
-			kind => System.Threading.Tasks.Task.FromResult<global::Uno.UI.Composition.Drawing.IGraphicsContext?>(
+			kind => System.Threading.Tasks.Task.FromResult<global::Uno.UI.Composition.Drawing.ISwapChain?>(
 				kind == global::Uno.UI.Composition.Drawing.GraphicsContextKind.WebGpu
 					? global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateAndroid(nativeWindow, 1f)
 					: null);

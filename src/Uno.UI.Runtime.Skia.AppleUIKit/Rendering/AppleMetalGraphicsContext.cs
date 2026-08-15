@@ -17,12 +17,12 @@ internal interface IAppleNativeTextureSink
 }
 
 /// <summary>
-/// Neutral Skia-on-Metal <see cref="IGraphicsContext"/> for AppleUIKit — holds the MTKView's device/queue and wraps
+/// Neutral Skia-on-Metal <see cref="ISwapChain"/> for AppleUIKit — holds the MTKView's device/queue and wraps
 /// the per-frame drawable <c>MTLTexture</c> as an <see cref="IMetalRenderTarget"/>; the Skia backend builds its
 /// GRContext-Metal + surface and flushes. The MTKView owns the drawable and presents it (PresentDrawable/Commit), so
 /// <see cref="Present"/> is a no-op. Names no Skia type. Mirrors the macOS host's Metal context.
 /// </summary>
-internal sealed class AppleMetalGraphicsContext : IGraphicsContext, IAppleNativeTextureSink
+internal sealed class AppleMetalGraphicsContext : ISwapChain, IAppleNativeTextureSink
 {
 	private readonly nint _device;
 	private readonly nint _queue;

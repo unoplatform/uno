@@ -15,7 +15,7 @@ namespace Uno.UI.Composition.Drawing;
 /// </summary>
 internal readonly struct GraphicsInitialization
 {
-	public GraphicsInitialization(IGraphicsProvider provider, IGraphicsContext context, IDrawingFactory backend)
+	public GraphicsInitialization(IGraphicsProvider provider, ISwapChain context, IDrawingFactory backend)
 	{
 		Provider = provider;
 		Context = context;
@@ -23,7 +23,7 @@ internal readonly struct GraphicsInitialization
 	}
 
 	public IGraphicsProvider Provider { get; }
-	public IGraphicsContext Context { get; }
+	public ISwapChain Context { get; }
 
 	/// <summary>The backend — the host sets it as <c>CompositionTarget.Renderer</c>.</summary>
 	public IDrawingFactory Renderer { get; }
@@ -41,7 +41,7 @@ internal readonly struct GraphicsInitialization
 /// because one kind (WASM WebGpu) imports its device from JS and must not block the JS thread; every native host
 /// returns an already-completed task.
 /// </summary>
-internal delegate Task<IGraphicsContext?> GraphicsContextFactory(GraphicsContextKind kind);
+internal delegate Task<ISwapChain?> GraphicsContextFactory(GraphicsContextKind kind);
 
 /// <summary>
 /// Process-wide registry and negotiator for pluggable graphics backends. The app registers its ordered backend
@@ -183,7 +183,7 @@ internal static class GraphicsRegistry
 		{
 			foreach (var kind in backend.PreferredContexts)
 			{
-				IGraphicsContext? context;
+				ISwapChain? context;
 				try
 				{
 					// The host creates the window+context for this kind (or null to decline). WebGpu/Vulkan redirect

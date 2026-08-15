@@ -18,7 +18,7 @@ internal partial class BrowserRenderer
 	// The negotiated graphics context (Skia WebGL/software or WebGPU). It is created asynchronously — the WebGPU
 	// device import runs in JS and the JS thread must not be blocked — so _context is null until ready and frames
 	// re-arm meanwhile. The host names no backend and owns no Skia SKCanvas.
-	private IGraphicsContext? _context;
+	private ISwapChain? _context;
 	private bool _initFailed;
 
 	private int _renderCount;
@@ -77,7 +77,7 @@ internal partial class BrowserRenderer
 	/// context, or the WebGpu canvas context via the WebGPU project's init helper. WebGL is declined when the host
 	/// is configured for software. The host names no render backend.
 	/// </summary>
-	private async Task<IGraphicsContext?> CreateContextAsync(GraphicsContextKind kind, bool forceSoftwareRendering)
+	private async Task<ISwapChain?> CreateContextAsync(GraphicsContextKind kind, bool forceSoftwareRendering)
 	{
 		switch (kind)
 		{

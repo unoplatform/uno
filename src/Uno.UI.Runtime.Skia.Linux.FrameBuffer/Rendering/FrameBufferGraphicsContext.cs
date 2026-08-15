@@ -14,7 +14,7 @@ namespace Uno.UI.Runtime.Skia;
 /// the FrameBufferRenderer keeps owning its own target + present and drives the neutral render seam directly. This
 /// host also has no WebGPU/Skia fork (the DRM-vs-fbdev choice is the platform GPU-init), so it names no backend.
 /// </summary>
-internal sealed class FrameBufferGraphicsContext : IGraphicsContext
+internal sealed class FrameBufferGraphicsContext : ISwapChain
 {
 	public FrameBufferGraphicsContext(GraphicsContextKind kind) => Kind = kind;
 

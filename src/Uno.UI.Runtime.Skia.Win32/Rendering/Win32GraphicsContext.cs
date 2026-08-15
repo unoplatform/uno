@@ -25,14 +25,14 @@ internal interface IWin32PacedContext
 }
 
 /// <summary>
-/// Neutral OpenGL <see cref="IGraphicsContext"/> for Win32 — owns the WGL context + <c>SwapBuffers</c> and names
+/// Neutral OpenGL <see cref="ISwapChain"/> for Win32 — owns the WGL context + <c>SwapBuffers</c> and names
 /// no Skia type. <see cref="AcquireRenderTarget"/> makes the context current (the render happens on the render
 /// thread while current) and hands the backend a neutral <see cref="IGLRenderTarget"/> (default framebuffer +
 /// sample/stencil); the Skia backend builds its GRContext-GL against the current context. <see cref="Present"/>
 /// swaps and releases current. Created by <see cref="Win32GraphicsContextFactory"/>; returns <see langword="null"/>
 /// on failure so negotiation falls through to the software context.
 /// </summary>
-internal sealed class Win32OpenGLGraphicsContext : IGraphicsContext, IWin32PacedContext
+internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContext
 {
 	[UnmanagedFunctionPointer(CallingConvention.Winapi)]
 	private delegate int WglSwapIntervalEXT(int interval);
@@ -242,11 +242,11 @@ internal sealed class Win32OpenGLGraphicsContext : IGraphicsContext, IWin32Paced
 }
 
 /// <summary>
-/// Neutral software (CPU-framebuffer) <see cref="IGraphicsContext"/> for Win32 — owns the DIB section + the
+/// Neutral software (CPU-framebuffer) <see cref="ISwapChain"/> for Win32 — owns the DIB section + the
 /// <c>BitBlt</c> present, and names no Skia type. <see cref="AcquireRenderTarget"/> (re)creates the DIB on resize
 /// and hands the backend a neutral <see cref="ISoftwareRenderTarget"/>; the Skia backend wraps it as its surface.
 /// </summary>
-internal sealed class Win32SoftwareGraphicsContext : IGraphicsContext, IWin32PacedContext
+internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedContext
 {
 	private readonly HWND _hwnd;
 	private readonly Win32RenderPacer _pacer;
