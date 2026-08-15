@@ -521,6 +521,9 @@ namespace Uno.WinAppSDKSyncGenerator
 		/// </summary>
 		private bool ShouldEmitNonSkiaDefines(INamedTypeSymbol type)
 		{
+			// GetNamespaceBasePath returns one of a closed set of compile-time literals, never a
+			// filesystem-derived path, so the backslashes below are matched against this file's own
+			// constants and are unaffected by the host OS separator or the repository location.
 			var basePath = GetNamespaceBasePath(type);
 			return basePath.Contains(@"\Uno\Generated\", StringComparison.Ordinal)
 				|| basePath.Contains(@"\Uno.Foundation\", StringComparison.Ordinal)
