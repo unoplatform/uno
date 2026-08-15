@@ -122,15 +122,29 @@ owns the feature, not in a bulk sweep.
 
 ## 5. Suggested sequencing
 
-1. **`IS_UNIT_TESTS` (89) and `__NETSTD_REFERENCE__` (26)** in `src/Uno.UI` — the largest genuinely-dead groups,
-   both with an unambiguous cause. Delete the always-false blocks.
-2. **`NETFX_CORE`, `NETSTANDARD`, `WASM_SKIA`, `WINUI`, `__ANDROID__`, `UNO_HAS_UIELEMENT_IMPLICIT_PINNING`** —
-   small, same treatment.
-3. **The legacy platform symbols in §2.4** — repository-wide, mechanical.
-4. **`#if false`** — triage individually; do not sweep.
-5. **The feature flags in §4** — per flag, per owner.
+1. ✅ **`IS_UNIT_TESTS` (89) and `__NETSTD_REFERENCE__` (26)** in `src/Uno.UI` — the largest genuinely-dead
+   groups, both with an unambiguous cause. Delete the always-false blocks.
+2. ✅ **`NETFX_CORE` and `UNO_HAS_UIELEMENT_IMPLICIT_PINNING`** — small, same treatment. `NETSTANDARD`,
+   `WASM_SKIA`, `WINUI` and `__ANDROID__` are **not** swept; see the correction in §2.1.
+3. ✅ **The legacy platform symbols in §2.4** — done with spec 057, except the vendored ones, which stay by
+   decision because those sources are still resynced from upstream.
+4. **`#if false`** — triage individually; do not sweep. Untouched.
+5. **The feature flags in §4** — per flag, per owner. Untouched.
 6. **`__SKIA__` / `HAS_UNO`** — defer until the drawing-backend work has landed, and decide the MUX-annotation
-   question explicitly rather than by sweep.
+   question explicitly rather than by sweep. Untouched.
+
+After 1–3, `src/Uno.UI` has no always-false conditional left outside the protected categories: what remains is
+50 sites of parked ported code (057 §3.3), 62 of developer diagnostics (057 §3.5), 26 of MUX port fidelity, and
+`DEBUG`, which varies by configuration and must never be folded.
+
+### Two things the analysis had to learn
+
+- **An always-true `#elif` is an `#else`, not a no-op.** Simplifying only the always-*false* arms leaves
+  `#if __SKIA__ / #elif !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS` looking untouched when the second arm is
+  unconditional.
+- **A `^\s*#if` search misses a first line preceded by a UTF-8 BOM.** Three file-wide guards hid that way, and
+  the same blind spot let spec 057's pass miss two `SILVERLIGHT` sites and one `__UWP__`. Read sources with
+  BOM-stripping decoding before matching directives.
 
 ## 6. Open decisions
 
