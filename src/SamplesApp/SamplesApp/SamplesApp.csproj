@@ -259,7 +259,6 @@
 
 	<PropertyGroup Condition="'$(_Platform)' == 'android'">
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
-		<DefineConstants Condition=" '$(UseMonoRuntime)' == 'false' ">$(DefineConstants);RUNTIME_CORECLR</DefineConstants>
 		<!-- Pin the shrinker, as the netcoremobile head does. Left unset, R8 9.1.31 crashes with
 		     an NPE in its API-model database while desugaring androidx.core. -->
 		<AndroidLinkTool Condition="'$(DoNotSetAndroidLinkTool)' != 'true'">r8</AndroidLinkTool>
