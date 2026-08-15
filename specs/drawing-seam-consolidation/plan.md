@@ -231,3 +231,33 @@ Compile: X11/Win32/macOS/Linux.FrameBuffer (via `SamplesApp.Skia.Generic`), Andr
 non-blank frame; WebGpu head compiles (browser/native runtime handed off). iOS/AppleUIKit = Metal, compile
 handed off.
 ```
+
+## Step G — WebGPU: make the neutral seam real (carve the engine out of Init; delete the IVT)
+
+Audit finding: the WebGPU render target + device were "neutral" in name only — Uno's renderer reached the host's
+internal `WebGpuRenderSurface`/`WebGpuDevice`/`IWebGpuDeviceHolder` through
+`InternalsVisibleTo("Uno.UI.Composition.WebGpu")`, so a third-party backend (with no IVT) couldn't stand where Uno
+does. `WebGpuDevice` was a god-object: 4 real handles + the entire render engine (~30 pipelines, pools, slabs,
+caches, xform allocator) living in the `Init` assembly and shared by IVT.
+
+Carve (one atomic change, validated on X11/lavapipe):
+- **Engine → renderer** (`Uno.UI.Composition.WebGpu/WebGpuEngine.cs`): `WebGpuDevice` (now an *adopt* device built
+  from `IWebGpuDeviceContext`), `WebGpuTexturePool`/`WebGpuBufferPool`/`WebGpuRenderSurface`/`WebGpuSlab`/
+  `WebGpuVertexSlab` all moved. `WebGpuRenderSurface` is renderer-internal (no longer the seam type).
+- **Init keeps device bring-up**: new `WebGpuInitDevice` (instance/adapter/device/queue + present sampler),
+  implementing the neutral `IWebGpuDeviceContext`. MSAA is now **capability-only (2×→4×→1×), no DPI/scale input**
+  (the per-frame DPI scale is the drawing session's matrix; `RasterizationScale` static deleted).
+- **Neutral seam** (`Uno.UI.Composition.Drawing`): `IWebGpuRenderTarget` carries only the resolve colour
+  (`ColorTexture`/`ColorView`) — the backend allocates its own MSAA+depth and resolves into it, like every other
+  target; `IWebGpuDeviceContext` moved here next to `IVulkanDeviceContext` (raw handles + `ColorFormat` +
+  `SampleCount`), so `GraphicsRegistry` narrows `WebGpu ⇒ IGraphicsProvider<IWebGpuDeviceContext>` Uno-side,
+  consistent with Skia's GL/Metal/Vulkan arms.
+- **Provider**: `WebGpuGraphicsProvider : IGraphicsProvider<IWebGpuDeviceContext>` builds the engine from the
+  neutral handles. `IWebGpuDeviceHolder` deleted; the browser readback calls the now-public `WebGpuJsInterop`
+  directly (the cross-set hook is gone).
+- **Both IVTs deleted**: `Init → renderer` and the vestigial `Drawing → renderer`. The renderer now uses only the
+  public neutral seam — a third-party WebGPU backend stands exactly where Uno's does.
+
+Validated: WebGPU renders on X11/lavapipe (`init device msaa=4x`, `WebGpu context via WebGpuDrawingFactory`, luma
+0.75, no uncaptured errors); default Skia/Vulkan path unregressed (luma 0.75); compiles desktop + Android + WASM
+(WebGPU). WASM browser render is compile-only (no browser here).

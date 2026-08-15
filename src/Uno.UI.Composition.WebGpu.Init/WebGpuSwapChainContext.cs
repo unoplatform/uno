@@ -11,15 +11,16 @@ using static Uno.WebGpu.Native.WGPU;
 
 namespace Uno.UI.Composition.WebGpu;
 
-internal sealed unsafe class WebGpuSwapChainContext : ISwapChain, IWebGpuDeviceContext, IWebGpuDeviceHolder
+internal sealed unsafe class WebGpuSwapChainContext : ISwapChain, IWebGpuDeviceContext
 {
-	private readonly WebGpuDevice _device;
+	private readonly WebGpuInitDevice _device;
 	private IntPtr _surface;
-	private WebGpuRenderSurface? _target;
+	private WebGpuSwapchainTarget? _target;
 	// The scene renders (MSAA) and resolves into this OFFSCREEN single-sample texture; Present() then blits it into
 	// the acquired swapchain image. A direct MSAA-resolve straight into the swapchain texture does NOT composite on
 	// several native surfaces (and SwiftShader in the browser) — a render pass that TARGETS the swapchain image (the
-	// blit) does. This mirrors the browser context and the original branch's proven Win32 swapchain path.
+	// blit) does. The MSAA colour + depth the scene renders into are the RENDER BACKEND's (it allocates them to match
+	// this resolve target); this host owns only the single-sample resolve texture + the present/blit.
 	private IntPtr _presentTex;
 	private IntPtr _presentView;
 	private bool _frameAcquired;
@@ -70,7 +71,7 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 	/// (use one of the CreateXxxSurface factories).</param>
 	public WebGpuSwapChainContext(WGPUTextureFormat colorFormat, Func<IntPtr, IntPtr> createSurface)
 	{
-		_device = new WebGpuDevice(colorFormat);
+		_device = new WebGpuInitDevice(colorFormat);
 		_surface = createSurface(_device.Inst);
 		if (_surface == IntPtr.Zero)
 		{
@@ -78,12 +79,15 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		}
 	}
 
-	WebGpuDevice IWebGpuDeviceHolder.Device => _device;
+	// The host context IS the neutral device context (it owns the device it created); the backend adopts it.
 	nint IWebGpuDeviceContext.Instance => _device.Inst;
 	nint IWebGpuDeviceContext.Adapter => _device.Adapter;
 	nint IWebGpuDeviceContext.Device => _device.Dev;
 	nint IWebGpuDeviceContext.Queue => _device.Q;
+	uint IWebGpuDeviceContext.ColorFormat => (uint)_device.ColorFormat;
+	uint IWebGpuDeviceContext.SampleCount => _device.MsaaSamples;
 	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
+
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
 		width = Math.Max(1, width);
@@ -195,12 +199,12 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		}
 		_w = width;
 		_h = height;
-		_target?.Dispose();
 		if (_presentView != IntPtr.Zero) { wgpuTextureViewRelease(_presentView); _presentView = IntPtr.Zero; }
 		if (_presentTex != IntPtr.Zero) { wgpuTextureDestroy(_presentTex); _presentTex = IntPtr.Zero; }
 
-		// Offscreen single-sample resolve target: the scene's MSAA pass resolves into this, and it is sampled by the
-		// present blit. TextureBinding so the blit can sample it; CopySrc so ReadPixels/RenderTargetBitmap can read it.
+		// Offscreen single-sample resolve target: the scene's MSAA pass (owned by the render backend) resolves into
+		// this, and it is sampled by the present blit. TextureBinding so the blit can sample it; CopySrc so
+		// ReadPixels/RenderTargetBitmap can read it.
 		var td = new WGPUTextureDescriptor
 		{
 			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 },
@@ -212,11 +216,8 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		};
 		_presentTex = wgpuDeviceCreateTexture(_device.Dev, &td);
 		_presentView = wgpuTextureCreateView(_presentTex, null);
-		// External-colour surface: owns MSAA+depth; its resolve View is our offscreen _presentView.
-		_target = new WebGpuRenderSurface(_device, width, height, externalColor: true) { View = _presentView, Tex = _presentTex };
-		// 1x has no MSAA colour — the scene renders straight into _presentView (aliased; ctor left it unset as View
-		// wasn't assigned yet). At 2x/4x the ctor already created the multisampled colour that resolves into _presentView.
-		if (_device.MsaaSamples == 1) { _target.MsaaColorView = _presentView; }
+		_target = new WebGpuSwapchainTarget(_presentTex, _presentView, width, height,
+			_device.ColorFormat == WGPUTextureFormat.BGRA8Unorm ? GraphicsColorFormat.Bgra8888 : GraphicsColorFormat.Rgba8888);
 
 		WGPUSurfaceCapabilities caps = default;
 		wgpuSurfaceGetCapabilities(_surface, _device.Adapter, &caps);
@@ -224,14 +225,8 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		bool supported = false;
 		for (nuint i = 0; i < caps.FormatCount; i++) { if (caps.Formats[i] == _surfaceFormat) { supported = true; break; } }
 		if (!supported && caps.FormatCount > 0) { _surfaceFormat = caps.Formats[0]; }
-		// Keep the driver's preferred format (forcing a different one can make wgpuSurfaceConfigure panic on some
-		// Android drivers). If it's an *_Srgb format, the present blit compensates for the target's automatic
-		// linear->sRGB re-encode by decoding in-shader — see EnsureBlitPipeline / _surfaceIsSrgb.
 		var alphaMode = caps.AlphaModeCount > 0 ? caps.AlphaModes[0] : WGPUCompositeAlphaMode.Auto;
 
-		// Present mode: Fifo (vsync) by default. UNO_WEBGPU_PRESENT=mailbox|immediate|fiforelaxed opts into a
-		// non-blocking mode (validated against surface caps) — Fifo's SurfaceGetCurrentTexture blocks on vsync and
-		// spikes the per-frame acquire; a non-Fifo mode lets the frame run unthrottled (matches the reference host).
 		var presentMode = WGPUPresentMode.Fifo;
 		var envPm = System.Environment.GetEnvironmentVariable("UNO_WEBGPU_PRESENT");
 		if (!string.IsNullOrEmpty(envPm))
@@ -265,7 +260,6 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 
 	public void Dispose()
 	{
-		_target?.Dispose();
 		if (_presentView != IntPtr.Zero) { wgpuTextureViewRelease(_presentView); _presentView = IntPtr.Zero; }
 		if (_presentTex != IntPtr.Zero) { wgpuTextureDestroy(_presentTex); _presentTex = IntPtr.Zero; }
 		if (_surface != IntPtr.Zero) { wgpuSurfaceRelease(_surface); _surface = IntPtr.Zero; }
@@ -319,4 +313,26 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		var desc = new WGPUSurfaceDescriptor { NextInChain = (WGPUChainedStruct*)&metal };
 		return wgpuInstanceCreateSurface(instance, &desc);
 	}
+}
+
+/// <summary>The neutral WebGPU render target the host hands the backend: the single-sample resolve colour texture
+/// (host-owned; presented/read back). The backend allocates its own MSAA colour + depth to match and resolves into
+/// <see cref="ColorView"/>. Lifetime is the swapchain context's (recreated on resize).</summary>
+internal sealed class WebGpuSwapchainTarget : IWebGpuRenderTarget
+{
+	public WebGpuSwapchainTarget(nint colorTexture, nint colorView, int width, int height, GraphicsColorFormat colorFormat)
+	{
+		ColorTexture = colorTexture;
+		ColorView = colorView;
+		Width = width;
+		Height = height;
+		ColorFormat = colorFormat;
+	}
+
+	public nint ColorTexture { get; }
+	public nint ColorView { get; }
+	public int Width { get; }
+	public int Height { get; }
+	public GraphicsColorFormat ColorFormat { get; }
+	public void Dispose() { }   // the WebGpuSwapChainContext owns _presentTex/_presentView
 }

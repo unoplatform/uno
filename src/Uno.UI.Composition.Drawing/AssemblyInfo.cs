@@ -9,7 +9,6 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Uno.UI.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition.Skia")]
-[assembly: InternalsVisibleTo("Uno.UI.Composition.WebGpu")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition.WebGpu.Init")]
 
 // The graphics negotiator (GraphicsRegistry, GraphicsInitialization, the GraphicsContextFactory delegate) is
