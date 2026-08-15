@@ -4589,6 +4589,76 @@ public class Given_ElementTheme
 #endif
 
 	#endregion
+
+	#region Focused text input in dark theme (issue #24021)
+
+#if HAS_UNO
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24021")]
+	public async Task When_NumberBox_Focused_In_Dark_Theme_Text_Is_Light()
+	{
+		// The NumberBox template's Focused state sets ContentElement.RequestedTheme = Light
+		// (as WinUI does). The theme boundary must not override the explicitly set focused
+		// Foreground that the text display block inherits.
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+		var numberBox = new NumberBox { Width = 150, Value = 888 };
+		WindowHelper.WindowContent = numberBox;
+		await WindowHelper.WaitForLoaded(numberBox);
+		await WindowHelper.WaitForIdle();
+
+		var inputBox = numberBox.FindFirstDescendant<TextBox>("InputBox");
+		Assert.IsNotNull(inputBox, "InputBox should exist in the NumberBox template");
+
+		inputBox.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		var displayBlock = inputBox.FindFirstDescendant<TextBlock>(tb => tb.Text == "888");
+		Assert.IsNotNull(displayBlock, "The text display block should exist in the TextBox visual tree");
+
+		var foreground = displayBlock.Foreground as SolidColorBrush;
+		Assert.IsNotNull(foreground, "The display block Foreground should be a SolidColorBrush");
+		Assert.IsTrue((foreground.Color.R + foreground.Color.G + foreground.Color.B) / 3 > 200,
+			$"Focused NumberBox text should be light in dark theme, but was {foreground.Color}");
+	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24021")]
+	public async Task When_Editable_ComboBox_Focused_In_Dark_Theme_Text_Is_Light()
+	{
+		// Same as the NumberBox scenario: the editable ComboBox's TextBox style sets
+		// ContentElement.RequestedTheme = Light in its Focused state.
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+		var comboBox = new ComboBox { Width = 150, IsEditable = true };
+		WindowHelper.WindowContent = comboBox;
+		await WindowHelper.WaitForLoaded(comboBox);
+		await WindowHelper.WaitForIdle();
+
+		var editableText = comboBox.FindFirstDescendant<TextBox>("EditableText");
+		Assert.IsNotNull(editableText, "EditableText should exist in the ComboBox template");
+
+		editableText.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		editableText.Text = "888";
+		await WindowHelper.WaitForIdle();
+
+		var displayBlock = editableText.FindFirstDescendant<TextBlock>(tb => tb.Text == "888");
+		Assert.IsNotNull(displayBlock, "The text display block should exist in the TextBox visual tree");
+
+		var foreground = displayBlock.Foreground as SolidColorBrush;
+		Assert.IsNotNull(foreground, "The display block Foreground should be a SolidColorBrush");
+		Assert.IsTrue((foreground.Color.R + foreground.Color.G + foreground.Color.B) / 3 > 200,
+			$"Focused editable ComboBox text should be light in dark theme, but was {foreground.Color}");
+	}
+#endif
+
+	#endregion
 }
 
 public partial class Issue475ThemedDO : DependencyObject
