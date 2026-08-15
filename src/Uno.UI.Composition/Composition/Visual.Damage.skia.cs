@@ -57,6 +57,9 @@ public partial class Visual
 		// only ever a rect. Computing exact geometry for the new one therefore buys nothing while costing
 		// the most expensive part of this method (a stroke-to-fill outset plus two path booleans, per
 		// visual per frame). Scrolling makes this the common case for the whole subtree, so take bounds.
+		// shadowSilhouetteChanged is deliberately not excluded: it implies ShadowState is not null, and the
+		// exact-path branch preferBounds steers away from is itself gated on ShadowState being null, so the
+		// flag is inert for every visual that can set it.
 		var preferBounds = moved && !contentChanged;
 
 		if (TryGetPaintDamageRegion(clip, preferBounds, out var bounds, out var regionPath))
