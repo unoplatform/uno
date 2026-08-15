@@ -34,7 +34,7 @@ Here's a usage example:
   return WeakEventHelper.RegisterEvent(
    _sizeChangedHandlers ??= new(),
    handler,
-   (h, s, e) => (h as TypedEventHandler<object, WindowSizeChangedEventArgs>)?.Invoke(s, (WindowSizeChangedEventArgs)e)
+   (h, s, e) => (h as TypedEventHandler<object, WindowSizeChangedEventArgs>)?.Invoke(s, (WindowSizeChangedEventArgs)e!)
   );
  }
 
