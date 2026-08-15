@@ -18,8 +18,9 @@ Establishing that needs three inputs, not one:
    HAS_COMPOSITION_API HAS_INPUT_INJECTOR HAS_RENDER_TARGET_BITMAP SUPPORTS_RTL UNO_HAS_BORDER_VISUAL
    UNO_HAS_ENHANCED_LIFECYCLE UNO_HAS_MANAGED_POINTERS UNO_HAS_MANAGED_SCROLL_PRESENTER UNO_MIXIN_GENERATION
    UNO_SUPPORTS_NATIVEHOST ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT`
-2. **Which files are compiled into more than one project.** Roughly 15 files under `src/Uno.UI` are
-   `Compile Include`d by `Uno.UI.Composition`, `Uno.UI.SourceGenerators` and the SamplesApp heads. Their
+2. **Which files are compiled into more than one project.** 41 files under `src/Uno.UI` are
+   `Compile Include`d by `Uno.UI.Composition`, `Uno.UI.SourceGenerators`, `Uno.UI.Toolkit.Windows`,
+   the Skia runtimes, and the SamplesApp heads. Their
    conditionals are *not* dead and must be excluded from any sweep.
 3. **Configuration-dependent symbols must not be folded.** `DEBUG`, `TRACE`, `IS_CI`, `IS_CI_OR_DEBUG`,
    `RUNTIME_CORECLR` and `RUNTIME_NATIVE_AOT` vary by configuration or publish mode; treating a Debug dump as
