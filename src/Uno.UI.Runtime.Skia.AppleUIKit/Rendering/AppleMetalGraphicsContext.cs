@@ -36,8 +36,6 @@ internal sealed class AppleMetalGraphicsContext : ISwapChain, IAppleNativeTextur
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Metal;
 
-	public bool IsLost => false;
-
 	public nint Device => _device;
 	public nint Queue => _queue;
 

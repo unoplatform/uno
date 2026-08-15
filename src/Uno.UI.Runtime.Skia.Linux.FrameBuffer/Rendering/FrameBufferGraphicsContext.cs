@@ -21,8 +21,6 @@ internal sealed class FrameBufferGraphicsContext : ISwapChain, IGLDeviceContext
 
 	public GraphicsContextKind Kind { get; }
 
-	public bool IsLost => false;
-
 	// GL device face (used only when Kind == OpenGLES — the DRM/GBM GLES path). The framebuffer surface itself is
 	// handed over by FrameBufferRenderer's own target; this supplies the loader the neutral present builds from.
 	public GLFlavor Flavor => GLFlavor.OpenGLES;

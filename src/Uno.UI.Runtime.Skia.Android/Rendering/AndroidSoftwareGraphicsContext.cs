@@ -56,8 +56,6 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Software;
 
-	public bool IsLost => false;
-
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
 		width = Math.Max(1, width);

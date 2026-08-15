@@ -40,8 +40,6 @@ internal sealed class AndroidVulkanGraphicsContext : ISwapChain, IVulkanDeviceCo
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Vulkan;
 
-	public bool IsLost => false;
-
 	// Neutral device face — the GRVkBackendContext inputs the Skia backend reads to build its GRContext-Vulkan.
 	public nint Instance => _vk.InstancePtr;
 	public nint PhysicalDevice => _vk.PhysicalDevicePtr;

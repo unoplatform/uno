@@ -17,8 +17,6 @@ internal sealed class AndroidGLGraphicsContext : ISwapChain, IGLDeviceContext
 {
 	public GraphicsContextKind Kind => GraphicsContextKind.OpenGLES;
 
-	public bool IsLost => false;
-
 	public GLFlavor Flavor => GLFlavor.OpenGLES;
 	public Func<string, nint> GetProcAddress => AndroidNativeOpenGLWrapper.GetProcAddressStatic;
 
