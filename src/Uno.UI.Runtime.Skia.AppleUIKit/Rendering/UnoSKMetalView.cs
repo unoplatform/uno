@@ -152,11 +152,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 			_link.Paused = true;
 
-			var size = DrawableSize;
-
-			var width = (int)size.Width;
-			var height = (int)size.Height;
-
 			SKSurface? surface = null;
 			SKCanvas? canvas = null;
 			ICAMetalDrawable? drawable = null;
