@@ -3,8 +3,8 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || __WASM__ || false || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__WASM__", "__NETSTD_REFERENCE__")]
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 #endif
 	public partial class ItemsWrapGrid : global::Microsoft.UI.Xaml.Controls.Panel
 	{
