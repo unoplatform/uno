@@ -58,7 +58,7 @@ internal class AnimationFunctionCallSyntax : AnimationExpressionSyntax
 
 		// Quaternion factories
 		QuaternionCreateFromAxisAngleVector3FloatFunctionSpecification.Instance
-		);
+	);
 
 	public AnimationFunctionCallSyntax(AnimationExpressionSyntax identifierOrMemberAccess, ImmutableArray<AnimationExpressionSyntax> arguments)
 	{
