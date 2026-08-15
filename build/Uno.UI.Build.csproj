@@ -208,9 +208,12 @@
 	<!-- 7.0 is Skia-only: fail the pack if a native UI rendering head package is produced. -->
 	<Target Name="ValidateNoNativeUIHeadPackages" AfterTargets="BuildNuGetPackage" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(Configuration)'=='Release'">
 		<ItemGroup>
-			<!-- nuspec-produced packages land next to this project; csproj-produced ones in the staging directory. -->
-			<_ProducedPackage Include="$(MSBuildThisFileDirectory)*.nupkg" />
-			<_ProducedPackage Include="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\*.nupkg" Condition="'$(BUILD_ARTIFACTSTAGINGDIRECTORY)'!=''" />
+			<!--
+				nuspec-produced packages land next to this project; csproj-produced ones in the staging directory.
+				Scoped to the version being built so stale packages left on a self-hosted agent cannot trip the guard.
+			-->
+			<_ProducedPackage Include="$(MSBuildThisFileDirectory)*$(NBGV_SemVer2).nupkg" />
+			<_ProducedPackage Include="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\*$(NBGV_SemVer2).nupkg" Condition="'$(BUILD_ARTIFACTSTAGINGDIRECTORY)'!=''" />
 
 			<!-- Anchored so Uno.WinUI.Runtime.Skia.WebAssembly.Browser and Uno.Foundation.Runtime.WebAssembly do not match. -->
 			<_ForbiddenNativeHeadPackage Include="@(_ProducedPackage)"
