@@ -36,10 +36,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <summary>Test seam: forces the command-list retained fallback even when the backend has native retention.</summary>
 	internal static bool ForceFallbackRetainedRendering { get; set; }
 
-	// Retention is always available: the backend's native IRetainedRenderingSession when it advertises one,
-	// otherwise a command-list fallback that records and replays the neutral verbs on any session.
-	private static IRetainedRenderingSession Retained(IDrawingSession session)
-		=> RetainedRenderingSession.For(session, ForceFallbackRetainedRendering);
+	// Retention is always available: the registered backend's native recorder, or the neutral command-list
+	// fallback (also forced by the ForceFallbackRetainedRendering test seam). Replay is on the IRenderData
+	// (data.Replay(session)); a native recording only replays into its own backend's session, the command-list
+	// fallback into any.
+	private static ICommandRecorder CreateRecording()
+		=> ForceFallbackRetainedRendering ? new CommandListRecorder() : DrawingFactory.Current.CreateRecording();
 
 	private bool _enablePictureCollapsingOptimization;
 	private int _pictureCollapsingOptimizationFrameThreshold;
@@ -403,8 +405,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				// Non-analytic fallback: record the subtree once, then replay it twice — first through a
 				// drop-shadow-filtered layer (which composites the shadow), then directly (the content on top).
-				var retained = Retained(session.Session);
-				var recording = retained.CreateRecording();
+				var recording = CreateRecording();
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
 				_factory.CreateInstance(this, recording, ref rootTransform, session.Opacity, out var childSession);
@@ -418,10 +419,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				}
 
 				session.Session.SaveLayer(ShadowState.ShadowFilter);
-				retained.Replay(renderData);
+				renderData.Replay(session.Session);
 				session.Session.Restore();
 
-				retained.Replay(renderData);
+				renderData.Replay(session.Session);
 				renderData.Dispose();
 			}
 		}
@@ -440,12 +441,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			else
 			{
-				var retained = Retained(session.Session);
 				if ((visual._flags & VisualFlags.PaintDirty) != 0)
 				{
 					visual._flags &= ~VisualFlags.PaintDirty;
 
-					var recording = retained.CreateRecording();
+					var recording = CreateRecording();
 					_factory.CreateInstance(visual, recording, ref session.RootTransform, session.Opacity, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
 					visual.Paint(in recorderSession);
@@ -456,7 +456,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 				if (visual._content is { } content)
 				{
-					retained.Replay(content);
+					content.Replay(session.Session);
 				}
 			}
 #if DEBUG
@@ -469,10 +469,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization)
 		{
-			var retained = Retained(session.Session);
 			if (visual._childrenContent is { } childrenContent)
 			{
-				retained.Replay(childrenContent);
+				childrenContent.Replay(session.Session);
 			}
 			else if (!visual._enablePictureCollapsingOptimization
 					 || visual._framesSinceSubtreeNotChanged < visual._pictureCollapsingOptimizationFrameThreshold
@@ -486,7 +485,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			else
 			{
-				var recording = retained.CreateRecording();
+				var recording = CreateRecording();
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(visual.TotalMatrix, out var rootTransform);
 				_factory.CreateInstance(visual, recording, ref rootTransform, session.Opacity, out var childSession);
@@ -499,7 +498,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				}
 
 				var content = recording.Finish();
-				retained.Replay(content);
+				content.Replay(session.Session);
 
 				// The visual can be set on a ChildrenSKPictureInvalid path after the render has started.
 				// In such case, we should not cache this content. Not only it is outdated, it will also lead to a corrupted state,

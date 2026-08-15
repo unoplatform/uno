@@ -291,6 +291,22 @@ public sealed class WebGpuRenderData : IRenderData
 	// their GPU resources here at Dispose — resident textures (surface-owned) are left untouched (DisposeRequested=false).
 	internal List<WebGpuImageTexture> Textures;
 
+	// Backend-bound: dispatches to the WebGpu session that must consume it (guaranteed same-backend by the single
+	// registered backend). A recorder nests it (deferred ReplayRef / inline transform); a present session encodes
+	// and submits it as the frame.
+	public void Replay(IDrawingSession into)
+	{
+		switch (into)
+		{
+			case WebGpuCommandRecorder recorder:
+				recorder.Replay(this);
+				break;
+			case WebGpuPresentSession present:
+				present.Replay(this);
+				break;
+		}
+	}
+
 	// Dispose only nulls the field; the command LIST object stays alive while any in-flight frame's ReplayRef
 	// still references it (captured by reference), and the device's geometry cache is keyed on that list.
 	public void Dispose()
@@ -304,7 +320,7 @@ public sealed class WebGpuRenderData : IRenderData
 	}
 }
 
-public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IRetainedRenderingSession, IFlattenedPathSink
+public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
 {
 	// A save frame carries the matrix/clip to restore. Layer frames additionally redirect emitted commands into
 	// a sub-list until Restore, which composites that sub-list (as a LayerCmd) back onto the parent.
@@ -699,7 +715,6 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IRetainedRe
 	}
 
 	public IRenderData Finish() => _data;
-	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
 
 	// Whether a recording can be GPU-geometry-cached: only simple primitives (rect/rrect/path/image/gradient). PATH
 	// (PathFan) clips ARE cacheable — their fan is residentized (ResidentizeFan) so it isn't re-tessellated per frame,
@@ -875,7 +890,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IRetainedRe
 	}
 }
 
-public sealed unsafe class WebGpuPresentSession : IPresentSession, IRetainedRenderingSession
+public sealed unsafe class WebGpuPresentSession : IPresentSession
 {
 	private readonly WebGpuDevice _d;
 	private readonly WebGpuRenderSurface _s;
@@ -2308,7 +2323,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession, IRetainedRend
 	public void DrawImage(IImageTexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false) => _overlay.DrawImage(texture, x, y, sampling, colorFilter, antialias);
 	public void DrawImageNineSlice(IImageTexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false) => _overlay.DrawImageNineSlice(texture, centerSlice, destination, centerHollow, antialias);
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity) => _overlay.DrawEffectBackdrop(filter, opacity);
-	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
 
 	// Renders the deferred frame with the immediate-mode overlay (e.g. the diagnostics FPS counter drawn after Replay)
 	// appended as final, top-most commands. Doing it in ONE pass — rather than a follow-up LoadOp.Load overlay pass —
@@ -2345,14 +2359,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession, IRetainedRend
 	}
 }
 
-public sealed class WebGpuRenderer : IRenderer
-{
-	public readonly WebGpuDevice Device;
-	public WebGpuRenderer(WebGpuDevice device) => Device = device;
-	public ICommandRecorder BeginFrame() => new WebGpuCommandRecorder();
-	public IPresentSession BeginPresent(IRenderTarget target) => new WebGpuPresentSession(Device, (WebGpuRenderSurface)target);
-}
-
 // --- New-SPI pluggable-backend surface (see doc/uno-drawing-backend-abstraction.md) ---
 
 // NOTE: presentation belongs on the HOST graphics context that owns the window swapchain (it implements
@@ -2371,10 +2377,10 @@ public sealed class WebGpuGraphicsProvider : IGraphicsProvider
 	// factory manufactures GPU-resident images/shaders, and the WebGpu renderer draws. Geometry is a separate seam
 	// (GeometryFactory): WebGPU consumes whatever neutral IGeometry it's registered — it flattens everything — so a
 	// SkiaSharp-free app registers a ManagedGeometryFactory there rather than injecting it here.
-	public Uno.UI.Composition.Drawing.Graphics CreateGraphics(IGraphicsContext context)
+	public IDrawingFactory CreateGraphics(IGraphicsContext context)
 	{
 		var device = ((IWebGpuDeviceContext)context).Device;
-		return new(new WebGpuDrawingFactory(device), new WebGpuRenderer(device));
+		return new WebGpuDrawingFactory(device);
 	}
 }
 
@@ -2509,6 +2515,10 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory
 	private readonly WebGpuDevice _device;
 
 	public WebGpuDrawingFactory(WebGpuDevice device) { _device = device; }
+
+	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
+
+	public IPresentSession BeginPresent(IRenderTarget target) => new WebGpuPresentSession(_device, (WebGpuRenderSurface)target);
 
 	public IImageTexture CreateImageTexture(IImage image) => new WebGpuImageTexture(_device, image);
 

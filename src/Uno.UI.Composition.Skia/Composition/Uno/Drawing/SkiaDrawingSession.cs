@@ -10,9 +10,10 @@ using Windows.UI;
 
 namespace Uno.UI.Composition.Drawing;
 
-/// <summary>SkiaSharp-backed <see cref="IDrawingSession"/> wrapping an <see cref="SKCanvas"/>. The Skia
-/// backend also advertises the optional <see cref="IRetainedRenderingSession"/> capability (SKPicture).</summary>
-internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
+/// <summary>SkiaSharp-backed <see cref="IDrawingSession"/> wrapping an <see cref="SKCanvas"/>. Recordings
+/// (<see cref="SkiaCommandRecorder"/>) produce an SKPicture <see cref="SkiaRenderData"/> that replays back into
+/// one of these sessions via <see cref="SkiaRenderData.Replay"/>.</summary>
+internal class SkiaDrawingSession : IDrawingSession
 {
 	// Reused per drawing thread to avoid allocating a native SKPaint per draw. Each Build*Paint resets and
 	// fully reconfigures it from the verb's arguments, so no state leaks between draws.
@@ -40,25 +41,12 @@ internal class SkiaDrawingSession : IDrawingSession, IRetainedRenderingSession
 	private protected static void ReturnRecorder(SKPictureRecorder recorder)
 		=> (_recorderPool ??= new()).Push(recorder);
 
-	public ICommandRecorder CreateRecording() => StartRecording();
-
-	/// <summary>Creates a root recording session (no pre-existing session), used to record a whole frame.</summary>
+	/// <summary>Creates a recording session (no pre-existing session); records a whole frame or a nested subtree.</summary>
 	internal static SkiaCommandRecorder StartRecording()
 	{
 		var recorder = RentRecorder();
 		var recordingCanvas = recorder.BeginRecording(Visual.InfiniteClipRect.ToSKRect());
 		return new SkiaCommandRecorder(recorder, recordingCanvas);
-	}
-
-	public void Replay(IRenderData data)
-	{
-		if (data is SkiaRenderData { Picture: var picture } && picture != IntPtr.Zero)
-		{
-			unsafe
-			{
-				UnoSkiaApi.sk_canvas_draw_picture(_canvas.Handle, picture, null, IntPtr.Zero);
-			}
-		}
 	}
 
 	public void SaveLayer(IEffectFilter filter)

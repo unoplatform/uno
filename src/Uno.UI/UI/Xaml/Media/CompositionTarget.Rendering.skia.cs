@@ -29,13 +29,13 @@ public partial class CompositionTarget
 	// Backend-agnostic: the framework doesn't reference a concrete renderer. A head that installs its own renderer
 	// (e.g. WebGPU) sets this; otherwise it falls back to the registered backend's default (DrawingRegistration set
 	// by SkiaBackend.Register). Accessing it before any backend is registered throws a diagnosable error.
-	private static IRenderer? _renderer;
-	internal static IRenderer Renderer
+	private static IDrawingFactory? _renderer;
+	internal static IDrawingFactory Renderer
 	{
 		get => _renderer
 			?? DrawingRegistration.DefaultRenderer
 			?? throw new global::System.InvalidOperationException(
-				"No IRenderer registered. Register a graphics backend through the host builder (.GraphicsBackend) and/or the head must set CompositionTarget.Renderer before the first frame.");
+				"No graphics backend registered. Register one through the host builder (.GraphicsBackend) and/or the head must set CompositionTarget.Renderer before the first frame.");
 		set
 		{
 			// Invalidate on ANY change of the effective renderer, including the first assignment from the null
@@ -168,7 +168,7 @@ public partial class CompositionTarget
 
 		// Phase 1 (UI thread): the backend hands us a recording session, the agnostic cycle walks the
 		// visual tree into it, then we finish recording to get the opaque frame.
-		var recording = Renderer.BeginFrame();
+		var recording = Renderer.CreateRecording();
 		var (path, nativeVisualsInZOrder) = SkiaRenderHelper.RecordFrame(
 			recording,
 			(float)bounds.Width,
@@ -283,7 +283,7 @@ public partial class CompositionTarget
 					present.Scale(rasterizationScale, rasterizationScale);
 				}
 				present.Clear(global::Windows.UI.Colors.Transparent);
-				RetainedRenderingSession.For(present).Replay(lastRenderedFrame.frame);
+				lastRenderedFrame.frame.Replay(present);
 				_fpsHelper.DrawFps(present);
 				// A host overlay (e.g. the framebuffer software cursor) draws on top of the frame, under the same
 				// orientation + DPI transform as the content.

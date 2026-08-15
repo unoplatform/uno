@@ -9,49 +9,6 @@ using Windows.UI;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// Makes retained recording a capability the framework <em>always</em> has, regardless of the backend:
-/// <see cref="For"/> returns the backend's own <see cref="IRetainedRenderingSession"/> when it advertises one
-/// (the efficient native path — SkiaSharp's SKPicture, a WebGPU command buffer), and otherwise wraps the
-/// session in a <see cref="CommandListRetainedSession"/> that records the neutral <see cref="IDrawingSession"/>
-/// verbs into a list and replays them. Composition logic can therefore assume it can always retain, with no
-/// "backend without recording" branch.
-/// </summary>
-internal static class RetainedRenderingSession
-{
-	/// <summary>
-	/// The retained-rendering capability for <paramref name="session"/>: the backend's native one if present,
-	/// otherwise the command-list fallback. Pass <paramref name="forceFallback"/> to use the fallback even when
-	/// the backend has a native path (a test seam that exercises the fallback on a natively-capable backend).
-	/// </summary>
-	public static IRetainedRenderingSession For(IDrawingSession session, bool forceFallback = false)
-		=> (!forceFallback && session is IRetainedRenderingSession native)
-			? native
-			: new CommandListRetainedSession(session);
-}
-
-/// <summary>
-/// Backend-agnostic <see cref="IRetainedRenderingSession"/> layered over a plain <see cref="IDrawingSession"/>.
-/// Recordings are captured as a <see cref="CommandList"/> and replayed by re-issuing the recorded verbs against
-/// the wrapped session.
-/// </summary>
-internal sealed class CommandListRetainedSession : IRetainedRenderingSession
-{
-	private readonly IDrawingSession _target;
-
-	public CommandListRetainedSession(IDrawingSession target) => _target = target;
-
-	public ICommandRecorder CreateRecording() => new CommandListRecorder();
-
-	public void Replay(IRenderData data)
-	{
-		if (data is CommandList list)
-		{
-			list.Replay(_target);
-		}
-	}
-}
-
-/// <summary>
 /// The context threaded through every command on replay: the destination session, the destination's transform
 /// at the moment replay began (folded into recorded absolute <see cref="IDrawingSession.SetMatrix"/> calls so a
 /// recording made in one coordinate space composes into another — matching SkiaSharp's picture playback), and
@@ -114,10 +71,12 @@ internal sealed class CommandList : IRenderData
 
 /// <summary>
 /// Records the neutral drawing verbs into a replayable <see cref="CommandList"/>. Save-count and current
-/// transform are tracked so the getters behave like a real session, and recordings nest (a recorded verb may
-/// itself replay a sub-recording).
+/// transform are tracked so the getters behave like a real session, and recordings nest (a sub-recording's
+/// <see cref="CommandList.Replay"/> re-issues its verbs into this recorder). This is the backend-agnostic
+/// retained fallback the framework uses when a backend has no native retention (and the test seam
+/// <c>Visual.ForceFallbackRetainedRendering</c> forces even on a native backend).
 /// </summary>
-internal sealed class CommandListRecorder : ICommandRecorder, IRetainedRenderingSession
+internal sealed class CommandListRecorder : ICommandRecorder
 {
 	private readonly List<Action<ReplayContext>> _commands = new();
 	private readonly Stack<Matrix4x4> _stack = new();
@@ -146,16 +105,6 @@ internal sealed class CommandListRecorder : ICommandRecorder, IRetainedRendering
 	}
 
 	public IRenderData Finish() => new CommandList(_commands, _ownedGeometries);
-
-	public ICommandRecorder CreateRecording() => new CommandListRecorder();
-
-	public void Replay(IRenderData data)
-	{
-		if (data is CommandList list)
-		{
-			_commands.Add(ctx => list.Replay(ctx.Target));
-		}
-	}
 
 	public Matrix4x4 TotalMatrix => _matrix;
 
