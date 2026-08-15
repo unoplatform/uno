@@ -472,7 +472,8 @@ Update your code only if native/interop code reads these values directly from th
 defaults:
 
 ```csharp
-// Before 7.0 the values were in NSUserDefaults.StandardUserDefaults
+// In 7.0 and later, read the values from the dedicated UnoApplicationData suite
+// (before 7.0 they were in NSUserDefaults.StandardUserDefaults)
 var unoDefaults = new NSUserDefaults("UnoApplicationData", NSUserDefaultsType.SuiteName);
 ```
 
