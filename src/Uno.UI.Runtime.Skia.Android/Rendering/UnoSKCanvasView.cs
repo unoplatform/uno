@@ -169,8 +169,13 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 			// GLSurfaceView has just created + made-current the EGL context on this (its own) render thread. Negotiate
 			// here so the backend's GRContext-GLES is built on the GL thread against the current context. The host
 			// names no backend; it only serves the GLES kind by wrapping the ambient context.
+			// UseOpenGLOnSkiaAndroid picks how this GLSurfaceView renders: GLES (ambient EGL context, wrapped by
+			// AndroidGLGraphicsContext) or CPU raster uploaded+blitted to the GL framebuffer (AndroidSoftwareGraphicsContext).
+			var useGL = FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid;
 			GraphicsRegistry.ContextFactory = kind => System.Threading.Tasks.Task.FromResult<ISwapChain?>(
-				kind == GraphicsContextKind.OpenGLES ? new AndroidGLGraphicsContext() : null);
+				useGL
+					? (kind == GraphicsContextKind.OpenGLES ? new AndroidGLGraphicsContext() : null)
+					: (kind == GraphicsContextKind.Software ? new AndroidSoftwareGraphicsContext() : null));
 			var init = GraphicsRegistry.Initialize();
 			// OnSurfaceCreated fires again after a genuine EGL context loss (despite PreserveEGLContextOnPause);
 			// dispose the previous context before rebinding so re-negotiation doesn't leak it.
