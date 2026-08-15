@@ -483,9 +483,10 @@ internal sealed partial class WindowChrome : ContentControl
 
 		if (_window.AppWindow.NativeAppWindow is null)
 		{
-			// NativeAppWindow is not yet available (e.g., iOS scene delegate multi-window
-			// where the native window wrapper is deferred). ConfigureWindowChrome will be
-			// called again when NativeAppWindow is set via the AppWindow.Changed event.
+			// Defensive only: the native window can still be pending when the window is created
+			// ahead of its backing surface (e.g. an iOS scene that has not connected yet). There is
+			// no retry hook for this transition, but every platform that reports customization as
+			// supported already has its native window by the time chrome is configured.
 			return;
 		}
 
