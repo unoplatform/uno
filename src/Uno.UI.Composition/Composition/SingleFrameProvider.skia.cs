@@ -7,12 +7,12 @@ namespace Microsoft.UI.Composition;
 
 internal sealed class SingleFrameProvider : IFrameProvider
 {
-	private readonly IImageFrames _frames;
+	private readonly ImageFrames _frames;
 	private readonly long _bytes;
 	private bool _disposed;
 	private readonly object _lock = new();
 
-	public SingleFrameProvider(IImageFrames frames)
+	public SingleFrameProvider(ImageFrames frames)
 	{
 		_frames = frames;
 		var image = frames.Frames[0];

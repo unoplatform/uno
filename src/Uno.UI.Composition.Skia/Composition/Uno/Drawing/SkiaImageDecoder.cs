@@ -10,11 +10,11 @@ namespace Uno.UI.Composition.Drawing;
 /// <summary>
 /// SkiaSharp image decode used by <see cref="SkiaDrawingFactory"/>: turns encoded bytes into one or more BGRA frames,
 /// applying EXIF orientation, codec-native downscaling, animated-frame composition, and exact scaling to a target size.
-/// This is the backend-internal "technique"; callers see only the neutral <see cref="IImageFrames"/>.
+/// This is the backend-internal "technique"; callers see only the neutral <see cref="ImageFrames"/>.
 /// </summary>
 internal static class SkiaImageDecoder
 {
-	public static bool TryDecode(Stream stream, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out SkiaImageFrames? frames)
+	public static bool TryDecode(Stream stream, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out ImageFrames? frames)
 	{
 		using var managedStream = new SKManagedStream(stream);
 		using var codec = SKCodec.Create(managedStream);
@@ -52,7 +52,7 @@ internal static class SkiaImageDecoder
 				image.Dispose();
 			}
 
-			frames = new SkiaImageFrames(new[] { scaled }, new[] { 0 });
+			frames = new ImageFrames(new IImage[] { new SkiaImage(scaled) }, new[] { 0 });
 			return true;
 		}
 
@@ -109,7 +109,13 @@ internal static class SkiaImageDecoder
 			}
 		}
 
-		frames = new SkiaImageFrames(images, durations);
+		var skiaImages = new IImage[images.Length];
+		for (var i = 0; i < images.Length; i++)
+		{
+			skiaImages[i] = new SkiaImage(images[i]);
+		}
+
+		frames = new ImageFrames(skiaImages, durations);
 		return true;
 	}
 
