@@ -226,7 +226,10 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 			compositionTarget.Renderer = _renderer!;
 			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
 
-			_activity.NativeLayerHost!.Path = nativeClipPath;
+			if (_activity.NativeLayerHost is { } nativeLayerHost)
+			{
+				nativeLayerHost.Path = nativeClipPath;
+			}
 
 			if (_activity.Wrapper.TryReleaseFirstFrameGate())
 			{
