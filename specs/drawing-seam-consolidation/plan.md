@@ -214,14 +214,15 @@ crash). E6 (Win32/Android Vulkan contexts) remains — mechanical mirrors of E5.
 ## Step F — audit follow-ups (non-Vulkan)
 
 - `UseOpenGLOnSkiaAndroid` set-but-never-read: Android `ApplicationActivity.CreateRenderView` only branched
-  WebGpu-vs-GLES; setting it false was silently ignored. **PARTIAL:** the flag is now **non-silent** — when false,
-  `CreateRenderView` logs a clear warning and uses the GLES canvas view. **REMAINING:** actually forcing software
-  needs an Android software swapchain — a `SurfaceView` + `SurfaceHolder.LockCanvas` path handing an
-  `ISoftwareRenderTarget`. There is **no channel-order blocker**: `ISoftwareRenderTarget` already carries
-  `ColorFormat`, and the Skia backend honors it (`SkiaPresentSession.ForSoftware` wraps the buffer as RGBA or BGRA
-  per that field), so the Android context can hand an **RGBA8888** target (Android `Bitmap`'s native order) with no
-  swizzle. (feature/breakingchanges did the equivalent inside the GLSurfaceView: render a CPU `SKSurface`, blit onto
-  the GL surface.) Compile-only until run on an Android device.
+  WebGpu-vs-GLES; setting it false was silently ignored. **DONE (compile-only):** `UnoSKCanvasView`'s
+  `OnSurfaceCreated` now serves either GLES (`AndroidGLGraphicsContext`) or, when the flag is false, software
+  (`AndroidSoftwareGraphicsContext`) — matching feature/breakingchanges' render-CPU-present-via-GL inside the same
+  GLSurfaceView. The Skia backend rasterizes into a neutral **RGBA8888** `ISoftwareRenderTarget` (no channel-order
+  blocker: `ISoftwareRenderTarget` carries `ColorFormat` and `SkiaPresentSession.ForSoftware` wraps RGBA or BGRA per
+  that field), and `Present` uploads it via `glTexImage2D` + a trivial GLES2 fullscreen-quad shader onto the default
+  framebuffer (GL context current on the GLSurfaceView render thread; GLSurfaceView swaps implicitly). The stale
+  no-software warning in `CreateRenderView` is removed. Runtime validation on an Android device is still outstanding
+  (the GLES blit is Android-only).
 
 ## Validation
 
