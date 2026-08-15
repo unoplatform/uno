@@ -1,6 +1,6 @@
 <Project>
 
-	<Import Project="..\Directory.Build.targets" />
+	<Import Project="..\..\Directory.Build.targets" />
 
 	<!--
 	The repository excludes the MSBuild runtime assets everywhere, which is correct for task assemblies but

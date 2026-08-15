@@ -17,7 +17,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj" />
+		<ProjectReference Include="..\Uno.UI.Tasks\Uno.UI.Tasks.csproj" />
 	</ItemGroup>
 
 </Project>
