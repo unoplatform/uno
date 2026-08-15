@@ -38,7 +38,7 @@ public partial class PathKeyFrameAnimation : KeyFrameAnimation
 			startValue = _keyFrames.Values.FirstOrDefault();
 		}
 
-		if (!_keyFrames.TryGetValue(1.0f, out var finalValue))
+		if (!_keyFrames.TryGetValue(1, out var finalValue))
 		{
 			finalValue = _keyFrames.Values.LastOrDefault(startValue);
 		}
@@ -135,6 +135,14 @@ public partial class PathKeyFrameAnimation : KeyFrameAnimation
 		geometry.Path = path;
 		var built = geometry.GetSKPath();
 		var copy = built is null ? null : new SKPath(built);
+
+		// Only dispose the geometry when it built its own source. A SkiaGeometrySource2D-backed
+		// CompositionPath is adopted by reference, so disposing would free the caller's SKPath.
+		if (path.GeometrySource is not SkiaGeometrySource2D)
+		{
+			geometry.Dispose();
+		}
+
 		_skPathCache[path] = copy;
 		return copy;
 	}
