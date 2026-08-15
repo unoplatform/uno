@@ -27,7 +27,6 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker
 			}
 
 			root.Children.Remove(TestDatePickerFlyoutButton);
-			root.Children.Remove(TestNativeDatePickerFlyoutButton);
 			root.Children.Remove(theDatePicker);
 
 			unloadBtn.Content = "unloaded!";

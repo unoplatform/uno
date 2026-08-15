@@ -169,13 +169,9 @@
                 DatePickerFlyout.Date:<Run Text="{x:Bind DtString(btnFlyout2.Date), Mode=OneWay}" />
             </TextBlock>
         </StackPanel>
-        <TextBlock FontSize="16">NativeDatePickerFlyout &amp; (iOS &amp; Android only)</TextBlock>
+        <TextBlock FontSize="16">DatePicker with UseNativeStyle (Android only)</TextBlock>
         <StackPanel Orientation="Horizontal" Spacing="7">
             <ToggleButton x:Name="useNativeMinMaxDates">UseNativeMinMaxDates</ToggleButton>
-            <Button x:Name="btnWithNativeFlyout">
-                <Button.Flyout />
-                PICK DATE (Flyout)
-            </Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="7">
             <DatePicker
