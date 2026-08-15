@@ -31,12 +31,6 @@
             </Button>
             <TextBlock Text="{Binding Date, ElementName=TestDatePickerFlyout}" />
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Spacing="5">
-            <Button x:Name="TestNativeDatePickerFlyoutButton" Content="Open NativeDatePickerFlyout (if available)">
-                <Button.Flyout />
-            </Button>
-            <TextBlock Text="{Binding Date, ElementName=TestNativeDatePickerFlyout}" />
-        </StackPanel>
 
         <TextBlock FontSize="16">
             &lt;DatePicker&gt;:

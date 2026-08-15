@@ -11,8 +11,6 @@
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     mc:Ignorable="d not_win">
 
-    <UserControl.Resources />
-
     <StackPanel>
         <ComboBox
             x:Name="Values2"
