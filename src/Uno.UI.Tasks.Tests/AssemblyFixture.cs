@@ -80,6 +80,46 @@ internal sealed class PackageCacheFixture : IDisposable
 		return path;
 	}
 
+	/// <summary>
+	/// Builds a package shaped like Uno.WinRT: a platform-neutral compile surface under lib/&lt;neutral&gt;, a
+	/// per-platform implementation under lib/&lt;platform&gt;, and uno-runtime/&lt;tfm&gt;/&lt;rid&gt; folders.
+	/// </summary>
+	/// <returns>The PackageBasePath the package's own props would pass, i.e. its buildTransitive folder.</returns>
+	public string AddRuntimeEnabledPackage(
+		string packageId,
+		string version,
+		string neutralTargetFramework,
+		string platformTargetFramework,
+		string[] winRTAssemblies,
+		string[] otherAssemblies,
+		string[] runtimeIdentifiers)
+	{
+		var packageRoot = Path.Combine(Root, packageId, version);
+
+		foreach (var assembly in winRTAssemblies.Concat(otherAssemblies))
+		{
+			// The union compile surface every consumer binds against.
+			WriteAssembly(Path.Combine(packageRoot, "lib", neutralTargetFramework, assembly + ".dll"), assembly, [], false, []);
+
+			foreach (var runtimeIdentifier in runtimeIdentifiers)
+			{
+				WriteAssembly(
+					Path.Combine(packageRoot, "uno-runtime", neutralTargetFramework, runtimeIdentifier, assembly + ".dll"),
+					assembly, [], false, []);
+			}
+		}
+
+		// Only the WinRT assemblies carry a per-platform implementation.
+		foreach (var assembly in winRTAssemblies)
+		{
+			WriteAssembly(Path.Combine(packageRoot, "lib", platformTargetFramework, assembly + ".dll"), assembly, [], false, []);
+		}
+
+		var packageBasePath = Path.Combine(packageRoot, "buildTransitive");
+		Directory.CreateDirectory(packageBasePath);
+		return packageBasePath;
+	}
+
 	private static void WriteAssembly(
 		string path,
 		string name,
