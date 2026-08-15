@@ -114,14 +114,16 @@ Starting from Uno Platform 5.2, in project or class libraries using the `Uno.Sdk
 * `*.Apple.cs` is built only for `net10.0-ios` and `net10.0-tvos`
 * `*.Android.cs` is built only for `net10.0-android`
 * `*.WinAppSDK.cs` is built only for `net10.0-windows10` (eg. `net10.0-windows10.0.22621`)
+* `*.iOSmacOS.cs` is built only for `net10.0-ios`
+* `*.crossruntime.cs` and `*.skia.cs` are built for every target framework except `net10.0-windows10`
 
-In addition, for class libraries:
-
-* `*.reference.cs` is built only for reference implementation
-* `*.crossruntime.cs` is built for WebAssembly, Desktop, and reference implementation
+`*.crossruntime.cs` and `*.skia.cs` are equivalent, and hold code for the target frameworks Uno Platform renders itself as opposed to the WinAppSDK one. Neither names a drawing backend: `Uno.UI` is compiled once and resolves its backend at run time.
 
 > [!NOTE]
-> For backwards compatibility, using `.skia.cs` is currently equivalent to `.desktop.cs`. This might change in the future, so we recommend using the suffixes above instead.
+> Before Uno Platform 7.0, `*.skia.cs` and `*.crossruntime.cs` were built only for `net10.0-desktop`, which made `*.skia.cs` an alias of `*.desktop.cs`. A file that is genuinely desktop-only should be renamed to `*.desktop.cs`.
+
+> [!NOTE]
+> `*.reference.cs` is no longer built for any target framework and can be removed.
 
 Using file name conventions allows for reducing the use of `#if` compiler directives.
 
