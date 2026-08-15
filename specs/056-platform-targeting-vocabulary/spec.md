@@ -102,31 +102,47 @@ exist as a distinction.
 
 ## 4. Preprocessor symbols
 
-### 4.1 The asymmetry to close
+### 4.1 The host axis already has a symbol
 
-`*.skia.cs` and `*.crossruntime.cs` are compiled for consumers, but **neither `__SKIA__` nor `__CROSSRUNTIME__`
-is defined for consumers anywhere**. A consumer file with the suffix, guarded by the matching `#if`, compiles to
-nothing. Every suffix should have a symbol with the same meaning:
+`HAS_UNO` / `__UNO__` are defined in `build/nuget/uno.winui.common.targets`, which `uno.winui.targets` imports
+only when the WinAppSDK is *not* in play. They are therefore already exactly the host axis, and no new symbol is
+needed — `#if HAS_UNO` is the C# equivalent of `not_winappsdk:` and of `*.crossruntime.cs`.
 
-| Suffix | Symbol | Defined for consumers today |
+| Suffix | Matching symbol | Defined for consumers today |
 |---|---|---|
 | `*.Android.cs` | `__ANDROID__` | yes (.NET Android SDK) |
 | `*.iOS.cs` | `__IOS__` | yes (.NET iOS SDK) |
 | `*.tvOS.cs` | `__TVOS__` | yes (.NET tvOS SDK) |
 | `*.desktop.cs` | `__DESKTOP__` | yes |
 | `*.wasm.cs` | `__WASM__` | yes |
-| `*.WinAppSDK.cs` | — | **no** |
-| `*.crossruntime.cs` | `__CROSSRUNTIME__` | **no** |
+| `*.crossruntime.cs` | `HAS_UNO` | yes |
+| `*.WinAppSDK.cs` | `!HAS_UNO` | by absence |
 
-Proposal: define `__CROSSRUNTIME__` and a WinAppSDK symbol for consumers, from the target framework, alongside
-`__DESKTOP__` and `__WASM__`.
+One precision caveat worth documenting rather than fixing: `HAS_UNO`'s absence tracks *the WindowsAppSDK build
+assets being applied* (`$(WindowsAppSDKWinUI)` / `$(UseWinUITools)`), not the target framework, while the file
+suffixes are target-framework driven. The two disagree only for a `netX.0-windows10.x` project that references
+`Uno.WinUI` without the WindowsAppSDK — not a shape worth engineering for.
 
-### 4.2 Rename or document
+So the earlier concern that `*.crossruntime.cs` has no matching symbol was wrong: it has one, under a name that
+does not look like the suffix. That is a documentation problem, not a missing symbol.
+
+### 4.2 `HAS_UNO_SKIA_<host>` cannot work and should go
+
+Reported as [unoplatform/uno#17684](https://github.com/unoplatform/uno/issues/17684). The desktop hosts each
+define their own symbol — `HAS_UNO_SKIA_WIN32`, `HAS_UNO_SKIA_X11`, `HAS_UNO_SKIA_MACOS`,
+`HAS_UNO_SKIA_LINUX_FB` — but the SDK references all four packages together for a `netX.0-desktop` executable
+head, so **all four are defined simultaneously**. They read as a compile-time host discriminator and cannot be
+one: `netX.0-desktop` is a single target framework that runs on Windows, Linux and macOS.
+
+Proposal: drop them. Code that needs the running host must use `OperatingSystem.IsWindows()` /
+`IsLinux()` / `IsMacOS()`, which is the only thing that can be correct here. `__UNO_SKIA__` and `HAS_UNO_SKIA`
+have the same naming problem as `skia:` and go with the `skia` deprecation.
+
+### 4.3 Rename or document
 
 | Symbol | Problem |
 |---|---|
 | `UNO_REFERENCE_API` | For consumers it means "the target framework has no platform identifier". Nothing to do with the Reference API, which no longer exists for the UI layer. Either rename with an alias, or document the real meaning |
-| `__UNO_SKIA__`, `HAS_UNO_SKIA`, `HAS_UNO_SKIA_<host>` | Name a drawing backend that is no longer a compile-time fact. Same collision as `skia:` |
 
 ## 5. Migration
 
@@ -143,7 +159,10 @@ prefix without deleting the content would start emitting it.
    in 8.0 frees it for the backend axis. This should be decided with the drawing-backend work, not separately.
 2. **`*.Apple.cs` vs `*.UIKit.cs`** — both are in real use in this repository (29 vs 31 files). Picking a
    canonical name means renaming roughly 30 files on one side.
-3. **Is a WinAppSDK-vs-Uno symbol worth adding**, or is the absence of `__ANDROID__`/`__IOS__`/… sufficient in
-   practice for consumer code?
-4. **Does `UNO_REFERENCE_API` get renamed?** It is a consumer-visible symbol with unknown external usage; the
+3. **Does `UNO_REFERENCE_API` get renamed?** It is a consumer-visible symbol with unknown external usage; the
    rename is cheap but the alias is forever.
+4. **Do `HAS_UNO_SKIA_<host>` get removed outright or deprecated first?** They are actively misleading rather
+   than merely redundant, which argues for removal, but they are consumer-visible.
+5. **Is the `not_mux` content still wanted?** Dropping the prefix means deleting the four blocks it guards. They
+   are UWP-only content that has been dropped from every build since UWP was removed, so this should be a
+   formality — but it is a deletion of markup, not of a name.
