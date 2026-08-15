@@ -451,7 +451,7 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 
 			// TODO Uno (Stage 9 overflow selection): apply selection/text-highlighters to the overflow's
 			// content slice (the master's TextSelectionManager owns selection across the whole chain).
-			layout.ParsedText.Draw(session, null, Enumerable.Empty<TextHighlighter>(), compositionRange: null);
+			layout.ParsedText.Draw(this, session, null, Enumerable.Empty<TextHighlighter>(), compositionRange: null);
 
 			canvas.Restore();
 		}
