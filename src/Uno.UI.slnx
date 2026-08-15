@@ -361,7 +361,7 @@
       <BuildDependency Project="SourceGenerators/Uno.UI.Tasks/Uno.UI.Tasks.csproj" />
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.Tasks.Tests/Uno.UI.Tasks.Tests.csproj">
+    <Project Path="SourceGenerators/Uno.UI.Tasks.Tests/Uno.UI.Tasks.Tests.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
     <Project Path="Uno.UI.Tests.ViewLibrary/Uno.UI.Tests.ViewLibrary.csproj">
