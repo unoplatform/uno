@@ -1,10 +1,12 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Microsoft.Build.Framework;
 using Mono.Cecil;
 
@@ -22,6 +24,8 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 	/// </summary>
 	private const int MaxReportedMissingTypes = 5;
 
+	private const int MaxReportedTypeNameLength = 200;
+
 	[Required]
 	public Microsoft.Build.Framework.ITaskItem[]? RuntimeCopyLocalItemsInput { get; set; }
 
@@ -34,6 +38,12 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 	public string UnoUIRuntimeIdentifier { get; set; } = "";
 
 	public string UnoWinRTRuntimeIdentifier { get; set; } = "";
+
+	/// <summary>
+	/// The platform of the target framework being built, e.g. "android". Deliberately not the runtime identifiers:
+	/// those are only set by the runtime packages, which class libraries do not always reference.
+	/// </summary>
+	public string TargetPlatformIdentifier { get; set; } = "";
 
 	public bool DisablePlatformAssetValidation { get; set; }
 
@@ -59,7 +69,26 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 			foreach (var assembly in RuntimeCopyLocalItemsInput ?? [])
 			{
 				var assemblyPath = assembly.GetMetadata("FullPath");
-				using var originalAssembly = AssemblyDefinition.ReadAssembly(assemblyPath);
+
+				if (UnoUIAssemblyName.Equals(Path.GetFileNameWithoutExtension(assemblyPath), StringComparison.OrdinalIgnoreCase))
+				{
+					// Uno.UI is the oracle, not a candidate, and it is the largest file we would open.
+					continue;
+				}
+
+				AssemblyDefinition originalAssembly;
+				try
+				{
+					originalAssembly = AssemblyDefinition.ReadAssembly(assemblyPath);
+				}
+				catch (Exception e)
+				{
+					// A package may ship a native or malformed file; that is not this task's problem to report.
+					this.Log.LogMessage(MessageImportance.Low, $"Skipping '{assemblyPath}', it could not be read ({e.Message}).");
+					continue;
+				}
+
+				using var _ = originalAssembly;
 
 				if (!originalAssembly.MainModule.AssemblyReferences.Any(m => m.Name == UnoUIAssemblyName))
 				{
@@ -118,20 +147,36 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 
 	private PlatformAssetValidator? CreatePlatformAssetValidator()
 	{
-		if (DisablePlatformAssetValidation
-			|| UnoWinRTRuntimeIdentifier is not ("android" or "ios" or "tvos"))
+		// Every reason to skip is logged: a silent no-op is indistinguishable from a clean run in a binlog.
+		if (DisablePlatformAssetValidation)
 		{
+			this.Log.LogMessage(MessageImportance.Normal, "Skipping UNOB0020, disabled through UnoDisableUNOB0020Validation.");
+			return null;
+		}
+
+		if (TargetPlatformIdentifier.ToLower(CultureInfo.InvariantCulture) is not ("android" or "ios" or "tvos"))
+		{
+			this.Log.LogMessage(MessageImportance.Low, $"Skipping UNOB0020, '{TargetPlatformIdentifier}' carries no platform-specific package assets.");
+			return null;
+		}
+
+		var nugetPackageRoot = NormalizeNuGetPackageRoot();
+		if (nugetPackageRoot.Length == 0)
+		{
+			this.Log.LogMessage(MessageImportance.Normal, "Skipping UNOB0020, NuGetPackageRoot is not set.");
 			return null;
 		}
 
 		if (FindUnoUIAssemblyPath() is not { } unoUIPath)
 		{
 			// Uno.UI comes from a ProjectReference (in-repo heads), so there is nothing to compare against.
-			this.Log.LogMessage(MessageImportance.Low, "Skipping platform asset validation, Uno.UI could not be resolved from the compile references.");
+			this.Log.LogMessage(MessageImportance.Normal, "Skipping UNOB0020, Uno.UI could not be resolved from the compile references.");
 			return null;
 		}
 
-		return new PlatformAssetValidator(Log, unoUIPath, NormalizeNuGetPackageRoot());
+		this.Log.LogMessage(MessageImportance.Normal, $"Validating platform-specific package assets against '{unoUIPath}'.");
+
+		return new PlatformAssetValidator(Log, unoUIPath, nugetPackageRoot);
 	}
 
 	private string? FindUnoUIAssemblyPath()
@@ -171,20 +216,34 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 				return;
 			}
 
-			var missingTypes = assembly.MainModule.GetTypeReferences()
-				.Where(typeReference => typeReference.Scope is AssemblyNameReference { Name: UnoUIAssemblyName })
-				.Select(typeReference => typeReference.FullName)
-				.Where(name => !GetUnoUITypes().Contains(name))
-				.Distinct(StringComparer.Ordinal)
-				.OrderBy(name => name, StringComparer.Ordinal)
-				.ToList();
+			var knownTypes = GetUnoUITypes();
+			var missingTypes = new HashSet<string>(StringComparer.Ordinal);
+
+			foreach (var typeReference in assembly.MainModule.GetTypeReferences())
+			{
+				if (typeReference.Scope is AssemblyNameReference { Name: UnoUIAssemblyName }
+					&& !knownTypes.Contains(typeReference.FullName))
+				{
+					missingTypes.Add(typeReference.FullName);
+				}
+			}
 
 			if (missingTypes.Count == 0)
 			{
 				return;
 			}
 
-			var reported = string.Join(", ", missingTypes.Take(MaxReportedMissingTypes));
+			// The full list only reaches the log; the warning itself stays readable.
+			_log.LogMessage(
+				MessageImportance.Low,
+				$"'{assemblyPath}' references {missingTypes.Count} missing Uno.UI type(s): {string.Join(", ", missingTypes.OrderBy(name => name, StringComparer.Ordinal))}");
+
+			var displayed = missingTypes
+				.OrderBy(name => name, StringComparer.Ordinal)
+				.Take(MaxReportedMissingTypes)
+				.Select(Sanitize);
+
+			var reported = string.Join(", ", displayed);
 			if (missingTypes.Count > MaxReportedMissingTypes)
 			{
 				reported += $" and {missingTypes.Count - MaxReportedMissingTypes} more";
@@ -205,26 +264,47 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 				messageArgs: [$"lib/{asset.TargetFramework}/{Path.GetFileName(assemblyPath)}", asset.PackageId, asset.PackageVersion, reported]);
 		}
 
+		/// <summary>
+		/// Reading Uno.UI materializes its whole type table, so the result is shared across every project built by
+		/// this MSBuild node rather than rebuilt per project.
+		/// </summary>
+		private static readonly ConcurrentDictionary<(string Path, DateTime Written), HashSet<string>> _unoUITypeCache = new();
+
 		private HashSet<string> GetUnoUITypes()
+			=> _unoUITypes ??= _unoUITypeCache.GetOrAdd((_unoUIPath, File.GetLastWriteTimeUtc(_unoUIPath)), static key => ReadTypeNames(key.Path));
+
+		private static HashSet<string> ReadTypeNames(string path)
 		{
-			if (_unoUITypes is null)
+			using var unoUI = AssemblyDefinition.ReadAssembly(path);
+			var names = new HashSet<string>(StringComparer.Ordinal);
+
+			foreach (var type in unoUI.MainModule.GetTypes())
 			{
-				using var unoUI = AssemblyDefinition.ReadAssembly(_unoUIPath);
-				_unoUITypes = new HashSet<string>(StringComparer.Ordinal);
-
-				foreach (var type in unoUI.MainModule.GetTypes())
-				{
-					_unoUITypes.Add(type.FullName);
-				}
-
-				// Type forwards are as good as declarations for a consumer's type references.
-				foreach (var exportedType in unoUI.MainModule.ExportedTypes)
-				{
-					_unoUITypes.Add(exportedType.FullName);
-				}
+				names.Add(type.FullName);
 			}
 
-			return _unoUITypes;
+			// Type forwards are as good as declarations for a consumer's type references.
+			foreach (var exportedType in unoUI.MainModule.ExportedTypes)
+			{
+				names.Add(exportedType.FullName);
+			}
+
+			return names;
+		}
+
+		/// <summary>
+		/// Type names come from a foreign assembly's string heap, which allows control characters.
+		/// </summary>
+		private static string Sanitize(string name)
+		{
+			var builder = new StringBuilder(name.Length);
+
+			foreach (var c in name.Length > MaxReportedTypeNameLength ? name.Substring(0, MaxReportedTypeNameLength) : name)
+			{
+				builder.Append(c < ' ' || c == '' ? '?' : c);
+			}
+
+			return builder.ToString();
 		}
 
 		/// <summary>
