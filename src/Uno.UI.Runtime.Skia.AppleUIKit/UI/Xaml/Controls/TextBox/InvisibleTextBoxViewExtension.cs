@@ -157,7 +157,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public void UpdateNativeView()
 	{
-		if (ImeHost is { } host)
+		// Property changes before focus must not create an unattached native responder.
+		if (_textBoxView is not null && ImeHost is { } host)
 		{
 			EnsureTextBoxView(host);
 			UpdateProperties();
