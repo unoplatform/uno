@@ -32,7 +32,7 @@ internal interface IWin32PacedContext
 /// swaps and releases current. Created by <see cref="Win32GraphicsContextFactory"/>; returns <see langword="null"/>
 /// on failure so negotiation falls through to the software context.
 /// </summary>
-internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContext
+internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContext, IGLDeviceContext
 {
 	[UnmanagedFunctionPointer(CallingConvention.Winapi)]
 	private delegate int WglSwapIntervalEXT(int interval);
@@ -55,6 +55,9 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 	public GraphicsContextKind Kind => GraphicsContextKind.OpenGL;
 
 	public bool IsLost => false;
+
+	public GLFlavor Flavor => GLFlavor.OpenGL;
+	public Func<string, nint> GetProcAddress => Win32NativeOpenGLWrapper.GetProcAddressStatic;
 
 	public static unsafe Win32OpenGLGraphicsContext? TryCreate(HWND hwnd)
 	{
@@ -235,8 +238,6 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
-		public GLFlavor Flavor => GLFlavor.OpenGL;
-		public Func<string, nint> GetProcAddress => Win32NativeOpenGLWrapper.GetProcAddressStatic;
 		public void Dispose() { }
 	}
 }

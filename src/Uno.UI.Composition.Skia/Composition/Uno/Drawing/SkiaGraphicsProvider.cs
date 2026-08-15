@@ -5,7 +5,10 @@ using System.Collections.Generic;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>The registerable Skia backend pair (the built-in default choice; registered like any other backend).</summary>
-public sealed class SkiaGraphicsProvider : IGraphicsProvider
+public sealed class SkiaGraphicsProvider :
+	IGraphicsProvider<IGLDeviceContext>,
+	IGraphicsProvider<IMetalDeviceContext>,
+	IGraphicsProvider<IGraphicsContext>
 {
 	// Skia can render on GL/GLES, Metal (Apple), or the CPU framebuffer; the host's context factory vetoes a kind
 	// (returns null) when it can't provide that window, so negotiation falls to the next. This backend owns the kind
@@ -25,6 +28,11 @@ public sealed class SkiaGraphicsProvider : IGraphicsProvider
 
 	public IReadOnlyList<GraphicsContextKind> PreferredContexts => _preferred;
 
-	// Geometry is a separate seam (GeometryFactory) — swap the geometry engine there, not on the graphics backend.
+	// One typed CreateGraphics per device face Skia serves — it reads the device details off the typed context
+	// (no cast). Software needs no device. Geometry is a separate seam (GeometryFactory).
+	public IDrawingFactory CreateGraphics(IGLDeviceContext context) => new SkiaDrawingFactory(glDevice: context);
+
+	public IDrawingFactory CreateGraphics(IMetalDeviceContext context) => new SkiaDrawingFactory(metalDevice: context);
+
 	public IDrawingFactory CreateGraphics(IGraphicsContext context) => new SkiaDrawingFactory();
 }

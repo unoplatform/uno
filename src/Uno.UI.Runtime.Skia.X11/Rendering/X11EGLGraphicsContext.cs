@@ -14,7 +14,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 /// GRContext-GLES against it. <see cref="Present"/> swaps buffers and releases current. Chosen by negotiation
 /// when the host prefers OpenGL ES (e.g. the GLES branch), falling to software if EGL is unavailable.
 /// </summary>
-internal sealed unsafe class X11EGLGraphicsContext : ISwapChain
+internal sealed unsafe class X11EGLGraphicsContext : ISwapChain, IGLDeviceContext
 {
 	private const uint DefaultFramebuffer = 0;
 
@@ -42,6 +42,9 @@ internal sealed unsafe class X11EGLGraphicsContext : ISwapChain
 	public GraphicsContextKind Kind => GraphicsContextKind.OpenGLES;
 
 	public bool IsLost => false;
+
+	public GLFlavor Flavor => GLFlavor.OpenGLES;
+	public Func<string, nint> GetProcAddress => EglHelper.EglGetProcAddress;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
@@ -85,8 +88,6 @@ internal sealed unsafe class X11EGLGraphicsContext : ISwapChain
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
-		public GLFlavor Flavor => GLFlavor.OpenGLES;
-		public Func<string, nint> GetProcAddress => EglHelper.EglGetProcAddress;
 		public void Dispose() { }
 	}
 }

@@ -208,12 +208,19 @@ internal static class GraphicsRegistry
 
 				try
 				{
-					var backendFactory = backend.CreateGraphics(context);
+					// Narrow the context to the device face this kind implies and hand it to the matching typed
+					// provider (Uno-side, keyed on the closed kind — the backend reads its device details without
+					// casting a neutral context). Null when the backend doesn't implement that instantiation → decline.
+					var backendFactory = CreateGraphics(kind, backend, context);
+					if (backendFactory is null)
+					{
+						attempts.Append($"\n  - {backend.GetType().Name}/{kind}: backend does not implement IGraphicsProvider<T> for this kind");
+						context.Dispose();
+						continue;
+					}
 
-					// Capability gate: the backend must implement the typed IDrawingFactory<TTarget> matching this
-					// kind, else it could win a kind it can't present (crashing at the first frame). Declining here
-					// falls negotiation through to the next kind. This is also where the closed kind→target-type
-					// mapping lives — one place, Uno-side.
+					// Capability gate: the backend must also implement the typed IDrawingFactory<TTarget> matching
+					// this kind, else it could win a kind it can't present (crashing at the first frame).
 					if (!CanPresent(kind, backendFactory))
 					{
 						attempts.Append($"\n  - {backend.GetType().Name}/{kind}: backend does not implement IDrawingFactory<T> for this kind");
@@ -236,6 +243,19 @@ internal static class GraphicsRegistry
 		throw new InvalidOperationException(
 			$"No registered backend could initialize on this host. Attempts:{attempts}");
 	}
+
+	// The closed kind → device-context narrowing: hand the typed provider the context's device face. GL/Metal use
+	// neutral device contexts (nameable here); Software + WebGpu use the base IGraphicsContext (WebGpu self-casts
+	// to its own device context inside its provider). Null when the provider lacks the instantiation. The `?.`
+	// short-circuits before the (device-context) cast, so a declining provider never triggers an InvalidCast.
+	private static IDrawingFactory? CreateGraphics(GraphicsContextKind kind, IGraphicsProvider provider, ISwapChain context) => kind switch
+	{
+		GraphicsContextKind.OpenGL or GraphicsContextKind.OpenGLES
+			=> (provider as IGraphicsProvider<IGLDeviceContext>)?.CreateGraphics((IGLDeviceContext)context),
+		GraphicsContextKind.Metal
+			=> (provider as IGraphicsProvider<IMetalDeviceContext>)?.CreateGraphics((IMetalDeviceContext)context),
+		_ => (provider as IGraphicsProvider<IGraphicsContext>)?.CreateGraphics(context),
+	};
 
 	// The closed kind → typed-present capability mapping (kind ⇒ the IDrawingFactory<TTarget> a backend must
 	// implement). Vulkan is intentionally unmapped (no present path wired on this seam yet) → declined.
