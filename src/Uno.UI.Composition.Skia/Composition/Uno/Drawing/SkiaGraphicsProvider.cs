@@ -8,6 +8,7 @@ namespace Uno.UI.Composition.Drawing;
 public sealed class SkiaGraphicsProvider :
 	IGraphicsProvider<IGLDeviceContext>,
 	IGraphicsProvider<IMetalDeviceContext>,
+	IGraphicsProvider<IVulkanDeviceContext>,
 	IGraphicsProvider<IGraphicsContext>
 {
 	// Skia can render on GL/GLES, Metal (Apple), or the CPU framebuffer; the host's context factory vetoes a kind
@@ -33,6 +34,8 @@ public sealed class SkiaGraphicsProvider :
 	public IDrawingFactory CreateGraphics(IGLDeviceContext context) => new SkiaDrawingFactory(glDevice: context);
 
 	public IDrawingFactory CreateGraphics(IMetalDeviceContext context) => new SkiaDrawingFactory(metalDevice: context);
+
+	public IDrawingFactory CreateGraphics(IVulkanDeviceContext context) => new SkiaDrawingFactory(vulkanDevice: context);
 
 	public IDrawingFactory CreateGraphics(IGraphicsContext context) => new SkiaDrawingFactory();
 }

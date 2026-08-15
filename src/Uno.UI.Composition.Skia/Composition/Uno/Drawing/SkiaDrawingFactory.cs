@@ -18,6 +18,7 @@ internal sealed class SkiaDrawingFactory :
 	IDrawingFactory<IGLRenderTarget>,
 	IDrawingFactory<ISoftwareRenderTarget>,
 	IDrawingFactory<IMetalRenderTarget>,
+	IDrawingFactory<IVulkanRenderTarget>,
 	System.IDisposable
 {
 	// GL state (built lazily on the first GL present, once the host's GL context is current; per backend
@@ -32,16 +33,28 @@ internal sealed class SkiaDrawingFactory :
 	// changes, so the render target + surface are recreated each present; the GRContext is cached.
 	private GRContext? _metalContext;
 
+	// Vulkan state (built lazily on the first Vulkan present from the host's device context). The render image is
+	// stable across frames (recreated on resize), so the render target + surface are cached and rebuilt only when
+	// the image handle/size changes; the GRContext is cached.
+	private GRContext? _vulkanContext;
+	private GRBackendRenderTarget? _vulkanRenderTarget;
+	private SKSurface? _vulkanSurface;
+	private ulong _vulkanImage;
+	private int _vulkanWidth;
+	private int _vulkanHeight;
+
 	// Device face of the bound context (set by the provider from the typed context; one is non-null per kind).
-	// The device details (GL loader/flavor, Metal device/queue) come from here; the per-frame surface comes from
-	// the render target handed to BeginPresent.
+	// The device details (GL loader/flavor, Metal device/queue, Vulkan device handles) come from here; the
+	// per-frame surface comes from the render target handed to BeginPresent.
 	private readonly IGLDeviceContext? _glDevice;
 	private readonly IMetalDeviceContext? _metalDevice;
+	private readonly IVulkanDeviceContext? _vulkanDevice;
 
-	public SkiaDrawingFactory(IGLDeviceContext? glDevice = null, IMetalDeviceContext? metalDevice = null)
+	public SkiaDrawingFactory(IGLDeviceContext? glDevice = null, IMetalDeviceContext? metalDevice = null, IVulkanDeviceContext? vulkanDevice = null)
 	{
 		_glDevice = glDevice;
 		_metalDevice = metalDevice;
+		_vulkanDevice = vulkanDevice;
 	}
 
 	public ICommandRecorder CreateRecording() => SkiaDrawingSession.StartRecording();
@@ -54,6 +67,60 @@ internal sealed class SkiaDrawingFactory :
 	public IPresentSession BeginPresent(ISoftwareRenderTarget target) => SkiaPresentSession.ForSoftware(target);
 
 	public IPresentSession BeginPresent(IMetalRenderTarget target) => PresentForMetal(target);
+
+	public IPresentSession BeginPresent(IVulkanRenderTarget target) => PresentForVulkan(target);
+
+	// The host owns the Vulkan device/swapchain (IVulkanDeviceContext) and hands the per-frame render VkImage
+	// (IVulkanRenderTarget). Build/reuse a GRContext-Vulkan from the device context and wrap the image as an
+	// SKSurface (cached, rebuilt on image/size change); the host's Present() blits the rendered image to the
+	// swapchain. ResetContext each frame because that external blit/present mutates Vulkan state Skia can't track.
+	private IPresentSession PresentForVulkan(IVulkanRenderTarget vk)
+	{
+		_vulkanContext ??= GRContext.CreateVulkan(new GRVkBackendContext
+		{
+			VkInstance = _vulkanDevice!.Instance,
+			VkPhysicalDevice = _vulkanDevice!.PhysicalDevice,
+			VkDevice = _vulkanDevice!.Device,
+			VkQueue = _vulkanDevice!.Queue,
+			GraphicsQueueIndex = _vulkanDevice!.GraphicsQueueFamilyIndex,
+			MaxAPIVersion = _vulkanDevice!.MaxApiVersion,
+			// SkiaSharp 4.x requires the enabled extensions + max API version declared or CreateVulkan returns null.
+			Extensions = GRVkExtensions.Create(
+				(name, inst, dev) => _vulkanDevice!.GetProcAddress(name, inst, dev),
+				_vulkanDevice!.Instance, _vulkanDevice!.PhysicalDevice,
+				_vulkanDevice!.InstanceExtensions, _vulkanDevice!.DeviceExtensions),
+			GetProcedureAddress = (name, inst, dev) => _vulkanDevice!.GetProcAddress(name, inst, dev),
+		}) ?? throw new System.NotSupportedException("Failed to create a Vulkan GRContext.");
+
+		_vulkanContext.ResetContext();
+
+		if (_vulkanSurface is null || _vulkanImage != vk.Image || vk.Width != _vulkanWidth || vk.Height != _vulkanHeight)
+		{
+			_vulkanWidth = vk.Width;
+			_vulkanHeight = vk.Height;
+			_vulkanImage = vk.Image;
+			_vulkanRenderTarget?.Dispose();
+			_vulkanSurface?.Dispose();
+
+			var info = new GRVkImageInfo
+			{
+				Image = vk.Image,
+				Format = vk.Format,
+				ImageTiling = vk.ImageTiling,
+				ImageLayout = vk.ImageLayout,
+				ImageUsageFlags = vk.ImageUsageFlags,
+				SampleCount = vk.SampleCount,
+				LevelCount = vk.LevelCount,
+				CurrentQueueFamily = vk.CurrentQueueFamily,
+				Protected = vk.Protected,
+				Alloc = new GRVkAlloc { Memory = vk.Memory, Size = vk.MemorySize },
+			};
+			_vulkanRenderTarget = new GRBackendRenderTarget(vk.Width, vk.Height, info);
+			_vulkanSurface = SKSurface.Create(_vulkanContext, _vulkanRenderTarget, GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888, SKColorSpace.CreateSrgb());
+		}
+
+		return SkiaPresentSession.ForCachedGpuSurface(_vulkanSurface!, _vulkanContext);
+	}
 
 	// The host hands the per-frame MTLTexture (+ its device/queue); build/reuse a GRContext-Metal and wrap the
 	// texture as an SKSurface to compose into. Present flushes the GRContext so the render lands in the texture
@@ -112,6 +179,10 @@ internal sealed class SkiaDrawingFactory :
 		_glSurface?.Dispose();
 		_glRenderTarget?.Dispose();
 		_glContext?.Dispose();
+		_vulkanSurface?.Dispose();
+		_vulkanRenderTarget?.Dispose();
+		_vulkanContext?.Dispose();
+		_metalContext?.Dispose();
 	}
 
 	public IImageTexture RenderOffscreen(int pixelWidth, int pixelHeight, System.Action<IDrawingSession> render)

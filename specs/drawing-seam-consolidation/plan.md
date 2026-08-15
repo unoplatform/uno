@@ -136,26 +136,58 @@ Directive: a third-party backend needs only the WebGpu faces `IWebGpuRenderTarge
 - IVT: `Drawing → …WebGpu.Init` (for `WebGpuSwapChainContext : ISwapChain`); `…WebGpu.Init → the 6 hosts`
   that call `WebGpuContext.Create*` (X11/Win32/MacOS/WASM.Browser/Android/AppleUIKit).
 
-## Step E — restore Vulkan onto the neutral seam (audit P0)
+## Step E — restore Vulkan onto the neutral seam (audit P0) — CONFIRMED Path B
 
-Vulkan was dropped (`2b4d9e85b1` et al.); the Skia-coupled `Uno.UI.Composition.Skia/Vulkan/VulkanContext` subsystem
-is orphaned-but-intact. Restore it as a *neutral* kind, matching GL/Metal (device on context, Skia builds the
-GRContext):
-- New neutral seam types (Drawing): `IVulkanDeviceContext : IGraphicsContext` (instance/physicalDevice/device/
-  queue + queue-family index + `GetProcAddress` + required extensions — all `nint`/`uint`/`Func`/`string[]`) and
-  `IVulkanRenderTarget : IRenderTarget` (the swapchain `VkImage` + format/layout/tiling/usage/sample/level for a
-  `GRVkImageInfo`).
-- Skia: `SkiaDrawingFactory : IDrawingFactory<IVulkanRenderTarget>`, `SkiaGraphicsProvider :
-  IGraphicsProvider<IVulkanDeviceContext>`; `PresentForVulkan` builds `GRContext.CreateVulkan(GRVkBackendContext)`
-  from the device context (cache it) + `GRBackendRenderTarget(GRVkImageInfo)` from the target. (SkiaSharp 4.148
-  Vulkan needs `GRVkExtensions` declared — known.)
-- `GraphicsRegistry`: add the `Vulkan => IGLVk…` narrowing + `CanPresent` arm.
-- X11 (validatable on lavapipe): `X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext` reusing the
-  `VulkanContext` subsystem for instance/device/swapchain creation (strip its GRContext/SKSurface parts — those
-  move to the Skia backend); recreate `X11VulkanSurfaceFactory` (VK_KHR_xlib_surface) from `2b4d9e85b1^`. Win32/
-  Android faithfully mirrored (compile-only; recover their surface factories from git).
-- Re-wire the dead flags: `UseVulkanOnX11/Win32/SkiaAndroid` gate declining the Vulkan kind (host returns null
-  when false), so `X11RenderingBackend.Vulkan` stops being a no-op.
+Vulkan was dropped (`2b4d9e85b1` "Skia-free host — drop Vulkan-Skia", + `1d70992074`/`b0048c4024`/`89eaeeecee`);
+the `Uno.UI.Composition.Skia/Vulkan/VulkanContext` subsystem is orphaned-but-intact. The old path was
+deliberately **Skia-coupled** (`VulkanContext` owned the `GRContext`-Vulkan + `SKSurface`, handed back
+`SkiaRenderTarget(canvas)` — the type we deleted). Path B makes Vulkan a **neutral kind like GL/Metal**: the host
+context carries the device, the Skia backend builds the `GRContext`.
+
+**E1 — neutral seam types (`Uno.UI.Composition.Drawing`).**
+- `IVulkanDeviceContext : IGraphicsContext` — the `GRVkBackendContext` inputs, all neutral:
+  `nint Instance, PhysicalDevice, Device, Queue`; `uint GraphicsQueueFamilyIndex`; `uint MaxApiVersion`;
+  `string[] InstanceExtensions, DeviceExtensions`; `Func<string,nint,nint,nint> GetProcAddress` (name, instance,
+  device → addr — the `GRVkGetProcedureAddressDelegate` shape).
+- `IVulkanRenderTarget : IRenderTarget` — the `GRVkImageInfo` inputs for the render image, all neutral:
+  `ulong Image, Memory, MemorySize`; `uint Format, ImageTiling, ImageLayout, ImageUsageFlags, SampleCount,
+  LevelCount, CurrentQueueFamily`; `bool Protected`. (`Width`/`Height`/`ColorFormat` from `IRenderTarget`.)
+
+**E2 — `GraphicsRegistry`.** `CreateGraphics` narrowing: `Vulkan => IGraphicsProvider<IVulkanDeviceContext>`;
+`CanPresent`: `Vulkan => backend is IDrawingFactory<IVulkanRenderTarget>`.
+
+**E3 — Skia backend.** `SkiaDrawingFactory : IDrawingFactory<IVulkanRenderTarget>` with `_vulkanDevice`;
+`SkiaGraphicsProvider : IGraphicsProvider<IVulkanDeviceContext>` → `new SkiaDrawingFactory(vulkanDevice: ctx)`.
+`PresentForVulkan(IVulkanRenderTarget vk)`: build+cache `GRContext.CreateVulkan(GRVkBackendContext{ … from
+_vulkanDevice, Extensions = GRVkExtensions.Create(getProc, instance, physDevice, InstanceExtensions,
+DeviceExtensions) })`; each frame `_vulkanContext.ResetContext()` (external Vulkan blit mutates state), then
+`GRBackendRenderTarget(vk.Width, vk.Height, GRVkImageInfo{ … from vk })` + `SKSurface.Create(...TopLeft, Bgra8888,
+sRGB)`, recreated when the image handle/size changes. Return a present session that flushes the GRContext on
+dispose (the host's `Present` then blits+presents).
+
+**E4 — `VulkanContext` (strip Skia).** Remove `_grContext`, `_vkExtensions`, `_cachedRenderTarget`,
+`_cachedSkSurface`, `GrContext`, `CachedSkSurface`, `EnsureCachedSkiaSurface`, `DisposeCachedSkiaSurface`,
+`RenderFrame(Action<SKSurface>)`, and the `GRContext.CreateVulkan` in `Initialize`. Keep instance/device/
+swapchain/render-image creation, `Resize`/`ResizeRenderImage`, the device `Lock()`, `BlitAndPresent()` (pure
+Vulkan). Expose: the device handles (already), `EnabledExtensions` lists, the `GetProcAddress` wrapper, and the
+render image's `GRVkImageInfo` fields (`RenderImageInfo`), plus `EnsureRenderImage()`.
+
+**E5 — X11 host.** `X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext` owns the `VulkanContext`;
+`AcquireRenderTarget` takes the device `Lock` + ensures the render image + returns an `IVulkanRenderTarget` over
+it (resize → `ResizeRenderImage`); `Present` → `VulkanContext.BlitAndPresent()` + release the lock. Recreate
+`X11/Vulkan/X11VulkanSurfaceFactory.cs` (`VK_KHR_xlib_surface`) from `2b4d9e85b1^`. `X11XamlRootHost
+.CreateWindowAndContext`: `case Vulkan` (create the plain window + context), gated by `UseVulkanOnX11` (declined
+when false → falls through). **Validate on lavapipe** (`UNO_X11_RENDERER=Vulkan`).
+
+**E6 — Win32 + Android** mirror E5 (recreate `Win32VulkanSurfaceFactory`/`AndroidVulkanSurfaceFactory` +
+`*VulkanGraphicsContext` from git; wire `UseVulkanOnWin32`/`UseVulkanOnSkiaAndroid`). Compile-only here.
+
+Note: `VulkanContext` lived in the `Uno.UI.Composition.Skia` **backend** assembly, which hosts must not
+reference — so E4 also **relocated** the whole `Vulkan/` subsystem to the shared host runtime
+`Uno.UI.Runtime.Skia` (its namespace was already `Uno.UI.Runtime.Skia.Vulkan`; files renamed `.skia.cs`→`.cs`
+since that assembly isn't cross-targeted; `SkiaSharp` package added there for `SKSizeI`). E1–E5 DONE +
+**runtime-validated on X11/lavapipe** (`UNO_X11_RENDERER=Vulkan` renders, luma parity with GL/GLES/Software, no
+crash). E6 (Win32/Android Vulkan contexts) remains — mechanical mirrors of E5.
 
 ## Step F — audit follow-ups (non-Vulkan)
 

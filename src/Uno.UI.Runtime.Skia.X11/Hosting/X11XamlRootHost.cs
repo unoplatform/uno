@@ -546,6 +546,24 @@ internal partial class X11XamlRootHost : IXamlRootHost
 					return null;
 				}
 
+			case GraphicsContextKind.Vulkan:
+				if (FeatureConfiguration.Rendering.UseVulkanOnX11 != true)
+				{
+					return null; // opt-in only (X11RenderingBackend.Vulkan / UseVulkanOnX11); decline → fall through
+				}
+				try
+				{
+					_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+					_ = XLib.XSync(display, false);
+					return new X11VulkanGraphicsContext(TopX11Window);
+				}
+				catch (Exception e)
+				{
+					this.Log().Info($"Vulkan context creation failed ({e.Message}); falling through.");
+					DestroyTopWindow();
+					return null;
+				}
+
 			case GraphicsContextKind.Software:
 				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
 				return new X11SoftwareGraphicsContext(TopX11Window);
