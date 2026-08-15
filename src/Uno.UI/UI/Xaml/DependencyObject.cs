@@ -65,14 +65,29 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				if (_selfWeakReference is null)
+				var current = _selfWeakReference;
+				if (current is not null)
 				{
-					// Published atomically: consumers compare handle identity, and a losing racer's
-					// handle cannot be pooled back (it is a self reference), so it must not escape.
-					Interlocked.CompareExchange(ref _selfWeakReference, WeakReferencePool.RentSelfWeakReference(this), null);
+					return current;
 				}
 
-				return _selfWeakReference;
+				// Published atomically: consumers compare handle identity, so exactly one handle
+				// may ever escape for a given object.
+				var minted = WeakReferencePool.RentSelfWeakReference(this);
+				var published = Interlocked.CompareExchange(ref _selfWeakReference, minted, null);
+
+				if (published is not null)
+				{
+					// Lost the race. The minted handle never escaped and a self reference cannot go
+					// back to the pool (ReturnWeakReference refuses them), so free its GC handle here
+					// rather than leaving it for ManagedGCHandle's finalizer.
+					minted.GetUnsafeTargetHandle()?.Dispose();
+					minted.Dispose();
+
+					return published;
+				}
+
+				return minted;
 			}
 		}
 
