@@ -32,6 +32,18 @@ internal sealed class SkiaDrawingFactory :
 	// changes, so the render target + surface are recreated each present; the GRContext is cached.
 	private GRContext? _metalContext;
 
+	// Device face of the bound context (set by the provider from the typed context; one is non-null per kind).
+	// The device details (GL loader/flavor, Metal device/queue) come from here; the per-frame surface comes from
+	// the render target handed to BeginPresent.
+	private readonly IGLDeviceContext? _glDevice;
+	private readonly IMetalDeviceContext? _metalDevice;
+
+	public SkiaDrawingFactory(IGLDeviceContext? glDevice = null, IMetalDeviceContext? metalDevice = null)
+	{
+		_glDevice = glDevice;
+		_metalDevice = metalDevice;
+	}
+
 	public ICommandRecorder CreateRecording() => SkiaDrawingSession.StartRecording();
 
 	// Typed present per kind the Skia backend serves — the target arrives already narrowed, so there is no
@@ -48,7 +60,7 @@ internal sealed class SkiaDrawingFactory :
 	// before the host commits/presents the drawable. Recreated each frame (the texture differs per call).
 	private IPresentSession PresentForMetal(IMetalRenderTarget metal)
 	{
-		_metalContext ??= GRContext.CreateMetal(new GRMtlBackendContext { DeviceHandle = metal.Device, QueueHandle = metal.Queue })
+		_metalContext ??= GRContext.CreateMetal(new GRMtlBackendContext { DeviceHandle = _metalDevice!.Device, QueueHandle = _metalDevice!.Queue })
 			?? throw new System.NotSupportedException("Failed to create a Metal GRContext.");
 
 		var colorType = metal.ColorFormat == GraphicsColorFormat.Bgra8888 ? SKColorType.Bgra8888 : SKColorType.Rgba8888;
@@ -68,9 +80,9 @@ internal sealed class SkiaDrawingFactory :
 		// segfaults on Mesa/llvmpipe — validated with three loader variants — whereas its compiled-in native
 		// interface (Create()) renders correctly, so desktop GL uses that. The loader still rides the seam for any
 		// non-Skia backend; this is purely SkiaSharp's own desktop-GL assembly being unstable.
-		var loader = gl.GetProcAddress;
+		var loader = _glDevice!.GetProcAddress;
 		_glContext ??= GRContext.CreateGl(
-				(gl.Flavor switch
+				(_glDevice!.Flavor switch
 				{
 					GLFlavor.OpenGLES => GRGlInterface.CreateGles(name => loader(name)),
 					GLFlavor.WebGL => GRGlInterface.CreateWebGl(name => loader(name)),

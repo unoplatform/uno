@@ -23,7 +23,7 @@ internal interface IMacOSNativeTextureSink
 /// GRContext-Metal + surface and flushes. The native MTKView owns the drawable and commits, so
 /// <see cref="Present"/> is a no-op. Names no Skia type.
 /// </summary>
-internal sealed class MacOSMetalGraphicsContext : ISwapChain, IMacOSNativeTextureSink
+internal sealed class MacOSMetalGraphicsContext : ISwapChain, IMacOSNativeTextureSink, IMetalDeviceContext
 {
 	private readonly nint _device;
 	private readonly nint _queue;
@@ -39,21 +39,22 @@ internal sealed class MacOSMetalGraphicsContext : ISwapChain, IMacOSNativeTextur
 
 	public bool IsLost => false;
 
+	public nint Device => _device;
+	public nint Queue => _queue;
+
 	public void SetCurrentTexture(nint texture) => _currentTexture = texture;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
-		=> new MacOSMetalRenderTarget(_currentTexture, _device, _queue, Math.Max(1, width), Math.Max(1, height));
+		=> new MacOSMetalRenderTarget(_currentTexture, Math.Max(1, width), Math.Max(1, height));
 
 	// The native MTKView owns the drawable and commits after drawInMTKView returns.
 	public void Present() { }
 
 	public void Dispose() { }
 
-	private sealed class MacOSMetalRenderTarget(nint texture, nint device, nint queue, int width, int height) : IMetalRenderTarget
+	private sealed class MacOSMetalRenderTarget(nint texture, int width, int height) : IMetalRenderTarget
 	{
 		public nint Texture => texture;
-		public nint Device => device;
-		public nint Queue => queue;
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;

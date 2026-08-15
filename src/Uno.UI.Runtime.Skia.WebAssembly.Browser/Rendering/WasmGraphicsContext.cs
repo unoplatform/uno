@@ -10,7 +10,7 @@ namespace Uno.UI.Runtime.Skia;
 /// context current on acquire and handing the backend a neutral <see cref="IGLRenderTarget"/> (the canvas default
 /// framebuffer). The Skia backend builds its GRContext-GL against the current context. Names no Skia type.
 /// </summary>
-internal sealed class WasmGLGraphicsContext : ISwapChain
+internal sealed class WasmGLGraphicsContext : ISwapChain, IGLDeviceContext
 {
 	private readonly WebGlBrowserRenderer _renderer;
 
@@ -19,6 +19,9 @@ internal sealed class WasmGLGraphicsContext : ISwapChain
 	public GraphicsContextKind Kind => GraphicsContextKind.OpenGLES;
 
 	public bool IsLost => false;
+
+	public GLFlavor Flavor => GLFlavor.WebGL;
+	public Func<string, nint> GetProcAddress => global::Uno.UI.Runtime.Skia.WebAssembly.Browser.Graphics.WasmGLFunctions.GetProcAddress;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{

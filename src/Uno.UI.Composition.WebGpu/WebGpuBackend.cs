@@ -2367,7 +2367,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 /// <summary>A host graphics context that owns a <see cref="WebGpuDevice"/> (e.g. an on-window swapchain context).
 /// Lets <see cref="WebGpuGraphicsProvider"/> obtain the device without naming the platform context type.</summary>
-public sealed class WebGpuGraphicsProvider : IGraphicsProvider
+public sealed class WebGpuGraphicsProvider : IGraphicsProvider<IGraphicsContext>
 {
 	private static readonly GraphicsContextKind[] _preferred = { GraphicsContextKind.WebGpu };
 

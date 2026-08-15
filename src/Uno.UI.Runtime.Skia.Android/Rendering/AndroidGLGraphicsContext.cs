@@ -13,11 +13,14 @@ namespace Uno.UI.Runtime.Skia.Android;
 /// This mirrors the browser WebGL context (also a framework-created context, framework-driven loop, implicit present)
 /// — see WasmGLGraphicsContext. The Skia backend builds its GRContext-GLES against the current context. Names no Skia type.
 /// </summary>
-internal sealed class AndroidGLGraphicsContext : ISwapChain
+internal sealed class AndroidGLGraphicsContext : ISwapChain, IGLDeviceContext
 {
 	public GraphicsContextKind Kind => GraphicsContextKind.OpenGLES;
 
 	public bool IsLost => false;
+
+	public GLFlavor Flavor => GLFlavor.OpenGLES;
+	public Func<string, nint> GetProcAddress => AndroidNativeOpenGLWrapper.GetProcAddressStatic;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
@@ -45,8 +48,6 @@ internal sealed class AndroidGLGraphicsContext : ISwapChain
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
-		public GLFlavor Flavor => GLFlavor.OpenGLES;
-		public Func<string, nint> GetProcAddress => AndroidNativeOpenGLWrapper.GetProcAddressStatic;
 		public void Dispose() { }
 	}
 }

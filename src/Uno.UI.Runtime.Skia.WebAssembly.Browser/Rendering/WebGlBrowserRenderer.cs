@@ -63,8 +63,6 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
-		public GLFlavor Flavor => GLFlavor.WebGL;
-		public Func<string, nint> GetProcAddress => WasmGLFunctions.GetProcAddress;
 		public void Dispose() { }
 	}
 

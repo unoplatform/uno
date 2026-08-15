@@ -2,6 +2,7 @@
 
 using System;
 using Uno.UI.Composition.Drawing;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -14,13 +15,18 @@ namespace Uno.UI.Runtime.Skia;
 /// the FrameBufferRenderer keeps owning its own target + present and drives the neutral render seam directly. This
 /// host also has no WebGPU/Skia fork (the DRM-vs-fbdev choice is the platform GPU-init), so it names no backend.
 /// </summary>
-internal sealed class FrameBufferGraphicsContext : ISwapChain
+internal sealed class FrameBufferGraphicsContext : ISwapChain, IGLDeviceContext
 {
 	public FrameBufferGraphicsContext(GraphicsContextKind kind) => Kind = kind;
 
 	public GraphicsContextKind Kind { get; }
 
 	public bool IsLost => false;
+
+	// GL device face (used only when Kind == OpenGLES — the DRM/GBM GLES path). The framebuffer surface itself is
+	// handed over by FrameBufferRenderer's own target; this supplies the loader the neutral present builds from.
+	public GLFlavor Flavor => GLFlavor.OpenGLES;
+	public Func<string, nint> GetProcAddress => static name => EglHelper.EglGetProcAddress(name);
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 		=> throw new NotSupportedException(

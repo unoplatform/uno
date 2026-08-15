@@ -13,7 +13,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 /// <see cref="Present"/> swaps buffers and releases current. Chosen by negotiation when the window was created
 /// with a GLX visual (see X11XamlRootHost.CreateGLXWindow); the software context is the fallback.
 /// </summary>
-internal sealed class X11OpenGLGraphicsContext : ISwapChain
+internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext
 {
 	private const uint DefaultFramebuffer = 0; // the GLX buffer created in X11XamlRootHost, rendered directly on screen
 
@@ -32,6 +32,9 @@ internal sealed class X11OpenGLGraphicsContext : ISwapChain
 	public GraphicsContextKind Kind => GraphicsContextKind.OpenGL;
 
 	public bool IsLost => false;
+
+	public GLFlavor Flavor => GLFlavor.OpenGL;
+	public Func<string, nint> GetProcAddress => X11NativeOpenGLWrapper.GetProcAddressStatic;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
@@ -66,8 +69,6 @@ internal sealed class X11OpenGLGraphicsContext : ISwapChain
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
-		public GLFlavor Flavor => GLFlavor.OpenGL;
-		public Func<string, nint> GetProcAddress => X11NativeOpenGLWrapper.GetProcAddressStatic;
 		public void Dispose() { }
 	}
 }

@@ -82,6 +82,49 @@ public interface IRenderTarget : IDisposable { int Width { get; } int Height { g
   kind switch + gate in `GraphicsRegistry`, drop the `BeginPresent` type-switch in the backends, composition
   holds the bound presenter.
 
+## Step C — device details on the context; typed `IGraphicsProvider<TContext>`
+
+Fixes an inversion: device details currently ride on the **render target** (`IGLRenderTarget.GetProcAddress`/
+`Flavor`, `IMetalRenderTarget.Device`/`Queue`), which is why `SkiaGraphicsProvider.CreateGraphics` ignored the
+context. The context *is* the device (its own doc says so); device details belong there, the provider reads
+them, and the render target becomes a pure surface — which also makes `IGraphicsProvider<TContext>` worthwhile.
+
+**Neutral device-context interfaces (Drawing)** — neutral because their payloads are `enum`/`Func`/`nint`:
+- `IGLDeviceContext : IGraphicsContext { GLFlavor Flavor; Func<string,nint> GetProcAddress; }`
+- `IMetalDeviceContext : IGraphicsContext { nint Device; nint Queue; }`
+- WebGPU's device is a managed backend type, so `IWebGpuDeviceContext` stays in WebGpu.Init (non-neutral);
+  Software needs no device (base `IGraphicsContext`).
+
+**Render targets → pure surface:** strip `Flavor`+`GetProcAddress` from `IGLRenderTarget` (keep `FramebufferId`/
+`SampleCount`/`StencilBits`/size — the framebuffer is genuinely per-frame surface); strip `Device`+`Queue` from
+`IMetalRenderTarget` (keep `Texture`/size).
+
+**Host contexts implement the device-context** (alongside `ISwapChain`): every GL context (X11 GLX/EGL, Win32,
+DRM, Android, WASM) exposes `Flavor`+`GetProcAddress`; every Metal context (macOS, Apple) exposes `Device`+
+`Queue` — moved verbatim from their render targets. Loader/flavor stay static/context-stable; this is the
+consistent home for the loader (still present on every GL context, honoring "loader everywhere").
+
+**Provider generic:** `IGraphicsProvider` base keeps `PreferredContexts` only; `IGraphicsProvider<in TContext> :
+IGraphicsProvider { IDrawingFactory CreateGraphics(TContext); }`. Skia implements `<IGLDeviceContext>`,
+`<IMetalDeviceContext>`, `<IGraphicsContext>` (software) — each reads the device off the typed context, no cast.
+WebGPU implements `<IGraphicsContext>` and self-casts to its own `IWebGpuDeviceContext` (backend-specific device
+— the accepted self-cast, once at startup).
+
+**Skia backend:** `SkiaDrawingFactory` stores the device-context (`IGLDeviceContext?`/`IMetalDeviceContext?`);
+`PresentForGL` reads loader/flavor from it + the framebuffer from the render target; `PresentForMetal` reads
+device/queue from it + the texture from the render target. `GRContext-GL` still builds lazily (GL context
+current only at present) but now from the context's loader.
+
+**Negotiation narrowing (GraphicsRegistry), keyed on the closed kind** (also the capability gate):
+```
+kind switch {
+  OpenGL or OpenGLES => (provider as IGraphicsProvider<IGLDeviceContext>)?.CreateGraphics((IGLDeviceContext)context),
+  Metal              => (provider as IGraphicsProvider<IMetalDeviceContext>)?.CreateGraphics((IMetalDeviceContext)context),
+  _                  => (provider as IGraphicsProvider<IGraphicsContext>)?.CreateGraphics(context),   // Software, WebGpu(self-cast)
+}   // null → decline, negotiation falls through
+```
+Correct pairing is guaranteed by `PreferredContexts` (negotiation only asks a provider for kinds it declared).
+
 ## Validation
 
 Compile: X11/Win32/macOS/Linux.FrameBuffer (via `SamplesApp.Skia.Generic`), Android (`net10.0-android`), WASM
