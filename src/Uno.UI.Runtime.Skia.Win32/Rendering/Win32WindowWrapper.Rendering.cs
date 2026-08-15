@@ -43,10 +43,33 @@ internal partial class Win32WindowWrapper
 			GraphicsContextKind.OpenGL => (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true)
 				? Win32OpenGLGraphicsContext.TryCreate(_hwnd)
 				: null,
+			GraphicsContextKind.Vulkan => TryCreateVulkan(),
 			GraphicsContextKind.Software => new Win32SoftwareGraphicsContext(_hwnd),
 			GraphicsContextKind.WebGpu => global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateWin32(_hwnd, Win32Helper.GetModuleHInstance(), scale),
 			_ => null,
 		};
+	}
+
+	/// <summary>
+	/// Vulkan is opt-in on Win32 (<c>UseVulkanOnWin32</c> / <see cref="Win32RenderingBackend.Vulkan"/>): decline when
+	/// off, and swallow a creation failure so negotiation falls through to the next kind (software).
+	/// </summary>
+	private ISwapChain? TryCreateVulkan()
+	{
+		if (!FeatureConfiguration.Rendering.UseVulkanOnWin32)
+		{
+			return null;
+		}
+
+		try
+		{
+			return new Win32VulkanGraphicsContext(_hwnd);
+		}
+		catch (Exception e)
+		{
+			this.LogInfo()?.Info($"Vulkan context creation failed ({e.Message}); falling through.");
+			return null;
+		}
 	}
 
 	private void InitializeRenderThread()
