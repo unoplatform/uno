@@ -95,11 +95,20 @@ namespace Microsoft.UI.Xaml
 		private InheritedPropertiesDisposable? _inheritedProperties;
 		private ManagedWeakReference? _parentRef;
 		private object? _hardParentRef;
-		private readonly Dictionary<DependencyProperty, ManagedWeakReference> _inheritedForwardedProperties = new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
+		/// <summary>
+		/// Inherited properties forwarded from an ancestor which are not defined on this instance. Allocated on
+		/// first forward: a store exists for every DependencyObject, but only a subset ever forwards anything.
+		/// </summary>
+		private Dictionary<DependencyProperty, ManagedWeakReference>? _inheritedForwardedProperties;
 		private Stack<DependencyPropertyValuePrecedences?>? _overriddenPrecedences;
 
 		private static long _propertyChangedToken;
-		private readonly Dictionary<long, IDisposable> _propertyChangedTokens = new Dictionary<long, IDisposable>();
+
+		/// <summary>
+		/// Registrations made through the token-based <see cref="RegisterPropertyChangedCallback(DependencyProperty, DependencyPropertyChangedCallback)"/>
+		/// overload. Allocated on first registration: that public API is rarely used, unlike the store itself.
+		/// </summary>
+		private Dictionary<long, IDisposable>? _propertyChangedTokens;
 
 		private bool _registeringInheritedProperties;
 		private bool _unregisteringInheritedProperties;
@@ -127,6 +136,9 @@ namespace Microsoft.UI.Xaml
 				_inheritedProperties = value;
 			}
 		}
+
+		private Dictionary<DependencyProperty, ManagedWeakReference> InheritedForwardedProperties
+			=> _inheritedForwardedProperties ??= new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
 
 		/// <summary>
 		/// Provides the parent Dependency Object of this dependency object
@@ -810,7 +822,7 @@ namespace Microsoft.UI.Xaml
 				// Add inheritable attached properties to the inherited forwarded
 				// properties, so they can be automatically propagated when a child
 				// store is late added.
-				_inheritedForwardedProperties[property] = _originalObjectRef;
+				InheritedForwardedProperties[property] = _originalObjectRef;
 			}
 		}
 
@@ -935,16 +947,15 @@ namespace Microsoft.UI.Xaml
 		{
 			if (FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite)
 			{
-				var isFrameworkElement = _originalObjectType.Is(typeof(FrameworkElement));
-				var isMixinFrameworkElement = _originalObjectRef.Target is IFrameworkElement && !isFrameworkElement;
-
 				if (
 					!_originalObjectType.Is(property.OwnerType)
 					&& !property.IsAttached
 
 					// Don't fail validation for properties that are located on non-FrameworkElement types
 					// e.g. ScrollContentPresenter, for which using the Name property should not fail.
-					&& !isMixinFrameworkElement
+					// Evaluated last: it dereferences the weak reference, and this validation runs on every
+					// GetValue/SetValue when enabled (always in DEBUG).
+					&& !IsMixinFrameworkElement()
 				)
 				{
 					throw new InvalidOperationException(
@@ -952,6 +963,9 @@ namespace Microsoft.UI.Xaml
 					);
 				}
 			}
+
+			bool IsMixinFrameworkElement()
+				=> _originalObjectRef.Target is IFrameworkElement && !_originalObjectType.Is(typeof(FrameworkElement));
 		}
 
 		public long RegisterPropertyChangedCallback(DependencyProperty property, DependencyPropertyChangedCallback callback)
@@ -960,18 +974,19 @@ namespace Microsoft.UI.Xaml
 
 			var registration = RegisterPropertyChangedCallback(property, (PropertyChangedCallback)((s, e) => callback((DependencyObject)s, property)));
 
-			_propertyChangedTokens.Add(_propertyChangedToken, registration);
+			(_propertyChangedTokens ??= new Dictionary<long, IDisposable>()).Add(_propertyChangedToken, registration);
 
 			return _propertyChangedToken;
 		}
 
 		public void UnregisterPropertyChangedCallback(DependencyProperty property, long token)
 		{
-			if (_propertyChangedTokens.TryGetValue(token, out var registration))
+			if (_propertyChangedTokens is { } propertyChangedTokens
+				&& propertyChangedTokens.TryGetValue(token, out var registration))
 			{
 				registration.Dispose();
 
-				_propertyChangedTokens.Remove(token);
+				propertyChangedTokens.Remove(token);
 			}
 		}
 
@@ -1379,7 +1394,7 @@ namespace Microsoft.UI.Xaml
 			{
 				// Always update the inherited properties with the new value, the instance
 				// may change if a far ancestor changed.
-				_inheritedForwardedProperties[parentProperty] = sourceInstance;
+				InheritedForwardedProperties[parentProperty] = sourceInstance;
 
 				// If not, propagate the DP down to the child listeners, if any.
 				var localChildrenStores = _childrenStores;
@@ -1476,7 +1491,7 @@ namespace Microsoft.UI.Xaml
 			{
 				_unregisteringInheritedProperties = true;
 
-				_inheritedForwardedProperties.Clear();
+				_inheritedForwardedProperties?.Clear();
 
 				if (ActualInstance != null)
 				{
@@ -1665,7 +1680,7 @@ namespace Microsoft.UI.Xaml
 
 		private void PropagateInheritedNonLocalProperties(DependencyObjectStore? childStore)
 		{
-			if (_inheritedForwardedProperties.Count == 0)
+			if (_inheritedForwardedProperties is not { Count: > 0 } inheritedForwardedProperties)
 			{
 				// Avoid unnecessary AncestorsDictionary allocation and ActualInstance resolution.
 				return;
@@ -1683,7 +1698,7 @@ namespace Microsoft.UI.Xaml
 			// call to IsAncestor.
 			var actualInstanceAlias = ActualInstance;
 
-			foreach (var sourceInstanceProperties in _inheritedForwardedProperties)
+			foreach (var sourceInstanceProperties in inheritedForwardedProperties)
 			{
 
 				if (

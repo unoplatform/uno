@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Markup;
 
 namespace DirectUI;
@@ -587,7 +588,13 @@ partial class MetadataAPI // src\dxaml\xcp\dxaml\lib\MetadataAPI.cpp
 }
 partial class MetadataAPI // quick impl
 {
-	private static Dictionary<(Type Type, string Property), DependencyProperty> _dependencyPropertyReflectionCache = new(512);
+	/// <summary>
+	/// Caches the reflection lookup performed by <see cref="TryGetDependencyPropertyByName"/>.
+	/// Concurrent because property-path resolution is not confined to the UI thread, while the ALC
+	/// teardown sweep prunes the cache from the teardown thread.
+	/// </summary>
+	private static readonly ConcurrentDictionary<(Type Type, string Property), DependencyProperty> _dependencyPropertyReflectionCache
+		= new(Environment.ProcessorCount, 512);
 
 	private const BindingFlags DpStorageFlags =
 		BindingFlags.Public | BindingFlags.NonPublic |
@@ -612,22 +619,34 @@ partial class MetadataAPI // quick impl
 	{
 		var key = (type, propertyName);
 
-		if (!_dependencyPropertyReflectionCache.TryGetValue(key, out var property))
+		if (_dependencyPropertyReflectionCache.TryGetValue(key, out var property))
 		{
-			property = GetValue(
-				type.GetProperty($"{propertyName}Property", DpStorageFlags) as MemberInfo ??
-				type.GetField($"{propertyName}Property", DpStorageFlags)
-			);
+			return property;
+		}
 
-			static DependencyProperty GetValue(MemberInfo member) => member switch
-			{
-				PropertyInfo pi => pi.GetValue(null) as DependencyProperty,
-				FieldInfo fi => fi.GetValue(null) as DependencyProperty,
-				_ => null,
-			};
+		var member =
+			type.GetProperty($"{propertyName}Property", DpStorageFlags) as MemberInfo ??
+			type.GetField($"{propertyName}Property", DpStorageFlags);
+
+		property = GetValue(member);
+
+		// A resolved property is immutable for a loaded type, so it is always cacheable. A null result is
+		// only cached when the type exposes no matching member at all: that is a stable fact about the
+		// type's shape. A member that exists but reads back null may simply mean its static initializer
+		// has not run yet, and caching that would poison the entry for the rest of the process.
+		if (property is not null || member is null)
+		{
+			_dependencyPropertyReflectionCache[key] = property;
 		}
 
 		return property;
+
+		static DependencyProperty GetValue(MemberInfo member) => member switch
+		{
+			PropertyInfo pi => pi.GetValue(null) as DependencyProperty,
+			FieldInfo fi => fi.GetValue(null) as DependencyProperty,
+			_ => null,
+		};
 	}
 
 	public static Type GetClassInfoByTypeName(Type typeName) => typeName;
@@ -636,20 +655,5 @@ partial class MetadataAPI // quick impl
 	/// Removes entries from the reflection cache whose Type key belongs to a non-default ALC.
 	/// </summary>
 	internal static void ClearCachesForNonDefaultAlc()
-	{
-		var keysToRemove = new List<(Type, string)>();
-		foreach (var key in _dependencyPropertyReflectionCache.Keys)
-		{
-			var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Type.Assembly);
-			if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
-			{
-				keysToRemove.Add(key);
-			}
-		}
-
-		foreach (var key in keysToRemove)
-		{
-			_dependencyPropertyReflectionCache.Remove(key);
-		}
-	}
+		=> AlcCacheSweep.RemoveNonDefaultAlcEntries(_dependencyPropertyReflectionCache, static key => key.Type);
 }
