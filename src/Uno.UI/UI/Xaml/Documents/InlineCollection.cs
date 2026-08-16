@@ -107,7 +107,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		internal List<Inline>.Enumerator GetEnumeratorFast() => _collection.GetEnumeratorFast();
+		internal DependencyObjectCollection<Inline>.Enumerator GetEnumeratorFast() => _collection.GetEnumeratorFast();
 
 		/// <inheritdoc />
 		public void Add(Inline item)
