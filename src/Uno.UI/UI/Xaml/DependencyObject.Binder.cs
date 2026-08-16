@@ -390,15 +390,12 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal void SetTemplateBinding(DependencyProperty targetProperty, DependencyProperty sourceProperty)
+			=> SetTemplateBinding(targetProperty, sourceProperty, BindingExpression.GetTemplateBindingPath(sourceProperty));
+
+		internal void SetTemplateBinding(DependencyProperty targetProperty, DependencyProperty sourceProperty, string sourcePath)
 		{
-			SetBinding(
-				targetProperty,
-				new Binding
-				{
-					Path = sourceProperty.Name,
-					RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
-				}
-			);
+			TryRegisterInheritedProperties(force: true);
+			_properties.SetTemplateBinding(targetProperty, sourceProperty, sourcePath, _originalObjectRef);
 		}
 
 		/// <summary>
@@ -888,4 +885,3 @@ namespace Microsoft.UI.Xaml
 		}
 	}
 }
-

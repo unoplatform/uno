@@ -774,6 +774,41 @@ public class Given_Binding
 	}
 
 	[TestMethod]
+	public async Task When_TemplateBinding_Can_Use_DependencyProperty_Fast_Path()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<Page.Resources>
+						<Style x:Key="ButtonStyle" TargetType="Button">
+							<Setter Property="Template">
+								<Setter.Value>
+									<ControlTemplate TargetType="Button">
+										<StackPanel>
+											<ContentPresenter Content="{TemplateBinding Content}" />
+											<TextBlock Text="{TemplateBinding Tag, Mode=TwoWay}" />
+											<ScrollViewer HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" />
+										</StackPanel>
+									</ControlTemplate>
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</Page.Resources>
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
 	public async Task When_Static_XBind_Property_In_DataTemplate_Without_DataType()
 	{
 		var xamlFiles = new[]
