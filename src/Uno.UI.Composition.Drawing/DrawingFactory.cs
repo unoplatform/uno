@@ -17,6 +17,9 @@ internal static class DrawingFactory
 	private static IDrawingFactory? _current;
 
 	/// <summary>The active drawing factory, installed by negotiation.</summary>
+	/// <summary>The active drawing factory, or null if none is negotiated yet (a probe that never throws).</summary>
+	internal static IDrawingFactory? CurrentOrNull => _current;
+
 	/// <exception cref="InvalidOperationException">Read before a backend was negotiated (registration must come first).</exception>
 	public static IDrawingFactory Current
 		=> _current ?? throw new InvalidOperationException(

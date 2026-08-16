@@ -345,6 +345,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	// container backgrounds — inherited a sibling's transform and painted over content).
 	public int Save() { var pre = _stack.Count; _stack.Push(new SaveEntry { M = _m, Clip = _clip, PendingColorMatrix = _pendingColorMatrix }); return pre; }
 	public int SaveCount => _stack.Count;
+	public object NativeSurface => null;
 	public void Restore()
 	{
 		if (_stack.Count == 0) { return; }
@@ -2301,6 +2302,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	public void Scale(float sx, float sy) { _presentScale = new Vector2(_presentScale.X * sx, _presentScale.Y * sy); _overlay.Scale(sx, sy); }
 	public int Save() { _presentScaleStack.Push(_presentScale); _overlay.Save(); return _presentScaleStack.Count; }
 	public int SaveCount => _presentScaleStack.Count;
+	public object NativeSurface => null;
 	public void Restore() { if (_presentScaleStack.Count > 0) { _presentScale = _presentScaleStack.Pop(); } _overlay.Restore(); }
 	public void RestoreToCount(int count) { while (_presentScaleStack.Count > count) { Restore(); } }
 	public void SaveLayer(bool antialias = false) => _overlay.SaveLayer(antialias);
@@ -2519,6 +2521,8 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 	internal WebGpuDrawingFactory(WebGpuDevice device) { _device = device; }
 
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
+
+	public global::System.Type NativeSurfaceType => null;
 
 	public IPresentSession BeginPresent(IWebGpuRenderTarget target)
 	{

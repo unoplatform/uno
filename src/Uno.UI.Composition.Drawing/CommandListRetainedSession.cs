@@ -109,6 +109,7 @@ internal sealed class CommandListRecorder : ICommandRecorder
 	public Matrix4x4 TotalMatrix => _matrix;
 
 	public int SaveCount => _depth;
+	public object? NativeSurface => null;
 
 	public int Save()
 	{
