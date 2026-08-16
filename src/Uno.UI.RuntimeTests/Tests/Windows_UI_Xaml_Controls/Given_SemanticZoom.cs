@@ -120,16 +120,17 @@ public partial class Given_SemanticZoom
 		try
 		{
 			await UITestHelper.Load(sut, element => element.IsLoaded);
+			await WindowHelper.WaitForIdle();
 
 			await KeyboardHelper.PressKeySequence(
 				"$d$_ctrl#$d$_-#$u$_-#$u$_ctrl",
 				zoomedInView);
-			Assert.IsFalse(sut.IsZoomedInViewActive);
+			await WindowHelper.WaitFor(() => !sut.IsZoomedInViewActive);
 
 			await KeyboardHelper.PressKeySequence(
 				"$d$_ctrl#$d$_+#$u$_+#$u$_ctrl",
 				zoomedOutView);
-			Assert.IsTrue(sut.IsZoomedInViewActive);
+			await WindowHelper.WaitFor(() => sut.IsZoomedInViewActive);
 		}
 		finally
 		{
