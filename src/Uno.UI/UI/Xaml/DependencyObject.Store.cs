@@ -2196,6 +2196,34 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
+		/// Gets the precedence of the current base value (i.e. excluding animation and coercion), without
+		/// forcing the creation of the property details.
+		/// </summary>
+		/// <remarks>
+		/// Unlike <see cref="DependencyObjectExtensions.GetBaseValueSource"/>, this returns the raw precedence
+		/// used by <see cref="DependencyPropertyDetails.SetValue"/> to decide whether an incoming base value is
+		/// kept or discarded.
+		/// </remarks>
+		internal DependencyPropertyValuePrecedences GetBaseValueSourcePrecedence(DependencyProperty property)
+			=> _properties.FindPropertyDetails(property)?.GetBaseValueSource()
+				?? DependencyPropertyValuePrecedences.DefaultValue;
+
+		/// <summary>
+		/// Performs the resource binding cleanup that setting a value at <paramref name="precedence"/> would have
+		/// done, for a style setter whose application was skipped because a higher precedence already provides the
+		/// base value. This keeps a previously registered theme/hot-reload binding from resurfacing at that
+		/// precedence once the winning value is cleared.
+		/// </summary>
+		internal void ClearResourceBindingsForSkippedSetter(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
+		{
+			if (!_isSettingPersistentResourceBinding)
+			{
+				_resourceBindings?.ClearBinding(property, precedence);
+				_themeResources?.Clear(property, precedence);
+			}
+		}
+
+		/// <summary>
 		/// Determines if the two values are different, based on the type of the objects.
 		/// </summary>
 		/// <param name="previousValue">The previous value</param>

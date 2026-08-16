@@ -114,5 +114,209 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.IsTrue(SUT2.Setters.IsSealed);
 			Assert.IsTrue(SUT2.Setters[0].IsSealed);
 		}
+
+		[TestMethod]
+		public void When_Setter_Wins_Then_Value_Is_Materialized_Once()
+		{
+			var count = 0;
+			var SUT = new Style(typeof(Control));
+			SUT.Setters.Add(CreateCountingSetter(FrameworkElement.TagProperty, "fromStyle", () => count++));
+
+			Control control = new();
+			control.Style = SUT;
+
+			Assert.AreEqual("fromStyle", control.Tag);
+			Assert.AreEqual(1, count);
+		}
+
+		[TestMethod]
+		public void When_Setter_Overridden_By_Local_Value_Then_Value_Is_Not_Materialized()
+		{
+			var count = 0;
+			var SUT = new Style(typeof(Control));
+			SUT.Setters.Add(CreateCountingSetter(FrameworkElement.TagProperty, "fromStyle", () => count++));
+
+			Control control = new();
+			control.Tag = "local";
+			control.Style = SUT;
+
+			Assert.AreEqual("local", control.Tag);
+			Assert.AreEqual(0, count);
+		}
+
+		[TestMethod]
+		public void When_Overriding_Local_Value_Cleared_Then_Deferred_Setter_Is_Materialized()
+		{
+			var count = 0;
+			var SUT = new Style(typeof(Control));
+			SUT.Setters.Add(CreateCountingSetter(FrameworkElement.TagProperty, "fromStyle", () => count++));
+
+			Control control = new();
+			control.Tag = "local";
+			control.Style = SUT;
+
+			Assert.AreEqual(0, count);
+
+			control.ClearValue(FrameworkElement.TagProperty);
+
+			Assert.AreEqual("fromStyle", control.Tag);
+			Assert.AreEqual(1, count);
+		}
+
+		[TestMethod]
+		public void When_BuiltIn_Setter_Overridden_By_Explicit_Style_Then_Value_Is_Not_Materialized()
+		{
+			var builtInCount = 0;
+			var explicitCount = 0;
+
+			var builtInStyle = new Style(typeof(Control));
+			builtInStyle.Setters.Add(CreateCountingSetter(FrameworkElement.TagProperty, "builtIn", () => builtInCount++));
+
+			var explicitStyle = new Style(typeof(Control));
+			explicitStyle.Setters.Add(CreateCountingSetter(FrameworkElement.TagProperty, "explicit", () => explicitCount++));
+
+			Control control = new();
+			control.Style = explicitStyle;
+			builtInStyle.ApplyTo(control, DependencyPropertyValuePrecedences.ImplicitStyle);
+
+			Assert.AreEqual("explicit", control.Tag);
+			Assert.AreEqual(0, builtInCount);
+
+			// The winning setter must be materialized exactly once, even though the built-in style
+			// application used to re-apply the explicit setter on top of it.
+			Assert.AreEqual(1, explicitCount);
+		}
+
+		[TestMethod]
+		public void When_BuiltIn_Template_Overridden_By_Explicit_Style_Then_Template_Is_Not_Materialized()
+		{
+			var builtInCount = 0;
+			var explicitCount = 0;
+
+			var explicitTemplate = new ControlTemplate(() => null);
+
+			var builtInStyle = new Style(typeof(Control));
+			builtInStyle.Setters.Add(CreateCountingSetter(Control.TemplateProperty, new ControlTemplate(() => null), () => builtInCount++));
+
+			var explicitStyle = new Style(typeof(Control));
+			explicitStyle.Setters.Add(CreateCountingSetter(Control.TemplateProperty, explicitTemplate, () => explicitCount++));
+
+			Control control = new();
+			control.Style = explicitStyle;
+			builtInStyle.ApplyTo(control, DependencyPropertyValuePrecedences.ImplicitStyle);
+
+			Assert.AreSame(explicitTemplate, control.Template);
+			Assert.AreEqual(0, builtInCount);
+			Assert.AreEqual(1, explicitCount);
+		}
+
+		[TestMethod]
+		public void When_BasedOn_Setter_Overridden_By_Local_Value_Then_Value_Is_Not_Materialized()
+		{
+			var count = 0;
+
+			var baseStyle = new Style(typeof(Control));
+			baseStyle.Setters.Add(CreateCountingSetter(FrameworkElement.TagProperty, "fromBase", () => count++));
+
+			var SUT = new Style(typeof(Control)) { BasedOn = baseStyle };
+			SUT.Setters.Add(new Setter(Control.IsTabStopProperty, false));
+
+			Control control = new();
+			control.Tag = "local";
+			control.Style = SUT;
+
+			Assert.AreEqual("local", control.Tag);
+			Assert.IsFalse(control.IsTabStop);
+			Assert.AreEqual(0, count);
+
+			control.ClearValue(FrameworkElement.TagProperty);
+
+			Assert.AreEqual("fromBase", control.Tag);
+			Assert.AreEqual(1, count);
+		}
+
+		[TestMethod]
+		public void When_Style_Replaced_While_Overridden_Then_Deferred_Setter_Uses_New_Style()
+		{
+			var countA = 0;
+			var countB = 0;
+
+			var styleA = new Style(typeof(Control));
+			styleA.Setters.Add(CreateCountingSetter(FrameworkElement.TagProperty, "A", () => countA++));
+
+			var styleB = new Style(typeof(Control));
+			styleB.Setters.Add(CreateCountingSetter(FrameworkElement.TagProperty, "B", () => countB++));
+
+			Control control = new();
+			control.Tag = "local";
+			control.Style = styleA;
+			control.Style = styleB;
+
+			Assert.AreEqual("local", control.Tag);
+			Assert.AreEqual(0, countA);
+			Assert.AreEqual(0, countB);
+
+			control.ClearValue(FrameworkElement.TagProperty);
+
+			Assert.AreEqual("B", control.Tag);
+			Assert.AreEqual(0, countA);
+		}
+
+		[TestMethod]
+		public void When_Style_Cleared_While_Overridden_Then_Deferred_Setter_Is_Not_Materialized()
+		{
+			var count = 0;
+
+			var SUT = new Style(typeof(Control));
+			SUT.Setters.Add(CreateCountingSetter(FrameworkElement.TagProperty, "fromStyle", () => count++));
+
+			Control control = new();
+			control.Tag = "local";
+			control.Style = SUT;
+			control.Style = null;
+
+			Assert.AreEqual("local", control.Tag);
+			Assert.AreEqual(0, count);
+
+			control.ClearValue(FrameworkElement.TagProperty);
+
+			Assert.IsNull(control.Tag);
+			Assert.AreEqual(0, count);
+		}
+
+		[TestMethod]
+		public void When_Deferral_Disabled_Then_Overridden_Setter_Is_Materialized()
+		{
+			var count = 0;
+			var SUT = new Style(typeof(Control));
+			SUT.Setters.Add(CreateCountingSetter(FrameworkElement.TagProperty, "fromStyle", () => count++));
+
+			try
+			{
+				FeatureConfiguration.Style.DeferOverriddenSetterValues = false;
+
+				Control control = new();
+				control.Tag = "local";
+				control.Style = SUT;
+
+				Assert.AreEqual("local", control.Tag);
+				Assert.AreEqual(1, count);
+			}
+			finally
+			{
+				FeatureConfiguration.Style.DeferOverriddenSetterValues = true;
+			}
+		}
+
+		private static Setter CreateCountingSetter(DependencyProperty property, object value, Action onMaterialized)
+		{
+			SetterValueProviderHandler provider = () =>
+			{
+				onMaterialized();
+				return value;
+			};
+
+			return new Setter(property, provider);
+		}
 	}
 }
