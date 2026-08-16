@@ -2529,9 +2529,9 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 			_mainW = target.Width;
 			_mainH = target.Height;
 		}
-		// Point the backend surface at THIS frame's host resolve colour (host owns its lifetime; _ownsColor=false).
+		// Point the backend surface at THIS frame's host resolve colour view (host owns its lifetime; _ownsColor=false,
+		// and the underlying texture stays host-side — the render pass only needs the view).
 		_mainSurface.View = target.ColorView;
-		_mainSurface.Tex = target.ColorTexture;
 		if (_device.MsaaSamples == 1) { _mainSurface.MsaaColorView = target.ColorView; }   // 1x: render straight into it
 		return new WebGpuPresentSession(_device, _mainSurface);
 	}
