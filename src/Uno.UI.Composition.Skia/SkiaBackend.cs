@@ -3,7 +3,6 @@
 using SkiaSharp;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Composition.Drawing;
-using Uno.UI.Graphics;
 
 namespace Uno.UI.Composition.Skia;
 
@@ -36,11 +35,4 @@ public static class SkiaBackend
 	internal static void RegisterImageEncoder()
 		=> ApiExtensibility.Register(typeof(global::Windows.Graphics.Imaging.IImageEncoderExtension), _ => new SkiaImageEncoderExtension());
 
-	/// <summary>
-	/// Registers the raw-Skia <c>SKCanvasElement</c> visual factory. This one genuinely reaches Composition-internal
-	/// render-loop types (<c>SKCanvasVisualBase</c> + the internal paint hook), so it still requires the
-	/// Composition→Skia InternalsVisibleTo — separate from the (now-removed) Drawing→Skia one.
-	/// </summary>
-	internal static void RegisterSKCanvasElementFactory()
-		=> ApiExtensibility.Register(typeof(SKCanvasVisualBaseFactory), _ => new SKCanvasVisualFactory());
 }

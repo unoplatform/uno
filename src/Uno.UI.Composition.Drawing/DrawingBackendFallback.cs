@@ -137,10 +137,6 @@ internal static class DrawingBackendFallback
 				{
 					DrawingRegistration.RegisterDefaultRenderer(renderer);
 				}
-
-				// The raw-Skia SKCanvasElement factory (Composition-internal render hook) — still a void reflective
-				// call; it self-registers via ApiExtensibility inside the backend.
-				Invoke("RegisterSKCanvasElementFactory");
 			}
 		}
 	}

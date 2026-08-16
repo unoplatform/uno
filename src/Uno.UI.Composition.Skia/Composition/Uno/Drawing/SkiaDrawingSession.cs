@@ -42,10 +42,16 @@ internal class SkiaDrawingSession : IDrawingSession
 		=> (_recorderPool ??= new()).Push(recorder);
 
 	/// <summary>Creates a recording session (no pre-existing session); records a whole frame or a nested subtree.</summary>
+	// Cull bounds for the SKPictureRecorder — large enough to encompass any recorded content (the real clip is
+	// applied at replay). A Skia-side constant matching the framework's SafeEdge (SK_MaxS32FitsInFloat / 4 - 1), so
+	// the backend needs no Composition internal (Visual.InfiniteClipRect).
+	private const float SafeEdge = 2147483520f / 4f - 1f;
+	private static readonly SKRect RecordingBounds = new(-SafeEdge, -SafeEdge, SafeEdge, SafeEdge);
+
 	internal static SkiaCommandRecorder StartRecording()
 	{
 		var recorder = RentRecorder();
-		var recordingCanvas = recorder.BeginRecording(Visual.InfiniteClipRect.ToSKRect());
+		var recordingCanvas = recorder.BeginRecording(RecordingBounds);
 		return new SkiaCommandRecorder(recorder, recordingCanvas);
 	}
 
