@@ -11,7 +11,7 @@ namespace Microsoft.UI.Composition;
 partial class RectangleClip
 {
 	private SKRoundRect? _skRoundRect;
-	private static readonly SKPath _spareClipPath = new();
+	private static readonly SKPathBuilder _spareClipPathBuilder = new();
 
 	private protected override Rect? GetBoundsCore(Visual visual)
 	{
@@ -25,11 +25,11 @@ partial class RectangleClip
 	// The path returned here is reused, do not cache
 	internal override SKPath GetClipPath(Visual visual)
 	{
-		var path = _spareClipPath;
-		path.Rewind();
-		path.AddRoundRect(GetClipRoundedRect(visual));
+		var builder = _spareClipPathBuilder;
+		builder.Reset();
+		builder.AddRoundRect(GetClipRoundedRect(visual), SKPathDirection.Clockwise);
 
-		return path;
+		return builder.Detach();
 	}
 
 	private protected override SKRect? GetClipRect(Visual visual)

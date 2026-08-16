@@ -9,6 +9,9 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using MUXControlsTestApp.Utilities;
+#if HAS_UNO
+using Uno.Helpers.Theming;
+#endif
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
@@ -50,10 +53,14 @@ public class Given_Theme_Materialization
 		""";
 
 	private static Color? ColorOf(object element)
-		=> (element as Border)?.Background is SolidColorBrush b ? b.Color : null;
+		=> element is Border { Background: SolidColorBrush brush }
+			? brush.Color
+			: default(Color?);
 
 	private static Color? ForegroundOf(object element)
-		=> (element as TextBlock)?.Foreground is SolidColorBrush b ? b.Color : null;
+		=> element is TextBlock { Foreground: SolidColorBrush brush }
+			? brush.Color
+			: default(Color?);
 
 	// Builds an app-level ResourceDictionary carrying the sentinel ThemeDictionaries.
 	// Used by the popup/flyout/runtime-add repros (T4/T5/T6) which reference {ThemeResource SentinelBrush}
@@ -492,6 +499,39 @@ public class Given_Theme_Materialization
 	// ---- T6b2 — VisualState storyboard keyframe {ThemeResource} resolves the island theme (faithful) ----
 
 #if HAS_UNO
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.NativeWasm)]
+	public async Task When_NativeWasm_HighContrast_Does_Not_Select_HighContrast_Dictionary()
+	{
+		var originalSystemTheme = SystemThemeHelper.SystemThemeOverride;
+		var originalHighContrast = Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride;
+		using var lightApp = ThemeHelper.UseApplicationLightTheme();
+		var dictionary = new ResourceDictionary
+		{
+			ThemeDictionaries =
+			{
+				["Light"] = new ResourceDictionary { ["Sentinel"] = "Light" },
+				["HighContrast"] = new ResourceDictionary { ["Sentinel"] = "HighContrast" },
+			},
+		};
+
+		try
+		{
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = true;
+			SystemThemeHelper.SystemThemeOverride = SystemTheme.Dark;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Light", dictionary["Sentinel"]);
+		}
+		finally
+		{
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = originalHighContrast;
+			SystemThemeHelper.SystemThemeOverride = originalSystemTheme;
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
 	[TestMethod]
 	[RequiresFullWindow]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
@@ -981,7 +1021,7 @@ public class Given_Theme_Materialization
 #if HAS_UNO
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_HighContrast_Active_Selects_HighContrast_Dictionary()
 	{
 		// D8 (Phase 6): high contrast is an OS/app-global dimension OR-ed onto the base theme. When HC is
@@ -992,14 +1032,15 @@ public class Given_Theme_Materialization
 		// the accessibility settings; confirmed in WinUI probe app: a HighContrast ThemeDictionaries entry
 		// is used when the OS high-contrast feature is on.)
 		var hcSentinel = Color.FromArgb(0xFF, 0x00, 0xFF, 0x00);
+		var originalHighContrast = Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride;
 
 		using var lightApp = ThemeHelper.UseApplicationLightTheme();
 		await WindowHelper.WaitForIdle();
 
-		// Activate high contrast BEFORE the content loads so its first resolution selects the HC dictionary.
-		Uno.WinRTFeatureConfiguration.Accessibility.HighContrast = true;
 		try
 		{
+			// Activate high contrast BEFORE the content loads so its first resolution selects the HC dictionary.
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = true;
 			await WindowHelper.WaitForIdle();
 
 			var root = (Border)XamlReader.Load(
@@ -1032,7 +1073,67 @@ public class Given_Theme_Materialization
 		}
 		finally
 		{
-			Uno.WinRTFeatureConfiguration.Accessibility.HighContrast = false;
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = originalHighContrast;
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_HighContrast_Toggles_Existing_ThemeResource_Updates()
+	{
+		var hcSentinel = Color.FromArgb(0xFF, 0x00, 0xFF, 0x00);
+		var originalHighContrast = Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride;
+
+		using var lightApp = ThemeHelper.UseApplicationLightTheme();
+
+		try
+		{
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = false;
+			await WindowHelper.WaitForIdle();
+
+			var root = (Border)XamlReader.Load(
+				"""
+				<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				        Width="50" Height="50" Background="{ThemeResource SentinelBrush}">
+					<Border.Resources>
+						<ResourceDictionary>
+							<ResourceDictionary.ThemeDictionaries>
+								<ResourceDictionary x:Key="Light">
+									<SolidColorBrush x:Key="SentinelBrush" Color="#FF111111" />
+								</ResourceDictionary>
+								<ResourceDictionary x:Key="HighContrast">
+									<SolidColorBrush x:Key="SentinelBrush" Color="#FF00FF00" />
+								</ResourceDictionary>
+							</ResourceDictionary.ThemeDictionaries>
+						</ResourceDictionary>
+					</Border.Resources>
+				</Border>
+				""");
+
+			WindowHelper.WindowContent = root;
+			await WindowHelper.WaitForLoaded(root);
+
+			Assert.AreEqual(LightSentinel, ColorOf(root));
+
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = true;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(hcSentinel, ColorOf(root),
+				"Turning high contrast on must re-resolve existing ThemeResource values.");
+
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = false;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(LightSentinel, ColorOf(root),
+				"Turning high contrast off must restore the active base-theme value.");
+		}
+		finally
+		{
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = originalHighContrast;
+			WindowHelper.WindowContent = null;
 			await WindowHelper.WaitForIdle();
 		}
 	}
@@ -1043,9 +1144,12 @@ public class Given_Theme_Materialization
 	[TestMethod]
 	public void When_Phase4_Global_Theme_Stack_Removed_Guard()
 	{
-		// tests.md §B: Phase 4 deleted the process-global requested-theme stack and the band-aid push API.
-		// This reflection guard fails if PushRequestedThemeForSubTree (or the _requestedThemeForSubTree stack)
-		// is reintroduced — preventing a regression back to global-ambient theme selection. Sibling/context
+		// tests.md §B: Phase 4 deleted the process-global requested-theme stack and the internal band-aid
+		// push API. This reflection guard fails if the internal PushRequestedThemeForSubTree feeder (or the
+		// Themes._requestedThemeForSubTree stack) is reintroduced — preventing a regression back to
+		// global-ambient theme selection. The public PushRequestedThemeForSubTreeByName is intentionally
+		// kept: it is the sanctioned owner-less scope over the core requested-theme-for-subtree slot for
+		// external markup packages, not the removed global stack (see ResourceDictionary). Sibling/context
 		// isolation without the stack is covered by Given_ElementTheme's "Context Isolation" tests; non-FE
 		// owner theming by When_ThemeResource_On_NonFE_DependencyObject_*.
 		const BindingFlags allStatic = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
@@ -1053,14 +1157,72 @@ public class Given_Theme_Materialization
 
 		var resourceDictionary = typeof(ResourceDictionary);
 		Assert.IsNull(resourceDictionary.GetMethod("PushRequestedThemeForSubTree", allStatic),
-			"ResourceDictionary.PushRequestedThemeForSubTree must not be reintroduced (Phase 4 removed the global theme stack).");
-		Assert.IsNull(resourceDictionary.GetMethod("PushRequestedThemeForSubTreeByName", allStatic),
-			"ResourceDictionary.PushRequestedThemeForSubTreeByName must not be reintroduced.");
+			"ResourceDictionary.PushRequestedThemeForSubTree (internal band-aid feeder) must not be reintroduced.");
 
 		var themes = resourceDictionary.GetNestedType("Themes", BindingFlags.NonPublic);
 		Assert.IsNotNull(themes, "ResourceDictionary.Themes should still exist (it holds the app-level Active theme).");
 		Assert.IsNull(themes.GetField("_requestedThemeForSubTree", allMembers),
 			"Themes._requestedThemeForSubTree stack must not be reintroduced.");
+	}
+
+	// ---- Public by-name theme scope bridge (Uno.Extensions.Markup / C# Markup contract) ----
+
+	[TestMethod]
+	// Native (non-enhanced-lifecycle) targets do not read the core requested-theme-for-subtree slot, so the
+	// bridge is a balanced no-op there; the resolution-outcome assertions only hold on enhanced targets.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	public async Task When_PushRequestedThemeForSubTreeByName_Scopes_Resolution()
+	{
+		// Contract for external markup packages (Uno.Extensions.Markup / C# Markup): a balanced
+		// Push/PopRequestedThemeForSubTreeByName scopes {ThemeResource} resolution to the named base theme
+		// for an owner-less lookup, and nests LIFO. The theming rewrite (uno#23416) removed this public API;
+		// this guards the re-exposed bridge over the core requested-theme-for-subtree slot.
+		using var _ = ThemeHelper.UseSystemThemeOverride(ApplicationTheme.Light);
+		await WindowHelper.WaitForIdle();
+
+		var dict = (ResourceDictionary)XamlReader.Load(
+			"""
+			<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<ResourceDictionary.ThemeDictionaries>
+					<ResourceDictionary x:Key="Light">
+						<SolidColorBrush x:Key="SentinelBrush" Color="#FF111111" />
+					</ResourceDictionary>
+					<ResourceDictionary x:Key="Dark">
+						<SolidColorBrush x:Key="SentinelBrush" Color="#FFEEEEEE" />
+					</ResourceDictionary>
+				</ResourceDictionary.ThemeDictionaries>
+			</ResourceDictionary>
+			""");
+
+		static Color? Sentinel(ResourceDictionary d)
+			=> d.TryGetValue("SentinelBrush", out var v) && v is SolidColorBrush b ? (Color?)b.Color : null;
+
+		Assert.AreEqual(LightSentinel, Sentinel(dict), "Baseline (no scope) resolves the app Light theme.");
+
+		ResourceDictionary.PushRequestedThemeForSubTreeByName("Dark");
+		try
+		{
+			Assert.AreEqual(DarkSentinel, Sentinel(dict), "A Dark scope selects the Dark sub-dictionary.");
+
+			ResourceDictionary.PushRequestedThemeForSubTreeByName("Light");
+			try
+			{
+				Assert.AreEqual(LightSentinel, Sentinel(dict), "A nested Light scope selects Light.");
+			}
+			finally
+			{
+				ResourceDictionary.PopRequestedThemeForSubTreeByName();
+			}
+
+			Assert.AreEqual(DarkSentinel, Sentinel(dict), "Popping the nested scope restores the outer Dark scope.");
+		}
+		finally
+		{
+			ResourceDictionary.PopRequestedThemeForSubTreeByName();
+		}
+
+		Assert.AreEqual(LightSentinel, Sentinel(dict), "Popping the last scope restores the app Light theme.");
 	}
 #endif
 
@@ -1072,13 +1234,13 @@ public class Given_Theme_Materialization
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Flyout_On_Live_Button_NonUIElement_DOs_Inherit_Island_Theme()
 	{
-		// Mechanism test for the CDependencyObject-level Enter walk (DependencyObjectStore.mux.cs,
+		// Mechanism test for the CDependencyObject-level Enter walk (DependencyObject.mux.cs,
 		// depends.cpp:1013-1069): when a Button enters a Light island, its Flyout (a non-UIElement
 		// DO reached through the enter-property walk) and the flyout's items (detached UIElements,
 		// theme-established without activation) must carry the island's per-object theme — both for
 		// a XAML-declared flyout (themed at the button's Enter) and for one assigned to the live
 		// button afterwards (themed at set-time via the EnterEffectiveValue analog in
-		// DependencyObjectStore.UpdateAutoParent).
+		// DependencyObject.UpdateAutoParent).
 		//
 		// Uno-only: asserts the internal per-object theme (Store.GetTheme()), and Uno themes
 		// MenuFlyout items at opener-Enter where WinUI's item Enter is a dead enter (fIsLive=FALSE)
@@ -1111,7 +1273,7 @@ public class Given_Theme_Materialization
 			await UITestHelper.Load(root);
 
 			static Theme BaseThemeOf(DependencyObject dependencyObject)
-				=> Theming.GetBaseValue(((IDependencyObjectStoreProvider)dependencyObject).Store.GetTheme());
+				=> Theming.GetBaseValue(((DependencyObject)dependencyObject).GetTheme());
 
 			var declaredButton = (Button)root.FindName("DeclaredButton");
 			var declaredFlyout = (MenuFlyout)declaredButton.Flyout;

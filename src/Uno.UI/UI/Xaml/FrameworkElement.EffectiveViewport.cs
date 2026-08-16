@@ -1,11 +1,6 @@
 ﻿#nullable enable
 // #define TRACE_EFFECTIVE_VIEWPORT
 
-#if !(IS_NATIVE_ELEMENT && __APPLE_UIKIT__) && !UNO_HAS_ENHANCED_LIFECYCLE
-// On iOS lots of native elements are not using the Layouter and will never invoke the IFrameworkElement_EffectiveViewport.OnLayoutUpdated()
-// so avoid check of the '_isLayouted' flag
-#define CHECK_LAYOUTED
-#endif
 
 using System;
 using System.Collections.Generic;
@@ -31,14 +26,6 @@ namespace Microsoft.UI.Xaml
 {
 	partial class FrameworkElement : IFrameworkElement_EffectiveViewport
 	{
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		private static readonly RoutedEventHandler ReconfigureViewportPropagationOnLoad = (snd, e) => ((_This)snd).ReconfigureViewportPropagation();
-		private static readonly RoutedEventHandler ReconfigureViewportPropagationOnUnload = (snd, e) => ((_This)snd).ReconfigureViewportPropagation();
-#endif
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		private static readonly ICustomEventManager<_This, EffectiveViewportChangedEventArgs> _evpChangedManager =
-			new CustomKeepLastEventManager<_This, EffectiveViewportChangedEventArgs>(static () => _evpChangedManager!.OnTick(), (s, e) => s.RaiseEffectiveViewportChanged(e));
-#endif
 		private event TypedEventHandler<_This, EffectiveViewportChangedEventArgs>? _effectiveViewportChanged;
 		private List<IFrameworkElement_EffectiveViewport>? _childrenInterestedInViewportUpdates;
 		private bool _isEnumeratingChildrenInterestedInViewportUpdates;
@@ -99,11 +86,7 @@ namespace Microsoft.UI.Xaml
 			const string caller = "--unavailable--";
 #endif
 			if (
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				!isLeavingTree
-#else
-				IsLoaded
-#endif
 				&& IsEffectiveViewportEnabled)
 			{
 #if CHECK_LAYOUTED
@@ -380,23 +363,7 @@ namespace Microsoft.UI.Xaml
 			{
 				// Note: The event only notify about the parentViewport (expressed in local coordinate space!),
 				//		 the "local effective viewport" is used only by our children.
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				this.GetContext().EventManager.EnqueueForEffectiveViewportChanged(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
-#else
-#if !IS_NATIVE_ELEMENT
-				if (this is ItemsRepeater)
-				{
-					// ItemsRepeater's measure depends on EVPChanged, re-dispatching this event can cause invalid first measure.
-					_effectiveViewportChanged?.Invoke(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
-				}
-				else
-#endif
-				{
-					// re-dispatching the events on the ui-thread with a keep-last (keyed by the sender) strategy
-					// to filter out the first few invalid events.
-					_evpChangedManager.Enqueue(this, new EffectiveViewportChangedEventArgs(parentViewport.Effective));
-				}
-#endif
 			}
 
 			// the ScrollOffsets check is only relevant on skia. It will only be true when viewportUpdated is also true on other platforms.

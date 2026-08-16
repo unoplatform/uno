@@ -36,7 +36,7 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 
 			foreach (var assembly in RuntimeCopyLocalItemsInput ?? [])
 			{
-				var originalAssembly = AssemblyDefinition.ReadAssembly(assembly.GetMetadata("FullPath"));
+				using var originalAssembly = AssemblyDefinition.ReadAssembly(assembly.GetMetadata("FullPath"));
 
 				if (!originalAssembly.MainModule.AssemblyReferences.Any(m => m.Name == "Uno.UI"))
 				{

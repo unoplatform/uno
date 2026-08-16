@@ -9,14 +9,14 @@ namespace Windows.UI.Input;
 
 public partial class DraggingEventArgs
 {
-	internal DraggingEventArgs(PointerPoint point, DraggingState state, uint contactCount)
+	internal DraggingEventArgs(global::Microsoft.UI.Input.PointerPoint point, DraggingState state, uint contactCount)
 	{
 		Pointer = point;
 		DraggingState = state;
 		ContactCount = contactCount;
 	}
 
-	internal PointerPoint Pointer { get; }
+	internal global::Microsoft.UI.Input.PointerPoint Pointer { get; }
 
 	public DraggingState DraggingState { get; }
 

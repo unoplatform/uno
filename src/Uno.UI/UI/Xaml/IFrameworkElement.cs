@@ -27,7 +27,7 @@ using ViewGroup = Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml
 {
-	internal partial interface IFrameworkElement : IDataContextProvider, DependencyObject, IDependencyObjectParse
+	internal partial interface IFrameworkElement : IDataContextProvider, IDependencyObjectParse
 	{
 		event RoutedEventHandler Loaded;
 		event RoutedEventHandler Unloaded;
@@ -64,8 +64,6 @@ namespace Microsoft.UI.Xaml
 
 		Style Style { get; set; }
 
-		Microsoft.UI.Xaml.Media.Brush Background { get; set; }
-
 		Transform RenderTransform { get; set; }
 
 		TransitionCollection Transitions { get; set; }
@@ -75,8 +73,6 @@ namespace Microsoft.UI.Xaml
 		VerticalAlignment VerticalAlignment { get; set; }
 
 		Uri BaseUri { get; }
-
-		_Size AdjustArrange(_Size finalSize);
 
 		int? RenderPhase { get; set; }
 
@@ -114,7 +110,7 @@ namespace Microsoft.UI.Xaml
 		/// <param name="name">The name of the template part</param>
 		public static DependencyObject GetTemplateChild(this IFrameworkElement e, string name)
 		{
-			return e.FindName(name) as IFrameworkElement;
+			return e.FindName(name) as DependencyObject;
 		}
 #if !UNO_REFERENCE_API
 		// This extension method is not needed for Skia

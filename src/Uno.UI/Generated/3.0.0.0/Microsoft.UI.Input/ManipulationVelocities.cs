@@ -3,14 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct ManipulationVelocities
 	{
 		// Forced skipping of method Microsoft.UI.Input.ManipulationVelocities.ManipulationVelocities()
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public ManipulationVelocities(global::Windows.Foundation.Point _Linear, float _Angular, float _Expansion)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.ManipulationVelocities", "ManipulationVelocities(Point _Linear, float _Angular, float _Expansion)");

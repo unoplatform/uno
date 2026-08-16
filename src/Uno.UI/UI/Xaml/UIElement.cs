@@ -1,4 +1,4 @@
-﻿#if IS_UNIT_TESTS
+#if IS_UNIT_TESTS
 #pragma warning disable CS0067
 #endif
 
@@ -37,11 +37,20 @@ using Microsoft.UI.Input;
 using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Core.Scaling;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using Windows.Foundation.Metadata;
+using Uno.UI.DataBinding;
+using Microsoft.UI.Xaml.Hosting;
+using Uno.UI.Dispatching;
+using Uno.Collections;
+using Uno.UI.Xaml.Controls;
+using Uno.Helpers;
 
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class UIElement : DependencyObject, IXUidProvider
+	public partial class UIElement : DependencyObject, IXUidProvider, IVisualElement, IVisualElement2
 	{
 		private protected static bool _traceLayoutCycle;
 #if !__SKIA__
@@ -56,45 +65,11 @@ namespace Microsoft.UI.Xaml
 		private string _uid;
 
 		private Vector3 _translation = Vector3.Zero;
+		internal bool HasCompositionChildVisual { get; set; }
 
 		private InputCursor _protectedCursor;
 		private SerialDisposable _disposedEventDisposable = new();
 
-
-		/// <summary>
-		/// Gets the current theme value for this element.
-		/// </summary>
-		/// <remarks>Thin forwarder to <see cref="DependencyObjectStore"/>, where the per-object theme
-		/// lives for every DependencyObject (WinUI: CDependencyObject::GetTheme, CDependencyObject.h:1648).</remarks>
-		internal Theme GetTheme() => ((IDependencyObjectStoreProvider)this).Store.GetTheme();
-
-		/// <summary>
-		/// Sets the theme value for this element.
-		/// </summary>
-		internal void SetTheme(Theme theme) => ((IDependencyObjectStoreProvider)this).Store.SetTheme(theme);
-
-		/// <summary>
-		/// Gets whether this element is currently processing a theme walk.
-		/// </summary>
-		internal bool IsProcessingThemeWalk => ((IDependencyObjectStoreProvider)this).Store.IsProcessingThemeWalk;
-
-		/// <summary>
-		/// Sets whether this element is currently processing a theme walk.
-		/// </summary>
-		internal void SetIsProcessingThemeWalk(bool value) => ((IDependencyObjectStoreProvider)this).Store.SetIsProcessingThemeWalk(value);
-
-		/// <summary>
-		/// Notifies this element and its subtree that the theme has changed.
-		/// </summary>
-		/// <remarks>Thin forwarder — the walk is a CDependencyObject mechanism
-		/// (Theming.cpp:110-157) hosted on <see cref="DependencyObjectStore"/>. Element-level
-		/// theming is enhanced-lifecycle only; this is a no-op on native targets.</remarks>
-		internal void NotifyThemeChanged(Theme theme, bool forceRefresh = false)
-		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
-			((IDependencyObjectStoreProvider)this).Store.NotifyThemeChanged(theme, forceRefresh);
-#endif
-		}
 
 		public Size DesiredSize => Visibility == Visibility.Visible && HasLayoutStorage ? m_desiredSize : default;
 
@@ -625,7 +600,7 @@ namespace Microsoft.UI.Xaml
 
 		private protected void UpdateLastUsedTheme()
 		{
-			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
+			((DependencyObject)this).SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
 
 #nullable enable
@@ -773,7 +748,7 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 
-#if !__APPLE_UIKIT__ && !__ANDROID__ && !__SKIA__ // This is the default implementation, but it can be customized per platform
+#if !__SKIA__ // This is the default implementation, but it can be customized per platform
 		/// <summary>
 		/// Note: Offsets are only an approximation that does not take into consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
@@ -848,7 +823,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			// NOTE: DataContext propagation to ContextFlyout is handled automatically by the
-			// mentor mechanism in DependencyObjectStore.Binder.OnDependencyPropertyChanged.
+			// mentor mechanism in DependencyObject.Binder.OnDependencyPropertyChanged.
 			// ContextFlyoutProperty is marked with ValueDoesNotInheritDataContext, which triggers
 			// the mentor path: the flyout gets a weak reference to this UIElement as its mentor,
 			// and DataContext is propagated at Inheritance precedence. This matches WinUI's
@@ -943,7 +918,6 @@ namespace Microsoft.UI.Xaml
 
 			var bounds = root.XamlRoot.Bounds;
 
-#if !__NETSTD_REFERENCE__
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 			var eventManager = root.GetContext().EventManager;
@@ -1031,7 +1005,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			throw new LayoutCycleException("Layout cycle detected. For more information, see https://aka.platform.uno/layout-cycle");
-#endif
 		}
 
 		internal void ApplyClip()
@@ -1062,7 +1035,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-#if !(__SKIA__ || __WASM__)
+#if !__SKIA__
 		internal Rect GetNativeClippedViewport()
 		{
 			Rect rect;
@@ -1571,5 +1544,445 @@ namespace Microsoft.UI.Xaml
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event TypedEventHandler<UIElement, AccessKeyInvokedEventArgs> UIElement.AccessKeyInvoked", LogLevel.Debug);
 			}
 		}
+
+		private protected ContainerVisual _visual;
+		private Rect _lastFinalRect;
+		private Rect? _lastClippedFrame;
+		private Vector3 _lastTranslation;
+
+		public UIElement()
+		{
+			_isFrameworkElement = this is FrameworkElement;
+
+			Initialize();
+			InitializePointers();
+
+			UpdateHitTest();
+		}
+
+		public bool UseLayoutRounding
+		{
+			get => GetUseLayoutRoundingValue();
+			set => SetUseLayoutRoundingValue(value);
+		}
+
+		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallbackName = nameof(OnUseLayoutRoundingChanged))]
+		public static DependencyProperty UseLayoutRoundingProperty { get; } = CreateUseLayoutRoundingProperty();
+
+		private void OnUseLayoutRoundingChanged(DependencyPropertyChangedEventArgs args) => (this as IBorderInfoProvider)?.UpdateBorderThickness();
+
+		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
+		{
+			UpdateOpacity();
+			ContentPresenter.UpdateNativeHostContentPresentersOpacities();
+		}
+
+		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
+		{
+			UpdateHitTest();
+		}
+
+		private void UpdateOpacity()
+		{
+			Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
+		}
+
+		internal ContainerVisual Visual
+		{
+			get
+			{
+
+				if (_visual is null)
+				{
+					_visual = CreateElementVisual();
+					Debug.Assert(this is not IBorderInfoProvider || _visual is BorderVisual,
+						"Border info providers are expected to override CreateElementVisual and return BorderVisual, and types returning BorderVisual should be IBorderInfoProviders");
+#if ENABLE_CONTAINER_VISUAL_TRACKING
+					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
+#endif
+					_visual.Owner = new WeakReference(this);
+				}
+
+				return _visual;
+			}
+		}
+
+		private protected virtual ContainerVisual CreateElementVisual()
+			=> ElementVisualCompositor.CreateContainerVisual();
+
+		internal void SetElementVisualCompositor(Compositor compositor)
+		{
+			if (_visual is not null)
+			{
+				throw new InvalidOperationException("The element visual has already been created.");
+			}
+
+			_elementVisualCompositor = compositor;
+		}
+
+		internal static Action<UIElement, UIElement, int?> ExternalOnChildAdded { get; set; }
+		internal static Action<UIElement, UIElement> ExternalOnChildRemoved { get; set; }
+
+		/// <param name="relativeLocation">The point being tested, in element coordinates (i.e. top-left of element is (0,0) if not RTL)</param>
+		/// <remarks>This does NOT take the clipping into account.</remarks>
+		internal virtual bool HitTest(Point relativeLocation) => Visual.HitTest(relativeLocation);
+
+		internal void AddChild(UIElement child, int? index = null)
+		{
+			if (child == null)
+			{
+				return;
+			}
+
+			var currentParent = child.GetParent() as UIElement;
+
+			// Remove child from current parent, if any
+			if (currentParent != this && currentParent != null)
+			{
+				// ---IMPORTANT---
+				// This behavior is different than UWP:
+				// On UWP the behavior would be to throw an "Element already has a logical parent" exception.
+
+				// It is done here to align Wasm with Android and iOS where the control is
+				// simply "moved" when attached to another parent.
+
+				// This could lead to "child kidnapping", like the one happening in ComboBox & ComboBoxItem
+
+				this.Log().Info($"{this}.AddChild({child}): Removing child {child} from its current parent {currentParent}.");
+				currentParent.RemoveChild(child);
+			}
+
+			child.SetParent(this);
+
+			if (index is { } actualIndex && actualIndex != _children.Count)
+			{
+				var currentVisual = _children[actualIndex];
+				_children.Insert(actualIndex, child);
+				Visual.Children.InsertAbove(child.Visual, currentVisual.Visual);
+			}
+			else
+			{
+				_children.Add(child);
+				Visual.Children.InsertAtTop(child.Visual);
+			}
+
+			var enterParams = new EnterParams(IsActiveInVisualTree);
+			ChildEnter(child, enterParams);
+
+			OnChildAdded(child);
+			UIElementAccessibilityHelper.ExternalOnChildAdded?.Invoke(this, child, index);
+
+			// Reset to original (invalidated) state
+			child.ResetLayoutFlags();
+
+			if (IsMeasureDirtyPathDisabled)
+			{
+				FrameworkElementHelper.SetUseMeasurePathDisabled(child); // will invalidate too
+			}
+			else
+			{
+				child.InvalidateMeasure();
+			}
+
+			if (IsArrangeDirtyPathDisabled)
+			{
+				FrameworkElementHelper.SetUseArrangePathDisabled(child); // will invalidate too
+			}
+			else
+			{
+				child.InvalidateArrange();
+			}
+
+			// Force a new measure of this element (the parent of the new child)
+			InvalidateMeasure();
+			InvalidateArrange();
+
+		}
+
+		internal void MoveChildTo(int oldIndex, int newIndex)
+		{
+			var view = _children[oldIndex];
+
+			_children.RemoveAt(oldIndex);
+			if (newIndex == _children.Count)
+			{
+				_children.Add(view);
+			}
+			else
+			{
+				_children.Insert(newIndex, view);
+			}
+
+			InvalidateMeasure();
+		}
+
+		internal bool RemoveChild(UIElement child)
+		{
+			if (_children.Remove(child))
+			{
+				UIElementAccessibilityHelper.ExternalOnChildRemoved?.Invoke(this, child);
+				InnerRemoveChild(child);
+
+				// Force a new measure of this element
+				InvalidateMeasure();
+
+				return true;
+			}
+
+			return false;
+		}
+
+		internal UIElement ReplaceChild(int index, UIElement child)
+		{
+			var previous = _children[index];
+
+			if (!ReferenceEquals(child, previous))
+			{
+				RemoveChild(previous);
+				AddChild(child, index);
+			}
+
+			return previous;
+		}
+
+		internal void ClearChildren()
+		{
+			if (_children.Count == 0)
+			{
+				return;
+			}
+
+			foreach (var child in _children.ToArray())
+			{
+				UIElementAccessibilityHelper.ExternalOnChildRemoved?.Invoke(this, child);
+				InnerRemoveChild(child);
+			}
+
+			_children.Clear();
+			InvalidateMeasure();
+		}
+
+		private void InnerRemoveChild(UIElement child)
+		{
+			child.SetParent(null);
+			if (Visual != null)
+			{
+				Visual.Children.Remove(child.Visual);
+			}
+			OnChildRemoved(child);
+		}
+
+		internal UIElement FindFirstChild() => _children.FirstOrDefault();
+
+		internal MaterializableList<UIElement> GetChildren() => _children;
+
+		public IntPtr Handle { get; }
+
+		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
+		{
+			UpdateHitTest();
+			UpdateOpacity();
+
+			if (newValue == Visibility.Collapsed)
+			{
+				m_desiredSize = new Size(0, 0);
+				m_size = new Size(0, 0);
+			}
+
+			if (this.GetParent() is UIElement parent)
+			{
+				// Need to invalidate the parent when the visibility changes to ensure its
+				// algorithm is doing its layout properly.
+				parent.InvalidateMeasure();
+			}
+
+			// Notify UIA clients that IsOffscreen (and potentially other properties) may have changed.
+			CachedAutomationPeer?.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+
+			// Faithful to WinUI: a Visibility toggle on a live element enters/leaves the
+			// composition (PC) scene, and WinUI registers a StructureChanged event for it
+			// (Added when becoming visible, Removed when collapsing — see
+			// CUIElement::EnterPCSceneRecursive / LeavePCSceneRecursive in uielement.cpp).
+			// Collapsed elements are pruned from the automation tree (GetAPChildren filters
+			// to Visible children, mirrored here by FrameworkElementAutomationPeer.ChildIsAcceptable).
+			// The Skia bridge keeps a provider-level children cache that a visibility toggle
+			// would otherwise leave stale, so route the toggle through the same child
+			// added/removed path real tree mutations use. Without this, content revealed by a
+			// horizontal scroll/resize (e.g. WCT DataGrid columns scrolled into view, which
+			// flip cells from Collapsed to Visible rather than re-adding them) renders visually
+			// but never materializes in the UIA tree.
+			if (IsActiveInVisualTree && this.GetParent() is UIElement visibilityParent)
+			{
+				if (newValue == Visibility.Visible)
+				{
+					Uno.Helpers.UIElementAccessibilityHelper.ExternalOnChildAdded?.Invoke(visibilityParent, this, null);
+				}
+				else
+				{
+					Uno.Helpers.UIElementAccessibilityHelper.ExternalOnChildRemoved?.Invoke(visibilityParent, this);
+				}
+			}
+		}
+
+		partial void OnRenderTransformSet()
+		{
+		}
+
+		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
+		{
+			LayoutSlotWithMarginsAndAlignments = finalRect;
+
+			var oldFinalRect = _lastFinalRect;
+			var oldClippedFrame = _lastClippedFrame;
+			var oldTranslation = _lastTranslation;
+			_lastFinalRect = finalRect;
+			_lastClippedFrame = clippedFrame;
+			_lastTranslation = _translation;
+
+			var oldRect = oldFinalRect;
+			var newRect = finalRect;
+
+			var oldClip = oldClippedFrame;
+			var newClip = clippedFrame;
+
+			if (oldRect != newRect ||
+				oldClip != newClip ||
+				oldTranslation != _translation ||
+				(_renderTransform?.FlowDirectionTransform ?? Matrix3x2.Identity) != GetFlowDirectionTransform())
+			{
+				if (
+					newRect.Width < 0
+					|| newRect.Height < 0
+					|| double.IsNaN(newRect.Width)
+					|| double.IsNaN(newRect.Height)
+					|| double.IsNaN(newRect.X)
+					|| double.IsNaN(newRect.Y)
+				)
+				{
+					throw new InvalidOperationException($"{this}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
+				}
+
+				OnArrangeVisual(newRect, clippedFrame);
+				OnViewportUpdated();
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"{this}: ArrangeVisual({_lastFinalRect}) -- SKIPPED (no change)");
+				}
+			}
+		}
+
+		internal virtual void OnArrangeVisual(Rect rect, Rect? clip)
+		{
+			// Note: rect has already been rounded, if needed, during arrange.
+			var visual = Visual;
+			visual.ArrangeOffset = new Vector3((float)rect.X, (float)rect.Y, 0) + _translation;
+			visual.Size = new Vector2((float)rect.Width, (float)rect.Height);
+
+			var hasProjection = _projection is not null;
+			if (_renderTransform is null && (!GetFlowDirectionTransform().IsIdentity || hasProjection))
+			{
+				_renderTransform = new NativeRenderTransformAdapter(this, RenderTransform, RenderTransformOrigin);
+			}
+
+			if (_renderTransform is not null)
+			{
+				// Update with the new layout size - this is important for Projection calculations
+				var newSize = new Size(rect.Width, rect.Height);
+				if (_renderTransform.CurrentSize != newSize)
+				{
+					_renderTransform.UpdateSize(newSize);
+				}
+				else
+				{
+					_renderTransform.UpdateFlowDirectionTransform();
+				}
+			}
+
+			// The clipping applied by our parent due to layout constraints are pushed to the visual through the LayoutClip property
+			// This allows special handling of this clipping by the compositor (cf. ContainerVisual.Render).
+			if (clip is null)
+			{
+				visual.LayoutClip = null;
+			}
+			else
+			{
+				visual.LayoutClip = (clip.Value, ShouldApplyLayoutClipAsAncestorClip());
+			}
+		}
+
+		partial void ApplyNativeClip(Rect rect, Transform transform)
+		{
+			if (rect.IsEmpty)
+			{
+				Visual.Clip = null;
+			}
+			else
+			{
+				var roundedRectClip = rect;
+				if (GetUseLayoutRounding())
+				{
+					roundedRectClip = LayoutRound(roundedRectClip);
+				}
+
+				var compositionClip = Visual.Compositor.CreateRectangleClip(
+					top: (float)roundedRectClip.Top,
+					left: (float)roundedRectClip.Left,
+					bottom: (float)roundedRectClip.Bottom,
+					right: (float)roundedRectClip.Right
+				);
+
+				if (transform is { } clipTransform)
+				{
+					compositionClip.TransformMatrix = clipTransform.MatrixCore;
+				}
+
+				Visual.Clip = compositionClip;
+			}
+		}
+
+		partial void ShowVisual()
+			=> Visual.IsVisible = true;
+
+		partial void HideVisual()
+			=> Visual.IsVisible = false;
+
+		public void StartAnimation(ICompositionAnimationBase animation)
+		{
+			if (animation is CompositionAnimation compositionAnimation)
+			{
+				if (compositionAnimation.Target.Equals("Translation", StringComparison.OrdinalIgnoreCase) ||
+					compositionAnimation.Target.StartsWith("Translation.", StringComparison.OrdinalIgnoreCase))
+				{
+					ElementCompositionPreview.SetIsTranslationEnabled(this, true);
+				}
+
+				Visual.StartAnimation(compositionAnimation.Target, compositionAnimation);
+			}
+			else
+			{
+				throw new NotSupportedException("The method 'UIElement.StartAnimation' currently only supports 'CompositionAnimation'.");
+			}
+		}
+
+		public void StopAnimation(ICompositionAnimationBase animation)
+		{
+			if (animation is CompositionAnimation compositionAnimation)
+			{
+				Visual.StopAnimation(compositionAnimation.Target);
+			}
+			else
+			{
+				throw new NotSupportedException("The method 'UIElement.StopAnimation' currently only supports 'CompositionAnimation'.");
+			}
+		}
+
+		Visual IVisualElement2.GetVisualInternal() => ElementCompositionPreview.GetElementVisual(this);
+
+#if DEBUG
+		public string ShowLocalVisualTree() => this.ShowLocalVisualTree(1000);
+#endif
 	}
 }

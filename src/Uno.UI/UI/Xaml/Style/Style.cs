@@ -22,8 +22,6 @@ namespace Microsoft.UI.Xaml
 
 		private readonly static Dictionary<Type, StyleProviderHandler> _lookup = new(Uno.Core.Comparison.FastTypeComparer.Default);
 		private readonly static Dictionary<Type, Style> _defaultStyleCache = new(Uno.Core.Comparison.FastTypeComparer.Default);
-		private readonly static Dictionary<Type, StyleProviderHandler> _nativeLookup = new(Uno.Core.Comparison.FastTypeComparer.Default);
-		private readonly static Dictionary<Type, Style> _nativeDefaultStyleCache = new(Uno.Core.Comparison.FastTypeComparer.Default);
 
 		/// <summary>
 		/// Removes entries from the style caches whose Type key belongs to a non-default ALC.
@@ -32,8 +30,6 @@ namespace Microsoft.UI.Xaml
 		{
 			RemoveNonDefaultAlcEntries(_lookup);
 			RemoveNonDefaultAlcEntries(_defaultStyleCache);
-			RemoveNonDefaultAlcEntries(_nativeLookup);
-			RemoveNonDefaultAlcEntries(_nativeDefaultStyleCache);
 		}
 
 		private static void RemoveNonDefaultAlcEntries<TValue>(Dictionary<Type, TValue> dictionary)
@@ -126,7 +122,7 @@ namespace Microsoft.UI.Xaml
 			// In DependencyObject::EvaluateBaseValue (DependencyObject.cpp file), the value is updated to that returned from GetValueFromStyle
 			// Then, baseValueSource is updated from BaseValueSourceBuiltInStyle to BaseValueSourceStyle
 			// The OverrideLocalPrecedence call below is the equivalent of the baseValueSource update.
-			if (baseValueSource == DependencyPropertyValuePrecedences.ImplicitStyle &&
+			if (baseValueSource == DependencyPropertyValuePrecedences.BuiltInStyle &&
 				dependencyObject is FrameworkElement fe &&
 				fe.GetActiveStyle() is { } activeStyle &&
 				// Make sure to only consider active style if it was explicit.
@@ -150,7 +146,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			Debug.Assert(precedence is DependencyPropertyValuePrecedences.ImplicitStyle or DependencyPropertyValuePrecedences.ExplicitStyle);
+			Debug.Assert(precedence is DependencyPropertyValuePrecedences.BuiltInStyle or DependencyPropertyValuePrecedences.Style);
 
 			IDisposable? localPrecedenceDisposable = null;
 
@@ -177,7 +173,7 @@ namespace Microsoft.UI.Xaml
 							{
 								if (TryGetAdjustedSetter(precedence, o, _flattenedSetters[i], out var adjustedSetter))
 								{
-									using (o.OverrideLocalPrecedence(DependencyPropertyValuePrecedences.ExplicitStyle))
+									using (o.OverrideLocalPrecedence(DependencyPropertyValuePrecedences.Style))
 									{
 										adjustedSetter.ApplyTo(o);
 									}
@@ -203,7 +199,7 @@ namespace Microsoft.UI.Xaml
 					localPrecedenceDisposable = null;
 
 					// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
-					(o as IDependencyObjectStoreProvider)!.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading);
+					(o as DependencyObject)!.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading);
 					return localPrecedenceDisposable;
 				}
 
@@ -300,19 +296,11 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="type">The type to which the style applies</param>
 		/// <param name="dictionaryProvider">Provides the dictionary in which the style is defined.</param>
-		/// <param name="isNative">True if it is the native default style, false if it is the UWP default style.</param>
 		/// <remarks>This is an Uno-specific method, normally only called from Xaml-generated code.</remarks>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void RegisterDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider, bool isNative)
+		public static void RegisterDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider)
 		{
-			if (isNative)
-			{
-				_nativeLookup[type] = ProvideStyle;
-			}
-			else
-			{
-				_lookup[type] = ProvideStyle;
-			}
+			_lookup[type] = ProvideStyle;
 
 			Style ProvideStyle()
 			{
@@ -329,31 +317,26 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Returns the default Style for given type.
 		/// </summary>
-		internal static Style? GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, null, ShouldUseUWPDefaultStyle(type));
+		internal static Style? GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, null);
 
-		internal static Style? GetDefaultStyleForInstance(FrameworkElement instance, Type type) => GetDefaultStyleForType(type, instance, ShouldUseUWPDefaultStyle(type));
+		internal static Style? GetDefaultStyleForInstance(FrameworkElement instance, Type type) => GetDefaultStyleForType(type, instance);
 
-		private static Style? GetDefaultStyleForType(Type type, FrameworkElement? instance, bool useUWPDefaultStyles)
+		private static Style? GetDefaultStyleForType(Type type, FrameworkElement? instance)
 		{
 			if (type == null)
 			{
 				return null;
 			}
 
-			var styleCache = useUWPDefaultStyles ? _defaultStyleCache
-				: _nativeDefaultStyleCache;
-			var lookup = useUWPDefaultStyles ? _lookup
-				: _nativeLookup;
-
-			if (!styleCache.TryGetValue(type, out Style? style))
+			if (!_defaultStyleCache.TryGetValue(type, out Style? style))
 			{
-				if (lookup.TryGetValue(type, out var styleProvider))
+				if (_lookup.TryGetValue(type, out var styleProvider))
 				{
 					style = styleProvider();
 
-					styleCache[type] = style;
+					_defaultStyleCache[type] = style;
 
-					lookup.Remove(type); // The lookup won't be used again now that the style itself is cached
+					_lookup.Remove(type); // The lookup won't be used again now that the style itself is cached
 				}
 			}
 
@@ -368,40 +351,19 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			if (style == null && !useUWPDefaultStyles)
-			{
-				if (_logger.IsEnabled(LogLevel.Debug))
-				{
-					_logger.LogDebug($"No native style found for type {type}, falling back on UWP style");
-				}
-
-				// If no native style found, fall back on UWP style
-				style = GetDefaultStyleForType(type, instance, useUWPDefaultStyles: true);
-			}
-
 			if (_logger.IsEnabled(LogLevel.Debug))
 			{
 				if (style != null)
 				{
-					_logger.LogDebug($"Returning {(useUWPDefaultStyles ? "UWP" : "native")} style {style} for type {type}");
+					_logger.LogDebug($"Returning default style {style} for type {type}");
 				}
 				else
 				{
-					_logger.LogDebug($"No {(useUWPDefaultStyles ? "UWP" : "native")} style found for type {type}");
+					_logger.LogDebug($"No default style found for type {type}");
 				}
 			}
 
 			return style;
-		}
-
-		internal static bool ShouldUseUWPDefaultStyle(Type type)
-		{
-			if (type != null && FeatureConfiguration.Style.UseUWPDefaultStylesOverride.TryGetValue(type, out var value))
-			{
-				return value;
-			}
-
-			return FeatureConfiguration.Style.UseUWPDefaultStyles;
 		}
 	}
 }

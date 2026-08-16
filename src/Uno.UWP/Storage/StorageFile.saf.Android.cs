@@ -37,10 +37,10 @@ namespace Windows.Storage
 				}
 			}
 
-			internal SafFile(DocumentFile directoryDocument) : base(directoryDocument.Uri.Path ?? directoryDocument.Name ?? "")
+			internal SafFile(DocumentFile directoryDocument) : base(directoryDocument?.Uri?.Path ?? directoryDocument?.Name ?? "")
 			{
 				_directoryDocument = directoryDocument ?? throw new ArgumentNullException(nameof(directoryDocument));
-				_fileUri = _directoryDocument.Uri;
+				_fileUri = _directoryDocument.Uri ?? throw new ArgumentException($"directoryDocument.Uri must not be null.", nameof(directoryDocument));
 			}
 
 			public override StorageProvider Provider => StorageProviders.AndroidSaf;

@@ -144,8 +144,6 @@
             href: xref:Uno.Development.CommunityToolkit.v7
       - name: How to manually add a splash screen
         href: xref:Uno.Development.SplashScreen
-      - name: How to use native Frame navigation
-        href: xref:Uno.Tutorials.UseNativeFrameNav
       - name: How to consume a web API
         href: xref:Uno.Development.ConsumeWebApi
       - name: How to localize text resources
@@ -227,6 +225,8 @@
         href: xref:Uno.Skia.Desktop
       - name: Linux Framebuffer
         href: features/using-linux-framebuffer.md
+      - name: Headless (offscreen)
+        href: features/using-skia-headless.md
       - name: Using Skia Desktop (macOS)
         href: xref:Uno.Skia.macOS
       - name: Vulkan Rendering Backend
@@ -357,6 +357,8 @@
           href: guides/profiling-applications.md
         - name: IL Linker for WebAssembly
           href: xref:uno.articles.features.illinker
+        - name: Native AOT Support
+          href: features/native-aot.md
         - name: Skia Native Libraries Trimming
           href: features/skia-libraries-trimming.md
         - name: Working with String Resource Trimming
@@ -563,8 +565,6 @@
               href: controls/MenuFlyout.md
             - name: NavigationView
               href: controls/NavigationView.md
-            - name: Native control styles
-              href: native-styles.md
             - name: Other features
               href: xref:Uno.Development.AdditionalFeatures
             - name: Pivot
@@ -617,6 +617,8 @@
           href: uno-toolchain-telemetry.md
         - name: Composition API
           href: composition.md
+        - name: Customizing the Application class on Android
+          href: xref:Uno.Features.CustomizingAndroidApplication
         - name: Customizing the UIApplicationDelegate on iOS
           href: xref:Uno.Features.CustomizingUIApplicationDelegate
         - name: Dialogs
@@ -629,8 +631,6 @@
           href: features/custom-fonts.md
         - name: Markup Extensions
           href: features/windows-ui-markup-extensions.md
-        - name: Native frame navigation
-          href: features/native-frame-nav.md
         - name: Orientation
           href: features/orientation.md
         - name: Routed Events

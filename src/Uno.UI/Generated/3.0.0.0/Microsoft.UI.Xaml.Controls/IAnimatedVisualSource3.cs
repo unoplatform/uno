@@ -3,13 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IAnimatedVisualSource3
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		global::Microsoft.UI.Xaml.Controls.IAnimatedVisual2 TryCreateAnimatedVisual(global::Microsoft.UI.Composition.Compositor compositor, out object diagnostics, bool createAnimations);
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.IAnimatedVisualSource3.TryCreateAnimatedVisual(Microsoft.UI.Composition.Compositor, out object, bool)
 	}
 }

@@ -114,15 +114,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// TODO: Revisit if this can use SizeChanged += (_, _) => OnControlsBoundsChanged(); on all platforms.
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal override void AfterArrange()
 		{
 			base.AfterArrange();
-#else
-		internal override void OnLayoutUpdated()
-		{
-			base.OnLayoutUpdated();
-#endif
 			OnControlsBoundsChanged();
 		}
 
@@ -1244,7 +1238,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool InitializeTemplateChild<T>(
 			string childName,
 			string? uiaKey,
-			[NotNullWhen(true)] out T? child) where T : class, DependencyObject
+			[NotNullWhen(true)] out T? child) where T : DependencyObject
 		{
 			child = GetTemplateChild<T>(childName);
 			if (child is { } && uiaKey is { })

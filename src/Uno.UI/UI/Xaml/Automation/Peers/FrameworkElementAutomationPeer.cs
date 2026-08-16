@@ -595,7 +595,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 					// - We want to disable accessibility focus for elements whose names are aggregated into the name of their parent.
 					// - We want to prevent these elements from enumerating their own children in GetSimpleAccessibilityName(),
 					//	 which might be called as a result of calling automationPeer.GetName() below.
-					AutomationProperties.SetAccessibilityView(child, AccessibilityView.Raw);
+					AutomationProperties.SetAccessibilityView((DependencyObject)child, AccessibilityView.Raw);
 					return child;
 				})
 				.Select(FromIFrameworkElement)

@@ -3,21 +3,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class SurfaceImageSource : global::Microsoft.UI.Xaml.Media.ImageSource
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public SurfaceImageSource(int pixelWidth, int pixelHeight)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource", "SurfaceImageSource(int pixelWidth, int pixelHeight)");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource.SurfaceImageSource(int, int)
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public SurfaceImageSource(int pixelWidth, int pixelHeight, bool isOpaque)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Imaging.SurfaceImageSource", "SurfaceImageSource(int pixelWidth, int pixelHeight, bool isOpaque)");

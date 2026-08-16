@@ -712,9 +712,6 @@ namespace Microsoft.UI.Xaml.Controls
 				// Calculate Create layoutFrame and apply child's margins
 				var layoutFrame = new Rect(x, y, width, height).DeflateBy(childMargin);
 
-				// Give opportunity to element to alter arranged size
-				layoutFrame.Size = frameworkElement.AdjustArrange(layoutFrame.Size);
-
 				// Calculate clipped frame.
 				var clippedFrameWithParentOrigin =
 					layoutFrame

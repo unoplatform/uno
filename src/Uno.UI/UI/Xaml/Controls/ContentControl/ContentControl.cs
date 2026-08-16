@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -8,18 +8,21 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Media.Animation;
-using System.Collections;
 using System.Linq;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Uno;
 
 using View = Microsoft.UI.Xaml.UIElement;
+using Uno.UI.Controls;
+using Windows.Foundation;
+using Uno.Disposables;
+using System.Runtime.CompilerServices;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Content))]
-	public partial class ContentControl : Control, IEnumerable
+	public partial class ContentControl : Control
 	{
 		private View? _contentTemplateRoot;
 
@@ -414,14 +417,14 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					if ((ContentTemplateRoot is IDependencyObjectStoreProvider provider) &&
-						provider.Store.DataContextProperty is { } dataContextProperty &&
+					if ((ContentTemplateRoot is DependencyObject provider) &&
+						provider.DataContextPropertyInternal is { } dataContextProperty &&
 						// The DataContext may be set directly on the template root
 						(_localContentDataContextOverride || !(provider as DependencyObject).IsDependencyPropertyLocallySet(dataContextProperty))
 					)
 					{
 						_localContentDataContextOverride = true;
-						provider.Store.SetValue(dataContextProperty, Content, DependencyPropertyValuePrecedences.Local);
+						provider.SetValue(dataContextProperty, Content, DependencyPropertyValuePrecedences.Local);
 					}
 				}
 			}
@@ -434,11 +437,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private void ResetContentDataContextOverride()
 		{
 			if (_localContentDataContextOverride &&
-				ContentTemplateRoot is IDependencyObjectStoreProvider provider &&
-				provider.Store.DataContextProperty is { } dataContextProperty)
+				ContentTemplateRoot is DependencyObject provider &&
+				provider.DataContextPropertyInternal is { } dataContextProperty)
 			{
 				_localContentDataContextOverride = false;
-				provider.Store.ClearValue(dataContextProperty, DependencyPropertyValuePrecedences.Local);
+				provider.ClearValue(dataContextProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
 
@@ -517,5 +520,19 @@ namespace Microsoft.UI.Xaml.Controls
 				ContentTemplateRoot = null;
 			}
 		}
+
+#nullable disable
+		partial void RegisterContentTemplateRoot()
+		{
+			AddChild(ContentTemplateRoot);
+		}
+
+		partial void UnregisterContentTemplateRoot()
+		{
+			RemoveChild(ContentTemplateRoot);
+		}
+
+		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
+#nullable enable
 	}
 }

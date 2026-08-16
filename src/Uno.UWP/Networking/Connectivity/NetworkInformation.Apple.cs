@@ -1,5 +1,5 @@
 ﻿using System;
-#if __IOS__ && !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13931
+#if __IOS__
 using CoreTelephony;
 #endif
 using Uno.Networking.Connectivity.Internal;
@@ -10,7 +10,7 @@ namespace Windows.Networking.Connectivity
 {
 	public partial class NetworkInformation
 	{
-#if __IOS__ && !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13931
+#if __IOS__
 		private static readonly Lazy<CTCellularData> _cellularData = new Lazy<CTCellularData>(() => new CTCellularData());
 
 		internal static CTCellularData CellularData => _cellularData.Value;

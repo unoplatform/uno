@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml
 			{
 #if DEBUG
 				// Dispose here may not be invoked multiple times. If this is the case,
-				// this means that the Dispose method from DependencyObjectStore is invoked
+				// this means that the Dispose method from DependencyObject is invoked
 				// multiple times from different threads and is not synchronized properly.
 				Debug.Fail("Dispose may not be invoked multiple times.");
 #endif

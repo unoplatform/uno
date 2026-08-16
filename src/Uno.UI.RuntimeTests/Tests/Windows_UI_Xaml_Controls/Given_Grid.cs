@@ -612,7 +612,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(new Rect(new Point(84, 6), new Size(29, 29)), yellowBounds);
 
 			var redBounds = ImageAssert.GetColorBounds(bitmap, Colors.Red, tolerance: 5);
-			Assert.AreEqual(new Rect(new Point(84, 6), new Size(29, 29)), redBounds);
+			// The ellipse's anti-aliased core shifts by a couple of pixels depending on the rasterizer
+			// (software vs the default Vulkan GPU backend), so compare with a tolerance. A real clip would
+			// remove the ~4px top/right overflow, well beyond this tolerance.
+			AssertBoundsApproxEqual(new Rect(new Point(84, 6), new Size(29, 29)), redBounds, tolerance: 3);
+		}
+
+		private static void AssertBoundsApproxEqual(Rect expected, Rect actual, double tolerance)
+		{
+			Assert.IsTrue(
+				Math.Abs(expected.Left - actual.Left) <= tolerance &&
+				Math.Abs(expected.Top - actual.Top) <= tolerance &&
+				Math.Abs(expected.Width - actual.Width) <= tolerance &&
+				Math.Abs(expected.Height - actual.Height) <= tolerance,
+				$"Expected bounds ~{expected} (±{tolerance}px), got {actual}.");
 		}
 
 		[TestMethod]

@@ -1,5 +1,4 @@
-﻿#if !__NETSTD_REFERENCE__
-using System;
+﻿using System;
 using System.IO;
 using SkiaSharp;
 using Svg.Skia;
@@ -17,7 +16,7 @@ using SkiaSharp.Views.Windows;
 
 #if __SKIA__
 using SkiaCanvas = global::Uno.WinUI.Graphics2DSK.SKCanvasElement;
-#elif __MACCATALYST__ || !(__APPLE_UIKIT__ || __ANDROID__)
+#elif !(__APPLE_UIKIT__ || __ANDROID__)
 using SkiaCanvas = SkiaSharp.Views.Windows.SKXamlCanvas;
 using SkiaPaintEventArgs = SkiaSharp.Views.Windows.SKPaintSurfaceEventArgs;
 #else
@@ -26,7 +25,7 @@ using SkiaPaintEventArgs = SkiaSharp.Views.Windows.SKPaintGLSurfaceEventArgs;
 #endif
 #else
 using SkiaSharp.Views.UWP;
-#if __MACCATALYST__ || !(__APPLE_UIKIT__ || __ANDROID__)
+#if !(__APPLE_UIKIT__ || __ANDROID__)
 using SkiaCanvas = SkiaSharp.Views.UWP.SKXamlCanvas;
 using SkiaPaintEventArgs = SkiaSharp.Views.UWP.SKPaintSurfaceEventArgs;
 #else
@@ -34,6 +33,7 @@ using SkiaCanvas = SkiaSharp.Views.UWP.SKSwapChainPanel;
 using SkiaPaintEventArgs = SkiaSharp.Views.UWP.SKPaintGLSurfaceEventArgs;
 #endif
 #endif
+
 
 namespace Uno.UI.Svg;
 
@@ -63,9 +63,7 @@ internal partial class SvgCanvas : SkiaCanvas
 	{
 		Invalidate();
 
-#if __MACCATALYST__
-		this.Opaque = false;
-#elif __APPLE_UIKIT__
+#if __APPLE_UIKIT__
 		// The SKGLTextureView is opaque by default, so we poke at the tree
 		// to change the opacity of the first view of the SKSwapChainPanel
 		// to make it transparent.
@@ -138,7 +136,7 @@ internal partial class SvgCanvas : SkiaCanvas
 		{
 			var sourceRect = new SKRect(0, 0, bitmap.Width, bitmap.Height);
 			var destRect = new SKRect(0, 0, width, height);
-			canvas.DrawBitmap(bitmap, sourceRect, destRect);
+			canvas.DrawBitmap(bitmap, sourceRect, destRect, SKSamplingOptions.Default, null);
 		}
 		else if (_svgProvider.SkSvg?.Picture is { } picture)
 		{
@@ -162,4 +160,3 @@ internal partial class SvgCanvas : SkiaCanvas
 		return scaleMatrix;
 	}
 }
-#endif

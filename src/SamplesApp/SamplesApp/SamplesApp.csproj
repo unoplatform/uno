@@ -1,0 +1,513 @@
+<Project>
+	<!--
+	Uno.Sdk is imported by path rather than via Sdk="Uno.Sdk.Private": an Sdk attribute resolves through
+	NuGet at evaluation time, so a fresh clone could not load this project until the SDK had been packed.
+	Rationale for the non-obvious wiring in this file: specs/051-samplesapp-unosdk-skia/plan.md.
+	-->
+	<Import Project="$(MSBuildThisFileDirectory)..\..\Uno.Sdk\Sdk\Sdk.props" />
+
+	<PropertyGroup>
+		<!-- Desktop deliberately not first (UNOB0011): keeps VS multi-target debugging working. iOS/tvOS
+		     carry the explicit platform version to match $(NetCurrentNetCoreMobile). -->
+		<TargetFrameworks>$(NetCurrent)-browserwasm;$(NetCurrentWinAppSDK);$(NetCurrent)-android;$(NetCurrent)-ios$(NetCurrentAppleOSVersion);$(NetCurrent)-tvos$(NetCurrentAppleOSVersion);$(NetCurrent)-desktop</TargetFrameworks>
+		<OutputType>Exe</OutputType>
+	</PropertyGroup>
+
+	<!-- Honor UnoTargetFrameworkOverride (CI + local single-TFM builds), as the other heads do -->
+	<Import Project="..\..\targetframework-override.props" />
+
+	<!--
+	Windows MSIX is built with MSBuild.exe /t:Publish, and a single-valued but still *plural*
+	<TargetFrameworks> routes Publish through the cross-targeting outer build, which rejects it
+	(NETSDK1129). Collapsing to a single TargetFramework here is what makes $(TargetFramework)
+	non-empty, so everything that reads it must come below this point.
+	-->
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(UnoTargetFrameworkOverride)')) == 'windows'">
+		<TargetFramework>$(UnoTargetFrameworkOverride)</TargetFramework>
+		<TargetFrameworks></TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<!-- Every platform gate below keys off this. It must stay below the windows collapse above, and
+		     cannot be Uno.Sdk's $(IsAndroid)/$(IsWinAppSdk)/… — those still read false at this point. -->
+		<_Platform>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</_Platform>
+
+		<OutputType Condition="'$(_Platform)' == 'windows'">WinExe</OutputType>
+		<UnoSingleProject>true</UnoSingleProject>
+		<!-- Explicit because nine InternalsVisibleTo("SamplesApp") grants key off this exact name. -->
+		<AssemblyName>SamplesApp</AssemblyName>
+		<!-- WinUI keeps the old head's name, which is deliberately absent from the Uno.UI.Toolkit /
+		     Uno.Foundation IVT lists — that is what avoids the duplicate-type collision there. -->
+		<AssemblyName Condition="'$(_Platform)' == 'windows'">SamplesApp.Windows</AssemblyName>
+
+		<!--
+		Uno.Sdk sets UnoRuntimeIdentifier=Skia for desktop (Uno.Common.Desktop.targets) but not for
+		browserwasm, where this is the only source — without it Uno.CrossTargetting drops the .skia.cs
+		variants and __SKIA__. It must stay empty on android/ios/tvos so the native file suffixes win,
+		and on WinUI (native rendering).
+		-->
+		<_IsDesktopOrWasm Condition="'$(_Platform)' == 'desktop' OR '$(_Platform)' == 'browserwasm'">true</_IsDesktopOrWasm>
+		<UnoRuntimeIdentifier Condition="'$(UnoRuntimeIdentifier)' == '' AND '$(_IsDesktopOrWasm)' == 'true'">Skia</UnoRuntimeIdentifier>
+		<!-- True for every non-WinUI TFM (desktop/wasm/android/ios/tvos) — gates the Skia framework refs. -->
+		<_IsSkiaTfm Condition="'$(_Platform)' != 'windows'">true</_IsSkiaTfm>
+		<!-- Apple UIKit (iOS + tvOS; no MacCatalyst). NOTE: these TFMs require macOS to build — not
+		     compile-validated on Windows. Wiring mirrors the old netcoremobile head's apple <When> blocks. -->
+		<_IsUIKit Condition="'$(_Platform)' == 'ios' OR '$(_Platform)' == 'tvos'">true</_IsUIKit>
+
+		<!-- Keep full exception strings in release, as the current heads do -->
+		<UseSystemResourceKeys>false</UseSystemResourceKeys>
+
+		<!--
+		The framework always comes from in-repo source via ProjectReference below, so the Sdk's implicit
+		package resolution stays off. NuGet UnoFeatures resolution is covered by src\SolutionTemplate\**,
+		which consumes published Uno.Sdk versions.
+		-->
+		<DisableImplicitUnoPackages>true</DisableImplicitUnoPackages>
+		<DisableImplicitUnoWinAppSdkPackages>true</DisableImplicitUnoWinAppSdkPackages>
+
+		<!-- Shadow-build Uno.UI.Tasks first on CI / clean builds. Skipped on windows: building the
+		     netstandard2.0 tools under the WinAppSDK MSBuild.exe environment fails (CS0518/CS0012). -->
+		<PreBuildUnoUITasks Condition="'$(BuildingInsideVisualStudio)'=='' AND '$(_IsSkiaTfm)' == 'true'">true</PreBuildUnoUITasks>
+
+		<!--
+		NU1703 (transitive package binds to the deprecated MonoAndroid framework) is raised by restore,
+		which resolves before the per-TFM property groups apply, so it must be suppressed unconditionally
+		— TreatWarningsAsErrors would otherwise fail the android restore. Matches the netcoremobile head.
+		-->
+		<NoWarn>$(NoWarn);NU1703</NoWarn>
+
+		<!-- Trimmer warnings the wasm and android trimming passes both raise. To remove as they are fixed. -->
+		<_UnoTrimmingNoWarn>IL2026;IL2057;IL2062;IL2065;IL2067;IL2070;IL2072;IL2075;IL2077;IL2080;IL2104;IL2111;IL2122</_UnoTrimmingNoWarn>
+
+		<!--
+		The App/ApplicationDefinition lives in the SamplesApp.Skia base lib, not here, so the
+		hot-restart helper generator has nothing to bind to and fails the build with Uno0005.
+		Only android imports the generators, so scope it there rather than setting it globally.
+		-->
+		<UnoDisableHotRestartHelperGeneration Condition="'$(_Platform)' == 'android'">true</UnoDisableHotRestartHelperGeneration>
+	</PropertyGroup>
+
+	<!-- ==================== Framework via ProjectReference ==================== -->
+
+	<!-- Cross-Skia framework + AddIns shared by every Skia TFM (desktop/wasm/android/ios/tvos), NOT windows -->
+	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true'">
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
+		<ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Skia.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.SpellChecking\Uno.WinUI.SpellChecking.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
+	</ItemGroup>
+
+	<!-- Desktop framework variants + runtimes + AddIns (Win32/X11/FrameBuffer/macOS) -->
+	<ItemGroup Condition="'$(_Platform)' == 'desktop'">
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Win32\Uno.UI.Runtime.Skia.Win32.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Win32.Support\Uno.UI.Runtime.Skia.Win32.Support.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Linux.FrameBuffer\Uno.UI.Runtime.Skia.Linux.FrameBuffer.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.MacOS\Uno.UI.Runtime.Skia.MacOS.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.Win32\Uno.UI.MediaPlayer.Skia.Win32.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.X11\Uno.UI.MediaPlayer.Skia.X11.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.WebView.Skia.X11\Uno.UI.WebView.Skia.X11.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj" />
+	</ItemGroup>
+
+	<!-- browserwasm framework variants + runtime -->
+	<ItemGroup Condition="'$(_Platform)' == 'browserwasm'">
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\Uno.UI.Runtime.Skia.WebAssembly.Browser.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj" />
+	</ItemGroup>
+
+	<!-- Windows / WinAppSDK: NATIVE WinUI (no Uno.UI / SkiaSharp). Only the .Windows helper variants. -->
+	<ItemGroup Condition="'$(_Platform)' == 'windows'">
+		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Windows.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Windows.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Windows.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" AdditionalProperties="BuildGraphics3DGLForWindows=true" />
+		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Windows.csproj" />
+		<!-- No Uno.UI on WinUI: self-link the one Uno.UI extension the samples use that the
+		     Uno.Core.Extensions packages don't provide (matches the old SamplesApp.Windows head). -->
+		<Compile Include="..\..\Uno.UI\Extensions\DependencyObjectExtensions.cs" Link="Uno.UI\Extensions\DependencyObjectExtensions.cs" />
+	</ItemGroup>
+
+	<!-- ==================== Packages ==================== -->
+
+	<!-- Platform-agnostic packages (all TFMs incl. windows) -->
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
+		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="MSTest.Analyzers" />
+		<PackageReference Include="System.CommandLine" />
+		<PackageReference Include="IdentityModel.OidcClient" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.72.1" />
+		<PackageReference Include="Uno.BenchmarkDotNet" Version="0.11.7-develop" />
+		<PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
+		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
+		<PackageReference Include="Microsoft.Graph" Condition="'$(Configuration)'!='Debug'">
+			<!-- Workaround for https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2617 -->
+			<Version>5.56.0</Version>
+		</PackageReference>
+		<!-- Override vulnerable transitive Microsoft.Kiota.Abstractions 1.9.1 pulled in by Microsoft.Graph -->
+		<PackageReference Include="Microsoft.Kiota.Abstractions" Version="1.22.2" Condition="'$(Configuration)'!='Debug'" />
+	</ItemGroup>
+
+	<!-- Skia-only packages (desktop/wasm/android/ios/tvos, NOT windows) -->
+	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true'">
+		<PackageReference Include="SkiaSharp" />
+		<PackageReference Include="Uno.Fonts.Fluent" />
+		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" />
+	</ItemGroup>
+
+	<!-- Desktop-specific packages -->
+	<ItemGroup Condition="'$(_Platform)' == 'desktop'">
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+		<PackageReference Include="Microsoft.Web.WebView2" Aliases="MsWebView2" />
+		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23.1" />
+		<!-- WMI / system info (desktop-only; Microsoft.Windows.Compatibility provides it on wasm) -->
+		<PackageReference Include="System.Management" Version="8.0.0" />
+	</ItemGroup>
+
+	<!-- browserwasm packages -->
+	<ItemGroup Condition="'$(_Platform)' == 'browserwasm'">
+		<PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" />
+		<PackageReference Include="Microsoft.Windows.Compatibility" />
+	</ItemGroup>
+
+	<!-- Windows / WinAppSDK packages (real WinUI) -->
+	<ItemGroup Condition="'$(_Platform)' == 'windows'">
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="2.3.1" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2526" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="0.6.0" PrivateAssets="all" />
+		<PackageReference Include="CommunityToolkit.WinUI.Lottie" Version="8.0.0-rc" />
+		<!-- Provided transitively via Uno.UI on Skia; explicit on native WinUI. -->
+		<PackageReference Include="Uno.Core.Extensions.Logging" />
+		<PackageReference Include="Uno.Core.Extensions.Disposables" />
+		<PackageReference Include="Uno.Core.Extensions" />
+		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
+	</ItemGroup>
+
+	<!-- ==================== WASM build configuration ==================== -->
+	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm'">
+		<!-- Required for net9+ workloads -->
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<NoWarn>$(NoWarn);NU1903;NU1902</NoWarn>
+		<NoWarn>$(NoWarn);$(_UnoTrimmingNoWarn);IL2007;IL2045;IL2090</NoWarn>
+		<PublishTrimmed>false</PublishTrimmed>
+		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
+		<WasmIncludeFullIcuData>true</WasmIncludeFullIcuData>
+		<InvariantGlobalization>false</InvariantGlobalization>
+		<WasmShellLoadAllSatelliteResources>true</WasmShellLoadAllSatelliteResources>
+		<WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
+		<WasmBuildNative>true</WasmBuildNative>
+		<!-- Workaround for https://github.com/dotnet/aspnetcore/issues/63970 -->
+		<WasmFingerprintAssets>false</WasmFingerprintAssets>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(Configuration)'=='Debug'">
+		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
+		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
+		<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+	</PropertyGroup>
+	<ItemGroup Condition="'$(_Platform)' == 'browserwasm'">
+		<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=1024m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
+		<LinkerDescriptor Include="Platforms\WebAssembly\LinkerConfig.xml" />
+		<EmbeddedResource Include="Platforms\WebAssembly\WasmScripts\AppManifest.js" />
+		<Content Include="..\LinkedFiles\WebContent\**\*.*">
+			<Link>WebContent\%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<WasmShellExtraFilesToDeploy Include="..\LinkedFiles\WebContent\**\*.*">
+			<TargetPath>WebContent/%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+		</WasmShellExtraFilesToDeploy>
+	</ItemGroup>
+	<!-- ==================== android (Skia) ==================== -->
+	<ItemGroup Condition="'$(_Platform)' == 'android'">
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Android\Uno.UI.Runtime.Skia.Android.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.GooglePlay\Uno.UI.GooglePlay.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Foldable\Uno.UI.Foldable.netcoremobile.csproj" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(_Platform)' == 'android'">
+		<PackageReference Include="SkiaSharp.NativeAssets.Android" />
+		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
+		<!-- AndroidX versions track $(NetCurrent)'s .NET for Android bindings -->
+		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.10.0.1" />
+		<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.2.0.3" />
+		<PackageReference Include="Xamarin.Google.Android.Material" Version="1.14.0.5" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(_Platform)' == 'android'">
+		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
+		<DefineConstants Condition=" '$(UseMonoRuntime)' == 'false' ">$(DefineConstants);RUNTIME_CORECLR</DefineConstants>
+		<!-- Pin the shrinker, as the netcoremobile head does. Left unset, R8 9.1.31 crashes with
+		     an NPE in its API-model database while desugaring androidx.core. -->
+		<AndroidLinkTool Condition="'$(DoNotSetAndroidLinkTool)' != 'true'">r8</AndroidLinkTool>
+		<!-- apk (not aab) so the runtime-test harness can deploy to emulators -->
+		<AndroidPackageFormat>apk</AndroidPackageFormat>
+		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
+		<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
+		<!-- We need all the intermediate assemblies for the runtime tests -->
+		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
+		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
+		<PublishAot Condition=" '$(SkiaPublishAot)' != '' ">$(SkiaPublishAot)</PublishAot>
+		<NoWarn>$(NoWarn);$(_UnoTrimmingNoWarn);SYSLIB1045;IL2068;IL3000;IL3002;IL3050;IL3053</NoWarn>
+		<!-- Package id for the plain (mono) APK. Without it the package derives from the assembly
+		     (SamplesApp.SamplesApp-Signed.apk) and the CI artifact copy can't find it. The
+		     coreclr/nativeaot CI stages override this with .coreclr/.nativeaot suffixes. -->
+		<ApplicationId>uno.platform.samplesapp.skia</ApplicationId>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(_Platform)' == 'android' AND '$(Configuration)'=='Release'">
+		<RuntimeIdentifiers>android-x64;android-arm64</RuntimeIdentifiers>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(_Platform)' == 'android'">
+		<AndroidAsset Include="Platforms\Android\Assets\sound.mp3" Link="Assets\sound.mp3" />
+		<AndroidAsset Include="Platforms\Android\Assets\Lottie\**\*.json" Link="Assets\Lottie\%(RecursiveDir)%(Filename)%(Extension)" />
+		<!-- WebView2 maps a virtual host to this folder (Given_WebView2.When_LocalFolder_File). The Link
+		     must sit under $(MonoAndroidAssetsPrefix), i.e. Platforms\Android\Assets, not a bare Assets. -->
+		<AndroidAsset Include="..\LinkedFiles\WebContent\css\site.css" Link="Platforms\Android\Assets\WebContent\css\site.css" />
+		<AndroidAsset Include="..\LinkedFiles\WebContent\index.html" Link="Platforms\Android\Assets\WebContent\index.html" />
+		<AndroidAsset Include="..\LinkedFiles\WebContent\js\site.js" Link="Platforms\Android\Assets\WebContent\js\site.js" />
+		<AndroidEnvironment Include="Platforms\Android\environment.conf" />
+		<TrimmerRootDescriptor Include="Platforms\Android\LinkerConfig.xml" />
+	</ItemGroup>
+
+	<Import Condition="'$(_Platform)' == 'android'" Project="..\..\Uno.UI.Runtime.Skia.Android\build\*.Runtime.Skia.Android.props" />
+	<Import Condition="'$(_Platform)' == 'android'" Project="..\..\Uno.UI.Runtime.Skia.Android\build\*.Runtime.Skia.Android.targets" />
+
+	<!-- ==================== iOS + tvOS (AppleUIKit + Skia) — REQUIRES macOS to build ==================== -->
+	<!-- Mirrors the old SamplesApp.Skia.netcoremobile apple <When> blocks. Samples come from the
+	     SamplesApp.Skia base lib (referenced for all Skia TFMs above). Not compile-validated on Windows. -->
+	<ItemGroup Condition="'$(_IsUIKit)' == 'true'">
+		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.AppleUIKit\Uno.UI.Runtime.Skia.AppleUIKit.csproj" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(_IsUIKit)' == 'true'">
+		<!-- 13.0 is the floor the .NET 11 iOS/tvOS SDKs enforce, and what netcoremobile targets -->
+		<SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
+		<!-- iOS 17 compatibility -->
+		<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
+		<!-- AOT currently fails (uno-private #648): interpret instead -->
+		<MtouchUseLlvm>false</MtouchUseLlvm>
+		<UseInterpreter>true</UseInterpreter>
+		<MtouchInterpreter>all</MtouchInterpreter>
+	</PropertyGroup>
+
+	<!-- The .NET iOS/tvOS toolchain reserves the top-level bundle folder name 'Resources'
+	     (_CollectBundleResources errors on it), so the Link is prefixed with $(iOSProjectFolder). -->
+	<ItemGroup Condition="'$(_Platform)' == 'ios'">
+		<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="Platforms\iOS\Resources\WebContent\css\site.css" />
+		<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="Platforms\iOS\Resources\WebContent\index.html" />
+		<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="Platforms\iOS\Resources\WebContent\js\site.js" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(_Platform)' == 'tvos'">
+		<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="Platforms\tvOS\Resources\WebContent\css\site.css" />
+		<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="Platforms\tvOS\Resources\WebContent\index.html" />
+		<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="Platforms\tvOS\Resources\WebContent\js\site.js" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(_Platform)' == 'ios'">
+		<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
+		<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />
+	</ItemGroup>
+	<PropertyGroup Condition="'$(_Platform)' == 'ios'">
+		<!-- https://github.com/dotnet/runtime/issues/109966 -->
+		<_IsDedupEnabled>false</_IsDedupEnabled>
+		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">iossimulator-x64</RuntimeIdentifier>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(_Platform)' == 'tvos'">
+		<PackageReference Include="SkiaSharp.NativeAssets.TvOS" />
+	</ItemGroup>
+	<PropertyGroup Condition="'$(_Platform)' == 'tvos'">
+		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">tvossimulator-x64</RuntimeIdentifier>
+	</PropertyGroup>
+
+	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.props" />
+	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.targets" />
+
+	<!--
+	WASM + mobile: Uno.UI.Tasks.targets retargets the head's Content (the Uno.UI.RuntimeTests assets
+	and fonts) into the wasm ms-appx manifest, AndroidAssets and iOS/tvOS BundleResources. Referencing
+	the framework from source means it does not arrive transitively, so import it explicitly. Desktop
+	is excluded — it loads ms-appx straight from the flat output dir.
+	-->
+	<PropertyGroup Condition="'$(_IsSkiaTfm)' == 'true' AND '$(_Platform)' != 'desktop'">
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+	</PropertyGroup>
+	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets"
+	        Condition="'$(_IsSkiaTfm)' == 'true' AND '$(_Platform)' != 'desktop' AND '$(SkipUnoResourceGeneration)' == ''" />
+
+	<!--
+	Android needs AndroidResourcesGenerator to emit the DrawableHelper.SetDrawableResolver call —
+	without it every ms-appx local asset lookup throws "Drawable resources were not initialized" at
+	runtime. Must stay below the Runtime.Skia.Android import above, which sets UnoUIRuntimeIdentifier=Skia
+	for the generators to read; reversed, they pick XamarinProjectType=android and emit wrong output.
+	-->
+	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props"
+	        Condition="'$(_Platform)' == 'android'" />
+
+	<!-- ==================== Windows build configuration ==================== -->
+	<PropertyGroup Condition="'$(_Platform)' == 'windows'">
+		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+		<UseWinUI>true</UseWinUI>
+		<EnableMsixTooling>true</EnableMsixTooling>
+		<DefineConstants>$(DefineConstants);WINAPPSDK</DefineConstants>
+		<Platforms>x86;x64;ARM64</Platforms>
+		<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+		<!-- Disabled because of https://github.com/dotnet/sdk/issues/43680#issuecomment-2401193028 -->
+		<CsWinRTAotOptimizerEnabled>false</CsWinRTAotOptimizerEnabled>
+		<!-- MSIX signing is configured via CI -->
+		<AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
+		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+		<AppxAutoIncrementPackageRevision>false</AppxAutoIncrementPackageRevision>
+		<GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
+		<ApplicationManifest>Platforms\Windows\app.manifest</ApplicationManifest>
+	</PropertyGroup>
+	<ItemGroup Condition="'$(_Platform)' == 'windows'">
+		<AppxManifest Include="Platforms\Windows\Package.appxmanifest">
+			<SubType>Designer</SubType>
+		</AppxManifest>
+		<Content Include="Platforms\Windows\Assets\*.png" Link="Assets\%(Filename)%(Extension)" />
+		<Manifest Include="$(ApplicationManifest)" />
+		<Content Include="..\LinkedFiles\WebContent\index.html" Link="WebContent\index.html" />
+		<Content Include="..\LinkedFiles\WebContent\css\site.css" Link="WebContent\css\site.css" />
+		<Content Include="..\LinkedFiles\WebContent\js\site.js" Link="WebContent\js\site.js" />
+	</ItemGroup>
+	<!-- Activate the MSIX single-project tooling even before the WindowsAppSDK package is restored -->
+	<ItemGroup Condition="'$(_Platform)' == 'windows' and '$(DisableMsixProjectCapabilityAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+		<ProjectCapability Include="Msix" />
+	</ItemGroup>
+	<PropertyGroup Condition="'$(_Platform)' == 'windows' and '$(DisableHasPackageAndPublishMenuAddedByProject)'!='true' and '$(EnableMsixTooling)'=='true'">
+		<HasPackageAndPublishMenu>true</HasPackageAndPublishMenu>
+	</PropertyGroup>
+
+	<!-- ==================== App identity / icons / manifests ==================== -->
+
+	<!-- App identity manifest read at runtime by SamplesApp on Skia (windows uses the real MSIX manifest) -->
+	<ItemGroup Condition="'$(_Platform)' != 'windows'">
+		<EmbeddedResource Include="Platforms\Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+	</ItemGroup>
+
+	<!--
+	App icon + splash via Resizetizer (desktop + mobile). Excluded on browserwasm to match the
+	previous WASM head (enabling it trips Uno.Wasm.Bootstrap's PWA generation) and on windows,
+	which uses the MSIX logo assets above. PWA icons on wasm are a follow-up.
+	-->
+	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true' AND '$(_Platform)' != 'browserwasm'">
+		<PackageReference Include="Uno.Resizetizer" />
+		<UnoIcon Include="Assets\Icons\icon.svg" ForegroundFile="Assets\Icons\icon_foreground.svg" ForegroundScale="0.65" Color="#ffffff" />
+		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" Color="#ffffff" />
+	</ItemGroup>
+
+	<!-- Win32 DPI-awareness manifest (desktop only; windows sets its own ApplicationManifest above) -->
+	<PropertyGroup Condition="'$(_Platform)' == 'desktop'">
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+	</PropertyGroup>
+	<ItemGroup Condition="'$(_Platform)' == 'desktop'">
+		<Manifest Include="$(ApplicationManifest)" />
+		<!-- Deploy the WebView2 test content folder next to the app, as the old Skia.Generic head did;
+		     Given_WebView2.When_LocalFolder_File needs it there. -->
+		<Content Include="..\LinkedFiles\WebContent\**\*.*">
+			<Link>WebContent\%(RecursiveDir)%(Filename)%(Extension)</Link>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<AssemblyAttribute Include="System.Runtime.InteropServices.ComVisibleAttribute">
+			<_Parameter1>false</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
+
+	<!-- Stage the macOS native host dylib so the desktop artifact (built on Windows, run on macOS
+	     agents) can dlopen it. It comes from the native-assets-macos artifact, not a ProjectReference. -->
+	<PropertyGroup Condition="'$(_Platform)' == 'desktop'">
+		<_libUnoNativeMacPath>$(MSBuildThisFileDirectory)..\..\Uno.UI.Runtime.Skia.MacOS\UnoNativeMac\build\$(Configuration)\libUnoNativeMac.dylib</_libUnoNativeMacPath>
+	</PropertyGroup>
+	<Target Name="BuildUnoNativeMac" BeforeTargets="Compile"
+	        Condition="'$(_Platform)' == 'desktop' AND Exists('$(_libUnoNativeMacPath)')">
+		<Copy SourceFiles="$(_libUnoNativeMacPath)" DestinationFolder="$(OutDir)runtimes\osx\native\" />
+	</Target>
+
+	<!--
+	Fail the publish if the runtime-test fonts didn't make it into the output. Only meaningful on
+	desktop + browserwasm, whose publish lays package content out flat under $(PublishDir). Android and
+	iOS bundle assets inside the APK/.app, so a flat-path check can never pass there.
+	-->
+	<Target Name="_ValidatePublishedItems" AfterTargets="Publish" Condition="'$(_Platform)' == 'desktop' OR '$(_Platform)' == 'browserwasm'">
+		<ItemGroup>
+			<_validationPath Include="Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf" />
+			<_validationPath Include="Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf" />
+		</ItemGroup>
+		<Error Condition="!exists('$(PublishDir)%(_validationPath.Identity)')" Text="Failed to find published file: %(_validationPath.Identity)" />
+	</Target>
+
+	<!--
+	On macOS, create a minimal .app bundle alongside the regular build output so that
+	TCC-gated APIs (microphone, speech recognition) can present their authorization prompt.
+	Launch via `open bin/.../SamplesApp.app`. Set SkipMacOSAppBundle=true to skip.
+	-->
+	<Target Name="_UnoBundleAppMacOS"
+	        Condition="$([MSBuild]::IsOsPlatform('OSX')) and '$(SkipMacOSAppBundle)' != 'true' and '$(OutputType)' == 'Exe' and '$(TargetFramework)' != '' and '$(_Platform)' == 'desktop'"
+	        AfterTargets="Build">
+		<PropertyGroup>
+			<_AppBundleDir>$(OutputPath)$(AssemblyName).app</_AppBundleDir>
+			<_AppBundleContentsDir>$(_AppBundleDir)/Contents</_AppBundleContentsDir>
+			<_AppBundleMacOSDir>$(_AppBundleContentsDir)/MacOS</_AppBundleMacOSDir>
+		</PropertyGroup>
+		<RemoveDir Directories="$(_AppBundleDir)" />
+		<MakeDir Directories="$(_AppBundleMacOSDir)" />
+		<Copy SourceFiles="$(MSBuildThisFileDirectory)Resources/Info.plist" DestinationFolder="$(_AppBundleContentsDir)" />
+		<Exec Command="rsync -a --exclude='$(AssemblyName).app' '$(OutputPath)/' '$(_AppBundleMacOSDir)/'" />
+		<Message Importance="high" Text="Created macOS app bundle: $(_AppBundleDir)" />
+	</Target>
+
+	<!-- ==================== Shared content (samples, tests, benchmarks) ==================== -->
+	<!--
+	Skia TFMs consume the samples from the generic-Skia SamplesApp.Skia library, which compiles them
+	once as Skia; inlining would compile them with the native platform symbol and pull in native-only
+	types absent from the Skia build. WinUI cannot reference that library — it is built against Uno
+	Platform's Microsoft.UI.Xaml, a different type identity — so windows inlines the shared content
+	below and lets the real WinUI XAML compiler build it.
+	-->
+	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true'">
+		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
+		<!-- Nothing in the head references the samples statically, so the trimmer would drop them and
+		     the generated Uno.*.Descriptor.xml would fail to resolve under NativeAOT (IL2008). -->
+		<TrimmerRootAssembly Include="SamplesApp.Skia" RootMode="All" />
+	</ItemGroup>
+
+	<!-- Must stay below the Sdk.props import at the top: Directory.Build.props sets
+	     EnableAutomaticXamlPageInclusion=true there and Benchmarks.Shared.projitems sets it back. -->
+	<Import Project="..\SamplesApp.Shared\SamplesApp.Shared.props" Condition="'$(_IsSkiaTfm)' != 'true'" />
+	<Import Project="..\SamplesApp.Samples\SamplesApp.Samples.props" Condition="'$(_IsSkiaTfm)' != 'true'" />
+	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.props" Condition="'$(_IsSkiaTfm)' != 'true'" />
+	<Import Project="..\Benchmarks.Shared\Benchmarks.Shared.projitems" Label="Shared" Condition="'$(_IsSkiaTfm)' != 'true'" />
+	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" Condition="'$(_IsSkiaTfm)' != 'true'" />
+
+	<!-- Must stay last: replaces the implicit bottom import an Sdk attribute would have added. -->
+	<Import Project="$(MSBuildThisFileDirectory)..\..\Uno.Sdk\Sdk\Sdk.targets" />
+</Project>

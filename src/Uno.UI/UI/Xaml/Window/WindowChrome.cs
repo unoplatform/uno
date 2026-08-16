@@ -92,7 +92,7 @@ internal sealed partial class WindowChrome : ContentControl
 		// See: https://github.com/unoplatform/uno/issues/21688
 		DefaultBrushes.ResetDefaultThemeBrushes();
 		this.SetValue(ForegroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
-		if (e.WindowActivationState is Windows.UI.Core.CoreWindowActivationState.CodeActivated or Windows.UI.Core.CoreWindowActivationState.PointerActivated)
+		if (e.WindowActivationState is WindowActivationState.CodeActivated or WindowActivationState.PointerActivated)
 		{
 			VisualStateManager.GoToState(this, "Normal", true);
 		}

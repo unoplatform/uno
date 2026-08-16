@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using Uno.UI;
@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnLeftChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			if (dependencyObject is IFrameworkElement { Parent: IFrameworkElement parent })
+			if (dependencyObject is IFrameworkElement { Parent: FrameworkElement parent })
 			{
 				parent.InvalidateArrange();
 			}
@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnTopChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			if (dependencyObject is IFrameworkElement { Parent: IFrameworkElement parent })
+			if (dependencyObject is IFrameworkElement { Parent: FrameworkElement parent })
 			{
 				parent.InvalidateArrange();
 			}
@@ -50,7 +50,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnZIndexChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			(dependencyObject as IFrameworkElement)?.InvalidateArrange();
+			if (dependencyObject is IFrameworkElement)
+			{
+				dependencyObject.InvalidateArrange();
+			}
 			if (dependencyObject is UIElement element)
 			{
 				var zindex = args.NewValue is int d ? (int?)d : null;
@@ -80,5 +83,11 @@ namespace Microsoft.UI.Xaml.Controls
 		public static int GetZIndex(global::Microsoft.UI.Xaml.UIElement element) => GetZIndexValue(element);
 
 		public static void SetZIndex(global::Microsoft.UI.Xaml.UIElement element, int value) => SetZIndexValue(element, value);
+
+		static partial void OnZIndexChangedPartial(UIElement element, int? zindex)
+		{
+			element.Visual.ZIndex = (int)zindex;
+			element._children.ClearCachedReverseSortedList();
+		}
 	}
 }

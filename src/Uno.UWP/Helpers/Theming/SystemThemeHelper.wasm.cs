@@ -43,12 +43,35 @@ internal static partial class SystemThemeHelper
 	static partial void ObserveThemeChangesPlatform()
 	{
 		NativeMethods.ObserveSystemTheme();
+		NativeMethods.ObserveHighContrast();
+	}
+
+	static partial void GetIsHighContrastEnabledPlatform(ref bool result)
+	{
+		result = NativeMethods.GetHighContrast();
+	}
+
+	static partial void GetHighContrastSchemeNamePlatform(ref string result)
+	{
+		if (NativeMethods.GetHighContrast())
+		{
+			result = GetSystemTheme() == SystemTheme.Dark
+				? "High Contrast Black"
+				: "High Contrast White";
+		}
 	}
 
 	[JSExport]
 	public static int DispatchSystemThemeChange()
 	{
 		RefreshSystemTheme();
+		return 0;
+	}
+
+	[JSExport]
+	public static int DispatchHighContrastChange()
+	{
+		RefreshHighContrast();
 		return 0;
 	}
 }

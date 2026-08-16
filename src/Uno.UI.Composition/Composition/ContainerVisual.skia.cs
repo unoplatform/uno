@@ -8,6 +8,8 @@ using System.Runtime.InteropServices;
 using SkiaSharp;
 using Windows.Foundation;
 using Uno.Extensions;
+using Uno.UI.Composition;
+
 
 namespace Microsoft.UI.Composition;
 
@@ -46,11 +48,17 @@ public partial class ContainerVisual : Visual
 			if (e.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Reset
 				&& e.OldItems is not null)
 			{
+				var target = CompositionTarget;
 				foreach (var i in e.OldItems)
 				{
 					if (i is CompositionObject compositionObject)
 					{
 						compositionObject.StopAllAnimations();
+					}
+
+					if (target is not null && i is Visual removedVisual)
+					{
+						removedVisual.DamageLastRenderedRegion(target);
 					}
 				}
 			}
@@ -117,17 +125,19 @@ public partial class ContainerVisual : Visual
 			return false;
 		}
 
-		var clipRect = rect.ToSKRect();
-		dst.AddRect(clipRect);
+		var matrix = SKMatrix.Identity;
 		if (isAncestorClip)
 		{
 			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
 			var childToParentTransform = (Parent?.TotalMatrix ?? Matrix4x4.Identity) * totalMatrixInverted;
 			if (!childToParentTransform.IsIdentity)
 			{
-				dst.Transform(childToParentTransform.ToSKMatrix());
+				matrix = childToParentTransform.ToSKMatrix();
 			}
 		}
+
+		using var rectPath = SkiaExtensions.CreateRectPath(rect.ToSKRect());
+		rectPath.Transform(matrix, dst);
 
 		return true;
 	}
@@ -158,7 +168,7 @@ public partial class ContainerVisual : Visual
 	{
 		var prePaintingClipPath = _sparePrePaintingClippingPath;
 
-		prePaintingClipPath.Rewind();
+		prePaintingClipPath.Reset();
 
 		if (base.GetPrePaintingClipping(dst))
 		{
@@ -188,8 +198,7 @@ public partial class ContainerVisual : Visual
 
 			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
 			{
-				dst.Reset();
-				dst.AddPath(prePaintingClipPath);
+				prePaintingClipPath.Transform(SKMatrix.Identity, dst);
 
 				return true;
 			}
@@ -215,6 +224,15 @@ public partial class ContainerVisual : Visual
 		}
 
 		return false;
+	}
+
+	internal override void DamageLastRenderedRegion(ICompositionTarget target)
+	{
+		base.DamageLastRenderedRegion(target);
+		foreach (var child in Children.InnerList)
+		{
+			child.DamageLastRenderedRegion(target);
+		}
 	}
 
 	internal override int GetSubTreeVisualCount()

@@ -1,4 +1,4 @@
-﻿#pragma warning disable CS0105 // Ignore duplicate namespaces, to remove when moving to WinUI source tree.
+#pragma warning disable CS0105 // Ignore duplicate namespaces, to remove when moving to WinUI source tree.
 
 using Uno.Diagnostics.Eventing;
 using Microsoft.UI.Xaml.Controls;
@@ -31,6 +31,7 @@ using Uno.UI.Xaml.Media;
 
 using Color = System.Drawing.Color;
 using View = Microsoft.UI.Xaml.UIElement;
+using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml
 {
@@ -165,16 +166,11 @@ namespace Microsoft.UI.Xaml
 		{
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 			SizeChanged?.Invoke(this, args);
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-			_renderTransform?.UpdateSize(args.NewSize);
-#endif
 #endif
 		}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal void UpdateRenderTransformSize(Size newSize)
 			=> _renderTransform?.UpdateSize(newSize);
-#endif
 
 #if !IS_UNIT_TESTS
 		private protected override double GetActualHeight()
@@ -275,14 +271,11 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Gets the parent of this FrameworkElement in the object tree.
 		/// </summary>
-		public
-		DependencyObject Parent =>
+		public new DependencyObject Parent =>
 			LogicalParentOverride ??
-			((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
+			((DependencyObject)this).Parent as DependencyObject;
 
-#if !__NETSTD_REFERENCE__
 		internal bool HasParent() => Parent != null;
-#endif
 
 		public global::System.Uri BaseUri
 		{
@@ -307,7 +300,7 @@ namespace Microsoft.UI.Xaml
 		/// scenarios, for example in case of SelectorItem, where actual parent is null, but visual parent
 		/// is the list.
 		/// </summary>
-		internal virtual UIElement VisualParent => ((IDependencyObjectStoreProvider)this).Store.Parent as UIElement;
+		internal virtual UIElement VisualParent => ((DependencyObject)this).Parent as UIElement;
 
 		private bool _isParsing;
 		/// <summary>
@@ -403,7 +396,6 @@ namespace Microsoft.UI.Xaml
 		{
 			this.StoreTryEnableHardReferences();
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			var effectiveTheme = GetTheme();
 
 			// Apply active style and default style when we enter the visual tree.
@@ -413,7 +405,7 @@ namespace Microsoft.UI.Xaml
 			// Updates theme references to account for new ancestor theme dictionaries.
 			// Use UpdateThemeBindings (virtual) instead of the BindingHelper extension so that
 			// subclasses like TextBlock can also propagate to non-DP children (e.g., Inlines).
-			((IDependencyObjectStoreProvider)this).Store.ApplyElementNameBindings();
+			((DependencyObject)this).ApplyElementNameBindings();
 			UpdateThemeBindings(ResourceUpdateReason.ResolvedOnLoading);
 
 			// MUX Reference: CUIElement::Enter / EnsureTextFormatting
@@ -429,21 +421,11 @@ namespace Microsoft.UI.Xaml
 					EnsureThemeForeground(parentFg);
 				}
 			}
-#else
-			if (RequestedTheme is not ElementTheme.Default)
-			{
-				SyncRootRequestedTheme();
-			}
-			ApplyStyles();
-			this.UpdateResourceBindings();
-#endif
 		}
 
 		partial void OnUnloadedPartial()
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			ClearThemeStateOnUnloaded();
-#endif
 			this.StoreDisableHardReferences();
 		}
 
@@ -512,7 +494,7 @@ namespace Microsoft.UI.Xaml
 		{
 			var oldActiveStyle = _activeStyle;
 			UpdateActiveStyle();
-			OnStyleChanged(oldActiveStyle, _activeStyle, DependencyPropertyValuePrecedences.ExplicitStyle);
+			OnStyleChanged(oldActiveStyle, _activeStyle, DependencyPropertyValuePrecedences.Style);
 		}
 
 		/// <summary>
@@ -667,7 +649,7 @@ namespace Microsoft.UI.Xaml
 		/// Apply the default style for this element, if one is defined.
 		/// </summary>
 		/// <remarks>
-		/// The default app-wide style is always applied (using the lower priority ImplicitStyle) so that setters that are not
+		/// The default app-wide style is always applied (using the lower priority BuiltInStyle) so that setters that are not
 		/// set by a tree-provided style are still applied. (e.g. a tree-provided implicit style may only change the Foreground of a Button,
 		/// and the Template property still needs to be applied for the template to work).
 		/// </remarks>
@@ -678,13 +660,13 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 			_defaultStyleApplied = true;
-			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
+			((DependencyObject)this).SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 
 			var style = Style.GetDefaultStyleForInstance(this, GetDefaultStyleKey());
 
-			// Although this is the default style, we use the ImplicitStyle enum value (which is otherwise unused) to ensure that it takes precedence
-			//over inherited property values. UWP's precedence system is simpler than WPF's, from which the enum is derived.
-			OnStyleChanged(null, style, DependencyPropertyValuePrecedences.ImplicitStyle);
+			// The default style is applied at BuiltInStyle precedence so that it takes precedence over inherited
+			// property values. UWP's precedence system is simpler than WPF's, from which the enum is derived.
+			OnStyleChanged(null, style, DependencyPropertyValuePrecedences.BuiltInStyle);
 #if DEBUG
 			AppliedDefaultStyle = style;
 #endif
@@ -734,7 +716,7 @@ namespace Microsoft.UI.Xaml
 			return this.IsHeightConstrainedSimple();
 		}
 
-		internal override bool IsViewHit() => false;
+		internal override bool IsViewHit() => HasCompositionChildVisual;
 
 		/// <summary>
 		/// The list of available children render phases, if this
@@ -754,41 +736,30 @@ namespace Microsoft.UI.Xaml
 		{
 			add
 			{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				var isFirstSubscriber = _layoutUpdated is null;
-#endif
 
 				_layoutUpdated += value;
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				if (isFirstSubscriber)
 				{
 					Uno.UI.Extensions.DependencyObjectExtensions.GetContext(this).EventManager.AddLayoutUpdatedEventHandler(this);
 				}
-#endif
 			}
 			remove
 			{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				var hadSubscribers = _layoutUpdated is not null;
-#endif
 
 				_layoutUpdated -= value;
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				if (hadSubscribers && _layoutUpdated is null)
 				{
 					Uno.UI.Extensions.DependencyObjectExtensions.GetContext(this).EventManager.RemoveLayoutUpdatedEventHandler(this);
 				}
-#endif
 			}
 		}
 
 		// This shouldn't be virtual on enhanced lifecycle as it won't be called if there is no real subscriber to LayoutUpdated.
 		internal
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-			virtual
-#endif
 			void OnLayoutUpdated()
 		{
 			_layoutUpdated?.Invoke(null, null);
@@ -910,11 +881,102 @@ namespace Microsoft.UI.Xaml
 
 		internal DependencyObject GetTemplatedParent()
 		{
-			return (this as IDependencyObjectStoreProvider)?.Store.GetTemplatedParent2();
+			return (this as DependencyObject)?.GetTemplatedParent2();
 		}
 		internal void SetTemplatedParent(DependencyObject tp)
 		{
-			(this as IDependencyObjectStoreProvider)?.Store.SetTemplatedParent2(tp);
+			(this as DependencyObject)?.SetTemplatedParent2(tp);
 		}
+
+		protected FrameworkElement()
+		{
+			Initialize();
+		}
+
+		bool IFrameworkElementInternal.HasLayouter => true;
+
+		partial void Initialize();
+
+		private bool IsTopLevelXamlView() => false;
+
+		internal void SuspendRendering() => throw new NotSupportedException();
+
+		internal void ResumeRendering() => throw new NotSupportedException();
+
+		#region Name Dependency Property
+
+		private void OnNameChanged(string oldValue, string newValue)
+		{
+			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
+			{
+				Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
+			}
+		}
+
+		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
+		public static DependencyProperty NameProperty { get; } = CreateNameProperty();
+
+		public string Name
+		{
+			get => GetNameValue();
+			set => SetNameValue(value);
+		}
+
+		#endregion
+
+#if DEBUG
+		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args)
+		{
+		}
+#endif
+
+		private event TypedEventHandler<FrameworkElement, object> _loading;
+		public event TypedEventHandler<FrameworkElement, object> Loading
+		{
+			add
+			{
+				_loading += value;
+			}
+			remove
+			{
+				_loading -= value;
+			}
+		}
+
+		private event RoutedEventHandler _loaded;
+		public event RoutedEventHandler Loaded
+		{
+			add
+			{
+				_loaded += value;
+			}
+			remove
+			{
+				_loaded -= value;
+			}
+		}
+
+		private event RoutedEventHandler _unloaded;
+		public event RoutedEventHandler Unloaded
+		{
+			add
+			{
+				_unloaded += value;
+			}
+			remove
+			{
+				_unloaded -= value;
+			}
+		}
+
+#if ENABLE_CONTAINER_VISUAL_TRACKING // Make sure to update the Comment to have the valid depth
+		partial void OnLoading()
+		{
+			if (_visual is not null)
+			{
+				_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
+			}
+		}
+#endif
 	}
 }

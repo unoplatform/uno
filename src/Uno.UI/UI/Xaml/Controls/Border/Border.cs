@@ -10,7 +10,6 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Markup;
 using Uno.UI.Xaml;
 using Color = System.Drawing.Color;
-using View = Microsoft.UI.Xaml.UIElement;
 using _Debug = System.Diagnostics.Debug;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
@@ -23,10 +22,19 @@ namespace Microsoft.UI.Xaml.Controls;
 [ContentProperty(Name = nameof(Child))]
 public partial class Border : FrameworkElement
 {
+	private bool _useBackgroundOverride;
+
 	public Border()
 	{
-#if !UNO_HAS_BORDER_VISUAL
-		BorderRenderer = new BorderLayerRenderer(this);
+	}
+
+	internal bool UseBackgroundOverride => _useBackgroundOverride;
+
+	internal void SetUseBackgroundOverride(bool useBackgroundOverride)
+	{
+		_useBackgroundOverride = useBackgroundOverride;
+#if UNO_HAS_BORDER_VISUAL
+		this.UpdateBackground();
 #endif
 	}
 
@@ -35,28 +43,8 @@ public partial class Border : FrameworkElement
 #endif
 	public BrushTransition BackgroundTransition { get; set; }
 
-#if !UNO_HAS_BORDER_VISUAL
-	internal BorderLayerRenderer BorderRenderer { get; }
-#endif
 
-#if UNO_HAS_BORDER_VISUAL
 	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
-#endif
-
-	/// <summary>
-	/// Support for the C# collection initializer style.
-	/// Allows items to be added like this
-	/// new Border
-	/// {
-	///    new Border()
-	/// }
-	/// </summary>
-	/// <param name="view"></param>
-	public
-		void Add(View view)
-	{
-		Child = VisualTreeHelper.TryAdaptNative(view);
-	}
 
 	protected override bool IsSimpleLayout => true;
 
@@ -83,7 +71,7 @@ public partial class Border : FrameworkElement
 		}
 	}
 
-	public static DependencyProperty ChildProperty { get; } =
+	internal static DependencyProperty ChildProperty { get; } =
 		DependencyProperty.Register(
 			nameof(Child),
 			typeof(UIElement),
@@ -132,11 +120,7 @@ public partial class Border : FrameworkElement
 
 	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateCornerRadius();
-#else
-		UpdateBorder();
-#endif
 	}
 
 	#endregion
@@ -201,11 +185,7 @@ public partial class Border : FrameworkElement
 
 	private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		// TODO: https://github.com/unoplatform/uno/issues/16705
-#else
-		UpdateBorder();
-#endif
 	}
 
 	#endregion
@@ -221,11 +201,7 @@ public partial class Border : FrameworkElement
 	}
 	private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackgroundSizing();
-#else
-		UpdateBorder();
-#endif
 		base.OnBackgroundSizingChangedInner(e);
 	}
 	#endregion
@@ -244,11 +220,7 @@ public partial class Border : FrameworkElement
 
 	private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBorderThickness();
-#else
-		UpdateBorder();
-#endif
 	}
 
 	#endregion
@@ -290,19 +262,28 @@ public partial class Border : FrameworkElement
 
 	#endregion
 
-	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+	public Brush Background
 	{
-#if UNO_HAS_BORDER_VISUAL
+		get => (Brush)GetValue(BackgroundProperty);
+		set => SetValue(BackgroundProperty, value);
+	}
+
+	public static DependencyProperty BackgroundProperty { get; } =
+		DependencyProperty.Register(
+			nameof(Background),
+			typeof(Brush),
+			typeof(Border),
+			new FrameworkPropertyMetadata(null, propertyChangedCallback: (s, e) => ((Border)s)?.OnBackgroundChanged(e)));
+
+	private protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+	{
 		this.UpdateBackground();
 		BorderHelper.SetUpBrushTransitionIfAllowed(
 			(BorderVisual)this.Visual,
 			e.OldValue as Brush,
 			e.NewValue as Brush,
 			this.BackgroundTransition,
-			((IDependencyObjectStoreProvider)this).Store.GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
-#else
-		UpdateBorder();
-#endif
+			((DependencyObject)this).GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
 		OnBackgroundChangedPartial();
 	}
 
@@ -326,7 +307,4 @@ public partial class Border : FrameworkElement
 			;
 	}
 
-#if !UNO_HAS_BORDER_VISUAL
-	private void UpdateBorder() => BorderRenderer.Update();
-#endif
 }

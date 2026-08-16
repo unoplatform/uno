@@ -34,8 +34,7 @@
 
             <ResourceDictionary.MergedDictionaries>
                 <win:XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-                <ResourceDictionary Source="ms-appx:///Windows_UI_Xaml_Controls/ListView/MeasureDetectorControl/MeasureDetectorControl.xaml" />
-                <MapResources xmlns="using:Uno.UI.Maps" />
+                <ResourceDictionary Source="ms-appx:///Windows/UI/Xaml/Controls/ListView/MeasureDetectorControl/MeasureDetectorControl.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <local:StringToStyleDictionary x:Key="MyResource">

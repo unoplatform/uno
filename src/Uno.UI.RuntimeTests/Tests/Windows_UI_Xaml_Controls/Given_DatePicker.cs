@@ -351,7 +351,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			bool flyoutClosed = false;
 			datePickerFlyout.Closed += (s, e) => flyoutClosed = true;
-			datePickerFlyout.Close();
+			datePickerFlyout.Hide();
 
 			await TestServices.WindowHelper.WaitFor(() => flyoutClosed, message: "Flyout did not close");
 
@@ -394,7 +394,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			finally
 			{
-				datePickerFlyout.Close();
+				datePickerFlyout.Hide();
 			}
 		}
 #endif

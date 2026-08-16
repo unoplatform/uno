@@ -22,8 +22,8 @@
 		<None Include="**\*.reference.cs" Exclude="bin\**\*.reference.cs;obj\**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
 		<Compile Remove="**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
 
-		<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
-		<Compile Remove="**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
+		<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" Condition="!$(IsIOS)" />
+		<Compile Remove="**\*.iOS.cs" Condition="!$(IsIOS)" />
 
 		<None Include="**\*.tvOS.cs" Exclude="bin\**\*.tvOS.cs;obj\**\*.tvOS.cs" Condition="!$(IsTvOS)" />
 		<Compile Remove="**\*.tvOS.cs" Condition="!$(IsTvOS)" />
@@ -31,8 +31,8 @@
 		<None Include="**\*.UIKit.cs" Exclude="bin\**\*.UIKit.cs;obj\**\*.UIKit.cs" Condition="!$(IsAppleUIKit)" />
 		<Compile Remove="**\*.UIKit.cs" Condition="!$(IsAppleUIKit)" />
 
-		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" Condition="!$(IsIOSOrCatalyst)" />
-		<Compile Remove="**\*.iOSmacOS.cs" Condition="!$(IsIOSOrCatalyst)" />
+		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" Condition="!$(IsIOS)" />
+		<Compile Remove="**\*.iOSmacOS.cs" Condition="!$(IsIOS)" />
 
 		<None Include="**\*.Apple.cs" Exclude="bin\**\*.Apple.cs;obj\**\*.Apple.cs" Condition="!$(IsApple)" />
 		<Compile Remove="**\*.Apple.cs" Condition="!$(IsApple)" />
@@ -93,18 +93,26 @@
 		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE;HAS_RENDER_TARGET_BITMAP</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(IsCatalyst)">
-		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE;HAS_RENDER_TARGET_BITMAP</DefineConstants>
-		<SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
-	</PropertyGroup>
-
 	<PropertyGroup Condition="$(IsAppleUIKit)">
 		<DefineConstants>$(DefineConstants);__APPLE_UIKIT__</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsAndroid)">
 		<DefineConstants>$(DefineConstants);__ANDROID__;XAMARIN;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE;HAS_RENDER_TARGET_BITMAP</DefineConstants>
-		<SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<!--
+	  Android+NativeAOT fails with .NET 11 Preview 7 with error NU1102:
+	    Unable to find package Microsoft.NETCore.App.Runtime.NativeAOT.android-arm64 with version (= 11.0.0-preview.7.26378.119)
+	  …because there is no published 11.0.0-preview.7.26378.119 package; it should be 11.0.0-preview.7.26381.103.
+
+	  This is the upstream fix: https://github.com/dotnet/android/pull/12356
+
+	  For now, Update `$(MicrosoftNETCoreAppRefPackageVersion)` to the correct version so that NuGet versions are correct.
+	  -->
+	<PropertyGroup Condition=" $(IsAndroid) And '$(BundledNETCoreAppPackageVersion)' == '11.0.0-preview.7.26381.103' ">
+		<MicrosoftNETCoreAppRefPackageVersion>11.0.0-preview.7.26381.103</MicrosoftNETCoreAppRefPackageVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.19041' and $(TargetFramework.EndsWith('-windows10.0.19041.0')) != 'true' and '$(TargetPlatformIdentifier)' != 'UAP'">
@@ -213,8 +221,16 @@
 			<CommonOverridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</CommonOverridePackageId>
 			<CommonOverridePackageId>$(CommonOverridePackageId.ToLowerInvariant())</CommonOverridePackageId>
 			<CommonOverridePackageId>$(CommonOverridePackageId.Replace('uno.ui','uno.winui'))</CommonOverridePackageId>
-			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
-			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
+			<!--
+				Uno.WinUI ships the UI layer in lib/ only — the Skia build is the compile reference,
+				so there is no uno-runtime folder to override into. uno.winrt and uno.foundation
+				still carry both flavors.
+			-->
+			<_UnoOverrideUsesRuntimeFolder>true</_UnoOverrideUsesRuntimeFolder>
+			<_UnoOverrideUsesRuntimeFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference' or '$(CommonOverridePackageId)'=='uno.winui'">false</_UnoOverrideUsesRuntimeFolder>
+
+			<_TargetNugetFolder Condition="'$(_UnoOverrideUsesRuntimeFolder)'!='true'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder Condition="'$(_UnoOverrideUsesRuntimeFolder)'=='true'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
 			<!-- Track ownership so shared package folders are cleaned safely. -->
 			<_OwnedCommonOverrideManifest>$(_TargetNugetFolder)\.$(MSBuildProjectName).$(_OverrideTargetFramework).owned-files.txt</_OwnedCommonOverrideManifest>
 		</PropertyGroup>

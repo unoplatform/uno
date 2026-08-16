@@ -12,7 +12,6 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
-using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using System.Collections.Generic;
@@ -37,6 +36,7 @@ using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
 using static Private.Infrastructure.TestServices;
 using Private.Infrastructure;
+
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -129,6 +129,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await ImageAssert.AreNotEqualAsync(actual, different);
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23510")]
+		public void When_InlineUIContainer_Added_To_TextBlock_Throws()
+		{
+			var SUT = new TextBlock();
+			SUT.Inlines.Add(new Run { Text = "Before " });
+
+			// WinUI throws ArgumentException; Uno used to silently drop the container.
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Inlines.Add(new InlineUIContainer { Child = new Border() }));
+
+			// Same when inserted or assigned through the indexer.
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Inlines.Insert(0, new InlineUIContainer()));
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Inlines[0] = new InlineUIContainer());
+
+			// Nested inside a Span that already lives in the TextBlock must also throw.
+			var span = new Span();
+			SUT.Inlines.Add(span);
+			Assert.ThrowsExactly<ArgumentException>(() => span.Inlines.Add(new InlineUIContainer()));
+
+			// A Span already holding an InlineUIContainer must throw when added to the TextBlock.
+			var preBuilt = new Span();
+			preBuilt.Inlines.Add(new InlineUIContainer());
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Inlines.Add(preBuilt));
+
+			// The valid inlines remain untouched after the rejected additions.
+			Assert.AreEqual(2, SUT.Inlines.Count);
+			Assert.IsInstanceOfType(SUT.Inlines[0], typeof(Run));
+			Assert.IsInstanceOfType(SUT.Inlines[1], typeof(Span));
+		}
+
 #if __SKIA__
 		[TestMethod]
 		// It looks like CI might not have any installed fonts with Chinese characters which could cause the test to fail
@@ -141,7 +171,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
 
-			Assert.IsTrue(fallbackFont.ContainsGlyph(SUT.Text[0]));
+			using var fallbackSkFont = new SKFont(fallbackFont);
+			Assert.IsTrue(fallbackSkFont.ContainsGlyph(SUT.Text[0]));
 
 			var expected = new TextBlock { Text = "示例文本", FontSize = 24, FontFamily = new FontFamily(fallbackFont.FamilyName) };
 
@@ -174,7 +205,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
 
-			Assert.IsTrue(fallbackFont.ContainsGlyph(SUT.Text[0]));
+			using var fallbackSkFont = new SKFont(fallbackFont);
+			Assert.IsTrue(fallbackSkFont.ContainsGlyph(SUT.Text[0]));
 
 			var expected = new TextBlock
 			{
@@ -222,8 +254,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.Load(new StackPanel
 			{
-				expected,
-				SUT
+				Children =
+				{
+					expected,
+					SUT
+				}
 			});
 
 			Action OnFrameRendered = async () =>
@@ -1015,8 +1050,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.Load(new StackPanel
 			{
-				textbox,
-				textblock
+				Children =
+				{
+					textbox,
+					textblock
+				}
 			});
 
 			for (int i = 0; i < 5; i++)
@@ -1420,6 +1458,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
+		// Regression: tapping a selection gripper re-sampled the finger point, which sits on the thumb below the
+		// caret line, so GetIndexAt spilled onto the text and reselected a different word. Tapping a selection
+		// handle must keep the selection.
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_Tap_Gripper_Keeps_Selection()
+		{
+#if !__SKIA__
+			Assert.Inconclusive("Touch selection grippers are only implemented on Skia.");
+#else
+			var sut = new TextBlock
+			{
+				Text = "hello uno",
+				IsTextSelectionEnabled = true,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Tap the first word to select it and show the grippers.
+			finger.Press(new Point(bounds.X + bounds.Width / 4, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", sut.SelectedText.TrimEnd());
+			var grippers = sut.SelectionGrippersForTesting;
+			Assert.IsNotNull(grippers);
+
+			// Tap the end gripper's thumb near its bottom edge (below the caret line) — the geometry that used to
+			// reselect the word under the thumb instead of leaving the selection alone.
+			var endThumb = grippers.Value.end.GetAbsoluteBounds();
+			finger.Press(new Point(endThumb.GetCenter().X, endThumb.Bottom - 2));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello", sut.SelectedText.TrimEnd(), "tapping a selection gripper must keep the selection, not reselect a word under the thumb");
+			Assert.IsNotNull(sut.SelectionGrippersForTesting, "the grippers should remain visible after tapping one");
+#endif
+		}
+
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
@@ -1639,7 +1721,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual("Hello ", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual("Hello ", await ClipboardHelper.WaitForTextAsync("Hello "));
 		}
 
 #if !HAS_INPUT_INJECTOR
@@ -1686,7 +1768,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual("FirstLine", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual("FirstLine", await ClipboardHelper.WaitForTextAsync("FirstLine"));
 
 			// move to the center of the second line
 			mouse.MoveTo(SUT.GetAbsoluteBounds().Location + new Point(SUT.ActualWidth / 2, 25));
@@ -1701,7 +1783,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual("Second", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual("Second", await ClipboardHelper.WaitForTextAsync("Second"));
 
 			// move to the start of the second line
 			mouse.MoveTo(SUT.GetAbsoluteBounds().Location + new Point(0, 25));
@@ -1716,7 +1798,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(" ", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual(" ", await ClipboardHelper.WaitForTextAsync(" "));
 		}
 
 		[TestMethod]
@@ -1814,7 +1896,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, mod));
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(SUT.Text, await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual(SUT.Text, await ClipboardHelper.WaitForTextAsync(SUT.Text));
 		}
 
 		[TestMethod]
@@ -1916,7 +1998,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("world", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual("world", await ClipboardHelper.WaitForTextAsync("world"));
 		}
 
 		[TestMethod]

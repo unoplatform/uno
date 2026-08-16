@@ -210,7 +210,7 @@ namespace Uno.UI.DataBinding
 						// Don't get the source value if we're not accessing a dependency property.
 						// WinUI does not read the property value before setting the value for a
 						// non-dependency property source.
-						|| DependencyObjectStore.AreDifferent(value, _value.GetSourceValue())
+						|| DependencyObject.AreDifferent(value, _value.GetSourceValue())
 					))
 				{
 					_value.Value = value;
@@ -306,7 +306,7 @@ namespace Uno.UI.DataBinding
 
 		public bool PrefixOfOrEqualTo(BindingPath? that)
 		{
-			if (that == null || DependencyObjectStore.AreDifferent(this.DataContext, that.DataContext))
+			if (that == null || DependencyObject.AreDifferent(this.DataContext, that.DataContext))
 			{
 				return false;
 			}

@@ -21,6 +21,23 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 	{
 		private static SymbolDisplayFormat _fullyQualifiedWithoutGlobal = SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted);
 
+		// DependencyObject is a base class, so detection walks the base-type chain. This generator ships in the
+		// package and also compiles against previously-released Uno packages where DependencyObject is still an
+		// interface (its own tests reference the released package via WithUnoPackage), so an implemented-interface
+		// match is kept as a fallback until a stable release ships DependencyObject-as-class.
+		private static bool IsDependencyObject(INamedTypeSymbol? type)
+		{
+			for (var current = type; current is not null; current = current.BaseType)
+			{
+				if (current.ToDisplayString(_fullyQualifiedWithoutGlobal) == XamlConstants.Types.DependencyObject)
+				{
+					return true;
+				}
+			}
+
+			return type?.AllInterfaces.Any(t => t.ToDisplayString(_fullyQualifiedWithoutGlobal) == XamlConstants.Types.DependencyObject) ?? false;
+		}
+
 		private record AttachedPropertyData
 		{
 			private enum AttachedPropertyDataFlags : byte
@@ -204,8 +221,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				ContainingNamespace = dpSymbol.ContainingNamespace.ToString();
 				ContainingTypeName = dpSymbol.ContainingType.Name;
 
-				var isDependencyObject = dpSymbol.ContainingType.AllInterfaces
-					.Any(t => t.ToDisplayString(_fullyQualifiedWithoutGlobal) == XamlConstants.Types.DependencyObject);
+				var isDependencyObject = IsDependencyObject(dpSymbol.ContainingType);
 
 				if (dpSymbol.ContainingType.TypeKind == TypeKind.Class &&
 					(dpSymbol.ContainingType.IsStatic || isDependencyObject))

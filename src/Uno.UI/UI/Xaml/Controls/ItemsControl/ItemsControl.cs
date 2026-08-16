@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -18,6 +18,8 @@ using System.Diagnostics.CodeAnalysis;
 
 using _View = Microsoft.UI.Xaml.UIElement;
 using _ViewGroup = Microsoft.UI.Xaml.UIElement;
+using System.Text;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -96,7 +98,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get { return _internalItemsPanelRoot; }
 			set
 			{
-				if (_internalItemsPanelRoot is IDependencyObjectStoreProvider provider)
+				if (_internalItemsPanelRoot is DependencyObject provider)
 				{
 					provider.SetParent(null);
 				}
@@ -111,7 +113,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get { return _itemsPanelRoot; }
 			set
 			{
-				if (_itemsPanelRoot is IDependencyObjectStoreProvider provider)
+				if (_itemsPanelRoot is DependencyObject provider)
 				{
 					provider.SetParent(null);
 				}
@@ -1741,5 +1743,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// TODO Uno: Implement from WinUI
 		private protected bool IsItemsHostInvalid => false;
+
+		partial void RequestLayoutPartial()
+		{
+			InvalidateMeasure();
+		}
 	}
 }

@@ -125,7 +125,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnRowChanged(DependencyObject instance, DependencyPropertyChangedEventArgs args)
 		{
-			if (instance is IFrameworkElement { Parent: IFrameworkElement parent })
+			if (instance is IFrameworkElement { Parent: FrameworkElement parent })
 			{
 				parent.InvalidateMeasure();
 			}
@@ -142,7 +142,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnColumnChanged(DependencyObject instance, DependencyPropertyChangedEventArgs args)
 		{
-			if (instance is IFrameworkElement { Parent: IFrameworkElement parent })
+			if (instance is IFrameworkElement { Parent: FrameworkElement parent })
 			{
 				parent.InvalidateMeasure();
 			}
@@ -168,7 +168,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnRowSpanChanged(DependencyObject instance, DependencyPropertyChangedEventArgs args)
 		{
-			if (instance is IFrameworkElement { Parent: IFrameworkElement parent })
+			if (instance is IFrameworkElement { Parent: FrameworkElement parent })
 			{
 				parent.InvalidateMeasure();
 			}
@@ -193,7 +193,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnColumnSpanChanged(DependencyObject instance, DependencyPropertyChangedEventArgs args)
 		{
-			if (instance is IFrameworkElement { Parent: IFrameworkElement parent })
+			if (instance is IFrameworkElement { Parent: FrameworkElement parent })
 			{
 				parent.InvalidateMeasure();
 			}
