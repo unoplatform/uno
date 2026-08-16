@@ -224,7 +224,7 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 		_presentTex = wgpuDeviceCreateTexture(_device.Dev, &td);
 		_presentView = wgpuTextureCreateView(_presentTex, null);
 
-		_target = new WebGpuSwapchainTarget(_presentTex, _presentView, width, height,
+		_target = new WebGpuSwapchainTarget(_presentView, width, height,
 			_device.ColorFormat == WGPUTextureFormat.BGRA8Unorm ? GraphicsColorFormat.Bgra8888 : GraphicsColorFormat.Rgba8888);
 
 		var format = _device.ColorFormat;

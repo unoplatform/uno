@@ -216,7 +216,7 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		};
 		_presentTex = wgpuDeviceCreateTexture(_device.Dev, &td);
 		_presentView = wgpuTextureCreateView(_presentTex, null);
-		_target = new WebGpuSwapchainTarget(_presentTex, _presentView, width, height,
+		_target = new WebGpuSwapchainTarget(_presentView, width, height,
 			_device.ColorFormat == WGPUTextureFormat.BGRA8Unorm ? GraphicsColorFormat.Bgra8888 : GraphicsColorFormat.Rgba8888);
 
 		WGPUSurfaceCapabilities caps = default;
@@ -320,19 +320,17 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 /// <see cref="ColorView"/>. Lifetime is the swapchain context's (recreated on resize).</summary>
 internal sealed class WebGpuSwapchainTarget : IWebGpuRenderTarget
 {
-	public WebGpuSwapchainTarget(nint colorTexture, nint colorView, int width, int height, GraphicsColorFormat colorFormat)
+	public WebGpuSwapchainTarget(nint colorView, int width, int height, GraphicsColorFormat colorFormat)
 	{
-		ColorTexture = colorTexture;
 		ColorView = colorView;
 		Width = width;
 		Height = height;
 		ColorFormat = colorFormat;
 	}
 
-	public nint ColorTexture { get; }
 	public nint ColorView { get; }
 	public int Width { get; }
 	public int Height { get; }
 	public GraphicsColorFormat ColorFormat { get; }
-	public void Dispose() { }   // the WebGpuSwapChainContext owns _presentTex/_presentView
+	public void Dispose() { }   // the host context owns the underlying resolve texture/view
 }
