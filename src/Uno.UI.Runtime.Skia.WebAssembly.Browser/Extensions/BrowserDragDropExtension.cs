@@ -353,9 +353,15 @@ namespace Uno.UI.Runtime.Skia
 
 			/// <inheritdoc />
 			public Point GetPosition(object? relativeTo)
-				=> relativeTo == null
-					? new Point(x, y)
-					: ((UIElement)relativeTo).TransformToVisual(null).Inverse.TransformPoint(new Point(x, y));
+			{
+				if (relativeTo is null)
+				{
+					return new Point(x, y);
+				}
+
+				((UIElement)relativeTo).TransformToVisual(null).TryTransformInverse(new Point(x, y), out var position);
+				return position;
+			}
 		}
 
 		private struct DataEntry
