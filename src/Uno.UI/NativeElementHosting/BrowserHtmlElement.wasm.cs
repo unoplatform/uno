@@ -44,7 +44,7 @@ partial class BrowserHtmlElement
 		WindowManagerInterop.SetStyleString(UnoElementId, name, value);
 	}
 
-	private void SetCssStyleNative(params (string name, string value)[] styles)
+	private void SetCssStyleNative(ReadOnlySpan<(string name, string value)> styles)
 	{
 		WindowManagerInterop.SetStyles(UnoElementId, styles);
 	}
@@ -74,7 +74,7 @@ partial class BrowserHtmlElement
 		WindowManagerInterop.SetAttribute(UnoElementId, name, value);
 	}
 
-	private void SetHtmlAttributeNative(params (string name, string value)[] attributes)
+	private void SetHtmlAttributeNative(ReadOnlySpan<(string name, string value)> attributes)
 	{
 		WindowManagerInterop.SetAttributes(UnoElementId, attributes);
 	}

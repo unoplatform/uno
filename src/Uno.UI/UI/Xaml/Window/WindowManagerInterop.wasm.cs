@@ -143,17 +143,23 @@ namespace Uno.UI.Xaml
 
 		#region SetStyles
 
-		internal static void SetStyles(IntPtr htmlId, (string name, string value)[] styles)
+		internal static void SetStyles(IntPtr htmlId, params ReadOnlySpan<(string name, string value)> styles)
 		{
-			var pairs = new string[styles.Length * 2];
-
-			for (int i = 0; i < styles.Length; i++)
+			switch (styles.Length)
 			{
-				pairs[i * 2 + 0] = styles[i].name;
-				pairs[i * 2 + 1] = styles[i].value;
-			}
+				case 0:
+					return;
 
-			NativeMethods.SetStyles(htmlId, pairs);
+				// Single pair batches are by far the most common: the scalar entry point is
+				// equivalent on the JS side and skips the flat array allocation entirely.
+				case 1:
+					NativeMethods.SetStyleString(htmlId, styles[0].name, styles[0].value);
+					return;
+
+				default:
+					NativeMethods.SetStyles(htmlId, HtmlPropertyPairs.Flatten(styles));
+					return;
+			}
 		}
 
 		#endregion
@@ -204,17 +210,21 @@ namespace Uno.UI.Xaml
 
 		#region SetAttributes
 
-		internal static void SetAttributes(IntPtr htmlId, (string name, string value)[] attributes)
+		internal static void SetAttributes(IntPtr htmlId, params ReadOnlySpan<(string name, string value)> attributes)
 		{
-			var pairs = new string[attributes.Length * 2];
-
-			for (int i = 0; i < attributes.Length; i++)
+			switch (attributes.Length)
 			{
-				pairs[i * 2 + 0] = attributes[i].name;
-				pairs[i * 2 + 1] = attributes[i].value;
-			}
+				case 0:
+					return;
 
-			NativeMethods.SetAttributes(htmlId, pairs);
+				case 1:
+					NativeMethods.SetAttribute(htmlId, attributes[0].name, attributes[0].value);
+					return;
+
+				default:
+					NativeMethods.SetAttributes(htmlId, HtmlPropertyPairs.Flatten(attributes));
+					return;
+			}
 		}
 
 		#endregion
@@ -316,17 +326,21 @@ namespace Uno.UI.Xaml
 
 		#region SetProperty
 
-		internal static void SetProperty(IntPtr htmlId, (string name, string value)[] properties)
+		internal static void SetProperty(IntPtr htmlId, params ReadOnlySpan<(string name, string value)> properties)
 		{
-			var pairs = new string[properties.Length * 2];
-
-			for (int i = 0; i < properties.Length; i++)
+			switch (properties.Length)
 			{
-				pairs[i * 2 + 0] = properties[i].name;
-				pairs[i * 2 + 1] = properties[i].value;
-			}
+				case 0:
+					return;
 
-			NativeMethods.SetProperties(htmlId, pairs);
+				case 1:
+					NativeMethods.SetProperty(htmlId, properties[0].name, properties[0].value);
+					return;
+
+				default:
+					NativeMethods.SetProperties(htmlId, HtmlPropertyPairs.Flatten(properties));
+					return;
+			}
 		}
 
 		internal static void SetProperty(IntPtr htmlId, string name, string value)

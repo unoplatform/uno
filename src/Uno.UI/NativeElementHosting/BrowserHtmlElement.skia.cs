@@ -31,7 +31,7 @@ public sealed partial class BrowserHtmlElement : IDisposable
 		NativeMethods.SetStyleString(ElementId, name, value);
 	}
 
-	private void SetCssStyleNative(params (string name, string value)[] styles)
+	private void SetCssStyleNative(ReadOnlySpan<(string name, string value)> styles)
 	{
 		foreach (var pair in styles)
 		{
@@ -64,7 +64,7 @@ public sealed partial class BrowserHtmlElement : IDisposable
 		NativeMethods.SetAttribute(ElementId, name, value);
 	}
 
-	private void SetHtmlAttributeNative(params (string name, string value)[] attributes)
+	private void SetHtmlAttributeNative(ReadOnlySpan<(string name, string value)> attributes)
 	{
 		foreach (var pair in attributes)
 		{

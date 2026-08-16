@@ -135,13 +135,8 @@ namespace Microsoft.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetStyleDouble(HtmlId, name, value);
 		}
 
-		internal void SetStyle(params (string name, string value)[] styles)
+		internal void SetStyle(params ReadOnlySpan<(string name, string value)> styles)
 		{
-			if (styles == null || styles.Length == 0)
-			{
-				return; // nothing to do
-			}
-
 			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles);
 		}
 
@@ -263,13 +258,8 @@ namespace Microsoft.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.RemoveAttribute(HtmlId, name);
 		}
 
-		internal void SetAttribute(params (string name, string value)[] attributes)
+		internal void SetAttribute(params ReadOnlySpan<(string name, string value)> attributes)
 		{
-			if (attributes == null || attributes.Length == 0)
-			{
-				return; // nothing to do
-			}
-
 			Uno.UI.Xaml.WindowManagerInterop.SetAttributes(HtmlId, attributes);
 		}
 
@@ -281,13 +271,8 @@ namespace Microsoft.UI.Xaml
 		internal void SetProperty(string name, string value)
 			=> Uno.UI.Xaml.WindowManagerInterop.SetProperty(HtmlId, name, value);
 
-		internal void SetProperty(params (string name, string value)[] properties)
+		internal void SetProperty(params ReadOnlySpan<(string name, string value)> properties)
 		{
-			if (properties == null || properties.Length == 0)
-			{
-				return; // nothing to do
-			}
-
 			Uno.UI.Xaml.WindowManagerInterop.SetProperty(HtmlId, properties);
 		}
 
