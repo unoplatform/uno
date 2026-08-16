@@ -1,6 +1,5 @@
 ﻿using System;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -12,6 +11,8 @@ public partial class BitmapIcon : IconElement, IThemeChangeAware
 {
 	private readonly Image _image;
 
+	private protected override bool SupportsDirectChild => true;
+
 	/// <summary>
 	/// Initializes a new instance of the BitmapIcon class.
 	/// </summary>
@@ -19,11 +20,6 @@ public partial class BitmapIcon : IconElement, IThemeChangeAware
 	{
 		_image = new Image();
 		AddIconChild(_image);
-
-		_image.SetBinding(
-			dependencyProperty: Image.SourceProperty,
-			binding: new Binding { Source = this, Path = nameof(UriSource) }
-		);
 
 		UpdateImageMonochromeColor();
 	}
@@ -63,7 +59,18 @@ public partial class BitmapIcon : IconElement, IThemeChangeAware
 			nameof(UriSource),
 			typeof(Uri),
 			typeof(BitmapIcon),
-			new FrameworkPropertyMetadata(default(Uri)));
+			new FrameworkPropertyMetadata(
+				default(Uri),
+				propertyChangedCallback: (s, e) => ((BitmapIcon)s).OnUriSourceChanged((Uri)e.NewValue)));
+
+	// Mirrors the Uri -> ImageSource conversion the binding engine applies through ImageSourceConverter.
+	private void OnUriSourceChanged(Uri uriSource)
+	{
+		if (_image is not null)
+		{
+			_image.Source = (ImageSource)uriSource;
+		}
+	}
 
 	private void OnShowAsMonochromeChanged(bool value) => UpdateImageMonochromeColor();
 

@@ -15,7 +15,7 @@ using Microsoft.UI.Composition;
 
 namespace Uno.UI
 {
-	public static class FeatureConfiguration
+	public static partial class FeatureConfiguration
 	{
 		/// <summary>
 		/// Configuration for collectible AssemblyLoadContext (secondary-app) teardown.
