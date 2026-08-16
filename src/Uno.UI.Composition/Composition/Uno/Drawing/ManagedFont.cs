@@ -54,7 +54,6 @@ internal sealed class ManagedFont : IFont
 	private readonly int _numHMetrics;
 	private readonly int _ascent;
 	private readonly int _descent;
-	private readonly int _lineGap;
 	private readonly int? _underlinePosition;
 	private readonly int? _underlineThickness;
 	private readonly int? _strikeoutPosition;
@@ -69,7 +68,7 @@ internal sealed class ManagedFont : IFont
 	private string? _familyName;
 
 	private ManagedFont(byte[] data, float pixelSize, int unitsPerEm, int numGlyphs, int glyf, int loca, bool longLoca, CffTable? cff, ColrTable? colr, Color[]? palette,
-		CmapTable? cmap, int hmtx, int numHMetrics, int ascent, int descent, int lineGap, int? underlinePosition, int? underlineThickness,
+		CmapTable? cmap, int hmtx, int numHMetrics, int ascent, int descent, int? underlinePosition, int? underlineThickness,
 		int? strikeoutPosition, int? strikeoutThickness, int sfntOffset, int name)
 	{
 		_name = name;
@@ -88,7 +87,6 @@ internal sealed class ManagedFont : IFont
 		_numHMetrics = numHMetrics;
 		_ascent = ascent;
 		_descent = descent;
-		_lineGap = lineGap;
 		_underlinePosition = underlinePosition;
 		_underlineThickness = underlineThickness;
 		_strikeoutPosition = strikeoutPosition;
@@ -127,7 +125,6 @@ internal sealed class ManagedFont : IFont
 	public float Descent => -_descent * Scale;
 
 	/// <summary>Recommended extra line spacing in pixels.</summary>
-	public float LineGap => _lineGap * Scale;
 
 	// post stores the underline offset up-negative (below baseline); Skia's convention is positive-below, so negate.
 
@@ -374,14 +371,14 @@ internal sealed class ManagedFont : IFont
 			// Horizontal metrics + vertical line metrics (font units). Prefer OS/2 typo metrics when
 			// the font asks for them (fsSelection bit 7 = USE_TYPO_METRICS); else fall back to hhea.
 			var numHMetrics = hhea != 0 ? U16(data, hhea + 34) : 0;
-			int ascent = 0, descent = 0, lineGap = 0;
-			if (hhea != 0) { ascent = S16(data, hhea + 4); descent = S16(data, hhea + 6); lineGap = S16(data, hhea + 8); }
+			int ascent = 0, descent = 0;
+			if (hhea != 0) { ascent = S16(data, hhea + 4); descent = S16(data, hhea + 6); }
 			if (os2 != 0 && os2 + 78 <= data.Length)
 			{
 				var useTypo = (U16(data, os2 + 62) & 0x80) != 0; // fsSelection USE_TYPO_METRICS
 				if (useTypo || hhea == 0)
 				{
-					ascent = S16(data, os2 + 68); descent = S16(data, os2 + 70); lineGap = S16(data, os2 + 72);
+					ascent = S16(data, os2 + 68); descent = S16(data, os2 + 70);
 				}
 			}
 			// post table (v1/v2/v3 all share the header): underlinePosition + underlineThickness in font units.
@@ -423,7 +420,7 @@ internal sealed class ManagedFont : IFont
 			}
 
 			font = new ManagedFont(data, pixelSize, unitsPerEm, numGlyphs, glyf, loca, longLoca, cffTable, colrTable, palette,
-				cmapTable, hmtx, numHMetrics, ascent, descent, lineGap, underlinePosition, underlineThickness,
+				cmapTable, hmtx, numHMetrics, ascent, descent, underlinePosition, underlineThickness,
 				strikeoutPosition, strikeoutThickness, baseOffset, name);
 			return true;
 		}

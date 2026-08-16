@@ -11,9 +11,8 @@ using Windows.UI;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// Entry point for a pluggable 2D drawing backend. The default implementation is backed by SkiaSharp
-/// (<see cref="SkiaDrawingFactory"/>); a host or experiment can supply an alternative via
-/// <see cref="DrawingFactory.Register"/>.
+/// Entry point for a pluggable 2D drawing backend, supplied via <see cref="DrawingFactory.Register"/>. The
+/// framework registers a default backend when a host sets none; this interface names no specific one.
 /// </summary>
 /// <remarks>
 /// This is the device-bound resource half of the abstraction: it manufactures the stateful handles that cross the

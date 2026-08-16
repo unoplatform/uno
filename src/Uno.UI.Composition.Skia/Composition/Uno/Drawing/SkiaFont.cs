@@ -42,7 +42,6 @@ internal sealed class SkiaFont : IFont
 
 	public float Descent => _metrics.Descent;
 
-	public float LineGap => _metrics.Leading;
 
 	public float? UnderlinePosition => _metrics.UnderlinePosition;
 

@@ -36,17 +36,14 @@ public interface IFont
 	/// </summary>
 	void BuildGlyphRun(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<GlyphRunElement> elements);
 
-	// --- Metrics (pixels at this font's size; SkiaSharp sign convention: Ascent <= 0 above the baseline,
-	//     Descent >= 0 below it, so line height = Descent - Ascent). ---
+	// --- Metrics (pixels at this font's size; baseline-relative sign convention: Ascent <= 0 above the baseline,
+	//     Descent >= 0 below it, so line height = Descent - Ascent). Every provider maps to this convention. ---
 
 	/// <summary>Distance from the baseline to the top of the text, negative (above the baseline).</summary>
 	float Ascent { get; }
 
 	/// <summary>Distance from the baseline to the bottom of the text, positive (below the baseline).</summary>
 	float Descent { get; }
-
-	/// <summary>Recommended extra spacing between lines, in pixels.</summary>
-	float LineGap { get; }
 
 	/// <summary>Underline stroke offset from the baseline (positive below), or null if the font doesn't specify one.</summary>
 	float? UnderlinePosition { get; }
