@@ -4,6 +4,8 @@
 		<UsingUnoCommonDesktopTargets>true</UsingUnoCommonDesktopTargets>
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 
+		<IsMSALSupported>true</IsMSALSupported>
+
 		<!-- Enable the netx.0-desktop target -->
 		<TargetPlatformIdentifier>Desktop</TargetPlatformIdentifier>
 		<TargetFrameworkIdentifier>Desktop</TargetFrameworkIdentifier>

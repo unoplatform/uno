@@ -14,6 +14,13 @@ namespace Microsoft.UI.Xaml.Input
 			KeyStatus = keyStatus;
 		}
 
+		internal CharacterReceivedRoutedEventArgs(object originalSource, char character, CorePhysicalKeyStatus keyStatus)
+			: base(originalSource)
+		{
+			Character = character;
+			KeyStatus = keyStatus;
+		}
+
 		/// <summary>
 		/// Gets or sets a value that marks the routed event as handled.
 		/// A true value for Handled prevents most handlers along the event
