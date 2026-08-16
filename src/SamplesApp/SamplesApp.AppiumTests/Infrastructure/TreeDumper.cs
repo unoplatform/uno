@@ -39,8 +39,6 @@ public static class TreeDumper
 		"HorizontalSmallIncrease",
 		"HorizontalLargeDecrease",
 		"HorizontalLargeIncrease",
-		// TextBox template parts
-		"TextBox",
 		// Other framework-injected template parts that aren't sample content.
 		"PART_ContentPresenter",
 	};

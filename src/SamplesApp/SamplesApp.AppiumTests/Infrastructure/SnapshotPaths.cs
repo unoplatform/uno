@@ -16,11 +16,17 @@ internal static class SnapshotPaths
 			return Path.GetFullPath(options.SnapshotsDirectoryOverride!);
 		}
 
-		var testsDirectory = Path.GetDirectoryName(callerFilePath!)
-			?? throw new InvalidDataException("Unable to resolve the SamplesApp.AppiumTests tests directory.");
-		var projectDirectory = Path.GetDirectoryName(testsDirectory)
-			?? throw new InvalidDataException("Unable to resolve the SamplesApp.AppiumTests project directory.");
-		return Path.Combine(projectDirectory, "Snapshots");
+		if (!string.IsNullOrWhiteSpace(callerFilePath) && File.Exists(callerFilePath))
+		{
+			var testsDirectory = Path.GetDirectoryName(callerFilePath)
+				?? throw new InvalidDataException("Unable to resolve the SamplesApp.AppiumTests tests directory.");
+			var projectDirectory = Path.GetDirectoryName(testsDirectory)
+				?? throw new InvalidDataException("Unable to resolve the SamplesApp.AppiumTests project directory.");
+			return Path.Combine(projectDirectory, "Snapshots");
+		}
+
+		throw new InvalidDataException(
+			$"Set {AppiumTestOptions.EnvVarSnapshotsDir} to the committed snapshots directory when build and test run on different machines.");
 	}
 
 	public static string ResolveBaselinePath(

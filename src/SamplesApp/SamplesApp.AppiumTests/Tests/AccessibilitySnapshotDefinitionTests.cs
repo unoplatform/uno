@@ -25,6 +25,16 @@ public sealed class AccessibilitySnapshotDefinitionTests
 
 	[TestMethod]
 	[TestCategory(TestCategories.HostIndependent)]
+	public void SnapshotPath_RequiresOverride_WhenCallerPathIsUnavailable()
+	{
+		var action = () => SnapshotPaths.ResolveSnapshotsDirectory(callerFilePath: @"Z:\unavailable\AccessibilitySnapshotTests.cs");
+
+		action.Should().Throw<InvalidDataException>()
+			.WithMessage($"*{AppiumTestOptions.EnvVarSnapshotsDir}*");
+	}
+
+	[TestMethod]
+	[TestCategory(TestCategories.HostIndependent)]
 	public void Verified_Baselines_Match_Their_Definitions()
 	{
 		foreach (var definition in AccessibilityScreenReaderSnapshotDefinition.All)

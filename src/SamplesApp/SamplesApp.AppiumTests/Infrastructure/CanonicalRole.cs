@@ -204,6 +204,12 @@ internal static class CanonicalRole
 		}
 
 		var key = rawRole.Trim();
+		if (platform == AppiumPlatform.Windows &&
+			key.StartsWith("ControlType.", System.StringComparison.OrdinalIgnoreCase))
+		{
+			key = key["ControlType.".Length..];
+		}
+
 		var table = platform switch
 		{
 			AppiumPlatform.Windows => s_win32,
