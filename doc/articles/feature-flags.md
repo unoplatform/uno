@@ -214,3 +214,27 @@ This flag controls the [edge-to-edge UI behavior](https://developer.android.com/
 var isEdgeToEdge = FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled;
 #endif
 ```
+
+## `Perf2026` optimizations
+
+`Uno.UI.FeatureConfiguration.Perf2026` groups opt-in performance optimizations ported from WinUI that change internal
+allocation patterns or visual tree shapes. They are disabled by default; set `Uno.UI.FeatureConfiguration.Perf2026.EnableAll`
+to `true` to enable every optimization that has not been configured individually, or set a single flag to opt in
+selectively. Because these flags are captured while elements are being created, set them during application startup.
+
+### `IconElementNoGridContainer`
+
+When enabled, `FontIcon` and `BitmapIcon` host their inner `TextBlock`/`Image` directly instead of nesting it inside a
+`Grid` filled with a transparent brush, saving two objects and one layout/render level per icon. Measure/arrange results,
+foreground and theme propagation, hit testing, automation and rendering are unchanged, but code that reaches into an icon
+by index (for example `VisualTreeHelper.GetChild(icon, 0)`) observes the inner element instead of the `Grid`. Other icon
+types (`SymbolIcon`, `PathIcon`, `ImageIcon`, `IconSourceElement`) keep the `Grid`.
+
+```csharp
+public App()
+{
+    Uno.UI.FeatureConfiguration.Perf2026.IconElementNoGridContainer = true;
+    this.InitializeComponent();
+}
+```
+
