@@ -662,6 +662,9 @@ partial class MetadataAPI // quick impl
 
 	public static Type GetClassInfoByTypeName(Type typeName) => typeName;
 
+	internal static void ClearDependencyPropertyReflectionCache()
+		=> _dependencyPropertyReflectionCache.Clear();
+
 	/// <summary>
 	/// Removes entries from the reflection cache whose Type key belongs to a non-default ALC.
 	/// </summary>

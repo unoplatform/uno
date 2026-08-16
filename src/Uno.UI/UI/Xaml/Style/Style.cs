@@ -22,6 +22,11 @@ namespace Microsoft.UI.Xaml
 
 		private readonly static Dictionary<Type, StyleProviderHandler> _lookup = new(Uno.Core.Comparison.FastTypeComparer.Default);
 		private readonly static Dictionary<Type, Style> _defaultStyleCache = new(Uno.Core.Comparison.FastTypeComparer.Default);
+
+		/// <summary>
+		/// Performance-optimized variants of the default styles, only used when
+		/// <see cref="FeatureConfiguration.Style.UseDefaultStyleOptimizations"/> is enabled.
+		/// </summary>
 		private readonly static Dictionary<Type, StyleProviderHandler> _optimizedLookup = new(Uno.Core.Comparison.FastTypeComparer.Default);
 		private readonly static Dictionary<Type, Style> _optimizedDefaultStyleCache = new(Uno.Core.Comparison.FastTypeComparer.Default);
 
@@ -202,6 +207,8 @@ namespace Microsoft.UI.Xaml
 						{
 							try
 							{
+								// Defer before adjustment so a losing built-in setter does not materialize
+								// the explicit winner a second time.
 								if (TryDeferSetter(o, precedence, _flattenedSetters[i]))
 								{
 									continue;

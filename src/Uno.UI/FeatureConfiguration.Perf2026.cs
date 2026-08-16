@@ -9,15 +9,17 @@ public static partial class FeatureConfiguration
 	/// </summary>
 	/// <remarks>
 	/// These optimizations change internal visual tree shapes or allocation patterns, so they are opt-in
-	/// and default to <see cref="EnableAll"/>. Each optimization declares its own property in a dedicated
-	/// <c>FeatureConfiguration.Perf2026.&lt;Feature&gt;.cs</c> partial file.
+	/// and default to <see cref="EnableAll"/>. Individual switches live either in this group or in their
+	/// existing feature group, such as <see cref="FeatureConfiguration.Style"/>.
 	/// </remarks>
 	public static partial class Perf2026
 	{
 		/// <summary>
-		/// Enables every <see cref="Perf2026"/> optimization that has not been configured individually.
+		/// Enables every <see cref="Perf2026"/> optimization that has not been configured individually,
+		/// including optimized default styles and deferred overridden style values.
 		/// Defaults to false.
 		/// </summary>
+		/// <remarks>Set this during application startup, before controls or theme resources are created.</remarks>
 		public static bool EnableAll { get; set; }
 	}
 }

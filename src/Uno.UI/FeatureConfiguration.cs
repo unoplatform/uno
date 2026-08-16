@@ -333,6 +333,9 @@ namespace Uno.UI
 
 		public static class Style
 		{
+			private static bool? _useDefaultStyleOptimizations;
+			private static bool? _deferOverriddenSetterValues;
+
 			/// <summary>
 			/// Enables the optimized variants of the built-in control styles, when available.
 			/// </summary>
@@ -346,7 +349,11 @@ namespace Uno.UI
 			/// this is opt-in. Configure it during application startup, before default styles are cached.
 			/// </para>
 			/// </remarks>
-			public static bool UseDefaultStyleOptimizations { get; set; }
+			public static bool UseDefaultStyleOptimizations
+			{
+				get => _useDefaultStyleOptimizations ?? Perf2026.EnableAll;
+				set => _useDefaultStyleOptimizations = value;
+			}
 
 			/// <summary>
 			/// Determines whether a style setter whose value is overridden by a higher precedence (a local value,
@@ -356,9 +363,14 @@ namespace Uno.UI
 			/// <remarks>
 			/// <para>Matches WinUI's deferred <c>OptimizedStyle</c> setter values. Setters backed by a
 			/// <c>StaticResource</c>/<c>ThemeResource</c> are always applied so their resource bindings stay registered.</para>
-			/// <para>The default value is `true`.</para>
+			/// <para>Defaults to <see cref="Perf2026.EnableAll"/> unless configured explicitly.</para>
+			/// <para>Configure this during application startup so all controls use the same style-evaluation mode.</para>
 			/// </remarks>
-			public static bool DeferOverriddenSetterValues { get; set; } = true;
+			public static bool DeferOverriddenSetterValues
+			{
+				get => _deferOverriddenSetterValues ?? Perf2026.EnableAll;
+				set => _deferOverriddenSetterValues = value;
+			}
 		}
 
 		public static class TextBlock

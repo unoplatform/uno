@@ -72,6 +72,36 @@ public class Given_MetadataAPI_DependencyPropertyCache
 	}
 
 	[TestMethod]
+	public void When_HotReload_Clears_Cache_Then_Updated_Member_Is_Observed()
+	{
+		var type = typeof(MetadataApiLateInitProbe);
+
+		try
+		{
+			MetadataApiLateInitProbe.LateProperty = TextBlock.TextProperty;
+			Assert.AreSame(TextBlock.TextProperty, MetadataAPI.TryGetDependencyPropertyByName(type, "Late"));
+
+			MetadataApiLateInitProbe.LateProperty = ContentControl.ContentProperty;
+			Assert.AreSame(
+				TextBlock.TextProperty,
+				MetadataAPI.TryGetDependencyPropertyByName(type, "Late"),
+				"Pre-condition: the positive lookup must be cached before the metadata update.");
+
+			RuntimeTypeMetadataUpdateHandler.ClearCache([type]);
+
+			Assert.AreSame(
+				ContentControl.ContentProperty,
+				MetadataAPI.TryGetDependencyPropertyByName(type, "Late"),
+				"Hot reload must invalidate cached dependency-property members so regenerated registrations are observed.");
+		}
+		finally
+		{
+			MetadataApiLateInitProbe.LateProperty = null;
+			MetadataAPI.ClearDependencyPropertyReflectionCache();
+		}
+	}
+
+	[TestMethod]
 	public void When_Resolved_Concurrently_Then_Cache_Stays_Consistent()
 	{
 		var type = typeof(MetadataApiConcurrencyProbe);
