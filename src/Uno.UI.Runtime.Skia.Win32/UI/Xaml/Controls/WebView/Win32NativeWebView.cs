@@ -281,8 +281,8 @@ internal partial class Win32NativeWebView : Win32NativeWebViewBase, ISupportsVir
 			}
 
 			var browserFolder = customEnv?.BrowserExecutableFolder;
-			var userDataFolder = !string.IsNullOrEmpty(customEnv?.UserDataFolder)
-				? customEnv!.UserDataFolder
+			var userDataFolder = !string.IsNullOrEmpty(customEnv?.RequestedUserDataFolder)
+				? customEnv!.RequestedUserDataFolder
 				: Path.Join(ApplicationData.Current.LocalFolder.Path, "WebView2");
 			var env = await NativeWebView.CoreWebView2Environment.CreateAsync(browserFolder, userDataFolder, nativeEnvOptions);
 			if (customEnv is not null)

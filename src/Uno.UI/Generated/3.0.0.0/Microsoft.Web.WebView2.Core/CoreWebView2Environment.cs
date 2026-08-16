@@ -9,40 +9,13 @@ namespace Microsoft.Web.WebView2.Core
 	public partial class CoreWebView2Environment
 	{
 		// Skipping already declared property BrowserVersionString
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string FailureReportFolderPath
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "FailureReportFolderPath");
-			}
-		}
-#endif
+		// Skipping already declared property FailureReportFolderPath
 		// Skipping already declared property UserDataFolder
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.CreateAsync()
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.CreateWithOptionsAsync(string, string, Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetAvailableBrowserVersionString()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "GetAvailableBrowserVersionString()");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static string GetAvailableBrowserVersionString(string browserExecutableFolder)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "GetAvailableBrowserVersionString(string browserExecutableFolder)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static int CompareBrowserVersionString(string browserVersionString1, string browserVersionString2)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CompareBrowserVersionString(string browserVersionString1, string browserVersionString2)");
-		}
-#endif
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.GetAvailableBrowserVersionString()
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.GetAvailableBrowserVersionString(string)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.CompareBrowserVersionString(string, string)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static string GetAvailableBrowserVersionString(string browserExecutableFolder, global::Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions options)
@@ -110,13 +83,7 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Environment.BrowserProcessExited.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Environment.BrowserProcessExited.remove
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.CreatePrintSettings()
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Microsoft.Web.WebView2.Core.CoreWebView2ProcessInfo> GetProcessInfos()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "GetProcessInfos()");
-		}
-#endif
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.GetProcessInfos()
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Environment.ProcessInfosChanged.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Environment.ProcessInfosChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

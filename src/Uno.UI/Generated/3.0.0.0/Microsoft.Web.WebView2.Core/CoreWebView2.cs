@@ -8,16 +8,7 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 	public partial class CoreWebView2
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint BrowserProcessId
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "BrowserProcessId");
-			}
-		}
-#endif
+		// Skipping already declared property BrowserProcessId
 		// Skipping already declared property CanGoBack
 		// Skipping already declared property CanGoForward
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -149,16 +140,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2Profile Profile
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "Profile");
-			}
-		}
-#endif
+		// Skipping already declared property Profile
 		// Skipping already declared property Settings
 		// Skipping already declared property Source
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

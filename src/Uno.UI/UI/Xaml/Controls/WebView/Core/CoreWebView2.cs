@@ -109,6 +109,7 @@ public partial class CoreWebView2
 		}
 
 		ValidateEnvironmentForCurrentPlatform(environment, controllerOptions);
+		environment.AttachOwner(this);
 		CustomEnvironment = environment;
 		CustomControllerOptions = controllerOptions;
 	}
@@ -118,7 +119,7 @@ public partial class CoreWebView2
 		if (OperatingSystem.IsBrowser())
 		{
 			if (!string.IsNullOrEmpty(environment.BrowserExecutableFolder)
-				|| !string.IsNullOrEmpty(environment.UserDataFolder)
+				|| !string.IsNullOrEmpty(environment.RequestedUserDataFolder)
 				|| environment.Options?.HasNonDefaultValues == true
 				|| controllerOptions is { IsInPrivateModeEnabled: true }
 				|| controllerOptions?.HasUnsupportedWebKitOptions == true)
@@ -129,7 +130,7 @@ public partial class CoreWebView2
 		else if (OperatingSystem.IsMacOS())
 		{
 			if (!string.IsNullOrEmpty(environment.BrowserExecutableFolder)
-				|| !string.IsNullOrEmpty(environment.UserDataFolder)
+				|| !string.IsNullOrEmpty(environment.RequestedUserDataFolder)
 				|| environment.Options?.HasNonDefaultValues == true
 				|| controllerOptions?.HasUnsupportedWebKitOptions == true)
 			{
@@ -138,7 +139,7 @@ public partial class CoreWebView2
 		}
 		else if (!OperatingSystem.IsWindows()
 			&& (!string.IsNullOrEmpty(environment.BrowserExecutableFolder)
-				|| !string.IsNullOrEmpty(environment.UserDataFolder)
+				|| !string.IsNullOrEmpty(environment.RequestedUserDataFolder)
 				|| environment.Options?.HasNonDefaultValues == true
 				|| controllerOptions is { IsInPrivateModeEnabled: true }
 				|| controllerOptions?.HasUnsupportedWebKitOptions == true))
@@ -164,8 +165,6 @@ public partial class CoreWebView2
 			return _cookieManager ??= new CoreWebView2CookieManager(this);
 		}
 	}
-
-	public CoreWebView2Environment Environment => CustomEnvironment ?? _defaultEnvironment;
 
 #if __SKIA__
 	internal void OnLoaded()
@@ -269,6 +268,25 @@ public partial class CoreWebView2
 			_hostToFolderMap.Remove(hostName);
 		}
 	}
+
+	/// <summary>
+	/// Resolves an optional capability of the native WebView, or throws describing why it is unavailable.
+	/// </summary>
+	internal T RequireCapability<T>(string typeName, string memberName)
+		where T : class
+		=> _nativeWebView as T ?? throw CapabilityUnavailable(typeName, memberName);
+
+	/// <summary>
+	/// Builds the exception for a capability the native WebView cannot serve, distinguishing "not initialized
+	/// yet" from "this platform does not implement it". The latter reproduces the generated stub exactly, so
+	/// platforms that do not opt in keep their current behaviour and not-implemented reporting.
+	/// </summary>
+	internal Exception CapabilityUnavailable(string typeName, string memberName)
+		=> _nativeWebView is null
+			? new InvalidOperationException(
+				$"The native WebView is not initialized, so {typeName}.{memberName} is unavailable. " +
+				"Await the WebView2 control's EnsureCoreWebView2Async() before using this member.")
+			: global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException(typeName, memberName);
 
 	internal void NavigateWithHttpRequestMessage(global::Windows.Web.Http.HttpRequestMessage requestMessage)
 	{
