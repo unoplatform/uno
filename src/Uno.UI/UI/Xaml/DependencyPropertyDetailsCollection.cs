@@ -61,8 +61,20 @@ namespace Microsoft.UI.Xaml
 						// This may not work well for x:Bind, we will investigate proper support for x:Bind.
 						// Though, anything will be done now for x:Bind will need to be re-worked if we refactored
 						// x:Bind to be fully compiled, as in WinUI.
-						if (oldDetails.GetBinding() is { ParentBinding: { } binding })
+						if (oldDetails.GetBinding() is { } oldBindingExpression)
 						{
+							if (oldBindingExpression.TemplateBindingSourceProperty is { } oldSourceProperty)
+							{
+								var newSourceProperty = DependencyProperty.GetProperty(oldSourceProperty.OwnerType, oldSourceProperty.Name);
+								if (newSourceProperty is not null)
+								{
+									otherStore.SetTemplateBinding(newDP, newSourceProperty, oldBindingExpression.TemplateBindingPath);
+								}
+
+								continue;
+							}
+
+							var binding = oldBindingExpression.ParentBinding;
 							var newBinding = new Binding(binding.Path, binding.Converter, binding.ConverterParameter);
 							var newSource = binding.Source;
 							if (newSource is IDependencyObjectStoreProvider { Store: { } oldStore } && oldStore == store)

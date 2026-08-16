@@ -807,7 +807,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		// Then we can't do so, because updating the DC will cause the binding to evaluate again, and yield invalid value.
 		if (GetBindingExpression(ContentProperty) is not { } expression ||
 			expression.IsExplicitlySourced ||
-			expression.ParentBinding.IsTemplateBinding)
+			expression.IsTemplateBinding)
 		{
 			TrySetDataContextFromContent(newValue);
 		}

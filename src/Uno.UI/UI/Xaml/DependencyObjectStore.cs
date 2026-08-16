@@ -794,8 +794,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (object.ReferenceEquals(value, DependencyProperty.UnsetValue))
 			{
-				var hasTemplatedParentBinding =
-					propertyDetails.GetBinding()?.ParentBinding.RelativeSource?.Mode == RelativeSourceMode.TemplatedParent;
+				var hasTemplatedParentBinding = propertyDetails.GetBinding()?.IsTemplateBinding == true;
 
 				if (!hasTemplatedParentBinding)
 				{

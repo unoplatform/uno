@@ -4225,7 +4225,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							ownerType.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value))
 						);
 
-					if (isDependencyProperty)
+					if (isDependencyProperty
+						&& templateBindingNode is not null
+						&& prefix?.EndsWith(".", StringComparison.Ordinal) == true
+						&& TryBuildTemplateBindingSourceProperty(templateBindingNode, out var sourceProperty, out var sourcePath))
+					{
+						var propertyOwner = declaringType;
+						var target = prefix.Substring(0, prefix.Length - 1);
+
+						writer.AppendLineIndented(
+							$"global::Uno.UI.Xaml.BindingHelper.SetTemplateBinding({target}, {propertyOwner!.GetFullyQualifiedTypeIncludingGlobal()}.{member.Member.Name}Property, {sourceProperty}, @\"{DoubleEscape(sourcePath)}\");");
+					}
+					else if (isDependencyProperty)
 					{
 						var propertyOwner = declaringType;
 
@@ -5570,6 +5581,79 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return _metadataHelper.FindPropertyTypeByOwnerSymbol(CurrentStyleTargetType, property);
+		}
+
+		private bool TryBuildTemplateBindingSourceProperty(XamlObjectDefinition templateBinding, out string sourceProperty, out string sourcePath)
+		{
+			sourceProperty = null!;
+			sourcePath = null!;
+
+			if (templateBinding.Members.Count != 1)
+			{
+				return false;
+			}
+
+			var pathMember = templateBinding.Members[0];
+			if (pathMember.Objects.Count != 0
+				|| pathMember.Member.Name is not (XamlConstants.PositionalParameters or "Path")
+				|| pathMember.Value is not string property)
+			{
+				return false;
+			}
+
+			property = property.Trim('(', ')');
+			var separatorIndex = property.IndexOf('.');
+			if (separatorIndex >= 0)
+			{
+				var ownerType = FindType(property.Substring(0, separatorIndex));
+				var propertyName = property.Substring(separatorIndex + 1);
+				var templateTargetType = GetCurrentControlTemplateTargetType(templateBinding);
+				if (ownerType is null
+					|| !IsDependencyProperty(ownerType, propertyName)
+					|| (!IsAttachedProperty(ownerType, propertyName) && (templateTargetType is null || !templateTargetType.Is(ownerType))))
+				{
+					return false;
+				}
+
+				sourceProperty = $"{ownerType.GetFullyQualifiedTypeIncludingGlobal()}.{propertyName}Property";
+				sourcePath = IsAttachedProperty(ownerType, propertyName)
+					? $"({ownerType.ContainingNamespace.ToDisplayString()}:{ownerType.Name}.{propertyName})"
+					: property;
+				return true;
+			}
+
+			var sourceType = GetCurrentControlTemplateTargetType(templateBinding);
+			if (sourceType is null || !IsDependencyProperty(sourceType, property))
+			{
+				return false;
+			}
+
+			sourceProperty = $"{sourceType.GetFullyQualifiedTypeIncludingGlobal()}.{property}Property";
+			sourcePath = property;
+			return true;
+		}
+
+		private INamedTypeSymbol? GetCurrentControlTemplateTargetType(XamlObjectDefinition templateBinding)
+		{
+			for (var owner = templateBinding.Owner; owner is not null; owner = owner.Owner)
+			{
+				if (owner.Type.Name == "ControlTemplate"
+					&& FindMember(owner, "TargetType")?.Value is { } targetType)
+				{
+					return FindType(targetType.ToString());
+				}
+			}
+
+			foreach (var scope in _logicalScopeStack)
+			{
+				if (scope.Object.Type.Name == "ControlTemplate"
+					&& FindMember(scope.Object, "TargetType")?.Value is { } targetType)
+				{
+					return FindType(targetType.ToString());
+				}
+			}
+
+			return CurrentStyleTargetType;
 		}
 
 		private string BuildDependencyProperty(string property, IXamlLocation location)
