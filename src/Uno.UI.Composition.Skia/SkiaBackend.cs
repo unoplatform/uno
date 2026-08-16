@@ -8,50 +8,39 @@ using Uno.UI.Graphics;
 namespace Uno.UI.Composition.Skia;
 
 /// <summary>
-/// Explicit entry point that installs the SkiaSharp drawing backend. A Skia host calls this during startup —
-/// before the first layout/measure that resolves fonts/images through <see cref="DrawingFactory.Current"/> —
-/// so the backend is registered independently of assembly load timing. (The backend also self-registers via
-/// module initializers for standalone consumers that touch its types directly, e.g. tests and offscreen tools.)
+/// The SkiaSharp drawing backend's reflective bootstrap surface, invoked BY REFLECTION from
+/// <see cref="DrawingBackendFallback"/> in the neutral Drawing assembly (which keeps no compile-time dependency on
+/// this backend). Each factory here returns a <em>public neutral-seam</em> instance; the framework then registers it
+/// through its own internal per-seam registrars — so this backend reaches no Drawing internal and needs no
+/// InternalsVisibleTo from Drawing. Apps register through the host builder, not here.
 /// </summary>
 public static class SkiaBackend
 {
-	// Per-seam Skia defaults, invoked BY REFLECTION from DrawingBackendFallback (in the neutral Drawing assembly,
-	// which has no compile-time dependency on this backend) — one per empty seam, so a WebGPU head still gets the
-	// Skia font/image defaults but never the Skia renderer. They are internal: apps register through the host builder,
-	// never here. There is intentionally no public "install the whole backend" entry point.
-	internal static void RegisterDefaultFontProvider()
-		=> FontProvider.RegisterDefault(new SkiaFontProvider());
+	// Per-seam Skia defaults — each RETURNS a public seam instance (IFontProvider / IImageDecoder / …); the caller
+	// (DrawingBackendFallback) registers it via the framework's own internal RegisterDefault. Internal: reflection
+	// reaches them with BindingFlags.NonPublic, no IVT required.
+	internal static IFontProvider CreateFontProvider() => new SkiaFontProvider();
 
-	internal static void RegisterDefaultImageDecoder()
-		=> ImageDecoder.RegisterDefault(new SkiaImageDecoderBackend());
+	internal static IImageDecoder CreateImageDecoder() => new SkiaImageDecoderBackend();
 
-	internal static void RegisterDefaultGeometryFactory()
-		=> GeometryFactory.RegisterDefault(new SkiaGeometryFactory());
+	internal static IGeometryFactory CreateGeometryFactory() => new SkiaGeometryFactory();
 
-	/// <summary>Registers the Skia image encoder for <c>BitmapEncoder</c> (Uno.UWP), an imaging-library-agnostic seam.</summary>
+	/// <summary>The Skia graphics provider (the backend negotiation picks a context and builds its drawing factory).</summary>
+	internal static IGraphicsProvider CreateGraphicsProvider() => new SkiaGraphicsProvider();
+
+	/// <summary>The neutral default renderer for heads that don't install their own (e.g. the native Skia path).</summary>
+	internal static IDrawingFactory CreateDefaultRenderer() => new SkiaDrawingFactory();
+
+	/// <summary>Registers the Skia image encoder for <c>BitmapEncoder</c> (Uno.UWP) — a public, imaging-library-agnostic
+	/// <see cref="ApiExtensibility"/> seam, so no Uno.UWP internal is touched.</summary>
 	internal static void RegisterImageEncoder()
 		=> ApiExtensibility.Register(typeof(global::Windows.Graphics.Imaging.IImageEncoderExtension), _ => new SkiaImageEncoderExtension());
 
 	/// <summary>
-	/// Installs the Skia graphics BACKEND — the matched (drawing factory, renderer) pair plus the raw-Skia
-	/// SKCanvasElement factory. This is the seam a WebGPU/managed head OWNS by declaring its own backend, so the
-	/// implicit fallback only calls this when no backend was declared (see <c>DrawingBackendFallback</c>).
+	/// Registers the raw-Skia <c>SKCanvasElement</c> visual factory. This one genuinely reaches Composition-internal
+	/// render-loop types (<c>SKCanvasVisualBase</c> + the internal paint hook), so it still requires the
+	/// Composition→Skia InternalsVisibleTo — separate from the (now-removed) Drawing→Skia one.
 	/// </summary>
-	internal static void RegisterDefaultGraphics()
-	{
-		// The SKCanvasElement (raw-Skia) visual factory lives here because SKCanvasVisual reaches the concrete
-		// SkiaDrawingSession; the public 2dsk package resolves it through the neutral factory abstraction.
-		ApiExtensibility.Register(typeof(SKCanvasVisualBaseFactory), _ => new SKCanvasVisualFactory());
-
-		// Composition-root backend selection for the pluggable graphics pipeline: register Skia as the available
-		// backend (register-if-absent — a head that declared its own provider list wins). Negotiation
-		// (GraphicsRegistry.Initialize) then installs this provider's own drawing factory as DrawingFactory.Current;
-		// there is no separate DrawingFactory fallback (the provider carries the factory).
-		GraphicsRegistry.RegisterDefault(new IGraphicsProvider[] { new SkiaGraphicsProvider() });
-
-		// The framework (Uno.UI) is backend-agnostic and no longer defaults CompositionTarget.Renderer to a Skia
-		// type. Provide the Skia backend as the neutral default so heads that don't install their own renderer
-		// (e.g. the native Skia render path) still render; WebGPU heads override CompositionTarget.Renderer directly.
-		DrawingRegistration.RegisterDefaultRenderer(new SkiaDrawingFactory());
-	}
+	internal static void RegisterSKCanvasElementFactory()
+		=> ApiExtensibility.Register(typeof(SKCanvasVisualBaseFactory), _ => new SKCanvasVisualFactory());
 }
