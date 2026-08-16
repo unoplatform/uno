@@ -85,7 +85,11 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 				WebView.CoreWebView2?.CookieManager.DeleteAllCookies();
 				OutputText.Text = "Deleted all cookies.";
 			}
-			catch (Exception ex)
+			catch (InvalidOperationException ex)
+			{
+				OutputText.Text = $"Delete-all failed: {ex.Message}";
+			}
+			catch (NotSupportedException ex)
 			{
 				OutputText.Text = $"Delete-all failed: {ex.Message}";
 			}
