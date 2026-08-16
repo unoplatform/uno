@@ -3,7 +3,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Uno.Foundation.Diagnostics.CodeAnalysis;
 using Uno.Foundation.Extensibility;
-using Uno.UI.Graphics;
 
 [assembly: InternalsVisibleTo("Uno.UI.Foldable")]
 [assembly: InternalsVisibleTo("Uno.UI.UnitTests")]
