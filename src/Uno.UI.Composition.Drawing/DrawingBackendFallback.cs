@@ -49,7 +49,10 @@ internal static class DrawingBackendFallback
 			}
 
 			_fontAttempted = true;
-			Invoke("RegisterDefaultFontProvider");
+			if (Invoke<IFontProvider>("CreateFontProvider") is { } fontProvider)
+			{
+				FontProvider.RegisterDefault(fontProvider);
+			}
 		}
 	}
 
@@ -69,7 +72,10 @@ internal static class DrawingBackendFallback
 			}
 
 			_imageDecoderAttempted = true;
-			Invoke("RegisterDefaultImageDecoder");
+			if (Invoke<IImageDecoder>("CreateImageDecoder") is { } decoder)
+			{
+				ImageDecoder.RegisterDefault(decoder);
+			}
 		}
 	}
 
@@ -89,7 +95,10 @@ internal static class DrawingBackendFallback
 			}
 
 			_geometryAttempted = true;
-			Invoke("RegisterDefaultGeometryFactory");
+			if (Invoke<IGeometryFactory>("CreateGeometryFactory") is { } geometryFactory)
+			{
+				GeometryFactory.RegisterDefault(geometryFactory);
+			}
 		}
 	}
 
@@ -120,14 +129,32 @@ internal static class DrawingBackendFallback
 				return;
 			}
 
-			Invoke("RegisterDefaultGraphics");
+			if (Invoke<IGraphicsProvider>("CreateGraphicsProvider") is { } provider)
+			{
+				GraphicsRegistry.RegisterDefault(new[] { provider });
+
+				if (Invoke<IDrawingFactory>("CreateDefaultRenderer") is { } renderer)
+				{
+					DrawingRegistration.RegisterDefaultRenderer(renderer);
+				}
+
+				// The raw-Skia SKCanvasElement factory (Composition-internal render hook) — still a void reflective
+				// call; it self-registers via ApiExtensibility inside the backend.
+				Invoke("RegisterSKCanvasElementFactory");
+			}
 		}
 	}
 
-	/// <summary>Invokes a public static parameterless method on the Skia backend by reflection; no-op if the backend
-	/// assembly isn't present (a SkiaSharp-free head). Caller holds <see cref="_gate"/> and sets the once-flag first.</summary>
+	/// <summary>Reflectively calls a parameterless static factory on the Skia backend and returns its result cast to
+	/// the neutral seam interface <typeparamref name="T"/> — so the framework registers the instance through its own
+	/// internal registrar, and this backend reaches no framework internal (no InternalsVisibleTo from Drawing). Null
+	/// if the backend assembly isn't present (a SkiaSharp-free head) or the call fails.</summary>
+	private static T? Invoke<T>(string methodName) where T : class => Invoke(methodName) as T;
+
+	/// <summary>Reflectively invokes a parameterless static method on the Skia backend; returns its result (or null).
+	/// No-op if the backend assembly isn't present. Caller holds <see cref="_gate"/> and sets the once-flag first.</summary>
 	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Best-effort fallback; a trimmed/AOT app registers its backend explicitly.")]
-	private static void Invoke(string methodName)
+	private static object? Invoke(string methodName)
 	{
 		try
 		{
@@ -137,9 +164,9 @@ internal static class DrawingBackendFallback
 				_typeResolved = true;
 			}
 
-			// NonPublic: the per-seam registrars on SkiaBackend are internal (apps register through the host builder,
-			// not this backend directly); reflection reaches them across assemblies without a compile-time dependency.
-			_skiaBackendType
+			// NonPublic: the factories on SkiaBackend are internal (apps register through the host builder, not this
+			// backend directly); reflection reaches them across assemblies without a compile-time dependency.
+			return _skiaBackendType
 				?.GetMethod(methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, Type.EmptyTypes)
 				?.Invoke(null, null);
 		}
@@ -149,6 +176,8 @@ internal static class DrawingBackendFallback
 			{
 				typeof(DrawingBackendFallback).Log().Debug($"Skia backend fallback '{methodName}' failed (the app should register this seam explicitly): {e}");
 			}
+
+			return null;
 		}
 	}
 }
