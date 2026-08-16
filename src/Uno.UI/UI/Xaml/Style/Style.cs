@@ -182,6 +182,47 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 
+		/// <summary>
+		/// Determines whether a setter's value can be left unmaterialized because a higher precedence already
+		/// provides the base value of the target property, in which case applying the setter would be discarded
+		/// by the property store.
+		/// </summary>
+		/// <remarks>
+		/// <para>
+		/// MUX Reference: <c>OptimizedStyle::AddDeferredSetterInfo</c> / <c>OptimizedStyle::EnsureValueRealized</c>.
+		/// WinUI keeps a setter value unrealized until the layer it belongs to actually provides the effective value,
+		/// so that a built-in style whose <c>Control.Template</c> is entirely replaced by an app style never pays for
+		/// building that template. Uno's store keeps a single base value slot and re-queries the winning style through
+		/// <c>DependencyObjectStore.ReevaluateBaseValue</c> whenever the winning precedence is cleared, so skipping
+		/// the application here is observationally equivalent.
+		/// </para>
+		/// <para>
+		/// Setters carrying a resource key are never skipped: applying them registers the theme (and hot reload)
+		/// binding that keeps the value refreshed at that precedence, which is a subscription rather than a value.
+		/// </para>
+		/// </remarks>
+		private static bool TryDeferSetter(DependencyObject o, DependencyPropertyValuePrecedences precedence, SetterBase setterBase)
+		{
+			if (!FeatureConfiguration.Style.DeferOverriddenSetterValues ||
+				setterBase is not Setter { Property: { } property } setter ||
+				setter.ThemeResourceKey.HasValue)
+			{
+				return false;
+			}
+
+			var store = ((IDependencyObjectStoreProvider)o).Store;
+
+			if (store.GetBaseValueSourcePrecedence(property) >= precedence)
+			{
+				return false;
+			}
+
+			// Mirror the cleanup that applying the setter at this precedence would have performed, so a binding
+			// registered by a previously applied style cannot resurface at the skipped precedence.
+			store.ClearResourceBindingsForSkippedSetter(property, precedence);
+			return true;
+		}
+
 		internal void ApplyTo(DependencyObject o, DependencyPropertyValuePrecedences precedence)
 		{
 			if (o == null)
@@ -215,6 +256,11 @@ namespace Microsoft.UI.Xaml
 						{
 							try
 							{
+								if (TryDeferSetter(o, precedence, _flattenedSetters[i]))
+								{
+									continue;
+								}
+
 								if (TryGetAdjustedSetter(precedence, o, _flattenedSetters[i], out var adjustedSetter))
 								{
 									using (o.OverrideLocalPrecedence(DependencyPropertyValuePrecedences.ExplicitStyle))
@@ -279,9 +325,23 @@ namespace Microsoft.UI.Xaml
 		// There shouldn't be a DependencyObject parameter. This can be removed in Uno 6 once we remove `Setter<T>`
 		internal bool TryGetPropertyValue(DependencyProperty dp, out object? value, DependencyObject @do)
 		{
-			if (EnsureSetterMap().TryGetValue(dp, out var setter) && setter.TryGetSetterValue(out value, @do) && value != DependencyProperty.UnsetValue)
+			if (EnsureSetterMap().TryGetValue(dp, out var setter))
 			{
-				return true;
+				// The setter may resolve resources, which must happen in the scope the Style was declared in,
+				// exactly as it would have during ApplyTo. This matters for deferred setters, whose value is
+				// only built when this method is reached through DependencyObjectStore.ReevaluateBaseValue.
+				ResourceResolver.PushNewScope(_xamlScope);
+				try
+				{
+					if (setter.TryGetSetterValue(out value, @do) && value != DependencyProperty.UnsetValue)
+					{
+						return true;
+					}
+				}
+				finally
+				{
+					ResourceResolver.PopScope();
+				}
 			}
 
 			value = null;

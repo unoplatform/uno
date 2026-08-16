@@ -563,6 +563,18 @@ namespace Uno.UI
 			public static IDictionary<Type, bool> UseUWPDefaultStylesOverride { get; } = new Dictionary<Type, bool>();
 
 			/// <summary>
+			/// Determines whether a style setter whose value is overridden by a higher precedence (a local value,
+			/// a template binding, or an explicit style over a built-in style) skips building its value until that
+			/// value actually becomes the effective one.
+			/// </summary>
+			/// <remarks>
+			/// <para>Matches WinUI's deferred <c>OptimizedStyle</c> setter values. Setters backed by a
+			/// <c>StaticResource</c>/<c>ThemeResource</c> are always applied so their resource bindings stay registered.</para>
+			/// <para>The default value is `true`.</para>
+			/// </remarks>
+			public static bool DeferOverriddenSetterValues { get; set; } = true;
+
+			/// <summary>
 			/// This enables native frame navigation on Android and iOS by setting related classes (<see cref="Frame"/>, <see cref="CommandBar"/>
 			/// and <see cref="Microsoft.UI.Xaml.Controls.AppBarButton"/>) to use their native styles.
 			/// </summary>
