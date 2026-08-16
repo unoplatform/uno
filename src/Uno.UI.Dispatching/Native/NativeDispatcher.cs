@@ -31,7 +31,7 @@ namespace Uno.UI.Dispatching
 			new Queue<Delegate>(), // Idle
 		};
 
-		private readonly object _gate = new();
+		private readonly Lock _gate = new();
 
 		private readonly Dictionary<object, (Action? renderAction, int normalItemsToProcessBeforeNextRenderAction)> _compositionTargets = new();
 

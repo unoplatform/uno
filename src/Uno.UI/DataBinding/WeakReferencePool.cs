@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 
 namespace Uno.UI.DataBinding
 {
@@ -18,7 +19,7 @@ namespace Uno.UI.DataBinding
 	public static class WeakReferencePool
 	{
 		private readonly static Stack<ManagedGCHandle> _weakReferencePool = new Stack<ManagedGCHandle>();
-		private readonly static object _gate = new object();
+		private readonly static Lock _gate = new();
 
 		/// <summary>
 		/// The maximum number of recycled <see cref="WeakReference"/> that can been pooled
