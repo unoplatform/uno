@@ -35,11 +35,6 @@ public partial class CoreWebView2
 				return customEnvironment;
 			}
 
-			if (_nativeWebView is not ISupportsWebViewEnvironmentInfo)
-			{
-				throw CapabilityUnavailable(CoreWebView2TypeName, nameof(Environment));
-			}
-
 			return _environment ??= new CoreWebView2Environment(this);
 		}
 	}
