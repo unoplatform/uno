@@ -22,6 +22,8 @@ namespace Microsoft.UI.Xaml
 
 		private readonly static Dictionary<Type, StyleProviderHandler> _lookup = new(Uno.Core.Comparison.FastTypeComparer.Default);
 		private readonly static Dictionary<Type, Style> _defaultStyleCache = new(Uno.Core.Comparison.FastTypeComparer.Default);
+		private readonly static Dictionary<Type, StyleProviderHandler> _optimizedLookup = new(Uno.Core.Comparison.FastTypeComparer.Default);
+		private readonly static Dictionary<Type, Style> _optimizedDefaultStyleCache = new(Uno.Core.Comparison.FastTypeComparer.Default);
 
 		/// <summary>
 		/// Removes entries from the style caches whose Type key belongs to a non-default ALC.
@@ -30,7 +32,9 @@ namespace Microsoft.UI.Xaml
 		internal static void ClearCachesForNonDefaultAlc()
 		{
 			var removed = Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_lookup)
-				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_defaultStyleCache);
+				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_defaultStyleCache)
+				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_optimizedLookup)
+				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_optimizedDefaultStyleCache);
 
 			if (removed > 0 && _logger.IsEnabled(LogLevel.Debug))
 			{
@@ -303,6 +307,26 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
+		/// Registers a lazy performance-optimized default style provider for the nominated type.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void RegisterOptimizedDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider)
+		{
+			_optimizedLookup[type] = ProvideStyle;
+
+			Style ProvideStyle()
+			{
+				var styleSource = dictionaryProvider.GetResourceDictionary();
+				if (styleSource.TryGetValue(type, out var style, shouldCheckSystem: false))
+				{
+					return (Style)style;
+				}
+
+				throw new InvalidOperationException($"{styleSource} was registered as optimized style provider for {type} but doesn't contain matching style.");
+			}
+		}
+
+		/// <summary>
 		/// Returns the default Style for given type.
 		/// </summary>
 		internal static Style? GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, null);
@@ -316,17 +340,14 @@ namespace Microsoft.UI.Xaml
 				return null;
 			}
 
-			if (!_defaultStyleCache.TryGetValue(type, out Style? style))
+			Style? style = null;
+
+			if (FeatureConfiguration.Style.UseDefaultStyleOptimizations)
 			{
-				if (_lookup.TryGetValue(type, out var styleProvider))
-				{
-					style = styleProvider();
-
-					_defaultStyleCache[type] = style;
-
-					_lookup.Remove(type); // The lookup won't be used again now that the style itself is cached
-				}
+				style = GetStyleFromChannel(type, _optimizedDefaultStyleCache, _optimizedLookup);
 			}
+
+			style ??= GetStyleFromChannel(type, _defaultStyleCache, _lookup);
 
 			if (style is null && instance is Control { DefaultStyleResourceUri: { } defaultStyleResourceUri })
 			{
@@ -348,6 +369,23 @@ namespace Microsoft.UI.Xaml
 				else
 				{
 					_logger.LogDebug($"No default style found for type {type}");
+				}
+			}
+
+			return style;
+		}
+
+		private static Style? GetStyleFromChannel(Type type, Dictionary<Type, Style> styleCache, Dictionary<Type, StyleProviderHandler> lookup)
+		{
+			if (!styleCache.TryGetValue(type, out Style? style))
+			{
+				if (lookup.TryGetValue(type, out var styleProvider))
+				{
+					style = styleProvider();
+
+					styleCache[type] = style;
+
+					lookup.Remove(type); // The lookup won't be used again now that the style itself is cached
 				}
 			}
 

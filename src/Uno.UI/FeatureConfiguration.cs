@@ -331,6 +331,24 @@ namespace Uno.UI
 			public static bool UseOverStates { get; set; } = true;
 		}
 
+		public static class Style
+		{
+			/// <summary>
+			/// Enables the optimized variants of the built-in control styles, when available.
+			/// </summary>
+			/// <remarks>
+			/// <para>
+			/// The optimized styles are functionally equivalent to the default ones, but are tuned for
+			/// startup and first-frame performance. They are a port of the WinUI "perf2026" default style variants.
+			/// </para>
+			/// <para>
+			/// Because the visual tree of a template may differ slightly from the non-optimized variant,
+			/// this is opt-in. Configure it during application startup, before default styles are cached.
+			/// </para>
+			/// </remarks>
+			public static bool UseDefaultStyleOptimizations { get; set; }
+		}
+
 		public static class TextBlock
 		{
 			/// <summary>

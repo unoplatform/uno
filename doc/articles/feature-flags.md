@@ -6,6 +6,30 @@ uid: Uno.Development.FeatureFlags
 
 Uno provides a set of feature flags that can be set early in an app's startup to control its behavior. Some of these flags are for backward compatibility, some of them provide fine-grained customizability of a particular feature, and some of them allow to toggle between more 'WinUI-like' and more 'native-like' behavior in a particular context.
 
+## Optimized default control styles
+
+A performance-optimized variant of the built-in Fluent control styles is available, ported from the WinUI "perf2026" default style variants. Those styles preserve the control contracts while being tuned for startup and first-frame performance, mainly by:
+
+- replacing the visual state storyboards that only carry zero-duration `DiscreteObjectKeyFrame`s by `VisualState.Setters`, which apply at the same precedence but avoid creating and starting a `Storyboard`;
+- reducing the number of resource lookups performed while materializing a template, for example by sharing a single `Style` between the `ScrollBar` repeat buttons instead of assigning an inline `ControlTemplate` to each of them.
+
+The optimized styles are opt-in, as the visual tree of a template may differ slightly from the non-optimized variant:
+
+```csharp
+Uno.UI.FeatureConfiguration.Style.UseDefaultStyleOptimizations = true;
+```
+
+This must be set before the first control of a given type is created (typically before `Application.Start`), as default styles are cached on first use. Controls that do not have an optimized variant keep using their default style.
+It is also enabled by `Uno.UI.FeatureConfiguration.Perf2026.EnableAll` unless configured explicitly.
+
+The style source baseline is Microsoft UI XAML commit
+[`3c9c168844f06c6ac000a97977f0bb3f4c90fd75`](https://github.com/microsoft/microsoft-ui-xaml/tree/3c9c168844f06c6ac000a97977f0bb3f4c90fd75/controls/dev).
+Each dictionary identifies its source file. The overlay retains existing Uno template-host adaptations
+(such as gradient-border presenters, root-bounded popups, and the CommandBar style-key alias) and
+shares the base theme's resource keys. It imports the selected optimized styles, not the entire
+resource set or TabView control. The optimized ComboBox also enables the ported
+`ComboBoxHelper.KeepInteriorCornersSquare` behavior for editable drop-downs; the legacy style is unchanged.
+
 ## Disabling accessibility text scaling (Android and iOS)
 
 By default, Uno automatically enables accessibility text scaling on iOS and Android devices. However, to have more control, the feature flag `Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor` was added to control.
