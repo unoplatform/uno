@@ -106,7 +106,14 @@ partial class NumberBox
 				currentLocale = currentLocale.Substring(0, underscore);
 			}
 
-			formatter = new DecimalFormatter([currentLocale], GlobalizationPreferences.HomeGeographicRegion);
+			try
+			{
+				formatter = new DecimalFormatter([currentLocale], GlobalizationPreferences.HomeGeographicRegion);
+			}
+			catch (ArgumentException)
+			{
+				// Match WinUI's Language.IsWellFormed guard by falling back for malformed locale names.
+			}
 		}
 
 		formatter ??= new DecimalFormatter();

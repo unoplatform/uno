@@ -49,7 +49,7 @@ internal static class GeographicRegionHelper
 	/// for a null/empty/unrecognized region (mirrors <see cref="NumeralSystemTranslator"/>'s validation
 	/// conventions for <c>languages</c>).
 	/// </summary>
-	public static void ValidateGeographicRegion(string geographicRegion)
+	public static void ValidateGeographicRegion(string? geographicRegion)
 	{
 		if (geographicRegion is null ||
 			!IsUppercaseAlpha2(geographicRegion) &&

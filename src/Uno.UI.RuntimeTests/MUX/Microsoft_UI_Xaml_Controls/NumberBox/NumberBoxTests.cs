@@ -111,7 +111,8 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 			RunOnUIThread.Execute(() =>
 			{
 				var numberBox = new NumberBox();
-				var formatter = (DecimalFormatter)numberBox.NumberFormatter;
+				var formatter = numberBox.NumberFormatter as DecimalFormatter;
+				Assert.IsNotNull(formatter, "Default NumberFormatter should be a DecimalFormatter.");
 				var expectedLanguage = GlobalizationPreferences.Languages[0].Split('_')[0];
 
 				Assert.AreEqual(expectedLanguage, formatter.Languages[0]);
