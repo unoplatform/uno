@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -24,6 +25,10 @@ namespace Windows.ApplicationModel.Resources;
 partial class ResourceLoader
 {
 	private readonly Dictionary<string, Dictionary<string, string>> _resources = new(StringComparer.OrdinalIgnoreCase); // _resources[CULTURE][RES_KEY] => RES_VALUE
+
+	// Concurrent because, unlike the per-loader state, this is shared process-wide and GetString
+	// carries no thread affinity.
+	private static readonly ConcurrentDictionary<string, string?> _scripts = new(StringComparer.OrdinalIgnoreCase); // _scripts[CULTURE] => ISO 15924 script
 
 	internal string LoaderName { get; }
 
@@ -102,23 +107,34 @@ partial class ResourceLoader
 			_log.LogDebug($"[{LoaderName}] FindForCulture {culture}, {resource}");
 		}
 
-		if (_resources.TryGetValue(culture, out var map1) &&
-			map1.TryGetValue(resource, out resourceValue))
+		if (TryGetForCulture(culture, resource, out resourceValue))
 		{
 			return true;
 		}
 
-		// if we cant find using the specific culture, fallback on base culture, and then sibling cultures
+		// Then the culture's ancestors (zh-CN -> zh-Hans -> zh). The script tag only ever appears
+		// there, so a region-named culture can reach its script-named resources and vice versa.
+		foreach (var ancestor in GetAncestors(culture))
+		{
+			if (TryGetForCulture(ancestor, resource, out resourceValue))
+			{
+				return true;
+			}
+		}
+
+		// Finally sibling cultures, same-script ones first: zh-Hant must never answer a request
+		// for a Simplified Chinese culture just because both are written "zh-".
 		if (culture.Split('-', 2)[0] is { Length: > 0 } baseCulture)
 		{
+			var script = GetScript(culture);
 			var relatedCultures = _resources.Keys
 				.Where(x => x.StartsWith(baseCulture, StringComparison.OrdinalIgnoreCase))
-				.OrderByDescending(x => x == baseCulture) // base culture first
-				.ThenByDescending(x => x); // and then, sibling cultures in reverse order (from ex-ZZ to ex-AA)
+				.OrderByDescending(x => script is not null && GetScript(x) == script) // same script first
+				.ThenByDescending(x => string.Equals(x, baseCulture, StringComparison.OrdinalIgnoreCase)) // then base culture
+				.ThenByDescending(x => x, StringComparer.Ordinal); // and then, sibling cultures in reverse order (from ex-ZZ to ex-AA)
 			foreach (var related in relatedCultures)
 			{
-				if (_resources.TryGetValue(related, out var map2) &&
-					map2.TryGetValue(resource, out resourceValue))
+				if (TryGetForCulture(related, resource, out resourceValue))
 				{
 					return true;
 				}
@@ -127,5 +143,152 @@ partial class ResourceLoader
 
 		resourceValue = null;
 		return false;
+	}
+
+	private bool TryGetForCulture(string culture, string resource, out string? resourceValue)
+	{
+		if (_resources.TryGetValue(culture, out var map) &&
+			map.TryGetValue(resource, out resourceValue))
+		{
+			return true;
+		}
+
+		resourceValue = null;
+		return false;
+	}
+
+	/// <summary>
+	/// Enumerates the parent cultures of <paramref name="culture"/>, closest first, excluding itself
+	/// and the invariant culture.
+	/// </summary>
+	private static IEnumerable<string> GetAncestors(string culture)
+	{
+		if (TryGetCulture(culture) is not { } info)
+		{
+			yield break;
+		}
+
+		for (var parent = info.Parent; parent.Name is { Length: > 0 } name; parent = parent.Parent)
+		{
+			yield return name;
+
+			if (string.Equals(parent.Parent.Name, name, StringComparison.Ordinal))
+			{
+				// A culture whose parent is itself would loop forever.
+				yield break;
+			}
+		}
+	}
+
+	/// <summary>
+	/// Gets the ISO 15924 script of a culture (Hans, Hant, Latn, Cyrl, ...), or null when the
+	/// platform doesn't associate one with it.
+	/// </summary>
+	private static string? GetScript(string culture)
+		=> _scripts.GetOrAdd(culture, static x => ResolveScript(x));
+
+	private static string? ResolveScript(string culture)
+	{
+		if (TryGetCulture(culture) is not { } info)
+		{
+			return null;
+		}
+
+		// A neutral culture carrying no script of its own (zh) only reveals its default one through
+		// the specific culture the platform considers likely for it (zh -> zh-CN -> zh-Hans).
+		if (info.IsNeutralCulture && GetScriptSubtag(info.Name) is null)
+		{
+			info = TryGetSpecificCulture(info.Name) ?? info;
+		}
+
+		for (var current = info; current.Name is { Length: > 0 } name; current = current.Parent)
+		{
+			if (GetScriptSubtag(name) is { } script)
+			{
+				return script;
+			}
+
+			if (string.Equals(current.Parent.Name, name, StringComparison.Ordinal))
+			{
+				break;
+			}
+		}
+
+		return null;
+	}
+
+	/// <summary>
+	/// Extracts the script subtag of a culture name, i.e. a four-letter subtag that is not the
+	/// language itself (zh-Hant-TW -> Hant, ca-ES-VALENCIA -> null).
+	/// </summary>
+	private static string? GetScriptSubtag(string cultureName)
+	{
+		var remaining = cultureName.AsSpan();
+
+		// Skip the language subtag, a script can never be in first position.
+		var separator = remaining.IndexOf('-');
+		if (separator < 0)
+		{
+			return null;
+		}
+
+		remaining = remaining.Slice(separator + 1);
+
+		while (!remaining.IsEmpty)
+		{
+			separator = remaining.IndexOf('-');
+			var subtag = separator < 0 ? remaining : remaining.Slice(0, separator);
+
+			if (subtag.Length == 4 && IsAllLetters(subtag))
+			{
+				return subtag.ToString();
+			}
+
+			if (separator < 0)
+			{
+				break;
+			}
+
+			remaining = remaining.Slice(separator + 1);
+		}
+
+		return null;
+
+		static bool IsAllLetters(ReadOnlySpan<char> value)
+		{
+			foreach (var c in value)
+			{
+				if (!char.IsLetter(c))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+	}
+
+	private static CultureInfo? TryGetCulture(string name)
+	{
+		try
+		{
+			return CultureInfo.GetCultureInfo(name);
+		}
+		catch (CultureNotFoundException)
+		{
+			return null;
+		}
+	}
+
+	private static CultureInfo? TryGetSpecificCulture(string name)
+	{
+		try
+		{
+			return CultureInfo.CreateSpecificCulture(name);
+		}
+		catch (CultureNotFoundException)
+		{
+			return null;
+		}
 	}
 }
