@@ -26,6 +26,14 @@ namespace Microsoft.UI.Xaml
 		private readonly static Dictionary<Type, Style> _nativeDefaultStyleCache = new(Uno.Core.Comparison.FastTypeComparer.Default);
 
 		/// <summary>
+		/// Performance-optimized variants of the default styles, only used when
+		/// <see cref="FeatureConfiguration.Style.UseDefaultStyleOptimizations"/> is enabled. Types
+		/// without an optimized variant fall back to <see cref="_lookup"/>.
+		/// </summary>
+		private readonly static Dictionary<Type, StyleProviderHandler> _optimizedLookup = new(Uno.Core.Comparison.FastTypeComparer.Default);
+		private readonly static Dictionary<Type, Style> _optimizedDefaultStyleCache = new(Uno.Core.Comparison.FastTypeComparer.Default);
+
+		/// <summary>
 		/// Removes entries from the style caches whose Type key belongs to a non-default ALC.
 		/// These caches rebuild on demand, so the sweep may safely cover ALL non-default contexts.
 		/// User configuration (<see cref="FeatureConfiguration.Style.UseUWPDefaultStylesOverride"/>)
@@ -37,7 +45,9 @@ namespace Microsoft.UI.Xaml
 			var removed = Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_lookup)
 				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_defaultStyleCache)
 				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_nativeLookup)
-				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_nativeDefaultStyleCache);
+				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_nativeDefaultStyleCache)
+				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_optimizedLookup)
+				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_optimizedDefaultStyleCache);
 
 			if (removed > 0 && _logger.IsEnabled(LogLevel.Debug))
 			{
@@ -362,6 +372,34 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
+		/// Register a lazy performance-optimized default style provider for the nominated type.
+		/// </summary>
+		/// <param name="type">The type to which the style applies</param>
+		/// <param name="dictionaryProvider">Provides the dictionary in which the style is defined.</param>
+		/// <remarks>
+		/// This is an Uno-specific method, normally only called from Xaml-generated code for styles
+		/// marked with <c>IsOptimizedStyle="True"</c>. The registered style is only used when
+		/// <see cref="FeatureConfiguration.Style.UseDefaultStyleOptimizations"/> is enabled, and it never
+		/// replaces the default registration made by <see cref="RegisterDefaultStyleForType"/>.
+		/// </remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void RegisterOptimizedDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider)
+		{
+			_optimizedLookup[type] = ProvideStyle;
+
+			Style ProvideStyle()
+			{
+				var styleSource = dictionaryProvider.GetResourceDictionary();
+				if (styleSource.TryGetValue(type, out var style, shouldCheckSystem: false))
+				{
+					return (Style)style;
+				}
+
+				throw new InvalidOperationException($"{styleSource} was registered as optimized style provider for {type} but doesn't contain matching style.");
+			}
+		}
+
+		/// <summary>
 		/// Returns the default Style for given type.
 		/// </summary>
 		internal static Style? GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, null, ShouldUseUWPDefaultStyle(type));
@@ -375,22 +413,18 @@ namespace Microsoft.UI.Xaml
 				return null;
 			}
 
-			var styleCache = useUWPDefaultStyles ? _defaultStyleCache
-				: _nativeDefaultStyleCache;
-			var lookup = useUWPDefaultStyles ? _lookup
-				: _nativeLookup;
+			Style? style = null;
 
-			if (!styleCache.TryGetValue(type, out Style? style))
+			if (useUWPDefaultStyles && FeatureConfiguration.Style.UseDefaultStyleOptimizations)
 			{
-				if (lookup.TryGetValue(type, out var styleProvider))
-				{
-					style = styleProvider();
-
-					styleCache[type] = style;
-
-					lookup.Remove(type); // The lookup won't be used again now that the style itself is cached
-				}
+				// Optimized styles are only defined for a subset of the controls, a miss
+				// falls back to the standard style below.
+				style = GetStyleFromChannel(type, _optimizedDefaultStyleCache, _optimizedLookup);
 			}
+
+			style ??= useUWPDefaultStyles
+				? GetStyleFromChannel(type, _defaultStyleCache, _lookup)
+				: GetStyleFromChannel(type, _nativeDefaultStyleCache, _nativeLookup);
 
 			if (style is null && instance is Control { DefaultStyleResourceUri: { } defaultStyleResourceUri })
 			{
@@ -423,6 +457,23 @@ namespace Microsoft.UI.Xaml
 				else
 				{
 					_logger.LogDebug($"No {(useUWPDefaultStyles ? "UWP" : "native")} style found for type {type}");
+				}
+			}
+
+			return style;
+		}
+
+		private static Style? GetStyleFromChannel(Type type, Dictionary<Type, Style> styleCache, Dictionary<Type, StyleProviderHandler> lookup)
+		{
+			if (!styleCache.TryGetValue(type, out Style? style))
+			{
+				if (lookup.TryGetValue(type, out var styleProvider))
+				{
+					style = styleProvider();
+
+					styleCache[type] = style;
+
+					lookup.Remove(type); // The lookup won't be used again now that the style itself is cached
 				}
 			}
 

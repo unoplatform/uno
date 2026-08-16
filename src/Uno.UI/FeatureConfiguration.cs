@@ -532,6 +532,27 @@ namespace Uno.UI
 			public static bool UseUWPDefaultStyles { get; set; } = true;
 
 			/// <summary>
+			/// Enables the optimized variants of the built-in control styles, when available.
+			/// </summary>
+			/// <remarks>
+			/// <para>
+			/// The optimized styles are functionally equivalent to the default ones, but are tuned for
+			/// startup and first-frame performance (e.g. visual states using <c>Setter</c> instead of
+			/// <c>ObjectAnimationUsingKeyFrames</c>, or reduced resource lookups). They are a port of the
+			/// WinUI "perf2026" default style variants.
+			/// </para>
+			/// <para>
+			/// Because the visual tree of a template may differ slightly from the non-optimized variant,
+			/// this is opt-in. When left disabled (the default), the original styles are used, unmodified.
+			/// </para>
+			/// <para>
+			/// This must be set before the first control of a given type is created (typically before
+			/// <c>Application.Start</c>), as default styles are cached on first use.
+			/// </para>
+			/// </remarks>
+			public static bool UseDefaultStyleOptimizations { get; set; }
+
+			/// <summary>
 			/// Override the native styles usage per control type.
 			/// </summary>
 			/// <remarks>

@@ -27,6 +27,21 @@ By default, Uno favors the default WinUI XAML styles over the native styles for 
 
 This can be changed using `Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles`.
 
+## Optimized default control styles
+
+A performance-optimized variant of the built-in Fluent (WinUI 2) control styles is available, ported from the WinUI "perf2026" default style variants. Those styles are functionally equivalent to the default ones but are tuned for startup and first-frame performance, mainly by:
+
+- replacing the visual state storyboards that only carry zero-duration `DiscreteObjectKeyFrame`s by `VisualState.Setters`, which apply at the same precedence but avoid creating and starting a `Storyboard`;
+- reducing the number of resource lookups performed while materializing a template, for example by sharing a single `Style` between the `ScrollBar` repeat buttons instead of assigning an inline `ControlTemplate` to each of them.
+
+The optimized styles are opt-in, as the visual tree of a template may differ slightly from the non-optimized variant:
+
+```csharp
+Uno.UI.FeatureConfiguration.Style.UseDefaultStyleOptimizations = true;
+```
+
+This must be set before the first control of a given type is created (typically before `Application.Start`), as default styles are cached on first use. Controls that do not have an optimized variant keep using their default style.
+
 ## Disabling accessibility text scaling (Android and iOS)
 
 By default, Uno automatically enables accessibility text scaling on iOS and Android devices. However, to have more control, the feature flag `Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor` was added to control.

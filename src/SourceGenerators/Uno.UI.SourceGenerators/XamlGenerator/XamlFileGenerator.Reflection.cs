@@ -320,6 +320,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return false;
 			}
 
+			if (member?.Name == "IsOptimizedStyle" && objectDefinition.Type.Name == "Style")
+			{
+				return false;
+			}
+
 			return true;
 		}
 
