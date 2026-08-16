@@ -32,6 +32,8 @@ internal class SkiaDrawingSession : IDrawingSession
 	/// <summary>The underlying canvas. Transitional accessor for render code not yet migrated off SkiaSharp.</summary>
 	internal SKCanvas Canvas => _canvas;
 
+	public object? NativeSurface => _canvas;
+
 	private protected static SKPictureRecorder RentRecorder()
 	{
 		var pool = _recorderPool ??= new();
