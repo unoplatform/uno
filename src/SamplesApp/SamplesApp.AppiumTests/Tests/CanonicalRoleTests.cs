@@ -22,6 +22,7 @@ public sealed class CanonicalRoleTests
 			(rawRole: "AXStaticText", platform: "Mac", expected: "text"),
 			(rawRole: "tab", platform: "Windows", expected: "tablist"),
 			(rawRole: "tab item", platform: "Windows", expected: "tab"),
+			(rawRole: "ControlType.Button", platform: "Windows", expected: "button"),
 		};
 
 		foreach (var @case in cases)

@@ -48,7 +48,7 @@ public sealed class WindowsAdapter : IPlatformAdapter
 		element.SendKeys(value);
 	}
 
-	public string GetRole(IWebElement element) => GetAttributeAny(element, "LocalizedControlType", "ControlType") ?? string.Empty;
+	public string GetRole(IWebElement element) => GetAttributeAny(element, "ControlType", "LocalizedControlType") ?? string.Empty;
 
 	public string GetName(IWebDriver driver, IWebElement element) => GetAttributeAny(element, "Name") ?? string.Empty;
 
