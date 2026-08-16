@@ -26,9 +26,11 @@ partial class ResourceLoader
 {
 	private readonly Dictionary<string, Dictionary<string, string>> _resources = new(StringComparer.OrdinalIgnoreCase); // _resources[CULTURE][RES_KEY] => RES_VALUE
 
-	// Concurrent because, unlike the per-loader state, this is shared process-wide and GetString
-	// carries no thread affinity.
-	private static readonly ConcurrentDictionary<string, string?> _scripts = new(StringComparer.OrdinalIgnoreCase); // _scripts[CULTURE] => ISO 15924 script
+	// Keyed only by resource cultures, which are fixed at build time — never by the requested
+	// culture, which comes from PrimaryLanguageOverride and is caller-controlled. Concurrent
+	// because, unlike the per-loader state, this is shared process-wide and GetString carries no
+	// thread affinity.
+	private static readonly ConcurrentDictionary<string, string?> _resourceScripts = new(StringComparer.OrdinalIgnoreCase); // _resourceScripts[CULTURE] => ISO 15924 script
 
 	internal string LoaderName { get; }
 
@@ -126,10 +128,12 @@ partial class ResourceLoader
 		// for a Simplified Chinese culture just because both are written "zh-".
 		if (culture.Split('-', 2)[0] is { Length: > 0 } baseCulture)
 		{
-			var script = GetScript(culture);
+			// Resolved rather than cached: the requested culture is caller-controlled, so caching it
+			// would let a process-wide dictionary grow without bound.
+			var script = ResolveScript(culture);
 			var relatedCultures = _resources.Keys
 				.Where(x => x.StartsWith(baseCulture, StringComparison.OrdinalIgnoreCase))
-				.OrderByDescending(x => script is not null && GetScript(x) == script) // same script first
+				.OrderByDescending(x => script is not null && GetResourceScript(x) == script) // same script first
 				.ThenByDescending(x => string.Equals(x, baseCulture, StringComparison.OrdinalIgnoreCase)) // then base culture
 				.ThenByDescending(x => x, StringComparer.Ordinal); // and then, sibling cultures in reverse order (from ex-ZZ to ex-AA)
 			foreach (var related in relatedCultures)
@@ -181,11 +185,12 @@ partial class ResourceLoader
 	}
 
 	/// <summary>
-	/// Gets the ISO 15924 script of a culture (Hans, Hant, Latn, Cyrl, ...), or null when the
-	/// platform doesn't associate one with it.
+	/// Gets the ISO 15924 script of a culture holding resources (Hans, Hant, Latn, Cyrl, ...), or
+	/// null when the platform doesn't associate one with it. Cached: the resource cultures are
+	/// fixed at build time, and each is scored repeatedly while ordering the fallback candidates.
 	/// </summary>
-	private static string? GetScript(string culture)
-		=> _scripts.GetOrAdd(culture, static x => ResolveScript(x));
+	private static string? GetResourceScript(string culture)
+		=> _resourceScripts.GetOrAdd(culture, static x => ResolveScript(x));
 
 	private static string? ResolveScript(string culture)
 	{
