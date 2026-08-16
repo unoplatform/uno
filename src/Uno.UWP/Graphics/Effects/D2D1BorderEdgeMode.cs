@@ -7,7 +7,7 @@
 ///		- <see href="https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_CanvasEdgeBehavior.htm"/><br/>
 ///	</remarks>
 /// </summary>
-public enum D2D1BorderEdgeMode
+internal enum D2D1BorderEdgeMode
 {
 	Clamp = 0,
 	Wrap = 1,
