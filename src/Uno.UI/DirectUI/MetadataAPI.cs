@@ -430,35 +430,38 @@ partial class MetadataAPI // src\dxaml\xcp\components\metadata\MetadataAPI.cpp
 	/// This should only be called for built-in attached properties.
 	/// </summary>
 	public static DependencyProperty TryGetAttachedPropertyByName(string strName)
+		=> TryGetAttachedPropertyByName(strName.AsSpan());
+
+	/// <summary>
+	/// Tries to resolve an attached property by its name. strName should use the format ClassName.PropertyName.
+	/// This should only be called for built-in attached properties.
+	/// </summary>
+	public static DependencyProperty TryGetAttachedPropertyByName(ReadOnlySpan<char> strName)
 	{
 		DependencyProperty ppDP = null;
 
-#if !HAS_UNO
 		// The property was not found or we can't use the parser context. Assume that the property is in the default namespace.
 		// The property will be of the format: ClassName.PropertyName.
 		// We will extract the class name first then the property name and do the lookup using the type tables.
 		var nDotIndex = strName.IndexOf('.');
 		if (nDotIndex != -1)
 		{
+			var strClassName = strName[..nDotIndex];
+			var strPropertyName = strName[(nDotIndex + 1)..];
+
+#if !HAS_UNO
 			// Try to resolve the type.
-			string strClassName;
-			strClassName = strName[..nDotIndex];
-			Type pType = GetBuiltinClassInfoByName(strClassName);
+			Type pType = GetBuiltinClassInfoByName(strClassName.ToString());
 
 			if (pType != null)
 			{
 				// Try to resolve the property.
-				string strPropertyName;
-				strPropertyName = strName[(nDotIndex + 1)..];
-				ppDP = TryGetDependencyPropertyByName(pType, strPropertyName);
+				ppDP = TryGetDependencyPropertyByName(pType, strPropertyName.ToString());
 			}
-		}
 #else
-		if (strName.Split('.', 2) is [string type, string property])
-		{
-			ppDP = DependencyProperty.GetProperty(type, property);
-		}
+			ppDP = DependencyProperty.GetProperty(strClassName.ToString(), strPropertyName.ToString());
 #endif
+		}
 
 		return ppDP;
 	}
@@ -564,6 +567,14 @@ partial class MetadataAPI // src\dxaml\xcp\core\metadata\ReflectionAPI.cpp
 	/// </summary>
 	public static DependencyProperty TryGetDependencyPropertyByFullyQualifiedName(
 		string strName,
+		XamlServiceProviderContext context = null)
+		=> TryGetDependencyPropertyByFullyQualifiedName(strName.AsSpan(), context);
+
+	/// <summary>
+	/// Look for a DP given its full name, it might use the ObjectWriter context if allowed to.
+	/// </summary>
+	public static DependencyProperty TryGetDependencyPropertyByFullyQualifiedName(
+		ReadOnlySpan<char> strName,
 		XamlServiceProviderContext context = null)
 	{
 		// Assume it is not found.

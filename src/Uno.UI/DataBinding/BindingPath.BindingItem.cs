@@ -539,8 +539,45 @@ namespace Uno.UI.DataBinding
 					else
 					{
 						// e.g. "(Microsoft.UI.Xaml.Controls.Border.Background)" and "Background" should match.
-						return name1.Replace(")", "").Replace("(", "").Split(':', '.')[^1] ==
-							name2.Replace(")", "").Replace("(", "").Split(':', '.')[^1];
+						return EqualsIgnoringParenthesis(GetLastPart(name1), GetLastPart(name2));
+					}
+
+					static ReadOnlySpan<char> GetLastPart(string name)
+					{
+						var span = name.AsSpan();
+						var separator = span.LastIndexOfAny(':', '.');
+
+						return separator < 0 ? span : span[(separator + 1)..];
+					}
+
+					static bool EqualsIgnoringParenthesis(ReadOnlySpan<char> left, ReadOnlySpan<char> right)
+					{
+						int i = 0, j = 0;
+						while (true)
+						{
+							while (i < left.Length && left[i] is '(' or ')')
+							{
+								i++;
+							}
+
+							while (j < right.Length && right[j] is '(' or ')')
+							{
+								j++;
+							}
+
+							if (i == left.Length || j == right.Length)
+							{
+								return i == left.Length && j == right.Length;
+							}
+
+							if (left[i] != right[j])
+							{
+								return false;
+							}
+
+							i++;
+							j++;
+						}
 					}
 				}
 			}
