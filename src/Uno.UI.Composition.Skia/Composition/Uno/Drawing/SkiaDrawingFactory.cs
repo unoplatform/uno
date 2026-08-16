@@ -292,7 +292,7 @@ internal sealed class SkiaDrawingFactory :
 		return new SkiaShader(SKShader.CreateCompose(fallback, conical));
 	}
 
-	private static Color LastColor(Color[] colors) => colors.Length > 0 ? colors[^1] : Colors.Transparent;
+	private static Color LastColor(Color[] colors) => colors.Length > 0 ? colors[^1] : default;   // default(Color) == transparent
 
 	// SkiaSharp doesn't allow explicit RadiusX/RadiusY on a radial gradient, so we build a scale-down
 	// transform that squashes the larger axis onto the smaller and use a single radius.

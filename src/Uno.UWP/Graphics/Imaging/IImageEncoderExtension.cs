@@ -3,7 +3,7 @@
 namespace Windows.Graphics.Imaging;
 
 /// <summary>Backend-neutral output formats a <see cref="BitmapEncoder"/> can target.</summary>
-internal enum BitmapEncoderFormat
+public enum BitmapEncoderFormat
 {
 	Bmp,
 	Gif,
@@ -17,7 +17,7 @@ internal enum BitmapEncoderFormat
 /// resolves the implementation through <see cref="Uno.Foundation.Extensibility.ApiExtensibility"/> so it stays
 /// free of any imaging library; the drawing backend provides the concrete encoder.
 /// </summary>
-internal interface IImageEncoderExtension
+public interface IImageEncoderExtension
 {
 	/// <summary>Encodes the given premultiplication-tagged pixel buffer to <paramref name="format"/>.</summary>
 	byte[] Encode(byte[] pixels, int width, int height, BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapEncoderFormat format, int quality);
