@@ -17,11 +17,19 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 	[TestClass]
 	public class Given_Style
 	{
+		private bool _previousDeferOverriddenSetterValues;
+
 		[TestInitialize]
 		public void Init()
 		{
 			UnitTestsApp.App.EnsureApplication();
+			_previousDeferOverriddenSetterValues = FeatureConfiguration.Style.DeferOverriddenSetterValues;
+			FeatureConfiguration.Style.DeferOverriddenSetterValues = true;
 		}
+
+		[TestCleanup]
+		public void Cleanup()
+			=> FeatureConfiguration.Style.DeferOverriddenSetterValues = _previousDeferOverriddenSetterValues;
 
 		[TestMethod]
 		public void When_Sealed_Style_Add_Setter()
@@ -304,7 +312,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			}
 			finally
 			{
-				FeatureConfiguration.Style.DeferOverriddenSetterValues = true;
+				FeatureConfiguration.Style.DeferOverriddenSetterValues = _previousDeferOverriddenSetterValues;
 			}
 		}
 

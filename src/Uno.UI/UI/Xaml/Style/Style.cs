@@ -27,8 +27,7 @@ namespace Microsoft.UI.Xaml
 
 		/// <summary>
 		/// Performance-optimized variants of the default styles, only used when
-		/// <see cref="FeatureConfiguration.Style.UseDefaultStyleOptimizations"/> is enabled. Types
-		/// without an optimized variant fall back to <see cref="_lookup"/>.
+		/// <see cref="FeatureConfiguration.Style.UseDefaultStyleOptimizations"/> is enabled.
 		/// </summary>
 		private readonly static Dictionary<Type, StyleProviderHandler> _optimizedLookup = new(Uno.Core.Comparison.FastTypeComparer.Default);
 		private readonly static Dictionary<Type, Style> _optimizedDefaultStyleCache = new(Uno.Core.Comparison.FastTypeComparer.Default);
@@ -52,6 +51,26 @@ namespace Microsoft.UI.Xaml
 			if (removed > 0 && _logger.IsEnabled(LogLevel.Debug))
 			{
 				_logger.Debug($"[ALC-CLEANUP] Style caches: removed {removed} non-default-ALC entrie(s).");
+			}
+		}
+
+		/// <summary>
+		/// Registers a lazy performance-optimized default style provider for the nominated type.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void RegisterOptimizedDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider)
+		{
+			_optimizedLookup[type] = ProvideStyle;
+
+			Style ProvideStyle()
+			{
+				var styleSource = dictionaryProvider.GetResourceDictionary();
+				if (styleSource.TryGetValue(type, out var style, shouldCheckSystem: false))
+				{
+					return (Style)style;
+				}
+
+				throw new InvalidOperationException($"{styleSource} was registered as optimized style provider for {type} but doesn't contain matching style.");
 			}
 		}
 
@@ -256,6 +275,8 @@ namespace Microsoft.UI.Xaml
 						{
 							try
 							{
+								// Defer before adjustment so a losing built-in setter does not materialize
+								// the explicit winner a second time.
 								if (TryDeferSetter(o, precedence, _flattenedSetters[i]))
 								{
 									continue;
@@ -432,34 +453,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
-		/// Register a lazy performance-optimized default style provider for the nominated type.
-		/// </summary>
-		/// <param name="type">The type to which the style applies</param>
-		/// <param name="dictionaryProvider">Provides the dictionary in which the style is defined.</param>
-		/// <remarks>
-		/// This is an Uno-specific method, normally only called from Xaml-generated code for styles
-		/// marked with <c>IsOptimizedStyle="True"</c>. The registered style is only used when
-		/// <see cref="FeatureConfiguration.Style.UseDefaultStyleOptimizations"/> is enabled, and it never
-		/// replaces the default registration made by <see cref="RegisterDefaultStyleForType"/>.
-		/// </remarks>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void RegisterOptimizedDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider)
-		{
-			_optimizedLookup[type] = ProvideStyle;
-
-			Style ProvideStyle()
-			{
-				var styleSource = dictionaryProvider.GetResourceDictionary();
-				if (styleSource.TryGetValue(type, out var style, shouldCheckSystem: false))
-				{
-					return (Style)style;
-				}
-
-				throw new InvalidOperationException($"{styleSource} was registered as optimized style provider for {type} but doesn't contain matching style.");
-			}
-		}
-
-		/// <summary>
 		/// Returns the default Style for given type.
 		/// </summary>
 		internal static Style? GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, null, ShouldUseUWPDefaultStyle(type));
@@ -477,8 +470,6 @@ namespace Microsoft.UI.Xaml
 
 			if (useUWPDefaultStyles && FeatureConfiguration.Style.UseDefaultStyleOptimizations)
 			{
-				// Optimized styles are only defined for a subset of the controls, a miss
-				// falls back to the standard style below.
 				style = GetStyleFromChannel(type, _optimizedDefaultStyleCache, _optimizedLookup);
 			}
 

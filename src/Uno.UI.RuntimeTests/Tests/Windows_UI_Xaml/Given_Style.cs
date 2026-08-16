@@ -24,6 +24,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[TestClass]
 	public class Given_Style
 	{
+#if HAS_UNO
+		private bool _previousDeferOverriddenSetterValues;
+
+		[TestInitialize]
+		public void Initialize()
+		{
+			_previousDeferOverriddenSetterValues = FeatureConfiguration.Style.DeferOverriddenSetterValues;
+			FeatureConfiguration.Style.DeferOverriddenSetterValues = true;
+		}
+
+		[TestCleanup]
+		public void Cleanup()
+			=> FeatureConfiguration.Style.DeferOverriddenSetterValues = _previousDeferOverriddenSetterValues;
+#endif
+
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]

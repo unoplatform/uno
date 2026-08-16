@@ -41,6 +41,7 @@ Uno.UI.FeatureConfiguration.Style.UseDefaultStyleOptimizations = true;
 ```
 
 This must be set before the first control of a given type is created (typically before `Application.Start`), as default styles are cached on first use. Controls that do not have an optimized variant keep using their default style.
+It is also enabled by `Uno.UI.FeatureConfiguration.Perf2026.EnableAll` unless configured explicitly.
 
 ## Disabling accessibility text scaling (Android and iOS)
 
@@ -221,6 +222,16 @@ var isEdgeToEdge = FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled;
 allocation patterns or visual tree shapes. They are disabled by default; set `Uno.UI.FeatureConfiguration.Perf2026.EnableAll`
 to `true` to enable every optimization that has not been configured individually, or set a single flag to opt in
 selectively. Because these flags are captured while elements are being created, set them during application startup.
+Set `EnableAll` before assigning individual switches; an individual assignment remains an explicit override.
+
+`EnableAll` currently enables optimized default control styles, deferred evaluation of overridden style setters,
+and the Grid-less `FontIcon`/`BitmapIcon` visual tree.
+
+### Deferred overridden style setters
+
+Set `Uno.UI.FeatureConfiguration.Style.DeferOverriddenSetterValues` to enable or disable lazy evaluation separately.
+When enabled, a style setter that cannot win because of a local value or higher-precedence style does not create its
+value until the overriding value is cleared.
 
 ### `IconElementNoGridContainer`
 
@@ -228,7 +239,8 @@ When enabled, `FontIcon` and `BitmapIcon` host their inner `TextBlock`/`Image` d
 `Grid` filled with a transparent brush, saving two objects and one layout/render level per icon. Measure/arrange results,
 foreground and theme propagation, hit testing, automation and rendering are unchanged, but code that reaches into an icon
 by index (for example `VisualTreeHelper.GetChild(icon, 0)`) observes the inner element instead of the `Grid`. Other icon
-types (`SymbolIcon`, `PathIcon`, `ImageIcon`, `IconSourceElement`) keep the `Grid`.
+types (`SymbolIcon`, `PathIcon`, `ImageIcon`, `IconSourceElement`) keep the `Grid`. Pointer-event `OriginalSource` can
+also identify the `IconElement` rather than the removed wrapper.
 
 ```csharp
 public App()
@@ -237,4 +249,3 @@ public App()
     this.InitializeComponent();
 }
 ```
-

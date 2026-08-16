@@ -2,7 +2,7 @@
 <!-- Optimized (perf2026) variant of Resources\Version2\PriorityDefault\AppBarToggleButton_themeresources.xaml -->
 <!-- Visual states applying a single zero-length DiscreteObjectKeyFrame are expressed as VisualState setters. -->
 <ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-  <Style IsOptimizedStyle="True" TargetType="AppBarToggleButton" BasedOn="{StaticResource DefaultAppBarToggleButtonStyle}" />
+  <Style TargetType="AppBarToggleButton" BasedOn="{StaticResource DefaultAppBarToggleButtonStyle}" />
   <Style x:Key="AppBarToggleButtonOverflowStyle" TargetType="AppBarToggleButton" BasedOn="{StaticResource DefaultAppBarToggleButtonStyle}">
     <Setter Property="HorizontalAlignment" Value="Stretch" />
     <Setter Property="Width" Value="NaN" />

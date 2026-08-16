@@ -2,7 +2,7 @@
 <!-- Optimized (perf2026) variant of Resources\Version2\PriorityDefault\Button_themeresources.xaml -->
 <!-- Visual states applying a single zero-length DiscreteObjectKeyFrame are expressed as VisualState setters. -->
 <ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:uc="using:Uno.UI.Controls">
-    <Style IsOptimizedStyle="True" TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}" />
+    <Style TargetType="Button" BasedOn="{StaticResource DefaultButtonStyle}" />
     <Style x:Key="DefaultButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="{ThemeResource ButtonBackground}" />
         <Setter Property="BackgroundSizing" Value="InnerBorderEdge" />

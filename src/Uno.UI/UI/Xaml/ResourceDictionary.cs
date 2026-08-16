@@ -978,22 +978,47 @@ namespace Microsoft.UI.Xaml
 			if (source._themeDictionaries is { } sourceThemeDictionaries)
 			{
 				var themeDictionaries = GetOrCreateThemeDictionaries();
-
+				var sourceEntries = new List<KeyValuePair<ResourceKey, object>>(sourceThemeDictionaries._values.Count);
 				foreach (var pair in sourceThemeDictionaries._values)
+				{
+					sourceEntries.Add(pair);
+				}
+
+				foreach (var pair in sourceEntries)
 				{
 					var (key, value) = pair;
 
 					// Theme dictionaries must be merged individually, as replacing a whole theme
-					// dictionary would drop the entries it does not redefine.
-					if (value is ResourceDictionary sourceThemeDictionary
-						&& themeDictionaries._values.TryGetValue(key, out var existing)
-						&& existing is ResourceDictionary existingThemeDictionary)
+					// dictionary would drop the entries it does not redefine. Materialize the
+					// dictionary entries first because generated theme dictionaries are lazy.
+					if (value is LazyInitializer)
 					{
-						existingThemeDictionary.OverlayFrom(sourceThemeDictionary);
+						sourceThemeDictionaries.TryGetValue(key, out value, shouldCheckSystem: false);
+					}
+
+					if (value is ResourceDictionary sourceThemeDictionary)
+					{
+						var overlaidThemeDictionary = new ResourceDictionary();
+						if (themeDictionaries.TryGetValue(key, out var existing, shouldCheckSystem: false)
+							&& existing is ResourceDictionary existingThemeDictionary)
+						{
+							// Copy before overlaying: the existing theme dictionary can originate from
+							// the cached global Fluent resources and must not be mutated process-wide.
+							overlaidThemeDictionary.CopyFrom(existingThemeDictionary);
+						}
+
+						overlaidThemeDictionary.OverlayFrom(sourceThemeDictionary);
+						themeDictionaries.Set(key, overlaidThemeDictionary, throwIfPresent: false);
 					}
 					else
 					{
-						themeDictionaries._values[key] = value;
+						if (value is LazyInitializer lazy)
+						{
+							value = new LazyInitializer(ResourceResolver.CurrentScope, lazy.Initializer);
+							themeDictionaries._hasUnmaterializedItems = true;
+						}
+
+						themeDictionaries.Set(key, value, throwIfPresent: false);
 					}
 				}
 

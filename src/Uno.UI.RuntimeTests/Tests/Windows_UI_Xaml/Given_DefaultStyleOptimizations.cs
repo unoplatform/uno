@@ -34,6 +34,8 @@ public class Given_DefaultStyleOptimizations
 		// The optimizations must stay opt-in: enabling them by default would change the
 		// visual tree of every app.
 		Assert.IsFalse(FeatureConfiguration.Style.UseDefaultStyleOptimizations);
+		Assert.IsFalse(FeatureConfiguration.Style.DeferOverriddenSetterValues);
+		Assert.IsFalse(FeatureConfiguration.Perf2026.EnableAll);
 	}
 
 	[TestMethod]
@@ -186,6 +188,35 @@ public class Given_DefaultStyleOptimizations
 	}
 
 	[TestMethod]
+	public async Task When_Enabled_Then_Default_Style_Channel_Uses_Optimized_Style()
+	{
+		var previous = FeatureConfiguration.Style.UseDefaultStyleOptimizations;
+
+		try
+		{
+			FeatureConfiguration.Style.UseDefaultStyleOptimizations = true;
+			_ = new XamlControlsResources();
+
+			var button = new Button
+			{
+				Content = "Button",
+				Style = Style.GetDefaultStyleForType(typeof(Button)),
+			};
+			await UITestHelper.Load(button);
+
+			var states = GetStates(button);
+			Assert.AreEqual(
+				0,
+				CountTimelines(states.Values, IsConvertibleTimeline),
+				"The optimized default-style channel should select the registered Perf2026 style.");
+		}
+		finally
+		{
+			FeatureConfiguration.Style.UseDefaultStyleOptimizations = previous;
+		}
+	}
+
+	[TestMethod]
 	public void When_OverlayFrom_Then_Only_Matching_Keys_Are_Replaced()
 	{
 		var target = new ResourceDictionary
@@ -216,6 +247,37 @@ public class Given_DefaultStyleOptimizations
 
 		Assert.IsTrue(target.TryGetValue("Added", out var added, shouldCheckSystem: false));
 		Assert.AreEqual("added", added);
+	}
+
+	[TestMethod]
+	public void When_OverlayFrom_Then_Theme_Dictionaries_Are_Merged_Without_Mutating_Base()
+	{
+		var originalLight = new ResourceDictionary
+		{
+			["Kept"] = "kept",
+			["Replaced"] = "base",
+		};
+		var target = new ResourceDictionary();
+		target.ThemeDictionaries["Light"] = originalLight;
+
+		var sourceLight = new ResourceDictionary
+		{
+			["Replaced"] = "optimized",
+			["Added"] = "added",
+		};
+		var source = new ResourceDictionary();
+		source.ThemeDictionaries["Light"] = sourceLight;
+
+		target.OverlayFrom(source);
+
+		var overlaidLight = (ResourceDictionary)target.ThemeDictionaries["Light"];
+		Assert.AreNotSame(originalLight, overlaidLight, "Overlaying must not mutate a globally shared base theme dictionary.");
+		Assert.AreEqual("kept", overlaidLight["Kept"]);
+		Assert.AreEqual("optimized", overlaidLight["Replaced"]);
+		Assert.AreEqual("added", overlaidLight["Added"]);
+
+		Assert.AreEqual("base", originalLight["Replaced"]);
+		Assert.IsFalse(originalLight.ContainsKey("Added", shouldCheckSystem: false));
 	}
 
 	private static XamlControlsResources CreateResources(bool optimized)

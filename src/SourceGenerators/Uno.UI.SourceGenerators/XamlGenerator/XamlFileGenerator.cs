@@ -1807,21 +1807,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						using (TrySingleLineIfForLinkerHint(writer, style))
 						{
-							if (IsOptimizedStyle(style))
-							{
-								writer.AppendLineInvariantIndented("global::Microsoft.UI.Xaml.Style.RegisterOptimizedDefaultStyleForType({0}, {1});",
-											implicitKey,
-											SingletonInstanceAccess
-										);
-							}
-							else
-							{
-								writer.AppendLineInvariantIndented("global::Microsoft.UI.Xaml.Style.RegisterDefaultStyleForType({0}, {1}, /*isNativeStyle:*/{2});",
-											implicitKey,
-											SingletonInstanceAccess,
-											isNativeStyle.ToString().ToLowerInvariant()
-										);
-							}
+							writer.AppendLineInvariantIndented("global::Microsoft.UI.Xaml.Style.RegisterDefaultStyleForType({0}, {1}, /*isNativeStyle:*/{2});",
+										implicitKey,
+										SingletonInstanceAccess,
+										isNativeStyle.ToString().ToLowerInvariant()
+									);
 						}
 					}
 					else
@@ -1840,17 +1830,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private bool IsNativeStyle(XamlObjectDefinition style)
 			=> string.Equals(style.Members.FirstOrDefault(m => m.Member.Name == "IsNativeStyle")?.Value as string, "True", StringComparison.OrdinalIgnoreCase);
-
-		/// <summary>
-		/// Determines if the provided object is setting the "IsOptimizedStyle" property, used in
-		/// conjunction with "FeatureConfiguration.Style.UseDefaultStyleOptimizations".
-		/// </summary>
-		/// <remarks>
-		/// Contrary to native styles, optimized styles remain part of the dictionary content, as they are
-		/// also applied through the implicit style lookup when the containing dictionary is merged.
-		/// </remarks>
-		private bool IsOptimizedStyle(XamlObjectDefinition style)
-			=> string.Equals(style.Members.FirstOrDefault(m => m.Member.Name == "IsOptimizedStyle")?.Value as string, "True", StringComparison.OrdinalIgnoreCase);
 
 		/// <summary>
 		/// Initialize a new ResourceDictionary instance and populate its items and properties.

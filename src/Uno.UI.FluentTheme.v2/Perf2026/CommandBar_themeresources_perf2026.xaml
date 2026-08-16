@@ -940,6 +940,6 @@
     <Style x:Key="XamlCommandBar"
            TargetType="CommandBar"
            BasedOn="{StaticResource XamlDefaultCommandBar}" />
-    <Style IsOptimizedStyle="True" TargetType="CommandBar"
+    <Style TargetType="CommandBar"
            BasedOn="{StaticResource XamlDefaultCommandBar}" />
 </ResourceDictionary>

@@ -254,7 +254,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			Assert.AreEqual("While suspended", target.Text);
 
 			targetStore.SetTemplatedParent2(secondParent);
-			targetStore.ApplyTemplateBindings();
 			Assert.AreEqual("Second", target.Text);
 
 			firstParent.Content = "Ignored";
@@ -267,6 +266,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			Assert.AreEqual(RelativeSourceMode.TemplatedParent, expression.ParentBinding.RelativeSource.Mode);
 
 			var attachedExpression = new TextBlock();
+			firstParent.SetValue(ScrollViewer.HorizontalScrollModeProperty, ScrollMode.Enabled);
 			((IDependencyObjectStoreProvider)attachedExpression).Store.SetTemplatedParent2(firstParent);
 			BindingHelper.SetTemplateBinding(
 				attachedExpression,
@@ -276,6 +276,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			Assert.AreEqual(
 				"(Microsoft.UI.Xaml.Controls:ScrollViewer.HorizontalScrollMode)",
 				attachedExpression.GetBindingExpression(ScrollViewer.HorizontalScrollModeProperty).ParentBinding.Path.Path);
+			Assert.AreEqual(ScrollMode.Enabled, attachedExpression.GetValue(ScrollViewer.HorizontalScrollModeProperty));
+
+			firstParent.SetValue(ScrollViewer.HorizontalScrollModeProperty, ScrollMode.Disabled);
+			Assert.AreEqual(ScrollMode.Disabled, attachedExpression.GetValue(ScrollViewer.HorizontalScrollModeProperty));
 
 			target.SetBinding(
 				TextBlock.TextProperty,

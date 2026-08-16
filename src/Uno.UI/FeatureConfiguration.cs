@@ -523,6 +523,9 @@ namespace Uno.UI
 
 		public static class Style
 		{
+			private static bool? _useDefaultStyleOptimizations;
+			private static bool? _deferOverriddenSetterValues;
+
 			/// <summary>
 			/// Determines if Uno.UI should be using native styles for controls that have
 			/// a native counterpart. (e.g. Button, Slider, ComboBox, ...)
@@ -550,7 +553,11 @@ namespace Uno.UI
 			/// <c>Application.Start</c>), as default styles are cached on first use.
 			/// </para>
 			/// </remarks>
-			public static bool UseDefaultStyleOptimizations { get; set; }
+			public static bool UseDefaultStyleOptimizations
+			{
+				get => _useDefaultStyleOptimizations ?? Perf2026.EnableAll;
+				set => _useDefaultStyleOptimizations = value;
+			}
 
 			/// <summary>
 			/// Override the native styles usage per control type.
@@ -570,9 +577,14 @@ namespace Uno.UI
 			/// <remarks>
 			/// <para>Matches WinUI's deferred <c>OptimizedStyle</c> setter values. Setters backed by a
 			/// <c>StaticResource</c>/<c>ThemeResource</c> are always applied so their resource bindings stay registered.</para>
-			/// <para>The default value is `true`.</para>
+			/// <para>Defaults to <see cref="Perf2026.EnableAll"/> unless configured explicitly.</para>
+			/// <para>Configure this during application startup so all controls use the same style-evaluation mode.</para>
 			/// </remarks>
-			public static bool DeferOverriddenSetterValues { get; set; } = true;
+			public static bool DeferOverriddenSetterValues
+			{
+				get => _deferOverriddenSetterValues ?? Perf2026.EnableAll;
+				set => _deferOverriddenSetterValues = value;
+			}
 
 			/// <summary>
 			/// This enables native frame navigation on Android and iOS by setting related classes (<see cref="Frame"/>, <see cref="CommandBar"/>
