@@ -109,6 +109,9 @@ internal sealed class X11SoftwareGraphicsContext : ISwapChain
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Bgra8888;
+		// The context reuses one persistent HGlobal buffer across frames (reallocated only on resize), so the
+		// previous frame's pixels survive and the compositor can repaint only the damaged region.
+		public bool PreservesContents => true;
 		public void Dispose() { }
 	}
 }
