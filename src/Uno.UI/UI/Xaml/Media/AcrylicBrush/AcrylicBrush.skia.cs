@@ -101,7 +101,11 @@ public partial class AcrylicBrush
 		_brush?.Dispose();
 		if (forceCreateAcrylicBrush)
 		{
-			_brush = CreateAcrylicBrushViaCompositionEffect(compositor, useCrossFadeEffect);
+			// Default to the direct SkiaAcrylicBrush (bc's default); the WinUI-style composition-effect graph is
+			// opt-in via AcrylicBrush.UseCompositionEffectBrush.
+			_brush = AcrylicBrushExtensions.GetUseCompositionEffectBrush(this)
+				? CreateAcrylicBrushViaCompositionEffect(compositor, useCrossFadeEffect)
+				: CreateAcrylicBrushDirect(compositor);
 		}
 		else
 		{
@@ -109,6 +113,54 @@ public partial class AcrylicBrush
 		}
 
 		CompositionBrush = _brush;
+	}
+
+	// The noise texture is a small static asset tiled across every acrylic; decode + upload it once, shared across
+	// all AcrylicBrush instances. Null if the asset is missing or no codec/backend is available yet.
+	private static global::Uno.UI.Composition.Drawing.ITexture? _sharedNoiseTexture;
+
+	private static global::Uno.UI.Composition.Drawing.ITexture? EnsureNoiseTexture()
+	{
+		if (_sharedNoiseTexture is not null)
+		{
+			return _sharedNoiseTexture;
+		}
+
+		using var stream = typeof(AcrylicBrush).Assembly.GetManifestResourceStream(EffectNames.NoiseAsset);
+		if (stream is null
+			|| !global::Uno.UI.Composition.Drawing.ImageEncoderDecoder.Current.TryDecode(stream, null, null, out var frames)
+			|| frames.Frames.Count == 0)
+		{
+			return null;
+		}
+
+		_sharedNoiseTexture = global::Uno.UI.Composition.Drawing.DrawingFactory.Current.CreateTexture(frames.Frames[0]);
+		return _sharedNoiseTexture;
+	}
+
+	// The direct acrylic material (bc's default): a dedicated SkiaAcrylicBrush doing backdrop blur + luminosity +
+	// tint + noise on the neutral drawing seam, rather than a WinUI composition-effect graph.
+	private CompositionBrush CreateAcrylicBrushDirect(Compositor compositor)
+	{
+		if (EnsureNoiseTexture() is not { } noise)
+		{
+			return compositor.CreateColorBrush(FallbackColor);
+		}
+
+		Color tintColor = GetEffectiveTintColor();
+		Color luminosityColor = GetEffectiveLuminosityColor();
+
+		_isUsingOpaqueBrush = tintColor.A == 255;
+
+		return new global::Microsoft.UI.Composition.SkiaAcrylicBrush(compositor)
+		{
+			IsOpaque = _isUsingOpaqueBrush,
+			LuminosityColor = luminosityColor,
+			TintColor = tintColor,
+			BlurSigma = BlurRadius,
+			NoiseOpacity = NoiseOpacity,
+			NoiseTexture = noise,
+		};
 	}
 
 	#region CompositionEffectBrush path
