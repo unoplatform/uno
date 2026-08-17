@@ -6,7 +6,7 @@ namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
 /// App-registerable seam for turning SVG markup into a renderable document. Independent of the graphics backend
-/// (like <see cref="FontProvider"/> / <see cref="ImageDecoder"/> / <see cref="GeometryFactory"/>): the returned
+/// (like <see cref="FontProvider"/> / <see cref="ImageEncoderDecoder"/> / <see cref="GeometryFactory"/>): the returned
 /// <see cref="ISvgDocument"/> draws through the neutral <see cref="IDrawingSession"/>, so it works under any backend
 /// and creates no backend resources itself. Register via the host builder; the framework defaults to its managed
 /// (SkiaSharp-free) engine when none is set.

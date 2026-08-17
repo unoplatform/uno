@@ -20,7 +20,7 @@ internal static class Program
 			.GraphicsBackend(new global::Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider())
 			.GeometryFactory(new ManagedGeometryFactory())
 			.FontProvider(new ManagedFontProvider())
-			.ImageDecoder(new ManagedImageDecoderBackend())
+			.ImageEncoderDecoder(new ManagedImageDecoderBackend())
 			.Build()
 			.Run();
 	}

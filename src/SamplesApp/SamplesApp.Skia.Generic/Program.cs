@@ -104,7 +104,7 @@ namespace SkiaSharpExample
 
 			if (Environment.GetEnvironmentVariable("UNO_MANAGED_IMAGE_DECODER") is "1" or "true")
 			{
-				builder.ImageDecoder(new ManagedImageDecoderBackend());
+				builder.ImageEncoderDecoder(new ManagedImageDecoderBackend());
 			}
 		}
 

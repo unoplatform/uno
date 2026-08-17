@@ -237,7 +237,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			// codec) rather than SkiaSharp directly — the X11 host has no other native-Skia dependency, so this
 			// keeps a WebGPU + managed build genuinely libSkiaSharp-free. Pixels come back BGRA premultiplied.
 			using var fileStream = File.OpenRead(iconPath);
-			if (!ImageDecoder.Current.TryDecode(fileStream, null, null, out var frames) || frames.Frames.Count == 0)
+			if (!ImageEncoderDecoder.Current.TryDecode(fileStream, null, null, out var frames) || frames.Frames.Count == 0)
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{

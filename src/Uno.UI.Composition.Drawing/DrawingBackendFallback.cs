@@ -72,9 +72,9 @@ internal static class DrawingBackendFallback
 			}
 
 			_imageDecoderAttempted = true;
-			if (Invoke<IImageDecoder>("CreateImageDecoder") is { } decoder)
+			if (Invoke<IImageEncoderDecoder>("CreateImageDecoder") is { } decoder)
 			{
-				ImageDecoder.RegisterDefault(decoder);
+				ImageEncoderDecoder.RegisterDefault(decoder);
 			}
 		}
 	}

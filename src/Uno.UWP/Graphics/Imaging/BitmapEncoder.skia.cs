@@ -3,7 +3,6 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Uno.Foundation.Extensibility;
 using Windows.Foundation;
 
 namespace Windows.Graphics.Imaging
@@ -41,12 +40,8 @@ namespace Windows.Graphics.Imaging
 			{
 				if (_softwareBitmap is { } bitmap)
 				{
-					if (!ApiExtensibility.CreateInstance<IImageEncoderExtension>(this, out var encoder))
-					{
-						throw new NotSupportedException("No image encoder backend is registered.");
-					}
-
-					var data = encoder.Encode(bitmap.Pixels, bitmap.PixelWidth, bitmap.PixelHeight, bitmap.BitmapPixelFormat, bitmap.BitmapAlphaMode, _imageFormat, 100);
+					var encode = Encode ?? throw new NotSupportedException("No image codec is registered.");
+					var data = encode(bitmap.Pixels, bitmap.PixelWidth, bitmap.PixelHeight, bitmap.BitmapPixelFormat, bitmap.BitmapAlphaMode, _imageFormat, 100);
 					_stream.AsStream().Write(data, 0, data.Length);
 				}
 				return Task.CompletedTask;

@@ -655,7 +655,7 @@ partial class Win32ClipboardExtension // to clipboard
 		else
 		{
 			// Unknown image format — decode via the neutral image-decoder seam (no Skia) and convert to CF_DIB.
-			if (!global::Uno.UI.Composition.Drawing.ImageDecoder.Current.TryDecode(new MemoryStream(bytes, writable: false), null, null, out var frames)
+			if (!global::Uno.UI.Composition.Drawing.ImageEncoderDecoder.Current.TryDecode(new MemoryStream(bytes, writable: false), null, null, out var frames)
 				|| frames.Frames.Count == 0)
 			{
 				typeof(Win32ClipboardExtension).LogError()?.Error("SetBitmap: failed to decode image.");

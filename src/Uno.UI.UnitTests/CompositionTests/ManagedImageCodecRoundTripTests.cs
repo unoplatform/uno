@@ -1,0 +1,298 @@
+#nullable enable
+
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.Composition.Drawing;
+using Windows.Graphics.Imaging;
+
+namespace Uno.UI.Tests.CompositionTests;
+
+// Round-trips the SkiaSharp-free ManagedImageEncoder through the ManagedImageDecoder (used here as the oracle):
+// lossless formats (BMP/PNG) must reproduce pixels exactly; palette formats (GIF) must be exact after ≤256-colour
+// quantization and must round-trip transparency; JPEG (lossy) must stay within a tight per-channel average.
+[TestClass]
+public class ManagedImageCodecRoundTripTests
+{
+	[TestMethod]
+	public void When_Bmp_Opaque_Gradient_RoundTrips_Exactly()
+	{
+		var (rgba, w, h) = MakeGradient(24, 18);
+		AssertLosslessRgb(rgba, w, h, BitmapEncoderFormat.Bmp);
+	}
+
+	[TestMethod]
+	public void When_Bmp_FlatBlocks_RoundTrips_Exactly()
+	{
+		var (rgba, w, h) = MakeFlatBlocks(20, 20);
+		AssertLosslessRgb(rgba, w, h, BitmapEncoderFormat.Bmp);
+	}
+
+	[TestMethod]
+	public void When_Png_Opaque_Gradient_RoundTrips_Exactly()
+	{
+		var (rgba, w, h) = MakeGradient(24, 18);
+		AssertLosslessRgba(rgba, w, h, BitmapEncoderFormat.Png);
+	}
+
+	[TestMethod]
+	public void When_Png_Alpha_RoundTrips_Exactly()
+	{
+		var (rgba, w, h) = MakeAlpha(20, 16);
+		AssertLosslessRgba(rgba, w, h, BitmapEncoderFormat.Png);
+	}
+
+	[TestMethod]
+	public void When_Gif_FlatBlocks_RoundTrips_Exactly()
+	{
+		var (rgba, w, h) = MakeFlatBlocks(20, 20);
+		AssertGifExact(rgba, w, h);
+	}
+
+	[TestMethod]
+	public void When_Gif_GrayscaleRamp_256Colors_RoundTrips_Exactly()
+	{
+		// 256 distinct opaque colours → quantization is an identity, so the round-trip must be exact.
+		var (rgba, w, h) = MakeGrayscaleRamp();
+		AssertGifExact(rgba, w, h);
+	}
+
+	[TestMethod]
+	public void When_Gif_Transparency_RoundTrips()
+	{
+		var (rgba, w, h) = MakeAlphaBinary(20, 16);
+		AssertGifExact(rgba, w, h);
+	}
+
+	[TestMethod]
+	public void When_Jpeg_Gradient_Quality90_IsCloseEnough()
+	{
+		var (rgba, w, h) = MakeGradient(32, 32);
+		AssertJpegClose(rgba, w, h, quality: 90, avgTolerance: 3.0);
+	}
+
+	[TestMethod]
+	public void When_Jpeg_FlatBlocks_Quality90_IsCloseEnough()
+	{
+		var (rgba, w, h) = MakeFlatBlocks(24, 24);
+		AssertJpegClose(rgba, w, h, quality: 90, avgTolerance: 3.0);
+	}
+
+	[TestMethod]
+	public void When_Jpeg_OddSize_Quality90_IsCloseEnough()
+	{
+		var (rgba, w, h) = MakeGradient(17, 9); // exercises partial-block edge padding
+		AssertJpegClose(rgba, w, h, quality: 90, avgTolerance: 3.5);
+	}
+
+	private static void AssertLosslessRgb(byte[] rgba, int w, int h, BitmapEncoderFormat format)
+	{
+		var decoded = EncodeDecode(rgba, w, h, format);
+		var expected = ToPremultipliedBgra(rgba, w, h);
+		AssertMaxDiff(expected, decoded, w, h, includeAlpha: false, maxAllowed: 0, format.ToString());
+	}
+
+	private static void AssertLosslessRgba(byte[] rgba, int w, int h, BitmapEncoderFormat format)
+	{
+		var decoded = EncodeDecode(rgba, w, h, format);
+		var expected = ToPremultipliedBgra(rgba, w, h);
+		AssertMaxDiff(expected, decoded, w, h, includeAlpha: true, maxAllowed: 0, format.ToString());
+	}
+
+	private static void AssertGifExact(byte[] rgba, int w, int h)
+	{
+		var decoded = EncodeDecode(rgba, w, h, BitmapEncoderFormat.Gif);
+		// GIF treats alpha < 128 as fully transparent → decodes to (0,0,0,0); opaque colours map through an exact
+		// palette (≤256 distinct colours in these fixtures), so the decoded BGRA must match bit-for-bit.
+		var expected = new byte[w * h * 4];
+		for (var i = 0; i < w * h; i++)
+		{
+			if (rgba[i * 4 + 3] < 128)
+			{
+				continue; // stays (0,0,0,0)
+			}
+
+			expected[i * 4] = rgba[i * 4 + 2];
+			expected[i * 4 + 1] = rgba[i * 4 + 1];
+			expected[i * 4 + 2] = rgba[i * 4];
+			expected[i * 4 + 3] = 255;
+		}
+
+		AssertMaxDiff(expected, decoded, w, h, includeAlpha: true, maxAllowed: 0, "Gif");
+	}
+
+	private static void AssertJpegClose(byte[] rgba, int w, int h, int quality, double avgTolerance)
+	{
+		var decoded = EncodeDecode(rgba, w, h, BitmapEncoderFormat.Jpeg, quality);
+		var expected = ToPremultipliedBgra(rgba, w, h);
+
+		long total = 0;
+		var max = 0;
+		var samples = 0;
+		for (var i = 0; i < w * h; i++)
+		{
+			for (var c = 0; c < 3; c++) // B,G,R
+			{
+				var diff = Math.Abs(decoded[i * 4 + c] - expected[i * 4 + c]);
+				total += diff;
+				max = Math.Max(max, diff);
+				samples++;
+			}
+		}
+
+		var avg = (double)total / samples;
+		Assert.IsTrue(avg < avgTolerance, $"JPEG avg per-channel diff {avg:F3} exceeded {avgTolerance} (max {max}).");
+		Assert.IsTrue(max < 64, $"JPEG max per-channel diff {max} indicates structural garbage.");
+	}
+
+	private static byte[] EncodeDecode(byte[] rgba, int w, int h, BitmapEncoderFormat format, int quality = 90)
+	{
+		var encoded = ManagedImageEncoder.Encode(rgba, w, h, BitmapPixelFormat.Rgba8, BitmapAlphaMode.Straight, format, quality);
+		Assert.IsTrue(ManagedImageDecoder.TryDecode(encoded, null, null, out var decoded), $"{format} failed to decode.");
+		Assert.AreEqual(w, decoded!.Width, $"{format} width mismatch.");
+		Assert.AreEqual(h, decoded.Height, $"{format} height mismatch.");
+		return decoded.Frames[0];
+	}
+
+	private static void AssertMaxDiff(byte[] expected, byte[] actual, int w, int h, bool includeAlpha, int maxAllowed, string format)
+	{
+		var channels = includeAlpha ? 4 : 3;
+		for (var i = 0; i < w * h; i++)
+		{
+			for (var c = 0; c < channels; c++)
+			{
+				var diff = Math.Abs(expected[i * 4 + c] - actual[i * 4 + c]);
+				if (diff > maxAllowed)
+				{
+					Assert.Fail($"{format} pixel {i} channel {c}: expected {expected[i * 4 + c]}, got {actual[i * 4 + c]} (diff {diff}).");
+				}
+			}
+		}
+	}
+
+	private static byte[] ToPremultipliedBgra(byte[] rgba, int w, int h)
+	{
+		var bgra = new byte[w * h * 4];
+		for (var i = 0; i < w * h; i++)
+		{
+			var r = rgba[i * 4];
+			var g = rgba[i * 4 + 1];
+			var b = rgba[i * 4 + 2];
+			var a = rgba[i * 4 + 3];
+			if (a == 255)
+			{
+				bgra[i * 4] = b;
+				bgra[i * 4 + 1] = g;
+				bgra[i * 4 + 2] = r;
+				bgra[i * 4 + 3] = 255;
+			}
+			else
+			{
+				bgra[i * 4] = (byte)(b * a / 255);
+				bgra[i * 4 + 1] = (byte)(g * a / 255);
+				bgra[i * 4 + 2] = (byte)(r * a / 255);
+				bgra[i * 4 + 3] = a;
+			}
+		}
+
+		return bgra;
+	}
+
+	private static (byte[] rgba, int w, int h) MakeGradient(int w, int h)
+	{
+		var rgba = new byte[w * h * 4];
+		for (var y = 0; y < h; y++)
+		{
+			for (var x = 0; x < w; x++)
+			{
+				var i = (y * w + x) * 4;
+				rgba[i] = (byte)(x * 255 / Math.Max(1, w - 1));
+				rgba[i + 1] = (byte)(y * 255 / Math.Max(1, h - 1));
+				rgba[i + 2] = (byte)((x + y) * 255 / Math.Max(1, w + h - 2));
+				rgba[i + 3] = 255;
+			}
+		}
+
+		return (rgba, w, h);
+	}
+
+	private static (byte[] rgba, int w, int h) MakeFlatBlocks(int w, int h)
+	{
+		var colors = new byte[][]
+		{
+			new byte[] { 255, 0, 0 },
+			new byte[] { 0, 255, 0 },
+			new byte[] { 0, 0, 255 },
+			new byte[] { 255, 255, 0 },
+		};
+
+		var rgba = new byte[w * h * 4];
+		for (var y = 0; y < h; y++)
+		{
+			for (var x = 0; x < w; x++)
+			{
+				var i = (y * w + x) * 4;
+				var c = colors[(x < w / 2 ? 0 : 1) + (y < h / 2 ? 0 : 2)];
+				rgba[i] = c[0];
+				rgba[i + 1] = c[1];
+				rgba[i + 2] = c[2];
+				rgba[i + 3] = 255;
+			}
+		}
+
+		return (rgba, w, h);
+	}
+
+	private static (byte[] rgba, int w, int h) MakeAlpha(int w, int h)
+	{
+		var rgba = new byte[w * h * 4];
+		for (var y = 0; y < h; y++)
+		{
+			for (var x = 0; x < w; x++)
+			{
+				var i = (y * w + x) * 4;
+				rgba[i] = (byte)(x * 255 / Math.Max(1, w - 1));
+				rgba[i + 1] = (byte)(y * 255 / Math.Max(1, h - 1));
+				rgba[i + 2] = 128;
+				rgba[i + 3] = (byte)((x * 255 / Math.Max(1, w - 1) + 40) % 256); // varying translucency
+			}
+		}
+
+		return (rgba, w, h);
+	}
+
+	private static (byte[] rgba, int w, int h) MakeAlphaBinary(int w, int h)
+	{
+		var rgba = new byte[w * h * 4];
+		for (var y = 0; y < h; y++)
+		{
+			for (var x = 0; x < w; x++)
+			{
+				var i = (y * w + x) * 4;
+				var transparent = ((x / 4) + (y / 4)) % 2 == 0;
+				rgba[i] = 200;
+				rgba[i + 1] = 40;
+				rgba[i + 2] = 120;
+				rgba[i + 3] = (byte)(transparent ? 0 : 255);
+			}
+		}
+
+		return (rgba, w, h);
+	}
+
+	private static (byte[] rgba, int w, int h) MakeGrayscaleRamp()
+	{
+		const int w = 16;
+		const int h = 16;
+		var rgba = new byte[w * h * 4];
+		for (var i = 0; i < w * h; i++)
+		{
+			var v = (byte)i; // 0..255, all distinct
+			rgba[i * 4] = v;
+			rgba[i * 4 + 1] = v;
+			rgba[i * 4 + 2] = v;
+			rgba[i * 4 + 3] = 255;
+		}
+
+		return (rgba, w, h);
+	}
+}

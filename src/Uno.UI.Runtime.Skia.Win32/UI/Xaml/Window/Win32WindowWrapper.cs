@@ -797,7 +797,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// Decode + scale through the neutral image-decoder seam (no Skia): the managed decoder resamples to the
 		// target size and returns BGRA (premultiplied), which is exactly the icon color bitmap format.
 		using var fileStream = File.OpenRead(iconPath);
-		if (!ImageDecoder.Current.TryDecode(fileStream, targetSize, targetSize, out var frames) || frames.Frames.Count == 0)
+		if (!ImageEncoderDecoder.Current.TryDecode(fileStream, targetSize, targetSize, out var frames) || frames.Frames.Count == 0)
 		{
 			this.LogError()?.Error($"Couldn't decode icon file [{iconPath}].");
 			return HICON.Null;

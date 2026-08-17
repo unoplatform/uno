@@ -41,7 +41,7 @@ internal static class GlyphRunRenderer
 
 					case GlyphImage image:
 					{
-						var decoded = ImageDecoder.Current.CreateImage(image.PixelWidth, image.PixelHeight, image.Pixels);
+						var decoded = ImageEncoderDecoder.Current.CreateImage(image.PixelWidth, image.PixelHeight, image.Pixels);
 						var texture = DrawingFactory.Current.CreateTexture(decoded);
 						try
 						{

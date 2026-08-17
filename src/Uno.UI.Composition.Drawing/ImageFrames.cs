@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// The result of decoding an image (or wrapping raw pixels) through <see cref="IImageDecoder"/>: one or more
+/// The result of decoding an image (or wrapping raw pixels) through <see cref="IImageEncoderDecoder"/>: one or more
 /// decoded <see cref="IImage"/> frames in display order, plus their per-frame durations. A still image has a
 /// single frame; an animated image (GIF/APNG/WebP) has several.
 /// </summary>
