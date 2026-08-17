@@ -35,6 +35,14 @@ internal static partial class ManagedImageDecoder
 		}
 	}
 
+	// Upper bound on decoded pixel count, mirroring the Skia codec's guard. Header-declared dimensions drive large
+	// allocations before any pixel data is seen, so a tiny crafted header (e.g. 16384x16384) must be rejected here
+	// rather than being allowed to force a multi-gigabyte allocation (an OOM crash on 32-bit WASM).
+	private const long MaxPixels = 1L << 28;
+
+	internal static bool ExceedsPixelCap(int width, int height)
+		=> width <= 0 || height <= 0 || (long)width * height > MaxPixels;
+
 	private static bool TryDecodeCore(byte[] d, [NotNullWhen(true)] out DecodedImage? decoded)
 	{
 		decoded = null;

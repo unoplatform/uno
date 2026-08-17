@@ -22,9 +22,16 @@ internal static partial class ManagedImageDecoder
 
 		while (p + 8 <= d.Length)
 		{
-			var length = (int)ReadU32(d, p);
+			var rawLength = ReadU32(d, p);
 			var type = ReadU32(d, p + 4);
 			var chunk = p + 8;
+			// Reject a chunk whose data + CRC overruns the buffer. Reading the length unsigned and bounds-checking
+			// also guarantees the loop makes forward progress: a crafted huge length can no longer wrap `p`.
+			if (rawLength > int.MaxValue || (long)chunk + rawLength + 4 > d.Length)
+			{
+				return false;
+			}
+			var length = (int)rawLength;
 			p = chunk + length + 4; // skip data + CRC
 
 			switch (type)
@@ -54,7 +61,7 @@ internal static partial class ManagedImageDecoder
 			}
 		}
 
-		if (!sawHeader || width <= 0 || height <= 0 || interlace is not (0 or 1))
+		if (!sawHeader || ExceedsPixelCap(width, height) || interlace is not (0 or 1))
 		{
 			return false;
 		}

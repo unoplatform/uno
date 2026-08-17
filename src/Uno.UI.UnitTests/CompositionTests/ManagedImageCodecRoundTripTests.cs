@@ -299,3 +299,85 @@ public class ManagedImageCodecRoundTripTests
 		return (rgba, w, h);
 	}
 }
+
+// Guards the managed decoders against hostile input (remote / clipboard / ImageSource bytes are untrusted): a
+// crafted chunk length must not spin the chunk walker forever, and header-declared dimensions must not drive an
+// unbounded allocation. The [Timeout]s make the infinite-loop cases fail-before / pass-after (the loop never returns
+// pre-fix); the outsized-dimension cases assert a clean rejection instead of a multi-gigabyte allocation.
+[TestClass]
+public class Given_ManagedImageDecoder_Hardening
+{
+	[TestMethod]
+	[Timeout(10000)]
+	public void When_Png_CraftedChunkLength_DoesNotHang()
+	{
+		// PNG signature + one chunk whose big-endian length (0xFFFFFFF4) is negative-as-int and whose type matches no
+		// branch: pre-fix, p never advances and the walker loops forever; post-fix, the bounds check bails to false.
+		var png = new byte[16];
+		WritePngSignature(png);
+		png[8] = 0xFF; png[9] = 0xFF; png[10] = 0xFF; png[11] = 0xF4; // length
+		png[12] = (byte)'j'; png[13] = (byte)'u'; png[14] = (byte)'n'; png[15] = (byte)'k'; // unknown type
+
+		Assert.IsFalse(ManagedImageDecoder.TryDecode(png, null, null, out _));
+	}
+
+	[TestMethod]
+	[Timeout(10000)]
+	public void When_Webp_CraftedChunkSize_DoesNotHang()
+	{
+		// RIFF/WEBP + one chunk whose little-endian size (0xFFFFFFF8) is negative-as-int and whose FourCC matches no
+		// branch: pre-fix, p rewinds and the walker loops forever; post-fix, the bounds check bails to false.
+		var webp = new byte[20];
+		webp[0] = (byte)'R'; webp[1] = (byte)'I'; webp[2] = (byte)'F'; webp[3] = (byte)'F';
+		webp[4] = 12; // file size (unused)
+		webp[8] = (byte)'W'; webp[9] = (byte)'E'; webp[10] = (byte)'B'; webp[11] = (byte)'P';
+		webp[12] = (byte)'j'; webp[13] = (byte)'u'; webp[14] = (byte)'n'; webp[15] = (byte)'k'; // unknown FourCC
+		webp[16] = 0xF8; webp[17] = 0xFF; webp[18] = 0xFF; webp[19] = 0xFF; // size
+
+		Assert.IsFalse(ManagedImageDecoder.TryDecode(webp, null, null, out _));
+	}
+
+	[TestMethod]
+	[Timeout(10000)]
+	public void When_Png_OutsizedDimensions_RejectedWithoutHugeAllocation()
+	{
+		// A ~33-byte PNG header declaring 20000x20000 would force a ~1.6 GB allocation before any pixel data; the pixel
+		// cap must reject it up front.
+		var png = new byte[33];
+		WritePngSignature(png);
+		png[8] = 0x00; png[9] = 0x00; png[10] = 0x00; png[11] = 0x0D; // IHDR length = 13
+		png[12] = (byte)'I'; png[13] = (byte)'H'; png[14] = (byte)'D'; png[15] = (byte)'R';
+		png[16] = 0x00; png[17] = 0x00; png[18] = 0x4E; png[19] = 0x20; // width  = 20000
+		png[20] = 0x00; png[21] = 0x00; png[22] = 0x4E; png[23] = 0x20; // height = 20000
+		png[24] = 8;  // bit depth
+		png[25] = 6;  // colour type RGBA
+		png[26] = 0;  // compression
+		png[27] = 0;  // filter
+		png[28] = 0;  // interlace
+
+		Assert.IsFalse(ManagedImageDecoder.TryDecode(png, null, null, out _));
+	}
+
+	[TestMethod]
+	[Timeout(10000)]
+	public void When_Bmp_OutsizedDimensions_RejectedWithoutHugeAllocation()
+	{
+		// BM + a 40-byte BITMAPINFOHEADER declaring 20000x20000, 32bpp, uncompressed — the pixel cap must reject it.
+		var bmp = new byte[54];
+		bmp[0] = (byte)'B'; bmp[1] = (byte)'M';
+		bmp[10] = 54;   // pixel data offset
+		bmp[14] = 40;   // DIB header size
+		bmp[18] = 0x20; bmp[19] = 0x4E; // width  = 20000 (LE)
+		bmp[22] = 0x20; bmp[23] = 0x4E; // height = 20000 (LE)
+		bmp[28] = 32;   // bpp
+		// compression (offset 30) = 0
+
+		Assert.IsFalse(ManagedImageDecoder.TryDecode(bmp, null, null, out _));
+	}
+
+	private static void WritePngSignature(byte[] d)
+	{
+		d[0] = 0x89; d[1] = 0x50; d[2] = 0x4E; d[3] = 0x47;
+		d[4] = 0x0D; d[5] = 0x0A; d[6] = 0x1A; d[7] = 0x0A;
+	}
+}

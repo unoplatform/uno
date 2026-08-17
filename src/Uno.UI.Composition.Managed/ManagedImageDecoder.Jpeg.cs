@@ -159,6 +159,11 @@ internal static partial class ManagedImageDecoder
 			q++; // precision
 			_height = (_d[q] << 8) | _d[q + 1];
 			_width = (_d[q + 2] << 8) | _d[q + 3];
+			if (ExceedsPixelCap(_width, _height))
+			{
+				// Bail (caught by TryDecode's guard → graceful Skia fallback) before the dimension-driven allocations.
+				throw new NotSupportedException("JPEG dimensions exceed the decode pixel cap.");
+			}
 			var count = _d[q + 4];
 			q += 5;
 
@@ -712,7 +717,8 @@ internal static partial class ManagedImageDecoder
 		}
 	}
 
-	private static readonly int[] ZigZag =
+	// Shared with ManagedImageEncoder (the paired JPEG proof): the single zig-zag scan order.
+	internal static readonly int[] ZigZag =
 	{
 		0, 1, 8, 16, 9, 2, 3, 10, 17, 24, 32, 25, 18, 11, 4, 5,
 		12, 19, 26, 33, 40, 48, 41, 34, 27, 20, 13, 6, 7, 14, 21, 28,
