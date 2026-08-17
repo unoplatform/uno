@@ -101,14 +101,6 @@ public interface IDrawingFactory
 	/// per-session <c>CreateRecording</c>).
 	/// </summary>
 	ICommandRecorder CreateRecording();
-
-	/// <summary>
-	/// The runtime type this backend's <see cref="IDrawingSession.NativeSurface"/> exposes (e.g.
-	/// <c>typeof(SkiaSharp.SKCanvas)</c>), or <c>null</c> if it exposes none. A <c>&lt;Api&gt;CanvasElement</c>
-	/// compares this to its own API's surface type at load to decide, once, whether the active rendering can be
-	/// drawn into ZERO-COPY (direct) or whether it must use its own offscreen island — without waiting for a paint.
-	/// </summary>
-	Type? NativeSurfaceType { get; }
 }
 
 /// <summary>

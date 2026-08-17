@@ -2522,7 +2522,6 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
 
-	public global::System.Type NativeSurfaceType => null;
 
 	public IPresentSession BeginPresent(IWebGpuRenderTarget target)
 	{
