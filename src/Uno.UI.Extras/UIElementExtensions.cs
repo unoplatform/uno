@@ -12,20 +12,11 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 
 #if HAS_UNO
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 #endif
 
 #if NETCOREAPP && !HAS_UNO
 using Microsoft.UI;
-#endif
-
-#if __APPLE_UIKIT__
-using CoreGraphics;
-#endif
-
-#if __APPLE_UIKIT__
-using ObjCRuntime;
 #endif
 
 #if __SKIA__
@@ -67,65 +58,13 @@ namespace Uno.UI.Extras
 			}
 		}
 
-#if __APPLE_UIKIT__
-		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, CGPath path = null)
-#elif (WINAPPSDK || WINDOWS_UWP || NETCOREAPP) && !HAS_UNO
+#if (WINAPPSDK || WINDOWS_UWP || NETCOREAPP) && !HAS_UNO
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, DependencyObject host = null, CornerRadius cornerRadius = default(CornerRadius))
 #else
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor)
 #endif
 		{
-#if __ANDROID__
-			if (element is Android.Views.View view)
-			{
-				AndroidX.Core.View.ViewCompat.SetElevation(view, (float)Uno.UI.ViewHelper.LogicalToPhysicalPixels(elevation));
-				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.P)
-				{
-					view.SetOutlineAmbientShadowColor(shadowColor);
-					view.SetOutlineSpotShadowColor(shadowColor);
-				}
-			}
-#elif __APPLE_UIKIT__
-			if (element is UIKit.UIView view)
-			{
-				if (elevation > 0)
-				{
-					const float x = 0.28f;
-					const float y = 0.92f * 0.5f;
-					const float blur = 0.18f;
-
-					view.Layer.MasksToBounds = false;
-					view.Layer.ShadowOpacity = shadowColor.A / 255f;
-					view.Layer.ShadowColor = UIKit.UIColor.FromRGB(shadowColor.R, shadowColor.G, shadowColor.B).CGColor;
-					view.Layer.ShadowRadius = (nfloat)(blur * elevation);
-					view.Layer.ShadowOffset = new CoreGraphics.CGSize(x * elevation, y * elevation);
-					view.Layer.ShadowPath = path;
-				}
-				else if (view.Layer != null)
-				{
-					view.Layer.ShadowOpacity = 0;
-				}
-			}
-#elif __WASM__
-			if (element is UIElement uiElement)
-			{
-				if (elevation > 0)
-				{
-					const double x = 0.25d;
-					const double y = 0.92f * 0.5f;
-					const double blur = 0.3f;
-
-					var str = $"{(x * elevation).ToStringInvariant()}px {(y * elevation).ToStringInvariant()}px {(blur * elevation).ToStringInvariant()}px {shadowColor.ToCssString()}";
-					uiElement.SetStyle("box-shadow", str);
-					uiElement.SetCssClasses("noclip");
-				}
-				else
-				{
-					uiElement.ResetStyle("box-shadow");
-					uiElement.UnsetCssClasses("noclip");
-				}
-			}
-#elif __SKIA__
+#if __SKIA__
 			if (element is UIElement uiElement)
 			{
 				var visual = uiElement.Visual;
