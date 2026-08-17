@@ -82,7 +82,7 @@ public partial class CompositionTarget
 		{
 			var target = kvp.Key;
 
-			(IRenderRecord frame, IGeometry nativeElementClipPath)? staleFrame;
+			(IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage)? staleFrame;
 			lock (target._frameGate)
 			{
 				staleFrame = target._lastRenderedFrame;
@@ -91,6 +91,7 @@ public partial class CompositionTarget
 			if (staleFrame is { } sf)
 			{
 				sf.frame.Dispose();
+				sf.damage?.Dispose();
 			}
 
 			if (target.ContentRoot?.VisualTree?.RootElement?.Visual is { } rootVisual)
@@ -126,7 +127,10 @@ public partial class CompositionTarget
 	private static IGeometry? _lastScaledNativeClipPath;
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
-	private (IRenderRecord frame, IGeometry nativeElementClipPath)? _lastRenderedFrame;
+	private (IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage)? _lastRenderedFrame;
+	// Damage (dirty region) accumulated between frames from AddDamage + carried-forward unpresented damage;
+	// folded into each frame's own damage during Render. Guarded by _frameGate.
+	private readonly DamageRegion _pendingDamage = new();
 	// only set and read under _xamlRootBoundsGate
 	private Size _xamlRootBounds;
 	// only set and read under _xamlRootBoundsGate
@@ -182,28 +186,49 @@ public partial class CompositionTarget
 		var bounds = ContentRoot.VisualTree.Size;
 
 		// Phase 1 (UI thread): the backend hands us a recording session, the agnostic cycle walks the
-		// visual tree into it, then we finish recording to get the opaque frame.
+		// visual tree into it, then we finish recording to get the opaque frame. A per-frame damage
+		// accumulator collects each changed/moved visual's dirty region during the walk; it is seeded with
+		// damage carried over from AddDamage / a superseded-before-present previous frame, then clamped to
+		// the frame so it can drive a partial repaint at present time.
+		var frameDamage = new DamageRegion();
+		var frameRect = new Rect(0, 0, bounds.Width, bounds.Height);
+		lock (_frameGate)
+		{
+			frameDamage.Union(_pendingDamage);
+			_pendingDamage.Reset();
+		}
+
 		var recording = Renderer.CreateRecording();
 		var (path, nativeVisualsInZOrder) = SkiaRenderHelper.RecordFrame(
 			recording,
 			(float)bounds.Width,
 			(float)bounds.Height,
 			rootElement.Visual,
-			FrameRenderingOptions.invertNativeElementClipPath);
+			FrameRenderingOptions.invertNativeElementClipPath,
+			frameDamage);
 		var frame = recording.Finish();
-		var renderedFrame = (frame, path);
-		var previousFrame = default((IRenderRecord frame, IGeometry path)?);
+		frameDamage.ClampTo(frameRect);
+		var renderedFrame = (frame, path, frameDamage.Detach());
+		var previousFrame = default((IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage)?);
 		lock (_frameGate)
 		{
 			previousFrame = _lastRenderedFrame;
 
 			_lastRenderedFrame = renderedFrame;
+
+			// A previous frame that was recorded but never presented (its slot was still occupied) is being
+			// dropped; carry its damage forward so the area it would have repainted isn't lost.
+			if (previousFrame is { damage: { } carried })
+			{
+				_pendingDamage.Union(carried);
+			}
 		}
 
 		_fpsHelper.OnFrameRecorded();
 
 		// Release the previous frame now since we are swapping it
 		previousFrame?.frame.Dispose();
+		previousFrame?.damage?.Dispose();
 
 		if (_isRenderingActive)
 		{
@@ -242,7 +267,7 @@ public partial class CompositionTarget
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 
-		(IRenderRecord frame, IGeometry nativeElementClipPath)? lastRenderedFrameNullable;
+		(IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
 			lastRenderedFrameNullable = _lastRenderedFrame;
@@ -329,9 +354,10 @@ public partial class CompositionTarget
 	}
 
 
-	private void ReturnFrame((IRenderRecord frame, IGeometry path) frame)
+	private void ReturnFrame((IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage) frame)
 	{
 		IRenderRecord? frameToDelete = null;
+		IGeometry? damageToDelete = null;
 
 		lock (_frameGate)
 		{
@@ -343,11 +369,31 @@ public partial class CompositionTarget
 			else
 			{
 				frameToDelete = frame.frame;
+				damageToDelete = frame.damage;
 			}
 		}
 
 		// Release it then
 		frameToDelete?.Dispose();
+		damageToDelete?.Dispose();
+	}
+
+	void ICompositionTarget.AddDamage(Rect bounds)
+	{
+		NativeDispatcher.CheckThreadAccess();
+		lock (_frameGate)
+		{
+			_pendingDamage.UnionRect(bounds);
+		}
+	}
+
+	void ICompositionTarget.AddDamage(IGeometry region)
+	{
+		NativeDispatcher.CheckThreadAccess();
+		lock (_frameGate)
+		{
+			_pendingDamage.Union(region);
+		}
 	}
 
 	internal static void InvokeRendering()
