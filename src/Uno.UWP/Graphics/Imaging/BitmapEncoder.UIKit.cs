@@ -1,47 +1,81 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
+using CoreGraphics;
 using Foundation;
 using UIKit;
 using Windows.Foundation;
 using System.Runtime.InteropServices.WindowsRuntime;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Windows.Graphics.Imaging
 {
 	partial class BitmapEncoder
 	{
-		private readonly Func<UIImage, NSData> _encoder;
+		private readonly BitmapEncoderFormat _imageFormat;
 		private readonly global::Windows.Storage.Streams.IRandomAccessStream _stream;
 		private global::Windows.Graphics.Imaging.SoftwareBitmap _softwareBitmap;
 
-		private BitmapEncoder(Func<UIImage, NSData> encoder
+		private BitmapEncoder(BitmapEncoderFormat imageFormat
 			, Storage.Streams.IRandomAccessStream stream)
 		{
-			_encoder = encoder;
+			_imageFormat = imageFormat;
 			_stream = stream;
 		}
 
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.BitmapEncoder> CreateAsync(global::System.Guid encoderId, global::Windows.Storage.Streams.IRandomAccessStream stream)
 			=> AsyncOperation.FromTask<BitmapEncoder>(ct =>
 			{
-				if (!_encoderMap.TryGetValue(encoderId, out var encoder))
+				if (!_encoderMap.TryGetValue(encoderId, out var imageFormat))
 				{
 					throw new NotImplementedException($"Encoder {encoderId} in not implemented.", new ArgumentException(nameof(encoderId)));
 				}
-				return Task.FromResult(new BitmapEncoder(encoder, stream));
+				return Task.FromResult(new BitmapEncoder(imageFormat, stream));
 			});
 
 		public global::Windows.Foundation.IAsyncAction FlushAsync()
 			=> AsyncAction.FromTask(async ct =>
 			{
 				var image = _softwareBitmap?.Image;
-				if (image is { })
+				if (image?.CGImage is { } cgImage)
 				{
-					using var data = _encoder(image);
-					await _stream.WriteAsync(data.ToArray().AsBuffer());
+					// Prefer the registered neutral codec (so Skia-on-iOS encodes through the same codec as desktop);
+					// fall back to the native UIImage encoder when none is registered (a native-only head).
+					if (Encode is { } encode)
+					{
+						var pixels = ReadRgba(cgImage, out var width, out var height);
+						using var ms = new MemoryStream();
+						encode(ms, pixels, width, height, BitmapPixelFormat.Rgba8, BitmapAlphaMode.Premultiplied, _imageFormat, 100);
+						await _stream.WriteAsync(ms.ToArray().AsBuffer());
+					}
+					else
+					{
+						using var data = ToNativeEncoder(_imageFormat)(image);
+						await _stream.WriteAsync(data.ToArray().AsBuffer());
+					}
 				}
 			});
+
+		// Renders the CGImage into a known-layout context to read straight RGBA (premultiplied) bytes — the same
+		// CoreGraphics path SoftwareBitmap.Apple.cs uses to normalize images.
+		private static byte[] ReadRgba(CGImage cgImage, out int width, out int height)
+		{
+			width = (int)cgImage.Width;
+			height = (int)cgImage.Height;
+			var bytesPerRow = width * 4;
+			var pixels = new byte[bytesPerRow * height];
+			using var colorSpace = CGColorSpace.CreateDeviceRGB();
+			using var context = new CGBitmapContext(pixels, width, height, 8, bytesPerRow, colorSpace, CGImageAlphaInfo.PremultipliedLast);
+			context.DrawImage(new CGRect(0, 0, width, height), cgImage);
+			return pixels;
+		}
+
+		private static Func<UIImage, NSData> ToNativeEncoder(BitmapEncoderFormat format) =>
+			format switch
+			{
+				BitmapEncoderFormat.Jpeg => AsJPEG,
+				BitmapEncoderFormat.Png => AsPNG,
+				_ => throw new NotSupportedException($"The native iOS encoder does not support {format}; register a managed or Skia image codec to encode it.")
+			};
 
 		public void SetSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
 		{
