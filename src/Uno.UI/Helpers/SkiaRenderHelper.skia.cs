@@ -14,6 +14,7 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
+using Uno.UI.Composition;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Xaml.Core;
 using static Uno.UI.Helpers.SkiaRenderHelper;
@@ -41,11 +42,11 @@ internal static class SkiaRenderHelper
 	/// recording session provided by the backend) and computes the native-element clip path (a backend-neutral
 	/// <see cref="IGeometry"/>). Backend-agnostic; the caller obtains the frame via <see cref="ICommandRecorder.Finish"/>.
 	/// </summary>
-	internal static (IGeometry nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordFrame(ICommandRecorder session, float width, float height, ContainerVisual rootVisual, bool invertPath)
+	internal static (IGeometry nativeClipPath, List<Visual> nativeVisualsInZOrder) RecordFrame(ICommandRecorder session, float width, float height, ContainerVisual rootVisual, bool invertPath, DamageRegion? damage = null)
 	{
 		session.Clear(global::Windows.UI.Colors.Transparent);
 
-		rootVisual.Compositor.RenderRootVisual(session, rootVisual);
+		rootVisual.Compositor.RenderRootVisual(session, rootVisual, damage);
 
 		return !ContentPresenter.HasNativeElements() ?
 			(!invertPath ? EmptyClipPath : GetOrUpdateInvertedClippingPath(width, height), _emptyList) :

@@ -182,7 +182,7 @@ public partial class Compositor
 		return false;
 	}
 
-	internal void RenderRootVisual(Uno.UI.Composition.Drawing.IDrawingSession drawingSession, ContainerVisual rootVisual)
+	internal void RenderRootVisual(Uno.UI.Composition.Drawing.IDrawingSession drawingSession, ContainerVisual rootVisual, DamageRegion? damage = null)
 	{
 		if (rootVisual is null)
 		{
@@ -210,7 +210,7 @@ public partial class Compositor
 #if PRINT_FRAME_TIMES
 		var start = Stopwatch.GetTimestamp();
 #endif
-		rootVisual.RenderRootVisual(drawingSession, null);
+		rootVisual.RenderRootVisual(drawingSession, null, damage);
 #if PRINT_FRAME_TIMES
 		var span = Stopwatch.GetElapsedTime(start);
 		Console.WriteLine($"Rendered frame {_frameNumber++} in {span.TotalMilliseconds}ms");
