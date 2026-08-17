@@ -81,13 +81,13 @@ public class Given_ImplicitXamlNamespaces
 			{
 				Sources = { codeBehind, controlsSource, assemblyAttributes, xmlnsDefinitionAttr },
 			},
+			// Only what differs from the harness defaults: an entry here SUPPRESSES the default of the
+			// same key, so restating one freezes this test on a value the harness has moved on from --
+			// which is how it ended up the single test still feeding the generator a project path that
+			// is a UNC share root, and so generating nothing at all on Windows.
 			GlobalConfigOverride = new()
 			{
-				{ "is_global", "true" },
-				{ "build_property.MSBuildProjectFullPath", "//Project/Project.csproj" },
 				{ "build_property.RootNamespace", "TestRepro" },
-				{ "build_property.UnoForceHotReloadCodeGen", "false" },
-				{ "build_property.UnoEnableXamlFuzzyMatching", "false" },
 				{ "build_property.UnoEnableImplicitXamlNamespaces", "true" },
 			},
 		}.AddGeneratedSources();
