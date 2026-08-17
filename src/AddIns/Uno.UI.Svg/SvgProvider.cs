@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Uno.UI.Xaml.Media.Imaging.Svg;
@@ -9,9 +9,6 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
 using Windows.Graphics.Display;
-
-
-#if !__NETSTD_REFERENCE__
 using ShimSkiaSharp;
 using Svg.Skia;
 using Uno.UI.Xaml.Media;
@@ -19,15 +16,11 @@ using Uno.UI.Composition.Drawing;
 using SkiaSharp;
 using SKCanvas = SkiaSharp.SKCanvas;
 using SKMatrix = SkiaSharp.SKMatrix;
-#else
-#pragma warning disable CS0067
-#endif
 
 namespace Uno.UI.Svg;
 
 public partial class SvgProvider : ISvgProvider
 {
-#if !__NETSTD_REFERENCE__
 	// 16 MP (≈64 MB BGRA) ceiling on a single rasterization, to bound untrusted SVG dimensions.
 	private const long MaxRasterizePixelCount = 16L * 1024 * 1024;
 
@@ -36,14 +29,9 @@ public partial class SvgProvider : ISvgProvider
 
 	private SKSvg? _skSvg;
 	private SKBitmap? _skBitmap;
-#endif
 
 	public SvgProvider(object owner)
 	{
-#if __NETSTD_REFERENCE__
-		throw new PlatformNotSupportedException();
-#else
-
 		if (owner is not SvgImageSource svgImageSource)
 		{
 			throw new InvalidOperationException("Owner must be a SvgImageSource instance.");
@@ -53,52 +41,34 @@ public partial class SvgProvider : ISvgProvider
 
 		_disposables.Add(_owner.RegisterDisposablePropertyChangedCallback(SvgImageSource.RasterizePixelHeightProperty, SourcePropertyChanged));
 		_disposables.Add(_owner.RegisterDisposablePropertyChangedCallback(SvgImageSource.RasterizePixelWidthProperty, SourcePropertyChanged));
-#endif // __NETSTD_REFERENCE__
 	}
 
 	public event EventHandler? SourceLoaded;
 
-#if !__NETSTD_REFERENCE__
 	internal event EventHandler? SourceUpdated;
 
 	internal SKSvg? SkSvg => _skSvg;
 
 	internal SKBitmap? SkBitmap => _skBitmap;
-#endif
 
-	public bool IsParsed
-#if __NETSTD_REFERENCE__
-		=> throw new PlatformNotSupportedException();
-#else
-		=> _skSvg?.Picture is not null;
-#endif
+	public bool IsParsed => _skSvg?.Picture is not null;
 
 	public Size SourceSize
 	{
 		get
 		{
-#if __NETSTD_REFERENCE__
-			throw new PlatformNotSupportedException();
-#else
 			if (_skSvg?.Picture?.CullRect is { } rect)
 			{
 				return new Size(rect.Width, rect.Height);
 			}
 
 			return default;
-#endif
 		}
 	}
 
-	public UIElement GetCanvas()
-#if __NETSTD_REFERENCE__
-		=> throw new PlatformNotSupportedException();
-#else
-		=> new SvgCanvas(_owner, this);
-#endif
+	public UIElement GetCanvas() => new SvgCanvas(_owner, this);
 
 	public unsafe object? RenderToImage(int pixelWidth, int pixelHeight)
-#if !__NETSTD_REFERENCE__
 	{
 		if (_skSvg?.Picture is not { } picture || pixelWidth <= 0 || pixelHeight <= 0)
 		{
@@ -151,19 +121,9 @@ public partial class SvgProvider : ISvgProvider
 
 		return ImageEncoderDecoder.Current.CreateImage(pixelWidth, pixelHeight, bgra);
 	}
-#else
-		=> null;
-#endif
 
-	public
-#if !__NETSTD_REFERENCE__
-	async
-#endif
-	Task<bool> TryLoadSvgDataAsync(byte[] svgBytes)
+	public async Task<bool> TryLoadSvgDataAsync(byte[] svgBytes)
 	{
-#if __NETSTD_REFERENCE__
-		return Task.FromResult(false);
-#else
 		var succeeded = false;
 		try
 		{
@@ -197,20 +157,16 @@ public partial class SvgProvider : ISvgProvider
 		}
 
 		return succeeded;
-#endif
 	}
 
 	private void CleanupSvg()
 	{
-#if !__NETSTD_REFERENCE__
 		_skSvg?.Dispose();
 		_skBitmap?.Dispose();
 		_skSvg = null;
 		_skBitmap = null;
-#endif
 	}
 
-#if !__NETSTD_REFERENCE__
 	private Task<SKSvg?> LoadSvgAsync(byte[] svgBytes) =>
 		Task.Run(() =>
 		{
@@ -277,7 +233,6 @@ public partial class SvgProvider : ISvgProvider
 			SourceUpdated?.Invoke(this, EventArgs.Empty);
 		}
 	}
-#endif
 
 	public void Unload() => CleanupSvg();
 }
