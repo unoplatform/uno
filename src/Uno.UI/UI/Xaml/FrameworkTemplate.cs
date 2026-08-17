@@ -115,9 +115,9 @@ namespace Microsoft.UI.Xaml
 
 				if (view is { } && members is { })
 				{
-					// TODO: impl recycling (tp update) for tracked template members, and extend the
-					// tracking to lazily materialized ones (x:Load, VisualState) -- those are created
-					// after the builder returns, so they never reach OnMemberCreated and are missing here.
+					// TODO: impl recycling (tp update) for tracked template members. Lazily materialized
+					// ones (x:Load, VisualState) do get their templated parent, but they are created
+					// after this snapshot is taken, so they are absent from the tracked set.
 					FrameworkTemplatePool.Instance.TrackMaterializedTemplate(this, view, members);
 				}
 
