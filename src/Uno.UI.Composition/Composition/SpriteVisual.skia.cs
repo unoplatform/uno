@@ -11,7 +11,11 @@ namespace Microsoft.UI.Composition
 {
 	public partial class SpriteVisual : ContainerVisual
 	{
-		internal override void Paint(in PaintingSession session) => Brush?.TryPaint(session.Session, session.Opacity, new Rect(0, 0, Size.X, Size.Y));
+		internal override IGeometry? Paint(in PaintingSession session)
+		{
+			Brush?.TryPaint(session.Session, session.Opacity, new Rect(0, 0, Size.X, Size.Y));
+			return null;
+		}
 
 		internal override bool CanPaint() => Brush?.CanPaint() ?? false;
 

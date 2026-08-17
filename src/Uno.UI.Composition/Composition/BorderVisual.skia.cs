@@ -122,7 +122,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		}
 	}
 
-	internal override void Paint(in PaintingSession session)
+	internal override IGeometry? Paint(in PaintingSession session)
 	{
 		UpdatePathsAndCornerClip();
 
@@ -139,6 +139,9 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		base.Paint(in session);
 
 		_borderShape?.Render(in session);
+
+		// TODO(damage 1b): return BuildOwnContentPath() for precise border/background damage; bounds fallback for now.
+		return null;
 	}
 
 	internal override void ApplyPrePaintingClipping(IDrawingSession session)

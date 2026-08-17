@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using Uno.UI.Composition.Drawing;
 using System;
 using System.Linq;
 using System.Numerics;
@@ -14,11 +15,11 @@ public partial class ShapeVisual
 	private bool _needsContinuousUpdates;
 
 	/// <inheritdoc />
-	internal override void Paint(in PaintingSession session)
+	internal override IGeometry? Paint(in PaintingSession session)
 	{
 		if (Size.X == 0 || Size.Y == 0)
 		{
-			return;
+			return null;
 		}
 
 		// TODO: ShapeVisuals should be clipping to the size rect. However, this breaks shapes for us because
@@ -46,6 +47,9 @@ public partial class ShapeVisual
 		}
 
 		base.Paint(in session);
+
+		// TODO(damage 1b): return BuildOwnContentPath() for precise per-shape damage; bounds fallback for now.
+		return null;
 	}
 
 	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)

@@ -264,10 +264,10 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private class GLVisual(GLCanvasElement owner, Compositor compositor) : BorderVisual(compositor)
 	{
-		internal override void Paint(in PaintingSession session)
+		internal override IGeometry? Paint(in PaintingSession session)
 		{
 			NativeDispatcher.Main.Enqueue(owner.Render, NativeDispatcherPriority.High);
-			base.Paint(session);
+			return base.Paint(session);
 		}
 	}
 #endif

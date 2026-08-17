@@ -320,7 +320,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="canvas">The canvas on which this visual should be rendered.</param>
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
-	internal void RenderRootVisual(IDrawingSession drawingSession, Vector2? offsetOverride)
+	internal void RenderRootVisual(IDrawingSession drawingSession, Vector2? offsetOverride, DamageRegion? damage = null)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
@@ -350,6 +350,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 						  drawingSession,
 						  ref initialTransform.IsIdentity ? ref Unsafe.NullRef<Matrix4x4>() : ref initialTransform,
 						  opacity: 1.0f,
+						  damage,
 						  out var session);
 
 		using (session)
@@ -382,11 +383,14 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if ((_flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
 		{
 			_framesSinceSubtreeNotChanged++;
+			_subtreeChangedThisFrame = false;
 		}
 		else
 		{
 			_framesSinceSubtreeNotChanged = 0;
 			_flags &= ~VisualFlags.ChildrenSKPictureInvalid;
+			// A descendant changed this frame; a drop shadow cast by this visual must re-damage its silhouette.
+			_subtreeChangedThisFrame = true;
 		}
 
 		CreateLocalSession(in parentSession, out var session);
@@ -408,7 +412,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				var recording = CreateRecording();
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
-				_factory.CreateInstance(this, recording, ref rootTransform, session.Opacity, out var childSession);
+				_factory.CreateInstance(this, recording, ref rootTransform, session.Opacity, session.Damage, out var childSession);
 				IRenderRecord renderData;
 				using (childSession)
 				{
@@ -437,22 +441,30 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			if (visual.RequiresRepaintOnEveryFrame)
 			{
 				// Repaint-every-frame content (e.g. an effect brush over already-drawn area): paint directly, uncached.
-				visual.Paint(session);
+				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage);
+				visual._ownContentPath?.Dispose();
+				visual._ownContentPath = visual.Paint(session);
 			}
 			else
 			{
-				if ((visual._flags & VisualFlags.PaintDirty) != 0)
+				var contentChanged = (visual._flags & VisualFlags.PaintDirty) != 0;
+				if (contentChanged)
 				{
 					visual._flags &= ~VisualFlags.PaintDirty;
 
 					var recording = CreateRecording();
-					_factory.CreateInstance(visual, recording, ref session.RootTransform, session.Opacity, out var recorderSession);
+					_factory.CreateInstance(visual, recording, ref session.RootTransform, session.Opacity, session.Damage, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
-					visual.Paint(in recorderSession);
+					visual._ownContentPath?.Dispose();
+					visual._ownContentPath = visual.Paint(in recorderSession);
 
 					visual._content?.Dispose();
 					visual._content = recording.Finish();
 				}
+
+				// Contribute damage whether or not the content was re-recorded: a moved-but-unchanged visual keeps its
+				// cached content and own-content path, but its new position still needs to be repainted (and its old one).
+				visual.ContributeDamageOnPaint(contentChanged, session.Damage);
 
 				if (visual._content is { } content)
 				{
@@ -488,7 +500,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				var recording = CreateRecording();
 				// child.Render will reapply the total transform matrix, so we need to invert ours.
 				Matrix4x4.Invert(visual.TotalMatrix, out var rootTransform);
-				_factory.CreateInstance(visual, recording, ref rootTransform, session.Opacity, out var childSession);
+				_factory.CreateInstance(visual, recording, ref rootTransform, session.Opacity, session.Damage, out var childSession);
 				using (childSession)
 				{
 					foreach (var child in visual.GetChildrenInRenderOrder())
@@ -590,7 +602,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Draws the content of this visual.
 	/// </summary>
 	/// <param name="session">The drawing session to use.</param>
-	internal virtual void Paint(in PaintingSession session) { }
+	internal virtual IGeometry? Paint(in PaintingSession session) => null;
 
 	private protected virtual bool TryAddShadowPaths(List<(IGeometry path, float alpha)> output) => !CanPaint();
 
@@ -829,7 +841,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		var opacity = Opacity == 1.0f ? parentSession.Opacity : parentSession.Opacity * Opacity;
 
-		_factory.CreateInstance(this, parentSession.Session, ref rootTransform, opacity, out session);
+		_factory.CreateInstance(this, parentSession.Session, ref rootTransform, opacity, parentSession.Damage, out session);
 
 		if ((_flags & VisualFlags.MatrixDirty) != 0 || !_totalMatrix.isLocalMatrixIdentity)
 		{

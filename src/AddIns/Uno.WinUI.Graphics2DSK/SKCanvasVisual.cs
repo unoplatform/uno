@@ -16,12 +16,12 @@ internal sealed class SKCanvasVisual(SKCanvasElement owner, Compositor composito
 {
 	internal override bool CanPaint() => true;
 
-	internal override void Paint(in PaintingSession session)
+	internal override IGeometry? Paint(in PaintingSession session)
 	{
 		if (session.Session.NativeSurface is not SKCanvas canvas)
 		{
 			owner.EnsureIslandFallback();
-			return;
+			return null;
 		}
 
 		// Save/restore around the callback so the inheritor's RenderOverride can't leak canvas state into the frame.
@@ -30,6 +30,8 @@ internal sealed class SKCanvasVisual(SKCanvasElement owner, Compositor composito
 		canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y), antialias: true);
 		owner.InvokeRenderOverride(canvas, new Size(Size.X, Size.Y));
 		canvas.Restore();
+
+		return null;
 	}
 
 	public void Invalidate() => Compositor.InvalidateRender(this);
