@@ -88,7 +88,7 @@ namespace TestRepro
 						{
 							IsParsing = true,
 							Name = "tb",
-							// Source 0/MyResourceDictionary.xaml (Line 12:5)
+							// Source MyResourceDictionary.xaml (Line 12:5)
 						}
 						.MyResourceDictionary_147dbe765eba23608d8cd771f768c620_XamlApply((MyResourceDictionary_147dbe765eba23608d8cd771f768c620XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 						{
@@ -265,7 +265,7 @@ namespace MyProject.__Resources
 					{
 						IsParsing = true,
 						Name = "tb",
-						// Source 0/MyResourceDictionary.xaml (Line 12:5)
+						// Source MyResourceDictionary.xaml (Line 12:5)
 					}
 					.MyResourceDictionary_147dbe765eba23608d8cd771f768c620_XamlApply((MyResourceDictionary_147dbe765eba23608d8cd771f768c620XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 					{

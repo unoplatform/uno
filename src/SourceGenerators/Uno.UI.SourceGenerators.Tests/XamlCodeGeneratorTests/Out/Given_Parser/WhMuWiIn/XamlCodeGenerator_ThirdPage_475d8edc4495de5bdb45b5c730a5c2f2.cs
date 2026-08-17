@@ -48,13 +48,13 @@ namespace TestRepro
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			// Source 0/ThirdPage.xaml (Line 1:2)
+			// Source ThirdPage.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
 					IsParsing = true,
-					// Source 0/ThirdPage.xaml (Line 6:3)
+					// Source ThirdPage.xaml (Line 6:3)
 				}
 				.ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2_XamlApply((ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 				{
@@ -68,7 +68,7 @@ namespace TestRepro
 			this
 			.ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2_XamlApply((ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-			// Source 0/ThirdPage.xaml (Line 1:2)
+			// Source ThirdPage.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/ThirdPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}

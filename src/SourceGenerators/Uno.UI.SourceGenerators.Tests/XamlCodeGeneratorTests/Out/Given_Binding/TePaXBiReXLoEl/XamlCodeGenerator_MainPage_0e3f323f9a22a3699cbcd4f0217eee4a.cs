@@ -52,17 +52,17 @@ namespace TestRepro
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::TestRepro.NullableBoolConverter
 				{
-					// Source 0/MainPage.xaml (Line 10:4)
+					// Source MainPage.xaml (Line 10:4)
 				}
 			)
 			;
-			// Source 0/MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.StackPanel
 				{
 					IsParsing = true,
-					// Source 0/MainPage.xaml (Line 12:3)
+					// Source MainPage.xaml (Line 12:3)
 					Children = 
 					{
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -71,7 +71,7 @@ namespace TestRepro
 							{
 								IsParsing = true,
 								Name = "LoadElement",
-								// Source 0/MainPage.xaml (Line 13:4)
+								// Source MainPage.xaml (Line 13:4)
 								Content = "Loaded via x:Load and toggle enable for buttons"
 								,
 							}
@@ -137,7 +137,7 @@ namespace TestRepro
 							{
 								IsParsing = true,
 								Name = "button1",
-								// Source 0/MainPage.xaml (Line 14:4)
+								// Source MainPage.xaml (Line 14:4)
 								Content = "Button1"
 								,
 							}
@@ -168,7 +168,7 @@ namespace TestRepro
 								IsParsing = true,
 								Name = "ToggleLoad",
 								IsChecked = false,
-								// Source 0/MainPage.xaml (Line 15:4)
+								// Source MainPage.xaml (Line 15:4)
 								Content = "Toggle Load"
 								,
 							}
@@ -197,7 +197,7 @@ namespace TestRepro
 			this
 			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
 			{
-			// Source 0/MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}

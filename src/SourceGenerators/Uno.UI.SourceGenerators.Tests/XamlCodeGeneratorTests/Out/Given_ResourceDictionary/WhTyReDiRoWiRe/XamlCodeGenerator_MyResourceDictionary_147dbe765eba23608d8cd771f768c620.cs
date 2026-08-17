@@ -50,7 +50,7 @@ namespace MyApp
 						new global::Microsoft.UI.Xaml.Media.SolidColorBrush
 						{
 							Color = global::Microsoft.UI.Colors.Red,
-							// Source 0/MyResourceDictionary.xaml (Line 6:3)
+							// Source MyResourceDictionary.xaml (Line 6:3)
 						}
 					)
 				;
@@ -110,7 +110,7 @@ namespace MyProject
 					new global::Microsoft.UI.Xaml.Media.SolidColorBrush
 					{
 						Color = global::Microsoft.UI.Colors.Red,
-						// Source 0/MyResourceDictionary.xaml (Line 6:3)
+						// Source MyResourceDictionary.xaml (Line 6:3)
 					}
 				)
 				;

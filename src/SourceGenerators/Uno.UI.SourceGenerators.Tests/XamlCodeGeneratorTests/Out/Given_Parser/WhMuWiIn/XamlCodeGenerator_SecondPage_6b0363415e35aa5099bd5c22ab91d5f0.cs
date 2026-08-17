@@ -48,7 +48,7 @@ namespace TestRepro
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			// Source 0/SecondPage.xaml (Line 1:2)
+			// Source SecondPage.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.Grid
@@ -56,7 +56,7 @@ namespace TestRepro
 					IsParsing = true,
 					
 					// [ERROR] //Project/0/SecondPage.xaml(6,3): Property 'PropertyThatDoesNotExist' does not exist on 'Grid'.
-					// Source 0/SecondPage.xaml (Line 6:3)
+					// Source SecondPage.xaml (Line 6:3)
 				}
 				.SecondPage_6b0363415e35aa5099bd5c22ab91d5f0_XamlApply((SecondPage_6b0363415e35aa5099bd5c22ab91d5f0XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 				{
@@ -70,7 +70,7 @@ namespace TestRepro
 			this
 			.SecondPage_6b0363415e35aa5099bd5c22ab91d5f0_XamlApply((SecondPage_6b0363415e35aa5099bd5c22ab91d5f0XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-			// Source 0/SecondPage.xaml (Line 1:2)
+			// Source SecondPage.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/SecondPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}

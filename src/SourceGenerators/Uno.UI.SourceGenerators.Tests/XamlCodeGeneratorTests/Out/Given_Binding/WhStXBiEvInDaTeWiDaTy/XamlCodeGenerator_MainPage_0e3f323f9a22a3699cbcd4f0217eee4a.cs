@@ -48,7 +48,7 @@ namespace TestRepro
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			// Source 0/MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.ContentControl
@@ -59,7 +59,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_ConCon_ConTemΞ0_DatTem)
 					)
 					,
-					// Source 0/MainPage.xaml (Line 5:6)
+					// Source MainPage.xaml (Line 5:6)
 				}
 				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 				{
@@ -75,7 +75,7 @@ namespace TestRepro
 			this
 			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-			// Source 0/MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
@@ -130,7 +130,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Controls.Button
 						{
 							IsParsing = true,
-							// Source 0/MainPage.xaml (Line 8:18)
+							// Source MainPage.xaml (Line 8:18)
 						}
 						.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 						{

@@ -48,7 +48,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			// Source 0/Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 1:2)
+			// Source Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.Grid
@@ -60,7 +60,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
 							{
-								// Source 0/Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 15:14)
+								// Source Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 15:14)
 								Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star)
 							}
 						)
@@ -68,7 +68,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
 							{
-								// Source 0/Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 16:14)
+								// Source Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 16:14)
 								Width = new global::Microsoft.UI.Xaml.GridLength(2f, global::Microsoft.UI.Xaml.GridUnitType.Star)
 							}
 						)
@@ -76,7 +76,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
 							{
-								// Source 0/Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 17:14)
+								// Source Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 17:14)
 								Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto)
 							}
 						)
@@ -84,7 +84,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
 							{
-								// Source 0/Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 18:14)
+								// Source Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 18:14)
 								Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star)
 							}
 						)
@@ -92,7 +92,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
 							{
-								// Source 0/Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 19:14)
+								// Source Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 19:14)
 								Width = new global::Microsoft.UI.Xaml.GridLength(300f, global::Microsoft.UI.Xaml.GridUnitType.Pixel)
 							}
 						)
@@ -104,7 +104,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							new global::Microsoft.UI.Xaml.Controls.RowDefinition
 							{
-								// Source 0/Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 22:14)
+								// Source Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 22:14)
 								Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star)
 							}
 						)
@@ -112,7 +112,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							new global::Microsoft.UI.Xaml.Controls.RowDefinition
 							{
-								// Source 0/Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 23:14)
+								// Source Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 23:14)
 								Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto)
 							}
 						)
@@ -120,7 +120,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							new global::Microsoft.UI.Xaml.Controls.RowDefinition
 							{
-								// Source 0/Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 24:14)
+								// Source Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 24:14)
 								Height = new global::Microsoft.UI.Xaml.GridLength(25f, global::Microsoft.UI.Xaml.GridUnitType.Pixel)
 							}
 						)
@@ -128,7 +128,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							new global::Microsoft.UI.Xaml.Controls.RowDefinition
 							{
-								// Source 0/Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 25:14)
+								// Source Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 25:14)
 								Height = new global::Microsoft.UI.Xaml.GridLength(14f, global::Microsoft.UI.Xaml.GridUnitType.Pixel)
 							}
 						)
@@ -136,14 +136,14 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							new global::Microsoft.UI.Xaml.Controls.RowDefinition
 							{
-								// Source 0/Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 26:14)
+								// Source Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 26:14)
 								Height = new global::Microsoft.UI.Xaml.GridLength(20f, global::Microsoft.UI.Xaml.GridUnitType.Pixel)
 							}
 						)
 						,
 					}
 					,
-					// Source 0/Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 10:6)
+					// Source Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 10:6)
 				}
 				.Grid_Uses_New_Assigned_ContentProperty_Syntax_b80fca056e1bf6bae00bca0b4dfe18d7_XamlApply((Grid_Uses_New_Assigned_ContentProperty_Syntax_b80fca056e1bf6bae00bca0b4dfe18d7XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 				{
@@ -160,7 +160,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 			this
 			.Grid_Uses_New_Assigned_ContentProperty_Syntax_b80fca056e1bf6bae00bca0b4dfe18d7_XamlApply((Grid_Uses_New_Assigned_ContentProperty_Syntax_b80fca056e1bf6bae00bca0b4dfe18d7XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-			// Source 0/Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 1:2)
+			// Source Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/Grid_Uses_New_Assigned_ContentProperty_Syntax.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}

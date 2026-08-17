@@ -48,7 +48,7 @@ namespace TestRepro
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			// Source 0/ContentDialog1.xaml (Line 1:2)
+			// Source ContentDialog1.xaml (Line 1:2)
 			;
 			
 			PrimaryButtonText = global::Uno.UI.Helpers.MarkupHelper.GetResourceStringForXUid("TestProject/Resources", "XuidGeneratorErrorUid/PrimaryButtonText");
@@ -56,7 +56,7 @@ namespace TestRepro
 			this
 			.ContentDialog1_7987c32aca55089a14f8c6c711f92359_XamlApply((ContentDialog1_7987c32aca55089a14f8c6c711f92359XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
-			// Source 0/ContentDialog1.xaml (Line 1:2)
+			// Source ContentDialog1.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/ContentDialog1.xaml(1,2): Property 'base' does not exist on 'ContentDialog', this error was however considered irrelevant by the XamlFileGenerator.
 			}

@@ -56,7 +56,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Style
 						{
 							TargetType = typeof(global::Microsoft.UI.Xaml.Controls.TextBlock),
-							// Source 0/MainPage.xaml (Line 7:6)
+							// Source MainPage.xaml (Line 7:6)
 							Setters = 
 							{
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -64,7 +64,7 @@ namespace TestRepro
 									{
 										Property = global::Microsoft.UI.Xaml.Controls.TextBlock.ForegroundProperty,
 										Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Red),
-										// Source 0/MainPage.xaml (Line 8:8)
+										// Source MainPage.xaml (Line 8:8)
 									}
 								)
 								,
@@ -84,7 +84,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Style
 						{
 							TargetType = typeof(global::Microsoft.UI.Xaml.Controls.Button),
-							// Source 0/MainPage.xaml (Line 10:6)
+							// Source MainPage.xaml (Line 10:6)
 							Setters = 
 							{
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -92,7 +92,7 @@ namespace TestRepro
 									{
 										Property = global::Microsoft.UI.Xaml.Controls.Button.BackgroundProperty,
 										Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Azure),
-										// Source 0/MainPage.xaml (Line 11:8)
+										// Source MainPage.xaml (Line 11:8)
 									}
 								)
 								,
@@ -104,13 +104,13 @@ namespace TestRepro
 			}
 			)
 			;
-			// Source 0/MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.ListView
 				{
 					IsParsing = true,
-					// Source 0/MainPage.xaml (Line 14:4)
+					// Source MainPage.xaml (Line 14:4)
 				}
 				.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_LisVie)
 			)
@@ -157,7 +157,7 @@ namespace TestRepro
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_Pag(global::Microsoft.UI.Xaml.Controls.Page __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
-			// Source 0/MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 		}

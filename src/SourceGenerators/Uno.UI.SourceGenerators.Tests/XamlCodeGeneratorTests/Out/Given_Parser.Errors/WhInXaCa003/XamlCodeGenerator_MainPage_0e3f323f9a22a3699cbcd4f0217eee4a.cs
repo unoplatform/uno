@@ -48,7 +48,7 @@ namespace TestRepro
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			// Source 0/MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.Grid
@@ -62,7 +62,7 @@ namespace TestRepro
 							new global::Microsoft.UI.Xaml.Controls.RowDefinition
 							{
 								Height = new global::Microsoft.UI.Xaml.GridLength(56f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
-								// Source 0/MainPage.xaml (Line 6:8)
+								// Source MainPage.xaml (Line 6:8)
 							}
 						)
 						,
@@ -70,13 +70,13 @@ namespace TestRepro
 							new global::Microsoft.UI.Xaml.Controls.RowDefinition
 							{
 								Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-								// Source 0/MainPage.xaml (Line 7:8)
+								// Source MainPage.xaml (Line 7:8)
 							}
 						)
 						,
 					}
 					,
-					// Source 0/MainPage.xaml (Line 4:4)
+					// Source MainPage.xaml (Line 4:4)
 					Children = 
 					{
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -86,13 +86,13 @@ namespace TestRepro
 								VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
 								CornerRadius = new Microsoft.UI.Xaml.CornerRadius(4,4,4,4),
 								Padding = new global::Microsoft.UI.Xaml.Thickness(12,12,12,12),
-								// Source 0/MainPage.xaml (Line 10:6)
+								// Source MainPage.xaml (Line 10:6)
 								Child = 
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
 									new global::Microsoft.UI.Xaml.Controls.Grid
 									{
 										IsParsing = true,
-										// Source 0/MainPage.xaml (Line 11:8)
+										// Source MainPage.xaml (Line 11:8)
 										Children = 
 										{
 											global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -100,7 +100,7 @@ namespace TestRepro
 												{
 													IsParsing = true,
 													Text = "Découvrir",
-													// Source 0/MainPage.xaml (Line 12:10)
+													// Source MainPage.xaml (Line 12:10)
 												}
 												.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 												{
@@ -148,7 +148,7 @@ namespace TestRepro
 										{
 											Width = new global::Microsoft.UI.Xaml.GridLength(2f, global::Microsoft.UI.Xaml.GridUnitType.Star),
 											MinWidth = 320f,
-											// Source 0/MainPage.xaml (Line 18:10)
+											// Source MainPage.xaml (Line 18:10)
 										}
 									)
 									,
@@ -157,13 +157,13 @@ namespace TestRepro
 										{
 											Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
 											MinWidth = 280f,
-											// Source 0/MainPage.xaml (Line 19:10)
+											// Source MainPage.xaml (Line 19:10)
 										}
 									)
 									,
 								}
 								,
-								// Source 0/MainPage.xaml (Line 16:6)
+								// Source MainPage.xaml (Line 16:6)
 								Children = 
 								{
 									global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -174,7 +174,7 @@ namespace TestRepro
 											Padding = new global::Microsoft.UI.Xaml.Thickness(12,12,12,12),
 											BorderThickness = new global::Microsoft.UI.Xaml.Thickness(1,1,1,1),
 											Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,0,0),
-											// Source 0/MainPage.xaml (Line 22:8)
+											// Source MainPage.xaml (Line 22:8)
 											Child = 
 											global::MyProject.GlobalStaticResources.__PreserveProperties(
 												new global::Microsoft.UI.Xaml.Controls.Grid
@@ -186,7 +186,7 @@ namespace TestRepro
 															new global::Microsoft.UI.Xaml.Controls.RowDefinition
 															{
 																Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
-																// Source 0/MainPage.xaml (Line 25:14)
+																// Source MainPage.xaml (Line 25:14)
 															}
 														)
 														,
@@ -194,13 +194,13 @@ namespace TestRepro
 															new global::Microsoft.UI.Xaml.Controls.RowDefinition
 															{
 																Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-																// Source 0/MainPage.xaml (Line 26:14)
+																// Source MainPage.xaml (Line 26:14)
 															}
 														)
 														,
 													}
 													,
-													// Source 0/MainPage.xaml (Line 23:10)
+													// Source MainPage.xaml (Line 23:10)
 													Children = 
 													{
 														global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -210,7 +210,7 @@ namespace TestRepro
 																Orientation = global::Microsoft.UI.Xaml.Controls.Orientation.Horizontal,
 																Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,0,12),
 																VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
-																// Source 0/MainPage.xaml (Line 29:12)
+																// Source MainPage.xaml (Line 29:12)
 																Children = 
 																{
 																	global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -218,7 +218,7 @@ namespace TestRepro
 																		{
 																			IsParsing = true,
 																			Text = "Idées de voyage",
-																			// Source 0/MainPage.xaml (Line 30:14)
+																			// Source MainPage.xaml (Line 30:14)
 																		}
 																		.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 																		{
@@ -252,7 +252,7 @@ namespace TestRepro
 																	new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_GriΞ1_GriΞ0_BorΞ0_GriΞ1_LisVie_IteTemΞ0_DatTem)
 																)
 																,
-																// Source 0/MainPage.xaml (Line 33:12)
+																// Source MainPage.xaml (Line 33:12)
 															}
 															.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
 															{
@@ -303,7 +303,7 @@ namespace TestRepro
 											CornerRadius = new Microsoft.UI.Xaml.CornerRadius(8,8,8,8),
 											Padding = new global::Microsoft.UI.Xaml.Thickness(12,12,12,12),
 											BorderThickness = new global::Microsoft.UI.Xaml.Thickness(1,1,1,1),
-											// Source 0/MainPage.xaml (Line 63:8)
+											// Source MainPage.xaml (Line 63:8)
 											Child = 
 											global::MyProject.GlobalStaticResources.__PreserveProperties(
 												new global::Microsoft.UI.Xaml.Controls.Grid
@@ -315,7 +315,7 @@ namespace TestRepro
 															new global::Microsoft.UI.Xaml.Controls.RowDefinition
 															{
 																Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
-																// Source 0/MainPage.xaml (Line 66:14)
+																// Source MainPage.xaml (Line 66:14)
 															}
 														)
 														,
@@ -323,13 +323,13 @@ namespace TestRepro
 															new global::Microsoft.UI.Xaml.Controls.RowDefinition
 															{
 																Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-																// Source 0/MainPage.xaml (Line 67:14)
+																// Source MainPage.xaml (Line 67:14)
 															}
 														)
 														,
 													}
 													,
-													// Source 0/MainPage.xaml (Line 64:10)
+													// Source MainPage.xaml (Line 64:10)
 													Children = 
 													{
 														global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -338,7 +338,7 @@ namespace TestRepro
 																IsParsing = true,
 																Text = "Lieux sauvegardés",
 																Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,0,12),
-																// Source 0/MainPage.xaml (Line 70:12)
+																// Source MainPage.xaml (Line 70:12)
 															}
 															.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 															{
@@ -362,7 +362,7 @@ namespace TestRepro
 																	new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_GriΞ1_GriΞ1_BorΞ0_GriΞ1_LisVie_IteTemΞ0_DatTem)
 																)
 																,
-																// Source 0/MainPage.xaml (Line 72:12)
+																// Source MainPage.xaml (Line 72:12)
 															}
 															.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
 															{
@@ -431,7 +431,7 @@ namespace TestRepro
 			this
 			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler7)(__p1 => 
 			{
-			// Source 0/MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
@@ -503,11 +503,11 @@ namespace TestRepro
 							Shadow = 							global::MyProject.GlobalStaticResources.__PreserveProperties(
 								new global::Microsoft.UI.Xaml.Media.ThemeShadow
 								{
-									// Source 0/MainPage.xaml (Line 38:22)
+									// Source MainPage.xaml (Line 38:22)
 								}
 							)
 							,
-							// Source 0/MainPage.xaml (Line 36:18)
+							// Source MainPage.xaml (Line 36:18)
 							Child = 
 							global::MyProject.GlobalStaticResources.__PreserveProperties(
 								new global::Microsoft.UI.Xaml.Controls.Grid
@@ -519,7 +519,7 @@ namespace TestRepro
 											new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
 											{
 												Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
-												// Source 0/MainPage.xaml (Line 42:24)
+												// Source MainPage.xaml (Line 42:24)
 											}
 										)
 										,
@@ -527,13 +527,13 @@ namespace TestRepro
 											new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
 											{
 												Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-												// Source 0/MainPage.xaml (Line 43:24)
+												// Source MainPage.xaml (Line 43:24)
 											}
 										)
 										,
 									}
 									,
-									// Source 0/MainPage.xaml (Line 40:20)
+									// Source MainPage.xaml (Line 40:20)
 									Children = 
 									{
 										global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -544,7 +544,7 @@ namespace TestRepro
 												Height = 72f,
 												Stretch = global::Microsoft.UI.Xaml.Media.Stretch.UniformToFill,
 												Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,12,0),
-												// Source 0/MainPage.xaml (Line 46:22)
+												// Source MainPage.xaml (Line 46:22)
 											}
 											.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler8)(__p1 => 
 											{
@@ -567,7 +567,7 @@ namespace TestRepro
 											{
 												IsParsing = true,
 												VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
-												// Source 0/MainPage.xaml (Line 48:22)
+												// Source MainPage.xaml (Line 48:22)
 												Children = 
 												{
 													global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -575,7 +575,7 @@ namespace TestRepro
 														{
 															IsParsing = true,
 															TextWrapping = global::Microsoft.UI.Xaml.TextWrapping.Wrap,
-															// Source 0/MainPage.xaml (Line 49:24)
+															// Source MainPage.xaml (Line 49:24)
 														}
 														.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 														{
@@ -601,7 +601,7 @@ namespace TestRepro
 															IsParsing = true,
 															TextWrapping = global::Microsoft.UI.Xaml.TextWrapping.Wrap,
 															Margin = new global::Microsoft.UI.Xaml.Thickness(0,6,0,0),
-															// Source 0/MainPage.xaml (Line 50:24)
+															// Source MainPage.xaml (Line 50:24)
 														}
 														.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 														{
@@ -627,7 +627,7 @@ namespace TestRepro
 															IsParsing = true,
 															Orientation = global::Microsoft.UI.Xaml.Controls.Orientation.Horizontal,
 															Margin = new global::Microsoft.UI.Xaml.Thickness(0,8,0,0),
-															// Source 0/MainPage.xaml (Line 51:24)
+															// Source MainPage.xaml (Line 51:24)
 															Children = 
 															{
 																global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -636,7 +636,7 @@ namespace TestRepro
 																		IsParsing = true,
 																		Content = @"Explorer",
 																		HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Left,
-																		// Source 0/MainPage.xaml (Line 52:26)
+																		// Source MainPage.xaml (Line 52:26)
 																	}
 																	.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
 																	{
@@ -773,7 +773,7 @@ namespace TestRepro
 							Padding = new global::Microsoft.UI.Xaml.Thickness(8,8,8,8),
 							Margin = new global::Microsoft.UI.Xaml.Thickness(0,0,0,12),
 							BorderThickness = new global::Microsoft.UI.Xaml.Thickness(1,1,1,1),
-							// Source 0/MainPage.xaml (Line 75:18)
+							// Source MainPage.xaml (Line 75:18)
 							Child = 
 							global::MyProject.GlobalStaticResources.__PreserveProperties(
 								new global::Microsoft.UI.Xaml.Controls.Grid
@@ -785,7 +785,7 @@ namespace TestRepro
 											new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
 											{
 												Width = new global::Microsoft.UI.Xaml.GridLength(56f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
-												// Source 0/MainPage.xaml (Line 78:24)
+												// Source MainPage.xaml (Line 78:24)
 											}
 										)
 										,
@@ -793,7 +793,7 @@ namespace TestRepro
 											new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
 											{
 												Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-												// Source 0/MainPage.xaml (Line 79:24)
+												// Source MainPage.xaml (Line 79:24)
 											}
 										)
 										,
@@ -801,13 +801,13 @@ namespace TestRepro
 											new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
 											{
 												Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
-												// Source 0/MainPage.xaml (Line 80:24)
+												// Source MainPage.xaml (Line 80:24)
 											}
 										)
 										,
 									}
 									,
-									// Source 0/MainPage.xaml (Line 76:20)
+									// Source MainPage.xaml (Line 76:20)
 									Children = 
 									{
 										global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -819,7 +819,7 @@ namespace TestRepro
 												Stretch = global::Microsoft.UI.Xaml.Media.Stretch.Uniform,
 												VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
 												HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Center,
-												// Source 0/MainPage.xaml (Line 83:22)
+												// Source MainPage.xaml (Line 83:22)
 											}
 											.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler8)(__p1 => 
 											{
@@ -843,7 +843,7 @@ namespace TestRepro
 												IsParsing = true,
 												Margin = new global::Microsoft.UI.Xaml.Thickness(12,0,12,0),
 												VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
-												// Source 0/MainPage.xaml (Line 85:22)
+												// Source MainPage.xaml (Line 85:22)
 												Children = 
 												{
 													global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -851,7 +851,7 @@ namespace TestRepro
 														{
 															IsParsing = true,
 															TextWrapping = global::Microsoft.UI.Xaml.TextWrapping.Wrap,
-															// Source 0/MainPage.xaml (Line 86:24)
+															// Source MainPage.xaml (Line 86:24)
 														}
 														.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 														{
@@ -877,7 +877,7 @@ namespace TestRepro
 															IsParsing = true,
 															TextWrapping = global::Microsoft.UI.Xaml.TextWrapping.Wrap,
 															Margin = new global::Microsoft.UI.Xaml.Thickness(0,4,0,0),
-															// Source 0/MainPage.xaml (Line 87:24)
+															// Source MainPage.xaml (Line 87:24)
 														}
 														.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 														{
@@ -917,7 +917,7 @@ namespace TestRepro
 												Padding = new global::Microsoft.UI.Xaml.Thickness(8,4,8,4),
 												HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Right,
 												VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
-												// Source 0/MainPage.xaml (Line 90:22)
+												// Source MainPage.xaml (Line 90:22)
 											}
 											.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
 											{

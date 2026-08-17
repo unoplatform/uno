@@ -64,19 +64,19 @@ namespace TestRepro
 				{
 					IsParsing = true,
 					Text = "use me",
-					// Source 0/MainPage.xaml (Line 9:3)
+					// Source MainPage.xaml (Line 9:3)
 				}
 				.GenericApply(__that, __nameScope, ApplyTo_Pag_ResΞ2_TexBlo)
 			)
 			;
-			// Source 0/MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.TextBlock
 				{
 					IsParsing = true,
 					Text = "Some content",
-					// Source 0/MainPage.xaml (Line 11:4)
+					// Source MainPage.xaml (Line 11:4)
 				}
 				.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_TexBlo)
 			)
@@ -113,7 +113,7 @@ namespace TestRepro
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_Pag(global::Microsoft.UI.Xaml.Controls.Page __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
-			// Source 0/MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 		}

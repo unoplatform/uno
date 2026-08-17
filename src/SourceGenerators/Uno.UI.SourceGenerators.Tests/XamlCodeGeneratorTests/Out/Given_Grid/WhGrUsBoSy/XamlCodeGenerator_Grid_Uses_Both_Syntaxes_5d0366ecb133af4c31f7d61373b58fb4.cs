@@ -48,7 +48,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			// Source 0/Grid_Uses_Both_Syntaxes.xaml (Line 1:2)
+			// Source Grid_Uses_Both_Syntaxes.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.Grid
@@ -119,7 +119,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 							new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
 							{
 								Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-								// Source 0/Grid_Uses_Both_Syntaxes.xaml (Line 18:14)
+								// Source Grid_Uses_Both_Syntaxes.xaml (Line 18:14)
 							}
 						)
 						,
@@ -127,7 +127,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 							new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
 							{
 								Width = new global::Microsoft.UI.Xaml.GridLength(2f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-								// Source 0/Grid_Uses_Both_Syntaxes.xaml (Line 19:14)
+								// Source Grid_Uses_Both_Syntaxes.xaml (Line 19:14)
 							}
 						)
 						,
@@ -135,7 +135,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 							new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
 							{
 								Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
-								// Source 0/Grid_Uses_Both_Syntaxes.xaml (Line 20:14)
+								// Source Grid_Uses_Both_Syntaxes.xaml (Line 20:14)
 							}
 						)
 						,
@@ -143,7 +143,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 							new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
 							{
 								Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-								// Source 0/Grid_Uses_Both_Syntaxes.xaml (Line 21:14)
+								// Source Grid_Uses_Both_Syntaxes.xaml (Line 21:14)
 							}
 						)
 						,
@@ -151,7 +151,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 							new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
 							{
 								Width = new global::Microsoft.UI.Xaml.GridLength(300f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
-								// Source 0/Grid_Uses_Both_Syntaxes.xaml (Line 22:14)
+								// Source Grid_Uses_Both_Syntaxes.xaml (Line 22:14)
 							}
 						)
 						,
@@ -163,7 +163,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 							new global::Microsoft.UI.Xaml.Controls.RowDefinition
 							{
 								Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
-								// Source 0/Grid_Uses_Both_Syntaxes.xaml (Line 25:14)
+								// Source Grid_Uses_Both_Syntaxes.xaml (Line 25:14)
 							}
 						)
 						,
@@ -171,7 +171,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 							new global::Microsoft.UI.Xaml.Controls.RowDefinition
 							{
 								Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto),
-								// Source 0/Grid_Uses_Both_Syntaxes.xaml (Line 26:14)
+								// Source Grid_Uses_Both_Syntaxes.xaml (Line 26:14)
 							}
 						)
 						,
@@ -179,7 +179,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 							new global::Microsoft.UI.Xaml.Controls.RowDefinition
 							{
 								Height = new global::Microsoft.UI.Xaml.GridLength(25f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
-								// Source 0/Grid_Uses_Both_Syntaxes.xaml (Line 27:14)
+								// Source Grid_Uses_Both_Syntaxes.xaml (Line 27:14)
 							}
 						)
 						,
@@ -187,7 +187,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 							new global::Microsoft.UI.Xaml.Controls.RowDefinition
 							{
 								Height = new global::Microsoft.UI.Xaml.GridLength(14f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
-								// Source 0/Grid_Uses_Both_Syntaxes.xaml (Line 28:14)
+								// Source Grid_Uses_Both_Syntaxes.xaml (Line 28:14)
 							}
 						)
 						,
@@ -195,13 +195,13 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 							new global::Microsoft.UI.Xaml.Controls.RowDefinition
 							{
 								Height = new global::Microsoft.UI.Xaml.GridLength(20f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
-								// Source 0/Grid_Uses_Both_Syntaxes.xaml (Line 29:14)
+								// Source Grid_Uses_Both_Syntaxes.xaml (Line 29:14)
 							}
 						)
 						,
 					}
 					,
-					// Source 0/Grid_Uses_Both_Syntaxes.xaml (Line 11:6)
+					// Source Grid_Uses_Both_Syntaxes.xaml (Line 11:6)
 				}
 				.Grid_Uses_Both_Syntaxes_5d0366ecb133af4c31f7d61373b58fb4_XamlApply((Grid_Uses_Both_Syntaxes_5d0366ecb133af4c31f7d61373b58fb4XamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 				{
@@ -218,7 +218,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 			this
 			.Grid_Uses_Both_Syntaxes_5d0366ecb133af4c31f7d61373b58fb4_XamlApply((Grid_Uses_Both_Syntaxes_5d0366ecb133af4c31f7d61373b58fb4XamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 			{
-			// Source 0/Grid_Uses_Both_Syntaxes.xaml (Line 1:2)
+			// Source Grid_Uses_Both_Syntaxes.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/Grid_Uses_Both_Syntaxes.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}

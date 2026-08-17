@@ -48,13 +48,13 @@ namespace TestRepro
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			// Source 0/MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.StackPanel
 				{
 					IsParsing = true,
-					// Source 0/MainPage.xaml (Line 10:3)
+					// Source MainPage.xaml (Line 10:3)
 					Children = 
 					{
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -63,7 +63,7 @@ namespace TestRepro
 							{
 								IsParsing = true,
 								Name = "outerGrid",
-								// Source 0/MainPage.xaml (Line 11:4)
+								// Source MainPage.xaml (Line 11:4)
 								Children = 
 								{
 									global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -71,7 +71,7 @@ namespace TestRepro
 										{
 											IsParsing = true,
 											Name = "inner1",
-											// Source 0/MainPage.xaml (Line 12:5)
+											// Source MainPage.xaml (Line 12:5)
 											Children = 
 											{
 												global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -79,7 +79,7 @@ namespace TestRepro
 													{
 														IsParsing = true,
 														Name = "inner1Button",
-														// Source 0/MainPage.xaml (Line 13:6)
+														// Source MainPage.xaml (Line 13:6)
 													}
 													.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 													{
@@ -112,7 +112,7 @@ namespace TestRepro
 												new global::Microsoft.UI.Xaml.Controls.ControlTemplate(this, Build_PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem)
 											)
 											,
-											// Source 0/MainPage.xaml (Line 15:5)
+											// Source MainPage.xaml (Line 15:5)
 										}
 										.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 										{
@@ -129,7 +129,7 @@ namespace TestRepro
 										{
 											IsParsing = true,
 											Name = "inner3",
-											// Source 0/MainPage.xaml (Line 24:5)
+											// Source MainPage.xaml (Line 24:5)
 											Children = 
 											{
 												global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -137,7 +137,7 @@ namespace TestRepro
 													{
 														IsParsing = true,
 														Name = "inner3Button",
-														// Source 0/MainPage.xaml (Line 25:6)
+														// Source MainPage.xaml (Line 25:6)
 													}
 													.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 													{
@@ -242,7 +242,7 @@ namespace TestRepro
 			this
 			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
 			{
-			// Source 0/MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
@@ -342,7 +342,7 @@ namespace TestRepro
 						{
 							IsParsing = true,
 							Name = "gridInsideTemplate",
-							// Source 0/MainPage.xaml (Line 18:8)
+							// Source MainPage.xaml (Line 18:8)
 							Children = 
 							{
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -350,7 +350,7 @@ namespace TestRepro
 									{
 										IsParsing = true,
 										Name = "gridInsideGridInsideTemplate",
-										// Source 0/MainPage.xaml (Line 19:9)
+										// Source MainPage.xaml (Line 19:9)
 									}
 									.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 									{

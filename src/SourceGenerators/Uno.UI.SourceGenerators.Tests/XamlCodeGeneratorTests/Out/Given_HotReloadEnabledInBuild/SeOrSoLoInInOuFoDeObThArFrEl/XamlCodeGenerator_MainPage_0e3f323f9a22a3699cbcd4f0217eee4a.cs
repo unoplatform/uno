@@ -56,7 +56,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Style
 						{
 							TargetType = typeof(global::Microsoft.UI.Xaml.Controls.TextBlock),
-							// Source 0/MainPage.xaml (Line 7:6)
+							// Source MainPage.xaml (Line 7:6)
 							Setters = 
 							{
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -64,7 +64,7 @@ namespace TestRepro
 									{
 										Property = global::Microsoft.UI.Xaml.Controls.TextBlock.ForegroundProperty,
 										Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Red),
-										// Source 0/MainPage.xaml (Line 8:8)
+										// Source MainPage.xaml (Line 8:8)
 									}
 								)
 								,
@@ -84,7 +84,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Style
 						{
 							TargetType = typeof(global::Microsoft.UI.Xaml.Controls.Button),
-							// Source 0/MainPage.xaml (Line 10:6)
+							// Source MainPage.xaml (Line 10:6)
 							Setters = 
 							{
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -92,7 +92,7 @@ namespace TestRepro
 									{
 										Property = global::Microsoft.UI.Xaml.Controls.Button.BackgroundProperty,
 										Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Azure),
-										// Source 0/MainPage.xaml (Line 11:8)
+										// Source MainPage.xaml (Line 11:8)
 									}
 								)
 								,
@@ -116,7 +116,7 @@ namespace TestRepro
 			}
 			)
 			;
-			// Source 0/MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.ListView
@@ -128,7 +128,7 @@ namespace TestRepro
 						.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_LisVie_HeaTemΞ0_DatTem)
 					)
 					,
-					// Source 0/MainPage.xaml (Line 40:4)
+					// Source MainPage.xaml (Line 40:4)
 				}
 				.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_LisVie)
 			)
@@ -206,7 +206,7 @@ namespace TestRepro
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_Pag(global::Microsoft.UI.Xaml.Controls.Page __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
-			// Source 0/MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 		}
@@ -225,7 +225,7 @@ namespace TestRepro
 				global::MyProject.GlobalStaticResources.__PreserveProperties(
 					new global::Microsoft.UI.Xaml.VisualStateGroup
 					{
-						// Source 0/MainPage.xaml (Line 21:6)
+						// Source MainPage.xaml (Line 21:6)
 						States = 
 						{
 							global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -238,14 +238,14 @@ namespace TestRepro
 											new global::Microsoft.UI.Xaml.AdaptiveTrigger
 											{
 												MinWindowWidth = 641d,
-												// Source 0/MainPage.xaml (Line 24:12)
+												// Source MainPage.xaml (Line 24:12)
 											}
 											.GenericApply(__that, __nameScope, ApplyTo_Pag_VisStaGroΞ0_VisStaGroΞ0_VisSta_StaTriΞ0_AdaTri)
 										)
 										,
 									}
 									,
-									// Source 0/MainPage.xaml (Line 22:8)
+									// Source MainPage.xaml (Line 22:8)
 								}
 								.GenericApply(__that, __nameScope, ApplyTo_Pag_VisStaGroΞ0_VisStaGroΞ0_VisSta)
 							)
@@ -260,14 +260,14 @@ namespace TestRepro
 											new global::Microsoft.UI.Xaml.AdaptiveTrigger
 											{
 												MinWindowWidth = 0d,
-												// Source 0/MainPage.xaml (Line 32:12)
+												// Source MainPage.xaml (Line 32:12)
 											}
 											.GenericApply(__that, __nameScope, ApplyTo_Pag_VisStaGroΞ0_VisStaGroΞ1_VisSta_StaTriΞ0_AdaTri)
 										)
 										,
 									}
 									,
-									// Source 0/MainPage.xaml (Line 30:8)
+									// Source MainPage.xaml (Line 30:8)
 								}
 								.GenericApply(__that, __nameScope, ApplyTo_Pag_VisStaGroΞ0_VisStaGroΞ1_VisSta)
 							)
@@ -303,7 +303,7 @@ namespace TestRepro
 						{
 							Target = new global::Microsoft.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"),
 							Value = @"Red",
-							// Source 0/MainPage.xaml (Line 27:12)
+							// Source MainPage.xaml (Line 27:12)
 						}
 					)
 				);
@@ -336,7 +336,7 @@ namespace TestRepro
 						{
 							Target = new global::Microsoft.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"),
 							Value = @"Green",
-							// Source 0/MainPage.xaml (Line 35:12)
+							// Source MainPage.xaml (Line 35:12)
 						}
 					)
 				);
@@ -413,14 +413,14 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Controls.StackPanel
 						{
 							IsParsing = true,
-							// Source 0/MainPage.xaml (Line 14:8)
+							// Source MainPage.xaml (Line 14:8)
 							Children = 
 							{
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
 									new global::Microsoft.UI.Xaml.Controls.TextBlock
 									{
 										IsParsing = true,
-										// Source 0/MainPage.xaml (Line 15:10)
+										// Source MainPage.xaml (Line 15:10)
 									}
 									.GenericApply(__that, __nameScope, ApplyTo_Ξ0_StaPanΞ0_TexBlo)
 								)
@@ -430,7 +430,7 @@ namespace TestRepro
 									{
 										IsParsing = true,
 										Content = @"DoSomething",
-										// Source 0/MainPage.xaml (Line 16:10)
+										// Source MainPage.xaml (Line 16:10)
 									}
 									.GenericApply(__that, __nameScope, ApplyTo_Ξ0_StaPanΞ1_But)
 								)
@@ -534,7 +534,7 @@ namespace TestRepro
 						{
 							IsParsing = true,
 							Text = "Header",
-							// Source 0/MainPage.xaml (Line 43:10)
+							// Source MainPage.xaml (Line 43:10)
 						}
 						.GenericApply(__that, __nameScope, ApplyTo_Ξ0_TexBlo)
 					)

@@ -60,20 +60,20 @@ namespace TestRepro
 			}
 			)
 			;
-			// Source 0/EmptyDataTemplatePage.xaml (Line 1:3)
+			// Source EmptyDataTemplatePage.xaml (Line 1:3)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.StackPanel
 				{
 					IsParsing = true,
-					// Source 0/EmptyDataTemplatePage.xaml (Line 11:3)
+					// Source EmptyDataTemplatePage.xaml (Line 11:3)
 					Children = 
 					{
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							new global::Microsoft.UI.Xaml.Controls.ListView
 							{
 								IsParsing = true,
-								// Source 0/EmptyDataTemplatePage.xaml (Line 12:4)
+								// Source EmptyDataTemplatePage.xaml (Line 12:4)
 							}
 							.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_StaPanΞ0_LisVie)
 						)
@@ -88,7 +88,7 @@ namespace TestRepro
 									.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem)
 								)
 								,
-								// Source 0/EmptyDataTemplatePage.xaml (Line 13:4)
+								// Source EmptyDataTemplatePage.xaml (Line 13:4)
 							}
 							.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_StaPanΞ1_But)
 						)
@@ -169,7 +169,7 @@ namespace TestRepro
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_Pag(global::Microsoft.UI.Xaml.Controls.Page __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
-			// Source 0/EmptyDataTemplatePage.xaml (Line 1:3)
+			// Source EmptyDataTemplatePage.xaml (Line 1:3)
 			
 			// [WARNING] //Project/0/EmptyDataTemplatePage.xaml(1,3): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 		}

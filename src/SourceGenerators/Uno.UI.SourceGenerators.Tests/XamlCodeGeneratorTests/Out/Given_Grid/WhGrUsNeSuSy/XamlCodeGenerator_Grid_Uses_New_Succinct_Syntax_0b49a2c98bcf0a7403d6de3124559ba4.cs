@@ -48,7 +48,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			// Source 0/Grid_Uses_New_Succinct_Syntax.xaml (Line 1:2)
+			// Source Grid_Uses_New_Succinct_Syntax.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.Grid
@@ -113,7 +113,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 						,
 					}
 					,
-					// Source 0/Grid_Uses_New_Succinct_Syntax.xaml (Line 10:6)
+					// Source Grid_Uses_New_Succinct_Syntax.xaml (Line 10:6)
 				}
 				.Grid_Uses_New_Succinct_Syntax_0b49a2c98bcf0a7403d6de3124559ba4_XamlApply((Grid_Uses_New_Succinct_Syntax_0b49a2c98bcf0a7403d6de3124559ba4XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 				{
@@ -130,7 +130,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 			this
 			.Grid_Uses_New_Succinct_Syntax_0b49a2c98bcf0a7403d6de3124559ba4_XamlApply((Grid_Uses_New_Succinct_Syntax_0b49a2c98bcf0a7403d6de3124559ba4XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-			// Source 0/Grid_Uses_New_Succinct_Syntax.xaml (Line 1:2)
+			// Source Grid_Uses_New_Succinct_Syntax.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/Grid_Uses_New_Succinct_Syntax.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}

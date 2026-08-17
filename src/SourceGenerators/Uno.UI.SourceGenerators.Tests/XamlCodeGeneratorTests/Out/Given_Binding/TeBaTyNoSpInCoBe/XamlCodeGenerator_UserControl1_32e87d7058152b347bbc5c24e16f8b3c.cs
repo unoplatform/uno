@@ -48,13 +48,13 @@ namespace TestRepro
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			// Source 0/UserControl1.xaml (Line 1:2)
+			// Source UserControl1.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
 					IsParsing = true,
-					// Source 0/UserControl1.xaml (Line 12:3)
+					// Source UserControl1.xaml (Line 12:3)
 				}
 				.UserControl1_32e87d7058152b347bbc5c24e16f8b3c_XamlApply((UserControl1_32e87d7058152b347bbc5c24e16f8b3cXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 				{
@@ -68,7 +68,7 @@ namespace TestRepro
 			this
 			.UserControl1_32e87d7058152b347bbc5c24e16f8b3c_XamlApply((UserControl1_32e87d7058152b347bbc5c24e16f8b3cXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-			// Source 0/UserControl1.xaml (Line 1:2)
+			// Source UserControl1.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/UserControl1.xaml(1,2): Property 'base' does not exist on 'UserControl', this error was however considered irrelevant by the XamlFileGenerator.
 			}

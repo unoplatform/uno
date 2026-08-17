@@ -143,10 +143,22 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 					excludeXamlNamespaces = "android,wasm,skia,not_ios";
 				}
 
+				// The synthetic paths below start with TWO separators on purpose: that is the only shape
+				// Roslyn accepts as an absolute analyzer-config section name on both platforms -- on Unix
+				// the name must start with '/', on Windows it must be drive-rooted or UNC, and '//x/y' is
+				// the intersection (AnalyzerConfig.IsAbsoluteEditorConfigPath). A section name that is not
+				// absolute is silently dropped, taking SourceItemGroup with it, so the generator would see
+				// no Page item at all.
+				//
+				// Windows then reads '//Project/...' as the UNC path '\\Project\...', whose ROOT is
+				// '\\server\share' -- so the project file needs at least two segments above it. With
+				// '//Project/Project.csproj', 'Project.csproj' IS the share: the path is its own root,
+				// Path.GetDirectoryName returns null, and XamlCodeGeneration throws for an invalid
+				// MSBuildProjectFullPath -- generating nothing at all, on every test.
 				var defaultConfig = new Dictionary<string, string>
 				{
 					{ "is_global", "true" },
-					{ "build_property.MSBuildProjectFullPath", "//Project/Project.csproj" },
+					{ "build_property.MSBuildProjectFullPath", "//Project/0/Project.csproj" },
 					{ "build_property.RootNamespace", "MyProject" },
 					{ "build_property.UnoForceHotReloadCodeGen", "false" },
 					{ "build_property.UnoEnableXamlFuzzyMatching", "false" },
@@ -185,20 +197,30 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 
 				globalConfigBuilder.AppendLine();
 
+				// The item paths are frozen: a generated file is named after a hash of the item path it
+				// came from (XamlFileDefinition.UniqueID), and that name is also emitted INTO the
+				// generated code, so moving the items renames and rewrites every snapshot. That is why
+				// the project file above sits next to them rather than one folder up, and why Link --
+				// which an item is free to declare independently of where it physically lives -- carries
+				// the `0/` folder instead.
+				//
 				// Link is declared so the generated content is identical on every host. Without it the
-				// generator derives the "source link" (the `// Source …` comments, the BaseUri target
-				// path and the ms-appx:/// URIs) from the item path MINUS _projectDirectory, using
-				// Path.GetDirectoryName and Path.DirectorySeparatorChar — both host-dependent, so the
-				// same XAML yields `0\MainPage.xaml` on Windows and `0/MainPage.xaml` on Unix and no
-				// single set of committed snapshots can match both. Link short-circuits that math in
-				// GetSourceLink and XamlFileParser.GetTargetFilePath alike.
+				// generator derives the "source link" (the BaseUri target path and the ms-appx:/// URIs)
+				// from the item path MINUS _projectDirectory, using Path.GetDirectoryName and
+				// Path.DirectorySeparatorChar — both host-dependent, so the same XAML yields
+				// `0\MainPage.xaml` on Windows and `0/MainPage.xaml` on Unix and no single set of
+				// committed snapshots can match both. Link short-circuits that math in GetSourceLink and
+				// XamlFileParser.GetTargetFilePath alike. The `// Source …` comments come from a THIRD
+				// computation that Link does not reach (XamlFileGenerator._relativePath, relative to the
+				// project directory), which is why the items sit directly in it: the result then holds no
+				// separator at all, and cannot differ between hosts.
 				foreach (var xamlFile in _xamlFiles)
 				{
 					globalConfigBuilder.Append($@"[//Project/0/{xamlFile.FileName}]
 build_metadata.AdditionalFiles.SourceItemGroup = Page
 build_metadata.AdditionalFiles.Link = 0/{xamlFile.FileName}
 ");
-					TestState.AdditionalFiles.Add(($"//Project/0/{xamlFile.FileName}", xamlFile.Contents));
+					TestState.AdditionalFiles.Add(($"//Project/0/{xamlFile.FileName}", NormalizeNewLines(xamlFile.Contents)));
 				}
 
 				foreach (var resourceFile in _resourceFiles)
@@ -207,12 +229,28 @@ build_metadata.AdditionalFiles.Link = 0/{xamlFile.FileName}
 build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceFile.FileName}
 ");
-					TestState.AdditionalFiles.Add(($"//Project/0/Strings/{resourceFile.Locale}/{resourceFile.FileName}", resourceFile.Contents));
+					TestState.AdditionalFiles.Add(($"//Project/0/Strings/{resourceFile.Locale}/{resourceFile.FileName}", NormalizeNewLines(resourceFile.Contents)));
 				}
 
 				TestState.AnalyzerConfigFiles.Add(("/.globalconfig", globalConfigBuilder.ToString()));
 				await base.RunImplAsync(cancellationToken);
 			}
+
+			/// <summary>
+			/// Pins the newlines of a test input, so that what the generator derives from its BYTES is the
+			/// same on every host.
+			/// </summary>
+			/// <remarks>
+			/// The inputs arrive either as raw string literals in the test file or read from a checked-in
+			/// file, so under the repository's <c>* text=auto</c> they carry CRLF on Windows and LF on Unix.
+			/// The generated code mostly reflects the parsed XAML, which does not care — except for the
+			/// embedded-sources provider, which emits a SHA-1 of the source text (XamlFileDefinition.Checksum)
+			/// as a hex string. Unlike a newline, a hash cannot be converted back on checkout: unpinned, it
+			/// makes the Given_GenerateEmbeddedXamlSources and Given_HotReloadEnabledInBuild snapshots match
+			/// on exactly one platform.
+			/// </remarks>
+			private static string NormalizeNewLines(string content)
+				=> content.Replace("\r\n", "\n");
 
 			public IEnumerable<string> PreprocessorSymbols { get; set; } = ImmutableArray<string>.Empty;
 

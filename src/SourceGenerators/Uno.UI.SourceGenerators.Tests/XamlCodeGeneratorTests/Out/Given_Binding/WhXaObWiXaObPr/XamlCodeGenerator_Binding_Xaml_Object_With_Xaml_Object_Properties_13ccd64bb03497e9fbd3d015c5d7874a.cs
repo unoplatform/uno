@@ -48,13 +48,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			// Source 0/Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 1:2)
+			// Source Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
 					IsParsing = true,
-					// Source 0/Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 10:6)
+					// Source Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 10:6)
 					Children = 
 					{
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -63,7 +63,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 								IsParsing = true,
 								Name = "topLevel",
 								Tag = @"42",
-								// Source 0/Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 11:10)
+								// Source Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 11:10)
 							}
 							.Binding_Xaml_Object_With_Xaml_Object_Properties_13ccd64bb03497e9fbd3d015c5d7874a_XamlApply((Binding_Xaml_Object_With_Xaml_Object_Properties_13ccd64bb03497e9fbd3d015c5d7874aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 							{
@@ -109,7 +109,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			this
 			.Binding_Xaml_Object_With_Xaml_Object_Properties_13ccd64bb03497e9fbd3d015c5d7874a_XamlApply((Binding_Xaml_Object_With_Xaml_Object_Properties_13ccd64bb03497e9fbd3d015c5d7874aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-			// Source 0/Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 1:2)
+			// Source Binding_Xaml_Object_With_Xaml_Object_Properties.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/Binding_Xaml_Object_With_Xaml_Object_Properties.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}

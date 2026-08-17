@@ -1,9 +1,22 @@
-# Snapshot fixtures: preserve the bytes exactly as generated.
+# Snapshot fixtures are compared byte-for-byte against source-generator output, so their line
+# endings have to match whatever the generator that produced them emits.
 #
-# These files are compared byte-for-byte against source-generator output, so they must not go
-# through the repository's `* text=auto` line-ending normalization: it stores them with LF, and a
-# checkout then materializes LF on Unix while the generators that produced them emit CRLF (a
-# generator shipped as a NuGet package bakes the newlines of its own sources at package build time,
-# so its output is CRLF on every host). Normalized fixtures therefore only ever matched on the
-# platform whose checkout happened to restore the original endings.
-* -text
+# For Uno's own generators that is the host's newline: they build their output with
+# StringBuilder.AppendLine, i.e. Environment.NewLine. The repository-wide `* text=auto` is exactly
+# right for those -- it stores LF and materializes the host's newline on checkout, so the fixture
+# follows the generator on every platform. They are deliberately left to inherit it.
+#
+# It is wrong for the files below, whose newlines do NOT follow the host, so a converted checkout
+# would move them away from the output they are compared against.
+#
+# ObservablePropertyGenerator_*: produced by a generator shipped as a NuGet package, which baked the
+# newlines of its own sources at package build time and therefore emits CRLF on every host.
+# Normalized, they only ever matched on a checkout that happened to restore CRLF -- and git hid it:
+# the working copy kept its CRLF bytes while the blob held LF, and `git status` reported no change
+# because the clean filter normalized them back on comparison.
+#
+# *.codebehind.g.cs: built from a verbatim string literal rather than AppendLine, so its newlines
+# would be those of the emitter's own source file as checked out. XamlCodeBehindEmitter pins them to
+# LF instead, which is what these have to keep.
+ObservablePropertyGenerator_*.g.cs -text
+*.codebehind.g.cs -text

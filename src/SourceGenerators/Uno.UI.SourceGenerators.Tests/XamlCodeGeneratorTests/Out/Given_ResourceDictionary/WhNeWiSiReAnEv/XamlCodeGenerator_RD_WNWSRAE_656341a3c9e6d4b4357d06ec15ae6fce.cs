@@ -59,13 +59,13 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 			}
 			)
 			;
-			// Source 0/RD_WNWSRAE.xaml (Line 1:2)
+			// Source RD_WNWSRAE.xaml (Line 1:2)
 			;
 			
 			this
 			.RD_WNWSRAE_656341a3c9e6d4b4357d06ec15ae6fce_XamlApply((RD_WNWSRAE_656341a3c9e6d4b4357d06ec15ae6fceXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
-			// Source 0/RD_WNWSRAE.xaml (Line 1:2)
+			// Source RD_WNWSRAE.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/RD_WNWSRAE.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
@@ -119,7 +119,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 							global::MyProject.GlobalStaticResources.__PreserveProperties(
 								new global::Microsoft.UI.Xaml.Controls.FontIconSource
 								{
-									// Source 0/RD_WNWSRAE.xaml (Line 14:22)
+									// Source RD_WNWSRAE.xaml (Line 14:22)
 								}
 							)
 							,
@@ -130,7 +130,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 									global::MyProject.GlobalStaticResources.__PreserveProperties(
 										new global::Microsoft.UI.Xaml.Controls.SwipeItems
 										{
-											// Source 0/RD_WNWSRAE.xaml (Line 15:22)
+											// Source RD_WNWSRAE.xaml (Line 15:22)
 										}
 										.RD_WNWSRAE_656341a3c9e6d4b4357d06ec15ae6fce_XamlApply((RD_WNWSRAE_656341a3c9e6d4b4357d06ec15ae6fceXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 										{
@@ -138,7 +138,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 											global::MyProject.GlobalStaticResources.__PreserveProperties(
 												new global::Microsoft.UI.Xaml.Controls.SwipeItem
 												{
-													// Source 0/RD_WNWSRAE.xaml (Line 16:26)
+													// Source RD_WNWSRAE.xaml (Line 16:26)
 												}
 												.RD_WNWSRAE_656341a3c9e6d4b4357d06ec15ae6fce_XamlApply((RD_WNWSRAE_656341a3c9e6d4b4357d06ec15ae6fceXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 												{
@@ -160,7 +160,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 							)
 							,
 							},
-							// Source 0/RD_WNWSRAE.xaml (Line 12:14)
+							// Source RD_WNWSRAE.xaml (Line 12:14)
 						}
 						.RD_WNWSRAE_656341a3c9e6d4b4357d06ec15ae6fce_XamlApply((RD_WNWSRAE_656341a3c9e6d4b4357d06ec15ae6fceXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 						{

@@ -56,7 +56,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Style
 						{
 							TargetType = typeof(global::TestRepro.MyGrid),
-							// Source 0/MainPage.xaml (Line 8:4)
+							// Source MainPage.xaml (Line 8:4)
 							Setters = 
 							{
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -67,11 +67,11 @@ namespace TestRepro
 											new global::Microsoft.UI.Xaml.Style
 											{
 												TargetType = typeof(global::Microsoft.UI.Xaml.Controls.Button),
-												// Source 0/MainPage.xaml (Line 11:7)
+												// Source MainPage.xaml (Line 11:7)
 											}
 										)
 										,
-										// Source 0/MainPage.xaml (Line 9:5)
+										// Source MainPage.xaml (Line 9:5)
 									}
 								)
 								,
@@ -80,7 +80,7 @@ namespace TestRepro
 									{
 										Property = global::TestRepro.MyGrid.SecondProperty,
 										Value = "Hello",
-										// Source 0/MainPage.xaml (Line 14:5)
+										// Source MainPage.xaml (Line 14:5)
 									}
 								)
 								,
@@ -91,13 +91,13 @@ namespace TestRepro
 			}
 			)
 			;
-			// Source 0/MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			;
 			
 			this
 			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-			// Source 0/MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
