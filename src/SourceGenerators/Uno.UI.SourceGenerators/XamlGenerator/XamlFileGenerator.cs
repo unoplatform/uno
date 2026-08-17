@@ -1025,7 +1025,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									writer.AppendLineIndented($"global::System.Object {CurrentResourceOwner};");
 									writer.AppendLineIndented($"{kvp.Value.ReturnType} __rootInstance = null;");
 
-									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner}, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)"))
+									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner}, global::Uno.UI.TemplateMaterializationSettings __settings)"))
 									{
 										writer.AppendLineIndented($"var __that = this;");
 										writer.AppendLineIndented($"this.{CurrentResourceOwner} = {CurrentResourceOwner};");
@@ -6401,7 +6401,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							var buildMethod = CurrentScope.RegisterMethod(
 								$"Build_{subclassName.TrimStart('_')}",
 								(name, sb) => TryAnnotateWithGeneratorSource(sb).AppendMultiLineIndented($$"""
-								private {{modifier}}{{contentType}} {{name}}(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+								private {{modifier}}{{contentType}} {{name}}(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 								{
 									{{GetCacheBrokerForHotReload()}}
 									return new {{namespacePrefix}}{{CurrentScope.SubClassesRoot}}.{{subclassName}}().Build(__owner, __settings);

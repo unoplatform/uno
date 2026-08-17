@@ -82,7 +82,7 @@ namespace TestRepro
 
 		}
 		partial void OnInitializeCompleted();
-		private static _View Build_Pag_ResΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private static _View Build_Pag_ResΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			
 			return new __MainPage_d6cd66944958ced0c513e0a04797b51d.__Pag_ResΞ0_DatTem().Build(__owner, __settings);
@@ -105,7 +105,7 @@ namespace TestRepro
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				public _View Build(object __ResourceOwner_1, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;

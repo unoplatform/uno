@@ -82,7 +82,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 
 		}
 		partial void OnInitializeCompleted();
-		private static _View Build_Pag_ResΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private static _View Build_Pag_ResΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			
 			return new __RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7.__Pag_ResΞ0_DatTem().Build(__owner, __settings);
@@ -105,7 +105,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				public _View Build(object __ResourceOwner_1, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;

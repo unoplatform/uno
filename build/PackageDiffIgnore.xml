@@ -2359,6 +2359,7 @@
 		  <!-- BC01: legacy templated-parent mechanism removed; the template factory is now a plain System.Func (uno#18672, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.FrameworkTemplateBuilder" reason="BC01: legacy template builder delegate removed with the ambient TemplatedParentScope (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.NewFrameworkTemplateBuilder" reason="BC01: replaced by Uno.UI.FrameworkTemplateBuilder, declared next to TemplateManager instead of in the WinUI namespace (uno#18672, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.TemplateMaterializationSettings" reason="BC01: moved to the Uno.UI namespace, alongside FrameworkTemplateBuilder and TemplateManager -- it is Uno plumbing with no WinUI counterpart (uno#18672, breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
@@ -2719,8 +2720,8 @@
 		  <Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.DependencyObject::TemplatedParent()" reason="BC01: vestigial TemplatedParent DP removed, disjoint from the storage the framework uses (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.DependencyObject::TemplatedParentProperty()" reason="BC01: vestigial TemplatedParentProperty removed (uno#18672, breaking changes for 7.0)" />
 
-		  <!-- BC01: the per-member callback is now the TemplateMaterializationSettings.OnMemberCreated instance method, so the templated parent cannot be captured strongly (accessor paired in <Methods> below). -->
-		  <Member fullName="System.Action`1&lt;Microsoft.UI.Xaml.DependencyObject&gt; Microsoft.UI.Xaml.TemplateMaterializationSettings::TemplateMemberCreatedCallback()" reason="BC01: replaced by TemplateMaterializationSettings.OnMemberCreated (uno#18672, breaking changes for 7.0)" />
+		  <!-- BC01: TemplateMaterializationSettings moved to the Uno.UI namespace, and its per-member callback gave way to the OnMemberCreated instance method so the templated parent cannot be captured strongly (accessors paired in <Methods> below). -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.TemplateMaterializationSettings::(TemplatedParent|TemplateMemberCreatedCallback)\(\)" reason="BC01: type moved to Uno.UI; TemplateMemberCreatedCallback replaced by OnMemberCreated (uno#18672, breaking changes for 7.0)" isRegex="true" />
 	  </Properties>
 	  <Methods>
 		  <!-- Uno's legacy source-driven AnimatedVisualPlayer contract was removed in favor of WinUI's composition visual source contract. -->
@@ -3392,8 +3393,8 @@
 		  <!-- BC01: vestigial TemplatedParent DP accessors (paired with the <Properties> entries above). The removed no-op SetTemplatedParent and the ignored-argument ctor sat on DependencyObjectStore, already covered by the BC26 DependencyObjectStore regexes. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.DependencyObject(::|\.)(get_TemplatedParent|set_TemplatedParent|get_TemplatedParentProperty|OnTemplatedParentChanged)\(.*\)" reason="BC01: vestigial TemplatedParent DP and its accessors removed (uno#18672, breaking changes for 7.0)" isRegex="true" />
 		  <!-- BC01: only the framework materializes a template, so the settings ctor is internal. TemplatedParent stays public -- an app-authored builder still reads the settings handed to it -- but the member callback became an instance method (paired with the <Properties> entry above). -->
-		  <Member fullName="System\.Void Microsoft\.UI\.Xaml\.TemplateMaterializationSettings\.\.ctor\(.*\)" reason="BC01: TemplateMaterializationSettings is now constructed by the framework only (uno#18672, breaking changes for 7.0)" isRegex="true" />
-		  <Member fullName=".+ Microsoft\.UI\.Xaml\.TemplateMaterializationSettings(::|\.)get_TemplateMemberCreatedCallback\(\)" reason="BC01: replaced by TemplateMaterializationSettings.OnMemberCreated (uno#18672, breaking changes for 7.0)" isRegex="true" />
+		  <!-- BC01: nothing survives under the old name -- the type moved to Uno.UI, its ctor is internal, and TemplateMemberCreatedCallback gave way to the OnMemberCreated instance method. -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.TemplateMaterializationSettings(::|\.|/).+" reason="BC01: TemplateMaterializationSettings moved to Uno.UI and is framework-constructed (uno#18672, breaking changes for 7.0)" isRegex="true" />
 	  </Methods>
 	  <Events>
 		  <!-- ====================================================================== -->

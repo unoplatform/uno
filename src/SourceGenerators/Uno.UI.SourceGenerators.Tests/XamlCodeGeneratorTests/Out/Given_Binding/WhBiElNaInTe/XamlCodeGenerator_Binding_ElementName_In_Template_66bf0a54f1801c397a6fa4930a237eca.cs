@@ -111,7 +111,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 
 		}
 		partial void OnInitializeCompleted();
-		private static _View Build_PagΞ0_GriΞ0_ConCon_ConTemΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private static _View Build_PagΞ0_GriΞ0_ConCon_ConTemΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			
 			return new __Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca.__PagΞ0_GriΞ0_ConCon_ConTemΞ0_DatTem().Build(__owner, __settings);
@@ -140,7 +140,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				public _View Build(object __ResourceOwner_1, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;

@@ -2,9 +2,10 @@
 
 using System.Collections.Generic;
 using System.ComponentModel;
+using Microsoft.UI.Xaml;
 using Uno.UI.DataBinding;
 
-namespace Microsoft.UI.Xaml;
+namespace Uno.UI;
 
 [EditorBrowsable(EditorBrowsableState.Never)]
 public class TemplateMaterializationSettings

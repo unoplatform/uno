@@ -97,7 +97,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var settingsArg = _passTemplateSettings ? "__settings, " : "";
 					// Unannotated: generated files have no #nullable context, so a '?' here raises CS8669.
 					var settingsParameter = _passTemplateSettings
-						? ", global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings"
+						? ", global::Uno.UI.TemplateMaterializationSettings __settings"
 						: "";
 
 					_source.AppendIndented($".GenericApply(__that, __nameScope, {settingsArg}{_exposeContextMethod}");

@@ -163,7 +163,7 @@ namespace TestRepro
 		}
 
 
-		private _View Build_Pag_ResΞ2_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private _View Build_Pag_ResΞ2_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			"346ee2c4a3294fdba50b4b5daaa042583c405e7a".ToString(); // Forces this method to be updated (and use updated sub class type) when the file is being updated through Hot Reload
 			return new __MainPage_d6cd66944958ced0c513e0a04797b51d.__Pag_ResΞ2_DatTem().Build(__owner, __settings);
@@ -176,7 +176,7 @@ namespace TestRepro
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L13:6");
 		}
 
-		private _View Build_PagΞ0_LisVie_HeaTemΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private _View Build_PagΞ0_LisVie_HeaTemΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			"346ee2c4a3294fdba50b4b5daaa042583c405e7a".ToString(); // Forces this method to be updated (and use updated sub class type) when the file is being updated through Hot Reload
 			return new __MainPage_d6cd66944958ced0c513e0a04797b51d.__PagΞ0_LisVie_HeaTemΞ0_DatTem().Build(__owner, __settings);
@@ -404,7 +404,7 @@ namespace TestRepro
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				public _View Build(object __ResourceOwner_1, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
@@ -469,7 +469,7 @@ namespace TestRepro
 					
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-				private void ApplyTo_Ξ0_StaPanΞ0_TexBlo(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, __Pag_ResΞ2_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				private void ApplyTo_Ξ0_StaPanΞ0_TexBlo(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, __Pag_ResΞ2_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 					__p1.SetBinding(
@@ -485,7 +485,7 @@ namespace TestRepro
 
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-				private void ApplyTo_Ξ0_StaPanΞ1_But(global::Microsoft.UI.Xaml.Controls.Button __p1, __Pag_ResΞ2_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				private void ApplyTo_Ξ0_StaPanΞ1_But(global::Microsoft.UI.Xaml.Controls.Button __p1, __Pag_ResΞ2_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 					/* _isTopLevelDictionary:False */
@@ -497,7 +497,7 @@ namespace TestRepro
 
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-				private void ApplyTo_Ξ0_StaPan(global::Microsoft.UI.Xaml.Controls.StackPanel __p1, __Pag_ResΞ2_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				private void ApplyTo_Ξ0_StaPan(global::Microsoft.UI.Xaml.Controls.StackPanel __p1, __Pag_ResΞ2_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 14, 8);
@@ -527,7 +527,7 @@ namespace TestRepro
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				public _View Build(object __ResourceOwner_1, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
@@ -555,7 +555,7 @@ namespace TestRepro
 				}
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 				[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-				private void ApplyTo_Ξ0_TexBlo(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, __PagΞ0_LisVie_HeaTemΞ0_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				private void ApplyTo_Ξ0_TexBlo(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, __PagΞ0_LisVie_HeaTemΞ0_DatTem __that, global::Microsoft.UI.Xaml.NameScope __nameScope, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 43, 10);
