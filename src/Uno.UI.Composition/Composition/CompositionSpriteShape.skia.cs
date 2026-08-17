@@ -156,6 +156,44 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
+		/// <summary>
+		/// The geometry this shape actually covers when painted (filled area ∪ stroke band), in the owning visual's
+		/// local space, or null when it paints nothing. Used to build a precise per-visual damage region. The caller
+		/// owns and disposes the returned geometry.
+		/// </summary>
+		internal IGeometry? BuildRenderGeometry()
+		{
+			if (_geometryWithTransformations is not { } geometryWithTransformations)
+			{
+				return null;
+			}
+
+			IGeometry? result = null;
+
+			if (FillBrush is not null && _fillGeometryWithTransformations is { } fillGeometryWithTransformations)
+			{
+				result = fillGeometryWithTransformations.GetFilledGeometry(Geometry?.TrimStart ?? 0f, Geometry?.TrimEnd ?? 0f);
+			}
+
+			if (StrokeBrush is not null && StrokeThickness > 0)
+			{
+				var strokeGeometry = geometryWithTransformations.GetStrokeFillGeometry(GetStrokeStyle(withTrim: true));
+				if (result is null)
+				{
+					result = strokeGeometry;
+				}
+				else
+				{
+					var previous = result;
+					result = result.Combine(strokeGeometry, GeometryCombineMode.Union);
+					previous.Dispose();
+					strokeGeometry.Dispose();
+				}
+			}
+
+			return result;
+		}
+
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
 			base.OnPropertyChangedCore(propertyName, isSubPropertyChange);

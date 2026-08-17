@@ -140,8 +140,36 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 		_borderShape?.Render(in session);
 
-		// TODO(damage 1b): return BuildOwnContentPath() for precise border/background damage; bounds fallback for now.
-		return null;
+		return BuildOwnContentPath();
+	}
+
+	// The geometry this border covers (painted background ∪ border ring), in local space, for a precise damage region.
+	private IGeometry? BuildOwnContentPath()
+	{
+		UpdatePathsAndCornerClip();
+
+		IGeometry? dst = null;
+		if (_backgroundShape is { } bg && (BackgroundBrush?.CanPaint() ?? false) && bg.BuildRenderGeometry() is { } bgGeometry)
+		{
+			dst = bgGeometry;
+		}
+
+		if (_borderShape is { } border && (BorderBrush?.CanPaint() ?? false) && border.BuildRenderGeometry() is { } borderGeometry)
+		{
+			if (dst is null)
+			{
+				dst = borderGeometry;
+			}
+			else
+			{
+				var previous = dst;
+				dst = dst.Combine(borderGeometry, GeometryCombineMode.Union);
+				previous.Dispose();
+				borderGeometry.Dispose();
+			}
+		}
+
+		return dst;
 	}
 
 	internal override void ApplyPrePaintingClipping(IDrawingSession session)
