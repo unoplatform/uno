@@ -1,25 +1,24 @@
 ﻿#nullable enable
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Uno.UI.DataBinding;
 
 namespace Microsoft.UI.Xaml;
 
 [EditorBrowsable(EditorBrowsableState.Never)]
 public class TemplateMaterializationSettings
 {
-	private readonly WeakReference? _templatedParentWR;
+	private readonly ManagedWeakReference? _templatedParentWeakRef;
 	private readonly List<DependencyObject>? _members;
 
-	public DependencyObject? TemplatedParent => _templatedParentWR?.Target as DependencyObject;
+	public DependencyObject? TemplatedParent => _templatedParentWeakRef?.Target as DependencyObject;
 
 	internal TemplateMaterializationSettings(DependencyObject? templatedParent, List<DependencyObject>? members)
 	{
-		if (templatedParent != null)
-		{
-			_templatedParentWR = new(templatedParent);
-		}
+		// Borrows the object's own weak reference instead of allocating a GC handle per materialization,
+		// and reads the templated parent through the same path as DependencyObject.GetTemplatedParent.
+		_templatedParentWeakRef = (templatedParent as IWeakReferenceProvider)?.WeakReference;
 
 		_members = members;
 	}
