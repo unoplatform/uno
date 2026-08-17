@@ -311,7 +311,10 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 	// still references it (captured by reference), and the device's geometry cache is keyed on that list.
 	public void Dispose()
 	{
-		if (Textures is { } textures) { foreach (var t in textures) { if (t.DisposeRequested) { t.ReleaseDeferred(); } } }
+		// Drop this recording's references to the textures it recorded/nested. The GPU view is freed only once the
+		// composition has disposed the texture AND every recording that captured its handle has released it — an outer
+		// frame's ReplayRef may still hold this command list (with the raw view handle) and be compiled after us.
+		if (Textures is { } textures) { foreach (var t in textures) { t.Release(); } }
 		// Hand the compiled draw-list's GPU resources to the render thread for a deferred free (an in-flight frame may
 		// still reference them). Interlocked so a concurrent render-thread rebuild can't leak or double-free it.
 		var c = System.Threading.Interlocked.Exchange(ref Compiled, null);
@@ -630,7 +633,8 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	}
 	// Keep a texture recorded into this frame alive for the frame's lifetime (it may be a one-shot texture the
 	// caller disposes right after recording — e.g. CompositionNineGridBrush; the draw is replayed later at present).
-	private void TrackTexture(WebGpuTexture t) => (_data.Textures ??= new()).Add(t);
+	// Refcounted: this recording holds a ref until it is disposed (see WebGpuRenderRecord.Dispose / WebGpuTexture).
+	private void TrackTexture(WebGpuTexture t) { t.AddRef(); (_data.Textures ??= new()).Add(t); }
 
 	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false)
 	{
@@ -752,15 +756,32 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	{
 		if (data is WebGpuRenderRecord cacheable && IsCacheable(cacheable))
 		{
+			// The nested recording's command list (with the raw image view handles) is captured by reference and may
+			// be compiled at present AFTER the nested recording is disposed — so this recording must also hold a ref to
+			// its textures to keep the views alive for the whole time this recording can be replayed.
+			TrackNestedTextures(cacheable);
 			_target.Add(new ReplayRefCmd { Data = cacheable, Commands = cacheable.Commands, Transform = _m, Clip = _clip });
 			return;
 		}
 		ReplayInline(data);
 	}
 
+	// Take a ref to every texture the nested recording references, so an outer frame keeps them alive as long as it can
+	// be replayed. Balanced by this recording's Dispose (which Releases every entry in its Textures list).
+	private void TrackNestedTextures(WebGpuRenderRecord source)
+	{
+		if (source.Textures is not { } src) { return; }
+		var dst = _data.Textures ??= new();
+		foreach (var t in src) { t.AddRef(); dst.Add(t); }
+	}
+
 	private void ReplayInline(IRenderRecord data)
 	{
 		if (data is not WebGpuRenderRecord d) { return; }
+		// Inlined (non-cacheable) recordings copy their ImageCmds (with the same view handle) into this target, so this
+		// recording must keep those textures alive too. TransformFor wraps a bare command list (Textures == null), so
+		// this is a no-op on the present-time transform path.
+		TrackNestedTextures(d);
 		Vector2 T(Vector2 p) => new(p.X * _m.M11 + p.Y * _m.M21 + _m.M41, p.X * _m.M12 + p.Y * _m.M22 + _m.M42);
 		foreach (var cmd in d.Commands)
 		{
@@ -2424,7 +2445,7 @@ public sealed unsafe class WebGpuTexture : ITexture
 	}
 
 	// Adopts an already-rendered offscreen texture (from RenderOffscreen) as a sampleable, disposable handle —
-	// no upload, no readback. Deferred release is shared with the upload path (DisposeRequested/ReleaseDeferred).
+	// no upload, no readback. Deferred release is shared with the upload path (refcount + DisposeRequested).
 	internal WebGpuTexture(WebGpuDevice device, IntPtr tex, IntPtr view, int width, int height)
 	{
 		_d = device;
@@ -2470,17 +2491,48 @@ public sealed unsafe class WebGpuTexture : ITexture
 		fixed (byte* p = rgba) { wgpuQueueWriteTexture(device.Q, &dst, (IntPtr)p, (nuint)rgba.Length, &layout, &ext); }
 	}
 
-	// A transient texture (e.g. CompositionNineGridBrush) is disposed right after recording its draw, but the WebGPU
-	// draw is replayed later at present. So Dispose only marks intent; the owning WebGpuRenderRecord releases the GPU
-	// resources when it's disposed (after its last present), keeping the view alive for every replay in between.
+	// A transient image texture (e.g. CompositionNineGridBrush, or any per-frame-changing image) is disposed by the
+	// composition right after recording its draw, but the recorded ImageCmd captures the raw view HANDLE and the WebGPU
+	// draw is compiled/replayed later at present — possibly from an OUTER frame recording whose ReplayRef still holds the
+	// (disposed) content recording's command list. So the view must outlive EVERY recording that references it, not just
+	// the innermost one. We reference-count: each recording that records or nests this texture holds a ref (AddRef); the
+	// GPU resources are freed only once the composition has disposed the texture (DisposeRequested) AND the last
+	// referencing recording has released it (refcount 0). Mirrors SkiaSharp's SKPicture refcounting the SKImage it
+	// captured across nested pictures. Resident surface-owned textures are never Dispose()d, so they are never freed here.
+	private readonly object _lifetimeGate = new();
+	private int _refCount;
+	private bool _freed;
 	internal bool DisposeRequested { get; private set; }
-	public void Dispose() => DisposeRequested = true;
 
-	// Called by WebGpuRenderRecord.Dispose for each texture it recorded. Idempotent: a texture referenced by several
-	// in-flight recordings is released only once (whichever disposes last finds the handles already cleared).
-	internal void ReleaseDeferred()
+	// Taken by every WebGpuRenderRecord that records this texture directly or nests a recording that references it.
+	internal void AddRef()
 	{
-		if (View != IntPtr.Zero || Tex != IntPtr.Zero) { _d.DeferTextureRelease(View, Tex); View = IntPtr.Zero; Tex = IntPtr.Zero; }
+		lock (_lifetimeGate) { _refCount++; }
+	}
+
+	// The composition (e.g. CompositionImageSurface swapping to a new frame) is done with the CPU image. Marks intent;
+	// the GPU free is withheld until no recording references the captured view any more.
+	public void Dispose()
+	{
+		lock (_lifetimeGate) { DisposeRequested = true; TryFree(); }
+	}
+
+	// Balances one AddRef: called by WebGpuRenderRecord.Dispose for each reference it took.
+	internal void Release()
+	{
+		lock (_lifetimeGate) { _refCount--; TryFree(); }
+	}
+
+	// Enqueues the deferred GPU free exactly once, when both conditions hold: the composition has disposed the texture
+	// and no recording references it. The actual view/texture release happens at the next BeginFrameResources (drained
+	// under RenderGate, after the last present's submit), like the per-frame bind groups/buffers.
+	private void TryFree()
+	{
+		if (!_freed && DisposeRequested && _refCount <= 0)
+		{
+			_freed = true;
+			if (View != IntPtr.Zero || Tex != IntPtr.Zero) { _d.DeferTextureRelease(View, Tex); View = IntPtr.Zero; Tex = IntPtr.Zero; }
+		}
 	}
 }
 
