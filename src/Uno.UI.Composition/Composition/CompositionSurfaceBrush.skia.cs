@@ -19,12 +19,12 @@ namespace Microsoft.UI.Composition
 			set => SetObjectProperty(ref _monochromeColor, value);
 		}
 
-		internal override bool RequiresRepaintOnEveryFrame => Surface is ISkiaSurface;
+		internal override bool RequiresRepaintOnEveryFrame => Surface is IPaintableSurface;
 
 		Vector2? ISizedBrush.Size => Surface switch
 		{
 			CompositionImageSurface { Size: { } sz } => sz,
-			ISkiaSurface skiaSurface => skiaSurface.Size,
+			IPaintableSurface skiaSurface => skiaSurface.Size,
 			ICompositionImageSurfaceProvider { ImageSurface: { Size: { } sz } } => sz,
 			_ => null
 		};
@@ -78,7 +78,7 @@ namespace Microsoft.UI.Composition
 			return false;
 		}
 
-		internal override bool CanPaint() => TryGetCompositionImageSurface(Surface, out _) || Surface is ISkiaSurface;
+		internal override bool CanPaint() => TryGetCompositionImageSurface(Surface, out _) || Surface is IPaintableSurface;
 
 		internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 		{
@@ -87,7 +87,7 @@ namespace Microsoft.UI.Composition
 				return true;
 			}
 
-			if (Surface is ISkiaSurface skiaSurface)
+			if (Surface is IPaintableSurface skiaSurface)
 			{
 				session.Save();
 				session.ClipRect(bounds, antialias: true);

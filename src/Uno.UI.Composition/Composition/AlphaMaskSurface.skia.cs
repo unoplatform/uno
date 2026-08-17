@@ -12,7 +12,7 @@ namespace Microsoft.UI.Composition;
 /// The alpha mask is rendered as white content on transparent background,
 /// where the alpha channel represents the shape of the original content.
 /// </summary>
-internal class AlphaMaskSurface : CompositionObject, ICompositionSurface, ISkiaSurface
+internal class AlphaMaskSurface : CompositionObject, ICompositionSurface, IPaintableSurface
 {
 	private readonly WeakReference<Visual> _visual;
 
@@ -34,9 +34,9 @@ internal class AlphaMaskSurface : CompositionObject, ICompositionSurface, ISkiaS
 		_visual = new WeakReference<Visual>(visual);
 	}
 
-	Vector2 ISkiaSurface.Size => _visual.TryGetTarget(out var visual) ? visual.Size : Vector2.Zero;
+	Vector2 IPaintableSurface.Size => _visual.TryGetTarget(out var visual) ? visual.Size : Vector2.Zero;
 
-	void ISkiaSurface.Paint(IDrawingSession session, float opacity)
+	void IPaintableSurface.Paint(IDrawingSession session, float opacity)
 	{
 		if (!_visual.TryGetTarget(out var visual))
 		{
