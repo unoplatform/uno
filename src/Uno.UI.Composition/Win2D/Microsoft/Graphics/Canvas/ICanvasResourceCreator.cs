@@ -10,7 +10,7 @@ namespace Microsoft.Graphics.Canvas;
 /// Implemented by objects that can create graphics resources, exposing the device those resources
 /// belong to.
 /// </summary>
-public interface ICanvasResourceCreator
+internal interface ICanvasResourceCreator
 {
 	/// <summary>
 	/// Gets the device that resources created by this object belong to.

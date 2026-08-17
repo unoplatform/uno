@@ -9,7 +9,7 @@ namespace Microsoft.Graphics.Canvas.Geometry;
 /// <summary>
 /// Defines the direction in which an elliptical arc is drawn.
 /// </summary>
-public enum CanvasSweepDirection
+internal enum CanvasSweepDirection
 {
 	/// <summary>
 	/// Arcs are drawn in a counterclockwise (negative-angle) direction.

@@ -6,7 +6,7 @@ namespace Microsoft.Graphics.Canvas.Geometry;
 /// Specifies how a segment is stroked and joined to the segment that follows it.
 /// </summary>
 [Flags]
-public enum CanvasFigureSegmentOptions
+internal enum CanvasFigureSegmentOptions
 {
 	/// <summary>
 	/// The segment is stroked and joined using the stroke style in effect.

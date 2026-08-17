@@ -3,7 +3,7 @@
 /// <summary>
 /// Specifies how the intersecting areas of a geometry's figures are combined to form its filled region.
 /// </summary>
-public enum CanvasFilledRegionDetermination
+internal enum CanvasFilledRegionDetermination
 {
 	/// <summary>
 	/// A point is inside the fill region when a ray cast from it to infinity crosses an odd number of
