@@ -216,6 +216,12 @@ internal sealed unsafe class WebGpuGeometryCache
 	// re-tessellation, or allocation (that was ~60ms + 26MB/frame at 500 visuals).
 	public long SlabId;       // stable id for this recording's slices in the shared solid/rrect slabs
 	public List<FrameOp> FrameOrder;
+	// Resident device-space verts for a (non-table) frame-solid recording, kept so a pure reuse can re-derive its
+	// CURRENT slab byte offset every frame (TryByteOffset, else re-Put) instead of trusting a cached absolute — a
+	// stale offset into a culled-then-reclaimed slice was the cross-visual corruption the redo removes. FrameOrder
+	// offsets are RELATIVE to these lists; the absolute base is applied at emit. Solid = 6 floats/v, rrect = 22.
+	public List<float> FrameSolidVerts;
+	public List<float> FrameRrectVerts;
 	// TRANSFORM-TABLE frame-solid entry (gap 4 solid-scroll): solids/rrects are baked in the recording's OWN (identity)
 	// device space + a per-vertex slot, resident in the SHARED TABLE slabs; a move rewrites the slot (WriteXform), not
 	// the verts. FrameOrder byte offsets are RELATIVE to the recording's own vert list — the ABSOLUTE slab offset is
@@ -303,6 +309,10 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 	// texture CompositionNineGridBrush uploads). We keep them alive for every present of this recording, then release
 	// their GPU resources here at Dispose — resident textures (surface-owned) are left untouched (DisposeRequested=false).
 	internal List<WebGpuTexture> Textures;
+	// Guards Dispose against a second call: the texture Release()s below are refcount decrements, so a double Dispose
+	// would over-release and free a view an in-flight ReplayRef still holds. Interlocked because Dispose (UI thread)
+	// can race the render thread's Compiled rebuild.
+	private int _disposed;
 
 	// Backend-bound: dispatches to the WebGpu session that must consume it (guaranteed same-backend by the single
 	// registered backend). A recorder nests it (deferred ReplayRef / inline transform); a present session encodes
@@ -324,6 +334,10 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 	// still references it (captured by reference), and the device's geometry cache is keyed on that list.
 	public void Dispose()
 	{
+		if (System.Threading.Interlocked.Exchange(ref _disposed, 1) != 0)
+		{
+			return;
+		}
 		// Drop this recording's references to the textures it recorded/nested. The GPU view is freed only once the
 		// composition has disposed the texture AND every recording that captured its handle has released it — an outer
 		// frame's ReplayRef may still hold this command list (with the raw view handle) and be compiled after us.
@@ -1903,6 +1917,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								break;
 							}
 							WebGpuGeometryCache fe = null;
+							// Re-derived every frame (build => Put, reuse => TryByteOffset-else-Put); FrameOrder is relative.
+							int sBase = 0, rBase = 0;
 							bool fMiss, fStale;
 							if (repeat) { fMiss = true; fStale = false; }
 							else
@@ -1960,27 +1976,29 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 										foreach (var o in tmp) { order.Add(new FrameOp { Kind = -1, NonSolid = ResidentizeFan(o, fOwned) }); }
 									}
 								}
-								// Write the extracted verts into this recording's STABLE slices in the SHARED slabs (uploads
-								// only the changed bytes; grows the slab buffer 1.5x when needed) and rebase the ordered
-								// ops to absolute slab byte offsets. `id` is stable across frames so a static recording's
-								// slice is resident (no re-upload) and coalesces with neighbours across recordings.
+								// `id` is stable across frames so a static recording's slice stays resident (no re-upload) and
+								// coalesces with neighbours across recordings; a repeat emission gets a fresh transient id.
 								long id = repeat ? _d.NextSlabId()
 									: ((fMiss || fe is null || fe.SlabId == 0) ? _d.NextSlabId() : fe.SlabId);
-								int sBase = sv.Count > 0 ? _d.SolidSlab.Put(id, sv) : 0;
-								int rBase = rv.Count > 0 ? _d.RrectSlab.Put(id, rv) : 0;
-								for (int oi2 = 0; oi2 < order.Count; oi2++)
-								{
-									var fo = order[oi2];
-									if (fo.Kind == 0) { fo.ByteOff += sBase; order[oi2] = fo; }
-									else if (fo.Kind == 5) { fo.ByteOff += rBase; order[oi2] = fo; }
-								}
-								fe = new WebGpuGeometryCache { FrameSolid = true, SlabId = id, FrameOrder = order, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = fSlot };
+								// Upload the (transform-baked) verts under this recording's stable id and keep them resident on
+								// the cache. FrameOrder offsets stay RELATIVE — the absolute base (returned here, re-derived on a
+								// later pure reuse) is applied at emit — never a cached absolute into a possibly-reclaimed slice.
+								sBase = sv.Count > 0 ? _d.SolidSlab.Put(id, sv) : 0;
+								rBase = rv.Count > 0 ? _d.RrectSlab.Put(id, rv) : 0;
+								fe = new WebGpuGeometryCache { FrameSolid = true, SlabId = id, FrameOrder = order, FrameSolidVerts = sv, FrameRrectVerts = rv, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = fSlot };
 								// A repeat emission is not cached (its slice is transient); free its bind groups next frame.
 								if (repeat) { _d.DeferRelease(fOwned); }
 								else { fe.Device = _d; rr.Data.Compiled = fe; }
 								WebGpuTrace.Upload("geometry-build(frame-solid)", order.Count);
 							}
-							else { WebGpuTrace.Upload("geometry-reuse(frame-solid)", 0); _d.SolidSlab.MarkLive(fe.SlabId); _d.RrectSlab.MarkLive(fe.SlabId); }
+							else
+							{
+								// Pure reuse (no rebuild): re-derive the CURRENT slab base. TryByteOffset marks the slice live
+								// on a hit; if it was culled last frame its offset was reclaimed, so re-Put the resident verts.
+								WebGpuTrace.Upload("geometry-reuse(frame-solid)", 0);
+								if (fe.FrameSolidVerts is { Count: > 0 } && !_d.SolidSlab.TryByteOffset(fe.SlabId, out sBase)) { sBase = _d.SolidSlab.Put(fe.SlabId, fe.FrameSolidVerts); }
+								if (fe.FrameRrectVerts is { Count: > 0 } && !_d.RrectSlab.TryByteOffset(fe.SlabId, out rBase)) { rBase = _d.RrectSlab.Put(fe.SlabId, fe.FrameRrectVerts); }
+							}
 							// Rewrite this recording's path-fill transform entry every frame (device verts => pure current
 							// projection), so a window resize repositions its glyphs via the table with no re-tessellation.
 							if (fe.XformSlot >= 0) { WriteXform(fe.XformSlot, Matrix4x4.Identity); }
@@ -1988,8 +2006,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							// b1 = absolute slab byte offset). No append, no upload, no re-tessellation on a cache hit.
 							foreach (var fo in fe.FrameOrder)
 							{
-								if (fo.Kind == 0) { ops.Add(new DrawOp(0, 1, fo.Count, (nint)fo.ByteOff, false, fo.Clip, fo.ClipBg)); }
-								else if (fo.Kind == 5) { ops.Add(new DrawOp(5, 1, fo.Count, (nint)fo.ByteOff, false, fo.Clip, fo.ClipBg)); }
+								if (fo.Kind == 0) { ops.Add(new DrawOp(0, 1, fo.Count, (nint)(sBase + fo.ByteOff), false, fo.Clip, fo.ClipBg)); }
+								else if (fo.Kind == 5) { ops.Add(new DrawOp(5, 1, fo.Count, (nint)(rBase + fo.ByteOff), false, fo.Clip, fo.ClipBg)); }
 								else { ops.Add(fo.NonSolid); }
 							}
 							break;
