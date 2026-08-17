@@ -36,6 +36,11 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	public IntPtr StencilTableEO;
 	public IntPtr StencilTableNZ;
 	public IntPtr CoverTablePipe;
+	// Transform-table SOLID / ROUNDED-RECT variants (device-verts + per-vertex slot). Same table + ClipBgl as the
+	// path-fill cover, but drawn unconditionally under the clip depth (no stencil test) so a moved solid/rrect
+	// recording repositions via its slot with cross-visual coalescing preserved. See EmitTableFrameSolid.
+	public IntPtr SolidTablePipe;
+	public IntPtr RrTablePipe;
 	public IntPtr XformBgl;
 	// Persistent storage buffer + cached bind group for the main pass's per-frame arena transform table (group 0 of
 	// the table path-fill pipelines). The table CONTENTS are rewritten every frame, but the buffer identity + bind
@@ -68,6 +73,11 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
 	public WebGpuSlab SolidSlab;                  // persistent shared slab: all recordings' solid verts (6 floats/v)
 	public WebGpuSlab RrectSlab;                  // persistent shared slab: all recordings' rrect verts (22 floats/v)
+	// Transform-TABLE shared slabs: local (identity-baked) verts + a trailing per-vertex slot index (solid = 7
+	// floats/v, rrect = 23). A moved recording rewrites its transform-table slot instead of re-Putting these verts,
+	// while sibling recordings still coalesce into one draw (each vertex indexes its own slot). See EmitTableFrameSolid.
+	public WebGpuSlab SolidTableSlab;
+	public WebGpuSlab RrectTableSlab;
 	private long _nextSlabId = 1;                 // stable per-recording slab id (assigned on cache miss)
 	public long NextSlabId() => _nextSlabId++;
 	// Serializes a whole frame's render (reset → record → submit → poll) on this device. The on-window render
@@ -326,6 +336,8 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		BufferPool = new WebGpuBufferPool(this);
 		SolidSlab = new WebGpuSlab(this, 6);
 		RrectSlab = new WebGpuSlab(this, 22);
+		SolidTableSlab = new WebGpuSlab(this, 7);
+		RrectTableSlab = new WebGpuSlab(this, 23);
 		if (WebGpuProfiler.Enabled) { Profiler = new WebGpuProfiler(); }
 		System.Console.WriteLine($"[webgpu] engine init — UNO_WEBGPU_PROFILE={WebGpuProfiler.Enabled} pipeline={Pipeline} msaa={MsaaSamples}x colorFormat={ColorFormat}");
 	}
@@ -803,6 +815,33 @@ fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
   return vec4<f32>(i.col.rgb, i.col.a * cov);
 }";
 
+	// Transform-table rounded-rect: identical SDF/clip to RoundedRectWgsl, but the LOCAL (identity-baked) corners
+	// `cpos` are positioned by the per-vertex slot's local->NDC affine (xf[ti]) instead of being pre-baked NDC. The
+	// SDF params (p/hf/radii) are already transform-invariant local units, so a moved recording rewrites only its
+	// slot. clipCov uses the final builtin position + the clip's finv (device fragment -> local clip space).
+	private const string RoundedRectTableWgsl = @"
+struct Xf { a: vec4<f32>, b: vec4<f32> };
+struct VSOut { @builtin(position) pos: vec4<f32>, @location(0) p: vec2<f32>, @location(1) hf: vec2<f32>, @location(2) radii: vec4<f32>, @location(3) col: vec4<f32>, @location(4) ihalf: vec2<f32>, @location(5) icenter: vec2<f32>, @location(6) iradii: vec4<f32> };
+@group(0) @binding(0) var<storage, read> xf: array<Xf>;
+@group(1) @binding(0) var<uniform> clip: ClipU;
+@vertex fn vs(@location(0) cpos: vec2<f32>, @location(1) p: vec2<f32>, @location(2) hf: vec2<f32>, @location(3) radii: vec4<f32>, @location(4) col: vec4<f32>, @location(5) ihalf: vec2<f32>, @location(6) icenter: vec2<f32>, @location(7) iradii: vec4<f32>, @location(8) ti: u32) -> VSOut {
+  let t = xf[ti];
+  var o: VSOut; o.pos = vec4<f32>(cpos.x * t.a.x + cpos.y * t.a.y + t.a.z, cpos.x * t.a.w + cpos.y * t.b.x + t.b.y, 0.0, 1.0); o.p = p; o.hf = hf; o.radii = radii; o.col = col; o.ihalf = ihalf; o.icenter = icenter; o.iradii = iradii; return o;
+}
+fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
+  let rTop = select(radii.x, radii.y, p.x > 0.0); let rBot = select(radii.w, radii.z, p.x > 0.0);
+  let rad = select(rTop, rBot, p.y > 0.0); let q = abs(p) - hf + vec2<f32>(rad, rad);
+  return min(max(q.x, q.y), 0.0) + length(max(q, vec2<f32>(0.0, 0.0))) - rad;
+}
+@fragment fn fs(i: VSOut) -> @location(0) vec4<f32> {
+  let d = sdRR(i.p, i.hf, i.radii); let aa = max(fwidth(d), 1e-4);
+  var cov = 1.0 - smoothstep(-aa, aa, d);
+  let di = sdRR(i.p - i.icenter, i.ihalf, i.iradii); let aai = max(fwidth(di), 1e-4);
+  if (i.ihalf.x >= 0.0) { cov = cov * smoothstep(-aai, aai, di); }
+  cov = cov * clipCov(i.pos.xy, clip);
+  return vec4<f32>(i.col.rgb, i.col.a * cov);
+}";
+
 	private void CreateRoundedRectPipeline(WGPUBlendState* blend)
 	{
 		var module = Module(ClipStructFn + RoundedRectWgsl);
@@ -957,6 +996,39 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 		StencilTableEO = MakeTablePipe(stencilMod, vs, fs, colorWrite: false, colorAttrs: false, blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), 0xFF, 0xFF, WGPUCompareFunction.Always, stencilLayout);
 		StencilTableNZ = MakeTablePipe(stencilMod, vs, fs, colorWrite: false, colorAttrs: false, blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.IncrementWrap), Face(WGPUCompareFunction.Always, WGPUStencilOperation.DecrementWrap), 0xFF, 0xFF, WGPUCompareFunction.Always, stencilLayout);
 		CoverTablePipe = MakeTablePipe(coverMod, vs, fs, colorWrite: true, colorAttrs: true, blend, Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), 0xFF, 0xFF, WGPUCompareFunction.GreaterEqual, coverLayout);
+		// Solid transform-table pipe: the cover shader (pos+col+slot) drawn unconditionally under the clip depth (no
+		// stencil), so coalesced solids from moving recordings position per-vertex via their own slot.
+		var keep = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
+		SolidTablePipe = MakeTablePipe(coverMod, vs, fs, colorWrite: true, colorAttrs: true, blend, keep, keep, 0x00, 0x00, WGPUCompareFunction.GreaterEqual, coverLayout);
+		CreateRrectTablePipeline(blend, coverLayout);
+	}
+
+	// Transform-table rounded-rect pipeline: 8 float attrs (cpos/p/hf/radii/col/ihalf/icenter/iradii) + a trailing
+	// Uint32 slot. Explicit layout group0 = the storage transform table, group1 = the shared ClipU (ClipBgl).
+	private void CreateRrectTablePipeline(WGPUBlendState* blend, IntPtr layout)
+	{
+		var module = Module(ClipStructFn + RoundedRectTableWgsl);
+		var vs = SV("vs"); var fs = SV("fs");
+		var attrs = stackalloc WGPUVertexAttribute[9]
+		{
+			new() { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 },   // cpos (LOCAL device)
+			new() { Format = WGPUVertexFormat.Float32x2, Offset = 8, ShaderLocation = 1 },   // p (local centred)
+			new() { Format = WGPUVertexFormat.Float32x2, Offset = 16, ShaderLocation = 2 },  // hf
+			new() { Format = WGPUVertexFormat.Float32x4, Offset = 24, ShaderLocation = 3 },  // radii
+			new() { Format = WGPUVertexFormat.Float32x4, Offset = 40, ShaderLocation = 4 },  // col
+			new() { Format = WGPUVertexFormat.Float32x2, Offset = 56, ShaderLocation = 5 },  // ihalf
+			new() { Format = WGPUVertexFormat.Float32x2, Offset = 64, ShaderLocation = 6 },  // icenter
+			new() { Format = WGPUVertexFormat.Float32x4, Offset = 72, ShaderLocation = 7 },  // iradii
+			new() { Format = WGPUVertexFormat.Uint32, Offset = 88, ShaderLocation = 8 },     // slot index
+		};
+		var vbl = new WGPUVertexBufferLayout { ArrayStride = 92, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 9, Attributes = attrs };
+		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
+		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
+		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
+		var keepFace = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
+		var ds = new WGPUDepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = WGPUCompareFunction.GreaterEqual, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
+		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = layout };
+		RrTablePipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
 	}
 
 	private IntPtr MakeTablePipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, bool colorWrite, bool colorAttrs, WGPUBlendState* blend, WGPUStencilFaceState front, WGPUStencilFaceState back, uint stencilWrite, uint stencilRead, WGPUCompareFunction depthCompare, IntPtr layout)
@@ -1318,6 +1390,15 @@ internal sealed unsafe class WebGpuSlab
 	public void MarkLive(long id) => _live.Add(id);
 	public void EndFrame() => _alloc.RetainOnly(_live);
 	public int ByteOffset(long id) => (_alloc.TryGet(id, out var s) ? s.Off : 0) * _stride * sizeof(float);
+
+	// A recording whose LOCAL verts don't change on a move re-derives its slice's CURRENT byte offset each frame
+	// (never a cached one — a stale offset into a culled-then-reclaimed slice was the crash the redo avoids). Returns
+	// false if the slice was reclaimed (culled last frame) so the caller re-Puts it; marks it live on a hit so it survives.
+	public bool TryByteOffset(long id, out int byteOff)
+	{
+		if (_alloc.TryGet(id, out var s)) { byteOff = s.Off * _stride * sizeof(float); _live.Add(id); return true; }
+		byteOff = 0; return false;
+	}
 
 	// Reserve/reuse `id`'s stable slice, and upload ONLY what changed: the whole shadow if the buffer had to grow,
 	// otherwise a dirty diff against the CPU shadow — skip the write entirely when byte-identical (static UI), else
