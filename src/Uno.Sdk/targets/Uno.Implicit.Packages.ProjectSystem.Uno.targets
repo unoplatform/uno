@@ -14,10 +14,6 @@
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true"/>
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true'">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Svg" ProjectSystem="true" />
-	</ItemGroup>
-
 	<ItemGroup Condition="$(UnoFeatures.Contains(';spellchecking;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.SpellChecking" ProjectSystem="true" />
 	</ItemGroup>

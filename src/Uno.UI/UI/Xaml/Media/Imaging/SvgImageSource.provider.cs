@@ -1,12 +1,10 @@
-﻿#if __SKIA__
+#if __SKIA__
 #nullable enable
 
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Uno.Foundation.Extensibility;
 using Uno.UI.Xaml.Media;
-using Uno.UI.Xaml.Media.Imaging.Svg;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Media.Imaging;
@@ -15,21 +13,7 @@ partial class SvgImageSource
 {
 	private Task<ImageData>? _currentOpenTask;
 
-	private ISvgProvider? _svgProvider;
-
 	internal event EventHandler? SourceLoaded;
-
-	private void InitSvgProvider()
-	{
-		// A registered SVG renderer (opt-in, e.g. the managed engine) is the primary path; the Skia-based add-in,
-		// when installed, still drives the vector SvgCanvas and serves as a rendering fallback.
-		ApiExtensibility.CreateInstance(this, out _svgProvider);
-
-		if (_svgProvider is not null)
-		{
-			_svgProvider.SourceLoaded += OnSourceLoaded;
-		}
-	}
 
 	private bool TryOpenSvgImageData(CancellationToken ct, out Task<ImageData> asyncImage)
 	{
@@ -46,8 +30,9 @@ partial class SvgImageSource
 			return ImageData.Empty;
 		}
 
-		// Primary: a registered SVG renderer (opt-in via the host builder) parses the markup. Core names no managed
-		// impl; when none is registered we fall straight through to the optional Skia-based add-in below.
+		// The single registered ISvgRenderer (Skia by default, or the managed engine / an app-supplied one when
+		// registered via the host builder) parses the markup into a retained vector document. When none is registered
+		// or the markup can't be parsed, there is nothing to draw.
 		if (Uno.UI.Composition.Drawing.SvgRenderer.Current is { } renderer
 			&& renderer.Parse(imageData.ByteArray, Uno.UI.Composition.Drawing.GeometryFactory.Current, Uno.UI.Composition.Drawing.DrawingFactory.Current) is { } document)
 		{
@@ -56,24 +41,14 @@ partial class SvgImageSource
 			return imageData;
 		}
 
-		// Fallback: the optional Skia-based add-in (drives the vector SvgCanvas and any unsupported markup).
-		if (_svgProvider is not null && await _svgProvider.TryLoadSvgDataAsync(imageData.ByteArray))
-		{
-			return imageData;
-		}
-
 		return ImageData.Empty;
 	}
 
-	internal UIElement? GetCanvas() => _svgProvider?.GetCanvas();
+	internal bool IsParsed => _svgDocument is not null;
 
-	internal bool IsParsed => _svgDocument is not null || (_svgProvider?.IsParsed ?? false);
+	internal Size SourceSize => _svgDocument?.SourceSize ?? default;
 
-	internal Size SourceSize => _svgDocument?.SourceSize ?? _svgProvider?.SourceSize ?? default;
-
-	private void OnSourceLoaded(object? sender, EventArgs e) => SourceLoaded?.Invoke(this, EventArgs.Empty);
-
-	private void Unload() => _svgProvider?.Unload();
+	private void Unload() => _svgDocument = null;
 
 	private protected override void UnloadImageSourceData()
 	{

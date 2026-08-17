@@ -277,11 +277,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var size = InnerMeasureOverride(availableSize);
 
-			if (_svgCanvas is not null)
-			{
-				_svgCanvas.Measure(availableSize);
-			}
-
 			return size;
 		}
 

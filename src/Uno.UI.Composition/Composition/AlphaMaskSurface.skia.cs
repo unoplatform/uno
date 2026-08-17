@@ -36,7 +36,7 @@ internal class AlphaMaskSurface : CompositionObject, ICompositionSurface, IPaint
 
 	Vector2 IPaintableSurface.Size => _visual.TryGetTarget(out var visual) ? visual.Size : Vector2.Zero;
 
-	void IPaintableSurface.Paint(IDrawingSession session, float opacity)
+	void IPaintableSurface.Paint(IDrawingSession session, float opacity, global::Windows.Foundation.Rect bounds)
 	{
 		if (!_visual.TryGetTarget(out var visual))
 		{

@@ -29,6 +29,8 @@
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="HarfBuzzSharp" />
+		<!-- Svg.Skia backs the default ISvgRenderer (SkiaSvgRenderer); version is centrally set in Directory.Build.targets. -->
+		<PackageReference Include="Svg.Skia" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -37,6 +37,7 @@ internal static class DrawingBackendFallback
 	private static bool _fontAttempted;
 	private static bool _imageDecoderAttempted;
 	private static bool _geometryAttempted;
+	private static bool _svgAttempted;
 	private static bool _graphicsAttempted;
 
 	/// <summary>Lights up the Skia font provider if that seam is empty (a render-independent content seam).</summary>
@@ -104,6 +105,29 @@ internal static class DrawingBackendFallback
 			if (Invoke<IGeometryFactory>("CreateGeometryFactory") is { } geometryFactory)
 			{
 				GeometryFactory.RegisterDefault(geometryFactory);
+			}
+		}
+	}
+
+	/// <summary>Lights up the Skia SVG renderer if that seam is empty (a render-independent content seam).</summary>
+	public static void EnsureSvgRenderer()
+	{
+		if (Volatile.Read(ref _svgAttempted))
+		{
+			return;
+		}
+
+		lock (_gate)
+		{
+			if (_svgAttempted)
+			{
+				return;
+			}
+
+			_svgAttempted = true;
+			if (Invoke<ISvgRenderer>("CreateSvgRenderer") is { } renderer)
+			{
+				SvgRenderer.RegisterDefault(renderer);
 			}
 		}
 	}
