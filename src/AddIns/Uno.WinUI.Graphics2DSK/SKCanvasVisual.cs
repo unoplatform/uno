@@ -9,7 +9,8 @@ namespace Uno.WinUI.Graphics2DSK;
 /// <summary>
 /// The composition visual backing <see cref="SKCanvasElement"/>. During paint it draws the user's SkiaSharp
 /// straight into the frame's <see cref="SKCanvas"/> (zero-copy) when the active backend exposes one via
-/// <see cref="IDrawingSession.NativeSurface"/>; on any other backend that surface is null and nothing is drawn.
+/// <see cref="IDrawingSession.NativeSurface"/>; on any other backend that surface is null and it asks the owner
+/// to fall back to its GL island.
 /// </summary>
 internal sealed class SKCanvasVisual(SKCanvasElement owner, Compositor compositor) : ContainerVisual(compositor)
 {
@@ -19,6 +20,7 @@ internal sealed class SKCanvasVisual(SKCanvasElement owner, Compositor composito
 	{
 		if (session.Session.NativeSurface is not SKCanvas canvas)
 		{
+			owner.EnsureIslandFallback();
 			return;
 		}
 
