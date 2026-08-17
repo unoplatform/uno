@@ -19,7 +19,7 @@ namespace Microsoft.Graphics.Canvas.Geometry;
 /// Builds a path geometry out of a sequence of figures and segments, for use with
 /// <see cref="CanvasGeometry.CreatePath(CanvasPathBuilder)"/>.
 /// </summary>
-public class CanvasPathBuilder : IDisposable
+internal class CanvasPathBuilder : IDisposable
 {
 	private List<CompositionPathCommand> _commands = new List<CompositionPathCommand>();
 

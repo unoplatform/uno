@@ -3,7 +3,7 @@
 /// <summary>
 /// Indicates whether a figure is open or closed.
 /// </summary>
-public enum CanvasFigureLoop
+internal enum CanvasFigureLoop
 {
 	/// <summary>
 	/// The figure is open: its end point is not connected to its start point.

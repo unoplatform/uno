@@ -3,7 +3,7 @@
 /// <summary>
 /// Specifies whether a figure contributes to the filled region of a geometry.
 /// </summary>
-public enum CanvasFigureFill
+internal enum CanvasFigureFill
 {
 	/// <summary>
 	/// The figure is filled.

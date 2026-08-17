@@ -9,7 +9,7 @@ namespace Microsoft.Graphics.Canvas.Geometry;
 /// <summary>
 /// Specifies whether an arc should be greater than 180 degrees.
 /// </summary>
-public enum CanvasArcSize
+internal enum CanvasArcSize
 {
 	/// <summary>
 	/// The arc's sweep should be 180 degrees or less.
