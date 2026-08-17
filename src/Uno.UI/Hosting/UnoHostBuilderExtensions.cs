@@ -24,7 +24,7 @@ public static class UnoPlatformHostBuilderExtensions
 
 	/// <summary>
 	/// Registers the font resolver — a render-independent content seam (family/style/bytes/codepoint → glyph
-	/// outlines). Independent of the graphics backend, like <see cref="ImageDecoder"/>.
+	/// outlines). Independent of the graphics backend, like <see cref="ImageEncoderDecoder"/>.
 	/// </summary>
 	public static IUnoPlatformHostBuilder FontProvider(this IUnoPlatformHostBuilder builder, IFontProvider provider)
 	{
@@ -37,17 +37,17 @@ public static class UnoPlatformHostBuilderExtensions
 	/// Registers the image decoder — a render-independent content seam (encoded bytes → neutral pixels). Independent
 	/// of the graphics backend, like <see cref="FontProvider"/>.
 	/// </summary>
-	public static IUnoPlatformHostBuilder ImageDecoder(this IUnoPlatformHostBuilder builder, IImageDecoder decoder)
+	public static IUnoPlatformHostBuilder ImageEncoderDecoder(this IUnoPlatformHostBuilder builder, IImageEncoderDecoder decoder)
 	{
 		ArgumentNullException.ThrowIfNull(decoder);
-		builder.AddDrawingRegistration(() => Uno.UI.Composition.Drawing.ImageDecoder.Current = decoder);
+		builder.AddDrawingRegistration(() => Uno.UI.Composition.Drawing.ImageEncoderDecoder.Current = decoder);
 		return builder;
 	}
 
 	/// <summary>
 	/// Registers the geometry engine — a render-independent seam (the path + primitive builders that mint
 	/// <see cref="IGeometry"/>). Independent of the graphics backend, like <see cref="FontProvider"/> /
-	/// <see cref="ImageDecoder"/>; the render backend consumes whatever neutral geometry it produces.
+	/// <see cref="ImageEncoderDecoder"/>; the render backend consumes whatever neutral geometry it produces.
 	/// </summary>
 	public static IUnoPlatformHostBuilder GeometryFactory(this IUnoPlatformHostBuilder builder, IGeometryFactory factory)
 	{
@@ -59,7 +59,7 @@ public static class UnoPlatformHostBuilderExtensions
 	/// <summary>
 	/// Registers the SVG renderer — a render-independent content seam (SVG markup → a retained
 	/// <see cref="Uno.UI.Composition.Drawing.ISvgDocument"/> that replays through the neutral drawing session).
-	/// Independent of the graphics backend, like <see cref="FontProvider"/> / <see cref="ImageDecoder"/>; the
+	/// Independent of the graphics backend, like <see cref="FontProvider"/> / <see cref="ImageEncoderDecoder"/>; the
 	/// framework defaults to its managed engine when none is registered.
 	/// </summary>
 	public static IUnoPlatformHostBuilder SvgRenderer(this IUnoPlatformHostBuilder builder, Uno.UI.Composition.Drawing.ISvgRenderer renderer)

@@ -18,7 +18,7 @@ namespace Uno.UI.Composition.Drawing;
 /// This is the device-bound resource half of the abstraction: it manufactures the stateful handles that cross the
 /// backend boundary and need the GPU/pixel device — images, shaders and effect filters. Transient draw configuration
 /// (paint) is passed inline on the drawing-session verbs instead of being manufactured here. The backend-independent
-/// seams live separately: geometry (<see cref="GeometryFactory"/>), image decoding (<see cref="ImageDecoder"/>) and
+/// seams live separately: geometry (<see cref="GeometryFactory"/>), image decoding (<see cref="ImageEncoderDecoder"/>) and
 /// font resolution (<see cref="FontProvider"/>). The render backend consumes the neutral <see cref="IGeometry"/>
 /// those produce, runtime-checking for the concrete types it knows to take a fast path.
 /// </remarks>
@@ -44,7 +44,7 @@ public interface IDrawingFactory
 	/// <summary>
 	/// Uploads a neutral <see cref="IImage"/>'s pixels into a backend-specific GPU texture (see
 	/// <see cref="ITexture"/>). Done once; the caller owns and disposes the result. This is the "store"
-	/// half of images — decoding (neutral pixels) is separate, and lives in <see cref="IImageDecoder"/>.
+	/// half of images — decoding (neutral pixels) is separate, and lives in <see cref="IImageEncoderDecoder"/>.
 	/// </summary>
 	ITexture CreateTexture(IImage image);
 

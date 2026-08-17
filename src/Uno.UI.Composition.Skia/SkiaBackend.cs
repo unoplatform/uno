@@ -1,7 +1,6 @@
 #nullable enable
 
 using SkiaSharp;
-using Uno.Foundation.Extensibility;
 using Uno.UI.Composition.Drawing;
 
 namespace Uno.UI.Composition.Skia;
@@ -15,12 +14,12 @@ namespace Uno.UI.Composition.Skia;
 /// </summary>
 public static class SkiaBackend
 {
-	// Per-seam Skia defaults — each RETURNS a public seam instance (IFontProvider / IImageDecoder / …); the caller
+	// Per-seam Skia defaults — each RETURNS a public seam instance (IFontProvider / IImageEncoderDecoder / …); the caller
 	// (DrawingBackendFallback) registers it via the framework's own internal RegisterDefault. Internal: reflection
 	// reaches them with BindingFlags.NonPublic, no IVT required.
 	internal static IFontProvider CreateFontProvider() => new SkiaFontProvider();
 
-	internal static IImageDecoder CreateImageDecoder() => new SkiaImageDecoderBackend();
+	internal static IImageEncoderDecoder CreateImageDecoder() => new SkiaImageDecoderBackend();
 
 	internal static IGeometryFactory CreateGeometryFactory() => new SkiaGeometryFactory();
 
@@ -29,10 +28,4 @@ public static class SkiaBackend
 
 	/// <summary>The neutral default renderer for heads that don't install their own (e.g. the native Skia path).</summary>
 	internal static IDrawingFactory CreateDefaultRenderer() => new SkiaDrawingFactory();
-
-	/// <summary>Registers the Skia image encoder for <c>BitmapEncoder</c> (Uno.UWP) — a public, imaging-library-agnostic
-	/// <see cref="ApiExtensibility"/> seam, so no Uno.UWP internal is touched.</summary>
-	internal static void RegisterImageEncoder()
-		=> ApiExtensibility.Register(typeof(global::Windows.Graphics.Imaging.IImageEncoderExtension), _ => new SkiaImageEncoderExtension());
-
 }

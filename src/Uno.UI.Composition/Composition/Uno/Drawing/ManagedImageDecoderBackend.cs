@@ -4,16 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using Windows.Graphics.Imaging;
 
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// SkiaSharp-free <see cref="IImageDecoder"/>: decodes via <see cref="ManagedImageDecoder"/> and wraps the result
+/// SkiaSharp-free <see cref="IImageEncoderDecoder"/>: decodes via <see cref="ManagedImageDecoder"/> and wraps the result
 /// as managed, byte[]-backed <see cref="IImage"/>/<see cref="ImageFrames"/> — no Skia object is ever created.
-/// Register as <see cref="ImageDecoder.Current"/> so an image-bearing app can run with no native libSkiaSharp.
+/// Register as <see cref="ImageEncoderDecoder.Current"/> so an image-bearing app can run with no native libSkiaSharp.
 /// Formats the managed decoder can't handle return false (there is no Skia fallback here).
 /// </summary>
-public sealed class ManagedImageDecoderBackend : IImageDecoder
+public sealed class ManagedImageDecoderBackend : IImageEncoderDecoder
 {
 	public bool TryDecode(Stream stream, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out ImageFrames? frames)
 	{
@@ -39,6 +40,9 @@ public sealed class ManagedImageDecoderBackend : IImageDecoder
 
 	public ImageFrames CreateFrames(IImage image)
 		=> new(new[] { image }, new[] { 0 });
+
+	public byte[] Encode(byte[] pixels, int width, int height, BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapEncoderFormat format, int quality)
+		=> ManagedImageEncoder.Encode(pixels, width, height, pixelFormat, alphaMode, format, quality);
 
 	private static byte[] ReadAllBytes(Stream stream)
 	{

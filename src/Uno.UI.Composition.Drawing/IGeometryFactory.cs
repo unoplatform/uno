@@ -8,7 +8,7 @@ namespace Uno.UI.Composition.Drawing;
 /// </summary>
 /// <remarks>
 /// Geometry is an independent, render-backend-agnostic seam (like <see cref="IFontProvider"/> and
-/// <see cref="IImageDecoder"/>), <em>not</em> part of the drawing backend: composition builds geometry through the
+/// <see cref="IImageEncoderDecoder"/>), <em>not</em> part of the drawing backend: composition builds geometry through the
 /// registered factory, and a render backend consumes the neutral <see cref="IGeometry"/> it gets — runtime-checking
 /// for the concrete types it knows to take a fast path (e.g. the Skia backend uses an <c>SKPath</c> directly and
 /// converts anything else). A backend that has a native geometry representation registers a factory that produces it,

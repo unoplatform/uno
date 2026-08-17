@@ -2558,7 +2558,7 @@ internal sealed class WebGpuReadbackImage : IImage
 /// The device-bound WebGPU resource factory: textures, gradient shaders, color filters, the drop-shadow /
 /// backdrop-blur effect, and offscreen rasterization are all WebGPU-owned. Geometry, font resolution/shaping and
 /// image decode are separate backend-independent seams (<see cref="GeometryFactory"/> / <see cref="FontProvider"/>
-/// / <see cref="ImageDecoder"/>); WebGPU consumes the neutral <see cref="IGeometry"/> it's registered by flattening
+/// / <see cref="ImageEncoderDecoder"/>); WebGPU consumes the neutral <see cref="IGeometry"/> it's registered by flattening
 /// it, so a SkiaSharp-free app registers a <see cref="ManagedGeometryFactory"/> and links zero SkiaSharp for drawing.
 /// </summary>
 public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
