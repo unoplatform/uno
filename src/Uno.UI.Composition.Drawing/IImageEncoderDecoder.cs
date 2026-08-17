@@ -31,10 +31,12 @@ public interface IImageEncoderDecoder
 
 	/// <summary>
 	/// Encodes a raw pixel buffer (<paramref name="pixelFormat"/>/<paramref name="alphaMode"/>) to the compressed
-	/// <paramref name="format"/>, returning the file bytes. This is the inverse of <see cref="TryDecode"/> and the
-	/// engine behind <c>Windows.Graphics.Imaging.BitmapEncoder</c>. Throws for a format the codec can't produce.
+	/// <paramref name="format"/>, writing the file bytes into <paramref name="destination"/>. This is the inverse of
+	/// <see cref="TryDecode"/> and the engine behind <c>Windows.Graphics.Imaging.BitmapEncoder</c>. Writing into the
+	/// caller's stream avoids materializing the whole encoded file as an intermediate array. Throws for a format the
+	/// codec can't produce.
 	/// </summary>
-	byte[] Encode(byte[] pixels, int width, int height, BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapEncoderFormat format, int quality);
+	void Encode(Stream destination, byte[] pixels, int width, int height, BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapEncoderFormat format, int quality);
 }
 
 /// <summary>

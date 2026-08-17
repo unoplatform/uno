@@ -41,8 +41,8 @@ public sealed class ManagedImageDecoderBackend : IImageEncoderDecoder
 	public ImageFrames CreateFrames(IImage image)
 		=> new(new[] { image }, new[] { 0 });
 
-	public byte[] Encode(byte[] pixels, int width, int height, BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapEncoderFormat format, int quality)
-		=> ManagedImageEncoder.Encode(pixels, width, height, pixelFormat, alphaMode, format, quality);
+	public void Encode(Stream destination, byte[] pixels, int width, int height, BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapEncoderFormat format, int quality)
+		=> ManagedImageEncoder.Encode(destination, pixels, width, height, pixelFormat, alphaMode, format, quality);
 
 	private static byte[] ReadAllBytes(Stream stream)
 	{

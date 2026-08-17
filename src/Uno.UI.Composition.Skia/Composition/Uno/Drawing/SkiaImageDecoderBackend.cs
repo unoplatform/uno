@@ -27,7 +27,7 @@ internal sealed class SkiaImageDecoderBackend : IImageEncoderDecoder
 
 	public ImageFrames CreateFrames(IImage image) => new(new[] { image }, new[] { 0 });
 
-	public byte[] Encode(byte[] pixels, int width, int height, BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapEncoderFormat format, int quality)
+	public void Encode(Stream destination, byte[] pixels, int width, int height, BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapEncoderFormat format, int quality)
 	{
 		var info = new SKImageInfo(width, height, ToSKColorType(pixelFormat), ToSKAlphaType(alphaMode));
 
@@ -41,7 +41,7 @@ internal sealed class SkiaImageDecoderBackend : IImageEncoderDecoder
 
 		using var data = bitmap.Encode(ToSKEncodedImageFormat(format), quality)
 			?? throw new NotSupportedException($"Encoding to {format} is not supported by the Skia backend.");
-		return data.ToArray();
+		data.SaveTo(destination);
 	}
 
 	private static SKColorType ToSKColorType(BitmapPixelFormat format) =>
