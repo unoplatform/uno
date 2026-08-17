@@ -59,7 +59,6 @@ internal sealed class SkiaDrawingFactory :
 
 	public ICommandRecorder CreateRecording() => SkiaDrawingSession.StartRecording();
 
-	public global::System.Type? NativeSurfaceType => typeof(SKCanvas);
 
 	// Typed present per kind the Skia backend serves — the target arrives already narrowed, so there is no
 	// cast/switch here. CPU framebuffer → SKSurface over pixels; GL framebuffer → GRContext-GL; Metal texture →

@@ -1,5 +1,6 @@
 #nullable enable
 
+using System.ComponentModel;
 using System.Numerics;
 using Windows.Foundation;
 using Windows.UI;
@@ -24,10 +25,10 @@ public interface IDrawingSession
 	/// <summary>
 	/// The backend's live, directly-drawable native surface for this session — e.g. a SkiaSharp <c>SKCanvas</c> —
 	/// or <c>null</c> when the backend records neutral commands and exposes none (e.g. WebGPU). Type-erased so the
-	/// seam names no graphics library. A <c>&lt;Api&gt;CanvasElement</c> type-checks it against its API's surface
-	/// type to draw ZERO-COPY straight into the frame (see <see cref="IDrawingFactory.NativeSurfaceType"/> for the
-	/// load-time capability check); on <c>null</c> / a different type it falls back to its own offscreen island.
+	/// seam names no graphics library; a consumer type-checks it against its graphics API's surface type before
+	/// drawing straight into the frame, and does nothing when it is <c>null</c> or a different type.
 	/// </summary>
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	object? NativeSurface { get; }
 
 	void SetMatrix(in Matrix4x4 matrix);
