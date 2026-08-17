@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Composition.Drawing;
 using Windows.Graphics.Imaging;
@@ -146,7 +147,9 @@ public class ManagedImageCodecRoundTripTests
 
 	private static byte[] EncodeDecode(byte[] rgba, int w, int h, BitmapEncoderFormat format, int quality = 90)
 	{
-		var encoded = ManagedImageEncoder.Encode(rgba, w, h, BitmapPixelFormat.Rgba8, BitmapAlphaMode.Straight, format, quality);
+		using var ms = new MemoryStream();
+		ManagedImageEncoder.Encode(ms, rgba, w, h, BitmapPixelFormat.Rgba8, BitmapAlphaMode.Straight, format, quality);
+		var encoded = ms.ToArray();
 		Assert.IsTrue(ManagedImageDecoder.TryDecode(encoded, null, null, out var decoded), $"{format} failed to decode.");
 		Assert.AreEqual(w, decoded!.Width, $"{format} width mismatch.");
 		Assert.AreEqual(h, decoded.Height, $"{format} height mismatch.");

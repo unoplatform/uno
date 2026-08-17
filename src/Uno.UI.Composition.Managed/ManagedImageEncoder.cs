@@ -1,20 +1,21 @@
 #nullable enable
 
 using System;
+using System.IO;
 using Windows.Graphics.Imaging;
 
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
 /// SkiaSharp-free image ENCODER — the inverse of <see cref="ManagedImageDecoder"/>. Turns a raw pixel buffer into
-/// compressed file bytes for <see cref="ImageEncoderDecoder.Encode"/> (behind <c>BitmapEncoder</c>). Per-format
-/// encoders live in the <c>ManagedImageEncoder.&lt;Format&gt;.cs</c> partials; this file owns the dispatch and the
-/// input normalization (any <see cref="BitmapPixelFormat"/>/<see cref="BitmapAlphaMode"/> → straight, non-premultiplied
-/// 8-bit RGBA rows, top-down) that every encoder consumes.
+/// a compressed image written to a stream for <see cref="ImageEncoderDecoder.Encode"/> (behind <c>BitmapEncoder</c>).
+/// Per-format encoders live in the <c>ManagedImageEncoder.&lt;Format&gt;.cs</c> partials; this file owns the dispatch
+/// and the input normalization (any <see cref="BitmapPixelFormat"/>/<see cref="BitmapAlphaMode"/> → straight,
+/// non-premultiplied 8-bit RGBA rows, top-down) that every encoder consumes.
 /// </summary>
 internal static partial class ManagedImageEncoder
 {
-	public static byte[] Encode(byte[] pixels, int width, int height, BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapEncoderFormat format, int quality)
+	public static void Encode(Stream destination, byte[] pixels, int width, int height, BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapEncoderFormat format, int quality)
 	{
 		if (width <= 0 || height <= 0)
 		{
@@ -23,7 +24,7 @@ internal static partial class ManagedImageEncoder
 
 		var rgba = NormalizeToStraightRgba8(pixels, width, height, pixelFormat, alphaMode);
 
-		return format switch
+		var bytes = format switch
 		{
 			BitmapEncoderFormat.Bmp => EncodeBmp(rgba, width, height),
 			BitmapEncoderFormat.Png => EncodePng(rgba, width, height),
@@ -33,6 +34,8 @@ internal static partial class ManagedImageEncoder
 				"HEIF encoding requires an HEVC encoder and is not available in the managed image codec."),
 			_ => throw new NotSupportedException($"Unknown encoder format {format}.")
 		};
+
+		destination.Write(bytes, 0, bytes.Length);
 	}
 
 	/// <summary>

@@ -41,8 +41,7 @@ namespace Windows.Graphics.Imaging
 				if (_softwareBitmap is { } bitmap)
 				{
 					var encode = Encode ?? throw new NotSupportedException("No image codec is registered.");
-					var data = encode(bitmap.Pixels, bitmap.PixelWidth, bitmap.PixelHeight, bitmap.BitmapPixelFormat, bitmap.BitmapAlphaMode, _imageFormat, 100);
-					_stream.AsStream().Write(data, 0, data.Length);
+					encode(_stream.AsStream(), bitmap.Pixels, bitmap.PixelWidth, bitmap.PixelHeight, bitmap.BitmapPixelFormat, bitmap.BitmapAlphaMode, _imageFormat, 100);
 				}
 				return Task.CompletedTask;
 			});
