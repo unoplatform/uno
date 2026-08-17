@@ -28,6 +28,12 @@ internal sealed class SkiaFont : IFont
 	private readonly SKFont _font;
 	private readonly SKFontMetrics _metrics;
 	private HbFont? _hbFont;
+	// Per-(this font+size, glyph) caches: the SkiaFontProvider keeps this instance stable, so both survive across
+	// paints. Text repaints (caret blink, selection, edit) then reuse the neutral outline / rasterized pixels instead
+	// of re-fetching the native SKPath + re-iterating its verbs (every glyph) or re-running an SKSurface rasterize +
+	// readback (every colour glyph) on each paint. Coords are glyph-local; the pen offset is applied at replay.
+	private readonly Dictionary<ushort, PenOp[]> _glyphOutlines = new();
+	private readonly Dictionary<ushort, RasterGlyph?> _colorGlyphs = new();
 
 	public SkiaFont(SKFont font)
 	{
@@ -154,27 +160,58 @@ internal sealed class SkiaFont : IFont
 
 		for (var i = 0; i < glyphs.Length; i++)
 		{
-			using var glyphPath = _font.GetGlyphPath(glyphs[i]);
-			if (glyphPath is { IsEmpty: false })
+			var ops = GetGlyphOutline(glyphs[i]);
+			if (ops.Length > 0)
 			{
-				glyphPath.Transform(SKMatrix.CreateTranslation(positions[i].X, positions[i].Y + baselineY));
-				AppendPath(builder, glyphPath);
+				ReplayTranslated(builder, ops, positions[i].X, positions[i].Y + baselineY);
 			}
-			else if (HasColorGlyphs
-				&& TryRasterizeColorGlyph(glyphs[i], positions[i].X, positions[i].Y + baselineY, out var image))
+			else if (HasColorGlyphs && GetColorGlyph(glyphs[i]) is { } raster)
 			{
-				// Empty outline path == a colour glyph (or blank). SkiaSharp only rasterizes it, so hand the neutral
-				// pixels across the seam; the caller uploads them to a texture (the font stays off the backend).
-				elements.Add(image);
+				// Empty outline == a colour glyph (or blank). SkiaSharp only rasterizes it, so hand the neutral pixels
+				// across the seam; the caller uploads them to a texture (the font stays off the backend).
+				elements.Add(new GlyphImage(raster.Pixels, raster.Width, raster.Height,
+					positions[i].X + raster.InkLeft, positions[i].Y + baselineY + raster.InkTop));
 			}
 		}
 
 		elements.Add(new GlyphOutline(builder.Build()));
 	}
 
-	// Replays an SKPath's contours into a neutral IPathBuilder (pen verbs only — no SkiaSharp type crosses the seam).
-	private static void AppendPath(IPathBuilder builder, SKPath path)
+	// Cached neutral pen ops for a glyph in glyph-local coords (empty = no outline / colour glyph).
+	private PenOp[] GetGlyphOutline(ushort glyph)
 	{
+		if (_glyphOutlines.TryGetValue(glyph, out var cached))
+		{
+			return cached;
+		}
+
+		using var glyphPath = _font.GetGlyphPath(glyph);
+		var ops = glyphPath is { IsEmpty: false } ? ExtractPenOps(glyphPath) : Array.Empty<PenOp>();
+		_glyphOutlines[glyph] = ops;
+		return ops;
+	}
+
+	// Replays cached glyph-local pen ops into a neutral IPathBuilder, translated to the pen position.
+	private static void ReplayTranslated(IPathBuilder builder, PenOp[] ops, float dx, float dy)
+	{
+		var d = new Vector2(dx, dy);
+		foreach (var op in ops)
+		{
+			switch (op.Verb)
+			{
+				case PenVerb.Move: builder.MoveTo(op.P0 + d); break;
+				case PenVerb.Line: builder.LineTo(op.P0 + d); break;
+				case PenVerb.Quad: builder.QuadraticTo(op.P0 + d, op.P1 + d); break;
+				case PenVerb.Cubic: builder.CubicTo(op.P0 + d, op.P1 + d, op.P2 + d); break;
+				case PenVerb.Close: builder.Close(); break;
+			}
+		}
+	}
+
+	// Extracts an SKPath's contours to neutral pen ops (glyph-local; no SkiaSharp type crosses the seam or is cached).
+	private static PenOp[] ExtractPenOps(SKPath path)
+	{
+		var ops = new List<PenOp>();
 		using var it = path.CreateIterator(false);
 		var pts = new SKPoint[4];
 		SKPathVerb verb;
@@ -183,49 +220,63 @@ internal sealed class SkiaFont : IFont
 			switch (verb)
 			{
 				case SKPathVerb.Move:
-					builder.MoveTo(new Vector2(pts[0].X, pts[0].Y));
+					ops.Add(new PenOp(PenVerb.Move, new Vector2(pts[0].X, pts[0].Y)));
 					break;
 				case SKPathVerb.Line:
-					builder.LineTo(new Vector2(pts[1].X, pts[1].Y));
+					ops.Add(new PenOp(PenVerb.Line, new Vector2(pts[1].X, pts[1].Y)));
 					break;
 				case SKPathVerb.Quad:
-					builder.QuadraticTo(new Vector2(pts[1].X, pts[1].Y), new Vector2(pts[2].X, pts[2].Y));
+					ops.Add(new PenOp(PenVerb.Quad, new Vector2(pts[1].X, pts[1].Y), new Vector2(pts[2].X, pts[2].Y)));
 					break;
 				case SKPathVerb.Cubic:
-					builder.CubicTo(new Vector2(pts[1].X, pts[1].Y), new Vector2(pts[2].X, pts[2].Y), new Vector2(pts[3].X, pts[3].Y));
+					ops.Add(new PenOp(PenVerb.Cubic, new Vector2(pts[1].X, pts[1].Y), new Vector2(pts[2].X, pts[2].Y), new Vector2(pts[3].X, pts[3].Y)));
 					break;
 				case SKPathVerb.Conic:
 					// No neutral conic verb — subdivide into quads (2 for pow2=1: array is [p0,c0,m,c1,p2]).
 					var quads = SKPath.ConvertConicToQuads(pts[0], pts[1], pts[2], it.ConicWeight(), 1);
 					for (var q = 1; q + 1 < quads.Length; q += 2)
 					{
-						builder.QuadraticTo(new Vector2(quads[q].X, quads[q].Y), new Vector2(quads[q + 1].X, quads[q + 1].Y));
+						ops.Add(new PenOp(PenVerb.Quad, new Vector2(quads[q].X, quads[q].Y), new Vector2(quads[q + 1].X, quads[q + 1].Y)));
 					}
 					break;
 				case SKPathVerb.Close:
-					builder.Close();
+					ops.Add(new PenOp(PenVerb.Close));
 					break;
 			}
 		}
+
+		return ops.ToArray();
 	}
 
-	private bool TryRasterizeColorGlyph(ushort glyph, float originX, float originY, out GlyphImage result)
+	// Cached rasterized colour-glyph pixels (glyph-local ink; the pen origin is applied per paint), or null when the
+	// glyph has no ink (e.g. whitespace).
+	private RasterGlyph? GetColorGlyph(ushort glyph)
 	{
-		result = default!;
+		if (_colorGlyphs.TryGetValue(glyph, out var cached))
+		{
+			return cached;
+		}
 
+		var raster = RasterizeColorGlyph(glyph);
+		_colorGlyphs[glyph] = raster;
+		return raster;
+	}
+
+	private RasterGlyph? RasterizeColorGlyph(ushort glyph)
+	{
 		using var builder = new SKTextBlobBuilder();
 		builder.AddPositionedRun(new[] { glyph }, _font, new[] { new SKPoint(0, 0) });
 		using var blob = builder.Build();
 		if (blob is null)
 		{
-			return false;
+			return null;
 		}
 
 		var ink = blob.Bounds; // ink bounds of the glyph placed at the (0,0) baseline
 		if (ink.Width <= 0 || ink.Height <= 0)
 		{
 			// No ink (e.g. whitespace) — nothing to draw.
-			return false;
+			return null;
 		}
 
 		var width = (int)Math.Ceiling(ink.Width);
@@ -246,13 +297,44 @@ internal sealed class SkiaFont : IFont
 			{
 				if (!surface.ReadPixels(info, (nint)dst, info.RowBytes, 0, 0))
 				{
-					return false;
+					return null;
 				}
 			}
 		}
 
-		result = new GlyphImage(pixels, width, height, originX + ink.Left, originY + ink.Top);
-		return true;
+		return new RasterGlyph(pixels, width, height, ink.Left, ink.Top);
+	}
+
+	private enum PenVerb : byte { Move, Line, Quad, Cubic, Close }
+
+	private readonly struct PenOp
+	{
+		public readonly PenVerb Verb;
+		public readonly Vector2 P0, P1, P2;
+
+		public PenOp(PenVerb verb, Vector2 p0 = default, Vector2 p1 = default, Vector2 p2 = default)
+		{
+			Verb = verb;
+			P0 = p0;
+			P1 = p1;
+			P2 = p2;
+		}
+	}
+
+	private readonly struct RasterGlyph
+	{
+		public readonly byte[] Pixels;
+		public readonly int Width, Height;
+		public readonly float InkLeft, InkTop;
+
+		public RasterGlyph(byte[] pixels, int width, int height, float inkLeft, float inkTop)
+		{
+			Pixels = pixels;
+			Width = width;
+			Height = height;
+			InkLeft = inkLeft;
+			InkTop = inkTop;
+		}
 	}
 
 	private static bool HasColorTables(SKTypeface? typeface)
