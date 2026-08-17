@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 
 namespace Windows.Graphics.Imaging
@@ -40,7 +41,8 @@ namespace Windows.Graphics.Imaging
 			{
 				if (_softwareBitmap is { } bitmap)
 				{
-					var encode = Encode ?? throw new NotSupportedException("No image codec is registered.");
+					var encode = ResolveEncode() ?? throw new NotSupportedException(
+						"No image codec is registered; register one via the host builder or reference a Skia/managed image codec.");
 					encode(_stream.AsStream(), bitmap.Pixels, bitmap.PixelWidth, bitmap.PixelHeight, bitmap.BitmapPixelFormat, bitmap.BitmapAlphaMode, _imageFormat, 100);
 				}
 				return Task.CompletedTask;

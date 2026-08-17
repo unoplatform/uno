@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Uno.UI.Composition.Drawing;
 
 namespace Windows.Graphics.Imaging;
 
@@ -32,8 +33,9 @@ partial class BitmapEncoder
 	// _encoderMap is defined here to  make sure they are initialized after the encoder ID Guids above.
 	// Static field initializers are executed in textual order. When dealing with partial classes, the order is undefined.
 
-	// Uniform across all platforms: the neutral output format. FlushAsync prefers the registered neutral codec
-	// (Encode) and only falls back to the platform's native encoder when none is registered.
+	// Uniform across all platforms: the neutral output format. FlushAsync resolves the neutral codec (ResolveEncode,
+	// which lazily lights up the Skia/managed codec on a Skia head) and only falls back to the platform's native
+	// encoder on a native-only head where no codec exists.
 	private static readonly IDictionary<Guid, BitmapEncoderFormat> _encoderMap =
 		new Dictionary<Guid, BitmapEncoderFormat>()
 		{
@@ -45,11 +47,34 @@ partial class BitmapEncoder
 		};
 
 	/// <summary>
-	/// The registered neutral image codec's encode entry point, or null when none is registered (a native-only head).
-	/// Assigned once, top-down, at startup by the image-codec registration in the composition layer (which references
-	/// this assembly and hands its <c>IImageEncoderDecoder.Encode</c> down as a plain delegate) — so this assembly
-	/// needs no reference to, and no reflection into, the codec. <c>FlushAsync</c> prefers it and falls back to the
-	/// platform's native encoder when it's null. Signature: (destination, pixels, width, height, pixelFormat, alphaMode, format, quality).
+	/// The registered neutral image codec's encode entry point, or null when none has been registered yet. Assigned
+	/// top-down by the image-codec registration in the composition layer (which references this assembly and hands its
+	/// <c>IImageEncoderDecoder.Encode</c> down as a plain delegate) — so this assembly needs no reference to, and no
+	/// reflection into, the codec. Prefer <see cref="ResolveEncode"/> over reading this directly.
+	/// Signature: (destination, pixels, width, height, pixelFormat, alphaMode, format, quality).
+	/// Internal (not part of the WinUI <c>BitmapEncoder</c> surface): the setter is reached from the composition layer via InternalsVisibleTo.
 	/// </summary>
-	public static Action<Stream, byte[], int, int, BitmapPixelFormat, BitmapAlphaMode, BitmapEncoderFormat, int>? Encode { get; set; }
+	internal static Action<Stream, byte[], int, int, BitmapPixelFormat, BitmapAlphaMode, BitmapEncoderFormat, int>? Encode { get; set; }
+
+	/// <summary>
+	/// Downward trigger to the composition layer's lazy per-seam codec registration (Skia's
+	/// <c>DrawingBackendFallback.EnsureImageDecoder</c>), wired top-down at startup by that layer — this assembly sits
+	/// below it and can't reach it directly. Lets a head that never touched <c>ImageEncoderDecoder.Current</c> still
+	/// resolve a codec on first encode. Null (or a no-op) on a SkiaSharp-free / native-only head.
+	/// </summary>
+	internal static Action? EnsureCodec { get; set; }
+
+	/// <summary>
+	/// Returns the registered codec, triggering the composition layer's lazy registration once if none is set yet.
+	/// Null only when there is genuinely no codec (a native-only head), where callers use the platform encoder instead.
+	/// </summary>
+	internal static Action<Stream, byte[], int, int, BitmapPixelFormat, BitmapAlphaMode, BitmapEncoderFormat, int>? ResolveEncode()
+	{
+		if (Encode is null)
+		{
+			EnsureCodec?.Invoke();
+		}
+
+		return Encode;
+	}
 }

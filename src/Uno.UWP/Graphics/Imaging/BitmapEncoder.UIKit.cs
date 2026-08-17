@@ -6,6 +6,7 @@ using UIKit;
 using Windows.Foundation;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Uno.UI.Composition.Drawing;
 
 namespace Windows.Graphics.Imaging
 {
@@ -40,7 +41,7 @@ namespace Windows.Graphics.Imaging
 				{
 					// Prefer the registered neutral codec (so Skia-on-iOS encodes through the same codec as desktop);
 					// fall back to the native UIImage encoder when none is registered (a native-only head).
-					if (Encode is { } encode)
+					if (ResolveEncode() is { } encode)
 					{
 						var pixels = ReadRgba(cgImage, out var width, out var height);
 						using var ms = new MemoryStream();
