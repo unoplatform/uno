@@ -34,7 +34,6 @@ namespace Uno.WinUI.Graphics3DGL;
 /// </summary>
 /// <remarks>
 /// This is only available on WinUI and on skia-based targets running with hardware acceleration.
-/// This is currently only available on the WPF and X11 targets (and WinUI).
 /// </remarks>
 public abstract partial class GLCanvasElement : Grid, INativeContext
 {
