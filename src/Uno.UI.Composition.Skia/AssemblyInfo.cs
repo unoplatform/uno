@@ -1,13 +1,8 @@
 using global::System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.MacOS")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Tizen")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.X11")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.AppleUIKit")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Android")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.WebAssembly.Browser")]
-[assembly: InternalsVisibleTo("Uno.UI")]
+// The Skia backend stands on the public neutral seam: the framework (Uno.UI) and every Runtime.Skia host wire it up
+// through the public SkiaGraphicsProvider/SkiaBackend surface or the reflective DrawingBackendFallback — none of them
+// touch a backend internal, so no IVT is granted to them. The only grant is white-box test access: RuntimeTests
+// constructs concrete backend types (SkiaFont/SkiaImage/SkiaDrawingSession/SkiaGeometrySource2D) to prove the impl
+// matches the neutral seam.
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
