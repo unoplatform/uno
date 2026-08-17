@@ -1012,12 +1012,6 @@ namespace Microsoft.UI.Xaml
 					}
 					else
 					{
-						if (value is LazyInitializer lazy)
-						{
-							value = new LazyInitializer(ResourceResolver.CurrentScope, lazy.Initializer);
-							themeDictionaries._hasUnmaterializedItems = true;
-						}
-
 						themeDictionaries.Set(key, value, throwIfPresent: false);
 					}
 				}

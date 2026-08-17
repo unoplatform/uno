@@ -17,7 +17,8 @@ partial class PointerRoutedEventArgs : IHtmlHandleableRoutedEventArgs
 			return absolutePosition;
 		}
 
-		relativeTo.TransformToVisual(null).TryTransformInverse(absolutePosition, out var relativePosition);
-		return relativePosition;
+		return relativeTo.TransformToVisual(null).TryTransformInverse(absolutePosition, out var relativePosition)
+			? relativePosition
+			: absolutePosition;
 	}
 }

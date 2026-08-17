@@ -516,16 +516,14 @@ namespace Microsoft.UI.Xaml
 
 		private static Style? GetStyleFromChannel(Type type, Dictionary<Type, Style> styleCache, Dictionary<Type, StyleProviderHandler> lookup)
 		{
-			if (!styleCache.TryGetValue(type, out Style? style))
+			if (!styleCache.TryGetValue(type, out Style? style)
+				&& lookup.TryGetValue(type, out var styleProvider))
 			{
-				if (lookup.TryGetValue(type, out var styleProvider))
-				{
-					style = styleProvider();
+				style = styleProvider();
 
-					styleCache[type] = style;
+				styleCache[type] = style;
 
-					lookup.Remove(type); // The lookup won't be used again now that the style itself is cached
-				}
+				lookup.Remove(type); // The lookup won't be used again now that the style itself is cached
 			}
 
 			return style;

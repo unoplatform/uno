@@ -197,7 +197,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				await UITestHelper.Load(button, x => x.IsLoaded);
 
 				Assert.AreSame(template, button.Template);
-				Assert.IsNotNull(button.GetTemplateChild("CustomRoot"));
+				Assert.IsNotNull(FindDescendantByName(button, "CustomRoot"));
 
 				// Clearing the explicit style must fall back to the built-in style template,
 				// which was never materialized while the explicit style was winning.
@@ -206,7 +206,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 				Assert.IsNotNull(button.Template);
 				Assert.AreNotSame(template, button.Template);
-				Assert.IsNull(button.GetTemplateChild("CustomRoot"));
+				Assert.IsNull(FindDescendantByName(button, "CustomRoot"));
 			}
 			finally
 			{
@@ -345,6 +345,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				TestServices.WindowHelper.WindowContent = null;
 			}
+		}
+
+		private static FrameworkElement FindDescendantByName(DependencyObject parent, string name)
+		{
+			for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+			{
+				var child = VisualTreeHelper.GetChild(parent, i);
+				if (child is FrameworkElement { Name: var childName } element && childName == name)
+				{
+					return element;
+				}
+
+				if (FindDescendantByName(child, name) is { } descendant)
+				{
+					return descendant;
+				}
+			}
+
+			return null;
 		}
 	}
 }

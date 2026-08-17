@@ -359,8 +359,10 @@ namespace Uno.UI.Runtime.Skia
 					return new Point(x, y);
 				}
 
-				((UIElement)relativeTo).TransformToVisual(null).TryTransformInverse(new Point(x, y), out var position);
-				return position;
+				var absolutePosition = new Point(x, y);
+				return ((UIElement)relativeTo).TransformToVisual(null).TryTransformInverse(absolutePosition, out var position)
+					? position
+					: absolutePosition;
 			}
 		}
 

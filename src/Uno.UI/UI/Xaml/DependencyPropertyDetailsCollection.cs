@@ -4,6 +4,8 @@ using System;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Data;
 using Uno.Buffers;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 
 namespace Microsoft.UI.Xaml
@@ -69,6 +71,10 @@ namespace Microsoft.UI.Xaml
 								if (newSourceProperty is not null)
 								{
 									otherStore.SetTemplateBinding(newDP, newSourceProperty, oldBindingExpression.TemplateBindingPath);
+								}
+								else if (this.Log().IsEnabled(LogLevel.Debug))
+								{
+									this.Log().Debug($"[HotReload] Fast-path template binding {oldSourceProperty.OwnerType.Name}.{oldSourceProperty.Name} could not be cloned because the dependency property was not found.");
 								}
 
 								continue;

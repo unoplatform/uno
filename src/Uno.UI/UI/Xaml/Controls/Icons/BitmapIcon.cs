@@ -63,7 +63,7 @@ public partial class BitmapIcon : IconElement, IThemeChangeAware
 				default(Uri),
 				propertyChangedCallback: (s, e) => ((BitmapIcon)s).OnUriSourceChanged((Uri)e.NewValue)));
 
-	// Mirrors the Uri -> ImageSource conversion the binding engine applies through ImageSourceConverter.
+	// Uses ImageSource's implicit Uri conversion, equivalent to the binding engine's converter path.
 	private void OnUriSourceChanged(Uri uriSource)
 	{
 		if (_image is not null)

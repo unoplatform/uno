@@ -19,6 +19,7 @@ namespace Uno.UI.FluentTheme.v2
 	{
 		public Perf2026Resources()
 		{
+#if !__NETSTD_REFERENCE__
 			InitializeComponent();
 
 			Style.RegisterOptimizedDefaultStyleForType(typeof(AppBarButton), this);
@@ -31,6 +32,7 @@ namespace Uno.UI.FluentTheme.v2
 			Style.RegisterOptimizedDefaultStyleForType(typeof(ScrollBar), this);
 			Style.RegisterOptimizedDefaultStyleForType(typeof(Slider), this);
 			Style.RegisterOptimizedDefaultStyleForType(typeof(ToggleSwitch), this);
+#endif
 		}
 
 		ResourceDictionary IXamlResourceDictionaryProvider.GetResourceDictionary() => this;
