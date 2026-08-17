@@ -299,7 +299,8 @@ public partial class CompositionTarget
 				// the canvas to 0x0 which may crash on some targets
 				return lastRenderedFrame.nativeElementClipPath;
 			}
-			if (target is null || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale)
+			var resized = target is null || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale;
+			if (resized)
 			{
 				target = resizeFunc(new Size(Math.Round(xamlRootBounds.Width * rasterizationScale), Math.Round(xamlRootBounds.Height * rasterizationScale)));
 				_lastCanvasSize = xamlRootBounds;
@@ -307,8 +308,15 @@ public partial class CompositionTarget
 				_lastScaledNativeClipPath = null;
 			}
 
+			// Partial repaint: when the target kept the previous frame's pixels (persistent surface, not resized this
+			// frame), clip the clear+replay to the frame's damage region so only the changed area is repainted and the
+			// rest survives. Otherwise (fresh/undefined surface) repaint the whole frame.
+			var useDamage = !resized
+				&& target!.PreservesContents
+				&& lastRenderedFrame.damage is { } dmg && !dmg.IsEmpty;
+
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
-			using (var present = BeginPresent(Renderer, target))
+			using (var present = BeginPresent(Renderer, target!))
 			{
 				// Scaling (DPI) is applied through the neutral session so it works for any backend.
 				present.Save();
@@ -322,8 +330,17 @@ public partial class CompositionTarget
 				{
 					present.Scale(rasterizationScale, rasterizationScale);
 				}
+				// Clip the content clear+replay to the damage region (in root/logical coords, matching the content);
+				// Clear respects the clip, so only the damaged area is cleared and repainted. FPS/overlay draw outside
+				// this scope so they aren't restricted to the damage region.
+				present.Save();
+				if (useDamage)
+				{
+					present.ClipPath(lastRenderedFrame.damage!, ClipOperation.Intersect, antialias: false);
+				}
 				present.Clear(global::Windows.UI.Colors.Transparent);
 				lastRenderedFrame.frame.Replay(present);
+				present.Restore();
 				_fpsHelper.DrawFps(present);
 				// A host overlay (e.g. the framebuffer software cursor) draws on top of the frame, under the same
 				// orientation + DPI transform as the content.
