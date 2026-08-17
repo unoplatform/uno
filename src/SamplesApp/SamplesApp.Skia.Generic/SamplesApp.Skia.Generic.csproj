@@ -93,6 +93,7 @@
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 		<!-- Skia backend referenced only when the app opts into it (app-level flag); WebGpu backend is always
 		     available for the opt-in render path. The framework itself references neither. -->
+		<ProjectReference Include="..\..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" Condition="'$(UnoDrawingBackendSkia)'=='true'" />
 		<ProjectReference Include="..\..\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" Condition="'$(UnoDrawingBackendWebGpu)'=='true'" />
 		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />

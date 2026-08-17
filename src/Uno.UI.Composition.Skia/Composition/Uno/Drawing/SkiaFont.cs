@@ -146,9 +146,11 @@ internal sealed class SkiaFont : IFont
 		return new HbBlob(handle.AddrOfPinnedObject(), bytes.Length, HarfBuzzSharp.MemoryMode.ReadOnly, handle.Free);
 	}
 
-	public void BuildGlyphRun(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<GlyphRunElement> elements)
+	public void BuildGlyphRun(IGeometryFactory geometry, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<GlyphRunElement> elements)
 	{
-		var builder = new SKPathBuilder();
+		// Build the outline through the registered geometry factory — the font emits neutral pen verbs and never
+		// names a concrete IGeometry type, so it works with whatever geometry backend is registered.
+		var builder = geometry.CreatePathBuilder();
 
 		for (var i = 0; i < glyphs.Length; i++)
 		{
@@ -156,7 +158,7 @@ internal sealed class SkiaFont : IFont
 			if (glyphPath is { IsEmpty: false })
 			{
 				glyphPath.Transform(SKMatrix.CreateTranslation(positions[i].X, positions[i].Y + baselineY));
-				builder.AddPath(glyphPath, SKPathAddMode.Append);
+				AppendPath(builder, glyphPath);
 			}
 			else if (HasColorGlyphs
 				&& TryRasterizeColorGlyph(glyphs[i], positions[i].X, positions[i].Y + baselineY, out var image))
@@ -167,7 +169,44 @@ internal sealed class SkiaFont : IFont
 			}
 		}
 
-		elements.Add(new GlyphOutline(new SkiaGeometrySource2D(builder.Detach())));
+		elements.Add(new GlyphOutline(builder.Build()));
+	}
+
+	// Replays an SKPath's contours into a neutral IPathBuilder (pen verbs only — no SkiaSharp type crosses the seam).
+	private static void AppendPath(IPathBuilder builder, SKPath path)
+	{
+		using var it = path.CreateIterator(false);
+		var pts = new SKPoint[4];
+		SKPathVerb verb;
+		while ((verb = it.Next(pts)) != SKPathVerb.Done)
+		{
+			switch (verb)
+			{
+				case SKPathVerb.Move:
+					builder.MoveTo(new Vector2(pts[0].X, pts[0].Y));
+					break;
+				case SKPathVerb.Line:
+					builder.LineTo(new Vector2(pts[1].X, pts[1].Y));
+					break;
+				case SKPathVerb.Quad:
+					builder.QuadraticTo(new Vector2(pts[1].X, pts[1].Y), new Vector2(pts[2].X, pts[2].Y));
+					break;
+				case SKPathVerb.Cubic:
+					builder.CubicTo(new Vector2(pts[1].X, pts[1].Y), new Vector2(pts[2].X, pts[2].Y), new Vector2(pts[3].X, pts[3].Y));
+					break;
+				case SKPathVerb.Conic:
+					// No neutral conic verb — subdivide into quads (2 for pow2=1: array is [p0,c0,m,c1,p2]).
+					var quads = SKPath.ConvertConicToQuads(pts[0], pts[1], pts[2], it.ConicWeight(), 1);
+					for (var q = 1; q + 1 < quads.Length; q += 2)
+					{
+						builder.QuadraticTo(new Vector2(quads[q].X, quads[q].Y), new Vector2(quads[q + 1].X, quads[q + 1].Y));
+					}
+					break;
+				case SKPathVerb.Close:
+					builder.Close();
+					break;
+			}
+		}
 	}
 
 	private bool TryRasterizeColorGlyph(ushort glyph, float originX, float originY, out GlyphImage result)

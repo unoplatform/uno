@@ -8,5 +8,6 @@ namespace Uno.UI.Composition.Drawing;
 /// </summary>
 public sealed class ManagedSvgRenderer : ISvgRenderer
 {
-	public ISvgDocument? Parse(byte[] svg) => ManagedSvg.TryParse(svg, out var document) ? document : null;
+	public ISvgDocument? Parse(byte[] svg, IGeometryFactory geometry, IDrawingFactory drawing)
+		=> ManagedSvg.TryParse(svg, geometry, drawing, out var document) ? document : null;
 }

@@ -76,6 +76,7 @@
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
 		<ProjectReference Include="..\Uno.UI.Composition.Drawing\Uno.UI.Composition.Drawing.csproj" />
+		<ProjectReference Include="..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
 		<!-- Tests reference Skia backend types (SkiaFont/SkiaImage/SkiaDrawingSession/SkiaGeometrySource2D) directly;
 		     the framework no longer provides the backend transitively, so reference it here explicitly. -->
 		<ProjectReference Include="..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" />

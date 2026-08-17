@@ -244,6 +244,9 @@
     <Project Path="Uno.UI.Composition.Skia/Uno.UI.Composition.SkiaBackend.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
+    <Project Path="Uno.UI.Composition.Managed/Uno.UI.Composition.Managed.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Release" />
+    </Project>
     <Project Path="Uno.UI.Composition.Drawing/Uno.UI.Composition.Drawing.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>

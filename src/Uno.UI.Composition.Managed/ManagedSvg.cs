@@ -26,10 +26,15 @@ internal sealed class ManagedSvg : ISvgDocument
 {
 	private readonly XElement _root;
 	private readonly Dictionary<string, XElement> _byId = new();
+	// The registered factories, injected at parse — the renderer never reaches a global holder (no IVT into Drawing).
+	private readonly IGeometryFactory _geometry;
+	private readonly IDrawingFactory _drawing;
 
-	private ManagedSvg(XElement root)
+	private ManagedSvg(XElement root, IGeometryFactory geometry, IDrawingFactory drawing)
 	{
 		_root = root;
+		_geometry = geometry;
+		_drawing = drawing;
 		foreach (var el in root.DescendantsAndSelf())
 		{
 			var id = (string?)el.Attribute("id");
@@ -46,7 +51,7 @@ internal sealed class ManagedSvg : ISvgDocument
 
 	public Size SourceSize { get; }
 
-	public static bool TryParse(byte[] svg, out ManagedSvg document)
+	public static bool TryParse(byte[] svg, IGeometryFactory geometry, IDrawingFactory drawing, out ManagedSvg document)
 	{
 		document = null!;
 		try
@@ -58,7 +63,7 @@ internal sealed class ManagedSvg : ISvgDocument
 				return false;
 			}
 
-			document = new ManagedSvg(xdoc.Root);
+			document = new ManagedSvg(xdoc.Root, geometry, drawing);
 			return document.SourceSize is { Width: > 0, Height: > 0 };
 		}
 		catch
@@ -240,7 +245,7 @@ internal sealed class ManagedSvg : ISvgDocument
 			var cx = MapX(Frac("cx", 0.5f));
 			var cy = MapY(Frac("cy", 0.5f));
 			var r = Frac("r", 0.5f) * (objectBoundingBox ? (float)Math.Max(bounds.Width, bounds.Height) : 1f);
-			return DrawingFactory.Current.CreateRadialGradientShader(
+			return _drawing.CreateRadialGradientShader(
 				new Vector2(cx, cy), new Vector2(cx, cy), r, r, colors, positions, tileMode, localMatrix);
 		}
 
@@ -248,7 +253,7 @@ internal sealed class ManagedSvg : ISvgDocument
 		var y1 = MapY(Frac("y1", 0f));
 		var x2 = MapX(Frac("x2", 1f));
 		var y2 = MapY(Frac("y2", 0f));
-		return DrawingFactory.Current.CreateLinearGradientShader(
+		return _drawing.CreateLinearGradientShader(
 			new Vector2(x1, y1), new Vector2(x2, y2), colors, positions, tileMode, localMatrix);
 	}
 
@@ -313,7 +318,7 @@ internal sealed class ManagedSvg : ISvgDocument
 
 		var x = Len(el, "x");
 		var y = Len(el, "y");
-		var b = GeometryFactory.Current.CreatePathBuilder();
+		var b = _geometry.CreatePathBuilder();
 		// (Rounded rx/ry omitted in v1 — sharp corners.)
 		b.MoveTo(new Vector2(x, y));
 		b.LineTo(new Vector2(x + w, y));
@@ -332,7 +337,7 @@ internal sealed class ManagedSvg : ISvgDocument
 
 		// Four cubic bezier quadrants (kappa).
 		const float k = 0.5522847498f;
-		var b = GeometryFactory.Current.CreatePathBuilder();
+		var b = _geometry.CreatePathBuilder();
 		b.MoveTo(new Vector2(cx + rx, cy));
 		b.CubicTo(new Vector2(cx + rx, cy + ry * k), new Vector2(cx + rx * k, cy + ry), new Vector2(cx, cy + ry));
 		b.CubicTo(new Vector2(cx - rx * k, cy + ry), new Vector2(cx - rx, cy + ry * k), new Vector2(cx - rx, cy));
@@ -349,7 +354,7 @@ internal sealed class ManagedSvg : ISvgDocument
 			return null;
 		}
 
-		var b = GeometryFactory.Current.CreatePathBuilder();
+		var b = _geometry.CreatePathBuilder();
 		b.MoveTo(new Vector2(pts[0], pts[1]));
 		for (var i = 2; i + 1 < pts.Length; i += 2)
 		{
@@ -371,7 +376,7 @@ internal sealed class ManagedSvg : ISvgDocument
 			return null;
 		}
 
-		var b = GeometryFactory.Current.CreatePathBuilder();
+		var b = _geometry.CreatePathBuilder();
 		new SvgPathParser(d, b).Parse();
 		return b.Build();
 	}

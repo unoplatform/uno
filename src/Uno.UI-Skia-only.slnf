@@ -45,6 +45,7 @@
       "Uno.UI.Adapter.Microsoft.Extensions.Logging\\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj",
       "Uno.UI.Composition\\Uno.UI.Composition.csproj",
       "Uno.UI.Composition.Skia\\Uno.UI.Composition.SkiaBackend.csproj",
+      "Uno.UI.Composition.Managed\\Uno.UI.Composition.Managed.csproj",
       "Uno.UI.Composition.Drawing\\Uno.UI.Composition.Drawing.csproj",
       "Uno.UI.Composition.WebGpu.Init\\Uno.UI.Composition.WebGpu.Init.csproj",
       "Uno.UI.Composition.WebGpu\\Uno.UI.Composition.WebGpu.csproj",

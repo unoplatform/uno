@@ -87,7 +87,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		private static IGeometry BuildOutline(IFont font, ushort[] glyphs, Vector2[] positions)
 		{
 			var elements = new System.Collections.Generic.List<GlyphRunElement>();
-			font.BuildGlyphRun(glyphs, positions, 0f, elements);
+			font.BuildGlyphRun(new global::Uno.UI.Composition.Drawing.ManagedGeometryFactory(), glyphs, positions, 0f, elements);
 			IGeometry outline = null!;
 			foreach (var element in elements)
 			{
