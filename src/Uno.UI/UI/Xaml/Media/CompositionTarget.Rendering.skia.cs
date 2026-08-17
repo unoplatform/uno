@@ -308,16 +308,17 @@ public partial class CompositionTarget
 				_lastScaledNativeClipPath = null;
 			}
 
-			// Partial repaint: when the target kept the previous frame's pixels (persistent surface, not resized this
-			// frame), clip the clear+replay to the frame's damage region so only the changed area is repainted and the
-			// rest survives. Otherwise (fresh/undefined surface) repaint the whole frame.
-			var useDamage = !resized
-				&& target!.PreservesContents
-				&& lastRenderedFrame.damage is { } dmg && !dmg.IsEmpty;
-
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
 			using (var present = BeginPresent(Renderer, target!))
 			{
+				// Partial repaint: when the present's surface keeps the previous frame's pixels (a persistent host
+				// framebuffer, or a backend-retained offscreen it blits to the swapchain) and the frame wasn't resized,
+				// clip the clear+replay to the damage region so only the changed area is repainted and the rest survives.
+				// Otherwise (fresh/undefined surface) repaint the whole frame.
+				var useDamage = !resized
+					&& present.PreservesContents
+					&& lastRenderedFrame.damage is { } dmg && !dmg.IsEmpty;
+
 				// Scaling (DPI) is applied through the neutral session so it works for any backend.
 				present.Save();
 				// A host may impose an outermost transform (e.g. framebuffer display orientation) that must wrap
