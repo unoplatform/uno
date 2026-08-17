@@ -118,7 +118,7 @@ namespace Microsoft.UI.Xaml
 					// TODO: impl recycling (tp update) for tracked template members. Lazily materialized
 					// ones (x:Load, VisualState) do get their templated parent, but they are created
 					// after this snapshot is taken, so they are absent from the tracked set.
-					FrameworkTemplatePool.Instance.TrackMaterializedTemplate(this, view, members);
+					FrameworkTemplatePool.Instance.TrackMaterializedTemplate(view, members);
 				}
 
 				return view;
