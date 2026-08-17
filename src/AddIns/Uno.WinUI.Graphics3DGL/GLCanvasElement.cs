@@ -34,6 +34,7 @@ namespace Uno.WinUI.Graphics3DGL;
 /// </summary>
 /// <remarks>
 /// This is only available on WinUI and on skia-based targets running with hardware acceleration.
+/// This is currently available on the Win32, X11, macOS, and WebAssembly Skia targets (and WinUI).
 /// </remarks>
 public abstract partial class GLCanvasElement : Grid, INativeContext
 {
@@ -45,6 +46,17 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	private readonly Func<Window>? _getWindowFunc;
 
 	private bool _changingGlInitialized;
+
+	// On GLES, glReadPixels with BGRA is optional and driver metadata about it can't be trusted:
+	// Apple's GLES-on-Metal driver advertises GL_EXT_read_format_bgra yet rejects BGRA reads from
+	// the element's framebuffer (and reports an RGBA implementation-defined read pair). When an
+	// actual BGRA read doesn't work we read RGBA (always legal on GLES) and swap R/B into the
+	// BGRA back buffer. Desktop GL keeps BGRA (core), and WASM keeps BGRA too (its JS shim swaps
+	// internally), so this stays false there.
+	private bool _readbackAsRgbaWithSwap;
+
+	// Rate-limits the pending-GL-error warning in Render to once per element.
+	private bool _warnedPendingGlError;
 
 	// valid if and only if GLCanvasElement was loaded at least once and OpenGL is available on the running platform
 	private INativeOpenGLWrapper? _nativeOpenGlWrapper;
@@ -86,6 +98,12 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	/// and bind the original VAO at the end of the method. Similarly, make sure to disable depth testing at
 	/// the end if you choose to enable it.
 	/// Some of this may be done for you automatically.
+	/// </remarks>
+	/// <remarks>
+	/// OpenGL errors raised by user code should be checked and handled within <see cref="Init"/>
+	/// and <see cref="RenderOverride"/>. Errors still pending before the framebuffer readback are
+	/// drained (GL errors are sticky and would otherwise be misattributed to the readback check)
+	/// and logged — as a warning on the first occurrence, then at Debug level.
 	/// </remarks>
 	protected abstract void RenderOverride(GL gl);
 
@@ -215,7 +233,15 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	/// animation, call <see cref="Invalidate"/> inside <see cref="RenderOverride"/> to continuously invalidate and update.
 	/// </summary>
 #if WINAPPSDK
-	public void Invalidate() => DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Render);
+	public void Invalidate()
+	{
+		if (IsGLInitialized == false)
+		{
+			return;
+		}
+
+		DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Render);
+	}
 #else
 	// We used to Invalidate like this
 	// public void Invalidate() => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.Idle);
@@ -226,6 +252,11 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	// Invalidate() inside RenderOverride(), we will enter an infinite loop that completely hangs the app.
 	public void Invalidate()
 	{
+		if (IsGLInitialized == false)
+		{
+			return;
+		}
+
 		Compositor.GetSharedCompositor().InvalidateRender(Visual);
 	}
 
@@ -265,6 +296,8 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	/// <summary>
 	/// Indicates whether this element was loaded successfully or not, including the OpenGL context creation and setup.
 	/// This property is only valid when the element is loaded. When the element is not loaded in the visual tree, the value will be null.
+	/// The value also becomes false if an exception escapes <see cref="Init"/>, <see cref="RenderOverride"/> or the
+	/// framebuffer setup, in which case the element stops rendering until it is reloaded.
 	/// </summary>
 	public bool? IsGLInitialized
 	{
@@ -291,7 +324,33 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		using (_nativeOpenGlWrapper.MakeCurrent())
 		{
 			UpdateFramebuffer();
-			Init(_gl);
+			if (IsGLInitialized == false)
+			{
+				// The framebuffer creation failed and already recorded the failure.
+				return;
+			}
+
+			try
+			{
+				// Bind the element's offscreen framebuffer before Init so initialization runs against
+				// the same valid draw framebuffer used while rendering. FrameBufferDetails leaves FBO 0
+				// bound, but on iOS/tvOS there is no usable default framebuffer (EAGL has no window-backed
+				// FBO 0), so framebuffer-dependent init calls such as glValidateProgram would otherwise
+				// fail with "Current draw framebuffer is invalid".
+				_gl.BindFramebuffer(GLEnum.Framebuffer, _details!.Framebuffer);
+				_readbackAsRgbaWithSwap = NeedsRgbaReadbackSwap(_gl);
+				Init(_gl);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"{nameof(GLCanvasElement)} initialization failed. The element will not render.", e);
+				}
+
+				IsGLInitialized = false;
+				return;
+			}
 		}
 
 		var window =
@@ -338,7 +397,17 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 				return;
 			}
 #endif
-			OnDestroy(_gl);
+			try
+			{
+				OnDestroy(_gl);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"{nameof(GLCanvasElement)}.{nameof(OnDestroy)} failed.", e);
+				}
+			}
 			_details?.Dispose();
 			_gl.Dispose();
 		}
@@ -367,7 +436,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private void UpdateFramebuffer()
 	{
-		if (!IsLoaded || _nativeOpenGlWrapper is null)
+		if (IsGLInitialized == false || !IsLoaded || _nativeOpenGlWrapper is null)
 		{
 			return;
 		}
@@ -381,8 +450,22 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 		using (_nativeOpenGlWrapper!.MakeCurrent())
 		{
-			_details?.Dispose();
-			_details = new FrameBufferDetails(_gl, RenderSize);
+			try
+			{
+				_details?.Dispose();
+				_details = new FrameBufferDetails(_gl, RenderSize);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"{nameof(GLCanvasElement)} framebuffer update failed. The element will no longer render.", e);
+				}
+
+				IsGLInitialized = false;
+				_details = null;
+				return;
+			}
 		}
 
 #if WINAPPSDK
@@ -401,7 +484,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private unsafe void Render()
 	{
-		if (!IsLoaded || _nativeOpenGlWrapper is null)
+		if (IsGLInitialized == false || !IsLoaded || _nativeOpenGlWrapper is null)
 		{
 			return;
 		}
@@ -411,10 +494,37 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		using var _ = _nativeOpenGlWrapper!.MakeCurrent();
 
 		_gl!.BindFramebuffer(GLEnum.Framebuffer, _details.Framebuffer);
+		try
 		{
 			_gl.Viewport(new System.Drawing.Size((int)RenderSize.Width, (int)RenderSize.Height));
 
 			RenderOverride(_gl);
+
+			// GL errors are sticky and context-global, so anything user code leaves behind
+			// (RenderOverride, or Init on the first frame) would be misattributed to the readback
+			// check below. Handling GL errors is the user's job (see the RenderOverride docs);
+			// surface what they left instead of failing the readback on it. The drain is bounded
+			// because GetError can keep returning GL_CONTEXT_LOST forever on a lost context.
+			for (var i = 0; i < 8; i++)
+			{
+				var pendingError = _gl.GetError();
+				if (pendingError is GLEnum.NoError)
+				{
+					break;
+				}
+
+				// Warn once per element: with Invalidate() called from RenderOverride, a persistent
+				// user error would otherwise flood the logs at frame rate.
+				if (!_warnedPendingGlError && this.Log().IsEnabled(LogLevel.Warning))
+				{
+					_warnedPendingGlError = true;
+					this.Log().Warn($"GL error {pendingError} was pending before the framebuffer readback, most likely raised by {nameof(RenderOverride)} (or {nameof(Init)} on the first frame); GL errors should be checked and handled within user code. Further occurrences will be logged at Debug level.");
+				}
+				else if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"GL error {pendingError} was pending before the framebuffer readback.");
+				}
+			}
 
 			_gl.ReadBuffer(GLEnum.ColorAttachment0);
 
@@ -427,11 +537,81 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 #else
 			Buffer.Cast(_backBuffer.PixelBuffer).ApplyActionOnRawBufferPtr(ptr =>
 			{
-				_gl.ReadPixels(0, 0, (uint)RenderSize.Width, (uint)RenderSize.Height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)ptr);
+				if (_readbackAsRgbaWithSwap)
+				{
+					_gl.ReadPixels(0, 0, (uint)RenderSize.Width, (uint)RenderSize.Height, GLEnum.Rgba, GLEnum.UnsignedByte, (void*)ptr);
+					SwapRedBlue((byte*)ptr, (int)RenderSize.Width * (int)RenderSize.Height);
+				}
+				else
+				{
+					_gl.ReadPixels(0, 0, (uint)RenderSize.Width, (uint)RenderSize.Height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)ptr);
+				}
 			});
 			_backBuffer.PixelBuffer.Length = (uint)RenderSize.Width * (uint)RenderSize.Height * BytesPerPixel;
 #endif
+
+			// glReadPixels doesn't throw on failure (e.g. an unsupported readback format); it only
+			// sets a GL error and leaves the destination buffer untouched, which would show up as
+			// a permanently blank canvas.
+			if (_gl.GetError() is var readbackError && readbackError is not GLEnum.NoError)
+			{
+				throw new InvalidOperationException(
+					$"The framebuffer readback failed with {readbackError} while copying the framebuffer to the back buffer.");
+			}
+
 			_backBuffer.Invalidate();
+		}
+		catch (Exception e)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"{nameof(GLCanvasElement)} rendering failed. The element will no longer render.", e);
+			}
+
+			IsGLInitialized = false;
+		}
+	}
+
+	// Decides the readback format once, while the context is current and the element's framebuffer
+	// is bound (see OnLoaded). Any GLES context can lack BGRA read support, and extension strings
+	// can't be trusted for it (Apple's GLES-on-Metal driver advertises GL_EXT_read_format_bgra yet
+	// rejects BGRA reads from the element's framebuffer), so on GLES we probe with an actual 1x1
+	// BGRA read; everywhere else BGRA is used directly (see _readbackAsRgbaWithSwap).
+	private static bool NeedsRgbaReadbackSwap(GL gl)
+	{
+		// WASM readback stays BGRA regardless of what the context reports: the JS shim swaps
+		// internally and doesn't surface the native readback capabilities.
+		if (OperatingSystem.IsBrowser())
+		{
+			return false;
+		}
+
+		// GLES version strings are mandated to start with "OpenGL ES"; desktop GL version strings
+		// never have this prefix. BGRA readback is core on desktop GL.
+		if (!(gl.GetStringS(StringName.Version)?.StartsWith("OpenGL ES", StringComparison.Ordinal) ?? false))
+		{
+			return false;
+		}
+
+		// The drain is bounded because GetError can keep returning GL_CONTEXT_LOST forever on a
+		// lost context.
+		for (var i = 0; i < 8 && gl.GetError() is not GLEnum.NoError; i++) { }
+
+		// Select the read buffer explicitly so the probe mirrors the readback in Render and
+		// doesn't depend on the caller having just bound a freshly created framebuffer.
+		gl.ReadBuffer(GLEnum.ColorAttachment0);
+
+		Span<byte> probe = stackalloc byte[BytesPerPixel];
+		gl.ReadPixels(0, 0, 1, 1, GLEnum.Bgra, GLEnum.UnsignedByte, probe);
+		return gl.GetError() is not GLEnum.NoError;
+	}
+
+	private static unsafe void SwapRedBlue(byte* pixels, int pixelCount)
+	{
+		for (var i = 0; i < pixelCount; i++)
+		{
+			var offset = i * BytesPerPixel;
+			(pixels[offset], pixels[offset + 2]) = (pixels[offset + 2], pixels[offset]);
 		}
 	}
 
