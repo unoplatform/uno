@@ -315,9 +315,12 @@ public partial class CompositionTarget
 				// framebuffer, or a backend-retained offscreen it blits to the swapchain) and the frame wasn't resized,
 				// clip the clear+replay to the damage region so only the changed area is repainted and the rest survives.
 				// Otherwise (fresh/undefined surface) repaint the whole frame.
-				var useDamage = !resized
+				var damageEligible = !resized
 					&& present.PreservesContents
 					&& lastRenderedFrame.damage is { } dmg && !dmg.IsEmpty;
+				// Debug overlay: full-repaint (no damage clip) but paint the would-be damage region so it's visible.
+				var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;
+				var useDamage = damageEligible && !overlayEnabled;
 
 				// Scaling (DPI) is applied through the neutral session so it works for any backend.
 				present.Save();
@@ -342,6 +345,10 @@ public partial class CompositionTarget
 				present.Clear(global::Windows.UI.Colors.Transparent);
 				lastRenderedFrame.frame.Replay(present);
 				present.Restore();
+				if (overlayEnabled && damageEligible)
+				{
+					DrawDamageRegionOverlay(present, lastRenderedFrame.damage!);
+				}
 				_fpsHelper.DrawFps(present);
 				// A host overlay (e.g. the framebuffer software cursor) draws on top of the frame, under the same
 				// orientation + DPI transform as the content.
@@ -412,6 +419,16 @@ public partial class CompositionTarget
 		{
 			_pendingDamage.Union(region);
 		}
+	}
+
+	// Debug viz (FeatureConfiguration.Rendering.DamageRegionOverlay): paints the frame's damage region as a
+	// translucent red fill + outline over the fully-repainted frame, so the areas that would be partially
+	// repainted are visible.
+	private static void DrawDamageRegionOverlay(IPresentSession present, IGeometry damage)
+	{
+		present.DrawPath(damage, global::Windows.UI.Color.FromArgb(0x30, 0xFF, 0x00, 0x00), antialias: false);
+		using var outline = damage.GetStrokeFillGeometry(new StrokeStyle { Thickness = 1f });
+		present.DrawPath(outline, global::Windows.UI.Color.FromArgb(0xB0, 0xFF, 0x00, 0x00), antialias: false);
 	}
 
 	internal static void InvokeRendering()
