@@ -20,9 +20,9 @@ internal static partial class ManagedImageDecoder
 		var bpp = ReadU16LE(d, 28);
 		var compression = (int)ReadU32LE(d, 30);
 
-		if (width <= 0 || height <= 0 || compression != 0 || bpp is not (24 or 32 or 8))
+		if (ExceedsPixelCap(width, height) || compression != 0 || bpp is not (24 or 32 or 8))
 		{
-			return false; // only uncompressed 8/24/32-bit BMPs; the rest fall back to the codec
+			return false; // only uncompressed 8/24/32-bit BMPs (within the pixel cap); the rest fall back to the codec
 		}
 
 		byte[]? palette = null;

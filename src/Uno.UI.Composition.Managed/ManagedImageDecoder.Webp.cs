@@ -21,7 +21,7 @@ internal static partial class ManagedImageDecoder
 		while (p + 8 <= d.Length)
 		{
 			var id = (char)d[p] + "" + (char)d[p + 1] + (char)d[p + 2] + (char)d[p + 3];
-			var size = (int)ReadU32LE(d, p + 4);
+			var size = ReadU32LE(d, p + 4);
 			var chunk = p + 8;
 
 			if (id == "VP8L")
@@ -34,7 +34,13 @@ internal static partial class ManagedImageDecoder
 				return false; // animation / lossy -> Skia codec
 			}
 
-			p = chunk + size + (size & 1);
+			// Unsigned size + bounds check keeps `p` moving forward; a crafted huge size can no longer wrap it.
+			if (size > int.MaxValue || (long)chunk + size > d.Length)
+			{
+				return false;
+			}
+
+			p = chunk + (int)size + ((int)size & 1);
 		}
 
 		return false;
