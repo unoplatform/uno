@@ -31,12 +31,16 @@ internal sealed partial class ManagedGeometry
 
 		if (polysA.Count == 0)
 		{
-			return mode is GeometryCombineMode.Intersect ? new ManagedGeometry(Array.Empty<ManagedContour>(), GeometryFillRule.NonZero) : b.AsNonZeroCopy(polysB);
+			// A is empty: Union/Xor with B is B; Intersect and Difference (A minus B, A empty) are both empty.
+			return mode is GeometryCombineMode.Intersect or GeometryCombineMode.Difference
+				? new ManagedGeometry(Array.Empty<ManagedContour>(), GeometryFillRule.NonZero)
+				: b.AsNonZeroCopy(polysB);
 		}
 
 		if (polysB.Count == 0)
 		{
-			return mode is GeometryCombineMode.Intersect or GeometryCombineMode.Difference && mode == GeometryCombineMode.Intersect
+			// B is empty: Intersect is empty; Union/Xor/Difference (A minus nothing) are all A.
+			return mode is GeometryCombineMode.Intersect
 				? new ManagedGeometry(Array.Empty<ManagedContour>(), GeometryFillRule.NonZero)
 				: a.AsNonZeroCopy(polysA);
 		}

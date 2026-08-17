@@ -133,10 +133,6 @@ internal static partial class ManagedImageDecoder
 				}
 			}
 
-			var skips = 0; var nz = 0; var modes = new int[5];
-			for (var i = 0; i < _mbW * _mbH; i++) { if (_mbSkip[i]) skips++; if (_mbHasNonZero[i]) nz++; modes[_mbYMode[i]]++; }
-			System.Console.WriteLine($"[vp8dbg] skipEnabled={_skipEnabled} skipProb={_skipProb} baseQ={_baseQ} dq0=[{_dq[0, 0]},{_dq[0, 1]}] mbs={_mbW * _mbH} skips={skips} nzMbs={nz} modes=[{modes[0]},{modes[1]},{modes[2]},{modes[3]},{modes[4]}] filterLevel={_filterLevel} residualEnergy={DbgResidual} acCoeffs={DbgAc}");
-
 			if (_filterLevel > 0)
 			{
 				LoopFilter();
@@ -410,11 +406,6 @@ internal static partial class ManagedImageDecoder
 
 			ReconstructLuma(mbX, mbY, yMode, bModes, coeffs);
 			ReconstructChroma(mbX, mbY, uvMode, coeffs);
-
-			if (mbX == 0 && mbY == 0)
-			{
-				System.Console.WriteLine($"[vp8mb0] yMode={yMode} uvMode={uvMode} b0={bModes[0]} skip={skip} y[0..3]=[{_y[0]},{_y[1]},{_y[2]},{_y[3]}] y[row1]=[{_y[_yStride]},{_y[_yStride + 1]}] u0={_u[0]} v0={_v[0]} yCoef0=[{coeffs[0]},{coeffs[1]},{coeffs[2]}]");
-			}
 		}
 
 		private byte[] GetBModeProbs(int above, int left)
@@ -533,7 +524,6 @@ internal static partial class ManagedImageDecoder
 				}
 
 				var value = bd.GetBit(128) == 1 ? -v : v;
-				if (n >= 1) { DbgAc++; }
 				outNatural[Vp8Zigzag[n]] = (short)(value * (n == 0 ? dqDc : dqAc));
 			}
 
@@ -654,19 +644,8 @@ internal static partial class ManagedImageDecoder
 		private static int Mul1(int a) => ((a * 20091) >> 16) + a;
 		private static int Mul2(int a) => (a * 35468) >> 16;
 
-		internal static long DbgResidual;
-		internal static long DbgAc;
-		internal static readonly bool DbgNoResidual = Environment.GetEnvironmentVariable("VP8_NORES") == "1";
-		private static readonly bool _dbgForceBDc = Environment.GetEnvironmentVariable("VP8_BDC") == "1";
-
 		private static void Store(byte[] plane, int i, int residual)
 		{
-			DbgResidual += Math.Abs(residual);
-			if (DbgNoResidual)
-			{
-				return;
-			}
-
 			plane[i] = Clip8(plane[i] + residual);
 		}
 
@@ -829,7 +808,7 @@ internal static partial class ManagedImageDecoder
 			}
 
 			Span<byte> pred = stackalloc byte[16];
-			PredictB4x4(_dbgForceBDc ? 0 : mode, a, pred);
+			PredictB4x4(mode, a, pred);
 			for (var yy = 0; yy < 4; yy++)
 			{
 				for (var xx = 0; xx < 4; xx++)
