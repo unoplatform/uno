@@ -25,6 +25,12 @@ internal static class DrawingBackendFallback
 {
 	private const string SkiaBackendTypeName = "Uno.UI.Composition.Skia.SkiaBackend, Uno.UI.Composition.Skia";
 
+	// SVG has no impl in the core Skia backend: the Svg.Skia renderer ships as the optional Uno.UI.Svg add-in (its
+	// heavy dependency tree stays opt-in), and the SkiaSharp-free managed engine is the built-in fallback. Both are
+	// reached reflectively by assembly-qualified name so this seam assembly keeps no compile-time dependency on either.
+	private const string SvgAddInBackendTypeName = "Uno.UI.Svg.SvgBackend, Uno.UI.Svg";
+	private const string ManagedSvgRendererTypeName = "Uno.UI.Composition.Drawing.ManagedSvgRenderer, Uno.UI.Composition.Managed";
+
 	// Wire the downward codec-resolve trigger so Uno.UWP's BitmapEncoder (which sits below this assembly and can't
 	// reach here) can lazily light up a codec on first encode instead of failing. Runs on assembly load.
 	[System.Runtime.CompilerServices.ModuleInitializer]
@@ -109,7 +115,11 @@ internal static class DrawingBackendFallback
 		}
 	}
 
-	/// <summary>Lights up the Skia SVG renderer if that seam is empty (a render-independent content seam).</summary>
+	/// <summary>
+	/// Lights up the default SVG renderer if that seam is empty: the optional Svg.Skia add-in when referenced,
+	/// otherwise the built-in managed engine. An explicit host-builder registration already wins (this only runs when
+	/// <see cref="SvgRenderer.Current"/> is still null).
+	/// </summary>
 	public static void EnsureSvgRenderer()
 	{
 		if (Volatile.Read(ref _svgAttempted))
@@ -125,7 +135,9 @@ internal static class DrawingBackendFallback
 			}
 
 			_svgAttempted = true;
-			if (Invoke<ISvgRenderer>("CreateSvgRenderer") is { } renderer)
+			var renderer = InvokeStatic<ISvgRenderer>(SvgAddInBackendTypeName, "CreateSvgRenderer")
+				?? CreateInstance<ISvgRenderer>(ManagedSvgRendererTypeName);
+			if (renderer is { })
 			{
 				SvgRenderer.RegisterDefault(renderer);
 			}
@@ -176,6 +188,51 @@ internal static class DrawingBackendFallback
 	/// internal registrar, and this backend reaches no framework internal (no InternalsVisibleTo from Drawing). Null
 	/// if the backend assembly isn't present (a SkiaSharp-free head) or the call fails.</summary>
 	private static T? Invoke<T>(string methodName) where T : class => Invoke(methodName) as T;
+
+	/// <summary>Reflectively calls a parameterless static factory on an arbitrary assembly-qualified type (for seams
+	/// served by an add-in rather than the core Skia backend). Null if the type/assembly isn't present or the call fails.</summary>
+	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Best-effort fallback; a trimmed/AOT app registers this seam explicitly.")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Best-effort fallback; a trimmed/AOT app registers this seam explicitly.")]
+	private static T? InvokeStatic<T>(string typeName, string methodName) where T : class
+	{
+		try
+		{
+			return Type.GetType(typeName, throwOnError: false)
+				?.GetMethod(methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, Type.EmptyTypes)
+				?.Invoke(null, null) as T;
+		}
+		catch (Exception e)
+		{
+			if (typeof(DrawingBackendFallback).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(DrawingBackendFallback).Log().Debug($"Fallback factory '{typeName}.{methodName}' failed (register this seam explicitly): {e}");
+			}
+
+			return null;
+		}
+	}
+
+	/// <summary>Reflectively constructs an assembly-qualified type via its public parameterless constructor, cast to
+	/// the neutral seam interface <typeparamref name="T"/>. Null if the type/assembly isn't present or the call fails.</summary>
+	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Best-effort fallback; a trimmed/AOT app registers this seam explicitly.")]
+	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Best-effort fallback; a trimmed/AOT app registers this seam explicitly.")]
+	private static T? CreateInstance<T>(string typeName) where T : class
+	{
+		try
+		{
+			var type = Type.GetType(typeName, throwOnError: false);
+			return type is null ? null : Activator.CreateInstance(type) as T;
+		}
+		catch (Exception e)
+		{
+			if (typeof(DrawingBackendFallback).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(DrawingBackendFallback).Log().Debug($"Fallback type '{typeName}' could not be created (register this seam explicitly): {e}");
+			}
+
+			return null;
+		}
+	}
 
 	/// <summary>Reflectively invokes a parameterless static method on the Skia backend; returns its result (or null).
 	/// No-op if the backend assembly isn't present. Caller holds <see cref="_gate"/> and sets the once-flag first.</summary>

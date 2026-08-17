@@ -4,14 +4,14 @@ using System;
 using System.IO;
 using SkiaSharp;
 using Svg.Skia;
+using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 
-namespace Uno.UI.Composition.Drawing;
+namespace Uno.UI.Svg;
 
 /// <summary>
-/// The framework's default <see cref="ISvgRenderer"/>: a Svg.Skia-backed engine. Lit up by
-/// <see cref="DrawingBackendFallback"/> when the Skia backend is present, unless an app registers its own (e.g. the
-/// managed SkiaSharp-free engine) via the host builder. Same seam as any other renderer — there is no separate path.
+/// A Svg.Skia-backed <see cref="ISvgRenderer"/>. Shipped as the optional <c>Uno.UI.Svg</c> add-in: when referenced it
+/// becomes the default SVG renderer; otherwise the framework uses its managed (SkiaSharp-free) engine.
 /// </summary>
 internal sealed class SkiaSvgRenderer : ISvgRenderer
 {
@@ -40,8 +40,8 @@ internal sealed class SkiaSvgRenderer : ISvgRenderer
 
 /// <summary>
 /// A parsed SVG (a Svg.Skia <see cref="SKPicture"/>). <see cref="Render"/> replays it as VECTOR straight into the
-/// session's live <c>SKCanvas</c> when the backend is Skia (so it stays crisp at any scale, honoring the session's
-/// current transform/clip); it rasterizes to a neutral texture only as a cross-backend fallback (e.g. WebGPU).
+/// session's live <c>SKCanvas</c> when the backend is Skia (crisp at any scale, honoring the session's current
+/// transform/clip); it rasterizes to a neutral texture only as a cross-backend fallback (e.g. WebGPU).
 /// </summary>
 internal sealed class SkiaSvgDocument : ISvgDocument
 {
@@ -62,8 +62,7 @@ internal sealed class SkiaSvgDocument : ISvgDocument
 		var sx = cull.Width > 0 ? (float)(targetSize.Width / cull.Width) : 1f;
 		var sy = cull.Height > 0 ? (float)(targetSize.Height / cull.Height) : 1f;
 
-		// Vector path: draw the picture straight into the backend's live canvas at the session's current transform —
-		// resolution-independent, so it stays crisp at any scale.
+		// Vector path: draw the picture straight into the backend's live canvas at the session's current transform.
 		if (session.NativeSurface is SKCanvas canvas)
 		{
 			var save = session.Save();
@@ -89,7 +88,34 @@ internal sealed class SkiaSvgDocument : ISvgDocument
 		surface.Canvas.DrawPicture(picture);
 		surface.Canvas.Flush();
 
-		using var texture = new SkiaTexture(surface.Snapshot());
+		using var texture = new SvgTexture(surface.Snapshot());
 		session.DrawImage(texture, 0, 0, ImageSampling.Linear, antialias: true);
 	}
+}
+
+/// <summary>
+/// SkiaSharp-backed <see cref="ITexture"/> so a Skia-rendered SVG can be drawn into a non-Skia session (e.g. WebGPU)
+/// through the neutral <see cref="ITexture.CopyPixels"/> contract. (The add-in can't see the core backend's internal
+/// texture type, so it brings its own — it already depends on SkiaSharp via Svg.Skia.)
+/// </summary>
+internal sealed class SvgTexture : ITexture
+{
+	private readonly SKImage _image;
+
+	public SvgTexture(SKImage image) => _image = image;
+
+	public int PixelWidth => _image.Width;
+
+	public int PixelHeight => _image.Height;
+
+	public unsafe void CopyPixels(Span<byte> destination)
+	{
+		var info = new SKImageInfo(_image.Width, _image.Height, SKColorType.Bgra8888, SKAlphaType.Premul);
+		fixed (byte* dst = destination)
+		{
+			_image.ReadPixels(info, (nint)dst, info.RowBytes, 0, 0);
+		}
+	}
+
+	public void Dispose() => _image.Dispose();
 }
