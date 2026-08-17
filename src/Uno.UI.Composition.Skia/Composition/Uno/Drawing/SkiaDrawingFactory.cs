@@ -26,6 +26,9 @@ internal sealed class SkiaDrawingFactory :
 	private GRContext? _glContext;
 	private GRBackendRenderTarget? _glRenderTarget;
 	private SKSurface? _glSurface;
+	// Persistent GPU offscreen the frame composes into; retained across frames (blitted whole onto the swapchain
+	// framebuffer each present) so the compositor can repaint only the damaged region. Rebuilt on resize.
+	private SKSurface? _glOffscreen;
 	private int _glWidth;
 	private int _glHeight;
 
@@ -165,18 +168,22 @@ internal sealed class SkiaDrawingFactory :
 			_glHeight = gl.Height;
 			_glRenderTarget?.Dispose();
 			_glSurface?.Dispose();
+			_glOffscreen?.Dispose();
 
 			var info = new GRGlFramebufferInfo(gl.FramebufferId, SKColorType.Rgba8888.ToGlSizedFormat());
 			_glRenderTarget = new GRBackendRenderTarget(gl.Width, gl.Height, gl.SampleCount, gl.StencilBits, info);
 			// BottomLeft to match OpenGL's origin.
 			_glSurface = SKSurface.Create(_glContext, _glRenderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888);
+			// Retained across frames; Skia handles each surface's GL origin so the whole-offscreen blit isn't flipped.
+			_glOffscreen = SKSurface.Create(_glContext, budgeted: true, new SKImageInfo(gl.Width, gl.Height, SKColorType.Rgba8888, SKAlphaType.Premul));
 		}
 
-		return new SkiaPresentSession(_glSurface!.Canvas);
+		return SkiaPresentSession.ForRetainedGpuOffscreen(_glOffscreen!, _glSurface!, _glContext!);
 	}
 
 	public void Dispose()
 	{
+		_glOffscreen?.Dispose();
 		_glSurface?.Dispose();
 		_glRenderTarget?.Dispose();
 		_glContext?.Dispose();

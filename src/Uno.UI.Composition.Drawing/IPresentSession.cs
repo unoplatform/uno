@@ -11,4 +11,11 @@ namespace Uno.UI.Composition.Drawing;
 /// </summary>
 public interface IPresentSession : IDrawingSession, IDisposable
 {
+	/// <summary>
+	/// True when the surface this session composes into keeps the previous frame's pixels (a persistent host
+	/// framebuffer, or a backend-retained offscreen that is blitted to the swapchain on present), so the compositor
+	/// may repaint only the damaged region. False (the default) for a fresh/undefined surface each frame, which
+	/// requires a full repaint.
+	/// </summary>
+	bool PreservesContents => false;
 }
