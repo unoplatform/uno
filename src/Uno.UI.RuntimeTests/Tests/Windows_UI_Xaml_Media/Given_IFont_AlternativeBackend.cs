@@ -28,7 +28,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			// Skia is used only as a byte source (like reading a font file); it does no outline work here.
 			if (!TryFindGlyfFont(size, out var typeface, out var managed))
 			{
-				return; // no TrueType 'glyf' font available in this environment
+				Assert.Inconclusive("No TrueType 'glyf' font available in this environment; the IFont outline-parity seam was not exercised.");
+				return;
 			}
 
 			using (typeface)
