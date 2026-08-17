@@ -23,59 +23,83 @@ the boundary is split by lifetime/role:
   There is no combined paint struct — each verb takes exactly the inputs it honors, and scenarios are
   distinct overloads (e.g. a solid-color fill vs. a shader fill are separate methods).
 - **Expensive resources** (geometry, shaders, color/effect filters, images, image frames, fonts) cross as
-  **opaque handles** manufactured by a factory (`IDrawingBackend`) or a decode call; the framework holds and
+  **opaque handles** manufactured by a factory (`IDrawingFactory`) or a decode call; the framework holds and
   caches them without inspecting their internals. The backend downcasts internally.
-- **Per-visual/frame retained state** (Skia's `SKPicture`) crosses as an opaque `IRenderData` the backend
-  owns; composition never inspects it. This is behind the **optional** `IRetainedRenderingSession` capability
-  — a backend that doesn't advertise it is simply re-drawn every frame.
+- **Per-visual/frame retained state** (Skia's `SKPicture`) crosses as an opaque `IRenderRecord` the backend
+  owns; composition never inspects it. Recording is a first-class part of the factory (`CreateRecording()`), not
+  an optional capability — a backend with no native display-list gets a neutral command-list recorder for free
+  (see "Retained rendering" below), so composition always has a cached path.
 - **Value types are neutral** — `Windows.Foundation.Rect/Size`, `Windows.UI.Color`,
   `System.Numerics.Vector2/Matrix3x2/Matrix4x4` — no SkiaSharp type appears on any pluggable interface.
 - **The render cycle stays in Uno**, not the backend. `CompositionTarget` owns scheduling/vsync/threading and
   the visual-tree walk; the backend is a passive two-phase participant (record, then present).
 
-Layers, bottom to top: **resource factory** (`IDrawingBackend`) → **drawing session** (`IDrawingSession`,
-consuming value paint + handles; optionally `IRetainedRenderingSession` for recording) → **frame lifecycle**
-(`IRenderBackend`: record → `IRenderData` → present).
+Layers, bottom to top: **resource + frame factory** (`IDrawingFactory`, and its typed
+`IDrawingFactory<TTarget>` present half) → **drawing session** (`IDrawingSession`, consuming value paint +
+handles) → **records** (`ICommandRecorder.Finish()` → an opaque `IRenderRecord` replayed into a present
+session). The earlier separate `IRenderBackend` and the optional `IRetainedRenderingSession` were **merged into
+`IDrawingFactory`** — there is one factory interface for resources, recording, and (typed per render-target)
+present.
 
-**Conventions.** The SPI is **`public`** (namespace `Uno.UI.Composition.Drawing`, files under
-`src/Uno.UI.Composition/Composition/Uno/Drawing/*.skia.cs`, Skia target) — the deliberate flip is done, so a
-foreign backend in a separate assembly implements it with no `[InternalsVisibleTo]`. The backend
-implementations (`Skia*`, `Managed*`) stay `internal` — they are one implementation, not the contract.
-Backend-neutral geometry currency is `IGeometry`; `SKPath`/`SKImage`/`SKFont` etc. live only inside the Skia
-implementation classes and are never exposed on an interface.
+**Conventions.** The SPI is **`public`** (namespace `Uno.UI.Composition.Drawing`, in the dedicated
+`Uno.UI.Composition.Drawing` assembly) — the deliberate flip is done, so a foreign backend in a separate
+assembly implements it with **no `[InternalsVisibleTo]`**. This is now enforced: **no assembly grants its
+internals to `Uno.UI.Composition.Skia` or `Uno.UI.Composition.WebGpu`** — each backend stands entirely on the
+public seam (the last such IVTs were removed, and the WebGPU renderer engine was relocated into its own
+assembly so nothing reaches into it). The backend implementations (`Skia*`, `Managed*`, `WebGpu*`) stay
+`internal` — they are one implementation, not the contract. Backend-neutral geometry currency is `IGeometry`;
+`SKPath`/`SKImage`/`SKFont` etc. live only inside the Skia implementation classes and are never exposed on an
+interface.
 
 ---
 
 ## Registration & factory
 
-### `IDrawingBackend` — the resource factory
-Manufactures the stateful handles that cross the boundary; also owns image decode/upload and offscreen
-rendering. Geometry stays here (not a separate seam) because the renderer must understand the geometry type it
-draws — a custom path implementor is a custom `IDrawingFactory`. Current surface:
+### `IDrawingFactory` — the resource + frame factory
+Manufactures the stateful handles that cross the boundary (textures, shaders, filters, the drop-shadow /
+effect-tree filter), owns offscreen rendering + CPU snapshot, and starts recordings. The former separate
+`IRenderBackend` was merged in: `CreateRecording()` is here, and the present half is the typed
+`IDrawingFactory<TTarget>` (below). Current surface:
 
 ```csharp
-IPathBuilder CreatePathBuilder();
-IPrimitiveGeometryBuilder CreatePrimitiveGeometryBuilder();
-IGeometry CreateRectangleGeometry(Rect rect);
-
-IImageTexture RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render);
-Task<IImage> SnapshotAsync(IImageTexture texture);
-bool TryDecodeImage(Stream stream, int? targetWidth, int? targetHeight, out IImageFrames? frames);
-IImageFrames CreateImageFrame(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul);
+ITexture RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render);
+Task<IImage> SnapshotAsync(ITexture texture);
+ITexture CreateTexture(IImage image);
 
 IShader CreateLinearGradientShader(Vector2 start, Vector2 end, Color[] colors, float[] colorPositions, GradientTileMode tileMode, Matrix3x2 localMatrix);
 IShader CreateRadialGradientShader(Vector2 center, Vector2 gradientOrigin, float radiusX, float radiusY, Color[] colors, float[] colorPositions, GradientTileMode tileMode, Matrix3x2 localMatrix);
 IColorFilter CreateBlendModeColorFilter(Color color, BlendMode mode);
 IColorFilter CreateColorMatrixColorFilter(float[] matrix);
-IEffectFilter? CreateEffectFilter(IGraphicsEffect effect, Rect bounds, Func<string, CompositionBrush?> sourceResolver, bool useBackdropBlurClamp, bool isSoftwareRenderer, out bool hasBackdropInput);
+IEffectFilter? CreateEffectFilter(EffectNode tree, Rect bounds);   // a neutral, pre-resolved effect tree — see below
 IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, Color color);
+
+ICommandRecorder CreateRecording();                               // record a (sub)tree → IRenderRecord
+
+// present half, typed to the render-target kind the backend composes onto:
+public interface IDrawingFactory<in TTarget> : IDrawingFactory where TTarget : IRenderTarget
+{
+    IPresentSession BeginPresent(TTarget target);
+}
 ```
 
-### `DrawingBackend` (static)
-Process-wide holder: `DrawingBackend.Current` resolves to `SkiaDrawingBackend` by default;
-`DrawingBackend.Register(IDrawingBackend)` swaps it before the first frame. **This default-and-swap
-scheme is being replaced** — see "Backend registration model" below for the decided target
-(matched-pair registration on the host builder, no module-init default).
+**Geometry, image decode and fonts are *separate* neutral seams, not on the factory** — because core itself
+introspects them (geometry bounds/contains/combine; decoded pixels; glyph metrics/coverage), they are neutral
+abstractions with a *shared managed* implementation, and each is registered independently:
+
+- `IGeometryFactory` — path/primitive builders + `IGeometry` (its own registration; a managed geometry engine
+  or the Skia one).
+- `IImageDecoder` — `TryDecodeImage` / `CreateImageFrame` → `ImageFrames`.
+- `IFontProvider` / `IFont` — font resolution + render-time glyph output (see "Font seam").
+
+`CreateEffectFilter` takes a **neutral `EffectNode` tree** (composition resolves the `IGraphicsEffect` graph,
+sources and flags into a backend-independent node tree first), so the backend never sees `IGraphicsEffect` /
+`CompositionBrush`.
+
+### Holder & registration
+`DrawingFactory.Current` (an **internal** process-wide holder) is installed **once, by graphics negotiation**
+(`GraphicsRegistry`), at the winning backend — there is no public default-and-swap and no `[ModuleInitializer]`
+default. If the app declares no backend, negotiation lights up the implicit Skia default (when that assembly is
+present) before it negotiates. See "Backend registration & graphics negotiation" below for the full model.
 
 ---
 
@@ -85,6 +109,7 @@ Immediate-mode, stateful canvas. Transform stack, clipping, layers, and per-scen
 
 ```csharp
 Matrix4x4 TotalMatrix { get; }
+object? NativeSurface { get; }   // see "Zero-copy native surface" below — [EditorBrowsable(Never)]
 void SetMatrix(in Matrix4x4 m); void Concat(in Matrix4x4 m); void Translate(float dx, float dy); void Scale(float sx, float sy);
 int Save(); int SaveCount { get; } void Restore(); void RestoreToCount(int count);
 void SaveLayer(bool aa = false); void SaveLayer(IColorFilter f, bool aa = false); void SaveLayer(BlendMode b, bool aa = false); void SaveLayer(IEffectFilter f);
@@ -98,47 +123,63 @@ void DrawPath(IGeometry g, Color color, bool aa = false);
 void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive, bool aa = false);
 void StrokePath(IGeometry g, Color color, float strokeWidth, bool aa = false);
 void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool aa = false);
-void DrawImage(IImageTexture img, float x, float y, ImageSampling s, float opacity = 1f, bool aa = false);
-void DrawImage(IImageTexture img, float x, float y, ImageSampling s, IColorFilter filter, bool aa = false);
-void DrawImageNineSlice(IImageTexture img, in Rect centerSlice, in Rect destination, bool centerHollow, bool aa = false);
+void DrawImage(ITexture img, float x, float y, ImageSampling s, float opacity = 1f, bool aa = false);
+void DrawImage(ITexture img, float x, float y, ImageSampling s, IColorFilter filter, bool aa = false);
+void DrawImageNineSlice(ITexture img, in Rect centerSlice, in Rect destination, bool centerHollow, bool aa = false);
 void DrawEffectBackdrop(IEffectFilter filter, float opacity);
 ```
 
 Intent-over-technique: the interface says *what* (a shadow, a gradient fill, a faded image); the backend
 chooses *how* (mask filter, SDF, layer). Retained-mode concerns are deliberately **not** here.
 
-### Retained rendering (optional native fast-path, always available) — `IRetainedRenderingSession`
-```csharp
-ICommandRecorder CreateRecording();   // nested session captured as IRenderData
-void Replay(IRenderData data);
-```
-`ICommandRecorder : IDrawingSession` adds `IRenderData Finish()`. `IRenderData : IDisposable` is the opaque
-recorded frame (Skia: an `SKPicture`).
+### Zero-copy native surface — `IDrawingSession.NativeSurface`
 
-`IRetainedRenderingSession` is **not** a required base of `ICommandRecorder`/`IPresentSession`: a backend
-implements it on its sessions only to expose efficient *native* recording (SKPicture, a GPU command buffer).
-Composition never touches a session's retained capability directly — it goes through
-`RetainedRenderingSession.For(session)`, which returns the backend's native capability when present and
-otherwise a **command-list fallback** that records the neutral `IDrawingSession` verbs and replays them on top
-of any session. So retention is *always* available and composition has no uncached branch. The fallback is a
-self-contained snapshot: it copies (owns) the geometry handed to each deferred draw — matching a native
-display list, since composition disposes transient geometries right after the draw — and frees them when the
-recording is disposed. On a backend that provides native retention the fallback is never instantiated.
+`NativeSurface` is the backend's live, directly-drawable native surface for this session — a SkiaSharp
+`SKCanvas` on the Skia backend, or `null` when the backend records neutral commands and exposes none (WebGPU
+records into a command list — it returns `null`). It is **type-erased (`object?`)** so the seam names no
+graphics library, and marked `[EditorBrowsable(Never)]` so it doesn't clutter the advertised API. A consumer
+that wants to draw with a specific graphics API type-checks it (`session.NativeSurface is SKCanvas c`) and, on a
+match, draws **zero-copy straight into the frame**; on `null`/a different type it does something else. This is
+what `SKCanvasElement` uses: a small visual living in the `Uno.WinUI.Graphics2DSK` add-in draws directly into
+the frame `SKCanvas` when the active backend exposes one, and otherwise falls back to a self-contained
+Skia-on-GL island (`GLCanvasElement`, own `GRContext` + framebuffer, read back and composited). No backend name
+appears in that add-in — only the `SKCanvas` type-check.
+
+### Retained rendering — always available
+```csharp
+ICommandRecorder CreateRecording();   // on IDrawingFactory: start a recording; Finish() → IRenderRecord
+```
+`ICommandRecorder : IDrawingSession` adds `IRenderRecord Finish()`. `IRenderRecord : IDisposable` is the opaque
+recorded frame (Skia: an `SKPicture`) and exposes `void Replay(IDrawingSession into)`.
+
+Recording is **not** an optional capability interface any more — `CreateRecording()` is on `IDrawingFactory`.
+A backend with an efficient *native* display list (SKPicture, a GPU command buffer) returns its own recorder;
+a backend without one gets the framework's **command-list fallback** (`CommandListRetainedSession`) that records
+the neutral `IDrawingSession` verbs and replays them on top of any session. So retention is *always* available
+and composition has no uncached branch. The fallback is a self-contained snapshot: it copies (owns) the
+geometry handed to each deferred draw — matching a native display list, since composition disposes transient
+geometries right after the draw — and frees them when the recording is disposed.
 
 ---
 
-## Frame lifecycle — `IRenderBackend`
+## Frame lifecycle — `IDrawingFactory` (record) + `IDrawingFactory<TTarget>` (present)
 
-Two-phase, driven by `CompositionTarget` (which keeps scheduling/vsync/threading):
+Two-phase, driven by `CompositionTarget` (which keeps scheduling/vsync/threading). The former `IRenderBackend`
+is merged into the factory:
 
 ```csharp
-ICommandRecorder BeginFrame();               // phase 1 (UI thread): tree walks into this; Finish() -> IRenderData
-IPresentSession BeginPresent(IRenderSurface target);   // phase 2 (vsync): compose a frame onto the target
+ICommandRecorder CreateRecording();          // phase 1 (UI thread): tree walks into this; Finish() -> IRenderRecord
+IPresentSession BeginPresent(TTarget target);   // phase 2 (vsync): on IDrawingFactory<TTarget>, compose onto the target
 ```
 `IPresentSession : IDrawingSession, IDisposable` — the present-time session lets overlays (e.g. the FPS
 counter) compose *before* the frame is finalized; disposing it flushes/finalizes. The recorded frame is
-replayed into it through `RetainedRenderingSession.For(present)` (native replay, or the command-list fallback).
-`IRenderSurface` is the opaque present target.
+replayed into it via `IRenderRecord.Replay(present)` (native replay, or the command-list fallback).
+
+`IRenderTarget` (`Width`/`Height`/`GraphicsColorFormat`) is the opaque present target — a **color-attachment
+view** the backend downcasts to its kind-matched face: `IGLRenderTarget`, `IVulkanRenderTarget`,
+`IMetalRenderTarget`, `IWebGpuRenderTarget` (a wgpu `ColorView` handle), `ISoftwareRenderTarget` (CPU
+`Pixels`+`RowBytes`). The backend's present half is typed `IDrawingFactory<TTarget>` so `BeginPresent` receives
+exactly the target face for the negotiated kind — no neutral-context downcast in the backend.
 
 ---
 
@@ -146,25 +187,27 @@ replayed into it through `RetainedRenderingSession.For(present)` (native replay,
 
 - **`IGeometry : IDisposable`** — the geometry currency. `Rect Bounds { get; }`, `bool FillContains(...)`,
   transform/combine ops. Skia impl wraps `SKPath` (`SkiaGeometrySource2D`); the `SKPath` never escapes it.
-- **Geometry builders** — split so imperative and whole-shape construction can't interleave:
+- **Geometry builders** (on the separate `IGeometryFactory` seam) — split so imperative and whole-shape
+  construction can't interleave:
   - `IGeometryBuilder` — common base: `GeometryFillRule FillRule { get; set; }`, `IGeometry Build()`.
   - `IPathBuilder : IGeometryBuilder` — pen verbs: `MoveTo`, `LineTo`, `CubicTo`, `QuadraticTo`, `ArcTo`, `Close`.
   - `IPrimitiveGeometryBuilder : IGeometryBuilder` — whole primitives (rects/ellipses/etc.).
 - **`IShader`** — opaque gradient/shader handle (from the backend's `Create*GradientShader`).
 - **`IColorFilter`** — blend-mode / color-matrix filter handle.
-- **`IEffectFilter`** — realized `IGraphicsEffect` graph, or a drop-shadow filter.
+- **`IEffectFilter`** — a realized neutral `EffectNode` tree, or a drop-shadow filter.
 - **`IImage`** — neutral **CPU** pixels: `int PixelWidth/PixelHeight` + `CopyPixels` (BGRA8888 premul). The
   decode/snapshot form. Not itself disposable (its owner is).
-- **`IImageTexture : IDisposable`** — backend-resident **GPU** form (wgpu texture / `SKImage`). The currency the
+- **`ITexture : IDisposable`** — backend-resident **GPU** form (wgpu texture / `SKImage`). The currency the
   draw verbs consume (`DrawImage`) and that `RenderOffscreen` returns, so an offscreen result is sampled directly
   with no CPU round-trip. Caller-owned, disposed deterministically.
-- **`IImageFrames : IDisposable`** — decode/upload result: `IReadOnlyList<IImage> Frames`,
-  `IReadOnlyList<int> DurationsMs` (one entry = still image; several = animation). Owns frame lifetime.
+- **`ImageFrames : IDisposable`** — decode/upload result, now a **concrete** neutral class (was an interface):
+  `IReadOnlyList<IImage> Frames`, `IReadOnlyList<int> DurationsMs` (one entry = still image; several =
+  animation). Owns frame lifetime. On the `IImageDecoder` seam.
 
-**Produce vs. read-back.** `RenderOffscreen` yields an `IImageTexture` (stays on the backend — nine-slice, color
+**Produce vs. read-back.** `RenderOffscreen` yields an `ITexture` (stays on the backend — nine-slice, color
 glyphs and rendered SVG sample it straight). Pulling CPU pixels out (`RenderTargetBitmap`, snapshots) is the one
 inherently-async step — a GPU→CPU map can't block the browser's single JS thread — so it is isolated to
-`SnapshotAsync(IImageTexture) : Task<IImage>`. Skia returns a completed task; WASM WebGPU maps via JS `mapAsync`;
+`SnapshotAsync(ITexture) : Task<IImage>`. Skia returns a completed task; WASM WebGPU maps via JS `mapAsync`;
 desktop WebGPU blocks a poll. Everything else in the seam (record/draw/present/geometry) stays synchronous.
 
 ---
@@ -180,7 +223,7 @@ bool HasColorGlyphs { get; }
 void AppendColorGlyphImages(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<PositionedGlyphImage> output);
 ```
 Outline glyphs → one filled `IGeometry` (drawn via `DrawPath`); color glyphs (emoji: COLR/CBDT/sbix/SVG) →
-positioned backend textures (`PositionedGlyphImage.Image` is an `IImageTexture`, drawn via `DrawImage` and
+positioned backend textures (`PositionedGlyphImage.Image` is an `ITexture`, drawn via `DrawImage` and
 disposed by the caller). Obtained from `FontDetails.FontHandle`.
 
 - **`SkiaFont`** — default (`SKFont.GetGlyphPath` + offscreen rasterization for color glyphs).
@@ -297,7 +340,7 @@ primary path. Variable-font positioning is handled at the resolver seam (platfor
 otherwise a follow-up in `ManagedFont`).
 
 **Status — the seam exists.** `IFontManager` (`CreateFont` from bytes / `MatchFamily` / `MatchCharacter` /
-`GetDefaultFont`, all returning `IFont`) hangs off `IDrawingBackend.FontManager`. `SkiaFontManager` holds all
+`GetDefaultFont`, all returning `IFont`) hangs off `IDrawingFactory.FontManager`. `SkiaFontManager` holds all
 the Skia resolution (`SKTypeface.FromData`/`FromFamilyName`, `.ttc` face selection, variable-font axes,
 `SKFontManager.MatchCharacter`); `FontDetailsCache`/`Run`/`UnicodeText` now resolve through it with `IFont`
 currency and no direct Skia. `ManagedFontManager` (option A) is the **SkiaSharp-free** resolver: it indexes the
@@ -335,9 +378,9 @@ former `UNO_MANAGED_*` env vars to these registrations as a dev/test affordance)
 
 ## Image decode — `ManagedImageDecoder`
 
-The decode/upload seam is `IDrawingBackend.TryDecodeImage` (encoded bytes → `IImageFrames`, incl. EXIF /
-downscale / animation) and `CreateImageFrame` (raw BGRA → `IImageFrames`). The Skia backend uses `SKCodec`;
-the neutral frame providers (`SingleFrameProvider`/`AnimatedImageFrameProvider`) hold `IImageFrames` and are
+The decode/upload seam is `IDrawingFactory.TryDecodeImage` (encoded bytes → `ImageFrames`, incl. EXIF /
+downscale / animation) and `CreateImageFrame` (raw BGRA → `ImageFrames`). The Skia backend uses `SKCodec`;
+the neutral frame providers (`SingleFrameProvider`/`AnimatedImageFrameProvider`) hold `ImageFrames` and are
 SkiaSharp-free.
 
 **`ManagedImageDecoder`** (`.skia.cs` + `.Png/.Gif/.Bmp/.Jpeg/.Webp` partials) is the SkiaSharp-free decoder:
@@ -383,7 +426,7 @@ Neutral structs on the verbs: `RoundRectangle`, `StrokeStyle`, `PositionedGlyphI
 
 ## Backends
 
-- **Default: SkiaSharp** — `SkiaDrawingBackend`, `SkiaRenderBackend`, and the `Skia*` handle/session classes.
+- **Default: SkiaSharp** — `SkiaDrawingFactory`, `SkiaDrawingFactory`, and the `Skia*` handle/session classes.
 - **Managed/alternative seams** (SkiaSharp-free, opt-in via env toggle, prove the seams are neutral):
   `ManagedFont` (`UNO_MANAGED_FONT_BACKEND`), `ManagedImageDecoder` (`UNO_MANAGED_IMAGE_DECODER`), and
   `ManagedSvg` (primary; no toggle needed).
@@ -505,108 +548,104 @@ plus a clear answer to "who drives."
 > runtime (Win32/macOS/iOS/Android/WASM/DRM) is for on-device validation; AppleUIKit is unbuilt here only for lack
 > of the iOS workload. Vulkan on X11 still awaits a real-GPU matrix before its branch migrates.
 
-### The two seams stay separate
+### One factory with a typed present half (the two seams merged)
 
-`IDrawingBackend` (resource/content **factory** — geometries, shaders, filters, images; the
-`Uno.UI.Composition` layer, frame-independent) and `IRenderBackend` (**frame/present** pipeline,
-host-adjacent, per-surface) live at different layers and lifetimes (a shader is built once and
-reused across frames before any window exists; a present is per-tick). They are **not** collapsed
-into one interface — that would force one construction moment and drag the host-adjacent present
-concern into the content layer. A backend is registered as a **matched pair** (see `IGraphicsBackend`)
-so the two can never come from different families.
+The earlier design kept `IDrawingFactory` (resources) and `IRenderBackend` (present) as a separately-registered
+matched pair. They are now **one interface**: `IDrawingFactory` carries the resources + `CreateRecording()`, and
+the present half is the **typed** `IDrawingFactory<TTarget>` where `TTarget : IRenderTarget`. A backend
+implements `IDrawingFactory<TTarget>` **once per render-target kind it can present**
+(`IDrawingFactory<IVulkanRenderTarget>`, `IDrawingFactory<IWebGpuRenderTarget>`, …). Because there is one
+object, the resources and the present session are always the same family by construction — no pairing to keep
+in sync.
 
-### Handle model — why the matched pair is mandatory
+### Handle model — why factory and renderer are one family
 
-`IShader` / `IColorFilter` / `IEffectFilter` are **opaque** and consumed *only* by the paired
-renderer, which downcasts them to its own concrete type. A Skia factory paired with a foreign
-renderer would fault that cast (a `WebGpuShader` cast can never receive a `SkiaShader`). So the fix
-for gradients/effects is **not** to make `IShader` introspectable — it is to guarantee the factory
-and renderer are the same family. (`IGeometry` / `IImage` are the opposite: core itself introspects
-them — `Bounds`, `FillContains`, `Combine`, pixels — so they carry neutral members + readbacks and a
-*shared managed* implementation is legitimate. Rule of thumb: consumed only by the paired renderer →
-opaque + cast-back; introspected by core → neutral abstraction.)
+`IShader` / `IColorFilter` / `IEffectFilter` are **opaque** and consumed *only* by the same backend that
+minted them, which downcasts them to its own concrete type. A `WebGpuShader` cast can never receive a
+`SkiaShader`, so the guarantee is that the thing producing the handles is the same object presenting them —
+delivered by the single `IDrawingFactory` above. (`IGeometry` / `IImage` are the opposite: core itself
+introspects them — `Bounds`, `FillContains`, `Combine`, pixels — so they carry neutral members + readbacks and a
+*shared managed* implementation is legitimate. Rule of thumb: consumed only by the backend → opaque + cast-back;
+introspected by core → neutral abstraction.)
 
 ### Registration — user-side, uniform, no default
 
 There is **no default backend**. The core references no backend package; `Uno…Skia` is one
 optionally-referenced package among peers, so an app that registers only WebGPU never links Skia and
-the linker drops it. The app registers its choice with **one process-static call, identical on every
-platform** (including Android/iOS, which have no fluent host builder), placed in the shared app
-bootstrap that runs everywhere:
+the linker drops it. The app registers an **ordered list of `IGraphicsProvider`** with one process-static call,
+identical on every platform, in the shared app bootstrap:
 
 ```csharp
 // ordered by preference: try WebGPU, fall back to Skia
-GraphicsBackend.Register(new IGraphicsBackend[] { new WebGpuGraphicsBackend(), new SkiaGraphicsBackend() });
+GraphicsRegistry.Register(new IGraphicsProvider[] { new WebGpuGraphicsProvider(), new SkiaGraphicsProvider() });
 ```
 
-No `[ModuleInitializer]` self-registration: cross-assembly initializer order is undefined and a
-plugin assembly may not even be loaded, so it can't serve third parties — and it would bake a
-backend into core. Unregistered access throws with a message naming the fix. Standalone consumers
-(unit tests, offscreen harnesses) are their own composition root and register too. Where a fluent
-host builder exists, a `.UseSkiaRendering()` extension may be **thin sugar over the same static
-call** — never a separate mechanism, so the mechanism stays uniform.
-
-Two orthogonal choices, kept separate: the **windowing host** (`UseX11()` / Android `Activity`) is
-*where pixels go*; the **graphics backend** (`GraphicsBackend.Register`) is *how pixels are
-produced*. `DrawingBackend.Current` and the render backend remain process-global → one backend per
-process; per-window backends would require making those per-host (a separate change).
+Separately, the **host** sets exactly one delegate — `GraphicsRegistry.ContextFactory =
+(GraphicsContextKind) => Task<ISwapChain?>` — which builds the window+context for a kind or returns `null` to
+decline. No `[ModuleInitializer]` self-registration (cross-assembly init order is undefined and it would bake a
+backend into core); unregistered access throws with a message naming the fix. If the app registers nothing,
+negotiation lights up the implicit Skia provider when that assembly is present. `DrawingFactory.Current` and the
+present session are process-global → one backend per process.
 
 ### Negotiation — lazy, ordered, create-until-success
 
-Two ordered preference lists: the **user's backend list** (above) and each **backend's context-kind
-list** (owned by the backend — the user never needs to know Skia prefers Vulkan over GL). Nothing is
-created speculatively; contexts are created on demand until one succeeds:
+Two ordered lists — the app's **provider list** and each provider's **`PreferredContexts`** kind list (the app
+never needs to know Skia prefers Vulkan over GL). Nothing is created speculatively; the host makes a
+window+context per kind on demand until one binds:
 
 ```
-foreach backend in userBackendList:                         // user's order
-    foreach kind in backend.PreferredContexts:              // backend's order
-        if (ContextFactory(kind, host.NativeWindow, backend.Requirements) is { } ctx)  // concrete, Uno-owned
-            return backend.CreateRenderBackend(ctx)          // first success wins; stop
-        // kind unavailable / requirements unmet → factory returned null (fully disposed) → next kind
-    // no kind worked → next backend
-throw "no registered backend could initialize on this host (attempted: …)";
+foreach provider in registeredProviders:            // app's order
+    foreach kind in provider.PreferredContexts:      // backend's order
+        ISwapChain? ctx = await ContextFactory(kind) // host builds window+context, or null to decline
+        if ctx is null: continue                     // kind unavailable / host opted out → next kind
+        // narrow ctx to the device face this kind implies (IVulkanDeviceContext / IWebGpuDeviceContext / …)
+        // and hand it to the matching typed IGraphicsProvider<TContext>.CreateGraphics(ctx):
+        IDrawingFactory? factory = CreateGraphics(kind, provider, ctx)
+        if factory is null: ctx.Dispose(); continue  // backend has no provider for this kind
+        // bind-time capability gate: backend must also implement IDrawingFactory<TTarget> for this kind,
+        // else it could win a kind it can't present (crash on the first frame):
+        if !CanPresent(kind, factory): dispose(factory, ctx); continue
+        DrawingFactory.Register(factory); return { provider, ctx, factory }   // first success wins; stop
+throw "no graphics backend could initialize on this host (attempted: …)";
 ```
 
-`TryCreate` does a cheap availability probe before the real init (as Uno already does —
-`X11VulkanSurfaceFactory.IsVulkanAvailable()`), must fully clean up on failure (a null return means
-"as if never attempted"), and treating a later `CreateRenderBackend` failure like a context failure
-keeps the walk robust.
+The kind→device-face narrowing and the `CanPresent` gate live Uno-side (keyed on the closed `GraphicsContextKind`
+set), so the backend reads its device details through a typed context without ever downcasting a neutral one.
+
+The host's context factory does a cheap availability probe before the real init (as Uno already does —
+`X11VulkanSurfaceFactory.IsVulkanAvailable()`) and must fully clean up on failure (a `null` return means "as if
+never attempted"). Treating a failed `CreateGraphics` narrowing or a failed `CanPresent` gate the same way — dispose
+the context and try the next kind — keeps the walk robust.
 
 ### Who provides what
 
-- **Host provides `INativeWindow` only** — the tagged native handle (X11 `Display`+`Window`, Win32
-  `HWND`, Android `ANativeWindow`, `CAMetalLayer`) + size + resize events. This is the *only* thing
-  that is both platform-specific and GPU-agnostic. **The host references no GPU API and no backend.**
-- **Framework owns context + surface creation**, concretely. The context kinds are a **closed,
-  Uno-owned set** (`gl/gles/vulkan/metal/wgpu/software`) — third parties plug in *backends*, not new
-  kinds — so there is **no per-kind provider plugin interface**. Instead a single concrete
-  `GraphicsContextFactory` (a `switch` over the known kinds, living in the Uno graphics layer that
-  references the API libs) creates each context, owns its swapchain/surface, and owns the
-  **blit-with-dirty-rects** and present. Core reaches it through one internal seam
-  (`GraphicsBackend.ContextFactory`) so core stays free of GPU-API libraries. Uno already has most of
-  the creation code (`VulkanContext`, the EGL/GL renderers, the `*VulkanSurfaceFactory` set) — the
-  refactor splits each renderer's "acquire context/surface" half (→ the factory) from its "wrap as
-  `SKSurface`" half (→ the Skia backend). The **`Software`** context is special: it's a neutral CPU
-  **framebuffer** (pointer + width/height/stride) that lives in core with no lib, and each backend
-  *wraps* it (Skia via `SKSurface.Create(info, ptr, stride)`, a managed rasterizer via the raw bytes).
-- **Backend consumes** a ready context, builds its pipelines + its own scratch/stencil from it, and
-  fills a render target. It writes **no** graphics-init and **no** windowing code.
+- **Host provides one delegate** — `GraphicsRegistry.ContextFactory = (GraphicsContextKind) =>
+  Task<ISwapChain?>`. Given a kind it builds the window+context (a fresh window when the kind needs one —
+  an X11 GLX visual — or its existing kind-agnostic window reused — a Win32 HWND), owns the swapchain +
+  acquire/present, and returns it, or `null` to **decline** (unavailable, or its config opted out). The host
+  switches purely on `kind`; it names no backend and no `UNO_WEBGPU`. This replaced the earlier `INativeWindow`
+  hand-off (removed, with `NativeWindowKind`/`GraphicsRequirements`). For the GPU kinds the host delegates the
+  hard init to shared Uno helpers — `WebGpuContext.Create{X11,Win32,Metal,Android,WasmAsync}` and the
+  `*VulkanSurfaceFactory` set — so per-host code stays tiny. The **`Software`** target is a neutral CPU
+  framebuffer (`ISoftwareRenderTarget`: `Pixels`+`RowBytes`), wrapped by each backend (Skia via
+  `SKSurface.Create(info, ptr, stride)`; a managed rasterizer via the raw bytes).
+- **Backend consumes** the narrowed device face, builds its pipelines + its own scratch/stencil from it, and
+  fills the kind-matched render target. It writes **no** graphics-init and **no** windowing code.
 
 ### Contexts, not surfaces — and capabilities
 
-The negotiation currency is the **context** (the GPU-API connection/device: `IWebGpuContext` =
-Instance/Adapter/Device/Queue; GL context; `VkDevice`+queue; `MTLDevice`) — that's where the API
-family and the hard platform init live, and it's shareable + offscreen-capable. Well-known kinds:
-`OpenGL, OpenGLES, Vulkan, Metal, WebGpu, Software`. WebGPU is a first-class provided context, not a
-special case.
+The negotiation currency is the **context** — the GPU-API connection/device, exposed to the backend through a
+typed device face (`IWebGpuDeviceContext` = Instance/Adapter/Device/Queue + color format/sample count;
+`IVulkanDeviceContext`; `IGLDeviceContext`; `IMetalDeviceContext`) — that's where the API family and the hard
+platform init live. WebGPU is a first-class provided context, not a special case; its handles are opaque `nint`s
+so the same face serves **Dawn or wgpu-native** interchangeably.
 
-A backend declares **capabilities/requirements** (min stencil bits, depth, MSAA sample count,
-preferred color format, limits). These are **support guarantees on the created context** — the
-provider selects a device that supports them or `TryCreate` fails (feeding the negotiation fallback).
-Requirements split by role: color-format/sample-count **configure the framework-created color
-target**; stencil/depth-format/limits are **device-support the backend relies on when it allocates
-its *own* attachments**. The backend still allocates its own depth/stencil/scratch (technique- and
-size-specific, never presented) from the context — capabilities only guarantee the device *can*.
+There is **no `GraphicsRequirements` struct** any more. A backend's support requirement is expressed structurally:
+it only implements `IGraphicsProvider<TContext>` for the device faces it understands and `IDrawingFactory<TTarget>`
+for the targets it can present, and the negotiator's bind-time **`CanPresent` gate** skips a kind the backend
+can't present (so it can never win one it would crash on). Color format/sample count travel on the device face /
+render target; the backend still allocates its own depth/stencil/scratch (technique- and size-specific, never
+presented) from the context.
 
 ### The render target is a view — surface vs texture stays internal
 
@@ -643,58 +682,54 @@ is **kind-matched** (opaque to core; a `WebGpu` provider mints the one a WebGPU 
 
 ```csharp
 public enum GraphicsContextKind { OpenGL, OpenGLES, Vulkan, Metal, WebGpu, Software }
+public enum GraphicsColorFormat { Bgra8888, Rgba8888 }
 
-public readonly struct GraphicsRequirements
+// The host's ONLY contribution: build a window+context for a kind, or null to decline. Async because one
+// kind (WASM WebGpu) imports its device from JS; native hosts return an already-completed task. (internal)
+internal delegate Task<ISwapChain?> GraphicsContextFactory(GraphicsContextKind kind);
+
+public interface IGraphicsContext : IDisposable { GraphicsContextKind Kind { get; } }   // thin device/init handle
+
+// Device faces the negotiator narrows a context to, so the backend reads device details without casting
+// a neutral context. (Instance/Device/Queue etc. are opaque nint handles — Dawn or wgpu-native, GL, Vulkan, Metal.)
+public interface IGLDeviceContext     : IGraphicsContext { GLFlavor Flavor { get; } Func<string,nint> GetProcAddress { get; } }
+public interface IVulkanDeviceContext : IGraphicsContext { nint Instance { get; } nint PhysicalDevice { get; } nint Device { get; } nint Queue { get; } /* + queue family, extensions, GetProcAddress */ }
+public interface IMetalDeviceContext  : IGraphicsContext { /* device/queue/layer handles */ }
+public interface IWebGpuDeviceContext : IGraphicsContext { nint Instance { get; } nint Adapter { get; } nint Device { get; } nint Queue { get; } uint ColorFormat { get; } uint SampleCount { get; } }
+
+internal interface ISwapChain : IGraphicsContext          // what the host factory returns; Uno-internal
 {
-    public int MinStencilBits { get; init; }   // e.g. 8 for even-odd/nonzero fills
-    public bool NeedsDepth { get; init; }
-    public int SampleCount { get; init; }       // MSAA
-    public ColorFormat PreferredColor { get; init; }
+    IRenderTarget AcquireRenderTarget(int width, int height);
+    void Present();
 }
 
-public interface INativeWindow                  // host-provided; GPU-agnostic
+public interface IRenderTarget : IDisposable { int Width { get; } int Height { get; } GraphicsColorFormat ColorFormat { get; } }
+// kind-matched color-view faces the backend downcasts to:
+public interface IGLRenderTarget       : IRenderTarget { /* framebuffer id */ }
+public interface IVulkanRenderTarget   : IRenderTarget { /* image + view */ }
+public interface IMetalRenderTarget    : IRenderTarget { /* drawable/texture */ }
+public interface IWebGpuRenderTarget   : IRenderTarget { nint ColorView { get; } }
+public interface ISoftwareRenderTarget : IRenderTarget { nint Pixels { get; } int RowBytes { get; } }
+
+public interface IGraphicsProvider { IReadOnlyList<GraphicsContextKind> PreferredContexts { get; } }   // the registerable unit
+public interface IGraphicsProvider<TContext> : IGraphicsProvider where TContext : IGraphicsContext
 {
-    NativeWindowKind Kind { get; }              // X11 / Win32 / Android / Metal / …
-    nint Handle { get; } nint Display { get; }
-    PixelSize Size { get; }
-    event EventHandler Resized;
+    IDrawingFactory CreateGraphics(TContext context);   // implemented once per device-face kind the backend serves
 }
 
-// concrete, Uno-owned creation over the closed kind set — NOT a per-kind plugin interface.
-// Set once by the Uno graphics layer; core reaches it via GraphicsBackend.ContextFactory.
-public delegate IGraphicsContext? GraphicsContextFactory(
-    GraphicsContextKind kind, INativeWindow window, GraphicsRequirements requirements);
-
-public interface IGraphicsContext : IDisposable   // thin device/init handle; NOT a resource factory
+public interface IDrawingFactory { /* resources + CreateRecording() — see "Registration & factory" */ }
+public interface IDrawingFactory<in TTarget> : IDrawingFactory where TTarget : IRenderTarget
 {
-    GraphicsContextKind Kind { get; }
-    bool IsLost { get; }
+    IPresentSession BeginPresent(TTarget target);       // implemented once per render-target kind the backend presents
 }
 
-public interface IRenderTarget : IDisposable { PixelSize Size { get; } }   // kind-matched color view
-
-public interface IGraphicsBackend               // the registerable unit (matched pair)
+internal static class GraphicsRegistry                  // negotiation hub (internal; hosts/bootstrap reach it)
 {
-    IReadOnlyList<GraphicsContextKind> PreferredContexts { get; }   // ordered
-    GraphicsRequirements Requirements { get; }
-    IDrawingBackend Drawing { get; }
-    IRenderBackend CreateRenderBackend(IGraphicsContext context);
-}
-
-public interface IRenderBackend
-{
-    ICommandRecorder BeginFrame();                     // record the tree → IRenderData (UI thread)
-    IPresentSession BeginPresent(IRenderTarget target); // render session onto the color target (phase 2)
-    // The session form (rather than a bare Render(target, frame)) is retained because the framework
-    // composes present-time overlays into it — the FPS counter, whose timing is only known at present —
-    // and the per-frame Clear, before/after replaying the recorded frame. IPresentSession : IDrawingSession,
-    // IRetainedRenderingSession, IDisposable.
-}
-
-public static class GraphicsBackend
-{
-    public static void Register(IReadOnlyList<IGraphicsBackend> backendsInPreferenceOrder);
-    // no default; unregistered access throws
+    public static GraphicsContextFactory? ContextFactory { get; set; }                 // host sets this
+    internal static void Register(IReadOnlyList<IGraphicsProvider> providersInPreferenceOrder);   // app/bootstrap
+    public static GraphicsInitialization Initialize();                                 // sync; wraps InitializeAsync
+    public static Task<GraphicsInitialization> InitializeAsync();
+    // no default; unregistered access throws. Implicit Skia provider lit up when the app registered nothing.
 }
 ```
 
@@ -731,10 +766,14 @@ glyph rendering (outline + color), image decode (PNG/GIF/BMP/JPEG/WebP-lossless)
 the native-element clip path (crosses `CompositionTarget`↔host as `IGeometry`, converted to `SKPath` only
 inside each Skia host), and the record/present frame cycle. No SkiaSharp type appears on any of these interfaces.
 
-**Assembly layout:** `Uno.UI.Composition` is fully SkiaSharp-free; the Skia backend lives in a separate
-`Uno.UI.Composition.Skia` assembly (`Uno.UI → Uno.UI.Composition.Skia → Uno.UI.Composition`). `Uno.UI` itself
-no longer references SkiaSharp except the two items below — the Vulkan GPU subsystem was relocated wholesale
-from `Uno.UI` into the Skia backend assembly.
+**Assembly layout:** the public seam lives in its own SkiaSharp-free `Uno.UI.Composition.Drawing` assembly;
+`Uno.UI.Composition` is also SkiaSharp-free; the Skia backend lives in a separate `Uno.UI.Composition.Skia`
+assembly, and the WebGPU backend across `Uno.UI.Composition.WebGpu(.Init)`. `Uno.UI` itself no longer references
+SkiaSharp except the items below — the Vulkan GPU subsystem was relocated wholesale from `Uno.UI` into the Skia
+backend assembly. **No assembly grants its internals (`[InternalsVisibleTo]`) to `Uno.UI.Composition.Skia` or
+`Uno.UI.Composition.WebGpu`** — both backends stand entirely on the public seam (the WebGPU renderer engine was
+moved into its own assembly precisely so nothing reaches into it), so a third-party backend has the same access
+the built-in ones do: the public seam and nothing more.
 
 **WebGPU backend native/ABI:** the experimental WebGPU backend is bound to the **modern `webgpu.h` ABI**
 (no Silk.NET) and is split across two assemblies. The renderer-agnostic **init half** — the interop layer
@@ -751,12 +790,15 @@ WASM host's direct `WebGpuContext` reference resolves; the browser device is imp
 
 **Still Skia (the remaining path to fully dropping SkiaSharp):**
 1. **The rasterizer itself** — the default `IDrawingSession`/`RenderOffscreen` pixel work is SkiaSharp. A
-   fully Skia-free runtime needs an alternative `IDrawingBackend` that rasterizes (the largest remaining piece).
+   fully Skia-free runtime needs an alternative `IDrawingFactory` that rasterizes (the largest remaining piece).
 2. **Image decode fallbacks** — WebP **lossy (VP8)** and animated WebP (both need the ~2000-line RFC 6386
    VP8 intra decoder), TIFF, ICO still route to the Skia codec.
-3. **`SKCanvasElement`/`SvgCanvas`** — intentionally Skia-only (an app-facing "draw with raw Skia" control in
-   a separate package); out of scope for core neutrality. This is the only remaining SkiaSharp use in `Uno.UI`
-   besides the frame-rate-counter overlay's `SKFont` text shaping (a diagnostic, not a render-path dependency).
+3. **`SKCanvasElement`/`SvgCanvas`** — app-facing "draw with raw Skia" controls in a separate package, so they
+   are SkiaSharp *by contract* (the user draws on an `SKCanvas`); out of scope for core neutrality. But their
+   placement is now backend-agnostic: `SKCanvasElement` draws **zero-copy** into the frame when the active
+   backend exposes an `SKCanvas` via `IDrawingSession.NativeSurface`, and otherwise falls back to a Skia-on-GL
+   island — so it works on any backend and names none. (The frame-rate-counter overlay's `SKFont` text shaping
+   is the other diagnostic-only SkiaSharp use in `Uno.UI`.)
 4. **Transitional internals** — a few backend-internal spots still hand an `SKImage` to the composition
    surface (the WASM browser-canvas decode path); these are inside/adjacent to the Skia backend, not on a
    pluggable interface.
