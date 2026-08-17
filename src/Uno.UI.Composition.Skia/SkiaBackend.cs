@@ -23,8 +23,6 @@ public static class SkiaBackend
 
 	internal static IGeometryFactory CreateGeometryFactory() => new SkiaGeometryFactory();
 
-	internal static ISvgRenderer CreateSvgRenderer() => new SkiaSvgRenderer();
-
 	/// <summary>The Skia graphics provider (the backend negotiation picks a context and builds its drawing factory).</summary>
 	internal static IGraphicsProvider CreateGraphicsProvider() => new SkiaGraphicsProvider();
 

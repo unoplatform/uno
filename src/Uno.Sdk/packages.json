@@ -8,6 +8,7 @@
 			"Uno.WinUI.GooglePlay",
 			"Uno.WinUI.Foldable",
 			"Uno.WinUI.MSAL",
+			"Uno.WinUI.Svg",
 			"Uno.WinUI.Lottie",
 			"Uno.WinUI.DevServer",
 			"Uno.WinUI.Runtime.Skia.Linux.FrameBuffer",
