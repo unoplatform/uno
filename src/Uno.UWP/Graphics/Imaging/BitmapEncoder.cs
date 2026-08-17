@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#nullable enable
 
-#if __ANDROID__
-using Android.Graphics;
-#elif __APPLE_UIKIT__
-using Foundation;
-using UIKit;
-#endif
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Windows.Graphics.Imaging;
 
@@ -36,21 +32,8 @@ partial class BitmapEncoder
 	// _encoderMap is defined here to  make sure they are initialized after the encoder ID Guids above.
 	// Static field initializers are executed in textual order. When dealing with partial classes, the order is undefined.
 
-#if __ANDROID__
-	private static readonly IDictionary<Guid, Bitmap.CompressFormat> _encoderMap =
-		new Dictionary<Guid, Bitmap.CompressFormat>()
-		{
-			{JpegEncoderId, Bitmap.CompressFormat.Jpeg},
-			{PngEncoderId, Bitmap.CompressFormat.Png},
-		};
-#elif __APPLE_UIKIT__
-	private static readonly Dictionary<Guid, Func<UIImage, NSData>> _encoderMap =
-		new()
-		{
-			{JpegEncoderId, AsJPEG},
-			{PngEncoderId, AsPNG},
-		};
-#elif __SKIA__
+	// Uniform across all platforms: the neutral output format. FlushAsync prefers the registered neutral codec
+	// (Encode) and only falls back to the platform's native encoder when none is registered.
 	private static readonly IDictionary<Guid, BitmapEncoderFormat> _encoderMap =
 		new Dictionary<Guid, BitmapEncoderFormat>()
 		{
@@ -60,5 +43,13 @@ partial class BitmapEncoder
 			{PngEncoderId, BitmapEncoderFormat.Png},
 			{HeifEncoderId, BitmapEncoderFormat.Heif},
 		};
-#endif
+
+	/// <summary>
+	/// The registered neutral image codec's encode entry point, or null when none is registered (a native-only head).
+	/// Assigned once, top-down, at startup by the image-codec registration in the composition layer (which references
+	/// this assembly and hands its <c>IImageEncoderDecoder.Encode</c> down as a plain delegate) — so this assembly
+	/// needs no reference to, and no reflection into, the codec. <c>FlushAsync</c> prefers it and falls back to the
+	/// platform's native encoder when it's null. Signature: (destination, pixels, width, height, pixelFormat, alphaMode, format, quality).
+	/// </summary>
+	public static Action<Stream, byte[], int, int, BitmapPixelFormat, BitmapAlphaMode, BitmapEncoderFormat, int>? Encode { get; set; }
 }
