@@ -208,10 +208,19 @@
 	<!-- 7.0 is Skia-only: fail the pack if a native UI rendering head package is produced. -->
 	<Target Name="ValidateNoNativeUIHeadPackages" AfterTargets="BuildNuGetPackage" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(Configuration)'=='Release'">
 		<ItemGroup>
-			<_ForbiddenNativeHeadPackage Include="Uno.WinUI.WebAssembly;Uno.WinUI.Runtime.WebAssembly" />
+			<!--
+				nuspec-produced packages land next to this project; csproj-produced ones in the staging directory.
+				Scoped to the version being built so stale packages left on a self-hosted agent cannot trip the guard.
+			-->
+			<_ProducedPackage Include="$(MSBuildThisFileDirectory)*$(NBGV_SemVer2).nupkg" />
+			<_ProducedPackage Include="$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest\*$(NBGV_SemVer2).nupkg" Condition="'$(BUILD_ARTIFACTSTAGINGDIRECTORY)'!=''" />
+
+			<!-- Anchored so Uno.WinUI.Runtime.Skia.WebAssembly.Browser and Uno.Foundation.Runtime.WebAssembly do not match. -->
+			<_ForbiddenNativeHeadPackage Include="@(_ProducedPackage)"
+				Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Filename)', '^Uno\.WinUI(\.Runtime)?\.(WebAssembly|Wasm)\.'))" />
 		</ItemGroup>
-		<Error Condition="Exists('%(_ForbiddenNativeHeadPackage.Identity).$(NBGV_SemVer2).nupkg')"
-			   Text="Native UI head package '%(_ForbiddenNativeHeadPackage.Identity)' was produced but must not ship in 7.0 (Skia is the only renderer). Remove it from the pack pipeline." />
+		<Error Condition="'@(_ForbiddenNativeHeadPackage)'!=''"
+			   Text="Native UI head package(s) produced but must not ship in 7.0 (Skia is the only renderer): @(_ForbiddenNativeHeadPackage->'%(Filename)', ', '). Remove them from the pack pipeline." />
 	</Target>
 
 	<!--
