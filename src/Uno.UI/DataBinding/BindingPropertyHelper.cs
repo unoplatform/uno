@@ -141,6 +141,40 @@ namespace Uno.UI.DataBinding
 		/// </summary>
 		public static IBindableMetadataProvider? BindableMetadataProvider { get; set; }
 
+		/// <summary>
+		/// Resolves bindable metadata for <paramref name="type"/>, rejecting a result whose
+		/// <see cref="IBindableType.Type"/> is not <paramref name="type"/> itself. Generated providers
+		/// match by full name, so when the same assembly is loaded in a second AssemblyLoadContext the
+		/// provider can return metadata for the identically-named type from the other context; its
+		/// typed getters then fail with <see cref="InvalidCastException"/>. On mismatch this returns
+		/// null and callers fall back to reflection.
+		/// </summary>
+		internal static IBindableType? GetValidatedBindableType(Type type)
+		{
+			var bindableType = BindableMetadataProvider?.GetBindableTypeByType(type);
+
+			if (bindableType is null)
+			{
+				return null;
+			}
+
+			if (bindableType.Type != type)
+			{
+				if (_log.IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					_log.DebugFormat(
+						"Bindable metadata for [{0}] resolved to another type instance (context [{1}] vs [{2}]); using reflection instead.",
+						type.FullName,
+						System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(type.Assembly)?.Name,
+						System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(bindableType.Type.Assembly)?.Name);
+				}
+
+				return null;
+			}
+
+			return bindableType;
+		}
+
 		public static Type? GetPropertyType(Type type, string property, bool allowPrivateMembers)
 		{
 			// Capture the pooled key into a local: ClearCaches() swaps the static field, and a
@@ -643,7 +677,7 @@ namespace Uno.UI.DataBinding
 					using (Performance.Measure("GetValueGetter.BindableMetadataProvider"))
 #endif
 					{
-						var bindableType = BindableMetadataProvider.GetBindableTypeByType(type);
+						var bindableType = GetValidatedBindableType(type);
 
 						if (bindableType != null)
 						{
@@ -972,7 +1006,7 @@ namespace Uno.UI.DataBinding
 					using (Performance.Measure("GetValueSetter.BindableMetadataProvider"))
 #endif
 					{
-						var bindableType = BindableMetadataProvider.GetBindableTypeByType(type);
+						var bindableType = GetValidatedBindableType(type);
 
 						if (bindableType != null)
 						{
