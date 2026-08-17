@@ -17,9 +17,14 @@ namespace Microsoft.UI.Xaml.Documents;
 /// </summary>
 internal static class GlyphRunRenderer
 {
+	// Reused per render thread (Draw runs to completion before returning, so it is never reentrant on one thread).
+	[ThreadStatic]
+	private static List<GlyphRunElement>? _elements;
+
 	public static void Draw(IDrawingSession session, IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color)
 	{
-		var elements = new List<GlyphRunElement>();
+		var elements = _elements ??= new List<GlyphRunElement>();
+		elements.Clear();
 		font.BuildGlyphRun(GeometryFactory.Current, glyphs, positions, baselineY, elements);
 
 		try
@@ -40,19 +45,11 @@ internal static class GlyphRunRenderer
 						break;
 
 					case GlyphImage image:
-					{
-						var decoded = ImageEncoderDecoder.Current.CreateImage(image.PixelWidth, image.PixelHeight, image.Pixels);
-						var texture = DrawingFactory.Current.CreateTexture(decoded);
-						try
-						{
-							session.DrawImage(texture, image.X, image.Y, ImageSampling.Linear, antialias: true);
-						}
-						finally
-						{
-							texture.Dispose();
-						}
+						// The colour-glyph texture is cached per (font, glyph) — the font hands back a stable pixel
+						// buffer per glyph, so its reference identity keys the texture — sparing a decode + GPU upload
+						// on every repaint. Cache-owned (not disposed here).
+						session.DrawImage(GlyphTextureCache.Get(image.Pixels, image.PixelWidth, image.PixelHeight), image.X, image.Y, ImageSampling.Linear, antialias: true);
 						break;
-					}
 				}
 			}
 		}
@@ -74,6 +71,58 @@ internal static class GlyphRunRenderer
 						break;
 				}
 			}
+
+			elements.Clear();
+		}
+	}
+
+	// Per-render-thread cache of rasterized colour-glyph (emoji) textures, keyed by the font's stable per-glyph pixel
+	// buffer (reference identity). ThreadStatic so no lock is needed and a texture can't be freed mid-draw by another
+	// thread; bounded so GPU memory can't grow without limit; flushed when the drawing backend is re-registered
+	// (device reset) since the cached textures belong to the old device.
+	private static class GlyphTextureCache
+	{
+		private const int Cap = 512;
+
+		[ThreadStatic]
+		private static Dictionary<byte[], ITexture>? _textures;
+		[ThreadStatic]
+		private static IDrawingFactory? _factory;
+
+		public static ITexture Get(byte[] pixels, int width, int height)
+		{
+			var factory = DrawingFactory.Current;
+			var map = _textures ??= new Dictionary<byte[], ITexture>(ReferenceEqualityComparer.Instance);
+			if (!ReferenceEquals(factory, _factory))
+			{
+				Flush(map);
+				_factory = factory;
+			}
+
+			if (map.TryGetValue(pixels, out var texture))
+			{
+				return texture;
+			}
+
+			if (map.Count >= Cap)
+			{
+				Flush(map);
+			}
+
+			var decoded = ImageEncoderDecoder.Current.CreateImage(width, height, pixels);
+			texture = factory.CreateTexture(decoded);
+			map[pixels] = texture;
+			return texture;
+		}
+
+		private static void Flush(Dictionary<byte[], ITexture> map)
+		{
+			foreach (var texture in map.Values)
+			{
+				texture.Dispose();
+			}
+
+			map.Clear();
 		}
 	}
 }
