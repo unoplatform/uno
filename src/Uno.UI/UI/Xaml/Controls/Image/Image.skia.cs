@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Numerics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Composition;
 using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 
@@ -14,7 +15,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
 		private Size _lastMeasuredSize;
-		private CompositionImageSurface _currentSurface;
+		private ICompositionSurface _currentSurface;
 		private CompositionSurfaceBrush _surfaceBrush;
 		private readonly SpriteVisual _imageSprite;
 		private ImageData? _pendingImageData;
@@ -36,41 +37,12 @@ namespace Microsoft.UI.Xaml.Controls
 			_pendingImageData = null;
 			InvalidateMeasure();
 
-			if (newValue is SvgImageSource svgImageSource)
-			{
-				InitializeSvgSource(svgImageSource);
-			}
-			else if (newValue is ImageSource source)
+			// SVG flows through the same neutral path as any source: its ISvgRenderer produces a live composition
+			// surface (drawn as vector each frame, crisp at any size) that the sprite renders like any bitmap.
+			if (newValue is ImageSource source)
 			{
 				InitializeImageSource(source);
 			}
-		}
-
-		private void InitializeSvgSource(SvgImageSource source)
-		{
-			_svgCanvas = source.GetCanvas();
-			AddChild(_svgCanvas);
-			source.SourceLoaded += OnSvgSourceLoaded;
-			source.OpenFailed += OnSvgSourceFailed;
-			_sourceDisposable.Disposable = Disposable.Create(() =>
-			{
-				RemoveChild(_svgCanvas);
-				source.SourceLoaded -= OnSvgSourceLoaded;
-				source.OpenFailed -= OnSvgSourceFailed;
-				_svgCanvas = null;
-			});
-		}
-
-		private void OnSvgSourceLoaded(object sender, EventArgs args)
-		{
-			InvalidateMeasure();
-			ImageOpened?.Invoke(this, new RoutedEventArgs(this));
-		}
-
-		private void OnSvgSourceFailed(SvgImageSource sender, SvgImageSourceFailedEventArgs args)
-		{
-			InvalidateMeasure();
-			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, "Failed to load Svg source"));
 		}
 
 		private void InitializeImageSource(ImageSource source)
@@ -178,23 +150,18 @@ namespace Microsoft.UI.Xaml.Controls
 					this.Log().LogDebug($"Arrange {this} _lastMeasuredSize:{_lastMeasuredSize}, containerSize:{containerSize}, finalSize:{finalSize}");
 				}
 
-				if (Source is SvgImageSource)
+				_imageSprite.Size = roundedSize;
+
+				// A live (self-painting) surface fills the sprite bounds itself, so the brush transform is a no-op for
+				// it; a texture-backed surface is stretched from its pixel size to the sprite size here.
+				var srcSize = GetSurfaceSize(_currentSurface);
+				if (srcSize is { X: > 0, Y: > 0 } size)
 				{
-					_svgCanvas?.Arrange(new Rect(0, 0, roundedSize.X, roundedSize.Y));
-					return containerSize;
+					_surfaceBrush.TransformMatrix = Matrix3x2.CreateScale(_imageSprite.Size.X / size.X, _imageSprite.Size.Y / size.Y);
 				}
-				else
-				{
-					_imageSprite.Size = roundedSize;
 
-					var srcSize = _currentSurface.Size!.Value;
-					var transform = Matrix3x2.CreateScale(_imageSprite.Size.X / srcSize.X, _imageSprite.Size.Y / srcSize.Y);
-
-					_surfaceBrush.TransformMatrix = transform;
-
-					// Image has no direct child that needs to be arranged explicitly
-					return containerSize;
-				}
+				// Image has no direct child that needs to be arranged explicitly
+				return containerSize;
 			}
 			else
 			{
@@ -217,32 +184,22 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private bool IsSourceReady()
-		{
-			if (Source is SvgImageSource svgImageSource)
-			{
-				return svgImageSource.IsParsed;
-			}
-			else if (Source is ImageSource imageSource)
-			{
-				return _currentSurface?.Size != null;
-			}
-
-			return false;
-		}
+		private bool IsSourceReady() => Source is ImageSource && GetSurfaceSize(_currentSurface) is not null;
 
 		private Size GetSourceSize()
 		{
-			if (Source is SvgImageSource svgImageSource)
-			{
-				return svgImageSource.SourceSize;
-			}
-			else
-			{
-				var srcSize = _currentSurface.Size!.Value;
-				return new Size(srcSize.X, srcSize.Y);
-			}
+			var size = GetSurfaceSize(_currentSurface);
+			return size is { } value ? new Size(value.X, value.Y) : default;
 		}
+
+		// Pixel/intrinsic size of the current surface, whichever kind it is: a texture-backed CompositionImageSurface
+		// or a live self-painting IPaintableSurface (e.g. the SVG surface).
+		private static Vector2? GetSurfaceSize(ICompositionSurface surface) => surface switch
+		{
+			CompositionImageSurface image => image.Size,
+			IPaintableSurface paintable => paintable.Size,
+			_ => null
+		};
 
 		/// <summary>
 		/// Returns a mask that represents the alpha channel of the image as a CompositionBrush.

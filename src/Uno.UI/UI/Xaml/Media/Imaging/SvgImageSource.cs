@@ -44,9 +44,6 @@ public partial class SvgImageSource : ImageSource
 
 	private void Initialize()
 	{
-#if __SKIA__
-		InitSvgProvider();
-#endif
 		InitPartial();
 	}
 

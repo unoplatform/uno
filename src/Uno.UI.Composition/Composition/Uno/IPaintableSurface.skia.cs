@@ -13,7 +13,9 @@ namespace Uno.UI.Composition
 	/// </summary>
 	internal interface IPaintableSurface
 	{
-		internal void Paint(IDrawingSession session, float opacity);
+		/// <param name="bounds">The target rectangle the brush is painting into; a resolution-independent surface
+		/// (e.g. SVG) renders to fill it, so it stays crisp at any size. Fixed-size sources may ignore it.</param>
+		internal void Paint(IDrawingSession session, float opacity, global::Windows.Foundation.Rect bounds);
 		internal Vector2 Size { get; }
 	}
 }

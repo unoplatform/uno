@@ -17,7 +17,6 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme.v1")]
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme.v2")]
 [assembly: InternalsVisibleTo("Uno.UI.Lottie")]
-[assembly: InternalsVisibleTo("Uno.UI.Svg")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.Foldable")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Tizen")]

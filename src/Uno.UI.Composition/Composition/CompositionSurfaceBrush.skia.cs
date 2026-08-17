@@ -87,11 +87,11 @@ namespace Microsoft.UI.Composition
 				return true;
 			}
 
-			if (Surface is IPaintableSurface skiaSurface)
+			if (Surface is IPaintableSurface paintableSurface)
 			{
 				session.Save();
 				session.ClipRect(bounds, antialias: true);
-				skiaSurface.Paint(session, opacity);
+				paintableSurface.Paint(session, opacity, bounds);
 				session.Restore();
 				return true;
 			}

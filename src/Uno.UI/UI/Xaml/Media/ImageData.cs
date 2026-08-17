@@ -28,9 +28,11 @@ internal partial struct ImageData
 	}
 
 #if __SKIA__
-	public static ImageData FromCompositionSurface(CompositionImageSurface compositionSurface) => new(compositionSurface);
+	// Neutral surface (ICompositionSurface): a texture-backed CompositionImageSurface OR a live self-painting one
+	// (e.g. CompositionSvgSurface). Consumers that need texture specifics down-cast.
+	public static ImageData FromCompositionSurface(ICompositionSurface compositionSurface) => new(compositionSurface);
 
-	private ImageData(CompositionImageSurface compositionSurface)
+	private ImageData(ICompositionSurface compositionSurface)
 	{
 		Kind = ImageDataKind.CompositionSurface;
 		CompositionSurface = compositionSurface;
@@ -48,7 +50,7 @@ internal partial struct ImageData
 	public byte[]? ByteArray { get; } = null;
 
 #if __SKIA__
-	public CompositionImageSurface? CompositionSurface { get; } = null;
+	public ICompositionSurface? CompositionSurface { get; } = null;
 #endif
 
 	public override string ToString() =>

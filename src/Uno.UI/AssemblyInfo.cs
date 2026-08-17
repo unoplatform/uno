@@ -12,7 +12,6 @@ using Uno.Foundation.Extensibility;
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.Lottie")]
-[assembly: InternalsVisibleTo("Uno.UI.Svg")]
 [assembly: InternalsVisibleTo("Uno.UI.XamlHost")]
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]

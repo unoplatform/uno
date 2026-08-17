@@ -33,9 +33,34 @@ public interface ISvgDocument
 	void Render(IDrawingSession session, Size targetSize);
 }
 
-/// <summary>Holds the registered <see cref="ISvgRenderer"/>. Set once at startup (host builder / app).</summary>
+/// <summary>
+/// Holds the registered <see cref="ISvgRenderer"/>. When none was explicitly registered (host builder), the framework
+/// lazily lights up its default — the Skia SVG engine when the Skia backend is present — on first access, exactly like
+/// the <see cref="FontProvider"/> / <see cref="ImageEncoderDecoder"/> / <see cref="GeometryFactory"/> holders. An app
+/// can override it by registering its own (e.g. the managed engine) via the host builder.
+/// </summary>
 public static class SvgRenderer
 {
-	/// <summary>The active SVG renderer, or null when none is registered (the SVG consumer falls back to its default).</summary>
-	public static ISvgRenderer? Current { get; set; }
+	private static ISvgRenderer? _current;
+
+	/// <summary>
+	/// The active SVG renderer, or null only on a head with no SVG renderer at all (SVG then simply doesn't render).
+	/// Reading it lazily lights up the per-seam Skia default when nothing was explicitly registered.
+	/// </summary>
+	public static ISvgRenderer? Current
+	{
+		get
+		{
+			if (_current is null)
+			{
+				DrawingBackendFallback.EnsureSvgRenderer();
+			}
+
+			return _current;
+		}
+		internal set => _current = value;
+	}
+
+	/// <summary>Registers <paramref name="renderer"/> only if none is set yet (the per-seam fallback default).</summary>
+	internal static void RegisterDefault(ISvgRenderer renderer) => _current ??= renderer;
 }

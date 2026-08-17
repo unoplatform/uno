@@ -108,8 +108,6 @@
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.Tests.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Lottie.csproj</_AdjustedOutputProjects>
 
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Svg.Tests.csproj</_AdjustedOutputProjects>
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Svg.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Logging.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.MediaPlayer.Skia.X11.csproj</_AdjustedOutputProjects>

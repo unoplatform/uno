@@ -9,7 +9,7 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionVisualSurface : CompositionObject, ICompositionSurface, IPaintableSurface
 	{
-		void IPaintableSurface.Paint(global::Uno.UI.Composition.Drawing.IDrawingSession session, float opacity)
+		void IPaintableSurface.Paint(global::Uno.UI.Composition.Drawing.IDrawingSession session, float opacity, global::Windows.Foundation.Rect bounds)
 		{
 			if (SourceVisual is not null)
 			{
