@@ -106,6 +106,7 @@
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\Uno.UI.Runtime.Skia.WebAssembly.Browser.csproj" />
 		<!-- App-level WebGPU backend reference (the host no longer provides it); the app registers it in Program.cs. -->
 		<ProjectReference Include="..\..\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.Wasm.csproj" />

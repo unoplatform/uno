@@ -21,6 +21,7 @@ internal static class Program
 			.GeometryFactory(new ManagedGeometryFactory())
 			.FontProvider(new ManagedFontProvider())
 			.ImageEncoderDecoder(new ManagedImageDecoderBackend())
+			.SvgRenderer(new ManagedSvgRenderer())
 			.Build()
 			.Run();
 	}

@@ -458,16 +458,16 @@ internal sealed class ManagedFont : IFont
 		return end > start && S16(_data, _glyf + start) < 0;
 	}
 
-	public void BuildGlyphRun(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<GlyphRunElement> elements)
+	public void BuildGlyphRun(IGeometryFactory geometry, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<GlyphRunElement> elements)
 	{
 		var scale = _pixelSize / _unitsPerEm;
-		var builder = GeometryFactory.Current.CreatePathBuilder();
+		var builder = geometry.CreatePathBuilder();
 		for (var i = 0; i < glyphs.Length; i++)
 		{
 			if (HasColorGlyphs && _colr!.HasBaseGlyph(glyphs[i]))
 			{
 				// Colour glyph — emitted as vector layers (no rasterization, no render backend), excluded from the outline.
-				if (TryBuildColorLayers(glyphs[i], positions[i].X, positions[i].Y + baselineY, scale, out var layers))
+				if (TryBuildColorLayers(geometry, glyphs[i], positions[i].X, positions[i].Y + baselineY, scale, out var layers))
 				{
 					elements.Add(new GlyphColorLayers(layers));
 				}
@@ -484,7 +484,7 @@ internal sealed class ManagedFont : IFont
 
 	// COLR colour glyph → positioned (IGeometry, Color) layers built straight at the glyph origin. No rasterization
 	// and no render backend — the caller fills each layer with its colour.
-	private bool TryBuildColorLayers(ushort glyph, float originX, float originY, float scale, out IReadOnlyList<GlyphColorLayer> layers)
+	private bool TryBuildColorLayers(IGeometryFactory geometry, ushort glyph, float originX, float originY, float scale, out IReadOnlyList<GlyphColorLayer> layers)
 	{
 		layers = default!;
 		if (!_colr!.TryGetLayers(glyph, out var colrLayers))
@@ -495,7 +495,7 @@ internal sealed class ManagedFont : IFont
 		var result = new List<GlyphColorLayer>(colrLayers.Count);
 		foreach (var layer in colrLayers)
 		{
-			var builder = GeometryFactory.Current.CreatePathBuilder();
+			var builder = geometry.CreatePathBuilder();
 			EmitOutline(builder, layer.GlyphId, originX, originY, scale);
 			result.Add(new GlyphColorLayer(builder.Build(), PaletteColor(layer.PaletteIndex)));
 		}

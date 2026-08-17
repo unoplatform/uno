@@ -14,7 +14,9 @@ namespace Uno.UI.Composition.Drawing;
 public interface ISvgRenderer
 {
 	/// <summary>Parses SVG markup into a renderable <see cref="ISvgDocument"/>, or null when the bytes aren't SVG the renderer can handle.</summary>
-	ISvgDocument? Parse(byte[] svg);
+	/// <param name="geometry">Registered geometry factory the renderer builds its shape/path geometry with.</param>
+	/// <param name="drawing">Registered drawing factory the renderer mints its gradient shaders with.</param>
+	ISvgDocument? Parse(byte[] svg, IGeometryFactory geometry, IDrawingFactory drawing);
 }
 
 /// <summary>

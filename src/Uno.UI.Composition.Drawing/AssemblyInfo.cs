@@ -3,8 +3,9 @@ using System.Runtime.CompilerServices;
 // The low-level drawing-backend registration mutators (DrawingFactory.Register, GraphicsRegistry.Register + context
 // factories, FontProvider/ImageEncoderDecoder setters, DrawingRegistration.DefaultRenderer) are internal: app-side
 // registration goes through the host builder. These framework assemblies register on the app's behalf — the builder
-// (Uno.UI), the managed backend (Uno.UI.Composition), and the Skia/WebGPU backends (their module initializers /
-// providers) — so they need access to the internal registrars.
+// (Uno.UI) — so it can read the internal factory holders and register defaults.
+// The managed backend (Uno.UI.Composition.Managed) deliberately gets NO grant: it stands entirely on the public seam
+// (factories are injected into its BuildGlyphRun / Parse operations), exactly like the Skia backend.
 [assembly: InternalsVisibleTo("Uno.UI")]
 [assembly: InternalsVisibleTo("Uno.UI.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]

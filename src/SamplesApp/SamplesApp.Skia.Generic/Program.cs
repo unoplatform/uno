@@ -106,6 +106,11 @@ namespace SkiaSharpExample
 			{
 				builder.ImageEncoderDecoder(new ManagedImageDecoderBackend());
 			}
+
+			if (Environment.GetEnvironmentVariable("UNO_MANAGED_SVG") is "1" or "true")
+			{
+				builder.SvgRenderer(new ManagedSvgRenderer());
+			}
 		}
 
 		private static System.Reflection.Assembly? Default_Resolving(AssemblyLoadContext alc, System.Reflection.AssemblyName assemblyName)

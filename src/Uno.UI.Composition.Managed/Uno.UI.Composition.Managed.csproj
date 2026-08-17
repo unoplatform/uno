@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+		<!-- This is the SkiaSharp-free managed drawing backend used on ALL Skia platforms incl. Skia-on-Android, so it
+		     must stay net10.0 and NOT platform-cross-target under a mobile override — otherwise net10.0 consumers hit
+		     NU1201. Set the flag targetframework-override.props reads explicitly (mirrors Uno.UI.Composition.SkiaBackend
+		     and Uno.UI.Composition.Drawing). Must precede the import below, which reads it. -->
+		<UnoShouldUseNoPlatformOverride>true</UnoShouldUseNoPlatformOverride>
+	</PropertyGroup>
+
+	<Import Project="../targetframework-override.props" />
+
+	<PropertyGroup>
+		<AssemblyName>Uno.UI.Composition.Managed</AssemblyName>
+		<RootNamespace>Uno.UI.Composition</RootNamespace>
+		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO;IS_UNO_COMPOSITION</DefineConstants>
+
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="HarfBuzzSharp" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.Composition.Drawing\Uno.UI.Composition.Drawing.csproj" />
+		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
+		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
+	</ItemGroup>
+</Project>

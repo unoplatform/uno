@@ -21,8 +21,8 @@ partial class SvgImageSource
 
 	private void InitSvgProvider()
 	{
-		// The Skia-based add-in is now optional — the managed engine (ManagedSvg) is the primary SVG path.
-		// The add-in, when installed, still drives the vector SvgCanvas and serves as a rendering fallback.
+		// A registered SVG renderer (opt-in, e.g. the managed engine) is the primary path; the Skia-based add-in,
+		// when installed, still drives the vector SvgCanvas and serves as a rendering fallback.
 		ApiExtensibility.CreateInstance(this, out _svgProvider);
 
 		if (_svgProvider is not null)
@@ -46,9 +46,10 @@ partial class SvgImageSource
 			return ImageData.Empty;
 		}
 
-		// Primary: the registered SVG renderer parses the markup (defaults to the managed, Skia-free engine).
-		var renderer = Uno.UI.Composition.Drawing.SvgRenderer.Current ??= new Uno.UI.Composition.Drawing.ManagedSvgRenderer();
-		if (renderer.Parse(imageData.ByteArray) is { } document)
+		// Primary: a registered SVG renderer (opt-in via the host builder) parses the markup. Core names no managed
+		// impl; when none is registered we fall straight through to the optional Skia-based add-in below.
+		if (Uno.UI.Composition.Drawing.SvgRenderer.Current is { } renderer
+			&& renderer.Parse(imageData.ByteArray, Uno.UI.Composition.Drawing.GeometryFactory.Current, Uno.UI.Composition.Drawing.DrawingFactory.Current) is { } document)
 		{
 			_svgDocument = document;
 			SourceLoaded?.Invoke(this, EventArgs.Empty);

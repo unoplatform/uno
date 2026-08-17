@@ -20,7 +20,7 @@ internal static class GlyphRunRenderer
 	public static void Draw(IDrawingSession session, IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color)
 	{
 		var elements = new List<GlyphRunElement>();
-		font.BuildGlyphRun(glyphs, positions, baselineY, elements);
+		font.BuildGlyphRun(GeometryFactory.Current, glyphs, positions, baselineY, elements);
 
 		try
 		{

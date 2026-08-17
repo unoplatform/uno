@@ -12,7 +12,7 @@ namespace Uno.UI.Composition.Drawing;
 /// <em>shapes</em> a text run into positioned glyphs, turns those glyphs into drawable output, exposes the metrics
 /// the layout code needs, and answers glyph-coverage queries. Shaping is a font capability, so the shaper
 /// (HarfBuzz / CoreText / DirectWrite) is an implementation detail — no raw sfnt tables leak onto the seam. A
-/// backend impl (<c>SkiaFont</c>) may use its native font internally; <c>ManagedFont</c> is fully SkiaSharp-free.
+/// backend impl (<c>SkiaFont</c>) may use its native font internally; a managed impl can be fully SkiaSharp-free.
 /// Font <em>resolution</em> (family/style → face) stays outside this handle (<see cref="IFontProvider"/>).
 /// </summary>
 public interface IFont
@@ -34,7 +34,9 @@ public interface IFont
 	/// a texture). Each glyph is placed at its position, shifted by <paramref name="baselineY"/>. The caller owns and
 	/// disposes any <see cref="IGeometry"/> carried by the elements.
 	/// </summary>
-	void BuildGlyphRun(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<GlyphRunElement> elements);
+	/// <param name="geometry">The registered geometry factory the font builds its glyph outlines with — so the font
+	/// never names a concrete <see cref="IGeometry"/> type and works with whatever geometry backend is registered.</param>
+	void BuildGlyphRun(IGeometryFactory geometry, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<GlyphRunElement> elements);
 
 	// --- Metrics (pixels at this font's size; baseline-relative sign convention: Ascent <= 0 above the baseline,
 	//     Descent >= 0 below it, so line height = Descent - Ascent). Every provider maps to this convention. ---
