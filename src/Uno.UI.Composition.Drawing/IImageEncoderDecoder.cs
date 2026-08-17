@@ -81,7 +81,8 @@ public static class ImageEncoderDecoder
 		_current = codec;
 		// Push the encode capability DOWN to Uno.UWP's BitmapEncoder. BitmapEncoder is below this assembly and can't
 		// reference IImageEncoderDecoder; this assembly references Uno.UWP, so it hands the codec's Encode method to
-		// BitmapEncoder as a plain delegate — a compile-time, top-down assignment. No ApiExtensibility, no IVT.
+		// BitmapEncoder as a plain delegate — a compile-time, top-down assignment (no reflection/ApiExtensibility).
+		// BitmapEncoder.Encode is internal (not WinUI surface); we reach it via InternalsVisibleTo on Uno.UWP.
 		BitmapEncoder.Encode = codec.Encode;
 	}
 }

@@ -4,6 +4,7 @@ using System.IO;
 using Android.Graphics;
 using Java.Nio;
 using System.Threading.Tasks;
+using Uno.UI.Composition.Drawing;
 
 namespace Windows.Graphics.Imaging
 {
@@ -38,7 +39,7 @@ namespace Windows.Graphics.Imaging
 				{
 					// Prefer the registered neutral codec (so Skia-on-Android encodes through the same codec as
 					// desktop); fall back to Android's native encoder when none is registered (a native-only head).
-					if (Encode is { } encode)
+					if (ResolveEncode() is { } encode)
 					{
 						var width = bitmap.Width;
 						var height = bitmap.Height;

@@ -25,6 +25,12 @@ internal static class DrawingBackendFallback
 {
 	private const string SkiaBackendTypeName = "Uno.UI.Composition.Skia.SkiaBackend, Uno.UI.Composition.Skia";
 
+	// Wire the downward codec-resolve trigger so Uno.UWP's BitmapEncoder (which sits below this assembly and can't
+	// reach here) can lazily light up a codec on first encode instead of failing. Runs on assembly load.
+	[System.Runtime.CompilerServices.ModuleInitializer]
+	internal static void WireDownwardHooks()
+		=> Windows.Graphics.Imaging.BitmapEncoder.EnsureCodec = EnsureImageDecoder;
+
 	private static readonly object _gate = new();
 	private static Type? _skiaBackendType;
 	private static bool _typeResolved;
