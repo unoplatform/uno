@@ -568,12 +568,9 @@ namespace Microsoft.UI.Xaml.Data
 
 				if (GetWeakTemplatedParent()?.Target is DependencyObject templatedParent)
 				{
-					if (templatedParent is IDependencyObjectStoreProvider provider)
-					{
-						_templateBindingSubscription = provider.Store.RegisterPropertyChangedCallback(
-							_templateBindingSourceProperty,
-							OnTemplateBindingSourceChanged);
-					}
+					_templateBindingSubscription = templatedParent.RegisterPropertyChangedCallback(
+						_templateBindingSourceProperty,
+						OnTemplateBindingSourceChanged);
 
 					SetTemplateBindingTargetValue(templatedParent.GetValue(_templateBindingSourceProperty));
 				}
@@ -632,7 +629,7 @@ namespace Microsoft.UI.Xaml.Data
 				{
 					SetValue();
 				}
-				catch (Exception e)
+				catch (Exception e) when (!IsFatalException(e))
 				{
 					_IsCurrentlyPushing = false;
 
@@ -645,7 +642,7 @@ namespace Microsoft.UI.Xaml.Data
 					{
 						ApplyTemplateBindingDefaultValue();
 					}
-					catch (Exception e2)
+					catch (Exception e2) when (!IsFatalException(e2))
 					{
 						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 						{
@@ -659,6 +656,9 @@ namespace Microsoft.UI.Xaml.Data
 				SetValue();
 			}
 		}
+
+		private static bool IsFatalException(Exception exception)
+			=> exception is OutOfMemoryException or StackOverflowException or AccessViolationException;
 
 		private void ApplyTemplateBindingDefaultValue()
 		{

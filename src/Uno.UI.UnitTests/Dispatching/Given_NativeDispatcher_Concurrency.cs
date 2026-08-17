@@ -105,7 +105,7 @@ public class Given_NativeDispatcher_Concurrency
 					{
 						body();
 					}
-					catch (Exception error)
+					catch (Exception error) when (!IsFatalException(error))
 					{
 						errors.Add(error);
 					}
@@ -115,4 +115,7 @@ public class Given_NativeDispatcher_Concurrency
 
 		Task.WaitAll(workers);
 	}
+
+	private static bool IsFatalException(Exception exception)
+		=> exception is OutOfMemoryException or StackOverflowException or AccessViolationException;
 }

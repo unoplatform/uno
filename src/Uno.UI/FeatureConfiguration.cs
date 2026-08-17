@@ -342,11 +342,17 @@ namespace Uno.UI
 			/// <remarks>
 			/// <para>
 			/// The optimized styles are functionally equivalent to the default ones, but are tuned for
-			/// startup and first-frame performance. They are a port of the WinUI "perf2026" default style variants.
+			/// startup and first-frame performance (e.g. visual states using <c>Setter</c> instead of
+			/// <c>ObjectAnimationUsingKeyFrames</c>, or reduced resource lookups). They are a port of the
+			/// WinUI "perf2026" default style variants.
 			/// </para>
 			/// <para>
 			/// Because the visual tree of a template may differ slightly from the non-optimized variant,
-			/// this is opt-in. Configure it during application startup, before default styles are cached.
+			/// this is opt-in. When left disabled (the default), the original styles are used, unmodified.
+			/// </para>
+			/// <para>
+			/// This must be set before the first control of a given type is created (typically before
+			/// <c>Application.Start</c>), as default styles are cached on first use.
 			/// </para>
 			/// </remarks>
 			public static bool UseDefaultStyleOptimizations
@@ -371,6 +377,7 @@ namespace Uno.UI
 				get => _deferOverriddenSetterValues ?? Perf2026.EnableAll;
 				set => _deferOverriddenSetterValues = value;
 			}
+
 		}
 
 		public static class TextBlock

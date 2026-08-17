@@ -610,10 +610,13 @@ namespace Uno.UI.Tests.BinderTests
 			var item = new MyDependencyObject();
 			SUT.Add(item);
 
+			Assert.AreEqual(1, SUT.Count);
+			Assert.AreSame(item, SUT[0]);
 			Assert.AreSame(parent, item.GetParent());
 
 			SUT.Remove(item);
 
+			Assert.AreEqual(0, SUT.Count);
 			Assert.IsNull(item.GetParent());
 		}
 

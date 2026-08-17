@@ -48,6 +48,27 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
+		/// Registers a lazy performance-optimized default style provider for the nominated type.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void RegisterOptimizedDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider)
+		{
+			_optimizedLookup[type] = ProvideStyle;
+			_optimizedDefaultStyleCache.Remove(type);
+
+			Style ProvideStyle()
+			{
+				var styleSource = dictionaryProvider.GetResourceDictionary();
+				if (styleSource.TryGetValue(type, out var style, shouldCheckSystem: false))
+				{
+					return (Style)style;
+				}
+
+				throw new InvalidOperationException($"{styleSource} was registered as optimized style provider for {type} but doesn't contain matching style.");
+			}
+		}
+
+		/// <summary>
 		/// The xaml scope in force at the time the Style was created.
 		/// </summary>
 		private readonly XamlScope _xamlScope;
@@ -358,6 +379,7 @@ namespace Microsoft.UI.Xaml
 		public static void RegisterDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider)
 		{
 			_lookup[type] = ProvideStyle;
+			_defaultStyleCache.Remove(type);
 
 			Style ProvideStyle()
 			{
@@ -368,26 +390,6 @@ namespace Microsoft.UI.Xaml
 				}
 
 				throw new InvalidOperationException($"{styleSource} was registered as style provider for {type} but doesn't contain matching style.");
-			}
-		}
-
-		/// <summary>
-		/// Registers a lazy performance-optimized default style provider for the nominated type.
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void RegisterOptimizedDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider)
-		{
-			_optimizedLookup[type] = ProvideStyle;
-
-			Style ProvideStyle()
-			{
-				var styleSource = dictionaryProvider.GetResourceDictionary();
-				if (styleSource.TryGetValue(type, out var style, shouldCheckSystem: false))
-				{
-					return (Style)style;
-				}
-
-				throw new InvalidOperationException($"{styleSource} was registered as optimized style provider for {type} but doesn't contain matching style.");
 			}
 		}
 
@@ -442,19 +444,18 @@ namespace Microsoft.UI.Xaml
 
 		private static Style? GetStyleFromChannel(Type type, Dictionary<Type, Style> styleCache, Dictionary<Type, StyleProviderHandler> lookup)
 		{
-			if (!styleCache.TryGetValue(type, out Style? style))
+			if (!styleCache.TryGetValue(type, out Style? style)
+				&& lookup.TryGetValue(type, out var styleProvider))
 			{
-				if (lookup.TryGetValue(type, out var styleProvider))
-				{
-					style = styleProvider();
+				style = styleProvider();
 
-					styleCache[type] = style;
+				styleCache[type] = style;
 
-					lookup.Remove(type); // The lookup won't be used again now that the style itself is cached
-				}
+				lookup.Remove(type); // The lookup won't be used again now that the style itself is cached
 			}
 
 			return style;
 		}
+
 	}
 }
