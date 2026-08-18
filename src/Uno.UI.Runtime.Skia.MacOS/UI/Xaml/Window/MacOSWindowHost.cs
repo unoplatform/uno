@@ -1,4 +1,6 @@
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
 using Microsoft.UI.Input;
 using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
 using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
@@ -17,6 +19,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.Hosting;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Graphics;
@@ -98,8 +101,33 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			return;
 		}
 
-		_metalRenderThread = new MacOSRenderThread(_nativeWindow.Handle, _context, RenderThreadMetalDraw);
+		var screenFps = NativeUno.uno_window_get_refresh_rate(_nativeWindow.Handle);
+		var targetFps = ResolveTargetFps(screenFps);
+
+		// Logged unconditionally at Information: on a CI agent this is the only record of what the
+		// render clock is actually running at, and a screen reporting an unexpected rate (or none)
+		// is the first thing to check when frames stall.
+		if (this.Log().IsEnabled(LogLevel.Information))
+		{
+			this.Log().Info(
+				$"macOS render thread starting for window {_nativeWindow.Handle}: " +
+				$"surface={MacSkiaHost.Current.RenderSurfaceType}, " +
+				$"screen refresh rate={(screenFps > 0 ? screenFps.ToString("0.##", CultureInfo.InvariantCulture) + "Hz" : "unknown")}, " +
+				$"pacing at {targetFps.ToString("0.##", CultureInfo.InvariantCulture)} fps.");
+		}
+
+		_metalRenderThread = new MacOSRenderThread(_nativeWindow.Handle, _context, RenderThreadMetalDraw, targetFps);
 	}
+
+	/// <summary>
+	/// Frame rate the render thread should be paced at: the screen's refresh rate when it is known
+	/// and <see cref="FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate"/> is set,
+	/// otherwise the configured rate.
+	/// </summary>
+	private static double ResolveTargetFps(double screenFps)
+		=> FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate && screenFps > 0
+			? screenFps
+			: FeatureConfiguration.CompositionTarget.FrameRate;
 
 	/// <summary>
 	/// Called on the render thread. Draws the recorded SKPicture into the Metal texture
@@ -369,8 +397,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	{
 		if (_metalRenderThread is not null)
 		{
-			// Metal path: wake the dedicated render thread so draw + present run off the UI thread.
-			_metalRenderThread.SignalNewFrame();
+			// Metal path: ask the dedicated render thread for a frame so draw + present run off the
+			// UI thread. The request is paced, so repeated invalidations inside one frame interval
+			// coalesce instead of each costing a drawable acquisition.
+			_metalRenderThread.RequestFrame();
 		}
 		else
 		{
@@ -865,6 +895,12 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			var window = GetWindowHost(handle);
 			window?.DisplayInformationExtension?.Update(width, height, scaleFactor);
 			window?.RasterizationScaleChanged?.Invoke(window, EventArgs.Empty);
+
+			if (window?._metalRenderThread is { } renderThread)
+			{
+				// Moving between screens can change the refresh rate (e.g. 120Hz laptop -> 60Hz external).
+				renderThread.UpdateTargetFps(ResolveTargetFps(NativeUno.uno_window_get_refresh_rate(handle)));
+			}
 		}
 		catch (Exception e)
 		{
@@ -900,41 +936,75 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	/// wait never blocks input or layout. Mirrors the Win32 render thread and the iOS
 	/// CADisplayLink render thread.
 	/// </summary>
+	/// <remarks>
+	/// Frame requests are paced by a <see cref="FramePacer"/>, exactly as X11 paces its render
+	/// thread. This is not an optimization: <c>nextDrawable</c> blocks for ~1s and then returns nil
+	/// once the layer's pool is exhausted, so an unpaced loop that acquires as fast as it is
+	/// signalled outruns the compositor and turns every frame into a one-second stall. Pacing keeps
+	/// acquisitions at most one per refresh interval, which is the rate the compositor recycles at.
+	/// A timer drives the pace rather than the display, so the render clock keeps ticking even when
+	/// the display does not (occluded window, headless CI agent).
+	/// </remarks>
 	private sealed class MacOSRenderThread : IDisposable
 	{
 		/// <summary>
-		/// Pause before retrying a frame the render loop could not present. nextDrawable already
-		/// blocks for up to ~1s before returning nil, so this only avoids a hot spin in the cases
-		/// where acquisition fails immediately (e.g. a zero-sized layer during window setup).
+		/// Consecutive unpresentable frames tolerated at the normal pace before retries start
+		/// backing off. Brief failures are expected (a zero-sized layer during window setup, a
+		/// drawable still held across a resize) and should recover within a frame or two.
 		/// </summary>
-		private const int FrameRetryDelayMs = 8;
+		private const int UnthrottledRetries = 3;
+
+		private const int InitialBackoffMs = 16;
+		private const int MaxBackoffMs = 1000;
+
+		/// <summary>Minimum interval between "still cannot present" warnings.</summary>
+		private const int FailureLogIntervalMs = 5000;
 
 		private readonly Thread _thread;
 		private readonly AutoResetEvent _frameSignal = new(false);
 		private readonly ManualResetEventSlim _presentedEvent = new(false);
+		private readonly ManualResetEventSlim _shutdown = new(false);
+		private readonly FramePacer _framePacer;
 		private readonly nint _windowHandle;
 		private readonly GRContext _context;
 		private readonly Action<double, double, nint> _drawFrame;
 		private volatile bool _disposed;
 
-		internal MacOSRenderThread(nint windowHandle, GRContext context, Action<double, double, nint> drawFrame)
+		// Render-thread only.
+		private int _consecutiveFailures;
+		private long _firstFailureTimestamp;
+		private long _lastFailureLogTimestamp;
+
+		internal MacOSRenderThread(nint windowHandle, GRContext context, Action<double, double, nint> drawFrame, double targetFps)
 		{
 			_windowHandle = windowHandle;
 			_context = context;
 			_drawFrame = drawFrame;
+			_framePacer = new FramePacer(targetFps, () => _frameSignal.Set());
 			_thread = new Thread(RenderLoop) { Name = "Uno macOS Render Thread", IsBackground = true };
 			_thread.Start();
 		}
 
 		/// <summary>
-		/// Wakes the render thread to present a new frame. Calls made while it is busy
-		/// coalesce into a single wake-up. Resets the present-completion event first so a
-		/// <see cref="WaitForNextPresent"/> caller can never observe a previous present.
+		/// Asks for a frame. Requests made within the same frame interval coalesce into one
+		/// wake-up. Resets the present-completion event first so a <see cref="WaitForNextPresent"/>
+		/// caller can never observe a previous present.
 		/// </summary>
-		internal void SignalNewFrame()
+		internal void RequestFrame()
 		{
 			_presentedEvent.Reset();
-			_frameSignal.Set();
+			_framePacer.RequestFrame();
+		}
+
+		/// <summary>
+		/// Retargets the pace, e.g. when the window moves to a screen with a different refresh rate.
+		/// </summary>
+		internal void UpdateTargetFps(double fps)
+		{
+			if (fps > 0)
+			{
+				_framePacer.UpdateTargetFps(fps);
+			}
 		}
 
 		/// <summary>
@@ -956,6 +1026,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				{
 					break;
 				}
+
+				_framePacer.OnFrameStart();
 
 				var framePresented = false;
 				try
@@ -990,19 +1062,103 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 					NativeUno.uno_window_discard_frame(_windowHandle);
 				}
 
-				if (!framePresented && !_disposed)
+				if (framePresented)
 				{
-					// The frame request must not be lost. CompositionTarget.RequestNewFrame latches
-					// RenderRequested and only clears it once a frame is actually drawn, so it will not
-					// signal us again on its own: dropping this wake-up stops rendering for this window
-					// permanently, and anything awaiting a render (RenderTargetBitmap jobs, composition
-					// animations) would then never complete. AppKit gives the non-threaded path the same
-					// guarantee by re-invoking drawInMTKView: for as long as the view stays dirty, so
-					// re-arm to keep retrying until a frame gets through.
-					Thread.Sleep(FrameRetryDelayMs);
-					_frameSignal.Set();
+					OnFramePresented();
+				}
+				else if (!_disposed)
+				{
+					RetryFrame();
 				}
 			}
+		}
+
+		private void OnFramePresented()
+		{
+			if (_consecutiveFailures == 0)
+			{
+				return;
+			}
+
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().Info(
+					$"macOS render thread presented a frame again after {_consecutiveFailures} failed " +
+					$"attempt(s) over {ElapsedMsSince(_firstFailureTimestamp)}ms.");
+			}
+
+			_consecutiveFailures = 0;
+			_lastFailureLogTimestamp = 0;
+		}
+
+		/// <summary>
+		/// Re-arms a frame that could not be presented. The request must not be dropped:
+		/// <see cref="CompositionTarget.RequestNewFrame"/> latches its render-requested flag and only
+		/// clears it once a frame is actually drawn, so it will not signal us again on its own, and
+		/// anything awaiting a render (RenderTargetBitmap jobs, composition animations) would hang.
+		/// Retries are paced, and back off once failures persist so a window that can never present
+		/// (minimized, or a compositor that stopped recycling drawables) does not spin the GPU.
+		/// </summary>
+		private void RetryFrame()
+		{
+			if (_consecutiveFailures == 0)
+			{
+				_firstFailureTimestamp = Stopwatch.GetTimestamp();
+			}
+
+			_consecutiveFailures++;
+			ReportPersistentFailure();
+
+			var backoff = BackoffDelayMs(_consecutiveFailures);
+			if (backoff > 0 && _shutdown.Wait(backoff))
+			{
+				// Disposed while backing off.
+				return;
+			}
+
+			_framePacer.RequestFrame();
+		}
+
+		private void ReportPersistentFailure()
+		{
+			if (!this.Log().IsEnabled(LogLevel.Warning))
+			{
+				return;
+			}
+
+			if (_consecutiveFailures <= UnthrottledRetries)
+			{
+				// Still inside the tolerated window — a frame or two of failure is routine.
+				return;
+			}
+
+			if (_consecutiveFailures > UnthrottledRetries + 1
+				&& ElapsedMsSince(_lastFailureLogTimestamp) < FailureLogIntervalMs)
+			{
+				return;
+			}
+
+			_lastFailureLogTimestamp = Stopwatch.GetTimestamp();
+			this.Log().Warn(
+				$"macOS render thread could not present {_consecutiveFailures} consecutive frame(s) over " +
+				$"{ElapsedMsSince(_firstFailureTimestamp)}ms for window {_windowHandle}: the layer vended no " +
+				$"drawable. Retrying with backoff; rendering for this window is stalled until one is available.");
+		}
+
+		private static long ElapsedMsSince(long timestamp)
+			=> timestamp == 0 ? 0 : (long)Stopwatch.GetElapsedTime(timestamp).TotalMilliseconds;
+
+		private static int BackoffDelayMs(int consecutiveFailures)
+		{
+			if (consecutiveFailures <= UnthrottledRetries)
+			{
+				// Still within the tolerated window: retry at the normal pace.
+				return 0;
+			}
+
+			// Double from InitialBackoffMs, capped — the shift is bounded so it cannot overflow.
+			var steps = Math.Min(consecutiveFailures - UnthrottledRetries - 1, 8);
+			return Math.Min(MaxBackoffMs, InitialBackoffMs << steps);
 		}
 
 		/// <summary>
@@ -1010,18 +1166,22 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		/// primitives. The join is intentionally unbounded, matching the Win32 render thread: the
 		/// loop only delays observing <see cref="_disposed"/> while a frame is in flight, and both
 		/// <c>nextDrawable</c> and the present complete in bounded time (a vsync wait, or ~1s and a
-		/// nil drawable when the window is occluded), so the thread always exits. The caller tears
-		/// down the native window and the <see cref="GRContext"/> right after this returns, and the
-		/// render thread is their sole other user, so it must be guaranteed stopped first.
+		/// nil drawable when the window is occluded), so the thread always exits. A retry backoff
+		/// waits on <see cref="_shutdown"/> rather than sleeping, so it is cut short here. The caller
+		/// tears down the native window and the <see cref="GRContext"/> right after this returns, and
+		/// the render thread is their sole other user, so it must be guaranteed stopped first.
 		/// </summary>
 		public void Dispose()
 		{
 			_disposed = true;
+			_shutdown.Set();
 			_frameSignal.Set();
 			_thread.Join();
 
+			_framePacer.Dispose();
 			_frameSignal.Dispose();
 			_presentedEvent.Dispose();
+			_shutdown.Dispose();
 		}
 	}
 }
