@@ -2351,7 +2351,7 @@ namespace Uno.WinAppSDKSyncGenerator
 			// Microsoft.UI.Dispatching native #if defines instead of failing the restore loudly.
 			var isTopProject = projectFile.Replace('/', '\\').Contains(@"\Uno.UI\Uno.UI.", StringComparison.Ordinal);
 			string[] expectedRefs = isTopProject
-				? ["Uno.Foundation", "Uno", "Uno.UI.Composition", "Uno.UI.Dispatching"]
+				? ["Uno.Foundation", "Uno.WinRT", "Uno.UI.Composition", "Uno.UI.Dispatching"]
 				: ["Uno.Foundation", "Uno.UI.Dispatching"];
 			foreach (var expectedRef in expectedRefs)
 			{

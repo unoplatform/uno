@@ -14,7 +14,10 @@ function Assert-ExitCodeIsZero()
     }
 }
 
-$default = @('-v', 'n', "-p:RestoreConfigFile=$env:NUGET_CI_CONFIG", '-p:EnableWindowsTargeting=true')
+# Uno.UI.HotDesign is implicitly referenced by every Debug app build and is still compiled against
+# the pre-7.0 `Uno` assembly, which no longer exists after the Uno.WinRT rename. Restore this once
+# a 7.0 build of that package is published.
+$default = @('-v', 'n', "-p:RestoreConfigFile=$env:NUGET_CI_CONFIG", '-p:EnableWindowsTargeting=true', '-p:UnoDisableHotDesign=true')
 
 $debug = $default + '-c' + 'Debug'
 $release = $default + '-c' + 'Release'

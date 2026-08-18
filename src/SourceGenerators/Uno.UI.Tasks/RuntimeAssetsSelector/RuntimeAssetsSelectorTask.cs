@@ -261,7 +261,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		// Uno.UI.MSAL only depends on the WinRT layer (Uno.UWP), so it must follow the
 		// WinRT layer selection to keep its platform-specific helpers (https://github.com/unoplatform/uno/issues/20601).
 		private bool IsWinRTAssembly(string fileNameWithoutExtension)
-			=> fileNameWithoutExtension.ToLower(CultureInfo.InvariantCulture) is "uno" or "uno.ui.dispatching" or "uno.foundation" or "uno.ui.msal";
+			=> fileNameWithoutExtension.ToLower(CultureInfo.InvariantCulture) is "uno.winrt" or "uno.ui.dispatching" or "uno.foundation" or "uno.ui.msal";
 
 		private string GetWinRTAssembly(string runtimeDirectory, string assembly, Version targetFrameworkVersion)
 		{
