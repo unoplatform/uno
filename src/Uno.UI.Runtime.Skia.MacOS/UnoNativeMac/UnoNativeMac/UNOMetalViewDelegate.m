@@ -141,9 +141,9 @@ bool uno_window_acquire_next_frame(NSWindow* window, void** texture, double* wid
         UNOMetalViewDelegate* delegate = unoWindow.metalViewDelegate;
         if (delegate == nil) return false;
 
-        // nextDrawable is thread-safe (unlike MTKView.currentDrawable). It blocks up to ~1s
-        // if all drawables are in use (occluded/minimized window); with maximumDrawableCount=2
-        // set in uno_window_create that is rare, and a nil return is handled by the caller.
+        // nextDrawable is thread-safe (unlike MTKView.currentDrawable). It blocks for up to ~1s
+        // and then returns nil when every drawable in the layer's pool is still held by the
+        // compositor, so the caller must pace its acquisitions rather than retry in a tight loop.
         CAMetalLayer* metalLayer = (CAMetalLayer*)view.layer;
 
         id<CAMetalDrawable> drawable = [metalLayer nextDrawable];
