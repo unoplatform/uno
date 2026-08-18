@@ -133,7 +133,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		}
 
 		var clipGeometry = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(_context);
-		_context.Present();
 
 		if (clipGeometry is not null)
 		{

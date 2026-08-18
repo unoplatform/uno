@@ -17,17 +17,14 @@ internal partial class Win32WindowWrapper
 		private readonly Thread _thread;
 		private readonly AutoResetEvent _frameSignal = new(false);
 		private readonly ManualResetEventSlim _presentedEvent = new(false);
-		private readonly ISwapChain _context;
 		private readonly Func<IGeometry?> _drawFrame;
 		private readonly Action<IGeometry> _onClipPathUpdated;
 		private volatile bool _disposed;
 
 		internal RenderThread(
-			ISwapChain context,
 			Func<IGeometry?> drawFrame,
 			Action<IGeometry> onClipPathUpdated)
 		{
-			_context = context;
 			_drawFrame = drawFrame;
 			_onClipPathUpdated = onClipPathUpdated;
 			_thread = new Thread(RenderLoop) { Name = "Uno Render Thread", IsBackground = true };
@@ -62,11 +59,11 @@ internal partial class Win32WindowWrapper
 
 				try
 				{
+					// DrawFrame drives the frame through OnNativePlatformFrameRequested, which presents (SwapBuffers/
+					// BitBlt/swapchain present — may block for VSync) before returning the clip path.
 					if (_drawFrame() is { } clipPath)
 					{
 						_onClipPathUpdated(clipPath);
-						_context.Present(); // SwapBuffers/BitBlt/swapchain present — may block for VSync
-
 						_presentedEvent.Set();
 					}
 				}

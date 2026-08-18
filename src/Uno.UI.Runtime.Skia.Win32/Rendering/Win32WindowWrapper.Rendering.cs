@@ -71,7 +71,6 @@ internal partial class Win32WindowWrapper
 	private void InitializeRenderThread()
 	{
 		_renderThread = new RenderThread(
-			_context,
 			drawFrame: DrawFrame,
 			onClipPathUpdated: clipPath =>
 			{

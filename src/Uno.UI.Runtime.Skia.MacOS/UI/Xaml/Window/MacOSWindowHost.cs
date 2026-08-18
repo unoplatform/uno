@@ -132,7 +132,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		// A Skia-on-Metal context consumes the per-frame native texture; a WebGPU context ignores it and drives its own swapchain.
 		(_context as IMacOSNativeTextureSink)?.SetCurrentTexture(texture);
 		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_context);
-		_context.Present();
 
 		string? clip = null;
 		if (!nativeElementClipPath.IsEmpty)
@@ -173,7 +172,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		// The rendered buffer is read back out of the context's target and handed to the native SoftDraw.
 		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_context);
-		_context.Present();
 		var softwareTarget = (_context as MacOSSoftwareGraphicsContext)?.CurrentTarget;
 
 		string? clip = null;

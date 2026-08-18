@@ -76,7 +76,6 @@ internal sealed class HeadlessRenderer : IDisposable
 		}
 
 		ct.OnNativePlatformFrameRequested(_swapChain);
-		_swapChain.Present();
 	}
 
 	public void Dispose()
