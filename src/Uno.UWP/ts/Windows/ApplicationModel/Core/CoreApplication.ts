@@ -5,9 +5,6 @@
 	export class CoreApplication {
 
 		public static initialize() {
-
-			// create a non-finishing promise
-
 			Uno.UI.Dispatching.NativeDispatcher.init();
 		}
 

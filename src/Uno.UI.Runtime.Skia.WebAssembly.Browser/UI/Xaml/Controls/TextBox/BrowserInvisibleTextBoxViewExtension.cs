@@ -75,13 +75,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	[JSExport]
-<<<<<<< HEAD
 	private static Task OnSelectionChangedAsync(int selectionStart, int selectionLength)
 	{
 		OnSelectionChanged(selectionStart, selectionLength);
 
 		return Task.CompletedTask;
-=======
+	}
+
+	[JSExport]
 	private static void OnNativeBlur()
 	{
 		try
@@ -111,7 +112,6 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			// A managed exception must not cross back into the JS DOM-event callback.
 			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
->>>>>>> origin/master
 	}
 
 	[JSExport]

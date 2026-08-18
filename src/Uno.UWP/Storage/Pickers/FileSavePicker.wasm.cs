@@ -90,15 +90,6 @@ namespace Windows.Storage.Pickers
 
 			if (SuggestedSaveFile == null)
 			{
-<<<<<<< HEAD
-				var temporaryFolder = ApplicationData.Current.LocalCacheFolder;
-				if (!Directory.Exists(temporaryFolder.Path))
-				{
-					temporaryFolder.MakePersistent();
-				}
-
-=======
->>>>>>> origin/master
 				if (string.IsNullOrEmpty(SuggestedFileName))
 				{
 					SuggestedFileName = Guid.NewGuid().ToString();

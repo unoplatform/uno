@@ -23,7 +23,6 @@ using Uno.UI.Dispatching;
 using Buffer = HarfBuzzSharp.Buffer;
 using FontWeights = Microsoft.UI.Text.FontWeights;
 
-
 namespace Microsoft.UI.Xaml.Documents;
 
 internal readonly partial struct UnicodeText : IParsedText
@@ -828,7 +827,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		var step = SpellCheckSquigglyStepScale * scale;
 		var amplitude = SpellCheckSquigglyAmplitudeScale * scale;
 
-		var path = new SKPath();
+		var path = new SKPathBuilder();
 		var x = left;
 		var lastY = midY;
 		path.MoveTo(x, lastY);
@@ -847,7 +846,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			path.LineTo(right, lastY + (targetY - lastY) * ((right - x) / step));
 		}
 
-		return path;
+		return path.Detach();
 	}
 
 	public void Draw(in Visual.PaintingSession session,
@@ -953,31 +952,6 @@ internal readonly partial struct UnicodeText : IParsedText
 				var correctionIndexBase = wordBoundariesIndex == 0 ? 0 : _wordBoundaries[wordBoundariesIndex - 1];
 				if (correctionIndexBase + correction.correctionStart <= cluster.Value.start && correctionIndexBase + correction.correctionEnd >= cluster.Value.end)
 				{
-<<<<<<< HEAD
-					var fontSize = fontDetails.SKFontSize;
-					var scale = fontSize / 12.0f;
-					var step = 4 * scale;
-					var amplitude = 2 * scale;
-					var yOffset = 2 * scale;
-
-					var p = new SKPathBuilder();
-					var underlineY = y + line.baselineOffset + yOffset;
-					var underlineLeftX = unalignedX + alignmentOffset;
-					var underlineRightX = underlineLeftX + cluster.Value.width;
-					p.MoveTo(underlineLeftX, underlineY);
-					var x = underlineLeftX;
-					var up = true;
-					while (x + step < underlineRightX)
-					{
-						x += step;
-						var yWave = underlineY + (up ? -amplitude : amplitude);
-						p.LineTo(x, yWave);
-						up = !up;
-					}
-					p.LineTo(underlineRightX, underlineY);
-
-					spellCheckUnderlines.Add((p.Detach(), scale));
-=======
 					// Only widen this word's underline span here; one continuous squiggly per word is
 					// built and drawn after the cluster loop. Building a small zigzag per cluster
 					// restarts the wave phase and snaps back to the midline at every cluster boundary,
@@ -996,7 +970,6 @@ internal readonly partial struct UnicodeText : IParsedText
 						spellCheckUnderlines.TryGetValue((wordBoundariesIndex, lineIndex, scale), out var span)
 							? (Math.Min(span.left, underlineLeftX), Math.Max(span.right, underlineRightX), underlineY)
 							: (underlineLeftX, underlineRightX, underlineY);
->>>>>>> origin/master
 				}
 			}
 

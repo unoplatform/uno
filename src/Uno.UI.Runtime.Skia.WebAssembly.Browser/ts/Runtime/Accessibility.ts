@@ -63,6 +63,7 @@ namespace Uno.UI.Runtime.Skia {
 			// Wire up managed callbacks from WebAssemblyAccessibility.cs
 			const accessibilityExports = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility;
 			this.managedEnableAccessibility = accessibilityExports.EnableAccessibility;
+
 			this.managedOnScroll = accessibilityExports.OnScroll;
 			this.managedOnInvoke = accessibilityExports.OnInvoke;
 			this.managedOnToggle = accessibilityExports.OnToggle;
@@ -82,9 +83,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.containerElement.appendChild(this.politeElement);
 			this.containerElement.appendChild(this.assertiveElement);
 
-			const autoEnable = WebAssemblyThreading.isThreadingEnabled() ?
-				await accessibilityExports.IsAutoEnableAccessibilityAsync() :
-				accessibilityExports.IsAutoEnableAccessibility();
+			const autoEnable = await accessibilityExports.IsAutoEnableAccessibilityAsync();
 
 			if (!autoEnable) {
 				// Create enable accessibility button (for screen reader activation)

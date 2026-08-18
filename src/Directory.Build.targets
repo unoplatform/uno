@@ -74,15 +74,9 @@
 	<PropertyGroup>
 		<MSTestVersion>4.2.1</MSTestVersion>
 		<MicrosoftTestingPlatformVersion>2.2.1</MicrosoftTestingPlatformVersion>
-<<<<<<< HEAD
 		<SkiaSharpVersion>4.148.0</SkiaSharpVersion>
 		<HarfbuzzSharpVersion>14.2.0</HarfbuzzSharpVersion>
-		<UnoICUVersion>77.2.1</UnoICUVersion>
-=======
-		<SkiaSharpVersion>3.119.0</SkiaSharpVersion>
-		<HarfbuzzSharpVersion>8.3.1.1</HarfbuzzSharpVersion>
 		<UnoICUVersion>77.3.0-dev.4</UnoICUVersion>
->>>>>>> origin/master
 	</PropertyGroup>
 
 	<ItemGroup>

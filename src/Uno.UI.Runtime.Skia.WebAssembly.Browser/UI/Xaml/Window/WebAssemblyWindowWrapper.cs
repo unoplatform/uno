@@ -97,14 +97,14 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		}
 	}
 
-<<<<<<< HEAD
 	[JSExport]
 	private static Task OnResizeAsync([JSMarshalAs<JSType.Any>] object instance, double width, double height, float scale)
 	{
 		OnResize(instance, width, height, scale);
 
 		return Task.CompletedTask;
-=======
+	}
+
 	// Fed from a visualViewport listener on the JS side. occludedHeight is the height (in the
 	// same logical/CSS pixels as the window bounds) the on-screen keyboard covers at the bottom
 	// of the viewport, already gated on the invisible text input being focused, so browser-chrome
@@ -132,7 +132,6 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 			// A managed exception must not cross back into the JS DOM-event callback.
 			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
->>>>>>> origin/master
 	}
 
 	protected override void ShowCore()

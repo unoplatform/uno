@@ -838,10 +838,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// has opted in to auto-enabling accessibility (bypassing the "Enable Accessibility" button).
 	/// </summary>
 	[JSExport]
-	public static bool IsAutoEnableAccessibility()
-		=> FeatureConfiguration.AutomationPeer.AutoEnableAccessibility;
-
-	[JSExport]
 	public static Task<bool> IsAutoEnableAccessibilityAsync()
 		=> Task.FromResult(FeatureConfiguration.AutomationPeer.AutoEnableAccessibility);
 

@@ -485,12 +485,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			var toRoot = TotalMatrix.ToSKMatrix();
 
-<<<<<<< HEAD
-			preClip.Reset();
-=======
 			var preClip = _spareRenderPath;
 			preClip.Rewind();
->>>>>>> origin/master
 
 			ownClip.Rewind();
 			ownClip.AddPath(clipInRoot);
@@ -746,7 +742,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 	/// <summary>
-<<<<<<< HEAD
 	/// Returns the bounds, in root visual coordinates, of the effective clip applied to this visual's
 	/// own content by its ancestors (e.g. a ScrollViewer's viewport clip) and its own <see cref="Clip"/>.
 	/// Intersecting an element's bounds with this rect yields what's actually visible, which automation
@@ -766,8 +761,6 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 	/// <summary>
-=======
->>>>>>> origin/master
 	/// Draws the content of this visual.
 	/// </summary>
 	/// <param name="session">The drawing session to use.</param>
