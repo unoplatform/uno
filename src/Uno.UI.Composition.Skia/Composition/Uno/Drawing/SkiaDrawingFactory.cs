@@ -32,9 +32,14 @@ internal sealed class SkiaDrawingFactory :
 	private int _glWidth;
 	private int _glHeight;
 
-	// Metal state (built lazily on the first Metal present from the host's device/queue). The per-frame texture
-	// changes, so the render target + surface are recreated each present; the GRContext is cached.
+	// Metal state (built lazily on the first Metal present from the host's device/queue). The per-frame drawable
+	// changes, so the drawable surface is recreated each present; the GRContext is cached. The offscreen is a
+	// persistent GPU surface the frame composes into (retained across frames for partial repaint), blitted onto the
+	// per-frame drawable each present; rebuilt on resize.
 	private GRContext? _metalContext;
+	private SKSurface? _metalOffscreen;
+	private int _metalWidth;
+	private int _metalHeight;
 
 	// Vulkan state (built lazily on the first Vulkan present from the host's device context). The render image is
 	// stable across frames (recreated on resize), so the render target + surface are cached and rebuilt only when
@@ -136,10 +141,20 @@ internal sealed class SkiaDrawingFactory :
 
 		var colorType = metal.ColorFormat == GraphicsColorFormat.Bgra8888 ? SKColorType.Bgra8888 : SKColorType.Rgba8888;
 		var target = new GRBackendRenderTarget(metal.Width, metal.Height, new GRMtlTextureInfo(metal.Texture));
-		var surface = SKSurface.Create(_metalContext, target, GRSurfaceOrigin.TopLeft, colorType);
-		// The render target descriptor is consumed by SKSurface.Create; the surface is disposed on present.
+		var drawableSurface = SKSurface.Create(_metalContext, target, GRSurfaceOrigin.TopLeft, colorType);
+		// The render target descriptor is consumed by SKSurface.Create; the drawable surface is disposed on present.
 		target.Dispose();
-		return SkiaPresentSession.ForGpuTexture(surface, _metalContext);
+
+		if (_metalOffscreen is null || metal.Width != _metalWidth || metal.Height != _metalHeight)
+		{
+			_metalWidth = metal.Width;
+			_metalHeight = metal.Height;
+			_metalOffscreen?.Dispose();
+			_metalOffscreen = SKSurface.Create(_metalContext, budgeted: true, new SKImageInfo(metal.Width, metal.Height, colorType, SKAlphaType.Premul));
+		}
+
+		// Compose into the retained offscreen, then blit it onto the per-frame drawable on present.
+		return SkiaPresentSession.ForRetainedGpuOffscreen(_metalOffscreen!, drawableSurface, _metalContext, ownsFramebuffer: true);
 	}
 
 	// The host has made its GL context current; build/reuse a GRContext-GL and an SKSurface over the window
@@ -187,6 +202,7 @@ internal sealed class SkiaDrawingFactory :
 		_glSurface?.Dispose();
 		_glRenderTarget?.Dispose();
 		_glContext?.Dispose();
+		_metalOffscreen?.Dispose();
 		_vulkanSurface?.Dispose();
 		_vulkanRenderTarget?.Dispose();
 		_vulkanContext?.Dispose();

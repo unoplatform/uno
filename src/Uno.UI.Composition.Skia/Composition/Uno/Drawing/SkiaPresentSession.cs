@@ -18,18 +18,21 @@ internal sealed class SkiaPresentSession : SkiaDrawingSession, IPresentSession
 	// Non-null for the retained-offscreen case: the swapchain framebuffer to blit the composed offscreen into on
 	// present (the offscreen — `_surface` here, not owned — keeps the previous frame's pixels for partial repaint).
 	private readonly SKSurface? _blitTarget;
+	// True when the blit target is a per-frame surface (e.g. a Metal drawable) this session must dispose on present.
+	private readonly bool _ownsBlitTarget;
 
 	public bool PreservesContents { get; }
 
 	public SkiaPresentSession(SKCanvas canvas) : base(canvas)
 		=> _saveCount = canvas.Save();
 
-	private SkiaPresentSession(SKSurface surface, GRContext? flushContext, bool ownsSurface, bool preservesContents = false, SKSurface? blitTarget = null) : base(surface.Canvas)
+	private SkiaPresentSession(SKSurface surface, GRContext? flushContext, bool ownsSurface, bool preservesContents = false, SKSurface? blitTarget = null, bool ownsBlitTarget = false) : base(surface.Canvas)
 	{
 		_surface = surface;
 		_flushContext = flushContext;
 		_ownsSurface = ownsSurface;
 		_blitTarget = blitTarget;
+		_ownsBlitTarget = ownsBlitTarget;
 		PreservesContents = preservesContents;
 		_saveCount = surface.Canvas.Save();
 	}
@@ -59,8 +62,8 @@ internal sealed class SkiaPresentSession : SkiaDrawingSession, IPresentSession
 	/// frame's pixels, so partial repaint is valid), then on present blits the whole offscreen onto the swapchain
 	/// <paramref name="framebuffer"/> and flushes. Neither surface is disposed here (both are cached by the backend
 	/// until the size changes). The host swaps the framebuffer afterwards.</summary>
-	public static SkiaPresentSession ForRetainedGpuOffscreen(SKSurface offscreen, SKSurface framebuffer, GRContext flushContext)
-		=> new SkiaPresentSession(offscreen, flushContext, ownsSurface: false, preservesContents: true, blitTarget: framebuffer);
+	public static SkiaPresentSession ForRetainedGpuOffscreen(SKSurface offscreen, SKSurface framebuffer, GRContext flushContext, bool ownsFramebuffer = false)
+		=> new SkiaPresentSession(offscreen, flushContext, ownsSurface: false, preservesContents: true, blitTarget: framebuffer, ownsBlitTarget: ownsFramebuffer);
 
 	// Restore any state the composition (frame replay + overlay) left behind, then flush the result to the surface.
 	public void Dispose()
@@ -76,5 +79,6 @@ internal sealed class SkiaPresentSession : SkiaDrawingSession, IPresentSession
 		}
 		_flushContext?.Flush();
 		if (_ownsSurface) { _surface?.Dispose(); }
+		if (_ownsBlitTarget) { _blitTarget?.Dispose(); }
 	}
 }
