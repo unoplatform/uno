@@ -55,6 +55,8 @@ internal sealed class AppleMetalGraphicsContext : ISwapChain, IAppleNativeTextur
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Bgra8888;
+		// Retained-layer partial repaint: the backend blits a persistent layer onto this frame's drawable each present.
+		public bool PreservesContents => true;
 		public void Dispose() { }
 	}
 }

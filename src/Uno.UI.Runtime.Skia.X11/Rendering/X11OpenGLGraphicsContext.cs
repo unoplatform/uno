@@ -67,6 +67,9 @@ internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
+		// The Skia backend composes into a persistent retained layer and blits it here each present, so the previous
+		// frame survives SwapBuffers (the back buffer is otherwise undefined) — enabling damage-region partial repaint.
+		public bool PreservesContents => true;
 		public void Dispose() { }
 	}
 }

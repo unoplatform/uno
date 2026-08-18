@@ -86,6 +86,8 @@ internal sealed unsafe class X11EGLGraphicsContext : ISwapChain, IGLDeviceContex
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
+		// Retained-layer partial repaint: the backend blits a persistent layer here each present (see X11GLRenderTarget).
+		public bool PreservesContents => true;
 		public void Dispose() { }
 	}
 }
