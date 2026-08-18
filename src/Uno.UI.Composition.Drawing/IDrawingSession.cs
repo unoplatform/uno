@@ -31,6 +31,14 @@ public interface IDrawingSession
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	object? NativeSurface { get; }
 
+	/// <summary>
+	/// The backend factory that owns this session. Mint textures/resources native to THIS session's backend through
+	/// it — a texture from this factory is one a subsequent <see cref="DrawImage(ITexture,float,float,ImageSampling,float,bool)"/>
+	/// on this session will accept (a foreign texture is not). Prefer this over a process-global factory so an add-in
+	/// targets the session's actual backend.
+	/// </summary>
+	IDrawingFactory Factory { get; }
+
 	void SetMatrix(in Matrix4x4 matrix);
 
 	void Concat(in Matrix4x4 matrix);

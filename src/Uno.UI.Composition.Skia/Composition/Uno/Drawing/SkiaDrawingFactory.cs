@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Numerics;
 using Microsoft.UI.Composition;
 using SkiaSharp;
@@ -50,11 +51,16 @@ internal sealed class SkiaDrawingFactory :
 	private readonly IMetalDeviceContext? _metalDevice;
 	private readonly IVulkanDeviceContext? _vulkanDevice;
 
+	// The single negotiated backend factory, so a session can expose it as IDrawingSession.Factory without threading a
+	// reference through every (often static) session constructor. Set at construction; the winning backend is unique.
+	internal static SkiaDrawingFactory? Instance { get; private set; }
+
 	public SkiaDrawingFactory(IGLDeviceContext? glDevice = null, IMetalDeviceContext? metalDevice = null, IVulkanDeviceContext? vulkanDevice = null)
 	{
 		_glDevice = glDevice;
 		_metalDevice = metalDevice;
 		_vulkanDevice = vulkanDevice;
+		Instance = this;
 	}
 
 	public ICommandRecorder CreateRecording() => SkiaDrawingSession.StartRecording();
@@ -214,6 +220,12 @@ internal sealed class SkiaDrawingFactory :
 		var pixels = new byte[image.PixelWidth * image.PixelHeight * 4];
 		image.CopyPixels(pixels);
 		return new SkiaTexture(SKImage.FromPixelCopy(info, pixels));
+	}
+
+	public ITexture CreateTexture(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
+	{
+		var info = new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
+		return new SkiaTexture(SKImage.FromPixelCopy(info, bgraPremul));
 	}
 
 	public IShader CreateLinearGradientShader(

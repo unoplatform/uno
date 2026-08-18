@@ -72,8 +72,8 @@ internal sealed class SkiaSvgDocument : ISvgDocument
 			return;
 		}
 
-		// Cross-backend fallback (no SKCanvas, e.g. WebGPU): rasterize to a Skia-owned texture and let the session
-		// materialize it via the neutral ITexture.CopyPixels contract.
+		// Cross-backend fallback (no SKCanvas, e.g. WebGPU): rasterize to an offscreen, then let the SESSION's own
+		// backend mint a native texture from the pixels — a foreign texture wouldn't be accepted by its DrawImage.
 		var width = Math.Max(1, (int)Math.Ceiling(targetSize.Width));
 		var height = Math.Max(1, (int)Math.Ceiling(targetSize.Height));
 		var info = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
@@ -88,34 +88,13 @@ internal sealed class SkiaSvgDocument : ISvgDocument
 		surface.Canvas.DrawPicture(picture);
 		surface.Canvas.Flush();
 
-		using var texture = new SvgTexture(surface.Snapshot());
+		using var pixmap = surface.PeekPixels();
+		if (pixmap is null)
+		{
+			return;
+		}
+
+		using var texture = session.Factory.CreateTexture(width, height, pixmap.GetPixelSpan());
 		session.DrawImage(texture, 0, 0, ImageSampling.Linear, antialias: true);
 	}
-}
-
-/// <summary>
-/// SkiaSharp-backed <see cref="ITexture"/> so a Skia-rendered SVG can be drawn into a non-Skia session (e.g. WebGPU)
-/// through the neutral <see cref="ITexture.CopyPixels"/> contract. (The add-in can't see the core backend's internal
-/// texture type, so it brings its own — it already depends on SkiaSharp via Svg.Skia.)
-/// </summary>
-internal sealed class SvgTexture : ITexture
-{
-	private readonly SKImage _image;
-
-	public SvgTexture(SKImage image) => _image = image;
-
-	public int PixelWidth => _image.Width;
-
-	public int PixelHeight => _image.Height;
-
-	public unsafe void CopyPixels(Span<byte> destination)
-	{
-		var info = new SKImageInfo(_image.Width, _image.Height, SKColorType.Bgra8888, SKAlphaType.Premul);
-		fixed (byte* dst = destination)
-		{
-			_image.ReadPixels(info, (nint)dst, info.RowBytes, 0, 0);
-		}
-	}
-
-	public void Dispose() => _image.Dispose();
 }

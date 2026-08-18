@@ -34,6 +34,9 @@ internal class SkiaDrawingSession : IDrawingSession
 
 	public object? NativeSurface => _canvas;
 
+	public IDrawingFactory Factory => SkiaDrawingFactory.Instance
+		?? throw new InvalidOperationException("The Skia drawing factory has not been created yet.");
+
 	private protected static SKPictureRecorder RentRecorder()
 	{
 		var pool = _recorderPool ??= new();

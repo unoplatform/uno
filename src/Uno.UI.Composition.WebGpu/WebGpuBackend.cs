@@ -376,6 +376,8 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	public int Save() { var pre = _stack.Count; _stack.Push(new SaveEntry { M = _m, Clip = _clip, PendingColorMatrix = _pendingColorMatrix }); return pre; }
 	public int SaveCount => _stack.Count;
 	public object NativeSurface => null;
+	public IDrawingFactory Factory => WebGpuDrawingFactory.Instance
+		?? throw new InvalidOperationException("The WebGPU drawing factory has not been created yet.");
 	public void Restore()
 	{
 		if (_stack.Count == 0) { return; }
@@ -2569,6 +2571,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	public int Save() { _presentScaleStack.Push(_presentScale); _overlay.Save(); return _presentScaleStack.Count; }
 	public int SaveCount => _presentScaleStack.Count;
 	public object NativeSurface => null;
+	public IDrawingFactory Factory => WebGpuDrawingFactory.Instance
+		?? throw new InvalidOperationException("The WebGPU drawing factory has not been created yet.");
 	public void Restore() { if (_presentScaleStack.Count > 0) { _presentScale = _presentScaleStack.Pop(); } _overlay.Restore(); }
 	public void RestoreToCount(int count) { while (_presentScaleStack.Count > count) { Restore(); } }
 	public void SaveLayer(bool antialias = false) => _overlay.SaveLayer(antialias);
@@ -2708,6 +2712,21 @@ public sealed unsafe class WebGpuTexture : ITexture
 		_source = image;
 		int w = image.PixelWidth, h = image.PixelHeight;
 		PixelWidth = w; PixelHeight = h;
+		byte[] bgra = (w > 0 && h > 0) ? new byte[w * h * 4] : System.Array.Empty<byte>();
+		if (bgra.Length > 0) { image.CopyPixels(bgra); }
+		UploadBgra(device, w, h, bgra);
+	}
+
+	// Raw pixels-in-hand path (e.g. an add-in that rasterized to its own surface): no IImage detour.
+	internal WebGpuTexture(WebGpuDevice device, int width, int height, ReadOnlySpan<byte> bgraPremul)
+	{
+		_d = device;
+		PixelWidth = width; PixelHeight = height;
+		UploadBgra(device, width, height, bgraPremul);
+	}
+
+	private void UploadBgra(WebGpuDevice device, int w, int h, ReadOnlySpan<byte> bgra)
+	{
 		// A zero-sized source (e.g. an image brush whose surface isn't ready yet) would create an empty wgpu
 		// texture whose view is a null/"empty" handle, which fails bind-group validation. Fall back to a 1x1
 		// transparent texture so the draw is a no-op instead of a hard wgpu panic.
@@ -2723,10 +2742,8 @@ public sealed unsafe class WebGpuTexture : ITexture
 			fixed (byte* p0 = transparent) { wgpuQueueWriteTexture(device.Q, &dst0, (IntPtr)p0, 4, &layout0, &ext0); }
 			return;
 		}
-		var bgra = new byte[w * h * 4];
-		image.CopyPixels(bgra);
 		var rgba = new byte[w * h * 4];
-		for (int i = 0; i < bgra.Length; i += 4) { rgba[i] = bgra[i + 2]; rgba[i + 1] = bgra[i + 1]; rgba[i + 2] = bgra[i]; rgba[i + 3] = bgra[i + 3]; }
+		for (int i = 0; i < rgba.Length; i += 4) { rgba[i] = bgra[i + 2]; rgba[i + 1] = bgra[i + 1]; rgba[i + 2] = bgra[i]; rgba[i + 3] = bgra[i + 3]; }
 		var td = new WGPUTextureDescriptor { Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 }, Format = WGPUTextureFormat.RGBA8Unorm, MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopyDst | WGPUTextureUsage.CopySrc };
 		WebGpuDevice.TexLog("ImageTexture.upload", (uint)w, (uint)h, 1);
 		Tex = wgpuDeviceCreateTexture(device.Dev, &td);
@@ -2816,7 +2833,11 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 	private WebGpuRenderSurface _mainSurface;
 	private int _mainW, _mainH;
 
-	internal WebGpuDrawingFactory(WebGpuDevice device) { _device = device; }
+	// The single negotiated backend factory, so a session/recorder can expose it as IDrawingSession.Factory without
+	// threading a reference through every (parameterless) constructor. Set at construction; the winning backend is unique.
+	internal static WebGpuDrawingFactory Instance { get; private set; }
+
+	internal WebGpuDrawingFactory(WebGpuDevice device) { _device = device; Instance = this; }
 
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
 
@@ -2838,6 +2859,9 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 	}
 
 	public ITexture CreateTexture(IImage image) => new WebGpuTexture(_device, image);
+
+	public ITexture CreateTexture(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
+		=> new WebGpuTexture(_device, pixelWidth, pixelHeight, bgraPremul);
 
 	// Offscreen rasterization on the WebGPU device (record → present into a dedicated offscreen surface) and hand
 	// back the resolved color texture as a sampleable ITexture — no CPU read-back, so a nine-slice/glyph/SVG

@@ -48,6 +48,14 @@ public interface IDrawingFactory
 	/// </summary>
 	ITexture CreateTexture(IImage image);
 
+	/// <summary>
+	/// Uploads raw BGRA8888-premultiplied pixels (tightly packed, <paramref name="pixelWidth"/> × <paramref name="pixelHeight"/>
+	/// × 4 bytes) into a backend-specific GPU texture. The pixels-in-hand sibling of <see cref="CreateTexture(IImage)"/>,
+	/// for a caller that already holds bytes (e.g. an add-in that rasterized to its own surface) and shouldn't detour
+	/// through the codec's <see cref="IImageEncoderDecoder.CreateImage"/>. The caller owns and disposes the result.
+	/// </summary>
+	ITexture CreateTexture(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul);
+
 	/// <summary>Creates a linear-gradient shader in the current coordinate space.</summary>
 	IShader CreateLinearGradientShader(
 		Vector2 start,
