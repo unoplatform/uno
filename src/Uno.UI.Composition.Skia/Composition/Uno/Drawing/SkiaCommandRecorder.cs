@@ -12,8 +12,8 @@ internal sealed class SkiaCommandRecorder : SkiaDrawingSession, ICommandRecorder
 {
 	private readonly SKPictureRecorder _recorder;
 
-	public SkiaCommandRecorder(SKPictureRecorder recorder, SKCanvas recordingCanvas)
-		: base(recordingCanvas)
+	public SkiaCommandRecorder(SKPictureRecorder recorder, SKCanvas recordingCanvas, IDrawingFactory factory)
+		: base(recordingCanvas, factory)
 		=> _recorder = recorder;
 
 	public IRenderRecord Finish()

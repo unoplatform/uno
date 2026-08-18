@@ -56,19 +56,14 @@ internal sealed class SkiaDrawingFactory :
 	private readonly IMetalDeviceContext? _metalDevice;
 	private readonly IVulkanDeviceContext? _vulkanDevice;
 
-	// The single negotiated backend factory, so a session can expose it as IDrawingSession.Factory without threading a
-	// reference through every (often static) session constructor. Set at construction; the winning backend is unique.
-	internal static SkiaDrawingFactory? Instance { get; private set; }
-
 	public SkiaDrawingFactory(IGLDeviceContext? glDevice = null, IMetalDeviceContext? metalDevice = null, IVulkanDeviceContext? vulkanDevice = null)
 	{
 		_glDevice = glDevice;
 		_metalDevice = metalDevice;
 		_vulkanDevice = vulkanDevice;
-		Instance = this;
 	}
 
-	public ICommandRecorder CreateRecording() => SkiaDrawingSession.StartRecording();
+	public ICommandRecorder CreateRecording() => SkiaDrawingSession.StartRecording(this);
 
 
 	// Typed present per kind the Skia backend serves — the target arrives already narrowed, so there is no
@@ -76,7 +71,7 @@ internal sealed class SkiaDrawingFactory :
 	// GRContext-Metal.
 	public IPresentSession BeginPresent(IGLRenderTarget target) => PresentForGL(target);
 
-	public IPresentSession BeginPresent(ISoftwareRenderTarget target) => SkiaPresentSession.ForSoftware(target);
+	public IPresentSession BeginPresent(ISoftwareRenderTarget target) => SkiaPresentSession.ForSoftware(target, this);
 
 	public IPresentSession BeginPresent(IMetalRenderTarget target) => PresentForMetal(target);
 
@@ -131,7 +126,7 @@ internal sealed class SkiaDrawingFactory :
 			_vulkanSurface = SKSurface.Create(_vulkanContext, _vulkanRenderTarget, GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888, SKColorSpace.CreateSrgb());
 		}
 
-		return SkiaPresentSession.ForCachedGpuSurface(_vulkanSurface!, _vulkanContext);
+		return SkiaPresentSession.ForCachedGpuSurface(_vulkanSurface!, _vulkanContext, this);
 	}
 
 	// The host hands the per-frame MTLTexture (+ its device/queue); build/reuse a GRContext-Metal and wrap the
@@ -153,10 +148,10 @@ internal sealed class SkiaDrawingFactory :
 		if (metal.PreservesContents)
 		{
 			(_metalRetainedLayer ??= new RetainedLayer()).EnsureSurface(_metalContext, metal.Width, metal.Height, colorType);
-			return SkiaPresentSession.ForRetained(_metalRetainedLayer, surface, _metalContext, ownsSwapchainSurface: true);
+			return SkiaPresentSession.ForRetained(_metalRetainedLayer, surface, _metalContext, ownsSwapchainSurface: true, this);
 		}
 
-		return SkiaPresentSession.ForGpuTexture(surface, _metalContext);
+		return SkiaPresentSession.ForGpuTexture(surface, _metalContext, this);
 	}
 
 	// The host has made its GL context current; build/reuse a GRContext-GL and an SKSurface over the window
@@ -198,10 +193,10 @@ internal sealed class SkiaDrawingFactory :
 		if (gl.PreservesContents)
 		{
 			(_glRetainedLayer ??= new RetainedLayer()).EnsureSurface(_glContext!, gl.Width, gl.Height, SKColorType.Rgba8888);
-			return SkiaPresentSession.ForRetained(_glRetainedLayer, _glSurface!, _glContext, ownsSwapchainSurface: false);
+			return SkiaPresentSession.ForRetained(_glRetainedLayer, _glSurface!, _glContext, ownsSwapchainSurface: false, this);
 		}
 
-		return new SkiaPresentSession(_glSurface!.Canvas);
+		return new SkiaPresentSession(_glSurface!.Canvas, this);
 	}
 
 	public void Dispose()
@@ -222,7 +217,7 @@ internal sealed class SkiaDrawingFactory :
 		var info = new SKImageInfo(pixelWidth, pixelHeight, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 		using var surface = SKSurface.Create(info);
 		surface.Canvas.Clear(SKColors.Transparent);
-		render(new SkiaDrawingSession(surface.Canvas));
+		render(new SkiaDrawingSession(surface.Canvas, this));
 		// Snapshot detaches from the surface (copy-on-write), so the returned texture outlives it. On Skia an
 		// SKImage is already the sampleable form, so there is no readback here.
 		return new SkiaTexture(surface.Snapshot());

@@ -361,8 +361,12 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	private float[] _pendingColorMatrix;   // active effect colour matrix, applied per DrawImage in the image shader
 	private readonly WebGpuRenderRecord _data = new();
 	private List<WebGpuCommand> _target;   // current emit target (root command list, or a layer's list)
+	// The owning drawing factory, surfaced as IDrawingSession.Factory so an add-in painting into this recording mints
+	// session-native textures within the paint scope. Null only for the internal transform-scratch recorder
+	// (TransformFor), whose Factory is never read.
+	private readonly IDrawingFactory _factory;
 
-	public WebGpuCommandRecorder() => _target = _data.Commands;
+	public WebGpuCommandRecorder(IDrawingFactory factory = null) { _target = _data.Commands; _factory = factory; }
 
 	public Matrix4x4 TotalMatrix => _m;
 	public void SetMatrix(in Matrix4x4 matrix) => _m = matrix;
@@ -376,8 +380,8 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	public int Save() { var pre = _stack.Count; _stack.Push(new SaveEntry { M = _m, Clip = _clip, PendingColorMatrix = _pendingColorMatrix }); return pre; }
 	public int SaveCount => _stack.Count;
 	public object NativeSurface => null;
-	public IDrawingFactory Factory => WebGpuDrawingFactory.Instance
-		?? throw new InvalidOperationException("The WebGPU drawing factory has not been created yet.");
+	public IDrawingFactory Factory => _factory
+		?? throw new InvalidOperationException("This WebGPU recorder was created without a drawing factory (internal transform recorder).");
 	public void Restore()
 	{
 		if (_stack.Count == 0) { return; }
@@ -959,7 +963,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// here and is composited onto the replayed frame at Dispose — the present session IS a real drawing session,
 	// like the Skia one, not a replay-only sink. State verbs (Save/Scale/clip/…) forward here too so the overlay
 	// honours the transform; Scale/Save/Restore additionally drive the frame's root DPI scale (_presentScale).
-	private readonly WebGpuCommandRecorder _overlay = new();
+	private readonly WebGpuCommandRecorder _overlay;
+	private readonly IDrawingFactory _factory;
 	// The replayed frame's (DPI-scaled) commands + clear, captured at Replay and rendered ONCE at Dispose with the
 	// immediate-mode overlay appended as final top-most commands. Deferring lets the whole present be a single pass
 	// (no follow-up LoadOp.Load overlay pass), so the fast path's MSAA target resolves on-tile (StoreOp.Discard).
@@ -967,7 +972,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private WColor? _pendingClear;
 	private long _tReplayStart;
 	private static int _streamDumpFrame;
-	internal WebGpuPresentSession(WebGpuDevice d, WebGpuRenderSurface s) { _d = d; _s = s; }
+	internal WebGpuPresentSession(WebGpuDevice d, WebGpuRenderSurface s, IDrawingFactory factory) { _d = d; _s = s; _factory = factory; _overlay = new WebGpuCommandRecorder(factory); }
 
 	// Runs a frame: opens the shared encoder (if not already inside one), renders, then finishes+submits once.
 	// load=true preserves the target's existing colour (LoadOp.Load) so an overlay composites over the frame.
@@ -2571,8 +2576,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	public int Save() { _presentScaleStack.Push(_presentScale); _overlay.Save(); return _presentScaleStack.Count; }
 	public int SaveCount => _presentScaleStack.Count;
 	public object NativeSurface => null;
-	public IDrawingFactory Factory => WebGpuDrawingFactory.Instance
-		?? throw new InvalidOperationException("The WebGPU drawing factory has not been created yet.");
+	public IDrawingFactory Factory => _factory;
 	public void Restore() { if (_presentScaleStack.Count > 0) { _presentScale = _presentScaleStack.Pop(); } _overlay.Restore(); }
 	public void RestoreToCount(int count) { while (_presentScaleStack.Count > count) { Restore(); } }
 	public void SaveLayer(bool antialias = false) => _overlay.SaveLayer(antialias);
@@ -2833,13 +2837,9 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 	private WebGpuRenderSurface _mainSurface;
 	private int _mainW, _mainH;
 
-	// The single negotiated backend factory, so a session/recorder can expose it as IDrawingSession.Factory without
-	// threading a reference through every (parameterless) constructor. Set at construction; the winning backend is unique.
-	internal static WebGpuDrawingFactory Instance { get; private set; }
+	internal WebGpuDrawingFactory(WebGpuDevice device) { _device = device; }
 
-	internal WebGpuDrawingFactory(WebGpuDevice device) { _device = device; Instance = this; }
-
-	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder();
+	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder(this);
 
 
 	public IPresentSession BeginPresent(IWebGpuRenderTarget target)
@@ -2855,7 +2855,7 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 		// and the underlying texture stays host-side — the render pass only needs the view).
 		_mainSurface.View = target.ColorView;
 		if (_device.MsaaSamples == 1) { _mainSurface.MsaaColorView = target.ColorView; }   // 1x: render straight into it
-		return new WebGpuPresentSession(_device, _mainSurface);
+		return new WebGpuPresentSession(_device, _mainSurface, this);
 	}
 
 	public ITexture CreateTexture(IImage image) => new WebGpuTexture(_device, image);
@@ -2868,10 +2868,10 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 	// consumer draws it straight. CPU pixels (RenderTargetBitmap) come from SnapshotAsync instead.
 	public ITexture RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render)
 	{
-		var recorder = new WebGpuCommandRecorder();
+		var recorder = new WebGpuCommandRecorder(this);
 		render(recorder);
 		var surface = new WebGpuRenderSurface(_device, pixelWidth, pixelHeight);
-		var present = new WebGpuPresentSession(_device, surface);
+		var present = new WebGpuPresentSession(_device, surface, this);
 		present.ReplayNested(recorder.Finish());   // encodes + submits the nested render into the surface's color texture
 		// Take ownership of the resolved color texture; dispose releases only the (finished) MSAA + depth targets.
 		var (tex, view) = surface.DetachColor();

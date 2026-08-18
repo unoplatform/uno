@@ -26,16 +26,23 @@ internal class SkiaDrawingSession : IDrawingSession
 	private static Stack<SKPictureRecorder>? _recorderPool;
 
 	private readonly SKCanvas _canvas;
+	// The factory that created this session, surfaced as IDrawingSession.Factory. Carrying it on the session (rather
+	// than an ambient global) signals that its resource methods — CreateTexture etc. — are meant to be used within a
+	// session's scope, i.e. during the Paint callback while a session is live, not at arbitrary times.
+	private readonly IDrawingFactory _factory;
 
-	public SkiaDrawingSession(SKCanvas canvas) => _canvas = canvas;
+	public SkiaDrawingSession(SKCanvas canvas, IDrawingFactory factory)
+	{
+		_canvas = canvas;
+		_factory = factory;
+	}
 
 	/// <summary>The underlying canvas. Transitional accessor for render code not yet migrated off SkiaSharp.</summary>
 	internal SKCanvas Canvas => _canvas;
 
 	public object? NativeSurface => _canvas;
 
-	public IDrawingFactory Factory => SkiaDrawingFactory.Instance
-		?? throw new InvalidOperationException("The Skia drawing factory has not been created yet.");
+	public IDrawingFactory Factory => _factory;
 
 	private protected static SKPictureRecorder RentRecorder()
 	{
@@ -53,11 +60,11 @@ internal class SkiaDrawingSession : IDrawingSession
 	private const float SafeEdge = 2147483520f / 4f - 1f;
 	private static readonly SKRect RecordingBounds = new(-SafeEdge, -SafeEdge, SafeEdge, SafeEdge);
 
-	internal static SkiaCommandRecorder StartRecording()
+	internal static SkiaCommandRecorder StartRecording(IDrawingFactory factory)
 	{
 		var recorder = RentRecorder();
 		var recordingCanvas = recorder.BeginRecording(RecordingBounds);
-		return new SkiaCommandRecorder(recorder, recordingCanvas);
+		return new SkiaCommandRecorder(recorder, recordingCanvas, factory);
 	}
 
 	public void SaveLayer(IEffectFilter filter)
