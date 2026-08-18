@@ -960,6 +960,9 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		/// <summary>Minimum interval between "still cannot present" warnings.</summary>
 		private const int FailureLogIntervalMs = 5000;
 
+		/// <summary>A successful acquisition slower than this is worth reporting.</summary>
+		private const int SlowAcquireMs = 100;
+
 		private readonly Thread _thread;
 		private readonly AutoResetEvent _frameSignal = new(false);
 		private readonly ManualResetEventSlim _presentedEvent = new(false);
@@ -974,6 +977,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		private int _consecutiveFailures;
 		private long _firstFailureTimestamp;
 		private long _lastFailureLogTimestamp;
+		private long _lastAcquireLogTimestamp;
 
 		internal MacOSRenderThread(nint windowHandle, GRContext context, Action<double, double, nint> drawFrame, double targetFps)
 		{
@@ -1051,7 +1055,14 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				var framePresented = false;
 				try
 				{
-					if (NativeUno.uno_window_acquire_next_frame(_windowHandle, out var texture, out var width, out var height))
+					// Timed: whether nextDrawable blocks (and for how long) on a given machine is the
+					// single fact that separates "the render thread is stuck" from "the render thread is
+					// idle and something else is slow". Nothing else records it.
+					var acquireStart = Stopwatch.GetTimestamp();
+					var acquired = NativeUno.uno_window_acquire_next_frame(_windowHandle, out var texture, out var width, out var height);
+					ReportAcquire(acquired, ElapsedMsSince(acquireStart));
+
+					if (acquired)
 					{
 						_drawFrame(width, height, texture);
 
@@ -1136,6 +1147,34 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 
 			_framePacer.RequestFrame();
+		}
+
+		/// <summary>
+		/// Surfaces a drawable acquisition that failed, or succeeded but blocked. Both are reported the
+		/// first time and then at most once per <see cref="FailureLogIntervalMs"/>, so a pathological
+		/// agent shows up in the log immediately instead of only after several consecutive failures.
+		/// </summary>
+		private void ReportAcquire(bool acquired, long elapsedMs)
+		{
+			if (acquired && elapsedMs < SlowAcquireMs)
+			{
+				return;
+			}
+
+			if (!this.Log().IsEnabled(LogLevel.Warning))
+			{
+				return;
+			}
+
+			if (_lastAcquireLogTimestamp != 0 && ElapsedMsSince(_lastAcquireLogTimestamp) < FailureLogIntervalMs)
+			{
+				return;
+			}
+
+			_lastAcquireLogTimestamp = Stopwatch.GetTimestamp();
+			this.Log().Warn(
+				$"macOS drawable acquisition {(acquired ? "was slow" : "returned no drawable")} for window "
+				+ $"{_windowHandle}: nextDrawable took {elapsedMs}ms.");
 		}
 
 		private void ReportPersistentFailure()
