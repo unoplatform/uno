@@ -34,10 +34,10 @@ public interface ISvgDocument
 }
 
 /// <summary>
-/// Holds the registered <see cref="ISvgRenderer"/>. When none was explicitly registered (host builder), the framework
-/// lazily lights up its default — the Skia SVG engine when the Skia backend is present — on first access, exactly like
-/// the <see cref="FontProvider"/> / <see cref="ImageEncoderDecoder"/> / <see cref="GeometryFactory"/> holders. An app
-/// can override it by registering its own (e.g. the managed engine) via the host builder.
+/// Holds the registered <see cref="ISvgRenderer"/>. The host builder resolves the default at Build() time — the
+/// Svg.Skia add-in when referenced, else the built-in managed engine — exactly like the <see cref="FontProvider"/> /
+/// <see cref="ImageEncoderDecoder"/> / <see cref="GeometryFactory"/> holders. An app can override it via the host
+/// builder's .SvgRenderer(...).
 /// </summary>
 public static class SvgRenderer
 {

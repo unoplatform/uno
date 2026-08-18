@@ -50,6 +50,7 @@ internal sealed class SkottieLottieRenderer : ILottieRenderer
 
 		public void Render(IDrawingSession session, float progress, Rect area)
 		{
+			// Guards Render against a concurrent Dispose on desktop; a no-op on single-threaded WASM.
 			lock (_gate)
 			{
 				if (_animation is not { } animation)

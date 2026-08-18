@@ -5,6 +5,8 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
 
 namespace Uno.WinUI.Graphics2DSK;
 
@@ -60,7 +62,12 @@ public abstract partial class SKCanvasElement : Grid
 		{
 			// Graphics3DGL isn't referenced — no GL fallback (SKCanvasElement still works on a Skia backend, which
 			// exposes an SKCanvas and never reaches here). Don't touch SkiaGLCanvasElement, so its base assembly is
-			// never type-loaded.
+			// never type-loaded. Log so a blank SKCanvasElement on a non-Skia backend (e.g. WebGPU) is diagnosable.
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"{nameof(SKCanvasElement)} cannot draw on the active backend (it exposes no SKCanvas) and the Uno.WinUI.Graphics3DGL add-in — needed for the GL fallback — is not referenced; this element will not render. Reference Uno.WinUI.Graphics3DGL, or use a Skia backend.");
+			}
+
 			return;
 		}
 
