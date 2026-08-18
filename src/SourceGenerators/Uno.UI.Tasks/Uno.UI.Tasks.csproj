@@ -24,13 +24,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="..\..\Uno\ApplicationModel\Resources\Core\ResourceCandidate.cs">
+		<Compile Include="..\..\Uno.WinRT\ApplicationModel\Resources\Core\ResourceCandidate.cs">
 			<Link>Resources\ResourceCandidate.cs</Link>
 		</Compile>
-		<Compile Include="..\..\Uno\ApplicationModel\Resources\Core\ResourceQualifier.cs">
+		<Compile Include="..\..\Uno.WinRT\ApplicationModel\Resources\Core\ResourceQualifier.cs">
 			<Link>Resources\ResourceQualifier.cs</Link>
 		</Compile>
-		<Compile Include="..\..\Uno\Helpers\AndroidResourceNameEncoder.cs">
+		<Compile Include="..\..\Uno.WinRT\Helpers\AndroidResourceNameEncoder.cs">
 			<Link>Resources\AndroidResourceNameEncoder.cs</Link>
 		</Compile>
 		<Compile Include="..\Uno.UI.SourceGenerators\BindableTypeProviders\LinkerHintsHelpers.cs" Link="Helpers\LinkerHintsHelpers.cs" />

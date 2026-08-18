@@ -37,7 +37,7 @@ internal class MacOSLauncherExtension : ILauncherExtension
 		return Task.FromResult(supportStatus);
 	}
 
-	// copied and adapted from src/Uno/System/Launcher.macOS.SpecialUris.cs
+	// copied and adapted from src/Uno.WinRT/System/Launcher.macOS.SpecialUris.cs
 	private static readonly Lazy<Dictionary<string, string>> _settingsHandlers = new(() =>
 	{
 		var settings = new Dictionary<string, string>()

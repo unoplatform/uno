@@ -3,9 +3,9 @@
     "path": "..\\..\\src\\Uno.UI.slnx",
     "projects": [
       "Uno.UI\\Uno.UI.csproj",
-      "Uno\\Uno.Reference.csproj",
-      "Uno\\Uno.netcoremobile.csproj",
-      "Uno\\Uno.Wasm.csproj",
+      "Uno.WinRT\\Uno.WinRT.Reference.csproj",
+      "Uno.WinRT\\Uno.WinRT.netcoremobile.csproj",
+      "Uno.WinRT\\Uno.WinRT.Wasm.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.netcoremobile.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Wasm.csproj"
     ]

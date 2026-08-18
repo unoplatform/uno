@@ -65,7 +65,7 @@ NSMutableArray<NSString*>* get_allowed(char* filters[], int filterSize)
 char* uno_pick_single_folder(const char* _Nullable prompt, const char* _Nullable identifier, int32_t suggestedStartLocation)
 {
     NSOpenPanel *panel = [NSOpenPanel openPanel];
-    // based on settings from uno/src/Uno/Storage/Pickers/FolderPicker.macOS.cs
+    // based on settings from uno/src/Uno.WinRT/Storage/Pickers/FolderPicker.macOS.cs
     // filters are not applied in WinUI so we don't set them up here
     panel.allowedFileTypes = [NSArray arrayWithObject:@"none"];
     panel.canChooseDirectories = true;
@@ -97,7 +97,7 @@ char* uno_pick_single_folder(const char* _Nullable prompt, const char* _Nullable
 char* uno_pick_single_file(const char* _Nullable prompt, const char* _Nullable identifier, PickerLocationId suggestedStartLocation, char* filters[], int filterSize)
 {
     NSOpenPanel *panel = [NSOpenPanel openPanel];
-    // based on settings from uno/src/Uno/Storage/Pickers/FileOpenPicker.macOS.cs
+    // based on settings from uno/src/Uno.WinRT/Storage/Pickers/FileOpenPicker.macOS.cs
     panel.allowedFileTypes = get_allowed(filters, filterSize);
     panel.canChooseDirectories = false;
     panel.canChooseFiles = true;
@@ -129,7 +129,7 @@ char* uno_pick_single_file(const char* _Nullable prompt, const char* _Nullable i
 char** uno_pick_multiple_files(const char* _Nullable prompt, const char* _Nullable identifier, PickerLocationId suggestedStartLocation, char* filters[], int filterSize)
 {
     NSOpenPanel *panel = [NSOpenPanel openPanel];
-    // based on settings from uno/src/Uno/Storage/Pickers/FileOpenPicker.macOS.cs
+    // based on settings from uno/src/Uno.WinRT/Storage/Pickers/FileOpenPicker.macOS.cs
     panel.allowedFileTypes = get_allowed(filters, filterSize);
     panel.canChooseDirectories = false;
     panel.canChooseFiles = true;
@@ -181,7 +181,7 @@ void uno_free_string_array(char** array)
 char* uno_pick_save_file(const char* _Nullable prompt, const char* _Nullable identifier, const char* _Nullable suggestedFileName, PickerLocationId suggestedStartLocation, char* filters[], int filterSize)
 {
     NSSavePanel *panel = [NSSavePanel savePanel];
-    // based on settings from uno/src/Uno/Storage/Pickers/FileSavePicker.macOS.cs
+    // based on settings from uno/src/Uno.WinRT/Storage/Pickers/FileSavePicker.macOS.cs
     panel.allowsOtherFileTypes = true;
     panel.allowedFileTypes = get_allowed(filters, filterSize);
     panel.directoryURL = get_best_location(suggestedStartLocation);

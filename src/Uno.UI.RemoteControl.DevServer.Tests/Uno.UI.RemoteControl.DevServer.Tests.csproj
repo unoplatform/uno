@@ -148,7 +148,7 @@
 			<Aliases>RemoteServerCore</Aliases>
 		</ProjectReference>
 		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
-		<ProjectReference Include="..\Uno\Uno.Skia.csproj" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Skia.csproj" />
 	</ItemGroup>
 
 	<!--

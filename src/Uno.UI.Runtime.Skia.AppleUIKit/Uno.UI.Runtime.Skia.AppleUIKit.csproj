@@ -48,7 +48,7 @@
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
-		<ProjectReference Include="..\Uno\Uno.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj" />
 	</ItemGroup>
 

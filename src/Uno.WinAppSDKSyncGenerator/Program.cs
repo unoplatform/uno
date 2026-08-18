@@ -16,7 +16,7 @@ namespace Uno.WinAppSDKSyncGenerator
 			Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
 			DeleteDirectoryIfExists(@"..\..\..\Uno.UI\Generated\");
-			DeleteDirectoryIfExists(@"..\..\..\Uno\Generated\");
+			DeleteDirectoryIfExists(@"..\..\..\Uno.WinRT\Generated\");
 			DeleteDirectoryIfExists(@"..\..\..\Uno.Foundation\Generated\");
 			DeleteDirectoryIfExists(@"..\..\..\Uno.UI.Composition\Generated\");
 			DeleteDirectoryIfExists(@"..\..\..\Uno.UI.Dispatching\Generated\");
