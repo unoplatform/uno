@@ -26,28 +26,12 @@ internal sealed class SkiaDrawingFactory :
 	private GRContext? _glContext;
 	private GRBackendRenderTarget? _glRenderTarget;
 	private SKSurface? _glSurface;
-	// Persistent GPU offscreen the frame composes into; retained across frames (blitted whole onto the swapchain
-	// framebuffer each present) so the compositor can repaint only the damaged region. Rebuilt on resize.
-	private SKSurface? _glOffscreen;
 	private int _glWidth;
 	private int _glHeight;
 
-	// Software state: a persistent CPU offscreen the frame composes into (retained across frames for partial repaint),
-	// read back in full into the host's framebuffer each present. Rebuilt on size/format change. Backend-owned, so
-	// software retention matches the GPU paths — the host framebuffer needn't itself persist.
-	private SKSurface? _softwareOffscreen;
-	private int _softwareWidth;
-	private int _softwareHeight;
-	private SKColorType _softwareColorType;
-
-	// Metal state (built lazily on the first Metal present from the host's device/queue). The per-frame drawable
-	// changes, so the drawable surface is recreated each present; the GRContext is cached. The offscreen is a
-	// persistent GPU surface the frame composes into (retained across frames for partial repaint), blitted onto the
-	// per-frame drawable each present; rebuilt on resize.
+	// Metal state (built lazily on the first Metal present from the host's device/queue). The per-frame texture
+	// changes, so the render target + surface are recreated each present; the GRContext is cached.
 	private GRContext? _metalContext;
-	private SKSurface? _metalOffscreen;
-	private int _metalWidth;
-	private int _metalHeight;
 
 	// Vulkan state (built lazily on the first Vulkan present from the host's device context). The render image is
 	// stable across frames (recreated on resize), so the render target + surface are cached and rebuilt only when
@@ -81,29 +65,11 @@ internal sealed class SkiaDrawingFactory :
 	// GRContext-Metal.
 	public IPresentSession BeginPresent(IGLRenderTarget target) => PresentForGL(target);
 
-	public IPresentSession BeginPresent(ISoftwareRenderTarget target) => PresentForSoftware(target);
+	public IPresentSession BeginPresent(ISoftwareRenderTarget target) => SkiaPresentSession.ForSoftware(target);
 
 	public IPresentSession BeginPresent(IMetalRenderTarget target) => PresentForMetal(target);
 
 	public IPresentSession BeginPresent(IVulkanRenderTarget target) => PresentForVulkan(target);
-
-	// Compose into a persistent CPU offscreen (retained across frames), read back in full into the host framebuffer
-	// on present. Backend-owned retention, so partial repaint works uniformly with the GPU paths regardless of
-	// whether the host reuses its own buffer.
-	private IPresentSession PresentForSoftware(ISoftwareRenderTarget target)
-	{
-		var colorType = target.ColorFormat == GraphicsColorFormat.Rgba8888 ? SKColorType.Rgba8888 : SKColorType.Bgra8888;
-		if (_softwareOffscreen is null || target.Width != _softwareWidth || target.Height != _softwareHeight || colorType != _softwareColorType)
-		{
-			_softwareWidth = target.Width;
-			_softwareHeight = target.Height;
-			_softwareColorType = colorType;
-			_softwareOffscreen?.Dispose();
-			_softwareOffscreen = SKSurface.Create(new SKImageInfo(target.Width, target.Height, colorType, SKAlphaType.Premul));
-		}
-
-		return SkiaPresentSession.ForRetainedSoftware(_softwareOffscreen!, target);
-	}
 
 	// The host owns the Vulkan device/swapchain (IVulkanDeviceContext) and hands the per-frame render VkImage
 	// (IVulkanRenderTarget). Build/reuse a GRContext-Vulkan from the device context and wrap the image as an
@@ -167,20 +133,10 @@ internal sealed class SkiaDrawingFactory :
 
 		var colorType = metal.ColorFormat == GraphicsColorFormat.Bgra8888 ? SKColorType.Bgra8888 : SKColorType.Rgba8888;
 		var target = new GRBackendRenderTarget(metal.Width, metal.Height, new GRMtlTextureInfo(metal.Texture));
-		var drawableSurface = SKSurface.Create(_metalContext, target, GRSurfaceOrigin.TopLeft, colorType);
-		// The render target descriptor is consumed by SKSurface.Create; the drawable surface is disposed on present.
+		var surface = SKSurface.Create(_metalContext, target, GRSurfaceOrigin.TopLeft, colorType);
+		// The render target descriptor is consumed by SKSurface.Create; the surface is disposed on present.
 		target.Dispose();
-
-		if (_metalOffscreen is null || metal.Width != _metalWidth || metal.Height != _metalHeight)
-		{
-			_metalWidth = metal.Width;
-			_metalHeight = metal.Height;
-			_metalOffscreen?.Dispose();
-			_metalOffscreen = SKSurface.Create(_metalContext, budgeted: true, new SKImageInfo(metal.Width, metal.Height, colorType, SKAlphaType.Premul));
-		}
-
-		// Compose into the retained offscreen, then blit it onto the per-frame drawable on present.
-		return SkiaPresentSession.ForRetainedGpuOffscreen(_metalOffscreen!, drawableSurface, _metalContext, ownsFramebuffer: true);
+		return SkiaPresentSession.ForGpuTexture(surface, _metalContext);
 	}
 
 	// The host has made its GL context current; build/reuse a GRContext-GL and an SKSurface over the window
@@ -209,27 +165,21 @@ internal sealed class SkiaDrawingFactory :
 			_glHeight = gl.Height;
 			_glRenderTarget?.Dispose();
 			_glSurface?.Dispose();
-			_glOffscreen?.Dispose();
 
 			var info = new GRGlFramebufferInfo(gl.FramebufferId, SKColorType.Rgba8888.ToGlSizedFormat());
 			_glRenderTarget = new GRBackendRenderTarget(gl.Width, gl.Height, gl.SampleCount, gl.StencilBits, info);
 			// BottomLeft to match OpenGL's origin.
 			_glSurface = SKSurface.Create(_glContext, _glRenderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888);
-			// Retained across frames; Skia handles each surface's GL origin so the whole-offscreen blit isn't flipped.
-			_glOffscreen = SKSurface.Create(_glContext, budgeted: true, new SKImageInfo(gl.Width, gl.Height, SKColorType.Rgba8888, SKAlphaType.Premul));
 		}
 
-		return SkiaPresentSession.ForRetainedGpuOffscreen(_glOffscreen!, _glSurface!, _glContext!);
+		return new SkiaPresentSession(_glSurface!.Canvas);
 	}
 
 	public void Dispose()
 	{
-		_softwareOffscreen?.Dispose();
-		_glOffscreen?.Dispose();
 		_glSurface?.Dispose();
 		_glRenderTarget?.Dispose();
 		_glContext?.Dispose();
-		_metalOffscreen?.Dispose();
 		_vulkanSurface?.Dispose();
 		_vulkanRenderTarget?.Dispose();
 		_vulkanContext?.Dispose();

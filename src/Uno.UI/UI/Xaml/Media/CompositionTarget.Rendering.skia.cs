@@ -311,12 +311,12 @@ public partial class CompositionTarget
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
 			using (var present = BeginPresent(Renderer, target!))
 			{
-				// Partial repaint: when the present's surface keeps the previous frame's pixels (a persistent host
-				// framebuffer, or a backend-retained offscreen it blits to the swapchain) and the frame wasn't resized,
-				// clip the clear+replay to the damage region so only the changed area is repainted and the rest survives.
-				// Otherwise (fresh/undefined surface) repaint the whole frame.
+				// Partial repaint: when the host guarantees the target keeps the previous frame's pixels and the frame
+				// wasn't resized, clip the clear+replay to the damage region so only the changed area is repainted and
+				// the rest survives. The backend is oblivious — this is just an initial clip. Otherwise (fresh/undefined
+				// surface) repaint the whole frame.
 				var damageEligible = !resized
-					&& present.PreservesContents
+					&& target!.PreservesContents
 					&& lastRenderedFrame.damage is { } dmg && !dmg.IsEmpty;
 				// Debug overlay: full-repaint (no damage clip) but paint the would-be damage region so it's visible.
 				var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;

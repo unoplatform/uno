@@ -275,6 +275,10 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		public int Width => _info.PixelSize.Width;
 		public int Height => _info.PixelSize.Height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Bgra8888;
+		// The host renders into one stable intermediate image (recreated only on resize) and blits it to the
+		// swapchain each present (BlitAndPresent), so the previous frame's pixels survive — the compositor can
+		// repaint only the damaged region.
+		public bool PreservesContents => true;
 		public void Dispose() { }
 	}
 

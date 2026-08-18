@@ -45,4 +45,14 @@ public interface IRenderTarget : IDisposable
 	int Height { get; }
 
 	GraphicsColorFormat ColorFormat { get; }
+
+	/// <summary>
+	/// True when the host guarantees this target keeps the previous frame's pixels until the next acquisition at the
+	/// same size — so the compositor may repaint only the damaged region (as an initial clip) and let the rest
+	/// survive. Retention is entirely the host's business: a host that reuses one CPU framebuffer, or hands back a
+	/// stable GPU image (or an intermediate it blits to its swapchain), reports true; a host whose surface is
+	/// undefined each frame (a rotated/destroyed swapchain back buffer) reports false (the default) and gets a full
+	/// repaint. The render backend never sees this — it just executes the clip+clear+replay it is handed.
+	/// </summary>
+	bool PreservesContents => false;
 }
