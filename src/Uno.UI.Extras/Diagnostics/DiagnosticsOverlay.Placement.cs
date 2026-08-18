@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
-using Uno.UI.Toolkit.Extensions;
+using Uno.UI.Extras.Extensions;
 
 namespace Uno.Diagnostics.UI;
 

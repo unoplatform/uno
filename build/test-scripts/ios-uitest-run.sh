@@ -19,8 +19,12 @@
 #   - `idb-companion` comes from Meta's Homebrew tap `facebook/fb`
 #     (github.com/facebook/homebrew-fb). The formula pins the binary artifact
 #     of facebook/idb release v1.1.8 together with its sha256, so what gets
-#     installed is reproducible byte-for-byte; the tap itself has been
-#     dormant since 2022.
+#     installed is reproducible byte-for-byte.
+#   - The tap is pinned to a specific revision: its tip now ships idb-companion
+#     1.5.0.b2, which declares `depends_on macos: :sequoia` and
+#     `depends_on xcode: "26.0"`. The UI test agents run macOS 14
+#     ($(macOSVMImage_UITests) in .vsts-ci.yml), so brew rejects that formula
+#     outright — see the install section below.
 #   - Newer Homebrew refuses formulas from third-party taps unless explicitly
 #     trusted (`brew trust`) — see the install section below.
 #   - `fb-idb` (the Python client) is installed from PyPI via pipx, pinned to
@@ -197,6 +201,24 @@ then
 	# 2) Install helpers
 	brew list --versions pipx >/dev/null 2>&1 || brew install pipx
 	brew tap facebook/fb >/dev/null 2>&1 || true
+	# Pin the tap to the v1.1.8 formula. Its tip (1.5.0.b2) requires macOS
+	# Sequoia and Xcode 26, which the macOS 14 UI test agents cannot satisfy,
+	# so `brew install idb-companion` aborts with "Unsatisfied requirements".
+	# Detaching the tap checkout is enough: brew reads the formula straight
+	# from the working tree. HOMEBREW_NO_AUTO_UPDATE keeps a later `brew
+	# install` from fast-forwarding the tap back to its default branch.
+	export HOMEBREW_NO_AUTO_UPDATE=1
+	IDB_TAP_REVISION=c0386793f59da10c619787f2aa18d938ef1d69c9
+	IDB_TAP_REPO="$(brew --repo facebook/fb)"
+	if [ ! -d "$IDB_TAP_REPO/.git" ]; then
+		echo "Tap facebook/fb is not checked out at $IDB_TAP_REPO — cannot pin idb-companion." >&2
+		exit 1
+	fi
+	git -C "$IDB_TAP_REPO" fetch --depth 1 origin "$IDB_TAP_REVISION" \
+		|| git -C "$IDB_TAP_REPO" fetch --unshallow origin \
+		|| git -C "$IDB_TAP_REPO" fetch origin
+	git -C "$IDB_TAP_REPO" checkout --detach --force "$IDB_TAP_REVISION"
+
 	# Newer Homebrew on the runner images gates third-party taps: installing
 	# idb-companion fails with "Refusing to load formula facebook/fb/idb-companion
 	# from untrusted tap facebook/fb" unless explicitly trusted. Trust only the

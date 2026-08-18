@@ -53,7 +53,7 @@
       "Uno.UI.Runtime.Skia.Win32\\Uno.UI.Runtime.Skia.Win32.csproj",
       "Uno.UI.Runtime.Skia.X11\\Uno.UI.Runtime.Skia.X11.csproj",
       "Uno.UI.Runtime.Skia\\Uno.UI.Runtime.Skia.csproj",
-      "Uno.UI.Toolkit\\Uno.UI.Toolkit.Skia.csproj",
+      "Uno.UI.Extras\\Uno.UI.Extras.Skia.csproj",
       "Uno.UI.XamlHost\\Uno.UI.XamlHost.csproj",
       "Uno.UI\\Uno.UI.csproj",
       "Uno.UWP\\Uno.netcoremobile.csproj",

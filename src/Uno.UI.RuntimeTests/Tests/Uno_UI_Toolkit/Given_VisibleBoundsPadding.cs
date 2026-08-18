@@ -7,7 +7,7 @@ using Private.Infrastructure;
 using Uno.Disposables;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Toolkit;
+using Uno.UI.Extras;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 
-namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit
+namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Extras
 {
 	[TestClass]
 	[RunsOnUIThread]

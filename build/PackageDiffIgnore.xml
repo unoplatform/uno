@@ -2115,6 +2115,10 @@
 	</IgnoreSet>
 
 	<IgnoreSet baseVersion="6.6">
+	  <Assemblies>
+		  <!-- The whole assembly is renamed for 7.0, so every type in it reads as removed against the 6.6 baseline. -->
+		  <Member fullName="Uno.UI.Toolkit" reason="Assembly renamed Uno.UI.Toolkit -> Uno.UI.Extras (7.0 assembly renames)" />
+	  </Assemblies>
 	  <Types>
 		  <!-- Legacy cross-target FeatureConfiguration holder class removed with its sole flag (#2053, breaking changes for 7.0). -->
 		  <Member fullName="Uno.UI.FeatureConfiguration/Binding" reason="Removed empty FeatureConfiguration.Binding holder after deleting IgnoreINPCSameReferences (#2053, breaking changes for 7.0)" />

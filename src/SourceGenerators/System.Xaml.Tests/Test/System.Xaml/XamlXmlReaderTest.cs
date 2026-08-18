@@ -1395,7 +1395,7 @@ namespace MonoTests.Uno.Xaml
 
 				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_UnknownContent", },
 				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}Grid"},
-				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{using:Uno.UI.Toolkit}MyAttachedProperty.IsEnabled", },
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{using:Uno.UI.Extras}MyAttachedProperty.IsEnabled", },
 				new SequenceItem { NodeType = XamlNodeType.Value, Value = "True", },
 				new SequenceItem { NodeType = XamlNodeType.EndMember, },
 				new SequenceItem { NodeType = XamlNodeType.EndObject, },

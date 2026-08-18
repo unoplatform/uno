@@ -120,9 +120,9 @@
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.Tests.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.RemoteControl.csproj</_AdjustedOutputProjects>
 
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.Tests.csproj</_AdjustedOutputProjects>
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.Skia.csproj</_AdjustedOutputProjects>
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.Windows.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Extras.Tests.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Extras.Skia.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Extras.Windows.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Foldable.netcoremobile.csproj</_AdjustedOutputProjects>
 

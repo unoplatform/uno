@@ -22,8 +22,8 @@ using Uno.Foundation.Logging;
 #if IS_UNO // Is inside the Uno.UI project
 using _VisibleBoundsPadding = Uno.UI.Behaviors.InternalVisibleBoundsPadding;
 #else
-using Uno.UI.Toolkit.Extensions;
-using _VisibleBoundsPadding = Uno.UI.Toolkit.VisibleBoundsPadding;
+using Uno.UI.Extras.Extensions;
+using _VisibleBoundsPadding = Uno.UI.Extras.VisibleBoundsPadding;
 #endif
 
 #if IS_UNO
@@ -34,13 +34,13 @@ namespace Uno.UI.Behaviors
 	/// </summary>
 	/// <remarks>
 	/// This class is located in the same source file as the VisibleBoundsPadding class to avoid code duplication.
-	/// This is required to ensure that both Uno.UI styles and UWP (through Uno.UI.Toolkit) can use this behavior
+	/// This is required to ensure that both Uno.UI styles and UWP (through Uno.UI.Extras) can use this behavior
 	/// and not have to synchronize two code files. The internal implementation is not supposed to be used outside
-	/// of the Uno.UI assembly, Uno.UI.Toolkit.VisibleBoundsPadding should be used by dependents.
+	/// of the Uno.UI assembly, Uno.UI.Extras.VisibleBoundsPadding should be used by dependents.
 	/// </remarks>
 	internal static class InternalVisibleBoundsPadding
 #else
-namespace Uno.UI.Toolkit
+namespace Uno.UI.Extras
 {
 	/// <summary>
 	/// A behavior which automatically adds padding to a control that ensures its content will always be inside

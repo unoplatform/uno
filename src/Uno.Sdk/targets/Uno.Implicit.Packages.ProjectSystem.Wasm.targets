@@ -21,13 +21,4 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.WebAssembly.Browser" PrivateAssets="all" IncludeAssets="build" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="
-			   $(UnoFeatures.Contains(';lottie;'))
-			   OR $(UnoFeatures.Contains(';svg;'))
-			   OR $(UnoFeatures.Contains(';material;'))
-			   OR $(UnoFeatures.Contains(';cupertino;'))
-			   OR $(UnoFeatures.Contains(';simpletheme;'))">
-		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true"/>
-	</ItemGroup>
-
 </Project>

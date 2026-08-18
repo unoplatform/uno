@@ -84,12 +84,32 @@ on macOS with Skia rendering. To migrate:
 | `Uno.UI.Maps` AddIn removed | The native Google Maps control has no core Skia equivalent — use a third-party/Skia map or custom rendering. |
 | `Uno.WinUI` UI assemblies for `net*-android/ios/tvos` are now the Skia binaries | Same TFM string, but binary-incompatible with previously native-built consumers. Recompile all libraries against 7.0 and remove native bootstrap. |
 | `Xamarin.AndroidX.*` transitive deps removed (AppCompat, RecyclerView, Activity, Browser, SwipeRefreshLayout) | If *your own* code uses AndroidX, add explicit `PackageReference`s. |
+| `SkiaSharp.Views.Uno.WinUI` no longer referenced implicitly | The `Uno.Sdk` used to add it to every Uno Platform target, and to WebAssembly heads using the `lottie`, `svg`, `material`, `cupertino`, or `simpletheme` features. Nothing in Uno Platform needs it anymore — SVG draws through `Uno.WinUI.Graphics2DSK` and Lottie through `SkiaSharp.Skottie`. If *your own* code uses `SKXamlCanvas` or `SKSwapChainPanel`, switch to [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), which is hardware-accelerated and referenced implicitly; otherwise add an explicit `PackageReference`. |
 | Windows App SDK default moved from 1.7 to 2.3.1 | Windows heads now build against Windows App SDK 2.x, so packaged apps take a framework dependency on `Microsoft.WindowsAppRuntime.2` and end users need the matching [Windows App Runtime](https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads) — 2.3.1 or later from the **Stable release** section — installed. To stay on 1.x, set `<WinAppSdkVersion>` (and `<WinAppSdkBuildToolsVersion>`) explicitly in your Windows head. |
 
 > [!NOTE]
 > Referencing `Uno.WinUI.WebAssembly` (or the older `Uno.WinUI.Runtime.WebAssembly`)
 > alongside the Skia browser head raises the `UNOB0017` build diagnostic. Removing the
 > explicit reference resolves it.
+
+### `Uno.UI.Toolkit` is renamed to `Uno.UI.Extras`
+
+The `Uno.UI.Toolkit` assembly — which ships inside the `Uno.WinUI` package — was routinely
+mistaken for the separate [Uno Toolkit](xref:Toolkit.GettingStarted) product
+(`Uno.Toolkit.UI`); the two names are a word-order swap apart. It is now
+`Uno.UI.Extras`. Type names and behavior are unchanged, and there is **no** forwarding
+shim: the old namespaces stop resolving.
+
+| Before | After |
+|---|---|
+| `using Uno.UI.Toolkit;` | `using Uno.UI.Extras;` |
+| `using Uno.UI.Toolkit.Extensions;` | `using Uno.UI.Extras.Extensions;` |
+| `using Uno.UI.Toolkit.DevTools.Input;` (and `.DevTools.Xaml`) | `using Uno.UI.Extras.DevTools.Input;` |
+| `xmlns:toolkit="using:Uno.UI.Toolkit"` | `xmlns:extras="using:Uno.UI.Extras"` |
+
+The other namespaces carried by that assembly keep their names, so code using
+`DiagnosticsOverlay` (`Uno.Diagnostics.UI`), `FromJsonExtension` (`Uno.UI.Markup`) or
+`ColorExtensions` / `ImageHelper` (`Uno.Helpers`) needs no change.
 
 ### Public API removed
 
@@ -116,8 +136,8 @@ on macOS with Skia rendering. To migrate:
   `MenuFlyoutItemExtensions.IsDestructive` (red "destructive" item text) and
   `MenuFlyoutExtensions.CancelTextIosOverride` (custom cancel-button caption). Remove the
   attributes; style the `MenuFlyoutItem` directly for a destructive look.
-  `UICommandExtensions.SetDestructive` / `UICommand.IsDestructive` are **not** removed —
-  those still drive the native iOS `MessageDialog`.
+  `UICommand.IsDestructive` is **not** removed — it still drives the native iOS
+  `MessageDialog` — but its `Uno.UI.Extras` wrapper is (see below); set the property directly.
 - **Native default styles:** the whole `Generic.Native.xaml` dictionary is gone, so the
   `NativeDefaultButton`, `NativeDefaultCheckBox`, `NativeDefaultCommandBar`,
   `NativeDefaultAppBarButton`, `NativeDefaultFrame`, `NativeDefaultPivot`,
@@ -137,6 +157,17 @@ on macOS with Skia rendering. To migrate:
   `Style.RegisterDefaultStyleForType(Type, IXamlResourceDictionaryProvider, bool)` also loses its
   `isNative` parameter; it is `[EditorBrowsable(Never)]` and normally only called from
   XAML-generated code, so rebuilding regenerates the correct call.
+- **`Uno.UI.Extras` members that only ever ran on native targets:**
+  `Uno.UI.ViewHelper` (the `Uno.UI.Extras` one, whose only member `Architecture` always
+  returned `null` — the unrelated `Uno.UI.ViewHelper` in `Uno.UI` stays) and
+  `UICommandExtensions.SetDestructive`. To flag a destructive `UICommand`, set
+  `UICommand.IsDestructive` directly from an iOS-targeted head.
+
+  ```diff
+  - uic.SetDestructive(true);
+  + uic.IsDestructive = true;
+  ```
+
 - **Composition:** `Uno.CompositionConfiguration.Options.UseCompositorThread` (the Android
   RenderNode compositor thread). Remove the flag; Skia composition needs no dedicated
   native render thread.
@@ -431,7 +462,8 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 8. Convert every `xmlns:…="clr-namespace:…"` declaration in your XAML to the `using:` form.
 9. Convert the Android `Application` class to override `CreateHost()` instead of passing an
    `AppBuilder` delegate to the base constructor.
-10. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+10. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to `Uno.UI.Extras`.
+11. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)

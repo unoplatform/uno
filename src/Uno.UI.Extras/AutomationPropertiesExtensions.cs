@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Automation;
 using Uno;
 #endif
 
-namespace Uno.UI.Toolkit;
+namespace Uno.UI.Extras;
 
 /// <summary>
 /// Provides attached properties that extend the standard
@@ -21,7 +21,7 @@ namespace Uno.UI.Toolkit;
 ///
 /// XAML usage:
 /// <code>
-/// xmlns:uut="using:Uno.UI.Toolkit"
+/// xmlns:uut="using:Uno.UI.Extras"
 /// &lt;Button uut:AutomationPropertiesExtensions.Role="tab" /&gt;
 /// </code>
 /// </remarks>

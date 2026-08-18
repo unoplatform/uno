@@ -209,7 +209,7 @@ Enable this with:
 
 When set, `Uno.Sdk` stops adding the following implicit package references on the `net*-windows10*` target framework:
 
-- `Uno.WinUI` (also removes the bundled `Uno.UI.Toolkit.dll` it ships under `lib/net*-windows10.0.19041.0/`)
+- `Uno.WinUI` (also removes the bundled `Uno.UI.Extras.dll` it ships under `lib/net*-windows10.0.19041.0/`)
 - `Uno.Resizetizer`
 - `Uno.Sdk.Extras`
 - `Uno.Settings.DevServer`

@@ -1,12 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-					xmlns:toolkit="using:Uno.UI.Toolkit">
+					xmlns:extras="using:Uno.UI.Extras">
 
-	<Style TargetType="toolkit:ElevatedView">
+	<Style TargetType="extras:ElevatedView">
 		<Setter Property="IsTabStop" Value="False" />
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="toolkit:ElevatedView">
+				<ControlTemplate TargetType="extras:ElevatedView">
 					<Grid>
 						<Canvas x:Name="PART_ShadowHost" />
 						

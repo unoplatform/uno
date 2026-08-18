@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
-namespace Uno.UI.Toolkit.DevTools.Input;
+namespace Uno.UI.Extras.DevTools.Input;
 
 internal static class InputInjectorExtensions
 {
