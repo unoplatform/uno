@@ -1,6 +1,5 @@
 ﻿using AwesomeAssertions;
 using Microsoft.Build.Framework;
-using Uno.UI.Tasks.RuntimeAssetsValidator;
 
 namespace Uno.UI.Tasks.Tests;
 
@@ -10,7 +9,7 @@ public class Given_RuntimeAssetsValidatorTask
 	private const string RemovedType = "Uno.UI.Controls.BindableUIView";
 	private const string PresentType = "Microsoft.UI.Xaml.UIElement";
 
-	private static (RuntimeAssetsValidatorTask_v0 Task, RecordingBuildEngine Engine) CreateTask(
+	private static (RuntimeAssetsValidatorTask Task, RecordingBuildEngine Engine) CreateTask(
 		PackageCacheFixture fixture,
 		string asset,
 		string targetPlatformIdentifier = "android",
@@ -21,7 +20,7 @@ public class Given_RuntimeAssetsValidatorTask
 		var engine = new RecordingBuildEngine();
 		var unoUI = fixture.AddUnoUI(PresentType);
 
-		var task = new RuntimeAssetsValidatorTask_v0
+		var task = new RuntimeAssetsValidatorTask
 		{
 			BuildEngine = engine,
 			UnoRuntimeIdentifier = "",

@@ -1,12 +1,11 @@
 ﻿using AwesomeAssertions;
-using Uno.UI.Tasks.RuntimeAssetsSelector;
 
 namespace Uno.UI.Tasks.Tests;
 
 [TestClass]
 public class Given_RuntimeAssetsSelectorTask
 {
-	private static RuntimeAssetsSelectorTask_v0 CreateTask(PackageCacheFixture fixture, string platformAsset, string winRTRuntimeIdentifier)
+	private static RuntimeAssetsSelectorTask CreateTask(PackageCacheFixture fixture, string platformAsset, string winRTRuntimeIdentifier)
 		=> new()
 		{
 			BuildEngine = new RecordingBuildEngine(),

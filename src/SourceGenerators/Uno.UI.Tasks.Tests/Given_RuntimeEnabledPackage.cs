@@ -1,6 +1,5 @@
 ﻿using AwesomeAssertions;
 using Microsoft.Build.Framework;
-using Uno.UI.Tasks.RuntimeAssetsSelector;
 
 namespace Uno.UI.Tasks.Tests;
 
@@ -18,7 +17,7 @@ public class Given_RuntimeEnabledPackage
 	private static readonly string[] WinRTAssemblies = ["Uno", "Uno.Foundation", "Uno.UI.Dispatching"];
 	private static readonly string[] OtherAssemblies = ["Contoso.CrossRuntime"];
 
-	private static (RuntimeAssetsSelectorTask_v0 Task, string PackageBasePath) CreateTask(
+	private static (RuntimeAssetsSelectorTask Task, string PackageBasePath) CreateTask(
 		PackageCacheFixture fixture,
 		string unoRuntimeIdentifier,
 		string unoUIRuntimeIdentifier,
@@ -37,7 +36,7 @@ public class Given_RuntimeEnabledPackage
 		var plainLibrary = fixture.AddPackage("Contoso.Sensors", "2.0.0", "net10.0-android35.0", NeutralTargetFramework, []);
 		var plainNeutralAsset = Path.Combine(fixture.Root, "Contoso.Sensors", "2.0.0", "lib", NeutralTargetFramework, "Contoso.Sensors.dll");
 
-		var task = new RuntimeAssetsSelectorTask_v0
+		var task = new RuntimeAssetsSelectorTask
 		{
 			BuildEngine = new RecordingBuildEngine(),
 			UnoRuntimeEnabledPackage = [PackageCacheFixture.Item("Uno.WinRT", ("PackageBasePath", packageBasePath))],
