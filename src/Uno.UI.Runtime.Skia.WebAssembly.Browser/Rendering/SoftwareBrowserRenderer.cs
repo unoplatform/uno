@@ -6,8 +6,7 @@ using Uno.UI.Composition.Drawing;
 
 namespace Uno.UI.Runtime.Skia;
 
-// Neutral software renderer: hands the backend a neutral ISoftwareRenderTarget over the JS-owned pixel buffer
-// (BGRA/RGBA). The Skia backend wraps it as its surface; Flush blits the buffer to the canvas. No Skia here.
+// Hands the backend a neutral ISoftwareRenderTarget over the JS-owned pixel buffer; Flush blits it to the canvas.
 internal partial class SoftwareBrowserRenderer : IBrowserRenderer
 {
 	private readonly JSObject _nativeInstance;

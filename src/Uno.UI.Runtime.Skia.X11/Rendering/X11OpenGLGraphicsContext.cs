@@ -7,11 +7,8 @@ using Uno.UI.Composition.Drawing;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 /// <summary>
-/// Neutral OpenGL <see cref="ISwapChain"/> for X11 — names no GPU-library type. It makes the window's GLX
-/// context current and hands the renderer a neutral <see cref="IGLRenderTarget"/> (the window's default
-/// framebuffer + sample/stencil); the Skia backend builds its GRContext-GL against the current context.
-/// <see cref="Present"/> swaps buffers and releases current. Chosen by negotiation when the window was created
-/// with a GLX visual (see X11XamlRootHost.CreateGLXWindow); the software context is the fallback.
+/// Neutral OpenGL <see cref="ISwapChain"/> for X11: makes the window's GLX context current and hands the
+/// renderer a neutral <see cref="IGLRenderTarget"/>. <see cref="Present"/> swaps buffers and releases current.
 /// </summary>
 internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext
 {
@@ -67,8 +64,7 @@ internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
-		// The Skia backend composes into a persistent retained layer and blits it here each present, so the previous
-		// frame survives SwapBuffers (the back buffer is otherwise undefined) — enabling damage-region partial repaint.
+		// The backend blits a persistent retained layer here each present, so the previous frame survives SwapBuffers — enabling partial repaint.
 		public bool PreservesContents => true;
 		public void Dispose() { }
 	}

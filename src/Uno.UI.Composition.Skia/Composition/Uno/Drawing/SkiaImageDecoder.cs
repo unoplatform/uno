@@ -8,9 +8,8 @@ using SkiaSharp;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// SkiaSharp image decode used by <see cref="SkiaDrawingFactory"/>: turns encoded bytes into one or more BGRA frames,
-/// applying EXIF orientation, codec-native downscaling, animated-frame composition, and exact scaling to a target size.
-/// This is the backend-internal "technique"; callers see only the neutral <see cref="ImageFrames"/>.
+/// SkiaSharp image decode: turns encoded bytes into one or more BGRA <see cref="ImageFrames"/>, applying EXIF
+/// orientation, codec-native downscaling, animated-frame composition, and exact scaling to a target size.
 /// </summary>
 internal static class SkiaImageDecoder
 {

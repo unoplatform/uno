@@ -7,12 +7,10 @@ using Windows.Foundation;
 namespace Uno.WinUI.Graphics2DSK;
 
 /// <summary>
-/// The composition visual backing <see cref="SKCanvasElement"/>. Because <see cref="SKCanvasElement"/> is a
-/// <c>Grid</c> — an <c>IBorderInfoProvider</c> — this must be a <see cref="BorderVisual"/> (the framework asserts the
-/// visual of a border-info provider is one, and it renders the element's background/border). On top of that it draws
-/// the user's SkiaSharp straight into the frame's <see cref="SKCanvas"/> (zero-copy) when the active backend exposes
-/// one via <see cref="IDrawingSession.NativeSurface"/>; on any other backend it asks the owner to fall back to a GL
-/// island — a child that <c>base.Paint</c> composites.
+/// The composition visual backing <see cref="SKCanvasElement"/>. Must be a <see cref="BorderVisual"/> because the
+/// element is a <c>Grid</c> (<c>IBorderInfoProvider</c>), which the framework asserts and uses for background/border.
+/// On top it draws the user's SkiaSharp zero-copy into the frame's <see cref="SKCanvas"/> when the backend exposes
+/// one via <see cref="IDrawingSession.NativeSurface"/>; otherwise it asks the owner to fall back to a GL island.
 /// </summary>
 internal sealed class SKCanvasVisual(SKCanvasElement owner, Compositor compositor) : BorderVisual(compositor)
 {

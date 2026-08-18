@@ -8,11 +8,10 @@ using Windows.UI;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// A neutral, closed effect-graph node — the intermediate representation Uno produces (internally, once) from a
-/// WinUI <see cref="Windows.Graphics.Effects.IGraphicsEffect"/> graph. A render backend <b>fuses</b> a tree of these
-/// into its own opaque <see cref="IEffectFilter"/> (<see cref="IDrawingFactory.CreateEffectFilter(EffectNode, Windows.Foundation.Rect)"/>);
-/// it never reflects over Direct2D. Every static brush/image input is pre-rasterized to a
-/// <see cref="TextureInput"/> before the tree reaches the backend, so <see cref="SourceInput"/> is the only
+/// A neutral, closed effect-graph node — the intermediate representation Uno produces from a WinUI
+/// <see cref="Windows.Graphics.Effects.IGraphicsEffect"/> graph. A render backend <b>fuses</b> a tree of these into
+/// its own opaque <see cref="IEffectFilter"/> (<see cref="IDrawingFactory.CreateEffectFilter(EffectNode, Windows.Foundation.Rect)"/>);
+/// every static input is pre-rasterized to a <see cref="TextureInput"/>, so <see cref="SourceInput"/> is the only
 /// deferred (live-scene) leaf. See <c>specs/effects-neutralization/design.md</c>.
 /// </summary>
 public abstract record EffectNode
@@ -68,8 +67,8 @@ public sealed record TextureInput(ITexture Texture, EdgeExtend ExtendX = EdgeExt
 
 /// <summary>
 /// A per-pixel colour transform over <see cref="Source"/>, as a 4×5 (row-major, Skia-order) colour matrix. Absorbs
-/// D2D Opacity and every colour effect a backend realizes as a plain colour matrix (Grayscale, Invert, HueRotation,
-/// Saturation, Sepia, Exposure, TemperatureAndTint, ColorMatrix). Consecutive matrices fuse by matrix-multiply.
+/// D2D Opacity and every colour effect a backend realizes as a plain colour matrix; consecutive matrices fuse by
+/// matrix-multiply.
 /// </summary>
 public sealed record ColorMatrixEffectNode(EffectNode Source, float[] Matrix) : EffectNode
 {
@@ -77,9 +76,8 @@ public sealed record ColorMatrixEffectNode(EffectNode Source, float[] Matrix) : 
 }
 
 /// <summary>
-/// A gaussian blur of <see cref="Source"/>. <see cref="ClampEdge"/> clamps to the source edge
-/// (D2D <c>BorderMode.Hard</c> — no bleed past the element, what a backdrop/acrylic blur wants) versus fading to
-/// transparent (the default).
+/// A gaussian blur of <see cref="Source"/>. <see cref="ClampEdge"/> clamps to the source edge (D2D
+/// <c>BorderMode.Hard</c> — no bleed, what a backdrop/acrylic blur wants) versus fading to transparent (the default).
 /// </summary>
 public sealed record BlurEffectNode(EffectNode Source, float Sigma, bool ClampEdge) : EffectNode
 {
@@ -168,9 +166,7 @@ public enum LightingKind
 /// <summary>
 /// D2D distant/spot/point diffuse/specular lighting over <see cref="Source"/>'s alpha as a height field. The parser
 /// pre-computes the light geometry (via the neutral <c>EffectHelpers</c>); each <see cref="LightingKind"/> reads only
-/// the fields it needs — <see cref="Light"/> (distant: light vector; point/spot: position), <see cref="Target"/>
-/// (spot only), <see cref="Amount"/> (diffuse Kd / specular Ks), <see cref="SpecularExponent"/> (specular),
-/// <see cref="Focus"/> and <see cref="ConeAngle"/> (spot).
+/// the fields it needs.
 /// </summary>
 public sealed record LightingEffectNode(
 	EffectNode Source,
@@ -193,8 +189,8 @@ public sealed record CompositeEffectNode(IReadOnlyList<EffectNode> Sources, Blen
 }
 
 /// <summary>
-/// An effect Uno's parser doesn't (yet) translate to a neutral node. A backend renders <see cref="Source"/> (the
-/// first input, if any) unmodified so content still appears. Carries <see cref="EffectName"/> for diagnostics.
+/// An effect Uno's parser doesn't (yet) translate to a neutral node. A backend renders <see cref="Source"/>
+/// unmodified so content still appears; <see cref="EffectName"/> is carried for diagnostics.
 /// </summary>
 public sealed record UnsupportedEffectNode(string EffectName, EffectNode? Source) : EffectNode
 {

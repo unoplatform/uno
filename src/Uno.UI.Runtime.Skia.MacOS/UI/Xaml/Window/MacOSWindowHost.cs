@@ -34,8 +34,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private readonly Window _winUIWindow;
 	private readonly XamlRoot _xamlRoot;
 	private readonly DisplayInformation _displayInformation;
-	// The negotiated graphics context (Skia-on-Metal, software, or WebGPU on the CAMetalLayer). The host names no
-	// backend and owns no SKSurface; it drives the neutral per-frame loop from the native draw callbacks.
+	// The negotiated graphics context (Skia-on-Metal, software, or WebGPU on the CAMetalLayer).
 	private ISwapChain _context = null!;
 	private bool _initializationCompleted;
 	private string? _lastSvgClipPath;
@@ -52,10 +51,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		// RegisterForBackgroundColor();
 
-		// Neutral graphics pipeline: the host names no backend. It registers a per-kind window+context factory
-		// (CreateContext) and negotiates; the app-registered backend (Skia or WebGPU) owns the kind order. Only
-		// GPU-API context creation is macOS-specific (the device/queue query and the WebGPU init helper); the
-		// backend impl is transparent to the host.
+		// Neutral graphics pipeline: the host registers a per-kind context factory and negotiates; the app-registered backend owns the kind order.
 		var host = MacSkiaHost.Current;
 		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateContext(kind, host.RenderSurfaceType));
 
@@ -63,9 +59,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		_context = init.Context;
 		CompositionTarget.Renderer = init.Renderer;
 
-		// A swapchain-owning context (WebGPU on the CAMetalLayer) drives the layer itself, so the native draw is
-		// switched to tick-only (uno_window_set_webgpu_mode) to avoid contending for the layer's drawables. A
-		// native-texture context (Skia-on-Metal, an IMacOSNativeTextureSink) leaves the native draw providing textures.
+		// A swapchain-owning context (WebGPU) drives the layer itself, so switch the native draw to tick-only to avoid
+		// contending for the layer's drawables; a native-texture context (Skia-on-Metal) keeps providing textures.
 		if (host.RenderSurfaceType != RenderSurfaceType.Software && _context is not IMacOSNativeTextureSink)
 		{
 			NativeUno.uno_window_set_webgpu_mode(_nativeWindow.Handle, true);
@@ -73,9 +68,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	}
 
 	/// <summary>
-	/// The macOS window+context creator for the neutral pipeline. Skia-on-Metal wraps the device/queue queried from
-	/// the NSWindow; software owns a CPU framebuffer; WebGpu is built from the view's CAMetalLayer via the WebGPU
-	/// project's init helper. The host declines the GPU kinds when configured for software; it names no render backend.
+	/// Creates the macOS context for a requested kind: Skia-on-Metal from the NSWindow device/queue, software from a CPU
+	/// framebuffer, WebGpu from the view's CAMetalLayer. GPU kinds are declined when configured for software.
 	/// </summary>
 	private ISwapChain? CreateContext(GraphicsContextKind kind, RenderSurfaceType surfaceType)
 	{
@@ -135,8 +129,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		// The context owns the surface/present; a Skia-on-Metal context wraps the per-frame native texture (pushed
-		// via IMacOSNativeTextureSink), a WebGPU context ignores it and drives its own CAMetalLayer swapchain.
+		// A Skia-on-Metal context consumes the per-frame native texture; a WebGPU context ignores it and drives its own swapchain.
 		(_context as IMacOSNativeTextureSink)?.SetCurrentTexture(texture);
 		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(
 			null,
@@ -180,8 +173,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 		}
 
-		// The context owns the CPU framebuffer; the Skia backend wraps the acquired target as its surface. After the
-		// frame is rendered, the buffer is read back out of the acquired target and handed to the native SoftDraw.
+		// The rendered buffer is read back out of the acquired target and handed to the native SoftDraw.
 		ISoftwareRenderTarget? softwareTarget = null;
 		var nativeElementClipPath = ((CompositionTarget)RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(null, size =>
 		{

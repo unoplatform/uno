@@ -7,15 +7,10 @@ namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
 /// The result of decoding an image (or wrapping raw pixels) through <see cref="IImageEncoderDecoder"/>: one or more
-/// decoded <see cref="IImage"/> frames in display order, plus their per-frame durations. A still image has a
-/// single frame; an animated image (GIF/APNG/WebP) has several.
+/// decoded <see cref="IImage"/> frames in display order, plus their per-frame durations (a still image has one
+/// frame; an animated GIF/APNG/WebP has several). Since <see cref="IImage"/> is not itself disposable, this type
+/// owns the frames — disposing it releases any frame that is <see cref="IDisposable"/>.
 /// </summary>
-/// <remarks>
-/// <see cref="IImage"/> is intentionally not disposable (its lifetime is owned by whatever produced it), so this
-/// type is the owner: disposing it releases any frame that is itself <see cref="IDisposable"/> (e.g. a backend's
-/// native image handle). Managed, byte[]-backed frames need no release, so their dispose is a no-op. This is a
-/// plain data+ownership holder — there is no per-backend behavior worth an interface.
-/// </remarks>
 public sealed class ImageFrames : IDisposable
 {
 	private bool _disposed;

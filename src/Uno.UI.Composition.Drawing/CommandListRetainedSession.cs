@@ -9,10 +9,10 @@ using Windows.UI;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// The context threaded through every command on replay: the destination session, the destination's transform
-/// at the moment replay began (folded into recorded absolute <see cref="IDrawingSession.SetMatrix"/> calls so a
-/// recording made in one coordinate space composes into another — matching SkiaSharp's picture playback), and
-/// the save-depth offset that maps recording-relative save counts onto the destination's stack.
+/// The context threaded through every command on replay: the destination session, the destination's transform at
+/// the moment replay began (folded into recorded absolute <see cref="IDrawingSession.SetMatrix"/> calls so a
+/// recording composes into another coordinate space), and the save-depth offset mapping recording-relative save
+/// counts onto the destination's stack.
 /// </summary>
 internal sealed class ReplayContext
 {
@@ -25,9 +25,8 @@ internal sealed class ReplayContext
 internal sealed class CommandList : IRenderRecord
 {
 	private List<Action<ReplayContext>>? _commands;
-	// Geometry snapshots the recording owns (the composition disposes the originals right after the draw call,
-	// so — like a native display list that copies path data — the recording holds its own copies and frees them
-	// when disposed). Other resources (shaders/filters/images) are brush-owned and outlive the recording.
+	// Geometry snapshots the recording owns and frees on dispose — the composition disposes the originals right
+	// after the draw call. Other resources (shaders/filters/images) are brush-owned and outlive the recording.
 	private List<IGeometry>? _ownedGeometries;
 
 	internal CommandList(List<Action<ReplayContext>> commands, List<IGeometry>? ownedGeometries)
@@ -43,9 +42,9 @@ internal sealed class CommandList : IRenderRecord
 			return;
 		}
 
-		// Guard the destination so a recording's own save/restore can never escape past where it began, and so
-		// the transform/clip are restored afterwards. The recorded absolute SetMatrix values are relative to the
-		// destination transform captured here; relative ops (Concat/Translate/Scale/Save/clips/draws) replay as-is.
+		// Guard the destination so a recording's own save/restore can never escape past where it began, and so the
+		// transform/clip are restored afterwards. Recorded absolute SetMatrix values are relative to the destination
+		// transform captured here; relative ops replay as-is.
 		var guard = target.Save();
 		var ctx = new ReplayContext { Target = target, Base = target.TotalMatrix, DepthOffset = target.SaveCount - 1 };
 		foreach (var command in commands)
@@ -70,11 +69,9 @@ internal sealed class CommandList : IRenderRecord
 }
 
 /// <summary>
-/// Records the neutral drawing verbs into a replayable <see cref="CommandList"/>. Save-count and current
-/// transform are tracked so the getters behave like a real session, and recordings nest (a sub-recording's
-/// <see cref="CommandList.Replay"/> re-issues its verbs into this recorder). This is the backend-agnostic
-/// retained fallback the framework uses when a backend has no native retention (and the test seam
-/// <c>Visual.ForceFallbackRetainedRendering</c> forces even on a native backend).
+/// Records the neutral drawing verbs into a replayable <see cref="CommandList"/>. Save-count and current transform
+/// are tracked so the getters behave like a real session, and recordings nest. This is the backend-agnostic
+/// retained fallback the framework uses when a backend has no native retention.
 /// </summary>
 internal sealed class CommandListRecorder : ICommandRecorder
 {

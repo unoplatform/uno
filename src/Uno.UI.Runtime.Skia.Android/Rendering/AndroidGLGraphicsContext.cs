@@ -6,12 +6,9 @@ using Uno.WinUI.Runtime.Skia.Android;
 namespace Uno.UI.Runtime.Skia.Android;
 
 /// <summary>
-/// Neutral GLES <see cref="ISwapChain"/> for the Android Skia path. Uno does not own the GL device here —
-/// <c>GLSurfaceView</c> creates the EGL context, runs its own render thread, and swaps implicitly after
-/// <c>OnDrawFrame</c> returns. So this context WRAPS the ambient EGL context (already current on the GLSurfaceView
-/// render thread when acquired) and its <see cref="Present"/> is a no-op (GLSurfaceView calls <c>eglSwapBuffers</c>).
-/// This mirrors the browser WebGL context (also a framework-created context, framework-driven loop, implicit present)
-/// — see WasmGLGraphicsContext. The Skia backend builds its GRContext-GLES against the current context. Names no Skia type.
+/// Neutral GLES <see cref="ISwapChain"/> for the Android Skia path. <c>GLSurfaceView</c> owns the EGL context and
+/// swaps implicitly after <c>OnDrawFrame</c>, so this context wraps the ambient (already-current) EGL context and
+/// its <see cref="Present"/> is a no-op.
 /// </summary>
 internal sealed class AndroidGLGraphicsContext : ISwapChain, IGLDeviceContext
 {
@@ -22,8 +19,7 @@ internal sealed class AndroidGLGraphicsContext : ISwapChain, IGLDeviceContext
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
-		// The EGL context is current on the GLSurfaceView render thread; read the default framebuffer + its
-		// sample/stencil counts and hand a neutral target.
+		// Read the default framebuffer + its sample/stencil counts (EGL context is current here) into a neutral target.
 		var buffer = new int[3];
 		GLES20.GlGetIntegerv(GLES20.GlFramebufferBinding, buffer, 0);
 		GLES20.GlGetIntegerv(GLES20.GlStencilBits, buffer, 1);

@@ -20,9 +20,8 @@ namespace Uno.UI.Runtime.Skia.Android;
 
 /// <summary>
 /// EXPERIMENTAL WebGPU-backed rendering view for Android, mirroring <see cref="UnoSKVulkanView"/>: a SurfaceView
-/// whose ANativeWindow drives a wgpu swapchain through the neutral graphics pipeline
-/// (CreateAndroidSurface). Present is wgpuSurfacePresent — the same native-swapchain path validated on X11.
-/// Not runtime-validated on Linux CI (needs an Android device/emulator with a WebGPU-capable adapter).
+/// whose ANativeWindow drives a wgpu swapchain through the neutral graphics pipeline. Not runtime-validated on
+/// Linux CI (needs an Android device/emulator with a WebGPU-capable adapter).
 /// </summary>
 internal sealed partial class UnoSKWebGpuView : SurfaceView, ISurfaceHolderCallback, IUnoSkiaRenderView
 {
@@ -149,10 +148,8 @@ internal sealed partial class UnoSKWebGpuView : SurfaceView, ISurfaceHolderCallb
 		_width = rect.Width();
 		_height = rect.Height();
 
-		// Neutral pipeline: this SurfaceView owns the ANativeWindow, so it serves the WebGpu kind by creating the
-		// WebGpu swapchain context via the renderer-agnostic init helper (referenced directly — Android resolves the
-		// wgpu P/Invoke at runtime, so a Skia-only app that never negotiates WebGpu never loads the native). The host
-		// names no render backend.
+		// This SurfaceView owns the ANativeWindow, so it serves the WebGpu kind by creating the swapchain context.
+		// The wgpu P/Invoke resolves at runtime, so a Skia-only app that never negotiates WebGpu never loads it.
 		var nativeWindow = _nativeWindow;
 		global::Uno.UI.Composition.Drawing.GraphicsRegistry.ContextFactory =
 			kind => System.Threading.Tasks.Task.FromResult<global::Uno.UI.Composition.Drawing.ISwapChain?>(

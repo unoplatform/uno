@@ -16,8 +16,7 @@ internal partial class Win32WindowWrapper
 	/// <summary>EXPERIMENTAL opt-in (Win32RenderingBackend.WebGpu). Set before the window is created.</summary>
 	internal static bool PreferWebGpu;
 
-	// The negotiated graphics context (Skia GL/software or WebGPU) — the host names no backend and owns no
-	// SKSurface; it drives the neutral per-frame loop (AcquireRenderTarget → record/render → Present).
+	// The negotiated graphics context that drives the per-frame loop (AcquireRenderTarget → render → Present).
 	private ISwapChain _context = null!;
 
 	public event EventHandler<IGeometry>? RenderingNegativePathReevaluated; // not necessarily changed
@@ -30,10 +29,8 @@ internal partial class Win32WindowWrapper
 	void IXamlRootHost.InvalidateRender() => _renderThread?.SignalNewFrame();
 
 	/// <summary>
-	/// The Win32 window+context creator for the neutral pipeline. The HWND is kind-agnostic and already created,
-	/// so it is reused for every kind. OpenGL returns null when WGL init fails (→ negotiation falls through to
-	/// Software) or when the host is configured for software; WebGpu is built via the WebGPU project's init helper.
-	/// The host names no render backend.
+	/// Creates the context for a negotiated kind, reusing the already-created kind-agnostic HWND. A kind returns
+	/// null when unavailable or disabled, so negotiation falls through to the next (ultimately Software).
 	/// </summary>
 	private ISwapChain? CreateWindowAndContext(GraphicsContextKind kind)
 	{
@@ -51,8 +48,7 @@ internal partial class Win32WindowWrapper
 	}
 
 	/// <summary>
-	/// Vulkan is opt-in on Win32 (<c>UseVulkanOnWin32</c> / <see cref="Win32RenderingBackend.Vulkan"/>): decline when
-	/// off, and swallow a creation failure so negotiation falls through to the next kind (software).
+	/// Vulkan is opt-in on Win32: decline when off, and swallow a creation failure so negotiation falls through.
 	/// </summary>
 	private ISwapChain? TryCreateVulkan()
 	{
@@ -86,9 +82,8 @@ internal partial class Win32WindowWrapper
 	}
 
 	/// <summary>
-	/// Called on the render thread. Drives the frame through the shared loop (which owns sizing) and returns the
-	/// native-element clip path, or null when there is no frame to present yet. The render thread then presents
-	/// via <see cref="ISwapChain.Present"/>.
+	/// Called on the render thread. Drives the frame through the shared loop and returns the native-element clip
+	/// path, or null when there is no frame to present yet.
 	/// </summary>
 	private IGeometry? DrawFrame()
 	{

@@ -250,9 +250,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 
 	private unsafe void ApplyClipPath(IGeometry path)
 	{
-		// Neutral clip: intersect with the arrange rect and translate to local, all through the IGeometry seam
-		// (was a Skia path op + matrix). The host stays backend-agnostic — no Skia types. Geometry comes from the
-		// global GeometryFactory seam (backend-independent); the renderer consumes whatever neutral geometry it gets.
+		// Intersect with the arrange rect and translate to local, through the backend-neutral IGeometry seam.
 		using var rectGeometry = GeometryFactory.Current.CreateRectangleGeometry(_lastArrangeRect);
 		using var intersected = path.Combine(rectGeometry, GeometryCombineMode.Intersect);
 		using var localClip = intersected.Transform(Matrix3x2.CreateTranslation((float)-_lastArrangeRect.X, (float)-_lastArrangeRect.Y));
@@ -273,8 +271,8 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 			return;
 		}
 
-		// StreamFlattened subdivides curves to polylines, so the GDI+ path is line-only figures (a window region
-		// is polygonal regardless). Each contour is closed to form a fillable figure.
+		// StreamFlattened subdivides curves to polylines, so the GDI+ path is line-only closed figures
+		// (a window region is polygonal regardless).
 		var sink = new GdiPathSink(gpPath);
 		localClip.StreamFlattened(sink);
 		if (sink.Error is { } err)

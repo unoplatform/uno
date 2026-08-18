@@ -10,19 +10,15 @@ using Uno.UI.Composition.Drawing;
 namespace Uno.UI.Runtime.Skia.Android;
 
 /// <summary>
-/// Software (CPU-raster) <see cref="ISwapChain"/> for the Android Skia path, living inside the same
-/// <c>GLSurfaceView</c> as <see cref="AndroidGLGraphicsContext"/> — chosen when <c>UseOpenGLOnSkiaAndroid</c> is
-/// false. It mirrors feature/breakingchanges' "render CPU, present via GL": the Skia backend rasterizes the frame
-/// into a CPU framebuffer (a neutral <see cref="ISoftwareRenderTarget"/>, RGBA8888 — the backend honors
-/// <see cref="IRenderTarget.ColorFormat"/>, so no channel swizzle), then <see cref="Present"/> uploads that buffer
-/// as a texture and blits it over the default framebuffer with a trivial GLES2 quad; <c>GLSurfaceView</c> swaps
-/// implicitly once <c>OnDrawFrame</c> returns. Names no Skia type. The GL context is current on the GLSurfaceView
-/// render thread when acquired/presented, so all GL calls are valid here.
+/// Software (CPU-raster) <see cref="ISwapChain"/> for the Android Skia path, living in the same <c>GLSurfaceView</c>
+/// as <see cref="AndroidGLGraphicsContext"/> — chosen when <c>UseOpenGLOnSkiaAndroid</c> is false. The backend
+/// rasterizes into a CPU framebuffer (a neutral RGBA8888 <see cref="ISoftwareRenderTarget"/>); <see cref="Present"/>
+/// uploads it as a texture and blits it over the default framebuffer with a GLES2 quad. The GL context is current
+/// on the render thread when acquired/presented.
 /// </summary>
 internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 {
-	// Interleaved fullscreen triangle-strip: pos.xy (NDC) + tex.uv. V is flipped (CPU buffer is top-down; the top of
-	// the screen, pos.y=+1, samples the first buffer row, tex.v=0).
+	// Interleaved fullscreen triangle-strip: pos.xy (NDC) + tex.uv. V is flipped because the CPU buffer is top-down.
 	private static readonly float[] _quad =
 	{
 		-1f, -1f, 0f, 1f,

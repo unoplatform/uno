@@ -8,13 +8,9 @@ using Uno.WinUI.Runtime.Skia.X11.Vulkan;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 /// <summary>
-/// On-window Vulkan graphics context for X11, on the neutral (kind)=>context seam. It owns the Vulkan
-/// device/swapchain (<see cref="VulkanContext"/>) and exposes the device details as a neutral
-/// <see cref="IVulkanDeviceContext"/>; the Skia backend builds its own <c>GRContext</c>-Vulkan over the render
-/// image handed as an <see cref="IVulkanRenderTarget"/>. The device lock is held for the whole frame (acquire →
-/// backend render → present); <see cref="Present"/> blits the render image to the swapchain and releases the lock.
-/// Names no Skia type. Chosen by negotiation for <see cref="GraphicsContextKind.Vulkan"/> (X11 gates it on
-/// <c>UseVulkanOnX11</c>); the ctor throws when Vulkan is unavailable → negotiation falls through.
+/// On-window Vulkan graphics context for X11: owns the Vulkan device/swapchain (<see cref="VulkanContext"/>) and
+/// exposes it as a neutral <see cref="IVulkanDeviceContext"/>. The device lock is held for the whole frame;
+/// <see cref="Present"/> blits the render image to the swapchain and releases it.
 /// </summary>
 internal sealed class X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext
 {

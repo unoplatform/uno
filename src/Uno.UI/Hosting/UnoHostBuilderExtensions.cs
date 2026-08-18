@@ -8,12 +8,9 @@ namespace Uno.UI.Hosting;
 public static class UnoPlatformHostBuilderExtensions
 {
 	/// <summary>
-	/// Registers the app's graphics backend. A backend is a single unit that owns both its renderer and its drawing
-	/// factory: the provider announces the context kinds it supports (<see cref="IGraphicsProvider.PreferredContexts"/>),
-	/// the framework creates a matching context internally (synchronously or asynchronously) and hands it over, and the
-	/// provider mints the (drawing factory, renderer) pair from it. A backend that needs a geometry engine (e.g. WebGPU,
-	/// which rasterizes on the GPU but does not build paths) takes it via its own constructor — there is no separate
-	/// app-side drawing-factory registration and no context factory to wire.
+	/// Registers the app's graphics backend — one unit owning both its renderer and its drawing factory, minted from
+	/// a context the framework creates for the provider's <see cref="IGraphicsProvider.PreferredContexts"/>. A backend
+	/// needing a geometry engine (e.g. WebGPU) takes it via its own constructor.
 	/// </summary>
 	public static IUnoPlatformHostBuilder GraphicsBackend(this IUnoPlatformHostBuilder builder, IGraphicsProvider renderBackend)
 	{
@@ -46,8 +43,7 @@ public static class UnoPlatformHostBuilderExtensions
 
 	/// <summary>
 	/// Registers the geometry engine — a render-independent seam (the path + primitive builders that mint
-	/// <see cref="IGeometry"/>). Independent of the graphics backend, like <see cref="FontProvider"/> /
-	/// <see cref="ImageEncoderDecoder"/>; the render backend consumes whatever neutral geometry it produces.
+	/// <see cref="IGeometry"/>). The render backend consumes whatever neutral geometry it produces.
 	/// </summary>
 	public static IUnoPlatformHostBuilder GeometryFactory(this IUnoPlatformHostBuilder builder, IGeometryFactory factory)
 	{
@@ -58,9 +54,7 @@ public static class UnoPlatformHostBuilderExtensions
 
 	/// <summary>
 	/// Registers the SVG renderer — a render-independent content seam (SVG markup → a retained
-	/// <see cref="Uno.UI.Composition.Drawing.ISvgDocument"/> that replays through the neutral drawing session).
-	/// Independent of the graphics backend, like <see cref="FontProvider"/> / <see cref="ImageEncoderDecoder"/>; the
-	/// framework defaults to its managed engine when none is registered.
+	/// <see cref="Uno.UI.Composition.Drawing.ISvgDocument"/>). Defaults to the managed engine when none is registered.
 	/// </summary>
 	public static IUnoPlatformHostBuilder SvgRenderer(this IUnoPlatformHostBuilder builder, Uno.UI.Composition.Drawing.ISvgRenderer renderer)
 	{
@@ -71,9 +65,7 @@ public static class UnoPlatformHostBuilderExtensions
 
 	/// <summary>
 	/// Registers the Lottie renderer — a render-independent content seam (Bodymovin JSON → a seekable
-	/// <see cref="Uno.UI.Composition.Drawing.ILottieAnimation"/> that replays through the neutral drawing session).
-	/// Independent of the graphics backend, like <see cref="SvgRenderer"/>; when none is registered the Skottie add-in
-	/// (if referenced) is resolved by default, and Lottie playback is simply unavailable otherwise.
+	/// <see cref="Uno.UI.Composition.Drawing.ILottieAnimation"/>). Defaults to the Skottie add-in when referenced.
 	/// </summary>
 	public static IUnoPlatformHostBuilder LottieRenderer(this IUnoPlatformHostBuilder builder, Uno.UI.Composition.Drawing.ILottieRenderer renderer)
 	{

@@ -9,9 +9,8 @@ namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
 /// Bridges a backend-neutral <see cref="IGeometry"/> to the <see cref="SKPath"/> the Skia canvas needs. A native
-/// <see cref="SkiaGeometrySource2D"/> is passed through (borrowed, never disposed); any other (foreign) geometry is
-/// rebuilt into a transient SKPath from its neutral <see cref="IGeometry.StreamSegments"/> readback — so the Skia
-/// backend knows only its own path type and the neutral contract, never a foreign concrete geometry type.
+/// <see cref="SkiaGeometrySource2D"/> is passed through (borrowed); any foreign geometry is rebuilt into a transient
+/// SKPath from its neutral <see cref="IGeometry.StreamSegments"/> readback, so no foreign concrete type crosses in.
 /// </summary>
 internal static class SkiaGeometryInterop
 {
@@ -22,10 +21,8 @@ internal static class SkiaGeometryInterop
 			: new SkiaPathLease(BuildForeign(geometry), owned: true);
 
 	/// <summary>
-	/// Returns an <see cref="SKPath"/> for <paramref name="geometry"/> suitable for retaining beyond the current
-	/// scope (e.g. a native-element clip handed to a windowing API): a native geometry's path is returned directly
-	/// (borrowed, do not dispose), a foreign geometry is rebuilt into a fresh path. Use <see cref="Lease"/> instead
-	/// when the path is only needed within the current scope.
+	/// Like <see cref="Lease"/> but returns an <see cref="SKPath"/> safe to retain beyond the current scope (e.g. a
+	/// native-element clip handed to a windowing API): the native path is borrowed, a foreign one rebuilt fresh.
 	/// </summary>
 	public static SKPath ToSKPath(IGeometry geometry)
 		=> geometry is SkiaGeometrySource2D skia ? skia.Geometry : BuildForeign(geometry);

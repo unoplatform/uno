@@ -12,8 +12,7 @@ namespace Uno.UI.Composition.Drawing;
 /// <summary>
 /// The default <see cref="IDrawingFactory"/>, backed by SkiaSharp. Installed as <see cref="DrawingFactory.Current"/>
 /// only through negotiation — it is the factory the Skia provider (<see cref="SkiaGraphicsProvider"/>) carries, so
-/// when Skia wins negotiation the registry installs this. No module-initializer self-registration: the graphics
-/// backend is registered up front and the factory is set once, never as a load-time fallback later overwritten.
+/// the registry installs it when Skia wins negotiation.
 /// </summary>
 internal sealed class SkiaDrawingFactory :
 	IDrawingFactory<IGLRenderTarget>,
@@ -39,9 +38,8 @@ internal sealed class SkiaDrawingFactory :
 	private RetainedLayer? _glRetainedLayer;
 	private RetainedLayer? _metalRetainedLayer;
 
-	// Vulkan state (built lazily on the first Vulkan present from the host's device context). The render image is
-	// stable across frames (recreated on resize), so the render target + surface are cached and rebuilt only when
-	// the image handle/size changes; the GRContext is cached.
+	// Vulkan state (built lazily on the first Vulkan present). The render image is stable across frames, so the
+	// render target + surface are cached and rebuilt only when the image handle/size changes.
 	private GRContext? _vulkanContext;
 	private GRBackendRenderTarget? _vulkanRenderTarget;
 	private SKSurface? _vulkanSurface;
@@ -49,9 +47,8 @@ internal sealed class SkiaDrawingFactory :
 	private int _vulkanWidth;
 	private int _vulkanHeight;
 
-	// Device face of the bound context (set by the provider from the typed context; one is non-null per kind).
-	// The device details (GL loader/flavor, Metal device/queue, Vulkan device handles) come from here; the
-	// per-frame surface comes from the render target handed to BeginPresent.
+	// Device face of the bound context (one is non-null per kind): the device details come from here, the
+	// per-frame surface from the render target handed to BeginPresent.
 	private readonly IGLDeviceContext? _glDevice;
 	private readonly IMetalDeviceContext? _metalDevice;
 	private readonly IVulkanDeviceContext? _vulkanDevice;
@@ -66,9 +63,7 @@ internal sealed class SkiaDrawingFactory :
 	public ICommandRecorder CreateRecording() => SkiaDrawingSession.StartRecording(this);
 
 
-	// Typed present per kind the Skia backend serves — the target arrives already narrowed, so there is no
-	// cast/switch here. CPU framebuffer → SKSurface over pixels; GL framebuffer → GRContext-GL; Metal texture →
-	// GRContext-Metal.
+	// Typed present per kind: the target arrives already narrowed, so there is no cast/switch here.
 	public IPresentSession BeginPresent(IGLRenderTarget target) => PresentForGL(target);
 
 	public IPresentSession BeginPresent(ISoftwareRenderTarget target) => SkiaPresentSession.ForSoftware(target, this);
@@ -77,10 +72,9 @@ internal sealed class SkiaDrawingFactory :
 
 	public IPresentSession BeginPresent(IVulkanRenderTarget target) => PresentForVulkan(target);
 
-	// The host owns the Vulkan device/swapchain (IVulkanDeviceContext) and hands the per-frame render VkImage
-	// (IVulkanRenderTarget). Build/reuse a GRContext-Vulkan from the device context and wrap the image as an
-	// SKSurface (cached, rebuilt on image/size change); the host's Present() blits the rendered image to the
-	// swapchain. ResetContext each frame because that external blit/present mutates Vulkan state Skia can't track.
+	// Build/reuse a GRContext-Vulkan from the host's device context and wrap the per-frame render VkImage as an
+	// SKSurface (cached, rebuilt on image/size change). ResetContext each frame because the host's external
+	// blit/present mutates Vulkan state Skia can't track.
 	private IPresentSession PresentForVulkan(IVulkanRenderTarget vk)
 	{
 		_vulkanContext ??= GRContext.CreateVulkan(new GRVkBackendContext
@@ -129,9 +123,8 @@ internal sealed class SkiaDrawingFactory :
 		return SkiaPresentSession.ForCachedGpuSurface(_vulkanSurface!, _vulkanContext, this);
 	}
 
-	// The host hands the per-frame MTLTexture (+ its device/queue); build/reuse a GRContext-Metal and wrap the
-	// texture as an SKSurface to compose into. Present flushes the GRContext so the render lands in the texture
-	// before the host commits/presents the drawable. Recreated each frame (the texture differs per call).
+	// Build/reuse a GRContext-Metal and wrap the host's per-frame MTLTexture as an SKSurface. Present flushes the
+	// GRContext so the render lands in the texture before the host commits the drawable. Recreated each frame.
 	private IPresentSession PresentForMetal(IMetalRenderTarget metal)
 	{
 		_metalContext ??= GRContext.CreateMetal(new GRMtlBackendContext { DeviceHandle = _metalDevice!.Device, QueueHandle = _metalDevice!.Queue })
@@ -143,8 +136,8 @@ internal sealed class SkiaDrawingFactory :
 		// The render target descriptor is consumed by SKSurface.Create; the surface is disposed on present.
 		target.Dispose();
 
-		// The drawable is fresh each frame, so when the host opts into retention (partial repaint) the frame is
-		// composed into a persistent layer and blitted onto this frame's drawable; otherwise render straight into it.
+		// Under retention (partial repaint) the frame is composed into a persistent layer and blitted onto this
+		// frame's drawable; otherwise render straight into it.
 		if (metal.PreservesContents)
 		{
 			(_metalRetainedLayer ??= new RetainedLayer()).EnsureSurface(_metalContext, metal.Width, metal.Height, colorType);
@@ -154,15 +147,11 @@ internal sealed class SkiaDrawingFactory :
 		return SkiaPresentSession.ForGpuTexture(surface, _metalContext, this);
 	}
 
-	// The host has made its GL context current; build/reuse a GRContext-GL and an SKSurface over the window
-	// framebuffer, then compose into its (borrowed, cached-across-frames) canvas. The context swaps on present.
+	// Build/reuse a GRContext-GL and an SKSurface over the host's (already-current) window framebuffer.
 	private IPresentSession PresentForGL(IGLRenderTarget gl)
 	{
-		// GLES/WebGL: assemble the interface from the host's neutral proc loader (the seam mandates one, so this
-		// path is backend-agnostic). Desktop GL: SkiaSharp's proc-assembled interface (CreateOpenGl/Create(getProc))
-		// segfaults on Mesa/llvmpipe — validated with three loader variants — whereas its compiled-in native
-		// interface (Create()) renders correctly, so desktop GL uses that. The loader still rides the seam for any
-		// non-Skia backend; this is purely SkiaSharp's own desktop-GL assembly being unstable.
+		// GLES/WebGL assemble the interface from the host's proc loader. Desktop GL uses SkiaSharp's compiled-in
+		// native interface (Create()) instead: the proc-assembled variant segfaults on Mesa/llvmpipe.
 		var loader = _glDevice!.GetProcAddress;
 		_glContext ??= GRContext.CreateGl(
 				(_glDevice!.Flavor switch
@@ -187,9 +176,8 @@ internal sealed class SkiaDrawingFactory :
 			_glSurface = SKSurface.Create(_glContext, _glRenderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888);
 		}
 
-		// SwapBuffers leaves the back buffer undefined, so when the host opts into retention (partial repaint) the
-		// frame is composed into a persistent layer and blitted onto the swapchain each present; otherwise render
-		// straight into the swapchain surface (full repaint, no blit).
+		// SwapBuffers leaves the back buffer undefined, so under retention (partial repaint) the frame is composed
+		// into a persistent layer and blitted onto the swapchain each present; otherwise render straight into it.
 		if (gl.PreservesContents)
 		{
 			(_glRetainedLayer ??= new RetainedLayer()).EnsureSurface(_glContext!, gl.Width, gl.Height, SKColorType.Rgba8888);
@@ -277,8 +265,7 @@ internal sealed class SkiaDrawingFactory :
 		GradientTileMode tileMode,
 		Matrix3x2 localMatrix)
 	{
-		// SkiaSharp radial gradients take a single radius, so squash the larger axis onto the smaller with a
-		// scale-down matrix and use one radius.
+		// SkiaSharp radial gradients take a single radius, so squash the larger axis onto the smaller.
 		ComputeRadiusAndScale(center, radiusX, radiusY, out var radius, out var squash);
 
 		if (radius <= 0)
@@ -299,9 +286,8 @@ internal sealed class SkiaDrawingFactory :
 				new SKPoint(center.X, center.Y), radius, ToSKColors(colors), colorPositions, skTile, skTotal));
 		}
 
-		// Offset origin: SkiaSharp has no focal radial gradient, so approximate with a two-point conical
-		// gradient (reversed stops) composed over the last color, which fills the region the conical leaves
-		// uncovered.
+		// Offset origin: SkiaSharp has no focal radial gradient, so approximate with a two-point conical gradient
+		// (reversed stops) composed over the last color, which fills the region the conical leaves uncovered.
 		var reversedColors = new SKColor[colors.Length];
 		for (var i = 0; i < colors.Length; i++)
 		{
@@ -327,8 +313,7 @@ internal sealed class SkiaDrawingFactory :
 
 	private static Color LastColor(Color[] colors) => colors.Length > 0 ? colors[^1] : default;   // default(Color) == transparent
 
-	// SkiaSharp doesn't allow explicit RadiusX/RadiusY on a radial gradient, so we build a scale-down
-	// transform that squashes the larger axis onto the smaller and use a single radius.
+	// SkiaSharp allows only a single radius, so build a scale-down transform squashing the larger axis onto the smaller.
 	private static void ComputeRadiusAndScale(Vector2 center, float radiusX, float radiusY, out float radius, out Matrix3x2 matrix)
 	{
 		matrix = Matrix3x2.Identity;

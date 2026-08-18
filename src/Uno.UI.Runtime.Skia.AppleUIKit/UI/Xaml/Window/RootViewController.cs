@@ -68,10 +68,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		_textInputLayer.UserInteractionEnabled = false;
 		view.AddSubview(_textInputLayer);
 
-		// Neutral graphics pipeline: the host names no backend. It registers a per-kind window(view)+context factory
-		// and negotiates; the app-registered backend (Skia on Metal, or WebGPU on the CAMetalLayer) owns the kind
-		// order. The factory creates the render VIEW appropriate to the kind (an MTKView for Metal, a
-		// CAMetalLayer UIView for WebGpu) — the platform "window" here — and the matching context. No env fork.
+		// Neutral graphics pipeline: register a per-kind view+context factory and let the app-registered backend negotiate the kind.
 		GraphicsRegistry.ContextFactory = kind => System.Threading.Tasks.Task.FromResult(CreateRenderViewAndContext(kind));
 		var init = GraphicsRegistry.Initialize();
 		_context = init.Context;
@@ -120,17 +117,14 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	public void SetXamlRoot(XamlRoot xamlRoot) => _xamlRoot = xamlRoot;
 
-	// The Skia-on-Metal view (UnoSKMetalView) supplies the per-frame drawable texture; push it into the negotiated
-	// Metal context (an IAppleNativeTextureSink), then render + present through the neutral loop. The MTKView commits
-	// the drawable itself, so the context's Present is a no-op.
+	// Push the Skia-on-Metal view's per-frame drawable texture into the negotiated context, then render.
 	internal void OnMetalFrame(nint texture)
 	{
 		(_context as IAppleNativeTextureSink)?.SetCurrentTexture(texture);
 		OnFrameRequested();
 	}
 
-	// The neutral per-frame loop over the negotiated context (Skia-on-Metal or WebGPU-on-CAMetalLayer). The host
-	// names no backend: it acquires the context's target, records/renders, and presents.
+	// Neutral per-frame loop: acquire the negotiated context's target, render, and present.
 	internal void OnFrameRequested()
 	{
 		if (_context is null)

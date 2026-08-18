@@ -8,8 +8,7 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 /// <summary>
 /// A context that consumes the per-frame <c>MTLTexture</c> the native draw callback supplies (Skia-on-Metal),
-/// as opposed to a swapchain-owning context (WebGPU on the <c>CAMetalLayer</c>) that sources its own drawable.
-/// The host uses this seam to decide whether the native draw provides a texture or is switched to tick-only.
+/// as opposed to a swapchain-owning context (WebGPU) that sources its own drawable.
 /// </summary>
 internal interface IMacOSNativeTextureSink
 {
@@ -18,10 +17,8 @@ internal interface IMacOSNativeTextureSink
 }
 
 /// <summary>
-/// Neutral Skia-on-Metal <see cref="ISwapChain"/> for macOS — holds the device/queue and wraps the
-/// per-frame native <c>MTLTexture</c> as an <see cref="IMetalRenderTarget"/>; the Skia backend builds its
-/// GRContext-Metal + surface and flushes. The native MTKView owns the drawable and commits, so
-/// <see cref="Present"/> is a no-op. Names no Skia type.
+/// Neutral Skia-on-Metal <see cref="ISwapChain"/> for macOS: wraps the per-frame native <c>MTLTexture</c> as an
+/// <see cref="IMetalRenderTarget"/>. The native MTKView owns the drawable and commits, so <see cref="Present"/> is a no-op.
 /// </summary>
 internal sealed class MacOSMetalGraphicsContext : ISwapChain, IMacOSNativeTextureSink, IMetalDeviceContext
 {
@@ -56,18 +53,15 @@ internal sealed class MacOSMetalGraphicsContext : ISwapChain, IMacOSNativeTextur
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
-		// The Skia backend composes into a persistent retained layer and blits it onto this frame's (fresh) drawable
-		// each present, so the previous frame survives — enabling damage-region partial repaint.
+		// Backend keeps a persistent retained layer, so the previous frame survives for damage-region partial repaint.
 		public bool PreservesContents => true;
 		public void Dispose() { }
 	}
 }
 
 /// <summary>
-/// Neutral software (CPU-framebuffer) <see cref="ISwapChain"/> for macOS — owns a BGRA/RGBA buffer and
-/// hands it to the backend as an <see cref="ISoftwareRenderTarget"/>; the Skia backend wraps it as its surface.
-/// The native <c>SoftDraw</c> callback reads the rendered buffer back out of the acquired target, so
-/// <see cref="Present"/> is a no-op.
+/// Neutral software (CPU-framebuffer) <see cref="ISwapChain"/> for macOS: owns a buffer and hands it to the backend as an
+/// <see cref="ISoftwareRenderTarget"/>. The native <c>SoftDraw</c> callback reads it back, so <see cref="Present"/> is a no-op.
 /// </summary>
 internal sealed class MacOSSoftwareGraphicsContext : ISwapChain
 {

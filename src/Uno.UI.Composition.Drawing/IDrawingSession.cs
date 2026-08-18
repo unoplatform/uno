@@ -8,34 +8,25 @@ using Windows.UI;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// Immediate-mode, stateful drawing surface — the canvas-verb half of the pluggable-backend abstraction
-/// (Track 1). It mirrors the drawing surface the composition layer draws against today. Each verb takes
-/// exactly the paint inputs it honors (rather than one combined paint struct), and geometry is passed as
-/// an <see cref="IGeometry"/> handle.
+/// Immediate-mode, stateful drawing surface — the canvas-verb half of the pluggable-backend abstraction.
+/// Each verb takes exactly the paint inputs it honors, and geometry is passed as an <see cref="IGeometry"/> handle.
+/// Retained-mode concerns (display-list recording/replay) are intentionally a backend implementation detail, not on this interface.
 /// </summary>
-/// <remarks>
-/// Retained-mode concerns (display-list recording/replay, e.g. SkiaSharp's SKPicture) are intentionally
-/// NOT on this interface — they are an implementation detail of the backend behind it.
-/// </remarks>
 public interface IDrawingSession
 {
 	/// <summary>The current total transform, from the drawing origin to the current coordinate space.</summary>
 	Matrix4x4 TotalMatrix { get; }
 
 	/// <summary>
-	/// The backend's live, directly-drawable native surface for this session — e.g. a SkiaSharp <c>SKCanvas</c> —
-	/// or <c>null</c> when the backend records neutral commands and exposes none (e.g. WebGPU). Type-erased so the
-	/// seam names no graphics library; a consumer type-checks it against its graphics API's surface type before
-	/// drawing straight into the frame, and does nothing when it is <c>null</c> or a different type.
+	/// The backend's live, directly-drawable native surface (e.g. a SkiaSharp <c>SKCanvas</c>), or <c>null</c> when
+	/// the backend records neutral commands and exposes none. Type-erased; a consumer type-checks it before drawing.
 	/// </summary>
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	object? NativeSurface { get; }
 
 	/// <summary>
-	/// The backend factory that owns this session. Mint textures/resources native to THIS session's backend through
-	/// it — a texture from this factory is one a subsequent <see cref="DrawImage(ITexture,float,float,ImageSampling,float,bool)"/>
-	/// on this session will accept (a foreign texture is not). Prefer this over a process-global factory so an add-in
-	/// targets the session's actual backend.
+	/// The backend factory that owns this session. Mint textures/resources through it so they are native to THIS
+	/// session's backend (a foreign texture is not accepted); prefer it over a process-global factory.
 	/// </summary>
 	IDrawingFactory Factory { get; }
 
@@ -86,16 +77,14 @@ public interface IDrawingSession
 	void DrawRect(in Rect rect, IShader shader, bool antialias = false);
 
 	/// <summary>
-	/// Fills a rounded rectangle with a solid <paramref name="color"/>. <paramref name="radii"/> are the per-corner
-	/// radii in the order (TopLeft, TopRight, BottomRight, BottomLeft). A backend may render this analytically
-	/// (a single SDF quad) rather than tessellating a path — the common WinUI border/background shape.
+	/// Fills a rounded rectangle with a solid <paramref name="color"/>; <paramref name="radii"/> are the per-corner
+	/// radii in (TopLeft, TopRight, BottomRight, BottomLeft) order.
 	/// </summary>
 	void DrawRoundedRect(in Rect rect, Vector4 radii, Color color, bool antialias = false);
 
 	/// <summary>
-	/// Fills the ANNULUS between an outer and an inner rounded rectangle with a solid <paramref name="color"/> —
-	/// a rounded border/edge in one shape. Per-corner radii in (TopLeft, TopRight, BottomRight, BottomLeft) order.
-	/// A backend may render this analytically (one SDF quad, outer minus inner) rather than tessellating a ring path.
+	/// Fills the annulus between an outer and inner rounded rectangle with a solid <paramref name="color"/> — a
+	/// rounded border in one shape. Per-corner radii in (TopLeft, TopRight, BottomRight, BottomLeft) order.
 	/// </summary>
 	void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, Color color, bool antialias = false);
 
@@ -103,10 +92,9 @@ public interface IDrawingSession
 	void DrawPath(IGeometry geometry, Color color, bool antialias = false);
 
 	/// <summary>
-	/// Draws <paramref name="silhouette"/> as a soft shadow: its coverage is blurred by (<paramref name="sigmaX"/>,
-	/// <paramref name="sigmaY"/>) in device pixels and filled with <paramref name="color"/>. When
-	/// <paramref name="additive"/> is set, contributions are summed (for overlapping shadow regions). The
-	/// backend chooses the blur technique.
+	/// Draws <paramref name="silhouette"/> as a soft shadow: coverage blurred by (<paramref name="sigmaX"/>,
+	/// <paramref name="sigmaY"/>) device pixels and filled with <paramref name="color"/>; <paramref name="additive"/>
+	/// sums overlapping contributions.
 	/// </summary>
 	void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive, bool antialias = false);
 
@@ -129,9 +117,8 @@ public interface IDrawingSession
 	void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false);
 
 	/// <summary>
-	/// Applies <paramref name="filter"/> to the current surface content as an effect-brush backdrop:
-	/// a transparent offscreen layer whose backdrop is the filtered content, optionally modulated by
-	/// <paramref name="opacity"/>. Mirrors the WinUI effect-brush paint semantics.
+	/// Applies <paramref name="filter"/> to the current surface content as an effect-brush backdrop, modulated
+	/// by <paramref name="opacity"/>. Mirrors WinUI effect-brush paint semantics.
 	/// </summary>
 	void DrawEffectBackdrop(IEffectFilter filter, float opacity);
 }

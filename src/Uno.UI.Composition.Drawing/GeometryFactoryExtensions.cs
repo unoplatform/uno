@@ -11,10 +11,9 @@ namespace Uno.UI.Composition.Drawing;
 /// </summary>
 internal static class GeometryFactoryExtensions
 {
-	// Rectangle geometry is by far the most common shape (per-visual/per-frame clips and bounds). Rather than a
-	// factory method, reuse a cached primitive builder: Build() resets it, so a single instance serves every call.
-	// Thread-static because rendering can happen off the UI thread (offscreen passes); keyed on the factory so a
-	// backend swap (re-negotiation) rebuilds the cached builder.
+	// Rectangle geometry is the most common shape (per-visual/per-frame clips and bounds), so reuse a cached builder
+	// (Build() resets it). Thread-static because rendering can happen off the UI thread; keyed on the factory so a
+	// backend swap rebuilds the cached builder.
 	[ThreadStatic]
 	private static IGeometryFactory? _rectangleBuilderFactory;
 	[ThreadStatic]

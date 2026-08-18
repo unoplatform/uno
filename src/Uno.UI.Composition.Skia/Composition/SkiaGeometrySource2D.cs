@@ -169,8 +169,7 @@ namespace Microsoft.UI.Composition
 		}
 
 		// Curve-flattening tolerance (path units ≈ device px at typical scales). Matches SkiaSharp's default curve
-		// flatness so the stencil-fan tessellation density equals the reference's — a FIXED step count over-
-		// tessellated small glyph curves ~2x, doubling the stencil-fan vertex count on text-heavy UI.
+		// flatness so the stencil-fan tessellation density equals the reference's.
 		private const float FlattenTolerance = 0.1f;
 
 		// Adaptive segment count: scales with the curve's control-point deviation from its chord (the flattening

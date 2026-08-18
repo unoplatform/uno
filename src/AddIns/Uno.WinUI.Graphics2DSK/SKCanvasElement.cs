@@ -14,19 +14,16 @@ namespace Uno.WinUI.Graphics2DSK;
 /// A <see cref="FrameworkElement"/> that exposes the ability to draw directly using SkiaSharp.
 /// </summary>
 /// <remarks>
-/// When the active backend renders with SkiaSharp, the drawing goes ZERO-COPY straight into the window's frame
-/// <see cref="SKCanvas"/>. On any other backend (e.g. WebGPU) it falls back to a self-contained Skia-on-GL island
-/// (its own <see cref="SkiaSharp.GRContext"/> + framebuffer, read back and composited) so it still works, at the
-/// cost of a copy. This is only available on skia-based targets.
+/// On a SkiaSharp backend the drawing goes zero-copy straight into the window's frame <see cref="SKCanvas"/>.
+/// On any other backend (e.g. WebGPU) it falls back to a self-contained Skia-on-GL island (read back and
+/// composited, at the cost of a copy). Skia-based targets only.
 /// </remarks>
 public abstract partial class SKCanvasElement : Grid
 {
 #if CROSSRUNTIME
 	private SKCanvasVisual? _canvasVisual;
-	// Typed as the core FrameworkElement (not SkiaGLCanvasElement) so merely holding the field never forces the CLR
-	// to type-load SkiaGLCanvasElement — and thus its base GLCanvasElement's assembly (the optional Graphics3DGL
-	// add-in). Every reference to the concrete island type is isolated in a NoInlining method guarded by a presence
-	// check, so an app that doesn't reference Graphics3DGL neither pulls nor crashes on it.
+	// Typed as FrameworkElement (not SkiaGLCanvasElement) so holding the field never type-loads the optional
+	// Graphics3DGL add-in. Concrete-island references are isolated in NoInlining methods guarded by a presence check.
 	private FrameworkElement? _island;
 	private bool _islandRequested;
 
@@ -47,9 +44,8 @@ public abstract partial class SKCanvasElement : Grid
 #if CROSSRUNTIME
 	public static bool IsSupportedOnCurrentPlatform() => true;
 
-	// Called from the paint when the active backend exposes no SKCanvas (NativeSurface is null): bring up the
-	// GL island once, off the paint, so it composites the drawing on the next frame. The island (SkiaGLCanvasElement)
-	// derives from the optional Graphics3DGL add-in's GLCanvasElement, so we only touch it when that add-in is present.
+	// Called from the paint when the active backend exposes no SKCanvas: bring up the GL island once, off the paint,
+	// so it composites on the next frame. Only touched when the optional Graphics3DGL add-in is present.
 	internal void EnsureIslandFallback()
 	{
 		if (_islandRequested)
@@ -60,9 +56,8 @@ public abstract partial class SKCanvasElement : Grid
 
 		if (!IsGLCanvasElementAvailable())
 		{
-			// Graphics3DGL isn't referenced — no GL fallback (SKCanvasElement still works on a Skia backend, which
-			// exposes an SKCanvas and never reaches here). Don't touch SkiaGLCanvasElement, so its base assembly is
-			// never type-loaded. Log so a blank SKCanvasElement on a non-Skia backend (e.g. WebGPU) is diagnosable.
+			// Graphics3DGL isn't referenced — no GL fallback, and don't touch SkiaGLCanvasElement (keeps its base
+			// assembly unloaded). Log so a blank element on a non-Skia backend is diagnosable.
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
 				this.Log().LogWarning($"{nameof(SKCanvasElement)} cannot draw on the active backend (it exposes no SKCanvas) and the Uno.WinUI.Graphics3DGL add-in — needed for the GL fallback — is not referenced; this element will not render. Reference Uno.WinUI.Graphics3DGL, or use a Skia backend.");

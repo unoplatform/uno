@@ -135,10 +135,7 @@ namespace Microsoft.UI.Composition
 		}
 
 		/// <summary>
-		/// This is an alternative to the built-in SKBitmap.FromImage.
-		/// The problem with SKBitmap.FromImage is that it ignores the color type of the input image, and
-		/// uses SKImageInfo.PlatformColorType.
-		/// The code is the same as SKBitmap.FromImage except for respecting color type.
+		/// Like SKBitmap.FromImage, but respects the image's color type instead of forcing SKImageInfo.PlatformColorType.
 		/// See https://github.com/mono/SkiaSharp/blob/7d7766532a4666f56944e65bee1c2158c320f09c/binding/Binding/SKBitmap.cs#L830-L843
 		/// </summary>
 		public static SKBitmap ToSKBitmap(this SKImage image)
@@ -160,9 +157,8 @@ namespace Microsoft.UI.Composition
 		}
 
 		/// <summary>
-		/// Builds a fresh (immutable) <see cref="SKPath"/> containing <paramref name="rect"/>. SkiaSharp 4 routes
-		/// path construction through <see cref="SKPathBuilder"/>; callers Transform/Op the result into a reusable
-		/// working path.
+		/// Builds a fresh (immutable) <see cref="SKPath"/> containing <paramref name="rect"/> via
+		/// <see cref="SKPathBuilder"/>; callers Transform/Op the result into a reusable working path.
 		/// </summary>
 		internal static SKPath CreateRectPath(SKRect rect)
 		{

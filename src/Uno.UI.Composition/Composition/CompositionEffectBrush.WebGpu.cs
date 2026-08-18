@@ -8,14 +8,11 @@ using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition;
 
-// EXPERIMENTAL WebGPU path. The Skia effect path builds an SKImageFilter tree (Skia does the filtering),
-// which the WebGPU backend can't use. Instead we walk the same IGraphicsEffect graph into a compact
-// "recipe": a single source (image/backdrop/color) + a composed 4×5 color matrix. This covers the common
-// single-source per-pixel color effects (grayscale, invert, hue, sepia, saturation, temperature, tint,
-// opacity, exposure, luminance-to-alpha, linear-transfer, color-matrix); the WebGPU backend applies the
-// matrix (source painted inside a colour-matrix layer). Blur is passed through (not applied), and
-// multi-source / lighting / transform / border / mask / noise / nonlinear (contrast, gamma) effects are
-// unsupported (recipe fails).
+// EXPERIMENTAL WebGPU path. The WebGPU backend can't use Skia's SKImageFilter tree, so walk the IGraphicsEffect
+// graph into a compact "recipe": a single source (image/backdrop/color) + a composed 4×5 color matrix the backend
+// applies. Covers single-source per-pixel color effects (grayscale, invert, hue, sepia, opacity, color-matrix, …);
+// blur passes through unapplied, and multi-source / lighting / transform / border / mask / noise / nonlinear
+// effects are unsupported (recipe fails).
 public partial class CompositionEffectBrush
 {
 	internal bool TryGetWebGpuEffectRecipe(out CompositionBrush? source, out bool isBackdrop, out Color? solidColor, out float[] colorMatrix)

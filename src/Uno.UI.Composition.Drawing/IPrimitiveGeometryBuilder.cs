@@ -7,9 +7,8 @@ namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
 /// Whole-primitive builder: each <c>Add*</c> appends an independent, self-closed sub-contour, terminated by
-/// <see cref="IGeometryBuilder.Build"/>. Sub-contours share a single <see cref="IGeometryBuilder.FillRule"/>
-/// (so overlaps resolve as even-odd/non-zero across the whole set). For point-by-point construction use
-/// <see cref="IPathBuilder"/> instead.
+/// <see cref="IGeometryBuilder.Build"/>. Sub-contours share a single <see cref="IGeometryBuilder.FillRule"/>.
+/// For point-by-point construction use <see cref="IPathBuilder"/>.
 /// </summary>
 public interface IPrimitiveGeometryBuilder : IGeometryBuilder
 {

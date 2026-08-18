@@ -7,9 +7,9 @@ using System.Text;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// Neutral <see cref="IGeometry"/> → SVG path-data conversion for native-element clipping. Hosts previously reached
-/// into the Skia backend (SkiaGeometryInterop → SKPath.ToSvgPathData); this keeps the host backend-agnostic — the
-/// geometry streams its flattened contours through the neutral seam and we emit `M/L/Z` path data directly.
+/// Neutral <see cref="IGeometry"/> → SVG path-data conversion for native-element clipping, keeping the host
+/// backend-agnostic: the geometry streams its flattened contours through the neutral seam and we emit `M/L/Z` path
+/// data directly.
 /// </summary>
 public static class GeometrySvgExtensions
 {

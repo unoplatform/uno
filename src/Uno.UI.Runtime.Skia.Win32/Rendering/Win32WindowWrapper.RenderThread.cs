@@ -8,9 +8,9 @@ namespace Uno.UI.Runtime.Skia.Win32;
 internal partial class Win32WindowWrapper
 {
 	/// <summary>
-	/// Dedicated render thread that owns the neutral draw + present, mirroring WPF's milcore render thread.
-	/// The UI thread records SKPictures and signals presents; this thread acquires the context's target,
-	/// renders through the neutral loop, and presents (SwapBuffers/BitBlt/swapchain present — may block for VSync).
+	/// Dedicated render thread that owns the draw + present, mirroring WPF's milcore render thread. The UI thread
+	/// records pictures and signals presents; this thread acquires the context's target, renders, and presents
+	/// (SwapBuffers/BitBlt/swapchain present — may block for VSync).
 	/// </summary>
 	private sealed class RenderThread : IDisposable
 	{

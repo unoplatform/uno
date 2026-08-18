@@ -10,12 +10,10 @@ using Uno.Foundation.Logging;
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 /// <summary>
-/// EXPERIMENTAL WebGPU-backed render view for AppleUIKit (iOS/tvOS), mirroring the Android <c>UnoSKWebGpuView</c>:
-/// a <c>UIView</c> whose backing <see cref="CAMetalLayer"/> drives a wgpu swapchain through the shared
-/// wgpu swapchain over its CAMetalLayer. Present is wgpuSurfacePresent, and the scene is drawn through the
-/// neutral <c>CompositionTarget.OnNativePlatformFrameRequested</c> seam via the app-registered WebGPU pipeline.
-/// Opt in with UNO_WEBGPU. Not toolchain-validated on Linux CI — needs an Apple device build (and the wgpu-native
-/// iOS static lib linked via wgpu-native.targets, so <c>DllImport("webgpu")</c> resolves to the main program).
+/// EXPERIMENTAL WebGPU-backed render view for AppleUIKit (iOS/tvOS): a <c>UIView</c> whose backing
+/// <see cref="CAMetalLayer"/> drives a wgpu swapchain, drawn through the neutral
+/// <c>CompositionTarget.OnNativePlatformFrameRequested</c> seam. Opt in with UNO_WEBGPU; needs an Apple device build
+/// with the wgpu-native iOS static lib linked via wgpu-native.targets.
 /// </summary>
 internal sealed partial class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderView
 {
@@ -33,13 +31,11 @@ internal sealed partial class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderVi
 	public UnoSKWebGpuMetalView()
 		: base(CGRect.Empty)
 	{
-		// Match the screen's pixel density so the wgpu drawable is full-resolution (CAMetalLayer.drawableSize is in
-		// pixels; the view's Bounds are in points).
+		// Match the screen's pixel density so the wgpu drawable is full-resolution (drawableSize is in pixels).
 		ContentScaleFactor = UIScreen.MainScreen.Scale;
 		MetalLayer.ContentsScale = UIScreen.MainScreen.Scale;
 
-		// UIKit APIs are UI-thread-checked: create the link and read the display rate/scale here, not on the
-		// render thread (EnsureContext runs there).
+		// UIKit APIs are UI-thread-checked: create the link and read the display rate/scale here, not on the render thread.
 		_link = CADisplayLink.Create(OnDisplayLink);
 		_fps = UIScreen.MainScreen.MaximumFramesPerSecond;
 		_scale = (float)UIScreen.MainScreen.Scale;
@@ -113,9 +109,7 @@ internal sealed partial class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderVi
 	}
 
 	/// <summary>
-	/// Creates the WebGpu swapchain context over this view's <c>CAMetalLayer</c> via the renderer-agnostic init helper
-	/// (referenced directly; the host never references the WebGPU renderer). The wgpu native/link ships only with an
-	/// app that opts into WebGPU, so a Skia-only app that never negotiates the WebGpu kind never loads it.
+	/// Creates the WebGpu swapchain context over this view's <c>CAMetalLayer</c>.
 	/// </summary>
 	internal global::Uno.UI.Composition.Drawing.ISwapChain CreateGraphicsContext()
 		=> global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateMetal((IntPtr)MetalLayer.Handle, _scale);

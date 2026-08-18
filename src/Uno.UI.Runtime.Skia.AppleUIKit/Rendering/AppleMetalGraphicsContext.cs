@@ -6,9 +6,8 @@ using Uno.UI.Composition.Drawing;
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 /// <summary>
-/// A context that consumes the per-frame <c>MTLTexture</c> the MTKView supplies (Skia-on-Metal), as opposed to a
-/// swapchain-owning context (WebGPU on the <c>CAMetalLayer</c>) that sources its own drawable. Mirrors the macOS
-/// host's <c>IMacOSNativeTextureSink</c>.
+/// A context that consumes the per-frame <c>MTLTexture</c> the MTKView supplies (Skia-on-Metal), rather than a
+/// swapchain-owning context that sources its own drawable.
 /// </summary>
 internal interface IAppleNativeTextureSink
 {
@@ -17,10 +16,9 @@ internal interface IAppleNativeTextureSink
 }
 
 /// <summary>
-/// Neutral Skia-on-Metal <see cref="ISwapChain"/> for AppleUIKit — holds the MTKView's device/queue and wraps
-/// the per-frame drawable <c>MTLTexture</c> as an <see cref="IMetalRenderTarget"/>; the Skia backend builds its
-/// GRContext-Metal + surface and flushes. The MTKView owns the drawable and presents it (PresentDrawable/Commit), so
-/// <see cref="Present"/> is a no-op. Names no Skia type. Mirrors the macOS host's Metal context.
+/// Neutral Skia-on-Metal <see cref="ISwapChain"/> for AppleUIKit: holds the MTKView's device/queue and wraps the
+/// per-frame drawable <c>MTLTexture</c> as an <see cref="IMetalRenderTarget"/>. The MTKView owns and presents the
+/// drawable, so <see cref="Present"/> is a no-op.
 /// </summary>
 internal sealed class AppleMetalGraphicsContext : ISwapChain, IAppleNativeTextureSink, IMetalDeviceContext
 {

@@ -15,9 +15,8 @@ using Windows.Win32.Graphics.OpenGL;
 namespace Uno.UI.Runtime.Skia.Win32;
 
 /// <summary>
-/// Host contexts whose present is timer-paced (software BitBlt; GL under a fixed FrameRate) can be retargeted
-/// when the screen refresh rate changes. The WebGPU swapchain context does not implement this (the swapchain
-/// paces itself), so <c>Win32WindowWrapper.DisplayInformation</c>'s <see langword="is"/> check simply skips it.
+/// Implemented by contexts whose present is timer-paced (software BitBlt; GL under a fixed FrameRate) so they can
+/// be retargeted when the screen refresh rate changes. Self-pacing contexts (e.g. the WebGPU swapchain) don't.
 /// </summary>
 internal interface IWin32PacedContext
 {
@@ -25,12 +24,10 @@ internal interface IWin32PacedContext
 }
 
 /// <summary>
-/// Neutral OpenGL <see cref="ISwapChain"/> for Win32 — owns the WGL context + <c>SwapBuffers</c> and names
-/// no Skia type. <see cref="AcquireRenderTarget"/> makes the context current (the render happens on the render
-/// thread while current) and hands the backend a neutral <see cref="IGLRenderTarget"/> (default framebuffer +
-/// sample/stencil); the Skia backend builds its GRContext-GL against the current context. <see cref="Present"/>
-/// swaps and releases current. Created by <see cref="Win32GraphicsContextFactory"/>; returns <see langword="null"/>
-/// on failure so negotiation falls through to the software context.
+/// Backend-neutral OpenGL <see cref="ISwapChain"/> for Win32: owns the WGL context + <c>SwapBuffers</c>.
+/// <see cref="AcquireRenderTarget"/> makes the context current and hands the backend an <see cref="IGLRenderTarget"/>;
+/// <see cref="Present"/> swaps and releases current. Returns <see langword="null"/> on failure so negotiation
+/// falls through to the software context.
 /// </summary>
 internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContext, IGLDeviceContext
 {
@@ -82,7 +79,6 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 			cStencilBits = 1 // anything > 0 is fine, we will most likely get 8
 		};
 
-		// Choose the best matching pixel format
 		var pixelFormat = PInvoke.ChoosePixelFormat(hdc, pfd);
 
 		if (pixelFormat == 0)
@@ -101,7 +97,6 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 					: $"{nameof(PInvoke.ChoosePixelFormat)} chose a PFD with {chosenPfd.cColorBits} ColorBits {{ R{chosenPfd.cRedBits} G{chosenPfd.cGreenBits} B{chosenPfd.cBlueBits} A{chosenPfd.cAlphaBits} }}, {chosenPfd.cDepthBits} DepthBits and {chosenPfd.cStencilBits} StencilBits.");
 		}
 
-		// Set the pixel format for the device context
 		if (!PInvoke.SetPixelFormat(hdc, pixelFormat, pfd))
 		{
 			typeof(Win32OpenGLGraphicsContext).LogError()?.Error($"{nameof(PInvoke.SetPixelFormat)} failed: {Win32Helper.GetErrorMessage()}");
@@ -109,7 +104,6 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 			return null;
 		}
 
-		// Create the OpenGL context
 		var glContext = PInvoke.wglCreateContext(hdc);
 
 		if (glContext == HGLRC.Null)
@@ -132,11 +126,9 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 					: $"OpenGL Version: {versionString}");
 		}
 
-		// The renderer's GL backend needs OpenGL 2.0+. When the session has no usable GPU driver (common under RDP,
-		// some VMs, or a fresh/headless Windows install), wglCreateContext still succeeds but yields the Microsoft
-		// software rasterizer reporting version "1.1" — which GRGlInterface can't consume. DECLINE the OpenGL kind
-		// here (return null) so negotiation falls through to the software context, instead of committing to a GL
-		// context that then throws "GRGlInterface create failed" on every frame of the render loop.
+		// The GL backend needs OpenGL 2.0+. With no usable GPU driver (RDP, some VMs, fresh/headless Windows)
+		// wglCreateContext succeeds but yields the Microsoft software rasterizer reporting "1.1"; decline here
+		// so negotiation falls through to the software context rather than failing every frame.
 		if (!IsUsableGlVersion(versionString))
 		{
 			typeof(Win32OpenGLGraphicsContext).LogInfo()?.Info(
@@ -167,8 +159,7 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
 		// Make the GL context current on the render thread; it stays current through the backend's draw and
-		// is released in Present. Read the default framebuffer + its sample/stencil counts and hand a neutral
-		// target; the Skia backend builds GRContext-GL against the current context.
+		// is released in Present. The target carries the default framebuffer + its sample/stencil counts.
 		if (!PInvoke.wglMakeCurrent(_hdc, _glContext))
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.wglMakeCurrent)} failed: {Win32Helper.GetErrorMessage()}");
@@ -200,14 +191,12 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 		}
 	}
 
-	// Following the refresh: swap interval 1 paces SwapBuffers, nothing to retarget. Fixed
-	// FrameRate uses a static timer rate. UpdateRefreshRate only fires in the former case.
+	// No-op: when following the refresh, swap interval 1 paces SwapBuffers with nothing to retarget;
+	// the fixed-FrameRate path uses a static timer rate.
 	public void UpdateRefreshRate(double fps) { }
 
-	// Sets the GL swap interval: 1 blocks SwapBuffers until the next display refresh (vsync),
-	// 0 doesn't block (used when a fixed FrameRate is paced by the timer instead). Some drivers
-	// default to 0, letting the render loop spin. Per-context, so re-apply whenever an HGLRC
-	// is created.
+	// GL swap interval: 1 blocks SwapBuffers until the next refresh (vsync), 0 doesn't block (fixed
+	// FrameRate paced by the timer instead). Per-context, so re-apply whenever an HGLRC is created.
 	private static void SetSwapInterval(int interval)
 	{
 		var wglSwapIntervalAddr = PInvoke.wglGetProcAddress("wglSwapIntervalEXT");
@@ -222,9 +211,8 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 		}
 	}
 
-	// GL_VERSION starts with "<major>.<minor>[…]" (desktop WGL has no "OpenGL ES" prefix). The renderer's GL
-	// backend needs major >= 2; the Microsoft software fallback reports "1.1.0". A null/unparseable string is
-	// treated as unusable so we decline rather than commit to a context we can't verify.
+	// GL_VERSION starts with "<major>.<minor>[…]"; the GL backend needs major >= 2 (the Microsoft software
+	// fallback reports "1.1.0"). A null/unparseable string is treated as unusable.
 	private static bool IsUsableGlVersion(string? version)
 	{
 		if (string.IsNullOrEmpty(version))
@@ -274,9 +262,9 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 }
 
 /// <summary>
-/// Neutral software (CPU-framebuffer) <see cref="ISwapChain"/> for Win32 — owns the DIB section + the
-/// <c>BitBlt</c> present, and names no Skia type. <see cref="AcquireRenderTarget"/> (re)creates the DIB on resize
-/// and hands the backend a neutral <see cref="ISoftwareRenderTarget"/>; the Skia backend wraps it as its surface.
+/// Backend-neutral software (CPU-framebuffer) <see cref="ISwapChain"/> for Win32: owns the DIB section + the
+/// <c>BitBlt</c> present. <see cref="AcquireRenderTarget"/> (re)creates the DIB on resize and hands the backend
+/// an <see cref="ISoftwareRenderTarget"/>.
 /// </summary>
 internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedContext
 {
@@ -336,7 +324,6 @@ internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedCont
 			_height = height;
 		}
 
-		// Hand the CPU framebuffer to the backend as a neutral target; the Skia backend wraps it as its surface.
 		return new Win32SoftwareRenderTarget(_bits, _width * 4, _width, _height);
 	}
 

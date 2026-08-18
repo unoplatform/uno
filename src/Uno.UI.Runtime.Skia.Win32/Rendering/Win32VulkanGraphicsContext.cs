@@ -10,14 +10,10 @@ using Windows.Win32.Foundation;
 namespace Uno.UI.Runtime.Skia.Win32;
 
 /// <summary>
-/// On-window Vulkan graphics context for Win32, on the neutral (kind)=>context seam — the Win32 mirror of
-/// <c>X11VulkanGraphicsContext</c>. It owns the Vulkan device/swapchain (<see cref="VulkanContext"/>) and exposes
-/// the device details as a neutral <see cref="IVulkanDeviceContext"/>; the Skia backend builds its own
-/// <c>GRContext</c>-Vulkan over the render image handed as an <see cref="IVulkanRenderTarget"/>. The device lock is
-/// held for the whole frame (acquire → backend render → present); <see cref="Present"/> blits the render image to
-/// the swapchain and releases the lock. Names no Skia type. Chosen by negotiation for
-/// <see cref="GraphicsContextKind.Vulkan"/> (Win32 gates it on <c>UseVulkanOnWin32</c>); the ctor throws when
-/// Vulkan is unavailable → negotiation falls through.
+/// On-window Vulkan graphics context for Win32 (the mirror of <c>X11VulkanGraphicsContext</c>): owns the Vulkan
+/// device/swapchain and exposes it as a neutral <see cref="IVulkanDeviceContext"/>. The device lock is held for
+/// the whole frame; <see cref="Present"/> blits the render image to the swapchain and releases it. Gated on
+/// <c>UseVulkanOnWin32</c>; the ctor throws when Vulkan is unavailable so negotiation falls through.
 /// </summary>
 internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext
 {
