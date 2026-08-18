@@ -1,4 +1,6 @@
-﻿using Uno;
+﻿#nullable enable
+
+using Uno;
 
 #if HAS_UNO_WINUI
 namespace CommunityToolkit.WinUI.Lottie
