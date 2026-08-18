@@ -1,20 +1,11 @@
 #nullable enable
 
-#if HAS_SKOTTIE
-
 using System;
-using System.IO;
 using System.Numerics;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
-using SkiaSharp;
-using SkiaSharp.SceneGraph;
-using Uno.UI.Lottie;
-using Uno.WinUI.Graphics2DSK;
+using Uno.UI.Composition.Drawing;
+using Windows.Foundation;
 
 #if HAS_UNO_WINUI
 namespace CommunityToolkit.WinUI.Lottie
@@ -33,21 +24,18 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		private sealed class LottieAnimatedVisual : IAnimatedVisual2
 		{
 			private readonly object _gate = new();
-			private readonly InvalidationController _invalidationController = new();
-			private readonly LottieCanvasElement _canvasElement;
-			private readonly Visual _rootVisual;
+			private readonly LottieContentVisual _rootVisual;
 
-			private SkiaSharp.Skottie.Animation? _animation;
+			private ILottieAnimation? _animation;
 			private bool _isDisposed;
 
 			private LottieAnimatedVisual(Compositor compositor)
 			{
-				_canvasElement = new LottieCanvasElement(this);
-				ElementCompositionPreview.SetElementVisualCompositor(_canvasElement, compositor);
-				_rootVisual = ElementCompositionPreview.GetElementVisual(_canvasElement);
+				_rootVisual = new LottieContentVisual(this, compositor);
+				// The player drives this same "Progress" scalar (via an expression animation bound to its own
+				// Progress); AddContext repaints the visual each time it ticks.
 				_rootVisual.Properties.InsertScalar("Progress", 0.0f);
 				_rootVisual.Properties.AddContext(_rootVisual, null);
-				_invalidationController.Begin();
 			}
 
 			public Visual RootVisual => _rootVisual;
@@ -61,10 +49,17 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			public static IAnimatedVisual2? TryCreate(Compositor compositor, string animationJson, out object diagnostics)
 			{
+				if (LottieRenderer.Current is not { } renderer)
+				{
+					// No Lottie renderer registered (the Skottie add-in wasn't referenced / resolved): the player shows
+					// its fallback content rather than silently rendering nothing.
+					diagnostics = new InvalidOperationException("No ILottieRenderer is registered; Lottie playback is unavailable.");
+					return null;
+				}
+
 				try
 				{
-					var animation = CreateAnimation(animationJson);
-					if (animation is null)
+					if (renderer.Load(animationJson) is not { } animation)
 					{
 						diagnostics = new InvalidOperationException("Failed to load animation.");
 						return null;
@@ -84,8 +79,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			public void CreateAnimations()
 			{
-				// Skottie renders directly from the current Progress scalar each frame and does not
-				// materialize separate composition animation objects that need to be created up front.
+				// The renderer draws directly from the current Progress scalar each frame; there are no separate
+				// composition-side animation objects to create up front.
 			}
 
 			public void DestroyAnimations()
@@ -104,62 +99,63 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 					_isDisposed = true;
 					_rootVisual.Properties.RemoveContext(_rootVisual, null);
-					_invalidationController.End();
 					_animation?.Dispose();
 					_animation = null;
 				}
 			}
 
-			private static SkiaSharp.Skottie.Animation? CreateAnimation(string animationJson)
-			{
-				using var stream = new Utf8StringStream(animationJson);
-				return SkiaSharp.Skottie.Animation.TryCreate(stream, out var animation)
-					? animation
-					: null;
-			}
-
-			private void Initialize(SkiaSharp.Skottie.Animation animation)
+			private void Initialize(ILottieAnimation animation)
 			{
 				_animation = animation;
-				Size = new Vector2(animation.Size.Width, animation.Size.Height);
+				Size = animation.Size;
 				Duration = animation.Duration;
 				_rootVisual.Size = Size;
-				_canvasElement.Invalidate();
+				_rootVisual.Invalidate();
 			}
 
-			private void Render(SKCanvas canvas)
+			// Draws the current frame through the neutral drawing session — the renderer picks the fast (SKCanvas) or
+			// texture path for the active backend, so this is backend-agnostic.
+			private void Render(in Visual.PaintingSession paintingSession)
 			{
 				lock (_gate)
 				{
-					if (_isDisposed || _animation is null)
+					if (_isDisposed || _animation is not { } animation)
 					{
 						return;
 					}
 
-					canvas.Clear(SKColors.Transparent);
-
-					var progress = GetProgress();
-					var frameTime = TimeSpan.FromTicks((long)(Duration.Ticks * progress));
-					_animation.SeekFrameTime(frameTime, _invalidationController);
-					_animation.Render(canvas, new SKRect(0, 0, _animation.Size.Width, _animation.Size.Height));
-					_invalidationController.Reset();
+					var session = paintingSession.Session;
+					var area = new Rect(0, 0, _rootVisual.Size.X, _rootVisual.Size.Y);
+					var save = session.Save();
+					session.ClipRect(area);
+					animation.Render(session, GetProgress(), area);
+					session.RestoreToCount(save);
 				}
 			}
 
 			private float GetProgress()
-			{
-				return _rootVisual.Properties.TryGetScalar("Progress", out var progress) == CompositionGetValueStatus.Succeeded
+				=> _rootVisual.Properties.TryGetScalar("Progress", out var progress) == CompositionGetValueStatus.Succeeded
 					? Math.Clamp(progress, 0.0f, 1.0f)
 					: 0.0f;
-			}
 
-			private sealed class LottieCanvasElement(LottieAnimatedVisual owner) : SKCanvasElement
+			// The animated content's composition visual: paints the current Lottie frame through the neutral session.
+			private sealed class LottieContentVisual : ContainerVisual
 			{
-				protected override void RenderOverride(SKCanvas canvas, Windows.Foundation.Size area)
-					=> owner.Render(canvas);
+				private readonly LottieAnimatedVisual _owner;
+
+				public LottieContentVisual(LottieAnimatedVisual owner, Compositor compositor) : base(compositor)
+					=> _owner = owner;
+
+				internal override bool CanPaint() => true;
+
+				internal override IGeometry? Paint(in PaintingSession session)
+				{
+					_owner.Render(session);
+					return null;
+				}
+
+				public void Invalidate() => Compositor.InvalidateRender(this);
 			}
 		}
 	}
 }
-
-#endif
