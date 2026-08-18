@@ -6,6 +6,16 @@
 
 	<Import Project="../../targetframework-override.props" />
 
+	<!-- Drawing-backend build flags (see SamplesApp.Skia.Generic). Default both on = Skia. A SkiaSharp-free build
+	     passes -p:UnoDrawingBackendSkia=false; DrawingBackendConfiguration then registers the WebGPU renderer over
+	     the managed seams (WebGPU on iOS/tvOS is experimental — see wgpu-native.targets). -->
+	<PropertyGroup>
+		<UnoDrawingBackendSkia Condition="'$(UnoDrawingBackendSkia)'==''">true</UnoDrawingBackendSkia>
+		<UnoDrawingBackendWebGpu Condition="'$(UnoDrawingBackendWebGpu)'==''">true</UnoDrawingBackendWebGpu>
+		<DefineConstants Condition="'$(UnoDrawingBackendSkia)'=='true'">$(DefineConstants);UNO_DRAWING_SKIA</DefineConstants>
+		<DefineConstants Condition="'$(UnoDrawingBackendWebGpu)'=='true'">$(DefineConstants);UNO_DRAWING_WEBGPU</DefineConstants>
+	</PropertyGroup>
+
 	<PropertyGroup>
 		<SingleProject>true</SingleProject>
 
@@ -243,6 +253,11 @@
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
 		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
+		<!-- Drawing backends: managed seams always; Skia backend + WebGPU renderer gated by the app-level flags. -->
+		<ProjectReference Include="..\..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" Condition="'$(UnoDrawingBackendSkia)'=='true'" />
+		<ProjectReference Include="..\..\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" Condition="'$(UnoDrawingBackendWebGpu)'=='true'" />
+		<Compile Include="..\DrawingBackendConfiguration.cs" Link="DrawingBackendConfiguration.cs" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Android\Uno.UI.Runtime.Skia.Android.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.AppleUIKit\Uno.UI.Runtime.Skia.AppleUIKit.csproj" Condition="'$(IsUIKit)'=='true'" />
 		<!-- GLCanvasElement: Android (GLES via EGL) and iOS/tvOS (GLES via EAGL) have an

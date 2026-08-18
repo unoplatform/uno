@@ -5,6 +5,16 @@
 
 	<Import Project="../../targetframework-override-noplatform.props" />
 
+	<!-- Drawing-backend build flags (see SamplesApp.Skia.Generic). Default both on = Skia. A SkiaSharp-free build
+	     passes -p:UnoDrawingBackendSkia=false (with -p:UnoWebGpuWasm=true so Dawn is linked); DrawingBackendConfiguration
+	     then registers the WebGPU renderer over the managed seams. The DefineConstants gate the shared config. -->
+	<PropertyGroup>
+		<UnoDrawingBackendSkia Condition="'$(UnoDrawingBackendSkia)'==''">true</UnoDrawingBackendSkia>
+		<UnoDrawingBackendWebGpu Condition="'$(UnoDrawingBackendWebGpu)'==''">true</UnoDrawingBackendWebGpu>
+		<DefineConstants Condition="'$(UnoDrawingBackendSkia)'=='true'">$(DefineConstants);UNO_DRAWING_SKIA</DefineConstants>
+		<DefineConstants Condition="'$(UnoDrawingBackendWebGpu)'=='true'">$(DefineConstants);UNO_DRAWING_WEBGPU</DefineConstants>
+	</PropertyGroup>
+
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFramework>$(TargetFramework)</TargetFramework>
@@ -105,12 +115,15 @@
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\Uno.UI.Runtime.Skia.WebAssembly.Browser.csproj" />
 		<!-- App-level WebGPU backend reference (the host no longer provides it); the app registers it in Program.cs. -->
-		<ProjectReference Include="..\..\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
+		<!-- Skia backend referenced only when the app opts into it (default); WebGPU backend for the opt-in render path. -->
+		<ProjectReference Include="..\..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" Condition="'$(UnoDrawingBackendSkia)'=='true'" />
+		<ProjectReference Include="..\..\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" Condition="'$(UnoDrawingBackendWebGpu)'=='true'" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.Wasm.csproj" />
 		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
+		<Compile Include="..\DrawingBackendConfiguration.cs" Link="DrawingBackendConfiguration.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -109,11 +109,16 @@ namespace SamplesApp.Droid
 			}
 		}
 
-		protected override UnoPlatformHost CreateHost() =>
-			UnoPlatformHostBuilder.Create()
+		protected override UnoPlatformHost CreateHost()
+		{
+			var builder = UnoPlatformHostBuilder.Create()
 				.App(() => new App())
-				.UseAndroid()
-				.Build();
+				.UseAndroid();
+
+			global::SamplesApp.DrawingBackendConfiguration.Configure(builder);
+
+			return builder.Build();
+		}
 
 		public override void OnCreate()
 		{
