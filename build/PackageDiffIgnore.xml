@@ -3392,8 +3392,8 @@
 		  <Member fullName="System\.Boolean Uno\.UI\.TemplateManager\.UpdateDataTemplate\(.*\)" reason="BC01: UpdateDataTemplate overloads retyped to Uno.UI.FrameworkTemplateBuilder; the Func&lt;View&gt; overload is removed (uno#18672, breaking changes for 7.0)" isRegex="true" />
 		  <!-- BC01: vestigial TemplatedParent DP accessors (paired with the <Properties> entries above). The removed no-op SetTemplatedParent and the ignored-argument ctor sat on DependencyObjectStore, already covered by the BC26 DependencyObjectStore regexes. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.DependencyObject(::|\.)(get_TemplatedParent|set_TemplatedParent|get_TemplatedParentProperty|OnTemplatedParentChanged)\(.*\)" reason="BC01: vestigial TemplatedParent DP and its accessors removed (uno#18672, breaking changes for 7.0)" isRegex="true" />
-		  <!-- BC01: only the framework materializes a template, so the settings ctor is internal. TemplatedParent stays public -- an app-authored builder still reads the settings handed to it -- but the member callback became an instance method (paired with the <Properties> entry above). -->
-		  <!-- BC01: nothing survives under the old name -- the type moved to Uno.UI, its ctor is internal, and TemplateMemberCreatedCallback gave way to the OnMemberCreated instance method. -->
+		  <!-- BC01: only the framework materializes a template, so the settings ctor is internal. TemplatedParent stays public — an app-authored builder still reads the settings handed to it — but the member callback became an instance method (paired with the <Properties> entry above). -->
+		  <!-- BC01: nothing survives under the old name — the type moved to Uno.UI, its ctor is internal, and TemplateMemberCreatedCallback gave way to the OnMemberCreated instance method. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.TemplateMaterializationSettings(::|\.|/).+" reason="BC01: TemplateMaterializationSettings moved to Uno.UI and is framework-constructed (uno#18672, breaking changes for 7.0)" isRegex="true" />
 	  </Methods>
 	  <Events>
