@@ -30,7 +30,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
-		<ProjectReference Include="..\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
