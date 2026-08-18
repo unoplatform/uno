@@ -47,11 +47,17 @@ internal sealed class SkiaSvgDocument : ISvgDocument
 {
 	private readonly SKSvg _svg;
 
+	// Cross-backend fallback cache: the rasterized texture is reused across frames and rebuilt only when the target
+	// pixel size changes (the picture is static), so the fallback doesn't allocate a surface + upload every frame.
+	private ITexture? _fallbackTexture;
+	private int _fallbackWidth;
+	private int _fallbackHeight;
+
 	public SkiaSvgDocument(SKSvg svg) => _svg = svg;
 
 	public Size SourceSize => _svg.Picture is { CullRect: var cull } ? new Size(cull.Width, cull.Height) : default;
 
-	public unsafe void Render(IDrawingSession session, Size targetSize)
+	public void Render(IDrawingSession session, Size targetSize)
 	{
 		if (_svg.Picture is not { } picture || targetSize.Width <= 0 || targetSize.Height <= 0)
 		{
@@ -72,15 +78,32 @@ internal sealed class SkiaSvgDocument : ISvgDocument
 			return;
 		}
 
-		// Cross-backend fallback (no SKCanvas, e.g. WebGPU): rasterize to an offscreen, then let the SESSION's own
-		// backend mint a native texture from the pixels — a foreign texture wouldn't be accepted by its DrawImage.
+		// Cross-backend fallback (no SKCanvas, e.g. WebGPU): rasterize once per size to a texture the SESSION's own
+		// backend mints (a foreign texture wouldn't be accepted by its DrawImage), then reuse it every frame.
 		var width = Math.Max(1, (int)Math.Ceiling(targetSize.Width));
 		var height = Math.Max(1, (int)Math.Ceiling(targetSize.Height));
+
+		if (_fallbackTexture is null || _fallbackWidth != width || _fallbackHeight != height)
+		{
+			_fallbackTexture?.Dispose();
+			_fallbackTexture = RasterizeToTexture(session, picture, sx, sy, width, height);
+			_fallbackWidth = width;
+			_fallbackHeight = height;
+		}
+
+		if (_fallbackTexture is { } texture)
+		{
+			session.DrawImage(texture, 0, 0, ImageSampling.Linear, antialias: true);
+		}
+	}
+
+	private static ITexture? RasterizeToTexture(IDrawingSession session, SKPicture picture, float sx, float sy, int width, int height)
+	{
 		var info = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
 		using var surface = SKSurface.Create(info);
 		if (surface is null)
 		{
-			return;
+			return null;
 		}
 
 		surface.Canvas.Clear(SKColors.Transparent);
@@ -89,12 +112,13 @@ internal sealed class SkiaSvgDocument : ISvgDocument
 		surface.Canvas.Flush();
 
 		using var pixmap = surface.PeekPixels();
-		if (pixmap is null)
-		{
-			return;
-		}
+		return pixmap is null ? null : session.Factory.CreateTexture(width, height, pixmap.GetPixelSpan());
+	}
 
-		using var texture = session.Factory.CreateTexture(width, height, pixmap.GetPixelSpan());
-		session.DrawImage(texture, 0, 0, ImageSampling.Linear, antialias: true);
+	public void Dispose()
+	{
+		_fallbackTexture?.Dispose();
+		_fallbackTexture = null;
+		_svg.Dispose();
 	}
 }

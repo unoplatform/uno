@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using Windows.Foundation;
 
 namespace Uno.UI.Composition.Drawing;
@@ -19,9 +20,10 @@ public interface ISvgRenderer
 
 /// <summary>
 /// A parsed SVG document — the retained vector representation. <see cref="Render"/> replays it into any
-/// <see cref="IDrawingSession"/>. The document owns no backend resources; the caller supplies the session.
+/// <see cref="IDrawingSession"/>. A cross-backend renderer may cache a backend resource (e.g. a rasterized
+/// texture) across frames; that is released on <see cref="IDisposable.Dispose"/> when the document is torn down.
 /// </summary>
-public interface ISvgDocument
+public interface ISvgDocument : IDisposable
 {
 	/// <summary>The document's intrinsic size (from its viewBox / width-height).</summary>
 	Size SourceSize { get; }
