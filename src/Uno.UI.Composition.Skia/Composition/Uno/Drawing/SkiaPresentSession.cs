@@ -21,10 +21,10 @@ internal sealed class SkiaPresentSession : SkiaDrawingSession, IPresentSession
 	// blits the layer onto _surface (the swapchain) instead of flushing the composition surface directly.
 	private readonly RetainedLayer? _retainedLayer;
 
-	public SkiaPresentSession(SKCanvas canvas) : base(canvas)
+	public SkiaPresentSession(SKCanvas canvas, IDrawingFactory factory) : base(canvas, factory)
 		=> _saveCount = canvas.Save();
 
-	private SkiaPresentSession(SKSurface surface, GRContext? flushContext, bool ownsSurface) : base(surface.Canvas)
+	private SkiaPresentSession(SKSurface surface, GRContext? flushContext, bool ownsSurface, IDrawingFactory factory) : base(surface.Canvas, factory)
 	{
 		_surface = surface;
 		_flushContext = flushContext;
@@ -32,7 +32,7 @@ internal sealed class SkiaPresentSession : SkiaDrawingSession, IPresentSession
 		_saveCount = surface.Canvas.Save();
 	}
 
-	private SkiaPresentSession(RetainedLayer layer, SKSurface swapchainSurface, GRContext? flushContext, bool ownsSwapchainSurface) : base(layer.Surface!.Canvas)
+	private SkiaPresentSession(RetainedLayer layer, SKSurface swapchainSurface, GRContext? flushContext, bool ownsSwapchainSurface, IDrawingFactory factory) : base(layer.Surface!.Canvas, factory)
 	{
 		_retainedLayer = layer;
 		_surface = swapchainSurface;
@@ -42,27 +42,27 @@ internal sealed class SkiaPresentSession : SkiaDrawingSession, IPresentSession
 	}
 
 	/// <summary>Wraps the host's neutral CPU framebuffer as an owned SKSurface to compose into (disposed on present).</summary>
-	public static SkiaPresentSession ForSoftware(ISoftwareRenderTarget target)
+	public static SkiaPresentSession ForSoftware(ISoftwareRenderTarget target, IDrawingFactory factory)
 	{
 		var colorType = target.ColorFormat == GraphicsColorFormat.Rgba8888 ? SKColorType.Rgba8888 : SKColorType.Bgra8888;
 		var info = new SKImageInfo(target.Width, target.Height, colorType, SKAlphaType.Premul);
-		return new SkiaPresentSession(SKSurface.Create(info, target.Pixels, target.RowBytes), flushContext: null, ownsSurface: true);
+		return new SkiaPresentSession(SKSurface.Create(info, target.Pixels, target.RowBytes), flushContext: null, ownsSurface: true, factory);
 	}
 
 	/// <summary>Wraps a per-frame GPU-texture SKSurface (e.g. Metal) the session owns; present flushes+submits the GRContext.</summary>
-	public static SkiaPresentSession ForGpuTexture(SKSurface ownedSurface, GRContext flushContext)
-		=> new SkiaPresentSession(ownedSurface, flushContext, ownsSurface: true);
+	public static SkiaPresentSession ForGpuTexture(SKSurface ownedSurface, GRContext flushContext, IDrawingFactory factory)
+		=> new SkiaPresentSession(ownedSurface, flushContext, ownsSurface: true, factory);
 
 	/// <summary>Wraps a renderer-cached GPU SKSurface (e.g. the Vulkan render image); present flushes+submits the
 	/// GRContext but does NOT dispose the surface (the renderer reuses it until the image/size changes).</summary>
-	public static SkiaPresentSession ForCachedGpuSurface(SKSurface cachedSurface, GRContext flushContext)
-		=> new SkiaPresentSession(cachedSurface, flushContext, ownsSurface: false);
+	public static SkiaPresentSession ForCachedGpuSurface(SKSurface cachedSurface, GRContext flushContext, IDrawingFactory factory)
+		=> new SkiaPresentSession(cachedSurface, flushContext, ownsSurface: false, factory);
 
 	/// <summary>Composes the frame into a persistent <see cref="RetainedLayer"/> (so only the damaged region is
 	/// redrawn), then on present blits the layer onto <paramref name="swapchainSurface"/> and submits the GPU.
 	/// <paramref name="ownsSwapchainSurface"/> disposes a per-frame swapchain surface (e.g. a Metal drawable).</summary>
-	public static SkiaPresentSession ForRetained(RetainedLayer layer, SKSurface swapchainSurface, GRContext? flushContext, bool ownsSwapchainSurface)
-		=> new SkiaPresentSession(layer, swapchainSurface, flushContext, ownsSwapchainSurface);
+	public static SkiaPresentSession ForRetained(RetainedLayer layer, SKSurface swapchainSurface, GRContext? flushContext, bool ownsSwapchainSurface, IDrawingFactory factory)
+		=> new SkiaPresentSession(layer, swapchainSurface, flushContext, ownsSwapchainSurface, factory);
 
 	// Restore any state the composition (frame replay + overlay) left behind, then finalize: blit the retained layer
 	// onto the swapchain (retained case) or flush the composition surface directly, then submit the GPU.

@@ -169,7 +169,7 @@ public class Given_ContainerVisual
 
 		// Rendering a parent-less Panel-like visual carrying an ancestor layout clip used to throw a
 		// NullReferenceException inside GetArrangeClipPathInElementCoordinateSpace (issue #22416).
-		visual.RenderRootVisual(new global::Uno.UI.Composition.Drawing.SkiaDrawingSession(surface.Canvas), Vector2.Zero);
+		visual.RenderRootVisual(new global::Uno.UI.Composition.Drawing.SkiaDrawingSession(surface.Canvas, new global::Uno.UI.Composition.Drawing.SkiaDrawingFactory()), Vector2.Zero);
 	}
 
 	[TestMethod]
