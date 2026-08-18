@@ -307,9 +307,6 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		System.Console.WriteLine($"[webgpu] engine init — msaa={MsaaSamples}x colorFormat={ColorFormat}");
 	}
 
-	/// <summary>Reads a surface's resolved single-sample texture back to CPU as tightly-packed RGBA8 (top-down). For RTB and tests.</summary>
-	public byte[] ReadPixelsRgba(WebGpuRenderSurface s) => ReadPixelsFromTex(s.Tex, s.Width, s.Height);
-
 	/// <summary>Synchronous GPU→CPU readback of a texture, tightly-packed in the device color format, via a blocking
 	/// wgpuDevicePoll spin. Off-browser only (a native thread can pump the map); on the browser the drawing factory's
 	/// SnapshotAsync maps off the JS event loop instead, so this is never reached there.</summary>
@@ -1259,7 +1256,7 @@ internal sealed unsafe class WebGpuRenderSurface
 		_ownsResources = false;   // the pool owns and reclaims these; Dispose must not release them
 		Pooled = true;
 		DepthView = pool.Rent(width, height, (int)device.MsaaSamples, WGPUTextureUsage.RenderAttachment, WebGpuDevice.DepthStencilFormat);
-		// CopySrc so the resolved result can be read back (ReadPixelsRgba) for RenderTargetBitmap / offscreen.
+		// CopySrc so the resolved result can be read back (ReadPixelsFromTex, via SnapshotAsync) for RenderTargetBitmap / offscreen.
 		View = pool.Rent(width, height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopySrc, device.ColorFormat);
 		Tex = pool.TexForView(View);
 		// 1x: no separate MSAA colour — the pass renders straight into the single-sample View (no resolve). Otherwise

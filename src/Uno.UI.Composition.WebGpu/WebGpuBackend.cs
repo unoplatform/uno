@@ -2577,42 +2577,17 @@ public sealed class WebGpuGraphicsProvider : IGraphicsProvider<IWebGpuDeviceCont
 public sealed unsafe class WebGpuTexture : ITexture
 {
 	private readonly WebGpuDevice _d;
-	private readonly IImage _source; // set when uploaded from a CPU IImage; null for an adopted offscreen texture
 	public IntPtr Tex;
 	public IntPtr View;
 
 	public int PixelWidth { get; }
 	public int PixelHeight { get; }
 
-	// Cross-backend fallback only (a foreign backend drawing this texture). When uploaded from an IImage, defer to
-	// it; for an adopted offscreen texture (no CPU source) do a blocking GPU readback — off-browser only, since the
-	// matched WebGPU backend never calls this (it samples View directly), and browser readback is async elsewhere.
-	public void CopyPixels(Span<byte> destination)
-	{
-		if (_source is { } s)
-		{
-			s.CopyPixels(destination);
-			return;
-		}
-
-		var bytes = _d.ReadPixelsFromTex(Tex, PixelWidth, PixelHeight);
-		int n = Math.Min(bytes.Length, destination.Length);
-		if (_d.ColorFormat == WGPUTextureFormat.BGRA8Unorm)
-		{
-			bytes.AsSpan(0, n).CopyTo(destination);
-		}
-		else
-		{
-			for (int i = 0; i + 3 < n; i += 4) { destination[i] = bytes[i + 2]; destination[i + 1] = bytes[i + 1]; destination[i + 2] = bytes[i]; destination[i + 3] = bytes[i + 3]; }
-		}
-	}
-
 	// Adopts an already-rendered offscreen texture (from RenderOffscreen) as a sampleable, disposable handle —
 	// no upload, no readback. Deferred release is shared with the upload path (refcount + DisposeRequested).
 	internal WebGpuTexture(WebGpuDevice device, IntPtr tex, IntPtr view, int width, int height)
 	{
 		_d = device;
-		_source = null;
 		Tex = tex;
 		View = view;
 		PixelWidth = width;
@@ -2622,7 +2597,6 @@ public sealed unsafe class WebGpuTexture : ITexture
 	internal WebGpuTexture(WebGpuDevice device, IImage image)
 	{
 		_d = device;
-		_source = image;
 		int w = image.PixelWidth, h = image.PixelHeight;
 		PixelWidth = w; PixelHeight = h;
 		byte[] bgra = (w > 0 && h > 0) ? new byte[w * h * 4] : System.Array.Empty<byte>();
