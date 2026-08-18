@@ -121,7 +121,7 @@
 			The Skia build is the compile-time reference. The Reference flavor was folded away
 			for the UI layer: with native WASM rendering gone, `skia` was the only possible
 			runtime replacement, so lib/ and uno-runtime/<tfm>/skia were the same assembly in
-			all but name. Uno.UWP / Uno.Foundation / Uno.UI.Dispatching still ship both flavors
+			all but name. Uno / Uno.Foundation / Uno.UI.Dispatching still ship both flavors
 			and keep their uno-runtime folders (see Uno.WinRT.nuspec).
 		-->
 
