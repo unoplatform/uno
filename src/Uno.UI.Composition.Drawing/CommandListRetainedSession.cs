@@ -111,6 +111,10 @@ internal sealed class CommandListRecorder : ICommandRecorder
 	public int SaveCount => _depth;
 	public object? NativeSurface => null;
 
+	// The backend-agnostic recorder has no device of its own; its recorded verbs replay into a real backend session,
+	// so it exposes the ambient (single negotiated) factory — the same backend that recording will replay into.
+	public IDrawingFactory Factory => DrawingFactory.Current;
+
 	public int Save()
 	{
 		_commands.Add(static ctx => ctx.Target.Save());

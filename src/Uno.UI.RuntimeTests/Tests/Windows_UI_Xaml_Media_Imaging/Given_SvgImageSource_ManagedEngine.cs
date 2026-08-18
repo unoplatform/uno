@@ -235,6 +235,8 @@ public class Given_SvgImageSource_ManagedEngine
 
 		public Matrix4x4 TotalMatrix => new(_ctm.M11, _ctm.M12, 0, 0, _ctm.M21, _ctm.M22, 0, 0, 0, 0, 1, 0, _ctm.M31, _ctm.M32, 0, 1);
 		public object? NativeSurface => null;
+		// The managed SVG engine draws vector paths only (no textures), so this is never read in these tests.
+		public IDrawingFactory Factory => throw new NotSupportedException();
 
 		public void SetMatrix(in Matrix4x4 matrix) => _ctm = To2D(matrix);
 		public void Concat(in Matrix4x4 matrix) => _ctm = To2D(matrix) * _ctm;
@@ -327,6 +329,7 @@ public class Given_SvgImageSource_ManagedEngine
 		public ITexture RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render) => throw new NotSupportedException();
 		public Task<IImage> SnapshotAsync(ITexture texture) => throw new NotSupportedException();
 		public ITexture CreateTexture(IImage image) => throw new NotSupportedException();
+		public ITexture CreateTexture(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul) => throw new NotSupportedException();
 		public IColorFilter CreateBlendModeColorFilter(Color color, BlendMode mode) => throw new NotSupportedException();
 		public IColorFilter CreateColorMatrixColorFilter(float[] matrix) => throw new NotSupportedException();
 		public IEffectFilter? CreateEffectFilter(EffectNode tree, Rect bounds) => throw new NotSupportedException();
