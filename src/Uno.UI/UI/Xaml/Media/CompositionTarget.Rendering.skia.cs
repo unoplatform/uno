@@ -315,10 +315,12 @@ public partial class CompositionTarget
 				// wasn't resized, clip the clear+replay to the damage region so only the changed area is repainted and
 				// the rest survives. The backend is oblivious — this is just an initial clip. Otherwise (fresh/undefined
 				// surface) repaint the whole frame.
-				var damageEligible = !resized
-					&& target!.PreservesContents
-					&& lastRenderedFrame.damage is { } dmg && !dmg.IsEmpty;
+				// The frame's damage region is computed on every target; whether we can USE it for a partial repaint
+				// additionally requires the host to preserve the target's contents between frames.
+				var hasDamage = !resized && lastRenderedFrame.damage is { } dmg && !dmg.IsEmpty;
+				var damageEligible = hasDamage && target!.PreservesContents;
 				// Debug overlay: full-repaint (no damage clip) but paint the would-be damage region so it's visible.
+				// Deliberately NOT gated on PreservesContents — the viz must work on full-repaint targets too.
 				var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;
 				var useDamage = damageEligible && !overlayEnabled;
 
@@ -345,7 +347,7 @@ public partial class CompositionTarget
 				present.Clear(global::Windows.UI.Colors.Transparent);
 				lastRenderedFrame.frame.Replay(present);
 				present.Restore();
-				if (overlayEnabled && damageEligible)
+				if (overlayEnabled && hasDamage)
 				{
 					DrawDamageRegionOverlay(present, lastRenderedFrame.damage!);
 				}
@@ -426,6 +428,7 @@ public partial class CompositionTarget
 	// repainted are visible.
 	private static void DrawDamageRegionOverlay(IPresentSession present, IGeometry damage)
 	{
+
 		present.DrawPath(damage, global::Windows.UI.Color.FromArgb(0x30, 0xFF, 0x00, 0x00), antialias: false);
 		using var outline = damage.GetStrokeFillGeometry(new StrokeStyle { Thickness = 1f });
 		present.DrawPath(outline, global::Windows.UI.Color.FromArgb(0xB0, 0xFF, 0x00, 0x00), antialias: false);
