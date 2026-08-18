@@ -17,174 +17,6 @@ using WColor = Windows.UI.Color;
 namespace Uno.UI.Composition.WebGpu;
 
 
-// Detailed per-frame profiler (UNO_WEBGPU_PROFILE=1). Accumulates phase timings + operation counts over a window
-// of frames and logs one line per window, so a single run pinpoints the bottleneck — CPU record vs CPU encode vs
-// the GPU poll-drain vs present vs offscreen count vs allocation — without another round-trip. All timings are ms.
-// Ordered, human-readable trace of exactly what each frame submits to the GPU (passes, pipelines, draws, uploads),
-// gated by UNO_WEBGPU_TRACE. Pure logging — no behaviour change. Used to prove per-primitive GPU-submission parity
-// against the original ramez/webgpu-experiment backend. Reset() at frame start, Dump() to read the accumulated trace.
-public static class WebGpuTrace
-{
-	public static readonly bool Enabled = Environment.GetEnvironmentVariable("UNO_WEBGPU_TRACE") is "1" or "true";
-	private static readonly System.Text.StringBuilder _sb = new();
-	private static int _depth;
-
-	public static void Reset() { if (!Enabled) { return; } _sb.Clear(); _depth = 0; }
-
-	public static void Pass(string kind, int w, int h, uint msaa, bool clear)
-	{
-		if (!Enabled) { return; }
-		_sb.Append(' ', _depth * 2).Append("PASS ").Append(kind).Append(' ').Append(w).Append('x').Append(h)
-			.Append(" msaa=").Append(msaa).Append(clear ? " clear" : " load").Append('\n');
-		_depth++;
-	}
-
-	public static void PassEnd()
-	{
-		if (!Enabled) { return; }
-		_depth = Math.Max(0, _depth - 1);
-		_sb.Append(' ', _depth * 2).Append("PASS end\n");
-	}
-
-	public static void Draw(string pipe, uint vtx)
-	{
-		if (!Enabled) { return; }
-		_sb.Append(' ', _depth * 2).Append("DRAW ").Append(pipe).Append(" v=").Append(vtx).Append('\n');
-	}
-
-	public static void Upload(string what, int bytes)
-	{
-		if (!Enabled) { return; }
-		_sb.Append(' ', _depth * 2).Append("UPLOAD ").Append(what).Append(' ').Append(bytes).Append("B\n");
-	}
-
-	public static string Dump() => Enabled ? _sb.ToString() : "";
-}
-
-
-public sealed class WebGpuProfiler
-{
-	public static readonly bool Enabled = Environment.GetEnvironmentVariable("UNO_WEBGPU_PROFILE") is "1" or "true";
-	private static readonly double Ms = 1000.0 / System.Diagnostics.Stopwatch.Frequency;
-	private const int Window = 60;
-	private int _n;
-
-	// Window sums (ticks) + single-frame peaks.
-	private long _frameReq, _replay, _present, _beginFrame, _render, _submit, _poll, _acquire, _blit, _surface;
-	private long _pkFrame, _pkPoll, _pkRender, _pkPresent;
-	// Window count sums.
-	private long _cmds, _ops, _draws, _osLayer, _osBackdrop, _osCov, _osShadow, _backReCmds, _texCreate, _rent, _bgHit, _bgMiss, _bufNew, _upBytes;
-
-	// Per-frame temporaries (reset in FrameEnd after aggregation; FrameStart also resets for cleanliness — so a
-	// missing/unpaired FrameStart can't stall logging). No gate: adders always accumulate.
-	private long _tFrameReq, _tReplay, _tPresent, _tBeginFrame, _tRender, _tSubmit, _tPoll, _tAcquire, _tBlit, _tSurface;
-	private long _cCmds, _cOps, _cDraws, _cOsLayer, _cOsBackdrop, _cOsCov, _cOsShadow, _cBackReCmds, _cTexCreate, _cRent, _cBgHit, _cBgMiss, _cBufNew, _cUpBytes;
-	// Per-kind draw counts (which draws dominate a real scene: Solid/Path/Image/Gradient/Composite/Clip) — the lever
-	// for deciding where cross-visual coalescing pays off. `_cDCoal` counts solid ops folded away by coalescing.
-	private long _cDSolid, _cDPath, _cDImage, _cDGrad, _cDComp, _cDClip, _cDCoal, _cDRr;
-	private long _dSolid, _dPath, _dImage, _dGrad, _dComp, _dClip, _dCoal, _dRr;
-	// Window-level GC + wall clock marks (measured across the window, not per frame, so no FrameStart dependency).
-	private long _allocMark; private int _g0Mark, _g1Mark, _g2Mark; private long _flushMark; private bool _started;
-
-	public static long T() => System.Diagnostics.Stopwatch.GetTimestamp();
-
-	private void ResetFrameTemps()
-	{
-		_tFrameReq = _tReplay = _tPresent = _tBeginFrame = _tRender = _tSubmit = _tPoll = _tAcquire = _tBlit = _tSurface = 0;
-		_cCmds = _cOps = _cDraws = _cOsLayer = _cOsBackdrop = _cOsCov = _cOsShadow = _cBackReCmds = _cTexCreate = _cRent = _cBgHit = _cBgMiss = _cBufNew = _cUpBytes = 0;
-		_cDSolid = _cDPath = _cDImage = _cDGrad = _cDComp = _cDClip = _cDCoal = _cDRr = 0;
-	}
-
-	public void FrameStart() => ResetFrameTemps();
-
-	// Timing adders — pass a start timestamp captured with T().
-	public void FrameRequested(long t0) => _tFrameReq += T() - t0;
-	public void Replayed(long t0) => _tReplay += T() - t0;
-	public void Presented(long t0) => _tPresent += T() - t0;
-	public void BeginFrameT(long t0) => _tBeginFrame += T() - t0;
-	public void Render(long t0) => _tRender += T() - t0;
-	public void Submit(long t0) => _tSubmit += T() - t0;
-	public void Poll(long t0) => _tPoll += T() - t0;
-	public void Acquire(long t0) => _tAcquire += T() - t0;
-	public void Blit(long t0) => _tBlit += T() - t0;
-	public void Surface(long t0) => _tSurface += T() - t0;
-
-	// Counters.
-	public void Cmds(int n) => _cCmds += n;
-	public void Ops(int n) => _cOps += n;
-	public void Draw() => _cDraws++;
-	// kind: 0=solid 1=path 2=image 3=gradient 4=composite 5=clip. `coalesced` = solid ops merged into one draw.
-	public void DrawKind(int kind)
-	{
-		switch (kind)
-		{
-			case 0: _cDSolid++; break;
-			case 1: _cDPath++; break;
-			case 2: _cDImage++; break;
-			case 3: _cDGrad++; break;
-			case 4: _cDComp++; break;
-			case 5: _cDClip++; break;
-			case 6: _cDRr++; break;
-		}
-	}
-	public void Coalesced(int n) => _cDCoal += n;
-	public void OsLayer() => _cOsLayer++;
-	public void OsBackdrop(int reCmds) { _cOsBackdrop++; _cBackReCmds += reCmds; }
-	public void OsCov() => _cOsCov++;
-	public void OsShadow() => _cOsShadow++;
-	public void TexCreate() => _cTexCreate++;
-	public void Rent() => _cRent++;
-	public void BgHit() => _cBgHit++;
-	public void BgMiss() => _cBgMiss++;
-	public void BufNew() => _cBufNew++;
-	public void Upload(long bytes) => _cUpBytes += bytes;
-
-	// Called once per on-window frame (from the swapchain Present — the last frame step). Aggregates the frame's
-	// temporaries and logs one line every 30 frames OR every ~1s (whichever first — so even at very low fps a line
-	// appears within a second).
-	public void FrameEnd()
-	{
-		if (!_started) { _started = true; _allocMark = GC.GetAllocatedBytesForCurrentThread(); _g0Mark = GC.CollectionCount(0); _g1Mark = GC.CollectionCount(1); _g2Mark = GC.CollectionCount(2); _flushMark = T(); }
-		_frameReq += _tFrameReq; _replay += _tReplay; _present += _tPresent; _beginFrame += _tBeginFrame; _render += _tRender; _submit += _tSubmit; _poll += _tPoll; _acquire += _tAcquire; _blit += _tBlit; _surface += _tSurface;
-		var frame = _tFrameReq + _tPresent; if (frame > _pkFrame) { _pkFrame = frame; } if (_tPoll > _pkPoll) { _pkPoll = _tPoll; } if (_tRender > _pkRender) { _pkRender = _tRender; } if (_tPresent > _pkPresent) { _pkPresent = _tPresent; }
-		_cmds += _cCmds; _ops += _cOps; _draws += _cDraws; _osLayer += _cOsLayer; _osBackdrop += _cOsBackdrop; _osCov += _cOsCov; _osShadow += _cOsShadow; _backReCmds += _cBackReCmds; _texCreate += _cTexCreate; _rent += _cRent; _bgHit += _cBgHit; _bgMiss += _cBgMiss; _bufNew += _cBufNew; _upBytes += _cUpBytes;
-		_dSolid += _cDSolid; _dPath += _cDPath; _dImage += _cDImage; _dGrad += _cDGrad; _dComp += _cDComp; _dClip += _cDClip; _dCoal += _cDCoal; _dRr += _cDRr;
-		ResetFrameTemps();
-		_n++;
-		if (_n >= 30 || (T() - _flushMark) * Ms >= 1000.0) { Flush(); }
-	}
-
-	private void Flush()
-	{
-		if (_n == 0) { return; }
-		double A(long ticks) => ticks * Ms / _n;   // avg ms/frame
-		double Pk(long ticks) => ticks * Ms;        // single-frame peak ms
-		long C(long c) => c / _n;                   // avg count/frame
-		long alloc = GC.GetAllocatedBytesForCurrentThread() - _allocMark;
-		int g0 = GC.CollectionCount(0) - _g0Mark, g1 = GC.CollectionCount(1) - _g1Mark, g2 = GC.CollectionCount(2) - _g2Mark;
-		// frameReq (host DrawFrame) wraps record+replay; if it wasn't measured (e.g. a non-Win32 host or the smoke),
-		// fall back to replay+present so FRAME/fps/record stay sane instead of 0/Infinity/negative.
-		var totalTicks = _frameReq >= _replay ? _frameReq + _present : _replay + _present;
-		var record = _frameReq > _replay ? _frameReq - _replay : 0;
-		var frameMs = A(totalTicks);
-		var fps = frameMs > 0.001 ? 1000.0 / frameMs : 0;
-		System.Console.WriteLine(
-			$"[webgpu-profile] n={_n} FRAME={frameMs:F2}ms (~{fps:F0}fps: record={A(record):F2} replay={A(_replay):F2} present={A(_present):F2}) | " +
-			$"replay[beginFrame={A(_beginFrame):F2} render={A(_render):F2} submit={A(_submit):F2} poll={A(_poll):F2}] " +
-			$"present[acquire={A(_acquire):F2} blit={A(_blit):F2} surface={A(_surface):F2}] | " +
-			$"cnt/f: cmds={C(_cmds)} ops={C(_ops)} draws={C(_draws)}[S{C(_dSolid)} RR{C(_dRr)} P{C(_dPath)} I{C(_dImage)} G{C(_dGrad)} C{C(_dComp)} Clip{C(_dClip)} coal-{C(_dCoal)}] offscr={C(_osLayer + _osBackdrop + _osCov + _osShadow)}(L{C(_osLayer)} B{C(_osBackdrop)} Cov{C(_osCov)} Sh{C(_osShadow)}) backdropReCmds={C(_backReCmds)} texCreate={C(_texCreate)} rent={C(_rent)} bg(hit={C(_bgHit)} miss={C(_bgMiss)}) bufNew={C(_bufNew)} upload={C(_upBytes) / 1024}KB | " +
-			$"gc: alloc={alloc / _n / 1024}KB/f gen0={g0} gen1={g1} gen2={g2} | peak: FRAME={Pk(_pkFrame):F2} render={Pk(_pkRender):F2} poll={Pk(_pkPoll):F2} present={Pk(_pkPresent):F2}");
-		System.Console.Out.Flush();
-		_n = 0;
-		_frameReq = _replay = _present = _beginFrame = _render = _submit = _poll = _acquire = _blit = _surface = 0;
-		_pkFrame = _pkPoll = _pkRender = _pkPresent = 0;
-		_cmds = _ops = _draws = _osLayer = _osBackdrop = _osCov = _osShadow = _backReCmds = _texCreate = _rent = _bgHit = _bgMiss = _bufNew = _upBytes = 0;
-		_dSolid = _dPath = _dImage = _dGrad = _dComp = _dClip = _dCoal = _dRr = 0;
-		_allocMark = GC.GetAllocatedBytesForCurrentThread(); _g0Mark = GC.CollectionCount(0); _g1Mark = GC.CollectionCount(1); _g2Mark = GC.CollectionCount(2); _flushMark = T();
-	}
-}
-
-
 // One entry in a frame-solid recording's ordered emit list: a solid/rrect run (relative vert start into the
 // recording's cached SolidVerts/RrectVerts) or a spliced non-solid op (glyph/image/gradient).
 
@@ -244,7 +76,6 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 	public readonly WGPUTextureFormat ColorFormat;
 	public uint MsaaSamples { get; private set; } = 4;
 	public IntPtr Smp;                       // present-blit sampler (used by the swapchain/browser contexts)
-	public WebGpuProfiler Profiler;
 	private bool _hasFormatFeatures;
 	private readonly bool _browser;
 
@@ -297,7 +128,6 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		Q = wgpuDeviceGetQueue(Dev);
 		MsaaSamples = PickSampleCount();
 		CreatePresentSampler();
-		if (WebGpuProfiler.Enabled) { Profiler = new WebGpuProfiler(); }
 		System.Console.WriteLine($"[webgpu] init device — msaa={MsaaSamples}x fmtFeatures={_hasFormatFeatures} colorFormat={ColorFormat}");
 	}
 
@@ -311,7 +141,6 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		Q = wgpuDeviceGetQueue(Dev);
 		MsaaSamples = 4;         // browser (Dawn) init is async — can't synchronously probe; take spec-guaranteed 4×
 		CreatePresentSampler();
-		if (WebGpuProfiler.Enabled) { Profiler = new WebGpuProfiler(); }
 	}
 
 	/// <summary>Adopts an instance + a device imported from JS (browser bring-up). No adapter handle.</summary>
@@ -325,13 +154,9 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 	}
 
 	// MSAA sample count, no DPI/scale input: prefer 2× (needs the format feature), else 4× (spec-guaranteed), else 1×.
-	// UNO_WEBGPU_MSAA=1|2|4 forces a count. The browser can't synchronously probe → 4×.
+	// The browser can't synchronously probe → 4×.
 	private uint PickSampleCount()
 	{
-		var env = Environment.GetEnvironmentVariable("UNO_WEBGPU_MSAA");
-		if (env == "4") { return 4; }
-		if (env == "2") { return _hasFormatFeatures && SupportsSampleCount(2) ? 2u : 4u; }
-		if (env == "1") { return 1; }
 		if (_browser || OperatingSystem.IsBrowser()) { return 4; }
 		if (_hasFormatFeatures && SupportsSampleCount(2)) { return 2u; }
 		if (SupportsSampleCount(4)) { return 4u; }

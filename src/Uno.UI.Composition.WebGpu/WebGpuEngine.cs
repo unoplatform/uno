@@ -132,25 +132,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		while (_pendingCompiled.TryDequeue(out var c)) { DeferRelease(c.Owned); DeferRelease(c.StampOwned); if (c.XformSlot >= 0) { _freeXformSlots.Push(c.XformSlot); } }
 	}
 
-	// Diagnostic (UNO_RENDER_PERF): per-frame render CPU time + bind-group/buffer creates, logged from RunFrame.
-	// PerfBgCreates trends to ~0 in steady state once the cross-frame bind-group cache warms. Off by default.
-	internal static readonly bool PerfEnabled = Environment.GetEnvironmentVariable("UNO_RENDER_PERF") == "1";
-
-	// EXPERIMENTAL opt-in (UNO_WEBGPU_PIPELINE=1): don't block the CPU on a full GPU drain after each on-window
-	// frame — poll non-blocking so the CPU can record the next frame while the GPU renders the current one
-	// (~2x steady frame rate). Safe because pooled buffer/texture reuse and the persistent present target are
-	// ordered on the queue after the prior frame's reads, and transient textures are refcount-released (not
-	// destroyed) so wgpu frees them only once the GPU is done. Off by default (the drain is the conservative path);
-	// needs a real-GPU check for present-time tearing before it can become the default.
-	// Default ON: pooled-buffer reuse is queue-ordered (wgpuQueueWriteBuffer runs after the prior frame's reads) and
-	// transient textures are refcount-released, so non-blocking is safe; the swapchain's max-frames-in-flight
-	// provides backpressure. Set UNO_WEBGPU_PIPELINE=0 to force the old blocking drain (debugging / tearing check).
-	internal static readonly bool Pipeline = Environment.GetEnvironmentVariable("UNO_WEBGPU_PIPELINE") != "0";
-	public int PerfBgCreates, PerfBufCreates, PerfFrame;
-	public readonly System.Diagnostics.Stopwatch PerfSw = new();
-	public double PerfAccumMs;
-
-	public IntPtr TrackBg(IntPtr bg) { PerfBgCreates++; _pendingBindGroups.Add((nint)bg); return bg; }
+	public IntPtr TrackBg(IntPtr bg) { _pendingBindGroups.Add((nint)bg); return bg; }
 
 	// Uploads the frame's transform table into the persistent storage buffer (grown 1.5× on demand) and returns a
 	// bind group cached by buffer identity — rebuilt only when the buffer reallocates. Only the main on-window pass
@@ -179,7 +161,6 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 			var e = new WGPUBindGroupEntry { Binding = 0, Buffer = _xformBuf, Offset = 0, Size = _xformCap };
 			var bgd = new WGPUBindGroupDescriptor { Layout = XformBgl, EntryCount = 1, Entries = &e };
 			_xformBg = wgpuDeviceCreateBindGroup(Dev, &bgd);
-			PerfBgCreates++;
 		}
 		return _xformBg;
 	}
@@ -210,17 +191,15 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		{
 			foreach (var e in bucket)
 			{
-				if (e.Bgl == bgl && ((ReadOnlySpan<float>)e.Sig).SequenceEqual(sig)) { e.LastUsed = _bgFrameNo; bg = e.Bg; Profiler?.BgHit(); return true; }
+				if (e.Bgl == bgl && ((ReadOnlySpan<float>)e.Sig).SequenceEqual(sig)) { e.LastUsed = _bgFrameNo; bg = e.Bg; return true; }
 			}
 		}
-		Profiler?.BgMiss();
 		bg = default;
 		return false;
 	}
 
 	internal void AddCachedBg(nint bgl, float[] sig, IntPtr buf, IntPtr bg)
 	{
-		PerfBgCreates++;   // this path only runs on a cache miss (a bind group was just created)
 		var h = SigHash(bgl, sig);
 		if (!_bgCache.TryGetValue(h, out var bucket)) { bucket = new(); _bgCache[h] = bucket; }
 		bucket.Add(new CachedBg { Bgl = bgl, Sig = sig, Buf = buf, Bg = bg, LastUsed = _bgFrameNo });
@@ -263,9 +242,6 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	}
 	// Defers a single GPU buffer (e.g. an outgrown slab buffer) for release at the next frame start.
 	internal void DeferReleaseBuffer(nint buf) { if (buf != IntPtr.Zero) { _pendingBuffers.Add(buf); } }
-	// Detailed frame profiler (UNO_WEBGPU_PROFILE=1). Null when disabled — every hook is `Profiler?.X()` so there
-	// is zero overhead and no behaviour change off. Bracketed by the host DrawFrame (FrameStart) + Present (FrameEnd).
-	public WebGpuProfiler Profiler;
 
 	public IntPtr ImgBgl;
 	public IntPtr GradBgl;
@@ -294,19 +270,9 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	// Multisample count, probed per device at init (PickSampleCount): 2x when the device supports it for our colour
 	// format (half the MSAA colour/depth bandwidth + resolve cost of 4x for near-identical AA at typical DPI), else
 	// 4x — the only count besides 1 the WebGPU spec guarantees for every format (lavapipe/CI reject 2x for
-	// Bgra8Unorm). UNO_WEBGPU_MSAA=4 forces 4x. (1x/no-MSAA would need a separate no-resolve path — not wired.)
+	// Bgra8Unorm). (1x/no-MSAA would need a separate no-resolve path — not wired.)
 	// The host (WebGpuInitDevice) picks the MSAA sample count and bakes it here via the adopt ctor.
 	public uint MsaaSamples { get; private set; } = 4;
-
-	// TEMP DIAGNOSTIC (Win32 OOM): log + clamp every texture extent so an absurd size (e.g. a bad DPI/bounds
-	// computation) is visible in the console and doesn't hard-abort wgpu with "Not enough memory". Remove once
-	// the Win32 texture-allocation crash is root-caused.
-	internal static int _texCreateCount;
-	internal static void TexLog(string site, uint w, uint h, uint samples)
-	{
-		var n = System.Threading.Interlocked.Increment(ref _texCreateCount);
-		if (n <= 1000 || w > 16384 || h > 16384) { Console.WriteLine($"[webgpu] TEX #{n} {site} {w}x{h} x{samples}"); }
-	}
 
 	// The color-attachment format the pipelines + offscreen targets use. Rgba8Unorm by default (the
 	// offscreen/readback path assumes it); a swapchain renderer passes the surface's supported format.
@@ -338,8 +304,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		RrectSlab = new WebGpuSlab(this, 22);
 		SolidTableSlab = new WebGpuSlab(this, 7);
 		RrectTableSlab = new WebGpuSlab(this, 23);
-		if (WebGpuProfiler.Enabled) { Profiler = new WebGpuProfiler(); }
-		System.Console.WriteLine($"[webgpu] engine init — UNO_WEBGPU_PROFILE={WebGpuProfiler.Enabled} pipeline={Pipeline} msaa={MsaaSamples}x colorFormat={ColorFormat}");
+		System.Console.WriteLine($"[webgpu] engine init — msaa={MsaaSamples}x colorFormat={ColorFormat}");
 	}
 
 	/// <summary>Reads a surface's resolved single-sample texture back to CPU as tightly-packed RGBA8 (top-down). For RTB and tests.</summary>
@@ -476,7 +441,6 @@ fn clipCov(fcRaw: vec2<f32>, clip: ClipU) -> f32 {
 			MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D,
 			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding,
 		};
-		TexLog("CreateColorTarget", (uint)w, (uint)h, 1);
 		var tex = wgpuDeviceCreateTexture(Dev, &td);
 		return wgpuTextureCreateView(tex, null);
 	}
@@ -1129,14 +1093,11 @@ internal sealed unsafe class WebGpuTexturePool : IDisposable
 	{
 		lock (_gate)
 		{
-			_d.Profiler?.Rent();
 			foreach (var e in _entries)
 			{
 				if (!e.InUse && e.W == w && e.H == h && e.Samples == samples && e.Fmt == fmt && e.Usage == usage) { e.InUse = true; e.LastUsed = _frameNo; return e.View; }
 			}
-			_d.Profiler?.TexCreate();
 			var td = new WGPUTextureDescriptor { Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 }, Format = fmt, MipLevelCount = 1, SampleCount = (uint)samples, Dimension = WGPUTextureDimension._2D, Usage = usage };
-			WebGpuDevice.TexLog("Pool.Rent", (uint)w, (uint)h, (uint)samples);
 			var tex = wgpuDeviceCreateTexture(_d.Dev, &td);
 			var view = wgpuTextureCreateView(tex, null);
 			_entries.Add(new Entry { Tex = tex, View = view, W = w, H = h, Samples = samples, Fmt = fmt, Usage = usage, InUse = true, LastUsed = _frameNo });
@@ -1211,8 +1172,6 @@ internal sealed unsafe class WebGpuBufferPool : IDisposable
 			int cap = Math.Max(byteSize, 256);
 			var bd = new WGPUBufferDescriptor { Size = (nuint)cap, Usage = usage };
 			var buf = wgpuDeviceCreateBuffer(_d.Dev, &bd);
-			_d.PerfBufCreates++;
-			_d.Profiler?.BufNew();
 			_entries.Add(new Entry { Buf = buf, Cap = cap, Usage = usage, InUse = true });
 			return buf;
 		}
@@ -1278,7 +1237,6 @@ internal sealed unsafe class WebGpuRenderSurface
 			// TextureBinding so a resolved surface can be sampled (e.g. shadow coverage feeding the blur pass).
 			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.CopySrc | WGPUTextureUsage.TextureBinding,
 		};
-		WebGpuDevice.TexLog("Surface.color", (uint)width, (uint)height, 1);
 		Tex = wgpuDeviceCreateTexture(device.Dev, &td);
 		View = wgpuTextureCreateView(Tex, null);
 		CreateMultisampledTargets(device, width, height);
@@ -1334,7 +1292,6 @@ internal sealed unsafe class WebGpuRenderSurface
 				MipLevelCount = 1, SampleCount = device.MsaaSamples, Dimension = WGPUTextureDimension._2D,
 				Usage = WGPUTextureUsage.RenderAttachment,
 			};
-			WebGpuDevice.TexLog("Surface.msaa", (uint)width, (uint)height, device.MsaaSamples);
 			MsaaColorTex = wgpuDeviceCreateTexture(device.Dev, &cd);
 			MsaaColorView = wgpuTextureCreateView(MsaaColorTex, null);
 		}
@@ -1348,7 +1305,6 @@ internal sealed unsafe class WebGpuRenderSurface
 			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 }, Format = WebGpuDevice.DepthStencilFormat,
 			MipLevelCount = 1, SampleCount = device.MsaaSamples, Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.RenderAttachment,
 		};
-		WebGpuDevice.TexLog("Surface.depth", (uint)width, (uint)height, device.MsaaSamples);
 		DepthTex = wgpuDeviceCreateTexture(device.Dev, &dd);
 		DepthView = wgpuTextureCreateView(DepthTex, null);
 	}
@@ -1425,7 +1381,6 @@ internal sealed unsafe class WebGpuSlab
 			var bd = new WGPUBufferDescriptor { Size = (nuint)(_bufVerts * _stride * sizeof(float)), Usage = WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst };
 			Buf = wgpuDeviceCreateBuffer(_d.Dev, &bd);
 			fixed (float* p = dst) { wgpuQueueWriteBuffer(_d.Q, Buf, 0, (IntPtr)p, (nuint)(needFloats * sizeof(float))); }
-			_d.Profiler?.Upload(needFloats * sizeof(float));
 			return byteOff;
 		}
 		// Dirty diff vs the shadow: first/last changed float. Identical → nothing to upload (the common static case).
@@ -1435,7 +1390,6 @@ internal sealed unsafe class WebGpuSlab
 		int len = hi - lo + 1;
 		src.Slice(lo, len).CopyTo(slot.Slice(lo, len));
 		fixed (float* p = &dst[voff * _stride + lo]) { wgpuQueueWriteBuffer(_d.Q, Buf, (nuint)(byteOff + lo * sizeof(float)), (IntPtr)p, (nuint)(len * sizeof(float))); }
-		_d.Profiler?.Upload(len * sizeof(float));
 		return byteOff;
 	}
 }
