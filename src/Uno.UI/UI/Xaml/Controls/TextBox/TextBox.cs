@@ -39,7 +39,6 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Shapes;
-using SkiaSharp;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml;
