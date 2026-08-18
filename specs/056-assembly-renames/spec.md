@@ -30,7 +30,7 @@ Both names are historical artifacts rather than deliberate API choices:
 | Decision | Outcome |
 |---|---|
 | `Uno.UWP` folder + csprojs | **`src/Uno`** + `Uno.{Skia,Reference,Wasm,netcoremobile}.csproj` (csproj names unchanged) |
-| `Uno` `AssemblyName` | **Unchanged.** The assembly stays `Uno.dll` — see below |
+| `Uno` `AssemblyName` | **Unchanged in this change.** Stays `Uno.dll`; renamed to `Uno.WinRT` later in the 7.0 preview line — see below |
 | `Uno.UI.Toolkit` new name | **`Uno.UI.Extras`** — folder, csprojs, `AssemblyName`, root namespace |
 | Namespace scope (Extras) | Only `Uno.UI.Toolkit`, `.DevTools.*`, `.Extensions` move |
 | `RootNamespace` (WinRT) | Unchanged (`Windows`) — the projected API surface must not move |
@@ -39,26 +39,68 @@ Both names are historical artifacts rather than deliberate API choices:
 | PackageDiff | Part A: no delta. Part B: baseline reset, not per-member enumeration |
 | PR base branch | `feature/breakingchanges` (not `master`) |
 
-### Why the assembly keeps its name
+### When the assembly gets renamed
 
-The rename to `Uno.WinRT.dll` was implemented, and CI showed the cost was larger than the
-benefit. `Uno.dll` and `Uno.WinRT.dll` are different assembly identities, so every binary
-compiled against Uno 6.x stops binding — including `Uno.UI.HotDesign`, which the Uno.Sdk
-references implicitly in **every Debug app build**, and which transitively pulls
-`Uno.Toolkit.WinUI` and `Uno.Themes.WinUI`. All of them carry an assembly reference to `Uno`, so
-every template build failed with `CS0012` on projected types such as
-`Windows.UI.Core.CoreDispatcher`. The same identity split silently broke the XAML generator
-(duplicate `Windows.*` types make `GetTypeByMetadataName` return null) and the WASM browser head
-(`getAssemblyExports("Uno")` resolves at runtime, so nothing catches it at compile time).
+The rename to `Uno.WinRT.dll` **is happening in 7.0** — but not in this change, and not first. It
+was implemented in August 2026 and reverted; this section records why, and what has to be true
+before it is re-applied.
 
-None of that buys a functional improvement: the name is cosmetic, and every downstream Uno-family
-package would have to ship a rebuilt 7.0 line before the platform's own CI could go green — a flag
-day this repository cannot bootstrap on its own. The folder and csproj move delivers the
-maintainer-facing clarity with none of that, and the sync-generator relocation work that depends on
-this landing first couples to the *path*, not the assembly name.
+`Uno.dll` and `Uno.WinRT.dll` are different assembly identities, so every binary compiled against
+Uno 6.x stops binding. That alone is not what makes it expensive: 7.0 breaks compatibility by
+design, and the first-party ecosystem is being rebuilt for it regardless. What makes it expensive
+is **ordering** — this repository's CI must go green before the dependents that consume its output
+can be rebuilt against it.
 
-Renaming the assembly remains possible in a later major, on its own, once the ecosystem is already
-on 7.0.
+Three failure classes surfaced. Two are one-line fixes:
+
+| Failure | Cost |
+|---|---|
+| WASM `getAssemblyExports("Uno")` — a runtime lookup no compiler checks | one line in `CoreApplication.ts` |
+| XAML generator resolving duplicate `Windows.*` types — `GetTypeByMetadataName` returns null on ambiguity, so properties are *silently* dropped | drop the stale package reference from generator test fixtures |
+| **Template Debug builds fail with `CS0012`** | **structural — see below** |
+
+The Uno.Sdk references `Uno.UI.HotDesign` implicitly in **every Debug app build**, which
+transitively pulls `Uno.Toolkit.WinUI` and `Uno.Themes.WinUI`. Metadata read of
+`Uno.Toolkit.WinUI` 6.3.0-dev.6 (net8.0), counting type references per target assembly:
+
+| Binary | → `Uno` | → `Uno.UI` | → `Uno.UI.Toolkit` |
+|---|---|---|---|
+| `Uno.Toolkit.WinUI.dll` | 18 | 254 | 2 |
+| `Uno.Toolkit.WinUI.Material.dll` | 2 | 125 | 2 |
+| `Uno.Toolkit.Skia.WinUI.dll` | 4 | 71 | 1 |
+| `Uno.Toolkit.WinUI.Cupertino.dll` | 2 | 70 | 2 |
+
+The 18 include `Windows.UI.Color`, `Windows.UI.Text.FontWeight`, `Windows.System.VirtualKey` and
+`Windows.UI.Core.CoreDispatcher` — types that appear throughout public signatures. **This is the
+difference between an API removal and an assembly rename: a removal breaks a pre-built consumer
+only if that consumer touches the removed member, while a rename makes the assembly reference
+itself unresolvable, so every consumer fails unconditionally.**
+
+#### What must be true before re-applying it
+
+7.0 has not shipped and previews publish continuously, so the rename is sequenced *inside* the 7.0
+preview line rather than deferred to a later major:
+
+1. The first-party upgrade waves put `Uno.Toolkit`, `Uno.Themes` and — critically —
+   `Uno.UI.HotDesign` onto 7.0 preview builds. HotDesign lands last of the three, and it is the one
+   the Uno.Sdk pulls into every Debug build.
+2. Only then is the rename re-applied. Every dependent already has a 7.0 build in flight at that
+   point and simply re-rolls against a newer preview — ordinary preview churn, not a flag day.
+
+Deferring to 8.0 instead would buy a **second** ecosystem-wide rebuild for a change that is purely
+cosmetic, which is strictly worse than paying for it inside a rebuild that is already funded.
+
+The three reverted commits remain in this branch's history and are the starting point for the
+follow-up work.
+
+#### The same mechanism applies to Part B
+
+`Uno.Toolkit.WinUI.dll` references `Uno.UI.Toolkit.ElevatedView` and
+`Uno.UI.Toolkit.GlobalStaticResources`. Part B ships with no type-forwarders, so it faces the
+identical unresolvable-reference problem on a narrower surface — and because
+`GlobalStaticResources` runs during resource initialization, the failure can present as a startup
+`TypeLoadException` rather than a compile error. **Part B must be validated against a template
+Debug build before it merges.** It is the cheap rehearsal for Part A's eventual rename.
 
 ### Why `Uno.UI.Extras`
 
@@ -102,7 +144,7 @@ Toolkit. The assembly name and root namespace matching exactly is not worth the 
 | Output | `Uno.dll` in `bin/Uno.<variant>/` | unchanged |
 | `RootNamespace` | `Windows` | unchanged |
 | NuGet package id | `Uno.WinRT` | unchanged |
-| `AndroidResgenNamespace` | `Uno.UWP` | unchanged — renaming it is a public-type change in the mobile head for no gain |
+| `AndroidResgenNamespace` | `Uno.UWP` | unchanged — **deliberate, not an oversight.** The generated `Uno.UWP.Resource` type is public in the mobile head and matches the 6.6 PackageDiff baseline; renaming it would register as a removed public type and need a fresh ignore entry, to buy nothing |
 
 Nothing ships differently: the package, the assembly, and every type keep their identity, so
 PackageDiff sees no delta and consumers need no action.
@@ -247,7 +289,7 @@ pass `-p:UnoTargetFrameworkOverride=net10.0` (plus `-p:UnoFastDevBuild=true` for
 
 Checks 3, 4, 6 and 8 are the ones that fail *silently* — a green Skia build proves none of them.
 
-### Why the identity split had to be abandoned (found during Part A)
+### Why the identity split is deferred (found during Part A)
 
 Two identities for one assembly means both can be referenced by a single compilation. Every
 `Windows.*` type is then defined twice, and Roslyn's `Compilation.GetTypeByMetadataName` returns
@@ -260,7 +302,9 @@ pre-7.0 binaries the Uno.Sdk pulls implicitly had nothing to bind to, and every 
 build failed with `CS0012`. And the WASM browser head resolves its exports by assembly name at
 runtime (`getAssemblyExports`), so the rename broke app startup with no compile-time signal.
 
-Together these are why Part A now moves the folder only. The lesson generalises: an assembly
+Together these are why Part A now moves the folder only, and why the rename waits for the
+first-party upgrade waves ([When the assembly gets renamed](#when-the-assembly-gets-renamed)).
+The lesson generalises: an assembly
 identity is referenced by *string* from source generators, trimming descriptors, ALC helpers and
 JavaScript interop, and none of those are type-checked.
 
