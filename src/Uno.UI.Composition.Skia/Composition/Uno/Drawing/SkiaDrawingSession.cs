@@ -228,40 +228,23 @@ internal class SkiaDrawingSession : IDrawingSession
 	public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool antialias)
 		=> _canvas.DrawLine(p0.X, p0.Y, p1.X, p1.Y, StrokePaint(color, strokeWidth, antialias));
 
-	// Resolves an ITexture to an SKImage. Fast path: a SkiaTexture is used directly (owned=false).
-	// Cross-backend fallback (e.g. a WebGPU texture reaching a Skia RenderTargetBitmap pass): read the neutral
-	// pixels and materialize a transient SKImage (owned=true → dispose after drawing).
-	private static unsafe SKImage ResolveImage(ITexture texture, out bool owned)
-	{
-		if (texture is SkiaTexture s)
-		{
-			owned = false;
-			return s.Image;
-		}
-		owned = true;
-		var info = new SKImageInfo(texture.PixelWidth, texture.PixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
-		var buffer = new byte[texture.PixelWidth * texture.PixelHeight * 4];
-		texture.CopyPixels(buffer);
-		return SKImage.FromPixelCopy(info, buffer);
-	}
+	// A Skia session only draws Skia-created textures: every texture reaching a draw comes from the session's own
+	// factory. A foreign (e.g. WebGPU) texture would need a cross-backend GPU readback, which is not supported —
+	// readback is async-only, via IDrawingFactory.SnapshotAsync.
+	private static SKImage ResolveImage(ITexture texture)
+		=> texture is SkiaTexture s
+			? s.Image
+			: throw new NotSupportedException($"The Skia backend cannot draw a {texture.GetType().Name}: a texture created by another backend cannot be drawn directly.");
 
 	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, float opacity, bool antialias)
-	{
-		var image = ResolveImage(texture, out var owned);
-		_canvas.DrawImage(image, x, y, ToSK(sampling), ImagePaint(antialias, opacity, colorFilter: null));
-		if (owned) { image.Dispose(); }
-	}
+		=> _canvas.DrawImage(ResolveImage(texture), x, y, ToSK(sampling), ImagePaint(antialias, opacity, colorFilter: null));
 
 	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias)
-	{
-		var image = ResolveImage(texture, out var owned);
-		_canvas.DrawImage(image, x, y, ToSK(sampling), ImagePaint(antialias, opacity: 1f, colorFilter));
-		if (owned) { image.Dispose(); }
-	}
+		=> _canvas.DrawImage(ResolveImage(texture), x, y, ToSK(sampling), ImagePaint(antialias, opacity: 1f, colorFilter));
 
 	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias)
 	{
-		var skImage = ResolveImage(texture, out var owned);
+		var skImage = ResolveImage(texture);
 		var center = new SKRectI((int)centerSlice.Left, (int)centerSlice.Top, (int)centerSlice.Right, (int)centerSlice.Bottom);
 		var dst = destination.ToSKRect();
 		var skPaint = ImagePaint(antialias, opacity: 1f, colorFilter: null);
@@ -276,7 +259,6 @@ internal class SkiaDrawingSession : IDrawingSession
 		{
 			_canvas.DrawImageNinePatch(skImage, center, dst, skPaint);
 		}
-		if (owned) { skImage.Dispose(); }
 	}
 
 	private static SKPaint Spare()

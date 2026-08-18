@@ -15,11 +15,4 @@ public interface ITexture : IDisposable
 	int PixelWidth { get; }
 
 	int PixelHeight { get; }
-
-	/// <summary>
-	/// Neutral pixel readback (BGRA8888 premultiplied, tightly packed), used only as a cross-backend fallback: a
-	/// session whose backend didn't create this texture reads the pixels and materializes its own resource. The
-	/// matched backend never calls this — it casts the texture to its concrete type.
-	/// </summary>
-	void CopyPixels(Span<byte> destination);
 }
