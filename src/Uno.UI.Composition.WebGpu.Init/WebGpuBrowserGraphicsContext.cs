@@ -31,12 +31,6 @@ internal sealed unsafe class WebGpuBrowserGraphicsContext : ISwapChain, IWebGpuD
 	private int _w, _h;
 	private bool _configured;
 
-	// Headless verification: with UNO_WEBGPU_READBACK=1, copy the offscreen frame back to CPU once (after content
-	// has settled) and log its non-transparent pixel count via an async JS mapAsync — SwiftShader renders WebGPU
-	// correctly to a texture even though it can't composite the canvas, so a readback is the only headless proof.
-	private static readonly bool _readbackEnabled = Environment.GetEnvironmentVariable("UNO_WEBGPU_READBACK") == "1";
-	private bool _readbackInFlight;
-
 	// A 1-sample fullscreen-blit pipeline that samples _presentView into the canvas texture. SwiftShader only
 	// composites the canvas from a render pass targeting it directly (not a resolve or a copy), so present blits.
 	private IntPtr _blitModule;
@@ -58,7 +52,6 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 	{
 		_device = device;
 		CreateSurface(canvasId);
-		if (_readbackEnabled) { Console.WriteLine("[webgpu] UNO-READBACK-ENABLED=1"); }
 	}
 
 	private void CreateSurface(string canvasId)
@@ -135,37 +128,6 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 		wgpuTextureViewRelease(canvasView);
 		wgpuTextureRelease(_canvasTexture);
 		_canvasTexture = IntPtr.Zero;
-
-		// Headless verification (UNO_WEBGPU_READBACK=1): read the freshly-presented offscreen frame back to CPU and
-		// log its pixel stats. Present() only runs when a frame was actually drawn, so each present carries new
-		// content; re-arming per present (skipping while a map is in flight) means navigating between samples logs
-		// each new frame — the only way to observe WebGPU output headless, where SwiftShader can't composite a canvas.
-		if (_readbackEnabled && !_readbackInFlight)
-		{
-			_readbackInFlight = true;
-			ReadbackOffscreen();
-		}
-	}
-
-	private void ReadbackOffscreen()
-	{
-		int w = _w, h = _h;
-		uint unpadded = (uint)(w * 4);
-		uint padded = (unpadded + 255u) & ~255u;   // wgpu requires 256-byte row alignment for T2B copies
-		ulong total = (ulong)padded * (uint)h;
-		var bd = new WGPUBufferDescriptor { Size = (nuint)total, Usage = WGPUBufferUsage.CopyDst | WGPUBufferUsage.MapRead };
-		var buf = wgpuDeviceCreateBuffer(_device.Dev, &bd);
-		var enc = wgpuDeviceCreateCommandEncoder(_device.Dev, null);
-		var src = new WGPUTexelCopyTextureInfo { Texture = _presentTex, Aspect = WGPUTextureAspect.All, MipLevel = 0, Origin = default };
-		var dst = new WGPUTexelCopyBufferInfo { Buffer = buf, Layout = new WGPUTexelCopyBufferLayout { Offset = 0, BytesPerRow = padded, RowsPerImage = (uint)h } };
-		var ext = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 };
-		wgpuCommandEncoderCopyTextureToBuffer(enc, &src, &dst, &ext);
-		var cb = wgpuCommandEncoderFinish(enc, null);
-		wgpuQueueSubmit(_device.Q, 1, (IntPtr)(&cb));
-
-		// mapAsync must run off the event loop (the in-WASM DevicePoll busy-spin can't yield); hand the buffer ptr to
-		// JS. The await lives in a non-unsafe helper — 'await' is illegal inside this unsafe class's members (CS4004).
-		_ = WebGpuReadbackReporter.ReportAsync(buf, w, h, (int)padded, () => _readbackInFlight = false);
 	}
 
 	private void EnsureBlitPipeline()
@@ -218,8 +180,7 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 			MipLevelCount = 1,
 			SampleCount = 1,
 			Dimension = WGPUTextureDimension._2D,
-			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding
-				| (_readbackEnabled ? WGPUTextureUsage.CopySrc : 0),
+			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding,
 		};
 		_presentTex = wgpuDeviceCreateTexture(_device.Dev, &td);
 		_presentView = wgpuTextureCreateView(_presentTex, null);
@@ -263,24 +224,5 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 		if (_presentTex != IntPtr.Zero) { wgpuTextureRelease(_presentTex); _presentTex = IntPtr.Zero; }
 		if (_surface != IntPtr.Zero) { wgpuSurfaceRelease(_surface); _surface = IntPtr.Zero; }
 		_device.Dispose();
-	}
-}
-
-/// <summary>Non-unsafe home for the readback's async continuation (await is illegal inside the unsafe graphics
-/// context class). Maps the readback buffer off the event loop via JS and logs the offscreen frame's pixel stats.</summary>
-internal static class WebGpuReadbackReporter
-{
-	public static async System.Threading.Tasks.Task ReportAsync(IntPtr buf, int w, int h, int bytesPerRow, Action onDone)
-	{
-		try
-		{
-			var opaque = await WebGpuJsInterop.MapReadStatsAsync((int)buf, w, h, bytesPerRow);
-			Console.WriteLine($"[webgpu] UNO-READBACK {w}x{h} opaquePixels={opaque} (of {w * h})");
-			WGPU.wgpuBufferDestroy(buf);
-		}
-		finally
-		{
-			onDone();
-		}
 	}
 }

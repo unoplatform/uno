@@ -970,8 +970,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// (no follow-up LoadOp.Load overlay pass), so the fast path's MSAA target resolves on-tile (StoreOp.Discard).
 	private List<WebGpuCommand> _pendingCmds;
 	private WColor? _pendingClear;
-	private long _tReplayStart;
-	private static int _streamDumpFrame;
 	internal WebGpuPresentSession(WebGpuDevice d, WebGpuRenderSurface s, IDrawingFactory factory) { _d = d; _s = s; _factory = factory; _overlay = new WebGpuCommandRecorder(factory); }
 
 	// Runs a frame: opens the shared encoder (if not already inside one), renders, then finishes+submits once.
@@ -979,39 +977,22 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private void RunFrame(List<WebGpuCommand> cmds, WColor? clear, bool load = false)
 	{
 		var owns = _frameEncoder == IntPtr.Zero;
-		if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); if (WebGpuDevice.PerfEnabled) { _d.PerfBgCreates = 0; _d.PerfBufCreates = 0; _d.PerfSw.Restart(); } }
-			var pr = _d.Profiler;
-			var tRender = WebGpuProfiler.T();
-			try
+		if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); }
+		try
+		{
+			RenderInto(cmds, _s, clear, load);
+		}
+		finally
+		{
+			if (owns)
 			{
-				RenderInto(cmds, _s, clear, load);
-			}
-			finally
-			{
-				if (owns)
-				{
-					pr?.Render(tRender);
-					var tSubmit = WebGpuProfiler.T();
-					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
-					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
-					pr?.Submit(tSubmit);
-					// Pump the device. Blocking (wait=1) fully drains the GPU each frame (conservative, serializes CPU/GPU);
-					// UNO_WEBGPU_PIPELINE polls non-blocking (wait=0) so the CPU can overlap the next frame with the GPU.
-					var tPoll = WebGpuProfiler.T();
-					wgpuDevicePoll(_d.Dev, WebGpuDevice.Pipeline ? 0u : 1u, null);
-					pr?.Poll(tPoll);
-					_frameEncoder = IntPtr.Zero;
-				if (WebGpuDevice.PerfEnabled)
-				{
-					_d.PerfSw.Stop();
-					_d.PerfAccumMs += _d.PerfSw.Elapsed.TotalMilliseconds;
-					_d.PerfFrame++;
-					if (_d.PerfFrame == 1 || _d.PerfFrame % 20 == 0)
-					{
-						System.Console.Error.WriteLine($"RENDERPERF frame={_d.PerfFrame} cmds={cmds.Count} bgCreates={_d.PerfBgCreates} bufCreates={_d.PerfBufCreates} frameMs={_d.PerfSw.Elapsed.TotalMilliseconds:F2} avgMs={_d.PerfAccumMs / _d.PerfFrame:F2}");
-						System.Console.Error.Flush();
-					}
-				}
+				var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
+				wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+				// Pump the device non-blocking (wait=0) so the CPU can overlap the next frame with the GPU: pooled-buffer
+				// reuse is queue-ordered (wgpuQueueWriteBuffer runs after the prior frame's reads) and transient textures
+				// are refcount-released, so it is safe; the swapchain's max-frames-in-flight provides backpressure.
+				wgpuDevicePoll(_d.Dev, 0u, null);
+				_frameEncoder = IntPtr.Zero;
 			}
 		}
 	}
@@ -1151,7 +1132,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var size = data.Length * sizeof(float);
 		var buf = _d.BufferPool.Rent(size, WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst);
 		fixed (float* p = data) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, (nuint)size); }
-		_d.Profiler?.Upload(size);
 		return buf;
 	}
 
@@ -1162,7 +1142,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var size = span.Length * sizeof(float);
 		var buf = _d.BufferPool.Rent(size, WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst);
 		fixed (float* p = span) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, (nuint)size); }
-		_d.Profiler?.Upload(size);
 		return buf;
 	}
 
@@ -1274,7 +1253,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// shadow textures are not pooled/freed yet — fine for offscreen/one-shot; the on-window path needs cleanup.
 	private IntPtr RenderShadow(ShadowCmd sh, out Vector2 origin, out Vector2 size)
 	{
-		_d.Profiler?.OsShadow();
 		float pad = MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f;
 		origin = new Vector2(sh.BbMin.X - pad, sh.BbMin.Y - pad);
 		int sw = Math.Clamp((int)MathF.Ceiling(sh.BbMax.X - sh.BbMin.X + 2 * pad), 1, 4096);
@@ -1300,20 +1278,16 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var dsa = new WGPURenderPassDepthStencilAttachment { View = cov.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
-		WebGpuTrace.Pass("shadow-coverage", sw, sh2, _d.MsaaSamples, true);
 		wgpuRenderPassEncoderSetPipeline(pass, sh.EvenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
 		wgpuRenderPassEncoderSetBindGroup(pass, 0, MakeClipBg(_d.ClipBgl, default), 0, (uint*)null);   // identity xform (shadow fan already NDC)
 		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanNdc.Length * sizeof(float)));
 		wgpuRenderPassEncoderDraw(pass, (uint)(fanNdc.Length / 2), 1, 0, 0);
-		WebGpuTrace.Draw(sh.EvenOdd ? "shadow-stencil-eo" : "shadow-stencil-nz", (uint)(fanNdc.Length / 2));
 		wgpuRenderPassEncoderSetPipeline(pass, _d.CoverPipe);
 		wgpuRenderPassEncoderSetBindGroup(pass, 0, noClip, 0, (uint*)null);
 		wgpuRenderPassEncoderSetStencilReference(pass, 0);
 		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, coverBuf, 0, (nuint)(cq.Count * sizeof(float)));
 		wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
-		WebGpuTrace.Draw("shadow-cover", 6);
 		wgpuRenderPassEncoderEnd(pass);
-		WebGpuTrace.PassEnd();
 		if (_d.MsaaSamples > 1) { _d.Pool.Return(cov.MsaaColorView); }   // at 1x MsaaColorView aliases cov.View (blurred next) — don't reclaim
 		_d.Pool.Return(cov.DepthView);
 
@@ -1374,13 +1348,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = dst, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
-		WebGpuTrace.Pass(downsample ? "blur-down" : (dir.X != 0 ? "blur-h" : "blur-v"), 0, 0, 1, true);
 		wgpuRenderPassEncoderSetPipeline(pass, _d.BlurPipe);
 		wgpuRenderPassEncoderSetBindGroup(pass, 0, bg, 0, (uint*)null);
 		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-		WebGpuTrace.Draw("blur", 3);
 		wgpuRenderPassEncoderEnd(pass);
-		WebGpuTrace.PassEnd();
 	}
 
 	public void Replay(IRenderRecord data)
@@ -1390,15 +1361,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (data is not WebGpuRenderRecord rd) { return; }
 		lock (_d.RenderGate)
 		{
-			WebGpuTrace.Reset();
-			var pr = _d.Profiler;
-			_tReplayStart = WebGpuProfiler.T();
-			pr?.Cmds(rd.Commands.Count);
-			var tBf = WebGpuProfiler.T();
 			_d.BeginFrameResources();   // reclaim last frame's pooled textures/buffers + release its bind groups
 			_d.SolidSlab.BeginFrame(); _d.RrectSlab.BeginFrame();   // reset the shared slabs' live sets for this frame
 			_d.SolidTableSlab.BeginFrame(); _d.RrectTableSlab.BeginFrame();
-			pr?.BeginFrameT(tBf);
 			// Apply the root DPI scale to the whole (logical-coord) frame. Nested retained recordings keep their
 			// command-list reference (only their Transform gains the scale) so the geometry cache still hits.
 			// The actual render is deferred to Dispose so the immediate-mode overlay can be inlined (single pass).
@@ -1677,7 +1642,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			wgpuRenderPassEncoderSetScissorRect(pass, (uint)px, (uint)py, (uint)pw, (uint)ph);
 			wgpuRenderPassEncoderSetPipeline(pass, _d.ClipDepthSet0);
 			wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-			WebGpuTrace.Draw("clipdepth-set0(restore-prev)", 3);
 		}
 		if (next.PathFan is not { } fan || !TryScissor(next.Aabb, out var nx, out var ny, out var nw, out var nh))
 		{
@@ -1688,7 +1652,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// 1) fill the bbox with the "clipped" depth (intersect: 1 = clipped outside the shape; exclude: 0).
 		wgpuRenderPassEncoderSetPipeline(pass, excl ? _d.ClipDepthSet0 : _d.ClipDepthSet1);
 		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-		WebGpuTrace.Draw(excl ? "clipdepth-set0(fill)" : "clipdepth-set1(fill)", 3);
 		// 2) stencil the clip fan (winding) in full-window NDC.
 		IntPtr fanBuf; int fanVerts;
 		if (next.FanBuf != 0 && next.FanW == (int)_s.Width && next.FanH == (int)_s.Height) { fanBuf = (IntPtr)next.FanBuf; fanVerts = fan.Length / 2; }
@@ -1697,13 +1660,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		wgpuRenderPassEncoderSetBindGroup(pass, 0, MakeClipBg(_d.ClipBgl, default), 0, (uint*)null);   // identity xform (clip fan already NDC)
 		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanVerts * 2 * sizeof(float)));
 		wgpuRenderPassEncoderDraw(pass, (uint)fanVerts, 1, 0, 0);
-		WebGpuTrace.Draw(next.PathEvenOdd ? "clip-stencil-eo" : "clip-stencil-nz", (uint)(_scratch.Count / 2));
 		// 3) cover: write the "kept" depth (intersect: 0 inside the shape; exclude: 1) where the stencil is set,
 		// and reset the stencil to 0 (PassOp=Zero) so the next fill/clip starts clean.
 		wgpuRenderPassEncoderSetPipeline(pass, excl ? _d.ClipDepthCover1 : _d.ClipDepthCover0);
 		wgpuRenderPassEncoderSetStencilReference(pass, 0);
 		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-		WebGpuTrace.Draw(excl ? "clipdepth-cover1" : "clipdepth-cover0", 3);
 	}
 
 	// Gap-4 solid-scroll eligibility: a frame-solid recording whose SESSION clip is plain-AABB/None and whose commands
@@ -1802,9 +1763,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			long id = (fe is not null && fe.SlabId != 0) ? fe.SlabId : _d.NextSlabId();
 			fe = new WebGpuGeometryCache { TableFrame = true, FrameSolid = true, SlabId = id, FrameOrder = order, TableSolids = sv, TableRrects = rv, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = slot };
 			rr.Data.Compiled = fe;
-			WebGpuTrace.Upload("geometry-build(table-frame-solid)", order.Count);
 		}
-		else { WebGpuTrace.Upload("geometry-reuse(table-frame-solid)", 0); }
 		// Re-derive the CURRENT slab byte offset of this recording's slices every frame: reuse the resident slice when it
 		// survived last frame (no upload), else re-Put its UNCHANGED local verts (the slice was culled + its offset
 		// reclaimed). NEVER a cached absolute offset — that stale-offset-into-a-reclaimed-slice was the crash the redo fixes.
@@ -1996,13 +1955,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								// A repeat emission is not cached (its slice is transient); free its bind groups next frame.
 								if (repeat) { _d.DeferRelease(fOwned); }
 								else { fe.Device = _d; rr.Data.Compiled = fe; }
-								WebGpuTrace.Upload("geometry-build(frame-solid)", order.Count);
 							}
 							else
 							{
 								// Pure reuse (no rebuild): re-derive the CURRENT slab base. TryByteOffset marks the slice live
 								// on a hit; if it was culled last frame its offset was reclaimed, so re-Put the resident verts.
-								WebGpuTrace.Upload("geometry-reuse(frame-solid)", 0);
 								if (fe.FrameSolidVerts is { Count: > 0 } && !_d.SolidSlab.TryByteOffset(fe.SlabId, out sBase)) { sBase = _d.SolidSlab.Put(fe.SlabId, fe.FrameSolidVerts); }
 								if (fe.FrameRrectVerts is { Count: > 0 } && !_d.RrectSlab.TryByteOffset(fe.SlabId, out rBase)) { rBase = _d.RrectSlab.Put(fe.SlabId, fe.FrameRrectVerts); }
 							}
@@ -2050,9 +2007,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									for (int _ri = 0; _ri < aOps.Count; _ri++) { aOps[_ri] = ResidentizeFan(aOps[_ri], aOwned); }
 								entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, PurePath = aPure, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot };
 								rr.Data.Compiled = entry;
-								WebGpuTrace.Upload("geometry-build(new,arena)", aOps.Count);
 							}
-							else { WebGpuTrace.Upload("geometry-reuse(cache-hit)", 0); }
 							// Per frame (even on a cache/stamp hit): the identity-space verts map to the current replay
 							// transform + surface projection via this one table entry — the whole arena move/resize path.
 							if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, rr.Transform); }
@@ -2104,11 +2059,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							for (int _ri = 0; _ri < cachedOps.Count; _ri++) { cachedOps[_ri] = ResidentizeFan(cachedOps[_ri], owned); }
 							entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = cSlot };
 							rr.Data.Compiled = entry;
-							// Rebuild signal: transform-only changes SHOULD become a uniform re-stamp under arena (#22),
-							// not a full geometry rebuild — this UPLOAD line is what a moved-visual multi-frame trace watches.
-							WebGpuTrace.Upload(transformChanged ? "geometry-rebuild(transform-changed)" : "geometry-build(new)", cachedOps.Count);
 						}
-						else { WebGpuTrace.Upload("geometry-reuse(cache-hit)", 0); }
 						// Device-space verts => the slot's entry is the pure current projection (rewritten per frame so a
 						// resize repositions the path fills via the table without re-baking).
 						if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, Matrix4x4.Identity); }
@@ -2146,7 +2097,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// Render the layer's commands into a full-size offscreen surface, then composite (kind 4). Both the
 					// offscreen render and this composite record into the frame's single encoder, so wgpu barriers the
 					// offscreen resolve before the composite samples it — no explicit flush needed.
-					_d.Profiler?.OsLayer();
 					var layerSurface = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
 					RenderInto(lyr.Commands, layerSurface, null);
 
@@ -2261,12 +2211,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		};
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
-		WebGpuTrace.Pass(target.Pooled ? "offscreen" : "main", target.Width, target.Height, _d.MsaaSamples, true);
 
 		// Track the last-applied scissor and skip redundant SetScissorRect calls: static chrome draws many ops under
 		// one clip, so this collapses a per-op call to one per distinct clip. Locals (not a field) keep it correct
 		// under the recursive nested-layer RenderInto (each pass has its own scissor state).
-		if (!target.Pooled) { _d.Profiler?.Ops(ops.Count); }
 		int lastX = -1, lastY = -1, lastW = -1, lastH = -1;
 		// Current in-pass path-clip mask (device depth buffer). Changes only when a run of ops moves to a different
 		// path clip — the composition emits a clip then its subtree consecutively, so this fires ~once per clip.
@@ -2281,7 +2229,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				lastX = lastY = lastW = lastH = -1;   // the clip setup changed the scissor
 			}
 			if (!TryScissor(clip.Aabb, out var sx, out var sy, out var sw, out var sh)) { continue; }
-			_d.Profiler?.Draw();
 			if (sx != lastX || sy != lastY || sw != lastW || sh != lastH)
 			{
 				wgpuRenderPassEncoderSetScissorRect(pass, (uint)sx, (uint)sy, (uint)sw, (uint)sh);
@@ -2300,14 +2247,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						var nx = ops[oi + 1];
 						if (nx.kind != 0 || nx.b0 != 0 || nx.clipBg != clipBg
 							|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
-						count += nx.u0; oi++; _d.Profiler?.Coalesced(1);
+						count += nx.u0; oi++;
 					}
 					wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, solidBuf, (nuint)(startVert * 6 * sizeof(float)), (nuint)(count * 6 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
-					WebGpuTrace.Draw("solid", count);
-					_d.Profiler?.DrawKind(0);
 					break;
 				}
 				case 0 when b0 == 1:
@@ -2319,14 +2264,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						var nx = ops[oi + 1];
 						if (nx.kind != 0 || nx.b0 != 1 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
 							|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 6 * sizeof(float))) { break; }
-						count += nx.u0; oi++; _d.Profiler?.Coalesced(1);
+						count += nx.u0; oi++;
 					}
 					wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.SolidSlab.Buf, (nuint)byteOff, (nuint)(count * 6 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
-					WebGpuTrace.Draw("solid", count);
-					_d.Profiler?.DrawKind(0);
 					break;
 				}
 				case 0 when b0 == 2:
@@ -2340,15 +2283,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						var nx = ops[oi + 1];
 						if (nx.kind != 0 || nx.b0 != 2 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
 							|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 7 * sizeof(float))) { break; }
-						count += nx.u0; oi++; _d.Profiler?.Coalesced(1);
+						count += nx.u0; oi++;
 					}
 					wgpuRenderPassEncoderSetPipeline(pass, _d.SolidTablePipe);
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)xformBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.SolidTableSlab.Buf, (nuint)byteOff, (nuint)(count * 7 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
-					WebGpuTrace.Draw("solid-table", count);
-					_d.Profiler?.DrawKind(0);
 					break;
 				}
 				case 0:
@@ -2357,8 +2298,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b0, (nuint)b1, (nuint)(u0 * 6 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, u0, 1, 0, 0);   // u0 = 6 * (coalesced) rect count
-					WebGpuTrace.Draw("solid", u0);
-					_d.Profiler?.DrawKind(0);
 					break;
 				case 1:
 					// Path fill via the transform table: fan verts = device pos + slot index (stride 3); cover verts =
@@ -2368,15 +2307,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)xformBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b0, 0, (nuint)(u0 * 3 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, u0, 1, 0, 0);
-					WebGpuTrace.Draw(flag ? "path-stencil-eo" : "path-stencil-nz", u0);
 					wgpuRenderPassEncoderSetPipeline(pass, _d.CoverTablePipe);
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)xformBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetStencilReference(pass, 0);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(42 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
-					WebGpuTrace.Draw("path-cover", 6);
-					_d.Profiler?.DrawKind(1);
 					break;
 				case 2:
 					wgpuRenderPassEncoderSetPipeline(pass, _d.ImagePipe);
@@ -2384,8 +2320,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(24 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
-					WebGpuTrace.Draw("image", 6);
-					_d.Profiler?.DrawKind(2);
 					break;
 				case 3:
 					wgpuRenderPassEncoderSetPipeline(pass, _d.GradientPipe);
@@ -2393,15 +2327,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(12 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
-					WebGpuTrace.Draw("gradient", 6);
-					_d.Profiler?.DrawKind(3);
 					break;
 				case 4:
 					wgpuRenderPassEncoderSetPipeline(pass, u0 == 1 ? _d.CompositeDstIn : _d.CompositeSrcOver);
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)b0, 0, (uint*)null);
 					wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-					WebGpuTrace.Draw(u0 == 1 ? "composite-dstin" : "composite-srcover", 3);
-					_d.Profiler?.DrawKind(4);
 					break;
 				case 6:
 				{
@@ -2430,7 +2360,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					};
 					var rp6 = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca6, DepthStencilAttachment = &dsa6 };
 					pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp6);
-					WebGpuTrace.Pass("backdrop-segment", target.Width, target.Height, _d.MsaaSamples, true);
 					lastX = lastY = lastW = lastH = -1; curFan = null; curAabb = default;   // fresh pass: reset scissor + clip mask
 					if (TryScissor(bk.Clip.Aabb, out var bsx, out var bsy, out var bsw, out var bsh))
 					{
@@ -2457,7 +2386,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)bclipBg, 0, (uint*)null);
 						wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)bqbuf, 0, (nuint)(24 * sizeof(float)));
 						wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
-						WebGpuTrace.Draw("backdrop", 6);
 						// Tint overlay (skip A==0).
 						if (bk.Effect.Color.A != 0)
 						{
@@ -2472,10 +2400,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)tclipBg, 0, (uint*)null);
 							wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)tvbuf, 0, (nuint)(36 * sizeof(float)));
 							wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
-							WebGpuTrace.Draw("backdrop-tint", 6);
 						}
 					}
-					_d.Profiler?.OsBackdrop(0);   // segmented: 0 prefix commands re-rendered
 					break;
 				}
 				case 5 when b0 == 0:
@@ -2488,14 +2414,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						var nx = ops[oi + 1];
 						if (nx.kind != 5 || nx.b0 != 0 || nx.clipBg != clipBg
 							|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
-						count += nx.u0; oi++; _d.Profiler?.Coalesced(1);
+						count += nx.u0; oi++;
 					}
 					wgpuRenderPassEncoderSetPipeline(pass, _d.RrPipe);
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, rrectBuf, (nuint)(startVert * 22 * sizeof(float)), (nuint)(count * 22 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
-					WebGpuTrace.Draw("rrect", count);
-					_d.Profiler?.DrawKind(6);
 					break;
 				}
 				case 5 when b0 == 1:
@@ -2507,14 +2431,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						var nx = ops[oi + 1];
 						if (nx.kind != 5 || nx.b0 != 1 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
 							|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 22 * sizeof(float))) { break; }
-						count += nx.u0; oi++; _d.Profiler?.Coalesced(1);
+						count += nx.u0; oi++;
 					}
 					wgpuRenderPassEncoderSetPipeline(pass, _d.RrPipe);
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.RrectSlab.Buf, (nuint)byteOff, (nuint)(count * 22 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
-					WebGpuTrace.Draw("rrect", count);
-					_d.Profiler?.DrawKind(6);
 					break;
 				}
 				case 5 when b0 == 2:
@@ -2527,15 +2449,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						var nx = ops[oi + 1];
 						if (nx.kind != 5 || nx.b0 != 2 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
 							|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 23 * sizeof(float))) { break; }
-						count += nx.u0; oi++; _d.Profiler?.Coalesced(1);
+						count += nx.u0; oi++;
 					}
 					wgpuRenderPassEncoderSetPipeline(pass, _d.RrTablePipe);
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)xformBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.RrectTableSlab.Buf, (nuint)byteOff, (nuint)(count * 23 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
-					WebGpuTrace.Draw("rrect-table", count);
-					_d.Profiler?.DrawKind(6);
 					break;
 				}
 				case 5:
@@ -2544,14 +2464,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
 					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b0, (nuint)b1, (nuint)(u0 * 22 * sizeof(float)));
 					wgpuRenderPassEncoderDraw(pass, u0, 1, 0, 0);
-					WebGpuTrace.Draw("rrect", u0);
-					_d.Profiler?.DrawKind(6);
 					break;
 			}
 		}
 
 		wgpuRenderPassEncoderEnd(pass);
-		WebGpuTrace.PassEnd();
 		// A pooled offscreen (layer/backdrop) target: its MSAA colour has resolved into View and the depth is spent,
 		// so return both for the next same-size pass to reuse — only View (composited/sampled later) stays live. The
 		// on-window/dedicated target owns its MSAA+depth (persistent across frames) and is left untouched.
@@ -2621,16 +2538,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				cmds.AddRange(od.Commands);
 			}
 			RunFrame(cmds, _pendingClear);
-			// Diagnostic (UNO_WEBGPU_TRACE=1): dump the frame's ordered GPU command stream (PASS/DRAW) every 120th
-			// frame, so a running scene's stream can be diffed against the reference branch. Off by default.
-			if (WebGpuTrace.Enabled && (++_streamDumpFrame % 120) == 1)
-			{
-				System.Console.Error.WriteLine($"===== WEBGPU-STREAM frame {_streamDumpFrame} =====\n{WebGpuTrace.Dump()}===== end WEBGPU-STREAM =====");
-				System.Console.Error.Flush();
-			}
 			_d.SolidSlab.EndFrame(); _d.RrectSlab.EndFrame();   // free slices of recordings not seen this frame
 		_d.SolidTableSlab.EndFrame(); _d.RrectTableSlab.EndFrame();
-			_d.Profiler?.Replayed(_tReplayStart);
 			_pendingCmds = null;
 		}
 	}
@@ -2749,7 +2658,6 @@ public sealed unsafe class WebGpuTexture : ITexture
 		var rgba = new byte[w * h * 4];
 		for (int i = 0; i < rgba.Length; i += 4) { rgba[i] = bgra[i + 2]; rgba[i + 1] = bgra[i + 1]; rgba[i + 2] = bgra[i]; rgba[i + 3] = bgra[i + 3]; }
 		var td = new WGPUTextureDescriptor { Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 }, Format = WGPUTextureFormat.RGBA8Unorm, MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopyDst | WGPUTextureUsage.CopySrc };
-		WebGpuDevice.TexLog("ImageTexture.upload", (uint)w, (uint)h, 1);
 		Tex = wgpuDeviceCreateTexture(device.Dev, &td);
 		View = wgpuTextureCreateView(Tex, null);
 		var dst = new WGPUTexelCopyTextureInfo { Texture = Tex, Aspect = WGPUTextureAspect.All, MipLevel = 0, Origin = default };

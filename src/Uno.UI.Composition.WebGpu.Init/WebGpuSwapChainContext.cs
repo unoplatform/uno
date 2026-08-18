@@ -105,12 +105,9 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 			return;
 		}
 		_frameAcquired = false;
-		var pr = _device.Profiler;
-		var tPresent = WebGpuProfiler.T();
 		EnsureBlitPipeline();
 
 		// Acquire the swapchain image at present time (after the scene render) and blit the offscreen frame into it.
-		var tAcquire = WebGpuProfiler.T();
 		WGPUSurfaceTexture st = default;
 		wgpuSurfaceGetCurrentTexture(_surface, &st);
 		if ((st.Status != WGPUSurfaceGetCurrentTextureStatus.SuccessOptimal
@@ -118,14 +115,11 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 			|| st.Texture == IntPtr.Zero)
 		{
 			_configured = false;   // surface lost / out of date — reconfigure next frame
-			pr?.Acquire(tAcquire); pr?.Presented(tPresent); pr?.FrameEnd();
 			return;
 		}
 
 		var view = wgpuTextureCreateView(st.Texture, null);
-		pr?.Acquire(tAcquire);
 
-		var tBlit = WebGpuProfiler.T();
 		var entries = stackalloc WGPUBindGroupEntry[2];
 		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = _presentView };
 		entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _device.Smp };
@@ -136,27 +130,19 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = view, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca };
 		var pass = wgpuCommandEncoderBeginRenderPass(enc, &rp);
-		WebGpuTrace.Pass("present-blit", _w, _h, 1, true);
 		wgpuRenderPassEncoderSetPipeline(pass, _blitPipe);
 		wgpuRenderPassEncoderSetBindGroup(pass, 0, bg, 0, (uint*)null);
 		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-		WebGpuTrace.Draw("blit", 3);
 		wgpuRenderPassEncoderEnd(pass);
-		WebGpuTrace.PassEnd();
 		var cb = wgpuCommandEncoderFinish(enc, null);
 		wgpuQueueSubmit(_device.Q, 1, (IntPtr)(&cb));
-		pr?.Blit(tBlit);
 
-		var tSurface = WebGpuProfiler.T();
 		wgpuSurfacePresent(_surface);
-		pr?.Surface(tSurface);
 
 		wgpuBindGroupRelease(bg);
 		wgpuCommandEncoderRelease(enc);
 		wgpuTextureViewRelease(view);
 		wgpuTextureRelease(st.Texture);
-		pr?.Presented(tPresent);
-		pr?.FrameEnd();
 	}
 
 	private void EnsureBlitPipeline()
@@ -228,18 +214,6 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		var alphaMode = caps.AlphaModeCount > 0 ? caps.AlphaModes[0] : WGPUCompositeAlphaMode.Auto;
 
 		var presentMode = WGPUPresentMode.Fifo;
-		var envPm = System.Environment.GetEnvironmentVariable("UNO_WEBGPU_PRESENT");
-		if (!string.IsNullOrEmpty(envPm))
-		{
-			var want = envPm.ToLowerInvariant() switch
-			{
-				"mailbox" => WGPUPresentMode.Mailbox,
-				"immediate" => WGPUPresentMode.Immediate,
-				"fiforelaxed" => WGPUPresentMode.FifoRelaxed,
-				_ => WGPUPresentMode.Fifo,
-			};
-			for (nuint i = 0; i < caps.PresentModeCount; i++) { if (caps.PresentModes[i] == want) { presentMode = want; break; } }
-		}
 		var cfg = new WGPUSurfaceConfiguration
 		{
 			Device = _device.Dev,
