@@ -58,9 +58,13 @@ namespace Uno.UI.Samples.Tests
 		private double _lastTestResultsScrollableHeight;
 #if DEBUG
 		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(300);
+		private static readonly TimeSpan? DefaultTestBodyTimeoutFallback = null;
 #else
 		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(60);
+		private static readonly TimeSpan? DefaultTestBodyTimeoutFallback = TimeSpan.FromMinutes(5);
 #endif
+
+		private static readonly TimeSpan? DefaultTestBodyTimeout = GetDefaultTestBodyTimeout();
 
 #if !WINAPPSDK
 		private ApplicationView _applicationView;
@@ -1016,9 +1020,13 @@ namespace Uno.UI.Samples.Tests
 									var timeout = GetTestTimeout(test);
 									if (timeout.HasValue)
 									{
-										var timeoutTask = Task.Delay(timeout.Value);
+										// Cancel the delay as soon as the test finishes, otherwise every test
+										// leaves a pending timer alive for the whole timeout window.
+										using var timeoutCts = new CancellationTokenSource();
+										var timeoutTask = Task.Delay(timeout.Value, timeoutCts.Token);
 
 										var resultingTask = await Task.WhenAny(task, timeoutTask);
+										timeoutCts.Cancel();
 
 										if (resultingTask == timeoutTask)
 										{
@@ -1338,7 +1346,31 @@ namespace Uno.UI.Samples.Tests
 		private TimeSpan? GetTestTimeout(UnitTestMethodInfo test)
 			=> test.Method.GetCustomAttribute(typeof(TimeoutAttribute)) is TimeoutAttribute methodAttribute
 					? TimeSpan.FromMilliseconds(methodAttribute.Timeout)
-					: null;
+					: DefaultTestBodyTimeout;
+
+		/// <summary>
+		/// Fallback timeout applied to every async test body that carries no <see cref="TimeoutAttribute"/>.
+		/// Without it a single hung test consumes the whole CI job budget and the run ends with no results
+		/// file at all, losing the outcome of every other test in the shard.
+		/// </summary>
+		private static TimeSpan? GetDefaultTestBodyTimeout()
+		{
+			var configured = Environment.GetEnvironmentVariable("UNO_TEST_DEFAULT_TIMEOUT_SECONDS");
+
+			if (configured is not null)
+			{
+				if (!int.TryParse(configured, NumberStyles.Integer, CultureInfo.InvariantCulture, out var seconds))
+				{
+					return DefaultTestBodyTimeoutFallback;
+				}
+
+				// An explicit non-positive value opts out entirely, which is the only way to get the
+				// pre-existing unbounded behaviour back when debugging a test under a breakpoint.
+				return seconds <= 0 ? null : TimeSpan.FromSeconds(seconds);
+			}
+
+			return DefaultTestBodyTimeoutFallback;
+		}
 
 		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Appears to work on CI!")]
 		private IEnumerable<UnitTestClassInfo> InitializeTests()
