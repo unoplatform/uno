@@ -19,3 +19,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.AppleUIKit")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Android")]
+[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Headless")]

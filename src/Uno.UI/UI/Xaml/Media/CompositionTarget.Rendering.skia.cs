@@ -247,7 +247,7 @@ public partial class CompositionTarget
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}
 
-	private IGeometry Draw(IRenderTarget? target, Func<Size, IRenderTarget> resizeFunc, Matrix4x4? rootTransform = null, Action<IDrawingSession>? overlay = null)
+	private IGeometry Draw(ISwapChain swapChain, Matrix4x4? rootTransform = null, Action<IDrawingSession>? overlay = null)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 
@@ -283,22 +283,26 @@ public partial class CompositionTarget
 				// the canvas to 0x0 which may crash on some targets
 				return lastRenderedFrame.nativeElementClipPath;
 			}
-			var resized = target is null || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale;
+			// The swapchain owns sizing/caching: acquire every frame at the DPI-scaled bounds; it returns the cached
+			// target while the size is unchanged and recreates it on resize.
+			var target = swapChain.AcquireRenderTarget(
+				(int)Math.Round(xamlRootBounds.Width * rasterizationScale),
+				(int)Math.Round(xamlRootBounds.Height * rasterizationScale));
+			var resized = _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale;
 			if (resized)
 			{
-				target = resizeFunc(new Size(Math.Round(xamlRootBounds.Width * rasterizationScale), Math.Round(xamlRootBounds.Height * rasterizationScale)));
 				_lastCanvasSize = xamlRootBounds;
 				_lastRasterizationScale = rasterizationScale;
 				_lastScaledNativeClipPath = null;
 			}
 
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
-			using (var present = BeginPresent(Renderer, target!))
+			using (var present = BeginPresent(Renderer, target))
 			{
-				// Partial repaint: when unresized and the host preserves the target's pixels, clip the clear+replay to
-				// the damage region so only the changed area is repainted; otherwise repaint the whole frame.
+				// Partial repaint: when unresized and the host preserves the swapchain's pixels, clip the clear+replay
+				// to the damage region so only the changed area is repainted; otherwise repaint the whole frame.
 				var hasDamage = !resized && lastRenderedFrame.damage is { } dmg && !dmg.IsEmpty;
-				var damageEligible = hasDamage && target!.PreservesContents;
+				var damageEligible = hasDamage && swapChain.PreservesContents;
 				// Debug overlay paints the would-be damage region on a full repaint; deliberately not gated on
 				// PreservesContents so the viz works on full-repaint targets too.
 				var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;

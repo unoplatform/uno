@@ -22,6 +22,7 @@ internal sealed unsafe class X11EGLGraphicsContext : ISwapChain, IGLDeviceContex
 	private readonly IntPtr _eglContext;
 	private readonly int _samples;
 	private readonly int _stencil;
+	private X11EGLRenderTarget? _target;
 
 	public X11EGLGraphicsContext(X11Window x11Window)
 	{
@@ -42,11 +43,21 @@ internal sealed unsafe class X11EGLGraphicsContext : ISwapChain, IGLDeviceContex
 	public GLFlavor Flavor => GLFlavor.OpenGLES;
 	public Func<string, nint> GetProcAddress => EglHelper.EglGetProcAddress;
 
+	// The renderer draws into the default framebuffer, which SwapBuffers leaves undefined — no retention yet, so the
+	// compositor repaints the whole frame. (Host-owned FBO retention to restore partial repaint is a follow-up.)
+	public bool PreservesContents => false;
+
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
+		width = Math.Max(1, width);
+		height = Math.Max(1, height);
 		using var lockDisposable = X11Helper.XLock(_x11Window.Display);
 		MakeCurrent();
-		return new X11EGLRenderTarget(Math.Max(1, width), Math.Max(1, height), _samples, _stencil);
+		if (_target is null || _target.Width != width || _target.Height != height)
+		{
+			_target = new X11EGLRenderTarget(width, height, _samples, _stencil);
+		}
+		return _target;
 	}
 
 	public void Present()
@@ -84,8 +95,6 @@ internal sealed unsafe class X11EGLGraphicsContext : ISwapChain, IGLDeviceContex
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
-		// The backend blits a persistent layer here each present, enabling partial repaint.
-		public bool PreservesContents => true;
 		public void Dispose() { }
 	}
 }

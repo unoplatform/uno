@@ -51,6 +51,12 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 
 	public GraphicsContextKind Kind => GraphicsContextKind.OpenGL;
 
+	// The renderer draws into the default framebuffer, which SwapBuffers leaves undefined — no retention yet, so the
+	// compositor repaints the whole frame. (Host-owned FBO retention to restore partial repaint is a follow-up.)
+	public bool PreservesContents => false;
+
+	private Win32GLRenderTarget? _target;
+
 	public GLFlavor Flavor => GLFlavor.OpenGL;
 	public Func<string, nint> GetProcAddress => Win32NativeOpenGLWrapper.GetProcAddressStatic;
 
@@ -170,7 +176,13 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 		PInvoke.glGetIntegerv(/* GL_STENCIL_BITS */ 0x0D57, ref stencil);
 		PInvoke.glGetIntegerv(/* GL_SAMPLES */ 0x80A9, ref samples);
 
-		return new Win32GLRenderTarget((uint)framebuffer, samples, stencil, Math.Max(1, width), Math.Max(1, height));
+		width = Math.Max(1, width);
+		height = Math.Max(1, height);
+		if (_target is null || _target.Width != width || _target.Height != height)
+		{
+			_target = new Win32GLRenderTarget((uint)framebuffer, samples, stencil, width, height);
+		}
+		return _target;
 	}
 
 	public void Present()
@@ -255,8 +267,6 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
-		// Retained-layer partial repaint: the backend blits a persistent layer here each present (see X11GLRenderTarget).
-		public bool PreservesContents => true;
 		public void Dispose() { }
 	}
 }
@@ -287,6 +297,12 @@ internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedCont
 	}
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Software;
+
+	// The DIB is reused across frames (reallocated only on resize) and BitBlt copies it whole each present, so the
+	// previous frame's pixels survive — the compositor can repaint only the damaged region.
+	public bool PreservesContents => true;
+
+	private Win32SoftwareRenderTarget? _target;
 
 	public unsafe IRenderTarget AcquireRenderTarget(int width, int height)
 	{
@@ -322,9 +338,10 @@ internal sealed class Win32SoftwareGraphicsContext : ISwapChain, IWin32PacedCont
 			_bits = (nint)bits;
 			_width = width;
 			_height = height;
+			_target = new Win32SoftwareRenderTarget(_bits, _width * 4, _width, _height);
 		}
 
-		return new Win32SoftwareRenderTarget(_bits, _width * 4, _width, _height);
+		return _target!;
 	}
 
 	public void Present()
