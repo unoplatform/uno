@@ -1,4 +1,4 @@
-# Uno Platform 7.0 — Project move to `src/Uno`, assembly rename to `Uno.UI.Extras`
+# Uno Platform 7.0 — Project move to `src/Uno.WinRT`, assembly rename to `Uno.UI.Extras`
 
 > Two independent changes for the 7.0 major. Each ships as its own branch and PR against
 > `feature/breakingchanges`. The Toolkit rename is part of the breaking-changes rollout
@@ -6,7 +6,8 @@
 > **BC53** / [#12322](https://github.com/unoplatform/uno/issues/12322); the WinRT project move
 > is not a breaking change and carries no rollout item.
 
-_Written 2026-08-07. Part A revised 2026-08-10 — see [Why the assembly keeps its name](#why-the-assembly-keeps-its-name)._
+_Written 2026-08-07. Part A revised 2026-08-10, then again 2026-08-18 — see
+[When the assembly gets renamed](#when-the-assembly-gets-renamed)._
 
 ## Why now
 
@@ -20,7 +21,9 @@ Both names are historical artifacts rather than deliberate API choices:
   storage, sensors, networking, …). "UWP" predates Uno Platform's WinAppSDK alignment, and the
   folder was already the only library in the tree whose name disagreed with its csprojs
   (`Uno.UWP/Uno.Skia.csproj` against the `Uno.Foundation/Uno.Foundation.Skia.csproj` pattern).
-  Moving it to `src/Uno` drops the dead name and makes folder, csproj and assembly agree.
+  Moving it to `src/Uno.WinRT` drops the dead name and makes folder, csproj and package agree.
+  It also lands the project on its eventual assembly name, so the identity rename that follows is
+  a one-line change rather than a second folder move.
 - **`Uno.UI.Toolkit`** is near-indistinguishable from `Uno.Toolkit.UI`, the separate Uno Toolkit
   product — the two names are a word-order swap apart. Reordering or shortening cannot fix that;
   the word "Toolkit" has to go.
@@ -29,7 +32,7 @@ Both names are historical artifacts rather than deliberate API choices:
 
 | Decision | Outcome |
 |---|---|
-| `Uno.UWP` folder + csprojs | **`src/Uno`** + `Uno.{Skia,Reference,Wasm,netcoremobile}.csproj` (csproj names unchanged) |
+| `Uno.UWP` folder + csprojs | **`src/Uno.WinRT`** + `Uno.WinRT.{Skia,Reference,Wasm,netcoremobile}.csproj` |
 | `Uno` `AssemblyName` | **Unchanged in this change.** Stays `Uno.dll`; renamed to `Uno.WinRT` later in the 7.0 preview line — see below |
 | `Uno.UI.Toolkit` new name | **`Uno.UI.Extras`** — folder, csprojs, `AssemblyName`, root namespace |
 | Namespace scope (Extras) | Only `Uno.UI.Toolkit`, `.DevTools.*`, `.Extensions` move |
@@ -132,48 +135,54 @@ Toolkit. The assembly name and root namespace matching exactly is not worth the 
 
 ---
 
-## Part A — `src/Uno.UWP` → `src/Uno`
+## Part A — `src/Uno.UWP` → `src/Uno.WinRT`
 
 ### Move
 
 | What | From | To |
 |---|---|---|
-| Folder | `src/Uno.UWP` | `src/Uno` |
-| Projects | `Uno.{Skia,Reference,Wasm,netcoremobile}.csproj` | unchanged |
+| Folder | `src/Uno.UWP` | `src/Uno.WinRT` |
+| Projects | `Uno.{Skia,Reference,Wasm,netcoremobile}.csproj` | `Uno.WinRT.{Skia,Reference,Wasm,netcoremobile}.csproj` |
 | `AssemblyName` (×4) | `Uno` | unchanged |
-| Output | `Uno.dll` in `bin/Uno.<variant>/` | unchanged |
+| Output | `Uno.dll` in `bin/Uno.<variant>/` | `Uno.dll` in **`bin/Uno.WinRT.<variant>/`** — the folder follows the csproj name, the file name follows `AssemblyName` |
 | `RootNamespace` | `Windows` | unchanged |
 | NuGet package id | `Uno.WinRT` | unchanged |
 | `AndroidResgenNamespace` | `Uno.UWP` | unchanged — **deliberate, not an oversight.** The generated `Uno.UWP.Resource` type is public in the mobile head and matches the 6.6 PackageDiff baseline; renaming it would register as a removed public type and need a fresh ignore entry, to buy nothing |
 
 Nothing ships differently: the package, the assembly, and every type keep their identity, so
-PackageDiff sees no delta and consumers need no action.
+PackageDiff sees no delta and consumers need no action. Only the *inputs* to packing move.
 
 ### Consequences that are not the obvious find-and-replace
 
-Only *paths* move, but they are load-bearing in places the compiler never checks:
+Only *paths* move, but they are load-bearing in places the compiler never checks. Renaming the
+csprojs also moves `bin/<ProjectName>/`, so build outputs relocate even though `Uno.dll` does not —
+splitting that distinction wrong is the single easiest mistake in this change:
 
-- **26 `<file src>` paths** in `build/nuget/Uno.WinRT.nuspec` (`src\Uno.UWP\Bin\…` →
-  `src\Uno\Bin\…`; the `bin/<ProjectName>/` segment and the `Uno.dll` file name are unchanged,
-  because the csprojs keep their names)
+- **26 `<file src>` paths** in `build/nuget/Uno.WinRT.nuspec`: `src\Uno.UWP\Bin\Uno.<variant>\…`
+  → `src\Uno.WinRT\Bin\Uno.WinRT.<variant>\…`. **The trailing `Uno.dll` / `Uno.pdb` file names do
+  not change** — they follow `AssemblyName`, not the csproj name
 - `SamplesApp.Skia.Generic.csproj` — 2 hard-coded `…\Uno.UWP\bin\Uno.Skia\…\Uno.dll` item paths
-- `UnoAssemblyHelper.cs` — locates reference assemblies by folder name (`"Uno.UWP"`)
+- `SamplesApp/SamplesApp.csproj` — 4 `ProjectReference`s. This legacy head is easy to miss: no
+  solution filter builds it, so nothing fails when it is left stale
+- `UnoAssemblyHelper.cs` — takes folder name, **assembly file name** and `bin/` subfolders as three
+  separate arguments; the first and third move, the second does not
 - `src/Uno.UI/tsconfig.json` — `../Uno.UWP/js/*`
 - **5 `_AdjustedOutputProjects` entries** in `src/Directory.Build.props` key on the *csproj file
-  name*, so they are untouched by the move. Two of them (`Uno.Tests.csproj`) are stale — no such
-  project exists. Drop them.
+  name*, so — unlike a pure folder move — they **do** have to be rewritten. Two of them
+  (`Uno.Tests.csproj`) are stale: no such project exists. Drop them.
 
 The **sync generator** routes generated WinRT stubs by hard-coded path
 (`src/Uno.WinAppSDKSyncGenerator/`):
 
 - `Generator.cs` — 3 × `..\..\..\Uno.UWP\Generated\3.0.0.0` output paths
 - `Generator.cs:186` — `var platformProject = @"..\..\..\Uno.UWP\Uno";` (project path prefix,
-  suffixed per variant) — becomes `..\..\..\Uno\Uno`
-- `Generator.cs` — `basePath.Contains(@"\Uno.UWP\", …)` platform-vs-Skia discriminator. Match on
-  `\Uno\Generated\`, **not** `\Uno\`: a repository cloned into a folder named `Uno` would
-  otherwise make every base path look like this project's, silently emitting native defines for
-  Skia-only libraries.
+  suffixed per variant) — becomes `..\..\..\Uno.WinRT\Uno.WinRT`
+- `Generator.cs` — `basePath.Contains(@"\Uno.UWP\", …)` platform-vs-Skia discriminator, becoming
+  `\Uno.WinRT\`. This is a concrete reason `Uno.WinRT` beats a bare `Uno` for the folder name:
+  matching on `\Uno\` would make a repository cloned into a folder named `Uno` look like this
+  project on every path, silently emitting native defines for Skia-only libraries.
 - `Program.cs:19` — `DeleteDirectoryIfExists(@"..\..\..\Uno.UWP\Generated\")`
+- `AGENTS.md` and `.claude/skills/winui-port/SKILL.md` document the source layout by path
 
 Plus ~30 `ProjectReference` paths across the tree, 6 `src/Uno.UI.slnx` entries, and 9 `.slnf`
 filters.
