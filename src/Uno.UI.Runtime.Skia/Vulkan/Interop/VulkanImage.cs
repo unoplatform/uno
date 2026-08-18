@@ -2,7 +2,6 @@
 // Based on the Avalonia project (MIT License, Copyright (c) AvaloniaUI OÜ).
 // Original source: https://github.com/AvaloniaUI/Avalonia/tree/master/src/Avalonia.Vulkan
 using System;
-using SkiaSharp;
 using Uno.UI.Runtime.Skia.Vulkan;
 using Uno.UI.Runtime.Skia.Vulkan.UnmanagedInterop;
 
@@ -22,7 +21,7 @@ internal class VulkanImageBase : IDisposable
 	internal VkFormat Format { get; }
 	internal VkImageAspectFlags AspectFlags { get; private set; }
 	public uint MipLevels { get; private set; }
-	public SKSizeI Size { get; }
+	public global::Windows.Graphics.SizeInt32 Size { get; }
 	public ulong MemorySize { get; private set; }
 	public VkImageLayout CurrentLayout { get; protected set; }
 	public VkDeviceMemory MemoryHandle => _imageMemory;
@@ -56,7 +55,7 @@ internal class VulkanImageBase : IDisposable
 
 	public VulkanImageBase(IVulkanPlatformGraphicsContext context,
 		VulkanCommandBufferPool commandBufferPool,
-		VkFormat format, SKSizeI size, uint mipLevels = 0)
+		VkFormat format, global::Windows.Graphics.SizeInt32 size, uint mipLevels = 0)
 	{
 		Format = format;
 		Size = size;
@@ -194,7 +193,7 @@ internal class VulkanImageBase : IDisposable
 internal unsafe class VulkanImage : VulkanImageBase
 {
 	public VulkanImage(IVulkanPlatformGraphicsContext context, VulkanCommandBufferPool commandBufferPool,
-		VkFormat format, SKSizeI size, uint mipLevels = 0) : base(context, commandBufferPool, format, size, mipLevels)
+		VkFormat format, global::Windows.Graphics.SizeInt32 size, uint mipLevels = 0) : base(context, commandBufferPool, format, size, mipLevels)
 	{
 		Initialize(null);
 		TransitionLayout(VkImageLayout.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VkAccessFlags.VK_ACCESS_NONE_KHR);

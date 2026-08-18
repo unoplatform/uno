@@ -1,7 +1,6 @@
 // Based on the Avalonia project (MIT License, Copyright (c) AvaloniaUI OÜ).
 // Original source: https://github.com/AvaloniaUI/Avalonia/tree/master/src/Avalonia.Vulkan
 using System;
-using SkiaSharp;
 using Uno.UI.Runtime.Skia.Vulkan;
 using Uno.UI.Runtime.Skia.Vulkan.UnmanagedInterop;
 
@@ -60,7 +59,7 @@ internal class VulkanKhrSurface : IDisposable
 		return surfaceFormats[0];
 	}
 
-	public SKSizeI Size => _surfaceInfo.Size;
+	public global::Windows.Graphics.SizeInt32 Size => _surfaceInfo.Size;
 
 	public void Dispose()
 	{

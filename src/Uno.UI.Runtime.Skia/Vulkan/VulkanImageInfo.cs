@@ -1,13 +1,12 @@
 // Based on the Avalonia project (MIT License, Copyright (c) AvaloniaUI OÜ).
 // Original source: https://github.com/AvaloniaUI/Avalonia/tree/master/src/Avalonia.Vulkan
-using SkiaSharp;
 
 namespace Uno.UI.Runtime.Skia.Vulkan;
 
 public record struct VulkanImageInfo
 {
     public uint Format { get; set; }
-    public SKSizeI PixelSize { get; set; }
+    public global::Windows.Graphics.SizeInt32 PixelSize { get; set; }
     public ulong Handle { get; set; }
     public uint Layout { get; set; }
     public uint Tiling { get; set; }

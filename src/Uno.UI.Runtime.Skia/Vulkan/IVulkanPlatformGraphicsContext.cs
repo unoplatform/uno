@@ -1,7 +1,6 @@
 // Based on the Avalonia project (MIT License, Copyright (c) AvaloniaUI OÜ).
 // Original source: https://github.com/AvaloniaUI/Avalonia/tree/master/src/Avalonia.Vulkan
 using System;
-using SkiaSharp;
 using Uno.UI.Runtime.Skia.Vulkan.UnmanagedInterop;
 
 namespace Uno.UI.Runtime.Skia.Vulkan;
@@ -27,6 +26,6 @@ internal interface IVulkanPlatformGraphicsContext
 /// </summary>
 internal interface IVulkanKhrSurfacePlatformSurface : IDisposable
 {
-	SKSizeI Size { get; }
+	global::Windows.Graphics.SizeInt32 Size { get; }
 	ulong CreateSurface(IVulkanPlatformGraphicsContext context);
 }
