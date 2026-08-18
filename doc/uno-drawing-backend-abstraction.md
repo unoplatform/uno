@@ -702,14 +702,20 @@ presented) from the context.
 In every API the render target is a **color attachment view of a uniform type regardless of origin**
 (WebGPU `TextureView`, Vulkan `VkImageView`, Metal `MTLTexture`, GL framebuffer) — a swapchain image
 and an offscreen texture produce the *same* type. So the backend is handed a **render-target view**
-and never learns whether it's backed by the window swapchain (direct, no blit) or a retained
-offscreen texture (then we blit dirty rects). That decision is ours, per frame.
+and never learns whether it's backed by the window swapchain or a retained offscreen. The dirty
+region is expressed as a **clip in the recorded frame** (backend-independent), so the backend just
+replays the clipped frame; it is **damage-agnostic**.
 
-No "previous contents retained" flag is needed: the **dirty region is expressed as a clip in the
-recorded frame** (backend-independent), so the backend just replays the clipped frame; the invariant
-that pixels *outside* the dirty region already hold the previous frame is **ours to uphold** by our
-target management (a constraint on our strategy, not the backend contract). The render-target view
-is **kind-matched** (opaque to core; a `WebGpu` provider mints the one a WebGPU backend downcasts).
+Retention — the invariant that pixels *outside* the dirty region still hold the previous frame — is
+entirely host/target-side, declared by **`IRenderTarget.PreservesContents`** (the framework reads it
+in `CompositionTarget.Draw` to choose partial repaint vs. a full clear). It's `true` when the target
+persists across frames: the X11 **software** buffer is reused; the **Vulkan** path renders into a
+stable render image and blits it; and **GL/Metal** — whose swapchain does *not* preserve (SwapBuffers
+leaves the back buffer undefined; a Metal drawable is fresh each frame) — get retention from the Skia
+backend, which composes into a persistent `RetainedLayer` SKSurface and blits it onto the swapchain
+each present (X11 GL/GLES, Win32 GL, macOS + UIKit Metal). The full-repaint GL hosts (Android, WASM,
+DRM) leave it `false` and render straight into the swapchain, no blit. The render-target view is
+**kind-matched** (opaque to core; a `WebGpu` provider mints the one a WebGPU backend downcasts).
 
 ### Who drives the pipeline
 
