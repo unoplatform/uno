@@ -26,6 +26,8 @@ public class Given_DeviceTargetHelper
 	// iPadOS 13+ requests the desktop site by default, which reports the very same user agent and platform as a Mac.
 	[DataRow(IPadDesktopSiteUserAgent, "MacIntel", true, nameof(BrowserHostPlatform.iOS), DisplayName = "iPad requesting the desktop site")]
 	[DataRow(MacSafariUserAgent, "MacIntel", false, nameof(BrowserHostPlatform.Other), DisplayName = "Safari on macOS")]
+	// "Linux armv81" (with a digit one) is not a typo: it is the value Chrome 107+ and Firefox freeze on Android for
+	// UA reduction. "Linux armv8l" is what older browsers report, so both spellings are covered.
 	[DataRow(AndroidPhoneUserAgent, "Linux armv81", true, nameof(BrowserHostPlatform.Android), DisplayName = "Android phone")]
 	[DataRow(AndroidTabletUserAgent, "Linux armv8l", true, nameof(BrowserHostPlatform.Android), DisplayName = "Android tablet")]
 	// A touchscreen alone doesn't make a desktop OS follow mobile conventions - WinUI itself doesn't.
