@@ -121,13 +121,29 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 
 		using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(hdc, glContext);
 
+		var versionPtr = PInvoke.glGetString(/* GL_VERSION */ 0x1F02);
+		var versionString = versionPtr is null ? null : Marshal.PtrToStringUTF8((IntPtr)versionPtr);
+
 		if (typeof(Win32OpenGLGraphicsContext).Log().IsDebugEnabled())
 		{
-			var version = PInvoke.glGetString(/* GL_VERSION */ 0x1F02);
 			typeof(Win32OpenGLGraphicsContext).LogDebug()?.Debug(
-				version is null
+				versionString is null
 					? $"{nameof(PInvoke.glGetString)} failed with error code {PInvoke.glGetError().ToString("X", CultureInfo.InvariantCulture)}"
-					: $"OpenGL Version: {Marshal.PtrToStringUTF8((IntPtr)version)}");
+					: $"OpenGL Version: {versionString}");
+		}
+
+		// The renderer's GL backend needs OpenGL 2.0+. When the session has no usable GPU driver (common under RDP,
+		// some VMs, or a fresh/headless Windows install), wglCreateContext still succeeds but yields the Microsoft
+		// software rasterizer reporting version "1.1" — which GRGlInterface can't consume. DECLINE the OpenGL kind
+		// here (return null) so negotiation falls through to the software context, instead of committing to a GL
+		// context that then throws "GRGlInterface create failed" on every frame of the render loop.
+		if (!IsUsableGlVersion(versionString))
+		{
+			typeof(Win32OpenGLGraphicsContext).LogInfo()?.Info(
+				$"OpenGL version '{versionString ?? "(unknown)"}' is below the 2.0 the renderer requires (likely the software fallback with no GPU driver); declining OpenGL so a software context is used instead.");
+			_ = PInvoke.wglMakeCurrent(default, HGLRC.Null);
+			ReleaseGlContext(hwnd, hdc, glContext);
+			return null;
 		}
 
 		var followRefreshRate = FeatureConfiguration.CompositionTarget.SetFrameRateAsScreenRefreshRate;
@@ -204,6 +220,21 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 					$"Failed to set GL swap interval {interval} via wglSwapIntervalEXT; the render loop may run unthrottled on this driver.");
 			}
 		}
+	}
+
+	// GL_VERSION starts with "<major>.<minor>[…]" (desktop WGL has no "OpenGL ES" prefix). The renderer's GL
+	// backend needs major >= 2; the Microsoft software fallback reports "1.1.0". A null/unparseable string is
+	// treated as unusable so we decline rather than commit to a context we can't verify.
+	private static bool IsUsableGlVersion(string? version)
+	{
+		if (string.IsNullOrEmpty(version))
+		{
+			return false;
+		}
+
+		var dot = version.IndexOf('.');
+		var major = dot > 0 ? version.AsSpan(0, dot) : version.AsSpan();
+		return int.TryParse(major, out var majorVersion) && majorVersion >= 2;
 	}
 
 	private static void ReleaseGlContext(HWND hwnd, HDC hdc, HGLRC glContext)
