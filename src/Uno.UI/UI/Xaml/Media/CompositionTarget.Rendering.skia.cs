@@ -428,7 +428,6 @@ public partial class CompositionTarget
 	// repainted are visible.
 	private static void DrawDamageRegionOverlay(IPresentSession present, IGeometry damage)
 	{
-
 		present.DrawPath(damage, global::Windows.UI.Color.FromArgb(0x30, 0xFF, 0x00, 0x00), antialias: false);
 		using var outline = damage.GetStrokeFillGeometry(new StrokeStyle { Thickness = 1f });
 		present.DrawPath(outline, global::Windows.UI.Color.FromArgb(0xB0, 0xFF, 0x00, 0x00), antialias: false);

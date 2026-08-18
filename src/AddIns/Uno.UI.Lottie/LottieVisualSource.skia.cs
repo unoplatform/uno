@@ -4,6 +4,8 @@ using System;
 using System.Numerics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 
@@ -52,7 +54,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				if (LottieRenderer.Current is not { } renderer)
 				{
 					// No Lottie renderer registered (the Skottie add-in wasn't referenced / resolved): the player shows
-					// its fallback content rather than silently rendering nothing.
+					// its fallback content rather than silently rendering nothing — but log so the dev isn't left guessing.
+					if (typeof(LottieAnimatedVisual).Log().IsEnabled(LogLevel.Warning))
+					{
+						typeof(LottieAnimatedVisual).Log().Warn("No ILottieRenderer is registered (reference the Uno.UI.Lottie add-in or call .LottieRenderer(...)); Lottie playback is unavailable and the player will show its fallback content.");
+					}
+
 					diagnostics = new InvalidOperationException("No ILottieRenderer is registered; Lottie playback is unavailable.");
 					return null;
 				}
@@ -61,6 +68,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				{
 					if (renderer.Load(animationJson) is not { } animation)
 					{
+						if (typeof(LottieAnimatedVisual).Log().IsEnabled(LogLevel.Warning))
+						{
+							typeof(LottieAnimatedVisual).Log().Warn("The Lottie renderer could not load the animation (unrecognized/invalid JSON); the player will show its fallback content.");
+						}
+
 						diagnostics = new InvalidOperationException("Failed to load animation.");
 						return null;
 					}
@@ -72,6 +84,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				}
 				catch (Exception e)
 				{
+					if (typeof(LottieAnimatedVisual).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(LottieAnimatedVisual).Log().Error("The Lottie renderer threw while loading the animation.", e);
+					}
+
 					diagnostics = e;
 					return null;
 				}

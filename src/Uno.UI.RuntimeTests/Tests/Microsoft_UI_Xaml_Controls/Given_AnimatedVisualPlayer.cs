@@ -408,6 +408,42 @@ public class Given_AnimatedVisualPlayer
 	}
 
 	[TestMethod]
+	public async Task When_Real_Lottie_Source_Progress_Changes_Frame()
+	{
+		var source = new LottieVisualSource();
+		var player = new AnimatedVisualPlayer
+		{
+			Width = 48,
+			Height = 48,
+			AutoPlay = false,
+			Source = source
+		};
+		var host = CreateHost(player);
+
+		await UITestHelper.Load(host);
+
+		await source.SetSourceAsync(FeatureConfiguration.ProgressRing.DeterminateProgressRingAsset);
+		await TestServices.WindowHelper.WaitFor(() => player.IsAnimatedVisualLoaded, timeoutMS: 5000, "The Lottie source should load.");
+		await TestServices.WindowHelper.WaitForIdle();
+
+		player.SetProgress(0.0);
+		await TestServices.WindowHelper.WaitForIdle();
+		var atZero = await UITestHelper.ScreenShot(host);
+		await atZero.Populate();
+
+		player.SetProgress(0.5);
+		await TestServices.WindowHelper.WaitForIdle();
+		var atHalf = await UITestHelper.ScreenShot(host);
+		await atHalf.Populate();
+
+		// The neutral Lottie visual reads the player-driven Progress scalar each frame and re-renders; a frozen-at-
+		// frame-0 regression (progress not reaching the render) would make these two frames identical.
+		Assert.IsTrue(
+			CountDifferentPixels(atZero, atHalf, (int)host.ActualWidth, (int)host.ActualHeight) > 0,
+			"The same Lottie source should render a different frame at Progress 0 vs 0.5.");
+	}
+
+	[TestMethod]
 	public async Task When_Real_Lottie_Source_Fails_Player_Shows_Fallback_Content()
 	{
 		var source = new LottieVisualSource();
