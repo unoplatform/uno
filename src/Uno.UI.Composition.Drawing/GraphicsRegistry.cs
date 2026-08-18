@@ -219,6 +219,10 @@ internal static class GraphicsRegistry
 					}
 
 					DrawingFactory.Register(backendFactory);
+					if (typeof(GraphicsRegistry).Log().IsEnabled(LogLevel.Information))
+					{
+						typeof(GraphicsRegistry).Log().Info($"Graphics backend '{backend.GetType().Name}' won negotiation on context kind '{kind}'.");
+					}
 					return new GraphicsInitialization(backend, context, backendFactory);
 				}
 				catch (Exception e)
