@@ -12,21 +12,11 @@ internal static class DrawingRegistration
 {
 	private static IDrawingFactory? _defaultRenderer;
 
-	/// <summary>The backend-provided default backend, or <c>null</c> if no backend registered one.</summary>
+	/// <summary>The backend-provided default backend, or <c>null</c> if no backend registered one. The host builder
+	/// resolves the default (Skia) renderer at Build() time; a declared backend (e.g. WebGPU) owns this seam.</summary>
 	public static IDrawingFactory? DefaultRenderer
 	{
-		get
-		{
-			if (_defaultRenderer is null)
-			{
-				// Nothing registered explicitly: light up ONLY the Skia graphics backend (renderer + its matched
-				// factory) by reflection if present — but not when a backend was declared (a WebGPU head owns this
-				// seam via GraphicsRegistry). Font/image content seams fall back independently, elsewhere.
-				DrawingBackendFallback.EnsureGraphicsBackend();
-			}
-
-			return _defaultRenderer;
-		}
+		get => _defaultRenderer;
 		internal set => _defaultRenderer = value;
 	}
 

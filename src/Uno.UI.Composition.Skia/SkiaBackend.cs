@@ -6,17 +6,17 @@ using Uno.UI.Composition.Drawing;
 namespace Uno.UI.Composition.Skia;
 
 /// <summary>
-/// The SkiaSharp drawing backend's reflective bootstrap surface, invoked BY REFLECTION from
-/// <see cref="DrawingBackendFallback"/> in the neutral Drawing assembly (which keeps no compile-time dependency on
-/// this backend). Each factory here returns a <em>public neutral-seam</em> instance; the framework then registers it
+/// The SkiaSharp drawing backend's reflective bootstrap surface, invoked BY REFLECTION from the host builder
+/// (<c>UnoPlatformHostBuilder</c> in Uno.UI), which keeps no compile-time dependency on this backend. Each factory
+/// here returns a <em>public neutral-seam</em> instance; the framework then registers it
 /// through its own internal per-seam registrars — so this backend reaches no Drawing internal and needs no
 /// InternalsVisibleTo from Drawing. Apps register through the host builder, not here.
 /// </summary>
 public static class SkiaBackend
 {
 	// Per-seam Skia defaults — each RETURNS a public seam instance (IFontProvider / IImageEncoderDecoder / …); the caller
-	// (DrawingBackendFallback) registers it via the framework's own internal RegisterDefault. Internal: reflection
-	// reaches them with BindingFlags.NonPublic, no IVT required.
+	// (the host builder) registers it via the framework's own internal RegisterDefault. Internal: reflection reaches
+	// them with BindingFlags.NonPublic, no IVT required.
 	internal static IFontProvider CreateFontProvider() => new SkiaFontProvider();
 
 	internal static IImageEncoderDecoder CreateImageDecoder() => new SkiaImageDecoderBackend();

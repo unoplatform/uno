@@ -96,7 +96,16 @@ namespace SkiaSharpExample
 #endif
 			}
 
-			// Independent content seams (dev toggles). Left unset, they fall back per-seam to their Skia impls.
+#if !UNO_DRAWING_SKIA
+			// SkiaSharp-free build: no Skia backend assembly ships to supply defaults, so the render-independent content
+			// seams must be registered explicitly here — the host builder throws at Build() otherwise. (Geometry is
+			// already set to the managed engine above.) The dev toggles below can still override in a Skia build.
+			builder.FontProvider(new ManagedFontProvider());
+			builder.ImageEncoderDecoder(new ManagedImageDecoderBackend());
+			builder.SvgRenderer(new ManagedSvgRenderer());
+#endif
+
+			// Independent content seams (dev toggles). Left unset in a Skia build, they fall back to their Skia impls.
 			if (Environment.GetEnvironmentVariable("UNO_MANAGED_FONTS") is "1" or "true")
 			{
 				builder.FontProvider(new ManagedFontProvider());

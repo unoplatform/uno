@@ -92,9 +92,9 @@ internal static class GraphicsRegistry
 	}
 
 	/// <summary>
-	/// True once the app has declared a graphics backend through the host builder (<see cref="Register"/>). The
-	/// implicit Skia auto-registration (<see cref="DrawingBackendFallback"/>) stays out of the seams a declared
-	/// backend owns — even while that backend is still initializing (e.g. the WASM/WebGPU async device import).
+	/// True once the app has declared a graphics backend through the host builder (<see cref="Register"/>). The host
+	/// builder's implicit Skia auto-registration stays out of the seams a declared backend owns — even while that
+	/// backend is still initializing (e.g. the WASM/WebGPU async device import).
 	/// </summary>
 	public static bool HasRegisteredBackends
 	{
@@ -157,19 +157,8 @@ internal static class GraphicsRegistry
 
 		if (backends.Count == 0)
 		{
-			// No backend was declared by the app: light up the implicit Skia default (if the Skia backend assembly
-			// is present) so a host stays fully backend-agnostic — it always negotiates, whether the app registered
-			// a backend explicitly or relies on the built-in Skia fallback. A SkiaSharp-free head that declares no
-			// backend finds nothing and still throws below.
-			DrawingBackendFallback.EnsureGraphicsBackend();
-			lock (_gate)
-			{
-				backends = _backends;
-			}
-		}
-
-		if (backends.Count == 0)
-		{
+			// The host builder resolves the default backend (Skia, if present) eagerly in Build() and throws there when
+			// none can be. Reaching negotiation with nothing registered means the app bypassed that path.
 			throw new InvalidOperationException(
 				"No graphics backend registered. Call GraphicsRegistry.Register(...) during app initialization.");
 		}
