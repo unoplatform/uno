@@ -54,7 +54,16 @@ namespace SkiaSharpExample
 						hostBuilder.RenderingBackend(backend);
 					}
 				})
-				.UseWin32(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
+				.UseWin32(hostBuilder =>
+				{
+					hostBuilder.PreloadMediaPlayer(true);
+					// Dev/test affordance: force the Win32 render backend via env (e.g. UNO_WIN32_RENDERER=Vulkan|OpenGL|Software|WebGpu).
+					if (Environment.GetEnvironmentVariable("UNO_WIN32_RENDERER") is { } rb
+						&& Enum.TryParse<global::Uno.UI.Hosting.Win32RenderingBackend>(rb, ignoreCase: true, out var backend))
+					{
+						hostBuilder.RenderingBackend(backend);
+					}
+				})
 				.UseLinuxFrameBuffer(hostBuilder => hostBuilder.XkbKeymap(new(layout: "us,ara", options: "grp:alt_shift_toggle")))
 				.UseMacOS();
 
