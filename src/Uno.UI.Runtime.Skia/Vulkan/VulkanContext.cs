@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using Uno.UI.Runtime.Skia.Vulkan.Interop;
 using Uno.UI.Runtime.Skia.Vulkan.UnmanagedInterop;
 using Uno.UI.Composition.Drawing;
-using SkiaSharp;
 
 namespace Uno.UI.Runtime.Skia.Vulkan;
 
@@ -102,13 +101,13 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		using (_device.Lock())
 		{
 			// Create display (swapchain) via platform surface wrapper
-			var platformSurface = new DirectVulkanSurface(nativeWindowHandle, new SKSizeI(width, height), factory);
+			var platformSurface = new DirectVulkanSurface(nativeWindowHandle, new global::Windows.Graphics.SizeInt32(width, height), factory);
 			_display = VulkanDisplay.CreateDisplay(this, platformSurface);
 
 			// Create intermediate render image (TransitionLayout submits commands, needs lock). The Skia backend
 			// builds its own GRContext-Vulkan over this image via the neutral IVulkanDeviceContext/RenderTarget.
 			_renderImage = new VulkanImage(this, _display.CommandBufferPool,
-				_display.SurfaceFormat.format, new SKSizeI(width, height));
+				_display.SurfaceFormat.format, new global::Windows.Graphics.SizeInt32(width, height));
 		}
 	}
 
@@ -128,10 +127,10 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 			_renderImage?.Dispose();
 			_display.Dispose();
 
-			var platformSurface = new DirectVulkanSurface(_nativeWindowHandle, new SKSizeI(width, height), _factory);
+			var platformSurface = new DirectVulkanSurface(_nativeWindowHandle, new global::Windows.Graphics.SizeInt32(width, height), _factory);
 			_display = VulkanDisplay.CreateDisplay(this, platformSurface);
 			_renderImage = new VulkanImage(this, _display.CommandBufferPool,
-				_display.SurfaceFormat.format, new SKSizeI(width, height));
+				_display.SurfaceFormat.format, new global::Windows.Graphics.SizeInt32(width, height));
 			// _cachedSkSurface will be lazily recreated on next EnsureCachedSurface
 		}
 	}
@@ -151,7 +150,7 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 
 		_renderImage?.Dispose();
 		_renderImage = new VulkanImage(this, _display.CommandBufferPool,
-			_display.SurfaceFormat.format, new SKSizeI(width, height));
+			_display.SurfaceFormat.format, new global::Windows.Graphics.SizeInt32(width, height));
 	}
 
 	/// <summary>
@@ -288,14 +287,14 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		private readonly IntPtr _nativeWindowHandle;
 		private readonly IVulkanPlatformSurfaceFactory _factory;
 
-		public DirectVulkanSurface(IntPtr nativeWindowHandle, SKSizeI size, IVulkanPlatformSurfaceFactory factory)
+		public DirectVulkanSurface(IntPtr nativeWindowHandle, global::Windows.Graphics.SizeInt32 size, IVulkanPlatformSurfaceFactory factory)
 		{
 			_nativeWindowHandle = nativeWindowHandle;
 			_factory = factory;
 			Size = size;
 		}
 
-		public SKSizeI Size { get; }
+		public global::Windows.Graphics.SizeInt32 Size { get; }
 
 		public ulong CreateSurface(IVulkanPlatformGraphicsContext context)
 		{

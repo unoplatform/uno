@@ -24,11 +24,6 @@
 	<Import Project="../targetframework-override.props" />
 	
 	<ItemGroup>
-		<!-- The relocated Vulkan device/swapchain subsystem (Vulkan/) uses SkiaSharp's SKSizeI. -->
-		<PackageReference Include="SkiaSharp" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />

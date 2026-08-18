@@ -4,7 +4,6 @@
 using System;
 using System.Linq;
 using System.Threading;
-using SkiaSharp;
 using Uno.UI.Runtime.Skia.Vulkan;
 using Uno.UI.Runtime.Skia.Vulkan.UnmanagedInterop;
 
@@ -23,7 +22,7 @@ internal class VulkanDisplay : IDisposable
 	private VkImage[] _swapchainImages = Array.Empty<VkImage>();
 	private VkImageView[] _swapchainImageViews = Array.Empty<VkImageView>();
 	public VulkanCommandBufferPool CommandBufferPool { get; private set; }
-	public SKSizeI Size { get; private set; }
+	public global::Windows.Graphics.SizeInt32 Size { get; private set; }
 
 	private VulkanDisplay(IVulkanPlatformGraphicsContext context, VulkanKhrSurface surface, VkSwapchainKHR swapchain,
 		VkExtent2D swapchainExtent, IVulkanKhrSurfacePlatformSurface platformSurface)
@@ -161,7 +160,7 @@ internal class VulkanDisplay : IDisposable
 	private unsafe void CreateSwapchainImages()
 	{
 		DestroyCurrentImageViews();
-		Size = new SKSizeI((int)_swapchainExtent.width, (int)_swapchainExtent.height);
+		Size = new global::Windows.Graphics.SizeInt32((int)_swapchainExtent.width, (int)_swapchainExtent.height);
 		uint imageCount = 0;
 		_context.DeviceApi.GetSwapchainImagesKHR(_context.DeviceHandle, _swapchain, ref imageCount, null)
 			.ThrowOnError("vkGetSwapchainImagesKHR");
@@ -231,7 +230,7 @@ internal class VulkanDisplay : IDisposable
 
 	public bool EnsureSwapchainAvailable()
 	{
-		if (_surface == null || Size != _surface.Size)
+		if (_surface == null || Size.Width != _surface.Size.Width || Size.Height != _surface.Size.Height)
 		{
 			RecreateSwapchain();
 			return true;
