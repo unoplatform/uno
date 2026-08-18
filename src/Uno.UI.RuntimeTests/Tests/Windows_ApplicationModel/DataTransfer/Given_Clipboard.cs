@@ -113,7 +113,9 @@ partial class Given_Clipboard
 		using var stream = await reference.OpenReadAsync();
 		var results = ToBytes(stream);
 
+#if UNO_DRAWING_SKIA
 		SkiaImageAssert.ArePixelsEqual(bytes, results);
+#endif
 	}
 
 	[TestMethod]
@@ -132,7 +134,9 @@ partial class Given_Clipboard
 		using var stream = await reference.OpenReadAsync();
 		var results = ToBytes(stream);
 
+#if UNO_DRAWING_SKIA
 		SkiaImageAssert.ArePixelsEqual(bytes, results);
+#endif
 	}
 #endif
 
