@@ -70,11 +70,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		{
 			NativeUno.uno_window_set_webgpu_mode(_nativeWindow.Handle, true);
 		}
-
-		if (this.Log().IsEnabled(LogLevel.Information))
-		{
-			this.Log().Info($"Neutral graphics pipeline active: {_context.Kind} context (macOS).");
-		}
 	}
 
 	/// <summary>
