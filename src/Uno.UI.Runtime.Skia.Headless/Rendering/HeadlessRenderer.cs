@@ -2,7 +2,6 @@
 
 using System;
 using System.Threading;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Microsoft.UI.Composition;
@@ -23,7 +22,7 @@ internal sealed class HeadlessRenderer : IDisposable
 	private readonly Thread _renderThread;
 	private volatile bool _disposed;
 
-	private SKSurface? _nullSurface;
+	private readonly HeadlessSwapChain _swapChain = new();
 
 	public HeadlessRenderer(IXamlRootHost host)
 	{
@@ -76,13 +75,8 @@ internal sealed class HeadlessRenderer : IDisposable
 			return;
 		}
 
-		ct.OnNativePlatformFrameRequested(_nullSurface?.Canvas, size =>
-		{
-			_nullSurface?.Dispose();
-			_nullSurface = SKSurface.CreateNull((int)size.Width, (int)size.Height);
-			return _nullSurface.Canvas;
-		});
-		_nullSurface?.Flush();
+		ct.OnNativePlatformFrameRequested(_swapChain);
+		_swapChain.Present();
 	}
 
 	public void Dispose()
@@ -99,13 +93,13 @@ internal sealed class HeadlessRenderer : IDisposable
 
 		if (stopped)
 		{
-			_nullSurface?.Dispose();
+			_swapChain.Dispose();
 			_renderInvalidationEvent.Dispose();
 		}
 		else
 		{
-			// The thread may still be mid-render; leak its surface/event rather than risk a use-after-dispose race.
-			this.LogWarn()?.Warn("The headless rendering thread did not stop within the timeout; its surface and event are left undisposed to avoid a race.");
+			// The thread may still be mid-render; leak its buffer/event rather than risk a use-after-dispose race.
+			this.LogWarn()?.Warn("The headless rendering thread did not stop within the timeout; its buffer and event are left undisposed to avoid a race.");
 		}
 	}
 }

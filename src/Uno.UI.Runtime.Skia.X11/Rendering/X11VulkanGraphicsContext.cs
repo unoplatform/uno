@@ -40,6 +40,10 @@ internal sealed class X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContex
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Vulkan;
 
+	// The Vulkan render image is stable across frames (resized only on change), so it keeps the previous frame's
+	// pixels — the compositor can repaint only the damaged region.
+	public bool PreservesContents => true;
+
 	// Neutral device face — the GRVkBackendContext inputs the Skia backend reads to build its GRContext-Vulkan.
 	public nint Instance => _vk.InstancePtr;
 	public nint PhysicalDevice => _vk.PhysicalDevicePtr;
@@ -71,8 +75,15 @@ internal sealed class X11VulkanGraphicsContext : ISwapChain, IVulkanDeviceContex
 
 	public void Present()
 	{
+		// No frame was acquired this tick (the compositor skipped drawing — e.g. no recorded frame yet or empty
+		// bounds), so the device lock was never taken; there is nothing to blit/present.
+		if (_frameLock is null)
+		{
+			return;
+		}
+
 		_vk.BlitAndPresent();
-		_frameLock?.Dispose();
+		_frameLock.Dispose();
 		_frameLock = null;
 	}
 

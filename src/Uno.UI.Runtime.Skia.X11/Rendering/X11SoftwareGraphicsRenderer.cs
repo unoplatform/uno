@@ -37,7 +37,7 @@ internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 			return;
 		}
 
-		_ = compositionTarget.OnNativePlatformFrameRequested(null, size => _context.AcquireRenderTarget((int)size.Width, (int)size.Height));
+		_ = compositionTarget.OnNativePlatformFrameRequested(_context);
 		_context.Present();
 	}
 

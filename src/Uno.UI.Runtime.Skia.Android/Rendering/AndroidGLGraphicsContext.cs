@@ -17,15 +17,32 @@ internal sealed class AndroidGLGraphicsContext : ISwapChain, IGLDeviceContext
 	public GLFlavor Flavor => GLFlavor.OpenGLES;
 	public Func<string, nint> GetProcAddress => AndroidNativeOpenGLWrapper.GetProcAddressStatic;
 
+	// The renderer draws into the default framebuffer, which the implicit buffer swap leaves undefined — no host
+	// retention yet, so the compositor repaints the whole frame.
+	public bool PreservesContents => false;
+
+	private AndroidGLRenderTarget? _target;
+	private int _width, _height;
+
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
-		// Read the default framebuffer + its sample/stencil counts (EGL context is current here) into a neutral target.
-		var buffer = new int[3];
-		GLES20.GlGetIntegerv(GLES20.GlFramebufferBinding, buffer, 0);
-		GLES20.GlGetIntegerv(GLES20.GlStencilBits, buffer, 1);
-		GLES20.GlGetIntegerv(GLES20.GlSamples, buffer, 2);
+		width = Math.Max(1, width);
+		height = Math.Max(1, height);
 
-		return new AndroidGLRenderTarget((uint)buffer[0], buffer[2], buffer[1], Math.Max(1, width), Math.Max(1, height));
+		if (_target is null || width != _width || height != _height)
+		{
+			// Read the default framebuffer + its sample/stencil counts (EGL context is current here) into a neutral target.
+			var buffer = new int[3];
+			GLES20.GlGetIntegerv(GLES20.GlFramebufferBinding, buffer, 0);
+			GLES20.GlGetIntegerv(GLES20.GlStencilBits, buffer, 1);
+			GLES20.GlGetIntegerv(GLES20.GlSamples, buffer, 2);
+
+			_target = new AndroidGLRenderTarget((uint)buffer[0], buffer[2], buffer[1], width, height);
+			_width = width;
+			_height = height;
+		}
+
+		return _target;
 	}
 
 	// GLSurfaceView swaps the buffers implicitly once OnDrawFrame returns.

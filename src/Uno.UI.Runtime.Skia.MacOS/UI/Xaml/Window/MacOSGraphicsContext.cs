@@ -25,6 +25,7 @@ internal sealed class MacOSMetalGraphicsContext : ISwapChain, IMacOSNativeTextur
 	private readonly nint _device;
 	private readonly nint _queue;
 	private nint _currentTexture;
+	private MacOSMetalRenderTarget? _target;
 
 	public MacOSMetalGraphicsContext(nint device, nint queue)
 	{
@@ -34,27 +35,38 @@ internal sealed class MacOSMetalGraphicsContext : ISwapChain, IMacOSNativeTextur
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Metal;
 
+	// The native MTKView presents to a per-frame drawable with no host-retained surface, so the back buffer is
+	// undefined each frame and the compositor repaints the whole frame.
+	public bool PreservesContents => false;
+
 	public nint Device => _device;
 	public nint Queue => _queue;
 
 	public void SetCurrentTexture(nint texture) => _currentTexture = texture;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
-		=> new MacOSMetalRenderTarget(_currentTexture, Math.Max(1, width), Math.Max(1, height));
+	{
+		width = Math.Max(1, width);
+		height = Math.Max(1, height);
+		if (_target is null || _target.Width != width || _target.Height != height)
+		{
+			_target = new MacOSMetalRenderTarget(this, width, height);
+		}
+		return _target;
+	}
 
 	// The native MTKView owns the drawable and commits after drawInMTKView returns.
 	public void Present() { }
 
 	public void Dispose() { }
 
-	private sealed class MacOSMetalRenderTarget(nint texture, int width, int height) : IMetalRenderTarget
+	// Reads the per-frame texture live off the context, so the cached target reflects each SetCurrentTexture swap.
+	private sealed class MacOSMetalRenderTarget(MacOSMetalGraphicsContext owner, int width, int height) : IMetalRenderTarget
 	{
-		public nint Texture => texture;
+		public nint Texture => owner._currentTexture;
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
-		// Backend keeps a persistent retained layer, so the previous frame survives for damage-region partial repaint.
-		public bool PreservesContents => true;
 		public void Dispose() { }
 	}
 }
@@ -68,15 +80,23 @@ internal sealed class MacOSSoftwareGraphicsContext : ISwapChain
 	private nint _buffer;
 	private int _width;
 	private int _height;
+	private MacOSSoftwareRenderTarget? _target;
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Software;
+
+	// Reuses one persistent CPU buffer across frames (reallocated only on resize), so the compositor can repaint
+	// only the damaged region.
+	public bool PreservesContents => true;
+
+	/// <summary>The buffer last handed to the backend, for the native SoftDraw callback to read back.</summary>
+	internal ISoftwareRenderTarget? CurrentTarget => _target;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
 		width = Math.Max(1, width);
 		height = Math.Max(1, height);
 
-		if (_buffer == 0 || width != _width || height != _height)
+		if (_target is null || width != _width || height != _height)
 		{
 			if (_buffer != 0)
 			{
@@ -85,9 +105,10 @@ internal sealed class MacOSSoftwareGraphicsContext : ISwapChain
 			_width = width;
 			_height = height;
 			_buffer = Marshal.AllocHGlobal(width * height * 4);
+			_target = new MacOSSoftwareRenderTarget(_buffer, _width * 4, _width, _height);
 		}
 
-		return new MacOSSoftwareRenderTarget(_buffer, _width * 4, _width, _height);
+		return _target;
 	}
 
 	// The native SoftDraw callback blits the buffer to the window; nothing to present here.

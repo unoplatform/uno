@@ -33,11 +33,6 @@ internal sealed class SkiaDrawingFactory :
 	// changes, so the render target + surface are recreated each present; the GRContext is cached.
 	private GRContext? _metalContext;
 
-	// Persistent damage-region layers for the retained (partial-repaint) GL / Metal present paths — the frame is
-	// composed into these across presents and blitted onto the swapchain each frame. Null on the full-repaint hosts.
-	private RetainedLayer? _glRetainedLayer;
-	private RetainedLayer? _metalRetainedLayer;
-
 	// Vulkan state (built lazily on the first Vulkan present). The render image is stable across frames, so the
 	// render target + surface are cached and rebuilt only when the image handle/size changes.
 	private GRContext? _vulkanContext;
@@ -136,14 +131,8 @@ internal sealed class SkiaDrawingFactory :
 		// The render target descriptor is consumed by SKSurface.Create; the surface is disposed on present.
 		target.Dispose();
 
-		// Under retention (partial repaint) the frame is composed into a persistent layer and blitted onto this
-		// frame's drawable; otherwise render straight into it.
-		if (metal.PreservesContents)
-		{
-			(_metalRetainedLayer ??= new RetainedLayer()).EnsureSurface(_metalContext, metal.Width, metal.Height, colorType);
-			return SkiaPresentSession.ForRetained(_metalRetainedLayer, surface, _metalContext, ownsSwapchainSurface: true, this);
-		}
-
+		// Render straight into the host's texture; retention (partial repaint) is the host's business (it hands back a
+		// stable texture when it preserves contents).
 		return SkiaPresentSession.ForGpuTexture(surface, _metalContext, this);
 	}
 
@@ -176,21 +165,13 @@ internal sealed class SkiaDrawingFactory :
 			_glSurface = SKSurface.Create(_glContext, _glRenderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888);
 		}
 
-		// SwapBuffers leaves the back buffer undefined, so under retention (partial repaint) the frame is composed
-		// into a persistent layer and blitted onto the swapchain each present; otherwise render straight into it.
-		if (gl.PreservesContents)
-		{
-			(_glRetainedLayer ??= new RetainedLayer()).EnsureSurface(_glContext!, gl.Width, gl.Height, SKColorType.Rgba8888);
-			return SkiaPresentSession.ForRetained(_glRetainedLayer, _glSurface!, _glContext, ownsSwapchainSurface: false, this);
-		}
-
+		// Render straight into the host's framebuffer; retention (partial repaint) is the host's business (it hands
+		// back a stable framebuffer that survives its present when it preserves contents).
 		return new SkiaPresentSession(_glSurface!.Canvas, this);
 	}
 
 	public void Dispose()
 	{
-		_glRetainedLayer?.Dispose();
-		_metalRetainedLayer?.Dispose();
 		_glSurface?.Dispose();
 		_glRenderTarget?.Dispose();
 		_glContext?.Dispose();

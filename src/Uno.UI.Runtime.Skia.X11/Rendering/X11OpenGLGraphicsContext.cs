@@ -15,6 +15,7 @@ internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext
 	private const uint DefaultFramebuffer = 0; // the GLX buffer created in X11XamlRootHost, rendered directly on screen
 
 	private readonly X11Window _x11Window;
+	private X11GLRenderTarget? _target;
 
 	public X11OpenGLGraphicsContext(X11Window x11Window)
 	{
@@ -31,12 +32,22 @@ internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext
 	public GLFlavor Flavor => GLFlavor.OpenGL;
 	public Func<string, nint> GetProcAddress => X11NativeOpenGLWrapper.GetProcAddressStatic;
 
+	// The renderer draws into the default framebuffer, which SwapBuffers leaves undefined — no retention yet, so the
+	// compositor repaints the whole frame. (Host-owned FBO retention to restore partial repaint is a follow-up.)
+	public bool PreservesContents => false;
+
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
+		width = Math.Max(1, width);
+		height = Math.Max(1, height);
 		var glXInfo = _x11Window.glXInfo!.Value;
 		using var lockDisposable = X11Helper.XLock(_x11Window.Display);
 		MakeCurrent();
-		return new X11GLRenderTarget(Math.Max(1, width), Math.Max(1, height), glXInfo.sampleCount, glXInfo.stencilBits);
+		if (_target is null || _target.Width != width || _target.Height != height)
+		{
+			_target = new X11GLRenderTarget(width, height, glXInfo.sampleCount, glXInfo.stencilBits);
+		}
+		return _target;
 	}
 
 	public void Present()
@@ -64,8 +75,6 @@ internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
-		// The backend blits a persistent retained layer here each present, so the previous frame survives SwapBuffers — enabling partial repaint.
-		public bool PreservesContents => true;
 		public void Dispose() { }
 	}
 }

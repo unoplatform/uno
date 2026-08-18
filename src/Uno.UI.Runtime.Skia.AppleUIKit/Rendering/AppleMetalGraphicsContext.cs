@@ -25,6 +25,7 @@ internal sealed class AppleMetalGraphicsContext : ISwapChain, IAppleNativeTextur
 	private readonly nint _device;
 	private readonly nint _queue;
 	private nint _currentTexture;
+	private AppleMetalRenderTarget? _target;
 
 	public AppleMetalGraphicsContext(nint device, nint queue)
 	{
@@ -37,24 +38,36 @@ internal sealed class AppleMetalGraphicsContext : ISwapChain, IAppleNativeTextur
 	public nint Device => _device;
 	public nint Queue => _queue;
 
+	// Metal presents to the MTKView's per-frame drawable with no host-retained surface yet, so the drawable is
+	// undefined each frame — the compositor repaints the whole frame.
+	public bool PreservesContents => false;
+
 	public void SetCurrentTexture(nint texture) => _currentTexture = texture;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
-		=> new AppleMetalRenderTarget(_currentTexture, Math.Max(1, width), Math.Max(1, height));
+	{
+		width = Math.Max(1, width);
+		height = Math.Max(1, height);
+		// Cache the target across frames while the size is unchanged; the wrapped drawable texture is read live
+		// from the context, so a per-frame texture swap is reflected without reallocating the target.
+		if (_target is null || _target.Width != width || _target.Height != height)
+		{
+			_target = new AppleMetalRenderTarget(this, width, height);
+		}
+		return _target;
+	}
 
 	// The MTKView owns the drawable and commits after its Draw returns.
 	public void Present() { }
 
 	public void Dispose() { }
 
-	private sealed class AppleMetalRenderTarget(nint texture, int width, int height) : IMetalRenderTarget
+	private sealed class AppleMetalRenderTarget(AppleMetalGraphicsContext context, int width, int height) : IMetalRenderTarget
 	{
-		public nint Texture => texture;
+		public nint Texture => context._currentTexture;
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Bgra8888;
-		// Retained-layer partial repaint: the backend blits a persistent layer onto this frame's drawable each present.
-		public bool PreservesContents => true;
 		public void Dispose() { }
 	}
 }

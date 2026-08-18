@@ -99,8 +99,6 @@ internal partial class Win32WindowWrapper
 			return null;
 		}
 
-		return ct.OnNativePlatformFrameRequested(
-			null,
-			size => _context.AcquireRenderTarget((int)size.Width, (int)size.Height));
+		return ct.OnNativePlatformFrameRequested(_context);
 	}
 }

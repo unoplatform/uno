@@ -42,6 +42,7 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 	private ByteBuffer? _buffer;
 	private nint _pixels;
 	private int _width, _height;
+	private AndroidSoftwareRenderTarget? _target;
 
 	private bool _glInitialized;
 	private int _program;
@@ -51,6 +52,10 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 	private FloatBuffer? _quadBuffer;
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Software;
+
+	// Reuses one persistent CPU buffer across frames (reallocated only on resize), so the compositor can repaint
+	// only the damaged region.
+	public bool PreservesContents => true;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
@@ -64,9 +69,10 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 			_pixels = JNIEnv.GetDirectBufferAddress(_buffer.Handle);
 			_width = width;
 			_height = height;
+			_target = new AndroidSoftwareRenderTarget(_pixels, width * 4, width, height);
 		}
 
-		return new AndroidSoftwareRenderTarget(_pixels, width * 4, width, height);
+		return _target!;
 	}
 
 	public void Present()
@@ -191,6 +197,7 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 		_buffer?.Dispose();
 		_buffer = null;
 		_pixels = 0;
+		_target = null;
 	}
 
 	// Neutral CPU framebuffer target; the Skia backend wraps it as an RGBA8888 surface (ColorFormat-driven).

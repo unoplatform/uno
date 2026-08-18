@@ -216,6 +216,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 				k => System.Threading.Tasks.Task.FromResult<global::Uno.UI.Composition.Drawing.ISwapChain?>(
 					k == kind ? new FrameBufferGraphicsContext(kind) : null);
 			var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize();
+			_renderer.SetSwapChain(init.Context);
 			Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = init.Renderer;
 			Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer =
 				init.Context.Kind == global::Uno.UI.Composition.Drawing.GraphicsContextKind.Software;

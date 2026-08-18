@@ -40,6 +40,11 @@ internal abstract class FrameBufferRenderer
 	/// <summary>The neutral render target the backend last composed into (recreated by <see cref="CreateTarget"/> on resize).</summary>
 	protected abstract IRenderTarget? CurrentTarget { get; }
 
+	private ISwapChain? _swapChain;
+
+	/// <summary>Wires the negotiated context this renderer drives (its <c>AcquireRenderTarget</c> is routed here).</summary>
+	internal void SetSwapChain(ISwapChain swapChain) => _swapChain = swapChain;
+
 	protected void Render()
 	{
 		if (_host.RootElement?.Visual.CompositionTarget is not CompositionTarget ct)
@@ -63,18 +68,18 @@ internal abstract class FrameBufferRenderer
 		var rootTransform = BuildOrientationMatrix(degrees, transX, transY);
 		Action<IDrawingSession>? overlay = (_cursorVisible ?? _receivedMouseEvent) ? DrawCursor : null;
 
-		ct.OnNativePlatformFrameRequested(
-			CurrentTarget,
-			size =>
+		// Route the context's acquire to this renderer's orientation-aware target creation, reusing the current
+		// target while the physical size is unchanged (portrait swaps width/height for the physical framebuffer).
+		((FrameBufferGraphicsContext)_swapChain!).SetAcquire((width, height) =>
+		{
+			if (orientation is DisplayOrientations.Portrait or DisplayOrientations.PortraitFlipped)
 			{
-				if (orientation is DisplayOrientations.Portrait or DisplayOrientations.PortraitFlipped)
-				{
-					size = new Size(size.Height, size.Width);
-				}
-				return CreateTarget((int)size.Width, (int)size.Height);
-			},
-			rootTransform,
-			overlay);
+				(width, height) = (height, width);
+			}
+			return CurrentTarget is { } t && t.Width == width && t.Height == height ? t : CreateTarget(width, height);
+		});
+
+		ct.OnNativePlatformFrameRequested(_swapChain!, rootTransform, overlay);
 	}
 
 	private void DrawCursor(IDrawingSession session)

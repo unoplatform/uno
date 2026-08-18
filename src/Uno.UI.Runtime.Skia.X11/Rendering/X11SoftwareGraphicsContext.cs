@@ -24,6 +24,7 @@ internal sealed class X11SoftwareGraphicsContext : ISwapChain
 	private IntPtr _xImage;
 	private int _width;
 	private int _height;
+	private X11SoftwareRenderTarget? _target;
 
 	public X11SoftwareGraphicsContext(X11Window window)
 	{
@@ -39,17 +40,22 @@ internal sealed class X11SoftwareGraphicsContext : ISwapChain
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Software;
 
+	// Reuses one persistent CPU buffer across frames (reallocated only on resize), so the compositor can repaint
+	// only the damaged region.
+	public bool PreservesContents => true;
+
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
 		width = Math.Max(1, width);
 		height = Math.Max(1, height);
 
-		if (_buffer == IntPtr.Zero || width != _width || height != _height)
+		if (_target is null || width != _width || height != _height)
 		{
 			Reallocate(width, height);
+			_target = new X11SoftwareRenderTarget(_buffer, _width * 4, _width, _height);
 		}
 
-		return new X11SoftwareRenderTarget(_buffer, _width * 4, _width, _height);
+		return _target;
 	}
 
 	public void Present()
@@ -108,8 +114,6 @@ internal sealed class X11SoftwareGraphicsContext : ISwapChain
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Bgra8888;
-		// Reuses one persistent buffer across frames (reallocated only on resize), so the compositor can repaint only the damaged region.
-		public bool PreservesContents => true;
 		public void Dispose() { }
 	}
 }

@@ -22,11 +22,21 @@ public interface IGraphicsContext : IDisposable
 /// </summary>
 internal interface ISwapChain : IGraphicsContext
 {
-	/// <summary>Acquires the color target for the next frame (recreating the swapchain/framebuffer on resize).</summary>
+	/// <summary>
+	/// Acquires the color target for the next frame. The swapchain caches the target while the requested size is
+	/// unchanged and recreates it on resize (or when it becomes invalid), so callers may acquire every frame.
+	/// </summary>
 	IRenderTarget AcquireRenderTarget(int width, int height);
 
 	/// <summary>Presents the frame rendered into the last-acquired target to the window.</summary>
 	void Present();
+
+	/// <summary>
+	/// True when this swapchain keeps the previous frame's pixels at the same size, letting the compositor repaint
+	/// only the damaged region. A reused CPU framebuffer or a host-retained GPU surface returns true; a swapchain
+	/// whose back buffer is undefined each frame returns false (the default), forcing a full repaint.
+	/// </summary>
+	bool PreservesContents => false;
 }
 
 /// <summary>
@@ -42,12 +52,4 @@ public interface IRenderTarget : IDisposable
 	int Height { get; }
 
 	GraphicsColorFormat ColorFormat { get; }
-
-	/// <summary>
-	/// True when the host guarantees this target keeps the previous frame's pixels until the next acquisition at the
-	/// same size, so the compositor may repaint only the damaged region and let the rest survive. Retention is the
-	/// host's business (reused CPU framebuffer or stable GPU image → true; an undefined surface each frame → false,
-	/// the default, which forces a full repaint). The render backend never sees this.
-	/// </summary>
-	bool PreservesContents => false;
 }
