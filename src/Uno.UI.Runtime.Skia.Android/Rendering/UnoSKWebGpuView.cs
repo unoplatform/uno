@@ -162,8 +162,6 @@ internal sealed partial class UnoSKWebGpuView : SurfaceView, ISurfaceHolderCallb
 		var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize();
 		_context = init.Context;
 		Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = init.Renderer;
-
-		this.Log().Info($"Neutral graphics pipeline active: {init.Context.Kind} context (Android).");
 	}
 
 	private void RenderFrame()

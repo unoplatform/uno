@@ -53,11 +53,6 @@ internal partial class BrowserRenderer
 			CompositionTarget.Renderer = init.Renderer;
 			Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = init.Context.Kind == GraphicsContextKind.Software;
 
-			if (this.Log().IsEnabled(LogLevel.Information))
-			{
-				this.Log().Info($"Neutral graphics pipeline active: {init.Context.Kind} context (browser).");
-			}
-
 			// Force a fresh record+present under the negotiated renderer (a frame recorded before the async switch
 			// completes is skipped by the present session).
 			(_host.RootElement as Microsoft.UI.Xaml.UIElement)?.InvalidateArrange();

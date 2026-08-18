@@ -1,5 +1,3 @@
-// #define REPORT_FPS
-
 #nullable enable
 
 using System;
@@ -60,12 +58,6 @@ namespace Microsoft.UI.Xaml
 			// For XAML Islands (no Start call), the field default of OnExplicitShutdown remains.
 			_dispatcherShutdownMode = DispatcherShutdownMode.OnLastWindowClose;
 		}
-
-#if REPORT_FPS
-		static FrameRateLogger _renderFpsLogger = new FrameRateLogger(typeof(Application), "Render");
-#endif
-		private long _lastRender = Stopwatch.GetTimestamp();
-
 
 		internal ISkiaApplicationHost? Host { get; set; }
 
