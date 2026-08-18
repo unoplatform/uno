@@ -37,6 +37,25 @@ public partial class Visual
 		MiterLimit = 4f,
 	};
 
+	/// <summary>
+	/// A visual removed from the tree won't be visited next frame, so nothing would damage the area it occupied.
+	/// Damage this visual's (and every descendant's) last-rendered bounds into <paramref name="target"/> so the
+	/// partial-repaint path clears their old pixels.
+	/// </summary>
+	internal void ContributeRemovalDamage(Uno.UI.Composition.ICompositionTarget target)
+	{
+		if (_hasLastRenderBounds)
+		{
+			target.AddDamage(_lastRenderBounds);
+			_hasLastRenderBounds = false;
+		}
+
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			child.ContributeRemovalDamage(target);
+		}
+	}
+
 	internal void ContributeDamageOnPaint(bool contentChanged, DamageRegion? damage)
 	{
 		if (damage is null)

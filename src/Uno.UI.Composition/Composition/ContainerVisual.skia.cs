@@ -53,6 +53,12 @@ public partial class ContainerVisual : Visual
 					{
 						compositionObject.StopAllAnimations();
 					}
+					// A removed visual won't be visited next frame; damage its (and its descendants') old area so
+					// the partial-repaint path clears where it used to be.
+					if (CompositionTarget is { } removalTarget && i is Visual removedVisual)
+					{
+						removedVisual.ContributeRemovalDamage(removalTarget);
+					}
 				}
 			}
 		};

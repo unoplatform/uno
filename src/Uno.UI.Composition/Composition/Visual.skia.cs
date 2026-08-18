@@ -377,6 +377,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
+			// Became non-rendering (hidden or fully transparent) while it painted last frame: damage the area it
+			// used to occupy so the partial-repaint path clears it instead of leaving a stale ghost.
+			if (_hasLastRenderBounds)
+			{
+				parentSession.Damage?.UnionRect(_lastRenderBounds);
+				_hasLastRenderBounds = false;
+			}
 			return;
 		}
 
