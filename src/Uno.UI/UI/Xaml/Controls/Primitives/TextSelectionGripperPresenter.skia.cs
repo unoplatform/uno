@@ -96,12 +96,17 @@ internal sealed class TextSelectionGripperPresenter
 	private CaretWithStemAndThumb _startGripper;
 	private CaretWithStemAndThumb _endGripper;
 
+	// Subscribed while the grippers are active (GripperMode != Hidden) so they keep tracking their
+	// anchors every rendered frame (scrolling, text moves), even while culled out of view or after
+	// their popup was closed externally. Same pattern as SystemFocusVisual.
+	private CompositionTarget _frameRenderedTarget;
+
 	public TextSelectionGripperPresenter(ITextSelectionGripperHost host)
 	{
 		_host = host;
 
-		_startGripper = new CaretWithStemAndThumb(Update);
-		_endGripper = new CaretWithStemAndThumb(Update);
+		_startGripper = new CaretWithStemAndThumb();
+		_endGripper = new CaretWithStemAndThumb();
 
 		foreach (var gripper in (ReadOnlySpan<CaretWithStemAndThumb>)[_startGripper, _endGripper])
 		{
@@ -127,8 +132,33 @@ internal sealed class TextSelectionGripperPresenter
 
 	public void Hide()
 	{
+		UnsubscribeFrameRendered();
 		_startGripper.Hide();
 		_endGripper.Hide();
+	}
+
+	// While the grippers are active, reposition them on every rendered frame: scrolling an ancestor
+	// ScrollViewer produces frames without redrawing the text surface, so DrawingFinished alone would
+	// leave them (and their culling) stale. Subscribing at the content root (instead of on the gripper
+	// popups) keeps the tracking alive while a culled gripper's popup is closed, so it can re-show once
+	// its anchor scrolls back into view.
+	private void EnsureFrameRenderedSubscription()
+	{
+		if (_frameRenderedTarget is null
+			&& _host.GripperTextSurface.XamlRoot?.VisualTree.ContentRoot.CompositionTarget is { } target)
+		{
+			_frameRenderedTarget = target;
+			target.FrameRendered += Update;
+		}
+	}
+
+	private void UnsubscribeFrameRendered()
+	{
+		if (_frameRenderedTarget is { } target)
+		{
+			target.FrameRendered -= Update;
+			_frameRenderedTarget = null;
+		}
 	}
 
 	/// <summary>
@@ -143,6 +173,8 @@ internal sealed class TextSelectionGripperPresenter
 			Hide();
 			return;
 		}
+
+		EnsureFrameRenderedSubscription();
 
 		var surface = _host.GripperTextSurface;
 		var clip = _host.GripperClipBounds;
@@ -171,7 +203,7 @@ internal sealed class TextSelectionGripperPresenter
 			rect.Y += surface.Padding.Top;
 			gripper.Height = rect.Height + 16;
 			var transform = surface.TransformToVisual(null);
-			if (transform.TransformBounds(rect).IntersectWith(clip) is not null)
+			if (clip.Width > 0 && clip.Height > 0 && transform.TransformBounds(rect).IntersectWith(clip) is not null)
 			{
 				var matrixTransform = (MatrixTransform)transform;
 				var surfaceMatrix = matrixTransform.Matrix.ToMatrix3x2();
@@ -186,6 +218,8 @@ internal sealed class TextSelectionGripperPresenter
 			}
 			else
 			{
+				// Culled: its anchor is outside the visible clip (e.g. scrolled out of an ancestor
+				// ScrollViewer). The per-frame Update re-shows it once the anchor is back in view.
 				gripper.Hide();
 			}
 		}

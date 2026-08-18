@@ -720,7 +720,10 @@ namespace Microsoft.UI.Xaml.Controls
 		#region ITextSelectionGripperHost
 		TextBlock ITextSelectionGripperHost.GripperTextSurface => this;
 
-		Rect ITextSelectionGripperHost.GripperClipBounds => this.GetAbsoluteBoundsRect();
+		// Effective visible bounds (ancestor clips applied), so grippers are culled when the TextBlock is
+		// scrolled out of a parent ScrollViewer's viewport rather than floating over unrelated content.
+		Rect ITextSelectionGripperHost.GripperClipBounds
+			=> GetGlobalBoundsWithOptions(ignoreClipping: false, ignoreClippingOnScrollContentPresenters: false, useTargetInformation: false);
 
 		GripperMode ITextSelectionGripperHost.GripperMode => _grippersShown ? GripperMode.Both : GripperMode.Hidden;
 
