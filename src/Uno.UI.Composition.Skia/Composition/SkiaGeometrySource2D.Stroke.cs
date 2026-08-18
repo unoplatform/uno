@@ -8,9 +8,22 @@ namespace Microsoft.UI.Composition
 {
 	internal partial class SkiaGeometrySource2D
 	{
-		private static readonly SKPaint _strokeSparePaint = new();
-		private static readonly SKPathBuilder _strokeSpareBuilder = new();
-		private static readonly SKPoint[] _spareMiterPoints = new SKPoint[4];
+		// Per-thread scratch: stroke/fill geometry is built on both the record (UI/dispatcher) thread and the present
+		// (render) thread, so these must NOT be shared process-wide — concurrent Reset/GetFillPath/Detach on one
+		// SKPathBuilder corrupts the in-flight build and the resulting SKPath faults a later SKPath.Op. [ThreadStatic]
+		// gives each thread its own spare (matching SkiaDrawingSession._sparePaint). Lazily created per thread since
+		// [ThreadStatic] can't carry an initializer beyond the first thread.
+		[ThreadStatic]
+		private static SKPaint? _strokeSparePaintTls;
+		private static SKPaint _strokeSparePaint => _strokeSparePaintTls ??= new();
+
+		[ThreadStatic]
+		private static SKPathBuilder? _strokeSpareBuilderTls;
+		private static SKPathBuilder _strokeSpareBuilder => _strokeSpareBuilderTls ??= new();
+
+		[ThreadStatic]
+		private static SKPoint[]? _spareMiterPointsTls;
+		private static SKPoint[] _spareMiterPoints => _spareMiterPointsTls ??= new SKPoint[4];
 
 		IGeometry IGeometry.GetFilledGeometry(float trimStart, float trimEnd)
 		{
