@@ -86,11 +86,11 @@ internal partial class Win32WindowWrapper
 	}
 
 	/// <summary>
-	/// Called on the render thread. Acquires the context's target for the current client size, records/renders
-	/// the frame through the neutral loop, and returns the clip path and client dimensions — or null when there
-	/// is no frame to present yet. The render thread presents the frame via <see cref="ISwapChain.Present"/>.
+	/// Called on the render thread. Drives the frame through the shared loop (which owns sizing) and returns the
+	/// native-element clip path, or null when there is no frame to present yet. The render thread then presents
+	/// via <see cref="ISwapChain.Present"/>.
 	/// </summary>
-	private (IGeometry clipPath, int width, int height)? DrawFrame()
+	private IGeometry? DrawFrame()
 	{
 		var ct = ((IXamlRootHost)this).RootElement?.Visual.CompositionTarget as CompositionTarget;
 		if (ct is null || _rendererDisposed)
@@ -98,21 +98,14 @@ internal partial class Win32WindowWrapper
 			return null;
 		}
 
-		if (!PInvoke.GetClientRect(_hwnd, out RECT clientRect))
+		if (!PInvoke.GetClientRect(_hwnd, out _))
 		{
 			this.LogError()?.Error($"{nameof(PInvoke.GetClientRect)} failed: {Win32Helper.GetErrorMessage()}");
 			return null;
 		}
 
-		var width = clientRect.Width;
-		var height = clientRect.Height;
-
-		// The context owns the surface/present; the backend (whichever won negotiation) wraps the acquired target.
-		var target = _context.AcquireRenderTarget(width, height);
-		var clipGeometry = ct.OnNativePlatformFrameRequested(
-			target,
+		return ct.OnNativePlatformFrameRequested(
+			null,
 			size => _context.AcquireRenderTarget((int)size.Width, (int)size.Height));
-
-		return (clipGeometry, width, height);
 	}
 }

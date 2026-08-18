@@ -435,11 +435,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateWindowAndContext(kind, topWindowDisplay, display, screen, size));
 
 		var init = GraphicsRegistry.Initialize();
-		if (this.Log().IsEnabled(LogLevel.Information))
-		{
-			this.Log().Info($"Neutral graphics pipeline active: {init.Context.Kind} context via {init.Renderer.GetType().Name} (X11).");
-		}
-		_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, init.Context);
+		_renderer = new X11SoftwareGraphicsRenderer(this, init.Context);
 		Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = init.Renderer;
 
 		// Only XI2.2 has touch events, and that's pretty much the only reason we're using XI2,
