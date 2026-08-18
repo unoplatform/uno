@@ -57,4 +57,9 @@
 		<None Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\**"
 		      Link="Microsoft_UI_Xaml_Controls\WebView2Tests\%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
+	<!-- SkiaSharp-free build: SKCanvasElement exposes raw SKCanvas (Uno.WinUI.Graphics2DSK) and cannot be neutral. -->
+	<ItemGroup Condition="'$(UnoDrawingBackendSkia)'=='false'">
+		<Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Composition\SKCanvasElement_Simple.xaml" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Composition\SKCanvasElement_Simple.xaml.cs" />
+	</ItemGroup>
 </Project>

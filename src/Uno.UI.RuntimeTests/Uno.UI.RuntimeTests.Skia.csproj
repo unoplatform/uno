@@ -79,12 +79,32 @@
 		<ProjectReference Include="..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
 		<!-- Tests reference Skia backend types (SkiaFont/SkiaImage/SkiaDrawingSession/SkiaGeometrySource2D) directly;
 		     the framework no longer provides the backend transitively, so reference it here explicitly. -->
-		<ProjectReference Include="..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" />
+		<ProjectReference Include="..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="'$(UnoDrawingBackendSkia)'!='false'">
 		<ProjectReference Include="..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
 		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(UnoDrawingBackendSkia)'!='false'">
+		<DefineConstants>$(DefineConstants);UNO_DRAWING_SKIA</DefineConstants>
+	</PropertyGroup>
+
+	<!-- SkiaSharp-free build: compile out the tests that use SkiaSharp / SKCanvasElement / Skottie directly. The
+	     managed test-support (TestServices/TestPage/ImageAssert/RawBitmap) is SkiaSharp-free and stays, so the rest
+	     of the suite and all samples still compile. -->
+	<ItemGroup Condition="'$(UnoDrawingBackendSkia)'=='false'">
+		<Compile Remove="Helpers\SkiaImageAssert.cs" />
+		<Compile Remove="Tests\Microsoft_UI_Xaml_Controls\Given_AnimatedVisualPlayer.cs" />
+		<Compile Remove="Tests\Windows_UI_Composition\Given_ContainerVisual.cs" />
+		<Compile Remove="Tests\Windows_UI_Xaml_Controls\Given_Image.cs" />
+		<Compile Remove="Tests\Windows_UI_Xaml_Controls\Given_SKCanvasElement.skia.cs" />
+		<Compile Remove="Tests\Windows_UI_Xaml_Controls\Given_TextBlock.cs" />
+		<Compile Remove="Tests\Windows_UI_Xaml_Media\Given_AcrylicBrush.cs" />
+		<Compile Remove="Tests\Windows_UI_Xaml_Media\Given_Geometry.cs" />
+		<Compile Remove="Tests\Windows_UI_Xaml_Media\Given_IFont_AlternativeBackend.cs" />
+		<Compile Remove="Tests\Windows_UI_Xaml_Shapes\Given_Basic_Shapes_Parity.cs" />
 	</ItemGroup>
 
 	<PropertyGroup>

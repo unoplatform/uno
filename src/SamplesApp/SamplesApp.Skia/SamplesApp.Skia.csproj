@@ -7,6 +7,7 @@
 
 	<PropertyGroup>
 		<DefineConstants>$(DefineConstants);__SKIA__;HAS_UNO;UNO_REFERENCE_API</DefineConstants>
+		<DefineConstants Condition="'$(UnoDrawingBackendSkia)'!='false'">$(DefineConstants);UNO_DRAWING_SKIA</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 
@@ -32,10 +33,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.SpellChecking\Uno.WinUI.SpellChecking.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
@@ -48,7 +49,7 @@
 		<ProjectReference Include="..\..\Uno.UWP\Uno.Reference.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 	</ItemGroup>
 
 	<ItemGroup>
