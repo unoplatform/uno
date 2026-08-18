@@ -153,10 +153,38 @@ namespace Private.Infrastructure
 				return spRootFrameAsCC.Content as Page;
 			}
 
+			/// <summary>
+			/// Longest a pair of idle round-trips may take before it is worth reporting. Reaching the
+			/// idle queue should cost microseconds; anything near a second means the dispatcher is not
+			/// servicing Idle work, which is invisible today because WaitFor only re-checks its
+			/// deadline between awaits and so never times out on it.
+			/// </summary>
+			private const int SlowIdleMs = 500;
+
+			private static long _lastSlowIdleLogTimestamp;
+
 			internal static async Task WaitForIdle()
 			{
+				var start = Stopwatch.GetTimestamp();
+
 				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
 				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+
+				var elapsedMs = (long)Stopwatch.GetElapsedTime(start).TotalMilliseconds;
+				if (elapsedMs < SlowIdleMs)
+				{
+					return;
+				}
+
+				// Throttled: a stalled run would otherwise emit this on every wait.
+				var last = _lastSlowIdleLogTimestamp;
+				if (last != 0 && Stopwatch.GetElapsedTime(last).TotalMilliseconds < 5000)
+				{
+					return;
+				}
+
+				_lastSlowIdleLogTimestamp = Stopwatch.GetTimestamp();
+				Console.WriteLine($"[diag] WaitForIdle took {elapsedMs}ms — the Idle queue is not being serviced promptly.");
 			}
 
 			/// <summary>
