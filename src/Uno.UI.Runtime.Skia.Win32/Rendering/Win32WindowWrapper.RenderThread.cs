@@ -18,13 +18,13 @@ internal partial class Win32WindowWrapper
 		private readonly AutoResetEvent _frameSignal = new(false);
 		private readonly ManualResetEventSlim _presentedEvent = new(false);
 		private readonly ISwapChain _context;
-		private readonly Func<(IGeometry clipPath, int width, int height)?> _drawFrame;
+		private readonly Func<IGeometry?> _drawFrame;
 		private readonly Action<IGeometry> _onClipPathUpdated;
 		private volatile bool _disposed;
 
 		internal RenderThread(
 			ISwapChain context,
-			Func<(IGeometry, int, int)?> drawFrame,
+			Func<IGeometry?> drawFrame,
 			Action<IGeometry> onClipPathUpdated)
 		{
 			_context = context;
@@ -62,10 +62,8 @@ internal partial class Win32WindowWrapper
 
 				try
 				{
-					var result = _drawFrame();
-					if (result is { } frame)
+					if (_drawFrame() is { } clipPath)
 					{
-						var (clipPath, _, _) = frame;
 						_onClipPathUpdated(clipPath);
 						_context.Present(); // SwapBuffers/BitBlt/swapchain present — may block for VSync
 
