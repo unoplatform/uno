@@ -30,4 +30,10 @@ internal sealed class CompositionSvgSurface : CompositionObject, ICompositionSur
 
 	void IPaintableSurface.Paint(IDrawingSession session, float opacity, Rect bounds)
 		=> _document.Render(session, new Size(bounds.Width, bounds.Height));
+
+	private protected override void DisposeInternal()
+	{
+		_document.Dispose();
+		base.DisposeInternal();
+	}
 }

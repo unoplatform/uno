@@ -51,6 +51,9 @@ internal sealed class ManagedSvg : ISvgDocument
 
 	public Size SourceSize { get; }
 
+	// The managed engine renders straight into the session each frame and retains no backend resource; nothing to release.
+	public void Dispose() { }
+
 	public static bool TryParse(byte[] svg, IGeometryFactory geometry, IDrawingFactory drawing, out ManagedSvg document)
 	{
 		document = null!;
