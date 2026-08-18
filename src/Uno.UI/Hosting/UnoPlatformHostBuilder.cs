@@ -112,6 +112,10 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	private const string SvgAddInBackendTypeName = "Uno.UI.Svg.SvgBackend, Uno.UI.Svg";
 	private const string ManagedSvgRendererTypeName = "Uno.UI.Composition.Drawing.ManagedSvgRenderer, Uno.UI.Composition.Managed";
 
+	// Lottie ships as the optional Uno.UI.Lottie add-in (its Skottie dependency stays opt-in). When referenced it
+	// becomes the default; without it Lottie playback is simply unavailable (the player shows fallback content).
+	private const string SkottieLottieRendererTypeName = "Uno.UI.Lottie.SkottieLottieRenderer, Uno.UI.Lottie";
+
 	private static readonly object _fallbackGate = new();
 	private static Type? _skiaBackendType;
 	private static bool _skiaBackendTypeResolved;
@@ -135,6 +139,7 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 		TryLightUpImageDecoder();
 		TryLightUpGeometryFactory();
 		TryLightUpSvgRenderer(); // best-effort: the managed engine is the built-in default; SVG is optional.
+		TryLightUpLottieRenderer(); // best-effort: the Skottie add-in when referenced; Lottie is optional.
 
 		List<string>? missing = null;
 		void Require(bool satisfied, string seam, string register)
@@ -216,6 +221,19 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 		if (renderer is not null)
 		{
 			Drawing.SvgRenderer.RegisterDefault(renderer);
+		}
+	}
+
+	private static void TryLightUpLottieRenderer()
+	{
+		if (Drawing.LottieRenderer.Current is not null)
+		{
+			return;
+		}
+
+		if (InvokeStaticFactory<Drawing.ILottieRenderer>(SkottieLottieRendererTypeName, "CreateLottieRenderer") is { } renderer)
+		{
+			Drawing.LottieRenderer.RegisterDefault(renderer);
 		}
 	}
 

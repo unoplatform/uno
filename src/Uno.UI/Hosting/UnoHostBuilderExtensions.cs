@@ -70,6 +70,19 @@ public static class UnoPlatformHostBuilderExtensions
 	}
 
 	/// <summary>
+	/// Registers the Lottie renderer — a render-independent content seam (Bodymovin JSON → a seekable
+	/// <see cref="Uno.UI.Composition.Drawing.ILottieAnimation"/> that replays through the neutral drawing session).
+	/// Independent of the graphics backend, like <see cref="SvgRenderer"/>; when none is registered the Skottie add-in
+	/// (if referenced) is resolved by default, and Lottie playback is simply unavailable otherwise.
+	/// </summary>
+	public static IUnoPlatformHostBuilder LottieRenderer(this IUnoPlatformHostBuilder builder, Uno.UI.Composition.Drawing.ILottieRenderer renderer)
+	{
+		ArgumentNullException.ThrowIfNull(renderer);
+		builder.AddDrawingRegistration(() => Uno.UI.Composition.Drawing.LottieRenderer.Current = renderer);
+		return builder;
+	}
+
+	/// <summary>
 	/// Provides an <see cref="Microsoft.UI.Xaml.Application"/> instance to use when starting the app.
 	/// </summary>
 	/// <remarks>
