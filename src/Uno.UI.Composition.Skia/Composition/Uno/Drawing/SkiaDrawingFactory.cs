@@ -32,6 +32,14 @@ internal sealed class SkiaDrawingFactory :
 	private int _glWidth;
 	private int _glHeight;
 
+	// Software state: a persistent CPU offscreen the frame composes into (retained across frames for partial repaint),
+	// read back in full into the host's framebuffer each present. Rebuilt on size/format change. Backend-owned, so
+	// software retention matches the GPU paths — the host framebuffer needn't itself persist.
+	private SKSurface? _softwareOffscreen;
+	private int _softwareWidth;
+	private int _softwareHeight;
+	private SKColorType _softwareColorType;
+
 	// Metal state (built lazily on the first Metal present from the host's device/queue). The per-frame drawable
 	// changes, so the drawable surface is recreated each present; the GRContext is cached. The offscreen is a
 	// persistent GPU surface the frame composes into (retained across frames for partial repaint), blitted onto the
@@ -73,11 +81,29 @@ internal sealed class SkiaDrawingFactory :
 	// GRContext-Metal.
 	public IPresentSession BeginPresent(IGLRenderTarget target) => PresentForGL(target);
 
-	public IPresentSession BeginPresent(ISoftwareRenderTarget target) => SkiaPresentSession.ForSoftware(target);
+	public IPresentSession BeginPresent(ISoftwareRenderTarget target) => PresentForSoftware(target);
 
 	public IPresentSession BeginPresent(IMetalRenderTarget target) => PresentForMetal(target);
 
 	public IPresentSession BeginPresent(IVulkanRenderTarget target) => PresentForVulkan(target);
+
+	// Compose into a persistent CPU offscreen (retained across frames), read back in full into the host framebuffer
+	// on present. Backend-owned retention, so partial repaint works uniformly with the GPU paths regardless of
+	// whether the host reuses its own buffer.
+	private IPresentSession PresentForSoftware(ISoftwareRenderTarget target)
+	{
+		var colorType = target.ColorFormat == GraphicsColorFormat.Rgba8888 ? SKColorType.Rgba8888 : SKColorType.Bgra8888;
+		if (_softwareOffscreen is null || target.Width != _softwareWidth || target.Height != _softwareHeight || colorType != _softwareColorType)
+		{
+			_softwareWidth = target.Width;
+			_softwareHeight = target.Height;
+			_softwareColorType = colorType;
+			_softwareOffscreen?.Dispose();
+			_softwareOffscreen = SKSurface.Create(new SKImageInfo(target.Width, target.Height, colorType, SKAlphaType.Premul));
+		}
+
+		return SkiaPresentSession.ForRetainedSoftware(_softwareOffscreen!, target);
+	}
 
 	// The host owns the Vulkan device/swapchain (IVulkanDeviceContext) and hands the per-frame render VkImage
 	// (IVulkanRenderTarget). Build/reuse a GRContext-Vulkan from the device context and wrap the image as an
@@ -198,6 +224,7 @@ internal sealed class SkiaDrawingFactory :
 
 	public void Dispose()
 	{
+		_softwareOffscreen?.Dispose();
 		_glOffscreen?.Dispose();
 		_glSurface?.Dispose();
 		_glRenderTarget?.Dispose();

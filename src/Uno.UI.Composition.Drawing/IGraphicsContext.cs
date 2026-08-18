@@ -45,12 +45,4 @@ public interface IRenderTarget : IDisposable
 	int Height { get; }
 
 	GraphicsColorFormat ColorFormat { get; }
-
-	/// <summary>
-	/// True when this target keeps the previous frame's pixels intact until the next acquisition at the same
-	/// size (e.g. a host that reuses one persistent CPU framebuffer), so the compositor may repaint only the
-	/// damaged region and let the rest survive. False (the default) for targets whose contents are undefined
-	/// each frame (e.g. a rotated/destroyed swapchain back buffer), which require a full repaint.
-	/// </summary>
-	bool PreservesContents => false;
 }
