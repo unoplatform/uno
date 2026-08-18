@@ -78,6 +78,9 @@ public abstract partial class SKCanvasElement : Grid
 		{
 			_island = new SkiaGLCanvasElement(this);
 			Children.Add(_island);
+			// The fallback was reached from a paint that already returned; re-invalidate so the visual repaints now
+			// that the island is a child (otherwise the island — and thus the drawing — never composites).
+			_canvasVisual?.Invalidate();
 		}
 	}
 #else
