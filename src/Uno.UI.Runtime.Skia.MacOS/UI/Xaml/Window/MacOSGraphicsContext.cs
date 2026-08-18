@@ -56,6 +56,9 @@ internal sealed class MacOSMetalGraphicsContext : ISwapChain, IMacOSNativeTextur
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
+		// The Skia backend composes into a persistent retained layer and blits it onto this frame's (fresh) drawable
+		// each present, so the previous frame survives — enabling damage-region partial repaint.
+		public bool PreservesContents => true;
 		public void Dispose() { }
 	}
 }
