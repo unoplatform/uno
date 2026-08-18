@@ -19,16 +19,18 @@ internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 	private readonly IXamlRootHost _host;
 	private readonly X11Window _x11Window;
 	private readonly ISwapChain _context;
+	private readonly IDrawingFactory _renderer;
 	private Color _background;
 	private X11AirspaceRenderHelper? _airspaceHelper;
 	private int _airspaceWidth;
 	private int _airspaceHeight;
 
-	public X11SoftwareGraphicsRenderer(IXamlRootHost host, X11Window x11Window, ISwapChain context)
+	public X11SoftwareGraphicsRenderer(IXamlRootHost host, X11Window x11Window, ISwapChain context, IDrawingFactory renderer)
 	{
 		_host = host;
 		_x11Window = x11Window;
 		_context = context;
+		_renderer = renderer;
 	}
 
 	public void SetBackgroundColor(Color color) => _background = color;
@@ -44,6 +46,10 @@ internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 		{
 			return;
 		}
+
+		// Bind THIS window's backend factory to its CompositionTarget: each X11 window owns a distinct GL context, so
+		// the factory (and its GRContext) must not be shared through the process-wide default renderer.
+		compositionTarget.SetWindowRenderer(_renderer);
 
 		var nativeElementClipPath = compositionTarget.OnNativePlatformFrameRequested(_context);
 		ApplyAirspaceClip(nativeElementClipPath);
