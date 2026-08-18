@@ -65,6 +65,7 @@ effect-tree filter), owns offscreen rendering + CPU snapshot, and starts recordi
 ITexture RenderOffscreen(int pixelWidth, int pixelHeight, Action<IDrawingSession> render);
 Task<IImage> SnapshotAsync(ITexture texture);
 ITexture CreateTexture(IImage image);
+ITexture CreateTexture(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul);   // raw pixels-in-hand sibling
 
 IShader CreateLinearGradientShader(Vector2 start, Vector2 end, Color[] colors, float[] colorPositions, GradientTileMode tileMode, Matrix3x2 localMatrix);
 IShader CreateRadialGradientShader(Vector2 center, Vector2 gradientOrigin, float radiusX, float radiusY, Color[] colors, float[] colorPositions, GradientTileMode tileMode, Matrix3x2 localMatrix);
@@ -98,8 +99,17 @@ sources and flags into a backend-independent node tree first), so the backend ne
 ### Holder & registration
 `DrawingFactory.Current` (an **internal** process-wide holder) is installed **once, by graphics negotiation**
 (`GraphicsRegistry`), at the winning backend — there is no public default-and-swap and no `[ModuleInitializer]`
-default. If the app declares no backend, negotiation lights up the implicit Skia default (when that assembly is
-present) before it negotiates. See "Backend registration & graphics negotiation" below for the full model.
+default.
+
+The **default-backend reflection lives entirely in the host builder** (`UnoPlatformHostBuilder.Build()`), not
+scattered across the seam holders. After the app's explicit registrations are applied, `Build()` reflectively
+lights up any seam the app left empty from the SkiaSharp backend (or the SVG/Lottie add-ins) — by
+assembly-qualified name, so the framework keeps no compile-time dependency on SkiaSharp — then **throws right
+there** if a *required* seam (graphics backend, font, image decoder, geometry) is still unsatisfied and no Skia
+is present, instead of NRE-ing deep in the first frame. A deliberately SkiaSharp-free app registers each seam
+explicitly and never trips the throw. Seam holders (`FontProvider`/`ImageEncoderDecoder`/`GeometryFactory`/
+`SvgRenderer`/`LottieRenderer`) are now plain registries — they carry no lazy reflection. See "Backend
+registration & graphics negotiation" below.
 
 ---
 
@@ -110,6 +120,7 @@ Immediate-mode, stateful canvas. Transform stack, clipping, layers, and per-scen
 ```csharp
 Matrix4x4 TotalMatrix { get; }
 object? NativeSurface { get; }   // see "Zero-copy native surface" below — [EditorBrowsable(Never)]
+IDrawingFactory Factory { get; } // the backend that owns THIS session — mint session-native textures through it
 void SetMatrix(in Matrix4x4 m); void Concat(in Matrix4x4 m); void Translate(float dx, float dy); void Scale(float sx, float sy);
 int Save(); int SaveCount { get; } void Restore(); void RestoreToCount(int count);
 void SaveLayer(bool aa = false); void SaveLayer(IColorFilter f, bool aa = false); void SaveLayer(BlendMode b, bool aa = false); void SaveLayer(IEffectFilter f);
@@ -144,6 +155,18 @@ what `SKCanvasElement` uses: a small visual living in the `Uno.WinUI.Graphics2DS
 the frame `SKCanvas` when the active backend exposes one, and otherwise falls back to a self-contained
 Skia-on-GL island (`GLCanvasElement`, own `GRContext` + framebuffer, read back and composited). No backend name
 appears in that add-in — only the `SKCanvas` type-check.
+
+### The session's own factory — `IDrawingSession.Factory`
+
+A consumer that rasterizes to its own surface (the SVG add-in, the Skottie Lottie renderer) needs a texture the
+*current* session will actually draw — and a texture is only drawable on the backend that minted it (WebGPU's
+`DrawImage` silently no-ops on a foreign `ITexture`; only its own `WebGpuTexture` binds). `session.Factory`
+hands back the session's own backing factory (never a process-global), and `CreateTexture(w, h, bgraPremul)`
+mints a session-native texture from raw pixels with no `IImage` detour. So the neutral fallback for a
+non-`SKCanvas` backend is: rasterize to an offscreen → read the pixels → `session.Factory.CreateTexture(...)` →
+`session.DrawImage(...)`. An add-in never touches `DrawingFactory.Current` (it's internal) and never implements
+`ITexture` itself. Framework composition code, which legitimately owns the composition root, still uses the
+ambient `DrawingFactory.Current` for its sessionless texture/resource creation.
 
 ### Retained rendering — always available
 ```csharp
@@ -413,6 +436,33 @@ design).
 Covers the common icon subset (path incl. arcs→cubics, basic shapes, `use`, groups, transforms, viewBox,
 solid + linear/radial gradient fills, strokes, opacity, fill-rule, inline style). Not yet: text,
 clipPath/mask/filter/pattern, embedded images, CSS-class styling (fall back to the add-in when present).
+
+---
+
+## Lottie seam — `ILottieRenderer`
+
+Lottie (Bodymovin JSON) plugs in through a backend-neutral seam, mirroring `ISvgRenderer`:
+
+```csharp
+public interface ILottieRenderer { ILottieAnimation? Load(string animationJson); }
+public interface ILottieAnimation : IDisposable
+{
+    Vector2 Size { get; }
+    TimeSpan Duration { get; }
+    void Render(IDrawingSession session, float progress, Rect area);   // seek + draw one frame
+}
+```
+
+- **Renderer** — the `Uno.UI.Lottie` add-in's `SkottieLottieRenderer` wraps `SkiaSharp.Skottie`. Its `Render`
+  fast-paths on `NativeSurface is SKCanvas` (draws straight into the frame), else rasterizes to an offscreen and
+  goes through `session.Factory.CreateTexture(...)` → `DrawImage` — so Lottie plays on WebGPU too (the old
+  `SKCanvasElement` path only had a GL-island fallback). Resolved reflectively by the host builder when the
+  add-in is referenced, with a `.LottieRenderer(...)` override; `LottieRenderer.Current` is null when none is
+  registered, and the `AnimatedVisualPlayer` then shows its fallback content (no silent drop).
+- **Visual** — `LottieVisualSource`'s `IAnimatedVisual` is a plain `ContainerVisual` that overrides `Paint` to
+  call `ILottieAnimation.Render(session, progress, area)`, reading the player-driven `Progress` scalar
+  (`AddContext` repaints it each tick). The source is now SkiaSharp-free; only the Skottie renderer references
+  SkiaSharp. A managed (SkiaSharp-free) Lottie engine could later register against the same seam.
 
 ---
 
