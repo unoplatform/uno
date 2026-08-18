@@ -16,7 +16,9 @@ using Uno.UI.Xaml;
 namespace Uno.UI.NativeElementHosting;
 
 /// <summary>
-/// Defines how scroll input originating from a <see cref="BrowserHtmlElement"/> is routed on Skia WebAssembly.
+/// Defines how input originating from a <see cref="BrowserHtmlElement"/> is routed on Skia WebAssembly.
+/// Only scroll and pan gestures are affected; taps, focus, text selection and keyboard input always
+/// remain native.
 /// </summary>
 public enum BrowserHtmlElementInputPolicy
 {
@@ -26,13 +28,14 @@ public enum BrowserHtmlElementInputPolicy
 	NativeOnly,
 
 	/// <summary>
-	/// Scroll gestures are routed to the enclosing Uno Platform ScrollViewer.
+	/// A scrollable native element consumes the gesture first, then transfers whatever it could not
+	/// consume at its boundary to the enclosing Uno Platform <see cref="Microsoft.UI.Xaml.Controls.ScrollViewer"/>.
+	/// A gesture over non-scrollable native content goes to the ScrollViewer directly.
 	/// </summary>
-	UnoOnly,
-
-	/// <summary>
-	/// Native HTML consumes scroll input first and transfers any boundary residual to the enclosing Uno Platform ScrollViewer.
-	/// </summary>
+	/// <remarks>
+	/// Content hosted in an <c>iframe</c> stays native-only: pointer events do not cross the frame
+	/// boundary, so its scroll residual cannot be observed.
+	/// </remarks>
 	Negotiated,
 }
 
@@ -56,6 +59,7 @@ public sealed partial class BrowserHtmlElement : IDisposable
 
 	/// <summary>
 	/// Gets or sets the input policy used when this element is hosted in the Skia WebAssembly renderer.
+	/// Defaults to <see cref="BrowserHtmlElementInputPolicy.NativeOnly"/>.
 	/// </summary>
 	public BrowserHtmlElementInputPolicy InputPolicy
 	{

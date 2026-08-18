@@ -1,4 +1,4 @@
-﻿namespace Uno.UI.Runtime.Skia {
+namespace Uno.UI.Runtime.Skia {
 	//import PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
 	export enum HtmlPointerEvent {
@@ -31,14 +31,12 @@
 
 	export enum NativeElementInputPolicy {
 		NativeOnly = 0,
-		UnoOnly = 1,
-		Negotiated = 2,
+		Negotiated = 1,
 	}
 
 	interface NativeScrollGesture {
 		pointerId: number;
 		root: HTMLElement;
-		policy: NativeElementInputPolicy;
 		scrollTarget: HTMLElement | null;
 		startX: number;
 		startY: number;
@@ -183,11 +181,15 @@
 		}
 
 		private getInputPolicy(root: HTMLElement): NativeElementInputPolicy {
-			const value = Number(root.dataset.unoNativeInputPolicy);
-			return value === NativeElementInputPolicy.UnoOnly || value === NativeElementInputPolicy.Negotiated
-				? value
+			return Number(root.dataset.unoNativeInputPolicy) === NativeElementInputPolicy.Negotiated
+				? NativeElementInputPolicy.Negotiated
 				: NativeElementInputPolicy.NativeOnly;
 		}
+
+		// Mirrors the exclusions in uno.css: these keep their native touch-action, so the browser still pans
+		// and selects in them. A gesture anywhere inside one stays entirely native - negotiating it here as
+		// well would apply the browser's own panning a second time.
+		private static readonly nativeInputSelector = "input, textarea, select, [contenteditable]";
 
 		private findScrollableElement(target: EventTarget | null, root: HTMLElement): HTMLElement | null {
 			let current = target instanceof HTMLElement ? target : null;
@@ -222,11 +224,12 @@
 			let remainingHorizontalDelta = horizontalDelta;
 			let remainingVerticalDelta = verticalDelta;
 
-			if (!gesture.unoOwnsGesture && (gesture.policy === NativeElementInputPolicy.UnoOnly || gesture.scrollTarget === null)) {
+			// Non-scrollable native content has nothing to consume the gesture, so Uno takes it immediately.
+			if (!gesture.unoOwnsGesture && gesture.scrollTarget === null) {
 				gesture.unoOwnsGesture = true;
 			}
 
-			if (!gesture.unoOwnsGesture && gesture.policy === NativeElementInputPolicy.Negotiated && gesture.scrollTarget !== null) {
+			if (!gesture.unoOwnsGesture && gesture.scrollTarget !== null) {
 				const initialScrollLeft = gesture.scrollTarget.scrollLeft;
 				const initialScrollTop = gesture.scrollTarget.scrollTop;
 				const maximumScrollLeft = Math.max(gesture.scrollTarget.scrollWidth - gesture.scrollTarget.clientWidth, 0);
@@ -250,7 +253,7 @@
 				}
 			}
 
-			if (gesture.unoOwnsGesture || gesture.policy === NativeElementInputPolicy.UnoOnly) {
+			if (gesture.unoOwnsGesture) {
 				return BrowserPointerInputSource._exports.OnNativeScrollDelta(
 					this._source,
 					gesture.root.id,
@@ -315,8 +318,11 @@
 				return false;
 			}
 
-			const policy = this.getInputPolicy(root);
-			if (policy === NativeElementInputPolicy.NativeOnly) {
+			if (this.getInputPolicy(root) === NativeElementInputPolicy.NativeOnly) {
+				return false;
+			}
+
+			if (evt.target instanceof Element && evt.target.closest(BrowserPointerInputSource.nativeInputSelector) !== null) {
 				return false;
 			}
 
@@ -324,7 +330,6 @@
 				const gesture: NativeScrollGesture = {
 					pointerId: 0,
 					root,
-					policy,
 					scrollTarget: this.findScrollableElement(evt.target, root),
 					startX: evt.clientX,
 					startY: evt.clientY,
@@ -335,7 +340,7 @@
 					velocityY: 0,
 					started: true,
 					primaryAxis: Math.abs(evt.deltaX) > Math.abs(evt.deltaY) ? "horizontal" : "vertical",
-					unoOwnsGesture: policy === NativeElementInputPolicy.UnoOnly,
+					unoOwnsGesture: false,
 				};
 
 				const didScroll = this.applyNativeScrollDelta(gesture, evt.deltaX, evt.deltaY);
@@ -354,7 +359,6 @@
 				this._nativeScrollGesture = {
 					pointerId: evt.pointerId,
 					root,
-					policy,
 					scrollTarget: this.findScrollableElement(evt.target, root),
 					startX: evt.clientX,
 					startY: evt.clientY,
@@ -365,7 +369,7 @@
 					velocityY: 0,
 					started: false,
 					primaryAxis: null,
-					unoOwnsGesture: policy === NativeElementInputPolicy.UnoOnly,
+					unoOwnsGesture: false,
 				};
 				return true;
 			}
