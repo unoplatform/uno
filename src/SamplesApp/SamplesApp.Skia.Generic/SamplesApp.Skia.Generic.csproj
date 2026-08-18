@@ -104,6 +104,7 @@
 
 	<ItemGroup>
 		<Compile Update="Program.cs" />
+		<Compile Include="..\DrawingBackendConfiguration.cs" Link="DrawingBackendConfiguration.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
