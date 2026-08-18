@@ -310,18 +310,11 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	/// <summary>Reads a surface's resolved single-sample texture back to CPU as tightly-packed RGBA8 (top-down). For RTB and tests.</summary>
 	public byte[] ReadPixelsRgba(WebGpuRenderSurface s) => ReadPixelsFromTex(s.Tex, s.Width, s.Height);
 
-	/// <summary>Synchronous GPU→CPU readback of a texture, tightly-packed in the device color format. Uses a
-	/// blocking wgpuDevicePoll spin — valid off-browser only (a native thread can pump). On WASM the poll is a
-	/// no-op and the map would never complete (an infinite spin), so this throws there; browser readback must go
-	/// through the async <c>IDrawingFactory.SnapshotAsync</c> (which maps off the JS event loop).</summary>
+	/// <summary>Synchronous GPU→CPU readback of a texture, tightly-packed in the device color format, via a blocking
+	/// wgpuDevicePoll spin. Off-browser only (a native thread can pump the map); on the browser the drawing factory's
+	/// SnapshotAsync maps off the JS event loop instead, so this is never reached there.</summary>
 	public byte[] ReadPixelsFromTex(IntPtr tex, int w, int h)
 	{
-		if (OperatingSystem.IsBrowser())
-		{
-			throw new NotSupportedException(
-				"Synchronous GPU texture readback is not supported on WebAssembly: the WebGPU buffer map is asynchronous and the JS thread cannot block on it. Use the async IDrawingFactory.SnapshotAsync path (e.g. RenderTargetBitmap) instead.");
-		}
-
 		EncodeCopyTexToReadbackBuffer(tex, w, h, out var buf, out var total, out var padded);
 		wgpuDevicePoll(Dev, 1u, null);
 
