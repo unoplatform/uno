@@ -57,10 +57,10 @@ partial class BitmapEncoder
 	internal static Action<Stream, byte[], int, int, BitmapPixelFormat, BitmapAlphaMode, BitmapEncoderFormat, int>? Encode { get; set; }
 
 	/// <summary>
-	/// Downward trigger to the composition layer's lazy per-seam codec registration (Skia's
-	/// <c>DrawingBackendFallback.EnsureImageDecoder</c>), wired top-down at startup by that layer — this assembly sits
-	/// below it and can't reach it directly. Lets a head that never touched <c>ImageEncoderDecoder.Current</c> still
-	/// resolve a codec on first encode. Null (or a no-op) on a SkiaSharp-free / native-only head.
+	/// Downward trigger to the UI layer's default codec resolution, wired top-down at startup by the host builder
+	/// (<c>UnoPlatformHostBuilder</c>) — this assembly sits below it and can't reach it directly. Lets an encode that
+	/// ran without going through the host builder still light up a Skia codec on first use. Null (or a no-op) on a
+	/// SkiaSharp-free / native-only head.
 	/// </summary>
 	internal static Action? EnsureCodec { get; set; }
 

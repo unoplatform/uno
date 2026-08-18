@@ -16,18 +16,13 @@ internal static class FontProvider
 
 	public static IFontProvider Current
 	{
-		get
-		{
-			if (_current is null)
-			{
-				DrawingBackendFallback.EnsureFontProvider();
-			}
-
-			return _current ?? throw new InvalidOperationException(
-				"No IFontProvider registered. Register a font provider via the host builder (.FontProvider), or rely on the per-seam Skia fallback.");
-		}
+		get => _current ?? throw new InvalidOperationException(
+			"No IFontProvider registered. Register a font provider via the host builder (.FontProvider), or reference the Skia backend for the built-in default.");
 		internal set => _current = value;
 	}
+
+	/// <summary>Whether a font provider has been registered (used by the host builder's fail-fast seam check).</summary>
+	internal static bool IsRegistered => _current is not null;
 
 	/// <summary>
 	/// Registers <paramref name="provider"/> only if none is registered yet. Framework-internal (per-seam fallback);

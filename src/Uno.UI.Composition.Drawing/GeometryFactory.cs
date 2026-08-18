@@ -15,18 +15,13 @@ internal static class GeometryFactory
 
 	public static IGeometryFactory Current
 	{
-		get
-		{
-			if (_current is null)
-			{
-				DrawingBackendFallback.EnsureGeometryFactory();
-			}
-
-			return _current ?? throw new InvalidOperationException(
-				"No IGeometryFactory registered. Register a geometry engine via the host builder (.GeometryFactory), or rely on the per-seam Skia fallback.");
-		}
+		get => _current ?? throw new InvalidOperationException(
+			"No IGeometryFactory registered. Register a geometry engine via the host builder (.GeometryFactory), or reference the Skia backend for the built-in default.");
 		internal set => _current = value;
 	}
+
+	/// <summary>Whether a geometry engine has been registered (used by the host builder's fail-fast seam check).</summary>
+	internal static bool IsRegistered => _current is not null;
 
 	/// <summary>
 	/// Registers <paramref name="factory"/> only if none is registered yet. Framework-internal (per-seam fallback);

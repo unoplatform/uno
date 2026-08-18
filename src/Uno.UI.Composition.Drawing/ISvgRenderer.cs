@@ -45,19 +45,11 @@ public static class SvgRenderer
 
 	/// <summary>
 	/// The active SVG renderer, or null only on a head with no SVG renderer at all (SVG then simply doesn't render).
-	/// Reading it lazily lights up the per-seam Skia default when nothing was explicitly registered.
+	/// The host builder resolves the default (Svg.Skia add-in, else the managed engine) at Build() time.
 	/// </summary>
 	public static ISvgRenderer? Current
 	{
-		get
-		{
-			if (_current is null)
-			{
-				DrawingBackendFallback.EnsureSvgRenderer();
-			}
-
-			return _current;
-		}
+		get => _current;
 		internal set => _current = value;
 	}
 
