@@ -175,7 +175,6 @@ internal sealed partial class UnoSKWebGpuView : SurfaceView, ISurfaceHolderCallb
 		}
 
 		var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
-		context.Present();
 
 		ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
 	}

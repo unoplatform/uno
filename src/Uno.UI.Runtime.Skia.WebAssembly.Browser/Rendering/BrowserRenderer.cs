@@ -133,7 +133,6 @@ internal partial class BrowserRenderer
 
 		// The context owns the surface/present; the backend (whichever won negotiation) wraps the acquired target.
 		var currentClipPath = compositionTarget.OnNativePlatformFrameRequested(_context);
-		_context.Present();
 		ApplyNativeElementClip(currentClipPath);
 
 		if (this.Log().IsEnabled(LogLevel.Trace))

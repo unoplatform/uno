@@ -172,7 +172,9 @@ public partial class CompositionTarget
 			NativeDispatcher.Main.EnqueueRender(this, EnqueueRenderCallback);
 		}
 
-		return Draw(swapChain, rootTransform, overlay);
+		var nativeElementClipPath = Draw(swapChain, rootTransform, overlay);
+		swapChain.Present();
+		return nativeElementClipPath;
 	}
 
 	internal void OnRenderFrameOpportunity()

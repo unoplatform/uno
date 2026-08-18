@@ -177,7 +177,6 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 		}
 
 		var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
-		context.Present();
 
 		ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
 	}
