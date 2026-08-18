@@ -26,10 +26,15 @@ public partial class CompositionTarget
 	/// The active rendering backend that owns the frame record/present lifecycle. A head may install its own
 	/// (e.g. WebGPU); otherwise it falls back to the registered backend's default, throwing if none is registered.
 	/// </summary>
-	private static IDrawingFactory? _renderer;
+	// Process-wide default renderer, installed by single-window heads via the static Renderer setter. A per-window
+	// renderer (_windowRenderer) overrides it — required because each window may own a distinct GPU context (e.g. one
+	// GL context per X11 window), and a GRContext is bound to the context it was built on, so it cannot be shared.
+	private static IDrawingFactory? _defaultRenderer;
+	private IDrawingFactory? _windowRenderer;
+
 	internal static IDrawingFactory Renderer
 	{
-		get => _renderer
+		get => _defaultRenderer
 			?? DrawingRegistration.DefaultRenderer
 			?? throw new global::System.InvalidOperationException(
 				"No graphics backend registered. Register one through the host builder (.GraphicsBackend) and/or the head must set CompositionTarget.Renderer before the first frame.");
@@ -37,8 +42,8 @@ public partial class CompositionTarget
 		{
 			// Invalidate on ANY change, including the first assignment from null: the getter already falls back to a
 			// default renderer, so frames may have been recorded before a head assigns its own (async on WASM/WebGPU).
-			var changed = !ReferenceEquals(_renderer, value);
-			_renderer = value;
+			var changed = !ReferenceEquals(_defaultRenderer, value);
+			_defaultRenderer = value;
 
 			// The retained frame and cached per-visual recordings belong to the previous backend and can't be replayed
 			// by the new one; discard them and request a fresh frame so the tree re-records under the new renderer.
@@ -49,9 +54,31 @@ public partial class CompositionTarget
 		}
 	}
 
+	/// <summary>
+	/// Installs the renderer for THIS window's CompositionTarget, overriding the process-wide default. Multi-window
+	/// heads (e.g. X11, one GL context per window) must call this per window so each frame presents through the
+	/// factory bound to its own context; sharing a single static renderer crashes when one window's context is torn down.
+	/// </summary>
+	internal void SetWindowRenderer(IDrawingFactory renderer)
+	{
+		if (!ReferenceEquals(_windowRenderer, renderer))
+		{
+			_windowRenderer = renderer;
+			InvalidateAllRecordings();
+		}
+	}
+
+	// The renderer used for this instance's frames: the per-window one if set, else the process-wide default.
+	private IDrawingFactory ActiveRenderer
+		=> _windowRenderer
+			?? _defaultRenderer
+			?? DrawingRegistration.DefaultRenderer
+			?? throw new global::System.InvalidOperationException(
+				"No graphics backend registered. Register one through the host builder (.GraphicsBackend) and/or the head must set CompositionTarget.Renderer before the first frame.");
+
 	// Non-throwing peek at renderer availability. False while a declared backend initializes asynchronously (WASM
-	// WebGPU device import): Render() must SKIP the frame rather than force the throwing Renderer getter.
-	private static bool HasRenderer => _renderer is not null || DrawingRegistration.DefaultRenderer is not null;
+	// WebGPU device import): Render() must SKIP the frame rather than force the throwing renderer getter.
+	private bool HasRenderer => _windowRenderer is not null || _defaultRenderer is not null || DrawingRegistration.DefaultRenderer is not null;
 
 	// Neutral→typed narrowing for phase-2 present: downcast the target to its bound kind and dispatch to the
 	// backend's typed IDrawingFactory<TTarget>.BeginPresent, keeping the single cast Uno-side.
@@ -183,7 +210,7 @@ public partial class CompositionTarget
 			_pendingDamage.Reset();
 		}
 
-		var recording = Renderer.CreateRecording();
+		var recording = ActiveRenderer.CreateRecording();
 		var (path, nativeVisualsInZOrder) = SkiaRenderHelper.RecordFrame(
 			recording,
 			(float)bounds.Width,
@@ -297,7 +324,7 @@ public partial class CompositionTarget
 			}
 
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
-			using (var present = BeginPresent(Renderer, target))
+			using (var present = BeginPresent(ActiveRenderer, target))
 			{
 				// Partial repaint: when unresized and the host preserves the swapchain's pixels, clip the clear+replay
 				// to the damage region so only the changed area is repainted; otherwise repaint the whole frame.
