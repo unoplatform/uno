@@ -55,7 +55,7 @@ Install or repair the workloads with [`uno-check`](xref:UnoCheck.UsingUnoCheck):
 
 ```bash
 dotnet tool update -g uno.check
-uno-check --tfm net10.0-ios
+uno-check --target ios
 ```
 
 See [.NET version support](xref:Uno.Development.NetVersionSupport) for the versions supported by your Uno Platform release.
