@@ -1026,6 +1026,30 @@ void uno_set_ime_active(UNOWindow* window, bool active)
     }
 }
 
+double uno_window_get_refresh_rate(NSWindow* window)
+{
+    NSScreen* screen = window.screen;
+    if (screen == nil)
+    {
+        // An off-screen window (never ordered front, or on a headless agent) has no screen;
+        // fall back to the main screen so the render loop still gets a sane pace.
+        screen = NSScreen.mainScreen;
+    }
+    if (screen == nil)
+    {
+        return 0;
+    }
+    if (@available(macOS 12.0, *))
+    {
+        NSInteger fps = screen.maximumFramesPerSecond;
+        if (fps > 0)
+        {
+            return (double)fps;
+        }
+    }
+    return 0;
+}
+
 void uno_window_get_metal_handles(UNOWindow* window, void** device, void** queue)
 {
     *device = (__bridge void *)(uno_application_get_metal_device());

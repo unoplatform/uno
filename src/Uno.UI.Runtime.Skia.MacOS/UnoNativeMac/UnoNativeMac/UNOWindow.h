@@ -345,6 +345,10 @@ void uno_set_window_close_callbacks(window_should_close_fn_ptr shouldClose, wind
 
 void uno_window_get_metal_handles(UNOWindow* window, void*_Nonnull* _Nonnull device, void*_Nonnull* _Nonnull queue);
 
+/// Refresh rate, in frames per second, of the screen currently showing the window.
+/// Returns 0 when it cannot be determined, in which case the caller keeps its configured rate.
+double uno_window_get_refresh_rate(NSWindow* window);
+
 /// Acquires the next drawable from the window's CAMetalLayer (texture handle + size).
 /// Called from the managed render thread.
 bool uno_window_acquire_next_frame(NSWindow* window, void* _Nullable * _Nonnull texture, double* width, double* height);

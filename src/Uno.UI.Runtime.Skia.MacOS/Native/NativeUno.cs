@@ -362,6 +362,9 @@ internal static partial class NativeUno
 	internal static partial void uno_window_get_metal_handles(nint window, out nint device, out nint queue);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial double uno_window_get_refresh_rate(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_window_acquire_next_frame(nint window, out nint texture, out double width, out double height);
 
