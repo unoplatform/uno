@@ -6,8 +6,7 @@ namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
 /// Imperative "pen" builder: a single contour advanced by move/line/curve/arc verbs, terminated by
-/// <see cref="IGeometryBuilder.Build"/>. This is the surface used by path/stream geometries and the
-/// D2D command stream. For whole-shape construction use <see cref="IPrimitiveGeometryBuilder"/> instead.
+/// <see cref="IGeometryBuilder.Build"/>. For whole-shape construction use <see cref="IPrimitiveGeometryBuilder"/>.
 /// </summary>
 public interface IPathBuilder : IGeometryBuilder
 {

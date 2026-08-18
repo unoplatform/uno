@@ -149,8 +149,8 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 				return; // context negotiated on OnSurfaceCreated; nothing to render before then
 			}
 
-			// The context wraps the GLSurfaceView's ambient EGL context; the backend (whichever won negotiation)
-			// renders into the default framebuffer and GLSurfaceView swaps implicitly (Present is a no-op).
+			// The context wraps the ambient EGL context; the backend renders into the default framebuffer and
+			// GLSurfaceView swaps implicitly (Present is a no-op).
 			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(
 				null,
 				size => _context.AcquireRenderTarget((int)size.Width, (int)size.Height));
@@ -166,11 +166,9 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 
 		void IRenderer.OnSurfaceCreated(IGL10? gl, Javax.Microedition.Khronos.Egl.EGLConfig? config)
 		{
-			// GLSurfaceView has just created + made-current the EGL context on this (its own) render thread. Negotiate
-			// here so the backend's GRContext-GLES is built on the GL thread against the current context. The host
-			// names no backend; it only serves the GLES kind by wrapping the ambient context.
-			// UseOpenGLOnSkiaAndroid picks how this GLSurfaceView renders: GLES (ambient EGL context, wrapped by
-			// AndroidGLGraphicsContext) or CPU raster uploaded+blitted to the GL framebuffer (AndroidSoftwareGraphicsContext).
+			// GLSurfaceView has just made-current the EGL context on its render thread; negotiate here so the
+			// backend's GRContext-GLES is built on the GL thread against the current context. UseOpenGLOnSkiaAndroid
+			// picks GLES (ambient context) vs CPU raster blitted to the GL framebuffer.
 			var useGL = FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid;
 			GraphicsRegistry.ContextFactory = kind => System.Threading.Tasks.Task.FromResult<ISwapChain?>(
 				useGL

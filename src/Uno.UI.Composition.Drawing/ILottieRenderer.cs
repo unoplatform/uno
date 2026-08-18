@@ -7,11 +7,10 @@ using Windows.Foundation;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// App-registerable seam for turning Lottie (Bodymovin JSON) markup into a renderable, seekable animation.
-/// Independent of the graphics backend (like <see cref="ISvgRenderer"/> / <see cref="FontProvider"/>): the returned
-/// <see cref="ILottieAnimation"/> draws through the neutral <see cref="IDrawingSession"/>, so it works under any
-/// backend. Register via the host builder; the default (the Skottie add-in when present) is resolved at Build() time,
-/// and Lottie playback is simply unavailable — the player shows its fallback content — when none is registered.
+/// App-registerable seam for turning Lottie (Bodymovin JSON) markup into a renderable, seekable animation,
+/// independent of the graphics backend: the returned <see cref="ILottieAnimation"/> draws through the neutral
+/// <see cref="IDrawingSession"/>. Register via the host builder; the default (the Skottie add-in when present) is
+/// resolved at Build() time, and Lottie playback is unavailable when none is registered.
 /// </summary>
 public interface ILottieRenderer
 {
@@ -20,9 +19,8 @@ public interface ILottieRenderer
 }
 
 /// <summary>
-/// A parsed, seekable Lottie animation — the <em>retained</em> representation. <see cref="Render"/> replays it at a
-/// given progress into any <see cref="IDrawingSession"/> (a live per-frame session, or an offscreen to rasterize).
-/// The animation owns no backend resources; the caller supplies the session (and thus the backend).
+/// A parsed, seekable Lottie animation — the retained representation. <see cref="Render"/> replays it at a given
+/// progress into any <see cref="IDrawingSession"/>. The animation owns no backend resources; the caller supplies the session.
 /// </summary>
 public interface ILottieAnimation : IDisposable
 {
@@ -41,8 +39,8 @@ public interface ILottieAnimation : IDisposable
 
 /// <summary>
 /// Holds the registered <see cref="ILottieRenderer"/>, resolved by the host builder at Build() time (the Skottie
-/// add-in when present). Null when no renderer is registered — Lottie then simply doesn't play, and the
-/// <c>AnimatedVisualPlayer</c> falls back to its fallback content. Mirrors the <see cref="SvgRenderer"/> holder.
+/// add-in when present). Null when none is registered — Lottie then doesn't play and <c>AnimatedVisualPlayer</c>
+/// shows its fallback content.
 /// </summary>
 public static class LottieRenderer
 {

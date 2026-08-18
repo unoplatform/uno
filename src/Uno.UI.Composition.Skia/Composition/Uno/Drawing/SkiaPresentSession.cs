@@ -8,10 +8,8 @@ namespace Uno.UI.Composition.Drawing;
 internal sealed class SkiaPresentSession : SkiaDrawingSession, IPresentSession
 {
 	private readonly int _saveCount;
-	// The SKSurface this session composes into; disposed on present only when this session owns it (_ownsSurface).
-	// The host-canvas case borrows an SKCanvas (no surface); the Vulkan case borrows a surface the renderer caches.
-	// In the retained case this is instead the SWAPCHAIN surface the layer is blitted onto (composition targets
-	// _retainedLayer.Surface's canvas), disposed on present only when owned (a per-frame Metal drawable).
+	// The SKSurface this session composes into, disposed on present only when owned (_ownsSurface). In the retained
+	// case it is instead the swapchain surface the layer blits onto (composition targets _retainedLayer's canvas).
 	private readonly SKSurface? _surface;
 	private readonly bool _ownsSurface;
 	// Non-null for a GPU-texture present (Metal/Vulkan): the GRContext to submit on present so the render lands

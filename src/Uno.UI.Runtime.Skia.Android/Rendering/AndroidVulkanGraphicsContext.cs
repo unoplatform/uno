@@ -8,14 +8,11 @@ using Uno.WinUI.Runtime.Skia.Android.Platform.Vulkan;
 namespace Uno.UI.Runtime.Skia.Android;
 
 /// <summary>
-/// On-window Vulkan graphics context for Android, on the neutral (kind)=>context seam — the Android mirror of
-/// <c>Win32VulkanGraphicsContext</c>/<c>X11VulkanGraphicsContext</c>. It owns the Vulkan device/swapchain over the
-/// <c>ANativeWindow</c> (<see cref="VulkanContext"/>) and exposes the device details as a neutral
-/// <see cref="IVulkanDeviceContext"/>; the Skia backend builds its own <c>GRContext</c>-Vulkan over the render
-/// image handed as an <see cref="IVulkanRenderTarget"/>. The device lock is held for the whole frame (acquire →
-/// backend render → present); <see cref="Present"/> blits the render image to the swapchain and releases the lock.
-/// Names no Skia type. Driven by <c>UnoSKVulkanView</c>'s render thread; the ctor throws when Vulkan is
-/// unavailable → the view falls back to the canvas render view.
+/// On-window Vulkan graphics context for Android (the Android mirror of the Win32/X11 Vulkan contexts). It owns the
+/// Vulkan device/swapchain over the <c>ANativeWindow</c> and exposes the device as a neutral
+/// <see cref="IVulkanDeviceContext"/>. The device lock is held for the whole frame (acquire → render → present);
+/// <see cref="Present"/> blits the render image to the swapchain and releases the lock. The ctor throws when Vulkan
+/// is unavailable, letting the view fall back to the canvas render view.
 /// </summary>
 internal sealed class AndroidVulkanGraphicsContext : ISwapChain, IVulkanDeviceContext
 {

@@ -52,16 +52,14 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			throw new InvalidOperationException($"No app builder delegate was provided via the .App extension method.");
 		}
 
-		// Apply the app-declared drawing-backend registrations before any host runs, so the render/drawing backend
-		// + content seams are in place before the host negotiates graphics (GraphicsRegistry.Initialize) and the
-		// first frame is recorded.
+		// Apply the app-declared drawing registrations before any host runs, so backend + content seams are in
+		// place before the host negotiates graphics and records the first frame.
 		foreach (var apply in _drawingRegistrations)
 		{
 			apply();
 		}
 
-		// Fill any seam the app left unregistered from the SkiaSharp backend (if present), then fail fast if a required
-		// seam is still empty — instead of NRE-ing deep in the first frame.
+		// Fill unregistered seams from the SkiaSharp backend (if present), then fail fast if a required seam is empty.
 		EnsureDrawingRegistrationsOrThrow();
 
 		foreach (var hostBuilderFunc in _hostBuilders)
@@ -98,39 +96,33 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 	#region Default drawing-backend resolution (composition root)
 
-	// The framework is backend-agnostic and holds no compile-time reference to SkiaSharp or any concrete backend. When
-	// the app declares no backend/seam explicitly, the host builder lights up the SkiaSharp backend (renderer + its
-	// matched drawing factory, plus the render-independent font/image/geometry content seams) by reflection IF its
-	// assembly is present — so an app that just references SkiaSharp keeps rendering with no startup change, while a
-	// deliberately SkiaSharp-free app (whose build ships no Skia backend assembly) registers each seam explicitly. This
-	// runs once, eagerly, in Build(), and throws right there if a required seam is left with no implementation and no
-	// Skia to supply one.
+	// The framework holds no compile-time reference to any concrete backend. When the app declares no backend/seam,
+	// the SkiaSharp backend is lit up by reflection if its assembly is present; a SkiaSharp-free build registers each
+	// seam explicitly. Resolved by assembly-qualified name so no assembly reference is required.
 	private const string SkiaBackendTypeName = "Uno.UI.Composition.Skia.SkiaBackend, Uno.UI.Composition.Skia";
 
-	// SVG has no impl in the core Skia backend: the Svg.Skia renderer ships as the optional Uno.UI.Svg add-in, and the
-	// SkiaSharp-free managed engine is the built-in fallback. Both are reached by assembly-qualified name.
+	// SVG has no core Skia impl: the Svg.Skia renderer ships as the optional Uno.UI.Svg add-in, with the managed
+	// engine as the built-in fallback.
 	private const string SvgAddInBackendTypeName = "Uno.UI.Svg.SvgBackend, Uno.UI.Svg";
 	private const string ManagedSvgRendererTypeName = "Uno.UI.Composition.Drawing.ManagedSvgRenderer, Uno.UI.Composition.Managed";
 
-	// Lottie ships as the optional Uno.UI.Lottie add-in (its Skottie dependency stays opt-in). When referenced it
-	// becomes the default; without it Lottie playback is simply unavailable (the player shows fallback content).
+	// Lottie ships as the optional Uno.UI.Lottie add-in; when referenced it becomes the default, otherwise playback
+	// is unavailable.
 	private const string SkottieLottieRendererTypeName = "Uno.UI.Lottie.SkottieLottieRenderer, Uno.UI.Lottie";
 
 	private static readonly object _fallbackGate = new();
 	private static Type? _skiaBackendType;
 	private static bool _skiaBackendTypeResolved;
 
-	// Downward codec-resolve trigger: Uno.UWP's BitmapEncoder sits below Uno.UI and can't reach the codec registry, so
-	// it invokes this to lazily light up the Skia codec on first encode when the app never went through Build() (e.g. a
-	// standalone encode). The normal path registers the decoder eagerly in Build(). No-op on a SkiaSharp-free head.
+	// Downward codec-resolve trigger: Uno.UWP's BitmapEncoder sits below Uno.UI and can't reach the codec registry,
+	// so it invokes this to lazily light up the Skia codec on first encode when Build() was never called.
 	[ModuleInitializer]
 	internal static void WireDownwardHooks()
 		=> Windows.Graphics.Imaging.BitmapEncoder.EnsureCodec = TryLightUpImageDecoder;
 
 	/// <summary>
-	/// Resolves the default drawing backend + content seams for any seam the app left unregistered, then throws if a
-	/// required seam still has no implementation. Called once from <see cref="Build"/> after the app's explicit
-	/// registrations are applied and before any host negotiates graphics.
+	/// Resolves default backend + content seams for any seam the app left unregistered, then throws if a required
+	/// seam still has no implementation. Called once from <see cref="Build"/>.
 	/// </summary>
 	private static void EnsureDrawingRegistrationsOrThrow()
 	{
@@ -237,10 +229,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 		}
 	}
 
-	/// <summary>Reflectively calls a parameterless static factory on the Skia backend and returns its result cast to
-	/// the neutral seam interface <typeparamref name="T"/> — so the framework registers the instance through its own
-	/// internal registrar, and the backend reaches no framework internal. Null if the backend assembly isn't present (a
-	/// SkiaSharp-free head) or the call fails.</summary>
+	/// <summary>Reflectively calls a parameterless static factory on the Skia backend, cast to the neutral seam
+	/// <typeparamref name="T"/>. Null if the backend assembly isn't present or the call fails.</summary>
 	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Best-effort fallback; a trimmed/AOT app registers its backend explicitly.")]
 	private static T? InvokeSkiaFactory<T>(string methodName) where T : class
 	{
@@ -258,8 +248,7 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 				}
 			}
 
-			// NonPublic: the factories on SkiaBackend are internal (apps register through the host builder, not this
-			// backend directly); reflection reaches them across assemblies without a compile-time dependency.
+			// NonPublic: the SkiaBackend factories are internal; reflection reaches them without a compile-time dependency.
 			return _skiaBackendType
 				?.GetMethod(methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, Type.EmptyTypes)
 				?.Invoke(null, null) as T;

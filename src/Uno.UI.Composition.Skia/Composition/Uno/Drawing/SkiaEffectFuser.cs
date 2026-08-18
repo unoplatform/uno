@@ -9,10 +9,8 @@ namespace Uno.UI.Composition.Drawing;
 /// <summary>
 /// Fuses a neutral <see cref="EffectNode"/> tree into a single <see cref="SKImageFilter"/> DAG — the Skia backend's
 /// realization of <see cref="IDrawingFactory.CreateEffectFilter(EffectNode, Windows.Foundation.Rect)"/>. A
-/// <see cref="SourceInput"/> fuses to a filter with a null (implicit) input, which
-/// <see cref="SkiaDrawingSession.DrawEffectBackdrop(IEffectFilter, float)"/> feeds from the live backdrop via
-/// <c>SaveLayerRec.Backdrop</c>. The source-flag dance mirrors the legacy <c>SkiaEffectFactory</c> generators so
-/// output is identical.
+/// <see cref="SourceInput"/> fuses to a filter with a null (implicit) input, fed from the live backdrop via
+/// <c>SaveLayerRec.Backdrop</c>. The source-flag handling matches <c>SkiaEffectFactory</c> for identical output.
 /// </summary>
 internal sealed class SkiaEffectFuser
 {

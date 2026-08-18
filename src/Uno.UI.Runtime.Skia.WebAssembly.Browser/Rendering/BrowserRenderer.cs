@@ -15,9 +15,8 @@ internal partial class BrowserRenderer
 	private readonly IXamlRootHost _host;
 	private JSObject? _nativeInstance;
 
-	// The negotiated graphics context (Skia WebGL/software or WebGPU). It is created asynchronously — the WebGPU
-	// device import runs in JS and the JS thread must not be blocked — so _context is null until ready and frames
-	// re-arm meanwhile. The host names no backend and owns no Skia SKCanvas.
+	// Created asynchronously (the WebGPU device import runs in JS and must not block the JS thread), so it stays
+	// null until ready while frames re-arm meanwhile.
 	private ISwapChain? _context;
 	private bool _initFailed;
 
@@ -33,9 +32,7 @@ internal partial class BrowserRenderer
 
 		_host = host;
 
-		// Always negotiate through the pluggable pipeline: the app-registered backend (WebGPU), or the implicit Skia
-		// default lit up by negotiation when none was declared. Context creation is async (the WebGPU device import
-		// runs in JS), so kick it off and render once ready. The host names no backend and no GPU-API type.
+		// Context creation is async (the WebGPU device import runs in JS), so kick it off and render once ready.
 		_ = InitAsync(forceSoftwareRendering);
 	}
 
@@ -43,9 +40,7 @@ internal partial class BrowserRenderer
 	{
 		try
 		{
-			// Only GPU-API context creation is browser-specific (CreateContextAsync owns the WebGL/2D-canvas contexts,
-			// and the WebGPU init helper builds the canvas WebGpu context); the app-registered backend owns the kind
-			// order (WebGPU → [WebGpu]; Skia → [OpenGLES, Software]). The host names no render backend.
+			// Only GPU-API context creation is browser-specific; the app-registered backend owns the kind order.
 			GraphicsRegistry.ContextFactory = kind => CreateContextAsync(kind, forceSoftwareRendering);
 
 			var init = await GraphicsRegistry.InitializeAsync();
@@ -53,24 +48,21 @@ internal partial class BrowserRenderer
 			CompositionTarget.Renderer = init.Renderer;
 			Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = init.Context.Kind == GraphicsContextKind.Software;
 
-			// Force a fresh record+present under the negotiated renderer (a frame recorded before the async switch
-			// completes is skipped by the present session).
+			// Force a fresh record+present: a frame recorded before the async switch completes is skipped.
 			(_host.RootElement as Microsoft.UI.Xaml.UIElement)?.InvalidateArrange();
-			InvalidateRender();   // context is ready — request a frame now
+			InvalidateRender();
 		}
 		catch (Exception e)
 		{
-			// Terminal: nothing will ever set _context now, so stop re-arming the frame pump (RenderFrame would
-			// otherwise loop requestAnimationFrame forever with no further diagnostic).
+			// Terminal: stop re-arming the frame pump, since nothing will ever set _context now.
 			_initFailed = true;
 			this.Log().Error($"Browser graphics init failed: {e.Message}.");
 		}
 	}
 
 	/// <summary>
-	/// The browser window+context creator for the neutral pipeline: WebGL (as OpenGLES) or the 2D-canvas software
-	/// context, or the WebGpu canvas context via the WebGPU project's init helper. WebGL is declined when the host
-	/// is configured for software. The host names no render backend.
+	/// Creates the browser context for the requested kind: WebGL (as OpenGLES), the 2D-canvas software context,
+	/// or the WebGpu canvas context. WebGL is declined when the host is configured for software.
 	/// </summary>
 	private async Task<ISwapChain?> CreateContextAsync(GraphicsContextKind kind, bool forceSoftwareRendering)
 	{
@@ -81,10 +73,8 @@ internal partial class BrowserRenderer
 			case GraphicsContextKind.Software:
 				return SoftwareBrowserRenderer.TryCreate(out var sw) ? new WasmSoftwareGraphicsContext(sw) : null;
 			case GraphicsContextKind.WebGpu:
-				// The WebGPU "init half" (WebGpuContext) is a lightweight, renderer-agnostic assembly the host
-				// references directly. Its emdawnwebgpu emscripten link is small (a browser-API bridge, a few hundred
-				// KB) and always linked for WASM via WebGpu.Init's targets, so the symbols are guaranteed present —
-				// no reflection, no opt-in-link fragility. The host never references the WebGPU renderer.
+				// WebGpuContext is a lightweight renderer-agnostic assembly whose emdawnwebgpu link is always
+				// present for WASM via WebGpu.Init's targets, so no reflection or opt-in-link is needed.
 				return await global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateWasmAsync(WebAssemblyWindowWrapper.Instance.CanvasId);
 			default:
 				return null;
@@ -136,8 +126,7 @@ internal partial class BrowserRenderer
 
 		if (_context is null)
 		{
-			// Async context init not finished yet — re-arm so we render as soon as it's ready. If init failed
-			// terminally, stop re-arming (nothing will set _context).
+			// Async context init not finished yet — re-arm so we render as soon as it's ready (unless it failed).
 			if (!_initFailed && _nativeInstance is not null) { NativeMethods.Invalidate(_nativeInstance); }
 			return;
 		}

@@ -208,10 +208,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 				_renderer = CreateSoftwareRenderer(mouseIndicatorOptions);
 			}
 
-			// Route the backend renderer through the neutral registry (instead of the implicit Skia fallback), so a
-			// declared backend is honored. The FrameBuffer host has no WebGPU/Skia fork: the DRM-vs-fbdev choice above
-			// is the platform GPU-init, and the FrameBufferRenderer owns the frame loop + present (a DRM page-flip vsync
-			// loop that does not fit acquire/present), so the negotiated context is thin — it only names the kind.
+			// The FrameBuffer host names no backend: the DRM-vs-fbdev choice is the GPU-init and FrameBufferRenderer owns the frame loop, so the negotiated context only names the kind.
 			var kind = _renderer is SoftwareRenderer
 				? global::Uno.UI.Composition.Drawing.GraphicsContextKind.Software
 				: global::Uno.UI.Composition.Drawing.GraphicsContextKind.OpenGLES;

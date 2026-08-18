@@ -55,8 +55,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	private readonly HWND _hwnd;
 
-	// The drawing factory of the negotiated backend. The host reads it (not the global DrawingFactory.Current)
-	// so native-element hosting composes clip geometry through the same factory the renderer uses.
+	// The negotiated backend's drawing factory, so native-element hosting composes clip geometry through the
+	// same factory the renderer uses (rather than the global DrawingFactory.Current).
 	internal IDrawingFactory GraphicsFactory { get; private set; } = null!;
 
 	private Win32Accessibility? _accessibility;
@@ -108,10 +108,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Win32Host.RegisterWindow(_hwnd);
 
-		// Neutral graphics pipeline: the host names no backend. It registers a per-kind window+context factory
-		// (CreateWindowAndContext, reusing the kind-agnostic HWND) and negotiates; the app-registered backend
-		// (Skia or WebGPU) owns the kind order. Only GPU-API context creation is Win32-specific (WGL/DIB, and the
-		// WebGPU init helper); the backend impl is transparent to the host.
+		// Register the per-kind window+context factory and negotiate; the app-registered backend owns the kind order.
 		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateWindowAndContext(kind));
 
 		var init = GraphicsRegistry.Initialize();
@@ -794,8 +791,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	private unsafe HICON CreateIconFromFile(string iconPath, int targetSize)
 	{
-		// Decode + scale through the neutral image-decoder seam (no Skia): the managed decoder resamples to the
-		// target size and returns BGRA (premultiplied), which is exactly the icon color bitmap format.
+		// Decode + resample to the target size via the image-decoder seam; the returned BGRA (premultiplied)
+		// is exactly the icon color-bitmap format.
 		using var fileStream = File.OpenRead(iconPath);
 		if (!ImageEncoderDecoder.Current.TryDecode(fileStream, targetSize, targetSize, out var frames) || frames.Frames.Count == 0)
 		{

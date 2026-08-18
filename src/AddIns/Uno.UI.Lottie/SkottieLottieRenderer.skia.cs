@@ -12,10 +12,9 @@ using System.Numerics;
 namespace Uno.UI.Lottie;
 
 /// <summary>
-/// Skottie-backed <see cref="ILottieRenderer"/> — the default Lottie renderer, resolved reflectively by the host
-/// builder (by assembly-qualified name, so the framework keeps no compile-time dependency on this add-in or SkiaSharp)
-/// when Uno.UI.Lottie is referenced. It renders through the neutral <see cref="IDrawingSession"/>: straight into the
-/// backend's live SKCanvas when it exposes one, else via a session-native texture — so Lottie plays on WebGPU too.
+/// Skottie-backed <see cref="ILottieRenderer"/>, the default Lottie renderer resolved reflectively by the host
+/// builder when Uno.UI.Lottie is referenced. Renders through the neutral <see cref="IDrawingSession"/>: straight
+/// into the backend's live SKCanvas when it exposes one, else via a session-native texture (so WebGPU works too).
 /// </summary>
 internal sealed class SkottieLottieRenderer : ILottieRenderer
 {

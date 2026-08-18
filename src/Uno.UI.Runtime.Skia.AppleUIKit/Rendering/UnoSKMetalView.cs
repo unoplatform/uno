@@ -48,8 +48,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				return;
 			}
 
-			// The Skia backend owns the GRContext-Metal (built from this device/queue via the neutral
-			// IMetalRenderTarget seam); the host only presents the drawable. No Skia type lives here.
+			// The Skia backend owns the GRContext-Metal via the neutral IMetalRenderTarget seam; the host only presents.
 			_queue = queue;
 
 			ColorPixelFormat = MTLPixelFormat.BGRA8Unorm;
@@ -120,8 +119,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		void IAppleUIKitRenderView.SetOwner(RootViewController owner) => SetOwner(owner);
 
 		/// <summary>
-		/// Creates the neutral Skia-on-Metal context bound to this view's device/queue. The per-frame drawable
-		/// texture is pushed each frame (see <see cref="IMTKViewDelegate.Draw"/>); the view commits the drawable.
+		/// Creates the neutral Skia-on-Metal context bound to this view's device/queue.
 		/// </summary>
 		internal Uno.UI.Composition.Drawing.ISwapChain CreateGraphicsContext()
 			=> new AppleMetalGraphicsContext(Device!.Handle, _queue!.Handle);
@@ -170,11 +168,9 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 					return;
 				}
 
-				// Push the drawable's texture into the negotiated Metal context and render through the neutral loop;
-				// the Skia backend flushes+submits its GRContext-Metal into that texture. The host names no backend.
+				// Push the drawable's texture into the negotiated Metal context and render through the neutral loop.
 				_owner?.OnMetalFrame(drawable.Texture.Handle);
 
-				// Present the drawable.
 				commandBuffer = _queue!.CommandBuffer()!;
 				commandBuffer.PresentDrawable(drawable);
 				commandBuffer.Commit();

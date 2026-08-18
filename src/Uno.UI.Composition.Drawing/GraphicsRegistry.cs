@@ -28,26 +28,22 @@ internal readonly struct GraphicsInitialization
 	/// <summary>The backend — the host sets it as <c>CompositionTarget.Renderer</c>.</summary>
 	public IDrawingFactory Renderer { get; }
 
-	/// <summary>Alias for the backend (the drawing factory); the two are one object since the merge.</summary>
+	/// <summary>Alias for the backend (the drawing factory); the two are one object.</summary>
 	public IDrawingFactory DrawingFactory => Renderer;
 }
 
 /// <summary>
-/// Creates a window+context for a well-known <see cref="GraphicsContextKind"/>, or <see langword="null"/> to
-/// decline (the kind is unavailable, or the host's config opts out — negotiation then tries the next kind). The
-/// host owns both the native window (created freshly when the kind requires it, e.g. an X11 GLX visual, or its
-/// existing kind-agnostic window reused, e.g. a Win32 HWND) and the GPU-API context/device. The host switches
-/// purely on <paramref name="kind"/> and never sees the render backend (Skia vs WebGPU). It is asynchronous
-/// because one kind (WASM WebGpu) imports its device from JS and must not block the JS thread; every native host
-/// returns an already-completed task.
+/// Creates a window+context for a well-known <see cref="GraphicsContextKind"/>, or <see langword="null"/> to decline
+/// (negotiation then tries the next kind). The host owns the native window and the GPU-API context/device, switches
+/// purely on <paramref name="kind"/>, and never sees the render backend. Asynchronous because one kind (WASM WebGpu)
+/// imports its device from JS off the JS thread; every native host returns an already-completed task.
 /// </summary>
 internal delegate Task<ISwapChain?> GraphicsContextFactory(GraphicsContextKind kind);
 
 /// <summary>
 /// Process-wide registry and negotiator for pluggable graphics backends. The app registers its ordered backend
-/// preference (each backend declares the context kinds it accepts, in its own order); the host sets a single
-/// <see cref="ContextFactory"/> that turns a kind into a window+context. The host calls <see cref="Initialize"/>
-/// once and negotiation binds the first kind the host can serve to the backend that accepts it.
+/// preference; the host sets a single <see cref="ContextFactory"/> that turns a kind into a window+context.
+/// <see cref="Initialize"/> binds the first kind the host can serve to the backend that accepts it.
 /// </summary>
 internal static class GraphicsRegistry
 {
@@ -55,10 +51,8 @@ internal static class GraphicsRegistry
 	private static IReadOnlyList<IGraphicsProvider> _backends = Array.Empty<IGraphicsProvider>();
 
 	/// <summary>
-	/// The host's window+context creator (set once by the host). This is the <em>only</em> platform-specific,
-	/// GPU-agnostic seam: the host maps a neutral context kind to a window+context and never references a render
-	/// backend. WGL/GLX/EGL/DIB live in the host's implementations; portable kinds (WebGpu, Vulkan) redirect to a
-	/// shared GPU-API helper.
+	/// The host's window+context creator (set once by the host): the <em>only</em> platform-specific, GPU-agnostic
+	/// seam — it maps a neutral context kind to a window+context and never references a render backend.
 	/// </summary>
 	public static GraphicsContextFactory? ContextFactory { get; set; }
 
@@ -92,9 +86,9 @@ internal static class GraphicsRegistry
 	}
 
 	/// <summary>
-	/// True once the app has declared a graphics backend through the host builder (<see cref="Register"/>). The host
-	/// builder's implicit Skia auto-registration stays out of the seams a declared backend owns — even while that
-	/// backend is still initializing (e.g. the WASM/WebGPU async device import).
+	/// True once the app has declared a graphics backend through the host builder (<see cref="Register"/>), so the
+	/// implicit Skia auto-registration stays out of the seams a declared backend owns — even while that backend is
+	/// still initializing (e.g. the WASM/WebGPU async device import).
 	/// </summary>
 	public static bool HasRegisteredBackends
 	{
@@ -109,9 +103,8 @@ internal static class GraphicsRegistry
 
 	/// <summary>
 	/// Whether any registered backend accepts <paramref name="kind"/>. A neutral pre-negotiation signal for a host
-	/// that must choose a native window/view type up front where that choice is tied to the kind (e.g. Android
-	/// picks a plain SurfaceView for the WebGpu swapchain vs a GLSurfaceView for the GLES path) — the host reads the
-	/// kind, never a backend type or an env var.
+	/// that must choose a native window/view type up front when that choice is tied to the kind (e.g. Android's plain
+	/// SurfaceView for WebGpu vs a GLSurfaceView for GLES) — reading the kind, never a backend type or env var.
 	/// </summary>
 	public static bool HasBackendPreferring(GraphicsContextKind kind)
 	{
@@ -133,19 +126,17 @@ internal static class GraphicsRegistry
 	}
 
 	/// <summary>
-	/// Synchronous entry for hosts whose context creation completes synchronously (every kind except WASM/WebGpu).
-	/// The negotiation runs the same async core; because those creations return already-completed tasks it finishes
-	/// inline, so this neither blocks nor deadlocks. A host that can create the WASM/WebGpu context must negotiate
-	/// with <see cref="InitializeAsync"/> instead.
+	/// Synchronous entry for hosts whose context creation completes synchronously (every kind except WASM/WebGpu):
+	/// the async core finishes inline on already-completed tasks, so this neither blocks nor deadlocks. A host that
+	/// creates the WASM/WebGpu context must use <see cref="InitializeAsync"/> instead.
 	/// </summary>
 	public static GraphicsInitialization Initialize()
 		=> InitializeAsync().GetAwaiter().GetResult();
 
 	/// <summary>
 	/// Negotiates a backend + context: for each registered backend (registration order) and each context kind it
-	/// accepts (the backend's own order), asks the host <see cref="ContextFactory"/> to create a window+context for
-	/// that kind. The first non-null context wins: its <see cref="Graphics"/> pair is minted and its drawing factory
-	/// installed as <see cref="DrawingFactory.Current"/>. The host names no backend and no kind order.
+	/// accepts (the backend's own order), asks the host <see cref="ContextFactory"/> for a window+context. The first
+	/// non-null context wins and its drawing factory is installed as <see cref="DrawingFactory.Current"/>.
 	/// </summary>
 	public static async Task<GraphicsInitialization> InitializeAsync()
 	{
@@ -198,8 +189,7 @@ internal static class GraphicsRegistry
 				try
 				{
 					// Narrow the context to the device face this kind implies and hand it to the matching typed
-					// provider (Uno-side, keyed on the closed kind — the backend reads its device details without
-					// casting a neutral context). Null when the backend doesn't implement that instantiation → decline.
+					// provider. Null when the backend doesn't implement that instantiation → decline.
 					var backendFactory = CreateGraphics(kind, backend, context);
 					if (backendFactory is null)
 					{
@@ -237,10 +227,8 @@ internal static class GraphicsRegistry
 			$"No registered backend could initialize on this host. Attempts:{attempts}");
 	}
 
-	// The closed kind → device-context narrowing: hand the typed provider the context's device face. GL/Metal use
-	// neutral device contexts (nameable here); Software + WebGpu use the base IGraphicsContext (WebGpu self-casts
-	// to its own device context inside its provider). Null when the provider lacks the instantiation. The `?.`
-	// short-circuits before the (device-context) cast, so a declining provider never triggers an InvalidCast.
+	// The closed kind → device-context narrowing: hand the typed provider the context's device face. The `?.`
+	// short-circuits before the cast, so a declining provider (null) never triggers an InvalidCast.
 	private static IDrawingFactory? CreateGraphics(GraphicsContextKind kind, IGraphicsProvider provider, ISwapChain context) => kind switch
 	{
 		GraphicsContextKind.OpenGL or GraphicsContextKind.OpenGLES

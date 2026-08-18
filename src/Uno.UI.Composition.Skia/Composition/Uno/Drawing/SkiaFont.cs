@@ -28,10 +28,9 @@ internal sealed class SkiaFont : IFont
 	private readonly SKFont _font;
 	private readonly SKFontMetrics _metrics;
 	private HbFont? _hbFont;
-	// Per-(this font+size, glyph) caches: the SkiaFontProvider keeps this instance stable, so both survive across
-	// paints. Text repaints (caret blink, selection, edit) then reuse the neutral outline / rasterized pixels instead
-	// of re-fetching the native SKPath + re-iterating its verbs (every glyph) or re-running an SKSurface rasterize +
-	// readback (every colour glyph) on each paint. Coords are glyph-local; the pen offset is applied at replay.
+	// Per-glyph caches (this instance is kept stable by SkiaFontProvider, so they survive across paints): repaints
+	// reuse the neutral outline / rasterized pixels instead of re-extracting them. Coords are glyph-local; the pen
+	// offset is applied at replay.
 	private readonly Dictionary<ushort, PenOp[]> _glyphOutlines = new();
 	private readonly Dictionary<ushort, RasterGlyph?> _colorGlyphs = new();
 

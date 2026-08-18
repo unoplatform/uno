@@ -20,11 +20,9 @@ namespace Uno.UI.Runtime.Skia.Android;
 
 /// <summary>
 /// Vulkan-backed rendering view for Android — a SurfaceView whose ANativeWindow drives a Vulkan swapchain through
-/// the neutral graphics pipeline. It owns the ANativeWindow and serves the <see cref="GraphicsContextKind.Vulkan"/>
-/// kind by creating an <see cref="AndroidVulkanGraphicsContext"/> (the Skia backend then builds its GRContext-Vulkan
-/// over the render image); the host names no render backend. This restores the builder's documented default
-/// (<c>UseVulkan</c>): Vulkan when the device supports it, otherwise a fall-back to the canvas render view.
-/// Not runtime-validated on Linux CI (needs an Android device/emulator with a Vulkan-capable adapter).
+/// the neutral graphics pipeline, serving the <see cref="GraphicsContextKind.Vulkan"/> kind via an
+/// <see cref="AndroidVulkanGraphicsContext"/>. Not runtime-validated on Linux CI (needs an Android device/emulator
+/// with a Vulkan-capable adapter).
 /// </summary>
 internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallback, IUnoSkiaRenderView
 {
@@ -151,9 +149,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 		_width = rect.Width();
 		_height = rect.Height();
 
-		// Neutral pipeline: this SurfaceView owns the ANativeWindow, so it serves the Vulkan kind by creating the
-		// Vulkan swapchain context (device on the context; the Skia backend builds its own GRContext-Vulkan over the
-		// render image). The host names no render backend.
+		// This SurfaceView owns the ANativeWindow, so it serves the Vulkan kind by creating the swapchain context.
 		var nativeWindow = _nativeWindow;
 		var width = _width;
 		var height = _height;

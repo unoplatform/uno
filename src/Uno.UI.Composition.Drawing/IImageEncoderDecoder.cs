@@ -8,11 +8,10 @@ using Windows.Graphics.Imaging;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// The CPU-only, render-backend-independent image codec seam: it decodes encoded streams into neutral pixels
-/// AND encodes neutral pixels back to a compressed image. A codec can be supplied independently of the
-/// graphics/render backend (managed codec, Skia codec, or a platform codec); it produces the neutral
-/// <see cref="IImage"/>/<see cref="ImageFrames"/> currency any render backend consumes (via
-/// <see cref="IDrawingFactory.CreateTexture"/>), and the byte stream <c>BitmapEncoder</c> writes.
+/// The CPU-only, render-backend-independent image codec seam: it decodes encoded streams into neutral pixels and
+/// encodes neutral pixels back to a compressed image, supplied independently of the graphics backend (managed,
+/// Skia, or platform codec). It produces the neutral <see cref="IImage"/>/<see cref="ImageFrames"/> currency any
+/// render backend consumes, and the byte stream <c>BitmapEncoder</c> writes.
 /// </summary>
 public interface IImageEncoderDecoder
 {
@@ -31,19 +30,17 @@ public interface IImageEncoderDecoder
 
 	/// <summary>
 	/// Encodes a raw pixel buffer (<paramref name="pixelFormat"/>/<paramref name="alphaMode"/>) to the compressed
-	/// <paramref name="format"/>, writing the file bytes into <paramref name="destination"/>. This is the inverse of
-	/// <see cref="TryDecode"/> and the engine behind <c>Windows.Graphics.Imaging.BitmapEncoder</c>. Writing into the
-	/// caller's stream avoids materializing the whole encoded file as an intermediate array. Throws for a format the
-	/// codec can't produce.
+	/// <paramref name="format"/>, writing the file bytes into <paramref name="destination"/> — the inverse of
+	/// <see cref="TryDecode"/> and the engine behind <c>Windows.Graphics.Imaging.BitmapEncoder</c>. Throws for a
+	/// format the codec can't produce.
 	/// </summary>
 	void Encode(Stream destination, byte[] pixels, int width, int height, BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapEncoderFormat format, int quality);
 }
 
 /// <summary>
 /// Process-wide image codec, set at the composition root independently of the graphics backend. Unset access
-/// throws (there is no hidden default) — a platform head registers its codec at startup. Registering it also
-/// wires the codec's <see cref="IImageEncoderDecoder.Encode"/> down into <see cref="BitmapEncoder"/> (which lives
-/// below this assembly and so can't reference this seam) via a plain top-down delegate assignment — no reflection.
+/// throws (no hidden default) — a platform head registers its codec at startup. Registering it also wires the
+/// codec's <see cref="IImageEncoderDecoder.Encode"/> down into <see cref="BitmapEncoder"/>.
 /// </summary>
 public static class ImageEncoderDecoder
 {
@@ -74,10 +71,8 @@ public static class ImageEncoderDecoder
 	private static void SetCurrent(IImageEncoderDecoder codec)
 	{
 		_current = codec;
-		// Push the encode capability DOWN to Uno.UWP's BitmapEncoder. BitmapEncoder is below this assembly and can't
-		// reference IImageEncoderDecoder; this assembly references Uno.UWP, so it hands the codec's Encode method to
-		// BitmapEncoder as a plain delegate — a compile-time, top-down assignment (no reflection/ApiExtensibility).
-		// BitmapEncoder.Encode is internal (not WinUI surface); we reach it via InternalsVisibleTo on Uno.UWP.
+		// Hand the encode capability down to Uno.UWP's BitmapEncoder (below this assembly) as a plain delegate —
+		// a top-down assignment, no reflection. BitmapEncoder.Encode is reachable via InternalsVisibleTo.
 		BitmapEncoder.Encode = codec.Encode;
 	}
 }

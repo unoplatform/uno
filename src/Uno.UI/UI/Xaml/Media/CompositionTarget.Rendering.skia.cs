@@ -23,12 +23,9 @@ public partial class CompositionTarget
 	internal static (bool invertNativeElementClipPath, bool applyScalingToNativeElementClipPath) FrameRenderingOptions { get; set; } = (false, true);
 
 	/// <summary>
-	/// The active rendering backend that owns the frame record/present lifecycle. Defaults to the Skia
-	/// two-phase backend; a host/experiment can replace it before the first frame.
+	/// The active rendering backend that owns the frame record/present lifecycle. A head may install its own
+	/// (e.g. WebGPU); otherwise it falls back to the registered backend's default, throwing if none is registered.
 	/// </summary>
-	// Backend-agnostic: the framework doesn't reference a concrete renderer. A head that installs its own renderer
-	// (e.g. WebGPU) sets this; otherwise it falls back to the registered backend's default (DrawingRegistration set
-	// by SkiaBackend.Register). Accessing it before any backend is registered throws a diagnosable error.
 	private static IDrawingFactory? _renderer;
 	internal static IDrawingFactory Renderer
 	{
@@ -38,17 +35,13 @@ public partial class CompositionTarget
 				"No graphics backend registered. Register one through the host builder (.GraphicsBackend) and/or the head must set CompositionTarget.Renderer before the first frame.");
 		set
 		{
-			// Invalidate on ANY change of the effective renderer, including the first assignment from the null
-			// field (the getter falls back to the default Skia renderer, so frames may already have been recorded
-			// with it before a head assigns WebGPU). NOTE the null guard is intentionally absent: on WebAssembly the
-			// WebGPU device imports asynchronously and this is the FIRST assignment to the field, yet Skia frames
-			// were already recorded via the default — those recordings can't be replayed by WebGPU.
+			// Invalidate on ANY change, including the first assignment from null: the getter already falls back to a
+			// default renderer, so frames may have been recorded before a head assigns its own (async on WASM/WebGPU).
 			var changed = !ReferenceEquals(_renderer, value);
 			_renderer = value;
 
-			// The retained frame (_lastRenderedFrame) and every visual's cached recording were produced by the
-			// previous backend and can't be replayed by the new one — the tree would render blank. Discard them and
-			// request a fresh frame so the whole tree re-records under the new renderer.
+			// The retained frame and cached per-visual recordings belong to the previous backend and can't be replayed
+			// by the new one; discard them and request a fresh frame so the tree re-records under the new renderer.
 			if (changed)
 			{
 				InvalidateAllRecordings();
@@ -56,14 +49,12 @@ public partial class CompositionTarget
 		}
 	}
 
-	// Non-throwing peek at renderer availability. False while a declared graphics backend is still initializing
-	// asynchronously (e.g. the WASM/WebGPU device import replacing no default): there is deliberately no implicit
-	// Skia fallback renderer, so Render() must SKIP the frame rather than force the throwing Renderer getter.
+	// Non-throwing peek at renderer availability. False while a declared backend initializes asynchronously (WASM
+	// WebGPU device import): Render() must SKIP the frame rather than force the throwing Renderer getter.
 	private static bool HasRenderer => _renderer is not null || DrawingRegistration.DefaultRenderer is not null;
 
-	// Neutral→typed narrowing for phase-2 present: the fresh target is downcast to the kind it always is (the
-	// context bound at negotiation only yields that one type), and dispatched to the backend's typed
-	// IDrawingFactory<TTarget>.BeginPresent. The single cast is here, Uno-side; the backend surface stays typed.
+	// Neutral→typed narrowing for phase-2 present: downcast the target to its bound kind and dispatch to the
+	// backend's typed IDrawingFactory<TTarget>.BeginPresent, keeping the single cast Uno-side.
 	private static IPresentSession BeginPresent(IDrawingFactory backend, IRenderTarget target)
 		=> target switch
 		{
@@ -107,8 +98,6 @@ public partial class CompositionTarget
 	// We're using this table as a set with weakref keys. values are always null
 	private static readonly ConditionalWeakTable<CompositionTarget, object> _targets = new();
 	private static bool _isRenderingActive;
-
-	// Enqueued from the UI thread, drained on the rendering thread during Draw.
 
 	static CompositionTarget()
 	{
@@ -176,20 +165,16 @@ public partial class CompositionTarget
 
 		if (!HasRenderer)
 		{
-			// The declared graphics backend hasn't finished initializing (async WebGPU device import on WASM). Skip
-			// this frame instead of falling back to another backend; a fresh frame is requested once the head installs
-			// CompositionTarget.Renderer (see InitWebGpuAsync / InvalidateAllRecordings), so the tree records under it.
+			// Declared backend still initializing (async WebGPU device import on WASM); skip the frame rather than
+			// fall back to another backend — a fresh frame is requested once the head installs CompositionTarget.Renderer.
 			return;
 		}
 
 		var rootElement = ContentRoot.VisualTree.RootElement;
 		var bounds = ContentRoot.VisualTree.Size;
 
-		// Phase 1 (UI thread): the backend hands us a recording session, the agnostic cycle walks the
-		// visual tree into it, then we finish recording to get the opaque frame. A per-frame damage
-		// accumulator collects each changed/moved visual's dirty region during the walk; it is seeded with
-		// damage carried over from AddDamage / a superseded-before-present previous frame, then clamped to
-		// the frame so it can drive a partial repaint at present time.
+		// Phase 1 (UI thread): record the visual tree into a backend session, finishing to an opaque frame. The
+		// per-frame damage accumulator (seeded with carried-over damage) is clamped to drive a partial repaint at present.
 		var frameDamage = new DamageRegion();
 		var frameRect = new Rect(0, 0, bounds.Width, bounds.Height);
 		lock (_frameGate)
@@ -226,7 +211,6 @@ public partial class CompositionTarget
 
 		_fpsHelper.OnFrameRecorded();
 
-		// Release the previous frame now since we are swapping it
 		previousFrame?.frame.Dispose();
 		previousFrame?.damage?.Dispose();
 
@@ -311,16 +295,12 @@ public partial class CompositionTarget
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
 			using (var present = BeginPresent(Renderer, target!))
 			{
-				// Partial repaint: when the host guarantees the target keeps the previous frame's pixels and the frame
-				// wasn't resized, clip the clear+replay to the damage region so only the changed area is repainted and
-				// the rest survives. The backend is oblivious — this is just an initial clip. Otherwise (fresh/undefined
-				// surface) repaint the whole frame.
-				// The frame's damage region is computed on every target; whether we can USE it for a partial repaint
-				// additionally requires the host to preserve the target's contents between frames.
+				// Partial repaint: when unresized and the host preserves the target's pixels, clip the clear+replay to
+				// the damage region so only the changed area is repainted; otherwise repaint the whole frame.
 				var hasDamage = !resized && lastRenderedFrame.damage is { } dmg && !dmg.IsEmpty;
 				var damageEligible = hasDamage && target!.PreservesContents;
-				// Debug overlay: full-repaint (no damage clip) but paint the would-be damage region so it's visible.
-				// Deliberately NOT gated on PreservesContents — the viz must work on full-repaint targets too.
+				// Debug overlay paints the would-be damage region on a full repaint; deliberately not gated on
+				// PreservesContents so the viz works on full-repaint targets too.
 				var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;
 				var useDamage = damageEligible && !overlayEnabled;
 
@@ -336,9 +316,8 @@ public partial class CompositionTarget
 				{
 					present.Scale(rasterizationScale, rasterizationScale);
 				}
-				// Clip the content clear+replay to the damage region (in root/logical coords, matching the content);
-				// Clear respects the clip, so only the damaged area is cleared and repainted. FPS/overlay draw outside
-				// this scope so they aren't restricted to the damage region.
+				// Clip clear+replay to the damage region so only the damaged area is repainted; FPS/overlay draw
+				// outside this scope so they aren't restricted to it.
 				present.Save();
 				if (useDamage)
 				{
@@ -400,7 +379,6 @@ public partial class CompositionTarget
 			}
 		}
 
-		// Release it then
 		frameToDelete?.Dispose();
 		damageToDelete?.Dispose();
 	}
@@ -423,9 +401,8 @@ public partial class CompositionTarget
 		}
 	}
 
-	// Debug viz (FeatureConfiguration.Rendering.DamageRegionOverlay): paints the frame's damage region as a
-	// translucent red fill + outline over the fully-repainted frame, so the areas that would be partially
-	// repainted are visible.
+	// Debug viz (FeatureConfiguration.Rendering.DamageRegionOverlay): paints the damage region as a translucent
+	// red fill + outline over the fully-repainted frame.
 	private static void DrawDamageRegionOverlay(IPresentSession present, IGeometry damage)
 	{
 		present.DrawPath(damage, global::Windows.UI.Color.FromArgb(0x30, 0xFF, 0x00, 0x00), antialias: false);

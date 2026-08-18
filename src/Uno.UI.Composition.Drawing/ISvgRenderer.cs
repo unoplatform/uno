@@ -5,11 +5,9 @@ using Windows.Foundation;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// App-registerable seam for turning SVG markup into a renderable document. Independent of the graphics backend
-/// (like <see cref="FontProvider"/> / <see cref="ImageEncoderDecoder"/> / <see cref="GeometryFactory"/>): the returned
-/// <see cref="ISvgDocument"/> draws through the neutral <see cref="IDrawingSession"/>, so it works under any backend
-/// and creates no backend resources itself. Register via the host builder; the framework defaults to its managed
-/// (SkiaSharp-free) engine when none is set.
+/// App-registerable seam for turning SVG markup into a renderable document, independent of the graphics backend:
+/// the returned <see cref="ISvgDocument"/> draws through the neutral <see cref="IDrawingSession"/>. Register via
+/// the host builder; the framework defaults to its managed engine when none is set.
 /// </summary>
 public interface ISvgRenderer
 {
@@ -20,9 +18,8 @@ public interface ISvgRenderer
 }
 
 /// <summary>
-/// A parsed SVG document — the <em>retained</em> vector representation. <see cref="Render"/> replays it into any
-/// <see cref="IDrawingSession"/>: an offscreen session to rasterize at a chosen size, or a live per-frame session to
-/// draw it directly. The document owns no backend resources; the caller supplies the session (and thus the backend).
+/// A parsed SVG document — the retained vector representation. <see cref="Render"/> replays it into any
+/// <see cref="IDrawingSession"/>. The document owns no backend resources; the caller supplies the session.
 /// </summary>
 public interface ISvgDocument
 {
@@ -34,19 +31,14 @@ public interface ISvgDocument
 }
 
 /// <summary>
-/// Holds the registered <see cref="ISvgRenderer"/>. The host builder resolves the default at Build() time — the
-/// Svg.Skia add-in when referenced, else the built-in managed engine — exactly like the <see cref="FontProvider"/> /
-/// <see cref="ImageEncoderDecoder"/> / <see cref="GeometryFactory"/> holders. An app can override it via the host
-/// builder's .SvgRenderer(...).
+/// Holds the registered <see cref="ISvgRenderer"/>. The host builder resolves the default at Build() time (the
+/// Svg.Skia add-in when referenced, else the built-in managed engine); an app can override it via .SvgRenderer(...).
 /// </summary>
 public static class SvgRenderer
 {
 	private static ISvgRenderer? _current;
 
-	/// <summary>
-	/// The active SVG renderer, or null only on a head with no SVG renderer at all (SVG then simply doesn't render).
-	/// The host builder resolves the default (Svg.Skia add-in, else the managed engine) at Build() time.
-	/// </summary>
+	/// <summary>The active SVG renderer, or null on a head with no SVG renderer at all (SVG then doesn't render).</summary>
 	public static ISvgRenderer? Current
 	{
 		get => _current;

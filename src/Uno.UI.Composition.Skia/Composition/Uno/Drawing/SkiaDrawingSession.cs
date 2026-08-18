@@ -26,9 +26,8 @@ internal class SkiaDrawingSession : IDrawingSession
 	private static Stack<SKPictureRecorder>? _recorderPool;
 
 	private readonly SKCanvas _canvas;
-	// The factory that created this session, surfaced as IDrawingSession.Factory. Carrying it on the session (rather
-	// than an ambient global) signals that its resource methods — CreateTexture etc. — are meant to be used within a
-	// session's scope, i.e. during the Paint callback while a session is live, not at arbitrary times.
+	// The factory that created this session, surfaced as IDrawingSession.Factory. Carried on the session (not an
+	// ambient global) so its resource methods (CreateTexture etc.) are scoped to a live Paint callback.
 	private readonly IDrawingFactory _factory;
 
 	public SkiaDrawingSession(SKCanvas canvas, IDrawingFactory factory)
@@ -55,8 +54,7 @@ internal class SkiaDrawingSession : IDrawingSession
 
 	/// <summary>Creates a recording session (no pre-existing session); records a whole frame or a nested subtree.</summary>
 	// Cull bounds for the SKPictureRecorder — large enough to encompass any recorded content (the real clip is
-	// applied at replay). A Skia-side constant matching the framework's SafeEdge (SK_MaxS32FitsInFloat / 4 - 1), so
-	// the backend needs no Composition internal (Visual.InfiniteClipRect).
+	// applied at replay). Matches the framework's SafeEdge (SK_MaxS32FitsInFloat / 4 - 1).
 	private const float SafeEdge = 2147483520f / 4f - 1f;
 	private static readonly SKRect RecordingBounds = new(-SafeEdge, -SafeEdge, SafeEdge, SafeEdge);
 
@@ -93,7 +91,7 @@ internal class SkiaDrawingSession : IDrawingSession
 	public void SetMatrix(in Matrix4x4 matrix)
 	{
 		// Preserve the full 4x4 (visual transforms may include 3D rotation) by reinterpreting the
-		// Matrix4x4 as an SKMatrix44, matching the previous raw sk_canvas_set_matrix path.
+		// Matrix4x4 as an SKMatrix44.
 		var m = matrix;
 		unsafe
 		{

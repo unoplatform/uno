@@ -296,10 +296,7 @@ namespace Microsoft.UI.Xaml
 
 		private IUnoSkiaRenderView CreateRenderView()
 		{
-			// Pick the Android view class matching the registered backend's context kind — the host reads the neutral
-			// kind (never a backend type or env var). A plain SurfaceView serves the WebGpu swapchain (Uno owns the
-			// ANativeWindow + wgpu bring-up); a GLSurfaceView serves the GLES path (ambient EGL context, wrapped by
-			// AndroidGLGraphicsContext). Each view then negotiates its own context through the registry.
+			// Pick the Android view class matching the registered backend's context kind (host reads the neutral kind).
 			if (global::Uno.UI.Composition.Drawing.GraphicsRegistry.HasBackendPreferring(
 				global::Uno.UI.Composition.Drawing.GraphicsContextKind.WebGpu))
 			{
@@ -313,8 +310,7 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			// The builder's documented default (UseVulkan): a Vulkan SurfaceView when the device supports it,
-			// otherwise the canvas render view (GLES/software per UseOpenGL). Vulkan can fail at runtime, so a
+			// Default (UseVulkan): Vulkan when supported, else the canvas view. Vulkan can fail at runtime, so a
 			// failed bring-up falls through to the canvas view rather than aborting.
 			if (FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid)
 			{
@@ -510,8 +506,7 @@ namespace Microsoft.UI.Xaml
 				SetWillNotDraw(false);
 			}
 
-			// Neutral clip geometry (was SKPath): the native clip is driven through the backend-agnostic IGeometry
-			// seam — SVG path data + fill rule for the Android clip path, FillContains for hit-testing.
+			// Neutral clip geometry: SVG path data + fill rule drive the Android clip path, FillContains hit-testing.
 			public IGeometry? Path
 			{
 				get => _path;

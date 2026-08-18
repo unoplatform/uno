@@ -8,10 +8,9 @@ using Windows.Foundation;
 namespace Uno.WinUI.Graphics2DSK;
 
 /// <summary>
-/// Self-contained Skia-on-GL island backing <see cref="SKCanvasElement"/>. It renders the user's
-/// SkiaSharp drawing into <see cref="GLCanvasElement"/>'s own offscreen GL framebuffer through a
-/// dedicated <see cref="GRContext"/>, so it is independent of the app's active render backend (Skia,
-/// WebGPU, …). <see cref="GLCanvasElement"/> reads the pixels back and composites them as an image.
+/// Self-contained Skia-on-GL island backing <see cref="SKCanvasElement"/>: renders the user's SkiaSharp drawing
+/// into <see cref="GLCanvasElement"/>'s own offscreen GL framebuffer through a dedicated <see cref="GRContext"/>,
+/// independent of the app's active render backend. <see cref="GLCanvasElement"/> reads it back and composites it.
 /// </summary>
 internal sealed class SkiaGLCanvasElement : GLCanvasElement
 {
@@ -30,9 +29,8 @@ internal sealed class SkiaGLCanvasElement : GLCanvasElement
 
 	protected override void Init(GL gl)
 	{
-		// The base has made our GL context current; build a GRContext over it. Desktop GL uses the
-		// parameterless interface factory (matching the host's Skia GL renderer); the getter overload is
-		// only for GLES.
+		// The base has made our GL context current; build a GRContext over it. Desktop GL uses the parameterless
+		// interface factory (the getter overload is only for GLES).
 		_grContext = GRContext.CreateGl(
 			GRGlInterface.Create() ?? throw new NotSupportedException("OpenGL is not available (GRGlInterface create failed)."));
 	}
@@ -81,7 +79,7 @@ internal sealed class SkiaGLCanvasElement : GLCanvasElement
 		var canvas = _surface!.Canvas;
 		canvas.Clear(SKColors.Transparent);
 		canvas.Save();
-		// Guarantee drawing stays inside the element's area, matching the previous SKCanvasElement behaviour.
+		// Keep drawing inside the element's area.
 		canvas.ClipRect(new SKRect(0, 0, width, height));
 		_owner.InvokeRenderOverride(canvas, new Size(width, height));
 		canvas.Restore();

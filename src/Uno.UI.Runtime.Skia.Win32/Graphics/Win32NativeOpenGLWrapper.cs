@@ -98,9 +98,8 @@ internal class Win32NativeOpenGLWrapper : INativeOpenGLWrapper
 	}
 
 	// https://sharovarskyi.com/blog/posts/csharp-win32-opengl-silknet/
-	// Non-throwing loader for the neutral IGLRenderTarget seam (returns 0 for a missing entry point, which is
-	// what a backend's extension probing expects). opengl32's own exports serve core GL 1.1; wglGetProcAddress
-	// serves everything above it (and needs the GL context current, which the host guarantees before use).
+	// Non-throwing loader (returns 0 for a missing entry point): opengl32 exports serve core GL 1.1,
+	// wglGetProcAddress serves everything above it (needs the GL context current, guaranteed by the host).
 	internal static nint GetProcAddressStatic(string proc)
 	{
 		if (_opengl32.Value != IntPtr.Zero && NativeLibrary.TryGetExport(_opengl32.Value, proc, out var addr))

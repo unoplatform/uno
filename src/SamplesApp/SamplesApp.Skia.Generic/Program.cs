@@ -74,11 +74,8 @@ namespace SkiaSharpExample
 			host.Run();
 		}
 
-		// Composition root: the drawing/render backend and the independent content seams (font, image decode) are
-		// registered through the host builder — the app never calls the low-level static registrars. A backend is one
-		// unit that owns its renderer AND its drawing factory; a GPU backend (WebGPU) takes the geometry engine it
-		// needs via its own constructor, not a separate registration. Backend availability is gated by the app build
-		// flags (UNO_DRAWING_SKIA / UNO_DRAWING_WEBGPU); env vars pick among them and toggle the managed seams.
+		// Composition root: the backend and content seams are registered through the host builder. Available backends
+		// are gated by build flags (UNO_DRAWING_SKIA / UNO_DRAWING_WEBGPU); env vars pick among them and toggle seams.
 		private static void ConfigureDrawingBackend(IUnoPlatformHostBuilder builder)
 		{
 #if UNO_DRAWING_WEBGPU
@@ -106,9 +103,8 @@ namespace SkiaSharpExample
 			}
 
 #if !UNO_DRAWING_SKIA
-			// SkiaSharp-free build: no Skia backend assembly ships to supply defaults, so the render-independent content
-			// seams must be registered explicitly here — the host builder throws at Build() otherwise. (Geometry is
-			// already set to the managed engine above.) The dev toggles below can still override in a Skia build.
+			// SkiaSharp-free build: no Skia assembly supplies defaults, so the content seams must be registered
+			// explicitly here or the host builder throws at Build(). (Geometry is already set to the managed engine above.)
 			builder.FontProvider(new ManagedFontProvider());
 			builder.ImageEncoderDecoder(new ManagedImageDecoderBackend());
 			builder.SvgRenderer(new ManagedSvgRenderer());

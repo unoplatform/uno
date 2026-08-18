@@ -8,14 +8,9 @@ namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
 /// Backend-neutral handle to an immutable 2D geometry (path), produced by an <see cref="IDrawingFactory"/>
-/// and consumed by the drawing pipeline for filling, clipping, stroking and hit-testing.
+/// and consumed by the drawing pipeline for filling, clipping, stroking and hit-testing. It is a stateful
+/// resource handle, not a draw-time value: it is queried, transformed and combined outside of any draw call.
 /// </summary>
-/// <remarks>
-/// This is the "resource handle" half of the pluggable-backend abstraction: geometry is not a draw-time
-/// value. It is queried (<see cref="Bounds"/>, <see cref="FillContains"/>), transformed and combined well
-/// outside of any draw call — hit-testing, for instance, happens with no canvas at all — so it must cross
-/// the backend boundary as a stateful object rather than as inline draw parameters.
-/// </remarks>
 public interface IGeometry : IDisposable
 {
 	/// <summary>The tight (on-curve) bounds of the geometry.</summary>
@@ -47,17 +42,15 @@ public interface IGeometry : IDisposable
 
 	/// <summary>
 	/// Streams the geometry's outline to <paramref name="sink"/> as flattened polyline contours (curves
-	/// subdivided at a fixed local tolerance). The readback a tessellating backend (e.g. WebGPU) needs to fill a
-	/// path without a curve rasterizer. For a backend with its own rasterizer, prefer <see cref="StreamSegments"/>.
+	/// subdivided at a fixed local tolerance), for a tessellating backend (e.g. WebGPU) with no curve rasterizer.
+	/// For a backend with its own rasterizer, prefer <see cref="StreamSegments"/>.
 	/// </summary>
 	void StreamFlattened(IFlattenedPathSink sink);
 
 	/// <summary>
-	/// Streams the geometry's outline to <paramref name="sink"/> as un-flattened path segments (curves preserved).
-	/// Unlike <see cref="StreamFlattened"/>, this keeps the béziers so a backend with its own curve rasterizer can
-	/// reconstruct a faithful native path and flatten at device resolution (smooth under any transform, correct
-	/// strokes). It is the neutral "geometry → path" readback that lets any backend consume any geometry without
-	/// knowing its concrete type. The fill rule travels separately on <see cref="FillRule"/>.
+	/// Streams the geometry's outline to <paramref name="sink"/> as un-flattened path segments (béziers preserved),
+	/// so a backend with its own rasterizer can flatten at device resolution. The neutral geometry-to-path readback
+	/// that lets any backend consume any geometry; the fill rule travels separately on <see cref="FillRule"/>.
 	/// </summary>
 	void StreamSegments(IGeometrySink sink);
 }

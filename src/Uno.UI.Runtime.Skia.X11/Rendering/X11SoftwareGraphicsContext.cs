@@ -7,10 +7,9 @@ using Uno.UI.Composition.Drawing;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 /// <summary>
-/// The software (CPU-framebuffer) X11 graphics context. Uno owns the window binding and present here — it
-/// allocates a BGRA buffer, wraps it in an <see cref="XImage"/>, and blits it to the window with
-/// <c>XPutImage</c> — while naming no Skia type. The matched backend wraps the handed-over
-/// <see cref="ISoftwareRenderTarget"/> into its own surface to render into.
+/// Software (CPU-framebuffer) X11 graphics context: allocates a BGRA buffer, wraps it in an
+/// <see cref="XImage"/>, and blits it to the window with <c>XPutImage</c>. The backend renders into the
+/// handed-over <see cref="ISoftwareRenderTarget"/>.
 /// </summary>
 internal sealed class X11SoftwareGraphicsContext : ISwapChain
 {
@@ -109,8 +108,7 @@ internal sealed class X11SoftwareGraphicsContext : ISwapChain
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Bgra8888;
-		// The context reuses one persistent HGlobal buffer across frames (reallocated only on resize), so the
-		// previous frame's pixels survive — the compositor can repaint only the damaged region.
+		// Reuses one persistent buffer across frames (reallocated only on resize), so the compositor can repaint only the damaged region.
 		public bool PreservesContents => true;
 		public void Dispose() { }
 	}

@@ -233,9 +233,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		unsafe void SetIconFromFile(string iconPath)
 		{
-			// Decode through the neutral image-decoder seam (managed decoder when enabled, else the registered
-			// codec) rather than SkiaSharp directly — the X11 host has no other native-Skia dependency, so this
-			// keeps a WebGPU + managed build genuinely libSkiaSharp-free. Pixels come back BGRA premultiplied.
+			// Decode through the neutral image-decoder seam so a WebGPU + managed build stays libSkiaSharp-free.
+			// Pixels come back BGRA premultiplied.
 			using var fileStream = File.OpenRead(iconPath);
 			if (!ImageEncoderDecoder.Current.TryDecode(fileStream, null, null, out var frames) || frames.Frames.Count == 0)
 			{
@@ -427,11 +426,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_x11Window = CreateSoftwareRenderWindow(display, screen, size, rootXWindow);
 		var topWindowDisplay = XLib.XOpenDisplay(IntPtr.Zero);
 
-		// Neutral pluggable graphics pipeline: the host names no backend. It registers a per-kind window+context
-		// factory and negotiates; the registered backend (Skia, or WebGPU when the app registers it) owns the kind
-		// order. Only window+context creation per kind is X11-specific; the backend impl is transparent. The factory
-		// creates the RIGHT top window for the kind (GLX visual for OpenGL, a plain window otherwise), stores it in
-		// _x11TopWindow, and the whole rest of host init (input masks, XamlRoot, …) proceeds against it.
+		// Neutral pipeline: the host registers a per-kind window+context factory and lets the backend negotiate; only window+context creation is X11-specific.
 		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateWindowAndContext(kind, topWindowDisplay, display, screen, size));
 
 		var init = GraphicsRegistry.Initialize();
@@ -471,11 +466,9 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	}
 
 	/// <summary>
-	/// The X11 window+context creator for the neutral pipeline: given a negotiated context kind, creates the top
-	/// render window appropriate to it (a GLX-visual window for <see cref="GraphicsContextKind.OpenGL"/>, a plain
-	/// window otherwise), stores it in <see cref="_x11TopWindow"/>, and returns the context — or null to decline
-	/// (host config opted out, or the API is unavailable), cleaning up any window it created so it's "as if never
-	/// attempted." The host names no render backend; WebGpu is created via the WebGPU project's init helper.
+	/// Creates the top render window appropriate to a negotiated context kind (a GLX-visual window for
+	/// <see cref="GraphicsContextKind.OpenGL"/>, a plain window otherwise) and returns the context, or null to
+	/// decline (cleaning up any window it created).
 	/// </summary>
 	private ISwapChain? CreateWindowAndContext(GraphicsContextKind kind, IntPtr topWindowDisplay, IntPtr display, int screen, Size size)
 	{

@@ -8,9 +8,8 @@ using Uno.UI.Hosting;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 /// <summary>
-/// Drives the shared render loop over a negotiated <see cref="ISwapChain"/>, naming no GPU-library type.
-/// The host (X11XamlRootHost) owns the negotiation; this renderer defers sizing and the record/present cycle to
-/// <see cref="CompositionTarget.OnNativePlatformFrameRequested"/>, then presents.
+/// Drives the shared render loop over a negotiated <see cref="ISwapChain"/>, deferring the record/present cycle
+/// to <see cref="CompositionTarget.OnNativePlatformFrameRequested"/>.
 /// </summary>
 internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 {

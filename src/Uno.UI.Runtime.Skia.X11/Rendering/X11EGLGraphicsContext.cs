@@ -8,11 +8,9 @@ using Uno.UI.Helpers;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 /// <summary>
-/// Neutral OpenGL ES <see cref="ISwapChain"/> for X11 — names no GPU-library type. It creates an EGL
-/// display/context/surface for the (plain) window, makes it current, and hands the renderer a neutral
-/// <see cref="IGLRenderTarget"/> flagged GLES with the EGL proc loader; the Skia backend builds its
-/// GRContext-GLES against it. <see cref="Present"/> swaps buffers and releases current. Chosen by negotiation
-/// when the host prefers OpenGL ES (e.g. the GLES branch), falling to software if EGL is unavailable.
+/// Neutral OpenGL ES <see cref="ISwapChain"/> for X11: creates an EGL display/context/surface for the window
+/// and hands the renderer a neutral <see cref="IGLRenderTarget"/> flagged GLES. <see cref="Present"/> swaps
+/// buffers and releases current.
 /// </summary>
 internal sealed unsafe class X11EGLGraphicsContext : ISwapChain, IGLDeviceContext
 {
@@ -86,7 +84,7 @@ internal sealed unsafe class X11EGLGraphicsContext : ISwapChain, IGLDeviceContex
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
-		// Retained-layer partial repaint: the backend blits a persistent layer here each present (see X11GLRenderTarget).
+		// The backend blits a persistent layer here each present, enabling partial repaint.
 		public bool PreservesContents => true;
 		public void Dispose() { }
 	}

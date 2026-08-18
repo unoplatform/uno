@@ -3,9 +3,8 @@
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// A well-known GPU-API context kind. This is the negotiation currency between the framework's
-/// per-kind context providers and a backend's declared preferences. WebGPU is a first-class kind,
-/// not a special case.
+/// A well-known GPU-API context kind — the negotiation currency between the framework's per-kind context
+/// providers and a backend's declared preferences.
 /// </summary>
 public enum GraphicsContextKind
 {

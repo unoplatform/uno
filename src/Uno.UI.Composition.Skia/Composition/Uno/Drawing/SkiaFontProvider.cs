@@ -9,8 +9,7 @@ namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
 /// Default <see cref="IFontProvider"/>: resolves fonts through SkiaSharp (<c>SKTypeface</c>/<c>SKFontManager</c>)
-/// and wraps the result in a <see cref="SkiaFont"/>. This keeps all font <em>resolution</em> Skia code in one
-/// place; the text layer above talks only to <see cref="IFont"/>.
+/// and wraps the result in a <see cref="SkiaFont"/>, so the text layer above talks only to <see cref="IFont"/>.
 /// </summary>
 internal sealed class SkiaFontProvider : IFontProvider
 {

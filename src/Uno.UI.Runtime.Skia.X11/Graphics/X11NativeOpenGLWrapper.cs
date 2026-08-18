@@ -101,10 +101,8 @@ internal class X11NativeOpenGLWrapper : INativeOpenGLWrapper
 		return Disposable.Create(() => GlxInterface.glXMakeCurrent(_display, drawable, glContext));
 	}
 
-	// Non-throwing loader for the neutral IGLRenderTarget seam. dlsym libGL.so.1 first so genuinely-absent
-	// entry points resolve to 0 (accurate availability) — bare glXGetProcAddress returns a non-null dispatch
-	// trampoline for EVERY name, which fools a backend's capability probing into calling unsupported
-	// functions (a hard crash on Mesa). glXGetProcAddress then serves extensions libGL doesn't export.
+	// dlsym libGL.so.1 first so genuinely-absent entry points resolve to 0; bare glXGetProcAddress returns a
+	// non-null trampoline for every name, fooling capability probing into calling unsupported functions (crashes Mesa).
 	internal static nint GetProcAddressStatic(string proc)
 	{
 		if (_libGL.Value != IntPtr.Zero && NativeLibrary.TryGetExport(_libGL.Value, proc, out var addr))

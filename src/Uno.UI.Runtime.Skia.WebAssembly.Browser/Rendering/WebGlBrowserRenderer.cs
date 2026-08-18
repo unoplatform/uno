@@ -7,9 +7,8 @@ using Uno.UI.Runtime.Skia.WebAssembly.Browser.Graphics;
 
 namespace Uno.UI.Runtime.Skia;
 
-// Neutral WebGL renderer: makes the emscripten WebGL context current and hands the backend a neutral
-// IGLRenderTarget (the canvas default framebuffer). The Skia backend builds its GRContext-GL against the
-// current context. No Skia/GR type lives here.
+// Makes the emscripten WebGL context current and hands the backend a neutral IGLRenderTarget (the canvas
+// default framebuffer).
 internal partial class WebGlBrowserRenderer : IBrowserRenderer
 {
 	private record struct JsInfo(JSObject NativeInstance, uint FboId, int Stencil, int Samples, int Depth);

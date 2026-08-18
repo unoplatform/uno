@@ -7,11 +7,9 @@ namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
 /// A persistent GPU <see cref="SKSurface"/> the frame renders into so the previous frame's pixels survive across
-/// presents — the basis for damage-region partial repaint on a backend whose swapchain surface does NOT preserve
-/// contents (an OpenGL double-buffered <c>SwapBuffers</c> leaves the back buffer undefined; a Metal
-/// <c>CAMetalLayer</c> hands out a fresh pooled drawable each frame). <see cref="Present"/> blits the whole layer
-/// onto that swapchain surface each frame, so only the damaged region is re-rendered into the layer while the
-/// swapchain always shows the complete frame. Mirrors the stable-image-plus-blit the Vulkan path uses.
+/// presents — enabling damage-region partial repaint on backends whose swapchain surface does not preserve contents
+/// (GL <c>SwapBuffers</c>, a Metal <c>CAMetalLayer</c>'s pooled drawable). <see cref="Present"/> blits the whole
+/// layer onto the swapchain each frame, so only the damaged region is re-rendered while the swapchain shows it all.
 /// </summary>
 internal sealed class RetainedLayer : IDisposable
 {
