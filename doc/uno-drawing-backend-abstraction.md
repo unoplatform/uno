@@ -707,14 +707,14 @@ region is expressed as a **clip in the recorded frame** (backend-independent), s
 replays the clipped frame; it is **damage-agnostic**.
 
 Retention — the invariant that pixels *outside* the dirty region still hold the previous frame — is
-entirely host/target-side, declared by **`IRenderTarget.PreservesContents`** (the framework reads it
-in `CompositionTarget.Draw` to choose partial repaint vs. a full clear). It's `true` when the target
-persists across frames: the X11 **software** buffer is reused; the **Vulkan** path renders into a
-stable render image and blits it; and **GL/Metal** — whose swapchain does *not* preserve (SwapBuffers
-leaves the back buffer undefined; a Metal drawable is fresh each frame) — get retention from the Skia
-backend, which composes into a persistent `RetainedLayer` SKSurface and blits it onto the swapchain
-each present (X11 GL/GLES, Win32 GL, macOS + UIKit Metal). The full-repaint GL hosts (Android, WASM,
-DRM) leave it `false` and render straight into the swapchain, no blit. The render-target view is
+entirely host-side, declared by the internal **`ISwapChain.PreservesContents`** (the framework reads
+it in `CompositionTarget.Draw` to choose partial repaint vs. a full clear). **The backend never sees
+it** and always renders straight into the target it is handed. It's `true` when the host hands back a
+stable target across frames: the **software** buffer is reused (CPU framebuffer / DIB), and the
+**Vulkan** path renders into a stable render image and blits it. **GL and Metal** present an undefined
+back buffer (SwapBuffers leaves it undefined; a Metal drawable is fresh each frame) and have no
+host-side retention yet, so they report `false` (full repaint each frame); giving those hosts a
+persistent FBO / texture to restore partial repaint is a follow-up. The render-target view is
 **kind-matched** (opaque to core; a `WebGpu` provider mints the one a WebGPU backend downcasts).
 
 ### Who drives the pipeline
@@ -755,8 +755,9 @@ public interface IWebGpuDeviceContext : IGraphicsContext { nint Instance { get; 
 
 internal interface ISwapChain : IGraphicsContext          // what the host factory returns; Uno-internal
 {
-    IRenderTarget AcquireRenderTarget(int width, int height);
+    IRenderTarget AcquireRenderTarget(int width, int height); // caches by size; CompositionTarget.Draw acquires each frame
     void Present();
+    bool PreservesContents => false;                          // host-only retention signal; the backend never sees it
 }
 
 public interface IRenderTarget : IDisposable { int Width { get; } int Height { get; } GraphicsColorFormat ColorFormat { get; } }
