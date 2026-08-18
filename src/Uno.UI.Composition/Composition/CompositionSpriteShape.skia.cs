@@ -7,6 +7,8 @@ using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
 
+#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
+
 namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSpriteShape : CompositionShape

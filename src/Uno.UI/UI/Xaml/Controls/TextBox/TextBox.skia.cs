@@ -929,7 +929,7 @@ public partial class TextBox : ITextSelectionGripperHost
 		// Characters produced by a key press are inserted by OnKeyDownSkia. Only characters
 		// that can't be delivered through a key press — composed on a key release, i.e.
 		// Windows Alt+numpad codes — arrive solely through this event.
-		if (!_isSkiaTextBox || e.Handled || e.OriginalSource != this || !e.KeyStatus.IsKeyReleased)
+		if (e.Handled || e.OriginalSource != this || !e.KeyStatus.IsKeyReleased)
 		{
 			return;
 		}
