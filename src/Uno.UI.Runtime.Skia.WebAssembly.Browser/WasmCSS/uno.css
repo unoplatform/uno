@@ -1,4 +1,4 @@
-﻿html,
+html,
 body {
   /**
       Disable root scrolling (bouncing effect on touch devices)
@@ -85,10 +85,18 @@ input::-ms-clear {
     height: 100%;
 }
 
+/*
+  Negotiated native elements (BrowserHtmlElementInputPolicy.Negotiated) have their panning driven from
+  BrowserPointerInputSource so the residual can be chained to the enclosing Uno ScrollViewer.
+  `touch-action: none` on `html, body` above is not enough: the effective touch-action of a gesture is
+  resolved only up to the nearest scroll container, so a scrollable element *inside* the native content
+  resets the chain and would still be panned by the browser. Hence the descendant selector.
+  Form controls and contenteditable regions are deliberately excluded: they keep their full native touch
+  behavior (caret dragging, selection, nested scrolling) and simply do not participate in chaining.
+  `!important` is needed to win over inline styles set by embedded third-party content.
+*/
 #uno-native-element-host [data-uno-native-input-policy="1"],
-#uno-native-element-host [data-uno-native-input-policy="1"] *,
-#uno-native-element-host [data-uno-native-input-policy="2"],
-#uno-native-element-host [data-uno-native-input-policy="2"] * {
+#uno-native-element-host [data-uno-native-input-policy="1"] *:not(input):not(textarea):not(select):not([contenteditable]) {
 	touch-action: none !important;
 	overscroll-behavior: none !important;
 }
