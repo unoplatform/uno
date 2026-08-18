@@ -17,9 +17,6 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 	private static (string path, string fillType)? _lastSvgClipPath;
 	private static readonly Dictionary<string, WeakReference<BrowserNativeElementHostingExtension>> _hosts = new();
 
-	// Sub-pixel leftovers are not worth chaining to the next ScrollViewer.
-	private const double ScrollResidualEpsilon = 0.01;
-
 	public BrowserNativeElementHostingExtension(ContentPresenter contentPresenter)
 	{
 		_presenter = contentPresenter;
@@ -80,66 +77,8 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 		return extension.ApplyNegotiatedScroll(horizontalDelta, verticalDelta);
 	}
 
-	/// <summary>
-	/// Scrolls the <see cref="ScrollViewer"/> ancestry of the native element host by the residual delta a
-	/// native scroller could not consume, chaining outwards until the delta is exhausted.
-	/// </summary>
 	private bool ApplyNegotiatedScroll(double horizontalDelta, double verticalDelta)
-	{
-		var remainingHorizontalDelta = horizontalDelta;
-		var remainingVerticalDelta = verticalDelta;
-		var didScroll = false;
-
-		foreach (var ancestor in _presenter.GetVisualAncestry())
-		{
-			if (ancestor is not ScrollViewer { Presenter: { } presenter } scrollViewer)
-			{
-				continue;
-			}
-
-			var horizontalOffset = presenter.CanHorizontallyScroll && remainingHorizontalDelta is not 0
-				? presenter.HorizontalOffset + remainingHorizontalDelta
-				: (double?)null;
-			var verticalOffset = presenter.CanVerticallyScroll && remainingVerticalDelta is not 0
-				? presenter.VerticalOffset + remainingVerticalDelta
-				: (double?)null;
-
-			if (horizontalOffset is null && verticalOffset is null)
-			{
-				continue;
-			}
-
-			var initialHorizontalOffset = presenter.HorizontalOffset;
-			var initialVerticalOffset = presenter.VerticalOffset;
-
-			// This is user input, not a programmatic ChangeView. ChangeView arms the ScrollViewer's offset
-			// intent, which the post-layout recompute then keeps re-applying and would fight the drag - so
-			// clear it and go through the presenter exactly like PointerWheelScroll and
-			// TryEnableDirectManipulation do.
-			scrollViewer.ClearOffsetIntents();
-			presenter.Set(
-				horizontalOffset: horizontalOffset,
-				verticalOffset: verticalOffset,
-				disableAnimation: true,
-				isIntermediate: false);
-
-			// The presenter clamps and commits its offsets synchronously, unlike the ScrollViewer's own
-			// properties which are refreshed through a notification, so the residual is read back from it.
-			var consumedHorizontalDelta = presenter.HorizontalOffset - initialHorizontalOffset;
-			var consumedVerticalDelta = presenter.VerticalOffset - initialVerticalOffset;
-
-			remainingHorizontalDelta -= consumedHorizontalDelta;
-			remainingVerticalDelta -= consumedVerticalDelta;
-			didScroll |= consumedHorizontalDelta is not 0 || consumedVerticalDelta is not 0;
-
-			if (Math.Abs(remainingHorizontalDelta) < ScrollResidualEpsilon && Math.Abs(remainingVerticalDelta) < ScrollResidualEpsilon)
-			{
-				break;
-			}
-		}
-
-		return didScroll;
-	}
+		=> ScrollViewer.ChainScrollFromDescendant(_presenter, horizontalDelta, verticalDelta).DidScroll;
 
 	public void ArrangeNativeElement(object content, Windows.Foundation.Rect arrangeRect)
 	{
