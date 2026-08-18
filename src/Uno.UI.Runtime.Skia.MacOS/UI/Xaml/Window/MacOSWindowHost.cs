@@ -104,7 +104,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		var screenFps = NativeUno.uno_window_get_refresh_rate(_nativeWindow.Handle);
 		var targetFps = ResolveTargetFps(screenFps);
 
-		// Logged unconditionally at Information: on a CI agent this is the only record of what the
+		// Information rather than Trace on purpose: on a CI agent this is the only record of what the
 		// render clock is actually running at, and a screen reporting an unexpected rate (or none)
 		// is the first thing to check when frames stall.
 		if (this.Log().IsEnabled(LogLevel.Information))
@@ -980,9 +980,28 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			_windowHandle = windowHandle;
 			_context = context;
 			_drawFrame = drawFrame;
-			_framePacer = new FramePacer(targetFps, () => _frameSignal.Set());
+			_framePacer = new FramePacer(targetFps, SignalFrameDue);
 			_thread = new Thread(RenderLoop) { Name = "Uno macOS Render Thread", IsBackground = true };
 			_thread.Start();
+		}
+
+		/// <summary>
+		/// Pacer callback: the frame deadline has arrived, so let the render loop run.
+		/// </summary>
+		/// <remarks>
+		/// <see cref="Dispose"/> stops the pacer before disposing the events, but a timer callback
+		/// already in flight can still land afterwards — swallow that rather than let it surface as
+		/// an unhandled exception on a timer thread during window teardown.
+		/// </remarks>
+		private void SignalFrameDue()
+		{
+			try
+			{
+				_frameSignal.Set();
+			}
+			catch (ObjectDisposedException)
+			{
+			}
 		}
 
 		/// <summary>
