@@ -10,7 +10,7 @@ using Uno.Foundation.Logging;
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 /// <summary>
-/// EXPERIMENTAL WebGPU-backed render view for AppleUIKit (iOS/tvOS): a <c>UIView</c> whose backing
+/// WebGPU-backed render view for AppleUIKit (iOS/tvOS): a <c>UIView</c> whose backing
 /// <see cref="CAMetalLayer"/> drives a wgpu swapchain, drawn through the neutral
 /// <c>CompositionTarget.OnNativePlatformFrameRequested</c> seam. Opt in with UNO_WEBGPU; needs an Apple device build
 /// with the wgpu-native iOS static lib linked via wgpu-native.targets.

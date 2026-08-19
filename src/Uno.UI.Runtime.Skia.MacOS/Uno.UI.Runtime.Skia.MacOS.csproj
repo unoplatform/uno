@@ -51,7 +51,7 @@
 		<!-- WebGPU "init half": the host calls WebGpuContext.CreateMetal to build a WebGpu window+context for the
 		     GraphicsContextKind.WebGpu kind. The host uses only the renderer-agnostic init API, not the renderer. -->
 		<ProjectReference Include="..\Uno.UI.Composition.WebGpu.Init\Uno.UI.Composition.WebGpu.Init.csproj" />
-		<!-- EXPERIMENTAL WebGPU render path (UNO_WEBGPU): drives a wgpu swapchain on the window's CAMetalLayer. The
+		<!-- WebGPU render path (UNO_WEBGPU): drives a wgpu swapchain on the window's CAMetalLayer. The
 		     wgpu-native macOS dylib is provisioned next to the app head by wgpu-native.targets (osx-arm64/osx-x64). -->
 	</ItemGroup>
 

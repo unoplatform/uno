@@ -24,9 +24,4 @@ public enum Win32RenderingBackend
 	/// CPU-based software rendering. No GPU acceleration.
 	/// </summary>
 	Software,
-
-	/// <summary>
-	/// EXPERIMENTAL. WebGPU (wgpu-native) rendering on an HWND swapchain, via the neutral drawing backend.
-	/// </summary>
-	WebGpu,
 }
