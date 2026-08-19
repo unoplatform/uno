@@ -123,6 +123,14 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				Size = new Vector2(animation.Size.Width, animation.Size.Height);
 				Duration = animation.Duration;
 				_rootVisual.Size = Size;
+
+				// The element only exists to own the visual handed to AnimatedVisualPlayer; it never joins a
+				// XAML tree, so no parent ever lays it out. Give it the animation's box as its layout slot,
+				// otherwise it has none and the compositor suppresses the subtree as never-arranged.
+				var bounds = new Windows.Foundation.Size(Size.X, Size.Y);
+				_canvasElement.Measure(bounds);
+				_canvasElement.Arrange(new Windows.Foundation.Rect(default, bounds));
+
 				_canvasElement.Invalidate();
 			}
 
