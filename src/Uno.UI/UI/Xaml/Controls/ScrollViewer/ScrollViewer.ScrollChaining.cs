@@ -18,16 +18,28 @@ partial class ScrollViewer
 	/// <remarks>
 	/// This is the entry point for scroll deltas that originate outside of Uno's own pointer pipeline -
 	/// currently a native HTML element hosted on Skia WebAssembly which has exhausted its own scrolling.
-	/// The delta is treated as user input, not as a programmatic scroll.
+	/// The delta is treated as user touch input, not as a programmatic scroll.
 	/// </remarks>
+	/// <param name="isIntermediate">
+	/// False only for the last delta of a gesture. Callers that end a gesture without a final delta
+	/// should use <see cref="CompleteChainedScrollFromDescendant"/> instead.
+	/// </param>
 	/// <returns>
 	/// Whether any ScrollViewer moved, along with the delta that no ScrollViewer in the ancestry could consume.
 	/// </returns>
 	internal static (bool DidScroll, double RemainingHorizontalDelta, double RemainingVerticalDelta) ChainScrollFromDescendant(
 		UIElement origin,
 		double horizontalDelta,
-		double verticalDelta)
+		double verticalDelta,
+		bool isIntermediate)
 	{
+		// These deltas cross the JS boundary, where nothing guarantees they are finite. A NaN reaching
+		// ScrollContentPresenter.ValidateInputOffset throws, so reject it before it gets there.
+		if (!double.IsFinite(horizontalDelta) || !double.IsFinite(verticalDelta))
+		{
+			return (false, 0, 0);
+		}
+
 		var remainingHorizontalDelta = horizontalDelta;
 		var remainingVerticalDelta = verticalDelta;
 		var didScroll = false;
@@ -39,40 +51,50 @@ partial class ScrollViewer
 				continue;
 			}
 
-			var horizontalOffset = presenter.CanHorizontallyScroll && remainingHorizontalDelta is not 0
-				? presenter.HorizontalOffset + remainingHorizontalDelta
-				: (double?)null;
-			var verticalOffset = presenter.CanVerticallyScroll && remainingVerticalDelta is not 0
-				? presenter.VerticalOffset + remainingVerticalDelta
-				: (double?)null;
+			var scrollsHorizontally = presenter.CanHorizontallyScroll && Math.Abs(remainingHorizontalDelta) >= ScrollChainingResidualEpsilon;
+			var scrollsVertically = presenter.CanVerticallyScroll && Math.Abs(remainingVerticalDelta) >= ScrollChainingResidualEpsilon;
 
-			if (horizontalOffset is null && verticalOffset is null)
+			if (scrollsHorizontally || scrollsVertically)
 			{
-				continue;
+				var initialHorizontalOffset = presenter.HorizontalOffset;
+				var initialVerticalOffset = presenter.VerticalOffset;
+
+				// This is user input, not a programmatic ChangeView. ChangeView arms the ScrollViewer's offset
+				// intent, which the post-layout recompute then keeps re-applying and would fight the drag - so
+				// clear it and go through the presenter exactly like PointerWheelScroll and
+				// TryEnableDirectManipulation do.
+				scrollViewer.ClearOffsetIntents();
+				presenter.Set(
+					horizontalOffset: scrollsHorizontally ? initialHorizontalOffset + remainingHorizontalDelta : null,
+					verticalOffset: scrollsVertically ? initialVerticalOffset + remainingVerticalDelta : null,
+					disableAnimation: true,
+					isIntermediate: isIntermediate,
+					isTouch: true);
+
+				// The presenter clamps and commits its offsets synchronously, unlike the ScrollViewer's own
+				// properties which are refreshed through a notification, so the residual is read back from it.
+				var consumedHorizontalDelta = presenter.HorizontalOffset - initialHorizontalOffset;
+				var consumedVerticalDelta = presenter.VerticalOffset - initialVerticalOffset;
+
+				remainingHorizontalDelta -= consumedHorizontalDelta;
+				remainingVerticalDelta -= consumedVerticalDelta;
+				didScroll |= Math.Abs(consumedHorizontalDelta) >= ScrollChainingResidualEpsilon
+					|| Math.Abs(consumedVerticalDelta) >= ScrollChainingResidualEpsilon;
 			}
 
-			var initialHorizontalOffset = presenter.HorizontalOffset;
-			var initialVerticalOffset = presenter.VerticalOffset;
+			// A ScrollViewer that opts out of chaining absorbs the rest of the delta on that axis rather than
+			// letting it reach its own ancestors, mirroring IDirectManipulationHandler.OnUpdated. Only applied
+			// to an axis this ScrollViewer actually takes part in, so a horizontal-only scroller does not
+			// swallow the vertical delta of the scroller above it.
+			if (scrollsHorizontally && !scrollViewer.IsHorizontalScrollChainingEnabled)
+			{
+				remainingHorizontalDelta = 0;
+			}
 
-			// This is user input, not a programmatic ChangeView. ChangeView arms the ScrollViewer's offset
-			// intent, which the post-layout recompute then keeps re-applying and would fight the drag - so
-			// clear it and go through the presenter exactly like PointerWheelScroll and
-			// TryEnableDirectManipulation do.
-			scrollViewer.ClearOffsetIntents();
-			presenter.Set(
-				horizontalOffset: horizontalOffset,
-				verticalOffset: verticalOffset,
-				disableAnimation: true,
-				isIntermediate: false);
-
-			// The presenter clamps and commits its offsets synchronously, unlike the ScrollViewer's own
-			// properties which are refreshed through a notification, so the residual is read back from it.
-			var consumedHorizontalDelta = presenter.HorizontalOffset - initialHorizontalOffset;
-			var consumedVerticalDelta = presenter.VerticalOffset - initialVerticalOffset;
-
-			remainingHorizontalDelta -= consumedHorizontalDelta;
-			remainingVerticalDelta -= consumedVerticalDelta;
-			didScroll |= consumedHorizontalDelta is not 0 || consumedVerticalDelta is not 0;
+			if (scrollsVertically && !scrollViewer.IsVerticalScrollChainingEnabled)
+			{
+				remainingVerticalDelta = 0;
+			}
 
 			if (Math.Abs(remainingHorizontalDelta) < ScrollChainingResidualEpsilon
 				&& Math.Abs(remainingVerticalDelta) < ScrollChainingResidualEpsilon)
@@ -82,6 +104,23 @@ partial class ScrollViewer
 		}
 
 		return (didScroll, remainingHorizontalDelta, remainingVerticalDelta);
+	}
+
+	/// <summary>
+	/// Reports the end of a gesture previously driven through <see cref="ChainScrollFromDescendant"/>, so
+	/// consumers of <see cref="ViewChanged"/> observe a final non-intermediate view change.
+	/// </summary>
+	internal static void CompleteChainedScrollFromDescendant(UIElement origin)
+	{
+		foreach (var ancestor in origin.GetVisualAncestry())
+		{
+			if (ancestor is ScrollViewer { Presenter: { } presenter })
+			{
+				// No offset is passed: this only re-reports the offsets already in place, with
+				// IsIntermediate false to close the sequence of intermediate deltas.
+				presenter.Set(disableAnimation: true, isIntermediate: false, isTouch: true);
+			}
+		}
 	}
 }
 #endif
