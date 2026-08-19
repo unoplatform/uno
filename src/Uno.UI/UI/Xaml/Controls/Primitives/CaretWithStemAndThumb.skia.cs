@@ -1,5 +1,4 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
 using Windows.UI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Media;
@@ -28,7 +27,6 @@ internal sealed class CaretWithStemAndThumb : Grid
 	/// </summary>
 	internal const double ThumbSize = 16;
 
-	private readonly Action _repositionCallback;
 	private readonly Rectangle _stem;
 	private Popup _popup;
 
@@ -41,13 +39,8 @@ internal sealed class CaretWithStemAndThumb : Grid
 	/// </summary>
 	public double GrabOffsetY { get; set; }
 
-	/// <param name="repositionCallback">
-	/// Invoked once per rendered frame while the gripper is showing, so the owner
-	/// can keep the gripper glued to its anchor character as the text moves.
-	/// </param>
-	public CaretWithStemAndThumb(Action repositionCallback)
+	public CaretWithStemAndThumb()
 	{
-		_repositionCallback = repositionCallback;
 		// Numbers and colors below are partially measured by hand from WinUI and partially made up to be reasonable.
 
 		Background = new SolidColorBrush(Colors.Transparent); // to hit-test positively everywhere in the grid
@@ -117,26 +110,13 @@ internal sealed class CaretWithStemAndThumb : Grid
 		if (!_popup.IsOpen)
 		{
 			_popup.IsOpen = true;
-			_popup.Closed += OnPopupClosed;
-			((CompositionTarget)Visual.CompositionTarget)!.FrameRendered += OnFrameRendered;
 		}
 	}
-
-	private void OnPopupClosed(object sender, object e)
-	{
-		_popup.Closed -= OnPopupClosed;
-		if (Visual.CompositionTarget is CompositionTarget target)
-		{
-			target.FrameRendered -= OnFrameRendered;
-		}
-	}
-
-	private void OnFrameRendered() => _repositionCallback?.Invoke();
 
 	/// <summary>
 	/// The character this gripper points at has scrolled out of the visible region: stop painting (and
-	/// hit-testing) it, but keep the popup open. The popup is what drives the per-frame reposition, so
-	/// closing it here would leave nothing to notice the anchor scrolling back into view.
+	/// hit-testing) it, but keep the popup open so the next <see cref="ShowAt"/> brings it straight back
+	/// when the anchor scrolls into view again.
 	/// </summary>
 	public void Cull() => Visibility = Visibility.Collapsed;
 
