@@ -179,17 +179,21 @@ namespace Microsoft.UI.Xaml
 				}
 
 				// Establish the per-object theme on the lazily-built VisualState chain (storyboard,
-				// animations, keyframes, setters) the same way the Enter theme walk does for non-lazy DOs.
-				// MUX: WinUI carries m_theme on every DO, inherited from the inheritance parent at Enter
-				// (CDependencyObject::EnterImpl, depends.cpp:1044-1054), and CVisualState::EnterImpl enters
-				// its storyboard — so the keyframes carry an established theme. Uno builds this chain lazily
-				// HERE, outside the Enter walk, so without this a value DO (keyframe) keeps _theme=None and
-				// later re-resolves its {ThemeResource} against the (unscoped) app base theme on a non-walk
-				// path (element loading / visual-state re-entry). NotifyThemeChanged runs the same per-child
-				// establishment recursion (DependencyObjectStore.UpdateResourceBindingsIfNeeded) against the
-				// part's inherited theme; on non-enhanced-lifecycle targets it falls back to plain resolution.
+				// animations, keyframes, setters); without it a keyframe keeps _theme=None and later
+				// re-resolves its {ThemeResource} against the unscoped app base theme.
+				// Read pinned-safe: while the owner is mid-walk its per-object theme is still the
+				// pre-switch one, persisted only after the subtree completes (Theming.cpp:153-156).
+				// Templated parent first, so the keyframes resolve under the same owner the state's
+				// Setters do (VisualStateManager.cs:234 passes the Control into VisualStateGroup.GoToState,
+				// which is what Setter.ApplyValue then receives). The groups owner is the fallback for
+				// groups declared outside a ControlTemplate (MUX: CVisualStateManager2.cpp:345-354, :464).
+				// TODO Uno: no WinUI counterpart for the notify itself — WinUI's fault-in only calls
+				// CreateInstance (OptimizedVisualStateManagerDataSource.cpp:92-129); the chain is themed
+				// when the VSM parents it (CVisualState::EnterImpl enters its storyboard,
+				// components/vsm/VisualState.cpp:67-76, plus CDependencyObject::EnterImpl, depends.cpp:1044-1069).
 #if UNO_HAS_ENHANCED_LIFECYCLE
-				var ownerTheme = ThemeResolution.ResolveOwnerTheme(this.GetTemplatedParent() as DependencyObject);
+				var groupsOwner = this.GetTemplatedParent() ?? Owner?.GetParent() as DependencyObject;
+				var ownerTheme = ThemeResolution.ResolvePinnedOwnerTheme(groupsOwner);
 				((IDependencyObjectStoreProvider)this).Store.NotifyThemeChanged(ownerTheme, forceRefresh: true);
 #else
 				this.UpdateResourceBindings();

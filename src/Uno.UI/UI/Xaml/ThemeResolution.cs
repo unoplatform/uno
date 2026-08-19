@@ -39,7 +39,7 @@ internal static class ThemeResolution
 	/// applied to it) the owner is not walking and keeps its established theme, which is the whole point
 	/// of the pin.
 	/// </remarks>
-	internal static Theme ResolvePinnedOwnerTheme(DependencyObject owner)
+	internal static Theme ResolvePinnedOwnerTheme(DependencyObject? owner)
 	{
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		if (owner is IDependencyObjectStoreProvider { Store: { IsProcessingThemeWalk: true } ownerStore })
