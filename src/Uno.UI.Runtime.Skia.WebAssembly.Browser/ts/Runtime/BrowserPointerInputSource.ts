@@ -37,6 +37,7 @@ namespace Uno.UI.Runtime.Skia {
 	interface NativeScrollGesture {
 		pointerId: number;
 		root: HTMLElement;
+		unoElementId: number;
 		scrollTarget: HTMLElement | null;
 		startX: number;
 		startY: number;
@@ -53,6 +54,7 @@ namespace Uno.UI.Runtime.Skia {
 	export class BrowserPointerInputSource {
 
 		private static _exports: any;
+		private static _instance: BrowserPointerInputSource | null = null;
 		
 		public static async initialize(inputSource: any) {
 			if (BrowserPointerInputSource._exports == undefined) {
@@ -81,10 +83,12 @@ namespace Uno.UI.Runtime.Skia {
 		private _nativeScrollGesture: NativeScrollGesture | null = null;
 		private _nativeScrollInertiaFrame: number | null = null;
 		private _nativeScrollInertiaSession = 0;
+		private _nativeScrollInertiaGesture: NativeScrollGesture | null = null;
 
 		private constructor(manageSource: any) {
 			this._bootTime = Date.now() - performance.now();
 			this._source = manageSource;
+			BrowserPointerInputSource._instance = this;
 
 			BrowserPointerInputSource._exports.OnInitialized(manageSource, this._bootTime);
 			this.subscribePointerEvents(); // Subscribe only after the managed initialization is done
@@ -154,12 +158,33 @@ namespace Uno.UI.Runtime.Skia {
 			return false;
 		}
 
-		private getNativeInputHost(eventTarget: EventTarget | null): HTMLElement | null {
+		/**
+		 * Returns the hosted element the event originated from - the direct child of #uno-native-element-host -
+		 * together with the policy managed code registered for it. Resolution is by position in the tree and by
+		 * element identity, never by reading an attribute off the event target: hosted HTML can carry any
+		 * attribute it likes and must not be able to opt itself into a policy the app did not set.
+		 */
+		private getNativeInputHost(eventTarget: EventTarget | null): { root: HTMLElement, policy: NativeElementInputPolicy, unoElementId: number } | null {
+			const hostElement = this.getNativeElementHostCached();
+			if (hostElement === null) {
+				return null;
+			}
+
 			let currentNode = eventTarget as Node | null;
 
 			while (currentNode !== null) {
-				if (currentNode instanceof HTMLElement && currentNode.dataset.unoNativeInputPolicy !== undefined) {
-					return currentNode;
+				if (currentNode instanceof HTMLElement && currentNode.parentNode === hostElement) {
+					const registration = Uno.UI.NativeElementHosting.BrowserHtmlElement.getInputPolicy(currentNode);
+
+					return registration === null
+						? null
+						: {
+							root: currentNode,
+							policy: registration.policy === NativeElementInputPolicy.Negotiated
+								? NativeElementInputPolicy.Negotiated
+								: NativeElementInputPolicy.NativeOnly,
+							unoElementId: registration.unoElementId,
+						};
 				}
 
 				const parent = currentNode.parentNode;
@@ -178,12 +203,6 @@ namespace Uno.UI.Runtime.Skia {
 			}
 
 			return null;
-		}
-
-		private getInputPolicy(root: HTMLElement): NativeElementInputPolicy {
-			return Number(root.dataset.unoNativeInputPolicy) === NativeElementInputPolicy.Negotiated
-				? NativeElementInputPolicy.Negotiated
-				: NativeElementInputPolicy.NativeOnly;
 		}
 
 		// Mirrors the exclusions in uno.css: these keep their native touch-action, so the browser still pans
@@ -214,7 +233,7 @@ namespace Uno.UI.Runtime.Skia {
 			return null;
 		}
 
-		private applyNativeScrollDelta(gesture: NativeScrollGesture, horizontalDelta: number, verticalDelta: number): boolean {
+		private applyNativeScrollDelta(gesture: NativeScrollGesture, horizontalDelta: number, verticalDelta: number, isIntermediate: boolean = true): boolean {
 			if (gesture.primaryAxis === "horizontal") {
 				verticalDelta = 0;
 			} else if (gesture.primaryAxis === "vertical") {
@@ -232,11 +251,18 @@ namespace Uno.UI.Runtime.Skia {
 			if (!gesture.unoOwnsGesture && gesture.scrollTarget !== null) {
 				const initialScrollLeft = gesture.scrollTarget.scrollLeft;
 				const initialScrollTop = gesture.scrollTarget.scrollTop;
-				const maximumScrollLeft = Math.max(gesture.scrollTarget.scrollWidth - gesture.scrollTarget.clientWidth, 0);
+				const scrollRange = Math.max(gesture.scrollTarget.scrollWidth - gesture.scrollTarget.clientWidth, 0);
 				const maximumScrollTop = Math.max(gesture.scrollTarget.scrollHeight - gesture.scrollTarget.clientHeight, 0);
+
+				// In a right-to-left scroller scrollLeft runs from -scrollRange (fully scrolled) to 0, so the
+				// clamping bounds - not just the sign of the delta - depend on the direction.
+				const isRightToLeft = window.getComputedStyle(gesture.scrollTarget).direction === "rtl";
+				const minimumScrollLeft = isRightToLeft ? -scrollRange : 0;
+				const maximumScrollLeft = isRightToLeft ? 0 : scrollRange;
+
 				const requestedScrollLeft = initialScrollLeft + horizontalDelta;
 				const requestedScrollTop = initialScrollTop + verticalDelta;
-				const nextScrollLeft = Math.min(Math.max(requestedScrollLeft, 0), maximumScrollLeft);
+				const nextScrollLeft = Math.min(Math.max(requestedScrollLeft, minimumScrollLeft), maximumScrollLeft);
 				const nextScrollTop = Math.min(Math.max(requestedScrollTop, 0), maximumScrollTop);
 
 				gesture.scrollTarget.scrollLeft = nextScrollLeft;
@@ -255,10 +281,10 @@ namespace Uno.UI.Runtime.Skia {
 
 			if (gesture.unoOwnsGesture) {
 				return BrowserPointerInputSource._exports.OnNativeScrollDelta(
-					this._source,
-					gesture.root.id,
+					gesture.unoElementId,
 					remainingHorizontalDelta,
-					remainingVerticalDelta) !== 0;
+					remainingVerticalDelta,
+					isIntermediate) !== 0;
 			}
 
 			return remainingHorizontalDelta !== horizontalDelta || remainingVerticalDelta !== verticalDelta;
@@ -269,6 +295,37 @@ namespace Uno.UI.Runtime.Skia {
 			if (this._nativeScrollInertiaFrame !== null) {
 				cancelAnimationFrame(this._nativeScrollInertiaFrame);
 				this._nativeScrollInertiaFrame = null;
+
+				if (this._nativeScrollInertiaGesture !== null) {
+					this.completeNativeScroll(this._nativeScrollInertiaGesture);
+				}
+			}
+
+			this._nativeScrollInertiaGesture = null;
+		}
+
+		/** Public entry point so a detached element cannot leave a fling running against it. */
+		public static cancelNativeScrollInertiaFor(elementId: string): void {
+			const instance = BrowserPointerInputSource._instance;
+			if (instance !== null && instance._nativeScrollInertiaGesture?.root.id === elementId) {
+				instance.cancelNativeScrollInertia();
+			}
+		}
+
+		/**
+		 * Closes a chained scroll sequence so the ScrollViewers see a final non-intermediate view change.
+		 * Every delta during a drag or fling is reported as intermediate; without this, consumers that treat
+		 * IsIntermediate=false as "the scroll ended" would never observe the end.
+		 */
+		private completeNativeScroll(gesture: NativeScrollGesture): void {
+			if (!gesture.unoOwnsGesture) {
+				return;
+			}
+
+			try {
+				BrowserPointerInputSource._exports.OnNativeScrollCompleted(gesture.unoElementId);
+			} catch (e) {
+				console.warn(`Failed to complete negotiated native scroll: ${e}`);
 			}
 		}
 
@@ -280,9 +337,24 @@ namespace Uno.UI.Runtime.Skia {
 
 			this.cancelNativeScrollInertia();
 			const session = this._nativeScrollInertiaSession;
+			this._nativeScrollInertiaGesture = gesture;
 			let lastTimestamp = performance.now();
+
+			const stop = () => {
+				this._nativeScrollInertiaFrame = null;
+				this._nativeScrollInertiaGesture = null;
+				this.completeNativeScroll(gesture);
+			};
+
 			const step = (timestamp: number) => {
 				if (session !== this._nativeScrollInertiaSession) {
+					return;
+				}
+
+				// The element can be removed or the app torn down mid-fling; keep flinging only what is
+				// still on screen.
+				if (!gesture.root.isConnected) {
+					stop();
 					return;
 				}
 
@@ -292,14 +364,19 @@ namespace Uno.UI.Runtime.Skia {
 				gesture.velocityY *= Math.pow(0.95, elapsed / (1000 / 60));
 
 				if (Math.abs(gesture.velocityX) < minimumVelocity && Math.abs(gesture.velocityY) < minimumVelocity) {
-					this._nativeScrollInertiaFrame = null;
+					stop();
 					return;
 				}
 
-				if (this.applyNativeScrollDelta(gesture, gesture.velocityX * elapsed, gesture.velocityY * elapsed)) {
-					this._nativeScrollInertiaFrame = requestAnimationFrame(step);
-				} else {
-					this._nativeScrollInertiaFrame = null;
+				try {
+					if (this.applyNativeScrollDelta(gesture, gesture.velocityX * elapsed, gesture.velocityY * elapsed)) {
+						this._nativeScrollInertiaFrame = requestAnimationFrame(step);
+					} else {
+						stop();
+					}
+				} catch (e) {
+					console.warn(`Failed to apply negotiated native scroll inertia: ${e}`);
+					stop();
 				}
 			};
 
@@ -307,18 +384,16 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		private tryHandleNegotiatedNativeInput(evt: PointerEvent | WheelEvent): boolean {
-			const root = this.getNativeInputHost(evt.target);
-			if (root === null) {
+			const host = this.getNativeInputHost(evt.target);
+			if (host === null || host.policy === NativeElementInputPolicy.NativeOnly) {
 				return false;
 			}
+
+			const root = host.root;
 
 			// Pointer events do not cross an iframe boundary. Keep the embedded document native-only
 			// until it explicitly registers a bridge capable of reporting its scroll residual.
 			if (evt.target instanceof HTMLIFrameElement) {
-				return false;
-			}
-
-			if (this.getInputPolicy(root) === NativeElementInputPolicy.NativeOnly) {
 				return false;
 			}
 
@@ -327,9 +402,19 @@ namespace Uno.UI.Runtime.Skia {
 			}
 
 			if (evt instanceof WheelEvent) {
+				// Ctrl+wheel is browser zoom, not scroll - leave it to the normal pipeline, which already
+				// carves it out when BrowserInputHelper.isBrowserZoomEnabled.
+				if (evt.ctrlKey && BrowserInputHelper.isBrowserZoomEnabled) {
+					return false;
+				}
+
+				// A wheel burst is not a touch gesture, but it still supersedes a fling that is still running.
+				this.cancelNativeScrollInertia();
+
 				const gesture: NativeScrollGesture = {
 					pointerId: 0,
 					root,
+					unoElementId: host.unoElementId,
 					scrollTarget: this.findScrollableElement(evt.target, root),
 					startX: evt.clientX,
 					startY: evt.clientY,
@@ -355,10 +440,20 @@ namespace Uno.UI.Runtime.Skia {
 			}
 
 			if (evt.type === "pointerdown") {
+				if (this._nativeScrollGesture !== null && this._nativeScrollGesture.pointerId !== evt.pointerId) {
+					// A second finger means a multi-touch gesture (pinch/zoom) which this negotiation does not
+					// arbitrate. Drop our single-pointer gesture and leave the whole interaction to the browser,
+					// which still has pinch-zoom available (see the touch-action rule in uno.css).
+					this.completeNativeScroll(this._nativeScrollGesture);
+					this._nativeScrollGesture = null;
+					return false;
+				}
+
 				this.cancelNativeScrollInertia();
 				this._nativeScrollGesture = {
 					pointerId: evt.pointerId,
 					root,
+					unoElementId: host.unoElementId,
 					scrollTarget: this.findScrollableElement(evt.target, root),
 					startX: evt.clientX,
 					startY: evt.clientY,
@@ -381,6 +476,7 @@ namespace Uno.UI.Runtime.Skia {
 
 			if (evt.type === "pointercancel") {
 				this._nativeScrollGesture = null;
+				this.completeNativeScroll(gesture);
 				return true;
 			}
 
@@ -414,8 +510,16 @@ namespace Uno.UI.Runtime.Skia {
 
 			if (evt.type === "pointerup") {
 				this._nativeScrollGesture = null;
+
+				// startNativeScrollInertia reports the completion itself once the fling decays, so only close
+				// the sequence here when no fling is taking over.
 				if (gesture.started) {
 					this.startNativeScrollInertia(gesture);
+					if (this._nativeScrollInertiaGesture === null) {
+						this.completeNativeScroll(gesture);
+					}
+				} else {
+					this.completeNativeScroll(gesture);
 				}
 			}
 

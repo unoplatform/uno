@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Uno.Foundation.Logging;
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.NativeElementHosting;
@@ -13,9 +14,15 @@ namespace Uno.UI.Runtime.Skia;
 
 internal partial class BrowserNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
+	private static readonly Logger _log = typeof(BrowserNativeElementHostingExtension).Log();
+
 	private readonly ContentPresenter _presenter;
 	private static (string path, string fillType)? _lastSvgClipPath;
-	private static readonly Dictionary<string, WeakReference<BrowserNativeElementHostingExtension>> _hosts = new();
+
+	// Keyed by BrowserHtmlElement.UnoElementId (the GCHandle), never by the ElementId string: that string is
+	// settable by the caller (OwnHtmlElement) and observable from the hosted DOM, so it can collide or be
+	// spoofed by hosted content. The handle cannot.
+	private static readonly Dictionary<nint, WeakReference<BrowserNativeElementHostingExtension>> _hosts = new();
 
 	public BrowserNativeElementHostingExtension(ContentPresenter contentPresenter)
 	{
@@ -34,51 +41,94 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 		// An element collected without a matching DetachNativeElement would leave its registration
 		// behind forever, so drop the dead ones whenever the map grows.
 		PruneCollectedHosts();
-		_hosts[element.ElementId] = new(this);
+		_hosts[element.UnoElementId] = new(this);
 	}
 
 	public void DetachNativeElement(object content)
 	{
 		Debug.Assert(content is BrowserHtmlElement);
 		var element = (BrowserHtmlElement)content;
-		_hosts.Remove(element.ElementId);
+
+		// Only drop the registration if it is still ours: when an element is recycled, the new host can
+		// attach before the old one detaches, and unregistering then would silently kill its chaining.
+		if (_hosts.TryGetValue(element.UnoElementId, out var registered)
+			&& (!registered.TryGetTarget(out var host) || ReferenceEquals(host, this)))
+		{
+			_hosts.Remove(element.UnoElementId);
+		}
+
 		NativeMethods.DetachNativeElement(element.ElementId);
 	}
 
 	private static void PruneCollectedHosts()
 	{
-		List<string>? collected = null;
-		foreach (var (elementId, host) in _hosts)
+		List<nint>? collected = null;
+		foreach (var (unoElementId, host) in _hosts)
 		{
 			if (!host.TryGetTarget(out _))
 			{
-				(collected ??= new()).Add(elementId);
+				(collected ??= new()).Add(unoElementId);
 			}
 		}
 
 		if (collected is not null)
 		{
-			foreach (var elementId in collected)
+			foreach (var unoElementId in collected)
 			{
-				_hosts.Remove(elementId);
+				_hosts.Remove(unoElementId);
 			}
 		}
 	}
 
-	internal static bool ApplyNegotiatedScroll(string elementId, double horizontalDelta, double verticalDelta)
+	private static BrowserNativeElementHostingExtension? TryGetHost(nint unoElementId)
 	{
-		if (!_hosts.TryGetValue(elementId, out var weakExtension)
-			|| !weakExtension.TryGetTarget(out var extension))
+		if (!_hosts.TryGetValue(unoElementId, out var weakExtension))
 		{
-			_hosts.Remove(elementId);
+			return null;
+		}
+
+		if (!weakExtension.TryGetTarget(out var extension))
+		{
+			_hosts.Remove(unoElementId);
+			return null;
+		}
+
+		return extension;
+	}
+
+	internal static bool ApplyNegotiatedScroll(nint unoElementId, double horizontalDelta, double verticalDelta, bool isIntermediate)
+	{
+		if (TryGetHost(unoElementId) is not { } extension)
+		{
+			if (_log.IsEnabled(LogLevel.Warning))
+			{
+				_log.Warn($"Received a negotiated scroll for an unknown or collected native element ({unoElementId}).");
+			}
+
 			return false;
 		}
 
-		return extension.ApplyNegotiatedScroll(horizontalDelta, verticalDelta);
+		var result = ScrollViewer.ChainScrollFromDescendant(
+			extension._presenter,
+			horizontalDelta,
+			verticalDelta,
+			isIntermediate);
+
+		if (!result.DidScroll && _log.IsEnabled(LogLevel.Debug))
+		{
+			_log.Debug($"No ScrollViewer consumed the negotiated scroll for {unoElementId} (h={horizontalDelta}, v={verticalDelta}).");
+		}
+
+		return result.DidScroll;
 	}
 
-	private bool ApplyNegotiatedScroll(double horizontalDelta, double verticalDelta)
-		=> ScrollViewer.ChainScrollFromDescendant(_presenter, horizontalDelta, verticalDelta).DidScroll;
+	internal static void CompleteNegotiatedScroll(nint unoElementId)
+	{
+		if (TryGetHost(unoElementId) is { } extension)
+		{
+			ScrollViewer.CompleteChainedScrollFromDescendant(extension._presenter);
+		}
+	}
 
 	public void ArrangeNativeElement(object content, Windows.Foundation.Rect arrangeRect)
 	{
