@@ -9,7 +9,9 @@
 		<EmdawnCacheDir>$(MSBuildThisFileDirectory)obj\emdawnwebgpu\$(EmdawnTag)\</EmdawnCacheDir>
 		<EmdawnPkgDir>$(EmdawnCacheDir)emdawnwebgpu_pkg\</EmdawnPkgDir>
 		<!-- A writable emcc cache (a copy of the SDK's) so emcc can build the port + its extra stdlibs; pointing
-		     WasmCachePath off the SDK's default dir makes the SDK pass EM_FROZEN_CACHE=0 (BrowserWasmApp.targets). -->
+		     WasmCachePath off the SDK's default dir makes the SDK pass EM_FROZEN_CACHE=0 (BrowserWasmApp.targets).
+		     On Windows this is relocated next to the SDK cache (see _AnchorWgpuWasmCacheToToolchainDrive below);
+		     this obj\ default is the non-Windows path and the last-resort fallback. -->
 		<WgpuWasmCacheDir>$(MSBuildThisFileDirectory)obj\wgpu-wasm-emcache\</WgpuWasmCacheDir>
 		<WasmCachePath>$(WgpuWasmCacheDir)</WasmCachePath>
 		<!-- Forward slashes: this flag is appended verbatim to emcc's link response file, whose parser treats a
@@ -58,6 +60,24 @@
 			]]></Code>
 		</Task>
 	</UsingTask>
+
+	<!-- On Windows the writable emcc cache MUST sit on the same drive as the emscripten toolchain. When emcc
+	     builds a system-lib variant the port needs (e.g. libGL-webgl2-getprocaddr), it computes
+	     os.path.relpath(toolchainSource, cacheBuildDir); on Windows that throws ("path is on mount 'C:', start
+	     on mount 'E:'") when the toolchain and the cache are on different drives. The repo (hence obj\) is often
+	     on a different drive than the toolchain, so anchor the cache beside the SDK's own cache, which always
+	     shares the toolchain's drive. Resolved in a target, not a top-level property, because
+	     EmscriptenCacheSdkCacheDir is set by the workload after this file is imported; it runs before the cache
+	     is seeded, provisioned, or baked into the emcc env by _PrepareForBrowserWasmBuildNative. Non-Windows has
+	     a single root, so relpath never crosses a drive and the obj\ default stands. -->
+	<Target Name="_AnchorWgpuWasmCacheToToolchainDrive"
+			BeforeTargets="_PrepareForBrowserWasmBuildNative;_SeedWgpuWasmCache;_ProvisionEmdawnWebGpu"
+			Condition="'$(OS)' == 'Windows_NT' and '$(EmscriptenCacheSdkCacheDir)' != ''">
+		<PropertyGroup>
+			<WgpuWasmCacheDir>$([MSBuild]::NormalizeDirectory($(EmscriptenCacheSdkCacheDir), '..', 'uno-wgpu-wasm-emcache'))</WgpuWasmCacheDir>
+			<WasmCachePath>$(WgpuWasmCacheDir)</WasmCachePath>
+		</PropertyGroup>
+	</Target>
 
 	<!-- Fetch + patch the pinned emdawnwebgpu port before the native link. -->
 	<Target Name="_ProvisionEmdawnWebGpu" BeforeTargets="_GenerateManagedToNative;_WasmCompileNativeSources;Build"
