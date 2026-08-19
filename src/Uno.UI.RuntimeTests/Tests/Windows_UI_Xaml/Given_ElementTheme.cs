@@ -4594,6 +4594,63 @@ public class Given_ElementTheme
 
 #if HAS_UNO
 
+	// Coverage guard, NOT a negative control: this passes with and without the groups-owner fallback,
+	// because the keyframe value is already resolved on the parse-time path before lazy materialization
+	// re-establishes the chain theme. It locks in the observable contract — VisualStateGroups declared
+	// outside a ControlTemplate resolve under the element carrying the attached property, not the app
+	// base theme — so a future change to either path cannot silently regress it.
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_VisualStateGroups_Outside_Template_Materialize_Under_Groups_Owner_Theme()
+	{
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+		var root = (Border)XamlReader.Load(
+			"""
+			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					RequestedTheme="Light">
+				<VisualStateManager.VisualStateGroups>
+					<VisualStateGroup x:Name="G">
+						<VisualState x:Name="Normal" />
+						<VisualState x:Name="Applied">
+							<Storyboard>
+								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Target" Storyboard.TargetProperty="Foreground">
+									<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextFillColorPrimaryBrush}" />
+								</ObjectAnimationUsingKeyFrames>
+							</Storyboard>
+						</VisualState>
+					</VisualStateGroup>
+				</VisualStateManager.VisualStateGroups>
+				<TextBlock x:Name="Target" Text="t" />
+			</Border>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		// Positive controls: the Light boundary applied, and the lazy chain really materialized.
+		Assert.AreEqual(ElementTheme.Light, root.ActualTheme, "RequestedTheme=Light never applied");
+
+		var group = VisualStateManager.GetVisualStateGroups(root).Single(g => g.Name == "G");
+		var state = group.States.Single(st => st.Name == "Applied");
+		Assert.IsNotNull(state.Owner, "VisualState.Owner must be set for the groups-owner fallback to work");
+
+		var storyboard = state.Storyboard;
+		Assert.IsNotNull(storyboard, "Reading state.Storyboard should materialize the lazy chain");
+
+		var keyFrame = ((Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames)storyboard.Children.Single()).KeyFrames.Single();
+		Assert.IsNotNull(keyFrame.Value, "The keyframe should have resolved its {ThemeResource}");
+
+		// TextFillColorPrimaryBrush: Light #E4000000, Dark #FFFFFFFF.
+		Assert.AreEqual(
+			Windows.UI.Color.FromArgb(0xE4, 0x00, 0x00, 0x00),
+			((SolidColorBrush)keyFrame.Value).Color,
+			"The keyframe resolved against the app base theme instead of the groups owner's theme");
+	}
+
 	// Guard (not a negative control for the bail — the previous skipSetValue path already protected
 	// this element's own value): a themed boundary that carries its own Foreground keeps it. WinUI bails
 	// out of NotifyThemeChangedForInheritedProperties entirely there (framework.cpp:3423-3429 @
