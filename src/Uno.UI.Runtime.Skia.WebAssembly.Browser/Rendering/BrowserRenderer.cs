@@ -62,14 +62,14 @@ internal partial class BrowserRenderer
 	}
 
 	/// <summary>
-	/// Creates the browser context for the requested kind: WebGL (as OpenGLES), the 2D-canvas software context,
-	/// or the WebGpu canvas context. WebGL is declined when the host is configured for software.
+	/// Creates the browser context for the requested kind: WebGL, the 2D-canvas software context, or the WebGpu
+	/// canvas context. WebGL is declined when the host is configured for software.
 	/// </summary>
 	private async Task<ISwapChain?> CreateContextAsync(GraphicsContextKind kind, bool forceSoftwareRendering)
 	{
 		switch (kind)
 		{
-			case GraphicsContextKind.OpenGLES when !forceSoftwareRendering:
+			case GraphicsContextKind.WebGL when !forceSoftwareRendering:
 				return WebGlBrowserRenderer.TryCreate(out var gl) ? new WasmGLGraphicsContext(gl) : null;
 			case GraphicsContextKind.Software:
 				return SoftwareBrowserRenderer.TryCreate(out var sw) ? new WasmSoftwareGraphicsContext(sw) : null;

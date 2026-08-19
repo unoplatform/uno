@@ -14,7 +14,6 @@ internal sealed class AndroidGLGraphicsContext : ISwapChain, IGLDeviceContext
 {
 	public GraphicsContextKind Kind => GraphicsContextKind.OpenGLES;
 
-	public GLFlavor Flavor => GLFlavor.OpenGLES;
 	public Func<string, nint> GetProcAddress => AndroidNativeOpenGLWrapper.GetProcAddressStatic;
 
 	// The renderer draws into the default framebuffer, which the implicit buffer swap leaves undefined — no host
