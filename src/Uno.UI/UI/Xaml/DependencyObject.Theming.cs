@@ -426,17 +426,17 @@ public partial class DependencyObject
 			// owner's own inheritance chain.
 			var ownerTheme = ownerThemeOverride ?? ThemeResolution.ResolveOwnerTheme(owner);
 
-			// A VisualState setter value comes from outside its target's subtree, so when the same
-			// state applied a RequestedTheme boundary onto the target, resolve the setter's
-			// {ThemeResource} under the surrounding ambient theme instead — even mid-walk, where
-			// the slot carries the boundary theme (#24021).
-			if (themeRef.SetterBindingPath is not null
-				&& GetVisualStateSetterResolutionTheme() is { } setterAmbientTheme)
+			// A VSM setter's reference resolves under the setter side, not under the object it is
+			// registered on — WinUI keeps it on the CSetter entirely (ThemeResource.cpp:194-203).
+			// The pin applies during a walk too: the walk theme here is the TARGET's, which is exactly
+			// the boundary the setter value must not be re-scoped by (#24021).
+			if (themeRef.ResolutionOwner is { } resolutionOwner)
 			{
+				var setterTheme = ThemeResolution.ResolvePinnedOwnerTheme(resolutionOwner);
 				prevSlotTheme = core.GetRequestedThemeForSubTree();
-				if (prevSlotTheme != Theming.GetBaseValue(setterAmbientTheme))
+				if (prevSlotTheme != Theming.GetBaseValue(setterTheme))
 				{
-					core.SetRequestedThemeForSubTree(setterAmbientTheme);
+					core.SetRequestedThemeForSubTree(setterTheme);
 					popSlotTheme = true;
 				}
 			}
@@ -549,50 +549,6 @@ public partial class DependencyObject
 				core.SetRequestedThemeForSubTree(prevSlotTheme);
 			}
 		}
-	}
-
-	/// <summary>
-	/// Gets the theme a VisualState setter's {ThemeResource} value must resolve under when the
-	/// visual state itself applied a RequestedTheme boundary onto the setter's target, or null
-	/// to resolve under the target's own theme as usual.
-	/// </summary>
-	/// <remarks>
-	/// The setter lives outside its target's subtree (in the template's VisualStateGroups), so in
-	/// WinUI its resource reference never resolves under the target's RequestedTheme — e.g.
-	/// ComboBoxTextBoxStyle's Focused state sets both ContentElement.Foreground and
-	/// ContentElement.RequestedTheme=Light (#24021). Scoped to state-applied (Animations
-	/// precedence) boundaries only, so a XAML-authored RequestedTheme keeps Uno's element-level
-	/// theming semantics for setter targets.
-	/// </remarks>
-	internal Theme? GetVisualStateSetterResolutionTheme()
-	{
-		if (ActualInstance is not FrameworkElement fe
-			|| fe.RequestedTheme == ElementTheme.Default
-			|| GetCurrentHighestValuePrecedence(FrameworkElement.RequestedThemeProperty)
-				!= DependencyPropertyValuePrecedences.Animations)
-		{
-			return null;
-		}
-
-#if UNO_HAS_ENHANCED_LIFECYCLE
-		// The ambient theme surrounding the target: mid-walk the parent's persisted theme is
-		// stale (persisted only after its subtree completes) but its walk theme is current.
-		if (Parent is DependencyObject { IsProcessingThemeWalk: true } walkingParent)
-		{
-			return walkingParent.WalkTheme;
-		}
-
-		// An app that never switches theme at runtime has no established per-object themes (only
-		// a theme walk persists them), and ResolveOwnerTheme's owner-less fallback reads the
-		// requested-theme-for-subtree slot — mid-boundary already carrying the very theme being
-		// escaped. Use the application base theme instead (#24021).
-		if ((Parent as DependencyObject)?.GetTheme() is null or Theme.None)
-		{
-			return Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetBaseTheme();
-		}
-#endif
-
-		return ThemeResolution.ResolveOwnerTheme(Parent as DependencyObject);
 	}
 
 	#endregion
@@ -995,12 +951,13 @@ public partial class DependencyObject
 		// the owner's effective theme scoped onto the core requested-theme-for-subtree slot by
 		// UpdateResourceBindings (EnsureActiveThemeDictionary, Resources.cpp:764-768).
 
-		// Same VisualState-setter ambient rule as UpdateThemeReference (#24021): a state-applied
-		// value resolves outside the state-applied RequestedTheme boundary of its target.
-		using var setterAmbientScope = binding.SetterBindingPath is not null
-			&& GetVisualStateSetterResolutionTheme() is { } setterAmbientTheme
-				? Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(setterAmbientTheme)
-				: default;
+		// ...except for a VSM setter, whose value resolves on the setter side in WinUI and so must not
+		// pick up the target's own RequestedTheme here either (see ThemeResourceReference.ResolutionOwner).
+		// The setter's dual registration means the pinned owner is on the sibling theme-resource entry.
+		using var setterScope = _themeResources?.Get(property, binding.Precedence)?.ResolutionOwner is { } setterOwner
+			? Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(
+				ThemeResolution.ResolvePinnedOwnerTheme(setterOwner))
+			: default;
 
 		// Note: we intentionally do NOT skip theme resource bindings here even though
 		// Phase 1 (UpdateAllThemeReferences) may have already resolved them. The Phase 2
