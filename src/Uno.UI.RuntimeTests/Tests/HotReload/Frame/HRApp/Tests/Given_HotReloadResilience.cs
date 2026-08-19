@@ -78,7 +78,7 @@ public class Given_HotReloadResilience : BaseTestClass
 			// While the pause is held, the update is queued and the op is
 			// reported as Ignored ("UI update paused by UpdateFile").
 			await HotReloadHelper.UpdateServerFile<HR_Frame_Pages_Page1>(
-				"Hello", "PausedTest", ct);
+				"First page", "Paused page", ct);
 
 			// ReloadCompleted has not fired yet — it fires when the drain
 			// eventually applies the queued types after Dispose below.
@@ -97,7 +97,7 @@ public class Given_HotReloadResilience : BaseTestClass
 		{
 			// Undo the file change so subsequent tests start from a known state.
 			await HotReloadHelper.UpdateServerFile<HR_Frame_Pages_Page1>(
-				"PausedTest", "Hello", CancellationToken.None);
+				"Paused page", "First page", CancellationToken.None);
 		}
 	}
 }
