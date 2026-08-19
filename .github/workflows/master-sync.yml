@@ -231,12 +231,17 @@ jobs:
           conflict_files=""
           if git merge --no-ff --no-edit origin/master; then
             CONFLICT=0
-          elif git ls-files -u | grep -q .; then
+          # Test for unmerged entries via command substitution, never a pipe: under
+          # `pipefail` a reader that exits early (`grep -q`) can SIGPIPE the producer,
+          # and the 141 becomes the pipeline's status — reporting a conflicted merge
+          # as clean and dropping us into the "non-conflict failure" branch below.
+          elif [ -n "$(git ls-files -u)" ]; then
             CONFLICT=1
             conflict_files="$(git diff --name-only --diff-filter=U || true)"
             git add -A
             git commit --no-edit || { git merge --abort 2>/dev/null || true; note "❌ conflict commit failed"; exit 1; }
           else
+            git status --short || true
             git merge --abort 2>/dev/null || true
             note "❌ merge failed (non-conflict) — see logs"
             exit 1
