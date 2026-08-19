@@ -231,7 +231,7 @@ internal static class GraphicsRegistry
 	// short-circuits before the cast, so a declining provider (null) never triggers an InvalidCast.
 	private static IDrawingFactory? CreateGraphics(GraphicsContextKind kind, IGraphicsProvider provider, ISwapChain context) => kind switch
 	{
-		GraphicsContextKind.OpenGL or GraphicsContextKind.OpenGLES
+		GraphicsContextKind.OpenGL or GraphicsContextKind.OpenGLES or GraphicsContextKind.WebGL
 			=> (provider as IGraphicsProvider<IGLDeviceContext>)?.CreateGraphics((IGLDeviceContext)context),
 		GraphicsContextKind.Metal
 			=> (provider as IGraphicsProvider<IMetalDeviceContext>)?.CreateGraphics((IMetalDeviceContext)context),
@@ -245,7 +245,7 @@ internal static class GraphicsRegistry
 	// The closed kind → typed-present capability mapping (kind ⇒ the IDrawingFactory<TTarget> a backend must implement).
 	private static bool CanPresent(GraphicsContextKind kind, IDrawingFactory backend) => kind switch
 	{
-		GraphicsContextKind.OpenGL or GraphicsContextKind.OpenGLES => backend is IDrawingFactory<IGLRenderTarget>,
+		GraphicsContextKind.OpenGL or GraphicsContextKind.OpenGLES or GraphicsContextKind.WebGL => backend is IDrawingFactory<IGLRenderTarget>,
 		GraphicsContextKind.Metal => backend is IDrawingFactory<IMetalRenderTarget>,
 		GraphicsContextKind.Vulkan => backend is IDrawingFactory<IVulkanRenderTarget>,
 		GraphicsContextKind.Software => backend is IDrawingFactory<ISoftwareRenderTarget>,
