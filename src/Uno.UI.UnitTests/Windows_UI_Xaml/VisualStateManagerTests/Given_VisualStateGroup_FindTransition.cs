@@ -18,11 +18,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 		private static VisualTransition GetAppliedTransition(VisualStateGroup group)
 		{
 			var currentField = typeof(VisualStateGroup).GetField("_current", BindingFlags.NonPublic | BindingFlags.Instance);
+			Assert.IsNotNull(currentField, "Unable to find VisualStateGroup._current field (implementation changed).");
 			var current = currentField.GetValue(group);
 			// The tuple's element names (state, transition) are compiler sugar and are not
 			// preserved as actual reflection field names; the underlying ValueTuple<T1, T2>
 			// fields are Item1/Item2.
 			var transitionField = current.GetType().GetField("Item2");
+			Assert.IsNotNull(transitionField, "Unable to find ValueTuple.Item2 field (implementation changed).");
 			return (VisualTransition)transitionField.GetValue(current);
 		}
 
@@ -69,6 +71,26 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 			group.States.Add(new VisualState { Name = "B" });
 
 			var fromOnly = new VisualTransition { From = "A" };
+			group.Transitions.Add(fromOnly);
+
+			var control = CreateControlWithGroup(group);
+
+			VisualStateManager.GoToState(control, "A", false);
+			VisualStateManager.GoToState(control, "B", true);
+
+			Assert.AreSame(fromOnly, GetAppliedTransition(group));
+		}
+
+		[TestMethod]
+		public void When_No_Perfect_Match_A_From_Only_Transition_Takes_Priority_Over_A_To_Only_Transition()
+		{
+			var group = new VisualStateGroup();
+			group.States.Add(new VisualState { Name = "A" });
+			group.States.Add(new VisualState { Name = "B" });
+
+			var fromOnly = new VisualTransition { From = "A" };
+			var toOnly = new VisualTransition { To = "B" };
+			group.Transitions.Add(toOnly);
 			group.Transitions.Add(fromOnly);
 
 			var control = CreateControlWithGroup(group);
