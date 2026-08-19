@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Numerics;
 using Windows.Foundation;
@@ -169,9 +169,16 @@ internal sealed class TextSelectionGripperPresenter
 			// ParsedText rects are relative to the text origin; the surface draws translated by its Padding.
 			rect.X += surface.Padding.Left;
 			rect.Y += surface.Padding.Top;
-			gripper.Height = rect.Height + 16;
+			gripper.Height = rect.Height + CaretWithStemAndThumb.ThumbSize;
 			var transform = surface.TransformToVisual(null);
-			if (transform.TransformBounds(rect).IntersectWith(clip) is not null)
+			// Cull on the point the thumb hangs from - the bottom-center of the caret line - rather than on the
+			// caret line as a whole. The grippers are drawn in an unclipped popup above the tree, so a line that is
+			// only fractionally visible at the edge of the clip would still paint a whole thumb past it. This is
+			// what native Android checks too (Editor.HandleView.isPositionVisible).
+			// A 1px probe rather than a bare point: both sides of the test come from float matrices, and a caret
+			// line that ends flush with the clip (a selectable TextBlock's last line) must not flicker on rounding.
+			var anchor = new Rect(rect.GetMidX() - 0.5, rect.Bottom - 0.5, 1, 1);
+			if (transform.TransformBounds(anchor).IntersectWith(clip) is not null)
 			{
 				var matrixTransform = (MatrixTransform)transform;
 				var surfaceMatrix = matrixTransform.Matrix.ToMatrix3x2();
@@ -186,7 +193,7 @@ internal sealed class TextSelectionGripperPresenter
 			}
 			else
 			{
-				gripper.Hide();
+				gripper.Cull();
 			}
 		}
 	}

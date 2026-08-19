@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Numerics;
 using Windows.UI;
 using Microsoft.UI.Input;
@@ -21,6 +21,12 @@ internal sealed class CaretWithStemAndThumb : Grid
 	// current system accent color. Changing the accent color does NOT
 	// change the thumb color on WinUI, only the selection color.
 	private static readonly Color ThumbFillColor = Colors.FromARGB("FF0078D7");
+
+	/// <summary>
+	/// The side of the (square) thumb. The gripper is this wide, and hangs this far below the caret line
+	/// it points at, which is what <see cref="TextSelectionGripperPresenter"/> culls against.
+	/// </summary>
+	internal const double ThumbSize = 16;
 
 	private readonly Action _repositionCallback;
 	private readonly Rectangle _stem;
@@ -46,16 +52,16 @@ internal sealed class CaretWithStemAndThumb : Grid
 
 		Background = new SolidColorBrush(Colors.Transparent); // to hit-test positively everywhere in the grid
 
-		Width = 16;
+		Width = ThumbSize;
 
 		RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-		RowDefinitions.Add(new RowDefinition { Height = new GridLength(16, GridUnitType.Pixel) });
+		RowDefinitions.Add(new RowDefinition { Height = new GridLength(ThumbSize, GridUnitType.Pixel) });
 
 		var thumb = new Ellipse
 		{
 			Fill = new SolidColorBrush(Colors.White),
-			Width = 16,
-			Height = 16
+			Width = ThumbSize,
+			Height = ThumbSize
 		};
 
 		var thumbRing = new Ellipse
@@ -85,6 +91,10 @@ internal sealed class CaretWithStemAndThumb : Grid
 		Children.Add(thumbRing);
 	}
 
+	// Test hook: whether the gripper is actually painted. A culled gripper keeps its popup open (see Cull),
+	// and its measured size survives either way, so neither alone is a reliable signal.
+	internal bool IsShowing => _popup?.IsOpen == true && Visibility == Visibility.Visible;
+
 	public void SetStemVisible(bool visible) => _stem.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
 
 	public void ShowAt(XamlRoot xamlRoot, Matrix3x2 transform)
@@ -103,6 +113,7 @@ internal sealed class CaretWithStemAndThumb : Grid
 			RenderTransform = matrixTransform;
 		}
 		matrixTransform.Matrix = new Matrix(transform);
+		Visibility = Visibility.Visible;
 		if (!_popup.IsOpen)
 		{
 			_popup.IsOpen = true;
@@ -121,6 +132,13 @@ internal sealed class CaretWithStemAndThumb : Grid
 	}
 
 	private void OnFrameRendered() => _repositionCallback?.Invoke();
+
+	/// <summary>
+	/// The character this gripper points at has scrolled out of the visible region: stop painting (and
+	/// hit-testing) it, but keep the popup open. The popup is what drives the per-frame reposition, so
+	/// closing it here would leave nothing to notice the anchor scrolling back into view.
+	/// </summary>
+	public void Cull() => Visibility = Visibility.Collapsed;
 
 	public void Hide()
 	{
