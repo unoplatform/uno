@@ -127,6 +127,8 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      # Labels are an Issues API operation: creating 'sync-failed' needs this.
+      issues: write
     strategy:
       fail-fast: false
       matrix:
@@ -146,7 +148,6 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ env.SYNC_TOKEN }}
-          HAS_SYNC_BOT_TOKEN: ${{ env.HAS_SYNC_BOT_TOKEN }}
           FEATURE: ${{ matrix.branch }}
           DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
           REVIEW_TEAM: unoplatform/uno-core-team
@@ -269,7 +270,14 @@ jobs:
           # quarantined (drafted, auto-merge off) but otherwise untouched — so it kept
           # advertising a stale body while the feature branch drifted. Name the cause,
           # mark the PR, and say so in the summary.
-          wf_changed="$(git diff --name-only "origin/${FEATURE}..HEAD" -- '.github/workflows' || true)"
+          # Compare against the ref this push replaces: when the sync branch already exists
+          # HEAD can carry workflow files it already has, which are not new to this push.
+          if [ "$SYNC_EXISTS" = "1" ]; then
+            wf_base="origin/${SYNC_BRANCH}"
+          else
+            wf_base="origin/${FEATURE}"
+          fi
+          wf_changed="$(git diff --name-only "${wf_base}..HEAD" -- '.github/workflows' || true)"
           if ! git push --force-with-lease origin "HEAD:refs/heads/${SYNC_BRANCH}"; then
             if [ -n "$wf_changed" ] && [ "${HAS_SYNC_BOT_TOKEN:-false}" != "true" ]; then
               why="the merge updates .github/workflows/** and the default GITHUB_TOKEN may not push workflow files — provision the SYNC_BOT_TOKEN secret (see this workflow's header)"
