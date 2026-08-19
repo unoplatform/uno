@@ -97,6 +97,26 @@ internal sealed class ThemeResourceReference
 	/// </summary>
 	public BindingPath? SetterBindingPath { get; }
 
+	private WeakReference<DependencyObject>? _resolutionOwner;
+
+	/// <summary>
+	/// The object whose theme this reference resolves under, when that is not the object the
+	/// reference is registered on.
+	/// </summary>
+	/// <remarks>
+	/// WinUI keeps a VSM setter's live theme binding on the CSetter (ThemeResource.cpp:194-203), so it
+	/// resolves under the setter's own theme (Theming.cpp:415-424) and the target only ever receives a
+	/// resolved value (VisualStateSetterHelper.cpp:186). Uno registers the reference on the target
+	/// instead so the existing re-application path can reach it, so the resolution owner is pinned here
+	/// to keep WinUI's resolution semantics: the target's own RequestedTheme — which the same visual
+	/// state may have just set as a boundary — must not re-scope the value (#24021).
+	/// </remarks>
+	internal DependencyObject? ResolutionOwner
+	{
+		get => _resolutionOwner is not null && _resolutionOwner.TryGetTarget(out var owner) ? owner : null;
+		set => _resolutionOwner = value is null ? null : new WeakReference<DependencyObject>(value);
+	}
+
 	// MUX Reference: CThemeResource::CThemeResource(ThemeWalkResourceCache*) +
 	// SetInitialValueAndTargetDictionary (ThemeResource.cpp:32-51): construct with the key, pin the
 	// providing dictionary, and store the initially resolved value.
@@ -259,6 +279,7 @@ internal sealed class ThemeResourceReference
 		// Share the same pinned dictionary (and the initial-theme flag, like the C++ copy ctor).
 		clone._targetDictionary = _targetDictionary;
 		clone.IsValueFromInitialTheme = IsValueFromInitialTheme;
+		clone._resolutionOwner = _resolutionOwner;
 		return clone;
 	}
 }

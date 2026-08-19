@@ -27,6 +27,29 @@ namespace Microsoft.UI.Xaml;
 /// </remarks>
 internal static class ThemeResolution
 {
+	/// <summary>
+	/// Returns the effective <see cref="Theme"/> of an object a {ThemeResource} is pinned to resolve
+	/// under (<see cref="Data.ThemeResourceReference.ResolutionOwner"/>), safe to call mid-walk.
+	/// </summary>
+	/// <remarks>
+	/// While that owner is itself processing a theme walk, its per-object theme is the PRE-switch one —
+	/// WinUI persists <c>m_theme</c> only once the whole subtree completes (Theming.cpp:153-156) — so the
+	/// in-flight walk theme is the current one. That case is the owner's own theme genuinely changing, and
+	/// the pinned value must follow it; when only the target is walking (a boundary the visual state just
+	/// applied to it) the owner is not walking and keeps its established theme, which is the whole point
+	/// of the pin.
+	/// </remarks>
+	internal static Theme ResolvePinnedOwnerTheme(DependencyObject owner)
+	{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		if (owner is IDependencyObjectStoreProvider { Store: { IsProcessingThemeWalk: true } ownerStore })
+		{
+			return ownerStore.WalkTheme;
+		}
+#endif
+
+		return ResolveOwnerTheme(owner);
+	}
 
 	/// <summary>
 	/// Returns the effective <see cref="Theme"/> for the given <paramref name="owner"/>: the owner's
