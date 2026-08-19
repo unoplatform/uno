@@ -61,11 +61,12 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		_context = init.Context;
 		_renderer = init.Renderer;
 
-		// A swapchain-owning context (WebGPU) drives the layer itself, so switch the native draw to tick-only to avoid
-		// contending for the layer's drawables; a native-texture context (Skia-on-Metal) keeps providing textures.
+		// A context that owns the layer's present (e.g. WebGPU) drives the drawable itself, so switch the native draw to
+		// tick-only to avoid contending for the layer's drawables; a native-texture context (Skia-on-Metal) keeps
+		// providing textures via IMacOSNativeTextureSink.
 		if (host.RenderSurfaceType != RenderSurfaceType.Software && _context is not IMacOSNativeTextureSink)
 		{
-			NativeUno.uno_window_set_webgpu_mode(_nativeWindow.Handle, true);
+			NativeUno.uno_window_set_external_present(_nativeWindow.Handle, true);
 		}
 	}
 
