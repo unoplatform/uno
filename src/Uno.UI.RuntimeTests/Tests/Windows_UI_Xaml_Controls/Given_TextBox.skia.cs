@@ -5762,6 +5762,92 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => !IsGripperShowing(SUT), timeoutMS: 5000, message: "the handle must be hidden once the point it hangs from leaves the viewport");
 		}
 
+		// The other half of the culling contract: a gripper the finger is holding must NOT be culled when its
+		// anchor crosses the clip edge. Cull() collapses the gripper, and collapsing an element releases its
+		// pointer captures, so culling mid-drag used to abort the gesture - the caret froze on the last line that
+		// was still inside the viewport and the remaining finger movement went nowhere.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public async Task When_Gripper_Dragged_Past_Viewport_Edge_Drag_Keeps_Tracking()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			// A multi-line box taller than its own text - so its inner ScrollViewer never scrolls and nothing
+			// chases the caret - inside a ScrollViewer far too short to show all of it: the lower lines are
+			// clipped away, and dragging the handle onto one of them crosses the clip edge.
+			var SUT = new TextBox
+			{
+				Width = 280,
+				Height = 400,
+				AcceptsReturn = true,
+				Text = string.Join("\r", Enumerable.Range(1, 10).Select(i => $"Line {i}")),
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android,
+			};
+
+			var scrollViewer = new ScrollViewer
+			{
+				Width = 320,
+				Height = 150,
+				Content = new StackPanel { Children = { SUT } }
+			};
+			await UITestHelper.Load(scrollViewer);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Tap the first line to place the Android insertion handle on it.
+			var boxBounds = SUT.GetAbsoluteBoundsRect();
+			finger.Press(new Point(boxBounds.Left + 20, boxBounds.Top + 8));
+			finger.Release();
+			await WindowHelper.WaitFor(() => IsGripperShowing(SUT), message: "the tap should show the insertion handle");
+
+			// The handle's popup is placed on a later frame, so wait until it is actually over the box before
+			// pressing it - otherwise the press misses and the drag is a no-op.
+			await WindowHelper.WaitFor(
+				() => SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect() is { Width: > 0 } g
+					&& g.Top < scrollViewer.GetAbsoluteBoundsRect().Bottom,
+				timeoutMS: 3000,
+				message: "the insertion handle should be positioned before dragging it");
+
+			// Past the multi-tap window, so the drag that follows is its own gesture.
+			await Task.Delay(600);
+
+			// Small steps on purpose: one of them lands the caret on the first line below the viewport, which is the
+			// step that used to cull the gripper and drop its capture. A single big move would sample the last line
+			// in one go (sampleY is clamped to the text's span) and pass either way.
+			// The real delay matters as much as the step size - culling only happens in the per-frame Update, and
+			// WaitForIdle pumps the dispatcher without necessarily producing a rendered frame, so back-to-back
+			// injected moves never give culling a chance to run at all.
+			finger.Press(SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect().GetCenter());
+			for (var i = 0; i < 8; i++)
+			{
+				finger.MoveBy(0, 30, stepOffsetInMilliseconds: 10);
+				await Task.Delay(60);
+				await WindowHelper.WaitForIdle();
+			}
+
+			Assert.IsTrue(IsGripperShowing(SUT), "the handle must stay up while the finger is still holding it");
+
+			var caretAtEndOfDrag = SUT.SelectionStart;
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			// The finger ended below every line, so the caret must have tracked all the way to the last one.
+			var lastLineStart = SUT.Text.LastIndexOf('\r') + 1;
+			Assert.IsGreaterThan(1, lastLineStart, "premise: the TextBox must hold several lines");
+			Assert.IsTrue(
+				caretAtEndOfDrag >= lastLineStart,
+				$"the drag must keep tracking the finger after the handle's anchor leaves the viewport (the caret ended at {caretAtEndOfDrag}, the last line starts at {lastLineStart})");
+
+			// The premise: nothing scrolled the form to follow the caret, so the anchor really did cross the clip.
+			Assert.AreEqual(0d, scrollViewer.VerticalOffset, "the form must not have scrolled to chase the caret");
+
+			// And once the finger is off, the handle is culled again - it now points below the viewport.
+			await WindowHelper.WaitFor(() => !IsGripperShowing(SUT), timeoutMS: 5000, message: "the handle must be culled again once the drag ends below the viewport");
+		}
+
 		#endregion
 
 		[TestMethod]

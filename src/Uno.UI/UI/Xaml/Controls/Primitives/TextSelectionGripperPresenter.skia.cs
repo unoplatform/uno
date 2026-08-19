@@ -178,7 +178,13 @@ internal sealed class TextSelectionGripperPresenter
 			// A 1px probe rather than a bare point: both sides of the test come from float matrices, and a caret
 			// line that ends flush with the clip (a selectable TextBlock's last line) must not flicker on rounding.
 			var anchor = new Rect(rect.GetMidX() - 0.5, rect.Bottom - 0.5, 1, 1);
-			if (transform.TransformBounds(anchor).IntersectWith(clip) is not null)
+			// Never cull the gripper the finger is holding. Cull() collapses it, and collapsing an element releases
+			// its pointer captures (UIElement.Pointers.ClearPointersStateIfNeeded), which aborts the drag mid-gesture:
+			// the remaining moves are dropped and the release never reaches the gripper, so the selection toolbar
+			// never comes back either. The trade is that a dragged gripper may paint outside the clip for the duration
+			// of the gesture - transient, and under the finger. Native avoids even that by auto-scrolling the container
+			// when a handle reaches the edge, which we don't do yet.
+			if (gripper.HasPointerCapture || transform.TransformBounds(anchor).IntersectWith(clip) is not null)
 			{
 				var matrixTransform = (MatrixTransform)transform;
 				var surfaceMatrix = matrixTransform.Matrix.ToMatrix3x2();
