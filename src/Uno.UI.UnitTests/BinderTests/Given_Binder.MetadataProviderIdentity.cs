@@ -14,7 +14,10 @@ namespace Uno.UI.Tests.BinderTests
 	/// named type from the other context. Its typed getters then throw InvalidCastException. The
 	/// binder must treat such a type-identity mismatch as a miss and fall back to reflection.
 	/// </summary>
+	// RunWithProvider swaps the static BindingPropertyHelper.BindableMetadataProvider and clears the
+	// binder caches; running concurrently with any other test that touches that shared state would flake.
 	[TestClass]
+	[DoNotParallelize]
 	public partial class Given_Binder_MetadataProviderIdentity
 	{
 		[TestMethod]
