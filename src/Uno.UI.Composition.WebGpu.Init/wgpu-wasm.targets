@@ -12,7 +12,12 @@
 		     WasmCachePath off the SDK's default dir makes the SDK pass EM_FROZEN_CACHE=0 (BrowserWasmApp.targets). -->
 		<WgpuWasmCacheDir>$(MSBuildThisFileDirectory)obj\wgpu-wasm-emcache\</WgpuWasmCacheDir>
 		<WasmCachePath>$(WgpuWasmCacheDir)</WasmCachePath>
-		<EmccExtraLDFlags>$(EmccExtraLDFlags) --use-port=$(EmdawnPkgDir)emdawnwebgpu.port.py -sDEFAULT_TO_CXX=1</EmccExtraLDFlags>
+		<!-- Forward slashes: this flag is appended verbatim to emcc's link response file, whose parser treats a
+		     backslash as an escape char and eats it — so a Windows path would arrive with its separators stripped.
+		     emcc accepts forward slashes on Windows, and they pass through the response-file parser untouched. -->
+		<EmdawnPortPath>$(EmdawnPkgDir)emdawnwebgpu.port.py</EmdawnPortPath>
+		<EmdawnPortPath>$(EmdawnPortPath.Replace('\', '/'))</EmdawnPortPath>
+		<EmccExtraLDFlags>$(EmccExtraLDFlags) --use-port=$(EmdawnPortPath) -sDEFAULT_TO_CXX=1</EmccExtraLDFlags>
 	</PropertyGroup>
 
 	<ItemGroup>
