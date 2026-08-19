@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Transactions;
 using Uno.Extensions;
 using Uno.Foundation;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using static Microsoft.UI.Xaml.Controls.CollectionChangedOperation;
 
@@ -153,6 +154,16 @@ partial class BrowserHtmlElement
 		{
 			_eventMap.Remove(handler);
 			NativeMethods.UnregisterNativeHtmlEvent(UnoElementId, eventName, wrapper);
+		}
+	}
+
+	// Scroll negotiation is implemented by the Skia renderer's pointer input source, which the native WASM
+	// target does not use: there the Uno ScrollViewer is a DOM scroller and the browser chains into it itself.
+	partial void OnInputPolicyChanged(BrowserHtmlElementInputPolicy value)
+	{
+		if (value != BrowserHtmlElementInputPolicy.NativeOnly && this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn($"{nameof(BrowserHtmlElement)}.{nameof(InputPolicy)} is only supported when using the Skia renderer, and is ignored here.");
 		}
 	}
 

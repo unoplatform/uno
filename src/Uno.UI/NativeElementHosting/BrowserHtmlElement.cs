@@ -20,12 +20,17 @@ namespace Uno.UI.NativeElementHosting;
 /// Only scroll and pan gestures are affected; taps, focus, text selection and keyboard input always
 /// remain native.
 /// </summary>
+/// <remarks>
+/// The numeric values are a wire format: they are mirrored onto the hosted element as
+/// <c>data-uno-native-input-policy</c>, matched by <c>uno.css</c> and by the <c>NativeElementInputPolicy</c>
+/// enum in <c>BrowserPointerInputSource.ts</c>. Keep all four in sync.
+/// </remarks>
 public enum BrowserHtmlElementInputPolicy
 {
 	/// <summary>
 	/// Native HTML owns all input. This is the default behavior.
 	/// </summary>
-	NativeOnly,
+	NativeOnly = 0,
 
 	/// <summary>
 	/// A scrollable native element consumes the gesture first, then transfers whatever it could not
@@ -36,7 +41,7 @@ public enum BrowserHtmlElementInputPolicy
 	/// Content hosted in an <c>iframe</c> stays native-only: pointer events do not cross the frame
 	/// boundary, so its scroll residual cannot be observed.
 	/// </remarks>
-	Negotiated,
+	Negotiated = 1,
 }
 
 /// <summary>
