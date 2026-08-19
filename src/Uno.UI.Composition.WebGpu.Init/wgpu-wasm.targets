@@ -65,18 +65,23 @@
 	     builds a system-lib variant the port needs (e.g. libGL-webgl2-getprocaddr), it computes
 	     os.path.relpath(toolchainSource, cacheBuildDir); on Windows that throws ("path is on mount 'C:', start
 	     on mount 'E:'") when the toolchain and the cache are on different drives. The repo (hence obj\) is often
-	     on a different drive than the toolchain, so anchor the cache under EmscriptenSdkToolsPath — the running
-	     emcc install itself (Uno provisions it user-writable under %USERPROFILE%\.uno\emsdk), so it is both on
-	     the toolchain's drive by definition and writable (unlike the frozen SDK Cache pack, which lives in a
-	     read-only Program Files location). Resolved in a target, not a top-level property, because the workload
-	     sets EmscriptenSdkToolsPath after this file is imported; it runs before the cache is seeded, provisioned,
-	     or baked into the emcc env by _PrepareForBrowserWasmBuildNative. Non-Windows has a single root, so
-	     relpath never crosses a drive and the obj\ default stands. -->
+	     on a different drive than the toolchain, so relocate the cache onto the toolchain's drive at a reliably
+	     writable location. LocalAppData is the right home: per-user writable and, since the emsdk lives under the
+	     user profile, normally on the toolchain's drive too — unlike the emsdk tree itself (provisioned
+	     read-only) or the frozen SDK Cache pack (read-only Program Files). A drive-root folder on the toolchain
+	     drive is the fallback for the rare case LocalAppData is on another drive. Resolved in a target, not a
+	     top-level property, because the workload sets EmscriptenSdkToolsPath after this file is imported; it runs
+	     before the cache is seeded, provisioned, or baked into the emcc env by _PrepareForBrowserWasmBuildNative.
+	     Non-Windows has a single root, so relpath never crosses a drive and the obj\ default stands. -->
 	<Target Name="_AnchorWgpuWasmCacheToToolchainDrive"
 			BeforeTargets="_PrepareForBrowserWasmBuildNative;_SeedWgpuWasmCache;_ProvisionEmdawnWebGpu"
 			Condition="'$(OS)' == 'Windows_NT' and '$(EmscriptenSdkToolsPath)' != ''">
 		<PropertyGroup>
-			<WgpuWasmCacheDir>$([MSBuild]::NormalizeDirectory($(EmscriptenSdkToolsPath), 'uno-wgpu-wasm-emcache'))</WgpuWasmCacheDir>
+			<_WgpuToolchainDrive>$([System.IO.Path]::GetPathRoot($(EmscriptenSdkToolsPath)))</_WgpuToolchainDrive>
+			<!-- Drive-root fallback: always on the toolchain drive; used only when LocalAppData is elsewhere. -->
+			<WgpuWasmCacheDir>$([MSBuild]::NormalizeDirectory($(_WgpuToolchainDrive), 'uno-wgpu-wasm-emcache'))</WgpuWasmCacheDir>
+			<!-- Preferred: per-user writable cache under LocalAppData when it shares the toolchain drive. -->
+			<WgpuWasmCacheDir Condition="'$(LOCALAPPDATA)' != '' and '$([System.IO.Path]::GetPathRoot($(LOCALAPPDATA)))' == '$(_WgpuToolchainDrive)'">$([MSBuild]::NormalizeDirectory($(LOCALAPPDATA), 'Uno', 'wgpu-wasm-emcache'))</WgpuWasmCacheDir>
 			<WasmCachePath>$(WgpuWasmCacheDir)</WasmCachePath>
 		</PropertyGroup>
 	</Target>
