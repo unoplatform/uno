@@ -37,10 +37,10 @@
 #if DEBUG
     NSLog (@"drawInMTKView: %f %f", view.drawableSize.width, view.drawableSize.height);
 #endif
-    // The wgpu swapchain owns this view's CAMetalLayer, so we must NOT acquire currentDrawable
-    // (that would contend with wgpu's nextDrawable). Just tick managed code with texture = NULL; the managed
-    // MacOSWindowHost.MetalDraw routes to the WebGPU present path (AcquireRenderTarget + Present) on the layer.
-    if (self.webgpuMode)
+    // The negotiated context owns this view's CAMetalLayer, so we must NOT acquire currentDrawable
+    // (that would contend with the context's own nextDrawable). Just tick managed code with texture = NULL; the managed
+    // MacOSWindowHost.MetalDraw routes to the context's present path (AcquireRenderTarget + Present) on the layer.
+    if (self.externalPresent)
     {
         CGSize wsize = view.drawableSize;
         uno_get_metal_draw_callback()((__bridge void*) view.window, wsize.width, wsize.height, NULL);
