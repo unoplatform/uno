@@ -433,6 +433,9 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// The renderer is installed per-window on the CompositionTarget by the render driver each frame (each X11
 		// window owns a distinct GPU context, so the backend factory is per-window, never a process-wide singleton).
 		_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, init.Context, init.Renderer);
+		// Report whether the negotiated context rasterizes on the CPU (effect brushes read this while recording).
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer =
+			init.Context.Kind == global::Uno.UI.Composition.Drawing.GraphicsContextKind.Software;
 
 		// Only XI2.2 has touch events, and that's pretty much the only reason we're using XI2,
 		// so to make our assumptions simpler, we assume XI >= 2.2 or no XI at all.
