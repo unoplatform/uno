@@ -96,12 +96,17 @@ internal sealed class TextSelectionGripperPresenter
 	private CaretWithStemAndThumb _startGripper;
 	private CaretWithStemAndThumb _endGripper;
 
+	// The per-frame reposition loop, owned here rather than by each gripper: both grippers used to subscribe
+	// individually and invoke this same Update, so a two-thumb selection did all of its work - the ancestor-clip
+	// walk behind GripperClipBounds included - twice per rendered frame.
+	private CompositionTarget _frameLoop;
+
 	public TextSelectionGripperPresenter(ITextSelectionGripperHost host)
 	{
 		_host = host;
 
-		_startGripper = new CaretWithStemAndThumb(Update);
-		_endGripper = new CaretWithStemAndThumb(Update);
+		_startGripper = new CaretWithStemAndThumb();
+		_endGripper = new CaretWithStemAndThumb();
 
 		foreach (var gripper in (ReadOnlySpan<CaretWithStemAndThumb>)[_startGripper, _endGripper])
 		{
@@ -127,8 +132,30 @@ internal sealed class TextSelectionGripperPresenter
 
 	public void Hide()
 	{
+		UnsubscribeFromFrameLoop();
 		_startGripper.Hide();
 		_endGripper.Hide();
+	}
+
+	// Subscribed while the grippers are showing, so Update runs once per rendered frame however many of them
+	// are up. Unsubscribing from inside the callback is safe: FrameRendered is an Action event, so the in-flight
+	// invocation walks a snapshot of the handler list.
+	private void SubscribeToFrameLoop()
+	{
+		if (_frameLoop is null && _host.GripperTextSurface.XamlRoot is { } xamlRoot)
+		{
+			_frameLoop = xamlRoot.VisualTree.ContentRoot.CompositionTarget;
+			_frameLoop.FrameRendered += Update;
+		}
+	}
+
+	private void UnsubscribeFromFrameLoop()
+	{
+		if (_frameLoop is { } frameLoop)
+		{
+			_frameLoop = null;
+			frameLoop.FrameRendered -= Update;
+		}
 	}
 
 	/// <summary>
@@ -143,6 +170,8 @@ internal sealed class TextSelectionGripperPresenter
 			Hide();
 			return;
 		}
+
+		SubscribeToFrameLoop();
 
 		var surface = _host.GripperTextSurface;
 		var clip = _host.GripperClipBounds;
