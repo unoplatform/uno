@@ -29,7 +29,6 @@ internal sealed class X11OpenGLGraphicsContext : ISwapChain, IGLDeviceContext
 
 	public GraphicsContextKind Kind => GraphicsContextKind.OpenGL;
 
-	public GLFlavor Flavor => GLFlavor.OpenGL;
 	public Func<string, nint> GetProcAddress => X11NativeOpenGLWrapper.GetProcAddressStatic;
 
 	// The renderer draws into the default framebuffer, which SwapBuffers leaves undefined — no retention yet, so the

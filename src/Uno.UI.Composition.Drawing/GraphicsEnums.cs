@@ -10,6 +10,7 @@ public enum GraphicsContextKind
 {
 	OpenGL,
 	OpenGLES,
+	WebGL,
 	Vulkan,
 	Metal,
 	WebGpu,

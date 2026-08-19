@@ -18,9 +18,8 @@ internal sealed class WasmGLGraphicsContext : ISwapChain, IGLDeviceContext
 
 	public WasmGLGraphicsContext(WebGlBrowserRenderer renderer) => _renderer = renderer;
 
-	public GraphicsContextKind Kind => GraphicsContextKind.OpenGLES;
+	public GraphicsContextKind Kind => GraphicsContextKind.WebGL;
 
-	public GLFlavor Flavor => GLFlavor.WebGL;
 	public Func<string, nint> GetProcAddress => global::Uno.UI.Runtime.Skia.WebAssembly.Browser.Graphics.WasmGLFunctions.GetProcAddress;
 
 	// The renderer draws into the canvas default framebuffer, which is undefined after present — no host retention

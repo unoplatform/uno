@@ -57,7 +57,6 @@ internal sealed class Win32OpenGLGraphicsContext : ISwapChain, IWin32PacedContex
 
 	private Win32GLRenderTarget? _target;
 
-	public GLFlavor Flavor => GLFlavor.OpenGL;
 	public Func<string, nint> GetProcAddress => Win32NativeOpenGLWrapper.GetProcAddressStatic;
 
 	public static unsafe Win32OpenGLGraphicsContext? TryCreate(HWND hwnd)

@@ -143,10 +143,10 @@ internal sealed class SkiaDrawingFactory :
 		// native interface (Create()) instead: the proc-assembled variant segfaults on Mesa/llvmpipe.
 		var loader = _glDevice!.GetProcAddress;
 		_glContext ??= GRContext.CreateGl(
-				(_glDevice!.Flavor switch
+				(_glDevice!.Kind switch
 				{
-					GLFlavor.OpenGLES => GRGlInterface.CreateGles(name => loader(name)),
-					GLFlavor.WebGL => GRGlInterface.CreateWebGl(name => loader(name)),
+					GraphicsContextKind.OpenGLES => GRGlInterface.CreateGles(name => loader(name)),
+					GraphicsContextKind.WebGL => GRGlInterface.CreateWebGl(name => loader(name)),
 					_ => GRGlInterface.Create(),
 				})
 				?? throw new System.NotSupportedException("OpenGL is not available (GRGlInterface create failed)."))

@@ -40,7 +40,6 @@ internal sealed unsafe class X11EGLGraphicsContext : ISwapChain, IGLDeviceContex
 
 	public GraphicsContextKind Kind => GraphicsContextKind.OpenGLES;
 
-	public GLFlavor Flavor => GLFlavor.OpenGLES;
 	public Func<string, nint> GetProcAddress => EglHelper.EglGetProcAddress;
 
 	// The renderer draws into the default framebuffer, which SwapBuffers leaves undefined — no retention yet, so the

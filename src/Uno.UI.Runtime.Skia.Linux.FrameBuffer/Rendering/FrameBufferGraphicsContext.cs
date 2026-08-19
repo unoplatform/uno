@@ -24,7 +24,6 @@ internal sealed class FrameBufferGraphicsContext : ISwapChain, IGLDeviceContext
 	public bool PreservesContents => true;
 
 	// GL device face (used only when Kind == OpenGLES): supplies the GLES proc-address loader.
-	public GLFlavor Flavor => GLFlavor.OpenGLES;
 	public Func<string, nint> GetProcAddress => static name => EglHelper.EglGetProcAddress(name);
 
 	internal void SetAcquire(Func<int, int, IRenderTarget> acquire) => _acquire = acquire;
