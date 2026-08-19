@@ -347,8 +347,10 @@ namespace Private.Infrastructure
 				}
 
 				var stopwatch = Stopwatch.StartNew();
+				var iterations = 0;
 				while (stopwatch.ElapsedMilliseconds < timeoutMS)
 				{
+					iterations++;
 					await WaitForIdle();
 					if (condition())
 					{
@@ -357,6 +359,12 @@ namespace Private.Infrastructure
 				}
 
 				message ??= $"{callerMemberName}():{lineNumber}";
+
+				// The runner retries a failed test twice without logging it, so a WaitFor that times out
+				// three times shows up only as a test that took ~3x its timeout and "passed". Name it.
+				Console.WriteLine(
+					$"[diag] WaitFor timed out after {stopwatch.ElapsedMilliseconds}ms and {iterations} idle " +
+					$"round-trip(s) at {callerMemberName}():{lineNumber} — {message}");
 
 				throw new AssertFailedException("Timed out waiting for condition to be met. " + message);
 			}
