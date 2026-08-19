@@ -23,9 +23,6 @@ internal class Win32VulkanSurfaceFactory : IVulkanPlatformSurfaceFactory
 	[DllImport("vulkan-1.dll", EntryPoint = "vkGetInstanceProcAddr")]
 	private static extern IntPtr NativeGetInstanceProcAddr(IntPtr instance, [MarshalAs(UnmanagedType.LPStr)] string name);
 
-	[DllImport("kernel32.dll")]
-	private static extern IntPtr GetModuleHandle(string? lpModuleName);
-
 	private static bool _vulkanAvailable;
 	private static bool _vulkanChecked;
 
@@ -51,7 +48,7 @@ internal class Win32VulkanSurfaceFactory : IVulkanPlatformSurfaceFactory
 		var createInfo = new VkWin32SurfaceCreateInfoKHR
 		{
 			sType = VkWin32SurfaceCreateInfoKHR.VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR,
-			hinstance = GetModuleHandle(null),
+			hinstance = Win32Helper.GetModuleHInstance(),
 			hwnd = nativeWindowHandle
 		};
 
