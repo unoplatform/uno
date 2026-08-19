@@ -47,9 +47,9 @@ internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 			return;
 		}
 
-		// Bind THIS window's backend factory to its CompositionTarget: each X11 window owns a distinct GL context, so
-		// the factory (and its GRContext) must not be shared through the process-wide default renderer.
-		compositionTarget.SetWindowRenderer(_renderer);
+		// Bind THIS window's backend factory to its CompositionTarget: each X11 window owns a distinct GPU context, so
+		// the factory (and its GRContext) is per-window and must not be shared across windows.
+		compositionTarget.Renderer = _renderer;
 
 		var nativeElementClipPath = compositionTarget.OnNativePlatformFrameRequested(_context);
 		ApplyAirspaceClip(nativeElementClipPath);

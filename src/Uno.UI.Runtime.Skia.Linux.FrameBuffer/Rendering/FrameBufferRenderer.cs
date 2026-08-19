@@ -41,9 +41,13 @@ internal abstract class FrameBufferRenderer
 	protected abstract IRenderTarget? CurrentTarget { get; }
 
 	private ISwapChain? _swapChain;
+	private IDrawingFactory? _rendererFactory;
 
 	/// <summary>Wires the negotiated context this renderer drives (its <c>AcquireRenderTarget</c> is routed here).</summary>
 	internal void SetSwapChain(ISwapChain swapChain) => _swapChain = swapChain;
+
+	/// <summary>Wires the per-window backend factory installed on the CompositionTarget each frame.</summary>
+	internal void SetRenderer(IDrawingFactory renderer) => _rendererFactory = renderer;
 
 	protected void Render()
 	{
@@ -79,6 +83,7 @@ internal abstract class FrameBufferRenderer
 			return CurrentTarget is { } t && t.Width == width && t.Height == height ? t : CreateTarget(width, height);
 		});
 
+		ct.Renderer = _rendererFactory!;
 		ct.OnNativePlatformFrameRequested(_swapChain!, rootTransform, overlay);
 	}
 

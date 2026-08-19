@@ -30,6 +30,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 	public TextInputPlugin TextInputPlugin { get; }
 
 	private global::Uno.UI.Composition.Drawing.ISwapChain? _context;
+	private global::Uno.UI.Composition.Drawing.IDrawingFactory? _renderer;
 	private Thread? _renderThread;
 	private volatile bool _renderRequested;
 	private volatile bool _surfaceReady;
@@ -160,7 +161,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 					: null);
 		var init = global::Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize();
 		_context = init.Context;
-		Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = init.Renderer;
+		_renderer = init.Renderer;
 	}
 
 	private void RenderFrame()
@@ -176,6 +177,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 			return;
 		}
 
+		compositionTarget.Renderer = _renderer!;
 		var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
 
 		ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;

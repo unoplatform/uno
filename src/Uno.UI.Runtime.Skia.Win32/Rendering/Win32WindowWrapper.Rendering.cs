@@ -18,6 +18,8 @@ internal partial class Win32WindowWrapper
 
 	// The negotiated graphics context that drives the per-frame loop (AcquireRenderTarget → render → Present).
 	private ISwapChain _context = null!;
+	// The per-window backend factory installed on this window's CompositionTarget each frame.
+	private IDrawingFactory _renderer = null!;
 
 	public event EventHandler<IGeometry>? RenderingNegativePathReevaluated; // not necessarily changed
 
@@ -98,6 +100,7 @@ internal partial class Win32WindowWrapper
 			return null;
 		}
 
+		ct.Renderer = _renderer;
 		return ct.OnNativePlatformFrameRequested(_context);
 	}
 }
