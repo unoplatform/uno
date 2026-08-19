@@ -61,7 +61,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	private Win32Accessibility? _accessibility;
 	private bool _rendererDisposed;
-	private IDisposable? _backgroundDisposable;
 	private bool _forcePaintOnNextEraseBkgndOrNcPaint = true;
 
 	private string? _iconPath;
@@ -120,7 +119,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		InitializeRenderThread();
 
-		RegisterForBackgroundColor();
 
 		PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
 
@@ -529,7 +527,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		_renderThread = null;
 		_context.Dispose();
 		_rendererDisposed = true;
-		_backgroundDisposable?.Dispose();
 		DestroyIcons();
 		XamlRootMap.Unregister(XamlRoot!);
 	}
@@ -886,28 +883,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
-
-	private void RegisterForBackgroundColor()
-	{
-		UpdateRendererBackground();
-		_backgroundDisposable = _window?.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
-	}
-
-	private void UpdateRendererBackground()
-	{
-		if (_window?.Background is Microsoft.UI.Xaml.Media.SolidColorBrush brush)
-		{
-			_ = brush; // window background handled by the composition tree; nothing host-side to store
-		}
-		else if (_window?.Background is not null)
-		{
-			this.LogError()?.Error("This platform only supports SolidColorBrush for the Window background");
-		}
-		else if (_window is null)
-		{
-			this.LogDebug()?.Debug($"{nameof(UpdateRendererBackground)} is called before {nameof(_window)} is set.");
-		}
-	}
 
 	private unsafe float GetPrimaryMonitorScale()
 	{

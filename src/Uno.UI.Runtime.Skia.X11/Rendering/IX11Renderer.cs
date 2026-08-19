@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using Windows.UI;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -11,7 +10,6 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 /// </summary>
 internal interface IX11Renderer : IDisposable
 {
-	void SetBackgroundColor(Color color);
 
 	void Render();
 }
