@@ -19,14 +19,8 @@ public class Given_VisualStateGroup_FindTransition
 	{
 		var currentField = typeof(VisualStateGroup).GetField("_current", BindingFlags.NonPublic | BindingFlags.Instance);
 		Assert.IsNotNull(currentField, "Unable to find VisualStateGroup._current field (implementation changed).");
-		var current = currentField.GetValue(group);
-		Assert.IsNotNull(current, "VisualStateGroup._current returned null unexpectedly.");
-		// The tuple's element names (state, transition) are compiler sugar and are not
-		// preserved as actual reflection field names; the underlying ValueTuple<T1, T2>
-		// fields are Item1/Item2.
-		var transitionField = current.GetType().GetField("Item2");
-		Assert.IsNotNull(transitionField, "Unable to find ValueTuple.Item2 field (implementation changed).");
-		return (VisualTransition)transitionField.GetValue(current);
+		var (_, transition) = ((VisualState, VisualTransition))currentField.GetValue(group);
+		return transition;
 	}
 
 	private static Control CreateControlWithGroup(VisualStateGroup group)
