@@ -165,7 +165,22 @@ uno-devserver disco --addins-only --json
 globalJsonPath     <null> (missing global.json in working directory or parents)
 ```
 
-You are running `disco` outside of an Uno Platform project directory. Change to the directory containing your `.sln` or `.slnx` file.
+You are running `disco` outside of an Uno Platform workspace. Change to a directory that contains — or is beneath — the `global.json` file declaring your `Uno.Sdk` version. A solution file is not required: solution-less workspaces are resolved through `global.json`.
+
+If your workspace genuinely has no `global.json`, create one next to your project that declares the `Uno.Sdk` version:
+
+```json
+{
+  "msbuild-sdks": {
+    "Uno.Sdk": "6.6.29"
+  }
+}
+```
+
+See [Updating the Uno Platform version](xref:Uno.Development.UpgradeUnoNuget) for details.
+
+> [!NOTE]
+> Declaring the version inline in the project file (`<Project Sdk="Uno.Sdk/6.6.29">`) is enough to build, but the Dev Server tooling resolves the `Uno.Sdk` version from `global.json` only — a `global.json` is still required for `disco` and the dev loop.
 
 ### SDK package not restored
 
