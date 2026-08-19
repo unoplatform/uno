@@ -122,16 +122,23 @@ below moved**, not necessarily their whole namespace:
 |---|---|---|
 | `Microsoft.UI.Input` (**partial** — see below) | `PointerPoint`, `PointerPointProperties`, `PointerUpdateKind`, `PointerDeviceType`, `IPointerPointTransform` | `Uno.UI` |
 | `Microsoft.UI.System` | `ThemeSettings` | `Uno.UI` |
-| `Microsoft.UI` | `IClosableNotifier`, `ClosableNotifierHandler` | `Uno.UI.Composition` |
+| `Microsoft.UI` (**partial** — see below) | `IClosableNotifier`, `ClosableNotifierHandler` | `Uno.UI.Composition` |
 | `Microsoft.Graphics.DirectX` | `DirectXAlphaMode`, `DirectXColorSpace`, `DirectXPixelFormat`, `DirectXPrimitiveTopology` | `Uno.UI.Composition` |
 | `Microsoft.Graphics.Display` | `DisplayInformation`, `DisplayAdvancedColorInfo`, `DisplayAdvancedColorKind`, `DisplayHdrMetadataFormat` | `Uno.UI.Composition` |
 | `Microsoft.Windows.ApplicationModel.Resources` (MRT Core) | `ResourceLoader`, `ResourceManager`, `ResourceContext`, `ResourceMap`, `ResourceCandidate`, `ResourceCandidateKind`, `ResourceNotFoundEventArgs`, `KnownResourceQualifierName`, `MrtCoreContract`, `IResourceManager`, `IResourceContext` | `Uno.UI` |
 
 > [!IMPORTANT]
-> `Microsoft.UI.Input` is now **split across two assemblies**: only the five pointer types above
-> moved. The rest of the namespace — `InputCursor`, `InputSystemCursor`, `PointerEventArgs`,
-> `VirtualKeyStates`, the gesture and move/size event args, and everything else — stays in `Uno.UI`.
-> Do not assume the whole namespace resolves from `Uno`.
+> Two of those namespaces are now **split across two assemblies** — do not assume either resolves
+> wholesale from `Uno`:
+>
+> - `Microsoft.UI.Input`: only the five pointer types above moved. The rest — `InputCursor`,
+>   `InputSystemCursor`, `PointerEventArgs`, `VirtualKeyStates`, the gesture and move/size event
+>   args, and everything else — stays in `Uno.UI`.
+> - `Microsoft.UI`: only `IClosableNotifier` and `ClosableNotifierHandler` moved. `Colors` and
+>   `ColorHelper` stay in `Uno.UI`.
+>
+> The other groups moved completely: nothing is left in `Uno.UI`/`Uno.UI.Composition` for
+> `Microsoft.UI.System`, `Microsoft.Graphics.DirectX`, `Microsoft.Graphics.Display`, or MRT Core.
 
 **Source code needs no change.** Every namespace is unchanged, so existing `using` directives still
 resolve, and `Uno.WinUI` depends on `Uno.WinRT` — both assemblies are already referenced. The one
