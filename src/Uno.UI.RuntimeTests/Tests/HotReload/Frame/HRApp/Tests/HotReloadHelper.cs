@@ -69,6 +69,8 @@ internal static class HotReloadHelper
 			return;
 		}
 
+		EnsureOriginalTextIsPresent(message.FilePath, originalText, caller, line);
+
 		await Wait(RemoteControlClient.Instance.SendMessage(message), "send-msg");
 
 		if (Uno.HotReload.Client.UIUpdate.IsPaused(Uno.HotReload.Client.HotReloadUIPhases.VisualTree))
@@ -115,6 +117,8 @@ internal static class HotReloadHelper
 			return;
 		}
 
+		EnsureOriginalTextIsPresent(message.FilePath, originalText, caller, line);
+
 		await Wait(RemoteControlClient.Instance.SendMessage(message), "send-msg");
 
 		if (Uno.HotReload.Client.UIUpdate.IsPaused(Uno.HotReload.Client.HotReloadUIPhases.VisualTree))
@@ -155,15 +159,22 @@ internal static class HotReloadHelper
 
 		await RemoteControlClient.Instance.WaitForConnection();
 
+		var edited = false;
 		try
 		{
 			await UpdateServerFile(filePathInProject, originalText, replacementText, ct, caller, line);
+			edited = true;
 
 			await callback();
 		}
 		finally
 		{
-			await UpdateServerFile(filePathInProject, replacementText, originalText, CancellationToken.None, caller + "<undo>", line);
+			// Only undo an edit that actually happened: reverting a file that was never modified
+			// throws from the same guard and would replace the original failure.
+			if (edited)
+			{
+				await UpdateServerFile(filePathInProject, replacementText, originalText, CancellationToken.None, caller + "<undo>", line);
+			}
 		}
 	}
 
@@ -186,15 +197,47 @@ internal static class HotReloadHelper
 
 		await RemoteControlClient.Instance.WaitForConnection();
 
+		var edited = false;
 		try
 		{
 			await UpdateServerFile<T>(originalText, replacementText, ct, caller, line);
+			edited = true;
 
 			await callback();
 		}
 		finally
 		{
-			await UpdateServerFile<T>(replacementText, originalText, CancellationToken.None, caller + "<undo>", line);
+			// Only undo an edit that actually happened: reverting a file that was never modified
+			// throws from the same guard and would replace the original failure.
+			if (edited)
+			{
+				await UpdateServerFile<T>(replacementText, originalText, CancellationToken.None, caller + "<undo>", line);
+			}
+		}
+	}
+
+	/// <summary>
+	/// Fails fast when <paramref name="originalText"/> is absent from the file the server is about to edit.
+	/// </summary>
+	/// <remarks>
+	/// The replacement is performed server-side and a search string that matches nothing is applied as a
+	/// silent no-op: no file change, no hot reload, and a test that then asserts against content which was
+	/// never updated. Checking here turns that into an explicit failure naming the file and the caller.
+	/// The check is skipped when the source is not readable from this process, leaving the server as the
+	/// authority rather than introducing a new failure mode.
+	/// </remarks>
+	private static void EnsureOriginalTextIsPresent(string filePath, string originalText, string caller, int line)
+	{
+		if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+		{
+			return;
+		}
+
+		if (!File.ReadAllText(filePath).Contains(originalText, StringComparison.Ordinal))
+		{
+			throw new InvalidOperationException(
+				$"'{originalText}' was not found in '{filePath}' (requested by {caller}@{line}). " +
+				"The edit would have silently done nothing.");
 		}
 	}
 
