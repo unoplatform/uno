@@ -27,6 +27,10 @@ public partial class Visual
 
 	internal virtual float DamageRegionSamplingMargin => 0;
 
+	// Above this many path segments, skip the geometry-shaped damage region and use the bounding box instead:
+	// the boolean Combine to build/clip the tight region costs more than the extra pixels it would save.
+	private const int DamageTightPathMaxSegments = 64;
+
 	// Neutral analog of bc's stroke-4px-round outset used to grow a content path to cover antialiasing bleed.
 	private static readonly StrokeStyle _outsetStroke = new()
 	{
@@ -118,7 +122,12 @@ public partial class Visual
 
 		var clipRect = clip.Bounds;
 
-		if (ShadowState is null && DamageRegionSamplingMargin == 0 && _ownContentPath is { IsEmpty: false } ownContent)
+		// The tight (geometry-shaped) damage region is only worth its cost for simple shapes. For a complex path
+		// its boolean Combine (outset + clip) is expensive — pathologically so on a managed geometry engine, where
+		// it flattens curves and runs an O(n^2) boolean — while adding little over the bounding-box fallback below.
+		if (ShadowState is null && DamageRegionSamplingMargin == 0
+			&& _ownContentPath is { IsEmpty: false } ownContent
+			&& ownContent.SegmentCount <= DamageTightPathMaxSegments)
 		{
 			using var inRoot = ownContent.Transform(TotalMatrix.ToMatrix3x2());
 			using var outset = OutsetForAntialiasing(inRoot);
