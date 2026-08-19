@@ -25,6 +25,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	private IAppleUIKitRenderView? _renderView;
 	// The negotiated graphics context (Skia-on-Metal or WebGPU-on-CAMetalLayer). The host names no backend.
 	private ISwapChain? _context;
+	private IDrawingFactory? _renderer;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
 	private UIView? _topViewLayer;
@@ -72,7 +73,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		GraphicsRegistry.ContextFactory = kind => System.Threading.Tasks.Task.FromResult(CreateRenderViewAndContext(kind));
 		var init = GraphicsRegistry.Initialize();
 		_context = init.Context;
-		CompositionTarget.Renderer = init.Renderer;
+		_renderer = init.Renderer;
 
 		var renderView = (UIView)_renderView!;
 		renderView.Frame = view.Bounds;
@@ -132,7 +133,12 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 			return;
 		}
 
-		var clipGeometry = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(_context);
+		var ct = RootElement?.Visual.CompositionTarget as CompositionTarget;
+		if (ct is not null)
+		{
+			ct.Renderer = _renderer!;
+		}
+		var clipGeometry = ct?.OnNativePlatformFrameRequested(_context);
 
 		if (clipGeometry is not null)
 		{

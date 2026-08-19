@@ -18,6 +18,7 @@ internal partial class BrowserRenderer
 	// Created asynchronously (the WebGPU device import runs in JS and must not block the JS thread), so it stays
 	// null until ready while frames re-arm meanwhile.
 	private ISwapChain? _context;
+	private IDrawingFactory? _renderer;
 	private bool _initFailed;
 
 	private int _renderCount;
@@ -45,7 +46,7 @@ internal partial class BrowserRenderer
 
 			var init = await GraphicsRegistry.InitializeAsync();
 			_context = init.Context;
-			CompositionTarget.Renderer = init.Renderer;
+			_renderer = init.Renderer;
 			Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = init.Context.Kind == GraphicsContextKind.Software;
 
 			// Force a fresh record+present: a frame recorded before the async switch completes is skipped.
@@ -132,6 +133,8 @@ internal partial class BrowserRenderer
 		}
 
 		// The context owns the surface/present; the backend (whichever won negotiation) wraps the acquired target.
+		// The renderer is per-window (bound to this window's context), installed on its CompositionTarget each frame.
+		compositionTarget.Renderer = _renderer!;
 		var currentClipPath = compositionTarget.OnNativePlatformFrameRequested(_context);
 		ApplyNativeElementClip(currentClipPath);
 

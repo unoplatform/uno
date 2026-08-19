@@ -139,6 +139,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 	private class InternalRenderer() : Java.Lang.Object, IRenderer
 	{
 		private ISwapChain? _context;
+		private IDrawingFactory? _renderer;
 
 		void IRenderer.OnDrawFrame(IGL10? gl)
 		{
@@ -151,7 +152,9 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 
 			// The context wraps the ambient EGL context; the backend renders into the default framebuffer and
 			// GLSurfaceView swaps implicitly (Present is a no-op).
-			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_context);
+			var ct = (CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!;
+			ct.Renderer = _renderer!;
+			var nativeClipPath = ct.OnNativePlatformFrameRequested(_context);
 
 			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
 		}
@@ -176,7 +179,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 			// dispose the previous context before rebinding so re-negotiation doesn't leak it.
 			_context?.Dispose();
 			_context = init.Context;
-			Microsoft.UI.Xaml.Media.CompositionTarget.Renderer = init.Renderer;
+			_renderer = init.Renderer;
 		}
 
 		protected override void Dispose(bool disposing)
