@@ -22,6 +22,12 @@ public interface IGeometry : IDisposable
 	/// <summary>Whether the geometry contains no drawable area.</summary>
 	bool IsEmpty { get; }
 
+	/// <summary>
+	/// A cheap complexity hint: the number of path segments (lines + curves) making up the geometry. Callers use
+	/// it to avoid expensive per-geometry operations (e.g. boolean <see cref="Combine"/>) on very complex paths.
+	/// </summary>
+	int SegmentCount { get; }
+
 	/// <summary>Whether the filled interior of the geometry contains <paramref name="point"/>.</summary>
 	bool FillContains(Vector2 point);
 

@@ -17,6 +17,7 @@ namespace Uno.UI.Composition.Drawing;
 internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 {
 	private Rect? _bounds;
+	private int _segmentCount = -1;
 
 	public ManagedGeometry(IReadOnlyList<ManagedContour> contours, GeometryFillRule fillRule)
 	{
@@ -30,6 +31,24 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 	public GeometryFillRule FillRule { get; }
 
 	public Rect Bounds => _bounds ??= ComputeTightBounds();
+
+	public int SegmentCount
+	{
+		get
+		{
+			if (_segmentCount < 0)
+			{
+				var n = 0;
+				foreach (var contour in Contours)
+				{
+					n += contour.Segments.Count;
+				}
+				_segmentCount = n;
+			}
+
+			return _segmentCount;
+		}
+	}
 
 	public bool IsEmpty
 	{

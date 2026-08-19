@@ -53,6 +53,8 @@ namespace Microsoft.UI.Composition
 
 		bool IGeometry.IsEmpty => _geometry.IsEmpty;
 
+		int IGeometry.SegmentCount => _geometry.PointCount;
+
 		bool IGeometry.FillContains(Vector2 point) => _geometry.Contains(point.X, point.Y);
 
 		IGeometry IGeometry.Transform(Matrix3x2 matrix) => Transform(matrix.ToSKMatrix());
