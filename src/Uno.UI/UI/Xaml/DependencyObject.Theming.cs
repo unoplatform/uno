@@ -426,12 +426,26 @@ public partial class DependencyObject
 			// owner's own inheritance chain.
 			var ownerTheme = ownerThemeOverride ?? ThemeResolution.ResolveOwnerTheme(owner);
 
+			// A VSM setter's reference resolves under the setter side, not under the object it is
+			// registered on — WinUI keeps it on the CSetter entirely (ThemeResource.cpp:194-203).
+			// The pin applies during a walk too: the walk theme here is the TARGET's, which is exactly
+			// the boundary the setter value must not be re-scoped by (#24021).
+			if (themeRef.ResolutionOwner is { } resolutionOwner)
+			{
+				var setterTheme = ThemeResolution.ResolvePinnedOwnerTheme(resolutionOwner);
+				prevSlotTheme = core.GetRequestedThemeForSubTree();
+				if (prevSlotTheme != Theming.GetBaseValue(setterTheme))
+				{
+					core.SetRequestedThemeForSubTree(setterTheme);
+					popSlotTheme = true;
+				}
+			}
 			// MUX: Theming.cpp:368-376 — "Push theme that resource lookup should use to get the
 			// property value": only OUTSIDE a theme walk (`!IsProcessingThemeWalk()`) and when the
 			// owner's base theme differs from the slot. During a walk the slot already carries the
 			// walk's theme (set in NotifyThemeChanged, Theming.cpp:137-149) while the owner's
 			// per-object theme is not yet persisted — pushing here would re-scope to the stale theme.
-			if (!IsProcessingThemeWalk)
+			else if (!IsProcessingThemeWalk)
 			{
 				prevSlotTheme = core.GetRequestedThemeForSubTree();
 				if (prevSlotTheme != Theming.GetBaseValue(ownerTheme))
@@ -936,6 +950,14 @@ public partial class DependencyObject
 		// The Light/Dark sub-dictionary is selected at the dictionary leaf by the ambient active theme —
 		// the owner's effective theme scoped onto the core requested-theme-for-subtree slot by
 		// UpdateResourceBindings (EnsureActiveThemeDictionary, Resources.cpp:764-768).
+
+		// ...except for a VSM setter, whose value resolves on the setter side in WinUI and so must not
+		// pick up the target's own RequestedTheme here either (see ThemeResourceReference.ResolutionOwner).
+		// The setter's dual registration means the pinned owner is on the sibling theme-resource entry.
+		using var setterScope = _themeResources?.Get(property, binding.Precedence)?.ResolutionOwner is { } setterOwner
+			? Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(
+				ThemeResolution.ResolvePinnedOwnerTheme(setterOwner))
+			: default;
 
 		// Note: we intentionally do NOT skip theme resource bindings here even though
 		// Phase 1 (UpdateAllThemeReferences) may have already resolved them. The Phase 2

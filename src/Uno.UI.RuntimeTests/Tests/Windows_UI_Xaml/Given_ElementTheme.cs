@@ -4589,6 +4589,73 @@ public class Given_ElementTheme
 #endif
 
 	#endregion
+
+	#region VisualState setter {ThemeResource} resolves setter-side (issue #24021)
+
+#if HAS_UNO
+	// The editable ComboBox's ComboBoxTextBoxStyle Focused state applies BOTH
+	// ContentElement.Foreground="{ThemeResource TextControlForegroundFocused}" and
+	// ContentElement.RequestedTheme="Light" onto the inner TextBox's ScrollViewer (verbatim from
+	// WinUI, themeresources_v2.xaml:13111-13116). WinUI resolves the setter's {ThemeResource} on the
+	// Setter DO — which lives in the template's VisualStateGroups, outside the target's subtree — so
+	// the sibling RequestedTheme=Light never re-scopes it (ThemeResource.cpp:194-203 ->
+	// Theming.cpp:415-424 -> VisualStateSetterHelper.cpp:186).
+	//
+	// Expected values are taken from a native WinUI oracle (WinAppSDK 2.1.3, Dark page, focused):
+	// ContentElement.ActualTheme=Light, ContentElement.Foreground=#FFFFFFFF, BorderElement
+	// .Background=#B31E1E1E.
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24021")]
+	public async Task When_Editable_ComboBox_Focused_In_Dark_Theme_Setter_Resolves_Outside_Boundary()
+	{
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+		var comboBox = new ComboBox { Width = 160, IsEditable = true };
+		WindowHelper.WindowContent = comboBox;
+		await WindowHelper.WaitForLoaded(comboBox);
+		await WindowHelper.WaitForIdle();
+
+		var editableText = comboBox.FindFirstDescendant<TextBox>("EditableText");
+		Assert.IsNotNull(editableText, "EditableText should exist in the ComboBox template");
+
+		editableText.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		var contentElement = editableText.FindFirstDescendant<FrameworkElement>("ContentElement");
+		Assert.IsNotNull(contentElement, "ContentElement should exist in the TextBox template");
+
+		// Positive control: prove the Focused state actually applied. Without this, a foreground
+		// assertion alone passes identically when the state never ran, because the Dark
+		// TextControlForeground/...PointerOver/...Focused keys all alias TextFillColorPrimaryBrush.
+		var borderElement = editableText.FindFirstDescendant<Border>("BorderElement");
+		Assert.IsNotNull(borderElement, "BorderElement should exist in the TextBox template");
+		Assert.AreEqual(
+			Windows.UI.Color.FromArgb(0xB3, 0x1E, 0x1E, 0x1E),
+			((SolidColorBrush)borderElement.Background).Color,
+			"Focused state did not apply — BorderElement.Background is not TextControlBackgroundFocused (dark)");
+
+		// The boundary itself must still apply, exactly as it does in WinUI.
+		Assert.AreEqual(ElementTheme.Light, contentElement.ActualTheme,
+			"The Focused state's RequestedTheme=Light boundary should still apply to ContentElement");
+
+		// ...but the sibling setter's {ThemeResource} must NOT have resolved under it.
+		var foreground = ((Control)contentElement).Foreground as SolidColorBrush;
+		Assert.IsNotNull(foreground, "ContentElement.Foreground should be a SolidColorBrush");
+		Assert.AreNotEqual(
+			Windows.UI.Color.FromArgb(0xE4, 0x00, 0x00, 0x00),
+			foreground.Color,
+			"ContentElement.Foreground resolved under the target's own Light boundary");
+		Assert.AreEqual(
+			Colors.White,
+			foreground.Color,
+			"ContentElement.Foreground should be the Dark TextControlForegroundFocused");
+	}
+#endif
+
+	#endregion
+
 }
 
 public partial class Issue475ThemedDO : DependencyObject
