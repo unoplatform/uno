@@ -449,8 +449,8 @@ namespace Uno.UI
 		internal static bool ApplyVisualStateSetter(SpecializedResourceDictionary.ResourceKey resourceKey, object context, BindingPath bindingPath, DependencyPropertyValuePrecedences precedence, ResourceUpdateReason updateReason, DependencyObject setterOwner = null)
 		{
 			// MUX: a VSM setter's {ThemeResource} becomes a live binding on the CSetter itself
-			// (ThemeResource.cpp:194-203) and resolves under the SETTER's theme
-			// (SetThemeResourceBinding, Theming.cpp:415-424); the target only ever receives the
+			// (ThemeResource.cpp:189-198) and resolves under the SETTER's theme
+			// (SetThemeResourceBinding, Theming.cpp:367-379); the target only ever receives the
 			// already-resolved value (VisualStateSetterHelper.cpp:186). The setter inherits its theme
 			// from the element owning the VisualStateGroups, so resolve under that owner — never under
 			// the target, whose own RequestedTheme may be a boundary applied by this very state
