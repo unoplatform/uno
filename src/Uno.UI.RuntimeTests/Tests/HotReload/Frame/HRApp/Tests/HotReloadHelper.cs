@@ -228,12 +228,24 @@ internal static class HotReloadHelper
 	/// </remarks>
 	private static void EnsureOriginalTextIsPresent(string filePath, string originalText, string caller, int line)
 	{
-		if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
+		if (string.IsNullOrEmpty(filePath))
 		{
 			return;
 		}
 
-		if (!File.ReadAllText(filePath).Contains(originalText, StringComparison.Ordinal))
+		string content;
+		try
+		{
+			content = File.ReadAllText(filePath);
+		}
+		catch (Exception e) when (e is IOException or UnauthorizedAccessException or NotSupportedException)
+		{
+			// Missing, locked or otherwise unreadable from this process: the server remains the
+			// authority, rather than an unreadable path becoming a failure mode of its own.
+			return;
+		}
+
+		if (!content.Contains(originalText, StringComparison.Ordinal))
 		{
 			throw new InvalidOperationException(
 				$"'{originalText}' was not found in '{filePath}' (requested by {caller}@{line}). " +
