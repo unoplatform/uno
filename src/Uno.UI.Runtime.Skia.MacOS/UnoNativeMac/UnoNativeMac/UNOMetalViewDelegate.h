@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nullable) id<MTLCommandQueue> queue;
 
-// EXPERIMENTAL: when YES, the WebGPU backend owns the view's CAMetalLayer (acquire + present). drawInMTKView then
+// When YES, the WebGPU backend owns the view's CAMetalLayer (acquire + present). drawInMTKView then
 // skips its own currentDrawable acquire / presentDrawable and just ticks managed code (texture = NULL), which drives
 // the wgpu swapchain. See uno_window_set_webgpu_mode / uno_window_get_metal_layer.
 @property (assign) BOOL webgpuMode;

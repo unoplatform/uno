@@ -13,7 +13,7 @@
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
-		<Description>EXPERIMENTAL WebGPU drawing backend for Uno Platform (implements the neutral IRenderBackend seam).</Description>
+		<Description>WebGPU drawing backend for Uno Platform (implements the neutral IRenderBackend seam).</Description>
 	</PropertyGroup>
 
 	<!-- Modern-ABI native (wgpu-native, pinned) provisioned at build via a GitHub-release fetch;

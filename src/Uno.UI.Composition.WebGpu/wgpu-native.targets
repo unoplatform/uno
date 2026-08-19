@@ -130,7 +130,7 @@
 	     libwgpu_native.a per slice. Link it into the app with @(NativeReference Kind=Static ForceLoad=true) so its
 	     symbols land in the main program image; WebGpuLoader.Resolve then returns NativeLibrary.GetMainProgramHandle()
 	     for "webgpu". Pick the slice by RuntimeIdentifier (device vs simulator, arm64 vs x64). Import this .targets
-	     into the iOS app head. BEST-EFFORT / UNVALIDATED (authored on Linux): verify on a Mac that (a) the release zip
+	     into the iOS app head. Not yet verified on-device — verify on a Mac that (a) the release zip
 	     lays the archive at lib/libwgpu_native.a, and (b) the Rust static lib's system deps are satisfied — the iOS
 	     workload auto-links Metal/Foundation/QuartzCore, but wgpu may additionally need libc++/libresolv; add
 	     @(NativeReference Include="c++") / frameworks here if the link fails with undefined symbols.

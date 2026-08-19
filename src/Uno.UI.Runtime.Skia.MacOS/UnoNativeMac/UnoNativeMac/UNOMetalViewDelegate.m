@@ -37,7 +37,7 @@
 #if DEBUG
     NSLog (@"drawInMTKView: %f %f", view.drawableSize.width, view.drawableSize.height);
 #endif
-    // EXPERIMENTAL WebGPU: the wgpu swapchain owns this view's CAMetalLayer, so we must NOT acquire currentDrawable
+    // The wgpu swapchain owns this view's CAMetalLayer, so we must NOT acquire currentDrawable
     // (that would contend with wgpu's nextDrawable). Just tick managed code with texture = NULL; the managed
     // MacOSWindowHost.MetalDraw routes to the WebGPU present path (AcquireRenderTarget + Present) on the layer.
     if (self.webgpuMode)

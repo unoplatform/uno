@@ -8,7 +8,7 @@ using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition;
 
-// EXPERIMENTAL WebGPU path. The WebGPU backend can't use Skia's SKImageFilter tree, so walk the IGraphicsEffect
+// WebGPU path. The WebGPU backend can't use Skia's SKImageFilter tree, so walk the IGraphicsEffect
 // graph into a compact "recipe": a single source (image/backdrop/color) + a composed 4×5 color matrix the backend
 // applies. Covers single-source per-pixel color effects (grayscale, invert, hue, sepia, opacity, color-matrix, …);
 // blur passes through unapplied, and multi-source / lighting / transform / border / mask / noise / nonlinear

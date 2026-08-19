@@ -8,7 +8,7 @@
 
 	<!-- Drawing-backend build flags (see SamplesApp.Skia.Generic). Default both on = Skia. A SkiaSharp-free build
 	     passes -p:UnoDrawingBackendSkia=false; DrawingBackendConfiguration then registers the WebGPU renderer over
-	     the managed seams (WebGPU on iOS/tvOS is experimental — see wgpu-native.targets). -->
+	     the managed seams (WebGPU on iOS/tvOS is not yet validated on-device — see wgpu-native.targets). -->
 	<PropertyGroup>
 		<UnoDrawingBackendSkia Condition="'$(UnoDrawingBackendSkia)'==''">true</UnoDrawingBackendSkia>
 		<UnoDrawingBackendWebGpu Condition="'$(UnoDrawingBackendWebGpu)'==''">true</UnoDrawingBackendWebGpu>
@@ -287,7 +287,7 @@
 	<!-- Package the multi-ABI wgpu-native .so into the APK so the WebGPU backend's DllImportResolver finds it. -->
 	<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'" Project="..\..\Uno.UI.Composition.WebGpu\wgpu-native.targets" />
 	<!-- iOS/tvOS: static-link the wgpu-native archive (NativeReference ForceLoad) so DllImport("webgpu") resolves to
-	     the main program. EXPERIMENTAL / unvalidated — see wgpu-native.targets _ProvisionWgpuNativeIos. -->
+	     the main program. Not yet validated on-device — see wgpu-native.targets _ProvisionWgpuNativeIos. -->
 	<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='tvos'" Project="..\..\Uno.UI.Composition.WebGpu\wgpu-native.targets" />
 
 	<Import Condition="$(IsUIKit)=='true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.props" />

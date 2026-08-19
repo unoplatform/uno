@@ -54,7 +54,7 @@ namespace SkiaSharpExample
 				.UseWin32(hostBuilder =>
 				{
 					hostBuilder.PreloadMediaPlayer(true);
-					// Dev/test affordance: force the Win32 render backend via env (e.g. UNO_WIN32_RENDERER=Vulkan|OpenGL|Software|WebGpu).
+					// Dev/test affordance: force the Win32 render backend via env (e.g. UNO_WIN32_RENDERER=Vulkan|OpenGL|Software).
 					if (Environment.GetEnvironmentVariable("UNO_WIN32_RENDERER") is { } rb
 						&& Enum.TryParse<global::Uno.UI.Hosting.Win32RenderingBackend>(rb, ignoreCase: true, out var backend))
 					{

@@ -19,7 +19,7 @@ using Uno.UI.Helpers;
 namespace Uno.UI.Runtime.Skia.Android;
 
 /// <summary>
-/// EXPERIMENTAL WebGPU-backed rendering view for Android, mirroring <see cref="UnoSKVulkanView"/>: a SurfaceView
+/// WebGPU-backed rendering view for Android, mirroring <see cref="UnoSKVulkanView"/>: a SurfaceView
 /// whose ANativeWindow drives a wgpu swapchain through the neutral graphics pipeline. Not runtime-validated on
 /// Linux CI (needs an Android device/emulator with a WebGPU-capable adapter).
 /// </summary>

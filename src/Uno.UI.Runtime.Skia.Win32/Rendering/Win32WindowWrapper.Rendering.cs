@@ -13,9 +13,6 @@ internal partial class Win32WindowWrapper
 {
 	private RenderThread? _renderThread;
 
-	/// <summary>EXPERIMENTAL opt-in (Win32RenderingBackend.WebGpu). Set before the window is created.</summary>
-	internal static bool PreferWebGpu;
-
 	// The negotiated graphics context that drives the per-frame loop (AcquireRenderTarget → render → Present).
 	private ISwapChain _context = null!;
 	// The per-window backend factory installed on this window's CompositionTarget each frame.

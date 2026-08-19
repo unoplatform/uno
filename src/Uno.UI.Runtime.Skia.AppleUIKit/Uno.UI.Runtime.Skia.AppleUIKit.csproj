@@ -51,7 +51,7 @@
 		<!-- WebGPU "init half": the host calls WebGpuContext.Create* to build a WebGpu window+context for the
 		     GraphicsContextKind.WebGpu kind. The host uses only the renderer-agnostic init API, not the renderer. -->
 		<ProjectReference Include="..\Uno.UI.Composition.WebGpu.Init\Uno.UI.Composition.WebGpu.Init.csproj" />
-		<!-- EXPERIMENTAL WebGPU render path (UnoSKWebGpuMetalView, opt-in via UNO_WEBGPU). The wgpu-native iOS static
+		<!-- WebGPU render path (UnoSKWebGpuMetalView, opt-in via UNO_WEBGPU). The wgpu-native iOS static
 		     library must be linked by the app head (see wgpu-native.targets iOS provisioning) so DllImport("webgpu")
 		     resolves to the main program (WebGpuLoader.GetMainProgramHandle). -->
 	</ItemGroup>
