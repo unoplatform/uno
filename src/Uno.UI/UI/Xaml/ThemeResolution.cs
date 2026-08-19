@@ -4,7 +4,7 @@
 //
 // MUX References:
 //   CDependencyObject::GetTheme            — CDependencyObject.h:1648 (field m_theme:5 at :1761)
-//   CDependencyObject::EnterImpl (theme)   — depends.cpp:1023-1048 (inherits from the (logical)
+//   CDependencyObject::EnterImpl (theme)   — depends.cpp:1044-1069 (inherits from the (logical)
 //                                            inheritance parent at tree Enter)
 //   GetInheritanceParentInternal(logical)  — framework.cpp:3097-3130
 //   CFrameworkElement::ActualTheme         — framework.cpp:3953-3978 (falls back to the app/OS

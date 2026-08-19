@@ -194,11 +194,11 @@ partial class Application
 	/// <summary>
 	/// The explicit <see cref="ApplicationTheme"/> of a secondary-ALC application, if set.
 	/// Secondary apps must not mutate the shared <c>FrameworkTheming</c> (single per process, owned
-	/// by the host app — WinUI's one-FrameworkTheming-per-core model, corep.h:2144). Their theme is
+	/// by the host app — WinUI's one-FrameworkTheming-per-core model, corep.h:2205-2206). Their theme is
 	/// instead pinned as an element-level <see cref="FrameworkElement.RequestedTheme"/> on the
 	/// <c>AlcContentHost</c> boundary — the same mechanism WinUI uses to theme an island/subtree
 	/// independently of the app theme (CFrameworkElement::GetRequestedThemeOverride,
-	/// framework.cpp:3399-3418).
+	/// framework.cpp:3284-3304).
 	/// </summary>
 	private ApplicationTheme? _alcRequestedTheme;
 

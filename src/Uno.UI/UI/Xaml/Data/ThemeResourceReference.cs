@@ -104,8 +104,8 @@ internal sealed class ThemeResourceReference
 	/// reference is registered on.
 	/// </summary>
 	/// <remarks>
-	/// WinUI keeps a VSM setter's live theme binding on the CSetter (ThemeResource.cpp:194-203), so it
-	/// resolves under the setter's own theme (Theming.cpp:415-424) and the target only ever receives a
+	/// WinUI keeps a VSM setter's live theme binding on the CSetter (ThemeResource.cpp:189-198), so it
+	/// resolves under the setter's own theme (Theming.cpp:367-379) and the target only ever receives a
 	/// resolved value (VisualStateSetterHelper.cpp:186). Uno registers the reference on the target
 	/// instead so the existing re-application path can reach it, so the resolution owner is pinned here
 	/// to keep WinUI's resolution semantics: the target's own RequestedTheme — which the same visual
