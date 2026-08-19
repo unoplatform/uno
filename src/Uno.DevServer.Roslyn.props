@@ -19,7 +19,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net11.0'">
-		<DevServerRoslynVersion>4.14.0</DevServerRoslynVersion>
+		<DevServerRoslynVersion>5.6.0</DevServerRoslynVersion>
 		<DevServerMSBuildVersion>18.7.1</DevServerMSBuildVersion>
 		<DevServerMSBuildToolsVersion>18.7.1</DevServerMSBuildToolsVersion>
 	</PropertyGroup>
