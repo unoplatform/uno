@@ -111,6 +111,45 @@ The other namespaces carried by that assembly keep their names, so code using
 `DiagnosticsOverlay` (`Uno.Diagnostics.UI`), `FromJsonExtension` (`Uno.UI.Markup`) or
 `ColorExtensions` / `ImageHelper` (`Uno.Helpers`) needs no change.
 
+### MRT Core moves to the `Uno.WinRT` package
+
+The MRT Core surface — the `Microsoft.Windows.ApplicationModel.Resources` namespace — now lives in
+the assembly matching its Windows App SDK home:
+
+| | 6.x | 7.0 |
+|---|---|---|
+| Assembly | `Uno.UI` | `Uno` |
+| Package | `Uno.WinUI` | `Uno.WinRT` |
+
+**Source code needs no change.** The namespace is unchanged, so
+`using Microsoft.Windows.ApplicationModel.Resources;` still resolves, and `Uno.WinUI` depends on
+`Uno.WinRT`, so both assemblies are already referenced. The types that moved are
+`ResourceLoader`, `ResourceManager`, `ResourceContext`, `ResourceMap`, `ResourceCandidate`,
+`ResourceCandidateKind`, `ResourceNotFoundEventArgs`, `KnownResourceQualifierName`,
+`MrtCoreContract`, `IResourceManager`, and `IResourceContext`.
+
+**Compiled binaries must be rebuilt.** Moving a type between assemblies is a binary break, and
+there is no forwarding shim: a library built against 6.x resolves these types from `Uno.UI` and
+fails at run time with
+
+```text
+Could not load type 'Microsoft.Windows.ApplicationModel.Resources.ResourceLoader'
+from assembly 'Uno.UI, Version=…'.
+```
+
+Rebuild every library that uses MRT Core against 7.0, and update anything that names the
+assembly explicitly — assembly-qualified type names, `TypeForwardedTo`, or an IL merge/repack
+configuration:
+
+```diff
+- Type.GetType("Microsoft.Windows.ApplicationModel.Resources.ResourceLoader, Uno.UI")
++ Type.GetType("Microsoft.Windows.ApplicationModel.Resources.ResourceLoader, Uno")
+```
+
+The older WinRT loader — `Windows.ApplicationModel.Resources.ResourceLoader`, without the
+`Microsoft.` prefix — is **not** affected. It already lived in `Uno`; only the
+`Microsoft.Windows.*` MRT Core surface moved.
+
 ### Public API removed
 
 - **Native base classes / identity:** `BindableView` (and `Bindable*` widget wrappers),
@@ -463,7 +502,8 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 9. Convert the Android `Application` class to override `CreateHost()` instead of passing an
    `AppBuilder` delegate to the base constructor.
 10. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to `Uno.UI.Extras`.
-11. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+11. Update assembly-qualified type names that reach MRT Core (`Microsoft.Windows.ApplicationModel.Resources.*`) — the assembly is now `Uno`, not `Uno.UI`.
+12. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
