@@ -257,9 +257,11 @@ public partial class DependencyObject
 	/// SetThemeResource(pDP, pThemeResource) — is hosted end-to-end by the shared
 	/// <see cref="UpdateThemeReference"/> path below, which inlines the slot push.
 	///
-	/// TODO Uno: WinUI's pModifiedValue bookkeeping (SetModifierValueBeingSet, Theming.cpp:355-362)
-	/// and the freeze/unfreeze around SetValue (Theming.cpp:390-392) have no Uno analog — modified
-	/// (animated) values are tracked per-precedence by the store, and Uno has no SimulateFreeze.
+	/// The pModifiedValue bookkeeping (SetModifierValueBeingSet, Theming.cpp:355-362) is ported —
+	/// see ArmModifierValueBeingSet, armed by <see cref="UpdateThemeReference"/> around the value set.
+	///
+	/// TODO Uno: the freeze/unfreeze around SetValue (Theming.cpp:390-392) has no Uno analog —
+	/// Uno has no SimulateFreeze/SimulateUnfreeze.
 	/// </remarks>
 	internal void SetThemeResourceBinding(DependencyProperty property, ThemeResourceReference themeRef, DependencyPropertyValuePrecedences? precedence = null)
 	{
@@ -297,6 +299,43 @@ public partial class DependencyObject
 		}
 
 		_themeResources.Set(property, effectivePrecedence, themeRef);
+	}
+
+	// MUX Reference: CDependencyObject::SetThemeResourceBinding — Theming.cpp:355-362.
+	//   bool modiferValueBeingSet = (pModifiedValue && pModifiedValue->HasModifiers());
+	//   if (modiferValueBeingSet) pModifiedValue->SetModifierValueBeingSet(true);
+	//   auto modiferGuard = wil::scope_exit([&] { if (modiferValueBeingSet) pModifiedValue->SetModifierValueBeingSet(false); });
+	// Held around the engine re-applying a theme-resolved value, so the base-value write cannot make a
+	// held animation lose (the !IsModifierValueBeingSet() guard at PropertySystem.cpp:1649).
+	private ModifierValueBeingSetScope ArmModifierValueBeingSet(DependencyProperty property)
+		=> ModifierValueBeingSetScope.Arm(_properties.FindPropertyDetails(property)?.GetModifiedValue());
+
+	// WinUI's wil::scope_exit; default-constructed (nothing armed) when the property has no modifiers.
+	// The previous value is saved so a cascading re-entry on the same property cannot disarm an outer
+	// scope early — WinUI relies on deleting the CModifiedValue once !HasModifiers (PropertySystem.cpp:290-294),
+	// which Uno does not do.
+	private readonly struct ModifierValueBeingSetScope : IDisposable
+	{
+		private readonly ModifiedValue? _modifiedValue;
+		private readonly bool _previous;
+
+		private ModifierValueBeingSetScope(ModifiedValue modifiedValue)
+		{
+			_modifiedValue = modifiedValue;
+			_previous = modifiedValue.IsModifierValueBeingSet;
+			modifiedValue.IsModifierValueBeingSet = true;
+		}
+
+		internal static ModifierValueBeingSetScope Arm(ModifiedValue? modifiedValue)
+			=> modifiedValue is { HasModifiers: true } ? new ModifierValueBeingSetScope(modifiedValue) : default;
+
+		public void Dispose()
+		{
+			if (_modifiedValue is not null)
+			{
+				_modifiedValue.IsModifierValueBeingSet = _previous;
+			}
+		}
 	}
 
 	#endregion
@@ -511,21 +550,26 @@ public partial class DependencyObject
 				return;
 			}
 
-			if (themeRef.SetterBindingPath is { } bindingPath)
+			// MUX: Theming.cpp:355-362 — arm the per-property modifier-being-set gate across the value
+			// application (Theming.cpp:393), so re-resolving under a held animation cannot let the base win.
+			using (ArmModifierValueBeingSet(property))
 			{
-				try
+				if (themeRef.SetterBindingPath is { } bindingPath)
 				{
-					_isSettingPersistentResourceBinding = true;
-					bindingPath.Value = convertedValue;
+					try
+					{
+						_isSettingPersistentResourceBinding = true;
+						bindingPath.Value = convertedValue;
+					}
+					finally
+					{
+						_isSettingPersistentResourceBinding = false;
+					}
 				}
-				finally
+				else
 				{
-					_isSettingPersistentResourceBinding = false;
+					SetValue(property, convertedValue, precedence, isPersistentResourceBinding: true);
 				}
-			}
-			else
-			{
-				SetValue(property, convertedValue, precedence, isPersistentResourceBinding: true);
 			}
 
 			// MUX: Theming.cpp:397 — store the reference back in the map
@@ -808,15 +852,7 @@ public partial class DependencyObject
 		// point. This masks the flag-flip rather than skipping the re-stamp; a faithful port of WinUI's
 		// modifier-being-set gate (which would let the suppress be removed) is tracked as follow-up. Counter-based,
 		// so it nests safely under the global guard; try/finally so the counter unwinds on an exception in any phase.
-		ModifiedValue.SuppressLocalCanDefeatAnimations();
-		try
-		{
-			UpdateResourceBindingsCore(updateReason, resourceContextProvider, containingDictionary);
-		}
-		finally
-		{
-			ModifiedValue.ContinueLocalCanDefeatAnimations();
-		}
+		UpdateResourceBindingsCore(updateReason, resourceContextProvider, containingDictionary);
 	}
 
 	private void UpdateResourceBindingsCore(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider, ResourceDictionary? containingDictionary)
@@ -1041,21 +1077,27 @@ public partial class DependencyObject
 	private void SetResourceBindingValue(DependencyProperty property, ResourceBinding binding, object? value)
 	{
 		var convertedValue = BindingPropertyHelper.Convert(property.Type, value);
-		if (binding.SetterBindingPath != null)
+
+		// Uno's Phase-2 resource-binding fallback re-applies the same resolved value the theme-reference
+		// path does, so it needs the same modifier-being-set gate (MUX: Theming.cpp:355-362).
+		using (ArmModifierValueBeingSet(property))
 		{
-			try
+			if (binding.SetterBindingPath != null)
 			{
-				_isSettingPersistentResourceBinding = binding.IsPersistent;
-				binding.SetterBindingPath.Value = convertedValue;
+				try
+				{
+					_isSettingPersistentResourceBinding = binding.IsPersistent;
+					binding.SetterBindingPath.Value = convertedValue;
+				}
+				finally
+				{
+					_isSettingPersistentResourceBinding = false;
+				}
 			}
-			finally
+			else
 			{
-				_isSettingPersistentResourceBinding = false;
+				SetValue(property, convertedValue, binding.Precedence, isPersistentResourceBinding: binding.IsPersistent);
 			}
-		}
-		else
-		{
-			SetValue(property, convertedValue, binding.Precedence, isPersistentResourceBinding: binding.IsPersistent);
 		}
 	}
 
