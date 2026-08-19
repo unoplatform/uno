@@ -88,9 +88,12 @@ jobs:
           ref: ${{ steps.pr.outputs.ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      # This workflow file always comes from the default branch, but the checkout
+      # above is the PR head — so take the newest pin present in that tree rather
+      # than hardcoding one (`feature/breakingchanges` PRs need net11, not net10).
       - name: Pin .NET Version
         shell: bash
-        run: cp build/ci/net11/_global.json global.json
+        run: cp "$(ls -d build/ci/net* | sort -V | tail -1)/_global.json" global.json
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5.3.0
@@ -99,7 +102,7 @@ jobs:
 
       - name: Install required .NET workloads
         shell: bash
-        run: dotnet workload install android ios tvos
+        run: dotnet workload install android ios maccatalyst tvos
 
       - name: Restore sync generator solution filter
         working-directory: build

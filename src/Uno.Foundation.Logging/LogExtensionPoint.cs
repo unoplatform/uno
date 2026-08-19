@@ -1,14 +1,22 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 
 namespace Uno.Foundation.Logging
 {
 	internal static class LogExtensionPoint
 	{
 		private static LoggerFactory _loggerFactory = new LoggerFactory();
-		private static ConcurrentDictionary<Type, Logger> _loggers = new();
+
+		/// <summary>
+		/// Per-type logger memoization. Weak-keyed: a <see cref="Type"/> key roots the
+		/// LoaderAllocator of its AssemblyLoadContext, so a strongly keyed process-lifetime cache
+		/// would keep a collectible context resident forever as soon as one of its types logged
+		/// once. The cache is a pure memoization (evicted entries simply rebuild), which makes weak
+		/// keys sufficient — no unload hook or ALC-scoped purge is needed.
+		/// </summary>
+		private static readonly ConditionalWeakTable<Type, Logger> _loggers = new();
 
 		public static LoggerFactory Factory => _loggerFactory;
 
@@ -29,7 +37,7 @@ namespace Uno.Foundation.Logging
 		public static Logger Log<T>(this T instance)
 		{
 			var type = instance as Type ?? typeof(T);
-			return _loggers.GetOrAdd(type, static t => _loggerFactory.CreateLogger(t));
+			return _loggers.GetValue(type, static t => _loggerFactory.CreateLogger(t));
 		}
 
 		private static Logger? Log<T>(this T instance, LogLevel level)

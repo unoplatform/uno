@@ -163,6 +163,7 @@ internal sealed partial class TextBoxCore
 	partial void OnPointerReleasedPartial(PointerRoutedEventArgs args, bool wasFocused);
 	partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs e);
 	partial void OnKeyDownPartial(KeyRoutedEventArgs args);
+	partial void OnCharacterReceivedPartial(CharacterReceivedRoutedEventArgs e);
 	partial void SelectPartial(int start, int length);
 	partial void SelectAllPartial();
 	partial void PasteFromClipboardPartial(string adjustedClipboardText, int selectionStart, string newText);
@@ -361,6 +362,8 @@ internal sealed partial class TextBoxCore
 	internal void OnFlowDirectionChanged() => OnFlowDirectionChangedPartial();
 
 	internal void OnKeyDown(KeyRoutedEventArgs args) => OnKeyDownPartial(args);
+
+	internal void OnCharacterReceived(CharacterReceivedRoutedEventArgs e) => OnCharacterReceivedPartial(e);
 
 	internal void OnPointerCaptureLost(PointerRoutedEventArgs e) => OnPointerCaptureLostPartial(e);
 
