@@ -4521,11 +4521,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			var bitmap2 = await UITestHelper.ScreenShot(SUT);
 
+			// The two strings put "abc" on the same tab stop, so everything from x=20 on should match. Allow a small
+			// per-channel tolerance: the two renders can differ by a few levels in the glyphs' antialiased fringe
+			// (sub-pixel rasterization), which is imperceptible. A real misalignment would shift whole pixels (>100).
+			const int tolerance = 16;
 			for (var x = 20; x < bitmap.Width; x++)
 			{
 				for (var y = 0; y < bitmap.Height; y++)
 				{
-					Assert.AreEqual(bitmap.GetPixel(x, y), bitmap2.GetPixel(x, y));
+					var expected = bitmap.GetPixel(x, y);
+					var actual = bitmap2.GetPixel(x, y);
+					Assert.IsTrue(
+						Math.Abs(expected.A - actual.A) <= tolerance &&
+						Math.Abs(expected.R - actual.R) <= tolerance &&
+						Math.Abs(expected.G - actual.G) <= tolerance &&
+						Math.Abs(expected.B - actual.B) <= tolerance,
+						$"Pixel ({x},{y}) differs beyond tolerance {tolerance}: {expected} vs {actual}");
 				}
 			}
 		}
