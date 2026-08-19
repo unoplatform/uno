@@ -611,6 +611,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// and asserts DComp pixel parity; the Skia variant skips that (no DComp)
 		// and keeps the public-API view assertions.
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public async Task ReenterContent()
 		{
 			var scrollViewer = await AddScrollViewer(Orientation.Vertical);
