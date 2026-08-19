@@ -55,11 +55,15 @@ public partial class CompositionTarget
 	private readonly Lock _frameGate = new();
 	private readonly Lock _xamlRootBoundsGate = new();
 
-	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested
+	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested.
+	// All four cache per-composition-target (i.e. per-window) state and must not be static: the
+	// scaled clip path is invalidated by a per-target canvas recreation and keyed on this target's
+	// own frame, so sharing it lets one window discard and overwrite another's. On the hosts that
+	// render each window on its own thread that is also a data race on the SKPath itself.
 	private Size _lastCanvasSize = Size.Empty;
-	private static SKPath? _lastNativeClipPath;
+	private SKPath? _lastNativeClipPath;
 	private float _lastRasterizationScale = 1;
-	private static SKPath? _lastScaledNativeClipPath;
+	private SKPath? _lastScaledNativeClipPath;
 
 	private readonly SKPath _pendingDamage = new();
 
