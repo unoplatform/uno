@@ -4593,6 +4593,82 @@ public class Given_ElementTheme
 	#region VisualState setter {ThemeResource} resolves setter-side (issue #24021)
 
 #if HAS_UNO
+
+	// Guard (not a negative control for the bail — the previous skipSetValue path already protected
+	// this element's own value): a themed boundary that carries its own Foreground keeps it. WinUI bails
+	// out of NotifyThemeChangedForInheritedProperties entirely there (framework.cpp:3423-3429 @
+	// fc2f82117). The bail's observable effect — not publishing a frozen brush to the subtree — is
+	// covered by the NumberBox test below via reference identity.
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24021")]
+	public async Task When_Themed_Boundary_Has_Own_Foreground_Freeze_Bails()
+	{
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+		var stateBrush = new SolidColorBrush(Colors.Magenta);
+		var boundary = new TextBlock
+		{
+			Text = "boundary",
+			RequestedTheme = ElementTheme.Light,
+			Foreground = stateBrush,
+		};
+
+		WindowHelper.WindowContent = boundary;
+		await WindowHelper.WaitForLoaded(boundary);
+		await WindowHelper.WaitForIdle();
+
+		// Positive control: the boundary actually applied, so the freeze path really ran.
+		Assert.AreEqual(ElementTheme.Light, boundary.ActualTheme, "RequestedTheme=Light never applied");
+
+		// Reference identity, immune to the brush-aliasing trap.
+		Assert.AreSame(stateBrush, boundary.Foreground,
+			"The theme boundary overwrote its own explicitly-set Foreground");
+	}
+
+	// End-to-end #24021: the text the user sees is the TextBox's display block, which inherits
+	// Foreground from ContentElement. The Focused state sets ContentElement.Foreground AND
+	// ContentElement.RequestedTheme=Light on the same element, so the freeze must bail.
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24021")]
+	public async Task When_NumberBox_Focused_In_Dark_Theme_DisplayBlock_Keeps_ContentElement_Foreground()
+	{
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+		var numberBox = new NumberBox { Width = 160, Value = 888 };
+		WindowHelper.WindowContent = numberBox;
+		await WindowHelper.WaitForLoaded(numberBox);
+		await WindowHelper.WaitForIdle();
+
+		var inputBox = numberBox.FindFirstDescendant<TextBox>("InputBox");
+		Assert.IsNotNull(inputBox, "InputBox should exist in the NumberBox template");
+
+		inputBox.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		var contentElement = inputBox.FindFirstDescendant<FrameworkElement>("ContentElement");
+		Assert.IsNotNull(contentElement, "ContentElement should exist in the TextBox template");
+
+		// Positive controls: the Focused state ran, and its boundary applied.
+		var borderElement = inputBox.FindFirstDescendant<Border>("BorderElement");
+		Assert.AreEqual(
+			Windows.UI.Color.FromArgb(0xB3, 0x1E, 0x1E, 0x1E),
+			((SolidColorBrush)borderElement.Background).Color,
+			"Focused state did not apply — BorderElement.Background is not TextControlBackgroundFocused (dark)");
+		Assert.AreEqual(ElementTheme.Light, contentElement.ActualTheme,
+			"The Focused state's RequestedTheme=Light boundary should still apply");
+
+		var displayBlock = inputBox.FindFirstDescendant<TextBlock>(tb => tb.Text == "888");
+		Assert.IsNotNull(displayBlock, "The text display block should exist in the TextBox visual tree");
+
+		Assert.AreSame(((Control)contentElement).Foreground, displayBlock.Foreground,
+			"The display block must inherit ContentElement.Foreground, not a frozen theme default");
+		Assert.AreEqual(Colors.White, ((SolidColorBrush)displayBlock.Foreground).Color,
+			"Focused NumberBox text should be the Dark TextControlForegroundFocused");
+	}
 	// The editable ComboBox's ComboBoxTextBoxStyle Focused state applies BOTH
 	// ContentElement.Foreground="{ThemeResource TextControlForegroundFocused}" and
 	// ContentElement.RequestedTheme="Light" onto the inner TextBox's ScrollViewer (verbatim from
