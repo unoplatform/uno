@@ -427,7 +427,7 @@ public partial class DependencyObject
 			var ownerTheme = ownerThemeOverride ?? ThemeResolution.ResolveOwnerTheme(owner);
 
 			// A VSM setter's reference resolves under the setter side, not under the object it is
-			// registered on — WinUI keeps it on the CSetter entirely (ThemeResource.cpp:194-203).
+			// registered on — WinUI keeps it on the CSetter entirely (ThemeResource.cpp:189-198).
 			// The pin applies during a walk too: the walk theme here is the TARGET's, which is exactly
 			// the boundary the setter value must not be re-scoped by (#24021).
 			if (themeRef.ResolutionOwner is { } resolutionOwner)
