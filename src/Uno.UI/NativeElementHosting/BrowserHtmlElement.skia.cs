@@ -114,7 +114,7 @@ public sealed partial class BrowserHtmlElement : IDisposable
 	}
 
 	partial void OnInputPolicyChanged(BrowserHtmlElementInputPolicy value)
-		=> NativeMethods.SetInputPolicy(ElementId, (int)value);
+		=> NativeMethods.SetInputPolicy(ElementId, UnoElementId, (int)value);
 
 	[JSExport]
 	private static bool DispatchEventNativeElementMethod(
@@ -196,7 +196,7 @@ public sealed partial class BrowserHtmlElement : IDisposable
 		internal static partial void SetContentHtml(string elementId, string html);
 
 		[JSImport($"globalThis.Uno.UI.NativeElementHosting.BrowserHtmlElement.setInputPolicy")]
-		internal static partial void SetInputPolicy(string elementId, int value);
+		internal static partial void SetInputPolicy(string elementId, nint unoElementId, int value);
 
 		[JSImport($"globalThis.Uno.UI.NativeElementHosting.BrowserHtmlElement.registerNativeHtmlEvent")]
 		internal static partial void RegisterNativeHtmlEvent(
