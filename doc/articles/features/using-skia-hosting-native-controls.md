@@ -61,8 +61,21 @@ With this policy:
 
 The default is `NativeOnly`, which preserves the behavior described above.
 
+Chaining honors `ScrollViewer.IsHorizontalScrollChainingEnabled` and `IsVerticalScrollChainingEnabled`: a `ScrollViewer` that opts out of chaining absorbs the remaining delta instead of passing it to its own ancestors.
+
 > [!NOTE]
-> Form controls (`input`, `textarea`, `select`) and `contenteditable` regions always keep their full native touch behavior and never participate in chaining, so caret dragging and text selection are unaffected. Content hosted in an `iframe` also stays native-only, because pointer events do not cross the frame boundary and its scroll position cannot be observed from the hosting document.
+> Form controls (`input`, `textarea`, `select`) and `contenteditable` regions — and their descendants — always keep their full native touch behavior and never participate in chaining, so caret dragging and text selection are unaffected. Content hosted in an `iframe` also stays native-only, because pointer events do not cross the frame boundary and its scroll position cannot be observed from the hosting document.
+
+> [!IMPORTANT]
+> Because single-finger panning is driven by Uno in `Negotiated` mode, the negotiated subtree is set to `touch-action: pinch-zoom`. Pinch-zoom keeps working, but **double-tap-to-zoom is disabled** inside the negotiated element. Multi-touch gestures are not arbitrated: as soon as a second finger goes down, the whole interaction is handed back to the browser.
+
+### Troubleshooting
+
+If a drag over negotiated content does not scroll the enclosing `ScrollViewer`:
+
+- Confirm `InputPolicy` is set to `Negotiated` — it is `NativeOnly` by default, and it must be set on the element that is assigned as the `ContentPresenter`/`ContentControl` content, not on a nested element.
+- Confirm the target is not inside an `iframe`, a form control, or a `contenteditable` region.
+- Enable `Debug` logging on `Uno.UI.Runtime.Skia.BrowserNativeElementHostingExtension` — it logs when a delta arrives for an unknown element and when no `ScrollViewer` in the ancestry consumed one.
 
 ## Limitations
 

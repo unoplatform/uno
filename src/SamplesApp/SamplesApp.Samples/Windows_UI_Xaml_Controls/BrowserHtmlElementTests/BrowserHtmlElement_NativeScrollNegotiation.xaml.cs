@@ -38,7 +38,7 @@ public sealed partial class BrowserHtmlElement_NativeScrollNegotiation : Page
 				_nativeElement.SetHtmlContent("""
 					<label>Native text input <input aria-label="Native text input" value="Tap to focus and edit" /></label>
 					<button type="button">Native button</button>
-					<p>Drag over the input or button: this native content cannot scroll.</p>
+					<p>Drag over this paragraph or the button: this native content cannot scroll, so the drag goes to the Uno Platform ScrollViewer.</p>
 					<div id="native-scroll-region" style="height: 120px; overflow-y: auto; border: 1px dashed #666;">
 						<div style="height: 480px; padding: 8px;">Drag here to scroll the native region. At its boundary, continue dragging to test scroll chaining to the Uno Platform parent.</div>
 					</div>
@@ -47,7 +47,7 @@ public sealed partial class BrowserHtmlElement_NativeScrollNegotiation : Page
 			}
 			catch (Exception e)
 			{
-				NativeHostStatus.Text = $"Native host setup failed: {e.GetType().Name}";
+				NativeHostStatus.Text = $"Native host setup failed: {e.GetType().Name}: {e.Message}";
 			}
 		}
 #endif
