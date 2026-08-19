@@ -131,9 +131,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_framePacer = CreateFramePacer();
 		_renderThread = InitRenderThread();
 
-		var windowBackgroundDisposable = _window.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
-		UpdateRendererBackground();
-
 		Closed.ContinueWith(_ =>
 		{
 			using (X11Helper.XLock(RootX11Window.Display))
@@ -142,7 +139,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				_windowToHost.Remove(winUIWindow, out var _);
 				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
 				winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
-				windowBackgroundDisposable.Dispose();
 				_framePacer.Dispose();
 				_renderRequested.Dispose();
 				_renderer?.Dispose();
@@ -754,24 +750,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				_ = XLib.XDestroyWindow(TopX11Window.Display, TopX11Window.Window);
 				_ = XLib.XDestroyWindow(RootX11Window.Display, RootX11Window.Window);
 				_ = XLib.XFlush(RootX11Window.Display);
-			}
-		}
-	}
-
-	private void UpdateRendererBackground()
-	{
-		if (_window.Background is Microsoft.UI.Xaml.Media.SolidColorBrush brush)
-		{
-			if (_renderer is not null)
-			{
-				_renderer.SetBackgroundColor(brush.Color);
-			}
-		}
-		else if (_window.Background is not null)
-		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
 			}
 		}
 	}

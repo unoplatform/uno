@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using Windows.UI;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Hosting;
@@ -20,7 +19,6 @@ internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 	private readonly X11Window _x11Window;
 	private readonly ISwapChain _context;
 	private readonly IDrawingFactory _renderer;
-	private Color _background;
 	private X11AirspaceRenderHelper? _airspaceHelper;
 	private int _airspaceWidth;
 	private int _airspaceHeight;
@@ -32,8 +30,6 @@ internal sealed class X11SoftwareGraphicsRenderer : IX11Renderer
 		_context = context;
 		_renderer = renderer;
 	}
-
-	public void SetBackgroundColor(Color color) => _background = color;
 
 	public void Render()
 	{
