@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Diagnostics;
+using Uno.Foundation.Logging;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -184,7 +185,7 @@ namespace Private.Infrastructure
 				}
 
 				_lastSlowIdleLogTimestamp = Stopwatch.GetTimestamp();
-				Console.WriteLine($"[diag] WaitForIdle took {elapsedMs}ms — the Idle queue is not being serviced promptly.");
+				typeof(WindowHelper).Log().Warn($"WaitForIdle took {elapsedMs}ms — the Idle queue is not being serviced promptly.");
 			}
 
 			/// <summary>
@@ -362,8 +363,8 @@ namespace Private.Infrastructure
 
 				// The runner retries a failed test twice without logging it, so a WaitFor that times out
 				// three times shows up only as a test that took ~3x its timeout and "passed". Name it.
-				Console.WriteLine(
-					$"[diag] WaitFor timed out after {stopwatch.ElapsedMilliseconds}ms and {iterations} idle " +
+				typeof(WindowHelper).Log().Warn(
+					$"WaitFor timed out after {stopwatch.ElapsedMilliseconds}ms and {iterations} idle " +
 					$"round-trip(s) at {callerMemberName}():{lineNumber} — {message}");
 
 				throw new AssertFailedException("Timed out waiting for condition to be met. " + message);

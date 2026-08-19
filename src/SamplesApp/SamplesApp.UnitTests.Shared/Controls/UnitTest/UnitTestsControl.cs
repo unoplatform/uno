@@ -1075,8 +1075,8 @@ namespace Uno.UI.Samples.Tests
 										// retry loop sits inside this method while "Running test" is logged outside
 										// it — so a test that fails twice and then passes is indistinguishable in the
 										// log from one that was simply slow. Say so.
-										Console.WriteLine(
-											$"[diag] retry {_currentRun.CurrentRepeatCount + 1}/{config.Attempts - 1} of {fullTestName} " +
+										_log?.Warn(
+											$"Retry {_currentRun.CurrentRepeatCount + 1}/{config.Attempts - 1} of {fullTestName} " +
 											$"after {sw.ElapsedMilliseconds}ms: {e.GetType().Name}: {e.Message?.Split('\n')[0]}");
 
 										// Count only the first time we retry this test.
