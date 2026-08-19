@@ -44,7 +44,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	private SKSurface? _surface;
 	private readonly RetainedLayer _retainedLayer = new();
 	private int _rowBytes;
-	private bool _initializationCompleted;
+	private volatile bool _initializationCompleted;
 	// Written by the software/legacy draw paths on the main thread and by the Metal render thread.
 	private volatile string? _lastSvgClipPath;
 	private Size _nativeWindowSize;
@@ -142,6 +142,30 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		if (RootElement?.Visual.CompositionTarget is not CompositionTarget ct)
 		{
+			return;
+		}
+
+		// FIXME: we get the first (native) updates for window sizes before we have completed the (managed)
+		// host initialization — https://github.com/unoplatform/uno-private/issues/319
+		// The non-threaded path re-delivers the size from every draw until the managed host has subscribed
+		// to SizeChanged. Without that here, a size that arrives too early is simply lost and XamlRoot.Bounds
+		// stays 0x0 — and CoreServices.RequestAdditionalFrame silently does nothing while bounds are zero
+		// (CoreServices.cs:67), so UpdateLayout and RaiseLoadedEvent never run for that window. Every
+		// WaitForLoaded against it then burns its full timeout, three times over, and the test fails.
+		if (!_initializationCompleted)
+		{
+			// UpdateWindowSize raises SizeChanged into the managed tree, so it must run on the UI thread.
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				var scale = (float)_xamlRoot.RasterizationScale;
+				UpdateWindowSize(nativeWidth / scale, nativeHeight / scale);
+				_initializationCompleted = SizeChanged is not null;
+
+				// Nothing else will ask for the next frame while we are still bootstrapping, and the
+				// request is paced, so this cannot spin.
+				_metalRenderThread?.RequestFrame();
+			}, NativeDispatcherPriority.Normal);
+
 			return;
 		}
 
