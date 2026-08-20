@@ -231,10 +231,10 @@ internal sealed class TextSelectionGripperPresenter
 			// A 1px probe rather than a bare point: both sides of the test come from float matrices, and a caret
 			// line that ends flush with the clip (a selectable TextBlock's last line) must not flicker on rounding.
 			var anchor = new Rect(rect.GetMidX() - 0.5, rect.Bottom - 0.5, 1, 1);
-			// Never cull the gripper the finger is holding: Cull() collapses it, and collapsing an element releases
-			// its pointer captures (UIElement.Pointers.ClearPointersStateIfNeeded), which would end the drag. The cost
-			// is a dragged gripper painting outside the clip until the finger lifts; native instead auto-scrolls the
-			// container when a handle reaches the edge, which we don't do.
+			// Never cull the gripper the finger is holding: hiding it closes its popup, and unloading an element
+			// releases its pointer captures (UIElement.Pointers.ClearPointersStateOnUnload), which would end the drag.
+			// The cost is a dragged gripper painting outside the clip until the finger lifts; native instead
+			// auto-scrolls the container when a handle reaches the edge, which we don't do.
 			if (gripper.HasPointerCapture || transform.TransformBounds(anchor).IntersectWith(clip) is not null)
 			{
 				var matrixTransform = (MatrixTransform)transform;
@@ -252,12 +252,15 @@ internal sealed class TextSelectionGripperPresenter
 			{
 				// On the transition only. An empty clip here means GripperClipBounds computed nothing (host out of
 				// the live tree, or zero-sized) rather than the anchor genuinely being scrolled away.
-				if (gripper.Visibility != Visibility.Collapsed && this.Log().IsEnabled(LogLevel.Trace))
+				if (gripper.IsShowing && this.Log().IsEnabled(LogLevel.Trace))
 				{
 					this.Log().Trace($"Culling a text selection gripper: anchor {transform.TransformBounds(anchor)} is outside the clip {clip}.");
 				}
 
-				gripper.Cull();
+				// Closed rather than collapsed: the reposition loop is driven by the presenter, not by the popups, so
+				// nothing depends on a culled gripper's popup staying open - and an open one shows up in the public
+				// VisualTreeHelper.GetOpenPopupsForXamlRoot.
+				gripper.Hide();
 			}
 		}
 	}
