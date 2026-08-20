@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -9,10 +8,11 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.System;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.RuntimeTests.Helpers;
 
-public static class TextContextMenuHelper
+internal static class TextContextMenuHelper
 {
 	/// <summary>
 	/// Waits for the command carrying <paramref name="accelerator"/> in an open text context menu (e.g.
@@ -45,21 +45,7 @@ public static class TextContextMenuHelper
 		=> VisualTreeHelper.GetOpenPopupsForXamlRoot(xamlRoot)
 			.Select(popup => popup.Child)
 			.OfType<DependencyObject>()
-			.SelectMany(EnumerateSelfAndDescendants)
+			.SelectMany(x => x.EnumerateDescendants().Prepend(x))
 			.OfType<AppBarButton>()
 			.FirstOrDefault(button => button.KeyboardAccelerators.Any(ka => ka.Key == accelerator));
-
-	private static IEnumerable<DependencyObject> EnumerateSelfAndDescendants(DependencyObject root)
-	{
-		yield return root;
-
-		var count = VisualTreeHelper.GetChildrenCount(root);
-		for (var i = 0; i < count; i++)
-		{
-			foreach (var descendant in EnumerateSelfAndDescendants(VisualTreeHelper.GetChild(root, i)))
-			{
-				yield return descendant;
-			}
-		}
-	}
 }
