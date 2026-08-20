@@ -65,6 +65,10 @@ jobs:
   - template: ../templates/dotnet-install.yml
 
   - template: ../templates/linux-install-deps.yml
+    parameters:
+      # This job only runs Chrome under a virtual display. The vlc/gtk/webkit -dev packages in
+      # the default set exist for the Skia desktop X11 host and pull ~200 MB nothing here loads.
+      packages: 'xvfb fluxbox'
 
   - bash: |
         set -euo pipefail
@@ -74,7 +78,14 @@ jobs:
         wget --tries=3 --timeout=60 https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         # No apt-get update here: the .deb carries its own dependency list, and refreshing the
         # mirror indexes is exactly where the long stalls happen.
-        sudo timeout --kill-after=30s 5m apt-get install -y -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Dpkg::Use-Pty=0 ./google-chrome-stable_current_amd64.deb
+        apt_opts="-o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Dpkg::Use-Pty=0"
+        if ! sudo timeout --kill-after=30s 5m apt-get install -y $apt_opts ./google-chrome-stable_current_amd64.deb; then
+          # Chrome pulls its runtime dependencies from the .deb; refresh the indexes only if
+          # they turn out not to be resolvable from the pre-baked ones.
+          sudo dpkg --configure -a || true
+          sudo timeout --kill-after=30s 3m apt-get update $apt_opts
+          sudo timeout --kill-after=30s 5m apt-get install -y $apt_opts ./google-chrome-stable_current_amd64.deb
+        fi
     displayName: Install chrome
     timeoutInMinutes: 10
 
