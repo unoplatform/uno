@@ -1,6 +1,7 @@
-#if WINAPPSDK || __SKIA__
+﻿#if WINAPPSDK || __SKIA__
 using System.Linq;
 using System.Threading.Tasks;
+using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -48,7 +49,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			try
 			{
 #if __SKIA__
-				if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+				if (!ClipboardHelper.IsAvailable)
 				{
 					Assert.Inconclusive("Clipboard is not available on this platform.");
 				}
@@ -95,7 +96,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			try
 			{
 #if __SKIA__
-				if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+				if (!ClipboardHelper.IsAvailable)
 				{
 					Assert.Inconclusive("Clipboard is not available on this platform.");
 				}
@@ -137,7 +138,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // WASM clipboard APIs are async; GetContent() always registers providers, so Contains() is always true after Clear()
 		public async Task When_TextBox_Clipboard_Empty()
 		{
 #if __SKIA__
@@ -218,7 +218,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			try
 			{
 #if __SKIA__
-				if (!ApiExtensibility.IsRegistered<IClipboardExtension>())
+				if (!ClipboardHelper.IsAvailable)
 				{
 					Assert.Inconclusive("Clipboard is not available on this platform.");
 				}
@@ -288,7 +288,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // WASM clipboard APIs are async; GetContent() always registers providers, so Contains() is always true after Clear()
 		public async Task When_CanPasteClipboardContent_EmptyClipboard()
 		{
 #if __SKIA__
