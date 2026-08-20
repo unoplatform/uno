@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Numerics;
 using Windows.Foundation;
@@ -6,6 +6,7 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
+using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -96,10 +97,10 @@ internal sealed class TextSelectionGripperPresenter
 	private CaretWithStemAndThumb _startGripper;
 	private CaretWithStemAndThumb _endGripper;
 
-	// The per-frame reposition loop, owned here rather than by each gripper: both grippers used to subscribe
-	// individually and invoke this same Update, so a two-thumb selection did all of its work - the ancestor-clip
-	// walk behind GripperClipBounds included - twice per rendered frame.
+	// One frame-driven reposition pass for the pair: a per-gripper subscription runs Update - and the
+	// ancestor-clip walk behind GripperClipBounds - once per showing gripper per frame.
 	private CompositionTarget _frameLoop;
+	private bool _repositionFailureLogged;
 
 	public TextSelectionGripperPresenter(ITextSelectionGripperHost host)
 	{
@@ -137,15 +138,14 @@ internal sealed class TextSelectionGripperPresenter
 		_endGripper.Hide();
 	}
 
-	// Subscribed while the grippers are showing, so Update runs once per rendered frame however many of them
-	// are up. Unsubscribing from inside the callback is safe: FrameRendered is an Action event, so the in-flight
-	// invocation walks a snapshot of the handler list.
+	// Subscribed for as long as the grippers are showing. Unsubscribing from inside the callback is safe:
+	// FrameRendered is an Action event, so the in-flight invocation walks a snapshot of the handler list.
 	private void SubscribeToFrameLoop()
 	{
 		if (_frameLoop is null && _host.GripperTextSurface.XamlRoot is { } xamlRoot)
 		{
 			_frameLoop = xamlRoot.VisualTree.ContentRoot.CompositionTarget;
-			_frameLoop.FrameRendered += Update;
+			_frameLoop.FrameRendered += OnFrameRendered;
 		}
 	}
 
@@ -154,7 +154,29 @@ internal sealed class TextSelectionGripperPresenter
 		if (_frameLoop is { } frameLoop)
 		{
 			_frameLoop = null;
-			frameLoop.FrameRendered -= Update;
+			frameLoop.FrameRendered -= OnFrameRendered;
+		}
+	}
+
+	// The subscription outlives the grippers' visibility - a culled gripper still needs frames to notice its anchor
+	// scrolling back in - so an exception escaping Update would take the window's render loop with it.
+	private void OnFrameRendered()
+	{
+		try
+		{
+			Update();
+		}
+		catch (Exception e)
+		{
+			// First failure only: it would otherwise repeat every rendered frame.
+			if (!_repositionFailureLogged)
+			{
+				_repositionFailureLogged = true;
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Failed to reposition the text selection grippers.", e);
+				}
+			}
 		}
 	}
 
@@ -174,6 +196,8 @@ internal sealed class TextSelectionGripperPresenter
 		SubscribeToFrameLoop();
 
 		var surface = _host.GripperTextSurface;
+		// An axis-aligned bbox (GetGlobalBoundsWithOptions reduces the ancestor clip path to its Bounds), so a
+		// rotated ancestor over-approximates its clip and culls less than it could.
 		var clip = _host.GripperClipBounds;
 		var lower = _host.SelectionLowerIndex;
 		var upper = _host.SelectionUpperIndex;
@@ -207,12 +231,10 @@ internal sealed class TextSelectionGripperPresenter
 			// A 1px probe rather than a bare point: both sides of the test come from float matrices, and a caret
 			// line that ends flush with the clip (a selectable TextBlock's last line) must not flicker on rounding.
 			var anchor = new Rect(rect.GetMidX() - 0.5, rect.Bottom - 0.5, 1, 1);
-			// Never cull the gripper the finger is holding. Cull() collapses it, and collapsing an element releases
-			// its pointer captures (UIElement.Pointers.ClearPointersStateIfNeeded), which aborts the drag mid-gesture:
-			// the remaining moves are dropped and the release never reaches the gripper, so the selection toolbar
-			// never comes back either. The trade is that a dragged gripper may paint outside the clip for the duration
-			// of the gesture - transient, and under the finger. Native avoids even that by auto-scrolling the container
-			// when a handle reaches the edge, which we don't do yet.
+			// Never cull the gripper the finger is holding: Cull() collapses it, and collapsing an element releases
+			// its pointer captures (UIElement.Pointers.ClearPointersStateIfNeeded), which would end the drag. The cost
+			// is a dragged gripper painting outside the clip until the finger lifts; native instead auto-scrolls the
+			// container when a handle reaches the edge, which we don't do.
 			if (gripper.HasPointerCapture || transform.TransformBounds(anchor).IntersectWith(clip) is not null)
 			{
 				var matrixTransform = (MatrixTransform)transform;
@@ -228,6 +250,13 @@ internal sealed class TextSelectionGripperPresenter
 			}
 			else
 			{
+				// On the transition only. An empty clip here means GripperClipBounds computed nothing (host out of
+				// the live tree, or zero-sized) rather than the anchor genuinely being scrolled away.
+				if (gripper.Visibility != Visibility.Collapsed && this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Culling a text selection gripper: anchor {transform.TransformBounds(anchor)} is outside the clip {clip}.");
+				}
+
 				gripper.Cull();
 			}
 		}
