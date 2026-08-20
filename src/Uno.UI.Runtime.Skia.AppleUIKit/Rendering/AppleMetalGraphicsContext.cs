@@ -6,8 +6,8 @@ using Uno.UI.Composition.Drawing;
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 /// <summary>
-/// A context that consumes the per-frame <c>MTLTexture</c> the MTKView supplies (Skia-on-Metal), rather than a
-/// swapchain-owning context that sources its own drawable.
+/// A context that consumes the per-frame <c>MTLTexture</c> the MTKView supplies, rather than a swapchain-owning
+/// context that sources its own drawable.
 /// </summary>
 internal interface IAppleNativeTextureSink
 {
@@ -16,7 +16,7 @@ internal interface IAppleNativeTextureSink
 }
 
 /// <summary>
-/// Neutral Skia-on-Metal <see cref="ISwapChain"/> for AppleUIKit: holds the MTKView's device/queue and wraps the
+/// Neutral native-texture Metal <see cref="ISwapChain"/> for AppleUIKit: holds the MTKView's device/queue and wraps the
 /// per-frame drawable <c>MTLTexture</c> as an <see cref="IMetalRenderTarget"/>. The MTKView owns and presents the
 /// drawable, so <see cref="Present"/> is a no-op.
 /// </summary>

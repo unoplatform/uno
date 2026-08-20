@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
@@ -55,6 +56,13 @@ internal static class GraphicsRegistry
 	/// seam — it maps a neutral context kind to a window+context and never references a render backend.
 	/// </summary>
 	public static GraphicsContextFactory? ContextFactory { get; set; }
+
+	/// <summary>
+	/// Context kinds the host builder has excluded from negotiation, expressed as neutral kinds (the builder's
+	/// rendering-backend choice: force one API by excluding the others, or disable specific APIs). Negotiation skips
+	/// any kind in this set. Empty (the default) excludes nothing — every kind a registered backend prefers is tried.
+	/// </summary>
+	public static IReadOnlyCollection<GraphicsContextKind> DisabledContextKinds { get; set; } = Array.Empty<GraphicsContextKind>();
 
 	/// <summary>
 	/// Registers the app's backend preference, most-preferred first. Uniform across every platform (there is
@@ -158,11 +166,18 @@ internal static class GraphicsRegistry
 			?? throw new InvalidOperationException(
 				"No host graphics context factory set. The host must set GraphicsRegistry.ContextFactory before initializing.");
 
+		var disabledKinds = DisabledContextKinds;
 		var attempts = new StringBuilder();
 		foreach (var backend in backends)
 		{
 			foreach (var kind in backend.PreferredContexts)
 			{
+				if (disabledKinds.Contains(kind))
+				{
+					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: excluded by the host builder");
+					continue;
+				}
+
 				ISwapChain? context;
 				try
 				{

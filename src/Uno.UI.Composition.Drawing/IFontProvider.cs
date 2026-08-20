@@ -1,5 +1,6 @@
 #nullable enable
 
+using System.Threading.Tasks;
 using Windows.UI.Text;
 
 namespace Uno.UI.Composition.Drawing;
@@ -17,8 +18,13 @@ public interface IFontProvider
 	/// <summary>Resolves an installed font family, or <c>null</c> if the family is unknown (caller falls back to the default).</summary>
 	IFont? MatchFamily(string familyName, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize);
 
-	/// <summary>Finds a font that can render <paramref name="codepoint"/> when the requested family can't, or <c>null</c> if none is available.</summary>
-	IFont? MatchCharacter(int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize);
+	/// <summary>
+	/// Finds a font that can render <paramref name="codepoint"/> when the requested family can't, or <c>null</c> if none.
+	/// Asynchronous because fallback may fetch a font on demand (e.g. the browser downloading a Noto font); an installed
+	/// match completes synchronously (callers can consume the completed <see cref="ValueTask{T}"/> without awaiting).
+	/// This is the sole fallback seam — a custom provider implements it to supply its own fallback.
+	/// </summary>
+	ValueTask<IFont?> MatchCharacterAsync(int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize);
 
 	/// <summary>Returns a guaranteed-usable default font for the requested style.</summary>
 	IFont GetDefaultFont(FontWeight weight, FontStretch stretch, FontStyle style, float fontSize);

@@ -12,8 +12,8 @@ namespace Uno.UI.Runtime.Skia.Win32;
 /// <summary>
 /// On-window Vulkan graphics context for Win32 (the mirror of <c>X11VulkanGraphicsContext</c>): owns the Vulkan
 /// device/swapchain and exposes it as a neutral <see cref="IVulkanDeviceContext"/>. The device lock is held for
-/// the whole frame; <see cref="Present"/> blits the render image to the swapchain and releases it. Gated on
-/// <c>UseVulkanOnWin32</c>; the ctor throws when Vulkan is unavailable so negotiation falls through.
+/// the whole frame; <see cref="Present"/> blits the render image to the swapchain and releases it. The ctor throws
+/// when Vulkan is unavailable so negotiation falls through to the next kind.
 /// </summary>
 internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext
 {

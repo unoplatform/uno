@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Microsoft.UI.Xaml.Documents.TextFormatting;
+namespace Uno.UI.Composition.Drawing;
 
 internal static class FallbackFontMaps
 {

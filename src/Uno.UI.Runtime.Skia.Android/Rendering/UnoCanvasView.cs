@@ -22,14 +22,14 @@ using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
-internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderView
+internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 {
 	public UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 	public TextInputPlugin TextInputPlugin { get; }
 
 	private readonly InternalRenderer _renderer;
 
-	public UnoSKCanvasView(Context context) : base(context)
+	public UnoCanvasView(Context context) : base(context)
 	{
 		SetEGLContextClientVersion(2);
 		SetEGLConfigChooser(8, 8, 8, 8, 0, 8);
@@ -100,7 +100,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				this.Log().Error($"{nameof(UnoSKCanvasView)}.{nameof(OnFocusChanged)} failed", e);
+				this.Log().Error($"{nameof(UnoCanvasView)}.{nameof(OnFocusChanged)} failed", e);
 			}
 		}
 	}

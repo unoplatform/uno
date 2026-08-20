@@ -2,14 +2,12 @@
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.Web.WebView2.Core;
 using Uno.Foundation.Extensibility;
 using Uno.Graphics;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.WinUI.Runtime.Skia.Android;
-using Uno.WinUI.Runtime.Skia.Android.UI.Xaml.Controls.TextBox;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 
@@ -36,7 +34,6 @@ internal static class ExtensionsRegistrar
 		ApiExtensibility.Register(typeof(ISkiaNativeTimePickerProviderExtension), _ => new AndroidSkiaTimePickerProvider());
 		ApiExtensibility.Register(typeof(IInputPaneExtension), _ => new InputPaneExtension());
 		ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new AndroidSkiaMediaPlayerPresenterExtension(o));
-		ApiExtensibility.Register(typeof(IFontFallbackService), _ => AndroidSkiaFontFallbackService.Instance);
 		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => new AndroidImeTextBoxExtension());
 		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new AndroidNativeOpenGLWrapper(xamlRoot));
 

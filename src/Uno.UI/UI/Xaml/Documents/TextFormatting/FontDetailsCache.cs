@@ -12,7 +12,6 @@ using Uno.UI.Xaml.Media;
 using Windows.Storage;
 using Windows.Storage.Helpers;
 using Windows.UI.Text;
-using Uno.Foundation.Extensibility;
 using Uno.Helpers;
 
 namespace Microsoft.UI.Xaml.Documents.TextFormatting;
@@ -42,10 +41,6 @@ internal static class FontDetailsCache
 	// .manifest probe so the whole resolution completes synchronously.
 	private static readonly Dictionary<(string SourceUri, int Weight, FontStyle Style, FontStretch Stretch), Uri> _manifestUriCache = new();
 	private static readonly object _fontDataGate = new();
-
-	private static readonly IFontFallbackService? _fontFallbackService =
-		FeatureConfiguration.Font.FallbackService
-		?? (ApiExtensibility.CreateInstance<IFontFallbackService>(typeof(FontDetailsCache), out var service) ? service : null);
 
 	private static IFontProvider FontProvider => global::Uno.UI.Composition.Drawing.FontProvider.Current;
 
@@ -161,37 +156,7 @@ internal static class FontDetailsCache
 			return manager.CreateFont(cachedData, familyNameHint, weight, stretch, style, fontSize);
 		}
 
-		if (_fontFallbackService is { } fallbackService)
-		{
-			try
-			{
-				if (await fallbackService.GetFontStreamForFontFamily(name, weight, stretch, style) is { } fallbackStream)
-				{
-					using (fallbackStream)
-					{
-						return manager.CreateFont(ReadAllBytes(fallbackStream), familyNameHint, weight, stretch, style, fontSize);
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				typeof(FontDetailsCache).LogError()?.Error($"Font fallback service threw resolving {name}", e);
-			}
-		}
-
 		return manager.MatchFamily(name, weight, stretch, style, fontSize);
-	}
-
-	private static byte[] ReadAllBytes(Stream stream)
-	{
-		if (stream is MemoryStream ms)
-		{
-			return ms.ToArray();
-		}
-
-		using var buffer = new MemoryStream();
-		stream.CopyTo(buffer);
-		return buffer.ToArray();
 	}
 
 	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<FontDetails> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((
@@ -273,33 +238,39 @@ internal static class FontDetailsCache
 		FontStretch stretch,
 		FontStyle style) => _getFont(name, fontSize, weight, stretch, style);
 
-	public static async Task<FontDetails?> GetFontForCodepoint(
+	public static Task<FontDetails?> GetFontForCodepoint(
 		int codepoint,
 		float fontSize,
 		FontWeight weight,
 		FontStretch stretch,
 		FontStyle style)
 	{
-		if (_fontFallbackService is { } fallbackService)
+		// The provider resolves the codepoint through the installed fonts first, then its platform fallback (e.g. the
+		// browser's on-demand Noto fetch). An installed match completes synchronously, so the caller's IsCompleted
+		// fast-path keeps working; only a fetch defers.
+		var match = FontProvider.MatchCharacterAsync(codepoint, weight, stretch, style, fontSize);
+		if (match.IsCompletedSuccessfully)
 		{
-			string? fallbackServiceResult = null;
+			var font = match.Result;
+			return Task.FromResult(font is null ? null : FontDetails.Create(font, fontSize));
+		}
+
+		return Awaited(match, fontSize);
+
+		static async Task<FontDetails?> Awaited(ValueTask<IFont?> match, float fontSize)
+		{
+			IFont? font;
 			try
 			{
-				fallbackServiceResult = await fallbackService.GetFontFamilyForCodepoint(codepoint);
+				font = await match;
 			}
 			catch (Exception e)
 			{
-				typeof(UnicodeText).LogError()?.Error($"Font fallback service failed to get font for codepoint U+{codepoint:X4}", e);
-			}
-
-			if (fallbackServiceResult is null)
-			{
+				typeof(UnicodeText).LogError()?.Error("Font provider failed to resolve a fallback for a codepoint", e);
 				return null;
 			}
 
-			return await GetFont(fallbackServiceResult, fontSize, weight, stretch, style).loadedTask;
+			return font is null ? null : FontDetails.Create(font, fontSize);
 		}
-
-		return null;
 	}
 }
