@@ -33,6 +33,11 @@ export RESULTS_CANARY_FILE="$RESULTS_FILE.canary"
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-wasm-runtimetests-$UITEST_RUNTIME_TEST_GROUP-chromium.txt
 
+## Create the failed-tests directory up front: every abort path below (a crashed harness,
+## a killed app, a non-zero transform tool) otherwise skips the mkdir and leaves
+## `PublishBuildArtifacts@1` retrying a missing PathtoPublish for minutes.
+mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
+
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64 -w 0`
 
@@ -108,7 +113,6 @@ done
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
-mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 echo "Running NUnitTransformTool"
 
