@@ -72,7 +72,7 @@ public interface IFont
 /// The output of <see cref="IFont.Shape"/>: parallel arrays describing the positioned glyphs of one shaped run.
 /// <see cref="Offsets"/> and <see cref="Advances"/> are in pixels at the font's size.
 /// </summary>
-public readonly struct GlyphRun
+public readonly record struct GlyphRun
 {
 	public GlyphRun(ushort[] glyphs, Vector2[] offsets, float[] advances, int[] clusters)
 	{

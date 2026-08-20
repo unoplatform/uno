@@ -69,19 +69,19 @@ internal sealed class SvgPathParser
 		switch (char.ToUpperInvariant(command))
 		{
 			case 'M':
-			{
-				var x = Num() + (rel ? _cx : 0);
-				var y = Num() + (rel ? _cy : 0);
-				MoveTo(x, y);
-				break;
-			}
+				{
+					var x = Num() + (rel ? _cx : 0);
+					var y = Num() + (rel ? _cy : 0);
+					MoveTo(x, y);
+					break;
+				}
 			case 'L':
-			{
-				var x = Num() + (rel ? _cx : 0);
-				var y = Num() + (rel ? _cy : 0);
-				LineTo(x, y);
-				break;
-			}
+				{
+					var x = Num() + (rel ? _cx : 0);
+					var y = Num() + (rel ? _cy : 0);
+					LineTo(x, y);
+					break;
+				}
 			case 'H':
 				LineTo(Num() + (rel ? _cx : 0), _cy);
 				break;
@@ -89,51 +89,51 @@ internal sealed class SvgPathParser
 				LineTo(_cx, Num() + (rel ? _cy : 0));
 				break;
 			case 'C':
-			{
-				var c1 = new Vector2(Num() + (rel ? _cx : 0), Num() + (rel ? _cy : 0));
-				var c2 = new Vector2(Num() + (rel ? _cx : 0), Num() + (rel ? _cy : 0));
-				var e = new Vector2(Num() + (rel ? _cx : 0), Num() + (rel ? _cy : 0));
-				CubicTo(c1, c2, e);
-				break;
-			}
+				{
+					var c1 = new Vector2(Num() + (rel ? _cx : 0), Num() + (rel ? _cy : 0));
+					var c2 = new Vector2(Num() + (rel ? _cx : 0), Num() + (rel ? _cy : 0));
+					var e = new Vector2(Num() + (rel ? _cx : 0), Num() + (rel ? _cy : 0));
+					CubicTo(c1, c2, e);
+					break;
+				}
 			case 'S':
-			{
-				var c1 = char.ToUpperInvariant(_lastCommand) is 'C' or 'S'
-					? new Vector2(2 * _cx - _lastCx, 2 * _cy - _lastCy)
-					: new Vector2(_cx, _cy);
-				var c2 = new Vector2(Num() + (rel ? _cx : 0), Num() + (rel ? _cy : 0));
-				var e = new Vector2(Num() + (rel ? _cx : 0), Num() + (rel ? _cy : 0));
-				CubicTo(c1, c2, e);
-				break;
-			}
+				{
+					var c1 = char.ToUpperInvariant(_lastCommand) is 'C' or 'S'
+						? new Vector2(2 * _cx - _lastCx, 2 * _cy - _lastCy)
+						: new Vector2(_cx, _cy);
+					var c2 = new Vector2(Num() + (rel ? _cx : 0), Num() + (rel ? _cy : 0));
+					var e = new Vector2(Num() + (rel ? _cx : 0), Num() + (rel ? _cy : 0));
+					CubicTo(c1, c2, e);
+					break;
+				}
 			case 'Q':
-			{
-				var c1 = new Vector2(Num() + (rel ? _cx : 0), Num() + (rel ? _cy : 0));
-				var e = new Vector2(Num() + (rel ? _cx : 0), Num() + (rel ? _cy : 0));
-				QuadTo(c1, e);
-				break;
-			}
+				{
+					var c1 = new Vector2(Num() + (rel ? _cx : 0), Num() + (rel ? _cy : 0));
+					var e = new Vector2(Num() + (rel ? _cx : 0), Num() + (rel ? _cy : 0));
+					QuadTo(c1, e);
+					break;
+				}
 			case 'T':
-			{
-				var c1 = char.ToUpperInvariant(_lastCommand) is 'Q' or 'T'
-					? new Vector2(2 * _cx - _lastQx, 2 * _cy - _lastQy)
-					: new Vector2(_cx, _cy);
-				var e = new Vector2(Num() + (rel ? _cx : 0), Num() + (rel ? _cy : 0));
-				QuadTo(c1, e);
-				break;
-			}
+				{
+					var c1 = char.ToUpperInvariant(_lastCommand) is 'Q' or 'T'
+						? new Vector2(2 * _cx - _lastQx, 2 * _cy - _lastQy)
+						: new Vector2(_cx, _cy);
+					var e = new Vector2(Num() + (rel ? _cx : 0), Num() + (rel ? _cy : 0));
+					QuadTo(c1, e);
+					break;
+				}
 			case 'A':
-			{
-				var rx = Num();
-				var ry = Num();
-				var rot = Num();
-				var large = Flag();
-				var sweep = Flag();
-				var x = Num() + (rel ? _cx : 0);
-				var y = Num() + (rel ? _cy : 0);
-				ArcTo(rx, ry, rot, large, sweep, x, y);
-				break;
-			}
+				{
+					var rx = Num();
+					var ry = Num();
+					var rot = Num();
+					var large = Flag();
+					var sweep = Flag();
+					var x = Num() + (rel ? _cx : 0);
+					var y = Num() + (rel ? _cy : 0);
+					ArcTo(rx, ry, rot, large, sweep, x, y);
+					break;
+				}
 			case 'Z':
 				if (_open)
 				{

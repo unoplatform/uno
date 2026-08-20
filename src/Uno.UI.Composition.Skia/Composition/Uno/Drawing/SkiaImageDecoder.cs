@@ -13,6 +13,9 @@ namespace Uno.UI.Composition.Drawing;
 /// </summary>
 internal static class SkiaImageDecoder
 {
+	/// <summary>Shared durations array for single-frame (non-animated) images.</summary>
+	internal static readonly int[] SingleFrameDurations = new[] { 0 };
+
 	public static bool TryDecode(Stream stream, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out ImageFrames? frames)
 	{
 		using var managedStream = new SKManagedStream(stream);
@@ -51,7 +54,7 @@ internal static class SkiaImageDecoder
 				image.Dispose();
 			}
 
-			frames = new ImageFrames(new IImage[] { new SkiaImage(scaled) }, new[] { 0 });
+			frames = new ImageFrames(new IImage[] { new SkiaImage(scaled) }, SingleFrameDurations);
 			return true;
 		}
 

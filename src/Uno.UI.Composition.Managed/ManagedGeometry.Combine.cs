@@ -36,15 +36,15 @@ internal sealed partial class ManagedGeometry
 			switch (mode)
 			{
 				case GeometryCombineMode.Intersect:
-				{
-					var l = MathF.Max(al, bl);
-					var t = MathF.Max(at, bt);
-					var r = MathF.Min(ar, br);
-					var bo = MathF.Min(ab, bb);
-					return r <= l || bo <= t
-						? new ManagedGeometry(Array.Empty<ManagedContour>(), GeometryFillRule.NonZero)
-						: RectGeometry(l, t, r, bo);
-				}
+					{
+						var l = MathF.Max(al, bl);
+						var t = MathF.Max(at, bt);
+						var r = MathF.Min(ar, br);
+						var bo = MathF.Min(ab, bb);
+						return r <= l || bo <= t
+							? new ManagedGeometry(Array.Empty<ManagedContour>(), GeometryFillRule.NonZero)
+							: RectGeometry(l, t, r, bo);
+					}
 				case GeometryCombineMode.Union:
 					// A union of two rectangles is itself a rectangle only when one contains the other; otherwise
 					// fall through to the general path.

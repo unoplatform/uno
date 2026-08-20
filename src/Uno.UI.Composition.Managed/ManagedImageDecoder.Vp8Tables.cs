@@ -3,6 +3,7 @@
 namespace Uno.UI.Composition.Drawing;
 
 // VP8 constant tables (RFC 6386 / libwebp). Transcribed verbatim; do not edit values.
+#pragma warning disable CA1814 // spec-shaped rectangular tables
 internal static partial class ManagedImageDecoder
 {
 	// Default coefficient probabilities [type=4][band=8][context=3][node=11].

@@ -126,7 +126,7 @@ internal static partial class ManagedImageDecoder
 			}
 		}
 
-		decoded = new DecodedImage(width, height, new[] { bgra }, new[] { 0 });
+		decoded = new DecodedImage(width, height, new[] { bgra }, DecodedImage.SingleFrameDurations);
 		return true;
 	}
 
@@ -217,14 +217,14 @@ internal static partial class ManagedImageDecoder
 				b = SampleChannel(line, x, 2, 3, bitDepth);
 				break;
 			case 3: // palette
-			{
-				var index = ReadIndex(line, x, bitDepth);
-				r = palette![index * 3];
-				g = palette[index * 3 + 1];
-				b = palette[index * 3 + 2];
-				a = paletteAlpha is not null && index < paletteAlpha.Length ? paletteAlpha[index] : (byte)255;
-				break;
-			}
+				{
+					var index = ReadIndex(line, x, bitDepth);
+					r = palette![index * 3];
+					g = palette[index * 3 + 1];
+					b = palette[index * 3 + 2];
+					a = paletteAlpha is not null && index < paletteAlpha.Length ? paletteAlpha[index] : (byte)255;
+					break;
+				}
 			case 4: // grayscale + alpha
 				r = g = b = SampleChannel(line, x, 0, 2, bitDepth);
 				a = SampleChannel(line, x, 1, 2, bitDepth);

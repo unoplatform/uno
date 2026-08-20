@@ -25,7 +25,7 @@ internal sealed class SkiaImageDecoderBackend : IImageEncoderDecoder
 		return new SkiaImage(SKImage.FromPixelCopy(info, bgraPremul));
 	}
 
-	public ImageFrames CreateFrames(IImage image) => new(new[] { image }, new[] { 0 });
+	public ImageFrames CreateFrames(IImage image) => new(new[] { image }, SkiaImageDecoder.SingleFrameDurations);
 
 	public void Encode(Stream destination, byte[] pixels, int width, int height, BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapEncoderFormat format, int quality)
 	{

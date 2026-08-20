@@ -31,41 +31,41 @@ public partial class CompositionEffectBrush
 		switch (node)
 		{
 			case CompositionEffectSourceParameter p:
-			{
-				var brush = GetSourceParameter(p.Name);
-				if (brush is CompositionBackdropBrush) { isBackdrop = true; return true; }
-				source = brush;
-				return brush is not null;
-			}
-			case IGraphicsEffectD2D1Interop e:
-			{
-				switch (EffectHelpers.GetEffectType(e.GetEffectId()))
 				{
-					case EffectType.GaussianBlurEffect: // blur not applied on the WebGPU path yet — pass through
-						return e.GetSourceCount() == 1 && WalkRecipe(e.GetSource(0), ref acc, ref source, ref isBackdrop, ref solidColor);
-
-					case EffectType.ColorSourceEffect:
-						e.GetNamedPropertyMapping("Color", out uint cprop, out _);
-						solidColor = (Color)(e.GetProperty(cprop) ?? Colors.Transparent);
-						return true;
-
-					case EffectType.GrayscaleEffect: return Compose(e, Grayscale(), ref acc, ref source, ref isBackdrop, ref solidColor);
-					case EffectType.InvertEffect: return Compose(e, Invert(), ref acc, ref source, ref isBackdrop, ref solidColor);
-					case EffectType.LuminanceToAlphaEffect: return Compose(e, LuminanceToAlpha(), ref acc, ref source, ref isBackdrop, ref solidColor);
-					case EffectType.HueRotationEffect: return Compose(e, HueRotation(e), ref acc, ref source, ref isBackdrop, ref solidColor);
-					case EffectType.SaturationEffect: return Compose(e, Saturation(e), ref acc, ref source, ref isBackdrop, ref solidColor);
-					case EffectType.SepiaEffect: return Compose(e, Sepia(e), ref acc, ref source, ref isBackdrop, ref solidColor);
-					case EffectType.TemperatureAndTintEffect: return Compose(e, Temperature(e), ref acc, ref source, ref isBackdrop, ref solidColor);
-					case EffectType.OpacityEffect: return Compose(e, Opacity(e), ref acc, ref source, ref isBackdrop, ref solidColor);
-					case EffectType.ExposureEffect: return Compose(e, Exposure(e), ref acc, ref source, ref isBackdrop, ref solidColor);
-					case EffectType.TintEffect: return Compose(e, Tint(e), ref acc, ref source, ref isBackdrop, ref solidColor);
-					case EffectType.LinearTransferEffect: return Compose(e, LinearTransfer(e), ref acc, ref source, ref isBackdrop, ref solidColor);
-					case EffectType.ColorMatrixEffect: return Compose(e, ColorMatrix(e), ref acc, ref source, ref isBackdrop, ref solidColor);
-
-					default:
-						return false; // unsupported effect → fall back (renders nothing)
+					var brush = GetSourceParameter(p.Name);
+					if (brush is CompositionBackdropBrush) { isBackdrop = true; return true; }
+					source = brush;
+					return brush is not null;
 				}
-			}
+			case IGraphicsEffectD2D1Interop e:
+				{
+					switch (EffectHelpers.GetEffectType(e.GetEffectId()))
+					{
+						case EffectType.GaussianBlurEffect: // blur not applied on the WebGPU path yet — pass through
+							return e.GetSourceCount() == 1 && WalkRecipe(e.GetSource(0), ref acc, ref source, ref isBackdrop, ref solidColor);
+
+						case EffectType.ColorSourceEffect:
+							e.GetNamedPropertyMapping("Color", out uint cprop, out _);
+							solidColor = (Color)(e.GetProperty(cprop) ?? Colors.Transparent);
+							return true;
+
+						case EffectType.GrayscaleEffect: return Compose(e, Grayscale(), ref acc, ref source, ref isBackdrop, ref solidColor);
+						case EffectType.InvertEffect: return Compose(e, Invert(), ref acc, ref source, ref isBackdrop, ref solidColor);
+						case EffectType.LuminanceToAlphaEffect: return Compose(e, LuminanceToAlpha(), ref acc, ref source, ref isBackdrop, ref solidColor);
+						case EffectType.HueRotationEffect: return Compose(e, HueRotation(e), ref acc, ref source, ref isBackdrop, ref solidColor);
+						case EffectType.SaturationEffect: return Compose(e, Saturation(e), ref acc, ref source, ref isBackdrop, ref solidColor);
+						case EffectType.SepiaEffect: return Compose(e, Sepia(e), ref acc, ref source, ref isBackdrop, ref solidColor);
+						case EffectType.TemperatureAndTintEffect: return Compose(e, Temperature(e), ref acc, ref source, ref isBackdrop, ref solidColor);
+						case EffectType.OpacityEffect: return Compose(e, Opacity(e), ref acc, ref source, ref isBackdrop, ref solidColor);
+						case EffectType.ExposureEffect: return Compose(e, Exposure(e), ref acc, ref source, ref isBackdrop, ref solidColor);
+						case EffectType.TintEffect: return Compose(e, Tint(e), ref acc, ref source, ref isBackdrop, ref solidColor);
+						case EffectType.LinearTransferEffect: return Compose(e, LinearTransfer(e), ref acc, ref source, ref isBackdrop, ref solidColor);
+						case EffectType.ColorMatrixEffect: return Compose(e, ColorMatrix(e), ref acc, ref source, ref isBackdrop, ref solidColor);
+
+						default:
+							return false; // unsupported effect → fall back (renders nothing)
+					}
+				}
 			default:
 				return false;
 		}

@@ -12,8 +12,10 @@ internal static class UnoSkiaApi
 
 	// The native-library resolver is the Skia backend's own concern, so it self-installs on this assembly's load
 	// rather than being driven by the backend-neutral Compositor.
+#pragma warning disable CA2255 // intentional library module initializer
 	[ModuleInitializer]
 	internal static void ModuleInitialize() => Initialize();
+#pragma warning restore CA2255
 
 	internal static void Initialize()
 	{

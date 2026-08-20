@@ -433,27 +433,27 @@ internal sealed class CffTable
 						_sp = 0;
 						break;
 					case 24: // rcurveline
-					{
-						var i = 0;
-						for (; i + 5 < _sp - 2; i += 6)
 						{
-							RelativeCurve(_stack[i], _stack[i + 1], _stack[i + 2], _stack[i + 3], _stack[i + 4], _stack[i + 5]);
-						}
-						LineTo(_x + _stack[i], _y + _stack[i + 1]);
-						_sp = 0;
-						break;
-					}
-					case 25: // rlinecurve
-					{
-						var i = 0;
-						for (; i + 1 < _sp - 6; i += 2)
-						{
+							var i = 0;
+							for (; i + 5 < _sp - 2; i += 6)
+							{
+								RelativeCurve(_stack[i], _stack[i + 1], _stack[i + 2], _stack[i + 3], _stack[i + 4], _stack[i + 5]);
+							}
 							LineTo(_x + _stack[i], _y + _stack[i + 1]);
+							_sp = 0;
+							break;
 						}
-						RelativeCurve(_stack[i], _stack[i + 1], _stack[i + 2], _stack[i + 3], _stack[i + 4], _stack[i + 5]);
-						_sp = 0;
-						break;
-					}
+					case 25: // rlinecurve
+						{
+							var i = 0;
+							for (; i + 1 < _sp - 6; i += 2)
+							{
+								LineTo(_x + _stack[i], _y + _stack[i + 1]);
+							}
+							RelativeCurve(_stack[i], _stack[i + 1], _stack[i + 2], _stack[i + 3], _stack[i + 4], _stack[i + 5]);
+							_sp = 0;
+							break;
+						}
 					case 26: // vvcurveto
 						VvCurve();
 						break;
@@ -467,23 +467,23 @@ internal sealed class CffTable
 						AlternatingCurves(horizontalFirst: true);
 						break;
 					case 10: // callsubr
-					{
-						var index = (int)_stack[--_sp] + _localBias;
-						if (index >= 0 && index < _localSubrs.Count)
 						{
-							Run(_localSubrs.Start(index), _localSubrs.End(index));
+							var index = (int)_stack[--_sp] + _localBias;
+							if (index >= 0 && index < _localSubrs.Count)
+							{
+								Run(_localSubrs.Start(index), _localSubrs.End(index));
+							}
+							break;
 						}
-						break;
-					}
 					case 29: // callgsubr
-					{
-						var index = (int)_stack[--_sp] + _globalBias;
-						if (index >= 0 && index < _globalSubrs.Count)
 						{
-							Run(_globalSubrs.Start(index), _globalSubrs.End(index));
+							var index = (int)_stack[--_sp] + _globalBias;
+							if (index >= 0 && index < _globalSubrs.Count)
+							{
+								Run(_globalSubrs.Start(index), _globalSubrs.End(index));
+							}
+							break;
 						}
-						break;
-					}
 					case 11: // return
 						return;
 					case 14: // endchar
@@ -504,40 +504,40 @@ internal sealed class CffTable
 			switch (b1)
 			{
 				case 34: // hflex
-				{
-					var y0 = _y;
-					RelativeCurve(_stack[0], 0, _stack[1], _stack[2], _stack[3], 0);
-					RelativeCurve(_stack[4], 0, _stack[5], y0 - _y, _stack[6], 0);
-					break;
-				}
+					{
+						var y0 = _y;
+						RelativeCurve(_stack[0], 0, _stack[1], _stack[2], _stack[3], 0);
+						RelativeCurve(_stack[4], 0, _stack[5], y0 - _y, _stack[6], 0);
+						break;
+					}
 				case 36: // hflex1
-				{
-					var y0 = _y;
-					RelativeCurve(_stack[0], _stack[1], _stack[2], _stack[3], _stack[4], 0);
-					RelativeCurve(_stack[5], 0, _stack[6], _stack[7], _stack[8], y0 - _y);
-					break;
-				}
+					{
+						var y0 = _y;
+						RelativeCurve(_stack[0], _stack[1], _stack[2], _stack[3], _stack[4], 0);
+						RelativeCurve(_stack[5], 0, _stack[6], _stack[7], _stack[8], y0 - _y);
+						break;
+					}
 				case 35: // flex
 					RelativeCurve(_stack[0], _stack[1], _stack[2], _stack[3], _stack[4], _stack[5]);
 					RelativeCurve(_stack[6], _stack[7], _stack[8], _stack[9], _stack[10], _stack[11]);
 					break;
 				case 37: // flex1
-				{
-					var x0 = _x;
-					var y0 = _y;
-					var dx = _stack[0] + _stack[2] + _stack[4] + _stack[6] + _stack[8];
-					var dy = _stack[1] + _stack[3] + _stack[5] + _stack[7] + _stack[9];
-					RelativeCurve(_stack[0], _stack[1], _stack[2], _stack[3], _stack[4], _stack[5]);
-					if (Math.Abs(dx) > Math.Abs(dy))
 					{
-						RelativeCurve(_stack[6], _stack[7], _stack[8], _stack[9], _stack[10], y0 - (_y + _stack[7] + _stack[9]));
+						var x0 = _x;
+						var y0 = _y;
+						var dx = _stack[0] + _stack[2] + _stack[4] + _stack[6] + _stack[8];
+						var dy = _stack[1] + _stack[3] + _stack[5] + _stack[7] + _stack[9];
+						RelativeCurve(_stack[0], _stack[1], _stack[2], _stack[3], _stack[4], _stack[5]);
+						if (Math.Abs(dx) > Math.Abs(dy))
+						{
+							RelativeCurve(_stack[6], _stack[7], _stack[8], _stack[9], _stack[10], y0 - (_y + _stack[7] + _stack[9]));
+						}
+						else
+						{
+							RelativeCurve(_stack[6], _stack[7], _stack[8], _stack[9], x0 - (_x + _stack[6] + _stack[8]), _stack[10]);
+						}
+						break;
 					}
-					else
-					{
-						RelativeCurve(_stack[6], _stack[7], _stack[8], _stack[9], x0 - (_x + _stack[6] + _stack[8]), _stack[10]);
-					}
-					break;
-				}
 			}
 
 			_sp = 0;
