@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using SkiaSharp;
 using Windows.UI.Text;
 
@@ -56,26 +57,31 @@ internal sealed class SkiaFontProvider : IFontProvider
 		return MakeFont(ApplyVariableFontAxes(typeface, weight, stretch, style), fontSize);
 	}
 
-	public IFont? MatchCharacter(int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+	public ValueTask<IFont?> MatchCharacterAsync(int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
 	{
 		var key = (codepoint, weight.Weight, stretch, style, fontSize);
 		lock (_matchCharacterGate)
 		{
 			if (_matchCharacterCache.TryGetValue(key, out var cached))
 			{
-				return cached;
+				return new ValueTask<IFont?>(cached);
 			}
 		}
 
 		var typeface = SKFontManager.Default.MatchCharacter(codepoint);
-		var font = typeface is null ? null : MakeFont(ApplyVariableFontAxes(typeface, weight, stretch, style), fontSize);
+		if (typeface is null)
+		{
+			// Not among the installed fonts — hand off to the shared platform fallback (browser Noto / Android system).
+			return FontFallback.MatchCharacterAsync(this, codepoint, weight, stretch, style, fontSize);
+		}
 
+		var font = MakeFont(ApplyVariableFontAxes(typeface, weight, stretch, style), fontSize);
 		lock (_matchCharacterGate)
 		{
 			_matchCharacterCache[key] = font;
 		}
 
-		return font;
+		return new ValueTask<IFont?>((IFont?)font);
 	}
 
 	public IFont GetDefaultFont(FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)

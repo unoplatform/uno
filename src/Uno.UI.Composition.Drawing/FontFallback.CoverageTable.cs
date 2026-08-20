@@ -6,17 +6,16 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Text;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 
-namespace Microsoft.UI.Xaml.Documents.TextFormatting;
+namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
 /// A half-open <c>[Start, End)</c> codepoint range together with the font families known to cover it.
 /// Used as the input shape for <see cref="CoverageTableFontFallbackService"/>.
 /// </summary>
-public sealed record FontFallbackCoverageRange(int Start, int End, IReadOnlyList<string> Families);
+internal sealed record FontFallbackCoverageRange(int Start, int End, IReadOnlyList<string> Families);
 
 /// <summary>
 /// A reusable <see cref="IFontFallbackService"/> implementation that resolves fallback fonts
@@ -26,13 +25,13 @@ public sealed record FontFallbackCoverageRange(int Start, int End, IReadOnlyList
 /// Construct this with your own <see cref="FontFallbackCoverageRange"/> table and stream-loading
 /// strategy (embedded resource, private CDN, OS lookup, etc.).
 /// </remarks>
-public sealed class CoverageTableFontFallbackService : IFontFallbackService
+internal sealed class CoverageTableFontFallbackService : IFontFallbackService
 {
 	private readonly IReadOnlyList<FontFallbackCoverageRange> _coverageTable;
 	private readonly Func<string, FontWeight, FontStretch, FontStyle, CancellationToken, Task<Stream?>> _fontStreamProvider;
 	private readonly HashSet<int> _missingCodepoints = new();
 	private readonly Dictionary<string, byte[]?> _fetchedFonts = new();
-	private readonly Func<int, Task<string?>> _memoizedGetFontFamilyForCodepoint;
+	private readonly Dictionary<int, Task<string?>> _familyForCodepoint = new();
 	private Task? _fetchTask;
 
 	/// <summary>
@@ -53,10 +52,23 @@ public sealed class CoverageTableFontFallbackService : IFontFallbackService
 	{
 		_coverageTable = coverageTable ?? throw new ArgumentNullException(nameof(coverageTable));
 		_fontStreamProvider = fontStreamProvider ?? throw new ArgumentNullException(nameof(fontStreamProvider));
-		_memoizedGetFontFamilyForCodepoint = ((Func<int, Task<string?>>)GetFontFamilyForCodepointInternal).AsMemoized();
 	}
 
-	public Task<string?> GetFontFamilyForCodepoint(int codepoint) => _memoizedGetFontFamilyForCodepoint(codepoint);
+	public Task<string?> GetFontFamilyForCodepoint(int codepoint)
+	{
+		// Memoize the resolution task per codepoint so concurrent requests share one fetch. Accessed on the UI thread
+		// (the internal resolution asserts thread access); the lock only guards the cache dictionary itself.
+		lock (_familyForCodepoint)
+		{
+			if (!_familyForCodepoint.TryGetValue(codepoint, out var task))
+			{
+				task = GetFontFamilyForCodepointInternal(codepoint);
+				_familyForCodepoint[codepoint] = task;
+			}
+
+			return task;
+		}
+	}
 
 	public async Task<Stream?> GetFontStreamForFontFamily(string fontFamily, FontWeight weight, FontStretch stretch, FontStyle style)
 	{

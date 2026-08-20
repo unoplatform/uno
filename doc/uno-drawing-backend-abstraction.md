@@ -322,9 +322,10 @@ those same bytes)*. The open question is only **how to turn a family name + styl
 find a fallback font for a codepoint the chosen family can't render. Today this is 100% Skia
 (`FontDetailsCache`): `SKTypeface.FromFamilyName(name, weight, width, slant)`, `.ttc`/`.otc` face selection by
 family/PostScript name, variable-font axis positioning (`wght`/`wdth`/`ital`/`slnt`), and default-font
-fallback (`SKTypeface.FromFamilyName(null)`). Application/URI fonts and per-codepoint fallback already route
-through neutral-ish seams (`AppDataUriEvaluator` byte load; `IFontFallbackService` via `ApiExtensibility`); it
-is **system-family resolution + variable-font positioning** that is Skia-only.
+fallback (`SKTypeface.FromFamilyName(null)`). Application/URI fonts load bytes through `AppDataUriEvaluator`, and
+per-codepoint fallback is part of the neutral `IFontProvider` (`MatchCharacterAsync`, with the built-in browser Noto /
+Android system-font fallback behind `FontFallback`); it is **system-family resolution + variable-font positioning**
+that is Skia-only.
 
 Three ways to remove that dependency:
 
@@ -338,7 +339,7 @@ Three ways to remove that dependency:
   non-trivial to add to `ManagedFont`.
 
 - **B) Platform font APIs behind a seam (recommended target).** Define an `IFontManager` extensibility point
-  (mirroring `IFontFallbackService`): `family + style → font bytes/handle`, plus the existing
+  (mirroring `IFontProvider`): `family + style → font bytes/handle`, plus the existing
   codepoint→fallback. Provide it via `ApiExtensibility` with per-runtime implementations in the
   `Uno.UI.Runtime.Skia.*` projects — **DirectWrite** (Win32), **CoreText** (macOS/iOS), **fontconfig**
   (Linux), **Android font APIs** (Android).

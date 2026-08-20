@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Windows.UI.Text;
 
 namespace Uno.UI.Composition.Drawing;
@@ -86,14 +87,14 @@ public sealed class ManagedFontProvider : IFontProvider
 		return best is null ? null : Load(best, fontSize);
 	}
 
-	public IFont? MatchCharacter(int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+	public ValueTask<IFont?> MatchCharacterAsync(int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
 	{
 		var key = (codepoint, weight.Weight, stretch, style, (int)fontSize);
 		lock (_gate)
 		{
 			if (_matchCharacterCache.TryGetValue(key, out var cached))
 			{
-				return cached;
+				return new ValueTask<IFont?>(cached);
 			}
 		}
 
@@ -109,12 +110,18 @@ public sealed class ManagedFontProvider : IFontProvider
 			}
 		}
 
+		if (result is null)
+		{
+			// Not among the indexed OS fonts — hand off to the shared platform fallback (browser Noto / Android system).
+			return FontFallback.MatchCharacterAsync(this, codepoint, weight, stretch, style, fontSize);
+		}
+
 		lock (_gate)
 		{
 			_matchCharacterCache[key] = result;
 		}
 
-		return result;
+		return new ValueTask<IFont?>(result);
 	}
 
 	public IFont GetDefaultFont(FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
