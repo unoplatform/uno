@@ -1,10 +1,10 @@
----
+﻿---
 uid: Uno.Development.AdditionalFeatures
 ---
 
-# Other Uno.UI Features
+# Additional Uno Platform Features
 
-Uno.UI.Extras is a set of extension methods or behaviors used to enhance WinUI and activate device/OS specific features.
+Uno Platform ships a set of extension methods, attached properties and behaviors that enhance WinUI and activate device/OS specific features. They are available on every target, including WinAppSDK.
 
 Those methods are built to have no effect on a platform that does not support the enhanced feature: no need to wrap them into conditional code.
 

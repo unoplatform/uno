@@ -1,4 +1,4 @@
----
+﻿---
 uid: Uno.Development.MigratingToUno7
 ---
 
@@ -102,20 +102,27 @@ on macOS with Skia rendering. To migrate:
 > alongside the Skia browser head raises the `UNOB0017` build diagnostic. Removing the
 > explicit reference resolves it.
 
-### `Uno.UI.Toolkit` is renamed to `Uno.UI.Extras`
+### `Uno.UI.Toolkit` types move to the `Uno.UI.*` namespaces
 
-The `Uno.UI.Toolkit` assembly — which ships inside the `Uno.WinUI` package — was routinely
+The `Uno.UI.Toolkit` namespace — which ships inside the `Uno.WinUI` package — was routinely
 mistaken for the separate [Uno Toolkit](xref:Toolkit.GettingStarted) product
-(`Uno.Toolkit.UI`); the two names are a word-order swap apart. It is now
-`Uno.UI.Extras`. Type names and behavior are unchanged, and there is **no** forwarding
-shim: the old namespaces stop resolving.
+(`Uno.Toolkit.UI`); the two names are a word-order swap apart. Its types now sit in the
+namespace each one belongs to, alongside the rest of the framework. Type names and behavior
+are unchanged, and there is **no** forwarding shim: the old namespaces stop resolving.
 
-| Before | After |
-|---|---|
-| `using Uno.UI.Toolkit;` | `using Uno.UI.Extras;` |
-| `using Uno.UI.Toolkit.Extensions;` | `using Uno.UI.Extras.Extensions;` |
-| `using Uno.UI.Toolkit.DevTools.Input;` (and `.DevTools.Xaml`) | `using Uno.UI.Extras.DevTools.Input;` |
-| `xmlns:toolkit="using:Uno.UI.Toolkit"` | `xmlns:extras="using:Uno.UI.Extras"` |
+| Type | Before | After |
+|---|---|---|
+| `ElevatedView`, `CommandBarExtensions`, `SplitViewExtensions` | `Uno.UI.Toolkit` | `Uno.UI.Xaml.Controls` |
+| `UIElementExtensions` | `Uno.UI.Toolkit` | `Uno.UI.Xaml` |
+| `AutomationPropertiesExtensions` | `Uno.UI.Toolkit` | `Uno.UI.Xaml.Automation` |
+| `VisibleBoundsPadding` | `Uno.UI.Toolkit` | `Uno.UI.Behaviors` |
+| `StorageFileHelper` | `Uno.UI.Toolkit` | `Uno.Storage` |
+| input injection dev helpers | `Uno.UI.Toolkit.DevTools.Input` (and `.DevTools.Xaml`) | `Uno.UI.DevTools.Input` (and `.DevTools.Xaml`) |
+
+XAML declarations follow the same mapping, for example
+`xmlns:toolkit="using:Uno.UI.Toolkit"` becomes `xmlns:uno="using:Uno.UI.Xaml.Controls"` for
+`ElevatedView` and the `CommandBar`/`SplitView` extensions, or
+`xmlns:uno="using:Uno.UI.Behaviors"` for `VisibleBoundsPadding`.
 
 The other namespaces carried by that assembly keep their names, so code using
 `DiagnosticsOverlay` (`Uno.Diagnostics.UI`), `FromJsonExtension` (`Uno.UI.Markup`) or
@@ -147,7 +154,7 @@ The other namespaces carried by that assembly keep their names, so code using
   `MenuFlyoutExtensions.CancelTextIosOverride` (custom cancel-button caption). Remove the
   attributes; style the `MenuFlyoutItem` directly for a destructive look.
   `UICommand.IsDestructive` is **not** removed — it still drives the native iOS
-  `MessageDialog` — but its `Uno.UI.Extras` wrapper is (see below); set the property directly.
+  `MessageDialog` — but its Uno Platform wrapper is (see below); set the property directly.
 - **Native default styles:** the whole `Generic.Native.xaml` dictionary is gone, so the
   `NativeDefaultButton`, `NativeDefaultCheckBox`, `NativeDefaultCommandBar`,
   `NativeDefaultAppBarButton`, `NativeDefaultFrame`, `NativeDefaultPivot`,
@@ -167,8 +174,8 @@ The other namespaces carried by that assembly keep their names, so code using
   `Style.RegisterDefaultStyleForType(Type, IXamlResourceDictionaryProvider, bool)` also loses its
   `isNative` parameter; it is `[EditorBrowsable(Never)]` and normally only called from
   XAML-generated code, so rebuilding regenerates the correct call.
-- **`Uno.UI.Extras` members that only ever ran on native targets:**
-  `Uno.UI.ViewHelper` (the `Uno.UI.Extras` one, whose only member `Architecture` always
+- **`Uno.UI.Toolkit` members that only ever ran on native targets:**
+  `Uno.UI.ViewHelper` (the `Uno.UI.Toolkit` one, whose only member `Architecture` always
   returned `null` — the unrelated `Uno.UI.ViewHelper` in `Uno.UI` stays) and
   `UICommandExtensions.SetDestructive`. To flag a destructive `UICommand`, set
   `UICommand.IsDestructive` directly from an iOS-targeted head.
@@ -472,7 +479,7 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 8. Convert every `xmlns:…="clr-namespace:…"` declaration in your XAML to the `using:` form.
 9. Convert the Android `Application` class to override `CreateHost()` instead of passing an
    `AppBuilder` delegate to the base constructor.
-10. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to `Uno.UI.Extras`.
+10. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to their new `Uno.UI.*` namespaces.
 11. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
