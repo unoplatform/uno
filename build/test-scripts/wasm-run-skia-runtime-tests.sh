@@ -107,8 +107,18 @@ if ! test -f "$RESULTS_CANARY_FILE"; then
     exit 1
 fi
 
+# Bound the wait: if the browser started (the canary exists) but the run never produces a
+# results file, this loop otherwise spins until the 60-minute job timeout kills the job, which
+# reports as an opaque agent timeout rather than as a stalled test run.
+RESULTS_WAIT_SECONDS=2100
+WAITED=0
 while ! test -f "$RESULTS_FILE"; do
+    if [ $WAITED -ge $RESULTS_WAIT_SECONDS ]; then
+        echo "##vso[task.logissue type=error]UNOBLD005: The runtime tests did not produce $RESULTS_FILE within $((RESULTS_WAIT_SECONDS / 60)) minutes. The app started (the canary file exists) but the run never completed."
+        exit 1
+    fi
     sleep 10
+    WAITED=$((WAITED + 10))
 done
 
 ## Export the failed tests list for reuse in a pipeline retry
