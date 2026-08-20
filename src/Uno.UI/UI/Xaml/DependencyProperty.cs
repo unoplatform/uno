@@ -36,6 +36,9 @@ namespace Microsoft.UI.Xaml
 
 		private readonly static NameToPropertyDictionary _getPropertyCache = new NameToPropertyDictionary();
 		private readonly static object _getPropertyCacheGate = new();
+		private static int _getPropertyCacheVersion;
+		private static Action _getPropertyCacheMissTestHook;
+		private static Action _getPropertyCachePublishTestHook;
 		private static object DefaultThemeAnimationDurationBox = new Duration(FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration);
 
 		/// <summary>
@@ -63,6 +66,10 @@ namespace Microsoft.UI.Xaml
 
 				// The pooled lookup key retains the last-queried Type past the cache prunes.
 				_searchPropertyCacheEntry.Update(typeof(object), "");
+				unchecked
+				{
+					_getPropertyCacheVersion++;
+				}
 			}
 		}
 
@@ -380,22 +387,40 @@ namespace Microsoft.UI.Xaml
 				throw new InvalidOperationException("The dependency property system should not be accessed from non UI thread.");
 			}
 
-			lock (_getPropertyCacheGate)
+			while (true)
 			{
-				_searchPropertyCacheEntry.Update(type, name);
-
-				if (!_getPropertyCache.TryGetValue(_searchPropertyCacheEntry, out var result))
+				PropertyCacheEntry key;
+				int version;
+				lock (_getPropertyCacheGate)
 				{
-					var key = _searchPropertyCacheEntry.Clone();
-					var resolved = InternalGetProperty(type, name);
-					if (!_getPropertyCache.TryGetValue(key, out result))
+					_searchPropertyCacheEntry.Update(type, name);
+
+					if (_getPropertyCache.TryGetValue(_searchPropertyCacheEntry, out var cached))
 					{
-						_getPropertyCache.Add(key, resolved);
-						result = resolved;
+						return cached;
 					}
+
+					key = _searchPropertyCacheEntry.Clone();
+					version = _getPropertyCacheVersion;
 				}
 
-				return result;
+				_getPropertyCacheMissTestHook?.Invoke();
+				var resolved = InternalGetProperty(type, name);
+				_getPropertyCachePublishTestHook?.Invoke();
+
+				lock (_getPropertyCacheGate)
+				{
+					if (_getPropertyCache.TryGetValue(key, out var published))
+					{
+						return published;
+					}
+
+					if (version == _getPropertyCacheVersion)
+					{
+						_getPropertyCache.Add(key, resolved);
+						return resolved;
+					}
+				}
 			}
 		}
 
@@ -418,6 +443,11 @@ namespace Microsoft.UI.Xaml
 					_searchPropertyCacheEntry.Update(ownerType, name);
 
 					_getPropertyCache.Remove(_searchPropertyCacheEntry);
+				}
+
+				unchecked
+				{
+					_getPropertyCacheVersion++;
 				}
 			}
 		}
