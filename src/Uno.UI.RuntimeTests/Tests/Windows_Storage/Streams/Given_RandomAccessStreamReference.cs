@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,30 +16,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 	public class Given_RandomAccessStreamReference
 	{
 		private const string _unoStaticTestFileContent = "https://platform.uno/\r\n";
+		private static readonly Uri _unoStaticTestFileUri = new("https://uno-assets.platform.uno/uno-unit-tests.txt");
 
 		[TestMethod]
 		public async Task When_FromUri()
 		{
-			var sut = RandomAccessStreamReference.CreateFromUri(new Uri("https://uno-assets.platform.uno/uno-unit-tests.txt"));
-			var actual = await ReadToEnd(sut);
+			var sut = RandomAccessStreamReference.CreateFromUri(_unoStaticTestFileUri);
 
-			Assert.AreEqual(_unoStaticTestFileContent, actual);
+			try
+			{
+				var actual = await ReadToEnd(sut);
+
+				Assert.AreEqual(_unoStaticTestFileContent, actual);
+			}
+			catch (HttpRequestException ex) when (ex.StatusCode is null)
+			{
+				// No status code means the request never reached the server, so the agent has no egress. On iOS that is
+				// NSURLErrorNotConnectedToInternet from a freshly booted simulator, very likely the same infrastructure
+				// symptom as the simulator-boot flakiness; a network readiness probe in the iOS CI bootstrap is the better
+				// placed fix, tracked separately. A real 4xx/5xx carries a status code and must keep failing.
+				Assert.Inconclusive($"Could not reach {_unoStaticTestFileUri}, the test agent appears to be offline: {ex.Message}");
+			}
 		}
 
 		[TestMethod]
 		public async Task When_FlushReadOnly()
 		{
-			var sut = RandomAccessStreamReference.CreateFromUri(new Uri("https://uno-assets.platform.uno/uno-unit-tests.txt"));
-			using var readStream = await sut.OpenReadAsync();
+			var sut = RandomAccessStreamReference.CreateFromUri(_unoStaticTestFileUri);
 
 			try
 			{
-				await readStream.FlushAsync();
+				using var readStream = await sut.OpenReadAsync();
+
+				try
+				{
+					await readStream.FlushAsync();
+				}
+				catch (Exception)
+				{
+					// UWP throws NotImplementedException
+					// Uno throws InvalidOperationException with a description
+				}
 			}
-			catch (Exception)
+			catch (HttpRequestException ex) when (ex.StatusCode is null)
 			{
-				// UWP throws NotImplementedException
-				// Uno throws InvalidOperationException with a description
+				// Same transport-only guard as When_FromUri: an offline agent is inconclusive, an HTTP error is a failure.
+				Assert.Inconclusive($"Could not reach {_unoStaticTestFileUri}, the test agent appears to be offline: {ex.Message}");
 			}
 		}
 
