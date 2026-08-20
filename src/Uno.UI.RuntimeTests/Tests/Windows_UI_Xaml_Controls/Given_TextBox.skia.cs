@@ -7026,6 +7026,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				message: "Outer ScrollViewer should scroll to bring the caret at the end into view.");
 
 			var offsetAfterFocus = outerScrollViewer.VerticalOffset;
+			var extentAfterFocus = outerScrollViewer.ExtentHeight;
 
 			// Now type an Enter to add a new line — the caret moves further down.
 			textBox.SafeRaiseEvent(UIElement.KeyDownEvent,
@@ -7033,11 +7034,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			// The Enter triggers a re-layout + BringIntoView scroll that can exceed a short timeout on
-			// slower runtimes (e.g. WASM); give the settle enough room.
+			// slower runtimes (e.g. WASM); give the settle enough room. Extent and offset are waited on
+			// separately so a timeout says whether the TextBox never grew, or grew but never scrolled.
+			// AcceptsReturn above makes the WASM invisible input a <textarea>, which never matches the
+			// `instanceof HTMLInputElement` check in BrowserInvisibleTextBoxViewExtension.ts, so the DOM
+			// selection path is inert for this test.
 			await WindowHelper.WaitFor(
-				() => outerScrollViewer.VerticalOffset > offsetAfterFocus,
-				timeoutMS: 5000,
-				message: "Outer ScrollViewer should scroll further after adding a new line.");
+				() => outerScrollViewer.ExtentHeight,
+				extentAfterFocus,
+				messageBuilder: extent => $"TextBox did not grow after adding a new line: extent {extent} (was {extentAfterFocus}), offset {outerScrollViewer.VerticalOffset}, scrollable {outerScrollViewer.ScrollableHeight}",
+				comparer: (actual, previous) => actual > previous,
+				timeoutMS: 5000);
+
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.VerticalOffset,
+				offsetAfterFocus,
+				messageBuilder: offset => $"TextBox grew but the outer ScrollViewer did not scroll further: offset {offset} (was {offsetAfterFocus}), extent {outerScrollViewer.ExtentHeight}, scrollable {outerScrollViewer.ScrollableHeight}",
+				comparer: (actual, previous) => actual > previous,
+				timeoutMS: 5000);
 		}
 
 		[TestMethod]
