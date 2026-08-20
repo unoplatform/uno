@@ -33,6 +33,11 @@ export RESULTS_CANARY_FILE="$RESULTS_FILE.canary"
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-wasm-runtimetests-$UITEST_RUNTIME_TEST_GROUP-chromium.txt
 
+## The pipeline arms this as "false" before the dependency install; flipping it here tells the
+## publish tasks the test step actually started, so they only report a missing results file
+## when there is a real harness failure rather than a killed job.
+echo "##vso[task.setvariable variable=UNO_TESTS_STEP_RAN]true"
+
 ## Create the failed-tests directory up front: every abort path below (a crashed harness,
 ## a killed app, a non-zero transform tool) otherwise skips the mkdir and leaves
 ## `PublishBuildArtifacts@1` retrying a missing PathtoPublish for minutes.
