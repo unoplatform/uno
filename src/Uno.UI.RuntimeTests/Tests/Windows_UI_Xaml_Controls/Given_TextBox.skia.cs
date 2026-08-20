@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -5634,7 +5634,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(FeatureConfiguration.ScrollViewer.SnapDelay + TimeSpan.FromMilliseconds(750));
 			await WindowHelper.WaitForIdle();
 
-			Assert.IsGreaterThan(100d, scrollViewer.VerticalOffset, "the ScrollViewer must not scroll back to the focused TextBox");
+			// Asserting on where the box ended up rather than on an offset threshold: the clamp's target was the
+			// TextBox's own offset inside the content (CreateScrollableForm's fillerAbove), which clears any threshold
+			// low enough to be safe. What the lock did was put the box back against the viewport edge, so requiring it
+			// to be fully outside the viewport is what discriminates.
+			var boxBounds = SUT.GetAbsoluteBoundsRect();
+			var viewport = scrollViewer.GetAbsoluteBoundsRect();
+			Assert.IsTrue(
+				boxBounds.Bottom <= viewport.Top || boxBounds.Top >= viewport.Bottom,
+				$"the ScrollViewer must not scroll back to the focused TextBox (box {boxBounds}, viewport {viewport})");
 			Assert.AreEqual(expectedCaret, SUT.CaretMode, "scrolling away must not disturb the touch caret");
 		}
 
@@ -5762,15 +5770,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Scrolling up by this much would put the anchor exactly on the viewport's bottom edge.
 			var offsetAtEdge = scrollViewer.VerticalOffset - (viewportBottom - thumbAnchorY);
 
-			// A few px short of the edge: the anchor is still inside, so the handle stays up.
+			// A few px short of the edge: the anchor is still inside, so the handle stays up. Waiting on the gripper's
+			// own reported position, not just on idle: WaitForIdle pumps the dispatcher without necessarily producing a
+			// rendered frame, and both the reposition and the culling only happen in the per-frame Update.
+			var gripperTopBefore = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect().Top;
 			scrollViewer.ChangeView(null, offsetAtEdge + 6, null, disableAnimation: true);
-			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(
+				() => SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect().Top != gripperTopBefore,
+				timeoutMS: 5000,
+				message: "the scroll should have repositioned the handle");
 			Assert.IsTrue(IsGripperShowing(SUT), "the handle should still show while the point it hangs from is inside the viewport");
+
+			// The band just below the viewport is where a thumb hanging from an anchor on the edge lands - the
+			// accepted sub-thumb-height overhang. Asserting on that ink is what makes the cull below meaningful:
+			// IsShowing alone is the very flag Cull sets, so it cannot tell us the thumb stopped painting.
+			var root = (FrameworkElement)WindowHelper.XamlRoot.VisualTree.RootElement;
+			var svBounds = scrollViewer.GetAbsoluteBoundsRect();
+			var bandBelowViewport = new Rectangle(
+				(int)svBounds.Left,
+				(int)svBounds.Bottom + 1,
+				(int)svBounds.Width,
+				(int)CaretWithStemAndThumb.ThumbSize);
+			ImageAssert.HasColorInRectangle(
+				await UITestHelper.ScreenShot(root),
+				bandBelowViewport,
+				CaretWithStemAndThumb.ThumbFillColor,
+				tolerance: 20);
 
 			// A few px past it and the thumb would hang entirely below the viewport, over whatever is painted there.
 			scrollViewer.ChangeView(null, offsetAtEdge - 6, null, disableAnimation: true);
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitFor(() => !IsGripperShowing(SUT), timeoutMS: 5000, message: "the handle must be hidden once the point it hangs from leaves the viewport");
+
+			ImageAssert.DoesNotHaveColorInRectangle(
+				await UITestHelper.ScreenShot(root),
+				bandBelowViewport,
+				CaretWithStemAndThumb.ThumbFillColor,
+				tolerance: 20);
 		}
 
 		// The other half of the culling contract: a gripper the finger is holding must NOT be culled when its
@@ -6934,7 +6970,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(TimeSpan.FromSeconds(2));
 
 			Assert.IsGreaterThan(200d, offsetBeforeScroll - sv.VerticalOffset, "the scroll the user performed must stick");
-			Assert.IsGreaterThan(sv.GetAbsoluteBoundsRect().Bottom, SUT.GetAbsoluteBoundsRect().Top, "the focused TextBox must be allowed to leave the viewport");
+
+			// Spelled out rather than an IsGreaterThan whose argument order reads backwards: the box must have left
+			// the viewport entirely, which is exactly what the old pin prevented.
+			var boxBounds = SUT.GetAbsoluteBoundsRect();
+			var viewport = sv.GetAbsoluteBoundsRect();
+			Assert.IsTrue(
+				boxBounds.Top >= viewport.Bottom,
+				$"the focused TextBox must be allowed to leave the viewport (box {boxBounds}, viewport {viewport})");
 		}
 
 		[TestMethod]

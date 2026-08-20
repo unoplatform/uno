@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+using System.Numerics;
 using Windows.UI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Media;
@@ -19,7 +19,7 @@ internal sealed class CaretWithStemAndThumb : Grid
 	// This is, however, a constant color that doesn't depend on the
 	// current system accent color. Changing the accent color does NOT
 	// change the thumb color on WinUI, only the selection color.
-	private static readonly Color ThumbFillColor = Colors.FromARGB("FF0078D7");
+	internal static readonly Color ThumbFillColor = Colors.FromARGB("FF0078D7");
 
 	/// <summary>
 	/// The side of the (square) thumb. The gripper is this wide, and hangs this far below the caret line
@@ -86,7 +86,7 @@ internal sealed class CaretWithStemAndThumb : Grid
 
 	// Test hook: whether the gripper is actually painted. A culled gripper keeps its popup open (see Cull),
 	// and its measured size survives either way, so neither alone is a reliable signal.
-	internal bool IsShowing => _popup?.IsOpen == true && Visibility == Visibility.Visible;
+	internal bool IsShowing => _popup?.IsOpen is true && Visibility == Visibility.Visible;
 
 	public void SetStemVisible(bool visible) => _stem.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
 
