@@ -1892,6 +1892,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24126")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Command-bar overflow timing is only validated on Skia #9080
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
@@ -1920,7 +1921,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.PressRight();
 			mouse.ReleaseRight();
 
-			mouse.MoveTo(await TextContextMenuHelper.WaitForCommandPoint(WindowHelper.XamlRoot, VirtualKey.A));
+			var selectAllPoint = await TextContextMenuHelper.WaitForCommandPoint(WindowHelper.XamlRoot, VirtualKey.A);
+			mouse.MoveTo(selectAllPoint);
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
@@ -1954,6 +1956,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		// Clipboard is currently not available on skia-WASM
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24126")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_IsTextSelectionEnabled_ContextMenu_Copy()
 		{
@@ -1976,10 +1979,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// Seed the clipboard so that a copy which never runs fails against a known value instead of
 			// whatever the host happened to have on its clipboard.
-			var seed = new DataPackage();
-			seed.SetText("clipboard-not-written");
-			Clipboard.SetContent(seed);
-			await WindowHelper.WaitForIdle();
+			await ClipboardHelper.SeedDummyData();
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
@@ -1994,7 +1994,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.PressRight(bounds.GetCenter());
 			mouse.ReleaseRight();
 
-			mouse.MoveTo(await TextContextMenuHelper.WaitForCommandPoint(WindowHelper.XamlRoot, VirtualKey.C));
+			var copyPoint = await TextContextMenuHelper.WaitForCommandPoint(WindowHelper.XamlRoot, VirtualKey.C);
+			mouse.MoveTo(copyPoint);
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
