@@ -44,6 +44,7 @@ interface ClipboardItem {
 }
 interface ClipboardItemConstructor {
     new (items: Record<string, Blob | string | Promise<Blob | string>>): ClipboardItem;
+    supports?(type: string): boolean;
 }
 declare var ClipboardItem: ClipboardItemConstructor;
 interface Clipboard {
@@ -60,15 +61,33 @@ interface Navigator extends NavigatorClipboard {
 declare namespace Uno.Utils {
     class Clipboard {
         private static dispatchContentChanged;
-        private static dispatchGetContent;
+        private static lastPaste;
+        private static lastPasteShortcutTime;
+        private static pasteWaiters;
+        private static ownContent;
+        private static readonly pasteFreshnessMs;
+        private static readonly pasteRetentionMs;
+        private static readonly pasteWaitTimeoutMs;
+        private static readonly pasteShortcutCorrelationMs;
+        static setup(): void;
+        private static onKeyDownCaptured;
+        private static onPasteCaptured;
+        private static capturePaste;
+        private static getFreshPasteSnapshot;
+        private static isPasteImminent;
+        private static getOwnFormats;
+        static getSnapshotFormats(): string;
+        static getContentAsync(source: string): Promise<string>;
+        private static waitForPasteAsync;
+        private static buildContentFromPaste;
+        private static buildContentFromOwn;
+        private static readAsyncClipboard;
+        private static getImageExtension;
+        static setContentAsync(entriesJson: string, imageBytes: any, imageMimeType: string): Promise<void>;
+        private static tryTranscodeToPng;
+        static clearAsync(): Promise<void>;
         static startContentChanged(): void;
         static stopContentChanged(): void;
-        static setText(text: string): string;
-        static getText(): Promise<string>;
-        static getHtml(): Promise<string>;
-        static getImage(): Promise<string>;
-        static setImage(base64: string, mimeType: string): Promise<void>;
-        static setHtml(html: string, text: string): Promise<void>;
         private static onClipboardChanged;
     }
 }
