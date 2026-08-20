@@ -259,7 +259,19 @@ echo "Simulator boot wait finished ($(date))"
 
 # echo "Install app on simulator: $UITEST_IOSDEVICE_ID"
 # xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
-idb install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"
+# A single idb command timeout used to abort the whole job. Retry once with verbose logging,
+# then fall back to simctl. simctl install is only the fallback because it was historically
+# unreliable here (microsoft/appcenter#2389), but an install that works is better than a
+# stage retry that pays for the artifact download and the toolchain install all over again.
+if ! idb install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"; then
+	echo "##vso[task.logissue type=warning]idb install failed; retrying once with debug logging"
+	idb kill >/dev/null 2>&1 || true
+
+	if ! idb --log DEBUG install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"; then
+		echo "##vso[task.logissue type=warning]UNOBLD007: idb install failed twice; falling back to xcrun simctl install"
+		xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"
+	fi
+fi
 
 ## Pre-build the transform tool to get early warnings
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
