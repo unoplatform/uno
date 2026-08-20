@@ -472,17 +472,11 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	/// </summary>
 	private ISwapChain? CreateWindowAndContext(GraphicsContextKind kind, IntPtr topWindowDisplay, IntPtr display, int screen, Size size)
 	{
-		// Host render config, expressed as declining kinds (the backend owns the order, never the host).
-		var useOpenGL = FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? true;
-		var preferGles = FeatureConfiguration.Rendering.PreferGLESOverGLOnX11;
-
+		// Which kinds are enabled is decided by the host builder and applied in negotiation (GraphicsRegistry skips the
+		// excluded kinds); this factory just creates whatever kind it is asked for, declining only on creation failure.
 		switch (kind)
 		{
 			case GraphicsContextKind.OpenGL:
-				if (!useOpenGL || preferGles)
-				{
-					return null; // decline → fall through to GLES / software
-				}
 				try
 				{
 					var glxWindow = CreateGLXWindow(topWindowDisplay, screen, size, RootX11Window.Window);
@@ -503,10 +497,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				}
 
 			case GraphicsContextKind.OpenGLES:
-				if (!useOpenGL)
-				{
-					return null;
-				}
 				try
 				{
 					_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
@@ -536,10 +526,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				}
 
 			case GraphicsContextKind.Vulkan:
-				if (FeatureConfiguration.Rendering.UseVulkanOnX11 != true)
-				{
-					return null; // opt-in only (X11RenderingBackend.Vulkan / UseVulkanOnX11); decline → fall through
-				}
 				try
 				{
 					_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
