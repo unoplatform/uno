@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
-namespace Uno.UI.Extras.DevTools.Input;
+namespace Uno.UI.DevTools.Input;
 
 internal partial class Mouse : IInjectedPointer, IDisposable
 {

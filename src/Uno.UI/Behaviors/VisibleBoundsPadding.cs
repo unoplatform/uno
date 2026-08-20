@@ -22,26 +22,21 @@ using Uno.Foundation.Logging;
 #if IS_UNO // Is inside the Uno.UI project
 using _VisibleBoundsPadding = Uno.UI.Behaviors.InternalVisibleBoundsPadding;
 #else
-using Uno.UI.Extras.Extensions;
-using _VisibleBoundsPadding = Uno.UI.Extras.VisibleBoundsPadding;
+using _VisibleBoundsPadding = Uno.UI.Behaviors.VisibleBoundsPadding;
 #endif
 
-#if IS_UNO
 namespace Uno.UI.Behaviors
 {
+#if IS_UNO
 	/// <summary>
 	/// Internal Uno behavior, use VisibleBoundsPadding instead.
 	/// </summary>
 	/// <remarks>
-	/// This class is located in the same source file as the VisibleBoundsPadding class to avoid code duplication.
-	/// This is required to ensure that both Uno.UI styles and UWP (through Uno.UI.Extras) can use this behavior
-	/// and not have to synchronize two code files. The internal implementation is not supposed to be used outside
-	/// of the Uno.UI assembly, Uno.UI.Extras.VisibleBoundsPadding should be used by dependents.
+	/// This class shares its source file with the public VisibleBoundsPadding so that the Uno.UI styles and the
+	/// WinAppSDK build use the same implementation. The internal one is not meant to be used outside of Uno.UI.
 	/// </remarks>
 	internal static class InternalVisibleBoundsPadding
 #else
-namespace Uno.UI.Extras
-{
 	/// <summary>
 	/// A behavior which automatically adds padding to a control that ensures its content will always be inside
 	/// the <see cref="ApplicationView.VisibleBounds"/> of the application. Set PaddingMask to 'All' to enable this behavior,
