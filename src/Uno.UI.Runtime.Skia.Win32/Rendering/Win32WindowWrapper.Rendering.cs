@@ -36,9 +36,7 @@ internal partial class Win32WindowWrapper
 		var scale = (float)(RasterizationScale == 0 ? 1 : RasterizationScale);
 		return kind switch
 		{
-			GraphicsContextKind.OpenGL => (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true)
-				? Win32OpenGLGraphicsContext.TryCreate(_hwnd)
-				: null,
+			GraphicsContextKind.OpenGL => Win32OpenGLGraphicsContext.TryCreate(_hwnd),
 			GraphicsContextKind.Vulkan => TryCreateVulkan(),
 			GraphicsContextKind.Software => new Win32SoftwareGraphicsContext(_hwnd),
 			GraphicsContextKind.WebGpu => global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateWin32(_hwnd, Win32Helper.GetModuleHInstance(), scale),
@@ -47,15 +45,10 @@ internal partial class Win32WindowWrapper
 	}
 
 	/// <summary>
-	/// Vulkan is opt-in on Win32: decline when off, and swallow a creation failure so negotiation falls through.
+	/// Swallows a Vulkan creation failure so negotiation falls through to the next kind.
 	/// </summary>
 	private ISwapChain? TryCreateVulkan()
 	{
-		if (!FeatureConfiguration.Rendering.UseVulkanOnWin32)
-		{
-			return null;
-		}
-
 		try
 		{
 			return new Win32VulkanGraphicsContext(_hwnd);
