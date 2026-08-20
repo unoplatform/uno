@@ -71,10 +71,12 @@ jobs:
         set -x
         # We use google-chrome instead of chromium-browser because ubuntu uses snap
         # for the chromium package, and snapd isn't available in CI
-        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-        sudo apt-get update
-        sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
+        wget --tries=3 --timeout=60 https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        # No apt-get update here: the .deb carries its own dependency list, and refreshing the
+        # mirror indexes is exactly where the long stalls happen.
+        sudo timeout --kill-after=30s 5m apt-get install -y -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Dpkg::Use-Pty=0 ./google-chrome-stable_current_amd64.deb
     displayName: Install chrome
+    timeoutInMinutes: 10
 
   - bash: build/test-scripts/wasm-run-skia-runtime-tests.sh
     displayName: Run WebAssembly Skia Runtime Tests
