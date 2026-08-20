@@ -19,6 +19,7 @@ public class Given_GenericResources
 			"ProgressBarBorderThemeThickness",
 			"SliderHorizontalThumbHeight",
 			"SliderHorizontalThumbWidth",
+			"SplitViewPaneRootCornerRadius",
 			"SystemAccentColor",
 			"SystemAccentColorDark1",
 			"SystemAccentColorDark2",
