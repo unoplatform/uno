@@ -255,7 +255,10 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: Publish Failed Tests Results List
     condition: always()
-    retryCountOnTaskFailure: 10
+    # This artifact is a few hundred bytes. The 10 used by the large-payload publishes above
+    # exists for slow uploads; here it only stretches a missing-directory failure, which cost
+    # 11.2 minutes on one iOS job.
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
       ArtifactName: $(TEST_KIND)-tests-android-native-failures
