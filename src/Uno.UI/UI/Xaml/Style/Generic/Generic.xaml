@@ -1,4 +1,12 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<!--
+    WinUI source inventory:
+    - Windows SDK 10.0.26100.0, DesignTime\CommonConfiguration\Neutral\UAP\10.0.26100.0\Generic\generic.xaml
+      SHA-256 8426E3EEE1D245C45BBA8B64F915A17C99F2F375C20F426E11CCBB4FA810249C
+    - Microsoft.WindowsAppSDK 1.7.250909003, Microsoft.UI\Themes\generic.xaml
+      tag winui3/release/1.7.3, commit 65718e2813a90fc900e8775d2ddc580b268fcc2f
+    Uno platform adaptations and compatibility aliases are intentionally retained.
+-->
 
 <ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:not_win="http://uno.ui/not_win" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:netstdref="http://uno.ui/netstdref" mc:Ignorable="not_win netstdref">
 
@@ -5981,7 +5989,7 @@
 
     <x:String x:Key="RequiredHeaderContent">*</x:String>
     <!-- Default style for Windows.UI.Xaml.Controls.Button -->
-    <Style TargetType="Button">
+    <Style x:Key="XamlDefaultButton" TargetType="Button">
         <Setter Property="Background" Value="{ThemeResource ButtonBackground}" />
         <Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
         <Setter Property="Foreground" Value="{ThemeResource ButtonForeground}" />
@@ -6077,6 +6085,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="Button" BasedOn="{StaticResource XamlDefaultButton}" />
     <!-- Default style for Windows.UI.Xaml.Controls.Primitives.RepeatButton -->
     <Style TargetType="RepeatButton">
         <Setter Property="Background" Value="{ThemeResource RepeatButtonBackground}" />
@@ -6740,7 +6749,7 @@
         </Setter>
     </Style>
     <!-- Default style for Windows.UI.Xaml.Controls.CheckBox -->
-    <Style TargetType="CheckBox">
+    <Style x:Key="XamlDefaultCheckBox" TargetType="CheckBox">
         <Setter Property="Background" Value="{ThemeResource CheckBoxBackgroundUnchecked}" />
         <Setter Property="Foreground" Value="{ThemeResource CheckBoxForegroundUnchecked}" />
         <Setter Property="BorderBrush" Value="{ThemeResource CheckBoxBorderBrushUnchecked}" />
@@ -7141,6 +7150,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="CheckBox" BasedOn="{StaticResource XamlDefaultCheckBox}" />
     <!-- Default style for Windows.UI.Xaml.Controls.ContentControl -->
     <Style TargetType="ContentControl">
         <Setter Property="HorizontalContentAlignment" Value="Left" />
@@ -10876,7 +10886,7 @@
 
     <!-- Default style for Windows.UI.Xaml.Controls.Slider -->
 
-    <Style TargetType="Slider">
+    <Style x:Key="XamlDefaultSlider" TargetType="Slider">
         <Setter Property="Background" Value="{ThemeResource SliderTrackFill}" />
         <Setter Property="BorderThickness" Value="{ThemeResource SliderBorderThemeThickness}" />
         <Setter Property="Foreground" Value="{ThemeResource SliderTrackValueFill}" />
@@ -11171,9 +11181,10 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="Slider" BasedOn="{StaticResource XamlDefaultSlider}" />
     <!-- Default style for Windows.UI.Xaml.Controls.ToggleSwitch -->
 
-    <Style TargetType="ToggleSwitch">
+    <Style x:Key="XamlDefaultToggleSwitch" TargetType="ToggleSwitch">
         <Setter Property="Foreground" Value="{ThemeResource ToggleSwitchContentForeground}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
@@ -11534,6 +11545,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="ToggleSwitch" BasedOn="{StaticResource XamlDefaultToggleSwitch}" />
     <!-- Default style for Windows.UI.Xaml.Controls.ToolTip -->
     <Style TargetType="ToolTip">
         <Setter Property="Foreground" Value="{ThemeResource ToolTipForeground}" />
@@ -11926,7 +11938,7 @@
         </Setter>
     </Style>
     <!-- Default style for Windows.UI.Xaml.Controls.Frame -->
-    <Style TargetType="Frame">
+    <Style x:Key="XamlDefaultFrame" TargetType="Frame">
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="VerticalContentAlignment" Value="Stretch" />
@@ -11948,6 +11960,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="Frame" BasedOn="{StaticResource XamlDefaultFrame}" />
     <!-- Default style for Windows.UI.Xaml.Controls.FlyoutPresenter -->
     <Style TargetType="FlyoutPresenter">
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -12196,7 +12209,7 @@
         </Setter>
     </Style>
     <!-- Default style for Windows.UI.Xaml.Controls.Pivot -->
-    <Style TargetType="Pivot">
+    <Style x:Key="XamlDefaultPivot" TargetType="Pivot">
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="Background" Value="{ThemeResource PivotBackground}" />
@@ -12542,6 +12555,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="Pivot" BasedOn="{StaticResource XamlDefaultPivot}" />
     <!-- Default style for Windows.UI.Xaml.Controls.PivotItem -->
     <Style TargetType="PivotItem">
         <Setter Property="Background" Value="{ThemeResource PivotItemBackground}" />
