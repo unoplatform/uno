@@ -772,19 +772,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// on Apple platforms moving to the previous word is `option` (alt/menu) + `left`
 			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+
+			// Each step polls with its own message so a failure identifies which word-left it was.
+			// Polling only covers a late move; if the `if (HasPointerCapture) return;` guard in
+			// KeyDownLeftArrow makes it a no-op instead, the wait still times out here.
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(8, SUT.SelectionStart);
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				8,
+				messageBuilder: start => $"1st word-left should move the caret to the start of 'ghi', was {start} (length {SUT.SelectionLength})");
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(4, SUT.SelectionStart);
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				4,
+				messageBuilder: start => $"2nd word-left should move the caret to the start of 'def', was {start} (length {SUT.SelectionLength})");
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(0, SUT.SelectionStart);
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				0,
+				messageBuilder: start => $"3rd word-left should move the caret to the start of 'abc', was {start} (length {SUT.SelectionLength})");
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			// selecting the previous word is `shift` + the same modifier
@@ -793,18 +803,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			mod |= VirtualKeyModifiers.Shift;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(8, SUT.SelectionStart);
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				8,
+				messageBuilder: start => $"1st shift+word-left should select 'ghi', was {start} (length {SUT.SelectionLength})");
 			Assert.AreEqual(3, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(4, SUT.SelectionStart);
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				4,
+				messageBuilder: start => $"2nd shift+word-left should extend the selection to 'def ghi', was {start} (length {SUT.SelectionLength})");
 			Assert.AreEqual(7, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(0, SUT.SelectionStart);
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				0,
+				messageBuilder: start => $"3rd shift+word-left should extend the selection to the whole text, was {start} (length {SUT.SelectionLength})");
 			Assert.AreEqual(11, SUT.SelectionLength);
 		}
 
@@ -7026,6 +7042,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				message: "Outer ScrollViewer should scroll to bring the caret at the end into view.");
 
 			var offsetAfterFocus = outerScrollViewer.VerticalOffset;
+			var extentAfterFocus = outerScrollViewer.ExtentHeight;
 
 			// Now type an Enter to add a new line — the caret moves further down.
 			textBox.SafeRaiseEvent(UIElement.KeyDownEvent,
@@ -7033,11 +7050,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			// The Enter triggers a re-layout + BringIntoView scroll that can exceed a short timeout on
-			// slower runtimes (e.g. WASM); give the settle enough room.
+			// slower runtimes (e.g. WASM); give the settle enough room. Extent and offset are waited on
+			// separately so a timeout says whether the TextBox never grew, or grew but never scrolled.
+			// AcceptsReturn above makes the WASM invisible input a <textarea>, which never matches the
+			// `instanceof HTMLInputElement` check in BrowserInvisibleTextBoxViewExtension.ts, so the DOM
+			// selection path is inert for this test.
 			await WindowHelper.WaitFor(
-				() => outerScrollViewer.VerticalOffset > offsetAfterFocus,
-				timeoutMS: 5000,
-				message: "Outer ScrollViewer should scroll further after adding a new line.");
+				() => outerScrollViewer.ExtentHeight,
+				extentAfterFocus,
+				messageBuilder: extent => $"TextBox did not grow after adding a new line: extent {extent} (was {extentAfterFocus}), offset {outerScrollViewer.VerticalOffset}, scrollable {outerScrollViewer.ScrollableHeight}",
+				comparer: (actual, previous) => actual > previous,
+				timeoutMS: 5000);
+
+			await WindowHelper.WaitFor(
+				() => outerScrollViewer.VerticalOffset,
+				offsetAfterFocus,
+				messageBuilder: offset => $"TextBox grew but the outer ScrollViewer did not scroll further: offset {offset} (was {offsetAfterFocus}), extent {outerScrollViewer.ExtentHeight}, scrollable {outerScrollViewer.ScrollableHeight}",
+				comparer: (actual, previous) => actual > previous,
+				timeoutMS: 5000);
 		}
 
 		[TestMethod]

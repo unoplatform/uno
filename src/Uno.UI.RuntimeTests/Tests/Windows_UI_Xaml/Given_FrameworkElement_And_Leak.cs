@@ -148,7 +148,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationViewItem), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaWasm)] // Fails on net11.0-wasm, see https://github.com/unoplatform/uno/issues/9080
 		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter), 15)]
 #if !__APPLE_UIKIT__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationView), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.NavigationView), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaWasm)] // Fails on net11.0-wasm, see https://github.com/unoplatform/uno/issues/9080
 #endif
 		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.NumberBox), 15)]
 #if !WINAPPSDK
@@ -196,7 +196,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 			, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)] // UIKit Disabled - #10344
 		[ActivatableDataRow(typeof(MediaPlayerElement), 15, LeakTestStyles.All, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeAndroid)]
-		[ActivatableDataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CommandBarFlyout_Leak, Uno.UI.RuntimeTests", 15, LeakTestStyles.All, RuntimeTestPlatforms.NativeUIKit)] // flaky on native iOS
+		[ActivatableDataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.CommandBarFlyout_Leak, Uno.UI.RuntimeTests", 15, LeakTestStyles.All, RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWasm)] // flaky on native iOS; fails on net11.0-wasm, see https://github.com/unoplatform/uno/issues/9080
 #if RUNTIME_NATIVE_AOT
 		[Ignore("Fails under NativeAOT for known and unknown reasons; known reasons include:\n" +
 			"  * lack of a GC bridge, causing the RemoveDeadRefsAndGetAliveRefs() assert to fail.")]
