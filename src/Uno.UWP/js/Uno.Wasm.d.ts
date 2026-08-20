@@ -65,6 +65,7 @@ declare namespace Uno.Utils {
         private static lastPasteShortcutTime;
         private static pasteWaiters;
         private static ownContent;
+        private static blurredSinceOwnWrite;
         private static readonly pasteFreshnessMs;
         private static readonly pasteRetentionMs;
         private static readonly pasteWaitTimeoutMs;

@@ -66,6 +66,7 @@ namespace Uno.Utils {
 		// Serving reads from this cache avoids permission-gated clipboard reads for content
 		// this application wrote itself.
 		private static ownContent: OwnContent = null;
+		private static blurredSinceOwnWrite = false;
 
 		private static readonly pasteFreshnessMs = 2000;
 		private static readonly pasteRetentionMs = 30000;
@@ -82,11 +83,18 @@ namespace Uno.Utils {
 			document.addEventListener("keydown", Clipboard.onKeyDownCaptured, true);
 
 			// In-page copy/cut and returning from another window can change the clipboard content,
-			// making the last managed write no longer authoritative.
+			// making the last managed write no longer authoritative. Focus alone is not enough —
+			// spurious focus events fire at startup and around browser UI (e.g. permission
+			// bubbles), so invalidation requires an actual blur since the last write.
 			const invalidateOwnContent = () => { Clipboard.ownContent = null; };
 			document.addEventListener("copy", invalidateOwnContent);
 			document.addEventListener("cut", invalidateOwnContent);
-			window.addEventListener("focus", invalidateOwnContent);
+			window.addEventListener("blur", () => { Clipboard.blurredSinceOwnWrite = true; });
+			window.addEventListener("focus", () => {
+				if (Clipboard.blurredSinceOwnWrite) {
+					Clipboard.ownContent = null;
+				}
+			});
 		}
 
 		private static onKeyDownCaptured(event: KeyboardEvent) {
@@ -352,69 +360,64 @@ namespace Uno.Utils {
 				imageBlob: imageBlob
 			};
 			Clipboard.ownContent = ownContent;
+			Clipboard.blurredSinceOwnWrite = false;
+			Clipboard.onClipboardChanged();
 
-			try {
-				if (nav.clipboard && nav.clipboard.write && typeof ClipboardItem !== "undefined") {
-					const record: Record<string, Blob> = {};
+			// The system-clipboard write below is best-effort: browsers reject it outside a user
+			// gesture. The cache above keeps the content readable in-process either way (matching
+			// WinUI semantics); only sharing with other applications is lost. A rejection
+			// propagates so the managed side can log it.
+			if (nav.clipboard && nav.clipboard.write && typeof ClipboardItem !== "undefined") {
+				const record: Record<string, Blob> = {};
 
-					for (const entry of entries) {
-						if (entry.custom) {
-							const webType = "web " + entry.type;
-							if (ClipboardItem.supports && ClipboardItem.supports(webType)) {
-								record[webType] = new Blob([entry.value], { type: entry.type });
-							} else {
-								console.warn(`Clipboard: custom format '${entry.type}' is not supported by this browser and was skipped.`);
-							}
+				for (const entry of entries) {
+					if (entry.custom) {
+						const webType = "web " + entry.type;
+						if (ClipboardItem.supports && ClipboardItem.supports(webType)) {
+							record[webType] = new Blob([entry.value], { type: entry.type });
 						} else {
-							record[entry.type] = new Blob([entry.value], { type: entry.type });
+							console.warn(`Clipboard: custom format '${entry.type}' is not supported by this browser and was skipped.`);
 						}
+					} else {
+						record[entry.type] = new Blob([entry.value], { type: entry.type });
 					}
-
-					if (imageBlob && imageBlob.type !== "image/png") {
-						// Browsers only accept image/png for clipboard writes.
-						const png = await Clipboard.tryTranscodeToPng(imageBlob);
-						if (png) {
-							imageBlob = png;
-							ownContent.imageBlob = png;
-						}
-					}
-
-					if (imageBlob) {
-						record[imageBlob.type] = imageBlob;
-					}
-
-					if (Object.keys(record).length > 0) {
-						// A single ClipboardItem so all formats are written atomically, as WinUI does.
-						const item = new ClipboardItem(record);
-						await nav.clipboard.write([item]);
-					}
-
-					Clipboard.onClipboardChanged();
-					return;
 				}
 
-				// Fallbacks can only carry plain text.
-				const text = entries.find(e => e.type === "text/plain");
-				if (nav.clipboard) {
-					await nav.clipboard.writeText(text ? text.value : "");
-					Clipboard.onClipboardChanged();
-					return;
+				if (imageBlob && imageBlob.type !== "image/png") {
+					// Browsers only accept image/png for clipboard writes.
+					const png = await Clipboard.tryTranscodeToPng(imageBlob);
+					if (png) {
+						imageBlob = png;
+						ownContent.imageBlob = png;
+					}
 				}
 
-				const textarea = document.createElement("textarea");
-				textarea.value = text ? text.value : "";
-				document.body.appendChild(textarea);
-				textarea.select();
-				document.execCommand("copy");
-				document.body.removeChild(textarea);
-				Clipboard.onClipboardChanged();
-			} catch (e) {
-				// The write failed, so the actual clipboard state is unknown.
-				if (Clipboard.ownContent === ownContent) {
-					Clipboard.ownContent = null;
+				if (imageBlob) {
+					record[imageBlob.type] = imageBlob;
 				}
-				throw e;
+
+				if (Object.keys(record).length > 0) {
+					// A single ClipboardItem so all formats are written atomically, as WinUI does.
+					const item = new ClipboardItem(record);
+					await nav.clipboard.write([item]);
+				}
+
+				return;
 			}
+
+			// Fallbacks can only carry plain text.
+			const text = entries.find(e => e.type === "text/plain");
+			if (nav.clipboard) {
+				await nav.clipboard.writeText(text ? text.value : "");
+				return;
+			}
+
+			const textarea = document.createElement("textarea");
+			textarea.value = text ? text.value : "";
+			document.body.appendChild(textarea);
+			textarea.select();
+			document.execCommand("copy");
+			document.body.removeChild(textarea);
 		}
 
 		private static async tryTranscodeToPng(blob: Blob): Promise<Blob> {
@@ -438,22 +441,16 @@ namespace Uno.Utils {
 		public static async clearAsync(): Promise<void> {
 			Clipboard.lastPaste = null;
 
-			const ownContent: OwnContent = { texts: [], imageBlob: null };
-			Clipboard.ownContent = ownContent;
+			Clipboard.ownContent = { texts: [], imageBlob: null };
+			Clipboard.blurredSinceOwnWrite = false;
+			Clipboard.onClipboardChanged();
 
-			try {
-				const nav = navigator as NavigatorClipboard;
-				if (nav.clipboard) {
-					// Browsers cannot truly empty the clipboard; an empty text write is the closest equivalent.
-					await nav.clipboard.writeText("");
-				}
-
-				Clipboard.onClipboardChanged();
-			} catch (e) {
-				if (Clipboard.ownContent === ownContent) {
-					Clipboard.ownContent = null;
-				}
-				throw e;
+			const nav = navigator as NavigatorClipboard;
+			if (nav.clipboard) {
+				// Browsers cannot truly empty the clipboard; an empty text write is the closest
+				// equivalent. The cleared state is kept for in-process reads even when the
+				// browser rejects the write (no user gesture).
+				await nav.clipboard.writeText("");
 			}
 		}
 

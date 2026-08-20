@@ -113,7 +113,7 @@ partial class Given_Clipboard
 		var view = Clipboard.GetContent();
 		var reference = await view.GetBitmapAsync();
 		using var stream = await reference.OpenReadAsync();
-		var results = ToBytes(stream);
+		var results = await ToBytesAsync(stream);
 
 		SkiaImageAssert.ArePixelsEqual(bytes, results);
 	}
@@ -135,7 +135,7 @@ partial class Given_Clipboard
 		var view = Clipboard.GetContent();
 		var reference = await view.GetBitmapAsync();
 		using var stream = await reference.OpenReadAsync();
-		var results = ToBytes(stream);
+		var results = await ToBytesAsync(stream);
 
 		SkiaImageAssert.ArePixelsEqual(bytes, results);
 	}
@@ -244,7 +244,7 @@ partial class Given_Clipboard
 
 		var file = (Windows.Storage.StorageFile)items[0];
 		using var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
-		Assert.AreEqual("file-content-1", Encoding.UTF8.GetString(ToBytes(stream)));
+		Assert.AreEqual("file-content-1", Encoding.UTF8.GetString(await ToBytesAsync(stream)));
 #else
 		await Task.CompletedTask;
 #endif
@@ -271,7 +271,7 @@ partial class Given_Clipboard
 		var reference = await view.GetBitmapAsync();
 		using var stream = await reference.OpenReadAsync();
 
-		CollectionAssert.AreEqual(Convert.FromBase64String(TestPngBase64), ToBytes(stream));
+		CollectionAssert.AreEqual(Convert.FromBase64String(TestPngBase64), await ToBytesAsync(stream));
 #else
 		await Task.CompletedTask;
 #endif
@@ -317,6 +317,16 @@ partial class Given_Clipboard
 		using var stream = ras.AsStreamForRead();
 		using var buffer = new MemoryStream((int)ras.Size);
 		stream.CopyTo(buffer);
+
+		return buffer.ToArray();
+	}
+
+	// Native wasm file streams are asynchronous-only, so tests running on wasm must not use ToBytes.
+	private static async Task<byte[]> ToBytesAsync(IRandomAccessStream ras)
+	{
+		using var stream = ras.AsStreamForRead();
+		using var buffer = new MemoryStream((int)ras.Size);
+		await stream.CopyToAsync(buffer);
 
 		return buffer.ToArray();
 	}
