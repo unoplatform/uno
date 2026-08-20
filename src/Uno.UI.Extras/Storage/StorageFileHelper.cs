@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno;
 
-namespace Uno.UI.Extras;
+namespace Uno.Storage;
 
 public partial class StorageFileHelper
 {

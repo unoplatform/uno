@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 
-namespace Uno.UI.Extras
+namespace Uno.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "ElevatedContent")]
 	[TemplatePart(Name = "PART_Border", Type = typeof(Border))]
