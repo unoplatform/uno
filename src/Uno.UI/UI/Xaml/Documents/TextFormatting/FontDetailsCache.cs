@@ -34,10 +34,13 @@ internal static class FontDetailsCache
 	private static readonly Dictionary<FontEntry, Task<IFont?>> _fontCache = new();
 	private static readonly object _fontCacheGate = new();
 
-	// Bytes of loaded manifest-free URI fonts, keyed by source uri. A variable font is a single file shared by
-	// every weight/size, so caching the bytes lets a new weight/size be resolved synchronously instead of
-	// reloading the file (which briefly renders the default font — flicker when animating FontWeight).
+	// Bytes of loaded URI fonts, keyed by the manifest-resolved uri (which is the source uri when there is no
+	// manifest). An IFont bakes the size, so a new size of an already-loaded file must resolve synchronously —
+	// otherwise it briefly renders the default font (flicker) and the memoized sync FontDetails stays wrong.
 	private static readonly Dictionary<string, byte[]> _fontDataByUri = new();
+	// Manifest resolution per (source uri, weight, style, stretch): lets a warm font skip the async
+	// .manifest probe so the whole resolution completes synchronously.
+	private static readonly Dictionary<(string SourceUri, int Weight, FontStyle Style, FontStretch Stretch), Uri> _manifestUriCache = new();
 	private static readonly object _fontDataGate = new();
 
 	private static readonly IFontFallbackService? _fontFallbackService =
@@ -47,13 +50,21 @@ internal static class FontDetailsCache
 	private static IFontProvider FontProvider => global::Uno.UI.Composition.Drawing.FontProvider.Current;
 
 	/// <summary>
-	/// Loads the raw font bytes for an application/URI font, resolving a <c>.manifest</c> sidecar to the
-	/// weight/style-specific family first when present. Returns the bytes and whether a manifest was used
-	/// (manifest fonts map each weight/style to a different file, so their bytes aren't cached for reuse).
+	/// Resolves a <c>.manifest</c> sidecar to the weight/style-specific font file when present, returning the
+	/// source uri unchanged otherwise. Resolutions are cached so a warm font skips the async package probe.
 	/// </summary>
-	private static async Task<(byte[]? data, bool usedManifest)> LoadFontBytesFromApplicationUriAsync(Uri uri, FontWeight weight, FontStyle style, FontStretch stretch)
+	private static async Task<Uri> ResolveManifestUriAsync(Uri uri, FontWeight weight, FontStyle style, FontStretch stretch)
 	{
-		var usedManifest = false;
+		var key = (uri.OriginalString, weight.Weight, style, stretch);
+		lock (_fontDataGate)
+		{
+			if (_manifestUriCache.TryGetValue(key, out var cached))
+			{
+				return cached;
+			}
+		}
+
+		var resolved = uri;
 		try
 		{
 			var manifestUri = new Uri(uri.OriginalString + ".manifest");
@@ -62,8 +73,7 @@ internal static class FontDetailsCache
 			{
 				var manifestFile = await StorageFile.GetFileFromApplicationUriAsync(manifestUri);
 				using var manifestStream = await manifestFile.OpenStreamForReadAsync();
-				uri = new Uri(FontManifestHelpers.GetFamilyNameFromManifest(manifestStream, weight, style, stretch));
-				usedManifest = true;
+				resolved = new Uri(FontManifestHelpers.GetFamilyNameFromManifest(manifestStream, weight, style, stretch));
 			}
 		}
 		catch (Exception e)
@@ -74,6 +84,16 @@ internal static class FontDetailsCache
 			}
 		}
 
+		lock (_fontDataGate)
+		{
+			_manifestUriCache[key] = resolved;
+		}
+
+		return resolved;
+	}
+
+	private static async Task<byte[]?> LoadFontBytesAsync(Uri uri)
+	{
 		if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Debug))
 		{
 			typeof(FontDetailsCache).Log().LogDebug($"Fetching font from {uri}");
@@ -84,12 +104,12 @@ internal static class FontDetailsCache
 			using var stream = await AppDataUriEvaluator.ToStream(uri, CancellationToken.None);
 			using var buffer = new MemoryStream();
 			await stream.CopyToAsync(buffer, CancellationToken.None);
-			return (buffer.ToArray(), usedManifest);
+			return buffer.ToArray();
 		}
 		catch (Exception e)
 		{
 			typeof(FontDetailsCache).LogError()?.Error($"Loading font from {uri} failed: {e}");
-			return (null, usedManifest);
+			return null;
 		}
 	}
 
@@ -114,32 +134,28 @@ internal static class FontDetailsCache
 
 		if (Uri.TryCreate(name, UriKind.Absolute, out var uri))
 		{
+			// Both steps complete synchronously when warm, so a new size of an already-loaded font builds
+			// its IFont without ever falling back to the default font.
+			var resolvedUri = await ResolveManifestUriAsync(uri, weight, style, stretch);
+
 			byte[]? cachedData;
 			lock (_fontDataGate)
 			{
-				_fontDataByUri.TryGetValue(uri.OriginalString, out cachedData);
+				_fontDataByUri.TryGetValue(resolvedUri.OriginalString, out cachedData);
 			}
 
 			if (cachedData is null)
 			{
-				var (data, usedManifest) = await LoadFontBytesFromApplicationUriAsync(uri, weight, style, stretch);
-				if (data is null)
+				cachedData = await LoadFontBytesAsync(resolvedUri);
+				if (cachedData is null)
 				{
 					return null;
 				}
 
-				// A manifest maps each weight/style to a different file, so only cache when there's none: then
-				// the source uri identifies a single file shared by all weights, letting other weights resolve
-				// synchronously.
-				if (!usedManifest)
+				lock (_fontDataGate)
 				{
-					lock (_fontDataGate)
-					{
-						_fontDataByUri[uri.OriginalString] = data;
-					}
+					_fontDataByUri[resolvedUri.OriginalString] = cachedData;
 				}
-
-				cachedData = data;
 			}
 
 			return manager.CreateFont(cachedData, familyNameHint, weight, stretch, style, fontSize);
