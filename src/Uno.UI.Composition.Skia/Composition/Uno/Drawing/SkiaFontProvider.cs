@@ -26,6 +26,10 @@ internal sealed class SkiaFontProvider : IFontProvider
 	// Caches codepoint fallback resolution: the SKFontManager.MatchCharacter lookup is comparatively expensive,
 	// and a stable IFont instance lets the FontDetails cache dedupe. Keyed by codepoint + requested style + size.
 	private readonly Dictionary<(int Codepoint, int Weight, FontStretch Stretch, FontStyle Style, float Size), IFont?> _matchCharacterCache = new();
+	// Second level keyed by the resolved family: distinct codepoints matching the same physical font must share
+	// one IFont instance, or segment grouping sees a font change between every glyph and breaks contextual
+	// shaping (e.g. Arabic joining).
+	private readonly Dictionary<(string Family, int Weight, FontStretch Stretch, FontStyle Style, float Size), IFont> _matchedFamilyCache = new();
 	private readonly object _matchCharacterGate = new();
 
 	public IFont? CreateFont(byte[] data, string? familyNameHint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
@@ -68,7 +72,22 @@ internal sealed class SkiaFontProvider : IFontProvider
 		}
 
 		var typeface = SKFontManager.Default.MatchCharacter(codepoint);
-		var font = typeface is null ? null : MakeFont(ApplyVariableFontAxes(typeface, weight, stretch, style), fontSize);
+		IFont? font = null;
+		if (typeface is not null)
+		{
+			var familyKey = (typeface.FamilyName, weight.Weight, stretch, style, fontSize);
+			lock (_matchCharacterGate)
+			{
+				_matchedFamilyCache.TryGetValue(familyKey, out font);
+			}
+
+			font ??= MakeFont(ApplyVariableFontAxes(typeface, weight, stretch, style), fontSize);
+
+			lock (_matchCharacterGate)
+			{
+				_matchedFamilyCache[familyKey] = font;
+			}
+		}
 
 		lock (_matchCharacterGate)
 		{
