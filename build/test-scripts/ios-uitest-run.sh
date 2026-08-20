@@ -228,6 +228,35 @@ fi
 echo "Starting simulator: [$UITEST_IOSDEVICE_ID] ($UNO_UITEST_SIMULATOR_VERSION / $UNO_UITEST_SIMULATOR_NAME)"
 xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
 
+# `xcrun simctl bootstatus -b` blocks until the device reports a finished boot, but it has no
+# timeout of its own and macOS ships no timeout(1). Run it under a watchdog: a simulator that
+# never finishes booting is then reported here, instead of surfacing further down as an opaque
+# "Timed out after 0:02:00 secs on command --list 1" from idb.
+wait_for_boot() {
+	local udid="$1"
+	local limit="$2"
+	local status=0
+
+	xcrun simctl bootstatus "$udid" -b &
+	local boot_pid=$!
+
+	( sleep "$limit"; kill -TERM "$boot_pid" 2>/dev/null ) &
+	local watchdog_pid=$!
+
+	wait "$boot_pid" || status=$?
+
+	kill -TERM "$watchdog_pid" 2>/dev/null || true
+	wait "$watchdog_pid" 2>/dev/null || true
+
+	return $status
+}
+
+echo "Waiting for the simulator to finish booting (started $(date))"
+if ! wait_for_boot "$UITEST_IOSDEVICE_ID" 180; then
+	echo "##vso[task.logissue type=warning]UNOBLD006: The simulator did not report a completed boot within 180s. Continuing anyway; the app install below will surface a hard failure if it is genuinely unusable."
+fi
+echo "Simulator boot wait finished ($(date))"
+
 # echo "Install app on simulator: $UITEST_IOSDEVICE_ID"
 # xcrun simctl install "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH" || true
 idb install --udid "$UITEST_IOSDEVICE_ID" "$UNO_UITEST_IOSBUNDLE_PATH"
