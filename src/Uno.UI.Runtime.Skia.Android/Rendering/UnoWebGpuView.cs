@@ -19,11 +19,11 @@ using Uno.UI.Helpers;
 namespace Uno.UI.Runtime.Skia.Android;
 
 /// <summary>
-/// WebGPU-backed rendering view for Android, mirroring <see cref="UnoSKVulkanView"/>: a SurfaceView
+/// WebGPU-backed rendering view for Android, mirroring <see cref="UnoVulkanView"/>: a SurfaceView
 /// whose ANativeWindow drives a wgpu swapchain through the neutral graphics pipeline. Not runtime-validated on
 /// Linux CI (needs an Android device/emulator with a WebGPU-capable adapter).
 /// </summary>
-internal sealed partial class UnoSKWebGpuView : SurfaceView, ISurfaceHolderCallback, IUnoSkiaRenderView
+internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallback, IUnoRenderView
 {
 	public UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 	public TextInputPlugin TextInputPlugin { get; }
@@ -38,7 +38,7 @@ internal sealed partial class UnoSKWebGpuView : SurfaceView, ISurfaceHolderCallb
 	private readonly ManualResetEventSlim _renderEvent = new(false);
 	private IntPtr _nativeWindow; // Must stay alive while the wgpu surface references it
 
-	public UnoSKWebGpuView(Context context) : base(context)
+	public UnoWebGpuView(Context context) : base(context)
 	{
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
@@ -126,7 +126,7 @@ internal sealed partial class UnoSKWebGpuView : SurfaceView, ISurfaceHolderCallb
 		}
 		catch (Exception ex)
 		{
-			this.Log().Error("UnoSKWebGpuView render thread failed", ex);
+			this.Log().Error("UnoWebGpuView render thread failed", ex);
 		}
 	}
 
@@ -193,7 +193,7 @@ internal sealed partial class UnoSKWebGpuView : SurfaceView, ISurfaceHolderCallb
 
 	#endregion
 
-	#region Input / Accessibility (mirrored from UnoSKVulkanView)
+	#region Input / Accessibility (mirrored from UnoVulkanView)
 
 	public override bool OnCheckIsTextEditor() => true;
 
@@ -224,7 +224,7 @@ internal sealed partial class UnoSKWebGpuView : SurfaceView, ISurfaceHolderCallb
 		}
 		catch (Exception e)
 		{
-			this.Log().Error($"{nameof(UnoSKWebGpuView)}.{nameof(OnFocusChanged)} failed", e);
+			this.Log().Error($"{nameof(UnoWebGpuView)}.{nameof(OnFocusChanged)} failed", e);
 		}
 	}
 
