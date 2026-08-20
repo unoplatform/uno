@@ -12,6 +12,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [TestClass]
 public class Given_SplitView
 {
+	private sealed class TestSplitView : SplitView
+	{
+		internal DependencyObject GetPart(string name) => GetTemplateChild(name);
+	}
+
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task Update_OpenPaneLength()
@@ -36,5 +41,30 @@ public class Given_SplitView
 		await UITestHelper.WaitForIdle();
 
 		Assert.AreEqual(sut.OpenPaneLength, columnDefinition.Width.Value, "ColumnDefinition Width should be equal to OpenPaneLength after update");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task Default_Template_Contains_Pinned_Parts()
+	{
+		var sut = new TestSplitView
+		{
+			Content = new Border(),
+			Pane = new Border(),
+			DisplayMode = SplitViewDisplayMode.Inline,
+			IsPaneOpen = true,
+		};
+
+		await UITestHelper.Load(sut, x => x.IsLoaded);
+
+		Assert.IsNotNull(sut.Template);
+		Assert.IsNotNull(sut.GetPart("PaneRoot"));
+		Assert.IsNotNull(sut.GetPart("ContentRoot"));
+		Assert.IsNotNull(sut.GetPart("LightDismissLayer"));
+
+		sut.IsPaneOpen = false;
+		await UITestHelper.WaitForIdle();
+		sut.IsPaneOpen = true;
+		await UITestHelper.WaitForIdle();
 	}
 }
