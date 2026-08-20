@@ -322,9 +322,10 @@ those same bytes)*. The open question is only **how to turn a family name + styl
 find a fallback font for a codepoint the chosen family can't render. Today this is 100% Skia
 (`FontDetailsCache`): `SKTypeface.FromFamilyName(name, weight, width, slant)`, `.ttc`/`.otc` face selection by
 family/PostScript name, variable-font axis positioning (`wght`/`wdth`/`ital`/`slnt`), and default-font
-fallback (`SKTypeface.FromFamilyName(null)`). Application/URI fonts and per-codepoint fallback already route
-through neutral-ish seams (`AppDataUriEvaluator` byte load; `IFontFallbackService` via `ApiExtensibility`); it
-is **system-family resolution + variable-font positioning** that is Skia-only.
+fallback (`SKTypeface.FromFamilyName(null)`). Application/URI fonts load bytes through `AppDataUriEvaluator`, and
+per-codepoint fallback is part of the neutral `IFontProvider` (`MatchCharacterAsync`, with the built-in browser Noto /
+Android system-font fallback behind `FontFallback`); it is **system-family resolution + variable-font positioning**
+that is Skia-only.
 
 Three ways to remove that dependency:
 
@@ -338,7 +339,7 @@ Three ways to remove that dependency:
   non-trivial to add to `ManagedFont`.
 
 - **B) Platform font APIs behind a seam (recommended target).** Define an `IFontManager` extensibility point
-  (mirroring `IFontFallbackService`): `family + style → font bytes/handle`, plus the existing
+  (mirroring `IFontProvider`): `family + style → font bytes/handle`, plus the existing
   codepoint→fallback. Provide it via `ApiExtensibility` with per-runtime implementations in the
   `Uno.UI.Runtime.Skia.*` projects — **DirectWrite** (Win32), **CoreText** (macOS/iOS), **fontconfig**
   (Linux), **Android font APIs** (Android).
@@ -578,9 +579,10 @@ plus a clear answer to "who drives."
 > **decline** (unavailable, or the host's config opted out). The host switches purely on `kind` and
 > names no backend and no `UNO_WEBGPU`. **The backend owns the kind order** (`IGraphicsProvider.PreferredContexts`,
 > walked as-is); preference is expressed two neutral ways only — the app orders the provider's kinds via
-> its constructor (`new SkiaGraphicsProvider(GraphicsContextKind.Software)` forces software), and a host
-> *declines* kinds per its own config (Win32 `UseOpenGLOnWin32`, X11 `PreferGLESOverGLOnX11`, LinuxFB
-> `UseDRM`, WASM `forceSoftwareRendering`). Removed with the redesign: `INativeWindow`, `NativeWindowKind`,
+> its constructor (`new SkiaGraphicsProvider(GraphicsContextKind.Software)` forces software), a host
+> *declines* kinds per its own config (LinuxFB `UseDRM`, WASM `forceSoftwareRendering`), and the X11/Win32
+> host builders exclude kinds up front (`ForceRenderingBackend`/`DisableRenderingBackends` →
+> `GraphicsRegistry.DisabledContextKinds`, which negotiation skips). Removed with the redesign: `INativeWindow`, `NativeWindowKind`,
 > `GraphicsRequirements`, the WebGPU self-registration, `Initialize`'s `(window, preferredKinds)` params.
 > `DrawingFactory` is now `internal`.
 >
@@ -799,10 +801,10 @@ backend itself is pluggable. They are **removed**:
 
 | Removed API | Assembly |
 |-------------|----------|
-| `X11RenderingBackend` enum (`Default`/`Vulkan`/`OpenGL`/`OpenGLES`/`Software`) + `X11HostBuilder.RenderingBackend(…)` | `Uno.UI.Runtime.Skia.X11` |
-| `Win32RenderingBackend` enum (`Default`/`Vulkan`/`OpenGL`/`Software`) + `Win32HostBuilder.RenderingBackend(…)` | `Uno.UI.Runtime.Skia.Win32` |
+| `X11RenderingBackend` enum (`Vulkan`/`OpenGL`/`OpenGLES`/`Software`) + `X11HostBuilder.ForceRenderingBackend(…)` / `DisableRenderingBackends(…)` | `Uno.UI.Runtime.Skia.X11` |
+| `Win32RenderingBackend` enum (`Vulkan`/`OpenGL`/`Software`) + `Win32HostBuilder.ForceRenderingBackend(…)` / `DisableRenderingBackends(…)` | `Uno.UI.Runtime.Skia.Win32` |
 | `RenderSurfaceType` enum (`Auto`/`Metal`/`Software`; `Software`/`OpenGL`) | `Uno.UI.Runtime.Skia.MacOS`, `Uno.UI.Runtime.Skia.Win32` |
-| `FeatureConfiguration.Rendering.UseOpenGLOnX11`, `FeatureConfiguration.Rendering.UseVulkanOnX11` | `Uno.UI` |
+| `FeatureConfiguration.Rendering.{UseOpenGLOnX11, PreferGLESOverGLOnX11, UseVulkanOnX11, UseOpenGLOnWin32, UseVulkanOnWin32}` (replaced by the host-builder methods above) | `Uno.UI` |
 
 **Rationale.** The host builder now selects a *graphics backend* (Skia / WebGPU / third party); the
 GPU API and surface type are that backend's own internal concern — a WebGPU backend targets

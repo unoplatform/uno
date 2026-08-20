@@ -194,19 +194,6 @@ namespace Uno.UI
 			public static float? MaximumTextScaleFactor { get; set; }
 
 			/// <summary>
-			/// Overrides the font fallback mechanism used to resolve typefaces for codepoints
-			/// that the requested font family cannot render. When <c>null</c> (the default),
-			/// the platform-registered service is used.
-			/// </summary>
-			/// <remarks>
-			/// Customers wanting to keep the built-in coverage but change how font bytes are obtained
-			/// (e.g. to avoid CORS restrictions on WebAssembly) typically supply a
-			/// <see cref="Microsoft.UI.Xaml.Documents.TextFormatting.CoverageTableFontFallbackService"/>
-			/// constructed with their own coverage table and stream provider.
-			/// </remarks>
-			public static Microsoft.UI.Xaml.Documents.TextFormatting.IFontFallbackService FallbackService { get; set; }
-
-			/// <summary>
 			/// Overrides the OS-reported text scale factor with a manual value.
 			/// When set, this value takes precedence over the OS-reported scale factor.
 			/// Useful for platforms without OS text scaling support (macOS, WASM, Linux FrameBuffer) or for testing.
@@ -493,39 +480,6 @@ namespace Uno.UI
 
 		public static class Rendering
 		{
-			/// <summary>
-			/// Determines if OpenGL rendering should be enabled on the X11 target. If null, defaults to
-			/// OpenGL if available. Otherwise, software rendering will be used.
-			/// </summary>
-			public static bool? UseOpenGLOnX11 { get; set; }
-
-			/// <summary>
-			/// Determines if OpenGL ES + EGL should be used instead of OpenGL + GLX if both are available. This value is only
-			/// used if <see cref="UseOpenGLOnX11"/> is true or null. This property only affects the order of attempting
-			/// to create a GL/GlES context but even when true, if the preferred API fails, the other will be attempted.
-			/// </summary>
-			public static bool PreferGLESOverGLOnX11 { get; set; }
-
-			/// <summary>
-			/// Determines if OpenGL rendering should be enabled on the Win32 target. If null, defaults to
-			/// OpenGL if available. Otherwise, software rendering will be used.
-			/// </summary>
-			public static bool? UseOpenGLOnWin32 { get; set; }
-
-			/// <summary>
-			/// Determines if Vulkan rendering should be enabled on the X11 target.
-			/// Defaults to true: Vulkan is used for hardware-accelerated rendering when available, falling back to
-			/// OpenGL (or software rendering) if Vulkan is unavailable.
-			/// </summary>
-			public static bool UseVulkanOnX11 { get; set; } = true;
-
-			/// <summary>
-			/// Determines if Vulkan rendering should be enabled on the Win32 target.
-			/// Defaults to true: Vulkan is used for hardware-accelerated rendering when available, falling back to
-			/// OpenGL (or software rendering) if Vulkan is unavailable.
-			/// </summary>
-			public static bool UseVulkanOnWin32 { get; set; } = true;
-
 			/// <summary>
 			/// Determines if OpenGL rendering should be enabled on the Android target when using the skia renderer.
 			/// </summary>

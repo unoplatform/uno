@@ -40,7 +40,7 @@ using System.Threading.Tasks;
 using Windows.UI.Text;
 using Uno.Helpers;
 
-namespace Microsoft.UI.Xaml.Documents.TextFormatting;
+namespace Uno.UI.Composition.Drawing;
 
 internal static class NotoFontFallbackService
 {

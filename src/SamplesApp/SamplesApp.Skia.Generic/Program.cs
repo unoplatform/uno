@@ -48,7 +48,7 @@ namespace SkiaSharpExample
 					if (Environment.GetEnvironmentVariable("UNO_X11_RENDERER") is { } rb
 						&& Enum.TryParse<global::Uno.UI.Hosting.X11RenderingBackend>(rb, ignoreCase: true, out var backend))
 					{
-						hostBuilder.RenderingBackend(backend);
+						hostBuilder.ForceRenderingBackend(backend);
 					}
 				})
 				.UseWin32(hostBuilder =>
@@ -58,7 +58,7 @@ namespace SkiaSharpExample
 					if (Environment.GetEnvironmentVariable("UNO_WIN32_RENDERER") is { } rb
 						&& Enum.TryParse<global::Uno.UI.Hosting.Win32RenderingBackend>(rb, ignoreCase: true, out var backend))
 					{
-						hostBuilder.RenderingBackend(backend);
+						hostBuilder.ForceRenderingBackend(backend);
 					}
 				})
 				.UseLinuxFrameBuffer(hostBuilder => hostBuilder.XkbKeymap(new(layout: "us,ara", options: "grp:alt_shift_toggle")))
