@@ -7,23 +7,23 @@ uid: Uno.Features.Accessibility.RoleOverride
 This Uno-specific attached property lets you explicitly override the accessibility role of any XAML element. It is useful for declaring landmarks, custom regions, or forcing a specific ARIA role when the default mapping from the control's `AutomationPeer` is not sufficient.
 
 > [!NOTE]
-> This is an Uno Platform extension with no WinUI equivalent. It is defined in the `Uno.UI.Extras` namespace.
+> This is an Uno Platform extension with no WinUI equivalent. It is defined in the `Uno.UI.Xaml.Automation` namespace.
 
 ## How to use
 
-Add the `Uno.UI.Extras` namespace to your XAML, then set the `AutomationPropertiesExtensions.Role` attached property on any element:
+Add the `Uno.UI.Xaml.Automation` namespace to your XAML, then set the `AutomationPropertiesExtensions.Role` attached property on any element:
 
 ```xml
-<Page xmlns:uut="using:Uno.UI.Extras">
+<Page xmlns:uno="using:Uno.UI.Xaml.Automation">
 
     <!-- Declare a navigation landmark -->
-    <StackPanel uut:AutomationPropertiesExtensions.Role="navigation">
+    <StackPanel uno:AutomationPropertiesExtensions.Role="navigation">
         <Button Content="Home" />
         <Button Content="Settings" />
     </StackPanel>
 
     <!-- Force a specific role on a control -->
-    <Button uut:AutomationPropertiesExtensions.Role="tab"
+    <Button uno:AutomationPropertiesExtensions.Role="tab"
             Content="Overview" />
 </Page>
 ```
@@ -36,7 +36,7 @@ Setting the value to an empty string or `null` removes the override, reverting t
 
 ```xml
 <!-- Remove a previously set role override -->
-<Button uut:AutomationPropertiesExtensions.Role="" Content="Regular button" />
+<Button uno:AutomationPropertiesExtensions.Role="" Content="Regular button" />
 ```
 
 Or in code-behind:
@@ -70,7 +70,7 @@ For standard landmark regions, prefer `AutomationProperties.LandmarkType` — it
 <StackPanel AutomationProperties.LandmarkType="Navigation" />
 
 <!-- Use Role override for non-standard or specific ARIA roles -->
-<StackPanel uut:AutomationPropertiesExtensions.Role="complementary" />
+<StackPanel uno:AutomationPropertiesExtensions.Role="complementary" />
 ```
 
 Use `AutomationPropertiesExtensions.Role` when:
