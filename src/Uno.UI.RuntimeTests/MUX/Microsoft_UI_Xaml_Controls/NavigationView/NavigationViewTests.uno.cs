@@ -33,6 +33,12 @@ public partial class NavigationViewTests : MUXApiTestBase
 		{
 			SUT = new NavigationView
 			{
+				// The host does not stretch the SUT, so leave nothing to the adaptive
+				// thresholds (641/1008) that would otherwise pick the pane mode.
+				PaneDisplayMode = NavigationViewPaneDisplayMode.Left,
+				IsPaneOpen = true,
+				Width = 400,
+				Height = 400,
 				MenuItems =
 				{
 					new NavigationViewItem
