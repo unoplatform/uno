@@ -141,6 +141,12 @@ export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/Samples
 export UNO_UITEST_BENCHMARKS_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/benchmarks/ios-automated
 export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/RuntimeTestResults-ios-automated.xml
 
+## Create the failed-tests directory up front, next to the log directory above: an abort
+## between here and the transform tool (a failed idb install, a sick simulator during
+## teardown) otherwise leaves `PublishBuildArtifacts@1` retrying a missing PathtoPublish.
+mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
+mkdir -p $(dirname ${UNO_TESTS_RUNTIMETESTS_FAILED_LIST})
+
 export UNO_UITEST_SIMULATOR_VERSION="com.apple.CoreSimulator.SimRuntime.iOS-17-5"
 export UNO_UITEST_SIMULATOR_NAME="iPad Pro (12.9-inch) (6th generation)"
 
@@ -394,7 +400,6 @@ echo "Copying crash reports"
 cp -R ~/Library/Logs/DiagnosticReports/* $LOG_FILE_DIRECTORY || true
 
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
-mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 echo "Running NUnitTransformTool"
 
