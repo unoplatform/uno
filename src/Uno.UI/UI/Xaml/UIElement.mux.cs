@@ -156,10 +156,20 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		//UNO TODO: Implement GetClickablePointRasterizedClient on UIElement
 		internal Point GetClickablePointRasterizedClient()
 		{
-			return new Point();
+#if __SKIA__
+			var bounds = GetGlobalBoundsWithOptions(
+				ignoreClipping: false,
+				ignoreClippingOnScrollContentPresenters: false,
+				useTargetInformation: false);
+
+			return bounds.Width > 0 && bounds.Height > 0
+				? new Point(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2)
+				: default;
+#else
+			return default;
+#endif
 		}
 
 		//TODO:MZ: Implement all these in appropriate places :-)
