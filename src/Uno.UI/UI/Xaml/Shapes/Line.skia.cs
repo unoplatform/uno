@@ -1,6 +1,6 @@
 #nullable enable
 
-﻿using System;
+using System;
 using Uno.Media;
 using Windows.Foundation;
 using Microsoft.UI.Composition;

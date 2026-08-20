@@ -89,8 +89,10 @@ namespace Microsoft.UI.Composition
 		private static RoundRectangle ToRoundRect(Rect rect, Vector4 radii) => new()
 		{
 			Rect = rect,
-			TopLeft = new Vector2(radii.X, radii.X), TopRight = new Vector2(radii.Y, radii.Y),
-			BottomRight = new Vector2(radii.Z, radii.Z), BottomLeft = new Vector2(radii.W, radii.W),
+			TopLeft = new Vector2(radii.X, radii.X),
+			TopRight = new Vector2(radii.Y, radii.Y),
+			BottomRight = new Vector2(radii.Z, radii.Z),
+			BottomLeft = new Vector2(radii.W, radii.W),
 		};
 
 		internal override void Paint(in Visual.PaintingSession session)
@@ -211,7 +213,7 @@ namespace Microsoft.UI.Composition
 			if (_geometryWithTransformations is { } geometryWithTransformations)
 			{
 				point = CombinedTransformMatrix.Inverse().Transform(point);
-				
+
 				if (FillBrush is { } && geometryWithTransformations.FillContains(new Vector2((float)point.X, (float)point.Y)))
 				{
 					return true;

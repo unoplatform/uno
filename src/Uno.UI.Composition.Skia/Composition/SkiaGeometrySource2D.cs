@@ -146,17 +146,17 @@ namespace Microsoft.UI.Composition
 						current = pts[2];
 						break;
 					case SKPathVerb.Conic:
-					{
-						// No neutral conic segment — convert to (exact) quads and emit those.
-						var quads = new SKPoint[5];
-						var count = SKPath.ConvertConicToQuads(current, pts[1], pts[2], it.ConicWeight(), quads, 1);
-						for (var i = 0; i < count; i++)
 						{
-							sink.QuadTo(new Vector2(quads[i * 2 + 1].X, quads[i * 2 + 1].Y), new Vector2(quads[i * 2 + 2].X, quads[i * 2 + 2].Y));
+							// No neutral conic segment — convert to (exact) quads and emit those.
+							var quads = new SKPoint[5];
+							var count = SKPath.ConvertConicToQuads(current, pts[1], pts[2], it.ConicWeight(), quads, 1);
+							for (var i = 0; i < count; i++)
+							{
+								sink.QuadTo(new Vector2(quads[i * 2 + 1].X, quads[i * 2 + 1].Y), new Vector2(quads[i * 2 + 2].X, quads[i * 2 + 2].Y));
+							}
+							current = pts[2];
+							break;
 						}
-						current = pts[2];
-						break;
-					}
 					case SKPathVerb.Cubic:
 						sink.CubicTo(new Vector2(pts[1].X, pts[1].Y), new Vector2(pts[2].X, pts[2].Y), new Vector2(pts[3].X, pts[3].Y));
 						current = pts[3];

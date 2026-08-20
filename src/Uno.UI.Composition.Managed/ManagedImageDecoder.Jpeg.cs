@@ -563,7 +563,7 @@ internal static partial class ManagedImageDecoder
 			}
 		}
 
-		return new DecodedImage(width, height, new[] { bgra }, new[] { 0 });
+		return new DecodedImage(width, height, new[] { bgra }, DecodedImage.SingleFrameDurations);
 	}
 
 	private static int? TryReadExifOrientation(byte[] d, int start, int end)
@@ -668,6 +668,7 @@ internal static partial class ManagedImageDecoder
 
 	private static byte Clamp(double v) => (byte)Math.Clamp((int)(v + 0.5), 0, 255);
 
+#pragma warning disable CA1814 // fixed 8×8 DCT basis table; rectangular by nature
 	private static readonly double[,] _idctCos = BuildIdctCos();
 
 	private static double[,] BuildIdctCos()
@@ -684,6 +685,7 @@ internal static partial class ManagedImageDecoder
 
 		return table;
 	}
+#pragma warning restore CA1814
 
 	private static void Idct(int[] block, byte[] output)
 	{

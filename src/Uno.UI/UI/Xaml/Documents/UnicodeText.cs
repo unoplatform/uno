@@ -960,7 +960,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		// Outline glyphs are assembled into a path (drawn neutrally); color glyphs (emoji) become images.
 		foreach (var (color, fontToGlyphs) in _colorToFontToGlyphs)
 		{
-				var paintColor = color;
+			var paintColor = color;
 			foreach (var (font, (glyphs, positions)) in fontToGlyphs)
 			{
 				var glyphSpan = CollectionsMarshal.AsSpan(glyphs);

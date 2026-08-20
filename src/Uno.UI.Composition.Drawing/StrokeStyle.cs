@@ -7,7 +7,7 @@ namespace Uno.UI.Composition.Drawing;
 /// <see cref="IGeometry.GetStrokeFillGeometry"/>. Each backend produces the WinUI-correct fill region
 /// for this stroke however it can (e.g. simulating <see cref="StrokeCap.Triangle"/> with custom geometry).
 /// </summary>
-public readonly struct StrokeStyle
+public readonly record struct StrokeStyle
 {
 	public float Thickness { get; init; }
 	public StrokeCap StartCap { get; init; }

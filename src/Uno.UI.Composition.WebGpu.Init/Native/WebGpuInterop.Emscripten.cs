@@ -7,12 +7,14 @@ using System.Runtime.InteropServices;
 
 namespace Uno.WebGpu.Native;
 
+#pragma warning disable CA1815 // native ABI struct; equality is meaningless
 [StructLayout(LayoutKind.Sequential)]
 public unsafe struct WGPUEmscriptenSurfaceSourceCanvasHTMLSelector
 {
 	public WGPUChainedStruct Chain;
 	public WGPUStringView Selector;
 }
+#pragma warning restore CA1815
 
 public static partial class WGPU
 {

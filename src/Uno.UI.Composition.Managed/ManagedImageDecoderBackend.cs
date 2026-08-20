@@ -39,7 +39,7 @@ public sealed class ManagedImageDecoderBackend : IImageEncoderDecoder
 		=> new ManagedImage(pixelWidth, pixelHeight, bgraPremul.ToArray());
 
 	public ImageFrames CreateFrames(IImage image)
-		=> new(new[] { image }, new[] { 0 });
+		=> new(new[] { image }, DecodedImage.SingleFrameDurations);
 
 	public void Encode(Stream destination, byte[] pixels, int width, int height, BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapEncoderFormat format, int quality)
 		=> ManagedImageEncoder.Encode(destination, pixels, width, height, pixelFormat, alphaMode, format, quality);

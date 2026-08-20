@@ -176,6 +176,9 @@ internal static partial class ManagedImageDecoder
 /// <summary>Managed decode result: one or more BGRA-premultiplied frames (row-major, top-down) plus their durations.</summary>
 internal sealed class DecodedImage
 {
+	/// <summary>Shared durations array for single-frame (non-animated) images.</summary>
+	internal static readonly int[] SingleFrameDurations = new[] { 0 };
+
 	public DecodedImage(int width, int height, byte[][] frames, int[] durationsMs)
 	{
 		Width = width;

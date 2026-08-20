@@ -21,8 +21,6 @@ public partial class AcrylicBrush
 	private const float BlurRadius = 30.0f;
 	private const float NoiseOpacity = 0.02f;
 
-	private const string NoiseAssetResourceName = "Uno.UI.Resources.NoiseAsset256x256.png";
-
 	private struct EffectNames
 	{
 		public const string Backdrop = "Backdrop";

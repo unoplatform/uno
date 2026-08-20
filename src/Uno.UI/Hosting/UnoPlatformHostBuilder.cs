@@ -116,9 +116,11 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 	// Downward codec-resolve trigger: Uno.UWP's BitmapEncoder sits below Uno.UI and can't reach the codec registry,
 	// so it invokes this to lazily light up the Skia codec on first encode when Build() was never called.
+#pragma warning disable CA2255 // intentional library module initializer
 	[ModuleInitializer]
 	internal static void WireDownwardHooks()
 		=> Windows.Graphics.Imaging.BitmapEncoder.EnsureCodec = TryLightUpImageDecoder;
+#pragma warning restore CA2255
 
 	/// <summary>
 	/// Resolves default backend + content seams for any seam the app left unregistered, then throws if a required
@@ -232,6 +234,7 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	/// <summary>Reflectively calls a parameterless static factory on the Skia backend, cast to the neutral seam
 	/// <typeparamref name="T"/>. Null if the backend assembly isn't present or the call fails.</summary>
 	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Best-effort fallback; a trimmed/AOT app registers its backend explicitly.")]
+	[UnconditionalSuppressMessage("Trimming", "IL2080", Justification = "Best-effort fallback; a trimmed/AOT app registers its backend explicitly.")]
 	private static T? InvokeSkiaFactory<T>(string methodName) where T : class
 	{
 		try

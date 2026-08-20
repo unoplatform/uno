@@ -169,8 +169,11 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		var td = new WGPUTextureDescriptor
 		{
 			Size = new WGPUExtent3D { Width = 1, Height = 1, DepthOrArrayLayers = 1 },
-			Format = ColorFormat, MipLevelCount = 1, SampleCount = samples,
-			Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.RenderAttachment,
+			Format = ColorFormat,
+			MipLevelCount = 1,
+			SampleCount = samples,
+			Dimension = WGPUTextureDimension._2D,
+			Usage = WGPUTextureUsage.RenderAttachment,
 		};
 		var tex = wgpuDeviceCreateTexture(Dev, &td);
 		var box = new uint[2];

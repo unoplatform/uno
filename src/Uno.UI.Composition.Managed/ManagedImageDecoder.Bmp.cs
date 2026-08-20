@@ -80,7 +80,7 @@ internal static partial class ManagedImageDecoder
 			ForceOpaque(bgra);
 		}
 
-		decoded = new DecodedImage(width, height, new[] { bgra }, new[] { 0 });
+		decoded = new DecodedImage(width, height, new[] { bgra }, DecodedImage.SingleFrameDurations);
 		return true;
 	}
 

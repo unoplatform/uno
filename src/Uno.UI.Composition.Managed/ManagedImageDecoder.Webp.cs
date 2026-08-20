@@ -62,7 +62,7 @@ internal static partial class ManagedImageDecoder
 			SetPixelPremul(bgra, i * 4, (byte)(c >> 16), (byte)(c >> 8), (byte)c, (byte)(c >> 24));
 		}
 
-		decoded = new DecodedImage(width, height, new[] { bgra }, new[] { 0 });
+		decoded = new DecodedImage(width, height, new[] { bgra }, DecodedImage.SingleFrameDurations);
 		return true;
 	}
 

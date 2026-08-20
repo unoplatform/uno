@@ -97,6 +97,7 @@ internal static partial class ManagedImageEncoder
 		}
 	}
 
+#pragma warning disable CA1814 // fixed 8×8 DCT basis table; rectangular by nature
 	private static readonly double[,] _fdctCos = BuildFdctCos();
 
 	private static double[,] BuildFdctCos()
@@ -112,6 +113,7 @@ internal static partial class ManagedImageEncoder
 
 		return t;
 	}
+#pragma warning restore CA1814
 
 	// Separable float FDCT, then quantize into zig-zag order (index k → natural position ZigZag[k]).
 	private static void FdctQuantize(Span<double> block, int[] quantZigZag, int[] zz)

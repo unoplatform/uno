@@ -27,84 +27,84 @@ internal sealed class SkiaEffectFuser
 				return null;
 
 			case TextureInput texture:
-			{
-				_isSource = false;
-				var img = ((SkiaTexture)texture.Texture).Image;
-				var src = new SKRect(0, 0, img.Width, img.Height);
-
-				if (texture.ExtendX == EdgeExtend.None && texture.ExtendY == EdgeExtend.None)
 				{
-					// Plain finite image: place it back at bounds (it was rasterized in bounds-space at the origin).
-					var dst = new SKRect(bounds.Left, bounds.Top, bounds.Left + img.Width, bounds.Top + img.Height);
-					return SKImageFilter.CreateImage(img, src, dst, new SKSamplingOptions(SKFilterMode.Linear));
-				}
+					_isSource = false;
+					var img = ((SkiaTexture)texture.Texture).Image;
+					var src = new SKRect(0, 0, img.Width, img.Height);
 
-				// BorderEffect: extend the source's own rectangle to infinity per the edge mode; downstream sampling
-				// over `bounds` then sees the tiled/mirrored/clamped fill. Mirrors the legacy Border realization.
-				var imageFilter = SKImageFilter.CreateImage(img, src, src, new SKSamplingOptions(SKFilterMode.Linear));
-				var mode = PickExtend(texture.ExtendX, texture.ExtendY);
-				if (mode == SKShaderTileMode.Repeat)
-				{
-					return SKImageFilter.CreateTile(src, bounds, imageFilter);
-				}
+					if (texture.ExtendX == EdgeExtend.None && texture.ExtendY == EdgeExtend.None)
+					{
+						// Plain finite image: place it back at bounds (it was rasterized in bounds-space at the origin).
+						var dst = new SKRect(bounds.Left, bounds.Top, bounds.Left + img.Width, bounds.Top + img.Height);
+						return SKImageFilter.CreateImage(img, src, dst, new SKSamplingOptions(SKFilterMode.Linear));
+					}
 
-				ReadOnlySpan<float> identityKernel = [0, 0, 0, 0, 1, 0, 0, 0, 0];
-				return SKImageFilter.CreateMatrixConvolution(new SKSizeI(3, 3), identityKernel, 1f, 0f, new SKPointI(1, 1), mode, true, imageFilter, bounds);
-			}
+					// BorderEffect: extend the source's own rectangle to infinity per the edge mode; downstream sampling
+					// over `bounds` then sees the tiled/mirrored/clamped fill. Mirrors the legacy Border realization.
+					var imageFilter = SKImageFilter.CreateImage(img, src, src, new SKSamplingOptions(SKFilterMode.Linear));
+					var mode = PickExtend(texture.ExtendX, texture.ExtendY);
+					if (mode == SKShaderTileMode.Repeat)
+					{
+						return SKImageFilter.CreateTile(src, bounds, imageFilter);
+					}
+
+					ReadOnlySpan<float> identityKernel = [0, 0, 0, 0, 1, 0, 0, 0, 0];
+					return SKImageFilter.CreateMatrixConvolution(new SKSizeI(3, 3), identityKernel, 1f, 0f, new SKPointI(1, 1), mode, true, imageFilter, bounds);
+				}
 
 			case ColorInput color:
 				// ColorSource fills bounds; no input. Does not clear the backdrop flag (matches the legacy generator).
 				return SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(color.Color.ToSKColor(), SKBlendMode.Src), null, bounds);
 
 			case ColorMatrixEffectNode cm:
-			{
-				var source = Fuse(cm.Source, bounds);
-				if (source is null && !_isSource)
 				{
-					return null;
-				}
+					var source = Fuse(cm.Source, bounds);
+					if (source is null && !_isSource)
+					{
+						return null;
+					}
 
-				_isSource = false;
-				return SKImageFilter.CreateColorFilter(SKColorFilter.CreateColorMatrix(cm.Matrix), source, bounds);
-			}
+					_isSource = false;
+					return SKImageFilter.CreateColorFilter(SKColorFilter.CreateColorMatrix(cm.Matrix), source, bounds);
+				}
 
 			case ModulateEffectNode modulate:
-			{
-				var source = Fuse(modulate.Source, bounds);
-				if (source is null && !_isSource)
 				{
-					return null;
-				}
+					var source = Fuse(modulate.Source, bounds);
+					if (source is null && !_isSource)
+					{
+						return null;
+					}
 
-				_isSource = false;
-				// Tint: per-channel multiply by the colour, clamped to [0,1] — matches the legacy Tint realization.
-				return SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(modulate.Color.ToSKColor(), SKBlendMode.Modulate), source, bounds);
-			}
+					_isSource = false;
+					// Tint: per-channel multiply by the colour, clamped to [0,1] — matches the legacy Tint realization.
+					return SKImageFilter.CreateColorFilter(SKColorFilter.CreateBlendMode(modulate.Color.ToSKColor(), SKBlendMode.Modulate), source, bounds);
+				}
 
 			case LuminanceToAlphaEffectNode luma:
-			{
-				var source = Fuse(luma.Source, bounds);
-				if (source is null && !_isSource)
 				{
-					return null;
-				}
+					var source = Fuse(luma.Source, bounds);
+					if (source is null && !_isSource)
+					{
+						return null;
+					}
 
-				_isSource = false;
-				return SKImageFilter.CreateColorFilter(SKColorFilter.CreateLumaColor(), source, bounds);
-			}
+					_isSource = false;
+					return SKImageFilter.CreateColorFilter(SKColorFilter.CreateLumaColor(), source, bounds);
+				}
 
 			case ContrastEffectNode contrast:
-			{
-				var source = Fuse(contrast.Source, bounds);
-				if (source is null && !_isSource)
 				{
-					return null;
-				}
+					var source = Fuse(contrast.Source, bounds);
+					if (source is null && !_isSource)
+					{
+						return null;
+					}
 
-				_isSource = false;
-				var clamp = contrast.Clamp;
-				var shader =
-$$"""
+					_isSource = false;
+					var clamp = contrast.Clamp;
+					var shader =
+	$$"""
 	uniform shader input;
 	uniform half contrastValue;
 
@@ -150,30 +150,30 @@ $$"""
 	}
 """;
 
-				var runtimeEffect = SKRuntimeEffect.CreateShader(shader, out var errors);
-				if (errors is not null)
-				{
-					return null;
-				}
+					var runtimeEffect = SKRuntimeEffect.CreateShader(shader, out var errors);
+					if (errors is not null)
+					{
+						return null;
+					}
 
-				var uniforms = new SKRuntimeEffectUniforms(runtimeEffect) { { "contrastValue", contrast.Contrast } };
-				var children = new SKRuntimeEffectChildren(runtimeEffect);
-				children.Add("input", null);
-				return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), source, bounds);
-			}
+					var uniforms = new SKRuntimeEffectUniforms(runtimeEffect) { { "contrastValue", contrast.Contrast } };
+					var children = new SKRuntimeEffectChildren(runtimeEffect);
+					children.Add("input", null);
+					return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), source, bounds);
+				}
 
 			case LinearTransferEffectNode transfer:
-			{
-				var source = Fuse(transfer.Source, bounds);
-				if (source is null && !_isSource)
 				{
-					return null;
-				}
+					var source = Fuse(transfer.Source, bounds);
+					if (source is null && !_isSource)
+					{
+						return null;
+					}
 
-				_isSource = false;
-				var clamp = transfer.Clamp;
-				var shader =
-$$"""
+					_isSource = false;
+					var clamp = transfer.Clamp;
+					var shader =
+	$$"""
 	uniform shader input;
 
 	uniform half redOffset;
@@ -214,13 +214,13 @@ $$"""
 	}
 """;
 
-				var runtimeEffect = SKRuntimeEffect.CreateShader(shader, out var errors);
-				if (errors is not null)
-				{
-					return null;
-				}
+					var runtimeEffect = SKRuntimeEffect.CreateShader(shader, out var errors);
+					if (errors is not null)
+					{
+						return null;
+					}
 
-				var uniforms = new SKRuntimeEffectUniforms(runtimeEffect)
+					var uniforms = new SKRuntimeEffectUniforms(runtimeEffect)
 				{
 					{ "redOffset", transfer.Offsets[0] },
 					{ "redSlope", transfer.Slopes[0] },
@@ -231,23 +231,23 @@ $$"""
 					{ "alphaOffset", transfer.Offsets[3] },
 					{ "alphaSlope", transfer.Slopes[3] },
 				};
-				var children = new SKRuntimeEffectChildren(runtimeEffect);
-				children.Add("input", null);
-				return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), source, bounds);
-			}
-
-			case GammaTransferEffectNode gamma:
-			{
-				var source = Fuse(gamma.Source, bounds);
-				if (source is null && !_isSource)
-				{
-					return null;
+					var children = new SKRuntimeEffectChildren(runtimeEffect);
+					children.Add("input", null);
+					return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), source, bounds);
 				}
 
-				_isSource = false;
-				var clamp = gamma.Clamp;
-				var shader =
-$$"""
+			case GammaTransferEffectNode gamma:
+				{
+					var source = Fuse(gamma.Source, bounds);
+					if (source is null && !_isSource)
+					{
+						return null;
+					}
+
+					_isSource = false;
+					var clamp = gamma.Clamp;
+					var shader =
+	$$"""
 	uniform shader input;
 
 	uniform half redAmplitude;
@@ -292,13 +292,13 @@ $$"""
 	}
 """;
 
-				var runtimeEffect = SKRuntimeEffect.CreateShader(shader, out var errors);
-				if (errors is not null)
-				{
-					return null;
-				}
+					var runtimeEffect = SKRuntimeEffect.CreateShader(shader, out var errors);
+					if (errors is not null)
+					{
+						return null;
+					}
 
-				var uniforms = new SKRuntimeEffectUniforms(runtimeEffect)
+					var uniforms = new SKRuntimeEffectUniforms(runtimeEffect)
 				{
 					{ "redAmplitude", gamma.Amplitudes[0] },
 					{ "redExponent", gamma.Exponents[0] },
@@ -313,159 +313,159 @@ $$"""
 					{ "alphaExponent", gamma.Exponents[3] },
 					{ "alphaOffset", gamma.Offsets[3] },
 				};
-				var children = new SKRuntimeEffectChildren(runtimeEffect);
-				children.Add("input", null);
-				return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), source, bounds);
-			}
+					var children = new SKRuntimeEffectChildren(runtimeEffect);
+					children.Add("input", null);
+					return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), source, bounds);
+				}
 
 			case Transform2DEffectNode transform:
-			{
-				var source = Fuse(transform.Source, bounds);
-				if (source is null && !_isSource)
 				{
-					return null;
-				}
-
-				_isSource = false;
-				return SKImageFilter.CreateMerge(
-					(ReadOnlySpan<SKImageFilter>)[SKImageFilter.CreateMatrix(transform.Matrix.ToSKMatrix(), new SKSamplingOptions(SKCubicResampler.CatmullRom), source)],
-					bounds);
-			}
-
-			case BlurEffectNode blur:
-			{
-				var source = Fuse(blur.Source, bounds);
-				if (source is null && !_isSource)
-				{
-					return null;
-				}
-
-				_isSource = false;
-				return blur.ClampEdge
-					? SKImageFilter.CreateBlur(blur.Sigma, blur.Sigma, SKShaderTileMode.Clamp, source, bounds)
-					: SKImageFilter.CreateBlur(blur.Sigma, blur.Sigma, source, bounds);
-			}
-
-			case BlendEffectNode blend:
-			{
-				var background = Fuse(blend.Background, bounds);
-				if (background is null && !_isSource)
-				{
-					return null;
-				}
-
-				var foreground = Fuse(blend.Foreground, bounds);
-				if (foreground is null && !_isSource)
-				{
-					return null;
-				}
-
-				_isSource = false;
-				return SKImageFilter.CreateBlendMode(SkiaDrawingSession.ToSKBlendMode(blend.Mode), background, foreground, bounds);
-			}
-
-			case CompositeEffectNode composite:
-			{
-				if (composite.Sources.Count == 0)
-				{
-					return null;
-				}
-
-				var current = Fuse(composite.Sources[0], bounds);
-				if (current is null && !_isSource)
-				{
-					return null;
-				}
-
-				_isSource = false;
-				var mode = SkiaDrawingSession.ToSKBlendMode(composite.Mode);
-				for (var i = 1; i < composite.Sources.Count; i++)
-				{
-					var next = Fuse(composite.Sources[i], bounds);
-					if (next is not null && !_isSource)
+					var source = Fuse(transform.Source, bounds);
+					if (source is null && !_isSource)
 					{
-						current = SKImageFilter.CreateBlendMode(mode, current, next, bounds);
+						return null;
 					}
 
 					_isSource = false;
+					return SKImageFilter.CreateMerge(
+						(ReadOnlySpan<SKImageFilter>)[SKImageFilter.CreateMatrix(transform.Matrix.ToSKMatrix(), new SKSamplingOptions(SKCubicResampler.CatmullRom), source)],
+						bounds);
 				}
 
-				return current;
-			}
+			case BlurEffectNode blur:
+				{
+					var source = Fuse(blur.Source, bounds);
+					if (source is null && !_isSource)
+					{
+						return null;
+					}
+
+					_isSource = false;
+					return blur.ClampEdge
+						? SKImageFilter.CreateBlur(blur.Sigma, blur.Sigma, SKShaderTileMode.Clamp, source, bounds)
+						: SKImageFilter.CreateBlur(blur.Sigma, blur.Sigma, source, bounds);
+				}
+
+			case BlendEffectNode blend:
+				{
+					var background = Fuse(blend.Background, bounds);
+					if (background is null && !_isSource)
+					{
+						return null;
+					}
+
+					var foreground = Fuse(blend.Foreground, bounds);
+					if (foreground is null && !_isSource)
+					{
+						return null;
+					}
+
+					_isSource = false;
+					return SKImageFilter.CreateBlendMode(SkiaDrawingSession.ToSKBlendMode(blend.Mode), background, foreground, bounds);
+				}
+
+			case CompositeEffectNode composite:
+				{
+					if (composite.Sources.Count == 0)
+					{
+						return null;
+					}
+
+					var current = Fuse(composite.Sources[0], bounds);
+					if (current is null && !_isSource)
+					{
+						return null;
+					}
+
+					_isSource = false;
+					var mode = SkiaDrawingSession.ToSKBlendMode(composite.Mode);
+					for (var i = 1; i < composite.Sources.Count; i++)
+					{
+						var next = Fuse(composite.Sources[i], bounds);
+						if (next is not null && !_isSource)
+						{
+							current = SKImageFilter.CreateBlendMode(mode, current, next, bounds);
+						}
+
+						_isSource = false;
+					}
+
+					return current;
+				}
 
 			case AlphaMaskEffectNode alphaMask:
-			{
-				var sourceFilter = Fuse(alphaMask.Source, bounds);
-				if (sourceFilter is null && !_isSource)
 				{
-					return null;
-				}
+					var sourceFilter = Fuse(alphaMask.Source, bounds);
+					if (sourceFilter is null && !_isSource)
+					{
+						return null;
+					}
 
-				var maskFilter = Fuse(alphaMask.Mask, bounds);
-				if (maskFilter is null && !_isSource)
-				{
-					return null;
-				}
+					var maskFilter = Fuse(alphaMask.Mask, bounds);
+					if (maskFilter is null && !_isSource)
+					{
+						return null;
+					}
 
-				_isSource = false;
-				return SKImageFilter.CreateBlendMode(SKBlendMode.SrcIn, maskFilter, sourceFilter, bounds);
-			}
+					_isSource = false;
+					return SKImageFilter.CreateBlendMode(SKBlendMode.SrcIn, maskFilter, sourceFilter, bounds);
+				}
 
 			case ArithmeticCompositeEffectNode arithmetic:
-			{
-				var background = Fuse(arithmetic.Background, bounds);
-				if (background is null && !_isSource)
 				{
-					return null;
-				}
+					var background = Fuse(arithmetic.Background, bounds);
+					if (background is null && !_isSource)
+					{
+						return null;
+					}
 
-				var foreground = Fuse(arithmetic.Foreground, bounds);
-				if (foreground is null && !_isSource)
-				{
-					return null;
-				}
+					var foreground = Fuse(arithmetic.Foreground, bounds);
+					if (foreground is null && !_isSource)
+					{
+						return null;
+					}
 
-				_isSource = false;
-				return SKImageFilter.CreateArithmetic(arithmetic.Multiply, arithmetic.Source1, arithmetic.Source2, arithmetic.Offset, false, background, foreground, bounds);
-			}
+					_isSource = false;
+					return SKImageFilter.CreateArithmetic(arithmetic.Multiply, arithmetic.Source1, arithmetic.Source2, arithmetic.Offset, false, background, foreground, bounds);
+				}
 
 			case CrossFadeEffectNode crossFade:
-			{
-				var filter1 = Fuse(crossFade.SourceB, bounds);
-				if (filter1 is null && !_isSource)
 				{
-					return null;
-				}
-
-				var filter2 = Fuse(crossFade.SourceA, bounds);
-				if (filter2 is null && !_isSource)
-				{
-					return null;
-				}
-
-				_isSource = false;
-				var weight = crossFade.Weight;
-				if (weight <= 0.0f)
-				{
-					return filter1;
-				}
-
-				if (weight >= 1.0f)
-				{
-					return filter2;
-				}
-
-				var fbFilter = SKImageFilter.CreateColorFilter(SKColorFilter.CreateColorMatrix(
-					new[]
+					var filter1 = Fuse(crossFade.SourceB, bounds);
+					if (filter1 is null && !_isSource)
 					{
+						return null;
+					}
+
+					var filter2 = Fuse(crossFade.SourceA, bounds);
+					if (filter2 is null && !_isSource)
+					{
+						return null;
+					}
+
+					_isSource = false;
+					var weight = crossFade.Weight;
+					if (weight <= 0.0f)
+					{
+						return filter1;
+					}
+
+					if (weight >= 1.0f)
+					{
+						return filter2;
+					}
+
+					var fbFilter = SKImageFilter.CreateColorFilter(SKColorFilter.CreateColorMatrix(
+						new[]
+						{
 						weight, 0f,     0f,     0f,     0f,
 						0f,     weight, 0f,     0f,     0f,
 						0f,     0f,     weight, 0f,     0f,
 						0f,     0f,     0f,     weight, 0f,
-					}), filter2);
+						}), filter2);
 
-				var shader =
-"""
+					var shader =
+	"""
 	uniform shader input;
 	uniform half crossfade;
 
@@ -476,23 +476,23 @@ $$"""
 	}
 """;
 
-				var crossFadeEffect = SKRuntimeEffect.CreateShader(shader, out var crossFadeErrors);
-				if (crossFadeErrors is not null)
-				{
-					return null;
+					var crossFadeEffect = SKRuntimeEffect.CreateShader(shader, out var crossFadeErrors);
+					if (crossFadeErrors is not null)
+					{
+						return null;
+					}
+
+					var crossFadeUniforms = new SKRuntimeEffectUniforms(crossFadeEffect) { { "crossfade", weight } };
+					var crossFadeChildren = new SKRuntimeEffectChildren(crossFadeEffect);
+					crossFadeChildren.Add("input", null);
+					var amafFilter = SKImageFilter.CreateColorFilter(crossFadeEffect.ToColorFilter(crossFadeUniforms, crossFadeChildren), filter1);
+					return SKImageFilter.CreateBlendMode(SKBlendMode.Plus, fbFilter, amafFilter, bounds);
 				}
 
-				var crossFadeUniforms = new SKRuntimeEffectUniforms(crossFadeEffect) { { "crossfade", weight } };
-				var crossFadeChildren = new SKRuntimeEffectChildren(crossFadeEffect);
-				crossFadeChildren.Add("input", null);
-				var amafFilter = SKImageFilter.CreateColorFilter(crossFadeEffect.ToColorFilter(crossFadeUniforms, crossFadeChildren), filter1);
-				return SKImageFilter.CreateBlendMode(SKBlendMode.Plus, fbFilter, amafFilter, bounds);
-			}
-
 			case WhiteNoiseEffectNode noise:
-			{
-				var shader =
-"""
+				{
+					var shader =
+	"""
 	uniform half2 frequency;
 	uniform half2 offset;
 
@@ -519,43 +519,43 @@ $$"""
 	}
 """;
 
-				var noiseEffect = SKRuntimeEffect.CreateShader(shader, out var noiseErrors);
-				if (noiseErrors is not null)
-				{
-					return null;
-				}
+					var noiseEffect = SKRuntimeEffect.CreateShader(shader, out var noiseErrors);
+					if (noiseErrors is not null)
+					{
+						return null;
+					}
 
-				var noiseUniforms = new SKRuntimeEffectUniforms(noiseEffect)
+					var noiseUniforms = new SKRuntimeEffectUniforms(noiseEffect)
 				{
 					{ "frequency", new[] { noise.Frequency.X, noise.Frequency.Y } },
 					{ "offset", new[] { noise.Offset.X, noise.Offset.Y } },
 				};
-				return SKImageFilter.CreateShader(noiseEffect.ToShader(noiseUniforms), false, bounds);
-			}
-
-			case LightingEffectNode lighting:
-			{
-				var source = Fuse(lighting.Source, bounds);
-				if (source is null && !_isSource)
-				{
-					return null;
+					return SKImageFilter.CreateShader(noiseEffect.ToShader(noiseUniforms), false, bounds);
 				}
 
-				_isSource = false;
-				var light = new SKPoint3(lighting.Light.X, lighting.Light.Y, lighting.Light.Z);
-				var target = new SKPoint3(lighting.Target.X, lighting.Target.Y, lighting.Target.Z);
-				var color = lighting.LightColor.ToSKColor();
-				return lighting.Kind switch
+			case LightingEffectNode lighting:
 				{
-					LightingKind.DistantDiffuse => SKImageFilter.CreateDistantLitDiffuse(light, color, 1f, lighting.Amount, source, bounds),
-					LightingKind.DistantSpecular => SKImageFilter.CreateDistantLitSpecular(light, color, 1f, lighting.Amount, lighting.SpecularExponent, source, bounds),
-					LightingKind.SpotDiffuse => SKImageFilter.CreateSpotLitDiffuse(light, target, lighting.Focus, lighting.ConeAngle, color, 1f, lighting.Amount, source, bounds),
-					LightingKind.SpotSpecular => SKImageFilter.CreateSpotLitSpecular(light, target, lighting.SpecularExponent, lighting.ConeAngle, color, 1f, lighting.Amount, lighting.Focus, source, bounds),
-					LightingKind.PointDiffuse => SKImageFilter.CreatePointLitDiffuse(light, color, 1f, lighting.Amount, source, bounds),
-					LightingKind.PointSpecular => SKImageFilter.CreatePointLitSpecular(light, color, 1f, lighting.Amount, lighting.SpecularExponent, source, bounds),
-					_ => null,
-				};
-			}
+					var source = Fuse(lighting.Source, bounds);
+					if (source is null && !_isSource)
+					{
+						return null;
+					}
+
+					_isSource = false;
+					var light = new SKPoint3(lighting.Light.X, lighting.Light.Y, lighting.Light.Z);
+					var target = new SKPoint3(lighting.Target.X, lighting.Target.Y, lighting.Target.Z);
+					var color = lighting.LightColor.ToSKColor();
+					return lighting.Kind switch
+					{
+						LightingKind.DistantDiffuse => SKImageFilter.CreateDistantLitDiffuse(light, color, 1f, lighting.Amount, source, bounds),
+						LightingKind.DistantSpecular => SKImageFilter.CreateDistantLitSpecular(light, color, 1f, lighting.Amount, lighting.SpecularExponent, source, bounds),
+						LightingKind.SpotDiffuse => SKImageFilter.CreateSpotLitDiffuse(light, target, lighting.Focus, lighting.ConeAngle, color, 1f, lighting.Amount, source, bounds),
+						LightingKind.SpotSpecular => SKImageFilter.CreateSpotLitSpecular(light, target, lighting.SpecularExponent, lighting.ConeAngle, color, 1f, lighting.Amount, lighting.Focus, source, bounds),
+						LightingKind.PointDiffuse => SKImageFilter.CreatePointLitDiffuse(light, color, 1f, lighting.Amount, source, bounds),
+						LightingKind.PointSpecular => SKImageFilter.CreatePointLitSpecular(light, color, 1f, lighting.Amount, lighting.SpecularExponent, source, bounds),
+						_ => null,
+					};
+				}
 
 			case UnsupportedEffectNode unsupported:
 				return unsupported.Source is null ? null : Fuse(unsupported.Source, bounds);

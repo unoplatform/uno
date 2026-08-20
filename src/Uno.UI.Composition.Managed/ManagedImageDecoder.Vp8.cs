@@ -20,7 +20,7 @@ internal static partial class ManagedImageDecoder
 				return false;
 			}
 
-			decoded = new DecodedImage(dec.Width, dec.Height, new[] { bgra }, new[] { 0 });
+			decoded = new DecodedImage(dec.Width, dec.Height, new[] { bgra }, DecodedImage.SingleFrameDurations);
 			return true;
 		}
 		catch
@@ -43,7 +43,9 @@ internal static partial class ManagedImageDecoder
 		private Vp8BoolDecoder[] _tokens = null!;       // token partitions (coefficients)
 
 		// Coefficient probabilities (mutable copy of the defaults, updated by the header).
+#pragma warning disable CA1814 // VP8 spec-shaped rectangular table
 		private readonly byte[,,,] _coeffProba = new byte[4, 8, 3, 11];
+#pragma warning restore CA1814
 
 		// Segmentation.
 		private bool _segEnabled, _segUpdateMap, _segAbsDelta;
@@ -55,7 +57,9 @@ internal static partial class ManagedImageDecoder
 		private int _y1DcDelta, _y2DcDelta, _y2AcDelta, _uvDcDelta, _uvAcDelta;
 
 		// Per-segment dequant factors [seg][ y1dc,y1ac,y2dc,y2ac,uvdc,uvac ].
+#pragma warning disable CA1814 // VP8 spec-shaped rectangular table
 		private readonly int[,] _dq = new int[4, 6];
+#pragma warning restore CA1814
 
 		private bool _skipEnabled;
 		private int _skipProb;
@@ -842,23 +846,23 @@ internal static partial class ManagedImageDecoder
 					}
 					break;
 				case B_VE_PRED:
-				{
-					var x0v = Avg3(C, T0, T1);
-					var x1v = Avg3(T0, T1, T2);
-					var x2v = Avg3(T1, T2, T3);
-					var x3v = Avg3(T2, T3, R0);
-					for (var yy = 0; yy < 4; yy++) { o[yy * 4] = x0v; o[yy * 4 + 1] = x1v; o[yy * 4 + 2] = x2v; o[yy * 4 + 3] = x3v; }
-					break;
-				}
+					{
+						var x0v = Avg3(C, T0, T1);
+						var x1v = Avg3(T0, T1, T2);
+						var x2v = Avg3(T1, T2, T3);
+						var x3v = Avg3(T2, T3, R0);
+						for (var yy = 0; yy < 4; yy++) { o[yy * 4] = x0v; o[yy * 4 + 1] = x1v; o[yy * 4 + 2] = x2v; o[yy * 4 + 3] = x3v; }
+						break;
+					}
 				case B_HE_PRED:
-				{
-					var y0h = Avg3(C, L0, L1);
-					var y1h = Avg3(L0, L1, L2);
-					var y2h = Avg3(L1, L2, L3);
-					var y3h = Avg3(L2, L3, L3);
-					for (var xx = 0; xx < 4; xx++) { o[xx] = y0h; o[4 + xx] = y1h; o[8 + xx] = y2h; o[12 + xx] = y3h; }
-					break;
-				}
+					{
+						var y0h = Avg3(C, L0, L1);
+						var y1h = Avg3(L0, L1, L2);
+						var y2h = Avg3(L1, L2, L3);
+						var y3h = Avg3(L2, L3, L3);
+						for (var xx = 0; xx < 4; xx++) { o[xx] = y0h; o[4 + xx] = y1h; o[8 + xx] = y2h; o[12 + xx] = y3h; }
+						break;
+					}
 				case B_LD_PRED:
 					o[0] = Avg3(T0, T1, T2);
 					o[1] = Avg3(T1, T2, T3); o[4] = o[1];

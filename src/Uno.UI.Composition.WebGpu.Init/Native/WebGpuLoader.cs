@@ -15,6 +15,7 @@ internal static class WebGpuLoader
 {
 	private static int _registered;
 
+#pragma warning disable CA2255 // intentional library module initializer
 	[ModuleInitializer]
 	internal static void Register()
 	{
@@ -24,6 +25,7 @@ internal static class WebGpuLoader
 		}
 		NativeLibrary.SetDllImportResolver(typeof(WGPU).Assembly, Resolve);
 	}
+#pragma warning restore CA2255
 
 	private static IntPtr Resolve(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
 	{
