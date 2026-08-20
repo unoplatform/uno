@@ -42,12 +42,26 @@ internal sealed class HeadlessWindowWrapper : NativeWindowWrapperBase, IXamlRoot
 
 		XamlRootMap.Register(xamlRoot, this);
 
+		// Negotiate the graphics backend with a no-output software context, mirroring the native hosts:
+		// offscreen consumers (RenderTargetBitmap) require the negotiated DrawingFactory.Current, and the
+		// render cycle needs the negotiated renderer installed on the CompositionTarget.
+		Uno.UI.Composition.Drawing.GraphicsRegistry.ContextFactory = static kind =>
+			global::System.Threading.Tasks.Task.FromResult<Uno.UI.Composition.Drawing.ISwapChain?>(
+				kind is Uno.UI.Composition.Drawing.GraphicsContextKind.Software ? new HeadlessSwapChain() : null);
+		var init = Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize();
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = true;
+
 		// Create the renderer before publishing bounds: setting bounds can synchronously route an
 		// InvalidateRender back through this wrapper (as IXamlRootHost), which needs a live renderer.
-		_renderer = new HeadlessRenderer(this);
+		_renderer = new HeadlessRenderer(this, init.Context, init.Renderer);
 
 		// The XamlRoot is already associated (base ctor), so bounds can be published synchronously.
 		ApplySize();
+
+		// The CompositionTarget may have requested a frame before this wrapper was registered in the
+		// XamlRootMap; that request is latched (not re-raised), so replay the invalidation now that
+		// render requests can be routed here.
+		_renderer.Invalidate();
 	}
 
 	public override object? NativeWindow => null;

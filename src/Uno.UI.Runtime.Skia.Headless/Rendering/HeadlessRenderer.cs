@@ -22,11 +22,14 @@ internal sealed class HeadlessRenderer : IDisposable
 	private readonly Thread _renderThread;
 	private volatile bool _disposed;
 
-	private readonly HeadlessSwapChain _swapChain = new();
+	private readonly Uno.UI.Composition.Drawing.ISwapChain _swapChain;
+	private readonly Uno.UI.Composition.Drawing.IDrawingFactory _rendererFactory;
 
-	public HeadlessRenderer(IXamlRootHost host)
+	public HeadlessRenderer(IXamlRootHost host, Uno.UI.Composition.Drawing.ISwapChain swapChain, Uno.UI.Composition.Drawing.IDrawingFactory rendererFactory)
 	{
 		_host = host;
+		_swapChain = swapChain;
+		_rendererFactory = rendererFactory;
 
 		_renderThread = new Thread(_ =>
 		{
@@ -69,12 +72,21 @@ internal sealed class HeadlessRenderer : IDisposable
 
 	private void Render()
 	{
-		// The visual tree may not be available yet on the first invalidation(s).
-		if (_host.RootElement?.Visual.CompositionTarget is not CompositionTarget ct)
+		// The visual tree may not be available yet on the first invalidation(s). Don't drop the request:
+		// the framework latches RequestNewFrame until the next frame runs, so a dropped invalidation is a
+		// lost wakeup that stalls layout forever (this host has no unconditional native frame pump to heal it).
+		CompositionTarget? ct;
+		while ((ct = _host.RootElement?.Visual.CompositionTarget as CompositionTarget) is null)
 		{
-			return;
+			if (_disposed)
+			{
+				return;
+			}
+
+			Thread.Sleep(15);
 		}
 
+		ct.Renderer = _rendererFactory;
 		ct.OnNativePlatformFrameRequested(_swapChain);
 	}
 
