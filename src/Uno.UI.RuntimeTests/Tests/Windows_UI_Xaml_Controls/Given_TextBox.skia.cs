@@ -772,19 +772,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// on Apple platforms moving to the previous word is `option` (alt/menu) + `left`
 			var mod = DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+
+			// Each step polls with its own message so a failure identifies which word-left it was.
+			// Polling only covers a late move; if the `if (HasPointerCapture) return;` guard in
+			// KeyDownLeftArrow makes it a no-op instead, the wait still times out here.
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(8, SUT.SelectionStart);
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				8,
+				messageBuilder: start => $"1st word-left should move the caret to the start of 'ghi', was {start} (length {SUT.SelectionLength})");
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(4, SUT.SelectionStart);
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				4,
+				messageBuilder: start => $"2nd word-left should move the caret to the start of 'def', was {start} (length {SUT.SelectionLength})");
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(0, SUT.SelectionStart);
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				0,
+				messageBuilder: start => $"3rd word-left should move the caret to the start of 'abc', was {start} (length {SUT.SelectionLength})");
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			// selecting the previous word is `shift` + the same modifier
@@ -793,18 +803,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			mod |= VirtualKeyModifiers.Shift;
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(8, SUT.SelectionStart);
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				8,
+				messageBuilder: start => $"1st shift+word-left should select 'ghi', was {start} (length {SUT.SelectionLength})");
 			Assert.AreEqual(3, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(4, SUT.SelectionStart);
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				4,
+				messageBuilder: start => $"2nd shift+word-left should extend the selection to 'def ghi', was {start} (length {SUT.SelectionLength})");
 			Assert.AreEqual(7, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, mod));
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(0, SUT.SelectionStart);
+			await WindowHelper.WaitFor(
+				() => SUT.SelectionStart,
+				0,
+				messageBuilder: start => $"3rd shift+word-left should extend the selection to the whole text, was {start} (length {SUT.SelectionLength})");
 			Assert.AreEqual(11, SUT.SelectionLength);
 		}
 
