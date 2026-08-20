@@ -15,7 +15,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 /// <c>CompositionTarget.OnNativePlatformFrameRequested</c> seam. Opt in with UNO_WEBGPU; needs an Apple device build
 /// with the wgpu-native iOS static lib linked via wgpu-native.targets.
 /// </summary>
-internal sealed partial class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderView
+internal sealed partial class UnoWebGpuMetalView : UIView, IAppleUIKitRenderView
 {
 	private RootViewController? _owner;
 	private readonly CADisplayLink _link;
@@ -28,7 +28,7 @@ internal sealed partial class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderVi
 
 	private CAMetalLayer MetalLayer => (CAMetalLayer)Layer;
 
-	public UnoSKWebGpuMetalView()
+	public UnoWebGpuMetalView()
 		: base(CGRect.Empty)
 	{
 		// Match the screen's pixel density so the wgpu drawable is full-resolution (drawableSize is in pixels).
@@ -61,7 +61,7 @@ internal sealed partial class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderVi
 		{
 			var currentThread = NSThread.Current;
 			currentThread.QualityOfService = NSQualityOfService.UserInteractive;
-			currentThread.Name = "UnoSKWebGpuMetalViewRenderThread";
+			currentThread.Name = "UnoWebGpuMetalViewRenderThread";
 
 			if (UIDevice.CurrentDevice.CheckSystemVersion(15, 0))
 			{
@@ -79,7 +79,7 @@ internal sealed partial class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderVi
 		})
 		{
 			IsBackground = true,
-			Name = "UnoSKWebGpuMetalViewRenderThread"
+			Name = "UnoWebGpuMetalViewRenderThread"
 		};
 		_renderThread.Start();
 	}
@@ -104,7 +104,7 @@ internal sealed partial class UnoSKWebGpuMetalView : UIView, IAppleUIKitRenderVi
 		}
 		catch (Exception ex)
 		{
-			this.Log().Error($"{nameof(UnoSKWebGpuMetalView)} render failed", ex);
+			this.Log().Error($"{nameof(UnoWebGpuMetalView)} render failed", ex);
 		}
 	}
 

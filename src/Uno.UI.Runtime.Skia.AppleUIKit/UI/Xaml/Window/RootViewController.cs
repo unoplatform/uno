@@ -151,12 +151,12 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		switch (kind)
 		{
 			case GraphicsContextKind.Metal:
-				var skiaView = new UnoSKMetalView();
-				skiaView.SetOwner(this);
-				_renderView = skiaView;
-				return skiaView.CreateGraphicsContext();
+				var metalView = new UnoMetalView();
+				metalView.SetOwner(this);
+				_renderView = metalView;
+				return metalView.CreateGraphicsContext();
 			case GraphicsContextKind.WebGpu:
-				var webgpuView = new UnoSKWebGpuMetalView();
+				var webgpuView = new UnoWebGpuMetalView();
 				webgpuView.SetOwner(this);
 				_renderView = webgpuView;
 				return webgpuView.CreateGraphicsContext();

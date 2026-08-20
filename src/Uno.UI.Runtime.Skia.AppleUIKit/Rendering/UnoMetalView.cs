@@ -15,7 +15,7 @@ using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit
 {
-	internal sealed partial class UnoSKMetalView : MTKView, IMTKViewDelegate, IAppleUIKitRenderView
+	internal sealed partial class UnoMetalView : MTKView, IMTKViewDelegate, IAppleUIKitRenderView
 	{
 		private readonly IMTLCommandQueue? _queue;
 
@@ -24,10 +24,10 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		private Thread? _renderThread;
 
 		/// <summary>
-		/// Creates a new instance of <see cref="UnoSKMetalView"/>.
+		/// Creates a new instance of <see cref="UnoMetalView"/>.
 		/// </summary>
 		/// <param name="onFrameDrawn">A delegate that will be called on a separate thread once per frame draw.</param>
-		public UnoSKMetalView()
+		public UnoMetalView()
 			: base(CGRect.Empty, null)
 		{
 			_link = CADisplayLink.Create(() => this.Draw());
@@ -48,7 +48,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				return;
 			}
 
-			// The Skia backend owns the GRContext-Metal via the neutral IMetalRenderTarget seam; the host only presents.
+			// The negotiated backend owns its Metal render state via the neutral IMetalRenderTarget seam; the view only
+			// supplies the per-frame drawable texture and presents.
 			_queue = queue;
 
 			ColorPixelFormat = MTLPixelFormat.BGRA8Unorm;
@@ -66,7 +67,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			var fps = UIScreen.MainScreen.MaximumFramesPerSecond;
 			PreferredFramesPerSecond = fps;
 
-			this.LogDebug()?.LogDebug($"UnoSKMetalView: {nameof(PreferredFramesPerSecond)} = {fps}");
+			this.LogDebug()?.LogDebug($"UnoMetalView: {nameof(PreferredFramesPerSecond)} = {fps}");
 
 			Device = device;
 
@@ -81,7 +82,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			{
 				var currentThread = NSThread.Current;
 				currentThread.QualityOfService = NSQualityOfService.UserInteractive;
-				currentThread.Name = "UnoSKMetalViewRenderThread";
+				currentThread.Name = "UnoMetalViewRenderThread";
 
 				// CAFrameRateRange is only available on iOS 15.0+
 				if (UIDevice.CurrentDevice.CheckSystemVersion(15, 0))
@@ -109,7 +110,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			})
 			{
 				IsBackground = true,
-				Name = "UnoSKMetalViewRenderThread"
+				Name = "UnoMetalViewRenderThread"
 			};
 			_renderThread.Start();
 		}
@@ -119,7 +120,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		void IAppleUIKitRenderView.SetOwner(RootViewController owner) => SetOwner(owner);
 
 		/// <summary>
-		/// Creates the neutral Skia-on-Metal context bound to this view's device/queue.
+		/// Creates the neutral native-texture Metal context bound to this view's device/queue.
 		/// </summary>
 		internal Uno.UI.Composition.Drawing.ISwapChain CreateGraphicsContext()
 			=> new AppleMetalGraphicsContext(Device!.Handle, _queue!.Handle);
@@ -138,7 +139,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		}
 
 #if REPORT_FPS
-		static FrameRateLogger _drawFpsLogger = new FrameRateLogger(typeof(UnoSKMetalView), "Draw");
+		static FrameRateLogger _drawFpsLogger = new FrameRateLogger(typeof(UnoMetalView), "Draw");
 #endif
 
 		void IMTKViewDelegate.Draw(MTKView view)
