@@ -68,4 +68,70 @@ public class Given_SplitView
 		sut.IsPaneOpen = true;
 		await UITestHelper.WaitForIdle();
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task Right_Pane_Inline_Transitions_Are_Present_And_Run()
+	{
+		var inline = await LoadRightPane(SplitViewDisplayMode.Inline);
+		var rootGrid = inline.FindFirstDescendant<Grid>();
+		Assert.IsNotNull(rootGrid);
+
+		var displayModeStates = VisualStateManager
+			.GetVisualStateGroups(rootGrid)
+			.Single(group => group.Name == "DisplayModeStates");
+		var transitions = displayModeStates.Transitions
+			.Select(transition => (transition.From, transition.To))
+			.ToArray();
+
+		CollectionAssert.IsSubsetOf(
+			new[]
+			{
+				("Closed", "OpenInlineRight"),
+				("OpenInlineRight", "Closed"),
+				("ClosedCompactRight", "OpenInlineRight"),
+				("OpenInlineRight", "ClosedCompactRight"),
+			},
+			transitions);
+
+		await ExerciseRightPane(inline, SplitViewDisplayMode.Inline);
+
+		var compactInline = await LoadRightPane(SplitViewDisplayMode.CompactInline);
+		await ExerciseRightPane(compactInline, SplitViewDisplayMode.CompactInline);
+	}
+
+	private static async Task<TestSplitView> LoadRightPane(SplitViewDisplayMode displayMode)
+	{
+		var sut = new TestSplitView
+		{
+			Content = new Border(),
+			Pane = new Border(),
+			DisplayMode = displayMode,
+			PanePlacement = SplitViewPanePlacement.Right,
+			IsPaneOpen = false,
+		};
+
+		await UITestHelper.Load(sut, x => x.IsLoaded);
+		return sut;
+	}
+
+	private static async Task ExerciseRightPane(TestSplitView sut, SplitViewDisplayMode displayMode)
+	{
+		var paneRoot = sut.GetPart("PaneRoot") as FrameworkElement;
+		Assert.IsNotNull(paneRoot);
+
+		sut.IsPaneOpen = true;
+		await UITestHelper.WaitFor(() => Grid.GetColumn(paneRoot) == 1 && Grid.GetColumnSpan(paneRoot) == 1);
+
+		sut.IsPaneOpen = false;
+		if (displayMode == SplitViewDisplayMode.Inline)
+		{
+			await UITestHelper.WaitFor(() => paneRoot.Visibility == Visibility.Collapsed);
+		}
+		else
+		{
+			await UITestHelper.WaitFor(() => Grid.GetColumnSpan(paneRoot) == 2);
+			Assert.AreEqual(HorizontalAlignment.Right, paneRoot.HorizontalAlignment);
+		}
+	}
 }
