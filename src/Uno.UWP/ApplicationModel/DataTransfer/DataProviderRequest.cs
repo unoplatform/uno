@@ -51,6 +51,9 @@ namespace Windows.ApplicationModel.DataTransfer
 		internal void Abort()
 			=> _asyncData.TrySetException(new TimeoutException("Data provider didn't replied within the allocated time frame"));
 
+		internal void Fail(Exception exception)
+			=> _asyncData.TrySetException(exception);
+
 		private void Complete()
 		{
 			if (_data is null)
