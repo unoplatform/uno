@@ -52,7 +52,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 				{
 					await readStream.FlushAsync();
 				}
-				catch (Exception)
+				catch (Exception ex) when (ex is NotImplementedException or InvalidOperationException)
 				{
 					// UWP throws NotImplementedException
 					// Uno throws InvalidOperationException with a description

@@ -2733,14 +2733,20 @@ public class Given_ElementTheme
 			menuFlyout.ShowAt(button);
 			await WindowHelper.WaitForIdle();
 
-			var item = menuFlyout.Items[0] as MenuFlyoutItem;
-			Assert.IsNotNull(item, "MenuFlyout should expose its first item as a MenuFlyoutItem");
+			if (menuFlyout.Items[0] is not MenuFlyoutItem item)
+			{
+				Assert.Fail("MenuFlyout should expose its first item as a MenuFlyoutItem");
+				return;
+			}
 
 			// The template must be applied before its LayoutRoot can be sampled.
 			await WindowHelper.WaitForLoaded(item);
 
-			var presenter = item.FindVisualChildByName("LayoutRoot") as FrameworkElement;
-			Assert.IsNotNull(presenter, "MenuFlyoutItem should have materialized its LayoutRoot template child");
+			if (item.FindVisualChildByName("LayoutRoot") is not FrameworkElement presenter)
+			{
+				Assert.Fail("MenuFlyoutItem should have materialized its LayoutRoot template child");
+				return;
+			}
 
 			Assert.AreEqual(ElementTheme.Dark, item.ActualTheme,
 				"MenuFlyoutItem should have Dark theme after parent theme change");
