@@ -387,20 +387,27 @@ cp -fv "$UNO_ORIGINAL_TEST_RESULTS" $LOG_FILEPATH/Test-Results-$LOG_PREFIX.xml |
 find $AGENT_TEMPDIRECTORY -name "*.dmp" -exec cp -v {} $LOG_FILEPATH \;
 find $UNO_TESTS_LOCAL_TESTS_FILE -name "*.dmp" -exec cp -v {} $LOG_FILEPATH \;
 
+# Teardown is best-effort: under `set -e` a sick simulator failing any of these aborts the
+# script before the results are transformed and published, turning a diagnosable test failure
+# into a bare non-zero exit.
 ## Take a screenshot
-xcrun simctl io "$UITEST_IOSDEVICE_ID" screenshot $LOG_FILEPATH/capture-$LOG_PREFIX.png
+xcrun simctl io "$UITEST_IOSDEVICE_ID" screenshot $LOG_FILEPATH/capture-$LOG_PREFIX.png || true
 
 ## Capture the device logs
-xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH
+xcrun simctl spawn booted log collect --output $TMP_LOG_FILEPATH || true
 
 ## Shutting down simulator to reclaim memory
 echo "Shutting down simulator"
 xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
 
 echo "Dumping device logs to $LOG_FILEPATH_FULL"
-log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL
+log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL || true
 
 echo "Searching for failures in device logs"
+if [ ! -s "$LOG_FILEPATH_FULL" ]; then
+	echo "Device log is empty or missing; skipping the log scans"
+	: > "$LOG_FILEPATH_FULL"
+fi
 if grep -Eq "mini-generic-sharing.c:\d+, condition \`oti' not met" $LOG_FILEPATH_FULL
 then
 	# The application may crash without known cause, add a marker so the job can be restarted in that case.
