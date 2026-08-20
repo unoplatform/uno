@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Foundation;
 using Uno.Foundation.Logging;
@@ -194,31 +193,14 @@ internal static class AppleAppNotificationRuntime
 
 	private static bool AddRequest(UNNotificationRequest request)
 	{
-		var completion = new TaskCompletionSource<NSError?>(TaskCreationOptions.RunContinuationsAsynchronously);
-		var timedOut = 0;
-		var center = UNUserNotificationCenter.Current;
-		center.AddNotificationRequest(request, error =>
+		// Immediate notifications complete on the UI thread, so waiting here prevents their presentation.
+		UNUserNotificationCenter.Current.AddNotificationRequest(request, error =>
 		{
-			completion.TrySetResult(error);
-			if (error is null && Volatile.Read(ref timedOut) != 0)
+			if (error is not null)
 			{
-				center.RemovePendingNotificationRequests(new[] { request.Identifier });
-				center.RemoveDeliveredNotifications(new[] { request.Identifier });
+				LogWarning($"Apple rejected the app notification: {error.LocalizedDescription}");
 			}
 		});
-		if (!completion.Task.Wait(NativeOperationTimeout))
-		{
-			Interlocked.Exchange(ref timedOut, 1);
-			center.RemovePendingNotificationRequests(new[] { request.Identifier });
-			center.RemoveDeliveredNotifications(new[] { request.Identifier });
-			LogWarning("Timed out while adding an Apple app notification.");
-			return false;
-		}
-		if (completion.Task.Result is { } error)
-		{
-			LogWarning($"Apple rejected the app notification: {error.LocalizedDescription}");
-			return false;
-		}
 		return true;
 	}
 
