@@ -155,7 +155,8 @@ namespace Uno.UI.Behaviors
 		}
 
 #if !WINUI
-		public class VisibleBoundsDetails
+		// Every member is internal: the type is an implementation detail of the attached property.
+		internal class VisibleBoundsDetails
 		{
 			private static readonly ConditionalWeakTable<FrameworkElement, VisibleBoundsDetails> _instances =
 				new ConditionalWeakTable<FrameworkElement, VisibleBoundsDetails>();
