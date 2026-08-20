@@ -932,7 +932,7 @@ namespace Uno.UI.Samples.Tests
 								}
 #endif
 
-								await GeneralInitAsync(fullTestName);
+								await GeneralInitAsync();
 
 								object returnValue = null;
 								var methodArguments = testCase.Parameters;
@@ -1110,7 +1110,7 @@ namespace Uno.UI.Samples.Tests
 				}
 			}
 
-			async Task GeneralInitAsync(string fullTestName)
+			async Task GeneralInitAsync()
 			{
 #if HAS_UNO
 				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
@@ -1125,8 +1125,6 @@ namespace Uno.UI.Samples.Tests
 					// matching) to see phantom modifiers and fail intermittently.
 					// Reset before each test for a clean slate.
 					Uno.UI.Core.KeyboardStateTracker.Reset();
-
-					ResetThemingState(fullTestName);
 				});
 #else
 				await Task.CompletedTask;
@@ -1216,57 +1214,6 @@ namespace Uno.UI.Samples.Tests
 				inputManager.LastInputDeviceType = Xaml.Input.InputDeviceType.Mouse;
 			}
 		}
-
-		/// <summary>
-		/// Theming is driven by process-global state. A test that times out or crashes mid-scope never
-		/// runs the disposable that restores it, and every later test in the shard then resolves under
-		/// the wrong theme. Warn before restoring, so a leak stays attributable instead of becoming an
-		/// invisible reset.
-		/// </summary>
-		/// <remarks>
-		/// Two theming globals are deliberately not covered: CoreServices.HasThemeEverChanged has a
-		/// private setter (so popup theming stays order-dependent across tests), and
-		/// ResourceDictionary's by-name theme scope stack is private and [ThreadStatic], so an
-		/// unbalanced Push is not observable from here.
-		/// </remarks>
-		private static void ResetThemingState(string fullTestName)
-		{
-			if (Uno.Helpers.Theming.SystemThemeHelper.SystemThemeOverride is { } systemThemeOverride)
-			{
-				WarnThemingStateLeak(fullTestName, "SystemThemeHelper.SystemThemeOverride", systemThemeOverride);
-				Uno.Helpers.Theming.SystemThemeHelper.SystemThemeOverride = null;
-			}
-
-			if (Uno.WinRTFeatureConfiguration.Accessibility.HighContrast)
-			{
-				WarnThemingStateLeak(fullTestName, "WinRTFeatureConfiguration.Accessibility.HighContrast", true);
-				Uno.WinRTFeatureConfiguration.Accessibility.HighContrast = false;
-			}
-
-			// Reading CoreServices.Instance would create the singleton; only inspect an existing one.
-			if (Uno.UI.Xaml.Core.CoreServices.HasInstance)
-			{
-				var core = Uno.UI.Xaml.Core.CoreServices.Instance;
-
-				var subTreeTheme = core.GetRequestedThemeForSubTree();
-				if (subTreeTheme != Microsoft.UI.Xaml.Theme.None)
-				{
-					WarnThemingStateLeak(fullTestName, "CoreServices.RequestedThemeForSubTree", subTreeTheme);
-					core.SetRequestedThemeForSubTree(Microsoft.UI.Xaml.Theme.None);
-				}
-
-				if (core.IsSwitchingTheme)
-				{
-					WarnThemingStateLeak(fullTestName, "CoreServices.IsSwitchingTheme", true);
-					core.IsSwitchingTheme = false;
-				}
-			}
-		}
-
-		private static void WarnThemingStateLeak(string fullTestName, string state, object value)
-			=> typeof(UnitTestsControl).Log().Warn(
-				$"Theming state {state} was still {value} when {fullTestName} started - an earlier " +
-				$"test left it behind. Resetting it to the default.");
 #endif
 
 		private async ValueTask ExecuteOnDispatcher(Func<Task> asyncAction, CancellationToken ct = default)
