@@ -336,7 +336,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		// Skia-WASM: initial focus settles on the primary button instead of the default one, see https://github.com/unoplatform/uno/issues/24146
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Initial_Focus_With_DefaultButton_Set()
 		{
 			var SUT = new MyContentDialog

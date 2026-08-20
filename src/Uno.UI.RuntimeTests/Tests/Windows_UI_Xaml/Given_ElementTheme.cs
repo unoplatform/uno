@@ -2703,6 +2703,8 @@ public class Given_ElementTheme
 
 	[TestMethod]
 	[RequiresFullWindow]
+	// Skia-WASM: the item resolves the application theme instead of the changed parent theme, see https://github.com/unoplatform/uno/issues/24143
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_MenuFlyout_Opened_After_Theme_Change_Items_Use_New_Theme()
 	{
 		// ActualTheme falls back to the application theme when no local theme is set, so an ambient
