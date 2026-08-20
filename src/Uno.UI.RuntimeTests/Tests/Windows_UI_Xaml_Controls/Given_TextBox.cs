@@ -915,6 +915,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12839")]
+		public async Task When_Implicit_Style_Preserves_Default_Template()
+		{
+			var style = new Style(typeof(TextBox))
+			{
+				Setters =
+				{
+					new Setter(FrameworkElement.MarginProperty, new Thickness(8)),
+				},
+			};
+			var textBox = new TextBox { Text = "Hi" };
+			var host = new Grid
+			{
+				Children = { textBox },
+			};
+			host.Resources.Add(typeof(TextBox), style);
+
+			await UITestHelper.Load(host);
+
+			Assert.AreEqual(new Thickness(8), textBox.Margin);
+			Assert.IsNotNull(textBox.Template);
+			Assert.IsTrue(VisualTreeHelper.GetChildrenCount(textBox) > 0);
+		}
+
+		[TestMethod]
 #if __SKIA__ || __APPLE_UIKIT__
 		[Ignore("Fails on Skia and iOS")]
 		// On iOS, the failure is: AssertFailedException: Expected value to be greater than 1199.0, but found 1199.0.
