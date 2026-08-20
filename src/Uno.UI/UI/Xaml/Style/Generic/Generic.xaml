@@ -24241,12 +24241,12 @@
 												<DiscreteObjectKeyFrame KeyTime="{StaticResource SplitViewPaneAnimationCloseDuration}"
 																		Value="2" />
 											</ObjectAnimationUsingKeyFrames>
-											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform"
-																		   Storyboard.TargetProperty="TranslateX">
+											<win:DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform"
+																			   Storyboard.TargetProperty="TranslateX">
 												<SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0"
 																	  KeyTime="{StaticResource SplitViewPaneAnimationCloseDuration}"
 																	  Value="{Binding TemplateSettings.NegativeOpenPaneLengthMinusCompactLength, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
-											</DoubleAnimationUsingKeyFrames>
+											</win:DoubleAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneTransform"
 																		   Storyboard.TargetProperty="TranslateX">
 												<SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0"
@@ -24308,14 +24308,14 @@
 																	  KeyTime="{StaticResource SplitViewPaneAnimationOpenPreDuration}"
 																	  Value="0" />
 											</DoubleAnimationUsingKeyFrames>
-											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform"
-																		   Storyboard.TargetProperty="TranslateX">
+											<win:DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform"
+																			   Storyboard.TargetProperty="TranslateX">
 												<DiscreteDoubleKeyFrame KeyTime="0:0:0"
 																		Value="{Binding TemplateSettings.NegativeOpenPaneLength, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
 												<SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0"
 																	  KeyTime="{StaticResource SplitViewPaneAnimationOpenDuration}"
 																	  Value="0" />
-											</DoubleAnimationUsingKeyFrames>
+											</win:DoubleAnimationUsingKeyFrames>
 										</Storyboard>
 									</VisualTransition>
 									<VisualTransition From="ClosedCompactLeft"
@@ -24355,14 +24355,14 @@
 																	  KeyTime="{StaticResource SplitViewPaneAnimationOpenPreDuration}"
 																	  Value="0" />
 											</DoubleAnimationUsingKeyFrames>
-											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform"
-																		   Storyboard.TargetProperty="TranslateX">
+											<win:DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform"
+																			   Storyboard.TargetProperty="TranslateX">
 												<DiscreteDoubleKeyFrame KeyTime="0:0:0"
 																		Value="{Binding TemplateSettings.NegativeOpenPaneLengthMinusCompactLength, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
 												<SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0"
 																	  KeyTime="{StaticResource SplitViewPaneAnimationOpenDuration}"
 																	  Value="0" />
-											</DoubleAnimationUsingKeyFrames>
+											</win:DoubleAnimationUsingKeyFrames>
 										</Storyboard>
 									</VisualTransition>
 									<VisualTransition From="OpenInlineLeft"
@@ -24397,14 +24397,14 @@
 																	  KeyTime="{StaticResource SplitViewPaneAnimationOpenPreDuration}"
 																	  Value="0" />
 											</DoubleAnimationUsingKeyFrames>
-											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform"
-																		   Storyboard.TargetProperty="TranslateX">
+											<win:DoubleAnimationUsingKeyFrames Storyboard.TargetName="PaneClipRectangleTransform"
+																			   Storyboard.TargetProperty="TranslateX">
 												<DiscreteDoubleKeyFrame KeyTime="0:0:0"
 																		Value="0" />
 												<SplineDoubleKeyFrame KeySpline="0.0,0.35 0.15,1.0"
 																	  KeyTime="{StaticResource SplitViewPaneAnimationOpenDuration}"
 																	  Value="{Binding TemplateSettings.NegativeOpenPaneLengthMinusCompactLength, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
-											</DoubleAnimationUsingKeyFrames>
+											</win:DoubleAnimationUsingKeyFrames>
 										</Storyboard>
 									</VisualTransition>
 								</VisualStateGroup.Transitions>
