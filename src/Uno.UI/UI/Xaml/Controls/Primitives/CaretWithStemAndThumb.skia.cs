@@ -84,9 +84,9 @@ internal sealed class CaretWithStemAndThumb : Grid
 		Children.Add(thumbRing);
 	}
 
-	// Test hook: whether the gripper is actually painted. A culled gripper keeps its popup open (see Cull),
-	// and its measured size survives either way, so neither alone is a reliable signal.
-	internal bool IsShowing => _popup?.IsOpen is true && Visibility == Visibility.Visible;
+	// Test hook: whether the gripper is actually painted. Its measured size survives a hide, so size alone
+	// is not a reliable signal.
+	internal bool IsShowing => _popup?.IsOpen is true;
 
 	public void SetStemVisible(bool visible) => _stem.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
 
@@ -106,19 +106,11 @@ internal sealed class CaretWithStemAndThumb : Grid
 			RenderTransform = matrixTransform;
 		}
 		matrixTransform.Matrix = new Matrix(transform);
-		Visibility = Visibility.Visible;
 		if (!_popup.IsOpen)
 		{
 			_popup.IsOpen = true;
 		}
 	}
-
-	/// <summary>
-	/// The character this gripper points at has scrolled out of the visible region: stop painting (and
-	/// hit-testing) it, but keep the popup open so the next <see cref="ShowAt"/> brings it straight back
-	/// when the anchor scrolls into view again.
-	/// </summary>
-	public void Cull() => Visibility = Visibility.Collapsed;
 
 	public void Hide()
 	{
