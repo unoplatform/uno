@@ -6937,7 +6937,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
 
-			SUT.StartBringIntoView();
+			// Park the box in the viewport with an explicit offset rather than StartBringIntoView: on some targets
+			// that leaves the offset at 0, and the downward drag below then has nowhere left to scroll.
+			sv.ChangeView(null, 470, null, disableAnimation: true);
+			await WindowHelper.WaitFor(
+				() => sv.VerticalOffset > 400,
+				message: "the TextBox should be scrolled into view before it is tapped");
 			await UITestHelper.WaitForIdle(true);
 
 			// make the textbox touch knob appear
