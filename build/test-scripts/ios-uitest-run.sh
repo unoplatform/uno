@@ -37,6 +37,22 @@ IFS=$'\n\t'
 # (the BOM only breaks the shebang at exec time, but this is a safety net).
 sed -i '' $'1s/^\xEF\xBB\xBF//' "$0"
 
+# The pipeline has a re-run step that has never been reachable: every caller passes
+# UITEST_ALLOW_RERUN=false. Re-running the whole 90 minute suite on a test failure does not fit
+# the job budget, but re-running a setup that died before any test started does -- that is the
+# case this sentinel covers (simulator boot, app install, toolchain), and it is exactly what
+# aborted an iOS job on PR #24121 and cost a full stage retry.
+UNO_IOS_TESTS_STARTED=false
+
+report_harness_crash() {
+	local status=$?
+
+	if [ "$status" -ne 0 ] && [ "$UNO_IOS_TESTS_STARTED" != "true" ]; then
+		echo "##vso[task.setvariable variable=UNO_IOS_HARNESS_CRASHED]true"
+	fi
+}
+trap report_harness_crash EXIT
+
 if [ "$UITEST_SNAPSHOTS_ONLY" == 'true' ];
 then
 	export SCREENSHOTS_FOLDERNAME=ios-Snap
@@ -345,6 +361,7 @@ then
 		fi
 	fi
 
+	UNO_IOS_TESTS_STARTED=true
 	xcrun simctl launch "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
 
 	# get the process id for the app
@@ -393,6 +410,7 @@ else
 	echo "  Test filters: $UNO_TESTS_FILTER"
 
 	## Run tests
+	UNO_IOS_TESTS_STARTED=true
 	dotnet run -c Release -- --results-directory $UNO_ORIGINAL_TEST_RESULTS_DIRECTORY --hangdump --hangdump-timeout 45m --hangdump-filename hang.dump --settings .runsettings --filter "$UNO_TESTS_FILTER" || true
 fi
 
