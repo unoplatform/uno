@@ -24,7 +24,7 @@ namespace Uno.UI.Runtime.Skia.Android;
 /// <see cref="AndroidVulkanGraphicsContext"/>. Not runtime-validated on Linux CI (needs an Android device/emulator
 /// with a Vulkan-capable adapter).
 /// </summary>
-internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallback, IUnoSkiaRenderView
+internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallback, IUnoRenderView
 {
 	public UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 	public TextInputPlugin TextInputPlugin { get; }
@@ -39,7 +39,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 	private readonly ManualResetEventSlim _renderEvent = new(false);
 	private IntPtr _nativeWindow; // Must stay alive while the Vulkan surface references it
 
-	public UnoSKVulkanView(Context context) : base(context)
+	public UnoVulkanView(Context context) : base(context)
 	{
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
@@ -127,7 +127,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 		}
 		catch (Exception ex)
 		{
-			this.Log().Error("UnoSKVulkanView render thread failed", ex);
+			this.Log().Error("UnoVulkanView render thread failed", ex);
 		}
 	}
 
@@ -226,7 +226,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 		}
 		catch (Exception e)
 		{
-			this.Log().Error($"{nameof(UnoSKVulkanView)}.{nameof(OnFocusChanged)} failed", e);
+			this.Log().Error($"{nameof(UnoVulkanView)}.{nameof(OnFocusChanged)} failed", e);
 		}
 	}
 

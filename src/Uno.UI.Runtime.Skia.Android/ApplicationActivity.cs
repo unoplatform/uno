@@ -32,11 +32,11 @@ namespace Microsoft.UI.Xaml
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public partial class ApplicationActivity : Controls.NativePage
 	{
-		private static IUnoSkiaRenderView? _renderView;
+		private static IUnoRenderView? _renderView;
 		private static View? _renderViewAsView;
 		private static ClippedRelativeLayout? _nativeLayerHost;
 
-		internal static IUnoSkiaRenderView? RenderView => _renderView;
+		internal static IUnoRenderView? RenderView => _renderView;
 
 		private InputPane _inputPane;
 
@@ -294,7 +294,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private IUnoSkiaRenderView CreateRenderView()
+		private IUnoRenderView CreateRenderView()
 		{
 			// Pick the Android view class matching the registered backend's context kind (host reads the neutral kind).
 			if (global::Uno.UI.Composition.Drawing.GraphicsRegistry.HasBackendPreferring(
@@ -302,7 +302,7 @@ namespace Microsoft.UI.Xaml
 			{
 				try
 				{
-					return new UnoSKWebGpuView(this);
+					return new UnoWebGpuView(this);
 				}
 				catch (Exception ex)
 				{
@@ -316,7 +316,7 @@ namespace Microsoft.UI.Xaml
 			{
 				try
 				{
-					return new UnoSKVulkanView(this);
+					return new UnoVulkanView(this);
 				}
 				catch (Exception ex)
 				{
@@ -325,7 +325,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			// The canvas view renders GLES or software per UseOpenGLOnSkiaAndroid (chosen in its OnSurfaceCreated).
-			return new UnoSKCanvasView(this);
+			return new UnoCanvasView(this);
 		}
 
 		internal void InvalidateRender()

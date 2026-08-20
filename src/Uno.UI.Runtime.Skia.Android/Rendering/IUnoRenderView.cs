@@ -4,7 +4,7 @@ namespace Uno.UI.Runtime.Skia.Android;
 /// Common interface for GL and Vulkan rendering views on Android.
 /// Allows ApplicationActivity to work with either view without branching.
 /// </summary>
-internal interface IUnoSkiaRenderView
+internal interface IUnoRenderView
 {
 	void InvalidateRender();
 	void ResetRendererContext();
