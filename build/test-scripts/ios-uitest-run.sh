@@ -24,7 +24,7 @@
 #   - Newer Homebrew refuses formulas from third-party taps unless explicitly
 #     trusted (`brew trust`) — see the install section below.
 #   - `fb-idb` (the Python client) is installed from PyPI via pipx, pinned to
-#     Python 3.12 (asyncio breakage under 3.14) but not version-pinned.
+#     Python 3.12 (asyncio breakage under 3.14) and to the version CI already runs.
 # ===========================================================================
 set -euo pipefail
 IFS=$'\n\t'
@@ -215,7 +215,9 @@ then
 
 	# 3) Install fb-idb under Python 3.12
 	pipx uninstall fb-idb >/dev/null 2>&1 || true
-	pipx install --force fb-idb
+	# Pinned: the companion is pinned to a tap revision, so leaving the Python client floating
+	# means an upstream release can change the harness under a fixed simulator/Xcode pair.
+	pipx install --force 'fb-idb==1.1.7'
 else
 	echo "Using idb from: $(command -v idb)"
 fi
