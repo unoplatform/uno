@@ -52,7 +52,8 @@ public class Given_CollectibleAlcAssociations
 	{
 		var weakElement = StageHostResourceAssociation();
 
-		Application.CleanupNonDefaultAlcCaches();
+		// Explicit all-secondary sweep: this test exercises the global-teardown (unscoped) semantics.
+		Application.CleanupAllSecondaryAlcCaches();
 
 		for (var i = 0; i < 10 && weakElement.IsAlive; i++)
 		{
@@ -72,7 +73,8 @@ public class Given_CollectibleAlcAssociations
 	{
 		var weakElement = StageThemeDictionaryAssociation();
 
-		Application.CleanupNonDefaultAlcCaches();
+		// Explicit all-secondary sweep: this test exercises the global-teardown (unscoped) semantics.
+		Application.CleanupAllSecondaryAlcCaches();
 
 		for (var i = 0; i < 10 && weakElement.IsAlive; i++)
 		{

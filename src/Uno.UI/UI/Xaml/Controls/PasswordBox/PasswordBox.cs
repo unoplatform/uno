@@ -567,6 +567,13 @@ namespace Microsoft.UI.Xaml.Controls
 			_core.OnKeyDown(args);
 		}
 
+		protected override void OnCharacterReceived(CharacterReceivedRoutedEventArgs e)
+		{
+			base.OnCharacterReceived(e);
+
+			_core.OnCharacterReceived(e);
+		}
+
 		private protected override void OnPostKeyDown(KeyRoutedEventArgs args)
 		{
 			_core.OnPostKeyDown(args);

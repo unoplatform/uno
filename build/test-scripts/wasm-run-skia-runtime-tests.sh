@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 set -x #echo on
 set -euo pipefail
 IFS=$'\n\t'
@@ -78,7 +78,10 @@ while [ $TRY_COUNT -lt 5 ]; do
     # still runs.) --autoplay-policy lifts the gesture requirement on HTMLMediaElement.play(), which
     # otherwise rejects with NotAllowedError and stalls every media playback test. The URL is passed
     # as a positional arg to avoid re-quoting its '&'/'='/'?' chars.
-    xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' sh -c '{ fluxbox >/dev/null 2>&1 & } ; google-chrome --enable-logging=stderr --no-sandbox --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required --window-size=1920,1080 "$1"' _ "${RUNTIME_TESTS_URL}" &
+    # --no-first-run/--no-default-browser-check/--disable-search-engine-choice-screen stop the first-run
+    # experience from swallowing the command-line URL on the agent's brand-new profile: without them
+    # chrome starts but never navigates, so the canary never appears.
+    xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' sh -c '{ fluxbox >/dev/null 2>&1 & } ; google-chrome --enable-logging=stderr --no-sandbox --no-first-run --no-default-browser-check --disable-search-engine-choice-screen --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required --window-size=1920,1080 "$1"' _ "${RUNTIME_TESTS_URL}" &
 
     # wait one minute for the canary file to be created, otherwise fail the script.
     # This may happen if xvfb-run of chrome fails to start

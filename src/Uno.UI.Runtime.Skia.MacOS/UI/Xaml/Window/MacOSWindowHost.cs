@@ -3,6 +3,7 @@ using Microsoft.UI.Input;
 using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
 using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
 using KeyEventArgs = global::Windows.UI.Core.KeyEventArgs;
+using CharacterReceivedEventArgs = global::Windows.UI.Core.CharacterReceivedEventArgs;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Microsoft.UI.Windowing;
@@ -393,6 +394,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
+	event TypedEventHandler<object, CharacterReceivedEventArgs>? IUnoKeyboardInputSource.CharacterReceived { add { } remove { } }
 
 	private static KeyEventArgs CreateArgs(VirtualKey key, VirtualKeyModifiers mods, uint scanCode, ushort unicode)
 	{

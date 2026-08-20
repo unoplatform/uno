@@ -852,6 +852,40 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 		}
 	}
 
+	partial void OnCharacterReceivedPartial(CharacterReceivedRoutedEventArgs e)
+	{
+		// Characters produced by a key press are inserted by OnKeyDownSkia. Only characters
+		// that can't be delivered through a key press — composed on a key release, i.e.
+		// Windows Alt+numpad codes — arrive solely through this event.
+		if (e.Handled || e.OriginalSource != Owner || !e.KeyStatus.IsKeyReleased)
+		{
+			return;
+		}
+
+		if (IsReadOnly || HasPointerCapture || ShouldSwallowKeyDuringComposition || char.IsControl(e.Character))
+		{
+			return;
+		}
+
+		e.Handled = true;
+		TrySetCurrentlyTyping(true);
+
+		var (selectionStart, selectionLength) = _selection.selectionEndsAtTheStart
+			? (_selection.start + _selection.length, -_selection.length)
+			: (_selection.start, _selection.length);
+		var text = Text;
+		var start = Math.Min(selectionStart, selectionStart + selectionLength);
+		var end = Math.Max(selectionStart, selectionStart + selectionLength);
+		text = text[..start] + e.Character + text[end..];
+
+		_suppressCurrentlyTyping = true;
+		_clearHistoryOnTextChanged = false;
+		_pendingSelection = (start + 1, 0);
+		ProcessTextInput(text);
+		_clearHistoryOnTextChanged = true;
+		_suppressCurrentlyTyping = false;
+	}
+
 	private void OnKeyDownSkia(KeyRoutedEventArgs args)
 	{
 		if (SelectionFlyout?.IsOpen == true)
