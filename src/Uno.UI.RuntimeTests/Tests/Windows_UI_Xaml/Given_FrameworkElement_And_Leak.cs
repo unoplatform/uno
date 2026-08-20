@@ -224,22 +224,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			var controlType = GetControlType(controlTypeRaw);
 
-			var weakRefs = new HashSet<WeakReference<DependencyObject>>();
+			// The ordinal records which control instance a reference came from, so surviving objects can be
+			// attributed to the last instance (tolerated) or to an earlier one.
+			var weakRefs = new HashSet<(int Ordinal, WeakReference<DependencyObject> Reference)>();
 			var totalRefCount = 0;
 			void TrackDependencyObject(DependencyObject target)
 			{
-				totalRefCount++;
-				weakRefs.Add(new WeakReference<DependencyObject>(target));
+				weakRefs.Add((totalRefCount++, new WeakReference<DependencyObject>(target)));
 			}
 
-			IEnumerable<DependencyObject> RemoveDeadRefsAndGetAliveRefs()
+			IEnumerable<(int Ordinal, DependencyObject Target)> RemoveDeadRefsAndGetAliveRefs()
 			{
-				var toRemove = new List<WeakReference<DependencyObject>>();
+				var toRemove = new List<(int Ordinal, WeakReference<DependencyObject> Reference)>();
 				foreach (var weakRef in weakRefs)
 				{
-					if (weakRef.TryGetTarget(out var target))
+					if (weakRef.Reference.TryGetTarget(out var target))
 					{
-						yield return target;
+						yield return (weakRef.Ordinal, target);
 					}
 					else
 					{
@@ -278,10 +279,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var totalRefCountExceptForLastControlInstance = totalRefCount;
 			await MaterializeControl(controlType, rootContainer);
 
+			// Some platforms have a problem with GC timing and / or the way things like async methods are compiled
+			// where the last created instance of the control will remain in memory, so we check that objects from
+			// all but the last instance of the control are collected
+			var expected = totalRefCount - totalRefCountExceptForLastControlInstance;
+
 			var sw = Stopwatch.StartNew();
 
 			var endTime = TimeSpan.FromSeconds(30);
-			while (sw.Elapsed < endTime && RemoveDeadRefsAndGetAliveRefs().Any())
+			// The alive count only decreases, so there is nothing left to wait for once it meets the bar.
+			// Count() also enumerates fully, which is what lets the iterator prune the dead refs.
+			while (sw.Elapsed < endTime && RemoveDeadRefsAndGetAliveRefs().Count() > expected)
 			{
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
@@ -316,16 +324,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			//var leaks = Uno.UI.DataBinding.BinderReferenceHolder.GetLeakedObjects();
 #endif
 
-			var retainedMessage = "";
+			// A single snapshot feeds both the diagnostics and the assertion, so the two cannot disagree.
+			var alive = RemoveDeadRefsAndGetAliveRefs().ToArray();
+			var refcount = alive.Length;
+			var aliveEarlier = alive.Count(x => x.Ordinal < totalRefCountExceptForLastControlInstance);
+			var aliveLast = refcount - aliveEarlier;
+			var retainedTypes = alive
+				.GroupBy(x => ExtractTargetName(x.Target))
+				.OrderByDescending(g => g.Count())
+				.Select(g => $"{g.Key} x{g.Count()}")
+				.ToArray();
 
-			if (OperatingSystem.IsIOS() || OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser())
+			var retainedMessage =
+				$"platform={RuntimeTestsPlatformHelper.CurrentPlatform}, settled in {sw.Elapsed.TotalSeconds:F1}s, " +
+				$"alive={refcount} (expected <= {expected}), from earlier instances={aliveEarlier}, from last instance={aliveLast}, " +
+				$"retained: {retainedTypes.JoinBy("; ")}";
+
+			if (refcount > 0 && (OperatingSystem.IsIOS() || OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser()))
 			{
-				var retainedTypes = RemoveDeadRefsAndGetAliveRefs().Select(ExtractTargetName).ToArray();
-				if (RemoveDeadRefsAndGetAliveRefs().Any())
-				{
-					Console.WriteLine($"\n --- Retained types ---\n{string.Join("\n", retainedTypes)}");
+				Console.WriteLine($"\n --- Retained types ---\n{string.Join("\n", retainedTypes)}");
 
-					Console.WriteLine($"\n ========== first run: tree-graph ============\n{forest.FirstOrDefault()}");
+				Console.WriteLine($"\n ========== first run: tree-graph ============\n{forest.FirstOrDefault()}");
 
 #if TRACK_REFS
 				Console.WriteLine($"\n ========== first run: total objects created ============");
@@ -342,17 +361,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				}
 				Console.WriteLine();
 #endif
-				}
-
-				retainedMessage = retainedTypes.JoinBy(";");
 			}
 
-			// Some platforms have a problem with GC timing and / or the way things like async methods are compiled
-			// where the last created instance of the control will remain in memory, so we check that objects from
-			// all but the last instance of the control are collected
-			var expected = totalRefCount - totalRefCountExceptForLastControlInstance;
-			var refcount = RemoveDeadRefsAndGetAliveRefs().Count();
-
+			// A failure on a single platform indicts that platform, not the bar: the survivors named in the
+			// message are the lead to follow, so don't raise `expected` or drop the row to make it pass.
 			refcount.Should().BeLessThanOrEqualTo(expected, retainedMessage);
 
 			[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Use of [ActivatableDataRow] ensures that string fulfill TypeRequirements.")]
