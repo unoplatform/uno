@@ -1146,6 +1146,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		// Skia-WASM: a single click raises GotFocus three times for the same element, see https://github.com/unoplatform/uno/issues/24144
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Clicking_Outside_ContentElement_Should_Focus()
 		{
 			var tb1 = new TextBox() { Tag = "First" };

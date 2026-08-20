@@ -561,6 +561,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		// Skia-WASM: wheel notches are dropped so the index never reaches the last item, see https://github.com/unoplatform/uno/issues/24145
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_ScrollWheel()
 		{
 			var flipView = new FlipView()
