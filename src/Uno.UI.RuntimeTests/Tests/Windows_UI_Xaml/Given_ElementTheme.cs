@@ -2702,8 +2702,13 @@ public class Given_ElementTheme
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task When_MenuFlyout_Opened_After_Theme_Change_Items_Use_New_Theme()
 	{
+		// ActualTheme falls back to the application theme when no local theme is set, so an ambient
+		// Dark OS/browser theme would let a failed propagation assert Dark anyway.
+		using var _ = ThemeHelper.UseApplicationLightTheme();
+
 		// User repro: MenuFlyout items hovered show old theme foreground (black)
 		// after switching to dark theme. The flyout presenter and items should
 		// pick up the new theme when opened.
@@ -2728,20 +2733,19 @@ public class Given_ElementTheme
 			menuFlyout.ShowAt(button);
 			await WindowHelper.WaitForIdle();
 
-			// The flyout presenter should have Dark theme
-			var presenter = menuFlyout.Items[0].FindVisualChildByName("LayoutRoot");
-			if (presenter == null)
-			{
-				// Try getting the item directly
-				var item = menuFlyout.Items[0] as MenuFlyoutItem;
-				Assert.AreEqual(ElementTheme.Dark, item.ActualTheme,
-					"MenuFlyoutItem should have Dark theme after parent theme change");
-			}
-			else
-			{
-				Assert.AreEqual(ElementTheme.Dark, (presenter as FrameworkElement)?.ActualTheme,
-					"MenuFlyoutItem layout root should have Dark theme");
-			}
+			var item = menuFlyout.Items[0] as MenuFlyoutItem;
+			Assert.IsNotNull(item, "MenuFlyout should expose its first item as a MenuFlyoutItem");
+
+			// The template must be applied before its LayoutRoot can be sampled.
+			await WindowHelper.WaitForLoaded(item);
+
+			var presenter = item.FindVisualChildByName("LayoutRoot") as FrameworkElement;
+			Assert.IsNotNull(presenter, "MenuFlyoutItem should have materialized its LayoutRoot template child");
+
+			Assert.AreEqual(ElementTheme.Dark, item.ActualTheme,
+				"MenuFlyoutItem should have Dark theme after parent theme change");
+			Assert.AreEqual(ElementTheme.Dark, presenter.ActualTheme,
+				"MenuFlyoutItem layout root should have Dark theme");
 		}
 		finally
 		{
