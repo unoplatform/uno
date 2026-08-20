@@ -35,10 +35,11 @@ namespace Microsoft.UI.Xaml
 		private readonly static DependencyPropertyRegistry _registry = DependencyPropertyRegistry.Instance;
 
 		private readonly static NameToPropertyDictionary _getPropertyCache = new NameToPropertyDictionary();
+		private readonly static object _getPropertyCacheGate = new();
 		private static object DefaultThemeAnimationDurationBox = new Duration(FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration);
 
 		/// <summary>
-		/// A static <see cref="PropertyCacheEntry"/> used for lookups and avoid creating new instances. This assumes that uses are non-reentrant.
+		/// A synchronized <see cref="PropertyCacheEntry"/> reused for lookups to avoid creating new instances.
 		/// </summary>
 		private readonly static PropertyCacheEntry _searchPropertyCacheEntry = new();
 
@@ -54,11 +55,15 @@ namespace Microsoft.UI.Xaml
 		{
 			_registry.RemoveNonDefaultAlcEntries();
 			_getInheritedPropertiesForType.RemoveNonDefaultAlcEntries();
-			_getPropertyCache.RemoveNonDefaultAlcEntries();
 			_isTypeNullableDictionary.RemoveNonDefaultAlcEntries();
 
-			// The pooled lookup key retains the last-queried Type past the cache prunes.
-			_searchPropertyCacheEntry.Update(typeof(object), "");
+			lock (_getPropertyCacheGate)
+			{
+				_getPropertyCache.RemoveNonDefaultAlcEntries();
+
+				// The pooled lookup key retains the last-queried Type past the cache prunes.
+				_searchPropertyCacheEntry.Update(typeof(object), "");
+			}
 		}
 
 		private readonly PropertyMetadata _ownerTypeMetadata; // For perf consideration, we keep direct ref the metadata for the owner type
@@ -375,14 +380,23 @@ namespace Microsoft.UI.Xaml
 				throw new InvalidOperationException("The dependency property system should not be accessed from non UI thread.");
 			}
 
-			_searchPropertyCacheEntry.Update(type, name);
-
-			if (!_getPropertyCache.TryGetValue(_searchPropertyCacheEntry, out var result))
+			lock (_getPropertyCacheGate)
 			{
-				_getPropertyCache.Add(_searchPropertyCacheEntry.Clone(), result = InternalGetProperty(type, name));
-			}
+				_searchPropertyCacheEntry.Update(type, name);
 
-			return result;
+				if (!_getPropertyCache.TryGetValue(_searchPropertyCacheEntry, out var result))
+				{
+					var key = _searchPropertyCacheEntry.Clone();
+					var resolved = InternalGetProperty(type, name);
+					if (!_getPropertyCache.TryGetValue(key, out result))
+					{
+						_getPropertyCache.Add(key, resolved);
+						result = resolved;
+					}
+				}
+
+				return result;
+			}
 		}
 
 		internal static DependencyProperty GetProperty(string type, string name)
@@ -397,11 +411,14 @@ namespace Microsoft.UI.Xaml
 
 		private static void ResetGetPropertyCache(Type ownerType, string name)
 		{
-			if (_getPropertyCache.Count != 0)
+			lock (_getPropertyCacheGate)
 			{
-				_searchPropertyCacheEntry.Update(ownerType, name);
+				if (_getPropertyCache.Count != 0)
+				{
+					_searchPropertyCacheEntry.Update(ownerType, name);
 
-				_getPropertyCache.Remove(_searchPropertyCacheEntry);
+					_getPropertyCache.Remove(_searchPropertyCacheEntry);
+				}
 			}
 		}
 
