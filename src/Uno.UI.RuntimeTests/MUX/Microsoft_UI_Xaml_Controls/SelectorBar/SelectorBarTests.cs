@@ -14,7 +14,7 @@ using Private.Infrastructure;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
-using Uno.UI.Extras.DevTools.Input;
+using Uno.UI.DevTools.Input;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 using Uno.UI;

@@ -17,10 +17,10 @@ public class Given_HotReloadEnabledInBuild
 					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-					xmlns:toolkit="using:Uno.UI.Extras"
+					xmlns:uno="using:Uno.UI.Behaviors"
 					mc:Ignorable="android ios">
 
-				<Grid toolkit:VisibleBoundsPadding.PaddingMask="Top">
+				<Grid uno:VisibleBoundsPadding.PaddingMask="Top">
 					<TextBlock Text="Hello, world!"
 							   Margin="20"
 							   FontSize="30" />

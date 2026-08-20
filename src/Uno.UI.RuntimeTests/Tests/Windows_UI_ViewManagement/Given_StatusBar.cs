@@ -34,7 +34,7 @@ public class Given_StatusBar
 
 			var outerGrid = XamlHelper.LoadXaml<Grid>("""
 				<Grid BorderBrush="Red" BorderThickness="5">
-					<Grid extras:VisibleBoundsPadding.PaddingMask="All">
+					<Grid behaviors:VisibleBoundsPadding.PaddingMask="All">
 						<Border Background="SkyBlue" />
 					</Grid>
 				</Grid>

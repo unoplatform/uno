@@ -3,8 +3,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:extras="using:Uno.UI.Extras"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uno="using:Uno.UI.Xaml.Controls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
@@ -13,7 +13,7 @@
         Padding="32,32"
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-        <extras:ElevatedView
+        <uno:ElevatedView
             x:Name="elevatedView"
             Width="200"
             Height="160"
@@ -28,6 +28,6 @@
                 Margin="20"
                 FontSize="30"
                 Text="Hello, world!" />
-        </extras:ElevatedView>
+        </uno:ElevatedView>
     </Grid>
 </Page>

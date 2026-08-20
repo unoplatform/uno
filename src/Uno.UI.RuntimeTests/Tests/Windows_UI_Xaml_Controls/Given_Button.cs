@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Color = Windows.UI.Color;
 using Microsoft.UI.Xaml.Data;
-using Uno.UI.Extras.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 
 #if HAS_UNO_WINUI || WINAPPSDK || WINUI

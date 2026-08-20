@@ -52,8 +52,8 @@ namespace Private.Infrastructure
 #if !HAS_UNO
 					// Inject the current test window in the input injection services to avoid a
 					// dependency on TestServices in the Uno.UI.Extras project
-					Uno.UI.Extras.DevTools.Input.Finger.TestServices_WindowHelper_CurrentTestWindow = value;
-					Uno.UI.Extras.DevTools.Input.Mouse.TestServices_WindowHelper_CurrentTestWindow = value;
+					Uno.UI.DevTools.Input.Finger.TestServices_WindowHelper_CurrentTestWindow = value;
+					Uno.UI.DevTools.Input.Mouse.TestServices_WindowHelper_CurrentTestWindow = value;
 #endif
 				}
 			}
