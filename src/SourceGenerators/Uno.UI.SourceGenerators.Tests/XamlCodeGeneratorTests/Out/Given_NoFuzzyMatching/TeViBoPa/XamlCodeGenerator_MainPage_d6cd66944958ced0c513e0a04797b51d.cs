@@ -78,7 +78,7 @@ namespace TestRepro
 				}
 				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 				{
-				global::Uno.UI.Extras.VisibleBoundsPadding.SetPaddingMask(__p1, global::Uno.UI.Extras.VisibleBoundsPadding.PaddingMask.Top);
+				global::Uno.UI.Behaviors.VisibleBoundsPadding.SetPaddingMask(__p1, global::Uno.UI.Behaviors.VisibleBoundsPadding.PaddingMask.Top);
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 				__p1.CreationComplete();
 				}

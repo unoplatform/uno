@@ -9,7 +9,7 @@ using MUXControlsTestApp.Utilities;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Extras.DevTools.Input;
+using Uno.UI.DevTools.Input;
 using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
 

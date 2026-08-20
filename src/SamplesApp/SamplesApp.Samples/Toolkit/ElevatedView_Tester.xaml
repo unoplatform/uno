@@ -3,8 +3,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:extras="using:Uno.UI.Extras"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uno="using:Uno.UI.Xaml.Controls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
@@ -46,13 +46,13 @@
             Text="{x:Bind ColorString, Mode=TwoWay}" />
 
         <Grid Grid.Row="3">
-            <extras:ElevatedView
+            <uno:ElevatedView
                 x:Name="ElevatedElement"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Background="Blue">
                 <Grid Width="100" Height="100" />
-            </extras:ElevatedView>
+            </uno:ElevatedView>
         </Grid>
     </Grid>
 </Page>

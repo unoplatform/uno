@@ -11,7 +11,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		[TestMethod]
 		public async Task When_FileDoesNotExistsInPackage()
 		{
-			var fileExists = await Uno.UI.Extras.StorageFileHelper.ExistsInPackage("Asset_InvalidFile.xml");
+			var fileExists = await Uno.Storage.StorageFileHelper.ExistsInPackage("Asset_InvalidFile.xml");
 
 			Assert.IsFalse(fileExists);
 		}
@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		[TestMethod]
 		public async Task When_FileExistsInPackage_Nested()
 		{
-			var fileExists = await Uno.UI.Extras.StorageFileHelper.ExistsInPackage("Assets/Fonts/RoteFlora.ttf");
+			var fileExists = await Uno.Storage.StorageFileHelper.ExistsInPackage("Assets/Fonts/RoteFlora.ttf");
 
 			Assert.IsTrue(fileExists);
 		}
@@ -27,7 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		[TestMethod]
 		public async Task When_FileExistsInPackage_RootPath()
 		{
-			var fileExists = await Uno.UI.Extras.StorageFileHelper.ExistsInPackage("Asset_GetFileFromApplicationUriAsync.xml");
+			var fileExists = await Uno.Storage.StorageFileHelper.ExistsInPackage("Asset_GetFileFromApplicationUriAsync.xml");
 
 			Assert.IsTrue(fileExists);
 		}
@@ -35,7 +35,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 		[TestMethod]
 		public async Task When_ResourceFileExistsInPackage_Nested()
 		{
-			var fileExists = await Uno.UI.Extras.StorageFileHelper.ExistsInPackage("Assets/Icons/menu.png");
+			var fileExists = await Uno.Storage.StorageFileHelper.ExistsInPackage("Assets/Icons/menu.png");
 
 			Assert.IsTrue(fileExists);
 		}

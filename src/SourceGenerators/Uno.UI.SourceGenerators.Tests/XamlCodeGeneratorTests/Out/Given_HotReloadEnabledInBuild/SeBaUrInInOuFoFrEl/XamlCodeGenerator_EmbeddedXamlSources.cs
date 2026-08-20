@@ -97,16 +97,16 @@ internal static class EmbeddedXamlSourcesProvider
 	private static (string hash, string payload) GetSources_MainPage_d6cd66944958ced0c513e0a04797b51d()
 	{
 		return (
-			"f581a99cf10f74b81a36a655b8acca2d60edd9b4", // hash
+			"5d57e63207ff6c53fe45e009fe917730f8312bad", // hash
 			_utf8.GetString("""
 			<Page x:Class="TestRepro.MainPage"
 					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-					xmlns:toolkit="using:Uno.UI.Extras"
+					xmlns:uno="using:Uno.UI.Behaviors"
 					mc:Ignorable="android ios">
 			
-				<Grid toolkit:VisibleBoundsPadding.PaddingMask="Top">
+				<Grid uno:VisibleBoundsPadding.PaddingMask="Top">
 					<TextBlock Text="Hello, world!"
 							   Margin="20"
 							   FontSize="30" />

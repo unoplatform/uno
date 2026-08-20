@@ -6,10 +6,10 @@ using Windows.UI.Input.Preview.Injection;
 using RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Extras.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 #if WINAPPSDK
-using Uno.UI.Extras.Extensions;
+using Uno.UI.Extensions;
 #endif
 
 #if HAS_UNO_WINUI

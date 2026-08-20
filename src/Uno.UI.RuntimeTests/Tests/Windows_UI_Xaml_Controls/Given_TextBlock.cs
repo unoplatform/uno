@@ -24,7 +24,7 @@ using Uno.UI.Extensions;
 using Combinatorial.MSTest;
 using Uno.UI.Helpers;
 using Microsoft.UI.Xaml.Markup;
-using Uno.UI.Extras.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 #if __SKIA__
 using Microsoft.UI.Xaml.Data;

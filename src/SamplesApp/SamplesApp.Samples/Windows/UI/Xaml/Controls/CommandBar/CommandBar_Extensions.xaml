@@ -4,12 +4,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://nventive.com/android"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:extras="using:Uno.UI.Extras"
     xmlns:ios="http://nventive.com/ios"
     xmlns:local="using:Uno.UI.Samples.Content.UITests.CommandBar"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:not_win="http://uno.ui/not_win"
     xmlns:uno="using:Uno.UI.Controls"
+    xmlns:unoex="using:Uno.UI.Xaml.Controls"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     d:DesignHeight="300"
     d:DesignWidth="400"
@@ -28,18 +28,18 @@
             </AppBarButton>
 
             <android:Grid>
-                <CommandBar extras:CommandBarExtensions.Subtitle="Subtitle" Content="Title" />
+                <CommandBar unoex:CommandBarExtensions.Subtitle="Subtitle" Content="Title" />
             </android:Grid>
 
             <not_win:Grid>
                 <CommandBar Content="Title">
-                    <extras:CommandBarExtensions.NavigationCommand>
+                    <unoex:CommandBarExtensions.NavigationCommand>
                         <AppBarButton Command="{Binding Command}" Label="Label">
                             <AppBarButton.Icon>
                                 <BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
                             </AppBarButton.Icon>
                         </AppBarButton>
-                    </extras:CommandBarExtensions.NavigationCommand>
+                    </unoex:CommandBarExtensions.NavigationCommand>
                 </CommandBar>
             </not_win:Grid>
 
@@ -48,7 +48,7 @@
                     Background="Tomato"
                     Content="Title"
                     Foreground="White">
-                    <extras:CommandBarExtensions.NavigationCommand>
+                    <unoex:CommandBarExtensions.NavigationCommand>
                         <AppBarButton
                             Command="{Binding Command}"
                             Foreground="White"
@@ -57,19 +57,19 @@
                                 <BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
                             </AppBarButton.Icon>
                         </AppBarButton>
-                    </extras:CommandBarExtensions.NavigationCommand>
+                    </unoex:CommandBarExtensions.NavigationCommand>
                 </CommandBar>
             </not_win:Grid>
 
             <ios:Grid>
-                <CommandBar extras:CommandBarExtensions.BackButtonForeground="Red" Content="Title">
-                    <extras:CommandBarExtensions.NavigationCommand>
+                <CommandBar unoex:CommandBarExtensions.BackButtonForeground="Red" Content="Title">
+                    <unoex:CommandBarExtensions.NavigationCommand>
                         <AppBarButton Command="{Binding Command}" Label="Label">
                             <AppBarButton.Icon>
                                 <BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
                             </AppBarButton.Icon>
                         </AppBarButton>
-                    </extras:CommandBarExtensions.NavigationCommand>
+                    </unoex:CommandBarExtensions.NavigationCommand>
                     <AppBarButton Content="Button" />
                     <AppBarButton>
                         <AppBarButton.Icon>
