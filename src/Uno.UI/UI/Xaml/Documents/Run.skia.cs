@@ -116,9 +116,18 @@ namespace Microsoft.UI.Xaml.Documents
 
 				var (codepoint, codepointLength) = GetCodePoint(text, i);
 
-				var currentFont = defaultFont.ContainsGlyph(codepoint)
-					? defaultFont
-					: FontProvider.Current.MatchCharacter(codepoint, FontWeight, FontStretch, FontStyle, (float)FontSize);
+				// This legacy segmentation path is synchronous, so it only consults the synchronously-available (installed)
+				// match; deferred fallback (e.g. browser Noto fetch) is handled by the active UnicodeText path.
+				IFont? currentFont;
+				if (defaultFont.ContainsGlyph(codepoint))
+				{
+					currentFont = defaultFont;
+				}
+				else
+				{
+					var match = FontProvider.Current.MatchCharacterAsync(codepoint, FontWeight, FontStretch, FontStyle, (float)FontSize);
+					currentFont = match.IsCompletedSuccessfully ? match.Result : null;
+				}
 
 				if (currentFont is null)
 				{

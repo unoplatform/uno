@@ -1384,35 +1384,27 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
+		// The provider resolves installed fonts synchronously and defers only when a fallback must be fetched (browser
+		// Noto). A synchronously-resolved font is returned immediately; a deferred one registers a listener that
+		// re-invalidates the text once it arrives.
 		var fallbackFontTask = FontDetailsCache.GetFontForCodepoint(codepoint, fontSize, fontWeight, fontStretch, fontStyle);
 		if (fallbackFontTask.IsCompleted)
 		{
-			if (fallbackFontTask.IsCompletedSuccessfully
-				&& fallbackFontTask.Result is { } fallbackFont)
-			{
-				return fallbackFont;
-			}
-		}
-		else
-		{
-			if (!_codepointToListeners.TryGetValue(codepoint, out var codepointListeners))
-			{
-				codepointListeners = new();
-				_codepointToListeners[codepoint] = codepointListeners;
-			}
-			if (codepointListeners.Add(fontListener))
-			{
-				fallbackFontTask.ContinueWith(_ => NativeDispatcher.Main.Enqueue(() =>
-				{
-					codepointListeners.Remove(fontListener);
-					fontListener.Invalidate();
-				}));
-			}
+			return fallbackFontTask.IsCompletedSuccessfully ? fallbackFontTask.Result : null;
 		}
 
-		if (FontProvider.Current.MatchCharacter(codepoint, fontWeight, fontStretch, fontStyle, fontSize) is { } fallback)
+		if (!_codepointToListeners.TryGetValue(codepoint, out var codepointListeners))
 		{
-			return FontDetails.Create(fallback, fontSize);
+			codepointListeners = new();
+			_codepointToListeners[codepoint] = codepointListeners;
+		}
+		if (codepointListeners.Add(fontListener))
+		{
+			fallbackFontTask.ContinueWith(_ => NativeDispatcher.Main.Enqueue(() =>
+			{
+				codepointListeners.Remove(fontListener);
+				fontListener.Invalidate();
+			}));
 		}
 
 		return null;
