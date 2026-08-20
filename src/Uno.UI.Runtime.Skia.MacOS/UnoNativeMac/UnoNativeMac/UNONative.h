@@ -37,4 +37,10 @@ void uno_native_set_opacity(NSView<UNONativeElement>* element, double opacity);
 
 void uno_native_dispose(NSView<UNONativeElement> *element);
 
+char* _Nullable uno_capture_photo(bool useJpeg);
+char* _Nullable uno_capture_video(void);
+void uno_capture_cancel(void);
+
+void uno_perform_on_main_runloop(void* context, void (*callback)(void* context));
+
 NS_ASSUME_NONNULL_END
