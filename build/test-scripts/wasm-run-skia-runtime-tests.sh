@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 set -x #echo on
 set -euo pipefail
 IFS=$'\n\t'
@@ -85,8 +85,11 @@ while [ $TRY_COUNT -lt 5 ]; do
     # tests that wait on them time out (flaky WASM-Skia). Mirror linux-skia-runtime-tests.sh: define a
     # screen, run a window manager (fluxbox), keep a visible window size, and disable bg throttling.
     # (fluxbox degrades gracefully: if it is unavailable the backgrounded launch is a no-op and chrome
-    # still runs.) The URL is passed as a positional arg to avoid re-quoting its '&'/'='/'?' chars.
-    xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' sh -c '{ fluxbox >/dev/null 2>&1 & } ; google-chrome --enable-logging=stderr --no-sandbox --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --window-size=1920,1080 "$1"' _ "${RUNTIME_TESTS_URL}" &
+    # still runs.) --no-first-run/--no-default-browser-check/--disable-search-engine-choice-screen stop the
+    # first-run experience from swallowing the command-line URL on the agent's brand-new profile:
+    # without them chrome starts but never navigates, so the canary never appears.
+    # The URL is passed as a positional arg to avoid re-quoting its '&'/'='/'?' chars.
+    xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' sh -c '{ fluxbox >/dev/null 2>&1 & } ; google-chrome --enable-logging=stderr --no-sandbox --no-first-run --no-default-browser-check --disable-search-engine-choice-screen --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --window-size=1920,1080 "$1"' _ "${RUNTIME_TESTS_URL}" &
 
     # wait one minute for the canary file to be created, otherwise fail the script.
     # This may happen if xvfb-run of chrome fails to start
