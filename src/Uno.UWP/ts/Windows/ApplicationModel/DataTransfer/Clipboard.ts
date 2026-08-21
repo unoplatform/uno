@@ -467,11 +467,18 @@ namespace Uno.Utils {
 				}
 
 				const bitmap = await createImageBitmap(blob);
-				const canvas = new (globalThis as any).OffscreenCanvas(bitmap.width, bitmap.height);
-				const context = canvas.getContext("2d");
-				context.drawImage(bitmap, 0, 0);
-				bitmap.close();
-				return await canvas.convertToBlob({ type: "image/png" });
+				try {
+					const canvas = new (globalThis as any).OffscreenCanvas(bitmap.width, bitmap.height);
+					const context = canvas.getContext("2d");
+					if (!context) {
+						return null;
+					}
+
+					context.drawImage(bitmap, 0, 0);
+					return await canvas.convertToBlob({ type: "image/png" });
+				} finally {
+					bitmap.close();
+				}
 			} catch (e) {
 				console.warn(`Clipboard: failed to transcode image to PNG: ${e}`);
 				return null;

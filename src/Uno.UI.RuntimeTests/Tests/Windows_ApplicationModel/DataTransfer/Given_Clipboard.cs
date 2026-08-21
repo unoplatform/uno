@@ -344,6 +344,8 @@ partial class Given_Clipboard
 		{
 			await Task.Delay(50);
 		}
+
+		Assert.IsTrue(condition(), "The expected clipboard state was not reached.");
 	}
 
 	// for winui at least: use ToRASTream for SetData, use ToRAReferenceAsync for SetBitmap
