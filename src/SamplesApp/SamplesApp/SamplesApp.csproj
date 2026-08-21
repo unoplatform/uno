@@ -348,6 +348,17 @@
 		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">tvossimulator-x64</RuntimeIdentifier>
 	</PropertyGroup>
 
+	<!--
+	Xamarin.Shared.props defaults NoSymbolStrip=true for every simulator build, and Configuration is not part of
+	that condition. With composite ReadyToRun that leaves crossgen2's ~5.4M diagnostic local symbols in the image:
+	of SamplesApp.r2r's 1.99 GB, 1.61 GB was the Mach-O symbol table and only 236 MB was native code. Exactly one
+	symbol is external, so stripping costs us nothing but simulator crash symbolication. Device builds already
+	strip - this only restores the same behaviour on the simulator. Measured: 1.99 GB -> 384 MB, .app 2.19 GB -> 575 MB.
+	-->
+	<PropertyGroup Condition="'$(_IsUIKit)' == 'true' AND '$(RuntimeIdentifier)' != '' AND $(RuntimeIdentifier.Contains('simulator'))">
+		<NoSymbolStrip>false</NoSymbolStrip>
+	</PropertyGroup>
+
 	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.props" />
 	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.targets" />
 
