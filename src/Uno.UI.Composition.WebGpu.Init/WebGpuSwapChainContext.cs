@@ -23,6 +23,9 @@ internal sealed unsafe class WebGpuSwapChainContext : ISwapChain, IWebGpuDeviceC
 	// this resolve target); this host owns only the single-sample resolve texture + the present/blit.
 	private IntPtr _presentTex;
 	private IntPtr _presentView;
+	// The blit bind group only depends on _presentView + the device sampler, so it's rebuilt on reconfigure
+	// rather than per present (bind-group creation showed up in frame profiles).
+	private IntPtr _blitBg;
 	private bool _frameAcquired;
 	private int _w, _h;
 	private bool _configured;
@@ -105,7 +108,6 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 			return;
 		}
 		_frameAcquired = false;
-		EnsureBlitPipeline();
 
 		// Acquire the swapchain image at present time (after the scene render) and blit the offscreen frame into it.
 		WGPUSurfaceTexture st = default;
@@ -119,12 +121,7 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		}
 
 		var view = wgpuTextureCreateView(st.Texture, null);
-
-		var entries = stackalloc WGPUBindGroupEntry[2];
-		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = _presentView };
-		entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _device.Smp };
-		var bgd = new WGPUBindGroupDescriptor { Layout = _blitBgl, EntryCount = 2, Entries = entries };
-		var bg = wgpuDeviceCreateBindGroup(_device.Dev, &bgd);
+		var bg = _blitBg;
 
 		var enc = wgpuDeviceCreateCommandEncoder(_device.Dev, null);
 		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = view, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
@@ -139,7 +136,6 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 
 		wgpuSurfacePresent(_surface);
 
-		wgpuBindGroupRelease(bg);
 		wgpuCommandEncoderRelease(enc);
 		wgpuTextureViewRelease(view);
 		wgpuTextureRelease(st.Texture);
@@ -213,7 +209,33 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		if (!supported && caps.FormatCount > 0) { _surfaceFormat = caps.Formats[0]; }
 		var alphaMode = caps.AlphaModeCount > 0 ? caps.AlphaModes[0] : WGPUCompositeAlphaMode.Auto;
 
-		var presentMode = WGPUPresentMode.Fifo;
+		// UNO_WEBGPU_PRESENT picks the present mode (fifo default; immediate/mailbox/fiforelaxed for
+		// benchmarking without vsync backpressure), validated against the surface's capabilities.
+		var presentMode = Environment.GetEnvironmentVariable("UNO_WEBGPU_PRESENT")?.ToLowerInvariant() switch
+		{
+			"immediate" => WGPUPresentMode.Immediate,
+			"mailbox" => WGPUPresentMode.Mailbox,
+			"fiforelaxed" => WGPUPresentMode.FifoRelaxed,
+			_ => WGPUPresentMode.Fifo,
+		};
+		if (presentMode != WGPUPresentMode.Fifo)
+		{
+			var modeSupported = false;
+			for (nuint i = 0; i < caps.PresentModeCount; i++)
+			{
+				if (caps.PresentModes[i] == presentMode)
+				{
+					modeSupported = true;
+					break;
+				}
+			}
+
+			if (!modeSupported)
+			{
+				presentMode = WGPUPresentMode.Fifo; // guaranteed supported
+			}
+		}
+
 		var cfg = new WGPUSurfaceConfiguration
 		{
 			Device = _device.Dev,
@@ -225,6 +247,20 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 			AlphaMode = alphaMode,
 		};
 		wgpuSurfaceConfigure(_surface, &cfg);
+
+		// The blit pipeline needs the (now final) surface format; the bind group needs the fresh _presentView.
+		EnsureBlitPipeline();
+		if (_blitBg != IntPtr.Zero)
+		{
+			wgpuBindGroupRelease(_blitBg);
+		}
+
+		var blitEntries = stackalloc WGPUBindGroupEntry[2];
+		blitEntries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = _presentView };
+		blitEntries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _device.Smp };
+		var blitBgd = new WGPUBindGroupDescriptor { Layout = _blitBgl, EntryCount = 2, Entries = blitEntries };
+		_blitBg = wgpuDeviceCreateBindGroup(_device.Dev, &blitBgd);
+
 		System.Console.WriteLine($"[webgpu] surface {width}x{height} format={_surfaceFormat} present={presentMode}");
 		_configured = true;
 	}
@@ -234,6 +270,7 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 
 	public void Dispose()
 	{
+		if (_blitBg != IntPtr.Zero) { wgpuBindGroupRelease(_blitBg); _blitBg = IntPtr.Zero; }
 		if (_presentView != IntPtr.Zero) { wgpuTextureViewRelease(_presentView); _presentView = IntPtr.Zero; }
 		if (_presentTex != IntPtr.Zero) { wgpuTextureDestroy(_presentTex); _presentTex = IntPtr.Zero; }
 		if (_surface != IntPtr.Zero) { wgpuSurfaceRelease(_surface); _surface = IntPtr.Zero; }

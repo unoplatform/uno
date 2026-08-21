@@ -73,9 +73,9 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
 	public WebGpuSlab SolidSlab;                  // persistent shared slab: all recordings' solid verts (6 floats/v)
 	public WebGpuSlab RrectSlab;                  // persistent shared slab: all recordings' rrect verts (22 floats/v)
-	// Transform-TABLE shared slabs: local (identity-baked) verts + a trailing per-vertex slot index (solid = 7
-	// floats/v, rrect = 23). A moved recording rewrites its transform-table slot instead of re-Putting these verts,
-	// while sibling recordings still coalesce into one draw (each vertex indexes its own slot). See EmitTableFrameSolid.
+												  // Transform-TABLE shared slabs: local (identity-baked) verts + a trailing per-vertex slot index (solid = 7
+												  // floats/v, rrect = 23). A moved recording rewrites its transform-table slot instead of re-Putting these verts,
+												  // while sibling recordings still coalesce into one draw (each vertex indexes its own slot). See EmitTableFrameSolid.
 	public WebGpuSlab SolidTableSlab;
 	public WebGpuSlab RrectTableSlab;
 	private long _nextSlabId = 1;                 // stable per-recording slab id (assigned on cache miss)
@@ -313,7 +313,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	public byte[] ReadPixelsFromTex(IntPtr tex, int w, int h)
 	{
 		EncodeCopyTexToReadbackBuffer(tex, w, h, out var buf, out var total, out var padded);
-		wgpuDevicePoll(Dev, 1u, null);
+		_ = wgpuDevicePoll(Dev, 1u, null);
 
 		var mapped = new bool[1];
 		var mh = GCHandle.Alloc(mapped);
@@ -323,7 +323,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 			Callback = (IntPtr)(delegate* unmanaged[Cdecl]<WGPUMapAsyncStatus, WGPUStringView, IntPtr, IntPtr, void>)&OnMap,
 			Userdata1 = GCHandle.ToIntPtr(mh),
 		});
-		while (!mapped[0]) { wgpuDevicePoll(Dev, 1u, null); }
+		while (!mapped[0]) { _ = wgpuDevicePoll(Dev, 1u, null); }
 		mh.Free();
 		var mp = (byte*)(void*)wgpuBufferGetMappedRange(buf, 0, (nuint)total);
 		var outp = Unpad(new ReadOnlySpan<byte>(mp, (int)total), w, h, padded);
@@ -434,8 +434,11 @@ fn clipCov(fcRaw: vec2<f32>, clip: ClipU) -> f32 {
 	{
 		var td = new WGPUTextureDescriptor
 		{
-			Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 }, Format = DefaultColorFormat,
-			MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D,
+			Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 },
+			Format = DefaultColorFormat,
+			MipLevelCount = 1,
+			SampleCount = 1,
+			Dimension = WGPUTextureDimension._2D,
 			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding,
 		};
 		var tex = wgpuDeviceCreateTexture(Dev, &td);
@@ -575,13 +578,19 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
 		var ds = new WGPUDepthStencilState
 		{
-			Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.True, DepthCompare = WGPUCompareFunction.Always,
-			StencilFront = face, StencilBack = face, StencilReadMask = stencilRead, StencilWriteMask = stencilWrite,
+			Format = DepthStencilFormat,
+			DepthWriteEnabled = WGPUOptionalBool.True,
+			DepthCompare = WGPUCompareFunction.Always,
+			StencilFront = face,
+			StencilBack = face,
+			StencilReadMask = stencilRead,
+			StencilWriteMask = stencilWrite,
 		};
 		var pd = new WGPURenderPipelineDescriptor
 		{
 			Vertex = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 0 },
-			Fragment = &fsState, DepthStencil = &ds,
+			Fragment = &fsState,
+			DepthStencil = &ds,
 			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
 			Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
 			Layout = IntPtr.Zero,
@@ -636,7 +645,9 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
 		var pd = new WGPURenderPipelineDescriptor
 		{
-			Vertex = vsState, Fragment = &fsState, DepthStencil = ds,
+			Vertex = vsState,
+			Fragment = &fsState,
+			DepthStencil = ds,
 			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
 			Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
 			Layout = IntPtr.Zero,
@@ -685,7 +696,9 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
 		var pd = new WGPURenderPipelineDescriptor
 		{
-			Vertex = vsState, Fragment = &fsState, DepthStencil = null,
+			Vertex = vsState,
+			Fragment = &fsState,
+			DepthStencil = null,
 			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
 			Multisample = new WGPUMultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
 			Layout = IntPtr.Zero,
@@ -921,12 +934,19 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
 		var ds = new WGPUDepthStencilState
 		{
-			Format = DepthStencilFormat, DepthWriteEnabled = depthWrite ? WGPUOptionalBool.True : WGPUOptionalBool.False, DepthCompare = depthCompare,
-			StencilFront = front, StencilBack = back, StencilReadMask = stencilRead, StencilWriteMask = stencilWrite,
+			Format = DepthStencilFormat,
+			DepthWriteEnabled = depthWrite ? WGPUOptionalBool.True : WGPUOptionalBool.False,
+			DepthCompare = depthCompare,
+			StencilFront = front,
+			StencilBack = back,
+			StencilReadMask = stencilRead,
+			StencilWriteMask = stencilWrite,
 		};
 		var pd = new WGPURenderPipelineDescriptor
 		{
-			Vertex = vsState, Fragment = &fsState, DepthStencil = &ds,
+			Vertex = vsState,
+			Fragment = &fsState,
+			DepthStencil = &ds,
 			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
 			Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
 			Layout = layout,
@@ -1014,12 +1034,19 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
 		var ds = new WGPUDepthStencilState
 		{
-			Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = depthCompare,
-			StencilFront = front, StencilBack = back, StencilReadMask = stencilRead, StencilWriteMask = stencilWrite,
+			Format = DepthStencilFormat,
+			DepthWriteEnabled = WGPUOptionalBool.False,
+			DepthCompare = depthCompare,
+			StencilFront = front,
+			StencilBack = back,
+			StencilReadMask = stencilRead,
+			StencilWriteMask = stencilWrite,
 		};
 		var pd = new WGPURenderPipelineDescriptor
 		{
-			Vertex = vsState, Fragment = &fsState, DepthStencil = &ds,
+			Vertex = vsState,
+			Fragment = &fsState,
+			DepthStencil = &ds,
 			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
 			Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
 			Layout = layout,
@@ -1229,8 +1256,11 @@ internal sealed unsafe class WebGpuRenderSurface
 		Width = width; Height = height;
 		var td = new WGPUTextureDescriptor
 		{
-			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 }, Format = device.ColorFormat,
-			MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D,
+			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 },
+			Format = device.ColorFormat,
+			MipLevelCount = 1,
+			SampleCount = 1,
+			Dimension = WGPUTextureDimension._2D,
 			// TextureBinding so a resolved surface can be sampled (e.g. shadow coverage feeding the blur pass).
 			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.CopySrc | WGPUTextureUsage.TextureBinding,
 		};
@@ -1285,8 +1315,11 @@ internal sealed unsafe class WebGpuRenderSurface
 		{
 			var cd = new WGPUTextureDescriptor
 			{
-				Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 }, Format = device.ColorFormat,
-				MipLevelCount = 1, SampleCount = device.MsaaSamples, Dimension = WGPUTextureDimension._2D,
+				Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 },
+				Format = device.ColorFormat,
+				MipLevelCount = 1,
+				SampleCount = device.MsaaSamples,
+				Dimension = WGPUTextureDimension._2D,
 				Usage = WGPUTextureUsage.RenderAttachment,
 			};
 			MsaaColorTex = wgpuDeviceCreateTexture(device.Dev, &cd);
@@ -1299,8 +1332,12 @@ internal sealed unsafe class WebGpuRenderSurface
 
 		var dd = new WGPUTextureDescriptor
 		{
-			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 }, Format = WebGpuDevice.DepthStencilFormat,
-			MipLevelCount = 1, SampleCount = device.MsaaSamples, Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.RenderAttachment,
+			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 },
+			Format = WebGpuDevice.DepthStencilFormat,
+			MipLevelCount = 1,
+			SampleCount = device.MsaaSamples,
+			Dimension = WGPUTextureDimension._2D,
+			Usage = WGPUTextureUsage.RenderAttachment,
 		};
 		DepthTex = wgpuDeviceCreateTexture(device.Dev, &dd);
 		DepthView = wgpuTextureCreateView(DepthTex, null);

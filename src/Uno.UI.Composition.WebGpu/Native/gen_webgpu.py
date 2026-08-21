@@ -62,20 +62,32 @@ def main(headers, out):
     for m in re.finditer(r'typedef\s+[\w\s\*]+\(\s*\*\s*(\w+)\s*\)\s*\(', text):
         handles.add(m.group(1))
 
+    # C integer constant expressions: hex/dec literals plus shifts/ors/parens (e.g. `1 << 3`,
+    # `(1 << 0) | (1 << 2)`). The value charset is validated before eval so nothing else runs.
+    def c_const(expr):
+        expr = expr.strip()
+        if re.fullmatch(r'0[xX][0-9a-fA-F]+|\d+', expr):
+            return expr
+        if re.fullmatch(r'[0-9\s()<|]+', expr.replace('<<', '<')):
+            return f'0x{eval(expr):08X}'
+        return None
+
     # enums: typedef enum WGPUName { ... } WGPUName ...;
     for m in re.finditer(r'typedef enum (\w+)\s*\{(.*?)\}\s*\1', text, re.S):
         name, body = m.group(1), m.group(2)
         members=[]
-        for em in re.finditer(r'(\w+)\s*=\s*([0-9xXa-fA-F]+)', body):
-            members.append((em.group(1), em.group(2)))
+        for em in re.finditer(r'(\w+)\s*=\s*([^,}]+)', body):
+            if (val := c_const(em.group(2))) is not None:
+                members.append((em.group(1), val))
         enums[name]=members
 
-    # flag types: typedef WGPUFlags WGPUName;  + static const WGPUName WGPUName_X = 0x..;
+    # flag types: typedef WGPUFlags WGPUName;  + static const WGPUName WGPUName_X = <const-expr>;
     for m in re.finditer(r'typedef WGPUFlags (\w+)\s*;', text):
         flags[m.group(1)] = []
     for fname in list(flags):
-        for em in re.finditer(r'static const '+fname+r'\s+(\w+)\s*=\s*([0-9xXa-fA-F]+)', text):
-            flags[fname].append((em.group(1), em.group(2)))
+        for em in re.finditer(r'static const '+fname+r'\s+(\w+)\s*=\s*([^;]+);', text):
+            if (val := c_const(em.group(2))) is not None:
+                flags[fname].append((em.group(1), val))
 
     # structs: typedef struct WGPUName { ... } WGPUName ...;
     for m in re.finditer(r'typedef struct (\w+)\s*\{(.*?)\}\s*\1', text, re.S):
