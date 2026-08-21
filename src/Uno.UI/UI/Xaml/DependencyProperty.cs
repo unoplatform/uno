@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml
 		private static int _getPropertyCacheVersion;
 #if IS_UNIT_TESTS
 		internal static Action<Type, string> GetPropertyCacheSearchKeyUpdatedTestHook;
-		internal static Action<Type, string> RegisterPropertyPublishedTestHook;
+		internal static Action<Type, string> GetPropertyCacheResetTestHook;
 #endif
 		private static object DefaultThemeAnimationDurationBox = new Duration(FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration);
 
@@ -457,6 +457,9 @@ namespace Microsoft.UI.Xaml
 					_getPropertyCacheVersion++;
 				}
 			}
+#if IS_UNIT_TESTS
+			GetPropertyCacheResetTestHook?.Invoke(ownerType, name);
+#endif
 		}
 
 		private static DependencyProperty InternalGetProperty(Type type, string name)
@@ -507,9 +510,6 @@ namespace Microsoft.UI.Xaml
 		private static void RegisterProperty(Type ownerType, string name, DependencyProperty newProperty)
 		{
 			_registry.Add(ownerType, name, newProperty);
-#if IS_UNIT_TESTS
-			RegisterPropertyPublishedTestHook?.Invoke(ownerType, name);
-#endif
 			ResetGetPropertyCache(ownerType, name);
 		}
 
