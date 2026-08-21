@@ -6900,12 +6900,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// When_Scrolled_Out_Of_View_Grippers_Are_Hidden.
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mobile conventions: run on Desktop (dev) + real Android only
 		public async Task When_Touch_Focused_Then_Scrolled_Away_The_Scroll_Sticks()
 		{
 			var SUT = new TextBox
 			{
 				Width = 400,
-				Text = "Some Text"
+				Text = "Some Text",
+				// Pinned instead of left to the platform default, so every target reaches the same state: on the
+				// Android convention a single tap leaves the insertion handle up, where iOS leaves a thumbless caret
+				// and Desktop selects the tapped word. The handle is the state the removed scroll lock keyed on.
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
 			};
 
 			var sv = new ScrollViewer()
@@ -6937,25 +6942,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
 
-			// Park the box in the viewport with an explicit offset rather than StartBringIntoView: on some targets
-			// that leaves the offset at 0, and the downward drag below then has nowhere left to scroll.
+			// Park the box in the viewport with an explicit offset instead of a bring-into-view, and bound it on both
+			// sides: past 500 the box would be pushed off the top of the viewport and the geometry below stops holding.
 			sv.ChangeView(null, 470, null, disableAnimation: true);
 			await WindowHelper.WaitFor(
-				() => sv.VerticalOffset > 400,
-				message: "the TextBox should be scrolled into view before it is tapped");
+				() => sv.VerticalOffset is > 400 and < 490,
+				message: "the TextBox should be parked inside the viewport before it is tapped");
 			await UITestHelper.WaitForIdle(true);
 
-			// make the textbox touch knob appear
+			// One tap, not two. A second tap selects the word and pops the selection flyout, and then the scroll
+			// gesture below has nowhere to land: the flyout's light-dismiss overlay fills the window, so a press on
+			// it is consumed dismissing the flyout instead of scrolling, and the toolbar itself is placed above the
+			// selection, overlapping the viewport - a press there goes to its buttons. Both are correct behaviour;
+			// they just cost the gesture this test needs.
 			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
 			finger.Release();
-			await UITestHelper.WaitForIdle(true);
-			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
-			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "the tap should leave the insertion handle up");
 			await UITestHelper.WaitForIdle(true);
 
-			// scroll
+			// Premises spelled out rather than left to a mute "the offset did not move": the touch conventions can
+			// only be observed on CI, so each half of the scenario has to say when it is the one that broke.
+			Assert.AreNotEqual(FocusState.Unfocused, SUT.FocusState, "the tap should have focused the TextBox");
+			Assert.AreEqual(0, SUT.SelectionLength, "the tap should leave a caret, not a selection");
+			Assert.IsFalse(
+				SUT.SelectionFlyout?.IsOpen is true,
+				"the selection flyout must not be up - the scroll gesture would go to it instead of the ScrollViewer");
+
+			// Drag the filler above the box rather than the box itself, so the gesture is unambiguously a scroll
+			// and not a text gesture on any target.
+			var viewport = sv.GetAbsoluteBoundsRect();
+			var dragStart = new Point(viewport.GetCenter().X, (viewport.Top + SUT.GetAbsoluteBoundsRect().Top) / 2);
+
 			var offsetBeforeScroll = sv.VerticalOffset;
-			finger.Press(sv.GetAbsoluteBoundsRect().GetCenter());
+			finger.Press(dragStart);
 			await UITestHelper.WaitForIdle(true);
 			finger.MoveBy(0, 300, stepOffsetInMilliseconds: 20);
 			await UITestHelper.WaitForIdle(true);
@@ -6965,12 +6986,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Long enough to cover the scroll-end snap timer the old lock used to yank the offset back with.
 			await Task.Delay(TimeSpan.FromSeconds(2));
 
-			Assert.IsGreaterThan(200d, offsetBeforeScroll - sv.VerticalOffset, "the scroll the user performed must stick");
+			Assert.IsGreaterThan(
+				200d,
+				offsetBeforeScroll - sv.VerticalOffset,
+				$"the scroll the user performed must stick (offset {offsetBeforeScroll} -> {sv.VerticalOffset}, "
+				+ $"caret {SUT.CaretMode}, selection {SUT.SelectionStart}/{SUT.SelectionLength}, "
+				+ $"flyout {SUT.SelectionFlyout?.IsOpen}, dragged from {dragStart} in {viewport})");
 
 			// Spelled out rather than an IsGreaterThan whose argument order reads backwards: the box must have left
 			// the viewport entirely, which is exactly what the old pin prevented.
 			var boxBounds = SUT.GetAbsoluteBoundsRect();
-			var viewport = sv.GetAbsoluteBoundsRect();
 			Assert.IsTrue(
 				boxBounds.Top >= viewport.Bottom,
 				$"the focused TextBox must be allowed to leave the viewport (box {boxBounds}, viewport {viewport})");
