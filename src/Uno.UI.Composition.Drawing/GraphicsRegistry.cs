@@ -232,7 +232,7 @@ internal static class GraphicsRegistry
 				}
 				catch (Exception e)
 				{
-					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: CreateGraphics threw ({e.GetType().Name})");
+					attempts.Append($"\n  - {backend.GetType().Name}/{kind}: CreateGraphics threw ({e.GetType().Name}: {e.Message})");
 					context.Dispose();
 				}
 			}
