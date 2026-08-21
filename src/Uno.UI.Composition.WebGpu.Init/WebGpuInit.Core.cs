@@ -74,17 +74,53 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 {
 	public IntPtr Inst, Adapter, Dev, Q;
 	public readonly WGPUTextureFormat ColorFormat;
-	public uint MsaaSamples { get; private set; } = 4;
+	// 2× is the preferred default (quality/cost sweet spot for UI); the browser stays 4× in
+	// PickSampleCount because the WebGPU spec only guarantees sample counts 1 and 4.
+	public uint MsaaSamples { get; private set; } = 2;
 	public IntPtr Smp;                       // present-blit sampler (used by the swapchain/browser contexts)
 	private bool _hasFormatFeatures;
 	private readonly bool _browser;
 
-	public static IntPtr CreateInstancePtr() => wgpuCreateInstance(null);
+	public static IntPtr CreateInstancePtr() => CreateInstance();
+
+	/// <summary>
+	/// Creates the wgpu instance. <c>UNO_WEBGPU_BACKENDS</c> (comma-separated: vulkan, gl, metal, dx12)
+	/// restricts wgpu's adapter enumeration to the named backends — needed e.g. under RenderDoc, whose
+	/// hooks crash multi-backend instance enumeration. Unset keeps wgpu's default (all backends).
+	/// </summary>
+	private static IntPtr CreateInstance()
+	{
+		if (Environment.GetEnvironmentVariable("UNO_WEBGPU_BACKENDS") is not { Length: > 0 } spec)
+		{
+			return wgpuCreateInstance(null);
+		}
+
+		var backends = WGPUInstanceBackend.All;
+		foreach (var name in spec.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+		{
+			backends |= name.ToLowerInvariant() switch
+			{
+				"vulkan" => WGPUInstanceBackend.Vulkan,
+				"gl" => WGPUInstanceBackend.GL,
+				"metal" => WGPUInstanceBackend.Metal,
+				"dx12" => WGPUInstanceBackend.DX12,
+				_ => WGPUInstanceBackend.All,
+			};
+		}
+
+		var extras = new WGPUInstanceExtras
+		{
+			Chain = new WGPUChainedStruct { SType = (WGPUSType)WGPUNativeSType.WGPUSType_InstanceExtras },
+			Backends = backends,
+		};
+		var descriptor = new WGPUInstanceDescriptor { NextInChain = &extras.Chain };
+		return wgpuCreateInstance(&descriptor);
+	}
 
 	public WebGpuInitDevice(WGPUTextureFormat colorFormat)
 	{
 		ColorFormat = colorFormat;
-		Inst = wgpuCreateInstance(null);
+		Inst = CreateInstance();
 
 		var abox = new IntPtr[1];
 		var ah = GCHandle.Alloc(abox);
@@ -157,6 +193,7 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 	// The browser can't synchronously probe → 4×.
 	private uint PickSampleCount()
 	{
+		// The WebGPU spec only guarantees sample counts 1 and 4, so the browser uses 4.
 		if (_browser || OperatingSystem.IsBrowser()) { return 4; }
 		if (_hasFormatFeatures && SupportsSampleCount(2)) { return 2u; }
 		if (SupportsSampleCount(4)) { return 4u; }
