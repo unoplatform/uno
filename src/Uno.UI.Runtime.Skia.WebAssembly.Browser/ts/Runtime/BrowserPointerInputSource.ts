@@ -207,8 +207,10 @@ namespace Uno.UI.Runtime.Skia {
 
 		// Mirrors the exclusions in uno.css: these keep their native touch-action, so the browser still pans
 		// and selects in them. A gesture anywhere inside one stays entirely native - negotiating it here as
-		// well would apply the browser's own panning a second time.
-		private static readonly nativeInputSelector = "input, textarea, select, [contenteditable]";
+		// well would apply the browser's own panning a second time. Iframes are in the list because pointer
+		// events do not cross the frame boundary: the embedded document stays native-only until it explicitly
+		// registers a bridge capable of reporting its scroll residual.
+		private static readonly nativeInputSelector = "input, textarea, select, iframe, [contenteditable]";
 
 		private findScrollableElement(target: EventTarget | null, root: HTMLElement): HTMLElement | null {
 			let current = target instanceof HTMLElement ? target : null;
@@ -390,12 +392,6 @@ namespace Uno.UI.Runtime.Skia {
 			}
 
 			const root = host.root;
-
-			// Pointer events do not cross an iframe boundary. Keep the embedded document native-only
-			// until it explicitly registers a bridge capable of reporting its scroll residual.
-			if (evt.target instanceof HTMLIFrameElement) {
-				return false;
-			}
 
 			if (evt.target instanceof Element && evt.target.closest(BrowserPointerInputSource.nativeInputSelector) !== null) {
 				return false;
