@@ -96,7 +96,7 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 		return extension;
 	}
 
-	internal static bool ApplyNegotiatedScroll(nint unoElementId, double horizontalDelta, double verticalDelta, bool isIntermediate)
+	internal static bool ApplyNegotiatedScroll(nint unoElementId, double horizontalDelta, double verticalDelta, bool isIntermediate, bool isInertial)
 	{
 		if (TryGetHost(unoElementId) is not { } extension)
 		{
@@ -112,7 +112,8 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 			extension._presenter,
 			horizontalDelta,
 			verticalDelta,
-			isIntermediate);
+			isIntermediate,
+			isInertial);
 
 		if (!result.DidScroll && _log.IsEnabled(LogLevel.Debug))
 		{

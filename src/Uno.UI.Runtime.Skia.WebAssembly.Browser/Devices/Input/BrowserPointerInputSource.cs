@@ -169,7 +169,8 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 		[JSMarshalAs<JSType.Number>] nint unoElementId,
 		double horizontalDelta,
 		double verticalDelta,
-		[JSMarshalAs<JSType.Boolean>] bool isIntermediate)
+		[JSMarshalAs<JSType.Boolean>] bool isIntermediate,
+		[JSMarshalAs<JSType.Boolean>] bool isInertial)
 	{
 		try
 		{
@@ -177,7 +178,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 			// ViewChanged and running layout) from outside the dispatcher.
 			using var syncContextScope = NativeDispatcher.Main.SynchronizationContext.Apply();
 
-			return BrowserNativeElementHostingExtension.ApplyNegotiatedScroll(unoElementId, horizontalDelta, verticalDelta, isIntermediate)
+			return BrowserNativeElementHostingExtension.ApplyNegotiatedScroll(unoElementId, horizontalDelta, verticalDelta, isIntermediate, isInertial)
 				? 1
 				: 0;
 		}
