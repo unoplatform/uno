@@ -218,11 +218,11 @@ namespace Uno.Utils {
 		public static getSnapshotFormats(): string {
 			const snapshot = Clipboard.getFreshPasteSnapshot();
 			return JSON.stringify({
+				ownFormats: Clipboard.getOwnFormats(),
 				pasteFormats: snapshot ? snapshot.texts.map(t => t.type) : null,
 				pasteHasFiles: snapshot ? snapshot.files.length > 0 : false,
 				pasteHasImage: snapshot ? snapshot.files.some(f => f.type && f.type.startsWith("image/")) : false,
 				pasteImminent: !snapshot && Clipboard.isPasteImminent(),
-				ownFormats: Clipboard.getOwnFormats()
 			});
 		}
 
@@ -285,7 +285,8 @@ namespace Uno.Utils {
 		private static buildContentFromOwn(own: OwnContent) {
 			let image: any = null;
 			if (own.imageBlob) {
-				const file = new File([own.imageBlob], "clipboard" + Clipboard.getImageExtension(own.imageBlob.type), { type: own.imageBlob.type });
+				const fileName = "clipboard" + Clipboard.getImageExtension(own.imageBlob.type);
+				const file = new File([own.imageBlob], fileName, { type: own.imageBlob.type });
 				image = Uno.Storage.NativeStorageItem.getInfos(file)[0];
 			}
 
@@ -368,8 +369,8 @@ namespace Uno.Utils {
 			// GetContent immediately following SetContent sees the new state, and in-process
 			// reads round-trip with full fidelity as they would on WinUI.
 			const ownContent: OwnContent = {
+				imageBlob: imageBlob,
 				texts: entries.map(e => ({ type: e.type, value: e.value })),
-				imageBlob: imageBlob
 			};
 			Clipboard.ownContent = ownContent;
 			// A write issued while the window is already blurred must still invalidate on refocus.
