@@ -41,7 +41,13 @@ internal struct ClipData
 							   // 0 = not resident. FanW/FanH = surface size it was baked for (invalidated on resize).
 	public nint FanBuf;
 	public int FanW, FanH;
-	public static ClipData None => new() { Aabb = new Vector4(-1e9f, -1e9f, 1e9f, 1e9f) };
+	public static ClipData None => new() { Aabb = new Vector4(-1e9f, -1e9f, 1e9f, 1e9f), ScissorInert = true };
+
+	// The op's geometry is provably inside Aabb (containment proven at record time), so the scissor is not
+	// required for correctness: emit uses the full surface instead, letting the scissor dedup collapse and
+	// ClipDataEquals group ops across visuals whose only difference is their (inert) layout-clip AABB. The
+	// tight Aabb is KEPT — it still drives per-op culling against the composed present/damage clip.
+	public bool ScissorInert;
 
 	// No clip at all: infinite scissor, no rounded shapes, no path mask. (Arena re-stamp is only correct when the
 	// fragment shader doesn't depend on device position — i.e. no clip; see the ReplayRefCmd arena path.)
@@ -430,6 +436,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		// Tighten the scissor AABB; any active rounded shape is preserved (Intersect only).
 		var a = DeviceAabb(rect);
 		_clip.Aabb = new Vector4(MathF.Max(_clip.Aabb.X, a.X), MathF.Max(_clip.Aabb.Y, a.Y), MathF.Min(_clip.Aabb.Z, a.Z), MathF.Min(_clip.Aabb.W, a.W));
+		_clip.ScissorInert = false;
 	}
 
 	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
@@ -455,6 +462,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		if (!exclude)
 		{
 			_clip.Aabb = new Vector4(MathF.Max(_clip.Aabb.X, aabb.X), MathF.Max(_clip.Aabb.Y, aabb.Y), MathF.Min(_clip.Aabb.Z, aabb.Z), MathF.Min(_clip.Aabb.W, aabb.W));
+			_clip.ScissorInert = false;
 		}
 	}
 
@@ -490,6 +498,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			_clip.PathEvenOdd = geometry.FillRule == GeometryFillRule.EvenOdd;
 			_clip.PathExclude = operation == ClipOperation.Difference;
 		}
+		_clip.ScissorInert = false;
 		_fan = null;
 	}
 	public void Clear(WColor color) => _data.ClearColor = color;
@@ -511,15 +520,70 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	}
 
 	public void DrawRect(in Rect rect, WColor color, bool antialias = false)
-		=> _target.Add(new RectCommand
+	{
+		var p0 = Map((float)rect.Left, (float)rect.Top);
+		var p1 = Map((float)rect.Right, (float)rect.Top);
+		var p2 = Map((float)rect.Right, (float)rect.Bottom);
+		var p3 = Map((float)rect.Left, (float)rect.Bottom);
+		_target.Add(new RectCommand
 		{
 			Color = _pendingColorMatrix is { Length: >= 20 } pm ? ApplyColorMatrix(color, pm) : color,
-			Clip = _clip,
-			P0 = Map((float)rect.Left, (float)rect.Top),
-			P1 = Map((float)rect.Right, (float)rect.Top),
-			P2 = Map((float)rect.Right, (float)rect.Bottom),
-			P3 = Map((float)rect.Left, (float)rect.Bottom),
+			Clip = RelaxedClip(p0, p1, p2, p3),
+			P0 = p0,
+			P1 = p1,
+			P2 = p2,
+			P3 = p3,
 		});
+	}
+
+	// Containment relaxation: when the op's device bounds are provably unaffected by the current clip's
+	// rect/rounded components, shed them from the op's clip (see ClipData.ScissorInert) so the emit-time
+	// scissor dedups and coalescing can merge across visuals. Fan clips are exact-coverage — never relaxed.
+	private ClipData RelaxedClip(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
+		=> RelaxedClip(
+			Vector2.Min(Vector2.Min(p0, p1), Vector2.Min(p2, p3)),
+			Vector2.Max(Vector2.Max(p0, p1), Vector2.Max(p2, p3)));
+
+	private ClipData RelaxedClip(Vector2 bbMin, Vector2 bbMax)
+	{
+		var clip = _clip;
+		if (clip.ScissorInert || clip.PathFan is not null
+			|| bbMin.X < clip.Aabb.X || bbMin.Y < clip.Aabb.Y || bbMax.X > clip.Aabb.Z || bbMax.Y > clip.Aabb.W)
+		{
+			return clip;
+		}
+		if (clip.Rounds is { Length: > 0 } rounds)
+		{
+			RoundClip[] kept = null;
+			int keptCount = 0;
+			for (int i = 0; i < rounds.Length; i++)
+			{
+				var rc = rounds[i];
+				bool inert;
+				if (rc.Exclude)
+				{
+					// An exclude-round can't cut an op that doesn't overlap its rect.
+					inert = bbMax.X <= rc.Rect.X || bbMax.Y <= rc.Rect.Y || bbMin.X >= rc.Rect.Z || bbMin.Y >= rc.Rect.W;
+				}
+				else
+				{
+					// An intersect-round is coverage-1 inside its rect inset by the largest radii.
+					float rx = MathF.Max(MathF.Max(rc.Radii.X, rc.Radii.Y), MathF.Max(rc.Radii.Z, rc.Radii.W));
+					float ry = MathF.Max(MathF.Max(rc.RadiiY.X, rc.RadiiY.Y), MathF.Max(rc.RadiiY.Z, rc.RadiiY.W));
+					inert = bbMin.X >= rc.Rect.X + rx && bbMin.Y >= rc.Rect.Y + ry && bbMax.X <= rc.Rect.Z - rx && bbMax.Y <= rc.Rect.W - ry;
+				}
+				if (!inert)
+				{
+					kept ??= new RoundClip[rounds.Length];
+					kept[keptCount++] = rc;
+				}
+			}
+			if (keptCount == 0) { clip.Rounds = null; }
+			else if (keptCount < rounds.Length) { System.Array.Resize(ref kept, keptCount); clip.Rounds = kept; }
+		}
+		clip.ScissorInert = true;
+		return clip;
+	}
 
 	private List<float> _fan;
 	private Vector2 _pivot, _prev, _bbMin, _bbMax;
@@ -530,16 +594,20 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		if (_pendingColorMatrix is { Length: >= 20 } pm) { color = ApplyColorMatrix(color, pm); }
 		float w = (float)rect.Width, h = (float)rect.Height;
 		float maxR = MathF.Min(w, h) * 0.5f;
+		var p0 = Map((float)rect.Left, (float)rect.Top);
+		var p1 = Map((float)rect.Right, (float)rect.Top);
+		var p2 = Map((float)rect.Right, (float)rect.Bottom);
+		var p3 = Map((float)rect.Left, (float)rect.Bottom);
 		_target.Add(new RoundedRectCmd
 		{
-			P0 = Map((float)rect.Left, (float)rect.Top),
-			P1 = Map((float)rect.Right, (float)rect.Top),
-			P2 = Map((float)rect.Right, (float)rect.Bottom),
-			P3 = Map((float)rect.Left, (float)rect.Bottom),
+			P0 = p0,
+			P1 = p1,
+			P2 = p2,
+			P3 = p3,
 			Half = new Vector2(w * 0.5f, h * 0.5f),
 			Radii = new Vector4(Math.Clamp(radii.X, 0, maxR), Math.Clamp(radii.Y, 0, maxR), Math.Clamp(radii.Z, 0, maxR), Math.Clamp(radii.W, 0, maxR)),
 			Color = color,
-			Clip = _clip,
+			Clip = RelaxedClip(p0, p1, p2, p3),
 		});
 	}
 
@@ -551,16 +619,20 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		float oMax = MathF.Min(ow, oh) * 0.5f, iMax = MathF.Min(iw, ih) * 0.5f;
 		// Inner centre relative to the outer centre, in LOCAL space (the SDF's `p` is centred on the outer rect).
 		var innerCenter = new Vector2((float)(inner.Left + iw * 0.5f - (outer.Left + ow * 0.5f)), (float)(inner.Top + ih * 0.5f - (outer.Top + oh * 0.5f)));
+		var bp0 = Map((float)outer.Left, (float)outer.Top);
+		var bp1 = Map((float)outer.Right, (float)outer.Top);
+		var bp2 = Map((float)outer.Right, (float)outer.Bottom);
+		var bp3 = Map((float)outer.Left, (float)outer.Bottom);
 		_target.Add(new RoundedRectCmd
 		{
-			P0 = Map((float)outer.Left, (float)outer.Top),
-			P1 = Map((float)outer.Right, (float)outer.Top),
-			P2 = Map((float)outer.Right, (float)outer.Bottom),
-			P3 = Map((float)outer.Left, (float)outer.Bottom),
+			P0 = bp0,
+			P1 = bp1,
+			P2 = bp2,
+			P3 = bp3,
 			Half = oHalf,
 			Radii = new Vector4(Math.Clamp(outerRadii.X, 0, oMax), Math.Clamp(outerRadii.Y, 0, oMax), Math.Clamp(outerRadii.Z, 0, oMax), Math.Clamp(outerRadii.W, 0, oMax)),
 			Color = color,
-			Clip = _clip,
+			Clip = RelaxedClip(bp0, bp1, bp2, bp3),
 			InnerHalf = iHalf,
 			InnerCenter = innerCenter,
 			InnerRadii = new Vector4(Math.Clamp(innerRadii.X, 0, iMax), Math.Clamp(innerRadii.Y, 0, iMax), Math.Clamp(innerRadii.Z, 0, iMax), Math.Clamp(innerRadii.W, 0, iMax)),
@@ -578,7 +650,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		geometry.StreamFlattened(this);
 		if (_fan.Count > 0)
 		{
-			_target.Add(new PathFill { FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, Clip = _clip });
+			_target.Add(new PathFill { FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, Clip = RelaxedClip(_bbMin, _bbMax) });
 		}
 		_fan = null;
 	}
@@ -653,14 +725,18 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			u[WebGpuDevice.GradStopsBase + i] = g.Stops is { Length: > 0 } && i < g.Stops.Length ? g.Stops[i] : (count > 1 ? i / (float)(count - 1) : 0f);
 		}
 
+		var gp0 = Map((float)rect.Left, (float)rect.Top);
+		var gp1 = Map((float)rect.Right, (float)rect.Top);
+		var gp2 = Map((float)rect.Right, (float)rect.Bottom);
+		var gp3 = Map((float)rect.Left, (float)rect.Bottom);
 		_target.Add(new GradientCmd
 		{
-			Clip = _clip,
+			Clip = RelaxedClip(gp0, gp1, gp2, gp3),
 			Uniform = u,
-			P0 = Map((float)rect.Left, (float)rect.Top),
-			P1 = Map((float)rect.Right, (float)rect.Top),
-			P2 = Map((float)rect.Right, (float)rect.Bottom),
-			P3 = Map((float)rect.Left, (float)rect.Bottom),
+			P0 = gp0,
+			P1 = gp1,
+			P2 = gp2,
+			P3 = gp3,
 		});
 	}
 	public void DrawShadow(IGeometry silhouette, WColor color, float sigmaX, float sigmaY, bool additive, bool antialias = false)
@@ -695,14 +771,18 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		var dir = p1 - p0; var len = dir.Length(); if (len < 1e-4f) { return; }
 		dir /= len;
 		var n = new Vector2(-dir.Y, dir.X) * (strokeWidth / 2f);
+		var lp0 = Map(p0.X + n.X, p0.Y + n.Y);
+		var lp1 = Map(p1.X + n.X, p1.Y + n.Y);
+		var lp2 = Map(p1.X - n.X, p1.Y - n.Y);
+		var lp3 = Map(p0.X - n.X, p0.Y - n.Y);
 		_target.Add(new RectCommand
 		{
 			Color = color,
-			Clip = _clip,
-			P0 = Map(p0.X + n.X, p0.Y + n.Y),
-			P1 = Map(p1.X + n.X, p1.Y + n.Y),
-			P2 = Map(p1.X - n.X, p1.Y - n.Y),
-			P3 = Map(p0.X - n.X, p0.Y - n.Y),
+			Clip = RelaxedClip(lp0, lp1, lp2, lp3),
+			P0 = lp0,
+			P1 = lp1,
+			P2 = lp2,
+			P3 = lp3,
 		});
 	}
 	// Keep a texture recorded into this frame alive for the frame's lifetime (it may be a one-shot texture the
@@ -716,7 +796,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
 		TrackTexture(t);
 		// No per-frame upload — the texture is already resident; record its view for the present pass.
-		_target.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = opacity, ColorMatrix = _pendingColorMatrix, Clip = _clip });
+		{ var ip0 = Map(x, y); var ip1 = Map(x + w, y); var ip2 = Map(x + w, y + h); var ip3 = Map(x, y + h); _target.Add(new ImageCmd { P0 = ip0, P1 = ip1, P2 = ip2, P3 = ip3, View = t.View, W = w, H = h, Opacity = opacity, ColorMatrix = _pendingColorMatrix, Clip = RelaxedClip(ip0, ip1, ip2, ip3) }); }
 	}
 	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false)
 	{
@@ -727,11 +807,11 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		// The SrcIn blend-mode tint stays the fast path.
 		if (colorFilter is WebGpuColorFilter { Matrix: { } matrix })
 		{
-			_target.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = 1f, ColorMatrix = matrix, Clip = _clip });
+			{ var ip0 = Map(x, y); var ip1 = Map(x + w, y); var ip2 = Map(x + w, y + h); var ip3 = Map(x, y + h); _target.Add(new ImageCmd { P0 = ip0, P1 = ip1, P2 = ip2, P3 = ip3, View = t.View, W = w, H = h, Opacity = 1f, ColorMatrix = matrix, Clip = RelaxedClip(ip0, ip1, ip2, ip3) }); }
 			return;
 		}
 		var (mode, tint) = ResolveTint(colorFilter);
-		_target.Add(new ImageCmd { P0 = Map(x, y), P1 = Map(x + w, y), P2 = Map(x + w, y + h), P3 = Map(x, y + h), View = t.View, W = w, H = h, Opacity = 1f, TintMode = mode, Tint = tint, ColorMatrix = _pendingColorMatrix, Clip = _clip });
+		{ var ip0 = Map(x, y); var ip1 = Map(x + w, y); var ip2 = Map(x + w, y + h); var ip3 = Map(x, y + h); _target.Add(new ImageCmd { P0 = ip0, P1 = ip1, P2 = ip2, P3 = ip3, View = t.View, W = w, H = h, Opacity = 1f, TintMode = mode, Tint = tint, ColorMatrix = _pendingColorMatrix, Clip = RelaxedClip(ip0, ip1, ip2, ip3) }); }
 	}
 
 	// A SrcIn blend-mode WebGpuColorFilter → a straight-alpha tint (the only image color-filter case today);
@@ -763,17 +843,21 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 				if (centerHollow && row == 1 && col == 1) { continue; }
 				float dl = dxe[col], dr = dxe[col + 1], dt = dye[row], db = dye[row + 1];
 				if (dr - dl <= 0 || db - dt <= 0) { continue; }
+				var np0 = Map(dl, dt);
+				var np1 = Map(dr, dt);
+				var np2 = Map(dr, db);
+				var np3 = Map(dl, db);
 				_target.Add(new ImageCmd
 				{
 					View = t.View,
 					W = w,
 					H = h,
 					Opacity = 1f,
-					Clip = _clip,
-					P0 = Map(dl, dt),
-					P1 = Map(dr, dt),
-					P2 = Map(dr, db),
-					P3 = Map(dl, db),
+					Clip = RelaxedClip(np0, np1, np2, np3),
+					P0 = np0,
+					P1 = np1,
+					P2 = np2,
+					P3 = np3,
 					U0 = sxe[col] / w,
 					V0 = sye[row] / h,
 					U1 = sxe[col + 1] / w,
@@ -796,7 +880,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			_target.Add(new RectCommand
 			{
 				Color = fx.Color,
-				Clip = _clip,
+				Clip = RelaxedClip(new Vector2(a.X, a.Y), new Vector2(a.Z, a.W)),
 				P0 = new Vector2(a.X, a.Y),
 				P1 = new Vector2(a.Z, a.Y),
 				P2 = new Vector2(a.Z, a.W),
@@ -967,6 +1051,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	private ClipData ClipCompose(ClipData c, Func<Vector2, Vector2> t)
 	{
 		var result = _clip;
+		// The op's containment proof only covers its own recorded clip; the replay-site clip can still cut it,
+		// so the composed op is scissor-inert only when both sides are.
+		result.ScissorInert = c.ScissorInert && _clip.ScissorInert;
 		if (!(c.Aabb.X <= -1e8f && c.Aabb.Y <= -1e8f && c.Aabb.Z >= 1e8f && c.Aabb.W >= 1e8f))
 		{
 			var a = TransformedAabb(c.Aabb, t);
@@ -1033,10 +1120,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	// Runs a frame: opens the shared encoder (if not already inside one), renders, then finishes+submits once.
 	// load=true preserves the target's existing colour (LoadOp.Load) so an overlay composites over the frame.
+	private static int _frameStatsCounter;
+
 	private void RunFrame(List<WebGpuCommand> cmds, WColor? clear, bool load = false)
 	{
 		var owns = _frameEncoder == IntPtr.Zero;
 		if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); }
+		long t0 = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 		try
 		{
 			RenderInto(cmds, _s, clear, load);
@@ -1045,14 +1135,34 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		{
 			if (owns)
 			{
+				long t1 = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 				var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 				wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+				if (_emitStats && (_frameStatsCounter++ % 60) == 0)
+				{
+					long t2 = System.Diagnostics.Stopwatch.GetTimestamp();
+					double toMs = 1000.0 / System.Diagnostics.Stopwatch.Frequency;
+					System.Console.WriteLine($"[webgpu-frame] cmds={cmds.Count} renderInto={(t1 - t0) * toMs:F1}ms finishSubmit={(t2 - t1) * toMs:F1}ms");
+				}
 				// Pump the device non-blocking (wait=0) so the CPU can overlap the next frame with the GPU: pooled-buffer
 				// reuse is queue-ordered (wgpuQueueWriteBuffer runs after the prior frame's reads) and transient textures
 				// are refcount-released, so it is safe; the swapchain's max-frames-in-flight provides backpressure.
 				_ = wgpuDevicePoll(_d.Dev, 0u, null);
 				_frameEncoder = IntPtr.Zero;
 			}
+		}
+	}
+
+	// Stores a freshly built compiled entry on its recording, handling the Dispose race: Dispose exchanged the
+	// field before this store, so it couldn't see the new entry — hand it over here (the exchange keeps the
+	// release single-shot whichever side wins).
+	private void StoreCompiled(WebGpuRenderRecord rec, WebGpuGeometryCache fe)
+	{
+		fe.Device = _d;
+		rec.Compiled = fe;
+		if (rec.Commands is null && System.Threading.Interlocked.Exchange(ref rec.Compiled, null) is { } orphan)
+		{
+			_d.DeferCompiledRelease(orphan.Owned, orphan.StampOwned, orphan.XformSlot);
 		}
 	}
 
@@ -1451,7 +1561,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// content instead - far cheaper than the rebuild it prevents (Rounds is <=4 elements; the fan only when both have one).
 	private static bool ClipDataEquals(in ClipData a, in ClipData b)
 	{
-		if (a.Aabb != b.Aabb) { return false; }
+		// Scissor-inert clips emit the full-surface scissor, so their (tight, cull-only) AABBs don't affect
+		// drawing; two inert clips compare equal on the remaining components, letting coalescing merge runs
+		// across visuals whose only difference is the layout-clip rectangle.
+		if (a.ScissorInert != b.ScissorInert) { return false; }
+		if (!a.ScissorInert && a.Aabb != b.Aabb) { return false; }
 		int an = a.Rounds?.Length ?? 0, bn = b.Rounds?.Length ?? 0;
 		if (an != bn) { return false; }
 		for (int i = 0; i < an; i++)
@@ -1745,10 +1859,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// local space) so a rounded child-clip stays correct after the move; the device SCISSOR follows the move (the local
 	// AABB transformed by t2) with the plain-AABB session clip folded in. Table verts carry their own slot for position,
 	// so ClipU.xform is unused here — only finv matters. Mirrors the arena stamp.
-	private (ClipData Scissor, nint ClipBg) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb)
+	private (ClipData Scissor, nint ClipBg) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert)
 	{
 		var scissor = local;
 		scissor.PathFan = null;
+		// The recorded containment proof doesn't cover the replay-site clip being stamped in below.
+		scissor.ScissorInert = local.ScissorInert && sessionInert;
 		var ab = local.Aabb;
 		if (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f)
 		{
@@ -1821,7 +1937,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			}
 			long id = (fe is not null && fe.SlabId != 0) ? fe.SlabId : _d.NextSlabId();
 			fe = new WebGpuGeometryCache { TableFrame = true, FrameSolid = true, SlabId = id, FrameOrder = order, TableSolids = sv, TableRrects = rv, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = slot };
-			rr.Data.Compiled = fe;
+			StoreCompiled(rr.Data, fe);
 		}
 		// Re-derive the CURRENT slab byte offset of this recording's slices every frame: reuse the resident slice when it
 		// survived last frame (no upload), else re-Put its UNCHANGED local verts (the slice was culled + its offset
@@ -1844,7 +1960,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			foreach (var fo in fe.FrameOrder)
 			{
 				var local = fo.Kind == -1 ? fo.NonSolid.clip : fo.Clip;
-				stamps.Add(StampTableClip(local, stampOwned, finv, t2, sessionAabb));
+				stamps.Add(StampTableClip(local, stampOwned, finv, t2, sessionAabb, rr.Clip.ScissorInert));
 			}
 			fe.StampOwned = stampOwned; fe.StampClips = stamps; fe.StampXform = rr.Transform; fe.StampClip = rr.Clip; fe.StampW = (int)_s.Width; fe.StampH = (int)_s.Height; fe.HasStamp = true;
 		}
@@ -2013,7 +2129,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								fe = new WebGpuGeometryCache { FrameSolid = true, SlabId = id, FrameOrder = order, FrameSolidVerts = sv, FrameRrectVerts = rv, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = fSlot };
 								// A repeat emission is not cached (its slice is transient); free its bind groups next frame.
 								if (repeat) { _d.DeferRelease(fOwned); }
-								else { fe.Device = _d; rr.Data.Compiled = fe; }
+								else { StoreCompiled(rr.Data, fe); }
 							}
 							else
 							{
@@ -2065,7 +2181,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								BuildCoalesced(aList, aOps, aOwned, aSlot);
 								for (int _ri = 0; _ri < aOps.Count; _ri++) { aOps[_ri] = ResidentizeFan(aOps[_ri], aOwned); }
 								entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, PurePath = aPure, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot };
-								rr.Data.Compiled = entry;
+								StoreCompiled(rr.Data, entry);
 							}
 							// Per frame (even on a cache/stamp hit): the identity-space verts map to the current replay
 							// transform + surface projection via this one table entry — the whole arena move/resize path.
@@ -2117,7 +2233,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							BuildCoalesced(cList, cachedOps, owned, cSlot);
 							for (int _ri = 0; _ri < cachedOps.Count; _ri++) { cachedOps[_ri] = ResidentizeFan(cachedOps[_ri], owned); }
 							entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = cSlot };
-							rr.Data.Compiled = entry;
+							StoreCompiled(rr.Data, entry);
 						}
 						// Device-space verts => the slot's entry is the pure current projection (rewritten per frame so a
 						// resize repositions the path fills via the table without re-baking).
@@ -2304,6 +2420,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				statClipCh++;
 			}
 			if (!TryScissor(clip.Aabb, out var sx, out var sy, out var sw, out var sh)) { continue; }
+			// An inert clip's tight AABB is cull-only (checked above); the applied scissor is the full surface,
+			// so consecutive inert ops dedup to a single SetScissorRect.
+			if (clip.ScissorInert) { sx = 0; sy = 0; sw = (int)_s.Width; sh = (int)_s.Height; }
 			if (sx != lastX || sy != lastY || sw != lastW || sh != lastH)
 			{
 				wgpuRenderPassEncoderSetScissorRect(pass, (uint)sx, (uint)sy, (uint)sw, (uint)sh);
