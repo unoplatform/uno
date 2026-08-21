@@ -1092,6 +1092,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// UNO_WEBGPU_STATS=1: per-pass emit-shape diagnostics (see RenderInto).
 	private static readonly bool _emitStats = Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS") is "1" or "true";
 	private static int _emitStatsFrame;
+	// Build-shape counters (per stats interval): geometry-cache rebuilds / clip re-stamps observed while replaying.
+	private static int _statTableRebuilds, _statStamps, _statArenaRebuilds, _statCachedRebuilds;
 
 	private readonly WebGpuDevice _d;
 	private readonly WebGpuRenderSurface _s;
@@ -1840,12 +1842,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
 	}
 
-	// Gap-4 solid-scroll eligibility: a frame-solid recording whose SESSION clip is plain-AABB/None and whose commands
+	// Gap-4 solid-scroll eligibility: a frame-solid recording whose SESSION clip is fan-free and whose commands
 	// are only solids/rrects/path-fills with no path CHILD-clip. Images/gradients (no transform-table pipe) and path
-	// child-clips (a depth mask, not restampable) keep the device rebuild path; a rounded/path session clip too.
+	// child-clips (a depth mask, not restampable) keep the device rebuild path. Rounded session clips are eligible:
+	// the stamp folds them into ClipU by mapping them into the recording's local space (see StampTableClip) — list
+	// items scrolling inside a rounded container would otherwise full-rebuild every frame.
 	private static bool TableFrameEligible(ReplayRefCmd rr)
 	{
-		if (rr.Clip.PathFan is not null || (rr.Clip.Rounds?.Length ?? 0) != 0) { return false; }
+		if (rr.Clip.PathFan is not null) { return false; }
 		var cmds = rr.Commands;
 		for (int i = 0; i < cmds.Count; i++)
 		{
@@ -1859,12 +1863,37 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// local space) so a rounded child-clip stays correct after the move; the device SCISSOR follows the move (the local
 	// AABB transformed by t2) with the plain-AABB session clip folded in. Table verts carry their own slot for position,
 	// so ClipU.xform is unused here — only finv matters. Mirrors the arena stamp.
-	private (ClipData Scissor, nint ClipBg) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert)
+	// Folds device-space session rounds into a LOCAL-space clip: ClipU carries a single finv (fragment ->
+	// recording-local), so the rounds are mapped through that same finv (exact for axis-aligned transforms).
+	private static void FoldSessionRounds(ref ClipData local, RoundClip[] sessionRounds, in Matrix3x2 finv)
+	{
+		if (sessionRounds is not { Length: > 0 })
+		{
+			return;
+		}
+		var fsx = new Vector2(finv.M11, finv.M12).Length();
+		var fsy = new Vector2(finv.M21, finv.M22).Length();
+		foreach (var src in sessionRounds)
+		{
+			var q0 = new Vector2(src.Rect.X * finv.M11 + src.Rect.Y * finv.M21 + finv.M31, src.Rect.X * finv.M12 + src.Rect.Y * finv.M22 + finv.M32);
+			var q1 = new Vector2(src.Rect.Z * finv.M11 + src.Rect.W * finv.M21 + finv.M31, src.Rect.Z * finv.M12 + src.Rect.W * finv.M22 + finv.M32);
+			local.Rounds = ClipData.Push(local.Rounds, new RoundClip
+			{
+				Rect = new Vector4(MathF.Min(q0.X, q1.X), MathF.Min(q0.Y, q1.Y), MathF.Max(q0.X, q1.X), MathF.Max(q0.Y, q1.Y)),
+				Radii = src.Radii * fsx,
+				RadiiY = src.RadiiY * fsy,
+				Exclude = src.Exclude,
+			});
+		}
+	}
+
+	private (ClipData Scissor, nint ClipBg) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert, RoundClip[] sessionRounds)
 	{
 		var scissor = local;
 		scissor.PathFan = null;
 		// The recorded containment proof doesn't cover the replay-site clip being stamped in below.
 		scissor.ScissorInert = local.ScissorInert && sessionInert;
+		FoldSessionRounds(ref local, sessionRounds, finv);
 		var ab = local.Aabb;
 		if (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f)
 		{
@@ -1891,6 +1920,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		bool hit = fe is { TableFrame: true, FrameOrder: not null };
 		if (!hit)
 		{
+			if (_emitStats) { _statTableRebuilds++; }
 			if (fe is not null) { _d.DeferRelease(fe.Owned); _d.DeferRelease(fe.StampOwned); }
 			var fOwned = new OwnedResources();
 			var sv = new List<float>(); var rv = new List<float>(); var order = new List<FrameOp>();
@@ -1951,6 +1981,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// (memoized like the arena stamp); a STATIC table recording reuses them verbatim. The slab base is applied below.
 		if (!fe.HasStamp || fe.StampXform != rr.Transform || !ClipDataEquals(fe.StampClip, rr.Clip) || fe.StampW != (int)_s.Width || fe.StampH != (int)_s.Height)
 		{
+			if (_emitStats) { _statStamps++; }
 			if (fe.StampOwned is not null) { _d.DeferRelease(fe.StampOwned); }
 			var stampOwned = new OwnedResources();
 			var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
@@ -1960,7 +1991,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			foreach (var fo in fe.FrameOrder)
 			{
 				var local = fo.Kind == -1 ? fo.NonSolid.clip : fo.Clip;
-				stamps.Add(StampTableClip(local, stampOwned, finv, t2, sessionAabb, rr.Clip.ScissorInert));
+				stamps.Add(StampTableClip(local, stampOwned, finv, t2, sessionAabb, rr.Clip.ScissorInert, rr.Clip.Rounds));
 			}
 			fe.StampOwned = stampOwned; fe.StampClips = stamps; fe.StampXform = rr.Transform; fe.StampClip = rr.Clip; fe.StampW = (int)_s.Width; fe.StampH = (int)_s.Height; fe.HasStamp = true;
 		}
@@ -2159,7 +2190,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// ARENA (#22): a transform-safe recording (solid/image, no clip) bakes its geometry ONCE in its
 						// own identity NDC space; a moved replay re-stamps the vertex xform on the per-op clip bind groups
 						// and REUSES the vertex buffers instead of rebuilding. Moving-visual trace: moved frame => reuse.
-						if (rr.Clip.IsNone && IsArenaSafe(rr.Commands))
+						// Session clips without a fan are stamped in below (Aabb intersect + rounds folded via finv).
+						if (rr.Clip.PathFan is null && IsArenaSafe(rr.Commands))
 						{
 							// Stable path-fill transform slot: arena verts are in the recording's OWN (identity) space, so
 							// the slot's entry folds the replay transform + projection — written per frame below, so a
@@ -2171,6 +2203,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							bool aSizeChanged = entry is not null && (entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height);
 							if (miss || !entry.Arena || (aSizeChanged && !entry.PurePath))
 							{
+								if (_emitStats) { _statArenaRebuilds++; }
 								if (entry is not null) { _d.DeferRelease(entry.Owned); _d.DeferRelease(entry.StampOwned); }
 								var aOwned = new OwnedResources();
 								var aOps = new List<DrawOp>();
@@ -2186,8 +2219,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							// Per frame (even on a cache/stamp hit): the identity-space verts map to the current replay
 							// transform + surface projection via this one table entry — the whole arena move/resize path.
 							if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, rr.Transform); }
-							if (!entry.HasStamp || entry.StampXform != rr.Transform)
+							if (!entry.HasStamp || entry.StampXform != rr.Transform || !ClipDataEquals(entry.StampClip, rr.Clip))
 							{
+								if (_emitStats) { _statStamps++; }
 								if (entry.StampOwned is not null) { _d.DeferRelease(entry.StampOwned); }
 								var stampOwned = new OwnedResources();
 								var stamped = new List<DrawOp>(entry.Ops.Count);
@@ -2211,10 +2245,16 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 											MathF.Min(MathF.Min(p0.X, p1.X), MathF.Min(p2.X, p3.X)), MathF.Min(MathF.Min(p0.Y, p1.Y), MathF.Min(p2.Y, p3.Y)),
 											MathF.Max(MathF.Max(p0.X, p1.X), MathF.Max(p2.X, p3.X)), MathF.Max(MathF.Max(p0.Y, p1.Y), MathF.Max(p2.Y, p3.Y)));
 									}
-									var aClipBg = MakeClipBg(abgl, op.clip, stampOwned, xf, finv);
+									// Session clip: tighten the device scissor by its Aabb; fold its rounds into ClipU (local space).
+									var sa = rr.Clip.Aabb;
+									scissorClip.Aabb = new Vector4(MathF.Max(scissorClip.Aabb.X, sa.X), MathF.Max(scissorClip.Aabb.Y, sa.Y), MathF.Min(scissorClip.Aabb.Z, sa.Z), MathF.Min(scissorClip.Aabb.W, sa.W));
+									scissorClip.ScissorInert = op.clip.ScissorInert && rr.Clip.ScissorInert;
+									var uClip = op.clip;
+									FoldSessionRounds(ref uClip, rr.Clip.Rounds, finv);
+									var aClipBg = MakeClipBg(abgl, uClip, stampOwned, xf, finv);
 									stamped.Add(new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, (nint)aClipBg));
 								}
-								entry.StampOwned = stampOwned; entry.StampedOps = stamped; entry.StampXform = rr.Transform; entry.HasStamp = true;
+								entry.StampOwned = stampOwned; entry.StampedOps = stamped; entry.StampXform = rr.Transform; entry.StampClip = rr.Clip; entry.HasStamp = true;
 							}
 							ops.AddRange(entry.StampedOps);
 							break;
@@ -2223,6 +2263,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						int cSlot = (miss || entry is null) ? -1 : entry.XformSlot;
 						if (miss || transformChanged || entry.Arena || entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height || !ClipDataEquals(entry.Clip, rr.Clip))
 						{
+							if (_emitStats) { _statCachedRebuilds++; }
 							if (entry is not null) { _d.DeferRelease(entry.Owned); }
 							var owned = new OwnedResources();
 							var cachedOps = new List<DrawOp>();
@@ -2674,7 +2715,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// segmentation runs on scissor/clip boundaries). Rate-limited to ~once a second at 60fps.
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} clipChanges={statClipCh} fanOps={statFanOps} distinctFans={statFans?.Count ?? 0}");
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} clipChanges={statClipCh} fanOps={statFanOps} distinctFans={statFans?.Count ?? 0} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds}");
+			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0;
 		}
 
 		wgpuRenderPassEncoderEnd(pass);
