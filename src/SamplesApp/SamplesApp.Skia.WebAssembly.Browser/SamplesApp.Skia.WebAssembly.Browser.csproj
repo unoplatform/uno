@@ -70,6 +70,7 @@
 		<WasmShellMonoEnvironment Include="UNO_PERF_BUTTONS" Value="$(UnoPerfButtons)" Condition="'$(UnoPerfButtons)'!=''" />
 		<WasmShellMonoEnvironment Include="UNO_LOG_FPS" Value="1" Condition="'$(UnoPerfLogFps)'=='true'" />
 		<WasmShellMonoEnvironment Include="UNO_FORCE_FULL_REPAINT" Value="1" Condition="'$(UnoPerfForceFullRepaint)'=='true'" />
+		<WasmShellMonoEnvironment Include="UNO_WEBGPU_STATS" Value="1" Condition="'$(UnoPerfWebGpuStats)'=='true'" />
 	</ItemGroup>
 
 	<!-- The managed font provider has no system fonts to enumerate on WASM; feed it the app's default face. -->
