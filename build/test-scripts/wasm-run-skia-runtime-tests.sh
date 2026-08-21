@@ -33,6 +33,16 @@ export RESULTS_CANARY_FILE="$RESULTS_FILE.canary"
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-wasm-runtimetests-$UITEST_RUNTIME_TEST_GROUP-chromium.txt
 
+## The pipeline arms this as "false" before the dependency install; flipping it here tells the
+## publish tasks the test step actually started, so they only report a missing results file
+## when there is a real harness failure rather than a killed job.
+echo "##vso[task.setvariable variable=UNO_TESTS_STEP_RAN]true"
+
+## Create the failed-tests directory up front: every abort path below (a crashed harness,
+## a killed app, a non-zero transform tool) otherwise skips the mkdir and leaves
+## `PublishBuildArtifacts@1` retrying a missing PathtoPublish for minutes.
+mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
+
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64 -w 0`
 
@@ -107,13 +117,22 @@ if ! test -f "$RESULTS_CANARY_FILE"; then
     exit 1
 fi
 
+# Bound the wait: if the browser started (the canary exists) but the run never produces a
+# results file, this loop otherwise spins until the 60-minute job timeout kills the job, which
+# reports as an opaque agent timeout rather than as a stalled test run.
+RESULTS_WAIT_SECONDS=2100
+WAITED=0
 while ! test -f "$RESULTS_FILE"; do
+    if [ $WAITED -ge $RESULTS_WAIT_SECONDS ]; then
+        echo "##vso[task.logissue type=error]UNOBLD005: The runtime tests did not produce $RESULTS_FILE within $((RESULTS_WAIT_SECONDS / 60)) minutes. The app started (the canary file exists) but the run never completed."
+        exit 1
+    fi
     sleep 10
+    WAITED=$((WAITED + 10))
 done
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
-mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 echo "Running NUnitTransformTool"
 
