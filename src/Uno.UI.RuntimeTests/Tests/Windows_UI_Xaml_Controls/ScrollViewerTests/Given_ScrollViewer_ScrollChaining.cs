@@ -203,6 +203,53 @@ public class Given_ScrollViewer_ScrollChaining
 	}
 
 	[TestMethod]
+	public async Task When_Inertia_Is_Disabled_Then_Inertial_Delta_Is_Refused()
+	{
+		// IsScrollInertiaEnabled=false must stop the fling at that ScrollViewer, like
+		// IDirectManipulationHandler.OnInertiaStarting does for the managed recognizer: it neither
+		// scrolls nor lets the fling continue to the outer one.
+		var (outer, inner, origin) = BuildNested();
+		inner.IsScrollInertiaEnabled = false;
+		await UITestHelper.Load(outer);
+
+		var result = ScrollViewer.ChainScrollFromDescendant(origin, 0, 50, isIntermediate: true, isInertial: true);
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(result.DidScroll);
+		Assert.AreEqual(0, inner.VerticalOffset, 0.01);
+		Assert.AreEqual(0, outer.VerticalOffset, 0.01, "The fling must not continue past the ScrollViewer that opted out of inertia.");
+		Assert.AreEqual(0, result.RemainingVerticalDelta, 0.01, "The opted-out ScrollViewer absorbs the inertial delta.");
+	}
+
+	[TestMethod]
+	public async Task When_Inertia_Is_Disabled_Then_Drag_Still_Scrolls()
+	{
+		// The opt-out only concerns the inertial phase; deltas from the finger itself are unaffected.
+		var (outer, inner, origin) = BuildNested();
+		inner.IsScrollInertiaEnabled = false;
+		await UITestHelper.Load(outer);
+
+		var result = ScrollViewer.ChainScrollFromDescendant(origin, 0, 50, isIntermediate: true, isInertial: false);
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(result.DidScroll);
+		Assert.AreEqual(50, inner.VerticalOffset, 0.01);
+	}
+
+	[TestMethod]
+	public async Task When_Inertia_Is_Enabled_Then_Inertial_Delta_Scrolls()
+	{
+		var (outer, inner, origin) = BuildNested();
+		await UITestHelper.Load(outer);
+
+		var result = ScrollViewer.ChainScrollFromDescendant(origin, 0, 50, isIntermediate: true, isInertial: true);
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(result.DidScroll);
+		Assert.AreEqual(50, inner.VerticalOffset, 0.01);
+	}
+
+	[TestMethod]
 	public async Task When_Horizontal_Then_Residual_Chains_To_Outer()
 	{
 		var origin = new Border { Width = 500, Height = 100, Background = new SolidColorBrush(Colors.LightCoral) };
