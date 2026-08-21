@@ -47,7 +47,7 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 				var n = 0;
 				foreach (var contour in Contours)
 				{
-					n += contour.Segments.Count;
+					n += contour.Segments.Length;
 				}
 				_segmentCount = n;
 			}
@@ -62,7 +62,7 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 		{
 			foreach (var contour in Contours)
 			{
-				if (contour.Segments.Count > 0)
+				if (contour.Segments.Length > 0)
 				{
 					return false;
 				}
@@ -87,7 +87,7 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 				var pts = new List<Vector2>();
 				foreach (var contour in Contours)
 				{
-					if (contour.Segments.Count == 0)
+					if (contour.Segments.Length == 0)
 					{
 						continue;
 					}
@@ -135,7 +135,7 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 		for (var i = 0; i < Contours.Count; i++)
 		{
 			var contour = Contours[i];
-			var segments = new ManagedPathSegment[contour.Segments.Count];
+			var segments = new ManagedPathSegment[contour.Segments.Length];
 			for (var s = 0; s < segments.Length; s++)
 			{
 				var seg = contour.Segments[s];
@@ -192,7 +192,7 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 	{
 		foreach (var contour in Contours)
 		{
-			if (contour.Segments.Count == 0)
+			if (contour.Segments.Length == 0)
 			{
 				continue;
 			}
@@ -213,7 +213,7 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 	{
 		foreach (var contour in Contours)
 		{
-			if (contour.Segments.Count == 0)
+			if (contour.Segments.Length == 0)
 			{
 				continue;
 			}
@@ -246,7 +246,7 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 		var total = 0f;
 		foreach (var contour in Contours)
 		{
-			if (contour.Segments.Count == 0)
+			if (contour.Segments.Length == 0)
 			{
 				continue;
 			}
@@ -336,7 +336,7 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 
 		foreach (var contour in Contours)
 		{
-			if (contour.Segments.Count == 0)
+			if (contour.Segments.Length == 0)
 			{
 				continue;
 			}
@@ -488,7 +488,10 @@ internal readonly struct ManagedPathSegment
 /// <summary>A sub-path: a start point, its line/cubic segments, and whether it is closed.</summary>
 internal sealed class ManagedContour
 {
-	public ManagedContour(Vector2 start, IReadOnlyList<ManagedPathSegment> segments, bool closed)
+	// Segments is a concrete array on purpose: iterating it through IReadOnlyList<T> makes every access an
+	// array-interface wrapper call, which Mono AOT can't precompile on WASM — the whole tessellation path
+	// then runs interpreted (~two orders of magnitude slower).
+	public ManagedContour(Vector2 start, ManagedPathSegment[] segments, bool closed)
 	{
 		Start = start;
 		Segments = segments;
@@ -496,6 +499,6 @@ internal sealed class ManagedContour
 	}
 
 	public Vector2 Start { get; }
-	public IReadOnlyList<ManagedPathSegment> Segments { get; }
+	public ManagedPathSegment[] Segments { get; }
 	public bool Closed { get; }
 }

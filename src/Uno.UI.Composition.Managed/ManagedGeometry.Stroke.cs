@@ -75,7 +75,7 @@ internal sealed partial class ManagedGeometry
 
 		foreach (var contour in Contours)
 		{
-			if (contour.Segments.Count == 0)
+			if (contour.Segments.Length == 0)
 			{
 				continue;
 			}
