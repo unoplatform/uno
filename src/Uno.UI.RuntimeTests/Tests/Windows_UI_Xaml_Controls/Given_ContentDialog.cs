@@ -321,7 +321,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			try
 			{
-				await ShowDialog(SUT);
+				await ShowDialog(SUT, expectedFocusedButtonContent: "Target");
 
 				var focused = FocusManager.GetFocusedElement(SUT.XamlRoot);
 
@@ -336,7 +336,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		// Skia-WASM: initial focus settles on the primary button instead of the default one, see https://github.com/unoplatform/uno/issues/24146
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Initial_Focus_With_DefaultButton_Set()
 		{
 			var SUT = new MyContentDialog
@@ -353,14 +354,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			try
 			{
-				await ShowDialog(SUT);
-
-				// Initial focus moves to the default button asynchronously after the dialog opens; wait for
-				// a button to be focused before asserting which one (raced on slower runtimes, e.g. WASM).
-				await UITestHelper.WaitFor(
-					() => FocusManager.GetFocusedElement(SUT.XamlRoot) is Button,
-					timeoutMS: 5000,
-					message: "A button should receive initial focus once the dialog has opened");
+				await ShowDialog(SUT, expectedFocusedButtonContent: "Target");
 
 				var focused = FocusManager.GetFocusedElement(SUT.XamlRoot);
 
@@ -849,13 +843,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 		}
 
-		private static async Task ShowDialog(MyContentDialog dialog)
+		private static async Task ShowDialog(MyContentDialog dialog, string expectedFocusedButtonContent = null)
 		{
 			_ = dialog.ShowAsync();
 			await WindowHelper.WaitFor(() => dialog.BackgroundElement != null);
 #if !WINAPPSDK
 			await WindowHelper.WaitFor(() => dialog.BackgroundElement.ActualHeight > 0); // This is necessary on the current version of Uno because the template is materialized too early
 #endif
+
+			if (expectedFocusedButtonContent is not null)
+			{
+				// Initial focus is applied more than once while the dialog opens, so sampling focus as soon as the
+				// template is ready can catch an intermediate button (the command space puts the primary one first).
+				object focused = null;
+
+				await WindowHelper.WaitFor(
+					() =>
+					{
+						focused = FocusManager.GetFocusedElement(dialog.XamlRoot);
+						return (focused as Button)?.Content as string;
+					},
+					expectedFocusedButtonContent,
+					messageBuilder: actual => $"Initial focus settled on {(actual is not null ? $"the '{actual}' button" : focused?.ToString() ?? "nothing")} instead of the '{expectedFocusedButtonContent}' button.",
+					timeoutMS: 5000);
+			}
 		}
 
 #if HAS_UNO

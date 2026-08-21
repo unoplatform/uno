@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using System.Collections.Generic;
@@ -1894,7 +1895,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.Native)] // Very flaky on all targets #9080
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24126")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Command-bar overflow timing is only validated on Skia #9080
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #elif !HAS_RENDER_TARGET_BITMAP
@@ -1902,6 +1904,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_IsTextSelectionEnabled_ContextMenu_SelectAll()
 		{
+			using var _ = Disposable.Create(() => VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot));
+
 			var SUT = new TextBlock
 			{
 				Text = "Hello world",
@@ -1919,9 +1923,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			mouse.PressRight();
 			mouse.ReleaseRight();
-			await WindowHelper.WaitForIdle();
 
-			mouse.MoveBy(10, 10); // should be over first menu item now
+			var selectAllPoint = await TextContextMenuHelper.WaitForCommandPoint(WindowHelper.XamlRoot, VirtualKey.A);
+			mouse.MoveTo(selectAllPoint);
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
@@ -1955,6 +1959,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		// Clipboard is currently not available on skia-WASM
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24126")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_IsTextSelectionEnabled_ContextMenu_Copy()
 		{
@@ -1965,6 +1970,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 #endif
 
+			using var _ = Disposable.Create(() => VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot));
+
 			var SUT = new TextBlock
 			{
 				Text = "Hello world",
@@ -1972,6 +1979,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 
 			await UITestHelper.Load(SUT);
+
+			// Seed the clipboard so that a copy which never runs fails against a known value instead of
+			// whatever the host happened to have on its clipboard.
+			await ClipboardHelper.SeedDummyData();
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
@@ -1985,9 +1996,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			mouse.PressRight(bounds.GetCenter());
 			mouse.ReleaseRight();
-			await WindowHelper.WaitForIdle();
 
-			mouse.MoveBy(10, 10); // should be over first menu item now
+			var copyPoint = await TextContextMenuHelper.WaitForCommandPoint(WindowHelper.XamlRoot, VirtualKey.C);
+			mouse.MoveTo(copyPoint);
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();

@@ -20,7 +20,9 @@ internal static class TypeActivator
 	{
 		var replacementType = type.GetReplacementType();
 
-		if (Uno.UI.DataBinding.BindingPropertyHelper.BindableMetadataProvider?.GetBindableTypeByType(replacementType)?.CreateInstance() is { } factory)
+		// Validated lookup: a full-name match from another AssemblyLoadContext would otherwise
+		// instantiate the other context's identically-named type.
+		if (Uno.UI.DataBinding.BindingPropertyHelper.GetValidatedBindableType(replacementType)?.CreateInstance() is { } factory)
 		{
 			return factory();
 		}
