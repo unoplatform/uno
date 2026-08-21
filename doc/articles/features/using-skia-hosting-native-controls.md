@@ -63,6 +63,8 @@ The default is `NativeOnly`, which preserves the behavior described above.
 
 Chaining honors `ScrollViewer.IsHorizontalScrollChainingEnabled` and `IsVerticalScrollChainingEnabled`: a `ScrollViewer` that opts out of chaining absorbs the remaining delta instead of passing it to its own ancestors.
 
+Inertia honors `ScrollViewer.IsScrollInertiaEnabled`: during the fling that follows a released touch drag, a `ScrollViewer` with inertia disabled neither scrolls nor lets the fling continue past it. The native element itself still decays its own momentum until it reaches its boundary.
+
 > [!NOTE]
 > Form controls (`input`, `textarea`, `select`) and `contenteditable` regions — and their descendants — always keep their full native touch behavior and never participate in chaining, so caret dragging and text selection are unaffected. Content hosted in an `iframe` also stays native-only, because pointer events do not cross the frame boundary and its scroll position cannot be observed from the hosting document.
 
