@@ -246,6 +246,10 @@ internal sealed unsafe class WebGpuGeometryCache
 	// transform is unchanged — a STATIC arena visual then costs one AddRange/frame, no per-op MakeClipBg.
 	public List<DrawOp> StampedOps;
 	public OwnedResources StampOwned;
+	// ClipU buffer handles parallel to StampClips/StampedOps: a restamp rewrites these in place (bind groups kept)
+	// instead of allocating a fresh bag - see StampFrame for the same-submit guard.
+	public List<nint> StampBufs;
+	public long StampFrame;
 	public Matrix4x4 StampXform;
 	public bool HasStamp;
 }
@@ -1368,11 +1372,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	// The clip bind group for a command: just the ClipU uniform (rounded-rect + surface size). Arbitrary path clips
 	// are applied via the shared depth mask in the main pass, not sampled here, so there is no coverage texture.
-	private IntPtr MakeClipBg(IntPtr bgl, ClipData cd, OwnedResources owned = null, Matrix3x2 xform = default, Matrix3x2 finv = default)
+	private const int ClipUBytes = 288;   // rects[4]+radii[4] (128) + ex+ctrl+size+xform+xoff+finv (96) + radiiY[4] (64); match the WGSL struct
+
+	// Fills the shared _clipU scratch with the WGSL ClipU image for (cd, xform, finv).
+	private void FillClipU(ClipData cd, Matrix3x2 xform, Matrix3x2 finv)
 	{
 		if (xform == default) { xform = Matrix3x2.Identity; }   // default(Matrix3x2) is all-zero; treat as identity
 		if (finv == default) { finv = Matrix3x2.Identity; }
-		const int ClipUBytes = 288;   // rects[4]+radii[4] (128) + ex+ctrl+size+xform+xoff+finv (96) + radiiY[4] (64); match the WGSL struct
 		var cu = _clipU;
 		System.Array.Clear(cu);
 		var rounds = cd.Rounds;
@@ -1396,12 +1402,38 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 												  // finv translation in xoff.zw (px = fM11*x + fM21*y + fM31, py = fM12*x + fM22*y + fM32).
 		cu[50] = finv.M31; cu[51] = finv.M32;
 		cu[52] = finv.M11; cu[53] = finv.M12; cu[54] = finv.M21; cu[55] = finv.M22;
+	}
+
+	// In-place restamp of an existing owned ClipU buffer: the write is queue-ordered, so frames already submitted
+	// read the old floats; the bind group survives, making a per-frame restamp allocation-free.
+	private void RewriteClipU(nint buf, ClipData cd, Matrix3x2 xform, Matrix3x2 finv)
+	{
+		FillClipU(cd, xform, finv);
+		fixed (float* p = _clipU) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, ClipUBytes); }
+	}
+
+	// Owned variant exposing the ClipU buffer handle so a later restamp can RewriteClipU it in place.
+	private IntPtr MakeClipBgOwned(IntPtr bgl, ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf)
+	{
+		FillClipU(cd, xform, finv);
+		var b = Ubuf(ClipUBytes, owned);
+		fixed (float* p = _clipU) { wgpuQueueWriteBuffer(_d.Q, b, 0, (IntPtr)p, ClipUBytes); }
+		var e = new WGPUBindGroupEntry { Binding = 0, Buffer = b, Offset = 0, Size = ClipUBytes };
+		var bgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 1, Entries = &e };
+		buf = b;
+		return Bg(ref bgd, owned);
+	}
+
+	private IntPtr MakeClipBg(IntPtr bgl, ClipData cd, OwnedResources owned = null, Matrix3x2 xform = default, Matrix3x2 finv = default)
+	{
+		if (owned is not null) { return MakeClipBgOwned(bgl, cd, owned, xform, finv, out _); }
+		FillClipU(cd, xform, finv);
+		var cu = _clipU;
 
 		// The ClipU depends only on (layout, these floats) — identical across frames for static chrome — so reuse a
 		// cached bind group. Now that path clips carry no per-frame coverage texture, every clip is cacheable.
-		if (owned is null)
+		if (_d.TryGetCachedBg(bgl, cu, out var cachedBg)) { return cachedBg; }
 		{
-			if (_d.TryGetCachedBg(bgl, cu, out var cachedBg)) { return cachedBg; }
 			var cbd = new WGPUBufferDescriptor { Size = ClipUBytes, Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
 			var cbuf = wgpuDeviceCreateBuffer(_d.Dev, &cbd);
 			fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, cbuf, 0, (IntPtr)p, ClipUBytes); }
@@ -1411,12 +1443,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			_d.AddCachedBg(bgl, (float[])cu.Clone(), cbuf, cbg);   // cache stores the key — clone off the reused scratch
 			return cbg;
 		}
-
-		var buf = Ubuf(ClipUBytes, owned);
-		fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, ClipUBytes); }
-		var e = new WGPUBindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = ClipUBytes };
-		var bgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 1, Entries = &e };
-		return Bg(ref bgd, owned);
 	}
 
 	// Fills the shadow silhouette into an offscreen coverage surface (stencil-then-cover, white), then blurs it
@@ -1887,7 +1913,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 	}
 
-	private (ClipData Scissor, nint ClipBg) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert, RoundClip[] sessionRounds)
+	private (ClipData Scissor, nint ClipBg, nint Buf) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert, RoundClip[] sessionRounds, nint reuseBuf, nint reuseBg)
 	{
 		var scissor = local;
 		scissor.PathFan = null;
@@ -1906,7 +1932,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				MathF.Max(MathF.Max(p0.X, p1.X), MathF.Max(p2.X, p3.X)), MathF.Max(MathF.Max(p0.Y, p1.Y), MathF.Max(p2.Y, p3.Y)));
 		}
 		scissor.Aabb = new Vector4(MathF.Max(ab.X, sessionAabb.X), MathF.Max(ab.Y, sessionAabb.Y), MathF.Min(ab.Z, sessionAabb.Z), MathF.Min(ab.W, sessionAabb.W));
-		return (scissor, (nint)MakeClipBg(_d.ClipBgl, local, stampOwned, Matrix3x2.Identity, finv));
+		if (reuseBuf != 0)
+		{
+			RewriteClipU(reuseBuf, local, Matrix3x2.Identity, finv);
+			return (scissor, reuseBg, reuseBuf);
+		}
+		var bg = (nint)MakeClipBgOwned(_d.ClipBgl, local, stampOwned, Matrix3x2.Identity, finv, out var buf);
+		return (scissor, bg, buf);
 	}
 
 	// Transform-table frame-solid emit (gap-4 solid-scroll redo). Builds the recording's solids/rrects/path-fills ONCE
@@ -1982,18 +2014,25 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (!fe.HasStamp || fe.StampXform != rr.Transform || !ClipDataEquals(fe.StampClip, rr.Clip) || fe.StampW != (int)_s.Width || fe.StampH != (int)_s.Height)
 		{
 			if (_emitStats) { _statStamps++; }
-			if (fe.StampOwned is not null) { _d.DeferRelease(fe.StampOwned); }
-			var stampOwned = new OwnedResources();
+			// In-place restamp: rewrite the previous stamp's ClipU buffers and keep its bind groups. Unsafe only when
+			// this entry was already stamped under the current submit (same device frame) - the rewrite would clobber
+			// uniforms this frame's earlier draws still read - so that case (and the first stamp) allocates fresh.
+			var reuse = fe.HasStamp && fe.StampBufs is not null && fe.StampBufs.Count == fe.FrameOrder.Count && fe.StampFrame != _d.FrameSeq;
+			if (!reuse && fe.StampOwned is not null) { _d.DeferRelease(fe.StampOwned); }
+			var stampOwned = reuse ? fe.StampOwned : new OwnedResources();
 			var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
 			Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
 			var sessionAabb = rr.Clip.Aabb;
-			var stamps = new List<(ClipData, nint)>(fe.FrameOrder.Count);
-			foreach (var fo in fe.FrameOrder)
+			var stamps = reuse ? fe.StampClips : new List<(ClipData Scissor, nint ClipBg)>(fe.FrameOrder.Count);
+			var bufs = reuse ? fe.StampBufs : new List<nint>(fe.FrameOrder.Count);
+			for (int i = 0; i < fe.FrameOrder.Count; i++)
 			{
+				var fo = fe.FrameOrder[i];
 				var local = fo.Kind == -1 ? fo.NonSolid.clip : fo.Clip;
-				stamps.Add(StampTableClip(local, stampOwned, finv, t2, sessionAabb, rr.Clip.ScissorInert, rr.Clip.Rounds));
+				var st = StampTableClip(local, stampOwned, finv, t2, sessionAabb, rr.Clip.ScissorInert, rr.Clip.Rounds, reuse ? bufs[i] : 0, reuse ? stamps[i].ClipBg : 0);
+				if (reuse) { stamps[i] = (st.Scissor, st.ClipBg); } else { stamps.Add((st.Scissor, st.ClipBg)); bufs.Add(st.Buf); }
 			}
-			fe.StampOwned = stampOwned; fe.StampClips = stamps; fe.StampXform = rr.Transform; fe.StampClip = rr.Clip; fe.StampW = (int)_s.Width; fe.StampH = (int)_s.Height; fe.HasStamp = true;
+			fe.StampOwned = stampOwned; fe.StampClips = stamps; fe.StampBufs = bufs; fe.StampFrame = _d.FrameSeq; fe.StampXform = rr.Transform; fe.StampClip = rr.Clip; fe.StampW = (int)_s.Width; fe.StampH = (int)_s.Height; fe.HasStamp = true;
 		}
 		// Emit from the resident slabs (b0=2 => table slab) with the per-frame base + the memoized stamped clip.
 		for (int i = 0; i < fe.FrameOrder.Count; i++)
@@ -2222,17 +2261,21 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							if (!entry.HasStamp || entry.StampXform != rr.Transform || !ClipDataEquals(entry.StampClip, rr.Clip))
 							{
 								if (_emitStats) { _statStamps++; }
-								if (entry.StampOwned is not null) { _d.DeferRelease(entry.StampOwned); }
-								var stampOwned = new OwnedResources();
-								var stamped = new List<DrawOp>(entry.Ops.Count);
+								// In-place restamp (same guard as the table stamp): rewrite ClipU buffers, keep bind groups.
+								var reuse = entry.HasStamp && entry.StampBufs is not null && entry.StampBufs.Count == entry.Ops.Count && entry.StampFrame != _d.FrameSeq;
+								if (!reuse && entry.StampOwned is not null) { _d.DeferRelease(entry.StampOwned); }
+								var stampOwned = reuse ? entry.StampOwned : new OwnedResources();
+								var stamped = reuse ? entry.StampedOps : new List<DrawOp>(entry.Ops.Count);
+								var bufs = reuse ? entry.StampBufs : new List<nint>(entry.Ops.Count);
 								var xf = ArenaXform(rr.Transform);
 								// finv = inverse device affine, so clipCov maps the moved fragment back to the recording's
 								// own space where the (identity-baked) clip lives.
 								var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
 								Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
 								Vector2 MoveP(float x, float y) => new(x * t2.M11 + y * t2.M21 + t2.M31, x * t2.M12 + y * t2.M22 + t2.M32);
-								foreach (var op in entry.Ops)
+								for (int i = 0; i < entry.Ops.Count; i++)
 								{
+									var op = entry.Ops[i];
 									var abgl = op.kind switch { 3 => _d.GradClipBgl, 2 => _d.ImageClipBgl, _ => _d.SolidClipBgl };
 									// clipCov reads the LOCAL rounded shape (finv maps fc back to it); the SCISSOR is device-space
 									// so its Aabb must follow the move — transform the (finite) clip Aabb by the replay transform.
@@ -2251,10 +2294,19 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									scissorClip.ScissorInert = op.clip.ScissorInert && rr.Clip.ScissorInert;
 									var uClip = op.clip;
 									FoldSessionRounds(ref uClip, rr.Clip.Rounds, finv);
-									var aClipBg = MakeClipBg(abgl, uClip, stampOwned, xf, finv);
-									stamped.Add(new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, (nint)aClipBg));
+									if (reuse)
+									{
+										RewriteClipU(bufs[i], uClip, xf, finv);
+										stamped[i] = new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, stamped[i].clipBg);
+									}
+									else
+									{
+										var aClipBg = MakeClipBgOwned(abgl, uClip, stampOwned, xf, finv, out var buf);
+										bufs.Add(buf);
+										stamped.Add(new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, (nint)aClipBg));
+									}
 								}
-								entry.StampOwned = stampOwned; entry.StampedOps = stamped; entry.StampXform = rr.Transform; entry.StampClip = rr.Clip; entry.HasStamp = true;
+								entry.StampOwned = stampOwned; entry.StampedOps = stamped; entry.StampBufs = bufs; entry.StampFrame = _d.FrameSeq; entry.StampXform = rr.Transform; entry.StampClip = rr.Clip; entry.HasStamp = true;
 							}
 							ops.AddRange(entry.StampedOps);
 							break;
