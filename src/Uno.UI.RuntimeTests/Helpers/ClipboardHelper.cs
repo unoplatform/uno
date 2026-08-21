@@ -10,13 +10,15 @@ namespace Uno.UI.RuntimeTests.Helpers;
 public static class ClipboardHelper
 {
 	/// <summary>
-	/// True when the platform has a working clipboard. On skia the clipboard comes from an
-	/// <c>IClipboardExtension</c>, except on the browser where the WinRT layer provides a
-	/// WebAssembly implementation directly.
+	/// True when the platform has a working clipboard. An <c>IClipboardExtension</c> provides
+	/// the clipboard on skia desktop targets, while on the browser, Android, and iOS the
+	/// WinRT layer provides the implementation directly.
 	/// </summary>
 	public static bool IsAvailable =>
 #if HAS_UNO
 		OperatingSystem.IsBrowser() ||
+		OperatingSystem.IsAndroid() ||
+		OperatingSystem.IsIOS() ||
 		Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>();
 #else
 		true;
