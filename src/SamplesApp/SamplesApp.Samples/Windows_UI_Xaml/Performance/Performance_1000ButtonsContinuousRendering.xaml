@@ -32,6 +32,7 @@
         <StackPanel Orientation="Horizontal">
             <TextBlock Text="Number of Buttons: " />
             <NumberBox
+                x:Name="numberBox"
                 Minimum="1"
                 ValueChanged="NumberBoxValueChanged"
                 Value="100" />

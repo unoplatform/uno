@@ -299,6 +299,31 @@ namespace SampleControl.Presentation
 			}
 		}
 
+		// UNO_PERF_CYCLE benchmark sweep: shows every snapshot-eligible sample for a fixed dwell, with
+		// PERF-NAV console markers so an external harness can attribute per-second FPS lines to samples.
+		internal async Task CycleAllSamplesForPerf(int dwellSeconds, CancellationToken ct)
+		{
+			var samples = GetSampleChooserContentsForSnapshotTests().ToArray();
+			Console.WriteLine($"PERF-CYCLE: {samples.Length} samples");
+			foreach (var sample in samples)
+			{
+				try
+				{
+					Console.WriteLine($"PERF-NAV: {sample.ControlName}");
+					ShowNewSection(ct, Section.SamplesContent);
+					SelectedLibrarySample = sample;
+					var (content, _) = await UpdateContent(ct, sample);
+					ContentPhone = content;
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine($"PERF-NAV-FAILED: {sample.ControlName}: {e.Message}");
+				}
+				await Task.Delay(TimeSpan.FromSeconds(dwellSeconds), ct);
+			}
+			Console.WriteLine("PERF-CYCLE: done");
+		}
+
 		private async Task RecordAllTestsInner(string folderName, int totalGroups, int currentGroupIndex, CancellationToken ct, Action doneAction = null)
 		{
 			try
@@ -1133,14 +1158,34 @@ namespace SampleControl.Presentation
 		}
 
 		public void SetSelectedSample(CancellationToken token, string categoryName, string sampleName)
+			=> TrySetSelectedSample(token, categoryName, sampleName);
+
+		/// <summary>Diagnostic dump of the sample index for launch deep-link troubleshooting.</summary>
+		public string DumpSampleIndexForDiagnostics(string categoryFilter)
 		{
-			var category = _allCategories.FirstOrDefault(
+			if (_allCategories is null)
+			{
+				return "categories not loaded";
+			}
+
+			var categories = string.Join(", ", _allCategories.Select(c => c.Category));
+			var matches = _allCategories
+				.Where(c => c.Category?.IndexOf(categoryFilter, StringComparison.OrdinalIgnoreCase) >= 0)
+				.SelectMany(c => c.SamplesContent.Select(s => $"{c.Category}/{s.ControlName}"));
+			return $"categories: {categories} || matches: {string.Join(", ", matches)}";
+		}
+
+		/// <summary>Navigates to a sample by category + control name; false when the sample isn't (yet)
+		/// known — sample discovery is async, so early callers (launch deep links) should retry.</summary>
+		public bool TrySetSelectedSample(CancellationToken token, string categoryName, string sampleName)
+		{
+			var category = _allCategories?.FirstOrDefault(
 				c => c.Category != null &&
 				c.Category.Equals(categoryName, StringComparison.InvariantCultureIgnoreCase));
 
 			if (category == null)
 			{
-				return;
+				return false;
 			}
 
 			var sample = category.SamplesContent.FirstOrDefault(
@@ -1148,12 +1193,13 @@ namespace SampleControl.Presentation
 
 			if (sample == null)
 			{
-				return;
+				return false;
 			}
 
 			ShowNewSection(token, Section.SamplesContent);
 
 			SelectedLibrarySample = sample;
+			return true;
 		}
 
 		public async Task SetSelectedSample(CancellationToken ct, string metadataName)

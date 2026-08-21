@@ -2,6 +2,8 @@
 	<PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 		<RollForward>Major</RollForward>
+		<!-- RenderDocCapture uses unmanaged function pointers into the injected renderdoc.dll. -->
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override-noplatform.props" />
