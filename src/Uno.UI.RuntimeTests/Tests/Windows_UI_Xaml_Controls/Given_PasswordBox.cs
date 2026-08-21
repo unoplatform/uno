@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -251,7 +252,11 @@ public partial class Given_PasswordBox
 		}
 	}
 
+	// This asserts PasswordBox's API surface by member name, which the trimmer cannot see: on trimmed
+	// targets the members would be removed and the lookups would return null. DynamicDependency tells
+	// ILLink to preserve them, so the test keeps validating parity instead of the trimmer's opinion.
 	[TestMethod]
+	[DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(PasswordBox))]
 	public void When_WinUI_Surface_Is_Declared()
 	{
 		var type = typeof(PasswordBox);
