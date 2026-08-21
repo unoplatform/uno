@@ -315,6 +315,19 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
+		/// Binary-compat shim for XAML-generated code in libraries compiled before the native-style
+		/// registry was removed; native registrations are ignored.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void RegisterDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider, bool isNative)
+		{
+			if (!isNative)
+			{
+				RegisterDefaultStyleForType(type, dictionaryProvider);
+			}
+		}
+
+		/// <summary>
 		/// Returns the default Style for given type.
 		/// </summary>
 		internal static Style? GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, null);
