@@ -1032,7 +1032,7 @@ namespace Uno.UI.Samples.Tests
 
 										if (resultingTask == timeoutTask)
 										{
-											throw new TimeoutException(
+											throw new TestBodyTimeoutException(
 												$"Test execution timed out after {timeout.Value}");
 										}
 
@@ -1079,7 +1079,11 @@ namespace Uno.UI.Samples.Tests
 								}
 								else
 								{
-									if (_currentRun.CurrentRepeatCount < config.Attempts - 1)
+									// A test the harness had to cut off will not do better on a second run, and
+									// each attempt costs the shard the same wait again: three attempts of a stuck
+									// test still add up to most of the job budget. A TimeoutException a test raises
+									// from one of its own waits is an ordinary failure and stays retryable.
+									if (e is not TestBodyTimeoutException && _currentRun.CurrentRepeatCount < config.Attempts - 1)
 									{
 										// A retried test is reported as passed if a later attempt succeeds, and the
 										// retry loop sits inside this method while "Running test" is logged outside
@@ -1363,6 +1367,18 @@ namespace Uno.UI.Samples.Tests
 			=> test.Method.GetCustomAttribute(typeof(TimeoutAttribute)) is TimeoutAttribute methodAttribute
 					? TimeSpan.FromMilliseconds(methodAttribute.Timeout)
 					: DefaultTestBodyTimeout;
+
+		/// <summary>
+		/// Raised when the harness cuts off a test body that outlived its budget. Distinct from the
+		/// <see cref="TimeoutException"/> a test raises from one of its own waits, so only the former
+		/// skips the retries.
+		/// </summary>
+		private sealed class TestBodyTimeoutException : TimeoutException
+		{
+			public TestBodyTimeoutException(string message) : base(message)
+			{
+			}
+		}
 
 		/// <summary>
 		/// Fallback timeout applied to every async test body that carries no <see cref="TimeoutAttribute"/>.
