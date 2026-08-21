@@ -235,7 +235,7 @@ namespace Uno.UI.Runtime.Skia {
 			return null;
 		}
 
-		private applyNativeScrollDelta(gesture: NativeScrollGesture, horizontalDelta: number, verticalDelta: number, isIntermediate: boolean = true): boolean {
+		private applyNativeScrollDelta(gesture: NativeScrollGesture, horizontalDelta: number, verticalDelta: number, isIntermediate: boolean = true, isInertial: boolean = false): boolean {
 			if (gesture.primaryAxis === "horizontal") {
 				verticalDelta = 0;
 			} else if (gesture.primaryAxis === "vertical") {
@@ -286,7 +286,8 @@ namespace Uno.UI.Runtime.Skia {
 					gesture.unoElementId,
 					remainingHorizontalDelta,
 					remainingVerticalDelta,
-					isIntermediate) !== 0;
+					isIntermediate,
+					isInertial) !== 0;
 			}
 
 			return remainingHorizontalDelta !== horizontalDelta || remainingVerticalDelta !== verticalDelta;
@@ -371,7 +372,9 @@ namespace Uno.UI.Runtime.Skia {
 				}
 
 				try {
-					if (this.applyNativeScrollDelta(gesture, gesture.velocityX * elapsed, gesture.velocityY * elapsed)) {
+					// isInertial lets the managed side honor ScrollViewer.IsScrollInertiaEnabled: a delta refused
+					// there stops the fling, while the native scrollTarget keeps its own momentum until then.
+					if (this.applyNativeScrollDelta(gesture, gesture.velocityX * elapsed, gesture.velocityY * elapsed, /* isIntermediate */ true, /* isInertial */ true)) {
 						this._nativeScrollInertiaFrame = requestAnimationFrame(step);
 					} else {
 						stop();

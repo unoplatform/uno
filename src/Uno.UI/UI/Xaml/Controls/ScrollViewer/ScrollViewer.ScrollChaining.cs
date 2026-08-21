@@ -24,6 +24,10 @@ partial class ScrollViewer
 	/// False only for the last delta of a gesture. Callers that end a gesture without a final delta
 	/// should use <see cref="CompleteChainedScrollFromDescendant"/> instead.
 	/// </param>
+	/// <param name="isInertial">
+	/// True when the delta comes from the inertia (fling) phase of a gesture rather than from the user's
+	/// finger. A ScrollViewer with <see cref="IsScrollInertiaEnabled"/> false then refuses the delta.
+	/// </param>
 	/// <returns>
 	/// Whether any ScrollViewer moved, along with the delta that no ScrollViewer in the ancestry could consume.
 	/// </returns>
@@ -31,7 +35,8 @@ partial class ScrollViewer
 		UIElement origin,
 		double horizontalDelta,
 		double verticalDelta,
-		bool isIntermediate)
+		bool isIntermediate,
+		bool isInertial = false)
 	{
 		// These deltas cross the JS boundary, where nothing guarantees they are finite. A NaN reaching
 		// ScrollContentPresenter.ValidateInputOffset throws, so reject it before it gets there.
@@ -54,7 +59,22 @@ partial class ScrollViewer
 			var scrollsHorizontally = presenter.CanHorizontallyScroll && Math.Abs(remainingHorizontalDelta) >= ScrollChainingResidualEpsilon;
 			var scrollsVertically = presenter.CanVerticallyScroll && Math.Abs(remainingVerticalDelta) >= ScrollChainingResidualEpsilon;
 
-			if (scrollsHorizontally || scrollsVertically)
+			if (isInertial && !scrollViewer.IsScrollInertiaEnabled)
+			{
+				// Mirrors IDirectManipulationHandler.OnInertiaStarting: with inertia opted out, this ScrollViewer
+				// neither moves during the inertial phase nor lets the fling continue past it on the axes it takes
+				// part in - an outer ScrollViewer flinging while this one stands still would look broken.
+				if (scrollsHorizontally)
+				{
+					remainingHorizontalDelta = 0;
+				}
+
+				if (scrollsVertically)
+				{
+					remainingVerticalDelta = 0;
+				}
+			}
+			else if (scrollsHorizontally || scrollsVertically)
 			{
 				var initialHorizontalOffset = presenter.HorizontalOffset;
 				var initialVerticalOffset = presenter.VerticalOffset;
