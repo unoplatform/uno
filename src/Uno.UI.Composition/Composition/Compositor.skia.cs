@@ -182,6 +182,13 @@ public partial class Compositor
 		return false;
 	}
 
+	// UNO_LOG_FRAME_PHASES=1 splits the record phase into animation-tick vs visual-walk time (benchmarking);
+	// pairs with the frame-level [frame-phases] line in CompositionTarget.
+	private static readonly bool _logRecordPhases =
+		Environment.GetEnvironmentVariable("UNO_LOG_FRAME_PHASES") is "1" or "true";
+	private static long _recAnimationTicks, _recWalkTicks;
+	private static int _recPhaseFrames;
+
 	internal void RenderRootVisual(Uno.UI.Composition.Drawing.IDrawingSession drawingSession, ContainerVisual rootVisual, DamageRegion? damage = null)
 	{
 		if (rootVisual is null)
@@ -189,6 +196,7 @@ public partial class Compositor
 			throw new ArgumentNullException(nameof(rootVisual));
 		}
 
+		var recPhaseT0 = _logRecordPhases ? Stopwatch.GetTimestamp() : 0;
 		foreach (var animation in _runningAnimations.Keys.ToArray())
 		{
 			try
@@ -210,7 +218,20 @@ public partial class Compositor
 #if PRINT_FRAME_TIMES
 		var start = Stopwatch.GetTimestamp();
 #endif
+		var recPhaseT1 = _logRecordPhases ? Stopwatch.GetTimestamp() : 0;
 		rootVisual.RenderRootVisual(drawingSession, null, damage);
+		if (_logRecordPhases)
+		{
+			var recPhaseT2 = Stopwatch.GetTimestamp();
+			_recAnimationTicks += recPhaseT1 - recPhaseT0;
+			_recWalkTicks += recPhaseT2 - recPhaseT1;
+			if (++_recPhaseFrames >= 60)
+			{
+				Console.WriteLine($"[record-phases] animations={_recAnimationTicks * 1000.0 / Stopwatch.Frequency / _recPhaseFrames:F1}ms walk={_recWalkTicks * 1000.0 / Stopwatch.Frequency / _recPhaseFrames:F1}ms (avg/frame, {_runningAnimations.Count} running animations)");
+				_recAnimationTicks = _recWalkTicks = 0;
+				_recPhaseFrames = 0;
+			}
+		}
 #if PRINT_FRAME_TIMES
 		var span = Stopwatch.GetElapsedTime(start);
 		Console.WriteLine($"Rendered frame {_frameNumber++} in {span.TotalMilliseconds}ms");
