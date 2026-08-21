@@ -21,11 +21,17 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 	private Vector2 _start;
 	private Vector2 _current;
 	private bool _closedPending;
+	// Set when the accumulated content is exactly one AddRectangle/AddRoundedRectangle call, so the built
+	// geometry can advertise its analytic shape (IGeometry.TryGetRoundRect); any other verb clears it.
+	private RoundRectangle? _pureRoundRect;
+
+	private bool IsEmpty => _contours.Count == 0 && _segments is null;
 
 	public GeometryFillRule FillRule { get; set; } = GeometryFillRule.NonZero;
 
 	public void MoveTo(Vector2 point)
 	{
+		_pureRoundRect = null;
 		FlushContour(closed: false);
 		_start = point;
 		_current = point;
@@ -35,6 +41,7 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 
 	public void LineTo(Vector2 point)
 	{
+		_pureRoundRect = null;
 		EnsureContour();
 		_segments!.Add(ManagedPathSegment.Line(point));
 		_current = point;
@@ -42,6 +49,7 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 
 	public void CubicTo(Vector2 control1, Vector2 control2, Vector2 end)
 	{
+		_pureRoundRect = null;
 		EnsureContour();
 		_segments!.Add(ManagedPathSegment.Cubic(control1, control2, end));
 		_current = end;
@@ -49,6 +57,7 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 
 	public void QuadraticTo(Vector2 control, Vector2 end)
 	{
+		_pureRoundRect = null;
 		EnsureContour();
 		// Elevate the quadratic to an equivalent cubic.
 		var c1 = _current + (2f / 3f) * (control - _current);
@@ -59,6 +68,7 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 
 	public void ArcTo(Vector2 radius, float rotationAngle, bool isLargeArc, bool clockwise, Vector2 end)
 	{
+		_pureRoundRect = null;
 		EnsureContour();
 		AppendSvgArc(_current, end, radius.X, radius.Y, rotationAngle * MathF.PI / 180f, isLargeArc, clockwise);
 		_current = end;
@@ -77,6 +87,7 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 
 	public void AddRectangle(Rect rect)
 	{
+		var wasEmpty = IsEmpty;
 		FlushContour(closed: false);
 		var l = (float)rect.Left;
 		var t = (float)rect.Top;
@@ -90,6 +101,7 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 			ManagedPathSegment.Line(new Vector2(l, b)),
 		};
 		FlushContour(closed: true);
+		_pureRoundRect = wasEmpty ? new RoundRectangle { Rect = rect } : null;
 	}
 
 	public void AddRoundedRectangle(Rect rect, float radiusX, float radiusY)
@@ -97,6 +109,7 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 
 	public void AddRoundedRectangle(Rect rect, Vector2 topLeft, Vector2 topRight, Vector2 bottomRight, Vector2 bottomLeft)
 	{
+		var wasEmpty = IsEmpty;
 		FlushContour(closed: false);
 
 		var l = (float)rect.Left;
@@ -129,6 +142,10 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 		AppendCornerArc(new Vector2(l, t + topLeft.Y), new Vector2(l + topLeft.X, t), corner: new Vector2(l, t));
 
 		FlushContour(closed: true);
+		// Tag with the CLAMPED radii so the analytic shape matches the tessellated contour exactly.
+		_pureRoundRect = wasEmpty
+			? new RoundRectangle { Rect = rect, TopLeft = topLeft, TopRight = topRight, BottomRight = bottomRight, BottomLeft = bottomLeft }
+			: null;
 
 		static void Clamp(ref Vector2 a, ref Vector2 b, float extent, bool isHorizontalPair)
 		{
@@ -144,6 +161,7 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 
 	public void AddEllipse(Vector2 center, float radiusX, float radiusY)
 	{
+		_pureRoundRect = null;
 		FlushContour(closed: false);
 		_start = new Vector2(center.X + radiusX, center.Y);
 		_segments = new List<ManagedPathSegment>();
@@ -171,19 +189,22 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 			throw new NotSupportedException($"ManagedPathBuilder can only append a {nameof(ManagedGeometry)}.");
 		}
 
+		var wasEmpty = IsEmpty;
 		FlushContour(closed: false);
 		foreach (var contour in managed.Contours)
 		{
 			_contours.Add(contour);
 		}
+		_pureRoundRect = wasEmpty ? managed.SourceRoundRect : null;
 	}
 
 	public IGeometry Build()
 	{
 		FlushContour(closed: false);
-		var geometry = new ManagedGeometry(_contours.ToArray(), FillRule);
+		var geometry = new ManagedGeometry(_contours.ToArray(), FillRule, _pureRoundRect);
 		_contours.Clear();
 		FillRule = GeometryFillRule.NonZero;
+		_pureRoundRect = null;
 		return geometry;
 	}
 
