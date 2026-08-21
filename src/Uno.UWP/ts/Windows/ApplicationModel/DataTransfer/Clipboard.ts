@@ -27,7 +27,7 @@ interface Navigator extends NavigatorClipboard { }
 
 namespace Uno.Utils {
 	export class Clipboard {
-		private static dispatchContentChanged: () => number;
+		private static dispatchContentChanged: () => (void | Promise<void>);
 		private static dispatchGetContent: (requestId : string, content : string) => number;
 
 		public static startContentChanged() {
@@ -180,10 +180,10 @@ namespace Uno.Utils {
 
 		private static onClipboardChanged() {
 			if (!Clipboard.dispatchContentChanged) {
-				if ((<any>globalThis).DotnetExports !== undefined) {
-					Clipboard.dispatchContentChanged = (<any>globalThis).DotnetExports.Uno.Windows.ApplicationModel.DataTransfer.Clipboard.DispatchContentChanged;
+				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+					Clipboard.dispatchContentChanged = (<any>globalThis).DotnetExports.Uno.Windows.ApplicationModel.DataTransfer.Clipboard.DispatchContentChangedAsync;
 				} else {
-					throw `Clipboard: Unable to find dotnet exports`;
+					Clipboard.dispatchContentChanged = (<any>globalThis).DotnetExports.Uno.Windows.ApplicationModel.DataTransfer.Clipboard.DispatchContentChanged;
 				}
 			}
 			Clipboard.dispatchContentChanged();

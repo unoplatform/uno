@@ -13,6 +13,7 @@ internal abstract class X11Renderer : IDisposable
 	private int _renderCount;
 	private SKColor _background = SKColors.White;
 	private SKSurface? _surface;
+	private readonly RetainedLayer _retainedLayer = new();
 	private X11AirspaceRenderHelper? _airspaceHelper;
 	private readonly IXamlRootHost _host;
 	protected readonly X11Window _x11Window;
@@ -24,6 +25,12 @@ internal abstract class X11Renderer : IDisposable
 	}
 
 	public void SetBackgroundColor(SKColor color) => _background = color;
+
+	protected virtual bool UsesRetainedLayer => false;
+
+	protected virtual GRContext? GpuContext => null;
+
+	protected void DisposeRetainedLayer() => _retainedLayer.Dispose();
 
 	public void Render()
 	{
@@ -45,19 +52,33 @@ internal abstract class X11Renderer : IDisposable
 			MakeCurrent();
 		}
 
-		_surface?.Canvas.Clear(_background);
-		var nativeElementClipPath = ((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(_surface?.Canvas, size =>
+		var useLayer = UsesRetainedLayer;
+		var renderCanvas = useLayer ? _retainedLayer.Surface?.Canvas : _surface?.Canvas;
+
+		var nativeElementClipPath = ((CompositionTarget)_host.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(renderCanvas, size =>
 		{
 			_surface?.Dispose();
+			SKSurface renderSurface;
 			using (X11Helper.XLock(display))
 			{
 				_surface = UpdateSize((int)size.Width, (int)size.Height);
+				renderSurface = useLayer
+					? _retainedLayer.EnsureSurface(GpuContext!, (int)size.Width, (int)size.Height, _background)
+					: _surface;
 			}
-			_surface.Canvas.Clear(_background);
+			if (!useLayer)
+			{
+				renderSurface.Canvas.Clear(_background);
+			}
 			_airspaceHelper?.Dispose();
 			_airspaceHelper = new X11AirspaceRenderHelper(display, window, (int)size.Width, (int)size.Height);
-			return _surface.Canvas;
+			return renderSurface.Canvas;
 		});
+
+		if (useLayer && _surface is { } surface)
+		{
+			_retainedLayer.Present(surface);
+		}
 
 		_airspaceHelper?.XShapeClip(nativeElementClipPath);
 

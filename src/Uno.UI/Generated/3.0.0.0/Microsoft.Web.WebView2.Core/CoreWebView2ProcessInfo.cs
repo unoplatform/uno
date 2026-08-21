@@ -3,36 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2ProcessInfo
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		internal CoreWebView2ProcessInfo()
-		{
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2ProcessKind Kind
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessInfo", "Kind");
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public int ProcessId
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ProcessInfo", "ProcessId");
-			}
-		}
-#endif
+		// Skipping already declared property Kind
+		// Skipping already declared property ProcessId
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessInfo.Kind.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ProcessInfo.ProcessId.get
 	}

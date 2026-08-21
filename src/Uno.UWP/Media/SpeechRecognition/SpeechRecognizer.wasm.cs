@@ -23,7 +23,7 @@ namespace Windows.Media.SpeechRecognition
 		private TaskCompletionSource<SpeechRecognitionResult> _currentCompletionSource;
 
 		[JSExport]
-		internal static int DispatchStatus(string instanceId, string state)
+		internal static void DispatchStatus(string instanceId, string state)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
 			{
@@ -32,11 +32,18 @@ namespace Windows.Media.SpeechRecognition
 					speechRecognizer.OnStateChanged(stateEnum);
 				}
 			}
-			return 0;
 		}
 
 		[JSExport]
-		internal static int DispatchError(string instanceId, string error)
+		internal static Task DispatchStatusAsync(string instanceId, string state)
+		{
+			DispatchStatus(instanceId, state);
+
+			return Task.CompletedTask;
+		}
+
+		[JSExport]
+		internal static void DispatchError(string instanceId, string error)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
 			{
@@ -53,21 +60,35 @@ namespace Windows.Media.SpeechRecognition
 					}
 				}
 			}
-			return 0;
 		}
 
 		[JSExport]
-		internal static int DispatchHypothesis(string instanceId, string hypothesis)
+		internal static Task DispatchErrorAsync(string instanceId, string error)
+		{
+			DispatchError(instanceId, error);
+
+			return Task.CompletedTask;
+		}
+
+		[JSExport]
+		internal static void DispatchHypothesis(string instanceId, string hypothesis)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
 			{
 				speechRecognizer.OnHypothesisGenerated(hypothesis);
 			}
-			return 0;
 		}
 
 		[JSExport]
-		internal static int DispatchResult(string instanceId, string result, double confidence)
+		internal static Task DispatchHypothesisAsync(string instanceId, string hypothesis)
+		{
+			DispatchHypothesis(instanceId, hypothesis);
+
+			return Task.CompletedTask;
+		}
+
+		[JSExport]
+		internal static void DispatchResult(string instanceId, string result, double confidence)
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
 			{
@@ -79,7 +100,14 @@ namespace Windows.Media.SpeechRecognition
 				};
 				speechRecognizer?._currentCompletionSource.SetResult(recognitionResult);
 			}
-			return 0;
+		}
+
+		[JSExport]
+		internal static Task DispatchResultAsync(string instanceId, string result, double confidence)
+		{
+			DispatchResult(instanceId, result, confidence);
+
+			return Task.CompletedTask;
 		}
 
 		public IAsyncOperation<SpeechRecognitionResult> RecognizeAsync() =>

@@ -40,7 +40,9 @@
 				BrowserPointerInputSource._exports = browserExports.Uno.UI.Runtime.Skia.BrowserPointerInputSource;
 			}
 
-			new BrowserPointerInputSource(inputSource);
+			const instance = new BrowserPointerInputSource(inputSource);
+
+			await instance.initializeManaged();
 		}
 
 		public static setPointerCapture(pointerId: number): void {
@@ -61,8 +63,14 @@
 		private constructor(manageSource: any) {
 			this._bootTime = Date.now() - performance.now();
 			this._source = manageSource;
+		}
 
-			BrowserPointerInputSource._exports.OnInitialized(manageSource, this._bootTime);
+		private async initializeManaged() {
+			if (WebAssemblyThreading.isThreadingEnabled()) {
+				await BrowserPointerInputSource._exports.OnInitializedAsync(this._source, this._bootTime);
+			} else {
+				BrowserPointerInputSource._exports.OnInitialized(this._source, this._bootTime);
+			}
 			this.subscribePointerEvents(); // Subscribe only after the managed initialization is done
 		}
 
@@ -172,6 +180,26 @@
 				pressure = evt.pressure;
 				wheelDeltaX = 0;
 				wheelDeltaY = 0;
+			}
+
+			if (WebAssemblyThreading.isThreadingEnabled()) {
+				// preventDefault() is called before dispatch since we cannot wait for the C# result.
+				// Currently, no event handlers handle the pointer events so this is safe.
+				const isZooming = BrowserInputHelper.isBrowserZoomEnabled && evt instanceof WheelEvent && evt.ctrlKey;
+
+				if (!isZooming) {
+					evt.preventDefault();
+				}
+
+				BrowserPointerInputSource._exports.OnNativeEventAsync(
+					this._source,
+					event, evt.timeStamp, pointerType, pointerId,
+					evt.clientX, evt.clientY, evt.ctrlKey, evt.shiftKey,
+					evt.buttons, evt.button, pressure,
+					wheelDeltaX, wheelDeltaY, evt.relatedTarget !== null
+				);
+
+				return;
 			}
 
 			const result = BrowserPointerInputSource._exports.OnNativeEvent(

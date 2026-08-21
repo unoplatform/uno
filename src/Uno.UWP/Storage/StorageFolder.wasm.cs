@@ -49,5 +49,12 @@ namespace Windows.Storage
 			_storageInitialized.TrySetResult(true);
 		}
 
+		[JSExport]
+		internal static Task DispatchStorageInitializedAsync()
+		{
+			DispatchStorageInitialized();
+
+			return Task.CompletedTask;
+		}
 	}
 }

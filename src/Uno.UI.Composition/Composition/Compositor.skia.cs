@@ -29,7 +29,15 @@ public partial class Compositor
 		UnoSkiaApi.Initialize();
 	}
 
+	/// <summary>
+	/// Whether the scene is rasterized on the CPU rather than by a GPU-backed surface.
+	/// Set by the active render backend once its renderer is selected; null until then.
+	/// Consulted while recording (e.g. by effect brushes to generate filters the target
+	/// surface can rasterize) and temporarily overridden by RenderTargetBitmap.
+	/// </summary>
 	internal bool? IsSoftwareRenderer { get; set; }
+
+	internal static bool SkipVisualTreePainting { get; set; }
 
 	internal bool IsAnimating => _runningAnimations.Count > 0;
 
@@ -188,7 +196,7 @@ public partial class Compositor
 		return false;
 	}
 
-	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual)
+	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual, SKPath? damage = null)
 	{
 		if (rootVisual is null)
 		{
@@ -216,7 +224,12 @@ public partial class Compositor
 #if PRINT_FRAME_TIMES
 		var start = Stopwatch.GetTimestamp();
 #endif
-		rootVisual.RenderRootVisual(canvas, null);
+		// Skip only the paint walk: animations above still tick and transitions/frame
+		// re-requests below still run, so the scene stays live without producing pixels.
+		if (!SkipVisualTreePainting)
+		{
+			rootVisual.RenderRootVisual(canvas, null, damage);
+		}
 #if PRINT_FRAME_TIMES
 		var span = Stopwatch.GetElapsedTime(start);
 		Console.WriteLine($"Rendered frame {_frameNumber++} in {span.TotalMilliseconds}ms");

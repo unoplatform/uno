@@ -1,7 +1,7 @@
 namespace Uno.Helpers.Theming {
 
 	export class SystemThemeHelper {
-		private static dispatchThemeChange: () => number;
+		private static dispatchThemeChange: () => (void | Promise<void>);
 
 		public static getSystemTheme(): string {
 			if (window.matchMedia) {
@@ -17,10 +17,10 @@ namespace Uno.Helpers.Theming {
 
 		public static observeSystemTheme() {
 			if (!SystemThemeHelper.dispatchThemeChange) {
-				if ((<any>globalThis).DotnetExports !== undefined) {
-					SystemThemeHelper.dispatchThemeChange = (<any>globalThis).DotnetExports.Uno.Uno.Helpers.Theming.SystemThemeHelper.DispatchSystemThemeChange;
+				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+					SystemThemeHelper.dispatchThemeChange = (<any>globalThis).DotnetExports.Uno.Uno.Helpers.Theming.SystemThemeHelper.DispatchSystemThemeChangeAsync;
 				} else {
-					throw `SystemThemeHelper: Unable to find dotnet exports`;
+					SystemThemeHelper.dispatchThemeChange = (<any>globalThis).DotnetExports.Uno.Uno.Helpers.Theming.SystemThemeHelper.DispatchSystemThemeChange;
 				}
 			}
 

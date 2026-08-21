@@ -13,7 +13,14 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private protected override Line CreateLine(GeneratorDirection fillDirection, double extentOffset, double availableBreadth, Uno.UI.IndexPath nextVisibleItem)
 		{
-			if (ShouldInsertReorderingView(extentOffset) && GetAndUpdateReorderingIndex() is { } reorderingIndex)
+			// The !IsMaterialized() check is what keeps this from generating a SECOND container for an index that
+			// already has one: DequeueViewForItem() has no in-use check, so substituting an already-materialized
+			// index hands out a fresh container, and the original then gets dropped on the next ScrapLayout()
+			// without ever being unlinked from the panel. FillLayout() has always had this check on its own call
+			// to AddLine(Forward, reorderIndex); it belongs here too.
+			if (ShouldInsertReorderingView(extentOffset) &&
+				GetAndUpdateReorderingIndex() is { } reorderingIndex &&
+				!IsMaterialized(reorderingIndex))
 			{
 				nextVisibleItem = reorderingIndex;
 			}

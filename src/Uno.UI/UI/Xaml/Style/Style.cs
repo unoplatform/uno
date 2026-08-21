@@ -27,30 +27,60 @@ namespace Microsoft.UI.Xaml
 
 		/// <summary>
 		/// Removes entries from the style caches whose Type key belongs to a non-default ALC.
+		/// These caches rebuild on demand, so the sweep may safely cover ALL non-default contexts.
+		/// User configuration (<see cref="FeatureConfiguration.Style.UseUWPDefaultStylesOverride"/>)
+		/// is NOT part of this group — it never rebuilds; see
+		/// <see cref="RemoveAlcScopedUserStyleOverrides"/>.
 		/// </summary>
 		internal static void ClearCachesForNonDefaultAlc()
 		{
-			RemoveNonDefaultAlcEntries(_lookup);
-			RemoveNonDefaultAlcEntries(_defaultStyleCache);
-			RemoveNonDefaultAlcEntries(_nativeLookup);
-			RemoveNonDefaultAlcEntries(_nativeDefaultStyleCache);
+			var removed = Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_lookup)
+				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_defaultStyleCache)
+				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_nativeLookup)
+				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_nativeDefaultStyleCache);
+
+			if (removed > 0 && _logger.IsEnabled(LogLevel.Debug))
+			{
+				_logger.Debug($"[ALC-CLEANUP] Style caches: removed {removed} non-default-ALC entrie(s).");
+			}
 		}
 
-		private static void RemoveNonDefaultAlcEntries<TValue>(Dictionary<Type, TValue> dictionary)
+		/// <summary>
+		/// Removes <see cref="FeatureConfiguration.Style.UseUWPDefaultStylesOverride"/> entries whose
+		/// control <see cref="Type"/> key is owned by the dying ALC. This dictionary is USER
+		/// CONFIGURATION (written via <c>SetUWPDefaultStylesOverride</c> and never rebuilt), so unlike
+		/// the rebuild-on-demand caches above it must never be swept for all non-default contexts —
+		/// that would silently delete a live sibling secondary app's (or session add-in's) override.
+		/// A previewed app configuring overrides for its own control types would otherwise pin those
+		/// types — and its collectible context — for the process lifetime.
+		/// </summary>
+		internal static void RemoveAlcScopedUserStyleOverrides(global::System.Runtime.Loader.AssemblyLoadContext? dyingAlc)
 		{
-			var keysToRemove = new List<Type>();
-			foreach (var key in dictionary.Keys)
-			{
-				var alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Assembly);
-				if (alc is not null && alc != global::System.Runtime.Loader.AssemblyLoadContext.Default)
-				{
-					keysToRemove.Add(key);
-				}
-			}
+			var removed = Uno.UI.Helpers.AlcCacheSweep.RemoveUnloadScopedEntries(FeatureConfiguration.Style.UseUWPDefaultStylesOverride, dyingAlc);
 
-			foreach (var key in keysToRemove)
+			if (removed > 0 && _logger.IsEnabled(LogLevel.Debug))
 			{
-				dictionary.Remove(key);
+				_logger.Debug($"[ALC-CLEANUP] UseUWPDefaultStylesOverride: removed {removed} entrie(s) owned by dying ALC '{dyingAlc?.Name ?? "unload-initiated"}'.");
+			}
+		}
+
+		/// <summary>
+		/// Removes EVERY non-default-ALC <see cref="FeatureConfiguration.Style.UseUWPDefaultStylesOverride"/>
+		/// entry. DESTRUCTIVE and never rebuilt, so this is reserved for a genuine global shutdown
+		/// (<c>Application.CleanupAllSecondaryAlcCaches</c>), where every secondary app is going away and
+		/// no live sibling can be harmed. It keeps the user-override sweep consistent with the other
+		/// destructive global-shutdown sweeps (ResourceLoader lookup assemblies, CompositionTarget
+		/// handlers), which also go all-non-default there — otherwise a scoped-only override sweep would
+		/// leave keys that pin the very ALCs the shutdown exists to free. For a single dying ALC, use the
+		/// scoped <see cref="RemoveAlcScopedUserStyleOverrides"/> instead.
+		/// </summary>
+		internal static void RemoveAllNonDefaultAlcUserStyleOverrides()
+		{
+			var removed = Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(FeatureConfiguration.Style.UseUWPDefaultStylesOverride);
+
+			if (removed > 0 && _logger.IsEnabled(LogLevel.Debug))
+			{
+				_logger.Debug($"[ALC-CLEANUP] UseUWPDefaultStylesOverride: removed {removed} entrie(s) from all non-default ALCs (global shutdown).");
 			}
 		}
 

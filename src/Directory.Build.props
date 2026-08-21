@@ -243,6 +243,8 @@
 		
 		<!-- Required for studio -->
 		<NoWarn>$(NoWarn);UNO0008</NoWarn>
+
+		<NugetAudit>false</NugetAudit>
 	</PropertyGroup>
 
 	<!--

@@ -14,7 +14,10 @@
 
 		constructor() {
 			var that = this;
-			var dispatchBackRequest = (<any>globalThis).DotnetExports.Uno.Windows.UI.Core.SystemNavigationManager.DispatchBackRequest;
+			var dispatchBackRequest =
+				(<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled() ?
+					(<any>globalThis).DotnetExports.Uno.Windows.UI.Core.SystemNavigationManager.DispatchBackRequestAsync :
+						(<any>globalThis).DotnetExports.Uno.Windows.UI.Core.SystemNavigationManager.DispatchBackRequest;
 
 			window.history.replaceState(0, document.title, null);
 			window.addEventListener("popstate", function (evt) {

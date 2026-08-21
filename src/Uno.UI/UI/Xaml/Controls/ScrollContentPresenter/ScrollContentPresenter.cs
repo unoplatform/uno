@@ -3,7 +3,17 @@ using System;
 using Windows.Foundation;
 using Uno.UI;
 using Windows.System;
+#if __ANDROID__
+using View = Android.Views.View;
+using Font = Android.Graphics.Typeface;
+#elif __APPLE_UIKIT__
+using UIKit;
+using View = UIKit.UIView;
+using Color = UIKit.UIColor;
+using Font = UIKit.UIFont;
+#else
 using View = Microsoft.UI.Xaml.UIElement;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -52,12 +62,20 @@ namespace Microsoft.UI.Xaml.Controls
 		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
 
 		internal double TargetHorizontalOffset =>
+#if __WASM__ // On wasm the scroll might be async (especially with disableAnimation: false), so we need to use the pending value to support high speed multiple scrolling events
+			_pendingScrollTo?.horizontal ?? HorizontalOffset;
+#else
 			HorizontalOffset;
+#endif
 
 		internal double TargetVerticalOffset =>
+#if __WASM__ // On wasm the scroll might be async (especially with disableAnimation: false), so we need to use the pending value to support high speed multiple scrolling events
+			_pendingScrollTo?.vertical ?? VerticalOffset;
+#else
 			VerticalOffset;
+#endif
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__
 		public static DependencyProperty SizesContentToTemplatedParentProperty { get; } = DependencyProperty.Register(
 			nameof(SizesContentToTemplatedParent),
 			typeof(bool),
@@ -86,7 +104,15 @@ namespace Microsoft.UI.Xaml.Controls
 			return args.TargetRect;
 		}
 
-#if __SKIA__
+#if __WASM__
+		bool _forceChangeToCurrentView;
+		bool IScrollContentPresenter.ForceChangeToCurrentView
+		{
+			get => _forceChangeToCurrentView;
+			set => _forceChangeToCurrentView = value;
+		}
+
+#elif __SKIA__
 		bool _forceChangeToCurrentView;
 		internal bool ForceChangeToCurrentView
 		{
@@ -134,7 +160,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public double ViewportWidth => DesiredSize.Width - Margin.Left - Margin.Right;
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			if (Content is UIElement child)
@@ -264,10 +290,45 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (e.KeyModifiers == VirtualKeyModifiers.Control)
 				{
-					// TODO: Handle zoom https://github.com/unoplatform/uno/issues/4309
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+					if (Scroller?.ZoomMode == ZoomMode.Enabled)
+					{
+						// Calculate zoom change (positive delta = zoom in, negative = zoom out)
+						// WinUI zooms toward viewport center for Ctrl+Wheel (not cursor position)
+						var zoomDelta = delta > 0 ? 1.1f : 0.9f; // 10% zoom per wheel tick
+						var newZoom = Math.Clamp(_zoomFactor * zoomDelta, _minZoomFactor, _maxZoomFactor);
+
+						if (Math.Abs(newZoom - _zoomFactor) > 0.001f)
+						{
+							// Zoom toward viewport center - adjust offsets to keep center point fixed
+							var zoomRatio = newZoom / _zoomFactor;
+							var viewportCenterX = ViewportWidth / 2;
+							var viewportCenterY = ViewportHeight / 2;
+
+							// Offsets are expressed in scaled (screen) pixels, so the content point under the
+							// viewport center scales with the zoom ratio: newOffset = (oldOffset + center) * zoomRatio - center
+							var newHOffset = (HorizontalOffset + viewportCenterX) * zoomRatio - viewportCenterX;
+							var newVOffset = (VerticalOffset + viewportCenterY) * zoomRatio - viewportCenterY;
+
+							success = Set(
+								horizontalOffset: newHOffset,
+								verticalOffset: newVOffset,
+								zoomFactor: newZoom,
+								disableAnimation: false);
+						}
+					}
+#endif
 				}
 				else if (canScrollHorizontally && (properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
+					// IsHorizontalMouseWheel already carries the correct sign (positive = right). A Shift-redirected
+					// vertical wheel uses the vertical convention (positive = up), so negate to get positive = right.
+					var horizontalDelta = properties.IsHorizontalMouseWheel ? delta : -delta;
+#if __WASM__
+					success = Set(
+						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta),
+						disableAnimation: false);
+#else
 					// Trackpad/touchpad-style scroll events can arrive at display-refresh rate (~60/s) with precise
 					// pixel-level deltas. The 1-second composition animation is NOT suitable because:
 					// 1. When many events have accumulated the target far ahead of the visual, the animation's
@@ -285,9 +346,9 @@ namespace Microsoft.UI.Xaml.Controls
 						// (inline pickers) nearly unresponsive. Use delta directly as pixel offset
 						// for 1:1 trackpad-to-scroll mapping. Discrete mouse wheel (|delta| >= 120)
 						// still uses the standard formula for correct per-notch distance.
-						var hScrollAmount = Math.Abs(delta) < ScrollViewerDefaultMouseWheelDelta
-							? (double)delta
-							: GetHorizontalScrollWheelDelta(DesiredSize, delta);
+						var hScrollAmount = Math.Abs(horizontalDelta) < ScrollViewerDefaultMouseWheelDelta
+							? (double)horizontalDelta
+							: GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta);
 						success = Set(
 							horizontalOffset: HorizontalOffset + hScrollAmount,
 							options: new(DisableAnimation: true, IsIntermediate: false));
@@ -295,12 +356,18 @@ namespace Microsoft.UI.Xaml.Controls
 					else
 					{
 						success = Set(
-							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
+							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta),
 							disableAnimation: false);
 					}
+#endif
 				}
 				else if (canScrollVertically && !properties.IsHorizontalMouseWheel)
 				{
+#if __WASM__
+					success = Set(
+						verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
+						disableAnimation: false);
+#else
 					if (OperatingSystem.IsIOS() || OperatingSystem.IsMacOS())
 					{
 						var vScrollAmount = Math.Abs(delta) < ScrollViewerDefaultMouseWheelDelta
@@ -316,6 +383,7 @@ namespace Microsoft.UI.Xaml.Controls
 							verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
 							disableAnimation: false);
 					}
+#endif
 				}
 
 				// This is not similar to what WinUI is doing, since we already differ quite a bit from
@@ -352,9 +420,29 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return Math.Max(minOffset, Math.Min(offset, maxOffset));
 		}
+
+#elif __APPLE_UIKIT__ // Note: No __ANDROID__, the ICustomScrollInfo support is made directly in the NativeScrollContentPresenter
+		protected override Size MeasureOverride(Size size)
+		{
+			var result = base.MeasureOverride(size);
+
+			(RealContent as ICustomScrollInfo).ApplyViewport(ref result);
+
+			return result;
+		}
+
+		/// <inheritdoc />
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			var result = base.ArrangeOverride(finalSize);
+
+			(RealContent as ICustomScrollInfo).ApplyViewport(ref result);
+
+			return result;
+		}
 #endif
 
-#if __NETSTD_REFERENCE__
+#if __WASM__ || __NETSTD_REFERENCE__
 		protected override void OnContentChanged(object oldValue, object newValue) => base.OnContentChanged(oldValue, newValue);
 #endif
 	}

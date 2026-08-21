@@ -50,9 +50,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="build/*.*">
+		<Content Include="build/**/*.*">
 			<Pack>true</Pack>
 			<PackagePath>build</PackagePath>
+		</Content>
+		<Content Include="build/native/*.*">
+			<Pack>true</Pack>
+			<PackagePath>build/native</PackagePath>
 		</Content>
 	</ItemGroup>
 

@@ -171,6 +171,12 @@ public partial class ClientHotReloadProcessor
 	public Task UpdateFileAsync(string filePath, string? oldText, string newText, bool waitForHotReload, bool forceSaveToDisk, CancellationToken ct)
 		=> UpdateFileAsync(new UpdateRequest(filePath, oldText, newText, waitForHotReload) { ForceSaveToDisk = forceSaveToDisk }, ct);
 
+	/// <summary>
+	/// Applies a batch of file edits through the dev-server, throwing on failure — the thrown
+	/// error is the one reported by <see cref="TryUpdateFilesAsync"/>, including
+	/// <see cref="HotReloadNotInitializedException"/> when called before the first
+	/// <see cref="StatusChanged"/> notification.
+	/// </summary>
 	public async Task UpdateFileAsync(UpdateRequest req, CancellationToken ct)
 	{
 		if (await TryUpdateFileAsync(req, ct) is { Error: { } error })
@@ -185,10 +191,22 @@ public partial class ClientHotReloadProcessor
 	public Task<UpdateResult> TryUpdateFileAsync(UpdateRequest req, CancellationToken ct)
 		=> TryUpdateFilesAsync(req, ct);
 
+	/// <summary>
+	/// Applies a batch of file edits through the dev-server, optionally waiting for the
+	/// resulting hot-reload to be applied locally.
+	/// </summary>
+	/// <remarks>
+	/// Must not be called before the first <see cref="StatusChanged"/> notification: until the
+	/// hot-reload engine has published its initial status, the request cannot be tracked and
+	/// the call fails with a <see cref="HotReloadNotInitializedException"/> in the result's
+	/// <c>Error</c> — regardless of <c>WaitForHotReload</c> (the gate also applies to
+	/// write/persist-only usages).
+	/// </remarks>
 	public async Task<UpdateResult> TryUpdateFilesAsync(UpdateRequest req, CancellationToken ct)
 	{
 		var result = default(UpdateResult);
 		HotReloadUIPauseHandle? pauseHandle = null;
+		IDisposable? typeCorrelationScope = null;
 		var currentLocalHrId = -1;
 
 		try
@@ -203,6 +221,33 @@ public partial class ClientHotReloadProcessor
 			var debug = log.IsDebugEnabled() ? log : default;
 			var tag = $"[{Interlocked.Increment(ref _reqId):D2}-{Path.GetFileName(req.Edits.First().FilePath)}]";
 
+			// Client-side gate (counterpart of the server-side workspace gate): until the first status
+			// notification the request cannot be tracked. CurrentStatus is declared non-nullable but is
+			// legitimately null until then (StatusSink.Current starts as null!), hence the nullable local.
+			Status? currentStatus = CurrentStatus;
+			if (currentStatus is null)
+			{
+				if (log.IsEnabled(LogLevel.Warning))
+				{
+					log.Warn($"{tag} Rejecting the update: hot reload is not initialized yet — wait for the first StatusChanged notification before sending file updates.");
+				}
+
+				return result with { Error = new HotReloadNotInitializedException() };
+			}
+
+			if (currentStatus.State is HotReloadState.Disabled)
+			{
+				// Do not reject: with hot-reload disabled a file update is still a legitimate
+				// way to persist changes (files are written / forwarded to the IDE) — but no
+				// hot-reload should be expected, so surface the state to the caller's logs.
+				// This client-side check is advisory only: the server remains the authoritative
+				// enforcement point when hot reload is disabled.
+				if (log.IsEnabled(LogLevel.Warning))
+				{
+					log.Warn($"{tag} Hot reload is disabled for this session — the update will still be processed (files may be written), but no hot-reload is expected to be applied.");
+				}
+			}
+
 			debug?.Debug($"{tag} Updating {req.Edits.Length} file(s).");
 			if (debug?.IsTraceEnabled() ?? false)
 			{
@@ -210,6 +255,20 @@ public partial class ClientHotReloadProcessor
 				{
 					debug?.Debug($"{tag} '{edit.FilePath}' (from: {edit.OldText?[..100]} | to: {edit.NewText?[..100]}).");
 				}
+			}
+
+			// When a UI pause will be taken (below), the raw Type[] of each local HR operation is the
+			// pause-correlation payload: after awaiting completion we read the completed operations'
+			// Types to compute the set to drop from the pause handle. ReportCompleted normally
+			// releases that array the instant an operation turns terminal (collectible-ALC
+			// guarantee), which would always hand us an empty drop set. Enter a type-correlation
+			// scope BEFORE the update begins: operations turning terminal while it is active are
+			// registered with it and released by its Dispose (in the finally block) — the raw types
+			// are only ever retained while a scope holds them, so the ALC release guarantee is
+			// preserved without any additional call from this method.
+			if (req.PauseUIPhases != HotReloadUIPhases.None)
+			{
+				typeCorrelationScope = HotReloadClientOperation.EnterTypeCorrelationScope();
 			}
 
 			// As the local HR is not really ID trackable (trigger by VS without any ID), we capture the current ID here to make sure that if HR completes locally before we get info from the server, we won't miss it.
@@ -346,7 +405,17 @@ public partial class ClientHotReloadProcessor
 		}
 		finally
 		{
+			// Dispose the pause FIRST: its drain promotes deferred operations to terminal
+			// (ReportCompleted) while the correlation scope is still active, so they too get
+			// registered with the scope and released by its Dispose below.
 			pauseHandle?.Dispose();
+
+			// Disposing the scope releases the raw Type[] (and detaches the exception graphs) of
+			// every operation that turned terminal while it was active — including operations that
+			// fell outside this update's drop window. The release is deferred only if another
+			// concurrent caller's scope still holds an operation; the last scope out releases it,
+			// so no operation can pin its collectible previewed-app ALC past the overlapping calls.
+			typeCorrelationScope?.Dispose();
 		}
 	}
 
@@ -425,7 +494,7 @@ public partial class ClientHotReloadProcessor
 	}
 
 	private int GetCurrentLocalHotReloadId()
-		=> CurrentStatus.Local.Operations is { Count: > 0 } ops ? ops.Max(op => op.Id) : -1;
+		=> CurrentStatus?.Local.Operations is { Count: > 0 } ops ? ops.Max(op => op.Id) : -1;
 
 	private async ValueTask<HotReloadClientOperation> WaitForLocalHotReloadAsync(int hotReloadId, TimeSpan timeout, CancellationToken ct)
 	{

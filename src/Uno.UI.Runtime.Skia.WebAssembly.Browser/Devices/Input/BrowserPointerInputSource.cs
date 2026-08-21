@@ -1,19 +1,19 @@
 ﻿using System;
-using Windows.Devices.Input;
-using Windows.Foundation;
-using Windows.UI.Core;
-using Windows.UI.Input;
-using Microsoft.UI.Xaml.Controls;
-using static Windows.UI.Input.PointerUpdateKind;
-using Uno.Foundation.Logging;
-using System.Runtime.InteropServices.JavaScript;
-
-using _PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
-using _PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
 using System.Runtime.InteropServices;
-using Windows.System;
+using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
+using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml;
+using Windows.Devices.Input;
+using Windows.Foundation;
+using Windows.System;
+using Windows.UI.Core;
+using Windows.UI.Input;
+using static Windows.UI.Input.PointerUpdateKind;
+using _PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
+using _PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -52,6 +52,14 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 		((BrowserPointerInputSource)inputSource)._bootTime = (ulong)bootTime;
 
 		_trace?.Invoke("Complete initialization of BrowserPointerInputSource, we are now ready to receive pointer events!");
+	}
+
+	[JSExport]
+	private static Task OnInitializedAsync([JSMarshalAs<JSType.Any>] object inputSource, double bootTime)
+	{
+		OnInitialized(inputSource, bootTime);
+
+		return Task.CompletedTask;
 	}
 
 	[JSExport]
@@ -161,6 +169,31 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 
 			return (int)Uno.UI.Xaml.HtmlEventDispatchResult.Ok; // TODO
 		}
+	}
+
+	[JSExport]
+	private static Task OnNativeEventAsync(
+		[JSMarshalAs<JSType.Any>] object inputSource,
+		byte @event,
+		double timestamp,
+		int deviceType,
+		double pointerId,
+		double x,
+		double y,
+		bool ctrl,
+		bool shift,
+		int buttons,
+		int buttonUpdate,
+		double pressure,
+		double wheelDeltaX,
+		double wheelDeltaY,
+		bool hasRelatedTarget)
+	{
+		OnNativeEvent(inputSource, @event, timestamp, deviceType, pointerId,
+			x, y, ctrl, shift, buttons, buttonUpdate, pressure,
+			wheelDeltaX, wheelDeltaY, hasRelatedTarget);
+
+		return Task.CompletedTask;
 	}
 
 	[NotImplemented] public bool HasCapture => false;
@@ -326,8 +359,8 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 			HtmlPointerButtonUpdate.Right => PointerUpdateKind.RightButtonReleased,
 			HtmlPointerButtonUpdate.X1 when props.IsXButton1Pressed => PointerUpdateKind.XButton1Pressed,
 			HtmlPointerButtonUpdate.X1 => PointerUpdateKind.XButton1Released,
-			HtmlPointerButtonUpdate.X2 when props.IsXButton2Pressed => PointerUpdateKind.XButton1Pressed,
-			HtmlPointerButtonUpdate.X2 => PointerUpdateKind.XButton1Released,
+			HtmlPointerButtonUpdate.X2 when props.IsXButton2Pressed => PointerUpdateKind.XButton2Pressed,
+			HtmlPointerButtonUpdate.X2 => PointerUpdateKind.XButton2Released,
 			_ => PointerUpdateKind.Other
 		};
 

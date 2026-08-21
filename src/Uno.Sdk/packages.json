@@ -36,7 +36,7 @@
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net10.0": "10.1.0-dev.137"
+			"net10.0": "10.1.0-dev.214"
 		}
 	},
 	{
@@ -70,28 +70,28 @@
 	},
 	{
 		"group": "Resizetizer",
-		"version": "1.13.0-dev.11",
+		"version": "1.13.0-dev.17",
 		"packages": [
 			"Uno.Resizetizer"
 		]
 	},
 	{
 		"group": "sdkextras",
-		"version": "6.4.0-dev.7",
+		"version": "6.4.0-dev.13",
 		"packages": [
 			"Uno.Sdk.Extras"
 		]
 	},
 	{
 		"group": "settings",
-		"version": "1.8.0-dev.42",
+		"version": "1.13.0-dev.7",
 		"packages": [
 			"Uno.Settings.DevServer"
 		]
 	},
 	{
 		"group": "hotdesign",
-		"version": "1.18.66",
+		"version": "1.20.0-dev.750",
 		"packages": [
 			"Uno.UI.HotDesign"
 		]
@@ -125,41 +125,41 @@
 	},
 	{
 		"group": "WinAppSdkBuildTools",
-		"version": "10.0.28000.1721",
+		"version": "10.0.28000.2526",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools"
 		]
 	},
 	{
 		"group": "WinAppSdkBuildToolsWinApp",
-		"version": "0.3.1",
+		"version": "0.5.0",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools.WinApp"
 		]
 	},
 	{
 		"group": "MicrosoftLoggingConsole",
-		"version": "9.0.14",
+		"version": "9.0.18",
 		"packages": [
 			"Microsoft.Extensions.Logging.Console"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.5"
+			"net10.0": "10.0.10"
 		}
 	},
 	{
 		"group": "WindowsCompatibility",
-		"version": "9.0.14",
+		"version": "9.0.18",
 		"packages": [
 			"Microsoft.Windows.Compatibility"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.5"
+			"net10.0": "10.0.10"
 		}
 	},
 	{
 		"group": "MsalClient",
-		"version": "4.83.1",
+		"version": "4.87.0",
 		"packages": [
 			"Microsoft.Identity.Client",
 			"Microsoft.Identity.Client.Extensions.Msal"
@@ -167,7 +167,7 @@
 	},
 	{
 		"group": "Mvvm",
-		"version": "8.4.0",
+		"version": "8.4.2",
 		"packages": [
 			"CommunityToolkit.Mvvm"
 		]
@@ -183,7 +183,7 @@
 	},
 	{
 		"group": "UnoFonts",
-		"version": "2.8.1",
+		"version": "2.9.4",
 		"packages": [
 			"Uno.Fonts.OpenSans",
 			"Uno.Fonts.Fluent",
@@ -292,12 +292,12 @@
 	},
 	{
 		"group": "AndroidXWear",
-		"version": "1.3.0.16",
+		"version": "1.3.0.14",
 		"packages": [
 			"Xamarin.AndroidX.Wear"
 		],
 		"versionOverride": {
-			"net10.0": "1.4.0.1"
+			"net10.0": "1.3.0.15"
 		}
 	},
 	{
@@ -343,12 +343,12 @@
 			"Microsoft.Maui.Graphics"
 		],
 		"versionOverride": {
-			"net10.0": "10.0.50"
+			"net10.0": "10.0.90"
 		}
 	},
 	{
 		"group": "CSharpMarkup",
-		"version": "6.6.0-dev.5",
+		"version": "6.7.0-dev.16",
 		"packages": [
 			"Uno.WinUI.Markup",
 			"Uno.Extensions.Markup.Generators"
@@ -356,7 +356,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "7.2.0-dev.44",
+		"version": "7.3.0-dev.102",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -386,7 +386,7 @@
 	},
 	{
 		"group": "Toolkit",
-		"version": "8.5.0-dev.37",
+		"version": "9.1.0-dev.2",
 		"packages": [
 			"Uno.Toolkit.WinUI",
 			"Uno.Toolkit.WinUI.Cupertino",
@@ -399,7 +399,7 @@
 	},
 	{
 		"group": "Themes",
-		"version": "7.0.0-dev.24",
+		"version": "7.1.0-dev.1",
 		"packages": [
 			"Uno.Material.WinUI",
 			"Uno.Material.WinUI.Markup",
@@ -418,14 +418,14 @@
 	},
 	{
 		"group": "MicrosoftWebView2",
-		"version": "1.0.3856.49",
+		"version": "1.0.4078.44",
 		"packages": [
 			"Microsoft.Web.WebView2"
 		]
 	},
 	{
 		"group": "AppMcp",
-		"version": "1.3.0-dev.36",
+		"version": "1.3.0-dev.98",
 		"packages": [
 			"Uno.UI.App.Mcp"
 		]

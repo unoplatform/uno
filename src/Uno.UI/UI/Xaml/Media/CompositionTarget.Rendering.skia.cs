@@ -16,6 +16,8 @@ using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 
+#pragma warning disable CS0618 // SkiaSharp 4: intentional use of deprecated mutable SKPath/SKCanvas API (SKPathBuilder/SKSamplingOptions migration deferred)
+
 namespace Microsoft.UI.Xaml.Media;
 
 public partial class CompositionTarget
@@ -32,10 +34,24 @@ public partial class CompositionTarget
 
 	static CompositionTarget()
 	{
-		// A closing window stops calling Draw; fail its pending render jobs so awaiters fall
-		// back to software rendering instead of hanging.
-		XamlRootMap.Unregistered += (_, xamlRoot) => xamlRoot.VisualTree.ContentRoot.CompositionTarget.FailPendingRenderJobs();
+		XamlRootMap.Unregistered += (_, xamlRoot) =>
+		{
+			var target = xamlRoot.VisualTree.ContentRoot.CompositionTarget;
+			// A closing window stops calling Draw; fail its pending render jobs so awaiters fall
+			// back to software rendering instead of hanging.
+			target.FailPendingRenderJobs();
+			OnTargetUnregistered(target);
+		};
 	}
+
+	// Latest recorded frame per live target. Only touched on the UI thread. Entries are retained
+	// until replaced by a newer frame or until the target unregisters, so a Rendering raise can
+	// resend the last picture of a target that hasn't re-rendered since (e.g. a window minimized
+	// on hosts that stop servicing invalidations, like macOS).
+	private static readonly Dictionary<CompositionTarget, FramePicture> _latestFrames = new();
+
+	// Only touched on the UI thread.
+	private static bool _renderingRaiseScheduled;
 
 	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly Lock _frameGate = new();
@@ -47,8 +63,19 @@ public partial class CompositionTarget
 	private float _lastRasterizationScale = 1;
 	private static SKPath? _lastScaledNativeClipPath;
 
+	private readonly SKPath _pendingDamage = new();
+
+	// Recycled per-frame damage snapshot paths. At most a couple of frames are ever in flight, so reusing
+	// their SKPaths avoids allocating (and finalizing) a native path every frame. Only touched under
+	// _frameGate, like the frame slot itself.
+	private readonly Stack<SKPath> _damageSnapshotPool = new();
+
+	// Returned as the native-element clip path when there's no recorded frame yet. The clip path is
+	// borrowed read-only by hosts (never mutated or disposed), so a single shared instance is safe.
+	private static readonly SKPath _emptyPath = new();
+
 	// only set on the UI thread and under _frameGate, only read under _frameGate
-	private (IntPtr frame, SKPath nativeElementClipPath)? _lastRenderedFrame;
+	private (FramePicture picture, SKPath nativeElementClipPath, SKPath damage)? _lastRenderedFrame;
 	// only set and read under _xamlRootBoundsGate
 	private Size _xamlRootBounds;
 	// only set and read under _xamlRootBoundsGate
@@ -99,22 +126,49 @@ public partial class CompositionTarget
 			(float)bounds.Width,
 			(float)bounds.Height,
 			rootElement.Visual,
-			invertPath: FrameRenderingOptions.invertNativeElementClipPath);
-		var renderedFrame = (picture, path);
-		var previousFrame = default((IntPtr frame, SKPath path)?);
+			invertPath: FrameRenderingOptions.invertNativeElementClipPath,
+			damage: _pendingDamage);
+
+		if (_fpsHelper.TryGetDamageBounds(out var fpsBounds))
+		{
+			_pendingDamage.UnionRect(fpsBounds);
+		}
+
+		var framePicture = new FramePicture(picture);
+		var frameRect = new SKRect(0, 0, (float)bounds.Width, (float)bounds.Height);
+		var previousFrame = default((FramePicture picture, SKPath path, SKPath damage)?);
+		SKPath damageSnapshot;
 		lock (_frameGate)
 		{
 			previousFrame = _lastRenderedFrame;
 
-			_lastRenderedFrame = renderedFrame;
+			if (previousFrame is { damage: var carried } && !carried.IsEmpty)
+			{
+				_pendingDamage.Union(carried);
+			}
+
+			_pendingDamage.ClampTo(frameRect);
+
+			damageSnapshot = _damageSnapshotPool.Count > 0 ? _damageSnapshotPool.Pop() : new SKPath();
+			damageSnapshot.Rewind();
+			damageSnapshot.AddPath(_pendingDamage);
+			_pendingDamage.Rewind();
+
+			_lastRenderedFrame = (framePicture, path, damageSnapshot);
+
+			// The previous frame is being superseded in place (it wasn't borrowed for present, since the
+			// slot was non-null); its snapshot is no longer referenced, so recycle it for the next frame.
+			if (previousFrame is { damage: var superseded })
+			{
+				_damageSnapshotPool.Push(superseded);
+			}
 		}
 
 		_fpsHelper.OnFrameRecorded();
 
-		// Delete previous SKPicture now since we are swapping it
-		if (previousFrame != null)
+		if (previousFrame is { } prev)
 		{
-			UnoSkiaApi.sk_refcnt_safe_unref(previousFrame.Value.frame);
+			prev.picture.OnPipelineReleased();
 		}
 
 		if (_isRenderingActive)
@@ -147,7 +201,57 @@ public partial class CompositionTarget
 		}
 
 		FrameRendered?.Invoke();
+
+		OnFramePictureRecorded(this, framePicture);
+
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
+	}
+
+	void ICompositionTarget.AddDamage(SKRect bounds)
+	{
+		NativeDispatcher.CheckThreadAccess();
+		_pendingDamage.UnionRect(bounds);
+	}
+
+	void ICompositionTarget.AddDamage(SKPath region)
+	{
+		NativeDispatcher.CheckThreadAccess();
+		_pendingDamage.Union(region);
+	}
+
+	private readonly SKPaint _damageOutsetPaint = new() { Style = SKPaintStyle.Stroke, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
+	private readonly SKPath _damageOutsetBand = new();
+	private readonly SKPath _outsetDamage = new();
+
+	// Rendering is antialiased: it writes device pixels whose centers lie outside the drawn geometry,
+	// while the non-AA damage clip only includes pixels whose centers lie inside the damage region.
+	// When a damage edge lands between device pixels (fractional rasterization scale), that AA fringe
+	// is written but never replayed and accumulates as stale artifacts. Outsetting the clip by one
+	// device pixel covers every pixel the damaged content may have touched; the replayed picture is
+	// the full frame, so over-covering is always correct.
+	private SKPath OutsetDamageForPresent(SKPath damage, float rasterizationScale)
+	{
+		if (damage.IsEmpty)
+		{
+			return damage;
+		}
+
+		// The stroke straddles the edge, so a width of 2 device pixels outsets the fill by 1.
+		_damageOutsetPaint.StrokeWidth = 2 / rasterizationScale;
+		_damageOutsetBand.Rewind();
+		_damageOutsetPaint.GetFillPath(damage, _damageOutsetBand);
+		_outsetDamage.Rewind();
+		damage.Op(_damageOutsetBand, SKPathOp.Union, _outsetDamage);
+		return _outsetDamage;
+	}
+
+	private static readonly SKPaint _damageOverlayFill = new() { Color = new SKColor(0xFF, 0x00, 0x00, 0x30), Style = SKPaintStyle.Fill };
+	private static readonly SKPaint _damageOverlayStroke = new() { Color = new SKColor(0xFF, 0x00, 0x00, 0xB0), Style = SKPaintStyle.Stroke, StrokeWidth = 1 };
+
+	private static void DrawDamageRegionOverlay(SKCanvas canvas, SKPath damage)
+	{
+		canvas.DrawPath(damage, _damageOverlayFill);
+		canvas.DrawPath(damage, _damageOverlayStroke);
 	}
 
 	private SKPath Draw(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
@@ -161,7 +265,7 @@ public partial class CompositionTarget
 			RunRenderJobs(canvas.Context as GRContext);
 		}
 
-		(IntPtr frame, SKPath nativeElementClipPath)? lastRenderedFrameNullable;
+		(FramePicture picture, SKPath nativeElementClipPath, SKPath damage)? lastRenderedFrameNullable;
 		lock (_frameGate)
 		{
 			lastRenderedFrameNullable = _lastRenderedFrame;
@@ -174,7 +278,7 @@ public partial class CompositionTarget
 
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
 		{
-			return new SKPath();
+			return _emptyPath;
 		}
 		else
 		{
@@ -193,7 +297,8 @@ public partial class CompositionTarget
 				// the canvas to 0x0 which may crash on some targets
 				return lastRenderedFrame.nativeElementClipPath;
 			}
-			if (canvas is null || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale)
+			var canvasRecreated = canvas is null || _lastCanvasSize != xamlRootBounds || _lastRasterizationScale != rasterizationScale;
+			if (canvasRecreated)
 			{
 				canvas = resizeFunc(new Size(Math.Round(xamlRootBounds.Width * rasterizationScale), Math.Round(xamlRootBounds.Height * rasterizationScale)));
 				_lastCanvasSize = xamlRootBounds;
@@ -207,22 +312,38 @@ public partial class CompositionTarget
 				}
 			}
 
-			canvas.Save();
+			canvas!.Save();
 			if (rasterizationScale != 1)
 			{
 				canvas.Scale(rasterizationScale, rasterizationScale);
 			}
+
+			var damage = lastRenderedFrame.damage;
+			var useDamageRegion = !canvasRecreated;
+			var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;
+
+			if (useDamageRegion && !overlayEnabled)
+			{
+				canvas.ClipPath(OutsetDamageForPresent(damage, rasterizationScale), antialias: false);
+			}
+
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
 			SkiaRenderHelper.RenderPicture(
 				canvas,
-				lastRenderedFrame.frame,
+				lastRenderedFrame.picture.Picture,
 				SKColors.Transparent,
 				_fpsHelper.DrawFps);
+
+			if (overlayEnabled && useDamageRegion && !damage.IsEmpty)
+			{
+				DrawDamageRegionOverlay(canvas, damage);
+			}
+
 			canvas.Restore();
 
+			// This frame's damage is now presented; clear it so Render's carry-forward doesn't re-damage it next frame.
+			lastRenderedFrame.damage.Rewind();
 			ReturnFrame(lastRenderedFrame);
-
-			InvokeRendering();
 
 			if (FrameRenderingOptions.applyScalingToNativeElementClipPath && rasterizationScale != 1)
 			{
@@ -324,9 +445,9 @@ public partial class CompositionTarget
 		public void Fail() => _tcs.TrySetResult(false);
 	}
 
-	private void ReturnFrame((IntPtr picture, SKPath path) frame)
+	private void ReturnFrame((FramePicture picture, SKPath path, SKPath damage) frame)
 	{
-		var pictureToDelete = IntPtr.Zero;
+		var releasedPicture = default(FramePicture);
 
 		lock (_frameGate)
 		{
@@ -337,29 +458,134 @@ public partial class CompositionTarget
 			}
 			else
 			{
-				pictureToDelete = frame.picture;
+				releasedPicture = frame.picture;
+				// This presented frame is superseded by a newer one; its snapshot (already rewound in Draw)
+				// is done — recycle it.
+				_damageSnapshotPool.Push(frame.damage);
 			}
 		}
 
 		// Delete it then
-		if (pictureToDelete != IntPtr.Zero)
+		releasedPicture?.OnPipelineReleased();
+	}
+
+	private static void OnFramePictureRecorded(CompositionTarget target, FramePicture picture)
+	{
+		picture.Retain();
+		if (_latestFrames.TryGetValue(target, out var replaced))
 		{
-			UnoSkiaApi.sk_refcnt_safe_unref(pictureToDelete);
+			replaced.Release(pictureAccessed: false);
+		}
+		_latestFrames[target] = picture;
+
+		if (_isRenderingActive && !_renderingRaiseScheduled)
+		{
+			_renderingRaiseScheduled = true;
+			NativeDispatcher.Main.Enqueue(RaiseRendering, NativeDispatcherPriority.High);
 		}
 	}
 
-	internal static void InvokeRendering()
+	// Raises Rendering once per batch of recorded frames, with the latest picture of every live
+	// target — including targets that haven't re-rendered since the last raise, whose previous
+	// picture is resent. Synchronous callout to app code.
+	private static void RaiseRendering()
 	{
-		if (NativeDispatcher.Main.HasThreadAccess)
+		_renderingRaiseScheduled = false;
+
+		var pictures = new FramePicture[_latestFrames.Count];
+		var frameData = new List<(Window Window, object Data)>(_latestFrames.Count);
+		var i = 0;
+		foreach (var (target, picture) in _latestFrames)
 		{
-			_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
-		}
-		else
-		{
-			NativeDispatcher.Main.Enqueue(() =>
+			picture.Retain();
+			pictures[i++] = picture;
+			if (target.ContentRoot.GetOwnerWindow() is { } window)
 			{
-				_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
-			}, NativeDispatcherPriority.High);
+				frameData.Add((window, picture.Picture));
+			}
 		}
+
+		var args = new RenderingEventArgs(Stopwatch.GetElapsedTime(_start), frameData);
+		try
+		{
+			_rendering?.Invoke(null, args);
+		}
+		finally
+		{
+			foreach (var picture in pictures)
+			{
+				picture.Release(args.FrameDataAccessed);
+			}
+		}
+	}
+
+	private static void OnTargetUnregistered(CompositionTarget target)
+	{
+		_targets.Remove(target);
+		if (_latestFrames.Remove(target, out var picture))
+		{
+			picture.Release(pictureAccessed: false);
+		}
+	}
+
+	/// <summary>
+	/// Owns a frame's recorded picture. The picture is disposed deterministically once the
+	/// pipeline released it and all retentions (the latest-frame cache, in-flight Rendering
+	/// raises) are gone — unless a Rendering subscriber actually read it from the event args,
+	/// in which case user code may still hold it and the GC reclaims it instead.
+	/// </summary>
+	internal sealed class FramePicture(SKPicture picture)
+	{
+		private readonly Lock _gate = new();
+		private int _retainCount;
+		private bool _publicized;
+		private bool _releasedByPipeline;
+		private bool _disposed;
+
+		public SKPicture Picture { get; } = picture;
+
+		public void Retain()
+		{
+			lock (_gate)
+			{
+				_retainCount++;
+			}
+		}
+
+		public void Release(bool pictureAccessed)
+		{
+			bool dispose;
+			lock (_gate)
+			{
+				_retainCount--;
+				_publicized |= pictureAccessed;
+				dispose = ShouldDispose();
+				_disposed |= dispose;
+			}
+
+			if (dispose)
+			{
+				Picture.Dispose();
+			}
+		}
+
+		public void OnPipelineReleased()
+		{
+			bool dispose;
+			lock (_gate)
+			{
+				_releasedByPipeline = true;
+				dispose = ShouldDispose();
+				_disposed |= dispose;
+			}
+
+			if (dispose)
+			{
+				Picture.Dispose();
+			}
+		}
+
+		// only call under _gate
+		private bool ShouldDispose() => !_disposed && !_publicized && _releasedByPipeline && _retainCount == 0;
 	}
 }

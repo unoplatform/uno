@@ -1642,13 +1642,22 @@ function Install-DevserverCliTool {
 
     Write-Log "Installing devserver CLI tool into isolated tool path $toolDirectory"
 
-    if (-not [string]::IsNullOrWhiteSpace($PackagesDir) -and (Get-ChildItem -Path $PackagesDir -Filter "Uno.DevServer.*.nupkg" -ErrorAction SilentlyContinue | Select-Object -First 1)) {
-        Write-Log "Installing devserver CLI tool from local package artifacts in $PackagesDir"
-        & dotnet tool install --tool-path $toolDirectory uno.devserver --add-source $PackagesDir --ignore-failed-sources --prerelease
+    $localPackage = if (-not [string]::IsNullOrWhiteSpace($PackagesDir)) {
+        Get-ChildItem -Path $PackagesDir -Filter "Uno.DevServer.*.nupkg" -ErrorAction SilentlyContinue | Select-Object -First 1
+    }
+
+    if ($localPackage) {
+        # Pin the exact built version and install only from the local artifacts with the HTTP
+        # cache bypassed. On reused CI agents an unpinned '--prerelease' install could resolve or
+        # serve a different/partially-cached package from ambient feeds, intermittently failing
+        # with "DotnetToolSettings.xml was not found in the package".
+        $localVersion = $localPackage.Name -replace '^Uno\.DevServer\.', '' -replace '\.nupkg$', ''
+        Write-Log "Installing devserver CLI tool $localVersion from local package artifacts in $PackagesDir"
+        & dotnet tool install --tool-path $toolDirectory uno.devserver --version $localVersion --add-source $PackagesDir --no-http-cache --ignore-failed-sources
     }
     else {
         Write-Log "Installing devserver CLI tool from configured feeds (version $env:NBGV_SemVer2)"
-        & dotnet tool install --tool-path $toolDirectory uno.devserver --version $env:NBGV_SemVer2
+        & dotnet tool install --tool-path $toolDirectory uno.devserver --version $env:NBGV_SemVer2 --no-http-cache
     }
 
     if ($LASTEXITCODE -ne 0) {

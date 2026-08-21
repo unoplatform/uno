@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,11 +22,9 @@ using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Controls;
 
-using WebView2Utilities = WebView2.Utilities.WebView2Utilities;
-
 namespace Uno.UI.Runtime.Skia.Win32;
 
-internal sealed class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsVirtualHostMapping, ISupportsWebResourceRequested
+internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsVirtualHostMapping, ISupportsWebResourceRequested
 {
 	private readonly CoreWebView2 _coreWebView;
 	private readonly WebView2.ICoreWebView2_22 _nativeWebView;
@@ -35,6 +32,8 @@ internal sealed class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsV
 
 	private Dictionary<ulong, string> _navigationIdToUriMap = new();
 	private string _documentTitle = string.Empty;
+
+	static Win32NativeAotWebView() => Win32WebView2Loader.Ensure();
 
 	public Win32NativeAotWebView(CoreWebView2 owner, ContentPresenter presenter)
 	: base(presenter)
@@ -48,7 +47,6 @@ internal sealed class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsV
 		{
 			try
 			{
-				WebView2Utilities.Initialize(Assembly.GetEntryAssembly());
 				var userDataFolder = Path.Combine(ApplicationData.Current.LocalFolder.Path, "WebView2");
 
 				// These options must be applied at environment creation time; CoreWebView2EnvironmentOptions cannot be

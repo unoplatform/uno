@@ -30,6 +30,11 @@ public record ChangeSet(
 
 	public bool HasProjectEdits => !EditedProjects.IsEmpty || !AddedProjects.IsEmpty || !RemovedProjects.IsEmpty;
 
+	/// <summary>
+	/// A change-set with no entry at all.
+	/// </summary>
+	public static ChangeSet Empty { get; } = new([], [], [], [], [], [], [], [], [], []);
+
 	public static ChangeSet IgnoreAll(ImmutableHashSet<string> ignoredFiles)
 		=> new([], [], [], [], [], [], [], [], [], ignoredFiles);
 

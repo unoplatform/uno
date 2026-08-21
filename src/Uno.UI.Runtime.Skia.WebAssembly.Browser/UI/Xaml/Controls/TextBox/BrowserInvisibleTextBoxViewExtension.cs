@@ -1,8 +1,10 @@
-using System.Runtime.InteropServices.JavaScript;
 using System;
+using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.System;
@@ -35,6 +37,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	[JSExport]
+	private static Task OnInputTextChangedAsync(string text, int selectionStart, int selectionLength)
+	{
+		OnInputTextChanged(text, selectionStart, selectionLength);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	private static void OnNativePaste(string clipboardText)
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
@@ -43,6 +53,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		{
 			textBox.PasteFromClipboard(clipboardText);
 		}
+	}
+
+	[JSExport]
+	private static Task OnNativePasteAsync(string clipboardText)
+	{
+		OnNativePaste(clipboardText);
+
+		return Task.CompletedTask;
 	}
 
 	[JSExport]
@@ -57,6 +75,46 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	[JSExport]
+	private static Task OnSelectionChangedAsync(int selectionStart, int selectionLength)
+	{
+		OnSelectionChanged(selectionStart, selectionLength);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
+	private static void OnNativeBlur()
+	{
+		try
+		{
+			var xamlRoot = WebAssemblyWindowWrapper.Instance?.XamlRoot;
+			if (xamlRoot is null)
+			{
+				// Fired before the window/XamlRoot exists or during teardown: no managed focus to re-sync.
+				return;
+			}
+
+			// Fired only for browser-initiated blurs of the shared native input (managed-initiated
+			// blurs are suppressed on the JS side). In that case managed focus is still stale on the
+			// TextBox, so clearing it here is what finally raises LostFocus and re-syncs FocusManager.
+			var focused = FocusManager.GetFocusedElement(xamlRoot);
+			if (typeof(BrowserInvisibleTextBoxViewExtension).Log().IsEnabled(LogLevel.Trace))
+			{
+				typeof(BrowserInvisibleTextBoxViewExtension).Log().Trace($"OnNativeBlur: focused element is {focused?.GetType().Name ?? "null"}");
+			}
+			if (focused is TextBox textBox)
+			{
+				textBox.Unfocus();
+			}
+		}
+		catch (Exception e)
+		{
+			// A managed exception must not cross back into the JS DOM-event callback.
+			Application.Current.RaiseRecoverableUnhandledException(e);
+		}
+	}
+
+	[JSExport]
 	private static void OnEnterKeyPressed()
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
@@ -66,6 +124,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			var keyArgs = new KeyRoutedEventArgs(textBox, VirtualKey.Enter, VirtualKeyModifiers.None);
 			textBox.RaiseEvent(UIElement.KeyDownEvent, keyArgs);
 		}
+	}
+
+	[JSExport]
+	private static Task OnEnterKeyPressedAsync()
+	{
+		OnEnterKeyPressed();
+
+		return Task.CompletedTask;
 	}
 
 	// The "overlay layer" is the DOM, which is always present.
@@ -94,7 +160,9 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		{
 			if (NativeMethods.HasInput())
 			{
-				NativeMethods.Blur();
+				// The handle lets the JS side ignore this blur when another TextBox has already
+				// taken over the shared input (focus moving between TextBoxes).
+				NativeMethods.Blur(_view.TextBox?.Visual.Handle ?? 0);
 			}
 			_isNativeInputActive = false;
 		}
@@ -206,7 +274,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		public static partial bool Focus(IntPtr handle, bool isPassword, string? text, bool acceptsReturn, string inputMode, string enterKeyHint);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.blur")]
-		public static partial void Blur();
+		public static partial void Blur(IntPtr handle);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.detach")]
 		public static partial void Detach();
