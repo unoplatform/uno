@@ -347,20 +347,24 @@ internal sealed partial class ManagedGeometry
 		return new ManagedGeometry(contours, GeometryFillRule.NonZero);
 	}
 
+	// Snapped-polygon flattening, cached: the geometry is immutable and Combine flattens both operands on
+	// every call (borders/clips combine repeatedly per render pass).
+	private List<Vector2[]>? _flattenedSnapped;
+
 	private List<Vector2[]> FlattenClosedPolygons()
 	{
-		var result = new List<Vector2[]>();
-		foreach (var contour in Contours)
+		if (_flattenedSnapped is { } cached)
 		{
-			if (contour.Segments.Count == 0)
-			{
-				continue;
-			}
+			return cached;
+		}
 
-			var pts = new List<Vector2> { Snap(contour.Start) };
-			foreach (var flat in Flatten(contour, includeImplicitClose: true))
+		var result = new List<Vector2[]>();
+		foreach (var outline in FlattenedClosedOutlines)
+		{
+			var pts = new List<Vector2>(outline.Length);
+			foreach (var p in outline)
 			{
-				var s = Snap(flat);
+				var s = Snap(p);
 				if (pts.Count == 0 || pts[^1] != s)
 				{
 					pts.Add(s);
@@ -373,7 +377,7 @@ internal sealed partial class ManagedGeometry
 			}
 		}
 
-		return result;
+		return _flattenedSnapped = result;
 	}
 
 	private static Vector2 Snap(Vector2 p)
@@ -382,6 +386,23 @@ internal sealed partial class ManagedGeometry
 	/// <summary>Enumerates every edge of <paramref name="polys"/>, split at all crossings with <paramref name="others"/>.</summary>
 	private static IEnumerable<(Vector2, Vector2)> SplitAll(List<Vector2[]> polys, List<Vector2[]> others)
 	{
+		// Per-polygon AABBs let disjoint contours skip the O(edges²) pairing entirely, and the per-edge
+		// min/max quick-reject prunes most SegmentIntersection calls for the rest.
+		var otherBounds = new (Vector2 Min, Vector2 Max)[others.Count];
+		for (var k = 0; k < others.Count; k++)
+		{
+			var min = new Vector2(float.PositiveInfinity);
+			var max = new Vector2(float.NegativeInfinity);
+			foreach (var p in others[k])
+			{
+				min = Vector2.Min(min, p);
+				max = Vector2.Max(max, p);
+			}
+
+			otherBounds[k] = (min, max);
+		}
+
+		var cuts = new List<float>();
 		foreach (var poly in polys)
 		{
 			for (var i = 1; i < poly.Length; i++)
@@ -393,12 +414,30 @@ internal sealed partial class ManagedGeometry
 					continue;
 				}
 
-				var cuts = new List<float>();
-				foreach (var other in others)
+				var edgeMin = Vector2.Min(a, b);
+				var edgeMax = Vector2.Max(a, b);
+
+				cuts.Clear();
+				for (var k = 0; k < others.Count; k++)
 				{
+					var (polyMin, polyMax) = otherBounds[k];
+					if (edgeMax.X < polyMin.X || edgeMin.X > polyMax.X || edgeMax.Y < polyMin.Y || edgeMin.Y > polyMax.Y)
+					{
+						continue;
+					}
+
+					var other = others[k];
 					for (var j = 1; j < other.Length; j++)
 					{
-						if (SegmentIntersection(a, b, other[j - 1], other[j], out var t))
+						var c = other[j - 1];
+						var d = other[j];
+						if ((c.X < edgeMin.X && d.X < edgeMin.X) || (c.X > edgeMax.X && d.X > edgeMax.X) ||
+							(c.Y < edgeMin.Y && d.Y < edgeMin.Y) || (c.Y > edgeMax.Y && d.Y > edgeMax.Y))
+						{
+							continue;
+						}
+
+						if (SegmentIntersection(a, b, c, d, out var t))
 						{
 							if (t > 1e-4f && t < 1 - 1e-4f)
 							{

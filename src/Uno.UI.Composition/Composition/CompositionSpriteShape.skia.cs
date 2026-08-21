@@ -132,6 +132,17 @@ namespace Microsoft.UI.Composition
 						// draws) instead of a tessellated path clip (stencil + depth draws per visual).
 						session.Session.Save();
 						if (rrHint is { } hc) { session.Session.ClipRoundRect(ToRoundRect(hc.Rect, hc.Radii), antialias: true); }
+						else if (brHint is { } bc)
+						{
+							// A rounded border ring also clips analytically: intersect the outer round rect, exclude the
+							// inner one. Matters for gradient borders (Fluent's ControlElevationBorderBrush puts one on
+							// every Button): a tessellated ring clip costs a stencil mask per visual and defeats coalescing.
+							session.Session.ClipRoundRect(ToRoundRect(bc.Outer, bc.OuterRadii), antialias: true);
+							if (bc.Inner.Width > 0 && bc.Inner.Height > 0)
+							{
+								session.Session.ClipRoundRect(ToRoundRect(bc.Inner, bc.InnerRadii), ClipOperation.Difference, antialias: true);
+							}
+						}
 						else { session.Session.ClipPath(fillGeometry, antialias: true); }
 						fill.TryPaint(session.Session, session.Opacity, finalFillGeometryWithTransformations.Bounds);
 						session.Session.Restore();

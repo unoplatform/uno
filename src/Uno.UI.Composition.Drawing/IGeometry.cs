@@ -47,6 +47,13 @@ public interface IGeometry : IDisposable
 	IGeometry GetStrokeFillGeometry(in StrokeStyle style);
 
 	/// <summary>
+	/// When the geometry is known to be exactly one (rounded) rectangle contour, returns that shape so a
+	/// backend can substitute its analytic rect/rounded-rect fast path (e.g. a shader-evaluated clip) for
+	/// the tessellated path. Null means "unknown", not "not a rounded rect".
+	/// </summary>
+	RoundRectangle? TryGetRoundRect() => null;
+
+	/// <summary>
 	/// Streams the geometry's outline to <paramref name="sink"/> as flattened polyline contours (curves
 	/// subdivided at a fixed local tolerance), for a tessellating backend (e.g. WebGPU) with no curve rasterizer.
 	/// For a backend with its own rasterizer, prefer <see cref="StreamSegments"/>.

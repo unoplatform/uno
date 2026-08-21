@@ -19,11 +19,17 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 	private Rect? _bounds;
 	private int _segmentCount = -1;
 
-	public ManagedGeometry(IReadOnlyList<ManagedContour> contours, GeometryFillRule fillRule)
+	public ManagedGeometry(IReadOnlyList<ManagedContour> contours, GeometryFillRule fillRule, RoundRectangle? sourceRoundRect = null)
 	{
 		Contours = contours;
 		FillRule = fillRule;
+		SourceRoundRect = sourceRoundRect;
 	}
+
+	/// <summary>Set when the geometry was built as exactly one (rounded) rectangle primitive; see <see cref="IGeometry.TryGetRoundRect"/>.</summary>
+	internal RoundRectangle? SourceRoundRect { get; }
+
+	public RoundRectangle? TryGetRoundRect() => SourceRoundRect;
 
 	/// <summary>The sub-paths, each a start point plus line/cubic segments and a closed flag.</summary>
 	public IReadOnlyList<ManagedContour> Contours { get; }
@@ -66,25 +72,57 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 		}
 	}
 
+	// Flattened closed outlines ([0] = contour start, implicit close included), cached: the geometry is
+	// immutable and Combine ray-casts FillContains once per sub-edge, so re-flattening per call turns a
+	// single Combine into O(points²) curve evaluations.
+	private Vector2[][]? _flattenedOutlines;
+
+	internal Vector2[][] FlattenedClosedOutlines
+	{
+		get
+		{
+			if (_flattenedOutlines is null)
+			{
+				var outlines = new List<Vector2[]>(Contours.Count);
+				var pts = new List<Vector2>();
+				foreach (var contour in Contours)
+				{
+					if (contour.Segments.Count == 0)
+					{
+						continue;
+					}
+
+					pts.Clear();
+					pts.Add(contour.Start);
+					FlattenInto(contour, includeImplicitClose: true, pts);
+					outlines.Add(pts.ToArray());
+				}
+
+				_flattenedOutlines = outlines.ToArray();
+			}
+
+			return _flattenedOutlines;
+		}
+	}
+
 	public bool FillContains(Vector2 point)
 	{
+		// Outside the tight bounds a ray-cast can't cross anything.
+		var b = Bounds;
+		if (point.X < b.X || point.X > b.X + b.Width || point.Y < b.Y || point.Y > b.Y + b.Height)
+		{
+			return false;
+		}
+
 		// Ray-cast against the flattened outline. NonZero uses the winding number; EvenOdd uses parity.
 		var winding = 0;
 		var crossings = 0;
 
-		foreach (var contour in Contours)
+		foreach (var outline in FlattenedClosedOutlines)
 		{
-			if (contour.Segments.Count == 0)
+			for (var i = 1; i < outline.Length; i++)
 			{
-				continue;
-			}
-
-			var prev = contour.Start;
-			// The fill of a subpath always behaves as if closed (the implicit closing edge counts).
-			foreach (var flat in Flatten(contour, includeImplicitClose: true))
-			{
-				CountRayCrossing(prev, flat, point, ref winding, ref crossings);
-				prev = flat;
+				CountRayCrossing(outline[i - 1], outline[i], point, ref winding, ref crossings);
 			}
 		}
 
@@ -112,7 +150,27 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 			transformed[i] = new ManagedContour(Vector2.Transform(contour.Start, matrix), segments, contour.Closed);
 		}
 
-		return new ManagedGeometry(transformed, FillRule);
+		return new ManagedGeometry(transformed, FillRule, TransformRoundRect(SourceRoundRect, matrix));
+	}
+
+	// A round rect stays a round rect under positive axis-aligned scale + translation; anything else drops the tag.
+	private static RoundRectangle? TransformRoundRect(RoundRectangle? source, Matrix3x2 m)
+	{
+		if (source is not { } rr || m.M12 != 0 || m.M21 != 0 || m.M11 <= 0 || m.M22 <= 0)
+		{
+			return null;
+		}
+
+		var scale = new Vector2(m.M11, m.M22);
+		var tl = Vector2.Transform(new Vector2((float)rr.Rect.Left, (float)rr.Rect.Top), m);
+		return new RoundRectangle
+		{
+			Rect = new Rect(tl.X, tl.Y, rr.Rect.Width * m.M11, rr.Rect.Height * m.M22),
+			TopLeft = rr.TopLeft * scale,
+			TopRight = rr.TopRight * scale,
+			BottomRight = rr.BottomRight * scale,
+			BottomLeft = rr.BottomLeft * scale,
+		};
 	}
 
 	// Combine lives in ManagedGeometry.Combine.skia.cs.
@@ -122,7 +180,7 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 		// The fill path of a fill (non-stroke) is the path itself; a (0,0) trim means "no trimming".
 		if (trimStart == 0f && trimEnd == 0f)
 		{
-			return new ManagedGeometry(Contours, FillRule);
+			return new ManagedGeometry(Contours, FillRule, SourceRoundRect);
 		}
 
 		return Trim(trimStart, trimEnd);
@@ -140,7 +198,9 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 			}
 
 			sink.BeginContour(contour.Start);
-			foreach (var p in Flatten(contour, includeImplicitClose: false))
+			var pts = new List<Vector2>();
+			FlattenInto(contour, includeImplicitClose: false, pts);
+			foreach (var p in pts)
 			{
 				sink.LineTo(p);
 			}
@@ -192,10 +252,7 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 			}
 
 			var pts = new List<Vector2> { contour.Start };
-			foreach (var flat in Flatten(contour, includeImplicitClose: contour.Closed))
-			{
-				pts.Add(flat);
-			}
+			FlattenInto(contour, includeImplicitClose: contour.Closed, pts);
 
 			polylines.Add((pts.ToArray(), total));
 			for (var i = 1; i < pts.Count; i++)
@@ -360,15 +417,17 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 		return (u * u * u) * p0 + (3 * u * u * t) * p1 + (3 * u * t * t) * p2 + (t * t * t) * p3;
 	}
 
-	/// <summary>Flattens a contour's segments into a polyline of end points (curves subdivided).</summary>
-	internal static IEnumerable<Vector2> Flatten(ManagedContour contour, bool includeImplicitClose)
+	/// <summary>Flattens a contour's segments into a polyline of end points (curves subdivided), appended
+	/// to <paramref name="output"/>. A plain loop rather than an iterator: this is the geometry engine's
+	/// hottest path and iterator MoveNext/alloc overhead is measurable there.</summary>
+	internal static void FlattenInto(ManagedContour contour, bool includeImplicitClose, List<Vector2> output)
 	{
 		var current = contour.Start;
 		foreach (var seg in contour.Segments)
 		{
 			if (seg.Kind == ManagedSegmentKind.Line)
 			{
-				yield return seg.End;
+				output.Add(seg.End);
 			}
 			else
 			{
@@ -377,7 +436,7 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 				var steps = Math.Clamp((int)MathF.Ceiling(controlLength / 2f), 8, 256);
 				for (var i = 1; i <= steps; i++)
 				{
-					yield return EvaluateCubic(current, seg.C1, seg.C2, seg.End, i / (float)steps);
+					output.Add(EvaluateCubic(current, seg.C1, seg.C2, seg.End, i / (float)steps));
 				}
 			}
 
@@ -386,7 +445,7 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 
 		if (includeImplicitClose && current != contour.Start)
 		{
-			yield return contour.Start;
+			output.Add(contour.Start);
 		}
 	}
 

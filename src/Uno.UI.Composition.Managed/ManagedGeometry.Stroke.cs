@@ -81,7 +81,7 @@ internal sealed partial class ManagedGeometry
 			}
 
 			var points = new List<Vector2> { contour.Start };
-			points.AddRange(Flatten(contour, includeImplicitClose: contour.Closed));
+			FlattenInto(contour, includeImplicitClose: contour.Closed, points);
 
 			if (!hasDashes)
 			{

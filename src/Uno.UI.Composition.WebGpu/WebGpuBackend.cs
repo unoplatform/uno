@@ -28,17 +28,17 @@ internal struct ClipData
 {
 	public const int MaxRounds = 4;   // nesting depth beyond this drops the outermost (least likely to clip content)
 	public Vector4 Aabb;    // device L,T,R,B scissor
-	// Nested rounded-rect clips, all ANDed per-fragment (clipCov). null/empty = none. Copy-on-write: each push
-	// allocates a fresh array so Save/Restore snapshots and sibling commands keep their own reference.
+							// Nested rounded-rect clips, all ANDed per-fragment (clipCov). null/empty = none. Copy-on-write: each push
+							// allocates a fresh array so Save/Restore snapshots and sibling commands keep their own reference.
 	public RoundClip[] Rounds;
 	// Arbitrary path clip: the flattened device-space fan is applied via the shared depth mask in the main pass.
 	// Single slot — innermost path wins (nested arbitrary paths keep only the AABB intersection for the outer ones).
 	public float[] PathFan;
 	public bool PathEvenOdd;
 	public bool PathExclude;   // Difference op for the path clip
-	// RESIDENT clip-fan buffer: a CACHED recording's fan is stable, so its NDC vertex buffer is uploaded ONCE
-	// (into owned) and reused every frame instead of re-tessellated + re-uploaded per frame in ApplyDepthClip.
-	// 0 = not resident. FanW/FanH = surface size it was baked for (invalidated on resize).
+							   // RESIDENT clip-fan buffer: a CACHED recording's fan is stable, so its NDC vertex buffer is uploaded ONCE
+							   // (into owned) and reused every frame instead of re-tessellated + re-uploaded per frame in ApplyDepthClip.
+							   // 0 = not resident. FanW/FanH = surface size it was baked for (invalidated on resize).
 	public nint FanBuf;
 	public int FanW, FanH;
 	public static ClipData None => new() { Aabb = new Vector4(-1e9f, -1e9f, 1e9f, 1e9f) };
@@ -229,9 +229,9 @@ internal sealed unsafe class WebGpuGeometryCache
 	public bool TableFrame;
 	public List<float> TableSolids;   // resident local solid verts (7 floats/v) — re-Put only when the slice was culled
 	public List<float> TableRrects;   // resident local rrect verts (23 floats/v)
-	// Per-op (device scissor, clip bind group) for the current stamp, parallel to FrameOrder. Rebuilt only when the
-	// replay transform / session clip / surface size changes (memoized like the arena stamp); the slab base is applied
-	// on top each frame. StampW/StampH invalidate it on resize (the clip uniform + scissor are device-space).
+									  // Per-op (device scissor, clip bind group) for the current stamp, parallel to FrameOrder. Rebuilt only when the
+									  // replay transform / session clip / surface size changes (memoized like the arena stamp); the slab base is applied
+									  // on top each frame. StampW/StampH invalidate it on resize (the clip uniform + scissor are device-space).
 	public List<(ClipData Scissor, nint ClipBg)> StampClips;
 	public ClipData StampClip;
 	public int StampW, StampH;
@@ -301,9 +301,9 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 	internal List<WebGpuCommand> Commands = new();
 	internal WColor? ClearColor;
 	internal bool? Cacheable;   // memoized: all commands are simple primitives with no path clip
-	// The compiled GPU draw-list for this recording (the persistent retained state IRenderRecord is contracted to hold):
-	// built once on the render thread at first replay, reused every frame, freed (deferred to the render thread) when
-	// this recording is disposed. Written by the render thread, taken by the UI thread's Dispose — via Interlocked.
+								// The compiled GPU draw-list for this recording (the persistent retained state IRenderRecord is contracted to hold):
+								// built once on the render thread at first replay, reused every frame, freed (deferred to the render thread) when
+								// this recording is disposed. Written by the render thread, taken by the UI thread's Dispose — via Interlocked.
 	internal WebGpuGeometryCache Compiled;
 	// Transient image textures recorded into this frame that the caller disposed while recording (e.g. the one-shot
 	// texture CompositionNineGridBrush uploads). We keep them alive for every present of this recording, then release
@@ -361,9 +361,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	private float[] _pendingColorMatrix;   // active effect colour matrix, applied per DrawImage in the image shader
 	private readonly WebGpuRenderRecord _data = new();
 	private List<WebGpuCommand> _target;   // current emit target (root command list, or a layer's list)
-	// The owning drawing factory, surfaced as IDrawingSession.Factory so an add-in painting into this recording mints
-	// session-native textures within the paint scope. Null only for the internal transform-scratch recorder
-	// (TransformFor), whose Factory is never read.
+										   // The owning drawing factory, surfaced as IDrawingSession.Factory so an add-in painting into this recording mints
+										   // session-native textures within the paint scope. Null only for the internal transform-scratch recorder
+										   // (TransformFor), whose Factory is never read.
 	private readonly IDrawingFactory _factory;
 
 	public WebGpuCommandRecorder(IDrawingFactory factory = null) { _target = _data.Commands; _factory = factory; }
@@ -460,6 +460,24 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 
 	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
 	{
+		// A geometry that advertises itself as a single (rounded) rect clips analytically (shader-evaluated
+		// rounds / plain scissor) instead of costing a stencil-mask fan draw and defeating coalescing.
+		// Only under an axis-aligned matrix: the rounds are device-space axis-aligned, while the fan is
+		// exact under any transform.
+		if (_m.M12 == 0 && _m.M21 == 0 && geometry.TryGetRoundRect() is { } rr)
+		{
+			if (operation == ClipOperation.Intersect
+				&& rr.TopLeft == Vector2.Zero && rr.TopRight == Vector2.Zero && rr.BottomRight == Vector2.Zero && rr.BottomLeft == Vector2.Zero)
+			{
+				ClipRect(rr.Rect, operation, antialias);
+			}
+			else
+			{
+				ClipRoundRect(rr, operation, antialias);
+			}
+			return;
+		}
+
 		// Tighten the scissor to the path bounds, and capture the flattened device-space fan for an exact
 		// per-fragment coverage mask (built at present time).
 		ClipRect(geometry.Bounds, operation, antialias);
@@ -495,9 +513,12 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	public void DrawRect(in Rect rect, WColor color, bool antialias = false)
 		=> _target.Add(new RectCommand
 		{
-			Color = _pendingColorMatrix is { Length: >= 20 } pm ? ApplyColorMatrix(color, pm) : color, Clip = _clip,
-			P0 = Map((float)rect.Left, (float)rect.Top), P1 = Map((float)rect.Right, (float)rect.Top),
-			P2 = Map((float)rect.Right, (float)rect.Bottom), P3 = Map((float)rect.Left, (float)rect.Bottom),
+			Color = _pendingColorMatrix is { Length: >= 20 } pm ? ApplyColorMatrix(color, pm) : color,
+			Clip = _clip,
+			P0 = Map((float)rect.Left, (float)rect.Top),
+			P1 = Map((float)rect.Right, (float)rect.Top),
+			P2 = Map((float)rect.Right, (float)rect.Bottom),
+			P3 = Map((float)rect.Left, (float)rect.Bottom),
 		});
 
 	private List<float> _fan;
@@ -511,11 +532,14 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		float maxR = MathF.Min(w, h) * 0.5f;
 		_target.Add(new RoundedRectCmd
 		{
-			P0 = Map((float)rect.Left, (float)rect.Top), P1 = Map((float)rect.Right, (float)rect.Top),
-			P2 = Map((float)rect.Right, (float)rect.Bottom), P3 = Map((float)rect.Left, (float)rect.Bottom),
+			P0 = Map((float)rect.Left, (float)rect.Top),
+			P1 = Map((float)rect.Right, (float)rect.Top),
+			P2 = Map((float)rect.Right, (float)rect.Bottom),
+			P3 = Map((float)rect.Left, (float)rect.Bottom),
 			Half = new Vector2(w * 0.5f, h * 0.5f),
 			Radii = new Vector4(Math.Clamp(radii.X, 0, maxR), Math.Clamp(radii.Y, 0, maxR), Math.Clamp(radii.Z, 0, maxR), Math.Clamp(radii.W, 0, maxR)),
-			Color = color, Clip = _clip,
+			Color = color,
+			Clip = _clip,
 		});
 	}
 
@@ -529,12 +553,16 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		var innerCenter = new Vector2((float)(inner.Left + iw * 0.5f - (outer.Left + ow * 0.5f)), (float)(inner.Top + ih * 0.5f - (outer.Top + oh * 0.5f)));
 		_target.Add(new RoundedRectCmd
 		{
-			P0 = Map((float)outer.Left, (float)outer.Top), P1 = Map((float)outer.Right, (float)outer.Top),
-			P2 = Map((float)outer.Right, (float)outer.Bottom), P3 = Map((float)outer.Left, (float)outer.Bottom),
+			P0 = Map((float)outer.Left, (float)outer.Top),
+			P1 = Map((float)outer.Right, (float)outer.Top),
+			P2 = Map((float)outer.Right, (float)outer.Bottom),
+			P3 = Map((float)outer.Left, (float)outer.Bottom),
 			Half = oHalf,
 			Radii = new Vector4(Math.Clamp(outerRadii.X, 0, oMax), Math.Clamp(outerRadii.Y, 0, oMax), Math.Clamp(outerRadii.Z, 0, oMax), Math.Clamp(outerRadii.W, 0, oMax)),
-			Color = color, Clip = _clip,
-			InnerHalf = iHalf, InnerCenter = innerCenter,
+			Color = color,
+			Clip = _clip,
+			InnerHalf = iHalf,
+			InnerCenter = innerCenter,
 			InnerRadii = new Vector4(Math.Clamp(innerRadii.X, 0, iMax), Math.Clamp(innerRadii.Y, 0, iMax), Math.Clamp(innerRadii.Z, 0, iMax), Math.Clamp(innerRadii.W, 0, iMax)),
 		});
 	}
@@ -627,9 +655,12 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 
 		_target.Add(new GradientCmd
 		{
-			Clip = _clip, Uniform = u,
-			P0 = Map((float)rect.Left, (float)rect.Top), P1 = Map((float)rect.Right, (float)rect.Top),
-			P2 = Map((float)rect.Right, (float)rect.Bottom), P3 = Map((float)rect.Left, (float)rect.Bottom),
+			Clip = _clip,
+			Uniform = u,
+			P0 = Map((float)rect.Left, (float)rect.Top),
+			P1 = Map((float)rect.Right, (float)rect.Top),
+			P2 = Map((float)rect.Right, (float)rect.Bottom),
+			P3 = Map((float)rect.Left, (float)rect.Bottom),
 		});
 	}
 	public void DrawShadow(IGeometry silhouette, WColor color, float sigmaX, float sigmaY, bool additive, bool antialias = false)
@@ -641,9 +672,15 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		{
 			_target.Add(new ShadowCmd
 			{
-				FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax,
+				FanDevice = _fan.ToArray(),
+				BbMin = _bbMin,
+				BbMax = _bbMax,
 				EvenOdd = silhouette.FillRule == GeometryFillRule.EvenOdd,
-				Color = color, SigmaX = sigmaX, SigmaY = sigmaY, Additive = additive, Clip = _clip,
+				Color = color,
+				SigmaX = sigmaX,
+				SigmaY = sigmaY,
+				Additive = additive,
+				Clip = _clip,
 			});
 		}
 		_fan = null;
@@ -655,13 +692,17 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	}
 	public void DrawLine(Vector2 p0, Vector2 p1, WColor color, float strokeWidth, bool antialias = false)
 	{
-		var dir = p1 - p0; var len = dir.Length(); if (len < 1e-4f) { return; } dir /= len;
+		var dir = p1 - p0; var len = dir.Length(); if (len < 1e-4f) { return; }
+		dir /= len;
 		var n = new Vector2(-dir.Y, dir.X) * (strokeWidth / 2f);
 		_target.Add(new RectCommand
 		{
-			Color = color, Clip = _clip,
-			P0 = Map(p0.X + n.X, p0.Y + n.Y), P1 = Map(p1.X + n.X, p1.Y + n.Y),
-			P2 = Map(p1.X - n.X, p1.Y - n.Y), P3 = Map(p0.X - n.X, p0.Y - n.Y),
+			Color = color,
+			Clip = _clip,
+			P0 = Map(p0.X + n.X, p0.Y + n.Y),
+			P1 = Map(p1.X + n.X, p1.Y + n.Y),
+			P2 = Map(p1.X - n.X, p1.Y - n.Y),
+			P3 = Map(p0.X - n.X, p0.Y - n.Y),
 		});
 	}
 	// Keep a texture recorded into this frame alive for the frame's lifetime (it may be a one-shot texture the
@@ -724,9 +765,19 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 				if (dr - dl <= 0 || db - dt <= 0) { continue; }
 				_target.Add(new ImageCmd
 				{
-					View = t.View, W = w, H = h, Opacity = 1f, Clip = _clip,
-					P0 = Map(dl, dt), P1 = Map(dr, dt), P2 = Map(dr, db), P3 = Map(dl, db),
-					U0 = sxe[col] / w, V0 = sye[row] / h, U1 = sxe[col + 1] / w, V1 = sye[row + 1] / h,
+					View = t.View,
+					W = w,
+					H = h,
+					Opacity = 1f,
+					Clip = _clip,
+					P0 = Map(dl, dt),
+					P1 = Map(dr, dt),
+					P2 = Map(dr, db),
+					P3 = Map(dl, db),
+					U0 = sxe[col] / w,
+					V0 = sye[row] / h,
+					U1 = sxe[col + 1] / w,
+					V1 = sye[row + 1] / h,
 				});
 			}
 		}
@@ -744,8 +795,12 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			var a = _clip.Aabb;
 			_target.Add(new RectCommand
 			{
-				Color = fx.Color, Clip = _clip,
-				P0 = new Vector2(a.X, a.Y), P1 = new Vector2(a.Z, a.Y), P2 = new Vector2(a.Z, a.W), P3 = new Vector2(a.X, a.W),
+				Color = fx.Color,
+				Clip = _clip,
+				P0 = new Vector2(a.X, a.Y),
+				P1 = new Vector2(a.Z, a.Y),
+				P2 = new Vector2(a.Z, a.W),
+				P3 = new Vector2(a.X, a.W),
 			});
 			return;
 		}
@@ -947,6 +1002,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 
 public sealed unsafe class WebGpuPresentSession : IPresentSession
 {
+	// UNO_WEBGPU_STATS=1: per-pass emit-shape diagnostics (see RenderInto).
+	private static readonly bool _emitStats = Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS") is "1" or "true";
+	private static int _emitStatsFrame;
+
 	private readonly WebGpuDevice _d;
 	private readonly WebGpuRenderSurface _s;
 	private WColor? _presentClear;
@@ -991,7 +1050,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				// Pump the device non-blocking (wait=0) so the CPU can overlap the next frame with the GPU: pooled-buffer
 				// reuse is queue-ordered (wgpuQueueWriteBuffer runs after the prior frame's reads) and transient textures
 				// are refcount-released, so it is safe; the swapchain's max-frames-in-flight provides backpressure.
-				wgpuDevicePoll(_d.Dev, 0u, null);
+				_ = wgpuDevicePoll(_d.Dev, 0u, null);
 				_frameEncoder = IntPtr.Zero;
 			}
 		}
@@ -1217,12 +1276,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 		cu[36] = n;                              // ctrl.x = active count
 		cu[40] = _s.Width; cu[41] = _s.Height;   // size
-		// xform maps stored (identity-baked) NDC verts to the replay NDC: px = M11*x + M21*y + M31, py = M12*x + M22*y + M32.
+												 // xform maps stored (identity-baked) NDC verts to the replay NDC: px = M11*x + M21*y + M31, py = M12*x + M22*y + M32.
 		cu[44] = xform.M11; cu[45] = xform.M21; cu[46] = xform.M12; cu[47] = xform.M22;
 		cu[48] = xform.M31; cu[49] = xform.M32;   // xoff.xy (NDC translation)
-		// finv maps the device fragment position back to the recording's own space (inverse device affine) so a clip
-		// baked at identity is correct after the move. Identity => clipCov sees fc unchanged. finv 2x2 in `finv`,
-		// finv translation in xoff.zw (px = fM11*x + fM21*y + fM31, py = fM12*x + fM22*y + fM32).
+												  // finv maps the device fragment position back to the recording's own space (inverse device affine) so a clip
+												  // baked at identity is correct after the move. Identity => clipCov sees fc unchanged. finv 2x2 in `finv`,
+												  // finv translation in xoff.zw (px = fM11*x + fM21*y + fM31, py = fM12*x + fM22*y + fM32).
 		cu[50] = finv.M31; cu[51] = finv.M32;
 		cu[52] = finv.M11; cu[53] = finv.M12; cu[54] = finv.M21; cu[55] = finv.M22;
 
@@ -1531,103 +1590,103 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		switch (cmd)
 		{
 			case RectCommand rc:
-			{
-				var c = new Vector4(rc.Color.R / 255f, rc.Color.G / 255f, rc.Color.B / 255f, rc.Color.A / 255f);
-				var v = new List<float>();
-				void V(Vector2 p) { var n = Ndc(p); v.Add(n.X); v.Add(n.Y); v.Add(c.X); v.Add(c.Y); v.Add(c.Z); v.Add(c.W); }
-				V(rc.P0); V(rc.P1); V(rc.P2); V(rc.P0); V(rc.P2); V(rc.P3);
-				ops.Add(new DrawOp(0, (nint)Vbuf(v.ToArray(), owned), 6, 0, false, rc.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc.Clip, owned)));
-				break;
-			}
+				{
+					var c = new Vector4(rc.Color.R / 255f, rc.Color.G / 255f, rc.Color.B / 255f, rc.Color.A / 255f);
+					var v = new List<float>();
+					void V(Vector2 p) { var n = Ndc(p); v.Add(n.X); v.Add(n.Y); v.Add(c.X); v.Add(c.Y); v.Add(c.Z); v.Add(c.W); }
+					V(rc.P0); V(rc.P1); V(rc.P2); V(rc.P0); V(rc.P2); V(rc.P3);
+					ops.Add(new DrawOp(0, (nint)Vbuf(v.ToArray(), owned), 6, 0, false, rc.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc.Clip, owned)));
+					break;
+				}
 			case PathFill pf:
-			{
-				float slotBits = System.BitConverter.Int32BitsToSingle(pathSlot);
-				_scratch.Clear();
-				for (int i = 0; i < pf.FanDevice.Length; i += 2) { _scratch.Add(pf.FanDevice[i]); _scratch.Add(pf.FanDevice[i + 1]); _scratch.Add(slotBits); }
-				var fanBuf = Vbuf(_scratch, owned);
-				float pr = pf.Color.R / 255f, pg = pf.Color.G / 255f, pb = pf.Color.B / 255f, pa = pf.Color.A / 255f;
-				_scratch.Clear();
-				var tl = pf.BbMin; var br = pf.BbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
-				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(tr, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits);
-				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits); PushVertT(bl, pr, pg, pb, pa, slotBits);
-				var covBuf = Vbuf(_scratch, owned);
-				var clipBg = MakeClipBg(_d.CoverClipBgl, pf.Clip, owned);
-				ops.Add(new DrawOp(1, (nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)covBuf, pf.EvenOdd, pf.Clip, (nint)clipBg));
-				break;
-			}
+				{
+					float slotBits = System.BitConverter.Int32BitsToSingle(pathSlot);
+					_scratch.Clear();
+					for (int i = 0; i < pf.FanDevice.Length; i += 2) { _scratch.Add(pf.FanDevice[i]); _scratch.Add(pf.FanDevice[i + 1]); _scratch.Add(slotBits); }
+					var fanBuf = Vbuf(_scratch, owned);
+					float pr = pf.Color.R / 255f, pg = pf.Color.G / 255f, pb = pf.Color.B / 255f, pa = pf.Color.A / 255f;
+					_scratch.Clear();
+					var tl = pf.BbMin; var br = pf.BbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
+					PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(tr, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits);
+					PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits); PushVertT(bl, pr, pg, pb, pa, slotBits);
+					var covBuf = Vbuf(_scratch, owned);
+					var clipBg = MakeClipBg(_d.CoverClipBgl, pf.Clip, owned);
+					ops.Add(new DrawOp(1, (nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)covBuf, pf.EvenOdd, pf.Clip, (nint)clipBg));
+					break;
+				}
 			case ImageCmd im:
-			{
-				var view = im.View;
-				var ubuf = Ubuf(112, owned);
-				var op = stackalloc float[28];
-				bool hasMatrix = im.ColorMatrix is { Length: >= 20 };
-				op[0] = im.Opacity; op[1] = im.TintMode; op[2] = hasMatrix ? 1f : 0f; op[3] = 0;
-				op[4] = im.Tint.X; op[5] = im.Tint.Y; op[6] = im.Tint.Z; op[7] = im.Tint.W;
-				if (im.ColorMatrix is { Length: >= 20 } mm)
 				{
-					op[8] = mm[0]; op[9] = mm[1]; op[10] = mm[2]; op[11] = mm[3];        // m0
-					op[12] = mm[5]; op[13] = mm[6]; op[14] = mm[7]; op[15] = mm[8];      // m1
-					op[16] = mm[10]; op[17] = mm[11]; op[18] = mm[12]; op[19] = mm[13];  // m2
-					op[20] = mm[15]; op[21] = mm[16]; op[22] = mm[17]; op[23] = mm[18];  // m3
-					op[24] = mm[4]; op[25] = mm[9]; op[26] = mm[14]; op[27] = mm[19];    // off (5th column)
+					var view = im.View;
+					var ubuf = Ubuf(112, owned);
+					var op = stackalloc float[28];
+					bool hasMatrix = im.ColorMatrix is { Length: >= 20 };
+					op[0] = im.Opacity; op[1] = im.TintMode; op[2] = hasMatrix ? 1f : 0f; op[3] = 0;
+					op[4] = im.Tint.X; op[5] = im.Tint.Y; op[6] = im.Tint.Z; op[7] = im.Tint.W;
+					if (im.ColorMatrix is { Length: >= 20 } mm)
+					{
+						op[8] = mm[0]; op[9] = mm[1]; op[10] = mm[2]; op[11] = mm[3];        // m0
+						op[12] = mm[5]; op[13] = mm[6]; op[14] = mm[7]; op[15] = mm[8];      // m1
+						op[16] = mm[10]; op[17] = mm[11]; op[18] = mm[12]; op[19] = mm[13];  // m2
+						op[20] = mm[15]; op[21] = mm[16]; op[22] = mm[17]; op[23] = mm[18];  // m3
+						op[24] = mm[4]; op[25] = mm[9]; op[26] = mm[14]; op[27] = mm[19];    // off (5th column)
+					}
+					wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)op, 112);
+					var entries = stackalloc WGPUBindGroupEntry[3];
+					entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = view };
+					entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+					entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 112 };
+					var bgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
+					var bg = Bg(ref bgd, owned);
+					var q = new float[24];
+					void QV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); q[idx] = n.X; q[idx + 1] = n.Y; q[idx + 2] = u; q[idx + 3] = vv; }
+					QV(0, im.P0, im.U0, im.V0); QV(4, im.P1, im.U1, im.V0); QV(8, im.P2, im.U1, im.V1); QV(12, im.P0, im.U0, im.V0); QV(16, im.P2, im.U1, im.V1); QV(20, im.P3, im.U0, im.V1);
+					ops.Add(new DrawOp(2, (nint)bg, 0, (nint)Vbuf(q, owned), false, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip, owned)));
+					break;
 				}
-				wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)op, 112);
-				var entries = stackalloc WGPUBindGroupEntry[3];
-				entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = view };
-				entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-				entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 112 };
-				var bgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
-				var bg = Bg(ref bgd, owned);
-				var q = new float[24];
-				void QV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); q[idx] = n.X; q[idx + 1] = n.Y; q[idx + 2] = u; q[idx + 3] = vv; }
-				QV(0, im.P0, im.U0, im.V0); QV(4, im.P1, im.U1, im.V0); QV(8, im.P2, im.U1, im.V1); QV(12, im.P0, im.U0, im.V0); QV(16, im.P2, im.U1, im.V1); QV(20, im.P3, im.U0, im.V1);
-				ops.Add(new DrawOp(2, (nint)bg, 0, (nint)Vbuf(q, owned), false, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip, owned)));
-				break;
-			}
 			case GradientCmd gc:
-			{
-				var bytes = (nuint)WebGpuDevice.GradientUniformBytes;
-				// A per-frame gradient bind group depends only on its uniform (the packed stops/geometry) — cache it
-				// across frames like clips, so a static gradient isn't a CreateBuffer + CreateBindGroup every frame.
-				IntPtr gbg;
-				if (!(owned is null && _d.TryGetCachedBg((nint)_d.GradBgl, gc.Uniform, out gbg)))
 				{
-					// Cached (owned == null) entries need a PERSISTENT uniform buffer — a pooled one would be reused
-					// next frame and corrupt the cached bind group. Cached-recording (owned) buffers persist already.
-					IntPtr ubuf;
-					if (owned is null)
+					var bytes = (nuint)WebGpuDevice.GradientUniformBytes;
+					// A per-frame gradient bind group depends only on its uniform (the packed stops/geometry) — cache it
+					// across frames like clips, so a static gradient isn't a CreateBuffer + CreateBindGroup every frame.
+					IntPtr gbg;
+					if (!(owned is null && _d.TryGetCachedBg((nint)_d.GradBgl, gc.Uniform, out gbg)))
 					{
-						var gbd = new WGPUBufferDescriptor { Size = bytes, Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
-						ubuf = wgpuDeviceCreateBuffer(_d.Dev, &gbd);
+						// Cached (owned == null) entries need a PERSISTENT uniform buffer — a pooled one would be reused
+						// next frame and corrupt the cached bind group. Cached-recording (owned) buffers persist already.
+						IntPtr ubuf;
+						if (owned is null)
+						{
+							var gbd = new WGPUBufferDescriptor { Size = bytes, Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
+							ubuf = wgpuDeviceCreateBuffer(_d.Dev, &gbd);
+						}
+						else { ubuf = Ubuf((int)bytes, owned); }
+						fixed (float* p = gc.Uniform) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, bytes); }
+						var gentry = new WGPUBindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = bytes };
+						var gbgd = new WGPUBindGroupDescriptor { Layout = _d.GradBgl, EntryCount = 1, Entries = &gentry };
+						if (owned is null)
+						{
+							gbg = wgpuDeviceCreateBindGroup(_d.Dev, (WGPUBindGroupDescriptor*)Unsafe.AsPointer(ref gbgd));
+							_d.AddCachedBg((nint)_d.GradBgl, gc.Uniform, ubuf, gbg);
+						}
+						else { gbg = Bg(ref gbgd, owned); }
 					}
-					else { ubuf = Ubuf((int)bytes, owned); }
-					fixed (float* p = gc.Uniform) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, bytes); }
-					var gentry = new WGPUBindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = bytes };
-					var gbgd = new WGPUBindGroupDescriptor { Layout = _d.GradBgl, EntryCount = 1, Entries = &gentry };
-					if (owned is null)
-					{
-						gbg = wgpuDeviceCreateBindGroup(_d.Dev, (WGPUBindGroupDescriptor*)Unsafe.AsPointer(ref gbgd));
-						_d.AddCachedBg((nint)_d.GradBgl, gc.Uniform, ubuf, gbg);
-					}
-					else { gbg = Bg(ref gbgd, owned); }
+					var gq = new float[12];
+					void GV(int idx, Vector2 pos) { var n = Ndc(pos); gq[idx] = n.X; gq[idx + 1] = n.Y; }
+					GV(0, gc.P0); GV(2, gc.P1); GV(4, gc.P2); GV(6, gc.P0); GV(8, gc.P2); GV(10, gc.P3);
+					ops.Add(new DrawOp(3, (nint)gbg, 0, (nint)Vbuf(gq, owned), false, gc.Clip, (nint)MakeClipBg(_d.GradClipBgl, gc.Clip, owned)));
+					break;
 				}
-				var gq = new float[12];
-				void GV(int idx, Vector2 pos) { var n = Ndc(pos); gq[idx] = n.X; gq[idx + 1] = n.Y; }
-				GV(0, gc.P0); GV(2, gc.P1); GV(4, gc.P2); GV(6, gc.P0); GV(8, gc.P2); GV(10, gc.P3);
-				ops.Add(new DrawOp(3, (nint)gbg, 0, (nint)Vbuf(gq, owned), false, gc.Clip, (nint)MakeClipBg(_d.GradClipBgl, gc.Clip, owned)));
-				break;
-			}
 			case RoundedRectCmd rrc:
-			{
-				// Legacy per-op fallback (b0=1). The common path routes rrects through the shared per-pass buffer
-				// (b0==0) for cross-visual coalescing; this stays for any non-frame-solid cached recording.
-				var tmp = RentRrect();
-				AppendRrect(tmp, rrc);
-				var buf = Vbuf(tmp, owned);
-				ReturnRrect(tmp);
-				ops.Add(new DrawOp(5, (nint)buf, 6, 0, false, rrc.Clip, (nint)MakeClipBg(_d.RrClipBgl, rrc.Clip, owned)));
-				break;
-			}
+				{
+					// Legacy per-op fallback (b0=1). The common path routes rrects through the shared per-pass buffer
+					// (b0==0) for cross-visual coalescing; this stays for any non-frame-solid cached recording.
+					var tmp = RentRrect();
+					AppendRrect(tmp, rrc);
+					var buf = Vbuf(tmp, owned);
+					ReturnRrect(tmp);
+					ops.Add(new DrawOp(5, (nint)buf, 6, 0, false, rrc.Clip, (nint)MakeClipBg(_d.RrClipBgl, rrc.Clip, owned)));
+					break;
+				}
 		}
 	}
 
@@ -1828,20 +1887,20 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			switch (cmd)
 			{
 				case RectCommand rc0:
-				{
-					// Coalesce a run of consecutive rects sharing the same clip into the shared solid buffer + one op.
-					// b0==0 marks a shared-buffer solid (b1=start vertex, u0=vertex count) so adjacent solid ops that
-					// share a clip bind group coalesce further ACROSS recordings in the emit loop.
-					int j = ci; int start = solid.Count / 6;
-					while (j < cmds.Count && cmds[j] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
 					{
-						AppendSolidRect(solid, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
-						j++;
+						// Coalesce a run of consecutive rects sharing the same clip into the shared solid buffer + one op.
+						// b0==0 marks a shared-buffer solid (b1=start vertex, u0=vertex count) so adjacent solid ops that
+						// share a clip bind group coalesce further ACROSS recordings in the emit loop.
+						int j = ci; int start = solid.Count / 6;
+						while (j < cmds.Count && cmds[j] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
+						{
+							AppendSolidRect(solid, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
+							j++;
+						}
+						ops.Add(new DrawOp(0, 0, (uint)((j - ci) * 6), (nint)start, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip)));
+						ci = j - 1;   // the for-loop's ci++ advances past the run
+						break;
 					}
-					ops.Add(new DrawOp(0, 0, (uint)((j - ci) * 6), (nint)start, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip)));
-					ci = j - 1;   // the for-loop's ci++ advances past the run
-					break;
-				}
 				case PathFill:
 					BuildSimpleOp(cmd, ops, null, AllocTransientPathSlot());   // pooled (per-frame); transient table slot
 					break;
@@ -1850,21 +1909,21 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					BuildSimpleOp(cmd, ops, null, -1);   // pooled (per-frame)
 					break;
 				case RoundedRectCmd rri:
-				{
-					// Shared rrect buffer (b0==0, b1=start vert): adjacent same-clip rrects coalesce in the emit loop.
-					int st = rrect.Count / 22;
-					AppendRrect(rrect, rri);
-					ops.Add(new DrawOp(5, 0, 6, (nint)st, false, rri.Clip, (nint)MakeClipBg(_d.RrClipBgl, rri.Clip)));
-					break;
-				}
+					{
+						// Shared rrect buffer (b0==0, b1=start vert): adjacent same-clip rrects coalesce in the emit loop.
+						int st = rrect.Count / 22;
+						AppendRrect(rrect, rri);
+						ops.Add(new DrawOp(5, 0, 6, (nint)st, false, rri.Clip, (nint)MakeClipBg(_d.RrClipBgl, rri.Clip)));
+						break;
+					}
 				case ReplayRefCmd rr:
-				{
-					// FRAME-SOLID path (ramez arena baseline): any recording that contains rects — a Border background,
-					// a Button (background + border + glyphs) — re-emits its SOLIDS into the SHARED per-pass buffer
-					// every frame so sibling visuals sharing a clip collapse to ONE draw (the cross-visual draw-count
-					// win the profiler showed). NON-solids (glyphs/images/gradients) stay cached (device space,
-					// rebuilt only on a transform/clip change) and are consumed in draw order as the recording is
-					// re-walked. Pure non-solid recordings fall through to the arena path below (moving-visual reuse).
+					{
+						// FRAME-SOLID path (ramez arena baseline): any recording that contains rects — a Border background,
+						// a Button (background + border + glyphs) — re-emits its SOLIDS into the SHARED per-pass buffer
+						// every frame so sibling visuals sharing a clip collapse to ONE draw (the cross-visual draw-count
+						// win the profiler showed). NON-solids (glyphs/images/gradients) stay cached (device space,
+						// rebuilt only on a transform/clip change) and are consumed in draw order as the recording is
+						// re-walked. Pure non-solid recordings fall through to the arena path below (moving-visual reuse).
 						if (HasReappendable(rr.Commands))
 						{
 							// A recording replayed MORE THAN ONCE in a single frame (same command list, different
@@ -1890,7 +1949,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							else
 							{
 								fe = rr.Data.Compiled;
-									fMiss = fe is null;
+								fMiss = fe is null;
 								fStale = !fMiss && (!fe.FrameSolid || fe.TableFrame || fe.FrameOrder is null || fe.Transform != rr.Transform || fe.BuiltW != (int)_s.Width || fe.BuiltH != (int)_s.Height || !ClipDataEquals(fe.Clip, rr.Clip));
 							}
 							if (fMiss || fStale)
@@ -1976,10 +2035,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							}
 							break;
 						}
-					// The per-visual GPU-geometry cache (slab/scroll), keyed by the recording's immutable command
-					// list. Build once; reuse while it's replayed at the same transform/clip. A stale entry (moved
-					// visual) is deferred-released and rebuilt. Entries not referenced any frame are evicted.
-					var entry = rr.Data.Compiled;
+						// The per-visual GPU-geometry cache (slab/scroll), keyed by the recording's immutable command
+						// list. Build once; reuse while it's replayed at the same transform/clip. A stale entry (moved
+						// visual) is deferred-released and rebuilt. Entries not referenced any frame are evicted.
+						var entry = rr.Data.Compiled;
 						var miss = entry is null;
 						// ARENA (#22): a transform-safe recording (solid/image, no clip) bakes its geometry ONCE in its
 						// own identity NDC space; a moved replay re-stamps the vertex xform on the per-op clip bind groups
@@ -2004,7 +2063,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								bool aHasPath = false, aPure = aList.Count > 0; foreach (var c in aList) { if (c is PathFill) { aHasPath = true; } else { aPure = false; } }
 								if (aHasPath && aSlot < 0) { aSlot = _d.AllocXformSlot(); }
 								BuildCoalesced(aList, aOps, aOwned, aSlot);
-									for (int _ri = 0; _ri < aOps.Count; _ri++) { aOps[_ri] = ResidentizeFan(aOps[_ri], aOwned); }
+								for (int _ri = 0; _ri < aOps.Count; _ri++) { aOps[_ri] = ResidentizeFan(aOps[_ri], aOwned); }
 								entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, PurePath = aPure, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot };
 								rr.Data.Compiled = entry;
 							}
@@ -2013,33 +2072,33 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, rr.Transform); }
 							if (!entry.HasStamp || entry.StampXform != rr.Transform)
 							{
-							if (entry.StampOwned is not null) { _d.DeferRelease(entry.StampOwned); }
-							var stampOwned = new OwnedResources();
-							var stamped = new List<DrawOp>(entry.Ops.Count);
-							var xf = ArenaXform(rr.Transform);
-							// finv = inverse device affine, so clipCov maps the moved fragment back to the recording's
-							// own space where the (identity-baked) clip lives.
-							var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
-							Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
-							Vector2 MoveP(float x, float y) => new(x * t2.M11 + y * t2.M21 + t2.M31, x * t2.M12 + y * t2.M22 + t2.M32);
-							foreach (var op in entry.Ops)
-							{
-								var abgl = op.kind switch { 3 => _d.GradClipBgl, 2 => _d.ImageClipBgl, _ => _d.SolidClipBgl };
-								// clipCov reads the LOCAL rounded shape (finv maps fc back to it); the SCISSOR is device-space
-								// so its Aabb must follow the move — transform the (finite) clip Aabb by the replay transform.
-								var scissorClip = op.clip;
-								var ab = op.clip.Aabb;
-								if (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f)
+								if (entry.StampOwned is not null) { _d.DeferRelease(entry.StampOwned); }
+								var stampOwned = new OwnedResources();
+								var stamped = new List<DrawOp>(entry.Ops.Count);
+								var xf = ArenaXform(rr.Transform);
+								// finv = inverse device affine, so clipCov maps the moved fragment back to the recording's
+								// own space where the (identity-baked) clip lives.
+								var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
+								Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
+								Vector2 MoveP(float x, float y) => new(x * t2.M11 + y * t2.M21 + t2.M31, x * t2.M12 + y * t2.M22 + t2.M32);
+								foreach (var op in entry.Ops)
 								{
-									var p0 = MoveP(ab.X, ab.Y); var p1 = MoveP(ab.Z, ab.Y); var p2 = MoveP(ab.Z, ab.W); var p3 = MoveP(ab.X, ab.W);
-									scissorClip.Aabb = new Vector4(
-										MathF.Min(MathF.Min(p0.X, p1.X), MathF.Min(p2.X, p3.X)), MathF.Min(MathF.Min(p0.Y, p1.Y), MathF.Min(p2.Y, p3.Y)),
-										MathF.Max(MathF.Max(p0.X, p1.X), MathF.Max(p2.X, p3.X)), MathF.Max(MathF.Max(p0.Y, p1.Y), MathF.Max(p2.Y, p3.Y)));
+									var abgl = op.kind switch { 3 => _d.GradClipBgl, 2 => _d.ImageClipBgl, _ => _d.SolidClipBgl };
+									// clipCov reads the LOCAL rounded shape (finv maps fc back to it); the SCISSOR is device-space
+									// so its Aabb must follow the move — transform the (finite) clip Aabb by the replay transform.
+									var scissorClip = op.clip;
+									var ab = op.clip.Aabb;
+									if (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f)
+									{
+										var p0 = MoveP(ab.X, ab.Y); var p1 = MoveP(ab.Z, ab.Y); var p2 = MoveP(ab.Z, ab.W); var p3 = MoveP(ab.X, ab.W);
+										scissorClip.Aabb = new Vector4(
+											MathF.Min(MathF.Min(p0.X, p1.X), MathF.Min(p2.X, p3.X)), MathF.Min(MathF.Min(p0.Y, p1.Y), MathF.Min(p2.Y, p3.Y)),
+											MathF.Max(MathF.Max(p0.X, p1.X), MathF.Max(p2.X, p3.X)), MathF.Max(MathF.Max(p0.Y, p1.Y), MathF.Max(p2.Y, p3.Y)));
+									}
+									var aClipBg = MakeClipBg(abgl, op.clip, stampOwned, xf, finv);
+									stamped.Add(new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, (nint)aClipBg));
 								}
-								var aClipBg = MakeClipBg(abgl, op.clip, stampOwned, xf, finv);
-								stamped.Add(new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, (nint)aClipBg));
-							}
-							entry.StampOwned = stampOwned; entry.StampedOps = stamped; entry.StampXform = rr.Transform; entry.HasStamp = true;
+								entry.StampOwned = stampOwned; entry.StampedOps = stamped; entry.StampXform = rr.Transform; entry.HasStamp = true;
 							}
 							ops.AddRange(entry.StampedOps);
 							break;
@@ -2063,99 +2122,99 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// Device-space verts => the slot's entry is the pure current projection (rewritten per frame so a
 						// resize repositions the path fills via the table without re-baking).
 						if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, Matrix4x4.Identity); }
-					// Splice the cached draw-ops straight into this frame's op list — replayed by direct encoding in
-					// the main pass, NOT a render bundle (ExecuteBundles measured ~6x slower on wgpu-native, and forces
-					// a scissor reset; direct replay keeps each op's scissor). Buffers/bind groups persist in `owned`.
-					ops.AddRange(entry.Ops);
-					break;
-				}
+						// Splice the cached draw-ops straight into this frame's op list — replayed by direct encoding in
+						// the main pass, NOT a render bundle (ExecuteBundles measured ~6x slower on wgpu-native, and forces
+						// a scissor reset; direct replay keeps each op's scissor). Buffers/bind groups persist in `owned`.
+						ops.AddRange(entry.Ops);
+						break;
+					}
 				case ShadowCmd sh:
-				{
-					// Render the blurred coverage offscreen, then composite it as a SrcIn-tinted image (tint =
-					// shadow color) at its device placement — reusing the image draw path (kind 2), incl. clip.
-					var blurView = RenderShadow(sh, out var origin, out var size);
-					var ubuf = MakeUniform((int)112);
-					var op = stackalloc float[8];
-					op[0] = 1f; op[1] = 1f; op[2] = 0; op[3] = 0;
-					op[4] = sh.Color.R / 255f; op[5] = sh.Color.G / 255f; op[6] = sh.Color.B / 255f; op[7] = sh.Color.A / 255f;
-					wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)op, 32);
-					var sentries = stackalloc WGPUBindGroupEntry[3];
-					sentries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blurView };
-					sentries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-					sentries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 112 };
-					var sbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sentries };
-					var sbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &sbgd));
-					var sq = new float[24];
-					void SQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); sq[idx] = n.X; sq[idx + 1] = n.Y; sq[idx + 2] = u; sq[idx + 3] = vv; }
-					var o0 = origin; var o1 = origin + new Vector2(size.X, 0); var o2 = origin + size; var o3 = origin + new Vector2(0, size.Y);
-					SQV(0, o0, 0, 0); SQV(4, o1, 1, 0); SQV(8, o2, 1, 1); SQV(12, o0, 0, 0); SQV(16, o2, 1, 1); SQV(20, o3, 0, 1);
-					ops.Add(new DrawOp(2, (nint)sbg, 0, (nint)MakeBuffer(sq), false, sh.Clip, (nint)MakeClipBg(_d.ImageClipBgl, sh.Clip)));
-					break;
-				}
+					{
+						// Render the blurred coverage offscreen, then composite it as a SrcIn-tinted image (tint =
+						// shadow color) at its device placement — reusing the image draw path (kind 2), incl. clip.
+						var blurView = RenderShadow(sh, out var origin, out var size);
+						var ubuf = MakeUniform((int)112);
+						var op = stackalloc float[8];
+						op[0] = 1f; op[1] = 1f; op[2] = 0; op[3] = 0;
+						op[4] = sh.Color.R / 255f; op[5] = sh.Color.G / 255f; op[6] = sh.Color.B / 255f; op[7] = sh.Color.A / 255f;
+						wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)op, 32);
+						var sentries = stackalloc WGPUBindGroupEntry[3];
+						sentries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blurView };
+						sentries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+						sentries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 112 };
+						var sbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sentries };
+						var sbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &sbgd));
+						var sq = new float[24];
+						void SQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); sq[idx] = n.X; sq[idx + 1] = n.Y; sq[idx + 2] = u; sq[idx + 3] = vv; }
+						var o0 = origin; var o1 = origin + new Vector2(size.X, 0); var o2 = origin + size; var o3 = origin + new Vector2(0, size.Y);
+						SQV(0, o0, 0, 0); SQV(4, o1, 1, 0); SQV(8, o2, 1, 1); SQV(12, o0, 0, 0); SQV(16, o2, 1, 1); SQV(20, o3, 0, 1);
+						ops.Add(new DrawOp(2, (nint)sbg, 0, (nint)MakeBuffer(sq), false, sh.Clip, (nint)MakeClipBg(_d.ImageClipBgl, sh.Clip)));
+						break;
+					}
 				case LayerCmd lyr:
-				{
-					// Render the layer's commands into a full-size offscreen surface, then composite (kind 4). Both the
-					// offscreen render and this composite record into the frame's single encoder, so wgpu barriers the
-					// offscreen resolve before the composite samples it — no explicit flush needed.
-					var layerSurface = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
-					RenderInto(lyr.Commands, layerSurface, null);
-
-					// SaveLayer(IEffectFilter) drop shadow: blur the content, draw it tinted+offset behind, then
-					// the content on top. Reuses the image path (SrcIn tint) for the shadow — same as DrawShadow.
-					if (lyr.ShadowEffect is { } fx)
 					{
-						var blur = BlurPyramid(layerSurface.View, _s.Width, _s.Height, fx.SigmaX, fx.SigmaY);
-						var subuf = MakeUniform((int)112);
-						var sop = stackalloc float[8];
-						sop[0] = 1f; sop[1] = 1f; sop[2] = 0; sop[3] = 0;
-						sop[4] = fx.Color.R / 255f; sop[5] = fx.Color.G / 255f; sop[6] = fx.Color.B / 255f; sop[7] = fx.Color.A / 255f;
-						wgpuQueueWriteBuffer(_d.Q, subuf, 0, (IntPtr)sop, 32);
-						var sfe = stackalloc WGPUBindGroupEntry[3];
-						sfe[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blur };
-						sfe[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-						sfe[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = subuf, Offset = 0, Size = 112 };
-						var sfbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sfe };
-						var sfbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &sfbgd));
-						var fq = new float[24];
-						void FQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); fq[idx] = n.X; fq[idx + 1] = n.Y; fq[idx + 2] = u; fq[idx + 3] = vv; }
-						var off = new Vector2(fx.Dx, fx.Dy);
-						FQV(0, new Vector2(0, 0) + off, 0, 0); FQV(4, new Vector2(_s.Width, 0) + off, 1, 0); FQV(8, new Vector2(_s.Width, _s.Height) + off, 1, 1);
-						FQV(12, new Vector2(0, 0) + off, 0, 0); FQV(16, new Vector2(_s.Width, _s.Height) + off, 1, 1); FQV(20, new Vector2(0, _s.Height) + off, 0, 1);
-						ops.Add(new DrawOp(2, (nint)sfbg, 0, (nint)MakeBuffer(fq), false, lyr.Clip, (nint)MakeClipBg(_d.ImageClipBgl, lyr.Clip)));
-					}
+						// Render the layer's commands into a full-size offscreen surface, then composite (kind 4). Both the
+						// offscreen render and this composite record into the frame's single encoder, so wgpu barriers the
+						// offscreen resolve before the composite samples it — no explicit flush needed.
+						var layerSurface = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
+						RenderInto(lyr.Commands, layerSurface, null);
 
-					var cu = new float[24];
-					cu[0] = lyr.ColorMatrix is { Length: >= 20 } ? 1f : 0f; cu[1] = 1f;
-					if (lyr.ColorMatrix is { Length: >= 20 } mm)
-					{
-						cu[4] = mm[0]; cu[5] = mm[1]; cu[6] = mm[2]; cu[7] = mm[3];        // m0
-						cu[8] = mm[5]; cu[9] = mm[6]; cu[10] = mm[7]; cu[11] = mm[8];      // m1
-						cu[12] = mm[10]; cu[13] = mm[11]; cu[14] = mm[12]; cu[15] = mm[13]; // m2
-						cu[16] = mm[15]; cu[17] = mm[16]; cu[18] = mm[17]; cu[19] = mm[18]; // m3
-						cu[20] = mm[4]; cu[21] = mm[9]; cu[22] = mm[14]; cu[23] = mm[19];   // off (5th column)
+						// SaveLayer(IEffectFilter) drop shadow: blur the content, draw it tinted+offset behind, then
+						// the content on top. Reuses the image path (SrcIn tint) for the shadow — same as DrawShadow.
+						if (lyr.ShadowEffect is { } fx)
+						{
+							var blur = BlurPyramid(layerSurface.View, _s.Width, _s.Height, fx.SigmaX, fx.SigmaY);
+							var subuf = MakeUniform((int)112);
+							var sop = stackalloc float[8];
+							sop[0] = 1f; sop[1] = 1f; sop[2] = 0; sop[3] = 0;
+							sop[4] = fx.Color.R / 255f; sop[5] = fx.Color.G / 255f; sop[6] = fx.Color.B / 255f; sop[7] = fx.Color.A / 255f;
+							wgpuQueueWriteBuffer(_d.Q, subuf, 0, (IntPtr)sop, 32);
+							var sfe = stackalloc WGPUBindGroupEntry[3];
+							sfe[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blur };
+							sfe[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+							sfe[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = subuf, Offset = 0, Size = 112 };
+							var sfbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sfe };
+							var sfbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &sfbgd));
+							var fq = new float[24];
+							void FQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); fq[idx] = n.X; fq[idx + 1] = n.Y; fq[idx + 2] = u; fq[idx + 3] = vv; }
+							var off = new Vector2(fx.Dx, fx.Dy);
+							FQV(0, new Vector2(0, 0) + off, 0, 0); FQV(4, new Vector2(_s.Width, 0) + off, 1, 0); FQV(8, new Vector2(_s.Width, _s.Height) + off, 1, 1);
+							FQV(12, new Vector2(0, 0) + off, 0, 0); FQV(16, new Vector2(_s.Width, _s.Height) + off, 1, 1); FQV(20, new Vector2(0, _s.Height) + off, 0, 1);
+							ops.Add(new DrawOp(2, (nint)sfbg, 0, (nint)MakeBuffer(fq), false, lyr.Clip, (nint)MakeClipBg(_d.ImageClipBgl, lyr.Clip)));
+						}
+
+						var cu = new float[24];
+						cu[0] = lyr.ColorMatrix is { Length: >= 20 } ? 1f : 0f; cu[1] = 1f;
+						if (lyr.ColorMatrix is { Length: >= 20 } mm)
+						{
+							cu[4] = mm[0]; cu[5] = mm[1]; cu[6] = mm[2]; cu[7] = mm[3];        // m0
+							cu[8] = mm[5]; cu[9] = mm[6]; cu[10] = mm[7]; cu[11] = mm[8];      // m1
+							cu[12] = mm[10]; cu[13] = mm[11]; cu[14] = mm[12]; cu[15] = mm[13]; // m2
+							cu[16] = mm[15]; cu[17] = mm[16]; cu[18] = mm[17]; cu[19] = mm[18]; // m3
+							cu[20] = mm[4]; cu[21] = mm[9]; cu[22] = mm[14]; cu[23] = mm[19];   // off (5th column)
+						}
+						var lubuf = MakeUniform((int)96);
+						fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, lubuf, 0, (IntPtr)p, 96); }
+						var lentries = stackalloc WGPUBindGroupEntry[3];
+						lentries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = layerSurface.View };
+						lentries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+						lentries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = lubuf, Offset = 0, Size = 96 };
+						var lbgd = new WGPUBindGroupDescriptor { Layout = lyr.CompositeMode == 1 ? _d.CompositeDstInBgl : _d.CompositeBgl, EntryCount = 3, Entries = lentries };
+						var lbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &lbgd));
+						ops.Add(new DrawOp(4, (nint)lbg, (uint)lyr.CompositeMode, 0, false, lyr.Clip, 0));
+						break;
 					}
-					var lubuf = MakeUniform((int)96);
-					fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, lubuf, 0, (IntPtr)p, 96); }
-					var lentries = stackalloc WGPUBindGroupEntry[3];
-					lentries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = layerSurface.View };
-					lentries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-					lentries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = lubuf, Offset = 0, Size = 96 };
-					var lbgd = new WGPUBindGroupDescriptor { Layout = lyr.CompositeMode == 1 ? _d.CompositeDstInBgl : _d.CompositeBgl, EntryCount = 3, Entries = lentries };
-					var lbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &lbgd));
-					ops.Add(new DrawOp(4, (nint)lbg, (uint)lyr.CompositeMode, 0, false, lyr.Clip, 0));
-					break;
-				}
 				case BackdropCmd bk:
-				{
-					// Defer to encode-time pass-segmenting: a kind-6 marker splits THIS pass here so the backdrop samples the
-					// framebuffer RESOLVED SO FAR (the content behind it) in place — no offscreen, no prefix re-render. Works for
-					// the on-window target AND pooled layer targets: both store+reload their MSAA across the segment (see the
-					// main-pass + kind-6 StoreOp), so an acrylic inside a layer/flyout skips the full-window offscreen the old
-					// pooled fallback re-rendered per backdrop, and an empty prefix costs nothing (no separate blurred offscreen).
-					int bi = backdrops.Count; backdrops.Add(bk);
-					ops.Add(new DrawOp(6, 0, 0, (nint)bi, false, bk.Clip, 0));
-					break;
-				}
+					{
+						// Defer to encode-time pass-segmenting: a kind-6 marker splits THIS pass here so the backdrop samples the
+						// framebuffer RESOLVED SO FAR (the content behind it) in place — no offscreen, no prefix re-render. Works for
+						// the on-window target AND pooled layer targets: both store+reload their MSAA across the segment (see the
+						// main-pass + kind-6 StoreOp), so an acrylic inside a layer/flyout skips the full-window offscreen the old
+						// pooled fallback re-rendered per backdrop, and an empty prefix costs nothing (no separate blurred offscreen).
+						int bi = backdrops.Count; backdrops.Add(bk);
+						ops.Add(new DrawOp(6, 0, 0, (nint)bi, false, bk.Clip, 0));
+						break;
+					}
 			}
 		}
 
@@ -2200,14 +2259,21 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			// multisampled buffer is Discarded after resolve — EXCEPT when a case-6 backdrop will segment this pass
 			// (it ends + reopens with LoadOp.Load, which requires the samples were Stored). The overlay is inlined
 			// into this same pass (see Dispose), so there is no follow-up load pass to keep the samples alive for.
-			View = target.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero, LoadOp = load ? WGPULoadOp.Load : WGPULoadOp.Clear, StoreOp = (_d.MsaaSamples > 1 && backdrops.Count == 0) ? WGPUStoreOp.Discard : WGPUStoreOp.Store,
+			View = target.MsaaColorView,
+			ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero,
+			LoadOp = load ? WGPULoadOp.Load : WGPULoadOp.Clear,
+			StoreOp = (_d.MsaaSamples > 1 && backdrops.Count == 0) ? WGPUStoreOp.Discard : WGPUStoreOp.Store,
 			ClearValue = clear.HasValue ? new WGPUColor { R = clear.Value.R / 255.0, G = clear.Value.G / 255.0, B = clear.Value.B / 255.0, A = clear.Value.A / 255.0 } : default,
 		};
 		var dsa = new WGPURenderPassDepthStencilAttachment
 		{
 			View = target.DepthView,
-			DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f,
-			StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0,
+			DepthLoadOp = WGPULoadOp.Clear,
+			DepthStoreOp = WGPUStoreOp.Discard,
+			DepthClearValue = 0f,
+			StencilLoadOp = WGPULoadOp.Clear,
+			StencilStoreOp = WGPUStoreOp.Discard,
+			StencilClearValue = 0,
 		};
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
@@ -2216,82 +2282,92 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// one clip, so this collapses a per-op call to one per distinct clip. Locals (not a field) keep it correct
 		// under the recursive nested-layer RenderInto (each pass has its own scissor state).
 		int lastX = -1, lastY = -1, lastW = -1, lastH = -1;
+		int statIters = 0, statScissor = 0, statClipCh = 0, statFanOps = 0;
+		var statFans = _emitStats ? new HashSet<float[]>(System.Collections.Generic.ReferenceEqualityComparer.Instance) : null;
 		// Current in-pass path-clip mask (device depth buffer). Changes only when a run of ops moves to a different
 		// path clip — the composition emits a clip then its subtree consecutively, so this fires ~once per clip.
 		float[] curFan = null; Vector4 curAabb = default;
 		for (int oi = 0; oi < ops.Count; oi++)
 		{
 			var (kind, b0, u0, b1, flag, clip, clipBg) = ops[oi];
+			statIters++;
+			if (statFans is not null && clip.PathFan is { } statFan)
+			{
+				statFanOps++;
+				statFans.Add(statFan);
+			}
 			if (!ReferenceEquals(clip.PathFan, curFan))
 			{
 				ApplyDepthClip(pass, curFan, curAabb, clip);
 				curFan = clip.PathFan; curAabb = clip.Aabb;
 				lastX = lastY = lastW = lastH = -1;   // the clip setup changed the scissor
+				statClipCh++;
 			}
 			if (!TryScissor(clip.Aabb, out var sx, out var sy, out var sw, out var sh)) { continue; }
 			if (sx != lastX || sy != lastY || sw != lastW || sh != lastH)
 			{
 				wgpuRenderPassEncoderSetScissorRect(pass, (uint)sx, (uint)sy, (uint)sw, (uint)sh);
 				lastX = sx; lastY = sy; lastW = sw; lastH = sh;
+				statScissor++;
 			}
 			switch (kind)
 			{
 				case 0 when b0 == 0:
-				{
-					// Shared-buffer solid (b1=start vertex, u0=vertex count). COALESCE the maximal run of following
-					// solid ops sharing this clip bind group + clip (same scissor + depth-clip): their verts are
-					// contiguous in the shared buffer by construction, so the whole run draws in ONE call.
-					int startVert = (int)b1; uint count = u0;
-					while (oi + 1 < ops.Count)
 					{
-						var nx = ops[oi + 1];
-						if (nx.kind != 0 || nx.b0 != 0 || nx.clipBg != clipBg
-							|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
-						count += nx.u0; oi++;
+						// Shared-buffer solid (b1=start vertex, u0=vertex count). COALESCE the maximal run of following
+						// solid ops sharing this clip bind group + clip (same scissor + depth-clip): their verts are
+						// contiguous in the shared buffer by construction, so the whole run draws in ONE call.
+						int startVert = (int)b1; uint count = u0;
+						while (oi + 1 < ops.Count)
+						{
+							var nx = ops[oi + 1];
+							if (nx.kind != 0 || nx.b0 != 0 || nx.clipBg != clipBg
+								|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
+							count += nx.u0; oi++;
+						}
+						wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
+						wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
+						wgpuRenderPassEncoderSetVertexBuffer(pass, 0, solidBuf, (nuint)(startVert * 6 * sizeof(float)), (nuint)(count * 6 * sizeof(float)));
+						wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
+						break;
 					}
-					wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
-					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, solidBuf, (nuint)(startVert * 6 * sizeof(float)), (nuint)(count * 6 * sizeof(float)));
-					wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
-					break;
-				}
 				case 0 when b0 == 1:
-				{
-					// Resident SOLID SLAB (b1 = absolute byte offset). Coalesce a byte-contiguous run sharing clip+bindgroup.
-					int byteOff = (int)b1; uint count = u0;
-					while (oi + 1 < ops.Count)
 					{
-						var nx = ops[oi + 1];
-						if (nx.kind != 0 || nx.b0 != 1 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
-							|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 6 * sizeof(float))) { break; }
-						count += nx.u0; oi++;
+						// Resident SOLID SLAB (b1 = absolute byte offset). Coalesce a byte-contiguous run sharing clip+bindgroup.
+						int byteOff = (int)b1; uint count = u0;
+						while (oi + 1 < ops.Count)
+						{
+							var nx = ops[oi + 1];
+							if (nx.kind != 0 || nx.b0 != 1 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 6 * sizeof(float))) { break; }
+							count += nx.u0; oi++;
+						}
+						wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
+						wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
+						wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.SolidSlab.Buf, (nuint)byteOff, (nuint)(count * 6 * sizeof(float)));
+						wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
+						break;
 					}
-					wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
-					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.SolidSlab.Buf, (nuint)byteOff, (nuint)(count * 6 * sizeof(float)));
-					wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
-					break;
-				}
 				case 0 when b0 == 2:
-				{
-					// Resident SOLID TABLE SLAB (b1 = absolute byte offset, stride 7 = pos+col+slot). Group 0 = the
-					// transform table (each vertex's slot positions it), group 1 = ClipU. Coalesce byte-contiguous
-					// same-clip runs ACROSS recordings — each vertex still carries its own slot, so one draw is correct.
-					int byteOff = (int)b1; uint count = u0;
-					while (oi + 1 < ops.Count)
 					{
-						var nx = ops[oi + 1];
-						if (nx.kind != 0 || nx.b0 != 2 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
-							|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 7 * sizeof(float))) { break; }
-						count += nx.u0; oi++;
+						// Resident SOLID TABLE SLAB (b1 = absolute byte offset, stride 7 = pos+col+slot). Group 0 = the
+						// transform table (each vertex's slot positions it), group 1 = ClipU. Coalesce byte-contiguous
+						// same-clip runs ACROSS recordings — each vertex still carries its own slot, so one draw is correct.
+						int byteOff = (int)b1; uint count = u0;
+						while (oi + 1 < ops.Count)
+						{
+							var nx = ops[oi + 1];
+							if (nx.kind != 0 || nx.b0 != 2 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 7 * sizeof(float))) { break; }
+							count += nx.u0; oi++;
+						}
+						wgpuRenderPassEncoderSetPipeline(pass, _d.SolidTablePipe);
+						wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)xformBg, 0, (uint*)null);
+						wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
+						wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.SolidTableSlab.Buf, (nuint)byteOff, (nuint)(count * 7 * sizeof(float)));
+						wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
+						break;
 					}
-					wgpuRenderPassEncoderSetPipeline(pass, _d.SolidTablePipe);
-					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)xformBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.SolidTableSlab.Buf, (nuint)byteOff, (nuint)(count * 7 * sizeof(float)));
-					wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
-					break;
-				}
 				case 0:
 					// b0 = vertex buffer (private/immediate or a resident frame-solid buffer); b1 = byte offset into it.
 					wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
@@ -2334,130 +2410,137 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
 					break;
 				case 6:
-				{
-					// Backdrop pass-segment (acrylic O(n) path): END this segment so its MSAA resolves into target.View
-					// (the content BEHIND the backdrop), blur that, REOPEN the pass loading the content back, and
-					// composite the blurred backdrop + tint over the effect region. Subsequent ops draw on top in the
-					// reopened pass. No prefix re-render — each command is encoded once.
-					var bk = backdrops[(int)b1];
-					wgpuRenderPassEncoderEnd(pass);
-					// Region-limit: blur only the element AABB padded by the blur reach, not the whole framebuffer.
-					float sPad = MathF.Max(bk.Effect.SigmaX, bk.Effect.SigmaY) + 8f;
-					var sAabb = bk.Clip.Aabb;
-					float srx = MathF.Max(0f, sAabb.X - sPad), sry = MathF.Max(0f, sAabb.Y - sPad);
-					float srw = MathF.Max(1f, MathF.Min(_s.Width, sAabb.Z + sPad) - srx), srh = MathF.Max(1f, MathF.Min(_s.Height, sAabb.W + sPad) - sry);
-					var bblur = BlurPyramidRegion(target.View, _s.Width, _s.Height, srx, sry, srw, srh, bk.Effect.SigmaX, bk.Effect.SigmaY);
-					var ca6 = new WGPURenderPassColorAttachment
 					{
-						DepthSlice = uint.MaxValue,
-						View = target.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero,
-						LoadOp = WGPULoadOp.Load, StoreOp = WGPUStoreOp.Store,   // store: a following segment (next backdrop) reloads it; pooled layer targets segment too now
-					};
-					var dsa6 = new WGPURenderPassDepthStencilAttachment
-					{
-						View = target.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f,
-						StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0,
-					};
-					var rp6 = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca6, DepthStencilAttachment = &dsa6 };
-					pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp6);
-					lastX = lastY = lastW = lastH = -1; curFan = null; curAabb = default;   // fresh pass: reset scissor + clip mask
-					if (TryScissor(bk.Clip.Aabb, out var bsx, out var bsy, out var bsw, out var bsh))
-					{
-						wgpuRenderPassEncoderSetScissorRect(pass, (uint)bsx, (uint)bsy, (uint)bsw, (uint)bsh);
-						lastX = bsx; lastY = bsy; lastW = bsw; lastH = bsh;
-						// Acrylic composite: blurred backdrop image (lum/noise/opacity baked via the 112B uniform).
-						var bubuf = MakeUniform(112);
-						var bop = stackalloc float[28]; bop[0] = bk.Opacity; bop[3] = 1f; var lum = bk.Effect.LumColor; bop[4] = lum.R / 255f; bop[5] = lum.G / 255f; bop[6] = lum.B / 255f; bop[7] = lum.A / 255f; bop[24] = bk.Effect.Noise;
-						wgpuQueueWriteBuffer(_d.Q, bubuf, 0, (IntPtr)bop, 112);
-						var bde = stackalloc WGPUBindGroupEntry[3];
-						bde[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = bblur };
-						bde[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-						bde[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = bubuf, Offset = 0, Size = 112 };
-						var bdbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = bde };
-						var bdbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bdbgd));
-						var bq = new float[24];
-						void BQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); bq[idx] = n.X; bq[idx + 1] = n.Y; bq[idx + 2] = u; bq[idx + 3] = vv; }
-						BQV(0, new Vector2(srx, sry), 0, 0); BQV(4, new Vector2(srx + srw, sry), 1, 0); BQV(8, new Vector2(srx + srw, sry + srh), 1, 1);
-						BQV(12, new Vector2(srx, sry), 0, 0); BQV(16, new Vector2(srx + srw, sry + srh), 1, 1); BQV(20, new Vector2(srx, sry + srh), 0, 1);
-						var bqbuf = MakeBuffer(bq);
-						var bclipBg = MakeClipBg(_d.ImageClipBgl, bk.Clip);
-						wgpuRenderPassEncoderSetPipeline(pass, _d.ImagePipe);
-						wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bdbg, 0, (uint*)null);
-						wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)bclipBg, 0, (uint*)null);
-						wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)bqbuf, 0, (nuint)(24 * sizeof(float)));
-						wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
-						// Tint overlay (skip A==0).
-						if (bk.Effect.Color.A != 0)
+						// Backdrop pass-segment (acrylic O(n) path): END this segment so its MSAA resolves into target.View
+						// (the content BEHIND the backdrop), blur that, REOPEN the pass loading the content back, and
+						// composite the blurred backdrop + tint over the effect region. Subsequent ops draw on top in the
+						// reopened pass. No prefix re-render — each command is encoded once.
+						var bk = backdrops[(int)b1];
+						wgpuRenderPassEncoderEnd(pass);
+						// Region-limit: blur only the element AABB padded by the blur reach, not the whole framebuffer.
+						float sPad = MathF.Max(bk.Effect.SigmaX, bk.Effect.SigmaY) + 8f;
+						var sAabb = bk.Clip.Aabb;
+						float srx = MathF.Max(0f, sAabb.X - sPad), sry = MathF.Max(0f, sAabb.Y - sPad);
+						float srw = MathF.Max(1f, MathF.Min(_s.Width, sAabb.Z + sPad) - srx), srh = MathF.Max(1f, MathF.Min(_s.Height, sAabb.W + sPad) - sry);
+						var bblur = BlurPyramidRegion(target.View, _s.Width, _s.Height, srx, sry, srw, srh, bk.Effect.SigmaX, bk.Effect.SigmaY);
+						var ca6 = new WGPURenderPassColorAttachment
 						{
-							var col = bk.Effect.Color; var tcx = col.R / 255f; var tcy = col.G / 255f; var tcz = col.B / 255f; var tcw = col.A / 255f;
-							var tv = new System.Collections.Generic.List<float>();
-							void TV(float x, float y) { var n = Ndc(new Vector2(x, y)); tv.Add(n.X); tv.Add(n.Y); tv.Add(tcx); tv.Add(tcy); tv.Add(tcz); tv.Add(tcw); }
-							var a = bk.Clip.Aabb;
-							TV(a.X, a.Y); TV(a.Z, a.Y); TV(a.Z, a.W); TV(a.X, a.Y); TV(a.Z, a.W); TV(a.X, a.W);
-							var tvbuf = MakeBuffer(tv);
-							var tclipBg = MakeClipBg(_d.SolidClipBgl, bk.Clip);
-							wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
-							wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)tclipBg, 0, (uint*)null);
-							wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)tvbuf, 0, (nuint)(36 * sizeof(float)));
+							DepthSlice = uint.MaxValue,
+							View = target.MsaaColorView,
+							ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero,
+							LoadOp = WGPULoadOp.Load,
+							StoreOp = WGPUStoreOp.Store,   // store: a following segment (next backdrop) reloads it; pooled layer targets segment too now
+						};
+						var dsa6 = new WGPURenderPassDepthStencilAttachment
+						{
+							View = target.DepthView,
+							DepthLoadOp = WGPULoadOp.Clear,
+							DepthStoreOp = WGPUStoreOp.Discard,
+							DepthClearValue = 0f,
+							StencilLoadOp = WGPULoadOp.Clear,
+							StencilStoreOp = WGPUStoreOp.Discard,
+							StencilClearValue = 0,
+						};
+						var rp6 = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca6, DepthStencilAttachment = &dsa6 };
+						pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp6);
+						lastX = lastY = lastW = lastH = -1; curFan = null; curAabb = default;   // fresh pass: reset scissor + clip mask
+						if (TryScissor(bk.Clip.Aabb, out var bsx, out var bsy, out var bsw, out var bsh))
+						{
+							wgpuRenderPassEncoderSetScissorRect(pass, (uint)bsx, (uint)bsy, (uint)bsw, (uint)bsh);
+							lastX = bsx; lastY = bsy; lastW = bsw; lastH = bsh;
+							// Acrylic composite: blurred backdrop image (lum/noise/opacity baked via the 112B uniform).
+							var bubuf = MakeUniform(112);
+							var bop = stackalloc float[28]; bop[0] = bk.Opacity; bop[3] = 1f; var lum = bk.Effect.LumColor; bop[4] = lum.R / 255f; bop[5] = lum.G / 255f; bop[6] = lum.B / 255f; bop[7] = lum.A / 255f; bop[24] = bk.Effect.Noise;
+							wgpuQueueWriteBuffer(_d.Q, bubuf, 0, (IntPtr)bop, 112);
+							var bde = stackalloc WGPUBindGroupEntry[3];
+							bde[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = bblur };
+							bde[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+							bde[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = bubuf, Offset = 0, Size = 112 };
+							var bdbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = bde };
+							var bdbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bdbgd));
+							var bq = new float[24];
+							void BQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); bq[idx] = n.X; bq[idx + 1] = n.Y; bq[idx + 2] = u; bq[idx + 3] = vv; }
+							BQV(0, new Vector2(srx, sry), 0, 0); BQV(4, new Vector2(srx + srw, sry), 1, 0); BQV(8, new Vector2(srx + srw, sry + srh), 1, 1);
+							BQV(12, new Vector2(srx, sry), 0, 0); BQV(16, new Vector2(srx + srw, sry + srh), 1, 1); BQV(20, new Vector2(srx, sry + srh), 0, 1);
+							var bqbuf = MakeBuffer(bq);
+							var bclipBg = MakeClipBg(_d.ImageClipBgl, bk.Clip);
+							wgpuRenderPassEncoderSetPipeline(pass, _d.ImagePipe);
+							wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bdbg, 0, (uint*)null);
+							wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)bclipBg, 0, (uint*)null);
+							wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)bqbuf, 0, (nuint)(24 * sizeof(float)));
 							wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
+							// Tint overlay (skip A==0).
+							if (bk.Effect.Color.A != 0)
+							{
+								var col = bk.Effect.Color; var tcx = col.R / 255f; var tcy = col.G / 255f; var tcz = col.B / 255f; var tcw = col.A / 255f;
+								var tv = new System.Collections.Generic.List<float>();
+								void TV(float x, float y) { var n = Ndc(new Vector2(x, y)); tv.Add(n.X); tv.Add(n.Y); tv.Add(tcx); tv.Add(tcy); tv.Add(tcz); tv.Add(tcw); }
+								var a = bk.Clip.Aabb;
+								TV(a.X, a.Y); TV(a.Z, a.Y); TV(a.Z, a.W); TV(a.X, a.Y); TV(a.Z, a.W); TV(a.X, a.W);
+								var tvbuf = MakeBuffer(tv);
+								var tclipBg = MakeClipBg(_d.SolidClipBgl, bk.Clip);
+								wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
+								wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)tclipBg, 0, (uint*)null);
+								wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)tvbuf, 0, (nuint)(36 * sizeof(float)));
+								wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
+							}
 						}
+						break;
 					}
-					break;
-				}
 				case 5 when b0 == 0:
-				{
-					// Shared rrect buffer (b1=start vert, u0=6). COALESCE the run of following rrect ops sharing this
-					// clip bind group + clip: their 22-float verts are contiguous, so the run draws in ONE call.
-					int startVert = (int)b1; uint count = u0;
-					while (oi + 1 < ops.Count)
 					{
-						var nx = ops[oi + 1];
-						if (nx.kind != 5 || nx.b0 != 0 || nx.clipBg != clipBg
-							|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
-						count += nx.u0; oi++;
+						// Shared rrect buffer (b1=start vert, u0=6). COALESCE the run of following rrect ops sharing this
+						// clip bind group + clip: their 22-float verts are contiguous, so the run draws in ONE call.
+						int startVert = (int)b1; uint count = u0;
+						while (oi + 1 < ops.Count)
+						{
+							var nx = ops[oi + 1];
+							if (nx.kind != 5 || nx.b0 != 0 || nx.clipBg != clipBg
+								|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
+							count += nx.u0; oi++;
+						}
+						wgpuRenderPassEncoderSetPipeline(pass, _d.RrPipe);
+						wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
+						wgpuRenderPassEncoderSetVertexBuffer(pass, 0, rrectBuf, (nuint)(startVert * 22 * sizeof(float)), (nuint)(count * 22 * sizeof(float)));
+						wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
+						break;
 					}
-					wgpuRenderPassEncoderSetPipeline(pass, _d.RrPipe);
-					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, rrectBuf, (nuint)(startVert * 22 * sizeof(float)), (nuint)(count * 22 * sizeof(float)));
-					wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
-					break;
-				}
 				case 5 when b0 == 1:
-				{
-					// Resident RRECT SLAB (b1 = absolute byte offset). Coalesce byte-contiguous same-clip runs.
-					int byteOff = (int)b1; uint count = u0;
-					while (oi + 1 < ops.Count)
 					{
-						var nx = ops[oi + 1];
-						if (nx.kind != 5 || nx.b0 != 1 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
-							|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 22 * sizeof(float))) { break; }
-						count += nx.u0; oi++;
+						// Resident RRECT SLAB (b1 = absolute byte offset). Coalesce byte-contiguous same-clip runs.
+						int byteOff = (int)b1; uint count = u0;
+						while (oi + 1 < ops.Count)
+						{
+							var nx = ops[oi + 1];
+							if (nx.kind != 5 || nx.b0 != 1 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 22 * sizeof(float))) { break; }
+							count += nx.u0; oi++;
+						}
+						wgpuRenderPassEncoderSetPipeline(pass, _d.RrPipe);
+						wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
+						wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.RrectSlab.Buf, (nuint)byteOff, (nuint)(count * 22 * sizeof(float)));
+						wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
+						break;
 					}
-					wgpuRenderPassEncoderSetPipeline(pass, _d.RrPipe);
-					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.RrectSlab.Buf, (nuint)byteOff, (nuint)(count * 22 * sizeof(float)));
-					wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
-					break;
-				}
 				case 5 when b0 == 2:
-				{
-					// Resident RRECT TABLE SLAB (b1 = absolute byte offset, stride 23). Group 0 = the transform table
-					// (per-vertex slot positions the local corners), group 1 = ClipU. Coalesce byte-contiguous same-clip runs.
-					int byteOff = (int)b1; uint count = u0;
-					while (oi + 1 < ops.Count)
 					{
-						var nx = ops[oi + 1];
-						if (nx.kind != 5 || nx.b0 != 2 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
-							|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 23 * sizeof(float))) { break; }
-						count += nx.u0; oi++;
+						// Resident RRECT TABLE SLAB (b1 = absolute byte offset, stride 23). Group 0 = the transform table
+						// (per-vertex slot positions the local corners), group 1 = ClipU. Coalesce byte-contiguous same-clip runs.
+						int byteOff = (int)b1; uint count = u0;
+						while (oi + 1 < ops.Count)
+						{
+							var nx = ops[oi + 1];
+							if (nx.kind != 5 || nx.b0 != 2 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 23 * sizeof(float))) { break; }
+							count += nx.u0; oi++;
+						}
+						wgpuRenderPassEncoderSetPipeline(pass, _d.RrTablePipe);
+						wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)xformBg, 0, (uint*)null);
+						wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
+						wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.RrectTableSlab.Buf, (nuint)byteOff, (nuint)(count * 23 * sizeof(float)));
+						wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
+						break;
 					}
-					wgpuRenderPassEncoderSetPipeline(pass, _d.RrTablePipe);
-					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)xformBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.RrectTableSlab.Buf, (nuint)byteOff, (nuint)(count * 23 * sizeof(float)));
-					wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
-					break;
-				}
 				case 5:
 					// b0 = vertex buffer (resident frame-solid or legacy per-op); b1 = byte offset; u0 = vertex count.
 					wgpuRenderPassEncoderSetPipeline(pass, _d.RrPipe);
@@ -2466,6 +2549,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					wgpuRenderPassEncoderDraw(pass, u0, 1, 0, 0);
 					break;
 			}
+		}
+
+		// UNO_WEBGPU_STATS=1: emit-shape counters to size command-encoding optimizations (render-bundle
+		// segmentation runs on scissor/clip boundaries). Rate-limited to ~once a second at 60fps.
+		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
+		{
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} clipChanges={statClipCh} fanOps={statFanOps} distinctFans={statFans?.Count ?? 0}");
 		}
 
 		wgpuRenderPassEncoderEnd(pass);
@@ -2539,7 +2629,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			}
 			RunFrame(cmds, _pendingClear);
 			_d.SolidSlab.EndFrame(); _d.RrectSlab.EndFrame();   // free slices of recordings not seen this frame
-		_d.SolidTableSlab.EndFrame(); _d.RrectTableSlab.EndFrame();
+			_d.SolidTableSlab.EndFrame(); _d.RrectTableSlab.EndFrame();
 			_pendingCmds = null;
 		}
 	}
@@ -2755,7 +2845,7 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 		var surface = new WebGpuRenderSurface(_device, pixelWidth, pixelHeight);
 		var present = new WebGpuPresentSession(_device, surface, this);
 		present.ReplayNested(recorder.Finish());   // encodes + submits the nested render into the surface's color texture
-		// Take ownership of the resolved color texture; dispose releases only the (finished) MSAA + depth targets.
+												   // Take ownership of the resolved color texture; dispose releases only the (finished) MSAA + depth targets.
 		var (tex, view) = surface.DetachColor();
 		surface.Dispose();
 		return new WebGpuTexture(_device, tex, view, pixelWidth, pixelHeight);
