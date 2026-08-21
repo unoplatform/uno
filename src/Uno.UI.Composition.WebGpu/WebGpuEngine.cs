@@ -113,8 +113,13 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	// the previous frame's GPU work has completed (present DevicePolls). A cached recording's persistent resources
 	// released mid-frame (cache miss) are deferred the same way, since ops already emitted this frame still use
 	// them. Pooled buffers/textures are reused (not released). Call once per frame before rebuilding.
+	// Monotonic per-session-frame counter: lets stamp memos detect "already stamped under the current submit",
+	// where an in-place uniform rewrite would clobber data this frame's earlier draws still reference.
+	public long FrameSeq;
+
 	public void BeginFrameResources()
 	{
+		FrameSeq++;
 		Pool.BeginFrame();
 		BufferPool.BeginFrame();
 		foreach (var bg in _pendingBindGroups) { wgpuBindGroupRelease((IntPtr)bg); }
