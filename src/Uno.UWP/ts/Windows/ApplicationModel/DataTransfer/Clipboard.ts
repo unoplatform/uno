@@ -164,6 +164,8 @@ namespace Uno.Utils {
 						const type = item.type || "text/plain";
 						// getData is synchronous within a paste event (unlike item.getAsString),
 						// so the payload survives past the event handler.
+						// An empty payload is treated as absent: on the web an empty text write
+						// is the representation of a cleared clipboard.
 						const value = event.clipboardData.getData(type) || "";
 						if (value) {
 							texts.push({ type: Clipboard.toManagedType(type), value: value });
@@ -316,6 +318,8 @@ namespace Uno.Utils {
 							} else {
 								const blob = await item.getType(type);
 								const value = await blob.text();
+								// An empty payload is treated as absent: on the web an empty text
+								// write is the representation of a cleared clipboard.
 								if (value) {
 									texts.push({ type: Clipboard.toManagedType(type), value: value });
 								}
@@ -388,7 +392,8 @@ namespace Uno.Utils {
 					if (entry.custom) {
 						const webType = "web " + entry.type;
 						if (ClipboardItem.supports && ClipboardItem.supports(webType)) {
-							record[webType] = new Blob([entry.value], { type: entry.type });
+							// The blob type must match the ClipboardItem key or the write is rejected.
+							record[webType] = new Blob([entry.value], { type: webType });
 						} else {
 							console.warn(`Clipboard: custom format '${entry.type}' is not supported by this browser and was skipped.`);
 						}

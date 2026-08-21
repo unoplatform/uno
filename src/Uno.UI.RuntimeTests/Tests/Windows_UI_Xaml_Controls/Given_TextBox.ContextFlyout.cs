@@ -1,4 +1,4 @@
-﻿#if WINAPPSDK || __SKIA__
+#if WINAPPSDK || __SKIA__
 using System.Linq;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Helpers;
