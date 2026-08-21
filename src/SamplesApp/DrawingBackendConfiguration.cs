@@ -44,7 +44,7 @@ internal static class DrawingBackendConfiguration
 #if !UNO_DRAWING_SKIA
 		// SkiaSharp-free build: no Skia assembly supplies defaults, so the content seams must be registered
 		// explicitly here or the host builder throws at Build(). (Geometry is already set to the managed engine above.)
-		builder.FontProvider(new ManagedFontProvider());
+		builder.FontProvider(new ManagedFontProvider(TryGetBundledDefaultFont()));
 		builder.ImageEncoderDecoder(new ManagedImageDecoderBackend());
 		builder.SvgRenderer(new ManagedSvgRenderer());
 #endif
@@ -52,7 +52,7 @@ internal static class DrawingBackendConfiguration
 		// Independent content seams (dev toggles). Left unset in a Skia build, they fall back to their Skia impls.
 		if (Environment.GetEnvironmentVariable("UNO_MANAGED_FONTS") is "1" or "true")
 		{
-			builder.FontProvider(new ManagedFontProvider());
+			builder.FontProvider(new ManagedFontProvider(TryGetBundledDefaultFont()));
 		}
 
 		if (Environment.GetEnvironmentVariable("UNO_MANAGED_IMAGE_DECODER") is "1" or "true")
@@ -63,6 +63,28 @@ internal static class DrawingBackendConfiguration
 		if (Environment.GetEnvironmentVariable("UNO_MANAGED_SVG") is "1" or "true")
 		{
 			builder.SvgRenderer(new ManagedSvgRenderer());
+		}
+	}
+
+	// The managed font provider enumerates system fonts, which platforms like WASM don't have — feed it the
+	// head-embedded default face there (see the head csproj's EmbeddedResource).
+	private static byte[]? TryGetBundledDefaultFont()
+	{
+		if (!OperatingSystem.IsBrowser())
+		{
+			return null;
+		}
+
+		if (typeof(DrawingBackendConfiguration).Assembly.GetManifestResourceStream("SamplesApp.DefaultFont.ttf") is not { } stream)
+		{
+			return null;
+		}
+
+		using (stream)
+		{
+			using var ms = new System.IO.MemoryStream();
+			stream.CopyTo(ms);
+			return ms.ToArray();
 		}
 	}
 }

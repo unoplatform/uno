@@ -8,6 +8,20 @@
 	<!-- Drawing-backend build flags (see SamplesApp.Skia.Generic). Default both on = Skia. A SkiaSharp-free build
 	     passes -p:UnoDrawingBackendSkia=false (with -p:UnoWebGpuWasm=true so Dawn is linked); DrawingBackendConfiguration
 	     then registers the WebGPU renderer over the managed seams. The DefineConstants gate the shared config. -->
+	<!-- Head-scoped AOT switch: passing RunAOTCompilation/PublishTrimmed globally breaks the
+	     netstandard2.0 generator projects in the graph. -->
+	<PropertyGroup Condition="'$(UnoWasmAot)'=='true'">
+		<RunAOTCompilation>true</RunAOTCompilation>
+		<PublishTrimmed>true</PublishTrimmed>
+	</PropertyGroup>
+	<ItemGroup Condition="'$(UnoWasmAot)'=='true'">
+		<!-- The Mono AOT cross-compiler runs out of memory on these giant assemblies. None are on the
+		     render path (samples/test infra) — the perf-critical Uno.UI/Composition assemblies stay AOT'd. -->
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Graph.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\SamplesApp.Skia.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Uno.UI.RuntimeTests.dll" />
+	</ItemGroup>
+
 	<PropertyGroup>
 		<UnoDrawingBackendSkia Condition="'$(UnoDrawingBackendSkia)'==''">true</UnoDrawingBackendSkia>
 		<UnoDrawingBackendWebGpu Condition="'$(UnoDrawingBackendWebGpu)'==''">true</UnoDrawingBackendWebGpu>
@@ -29,8 +43,8 @@
 		IL Linking is disabled in Debug configuration.
 		When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-webassembly.html
 		-->
-		<PublishTrimmed>false</PublishTrimmed>
-		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
+		<PublishTrimmed Condition="'$(UnoWasmAot)'!='true'">false</PublishTrimmed>
+		<WasmShellILLinkerEnabled Condition="'$(UnoWasmAot)'!='true'">false</WasmShellILLinkerEnabled>
 		
 		<PreBuildUnoUITasks>true</PreBuildUnoUITasks>
 		
@@ -52,6 +66,15 @@
 
 	<ItemGroup>
 		<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=1024m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
+		<!-- Benchmark hooks (see the perf samples): baked in only when the corresponding property is passed. -->
+		<WasmShellMonoEnvironment Include="UNO_PERF_BUTTONS" Value="$(UnoPerfButtons)" Condition="'$(UnoPerfButtons)'!=''" />
+		<WasmShellMonoEnvironment Include="UNO_LOG_FPS" Value="1" Condition="'$(UnoPerfLogFps)'=='true'" />
+		<WasmShellMonoEnvironment Include="UNO_FORCE_FULL_REPAINT" Value="1" Condition="'$(UnoPerfForceFullRepaint)'=='true'" />
+	</ItemGroup>
+
+	<!-- The managed font provider has no system fonts to enumerate on WASM; feed it the app's default face. -->
+	<ItemGroup Condition="'$(UnoDrawingBackendSkia)'!='true'">
+		<EmbeddedResource Include="$(NuGetPackageRoot)uno.fonts.opensans\2.8.1\lib\net7.0\Uno.Fonts.OpenSans\Fonts\OpenSans-Regular.ttf" Link="EmbeddedFonts\OpenSans-Regular.ttf" LogicalName="SamplesApp.DefaultFont.ttf" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
