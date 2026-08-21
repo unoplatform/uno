@@ -51,6 +51,7 @@
 			pattern instead.
 			-->
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\**\*.cs" />
+			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks.Tests\*.cs" />
 			<_Sha1Replace Include="..\build\nuget\uno.winui.winappsdk.targets" />
 			<_Sha1Replace Include="..\build\nuget\uno.winui.runtime-replace.targets" />
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\AssemblyName.props" />
