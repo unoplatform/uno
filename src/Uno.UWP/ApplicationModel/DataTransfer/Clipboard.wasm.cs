@@ -83,14 +83,22 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			var entries = new List<ClipboardWriteEntry>();
 
-			var hasExplicitText = data.Contains(StandardDataFormats.Text);
-			var text = hasExplicitText
+			var uriText = await GetUriFallbackText(data);
+
+			var text = data.Contains(StandardDataFormats.Text)
 				? await data.GetTextAsync()
-				: await GetUriFallbackText(data);
+				: uriText;
 
 			if (text is not null)
 			{
 				entries.Add(new ClipboardWriteEntry { Type = PlainTextMimeType, Value = text });
+			}
+
+			if (uriText is not null)
+			{
+				// Round-trips GetWebLinkAsync/GetUriAsync through GetContent (browsers have no
+				// dedicated link format); on Chromium this also transfers as a web custom format.
+				entries.Add(new ClipboardWriteEntry { Type = UriListMimeType, Value = uriText, Custom = true });
 			}
 
 			if (data.Contains(StandardDataFormats.Html))
@@ -106,13 +114,6 @@ namespace Windows.ApplicationModel.DataTransfer
 			if (data.Contains(StandardDataFormats.StorageItems) && typeof(Clipboard).Log().IsEnabled(LogLevel.Warning))
 			{
 				typeof(Clipboard).Log().Warn("Storage items cannot be written to the browser clipboard and were skipped.");
-			}
-
-			if (hasExplicitText &&
-				(data.Contains(StandardDataFormats.WebLink) || data.Contains(StandardDataFormats.ApplicationLink)) &&
-				typeof(Clipboard).Log().IsEnabled(LogLevel.Warning))
-			{
-				typeof(Clipboard).Log().Warn("Link formats are only written to the browser clipboard as text when no explicit text is set, and were skipped.");
 			}
 
 			foreach (var formatId in data.AvailableFormats)

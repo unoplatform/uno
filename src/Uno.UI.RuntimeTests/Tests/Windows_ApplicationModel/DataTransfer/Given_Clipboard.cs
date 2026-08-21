@@ -246,6 +246,26 @@ partial class Given_Clipboard
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(Include, Wasm)]
+	public async Task When_GetSet_Clipboard_WebLink()
+	{
+		var package = new DataPackage();
+		var uri = new Uri(UriAddress);
+		package.SetWebLink(uri);
+
+		Clipboard.SetContent(package);
+
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.WebLink));
+
+		var view = Clipboard.GetContent();
+
+		Assert.IsTrue(view.Contains(StandardDataFormats.WebLink));
+		Assert.IsTrue(view.Contains(StandardDataFormats.Text));
+		Assert.AreEqual(uri, await view.GetWebLinkAsync());
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
 	public async Task When_Paste_Event_With_Files()
 	{
 #if HAS_UNO
