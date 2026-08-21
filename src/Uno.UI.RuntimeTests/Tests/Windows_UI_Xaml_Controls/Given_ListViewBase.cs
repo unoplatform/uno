@@ -3872,7 +3872,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
+		// Skia-WASM: the materialized index regresses during the settle that follows a successful poll, see https://github.com/unoplatform/uno/issues/24147
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native | RuntimeTestPlatforms.SkiaWasm)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
 		public async Task When_Incremental_Load_ShouldStop()
 		{
 			const int BatchSize = 25;
