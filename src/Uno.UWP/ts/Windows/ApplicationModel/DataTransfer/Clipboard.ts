@@ -158,6 +158,7 @@ namespace Uno.Utils {
 					if (item.kind === "file") {
 						const file = item.getAsFile();
 						if (file && !seenFiles.has(file)) {
+							seenFiles.add(file);
 							files.push(file);
 						}
 					} else if (item.kind === "string") {
