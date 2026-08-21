@@ -121,6 +121,10 @@ public partial class CompositionTarget
 	private static IGeometry? _lastScaledNativeClipPath;
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
+	// UNO_FORCE_FULL_REPAINT=1 disables damage-clipped partial repaints (benchmarking: measures true full-frame cost).
+	private static readonly bool _forceFullRepaint =
+		Environment.GetEnvironmentVariable("UNO_FORCE_FULL_REPAINT") is "1" or "true";
+
 	private (IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage)? _lastRenderedFrame;
 	// Damage (dirty region) accumulated between frames from AddDamage + carried-forward unpresented damage;
 	// folded into each frame's own damage during Render. Guarded by _frameGate.
@@ -311,7 +315,7 @@ public partial class CompositionTarget
 				// Debug overlay paints the would-be damage region on a full repaint; deliberately not gated on
 				// PreservesContents so the viz works on full-repaint targets too.
 				var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;
-				var useDamage = damageEligible && !overlayEnabled;
+				var useDamage = damageEligible && !overlayEnabled && !_forceFullRepaint;
 
 				// Scaling (DPI) is applied through the neutral session so it works for any backend.
 				present.Save();
