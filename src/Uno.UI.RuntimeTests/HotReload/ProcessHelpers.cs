@@ -59,27 +59,62 @@ internal class ProcessHelpers
 		}
 	}
 
-	public static async Task<Process> RunProcess(
-		CancellationToken ct,
-		string executable,
-		List<string> parameters,
-		string workingDirectory,
-		string logPrefix,
-		bool waitForExit,
-		Dictionary<string, string>? environmentVariables = null)
+	/// <summary>
+	/// Waits for <paramref name="process"/> to exit, killing it and everything it spawned when
+	/// <paramref name="ct"/> fires first.
+	/// </summary>
+	/// <remarks>
+	/// Merely abandoning the wait is not enough: the orphaned app keeps holding its dev-server
+	/// connection and goes on competing with the attempt that follows.
+	/// </remarks>
+	public static async Task WaitForExitAsync(Process process, string logPrefix, CancellationToken ct)
 	{
-		var process = StartProcess(executable, parameters, workingDirectory, logPrefix, environmentVariables);
-
 #if HAS_UNO
 		typeof(ProcessHelpers).Log().Debug(logPrefix + $" waiting for process exit");
 #endif
 
-		if (waitForExit)
+		try
 		{
-			await process.WaitForExitAsync();
+			await process.WaitForExitAsync(ct);
+		}
+		catch (OperationCanceledException)
+		{
+#if HAS_UNO
+			typeof(ProcessHelpers).Log().Error(logPrefix + $" did not exit in time, killing it");
+#endif
+			KillProcessTree(process);
+
+			throw;
+		}
+	}
+
+	/// <summary>
+	/// Kills <paramref name="process"/> and its children, tolerating a process that already exited.
+	/// </summary>
+	public static void KillProcessTree(Process? process)
+	{
+		if (process is null)
+		{
+			return;
 		}
 
-		return process;
+		try
+		{
+			if (!process.HasExited)
+			{
+				// The app is started through "dotnet run", so killing the launcher alone would
+				// leave the app itself running.
+				process.Kill(entireProcessTree: true);
+				process.WaitForExit(10_000);
+			}
+		}
+		catch (Exception e)
+		{
+			// The process may exit on its own between the check and the kill.
+#if HAS_UNO
+			typeof(ProcessHelpers).Log().Debug($"Failed to kill process ({e.Message})");
+#endif
+		}
 	}
 
 	public static Process StartProcess(

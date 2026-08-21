@@ -33,6 +33,16 @@ public partial class Given_HotReloadWorkspace
 	private static int _remoteControlPort;
 	private static Process? _testAppProcess;
 
+	/// <summary>
+	/// Budget for a single run of the hot-reload app.
+	/// </summary>
+	/// <remarks>
+	/// A healthy run of the whole HRApp suite takes about ninety seconds. When a hot-reload session
+	/// breaks server-side, every remaining test in the app instead burns its own five-minute budget,
+	/// which turns this single test into a multi-hour one and used to consume the entire CI job.
+	/// </remarks>
+	private static readonly TimeSpan TestAppTimeout = TimeSpan.FromMinutes(6);
+
 	/// <remarks>
 	/// This test is running C# hot reload tests in a separate app, located 
 	/// in the HRApp folder. These tests are run as "runtime tests" in the HRApp, and the
@@ -55,11 +65,28 @@ public partial class Given_HotReloadWorkspace
 	// Hot reload tests are only available on Skia desktop targets
 	[Filters]
 	[TestMethod]
+	// Backstop for the whole test: TestAppTimeout bounds the app run itself, this also covers the
+	// build and the result parsing around it.
+	[Timeout(8 * 60 * 1000, CooperativeCancellation = false)]
 	public async Task When_HotReloadScenario(string filters)
 	{
 		// Remove this class and this method from the filters
 		filters = string.Join(";", (filters?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>()).ToImmutableArray().RemoveAll(IsOuterTestFilter));
-		var resultFile = await RunTestApp(filters, CancellationToken.None);
+
+		using var cts = new CancellationTokenSource(TestAppTimeout);
+
+		string resultFile;
+		try
+		{
+			resultFile = await RunTestApp(filters, cts.Token);
+		}
+		catch (OperationCanceledException) when (cts.IsCancellationRequested)
+		{
+			throw new TimeoutException(
+				$"The hot reload test app did not complete within {TestAppTimeout} and was killed. " +
+				"This usually means a hot-reload never completed: look for an internal error in the " +
+				"dev-server output above.");
+		}
 
 		// Parse the nunit XML results file and extract all failed tests
 		var tests = NUnitXmlParser.GetTests(resultFile);
@@ -119,8 +146,8 @@ public partial class Given_HotReloadWorkspace
 	[TestCleanup]
 	public void TestCleanupWrapper()
 	{
-		_testAppProcess?.Kill();
-		_testAppProcess?.WaitForExit();
+		ProcessHelpers.KillProcessTree(_testAppProcess);
+		_testAppProcess = null;
 	}
 
 	public static async Task InitializeServer()
@@ -140,8 +167,7 @@ public partial class Given_HotReloadWorkspace
 		var hrAppPath = GetHotReloadAppPath();
 
 		typeof(Given_HotReloadWorkspace).Log().Debug($"Starting test app (path{hrAppPath})");
-		var p = await ProcessHelpers.RunProcess(
-			ct,
+		var p = ProcessHelpers.StartProcess(
 			"dotnet",
 			new() {
 				"run",
@@ -160,13 +186,16 @@ public partial class Given_HotReloadWorkspace
 			},
 			hrAppPath,
 			"HRApp",
-			true,
 
 			// Required when running in CI, as VS sets it automatically in debug
 			new() { ["DOTNET_MODIFIABLE_ASSEMBLIES"] = "debug" }
 		);
 
+		// Track the app before waiting on it: a run that never completes leaves this method waiting,
+		// and the cleanup can only kill the app once it has been recorded here.
 		_testAppProcess = p;
+
+		await ProcessHelpers.WaitForExitAsync(p, "HRApp", ct);
 
 		if (p.ExitCode != 0)
 		{
