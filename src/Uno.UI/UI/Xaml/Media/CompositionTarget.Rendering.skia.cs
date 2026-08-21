@@ -125,6 +125,12 @@ public partial class CompositionTarget
 	private static readonly bool _forceFullRepaint =
 		Environment.GetEnvironmentVariable("UNO_FORCE_FULL_REPAINT") is "1" or "true";
 
+	// UNO_LOG_FRAME_PHASES=1 prints per-phase frame timing averages every 60 frames (benchmarking).
+	private static readonly bool _logFramePhases =
+		Environment.GetEnvironmentVariable("UNO_LOG_FRAME_PHASES") is "1" or "true";
+	private static long _phaseRecordTicks, _phaseFinishTicks, _phaseDrawTicks, _phaseGapTicks, _phaseLastRenderEnd;
+	private static int _phaseRenderFrames, _phaseDrawFrames;
+
 	private (IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage)? _lastRenderedFrame;
 	// Damage (dirty region) accumulated between frames from AddDamage + carried-forward unpresented damage;
 	// folded into each frame's own damage during Render. Guarded by _frameGate.
@@ -192,6 +198,11 @@ public partial class CompositionTarget
 			_pendingDamage.Reset();
 		}
 
+		var phaseT0 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
+		if (_logFramePhases && _phaseLastRenderEnd != 0)
+		{
+			_phaseGapTicks += phaseT0 - _phaseLastRenderEnd;
+		}
 		var recording = Renderer.CreateRecording();
 		var (path, nativeVisualsInZOrder) = SkiaRenderHelper.RecordFrame(
 			recording,
@@ -200,7 +211,14 @@ public partial class CompositionTarget
 			rootElement.Visual,
 			FrameRenderingOptions.invertNativeElementClipPath,
 			frameDamage);
+		var phaseT1 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
 		var frame = recording.Finish();
+		if (_logFramePhases)
+		{
+			var phaseT2 = Stopwatch.GetTimestamp();
+			_phaseRecordTicks += phaseT1 - phaseT0;
+			_phaseFinishTicks += phaseT2 - phaseT1;
+		}
 		frameDamage.ClampTo(frameRect);
 		var renderedFrame = (frame, path, frameDamage.Detach());
 		var previousFrame = default((IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage)?);
@@ -253,12 +271,25 @@ public partial class CompositionTarget
 		}
 
 		FrameRendered?.Invoke();
+
+		if (_logFramePhases)
+		{
+			_phaseLastRenderEnd = Stopwatch.GetTimestamp();
+			if (++_phaseRenderFrames >= 60)
+			{
+				double Ms(long t, int c) => c == 0 ? 0 : t * 1000.0 / Stopwatch.Frequency / c;
+				Console.WriteLine($"[frame-phases] record={Ms(_phaseRecordTicks, _phaseRenderFrames):F1}ms finish={Ms(_phaseFinishTicks, _phaseRenderFrames):F1}ms draw={Ms(_phaseDrawTicks, Math.Max(_phaseDrawFrames, 1)):F1}ms gap={Ms(_phaseGapTicks, _phaseRenderFrames):F1}ms (avg/frame, {_phaseRenderFrames} renders, {_phaseDrawFrames} draws)");
+				_phaseRecordTicks = _phaseFinishTicks = _phaseDrawTicks = _phaseGapTicks = 0;
+				_phaseRenderFrames = _phaseDrawFrames = 0;
+			}
+		}
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
 	}
 
 	private IGeometry Draw(ISwapChain swapChain, Matrix4x4? rootTransform = null, Action<IDrawingSession>? overlay = null)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
+		var phaseDrawT0 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
 
 		(IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage)? lastRenderedFrameNullable;
 		lock (_frameGate)
@@ -351,6 +382,12 @@ public partial class CompositionTarget
 			}
 
 			ReturnFrame(lastRenderedFrame);
+
+			if (_logFramePhases)
+			{
+				_phaseDrawTicks += Stopwatch.GetTimestamp() - phaseDrawT0;
+				_phaseDrawFrames++;
+			}
 
 			InvokeRendering();
 

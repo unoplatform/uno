@@ -72,6 +72,10 @@
 		<WasmShellMonoEnvironment Include="UNO_FORCE_FULL_REPAINT" Value="1" Condition="'$(UnoPerfForceFullRepaint)'=='true'" />
 		<WasmShellMonoEnvironment Include="UNO_WEBGPU_STATS" Value="1" Condition="'$(UnoPerfWebGpuStats)'=='true'" />
 		<WasmShellMonoEnvironment Include="UNO_PERF_SCROLL" Value="1" Condition="'$(UnoPerfScroll)'=='true'" />
+		<WasmShellMonoEnvironment Include="UNO_LOG_FRAME_PHASES" Value="1" Condition="'$(UnoPerfFramePhases)'=='true'" />
+		<!-- Logs "AOT NOT FOUND" per interpreter fallback — identifies hot methods Mono AOT missed. -->
+		<WasmShellMonoEnvironment Include="MONO_LOG_LEVEL" Value="debug" Condition="'$(UnoMonoLogAot)'=='true'" />
+		<WasmShellMonoEnvironment Include="MONO_LOG_MASK" Value="aot" Condition="'$(UnoMonoLogAot)'=='true'" />
 	</ItemGroup>
 
 	<!-- The managed font provider has no system fonts to enumerate on WASM; feed it the app's default face. -->
