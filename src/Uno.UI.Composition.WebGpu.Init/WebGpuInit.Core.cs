@@ -175,7 +175,7 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		Adapter = IntPtr.Zero;   // JS adapter isn't imported
 		Dev = dev;
 		Q = wgpuDeviceGetQueue(Dev);
-		MsaaSamples = 4;         // browser (Dawn) init is async — can't synchronously probe; take spec-guaranteed 4×
+		MsaaSamples = RequestedSampleCount() is 1u ? 1u : 4u;   // browser (Dawn) init is async — can't probe; spec guarantees only 1×/4×
 		CreatePresentSampler();
 	}
 
@@ -191,10 +191,26 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 
 	// MSAA sample count, no DPI/scale input: prefer 2× (needs the format feature), else 4× (spec-guaranteed), else 1×.
 	// The browser can't synchronously probe → 4×.
+	// UNO_WEBGPU_MSAA=1|2|4|8 overrides the sample count (validated against the device; the browser
+	// honours only 1, since the spec guarantees just 1 and 4 and Dawn init can't probe synchronously).
+	private static uint? RequestedSampleCount()
+		=> Environment.GetEnvironmentVariable("UNO_WEBGPU_MSAA") switch
+		{
+			"1" => 1u,
+			"2" => 2u,
+			"4" => 4u,
+			"8" => 8u,
+			_ => null,
+		};
+
 	private uint PickSampleCount()
 	{
 		// The WebGPU spec only guarantees sample counts 1 and 4, so the browser uses 4.
-		if (_browser || OperatingSystem.IsBrowser()) { return 4; }
+		if (_browser || OperatingSystem.IsBrowser()) { return RequestedSampleCount() is 1u ? 1u : 4u; }
+		if (RequestedSampleCount() is { } requested && (requested == 1u || SupportsSampleCount(requested)))
+		{
+			return requested;
+		}
 		if (_hasFormatFeatures && SupportsSampleCount(2)) { return 2u; }
 		if (SupportsSampleCount(4)) { return 4u; }
 		return 1u;
