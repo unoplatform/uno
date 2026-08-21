@@ -66,6 +66,33 @@ namespace Uno.UI.Samples.Controls
 				};
 			}
 
+			// Benchmark hook: UNO_PERF_SCROLL=1 auto-scrolls the samples list at 60Hz (bounces at the ends),
+			// reproducing the realize/derealize churn of manual scrolling without synthesizing input.
+			if (Environment.GetEnvironmentVariable("UNO_PERF_SCROLL") is "1" or "true")
+			{
+				Loaded += async (_, _) =>
+				{
+					await Task.Delay(TimeSpan.FromSeconds(12));
+					var sv = FindTallestScrollViewer(this);
+					if (sv is null)
+					{
+						Console.WriteLine("PERF-SCROLL: no scrollable ScrollViewer found");
+						return;
+					}
+					Console.WriteLine($"PERF-SCROLL: start (scrollable={sv.ScrollableHeight:F0})");
+					var dir = 1d;
+					var scrollTimer = new Microsoft.UI.Xaml.DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };
+					scrollTimer.Tick += (_, _) =>
+					{
+						var next = sv.VerticalOffset + dir * 25;
+						if (next >= sv.ScrollableHeight) { next = sv.ScrollableHeight; dir = -1; }
+						else if (next <= 0) { next = 0; dir = 1; }
+						sv.ChangeView(null, next, null, disableAnimation: true);
+					};
+					scrollTimer.Start();
+				};
+			}
+
 			if (Environment.GetEnvironmentVariable("UNO_LOG_FPS") is "1" or "true")
 			{
 				var frames = 0;
@@ -85,6 +112,27 @@ namespace Uno.UI.Samples.Controls
 		}
 
 		private SampleChooserViewModel ViewModel => (SampleChooserViewModel)DataContext;
+
+		private static ScrollViewer FindTallestScrollViewer(DependencyObject root)
+		{
+			ScrollViewer best = null;
+			var queue = new Queue<DependencyObject>();
+			queue.Enqueue(root);
+			while (queue.Count > 0)
+			{
+				var current = queue.Dequeue();
+				if (current is ScrollViewer sv && sv.ScrollableHeight > 0 && (best is null || sv.ScrollableHeight > best.ScrollableHeight))
+				{
+					best = sv;
+				}
+				var count = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(current);
+				for (var i = 0; i < count; i++)
+				{
+					queue.Enqueue(Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(current, i));
+				}
+			}
+			return best;
+		}
 
 		private async void FocusSearchAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
 		{
