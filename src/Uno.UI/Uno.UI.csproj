@@ -4,6 +4,8 @@
 		<DefineConstants>$(DefineConstants);ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT</DefineConstants>
 		<UnoShouldUseNoPlatformOverride>true</UnoShouldUseNoPlatformOverride>
 		<DefineConstants Condition="'$(UnoUnitTestBuild)' == 'true'">$(DefineConstants);DEPENDENCY_PROPERTY_CACHE_TESTS</DefineConstants>
+		<OutputPath Condition="'$(UnoUnitTestBuild)' == 'true'">bin\Uno.UI.Skia.UnitTests\$(Configuration)</OutputPath>
+		<IntermediateOutputPath Condition="'$(UnoUnitTestBuild)' == 'true'">obj\Uno.UI.Skia.UnitTests\$(Configuration)\$(TargetFramework)\</IntermediateOutputPath>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
