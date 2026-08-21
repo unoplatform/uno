@@ -39,10 +39,12 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			var dataPackage = new DataPackage();
 
-			var clipText = UIPasteboard.General.String;
-			if (clipText != null)
+			// Reading UIPasteboard.General.String eagerly triggers the iOS paste-permission
+			// prompt. HasStrings is prompt-free, so defer the actual read until the content
+			// is requested, matching a real paste intent.
+			if (UIPasteboard.General.HasStrings)
 			{
-				dataPackage.SetText(clipText);
+				dataPackage.SetDataProvider(StandardDataFormats.Text, ct => Task.FromResult<object>(UIPasteboard.General.String ?? string.Empty));
 			}
 
 			return dataPackage.GetView();

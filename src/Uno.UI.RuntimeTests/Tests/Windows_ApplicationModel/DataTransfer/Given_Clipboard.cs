@@ -44,7 +44,8 @@ partial class Given_Clipboard
 	[TestMethod]
 	[RunsOnUIThread]
 	// On wasm the read is served from the last-write cache, so no clipboard-read permission is needed.
-	[PlatformCondition(Include, NativeIOS | NativeAndroid | SkiaWin32 | Wasm)]
+	[PlatformCondition(Include, NativeIOS | NativeAndroid | SkiaWin32 | SkiaIOS | Wasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23962")]
 	public async Task When_GetSet_Clipboard_Text()
 	{
 		var package = new DataPackage();
@@ -55,6 +56,9 @@ partial class Given_Clipboard
 		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.Text));
 
 		var view = Clipboard.GetContent();
+
+		Assert.IsTrue(view.Contains(StandardDataFormats.Text));
+
 		var text = await view.GetTextAsync();
 
 		Assert.AreEqual(TestString, text);

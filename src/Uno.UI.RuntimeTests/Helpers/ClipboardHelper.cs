@@ -2,6 +2,7 @@
 
 using System;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel.DataTransfer;
 
 namespace Uno.UI.RuntimeTests.Helpers;
@@ -52,5 +53,22 @@ public static class ClipboardHelper
 		}
 
 		return actual;
+	}
+
+	/// <summary>
+	/// Puts a unique sentinel on the clipboard and waits for it to read back, so that a copy which
+	/// never runs is asserted against a known value instead of whatever the host had on its clipboard.
+	/// </summary>
+	public static async Task<string> SeedDummyData()
+	{
+		var seed = $"dummy-data-{DateTime.Now.Ticks}";
+
+		var package = new DataPackage();
+		package.SetText(seed);
+		Clipboard.SetContent(package);
+
+		Assert.AreEqual(seed, await WaitForTextAsync(seed), "The clipboard seed was never written.");
+
+		return seed;
 	}
 }
