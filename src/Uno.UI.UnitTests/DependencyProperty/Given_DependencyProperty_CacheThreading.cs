@@ -45,6 +45,58 @@ public class Given_DependencyProperty_CacheThreading
 		Assert.AreSame(secondExpected, DependencyProperty.GetProperty(typeof(SecondCacheOwner), SecondPropertyName));
 	}
 
+	[TestMethod]
+	public void When_Property_Is_Registered_While_Lookup_Is_In_Flight()
+	{
+		using var registryPublished = new ManualResetEventSlim();
+		using var allowCacheInvalidation = new ManualResetEventSlim();
+		DependencyProperty.RegisterPropertyPublishedTestHook =
+			(type, propertyName) =>
+			{
+				if (type == typeof(RegistrationCacheOwner) && propertyName == RegistrationPropertyName)
+				{
+					registryPublished.Set();
+					Assert.IsTrue(allowCacheInvalidation.Wait(TimeSpan.FromSeconds(5)));
+				}
+			};
+
+		try
+		{
+			DependencyProperty? registered = null;
+			DependencyProperty? resolved = null;
+			Exception? registrationError = null;
+			Exception? lookupError = null;
+			var registrationThread = StartThread(
+				() => registered = DependencyProperty.Register(
+					RegistrationPropertyName,
+					typeof(int),
+					typeof(RegistrationCacheOwner),
+					new PropertyMetadata(0)),
+				error => registrationError = error);
+			Assert.IsTrue(registryPublished.Wait(TimeSpan.FromSeconds(5)));
+
+			var lookupThread = StartThread(
+				() => resolved = DependencyProperty.GetProperty(typeof(RegistrationCacheOwner), RegistrationPropertyName),
+				error => lookupError = error);
+			Assert.IsTrue(lookupThread.Join(TimeSpan.FromSeconds(10)));
+			allowCacheInvalidation.Set();
+			Assert.IsTrue(registrationThread.Join(TimeSpan.FromSeconds(10)));
+
+			Assert.IsNull(registrationError, registrationError?.ToString());
+			Assert.IsNull(lookupError, lookupError?.ToString());
+			Assert.IsNotNull(registered);
+			Assert.AreSame(registered, resolved);
+			Assert.AreSame(
+				registered,
+				DependencyProperty.GetProperty(typeof(RegistrationCacheOwner), RegistrationPropertyName));
+		}
+		finally
+		{
+			DependencyProperty.RegisterPropertyPublishedTestHook = null;
+			allowCacheInvalidation.Set();
+		}
+	}
+
 	private static Thread StartThread(Action action, Action<Exception> onError)
 	{
 		var thread = new Thread(
@@ -68,6 +120,7 @@ public class Given_DependencyProperty_CacheThreading
 
 	private const string FirstPropertyName = "First";
 	private const string SecondPropertyName = "Second";
+	private const string RegistrationPropertyName = "RegisteredConcurrently";
 	private static readonly Barrier ResolutionBoundary = new(2);
 
 	private sealed class FirstCacheOwner
@@ -80,5 +133,9 @@ public class Given_DependencyProperty_CacheThreading
 	{
 		static SecondCacheOwner()
 			=> Assert.IsTrue(ResolutionBoundary.SignalAndWait(TimeSpan.FromSeconds(5)));
+	}
+
+	private sealed class RegistrationCacheOwner
+	{
 	}
 }
