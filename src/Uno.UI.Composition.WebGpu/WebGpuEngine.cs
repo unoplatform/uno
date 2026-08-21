@@ -129,7 +129,9 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 
 		// Free compiled draw-lists whose owning recording was disposed (their slab slices are reclaimed separately by
 		// each slab's RetainOnly, since a disposed recording is never replayed → never marked live).
-		while (_pendingCompiled.TryDequeue(out var c)) { DeferRelease(c.Owned); DeferRelease(c.StampOwned); if (c.XformSlot >= 0) { _freeXformSlots.Push(c.XformSlot); } }
+		// The slot free rides the Owned claim: when a rebuild already claimed the bag it also kept (reused) the
+		// slot for the replacement entry, so freeing it here would alias two live recordings onto one slot.
+		while (_pendingCompiled.TryDequeue(out var c)) { var claimed = DeferRelease(c.Owned); DeferRelease(c.StampOwned); if (claimed && c.XformSlot >= 0) { _freeXformSlots.Push(c.XformSlot); } }
 	}
 
 	public IntPtr TrackBg(IntPtr bg) { _pendingBindGroups.Add((nint)bg); return bg; }
@@ -233,12 +235,15 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	// BeginFrameResources, after the last present's submit+DevicePoll, like the per-frame bind groups/buffers.
 	internal void DeferTextureRelease(IntPtr view, IntPtr tex) => _pendingTextures.Enqueue(((nint)view, (nint)tex));
 
-	// Defers a cached recording's persistent resources for release at the next frame start.
-	internal void DeferRelease(OwnedResources owned)
+	// Defers a cached recording's persistent resources for release at the next frame start. Idempotent per bag
+	// (see OwnedResources.Released) — concurrent rebuild/Dispose hand-offs must not double-release. Returns
+	// whether THIS call claimed the bag (callers gate coupled frees, e.g. the transform slot, on the claim).
+	internal bool DeferRelease(OwnedResources owned)
 	{
-		if (owned is null) { return; }
+		if (owned is null || System.Threading.Interlocked.Exchange(ref owned.Released, 1) != 0) { return false; }
 		_pendingBuffers.AddRange(owned.Buffers);
 		_pendingBindGroups.AddRange(owned.BindGroups);
+		return true;
 	}
 	// Defers a single GPU buffer (e.g. an outgrown slab buffer) for release at the next frame start.
 	internal void DeferReleaseBuffer(nint buf) { if (buf != IntPtr.Zero) { _pendingBuffers.Add(buf); } }
@@ -1354,6 +1359,11 @@ internal sealed class OwnedResources
 {
 	public System.Collections.Generic.List<nint> Buffers = new();
 	public System.Collections.Generic.List<nint> BindGroups = new();
+	// Release-once claim: a rebuild (render thread) and the recording's Dispose (UI thread) can both hand the
+	// same bag to DeferRelease — the rebuild reads the compiled entry before it stores the replacement, so a
+	// Dispose in that window re-defers the old bag. Double-releasing recycles wgpu ids under in-flight uses
+	// ("BindGroup[Id] does not exist" panic); the claim makes the second hand-off a no-op.
+	public int Released;
 }
 
 
