@@ -391,7 +391,7 @@ namespace Uno.Utils {
 				for (const entry of entries) {
 					if (entry.custom) {
 						const webType = "web " + entry.type;
-						if (ClipboardItem.supports && ClipboardItem.supports(webType)) {
+						if (Clipboard.supportsCustomFormat(webType)) {
 							// The blob type must match the ClipboardItem key or the write is rejected.
 							record[webType] = new Blob([entry.value], { type: webType });
 						} else {
@@ -448,6 +448,15 @@ namespace Uno.Utils {
 			// restore the cache it just cleared.
 			Clipboard.ownContent = ownContent;
 			Clipboard.blurredSinceOwnWrite = !document.hasFocus();
+		}
+
+		// Guarded so an engine rejecting an unparsable format id cannot abort the whole write.
+		private static supportsCustomFormat(webType: string): boolean {
+			try {
+				return !!(ClipboardItem.supports && ClipboardItem.supports(webType));
+			} catch (e) {
+				return false;
+			}
 		}
 
 		private static async tryTranscodeToPng(blob: Blob): Promise<Blob> {

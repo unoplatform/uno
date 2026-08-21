@@ -284,6 +284,8 @@ namespace Windows.ApplicationModel.DataTransfer
 				_ => mimeType, // Custom format ids pass through unchanged
 			};
 
+			// Missing resolves to empty: browsers cannot distinguish an empty clipboard from an
+			// empty string, so the absent/empty distinction does not exist on this platform.
 			package.SetDataProvider(formatId, async ct => await GetTextValue(content, mimeType) ?? "");
 		}
 
@@ -309,6 +311,8 @@ namespace Windows.ApplicationModel.DataTransfer
 		private static void AddStorageItemsProvider(DataPackage package, Lazy<Task<ClipboardContentData>> content) =>
 			package.SetDataProvider(StandardDataFormats.StorageItems, async ct =>
 			{
+				// A paste gesture that carried no files resolves to an empty list rather than
+				// failing, so optimistic paste handlers degrade to a graceful no-op.
 				var data = await content.Value;
 				return (IReadOnlyList<IStorageItem>)data.Files.Select(StorageFile.GetFromNativeInfo).ToList();
 			});

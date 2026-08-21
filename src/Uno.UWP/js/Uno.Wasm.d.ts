@@ -87,6 +87,7 @@ declare namespace Uno.Utils {
         private static readAsyncClipboard;
         private static getImageExtension;
         static setContentAsync(entriesJson: string, imageBytes: any, imageMimeType: string): Promise<void>;
+        private static supportsCustomFormat;
         private static tryTranscodeToPng;
         static clearAsync(): Promise<void>;
         static startContentChanged(): void;
