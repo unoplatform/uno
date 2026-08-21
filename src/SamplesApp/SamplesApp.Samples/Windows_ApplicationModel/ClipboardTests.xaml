@@ -18,6 +18,7 @@
                 <Button Command="{x:Bind Model.CopyCommand}">Text</Button>
                 <Button Command="{x:Bind Model.CopyHtmlCommand}">HTML</Button>
                 <Button Command="{x:Bind Model.CopyImageCommand}">Sample image</Button>
+                <Button Command="{x:Bind Model.CopyCustomFormatCommand}">Custom format</Button>
             </StackPanel>
 
             <!--  Pasting  -->
@@ -27,6 +28,7 @@
                 <Button Command="{x:Bind Model.PasteHtmlCommand}">HTML</Button>
                 <Button Command="{x:Bind Model.PasteStorageItemsCommand}">Files</Button>
                 <Button Command="{x:Bind Model.PasteImageCommand}">Image</Button>
+                <Button Command="{x:Bind Model.PasteCustomFormatCommand}">Custom format</Button>
             </StackPanel>
 
             <!--  Utils  -->
