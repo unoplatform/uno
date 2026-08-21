@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Extras.DevTools.Input;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices.WindowHelper;
