@@ -106,15 +106,15 @@ public class Given_DependencyProperty_CacheThreading
 	[TestMethod]
 	public void When_Property_Is_Registered_While_Lookup_Is_In_Flight()
 	{
-		using var registryPublished = new ManualResetEventSlim();
-		using var allowCacheInvalidation = new ManualResetEventSlim();
-		DependencyProperty.RegisterPropertyPublishedTestHook =
+		using var cacheInvalidated = new ManualResetEventSlim();
+		using var allowRegistration = new ManualResetEventSlim();
+		DependencyProperty.GetPropertyCacheResetTestHook =
 			(type, propertyName) =>
 			{
 				if (type == typeof(RegistrationCacheOwner) && propertyName == RegistrationPropertyName)
 				{
-					registryPublished.Set();
-					Assert.IsTrue(allowCacheInvalidation.Wait(TimeSpan.FromSeconds(5)));
+					cacheInvalidated.Set();
+					Assert.IsTrue(allowRegistration.Wait(TimeSpan.FromSeconds(5)));
 				}
 			};
 
@@ -131,13 +131,13 @@ public class Given_DependencyProperty_CacheThreading
 					typeof(RegistrationCacheOwner),
 					new PropertyMetadata(0)),
 				error => registrationError = error);
-			Assert.IsTrue(registryPublished.Wait(TimeSpan.FromSeconds(5)));
+			Assert.IsTrue(cacheInvalidated.Wait(TimeSpan.FromSeconds(5)));
 
 			var lookupThread = StartThread(
 				() => resolved = DependencyProperty.GetProperty(typeof(RegistrationCacheOwner), RegistrationPropertyName),
 				error => lookupError = error);
 			Assert.IsTrue(lookupThread.Join(TimeSpan.FromSeconds(10)));
-			allowCacheInvalidation.Set();
+			allowRegistration.Set();
 			Assert.IsTrue(registrationThread.Join(TimeSpan.FromSeconds(10)));
 
 			Assert.IsNull(registrationError, registrationError?.ToString());
@@ -150,8 +150,8 @@ public class Given_DependencyProperty_CacheThreading
 		}
 		finally
 		{
-			DependencyProperty.RegisterPropertyPublishedTestHook = null;
-			allowCacheInvalidation.Set();
+			DependencyProperty.GetPropertyCacheResetTestHook = null;
+			allowRegistration.Set();
 		}
 	}
 
