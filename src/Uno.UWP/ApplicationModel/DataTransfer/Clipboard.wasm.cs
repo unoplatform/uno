@@ -83,7 +83,8 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			var entries = new List<ClipboardWriteEntry>();
 
-			var text = data.Contains(StandardDataFormats.Text)
+			var hasExplicitText = data.Contains(StandardDataFormats.Text);
+			var text = hasExplicitText
 				? await data.GetTextAsync()
 				: await GetUriFallbackText(data);
 
@@ -107,7 +108,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				typeof(Clipboard).Log().Warn("Storage items cannot be written to the browser clipboard and were skipped.");
 			}
 
-			if (text is not null &&
+			if (hasExplicitText &&
 				(data.Contains(StandardDataFormats.WebLink) || data.Contains(StandardDataFormats.ApplicationLink)) &&
 				typeof(Clipboard).Log().IsEnabled(LogLevel.Warning))
 			{

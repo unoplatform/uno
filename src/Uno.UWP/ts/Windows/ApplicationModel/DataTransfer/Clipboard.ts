@@ -406,7 +406,13 @@ namespace Uno.Utils {
 				}
 
 				if (imageBlob) {
-					record[imageBlob.type] = imageBlob;
+					if (imageBlob.type === "image/png") {
+						record[imageBlob.type] = imageBlob;
+					} else {
+						// Including a non-PNG blob would make the whole atomic write reject,
+						// losing the other formats too; the cache still serves the image in-process.
+						console.warn("Clipboard: the image could not be transcoded to PNG and was not written to the system clipboard.");
+					}
 				}
 
 				if (Object.keys(record).length > 0) {
