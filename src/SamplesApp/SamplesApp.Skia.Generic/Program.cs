@@ -66,6 +66,8 @@ namespace SkiaSharpExample
 
 			SamplesApp.DrawingBackendConfiguration.Configure(builder);
 
+			SamplesApp.RenderDocCapture.ArmFromEnvironment();
+
 			host = builder.Build();
 
 			host.Run();

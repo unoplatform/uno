@@ -275,11 +275,16 @@ partial class App
 
 			args = args.Substring(samplePrefix.Length);
 
+			// The deep link is the first token only — further space-separated launch args (e.g.
+			// --FeatureConfiguration overrides) are not part of the sample path.
+			args = args.Split(' ', 2)[0];
+
 			var pathParts = args.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 			var category = pathParts[0];
 			var sampleName = pathParts[1];
 
-			SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, category, sampleName);
+			// Sample discovery is async and races the launch: retry until the chooser knows the sample.
+			_ = NavigateWithRetriesAsync(category, sampleName);
 			return true;
 		}
 		catch (Exception ex)
@@ -287,6 +292,31 @@ partial class App
 			_log?.Error($"Could not navigate to initial sample - {ex}");
 		}
 		return false;
+	}
+
+	private static async Task NavigateWithRetriesAsync(string category, string sampleName)
+	{
+		try
+		{
+			for (var i = 0; i < 40; i++)
+			{
+				if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm
+					&& vm.TrySetSelectedSample(CancellationToken.None, category, sampleName))
+				{
+					Console.WriteLine($"Navigated to launch sample {category}/{sampleName}");
+					return;
+				}
+
+				await Task.Delay(250);
+			}
+
+			Console.WriteLine($"Launch sample {category}/{sampleName} was not found.");
+			Console.WriteLine(SampleControl.Presentation.SampleChooserViewModel.Instance?.DumpSampleIndexForDiagnostics(category) ?? "no view model");
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Launch sample navigation failed: {ex}");
+		}
 	}
 
 #if __IOS__
