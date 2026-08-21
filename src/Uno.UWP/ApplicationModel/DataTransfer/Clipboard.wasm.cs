@@ -1,4 +1,4 @@
-#nullable disable // Not supported by WinUI yet
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -102,6 +102,18 @@ namespace Windows.ApplicationModel.DataTransfer
 				entries.Add(new ClipboardWriteEntry { Type = RtfMimeType, Value = await data.GetRtfAsync(), Custom = true });
 			}
 
+			if (data.Contains(StandardDataFormats.StorageItems) && typeof(Clipboard).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(Clipboard).Log().Warn("Storage items cannot be written to the browser clipboard and were skipped.");
+			}
+
+			if (text is not null &&
+				(data.Contains(StandardDataFormats.WebLink) || data.Contains(StandardDataFormats.ApplicationLink)) &&
+				typeof(Clipboard).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(Clipboard).Log().Warn("Link formats are only written to the browser clipboard as text when no explicit text is set, and were skipped.");
+			}
+
 			foreach (var formatId in data.AvailableFormats)
 			{
 				if (IsStandardFormat(formatId))
@@ -141,7 +153,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		}
 
 		// WinUI exposes URIs as dedicated formats; browsers can only carry them as text.
-		private static async Task<string> GetUriFallbackText(DataPackageView data)
+		private static async Task<string?> GetUriFallbackText(DataPackageView data)
 		{
 			var uri = DataPackage.CombineUri(
 				data.Contains(StandardDataFormats.WebLink) ? (await data.GetWebLinkAsync())?.ToString() : null,
@@ -172,10 +184,9 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 
 			using var stream = ras.AsStreamForRead();
-			var buffer = new MemoryStream((int)ras.Size);
-			await stream.CopyToAsync(buffer);
+			var bytes = new byte[(int)ras.Size];
+			await stream.ReadExactlyAsync(bytes);
 
-			var bytes = buffer.ToArray();
 			return (bytes, GetImageMimeType(ras, bytes));
 		}
 
@@ -190,7 +201,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			// same source the advertised formats were derived from.
 			var fromPaste = formats.PasteFormats is not null || formats.PasteImminent;
 			var content = new Lazy<Task<ClipboardContentData>>(
-				() => GetClipboardContentAsync(fromPaste ? "paste" : "any"),
+				() => GetClipboardContentAsync(fromPaste),
 				LazyThreadSafetyMode.ExecutionAndPublication);
 
 			if (formats.PasteFormats is { } pasteFormats)
@@ -248,31 +259,34 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		private static void AddTextProvider(DataPackage package, Lazy<Task<ClipboardContentData>> content, string mimeType)
 		{
-			switch (mimeType)
+			if (mimeType == UriListMimeType)
 			{
-				case PlainTextMimeType:
-					package.SetDataProvider(StandardDataFormats.Text, async ct => await GetTextValue(content, mimeType) ?? "");
-					break;
-				case HtmlMimeType:
-					package.SetDataProvider(StandardDataFormats.Html, async ct => await GetTextValue(content, mimeType) ?? "");
-					break;
-				case RtfMimeType:
-					package.SetDataProvider(StandardDataFormats.Rtf, async ct => await GetTextValue(content, mimeType) ?? "");
-					break;
-				case UriListMimeType:
-					// https://datatracker.ietf.org/doc/html/rfc2483#section-5
-					package.SetDataProvider(StandardDataFormats.WebLink, async ct =>
-						new Uri((await GetTextValue(content, mimeType) ?? "")
-							.Split(_newLineChars, StringSplitOptions.RemoveEmptyEntries)
-							.First(line => !line.StartsWith('#'))));
-					break;
-				default:
-					package.SetDataProvider(mimeType, async ct => await GetTextValue(content, mimeType));
-					break;
+				// https://datatracker.ietf.org/doc/html/rfc2483#section-5
+				package.SetDataProvider(StandardDataFormats.WebLink, async ct =>
+				{
+					var uri = (await GetTextValue(content, mimeType) ?? "")
+						.Split(_newLineChars, StringSplitOptions.RemoveEmptyEntries)
+						.FirstOrDefault(line => !line.StartsWith('#'));
+
+					return uri is null
+						? throw new InvalidOperationException("The clipboard uri-list does not contain a URI.")
+						: new Uri(uri);
+				});
+				return;
 			}
+
+			var formatId = mimeType switch
+			{
+				PlainTextMimeType => StandardDataFormats.Text,
+				HtmlMimeType => StandardDataFormats.Html,
+				RtfMimeType => StandardDataFormats.Rtf,
+				_ => mimeType, // Custom format ids pass through unchanged
+			};
+
+			package.SetDataProvider(formatId, async ct => await GetTextValue(content, mimeType) ?? "");
 		}
 
-		private static async Task<string> GetTextValue(Lazy<Task<ClipboardContentData>> content, string mimeType)
+		private static async Task<string?> GetTextValue(Lazy<Task<ClipboardContentData>> content, string mimeType)
 		{
 			var data = await content.Value;
 			return data.Texts.FirstOrDefault(entry => entry.Type == mimeType)?.Value;
@@ -284,7 +298,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				var data = await content.Value;
 				if (data.Image is null)
 				{
-					return null;
+					throw new InvalidOperationException("The clipboard does not contain an image.");
 				}
 
 				// The image is registered as a native file handle on the JS side and streamed on demand.
@@ -295,13 +309,13 @@ namespace Windows.ApplicationModel.DataTransfer
 			package.SetDataProvider(StandardDataFormats.StorageItems, async ct =>
 			{
 				var data = await content.Value;
-				return data.Files.Select(StorageFile.GetFromNativeInfo).ToList() as IReadOnlyList<IStorageItem>;
+				return (IReadOnlyList<IStorageItem>)data.Files.Select(StorageFile.GetFromNativeInfo).ToList();
 			});
 
-		private static async Task<ClipboardContentData> GetClipboardContentAsync(string source)
+		private static async Task<ClipboardContentData> GetClipboardContentAsync(bool fromPaste)
 		{
 			var data = JsonHelper.Deserialize<ClipboardContentData>(
-				await NativeMethods.GetContentAsync(source), ClipboardSerializationContext.Default);
+				await NativeMethods.GetContentAsync(fromPaste), ClipboardSerializationContext.Default);
 
 			return data.Status switch
 			{

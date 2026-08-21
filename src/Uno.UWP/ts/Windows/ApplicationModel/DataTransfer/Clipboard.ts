@@ -166,9 +166,7 @@ namespace Uno.Utils {
 						// so the payload survives past the event handler.
 						const value = event.clipboardData.getData(type) || "";
 						if (value) {
-							// Web custom formats surface with a "web " prefix; managed code uses the bare id.
-							const effectiveType = type.startsWith("web ") ? type.substring(4) : type;
-							texts.push({ type: effectiveType, value: value });
+							texts.push({ type: Clipboard.toManagedType(type), value: value });
 						}
 					}
 				}
@@ -187,6 +185,15 @@ namespace Uno.Utils {
 				return snapshot;
 			}
 			return null;
+		}
+
+		private static emptyContent(status: string) {
+			return { status: status, texts: <ClipboardTextEntry[]>[], files: <any[]>[], image: <any>null };
+		}
+
+		// Web custom formats surface with a "web " prefix; managed code uses the bare id.
+		private static toManagedType(type: string): string {
+			return type.startsWith("web ") ? type.substring(4) : type;
 		}
 
 		private static isPasteImminent(): boolean {
@@ -219,10 +226,16 @@ namespace Uno.Utils {
 			});
 		}
 
-		// source is "paste" when the caller built its view from a paste snapshot (or an imminent
-		// paste) and must resolve against it even once it is no longer fresh, "any" otherwise.
-		public static async getContentAsync(source: string): Promise<string> {
-			let snapshot = source === "paste" ? Clipboard.lastPaste : Clipboard.getFreshPasteSnapshot();
+		// fromPaste is true when the caller built its view from a paste snapshot (or an imminent
+		// paste) and must resolve against it even once it is no longer fresh.
+		public static async getContentAsync(fromPaste: boolean): Promise<string> {
+			let snapshot = fromPaste ? Clipboard.lastPaste : Clipboard.getFreshPasteSnapshot();
+
+			// A paste shortcut newer than the retained snapshot means new content is incoming;
+			// wait for it rather than serving the previous paste.
+			if (snapshot && Clipboard.lastPasteShortcutTime > snapshot.time) {
+				snapshot = null;
+			}
 
 			if (!snapshot && Clipboard.isPasteImminent()) {
 				// The paste shortcut can reach managed code before the DOM paste event fires;
@@ -282,7 +295,7 @@ namespace Uno.Utils {
 		private static async readAsyncClipboard() {
 			const nav = navigator as NavigatorClipboard;
 			if (!nav.clipboard) {
-				return { status: "unavailable", texts: <ClipboardTextEntry[]>[], files: <any[]>[], image: <any>null };
+				return Clipboard.emptyContent("unavailable");
 			}
 
 			if (nav.clipboard.read) {
@@ -303,8 +316,7 @@ namespace Uno.Utils {
 								const blob = await item.getType(type);
 								const value = await blob.text();
 								if (value) {
-									const effectiveType = type.startsWith("web ") ? type.substring(4) : type;
-									texts.push({ type: effectiveType, value: value });
+									texts.push({ type: Clipboard.toManagedType(type), value: value });
 								}
 							}
 						}
@@ -314,7 +326,7 @@ namespace Uno.Utils {
 					return { status: status, texts: texts, files: <any[]>[], image: image };
 				} catch (e) {
 					console.error(`Clipboard: failed to read from clipboard: ${e}`);
-					return { status: "denied", texts: <ClipboardTextEntry[]>[], files: <any[]>[], image: <any>null };
+					return Clipboard.emptyContent("denied");
 				}
 			}
 
@@ -323,10 +335,10 @@ namespace Uno.Utils {
 				const text = await nav.clipboard.readText();
 				return text
 					? { status: "async", texts: [{ type: "text/plain", value: text }], files: <any[]>[], image: <any>null }
-					: { status: "empty", texts: <ClipboardTextEntry[]>[], files: <any[]>[], image: <any>null };
+					: Clipboard.emptyContent("empty");
 			} catch (e) {
 				console.error(`Clipboard: failed to read text from clipboard: ${e}`);
-				return { status: "denied", texts: <ClipboardTextEntry[]>[], files: <any[]>[], image: <any>null };
+				return Clipboard.emptyContent("denied");
 			}
 		}
 
@@ -360,7 +372,8 @@ namespace Uno.Utils {
 				imageBlob: imageBlob
 			};
 			Clipboard.ownContent = ownContent;
-			Clipboard.blurredSinceOwnWrite = false;
+			// A write issued while the window is already blurred must still invalidate on refocus.
+			Clipboard.blurredSinceOwnWrite = !document.hasFocus();
 			Clipboard.onClipboardChanged();
 
 			// The system-clipboard write below is best-effort: browsers reject it outside a user
@@ -418,6 +431,11 @@ namespace Uno.Utils {
 			textarea.select();
 			document.execCommand("copy");
 			document.body.removeChild(textarea);
+
+			// execCommand dispatched a copy event, which the invalidation listener handled;
+			// restore the cache it just cleared.
+			Clipboard.ownContent = ownContent;
+			Clipboard.blurredSinceOwnWrite = !document.hasFocus();
 		}
 
 		private static async tryTranscodeToPng(blob: Blob): Promise<Blob> {
@@ -442,7 +460,7 @@ namespace Uno.Utils {
 			Clipboard.lastPaste = null;
 
 			Clipboard.ownContent = { texts: [], imageBlob: null };
-			Clipboard.blurredSinceOwnWrite = false;
+			Clipboard.blurredSinceOwnWrite = !document.hasFocus();
 			Clipboard.onClipboardChanged();
 
 			const nav = navigator as NavigatorClipboard;

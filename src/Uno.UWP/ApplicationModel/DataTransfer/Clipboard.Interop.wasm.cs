@@ -13,7 +13,7 @@ namespace __Windows.ApplicationModel.DataTransfer
 			internal static partial string GetSnapshotFormats();
 
 			[JSImport($"{JsType}.getContentAsync")]
-			internal static partial Task<string> GetContentAsync(string source);
+			internal static partial Task<string> GetContentAsync(bool fromPaste);
 
 			[JSImport($"{JsType}.setContentAsync")]
 			internal static partial Task SetContentAsync(string entriesJson, byte[] imageBytes, string imageMimeType);

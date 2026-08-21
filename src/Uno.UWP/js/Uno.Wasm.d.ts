@@ -75,10 +75,12 @@ declare namespace Uno.Utils {
         private static onPasteCaptured;
         private static capturePaste;
         private static getFreshPasteSnapshot;
+        private static emptyContent;
+        private static toManagedType;
         private static isPasteImminent;
         private static getOwnFormats;
         static getSnapshotFormats(): string;
-        static getContentAsync(source: string): Promise<string>;
+        static getContentAsync(fromPaste: boolean): Promise<string>;
         private static waitForPasteAsync;
         private static buildContentFromPaste;
         private static buildContentFromOwn;

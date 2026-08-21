@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -16,8 +16,6 @@ using static Microsoft.VisualStudio.TestTools.UnitTesting.ConditionMode;
 using static Microsoft.VisualStudio.TestTools.UnitTesting.RuntimeTestPlatforms;
 
 namespace Uno.UI.RuntimeTests.Tests;
-
-// Testing Append, Write and Read in one test method
 
 [TestClass]
 public partial class Given_Clipboard;
@@ -54,7 +52,7 @@ partial class Given_Clipboard
 
 		Clipboard.SetContent(package);
 
-		await DelayForClipboard();
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.Text));
 
 		var view = Clipboard.GetContent();
 		var text = await view.GetTextAsync();
@@ -72,7 +70,7 @@ partial class Given_Clipboard
 		package.SetUri(uri);
 		Clipboard.SetContent(package);
 
-		await DelayForClipboard();
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.Uri));
 
 		var view = Clipboard.GetContent();
 		var result = await view.GetUriAsync();
@@ -108,7 +106,7 @@ partial class Given_Clipboard
 
 		Clipboard.SetContent(package);
 
-		await DelayForClipboard();
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.Bitmap));
 
 		var view = Clipboard.GetContent();
 		var reference = await view.GetBitmapAsync();
@@ -130,7 +128,7 @@ partial class Given_Clipboard
 
 		Clipboard.SetContent(package);
 
-		await DelayForClipboard();
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.Bitmap));
 
 		var view = Clipboard.GetContent();
 		var reference = await view.GetBitmapAsync();
@@ -150,6 +148,31 @@ partial class Given_Clipboard
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(Include, Wasm)]
+	public async Task When_SetContent_ContentChanged()
+	{
+		var raised = 0;
+		EventHandler<object> onContentChanged = (_, _) => raised++;
+		Clipboard.ContentChanged += onContentChanged;
+
+		try
+		{
+			var package = new DataPackage();
+			package.SetText(TestString);
+
+			Clipboard.SetContent(package);
+
+			await WaitForClipboardAsync(() => raised > 0);
+			Assert.IsTrue(raised > 0);
+		}
+		finally
+		{
+			Clipboard.ContentChanged -= onContentChanged;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
 	public async Task When_GetSet_Clipboard_Text_And_Html()
 	{
 		const string html = "<b>bold</b>";
@@ -160,7 +183,7 @@ partial class Given_Clipboard
 
 		Clipboard.SetContent(package);
 
-		await DelayForClipboard();
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.Html));
 
 		var view = Clipboard.GetContent();
 
@@ -180,13 +203,13 @@ partial class Given_Clipboard
 
 		Clipboard.SetContent(package);
 
-		await DelayForClipboard();
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.Text));
 
 		Assert.IsTrue(Clipboard.GetContent().Contains(StandardDataFormats.Text));
 
 		Clipboard.Clear();
 
-		await DelayForClipboard();
+		await WaitForClipboardAsync(() => !Clipboard.GetContent().Contains(StandardDataFormats.Text));
 
 		var view = Clipboard.GetContent();
 		Assert.IsFalse(view.Contains(StandardDataFormats.Text));
@@ -208,7 +231,7 @@ partial class Given_Clipboard
 
 		Clipboard.SetContent(package);
 
-		await DelayForClipboard();
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(customFormat));
 
 		var view = Clipboard.GetContent();
 
@@ -289,15 +312,13 @@ partial class Given_Clipboard
 			""");
 #endif
 
-	private static async Task DelayForClipboard()
+	// Clipboard writes complete asynchronously on some platforms (wasm, Android, iOS), so poll
+	// for the expected state instead of asserting immediately or waiting a fixed delay.
+	private static async Task WaitForClipboardAsync(Func<bool> condition)
 	{
-		// On some platforms, clipboard operations are not immediately available.
-		// On Android/iOS, SetContent dispatches the write asynchronously
-		// via CoreDispatcher.Main.RunAsync. On Wasm, clipboard access is also async.
-		var platform = RuntimeTestsPlatformHelper.CurrentPlatform;
-		if ((RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.Android | RuntimeTestPlatforms.IOS).HasFlag(platform))
+		for (var i = 0; i < 60 && !condition(); i++)
 		{
-			await Task.Delay(1000);
+			await Task.Delay(50);
 		}
 	}
 
