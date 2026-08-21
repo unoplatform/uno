@@ -97,17 +97,22 @@ input::-ms-clear {
   multi-finger pinch-zoom to the browser. Double-tap-to-zoom is lost, which no touch-action value can
   preserve alongside disabled panning.
 
-  Form controls and contenteditable regions - and their descendants, matching the `closest()` exclusion in
-  BrowserPointerInputSource.nativeInputSelector - are excluded: they keep full native touch behavior
-  (caret dragging, selection, nested scrolling) and do not participate in chaining. The two exclusion lists
-  must stay in sync or a gesture lands in a subtree that neither the browser nor Uno will pan.
+  Form controls, contenteditable regions and iframes - and their descendants, matching the `closest()`
+  exclusion in BrowserPointerInputSource.nativeInputSelector - are excluded: they keep full native touch
+  behavior (caret dragging, selection, nested scrolling) and do not participate in chaining. The value this
+  rule puts on the negotiation root does not reach into them: a gesture's effective touch-action intersects
+  ancestor values only up to the nearest scroll container, so the chain stops at the excluded scroller
+  itself. Iframes need the CSS exclusion too, since the touch-action of the host document would otherwise
+  restrict panning inside the embedded document, whose events never reach our negotiation handler. The root
+  selector carries the same exclusion for when the negotiated element itself is such a control. The two
+  exclusion lists must stay in sync or a gesture lands in a subtree that neither the browser nor Uno will pan.
 
   The child combinator matters: only an element managed code registered as a negotiation root may carry
   this policy. Hosted HTML is app- or third-party-supplied and could otherwise set the attribute itself.
   `!important` is needed to win over inline styles set by embedded third-party content.
 */
-#uno-native-element-host > [data-uno-native-input-policy="1"],
-#uno-native-element-host > [data-uno-native-input-policy="1"] *:not(:is(input, textarea, select, [contenteditable])):not(:is(input, textarea, select, [contenteditable]) *) {
+#uno-native-element-host > [data-uno-native-input-policy="1"]:not(:is(input, textarea, select, iframe, [contenteditable])),
+#uno-native-element-host > [data-uno-native-input-policy="1"] *:not(:is(input, textarea, select, iframe, [contenteditable])):not(:is(input, textarea, select, iframe, [contenteditable]) *) {
 	touch-action: pinch-zoom !important;
 	overscroll-behavior: none !important;
 }
