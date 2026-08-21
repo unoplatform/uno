@@ -1,4 +1,8 @@
-﻿using System;
+﻿#if DEPENDENCY_PROPERTY_CACHE_TESTS
+#define IS_UNIT_TESTS
+#endif
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -37,6 +41,9 @@ namespace Microsoft.UI.Xaml
 		private readonly static NameToPropertyDictionary _getPropertyCache = new NameToPropertyDictionary();
 		private readonly static object _getPropertyCacheGate = new();
 		private static int _getPropertyCacheVersion;
+#if IS_UNIT_TESTS
+		internal static Action<Type, string> RegisterPropertyPublishedTestHook;
+#endif
 		private static object DefaultThemeAnimationDurationBox = new Duration(FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration);
 
 		/// <summary>
@@ -495,9 +502,11 @@ namespace Microsoft.UI.Xaml
 
 		private static void RegisterProperty(Type ownerType, string name, DependencyProperty newProperty)
 		{
-			ResetGetPropertyCache(ownerType, name);
-
 			_registry.Add(ownerType, name, newProperty);
+#if IS_UNIT_TESTS
+			RegisterPropertyPublishedTestHook?.Invoke(ownerType, name);
+#endif
+			ResetGetPropertyCache(ownerType, name);
 		}
 
 		/// <summary>

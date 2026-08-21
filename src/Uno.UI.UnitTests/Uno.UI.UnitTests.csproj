@@ -19,6 +19,12 @@
 
 	<Import Project="../targetframework-override.props" />
 
+	<ItemDefinitionGroup>
+		<ProjectReference>
+			<AdditionalProperties>UnoUnitTestBuild=true</AdditionalProperties>
+		</ProjectReference>
+	</ItemDefinitionGroup>
+
 	<!--
 	Uncomment to troubleshoot source generation
 	<PropertyGroup>

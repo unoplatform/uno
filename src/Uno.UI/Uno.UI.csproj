@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 		<UnoShouldUseNoPlatformOverride>true</UnoShouldUseNoPlatformOverride>
+		<DefineConstants Condition="'$(UnoUnitTestBuild)' == 'true'">$(DefineConstants);DEPENDENCY_PROPERTY_CACHE_TESTS</DefineConstants>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
