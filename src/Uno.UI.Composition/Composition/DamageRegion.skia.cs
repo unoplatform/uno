@@ -1,47 +1,34 @@
 #nullable enable
 
 using System;
-using System.Numerics;
+using System.Collections.Generic;
 using Windows.Foundation;
 using Uno.UI.Composition.Drawing;
 
 namespace Uno.UI.Composition;
 
 /// <summary>
-/// A mutable accumulator for a per-frame damage (dirty) region, expressed on the neutral <see cref="IGeometry"/>
-/// seam. This is the backend-neutral analog of the mutable <c>SKPath</c> that used to carry damage: because
-/// <see cref="IGeometry"/> is immutable (its <see cref="IGeometry.Combine"/>/<see cref="IGeometry.Transform"/>
-/// return fresh geometries), the mutate-in-place role is held here instead, reassigning the wrapped geometry and
-/// disposing the superseded one. Any pooling/reuse of the underlying geometries is an implementation concern of
-/// the geometry seam, not of this accumulator.
+/// A mutable accumulator for a per-frame damage (dirty) region. Damage is conservative, so contributions are
+/// tracked as a bounded list of bounding rects — never as incremental geometry booleans: a per-contribution
+/// <see cref="IGeometry.Combine"/> over a growing region is O(region²) per frame and dominates the frame on
+/// engines whose Combine is not trivially cheap (the managed engine spends most of a scrolled frame there).
+/// One union geometry is materialized per frame at <see cref="Detach"/>, from at most <see cref="MaxRects"/> rects.
 /// </summary>
 internal sealed class DamageRegion : IDisposable
 {
-	private IGeometry? _region;
+	// Past this many distinct dirty rects the frame is effectively a full repaint anyway; collapse to bounds.
+	private const int MaxRects = 16;
 
-	/// <summary>The accumulated region, or null when nothing has been contributed yet.</summary>
-	internal IGeometry? Geometry => _region;
+	private readonly List<Rect> _rects = new();
 
-	internal bool IsEmpty => _region is null || _region.IsEmpty;
+	internal bool IsEmpty => _rects.Count == 0;
 
-	/// <summary>Unions <paramref name="addition"/> into the region. The addition is copied, never adopted.</summary>
+	/// <summary>Unions <paramref name="addition"/>'s bounds into the region (damage is conservative).</summary>
 	internal void Union(IGeometry addition)
 	{
-		if (addition.IsEmpty)
+		if (!addition.IsEmpty)
 		{
-			return;
-		}
-
-		if (_region is null)
-		{
-			// Copy: the caller keeps ownership of `addition` (e.g. a visual's reused own-content path).
-			_region = addition.Transform(Matrix3x2.Identity);
-		}
-		else
-		{
-			var previous = _region;
-			_region = _region.Combine(addition, GeometryCombineMode.Union);
-			previous.Dispose();
+			UnionRect(addition.Bounds);
 		}
 	}
 
@@ -52,46 +39,77 @@ internal sealed class DamageRegion : IDisposable
 			return;
 		}
 
-		using var scratch = GeometryFactory.Current.CreateRectangleGeometry(rect);
-		Union(scratch);
+		for (var i = 0; i < _rects.Count; i++)
+		{
+			if (Contains(_rects[i], rect))
+			{
+				return;
+			}
+		}
+
+		_rects.Add(rect);
+		if (_rects.Count > MaxRects)
+		{
+			var bounds = _rects[0];
+			for (var i = 1; i < _rects.Count; i++)
+			{
+				bounds.Union(_rects[i]);
+			}
+
+			_rects.Clear();
+			_rects.Add(bounds);
+		}
 	}
 
 	/// <summary>Intersects the region with <paramref name="frameRect"/> (drops everything outside the frame).</summary>
 	internal void ClampTo(Rect frameRect)
 	{
-		if (_region is null || _region.IsEmpty || Contains(frameRect, _region.Bounds))
+		for (var i = _rects.Count - 1; i >= 0; i--)
 		{
-			return;
+			var r = _rects[i];
+			r.Intersect(frameRect);
+			if (r.IsEmpty || r.Width <= 0 || r.Height <= 0)
+			{
+				_rects.RemoveAt(i);
+			}
+			else
+			{
+				_rects[i] = r;
+			}
 		}
-
-		using var scratch = GeometryFactory.Current.CreateRectangleGeometry(frameRect);
-		var previous = _region;
-		_region = _region.Combine(scratch, GeometryCombineMode.Intersect);
-		previous.Dispose();
 	}
 
 	/// <summary>Unions another accumulator's region into this one (used to fold carried-over damage forward).</summary>
 	internal void Union(DamageRegion other)
 	{
-		if (other._region is { IsEmpty: false } region)
+		foreach (var r in other._rects)
 		{
-			Union(region);
+			UnionRect(r);
 		}
 	}
 
-	/// <summary>Detaches the accumulated region, leaving this accumulator empty. The caller owns the result.</summary>
+	/// <summary>Materializes and detaches the accumulated region, leaving this accumulator empty. The caller owns the result.</summary>
 	internal IGeometry? Detach()
 	{
-		var region = _region;
-		_region = null;
+		if (_rects.Count == 0)
+		{
+			return null;
+		}
+
+		var region = GeometryFactory.Current.CreateRectangleGeometry(_rects[0]);
+		for (var i = 1; i < _rects.Count; i++)
+		{
+			using var rect = GeometryFactory.Current.CreateRectangleGeometry(_rects[i]);
+			var previous = region;
+			region = previous.Combine(rect, GeometryCombineMode.Union);
+			previous.Dispose();
+		}
+
+		_rects.Clear();
 		return region;
 	}
 
-	internal void Reset()
-	{
-		_region?.Dispose();
-		_region = null;
-	}
+	internal void Reset() => _rects.Clear();
 
 	public void Dispose() => Reset();
 
