@@ -37,8 +37,6 @@ namespace Microsoft.UI.Xaml
 		private readonly static NameToPropertyDictionary _getPropertyCache = new NameToPropertyDictionary();
 		private readonly static object _getPropertyCacheGate = new();
 		private static int _getPropertyCacheVersion;
-		private static Action _getPropertyCacheMissTestHook;
-		private static Action _getPropertyCachePublishTestHook;
 		private static object DefaultThemeAnimationDurationBox = new Duration(FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration);
 
 		/// <summary>
@@ -404,9 +402,7 @@ namespace Microsoft.UI.Xaml
 					version = _getPropertyCacheVersion;
 				}
 
-				_getPropertyCacheMissTestHook?.Invoke();
 				var resolved = InternalGetProperty(type, name);
-				_getPropertyCachePublishTestHook?.Invoke();
 
 				lock (_getPropertyCacheGate)
 				{
