@@ -42,6 +42,7 @@ namespace Microsoft.UI.Xaml
 		private readonly static object _getPropertyCacheGate = new();
 		private static int _getPropertyCacheVersion;
 #if IS_UNIT_TESTS
+		internal static Action<Type, string> GetPropertyCacheSearchKeyUpdatedTestHook;
 		internal static Action<Type, string> RegisterPropertyPublishedTestHook;
 #endif
 		private static object DefaultThemeAnimationDurationBox = new Duration(FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration);
@@ -399,6 +400,9 @@ namespace Microsoft.UI.Xaml
 				lock (_getPropertyCacheGate)
 				{
 					_searchPropertyCacheEntry.Update(type, name);
+#if IS_UNIT_TESTS
+					GetPropertyCacheSearchKeyUpdatedTestHook?.Invoke(type, name);
+#endif
 
 					if (_getPropertyCache.TryGetValue(_searchPropertyCacheEntry, out var cached))
 					{
