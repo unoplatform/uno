@@ -1,6 +1,7 @@
 #nullable enable
 
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 
@@ -48,6 +49,18 @@ public class Given_GenericResources
 		{
 			Assert.IsNotNull(Application.Current!.Resources[key], $"Resource '{key}' was not resolved.");
 		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public void When_ScrollViewer_Compatibility_Style_Is_Applied()
+	{
+		var defaultStyle = Application.Current!.Resources["DefaultScrollViewerStyle"] as Style;
+		var implicitStyle = Application.Current.Resources[typeof(ScrollViewer)] as Style;
+
+		Assert.IsNotNull(defaultStyle);
+		Assert.IsNotNull(implicitStyle);
+		Assert.AreSame(defaultStyle, implicitStyle.BasedOn);
 	}
 }
 #endif
