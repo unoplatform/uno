@@ -93,6 +93,42 @@ namespace Uno.UI.Samples.Controls
 				};
 			}
 
+			// Benchmark hook: UNO_AOT_PROFILE=<seconds> (browser, WasmProfilers=aot builds) stops the Mono AOT
+			// profiler after <seconds> and streams the .aotprofile base64-chunked to the console, where scripted
+			// runs can reassemble it for a WasmAotProfilePath feedback build. All reflection so every head compiles.
+			if (OperatingSystem.IsBrowser()
+				&& int.TryParse(Environment.GetEnvironmentVariable("UNO_AOT_PROFILE"), out var profileSeconds)
+				&& profileSeconds > 0)
+			{
+				Loaded += async (_, _) =>
+				{
+					await Task.Delay(TimeSpan.FromSeconds(profileSeconds));
+					try
+					{
+						// Entering StopProfile makes the profiler dump to INTERNAL.aotProfileData (the default writeAt/sendTo).
+						var exports = Type.GetType("System.Runtime.InteropServices.JavaScript.JavaScriptExports, System.Runtime.InteropServices.JavaScript", throwOnError: true);
+						exports.GetMethod("StopProfile", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
+							.Invoke(null, null);
+						var wrt = Type.GetType("Uno.Foundation.WebAssemblyRuntime, Uno.Foundation.Runtime.WebAssembly", throwOnError: true);
+						var invokeJs = wrt.GetMethod("InvokeJS", new[] { typeof(string) });
+						var b64 = (string)invokeJs.Invoke(null, new object[]
+						{
+							"(function(){ var d = globalThis.getDotnetRuntime(0).INTERNAL.aotProfileData; if (!d) { return 'NONE'; } var s = ''; var CH = 32768; for (var i = 0; i < d.length; i += CH) { s += String.fromCharCode.apply(null, d.subarray(i, Math.min(i + CH, d.length))); } return btoa(s); })()"
+						});
+						Console.WriteLine($"AOTPROFILE-LEN:{b64.Length}");
+						for (var i = 0; i < b64.Length; i += 8000)
+						{
+							Console.WriteLine($"AOTPROFILE:{b64.Substring(i, Math.Min(8000, b64.Length - i))}");
+						}
+						Console.WriteLine("AOTPROFILE-END");
+					}
+					catch (Exception e)
+					{
+						Console.WriteLine($"AOTPROFILE-ERROR:{e.InnerException?.Message ?? e.Message}");
+					}
+				};
+			}
+
 			if (Environment.GetEnvironmentVariable("UNO_LOG_FPS") is "1" or "true")
 			{
 				var frames = 0;
