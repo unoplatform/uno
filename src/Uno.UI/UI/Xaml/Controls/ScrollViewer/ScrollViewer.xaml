@@ -323,4 +323,6 @@
 		</Setter>
 	</Style>
 
+	<netstdref:Style TargetType="ScrollViewer" BasedOn="{StaticResource DefaultScrollViewerStyle}" />
+
 </ResourceDictionary>
