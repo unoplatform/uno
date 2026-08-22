@@ -123,9 +123,11 @@ public partial class TextBox : ITextSelectionGripperHost
 	// OperatingSystem.IsAndroid()/IsIOS() are both false and the OS-derived default is Desktop.
 	internal TouchTextSelectionConvention TouchSelectionConvention { get; set; } = GetDefaultTouchTextSelectionConvention();
 
+	// A browser on a phone or tablet must follow that device's touch conventions too: on WebAssembly the
+	// OS APIs report "browser", so the host device comes from DeviceTargetHelper.BrowserHost.
 	private static TouchTextSelectionConvention GetDefaultTouchTextSelectionConvention()
-		=> OperatingSystem.IsAndroid() ? TouchTextSelectionConvention.Android
-			: Uno.UI.Helpers.DeviceTargetHelper.IsUIKit() ? TouchTextSelectionConvention.iOS
+		=> OperatingSystem.IsAndroid() || DeviceTargetHelper.BrowserHost is BrowserHostPlatform.Android ? TouchTextSelectionConvention.Android
+			: DeviceTargetHelper.IsUIKit() || DeviceTargetHelper.BrowserHost is BrowserHostPlatform.iOS ? TouchTextSelectionConvention.iOS
 			: TouchTextSelectionConvention.Desktop;
 
 	public static DependencyProperty CanUndoProperty { get; } = DependencyProperty.Register(
@@ -1877,11 +1879,11 @@ public partial class TextBox : ITextSelectionGripperHost
 	}
 
 	// Which platform's native touch text-selection conventions the Skia TextBox follows.
-	// Defaults to the running OS; runtime tests override it to exercise the mobile behavior on
-	// Skia Desktop, where OperatingSystem.IsAndroid()/IsIOS() are both false.
+	// Defaults to the running device (on WebAssembly, the device hosting the browser); runtime tests override
+	// it to exercise the mobile behavior on Skia Desktop, where OperatingSystem.IsAndroid()/IsIOS() are both false.
 	internal enum TouchTextSelectionConvention
 	{
-		// Desktop convention (Windows, macOS and Linux): the OS-derived default for every non-mobile target.
+		// Desktop convention (Windows, macOS, Linux and desktop browsers).
 		Desktop,
 		Android,
 		iOS
