@@ -76,9 +76,9 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 
 		if (Disposed || handle == 0)
 		{
-			if (this.Log().IsEnabled(LogLevel.Error))
+			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().Error($"Cannot {operation} a WebView2 whose native peer was already disposed.");
+				this.Log().Warn($"Cannot {operation} a WebView2 whose native peer was already disposed.");
 			}
 
 			return false;
@@ -132,9 +132,8 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 		{
 			var handle = GCHandle.Alloc(tcs);
 			NativeUno.uno_webview_execute_script(webview, GCHandle.ToIntPtr(handle), script);
+			return await tcs.Task;
 		}
-
-		return await tcs.Task;
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]

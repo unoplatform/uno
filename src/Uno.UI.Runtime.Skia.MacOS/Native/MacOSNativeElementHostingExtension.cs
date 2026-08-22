@@ -42,7 +42,10 @@ internal class MacOSNativeElement : Microsoft.UI.Xaml.FrameworkElement
 		Disposed = true;
 		NativeHandle = 0;
 
-		NativeUno.uno_native_dispose(handle);
+		if (handle != 0)
+		{
+			NativeUno.uno_native_dispose(handle);
+		}
 	}
 }
 
@@ -79,9 +82,9 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 
 		if (nativeElement.Disposed || nativeElement.NativeHandle == 0)
 		{
-			if (this.Log().IsEnabled(LogLevel.Error))
+			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().Error($"Cannot {operation} a {content.GetType().FullName} whose native peer was already disposed.");
+				this.Log().Warn($"Cannot {operation} a {content.GetType().FullName} whose native peer was already disposed.");
 			}
 
 			element = null!;
@@ -179,6 +182,8 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 			NativeUno.uno_native_measure(element.NativeHandle, childMeasuredSize.Width, childMeasuredSize.Height, availableSize.Width, availableSize.Height, out var width, out var height);
 			return new Size(width, height);
 		}
+
+		// Not Size.Empty: that is (-∞, -∞), which ContentPresenter does not clamp and Layouter rejects.
 		return new Size(0, 0);
 	}
 }
