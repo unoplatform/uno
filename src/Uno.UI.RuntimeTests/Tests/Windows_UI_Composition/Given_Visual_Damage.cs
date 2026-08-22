@@ -44,7 +44,7 @@ public class Given_Visual_Damage
 		using var damage = new SKPath();
 		RenderFrame(root, damage);
 
-		damage.Rewind();
+		damage.Reset();
 
 		// The only change: the clip grows to reveal the bottom half.
 		root.Clip = compositor.CreateRectangleClip(top: 0, left: 0, bottom: 100, right: 100);
@@ -109,7 +109,7 @@ public class Given_Visual_Damage
 			for (var i = 0; i < 5; i++)
 			{
 				RenderFrame(root, damage);
-				damage.Rewind();
+				damage.Reset();
 			}
 
 			// Identical bounds, rounded corners: the corner pixels are no longer inside the clip.

@@ -1,4 +1,4 @@
-﻿#pragma warning disable CS0109
+#pragma warning disable CS0109
 
 using System;
 using System.Collections.Generic;
@@ -30,25 +30,29 @@ using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
-
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
+using Microsoft.UI.Composition;
+using System.Numerics;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.System;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Uno.UI.Dispatching;
+using Uno.UI.Xaml.Media;
+using Uno.UI.Xaml.Core.Scaling;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Internal;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Inlines))]
-	public partial class TextBlock : DependencyObject, IThemeChangeAware
+	public partial class TextBlock : FrameworkElement, IThemeChangeAware, IBlock, UnicodeText.IFontCacheUpdateListener, ITextSelectionGripperHost
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
 		private IDisposable _foregroundBrushChangedSubscription;
 
-#if !__WASM__
 		// Used for text selection which is handled natively
 		private bool _isPressed;
 		private Range _selectionOnPointerPressed; // stores the selection before a mouse press so that it's restored on pointer cancellation
-#endif
 
 		private Hyperlink _hyperlinkOver; // do not use: use HyperlinkOver instead
 		private Hyperlink HyperlinkOver
@@ -142,9 +146,6 @@ namespace Microsoft.UI.Xaml.Controls
 				if (_inlines == null)
 				{
 					_inlines = new InlineCollection(this);
-#if __WASM__
-					SetText(string.Empty); // To clean up the text that is set directly on the TextBlock's <p>
-#endif
 					UpdateInlines(Text);
 
 					SetupInlines();
@@ -300,9 +301,6 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Text Dependency Property
 
 		public
-#if __APPLE_UIKIT__
-			new
-#endif
 			string Text
 		{
 			get { return (string)GetValue(TextProperty); }
@@ -411,11 +409,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region FontFamily Dependency Property
 
-#if __APPLE_UIKIT__
-		/// <summary>
-		/// Supported font families: http://iosfonts.com/
-		/// </summary>
-#endif
 		public FontFamily FontFamily
 		{
 			get => (FontFamily)GetValue(FontFamilyProperty);
@@ -558,15 +551,11 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Foreground Dependency Property
 
 		public
-#if __ANDROID__
-		new
-#endif
 			Brush Foreground
 		{
 			get => (Brush)GetValue(ForegroundProperty);
 			set
 			{
-#if !__WASM__
 				if (value is SolidColorBrush || value is GradientBrush || value is RadialGradientBrush || value is null)
 				{
 					SetValue(ForegroundProperty, value);
@@ -575,9 +564,6 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					throw new NotSupportedException("Only SolidColorBrush or GradientBrush's FallbackColor are supported.");
 				}
-#else
-				SetValue(ForegroundProperty, value);
-#endif
 			}
 		}
 
@@ -630,8 +616,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region IsTextSelectionEnabled Dependency Property
 
-#if !__WASM__ && !__SKIA__
-		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+#if !__SKIA__
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public bool IsTextSelectionEnabled
 		{
@@ -639,8 +625,8 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(IsTextSelectionEnabledProperty, value);
 		}
 
-#if !__WASM__ && !__SKIA__
-		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+#if !__SKIA__
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty IsTextSelectionEnabledProperty { get; } =
 			DependencyProperty.Register(
@@ -885,15 +871,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			add
 			{
-#if __WASM__
-				if (!_shouldUpdateIsTextTrimmed)
-				{
-					UpdateIsTextTrimmed();
-
-					_shouldUpdateIsTextTrimmed = true;
-				}
-#endif
-
 				_isTextTrimmedChanged += value;
 			}
 			remove
@@ -918,15 +895,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-#if __WASM__
-				if (!_shouldUpdateIsTextTrimmed)
-				{
-					UpdateIsTextTrimmed();
-
-					_shouldUpdateIsTextTrimmed = true;
-				}
-#endif
-
 				return (bool)GetValue(IsTextTrimmedProperty);
 			}
 
@@ -953,39 +921,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private bool UseInlinesFastPath => _inlines == null;
 
-#if __ANDROID__ || __WASM__
-		/// <summary>
-		/// Returns if the TextBlock is constrained by a maximum number of lines.
-		/// </summary>
-		private bool IsLayoutConstrainedByMaxLines => MaxLines > 0;
-#endif
-
-#if __ANDROID__ || __APPLE_UIKIT__
-		/// <summary>
-		/// Gets the inlines which affect the typography of the TextBlock.
-		/// </summary>
-		private IEnumerable<(Inline inline, int start, int end)> GetEffectiveInlines()
-		{
-			if (UseInlinesFastPath)
-			{
-				yield break;
-			}
-
-			var start = 0;
-			foreach (var inline in Inlines.SelectMany(InlineExtensions.Enumerate))
-			{
-				if (inline.HasTypographicalEffectWithin(this))
-				{
-					yield return (inline, start, start + inline.GetText().Length);
-				}
-
-				if (inline is Run || inline is LineBreak)
-				{
-					start += inline.GetText().Length;
-				}
-			}
-		}
-#endif
 		private void UpdateInlines(string text)
 		{
 			if (UseInlinesFastPath)
@@ -1066,9 +1001,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-#if !__WASM__
 			that._isPressed = true;
-#endif
 
 			if (that.FindHyperlinkAt(e) is Hyperlink hyperlink)
 			{
@@ -1081,7 +1014,6 @@ namespace Microsoft.UI.Xaml.Controls
 				e.Handled = true;
 				that.CompleteGesture(); // Make sure to mute Tapped
 			}
-#if !__WASM__
 			else if (that.IsTextSelectionEnabled && e.Pointer.PointerDeviceType is PointerDeviceType.Mouse)
 			{
 				var point = e.GetCurrentPoint(that);
@@ -1111,7 +1043,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 				that.CapturePointer(e.Pointer);
 			}
-#endif
 #if __SKIA__
 			else if (that.IsTextSelectionEnabled && e.Pointer.PointerDeviceType is PointerDeviceType.Touch or PointerDeviceType.Pen)
 			{
@@ -1136,7 +1067,6 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-#if !__WASM__
 			if (that._isPressed && that.IsTextSelectionEnabled && that.FindHyperlinkAt(e) is { })
 			{
 				// if we release on a hyperlink, we don't select anything
@@ -1144,7 +1074,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			that._isPressed = false;
-#endif
 
 			if (that.IsCaptured(e.Pointer))
 			{
@@ -1172,22 +1101,18 @@ namespace Microsoft.UI.Xaml.Controls
 			// Modeled after WinUI TextSelectionManager.cpp UpdateSelectionFlyoutVisibility:
 			// After pointer release, handle touch/pen selection and queue a SelectionFlyout visibility update.
 			that.OnPointerReleasedForSelectionFlyout(e);
-#if !__WASM__
 			e.Handled |= that.IsTextSelectionEnabled;
-#endif
 		};
 
 		private static readonly PointerEventHandler OnPointerCaptureLost = (object sender, PointerRoutedEventArgs e) =>
 		{
 			if (sender is TextBlock that)
 			{
-#if !__WASM__
 				that._isPressed = false;
 				if (e.Pointer.PointerDeviceType is PointerDeviceType.Mouse)
 				{
 					that.Selection = that._selectionOnPointerPressed;
 				}
-#endif
 
 				e.Handled = that.AbortHyperlinkCaptures(e.Pointer);
 			}
@@ -1208,7 +1133,6 @@ namespace Microsoft.UI.Xaml.Controls
 				hyperlink?.SetPointerOver(e.Pointer);
 			}
 
-#if !__WASM__
 			if (that._isPressed && that.IsTextSelectionEnabled && e.Pointer.PointerDeviceType is PointerDeviceType.Mouse)
 			{
 				var point = e.GetCurrentPoint(that);
@@ -1222,7 +1146,6 @@ namespace Microsoft.UI.Xaml.Controls
 					that.Selection = that.Selection with { end = index };
 				}
 			}
-#endif
 		};
 
 		private static readonly PointerEventHandler OnPointerEntered = (sender, e) =>
@@ -1275,9 +1198,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void RecalculateSubscribeToPointerEvents()
 		{
 			SubscribeToPointerEvents = HasHyperlink
-#if !__WASM__
 				|| IsTextSelectionEnabled
-#endif
 				;
 		}
 
@@ -1369,32 +1290,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private Hyperlink FindHyperlinkAt(PointerRoutedEventArgs e)
 		{
-#if __WASM__
-			var point = e.GetCurrentPoint(null).Position;
-			var elementInCoordinate = WindowManagerInterop.TryGetElementInCoordinate(point) as TextElement;
-			while (elementInCoordinate is not null)
-			{
-				if (elementInCoordinate is Hyperlink)
-				{
-					break;
-				}
-
-				elementInCoordinate = elementInCoordinate.GetParent() as TextElement;
-			}
-
-			if (elementInCoordinate is Hyperlink hyperlink)
-			{
-				foreach (var candidate in _hyperlinks)
-				{
-					if (hyperlink == candidate)
-					{
-						return hyperlink;
-					}
-				}
-			}
-
-			return null;
-#elif __SKIA__
+#if __SKIA__
 			return ParsedText.GetHyperlinkAt(e.GetCurrentPoint(this).Position);
 #else
 			return null;
@@ -1428,7 +1324,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				foreach (var inline in _inlines)
 				{
-					((IDependencyObjectStoreProvider)inline).Store.UpdateResourceBindings(updateReason, resourceContextProvider: this);
+					((DependencyObject)inline).UpdateResourceBindings(updateReason, resourceContextProvider: this);
 				}
 			}
 		}
@@ -1462,5 +1358,765 @@ namespace Microsoft.UI.Xaml.Controls
 		void IThemeChangeAware.OnThemeChanged() => OnForegroundChanged();
 
 		internal record struct Range(int start, int end);
+
+#nullable enable
+		// The caret thickness is actually always 1-pixel wide regardless of how big the text is
+		internal const float CaretThickness = 1;
+
+		private Action? _selectionHighlightColorChanged;
+		private IDisposable? _selectionHighlightBrushChangedSubscription;
+		private readonly VirtualKeyModifiers _platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
+		private Size _lastInlinesArrangeWithPadding;
+		private readonly Dictionary<TextHighlighter, IDisposable> _textHighlighterDisposables = new();
+
+		private protected override ContainerVisual CreateElementVisual() => new TextVisual(Compositor.GetSharedCompositor(), this);
+
+		private bool _renderSelection;
+		private (int index, CompositionBrush brush)? _caretPaint;
+		private bool _forceFocusedForContextFlyout;
+
+		// Touch-selection grippers (knobs), driven by the shared TextSelectionGripperPresenter. Unlike
+		// TextBox there is no caret/insertion point in a TextBlock, so the grippers only ever appear in
+		// pairs around a non-empty selection (GripperMode is only ever Hidden or Both).
+		private TextSelectionGripperPresenter? _gripperPresenter;
+		private bool _grippersShown;
+		private Microsoft.UI.Input.PointerPoint? _lastPointerDownPoint;
+
+		private (Size availableSize, Size outSize, TextAlignment? alignment) _lastParsedTextCreationValues = (Size.Empty, Size.Empty, TextAlignment.Left);
+		internal IParsedText ParsedText { get; private set; } = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
+
+		internal event EventHandler? DrawingFinished;
+
+		public TextBlock()
+		{
+			UpdateLastUsedTheme();
+
+			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
+			((ObservableCollection<TextHighlighter>)TextHighlighters).CollectionChanged += OnTextHighlightersChanged;
+
+			Tapped += static (s, e) => ((TextBlock)s).OnTapped(e);
+			DoubleTapped += static (s, e) => ((TextBlock)s).OnDoubleTapped(e);
+			KeyDown += static (s, e) => ((TextBlock)s).OnKeyDown(e);
+
+			GotFocus += (_, _) =>
+			{
+				_forceFocusedForContextFlyout = false;
+				UpdateSelectionRendering();
+			};
+			LostFocus += (_, _) =>
+			{
+				_forceFocusedForContextFlyout = ShouldForceFocusedVisualState();
+				UpdateSelectionRendering();
+
+				if (!_forceFocusedForContextFlyout)
+				{
+					HideGrippers();
+				}
+			};
+		}
+
+		public static DependencyProperty SelectionFlyoutProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SelectionFlyout), typeof(FlyoutBase), typeof(TextBlock),
+				new FrameworkPropertyMetadata(default(FlyoutBase), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+
+		public FlyoutBase SelectionFlyout
+		{
+			get => (FlyoutBase)GetValue(SelectionFlyoutProperty);
+			set => SetValue(SelectionFlyoutProperty, value);
+		}
+
+		/// <summary>
+		/// The text-input engine this block renders for, when it is a control's display block rather than a
+		/// standalone <see cref="TextBlock"/>. Typed as the engine, not the control, so it is set for a
+		/// <see cref="PasswordBox"/> as well — the engine drives selection and caret for both.
+		/// </summary>
+		internal TextBoxCore? OwningTextBox { get; init; }
+
+		internal bool IsSpellCheckEnabled { get; set; }
+
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+#if DEBUG
+			Visual.Comment = $"{Visual.Comment}#text";
+#endif
+		}
+
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			_forceFocusedForContextFlyout = false;
+			HideGrippers();
+		}
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			var padding = Padding;
+			var availableSizeWithoutPadding = availableSize.Subtract(padding).AtLeastZero();
+			ParsedText = ParseText(availableSizeWithoutPadding, out var desiredSize);
+
+			desiredSize = desiredSize.Add(padding);
+
+			if (GetUseLayoutRounding())
+			{
+				// In order to prevent text clipping as a result of layout rounding at
+				// scales other than 1.0x, the ceiling of the rescaled size is used.
+				var plateauScale = RootScale.GetRasterizationScaleForElement(this);
+				Size pageNodeSize = desiredSize;
+				desiredSize.Width = ((int)Math.Ceiling(pageNodeSize.Width * plateauScale)) / plateauScale;
+				desiredSize.Height = ((int)Math.Ceiling(pageNodeSize.Height * plateauScale)) / plateauScale;
+
+				// LsTextLine is not aware of layoutround and uses baseline height to place the rendered text.
+				// However, because the height of the *block is potentionally layoutround-ed up, we should adjust the
+				// placement of text by the difference.  Horizontal adjustment is not of concern since
+				// LsTextLine uses arranged size which is already layoutround-ed.
+				//_layoutRoundingHeightAdjustment = desiredSize.Height - pageNodeSize.Height;
+			}
+
+			return desiredSize;
+		}
+
+		private UnicodeText ParseText(Size availableSizeWithoutPadding, out Size size)
+		{
+			var isTextBoxOwned = OwningTextBox is not null;
+			var adjustedTextAlignment = GetAdjustedTextAlignment();
+			var ret = new UnicodeText(
+				availableSizeWithoutPadding,
+				Inlines.TraversedTree.leafTree,
+				GetDefaultFontDetails(),
+				MaxLines,
+				(float)LineHeight,
+				LineStackingStrategy,
+				FlowDirection,
+				adjustedTextAlignment,
+				TextWrapping,
+				TextTrimming,
+				IsSpellCheckEnabled,
+				this,
+				isTextBoxOwned,
+				out size);
+
+			if (isTextBoxOwned)
+			{
+				size.Width += CaretThickness;
+			}
+
+			_lastParsedTextCreationValues = (availableSizeWithoutPadding, size, adjustedTextAlignment);
+			return ret;
+		}
+
+		private TextAlignment? GetAdjustedTextAlignment() =>
+			OwningTextBox is { IsTextAlignmentExplicitlySet: false }
+				? null
+				: TextAlignment;
+
+		// the entire body of the text block is considered hit-testable
+		internal override bool HitTest(Point point)
+		{
+			// This is equivalent to using TransformToVisual but without the unnecessary MatrixTransform allocation.
+			var transform = GetTransform(this, (UIElement)this.GetParent());
+			var success = Matrix3x2.Invert(transform, out var inverted);
+			return success && inverted.Transform(LayoutSlotWithMarginsAndAlignments).Contains(point);
+		}
+
+		partial void OnIsTextSelectionEnabledChangedPartial()
+		{
+			RecalculateSubscribeToPointerEvents();
+			UpdateSelectionRendering();
+
+			if (!IsTextSelectionEnabled)
+			{
+				HideGrippers();
+			}
+
+			// Enable context menu gestures when text selection is enabled.
+			// This ensures ContextRequested is raised for the default TextCommandBarFlyout.
+			// We need to call this explicitly because TextBlock's default ContextFlyout is set via
+			// GetDefaultValue (not via SetValue), which doesn't trigger OnContextFlyoutChanged.
+			if (IsTextSelectionEnabled)
+			{
+				EnsureContextMenuGesturesEnabled();
+			}
+		}
+
+		private void UpdateSelectionRendering()
+		{
+			if (OwningTextBox is null) // TextBox manages RenderSelection itself
+			{
+				RenderSelection = IsTextSelectionEnabled && (IsFocused || _forceFocusedForContextFlyout);
+			}
+		}
+
+		// Ported from: TextSelectionManager.cpp ShouldForceFocusedVisualState (lines 3422-3428)
+		private bool ShouldForceFocusedVisualState()
+		{
+			return TextControlFlyoutHelper.IsGettingFocus(SelectionFlyout, this)
+				|| TextControlFlyoutHelper.IsGettingFocus(ContextFlyout, this);
+		}
+
+		// Ported from: TextSelectionManager.cpp ForceFocusLoss (lines 3430-3444)
+		internal void ForceFocusLoss()
+		{
+			_forceFocusedForContextFlyout = false;
+			UpdateSelectionRendering();
+			HideGrippers();
+		}
+
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			Visual.Compositor.InvalidateRender(Visual);
+			var padding = Padding;
+			var availableSizeWithoutPadding = finalSize.Subtract(padding);
+
+			// There's no reason to re-parse the text if the available size hasn't changed since the last measure/arrange.
+			// Note that MeasureOverride doesn't have these checks. If something in the text block has changed that would
+			// require a re-parse, the ParseText call during the measure pass will catch it. There are no changes that
+			// would require a re-parse that would invalidate arrange but not measure, except TextAlignment, which we explicitly check.
+			var arrangedSize = _lastParsedTextCreationValues.outSize;
+			if (_lastParsedTextCreationValues.availableSize != availableSizeWithoutPadding || _lastParsedTextCreationValues.alignment != GetAdjustedTextAlignment())
+			{
+				ParsedText = ParseText(availableSizeWithoutPadding, out arrangedSize);
+			}
+
+			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
+
+			var result = base.ArrangeOverride(finalSize);
+			UpdateIsTextTrimmed();
+
+			return result;
+		}
+
+		internal bool RenderSelection
+		{
+			set
+			{
+				if (_renderSelection != value)
+				{
+					_renderSelection = value;
+					InvalidateInlineAndRequireRepaint();
+				}
+			}
+		}
+
+		internal (int index, CompositionBrush brush)? RenderCaret
+		{
+			set
+			{
+				if (_caretPaint != value)
+				{
+					_caretPaint = value;
+					InvalidateInlineAndRequireRepaint();
+				}
+			}
+		}
+
+		internal void Draw(in Visual.PaintingSession session)
+		{
+			session.Canvas.Save();
+			session.Canvas.Translate((float)Padding.Left, (float)Padding.Top);
+			var highligherters = _renderSelection ? TextHighlighters.Append(new TextHighlighter
+			{
+				Background = SelectionHighlightColor,
+				Foreground = DefaultBrushes.SelectedTextForegroundColor,
+				Ranges =
+				{
+					new TextRange
+					{
+						StartIndex = Math.Min(Selection.start, Selection.end),
+						Length = Math.Abs(Selection.start - Selection.end)
+					}
+				}
+			}) : TextHighlighters;
+			(int startIndex, int length)? compositionRange = null;
+			if (OwningTextBox is { IsComposing: true, CompositionUnderlineLength: > 0 } owningTextBox)
+			{
+				compositionRange = (owningTextBox.CompositionUnderlineStart, owningTextBox.CompositionUnderlineLength);
+			}
+			ParsedText.Draw(
+				this,
+				session,
+				_caretPaint is { } c ? (c.index, c.brush, CaretThickness) : null,
+				highligherters,
+				compositionRange);
+			session.Canvas.Restore();
+			DrawingFinished?.Invoke(this, EventArgs.Empty);
+		}
+
+		/// <summary>
+		/// Gets the line height of the TextBlock either
+		/// based on the LineHeight property or the default
+		/// font line height.
+		/// </summary>
+		/// <returns>Computed line height</returns>
+		private FontDetails GetDefaultFontDetails()
+		{
+			var scaledSize = Uno.UI.Xaml.Core.TextScaleHelper.GetScaledFontSize(FontSize, Uno.UI.Xaml.Core.CoreServices.Instance.FontScale, IsTextScaleFactorEnabled && !Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor);
+			var (details, task) = FontDetailsCache.GetFont(FontFamily?.Source, (float)scaledSize, FontWeight, FontStretch, FontStyle);
+			if (task.IsCompletedSuccessfully)
+			{
+				return task.Result;
+			}
+			else
+			{
+				task.ContinueWith(_ =>
+				{
+					NativeDispatcher.Main.Enqueue(OnFontLoaded);
+				});
+				return details;
+			}
+		}
+
+		private int GetCharacterIndexAtPoint(Point point, bool extended = false) => ParsedText.GetIndexAt(point, false, extended);
+
+		// Invalidate Inlines measure and repaint text when any IBlock properties used during measuring change:
+
+		private void InvalidateInlineAndRequireRepaint()
+		{
+			Visual.Compositor.InvalidateRender(Visual);
+		}
+
+		partial void InvalidateTextBlockPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnForegroundChangedPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnInlinesChangedPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnMaxLinesChangedPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnTextWrappingChangedPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnLineHeightChangedPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnLineStackingStrategyChangedPartial() => InvalidateInlineAndRequireRepaint();
+		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush) => InvalidateInlineAndRequireRepaint();
+
+		private void OnTextHighlightersChanged(object? sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.OldItems is not null)
+			{
+				foreach (var item in e.OldItems)
+				{
+					if (item is TextHighlighter highlighter)
+					{
+						if (_textHighlighterDisposables.Remove(highlighter, out var disposable))
+						{
+							disposable.Dispose();
+						}
+					}
+				}
+			}
+			if (e.NewItems is not null)
+			{
+				foreach (var item in e.NewItems)
+				{
+					if (item is TextHighlighter highlighter)
+					{
+						var backgroundDisposable = highlighter.RegisterDisposablePropertyChangedCallback(TextHighlighter.BackgroundProperty, OnTextHighlighterPropertyChanged);
+						var foregroundDisposable = highlighter.RegisterDisposablePropertyChangedCallback(TextHighlighter.ForegroundProperty, OnTextHighlighterPropertyChanged);
+						NotifyCollectionChangedEventHandler onCollectionChanged = (_, _) => InvalidateInlineAndRequireRepaint();
+						var rangesDisposable = Disposable.Create(() => ((ObservableCollection<TextRange>)highlighter.Ranges).CollectionChanged -= onCollectionChanged);
+						((ObservableCollection<TextRange>)highlighter.Ranges).CollectionChanged += onCollectionChanged;
+						var disposable = new CompositeDisposable();
+						disposable.Add(backgroundDisposable);
+						disposable.Add(foregroundDisposable);
+						disposable.Add(rangesDisposable);
+						_textHighlighterDisposables.Add(highlighter, disposable);
+					}
+				}
+			}
+
+			InvalidateInlineAndRequireRepaint();
+		}
+
+		private void OnTextHighlighterPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			InvalidateInlineAndRequireRepaint();
+		}
+
+		void UnicodeText.IFontCacheUpdateListener.Invalidate() => InvalidateMeasure();
+
+		void IBlock.Invalidate(bool updateText) => InvalidateInlineAndRequireRepaint();
+		string IBlock.GetText() => Text;
+
+		partial void OnSelectionChanged()
+		{
+			InvalidateInlineAndRequireRepaint();
+
+			var start = Math.Min(Selection.start, Selection.end);
+			var end = Math.Max(Selection.start, Selection.end);
+			SelectedText = Text[start..end];
+
+			if (start == end)
+			{
+				// No selection left to grab: drop the touch grippers.
+				HideGrippers();
+			}
+		}
+
+		partial void SetupInlines() => RenderSelection = IsTextSelectionEnabled;
+
+		private void OnKeyDown(KeyRoutedEventArgs args)
+		{
+			switch (args.Key)
+			{
+				case VirtualKey.C when args.KeyboardModifiers.HasFlag(_platformCtrlKey):
+					CopySelectionToClipboard();
+					args.Handled = true;
+					break;
+				case VirtualKey.A when args.KeyboardModifiers.HasFlag(_platformCtrlKey):
+					SelectAll();
+					args.Handled = true;
+					break;
+			}
+		}
+
+		private void OnTapped(TappedRoutedEventArgs e)
+		{
+			// Touch tapping is owned by the pointer-released touch path
+			if (IsTextSelectionEnabled && e.PointerDeviceType == PointerDeviceType.Mouse)
+			{
+				Selection = default;
+			}
+		}
+
+		private void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
+		{
+			if (IsTextSelectionEnabled)
+			{
+				if (GetCharacterIndexAtPoint(e.GetPosition(this), true) is var index and > 1)
+				{
+					var chunk = ParsedText.GetWordAt(index, true);
+
+					Selection = new Range(chunk.start, chunk.start + chunk.length);
+
+					if (e.PointerDeviceType is not PointerDeviceType.Mouse && chunk.length > 0)
+					{
+						ShowGrippers();
+					}
+				}
+			}
+		}
+
+		public void CopySelectionToClipboard()
+		{
+			if (Selection.start != Selection.end)
+			{
+				var text = SelectedText;
+				var dataPackage = new DataPackage();
+				dataPackage.SetText(text);
+				Clipboard.SetContent(dataPackage);
+			}
+		}
+
+		public void SelectAll() => Selection = new Range(0, Text.Length);
+
+		// TODO: move to TextBlock.cs when we implement SelectionHighlightColor for the other platforms
+		#region SelectionHighlightColor (DP)
+		public SolidColorBrush SelectionHighlightColor
+		{
+			get => (SolidColorBrush)GetValue(SelectionHighlightColorProperty);
+			set => SetValue(SelectionHighlightColorProperty, value);
+		}
+
+		public static DependencyProperty SelectionHighlightColorProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SelectionHighlightColor),
+				typeof(SolidColorBrush),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(
+					DefaultBrushes.SelectionHighlightColor,
+					propertyChangedCallback: (s, e) => ((TextBlock)s)?.OnSelectionHighlightColorChanged((SolidColorBrush)e.OldValue, (SolidColorBrush)e.NewValue)));
+
+		private void OnSelectionHighlightColorChanged(SolidColorBrush? oldBrush, SolidColorBrush? newBrush)
+		{
+			oldBrush ??= DefaultBrushes.SelectionHighlightColor;
+			newBrush ??= DefaultBrushes.SelectionHighlightColor;
+
+			_selectionHighlightBrushChangedSubscription?.Dispose();
+			_selectionHighlightBrushChangedSubscription = Brush.SetupBrushChanged(newBrush, ref _selectionHighlightColorChanged, () => OnSelectionHighlightColorChangedPartial(newBrush));
+		}
+
+		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);
+		#endregion
+
+		#region SelectedText (DP - readonly)
+		public static DependencyProperty SelectedTextProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SelectedText), typeof(string),
+				typeof(TextBlock),
+				new FrameworkPropertyMetadata(string.Empty));
+
+		public string SelectedText
+		{
+			get => (string)this.GetValue(SelectedTextProperty);
+			private set => this.SetValue(SelectedTextProperty, value);
+		}
+		#endregion
+
+		partial void UpdateIsTextTrimmed()
+		{
+			IsTextTrimmed = IsTextTrimmable && (
+				_lastInlinesArrangeWithPadding.Width > ActualWidth ||
+				_lastInlinesArrangeWithPadding.Height > ActualHeight
+			);
+		}
+
+		/// <summary>
+		/// Returns a mask that represents the alpha channel of the text as a CompositionBrush.
+		/// This brush can be used with CompositionMaskBrush or DropShadow.Mask to create shaped effects.
+		/// </summary>
+		/// <returns>A CompositionBrush representing the text as an alpha mask.</returns>
+		public CompositionBrush GetAlphaMask()
+		{
+			var compositor = Compositor.GetSharedCompositor();
+			var surface = new AlphaMaskSurface(compositor, Visual);
+			var brush = compositor.CreateSurfaceBrush(surface);
+			brush.Stretch = CompositionStretch.None;
+			return brush;
+		}
+
+		#region SelectionFlyout Support
+		// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/text/common/TextSelectionManager.cpp (lines 3381-3420)
+		// TextSelectionManager::UpdateSelectionFlyoutVisibility
+
+		private PointerDeviceType _lastInputDeviceType;
+		private Point _lastPointerPosition;
+		private bool _isSelectionFlyoutUpdateQueued;
+
+		private bool HasSelectionFlyout() => SelectionFlyout is not null;
+
+		/// <summary>
+		/// Called from OnPointerReleased to handle touch/pen tap selection and queue a SelectionFlyout
+		/// visibility update. Mouse input is handled on the pressed/move side and ignored here (matching WinUI).
+		/// </summary>
+		partial void OnPointerReleasedForSelectionFlyout(PointerRoutedEventArgs e)
+		{
+			// Mouse doesn't get the gripper/selection-flyout treatment (matching WinUI behavior).
+			if (e.Pointer.PointerDeviceType is PointerDeviceType.Mouse || !IsTextSelectionEnabled)
+			{
+				return;
+			}
+
+			var down = _lastPointerDownPoint;
+			_lastPointerDownPoint = null;
+
+			if (FindHyperlinkAt(e) is not null)
+			{
+				// Tapping a hyperlink: navigation is handled elsewhere, don't start a selection.
+				return;
+			}
+
+			if (down is null)
+			{
+				return;
+			}
+
+			var touchHoldTime = e.GetCurrentPoint(null).Timestamp - down.Timestamp;
+			if (touchHoldTime >= Microsoft.UI.Input.GestureRecognizer.HoldMinDelayMicroseconds)
+			{
+				// Long-press: the context menu was already opened through the Holding gesture
+				// (ContextRequested).
+				return;
+			}
+
+			TouchTap(e.GetCurrentPoint(this).Position);
+			QueueUpdateSelectionFlyoutVisibility(e.Pointer.PointerDeviceType, e.GetCurrentPoint(this).Position);
+		}
+
+		private void QueueUpdateSelectionFlyoutVisibility(PointerDeviceType deviceType, Point position)
+		{
+			_lastInputDeviceType = deviceType;
+			_lastPointerPosition = position;
+
+			// Prevent duplicate queued updates (matching TextBox behavior)
+			if (!_isSelectionFlyoutUpdateQueued)
+			{
+				_isSelectionFlyoutUpdateQueued = true;
+				DispatcherQueue.TryEnqueue(() => UpdateSelectionFlyoutVisibility());
+			}
+		}
+
+		private void UpdateSelectionFlyoutVisibility()
+		{
+			// Reset the queued flag
+			_isSelectionFlyoutUpdateQueued = false;
+
+			if (!HasSelectionFlyout() || TextControlFlyoutHelper.IsOpen(ContextFlyout))
+			{
+				return;
+			}
+
+			var selectionLength = Math.Abs(Selection.end - Selection.start);
+			var showMode = FlyoutShowMode.Transient;
+			var shouldShow = false;
+
+			switch (_lastInputDeviceType)
+			{
+				case PointerDeviceType.Mouse:
+					// Mouse doesn't show SelectionFlyout (matching WinUI behavior)
+					shouldShow = false;
+					break;
+				case PointerDeviceType.Pen:
+				case PointerDeviceType.Touch:
+					if (selectionLength > 0)
+					{
+						shouldShow = true;
+						showMode = FlyoutShowMode.Transient;
+					}
+					break;
+				default:
+					shouldShow = false;
+					break;
+			}
+
+			if (shouldShow)
+			{
+				// Get selection bounds and adjust flyout position (Y = top of selection)
+				var position = _lastPointerPosition;
+
+				var startIndex = Math.Min(Selection.start, Selection.end);
+				var endIndex = Math.Max(Selection.start, Selection.end);
+				var startRect = ParsedText.GetRectForIndex(startIndex);
+				var endRect = ParsedText.GetRectForIndex(endIndex);
+				var selectionTop = Math.Min(startRect.Top, endRect.Top);
+
+				// Adjust for padding
+				position = new Point(position.X, selectionTop + Padding.Top);
+
+				if (SelectionFlyout is { } selectionFlyout)
+				{
+					TextControlFlyoutHelper.ShowAt(selectionFlyout, this, position, showMode);
+				}
+			}
+			else
+			{
+				// Close SelectionFlyout if it's open and we shouldn't show it
+				if (SelectionFlyout?.IsOpen == true)
+				{
+					SelectionFlyout.Hide();
+				}
+			}
+
+			// Reset input device type after processing (matching WinUI behavior)
+			_lastInputDeviceType = default;
+		}
+		#endregion
+
+		#region Touch selection grippers
+		// The gripper visuals and all the drag/positioning mechanics live in the shared
+		// TextSelectionGripperPresenter (also used by TextBox). A TextBlock has no caret/insertion point,
+		// so its GripperMode is only ever Hidden or Both (a non-empty selection).
+
+		// Test hook: the pair of selection grippers when they are currently showing, otherwise null.
+		internal (CaretWithStemAndThumb start, CaretWithStemAndThumb end)? SelectionGrippersForTesting
+			=> _gripperPresenter?.VisibleGrippersForTesting;
+
+		private void ShowGrippers()
+		{
+			if (!IsTextSelectionEnabled)
+			{
+				return;
+			}
+
+			_gripperPresenter ??= new TextSelectionGripperPresenter(this);
+			_grippersShown = true;
+			_gripperPresenter.Update();
+		}
+
+		private void HideGrippers()
+		{
+			_grippersShown = false;
+			_gripperPresenter?.Hide();
+		}
+
+		// Touch tap handling: select the tapped word (and show the grippers), or keep an existing
+		// selection if the tap landed inside it. The point is relative to the TextBlock.
+		private void TouchTap(Point point)
+		{
+			var textPoint = new Point(point.X - Padding.Left, point.Y - Padding.Top);
+			var index = Math.Max(0, ParsedText.GetIndexAt(textPoint, true, true));
+
+			var selStart = Math.Min(Selection.start, Selection.end);
+			var selEnd = Math.Max(Selection.start, Selection.end);
+			if (selStart != selEnd && selStart <= index && index < selEnd)
+			{
+				// Tapped inside the current selection: keep it and re-show the grippers/flyout.
+				ShowGrippers();
+				return;
+			}
+
+			var chunk = ParsedText.GetWordAt(index, true);
+			Selection = new Range(chunk.start, chunk.start + chunk.length);
+			if (chunk.length > 0)
+			{
+				ShowGrippers();
+			}
+			else
+			{
+				HideGrippers();
+			}
+		}
+
+		#region ITextSelectionGripperHost
+		TextBlock ITextSelectionGripperHost.GripperTextSurface => this;
+
+		Rect ITextSelectionGripperHost.GripperClipBounds => this.GetAbsoluteBoundsRect();
+
+		GripperMode ITextSelectionGripperHost.GripperMode => _grippersShown ? GripperMode.Both : GripperMode.Hidden;
+
+		int ITextSelectionGripperHost.SelectionLowerIndex => Math.Min(Selection.start, Selection.end);
+
+		int ITextSelectionGripperHost.SelectionUpperIndex => Math.Max(Selection.start, Selection.end);
+
+		void ITextSelectionGripperHost.SetGripperSelection(int start, int end) => Selection = new Range(start, end);
+
+		// A TextBlock never reports GripperMode.EndOnly, so this is only a defensive fallback.
+		void ITextSelectionGripperHost.MoveGripperCaret(int index) => Selection = new Range(index, index);
+
+		// A TextBlock doesn't scroll its own content, so there's nothing to bring into view.
+		void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper) { }
+
+		void ITextSelectionGripperHost.OnGripperPressed() => DismissSelectionFlyoutForPointerPress();
+
+		// Dismiss the selection flyout (the floating copy bar) when a touch interaction begins, so it
+		// doesn't linger next to a context menu opened on the same gesture.
+		internal void DismissSelectionFlyoutForPointerPress() => TextControlFlyoutHelper.CloseIfOpen(SelectionFlyout);
+
+		void ITextSelectionGripperHost.RequestGripperContextMenu(PointerRoutedEventArgs args)
+		{
+			var contextArgs = new ContextRequestedEventArgs();
+			contextArgs.SetGlobalPoint(args.GetCurrentPoint(null).Position);
+			OnContextRequested(this, contextArgs);
+		}
+
+		// A TextBlock only ever shows Both-mode grippers over a real selection, so there's never a collapsed
+		// caret to re-open the flyout over; allowEmptySelection is irrelevant here.
+		void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args, bool allowEmptySelection)
+			=> QueueUpdateSelectionFlyoutVisibility(args.Pointer.PointerDeviceType, args.GetCurrentPoint(this).Position);
+
+		// Both grippers sit on the current selection's edges, so tapping either one keeps the selection and
+		// re-shows the grippers/flyout — there's no insertion handle (or editable caret) to re-place, so press
+		// and anchorIndex are unused here.
+		void ITextSelectionGripperHost.OnGripperTapped(Microsoft.UI.Input.PointerPoint press, int anchorIndex)
+			=> ShowGrippers();
+		#endregion
+		#endregion
+
+		/// <summary>
+		/// Fires the ContextMenuOpening event synchronously and returns whether it was handled.
+		/// </summary>
+		/// <remarks>
+		/// Ported from CTextBlock::FireContextMenuOpeningEventSynchronously (TextBlock.cpp:4107)
+		/// and TextControlHelper::OnContextMenuOpeningHandler (TextControlHelper.h:10).
+		///
+		/// WinUI does this->TransformToRoot(point) then divides by rasterization scale.
+		/// In Uno/Skia, TransformToVisual(null) already yields DIP coordinates.
+		/// </remarks>
+		internal bool FireContextMenuOpeningEventSynchronously(Point point)
+		{
+			// WinUI: TransformToRoot + pointerPosition /= zoomScale
+			var rootPoint = TransformToVisual(null).TransformPoint(point);
+
+			var args = new ContextMenuEventArgs(rootPoint.X, rootPoint.Y);
+			ContextMenuOpening?.Invoke(this, args);
+			return args.Handled;
+		}
+#nullable disable
 	}
 }

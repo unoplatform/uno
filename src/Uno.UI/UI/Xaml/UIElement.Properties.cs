@@ -1,4 +1,4 @@
-﻿#if IS_UNIT_TESTS || __WASM__
+﻿#if IS_UNIT_TESTS
 #pragma warning disable CS0067
 #endif
 
@@ -17,10 +17,6 @@ using Windows.Foundation;
 using Windows.System;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Helpers;
-
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
 
 namespace Microsoft.UI.Xaml
 {
@@ -84,9 +80,6 @@ namespace Microsoft.UI.Xaml
 		public static DependencyProperty VisibilityProperty { get; } = CreateVisibilityProperty();
 
 		public
-#if __ANDROID__
-		new
-#endif
 		Visibility Visibility
 		{
 			get => GetVisibilityValue();
@@ -112,7 +105,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		// ValueDoesNotInheritDataContext prevents standard parent-chain DataContext propagation.
-		// Instead, the mentor mechanism in DependencyObjectStore.Binder propagates DataContext
+		// Instead, the mentor mechanism in DependencyObject.Binder propagates DataContext
 		// via a weak reference, matching WinUI's SetParentForInheritanceContextOnly / GetMentor pattern.
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext)]
 		public static DependencyProperty ContextFlyoutProperty { get; } = CreateContextFlyoutProperty();

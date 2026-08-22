@@ -11,6 +11,11 @@ namespace Microsoft.UI.Xaml.Hosting;
 public partial class ElementCompositionPreview
 {
 #if __SKIA__
+	internal static void SetElementVisualCompositor(UIElement element, Compositor compositor)
+		=> element.SetElementVisualCompositor(compositor);
+#endif
+
+#if __SKIA__
 	private const string ChildVisualName = "childVisual";
 #else
 	static readonly Compositor _compositor = new Compositor();
@@ -42,28 +47,23 @@ public partial class ElementCompositionPreview
 	/// </summary>
 	/// <param name="element">The element to add the child Visual to.</param>
 	/// <param name="visual">The Visual to add to the element's visual tree.</param>
-	public static void SetElementChildVisual(UIElement element, Visual visual)
+	public static void SetElementChildVisual(UIElement element, Visual? visual)
 	{
-#if __APPLE_UIKIT__
-		element.Layer.AddSublayer(visual.NativeLayer);
-		visual.NativeOwner = element;
-		element.ClipsToBounds = false;
-
-		if (element is FrameworkElement fe)
-		{
-			fe.SizeChanged +=
-				(s, e) => visual.NativeLayer.Frame = new CoreGraphics.CGRect(0, 0, element.Frame.Width, element.Frame.Height);
-		}
-#elif __SKIA__
-
-		var container = new Composition.ContainerVisual(element.Visual.Compositor) { Comment = ChildVisualName };
-		container.Children.InsertAtTop(visual);
-
+#if __SKIA__
 		if (element.Visual.Children.FirstOrDefault(v => v.Comment == ChildVisualName) is Composition.ContainerVisual cv)
 		{
 			element.Visual.Children.Remove(cv);
 		}
 
+		element.HasCompositionChildVisual = visual is not null;
+
+		if (visual is null)
+		{
+			return;
+		}
+
+		var container = new Composition.ContainerVisual(element.Visual.Compositor) { Comment = ChildVisualName };
+		container.Children.InsertAtTop(visual);
 		element.Visual.Children.InsertAtTop(container);
 #endif
 	}

@@ -179,7 +179,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		_lastSize = size;
 
 		OnSizeChanged(size);
-#if __SKIA__ || __WASM__
+#if __SKIA__
 		XamlRoot?.InvalidateMeasure(); //TODO:MZ: Should notify before or after?
 #endif
 		var windowSizeChanged = new WindowSizeChangedEventArgs(size);
@@ -244,7 +244,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		}
 
 		_lastActivationState = state;
-		var activatedEventArgs = new WindowActivatedEventArgs(state);
+		var activatedEventArgs = new WindowActivatedEventArgs((WindowActivationState)state);
 		// There are two "versions" of WindowActivatedEventArgs in Uno currently
 		// when using WinUI, we need to use "legacy" version to work with CoreWindow
 		// (which will eventually be removed as a legacy API as well.

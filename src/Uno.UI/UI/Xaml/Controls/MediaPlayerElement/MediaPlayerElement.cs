@@ -174,13 +174,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					ApplicationView.GetForWindowId(XamlRoot.HostWindow.AppWindow.Id).TryEnterFullScreenMode();
 
-#if __ANDROID__
-					this.RemoveView(_layoutRoot);
-#elif __APPLE_UIKIT__
-					_layoutRoot.RemoveFromSuperview();
-#else
 					_mediaPlayerPresenter?.RequestFullScreen();
-#endif
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 					XamlRoot.VisualTree.FullWindowMediaRoot.DisplayFullscreen(_layoutRoot);
 #endif
@@ -192,11 +186,7 @@ namespace Microsoft.UI.Xaml.Controls
 					XamlRoot.VisualTree.FullWindowMediaRoot.DisplayFullscreen(null);
 #endif
 
-#if __ANDROID__
-					this.AddView(_layoutRoot);
-#elif __APPLE_UIKIT__
-					this.Add(_layoutRoot);
-#elif __SKIA__ || __WASM__
+#if __SKIA__
 					this.AddChild(_layoutRoot);
 					_mediaPlayerPresenter?.ExitFullScreen();
 #else
@@ -415,19 +405,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void ToggleCompactOverlay(bool showCompactOverlay)
 		{
-#if __WASM__
-			if (_mediaPlayerPresenter != null)
-			{
-				if (showCompactOverlay)
-				{
-					_mediaPlayerPresenter.RequestCompactOverlay();
-				}
-				else
-				{
-					_mediaPlayerPresenter.ExitCompactOverlay();
-				}
-			}
-#endif
 		}
 
 	}

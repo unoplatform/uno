@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Uno.Disposables;
@@ -76,11 +76,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				_wasBeginScheduled = true;
 
 #if !IS_UNIT_TESTS
-#if __ANDROID__
-				_ = Dispatcher.RunAnimation(() =>
-#else
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-#endif
 #endif
 				{
 					_wasBeginScheduled = false;
@@ -273,13 +269,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 				var i = index;
 
-#if __ANDROID__
-				if (ABuild.VERSION.SdkInt >= ABuildVersionCodes.Kitkat)
-				{
-					animator.AnimationPause += (a, _) => OnFrame((IValueAnimator)a);
-				}
-#endif
-
 				animator.AnimationEnd += (a, _) =>
 				{
 					OnFrame((IValueAnimator)a);
@@ -382,5 +371,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 
 		IEnumerable IKeyFramesProvider.GetKeyFrames() => KeyFrames;
+
+		private bool ReportEachFrame() => true;
+
+		partial void OnFrame(IValueAnimator currentAnimator)
+		{
+			SetValue(currentAnimator.AnimatedValue);
+		}
 	}
 }

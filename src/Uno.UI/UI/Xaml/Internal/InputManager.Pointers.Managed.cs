@@ -25,9 +25,9 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.UIElement;
-using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
-using PointerUpdateKind = Windows.UI.Input.PointerUpdateKind;
+using PointerUpdateKind = Microsoft.UI.Input.PointerUpdateKind;
 using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Composition;
 
@@ -499,7 +499,7 @@ internal partial class InputManager
 			}
 
 			var overStaleBranch = default(VisualTreeHelper.Branch?);
-			var isOutOfWindow = args.CurrentPoint.Pointer.Type is PointerDeviceType.Touch
+			var isOutOfWindow = (PointerDeviceType)args.CurrentPoint.Pointer.Type is PointerDeviceType.Touch
 				? !HitTest(args, out var originalSource) // No need to find the stale branch for touch as we will flush the over state on the whole tree
 				: !HitTest(args, _isOver, out originalSource, out overStaleBranch);
 			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;

@@ -16,7 +16,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media.VisualTreeHelperPages;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Extras.DevTools.Input;
 using Windows.Foundation;
 using Windows.UI;
 using static Private.Infrastructure.TestServices;
@@ -158,7 +158,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			RectAssert.AreEqual(expected, bounds);
 
 			GetHitTestability getHitTestability = null;
-			getHitTestability = element => (element as FrameworkElement)?.Background != null ? (element.GetHitTestVisibility(), getHitTestability) : (HitTestability.Invisible, getHitTestability);
+			getHitTestability = element =>
+			{
+				var background = element switch
+				{
+					Border border => border.Background,
+					Panel panel => panel.Background,
+					ContentPresenter presenter => presenter.Background,
+					Control control => control.Background,
+					_ => null
+				};
+				return background != null ? (element.GetHitTestVisibility(), getHitTestability) : (HitTestability.Invisible, getHitTestability);
+			};
 
 			foreach (var point in GetPointsInside(bounds, perimeterOffset: 5))
 			{

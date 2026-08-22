@@ -3,21 +3,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class UIElement : global::Microsoft.UI.Composition.IAnimationObject, global::Microsoft.UI.Composition.IVisualElement, global::Microsoft.UI.Composition.IVisualElement2
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty AccessKeyProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(AccessKey), typeof(string),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty AccessKeyScopeOwnerProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(AccessKeyScopeOwner), typeof(global::Microsoft.UI.Xaml.DependencyObject),
@@ -26,8 +26,8 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared property AllowDropProperty
 		// Skipping already declared property BringIntoViewRequestedEvent
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty CacheModeProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(CacheMode), typeof(global::Microsoft.UI.Xaml.Media.CacheMode),
@@ -38,8 +38,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property CanDragProperty
 		// Skipping already declared property CharacterReceivedEvent
 		// Skipping already declared property ClipProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty CompositeModeProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(CompositeMode), typeof(global::Microsoft.UI.Xaml.Media.ElementCompositeMode),
@@ -53,8 +53,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property DragLeaveEvent
 		// Skipping already declared property DragOverEvent
 		// Skipping already declared property DropEvent
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ExitDisplayModeOnAccessKeyInvokedProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ExitDisplayModeOnAccessKeyInvoked), typeof(bool),
@@ -63,41 +63,34 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared property FocusStateProperty
 		// Skipping already declared property GettingFocusEvent
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty HighContrastAdjustmentProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(HighContrastAdjustment), typeof(global::Microsoft.UI.Xaml.ElementHighContrastAdjustment),
-			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.ElementHighContrastAdjustment)));
-#endif
+		// Skipping already declared property HighContrastAdjustmentProperty
 		// Skipping already declared property HoldingEvent
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsAccessKeyScopeProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsAccessKeyScope), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsDoubleTapEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsDoubleTapEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsHoldingEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsHoldingEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsRightTapEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsRightTapEnabled), typeof(bool),
@@ -105,8 +98,8 @@ namespace Microsoft.UI.Xaml
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property IsTabStopProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsTapEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsTapEnabled), typeof(bool),
@@ -114,32 +107,32 @@ namespace Microsoft.UI.Xaml
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property KeyDownEvent
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty KeyTipHorizontalOffsetProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(KeyTipHorizontalOffset), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty KeyTipPlacementModeProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(KeyTipPlacementMode), typeof(global::Microsoft.UI.Xaml.Input.KeyTipPlacementMode),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Input.KeyTipPlacementMode)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty KeyTipTargetProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(KeyTipTarget), typeof(global::Microsoft.UI.Xaml.DependencyObject),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.DependencyObject)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty KeyTipVerticalOffsetProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(KeyTipVerticalOffset), typeof(double),
@@ -149,8 +142,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property KeyUpEvent
 		// Skipping already declared property KeyboardAcceleratorPlacementModeProperty
 		// Skipping already declared property KeyboardAcceleratorPlacementTargetProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty LightsProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Lights), typeof(global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.XamlLight>),
@@ -174,55 +167,23 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property PointerPressedEvent
 		// Skipping already declared property PointerReleasedEvent
 		// Skipping already declared property PointerWheelChangedEvent
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.RoutedEvent PreviewKeyDownEvent
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.UIElement", "PreviewKeyDownEvent");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.RoutedEvent PreviewKeyUpEvent
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.UIElement", "PreviewKeyUpEvent");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ProjectionProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Projection), typeof(global::Microsoft.UI.Xaml.Media.Projection),
-			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Projection)));
-#endif
+		// Skipping already declared property PreviewKeyDownEvent
+		// Skipping already declared property PreviewKeyUpEvent
+		// Skipping already declared property ProjectionProperty
 		// Skipping already declared property RightTappedEvent
 		// Skipping already declared property ShadowProperty
 		// Skipping already declared property TabFocusNavigationProperty
 		// Skipping already declared property TabIndexProperty
 		// Skipping already declared property TappedEvent
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty Transform3DProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Transform3D), typeof(global::Microsoft.UI.Xaml.Media.Media3D.Transform3D),
 			typeof(global::Microsoft.UI.Xaml.UIElement),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Media3D.Transform3D)));
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty UseLayoutRoundingProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(UseLayoutRounding), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
+		// Skipping already declared property UseLayoutRoundingProperty
 		// Skipping already declared property UseSystemFocusVisualsProperty
 		// Skipping already declared property XYFocusDownNavigationStrategyProperty
 		// Skipping already declared property XYFocusDownProperty
@@ -233,8 +194,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property XYFocusRightProperty
 		// Skipping already declared property XYFocusUpNavigationStrategyProperty
 		// Skipping already declared property XYFocusUpProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public string AccessKey
 		{
 			get
@@ -247,8 +208,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.DependencyObject AccessKeyScopeOwner
 		{
 			get
@@ -264,8 +225,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property ActualOffset
 		// Skipping already declared property ActualSize
 		// Skipping already declared property AllowDrop
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Media.CacheMode CacheMode
 		{
 			get
@@ -280,8 +241,8 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared property CanBeScrollAnchor
 		// Skipping already declared property CanDrag
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::System.Numerics.Vector3 CenterPoint
 		{
 			get
@@ -295,8 +256,8 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared property Clip
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Media.ElementCompositeMode CompositeMode
 		{
 			get
@@ -311,8 +272,8 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared property ContextFlyout
 		// Skipping already declared property DesiredSize
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public bool ExitDisplayModeOnAccessKeyInvoked
 		{
 			get
@@ -326,22 +287,9 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared property FocusState
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.ElementHighContrastAdjustment HighContrastAdjustment
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.ElementHighContrastAdjustment)this.GetValue(HighContrastAdjustmentProperty);
-			}
-			set
-			{
-				this.SetValue(HighContrastAdjustmentProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		// Skipping already declared property HighContrastAdjustment
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsAccessKeyScope
 		{
 			get
@@ -354,8 +302,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsDoubleTapEnabled
 		{
 			get
@@ -368,8 +316,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsHoldingEnabled
 		{
 			get
@@ -382,8 +330,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsRightTapEnabled
 		{
 			get
@@ -397,8 +345,8 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared property IsTabStop
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsTapEnabled
 		{
 			get
@@ -411,8 +359,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public double KeyTipHorizontalOffset
 		{
 			get
@@ -425,8 +373,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Input.KeyTipPlacementMode KeyTipPlacementMode
 		{
 			get
@@ -439,8 +387,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.DependencyObject KeyTipTarget
 		{
 			get
@@ -453,8 +401,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public double KeyTipVerticalOffset
 		{
 			get
@@ -470,8 +418,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property KeyboardAcceleratorPlacementMode
 		// Skipping already declared property KeyboardAcceleratorPlacementTarget
 		// Skipping already declared property KeyboardAccelerators
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Media.XamlLight> Lights
 		{
 			get
@@ -481,8 +429,8 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared property ManipulationMode
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.ScalarTransition OpacityTransition
 		{
 			get
@@ -496,23 +444,10 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared property PointerCaptures
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.Projection Projection
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.Projection)this.GetValue(ProjectionProperty);
-			}
-			set
-			{
-				this.SetValue(ProjectionProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property Projection
 		// Skipping already declared property ProtectedCursor
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public double RasterizationScale
 		{
 			get
@@ -526,8 +461,8 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared property RenderSize
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public float Rotation
 		{
 			get
@@ -540,8 +475,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::System.Numerics.Vector3 RotationAxis
 		{
 			get
@@ -554,8 +489,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.ScalarTransition RotationTransition
 		{
 			get
@@ -568,8 +503,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::System.Numerics.Vector3 Scale
 		{
 			get
@@ -582,8 +517,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Vector3Transition ScaleTransition
 		{
 			get
@@ -599,8 +534,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Shadow
 		// Skipping already declared property TabFocusNavigation
 		// Skipping already declared property TabIndex
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Media.Media3D.Transform3D Transform3D
 		{
 			get
@@ -613,8 +548,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::System.Numerics.Matrix4x4 TransformMatrix
 		{
 			get
@@ -628,8 +563,8 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared property Translation
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Vector3Transition TranslationTransition
 		{
 			get
@@ -642,20 +577,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public bool UseLayoutRounding
-		{
-			get
-			{
-				return (bool)this.GetValue(UseLayoutRoundingProperty);
-			}
-			set
-			{
-				this.SetValue(UseLayoutRoundingProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property UseLayoutRounding
 		// Skipping already declared property UseSystemFocusVisuals
 		// Skipping already declared property XYFocusDown
 		// Skipping already declared property XYFocusDownNavigationStrategy
@@ -667,8 +589,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property XYFocusUp
 		// Skipping already declared property XYFocusUpNavigationStrategy
 		// Skipping already declared property XamlRoot
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static bool TryStartDirectManipulation(global::Microsoft.UI.Xaml.Input.Pointer value)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.UIElement", "TryStartDirectManipulation(Pointer value)");
@@ -755,40 +677,16 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XYFocusRightProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XYFocusUpNavigationStrategyProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XYFocusUpProperty.get
-#if false || false || false || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public void Measure(global::Windows.Foundation.Size availableSize)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "Measure(Size availableSize)");
-		}
-#endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public void Arrange(global::Windows.Foundation.Rect finalRect)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "Arrange(Rect finalRect)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.UIElement.Measure(Windows.Foundation.Size)
+		// Skipping already declared method Microsoft.UI.Xaml.UIElement.Arrange(Windows.Foundation.Rect)
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.CapturePointer(Microsoft.UI.Xaml.Input.Pointer)
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.ReleasePointerCapture(Microsoft.UI.Xaml.Input.Pointer)
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.ReleasePointerCaptures()
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.AddHandler(Microsoft.UI.Xaml.RoutedEvent, object, bool)
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.RemoveHandler(Microsoft.UI.Xaml.RoutedEvent, object)
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.TransformToVisual(Microsoft.UI.Xaml.UIElement)
-#if false || false || false || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public void InvalidateMeasure()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "InvalidateMeasure()");
-		}
-#endif
-#if false || false || false || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public void InvalidateArrange()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "InvalidateArrange()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.UIElement.InvalidateMeasure()
+		// Skipping already declared method Microsoft.UI.Xaml.UIElement.InvalidateArrange()
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.UpdateLayout()
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.CancelDirectManipulations()
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.StartDragAsync(Microsoft.UI.Input.PointerPoint)
@@ -796,20 +694,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.StartBringIntoView(Microsoft.UI.Xaml.BringIntoViewOptions)
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.TryInvokeKeyboardAccelerator(Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.Focus(Microsoft.UI.Xaml.FocusState)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public void StartAnimation(global::Microsoft.UI.Composition.ICompositionAnimationBase animation)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "StartAnimation(ICompositionAnimationBase animation)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public void StopAnimation(global::Microsoft.UI.Composition.ICompositionAnimationBase animation)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "StopAnimation(ICompositionAnimationBase animation)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.UIElement.StartAnimation(Microsoft.UI.Composition.ICompositionAnimationBase)
+		// Skipping already declared method Microsoft.UI.Xaml.UIElement.StopAnimation(Microsoft.UI.Composition.ICompositionAnimationBase)
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.AccessKeyDisplayDismissed.add
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.AccessKeyDisplayDismissed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.AccessKeyDisplayRequested.add
@@ -891,15 +777,15 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.Tapped.add
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.Tapped.remove
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.OnCreateAutomationPeer()
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		protected virtual void OnDisconnectVisualChildren()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "OnDisconnectVisualChildren()");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		protected virtual global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.IEnumerable<global::Windows.Foundation.Point>> FindSubElementsForTouchTargeting(global::Windows.Foundation.Point point, global::Windows.Foundation.Rect boundingRect)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.UIElement", "FindSubElementsForTouchTargeting(Point point, Rect boundingRect)");
@@ -909,22 +795,22 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.OnKeyboardAcceleratorInvoked(Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.OnProcessKeyboardAccelerators(Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.OnBringIntoViewRequested(Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		protected virtual void PopulatePropertyInfoOverride(string propertyName, global::Microsoft.UI.Composition.AnimationPropertyInfo animationPropertyInfo)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "PopulatePropertyInfoOverride(string propertyName, AnimationPropertyInfo animationPropertyInfo)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public void PopulatePropertyInfo(string propertyName, global::Microsoft.UI.Composition.AnimationPropertyInfo propertyInfo)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "PopulatePropertyInfo(string propertyName, AnimationPropertyInfo propertyInfo)");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Composition.Visual GetVisualInternal()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.UIElement", "GetVisualInternal()");
@@ -1056,32 +942,32 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XYFocusUpNavigationStrategy.set
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XamlRoot.get
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.XamlRoot.set
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.UIElement, global::Microsoft.UI.Xaml.Input.AccessKeyDisplayDismissedEventArgs> AccessKeyDisplayDismissed
 		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event AccessKeyDisplayDismissed");
 			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event AccessKeyDisplayDismissed");
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.UIElement, global::Microsoft.UI.Xaml.Input.AccessKeyDisplayRequestedEventArgs> AccessKeyDisplayRequested
 		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event AccessKeyDisplayRequested");
 			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event AccessKeyDisplayRequested");
@@ -1121,38 +1007,8 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.PointerPressed
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.PointerReleased
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.PointerWheelChanged
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__NETSTD_REFERENCE__")]
-		public event global::Microsoft.UI.Xaml.Input.KeyEventHandler PreviewKeyDown
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event PreviewKeyDown");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event PreviewKeyDown");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || false || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__NETSTD_REFERENCE__")]
-		public event global::Microsoft.UI.Xaml.Input.KeyEventHandler PreviewKeyUp
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event PreviewKeyUp");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event PreviewKeyUp");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.UIElement.PreviewKeyDown
+		// Skipping already declared event Microsoft.UI.Xaml.UIElement.PreviewKeyUp
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.ProcessKeyboardAccelerators
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.RightTapped
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.Tapped

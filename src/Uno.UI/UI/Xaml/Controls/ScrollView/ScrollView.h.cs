@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference ScrollView.h, commit b8cfb8490
 
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -61,6 +62,8 @@ public partial class ScrollView : Control
 	// event_token m_scrollPresenterStateChangedToken{};
 	// event_token m_scrollPresenterScrollAnimationStartingToken{};
 	// event_token m_scrollPresenterZoomAnimationStartingToken{};
+	// event_token m_scrollPresenterScrollStartingToken{};
+	// event_token m_scrollPresenterZoomStartingToken{};
 	// event_token m_scrollPresenterViewChangedToken{};
 	// event_token m_scrollPresenterScrollCompletedToken{};
 	// event_token m_scrollPresenterZoomCompletedToken{};

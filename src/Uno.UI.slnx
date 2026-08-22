@@ -18,19 +18,7 @@
     <Project Path="AddIns/Uno.UI.GooglePlay/Uno.UI.GooglePlay.netcoremobile.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="AddIns/Uno.UI.Lottie/Uno.UI.Lottie.netcoremobile.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="AddIns/Uno.UI.Lottie/Uno.UI.Lottie.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="AddIns/Uno.UI.Lottie/Uno.UI.Lottie.Skia.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="AddIns/Uno.UI.Lottie/Uno.UI.Lottie.Wasm.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="AddIns/Uno.UI.Maps/Uno.UI.Maps.netcoremobile.csproj">
+    <Project Path="AddIns/Uno.UI.Lottie/Uno.UI.Lottie.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="AddIns/Uno.UI.MediaPlayer.Skia.Win32/Uno.UI.MediaPlayer.Skia.Win32.csproj">
@@ -39,40 +27,22 @@
     <Project Path="AddIns/Uno.UI.MediaPlayer.Skia.X11/Uno.UI.MediaPlayer.Skia.X11.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
-    <Project Path="AddIns/Uno.UI.MediaPlayer.WebAssembly/Uno.UI.MediaPlayer.WebAssembly.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="AddIns/Uno.UI.MSAL/Uno.UI.MSAL.netcoremobile.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="AddIns/Uno.UI.MSAL/Uno.UI.MSAL.Reference.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="AddIns/Uno.UI.MSAL/Uno.UI.MSAL.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="AddIns/Uno.UI.MSAL/Uno.UI.MSAL.Wasm.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="AddIns/Uno.UI.MSAL/Uno.UI.MSAL.Windows.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="AddIns/Uno.UI.Svg/Uno.UI.Svg.netcoremobile.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="AddIns/Uno.UI.Svg/Uno.UI.Svg.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="AddIns/Uno.UI.Svg/Uno.UI.Svg.Skia.csproj">
+    <Project Path="AddIns/Uno.UI.Svg/Uno.UI.Svg.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="AddIns/Uno.UI.WebView.Skia.X11/Uno.UI.WebView.Skia.X11.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
     <Project Path="AddIns/Uno.WinUI.Graphics2DSK/Uno.WinUI.Graphics2DSK.Crossruntime.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
-    </Project>
-    <Project Path="AddIns/Uno.WinUI.Graphics2DSK/Uno.WinUI.Graphics2DSK.netcoremobile.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
     <Project Path="AddIns/Uno.WinUI.Graphics2DSK/Uno.WinUI.Graphics2DSK.Windows.csproj">
@@ -143,24 +113,21 @@
   </Folder>
   <Folder Name="/SamplesApp/">
     <Project Path="SamplesApp/Benchmarks.Shared/SamplesApp.Benchmarks.shproj" />
-    <Project Path="SamplesApp/SamplesApp.netcoremobile/SamplesApp.netcoremobile.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-      <Deploy Solution="Debug|Any CPU" />
-      <Deploy Solution="Debug|iPhone" />
-      <Deploy Solution="Debug|iPhoneSimulator" />
+    <Project Path="SamplesApp/SamplesApp/SamplesApp.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
     <Project Path="SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
     <Project Path="SamplesApp/SamplesApp.Skia.netcoremobile/SamplesApp.Skia.netcoremobile.csproj">
-      <BuildDependency Project="Uno.UWP/Uno.netcoremobile.csproj" />
+      <BuildDependency Project="Uno.WinRT/Uno.WinRT.netcoremobile.csproj" />
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Deploy Solution="Debug|Any CPU" />
       <Deploy Solution="Debug|iPhoneSimulator" />
     </Project>
     <Project Path="SamplesApp/SamplesApp.Skia.WebAssembly.Browser/SamplesApp.Skia.WebAssembly.Browser.csproj">
       <BuildDependency Project="Uno.UI.Dispatching/Uno.UI.Dispatching.Wasm.csproj" />
-      <BuildDependency Project="Uno.UWP/Uno.Wasm.csproj" />
+      <BuildDependency Project="Uno.WinRT/Uno.WinRT.Wasm.csproj" />
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="SamplesApp/SamplesApp.Skia/SamplesApp.Skia.csproj">
@@ -185,10 +152,6 @@
       <Build Solution="*|x86" />
       <Build Solution="Debug|Any CPU" />
       <Build Solution="Release|Any CPU" />
-    </Project>
-    <Project Path="SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-      <Build Solution="Release_NoSamples|Any CPU" Project="false" />
     </Project>
     <Project Path="SamplesApp/SamplesApp.Windows/SamplesApp.Windows.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
@@ -260,7 +223,7 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/">
-    <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.Skia.csproj">
+    <Project Path="Uno.UI.Extras/Uno.UI.Extras.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>
@@ -275,30 +238,12 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/Composition/">
-    <Project Path="Uno.UI.Composition/Uno.UI.Composition.netcoremobile.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.Composition/Uno.UI.Composition.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.Composition/Uno.UI.Composition.Skia.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.Composition/Uno.UI.Composition.Wasm.csproj">
+    <Project Path="Uno.UI.Composition/Uno.UI.Composition.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/DevServer/">
-    <Project Path="Uno.UI.RemoteControl/Uno.UI.RemoteControl.netcoremobile.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.RemoteControl/Uno.UI.RemoteControl.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.RemoteControl/Uno.UI.RemoteControl.Skia.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.RemoteControl/Uno.UI.RemoteControl.Wasm.csproj">
+    <Project Path="Uno.UI.RemoteControl/Uno.UI.RemoteControl.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>
@@ -317,40 +262,13 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/Fluent/">
-    <Project Path="Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.netcoremobile.csproj">
+    <Project Path="Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Reference.csproj">
+    <Project Path="Uno.UI.FluentTheme.v2/Uno.UI.FluentTheme.v2.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Skia.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Wasm.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.FluentTheme.v2/Uno.UI.FluentTheme.v2.netcoremobile.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.FluentTheme.v2/Uno.UI.FluentTheme.v2.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.FluentTheme.v2/Uno.UI.FluentTheme.v2.Skia.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.FluentTheme.v2/Uno.UI.FluentTheme.v2.Wasm.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.FluentTheme/Uno.UI.FluentTheme.netcoremobile.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.FluentTheme/Uno.UI.FluentTheme.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.FluentTheme/Uno.UI.FluentTheme.Skia.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.FluentTheme/Uno.UI.FluentTheme.Wasm.csproj">
+    <Project Path="Uno.UI.FluentTheme/Uno.UI.FluentTheme.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>
@@ -404,16 +322,7 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/Islands/">
-    <Project Path="Uno.UI.XamlHost/Uno.UI.XamlHost.netcoremobile.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.XamlHost/Uno.UI.XamlHost.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.XamlHost/Uno.UI.XamlHost.Skia.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.XamlHost/Uno.UI.XamlHost.Wasm.csproj">
+    <Project Path="Uno.UI.XamlHost/Uno.UI.XamlHost.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>
@@ -446,21 +355,12 @@
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
     <Project Path="Uno.UI.Runtime.Skia/Uno.UI.Runtime.Skia.csproj">
-      <BuildDependency Project="Uno.UI/Uno.UI.Reference.csproj" />
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.Runtime.WebAssembly/Uno.UI.Runtime.WebAssembly.csproj">
+      <BuildDependency Project="Uno.UI/Uno.UI.csproj" />
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/RuntimeTests/">
-    <Project Path="Uno.UI.RuntimeTests/Uno.UI.RuntimeTests.netcoremobile.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
     <Project Path="Uno.UI.RuntimeTests/Uno.UI.RuntimeTests.Skia.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.RuntimeTests/Uno.UI.RuntimeTests.Wasm.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.RuntimeTests/Uno.UI.RuntimeTests.Windows.csproj">
@@ -475,16 +375,7 @@
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/Toolkit/">
-    <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.netcoremobile.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.Wasm.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI.Toolkit/Uno.UI.Toolkit.Windows.csproj">
+    <Project Path="Uno.UI.Extras/Uno.UI.Extras.Windows.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>
@@ -503,34 +394,21 @@
       <Build Solution="Release|x64" Project="false" />
       <Build Solution="Release|x86" Project="false" />
     </Project>
-    <Project Path="Uno.UI.Wasm.Tests/Uno.UI.Wasm.Tests.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-      <Build Solution="Release_NoSamples|Any CPU" Project="false" />
-    </Project>
-    <Project Path="Uno.UI/Uno.UI.netcoremobile.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI/Uno.UI.Reference.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI/Uno.UI.Skia.csproj">
-      <BuildType Solution="Release_NoSamples|*" Project="Release" />
-    </Project>
-    <Project Path="Uno.UI/Uno.UI.Wasm.csproj">
+    <Project Path="Uno.UI/Uno.UI.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>
   <Folder Name="/Uno.UI/WinRT/">
-    <Project Path="Uno.UWP/Uno.netcoremobile.csproj">
+    <Project Path="Uno.WinRT/Uno.WinRT.netcoremobile.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UWP/Uno.Reference.csproj">
+    <Project Path="Uno.WinRT/Uno.WinRT.Reference.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UWP/Uno.Skia.csproj">
+    <Project Path="Uno.WinRT/Uno.WinRT.Skia.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
-    <Project Path="Uno.UWP/Uno.Wasm.csproj">
+    <Project Path="Uno.WinRT/Uno.WinRT.Wasm.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
   </Folder>

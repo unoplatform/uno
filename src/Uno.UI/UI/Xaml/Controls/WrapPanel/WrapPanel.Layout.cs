@@ -10,20 +10,7 @@ using Windows.Foundation;
 
 using Rect = Windows.Foundation.Rect;
 
-#if __ANDROID__
-using View = Android.Views.View;
-using ViewGroup = Android.Views.ViewGroup;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
-#elif __APPLE_UIKIT__
-using UIKit;
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-using ViewGroup = UIKit.UIView;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {

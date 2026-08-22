@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
 [assembly: InternalsVisibleTo("Uno.UI.UnitTests")]
-[assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
+[assembly: InternalsVisibleTo("Uno.UI.Extras")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
@@ -25,7 +25,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]
 [assembly: InternalsVisibleTo("SamplesApp.macOS")]
-[assembly: InternalsVisibleTo("SamplesApp.Wasm")]
 [assembly: InternalsVisibleTo("SamplesApp.Skia")]
 
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]

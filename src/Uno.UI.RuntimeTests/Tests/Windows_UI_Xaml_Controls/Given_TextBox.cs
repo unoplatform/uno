@@ -13,7 +13,7 @@ using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Extras.DevTools.Input;
 using Color = Windows.UI.Color;
 using static Private.Infrastructure.TestServices;
 using SamplesApp.UITests;
@@ -56,7 +56,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public partial class Given_TextBox
 	{
 #if __SKIA__
-		// Apple platforms (macOS, iOS, Mac Catalyst, tvOS) use Command key for standard shortcuts
+		// Apple platforms (macOS, iOS, tvOS) use Command key for standard shortcuts
 		private readonly VirtualKeyModifiers _platformCtrlKey = DeviceTargetHelper.PlatformCommandModifier;
 #elif WINAPPSDK
 		private readonly VirtualKeyModifiers _platformCtrlKey = VirtualKeyModifiers.Control;
@@ -227,7 +227,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(textBox);
 
 				FocusManager.GettingFocus += OnGettingFocus;
-				textBox.OnTemplateRecycled();
+				((Microsoft.UI.Xaml.IFrameworkTemplatePoolAware)textBox).OnTemplateRecycled();
 			}
 			finally
 			{
@@ -313,9 +313,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// On WinUI, TextBoxes start their selection at 0
 			Assert.AreEqual(
 #if __SKIA__
-				!FeatureConfiguration.TextBox.UseOverlayOnSkia ? 0 :
+				0,
+#else
+				textBox.Text.Length,
 #endif
-					textBox.Text.Length,
 				textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
 			textBox.Select(1, 7);
@@ -338,9 +339,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// On WinUI, TextBoxes start their selection at 0
 			Assert.AreEqual(
 #if __SKIA__
-				!FeatureConfiguration.TextBox.UseOverlayOnSkia ? 0 :
+				0,
+#else
+				textBox.Text.Length,
 #endif
-					textBox.Text.Length,
 				textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
 			textBox.Select(1, 20);
@@ -363,9 +365,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// On WinUI, TextBoxes start their selection at 0
 			Assert.AreEqual(
 #if __SKIA__
-				!FeatureConfiguration.TextBox.UseOverlayOnSkia ? 0 :
+				0,
+#else
+				textBox.Text.Length,
 #endif
-					textBox.Text.Length,
 				textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
 			textBox.Select(20, 5);

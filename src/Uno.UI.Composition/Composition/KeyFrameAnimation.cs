@@ -64,8 +64,11 @@ namespace Microsoft.UI.Composition
 		}
 
 		internal void Pause()
+			=> _keyframeEvaluator!.Pause();
+
+		internal void Seek(float progress)
 		{
-			_keyframeEvaluator!.Pause();
+			_keyframeEvaluator!.Seek(progress);
 		}
 
 		// These match WinUI's non-virtual KeyFrameAnimation API surface; per-type behaviour is provided
@@ -91,9 +94,16 @@ namespace Microsoft.UI.Composition
 		}
 
 		internal void Resume()
+			=> _keyframeEvaluator!.Resume();
+
+		internal bool IsPaused => _keyframeEvaluator?.IsPaused == true;
+
+		internal void SetPlaybackRate(float value)
 		{
-			_keyframeEvaluator!.Resume();
+			_keyframeEvaluator!.PlaybackRate = value;
 		}
+
+		internal void SeekTo(float progress) => _keyframeEvaluator?.SeekTo(progress);
 
 		internal float Progress => _keyframeEvaluator!.Progress;
 

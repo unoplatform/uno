@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -10,6 +10,9 @@ using Uno.UI.Xaml;
 using Windows.UI.Core;
 
 using Windows.UI;
+using System.Numerics;
+using Microsoft.UI.Xaml.Media;
+using Uno;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -30,19 +33,6 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			InitializeBinder();
 		}
-
-#if __ANDROID__ || __APPLE_UIKIT__
-		internal static Color GetFallbackColor(Brush brush)
-		{
-			return brush switch
-			{
-				SolidColorBrush scb => scb.ColorWithOpacity,
-				GradientBrush gb => gb.FallbackColorWithOpacity,
-				XamlCompositionBrushBase xamlCompositionBrushBase => xamlCompositionBrushBase.FallbackColorWithOpacity,
-				_ => SolidColorBrushHelper.Transparent.Color,
-			};
-		}
-#endif
 
 		public static implicit operator Brush(Color uiColor) => new SolidColorBrush(uiColor);
 
@@ -77,9 +67,9 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 		}
 
-		internal virtual void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
-			if (args.Property == DataContextProperty || args.Property == XamlCompositionBrushBase.CompositionBrushProperty)
+			if (args.Property == XamlCompositionBrushBase.CompositionBrushProperty)
 			{
 				return;
 			}
@@ -169,6 +159,79 @@ namespace Microsoft.UI.Xaml.Media
 				default:
 					color = default;
 					return false;
+			}
+		}
+
+#nullable disable
+		private protected CompositionBrush _compositionBrush;
+
+		internal delegate void BrushSetterHandler(CompositionBrush brush);
+
+		internal virtual CompositionBrush GetOrCreateCompositionBrush(Compositor compositor)
+		{
+			if (_compositionBrush is null)
+			{
+				_compositionBrush = compositor.CreateColorBrush(Colors.Transparent);
+				SynchronizeCompositionBrush();
+			}
+
+			return _compositionBrush;
+		}
+
+		internal virtual void SynchronizeCompositionBrush()
+		{
+		}
+
+		private protected static void ConvertGradientColorStops(Compositor compositor, CompositionGradientBrush compositionBrush, IEnumerable<GradientStop> gradientStops, double opacity)
+		{
+			compositionBrush.ColorStops.Clear();
+
+			foreach (var stop in gradientStops)
+			{
+				compositionBrush.ColorStops.Add(compositor.CreateColorGradientStop((float)stop.Offset, stop.Color.WithOpacity(opacity)));
+			}
+		}
+
+		private protected static CompositionGradientExtendMode ConvertGradientExtendMode(GradientSpreadMethod spreadMethod)
+		{
+			switch (spreadMethod)
+			{
+				case GradientSpreadMethod.Repeat:
+					return CompositionGradientExtendMode.Wrap;
+				case GradientSpreadMethod.Reflect:
+					return CompositionGradientExtendMode.Mirror;
+				case GradientSpreadMethod.Pad:
+				default:
+					return CompositionGradientExtendMode.Clamp;
+			}
+		}
+
+		private protected static CompositionMappingMode ConvertBrushMappingMode(BrushMappingMode mappingMode)
+		{
+			switch (mappingMode)
+			{
+				case BrushMappingMode.Absolute:
+					return CompositionMappingMode.Absolute;
+				case BrushMappingMode.RelativeToBoundingBox:
+				default:
+					return CompositionMappingMode.Relative;
+			}
+		}
+#nullable enable
+	}
+
+
+	internal static class BrushExtensions
+	{
+		internal static void TrySetColorFromBrush(this CompositionBrush brush, XamlCompositionBrushBase srcBrush)
+		{
+			if (brush is CompositionColorBrush colorBrush)
+			{
+				colorBrush.Color = srcBrush.FallbackColor;
+			}
+			else if (brush is CompositionBrushWrapper wrapper)
+			{
+				TrySetColorFromBrush(wrapper.WrappedBrush, srcBrush);
 			}
 		}
 	}

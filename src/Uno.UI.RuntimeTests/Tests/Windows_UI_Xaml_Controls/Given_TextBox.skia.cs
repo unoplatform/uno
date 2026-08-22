@@ -18,7 +18,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Extras.DevTools.Input;
 using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
@@ -37,8 +37,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	/// <summary>
 	/// This partial is for testing the skia-based TextBox implementation.
-	/// Most tests here should set UseOverlayOnSkia to false and HideCaret
-	/// to true and then set them back at the end of the test.
+	/// Most tests here should set HideCaret to true and then set it back
+	/// at the end of the test.
 	/// </summary>
 	public partial class Given_TextBox
 	{
@@ -4265,8 +4265,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var sp = new StackPanel()
 			{
-				SUT,
-				new TextBox() { Text="focus dummy" }
+				Children =
+				{
+					SUT,
+					new TextBox() { Text="focus dummy" }
+				}
 			};
 
 			WindowHelper.WindowContent = sp;
@@ -4581,39 +4584,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_FeatureConfiguration_Changes()
-		{
-			var useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
-			using var _ = Disposable.Create(() => FeatureConfiguration.TextBox.UseOverlayOnSkia = useOverlay);
-
-			FeatureConfiguration.TextBox.UseOverlayOnSkia = true;
-
-			var SUT = new TextBox
-			{
-				Width = 150,
-				Text = "hello world"
-			};
-
-			await UITestHelper.Load(SUT);
-
-			SUT.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(0, SUT.TextBoxView.DisplayBlock.Opacity);
-
-			FeatureConfiguration.TextBox.UseOverlayOnSkia = false;
-
-			await UITestHelper.Load(new Button()); // a random control to unload SUT
-
-			Assert.AreEqual(1, SUT.TextBoxView.DisplayBlock.Opacity);
-		}
-
-		[TestMethod]
 		public async Task When_Caret_Color_DarkMode()
 		{
-			var useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
-			using var _1 = Disposable.Create(() => FeatureConfiguration.TextBox.UseOverlayOnSkia = useOverlay);
-
 			// The TextBox is purposefully empty. We want the only content pixels to come from the caret.
 			var SUT = new TextBox
 			{
@@ -4739,9 +4711,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.Inconclusive("Not supported on Wasm Skia.");
 			}
 
-			var useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
-			using var _1 = Disposable.Create(() => FeatureConfiguration.TextBox.UseOverlayOnSkia = useOverlay);
-
 			var SUT = new PasswordBox()
 			{
 				Width = 150
@@ -4767,7 +4736,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			char defaultPasswordBoxChar = PasswordBox.DefaultPasswordChar[0];
 #endif
 
-			Assert.AreEqual(new string(defaultPasswordBoxChar, 4), SUT.TextBoxView.DisplayBlock.Text);
+			Assert.AreEqual(new string(defaultPasswordBoxChar, 4), SUT.Core.TextBoxView.DisplayBlock.Text);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
@@ -4777,7 +4746,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("test", SUT.TextBoxView.DisplayBlock.Text);
+			Assert.AreEqual("test", SUT.Core.TextBoxView.DisplayBlock.Text);
 		}
 
 		[TestMethod]
@@ -4870,21 +4839,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
 			finger.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
 			Assert.AreEqual("Text", SUT.SelectedText);
 
 			// clicking inside the selected area keeps the selection
 			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
 			finger.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
 			Assert.AreEqual("Text", SUT.SelectedText);
 
 			// clicking outside the selected area drops it
 			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter() + new Point(100, 0));
 			finger.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode);
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode);
 			Assert.AreEqual("", SUT.SelectedText);
 		}
 
@@ -4908,7 +4877,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(new Point(bounds.Left + 15, bounds.GetCenter().Y));
 			finger.Release();
 			await WindowHelper.WaitFor(
-				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
 				message: "first tap should select the word and show both thumbs");
 			var lengthBeforeDrag = SUT.SelectionLength;
 
@@ -4940,24 +4909,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// The drag readjusted (extended) the selection...
 			Assert.IsTrue(SUT.SelectionLength > lengthBeforeDrag, $"drag should extend the selection (was {lengthBeforeDrag}, now {SUT.SelectionLength})");
 			// ...and both thumbs must remain visible (the readjust must not be mistaken for a long-press that opens the context menu and hides the thumbs).
-			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
 		}
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
 		public Task When_Touch_Gripper_Drag_Readjusts_Selection_Keeps_Thumbs_Android()
-			=> AssertGripperDragReadjustsWordSelection(TextBox.TouchTextSelectionConvention.Android);
+			=> AssertGripperDragReadjustsWordSelection(TextBoxCore.TouchTextSelectionConvention.Android);
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaUIKit)] // iOS convention: run on Desktop (dev) + real iOS only
 		public Task When_Touch_Gripper_Drag_Readjusts_Selection_Keeps_Thumbs_iOS()
-			=> AssertGripperDragReadjustsWordSelection(TextBox.TouchTextSelectionConvention.iOS);
+			=> AssertGripperDragReadjustsWordSelection(TextBoxCore.TouchTextSelectionConvention.iOS);
 
 		// Native iOS/Android sister of When_Touch_Gripper_Drag_Readjusts_Selection_Keeps_Thumbs: on mobile a
 		// single tap only places a caret, so the word selection comes from a double-tap. Dragging the end
 		// gripper then readjusts (extends) the selection, and spanning past the 800ms hold threshold must NOT
 		// be mistaken for a long-press (which word-selects on Android / caret-drags on iOS) and must keep both thumbs.
-		private static async Task AssertGripperDragReadjustsWordSelection(TextBox.TouchTextSelectionConvention convention)
+		private static async Task AssertGripperDragReadjustsWordSelection(TextBoxCore.TouchTextSelectionConvention convention)
 		{
 			var SUT = new TextBox
 			{
@@ -4979,7 +4948,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(wordPoint);
 			finger.Release();
 			await WindowHelper.WaitFor(
-				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
 				message: "double-tap should select the word and show both thumbs");
 			var lengthBeforeDrag = SUT.SelectionLength;
 
@@ -5011,7 +4980,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// The drag readjusted (extended) the selection...
 			Assert.IsTrue(SUT.SelectionLength > lengthBeforeDrag, $"drag should extend the selection (was {lengthBeforeDrag}, now {SUT.SelectionLength})");
 			// ...and both thumbs must remain visible (the readjust must not be mistaken for a long-press that changes the selection and hides thumbs).
-			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
 		}
 
 		[TestMethod]
@@ -5021,7 +4990,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 300,
 				Text = "The quick brown fox jumps over",
-				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
 			};
 
 			await UITestHelper.Load(SUT);
@@ -5034,7 +5003,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(new Point(bounds.Left + 90, bounds.GetCenter().Y));
 			finger.Release();
 			await WindowHelper.WaitFor(
-				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
 				message: "tap should place the single insertion handle");
 
 			await WindowHelper.WaitFor(
@@ -5072,7 +5041,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 300,
 				Text = "The quick brown fox jumps over",
-				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
 			};
 
 			await UITestHelper.Load(SUT);
@@ -5085,7 +5054,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(new Point(bounds.GetCenter().X, bounds.GetCenter().Y));
 			finger.Release();
 			await WindowHelper.WaitFor(
-				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
 				message: "tap should place the single insertion handle");
 			await WindowHelper.WaitFor(
 				() => SUT.VisibleGrippersForTesting is { } vg && vg.end.GetAbsoluteBoundsRect().Width > 0,
@@ -5119,30 +5088,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		public Task When_Touch_SingleTap_Places_Caret_Android()
-			=> AssertTouchSingleTapPlacesCaret(TextBox.TouchTextSelectionConvention.Android, TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing);
+			=> AssertTouchSingleTapPlacesCaret(TextBoxCore.TouchTextSelectionConvention.Android, TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing);
 
 		[TestMethod]
 		public Task When_Touch_SingleTap_Places_Caret_iOS()
-			=> AssertTouchSingleTapPlacesCaret(TextBox.TouchTextSelectionConvention.iOS, TextBox.CaretDisplayMode.ThumblessCaretShowing);
+			=> AssertTouchSingleTapPlacesCaret(TextBoxCore.TouchTextSelectionConvention.iOS, TextBoxCore.CaretDisplayMode.ThumblessCaretShowing);
 
 		[TestMethod]
 		public Task When_Touch_DoubleTap_Selects_Word_Android()
-			=> AssertTouchDoubleTapSelectsWord(TextBox.TouchTextSelectionConvention.Android);
+			=> AssertTouchDoubleTapSelectsWord(TextBoxCore.TouchTextSelectionConvention.Android);
 
 		[TestMethod]
 		public Task When_Touch_DoubleTap_Selects_Word_iOS()
-			=> AssertTouchDoubleTapSelectsWord(TextBox.TouchTextSelectionConvention.iOS);
+			=> AssertTouchDoubleTapSelectsWord(TextBoxCore.TouchTextSelectionConvention.iOS);
 
 		[TestMethod]
 		public Task When_Touch_Tap_Collapses_Selection_Android()
-			=> AssertTouchTapCollapsesSelection(TextBox.TouchTextSelectionConvention.Android);
+			=> AssertTouchTapCollapsesSelection(TextBoxCore.TouchTextSelectionConvention.Android);
 
 		[TestMethod]
 		public Task When_Touch_Tap_Collapses_Selection_iOS()
-			=> AssertTouchTapCollapsesSelection(TextBox.TouchTextSelectionConvention.iOS);
+			=> AssertTouchTapCollapsesSelection(TextBoxCore.TouchTextSelectionConvention.iOS);
 
 		// Native iOS/Android: a single tap places a caret (it does NOT select a word like the Windows convention).
-		private static async Task AssertTouchSingleTapPlacesCaret(TextBox.TouchTextSelectionConvention convention, TextBox.CaretDisplayMode expectedCaret)
+		private static async Task AssertTouchSingleTapPlacesCaret(TextBoxCore.TouchTextSelectionConvention convention, TextBoxCore.CaretDisplayMode expectedCaret)
 		{
 			var SUT = new TextBox
 			{
@@ -5170,7 +5139,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		// Native iOS/Android: a double-tap selects the word under the tap.
-		private static async Task AssertTouchDoubleTapSelectsWord(TextBox.TouchTextSelectionConvention convention)
+		private static async Task AssertTouchDoubleTapSelectsWord(TextBoxCore.TouchTextSelectionConvention convention)
 		{
 			var SUT = new TextBox
 			{
@@ -5193,7 +5162,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("Text", SUT.SelectedText);
-			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
 		}
 
 		[TestMethod]
@@ -5203,7 +5172,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 400,
 				Text = "Some Text",
-				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
 			};
 
 			await UITestHelper.Load(SUT);
@@ -5219,7 +5188,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(point);
 			finger.Release();
 			await WindowHelper.WaitForIdle(); // let the insertion handle render + position (a real double-tap has this gap)
-			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode);
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode);
 			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "insertion handle should be visible after the first Android tap");
 
 			// Second tap a few px away: still lands on the insertion handle (within its hit-rect) yet within the
@@ -5229,7 +5198,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("Some", SUT.SelectedText); // native Android selects just the word, not the trailing space
-			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
 		}
 
 		// Regression: tapping the single Android insertion handle re-sampled the finger point, which sits on the
@@ -5243,7 +5212,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 300,
 				Text = "The quick brown fox jumps over",
-				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
 			};
 
 			await UITestHelper.Load(SUT);
@@ -5256,7 +5225,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(new Point(bounds.Left + 90, bounds.GetCenter().Y));
 			finger.Release();
 			await WindowHelper.WaitFor(
-				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
 				message: "tap should place the single insertion handle");
 
 			await WindowHelper.WaitFor(
@@ -5315,7 +5284,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 400,
 				Text = "Some Text",
-				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
 			};
 
 			await UITestHelper.Load(SUT);
@@ -5328,7 +5297,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(new Point(bounds.Left + 20, bounds.GetCenter().Y));
 			finger.Release();
 			await WindowHelper.WaitFor(
-				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
 				message: "the first Android tap should place the single insertion handle");
 			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "the insertion handle should be visible after the first Android tap");
 
@@ -5484,18 +5453,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mobile conventions: run on Desktop (dev) + real Android only
 		public Task When_Touch_Tap_Empty_Places_Caret_Android()
-			=> AssertTouchTapOnEmptyBoxPlacesCaret(TextBox.TouchTextSelectionConvention.Android, TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing);
+			=> AssertTouchTapOnEmptyBoxPlacesCaret(TextBoxCore.TouchTextSelectionConvention.Android, TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing);
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
 		public Task When_Touch_Tap_Empty_Places_Caret_iOS()
-			=> AssertTouchTapOnEmptyBoxPlacesCaret(TextBox.TouchTextSelectionConvention.iOS, TextBox.CaretDisplayMode.ThumblessCaretShowing);
+			=> AssertTouchTapOnEmptyBoxPlacesCaret(TextBoxCore.TouchTextSelectionConvention.iOS, TextBoxCore.CaretDisplayMode.ThumblessCaretShowing);
 
 		// Native iOS/Android: a single tap in an EMPTY field places the caret - Android with its insertion handle, iOS
 		// as a bare caret. The empty box used to swallow the tap entirely (the tap-to-caret path was gated on non-empty
 		// text), leaving no caret affordance and no handle to open the flyout from. A single tap must NOT pop the
 		// flyout though: that belongs to the double-tap / long-press / handle-tap.
-		private static async Task AssertTouchTapOnEmptyBoxPlacesCaret(TextBox.TouchTextSelectionConvention convention, TextBox.CaretDisplayMode expectedCaret)
+		private static async Task AssertTouchTapOnEmptyBoxPlacesCaret(TextBoxCore.TouchTextSelectionConvention convention, TextBoxCore.CaretDisplayMode expectedCaret)
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
 			using var __ = new DisposableAction(() =>
@@ -5520,7 +5489,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(0, SUT.SelectionStart, "the caret should sit at the only available index");
 			Assert.AreEqual(0, SUT.SelectionLength, "there is nothing to select in an empty box");
-			if (convention == TextBox.TouchTextSelectionConvention.Android)
+			if (convention == TextBoxCore.TouchTextSelectionConvention.Android)
 			{
 				Assert.IsNotNull(SUT.VisibleGrippersForTesting, "Android should show the insertion handle so it can open the flyout");
 			}
@@ -5534,27 +5503,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mobile conventions: run on Desktop (dev) + real Android only
 		public Task When_Touch_DoubleTap_Empty_Opens_Flyout_Android()
-			=> AssertTouchGestureOnEmptyBoxOpensFlyout(TextBox.TouchTextSelectionConvention.Android, longPress: false);
+			=> AssertTouchGestureOnEmptyBoxOpensFlyout(TextBoxCore.TouchTextSelectionConvention.Android, longPress: false);
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
 		public Task When_Touch_DoubleTap_Empty_Opens_Flyout_iOS()
-			=> AssertTouchGestureOnEmptyBoxOpensFlyout(TextBox.TouchTextSelectionConvention.iOS, longPress: false);
+			=> AssertTouchGestureOnEmptyBoxOpensFlyout(TextBoxCore.TouchTextSelectionConvention.iOS, longPress: false);
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
 		public Task When_Touch_LongPress_Empty_Opens_Flyout_Android()
-			=> AssertTouchGestureOnEmptyBoxOpensFlyout(TextBox.TouchTextSelectionConvention.Android, longPress: true);
+			=> AssertTouchGestureOnEmptyBoxOpensFlyout(TextBoxCore.TouchTextSelectionConvention.Android, longPress: true);
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
 		public Task When_Touch_LongPress_Empty_Opens_Flyout_iOS()
-			=> AssertTouchGestureOnEmptyBoxOpensFlyout(TextBox.TouchTextSelectionConvention.iOS, longPress: true);
+			=> AssertTouchGestureOnEmptyBoxOpensFlyout(TextBoxCore.TouchTextSelectionConvention.iOS, longPress: true);
 
 		// Native iOS/Android pop the text flyout (Paste) over an EMPTY field on a double-tap or a long-press. Neither
 		// gesture has a word to select nor a caret to drag there, so the mobile conventions used to swallow it and show
 		// nothing at all. The clipboard is populated so Paste exists: with no command the flyout self-hides (correctly).
-		private async Task AssertTouchGestureOnEmptyBoxOpensFlyout(TextBox.TouchTextSelectionConvention convention, bool longPress)
+		private async Task AssertTouchGestureOnEmptyBoxOpensFlyout(TextBoxCore.TouchTextSelectionConvention convention, bool longPress)
 		{
 			if (!Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>())
 			{
@@ -5613,9 +5582,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual("", SUT.SelectedText, "there is nothing to select in an empty box");
 			// The thumbless iOS caret blinks on a 500 ms timer, so it can be mid-blink by the time the flyout opens.
-			var expectedCaret = convention == TextBox.TouchTextSelectionConvention.Android
-				? TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing
-				: TextBox.CaretDisplayMode.ThumblessCaretShowing;
+			var expectedCaret = convention == TextBoxCore.TouchTextSelectionConvention.Android
+				? TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing
+				: TextBoxCore.CaretDisplayMode.ThumblessCaretShowing;
 			await WindowHelper.WaitFor(
 				() => SUT.CaretMode == expectedCaret,
 				timeoutMS: 3000,
@@ -5653,7 +5622,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 400,
 				Text = "",
-				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
 			};
 
 			await UITestHelper.Load(SUT);
@@ -5677,7 +5646,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				message: "Select All alone should keep the empty-box flyout open with an empty clipboard");
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode, "the gesture should still place the Android insertion caret");
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode, "the gesture should still place the Android insertion caret");
 
 			if (SUT.SelectionFlyout is not TextCommandBarFlyout flyout)
 			{
@@ -5713,7 +5682,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new PasswordBox
 			{
 				Width = 400,
-				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
 			};
 
 			await UITestHelper.Load(SUT);
@@ -5768,7 +5737,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new PasswordBox
 			{
 				Width = 400,
-				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
 			};
 
 			await UITestHelper.Load(SUT);
@@ -5811,17 +5780,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mobile conventions: run on Desktop (dev) + real Android only
 		public Task When_Touch_Tap_Selection_Thumb_Keeps_Selection_Android()
-			=> AssertTouchTapSelectionThumbKeepsSelection(TextBox.TouchTextSelectionConvention.Android, tapStartThumb: false);
+			=> AssertTouchTapSelectionThumbKeepsSelection(TextBoxCore.TouchTextSelectionConvention.Android, tapStartThumb: false);
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
 		public Task When_Touch_Tap_Start_Selection_Thumb_Keeps_Selection_Android()
-			=> AssertTouchTapSelectionThumbKeepsSelection(TextBox.TouchTextSelectionConvention.Android, tapStartThumb: true);
+			=> AssertTouchTapSelectionThumbKeepsSelection(TextBoxCore.TouchTextSelectionConvention.Android, tapStartThumb: true);
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
 		public Task When_Touch_Tap_Selection_Thumb_Keeps_Selection_iOS()
-			=> AssertTouchTapSelectionThumbKeepsSelection(TextBox.TouchTextSelectionConvention.iOS, tapStartThumb: false);
+			=> AssertTouchTapSelectionThumbKeepsSelection(TextBoxCore.TouchTextSelectionConvention.iOS, tapStartThumb: false);
 
 		// Native iOS/Android: with a range selected (both thumbs showing), tapping either thumb must KEEP the
 		// selection - the thumb is a selection edge, not a caret. It used to route through the caret-placing tap path
@@ -5829,7 +5798,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// The tap is delivered through the gripper host seam instead of by injecting at the thumb's coordinates:
 		// grippers live in popups clipped to the TextBox, so in the (short) test host the thumb hangs outside the
 		// control and a coordinate-aimed tap silently lands on the text - or on nothing - rather than the gripper.
-		private static async Task AssertTouchTapSelectionThumbKeepsSelection(TextBox.TouchTextSelectionConvention convention, bool tapStartThumb)
+		private static async Task AssertTouchTapSelectionThumbKeepsSelection(TextBoxCore.TouchTextSelectionConvention convention, bool tapStartThumb)
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
 			using var __ = new DisposableAction(() =>
@@ -5855,7 +5824,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(wordPoint);
 			finger.Release();
 			await WindowHelper.WaitFor(
-				() => SUT.SelectedText == "Some" && SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				() => SUT.SelectedText == "Some" && SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
 				message: "the double-tap should select the word and show both thumbs");
 
 			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "both selection thumbs should be showing before tapping one");
@@ -5877,11 +5846,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// The presenter pins a gripper tap to the selection edge the thumb points at, never to the finger's
 			// position on the thumb (see TextSelectionGripperPresenter.OnGripperPointerReleased).
 			var anchorIndex = tapStartThumb ? SUT.SelectionStart : SUT.SelectionStart + SUT.SelectionLength;
-			((ITextSelectionGripperHost)SUT).OnGripperTapped(press, anchorIndex);
+			((ITextSelectionGripperHost)SUT.Core).OnGripperTapped(press, anchorIndex);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("Some", SUT.SelectedText, $"tapping the {(tapStartThumb ? "start" : "end")} thumb (anchor {anchorIndex}) must keep the selection, not collapse it");
-			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "both thumbs must remain after tapping one of them");
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "both thumbs must remain after tapping one of them");
 		}
 
 		// Repro: with a full selection's touch flyout open (both thumbs showing), Select All sits in the OVERFLOW
@@ -5911,7 +5880,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 400,
 				Text = "asd qwertyuiopasdfghjkl",
-				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
 			};
 
 			await UITestHelper.Load(SUT);
@@ -5931,7 +5900,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(wordPoint);
 			finger.Release();
 			await WindowHelper.WaitFor(
-				() => SUT.SelectedText == "asd" && SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				() => SUT.SelectedText == "asd" && SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
 				message: "the double-tap should select all the text and show both thumbs");
 			await WindowHelper.WaitFor(
 				() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true,
@@ -5979,7 +5948,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(farPoint);
 			finger.Release();
 			await WindowHelper.WaitFor(
-				() => SUT.SelectedText == "" && SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				() => SUT.SelectedText == "" && SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
 				message: "a plain tap should collapse the selection to the single insertion handle");
 
 			// The gripper popups are (re)positioned on a later frame, so GetAbsoluteBoundsRect is stale right after the
@@ -6060,7 +6029,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Width = 400,
 				Text = "helllo", // a single misspelled word, so a touch double-tap selects it whole
 				IsSpellCheckEnabled = true,
-				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
 			};
 
 			await UITestHelper.Load(SUT);
@@ -6132,7 +6101,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		// Native iOS/Android: tapping collapses an existing selection to a caret (Windows keeps it).
-		private static async Task AssertTouchTapCollapsesSelection(TextBox.TouchTextSelectionConvention convention)
+		private static async Task AssertTouchTapCollapsesSelection(TextBoxCore.TouchTextSelectionConvention convention)
 		{
 			var SUT = new TextBox
 			{
@@ -6161,11 +6130,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		public Task When_Touch_LongPress_Selects_Word_Android()
-			=> AssertTouchLongPress(TextBox.TouchTextSelectionConvention.Android, expectWordSelected: true);
+			=> AssertTouchLongPress(TextBoxCore.TouchTextSelectionConvention.Android, expectWordSelected: true);
 
 		[TestMethod]
 		public Task When_Touch_LongPress_Keeps_ContextMenu_Desktop()
-			=> AssertTouchLongPress(TextBox.TouchTextSelectionConvention.Desktop, expectWordSelected: false);
+			=> AssertTouchLongPress(TextBoxCore.TouchTextSelectionConvention.Desktop, expectWordSelected: false);
 
 		// A touch long-press on a mobile convention must select the word BEFORE the text control's flyout
 		// computes its commands. Regression: the inner DisplayBlock's ContextRequested class handler used to
@@ -6181,7 +6150,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 400,
 				Text = "Some Text",
-				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
 			};
 
 			await UITestHelper.Load(SUT);
@@ -6230,7 +6199,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 400,
 				Text = "Some Text",
-				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
 			};
 
 			await UITestHelper.Load(SUT);
@@ -6293,7 +6262,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 400,
 				Text = "Some Text",
-				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
 			};
 
 			await UITestHelper.Load(SUT);
@@ -6317,7 +6286,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Steady state (Assert, not WaitFor): after the flyout opens, the word must stay selected AND both
 			// thumbs must remain — a bug that flips CaretMode back to thumbless leaves the highlight but drops the thumbs.
 			Assert.AreEqual("Text", SUT.SelectedText, "selection should persist while the flyout is open");
-			Assert.AreEqual(TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "both thumbs must survive the flyout opening");
+			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode, "both thumbs must survive the flyout opening");
 			Assert.IsTrue(
 				SUT.VisibleGrippersForTesting is { } vg
 					&& vg.start.GetAbsoluteBoundsRect().Width > 0
@@ -6428,7 +6397,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		// Native Android: a touch long-press selects the word (and suppresses the context menu).
 		// The Desktop convention keeps the default context-menu behavior (no auto word selection).
-		private static async Task AssertTouchLongPress(TextBox.TouchTextSelectionConvention convention, bool expectWordSelected)
+		private static async Task AssertTouchLongPress(TextBoxCore.TouchTextSelectionConvention convention, bool expectWordSelected)
 		{
 			var SUT = new TextBox
 			{
@@ -6460,17 +6429,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		public Task When_Touch_Hold_Does_Not_Flag_ContextMenu_Android()
-			=> AssertTouchHoldDoesNotFlagContextMenuOnHolding(TextBox.TouchTextSelectionConvention.Android);
+			=> AssertTouchHoldDoesNotFlagContextMenuOnHolding(TextBoxCore.TouchTextSelectionConvention.Android);
 
 		[TestMethod]
 		public Task When_Touch_Hold_Does_Not_Flag_ContextMenu_iOS()
-			=> AssertTouchHoldDoesNotFlagContextMenuOnHolding(TextBox.TouchTextSelectionConvention.iOS);
+			=> AssertTouchHoldDoesNotFlagContextMenuOnHolding(TextBoxCore.TouchTextSelectionConvention.iOS);
 
 		// Native iOS/Android handle a touch-and-hold without opening a context menu. Routing it through the
 		// ContextMenuProcessor (the path the Holding gesture uses) must NOT flag the hold as menu-showing;
 		// otherwise a later HoldingState.Canceled (the finger moving during the caret-drag / after word-select)
 		// would spuriously raise ContextCanceled or close a light-dismiss popup the TextBox lives in.
-		private static async Task AssertTouchHoldDoesNotFlagContextMenuOnHolding(TextBox.TouchTextSelectionConvention convention)
+		private static async Task AssertTouchHoldDoesNotFlagContextMenuOnHolding(TextBoxCore.TouchTextSelectionConvention convention)
 		{
 			var SUT = new TextBox
 			{
@@ -6501,7 +6470,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 400,
 				Text = "Some Text long enough",
-				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.iOS
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.iOS
 			};
 
 			await UITestHelper.Load(SUT);
@@ -6641,9 +6610,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19327")]
 		public async Task When_Setting_Short_Text_And_Previous_Selection_Is_OutOfBounds()
 		{
-			var useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
-			using var _ = Disposable.Create(() => FeatureConfiguration.TextBox.UseOverlayOnSkia = useOverlay);
-
 			var SUT = new TextBox
 			{
 				Width = 150,
@@ -6945,7 +6911,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(SUT);
 
 				SUT.Focus(FocusState.Programmatic);
-				SUT.Select(0, 4);
+				SUT.Core.Select(0, 4);
 				await WindowHelper.WaitForIdle();
 
 				Assert.IsInstanceOfType<TextCommandBarFlyout>(SUT.ContextFlyout, "PasswordBox should have TextCommandBarFlyout as ContextFlyout");
@@ -6998,6 +6964,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		// Skia-WASM: the TextBox grows but the outer ScrollViewer never scrolls further in time, see https://github.com/unoplatform/uno/issues/24157
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_OuterScrollViewer_BringIntoView_Scrolls_To_Caret()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -7740,7 +7708,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public event EventHandler<ImeCompositionEventArgs> CompositionCompleted;
 			public event EventHandler CompositionEnded;
 
-			public void StartImeSession(TextBox textBox) { }
+			public void StartImeSession(TextBoxCore core) { }
 
 			public void EndImeSession()
 			{
@@ -7788,21 +7756,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private class TextBoxFeatureConfigDisposable : IDisposable
 		{
-			private bool _useOverlay;
 			private bool _hideCaret;
 
 			public TextBoxFeatureConfigDisposable()
 			{
-				_useOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
 				_hideCaret = FeatureConfiguration.TextBox.HideCaret;
 
-				FeatureConfiguration.TextBox.UseOverlayOnSkia = false;
 				FeatureConfiguration.TextBox.HideCaret = true;
 			}
 
 			public void Dispose()
 			{
-				FeatureConfiguration.TextBox.UseOverlayOnSkia = _useOverlay;
 				FeatureConfiguration.TextBox.HideCaret = _hideCaret;
 			}
 		}

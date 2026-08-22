@@ -32,7 +32,8 @@ internal static class UIViewExtensions
 		{
 			// Sometimes, a view is not part of the visual tree (or doesn't have a next responder) but is part of the logical tree.
 			// Here, we substitute the view with the first logical parent that's part of the visual tree (or has a next responder).
-			view = (view as DependencyObject)
+			// DependencyObject is a class that UIView does not derive from, so the cast goes through object.
+			view = ((object?)view as DependencyObject)
 				?.GetParents()
 				.OfType<_View>()
 				.Where(parent => parent.NextResponder != null)

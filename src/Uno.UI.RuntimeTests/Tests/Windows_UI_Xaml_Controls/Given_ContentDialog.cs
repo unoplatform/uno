@@ -25,7 +25,7 @@ using Combinatorial.MSTest;
 using Microsoft.UI.Windowing;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Extras.DevTools.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -798,17 +798,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 #if __ANDROID__
-		// Fails because keyboard does not appear when TextBox is programmatically focussed, or appearance is not correctly registered - https://github.com/unoplatform/uno/issues/7995
-		[Ignore()]
-		[TestMethod]
-		public async Task When_Soft_Keyboard_And_VisibleBounds_Native()
-		{
-			using (FeatureConfigurationHelper.UseNativePopups())
-			{
-				await When_Soft_Keyboard_And_VisibleBounds();
-			}
-		}
-
 		// Fails because keyboard does not appear when TextBox is programmatically focussed, or appearance is not correctly registered - https://github.com/unoplatform/uno/issues/7995
 		[Ignore()]
 		[TestMethod]

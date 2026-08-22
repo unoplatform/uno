@@ -99,7 +99,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 	{
 		var projectDir = Path.GetDirectoryName(projectPath)!;
 		var assemblyName = Path.GetFileNameWithoutExtension(projectPath);
-		var tfm = $"{_targetFramework}-desktop";
+		var tfm = GetTargetFramework($"{_targetFramework}-desktop");
 		var assemblyPath = Path.Combine(projectDir, "bin", "Debug", tfm, assemblyName + ".dll");
 
 		TestContext.WriteLine($"Reading assembly info from: {assemblyPath}");
@@ -113,6 +113,15 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 			var response = await http.GetAsync(url, CT);
 			response.EnsureSuccessStatusCode();
 		}
+	}
+
+	private string GetTargetFramework(string targetFramework)
+	{
+		if (_targetFramework == null || SolutionHelper.OverridePrereleaseTargetFrameworkVersion == null)
+		{
+			return targetFramework;
+		}
+		return targetFramework.Replace(_targetFramework!, SolutionHelper.OverridePrereleaseTargetFrameworkVersion);
 	}
 
 	/// <summary>
@@ -135,7 +144,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 
 		// Build the project with devserver configuration so the generators create the right ServerEndpointAttribute
 		// Using MSBuild properties directly to override any .csproj.user or Directory.Build.props values
-		// Explicitly targeting the detected framework (net10.0 on CI, net9.0 locally)
+		// Explicitly targeting the detected framework (net11.0 on CI, net10.0 locally)
 		var buildInfo = new ProcessStartInfo
 		{
 			FileName = "dotnet",
@@ -164,7 +173,7 @@ public class RealAppLaunchIntegrationTests : TelemetryTestBase
 	/// </summary>
 	private async Task<Process> StartSkiaDesktopAppAsync(string projectPath, int devServerPort)
 	{
-		var appTfm = $"{_targetFramework}-desktop";
+		var appTfm = GetTargetFramework($"{_targetFramework}-desktop");
 
 		// Before starting the app, make sure it will run with the freshly compiled RemoteControlClient
 		try

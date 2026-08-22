@@ -28,7 +28,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 		public async Task When_EarlyItems()
 		{
 			var style = new Style(typeof(ItemsControl));
-			style.Setters.Add(new Setter<ItemsControl>("Template", x => x.Template = XamlHelper.LoadXaml<ControlTemplate>("""
+			style.Setters.Add(new Setter(Control.TemplateProperty, XamlHelper.LoadXaml<ControlTemplate>("""
 				<ControlTemplate>
 					<ItemsPresenter />
 				</ControlTemplate>
@@ -91,9 +91,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			var style = new Style(typeof(ItemsControl))
 			{
 				Setters =  {
-					new Setter<ItemsControl>("Template", t =>
-						t.Template = new ControlTemplate(() => itemsPresenter)
-					)
+					new Setter(Control.TemplateProperty, new ControlTemplate(() => itemsPresenter))
 				}
 			};
 
@@ -570,25 +568,12 @@ namespace Uno.UI.Tests.ItemsControlTests
 			Assert.AreEqual(4, count);
 		}
 
+		// Empty ItemContainerStyle: these tests assert only item/container generation, not container visuals.
+		// The previous Setter<ListViewItem>("Template", ...) was a type-guarded no-op on the ContentPresenter
+		// containers ItemsControl actually creates, and a real Control.Template setter is invalid there, so no
+		// container Template is applied either way.
 		private Style BuildBasicContainerStyle() =>
-			new Style(typeof(Microsoft.UI.Xaml.Controls.ListViewItem))
-			{
-				Setters = {
-					new Setter<ListViewItem>("Template", t =>
-						t.Template = new ControlTemplate(() =>
-							new Grid
-							{
-								Children = {
-									new ContentPresenter().Apply(p => {
-										p.SetBinding(ContentPresenter.ContentTemplateProperty, new Binding(){ Path = "ContentTemplate", RelativeSource = RelativeSource.TemplatedParent });
-										p.SetBinding(ContentPresenter.ContentProperty, new Binding(){ Path = "Content", RelativeSource = RelativeSource.TemplatedParent });
-									})
-								}
-							}
-						)
-					)
-				}
-			};
+			new Style(typeof(Microsoft.UI.Xaml.Controls.ListViewItem));
 
 	}
 

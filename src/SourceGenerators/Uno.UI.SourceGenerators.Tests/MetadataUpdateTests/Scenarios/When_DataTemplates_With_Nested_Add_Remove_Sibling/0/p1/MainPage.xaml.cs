@@ -24,7 +24,7 @@ public sealed partial class MainPage : Page
 }
 
 [Microsoft.UI.Xaml.Markup.ContentProperty(Name = nameof(Template1))]
-public class MyControl
+public class MyControl : global::Microsoft.UI.Xaml.Controls.Control
 {
 	public DataTemplate Template1 { get; set; }
 	public DataTemplate Template2 { get; set; }

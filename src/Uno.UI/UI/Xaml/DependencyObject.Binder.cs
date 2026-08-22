@@ -1,0 +1,951 @@
+#nullable enable
+
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+// fallback option for legacy DepObj from external library generated before templated-parent rework.
+#define ENABLE_LEGACY_DO_TP_SUPPORT
+#endif
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
+using Uno.Collections;
+using Uno.Diagnostics.Eventing;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using Uno.UI.DataBinding;
+
+#if !IS_UNIT_TESTS
+using Uno.UI.Controls;
+#endif
+
+namespace Microsoft.UI.Xaml
+{
+	public partial class DependencyObject
+	{
+		private readonly object _gate = new object();
+
+		private object? _associatedParent; // see note in AssociateParent(object)
+
+		private HashtableEx? _childrenBindableMap; // maps DependencyProperty to _childrenBindable[index]
+		private List<object?>? _childrenBindable;
+		private HashtableEx ChildrenBindableMap => _childrenBindableMap ??= new HashtableEx(DependencyPropertyComparer.Default);
+		private List<object?> ChildrenBindable => _childrenBindable ??= new List<object?>();
+
+		// Mentor mechanism (models WinUI's SetParentForInheritanceContextOnly / GetMentor):
+		// On the CHILD side: weak ref to owning FrameworkElement (the mentor).
+		private ManagedWeakReference? _mentorRef;
+		// On the PARENT side: tracks non-UIElement DependencyObjects set as property values
+		// with ValueDoesNotInheritDataContext, so DataContext can be propagated to them.
+		private HashtableEx? _mentoredChildrenMap; // maps DependencyProperty → index in _mentoredChildren
+		private List<ManagedWeakReference?>? _mentoredChildren;
+
+		private bool _isApplyingDataContextBindings;
+		private bool _bindingsSuspended;
+		// Null when the owning DependencyObject is not a FrameworkElement: DataContext is a
+		// FrameworkElement-only property (WinUI parity), so non-FE stores carry no DataContext.
+		private readonly DependencyProperty? _dataContextProperty;
+		private bool _inheritanceContextEnabled = true;
+
+#if ENABLE_LEGACY_DO_TP_SUPPORT
+		private ManagedWeakReference? _templatedParentWeakRef;
+		internal ManagedWeakReference? GetTemplatedParentWeakRef() => _templatedParentWeakRef;
+#endif
+
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		internal void SetTemplatedParent(FrameworkElement? templatedParent)
+		{
+			// do nothing, this only exist to keep public api the same.
+		}
+#endif
+
+#if ENABLE_LEGACY_DO_TP_SUPPORT
+		internal DependencyObject? GetTemplatedParent2() => _templatedParentWeakRef?.Target as DependencyObject;
+		internal void SetTemplatedParent2(DependencyObject parent) => _templatedParentWeakRef = (parent as IWeakReferenceProvider)?.WeakReference;
+#endif
+
+		private bool IsCandidateChild([NotNullWhen(true)] object? child)
+		{
+			if (child is DependencyObject)
+			{
+				return true;
+			}
+
+			// The property value may be an enumerable of providers
+			var isValidEnumerable = child is not string;
+			return isValidEnumerable && child is IEnumerable;
+		}
+
+		private void ApplyChildrenBindable(object? inheritedValue)
+		{
+			if (_childrenBindable is null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < _childrenBindable.Count; i++)
+			{
+				var child = _childrenBindable[i];
+				if (child is null)
+				{
+					continue;
+				}
+
+				Debug.Assert(IsCandidateChild(child));
+
+				var childAsStoreProvider = child as DependencyObject;
+
+				// Get the parent if the child is a provider, otherwise an
+				// "attached store" may be created for no good reason.
+				var parent = childAsStoreProvider?.GetParent();
+
+				//Do not propagate value if you are not this child's parent
+				//Covers case where a child may hold a binding to a view higher up the tree
+				//Example: Button A contains a Flyout with Button B inside of it
+				//	Button B has a binding to the Flyout itself
+				//	We should not propagate Button B's DataContext to the Flyout
+				//	since its real parent is actually Button A
+				if (parent != null && parent != ActualInstance)
+				{
+					continue;
+				}
+
+				if (childAsStoreProvider != null)
+				{
+					childAsStoreProvider.SetInheritedDataContext(inheritedValue);
+				}
+				else if (child is IList list)
+				{
+					// Special case for IList where the child may not be enumerable
+
+					for (int childIndex = 0; childIndex < list.Count; childIndex++)
+					{
+						if (list[childIndex] is DependencyObject provider2)
+						{
+							provider2.SetInheritedDataContext(inheritedValue);
+						}
+					}
+				}
+				else if (child is IEnumerable enumerable)
+				{
+					foreach (var item in enumerable)
+					{
+						if (item is DependencyObject provider2)
+						{
+							provider2.SetInheritedDataContext(inheritedValue);
+						}
+					}
+				}
+				else
+				{
+					throw new Exception("This cannot be reached. IsCandidateChild would have returned false if none of the conditions were true.");
+				}
+			}
+		}
+
+		private void SetInheritedDataContext(object? dataContext)
+		{
+			if (_dataContextProperty is not { } dataContextProperty)
+			{
+				// Non-FE store: no DataContextProperty. Resolve the inherited (mentor/parent) DataContext directly
+				// into this object's bindings and forward it to its inheriting children. This is WinUI's
+				// inheritance-context: a non-FrameworkElement DependencyObject has no DataContext of its own; its
+				// {Binding}s resolve against the ambient DataContext of the FrameworkElement it is connected to.
+				ApplyDataContext(_inheritanceContextEnabled ? dataContext : null);
+				return;
+			}
+
+			if (_inheritanceContextEnabled)
+			{
+				SetValue(dataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance, _properties.DataContextPropertyDetails!);
+			}
+			else
+			{
+				ClearValue(dataContextProperty, DependencyPropertyValuePrecedences.Inheritance);
+			}
+		}
+
+		/// <summary>
+		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
+		/// </summary>
+		internal void ApplyCompiledBindings()
+			=> _properties.ApplyCompiledBindings();
+
+		internal void SuspendCompiledBindings()
+			// ignoring local _bindingsSuspended flag, since this operation is applied on the BindingExpression level.
+			=> _properties.SuspendCompiledBindings();
+
+		/// <summary>
+		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
+		/// </summary>
+		internal void ApplyElementNameBindings()
+			=> _properties.ApplyElementNameBindings();
+
+		internal void ApplyTemplateBindings()
+			// Update the template-bindings when the templated-parent is late injected.
+			// Such as the case with: ElementStub materialization.
+			=> _properties.ApplyTemplateBindings();
+
+		static void InitializeStaticBinder()
+		{
+			// Register the ability for the BindingPath to subscribe to dependency property changes.
+			BindingPath.RegisterPropertyChangedRegistrationHandler(new BindingPathPropertyChangedRegistrationHandler());
+		}
+
+		internal DependencyProperty? DataContextPropertyInternal => _dataContextProperty;
+
+		/// <summary>
+		/// Suspends the processing the <see cref="DataContext"/> until <see cref="ResumeBindings"/> is called.
+		/// </summary>
+		internal void SuspendBindings()
+		{
+			_bindingsSuspended = true;
+			_properties.SuspendBindings();
+		}
+
+		/// <summary>
+		/// Restores the processing the <see cref="DataContext"/> after <see cref="SuspendBindings"/> was called.
+		/// </summary>
+		internal void ResumeBindings()
+		{
+			_bindingsSuspended = false;
+			_properties.ResumeBindings();
+		}
+
+		private void BinderDispose()
+		{
+			lock (_gate)
+			{
+				// Guard the dispose as it may be invoked from both a finalizer and the dispatcher.
+				if (_isDisposed)
+				{
+					return;
+				}
+
+				_isDisposed = true;
+			}
+
+			_properties.Dispose();
+			_childrenBindableMap?.Dispose();
+			_mentoredChildrenMap?.Dispose();
+
+			if (_mentorRef is not null)
+			{
+				WeakReferencePool.ReturnWeakReference(this, _mentorRef);
+				_mentorRef = null;
+			}
+
+			if (_mentoredChildren is not null)
+			{
+				for (int i = 0; i < _mentoredChildren.Count; i++)
+				{
+					if (_mentoredChildren[i] is { } childRef)
+					{
+						WeakReferencePool.ReturnWeakReference(this, childRef);
+					}
+				}
+				_mentoredChildren = null;
+			}
+		}
+
+		private void OnDataContextChanged(object? providedDataContext, object? actualDataContext, DependencyPropertyValuePrecedences precedence)
+		{
+			if (precedence == DependencyPropertyValuePrecedences.Inheritance && _properties.FindDataContextBinding() is { } dataContextBinding)
+			{
+				// Set the DataContext for the bindings using the current DataContext, except for the
+				// binding to the DataContext itself, which must use the inherited DataContext.
+				//
+				// This is to avoid recursion when the datacontext.
+				//
+				// The inherited DataContext may also be null in the case of non-inherited data binding
+				// when using the custom target parameter in SetBinding.
+				if (dataContextBinding.ParentBinding.RelativeSource == null)
+				{
+					dataContextBinding.DataContext = providedDataContext;
+				}
+			}
+			else
+			{
+				try
+				{
+					if (_isApplyingDataContextBindings || _bindingsSuspended)
+					{
+						// If we reach this point, this means that a propagation loop has been detected, and
+						// we can skip the current binder.
+						// This can happen if a DependencyObject-typed DependencyProperty contains a reference
+						// to one of its ancestors.
+						return;
+					}
+
+					_isApplyingDataContextBindings = true;
+
+					if (TryWriteDataContextChangedEventActivity() is { } trace)
+					{
+						using (trace)
+						{
+							ApplyDataContext(actualDataContext);
+						}
+					}
+					else
+					{
+						ApplyDataContext(actualDataContext);
+					}
+				}
+				finally
+				{
+					_isApplyingDataContextBindings = false;
+				}
+			}
+
+		}
+
+		private void ApplyDataContext(object? actualDataContext)
+		{
+			// A ResourceDictionary item must not cache/inherit DataContext (WinUI — resources have no DataContext).
+			// OnParentPropertyChangedCallback blocks the parent-inheritance path; this blocks the bindable-child path
+			// (ApplyChildrenBindable / on-attach push → SetInheritedDataContext) too, so a resource pulled into a
+			// subtree via {StaticResource}/{ThemeResource} can't permanently cache that subtree's DataContext — which
+			// otherwise pins the owner's ViewModel (the resource is kept alive by a merged/theme dictionary) or a
+			// collectible AssemblyLoadContext.
+			if (IsResourceDictionaryItem)
+			{
+				return;
+			}
+
+			_properties.ApplyDataContext(actualDataContext);
+			ApplyChildrenBindable(actualDataContext);
+			ApplyMentoredChildrenDataContext(actualDataContext);
+
+			// A non-FrameworkElement store has no DataContextProperty, so the inherited-property SetValue path that
+			// normally pushes DataContext to parent-inheritance children never runs for it. DependencyObjectCollection
+			// items attach via SetParent (they become _childrenStores, not _childrenBindable), so propagate the
+			// inherited DataContext to them here — otherwise {Binding}s on collection items (e.g. the StateTriggers of
+			// a VisualState) never resolve. FrameworkElement stores reach these children through SetValue/Inheritance.
+			if (_dataContextProperty is null && _childrenStores.Count != 0)
+			{
+				var instanceRef = SelfWeakReference;
+				var localChildrenStores = _childrenStores;
+				for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+				{
+					CallChildCallback(localChildrenStores[storeIndex], instanceRef, FrameworkElement.DataContextProperty, actualDataContext);
+				}
+			}
+		}
+
+		private IDisposable? TryWriteDataContextChangedEventActivity()
+		{
+			IDisposable? traceActivity = null;
+
+			if (_trace.IsEnabled)
+			{
+				traceActivity = _trace.WriteEventActivity(DependencyObjectTraceProvider.DataContextChangedStart, DependencyObjectTraceProvider.DataContextChangedStop, GetTraceProperties());
+			}
+
+			return traceActivity;
+		}
+
+		private object?[] GetTraceProperties()
+			=> new object?[] { GetHashCode(), _originalObjectType?.ToString() };
+
+
+		internal void SetBinding(object target, string dependencyProperty, BindingBase binding)
+		{
+			TryRegisterInheritedProperties(force: true);
+
+			if (target is DependencyObject provider)
+			{
+				provider.SetBinding(dependencyProperty, binding);
+			}
+			else
+			{
+				throw new NotSupportedException($"Target {target?.GetType()} must be a DependencyObject");
+			}
+		}
+
+		/// <summary>
+		/// Set a binding using a regular or attached DependencyProperty
+		/// </summary>
+		/// <param name="dependencyProperty">The dependency property to bind</param>
+		/// <param name="binding">The binding expression</param>
+		internal void SetBindingInternal(DependencyProperty dependencyProperty, BindingBase binding)
+		{
+			TryRegisterInheritedProperties(force: true);
+
+			if (dependencyProperty == null)
+			{
+				throw new ArgumentNullException(nameof(dependencyProperty));
+			}
+
+			if (binding == null)
+			{
+				throw new ArgumentNullException(nameof(binding));
+			}
+
+			if (binding is Binding fullBinding)
+			{
+				_properties.SetBinding(dependencyProperty, fullBinding, SelfWeakReference);
+			}
+			else if (binding is ResourceBinding resourceBinding)
+			{
+				_resourceBindings = _resourceBindings ?? new ResourceBindingCollection();
+				_resourceBindings.Add(dependencyProperty, resourceBinding);
+			}
+			else
+			{
+				throw new NotSupportedException("Only Microsoft.UI.Xaml.Data.Binding is supported for bindings.");
+			}
+		}
+
+		internal void SetResourceBinding(DependencyProperty dependencyProperty, SpecializedResourceDictionary.ResourceKey resourceKey, ResourceUpdateReason updateReason, object context, DependencyPropertyValuePrecedences? precedence, BindingPath? setterBindingPath)
+		{
+			if (precedence == null && _overriddenPrecedences?.Count > 0)
+			{
+				precedence = _overriddenPrecedences.Peek();
+			}
+
+			var binding = new ResourceBinding(resourceKey, updateReason, context, precedence ?? DependencyPropertyValuePrecedences.Local, setterBindingPath);
+			SetBinding(dependencyProperty, binding);
+		}
+
+		internal void SetBindingInternal(string dependencyProperty, BindingBase binding)
+		{
+			TryRegisterInheritedProperties(force: true);
+
+			if (dependencyProperty == null)
+			{
+				throw new ArgumentNullException(nameof(dependencyProperty));
+			}
+
+			if (binding == null)
+			{
+				throw new ArgumentNullException(nameof(binding));
+			}
+
+			var fullBinding = binding as Microsoft.UI.Xaml.Data.Binding;
+
+			if (fullBinding != null)
+			{
+				var boundProperty = DependencyProperty.GetProperty(_originalObjectType, dependencyProperty)
+					?? FindStandardProperty(_originalObjectType, dependencyProperty, fullBinding.IsXBind);
+
+				if (boundProperty != null)
+				{
+					_properties.SetBinding(boundProperty, fullBinding, SelfWeakReference);
+				}
+			}
+			else
+			{
+				throw new NotSupportedException("Only Microsoft.UI.Xaml.Data.Binding is supported for bindings.");
+			}
+		}
+
+		internal void SetTemplateBinding(DependencyProperty targetProperty, DependencyProperty sourceProperty)
+		{
+			SetBinding(
+				targetProperty,
+				new Binding
+				{
+					Path = sourceProperty.Name,
+					RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
+				}
+			);
+		}
+
+		/// <summary>
+		/// Finds a DependencyProperty for the specified C# property
+		/// </summary>
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Types manipulated here have been marked earlier")]
+		private DependencyProperty? FindStandardProperty(Type originalObjectType, string dependencyProperty, bool allowPrivateMembers)
+		{
+			var propertyType = BindingPropertyHelper.GetPropertyType(originalObjectType, dependencyProperty, allowPrivateMembers);
+
+			if (propertyType != null)
+			{
+				// This line populates the cache for the getter in the BindingPropertyHelper, making the binder
+				// pick it up later on.
+				var setter = BindingPropertyHelper.GetValueSetter(originalObjectType, dependencyProperty, true);
+
+				var property = DependencyProperty.GetProperty(originalObjectType, dependencyProperty);
+
+				if (property == null)
+				{
+					// Create a stub property so the BindingPropertyHelper is able to pick up
+					// the plain C# properties.
+					property = DependencyProperty.Register(
+						dependencyProperty,
+						propertyType,
+						originalObjectType,
+						new FrameworkPropertyMetadata(null)
+					);
+				}
+
+				return property;
+			}
+			else
+			{
+				this.Log().Error($"The property {dependencyProperty} does not exist on {originalObjectType}");
+				return null;
+			}
+		}
+
+		internal void SetBindingValue(object value, [CallerMemberName] string? propertyName = null)
+		{
+			var property = DependencyProperty.GetProperty(_originalObjectType, propertyName);
+
+			if (property == null && propertyName != null)
+			{
+				property = FindStandardProperty(_originalObjectType, propertyName, false);
+			}
+
+			if (property != null)
+			{
+				SetBindingValue(value, property);
+			}
+			else
+			{
+				throw new InvalidOperationException($"Binding to a non-DependencyProperty is not supported ({_originalObjectType}.{propertyName})");
+			}
+		}
+
+		/// <summary>
+		/// Sets the specified source <paramref name="value"/> on <paramref name="property"/>
+		/// </summary>
+		internal void SetBindingValue(object value, DependencyProperty property)
+		{
+			_properties.SetSourceValue(property, value);
+		}
+
+		/// <summary>
+		/// Sets the specified source <paramref name="value"/> on <paramref name="property"/>
+		/// </summary>
+		internal void SetBindingValue(DependencyPropertyDetails propertyDetails, object? value)
+		{
+			var unregisteringInheritedProperties = _unregisteringInheritedProperties || _parentUnregisteringInheritedProperties;
+			if (unregisteringInheritedProperties)
+			{
+				// This guards against the scenario where inherited DataContext is removed when the view is removed from the visual tree,
+				// in which case 2-way bindings should not be updated.
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					this.Log().DebugFormat("SetSourceValue() not called because inherited property is being unset.");
+				}
+				return;
+			}
+			_properties.SetSourceValue(propertyDetails, value);
+		}
+
+		/// <summary>
+		/// Subscribes to a dependency property changed handler
+		/// </summary>
+		/// <param name="dataContext">The DataContext that contains propertyName</param>
+		/// <param name="propertyName">The property to observe</param>
+		/// <param name="newValueAction">The action to execute when a new value is raised</param>
+		/// <param name="disposeAction">The action to execute when the listener wants to dispose the subscription</param>
+		/// <returns></returns>
+		private static IDisposable? SubscribeToDependencyPropertyChanged(ManagedWeakReference dataContextReference, string propertyName, BindingPath.IPropertyChangedValueHandler newValueAction)
+		{
+			var dependencyObject = dataContextReference.Target as DependencyObject;
+
+			if (dependencyObject != null)
+			{
+				var dp = Microsoft.UI.Xaml.DependencyProperty.GetProperty(dependencyObject.GetType(), propertyName);
+
+				if (dp != null)
+				{
+					return Microsoft.UI.Xaml.DependencyObjectExtensions
+						.RegisterDisposablePropertyChangedCallback(dependencyObject, dp, newValueAction.NewValue);
+				}
+				else
+				{
+					if (typeof(DependencyProperty).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					{
+						typeof(DependencyProperty).Log().DebugFormat(
+							"Unable to find the dependency property [{0}] on type [{1}]"
+							, propertyName
+							, dependencyObject.GetType()
+						);
+					}
+				}
+			}
+
+			return null;
+		}
+
+		private void OnDependencyPropertyChanged(DependencyPropertyDetails propertyDetails, object? newValue)
+		{
+			SetBindingValue(propertyDetails, newValue);
+
+			if (!propertyDetails.HasValueDoesNotInherit)
+			{
+				var newValueAsProvider = newValue as DependencyObject;
+
+				if (propertyDetails.HasValueInherits)
+				{
+					if (newValueAsProvider is not null)
+					{
+						SetChildrenBindableValue(
+							propertyDetails,
+
+							// Ensure DataContext propagation loops cannot happen
+							ReferenceEquals(newValueAsProvider.Parent, ActualInstance) ? null : newValue);
+					}
+					else
+					{
+						SetChildrenBindableValue(propertyDetails, newValue);
+					}
+				}
+				else
+				{
+					if (newValueAsProvider is not null
+						&& newValueAsProvider is not UIElement)
+					{
+						SetChildrenBindableValue(propertyDetails, newValueAsProvider);
+					}
+				}
+			}
+			else
+			{
+				// For ValueDoesNotInheritDataContext properties, establish a weak mentor link
+				// instead of using _childrenBindable (which calls AssociateParent with a strong ref).
+				// This matches WinUI's SetParentForInheritanceContextOnly behavior where
+				// non-FrameworkElement property values get a weak ref to the owning element.
+				// Exclude FrameworkTemplate (DataTemplate, ControlTemplate) and IMultiParentShareableDependencyObject
+				// (Style, Brush, etc.) since those are shareable and must not inherit DataContext via the mentor path.
+				// Also exclude FlyoutBase: a flyout is not part of its owner's visual tree and gets no DataContext of
+				// its own (WinUI parity). The owner/placement-target DataContext is forwarded to the presenter and
+				// content/items only when the flyout is shown (FlyoutBase.ForwardTargetPropertiesToPresenter), not via
+				// the mentor before show.
+				if (newValue is DependencyObject newProvider
+					&& newProvider is not UIElement
+					&& newProvider is not FrameworkTemplate
+					&& newProvider is not Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase
+					&& newProvider is not IMultiParentShareableDependencyObject)
+				{
+					SetMentoredChild(propertyDetails, newProvider);
+				}
+				else
+				{
+					// Clear the old mentored child (value is null, a UIElement, a FrameworkTemplate, a FlyoutBase, or an IMultiParentShareableDependencyObject)
+					SetMentoredChild(propertyDetails, null);
+				}
+			}
+		}
+
+		private void SetChildrenBindableValue(DependencyPropertyDetails propertyDetails, object? value)
+		{
+			if (IsCandidateChild(value))
+			{
+				var index = GetOrCreateChildBindablePropertyIndex(propertyDetails.Property);
+				UpdateChildBindable(index, value);
+			}
+			else if (TryGetChildBindablePropertyIndex(propertyDetails.Property, out var index))
+			{
+				// clear the old value if the new value is not a candidate child, to avoid keeping stale reference.
+				UpdateChildBindable(index, null);
+			}
+
+			void UpdateChildBindable(int index, object? newValue)
+			{
+				var oldValue = ChildrenBindable[index];
+				if (ReferenceEquals(oldValue, newValue)) return;
+
+				if (oldValue is IMultiParentShareableDependencyObject &&
+					oldValue is DependencyObject { _inheritanceContextEnabled: true } oldStore)
+				{
+					oldStore.UnassociateParent(ActualInstance);
+				}
+				ChildrenBindable[index] = newValue;
+				if (newValue is IMultiParentShareableDependencyObject &&
+					newValue is DependencyObject { _inheritanceContextEnabled: true } newStore)
+				{
+					newStore.AssociateParent(ActualInstance);
+				}
+
+				// A non-FE bindable child added after this owner already has a DataContext must receive the current
+				// value now — ApplyChildrenBindable only fires on a DataContext *change*. This mirrors the on-attach
+				// propagation the removed per-object DataContextProperty used to provide. Scoped to non-FE children
+				// (DataContextProperty is null): a FrameworkElement child gets its DataContext through the normal
+				// inheritance/tree mechanism, and pushing onto it here would retain it (e.g. a flyout presenter's
+				// content keeping the owner's ViewModel alive after close). SetInheritedDataContext still respects the
+				// child's inheritance-context, so a brush shared across parents won't re-inherit.
+				// The parent guard mirrors ApplyChildrenBindable: only push onto a child this owner actually owns
+				// (parent null or == this). A value owned by another object (e.g. a MenuFlyout's Items collection set
+				// as a presenter's ItemsSource — parent is the flyout, not the presenter) is skipped by the matching
+				// clear path, so pushing onto it here would cache a DataContext that is never released.
+				if (newValue is DependencyObject addedProvider
+					&& addedProvider.DataContextPropertyInternal is null
+					&& (addedProvider.GetParent() is not { } addedParent || ReferenceEquals(addedParent, ActualInstance))
+					&& _properties.DataContextPropertyDetails is { } dataContextDetails)
+				{
+					var currentDataContext = GetValue(dataContextDetails);
+					if (currentDataContext is not null && currentDataContext != DependencyProperty.UnsetValue)
+					{
+						addedProvider.SetInheritedDataContext(currentDataContext);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Gets or create an index in the <see cref="_childrenBindable"/> list, to avoid enumerating <see cref="_childrenBindableMap"/>.
+		/// </summary>
+		private int GetOrCreateChildBindablePropertyIndex(DependencyProperty property)
+		{
+			int index;
+
+			if (!ChildrenBindableMap.TryGetValue(property, out var indexRaw))
+			{
+				ChildrenBindableMap[property] = index = ChildrenBindableMap.Count;
+				ChildrenBindable.Add(null); // The caller will replace null with a non-null value.
+			}
+			else
+			{
+				index = (int)indexRaw!;
+			}
+
+			return index;
+		}
+
+		private bool TryGetChildBindablePropertyIndex(DependencyProperty property, out int index)
+		{
+			if (_childrenBindableMap?.TryGetValue(property, out var indexRaw) == true)
+			{
+				index = (int)indexRaw!;
+				return true;
+			}
+
+
+			index = -1;
+			return false;
+		}
+
+		private void AssociateParent(object? parent)
+		{
+			if (parent == null) return;
+			if (!_inheritanceContextEnabled) return;
+
+			// the code below is used to mimic the behavior of: CMultiParentShareableDependencyObject::GetMentor
+			// we are omitting the exception cases with:
+			//		If we have multiple parents, then InheritanceContext is turned off permanently except in the cases
+			//		of ResourceDictionary and ContentControl.  It is ok to have multiple parents as long as
+			//		the first parent is a ResourceDictionary, or if the first parent is a ContentControl and there are at most
+			//		two parents.
+			// todo: if we are to implement that in the future, we should promote `object? _associatedParent` into a `List/HashSet<object?>? _associatedParents`
+
+			if (_associatedParent == null)
+			{
+				_associatedParent = parent;
+				RegisterCollectibleParentAssociation(parent);
+			}
+			else
+			{
+				// if there are multiple parents (would be if we count the previous one `_associatedParent` and the current one `parent`),
+				// it means that the current instance is shared across multiple owners/parents,
+				// which means that it should no longer participate in any dc propagation.
+				_inheritanceContextEnabled = false;
+
+				ClearInheritedDataContext();
+				_associatedParent = null;
+			}
+		}
+		private void UnassociateParent(object? parent)
+		{
+			if (parent == null) return;
+			if (!_inheritanceContextEnabled) return;
+
+			if (ReferenceEquals(_associatedParent, parent))
+			{
+				_associatedParent = null;
+			}
+		}
+
+		#region Mentor mechanism
+
+		/// <summary>
+		/// Sets the mentor (inheritance context parent) on this store.
+		/// Called on the CHILD's store. The mentor is stored as a weak reference
+		/// (matching WinUI's SetParentForInheritanceContextOnly which uses xref::weakref_ptr).
+		/// </summary>
+		internal void SetMentor(object? mentor)
+		{
+			if (_mentorRef is not null)
+			{
+				WeakReferencePool.ReturnWeakReference(this, _mentorRef);
+				_mentorRef = null;
+			}
+
+			if (mentor is not null)
+			{
+				_mentorRef = WeakReferencePool.RentWeakReference(this, mentor);
+			}
+			else
+			{
+				ClearInheritedDataContext();
+			}
+		}
+
+		/// <summary>
+		/// Gets the mentor (inheritance context parent) for this store.
+		/// Returns null if no mentor is set or the mentor has been collected.
+		/// </summary>
+		internal object? GetMentor() => _mentorRef?.TryGetTarget<object>(out var mentor) is true ? mentor : default;
+
+		/// <summary>
+		/// Tracks a non-UIElement DependencyObject as a mentored child of this store.
+		/// Called on the PARENT's store when a property with ValueDoesNotInheritDataContext
+		/// is set to a non-UIElement DependencyObject value.
+		/// </summary>
+		private void SetMentoredChild(DependencyPropertyDetails propertyDetails, DependencyObject? newValue)
+		{
+			var property = propertyDetails.Property;
+
+			// Get or create slot for this property
+			int index;
+			if (_mentoredChildrenMap is not null && _mentoredChildrenMap.TryGetValue(property, out var indexRaw))
+			{
+				index = (int)indexRaw!;
+			}
+			else if (newValue is null)
+			{
+				return; // Nothing to clear
+			}
+			else
+			{
+				_mentoredChildrenMap ??= new HashtableEx(DependencyPropertyComparer.Default);
+				_mentoredChildren ??= new List<ManagedWeakReference?>();
+				index = _mentoredChildren.Count;
+				_mentoredChildrenMap[property] = index;
+				_mentoredChildren.Add(null);
+			}
+
+			// Clear mentor on old value
+			var oldRef = _mentoredChildren![index];
+			if (oldRef?.Target is DependencyObject oldProvider)
+			{
+				var oldMentor = oldProvider.GetMentor();
+				if (oldMentor is not null && ReferenceEquals(oldMentor, ActualInstance))
+				{
+					oldProvider.SetMentor(null);
+				}
+			}
+			if (oldRef is not null)
+			{
+				WeakReferencePool.ReturnWeakReference(this, oldRef);
+			}
+
+			// Set mentor on new value
+			if (newValue is not null)
+			{
+				_mentoredChildren[index] = WeakReferencePool.RentWeakReference(this, newValue);
+				newValue.SetMentor(ActualInstance);
+
+				// Immediately propagate current DataContext (null when this mentor is not a FrameworkElement).
+				var currentDC = _properties.DataContextPropertyDetails is { } dataContextDetails ? GetValue(dataContextDetails) : null;
+				newValue.SetInheritedDataContext(currentDC);
+			}
+			else
+			{
+				_mentoredChildren[index] = null;
+			}
+		}
+
+		/// <summary>
+		/// Propagates DataContext to all mentored children whose mentor is still this instance.
+		/// Called from ApplyDataContext when the parent's DataContext changes.
+		/// </summary>
+		private void ApplyMentoredChildrenDataContext(object? dataContext)
+		{
+			if (_mentoredChildren is null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < _mentoredChildren.Count; i++)
+			{
+				var childRef = _mentoredChildren[i];
+				if (childRef?.Target is DependencyObject childProvider)
+				{
+					var mentor = childProvider.GetMentor();
+					if (mentor is not null && ReferenceEquals(mentor, ActualInstance))
+					{
+						childProvider.SetInheritedDataContext(dataContext);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Clears inherited DataContext on all mentored children.
+		/// Called when the owning UIElement is unloaded to break the
+		/// reference chain and prevent ViewModel leaks.
+		/// </summary>
+		internal void ClearMentoredChildrenDataContext()
+		{
+			if (_mentoredChildren is null)
+			{
+				return;
+			}
+
+			for (int i = 0; i < _mentoredChildren.Count; i++)
+			{
+				var childRef = _mentoredChildren[i];
+				if (childRef?.Target is DependencyObject childProvider)
+				{
+					var mentor = childProvider.GetMentor();
+					if (mentor is not null && ReferenceEquals(mentor, ActualInstance))
+					{
+						childProvider.ClearInheritedDataContext();
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Re-propagates current DataContext to all mentored children.
+		/// Called when the owning UIElement is loaded (after a previous unload
+		/// may have cleared their DataContext).
+		/// </summary>
+		internal void RepropagateMentoredChildrenDataContext()
+		{
+			if (_mentoredChildren is null)
+			{
+				return;
+			}
+
+			var currentDC = _properties.DataContextPropertyDetails is { } dataContextDetails ? GetValue(dataContextDetails) : null;
+			ApplyMentoredChildrenDataContext(currentDC);
+		}
+
+		#endregion
+
+		internal BindingExpression? GetBindingExpression(DependencyProperty dependencyProperty)
+			=> _properties.GetBindingExpression(dependencyProperty);
+
+		internal Microsoft.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty)
+			=> GetBindingExpression(dependencyProperty)?.ParentBinding;
+
+		internal bool IsPropertyTemplateBound(DependencyProperty dependencyProperty)
+			=> _properties.IsPropertyTemplateBound(dependencyProperty);
+
+		/// <summary>
+		/// BindingPath Registration handler for DependencyProperty instances
+		/// </summary>
+		private class BindingPathPropertyChangedRegistrationHandler : BindingPath.IPropertyChangedRegistrationHandler
+		{
+			public IDisposable? Register(ManagedWeakReference dataContext, string propertyName, BindingPath.IPropertyChangedValueHandler onNewValue)
+				=> SubscribeToDependencyPropertyChanged(dataContext, propertyName, onNewValue);
+		}
+	}
+}
+

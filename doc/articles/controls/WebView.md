@@ -164,15 +164,12 @@ The flag defaults to `true` in `DEBUG` builds and `false` in `RELEASE` builds.
 | Platform | What it enables | How to open |
 | ---------- | ----------------- | ------------- |
 | **Windows / Linux (Skia)** | Chromium DevTools | Right-click inside the WebView and choose **Inspect**, or press <kbd>F12</kbd>. |
-| **iOS / Mac Catalyst / macOS** | Safari Web Inspector against the `WKWebView` (iOS 16.4+, macOS 13.3+) | In Safari, enable the **Develop** menu, then pick the device → page. See Apple's [Inspecting iOS](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios) guide. |
+| **iOS / macOS** | Safari Web Inspector against the `WKWebView` (iOS 16.4+, macOS 13.3+) | In Safari, enable the **Develop** menu, then pick the device → page. See Apple's [Inspecting iOS](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios) guide. |
 | **Android** | Chrome DevTools remote debugging | Open `chrome://inspect` in desktop Chrome with the device connected. |
 | **WebAssembly** | N/A | Use the host browser's developer tools (<kbd>F12</kbd>). |
 
 > [!IMPORTANT]
 > On Apple platforms the OS gates inspection to apps signed with the get-task-allow entitlement (DEBUG / development builds). Setting the flag in a RELEASE build has no visible effect.
->
-> [!NOTE]
-> The legacy iOS-only `Uno.UI.FeatureConfiguration.WebView2.IsInspectable` property is now an obsolete alias for `EnableDevTools`.
 
 ## Customizing the WebView2 environment (Windows)
 
@@ -463,7 +460,7 @@ When using the WebView2 and running on WinAppSDK, make sure to create an `x64` o
 
 ## Windows Specifics
 
-Starting with Uno 7, WebView2 has two separate backends on Windows:
+Uno 6.7 has two separate backends on Windows for WebView2:
 
 - Microsoft.Web.WebView2
 - WebView2Aot
@@ -487,3 +484,5 @@ public partial class Program
     }
 }
 ```
+
+Uno 7 removes support for the Microsoft.Web.WebView2 backend, along with support for the `microsoft.web.webview2` value within the `UNO_WEBVIEW2_BACKEND` environment variable.

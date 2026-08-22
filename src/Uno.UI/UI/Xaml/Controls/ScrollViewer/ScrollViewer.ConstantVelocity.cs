@@ -22,23 +22,9 @@ using Uno;
 using Uno.Extensions;
 
 
-#if __ANDROID__
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-#elif __APPLE_UIKIT__
-using UIKit;
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
-#else
-using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.IScrollContentPresenter;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {

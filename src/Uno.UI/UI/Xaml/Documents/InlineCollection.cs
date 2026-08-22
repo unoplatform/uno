@@ -3,52 +3,27 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.UI.Xaml.Controls;
-#if !__WASM__
 using Uno.UI.Xaml.Core;
-#endif
-
-#if __WASM__
-using System.Collections.Specialized;
-#endif
 
 namespace Microsoft.UI.Xaml.Documents
 {
 	public partial class InlineCollection : IList<Inline>, IEnumerable<Inline>
 	{
-#if __WASM__
-		private readonly UIElementCollection _collection;
-#else
 		private readonly DependencyObjectCollection<Inline> _collection = new DependencyObjectCollection<Inline>();
-#endif
 
-#if __WASM__
-		internal InlineCollection(UIElement containerElement)
-		{
-			_collection = new UIElementCollection(containerElement);
-			_collection.CollectionChanged += OnCollectionChanged;
-		}
-#else
 		internal InlineCollection(DependencyObject parent)
 		{
 			_collection.SetParent(parent);
 			_collection.VectorChanged += (s, e) => OnCollectionChanged();
 		}
-#endif
 
 		private void OnCollectionChanged(
-#if __WASM__
-			 object sender, NotifyCollectionChangedEventArgs e
-#endif
 			)
 		{
 #if !IS_UNIT_TESTS
 			InvalidateTraversedTree();
 
-#if __WASM__
-			switch (_collection.Owner)
-#else
 			switch (_collection.GetParent())
-#endif
 			{
 				case TextBlock textBlock:
 					textBlock.InvalidateInlines(true);
@@ -101,19 +76,12 @@ namespace Microsoft.UI.Xaml.Documents
 						var result = new List<Inline>(4);
 
 
-#if __WASM__
-						foreach (var current in _collection)
-						{
-							GetPreorderTreeInner((Inline)current, result);
-						}
-#else
 						var enumerator = _collection.GetEnumeratorFast();
 
 						while (enumerator.MoveNext())
 						{
 							GetPreorderTreeInner(enumerator.Current, result);
 						}
-#endif
 
 						return result.ToArray();
 					}
@@ -124,19 +92,12 @@ namespace Microsoft.UI.Xaml.Documents
 
 						if (inline is Span span)
 						{
-#if __WASM__
-							foreach (var current in span.Inlines._collection)
-							{
-								GetPreorderTreeInner((Inline)current, accumulator);
-							}
-#else
 							var enumerator = span.Inlines.GetEnumeratorFast();
 
 							while (enumerator.MoveNext())
 							{
 								GetPreorderTreeInner(enumerator.Current, accumulator);
 							}
-#endif
 						}
 					}
 				}
@@ -144,17 +105,11 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		public IEnumerator<Inline> GetEnumerator() =>
-#if __WASM__
-			_collection.OfType<Inline>().GetEnumerator();
-#else
 			_collection.GetEnumerator();
-#endif
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-#if !__WASM__
 		private List<Inline>.Enumerator GetEnumeratorFast() => _collection.GetEnumeratorFast();
-#endif
 
 		/// <inheritdoc />
 		public void Add(Inline item)
@@ -164,9 +119,6 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		/// <inheritdoc />
-#if __WASM__
-		public void Clear() => _collection.Clear();
-#else
 		public void Clear()
 		{
 			foreach (var inline in _collection)
@@ -179,7 +131,6 @@ namespace Microsoft.UI.Xaml.Documents
 
 			_collection.Clear();
 		}
-#endif
 
 		/// <inheritdoc />
 		public bool Contains(Inline item) => _collection.Contains(item);
@@ -217,15 +168,11 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		/// <inheritdoc />
-#if __WASM__
-		public void RemoveAt(int index) => _collection.RemoveAt(index);
-#else
 		public void RemoveAt(int index)
 		{
 			ClearFocusForRemovedInline(_collection[index]);
 			_collection.RemoveAt(index);
 		}
-#endif
 
 		/// <inheritdoc />
 		public Inline this[int index]
@@ -234,32 +181,28 @@ namespace Microsoft.UI.Xaml.Documents
 			set
 			{
 				ValidateInline(value, nameof(value));
-#if !__WASM__
 				if (!ReferenceEquals(_collection[index], value))
 				{
 					ClearFocusForRemovedInline(_collection[index]);
 				}
-#endif
 
 				_collection[index] = value;
 			}
 		}
 
-#if !__WASM__
 		private static bool ClearFocusForRemovedInline(Inline inline)
 		{
 			var focusManager = VisualTree.GetFocusManagerForElement(inline, VisualTree.LookupOptions.NoFallback);
 			if (focusManager?.FocusedElement is Inline focusedInline &&
 				inline.Enumerate().Any(candidate => ReferenceEquals(candidate, focusedInline)))
 			{
-				// Non-WASM inline collections do not run a live Leave walk when an item is removed.
+				// Inline collections do not run a live Leave walk when an item is removed.
 				focusManager.ClearFocus(canCancel: false);
 				return true;
 			}
 
 			return false;
 		}
-#endif
 
 		/// <summary>
 		/// WinUI only supports <see cref="InlineUIContainer"/> within a <see cref="RichTextBlock"/>; adding one to a
@@ -307,12 +250,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 		private bool IsOwnedByTextBlock()
 		{
-			var current =
-#if __WASM__
-				(object)_collection.Owner;
-#else
-				_collection.GetParent();
-#endif
+			var current = _collection.GetParent();
 
 			// Walk up through Span/Hyperlink/etc. to find the owning control.
 			while (current is Inline inline)

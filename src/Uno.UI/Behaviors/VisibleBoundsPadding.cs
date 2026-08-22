@@ -13,10 +13,6 @@ using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 #if HAS_UNO // Is building using Uno.UI
 using Uno.Collections;
 using Uno.Extensions;
@@ -26,8 +22,8 @@ using Uno.Foundation.Logging;
 #if IS_UNO // Is inside the Uno.UI project
 using _VisibleBoundsPadding = Uno.UI.Behaviors.InternalVisibleBoundsPadding;
 #else
-using Uno.UI.Toolkit.Extensions;
-using _VisibleBoundsPadding = Uno.UI.Toolkit.VisibleBoundsPadding;
+using Uno.UI.Extras.Extensions;
+using _VisibleBoundsPadding = Uno.UI.Extras.VisibleBoundsPadding;
 #endif
 
 #if IS_UNO
@@ -38,13 +34,13 @@ namespace Uno.UI.Behaviors
 	/// </summary>
 	/// <remarks>
 	/// This class is located in the same source file as the VisibleBoundsPadding class to avoid code duplication.
-	/// This is required to ensure that both Uno.UI styles and UWP (through Uno.UI.Toolkit) can use this behavior
+	/// This is required to ensure that both Uno.UI styles and UWP (through Uno.UI.Extras) can use this behavior
 	/// and not have to synchronize two code files. The internal implementation is not supposed to be used outside
-	/// of the Uno.UI assembly, Uno.UI.Toolkit.VisibleBoundsPadding should be used by dependents.
+	/// of the Uno.UI assembly, Uno.UI.Extras.VisibleBoundsPadding should be used by dependents.
 	/// </remarks>
 	internal static class InternalVisibleBoundsPadding
 #else
-namespace Uno.UI.Toolkit
+namespace Uno.UI.Extras
 {
 	/// <summary>
 	/// A behavior which automatically adds padding to a control that ensures its content will always be inside
@@ -181,12 +177,6 @@ namespace Uno.UI.Toolkit
 
 				_visibleBoundsChanged = (s2, e2) => UpdatePadding();
 
-#if __APPLE_UIKIT__
-				// For iOS, it's required to react on SizeChanged to prevent weird alignment
-				// problems with Text using the LayoutManager (NSTextContainer).
-				// https://github.com/unoplatform/uno/issues/2836
-				owner.SizeChanged += (s, e) => UpdatePadding();
-#endif
 				owner.LayoutUpdated += (s, e) => UpdatePadding();
 
 				owner.Loaded += (s, e) =>
@@ -327,14 +317,6 @@ namespace Uno.UI.Toolkit
 			private Thickness AdjustScrollablePadding(Thickness visibilityPadding, ScrollViewer scrollAncestor)
 			{
 				var scrollableRoot = scrollAncestor.Content as FrameworkElement;
-#if XAMARIN
-				if (scrollableRoot is ItemsPresenter)
-				{
-					// This implies we're probably inside a ListView, in which case the reasoning breaks down in Uno (because ItemsPresenter
-					// is *outside* the scrollable region); we skip the adjustment and hope for the best.
-					scrollableRoot = null;
-				}
-#endif
 				if (scrollableRoot != null && Owner is { })
 				{
 					// Get the spacing already provided by the alignment of the child relative to it ancestor at the root of the scrollable hierarchy.
@@ -396,12 +378,6 @@ namespace Uno.UI.Toolkit
 					{
 						_log.Log(LogLevel.Debug, $"ApplyPadding={padding}");
 					}
-
-#if __ANDROID__
-					// Dispatching on Android prevents issues where layout/render changes occurring
-					// during initial loading of the view are not always properly picked up by the layouting/rendering engine.
-					_ = owner.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, owner.InvalidateMeasure);
-#endif
 				}
 #endif
 			}

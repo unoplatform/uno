@@ -24,9 +24,7 @@ namespace Microsoft.UI.Xaml.Input
 
 			Pointers = args.Pointers;
 			PointerDeviceType = args.PointerDeviceType;
-			Position = FeatureConfiguration.ManipulationRoutedEventArgs.IsAbsolutePositionEnabled
-				? args.Position
-				: UIElement.GetTransform(container, null).Inverse().Transform(args.Position);
+			Position = UIElement.GetTransform(container, null).Inverse().Transform(args.Position);
 			Cumulative = args.Cumulative;
 		}
 

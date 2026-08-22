@@ -241,7 +241,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (Style.GetDefaultStyleForInstance(this, GetDefaultStyleKey()) is { } style)
 			{
-				return style.TryGetPropertyValue(dp, out value, this);
+				return style.TryGetPropertyValue(dp, out value);
 			}
 
 			value = null;

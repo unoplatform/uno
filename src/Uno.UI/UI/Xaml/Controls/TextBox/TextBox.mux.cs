@@ -1,37 +1,17 @@
-﻿using Uno.UI.Xaml.Core;
+#nullable enable
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TextBox
 	{
-		private bool _forceFocusedVisualState;
-
+		// Set only by this control's pointer/visibility overrides and read only for visual state, so it
+		// stays control-owned; the core asks for it through ITextBoxHost.
 		private bool _isPointerOver;
 
+		bool ITextBoxHost.IsPointerOver => _isPointerOver;
+
 		internal override void UpdateVisualState(bool useTransitions = true)
-		{
-			var focusManager = VisualTree.GetFocusManagerForElement(this);
-			// CommonStates & FocusStates are combined
-			//
-			// NOTES: Pressed state is the same as Focused
-			//        PointerFocused state is the same as Focused
-			if (!IsEnabled)
-			{
-				VisualStateManager.GoToState(this, "Disabled", true);
-			}
-			else if (_forceFocusedVisualState || (FocusState != FocusState.Unfocused && focusManager.IsPluginFocused()))
-			{
-				VisualStateManager.GoToState(this, "Focused", true);
-			}
-			else if (_isPointerOver)
-			{
-				VisualStateManager.GoToState(this, "PointerOver", true);
-			}
-			else
-			{
-				VisualStateManager.GoToState(this, "Normal", true);
-			}
-		}
+			=> _core.UpdateVisualStateCore(useTransitions);
 
 		internal override string GetPlainText()
 		{

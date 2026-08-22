@@ -41,7 +41,8 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty IsActiveProperty { get; } = DependencyProperty.Register(
 			nameof(IsActive), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(true, OnIsActivePropertyChanged));
 
-		public bool IsActive
+		// Hides the internal DependencyObject.IsActive (live-tree state).
+		public new bool IsActive
 		{
 			get => (bool)GetValue(IsActiveProperty);
 			set => SetValue(IsActiveProperty, value);

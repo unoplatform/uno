@@ -6,68 +6,37 @@ uid: Uno.Controls.CommandBar
 
 The `CommandBar` in **Uno** is designed to be used the same way you would use the `CommandBar` on **WinUI**. In most cases, you should refer to the [official `CommandBar` documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.commandbar).
 
-This document exists to highlight some of the differences you might encounter when working with the native mode of `CommandBar` on either **iOS** or **Android**.
+This document exists to highlight some of the differences you might encounter when working with `CommandBar` on **iOS** or **Android**.
 
-## Modes
+The `CommandBar` replicates **WinUI**'s `CommandBar`. It is templatable and supports a template that's almost identical to **WinUI**'s default `CommandBar`, based on the `XamlDefaultCommandBar` style.
 
-The `CommandBar` supports 2 different modes:
-
-| Mode    | Style                    |
-|---------|--------------------------|
-| Windows | `XamlDefaultCommandBar`  |
-| Native  | `NativeDefaultCommandBar`|
-
-### Windows
-
-This mode replicates **WinUI**'s `CommandBar`. It is templatable and supports a template that's almost identical to **WinUI**'s default `CommandBar`.
+> [!NOTE]
+> Uno Platform 7.0 removed the native `CommandBar` backends — the iOS `UINavigationBar`
+> and Android `Toolbar` presentation and the `NativeDefaultCommandBar` style went with the
+> native renderers, so there is no longer a separate native mode to opt into. The
+> iOS/Android-specific guidance below — the `Padding` note, the back button, the fixed
+> `Height`, the unsupported `SecondaryCommands`, the `CommandBarExtensions` attached
+> properties, and the `Known issues` and `FAQ` entries that mention "native mode" —
+> describes that removed mode and is kept as legacy content pending a rewrite. See
+> [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
 
 ![CommandBar Example - Windows](assets/commandbar/windows/example.png)
 
-#### Usage Example
+## Usage Example
 
 ```csharp
 <Style TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}" />
 ```
 
-#### Remarks
-
-- This mode hasn't been extensively tested.
-- We usually avoid using this mode, and prefer to use the Native one instead.
-
-### Native
-
-This mode is the preferred one and is enabled by default. It uses platform-specific controls to ensure a more native user experience.
-
-![CommandBar Example - Android](assets/commandbar/android/example.png)
-
-![CommandBar Example - iOS](assets/commandbar/ios/example.png)
-
-| Platform | Native control      | Benefits                                              |
-|----------|---------------------|-------------------------------------------------------|
-| Android  | `Toolbar`          | Native pressed states (ripple), native overflow menu. |
-| iOS      | `UINavigationBar` | Transitions when navigating  between pages.   |
-
-The rest of this document will exclusively cover this mode.
-
-#### Usage Example
-
-```csharp
-<Style TargetType="CommandBar" BasedOn="{StaticResource NativeDefaultCommandBar}" />
-```
-
-#### Remarks
-
-In this mode, the `CommandBar` can't be fully customized like other templatable controls would. Additionally, you can't customize the visual states of either the `CommandBar` or its `AppBarButton`s.
-
-### Padding
+## Padding
 
 You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS/Native and Android/Native.
 
 On Skia-based renderers, you'll need to set the `VisibleBoundsPadding` or `SafeArea` on the parent control of the `CommandBar`.
 
-#### Back button
+## Back button
 
-An important difference with this mode is the presence of a back button. Whenever the `CommandBar` is part of a `Page` whose `Frame` has a non-empty back stack, the back button will be displayed.
+An important difference on these platforms is the presence of a back button. Whenever the `CommandBar` is part of a `Page` whose `Frame` has a non-empty back stack, the back button will be displayed.
 
 ![CommandBar Example - Android - Back button](assets/commandbar/android/back.png)
 
@@ -159,7 +128,6 @@ Gets or sets a brush that describes the foreground color.
 - This is typically used to change the Content`'s text color.
 - Only supports `SolidColorBrush`.
 - Setting this property will not affect any of the `CommandBar's` `AppBarButton` tint Color. If you need to change the `AppBarButton` tint, this is possible by setting the `ShowAsMonochrome` property to true as well as setting the Foreground`SolidColorBrush`on the`BitmapIcon`.
-- On`Android`, you can also enable a feature that will allow that the`SolidColorBrush`set on your `CommandBar` `Foreground` to update your`AppBarButton`s Tint. To enable this, set on your `App.xml.cs` the `FeatureConfiguration.AppBarButton.EnableBitmapIconTint` to **true**.
 
 ### PrimaryCommands
 
@@ -207,7 +175,7 @@ The height is fixed and cannot be changed.
 
 Extensions are attached properties that extend the **WinUI** APIs to provide platform-specific features.
 
-They can be found in the `Uno.UI.Toolkit` namespace.
+They can be found in the `Uno.UI.Extras` namespace.
 
 Extensions to extend the functionality of `CommandBar` can be found in the `CommandBarExtensions` class.
 
@@ -463,10 +431,10 @@ Gets or sets a value indicating whether the user can interact with the control.
   You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS and Android.
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:extras="using:Uno.UI.Extras"
   ...
   <Style Target="CommandBar">
-      <Setter Property="toolkit:VisibleBoundsPadding.PaddingMask"
+      <Setter Property="extras:VisibleBoundsPadding.PaddingMask"
               Value="Top" />
   </Style>
   ```
@@ -474,10 +442,10 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I remove the back button title from all pages on iOS?
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:extras="using:Uno.UI.Extras"
   ...
   <Style Target="CommandBar">
-      <Setter Property="toolkit:CommandBarExtensions.BackButtonTitle"
+      <Setter Property="extras:CommandBarExtensions.BackButtonTitle"
               Value="" />
   </Style>
   ```
@@ -485,10 +453,10 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I change the back button icon/arrow/chevron in my app?
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:extras="using:Uno.UI.Extras"
   ...
   <Style Target="CommandBar">
-      <Setter Property="toolkit:CommandBarExtensions.BackButtonIcon">
+      <Setter Property="extras:CommandBarExtensions.BackButtonIcon">
           <Setter.Value>
               <BitmapIcon UriSource="ms-appx://Assets/back.png" />
           </Setter.Value>
@@ -499,9 +467,9 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I change the color of the back button?
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:extras="using:Uno.UI.Extras"
   ...
-  <CommandBar toolkit:CommandBarExtensions.BackButtonForeground="Red" />
+  <CommandBar extras:CommandBarExtensions.BackButtonForeground="Red" />
   ```
 
 - > Why does my back button display "Back" on iOS?
@@ -522,9 +490,9 @@ Gets or sets a value indicating whether the user can interact with the control.
   You must use `VisibleBoundsPadding.PaddingMask="Top"` on the parent control of `CommandBar` to properly support the notch or punch-holes on iOS and Android.
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:extras="using:Uno.UI.Extras"
   ...
-  <Grid toolkit:VisibleBoundsPadding.PaddingMask="Top">
+  <Grid extras:VisibleBoundsPadding.PaddingMask="Top">
       <CommandBar>
         ...
       </CommandBar>
@@ -629,9 +597,9 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I add an elevation shadow to the CommandBar on Android?
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:extras="using:Uno.UI.Extras"
   ...
-  <CommandBar toolkit:UIElementExtensions.Elevation="4" />
+  <CommandBar extras:UIElementExtensions.Elevation="4" />
   ```
 
 - > How can I use a Path for the AppBarButton Icon?
@@ -655,12 +623,12 @@ Gets or sets a value indicating whether the user can interact with the control.
   ```xml
 
   <CommandBar x:Uid="MyCommandBar"
-              toolkit:CommandBarExtensions.BackButtonTitle="My Page Title">
+              extras:CommandBarExtensions.BackButtonTitle="My Page Title">
           ...
   </CommandBar>
   ```
 
-  And in the `.resw` file, the name would be: `MyCommandBar.[using:Uno.UI.Toolkit]CommandBarExtensions.BackButtonTitle`
+  And in the `.resw` file, the name would be: `MyCommandBar.[using:Uno.UI.Extras]CommandBarExtensions.BackButtonTitle`
 
 - > How can I put a ComboBox in my CommandBar?
 
@@ -686,13 +654,13 @@ Gets or sets a value indicating whether the user can interact with the control.
 
   ```xml
   <CommandBar>
-      <toolkit:CommandBarExtensions.NavigationCommand>
+      <extras:CommandBarExtensions.NavigationCommand>
           <AppBarButton Command="{Binding GoBack}">
               <AppBarButton.Icon>
                   <BitmapIcon UriSource="ms-appx:///Assets/Icons/back.png" />
               </AppBarButton.Icon>
           </AppBarButton>
-      </toolkit:CommandBarExtensions.NavigationCommand>
+      </extras:CommandBarExtensions.NavigationCommand>
   </CommandBar>
   ```
 
@@ -704,13 +672,13 @@ Gets or sets a value indicating whether the user can interact with the control.
 
   ```xml
   <CommandBar>
-      <toolkit:CommandBarExtensions.NavigationCommand>
+      <extras:CommandBarExtensions.NavigationCommand>
           <AppBarButton Command="{Binding ToggleMenu}">
               <AppBarButton.Icon>
                   <BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
               </AppBarButton.Icon>
           </AppBarButton>
-      </toolkit:CommandBarExtensions.NavigationCommand>
+      </extras:CommandBarExtensions.NavigationCommand>
   </CommandBar>
   ```
 
@@ -837,7 +805,7 @@ Gets or sets a value indicating whether the user can interact with the control.
 
   ```xml
   <Style Target="CommandBar">
-      <Setter Property="toolkit:CommandBarExtensions.BackButtonIcon">
+      <Setter Property="extras:CommandBarExtensions.BackButtonIcon">
           <Setter.Value>
               <BitmapIcon UriSource="ms-appx:///Assets/Icons/back.png" />
           </Setter.Value>

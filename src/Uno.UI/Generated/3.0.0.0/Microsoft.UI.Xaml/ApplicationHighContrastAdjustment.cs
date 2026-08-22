@@ -3,16 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-	[global::System.FlagsAttribute]
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false
 	public enum ApplicationHighContrastAdjustment : uint
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		None = 0,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Auto = 4294967295,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.ApplicationHighContrastAdjustment.None
+		// Skipping already declared field Microsoft.UI.Xaml.ApplicationHighContrastAdjustment.Auto
 	}
 #endif
 }

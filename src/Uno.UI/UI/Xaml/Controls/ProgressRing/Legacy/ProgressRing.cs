@@ -11,17 +11,13 @@ public partial class ProgressRing : Control
 	public ProgressRing()
 	{
 		DefaultStyleKey = typeof(ProgressRing);
-
-#if __ANDROID__ || __APPLE_UIKIT__
-		// Apply the native style by default
-		Style = (Style)Application.Current.Resources["NativeWuxProgressRingStyle"];
-#endif
 	}
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether the <see cref="ProgressRing"/> is showing progress.
 	/// </summary>
-	public bool IsActive
+	// Hides the internal DependencyObject.IsActive (live-tree state).
+	public new bool IsActive
 	{
 		get => (bool)GetValue(IsActiveProperty);
 		set => SetValue(IsActiveProperty, value);

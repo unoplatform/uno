@@ -247,10 +247,9 @@ namespace Microsoft.UI.Xaml
 
 		protected override void OnCreate(Bundle? bundle)
 		{
-			if (FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
-			{
-				EdgeToEdge.Enable(this);
-			}
+			// Once the app targets SDK 35+, edge-to-edge is enforced.
+			// Calling EdgeToEdge.Enable keeps this behavior consistent on earlier SDK levels too.
+			EdgeToEdge.Enable(this);
 
 			base.OnCreate(bundle);
 
@@ -305,6 +304,9 @@ namespace Microsoft.UI.Xaml
 				}
 				else
 				{
+					// Vulkan feature flags are static device configuration and can be declared even when
+					// the driver cannot actually render (common on emulators) — the view constructor
+					// creates the Vulkan device and throws when the driver is unusable.
 					try
 					{
 						return new UnoSKVulkanView(this);

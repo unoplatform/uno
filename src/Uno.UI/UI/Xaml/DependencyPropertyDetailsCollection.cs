@@ -15,7 +15,8 @@ namespace Microsoft.UI.Xaml
 	{
 		private readonly ManagedWeakReference _ownerReference;
 		private object? _hardOwnerReference;
-		private readonly DependencyProperty _dataContextProperty;
+		// Null when the owner is not a FrameworkElement (DataContext is FrameworkElement-only).
+		private readonly DependencyProperty? _dataContextProperty;
 		private DependencyPropertyDetails? _dataContextPropertyDetails;
 
 		private readonly static ArrayPool<short> _offsetsPool = ArrayPool<short>.Shared;
@@ -33,7 +34,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Creates an instance using the specified DependencyObject <see cref="Type"/>
 		/// </summary>
-		public DependencyPropertyDetailsCollection(ManagedWeakReference ownerReference, DependencyProperty dataContextProperty)
+		public DependencyPropertyDetailsCollection(ManagedWeakReference ownerReference, DependencyProperty? dataContextProperty)
 		{
 			_ownerReference = ownerReference;
 
@@ -42,7 +43,7 @@ namespace Microsoft.UI.Xaml
 			_entries = _empty;
 		}
 
-		internal void CloneToForHotReload(DependencyPropertyDetailsCollection other, DependencyObjectStore store, DependencyObjectStore otherStore)
+		internal void CloneToForHotReload(DependencyPropertyDetailsCollection other, DependencyObject store, DependencyObject otherStore)
 		{
 			for (int i = 0; i < _entries.Length; i++)
 			{
@@ -65,7 +66,7 @@ namespace Microsoft.UI.Xaml
 						{
 							var newBinding = new Binding(binding.Path, binding.Converter, binding.ConverterParameter);
 							var newSource = binding.Source;
-							if (newSource is IDependencyObjectStoreProvider { Store: { } oldStore } && oldStore == store)
+							if (newSource is DependencyObject oldStore && oldStore == store)
 							{
 								newSource = otherStore.ActualInstance;
 							}
@@ -103,8 +104,10 @@ namespace Microsoft.UI.Xaml
 			_entries = null!;
 		}
 
-		public DependencyPropertyDetails DataContextPropertyDetails
-			=> _dataContextPropertyDetails ??= GetPropertyDetails(_dataContextProperty);
+		public DependencyPropertyDetails? DataContextPropertyDetails
+			=> _dataContextProperty is { } dataContextProperty
+				? _dataContextPropertyDetails ??= GetPropertyDetails(dataContextProperty)
+				: null;
 
 		/// <summary>
 		/// Gets the <see cref="DependencyPropertyDetails"/> for a specific <see cref="DependencyProperty"/>

@@ -12,7 +12,7 @@
 					xmlns:android="http://uno.ui/android#using:Uno.UI.Controls"
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
-					xmlns:toolkit="using:Uno.UI.Toolkit"
+					xmlns:toolkit="using:Uno.UI.Extras"
 					mc:Ignorable="d win not_win android">
 
     <!-- Default native Button styles -->

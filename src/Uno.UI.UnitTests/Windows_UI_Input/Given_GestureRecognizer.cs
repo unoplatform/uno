@@ -7,7 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Input;
 using Windows.Foundation;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using AwesomeAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Disposables;
@@ -2023,9 +2024,9 @@ namespace Uno.UI.Tests.Windows_UI_Input
 	{
 		private static long _frameId = 0;
 
-		public static PointerDevice MousePointer { get; } = new PointerDevice(PointerDeviceType.Mouse);
-		public static PointerDevice PenPointer { get; } = new PointerDevice(PointerDeviceType.Pen);
-		public static PointerDevice TouchPointer { get; } = new PointerDevice(PointerDeviceType.Touch);
+		public static PointerDevice MousePointer { get; } = new PointerDevice((global::Windows.Devices.Input.PointerDeviceType)PointerDeviceType.Mouse);
+		public static PointerDevice PenPointer { get; } = new PointerDevice((global::Windows.Devices.Input.PointerDeviceType)PointerDeviceType.Pen);
+		public static PointerDevice TouchPointer { get; } = new PointerDevice((global::Windows.Devices.Input.PointerDeviceType)PointerDeviceType.Touch);
 
 		public static PointerPointProperties LeftButton { get; } = new PointerPointProperties
 		{
@@ -2088,8 +2089,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			id ??= 1;
 			ts ??= frameId;
 			var pointer = device.HasValue
-				? new PointerDevice(device.Value)
-				: (currentPointer.device ?? new PointerDevice(PointerDeviceType.Touch));
+				? new PointerDevice((global::Windows.Devices.Input.PointerDeviceType)device.Value)
+				: (currentPointer.device ?? new PointerDevice((global::Windows.Devices.Input.PointerDeviceType)PointerDeviceType.Touch));
 			var location = new Windows.Foundation.Point(x, y);
 			properties ??= currentPointer.properties ?? LeftButton;
 
@@ -2097,13 +2098,13 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		public static TappedEventArgs Tap(double x, double y, uint tapCount = 1, PointerDeviceType? device = null)
-			=> new TappedEventArgs(1, device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), tapCount);
+			=> new TappedEventArgs(1, device ?? (PointerDeviceType?)_currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), tapCount);
 
 		public static RightTappedEventArgs RightTap(double x, double y, PointerDeviceType? device = null)
-			=> new RightTappedEventArgs(1, device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y));
+			=> new RightTappedEventArgs(1, device ?? (PointerDeviceType?)_currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y));
 
 		public static HoldingEventArgs Hold(double x, double y, HoldingState state, PointerDeviceType? device = null, uint? ptId = null)
-			=> new HoldingEventArgs(ptId ?? 1, device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), state);
+			=> new HoldingEventArgs(ptId ?? 1, device ?? (PointerDeviceType?)_currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), state);
 
 		public static DraggingEventArgs Drag(PointerPoint point, DraggingState state)
 			=> new DraggingEventArgs(point, state, 1);

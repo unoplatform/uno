@@ -23,7 +23,7 @@ using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.ListViewPages;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Extras.DevTools.Input;
 
 #if __APPLE_UIKIT__
 using UIKit;
@@ -276,7 +276,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 							{
 								Name = "ListControl"
 							};
-							tvl.SetBinding(FrameworkElement.BackgroundProperty, new TemplateBinding(new PropertyPath("Background")));
+							tvl.SetBinding(Control.BackgroundProperty, new TemplateBinding(new PropertyPath("Background")));
 							tvl.SetBinding(ItemsControl.ItemTemplateProperty, new TemplateBinding(new PropertyPath("ItemTemplate")));
 							tvl.SetBinding(ItemsControl.ItemTemplateSelectorProperty, new TemplateBinding(new PropertyPath("ItemTemplateSelector")));
 							tvl.SetBinding(ItemsControl.ItemTemplateSelectorProperty, new TemplateBinding(new PropertyPath("ItemTemplateSelector")));

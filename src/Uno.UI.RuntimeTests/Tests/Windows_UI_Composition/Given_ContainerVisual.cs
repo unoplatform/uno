@@ -16,7 +16,7 @@ using Uno.Disposables;
 using Uno.Extensions.Specialized;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.WinUI.Graphics2DSK;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Extras.DevTools.Input;
 using CollectionExtensions = Uno.Extensions.CollectionExtensions;
 using RectExtensions = Uno.Extensions.RectExtensions;
 

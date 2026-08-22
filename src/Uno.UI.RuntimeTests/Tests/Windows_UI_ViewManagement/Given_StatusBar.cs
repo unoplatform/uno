@@ -19,11 +19,6 @@ public class Given_StatusBar
 	[RequiresFullWindow]
 	public async Task StatusBar_Background_Value_ShouldDisplaceRenderArea()
 	{
-		if (!FeatureConfiguration.AndroidSettings.IsEdgeToEdgeEnabled)
-		{
-			Assert.Inconclusive("This test is only relevant when Edge2Edge is enabled.");
-		}
-
 		var sb = StatusBar.GetForCurrentView();
 		var av = ApplicationView.GetForCurrentView();
 		if (sb.OccludedRect.Height == 0 || av.IsFullScreenMode)
@@ -39,7 +34,7 @@ public class Given_StatusBar
 
 			var outerGrid = XamlHelper.LoadXaml<Grid>("""
 				<Grid BorderBrush="Red" BorderThickness="5">
-					<Grid toolkit:VisibleBoundsPadding.PaddingMask="All">
+					<Grid extras:VisibleBoundsPadding.PaddingMask="All">
 						<Border Background="SkyBlue" />
 					</Grid>
 				</Grid>

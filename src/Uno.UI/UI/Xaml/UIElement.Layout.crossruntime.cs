@@ -1,5 +1,4 @@
-﻿#if !__NETSTD_REFERENCE__
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Controls;
@@ -37,7 +36,7 @@ namespace Microsoft.UI.Xaml
 
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
 
-			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath && !IsMeasureDirtyPathDisabled)
+			if (!IsMeasureDirtyPathDisabled)
 			{
 				InvalidateParentMeasureDirtyPath();
 			}
@@ -104,7 +103,7 @@ namespace Microsoft.UI.Xaml
 
 			SetLayoutFlags(LayoutFlag.ArrangeDirty);
 
-			if (FeatureConfiguration.UIElement.UseInvalidateArrangePath && !IsArrangeDirtyPathDisabled)
+			if (!IsArrangeDirtyPathDisabled)
 			{
 				InvalidateParentArrangeDirtyPath();
 			}
@@ -218,7 +217,6 @@ namespace Microsoft.UI.Xaml
 				isFirstMeasure
 				|| (availableSize != m_previousAvailableSize)
 				|| IsMeasureDirty
-				|| !FeatureConfiguration.UIElement.UseInvalidateMeasurePath // dirty_path disabled globally
 				|| IsMeasureDirtyPathDisabled;
 
 			var isMeasureDirtyPath = IsMeasureDirtyPath;
@@ -489,4 +487,3 @@ namespace Microsoft.UI.Xaml
 		}
 	}
 }
-#endif

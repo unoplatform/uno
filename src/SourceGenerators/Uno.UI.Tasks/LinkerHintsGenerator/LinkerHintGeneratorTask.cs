@@ -50,11 +50,6 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		public string OutputPath { get; set; } = "";
 
 		[Required]
-		public string UnoUIPackageBasePath { get; set; } = "";
-
-		public string UnoRuntimeIdentifier { get; set; } = "";
-
-		[Required]
 		public Microsoft.Build.Framework.ITaskItem[] TrimmerRootDescriptor { get; set; } = [];
 
 		[Required]
@@ -158,7 +153,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				$"--trim-mode link",
 				$"--action link",
 				$"-b true",
-				$"-a {AssemblyPath} entrypoint",
+				$"-a {Path.GetFileNameWithoutExtension(AssemblyPath)} entrypoint",
 				$"-out {outputPath}",
 				rootDescriptors,
 				referencedAssemblies,
@@ -170,12 +165,23 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 			File.WriteAllText(file, paramString);
 
 			Directory.CreateDirectory(OutputPath);
-
 			var res = StartProcess("dotnet", $"\"{linkerPath}\" @{file}", CurrentProjectPath);
 
-			if (!string.IsNullOrEmpty(res.error))
+			if (res.error.Count > 0)
 			{
-				Log.LogError(res.error);
+				foreach (var error in res.error)
+				{
+					Log.LogError(error);
+				}
+			}
+
+			if (res.exitCode != 0)
+			{
+				// in https://github.com/dotnet/runtime/issues/126268, the `error IL1032` messages were written to stdout!
+				foreach (var error in res.output.Where(e => e.Contains(" error ")))
+				{
+					Log.LogError(error);
+				}
 			}
 		}
 
@@ -244,7 +250,8 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 
 		private bool IsDependencyObject(TypeDefinition type)
 		{
-			if (type.Interfaces.Any(c => c.InterfaceType.FullName == "Microsoft.UI.Xaml.DependencyObject"))
+			// DependencyObject is a base class; the recursion below bottoms out here when it is reached.
+			if (type.FullName == "Microsoft.UI.Xaml.DependencyObject")
 			{
 				return true;
 			}
@@ -357,15 +364,10 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		{
 			if (ReferencePath != null)
 			{
-				var unoUIPackageBasePath = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(UnoUIPackageBasePath)));
-
+				// Uno.WinUI ships the Skia build in lib/ with no uno-runtime folder to redirect to.
 				foreach (var referencePath in ReferencePath)
 				{
-					var isReferenceAssembly = referencePath.GetMetadata("PathInPackage")?.StartsWith("ref/", StringComparison.OrdinalIgnoreCase) ?? false;
-					var hasConcreteAssembly = isReferenceAssembly && ReferencePath.Any(innerReference => HasConcreteAssemblyForReferenceAssembly(innerReference, referencePath));
-
-					var name = Path.GetFileName(referencePath.ItemSpec);
-					_referencedAssemblies.Add(RewriteReferencePath(referencePath.ItemSpec, unoUIPackageBasePath, UnoRuntimeIdentifier));
+					_referencedAssemblies.Add(referencePath.ItemSpec);
 				}
 
 				var searchPaths = ReferencePath
@@ -380,51 +382,13 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 					_assemblyResolver.AddSearchDirectory(assembly);
 				}
 			}
-
-			string RewriteReferencePath(string referencePath, string unoUIPackageBasePath, string unoRuntimeIdentifier)
-			{
-				var separator = Path.DirectorySeparatorChar;
-				unoRuntimeIdentifier = unoRuntimeIdentifier.ToLowerInvariant();
-
-				var runtimeTargetFramework =
-					new Version(TargetFrameworkVersion) >= new Version("9.0")
-					? "net9.0"
-					: "netstandard2.0";
-
-				var isUnoRuntimeEnabled = (unoRuntimeIdentifier == "skia" || unoRuntimeIdentifier == "webassembly") &&
-						referencePath.StartsWith(unoUIPackageBasePath, StringComparison.Ordinal);
-
-				if (isUnoRuntimeEnabled)
-				{
-					var originalFolderPath = $"lib{separator}{runtimeTargetFramework}";
-					var preUno46FolderPart = $"uno-runtime{separator}{unoRuntimeIdentifier}";
-					var postUno46FolderPathPart = $"uno-runtime{separator}{runtimeTargetFramework}{separator}{unoRuntimeIdentifier}";
-
-					var post46Path = referencePath.Replace(originalFolderPath, postUno46FolderPathPart);
-					var pre46Path = referencePath.Replace(originalFolderPath, preUno46FolderPart);
-
-					if (File.Exists(post46Path))
-					{
-						return post46Path;
-					}
-					else if (File.Exists(pre46Path))
-					{
-						return pre46Path;
-					}
-				}
-
-				return referencePath;
-			}
 		}
-
-		private static bool HasConcreteAssemblyForReferenceAssembly(ITaskItem other, ITaskItem referenceAssembly)
-			=> Path.GetFileName(other.ItemSpec) == Path.GetFileName(referenceAssembly.ItemSpec) && (other.GetMetadata("PathInPackage")?.StartsWith("lib/", StringComparison.OrdinalIgnoreCase) ?? false);
 
 
 		private string AlignPath(string outputPath)
 			=> outputPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar).Replace(new string(Path.DirectorySeparatorChar, 2), Path.DirectorySeparatorChar.ToString());
 
-		private (int exitCode, string output, string error) StartProcess(string executable, string parameters, string workingDirectory)
+		private (int exitCode, List<string> output, List<string> error) StartProcess(string executable, string parameters, string workingDirectory)
 		{
 			Log.LogMessage(
 				DefaultLogMessageLevel,
@@ -447,12 +411,12 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				p.StartInfo.WorkingDirectory = workingDirectory;
 			}
 
-			var output = new StringBuilder();
-			var error = new StringBuilder();
+			var output = new List<string>();
+			var error = new List<string>();
 			var elapsed = Stopwatch.StartNew();
 
-			p.OutputDataReceived += (s, e) => { if (e.Data != null) { Log.LogMessage(DefaultLogMessageLevel, $"[{elapsed.Elapsed}] {e.Data}"); output.Append(e.Data); } };
-			p.ErrorDataReceived += (s, e) => { if (e.Data != null) { Log.LogError($"[{elapsed.Elapsed}] {e.Data}"); error.Append(e.Data); } };
+			p.OutputDataReceived += (s, e) => { if (e.Data != null) { Log.LogMessage(DefaultLogMessageLevel, $"[{elapsed.Elapsed}] {e.Data}"); output.Add(e.Data); } };
+			p.ErrorDataReceived += (s, e) => { if (e.Data != null) { Log.LogError($"[{elapsed.Elapsed}] {e.Data}"); error.Add(e.Data); } };
 
 			if (p.Start())
 			{
@@ -464,7 +428,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				p.CancelOutputRead();
 				p.Close();
 
-				return (exitCore, output.ToString(), error.ToString());
+				return (exitCore, output, error);
 			}
 			else
 			{

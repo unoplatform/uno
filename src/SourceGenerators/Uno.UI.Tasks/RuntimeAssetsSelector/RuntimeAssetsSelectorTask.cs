@@ -26,7 +26,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 	/// </summary>
 	public class RuntimeAssetsSelectorTask_v0 : Microsoft.Build.Utilities.Task
 	{
-		private const int LatestSupportedDotnetVersion = 10; // **MUST BE** net10.0 aligned (Keep this comment to ease upgrade to later versions of .NET)
+		private const int LatestSupportedDotnetVersion = 11; // **MUST BE** net11.0 aligned (Keep this comment to ease upgrade to later versions of .NET)
 
 		// Even if Uno does not support net7.0 explicitly anymore, dependencies
 		// may still be providing net7.0 runtime support files (e.g. SkiaSharp)
@@ -105,8 +105,8 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				//         - We do nothing
 				//     Two layer mode:
 				//         - For Wasm Skia, we do nothing.
-				//         - For Android Skia, iOS, Mac Catalyst, or tvOS Skia:
-				//             - Adjust both RuntimeCopyLocalItems and ResolvedCompileFileDefinitions such that netX.0 binaries are used instead of netX.0-android, -ios, -maccatalyst, or -tvos
+				//         - For Android Skia, iOS, or tvOS Skia:
+				//             - Adjust both RuntimeCopyLocalItems and ResolvedCompileFileDefinitions such that netX.0 binaries are used instead of netX.0-android, -ios, or -tvos
 				//                 - maybe we should prefer netX.0-desktop over netX.0, if exists.
 				//                 - we should only do that for dlls that reference Uno.UI.dll (use Mono.Cecil to detect that)
 
@@ -481,7 +481,6 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 								var targetFramework = split[3];
 								if (targetFramework.Contains("-android") ||
 									targetFramework.Contains("-ios") ||
-									targetFramework.Contains("-maccatalyst") |
 									targetFramework.Contains("-tvos"))
 								{
 									var packageVersion = split[1];
@@ -493,7 +492,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 									var adjustedPath = $"{nugetCacheRoot}{packageName}/{packageVersion}/lib/{adjustedTargetFramework}/{dllFileName}";
 									if (File.Exists(adjustedPath))
 									{
-										var originalAssembly = AssemblyDefinition.ReadAssembly(identityNormalized);
+										using var originalAssembly = AssemblyDefinition.ReadAssembly(identityNormalized);
 										if (!originalAssembly.MainModule.AssemblyReferences.Any(m => m.Name == "Uno.UI"))
 										{
 											// We only need to retarget packages that are explicitly referencing Uno.UI
@@ -558,7 +557,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		}
 
 		private bool IsSkiaMobileRuntimeIdentifier(string runtimeIdentifier)
-			=> runtimeIdentifier is "android" or "ios" or "maccatalyst" or "tvos";
+			=> runtimeIdentifier is "android" or "ios" or "tvos";
 
 		private bool IsSkiaMobileOrWasmRuntimeIdentifier(string runtimeIdentifier) =>
 			IsSkiaMobileRuntimeIdentifier(runtimeIdentifier) || runtimeIdentifier is "webassembly";

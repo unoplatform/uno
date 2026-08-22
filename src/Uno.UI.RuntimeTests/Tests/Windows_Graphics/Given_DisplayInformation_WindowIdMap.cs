@@ -3,7 +3,7 @@
 // DisplayInformation is a process singleton, not per-window — so these tests cannot run there.
 // Two guards are needed: the #if !__ANDROID__ keeps a native-Android compilation clean, while the
 // class-level [PlatformCondition] excludes Skia-on-Android at runtime — that assembly is compiled
-// generically (so __ANDROID__ is not defined) yet loads the Android Uno.UWP, where the seam is
+// generically (so __ANDROID__ is not defined) yet loads the Android Uno.dll, where the seam is
 // absent and the call would otherwise throw MissingMethodException.
 #if HAS_UNO && !__ANDROID__
 #nullable enable

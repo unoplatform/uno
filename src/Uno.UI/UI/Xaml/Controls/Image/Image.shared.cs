@@ -37,9 +37,6 @@ partial class Image
 	/// Returns an Empty string as the Description for the Image.
 	/// </summary>
 	internal
-#if __APPLE_UIKIT__
-		new
-#endif
 		string Description
 	{
 		// UNO TODO: Description on Image is not implemented

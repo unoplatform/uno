@@ -3,43 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-	[global::Microsoft.UI.Xaml.Markup.ContentPropertyAttribute(Name = "ProjectionMatrix")]
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
+#if false
+	[global::Uno.NotImplemented]
 #endif
 	public partial class Matrix3DProjection : global::Microsoft.UI.Xaml.Media.Projection
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ProjectionMatrixProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ProjectionMatrix), typeof(global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D),
-			typeof(global::Microsoft.UI.Xaml.Media.Matrix3DProjection),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D ProjectionMatrix
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D)this.GetValue(ProjectionMatrixProperty);
-			}
-			set
-			{
-				this.SetValue(ProjectionMatrixProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public Matrix3DProjection() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Matrix3DProjection", "Matrix3DProjection()");
-		}
-#endif
+		// Skipping already declared property ProjectionMatrixProperty
+		// Skipping already declared property ProjectionMatrix
+		// Skipping already declared method Microsoft.UI.Xaml.Media.Matrix3DProjection.Matrix3DProjection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.Matrix3DProjection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.ProjectionMatrixProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Matrix3DProjection.ProjectionMatrix.get

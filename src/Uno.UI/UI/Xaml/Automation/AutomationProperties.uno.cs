@@ -13,53 +13,6 @@ public sealed partial class AutomationProperties
 {
 	private static void OnAutomationIdChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 	{
-#if __APPLE_UIKIT__
-		if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is UIKit.UIView view)
-		{
-			view.AccessibilityIdentifier = (string)args.NewValue;
-		}
-#elif __ANDROID__
-		if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is AView view)
-		{
-			view.ContentDescription = (string)args.NewValue;
-		}
-#elif __WASM__
-		if (dependencyObject is UIElement uiElement)
-		{
-			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
-			{
-				// Use safe cast + trim + remove-when-empty so we never throw on a null NewValue
-				// or persist a stale xamlautomationid="" attribute in the DOM. Matches the WASM
-				// Skia ``setXamlAutomationId`` and ``setAriaStringAttribute`` contracts.
-				var automationId = (args.NewValue as string)?.Trim();
-				if (!string.IsNullOrEmpty(automationId))
-				{
-					uiElement.SetAttribute("xamlautomationid", automationId);
-				}
-				else
-				{
-					uiElement.RemoveAttribute("xamlautomationid");
-				}
-			}
-
-			// AutomationId is a test/automation identifier, not an accessible name source.
-			// aria-label must be sourced from AutomationProperties.Name (peer name resolution),
-			// not from AutomationId — otherwise assistive tech announces the dev-only id.
-
-			var role = FindHtmlRole(uiElement);
-			if (!string.IsNullOrEmpty(role))
-			{
-				uiElement.SetAttribute("role", role);
-			}
-			else
-			{
-				// FR-020 role-token normalization can now return null for non-ARIA control types.
-				// Explicitly clear any previously-set role so stale tokens don't survive a normalization
-				// change (or a control-type swap) that drops the role for this element.
-				uiElement.RemoveAttribute("role");
-			}
-		}
-#endif
 	}
 
 	private static void OnNamePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -104,11 +57,11 @@ public sealed partial class AutomationProperties
 #endif
 	}
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
 	internal static string? FindHtmlRole(UIElement uIElement)
 	{
 		// Uno-specific: allow explicit role override via AutomationPropertiesExtensions.Role
-		// (defined in Uno.UI.Toolkit). The provider is registered via RoleOverrideProvider.
+		// (defined in Uno.UI.Extras). The provider is registered via RoleOverrideProvider.
 		var roleOverride = GetRoleOverride(uIElement);
 		if (!string.IsNullOrEmpty(roleOverride))
 		{
@@ -277,7 +230,7 @@ public sealed partial class AutomationProperties
 #endif
 
 	/// <summary>
-	/// Attached property allowing role override to be supplied by external assemblies (e.g. Uno.UI.Toolkit).
+	/// Attached property allowing role override to be supplied by external assemblies (e.g. Uno.UI.Extras).
 	/// This avoids the need for a delegate/provider and simplifies lookups.
 	/// </summary>
 	public static DependencyProperty RoleOverrideProperty { get; } =

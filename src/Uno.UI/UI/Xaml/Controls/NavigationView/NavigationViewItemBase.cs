@@ -49,7 +49,7 @@ public partial class NavigationViewItemBase : ContentControl
 
 	// TODO: MZ Uno specific: existing Depth property inherited from base class
 	internal
-#if __NETSTD_REFERENCE__ || __SKIA__ || __WASM__
+#if __NETSTD_REFERENCE__ || __SKIA__
 		new
 #endif
 		int Depth
@@ -89,20 +89,4 @@ public partial class NavigationViewItemBase : ContentControl
 		}
 	}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-	// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle),
-	// so an item may be prepared before its template was applied; reapply it on demand.
-	// private protected (not protected): gated by !UNO_HAS_ENHANCED_LIFECYCLE, which the reference build
-	// doesn't define, so an accessible member here would diverge from the Skia/WASM API surface.
-	private protected bool _fullyInitialized = false;
-
-	internal void Reinitialize()
-	{
-		if (!_fullyInitialized)
-		{
-			OnApplyTemplate();
-		}
-		UpdateVisualState(false);
-	}
-#endif
 }

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Input;
+using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Input;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 

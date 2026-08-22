@@ -226,9 +226,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region IScrollAnchorProvider / IRepeaterScrollingSurface
 
-		internal double HorizontalAnchorRatio { get; set; }
+		public double HorizontalAnchorRatio { get; set; }
 
-		internal double VerticalAnchorRatio { get; set; }
+		public double VerticalAnchorRatio { get; set; }
 
 		UIElement IRepeaterScrollingSurface.AnchorElement => GetAnchorElement(out _);
 

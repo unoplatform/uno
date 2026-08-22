@@ -1,7 +1,4 @@
-﻿#if __IOS__ || __ANDROID__
-#define SUPPORTS_NATIVE_DATEPICKER
-#endif
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -234,7 +231,7 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						CoreWindowActivationState state =
 							CoreWindowActivationState.CodeActivated;
-						state = (args.WindowActivationState);
+						state = (CoreWindowActivationState)args.WindowActivationState;
 
 						if (state == CoreWindowActivationState.CodeActivated
 							|| state == CoreWindowActivationState.PointerActivated)

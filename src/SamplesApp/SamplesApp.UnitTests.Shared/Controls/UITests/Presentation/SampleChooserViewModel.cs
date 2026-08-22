@@ -357,7 +357,15 @@ namespace SampleControl.Presentation
 
 							if (control is IWaitableSample waitableSample)
 							{
-								await waitableSample.SamplePreparedTask;
+								// Cap the wait so a sample that never signals readiness can't stall the
+								// whole screenshot run until the CI job timeout. A timeout yields one bad
+								// screenshot for this sample instead of hanging every remaining sample.
+								var timeoutTask = Task.Delay(TimeSpan.FromMinutes(2), ct);
+								if (await Task.WhenAny(waitableSample.SamplePreparedTask, timeoutTask) == timeoutTask)
+								{
+									Console.WriteLine($"Timed out waiting for sample {fileName} to be prepared (IWaitableSample.SamplePreparedTask).");
+									_log.Error($"Timed out waiting for sample {fileName} to be prepared (IWaitableSample.SamplePreparedTask).");
+								}
 							}
 
 #if HAS_UNO

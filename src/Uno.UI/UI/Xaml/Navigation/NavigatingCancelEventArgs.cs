@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Navigation;
 /// </summary>
 public sealed partial class NavigatingCancelEventArgs
 {
-	public NavigatingCancelEventArgs(NavigationMode navigationMode, NavigationTransitionInfo navigationTransitionInfo, object parameter, Type sourcePageType)
+	internal NavigatingCancelEventArgs(NavigationMode navigationMode, NavigationTransitionInfo navigationTransitionInfo, object parameter, Type sourcePageType)
 	{
 		NavigationMode = navigationMode;
 		NavigationTransitionInfo = navigationTransitionInfo;

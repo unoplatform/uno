@@ -17,10 +17,6 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class AutoSuggestBox : ItemsControl
@@ -68,24 +64,6 @@ namespace Microsoft.UI.Xaml.Controls
 					AutomationProperties.SetName(_textBox, automationName);
 				}
 			}
-
-			// Uno specific: If the user enabled the legacy behavior for popup light dismiss default
-			// we force it to false explicitly to make sure the AutoSuggestBox works correctly.
-			if (FeatureConfiguration.Popup.EnableLightDismissByDefault)
-			{
-				_popup.IsLightDismissEnabled = false;
-			}
-
-#if __ANDROID__
-			_popup.DisableFocus();
-#endif
-
-#if __APPLE_UIKIT__
-			if (_textBox is { } textbox)
-			{
-				textbox.IsKeepingFocusOnEndEditing = true;
-			}
-#endif
 
 			UpdateTextBox();
 			UpdateDescriptionVisibility(true);

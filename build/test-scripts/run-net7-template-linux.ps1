@@ -28,7 +28,7 @@ $projects =
 @(
     # 5.3 Blank with net9
     @(0, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @(), @()),
-    @(0, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net10.0-browserwasm", "-p:UseArtifactsOutput=true", "-p:UnoXamlResourcesTrimming=true"), @()),
+    @(0, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net11.0-browserwasm", "-p:UseArtifactsOutput=true", "-p:UnoXamlResourcesTrimming=true"), @()),
 
     # 5.3 lib
     @(1, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @()),
@@ -37,10 +37,10 @@ $projects =
     @(1, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @(), @()),
     
     # 5.6 net-current with XAML trimming validation - desktop
-    @(1, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net10.0-desktop", "-p:UnoXamlResourcesTrimming=true", "-p:PublishTrimmed=true", "-r", "linux-x64"), @("Publish")),
+    @(1, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoXamlResourcesTrimming=true", "-p:PublishTrimmed=true", "-r", "linux-x64"), @("Publish")),
     
     # 5.6 net-current with XAML trimming validation - wasm
-    @(1, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net10.0-browserwasm", "-p:UnoXamlResourcesTrimming=true", "-p:WasmShellILLinkerEnabled=true"), @("Publish")),
+    @(1, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-browserwasm", "-p:UnoXamlResourcesTrimming=true", "-p:WasmShellILLinkerEnabled=true"), @("Publish")),
 
     # 5.3 Uno App with Library reference
     @(2, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @(), @()),
@@ -48,12 +48,6 @@ $projects =
     # 5.3 blank publish testing
     # Disabled for LXD setup issues
     # @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f:net9.0-desktop", "-p:SelfContained=true", "-p:PackageFormat=snap"), @("Publish"))
-
-    # 5.6 Android/ios/Wasm+Skia nuget package first
-    @(3, "5.6/uno56droidioswasmskia/Uno56NugetLibrary/Uno56NugetLibrary.csproj", @("-p:PackageOutputPath=$env:BUILD_SOURCESDIRECTORY/src/PackageCache"), @("CleanNugetTemp","NoBuildClean")),
-
-    # 5.6 Android/ios/Wasm+Skia
-    @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @(), @()),
 
     # 5.6 Win32+Skia
     @(3, "5.6/uno56net9win32/uno56net9win32/uno56net9win32.csproj", @(), @()),
@@ -136,20 +130,35 @@ for($i = 0; $i -lt $projects.Length; $i++)
 # SkiaSharp.NativeAssets.Linux too. The base SkiaSharp package pulls its Win32/macOS native assets
 # but not the Linux one, so without the Uno.Sdk injecting it the Linux native stays at the runtime
 # packs' floor while managed SkiaSharp moves up — a silent mismatch that crashes Skia Desktop on Linux.
+#
+# The check compares the two resolved versions against each other rather than against a literal:
+# the desktop runtime packs floor SkiaSharp.NativeAssets.Linux at $(SkiaSharpVersion), so pinning
+# this to any other version is either a downgrade NuGet rejects (NU1605) or a literal that has to
+# be re-pinned on every bump. Equality is the invariant that actually matters.
 if ($TestGroup -eq '1')
 {
     $skiaAlignProject = "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj"
-    $skiaAlignVersion = "4.148.0"
     $skiaAlignAssets = "5.6/uno56netcurrent/uno56netcurrent/obj/project.assets.json"
 
-    Write-Host "Validating SkiaSharp.NativeAssets.Linux aligns with an overridden SkiaSharpVersion ($skiaAlignVersion) - issue #23658"
-    dotnet restore $skiaAlignProject "-p:SkiaSharpVersion=$skiaAlignVersion" "-p:RestoreConfigFile=$env:NUGET_CI_CONFIG" -p:EnableWindowsTargeting=true -bl:binlogs/skiasharp-linux-alignment/restore.binlog
+    Write-Host "Validating SkiaSharp.NativeAssets.Linux resolves alongside managed SkiaSharp - issue #23658"
+    dotnet restore $skiaAlignProject "-p:RestoreConfigFile=$env:NUGET_CI_CONFIG" -p:EnableWindowsTargeting=true -bl:binlogs/skiasharp-linux-alignment/restore.binlog
     Assert-ExitCodeIsZero
 
     $assets = Get-Content $skiaAlignAssets -Raw
-    if ($assets -notmatch [regex]::Escape("SkiaSharp.NativeAssets.Linux/$skiaAlignVersion"))
+    $managedVersion = [regex]::Match($assets, '"SkiaSharp/(?<v>[^"]+)"').Groups['v'].Value
+    $linuxVersion = [regex]::Match($assets, '"SkiaSharp\.NativeAssets\.Linux/(?<v>[^"]+)"').Groups['v'].Value
+
+    if (-not $managedVersion)
     {
-        throw "SkiaSharp.NativeAssets.Linux did not resolve to $skiaAlignVersion to match the overridden managed SkiaSharp. The Uno.Sdk must inject the Linux native asset for desktop heads (issue #23658)."
+        throw "Managed SkiaSharp did not resolve at all for a Linux desktop head, so the native asset alignment cannot be validated (issue #23658)."
     }
-    Write-Host "SkiaSharp.NativeAssets.Linux correctly aligned to $skiaAlignVersion"
+    if (-not $linuxVersion)
+    {
+        throw "SkiaSharp.NativeAssets.Linux was not resolved. The Uno.Sdk must inject the Linux native asset for desktop heads (issue #23658)."
+    }
+    if ($managedVersion -ne $linuxVersion)
+    {
+        throw "SkiaSharp.NativeAssets.Linux resolved to $linuxVersion but managed SkiaSharp resolved to $managedVersion. A mismatch crashes Skia Desktop on Linux at startup (issue #23658)."
+    }
+    Write-Host "SkiaSharp.NativeAssets.Linux correctly aligned to $linuxVersion"
 }
