@@ -11,6 +11,12 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// <summary>
 /// Exposes RichEditBox types to Microsoft UI Automation.
 /// </summary>
+/// <remarks>
+/// On Skia, links and inline images are managed text-object children for Text/Text2 range navigation.
+/// A browser textarea cannot contain semantic element children, so the WebAssembly semantic DOM keeps
+/// RichEditBox as one native textarea and does not duplicate its inline text as descendant link/image
+/// nodes. The managed automation tree remains available without adding a Value pattern.
+/// </remarks>
 public partial class RichEditBoxAutomationPeer : FrameworkElementAutomationPeer, IValueProvider
 {
 	private TextAdapter m_textPattern;
@@ -24,13 +30,17 @@ public partial class RichEditBoxAutomationPeer : FrameworkElementAutomationPeer,
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Edit;
 
+	protected override IList<AutomationPeer> GetChildrenCore()
+	{
+#if __SKIA__
+		return GetTextObjectChildrenCore();
+#else
+		return Array.Empty<AutomationPeer>();
+#endif
+	}
+
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
-		if (patternInterface == PatternInterface.Value)
-		{
-			return this;
-		}
-
 		if (patternInterface == PatternInterface.Text
 			|| patternInterface == PatternInterface.Text2
 			|| patternInterface == PatternInterface.TextEdit)
@@ -45,12 +55,16 @@ public partial class RichEditBoxAutomationPeer : FrameworkElementAutomationPeer,
 		return base.GetPatternCore(patternInterface);
 	}
 
-	// IValueProvider
+	internal void RaiseIsReadOnlyPropertyChangedEvent(bool oldValue, bool newValue)
+		=> RaisePropertyChangedEvent(ValuePatternIdentifiers.IsReadOnlyProperty, oldValue, newValue);
 
+	/// <inheritdoc />
 	public string Value => TextAdapter.GetEffectiveText((Controls.RichEditBox)Owner);
 
+	/// <inheritdoc />
 	public bool IsReadOnly => ((Controls.RichEditBox)Owner).IsReadOnly;
 
+	/// <inheritdoc />
 	public void SetValue(string value)
 	{
 		if (IsReadOnly)
@@ -58,16 +72,9 @@ public partial class RichEditBoxAutomationPeer : FrameworkElementAutomationPeer,
 			throw new InvalidOperationException("Cannot set value on a read-only RichEditBox.");
 		}
 
-		// RichEditTextDocument.SetText is NotImplemented on most Uno targets — swallow
-		// silently so the AT call doesn't crash. When the underlying API is wired up,
-		// this becomes the natural surface for screen-reader-driven mutations.
-		try
-		{
-			((Controls.RichEditBox)Owner).Document?.SetText(Microsoft.UI.Text.TextSetOptions.None, value ?? string.Empty);
-		}
-		catch
-		{
-		}
+		((Controls.RichEditBox)Owner).Document?.SetText(
+			Microsoft.UI.Text.TextSetOptions.None,
+			value ?? string.Empty);
 	}
 
 	protected override string GetNameCore()

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -141,21 +142,28 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 						dispose = false;
 						new Thread(() =>
 						{
-							using var _2 = Disposable.Create(() =>
+							try
 							{
-								PInvoke.ReleaseStgMedium(ref hdropMedium);
-								asyncCapability->EndOperation(HRESULT.S_OK, null, (uint)DropEffect);
-								asyncCapabilityScope.Dispose();
-							});
+								using var _2 = Disposable.Create(() =>
+								{
+									PInvoke.ReleaseStgMedium(ref hdropMedium);
+									asyncCapability->EndOperation(HRESULT.S_OK, null, (uint)DropEffect);
+									asyncCapabilityScope.Dispose();
+								});
 
-							var files = Win32ClipboardExtension.GetFileDropList(hdropMedium.u.hGlobal);
-							if (files is null)
-							{
-								_tcs.SetException(new InvalidOperationException("Failed to retrieve file drop list from HDROP."));
+								var files = Win32ClipboardExtension.GetFileDropList(hdropMedium.u.hGlobal);
+								if (files is null)
+								{
+									_tcs.TrySetException(new InvalidOperationException("Failed to retrieve file drop list from HDROP."));
+								}
+								else
+								{
+									_tcs.TrySetResult(files);
+								}
 							}
-							else
+							catch (Exception error) when (error is ArgumentException or IOException or InvalidOperationException or NotSupportedException or UnauthorizedAccessException or COMException)
 							{
-								_tcs.SetResult(files);
+								_tcs.TrySetException(error);
 							}
 						}).Start();
 					}
@@ -168,4 +176,3 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 		}
 	}
 }
-

@@ -71,6 +71,8 @@ void uno_window_move(NSWindow *window, double x, double y);
 bool uno_window_resize(NSWindow *window, double width, double height);
 
 void uno_window_get_position(NSWindow *window, double *x, double *y);
+void uno_window_convert_local_to_screen(NSWindow *window, double x, double y, double *screenX, double *screenY);
+void uno_window_convert_screen_to_local(NSWindow *window, double screenX, double screenY, double *x, double *y);
 char* uno_window_get_title(NSWindow *window);
 void uno_window_set_title(NSWindow *window, const char* title);
 
@@ -366,6 +368,7 @@ void uno_set_ime_callbacks(ime_insert_text_callback_fn_ptr insertText,
                            ime_unmark_text_callback_fn_ptr unmarkText,
                            ime_get_caret_rect_callback_fn_ptr getCaretRect);
 void uno_set_ime_active(UNOWindow* window, bool active);
+void uno_notify_ime_position_changed(UNOWindow* window);
 
 ime_insert_text_callback_fn_ptr uno_get_ime_insert_text_callback(void);
 ime_set_marked_text_callback_fn_ptr uno_get_ime_set_marked_text_callback(void);

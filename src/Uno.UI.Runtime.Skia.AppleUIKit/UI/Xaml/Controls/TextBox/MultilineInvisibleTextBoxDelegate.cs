@@ -35,13 +35,8 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 	{
 		if (textView is MultilineInvisibleTextBoxView textBoxView)
 		{
-			if (_textBoxViewExtension.GetTarget()?.Owner.TextBox is not TextBox textBox)
-			{
-				return false;
-			}
-
-			// Both IsReadOnly = true and IsTabStop = false can prevent editing
-			if (textBox.IsReadOnly || !textBox.IsTabStop)
+			if (_textBoxViewExtension.GetTarget()?.Owner.Host is not IImeSessionHost host
+				|| !host.CanAcceptTextInput)
 			{
 				return false;
 			}
@@ -70,13 +65,13 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 			//	return false;
 			//}
 
-			if (textBox.MaxLength > 0)
+			if (host.MaxLength > 0)
 			{
 				// When replacing text from pasting (multiple characters at once)
 				// we should only allow it (return true) when the new text length
-				// is lower or equal to the allowed length (TextBox.MaxLength)
+				// is lower or equal to the allowed length.
 				var newLength = (textBoxView.Text?.Length ?? 0) + replacementString.Length - range.Length;
-				return newLength <= textBox.MaxLength;
+				return newLength <= host.MaxLength;
 			}
 		}
 
@@ -93,9 +88,9 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 	/// </summary>
 	public override void EditingStarted(UITextView textView)
 	{
-		if (_textBoxViewExtension.GetTarget()?.Owner.TextBox is TextBox textBox && textBox.FocusState == FocusState.Unfocused)
+		if (_textBoxViewExtension.GetTarget()?.Owner.Host is Control control && control.FocusState == FocusState.Unfocused)
 		{
-			textBox.Focus(FocusState.Pointer);
+			control.Focus(FocusState.Pointer);
 		}
 	}
 
@@ -107,9 +102,9 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 		var bindableTextView = textView as MultilineInvisibleTextBoxView;
 		bindableTextView?.OnTextChanged();
 
-		if (_textBoxViewExtension.GetTarget()?.Owner.TextBox is TextBox { FocusState: not FocusState.Unfocused } textBox)
+		if (_textBoxViewExtension.GetTarget()?.Owner.Host is Control { FocusState: not FocusState.Unfocused } control)
 		{
-			textBox.Unfocus();
+			control.Unfocus();
 		}
 	}
 }
