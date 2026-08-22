@@ -427,6 +427,8 @@ namespace Microsoft.UI.Xaml
 #if __SKIA__
 			SystemThemeHelper.HighContrastChanged += OnHighContrastChanged;
 #endif
+			AccentColorHelper.AccentColorChanged += OnAccentColorChanged;
+			AccentColorResourceUpdater.UpdateAccentColorResources();
 
 			InitializeTextScaling();
 
@@ -463,7 +465,21 @@ namespace Microsoft.UI.Xaml
 			// is suppressed — the FrameworkTheming-native form of the old IsThemeSetExplicitly guard.
 			WinUICoreServices.Instance.Theming.OnThemeChanged();
 
+			// Some platforms piggyback accent color changes on theme change events.
+			// RefreshAccentColor raises AccentColorChanged (→ OnAccentColorChanged → OnColorValuesChanged)
+			// when the accent actually changed; only notify here when it didn't, so ColorValuesChanged
+			// fires once per effective change.
+			if (!AccentColorHelper.RefreshAccentColor())
+			{
+				UISettings.OnColorValuesChanged();
+			}
+		}
+
+		private void OnAccentColorChanged(object sender, EventArgs e)
+		{
+			AccentColorResourceUpdater.UpdateAccentColorResources();
 			UISettings.OnColorValuesChanged();
+			OnResourcesChanged(ResourceUpdateReason.ThemeResource);
 		}
 
 #if __SKIA__
