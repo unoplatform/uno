@@ -109,11 +109,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// </summary>
 		private void Play()
 		{
-#if __SKIA__
 			PlayDeferred();
-#else
-			PlayImmediate();
-#endif
 		}
 
 		private void PlayImmediate()
@@ -147,9 +143,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				);
 			}
 
-#if __SKIA__
 			CancelDeferredPlay();
-#endif
 			// We explicitly call the Stop of the _frameScheduler before the Reset dispose it,
 			// so the EndReason will be Stopped instead of Aborted.
 			_frameScheduler?.Stop();
@@ -223,9 +217,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.SkipToFill()
 		{
-#if __SKIA__
 			CancelDeferredPlay();
-#endif
 			// Set value to last keytime and set state to filling
 			_frameScheduler?.Dispose();
 			_frameScheduler = null;
@@ -244,9 +236,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.Deactivate()
 		{
-#if __SKIA__
 			CancelDeferredPlay();
-#endif
 			Reset();
 		}
 
