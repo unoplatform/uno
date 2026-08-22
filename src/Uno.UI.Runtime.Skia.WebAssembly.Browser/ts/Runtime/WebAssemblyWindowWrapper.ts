@@ -72,6 +72,8 @@ namespace Uno.UI.Runtime.Skia {
 				window.visualViewport.addEventListener("scroll", () => this.reportKeyboardOcclusion());
 			}
 
+			this.watchDevicePixelRatio();
+
 			this.resize();
 		}
 
@@ -105,6 +107,28 @@ namespace Uno.UI.Runtime.Skia {
 
 			this.lastReportedOcclusion = occludedHeight;
 			this.onViewportOcclusionChanged(this.owner, layout.width, layout.height, occludedHeight);
+		}
+
+		private watchDevicePixelRatio() {
+			// Some browsers (notably Safari) do not raise a 'resize' event when the
+			// window is moved between displays with different pixel densities. Watch
+			// devicePixelRatio with matchMedia and dispatch a synthetic 'resize' so
+			// the window wrapper and canvas renderer pick up the new scale. The
+			// media query targets the current devicePixelRatio, so it must be
+			// re-registered after every change.
+			if (!window.matchMedia) {
+				return;
+			}
+
+			const register = () => {
+				const query = window.matchMedia(`(resolution: ${globalThis.devicePixelRatio}dppx)`);
+				query.addEventListener("change", () => {
+					window.dispatchEvent(new Event("resize"));
+					register();
+				}, { once: true });
+			};
+
+			register();
 		}
 
 		public static removeLoading() {
