@@ -14,7 +14,6 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
-using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
@@ -267,12 +266,6 @@ partial class AutoSuggestBox
 					m_tpPopupPart.Opened -= OnPopupOpened;
 				}
 			});
-
-			// Uno specific: Disable light dismiss if the legacy behavior is enabled
-			if (FeatureConfiguration.Popup.EnableLightDismissByDefault)
-			{
-				m_tpPopupPart.IsLightDismissEnabled = false;
-			}
 		}
 
 		// Configure Suggestions Container part
