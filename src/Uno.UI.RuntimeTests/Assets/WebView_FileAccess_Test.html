@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>File Access Test</title>
+    <link rel="stylesheet" href="WebView_FileAccess_Test.css">
+</head>
+<body>
+    <div id="test-div">Test Content</div>
+    <script>
+        // Set a flag that can be checked by the test to verify the page loaded
+        window.fileAccessTestLoaded = true;
+        
+        // Check if CSS was loaded by reading the computed style
+        window.addEventListener('load', function() {
+            var testDiv = document.getElementById('test-div');
+            var computedStyle = window.getComputedStyle(testDiv);
+            window.cssLoaded = computedStyle.backgroundColor === 'rgb(0, 128, 0)' || computedStyle.backgroundColor === 'green';
+        });
+    </script>
+</body>
+</html>
