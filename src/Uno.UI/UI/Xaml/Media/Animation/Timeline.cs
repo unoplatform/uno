@@ -425,7 +425,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		private protected virtual void OnThemeChanged() { }
 
-#if __SKIA__
 		#region TimeManager integration (WinUI CTimeline)
 
 		/// <summary>
@@ -463,7 +462,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		#endregion
-#endif
 
 		// Finalization must not be suppressed here: it would also skip the inherited ~DependencyObject,
 		// leaving the binder state and its pooled references unreleased. The flag skips only the

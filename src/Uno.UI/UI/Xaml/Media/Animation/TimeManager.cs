@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference: dxaml/xcp/core/animation/timemgr.cpp, dxaml/xcp/core/inc/timemgr.h
 
-#if __SKIA__
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -552,4 +551,3 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 	}
 }
-#endif

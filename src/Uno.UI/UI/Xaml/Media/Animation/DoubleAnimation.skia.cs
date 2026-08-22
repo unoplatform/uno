@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference: dxaml/xcp/core/animation/animation.cpp — CAnimation::UpdateAnimation (non-keyframe)
 
-#if __SKIA__
 using System;
 using System.Globalization;
 
@@ -143,4 +142,3 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 	}
 }
-#endif

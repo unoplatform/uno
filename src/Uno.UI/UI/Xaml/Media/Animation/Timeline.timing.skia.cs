@@ -3,7 +3,6 @@
 // MUX Reference: dxaml/xcp/core/animation/Timeline.cpp
 //   CTimeline::ComputeStateImpl, ComputeCurrentClockState, ComputeLocalProgressAndTime
 
-#if __SKIA__
 using System;
 
 namespace Microsoft.UI.Xaml.Media.Animation
@@ -347,4 +346,3 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 	}
 }
-#endif
