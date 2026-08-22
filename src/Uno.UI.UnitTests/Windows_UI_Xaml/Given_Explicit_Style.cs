@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
 using Uno.UI.Tests.Helpers;
+using Uno.UI;
 using Windows.Foundation;
 using Windows.UI;
 using Microsoft.UI.Xaml;
@@ -158,6 +159,62 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			button2.Measure(new Size(1000, 1000));
 
 			Assert.IsNotNull(button2.Style.BasedOn);
+		}
+
+		[TestMethod]
+		public void When_Default_Style_Provider_Is_Replaced()
+		{
+			AssertProviderReplacement(typeof(UwpDefaultStyleTestControl), isNative: false);
+			AssertProviderReplacement(typeof(NativeDefaultStyleTestControl), isNative: true);
+
+			static void AssertProviderReplacement(Type type, bool isNative)
+			{
+				var originalStyle = new Style(type);
+				var replacementStyle = new Style(type);
+
+				FeatureConfiguration.Style.UseUWPDefaultStylesOverride[type] = !isNative;
+				try
+				{
+					Style.RegisterDefaultStyleForType(
+						type,
+						new TestResourceDictionaryProvider(type, originalStyle),
+						isNative);
+					Assert.AreSame(originalStyle, Style.GetDefaultStyleForType(type));
+
+					Style.RegisterDefaultStyleForType(
+						type,
+						new TestResourceDictionaryProvider(type, replacementStyle),
+						isNative);
+					Assert.AreSame(replacementStyle, Style.GetDefaultStyleForType(type));
+				}
+				finally
+				{
+					FeatureConfiguration.Style.UseUWPDefaultStylesOverride.Remove(type);
+				}
+			}
+		}
+
+		private sealed class UwpDefaultStyleTestControl : Control
+		{
+		}
+
+		private sealed class NativeDefaultStyleTestControl : Control
+		{
+		}
+
+		private sealed class TestResourceDictionaryProvider : IXamlResourceDictionaryProvider
+		{
+			private readonly ResourceDictionary _resources;
+
+			public TestResourceDictionaryProvider(Type type, Style style)
+			{
+				_resources = new ResourceDictionary
+				{
+					[type] = style,
+				};
+			}
+
+			public ResourceDictionary GetResourceDictionary() => _resources;
 		}
 	}
 }
