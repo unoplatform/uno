@@ -42,9 +42,9 @@ internal static class ThemeResolution
 	internal static Theme ResolvePinnedOwnerTheme(DependencyObject? owner)
 	{
 #if UNO_HAS_ENHANCED_LIFECYCLE
-		if (owner is IDependencyObjectStoreProvider { Store: { IsProcessingThemeWalk: true } ownerStore })
+		if (owner is { IsProcessingThemeWalk: true })
 		{
-			return ownerStore.WalkTheme;
+			return owner.WalkTheme;
 		}
 #endif
 
