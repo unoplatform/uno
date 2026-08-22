@@ -11,18 +11,18 @@ Set-PSDebug -Trace 1
 $external_docs = @{
     # use either commit, or branch name to use its latest commit
     "uno.wasm.bootstrap" = @{ ref="1e094106842f6e7f43075f06d2a0354077da3a0f" }  #latest main commit
-    "uno.themes"         = @{ ref="d20cd74337c6e5b8564a9871be46243a0bac8aac" }  #latest master commit
-    "uno.toolkit.ui"     = @{ ref="a4fde4fc6f46e231dc109227cd6e02a493bada34" }  #latest main commit
+    "uno.themes"         = @{ ref="0438da0347594090448dd2c9ea923745aa3d7f8e" }  #latest master commit
+    "uno.toolkit.ui"     = @{ ref="b7a1a3ea2b0092d23aecda90b5d23e73728e43b3" }  #latest main commit
     "uno.check"          = @{ ref="b84ac3182979c12fdd34041147928e508026ac98" }  #latest main commit
     "uno.xamlmerge.task" = @{ ref="081dcfa44b5ce24ac0948675e5ee6b781e2107bc" }  #latest main commit
     "figma-docs"         = @{ ref="842a2792282b88586a337381b2b3786e779973b4" }  #latest main commit
     "uno.resizetizer"    = @{ ref="e422ad9f26cf21ed02c339e717e0dd0189bb566e" }  #latest main commit
     "uno.uitest"         = @{ ref="94d027295b779e28064aebf99aeaee2b393ad558" }  #latest master commit
-    "uno.extensions"     = @{ ref="3f5d79e4c4fad547bd651c4766f9d753d637330f" }  #latest main commit
+    "uno.extensions"     = @{ ref="32faf32b5d44b518401c92965be18e312c3ce3b5" }  #latest main commit
     "workshops"          = @{ ref="3515c29e03dea36cf2206d797d1bf9f8620370e3" }  #latest master commit
-    "uno.samples"        = @{ ref="a925b2115956900b677aadf387a18000bf66a338" }  #latest master commit
+    "uno.samples"        = @{ ref="60d60c8fa12fd4c03c312a74c07c41c6aefe91a6" }  #latest master commit
     "uno.chefs"          = @{ ref="a3241a14b04fc86a407fbcade997ba9e83b32c1d" }  #latest main commit
-    "hd-docs"            = @{ ref="30cdbc9be50ebb9450d55f5cda809998ee23eb1c"; dest="studio/Hot Design" } #latest main commit
+    "hd-docs"            = @{ ref="f0d12c19e0158a27508ce926fec2ccd2caadde6f"; dest="studio/Hot Design" } #latest main commit
     "studio-docs"        = @{ ref="3b86af4dac3e7a21c41b619960d14848ce95e2fd" }  #latest main commit
 }
 
