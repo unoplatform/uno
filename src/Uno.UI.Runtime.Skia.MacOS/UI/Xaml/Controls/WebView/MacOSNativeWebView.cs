@@ -17,11 +17,11 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 {
 	private readonly MacOSWindowNative _window;
 	private readonly CoreWebView2 _owner;
-	private readonly nint _webview;
 	private string _previousTitle;
 	private bool _isHistoryChangeQueued;
 	private bool _isCancelling;
 	private string? _lastHtmlContent;
+	private nint _registeredHandle;
 
 	private const string OkResourceKey = "WebView_Ok";
 	private const string CancelResourceKey = "WebView_Cancel";
@@ -55,26 +55,63 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 		OkString = !string.IsNullOrEmpty(ok) ? ok : "OK";
 		CancelString = !string.IsNullOrEmpty(cancel) ? cancel : "Cancel";
 
-		_webview = NativeUno.uno_webview_create(_window.Handle, OkString, CancelString);
-		NativeHandle = _webview;
+		NativeHandle = NativeUno.uno_webview_create(_window.Handle, OkString, CancelString);
 
-		NativeUno.uno_webview_set_inspectable(_webview, global::Uno.UI.FeatureConfiguration.WebView2.EnableDevTools);
+		NativeUno.uno_webview_set_inspectable(NativeHandle, global::Uno.UI.FeatureConfiguration.WebView2.EnableDevTools);
 
 		_previousTitle = "";
 	}
 
+	/// <summary>
+	/// Resolves the native <c>WKWebView</c> handle, refusing to hand a disposed peer to native code.
+	/// </summary>
+	/// <remarks>
+	/// The peer is destroyed when the element leaves the visual tree, which zeroes
+	/// <see cref="MacOSNativeElement.NativeHandle"/>. Messaging the freed <c>WKWebView</c> would make ARC
+	/// retain deallocated memory and take down the whole process, so each operation has to fail on its own.
+	/// </remarks>
+	private bool TryGetHandle(string operation, out nint handle)
+	{
+		handle = NativeHandle;
+
+		if (Disposed || handle == 0)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Cannot {operation} a WebView2 whose native peer was already disposed.");
+			}
+
+			return false;
+		}
+
+		return true;
+	}
+
 	void ICleanableNativeWebView.OnLoaded()
 	{
-		_webViews[NativeHandle] = new WeakReference<MacOSNativeWebView>(this);
-		NativeUno.uno_webview_register_message_handler(NativeHandle);
+		// A zeroed handle would key the map at 0, which every disposed instance would then share.
+		if (TryGetHandle("register the message handler of", out var handle))
+		{
+			_registeredHandle = handle;
+			_webViews[handle] = new WeakReference<MacOSNativeWebView>(this);
+			NativeUno.uno_webview_register_message_handler(handle);
+		}
 	}
 
 	void ICleanableNativeWebView.OnUnloaded()
 	{
-		_webViews.Remove(NativeHandle);
+		// Removed by the remembered key, not by NativeHandle: the unload order between the WebView2 and
+		// its native element is undefined, so the peer may already be disposed and the handle zeroed.
+		if (_registeredHandle != 0)
+		{
+			_webViews.Remove(_registeredHandle);
+			_registeredHandle = 0;
+		}
 	}
 
-	public string DocumentTitle => NativeUno.uno_webview_get_title(_webview);
+	public string DocumentTitle => TryGetHandle("read the document title of", out var handle)
+		? NativeUno.uno_webview_get_title(handle)
+		: "";
 
 	public async Task<string?> ExecuteScriptAsync(string script, CancellationToken token)
 	{
@@ -85,11 +122,16 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 			this.Log().Debug($"ExecuteScriptAsync: {executedScript}");
 		}
 
+		if (!TryGetHandle("execute a script on", out var webview))
+		{
+			return null;
+		}
+
 		var tcs = new TaskCompletionSource<string>();
 		using (token.Register(() => tcs.TrySetCanceled()))
 		{
 			var handle = GCHandle.Alloc(tcs);
-			NativeUno.uno_webview_execute_script(_webview, GCHandle.ToIntPtr(handle), script);
+			NativeUno.uno_webview_execute_script(webview, GCHandle.ToIntPtr(handle), script);
 		}
 
 		return await tcs.Task;
@@ -116,9 +158,21 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 		gch.Free();
 	}
 
-	public void GoBack() => NativeUno.uno_webview_go_back(_webview);
+	public void GoBack()
+	{
+		if (TryGetHandle("navigate back", out var handle))
+		{
+			NativeUno.uno_webview_go_back(handle);
+		}
+	}
 
-	public void GoForward() => NativeUno.uno_webview_go_forward(_webview);
+	public void GoForward()
+	{
+		if (TryGetHandle("navigate forward", out var handle))
+		{
+			NativeUno.uno_webview_go_forward(handle);
+		}
+	}
 
 	public async Task<string?> InvokeScriptAsync(string script, string[]? arguments, CancellationToken token)
 	{
@@ -138,11 +192,16 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 			this.Log().Debug($"InvokeScriptAsync: {javascript}");
 		}
 
+		if (!TryGetHandle("invoke a script on", out var webview))
+		{
+			return null;
+		}
+
 		var tcs = new TaskCompletionSource<string?>();
 		using (token.Register(() => tcs.TrySetCanceled()))
 		{
 			var handle = GCHandle.Alloc(tcs);
-			NativeUno.uno_webview_invoke_script(_webview, GCHandle.ToIntPtr(handle), javascript);
+			NativeUno.uno_webview_invoke_script(webview, GCHandle.ToIntPtr(handle), javascript);
 			return await tcs.Task;
 		}
 	}
@@ -191,7 +250,10 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 			url = uri.AbsoluteUri;
 		}
 
-		NativeUno.uno_webview_navigate(_webview, url, null);
+		if (TryGetHandle("navigate", out var handle))
+		{
+			NativeUno.uno_webview_navigate(handle, url, null);
+		}
 	}
 
 	public void ProcessNavigation(string html)
@@ -202,7 +264,10 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 		}
 
 		_lastHtmlContent = html;
-		NativeUno.uno_webview_load_html(_webview, html);
+		if (TryGetHandle("load HTML into", out var handle))
+		{
+			NativeUno.uno_webview_load_html(handle, html);
+		}
 	}
 
 	public void ProcessNavigation(HttpRequestMessage httpRequestMessage)
@@ -218,32 +283,49 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 		if (url is not null)
 		{
 			var headers = JsonSerializer.Serialize(httpRequestMessage.Headers);
-			NativeUno.uno_webview_navigate(_webview, url, headers);
+			if (TryGetHandle("navigate", out var handle))
+			{
+				NativeUno.uno_webview_navigate(handle, url, headers);
+			}
 		}
 	}
 
 	public void Reload()
 	{
+		if (!TryGetHandle("reload", out var handle))
+		{
+			return;
+		}
+
 		if (_lastHtmlContent != null)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Debug($"Reloading cached HTML content");
 			}
-			NativeUno.uno_webview_load_html(_webview, _lastHtmlContent);
+			NativeUno.uno_webview_load_html(handle, _lastHtmlContent);
 		}
 		else
 		{
-			NativeUno.uno_webview_reload(_webview);
+			NativeUno.uno_webview_reload(handle);
 		}
 	}
 
 	public void SetScrollingEnabled(bool isScrollingEnabled)
 	{
-		NativeUno.uno_webview_set_scrolling_enabled(_webview, isScrollingEnabled);
+		if (TryGetHandle("set the scrolling mode of", out var handle))
+		{
+			NativeUno.uno_webview_set_scrolling_enabled(handle, isScrollingEnabled);
+		}
 	}
 
-	public void Stop() => NativeUno.uno_webview_stop(_webview);
+	public void Stop()
+	{
+		if (TryGetHandle("stop", out var handle))
+		{
+			NativeUno.uno_webview_stop(handle);
+		}
+	}
 
 	private static readonly Dictionary<nint, WeakReference<MacOSNativeWebView>> _webViews = [];
 
@@ -264,9 +346,18 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 
 	private void SetHistoryProperties()
 	{
-		_owner.SetHistoryProperties(
-			NativeUno.uno_webview_can_go_back(_webview),
-			NativeUno.uno_webview_can_go_forward(_webview));
+		// A disposed peer reports no history rather than keeping the last known values: a stale `true`
+		// would invite a GoBack/GoForward call that can no longer do anything.
+		var canGoBack = false;
+		var canGoForward = false;
+
+		if (TryGetHandle("read the navigation history of", out var handle))
+		{
+			canGoBack = NativeUno.uno_webview_can_go_back(handle);
+			canGoForward = NativeUno.uno_webview_can_go_forward(handle);
+		}
+
+		_owner.SetHistoryProperties(canGoBack, canGoForward);
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
