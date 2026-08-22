@@ -22,15 +22,12 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]
 
 [assembly: InternalsVisibleTo("SamplesApp")]
-[assembly: InternalsVisibleTo("SamplesApp.Droid")]
 [assembly: InternalsVisibleTo("SamplesApp.macOS")]
-[assembly: InternalsVisibleTo("SamplesApp.Skia")]
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
 
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Tizen")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Linux.FrameBuffer")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Headless")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.WebAssembly.Browser")]
