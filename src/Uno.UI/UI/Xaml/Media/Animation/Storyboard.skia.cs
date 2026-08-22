@@ -4,7 +4,6 @@
 //                dxaml/xcp/core/animation/ParallelTimeline.cpp — CParallelTimeline::UpdateAnimation
 //                dxaml/xcp/core/animation/TimelineGroup.cpp — CTimelineGroup::ComputeStateImpl
 
-#if __SKIA__
 using System;
 using System.Linq;
 using Uno.UI.Xaml.Core;
@@ -425,4 +424,3 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 	}
 }
-#endif

@@ -424,7 +424,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		private protected virtual void OnThemeChanged() { }
 
-#if __SKIA__
 		#region TimeManager integration (WinUI CTimeline)
 
 		/// <summary>
@@ -462,7 +461,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		#endregion
-#endif
 
 		~Timeline()
 		{

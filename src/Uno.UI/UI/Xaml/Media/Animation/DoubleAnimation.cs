@@ -91,7 +91,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.Begin()
 		{
-#if __SKIA__
 			if (IsParentStoryboardRegistered())
 			{
 				_isTimeManagerDriven = true;
@@ -102,13 +101,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				State = TimelineState.Active;
 				return;
 			}
-#endif
 			_animationImplementation.Begin();
 		}
 
 		void ITimeline.Stop()
 		{
-#if __SKIA__
 			if (_isTimeManagerDriven)
 			{
 				_isTimeManagerDriven = false;
@@ -117,31 +114,26 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				State = TimelineState.Stopped;
 				return;
 			}
-#endif
 			_animationImplementation.Stop();
 		}
 
 		void ITimeline.Resume()
 		{
-#if __SKIA__
 			if (_isTimeManagerDriven)
 			{
 				State = TimelineState.Active;
 				return;
 			}
-#endif
 			_animationImplementation.Resume();
 		}
 
 		void ITimeline.Pause()
 		{
-#if __SKIA__
 			if (_isTimeManagerDriven)
 			{
 				State = TimelineState.Paused;
 				return;
 			}
-#endif
 			_animationImplementation.Pause();
 		}
 
@@ -151,7 +143,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.SkipToFill()
 		{
-#if __SKIA__
 			if (_isTimeManagerDriven)
 			{
 				_isTimeManagerDriven = false;
@@ -163,13 +154,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				OnCompleted();
 				return;
 			}
-#endif
 			_animationImplementation.SkipToFill();
 		}
 
 		void ITimeline.Deactivate()
 		{
-#if __SKIA__
 			if (_isTimeManagerDriven)
 			{
 				_isTimeManagerDriven = false;
@@ -177,7 +166,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				State = TimelineState.Stopped;
 				return;
 			}
-#endif
 			_animationImplementation.Deactivate();
 		}
 

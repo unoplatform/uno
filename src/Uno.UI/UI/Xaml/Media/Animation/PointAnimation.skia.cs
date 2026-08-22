@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference: dxaml/xcp/core/animation/PointAnimation.cpp — CPointAnimation::InterpolateCurrentValue
 
-#if __SKIA__
 using System;
 using Windows.Foundation;
 
@@ -142,4 +141,3 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 	}
 }
-#endif

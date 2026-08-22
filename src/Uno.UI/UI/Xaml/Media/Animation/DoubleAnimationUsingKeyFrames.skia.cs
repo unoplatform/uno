@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference: dxaml/xcp/core/animation/animation.cpp — CAnimation::UpdateAnimationUsingKeyFrames
 
-#if __SKIA__
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -294,4 +293,3 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 	}
 }
-#endif

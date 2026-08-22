@@ -89,7 +89,6 @@ namespace Uno.UI.Xaml.Core
 			_isInTick = true;
 			try
 			{
-#if __SKIA__
 				// MUX Reference: CCoreServices::Tick() (xcpcore.cpp line 4106)
 				// Tick all active animations BEFORE layout so animated property values
 				// are applied before Measure/Arrange. This matches WinUI's frame cycle:
@@ -111,9 +110,6 @@ namespace Uno.UI.Xaml.Core
 						Microsoft.UI.Xaml.Media.CompositionTarget.PhaseAddLayout(global::System.Diagnostics.Stopwatch.GetTimestamp() - phaseTicksT0);
 					}
 				}
-#else
-				UpdateLayoutForAllRoots();
-#endif
 			}
 			finally
 			{
@@ -165,12 +161,9 @@ namespace Uno.UI.Xaml.Core
 					root.UpdateLayout();
 				}
 
-#if __SKIA__
 				(root.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
-#endif
 			}
 
-#if __SKIA__
 			// MUX Reference: Second tick pass in CCoreServices::Tick()
 			// Tick only timelines added during layout (e.g., animations started by
 			// Loaded event handlers or layout-triggered VisualState transitions).
@@ -179,7 +172,6 @@ namespace Uno.UI.Xaml.Core
 			{
 				TimeManager.Instance.Tick(newTimelinesOnly: true);
 			}
-#endif
 		}
 
 		// TODO Uno: This will not be a singleton when multi-window setups are supported.
