@@ -17,6 +17,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 public class Given_NumberBox_Uno_UITest : SampleControlUITestBase
 {
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Migrated Uno-only test; SampleControlUITestBase needs InputInjector, unavailable in the WinAppSDK MSIX.
 	public async Task When_Header_Is_Custom_Content()
 	{
 		var headerContent = new TextBlock { Text = "This is a NumberBox Header" };
@@ -40,7 +41,7 @@ public class Given_NumberBox_Uno_UITest : SampleControlUITestBase
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm)] // Screenshots need HAS_RENDER_TARGET_BITMAP, unavailable on native WASM (DOM).
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeWinUI)] // Screenshots need HAS_RENDER_TARGET_BITMAP, unavailable on native WASM (DOM); WinUI lacks InputInjector in the MSIX.
 	public async Task When_Description_Is_Custom_Content()
 	{
 		var descriptionBorder = new Border
