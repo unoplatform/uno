@@ -343,6 +343,9 @@ public partial class GestureRecognizer
 		{
 #if __SKIA__
 			private EventHandler<long>? _handler;
+			// Unsubscribe from the target we subscribed to: MainFrameDriverTarget can change or go null,
+			// and a missed -= leaks a frame driver that keeps the compositor ticking forever.
+			private Microsoft.UI.Xaml.Media.CompositionTarget? _target;
 			private long _startTimestamp;
 
 			public bool IsRunning => _handler is not null;
@@ -368,6 +371,7 @@ public partial class GestureRecognizer
 
 					onTick(TimeSpan.FromTicks(timestamp - _startTimestamp));
 				};
+				_target = target;
 				target.FrameStarting += _handler;
 			}
 
@@ -375,9 +379,10 @@ public partial class GestureRecognizer
 			{
 				if (_handler is not null)
 				{
-					if (Microsoft.UI.Xaml.Media.CompositionTarget.MainFrameDriverTarget is { } target)
+					if (_target is { } target)
 					{
 						target.FrameStarting -= _handler;
+						_target = null;
 					}
 
 					_handler = null;

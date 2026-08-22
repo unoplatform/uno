@@ -2213,6 +2213,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				because: $"the fling must stay proportionate to the {dragDistance:F0}px flick that launched it");
 		}
 
+#if HAS_UNO // ScrollViewer.UpdatesMode is Uno-specific
 		[TestMethod]
 #if __WASM__
 		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
@@ -2272,5 +2273,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				advanced,
 				$"Every 1px move should advance the offset, got [{string.Join(", ", offsets)}].");
 		}
+#endif
 	}
 }

@@ -49,7 +49,7 @@ public partial class CompositionTarget
 			{
 				Compositor.RemoveFrameDriver();
 
-					// The grid's phase means nothing across the gap until the next motion starts.
+				// The grid's phase means nothing across the gap until the next motion starts.
 				_frameClock.Reset();
 			}
 		}
