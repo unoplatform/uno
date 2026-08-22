@@ -1246,8 +1246,8 @@ internal sealed unsafe class WebGpuRenderSurface
 	public IntPtr MsaaColorView;     // multisampled color the pass renders into, resolved into View
 	public IntPtr DepthTex;
 	public IntPtr DepthView;         // multisampled depth/stencil (clip mask + stencil-then-cover)
-	// Render-bundle cache for this surface's main pass (see RenderInto): the present session is per-frame, so
-	// the cache lives here; a resize allocates a new surface, which naturally resets it.
+									 // Render-bundle cache for this surface's main pass (see RenderInto): the present session is per-frame, so
+									 // the cache lives here; a resize allocates a new surface, which naturally resets it.
 	public DrawOp[] BundleOps = Array.Empty<DrawOp>();
 	public int BundleOpsN = -1;
 	public IntPtr[] BundleChunks = Array.Empty<IntPtr>();
