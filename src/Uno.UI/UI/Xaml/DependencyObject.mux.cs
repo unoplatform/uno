@@ -3,9 +3,9 @@
 // MUX Reference depends.cpp, commit fc2f82117
 //
 // CDependencyObject::Enter/EnterImpl/Leave/LeaveImpl. In WinUI these are methods on
-// CDependencyObject; in Uno, DependencyObject is an interface on every target, so the
-// CDependencyObject layer lives on the DependencyObject that every DependencyObject owns
-// (operating on ActualInstance). UIElement's visual Enter walk (UIElement.mux.cs, ported from
+// CDependencyObject; in Uno, DependencyObject is the concrete base class that directly carries the
+// property store, so the CDependencyObject layer lives on it (ActualInstance is an identity alias
+// returning `this`). UIElement's visual Enter walk (UIElement.mux.cs, ported from
 // uielement.cpp) calls into this layer exactly where CUIElement::EnterImpl calls
 // CDependencyObject::EnterImpl. The enter-property walks live in
 // DependencyObject.PropertySystem.mux.cs (ported from PropertySystem.cpp).

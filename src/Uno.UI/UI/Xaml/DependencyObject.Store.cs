@@ -57,8 +57,6 @@ namespace Microsoft.UI.Xaml
 
 		private static readonly IEventProvider _trace = Tracing.Get(DependencyObjectTraceProvider.Id);
 
-		private bool _isDisposed;
-
 		private readonly DependencyPropertyDetailsCollection _properties;
 		private ResourceBindingCollection? _resourceBindings;
 		private ThemeResourceMap? _themeResources;
@@ -99,8 +97,6 @@ namespace Microsoft.UI.Xaml
 		/// The theme last to apply theme bindings on this object and its children.
 		/// </summary>
 		private SpecializedResourceDictionary.ResourceKey? _themeLastUsed;
-
-		internal bool IsDisposed => _isDisposed;
 
 		private InheritedPropertiesDisposable? InheritedProperties
 		{
@@ -221,7 +217,7 @@ namespace Microsoft.UI.Xaml
 			_originalObjectType = effectiveOwner.GetType();
 			_dataContextProperty = effectiveOwner is FrameworkElement ? FrameworkElement.DataContextProperty : null;
 
-			_properties = new DependencyPropertyDetailsCollection(SelfWeakReference, _dataContextProperty);
+			_properties = new DependencyPropertyDetailsCollection(this, _dataContextProperty);
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 			TemplatedParentScope.UpdateTemplatedParentIfNeeded(this, store: this);
@@ -238,13 +234,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		// Every DependencyObject is finalizable so pooled weak references and property details are
-		// returned when it is collected without an explicit teardown. BinderDispose is idempotent and
-		// guards against the finalizer/dispatcher race.
-		~DependencyObject()
-		{
-			BinderDispose();
-		}
+		// DependencyObject is deliberately not finalizable: it is the most-instantiated type in the
+		// framework, and nothing it owns needs finalization. The pooled weak handles it rents are freed
+		// by ManagedGCHandle's own finalizer, and the property details it holds are plain managed state.
 
 		/// <summary>
 		/// Determines if the dependency object automatically registers for inherited
@@ -656,8 +648,8 @@ namespace Microsoft.UI.Xaml
 
 					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
-						var name = (SelfWeakReference.Target as IFrameworkElement)?.Name ?? SelfWeakReference.Target?.GetType().Name;
-						var hashCode = SelfWeakReference.Target?.GetHashCode();
+						var name = (this as IFrameworkElement)?.Name ?? GetType().Name;
+						var hashCode = GetHashCode();
 
 						this.Log().Debug(
 							$"SetValue on [{name}/{hashCode:X8}] for [{property.Name}] to [{newValue}] (req:{value} reqp:{precedence} p:{previousValue} pp:{previousPrecedence} np:{newPrecedence})"
@@ -949,7 +941,7 @@ namespace Microsoft.UI.Xaml
 			if (FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite)
 			{
 				var isFrameworkElement = _originalObjectType.Is(typeof(FrameworkElement));
-				var isMixinFrameworkElement = SelfWeakReference.Target is IFrameworkElement && !isFrameworkElement;
+				var isMixinFrameworkElement = this is IFrameworkElement && !isFrameworkElement;
 
 				if (
 					!_originalObjectType.Is(property.OwnerType)
@@ -1946,9 +1938,6 @@ namespace Microsoft.UI.Xaml
 		{
 			var propertyMetadata = property.Metadata;
 
-			// We can reuse the weak reference, otherwise capture the weak reference to this instance.
-			var instanceRef = SelfWeakReference;
-
 			if (propertyMetadata is FrameworkPropertyMetadata frameworkPropertyMetadata)
 			{
 				if (frameworkPropertyMetadata.Options.HasLogicalChild())
@@ -1980,9 +1969,15 @@ namespace Microsoft.UI.Xaml
 				if (frameworkPropertyMetadata.Options.HasInherits())
 				{
 					var localChildrenStores = _childrenStores;
-					for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+					if (localChildrenStores.Count > 0)
 					{
-						CallChildCallback(localChildrenStores[storeIndex], instanceRef, property, newValue);
+						// Minted only once we know there is an inheriting child: a leaf object never
+						// reaches this and so never rents a weak self-handle.
+						var instanceRef = SelfWeakReference;
+						for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+						{
+							CallChildCallback(localChildrenStores[storeIndex], instanceRef, property, newValue);
+						}
 					}
 				}
 			}
@@ -2037,10 +2032,14 @@ namespace Microsoft.UI.Xaml
 
 			// Raise the property change for generic handlers
 			var currentCallbacks = _genericCallbacks.Data;
-			for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
+			if (currentCallbacks.Length > 0)
 			{
-				var callback = currentCallbacks[callbackIndex];
-				callback.Invoke(instanceRef, property, eventArgs);
+				var instanceRef = SelfWeakReference;
+				for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
+				{
+					var callback = currentCallbacks[callbackIndex];
+					callback.Invoke(instanceRef, property, eventArgs);
+				}
 			}
 
 			// Cleanup to avoid leaks
@@ -2299,8 +2298,6 @@ namespace Microsoft.UI.Xaml
 			if (FeatureConfiguration.DependencyObject.IsStoreHardReferenceEnabled)
 			{
 				_hardParentRef = Parent;
-
-				_properties.TryEnableHardReferences();
 			}
 		}
 
@@ -2312,8 +2309,6 @@ namespace Microsoft.UI.Xaml
 			if (FeatureConfiguration.DependencyObject.IsStoreHardReferenceEnabled)
 			{
 				_hardParentRef = null;
-
-				_properties.DisableHardReferences();
 			}
 		}
 
