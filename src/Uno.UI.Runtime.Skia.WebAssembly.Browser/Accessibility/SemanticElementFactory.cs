@@ -49,6 +49,18 @@ internal static partial class SemanticElementFactory
 		var attributes = AriaMapper.GetAriaAttributes(peer);
 		var capabilities = AriaMapper.GetPatternCapabilities(peer);
 
+		// WA-04 / FR-019: when AutomationProperties.LabeledBy resolves to a labeller that has its own
+		// semantic node, aria-labelledby (an IDREF) provides the accessible name and takes ARIA
+		// precedence. ResolveLabel also flattens LabeledBy into a literal name, so suppress that
+		// aria-label here to avoid emitting both aria-labelledby and a redundant/competing aria-label.
+		var labelledById = ResolveLabelledByIdRef(peer);
+		if (labelledById is not null)
+		{
+			attributes.Label = null;
+		}
+
+		var hasAccessibleName = !string.IsNullOrEmpty(attributes.Label) || labelledById is not null;
+
 		var created = elementType switch
 		{
 			SemanticElementType.Button => CreateButtonElement(peer, handle, parentHandle, index, x, y, width, height, attributes, isFocusable),
@@ -112,7 +124,7 @@ internal static partial class SemanticElementFactory
 		}
 
 		// Apply landmark role if set (VoiceOver rotor landmark navigation)
-		if (created && !string.IsNullOrEmpty(attributes.LandmarkRole))
+		if (created && AriaMapper.CanExposeLandmarkRole(attributes.LandmarkRole, hasAccessibleName))
 		{
 			NativeMethods.UpdateLandmarkRole(handle, attributes.LandmarkRole);
 		}
@@ -158,17 +170,13 @@ internal static partial class SemanticElementFactory
 		}
 
 		// Apply aria-labelledby when AutomationProperties.LabeledBy resolves to a labeller that has
-		// its own semantic node. The IDREF is computed here (not in AriaMapper) because only the
+		// its own semantic node. The IDREF is computed above (not in AriaMapper) because only the
 		// WASM layer can map the labeller UIElement → its uno-semantics-{handle} id and verify the
-		// node is actually present (no dangling IDREF — FR-019/FR-022). aria-labelledby is independent
-		// of aria-label: both can be present.
-		if (created)
+		// node is actually present (no dangling IDREF — FR-019/FR-022). When it is present the
+		// competing flattened aria-label has already been suppressed (see WA-04 above).
+		if (created && labelledById is not null)
 		{
-			var labelledById = ResolveLabelledByIdRef(peer);
-			if (labelledById is not null)
-			{
-				NativeMethods.UpdateAriaLabelledBy(handle, labelledById);
-			}
+			NativeMethods.UpdateAriaLabelledBy(handle, labelledById);
 		}
 
 		// Apply relationship attributes (aria-describedby, aria-controls, aria-flowto)
@@ -1264,7 +1272,8 @@ internal static partial class SemanticElementFactory
 
 	/// <summary>
 	/// Resolves a collection of AutomationPeers to a space-separated list of DOM element IDs
-	/// using the uno-semantics-{handle} convention.
+	/// using the uno-semantics-{handle} convention. Returns an empty string when the collection
+	/// exists but none of its peers has a semantic node, allowing live updates to clear stale IDREFs.
 	/// </summary>
 	internal static string? ResolvePeerCollectionToIdList(IEnumerable<AutomationPeer>? peers)
 	{
@@ -1279,7 +1288,11 @@ internal static partial class SemanticElementFactory
 			if (relatedPeer is FrameworkElementAutomationPeer { Owner: { } relatedOwner })
 			{
 				var relatedHandle = relatedOwner.Visual.Handle;
-				if (relatedHandle != IntPtr.Zero)
+				// WA-02 / FR-022: only reference a related element that actually has a semantic node.
+				// Otherwise aria-describedby/controls/flowto would emit a dangling IDREF pointing at a
+				// non-existent uno-semantics-{handle} id (matches the LabeledBy gate above).
+				if (relatedHandle != IntPtr.Zero &&
+					WebAssemblyAccessibility.Instance.HasSemanticElement(relatedHandle))
 				{
 					sb ??= new StringBuilder();
 					if (sb.Length > 0)
@@ -1292,7 +1305,7 @@ internal static partial class SemanticElementFactory
 			}
 		}
 
-		return sb?.ToString();
+		return sb?.ToString() ?? string.Empty;
 	}
 
 	private static partial class NativeMethods
@@ -1346,7 +1359,7 @@ internal static partial class SemanticElementFactory
 		internal static partial void UpdateAriaDescription(IntPtr handle, string description);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateLandmarkRole")]
-		internal static partial void UpdateLandmarkRole(IntPtr handle, string role);
+		internal static partial void UpdateLandmarkRole(IntPtr handle, string? role);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaRoleDescription")]
 		internal static partial void UpdateAriaRoleDescription(IntPtr handle, string roleDescription);
