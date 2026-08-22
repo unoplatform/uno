@@ -5,9 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using AwesomeAssertions.Execution;
+using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 {
@@ -221,6 +224,73 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 
 			Assert.AreEqual(ScrollBarVisibility.Auto, (ScrollBarVisibility)tb.GetValue(ScrollViewer.HorizontalScrollBarVisibilityProperty));
 			Assert.AreEqual(ScrollBarVisibility.Hidden, (ScrollBarVisibility)tb.GetValue(ScrollViewer.VerticalScrollBarVisibilityProperty));
+		}
+
+		[TestMethod]
+		public void When_TemplateBinding_Uses_DependencyProperty_Fast_Path()
+		{
+			var firstParent = new ContentControl { Content = "First" };
+			var secondParent = new ContentControl { Content = "Second" };
+			var target = new TextBlock();
+			var targetStore = ((IDependencyObjectStoreProvider)target).Store;
+
+			targetStore.SetTemplatedParent2(firstParent);
+			BindingHelper.SetTemplateBinding(target, TextBlock.TextProperty, ContentControl.ContentProperty);
+
+			Assert.AreEqual("First", target.Text);
+
+			var expression = target.GetBindingExpression(TextBlock.TextProperty);
+			Assert.IsNotNull(expression);
+			Assert.AreSame(ContentControl.ContentProperty, expression.TemplateBindingSourceProperty);
+
+			firstParent.Content = "First updated";
+			Assert.AreEqual("First updated", target.Text);
+
+			targetStore.SuspendBindings();
+			firstParent.Content = "While suspended";
+			Assert.AreEqual("First updated", target.Text);
+
+			targetStore.ResumeBindings();
+			Assert.AreEqual("While suspended", target.Text);
+
+			targetStore.SetTemplatedParent2(secondParent);
+			Assert.AreEqual("Second", target.Text);
+
+			firstParent.Content = "Ignored";
+			Assert.AreEqual("Second", target.Text);
+
+			secondParent.Content = "Second updated";
+			Assert.AreEqual("Second updated", target.Text);
+
+			Assert.AreEqual(nameof(ContentControl.Content), expression.ParentBinding.Path.Path);
+			Assert.AreEqual(RelativeSourceMode.TemplatedParent, expression.ParentBinding.RelativeSource.Mode);
+
+			var attachedExpression = new TextBlock();
+			firstParent.SetValue(ScrollViewer.HorizontalScrollModeProperty, ScrollMode.Enabled);
+			((IDependencyObjectStoreProvider)attachedExpression).Store.SetTemplatedParent2(firstParent);
+			BindingHelper.SetTemplateBinding(
+				attachedExpression,
+				ScrollViewer.HorizontalScrollModeProperty,
+				ScrollViewer.HorizontalScrollModeProperty);
+
+			Assert.AreEqual(
+				"(Microsoft.UI.Xaml.Controls:ScrollViewer.HorizontalScrollMode)",
+				attachedExpression.GetBindingExpression(ScrollViewer.HorizontalScrollModeProperty).ParentBinding.Path.Path);
+			Assert.AreEqual(ScrollMode.Enabled, attachedExpression.GetValue(ScrollViewer.HorizontalScrollModeProperty));
+
+			firstParent.SetValue(ScrollViewer.HorizontalScrollModeProperty, ScrollMode.Disabled);
+			Assert.AreEqual(ScrollMode.Disabled, attachedExpression.GetValue(ScrollViewer.HorizontalScrollModeProperty));
+
+			target.SetBinding(
+				TextBlock.TextProperty,
+				new Binding
+				{
+					Path = new PropertyPath(string.Empty),
+					Source = "Replacement",
+				});
+
+			secondParent.Content = "Ignored after replacement";
+			Assert.AreEqual("Replacement", target.Text);
 		}
 	}
 }

@@ -16,6 +16,8 @@ namespace Microsoft.UI.Xaml.Controls;
 public partial class IconElement : FrameworkElement
 {
 	private Grid? _rootGrid;
+	private UIElement? _iconChild;
+	private bool? _usesDirectChild;
 
 	//This field is never accessed. It just exists to create a reference, because the DP causes is	sues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)
 	private Brush? _foregroundStrongref;
@@ -67,12 +69,12 @@ public partial class IconElement : FrameworkElement
 
 	protected override Size MeasureOverride(Size availableSize)
 	{
-		if (_rootGrid is not null)
+		if (GetLayoutChild() is { } child)
 		{
 			// Measure the child
-			_rootGrid.Measure(availableSize);
-			_rootGrid.EnsureLayoutStorage();
-			return _rootGrid.DesiredSize;
+			child.Measure(availableSize);
+			child.EnsureLayoutStorage();
+			return child.DesiredSize;
 		}
 
 		return default;
@@ -80,14 +82,28 @@ public partial class IconElement : FrameworkElement
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{
-		if (_rootGrid is not null)
+		if (GetLayoutChild() is { } child)
 		{
 			Rect arrangeRect = new Rect(0, 0, finalSize.Width, finalSize.Height);
-			_rootGrid.Arrange(arrangeRect);
+			child.Arrange(arrangeRect);
 		}
 
 		return finalSize;
 	}
+
+	private UIElement? GetLayoutChild() => UsesDirectChild ? _iconChild : _rootGrid;
+
+	/// <summary>
+	/// Gets whether this icon is able to host its visual child without the intermediate root Grid.
+	/// </summary>
+	private protected virtual bool SupportsDirectChild => false;
+
+	private bool UsesDirectChild
+		=> _usesDirectChild ??= SupportsDirectChild && Uno.UI.FeatureConfiguration.Perf2026.IconElementNoGridContainer;
+
+	// The root Grid carries a transparent background, which makes the whole icon surface hit-testable.
+	// Keep that behavior when the Grid (and its brush) are not allocated.
+	internal override bool IsViewHit() => UsesDirectChild || base.IsViewHit();
 
 	private protected virtual void OnForegroundChanged(DependencyPropertyChangedEventArgs e) { }
 
@@ -121,6 +137,13 @@ public partial class IconElement : FrameworkElement
 
 	internal void AddIconChild(UIElement child)
 	{
+		if (UsesDirectChild)
+		{
+			_iconChild = child;
+			VisualTreeHelper.AddChild(this, child);
+			return;
+		}
+
 		InitializeRootGrid();
 
 		_rootGrid.Children.Add(child);
@@ -128,6 +151,17 @@ public partial class IconElement : FrameworkElement
 
 	internal void RemoveIconChild()
 	{
+		if (UsesDirectChild)
+		{
+			if (_iconChild is { } child)
+			{
+				_iconChild = null;
+				VisualTreeHelper.RemoveChild(this, child);
+			}
+
+			return;
+		}
+
 		InitializeRootGrid();
 
 		_rootGrid.Children.Clear();

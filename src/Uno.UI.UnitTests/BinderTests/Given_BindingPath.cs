@@ -148,6 +148,38 @@ namespace Uno.UI.Tests.BinderTests
 			result[3].PropertyName.Should().Be("value");
 		}
 
+		[TestMethod]
+		[DataRow("hello_world", "hello_world")]
+		[DataRow("hello.world", "world")]
+		[DataRow("(Grid.Column)", "Column")]
+		[DataRow("(bonjour:le.monde)", "monde")]
+		[DataRow("hello[world](bonjour:le.monde)", "monde")]
+		[DataRow("[hello_world]", "[hello_world]")]
+		public void When_GetTargetContextAndPropertyName(string path, string expected)
+		{
+			var sut = new BindingPath(path, null);
+
+			var (_, propertyName) = sut.GetTargetContextAndPropertyName();
+
+			propertyName.Should().Be(expected);
+		}
+
+		[TestMethod]
+		[DataRow("hello_world", "hello_world", true)]
+		[DataRow("(Grid.Column)", "Column", true)]
+		[DataRow("(bonjour:le.monde)", "monde", true)]
+		[DataRow("(bonjour:le.monde)", "le", false)]
+		[DataRow("hello", "world", false)]
+		[DataRow("[hello]", "[hello]", true)]
+		[DataRow("[hello]", "hello", false)]
+		public void When_PrefixOfOrEqualTo_Then_PropertyNamesAreCompared(string left, string right, bool expected)
+		{
+			var sut1 = new BindingPath(left, null);
+			var sut2 = new BindingPath(right, null);
+
+			sut1.PrefixOfOrEqualTo(sut2).Should().Be(expected);
+		}
+
 		private static (MyTarget target, BindingPath binding) Arrange(bool forAnimations = false)
 		{
 			var target = new MyTarget();

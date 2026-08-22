@@ -131,6 +131,47 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			return MatrixCore.Transform(rect);
 		}
+
+		/// <inheritdoc />
+		internal override bool TryTransformInverse(Point inPoint, out Point outPoint)
+		{
+			if (!TryGetInverseMatrix(out var inverse))
+			{
+				outPoint = inPoint;
+				return false;
+			}
+
+			outPoint = inverse.Transform(inPoint);
+			return true;
+		}
+
+		/// <inheritdoc />
+		internal override bool TryTransformBoundsInverse(Rect rect, out Rect outRect)
+		{
+			if (!TryGetInverseMatrix(out var inverse))
+			{
+				outRect = rect;
+				return false;
+			}
+
+			outRect = inverse.Transform(rect);
+			return true;
+		}
+
+		/// <summary>
+		/// Inverts <see cref="MatrixCore"/> without allocating an intermediate <see cref="MatrixTransform"/>.
+		/// </summary>
+		private bool TryGetInverseMatrix(out Matrix3x2 inverse)
+		{
+			var matrix = MatrixCore;
+			if (matrix.IsIdentity)
+			{
+				inverse = Matrix3x2.Identity;
+				return true;
+			}
+
+			return Matrix3x2.Invert(matrix, out inverse);
+		}
 		#endregion
 	}
 }

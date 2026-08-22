@@ -76,9 +76,9 @@ namespace Microsoft.UI.Xaml.Controls
 		public bool IsReadOnly => false;
 
 		/// <summary>
-		/// The inner list is exposed in order to get the struct enumerable exposed by <see cref="List{T}"/> to avoid allocations.
+		/// The inner collection is exposed in order to get its allocation-free struct enumerator.
 		/// </summary>
-		internal List<ColumnDefinition> InnerList => _inner.Items;
+		internal DependencyObjectCollection<ColumnDefinition>.Enumerator GetEnumeratorFast() => _inner.GetEnumeratorFast();
 
 		public global::System.Collections.Generic.IEnumerator<ColumnDefinition> GetEnumerator() => _inner.GetEnumerator();
 

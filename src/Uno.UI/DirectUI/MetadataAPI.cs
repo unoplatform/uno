@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Markup;
 
 namespace DirectUI;
@@ -429,35 +430,38 @@ partial class MetadataAPI // src\dxaml\xcp\components\metadata\MetadataAPI.cpp
 	/// This should only be called for built-in attached properties.
 	/// </summary>
 	public static DependencyProperty TryGetAttachedPropertyByName(string strName)
+		=> TryGetAttachedPropertyByName(strName.AsSpan());
+
+	/// <summary>
+	/// Tries to resolve an attached property by its name. strName should use the format ClassName.PropertyName.
+	/// This should only be called for built-in attached properties.
+	/// </summary>
+	public static DependencyProperty TryGetAttachedPropertyByName(ReadOnlySpan<char> strName)
 	{
 		DependencyProperty ppDP = null;
 
-#if !HAS_UNO
 		// The property was not found or we can't use the parser context. Assume that the property is in the default namespace.
 		// The property will be of the format: ClassName.PropertyName.
 		// We will extract the class name first then the property name and do the lookup using the type tables.
 		var nDotIndex = strName.IndexOf('.');
 		if (nDotIndex != -1)
 		{
+			var strClassName = strName[..nDotIndex];
+			var strPropertyName = strName[(nDotIndex + 1)..];
+
+#if !HAS_UNO
 			// Try to resolve the type.
-			string strClassName;
-			strClassName = strName[..nDotIndex];
-			Type pType = GetBuiltinClassInfoByName(strClassName);
+			Type pType = GetBuiltinClassInfoByName(strClassName.ToString());
 
 			if (pType != null)
 			{
 				// Try to resolve the property.
-				string strPropertyName;
-				strPropertyName = strName[(nDotIndex + 1)..];
-				ppDP = TryGetDependencyPropertyByName(pType, strPropertyName);
+				ppDP = TryGetDependencyPropertyByName(pType, strPropertyName.ToString());
 			}
-		}
 #else
-		if (strName.Split('.', 2) is [string type, string property])
-		{
-			ppDP = DependencyProperty.GetProperty(type, property);
-		}
+			ppDP = DependencyProperty.GetProperty(strClassName.ToString(), strPropertyName.ToString());
 #endif
+		}
 
 		return ppDP;
 	}
@@ -564,6 +568,14 @@ partial class MetadataAPI // src\dxaml\xcp\core\metadata\ReflectionAPI.cpp
 	public static DependencyProperty TryGetDependencyPropertyByFullyQualifiedName(
 		string strName,
 		XamlServiceProviderContext context = null)
+		=> TryGetDependencyPropertyByFullyQualifiedName(strName.AsSpan(), context);
+
+	/// <summary>
+	/// Look for a DP given its full name, it might use the ObjectWriter context if allowed to.
+	/// </summary>
+	public static DependencyProperty TryGetDependencyPropertyByFullyQualifiedName(
+		ReadOnlySpan<char> strName,
+		XamlServiceProviderContext context = null)
 	{
 		// Assume it is not found.
 		DependencyProperty ppDP = null;
@@ -587,7 +599,13 @@ partial class MetadataAPI // src\dxaml\xcp\dxaml\lib\MetadataAPI.cpp
 }
 partial class MetadataAPI // quick impl
 {
-	private static Dictionary<(Type Type, string Property), DependencyProperty> _dependencyPropertyReflectionCache = new(512);
+	/// <summary>
+	/// Caches the reflection lookup performed by <see cref="TryGetDependencyPropertyByName"/>.
+	/// Concurrent because property-path resolution is not confined to the UI thread, while the ALC
+	/// teardown sweep prunes the cache from the teardown thread.
+	/// </summary>
+	private static readonly ConcurrentDictionary<(Type Type, string Property), DependencyProperty> _dependencyPropertyReflectionCache
+		= new(Environment.ProcessorCount, 512);
 
 	private const BindingFlags DpStorageFlags =
 		BindingFlags.Public | BindingFlags.NonPublic |
@@ -612,44 +630,44 @@ partial class MetadataAPI // quick impl
 	{
 		var key = (type, propertyName);
 
-		if (!_dependencyPropertyReflectionCache.TryGetValue(key, out var property))
+		if (_dependencyPropertyReflectionCache.TryGetValue(key, out var property))
 		{
-			property = GetValue(
-				type.GetProperty($"{propertyName}Property", DpStorageFlags) as MemberInfo ??
-				type.GetField($"{propertyName}Property", DpStorageFlags)
-			);
+			return property;
+		}
 
-			static DependencyProperty GetValue(MemberInfo member) => member switch
-			{
-				PropertyInfo pi => pi.GetValue(null) as DependencyProperty,
-				FieldInfo fi => fi.GetValue(null) as DependencyProperty,
-				_ => null,
-			};
+		var member =
+			type.GetProperty($"{propertyName}Property", DpStorageFlags) as MemberInfo ??
+			type.GetField($"{propertyName}Property", DpStorageFlags);
+
+		property = GetValue(member);
+
+		// A resolved property is immutable for a loaded type, so it is always cacheable. A null result is
+		// only cached when the type exposes no matching member at all: that is a stable fact about the
+		// type's shape. A member that exists but reads back null may simply mean its static initializer
+		// has not run yet, and caching that would poison the entry for the rest of the process.
+		if (property is not null || member is null)
+		{
+			_dependencyPropertyReflectionCache[key] = property;
 		}
 
 		return property;
+
+		static DependencyProperty GetValue(MemberInfo member) => member switch
+		{
+			PropertyInfo pi => pi.GetValue(null) as DependencyProperty,
+			FieldInfo fi => fi.GetValue(null) as DependencyProperty,
+			_ => null,
+		};
 	}
 
 	public static Type GetClassInfoByTypeName(Type typeName) => typeName;
+
+	internal static void ClearDependencyPropertyReflectionCache()
+		=> _dependencyPropertyReflectionCache.Clear();
 
 	/// <summary>
 	/// Removes entries from the reflection cache whose Type key belongs to a non-default ALC.
 	/// </summary>
 	internal static void ClearCachesForNonDefaultAlc()
-	{
-		var keysToRemove = new List<(Type, string)>();
-		foreach (var key in _dependencyPropertyReflectionCache.Keys)
-		{
-			var alc = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Type.Assembly);
-			if (alc is not null && alc != System.Runtime.Loader.AssemblyLoadContext.Default)
-			{
-				keysToRemove.Add(key);
-			}
-		}
-
-		foreach (var key in keysToRemove)
-		{
-			_dependencyPropertyReflectionCache.Remove(key);
-		}
-	}
+		=> AlcCacheSweep.RemoveNonDefaultAlcEntries(_dependencyPropertyReflectionCache, static key => key.Type);
 }
