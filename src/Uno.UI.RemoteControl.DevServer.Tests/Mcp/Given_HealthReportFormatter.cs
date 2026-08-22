@@ -58,6 +58,81 @@ public class Given_HealthReportFormatter
 	}
 
 	[TestMethod]
+	public void WhenJsonRequested_IncludesSdkUpdateFields()
+	{
+		var report = new HealthReport
+		{
+			Status = HealthStatus.Healthy,
+			UnoSdkPackage = "Uno.Sdk",
+			UnoSdkVersion = "6.4.12",
+			LatestUnoSdkVersion = "6.5.31",
+			UnoSdkUpdateAvailable = true,
+			Issues = [],
+		};
+
+		var json = HealthReportFormatter.FormatJson(report);
+
+		json.Should().Contain("\"unoSdkPackage\":\"Uno.Sdk\"");
+		json.Should().Contain("\"unoSdkVersion\":\"6.4.12\"");
+		json.Should().Contain("\"latestUnoSdkVersion\":\"6.5.31\"");
+		json.Should().Contain("\"unoSdkUpdateAvailable\":true");
+	}
+
+	[TestMethod]
+	public void WhenUpdateAvailable_IncludesRecommendedVersionWithSuffix()
+	{
+		var report = new HealthReport
+		{
+			Status = HealthStatus.Healthy,
+			UnoSdkPackage = "Uno.Sdk",
+			UnoSdkVersion = "6.4.12",
+			LatestUnoSdkVersion = "6.5.31",
+			UnoSdkUpdateAvailable = true,
+			Issues = [],
+		};
+
+		var text = HealthReportFormatter.FormatPlainText(report);
+
+		text.Should().Contain("Uno.Sdk: 6.4.12");
+		text.Should().Contain("Recommended Uno.Sdk: 6.5.31 (update available)");
+	}
+
+	[TestMethod]
+	public void WhenUpToDate_OmitsUpdateSuffix()
+	{
+		var report = new HealthReport
+		{
+			Status = HealthStatus.Healthy,
+			UnoSdkPackage = "Uno.Sdk",
+			UnoSdkVersion = "6.5.31",
+			LatestUnoSdkVersion = "6.5.31",
+			UnoSdkUpdateAvailable = false,
+			Issues = [],
+		};
+
+		var text = HealthReportFormatter.FormatPlainText(report);
+
+		text.Should().Contain("Recommended Uno.Sdk: 6.5.31");
+		text.Should().NotContain("(update available)");
+	}
+
+	[TestMethod]
+	public void WhenPackageIsUnoSdkPrivate_LabelUsesActualPackageId()
+	{
+		var report = new HealthReport
+		{
+			Status = HealthStatus.Healthy,
+			UnoSdkPackage = "Uno.Sdk.Private",
+			UnoSdkVersion = "6.4.12",
+			Issues = [],
+		};
+
+		var text = HealthReportFormatter.FormatPlainText(report);
+
+		text.Should().Contain("Uno.Sdk.Private: 6.4.12");
+	}
+
+	[TestMethod]
 	public void WhenPlainTextRequested_IncludesActiveServerOwnershipDetails()
 	{
 		var report = new HealthReport
