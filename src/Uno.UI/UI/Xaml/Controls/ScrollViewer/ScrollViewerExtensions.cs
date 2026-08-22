@@ -12,9 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private static ScrollViewer Padding(this ScrollViewer sv, Thickness padding)
 		{
 
-#if !IS_UNIT_TESTS
 			sv.Padding = padding;
-#endif
 
 			return sv;
 		}

@@ -11,7 +11,6 @@
 
 		<AssemblyName>SamplesApp</AssemblyName>
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
-		<DefineConstants Condition=" '$(UseMonoRuntime)' == 'false' ">$(DefineConstants);RUNTIME_CORECLR</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 
 		<ApplicationId Condition=" '$(ApplicationId)' != '' ">$(ApplicationId)</ApplicationId>
@@ -69,7 +68,6 @@
 	<Target Name="AdjustCalabash" BeforeTargets="BeforeBuild">
 		<!-- Needs to be run as a target, as RuntimeIdentifier is set after the csproj is parsed -->
 		<PropertyGroup Condition="!$(RuntimeIdentifier.Contains('arm64'))">
-			<DefineConstants>$(DefineConstants);HAS_TESTCLOUD_AGENT</DefineConstants>
 		</PropertyGroup>
 	</Target>
 

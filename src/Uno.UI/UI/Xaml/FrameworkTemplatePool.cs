@@ -19,16 +19,10 @@ using Uno.UI.Dispatching;
 using Windows.Foundation.Metadata;
 using Windows.System;
 
-#if METRO
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
 using System.Text;
 using System.Runtime.CompilerServices;
-#endif
 
 
 namespace Microsoft.UI.Xaml
@@ -148,9 +142,7 @@ namespace Microsoft.UI.Xaml
 
 		private FrameworkTemplatePool()
 		{
-#if !IS_UNIT_TESTS
 			_platformProvider.Schedule(Scavenger);
-#endif
 		}
 
 		private async void Scavenger()

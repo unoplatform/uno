@@ -75,7 +75,6 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private static void EnsureScavengerStarted()
 		{
-#if !IS_UNIT_TESTS
 			lock (_poolsGate)
 			{
 				if (_scavengerStarted || !FeatureConfiguration.Page.IsPoolingEnabled)
@@ -87,7 +86,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			_ = CoreDispatcher.Main.RunIdleAsync(Scavenger);
-#endif
 		}
 
 		private static async void Scavenger(IdleDispatchedHandlerArgs e)

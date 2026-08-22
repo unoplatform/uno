@@ -5,15 +5,9 @@ using System.Security;
 [assembly: AssemblyProduct("Uno")]
 [assembly: AssemblyCompany("Uno Platform Inc.")]
 
-#if !METRO && !WINPRT && !SILVERLIGHT
 [assembly: SecurityTransparent]
-#endif
 
-#if SILVERLIGHT
-#elif WINDOWS_PHONE
-#elif METRO
-#elif XAMARIN
-#else
+#if !XAMARIN
 [assembly: AllowPartiallyTrustedCallers]
 [assembly: SecurityRules(SecurityRuleSet.Level1)]
 #endif

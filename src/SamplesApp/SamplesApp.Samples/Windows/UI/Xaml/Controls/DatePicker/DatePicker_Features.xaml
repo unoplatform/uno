@@ -2,13 +2,11 @@
     x:Class="UITests.Windows_UI_Xaml_Controls.DatePicker.DatePicker_Features"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:android="http://uno.ui/android"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ios="http://uno.ui/ios"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:not_win="http://uno.ui/not_win"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    mc:Ignorable="d ios android not_win">
+    mc:Ignorable="d not_win">
 
     <StackPanel Margin="20" Spacing="10">
         <StackPanel Orientation="Horizontal" Spacing="4">
@@ -175,36 +173,9 @@
         <StackPanel Orientation="Horizontal" Spacing="7">
             <ToggleButton x:Name="useNativeMinMaxDates">UseNativeMinMaxDates</ToggleButton>
             <Button x:Name="btnWithNativeFlyout">
-                <Button.Flyout>
-                    <android:NativeDatePickerFlyout
-                        x:Name="btnNativeFlyout"
-                        CalendarIdentifier="{Binding SelectedItem.Content, ElementName=calendarIdentifier, FallbackValue=GregorianCalendar}"
-                        Date="{x:Bind PickedDate, Mode=TwoWay}"
-                        DayVisible="{Binding IsChecked, ElementName=dayVisible}"
-                        MaxYear="{x:Bind DtYear(maxYear.SelectedItem), Mode=OneWay}"
-                        MinYear="{x:Bind DtYear(minYear.SelectedItem), Mode=OneWay}"
-                        MonthVisible="{Binding IsChecked, ElementName=monthVisible}"
-                        UseNativeMinMaxDates="{Binding IsChecked, ElementName=useNativeMinMaxDates}"
-                        YearVisible="{Binding IsChecked, ElementName=yearVisible}" />
-                    <ios:NativeDatePickerFlyout
-                        x:Name="btnNativeFlyout"
-                        CalendarIdentifier="{Binding SelectedItem.Content, ElementName=calendarIdentifier, FallbackValue=GregorianCalendar}"
-                        Date="{x:Bind PickedDate, Mode=TwoWay}"
-                        DayVisible="{Binding IsChecked, ElementName=dayVisible}"
-                        MaxYear="{x:Bind DtYear(maxYear.SelectedItem), Mode=OneWay}"
-                        MinYear="{x:Bind DtYear(minYear.SelectedItem), Mode=OneWay}"
-                        MonthVisible="{Binding IsChecked, ElementName=monthVisible}"
-                        UseNativeMinMaxDates="{Binding IsChecked, ElementName=useNativeMinMaxDates}"
-                        YearVisible="{Binding IsChecked, ElementName=yearVisible}" />
-                </Button.Flyout>
+                <Button.Flyout />
                 PICK DATE (Flyout)
             </Button>
-            <ios:TextBlock>
-                DatePickerFlyout.Date:<Run Text="{x:Bind DtString(btnNativeFlyout.Date), Mode=OneWay}" />
-            </ios:TextBlock>
-            <android:TextBlock>
-                DatePickerFlyout.Date:<Run Text="{x:Bind DtString(btnNativeFlyout.Date), Mode=OneWay}" />
-            </android:TextBlock>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="7">
             <DatePicker
@@ -218,12 +189,6 @@
                 MinYear="{x:Bind DtYear(minYear.SelectedItem), Mode=OneWay}"
                 MonthVisible="{Binding IsChecked, ElementName=monthVisible}"
                 YearVisible="{Binding IsChecked, ElementName=yearVisible}" />
-            <ios:TextBlock>
-                DatePicker.Date:<Run Text="{x:Bind DtString(nativeDatePicker.Date), Mode=OneWay}" />
-            </ios:TextBlock>
-            <android:TextBlock>
-                DatePicker.Date:<Run Text="{x:Bind DtString(nativeDatePicker.Date), Mode=OneWay}" />
-            </android:TextBlock>
         </StackPanel>
     </StackPanel>
 </Page>

@@ -8,17 +8,13 @@
     xmlns:not_wasm="http://uno.ui/not_wasm"
     xmlns:not_win="http://uno.ui/not_win"
     xmlns:uno="using:Uno.UI.Xaml.Controls"
-    xmlns:wasm="http://uno.ui/wasm"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    mc:Ignorable="d not_win wasm not_wasm">
+    mc:Ignorable="d not_win not_wasm">
 
     <win:TextBlock Text="This sample demos a Uno only feature and is not available on Windows." />
 
-    <not_win:Grid
-        not_wasm:BorderThickness="2,50,2,100"
-        wasm:BorderThickness="2,100,2,100"
-        BorderBrush="DarkRed">
+    <not_win:Grid not_wasm:BorderThickness="2,50,2,100" BorderBrush="DarkRed">
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />

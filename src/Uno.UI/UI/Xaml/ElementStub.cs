@@ -21,25 +21,7 @@ namespace Microsoft.UI.Xaml
 	/// <remarks>This control is added in the visual tree, in place of the original content.</remarks>
 	public partial class ElementStub : FrameworkElement
 	{
-#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-		ManagedWeakReference _contentReference;
-
-		private View _content
-		{
-			get => _contentReference?.Target as View;
-			set
-			{
-				if (_contentReference != null)
-				{
-					WeakReferencePool.ReturnWeakReference(this, _contentReference);
-				}
-
-				_contentReference = WeakReferencePool.RentWeakReference(this, value);
-			}
-		}
-#else
 		private View _content;
-#endif
 
 		// Captures the resource scope at parse time so {StaticResource} lookups inside the
 		// lazily-created subtree can walk the same ancestor chain they would have seen if the
@@ -112,20 +94,7 @@ namespace Microsoft.UI.Xaml
 
 		public ElementStub(Func<View> contentBuilder) : this()
 		{
-#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-			// In this context, the delegate provided here closes over other UIElement instances
-			// causing memory leaks unless the Target member of the delegate is weak.
-			// Here, we deconstruct the delegate to keep the MethodInfo, and invoking it
-			// via the resolution of the weak reference. This technique only works because
-			// the provided delegate and its target (the lambda's display class) is kept
-			// alive by the "ElementStub holder" variable provided by the XAML generator.
-			var delegateTarget = WeakReferencePool.RentWeakReference(this, contentBuilder.Target);
-			var methodInfo = contentBuilder.Method;
-
-			ContentBuilder = () => (View)methodInfo.Invoke(delegateTarget.Target, null);
-#else
 			ContentBuilder = contentBuilder;
-#endif
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 			_fromLegacyTemplate = TemplatedParentScope.GetCurrentTemplate() is { IsLegacyTemplate: true };

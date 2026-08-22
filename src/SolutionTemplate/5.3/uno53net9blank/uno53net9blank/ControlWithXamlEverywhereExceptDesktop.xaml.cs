@@ -3,7 +3,7 @@ using System;
 using Microsoft.UI.Xaml.Controls;
 
 public sealed
-#if !DESKTOP
+#if !__DESKTOP__
     // This control tests that ControlWithXamlEverywhereExceptDesktop.xaml is not included,
     // so if ControlWithXamlEverywhereExceptDesktop.xaml is included, it won't compile.
     partial

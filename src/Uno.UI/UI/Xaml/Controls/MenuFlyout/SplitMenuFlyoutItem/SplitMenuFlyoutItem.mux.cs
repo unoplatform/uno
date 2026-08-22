@@ -23,7 +23,7 @@ partial class SplitMenuFlyoutItem
 		MenuFlyout.KeyboardAcceleratorFlyoutItemLeave(this, this, SplitMenuFlyoutItem.ItemsProperty, @params);
 	}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE && !__NETSTD_REFERENCE__
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 	// Uno specific fallback for platforms without enhanced lifecycle (Android/iOS native).
 	// On Skia/WASM, the dead enter in EnterImpl registers sub-item KeyboardAcceleratorCollections
 	// into the global live list, and ProcessGlobalAccelerators finds them — matching WinUI behavior.

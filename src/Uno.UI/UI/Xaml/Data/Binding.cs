@@ -17,17 +17,6 @@ namespace Microsoft.UI.Xaml.Data
 		/// </summary>
 		private WeakReference _weakSource;
 
-#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-		/// <summary>
-		/// On platforms which perform implicit and opaque pinning of native references, it
-		/// is required to keep weak references to direct and indirect references to UIElement instances.
-		/// Keeping weak references is costly,  so it's enabled only on select platforms.
-		/// Note that this is needed only for x:Bind related operations, where the lifespan of
-		/// the binding is explicitly tied to the object containing the weak references. This means
-		/// that there's weak references will be kept alive properly.
-		/// </summary>
-		private ManagedWeakReference _compiledSource;
-#endif
 
 		/// <summary>
 		/// A hard storage for other types of <see cref="Source"/> content.
@@ -182,11 +171,7 @@ namespace Microsoft.UI.Xaml.Data
 		/// <value>The source.</value>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public object CompiledSource
-#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-		{ get => _compiledSource?.Target; set => _compiledSource = WeakReferencePool.RentWeakReference(this, value); }
-#else
 		{ get; set; }
-#endif
 
 		/// <summary>
 		/// Provides the method used in the context of x:Bind expressions to
