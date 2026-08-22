@@ -733,9 +733,7 @@ partial class ContentDialog
 				tcs.TrySetCanceled();
 				Hide();
 			}
-#if !__WASM__
 				, useSynchronizationContext: true
-#endif
 				))
 			{
 				return await tcs.Task;
@@ -1467,13 +1465,6 @@ partial class ContentDialog
 #if HAS_UNO
 	private void AdjustVisualStateForInputPane()
 	{
-#if __ANDROID__
-		if (m_tpPopup?.UseNativePopup == true)
-		{
-			// Skip managed adjustment since the popup itself will adjust to the soft keyboard.
-			return;
-		}
-#endif
 		Rect inputPaneRect = InputPane.GetForCurrentView().OccludedRect;
 
 		if (m_isShowing && inputPaneRect.Height > 0)
