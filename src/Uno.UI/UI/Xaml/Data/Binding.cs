@@ -95,8 +95,19 @@ namespace Microsoft.UI.Xaml.Data
 		/// <summary>
 		/// Gets or sets the name of the element to use as the binding source for the Binding.
 		/// </summary>
-		/// <value>The name of the element, or an ElementNameSubject instance that can be used to monitor the element name instance changes.</value>
-		public object ElementName { get; set; }
+		/// <value>The name of the element.</value>
+		public string ElementName { get; set; }
+
+		/// <summary>
+		/// Routes the availability of the element instance for a late-bound ElementName binding.
+		/// </summary>
+		/// <remarks>
+		/// Uno-only seam set by the XAML code generator and runtime reader. It must be public
+		/// because the compiled-XAML output lives in the consuming assembly, which has no access
+		/// to Uno.UI internals (same rationale as <see cref="CompiledSource"/>).
+		/// </remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public ElementNameSubject ElementNameSubject { get; set; }
 
 		/// <summary>
 		/// Gets or sets the value to use when the binding is unable to return a value.
