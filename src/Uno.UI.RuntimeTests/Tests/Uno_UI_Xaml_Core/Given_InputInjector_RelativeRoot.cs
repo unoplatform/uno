@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Extras.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
