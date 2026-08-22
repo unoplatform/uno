@@ -41,12 +41,10 @@ internal static class ThemeResolution
 	/// </remarks>
 	internal static Theme ResolvePinnedOwnerTheme(DependencyObject? owner)
 	{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		if (owner is { IsProcessingThemeWalk: true })
 		{
 			return owner.WalkTheme;
 		}
-#endif
 
 		return ResolveOwnerTheme(owner);
 	}
