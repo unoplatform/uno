@@ -237,7 +237,7 @@ namespace Uno.UI
 
 			Microsoft.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
 			{
-				NativeWindowWrapper.Instance.OnNativeVisibilityChanged(true);
+				(this as ApplicationActivity)?.Wrapper.OnNativeVisibilityChanged(true);
 			});
 		}
 
@@ -264,7 +264,7 @@ namespace Uno.UI
 			SetAsCurrent();
 
 			Microsoft.UI.Xaml.Application.Current?.RaiseResuming();
-			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+			(this as ApplicationActivity)?.Wrapper.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 		}
 
 		public override void OnTopResumedActivityChanged(bool isTopResumedActivity)
@@ -277,7 +277,7 @@ namespace Uno.UI
 
 		partial void InnerTopResumedActivityChanged(bool isTopResumedActivity)
 		{
-			NativeWindowWrapper.Instance.OnNativeActivated(
+			(this as ApplicationActivity)?.Wrapper.OnNativeActivated(
 				isTopResumedActivity ?
 					CoreWindowActivationState.CodeActivated :
 					CoreWindowActivationState.Deactivated);
@@ -295,7 +295,7 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.Deactivated);
+			(this as ApplicationActivity)?.Wrapper.OnNativeActivated(CoreWindowActivationState.Deactivated);
 		}
 
 		protected override void OnStop()
@@ -316,7 +316,7 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			NativeWindowWrapper.Instance.OnNativeVisibilityChanged(false);
+			(this as ApplicationActivity)?.Wrapper.OnNativeVisibilityChanged(false);
 			Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Microsoft.UI.Xaml.Application.Current?.RaiseSuspending());
 		}
 
@@ -328,7 +328,28 @@ namespace Uno.UI
 
 		partial void InnerDestroy();
 
-		partial void InnerDestroy() => ResignCurrent();
+		partial void InnerDestroy()
+		{
+			ResignCurrent();
+
+			// Don't leave a destroyed activity as the ambient foreground context when another
+			// live activity can take over. If this is the last one, keep it so callers that
+			// hard-cast Current to Activity keep working as before (rather than falling back to
+			// the non-Activity application context).
+			if (ContextHelper.TryGetCurrent(out var current) && ReferenceEquals(current, this))
+			{
+				BaseActivity? next;
+				lock (_instances)
+				{
+					next = _instances.Values.FirstOrDefault(activity => !ReferenceEquals(activity, this));
+				}
+
+				if (next is not null)
+				{
+					ContextHelper.SetForeground(next);
+				}
+			}
+		}
 
 		private void SetAsCurrent()
 		{

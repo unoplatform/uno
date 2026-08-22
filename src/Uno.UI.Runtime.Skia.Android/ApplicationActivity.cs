@@ -32,27 +32,55 @@ namespace Microsoft.UI.Xaml
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public partial class ApplicationActivity : Controls.NativePage
 	{
-		private static IUnoSkiaRenderView? _renderView;
-		private static View? _renderViewAsView;
-		private static ClippedRelativeLayout? _nativeLayerHost;
+		private IUnoSkiaRenderView? _renderView;
+		private View? _renderViewAsView;
+		private ClippedRelativeLayout? _nativeLayerHost;
 
-		internal static IUnoSkiaRenderView? RenderView => _renderView;
+		internal IUnoSkiaRenderView? RenderView => _renderView;
 
 		private InputPane _inputPane;
 
-		private static bool _started;
+		private bool _started;
 		private bool _isContentViewSet;
 
-		/// <summary>
-		/// The windows model implies only one managed activity.
-		/// </summary>
-		internal static ApplicationActivity Instance { get; private set; } = null!;
+		private NativeWindowWrapper? _wrapper;
 
-		internal static RelativeLayout RelativeLayout { get; private set; } = null!;
+		/// <summary>
+		/// The native wrapper for the window this activity drives. Created lazily so the early
+		/// lifecycle callbacks (which run before the managed Window exists) can drive it. On
+		/// activity re-creation the wrapper already bound to the window is reused and re-pointed
+		/// at this activity, since the managed Window outlives individual activities.
+		/// </summary>
+		internal NativeWindowWrapper Wrapper
+		{
+			get
+			{
+				if (_wrapper is null)
+				{
+					// TODO #13827: adopting the wrapper through the ambient current window makes this
+					// binding per-activity rather than per-window. Replacing it needs an explicit
+					// activity<->window binding, which lands with the live second-activity work.
+					// SupportsMultipleWindows is false, so there is a single window: on re-creation
+					// reuse the wrapper already bound to it rather than orphaning it.
+					_wrapper = Microsoft.UI.Xaml.Window.CurrentSafe?.NativeWrapper as NativeWindowWrapper
+						?? new NativeWindowWrapper(this);
+					_wrapper.CurrentActivity = this;
+				}
+
+				return _wrapper;
+			}
+		}
+
+		/// <summary>
+		/// The root element of the window hosted by this activity, once the window has been created.
+		/// </summary>
+		internal UIElement? RootElement => _wrapper?.Window?.RootElement;
+
+		internal RelativeLayout RelativeLayout { get; private set; } = null!;
 
 		internal LayoutProvider LayoutProvider { get; private set; } = null!;
 
-		internal static ClippedRelativeLayout? NativeLayerHost => _nativeLayerHost;
+		internal ClippedRelativeLayout? NativeLayerHost => _nativeLayerHost;
 
 		public ApplicationActivity(IntPtr ptr, JniHandleOwnership owner) : base(ptr, owner)
 		{
@@ -67,8 +95,6 @@ namespace Microsoft.UI.Xaml
 		[MemberNotNull(nameof(_inputPane))]
 		private void Initialize()
 		{
-			Instance = this;
-
 			_inputPane = InputPane.GetForCurrentView();
 			_inputPane.Showing += OnInputPaneVisibilityChanged;
 			_inputPane.Hiding += OnInputPaneVisibilityChanged;
@@ -93,7 +119,11 @@ namespace Microsoft.UI.Xaml
 			// Cannot call this in ctor: see
 			// https://stackoverflow.com/questions/10593022/monodroid-error-when-calling-constructor-of-custom-view-twodscrollview#10603714
 			RaiseConfigurationChanges();
-			SimpleOrientationSensor.GetDefault()!.OrientationChanged += OnSensorOrientationChanged;
+
+			// OnAttachedToWindow can run more than once per activity, so keep the subscription single.
+			var orientationSensor = SimpleOrientationSensor.GetDefault()!;
+			orientationSensor.OrientationChanged -= OnSensorOrientationChanged;
+			orientationSensor.OrientationChanged += OnSensorOrientationChanged;
 
 			// Note: Deep-linking will cause a new instance of this Activity and its DecorView to be created.
 			// This means any event handlers or listeners attached to these objects in previous instances will not be present.
@@ -110,31 +140,10 @@ namespace Microsoft.UI.Xaml
 		{
 		}
 
+		// Content attach and reactivation on activity re-creation happen in OnStart, once this
+		// activity has built its own render surface.
 		protected override void InitializeComponent()
 		{
-			// The app was previously running, but application activity
-			// changed. Reparent content.
-			if (RelativeLayout is not null)
-			{
-				// Reparent the current layout to this activity
-				if (RelativeLayout.Parent is ViewGroup parent)
-				{
-					parent.RemoveView(RelativeLayout);
-				}
-
-				this.SetContentView(RelativeLayout);
-
-				// Ensure the render view is reset
-				_renderView?.ResetRendererContext();
-
-				var winUIWindow = Microsoft.UI.Xaml.Window.CurrentSafe ?? Microsoft.UI.Xaml.Window.InitialWindow;
-				if (winUIWindow?.RootElement is { } root)
-				{
-					// Reactivate the window
-					winUIWindow.Activate();
-					InvalidateRender();
-				}
-			}
 		}
 
 		public override bool DispatchKeyEvent(KeyEvent? e)
@@ -144,7 +153,7 @@ namespace Microsoft.UI.Xaml
 				return base.DispatchKeyEvent(e);
 			}
 
-			var handled = AndroidKeyboardInputSource.Instance.OnNativeKeyEvent(e);
+			var handled = Wrapper.KeyboardSource.OnNativeKeyEvent(e);
 
 			if (!handled)
 			{
@@ -177,7 +186,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			_renderViewAsView?.GetLocationInWindow(_locationInWindow);
-			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, _locationInWindow, nativelyHandled);
+			Wrapper.PointerSource.OnNativeMotionEvent(ev, _locationInWindow, nativelyHandled);
 
 			// As the AndroidCorePointerInputSource can dispatch event asynchronously, we always return true to prevent the system from dispatching the event
 			// as we assume that anyway we are the fully opaque (i.e. the pointer should not be dispatch to any element under this current ApplicationActivity).
@@ -204,7 +213,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			_renderViewAsView?.GetLocationInWindow(_locationInWindow);
-			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, _locationInWindow, nativelyHandled);
+			Wrapper.PointerSource.OnNativeMotionEvent(ev, _locationInWindow, nativelyHandled);
 
 			// As the AndroidCorePointerInputSource can dispatch event asynchronously, we always return true to prevent the system from dispatching the event
 			// as we assume that anyway we are the fully opaque (i.e. the pointer should not be dispatch to any element under this current ApplicationActivity).
@@ -241,7 +250,7 @@ namespace Microsoft.UI.Xaml
 
 		private void OnKeyboardChanged(Rect keyboard)
 		{
-			NativeWindowWrapper.Instance.RaiseNativeSizeChanged();
+			Wrapper.RaiseNativeSizeChanged();
 			_inputPane.OccludedRect = ViewHelper.PhysicalToLogicalPixels(keyboard);
 		}
 
@@ -253,7 +262,16 @@ namespace Microsoft.UI.Xaml
 
 			base.OnCreate(bundle);
 
-			NativeWindowWrapper.Instance.OnActivityCreated();
+			Wrapper.OnActivityCreated();
+
+			// Track and observe this activity's window system UI visibility on its per-window wrapper.
+			var decorView = this.Window!.DecorView;
+#pragma warning disable 618
+#pragma warning disable CA1422 // Validate platform compatibility
+			Wrapper.SystemUiVisibility = (int)decorView.SystemUiVisibility;
+			decorView.SetOnSystemUiVisibilityChangeListener(new OnSystemUiVisibilityChangeListener(this));
+#pragma warning restore CA1422 // Validate platform compatibility
+#pragma warning restore 618
 
 			LayoutProvider = new LayoutProvider(this);
 			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
@@ -266,11 +284,10 @@ namespace Microsoft.UI.Xaml
 
 		protected override void OnStart()
 		{
-			base.OnStart();
-
-			// OnStart gets fired either after onCreate (first launch) or after onRestart
-			// (go out of app then back again). We only want to do this once, hence
-			// the flag.
+			// The render stack must exist before base.OnStart(): that call synchronously reaches
+			// Application.Start -> OnLaunched -> CreateWindow, after which the host is registered
+			// and InvalidateRender() can run against RelativeLayout. This state is per-activity, so
+			// unlike the previous process-wide stack it is null again on every re-creation.
 			if (!_started)
 			{
 				_started = true;
@@ -291,6 +308,19 @@ namespace Microsoft.UI.Xaml
 					ViewGroup.LayoutParams.MatchParent,
 					ViewGroup.LayoutParams.MatchParent);
 				RelativeLayout.AddView(NativeLayerHost);
+			}
+
+			base.OnStart();
+
+			// On activity re-creation (deep-link, process restore) the managed Window already
+			// exists with its content loaded, but CreateWindow won't run again for this new
+			// activity. Attach this activity's freshly-built surface and reactivate the window.
+			if (!_isContentViewSet && Wrapper.Window is { RootElement: not null } existingWindow)
+			{
+				EnsureContentView();
+				_renderView?.ResetRendererContext();
+				existingWindow.Activate();
+				InvalidateRender();
 			}
 		}
 
@@ -332,7 +362,7 @@ namespace Microsoft.UI.Xaml
 
 		private void OnInsetsChanged(Thickness insets)
 		{
-			NativeWindowWrapper.Instance.RaiseNativeSizeChanged();
+			Wrapper.RaiseNativeSizeChanged();
 		}
 
 		public override void SetContentView(View? view)
@@ -391,9 +421,29 @@ namespace Microsoft.UI.Xaml
 			LayoutProvider.KeyboardChanged -= OnKeyboardChanged;
 			LayoutProvider.InsetsChanged -= OnInsetsChanged;
 
+			// These are subscribed on process-wide singletons, so a missing -= keeps this activity
+			// (and its render stack) alive for the life of the process, once per re-creation.
+			_inputPane.Showing -= OnInputPaneVisibilityChanged;
+			_inputPane.Hiding -= OnInputPaneVisibilityChanged;
+			SimpleOrientationSensor.GetDefault()!.OrientationChanged -= OnSensorOrientationChanged;
+
 			CleanupBackPressedCallback();
 
-			NativeWindowWrapper.Instance.OnNativeClosed();
+			// The render stack is per-activity and the peer finalizer never runs the managed
+			// dispose path, so the GL/Vulkan context has to be released explicitly.
+			_renderView?.TeardownRenderer();
+			_renderView = null;
+			_renderViewAsView = null;
+			_nativeLayerHost = null;
+
+			// Only signal the managed window as closing when this activity is not being re-created
+			// and still owns the window. IsChangingConfigurations — not IsFinishing — is the
+			// complement of "being re-created": a finishing activity is also the one replaced by
+			// the StartActivity/Finish restart idiom, where the successor already took the wrapper.
+			if (!IsChangingConfigurations && _wrapper is { } wrapper && ReferenceEquals(wrapper.CurrentActivity, this))
+			{
+				wrapper.OnNativeClosed();
+			}
 		}
 
 		public override void OnConfigurationChanged(Configuration newConfig)
@@ -405,7 +455,7 @@ namespace Microsoft.UI.Xaml
 
 		private void RaiseConfigurationChanges()
 		{
-			NativeWindowWrapper.Instance.RaiseNativeSizeChanged();
+			Wrapper.RaiseNativeSizeChanged();
 			//ViewHelper.RefreshFontScale();
 			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
 			SystemThemeHelper.RefreshSystemTheme();

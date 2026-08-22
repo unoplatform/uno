@@ -185,7 +185,7 @@ public partial class Gamepad
 	{
 		if (_inputManager == null)
 		{
-			_inputManager = (InputManager?)ContextHelper.Current.GetSystemService(Context.InputService);
+			_inputManager = (InputManager?)ContextHelper.Current!.GetSystemService(Context.InputService);
 
 			if (_inputManager == null)
 			{

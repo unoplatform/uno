@@ -38,9 +38,12 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 	private readonly object _renderLock = new();
 	private IntPtr _nativeWindow; // Must stay alive while Vulkan surfaces reference it
 	private readonly AndroidVulkanSurfaceFactory _surfaceFactory = new();
+	private readonly ApplicationActivity _activity;
 
-	public UnoSKVulkanView(Context context) : base(context)
+	public UnoSKVulkanView(ApplicationActivity activity) : base(activity)
 	{
+		_activity = activity;
+
 		// Create the window-independent Vulkan resources (instance, device, GRContext) right away:
 		// this throws when the driver is unusable, letting the caller fall back to the OpenGL ES view.
 		// The window-scoped part (swapchain) is completed on the render thread once a surface exists.
@@ -204,16 +207,25 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 		{
 			_vulkanContext.RenderFrame(skSurface =>
 			{
-				var compositionTarget = Microsoft.UI.Xaml.Window.CurrentSafe?.RootElement?.Visual.CompositionTarget as CompositionTarget;
+				var compositionTarget = _activity.RootElement?.Visual.CompositionTarget as CompositionTarget;
 				if (compositionTarget == null)
+				{
+					// OnNativePlatformFrameRequested is the only thing that clears the target's
+					// RenderRequested flag, so dropping the frame outright would make every later
+					// RequestNewFrame a no-op. Re-arm so the loop retries once the window is ready.
+					_renderRequested = true;
 					return;
+				}
 
 				var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(
 					skSurface.Canvas,
 					size => skSurface.Canvas);
 
 				// Update the native layer host clip path
-				ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
+				if (_activity.NativeLayerHost is { } nativeLayerHost)
+				{
+					nativeLayerHost.Path = nativeClipPath;
+				}
 			});
 		}
 		catch (Exception ex)
@@ -298,20 +310,31 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 
 	#endregion
 
+	public void TeardownRenderer()
+	{
+		if (_disposed)
+		{
+			return;
+		}
+
+		_disposed = true;
+		_renderEvent.Set();
+		_renderThread?.Join(TimeSpan.FromSeconds(2));
+		_renderThread = null;
+		_vulkanContext.Dispose();
+		if (_nativeWindow != IntPtr.Zero)
+		{
+			ANativeWindow_release(_nativeWindow);
+			_nativeWindow = IntPtr.Zero;
+		}
+		_renderEvent.Dispose();
+	}
+
 	protected override void Dispose(bool disposing)
 	{
 		if (disposing)
 		{
-			_disposed = true;
-			_renderEvent.Set();
-			_renderThread?.Join(TimeSpan.FromSeconds(2));
-			_vulkanContext.Dispose();
-			if (_nativeWindow != IntPtr.Zero)
-			{
-				ANativeWindow_release(_nativeWindow);
-				_nativeWindow = IntPtr.Zero;
-			}
-			_renderEvent.Dispose();
+			TeardownRenderer();
 		}
 		base.Dispose(disposing);
 	}

@@ -27,13 +27,19 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 	public UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 	public TextInputPlugin TextInputPlugin { get; }
 
+	// Matches the Vulkan render loop's wake interval, so both backends retry a skipped frame
+	// at the same cadence while the window isn't ready.
+	private const long RenderRetryDelayMs = 100;
+
+	private readonly ApplicationActivity _activity;
 	private readonly InternalRenderer _renderer;
 
-	public UnoSKCanvasView(Context context) : base(context)
+	public UnoSKCanvasView(ApplicationActivity activity) : base(activity)
 	{
+		_activity = activity;
 		SetEGLContextClientVersion(2);
 		SetEGLConfigChooser(8, 8, 8, 8, 0, 8);
-		SetRenderer(_renderer = new InternalRenderer());
+		SetRenderer(_renderer = new InternalRenderer(this));
 		// The scene is still presented through GL, but when not hardware-accelerated it is
 		// rasterized on the CPU first, which is what IsSoftwareRenderer reflects.
 		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = !_renderer.HardwareAccelerated;
@@ -56,6 +62,12 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 	public void ResetRendererContext()
 	{
 		_renderer.ResetContext();
+	}
+
+	public void TeardownRenderer()
+	{
+		_renderer.ResetContext();
+		_renderer.Dispose();
 	}
 
 	public void InvalidateRender()
@@ -139,8 +151,11 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 
 	// Copied from https://github.com/mono/SkiaSharp/blob/main/source/SkiaSharp.Views/SkiaSharp.Views/Platform/Android/SKGLSurfaceView.cs
 	// and modified to also add rendering without OpenGL
-	private class InternalRenderer() : Java.Lang.Object, IRenderer
+	private class InternalRenderer(UnoSKCanvasView view) : Java.Lang.Object, IRenderer
 	{
+		private readonly UnoSKCanvasView _view = view;
+		private readonly ApplicationActivity _activity = view._activity;
+
 		private const SKColorType ColorType = SKColorType.Rgba8888;
 		private const GRSurfaceOrigin SurfaceOrigin = GRSurfaceOrigin.BottomLeft;
 
@@ -168,8 +183,19 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 				_context = GRContext.CreateGl(glInterface);
 			}
 
+			if (_activity.RootElement?.Visual.CompositionTarget is not CompositionTarget compositionTarget)
+			{
+				// The window isn't ready (e.g. mid teardown during activity re-creation). Skipping is
+				// only safe if we re-arm: OnNativePlatformFrameRequested below is the only thing that
+				// clears the target's RenderRequested flag, so a bare return would make every later
+				// RequestNewFrame a no-op and the window would never repaint again. RenderMode is
+				// WhenDirty, so re-request on a delay rather than spinning the GL thread.
+				_view.PostDelayed(_view.RequestRender, RenderRetryDelayMs);
+				return;
+			}
+
 			var renderSurface = _hardwareAccelerated ? _retainedLayer.Surface : _softwareSurface;
-			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(renderSurface?.Canvas,
+			var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(renderSurface?.Canvas,
 			size =>
 			{
 				// read the info from the buffer
@@ -208,7 +234,10 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 				return _softwareSurface.Canvas;
 			});
 
-			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
+			if (_activity.NativeLayerHost is { } nativeLayerHost)
+			{
+				nativeLayerHost.Path = nativeClipPath;
+			}
 
 			if (_hardwareAccelerated)
 			{
