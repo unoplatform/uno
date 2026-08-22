@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.Graphics;
 using Windows.UI.Core;
 
@@ -243,6 +244,11 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 			IsVisible = true;
 			Shown?.Invoke(this, EventArgs.Empty);
 		}
+		else if (!IsVisible)
+		{
+			ShowCore();
+			IsVisible = true;
+		}
 
 		if (activateWindow)
 		{
@@ -297,7 +303,12 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	public void Destroy() { }
 
-	public void Hide() => IsVisible = false;
+	public void Hide() => HideCore();
+
+	protected virtual void HideCore()
+	{
+		ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "Hide()");
+	}
 
 	public virtual void SetIcon(string iconPath)
 	{

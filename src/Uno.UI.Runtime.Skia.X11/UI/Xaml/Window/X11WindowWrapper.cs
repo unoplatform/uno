@@ -35,14 +35,14 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	{
 		get
 		{
-			using var lockDiposable = X11Helper.XLock(_host.RootX11Window.Display);
+			using var lockDisposable = X11Helper.XLock(_host.RootX11Window.Display);
 			var @out = string.Empty;
 			_ = XLib.XFetchName(_host.RootX11Window.Display, _host.RootX11Window.Window, ref @out);
 			return @out;
 		}
 		set
 		{
-			using var lockDiposable = X11Helper.XLock(_host.RootX11Window.Display);
+			using var lockDisposable = X11Helper.XLock(_host.RootX11Window.Display);
 			_ = XLib.XStoreName(_host.RootX11Window.Display, _host.RootX11Window.Window, value);
 		}
 	}
@@ -52,7 +52,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	internal protected override void Activate()
 	{
 		var x11Window = _host.RootX11Window;
-		using var lockDiposable = X11Helper.XLock(x11Window.Display);
+		using var lockDisposable = X11Helper.XLock(x11Window.Display);
 		_ = XLib.XRaiseWindow(x11Window.Display, x11Window.Window);
 		_ = XLib.XFlush(x11Window.Display); // Important! Otherwise X commands will sit waiting to be flushed, and since the window is not activated, there are no new X commands being sent to force a flush.
 
@@ -104,12 +104,47 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	private void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
-	protected override void ShowCore()
+	protected override void ShowCore() => SetNativeVisible(true);
+
+	protected override void HideCore()
 	{
-		using var lockDiposable = X11Helper.XLock(_host.RootX11Window.Display);
-		using var lockDiposable2 = X11Helper.XLock(_host.TopX11Window.Display);
-		_ = XLib.XMapWindow(_host.RootX11Window.Display, _host.RootX11Window.Window);
-		_ = XLib.XMapWindow(_host.TopX11Window.Display, _host.TopX11Window.Window);
+		SetNativeVisible(false);
+		IsVisible = false;
+	}
+
+	private void SetNativeVisible(bool visible)
+	{
+		if (_host.Closed.IsCompleted)
+		{
+			return;
+		}
+		var display = _host.RootX11Window.Display;
+		var window = _host.RootX11Window.Window;
+
+		var topWindow = _host.TopX11Window.Window;
+		var topDisplay = _host.TopX11Window.Display;
+
+		using var lockDisposable = X11Helper.XLock(display);
+		using var lockDisposable2 = X11Helper.XLock(topDisplay);
+
+		if (!visible)
+		{
+			SetFullScreenMode(false);
+		}
+
+		if (visible)
+		{
+			_ = XLib.XMapWindow(display, window);
+			_ = XLib.XMapWindow(topDisplay, topWindow);
+		}
+		else
+		{
+			_ = XLib.XUnmapWindow(display, window);
+			_ = XLib.XUnmapWindow(topDisplay, topWindow);
+		}
+
+		_ = XLib.XFlush(display);
+		_ = XLib.XFlush(topDisplay);
 	}
 
 	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
@@ -143,7 +178,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 		var display = _host.RootX11Window.Display;
 		var window = _host.RootX11Window.Window;
-		using var lockDiposable = X11Helper.XLock(display);
+		using var lockDisposable = X11Helper.XLock(display);
 
 		_ = X11Helper.XMoveWindow(display, window, position.X, position.Y);
 		XLib.XSync(display, false);
@@ -158,7 +193,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 		var display = _host.RootX11Window.Display;
 		var window = _host.RootX11Window.Window;
-		using var lockDiposable = X11Helper.XLock(display);
+		using var lockDisposable = X11Helper.XLock(display);
 
 		// If the window manager adds decorations, usually that is implemented by wrapping
 		// the window in another slightly bigger window that includes the decorations. In that case,

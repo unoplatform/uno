@@ -77,16 +77,17 @@ internal class X11NativeOverlappedPresenter(X11Window x11Window, X11WindowWrappe
 		// https://stackoverflow.com/a/30256233
 		using var lockDiposable = X11Helper.XLock(x11Window.Display);
 
-		var shouldActivate = activateWindow;
-		shouldActivate |= GetWMState().Contains(X11Helper.GetAtom(x11Window.Display, X11Helper._NET_WM_STATE_HIDDEN));
-		if (!shouldActivate)
-		{
-			XWindowAttributes attributes = default;
-			_ = XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
-			shouldActivate = attributes.map_state == MapState.IsUnmapped;
-		}
+		var isHidden = GetWMState().Contains(X11Helper.GetAtom(x11Window.Display, X11Helper._NET_WM_STATE_HIDDEN));
 
-		if (shouldActivate)
+		XWindowAttributes attributes = default;
+		_ = XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
+		var isUnmapped = attributes.map_state is MapState.IsUnmapped;
+
+		if (isHidden || isUnmapped)
+		{
+			wrapper.Show(activateWindow);
+		}
+		else if (activateWindow)
 		{
 			wrapper.Activate();
 		}
