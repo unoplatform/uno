@@ -1,3 +1,7 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\test\native\external\controls\autosuggestbox\AutoSuggestBoxIntegrationTests.cpp, commit 8463f451
+
 #if HAS_UNO
 using System;
 using System.Collections.Generic;
@@ -170,9 +174,9 @@ public class AutoSuggestBoxIntegrationTests : BaseDxamlTestClass
 				</Grid>
 				"""));
 
-			autoSuggestBox = (AutoSuggestBox)(rootPanel.FindName("ASB"));
 			button = (Button)(rootPanel.FindName("button"));
 			flyout = (Flyout)(button.Flyout);
+			autoSuggestBox = (AutoSuggestBox)flyout.Content;
 
 			autoSuggestBox.TextChanged += (s, e) =>
 			{
@@ -1754,6 +1758,7 @@ public class AutoSuggestBoxIntegrationTests : BaseDxamlTestClass
 	// Original C++: void AutoSuggestBoxIntegrationTests::ValidateOverlayUIETree()
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task CanTabOutWhileSuggestionListIsOpen()
 	{
 		AutoSuggestBox autoSuggestBox = null;

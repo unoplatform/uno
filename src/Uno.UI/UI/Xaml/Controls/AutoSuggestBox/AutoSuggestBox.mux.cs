@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference src\dxaml\xcp\dxaml\lib\AutoSuggestBox_Partial.cpp, tag winui3/release/1.7.1
+// MUX Reference src\dxaml\xcp\dxaml\lib\AutoSuggestBox_Partial.cpp, tag winui3/release/1.7.1, commit 5f27a786
 
 using System;
 using System.Collections.Generic;
@@ -17,7 +17,6 @@ using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.System;
 using Windows.UI.ViewManagement;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
@@ -67,13 +66,15 @@ partial class AutoSuggestBox
 		SizeChanged += OnSizeChanged;
 		m_sizeChangedEventRevoker.Disposable = Disposable.Create(() => SizeChanged -= OnSizeChanged);
 
+		RegisterPropertyChangedCallback(
+			AutoSuggestBoxHelper.KeepInteriorCornersSquareProperty,
+			AutoSuggestBoxHelper.OnKeepInteriorCornersSquarePropertyChanged);
+
 		// Resolve the InputPane eagerly (OnGotFocus reads its OccludedRect), but wire the SIP
 		// handlers only while loaded: InputPane is a process-wide singleton, so handlers left
 		// attached would root this control for the lifetime of the process.
 		ResolveInputPane();
 
-		// Hook up Items.VectorChanged
-		Items.VectorChanged += OnItemsVectorChanged;
 	}
 
 	private void ResolveInputPane()
@@ -82,7 +83,7 @@ partial class AutoSuggestBox
 		{
 			m_tpInputPane = InputPane.GetForCurrentView();
 		}
-		catch
+		catch (Exception)
 		{
 			// InputPane might not be available on all platforms
 		}
@@ -382,7 +383,7 @@ partial class AutoSuggestBox
 
 		var eventArgs = new AutoSuggestBoxTextChangedEventArgs();
 		eventArgs.SetCounter(m_textChangedCounter);
-		eventArgs.Owner = this;
+		eventArgs.SetOwner(this);
 		eventArgs.Reason = m_textChangeReason;
 
 		m_tpTextChangedEventArgs = eventArgs;
@@ -563,7 +564,7 @@ partial class AutoSuggestBox
 				{
 					searchName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutoSuggestBoxQueryButton);
 				}
-				catch
+				catch (Exception)
 				{
 					searchName = "Search";
 				}
@@ -739,14 +740,6 @@ partial class AutoSuggestBox
 	{
 		s_sipIsOpen = false;
 		ReevaluateIsOverlayVisible();
-	}
-
-	/// <summary>
-	/// Handler for Items vector changed.
-	/// </summary>
-	private void OnItemsVectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs args)
-	{
-		OnItemsChanged_Internal(args);
 	}
 
 #if false // TODO Uno: Wire when TextBox.CandidateWindowBoundsChanged becomes available
@@ -1232,18 +1225,20 @@ partial class AutoSuggestBox
 			{
 				if (m_suggestionListPosition == SuggestionListPosition.Above)
 				{
-					// Detach previous reversed vector if any
-					m_spReversedVector?.Detach();
-					m_spReversedVector = null;
-
-					if (Items is IList<object> sourceList && sourceList.Count > 0)
+					if (Items is IList<object> sourceList)
 					{
-						m_spReversedVector = new ReversedVector(sourceList);
-						itemsControl.ItemsSource = m_spReversedVector;
-						ScrollLastItemIntoView();
+						if (m_spReversedVector is null || !m_spReversedVector.IsBoundTo(sourceList))
+						{
+							m_spReversedVector?.Detach();
+							m_spReversedVector = new ReversedVector(sourceList);
+							itemsControl.ItemsSource = m_spReversedVector;
+							ScrollLastItemIntoView();
+						}
 					}
 					else
 					{
+						m_spReversedVector?.Detach();
+						m_spReversedVector = null;
 						itemsControl.ItemsSource = ItemsSource;
 					}
 				}
@@ -1376,7 +1371,7 @@ partial class AutoSuggestBox
 			value = pathListener.Value;
 		}
 
-		return value?.ToString() ?? "";
+		return value is null ? "" : FrameworkElement.GetStringFromObject(value) ?? "";
 	}
 
 	#endregion
@@ -1386,10 +1381,8 @@ partial class AutoSuggestBox
 	/// <summary>
 	/// Called when ItemsSource is set, or when the ItemsSource collection changes.
 	/// </summary>
-	private void OnItemsChanged_Internal(object e)
+	protected override void OnItemsChanged(object e)
 	{
-		var isTextBoxFocused = IsTextBoxFocusedElement();
-
 #if DEBUG
 		var wasHandlingCollectionChange = m_handlingCollectionChange;
 		m_handlingCollectionChange = true;
@@ -1397,8 +1390,9 @@ partial class AutoSuggestBox
 
 		try
 		{
-			// Call base implementation
-			// base.OnItemsChanged(e);
+			base.OnItemsChanged(e);
+
+			var isTextBoxFocused = IsTextBoxFocusedElement();
 
 			if (isTextBoxFocused)
 			{
@@ -1445,15 +1439,6 @@ partial class AutoSuggestBox
 			UpdateSuggestionListSize();
 			UpdateSuggestionListVisibility();
 		}
-	}
-
-	/// <summary>
-	/// Override for items source changed.
-	/// </summary>
-	protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
-	{
-		base.OnItemsSourceChanged(e);
-		OnItemsChanged_Internal(e);
 	}
 
 	#endregion
@@ -1733,7 +1718,7 @@ partial class AutoSuggestBox
 				m_availableSuggestionHeight = 0;
 			}
 		}
-		catch
+		catch (Exception)
 		{
 			// Fallback to reasonable defaults
 			m_suggestionListPosition = SuggestionListPosition.Below;
@@ -1930,7 +1915,7 @@ partial class AutoSuggestBox
 		var header = Header;
 		if (header is not null)
 		{
-			return header.ToString();
+			return FrameworkElement.GetStringFromObject(header);
 		}
 		return null;
 	}
