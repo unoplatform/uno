@@ -292,9 +292,6 @@ partial class AppBar
 		m_tpExpandButton = GetTemplateChild<ButtonBase>("ExpandButton")
 			?? GetTemplateChild<ButtonBase>("MoreButton");
 
-		// TODO Uno: The native CommandBar template bypasses the managed measure/clip logic.
-		UpdateIsNativeTemplate();
-
 		// Attach content root size changed handler.
 		if (m_tpContentRoot is not null)
 		{
@@ -343,13 +340,6 @@ partial class AppBar
 	protected override Size MeasureOverride(Size availableSize)
 	{
 		var returnValue = base.MeasureOverride(availableSize);
-
-#if HAS_UNO
-		if (_isNativeTemplate)
-		{
-			return returnValue;
-		}
-#endif
 
 		if (m_Mode == AppBarMode.Top || m_Mode == AppBarMode.Bottom)
 		{
