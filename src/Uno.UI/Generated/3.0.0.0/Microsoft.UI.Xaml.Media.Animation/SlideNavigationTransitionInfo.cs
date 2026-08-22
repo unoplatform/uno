@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #endif
 	public partial class SlideNavigationTransitionInfo : global::Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo
 	{
-#if __SKIA__
+#if false // Implemented in SlideNavigationTransitionInfo.cs
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty EffectProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			typeof(global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionEffect)));
 #endif
-#if __SKIA__
+#if false // Implemented in SlideNavigationTransitionInfo.cs
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionEffect Effect
 		{
