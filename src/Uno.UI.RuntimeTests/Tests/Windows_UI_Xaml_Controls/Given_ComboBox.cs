@@ -820,7 +820,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Full_Collection_Reset()
 		{
 			var SUT = new ComboBox();
-			SUT.ItemTemplate = new DataTemplate(() =>
+			SUT.ItemTemplate = new DataTemplate(null, (_, _) =>
 			{
 
 				var tb = new TextBlock();
@@ -886,7 +886,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Recycling_Explicit_Items()
 		{
 			var SUT = new ComboBox();
-			SUT.ItemTemplate = new DataTemplate(() =>
+			SUT.ItemTemplate = new DataTemplate(null, (_, _) =>
 			{
 
 				var tb = new TextBlock();
@@ -953,8 +953,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var itemsControl = new ItemsControl()
 			{
-				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
-				ItemTemplate = new DataTemplate(() =>
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => new StackPanel()),
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var comboBox = new ComboBox();
 					comboBox.Name = "combo";

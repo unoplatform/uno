@@ -109,7 +109,7 @@ namespace TestRepro
 											IsParsing = true,
 											Name = "inner2",
 											Template = 											global::MyProject.GlobalStaticResources.__PreserveProperties(
-												new global::Microsoft.UI.Xaml.Controls.ControlTemplate(this, Build_PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem)
+												global::Uno.UI.Helpers.MarkupHelper.CreateControlTemplate(this, Build_PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem)
 											)
 											,
 											// Source 0\MainPage.xaml (Line 15:5)
@@ -262,7 +262,7 @@ namespace TestRepro
 			((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;
 		}
 		partial void OnInitializeCompleted();
-		private static _View Build_PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private static _View Build_PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			
 			return new __MainPage_d6cd66944958ced0c513e0a04797b51d.__PagΞ0_StaPanΞ0_GriΞ1_But_TemΞ0_ConTem().Build(__owner, __settings);
@@ -332,7 +332,7 @@ namespace TestRepro
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				public _View Build(object __ResourceOwner_1, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
@@ -354,6 +354,7 @@ namespace TestRepro
 									}
 									.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 									{
+									global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 									__nameScope.RegisterName("gridInsideGridInsideTemplate", __p1);
 									__that.gridInsideGridInsideTemplate = __p1;
 									global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
@@ -366,6 +367,7 @@ namespace TestRepro
 						}
 						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 						{
+						global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 						__nameScope.RegisterName("gridInsideTemplate", __p1);
 						__that.gridInsideTemplate = __p1;
 						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);

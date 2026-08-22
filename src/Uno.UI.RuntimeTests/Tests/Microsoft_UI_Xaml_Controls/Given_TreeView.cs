@@ -135,7 +135,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			{
 				Height = 100,
 				ItemsSource = itemsSource,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var tvi = new TreeViewItem();
 					tvi.SetBinding(TreeViewItem.ItemsSourceProperty, new Binding("Items"));
@@ -270,7 +270,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 					BasedOn = Style.GetDefaultStyleForType(typeof(TreeView)),
 					Setters =
 					{
-						new Setter(Control.TemplateProperty, new ControlTemplate(() =>
+						new Setter(Control.TemplateProperty, new ControlTemplate(null, (_, _) =>
 						{
 							var tvl = new CustomTreeViewList
 							{
@@ -331,7 +331,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			using var _ = new DisposableAction(() => TestableTreeViewItem.DraggingThrewException = false);
 			var treeView = new TreeView
 			{
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var tvi = new TestableTreeViewItem();
 					tvi.SetBinding(TreeViewItem.ItemsSourceProperty, new Binding("Items"));
@@ -471,7 +471,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 						ItemsSource = "12",
 						ItemTemplateSelector = new TreeItemTemplateSelector
 						{
-							Template = new DataTemplate(() => border = new Border
+							Template = new DataTemplate(null, (_, _) => border = new Border
 							{
 								Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
 								Width = 100,

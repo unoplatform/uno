@@ -449,16 +449,6 @@ namespace Microsoft.UI.Xaml
 		internal static bool IsRightToLeft(this DependencyObject dependencyObject) =>
 			dependencyObject is FrameworkElement fw && fw.FlowDirection == FlowDirection.RightToLeft;
 
-		internal static DependencyObject GetTemplatedParent(this DependencyObject @do)
-		{
-			return (@do as DependencyObject)?.GetTemplatedParent2();
-		}
-
-		internal static void SetTemplatedParent(this DependencyObject @do, DependencyObject tp)
-		{
-			(@do as DependencyObject)?.SetTemplatedParent2(tp);
-		}
-
 		internal static bool HasLocalOrModifierValue(this DependencyObject @do, DependencyProperty dp)
 		{
 			return (@do as DependencyObject).HasLocalOrModifierValue(dp);

@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_header = this.GetTemplateChild("Header") as PivotHeaderPanel;
 			_headerClipperGeometry = this.GetTemplateChild("HeaderClipperGeometry") as RectangleGeometry;
 			_headerClipper = this.GetTemplateChild("HeaderClipper") as ContentControl;
-			_pivotItemTemplate = new DataTemplate(() => new PivotItem());
+			_pivotItemTemplate = new DataTemplate(null, (_, _) => new PivotItem());
 
 			_isUWPTemplate = _staticHeader != null;
 

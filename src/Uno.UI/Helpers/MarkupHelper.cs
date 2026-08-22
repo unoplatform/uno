@@ -11,6 +11,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Markup;
 using Windows.ApplicationModel.Resources;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 
 namespace Uno.UI.Helpers
@@ -67,19 +68,13 @@ namespace Uno.UI.Helpers
 		/// Sets a builder for markup-lazy properties in <see cref="VisualState"/>
 		/// </summary>
 		public static void SetVisualStateLazy(VisualState target, Action builder)
-		{
-			target.LazyBuilder = builder;
-			target.FromLegacyTemplate = TemplatedParentScope.GetCurrentTemplate() is { IsLegacyTemplate: true };
-		}
+			=> target.LazyBuilder = builder;
 
 		/// <summary>
 		/// Sets a builder for markup-lazy properties in <see cref="VisualTransition"/>
 		/// </summary>
 		public static void SetVisualTransitionLazy(VisualTransition target, Action builder)
-		{
-			target.LazyBuilder = builder;
-			target.FromLegacyTemplate = TemplatedParentScope.GetCurrentTemplate() is { IsLegacyTemplate: true };
-		}
+			=> target.LazyBuilder = builder;
 
 		public static IXamlServiceProvider CreateParserContext(object? target, Type propertyDeclaringType, string propertyName, [DynamicallyAccessedMembers(ProvideValueTargetProperty.TypeRequirements)] Type propertyType)
 			=> CreateParserContext(target, propertyDeclaringType, propertyName, propertyType, null);
@@ -112,6 +107,39 @@ namespace Uno.UI.Helpers
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static TInstance? GetElementProperty<TInstance>(object target, string propertyName)
 			=> WeakProperties.GetValue<TInstance>(target, propertyName);
+
+		/// <summary>
+		/// Applies the materialization settings to a member created from a <see cref="FrameworkTemplate"/>.
+		/// </summary>
+		/// <remarks>
+		/// Null-safe entry point for generated XAML; the behavior itself lives on the settings. Called once
+		/// per template member, so it is also the place to add materialization diagnostics.
+		/// </remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void OnTemplateMemberCreated(DependencyObject target, TemplateMaterializationSettings? settings)
+			=> settings?.OnMemberCreated(target);
+
+		/// <summary>
+		/// Creates a <see cref="DataTemplate"/> from a factory.
+		/// </summary>
+		/// <remarks>
+		/// The builder constructors are internal (WinUI exposes none), so generated XAML -- which compiles into
+		/// the consuming app's assembly -- reaches them through these helpers.
+		/// </remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static DataTemplate CreateDataTemplate(object? owner, FrameworkTemplateBuilder? factory) => new(owner, factory);
+
+		/// <summary>
+		/// Creates a <see cref="ControlTemplate"/> from a factory. See <see cref="CreateDataTemplate"/>.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static ControlTemplate CreateControlTemplate(object? owner, FrameworkTemplateBuilder? factory) => new(owner, factory);
+
+		/// <summary>
+		/// Creates an <see cref="ItemsPanelTemplate"/> from a factory. See <see cref="CreateDataTemplate"/>.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static ItemsPanelTemplate CreateItemsPanelTemplate(object? owner, FrameworkTemplateBuilder? factory) => new(owner, factory);
 
 		/// <summary>
 		/// Helper for XAML code generation. Not intended to be used in apps outside of XAML generator.

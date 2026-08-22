@@ -879,15 +879,6 @@ namespace Microsoft.UI.Xaml
 			return null;
 		}
 
-		internal DependencyObject GetTemplatedParent()
-		{
-			return (this as DependencyObject)?.GetTemplatedParent2();
-		}
-		internal void SetTemplatedParent(DependencyObject tp)
-		{
-			(this as DependencyObject)?.SetTemplatedParent2(tp);
-		}
-
 		protected FrameworkElement()
 		{
 			Initialize();

@@ -21,10 +21,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 
 			var SUT = new MyItem()
 			{
-				Template = new ControlTemplate(() => myPresenter = new MyPresenter
+				Template = new ControlTemplate(null, (_, _) => myPresenter = new MyPresenter
 				{
 					Name = "myPresenter",
-					Template = new ControlTemplate(() => new Grid
+					Template = new ControlTemplate(null, (_, _) => new Grid
 					{
 						Children =
 						{
