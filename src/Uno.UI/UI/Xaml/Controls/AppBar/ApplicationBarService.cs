@@ -784,7 +784,7 @@ internal class ApplicationBarService
 
 	private void OnWindowActivated(object sender, WindowActivatedEventArgs args)
 	{
-		if (args.WindowActivationState == Windows.UI.Core.CoreWindowActivationState.Deactivated)
+		if (args.WindowActivationState == WindowActivationState.Deactivated)
 		{
 			SetFocusReturnState(FocusState.Programmatic);
 			CloseAllNonStickyAppBars();
