@@ -1184,46 +1184,57 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_pendingHorizontalOffset = horizontalOffset;
 			_pendingVerticalOffset = verticalOffset;
+			_pendingScrollIsIntermediate = isIntermediate;
 
-			if (isIntermediate && UpdatesMode != Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous)
+			if (UpdatesMode == Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous)
 			{
-				RequestUpdate();
-				_snapPointsTimer?.Stop();
+				// Synchronous mode: update DPs immediately (used for testing).
+				// This bypasses the WinUI-aligned deferred path so that test assertions
+				// can read VerticalOffset/HorizontalOffset right after input injection.
+				_hasPendingScrollUpdate = false;
+
+				var oldHorizontalOffset = HorizontalOffset;
+				var oldVerticalOffset = VerticalOffset;
+
+				HorizontalOffset = horizontalOffset;
+				VerticalOffset = verticalOffset;
+				RaiseViewChanged(isIntermediate || m_isInIntermediateViewChangedMode, oldHorizontalOffset, oldVerticalOffset);
 			}
 			else
 			{
-				Update(isIntermediate);
+				// WinUI-aligned behavior: store pending offsets and defer DP updates to ArrangeOverride.
+				// On WinUI, SetOffsetsWithExtents stores offsets in ScrollData + InvalidateArrange;
+				// the DPs are updated during ArrangeOverride → VerifyScrollData → put_HorizontalOffset/VerticalOffset.
+				_hasPendingScrollUpdate = true;
+				_presenter?.InvalidateArrange();
+			}
 
-				if (isIntermediate)
+			if (isIntermediate)
+			{
+				// when intermediate (aka manual) scrolling occurs,
+				// we want to cancel any pending snapping, to prevent snapping to occur mid-scroll.
+				_snapPointsTimer?.Stop();
+			}
+			else if (
+				(HorizontalSnapPointsType != SnapPointsType.None
+					|| VerticalSnapPointsType != SnapPointsType.None
+					|| ShouldSnapToTouchTextBox()))
+			{
+				_horizontalOffsetForSnapPoints = horizontalOffset;
+				_verticalOffsetForSnapPoints = verticalOffset;
+
+				if (_snapPointsTimer == null)
 				{
-					// when intermediate (aka manual) scrolling occurs,
-					// we want to cancel any pending snapping, to prevent snapping to occur mid-scroll.
-					_snapPointsTimer?.Stop();
-				}
-				if (!isIntermediate
-					)
-				{
-					if (HorizontalSnapPointsType != SnapPointsType.None
-						|| VerticalSnapPointsType != SnapPointsType.None
-						|| ShouldSnapToTouchTextBox())
+					_snapPointsTimer = global::Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
+					_snapPointsTimer.IsRepeating = false;
+					_snapPointsTimer.Interval = FeatureConfiguration.ScrollViewer.SnapDelay;
+					_snapPointsTimer.Tick += (snd, evt) =>
 					{
-						_horizontalOffsetForSnapPoints = horizontalOffset;
-						_verticalOffsetForSnapPoints = verticalOffset;
-
-						if (_snapPointsTimer == null)
-						{
-							_snapPointsTimer = global::Windows.System.DispatcherQueue.GetForCurrentThread().CreateTimer();
-							_snapPointsTimer.IsRepeating = false;
-							_snapPointsTimer.Interval = FeatureConfiguration.ScrollViewer.SnapDelay;
-							_snapPointsTimer.Tick += (snd, evt) =>
-							{
-								DelayedMoveToSnapPoint();
-							};
-						}
-
-						_snapPointsTimer.Start();
-					}
+						DelayedMoveToSnapPoint();
+					};
 				}
+
+				_snapPointsTimer.Start();
 			}
 
 		}
@@ -1236,56 +1247,101 @@ namespace Microsoft.UI.Xaml.Controls
 			// Recalculate scrollable dimensions with new zoom factor
 			UpdateDimensionProperties();
 
-			// Note: We should also defer the intermediate zoom changes
-			Update(isIntermediate: false);
+			RaiseViewChanged(isIntermediate: false);
 
 			UpdateZoomedContentAlignment();
 		}
 
 		#region Deferred update (i.e. ViewChanged) support
-		private bool _hasPendingUpdate;
+		// WinUI-compatible synchronous delay/counter mechanism for ViewChanged event batching.
+		// WinUI uses m_iViewChangedDelay as a nestable counter: callers increment via DelayViewChanged()
+		// before operations that may trigger multiple property changes, then decrement via FlushViewChanged().
+		// Events are stored while the counter is positive and raised when it returns to zero.
+		private bool m_isViewChangedDelayed;
+		private bool m_isDelayedViewChangedIntermediate;
+		private bool m_isInIntermediateViewChangedMode;
+		private bool m_isViewChangedRaisedInIntermediateMode;
+		private int m_iViewChangedDelay;
+
+		// Offsets as they were before the first batched change, so a delayed event still
+		// reports the full delta to the automation peer.
+		private double m_delayedOldHorizontalOffset;
+		private double m_delayedOldVerticalOffset;
+
+		// Pending offsets — applied during ArrangeOverride to align with WinUI behavior.
+		// On WinUI, offsets are stored via SetOffsetsWithExtents + InvalidateArrange and
+		// applied during ArrangeOverride → VerifyScrollData → put_HorizontalOffset/VerticalOffset.
 		private double _pendingHorizontalOffset;
 		private double _pendingVerticalOffset;
+		private bool _pendingScrollIsIntermediate;
+		private bool _hasPendingScrollUpdate;
 
-		private void RequestUpdate()
+		/// <summary>
+		/// Increments the delay counter to prevent ViewChanged from being raised.
+		/// Must be paired with a call to <see cref="FlushViewChanged"/>.
+		/// </summary>
+		internal void DelayViewChanged()
 		{
-			if (_hasPendingUpdate)
+			m_iViewChangedDelay++;
+		}
+
+		/// <summary>
+		/// Decrements the delay counter and raises any stored ViewChanged event
+		/// when the counter reaches zero.
+		/// </summary>
+		internal void FlushViewChanged()
+		{
+			Debug.Assert(m_iViewChangedDelay > 0);
+
+			m_iViewChangedDelay--;
+
+			if (m_iViewChangedDelay == 0 && m_isViewChangedDelayed)
 			{
+				RaiseViewChanged(m_isDelayedViewChangedIntermediate, m_delayedOldHorizontalOffset, m_delayedOldVerticalOffset);
+			}
+		}
+
+		/// <summary>
+		/// Raises the ViewChanged event for a change that did not alter the offsets
+		/// (or whose offsets are still the pre-change values).
+		/// </summary>
+		private void RaiseViewChanged(bool isIntermediate)
+			=> RaiseViewChanged(isIntermediate, HorizontalOffset, VerticalOffset);
+
+		/// <summary>
+		/// Raises the ViewChanged event, or stores it for later if the delay counter is active.
+		/// When delayed, only the latest isIntermediate value is retained.
+		/// </summary>
+		/// <remarks>
+		/// The offset DPs already hold the new values when this is called from the arrange pass,
+		/// so the automation peer must be given the pre-change offsets to detect a scroll-percent change.
+		/// </remarks>
+		private void RaiseViewChanged(bool isIntermediate, double oldHorizontalOffset, double oldVerticalOffset)
+		{
+			if (m_iViewChangedDelay > 0)
+			{
+				// Batch: store the event for later, keeping the latest isIntermediate value
+				// and the offsets from before the first batched change.
+				if (!m_isViewChangedDelayed)
+				{
+					m_delayedOldHorizontalOffset = oldHorizontalOffset;
+					m_delayedOldVerticalOffset = oldVerticalOffset;
+				}
+
+				m_isViewChangedDelayed = true;
+				m_isDelayedViewChangedIntermediate = isIntermediate;
 				return;
 			}
 
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			if (m_isInIntermediateViewChangedMode)
 			{
-				if (_hasPendingUpdate)
-				{
-					Update(isIntermediate: true);
-				}
-			});
-			_hasPendingUpdate = true;
-		}
-
-		private void Update(bool isIntermediate)
-		{
-			_hasPendingUpdate = false;
-
-			var oldHorizontalOffset = HorizontalOffset;
-			var oldVerticalOffset = VerticalOffset;
-
-			HorizontalOffset = _pendingHorizontalOffset;
-			VerticalOffset = _pendingVerticalOffset;
-
-			if (!isIntermediate && (oldHorizontalOffset != HorizontalOffset || oldVerticalOffset != VerticalOffset))
-			{
-				// Mirrors ScrollContentPresenter_Partial.cpp:871 (SetHorizontalOffsetPrivate /
-				// SetVerticalOffsetPrivate): discrete offset changes schedule an arrange so that
-				// AnchoringArrangeOverride re-selects CurrentAnchor against the new viewport.
-				// Intermediate ticks (DManip-driven inertia / drag) are skipped to match WinUI,
-				// which lets the compositor drive offsets during manipulation without re-running
-				// layout per frame.
-				InvalidateArrange();
+				// Track that ViewChanged was raised during intermediate mode so that
+				// LeaveIntermediateViewChangedMode can raise a final non-intermediate event.
+				m_isViewChangedRaisedInIntermediateMode = true;
 			}
 
-			// Not ideal, and doesn't match WinUI. This can miss raising some automation events.
+			m_isViewChangedDelayed = false;
+
 			if (AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged) &&
 				GetAutomationPeer() is ScrollViewerAutomationPeer peer)
 			{
@@ -1303,6 +1359,72 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdatePartial(isIntermediate);
 
 			ViewChanged?.Invoke(this, new ScrollViewerViewChangedEventArgs { IsIntermediate = isIntermediate });
+		}
+
+		/// <summary>
+		/// Enters intermediate mode. All ViewChanged events raised while in this mode
+		/// will have IsIntermediate set to true. A final non-intermediate event is raised
+		/// when leaving intermediate mode via <see cref="LeaveIntermediateViewChangedMode"/>.
+		/// </summary>
+		internal void EnterIntermediateViewChangedMode()
+		{
+			if (!m_isInIntermediateViewChangedMode)
+			{
+				m_isInIntermediateViewChangedMode = true;
+				m_isViewChangedRaisedInIntermediateMode = false;
+			}
+		}
+
+		/// <summary>
+		/// Leaves intermediate mode. If ViewChanged was raised during intermediate mode
+		/// and <paramref name="raiseFinalViewChanged"/> is true, ensures a final
+		/// ViewChanged event with IsIntermediate=false is raised.
+		/// When a pending scroll update exists (from OnPresenterScrolled), the final event
+		/// is raised during the arrange pass via <see cref="OnPresenterArranged"/>.
+		/// </summary>
+		internal void LeaveIntermediateViewChangedMode(bool raiseFinalViewChanged)
+		{
+			if (m_isInIntermediateViewChangedMode)
+			{
+				m_isInIntermediateViewChangedMode = false;
+
+				if (m_isViewChangedRaisedInIntermediateMode)
+				{
+					m_isViewChangedRaisedInIntermediateMode = false;
+
+					if (raiseFinalViewChanged && !_hasPendingScrollUpdate)
+					{
+						// No pending scroll update will trigger an arrange, so raise directly.
+						RaiseViewChanged(isIntermediate: false);
+					}
+					// Otherwise, the pending scroll update from OnCompleted's Set(IsIntermediate: false)
+					// will raise the final non-intermediate event during OnPresenterArranged.
+				}
+			}
+		}
+
+		/// <summary>
+		/// Called from <see cref="ScrollContentPresenter.ArrangeOverride"/> to flush
+		/// pending scroll offset updates. Aligns with WinUI where offset DPs are updated
+		/// during ArrangeOverride → VerifyScrollData → put_HorizontalOffset/VerticalOffset.
+		/// </summary>
+		internal void OnPresenterArranged()
+		{
+			if (_hasPendingScrollUpdate)
+			{
+				_hasPendingScrollUpdate = false;
+
+				var oldHorizontalOffset = HorizontalOffset;
+				var oldVerticalOffset = VerticalOffset;
+
+				HorizontalOffset = _pendingHorizontalOffset;
+				VerticalOffset = _pendingVerticalOffset;
+
+				RaiseViewChanged(
+					_pendingScrollIsIntermediate || m_isInIntermediateViewChangedMode,
+					oldHorizontalOffset,
+					oldVerticalOffset);
+			}
 		}
 
 		partial void UpdatePartial(bool isIntermediate);
@@ -1458,12 +1580,24 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (verticalOffsetChanged || horizontalOffsetChanged || zoomFactorChanged)
 			{
-				return ChangeViewCore(
-					horizontalOffset,
-					verticalOffset,
-					zoomFactor,
-					disableAnimation,
-					shouldSnap: true);
+				// Batch the ViewChanged events that ChangeViewCore raises synchronously, i.e. zoom
+				// changes (OnPresenterZoomed) and, in Synchronous UpdatesMode, offset changes.
+				// In the default Deferred mode, OnPresenterScrolled only stores the pending offsets
+				// and the event is raised later during the arrange pass, so nothing is batched here.
+				DelayViewChanged();
+				try
+				{
+					return ChangeViewCore(
+						horizontalOffset,
+						verticalOffset,
+						zoomFactor,
+						disableAnimation,
+						shouldSnap: true);
+				}
+				finally
+				{
+					FlushViewChanged();
+				}
 			}
 			else
 			{
@@ -1593,8 +1727,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private static readonly bool _indicatorResetDisabled = _indicatorResetDelay == TimeSpan.MaxValue;
 		private DispatcherQueueTimer? _indicatorResetTimer;
 		private string? _indicatorState;
-		//private bool m_isInIntermediateViewChangedMode;
-		//private bool m_isViewChangedRaisedInIntermediateMode;
 		//private bool m_isDraggingThumb;
 
 		private void PrepareScrollIndicator() // OnApplyTemplate
