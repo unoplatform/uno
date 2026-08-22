@@ -11,7 +11,7 @@
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     d:DesignHeight="2000"
     d:DesignWidth="400"
-    mc:Ignorable="d ">
+    mc:Ignorable="d">
 
     <controls:SampleControl SampleDescription="ListViewWithinScollViewer">
         <controls:SampleControl.SampleContent>

@@ -54,13 +54,9 @@ namespace Microsoft.UI.Xaml
 		// ctor (invoked by IFrameworkElement.Initialize())
 		void IFrameworkElement_EffectiveViewport.InitializeEffectiveViewport()
 		{
-#if IS_NATIVE_ELEMENT
-			Loaded += ReconfigureViewportPropagationOnLoad;
-			Unloaded += ReconfigureViewportPropagationOnUnload;
-#endif
 		}
 
-#if !IS_NATIVE_ELEMENT && !UNO_HAS_ENHANCED_LIFECYCLE && !__NETSTD_REFERENCE__ // We rely on Enter/Leave with enhanced lifecycle instead of Loaded/Unloaded.
+#if !UNO_HAS_ENHANCED_LIFECYCLE && !__NETSTD_REFERENCE__ // We rely on Enter/Leave with enhanced lifecycle instead of Loaded/Unloaded.
 		private partial void ReconfigureViewportPropagationPartial()
 			=> ReconfigureViewportPropagation();
 #endif
@@ -195,20 +191,6 @@ namespace Microsoft.UI.Xaml
 			PropagateEffectiveViewportChange(isInitial, isInternal);
 		}
 
-#if IS_NATIVE_ELEMENT
-		private bool IsScrollPort { get; } = false;
-		private bool IsVisualTreeRoot { get; } = false;
-		private global::Windows.Foundation.Point ScrollOffsets { get; } = default;
-
-		// Native elements cannot be clipped (using Uno), so the _localViewport will always be an empty rect, and we only react to LayoutSlot updates
-		void IFrameworkElement_EffectiveViewport.OnLayoutUpdated()
-		{
-#if CHECK_LAYOUTED
-			_isLayouted = true;
-#endif
-			PropagateEffectiveViewportChange();
-		}
-#else
 
 #if !UNO_REFERENCE_API
 		void IFrameworkElement_EffectiveViewport.OnLayoutUpdated() { }  // Nothing to do here: this won't be invoked for real FrameworkElement, instead we receive OnViewportUpdated
@@ -247,7 +229,6 @@ namespace Microsoft.UI.Xaml
 			// but for now we support only internal controls that can set the ScrollOffsets property on UIElement.
 			PropagateEffectiveViewportChange();
 		}
-#endif
 
 		private ViewportInfo GetEffectiveViewport(ViewportInfo parentViewport)
 		{

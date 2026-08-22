@@ -34,7 +34,7 @@ namespace Uno.Extensions
 			return type.IsAssignableFrom(instance);
 		}
 
-#if WINAPPSDK || WINPRT || XAMARIN
+#if WINAPPSDK || XAMARIN
 #pragma warning disable IL2070
 		public static IEnumerable<ConstructorInfo> GetConstructors(this TypeInfo type)
 		{

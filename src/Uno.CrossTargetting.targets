@@ -31,24 +31,17 @@
 		<None Include="**\*.UIKit.cs" Exclude="bin\**\*.UIKit.cs;obj\**\*.UIKit.cs" Condition="!$(IsAppleUIKit)" />
 		<Compile Remove="**\*.UIKit.cs" Condition="!$(IsAppleUIKit)" />
 
-		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" Condition="!$(IsIOS)" />
-		<Compile Remove="**\*.iOSmacOS.cs" Condition="!$(IsIOS)" />
-
-		<None Include="**\*.Apple.cs" Exclude="bin\**\*.Apple.cs;obj\**\*.Apple.cs" Condition="!$(IsApple)" />
-		<Compile Remove="**\*.Apple.cs" Condition="!$(IsApple)" />
-
 		<None Include="**\*.Android.cs" Exclude="bin\**\*.Android.cs;obj\**\*.Android.cs" Condition="!$(IsAndroid)" />
 		<Compile Remove="**\*.Android.cs" Condition="!$(IsAndroid)" />
-
-		<None Include="**\*.Xamarin.cs" Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsApple)" />
-		<Compile Remove="**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsApple)" />
 	</ItemGroup>
 
 	<!--
   List of known constants:
   - __SKIA__: Used when building for the Skia backend
   - __WASM__: Used when building for the WebAssembly backend
-  - UNO_REFERENCE_API: Used when the Reference API is used (it's true for Skia, Wasm, and Reference).
+  - UNO_REFERENCE_API: True for Skia, Wasm and Reference. The name is historical: for a consumer this is
+					   simply "drawn by Uno rather than by WinUI", the same condition as HAS_UNO, and it is
+					   defined on the Android and Apple target frameworks too. Prefer HAS_UNO in new code.
   - __CROSSRUNTIME__: Currently have the same semantics as UNO_REFERENCE_API
   - __NETSTD_REFERENCE__: Used when building the reference assemblies (only true for Reference)
   - UNO_HAS_UIELEMENT_IMPLICIT_PINNING: Used to mark targets that have specific constraints on
