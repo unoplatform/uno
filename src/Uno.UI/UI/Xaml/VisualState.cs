@@ -191,13 +191,9 @@ namespace Microsoft.UI.Xaml
 				// CreateInstance (OptimizedVisualStateManagerDataSource.cpp:92-129); the chain is themed
 				// when the VSM parents it (CVisualState::EnterImpl enters its storyboard,
 				// components/vsm/VisualState.cpp:67-76, plus CDependencyObject::EnterImpl, depends.cpp:1044-1069).
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				var groupsOwner = this.GetTemplatedParent() ?? Owner?.GetParent() as DependencyObject;
 				var ownerTheme = ThemeResolution.ResolvePinnedOwnerTheme(groupsOwner);
 				NotifyThemeChanged(ownerTheme, forceRefresh: true);
-#else
-				this.UpdateResourceBindings();
-#endif
 			}
 		}
 
