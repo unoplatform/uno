@@ -218,6 +218,10 @@
 		<WasmBuildNative>true</WasmBuildNative>
 		<!-- Workaround for https://github.com/dotnet/aspnetcore/issues/63970 -->
 		<WasmFingerprintAssets>false</WasmFingerprintAssets>
+		<!-- With fingerprinting off, the bootstrapper's dotnet.js fingerprint probe matches the
+		     unfingerprinted dotnet.runtime.js and rewrites uno-config.js to point at it, which
+		     leaves m.dotnet undefined and fails .NET runtime initialization. -->
+		<WasmShellEnableDotnetJsFingerprinting>false</WasmShellEnableDotnetJsFingerprinting>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(Configuration)'=='Debug'">
 		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
