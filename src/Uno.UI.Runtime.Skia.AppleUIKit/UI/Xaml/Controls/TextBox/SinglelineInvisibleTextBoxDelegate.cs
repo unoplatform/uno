@@ -75,6 +75,9 @@ internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 		return true;
 	}
 
+	public override void DidChangeSelection(UITextField textField)
+		=> _textBoxViewExtension.GetTarget()?.OnNativeSelectionChanged();
+
 	public override bool ShouldReturn(UITextField textField)
 	{
 		if (IsKeyboardHiddenOnEnter)

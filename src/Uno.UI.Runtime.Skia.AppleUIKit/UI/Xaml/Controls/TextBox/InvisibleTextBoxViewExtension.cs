@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using UIKit;
 using Uno.UI;
+using Uno.UI.Extensions;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
@@ -19,6 +20,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	private readonly TextBoxView _owner;
 	private UIView? _latestNativeView;
 	private IInvisibleTextBoxView? _textBoxView;
+	private bool _isStartingEntry;
 
 	public InvisibleTextBoxViewExtension(TextBoxView view)
 	{
@@ -29,7 +31,23 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public bool IsOverlayLayerInitialized(XamlRoot xamlRoot) => true;
 
+	// Taking first responder makes UIKit park the caret at the end of the document and
+	// report it through the selection delegate. That is an internal mutation, not a user
+	// intent, so it must not be synced back to the TextBox.
 	public void StartEntry()
+	{
+		try
+		{
+			_isStartingEntry = true;
+			StartEntryCore();
+		}
+		finally
+		{
+			_isStartingEntry = false;
+		}
+	}
+
+	private void StartEntryCore()
 	{
 		// StartEntry can be called twice without any EndEntry.
 		// This happens when the managed TextBox receives Focus
@@ -52,15 +70,23 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		EnsureTextBoxView(textBox);
 		SetSoftKeyboardTheme();
 
+		// The proxy wraps its text at its frame width and iOS keyboard interactions
+		// (e.g. the spacebar trackpad drag) map vertical movement through that layout,
+		// so the frame must track the TextBox size while editing.
+		textBox.SizeChanged += OnTextBoxSizeChanged;
+
 		AddViewToTextInputLayer(textBox.XamlRoot);
+
+		// Read the intended selection before taking first responder, which moves the
+		// native caret to the end of the document.
+		var start = textBox.SelectionStart;
+		var length = textBox.SelectionLength;
 
 		// change FirstResponder's View before removing the previous view to avoid flickering
 		_textBoxView.BecomeFirstResponder();
 
 		RemovePreviousViewFromTextInputLayer();
 
-		var start = textBox?.SelectionStart ?? 0;
-		var length = textBox?.SelectionLength ?? 0;
 		_textBoxView.Select(start, length);
 	}
 
@@ -68,10 +94,17 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	{
 		if (_textBoxView is not null)
 		{
+			if (_owner.TextBox is { } textBox)
+			{
+				textBox.SizeChanged -= OnTextBoxSizeChanged;
+			}
+
 			RemoveViewFromTextInputLayer();
 			_textBoxView = null;
 		}
 	}
+
+	private void OnTextBoxSizeChanged(object sender, SizeChangedEventArgs args) => InvalidateLayout();
 
 	public void UpdateSize() => InvalidateLayout();
 
@@ -158,6 +191,12 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		_textBoxView.SpellCheckingType = textBox.IsSpellCheckEnabled ? UITextSpellCheckingType.Yes : UITextSpellCheckingType.No;
 		_textBoxView.AutocorrectionType = textBox.IsSpellCheckEnabled ? UITextAutocorrectionType.Yes : UITextAutocorrectionType.No;
 
+		// The proxy lays out its own copy of the text and iOS keyboard interactions
+		// (e.g. the spacebar trackpad drag) constrain horizontal caret movement to the
+		// proxy's layout lines. Match the font size so its wrap points stay close to
+		// the Skia-rendered text.
+		_textBoxView.Font = UIFont.SystemFontOfSize((float)textBox.FontSize);
+
 		var inputReturnType = TextBoxExtensions.GetInputReturnType(textBox);
 		_textBoxView.ReturnKeyType = inputReturnType.ToUIReturnKeyType();
 
@@ -225,6 +264,61 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			var length = GetSelectionLength();
 			textBox.SelectInternal(start, length);
 		}
+	}
+
+	// Invoked from textFieldDidChangeSelection:/textViewDidChangeSelection:. UIKit mutates the
+	// selection through internal controllers for some interactions (e.g. the spacebar trackpad-
+	// mode drag), bypassing the setSelectedTextRange: override in the views, so the delegate
+	// callback is the only notification that covers every native selection change.
+	internal void OnNativeSelectionChanged()
+	{
+		if (_textBoxView is not { } textBoxView
+			|| _isStartingEntry
+			|| textBoxView.IsSettingTextFromManaged
+			|| textBoxView.IsSettingSelectionFromManaged
+			|| textBoxView.IsComposing)
+		{
+			return;
+		}
+
+		if (_owner?.TextBox is not { } textBox)
+		{
+			return;
+		}
+
+		// While a native edit is in flight the native text is ahead of the managed text, so
+		// selection offsets don't map onto it; ProcessNativeTextInput applies the post-edit
+		// selection itself (see SetPendingSelection).
+		if (!NativeTextEquals(GetNativeText(), textBox.Text))
+		{
+			return;
+		}
+
+		SyncSelectionToTextBox();
+	}
+
+	// Equivalent to nativeText.Replace('\n', '\r') == managedText (native uses \n, managed
+	// uses \r — see SetText), without allocating: this runs on every native selection change.
+	private static bool NativeTextEquals(string? nativeText, string? managedText)
+	{
+		nativeText ??= string.Empty;
+		managedText ??= string.Empty;
+
+		if (nativeText.Length != managedText.Length)
+		{
+			return false;
+		}
+
+		for (var i = 0; i < nativeText.Length; i++)
+		{
+			var nativeChar = nativeText[i] == '\n' ? '\r' : nativeText[i];
+			if (nativeChar != managedText[i])
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	internal void ProcessNativeTextInput(string? text)
@@ -329,6 +423,23 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		var y = rect?.Y ?? 0;
 		var width = rect?.Width ?? 10;
 		var height = rect?.Height ?? 10;
+
+		// For the off-screen proxy, wrap fidelity matters more than the control
+		// bounds: size it to the text area so its line breaks stay close to the
+		// Skia layout (see the font-size match in UpdateProperties).
+		if (!ShouldAnchorToTextBox() && textBox?.ContentElement is { } contentElement)
+		{
+			var contentWidth = contentElement.ActualWidth - contentElement.Padding.Horizontal();
+			var contentHeight = contentElement.ActualHeight - contentElement.Padding.Vertical();
+			if (contentWidth > 0)
+			{
+				width = contentWidth;
+			}
+			if (contentHeight > 0)
+			{
+				height = contentHeight;
+			}
+		}
 
 		// Only iPad shows a floating numeric keypad that needs an anchor
 		// view. For all other cases we push the native view off-screen so
