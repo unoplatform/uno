@@ -9,7 +9,7 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Extras.DevTools.Input;
 using static Private.Infrastructure.TestServices;
 
 #nullable enable
