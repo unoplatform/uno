@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference AutoSuggestBoxHelper.cpp, tag winui3/release/1.7.1
+// MUX Reference src\controls\dev\AutoSuggestBox\AutoSuggestBoxHelper.h/.cpp, tag winui3/release/1.7.1, commit 5f27a786
 
 #nullable enable
 
@@ -36,6 +36,26 @@ public partial class AutoSuggestBoxHelper
 
 	#endregion
 
+	internal static void OnKeepInteriorCornersSquarePropertyChanged(DependencyObject sender, DependencyProperty property)
+	{
+		if (sender is AutoSuggestBox autoSuggestBox)
+		{
+			var keepInteriorCornersSquare = GetKeepInteriorCornersSquare(autoSuggestBox);
+			var isPopupOpen = autoSuggestBox.GetTemplateChild(c_popupName) is Popup { IsOpen: true };
+
+			UpdateCornerRadius(autoSuggestBox, keepInteriorCornersSquare && isPopupOpen);
+
+			if (keepInteriorCornersSquare)
+			{
+				SetupCornerRadiusMonitoring(autoSuggestBox);
+			}
+			else
+			{
+				TeardownCornerRadiusMonitoring(autoSuggestBox);
+			}
+		}
+	}
+
 	/// <summary>
 	/// Called to set up corner radius monitoring for an AutoSuggestBox.
 	/// This should be called when the control is loaded and KeepInteriorCornersSquare is true.
@@ -51,6 +71,11 @@ public partial class AutoSuggestBoxHelper
 		var existingRevokers = GetAutoSuggestEventRevokers(autoSuggestBox);
 		if (existingRevokers is not null)
 		{
+			if (autoSuggestBox.IsLoaded)
+			{
+				OnAutoSuggestBoxLoaded(autoSuggestBox, null!);
+			}
+
 			return;
 		}
 
@@ -101,42 +126,40 @@ public partial class AutoSuggestBoxHelper
 			return;
 		}
 
-		// Only set up popup events if not already set up
-		if (revokers.PopupOpenedRevoker is null || revokers.PopupClosedRevoker is null)
+		revokers.PopupOpenedRevoker?.Dispose();
+		revokers.PopupClosedRevoker?.Dispose();
+		revokers.PopupOpenedRevoker = null;
+		revokers.PopupClosedRevoker = null;
+
+		var popup = autoSuggestBox.GetTemplateChild(c_popupName) as Popup;
+		if (popup is not null)
 		{
-			var popup = autoSuggestBox.GetTemplateChild(c_popupName) as Popup;
-			if (popup is not null)
+			// Use weak reference to avoid preventing garbage collection
+			var autoSuggestBoxWeakRef = new WeakReference<AutoSuggestBox>(autoSuggestBox);
+
+			void OnPopupOpened(object? s, object e)
 			{
-				// C++ assigns to winrt::auto_revoke revokers, which revoke the previous subscription
-				// on assignment. Plain IDisposable fields don't, so revoke explicitly before re-wiring.
-				revokers.PopupOpenedRevoker?.Dispose();
-				revokers.PopupClosedRevoker?.Dispose();
-
-				// Use weak reference to avoid preventing garbage collection
-				var autoSuggestBoxWeakRef = new WeakReference<AutoSuggestBox>(autoSuggestBox);
-
-				void OnPopupOpened(object? s, object e)
+				if (autoSuggestBoxWeakRef.TryGetTarget(out var asb))
 				{
-					if (autoSuggestBoxWeakRef.TryGetTarget(out var asb))
-					{
-						UpdateCornerRadius(asb, isPopupOpen: true);
-					}
+					UpdateCornerRadius(asb, isPopupOpen: true);
 				}
-
-				void OnPopupClosed(object? s, object e)
-				{
-					if (autoSuggestBoxWeakRef.TryGetTarget(out var asb))
-					{
-						UpdateCornerRadius(asb, isPopupOpen: false);
-					}
-				}
-
-				popup.Opened += OnPopupOpened;
-				popup.Closed += OnPopupClosed;
-
-				revokers.PopupOpenedRevoker = Disposable.Create(() => popup.Opened -= OnPopupOpened);
-				revokers.PopupClosedRevoker = Disposable.Create(() => popup.Closed -= OnPopupClosed);
 			}
+
+			void OnPopupClosed(object? s, object e)
+			{
+				if (autoSuggestBoxWeakRef.TryGetTarget(out var asb))
+				{
+					UpdateCornerRadius(asb, isPopupOpen: false);
+				}
+			}
+
+			popup.Opened += OnPopupOpened;
+			popup.Closed += OnPopupClosed;
+
+			revokers.PopupOpenedRevoker = Disposable.Create(() => popup.Opened -= OnPopupOpened);
+			revokers.PopupClosedRevoker = Disposable.Create(() => popup.Closed -= OnPopupClosed);
+
+			UpdateCornerRadius(autoSuggestBox, popup.IsOpen);
 		}
 	}
 
@@ -200,7 +223,7 @@ public partial class AutoSuggestBoxHelper
 				var popupTop = transform.TransformPoint(new global::Windows.Foundation.Point(0, 0));
 				verticalOffset = popupTop.Y;
 			}
-			catch
+			catch (Exception)
 			{
 				// Transform may fail if elements are not in the same visual tree
 			}
