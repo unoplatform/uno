@@ -2545,7 +2545,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// recording (or the FPS overlay) invalidates only its own chunk while the rest of the frame replays
 		// pre-recorded bundles. Index-based boundaries stay stable while the op COUNT is stable; a count or
 		// shared-buffer change re-snapshots everything (one inline frame).
-		const int BundleChunkSize = 128;
+		const int BundleChunkSize = 32;
 		bool[] chunkReplay = null, chunkRecord = null;
 		if (bundleEligible)
 		{
@@ -2925,14 +2925,22 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		bundleFormats[0] = _d.ColorFormat;
 		if (chunkReplay is not null)
 		{
+			var replayRun = stackalloc IntPtr[chunkReplay.Length];
 			for (int c = 0; c < chunkReplay.Length; c++)
 			{
 				int cs = c * BundleChunkSize, ce = Math.Min(cs + BundleChunkSize, ops.Count);
 				if (chunkReplay[c])
 				{
-					bundleList[0] = target.BundleChunks[c];
-					wgpuRenderPassEncoderExecuteBundles(pass, 1, (IntPtr)bundleList);
-					statBundleReplay++;
+					// A run of consecutive unchanged chunks replays in ONE ExecuteBundles call.
+					var runLength = 0;
+					while (c < chunkReplay.Length && chunkReplay[c])
+					{
+						replayRun[runLength++] = target.BundleChunks[c];
+						c++;
+					}
+					c--;
+					wgpuRenderPassEncoderExecuteBundles(pass, (nuint)runLength, (IntPtr)replayRun);
+					statBundleReplay += runLength;
 				}
 				else if (chunkRecord[c])
 				{
