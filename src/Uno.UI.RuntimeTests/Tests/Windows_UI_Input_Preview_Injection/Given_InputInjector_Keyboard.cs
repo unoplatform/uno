@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.DevTools.Input;
 using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.System;
