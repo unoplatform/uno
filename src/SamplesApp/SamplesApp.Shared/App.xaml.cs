@@ -42,6 +42,7 @@ using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using SampleControl.Presentation;
+using Microsoft.Windows.AppLifecycle;
 #else
 using DispatcherQueue = Windows.System.DispatcherQueue;
 using DispatcherQueuePriority = Windows.System.DispatcherQueuePriority;
@@ -93,6 +94,9 @@ namespace SamplesApp
 #if !HAS_UNO
 			UnhandledException += App_UnhandledException;
 #endif
+
+			Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().Activated += OnAppInstanceActivated;
+
 			// Fix language for UI tests
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 			Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
@@ -141,11 +145,7 @@ namespace SamplesApp
 		/// will be used such as when the application is launched to open a specific file.
 		/// </summary>
 		/// <param name="e">Details about the launch request and process.</param>
-		protected
-#if HAS_UNO
-			internal
-#endif
-		override void OnLaunched(LaunchActivatedEventArgs e)
+		protected override void OnLaunched(LaunchActivatedEventArgs e)
 		{
 #if __SKIA__ && !UNO_ISLANDS
 			_gotOnLaunched = true;
@@ -313,32 +313,43 @@ namespace SamplesApp
 #endif
 
 #if !WINAPPSDK
-		protected
-#if HAS_UNO
-			internal
-#endif
-			override async void OnActivated(IActivatedEventArgs e)
+		protected override async void OnActivated(IActivatedEventArgs args)
 		{
-			base.OnActivated(e);
+			base.OnActivated(args);
 
 			EnsureMainWindow();
 			InitializeFrame();
 			ActivateMainWindow();
 
-			if (e.Kind == ActivationKind.Protocol)
+			if (args.Kind == ActivationKind.Protocol)
 			{
-				var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)e;
-				var dlg = new MessageDialog(
-					$"PreviousState - {e.PreviousExecutionState}, " +
-					$"Uri - {protocolActivatedEventArgs.Uri}",
-					"Application activated via protocol");
-				if (ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog, Uno", nameof(MessageDialog.ShowAsync)))
-				{
-					await dlg.ShowAsync();
-				}
+				var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)args;
+				await ProcessProtocolActivation(protocolActivatedEventArgs);
 			}
 		}
 #endif
+
+		private void OnAppInstanceActivated(object? sender, AppActivationArguments args) => ProcessAppActivationArguments(args);
+
+		private async void ProcessAppActivationArguments(AppActivationArguments arguments)
+		{
+			if (arguments.Kind == ExtendedActivationKind.Protocol)
+			{
+				var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)arguments.Data;
+				await ProcessProtocolActivation(protocolActivatedEventArgs);
+			}
+			else if (arguments.Kind == ExtendedActivationKind.Launch)
+			{
+				// No additional handling is required for Launch activations here.
+				// The main window and navigation are already initialized by the
+				// app's primary activation path before this method is invoked.
+			}
+		}
+
+		private Task ProcessProtocolActivation(ProtocolActivatedEventArgs args)
+		{
+			return Task.CompletedTask;
+		}
 
 		private void ActivateMainWindow()
 		{
@@ -434,11 +445,11 @@ namespace SamplesApp
 				return;
 			}
 
-			if (!string.IsNullOrEmpty(args))
-			{
-				var dlg = new MessageDialog(args, "Launch arguments");
-				await dlg.ShowAsync();
-			}
+			//if (!string.IsNullOrEmpty(args))
+			//{
+			//	var dlg = new MessageDialog(args, "Launch arguments");
+			//	await dlg.ShowAsync();
+			//}
 
 			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
 			{

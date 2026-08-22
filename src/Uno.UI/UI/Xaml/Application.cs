@@ -32,6 +32,7 @@ using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
+using Microsoft.Windows.AppLifecycle;
 using Uno.Foundation;
 using System.Diagnostics;
 using Windows.UI.Core;
@@ -122,6 +123,12 @@ namespace Microsoft.UI.Xaml
 				BackButtonIntegration.Initialize();
 
 				InitializePartial();
+
+				var appInstance = Windows.AppLifecycle.AppInstance.GetCurrent();
+				// Set default launch activation args
+				appInstance.SetDefaultLaunchActivatedArgs(
+					AppActivationArguments.CreateLaunch(
+						new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable())));
 			}
 			else
 			{
@@ -131,6 +138,21 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal bool InitializationComplete => _initializationComplete;
+
+		// Per-instance, because several Application instances can coexist (one per ALC) and each
+		// still needs its own OnLaunched. CoreApplication.WasLaunched is the process-wide mirror
+		// AppInstance reads, since it cannot see Application.
+		private bool _wasLaunched;
+
+		internal bool WasLaunched
+		{
+			get => _wasLaunched;
+			private set
+			{
+				_wasLaunched = value;
+				CoreApplication.WasLaunched = value;
+			}
+		}
 
 		partial void InitializePartial();
 
@@ -409,9 +431,28 @@ namespace Microsoft.UI.Xaml
 
 		private static partial Application StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback);
 
-		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
+		protected virtual void OnActivated(IActivatedEventArgs args) { }
 
-		protected internal virtual void OnLaunched(LaunchActivatedEventArgs args) { }
+		protected virtual void OnLaunched(LaunchActivatedEventArgs args) { }
+
+		// Activation always goes through the proper OnLaunched path.
+		internal void InvokeOnActivated(IActivatedEventArgs args) => InvokeOnLaunched(args);
+
+		internal void InvokeOnLaunched(IActivatedEventArgs activatedArgs)
+		{
+			if (activatedArgs is not null)
+			{
+				Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().SetOrRaiseActivation(AppActivationArguments.FromActivatedEventArgs(activatedArgs));
+			}
+			// OnLaunched should execute only for full apps, not for individual islands.
+			if (CoreApplication.IsFullFledgedApp && !WasLaunched)
+			{
+				var args = new Microsoft.UI.Xaml.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable());
+				OnLaunched(args);
+			}
+
+			WasLaunched = true;
+		}
 
 		internal void InitializationCompleted()
 		{
@@ -850,13 +891,13 @@ namespace Microsoft.UI.Xaml
 				}
 
 				// Force a schedule to let the dotnet exports be initialized properly
-				DispatcherQueue.Main.TryEnqueue(currentApp.InvokeOnLaunched);
+				DispatcherQueue.Main.TryEnqueue(currentApp.PrepareOnLaunched);
 			}
 			else
 			{
 				// Other platforms can be synchronous, except iOS that requires
 				// the creation of the window to be synchronous to avoid a black screen.
-				currentApp.InvokeOnLaunched();
+				currentApp.PrepareOnLaunched();
 			}
 
 			return currentApp;
@@ -864,27 +905,23 @@ namespace Microsoft.UI.Xaml
 
 		internal Task FontPreloadTask { get; private set; }
 
-		private void InvokeOnLaunched()
+		private void PrepareOnLaunched()
 		{
+			using var _ = WritePhaseEventTrace(TraceProvider.LaunchedStart, TraceProvider.LaunchedStop);
 			InitializeSystemTheme();
 
-			using (WritePhaseEventTrace(TraceProvider.LaunchedStart, TraceProvider.LaunchedStop))
+			InitializationCompleted();
+			FontPreloadTask = PreloadFonts();
+
+			IActivatedEventArgs? activatedArgs = null;
+			if (OperatingSystem.IsAndroid() && _activationUri is { } uri)
 			{
-				InitializationCompleted();
-				FontPreloadTask = PreloadFonts();
-
-				// OnLaunched should execute only for full apps, not for individual islands.
-				if (CoreApplication.IsFullFledgedApp)
-				{
-					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable()));
-
-					if (OperatingSystem.IsAndroid() && _activationUri is { } uri)
-					{
-						OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
-						_activationUri = null;
-					}
-				}
+				// Android hands the protocol URI over before the app exists, see NativeApplication.
+				activatedArgs = new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning);
+				_activationUri = null;
 			}
+
+			InvokeOnLaunched(activatedArgs);
 		}
 
 		private static async Task PreloadFonts()
