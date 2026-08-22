@@ -554,124 +554,142 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal override void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs c, int section)
 		{
-			// Get SelectedIndex before calling base, as a quick workaround for side-effect in FlipView.Android that changes the SelectedIndex, to avoid incrementing it twice
-			var selectedIndexToSet = SelectedIndex;
-			base.OnItemsSourceSingleCollectionChanged(sender, c, section);
-			switch (c.Action)
+			// If a collection change lead to a selection change, we should not bring into view the selected item.
+			m_inCollectionChange = true;
+			try
 			{
-				case NotifyCollectionChangedAction.Add:
+				// Get SelectedIndex before calling base, as a quick workaround for side-effect in FlipView.Android that changes the SelectedIndex, to avoid incrementing it twice
+				var selectedIndexToSet = SelectedIndex;
+				base.OnItemsSourceSingleCollectionChanged(sender, c, section);
+				switch (c.Action)
+				{
+					case NotifyCollectionChangedAction.Add:
 
-					//Advance SelectedIndex if items are being inserted before it
-					var newIndex = GetIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(c.NewStartingIndex, section));
-					if (selectedIndexToSet >= newIndex)
-					{
-						selectedIndexToSet += c.NewItems.Count;
-						SelectedIndex = Math.Min(NumberOfItems - 1, selectedIndexToSet);
-					}
-					break;
-				case NotifyCollectionChangedAction.Remove:
-					{
-						var oldIndex = GetIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(c.OldStartingIndex, section));
-						if (selectedIndexToSet >= oldIndex && selectedIndexToSet < oldIndex + c.OldItems.Count)
+						//Advance SelectedIndex if items are being inserted before it
+						var newIndex = GetIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(c.NewStartingIndex, section));
+						if (selectedIndexToSet >= newIndex)
 						{
-							//Deset if selected item is being removed
-							ResetIndexIfNeeded();
+							selectedIndexToSet += c.NewItems.Count;
+							SelectedIndex = Math.Min(NumberOfItems - 1, selectedIndexToSet);
 						}
-						else if (selectedIndexToSet >= oldIndex + c.OldItems.Count)
+						break;
+					case NotifyCollectionChangedAction.Remove:
 						{
-							//Decrement SelectedIndex if items are removed before it
-							selectedIndexToSet -= c.OldItems.Count;
-							SelectedIndex = Math.Max(-1, selectedIndexToSet);
+							var oldIndex = GetIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(c.OldStartingIndex, section));
+							if (selectedIndexToSet >= oldIndex && selectedIndexToSet < oldIndex + c.OldItems.Count)
+							{
+								//Deset if selected item is being removed
+								ResetIndexIfNeeded();
+							}
+							else if (selectedIndexToSet >= oldIndex + c.OldItems.Count)
+							{
+								//Decrement SelectedIndex if items are removed before it
+								selectedIndexToSet -= c.OldItems.Count;
+								SelectedIndex = Math.Max(-1, selectedIndexToSet);
+							}
 						}
-					}
-					break;
-				case NotifyCollectionChangedAction.Replace:
-					{
-						var oldIndex = GetIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(c.OldStartingIndex, section));
-						if (selectedIndexToSet >= oldIndex && selectedIndexToSet < oldIndex + c.OldItems.Count)
+						break;
+					case NotifyCollectionChangedAction.Replace:
 						{
-							//Deset if selected item is being replaced
-							ResetIndexIfNeeded();
+							var oldIndex = GetIndexFromIndexPath(Uno.UI.IndexPath.FromRowSection(c.OldStartingIndex, section));
+							if (selectedIndexToSet >= oldIndex && selectedIndexToSet < oldIndex + c.OldItems.Count)
+							{
+								//Deset if selected item is being replaced
+								ResetIndexIfNeeded();
+							}
 						}
-					}
-					break;
-				case NotifyCollectionChangedAction.Move:
-				case NotifyCollectionChangedAction.Reset:
-					if (SelectedIndexPath?.Section == section)
-					{
-						var item = ItemFromIndex(SelectedIndex);
-						if (item == null || !item.Equals(SelectedItem))
+						break;
+					case NotifyCollectionChangedAction.Move:
+					case NotifyCollectionChangedAction.Reset:
+						if (SelectedIndexPath?.Section == section)
 						{
-							// If selected item and index no longer coincide, unselect the selection
-							ResetIndexIfNeeded();
+							var item = ItemFromIndex(SelectedIndex);
+							if (item == null || !item.Equals(SelectedItem))
+							{
+								// If selected item and index no longer coincide, unselect the selection
+								ResetIndexIfNeeded();
+							}
 						}
-					}
-					break;
+						break;
+				}
+
+				OnItemsChanged(c);
 			}
-
-			OnItemsChanged(c);
+			finally
+			{
+				m_inCollectionChange = false;
+			}
 		}
 
 		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs c)
 		{
-			base.OnItemsSourceGroupsChanged(sender, c);
-
-			if (SelectedIndexPath == null)
+			// If a collection change lead to a selection change, we should not bring into view the selected item.
+			m_inCollectionChange = true;
+			try
 			{
-				return;
-			}
-			var selectedIndexPath = SelectedIndexPath.Value;
+				base.OnItemsSourceGroupsChanged(sender, c);
 
-			switch (c.Action)
-			{
-				case NotifyCollectionChangedAction.Add:
-					var newIndexPath = Uno.UI.IndexPath.FromRowSection(row: 0, section: c.NewStartingIndex);
-					if (selectedIndexPath >= newIndexPath)
-					{
-						//Advance SelectedIndex if groups are being inserted before it
-						var newSelectedIndex = SelectedIndex;
-						for (int i = c.NewStartingIndex; i < c.NewStartingIndex + c.NewItems.Count; i++)
+				if (SelectedIndexPath == null)
+				{
+					return;
+				}
+				var selectedIndexPath = SelectedIndexPath.Value;
+
+				switch (c.Action)
+				{
+					case NotifyCollectionChangedAction.Add:
+						var newIndexPath = Uno.UI.IndexPath.FromRowSection(row: 0, section: c.NewStartingIndex);
+						if (selectedIndexPath >= newIndexPath)
 						{
-							newSelectedIndex += GetGroupCount(i);
-						}
-						SelectedIndex = newSelectedIndex;
-					}
-					break;
-				case NotifyCollectionChangedAction.Remove:
-					{
-						var oldIndexPath = Uno.UI.IndexPath.FromRowSection(row: 0, section: c.OldStartingIndex);
-						var oldIndexPathLast = Uno.UI.IndexPath.FromRowSection(row: int.MaxValue, section: c.OldStartingIndex + c.OldItems.Count);
-						if (selectedIndexPath >= oldIndexPath && selectedIndexPath < oldIndexPathLast)
-						{
-							//Deset if selected item is in group being removed
-							ResetIndexIfNeeded();
-						}
-						else if (selectedIndexPath >= oldIndexPathLast)
-						{
-							//Decrement SelectedIndex if groups are removed before it
+							//Advance SelectedIndex if groups are being inserted before it
 							var newSelectedIndex = SelectedIndex;
-							for (int i = c.OldStartingIndex; i < c.OldStartingIndex + c.OldItems.Count; i++)
+							for (int i = c.NewStartingIndex; i < c.NewStartingIndex + c.NewItems.Count; i++)
 							{
-								newSelectedIndex -= GetGroupCount(i);
+								newSelectedIndex += GetGroupCount(i);
 							}
 							SelectedIndex = newSelectedIndex;
 						}
-					}
-					break;
-				case NotifyCollectionChangedAction.Replace:
-					{
-						var oldIndexPath = Uno.UI.IndexPath.FromRowSection(row: 0, section: c.OldStartingIndex);
-						var oldIndexPathLast = Uno.UI.IndexPath.FromRowSection(row: int.MaxValue, section: c.OldStartingIndex + c.OldItems.Count);
-						if (selectedIndexPath >= oldIndexPath && selectedIndexPath < oldIndexPathLast)
+						break;
+					case NotifyCollectionChangedAction.Remove:
 						{
-							//Deset if selected item is in group being replaced
-							ResetIndexIfNeeded();
+							var oldIndexPath = Uno.UI.IndexPath.FromRowSection(row: 0, section: c.OldStartingIndex);
+							var oldIndexPathLast = Uno.UI.IndexPath.FromRowSection(row: int.MaxValue, section: c.OldStartingIndex + c.OldItems.Count);
+							if (selectedIndexPath >= oldIndexPath && selectedIndexPath < oldIndexPathLast)
+							{
+								//Deset if selected item is in group being removed
+								ResetIndexIfNeeded();
+							}
+							else if (selectedIndexPath >= oldIndexPathLast)
+							{
+								//Decrement SelectedIndex if groups are removed before it
+								var newSelectedIndex = SelectedIndex;
+								for (int i = c.OldStartingIndex; i < c.OldStartingIndex + c.OldItems.Count; i++)
+								{
+									newSelectedIndex -= GetGroupCount(i);
+								}
+								SelectedIndex = newSelectedIndex;
+							}
 						}
-					}
-					break;
-				case NotifyCollectionChangedAction.Reset:
-					ResetIndexIfNeeded();
-					break;
+						break;
+					case NotifyCollectionChangedAction.Replace:
+						{
+							var oldIndexPath = Uno.UI.IndexPath.FromRowSection(row: 0, section: c.OldStartingIndex);
+							var oldIndexPathLast = Uno.UI.IndexPath.FromRowSection(row: int.MaxValue, section: c.OldStartingIndex + c.OldItems.Count);
+							if (selectedIndexPath >= oldIndexPath && selectedIndexPath < oldIndexPathLast)
+							{
+								//Deset if selected item is in group being replaced
+								ResetIndexIfNeeded();
+							}
+						}
+						break;
+					case NotifyCollectionChangedAction.Reset:
+						ResetIndexIfNeeded();
+						break;
+				}
+			}
+			finally
+			{
+				m_inCollectionChange = false;
 			}
 		}
 
@@ -939,24 +957,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			//if (shouldScrollIntoView)
-			//{
-			//	shouldScrollIntoView = CanScrollIntoView();
-			//}
-
-			//if (shouldScrollIntoView)
-			//{
-			//	ScrollIntoView(
-			//		index,
-			//		isGroupItemIndex: false,
-			//		isHeader: false,
-			//		isFooter: false,
-			//		isFromPublicAPI: false,
-			//		ensureContainerRealized: true,
-			//		animateIfBringIntoView,
-			//		ScrollIntoViewAlignment.Default);
-			//}
-
 			if (shouldFocus)
 			{
 				var spContainer = ContainerFromIndex(index);
@@ -967,37 +967,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				}
 			}
 		}
-
-#if false
-		private void ScrollIntoView(int index, bool isGroupItemIndex, bool isHeader, bool isFooter, bool isFromPublicAPI, bool ensureContainerRealized, bool animateIfBringIntoView, ScrollIntoViewAlignment @default)
-		{
-
-		}
-#endif
-
-#if false
-		bool CanScrollIntoView()
-		{
-			Panel spPanel;
-			bool isItemsHostInvalid = false;
-			bool isInLiveTree = false;
-
-			spPanel = ItemsPanelRoot;
-
-			if (spPanel != null)
-			{
-				//isItemsHostInvalid = IsItemsHostInvalid;
-
-				if (!isItemsHostInvalid)
-				{
-					//isInLiveTree = IsInLiveTree();
-					isInLiveTree = true;
-				}
-			}
-
-			return !isItemsHostInvalid && isInLiveTree && !m_skipScrollIntoView && !m_inCollectionChange;
-		}
-#endif
 
 		partial void RefreshPartial();
 

@@ -186,7 +186,7 @@ namespace Microsoft.UI.Xaml.Controls
 			RestoreScroll();
 			RegisterEventHandler("scroll", (RoutedEventHandlerWithHandled)OnScroll, GenericEventHandlers.RaiseRoutedEventHandlerWithHandled);
 
-			// a workaround to make scrolling cancelable on WASM
+			// Browser scrolling must be canceled at the wheel event before the native scroll occurs.
 			AddHandler(PointerWheelChangedEvent, new PointerEventHandler(OnPointerWheelChanged), true);
 		}
 
@@ -284,7 +284,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (_rootEltUsedToProcessScrollTo is null && rootElement is FrameworkElement rootFwElt)
 				{
 					_rootEltUsedToProcessScrollTo = rootFwElt;
-					// TODO: LayoutUpdated doesn't look like the right thing to do.
+					// LayoutUpdated is the first point at which a previously hidden or unarranged DOM scroller can accept the request.
 					rootFwElt.LayoutUpdated += TryProcessScrollTo;
 				}
 

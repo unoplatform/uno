@@ -17,7 +17,11 @@ using View = Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+#if __SKIA__
+	public sealed partial class ScrollContentPresenter : ContentPresenter, ILayoutConstraints
+#else
 	public partial class ScrollContentPresenter : ContentPresenter, ILayoutConstraints
+#endif
 	{
 		public ScrollContentPresenter()
 		{
@@ -89,6 +93,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
+#if !__SKIA__
 		public Rect MakeVisible(UIElement visual, Rect rectangle)
 		{
 			// Simulate a BringIntoView request
@@ -103,6 +108,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return args.TargetRect;
 		}
+#endif
 
 #if __WASM__
 		bool _forceChangeToCurrentView;
@@ -161,6 +167,13 @@ namespace Microsoft.UI.Xaml.Controls
 		public double ViewportWidth => DesiredSize.Width - Margin.Left - Margin.Right;
 
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__
+#if __SKIA__
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureOverridePort(availableSize);
+
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeOverridePort(finalSize);
+#else
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			if (Content is UIElement child)
@@ -256,16 +269,23 @@ namespace Microsoft.UI.Xaml.Controls
 				(child as ICustomScrollInfo)?.ApplyViewport(ref finalSize);
 			}
 
+#if __SKIA__
+			if (Scroller?.IsInDirectManipulationCompletion() == true)
+			{
+				Scroller.PostDirectManipulationLayoutRefreshed();
+			}
+#endif
+
 			return finalSize;
 		}
+#endif
 
 		internal override bool IsViewHit()
 			=> true;
 
 #if __CROSSRUNTIME__
-		// This may need to be adjusted if/when CanContentRenderOutsideBounds is implemented.
 		private protected override Rect? GetClipRect(bool needsClipToSlot, Point visualOffset, Rect finalRect, Size maxSize, Thickness margin)
-			=> new Rect(default, RenderSize);
+			=> CanContentRenderOutsideBounds ? null : new Rect(default, RenderSize);
 #endif
 
 		private void PointerWheelScroll(object sender, Input.PointerRoutedEventArgs e)

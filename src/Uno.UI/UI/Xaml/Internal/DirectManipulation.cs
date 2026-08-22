@@ -56,10 +56,12 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 	private readonly DirectManipulationCollection _collection;
 	private readonly PointerIdentifier _originalPointer; // The original pointer that started the manipulation. Valid only when _state is States.Preparing, might have changed for all other states.
 	private readonly GestureRecognizer _recognizer;
+	private readonly HashSet<PointerIdentifier> _claimedPointers = new();
 
 	private bool _isResuming;
 	private GestureSettings _settings;
 	private Windows.UI.Core.PointerEventArgs? _currentPointerArgs;
+	private Windows.UI.Core.PointerEventArgs? _originalPointerArgs;
 
 	private States _state = States.Preparing;
 
@@ -95,7 +97,7 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 	/// <remarks>Once true, will remain true forever! Complete will NOT set this back to false.</remarks>
 	public bool HasStarted { get; private set; }
 
-	public bool IsCompleted => _state is States.Completed;
+	public bool IsCompleted => _state is States.Completed && _claimedPointers.Count == 0;
 
 	public bool IsInertial => _state is States.Inertial;
 
@@ -117,12 +119,8 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 	/// (This does NOT mean "interacting" !!)
 	/// </summary>
 	public bool IsTracking(PointerIdentifier pointer)
-		=> _state switch
-		{
-			States.Preparing => pointer == _originalPointer,
-			not States.Inertial => _recognizer.PendingManipulation?.IsActive(pointer) is true, // Note: Will return false once completed
-			_ => false
-		};
+		=> (_state is States.Preparing && pointer == _originalPointer)
+			|| _claimedPointers.Contains(pointer);
 
 	public bool Cancel()
 	{
@@ -139,16 +137,18 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 
 		Debug.Assert(_state is not States.Completed, "Inactive manipulation should have been scavenged prior trying to continue/resume.");
 
-		// Note: We can resume an inertial manip ONLY if the inertial handler accepts it ... usually it will be when the pressed pointer is again on the target element.
+		if (CanContinueWith(args))
+		{
+			return true;
+		}
+
+		// We can resume an inertial manipulation only if its handler accepts the pointer.
 		if (_inertiaHandler?.CanAddPointerAt(args.CurrentPoint.Position) ?? false)
 		{
 			Debug.Assert(_state is States.Inertial);
 
-			// We don't need to do anything here, we wait for the down to .
-
 			return true;
 		}
-		// "continue" multi-touch: else if(lastActiveHandler.IsInBoundsForResume())
 		else
 		{
 			if (_state is States.Inertial)
@@ -168,11 +168,13 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 
 		Debug.Assert(_state is not States.Completed, "Inactive manipulation should have been scavenged prior trying to continue/resume.");
 
-		// There are 2 cases where a manipulation can process a down event:
-		//		* Single touch: inertial
-		//		* Multi touch: multiples pinches (to zoom) with the release of only one pointer **NOT SUPPORTED**
+		if (CanContinueWith(args))
+		{
+			TrackDown(args);
+			return true;
+		}
 
-		// Note: We can resume an inertial manip ONLY if the inertial handler accepts it ... usually it will be when the pressed pointer is again on the target element.
+		// We can resume an inertial manipulation only if its handler accepts the pointer.
 		if (_inertiaHandler?.CanAddPointerAt(args.CurrentPoint.Position) ?? false)
 		{
 			Debug.Assert(_state is States.Inertial);
@@ -181,20 +183,16 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 			_isResuming = true;
 			try
 			{
-				// For now we do not support multi-touch direct-manipulations, so we complete the previous manipulation and start a new one.
-				// This has be changed to support pinch to zoom.
 				using var _ = WithCurrent(args);
 				_recognizer.CompleteGesture();
-				_recognizer.ProcessDownEvent(args.CurrentPoint); // Starts a new manipulation (in starting state for now).
+				TrackDownCore(args);
 			}
 			finally
 			{
 				_isResuming = false;
 			}
-
 			return true;
 		}
-		// "continue" multi-touch: else if(lastActiveHandler.IsInBoundsForResume())
 		else
 		{
 			if (_state is States.Inertial)
@@ -208,6 +206,29 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 		}
 	}
 
+	private bool CanContinueWith(_PointerEventArgs args)
+		=> _state is States.Preparing or States.Interacting
+			&& _claimedPointers.Count == 1
+			&& !_claimedPointers.Contains(args.CurrentPoint.Pointer)
+			&& Handlers.Any(handler => handler.CanAddPointerAt(args.CurrentPoint.Position));
+
+	private void TrackDown(_PointerEventArgs args)
+	{
+		using var _ = WithCurrent(args);
+		TrackDownCore(args);
+	}
+
+	private void TrackDownCore(_PointerEventArgs args)
+	{
+		var pointer = args.CurrentPoint.Pointer;
+		_claimedPointers.Add(pointer);
+		_recognizer.ProcessDownEvent(args.CurrentPoint);
+		if (!_recognizer.IsTracking(pointer))
+		{
+			_claimedPointers.Remove(pointer);
+		}
+	}
+
 	/// <inheritdoc />
 	public void ProcessDown(_PointerEventArgs args)
 	{
@@ -216,8 +237,8 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 		{
 			Trace?.Invoke($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Adding pointer --POST DISPATCH-- (@{args.CurrentPoint.Position.ToDebugString()} | ts={args.CurrentPoint.Timestamp}).");
 
-			using var _ = WithCurrent(args);
-			_recognizer.ProcessDownEvent(args.CurrentPoint);
+			_originalPointerArgs = args;
+			TrackDown(args);
 
 			// If the recognizer immediately rejected the manipulation (e.g. settings = None from PreventDirectManipulation),
 			// complete directly. ManipulationAborted is not used here as it implies ManipulationConfigured was received.
@@ -230,7 +251,12 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 
 	public bool TryProcessMove(_PointerEventArgs args)
 	{
-		Debug.Assert(_state is States.Preparing or States.Interacting or States.Cancelled);
+		Debug.Assert(_state is States.Preparing or States.Interacting or States.Cancelled or States.Completed);
+
+		if (_state is States.Completed)
+		{
+			return HasStarted;
+		}
 
 		if (_state is States.Interacting)
 		{
@@ -264,24 +290,30 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 
 	public bool TryProcessUp(_PointerEventArgs args)
 	{
-		Debug.Assert(_state is States.Preparing or States.Interacting or States.Cancelled);
+		Debug.Assert(_state is States.Preparing or States.Interacting or States.Cancelled or States.Completed);
+
+		if (_state is States.Completed)
+		{
+			_claimedPointers.Remove(args.CurrentPoint.Pointer);
+			return HasStarted;
+		}
 
 		if (_state is States.Interacting)
 		{
 			Trace?.Invoke($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Releasing pointer (@{args.CurrentPoint.Position.ToDebugString()} | ts={args.CurrentPoint.Timestamp}).");
 
 			using var _ = WithCurrent(args);
-			_recognizer.ProcessUpEvent(args.CurrentPoint); // Will move **single-touch** manipulation to completed state
+			_recognizer.ProcessUpEvent(args.CurrentPoint);
 		}
 		else if (_state is not States.Completed)
 		{
 			Trace?.Invoke($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Releasing -abort- pointer (@{args.CurrentPoint.Position.ToDebugString()} | ts={args.CurrentPoint.Timestamp}).");
 
 			using var _ = WithCurrent(args);
-			// Note: This is **not** multi-touch safe! We need to wait for the last pointer to be released/cancelled before completing the manipulation.
-			_recognizer.CompleteGesture(); // Will move **single-touch** manipulation to completed state
+			_recognizer.CompleteGesture();
 		}
 
+		_claimedPointers.Remove(args.CurrentPoint.Pointer);
 		return HasStarted;
 	}
 
@@ -300,24 +332,25 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 			Trace?.Invoke($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Releasing pointer of an non-started manip (@{args.CurrentPoint.Position.ToDebugString()} | ts={args.CurrentPoint.Timestamp}).");
 
 			using var _ = WithCurrent(args);
-			// Note: This is **not** multi-touch safe! We need to wait for the last pointer to be released/cancelled before completing the manipulation.
-			_recognizer.CompleteGesture(); // Will move to completed state and scavenge this direct-manipulation
+			_recognizer.CompleteGesture();
 		}
+
+		_claimedPointers.Remove(args.CurrentPoint.Pointer);
 	}
 
 	public bool TryProcessCancel(_PointerEventArgs args)
 	{
-		Debug.Assert(_state is States.Preparing or States.Interacting or States.Cancelled);
+		Debug.Assert(_state is States.Preparing or States.Interacting or States.Cancelled or States.Completed);
 
 		if (_state is not States.Completed)
 		{
 			Trace?.Invoke($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Cancelling pointer (@{args.CurrentPoint.Position.ToDebugString()} | ts={args.CurrentPoint.Timestamp}).");
 
 			using var _ = WithCurrent(args);
-			// Note: This is **not** multi-touch safe! We need to wait for the last pointer to be released/cancelled before completing the manipulation.
-			_recognizer.CompleteGesture(); // Will move to completed state and scavenge this direct-manipulation 
+			_recognizer.CompleteGesture();
 		}
 
+		_claimedPointers.Remove(args.CurrentPoint.Pointer);
 		return HasStarted;
 	}
 
@@ -336,9 +369,10 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 			Trace?.Invoke($"[DirectManipulation] [{args.CurrentPoint.Pointer}] Cancelling pointer of an non-started manip (@{args.CurrentPoint.Position.ToDebugString()} | ts={args.CurrentPoint.Timestamp}).");
 
 			using var _ = WithCurrent(args);
-			// Note: This is **not** multi-touch safe! We need to wait for the last pointer to be released/cancelled before completing the manipulation.
-			_recognizer.CompleteGesture(); // Will move to completed state and scavenge this direct-manipulation 
+			_recognizer.CompleteGesture();
 		}
+
+		_claimedPointers.Remove(args.CurrentPoint.Pointer);
 	}
 	#endregion
 
@@ -363,8 +397,6 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 			Debug.Fail("_currentPointerArgs must be set before requesting to the gesture recognizer to process that event!");
 			return;
 		}
-
-		// TODO: Make sure ManipulationStarting is fired on UIElement.
 
 		if (_state is not States.Preparing)
 		{
@@ -429,7 +461,11 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 
 			// Stealing the pointer! Starting from here, no other element in the visual tree will receive pointer events for this pointer,
 			// and we will receive them only through the TryProcess*** methods.
-			_pointerManager.CancelPointer(_currentPointerArgs, isDirectManipulation: true);
+			if (_originalPointerArgs is { } originalPointerArgs)
+			{
+				_pointerManager.CancelPointer(originalPointerArgs, isDirectManipulation: true);
+				_originalPointerArgs = null;
+			}
 
 			foreach (var handler in Handlers)
 			{

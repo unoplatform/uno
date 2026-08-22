@@ -5,7 +5,6 @@ using DirectUI;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
-using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
@@ -16,8 +15,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class ScrollViewer
 	{
-		private IDisposable? _directManipulationHandlerSubscription;
-
 		private bool m_isPointerLeftButtonPressed;
 
 		internal bool m_templatedParentHandlesMouseButton;
@@ -49,7 +46,12 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 			}
 		}
-		internal bool IsInDirectManipulation { get; }
+		internal bool IsInDirectManipulation
+#if __SKIA__
+			=> IsInDirectManipulationCore();
+#else
+		{ get; }
+#endif
 		internal bool TemplatedParentHandlesScrolling { get; set; }
 		internal Func<AutomationPeer>? AutomationPeerFactoryIndex { get; set; }
 
@@ -58,7 +60,35 @@ namespace Microsoft.UI.Xaml.Controls
 			bool skipAnimationWhileRunning,
 			bool animate)
 		{
-#if __WASM__
+#if __SKIA__
+			if (m_hManipulationHandler is null)
+			{
+				return false;
+			}
+
+			GetCanManipulateElements(
+				out _,
+				out _,
+				out var canManipulateElementsWithBringIntoViewport);
+			if (!canManipulateElementsWithBringIntoViewport)
+			{
+				return false;
+			}
+
+			BringIntoViewportInternal(
+				bounds,
+				0.0f,
+				0.0f,
+				1.0f,
+				transformIsValid: false,
+				skipDuringTouchContact,
+				skipAnimationWhileRunning,
+				animate && IsAnimationEnabled,
+				applyAsManip: true,
+				isForMakeVisible: false,
+				out var handled);
+			return handled;
+#elif __WASM__
 			return ChangeView(bounds.X, bounds.Y, null, true);
 #else
 			return ChangeView(bounds.X, bounds.Y, null, !animate);
@@ -67,34 +97,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void SetDirectManipulationStateChangeHandler(IDirectManipulationStateChangeHandler? handler)
 		{
-			_directManipulationHandlerSubscription?.Dispose();
-
-			if (handler is null)
-			{
-				return;
-			}
-
-			var weakHandler = WeakReferencePool.RentWeakReference(this, handler);
-			UpdatesMode = ScrollViewerUpdatesMode.Synchronous;
-			ViewChanged += OnViewChanged;
-			_directManipulationHandlerSubscription = Disposable.Create(() =>
-			{
-				ViewChanged -= OnViewChanged;
-				WeakReferencePool.ReturnWeakReference(this, weakHandler);
-			});
-
-			void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
-			{
-				if (args.IsIntermediate)
-				{
-					return;
-				}
-
-				if (weakHandler.Target is IDirectManipulationStateChangeHandler h)
-				{
-					h.NotifyStateChange(DMManipulationState.DMManipulationCompleted, default, default, default, default, default, default, default, default);
-				}
-			}
+#if __SKIA__
+			m_pDMStateChangeHandler = handler;
+#endif
 		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs pArgs)
@@ -124,19 +129,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (m_isPointerLeftButtonPressed)
 			{
-				//GestureModes gestureFollowing = GestureModes.None;
-
 				// Reset the pointer left button pressed state
 				m_isPointerLeftButtonPressed = false;
 
-				//var gestureFollowing = args.GestureFollowing;
+#if __SKIA__
+				var gestureFollowing = args.GestureFollowing;
 
-				//if (gestureFollowing == GestureModes.RightTapped)
-				//{
-				//	// Schedule the focus change for OnRightTappedUnhandled.
-				//	m_shouldFocusOnRightTapUnhandled = true;
-				//}
-				//else
+				if (gestureFollowing == GestureModes.RightTapped)
+				{
+					// Schedule the focus change for OnRightTappedUnhandled.
+					m_shouldFocusOnRightTapUnhandled = true;
+				}
+				else
+#endif
 				{
 					bool isFocusedOnLightDismissPopupOfFlyout = false;
 

@@ -1,6 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference SemanticZoomAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
+// MUX Reference SemanticZoomAutomationPeer_Partial.cpp, tag winui3/release/1.8.4, commit dc46907e92
+
+#nullable enable
+
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
 /// <summary>
@@ -8,12 +11,15 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// </summary>
 public partial class SemanticZoomAutomationPeer : FrameworkElementAutomationPeer, Provider.IToggleProvider
 {
+	// Initializes a new instance of the SemanticZoomAutomationPeer class.
 	public SemanticZoomAutomationPeer(Controls.SemanticZoom owner) : base(owner)
 	{
 
 	}
 
-	protected override object GetPatternCore(PatternInterface patternInterface)
+	// Deconstructor
+
+	protected override object? GetPatternCore(PatternInterface patternInterface)
 	{
 		if (patternInterface == PatternInterface.Toggle)
 		{
@@ -40,7 +46,11 @@ public partial class SemanticZoomAutomationPeer : FrameworkElementAutomationPeer
 			throw new ElementNotEnabledException();
 		}
 
-		(Owner as Controls.SemanticZoom).ToggleActiveView();
+#if __SKIA__
+		((Controls.SemanticZoom)Owner).AutomationSemanticZoomOnToggle();
+#else
+		((Controls.SemanticZoom)Owner).ToggleActiveView();
+#endif
 	}
 
 	/// <summary>
@@ -50,7 +60,7 @@ public partial class SemanticZoomAutomationPeer : FrameworkElementAutomationPeer
 	{
 		get
 		{
-			if ((Owner as Controls.SemanticZoom).IsZoomedInViewActive)
+			if (((Controls.SemanticZoom)Owner).IsZoomedInViewActive)
 			{
 				return ToggleState.On;
 			}
@@ -59,5 +69,22 @@ public partial class SemanticZoomAutomationPeer : FrameworkElementAutomationPeer
 				return ToggleState.Off;
 			}
 		}
+	}
+
+	internal void RaiseToggleStatePropertyChangedEvent(bool newValue)
+	{
+		var oldState = ToggleState.On;
+		var newState = ToggleState.On;
+
+		if (newValue)
+		{
+			oldState = ToggleState.Off;
+		}
+		else
+		{
+			newState = ToggleState.Off;
+		}
+
+		RaisePropertyChangedEvent(TogglePatternIdentifiers.ToggleStateProperty, oldState, newState);
 	}
 }
