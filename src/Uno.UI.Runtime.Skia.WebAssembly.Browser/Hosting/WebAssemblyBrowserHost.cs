@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using Uno.Extensions.ApplicationModel.Core;
+using Uno.Foundation;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Graphics;
@@ -20,6 +21,7 @@ using Windows.Graphics.Display;
 using Windows.Media.Playback;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
+using __Windows.ApplicationModel.Core;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
@@ -66,6 +68,9 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 		if (!_isInitialized)
 		{
 			_isInitialized = true;
+
+			WebAssemblyThreading.Initialize();
+
 			NativeMethods.PersistBootstrapperLoader();
 
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
@@ -82,6 +87,8 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 			ApiExtensibility.Register(typeof(IDragDropExtension), _ => BrowserDragDropExtension.Instance);
 			ApiExtensibility.Register(typeof(IFontFallbackService), _ => NotoFontFallbackService.Instance);
 			ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new WasmNativeOpenGLWrapper(xamlRoot));
+
+			await CoreApplicationNative.InitializeExports();
 
 			await WebAssemblyWindowWrapper.Initialize();
 

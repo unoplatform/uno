@@ -38,6 +38,9 @@
 
 		<!-- Attempt workaround for https://github.com/dotnet/aspnetcore/issues/63970 -->
 		<WasmFingerprintAssets>false</WasmFingerprintAssets>
+
+		<!-- Workaround for Bootstrapper DotnetJs Fingerprinting issue -->
+		<WasmShellEnableDotnetJsFingerprinting>false</WasmShellEnableDotnetJsFingerprinting>
 	</PropertyGroup>
 
 	<ItemGroup>
