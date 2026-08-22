@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference AutoSuggestBoxAutomationPeer_Partial.cpp, tag winui3/release/1.7.1
+// MUX Reference src\dxaml\xcp\dxaml\lib\AutoSuggestBoxAutomationPeer_Partial.cpp, tag winui3/release/1.7.1, commit 5f27a786
 
 using Microsoft.UI.Xaml.Controls;
 

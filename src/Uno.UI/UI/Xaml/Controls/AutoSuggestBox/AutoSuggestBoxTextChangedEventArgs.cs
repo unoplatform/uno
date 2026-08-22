@@ -1,6 +1,8 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference src\dxaml\xcp\dxaml\lib\AutoSuggestBoxTextChangedEventArgs_Partial.cpp, tag winui3/release/1.7.1
+// MUX Reference src\dxaml\xcp\dxaml\lib\AutoSuggestBoxTextChangedEventArgs_Partial.h, tag winui3/release/1.7.1, commit 5f27a786
+
+using System;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -9,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class AutoSuggestBoxTextChangedEventArgs : DependencyObject
 {
-	private AutoSuggestBox _owner;
+	private WeakReference<AutoSuggestBox> _owner;
 	private uint _counter;
 
 	/// <summary>
@@ -24,26 +26,17 @@ public partial class AutoSuggestBoxTextChangedEventArgs : DependencyObject
 	/// <summary>
 	/// Identifies the Reason dependency property.
 	/// </summary>
-	/// <remarks>
-	/// C++ default is ProgrammaticChange (m_reason = ProgrammaticChange in constructor).
-	/// The default here is the enum default (UserInput = 0). In practice, Reason is always
-	/// set explicitly before the event fires, so this difference has no observable effect.
-	/// </remarks>
 	public static DependencyProperty ReasonProperty { get; } =
 		DependencyProperty.Register(
 			nameof(Reason),
 			typeof(AutoSuggestionBoxTextChangeReason),
 			typeof(AutoSuggestBoxTextChangedEventArgs),
-			new FrameworkPropertyMetadata(default(AutoSuggestionBoxTextChangeReason)));
+			new FrameworkPropertyMetadata(AutoSuggestionBoxTextChangeReason.ProgrammaticChange));
 
 	/// <summary>
-	/// Gets or sets the owner AutoSuggestBox.
+	/// Sets the owner AutoSuggestBox.
 	/// </summary>
-	internal AutoSuggestBox Owner
-	{
-		get => _owner;
-		set => _owner = value;
-	}
+	internal void SetOwner(AutoSuggestBox owner) => _owner = new WeakReference<AutoSuggestBox>(owner);
 
 	/// <summary>
 	/// Initializes a new instance of the AutoSuggestBoxTextChangedEventArgs class.
@@ -72,12 +65,12 @@ public partial class AutoSuggestBoxTextChangedEventArgs : DependencyObject
 	public bool CheckCurrent()
 	{
 #if HAS_UNO
-		if (_owner is not null)
+		if (_owner?.TryGetTarget(out var owner) == true)
 		{
 			// The counter comparison approach matches WinUI behavior.
 			// If the counter hasn't changed since this event was created,
 			// then the current text value is the same as when this event was raised.
-			return _counter == _owner.GetTextChangedCounter();
+			return _counter == owner.GetTextChangedCounter();
 		}
 #endif
 		return false;

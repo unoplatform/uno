@@ -1,12 +1,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference src\controls\dev\AutoSuggestBox\AutoSuggestBoxHelper.h/.cpp, tag winui3/release/1.7.1
+// MUX Reference src\dxaml\xcp\dxaml\lib\ReversedVector.h/.cpp, tag winui3/release/1.7.1, commit 5f27a786
 
 #if HAS_UNO
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using Windows.Foundation.Collections;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -15,23 +14,21 @@ namespace Microsoft.UI.Xaml.Controls;
 /// A wrapper around an IList that presents items in reversed order.
 /// Used by AutoSuggestBox when the suggestion list is positioned above
 /// the TextBox without a legacy ScaleTransform template part.
-/// C++ equivalent: ReversedVector in AutoSuggestBoxHelper.h/.cpp
+/// C++ equivalent: ReversedVector in ReversedVector.h/.cpp
 /// </summary>
-internal sealed class ReversedVector : IList<object>, INotifyCollectionChanged
+internal sealed class ReversedVector : IList<object>, IObservableVector<object>
 {
 	private readonly IList<object> _source;
-	private readonly INotifyCollectionChanged _sourceNotify;
+	private readonly IObservableVector<object> _observableSource;
 
-	public event NotifyCollectionChangedEventHandler CollectionChanged;
+	public event VectorChangedEventHandler<object> VectorChanged;
 
 	public ReversedVector(IList<object> source)
 	{
 		_source = source ?? throw new ArgumentNullException(nameof(source));
-		_sourceNotify = source as INotifyCollectionChanged;
-		if (_sourceNotify is not null)
-		{
-			_sourceNotify.CollectionChanged += OnSourceCollectionChanged;
-		}
+		_observableSource = source as IObservableVector<object>
+			?? throw new ArgumentException("The source must implement IObservableVector<object>.", nameof(source));
+		_observableSource.VectorChanged += OnSourceVectorChanged;
 	}
 
 	public int Count => _source.Count;
@@ -79,45 +76,25 @@ internal sealed class ReversedVector : IList<object>, INotifyCollectionChanged
 
 	public void Detach()
 	{
-		if (_sourceNotify is not null)
-		{
-			_sourceNotify.CollectionChanged -= OnSourceCollectionChanged;
-		}
+		_observableSource.VectorChanged -= OnSourceVectorChanged;
 	}
+
+	public bool IsBoundTo(IList<object> source) => ReferenceEquals(_source, source);
 
 	private int ReverseIndex(int index) => _source.Count - 1 - index;
 
-	private void OnSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+	private void OnSourceVectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs args)
 	{
-		// Forward the event with reversed indices where applicable.
-		NotifyCollectionChangedEventArgs reversedArgs;
-
-		switch (e.Action)
+		var size = (uint)_source.Count;
+		var index = args.CollectionChange switch
 		{
-			case NotifyCollectionChangedAction.Add:
-				var addIndex = e.NewStartingIndex >= 0 ? ReverseIndex(e.NewStartingIndex) : -1;
-				reversedArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, e.NewItems, addIndex);
-				break;
+			CollectionChange.ItemInserted => size - 1u - args.Index,
+			CollectionChange.ItemRemoved => size - args.Index,
+			CollectionChange.ItemChanged => size - 1u - args.Index,
+			_ => 0u,
+		};
 
-			case NotifyCollectionChangedAction.Remove:
-				// After removal, count has already changed, so we need to adjust.
-				// The source has already removed the item, so the reversed index maps
-				// from the old count perspective.
-				var removeIndex = e.OldStartingIndex >= 0 ? _source.Count - e.OldStartingIndex : -1;
-				reversedArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, e.OldItems, removeIndex);
-				break;
-
-			case NotifyCollectionChangedAction.Reset:
-				reversedArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
-				break;
-
-			default:
-				// For Replace and Move, just issue a Reset to keep things simple.
-				reversedArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
-				break;
-		}
-
-		CollectionChanged?.Invoke(this, reversedArgs);
+		VectorChanged?.Invoke(this, new VectorChangedEventArgs(args.CollectionChange, index));
 	}
 }
 #endif
