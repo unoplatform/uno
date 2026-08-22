@@ -154,13 +154,7 @@ namespace Microsoft.UI.Xaml
 #if !SUPPORTS_RTL
 		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__")]
 #endif
-		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight
-#if SUPPORTS_RTL
-			, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.Inherits
-#else
-			, Options = FrameworkPropertyMetadataOptions.Inherits
-#endif
-			)]
+		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.Inherits)]
 		public static DependencyProperty FlowDirectionProperty { get; } = CreateFlowDirectionProperty();
 
 		#endregion
