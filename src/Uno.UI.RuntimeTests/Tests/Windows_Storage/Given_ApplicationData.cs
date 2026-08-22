@@ -157,6 +157,10 @@ public class Given_ApplicationData
 		Assert.AreEqual(currentVersion, reportedDesiredVersion);
 	}
 
+#if HAS_UNO
+	// Uno-only: asserts Uno's DeferralManager cancellation. Native WinUI leaves the set-version
+	// operation pending on an uncompleted deferral even after Cancel(), which wedges
+	// ApplicationData for every later test in the process.
 	[TestMethod]
 	public async Task When_SetVersion_Deferral_Never_Completed()
 	{
@@ -179,4 +183,5 @@ public class Given_ApplicationData
 
 		appData.Version.Should().Be(currentVersion);
 	}
+#endif
 }
