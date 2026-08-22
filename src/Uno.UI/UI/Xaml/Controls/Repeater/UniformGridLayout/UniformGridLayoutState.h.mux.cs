@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference UniformGridLayoutState.h, commit b8cfb8490
 
 #nullable enable
 
@@ -34,10 +35,12 @@ namespace Microsoft.UI.Xaml.Controls
 		//	double minRowSpacing,
 		//	double minColumnSpacing,
 		//	uint maxItemsPerLine);
+		//void InvalidateElementSize();
 
 		// private
 		FlowLayoutAlgorithm m_flowAlgorithm = new FlowLayoutAlgorithm();
 
+		bool m_isEffectiveSizeValid = false;
 		double m_effectiveItemWidth = 0.0;
 		double m_effectiveItemHeight = 0.0;
 

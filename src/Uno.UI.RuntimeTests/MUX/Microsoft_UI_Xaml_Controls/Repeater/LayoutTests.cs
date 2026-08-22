@@ -47,7 +47,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	public partial class LayoutTests : MUXApiTestBase
 	{
 		[TestMethod]
+#if !__SKIA__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void ValidateMappingAndAutoRecycling()
 		{
 			ItemsRepeater repeater = null;
@@ -133,7 +135,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+#if !__SKIA__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
+#endif
 		public void ValidateNonVirtualLayoutDoesNotGetMeasuredForViewportChanges()
 		{
 			RunOnUIThread.Execute(() =>

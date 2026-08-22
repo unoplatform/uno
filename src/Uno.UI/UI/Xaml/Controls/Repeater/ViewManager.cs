@@ -167,6 +167,18 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			m_owner.OnElementClearing(element);
 
+			var virtInfo = ItemsRepeater.GetVirtualizationInfo(element);
+			virtInfo.MoveOwnershipToElementFactory();
+
+			// During creation of this object, we were the one setting the DataContext, so clear it now.
+			if (virtInfo.MustClearDataContext)
+			{
+				if (element is FrameworkElement elementAsFE)
+				{
+					elementAsFE.DataContext = null;
+				}
+			}
+
 			if (m_owner.ItemTemplateShim != null)
 			{
 				if (m_ElementFactoryRecycleArgs == null)
@@ -198,8 +210,6 @@ namespace Microsoft.UI.Xaml.Controls
 				children.RemoveAt(childIndex);
 			}
 
-			var virtInfo = ItemsRepeater.GetVirtualizationInfo(element);
-			virtInfo.MoveOwnershipToElementFactory();
 			m_phaser.StopPhasing(element, virtInfo);
 			if (m_lastFocusedElement == element)
 			{
@@ -768,6 +778,9 @@ namespace Microsoft.UI.Xaml.Controls
 				REPEATER_TRACE_PERF("ElementRecycled");
 			}
 
+			// Clear flag
+			virtInfo.MustClearDataContext = false;
+
 			if (data != element)
 			{
 				// Prepare the element
@@ -804,6 +817,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 
 					elementAsFE.DataContext = elementDataContext;
+					virtInfo.MustClearDataContext = true;
 				}
 				else
 				{
