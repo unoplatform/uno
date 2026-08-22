@@ -194,7 +194,7 @@ namespace Microsoft.UI.Xaml
 #if UNO_HAS_ENHANCED_LIFECYCLE
 				var groupsOwner = this.GetTemplatedParent() ?? Owner?.GetParent() as DependencyObject;
 				var ownerTheme = ThemeResolution.ResolvePinnedOwnerTheme(groupsOwner);
-				((IDependencyObjectStoreProvider)this).Store.NotifyThemeChanged(ownerTheme, forceRefresh: true);
+				NotifyThemeChanged(ownerTheme, forceRefresh: true);
 #else
 				this.UpdateResourceBindings();
 #endif

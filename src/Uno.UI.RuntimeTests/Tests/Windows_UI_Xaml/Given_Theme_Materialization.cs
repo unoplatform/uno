@@ -1484,7 +1484,7 @@ public class Given_Theme_Materialization
 		// simple isolated control). A single resource binding writes once, so the defeat sticks.
 		var key = new SpecializedResourceDictionary.ResourceKey("ResBrush");
 		void Bind(Microsoft.UI.Xaml.Shapes.Rectangle r) =>
-			((IDependencyObjectStoreProvider)r).Store.SetResourceBinding(
+			r.SetResourceBinding(
 				Microsoft.UI.Xaml.Shapes.Shape.FillProperty, key, Microsoft.UI.Xaml.Data.ResourceUpdateReason.ThemeResource,
 				context: null, precedence: null, setterBindingPath: null);
 
@@ -1519,8 +1519,8 @@ public class Given_Theme_Materialization
 			// path), which writes the resolved brush at Local precedence.
 			Bind(animated);
 			Bind(control);
-			((IDependencyObjectStoreProvider)animated).Store.UpdateResourceBindings(Microsoft.UI.Xaml.Data.ResourceUpdateReason.ThemeResource);
-			((IDependencyObjectStoreProvider)control).Store.UpdateResourceBindings(Microsoft.UI.Xaml.Data.ResourceUpdateReason.ThemeResource);
+			animated.UpdateResourceBindings(Microsoft.UI.Xaml.Data.ResourceUpdateReason.ThemeResource);
+			control.UpdateResourceBindings(Microsoft.UI.Xaml.Data.ResourceUpdateReason.ThemeResource);
 			await WindowHelper.WaitForIdle();
 
 			// Control (no animation) proves the binding actually re-applied the resolved value, so the 'animated'
