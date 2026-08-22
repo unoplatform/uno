@@ -506,15 +506,10 @@ partial class ItemsRepeater
 
 	void OnLoaded(object sender, RoutedEventArgs args)
 	{
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		// On native Uno targets we always detach from the scroller on unload, so we force a
-		// layouting pass to re-subscribe to scroller and update viewport (in a single pass).
-#else
 		// If we skipped an unload event, reset the scrollers now and invalidate measure so that we get a new
 		// layout pass during which we will hookup new scrollers.
 		// The potential cache buffer is also reset so that the realization window regrows from scratch.
 		if (m_loadedCounter > m_unloadedCounter)
-#endif
 		{
 			InvalidateMeasure();
 			m_viewportManager.ResetScrollers();
@@ -533,13 +528,9 @@ partial class ItemsRepeater
 		m_stackLayoutMeasureCounter = 0u;
 		++m_unloadedCounter;
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		// Uno specific on native targets: always reset; we don't validate the count in the loaded.
-#else
 		// Only reset the scrollers if this unload event is in-sync.
 		// The potential cache buffer is also reset so that the realization window regrows from scratch.
 		if (m_unloadedCounter == m_loadedCounter)
-#endif
 		{
 			m_viewportManager.ResetScrollers();
 			m_viewportManager.ResetLayoutRealizationWindowCacheBuffer();
