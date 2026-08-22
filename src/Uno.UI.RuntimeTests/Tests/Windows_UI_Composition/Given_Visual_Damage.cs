@@ -5,6 +5,7 @@ using Uno.UI;
 using Windows.UI;
 
 #if __SKIA__
+using Uno.UI.Composition;
 using Uno.UI.Helpers;
 using SkiaSharp;
 #endif
@@ -41,7 +42,7 @@ public class Given_Visual_Damage
 		// Clip away the bottom half of the child.
 		root.Clip = compositor.CreateRectangleClip(top: 0, left: 0, bottom: 50, right: 100);
 
-		using var damage = new SKPath();
+		using var damage = new DamageRegion();
 		RenderFrame(root, damage);
 
 		damage.Reset();
@@ -54,15 +55,17 @@ public class Given_Visual_Damage
 			damage.IsEmpty,
 			"Growing the clip reported no damage, so the revealed strip would keep the previous frame's pixels.");
 
+		using var reported = SnapshotDamage(damage);
+
 		Assert.IsTrue(
-			damage.Bounds.Bottom >= 98,
-			$"Damage does not cover the revealed strip down to y=100 (damage bounds: {damage.Bounds}).");
+			reported.Bounds.Bottom >= 98,
+			$"Damage does not cover the revealed strip down to y=100 (damage bounds: {reported.Bounds}).");
 
 		// Reporting the whole surface would satisfy the assertions above while erasing the point of
 		// partial repaint, so bound the reported region to the child plus antialiasing slack.
 		Assert.IsTrue(
-			damage.Bounds.Right <= 140,
-			$"Damage is far wider than the revealed strip, partial repaint is being defeated (damage bounds: {damage.Bounds}).");
+			reported.Bounds.Right <= 140,
+			$"Damage is far wider than the revealed strip, partial repaint is being defeated (damage bounds: {reported.Bounds}).");
 #else
 		await Task.CompletedTask;
 #endif
@@ -103,7 +106,7 @@ public class Given_Visual_Damage
 
 			root.Clip = compositor.CreateRectangleClip(left: 0, top: 0, right: 100, bottom: 100);
 
-			using var damage = new SKPath();
+			using var damage = new DamageRegion();
 
 			// Render enough unchanged frames for the subtree to be cached.
 			for (var i = 0; i < 5; i++)
@@ -133,10 +136,19 @@ public class Given_Visual_Damage
 	}
 
 #if __SKIA__
-	private static void RenderFrame(ContainerVisual root, SKPath damage)
+	private static void RenderFrame(ContainerVisual root, DamageRegion damage)
 	{
 		var (picture, _, _) = SkiaRenderHelper.RecordPictureAndReturnPath(200, 200, root, invertPath: false, damage: damage);
 		picture.Dispose();
+	}
+
+	// The region keeps rect and exact-path contributions apart; snapshotting materialises them into the
+	// single path the frame is actually clipped to, which is what these assertions inspect.
+	private static SKPath SnapshotDamage(DamageRegion damage)
+	{
+		var path = new SKPath();
+		damage.SnapshotAndReset(path, new SKRect(0, 0, 200, 200));
+		return path;
 	}
 #endif
 }
