@@ -188,9 +188,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.SkipToFill()
 		{
-#if __SKIA__
 			CancelDeferredPlay();
-#endif
 			if (_currentAnimator is { IsRunning: true })
 			{
 				_currentAnimator.Cancel();//Stop the animator if it is running
@@ -209,9 +207,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.Deactivate()
 		{
-#if __SKIA__
 			CancelDeferredPlay();
-#endif
 			if (_currentAnimator is { IsRunning: true })
 			{
 				_currentAnimator.Cancel();//Stop the animator if it is running
@@ -223,9 +219,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.Stop()
 		{
-#if __SKIA__
 			CancelDeferredPlay();
-#endif
 			_currentAnimator?.Cancel(); // stop could be called before the initialization
 			_startingValue = null;
 			ClearValue();
@@ -239,11 +233,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// </summary>
 		private void Play()
 		{
-#if __SKIA__
 			PlayDeferred();
-#else
-			PlayImmediate();
-#endif
 		}
 
 		/// <summary>
