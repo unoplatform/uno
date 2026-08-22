@@ -554,8 +554,14 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					SolidColorBrushHelper.Black,
+					// Inherits needed for Foreground to cascade from ancestor theme resources.
 					FrameworkPropertyMetadataOptions.Inherits,
-					propertyChangedCallback: (s, e) => ((Control)s)?.OnForegroundColorChanged(e.OldValue as Brush, e.NewValue as Brush)
+					propertyChangedCallback: (s, e) =>
+					{
+						var c = (Control)s;
+						c?.OnForegroundColorChanged(e.OldValue as Brush, e.NewValue as Brush);
+						c?.OnTextFormattingPropertyChanged("Foreground", e.NewValue);
+					}
 				)
 			);
 
@@ -576,8 +582,13 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					FontWeights.Normal,
-					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
-					(s, e) => ((Control)s)?.OnFontWeightChanged((FontWeight)e.OldValue, (FontWeight)e.NewValue)
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					(s, e) =>
+					{
+						var c = (Control)s;
+						c?.OnFontWeightChanged((FontWeight)e.OldValue, (FontWeight)e.NewValue);
+						c?.OnTextFormattingPropertyChanged("FontWeight", e.NewValue);
+					}
 				)
 			);
 
@@ -598,8 +609,13 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					14.0,
-					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
-					(s, e) => ((Control)s)?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue)
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					(s, e) =>
+					{
+						var c = (Control)s;
+						c?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue);
+						c?.OnTextFormattingPropertyChanged("FontSize", e.NewValue);
+					}
 				)
 			);
 
@@ -646,8 +662,13 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					FontFamily.Default,
-					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
-					(s, e) => ((Control)s)?.OnFontFamilyChanged(e.OldValue as FontFamily, e.NewValue as FontFamily)
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					(s, e) =>
+					{
+						var c = (Control)s;
+						c?.OnFontFamilyChanged(e.OldValue as FontFamily, e.NewValue as FontFamily);
+						c?.OnTextFormattingPropertyChanged("FontFamily", e.NewValue);
+					}
 				)
 			);
 		#endregion
@@ -667,8 +688,13 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					FontStyle.Normal,
-					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
-					(s, e) => ((Control)s)?.OnFontStyleChanged((FontStyle)e.OldValue, (FontStyle)e.NewValue)
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					(s, e) =>
+					{
+						var c = (Control)s;
+						c?.OnFontStyleChanged((FontStyle)e.OldValue, (FontStyle)e.NewValue);
+						c?.OnTextFormattingPropertyChanged("FontStyle", e.NewValue);
+					}
 				)
 			);
 		#endregion
@@ -681,7 +707,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetFontStretchValue(value);
 		}
 
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal)]
 		public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
 		#endregion
 
@@ -932,6 +958,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private protected virtual void OnFontStretchChanged(FontStretch oldValue, FontStretch newValue)
 		{
 			OnFontStretchChangedPartial(oldValue, newValue);
+			OnTextFormattingPropertyChanged("FontStretch", newValue);
 		}
 
 		partial void OnFontStretchChangedPartial(FontStretch oldValue, FontStretch newValue);

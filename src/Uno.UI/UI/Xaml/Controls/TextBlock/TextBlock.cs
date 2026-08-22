@@ -202,8 +202,13 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: FontStyle.Normal,
-					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontStyleChanged()
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) =>
+					{
+						var tb = (TextBlock)s;
+						tb.OnFontStyleChanged();
+						tb.OnTextFormattingPropertyChanged("FontStyle", e.NewValue);
+					}
 				)
 			);
 
@@ -225,13 +230,14 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetFontStretchValue(value);
 		}
 
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure)]
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
 
 		private void OnFontStretchChanged()
 		{
 			OnFontStretchChangedPartial();
 			InvalidateTextBlock();
+			OnTextFormattingPropertyChanged("FontStretch", FontStretch);
 		}
 
 		partial void OnFontStretchChangedPartial();
@@ -283,8 +289,13 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: FontWeights.Normal,
-					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontWeightChanged()
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) =>
+					{
+						var tb = (TextBlock)s;
+						tb.OnFontWeightChanged();
+						tb.OnTextFormattingPropertyChanged("FontWeight", e.NewValue);
+					}
 				)
 			);
 
@@ -422,8 +433,13 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: FontFamily.Default,
-					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontFamilyChanged()
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) =>
+					{
+						var tb = (TextBlock)s;
+						tb.OnFontFamilyChanged();
+						tb.OnTextFormattingPropertyChanged("FontFamily", e.NewValue);
+					}
 				)
 			);
 
@@ -452,8 +468,13 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: 14.0,
-					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontSizeChanged()
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) =>
+					{
+						var tb = (TextBlock)s;
+						tb.OnFontSizeChanged();
+						tb.OnTextFormattingPropertyChanged("FontSize", e.NewValue);
+					}
 				)
 			);
 
@@ -574,8 +595,14 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: SolidColorBrushHelper.Black,
+					// Inherits needed for Foreground to cascade from ancestor theme resources.
 					options: FrameworkPropertyMetadataOptions.Inherits,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).Subscribe((Brush)e.OldValue, (Brush)e.NewValue)
+					propertyChangedCallback: (s, e) =>
+					{
+						var tb = (TextBlock)s;
+						tb.Subscribe((Brush)e.OldValue, (Brush)e.NewValue);
+						tb.OnTextFormattingPropertyChanged("Foreground", e.NewValue);
+					}
 				)
 			);
 
@@ -806,8 +833,13 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: 0,
-					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnCharacterSpacingChanged()
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) =>
+					{
+						var tb = (TextBlock)s;
+						tb.OnCharacterSpacingChanged();
+						tb.OnTextFormattingPropertyChanged("CharacterSpacing", e.NewValue);
+					}
 				)
 			);
 
@@ -836,8 +868,13 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextDecorations.None,
-					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnTextDecorationsChanged()
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (s, e) =>
+					{
+						var tb = (TextBlock)s;
+						tb.OnTextDecorationsChanged();
+						tb.OnTextFormattingPropertyChanged("TextDecorations", e.NewValue);
+					}
 				)
 			);
 
