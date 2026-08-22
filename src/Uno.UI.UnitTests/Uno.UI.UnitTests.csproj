@@ -98,6 +98,8 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Page Include="..\SamplesApp\SamplesApp.Samples\Windows\UI\Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
+		<Page Include="Themes\Generic.xaml" />
+		<Page Include="Themes\Controls\GenericXamlMergedControl.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl.VS\AbsolutePathComparer.cs">
