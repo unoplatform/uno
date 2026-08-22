@@ -451,6 +451,79 @@ Two related behavior changes:
 
 See [Customizing the `Application` class on Android](xref:Uno.Features.CustomizingAndroidApplication).
 
+### Application settings on iOS, tvOS, and Mac Catalyst
+
+Values stored through `ApplicationData.Current.LocalSettings` / `.RoamingSettings` used to be
+written directly into the shared `NSUserDefaults.StandardUserDefaults` domain. In 7.0 they
+are stored in a dedicated `NSUserDefaults` suite named `UnoApplicationData`, persisted as
+`Library/Preferences/UnoApplicationData.plist` inside the app sandbox.
+
+This isolates Uno-managed settings from the keys the OS, Apple frameworks, and native
+libraries keep in the standard domain: enumerating (`Values.Keys`, `Values.Count`) or
+clearing (`Values.Clear()`) application settings no longer sees — or deletes — unrelated
+native keys.
+
+**Existing values migrate automatically.** On the first settings access after updating to
+7.0, values written by an earlier Uno Platform version (recognized by Uno's serialized
+`TypeName:value` format) are moved from the standard defaults into the new container. Apps
+that only access settings through the `ApplicationData` API need no changes.
+
+Update your code only if native/interop code reads these values directly from the standard
+defaults:
+
+```csharp
+// Before 7.0 the values were in NSUserDefaults.StandardUserDefaults
+var unoDefaults = new NSUserDefaults("UnoApplicationData", NSUserDefaultsType.SuiteName);
+```
+
+```swift
+// Swift companion code
+let unoDefaults = UserDefaults(suiteName: "UnoApplicationData")
+```
+
+Values your app writes to the standard defaults itself through native APIs are not
+affected — they stay where they are and remain invisible to `ApplicationData`, as before.
+
+> [!IMPORTANT]
+> The migration is one-way. Once a 7.0 build has run, the migrated values are removed from
+> `NSUserDefaults.StandardUserDefaults`, so downgrading to a pre-7.0 build of your app will
+> not find them there anymore.
+
+See [Application Data and Settings](xref:Uno.Features.ApplicationData) for details on where
+each platform stores its data.
+
+### Application settings on Android
+
+Values stored through `ApplicationData.Current.LocalSettings` / `.RoamingSettings` used to be
+written into the app's default `SharedPreferences` file (`<package-name>_preferences`) — the
+same file the AndroidX preference screens and other libraries use. In 7.0 they are stored in a
+dedicated `SharedPreferences` file named `UnoApplicationData`.
+
+As on Apple platforms, this isolates Uno-managed settings from keys the app and its libraries
+own: enumerating (`Values.Keys`, `Values.Count`) or clearing (`Values.Clear()`) application
+settings no longer sees — or deletes — unrelated preference keys.
+
+**Existing values migrate automatically.** On the first settings access after updating to 7.0,
+values written by an earlier Uno Platform version (recognized by Uno's serialized
+`TypeName:value` format) are moved out of the default preferences into the new file. Apps that
+only access settings through the `ApplicationData` API need no changes.
+
+Update your code only if native code reads these values directly from the default preferences:
+
+```csharp
+// Before 7.0 the values were in the default SharedPreferences
+var preferences = context.GetSharedPreferences("UnoApplicationData", FileCreationMode.Private);
+```
+
+Values your app writes to the default preferences itself — including anything bound to an
+AndroidX preference screen — are not affected. They stay where they are and remain invisible to
+`ApplicationData`, as before.
+
+> [!IMPORTANT]
+> The migration is one-way. Once a 7.0 build has run, the migrated values are removed from the
+> default preferences, so downgrading to a pre-7.0 build of your app will not find them there
+> anymore.
+
 ### Templates and project heads
 
 New apps get Skia heads only. Existing apps should drop native `*.Mobile` / native
@@ -475,6 +548,12 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 10. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to `Uno.UI.Extras`.
 11. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
+12. On Android, application settings move out of the default `SharedPreferences` into the
+    `UnoApplicationData` file automatically on first access — update any native code that read
+    them from the default preferences.
+13. On iOS/tvOS/Mac Catalyst, application settings move to the `UnoApplicationData`
+    container automatically on first access — update any native/interop code that read them
+    from `NSUserDefaults.StandardUserDefaults`.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
 for the full Android/iOS/WebAssembly Skia bootstrapping steps.
