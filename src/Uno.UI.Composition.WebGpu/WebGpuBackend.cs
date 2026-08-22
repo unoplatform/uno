@@ -1911,6 +1911,18 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// local space) so a rounded child-clip stays correct after the move; the device SCISSOR follows the move (the local
 	// AABB transformed by t2) with the plain-AABB session clip folded in. Table verts carry their own slot for position,
 	// so ClipU.xform is unused here — only finv matters. Mirrors the arena stamp.
+	private void ReleaseBundleChunks(WebGpuRenderSurface target)
+	{
+		for (int i = 0; i < target.BundleChunks.Length; i++)
+		{
+			if (target.BundleChunks[i] != IntPtr.Zero)
+			{
+				_d.DeferBundleRelease(target.BundleChunks[i]);
+				target.BundleChunks[i] = IntPtr.Zero;
+			}
+		}
+	}
+
 	private static bool IsFiniteAabb(Vector4 aabb)
 		=> aabb.X > -1e8f || aabb.Y > -1e8f || aabb.Z < 1e8f || aabb.W < 1e8f;
 
@@ -2514,6 +2526,77 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			}
 		}
 
+		// ---- render-bundle fast path (main surface only) ----
+		var bundleEligible = ReferenceEquals(target, _s) && backdrops.Count == 0;
+		var bundleVeto = "";
+		for (int i = 0; bundleEligible && i < ops.Count; i++)
+		{
+			var o = ops[i];
+			bundleEligible = o.kind is 0 or 1 or 2 or 3 or 5
+				&& !(o.kind is 0 or 5 && o.b0 == 0)   // shared per-frame append buffers: handles churn every frame
+				&& o.clip.PathFan is null
+				&& (o.clip.ScissorInert || o.clip.AabbInClipU || !o.clip.ScissorLoadBearing);
+			if (!bundleEligible && _emitStats)
+			{
+				bundleVeto = $"op{i}:k{o.kind}/b0={(o.b0 == 0 ? 0 : 1)}/fan={(o.clip.PathFan is not null ? 1 : 0)}/lb={(o.clip.ScissorLoadBearing ? 1 : 0)}";
+			}
+		}
+		// Chunked bundle cache: fixed 128-op chunks compare independently against the snapshot, so an animated
+		// recording (or the FPS overlay) invalidates only its own chunk while the rest of the frame replays
+		// pre-recorded bundles. Index-based boundaries stay stable while the op COUNT is stable; a count or
+		// shared-buffer change re-snapshots everything (one inline frame).
+		const int BundleChunkSize = 128;
+		bool[] chunkReplay = null, chunkRecord = null;
+		if (bundleEligible)
+		{
+			var chunkCount = (ops.Count + BundleChunkSize - 1) / BundleChunkSize;
+			var headerOk = target.BundleOpsN == ops.Count
+				&& target.BundleSolidTableBuf == (nint)_d.SolidTableSlab.Buf && target.BundleRrectTableBuf == (nint)_d.RrectTableSlab.Buf
+				&& target.BundleSolidSlabBuf == (nint)_d.SolidSlab.Buf && target.BundleXformBg == xformBg
+				&& target.BundleChunks.Length == chunkCount;
+			if (!headerOk)
+			{
+				ReleaseBundleChunks(target);
+				if (target.BundleOps.Length < ops.Count) { target.BundleOps = new DrawOp[Math.Max(ops.Count, target.BundleOps.Length * 2)]; }
+				target.BundleChunks = new IntPtr[chunkCount];
+				for (int i = 0; i < ops.Count; i++) { target.BundleOps[i] = ops[i]; }
+				target.BundleOpsN = ops.Count;
+				target.BundleSolidTableBuf = (nint)_d.SolidTableSlab.Buf; target.BundleRrectTableBuf = (nint)_d.RrectTableSlab.Buf;
+				target.BundleSolidSlabBuf = (nint)_d.SolidSlab.Buf; target.BundleXformBg = xformBg;
+			}
+			else
+			{
+				chunkReplay = new bool[chunkCount];
+				chunkRecord = new bool[chunkCount];
+				for (int c = 0; c < chunkCount; c++)
+				{
+					int cs = c * BundleChunkSize, ce = Math.Min(cs + BundleChunkSize, ops.Count);
+					var same = true;
+					for (int i = cs; same && i < ce; i++)
+					{
+						var a = ops[i]; var b = target.BundleOps[i];
+						same = a.kind == b.kind && a.b0 == b.b0 && a.u0 == b.u0 && a.b1 == b.b1
+							&& a.flag == b.flag && a.clipBg == b.clipBg && a.clip.Aabb == b.clip.Aabb;
+					}
+					if (same)
+					{
+						if (target.BundleChunks[c] != IntPtr.Zero) { chunkReplay[c] = true; }
+						else { chunkRecord[c] = true; }
+					}
+					else
+					{
+						if (target.BundleChunks[c] != IntPtr.Zero) { _d.DeferBundleRelease(target.BundleChunks[c]); target.BundleChunks[c] = IntPtr.Zero; }
+						for (int i = cs; i < ce; i++) { target.BundleOps[i] = ops[i]; }
+					}
+				}
+			}
+		}
+		else if (ReferenceEquals(target, _s) && target.BundleOpsN >= 0)
+		{
+			ReleaseBundleChunks(target);
+			target.BundleOpsN = -1;
+		}
+
 		var ca = new WGPURenderPassColorAttachment
 		{
 			// Render into the multisampled color and resolve into the single-sample target texture.
@@ -2555,7 +2638,17 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// Current in-pass path-clip mask (device depth buffer). Changes only when a run of ops moves to a different
 		// path clip — the composition emits a clip then its subtree consecutively, so this fires ~once per clip.
 		float[] curFan = null; Vector4 curAabb = default;
-		for (int oi = 0; oi < ops.Count; oi++)
+		int statBundleReplay = 0, statBundleRec = 0;
+		IntPtr bundleEnc = IntPtr.Zero;
+		var bundleRec = false;
+		// Encode target: the open pass, or (when recording a cache-eligible chunk) the render bundle encoder.
+		void EncPipe(IntPtr pipe) { if (bundleRec) { wgpuRenderBundleEncoderSetPipeline(bundleEnc, pipe); } else { wgpuRenderPassEncoderSetPipeline(pass, pipe); } }
+		void EncBg(uint group, IntPtr bg) { if (bundleRec) { wgpuRenderBundleEncoderSetBindGroup(bundleEnc, group, bg, 0, (uint*)null); } else { wgpuRenderPassEncoderSetBindGroup(pass, group, bg, 0, (uint*)null); } }
+		void EncVb(IntPtr buf, nuint off, nuint size) { if (bundleRec) { wgpuRenderBundleEncoderSetVertexBuffer(bundleEnc, 0, buf, off, size); } else { wgpuRenderPassEncoderSetVertexBuffer(pass, 0, buf, off, size); } }
+		void EncDraw(uint count) { if (bundleRec) { wgpuRenderBundleEncoderDraw(bundleEnc, count, 1, 0, 0); } else { wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0); } }
+		void EncodeRange(int start, int end)
+		{
+		for (int oi = start; oi < end; oi++)
 		{
 			var (kind, b0, u0, b1, flag, clip, clipBg) = ops[oi];
 			statIters++;
@@ -2578,7 +2671,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				|| (!clip.ScissorLoadBearing && clip.PathFan is null && IsFiniteAabb(clip.Aabb));
 			if (_emitStats) { if (clip.ScissorInert) { statInert++; } if (scissorWiden && !clip.ScissorInert) { statFolded++; } }
 			if (scissorWiden) { sx = 0; sy = 0; sw = (int)_s.Width; sh = (int)_s.Height; }
-			if (sx != lastX || sy != lastY || sw != lastW || sh != lastH)
+			if (!bundleRec && (sx != lastX || sy != lastY || sw != lastW || sh != lastH))
 			{
 				wgpuRenderPassEncoderSetScissorRect(pass, (uint)sx, (uint)sy, (uint)sw, (uint)sh);
 				lastX = sx; lastY = sy; lastW = sw; lastH = sh;
@@ -2592,34 +2685,34 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// solid ops sharing this clip bind group + clip (same scissor + depth-clip): their verts are
 						// contiguous in the shared buffer by construction, so the whole run draws in ONE call.
 						int startVert = (int)b1; uint count = u0;
-						while (oi + 1 < ops.Count)
+						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
 							if (nx.kind != 0 || nx.b0 != 0 || nx.clipBg != clipBg
 								|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
 							count += nx.u0; oi++;
 						}
-						wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
-						wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
-						wgpuRenderPassEncoderSetVertexBuffer(pass, 0, solidBuf, (nuint)(startVert * 6 * sizeof(float)), (nuint)(count * 6 * sizeof(float)));
-						wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
+						EncPipe(_d.SolidPipe);
+						EncBg(0, (IntPtr)clipBg);
+						EncVb(solidBuf, (nuint)(startVert * 6 * sizeof(float)), (nuint)(count * 6 * sizeof(float)));
+						EncDraw(count);
 						break;
 					}
 				case 0 when b0 == 1:
 					{
 						// Resident SOLID SLAB (b1 = absolute byte offset). Coalesce a byte-contiguous run sharing clip+bindgroup.
 						int byteOff = (int)b1; uint count = u0;
-						while (oi + 1 < ops.Count)
+						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
 							if (nx.kind != 0 || nx.b0 != 1 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
 								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 6 * sizeof(float))) { break; }
 							count += nx.u0; oi++;
 						}
-						wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
-						wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
-						wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.SolidSlab.Buf, (nuint)byteOff, (nuint)(count * 6 * sizeof(float)));
-						wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
+						EncPipe(_d.SolidPipe);
+						EncBg(0, (IntPtr)clipBg);
+						EncVb(_d.SolidSlab.Buf, (nuint)byteOff, (nuint)(count * 6 * sizeof(float)));
+						EncDraw(count);
 						break;
 					}
 				case 0 when b0 == 2:
@@ -2628,59 +2721,58 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// transform table (each vertex's slot positions it), group 1 = ClipU. Coalesce byte-contiguous
 						// same-clip runs ACROSS recordings — each vertex still carries its own slot, so one draw is correct.
 						int byteOff = (int)b1; uint count = u0;
-						while (oi + 1 < ops.Count)
+						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
 							if (nx.kind != 0 || nx.b0 != 2 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
 								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 7 * sizeof(float))) { break; }
 							count += nx.u0; oi++;
 						}
-						wgpuRenderPassEncoderSetPipeline(pass, _d.SolidTablePipe);
-						wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)xformBg, 0, (uint*)null);
-						wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
-						wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.SolidTableSlab.Buf, (nuint)byteOff, (nuint)(count * 7 * sizeof(float)));
-						wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
+						EncPipe(_d.SolidTablePipe);
+						EncBg(0, (IntPtr)xformBg);
+						EncBg(1, (IntPtr)clipBg);
+						EncVb(_d.SolidTableSlab.Buf, (nuint)byteOff, (nuint)(count * 7 * sizeof(float)));
+						EncDraw(count);
 						break;
 					}
 				case 0:
 					// b0 = vertex buffer (private/immediate or a resident frame-solid buffer); b1 = byte offset into it.
-					wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
-					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b0, (nuint)b1, (nuint)(u0 * 6 * sizeof(float)));
-					wgpuRenderPassEncoderDraw(pass, u0, 1, 0, 0);   // u0 = 6 * (coalesced) rect count
+					EncPipe(_d.SolidPipe);
+					EncBg(0, (IntPtr)clipBg);
+					EncVb((IntPtr)b0, (nuint)b1, (nuint)(u0 * 6 * sizeof(float)));
+					EncDraw(u0);   // u0 = 6 * (coalesced) rect count
 					break;
 				case 1:
 					// Path fill via the transform table: fan verts = device pos + slot index (stride 3); cover verts =
 					// device pos + colour + slot index (stride 7). Group 0 = storage table (positions the verts);
 					// group 1 (cover) = ClipU (analytic clip coverage). Table entries were written during op-build.
-					wgpuRenderPassEncoderSetPipeline(pass, flag ? _d.StencilTableEO : _d.StencilTableNZ);
-					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)xformBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b0, 0, (nuint)(u0 * 3 * sizeof(float)));
-					wgpuRenderPassEncoderDraw(pass, u0, 1, 0, 0);
-					wgpuRenderPassEncoderSetPipeline(pass, _d.CoverTablePipe);
-					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)xformBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetStencilReference(pass, 0);
-					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(42 * sizeof(float)));
-					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
+					EncPipe(flag ? _d.StencilTableEO : _d.StencilTableNZ);
+					EncBg(0, (IntPtr)xformBg);
+					EncVb((IntPtr)b0, 0, (nuint)(u0 * 3 * sizeof(float)));
+					EncDraw(u0);
+					EncPipe(_d.CoverTablePipe);
+					EncBg(0, (IntPtr)xformBg);
+					EncBg(1, (IntPtr)clipBg);
+					EncVb((IntPtr)b1, 0, (nuint)(42 * sizeof(float)));
+					EncDraw(6);
 					break;
 				case 2:
-					wgpuRenderPassEncoderSetPipeline(pass, _d.ImagePipe);
-					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)b0, 0, (uint*)null);
-					wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(24 * sizeof(float)));
-					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
+					EncPipe(_d.ImagePipe);
+					EncBg(0, (IntPtr)b0);
+					EncBg(1, (IntPtr)clipBg);
+					EncVb((IntPtr)b1, 0, (nuint)(24 * sizeof(float)));
+					EncDraw(6);
 					break;
 				case 3:
-					wgpuRenderPassEncoderSetPipeline(pass, _d.GradientPipe);
-					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)b0, 0, (uint*)null);
-					wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b1, 0, (nuint)(12 * sizeof(float)));
-					wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
+					EncPipe(_d.GradientPipe);
+					EncBg(0, (IntPtr)b0);
+					EncBg(1, (IntPtr)clipBg);
+					EncVb((IntPtr)b1, 0, (nuint)(12 * sizeof(float)));
+					EncDraw(6);
 					break;
 				case 4:
 					wgpuRenderPassEncoderSetPipeline(pass, u0 == 1 ? _d.CompositeDstIn : _d.CompositeSrcOver);
-					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)b0, 0, (uint*)null);
+					EncBg(0, (IntPtr)b0);
 					wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
 					break;
 				case 6:
@@ -2738,11 +2830,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							BQV(12, new Vector2(srx, sry), 0, 0); BQV(16, new Vector2(srx + srw, sry + srh), 1, 1); BQV(20, new Vector2(srx, sry + srh), 0, 1);
 							var bqbuf = MakeBuffer(bq);
 							var bclipBg = MakeClipBg(_d.ImageClipBgl, bk.Clip);
-							wgpuRenderPassEncoderSetPipeline(pass, _d.ImagePipe);
+							EncPipe(_d.ImagePipe);
 							wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bdbg, 0, (uint*)null);
 							wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)bclipBg, 0, (uint*)null);
 							wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)bqbuf, 0, (nuint)(24 * sizeof(float)));
-							wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
+							EncDraw(6);
 							// Tint overlay (skip A==0).
 							if (bk.Effect.Color.A != 0)
 							{
@@ -2753,10 +2845,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								TV(a.X, a.Y); TV(a.Z, a.Y); TV(a.Z, a.W); TV(a.X, a.Y); TV(a.Z, a.W); TV(a.X, a.W);
 								var tvbuf = MakeBuffer(tv);
 								var tclipBg = MakeClipBg(_d.SolidClipBgl, bk.Clip);
-								wgpuRenderPassEncoderSetPipeline(pass, _d.SolidPipe);
+								EncPipe(_d.SolidPipe);
 								wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)tclipBg, 0, (uint*)null);
 								wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)tvbuf, 0, (nuint)(36 * sizeof(float)));
-								wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
+								EncDraw(6);
 							}
 						}
 						break;
@@ -2766,34 +2858,34 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// Shared rrect buffer (b1=start vert, u0=6). COALESCE the run of following rrect ops sharing this
 						// clip bind group + clip: their 22-float verts are contiguous, so the run draws in ONE call.
 						int startVert = (int)b1; uint count = u0;
-						while (oi + 1 < ops.Count)
+						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
 							if (nx.kind != 5 || nx.b0 != 0 || nx.clipBg != clipBg
 								|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
 							count += nx.u0; oi++;
 						}
-						wgpuRenderPassEncoderSetPipeline(pass, _d.RrPipe);
-						wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
-						wgpuRenderPassEncoderSetVertexBuffer(pass, 0, rrectBuf, (nuint)(startVert * 22 * sizeof(float)), (nuint)(count * 22 * sizeof(float)));
-						wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
+						EncPipe(_d.RrPipe);
+						EncBg(0, (IntPtr)clipBg);
+						EncVb(rrectBuf, (nuint)(startVert * 22 * sizeof(float)), (nuint)(count * 22 * sizeof(float)));
+						EncDraw(count);
 						break;
 					}
 				case 5 when b0 == 1:
 					{
 						// Resident RRECT SLAB (b1 = absolute byte offset). Coalesce byte-contiguous same-clip runs.
 						int byteOff = (int)b1; uint count = u0;
-						while (oi + 1 < ops.Count)
+						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
 							if (nx.kind != 5 || nx.b0 != 1 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
 								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 22 * sizeof(float))) { break; }
 							count += nx.u0; oi++;
 						}
-						wgpuRenderPassEncoderSetPipeline(pass, _d.RrPipe);
-						wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
-						wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.RrectSlab.Buf, (nuint)byteOff, (nuint)(count * 22 * sizeof(float)));
-						wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
+						EncPipe(_d.RrPipe);
+						EncBg(0, (IntPtr)clipBg);
+						EncVb(_d.RrectSlab.Buf, (nuint)byteOff, (nuint)(count * 22 * sizeof(float)));
+						EncDraw(count);
 						break;
 					}
 				case 5 when b0 == 2:
@@ -2801,35 +2893,80 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// Resident RRECT TABLE SLAB (b1 = absolute byte offset, stride 23). Group 0 = the transform table
 						// (per-vertex slot positions the local corners), group 1 = ClipU. Coalesce byte-contiguous same-clip runs.
 						int byteOff = (int)b1; uint count = u0;
-						while (oi + 1 < ops.Count)
+						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
 							if (nx.kind != 5 || nx.b0 != 2 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
 								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 23 * sizeof(float))) { break; }
 							count += nx.u0; oi++;
 						}
-						wgpuRenderPassEncoderSetPipeline(pass, _d.RrTablePipe);
-						wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)xformBg, 0, (uint*)null);
-						wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)clipBg, 0, (uint*)null);
-						wgpuRenderPassEncoderSetVertexBuffer(pass, 0, _d.RrectTableSlab.Buf, (nuint)byteOff, (nuint)(count * 23 * sizeof(float)));
-						wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0);
+						EncPipe(_d.RrTablePipe);
+						EncBg(0, (IntPtr)xformBg);
+						EncBg(1, (IntPtr)clipBg);
+						EncVb(_d.RrectTableSlab.Buf, (nuint)byteOff, (nuint)(count * 23 * sizeof(float)));
+						EncDraw(count);
 						break;
 					}
 				case 5:
 					// b0 = vertex buffer (resident frame-solid or legacy per-op); b1 = byte offset; u0 = vertex count.
-					wgpuRenderPassEncoderSetPipeline(pass, _d.RrPipe);
-					wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)clipBg, 0, (uint*)null);
-					wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)b0, (nuint)b1, (nuint)(u0 * 22 * sizeof(float)));
-					wgpuRenderPassEncoderDraw(pass, u0, 1, 0, 0);
+					EncPipe(_d.RrPipe);
+					EncBg(0, (IntPtr)clipBg);
+					EncVb((IntPtr)b0, (nuint)b1, (nuint)(u0 * 22 * sizeof(float)));
+					EncDraw(u0);
 					break;
 			}
 		}
 
 		// UNO_WEBGPU_STATS=1: emit-shape counters to size command-encoding optimizations (render-bundle
 		// segmentation runs on scissor/clip boundaries). Rate-limited to ~once a second at 60fps.
+		}
+		var bundleList = stackalloc IntPtr[1];
+		var bundleFormats = stackalloc WGPUTextureFormat[1];
+		bundleFormats[0] = _d.ColorFormat;
+		if (chunkReplay is not null)
+		{
+			for (int c = 0; c < chunkReplay.Length; c++)
+			{
+				int cs = c * BundleChunkSize, ce = Math.Min(cs + BundleChunkSize, ops.Count);
+				if (chunkReplay[c])
+				{
+					bundleList[0] = target.BundleChunks[c];
+					wgpuRenderPassEncoderExecuteBundles(pass, 1, (IntPtr)bundleList);
+					statBundleReplay++;
+				}
+				else if (chunkRecord[c])
+				{
+					var bed = new WGPURenderBundleEncoderDescriptor
+					{
+						ColorFormatCount = 1,
+						ColorFormats = bundleFormats,
+						DepthStencilFormat = WebGpuDevice.DepthStencilFormat,
+						SampleCount = (uint)_d.MsaaSamples,
+					};
+					bundleEnc = wgpuDeviceCreateRenderBundleEncoder(_d.Dev, &bed);
+					bundleRec = true;
+					EncodeRange(cs, ce);
+					var bundleDesc = new WGPURenderBundleDescriptor();
+					target.BundleChunks[c] = wgpuRenderBundleEncoderFinish(bundleEnc, &bundleDesc);
+					wgpuRenderBundleEncoderRelease(bundleEnc);
+					bundleEnc = IntPtr.Zero; bundleRec = false;
+					bundleList[0] = target.BundleChunks[c];
+					wgpuRenderPassEncoderExecuteBundles(pass, 1, (IntPtr)bundleList);
+					statBundleRec++;
+				}
+				else
+				{
+					EncodeRange(cs, ce);
+				}
+			}
+		}
+		else
+		{
+			EncodeRange(0, ops.Count);
+		}
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} inert={statInert} folded={statFolded} clipChanges={statClipCh} fanOps={statFanOps} distinctFans={statFans?.Count ?? 0} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds}");
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} inert={statInert} folded={statFolded} bundle=r{statBundleReplay}+w{statBundleRec}{bundleVeto} clipChanges={statClipCh} fanOps={statFanOps} distinctFans={statFans?.Count ?? 0} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds}");
 			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0;
 		}
 
