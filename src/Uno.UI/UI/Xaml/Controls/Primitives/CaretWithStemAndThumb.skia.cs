@@ -22,7 +22,6 @@ internal sealed class CaretWithStemAndThumb : Grid
 	// change the thumb color on WinUI, only the selection color.
 	private static readonly Color ThumbFillColor = Colors.FromARGB("FF0078D7");
 
-	private readonly Action _repositionCallback;
 	private readonly Rectangle _stem;
 	private Popup _popup;
 
@@ -35,13 +34,8 @@ internal sealed class CaretWithStemAndThumb : Grid
 	/// </summary>
 	public double GrabOffsetY { get; set; }
 
-	/// <param name="repositionCallback">
-	/// Invoked once per rendered frame while the gripper is showing, so the owner
-	/// can keep the gripper glued to its anchor character as the text moves.
-	/// </param>
-	public CaretWithStemAndThumb(Action repositionCallback)
+	public CaretWithStemAndThumb()
 	{
-		_repositionCallback = repositionCallback;
 		// Numbers and colors below are partially measured by hand from WinUI and partially made up to be reasonable.
 
 		Background = new SolidColorBrush(Colors.Transparent); // to hit-test positively everywhere in the grid
@@ -87,6 +81,8 @@ internal sealed class CaretWithStemAndThumb : Grid
 
 	public void SetStemVisible(bool visible) => _stem.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
 
+	internal bool IsPopupOpenForTesting => _popup?.IsOpen == true;
+
 	public void ShowAt(XamlRoot xamlRoot, Matrix3x2 transform)
 	{
 		_popup ??= new Popup
@@ -103,24 +99,8 @@ internal sealed class CaretWithStemAndThumb : Grid
 			RenderTransform = matrixTransform;
 		}
 		matrixTransform.Matrix = new Matrix(transform);
-		if (!_popup.IsOpen)
-		{
-			_popup.IsOpen = true;
-			_popup.Closed += OnPopupClosed;
-			((CompositionTarget)Visual.CompositionTarget)!.FrameRendered += OnFrameRendered;
-		}
+		_popup.IsOpen = true;
 	}
-
-	private void OnPopupClosed(object sender, object e)
-	{
-		_popup.Closed -= OnPopupClosed;
-		if (Visual.CompositionTarget is CompositionTarget target)
-		{
-			target.FrameRendered -= OnFrameRendered;
-		}
-	}
-
-	private void OnFrameRendered() => _repositionCallback?.Invoke();
 
 	public void Hide()
 	{

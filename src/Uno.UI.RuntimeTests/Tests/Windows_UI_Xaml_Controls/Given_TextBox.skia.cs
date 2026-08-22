@@ -6539,13 +6539,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/1164")]
+		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/537")]
 		public async Task When_Touch_Focused_Then_Scrolled_Away()
 		{
 			var SUT = new TextBox
 			{
 				Width = 400,
-				Text = "Some Text"
+				Text = "Some Text",
+				SelectionFlyout = null // avoid the selection toolbar's light-dismiss layer eating the scroll gesture
 			};
 
 			var sv = new ScrollViewer()
@@ -6588,6 +6590,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Release();
 			await UITestHelper.WaitForIdle(true);
 
+			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "the touch grippers should be showing after the taps");
+
 			// scroll
 			finger.Press(sv.GetAbsoluteBoundsRect().GetCenter());
 			await UITestHelper.WaitForIdle(true);
@@ -6597,8 +6601,125 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.WaitForIdle(true);
 
 			await Task.Delay(TimeSpan.FromSeconds(2));
+			await UITestHelper.WaitForIdle(true);
 
-			SUT.GetAbsoluteBoundsRect().Bottom.Should().BeApproximately(sv.GetAbsoluteBoundsRect().Bottom, 5);
+			// The user must be able to scroll the focused TextBox away (native/WinUI parity): the TextBox
+			// stays out of the viewport instead of being scrolled back into view.
+			Assert.IsTrue(
+				SUT.GetAbsoluteBoundsRect().Top >= sv.GetAbsoluteBoundsRect().Bottom - 1,
+				$"the TextBox should remain scrolled out of view (tb top {SUT.GetAbsoluteBoundsRect().Top}, sv bottom {sv.GetAbsoluteBoundsRect().Bottom})");
+
+			// ...and its grippers must not float over unrelated content while it is out of view.
+			var grippers = SUT.VisibleGrippersForTesting;
+			Assert.IsNotNull(grippers, "the selection state (and thus the grippers pair) should still be active");
+			Assert.IsFalse(grippers.Value.end.IsPopupOpenForTesting, "grippers should be culled while the TextBox is scrolled out of view");
+
+			// Scrolling back must re-show the grippers at the selection.
+			SUT.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = false });
+			await UITestHelper.WaitForIdle(true);
+			await WindowHelper.WaitFor(
+				() => SUT.VisibleGrippersForTesting is { end.IsPopupOpenForTesting: true },
+				timeoutMS: 5000,
+				message: "grippers should re-appear once the TextBox is scrolled back into view");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/537")]
+		[DataRow(true, DisplayName = "WithSelection")]
+		[DataRow(false, DisplayName = "CursorOnly")]
+		public async Task When_Touch_TextBox_In_ScrollViewer_Scroll_Away_Does_Not_Snap_Back(bool withSelection)
+		{
+			var SUT = new TextBox
+			{
+				Width = 300,
+				Text = "Hello world",
+				FontFamily = "Arial",
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android,
+				SelectionFlyout = null // avoid the selection toolbar's light-dismiss layer eating the scroll gesture
+			};
+
+			var panel = new StackPanel { Spacing = 8 };
+			panel.Children.Add(new Border { Height = 1200, Background = new SolidColorBrush(Microsoft.UI.Colors.LightGray) });
+			panel.Children.Add(SUT);
+			panel.Children.Add(new Border { Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.LightBlue) });
+
+			var sv = new ScrollViewer
+			{
+				Height = 400,
+				Width = 340,
+				Content = panel,
+				IsScrollInertiaEnabled = false, // deterministic settling offset
+			};
+
+			await UITestHelper.Load(sv);
+
+			sv.ChangeView(null, sv.ScrollableHeight, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var tbBounds = SUT.GetAbsoluteBoundsRect();
+			var tapPoint = new Point(tbBounds.Left + 30, tbBounds.GetCenter().Y);
+
+			if (withSelection)
+			{
+				// Double-tap: select the word and show both grippers
+				finger.Press(tapPoint);
+				finger.Release();
+				finger.Press(tapPoint);
+				finger.Release();
+				await WindowHelper.WaitFor(
+					() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+					message: "double-tap should select the word and show both thumbs");
+			}
+			else
+			{
+				// Single tap: collapsed caret + single insertion handle
+				finger.Press(tapPoint);
+				finger.Release();
+				await WindowHelper.WaitFor(
+					() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+					message: "tap should place the single insertion handle");
+			}
+
+			await WindowHelper.WaitForIdle();
+
+			var offsetBefore = sv.VerticalOffset;
+
+			// Swipe: finger down over the filler above the TextBox, drag downward => scrolls the viewport up
+			var svBounds = sv.GetAbsoluteBoundsRect();
+			finger.Press(new Point(svBounds.GetCenter().X, svBounds.Top + 60));
+			finger.MoveBy(0, 250, steps: 25);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			var offsetAfterRelease = sv.VerticalOffset;
+			Assert.IsTrue(
+				offsetAfterRelease < offsetBefore - 100,
+				$"the swipe should have scrolled the viewport up (before {offsetBefore}, after {offsetAfterRelease})");
+
+			// Let any (undesired) scroll-back animation run: the offset must stay where the user scrolled
+			// instead of snapping back to the focused TextBox (native/WinUI parity).
+			await Task.Delay(1500);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(offsetAfterRelease, sv.VerticalOffset, 1.0,
+				"the viewport must not scroll back to the focused TextBox after the user scrolled away");
+
+			// The grippers must not float over unrelated content while the TextBox is out of view.
+			var grippers = SUT.VisibleGrippersForTesting;
+			Assert.IsNotNull(grippers, "the touch selection state (and thus the grippers pair) should still be active");
+			Assert.IsFalse(grippers.Value.end.IsPopupOpenForTesting,
+				"grippers should be culled while the TextBox is scrolled out of view");
+
+			// Scrolling back must re-show the grippers at the selection (on the next rendered frame,
+			// so allow a generous timeout for a frame to be produced).
+			sv.ChangeView(null, offsetBefore, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(
+				() => SUT.VisibleGrippersForTesting is { end.IsPopupOpenForTesting: true },
+				timeoutMS: 5000,
+				message: "grippers should re-appear once the TextBox is scrolled back into view");
 		}
 
 		[TestMethod]

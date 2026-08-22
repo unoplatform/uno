@@ -1932,7 +1932,10 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	TextBlock ITextSelectionGripperHost.GripperTextSurface => TextBoxView.DisplayBlock;
 
-	Rect ITextSelectionGripperHost.GripperClipBounds => this.GetAbsoluteBoundsRect();
+	// Effective visible bounds (ancestor clips applied), so grippers are culled when the TextBox is
+	// scrolled out of a parent ScrollViewer's viewport rather than floating over unrelated content.
+	Rect ITextSelectionGripperHost.GripperClipBounds
+		=> GetGlobalBoundsWithOptions(ignoreClipping: false, ignoreClippingOnScrollContentPresenters: false, useTargetInformation: false);
 
 	GripperMode ITextSelectionGripperHost.GripperMode => _caretMode switch
 	{
