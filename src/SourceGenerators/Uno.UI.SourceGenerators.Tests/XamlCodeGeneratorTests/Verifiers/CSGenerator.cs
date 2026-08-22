@@ -130,15 +130,15 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 				string? excludeXamlNamespaces = null;
 				if (ReferenceAssemblies.Packages.Any(p => p.Id.StartsWith("Microsoft.Android.Ref", StringComparison.OrdinalIgnoreCase)))
 				{
-					includeXamlNamespaces = "android,not_ios,not_wasm,not_skia,not_netstdref";
-					excludeXamlNamespaces = "ios,wasm,skia,not_android";
+					includeXamlNamespaces = "android,not_ios,not_tvos,not_desktop,not_wasm,not_winappsdk,not_win";
+					excludeXamlNamespaces = "not_android,ios,tvos,desktop,wasm,winappsdk,win";
 				}
 				else if (ReferenceAssemblies.Packages.Any(p =>
 					p.Id.StartsWith("Microsoft.iOS.Ref", StringComparison.OrdinalIgnoreCase) ||
 					p.Id.StartsWith("Microsoft.tvOS.Ref", StringComparison.OrdinalIgnoreCase)))
 				{
-					includeXamlNamespaces = "ios,not_android,not_wasm,not_skia,not_netstdref";
-					excludeXamlNamespaces = "android,wasm,skia,not_ios";
+					includeXamlNamespaces = "not_android,ios,not_tvos,not_desktop,not_wasm,not_winappsdk,not_win";
+					excludeXamlNamespaces = "android,not_ios,tvos,desktop,wasm,winappsdk,win";
 				}
 
 				var defaultConfig = new Dictionary<string, string>
