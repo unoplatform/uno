@@ -13,15 +13,37 @@ internal class MacOSNativeElement : Microsoft.UI.Xaml.FrameworkElement
 {
 	public MacOSNativeElement()
 	{
-		Unloaded += (s, e) =>
-		{
-			NativeUno.uno_native_dispose(NativeHandle);
-		};
+		Unloaded += (s, e) => DisposeNativePeer();
 	}
 
 	public nint NativeHandle { get; internal set; }
 
 	internal bool Detached { get; set; }
+
+	/// <summary>
+	/// Set once the native peer has been released, at which point <see cref="NativeHandle"/> is zeroed.
+	/// </summary>
+	/// <remarks>
+	/// <c>uno_native_dispose</c> drops the last strong reference the native side holds on the NSView, so
+	/// the object is deallocated. Any later call handing the stale handle back to native code would make
+	/// ARC retain freed memory, which crashes the process rather than failing the current operation.
+	/// </remarks>
+	internal bool Disposed { get; private set; }
+
+	internal void DisposeNativePeer()
+	{
+		if (Disposed)
+		{
+			return;
+		}
+
+		var handle = NativeHandle;
+
+		Disposed = true;
+		NativeHandle = 0;
+
+		NativeUno.uno_native_dispose(handle);
+	}
 }
 
 internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
@@ -37,9 +59,42 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 
 	public static void Register() => ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new MacOSNativeElementHostingExtension(o));
 
+	/// <summary>
+	/// Resolves <paramref name="content"/> to a native element that is still safe to hand to native code.
+	/// A disposed element keeps its managed wrapper alive but its NSView is gone, and the framework can
+	/// still re-enter it into the visual tree (a reparent raises Unloaded then Loaded).
+	/// </summary>
+	private bool TryGetLiveElement(object content, string operation, out MacOSNativeElement element)
+	{
+		if (content is not MacOSNativeElement nativeElement)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Object `content` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
+			}
+
+			element = null!;
+			return false;
+		}
+
+		if (nativeElement.Disposed || nativeElement.NativeHandle == 0)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Cannot {operation} a {content.GetType().FullName} whose native peer was already disposed.");
+			}
+
+			element = null!;
+			return false;
+		}
+
+		element = nativeElement;
+		return true;
+	}
+
 	public void ArrangeNativeElement(object content, Rect arrangeRect)
 	{
-		if (content is MacOSNativeElement element)
+		if (TryGetLiveElement(content, "arrange", out var element))
 		{
 			if (element.Detached)
 			{
@@ -50,36 +105,24 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 				NativeUno.uno_native_arrange(element.NativeHandle, arrangeRect.Left, arrangeRect.Top, arrangeRect.Width, arrangeRect.Height);
 			}
 		}
-		else if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
-		}
 	}
 
 	public void AttachNativeElement(object content)
 	{
-		if (content is MacOSNativeElement element)
+		if (TryGetLiveElement(content, "attach", out var element))
 		{
 			NativeUno.uno_native_attach(element.NativeHandle);
 			element.Detached = false;
-		}
-		else if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
 		}
 	}
 
 	public void ChangeNativeElementOpacity(object content, double opacity)
 	{
-		if (content is MacOSNativeElement element)
+		if (TryGetLiveElement(content, "change the opacity of", out var element))
 		{
 			// https://developer.apple.com/documentation/appkit/nsview/1483560-alphavalue?language=objc
 			// note: no marshaling needed as CGFloat is double for 64bits apps
 			NativeUno.uno_native_set_opacity(element.NativeHandle, opacity);
-		}
-		else if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
 		}
 	}
 
@@ -104,7 +147,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 
 	public void DetachNativeElement(object content)
 	{
-		if (content is MacOSNativeElement element)
+		if (TryGetLiveElement(content, "detach", out var element))
 		{
 			if (element.Detached)
 			{
@@ -116,37 +159,25 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 				element.Detached = true;
 			}
 		}
-		else if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
-		}
 	}
 
 	public bool IsNativeElement(object content) => content is MacOSNativeElement;
 
 	public bool IsNativeElementAttached(object owner, object nativeElement)
 	{
-		if (nativeElement is MacOSNativeElement element)
+		if (TryGetLiveElement(nativeElement, "query the attached state of", out var element))
 		{
 			return NativeUno.uno_native_is_attached(element.NativeHandle);
-		}
-		else if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"Object `{nameof(owner)}` is a {owner.GetType().FullName} and not a MacOSNativeElement subclass.");
 		}
 		return false;
 	}
 
 	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize)
 	{
-		if (content is MacOSNativeElement element)
+		if (TryGetLiveElement(content, "measure", out var element))
 		{
 			NativeUno.uno_native_measure(element.NativeHandle, childMeasuredSize.Width, childMeasuredSize.Height, availableSize.Width, availableSize.Height, out var width, out var height);
 			return new Size(width, height);
-		}
-		else if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"Object `{nameof(content)}` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
 		}
 		return Size.Empty;
 	}

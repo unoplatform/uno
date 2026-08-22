@@ -148,6 +148,14 @@ void uno_native_dispose(NSView<UNONativeElement>* element)
 #if DEBUG
     NSLog(@"uno_native_dispose #%p", element);
 #endif
+    if (!element) {
+        return;
+    }
     [element dispose];
+    // Disposal is terminal: drop BOTH strong references, so the view cannot be resurrected through
+    // `elements` by a later attach. `transients` alone is not enough — an element detached before it
+    // is disposed has already been moved out of `elements`, and one disposed while still attached
+    // would otherwise stay retained there forever.
     [transients removeObject:element];
+    [elements removeObject:element];
 }
