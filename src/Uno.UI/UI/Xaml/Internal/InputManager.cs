@@ -27,6 +27,8 @@ internal partial class InputManager : IInputInjectorTarget
 		ConstructKeyboardManager();
 
 		ConstructPointerManager();
+
+		InputInjector.SetTargetForCurrentThread(this);
 	}
 
 	internal ContextMenuProcessor ContextMenuProcessor => _contextMenuProcessor;
