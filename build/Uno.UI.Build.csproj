@@ -55,6 +55,8 @@
 			<_Sha1Replace Include="..\build\nuget\uno.winui.runtime-replace.targets" />
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\AssemblyName.props" />
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*.*" />
+			<!-- The tests reference the versioned task names, isolated to this file so the rest of the tests stay untouched -->
+			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks.Tests\VersionedTaskAliases.cs" />
 			<_Sha1Replace Include="..\src\Uno.Sdk\**\*" />
 		</ItemGroup>
 
