@@ -117,6 +117,17 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	// where an in-place uniform rewrite would clobber data this frame's earlier draws still reference.
 	public long FrameSeq;
 
+	// Superseded render bundles: like bind groups, released at the next frame start once in-flight GPU work drained.
+	private readonly List<nint> _pendingBundles = new();
+
+	public void DeferBundleRelease(IntPtr bundle)
+	{
+		if (bundle != IntPtr.Zero)
+		{
+			_pendingBundles.Add(bundle);
+		}
+	}
+
 	public void BeginFrameResources()
 	{
 		FrameSeq++;
@@ -124,6 +135,8 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		BufferPool.BeginFrame();
 		foreach (var bg in _pendingBindGroups) { wgpuBindGroupRelease((IntPtr)bg); }
 		foreach (var b in _pendingBuffers) { wgpuBufferRelease((IntPtr)b); }
+		foreach (var rb in _pendingBundles) { wgpuRenderBundleRelease((IntPtr)rb); }
+		_pendingBundles.Clear();
 		// Release (refcount) rather than Destroy (immediate) the transient one-shot textures: wgpu then frees them
 		// only once the GPU has finished the frames that used them — safe even when the per-frame drain is skipped.
 		while (_pendingTextures.TryDequeue(out var t)) { if (t.view != IntPtr.Zero) { wgpuTextureViewRelease((IntPtr)t.view); } if (t.tex != IntPtr.Zero) { wgpuTextureRelease((IntPtr)t.tex); } }
@@ -1233,6 +1246,12 @@ internal sealed unsafe class WebGpuRenderSurface
 	public IntPtr MsaaColorView;     // multisampled color the pass renders into, resolved into View
 	public IntPtr DepthTex;
 	public IntPtr DepthView;         // multisampled depth/stencil (clip mask + stencil-then-cover)
+	// Render-bundle cache for this surface's main pass (see RenderInto): the present session is per-frame, so
+	// the cache lives here; a resize allocates a new surface, which naturally resets it.
+	public DrawOp[] BundleOps = Array.Empty<DrawOp>();
+	public int BundleOpsN = -1;
+	public IntPtr[] BundleChunks = Array.Empty<IntPtr>();
+	public nint BundleSolidTableBuf, BundleRrectTableBuf, BundleSolidSlabBuf, BundleXformBg;
 	public int Width { get; }
 	public int Height { get; }
 	// True when MSAA colour + depth were rented from the transient pool. Both are write-only within this surface's
