@@ -20,6 +20,8 @@ namespace Microsoft.UI.Xaml.Documents
 		private void OnCollectionChanged(
 			)
 		{
+			MarkDirty();
+
 #if !IS_UNIT_TESTS
 			InvalidateTraversedTree();
 
@@ -31,11 +33,38 @@ namespace Microsoft.UI.Xaml.Documents
 				case Inline inline:
 					inline.InvalidateInlines(true);
 					break;
+				case Block block:
+					block.InvalidateInlines(contentChanged: true);
+					break;
 				default:
 					break;
 			}
 #endif
 		}
+
+		// CInlineCollection::MarkDirty — drop our cached position counts, then let the owning element
+		// carry the invalidation on to the collection that holds it, so no ancestor keeps a stale count.
+		internal void MarkDirty()
+		{
+			ResetPositionCountsPartial();
+
+			if (_collection.GetParent() is TextElement owner)
+			{
+				owner.MarkDirty();
+			}
+		}
+
+		// Implemented on Skia to invalidate the run-model position-count cache.
+		partial void ResetPositionCountsPartial();
+
+		// The owning element of this collection (the Span/Hyperlink/TextBlock it belongs to).
+		// Mirrors CInlineCollection::GetParentInternal — used by TextSchema validation.
+		internal object GetParent()
+#if __WASM__
+			=> _collection.Owner;
+#else
+			=> _collection.GetParent();
+#endif
 
 		private (Inline[] preorderTree, Inline[] leafTree)? _traversedTree;
 
@@ -59,7 +88,7 @@ namespace Microsoft.UI.Xaml.Documents
 					return traversedTree;
 				}
 				var preOrderTree = GetPreorderTree();
-				return (_traversedTree = (preOrderTree, preOrderTree.Where(inline => inline is Run or LineBreak).ToArray())).Value;
+				return (_traversedTree = (preOrderTree, preOrderTree.Where(inline => inline is Run or LineBreak or InlineUIContainer).ToArray())).Value;
 
 				Inline[] GetPreorderTree()
 				{

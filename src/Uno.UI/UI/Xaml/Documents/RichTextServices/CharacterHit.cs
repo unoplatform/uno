@@ -1,0 +1,16 @@
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference CharacterHit.h, tag winui3/release/1.8.2, commit 4a1c6184c
+
+#nullable enable
+
+namespace Microsoft.UI.Xaml.Documents.RichTextServices;
+
+/// <summary>
+/// Represents information about a character hit within a glyph run.
+/// </summary>
+internal readonly record struct CharacterHit(
+	// The index of the first character that got hit.
+	int FirstCharacterIndex,
+	// The trailing length value for the character that got hit.
+	int TrailingLength);
