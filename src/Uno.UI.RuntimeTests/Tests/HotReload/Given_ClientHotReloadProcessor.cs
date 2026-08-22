@@ -16,7 +16,6 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload;
 public class Given_ClientHotReloadProcessor
 {
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)] // Currently fails on Android .NET 11
 	public void When_GetRuntimeTargetFramework_Then_PlatformMatchesRuntimeIdentifier()
 	{
 		// Cross-check the reported platform against the runtime identifier rather than
