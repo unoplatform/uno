@@ -517,7 +517,7 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 10. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to `Uno.UI.Extras`.
 11. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
-11. On iOS/tvOS/Mac Catalyst, application settings move to the `UnoApplicationData`
+12. On iOS/tvOS/Mac Catalyst, application settings move to the `UnoApplicationData`
     container automatically on first access — update any native/interop code that read them
     from `NSUserDefaults.StandardUserDefaults`.
 
