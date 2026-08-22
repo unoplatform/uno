@@ -102,7 +102,7 @@ namespace Uno.Utils {
 				((event.ctrlKey || event.metaKey) && (event.key === "v" || event.key === "V")) ||
 				(event.shiftKey && event.key === "Insert");
 			if (isPasteShortcut) {
-				Clipboard.lastPasteShortcutTime = Date.now();
+				Clipboard.lastPasteShortcutTime = performance.now();
 			}
 		}
 
@@ -179,12 +179,12 @@ namespace Uno.Utils {
 				return null;
 			}
 
-			return { time: Date.now(), texts: texts, files: files };
+			return { time: performance.now(), texts: texts, files: files };
 		}
 
 		private static getFreshPasteSnapshot(): PasteSnapshot {
 			const snapshot = Clipboard.lastPaste;
-			if (snapshot && (Date.now() - snapshot.time) <= Clipboard.pasteFreshnessMs) {
+			if (snapshot && (performance.now() - snapshot.time) <= Clipboard.pasteFreshnessMs) {
 				return snapshot;
 			}
 			return null;
@@ -201,7 +201,7 @@ namespace Uno.Utils {
 
 		private static isPasteImminent(): boolean {
 			return Clipboard.lastPasteShortcutTime >= 0 &&
-				(Date.now() - Clipboard.lastPasteShortcutTime) <= Clipboard.pasteShortcutCorrelationMs;
+				(performance.now() - Clipboard.lastPasteShortcutTime) <= Clipboard.pasteShortcutCorrelationMs;
 		}
 
 		private static getOwnFormats(): string[] {
