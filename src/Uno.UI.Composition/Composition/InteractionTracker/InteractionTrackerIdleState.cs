@@ -42,10 +42,10 @@ internal sealed class InteractionTrackerIdleState : InteractionTrackerState
 	{
 	}
 
-	internal override void ReceivePointerWheel(int delta, bool isHorizontal)
+	internal override void ReceivePointerWheel(double delta, bool isHorizontal)
 	{
 		// Constant velocity for 250ms
-		var velocityValue = delta / 0.25f;
+		var velocityValue = (float)(delta / 0.25);
 		Vector3 velocity = isHorizontal ? new Vector3(velocityValue, 0, 0) : new Vector3(0, velocityValue, 0);
 		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocity, requestId: 0, isFromPointerWheel: true));
 	}

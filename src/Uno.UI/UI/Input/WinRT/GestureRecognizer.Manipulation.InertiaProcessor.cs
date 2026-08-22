@@ -330,10 +330,23 @@ public partial class GestureRecognizer
 		}
 
 #if IS_UNO_UI_PROJECT
+		/// <summary>
+		/// Ticks the inertia once per frame, before that frame's picture is recorded.
+		/// </summary>
+		/// <remarks>
+		/// CompositionTarget.Rendering is raised from a dispatcher continuation *after* the record, so a
+		/// driver on it writes into the following frame — a structural frame of latency on every fling.
+		/// Compositor.FrameStarting runs before the paint walk and carries one timestamp for the whole
+		/// frame, so the position is both current and evaluated against the same clock as everything else.
+		/// </remarks>
 		private sealed class CompositionInertiaProcessorTimer(Action<TimeSpan> onTick) : IInertiaProcessorTimer
 		{
-			private EventHandler<object>? _handler;
-			private Stopwatch? _time;
+#if __SKIA__
+			private EventHandler<long>? _handler;
+			// Unsubscribe from the target we subscribed to: MainFrameDriverTarget can change or go null,
+			// and a missed -= leaks a frame driver that keeps the compositor ticking forever.
+			private Microsoft.UI.Xaml.Media.CompositionTarget? _target;
+			private long _startTimestamp;
 
 			public bool IsRunning => _handler is not null;
 
@@ -341,24 +354,65 @@ public partial class GestureRecognizer
 			{
 				Stop();
 
-				_time = Stopwatch.StartNew();
-				_handler = (_, args) =>
+				if (Microsoft.UI.Xaml.Media.CompositionTarget.MainFrameDriverTarget is not { } target)
 				{
-					// Note: We are not using the ((Microsoft.UI.Xaml.Media.RenderingEventArgs)args).RenderingTime as we are not able to have the value at t0
-					onTick(_time.Elapsed);
-				};
+					return;
+				}
 
-				CompositionTarget.Rendering += _handler;
+				// Anchored on the first tick, not here: the grid sits at the mean tick offset, so timing from
+				// a raw clock read would make the first elapsed value negative.
+				_startTimestamp = 0;
+				_handler = (_, timestamp) =>
+				{
+					if (_startTimestamp == 0)
+					{
+						_startTimestamp = timestamp - target.FrameIntervalInTicks;
+					}
+
+					onTick(TimeSpan.FromTicks(timestamp - _startTimestamp));
+				};
+				_target = target;
+				target.FrameStarting += _handler;
 			}
 
 			public void Stop()
 			{
 				if (_handler is not null)
 				{
-					CompositionTarget.Rendering -= _handler;
+					if (_target is { } target)
+					{
+						target.FrameStarting -= _handler;
+						_target = null;
+					}
+
 					_handler = null;
 				}
 			}
+#else
+			// Non-Skia targets have no pre-record frame hook; keep the post-record behaviour there.
+			private EventHandler<object>? _renderingHandler;
+			private Stopwatch? _time;
+
+			public bool IsRunning => _renderingHandler is not null;
+
+			public void Start()
+			{
+				Stop();
+
+				_time = Stopwatch.StartNew();
+				_renderingHandler = (_, _) => onTick(_time.Elapsed);
+				CompositionTarget.Rendering += _renderingHandler;
+			}
+
+			public void Stop()
+			{
+				if (_renderingHandler is not null)
+				{
+					CompositionTarget.Rendering -= _renderingHandler;
+					_renderingHandler = null;
+				}
+			}
+#endif
 
 			~CompositionInertiaProcessorTimer() => Stop();
 		}
