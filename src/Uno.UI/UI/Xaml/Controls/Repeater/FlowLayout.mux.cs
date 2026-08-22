@@ -418,10 +418,6 @@ partial class FlowLayout
 		avgCountInLine = Math.Max(1.0, flowState.TotalItemsPerLine / flowState.TotalLinesMeasured);
 		avgLineSize = Math.Round(flowState.TotalLineSize / flowState.TotalLinesMeasured);
 
-#if !__SKIA__
-		flowState.Uno_LastKnownAverageLineSize = avgLineSize;
-#endif
-
 		return avgLineSize;
 	}
 

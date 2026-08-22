@@ -51,10 +51,4 @@ partial class FlowLayoutAlgorithm
 	private Size MinorMajorSize(float minor, float major)
 		=> ((OrientationBasedMeasures)this).MinorMajorSize(minor, major);
 #pragma warning restore IDE0051
-
-#if !__SKIA__
-	// Uno-specific: exposed for the IsSignificantViewportChange viewport
-	// optimization on native targets.
-	internal int RealizedElementCount => m_elementManager.GetRealizedElementCount;
-#endif
 }
