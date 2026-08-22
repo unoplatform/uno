@@ -8,36 +8,21 @@ namespace Microsoft.UI.Xaml.Documents;
 // TextFormatting partial for TextElement.
 // Mirrors WinUI's CTextElement::PullInheritedTextFormatting (TextElement.cpp:184-263).
 //
-// On WASM, TextElement inherits from UIElement and gets _textFormatting from there.
-// On all other platforms, TextElement inherits from DependencyObject and needs its
-// own TextFormatting storage.
+// TextElement inherits from DependencyObject, not UIElement, so it carries its own
+// TextFormatting storage.
 //
 // Uses type alias TF to avoid collision with the Microsoft.UI.Xaml.Documents.TextFormatting namespace.
 public abstract partial class TextElement : ITextFormattingOwner
 {
-#if !__WASM__
-	// On non-WASM platforms, TextElement does NOT inherit from UIElement,
-	// so it needs its own TextFormatting field.
 	internal TF _textFormatting;
-#endif
 
-	TF ITextFormattingOwner.TextFormatting =>
-#if __WASM__
-		// On WASM, UIElement._textFormatting is used (inherited)
-		((UIElement)(object)this)._textFormatting;
-#else
-		_textFormatting;
-#endif
+	TF ITextFormattingOwner.TextFormatting => _textFormatting;
 
 	void ITextFormattingOwner.EnsureTextFormatting(DependencyProperty property, bool forGetValue)
 		=> EnsureTextFormatting(property, forGetValue);
 
 	internal void EnsureTextFormatting(DependencyProperty property, bool forGetValue)
 	{
-#if __WASM__
-		// On WASM, delegate to UIElement.EnsureTextFormatting
-		((UIElement)(object)this).EnsureTextFormatting(property, forGetValue);
-#else
 		if (_textFormatting is null)
 		{
 			_textFormatting = TF.CreateDefault();
@@ -50,7 +35,6 @@ public abstract partial class TextElement : ITextFormattingOwner
 			PullInheritedTextFormatting();
 			_textFormatting.SetIsUpToDate();
 		}
-#endif
 	}
 
 	/// <summary>
@@ -98,12 +82,7 @@ public abstract partial class TextElement : ITextFormattingOwner
 	/// </summary>
 	internal virtual void PullInheritedTextFormatting()
 	{
-		var tf =
-#if __WASM__
-			((UIElement)(object)this)._textFormatting;
-#else
-			_textFormatting;
-#endif
+		var tf = _textFormatting;
 
 		if (tf is null)
 		{
@@ -182,21 +161,12 @@ public abstract partial class TextElement : ITextFormattingOwner
 			return;
 		}
 
-		var tf =
-#if __WASM__
-			((UIElement)(object)this)._textFormatting;
-#else
-			_textFormatting;
-#endif
+		var tf = _textFormatting;
 
 		if (tf is null)
 		{
 			tf = TF.CreateDefault();
-#if __WASM__
-			((UIElement)(object)this)._textFormatting = tf;
-#else
 			_textFormatting = tf;
-#endif
 		}
 
 		tf.SetFieldValue(propertyName, newValue);
