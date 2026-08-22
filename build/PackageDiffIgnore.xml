@@ -2118,8 +2118,22 @@
 	  <Assemblies>
 		  <!-- The whole assembly is renamed for 7.0, so every type in it reads as removed against the 6.6 baseline. -->
 		  <Member fullName="Uno.UI.Toolkit" reason="Assembly renamed Uno.UI.Toolkit -> Uno.UI.Extras (7.0 assembly renames)" />
+		  <!-- Fluent V1 shipped an assembly whose style content had already been deleted: themeresources_v1.xaml was an empty ResourceDictionary and XamlControlsResources forced version 2 regardless (BC71, breaking changes for 7.0). -->
+		  <Member fullName="Uno.UI.FluentTheme.v1" reason="Removed the Uno.UI.FluentTheme.v1 assembly along with the Fluent V1 scaffolding (BC71, breaking changes for 7.0)" />
+		  <!-- With V1 gone the "v2" suffix had no meaning, so the assembly was merged into Uno.UI.FluentTheme (BC71, breaking changes for 7.0). -->
+		  <Member fullName="Uno.UI.FluentTheme.v2" reason="Merged the Uno.UI.FluentTheme.v2 assembly into Uno.UI.FluentTheme; the v2 suffix was an artifact of the removed Fluent V1/V2 split (BC71, breaking changes for 7.0)" />
 	  </Assemblies>
 	  <Types>
+		  <!-- Fluent V1 public surface, removed with the Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.XamlControlsResourcesV1" reason="Removed XamlControlsResourcesV1; it sourced an empty V1 dictionary and had no consumers (BC71, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FluentTheme.v1.GlobalStaticResources" reason="Generated with the removed Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FluentTheme.v1.Resource" reason="Generated with the removed Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0)" />
+		  <!-- Fluent V2 public surface, removed with the merge of Uno.UI.FluentTheme.v2 into Uno.UI.FluentTheme (BC71, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.XamlControlsResourcesV2" reason="Removed XamlControlsResourcesV2; WinAppSDK has no such type and with V1 gone it duplicated XamlControlsResources (BC71, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FluentTheme.v2.GlobalStaticResources" reason="Generated with the merged-away Uno.UI.FluentTheme.v2 assembly (BC71, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FluentTheme.v2.Resource" reason="Generated with the merged-away Uno.UI.FluentTheme.v2 assembly (BC71, breaking changes for 7.0)" />
+		  <!-- Uno-only resources-version selector with no WinUI counterpart; version 2 was already forced unconditionally (BC71, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion" reason="Removed the Uno-only ControlsResourcesVersion enum; WinAppSDK has no such type and only version 2 exists (BC71, breaking changes for 7.0)" />
 		  <!-- Legacy cross-target FeatureConfiguration holder class removed with its sole flag (#2053, breaking changes for 7.0). -->
 		  <Member fullName="Uno.UI.FeatureConfiguration/Binding" reason="Removed empty FeatureConfiguration.Binding holder after deleting IgnoreINPCSameReferences (#2053, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Timeline" reason="Removed empty FeatureConfiguration.Timeline holder after deleting DefaultsStartingValueFromAnimatedValue (#2053, breaking changes for 7.0)" />
@@ -2358,6 +2372,17 @@
 		  <Member fullName="Uno.WinRTFeatureConfiguration/ApplicationLanguages" reason="Removed empty WinRTFeatureConfiguration.ApplicationLanguages holder after deleting UseLegacyPrimaryLanguageOverride (BC50, breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
+		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion Microsoft.UI.Xaml.Controls.ControlsResourcesVersion::Version1" reason="Removed with the ControlsResourcesVersion enum; V1 styles no longer exist (BC71, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion Microsoft.UI.Xaml.Controls.ControlsResourcesVersion::Version2" reason="Removed with the ControlsResourcesVersion enum; version 2 is the only behavior and needs no selector (BC71, breaking changes for 7.0)" />
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.ControlsResourcesVersion::value__" reason="Removed with the ControlsResourcesVersion enum (BC71, breaking changes for 7.0)" />
+		  <!-- ControlsResourcesVersionProperty is declared as a get-only property today, but the 6.6.x base may expose it as a DP field; cover both shapes (paired with the <Properties>/<Methods> entries). -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.XamlControlsResources::ControlsResourcesVersionProperty" reason="Removed the ControlsResourcesVersionProperty DP with its property (BC71, breaking changes for 7.0)" />
+		  <!-- Any remaining member of the deleted Uno.UI.FluentTheme.v1 assembly or of XamlControlsResourcesV1 (see the <Assemblies>/<Types> entries above). Regex because the generated GlobalStaticResources member set is not reproducible locally. -->
+		  <Member fullName=".+ Uno\.UI\.FluentTheme\.v1\..+" reason="Member of the removed Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.XamlControlsResourcesV1(::|\.).+" reason="Member of the removed XamlControlsResourcesV1 type (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Uno\.UI\.FluentTheme\.v2\..+" reason="Member of the merged-away Uno.UI.FluentTheme.v2 assembly (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.XamlControlsResourcesV2(::|\.).+" reason="Member of the removed XamlControlsResourcesV2 type (BC71, breaking changes for 7.0)" isRegex="true" />
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
 		  <!-- DependencyPropertyValuePrecedences enum cleanup: obsolete/misused members removed and style levels renamed to match WinUI's BaseValueSource (#16356, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::TemplatedParent" reason="Removed unused TemplatedParent precedence (#16356, breaking changes for 7.0)" />
@@ -2432,6 +2457,14 @@
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.NavigationViewItemBase::_fullyInitialized" reason="Reference flavor folded into Skia; field was compiled only under !UNO_HAS_ENHANCED_LIFECYCLE (breaking changes for 7.0, uno#8339)" />
 	  </Fields>
 	  <Properties>
+		  <!-- Fluent resources-version selector removed: only version 2 exists and WinAppSDK has no equivalent surface. Accessors paired in the <Methods> block below (BC71, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion Microsoft.UI.Xaml.Controls.XamlControlsResources::ControlsResourcesVersion()" reason="Removed the Uno-only XamlControlsResources.ControlsResourcesVersion property; version 2 was already forced unconditionally (BC71, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.XamlControlsResources::ControlsResourcesVersionProperty()" reason="Removed the ControlsResourcesVersionProperty DP with its property (BC71, breaking changes for 7.0)" />
+		  <Member fullName="System.Object Microsoft.UI.Xaml.Controls.XamlControlsResourcesV2::ControlsResourcesVersion()" reason="Removed the inert object-typed ControlsResourcesVersion stub on XamlControlsResourcesV2; it was never a DP and never read (BC71, breaking changes for 7.0)" />
+		  <Member fullName=".+ Uno\.UI\.FluentTheme\.v1\..+" reason="Member of the removed Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.XamlControlsResourcesV1(::|\.).+" reason="Member of the removed XamlControlsResourcesV1 type (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Uno\.UI\.FluentTheme\.v2\..+" reason="Member of the merged-away Uno.UI.FluentTheme.v2 assembly (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.XamlControlsResourcesV2(::|\.).+" reason="Member of the removed XamlControlsResourcesV2 type (BC71, breaking changes for 7.0)" isRegex="true" />
 		  <!-- StackLayout.DisableVirtualization is a plain CLR property in WinUI (backed by internal IsVirtualizationEnabledProperty); the DisableVirtualizationProperty DP is not part of the WinUI surface. -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
 		  <!-- Native-only FeatureConfiguration knobs removed with the native renderers (#2052, breaking changes for 7.0). -->
@@ -2714,6 +2747,17 @@
 
 	  </Properties>
 	  <Methods>
+		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion Microsoft.UI.Xaml.Controls.XamlControlsResources.get_ControlsResourcesVersion()" reason="Removed with the XamlControlsResources.ControlsResourcesVersion property (BC71, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.XamlControlsResources.set_ControlsResourcesVersion(Microsoft.UI.Xaml.Controls.ControlsResourcesVersion value)" reason="Removed with the XamlControlsResources.ControlsResourcesVersion property (BC71, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.XamlControlsResources.get_ControlsResourcesVersionProperty()" reason="Removed with the ControlsResourcesVersionProperty DP (BC71, breaking changes for 7.0)" />
+		  <Member fullName="System.Object Microsoft.UI.Xaml.Controls.XamlControlsResourcesV2.get_ControlsResourcesVersion()" reason="Removed with the inert XamlControlsResourcesV2.ControlsResourcesVersion stub (BC71, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.XamlControlsResourcesV2.set_ControlsResourcesVersion(System.Object value)" reason="Removed with the inert XamlControlsResourcesV2.ControlsResourcesVersion stub (BC71, breaking changes for 7.0)" />
+		  <!-- Any remaining member of the deleted Uno.UI.FluentTheme.v1 assembly (its generated GlobalStaticResources member set is not reproducible locally) or of XamlControlsResourcesV1. -->
+		  <Member fullName=".+ Uno\.UI\.FluentTheme\.v1\..+" reason="Member of the removed Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.XamlControlsResourcesV1(::|\.).+" reason="Member of the removed XamlControlsResourcesV1 type (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Uno\.UI\.FluentTheme\.v2\..+" reason="Member of the merged-away Uno.UI.FluentTheme.v2 assembly (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.XamlControlsResourcesV2(::|\.).+" reason="Member of the removed XamlControlsResourcesV2 type (BC71, breaking changes for 7.0)" isRegex="true" />
 		  <!-- Uno's legacy source-driven AnimatedVisualPlayer contract was removed in favor of WinUI's composition visual source contract. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Update(Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Load()" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
