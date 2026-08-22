@@ -435,17 +435,8 @@ namespace Microsoft.UI.Xaml
 
 		protected virtual void OnLaunched(LaunchActivatedEventArgs args) { }
 
-		internal void InvokeOnActivated(IActivatedEventArgs args)
-		{
-#if __SKIA__
-			// For Skia targets, we always go through the proper OnLaunched activation path
-			InvokeOnLaunched(args);
-#else
-			Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().SetOrRaiseActivation(AppActivationArguments.FromActivatedEventArgs(args));
-			OnActivated(args);
-			WasLaunched = true;
-#endif
-		}
+		// Activation always goes through the proper OnLaunched path.
+		internal void InvokeOnActivated(IActivatedEventArgs args) => InvokeOnLaunched(args);
 
 		internal void InvokeOnLaunched(IActivatedEventArgs activatedArgs)
 		{
