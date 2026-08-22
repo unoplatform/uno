@@ -833,7 +833,7 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
    explicitly.
 15. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
-11. On iOS/tvOS/Mac Catalyst, application settings move to the `UnoApplicationData`
+12. On iOS/tvOS/Mac Catalyst, application settings move to the `UnoApplicationData`
     container automatically on first access — update any native/interop code that read them
     from `NSUserDefaults.StandardUserDefaults`.
 
