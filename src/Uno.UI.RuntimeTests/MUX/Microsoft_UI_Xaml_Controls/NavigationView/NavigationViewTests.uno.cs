@@ -33,6 +33,12 @@ public partial class NavigationViewTests : MUXApiTestBase
 		{
 			SUT = new NavigationView
 			{
+				// The host does not stretch the SUT, so leave nothing to the adaptive
+				// thresholds (641/1008) that would otherwise pick the pane mode.
+				PaneDisplayMode = NavigationViewPaneDisplayMode.Left,
+				IsPaneOpen = true,
+				Width = 400,
+				Height = 400,
 				MenuItems =
 				{
 					new NavigationViewItem
@@ -63,6 +69,7 @@ public partial class NavigationViewTests : MUXApiTestBase
 		await WindowHelper.WaitForIdle();
 
 		NavigationViewItem mi1 = null;
+		FrameworkElement presenter = null;
 		FrameworkElement chevron = null;
 		InputInjector injector = null;
 
@@ -72,6 +79,7 @@ public partial class NavigationViewTests : MUXApiTestBase
 			using var finger = injector.GetFinger();
 
 			mi1 = (NavigationViewItem)SUT.FindVisualChildByName("MI1");
+			presenter = (FrameworkElement)mi1.FindVisualChildByName("NavigationViewItemPresenter");
 			chevron = (FrameworkElement)SUT.FindVisualChildByName("ExpandCollapseChevron");
 
 			Assert.IsFalse(mi1.IsExpanded);
@@ -96,11 +104,12 @@ public partial class NavigationViewTests : MUXApiTestBase
 
 		Assert.IsFalse(mi1.IsExpanded);
 
-		var bounds = mi1.GetAbsoluteBounds().GetCenter();
 		MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 		{
 			using var finger = injector.GetFinger();
-			finger.Press(bounds);
+			// The presenter is the tap target rather than mi1, whose bounds also cover
+			// MI2/MI3 once expanded.
+			finger.Press(presenter.GetAbsoluteBounds().GetCenter());
 			finger.Release();
 		});
 
@@ -112,7 +121,7 @@ public partial class NavigationViewTests : MUXApiTestBase
 		MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 		{
 			using var finger = injector.GetFinger();
-			finger.Press(bounds);
+			finger.Press(presenter.GetAbsoluteBounds().GetCenter());
 			finger.Release();
 		});
 

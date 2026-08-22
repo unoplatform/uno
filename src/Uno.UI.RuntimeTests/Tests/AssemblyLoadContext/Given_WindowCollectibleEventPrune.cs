@@ -39,7 +39,8 @@ public class Given_WindowCollectibleEventPrune
 		var weakTarget = SubscribeCollectibleHandler(window!);
 		try
 		{
-			Application.CleanupNonDefaultAlcCaches();
+			// Explicit all-secondary sweep: this test exercises the global-teardown (unscoped) semantics.
+			Application.CleanupAllSecondaryAlcCaches();
 
 			for (var i = 0; i < 10 && weakTarget.IsAlive; i++)
 			{

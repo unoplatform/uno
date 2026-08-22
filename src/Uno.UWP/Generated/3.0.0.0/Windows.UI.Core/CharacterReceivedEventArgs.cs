@@ -3,50 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CharacterReceivedEventArgs : global::Windows.UI.Core.ICoreWindowEventArgs
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CharacterReceivedEventArgs()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public bool Handled
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CharacterReceivedEventArgs", "Handled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CharacterReceivedEventArgs", "Handled");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint KeyCode
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CharacterReceivedEventArgs", "KeyCode");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Core.CorePhysicalKeyStatus KeyStatus
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Core.CharacterReceivedEventArgs", "KeyStatus");
-			}
-		}
-#endif
+		// Skipping already declared property Handled
+		// Skipping already declared property KeyCode
+		// Skipping already declared property KeyStatus
 		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.Handled.set
 		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.KeyCode.get
