@@ -2648,277 +2648,277 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		void EncDraw(uint count) { if (bundleRec) { wgpuRenderBundleEncoderDraw(bundleEnc, count, 1, 0, 0); } else { wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0); } }
 		void EncodeRange(int start, int end)
 		{
-		for (int oi = start; oi < end; oi++)
-		{
-			var (kind, b0, u0, b1, flag, clip, clipBg) = ops[oi];
-			statIters++;
-			if (statFans is not null && clip.PathFan is { } statFan)
+			for (int oi = start; oi < end; oi++)
 			{
-				statFanOps++;
-				statFans.Add(statFan);
-			}
-			if (!ReferenceEquals(clip.PathFan, curFan))
-			{
-				ApplyDepthClip(pass, curFan, curAabb, clip);
-				curFan = clip.PathFan; curAabb = clip.Aabb;
-				lastX = lastY = lastW = lastH = -1;   // the clip setup changed the scissor
-				statClipCh++;
-			}
-			if (!TryScissor(clip.Aabb, out var sx, out var sy, out var sw, out var sh)) { continue; }
-			// An inert clip's tight AABB is cull-only (checked above); the applied scissor is the full surface,
-			// so consecutive inert ops dedup to a single SetScissorRect.
-			var scissorWiden = clip.ScissorInert || clip.AabbInClipU
-				|| (!clip.ScissorLoadBearing && clip.PathFan is null && IsFiniteAabb(clip.Aabb));
-			if (_emitStats) { if (clip.ScissorInert) { statInert++; } if (scissorWiden && !clip.ScissorInert) { statFolded++; } }
-			if (scissorWiden) { sx = 0; sy = 0; sw = (int)_s.Width; sh = (int)_s.Height; }
-			if (!bundleRec && (sx != lastX || sy != lastY || sw != lastW || sh != lastH))
-			{
-				wgpuRenderPassEncoderSetScissorRect(pass, (uint)sx, (uint)sy, (uint)sw, (uint)sh);
-				lastX = sx; lastY = sy; lastW = sw; lastH = sh;
-				statScissor++;
-			}
-			switch (kind)
-			{
-				case 0 when b0 == 0:
-					{
-						// Shared-buffer solid (b1=start vertex, u0=vertex count). COALESCE the maximal run of following
-						// solid ops sharing this clip bind group + clip (same scissor + depth-clip): their verts are
-						// contiguous in the shared buffer by construction, so the whole run draws in ONE call.
-						int startVert = (int)b1; uint count = u0;
-						while (oi + 1 < end)
+				var (kind, b0, u0, b1, flag, clip, clipBg) = ops[oi];
+				statIters++;
+				if (statFans is not null && clip.PathFan is { } statFan)
+				{
+					statFanOps++;
+					statFans.Add(statFan);
+				}
+				if (!ReferenceEquals(clip.PathFan, curFan))
+				{
+					ApplyDepthClip(pass, curFan, curAabb, clip);
+					curFan = clip.PathFan; curAabb = clip.Aabb;
+					lastX = lastY = lastW = lastH = -1;   // the clip setup changed the scissor
+					statClipCh++;
+				}
+				if (!TryScissor(clip.Aabb, out var sx, out var sy, out var sw, out var sh)) { continue; }
+				// An inert clip's tight AABB is cull-only (checked above); the applied scissor is the full surface,
+				// so consecutive inert ops dedup to a single SetScissorRect.
+				var scissorWiden = clip.ScissorInert || clip.AabbInClipU
+					|| (!clip.ScissorLoadBearing && clip.PathFan is null && IsFiniteAabb(clip.Aabb));
+				if (_emitStats) { if (clip.ScissorInert) { statInert++; } if (scissorWiden && !clip.ScissorInert) { statFolded++; } }
+				if (scissorWiden) { sx = 0; sy = 0; sw = (int)_s.Width; sh = (int)_s.Height; }
+				if (!bundleRec && (sx != lastX || sy != lastY || sw != lastW || sh != lastH))
+				{
+					wgpuRenderPassEncoderSetScissorRect(pass, (uint)sx, (uint)sy, (uint)sw, (uint)sh);
+					lastX = sx; lastY = sy; lastW = sw; lastH = sh;
+					statScissor++;
+				}
+				switch (kind)
+				{
+					case 0 when b0 == 0:
 						{
-							var nx = ops[oi + 1];
-							if (nx.kind != 0 || nx.b0 != 0 || nx.clipBg != clipBg
-								|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
-							count += nx.u0; oi++;
-						}
-						EncPipe(_d.SolidPipe);
-						EncBg(0, (IntPtr)clipBg);
-						EncVb(solidBuf, (nuint)(startVert * 6 * sizeof(float)), (nuint)(count * 6 * sizeof(float)));
-						EncDraw(count);
-						break;
-					}
-				case 0 when b0 == 1:
-					{
-						// Resident SOLID SLAB (b1 = absolute byte offset). Coalesce a byte-contiguous run sharing clip+bindgroup.
-						int byteOff = (int)b1; uint count = u0;
-						while (oi + 1 < end)
-						{
-							var nx = ops[oi + 1];
-							if (nx.kind != 0 || nx.b0 != 1 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
-								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 6 * sizeof(float))) { break; }
-							count += nx.u0; oi++;
-						}
-						EncPipe(_d.SolidPipe);
-						EncBg(0, (IntPtr)clipBg);
-						EncVb(_d.SolidSlab.Buf, (nuint)byteOff, (nuint)(count * 6 * sizeof(float)));
-						EncDraw(count);
-						break;
-					}
-				case 0 when b0 == 2:
-					{
-						// Resident SOLID TABLE SLAB (b1 = absolute byte offset, stride 7 = pos+col+slot). Group 0 = the
-						// transform table (each vertex's slot positions it), group 1 = ClipU. Coalesce byte-contiguous
-						// same-clip runs ACROSS recordings — each vertex still carries its own slot, so one draw is correct.
-						int byteOff = (int)b1; uint count = u0;
-						while (oi + 1 < end)
-						{
-							var nx = ops[oi + 1];
-							if (nx.kind != 0 || nx.b0 != 2 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
-								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 7 * sizeof(float))) { break; }
-							count += nx.u0; oi++;
-						}
-						EncPipe(_d.SolidTablePipe);
-						EncBg(0, (IntPtr)xformBg);
-						EncBg(1, (IntPtr)clipBg);
-						EncVb(_d.SolidTableSlab.Buf, (nuint)byteOff, (nuint)(count * 7 * sizeof(float)));
-						EncDraw(count);
-						break;
-					}
-				case 0:
-					// b0 = vertex buffer (private/immediate or a resident frame-solid buffer); b1 = byte offset into it.
-					EncPipe(_d.SolidPipe);
-					EncBg(0, (IntPtr)clipBg);
-					EncVb((IntPtr)b0, (nuint)b1, (nuint)(u0 * 6 * sizeof(float)));
-					EncDraw(u0);   // u0 = 6 * (coalesced) rect count
-					break;
-				case 1:
-					// Path fill via the transform table: fan verts = device pos + slot index (stride 3); cover verts =
-					// device pos + colour + slot index (stride 7). Group 0 = storage table (positions the verts);
-					// group 1 (cover) = ClipU (analytic clip coverage). Table entries were written during op-build.
-					EncPipe(flag ? _d.StencilTableEO : _d.StencilTableNZ);
-					EncBg(0, (IntPtr)xformBg);
-					EncVb((IntPtr)b0, 0, (nuint)(u0 * 3 * sizeof(float)));
-					EncDraw(u0);
-					EncPipe(_d.CoverTablePipe);
-					EncBg(0, (IntPtr)xformBg);
-					EncBg(1, (IntPtr)clipBg);
-					EncVb((IntPtr)b1, 0, (nuint)(42 * sizeof(float)));
-					EncDraw(6);
-					break;
-				case 2:
-					EncPipe(_d.ImagePipe);
-					EncBg(0, (IntPtr)b0);
-					EncBg(1, (IntPtr)clipBg);
-					EncVb((IntPtr)b1, 0, (nuint)(24 * sizeof(float)));
-					EncDraw(6);
-					break;
-				case 3:
-					EncPipe(_d.GradientPipe);
-					EncBg(0, (IntPtr)b0);
-					EncBg(1, (IntPtr)clipBg);
-					EncVb((IntPtr)b1, 0, (nuint)(12 * sizeof(float)));
-					EncDraw(6);
-					break;
-				case 4:
-					wgpuRenderPassEncoderSetPipeline(pass, u0 == 1 ? _d.CompositeDstIn : _d.CompositeSrcOver);
-					EncBg(0, (IntPtr)b0);
-					wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-					break;
-				case 6:
-					{
-						// Backdrop pass-segment (acrylic O(n) path): END this segment so its MSAA resolves into target.View
-						// (the content BEHIND the backdrop), blur that, REOPEN the pass loading the content back, and
-						// composite the blurred backdrop + tint over the effect region. Subsequent ops draw on top in the
-						// reopened pass. No prefix re-render — each command is encoded once.
-						var bk = backdrops[(int)b1];
-						wgpuRenderPassEncoderEnd(pass);
-						// Region-limit: blur only the element AABB padded by the blur reach, not the whole framebuffer.
-						float sPad = MathF.Max(bk.Effect.SigmaX, bk.Effect.SigmaY) + 8f;
-						var sAabb = bk.Clip.Aabb;
-						float srx = MathF.Max(0f, sAabb.X - sPad), sry = MathF.Max(0f, sAabb.Y - sPad);
-						float srw = MathF.Max(1f, MathF.Min(_s.Width, sAabb.Z + sPad) - srx), srh = MathF.Max(1f, MathF.Min(_s.Height, sAabb.W + sPad) - sry);
-						var bblur = BlurPyramidRegion(target.View, _s.Width, _s.Height, srx, sry, srw, srh, bk.Effect.SigmaX, bk.Effect.SigmaY);
-						var ca6 = new WGPURenderPassColorAttachment
-						{
-							DepthSlice = uint.MaxValue,
-							View = target.MsaaColorView,
-							ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero,
-							LoadOp = WGPULoadOp.Load,
-							StoreOp = WGPUStoreOp.Store,   // store: a following segment (next backdrop) reloads it; pooled layer targets segment too now
-						};
-						var dsa6 = new WGPURenderPassDepthStencilAttachment
-						{
-							View = target.DepthView,
-							DepthLoadOp = WGPULoadOp.Clear,
-							DepthStoreOp = WGPUStoreOp.Discard,
-							DepthClearValue = 0f,
-							StencilLoadOp = WGPULoadOp.Clear,
-							StencilStoreOp = WGPUStoreOp.Discard,
-							StencilClearValue = 0,
-						};
-						var rp6 = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca6, DepthStencilAttachment = &dsa6 };
-						pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp6);
-						lastX = lastY = lastW = lastH = -1; curFan = null; curAabb = default;   // fresh pass: reset scissor + clip mask
-						if (TryScissor(bk.Clip.Aabb, out var bsx, out var bsy, out var bsw, out var bsh))
-						{
-							wgpuRenderPassEncoderSetScissorRect(pass, (uint)bsx, (uint)bsy, (uint)bsw, (uint)bsh);
-							lastX = bsx; lastY = bsy; lastW = bsw; lastH = bsh;
-							// Acrylic composite: blurred backdrop image (lum/noise/opacity baked via the 112B uniform).
-							var bubuf = MakeUniform(112);
-							var bop = stackalloc float[28]; bop[0] = bk.Opacity; bop[3] = 1f; var lum = bk.Effect.LumColor; bop[4] = lum.R / 255f; bop[5] = lum.G / 255f; bop[6] = lum.B / 255f; bop[7] = lum.A / 255f; bop[24] = bk.Effect.Noise;
-							wgpuQueueWriteBuffer(_d.Q, bubuf, 0, (IntPtr)bop, 112);
-							var bde = stackalloc WGPUBindGroupEntry[3];
-							bde[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = bblur };
-							bde[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-							bde[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = bubuf, Offset = 0, Size = 112 };
-							var bdbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = bde };
-							var bdbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bdbgd));
-							var bq = new float[24];
-							void BQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); bq[idx] = n.X; bq[idx + 1] = n.Y; bq[idx + 2] = u; bq[idx + 3] = vv; }
-							BQV(0, new Vector2(srx, sry), 0, 0); BQV(4, new Vector2(srx + srw, sry), 1, 0); BQV(8, new Vector2(srx + srw, sry + srh), 1, 1);
-							BQV(12, new Vector2(srx, sry), 0, 0); BQV(16, new Vector2(srx + srw, sry + srh), 1, 1); BQV(20, new Vector2(srx, sry + srh), 0, 1);
-							var bqbuf = MakeBuffer(bq);
-							var bclipBg = MakeClipBg(_d.ImageClipBgl, bk.Clip);
-							EncPipe(_d.ImagePipe);
-							wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bdbg, 0, (uint*)null);
-							wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)bclipBg, 0, (uint*)null);
-							wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)bqbuf, 0, (nuint)(24 * sizeof(float)));
-							EncDraw(6);
-							// Tint overlay (skip A==0).
-							if (bk.Effect.Color.A != 0)
+							// Shared-buffer solid (b1=start vertex, u0=vertex count). COALESCE the maximal run of following
+							// solid ops sharing this clip bind group + clip (same scissor + depth-clip): their verts are
+							// contiguous in the shared buffer by construction, so the whole run draws in ONE call.
+							int startVert = (int)b1; uint count = u0;
+							while (oi + 1 < end)
 							{
-								var col = bk.Effect.Color; var tcx = col.R / 255f; var tcy = col.G / 255f; var tcz = col.B / 255f; var tcw = col.A / 255f;
-								var tv = new System.Collections.Generic.List<float>();
-								void TV(float x, float y) { var n = Ndc(new Vector2(x, y)); tv.Add(n.X); tv.Add(n.Y); tv.Add(tcx); tv.Add(tcy); tv.Add(tcz); tv.Add(tcw); }
-								var a = bk.Clip.Aabb;
-								TV(a.X, a.Y); TV(a.Z, a.Y); TV(a.Z, a.W); TV(a.X, a.Y); TV(a.Z, a.W); TV(a.X, a.W);
-								var tvbuf = MakeBuffer(tv);
-								var tclipBg = MakeClipBg(_d.SolidClipBgl, bk.Clip);
-								EncPipe(_d.SolidPipe);
-								wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)tclipBg, 0, (uint*)null);
-								wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)tvbuf, 0, (nuint)(36 * sizeof(float)));
-								EncDraw(6);
+								var nx = ops[oi + 1];
+								if (nx.kind != 0 || nx.b0 != 0 || nx.clipBg != clipBg
+									|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
+								count += nx.u0; oi++;
 							}
+							EncPipe(_d.SolidPipe);
+							EncBg(0, (IntPtr)clipBg);
+							EncVb(solidBuf, (nuint)(startVert * 6 * sizeof(float)), (nuint)(count * 6 * sizeof(float)));
+							EncDraw(count);
+							break;
 						}
-						break;
-					}
-				case 5 when b0 == 0:
-					{
-						// Shared rrect buffer (b1=start vert, u0=6). COALESCE the run of following rrect ops sharing this
-						// clip bind group + clip: their 22-float verts are contiguous, so the run draws in ONE call.
-						int startVert = (int)b1; uint count = u0;
-						while (oi + 1 < end)
+					case 0 when b0 == 1:
 						{
-							var nx = ops[oi + 1];
-							if (nx.kind != 5 || nx.b0 != 0 || nx.clipBg != clipBg
-								|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
-							count += nx.u0; oi++;
+							// Resident SOLID SLAB (b1 = absolute byte offset). Coalesce a byte-contiguous run sharing clip+bindgroup.
+							int byteOff = (int)b1; uint count = u0;
+							while (oi + 1 < end)
+							{
+								var nx = ops[oi + 1];
+								if (nx.kind != 0 || nx.b0 != 1 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+									|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 6 * sizeof(float))) { break; }
+								count += nx.u0; oi++;
+							}
+							EncPipe(_d.SolidPipe);
+							EncBg(0, (IntPtr)clipBg);
+							EncVb(_d.SolidSlab.Buf, (nuint)byteOff, (nuint)(count * 6 * sizeof(float)));
+							EncDraw(count);
+							break;
 						}
-						EncPipe(_d.RrPipe);
+					case 0 when b0 == 2:
+						{
+							// Resident SOLID TABLE SLAB (b1 = absolute byte offset, stride 7 = pos+col+slot). Group 0 = the
+							// transform table (each vertex's slot positions it), group 1 = ClipU. Coalesce byte-contiguous
+							// same-clip runs ACROSS recordings — each vertex still carries its own slot, so one draw is correct.
+							int byteOff = (int)b1; uint count = u0;
+							while (oi + 1 < end)
+							{
+								var nx = ops[oi + 1];
+								if (nx.kind != 0 || nx.b0 != 2 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+									|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 7 * sizeof(float))) { break; }
+								count += nx.u0; oi++;
+							}
+							EncPipe(_d.SolidTablePipe);
+							EncBg(0, (IntPtr)xformBg);
+							EncBg(1, (IntPtr)clipBg);
+							EncVb(_d.SolidTableSlab.Buf, (nuint)byteOff, (nuint)(count * 7 * sizeof(float)));
+							EncDraw(count);
+							break;
+						}
+					case 0:
+						// b0 = vertex buffer (private/immediate or a resident frame-solid buffer); b1 = byte offset into it.
+						EncPipe(_d.SolidPipe);
 						EncBg(0, (IntPtr)clipBg);
-						EncVb(rrectBuf, (nuint)(startVert * 22 * sizeof(float)), (nuint)(count * 22 * sizeof(float)));
-						EncDraw(count);
+						EncVb((IntPtr)b0, (nuint)b1, (nuint)(u0 * 6 * sizeof(float)));
+						EncDraw(u0);   // u0 = 6 * (coalesced) rect count
 						break;
-					}
-				case 5 when b0 == 1:
-					{
-						// Resident RRECT SLAB (b1 = absolute byte offset). Coalesce byte-contiguous same-clip runs.
-						int byteOff = (int)b1; uint count = u0;
-						while (oi + 1 < end)
-						{
-							var nx = ops[oi + 1];
-							if (nx.kind != 5 || nx.b0 != 1 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
-								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 22 * sizeof(float))) { break; }
-							count += nx.u0; oi++;
-						}
-						EncPipe(_d.RrPipe);
-						EncBg(0, (IntPtr)clipBg);
-						EncVb(_d.RrectSlab.Buf, (nuint)byteOff, (nuint)(count * 22 * sizeof(float)));
-						EncDraw(count);
-						break;
-					}
-				case 5 when b0 == 2:
-					{
-						// Resident RRECT TABLE SLAB (b1 = absolute byte offset, stride 23). Group 0 = the transform table
-						// (per-vertex slot positions the local corners), group 1 = ClipU. Coalesce byte-contiguous same-clip runs.
-						int byteOff = (int)b1; uint count = u0;
-						while (oi + 1 < end)
-						{
-							var nx = ops[oi + 1];
-							if (nx.kind != 5 || nx.b0 != 2 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
-								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 23 * sizeof(float))) { break; }
-							count += nx.u0; oi++;
-						}
-						EncPipe(_d.RrTablePipe);
+					case 1:
+						// Path fill via the transform table: fan verts = device pos + slot index (stride 3); cover verts =
+						// device pos + colour + slot index (stride 7). Group 0 = storage table (positions the verts);
+						// group 1 (cover) = ClipU (analytic clip coverage). Table entries were written during op-build.
+						EncPipe(flag ? _d.StencilTableEO : _d.StencilTableNZ);
+						EncBg(0, (IntPtr)xformBg);
+						EncVb((IntPtr)b0, 0, (nuint)(u0 * 3 * sizeof(float)));
+						EncDraw(u0);
+						EncPipe(_d.CoverTablePipe);
 						EncBg(0, (IntPtr)xformBg);
 						EncBg(1, (IntPtr)clipBg);
-						EncVb(_d.RrectTableSlab.Buf, (nuint)byteOff, (nuint)(count * 23 * sizeof(float)));
-						EncDraw(count);
+						EncVb((IntPtr)b1, 0, (nuint)(42 * sizeof(float)));
+						EncDraw(6);
 						break;
-					}
-				case 5:
-					// b0 = vertex buffer (resident frame-solid or legacy per-op); b1 = byte offset; u0 = vertex count.
-					EncPipe(_d.RrPipe);
-					EncBg(0, (IntPtr)clipBg);
-					EncVb((IntPtr)b0, (nuint)b1, (nuint)(u0 * 22 * sizeof(float)));
-					EncDraw(u0);
-					break;
+					case 2:
+						EncPipe(_d.ImagePipe);
+						EncBg(0, (IntPtr)b0);
+						EncBg(1, (IntPtr)clipBg);
+						EncVb((IntPtr)b1, 0, (nuint)(24 * sizeof(float)));
+						EncDraw(6);
+						break;
+					case 3:
+						EncPipe(_d.GradientPipe);
+						EncBg(0, (IntPtr)b0);
+						EncBg(1, (IntPtr)clipBg);
+						EncVb((IntPtr)b1, 0, (nuint)(12 * sizeof(float)));
+						EncDraw(6);
+						break;
+					case 4:
+						wgpuRenderPassEncoderSetPipeline(pass, u0 == 1 ? _d.CompositeDstIn : _d.CompositeSrcOver);
+						EncBg(0, (IntPtr)b0);
+						wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+						break;
+					case 6:
+						{
+							// Backdrop pass-segment (acrylic O(n) path): END this segment so its MSAA resolves into target.View
+							// (the content BEHIND the backdrop), blur that, REOPEN the pass loading the content back, and
+							// composite the blurred backdrop + tint over the effect region. Subsequent ops draw on top in the
+							// reopened pass. No prefix re-render — each command is encoded once.
+							var bk = backdrops[(int)b1];
+							wgpuRenderPassEncoderEnd(pass);
+							// Region-limit: blur only the element AABB padded by the blur reach, not the whole framebuffer.
+							float sPad = MathF.Max(bk.Effect.SigmaX, bk.Effect.SigmaY) + 8f;
+							var sAabb = bk.Clip.Aabb;
+							float srx = MathF.Max(0f, sAabb.X - sPad), sry = MathF.Max(0f, sAabb.Y - sPad);
+							float srw = MathF.Max(1f, MathF.Min(_s.Width, sAabb.Z + sPad) - srx), srh = MathF.Max(1f, MathF.Min(_s.Height, sAabb.W + sPad) - sry);
+							var bblur = BlurPyramidRegion(target.View, _s.Width, _s.Height, srx, sry, srw, srh, bk.Effect.SigmaX, bk.Effect.SigmaY);
+							var ca6 = new WGPURenderPassColorAttachment
+							{
+								DepthSlice = uint.MaxValue,
+								View = target.MsaaColorView,
+								ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero,
+								LoadOp = WGPULoadOp.Load,
+								StoreOp = WGPUStoreOp.Store,   // store: a following segment (next backdrop) reloads it; pooled layer targets segment too now
+							};
+							var dsa6 = new WGPURenderPassDepthStencilAttachment
+							{
+								View = target.DepthView,
+								DepthLoadOp = WGPULoadOp.Clear,
+								DepthStoreOp = WGPUStoreOp.Discard,
+								DepthClearValue = 0f,
+								StencilLoadOp = WGPULoadOp.Clear,
+								StencilStoreOp = WGPUStoreOp.Discard,
+								StencilClearValue = 0,
+							};
+							var rp6 = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca6, DepthStencilAttachment = &dsa6 };
+							pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp6);
+							lastX = lastY = lastW = lastH = -1; curFan = null; curAabb = default;   // fresh pass: reset scissor + clip mask
+							if (TryScissor(bk.Clip.Aabb, out var bsx, out var bsy, out var bsw, out var bsh))
+							{
+								wgpuRenderPassEncoderSetScissorRect(pass, (uint)bsx, (uint)bsy, (uint)bsw, (uint)bsh);
+								lastX = bsx; lastY = bsy; lastW = bsw; lastH = bsh;
+								// Acrylic composite: blurred backdrop image (lum/noise/opacity baked via the 112B uniform).
+								var bubuf = MakeUniform(112);
+								var bop = stackalloc float[28]; bop[0] = bk.Opacity; bop[3] = 1f; var lum = bk.Effect.LumColor; bop[4] = lum.R / 255f; bop[5] = lum.G / 255f; bop[6] = lum.B / 255f; bop[7] = lum.A / 255f; bop[24] = bk.Effect.Noise;
+								wgpuQueueWriteBuffer(_d.Q, bubuf, 0, (IntPtr)bop, 112);
+								var bde = stackalloc WGPUBindGroupEntry[3];
+								bde[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = bblur };
+								bde[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+								bde[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = bubuf, Offset = 0, Size = 112 };
+								var bdbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = bde };
+								var bdbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bdbgd));
+								var bq = new float[24];
+								void BQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); bq[idx] = n.X; bq[idx + 1] = n.Y; bq[idx + 2] = u; bq[idx + 3] = vv; }
+								BQV(0, new Vector2(srx, sry), 0, 0); BQV(4, new Vector2(srx + srw, sry), 1, 0); BQV(8, new Vector2(srx + srw, sry + srh), 1, 1);
+								BQV(12, new Vector2(srx, sry), 0, 0); BQV(16, new Vector2(srx + srw, sry + srh), 1, 1); BQV(20, new Vector2(srx, sry + srh), 0, 1);
+								var bqbuf = MakeBuffer(bq);
+								var bclipBg = MakeClipBg(_d.ImageClipBgl, bk.Clip);
+								EncPipe(_d.ImagePipe);
+								wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bdbg, 0, (uint*)null);
+								wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)bclipBg, 0, (uint*)null);
+								wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)bqbuf, 0, (nuint)(24 * sizeof(float)));
+								EncDraw(6);
+								// Tint overlay (skip A==0).
+								if (bk.Effect.Color.A != 0)
+								{
+									var col = bk.Effect.Color; var tcx = col.R / 255f; var tcy = col.G / 255f; var tcz = col.B / 255f; var tcw = col.A / 255f;
+									var tv = new System.Collections.Generic.List<float>();
+									void TV(float x, float y) { var n = Ndc(new Vector2(x, y)); tv.Add(n.X); tv.Add(n.Y); tv.Add(tcx); tv.Add(tcy); tv.Add(tcz); tv.Add(tcw); }
+									var a = bk.Clip.Aabb;
+									TV(a.X, a.Y); TV(a.Z, a.Y); TV(a.Z, a.W); TV(a.X, a.Y); TV(a.Z, a.W); TV(a.X, a.W);
+									var tvbuf = MakeBuffer(tv);
+									var tclipBg = MakeClipBg(_d.SolidClipBgl, bk.Clip);
+									EncPipe(_d.SolidPipe);
+									wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)tclipBg, 0, (uint*)null);
+									wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)tvbuf, 0, (nuint)(36 * sizeof(float)));
+									EncDraw(6);
+								}
+							}
+							break;
+						}
+					case 5 when b0 == 0:
+						{
+							// Shared rrect buffer (b1=start vert, u0=6). COALESCE the run of following rrect ops sharing this
+							// clip bind group + clip: their 22-float verts are contiguous, so the run draws in ONE call.
+							int startVert = (int)b1; uint count = u0;
+							while (oi + 1 < end)
+							{
+								var nx = ops[oi + 1];
+								if (nx.kind != 5 || nx.b0 != 0 || nx.clipBg != clipBg
+									|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
+								count += nx.u0; oi++;
+							}
+							EncPipe(_d.RrPipe);
+							EncBg(0, (IntPtr)clipBg);
+							EncVb(rrectBuf, (nuint)(startVert * 22 * sizeof(float)), (nuint)(count * 22 * sizeof(float)));
+							EncDraw(count);
+							break;
+						}
+					case 5 when b0 == 1:
+						{
+							// Resident RRECT SLAB (b1 = absolute byte offset). Coalesce byte-contiguous same-clip runs.
+							int byteOff = (int)b1; uint count = u0;
+							while (oi + 1 < end)
+							{
+								var nx = ops[oi + 1];
+								if (nx.kind != 5 || nx.b0 != 1 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+									|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 22 * sizeof(float))) { break; }
+								count += nx.u0; oi++;
+							}
+							EncPipe(_d.RrPipe);
+							EncBg(0, (IntPtr)clipBg);
+							EncVb(_d.RrectSlab.Buf, (nuint)byteOff, (nuint)(count * 22 * sizeof(float)));
+							EncDraw(count);
+							break;
+						}
+					case 5 when b0 == 2:
+						{
+							// Resident RRECT TABLE SLAB (b1 = absolute byte offset, stride 23). Group 0 = the transform table
+							// (per-vertex slot positions the local corners), group 1 = ClipU. Coalesce byte-contiguous same-clip runs.
+							int byteOff = (int)b1; uint count = u0;
+							while (oi + 1 < end)
+							{
+								var nx = ops[oi + 1];
+								if (nx.kind != 5 || nx.b0 != 2 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+									|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 23 * sizeof(float))) { break; }
+								count += nx.u0; oi++;
+							}
+							EncPipe(_d.RrTablePipe);
+							EncBg(0, (IntPtr)xformBg);
+							EncBg(1, (IntPtr)clipBg);
+							EncVb(_d.RrectTableSlab.Buf, (nuint)byteOff, (nuint)(count * 23 * sizeof(float)));
+							EncDraw(count);
+							break;
+						}
+					case 5:
+						// b0 = vertex buffer (resident frame-solid or legacy per-op); b1 = byte offset; u0 = vertex count.
+						EncPipe(_d.RrPipe);
+						EncBg(0, (IntPtr)clipBg);
+						EncVb((IntPtr)b0, (nuint)b1, (nuint)(u0 * 22 * sizeof(float)));
+						EncDraw(u0);
+						break;
+				}
 			}
-		}
 
-		// UNO_WEBGPU_STATS=1: emit-shape counters to size command-encoding optimizations (render-bundle
-		// segmentation runs on scissor/clip boundaries). Rate-limited to ~once a second at 60fps.
+			// UNO_WEBGPU_STATS=1: emit-shape counters to size command-encoding optimizations (render-bundle
+			// segmentation runs on scissor/clip boundaries). Rate-limited to ~once a second at 60fps.
 		}
 		var bundleList = stackalloc IntPtr[1];
 		var bundleFormats = stackalloc WGPUTextureFormat[1];
