@@ -1,10 +1,14 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Windows.Storage;
 
 partial class ApplicationData
 {
+	// Persistence needs no setup on this platform, but Application.StartPartial calls it unconditionally.
+	internal Task EnablePersistenceAsync() => Task.CompletedTask;
+
 	private static string GetLocalCacheFolder()
 		=> GetAndroidAppContext().CacheDir.AbsolutePath;
 
