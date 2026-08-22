@@ -127,7 +127,7 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 			return null;
 		}
 
-		var tcs = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+		var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
 		using (token.Register(() => tcs.TrySetCanceled()))
 		{
 			var handle = GCHandle.Alloc(tcs);

@@ -70,7 +70,7 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"Object `content` is a {content.GetType().FullName} and not a MacOSNativeElement subclass.");
+				this.Log().Debug($"Object `content` is a {content?.GetType().FullName ?? "null"} and not a MacOSNativeElement subclass.");
 			}
 
 			element = null!;
@@ -179,6 +179,6 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 			NativeUno.uno_native_measure(element.NativeHandle, childMeasuredSize.Width, childMeasuredSize.Height, availableSize.Width, availableSize.Height, out var width, out var height);
 			return new Size(width, height);
 		}
-		return Size.Empty;
+		return new Size(0, 0);
 	}
 }
