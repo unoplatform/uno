@@ -62,7 +62,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 							{
 								IsParsing = true,
 								Name = "topLevel",
-								Tag = @"42",
+								Tag = "42",
 								ContentTemplate = 								global::MyProject.GlobalStaticResources.__PreserveProperties(
 									new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_GriΞ0_ConCon_ConTemΞ0_DatTem)
 								)
@@ -162,7 +162,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 							global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 							new Microsoft.UI.Xaml.Data.Binding()
 							{
-								Path = @"Tag",
+								Path = "Tag",
 								ElementName = _topLevelSubject,
 							}
 						);
