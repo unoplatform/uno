@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -71,8 +72,9 @@ internal static partial class SemanticElementFactory
 			SemanticElementType.TreeItem => CreateTreeItemElement(peer, handle, parentHandle, index, x, y, width, height, attributes, isFocusable),
 			SemanticElementType.Grid => CreateGridElement(peer, handle, parentHandle, index, x, y, width, height, attributes, isFocusable),
 			SemanticElementType.GridRow => CreateGridRowElement(peer, handle, parentHandle, index, x, y, width, height, attributes, isFocusable),
-			SemanticElementType.GridCell => CreateGridCellElement(peer, handle, parentHandle, index, x, y, width, height, attributes, isFocusable),
-			SemanticElementType.ColumnHeader => CreateColumnHeaderElement(peer, handle, parentHandle, index, x, y, width, height, attributes, isFocusable),
+			SemanticElementType.GridCell => CreateGridCellElement(peer, handle, parentHandle, index, x, y, width, height, attributes, capabilities.CanInvoke, isFocusable),
+			SemanticElementType.ColumnHeader => CreateColumnHeaderElement(peer, handle, parentHandle, index, x, y, width, height, attributes, capabilities.CanInvoke, isFocusable),
+			SemanticElementType.RowHeader => CreateRowHeaderElement(peer, handle, parentHandle, index, x, y, width, height, attributes, isFocusable),
 			SemanticElementType.Menu => CreateMenuElement(peer, handle, parentHandle, index, x, y, width, height, attributes, isFocusable),
 			SemanticElementType.MenuItem => CreateMenuItemElement(peer, handle, parentHandle, index, x, y, width, height, attributes, isFocusable),
 			SemanticElementType.Text => CreateTextElement(peer, handle, parentHandle, index, x, y, width, height, attributes, owner, isFocusable),
@@ -89,7 +91,7 @@ internal static partial class SemanticElementFactory
 		// Ensure aria-label is applied for all control types (FR-030, WCAG 4.1.2)
 		// Button/Checkbox/Radio already pass label during creation; apply for others
 		if (created && !string.IsNullOrEmpty(attributes.Label) &&
-			elementType is not (SemanticElementType.Button or SemanticElementType.Checkbox or SemanticElementType.RadioButton))
+			elementType is not (SemanticElementType.Button or SemanticElementType.Checkbox or SemanticElementType.RadioButton or SemanticElementType.GridRow))
 		{
 			NativeMethods.UpdateAriaLabel(handle, attributes.Label);
 		}
@@ -106,9 +108,12 @@ internal static partial class SemanticElementFactory
 		}
 
 		// Apply aria-description from HelpText for VoiceOver secondary context
-		if (created && !string.IsNullOrEmpty(attributes.Description))
+		var description = elementType is SemanticElementType.ColumnHeader
+			? ResolveGridSortMetadata(peer).Description
+			: attributes.Description;
+		if (created && !string.IsNullOrEmpty(description))
 		{
-			NativeMethods.UpdateAriaDescription(handle, attributes.Description);
+			NativeMethods.UpdateAriaDescription(handle, description);
 		}
 
 		// Apply landmark role if set (VoiceOver rotor landmark navigation)
@@ -146,6 +151,11 @@ internal static partial class SemanticElementFactory
 			NativeMethods.UpdateAriaInvalid(handle, true);
 		}
 
+		if (created && attributes.Disabled)
+		{
+			NativeMethods.UpdateDisabledState(handle, true);
+		}
+
 		// Apply aria-live for live region elements (screen readers monitor content changes)
 		if (created && owner is not null)
 		{
@@ -169,12 +179,6 @@ internal static partial class SemanticElementFactory
 			{
 				NativeMethods.UpdateAriaLabelledBy(handle, labelledById);
 			}
-		}
-
-		// Apply relationship attributes (aria-describedby, aria-controls, aria-flowto)
-		if (created)
-		{
-			ApplyRelationshipAttributes(peer, handle);
 		}
 
 		// Apply aria-expanded for ExpandCollapse-capable elements not handled by their
@@ -213,8 +217,8 @@ internal static partial class SemanticElementFactory
 			NativeMethods.UpdateAriaModal(handle, true);
 		}
 
-		// Apply owner-scoped attributes sourced from AutomationProperties attached properties
-		// (aria-level, aria-busy, lang). These are independent of the resolved element type.
+		// Apply owner-scoped attributes sourced from AutomationProperties attached properties.
+		// aria-level is filtered in the DOM by the element's final role.
 		if (created && owner is not null)
 		{
 			ApplyOwnerScopedAriaAttributes(owner, handle);
@@ -222,6 +226,9 @@ internal static partial class SemanticElementFactory
 
 		return created;
 	}
+
+	internal static void SetXamlAutomationId(IntPtr handle, string automationId)
+		=> NativeMethods.SetXamlAutomationId(handle, automationId);
 
 	/// <summary>
 	/// Creates a button semantic element.
@@ -448,16 +455,9 @@ internal static partial class SemanticElementFactory
 		string? selectedValue = null;
 
 		if (peer is FrameworkElementAutomationPeer frameworkPeer &&
-			frameworkPeer.Owner is ComboBox comboBox &&
-			comboBox.SelectedItem is { } selected)
+			frameworkPeer.Owner is ComboBox comboBox)
 		{
-			// Mirror WinUI selection-text resolution: prefer the value pattern (which honors
-			// DisplayMemberPath / item-template-bound value providers), fall back to ToString
-			// only when no value provider is exposed. This avoids announcing a type name for
-			// non-string item view models.
-			selectedValue = (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
-				? valueProvider.Value
-				: selected.ToString();
+			selectedValue = ResolveComboBoxValue(peer, comboBox);
 		}
 
 		NativeMethods.CreateComboBoxElement(
@@ -472,6 +472,30 @@ internal static partial class SemanticElementFactory
 			selectedValue,
 			isFocusable);
 		return true;
+	}
+
+	internal static string? ResolveComboBoxValue(AutomationPeer peer, ComboBox comboBox)
+	{
+		try
+		{
+			// ComboBoxAutomationPeer implements IValueProvider for its SelectionBoxItem even
+			// when the select-only peer does not advertise the editable Value pattern.
+			var valueProvider = peer as IValueProvider ?? peer.GetPattern(PatternInterface.Value) as IValueProvider;
+			if (valueProvider is not null)
+			{
+				var value = valueProvider.Value;
+				if (!string.IsNullOrEmpty(value))
+				{
+					return value;
+				}
+			}
+		}
+		catch
+		{
+			// Fall through to the selection-box representation when a custom provider is unavailable.
+		}
+
+		return comboBox.GetItemDisplayTextForAutomation(comboBox.SelectionBoxItem ?? comboBox.SelectedItem);
 	}
 
 	/// <summary>
@@ -849,8 +873,8 @@ internal static partial class SemanticElementFactory
 
 		if (peer.GetPattern(PatternInterface.Grid) is IGridProvider gridProvider)
 		{
-			rowCount = gridProvider.RowCount;
-			colCount = gridProvider.ColumnCount;
+			rowCount = gridProvider.RowCount + GetHeaderRowCount(peer);
+			colCount = gridProvider.ColumnCount + GetRowHeaderColumnCount(peer);
 		}
 
 		if (peer.GetPattern(PatternInterface.Selection) is ISelectionProvider selectionProvider)
@@ -870,7 +894,7 @@ internal static partial class SemanticElementFactory
 			rowCount,
 			colCount,
 			multiSelectable,
-			isFocusable);
+			isFocusable || peer is FrameworkElementAutomationPeer { Owner.IsTabStop: true });
 		return true;
 	}
 
@@ -889,11 +913,7 @@ internal static partial class SemanticElementFactory
 		AriaAttributes attributes,
 		bool isFocusable)
 	{
-		// aria-rowindex is 1-based. The row peer (DataGridRowAutomationPeer) does not report a
-		// position, so emit it only when one is actually known — otherwise 0, which the JS omits.
-		// (Previously this defaulted to 1, making every row announce "row 1".) The per-row index is
-		// still conveyed by each cell's aria-rowindex, sourced from IGridItemProvider.Row.
-		var rowIndex = attributes.PositionInSet is > 0 ? attributes.PositionInSet.Value : 0;
+		var rowIndex = ResolveGridRowIndex(peer);
 		var (selectable, selected) = GetSelectionState(peer);
 
 		NativeMethods.CreateGridRowElement(
@@ -924,16 +944,21 @@ internal static partial class SemanticElementFactory
 		float width,
 		float height,
 		AriaAttributes attributes,
+		bool canInvoke,
 		bool isFocusable)
 	{
 		var rowIndex = 0;
 		var colIndex = 0;
+		var rowSpan = 1;
+		var colSpan = 1;
 
 		if (peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider gridItemProvider)
 		{
 			// ARIA aria-rowindex/aria-colindex are 1-based; GridItemProvider is 0-based
-			rowIndex = gridItemProvider.Row + 1;
-			colIndex = gridItemProvider.Column + 1;
+			rowIndex = ResolveGridItemRowIndex(peer, gridItemProvider);
+			colIndex = ResolveGridItemColumnIndex(peer, gridItemProvider);
+			rowSpan = gridItemProvider.RowSpan;
+			colSpan = gridItemProvider.ColumnSpan;
 		}
 
 		var (selectable, selected) = GetSelectionState(peer);
@@ -949,8 +974,11 @@ internal static partial class SemanticElementFactory
 			attributes.Label,
 			rowIndex,
 			colIndex,
+			rowSpan,
+			colSpan,
 			selectable,
 			selected,
+			canInvoke,
 			isFocusable);
 		return true;
 	}
@@ -968,18 +996,23 @@ internal static partial class SemanticElementFactory
 		float width,
 		float height,
 		AriaAttributes attributes,
+		bool canInvoke,
 		bool isFocusable)
 	{
 		// aria-colindex is 1-based. GridItemProvider.Column is 0-based; map it the same way cells do
 		// so a header and its column's cells share the same aria-colindex. The WCT column-header peer
 		// does not implement GridItem, so this stays 0 (omitted) there — cells still carry the index.
 		var colIndex = 0;
+		colIndex = ResolveColumnHeaderIndex(peer);
+		var rowSpan = 1;
+		var colSpan = 1;
 		if (peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider gridItemProvider)
 		{
-			colIndex = gridItemProvider.Column + 1;
+			rowSpan = gridItemProvider.RowSpan;
+			colSpan = gridItemProvider.ColumnSpan;
 		}
 
-		var sort = GetSortDirection(peer);
+		var sort = ResolveGridSortDirection(peer);
 
 		NativeMethods.CreateColumnHeaderElement(
 			parentHandle,
@@ -991,7 +1024,46 @@ internal static partial class SemanticElementFactory
 			height,
 			attributes.Label,
 			colIndex,
+			rowSpan,
+			colSpan,
 			sort,
+			canInvoke,
+			isFocusable);
+		return true;
+	}
+
+	private static bool CreateRowHeaderElement(
+		AutomationPeer peer,
+		IntPtr handle,
+		IntPtr parentHandle,
+		int? index,
+		float x,
+		float y,
+		float width,
+		float height,
+		AriaAttributes attributes,
+		bool isFocusable)
+	{
+		var rowSpan = 1;
+		var colSpan = 1;
+		if (peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider gridItemProvider)
+		{
+			rowSpan = gridItemProvider.RowSpan;
+			colSpan = gridItemProvider.ColumnSpan;
+		}
+
+		NativeMethods.CreateRowHeaderElement(
+			parentHandle,
+			handle,
+			index,
+			x,
+			y,
+			width,
+			height,
+			attributes.Label,
+			ResolveGridRowIndex(peer),
+			rowSpan,
+			colSpan,
 			isFocusable);
 		return true;
 	}
@@ -1002,40 +1074,306 @@ internal static partial class SemanticElementFactory
 	/// </summary>
 	private static (bool selectable, bool selected) GetSelectionState(AutomationPeer peer)
 	{
-		if (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider provider)
+		try
 		{
-			return (true, provider.IsSelected);
+			if (AriaMapper.GetPatternOrEventsSource(peer, PatternInterface.SelectionItem) is ISelectionItemProvider provider)
+			{
+				return (true, provider.IsSelected);
+			}
+		}
+		catch (Exception ex)
+		{
+			if (typeof(SemanticElementFactory).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(SemanticElementFactory).Log().Warn($"[A11y] Ignored unavailable selection state from {peer.GetType().Name}: {ex.Message}");
+			}
 		}
 
 		return (false, false);
 	}
 
-	/// <summary>
-	/// Resolves a column header's sort direction for aria-sort. UIA has no sort pattern and the
-	/// Community Toolkit DataGrid column-header peer does not expose sort state, so this reads the
-	/// generic ItemStatus channel ("ascending"/"descending") which an app — or an enhanced peer —
-	/// can populate. Returns null when no sort is advertised, so the JS omits aria-sort entirely.
-	/// </summary>
-	private static string? GetSortDirection(AutomationPeer peer)
+	internal static void RefreshGridMetadata(AutomationPeer peer, UIElement owner)
 	{
-		var status = peer.GetItemStatus();
-		if (string.IsNullOrEmpty(status))
-		{
-			return null;
-		}
+		var handle = owner.Visual.Handle;
+		var elementType = AriaMapper.GetSemanticElementType(peer, owner);
+		var attributes = AriaMapper.GetAriaAttributes(peer);
+		NativeMethods.UpdateDisabledState(handle, attributes.Disabled);
 
-		var normalized = status.ToLowerInvariant();
-		if (normalized.Contains("ascend"))
+		switch (elementType)
+		{
+			case SemanticElementType.Grid:
+				if (peer.GetPattern(PatternInterface.Grid) is IGridProvider gridProvider)
+				{
+					var multiSelectable = peer.GetPattern(PatternInterface.Selection) is ISelectionProvider selectionProvider &&
+						selectionProvider.CanSelectMultiple;
+					NativeMethods.UpdateGridCounts(
+						handle,
+						gridProvider.RowCount + GetHeaderRowCount(peer),
+						gridProvider.ColumnCount + GetRowHeaderColumnCount(peer),
+						multiSelectable);
+				}
+				break;
+
+			case SemanticElementType.GridRow:
+				{
+					var (selectable, selected) = GetSelectionState(peer);
+					NativeMethods.UpdateGridElementMetadata(
+						handle,
+						null,
+						ResolveGridRowIndex(peer),
+						0,
+						1,
+						1,
+						selectable,
+						selected);
+					break;
+				}
+
+			case SemanticElementType.GridCell:
+				{
+					var rowIndex = 0;
+					var colIndex = 0;
+					var rowSpan = 1;
+					var colSpan = 1;
+					if (peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider gridItemProvider)
+					{
+						rowIndex = ResolveGridItemRowIndex(peer, gridItemProvider);
+						colIndex = ResolveGridItemColumnIndex(peer, gridItemProvider);
+						rowSpan = gridItemProvider.RowSpan;
+						colSpan = gridItemProvider.ColumnSpan;
+					}
+
+					var (selectable, selected) = GetSelectionState(peer);
+					NativeMethods.UpdateGridElementMetadata(
+						handle,
+						attributes.Label,
+						rowIndex,
+						colIndex,
+						rowSpan,
+						colSpan,
+						selectable,
+						selected);
+					break;
+				}
+
+			case SemanticElementType.ColumnHeader:
+				var columnHeaderRowSpan = 1;
+				var columnHeaderColumnSpan = 1;
+				if (peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider columnHeaderGridItem)
+				{
+					columnHeaderRowSpan = columnHeaderGridItem.RowSpan;
+					columnHeaderColumnSpan = columnHeaderGridItem.ColumnSpan;
+				}
+				var sortMetadata = ResolveGridSortMetadata(peer);
+				NativeMethods.UpdateGridElementMetadata(
+					handle,
+					attributes.Label,
+					0,
+					ResolveColumnHeaderIndex(peer),
+					columnHeaderRowSpan,
+					columnHeaderColumnSpan,
+					false,
+					false);
+				NativeMethods.UpdateColumnHeaderSort(handle, sortMetadata.Direction);
+				NativeMethods.UpdateAriaDescription(handle, sortMetadata.Description ?? string.Empty);
+				break;
+
+			case SemanticElementType.RowHeader:
+				var rowHeaderRowSpan = 1;
+				var rowHeaderColumnSpan = 1;
+				if (peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider rowHeaderGridItem)
+				{
+					rowHeaderRowSpan = rowHeaderGridItem.RowSpan;
+					rowHeaderColumnSpan = rowHeaderGridItem.ColumnSpan;
+				}
+				NativeMethods.UpdateGridElementMetadata(
+					handle,
+					attributes.Label,
+					ResolveGridRowIndex(peer),
+					1,
+					rowHeaderRowSpan,
+					rowHeaderColumnSpan,
+					false,
+					false);
+				break;
+		}
+	}
+
+	/// <summary>
+	/// Resolves a column header's sort direction for aria-sort. UIA has no sort pattern; Toolkit
+	/// DataGrid exposes the direction through HelpText, while custom peers may use ItemStatus.
+	/// Returns null when no exact ascending/descending state is advertised.
+	/// </summary>
+	internal static string? ResolveGridSortDirection(AutomationPeer peer)
+		=> ResolveGridSortMetadata(peer).Direction;
+
+	internal static (string? Direction, string? Description) ResolveGridSortMetadata(AutomationPeer peer)
+	{
+		var itemStatusDirection = TryNormalizeSortDirection(peer.GetItemStatus());
+		var helpText = peer.GetHelpText();
+		var helpTextDirection = TryNormalizeSortDirection(helpText);
+		var fullDescription = peer.GetFullDescription();
+		var description = !string.IsNullOrEmpty(fullDescription)
+			? fullDescription
+			: helpTextDirection is null ? helpText : null;
+		return (itemStatusDirection ?? helpTextDirection, description);
+	}
+
+	private static string? TryNormalizeSortDirection(string? status)
+	{
+		if (string.Equals(status?.Trim(), "Ascending", StringComparison.OrdinalIgnoreCase))
 		{
 			return "ascending";
 		}
 
-		if (normalized.Contains("descend"))
+		return string.Equals(status?.Trim(), "Descending", StringComparison.OrdinalIgnoreCase)
+			? "descending"
+			: null;
+	}
+
+	private static int ResolveGridRowIndex(AutomationPeer peer)
+	{
+		if (peer.GetAutomationControlType() is AutomationControlType.Header)
 		{
-			return "descending";
+			return 1;
 		}
 
-		return null;
+		if (TryFindGridItemProvider(peer, out var gridItemProvider))
+		{
+			return gridItemProvider.Row + 1 + GetHeaderRowCount(gridItemProvider);
+		}
+
+		return peer.GetPositionInSet() is > 0 and var position ? position : 0;
+	}
+
+	private static bool TryFindGridItemProvider(AutomationPeer peer, out IGridItemProvider provider)
+	{
+		if (peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider ownProvider)
+		{
+			provider = ownProvider;
+			return true;
+		}
+
+		if (peer is FrameworkElementAutomationPeer { Owner: { } owner })
+		{
+			var containingGridPeer = AriaMapper.GetContainingDataGridPeer(peer);
+			if (TryFindDescendantGridItemProvider(owner, containingGridPeer, out provider))
+			{
+				return true;
+			}
+
+			for (var current = owner.GetParent() as UIElement; current is not null; current = current.GetParent() as UIElement)
+			{
+				if (current.GetOrCreateAutomationPeer() is { } currentPeer &&
+					currentPeer.GetPattern(PatternInterface.GridItem) is IGridItemProvider ancestorProvider)
+				{
+					provider = ancestorProvider;
+					return true;
+				}
+
+				if (current.GetOrCreateAutomationPeer()?.GetAutomationControlType() is AutomationControlType.DataGrid)
+				{
+					break;
+				}
+			}
+		}
+
+		provider = null!;
+		return false;
+	}
+
+	private static bool TryFindDescendantGridItemProvider(
+		UIElement owner,
+		AutomationPeer? containingGridPeer,
+		out IGridItemProvider provider)
+	{
+		foreach (var child in owner.GetChildren())
+		{
+			if (child.GetOrCreateAutomationPeer() is { } childPeer)
+			{
+				if (childPeer.GetAutomationControlType() is AutomationControlType.DataGrid)
+				{
+					continue;
+				}
+
+				if (childPeer.GetPattern(PatternInterface.GridItem) is IGridItemProvider childProvider &&
+					(containingGridPeer is null || ReferenceEquals(childProvider.ContainingGrid?.AutomationPeer, containingGridPeer)))
+				{
+					provider = childProvider;
+					return true;
+				}
+			}
+
+			if (TryFindDescendantGridItemProvider(child, containingGridPeer, out provider))
+			{
+				return true;
+			}
+		}
+
+		provider = null!;
+		return false;
+	}
+
+	private static int GetHeaderRowCount(AutomationPeer gridPeer)
+		=> gridPeer.GetPattern(PatternInterface.Table) is ITableProvider tableProvider &&
+			tableProvider.GetColumnHeaders() is { Length: > 0 }
+				? 1
+				: 0;
+
+	private static int GetHeaderRowCount(IGridItemProvider gridItemProvider)
+		=> gridItemProvider.ContainingGrid?.AutomationPeer is { } gridPeer
+			? GetHeaderRowCount(gridPeer)
+			: 0;
+
+	private static int GetRowHeaderColumnCount(AutomationPeer gridPeer)
+		=> gridPeer.GetPattern(PatternInterface.Table) is ITableProvider tableProvider &&
+			tableProvider.GetRowHeaders() is { Length: > 0 }
+				? 1
+				: 0;
+
+	private static int GetRowHeaderColumnCount(IGridItemProvider gridItemProvider)
+		=> gridItemProvider.ContainingGrid?.AutomationPeer is { } gridPeer
+			? GetRowHeaderColumnCount(gridPeer)
+			: 0;
+
+	private static int ResolveGridItemColumnIndex(AutomationPeer peer, IGridItemProvider gridItemProvider)
+	{
+		var rowHeaderOffset = peer.GetPattern(PatternInterface.TableItem) is ITableItemProvider tableItemProvider &&
+			tableItemProvider.GetRowHeaderItems() is { Length: > 0 }
+				? 1
+				: GetRowHeaderColumnCount(gridItemProvider);
+		return gridItemProvider.Column + 1 + rowHeaderOffset;
+	}
+
+	private static int ResolveGridItemRowIndex(AutomationPeer peer, IGridItemProvider gridItemProvider)
+	{
+		if (peer.GetPattern(PatternInterface.TableItem) is ITableItemProvider tableItemProvider &&
+			tableItemProvider.GetColumnHeaderItems() is { Length: > 0 })
+		{
+			return gridItemProvider.Row + 2;
+		}
+
+		return gridItemProvider.Row + 1 + GetHeaderRowCount(gridItemProvider);
+	}
+
+	private static int ResolveColumnHeaderIndex(AutomationPeer peer)
+	{
+		var dataGridPeer = AriaMapper.GetContainingDataGridPeer(peer);
+		if (dataGridPeer?.GetPattern(PatternInterface.Table) is not ITableProvider tableProvider ||
+			tableProvider.GetColumnHeaders() is not { } columnHeaders)
+		{
+			return 0;
+		}
+
+		for (var index = 0; index < columnHeaders.Length; index++)
+		{
+			if (ReferenceEquals(columnHeaders[index]?.AutomationPeer, peer))
+			{
+				return index + 1 + GetRowHeaderColumnCount(dataGridPeer);
+			}
+		}
+
+		return 0;
 	}
 
 	/// <summary>
@@ -1121,39 +1459,170 @@ internal static partial class SemanticElementFactory
 
 	/// <summary>
 	/// Returns true if the given element type maps to an ARIA role that supports aria-posinset/aria-setsize.
-	/// Per WAI-ARIA, these are: option, listitem, menuitem, menuitemcheckbox, menuitemradio, radio, row, tab, treeitem.
+	/// Grid rows use aria-rowindex/aria-rowcount instead of generic set-position attributes.
 	/// </summary>
 	private static bool SupportsAriaPositionInSet(SemanticElementType elementType)
 	{
 		return elementType is SemanticElementType.ListItem or SemanticElementType.RadioButton
 			or SemanticElementType.Tab or SemanticElementType.TreeItem
-			or SemanticElementType.MenuItem or SemanticElementType.GridRow;
+			or SemanticElementType.MenuItem;
 	}
 
 	/// <summary>
 	/// Applies ARIA relationship attributes (describedby, controls, flowto) to a semantic element.
 	/// Resolves AutomationPeer collections to space-separated DOM element IDs.
 	/// </summary>
-	private static void ApplyRelationshipAttributes(AutomationPeer peer, IntPtr handle)
+	internal static bool ApplyRelationshipAttributes(AutomationPeer peer, IntPtr handle, out bool hasRelationships)
 	{
-		var describedByIds = ResolvePeerCollectionToIdList(peer.GetDescribedBy());
-		if (describedByIds is not null)
-		{
-			NativeMethods.UpdateAriaDescribedBy(handle, describedByIds);
-		}
+		var describedBy = ResolveRelationship(peer, RelationshipKind.DescribedBy);
+		var controlled = ResolveRelationship(peer, RelationshipKind.ControlledPeers);
+		var flowsTo = ResolveRelationship(peer, RelationshipKind.FlowsTo);
 
-		var controlledIds = ResolvePeerCollectionToIdList(peer.GetControlledPeers());
-		if (controlledIds is not null)
-		{
-			NativeMethods.UpdateAriaControls(handle, controlledIds);
-		}
+		NativeMethods.UpdateAriaDescribedBy(handle, describedBy.IdList ?? string.Empty);
+		NativeMethods.UpdateAriaControls(handle, controlled.IdList ?? string.Empty);
+		NativeMethods.UpdateAriaFlowTo(handle, flowsTo.IdList ?? string.Empty);
 
-		var flowsToIds = ResolvePeerCollectionToIdList(peer.GetFlowsTo());
-		if (flowsToIds is not null)
+		hasRelationships = describedBy.HasRelationships || controlled.HasRelationships || flowsTo.HasRelationships;
+		return describedBy.AllResolved && controlled.AllResolved && flowsTo.AllResolved;
+	}
+
+	private static RelationshipResolution ResolveRelationship(AutomationPeer peer, RelationshipKind kind)
+	{
+		try
 		{
-			NativeMethods.UpdateAriaFlowTo(handle, flowsToIds);
+			if (peer is FrameworkElementAutomationPeer { Owner: { } owner })
+			{
+				IEnumerable<DependencyObject>? authoredElements = kind switch
+				{
+					RelationshipKind.DescribedBy => AutomationProperties.TryGetDescribedBy(owner),
+					RelationshipKind.ControlledPeers => AutomationProperties.TryGetControlledPeers(owner),
+					RelationshipKind.FlowsTo => AutomationProperties.TryGetFlowsTo(owner),
+					_ => null,
+				};
+
+				if (authoredElements is not null)
+				{
+					var authored = ResolveElementCollectionToIdList(authoredElements);
+					var customPeers = kind switch
+					{
+						RelationshipKind.DescribedBy => peer.GetDescribedBy(),
+						RelationshipKind.ControlledPeers => peer.GetControlledPeers(),
+						RelationshipKind.FlowsTo => peer.GetFlowsTo(),
+						_ => null,
+					};
+					var customIdList = ResolvePeerCollectionToIdList(customPeers, out var customResolved, out var hasCustomPeers);
+					return MergeRelationshipResolutions(authored, new(customIdList, customResolved, hasCustomPeers));
+				}
+			}
+
+			var relatedPeers = kind switch
+			{
+				RelationshipKind.DescribedBy => peer.GetDescribedBy(),
+				RelationshipKind.ControlledPeers => peer.GetControlledPeers(),
+				RelationshipKind.FlowsTo => peer.GetFlowsTo(),
+				_ => null,
+			};
+			var idList = ResolvePeerCollectionToIdList(relatedPeers, out var allResolved, out var hasPeers);
+			return new(idList, allResolved, hasPeers);
+		}
+		catch (Exception ex)
+		{
+			if (typeof(SemanticElementFactory).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(SemanticElementFactory).Log().Warn($"[A11y] Failed to resolve {kind} for {peer.GetType().Name}: {ex.Message}");
+			}
+			return new(null, AllResolved: false, HasRelationships: true);
 		}
 	}
+
+	private static RelationshipResolution MergeRelationshipResolutions(RelationshipResolution first, RelationshipResolution second)
+	{
+		if (!first.HasRelationships)
+		{
+			return second;
+		}
+		if (!second.HasRelationships)
+		{
+			return first;
+		}
+
+		var tokens = new HashSet<string>(StringComparer.Ordinal);
+		StringBuilder? builder = null;
+		AppendTokens(first.IdList);
+		AppendTokens(second.IdList);
+		return new(builder?.ToString(), first.AllResolved && second.AllResolved, HasRelationships: true);
+
+		void AppendTokens(string? idList)
+		{
+			if (string.IsNullOrWhiteSpace(idList))
+			{
+				return;
+			}
+			foreach (var token in idList.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+			{
+				if (tokens.Add(token))
+				{
+					builder ??= new StringBuilder();
+					if (builder.Length > 0)
+					{
+						builder.Append(' ');
+					}
+					builder.Append(token);
+				}
+			}
+		}
+	}
+
+	private static RelationshipResolution ResolveElementCollectionToIdList(IEnumerable<DependencyObject> elements)
+	{
+		var allResolved = true;
+		var hasRelationships = false;
+		var handles = new HashSet<IntPtr>();
+		StringBuilder? builder = null;
+		foreach (var relatedElement in elements)
+		{
+			hasRelationships = true;
+			if (relatedElement is not UIElement relatedOwner)
+			{
+				allResolved = false;
+				continue;
+			}
+
+			var relatedHandle = relatedOwner.Visual.Handle;
+			if (relatedHandle == IntPtr.Zero || !WebAssemblyAccessibility.Instance.HasSemanticElement(relatedHandle))
+			{
+				allResolved = false;
+				continue;
+			}
+
+			if (handles.Add(relatedHandle))
+			{
+				AppendSemanticId(ref builder, relatedHandle);
+			}
+		}
+
+		return new(builder?.ToString(), allResolved, hasRelationships);
+	}
+
+	private static void AppendSemanticId(ref StringBuilder? builder, IntPtr handle)
+	{
+		builder ??= new StringBuilder();
+		if (builder.Length > 0)
+		{
+			builder.Append(' ');
+		}
+		builder.Append("uno-semantics-");
+		builder.Append(handle);
+	}
+
+	private enum RelationshipKind
+	{
+		DescribedBy,
+		ControlledPeers,
+		FlowsTo,
+	}
+
+	private readonly record struct RelationshipResolution(string? IdList, bool AllResolved, bool HasRelationships);
 
 	/// <summary>
 	/// Applies the owner-scoped ARIA attributes that are derived from <see cref="AutomationProperties"/>
@@ -1187,7 +1656,7 @@ internal static partial class SemanticElementFactory
 
 		// lang from AutomationProperties.Culture (an LCID). The XAML FrameworkElement.Language
 		// property is not implemented on Skia/WASM, so Culture is the reliable source here.
-		var lang = ResolveLang(owner);
+		var lang = ResolveLanguage(AutomationProperties.GetCulture(owner));
 		if (!string.IsNullOrEmpty(lang))
 		{
 			NativeMethods.UpdateLang(handle, lang);
@@ -1198,7 +1667,7 @@ internal static partial class SemanticElementFactory
 	/// Determines whether an <see cref="AutomationProperties.ItemStatusProperty"/> value
 	/// represents a busy / in-progress state that should surface as <c>aria-busy="true"</c>.
 	/// </summary>
-	private static bool IsBusyStatus(string? itemStatus)
+	internal static bool IsBusyStatus(string? itemStatus)
 	{
 		if (string.IsNullOrWhiteSpace(itemStatus))
 		{
@@ -1216,23 +1685,22 @@ internal static partial class SemanticElementFactory
 	/// <see cref="AutomationProperties.CultureProperty"/> (an LCID). Returns <c>null</c> when
 	/// no culture is set or the LCID cannot be resolved.
 	/// </summary>
-	private static string? ResolveLang(UIElement owner)
+	internal static string ResolveLanguage(int lcid)
 	{
-		var lcid = AutomationProperties.GetCulture(owner);
 		if (lcid <= 0)
 		{
-			return null;
+			return string.Empty;
 		}
 
 		try
 		{
 			var name = CultureInfo.GetCultureInfo(lcid).Name;
-			return string.IsNullOrEmpty(name) ? null : name;
+			return string.IsNullOrEmpty(name) ? string.Empty : name;
 		}
 		catch (CultureNotFoundException)
 		{
 			// Unknown/invalid LCID — skip rather than emitting a bogus lang attribute.
-			return null;
+			return string.Empty;
 		}
 	}
 
@@ -1267,28 +1735,40 @@ internal static partial class SemanticElementFactory
 	/// using the uno-semantics-{handle} convention.
 	/// </summary>
 	internal static string? ResolvePeerCollectionToIdList(IEnumerable<AutomationPeer>? peers)
+		=> ResolvePeerCollectionToIdList(peers, out _, out _);
+
+	private static string? ResolvePeerCollectionToIdList(IEnumerable<AutomationPeer>? peers, out bool allResolved, out bool hasPeers)
 	{
+		allResolved = true;
+		hasPeers = false;
 		if (peers is null)
 		{
 			return null;
 		}
 
+		var handles = new HashSet<IntPtr>();
 		StringBuilder? sb = null;
 		foreach (var relatedPeer in peers)
 		{
+			hasPeers = true;
 			if (relatedPeer is FrameworkElementAutomationPeer { Owner: { } relatedOwner })
 			{
 				var relatedHandle = relatedOwner.Visual.Handle;
-				if (relatedHandle != IntPtr.Zero)
+				if (relatedHandle != IntPtr.Zero && WebAssemblyAccessibility.Instance.HasSemanticElement(relatedHandle))
 				{
-					sb ??= new StringBuilder();
-					if (sb.Length > 0)
+					if (handles.Add(relatedHandle))
 					{
-						sb.Append(' ');
+						AppendSemanticId(ref sb, relatedHandle);
 					}
-					sb.Append("uno-semantics-");
-					sb.Append(relatedHandle);
 				}
+				else
+				{
+					allResolved = false;
+				}
+			}
+			else
+			{
+				allResolved = false;
 			}
 		}
 
@@ -1360,6 +1840,9 @@ internal static partial class SemanticElementFactory
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaInvalid")]
 		internal static partial void UpdateAriaInvalid(IntPtr handle, bool invalid);
 
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateDisabledState")]
+		internal static partial void UpdateDisabledState(IntPtr handle, bool disabled);
+
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaPressed")]
 		internal static partial void UpdateAriaPressed(IntPtr handle, string pressed);
 
@@ -1399,10 +1882,22 @@ internal static partial class SemanticElementFactory
 		internal static partial void CreateGridRowElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, int rowIndex, bool selectable, bool selected, bool isFocusable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createGridCellElement")]
-		internal static partial void CreateGridCellElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, int rowIndex, int colIndex, bool selectable, bool selected, bool isFocusable);
+		internal static partial void CreateGridCellElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, int rowIndex, int colIndex, int rowSpan, int colSpan, bool selectable, bool selected, bool canInvoke, bool isFocusable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createColumnHeaderElement")]
-		internal static partial void CreateColumnHeaderElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, int colIndex, string? sort, bool isFocusable);
+		internal static partial void CreateColumnHeaderElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, int colIndex, int rowSpan, int colSpan, string? sort, bool canInvoke, bool isFocusable);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createRowHeaderElement")]
+		internal static partial void CreateRowHeaderElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, int rowIndex, int rowSpan, int colSpan, bool isFocusable);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateGridElementMetadata")]
+		internal static partial void UpdateGridElementMetadata(IntPtr handle, string? label, int rowIndex, int colIndex, int rowSpan, int colSpan, bool selectable, bool selected);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateGridCounts")]
+		internal static partial void UpdateGridCounts(IntPtr handle, int rowCount, int colCount, bool multiSelectable);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateColumnHeaderSort")]
+		internal static partial void UpdateColumnHeaderSort(IntPtr handle, string? sort);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createMenuElement")]
 		internal static partial void CreateMenuElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, bool isFocusable);

@@ -2,12 +2,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -31,6 +33,7 @@ public static class AriaMapper
 		{ AutomationControlType.ListItem, "option" },
 		{ AutomationControlType.Menu, "menu" },
 		{ AutomationControlType.MenuItem, "menuitem" },
+		{ AutomationControlType.MenuBar, "menubar" },
 		{ AutomationControlType.Tab, "tablist" },
 		{ AutomationControlType.TabItem, "tab" },
 		{ AutomationControlType.Tree, "tree" },
@@ -46,7 +49,8 @@ public static class AriaMapper
 		{ AutomationControlType.Header, "heading" },
 		{ AutomationControlType.ToolTip, "tooltip" },
 		{ AutomationControlType.DataGrid, "grid" },
-		{ AutomationControlType.DataItem, "row" },
+		{ AutomationControlType.Table, "table" },
+		{ AutomationControlType.Separator, "separator" },
 		{ AutomationControlType.Document, "document" },
 		{ AutomationControlType.Window, "dialog" },
 		{ AutomationControlType.Pane, "region" },
@@ -54,7 +58,20 @@ public static class AriaMapper
 		{ AutomationControlType.StatusBar, "status" },
 		{ AutomationControlType.Thumb, "slider" },
 		{ AutomationControlType.ToolBar, "toolbar" },
-		{ AutomationControlType.Custom, "generic" },
+	};
+
+	private static readonly HashSet<string> ValidAriaRoles = new(StringComparer.Ordinal)
+	{
+		"alert", "alertdialog", "application", "article", "banner", "blockquote", "button", "caption",
+		"cell", "checkbox", "code", "columnheader", "combobox", "complementary", "contentinfo", "definition",
+		"deletion", "dialog", "directory", "document", "emphasis", "feed", "figure", "form", "generic",
+		"grid", "gridcell", "group", "heading", "img", "insertion", "link", "list", "listbox", "listitem",
+		"log", "main", "marquee", "math", "menu", "menubar", "menuitem", "menuitemcheckbox", "menuitemradio",
+		"meter", "navigation", "none", "note", "option", "paragraph", "presentation", "progressbar", "radio",
+		"radiogroup", "region", "row", "rowgroup", "rowheader", "scrollbar", "search", "searchbox", "separator",
+		"slider", "spinbutton", "status", "strong", "subscript", "superscript", "switch", "tab", "table",
+		"tablist", "tabpanel", "term", "textbox", "time", "timer", "toolbar", "tooltip", "tree", "treegrid",
+		"treeitem",
 	};
 
 	/// <summary>
@@ -65,6 +82,22 @@ public static class AriaMapper
 	public static string? GetAriaRole(AutomationControlType controlType)
 	{
 		return ControlTypeToRoleMap.TryGetValue(controlType, out var role) ? role : null;
+	}
+
+	internal static string? NormalizeAriaRole(string? role)
+	{
+		if (string.IsNullOrWhiteSpace(role))
+		{
+			return null;
+		}
+
+		var roles = role.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+		var validRoles = roles
+			.Select(static token => token.ToLowerInvariant())
+			.Where(ValidAriaRoles.Contains)
+			.Distinct(StringComparer.Ordinal)
+			.ToArray();
+		return validRoles.Length > 0 ? string.Join(' ', validRoles) : null;
 	}
 
 	/// <summary>
@@ -82,20 +115,29 @@ public static class AriaMapper
 
 		var controlType = peer.GetAutomationControlType();
 
-		// A column header (e.g. DataGridColumnHeaderAutomationPeer) reports HeaderItem. ARIA has no
-		// "headeritem" role, so without this it fell through to a role-less generic <div>.
+		// HeaderItem is used for both DataGrid column and row headers. Resolve it through the
+		// containing DataGrid's Table provider so each header receives its correct ARIA role.
 		if (controlType is AutomationControlType.HeaderItem)
 		{
-			return SemanticElementType.ColumnHeader;
+			return GetGridHeaderType(peer);
 		}
 
-		// A grid cell (e.g. DataGridCellAutomationPeer) reports Custom, which is too generic to map by
-		// type. Identify it by the GridItem pattern instead so it becomes a role="gridcell" carrying
-		// aria-rowindex/aria-colindex.
-		if (controlType is AutomationControlType.Custom &&
-			peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider)
+		// DataGridCellAutomationPeer varies its control type with the column (Text, ComboBox,
+		// CheckBox, or Custom), while consistently exposing GridItem. The pattern is the stable
+		// semantic contract. Restrict the mapping to a DataGrid containing peer so CalendarView
+		// items and other GridItem-capable controls preserve their own control semantics.
+		if (IsDataGridItem(peer))
 		{
 			return SemanticElementType.GridCell;
+		}
+
+		// UIA Header is a container for HeaderItem peers. In an ARIA grid those header cells require
+		// a row context, so map a populated header container to the structural header row.
+		if (controlType is AutomationControlType.Header &&
+			GetContainingDataGridPeer(peer) is not null &&
+			HasDataGridHeaderItemChildren(peer))
+		{
+			return SemanticElementType.GridRow;
 		}
 
 		return controlType switch
@@ -115,12 +157,125 @@ public static class AriaMapper
 			AutomationControlType.Tree => SemanticElementType.Tree,
 			AutomationControlType.TreeItem => SemanticElementType.TreeItem,
 			AutomationControlType.DataGrid => SemanticElementType.Grid,
-			AutomationControlType.DataItem => SemanticElementType.GridRow,
+			AutomationControlType.DataItem when GetContainingDataGridPeer(peer) is not null => SemanticElementType.GridRow,
 			AutomationControlType.Menu => SemanticElementType.Menu,
 			AutomationControlType.MenuItem => SemanticElementType.MenuItem,
 			AutomationControlType.Text => GetTextSemanticType(owner),
 			_ => SemanticElementType.Generic
 		};
+	}
+
+	private static SemanticElementType GetGridHeaderType(AutomationPeer peer)
+	{
+		var dataGridPeer = GetContainingDataGridPeer(peer);
+		if (dataGridPeer?.GetPattern(PatternInterface.Table) is not ITableProvider tableProvider)
+		{
+			return SemanticElementType.Generic;
+		}
+
+		if (ContainsPeer(tableProvider.GetColumnHeaders(), peer))
+		{
+			return SemanticElementType.ColumnHeader;
+		}
+
+		if (ContainsPeer(tableProvider.GetRowHeaders(), peer))
+		{
+			return SemanticElementType.RowHeader;
+		}
+
+		return SemanticElementType.Generic;
+	}
+
+	private static bool IsDataGridItem(AutomationPeer peer)
+	{
+		if (peer.GetPattern(PatternInterface.GridItem) is not IGridItemProvider gridItemProvider)
+		{
+			return false;
+		}
+
+		return GetContainingDataGridPeer(peer) is not null;
+	}
+
+	internal static AutomationPeer? GetContainingDataGridPeer(AutomationPeer peer)
+	{
+		if (peer.GetPattern(PatternInterface.GridItem) is IGridItemProvider gridItemProvider)
+		{
+			if (gridItemProvider.ContainingGrid is not { } containingGrid)
+			{
+				return null;
+			}
+
+			var containingPeer = containingGrid.AutomationPeer;
+			return containingPeer?.GetAutomationControlType() is AutomationControlType.DataGrid
+				? containingPeer
+				: null;
+		}
+
+		var depth = 0;
+		for (var current = peer.GetParent(); current is not null && depth < 64; current = current.GetParent(), depth++)
+		{
+			if (current.GetAutomationControlType() is AutomationControlType.DataGrid)
+			{
+				return current;
+			}
+		}
+
+		if (peer is FrameworkElementAutomationPeer { Owner: { } owner })
+		{
+			if (owner.GetOrCreateAutomationPeer() is { } ownerPeer &&
+				ownerPeer.GetAutomationControlType() is AutomationControlType.DataGrid)
+			{
+				return ownerPeer;
+			}
+
+			for (var current = owner.GetParent() as UIElement; current is not null; current = current.GetParent() as UIElement)
+			{
+				if (current.GetOrCreateAutomationPeer() is { } currentPeer &&
+					currentPeer.GetAutomationControlType() is AutomationControlType.DataGrid)
+				{
+					return currentPeer;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	private static bool ContainsPeer(IRawElementProviderSimple[]? providers, AutomationPeer peer)
+	{
+		if (providers is null)
+		{
+			return false;
+		}
+
+		foreach (var provider in providers)
+		{
+			if (ReferenceEquals(provider?.AutomationPeer, peer))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static bool HasDataGridHeaderItemChildren(AutomationPeer peer)
+	{
+		if (peer.GetChildren() is not { } children)
+		{
+			return false;
+		}
+
+		foreach (var child in children)
+		{
+			if (child.GetAutomationControlType() is AutomationControlType.HeaderItem &&
+				GetGridHeaderType(child) is not SemanticElementType.Generic)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/// <summary>
@@ -131,18 +286,23 @@ public static class AriaMapper
 	/// a Text element; the latter takes the generic path so those attributes are still emitted.
 	/// </summary>
 	private static SemanticElementType GetTextSemanticType(UIElement? owner)
-	{
-		if (owner is not null &&
+		=> RequiresGenericTextSemantics(owner) ? SemanticElementType.Generic : SemanticElementType.Text;
+
+	internal static bool RequiresGenericTextSemantics(UIElement? owner)
+		=> owner is not null &&
 			(!string.IsNullOrEmpty(AutomationProperties.GetName(owner)) ||
+			!string.IsNullOrEmpty(AutomationProperties.GetAutomationId(owner)) ||
+			AutomationProperties.GetLabeledBy(owner) is not null ||
 			AutomationProperties.GetLandmarkType(owner) != AutomationLandmarkType.None ||
 			AutomationProperties.GetLiveSetting(owner) != AutomationLiveSetting.Off ||
-			!string.IsNullOrEmpty(AutomationProperties.GetAutomationId(owner))))
-		{
-			return SemanticElementType.Generic;
-		}
-
-		return SemanticElementType.Text;
-	}
+			AutomationProperties.GetHeadingLevel(owner) != AutomationHeadingLevel.None ||
+			!string.IsNullOrEmpty(AutomationProperties.GetHelpText(owner)) ||
+			!string.IsNullOrEmpty(AutomationProperties.GetFullDescription(owner)) ||
+			!string.IsNullOrEmpty(AutomationProperties.GetLocalizedControlType(owner)) ||
+			!string.IsNullOrEmpty(AutomationProperties.GetLocalizedLandmarkType(owner)) ||
+			AutomationProperties.GetIsDialog(owner) ||
+			AutomationProperties.GetLevel(owner) > 0 ||
+			!string.IsNullOrEmpty(AutomationProperties.GetRoleOverride(owner)));
 
 	private static SemanticElementType GetButtonType(AutomationPeer peer)
 	{
@@ -327,7 +487,7 @@ public static class AriaMapper
 				attributes.MultiSelectable = selectionProvider.CanSelectMultiple;
 			}
 
-			if (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
+			if (GetPatternOrEventsSource(peer, PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
 			{
 				attributes.Selected = selectionItemProvider.IsSelected;
 
@@ -392,6 +552,9 @@ public static class AriaMapper
 			_ => "false"
 		};
 	}
+
+	internal static object? GetPatternOrEventsSource(AutomationPeer peer, PatternInterface patternInterface)
+		=> peer.GetPattern(patternInterface) ?? peer.EventsSource?.GetPattern(patternInterface);
 
 	/// <summary>
 	/// Resolves a label for an automation peer using a fallback chain aligned with WinUI's
@@ -483,13 +646,42 @@ public static class AriaMapper
 
 			return name; // May still be empty, but we tried
 		}
-		catch (Exception ex)
+		catch (Exception ex) when (ex is ElementNotAvailableException or ElementNotEnabledException or InvalidOperationException or ArgumentException)
 		{
-			// Some peers may throw if queried before fully initialized.
-			// Return empty rather than crashing the accessibility system.
-			System.Diagnostics.Debug.WriteLine($"[A11y] AriaMapper.ResolveLabel failed for {peer.GetType().Name}: {ex.Message}");
+			if (typeof(AriaMapper).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(AriaMapper).Log().Warn(
+					$"[A11y] ResolveLabel could not query peerType={peer.GetType().Name} exceptionType={ex.GetType().Name}.");
+			}
 			return null;
 		}
+	}
+
+	/// <summary>
+	/// Resolves only an explicitly-authored accessible name. This excludes peer/content
+	/// fallbacks that can flatten an entire descendant subtree into a landmark name.
+	/// </summary>
+	public static string? ResolveAuthoredLabel(AutomationPeer peer)
+	{
+		if (peer is not FrameworkElementAutomationPeer { Owner: { } owner })
+		{
+			return null;
+		}
+
+		var labeledBy = AutomationProperties.GetLabeledBy(owner);
+		if (labeledBy is TextBlock labelTextBlock && !string.IsNullOrEmpty(labelTextBlock.Text))
+		{
+			return labelTextBlock.Text;
+		}
+
+		if (labeledBy is UIElement labelElement &&
+			labelElement.GetOrCreateAutomationPeer()?.GetName() is { Length: > 0 } labelName)
+		{
+			return labelName;
+		}
+
+		var name = AutomationProperties.GetName(owner);
+		return string.IsNullOrEmpty(name) ? null : name;
 	}
 
 	/// <summary>
@@ -553,7 +745,7 @@ public static class AriaMapper
 			return false;
 		}
 
-		return IsScrollable(peer, owner) && !string.IsNullOrEmpty(ResolveLabel(peer));
+		return IsScrollable(peer, owner) && !string.IsNullOrEmpty(ResolveAuthoredLabel(peer));
 	}
 
 	/// <summary>
@@ -573,6 +765,10 @@ public static class AriaMapper
 		};
 	}
 
+	internal static bool CanExposeLandmarkRole(string? landmarkRole, bool hasAccessibleName)
+		=> !string.IsNullOrEmpty(landmarkRole) &&
+			(landmarkRole is not ("region" or "form") || hasAccessibleName);
+
 	/// <summary>
 	/// Gets the pattern capabilities for an automation peer.
 	/// </summary>
@@ -587,7 +783,7 @@ public static class AriaMapper
 			CanRangeValue = peer.GetPattern(PatternInterface.RangeValue) is IRangeValueProvider,
 			CanValue = peer.GetPattern(PatternInterface.Value) is IValueProvider,
 			CanExpandCollapse = peer.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider,
-			CanSelect = peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider,
+			CanSelect = GetPatternOrEventsSource(peer, PatternInterface.SelectionItem) is ISelectionItemProvider,
 			CanScroll = peer.GetPattern(PatternInterface.Scroll) is IScrollProvider
 		};
 	}
@@ -647,7 +843,9 @@ public enum SemanticElementType
 	/// <summary>div with role="menu"</summary>
 	Menu,
 	/// <summary>div with role="menuitem"</summary>
-	MenuItem
+	MenuItem,
+	/// <summary>div with role="rowheader"</summary>
+	RowHeader
 }
 
 /// <summary>

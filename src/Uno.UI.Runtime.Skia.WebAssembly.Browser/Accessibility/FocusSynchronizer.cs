@@ -5,6 +5,7 @@ using System.Runtime.InteropServices.JavaScript;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
@@ -21,6 +22,7 @@ internal sealed partial class FocusSynchronizer
 	private readonly WebAssemblyAccessibility _accessibility;
 	private IntPtr _currentFocusedHandle;
 	private IntPtr _previousFocusedHandle;
+	private IntPtr _automationFocusedHandleDuringBrowserSync;
 	private bool _isSyncing;
 
 	/// <summary>
@@ -59,6 +61,17 @@ internal sealed partial class FocusSynchronizer
 		// enabled. Perform an initial sync so the semantic element receives DOM focus and
 		// any active native overlay (e.g. the hidden <input> used by TextBox) is detached.
 		SyncInitialFocus();
+	}
+
+	internal void Uninitialize()
+	{
+		FocusManager.GotFocus -= OnXamlGotFocus;
+		FocusManager.LostFocus -= OnXamlLostFocus;
+		UntrackFocusedElement();
+		_currentFocusedHandle = IntPtr.Zero;
+		_previousFocusedHandle = IntPtr.Zero;
+		_automationFocusedHandleDuringBrowserSync = IntPtr.Zero;
+		_isSyncing = false;
 	}
 
 	/// <summary>
@@ -136,6 +149,12 @@ internal sealed partial class FocusSynchronizer
 			// Many UIElements (Grid, Border, SplitView, etc.) are pruned from the
 			// semantic tree and don't have corresponding DOM nodes.
 			var semanticHandle = _accessibility.ResolveToSemanticHandle(element);
+			if (element.GetOrCreateAutomationPeer()?.GetAutomationControlType() is AutomationControlType.DataGrid &&
+				_currentFocusedHandle != IntPtr.Zero &&
+				_accessibility.IsSemanticDescendantOf(_currentFocusedHandle, semanticHandle))
+			{
+				semanticHandle = _currentFocusedHandle;
+			}
 			if (semanticHandle == IntPtr.Zero)
 			{
 				// No semantic element found — still track the focused element
@@ -200,7 +219,26 @@ internal sealed partial class FocusSynchronizer
 			return;
 		}
 
-		if (owner is not Control control || !control.IsFocusable)
+		if (owner is not Control control)
+		{
+			return;
+		}
+
+		var controlPeer = control.GetOrCreateAutomationPeer();
+		if (!control.IsEnabled || controlPeer?.IsEnabled() == false || !AreContainingDataGridsEnabled(control))
+		{
+			return;
+		}
+
+		UIElement focusTarget = control;
+		if (!focusTarget.IsFocusable &&
+			controlPeer is { } peer &&
+			AriaMapper.GetContainingDataGridPeer(peer) is FrameworkElementAutomationPeer { Owner: UIElement dataGrid })
+		{
+			focusTarget = dataGrid;
+		}
+
+		if (!focusTarget.IsFocusable)
 		{
 			return;
 		}
@@ -208,17 +246,30 @@ internal sealed partial class FocusSynchronizer
 		_isSyncing = true;
 		try
 		{
+			_automationFocusedHandleDuringBrowserSync = IntPtr.Zero;
 			_previousFocusedHandle = _currentFocusedHandle;
+			if (!focusTarget.Focus(FocusState.Keyboard))
+			{
+				_currentFocusedHandle = _previousFocusedHandle;
+				return;
+			}
 			_currentFocusedHandle = handle;
-			control.Focus(FocusState.Keyboard);
-
+			var hasCurrentCellRedirect = !ReferenceEquals(focusTarget, control) &&
+				_automationFocusedHandleDuringBrowserSync != IntPtr.Zero &&
+				_accessibility.IsSemanticDescendantOf(_automationFocusedHandleDuringBrowserSync, focusTarget.Visual.Handle);
+			var semanticFocusHandle = hasCurrentCellRedirect ? _automationFocusedHandleDuringBrowserSync : handle;
+			_currentFocusedHandle = semanticFocusHandle;
+			if (!ReferenceEquals(focusTarget, control) && !hasCurrentCellRedirect)
+			{
+				NativeMethods.FocusSemanticElement(handle);
+			}
 			// Drive the roving tabindex from focus movement, not only selection, so the
 			// single tab stop within a composite follows the focused element. groupHandle
 			// is Zero — JS infers the owning composite from the active element.
-			NativeMethods.UpdateRovingTabindex(IntPtr.Zero, handle);
+			NativeMethods.UpdateRovingTabindex(IntPtr.Zero, semanticFocusHandle);
 
 			// Track for focus recovery
-			TrackFocusedElement(owner!);
+			TrackFocusedElement(focusTarget);
 		}
 		catch (Exception ex)
 		{
@@ -229,8 +280,34 @@ internal sealed partial class FocusSynchronizer
 		}
 		finally
 		{
+			_automationFocusedHandleDuringBrowserSync = IntPtr.Zero;
 			_isSyncing = false;
 		}
+	}
+
+	private static bool AreContainingDataGridsEnabled(UIElement element)
+	{
+		for (var current = element.GetParent() as UIElement; current is not null; current = current.GetParent() as UIElement)
+		{
+			if (current.GetOrCreateAutomationPeer() is { } peer &&
+				peer.GetAutomationControlType() is AutomationControlType.DataGrid && !peer.IsEnabled())
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	internal void OnAutomationFocusChanged(IntPtr handle)
+	{
+		if (_isSyncing)
+		{
+			_automationFocusedHandleDuringBrowserSync = handle;
+		}
+
+		_previousFocusedHandle = _currentFocusedHandle;
+		_currentFocusedHandle = handle;
 	}
 
 	/// <summary>

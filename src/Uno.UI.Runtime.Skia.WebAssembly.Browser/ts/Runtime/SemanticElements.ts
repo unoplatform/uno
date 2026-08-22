@@ -41,7 +41,7 @@ namespace Uno.UI.Runtime.Skia {
 		 * Gets the semantics root element.
 		 */
 		private static getSemanticsRoot(): HTMLElement | null {
-			return document.getElementById("uno-semantics-root");
+			return Accessibility.getSemanticsRoot();
 		}
 
 		/**
@@ -82,8 +82,9 @@ namespace Uno.UI.Runtime.Skia {
 		 * Returns the removed element (for potential reuse) or null.
 		 */
 		private static removeExistingById(id: string): HTMLElement | null {
-			const existing = document.getElementById(id);
+			const existing = Accessibility.getSemanticElementById(id);
 			if (existing) {
+				Accessibility.repairGridFocusBeforeRemoval(existing);
 				existing.remove();
 			}
 			return existing;
@@ -104,7 +105,7 @@ namespace Uno.UI.Runtime.Skia {
 
 			let parent: HTMLElement | null = null;
 			if (parentHandle !== 0) {
-				parent = document.getElementById(`uno-semantics-${parentHandle}`);
+				parent = Accessibility.getSemanticElementByHandle(parentHandle);
 			}
 			if (!parent) {
 				Accessibility.debugWarn(`[A11y] TS appendToParent: parent NOT FOUND handle=${parentHandle} for element=${element.id} — falling back to semanticsRoot`);
@@ -115,6 +116,15 @@ namespace Uno.UI.Runtime.Skia {
 					parent.insertBefore(element, parent.children[index]);
 				} else {
 					parent.appendChild(element);
+				}
+
+				const owningGridItem = parent.closest('[role="gridcell"], [role="columnheader"], [role="rowheader"]') as HTMLElement | null;
+				if (owningGridItem && element !== owningGridItem) {
+					const desiredTabIndex = element.tabIndex;
+					element.dataset.unoGridTabIndex = String(desiredTabIndex);
+					element.tabIndex = owningGridItem.dataset.unoGridInteractionMode === 'true'
+						? desiredTabIndex
+						: -1;
 				}
 			}
 		}
@@ -138,9 +148,21 @@ namespace Uno.UI.Runtime.Skia {
 			element.id = `uno-semantics-${handle}`;
 
 			const callbacks = this.getCallbacks();
+			const rejectStaleEvent = (event: Event) => {
+				if (!Accessibility.isCurrentSemanticElement(element)) {
+					event.preventDefault();
+					event.stopImmediatePropagation();
+				}
+			};
+			['click', 'input', 'change', 'keydown', 'compositionend', 'focus', 'blur', 'focusout'].forEach(type =>
+				element.addEventListener(type, rejectStaleEvent, { capture: true }));
 
 			// Common event handlers
 			element.addEventListener('focus', () => {
+				if (['gridcell', 'columnheader', 'rowheader'].includes(element.getAttribute('role') ?? '') &&
+					!Accessibility.prepareGridItemFocus(element)) {
+					return;
+				}
 				if (callbacks.onFocus) {
 					callbacks.onFocus(handle);
 				}
@@ -179,6 +201,9 @@ namespace Uno.UI.Runtime.Skia {
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			// A disabled control must not be a tab stop (T017), regardless of the peer focusability.
+			if (disabled) {
+				element.dataset.unoEnabledTabIndex = String(isFocusable ? 0 : -1);
+			}
 			Accessibility.updateElementFocusability(element, isFocusable && !disabled);
 
 			this.setAriaStringAttribute(element, 'aria-label', label);
@@ -225,6 +250,9 @@ namespace Uno.UI.Runtime.Skia {
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			// A disabled control must not be a tab stop (T017).
+			if (disabled) {
+				element.dataset.unoEnabledTabIndex = String(isFocusable ? 0 : -1);
+			}
 			Accessibility.updateElementFocusability(element, isFocusable && !disabled);
 
 			// aria-pressed for toggle button pattern (distinct from aria-checked for checkboxes)
@@ -273,6 +301,9 @@ namespace Uno.UI.Runtime.Skia {
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			// A disabled control must not be a tab stop (T017).
+			if (disabled) {
+				element.dataset.unoEnabledTabIndex = String(isFocusable ? 0 : -1);
+			}
 			Accessibility.updateElementFocusability(element, isFocusable && !disabled);
 
 			// role="switch" with aria-checked for ToggleSwitch (ARIA switch pattern)
@@ -332,11 +363,6 @@ namespace Uno.UI.Runtime.Skia {
 			element.value = String(value);
 			element.step = String(step);
 
-			// Set ARIA value attributes for screen readers
-			element.setAttribute('aria-valuenow', String(value));
-			element.setAttribute('aria-valuemin', String(min));
-			element.setAttribute('aria-valuemax', String(max));
-
 			// aria-valuetext: VoiceOver reads this instead of the raw number
 			// when a human-readable value description is available
 			this.setAriaStringAttribute(element, 'aria-valuetext', valueText);
@@ -389,15 +415,11 @@ namespace Uno.UI.Runtime.Skia {
 
 			this.setAriaStringAttribute(element, 'aria-label', label);
 
-			// Set checked state (WCAG 4.1.2: aria-checked must match visual state)
+			// Native checked/indeterminate state is exposed by the HTML accessibility mapping.
 			if (checkedState === 'true') {
 				element.checked = true;
-				element.setAttribute('aria-checked', 'true');
 			} else if (checkedState === 'mixed') {
 				element.indeterminate = true;
-				element.setAttribute('aria-checked', 'mixed');
-			} else {
-				element.setAttribute('aria-checked', 'false');
 			}
 
 			const callbacks = this.getCallbacks();
@@ -662,7 +684,10 @@ namespace Uno.UI.Runtime.Skia {
 			// not hardcoded here (FR-028).
 			Accessibility.updateElementFocusability(element, isFocusable);
 
-			this.setAriaStringAttribute(element, 'aria-label', selectedValue);
+			// A select-only combobox has an accessible name distinct from its current value.
+			// The common name pass applies aria-label/aria-labelledby; focusable combobox text
+			// content maps to the independent browser accessibility value.
+			element.textContent = selectedValue ?? '';
 
 			const callbacks = this.getCallbacks();
 
@@ -693,6 +718,13 @@ namespace Uno.UI.Runtime.Skia {
 			});
 
 			this.appendToParent(element, parentHandle, index);
+		}
+
+		public static updateComboBoxValue(handle: number, selectedValue: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.textContent = selectedValue;
+			}
 		}
 
 		/**
@@ -741,24 +773,30 @@ namespace Uno.UI.Runtime.Skia {
 			selected: boolean,
 			positionInSet: number,
 			sizeOfSet: number,
-			_isFocusable: boolean
+			isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 
 			element.setAttribute('role', 'option');
 			element.setAttribute('aria-selected', String(selected));
-			element.setAttribute('aria-posinset', String(positionInSet));
-			element.setAttribute('aria-setsize', String(sizeOfSet));
-			// Composite item stays at -1 (parent listbox manages focus via roving / activedescendant).
-			// _isFocusable is accepted for signature uniformity.
+			if (positionInSet > 0) {
+				element.setAttribute('aria-posinset', String(positionInSet));
+			}
+			if (sizeOfSet > 0) {
+				element.setAttribute('aria-setsize', String(sizeOfSet));
+			}
+			element.dataset.unoOptionFocusable = String(isFocusable);
 			element.tabIndex = -1;
 			element.style.pointerEvents = 'none';
 
 			const callbacks = this.getCallbacks();
 
 			// Click handler for selection (T073)
-			element.addEventListener('click', () => {
+			element.addEventListener('click', (event: MouseEvent) => {
+				if (event.target !== element) {
+					return;
+				}
 				if (callbacks.onSelection) {
 					callbacks.onSelection(handle);
 				}
@@ -775,25 +813,21 @@ namespace Uno.UI.Runtime.Skia {
 			});
 
 			this.appendToParent(element, parentHandle, index);
+			if (element.parentElement?.getAttribute('role') === 'listbox') {
+				Accessibility.synchronizeListboxTabStop(element.parentElement, selected ? element : null);
+			}
 		}
 
 		/**
 		 * Updates the value of a slider element and its ARIA attributes.
 		 */
 		public static updateSliderValue(handle: number, value: number, min: number, max: number, valueText: string | null): void {
-			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLInputElement;
+			const element = Accessibility.getSemanticElementByHandle(handle) as HTMLInputElement;
 			if (element && element.type === 'range') {
 				element.min = String(min);
 				element.max = String(max);
 				element.value = String(value);
-				element.setAttribute('aria-valuenow', String(value));
-				element.setAttribute('aria-valuemin', String(min));
-				element.setAttribute('aria-valuemax', String(max));
-				if (valueText) {
-					element.setAttribute('aria-valuetext', valueText);
-				} else {
-					element.removeAttribute('aria-valuetext');
-				}
+				Accessibility.updateIntrinsicRoleAttribute(element, 'aria-valuetext', valueText || null);
 			}
 		}
 
@@ -806,7 +840,7 @@ namespace Uno.UI.Runtime.Skia {
 			selectionStart: number,
 			selectionEnd: number
 		): void {
-			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLInputElement | HTMLTextAreaElement;
+			const element = Accessibility.getSemanticElementByHandle(handle) as HTMLInputElement | HTMLTextAreaElement;
 			if (element && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
 				// Skip no-op writes to avoid caret and IME churn when the DOM value already matches.
 				if (element.value !== value) {
@@ -833,14 +867,9 @@ namespace Uno.UI.Runtime.Skia {
 		 * Updates the read-only state of a text input element.
 		 */
 		public static updateTextBoxReadOnly(handle: number, isReadOnly: boolean): void {
-			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLInputElement | HTMLTextAreaElement;
+			const element = Accessibility.getSemanticElementByHandle(handle) as HTMLInputElement | HTMLTextAreaElement;
 			if (element && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
 				element.readOnly = isReadOnly;
-				if (isReadOnly) {
-					element.setAttribute('aria-readonly', 'true');
-				} else {
-					element.removeAttribute('aria-readonly');
-				}
 			}
 		}
 
@@ -848,7 +877,7 @@ namespace Uno.UI.Runtime.Skia {
 		 * Updates the placeholder text of a text input element.
 		 */
 		public static updateTextBoxPlaceholder(handle: number, placeholder: string): void {
-			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLInputElement | HTMLTextAreaElement;
+			const element = Accessibility.getSemanticElementByHandle(handle) as HTMLInputElement | HTMLTextAreaElement;
 			if (element && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
 				element.placeholder = placeholder ?? '';
 			}
@@ -858,13 +887,14 @@ namespace Uno.UI.Runtime.Skia {
 		 * Updates the expanded/collapsed state of a combobox element.
 		 */
 		public static updateExpandCollapseState(handle: number, expanded: boolean): void {
-			const element = document.getElementById(`uno-semantics-${handle}`);
+			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.setAttribute('aria-expanded', String(expanded));
+				Accessibility.updateIntrinsicRoleAttribute(element, 'aria-expanded', String(expanded));
 				// Clear activedescendant when collapsing
 				if (!expanded) {
 					element.removeAttribute('aria-activedescendant');
 				}
+				Accessibility.sanitizeActiveRoleOverride(element);
 			}
 		}
 
@@ -873,7 +903,7 @@ namespace Uno.UI.Runtime.Skia {
 		 * Screen readers use this to announce the currently focused option without moving DOM focus.
 		 */
 		public static updateActiveDescendant(containerHandle: number, activeItemHandle: number): void {
-			const container = document.getElementById(`uno-semantics-${containerHandle}`);
+			const container = Accessibility.getSemanticElementByHandle(containerHandle);
 			if (container) {
 				if (activeItemHandle !== 0) {
 					const activeId = `uno-semantics-${activeItemHandle}`;
@@ -888,9 +918,78 @@ namespace Uno.UI.Runtime.Skia {
 		 * Updates the selected state of a list item element.
 		 */
 		public static updateSelectionState(handle: number, selected: boolean): void {
-			const element = document.getElementById(`uno-semantics-${handle}`);
+			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
+				Accessibility.updateIntrinsicRoleAttribute(element, 'aria-selected', String(selected));
+				if (element.getAttribute('role') === 'option' && element.parentElement?.getAttribute('role') === 'listbox') {
+					Accessibility.synchronizeListboxTabStop(element.parentElement, selected ? element : null);
+				}
+			}
+		}
+
+		public static updateGridElementMetadata(
+			handle: number,
+			label: string | null,
+			rowIndex: number,
+			colIndex: number,
+			rowSpan: number,
+			colSpan: number,
+			selectable: boolean,
+			selected: boolean
+		): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (!element) {
+				return;
+			}
+
+			this.setAriaStringAttribute(element, 'aria-label', label);
+			this.setPositiveIntegerAttribute(element, 'aria-rowindex', rowIndex);
+			this.setPositiveIntegerAttribute(element, 'aria-colindex', colIndex);
+			this.setGridSpanAttribute(element, 'aria-rowspan', rowSpan);
+			this.setGridSpanAttribute(element, 'aria-colspan', colSpan);
+			if (selectable) {
 				element.setAttribute('aria-selected', String(selected));
+			} else {
+				element.removeAttribute('aria-selected');
+			}
+		}
+
+		public static updateGridCounts(
+			handle: number,
+			rowCount: number,
+			colCount: number,
+			multiSelectable: boolean
+		): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (!element) {
+				return;
+			}
+
+			this.setPositiveIntegerAttribute(element, 'aria-rowcount', rowCount);
+			this.setPositiveIntegerAttribute(element, 'aria-colcount', colCount);
+			element.setAttribute('aria-multiselectable', String(multiSelectable));
+		}
+
+		public static updateColumnHeaderSort(handle: number, sort: string | null): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				this.setAriaStringAttribute(element, 'aria-sort', sort);
+			}
+		}
+
+		private static setPositiveIntegerAttribute(element: HTMLElement, name: string, value: number): void {
+			if (value > 0) {
+				element.setAttribute(name, String(value));
+			} else {
+				element.removeAttribute(name);
+			}
+		}
+
+		private static setGridSpanAttribute(element: HTMLElement, name: string, value: number): void {
+			if (value > 1) {
+				element.setAttribute(name, String(value));
+			} else {
+				element.removeAttribute(name);
 			}
 		}
 
@@ -898,12 +997,49 @@ namespace Uno.UI.Runtime.Skia {
 		 * Updates the disabled state of an element.
 		 */
 		public static updateDisabledState(handle: number, disabled: boolean): void {
-			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLButtonElement | HTMLInputElement;
+			const element = Accessibility.getSemanticElementByHandle(handle) as HTMLButtonElement | HTMLInputElement;
 			if (element) {
+				if ((element.getAttribute('aria-disabled') === 'true') === disabled) {
+					return;
+				}
+				const role = element.getAttribute('role') ?? '';
+				const isGridItem = ['gridcell', 'columnheader', 'rowheader'].includes(role);
+				const isGridRow = role === 'row';
+				if (disabled && (isGridItem || isGridRow)) {
+					Accessibility.repairGridFocusBeforeRemoval(element);
+				}
 				if ('disabled' in element) {
 					element.disabled = disabled;
 				}
 				element.setAttribute('aria-disabled', String(disabled));
+				if (role === 'option' && element.parentElement?.getAttribute('role') === 'listbox') {
+					element.tabIndex = -1;
+					Accessibility.synchronizeListboxTabStop(element.parentElement);
+					return;
+				}
+				if (disabled && (isGridItem || isGridRow)) {
+					Accessibility.suspendGridSubtree(element);
+				}
+				if (element.getAttribute('role') === 'grid') {
+					Accessibility.updateGridDisabledState(element, disabled);
+				} else if (isGridItem || isGridRow) {
+					const grid = element.closest('[role="grid"]') as HTMLElement | null;
+					if (grid) {
+						if (disabled && isGridItem) {
+							element.tabIndex = -1;
+							if (grid.dataset.unoGridActiveId === element.id) {
+								delete grid.dataset.unoGridActiveId;
+							}
+						}
+						Accessibility.synchronizeGridTabStop(grid);
+					}
+				} else if (disabled) {
+					element.dataset.unoEnabledTabIndex = String(element.tabIndex);
+					element.tabIndex = -1;
+				} else if (element.dataset.unoEnabledTabIndex !== undefined) {
+					element.tabIndex = Number(element.dataset.unoEnabledTabIndex);
+					delete element.dataset.unoEnabledTabIndex;
+				}
 			}
 		}
 
@@ -1190,14 +1326,14 @@ namespace Uno.UI.Runtime.Skia {
 			rowCount: number,
 			colCount: number,
 			multiSelectable: boolean,
-			_isFocusable: boolean
+			isFocusable: boolean
 		): void {
-			const element = document.createElement('table');
+			const element = document.createElement('div');
 			this.applyCommonStyles(element, x, y, width, height, handle);
 			element.setAttribute('role', 'grid');
 			// Roving model (T015): the composite container is not itself a tab stop; the active cell is.
-			// _isFocusable is accepted for signature uniformity.
 			element.tabIndex = -1;
+			Accessibility.updateElementFocusability(element, isFocusable);
 			element.style.pointerEvents = 'none';
 			this.setAriaStringAttribute(element, 'aria-label', label);
 			if (rowCount > 0) {
@@ -1206,9 +1342,12 @@ namespace Uno.UI.Runtime.Skia {
 			if (colCount > 0) {
 				element.setAttribute('aria-colcount', String(colCount));
 			}
-			if (multiSelectable) {
-				element.setAttribute('aria-multiselectable', 'true');
-			}
+			element.setAttribute('aria-multiselectable', String(multiSelectable));
+			element.addEventListener('focus', () => {
+				if (document.activeElement === element) {
+					Accessibility.updateRovingTabindex(0, handle);
+				}
+			});
 			this.appendToParent(element, parentHandle, index);
 		}
 
@@ -1257,8 +1396,11 @@ namespace Uno.UI.Runtime.Skia {
 			label: string | null,
 			rowIndex: number,
 			colIndex: number,
+			rowSpan: number,
+			colSpan: number,
 			selectable: boolean,
 			selected: boolean,
+			canInvoke: boolean,
 			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
@@ -1275,10 +1417,14 @@ namespace Uno.UI.Runtime.Skia {
 			if (colIndex > 0) {
 				element.setAttribute('aria-colindex', String(colIndex));
 			}
+			this.setGridSpanAttribute(element, 'aria-rowspan', rowSpan);
+			this.setGridSpanAttribute(element, 'aria-colspan', colSpan);
 			if (selectable) {
 				element.setAttribute('aria-selected', String(selected));
 			}
+			this.installGridItemBehavior(element, handle, selectable, canInvoke);
 			this.appendToParent(element, parentHandle, index);
+			this.initializeGridTabStop(element, true);
 		}
 
 		/**
@@ -1294,7 +1440,10 @@ namespace Uno.UI.Runtime.Skia {
 			height: number,
 			label: string | null,
 			colIndex: number,
+			rowSpan: number,
+			colSpan: number,
 			sort: string | null,
+			canInvoke: boolean,
 			_isFocusable: boolean
 		): void {
 			const element = document.createElement('div');
@@ -1308,10 +1457,78 @@ namespace Uno.UI.Runtime.Skia {
 			if (colIndex > 0) {
 				element.setAttribute('aria-colindex', String(colIndex));
 			}
+			this.setGridSpanAttribute(element, 'aria-rowspan', rowSpan);
+			this.setGridSpanAttribute(element, 'aria-colspan', colSpan);
 			if (sort) {
 				element.setAttribute('aria-sort', sort);
 			}
+			this.installGridItemBehavior(element, handle, false, canInvoke);
 			this.appendToParent(element, parentHandle, index);
+			this.initializeGridTabStop(element, false);
+		}
+
+		/**
+		 * Creates a row header element.
+		 */
+		public static createRowHeaderElement(
+			parentHandle: number,
+			handle: number,
+			index: number | null,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			label: string | null,
+			rowIndex: number,
+			rowSpan: number,
+			colSpan: number,
+			_isFocusable: boolean
+		): void {
+			const element = document.createElement('div');
+			this.applyCommonStyles(element, x, y, width, height, handle);
+			element.setAttribute('role', 'rowheader');
+			element.tabIndex = -1;
+			element.style.pointerEvents = 'none';
+			this.setAriaStringAttribute(element, 'aria-label', label);
+			this.setPositiveIntegerAttribute(element, 'aria-rowindex', rowIndex);
+			element.setAttribute('aria-colindex', '1');
+			this.setGridSpanAttribute(element, 'aria-rowspan', rowSpan);
+			this.setGridSpanAttribute(element, 'aria-colspan', colSpan);
+			this.installGridItemBehavior(element, handle, false, false);
+			this.appendToParent(element, parentHandle, index);
+			this.initializeGridTabStop(element, false);
+		}
+
+		private static initializeGridTabStop(element: HTMLElement, preferDataCell: boolean): void {
+			Accessibility.initializeGridTabStop(element, preferDataCell);
+		}
+
+		private static installGridItemBehavior(element: HTMLElement, handle: number, selectable: boolean, canInvoke: boolean): void {
+			element.addEventListener('focus', () => {
+				if (element.isConnected && document.getElementById(element.id) === element && document.activeElement === element &&
+					Accessibility.prepareGridItemFocus(element)) {
+					Accessibility.updateRovingTabindex(0, handle);
+				}
+			});
+			element.addEventListener('focusout', (event: FocusEvent) => {
+				if (!event.relatedTarget || !element.contains(event.relatedTarget as Node)) {
+					Accessibility.exitGridInteractionMode(element);
+				}
+			});
+			element.addEventListener('click', (event: MouseEvent) => {
+				const grid = element.closest('[role="grid"]') as HTMLElement | null;
+				if (!element.isConnected || document.getElementById(element.id) !== element || event.target !== element ||
+					!grid || !Accessibility.isGridItemEligible(element, grid)) {
+					return;
+				}
+
+				const callbacks = this.getCallbacks();
+				if (canInvoke) {
+					callbacks.onInvoke?.(handle);
+				} else if (selectable) {
+					callbacks.onSelection?.(handle);
+				}
+			});
 		}
 
 		/**
@@ -1421,54 +1638,29 @@ namespace Uno.UI.Runtime.Skia {
 		// ===== Virtualized Container Functions =====
 
 		/**
-		 * Queue for batching virtualized item DOM mutations via requestAnimationFrame.
-		 */
-		private static virtualizedMutationQueue: (() => void)[] = [];
-		private static virtualizedRafId: number = 0;
-
-		/**
-		 * Schedules a virtualized mutation to be flushed in the next animation frame.
-		 */
-		private static scheduleVirtualizedMutation(mutation: () => void): void {
-			SemanticElements.virtualizedMutationQueue.push(mutation);
-			if (SemanticElements.virtualizedRafId === 0) {
-				SemanticElements.virtualizedRafId = requestAnimationFrame(() => {
-					SemanticElements.flushVirtualizedMutations();
-				});
-			}
-		}
-
-		/**
-		 * Flushes all queued virtualized mutations.
-		 */
-		private static flushVirtualizedMutations(): void {
-			const queue = SemanticElements.virtualizedMutationQueue;
-			SemanticElements.virtualizedMutationQueue = [];
-			SemanticElements.virtualizedRafId = 0;
-			for (const mutation of queue) {
-				mutation();
-			}
-		}
-
-		/**
 		 * Registers a virtualized container (creates listbox/grid element).
 		 */
 		public static registerVirtualizedContainer(
 			containerHandle: number,
 			role: string,
 			label: string,
-			multiselectable: boolean
+			multiselectable: boolean,
+			usesActiveDescendant: boolean
 		): void {
 			// If an element for this container already exists (created by CreateListBoxElement),
 			// just update its attributes instead of creating a duplicate.
-			const existing = document.getElementById(`uno-semantics-${containerHandle}`);
+			const existing = Accessibility.getSemanticElementByHandle(containerHandle);
 			if (existing) {
 				if (label) {
 					existing.setAttribute('aria-label', label);
 				}
 				if (multiselectable) {
 					existing.setAttribute('aria-multiselectable', 'true');
+				} else {
+					existing.removeAttribute('aria-multiselectable');
 				}
+				existing.dataset.unoUsesActiveDescendant = String(usesActiveDescendant);
+				Accessibility.synchronizeListboxTabStop(existing);
 				return;
 			}
 
@@ -1480,6 +1672,7 @@ namespace Uno.UI.Runtime.Skia {
 			const element = document.createElement('div');
 			element.id = `uno-semantics-${containerHandle}`;
 			element.setAttribute('role', role);
+			element.dataset.unoUsesActiveDescendant = String(usesActiveDescendant);
 			element.style.position = 'absolute';
 			// Roving model (T015): the virtualized composite container is not itself a tab stop;
 			// focus rests on the active descendant item, consistent with createListBoxElement.
@@ -1495,9 +1688,22 @@ namespace Uno.UI.Runtime.Skia {
 			root.appendChild(element);
 		}
 
+		public static updateVirtualizedContainerMultiselectable(containerHandle: number, multiselectable: boolean): void {
+			const container = Accessibility.getSemanticElementByHandle(containerHandle);
+			if (!container) {
+				return;
+			}
+
+			if (multiselectable) {
+				container.setAttribute('aria-multiselectable', 'true');
+			} else {
+				container.removeAttribute('aria-multiselectable');
+			}
+		}
+
 		/**
 		 * Adds a semantic element for a realized virtualized item.
-		 * Batched via requestAnimationFrame.
+		 * Applied synchronously so managed realized-state and DOM membership remain atomic.
 		 */
 		public static addVirtualizedItem(
 			containerHandle: number,
@@ -1509,73 +1715,97 @@ namespace Uno.UI.Runtime.Skia {
 			width: number,
 			height: number,
 			role: string,
-			label: string
-		): void {
-			SemanticElements.scheduleVirtualizedMutation(() => {
-				const container = document.getElementById(`uno-semantics-${containerHandle}`);
-				if (!container) {
-					return;
+			label: string,
+			selected: boolean,
+			disabled: boolean,
+			focusable: boolean,
+			usesActiveDescendant: boolean
+		): boolean {
+			const container = Accessibility.getSemanticElementByHandle(containerHandle);
+			if (!container) {
+				return false;
+			}
+
+			// If an element for this item already exists (created by OnChildAdded→CreateListItemElement),
+			// just update it instead of creating a duplicate.
+			const existingItem = Accessibility.getSemanticElementByHandle(itemHandle);
+			if (existingItem) {
+				existingItem.setAttribute('role', role);
+				existingItem.setAttribute('aria-posinset', String(index + 1));
+				existingItem.setAttribute('aria-setsize', String(totalCount));
+				existingItem.setAttribute('aria-selected', String(selected));
+				existingItem.setAttribute('aria-disabled', String(disabled));
+				existingItem.dataset.unoOptionFocusable = String(focusable);
+				SemanticElements.setAriaStringAttribute(existingItem, 'aria-label', label);
+				// Ensure item is inside the correct container
+				if (existingItem.parentElement !== container) {
+					container.appendChild(existingItem);
 				}
+				SemanticElements.ensureVirtualizedSelectionHandler(existingItem, itemHandle);
+				container.dataset.unoUsesActiveDescendant = String(usesActiveDescendant);
+				Accessibility.initializeListboxOption(container, existingItem, selected);
+				return true;
+			}
 
-				// If an element for this item already exists (created by OnChildAdded→CreateListItemElement),
-				// just update it instead of creating a duplicate.
-				const existingItem = document.getElementById(`uno-semantics-${itemHandle}`);
-				if (existingItem) {
-					existingItem.setAttribute('aria-posinset', String(index + 1));
-					existingItem.setAttribute('aria-setsize', String(totalCount));
-					if (label) {
-						existingItem.setAttribute('aria-label', label);
-					}
-					// Ensure item is inside the correct container
-					if (existingItem.parentElement !== container) {
-						container.appendChild(existingItem);
-					}
-					return;
-				}
+			const element = document.createElement('div');
+			SemanticElements.applyCommonStyles(element, x, y, width, height, itemHandle);
+			element.setAttribute('role', role);
+			// aria-posinset is 1-based, index is 0-based
+			element.setAttribute('aria-posinset', String(index + 1));
+			element.setAttribute('aria-setsize', String(totalCount));
+			element.setAttribute('aria-selected', String(selected));
+			element.setAttribute('aria-disabled', String(disabled));
+			element.dataset.unoOptionFocusable = String(focusable);
+			element.tabIndex = -1;
+			element.style.pointerEvents = 'none';
 
-				const element = document.createElement('div');
-				SemanticElements.applyCommonStyles(element, x, y, width, height, itemHandle);
-				element.setAttribute('role', role);
-				// aria-posinset is 1-based, index is 0-based
-				element.setAttribute('aria-posinset', String(index + 1));
-				element.setAttribute('aria-setsize', String(totalCount));
-				element.tabIndex = -1;
-				element.style.pointerEvents = 'none';
+			if (label) {
+				element.setAttribute('aria-label', label);
+			}
 
-				if (label) {
-					element.setAttribute('aria-label', label);
-				}
+			SemanticElements.ensureVirtualizedSelectionHandler(element, itemHandle);
 
+			container.appendChild(element);
+			container.dataset.unoUsesActiveDescendant = String(usesActiveDescendant);
+			Accessibility.initializeListboxOption(container, element, selected);
+			return true;
+		}
+
+		private static ensureVirtualizedSelectionHandler(element: HTMLElement, itemHandle: number): void {
+			if (element.dataset.unoSelectionHandlerAttached === 'true') {
+				return;
+			}
+
+			element.dataset.unoSelectionHandlerAttached = 'true';
+			element.addEventListener('click', (e) => {
+				e.preventDefault();
 				const callbacks = SemanticElements.getCallbacks();
-				element.addEventListener('click', (e) => {
-					e.preventDefault();
-					if (callbacks.onSelection) {
-						callbacks.onSelection(itemHandle);
-					}
-				});
-
-				container.appendChild(element);
+				if (callbacks.onSelection) {
+					callbacks.onSelection(itemHandle);
+				}
 			});
 		}
 
 		/**
 		 * Removes a semantic element for an unrealized virtualized item.
-		 * Batched via requestAnimationFrame.
+		 * Applied synchronously so stale removals cannot cross container generations.
 		 */
 		public static removeVirtualizedItem(itemHandle: number): void {
-			SemanticElements.scheduleVirtualizedMutation(() => {
-				const element = document.getElementById(`uno-semantics-${itemHandle}`);
-				if (element && element.parentElement) {
-					element.parentElement.removeChild(element);
+			const element = Accessibility.getSemanticElementByHandle(itemHandle);
+			if (element && element.parentElement) {
+				const container = element.parentElement;
+				container.removeChild(element);
+				if (container.getAttribute('role') === 'listbox') {
+					Accessibility.synchronizeListboxTabStop(container);
 				}
-			});
+			}
 		}
 
 		/**
 		 * Updates the total item count on all realized items in a container.
 		 */
 		public static updateVirtualizedItemCount(containerHandle: number, totalCount: number): void {
-			const container = document.getElementById(`uno-semantics-${containerHandle}`);
+			const container = Accessibility.getSemanticElementByHandle(containerHandle);
 			if (!container) {
 				return;
 			}
@@ -1585,11 +1815,21 @@ namespace Uno.UI.Runtime.Skia {
 			});
 		}
 
+		public static updateVirtualizedItemPosition(itemHandle: number, index: number, totalCount: number): boolean {
+			const item = Accessibility.getSemanticElementByHandle(itemHandle);
+			if (item) {
+				item.setAttribute('aria-posinset', String(index + 1));
+				item.setAttribute('aria-setsize', String(totalCount));
+				return true;
+			}
+			return false;
+		}
+
 		/**
 		 * Unregisters a virtualized container and removes all its semantic elements.
 		 */
 		public static unregisterVirtualizedContainer(containerHandle: number): void {
-			const element = document.getElementById(`uno-semantics-${containerHandle}`);
+			const element = Accessibility.getSemanticElementByHandle(containerHandle);
 			if (element && element.parentElement) {
 				element.parentElement.removeChild(element);
 			}

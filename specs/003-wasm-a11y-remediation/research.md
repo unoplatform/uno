@@ -4,11 +4,12 @@
 **Branch**: `003-wasm-a11y-remediation`
 **Depends on**: `001-wasm-accessibility` (AriaMapper, SemanticElementFactory, semantic DOM), `002-wasm-a11y-advanced` (roving tabindex, FocusSynchronizer, virtualization)
 
-> **Evidence level: code review by inspection, adversarially verified.** Every claim
-> below was traced in the live source and independently re-verified by a second
-> reviewer instructed to refute it. **None of this is runtime-validated** — the
-> existing runtime tests for these mappings are almost entirely `[Ignore]`d (see
-> §4), so the headline conclusion is *"correct by inspection, untested at runtime."*
+> **Evidence level: historical audit by inspection; remediation runtime-validated.**
+> The findings below describe the pre-remediation source and were adversarially
+> verified during planning. The implemented remediation is now covered by active
+> semantic-DOM runtime tests: 253 targeted Skia-WASM tests, 85 Skia Desktop tests,
+> and 8 live WASM automation/standards tests passed. The historical findings remain
+> here as rationale and as a baseline for regression coverage.
 
 This document consolidates two audits:
 1. **Mapping verification** — does each XAML control → HTML/ARIA mapping actually
@@ -41,8 +42,9 @@ The accessibility code spans two **independent** code paths:
 | **TextBlock(Body) → `<p>`/`<span>`** | 🔴 gap | **Pruned entirely** — produces *no* DOM node (not even a `<div>`). Also affects `RichTextBlock`/`RichTextBlockOverflow`. |
 | **ScrollViewer → `role=region`** | 🟡 partial | `role=region` emitted **unconditionally** (every ScrollViewer → rotor noise) and **unlabeled or labeled with a descendant-text dump** (axe/WCAG "region must have a name" violation). |
 
-Corrected headline: **not "4 of 6 done" — at best ~2.5 of 6 are solid; one is broken;
-the rest partial/gap; and the whole subsystem is runtime-unverified.**
+Corrected audit-time headline: **not "4 of 6 done" — at best ~2.5 of 6 were solid;
+one was broken, the rest partial/gap, and the whole subsystem was runtime-unverified.**
+The remediation and active runtime suite described above supersede that validation state.
 
 ### 2.1 RadioButton — three fatal defects
 
@@ -204,7 +206,7 @@ DOM-level / interaction assertions are essentially absent:
 | RadioButton | Treat as a correctness bug, fix first | Broken on 3 axes; highest user impact |
 | tabindex | Gate on real focusability across **all** paths; headings/non-interactive get none | Root cause is the factory's hardcoded literals |
 | Live-sync | Add missing `NotifyPropertyChangedEventCore` branches; consider a generalized property→attribute map | Hand-maintained switch is the systemic gap |
-| Tests | Add DOM-level runtime tests (enable AOM, assert element/attributes/routing) + re-enable the `[Ignore]`d suite | Current coverage is near-zero and inactive |
+| Tests | Add DOM-level runtime tests (enable AOM, assert element/attributes/routing) + re-enable the `[Ignore]`d suite | Coverage was near-zero and inactive at audit time |
 | Native WASM DOM | Out of scope except optional `tabindex`-noise cleanup | Maintenance-only target |
 | ARIA attribute correctness | Fix wrong-target mappings, close factory/generic divergence, map the unmapped, add IDREF integrity + tests | See §8 |
 
@@ -213,8 +215,9 @@ DOM-level / interaction assertions are essentially absent:
 ## 8. ARIA attribute mapping audit
 
 > Third audit (adversarially verified; two overclaims corrected — noted at the end). Covers
-> every `AutomationProperties`/peer property → ARIA attribute. **No runtime test asserts any
-> emitted ARIA output today.** Answer to "are they all mapped correctly?": **No.**
+> every `AutomationProperties`/peer property → ARIA attribute. At audit time, no runtime
+> test asserted emitted ARIA output. The active remediation suite now exercises this output.
+> The audit-time answer to "are they all mapped correctly?" was **No.**
 
 ### 8.1 Wrong-target — mapped to the wrong attribute (P1)
 
