@@ -21,7 +21,7 @@
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">tvossimulator-x64</RuntimeIdentifier>
 
 		<!-- Override RuntimeIdentifier specifically for smaller builds -->
-		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!=''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!='' AND '$(UnoSampleAppRuntimeIdentifiers)' != ''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
 
 		<!--
 		Required for the mobile nuget restore to revalidate
@@ -129,10 +129,27 @@
 				<!--<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />-->
 				<PackageReference Include="SkiaSharp" />
 				<PackageReference Include="SkiaSharp.NativeAssets.TvOS" />
+
+				<!--
+				AwesomeAssertions annotates its API with JetBrains.Annotations but does not
+				declare a package dependency on it, so the assembly is absent from the graph.
+				tvOS is the only head that does a full AOT pass, and the AOT compiler bails on
+				the resulting loader error:
+				  Failed to load custom attributes from AwesomeAssertions.AssertionEngine:ResetToDefaults()
+				  due to Could not load file or assembly 'JetBrains.Annotations'
+				  FullAOT cannot continue if there are loader errors.
+				Referencing it explicitly makes the custom attributes resolvable.
+				-->
+				<PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
+			</ItemGroup>
+
+			<!-- Auto-included by the default None glob; Rider then reads their UIDeviceFamily and mislabels the project as iPhone/iPad. -->
+			<ItemGroup>
+				<None Remove="iOS\Info.plist" />
+				<None Remove="MacCatalyst\Info.plist" />
 			</ItemGroup>
 
 			<PropertyGroup>
-				<MtouchUseLlvm>true</MtouchUseLlvm>
 				<SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
 
 				<!-- iOS 17 compatibility -->
@@ -300,5 +317,26 @@
 	  <CodesignProvision>VS: WildCard Development</CodesignProvision>
 	</PropertyGroup>
 
+	<!--
+	Microsoft.Identity.Client ships no tvOS asset (only net8.0, net8.0-ios18.0,
+	net8.0-android34.0, net462, net472, netstandard2.0), so a net10.0-tvos head resolves
+	the desktop lib/net8.0 assembly. That assembly carries
+	Microsoft.Identity.Client.Platforms.Features.DesktopOs.LibSystem, which P/Invokes
+	dlopen/dlsym through "/System/Library/Frameworks/System.framework/System" - a legacy
+	framework that exists only on macOS. Xamarin.Shared.Sdk.targets derives the native
+	framework list from DllImport paths, so that turns into "-framework System" and the
+	link fails with "ld: framework 'System' not found".
+
+	The code path is unreachable on tvOS, so drop the framework from the native link.
+	This mirrors how the Apple SDK itself removes BrowserEngineKit
+	(Xamarin.Shared.Sdk.targets, _ComputeLinkNativeExecutableInputs).
+	-->
+	<Target Name="_UnoRemoveMissingSystemFrameworkOnTvOS"
+			AfterTargets="_ComputeLinkNativeExecutableInputs"
+			Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos' ">
+		<ItemGroup>
+			<_NativeExecutableFrameworks Remove="System" />
+		</ItemGroup>
+	</Target>
 
 </Project>

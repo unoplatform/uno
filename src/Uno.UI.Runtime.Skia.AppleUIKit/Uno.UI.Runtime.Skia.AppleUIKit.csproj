@@ -41,7 +41,13 @@
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="SkiaSharp.Views" />
-		<PackageReference Include="Uno.icu-ios" />
+		<!--
+		Uno.icu-ios only ships iOS slices, and its targets pick the device archives for
+		any RID that does not contain 'iossimulator'. A tvOS head therefore force-loads
+		iOS-device arm64 objects and fails the native link. Exclude it until the package
+		carries real tvos/tvossimulator slices.
+		-->
+		<PackageReference Include="Uno.icu-ios" Condition="'$(IsTvOS)' != 'true'" />
 	</ItemGroup>
 
 	<ItemGroup>
