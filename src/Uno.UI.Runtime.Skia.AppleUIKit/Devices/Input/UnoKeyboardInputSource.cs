@@ -25,6 +25,7 @@ internal sealed class UnoKeyboardInputSource : IUnoKeyboardInputSource
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
 #pragma warning restore CS0067
+	event TypedEventHandler<object, CharacterReceivedEventArgs>? IUnoKeyboardInputSource.CharacterReceived { add { } remove { } }
 
 	public bool TryHandlePresses(NSSet<UIPress> presses, UIPressesEvent evt, AppleUIKitWindow window)
 	{

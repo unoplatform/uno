@@ -255,7 +255,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: Publish Failed Tests Results List
     condition: always()
-    retryCountOnTaskFailure: 10
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
       ArtifactName: $(TEST_KIND)-tests-android-native-failures
