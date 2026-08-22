@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
@@ -86,6 +87,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			cc.Style = explicitStyle;
 
 			Assert.AreEqual(HorizontalAlignment.Left, cc.HorizontalContentAlignment);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24159")]
+		public async Task When_Explicit_Style_Uses_Fluent_Default_Value()
+		{
+			var expected = Application.Current.Resources["ToggleButtonBackground"] as SolidColorBrush;
+			Assert.IsNotNull(expected);
+
+			var button = new ToggleButton
+			{
+				Content = "Explicit style",
+				Style = new Style(typeof(ToggleButton)),
+			};
+
+			try
+			{
+				await UITestHelper.Load(button);
+
+				var actual = button.Background as SolidColorBrush;
+				Assert.IsNotNull(actual);
+				Assert.AreEqual(expected.Color, actual.Color);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]

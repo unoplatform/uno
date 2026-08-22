@@ -343,10 +343,12 @@ namespace Microsoft.UI.Xaml
 			if (isNative)
 			{
 				_nativeLookup[type] = ProvideStyle;
+				_nativeDefaultStyleCache.Remove(type);
 			}
 			else
 			{
 				_lookup[type] = ProvideStyle;
+				_defaultStyleCache.Remove(type);
 			}
 
 			Style ProvideStyle()
