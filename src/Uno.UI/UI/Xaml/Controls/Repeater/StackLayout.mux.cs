@@ -84,13 +84,6 @@ partial class StackLayout
 			IsVirtualizationEnabled,
 			LayoutId);
 
-#if !__SKIA__
-		// Uno workaround: Keep track of realized items count for viewport invalidation optimization on native targets
-		stackState.Uno_LastKnownItemsCount = context.ItemCount;
-		stackState.Uno_LastKnownRealizedElementsCount = algo.RealizedElementCount;
-		stackState.Uno_LastKnownDesiredSize = desiredSize;
-#endif
-
 		return new Size(desiredSize.Width, desiredSize.Height);
 	}
 
@@ -401,11 +394,6 @@ partial class StackLayout
 		{
 			averageElementSize = Math.Round(averageElementSize);
 		}
-
-#if !__SKIA__
-		// Uno workaround: cache for viewport-invalidation optimization on native targets
-		stackState.Uno_LastKnownAverageElementSize = averageElementSize;
-#endif
 
 		return averageElementSize;
 	}

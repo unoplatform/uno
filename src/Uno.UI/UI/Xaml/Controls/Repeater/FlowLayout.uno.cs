@@ -1,15 +1,12 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 // Uno-specific scaffolding for the C++ OrientationBasedMeasures multiple
-// inheritance plus the IsSignificantViewportChange optimization that lets
-// FlowLayout participate in Uno's incremental viewport updates on native
-// targets (Skia uses the unmodified WinUI flow).
+// inheritance.
 partial class FlowLayout
 {
 	private ScrollOrientation _scrollOrientation;
@@ -51,21 +48,4 @@ partial class FlowLayout
 	private Size MinorMajorSize(float minor, float major)
 		=> ((OrientationBasedMeasures)this).MinorMajorSize(minor, major);
 #pragma warning restore IDE0051
-
-#if !__SKIA__
-	/// <inheritdoc />
-	protected internal override bool IsSignificantViewportChange(object state, Rect oldViewport, Rect newViewport)
-	{
-		if (state is FlowLayoutState { Uno_LastKnownAverageLineSize: > 0 } flowState)
-		{
-			var elementSize = flowState.Uno_LastKnownAverageLineSize;
-			return Math.Abs(MajorStart(oldViewport) - MajorStart(newViewport)) > elementSize * 1.5
-				|| Math.Abs(MajorEnd(oldViewport) - MajorEnd(newViewport)) > elementSize * 1.5;
-		}
-		else
-		{
-			return base.IsSignificantViewportChange(state, oldViewport, newViewport);
-		}
-	}
-#endif
 }
