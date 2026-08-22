@@ -2137,6 +2137,12 @@
 		  <Member fullName="Uno.UI.Toolkit.MenuFlyoutItemExtensions" reason="Removed MenuFlyoutItemExtensions; its IsDestructive attached property was read only by the native iOS MenuFlyout presentation (#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.Toolkit.MenuFlyoutExtensions" reason="Removed MenuFlyoutExtensions; its CancelTextIosOverride attached property was read only by the native iOS MenuFlyout presentation (#2052, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Control" reason="Removed empty FeatureConfiguration.Control holder after deleting UseLegacyContentAlignment (BC45, breaking changes for 7.0)" />
+		  <!-- Window's event handler delegates do not exist in WinUI; the events now use TypedEventHandler (#2089). -->
+		  <Member fullName="Microsoft.UI.Xaml.WindowActivatedEventHandler" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.WindowSizeChangedEventHandler" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.WindowClosedEventHandler" reason="Removed unused Uno-only delegate; WinUI has no such type (#2089, breaking changes for 7.0, uno#8339)" />
+
 		  <!-- Xaml-compat stub of the native-only Uno.UI.Maps addin, removed along with the addin itself (#2049, breaking changes for 7.0). -->
 		  <Member fullName="Uno.UI.Maps.MapResources" reason="Removed the Uno.UI.Toolkit Xaml-compat ResourceDictionary stub together with the native-only Uno.UI.Maps addin (#2049, breaking changes for 7.0)" />
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
@@ -2425,6 +2431,28 @@
 
 		  <!-- Duration.TimeSpan public field removed; WinUI exposes TimeSpan as a get-only property (paired accessor is emitted by the property, not a field). -->
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Made Duration.TimeSpan read-only to match WinUI (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- WinRT struct members are properties in WinUI, not fields: Thickness/CornerRadius expose get+set over -->
+		  <!-- private backing fields, GridLength exposes get-only. Uno projected them as public fields (#2082).    -->
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Thickness::Left" reason="Thickness.Left is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Thickness::Top" reason="Thickness.Top is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Thickness::Right" reason="Thickness.Right is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Thickness::Bottom" reason="Thickness.Bottom is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.CornerRadius::TopLeft" reason="CornerRadius.TopLeft is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.CornerRadius::TopRight" reason="CornerRadius.TopRight is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.CornerRadius::BottomRight" reason="CornerRadius.BottomRight is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.CornerRadius::BottomLeft" reason="CornerRadius.BottomLeft is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.GridLength::Value" reason="GridLength.Value is a get-only property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.GridUnitType Microsoft.UI.Xaml.GridLength::GridUnitType" reason="GridLength.GridUnitType is a get-only property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <!-- Uno.UI.Composition compiles the same Thickness/CornerRadius sources under its own namespace. -->
+		  <Member fullName="System.Double Uno.UI.Composition.Thickness::Left" reason="Thickness.Left is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Uno.UI.Composition.Thickness::Top" reason="Thickness.Top is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Uno.UI.Composition.Thickness::Right" reason="Thickness.Right is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Uno.UI.Composition.Thickness::Bottom" reason="Thickness.Bottom is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Uno.UI.Composition.CornerRadius::TopLeft" reason="CornerRadius.TopLeft is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Uno.UI.Composition.CornerRadius::TopRight" reason="CornerRadius.TopRight is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Uno.UI.Composition.CornerRadius::BottomRight" reason="CornerRadius.BottomRight is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Double Uno.UI.Composition.CornerRadius::BottomLeft" reason="CornerRadius.BottomLeft is a property in WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 
 		  <!-- Reference flavor folded into Skia: lib/ now carries the Skia build, so members that only the -->
 		  <!-- Reference compilation produced are gone. _fullyInitialized sat under !UNO_HAS_ENHANCED_LIFECYCLE, -->
@@ -3376,8 +3404,29 @@
 
 		  <!-- UriExtensions.IsLocalResource renamed: the name said "local resource" but the check is ms-appx, three lines from the ms-resource helpers it was confused with. -->
 		  <Member fullName="System.Boolean Uno.Extensions.UriExtensions.IsLocalResource(System.Uri uri)" reason="Renamed to IsMsAppx (BC51, breaking changes for 7.0)" />
+
+		  <!-- Sync generator alignment: GridLength's second constructor parameter is named `type` in WinUI. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.GridLength..ctor(System.Double value, Microsoft.UI.Xaml.GridUnitType gridUnitType)" reason="GridLength constructor parameter renamed to `type` to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+
+		  <!-- Sync generator alignment: DataTemplate.LoadContent returns DependencyObject in WinUI, not UIElement. -->
+		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.DataTemplate.LoadContent()" reason="LoadContent returns DependencyObject to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.DataTemplate.LoadContent(Microsoft.UI.Xaml.DependencyObject templatedParent)" reason="LoadContent returns DependencyObject to match WinUI (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
+
+		  <!-- Window event accessors retyped to TypedEventHandler; the old-typed accessors read as removed (events paired in <Events> below). -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.add_Activated(Microsoft.UI.Xaml.WindowActivatedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_Activated(Microsoft.UI.Xaml.WindowActivatedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.add_SizeChanged(Microsoft.UI.Xaml.WindowSizeChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_SizeChanged(Microsoft.UI.Xaml.WindowSizeChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.add_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 	  </Methods>
 	  <Events>
+		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->
+		  <!-- TypedEventHandler; the old-typed events read as removed (accessors paired in <Methods>). -->
+		  <Member fullName="Microsoft.UI.Xaml.WindowActivatedEventHandler Microsoft.UI.Xaml.Window::Activated" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.WindowSizeChangedEventHandler Microsoft.UI.Xaml.Window::SizeChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler Microsoft.UI.Xaml.Window::VisibilityChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+
 		  <!-- ====================================================================== -->
 		  <!-- BEGIN WinUI sync (Category B): shadow event removals.                  -->
 		  <!--                                                                        -->

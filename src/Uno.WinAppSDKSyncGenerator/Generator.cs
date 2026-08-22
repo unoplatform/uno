@@ -55,57 +55,19 @@ namespace Uno.WinAppSDKSyncGenerator
 			BaseXamlNamespace + ".Media.DoubleCollection",
 		};
 
+		/// <summary>
+		/// Types whose generated partial must not restate the WinUI base class, because Uno's
+		/// hand-written hierarchy diverges and a second, conflicting base clause is a CS0263.
+		/// Most of this list came from the pre-7.0 native view hierarchy and became obsolete with
+		/// the native drop — only genuine divergences belong here.
+		/// </summary>
 		private static readonly string[] _skipBaseTypes = new[]
 		{
-			// skipped because of legacy mismatched hierarchy
-			BaseXamlNamespace + ".FrameworkElement",
-			BaseXamlNamespace + ".UIElement",
-			BaseXamlNamespace + ".Controls.Image",
+			// Uno inserts CalendarViewBaseItem, which WinUI does not project, between the item and Control.
 			BaseXamlNamespace + ".Controls.CalendarViewDayItem",
-			BaseXamlNamespace + ".Controls.ComboBox",
-			BaseXamlNamespace + ".Controls.CheckBox",
-			BaseXamlNamespace + ".Controls.TextBlock",
-			BaseXamlNamespace + ".Controls.TextBox",
-			BaseXamlNamespace + ".Controls.ProgressRing",
-			BaseXamlNamespace + ".Controls.ListViewBase",
-			BaseXamlNamespace + ".Controls.ListView",
-			BaseXamlNamespace + ".Controls.ListViewHeaderItem",
-			BaseXamlNamespace + ".Controls.GridView",
-			BaseXamlNamespace + ".Controls.ComboBox",
-			BaseXamlNamespace + ".Controls.UserControl",
-			BaseXamlNamespace + ".Controls.RadioButton",
-			BaseXamlNamespace + ".Controls.Slider",
-			BaseXamlNamespace + ".Controls.PasswordBox",
-			BaseXamlNamespace + ".Controls.RichEditBox",
-			BaseXamlNamespace + ".Controls.ProgressBar",
-			BaseXamlNamespace + ".Controls.ListViewItem",
-			BaseXamlNamespace + ".Controls.ScrollContentPresenter",
-			BaseXamlNamespace + ".Controls.Pivot",
-			BaseXamlNamespace + ".Controls.CommandBar",
-			BaseXamlNamespace + ".Controls.AppBar",
-			BaseXamlNamespace + ".Controls.TimePickerFlyoutPresenter",
-			BaseXamlNamespace + ".Controls.DatePickerFlyoutPresenter",
-			BaseXamlNamespace + ".Controls.AppBarSeparator",
-			BaseXamlNamespace + ".Controls.DatePickerFlyout",
-			BaseXamlNamespace + ".Controls.TimePickerFlyout",
-			BaseXamlNamespace + ".Controls.AppBarToggleButton",
-			BaseXamlNamespace + ".Controls.FlipView",
-			BaseXamlNamespace + ".Controls.FlipViewItem",
-			BaseXamlNamespace + ".Controls.GridViewItem",
-			BaseXamlNamespace + ".Controls.ComboBoxItem",
-			BaseXamlNamespace + ".Controls.Flyout",
-			BaseXamlNamespace + ".Controls.FontIcon",
-			BaseXamlNamespace + ".Controls.MenuFlyout",
-			BaseXamlNamespace + ".Data.CollectionView",
-			BaseXamlNamespace + ".Controls.WebView",
-			BaseXamlNamespace + ".Controls.UIElementCollection",
-			BaseXamlNamespace + ".Media.Animation.FadeInThemeAnimation",
-			BaseXamlNamespace + ".Media.Animation.FadeOutThemeAnimation",
-			BaseXamlNamespace + ".Media.ImageBrush",
-			BaseXamlNamespace + ".Media.LinearGradientBrush",
+			// Uno's RelativeSource is not a DependencyObject and carries Mode as a plain property.
 			BaseXamlNamespace + ".Data.RelativeSource",
-			BaseXamlNamespace + ".Controls.Primitives.CarouselPanel",
-			BaseXamlNamespace + ".Controls.NavigationViewItemBase",
+			// Uno's WebView2 derives from Control to reuse templating; WinUI derives from FrameworkElement.
 			"Microsoft.UI.Xaml.Controls.WebView2",
 			// In Uno DependencyObjectCollection derives from DependencyObjectCollection<DependencyObject>, which
 			// carries the DependencyObject base and the IList implementation; emitting the metadata
@@ -763,50 +725,28 @@ namespace Uno.WinAppSDKSyncGenerator
 					// Skipped to include nullable annotations.
 					return true;
 
-				case "Windows.Foundation.Uri":
-				case BaseXamlNamespace + ".Input.ICommand":
 				case BaseXamlNamespace + ".Controls.UIElementCollection":
-					// Skipped because the reported interfaces are mismatched.
+					// UIElementCollection.GetEnumerator returns List<View>.Enumerator in Uno,
+					// where WinUI returns IEnumerator<UIElement>. Aligning it would allocate on
+					// every visual-tree enumeration, so the type stays skipped.
 					return true;
 
 				case BaseXamlNamespace + ".Media.FontFamily":
 				case BaseXamlNamespace + ".Controls.IconElement":
 				case BaseXamlNamespace + ".Data.ICollectionView":
-				case BaseXamlNamespace + ".Data.CollectionView":
 					// Skipped because the reported interfaces are mismatched.
 					return true;
 
 				case "Windows.UI.ViewManagement.InputPane":
 				case "Windows.UI.ViewManagement.InputPaneVisibilityEventArgs":
 				case "Windows.UI.ViewManagement.InputPaneInterop":
-					// Skipped because a dependency on FocusManager
-					return true;
-
-				case "Windows.ApplicationModel.Store.Preview.WebAuthenticationCoreManagerHelper":
-					// Skipped because a cross layer dependency to Windows.UI.Xaml
+					// Uno hosts InputPane in Uno.UI because it resolves the focused element through
+					// FocusManager, while GetNamespaceBasePath routes Windows.UI.ViewManagement stubs
+					// into Uno.UWP. The event args and interop types follow that placement.
 					return true;
 
 				case "Microsoft.UI.Xaml.Controls.XamlControlsResources":
 					// Skipped because the type is placed in the Uno.UI.FluentTheme assembly
-					return true;
-
-				case "Microsoft.UI.Xaml.Data.INotifyPropertyChanged":
-				case "Microsoft.UI.Xaml.Data.PropertyChangedEventArgs":
-				case "Microsoft.UI.Xaml.Data.PropertyChangedEventHandler":
-					// Skipped because the types are hidden from the projections in WinAppSDK
-					return true;
-
-				case "Windows.UI.Text.FontWeights":
-					// Skipped because the type not present WinAppSDK projection
-					return true;
-
-				case "Windows.UI.Colors":
-					// Skipped because the type not present WinAppSDK projection
-					return true;
-
-				case "Microsoft.Windows.ApplicationModel.DynamicDependency.Bootstrap":
-					// This class has a nested enum. So proper generation for nested types would be needed first.
-					// Also it's not clear if it's useful to generate it or not.
 					return true;
 
 				case "Windows.Devices.ILowLevelDevicesAggregateProvider":

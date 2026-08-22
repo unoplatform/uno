@@ -155,7 +155,7 @@ public partial class Window
 	/// <summary>
 	/// Occurs when the window has successfully been activated.
 	/// </summary>
-	public event WindowActivatedEventHandler? Activated
+	public event TypedEventHandler<object, WindowActivatedEventArgs> Activated
 	{
 		add
 		{
@@ -170,7 +170,7 @@ public partial class Window
 	/// <summary>
 	/// Occurs when the app window has first rendered or has changed its rendering size.
 	/// </summary>
-	public event WindowSizeChangedEventHandler? SizeChanged
+	public event TypedEventHandler<object, WindowSizeChangedEventArgs> SizeChanged
 	{
 		add
 		{
@@ -185,7 +185,7 @@ public partial class Window
 	/// <summary>
 	/// Occurs when the value of the Visible property changes.
 	/// </summary>
-	public event WindowVisibilityChangedEventHandler? VisibilityChanged
+	public event TypedEventHandler<object, WindowVisibilityChangedEventArgs> VisibilityChanged
 	{
 		add
 		{
@@ -644,13 +644,13 @@ public partial class Window
 	/// Provides a memory-friendly registration to the <see cref="SizeChanged" /> event.
 	/// </summary>
 	/// <returns>A disposable instance that will cancel the registration.</returns>
-	internal IDisposable RegisterSizeChangedEvent(Microsoft.UI.Xaml.WindowSizeChangedEventHandler handler)
+	internal IDisposable RegisterSizeChangedEvent(TypedEventHandler<object, WindowSizeChangedEventArgs> handler)
 	{
 		return WeakEventHelper.RegisterEvent(
 			_sizeChangedHandlers ??= new(),
 			handler,
 			(h, s, e) =>
-				(h as Microsoft.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e!)
+				(h as TypedEventHandler<object, WindowSizeChangedEventArgs>)?.Invoke(s, (WindowSizeChangedEventArgs)e!)
 		);
 	}
 

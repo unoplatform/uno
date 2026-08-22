@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TextBlock
+	public partial class TextBlock : global::Microsoft.UI.Xaml.FrameworkElement
 	{
 		// Skipping already declared property CharacterSpacingProperty
 		// Skipping already declared property FontFamilyProperty

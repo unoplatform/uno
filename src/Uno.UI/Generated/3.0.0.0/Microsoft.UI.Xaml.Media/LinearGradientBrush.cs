@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Media
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class LinearGradientBrush
+	public partial class LinearGradientBrush : global::Microsoft.UI.Xaml.Media.GradientBrush
 	{
 		// Skipping already declared property EndPointProperty
 		// Skipping already declared property StartPointProperty

@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DatePickerFlyout
+	public partial class DatePickerFlyout : global::Microsoft.UI.Xaml.Controls.Primitives.PickerFlyoutBase
 	{
 		// Skipping already declared property CalendarIdentifierProperty
 		// Skipping already declared property DateProperty

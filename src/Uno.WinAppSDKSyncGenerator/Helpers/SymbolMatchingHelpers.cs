@@ -63,30 +63,6 @@ internal static class SymbolMatchingHelpers
 
 	private static bool ShouldSkipSymbol(ISymbol uapSymbol)
 	{
-		if (uapSymbol.Name == "TimeSpan" && uapSymbol.ContainingSymbol.Name == "Duration")
-		{
-			// field vs property difference between Uno and WinUI.
-			return true;
-		}
-
-		if (uapSymbol.Name is "Left" or "Top" or "Right" or "Bottom" && uapSymbol.ContainingSymbol.Name == "Thickness")
-		{
-			// field vs property difference between Uno and WinUI.
-			return true;
-		}
-
-		if (uapSymbol.Name is "Value" or "GridUnitType" && uapSymbol.ContainingSymbol.Name == "GridLength")
-		{
-			// field vs property difference between Uno and WinUI.
-			return true;
-		}
-
-		if (uapSymbol.Name is "TopLeft" or "TopRight" or "BottomRight" or "BottomLeft" && uapSymbol.ContainingSymbol.Name == "CornerRadius")
-		{
-			// field vs property difference between Uno and WinUI.
-			return true;
-		}
-
 		if (uapSymbol.ContainingSymbol?.Name is
 			"ColorKeyFrameCollection" or
 			"Matrix" or
@@ -95,7 +71,6 @@ internal static class SymbolMatchingHelpers
 			"RepeatBehavior" or
 			"Matrix3D" or
 			"InlineCollection" or
-			"GridLength" or
 			"GeneratorPosition" or
 			"ToggleSwitch")
 		{
@@ -167,12 +142,6 @@ internal static class SymbolMatchingHelpers
 
 	private static bool AreEventsMatching(IEventSymbol uapEvent, IEventSymbol unoEvent)
 	{
-		if (uapEvent.ContainingType.Name == "Window")
-		{
-			// TODO: Match API with WinUI.
-			return true;
-		}
-
 		var result = AreMatchingCommon(uapEvent, unoEvent) && AreMatching(uapEvent.Type, unoEvent.Type);
 		return result;
 	}
@@ -187,12 +156,6 @@ internal static class SymbolMatchingHelpers
 
 	private static bool ArePropertiesMatching(IPropertySymbol uapProperty, IPropertySymbol unoProperty)
 	{
-		if (uapProperty.Name == "Name" && uapProperty.ContainingType.Name == "FrameworkElement")
-		{
-			// TODO: Name shouldn't be virtual.
-			return true;
-		}
-
 		if (!AreMatchingCommon(uapProperty, unoProperty))
 		{
 			return false;
@@ -243,11 +206,6 @@ internal static class SymbolMatchingHelpers
 		}
 
 		if (uapMethod.Name == "ToString" && uapMethod.Parameters.IsEmpty)
-		{
-			return true;
-		}
-
-		if (uapMethod.Name is "LoadContent" or "Measure" or "Arrange")
 		{
 			return true;
 		}
@@ -317,18 +275,6 @@ internal static class SymbolMatchingHelpers
 		uapParameters.IsOptional == unoParameters.IsOptional &&
 		uapParameters.Name == unoParameters.Name &&
 		uapParameters.IsParams == unoParameters.IsParams &&
-		(uapParameters.RefKind == unoParameters.RefKind || IgnoreRefKind(uapParameters)) &&
+		uapParameters.RefKind == unoParameters.RefKind &&
 		AreMatching(uapParameters.Type, unoParameters.Type);
-
-	private static bool IgnoreRefKind(IParameterSymbol uapParameter)
-	{
-		if (uapParameter.ContainingSymbol.Name == "Equals" && uapParameter.ContainingType.Name == "GuidHelper")
-		{
-			// GuidHelpers.Equals uses "in" RefKind in WinUI, while it uses "ref" RefKind in UWP.
-			// In Uno, we use "ref" in both flavors.
-			return true;
-		}
-
-		return false;
-	}
 }

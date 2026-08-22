@@ -1160,13 +1160,8 @@ partial class TimePicker
 		bool secondHostPopulated = false;
 		bool thirdHostPopulated = false;
 		bool isRTL = false;
-		GridLength starGridLength = default;
-		GridLength zeroGridLength = default;
-
-		zeroGridLength.GridUnitType = GridUnitType.Pixel;
-		zeroGridLength.Value = 0.0;
-		starGridLength.GridUnitType = GridUnitType.Star;
-		starGridLength.Value = 1.0;
+		GridLength starGridLength = new(1.0, GridUnitType.Star);
+		GridLength zeroGridLength = new(0.0, GridUnitType.Pixel);
 
 		GetOrder(ref hourOrder, ref minuteOrder, ref periodOrder, ref isRTL);
 

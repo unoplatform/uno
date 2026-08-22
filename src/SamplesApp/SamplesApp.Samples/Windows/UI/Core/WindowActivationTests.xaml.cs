@@ -160,11 +160,7 @@ namespace UITests.Windows_UI_Core
 			AddHistory("Window.Activated");
 		}
 
-#if WINAPPSDK
 		private void WindowVisibilityChanged(object sender, WindowVisibilityChangedEventArgs e)
-#else
-		private void WindowVisibilityChanged(object sender, VisibilityChangedEventArgs e)
-#endif
 		{
 			WindowVisibility = XamlWindow.Current.Visible ? "Visible" : "Hidden";
 			AddHistory("Window.VisibilityChanged");
