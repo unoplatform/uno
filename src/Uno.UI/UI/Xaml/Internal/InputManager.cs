@@ -28,9 +28,7 @@ internal partial class InputManager : IInputInjectorTarget
 
 		ConstructPointerManager();
 
-#if HAS_INPUT_INJECTOR
 		InputInjector.SetTargetForCurrentThread(this);
-#endif
 	}
 
 	internal ContextMenuProcessor ContextMenuProcessor => _contextMenuProcessor;
