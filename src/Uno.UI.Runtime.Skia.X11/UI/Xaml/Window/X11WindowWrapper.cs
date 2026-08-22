@@ -106,7 +106,11 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	protected override void ShowCore() => SetNativeVisible(true);
 
-	protected override void HideCore() => SetNativeVisible(false);
+	protected override void HideCore()
+	{
+		SetNativeVisible(false);
+		IsVisible = false;
+	}
 
 	private void SetNativeVisible(bool visible)
 	{
