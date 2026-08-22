@@ -426,11 +426,20 @@ fn roundCov(fc: vec2<f32>, rl: vec4<f32>, radX: vec4<f32>, radY: vec4<f32>, ex: 
 fn clipCov(fcRaw: vec2<f32>, clip: ClipU) -> f32 {
   // Fast path: no clip => full coverage, and NO finvMap (unclipped fragments must cost what they did pre-arena).
   let n = i32(clip.ctrl.x);
-  if (n == 0) { return 1.0; }
+  if (n == 0 && clip.ctrl.y < 0.5) { return 1.0; }
+  let fc = finvMap(clip, fcRaw);
+  // Dedicated plain-rect clip (ctrl.y flag; min in ctrl.zw, max in size.zw): carries the clip's AABB analytically
+  // so the per-op device SCISSOR is cull-only and the emit collapses SetScissorRect calls (see AabbInClipU).
+  var cov = 1.0;
+  if (clip.ctrl.y > 0.5) {
+    let dmin = fc - vec2<f32>(clip.ctrl.z, clip.ctrl.w);
+    let dmax = vec2<f32>(clip.size.z, clip.size.w) - fc;
+    cov = clamp(0.5 + min(min(dmin.x, dmin.y), min(dmax.x, dmax.y)), 0.0, 1.0);
+  }
+  if (n == 0) { return cov; }
   // Unrolled with STATIC array indices (n is 1..4). A dynamic uniform-array index (clip.rects[i]) is a GPU perf
   // cliff on some drivers; the common single-clip case (n==1) must cost what the old single-rect clipCov did.
-  let fc = finvMap(clip, fcRaw);
-  var cov = roundCov(fc, clip.rects[0], clip.radii[0], clip.radiiY[0], clip.ex.x);
+  cov = cov * roundCov(fc, clip.rects[0], clip.radii[0], clip.radiiY[0], clip.ex.x);
   if (n > 1) { cov = cov * roundCov(fc, clip.rects[1], clip.radii[1], clip.radiiY[1], clip.ex.y); }
   if (n > 2) { cov = cov * roundCov(fc, clip.rects[2], clip.radii[2], clip.radiiY[2], clip.ex.z); }
   if (n > 3) { cov = cov * roundCov(fc, clip.rects[3], clip.radii[3], clip.radiiY[3], clip.ex.w); }

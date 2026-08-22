@@ -49,6 +49,13 @@ internal struct ClipData
 	// tight Aabb is KEPT — it still drives per-op culling against the composed present/damage clip.
 	public bool ScissorInert;
 
+	// The clip's rect edge rides the op's ClipU (dedicated rect slot): the scissor is then cull-only, so the
+	// emit widens it to the full surface and consecutive such ops share one SetScissorRect.
+	public bool AabbInClipU;
+	// Set by the stamp paths when the scissor MUST stay tight (the ClipU was built from a different-space clip
+	// that could not fold the full rect constraint) — blocks the emit's derived-widening fallback.
+	public bool ScissorLoadBearing;
+
 	// No clip at all: infinite scissor, no rounded shapes, no path mask. (Arena re-stamp is only correct when the
 	// fragment shader doesn't depend on device position — i.e. no clip; see the ReplayRefCmd arena path.)
 	public bool IsNone => (Rounds is null || Rounds.Length == 0) && PathFan is null
@@ -1375,7 +1382,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private const int ClipUBytes = 288;   // rects[4]+radii[4] (128) + ex+ctrl+size+xform+xoff+finv (96) + radiiY[4] (64); match the WGSL struct
 
 	// Fills the shared _clipU scratch with the WGSL ClipU image for (cd, xform, finv).
-	private void FillClipU(ClipData cd, Matrix3x2 xform, Matrix3x2 finv)
+	// Returns true when the clip's AABB was folded in as a radius-0 round (see AabbInClipU).
+	private bool FillClipU(ClipData cd, Matrix3x2 xform, Matrix3x2 finv)
 	{
 		if (xform == default) { xform = Matrix3x2.Identity; }   // default(Matrix3x2) is all-zero; treat as identity
 		if (finv == default) { finv = Matrix3x2.Identity; }
@@ -1392,6 +1400,18 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			cu[56 + i * 4 + 0] = rc.RadiiY.X; cu[56 + i * 4 + 1] = rc.RadiiY.Y; cu[56 + i * 4 + 2] = rc.RadiiY.Z; cu[56 + i * 4 + 3] = rc.RadiiY.W;   // radiiY[i]
 			cu[32 + i] = rc.Exclude ? 1f : 0f;   // ex[i]
 		}
+		// Fold the clip's finite AABB into the dedicated rect slot (ctrl.y flag; min in ctrl.zw, max in
+		// size.zw): the shader then owns the rect edge and the emit widens the scissor to cull-only
+		// (see AabbInClipU). Path clips keep the scissor (the depth mask relies on it).
+		var foldedAabb = false;
+		var ab = cd.Aabb;
+		if (cd.PathFan is null && (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f))
+		{
+			cu[37] = 1f;                       // ctrl.y = rect clip enabled
+			cu[38] = ab.X; cu[39] = ab.Y;      // ctrl.zw = rect min
+			cu[42] = ab.Z; cu[43] = ab.W;      // size.zw = rect max
+			foldedAabb = true;
+		}
 		cu[36] = n;                              // ctrl.x = active count
 		cu[40] = _s.Width; cu[41] = _s.Height;   // size
 												 // xform maps stored (identity-baked) NDC verts to the replay NDC: px = M11*x + M21*y + M31, py = M12*x + M22*y + M32.
@@ -1402,20 +1422,22 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 												  // finv translation in xoff.zw (px = fM11*x + fM21*y + fM31, py = fM12*x + fM22*y + fM32).
 		cu[50] = finv.M31; cu[51] = finv.M32;
 		cu[52] = finv.M11; cu[53] = finv.M12; cu[54] = finv.M21; cu[55] = finv.M22;
+		return foldedAabb;
 	}
 
 	// In-place restamp of an existing owned ClipU buffer: the write is queue-ordered, so frames already submitted
 	// read the old floats; the bind group survives, making a per-frame restamp allocation-free.
-	private void RewriteClipU(nint buf, ClipData cd, Matrix3x2 xform, Matrix3x2 finv)
+	private bool RewriteClipU(nint buf, ClipData cd, Matrix3x2 xform, Matrix3x2 finv)
 	{
-		FillClipU(cd, xform, finv);
+		var folded = FillClipU(cd, xform, finv);
 		fixed (float* p = _clipU) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, ClipUBytes); }
+		return folded;
 	}
 
 	// Owned variant exposing the ClipU buffer handle so a later restamp can RewriteClipU it in place.
-	private IntPtr MakeClipBgOwned(IntPtr bgl, ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf)
+	private IntPtr MakeClipBgOwned(IntPtr bgl, ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
 	{
-		FillClipU(cd, xform, finv);
+		aabbInClipU = FillClipU(cd, xform, finv);
 		var b = Ubuf(ClipUBytes, owned);
 		fixed (float* p = _clipU) { wgpuQueueWriteBuffer(_d.Q, b, 0, (IntPtr)p, ClipUBytes); }
 		var e = new WGPUBindGroupEntry { Binding = 0, Buffer = b, Offset = 0, Size = ClipUBytes };
@@ -1426,7 +1448,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	private IntPtr MakeClipBg(IntPtr bgl, ClipData cd, OwnedResources owned = null, Matrix3x2 xform = default, Matrix3x2 finv = default)
 	{
-		if (owned is not null) { return MakeClipBgOwned(bgl, cd, owned, xform, finv, out _); }
+		if (owned is not null) { return MakeClipBgOwned(bgl, cd, owned, xform, finv, out _, out _); }
 		FillClipU(cd, xform, finv);
 		var cu = _clipU;
 
@@ -1889,6 +1911,21 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// local space) so a rounded child-clip stays correct after the move; the device SCISSOR follows the move (the local
 	// AABB transformed by t2) with the plain-AABB session clip folded in. Table verts carry their own slot for position,
 	// so ClipU.xform is unused here — only finv matters. Mirrors the arena stamp.
+	private static bool IsFiniteAabb(Vector4 aabb)
+		=> aabb.X > -1e8f || aabb.Y > -1e8f || aabb.Z < 1e8f || aabb.W < 1e8f;
+
+	// Intersects a DEVICE-space session AABB into a LOCAL-space clip AABB through finv, so the folded
+	// radius-0 ClipU rect (see AabbInClipU) also carries the session's plain-rect clip and the scissor can
+	// widen. Only exact when finv is axis-aligned — callers must not widen (or fold) otherwise.
+	private static void FoldSessionAabb(ref ClipData local, Vector4 sessionAabb, in Matrix3x2 finv)
+	{
+		var q0 = new Vector2(sessionAabb.X * finv.M11 + sessionAabb.Y * finv.M21 + finv.M31, sessionAabb.X * finv.M12 + sessionAabb.Y * finv.M22 + finv.M32);
+		var q1 = new Vector2(sessionAabb.Z * finv.M11 + sessionAabb.W * finv.M21 + finv.M31, sessionAabb.Z * finv.M12 + sessionAabb.W * finv.M22 + finv.M32);
+		local.Aabb = new Vector4(
+			MathF.Max(local.Aabb.X, MathF.Min(q0.X, q1.X)), MathF.Max(local.Aabb.Y, MathF.Min(q0.Y, q1.Y)),
+			MathF.Min(local.Aabb.Z, MathF.Max(q0.X, q1.X)), MathF.Min(local.Aabb.W, MathF.Max(q0.Y, q1.Y)));
+	}
+
 	// Folds device-space session rounds into a LOCAL-space clip: ClipU carries a single finv (fragment ->
 	// recording-local), so the rounds are mapped through that same finv (exact for axis-aligned transforms).
 	private static void FoldSessionRounds(ref ClipData local, RoundClip[] sessionRounds, in Matrix3x2 finv)
@@ -1932,12 +1969,24 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				MathF.Max(MathF.Max(p0.X, p1.X), MathF.Max(p2.X, p3.X)), MathF.Max(MathF.Max(p0.Y, p1.Y), MathF.Max(p2.Y, p3.Y)));
 		}
 		scissor.Aabb = new Vector4(MathF.Max(ab.X, sessionAabb.X), MathF.Max(ab.Y, sessionAabb.Y), MathF.Min(ab.Z, sessionAabb.Z), MathF.Min(ab.W, sessionAabb.W));
+		// Widening the scissor is only sound when the whole rect clip rides ClipU: the op's own AABB always
+		// does; a finite session AABB folds in exactly only under an axis-aligned transform.
+		var sessionFinite = IsFiniteAabb(sessionAabb);
+		var axisAligned = finv.M12 == 0 && finv.M21 == 0;
+		var canWiden = !sessionFinite || axisAligned;
+		if (sessionFinite && axisAligned)
+		{
+			FoldSessionAabb(ref local, sessionAabb, finv);
+		}
 		if (reuseBuf != 0)
 		{
-			RewriteClipU(reuseBuf, local, Matrix3x2.Identity, finv);
+			scissor.AabbInClipU = RewriteClipU(reuseBuf, local, Matrix3x2.Identity, finv) && canWiden;
+			scissor.ScissorLoadBearing = !scissor.AabbInClipU;
 			return (scissor, reuseBg, reuseBuf);
 		}
-		var bg = (nint)MakeClipBgOwned(_d.ClipBgl, local, stampOwned, Matrix3x2.Identity, finv, out var buf);
+		var bg = (nint)MakeClipBgOwned(_d.ClipBgl, local, stampOwned, Matrix3x2.Identity, finv, out var buf, out var folded);
+		scissor.AabbInClipU = folded && canWiden;
+		scissor.ScissorLoadBearing = !scissor.AabbInClipU;
 		return (scissor, bg, buf);
 	}
 
@@ -2294,14 +2343,24 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									scissorClip.ScissorInert = op.clip.ScissorInert && rr.Clip.ScissorInert;
 									var uClip = op.clip;
 									FoldSessionRounds(ref uClip, rr.Clip.Rounds, finv);
+									var uSessionFinite = IsFiniteAabb(rr.Clip.Aabb);
+									var uAxisAligned = finv.M12 == 0 && finv.M21 == 0;
+									var uCanWiden = !uSessionFinite || uAxisAligned;
+									if (uSessionFinite && uAxisAligned)
+									{
+										FoldSessionAabb(ref uClip, rr.Clip.Aabb, finv);
+									}
 									if (reuse)
 									{
-										RewriteClipU(bufs[i], uClip, xf, finv);
+										scissorClip.AabbInClipU = RewriteClipU(bufs[i], uClip, xf, finv) && uCanWiden;
+										scissorClip.ScissorLoadBearing = !scissorClip.AabbInClipU;
 										stamped[i] = new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, stamped[i].clipBg);
 									}
 									else
 									{
-										var aClipBg = MakeClipBgOwned(abgl, uClip, stampOwned, xf, finv, out var buf);
+										var aClipBg = MakeClipBgOwned(abgl, uClip, stampOwned, xf, finv, out var buf, out var aFolded);
+										scissorClip.AabbInClipU = aFolded && uCanWiden;
+										scissorClip.ScissorLoadBearing = !scissorClip.AabbInClipU;
 										bufs.Add(buf);
 										stamped.Add(new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, (nint)aClipBg));
 									}
@@ -2491,7 +2550,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// one clip, so this collapses a per-op call to one per distinct clip. Locals (not a field) keep it correct
 		// under the recursive nested-layer RenderInto (each pass has its own scissor state).
 		int lastX = -1, lastY = -1, lastW = -1, lastH = -1;
-		int statIters = 0, statScissor = 0, statClipCh = 0, statFanOps = 0;
+		int statIters = 0, statScissor = 0, statClipCh = 0, statFanOps = 0, statInert = 0, statFolded = 0;
 		var statFans = _emitStats ? new HashSet<float[]>(System.Collections.Generic.ReferenceEqualityComparer.Instance) : null;
 		// Current in-pass path-clip mask (device depth buffer). Changes only when a run of ops moves to a different
 		// path clip — the composition emits a clip then its subtree consecutively, so this fires ~once per clip.
@@ -2515,7 +2574,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			if (!TryScissor(clip.Aabb, out var sx, out var sy, out var sw, out var sh)) { continue; }
 			// An inert clip's tight AABB is cull-only (checked above); the applied scissor is the full surface,
 			// so consecutive inert ops dedup to a single SetScissorRect.
-			if (clip.ScissorInert) { sx = 0; sy = 0; sw = (int)_s.Width; sh = (int)_s.Height; }
+			var scissorWiden = clip.ScissorInert || clip.AabbInClipU
+				|| (!clip.ScissorLoadBearing && clip.PathFan is null && IsFiniteAabb(clip.Aabb));
+			if (_emitStats) { if (clip.ScissorInert) { statInert++; } if (scissorWiden && !clip.ScissorInert) { statFolded++; } }
+			if (scissorWiden) { sx = 0; sy = 0; sw = (int)_s.Width; sh = (int)_s.Height; }
 			if (sx != lastX || sy != lastY || sw != lastW || sh != lastH)
 			{
 				wgpuRenderPassEncoderSetScissorRect(pass, (uint)sx, (uint)sy, (uint)sw, (uint)sh);
@@ -2767,7 +2829,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// segmentation runs on scissor/clip boundaries). Rate-limited to ~once a second at 60fps.
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} clipChanges={statClipCh} fanOps={statFanOps} distinctFans={statFans?.Count ?? 0} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds}");
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} inert={statInert} folded={statFolded} clipChanges={statClipCh} fanOps={statFanOps} distinctFans={statFans?.Count ?? 0} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds}");
 			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0;
 		}
 
