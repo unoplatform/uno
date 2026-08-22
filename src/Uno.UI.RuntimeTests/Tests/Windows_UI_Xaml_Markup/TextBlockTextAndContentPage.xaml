@@ -1,0 +1,10 @@
+<Page
+	x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup.TextBlockTextAndContentPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<TextBlock x:Name="TestTextBlock"
+			   x:FieldModifier="public"
+			   Text="Hi">Something</TextBlock>
+
+</Page>
