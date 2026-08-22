@@ -1,15 +1,16 @@
-#nullable disable // Not supported by WinUI yet
+#nullable enable
 
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
-using System.Threading.Tasks;
-using Windows.Storage.Streams;
-using Windows.UI.Core;
-using Uno.Extensions.Specialized;
-using Uno.Foundation;
 using System.Threading;
+using System.Threading.Tasks;
+using Uno.Foundation.Logging;
+using Uno.Helpers.Serialization;
+using Windows.Storage;
+using Windows.Storage.Streams;
 
 using NativeMethods = __Windows.ApplicationModel.DataTransfer.Clipboard.NativeMethods;
 
@@ -17,115 +18,319 @@ namespace Windows.ApplicationModel.DataTransfer
 {
 	public static partial class Clipboard
 	{
-		public static void Clear() => SetClipboardText(string.Empty);
+		private const string PlainTextMimeType = "text/plain";
+		private const string HtmlMimeType = "text/html";
+		private const string RtfMimeType = "text/rtf";
+		private const string UriListMimeType = "text/uri-list";
 
-		public static void SetContent(DataPackage/* ? */ content)
+		private static readonly char[] _newLineChars = new[] { '\r', '\n' };
+
+		public static void Clear() =>
+			RunOnMainThread(async () =>
+			{
+				try
+				{
+					await NativeMethods.ClearAsync();
+				}
+				catch (Exception e)
+				{
+					if (typeof(Clipboard).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(Clipboard).Log().Error("Failed to clear the clipboard", e);
+					}
+				}
+			});
+
+		public static void SetContent(DataPackage content)
 		{
-			Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(
-				() => _ = SetContentAsync(content),
-				Uno.UI.Dispatching.NativeDispatcherPriority.High);
+			ArgumentNullException.ThrowIfNull(content);
+
+			var data = content.GetView(); // Freezes the DataPackage
+
+			RunOnMainThread(async () =>
+			{
+				try
+				{
+					await SetContentAsync(data);
+				}
+				catch (Exception e)
+				{
+					if (typeof(Clipboard).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(Clipboard).Log().Error("Failed to write to the clipboard", e);
+					}
+				}
+			});
 		}
 
-		internal static async Task SetContentAsync(DataPackage/* ? */ content)
+		// Starting the operation synchronously when possible keeps the write inside the
+		// transient user activation the browser clipboard API requires.
+		private static void RunOnMainThread(Func<Task> asyncAction)
 		{
-			var data = content?.GetView(); // Freezes the DataPackage
-
-			var hasBitmap = data?.Contains(StandardDataFormats.Bitmap) ?? false;
-			var hasHtml = data?.Contains(StandardDataFormats.Html) ?? false;
-			var hasText = data?.Contains(StandardDataFormats.Text) ?? false;
-
-			if (hasBitmap)
+			if (Uno.UI.Dispatching.NativeDispatcher.Main.HasThreadAccess)
 			{
-				var bitmapRef = await data.GetBitmapAsync();
-				await SetClipboardBitmap(bitmapRef);
+				_ = asyncAction();
 			}
-			else if (hasHtml)
+			else
 			{
-				var html = await data.GetHtmlFormatAsync();
-				// Get text for fallback - either from explicit text or extract from HTML
-				var text = hasText
-					? await data.GetTextAsync()
-					: "";
-
-				await SetClipboardHtml(html, text);
-			}
-			else if (hasText)
-			{
-				var text = await data.GetTextAsync();
-				SetClipboardText(text);
+				Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(
+					() => _ = asyncAction(),
+					Uno.UI.Dispatching.NativeDispatcherPriority.High);
 			}
 		}
 
-		public static DataPackageView GetContent()
+		internal static async Task SetContentAsync(DataPackageView data)
 		{
-			var dataPackage = new DataPackage();
+			var entries = new List<ClipboardWriteEntry>();
 
-			dataPackage.SetDataProvider(StandardDataFormats.Text, async ct => await GetClipboardText(ct));
-			dataPackage.SetDataProvider(StandardDataFormats.Html, async ct => await GetClipboardHtml(ct));
-			dataPackage.SetDataProvider(StandardDataFormats.Bitmap, async ct => await GetClipboardBitmap(ct));
+			var uriText = await GetUriFallbackText(data);
 
-			return dataPackage.GetView();
-		}
+			var text = data.Contains(StandardDataFormats.Text)
+				? await data.GetTextAsync()
+				: uriText;
 
-		private static async Task<string> GetClipboardText(CancellationToken ct)
-		{
-			return await NativeMethods.GetTextAsync();
-		}
-
-		private static async Task<string> GetClipboardHtml(CancellationToken ct)
-		{
-			return await NativeMethods.GetHtmlAsync();
-		}
-
-		private static async Task<RandomAccessStreamReference> GetClipboardBitmap(CancellationToken ct)
-		{
-			var base64 = await NativeMethods.GetImageAsync();
-			if (string.IsNullOrEmpty(base64))
+			if (text is not null)
 			{
-				return null;
-			}
-
-			var bytes = Convert.FromBase64String(base64);
-			var ras = new InMemoryRandomAccessStream();
-			var stream = ras.AsStreamForWrite();
-			{
-				stream.Write(bytes, 0, bytes.Length);
-				stream.Flush();
-
-				stream.Position = 0;
+				entries.Add(new ClipboardWriteEntry { Type = PlainTextMimeType, Value = text });
 			}
 
-			return RandomAccessStreamReference.CreateFromStream(ras);
+			if (uriText is not null)
+			{
+				// Round-trips GetWebLinkAsync/GetUriAsync through GetContent (browsers have no
+				// dedicated link format); on Chromium this also transfers as a web custom format.
+				entries.Add(new ClipboardWriteEntry { Type = UriListMimeType, Value = uriText, Custom = true });
+			}
+
+			if (data.Contains(StandardDataFormats.Html))
+			{
+				entries.Add(new ClipboardWriteEntry { Type = HtmlMimeType, Value = await data.GetHtmlFormatAsync() });
+			}
+
+			if (data.Contains(StandardDataFormats.Rtf))
+			{
+				entries.Add(new ClipboardWriteEntry { Type = RtfMimeType, Value = await data.GetRtfAsync(), Custom = true });
+			}
+
+			if (data.Contains(StandardDataFormats.StorageItems) && typeof(Clipboard).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(Clipboard).Log().Warn("Storage items cannot be written to the browser clipboard and were skipped.");
+			}
+
+			foreach (var formatId in data.AvailableFormats)
+			{
+				if (IsStandardFormat(formatId))
+				{
+					continue;
+				}
+
+				try
+				{
+					if (await data.GetDataAsync(formatId) is string value)
+					{
+						entries.Add(new ClipboardWriteEntry { Type = formatId, Value = value, Custom = true });
+					}
+					else if (typeof(Clipboard).Log().IsEnabled(LogLevel.Warning))
+					{
+						typeof(Clipboard).Log().Warn($"Only string data can be written to the clipboard for custom format '{formatId}'.");
+					}
+				}
+				catch (Exception e)
+				{
+					if (typeof(Clipboard).Log().IsEnabled(LogLevel.Warning))
+					{
+						typeof(Clipboard).Log().Warn($"Failed to retrieve the data for custom format '{formatId}'.", e);
+					}
+				}
+			}
+
+			var imageBytes = Array.Empty<byte>();
+			var imageMimeType = string.Empty;
+			if (data.Contains(StandardDataFormats.Bitmap))
+			{
+				(imageBytes, imageMimeType) = await ReadBitmapAsync(data);
+			}
+
+			var entriesJson = JsonHelper.Serialize(entries.ToArray(), ClipboardSerializationContext.Default);
+			await NativeMethods.SetContentAsync(entriesJson, imageBytes, imageMimeType);
 		}
 
-		private static void SetClipboardText(string text)
+		// WinUI exposes URIs as dedicated formats; browsers can only carry them as text.
+		private static async Task<string?> GetUriFallbackText(DataPackageView data)
 		{
-			NativeMethods.SetText(text);
+			var uri = DataPackage.CombineUri(
+				data.Contains(StandardDataFormats.WebLink) ? (await data.GetWebLinkAsync())?.ToString() : null,
+				data.Contains(StandardDataFormats.ApplicationLink) ? (await data.GetApplicationLinkAsync())?.ToString() : null,
+				null);
+
+			return string.IsNullOrEmpty(uri) ? null : uri;
 		}
 
-		private static async Task SetClipboardHtml(string html, string text)
-		{
-			await NativeMethods.SetHtmlAsync(html, text);
-		}
+		private static bool IsStandardFormat(string formatId) =>
+			formatId == StandardDataFormats.Text ||
+			formatId == StandardDataFormats.Html ||
+			formatId == StandardDataFormats.Rtf ||
+			formatId == StandardDataFormats.Bitmap ||
+			formatId == StandardDataFormats.StorageItems ||
+			formatId == StandardDataFormats.Uri || // Same id as WebLink
+			formatId == StandardDataFormats.ApplicationLink ||
+			formatId == StandardDataFormats.UserActivityJsonArray;
 
-		private static async Task SetClipboardBitmap(RandomAccessStreamReference reference)
+		private static async Task<(byte[] Bytes, string MimeType)> ReadBitmapAsync(DataPackageView data)
 		{
+			var reference = await data.GetBitmapAsync();
 			using var ras = await reference.OpenReadAsync();
-			using var stream = ras.AsStreamForRead();
 
 			if (ras.Size > int.MaxValue)
 			{
 				throw new NotSupportedException("Clipboard image is too large.");
 			}
 
-			var buffer = new MemoryStream((int)ras.Size);
-			stream.CopyTo(buffer);
+			using var stream = ras.AsStreamForRead();
+			var bytes = new byte[(int)ras.Size];
+			await stream.ReadExactlyAsync(bytes);
 
-			var data = buffer.ToArray();
-			var base64 = Convert.ToBase64String(data);
-			var mimeType = GetImageMimeType(ras, data);
+			return (bytes, GetImageMimeType(ras, bytes));
+		}
 
-			await NativeMethods.SetImageAsync(base64, mimeType);
+		public static DataPackageView GetContent()
+		{
+			var formats = JsonHelper.Deserialize<ClipboardSnapshotFormats>(
+				NativeMethods.GetSnapshotFormats(), ClipboardSerializationContext.Default);
+
+			var package = new DataPackage();
+
+			// All providers of this view share a single clipboard read, resolved against the
+			// same source the advertised formats were derived from.
+			var fromPaste = formats.PasteFormats is not null || formats.PasteImminent;
+			var content = new Lazy<Task<ClipboardContentData>>(
+				() => GetClipboardContentAsync(fromPaste),
+				LazyThreadSafetyMode.ExecutionAndPublication);
+
+			if (formats.PasteFormats is { } pasteFormats)
+			{
+				// A recent paste gesture was captured; its formats are known exactly.
+				foreach (var mimeType in pasteFormats)
+				{
+					AddTextProvider(package, content, mimeType);
+				}
+
+				if (formats.PasteHasFiles)
+				{
+					AddStorageItemsProvider(package, content);
+				}
+
+				if (formats.PasteHasImage)
+				{
+					AddBitmapProvider(package, content);
+				}
+			}
+			else if (formats.PasteImminent)
+			{
+				// A paste shortcut was just pressed; advertise everything and let the
+				// providers resolve from the incoming paste event.
+				AddTextProvider(package, content, PlainTextMimeType);
+				AddTextProvider(package, content, HtmlMimeType);
+				AddBitmapProvider(package, content);
+				AddStorageItemsProvider(package, content);
+			}
+			else if (formats.OwnFormats is { } ownFormats)
+			{
+				// The clipboard still holds the last content written by this application.
+				foreach (var mimeType in ownFormats)
+				{
+					if (mimeType.StartsWith("image/", StringComparison.Ordinal))
+					{
+						AddBitmapProvider(package, content);
+					}
+					else
+					{
+						AddTextProvider(package, content, mimeType);
+					}
+				}
+			}
+			else
+			{
+				// Unknown clipboard state: advertise the formats the async clipboard API may provide.
+				AddTextProvider(package, content, PlainTextMimeType);
+				AddTextProvider(package, content, HtmlMimeType);
+				AddBitmapProvider(package, content);
+			}
+
+			return package.GetView();
+		}
+
+		private static void AddTextProvider(DataPackage package, Lazy<Task<ClipboardContentData>> content, string mimeType)
+		{
+			if (mimeType == UriListMimeType)
+			{
+				// https://datatracker.ietf.org/doc/html/rfc2483#section-5
+				package.SetDataProvider(StandardDataFormats.WebLink, async ct =>
+				{
+					var uri = (await GetTextValue(content, mimeType) ?? "")
+						.Split(_newLineChars, StringSplitOptions.RemoveEmptyEntries)
+						.FirstOrDefault(line => !line.StartsWith('#'));
+
+					return uri is null
+						? throw new InvalidOperationException("The clipboard uri-list does not contain a URI.")
+						: new Uri(uri);
+				});
+				return;
+			}
+
+			var formatId = mimeType switch
+			{
+				PlainTextMimeType => StandardDataFormats.Text,
+				HtmlMimeType => StandardDataFormats.Html,
+				RtfMimeType => StandardDataFormats.Rtf,
+				_ => mimeType, // Custom format ids pass through unchanged
+			};
+
+			// Missing resolves to empty: browsers cannot distinguish an empty clipboard from an
+			// empty string, so the absent/empty distinction does not exist on this platform.
+			package.SetDataProvider(formatId, async ct => await GetTextValue(content, mimeType) ?? "");
+		}
+
+		private static async Task<string?> GetTextValue(Lazy<Task<ClipboardContentData>> content, string mimeType)
+		{
+			var data = await content.Value;
+			return data.Texts.FirstOrDefault(entry => entry.Type == mimeType)?.Value;
+		}
+
+		private static void AddBitmapProvider(DataPackage package, Lazy<Task<ClipboardContentData>> content) =>
+			package.SetDataProvider(StandardDataFormats.Bitmap, async ct =>
+			{
+				var data = await content.Value;
+				if (data.Image is null)
+				{
+					throw new InvalidOperationException("The clipboard does not contain an image.");
+				}
+
+				// The image is registered as a native file handle on the JS side and streamed on demand.
+				return RandomAccessStreamReference.CreateFromFile(StorageFile.GetFromNativeInfo(data.Image));
+			});
+
+		private static void AddStorageItemsProvider(DataPackage package, Lazy<Task<ClipboardContentData>> content) =>
+			package.SetDataProvider(StandardDataFormats.StorageItems, async ct =>
+			{
+				// A paste gesture that carried no files resolves to an empty list rather than
+				// failing, so optimistic paste handlers degrade to a graceful no-op.
+				var data = await content.Value;
+				return (IReadOnlyList<IStorageItem>)data.Files.Select(StorageFile.GetFromNativeInfo).ToList();
+			});
+
+		private static async Task<ClipboardContentData> GetClipboardContentAsync(bool fromPaste)
+		{
+			var data = JsonHelper.Deserialize<ClipboardContentData>(
+				await NativeMethods.GetContentAsync(fromPaste), ClipboardSerializationContext.Default);
+
+			return data.Status switch
+			{
+				"denied" => throw new UnauthorizedAccessException(
+					"Access to the clipboard was denied by the browser. Reading the clipboard requires user permission or a paste gesture."),
+				"unavailable" => throw new NotSupportedException(
+					"The browser clipboard API is not available in this context. A secure context (HTTPS) is required."),
+				_ => data,
+			};
 		}
 
 		private static string GetImageMimeType(IRandomAccessStreamWithContentType ras, byte[] data)

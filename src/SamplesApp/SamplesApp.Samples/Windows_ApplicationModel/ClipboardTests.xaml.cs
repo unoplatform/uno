@@ -44,6 +44,8 @@ namespace UITests.Windows_ApplicationModel
 
 	internal class ClipboardTestsViewModel : ViewModelBase
 	{
+		private const string CustomFormatId = "application/x-uno-sample";
+
 		private bool _isObservingContentChanged = false;
 		private string _lastContentChangedDate = "";
 		private string _text = "";
@@ -129,6 +131,8 @@ namespace UITests.Windows_ApplicationModel
 
 		public ICommand CopyImageCommand => GetOrCreateCommand(CopyImage);
 
+		public ICommand CopyCustomFormatCommand => GetOrCreateCommand(CopyCustomFormat);
+
 		public ICommand PasteTextCommand => GetOrCreateCommand(PasteText);
 
 		public ICommand PasteHtmlCommand => GetOrCreateCommand(PasteHtml);
@@ -136,6 +140,8 @@ namespace UITests.Windows_ApplicationModel
 		public ICommand PasteStorageItemsCommand => GetOrCreateCommand(PasteStorageItems);
 
 		public ICommand PasteImageCommand => GetOrCreateCommand(PasteImage);
+
+		public ICommand PasteCustomFormatCommand => GetOrCreateCommand(PasteCustomFormat);
 
 		public ICommand ListAvailableFormatsCommand => GetOrCreateCommand(ListAvailableFormats);
 
@@ -175,6 +181,24 @@ namespace UITests.Windows_ApplicationModel
 			var imageFile = await StorageFile.GetFileFromApplicationUriAsync(imageUri);
 			dataPackage.SetBitmap(RandomAccessStreamReference.CreateFromFile(imageFile));
 			Clipboard.SetContent(dataPackage);
+		}
+
+		private void CopyCustomFormat()
+		{
+			var dataPackage = new DataPackage();
+			dataPackage.SetText(Text);
+			dataPackage.SetData(CustomFormatId, $"custom payload: {Text} ({Timestamp})");
+			Clipboard.SetContent(dataPackage);
+		}
+
+		private async void PasteCustomFormat()
+		{
+			var package = Clipboard.GetContent();
+			UpdateStatusAndClearOldContents(package);
+
+			PastedContent = package.Contains(CustomFormatId)
+				? $"{CustomFormatId}: {await package.GetDataAsync(CustomFormatId)}"
+				: $"No {CustomFormatId} content in clipboard";
 		}
 
 		private async void PasteText()

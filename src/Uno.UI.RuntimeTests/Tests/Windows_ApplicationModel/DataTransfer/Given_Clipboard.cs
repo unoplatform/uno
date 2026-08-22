@@ -17,8 +17,6 @@ using static Microsoft.VisualStudio.TestTools.UnitTesting.RuntimeTestPlatforms;
 
 namespace Uno.UI.RuntimeTests.Tests;
 
-// Testing Append, Write and Read in one test method
-
 [TestClass]
 public partial class Given_Clipboard;
 partial class Given_Clipboard // setup and cleanup
@@ -45,8 +43,8 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
-	// note: do not enable this for wasm, without adjust default clipboard permission
-	[PlatformCondition(Include, NativeIOS | NativeAndroid | SkiaWin32 | SkiaIOS)]
+	// On wasm the read is served from the last-write cache, so no clipboard-read permission is needed.
+	[PlatformCondition(Include, NativeIOS | NativeAndroid | SkiaWin32 | SkiaIOS | Wasm)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23962")]
 	public async Task When_GetSet_Clipboard_Text()
 	{
@@ -55,7 +53,7 @@ partial class Given_Clipboard
 
 		Clipboard.SetContent(package);
 
-		await DelayForClipboard();
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.Text));
 
 		var view = Clipboard.GetContent();
 
@@ -76,7 +74,7 @@ partial class Given_Clipboard
 		package.SetUri(uri);
 		Clipboard.SetContent(package);
 
-		await DelayForClipboard();
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.Uri));
 
 		var view = Clipboard.GetContent();
 		var result = await view.GetUriAsync();
@@ -103,7 +101,7 @@ partial class Given_Clipboard
 #if __SKIA__
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, SkiaWin32)]
+	[PlatformCondition(Include, SkiaWin32 | SkiaWasm)]
 	public async Task When_GetSet_Clipboard_Bitmap_With_Png()
 	{
 		var package = new DataPackage();
@@ -112,17 +110,20 @@ partial class Given_Clipboard
 
 		Clipboard.SetContent(package);
 
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.Bitmap));
+
 		var view = Clipboard.GetContent();
 		var reference = await view.GetBitmapAsync();
 		using var stream = await reference.OpenReadAsync();
-		var results = ToBytes(stream);
+		var results = await ToBytesAsync(stream);
 
 		SkiaImageAssert.ArePixelsEqual(bytes, results);
 	}
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(Include, SkiaWin32)]
+	// On wasm the image is transcoded to PNG for the browser clipboard; pixel equality still holds.
+	[PlatformCondition(Include, SkiaWin32 | SkiaWasm)]
 	public async Task When_GetSet_Clipboard_Bitmap_With_Bmp()
 	{
 		var package = new DataPackage();
@@ -131,25 +132,220 @@ partial class Given_Clipboard
 
 		Clipboard.SetContent(package);
 
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.Bitmap));
+
 		var view = Clipboard.GetContent();
 		var reference = await view.GetBitmapAsync();
 		using var stream = await reference.OpenReadAsync();
-		var results = ToBytes(stream);
+		var results = await ToBytesAsync(stream);
 
 		SkiaImageAssert.ArePixelsEqual(bytes, results);
 	}
 #endif
 
-	private static async Task DelayForClipboard()
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
+	public void When_SetContent_Null()
+		=> Assert.ThrowsExactly<ArgumentNullException>(() => Clipboard.SetContent(null));
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
+	public async Task When_SetContent_ContentChanged()
 	{
-		// On some platforms, clipboard operations are not immediately available.
-		// On Android/iOS, SetContent dispatches the write asynchronously
-		// via CoreDispatcher.Main.RunAsync. On Wasm, clipboard access is also async.
-		var platform = RuntimeTestsPlatformHelper.CurrentPlatform;
-		if ((RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.Android | RuntimeTestPlatforms.IOS).HasFlag(platform))
+		var raised = 0;
+		EventHandler<object> onContentChanged = (_, _) => raised++;
+		Clipboard.ContentChanged += onContentChanged;
+
+		try
 		{
-			await Task.Delay(1000);
+			var package = new DataPackage();
+			package.SetText(TestString);
+
+			Clipboard.SetContent(package);
+
+			await WaitForClipboardAsync(() => raised > 0);
+			Assert.IsTrue(raised > 0);
 		}
+		finally
+		{
+			Clipboard.ContentChanged -= onContentChanged;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
+	public async Task When_GetSet_Clipboard_Text_And_Html()
+	{
+		const string html = "<b>bold</b>";
+
+		var package = new DataPackage();
+		package.SetText(TestString);
+		package.SetHtmlFormat(html);
+
+		Clipboard.SetContent(package);
+
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.Html));
+
+		var view = Clipboard.GetContent();
+
+		Assert.IsTrue(view.Contains(StandardDataFormats.Text));
+		Assert.IsTrue(view.Contains(StandardDataFormats.Html));
+		Assert.AreEqual(TestString, await view.GetTextAsync());
+		Assert.AreEqual(html, await view.GetHtmlFormatAsync());
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
+	public async Task When_Clear_Contains_Nothing()
+	{
+		var package = new DataPackage();
+		package.SetText(TestString);
+
+		Clipboard.SetContent(package);
+
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.Text));
+
+		Assert.IsTrue(Clipboard.GetContent().Contains(StandardDataFormats.Text));
+
+		Clipboard.Clear();
+
+		await WaitForClipboardAsync(() => !Clipboard.GetContent().Contains(StandardDataFormats.Text));
+
+		var view = Clipboard.GetContent();
+		Assert.IsFalse(view.Contains(StandardDataFormats.Text));
+		Assert.IsFalse(view.Contains(StandardDataFormats.Html));
+		Assert.IsFalse(view.Contains(StandardDataFormats.Bitmap));
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
+	public async Task When_GetSet_Clipboard_CustomFormat()
+	{
+		const string customFormat = "application/x-uno-test";
+		const string customPayload = "custom-payload";
+
+		var package = new DataPackage();
+		package.SetText(TestString);
+		package.SetData(customFormat, customPayload);
+
+		Clipboard.SetContent(package);
+
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(customFormat));
+
+		var view = Clipboard.GetContent();
+
+		Assert.IsTrue(view.Contains(customFormat));
+		Assert.AreEqual(customPayload, await view.GetDataAsync(customFormat) as string);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
+	public async Task When_GetSet_Clipboard_WebLink()
+	{
+		var package = new DataPackage();
+		var uri = new Uri(UriAddress);
+		package.SetWebLink(uri);
+
+		Clipboard.SetContent(package);
+
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.WebLink));
+
+		var view = Clipboard.GetContent();
+
+		Assert.IsTrue(view.Contains(StandardDataFormats.WebLink));
+		Assert.IsTrue(view.Contains(StandardDataFormats.Text));
+		Assert.AreEqual(uri, await view.GetWebLinkAsync());
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
+	public async Task When_Paste_Event_With_Files()
+	{
+#if HAS_UNO
+		DispatchSyntheticPaste(
+			"""
+			const dt = new DataTransfer();
+			dt.items.add('paste-text-payload', 'text/plain');
+			dt.items.add(new File(['file-content-1'], 'first.txt', { type: 'text/plain' }));
+			dt.items.add(new File(['file-content-2'], 'second.txt', { type: 'text/plain' }));
+			""");
+
+		var view = Clipboard.GetContent();
+
+		Assert.IsTrue(view.Contains(StandardDataFormats.Text));
+		Assert.IsTrue(view.Contains(StandardDataFormats.StorageItems));
+
+		Assert.AreEqual("paste-text-payload", await view.GetTextAsync());
+
+		var items = await view.GetStorageItemsAsync();
+		Assert.AreEqual(2, items.Count);
+		Assert.AreEqual("first.txt", items[0].Name);
+		Assert.AreEqual("second.txt", items[1].Name);
+
+		var file = (Windows.Storage.StorageFile)items[0];
+		using var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+		Assert.AreEqual("file-content-1", Encoding.UTF8.GetString(await ToBytesAsync(stream)));
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
+	public async Task When_Paste_Event_With_Image()
+	{
+#if HAS_UNO
+		DispatchSyntheticPaste(
+			$$"""
+			const bytes = Uint8Array.from(atob('{{TestPngBase64}}'), c => c.charCodeAt(0));
+			const dt = new DataTransfer();
+			dt.items.add(new File([bytes], 'image.png', { type: 'image/png' }));
+			""");
+
+		var view = Clipboard.GetContent();
+
+		Assert.IsTrue(view.Contains(StandardDataFormats.Bitmap));
+		Assert.IsTrue(view.Contains(StandardDataFormats.StorageItems));
+
+		var reference = await view.GetBitmapAsync();
+		using var stream = await reference.OpenReadAsync();
+
+		CollectionAssert.AreEqual(Convert.FromBase64String(TestPngBase64), await ToBytesAsync(stream));
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+#if HAS_UNO
+	private static void DispatchSyntheticPaste(string setupScript) =>
+		Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+			$$"""
+			(function() {
+				{{setupScript}}
+				document.dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true }));
+				return 'ok';
+			})()
+			""");
+#endif
+
+	// Clipboard writes complete asynchronously on some platforms (wasm, Android, iOS), so poll
+	// for the expected state instead of asserting immediately or waiting a fixed delay.
+	private static async Task WaitForClipboardAsync(Func<bool> condition)
+	{
+		for (var i = 0; i < 60 && !condition(); i++)
+		{
+			await Task.Delay(50);
+		}
+
+		Assert.IsTrue(condition(), "The expected clipboard state was not reached.");
 	}
 
 	// for winui at least: use ToRASTream for SetData, use ToRAReferenceAsync for SetBitmap
@@ -168,6 +364,16 @@ partial class Given_Clipboard
 		using var stream = ras.AsStreamForRead();
 		using var buffer = new MemoryStream((int)ras.Size);
 		stream.CopyTo(buffer);
+
+		return buffer.ToArray();
+	}
+
+	// Native wasm file streams are asynchronous-only, so tests running on wasm must not use ToBytes.
+	private static async Task<byte[]> ToBytesAsync(IRandomAccessStream ras)
+	{
+		using var stream = ras.AsStreamForRead();
+		using var buffer = new MemoryStream((int)ras.Size);
+		await stream.CopyToAsync(buffer);
 
 		return buffer.ToArray();
 	}
