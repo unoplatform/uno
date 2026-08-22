@@ -1182,7 +1182,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Presenter to Control, i.e. OnPresenterScrolled
 		internal void OnPresenterScrolled(double horizontalOffset, double verticalOffset, bool isIntermediate)
 		{
-#if __SKIA__
 			_pendingHorizontalOffset = horizontalOffset;
 			_pendingVerticalOffset = verticalOffset;
 			_pendingScrollIsIntermediate = isIntermediate;
@@ -1209,19 +1208,6 @@ namespace Microsoft.UI.Xaml.Controls
 				_hasPendingScrollUpdate = true;
 				_presenter?.InvalidateArrange();
 			}
-#else
-			_pendingHorizontalOffset = horizontalOffset;
-			_pendingVerticalOffset = verticalOffset;
-
-			if (isIntermediate && UpdatesMode != Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous)
-			{
-				RequestUpdate();
-			}
-			else
-			{
-				Update(isIntermediate);
-			}
-#endif
 
 			if (isIntermediate)
 			{
@@ -1261,18 +1247,12 @@ namespace Microsoft.UI.Xaml.Controls
 			// Recalculate scrollable dimensions with new zoom factor
 			UpdateDimensionProperties();
 
-#if __SKIA__
 			RaiseViewChanged(isIntermediate: false);
-#else
-			// Note: We should also defer the intermediate zoom changes
-			Update(isIntermediate: false);
-#endif
 
 			UpdateZoomedContentAlignment();
 		}
 
 		#region Deferred update (i.e. ViewChanged) support
-#if __SKIA__
 		// WinUI-compatible synchronous delay/counter mechanism for ViewChanged event batching.
 		// WinUI uses m_iViewChangedDelay as a nestable counter: callers increment via DelayViewChanged()
 		// before operations that may trigger multiple property changes, then decrement via FlushViewChanged().
@@ -1446,69 +1426,6 @@ namespace Microsoft.UI.Xaml.Controls
 					oldVerticalOffset);
 			}
 		}
-#else
-		private bool _hasPendingUpdate;
-		private double _pendingHorizontalOffset;
-		private double _pendingVerticalOffset;
-
-		private void RequestUpdate()
-		{
-			if (_hasPendingUpdate)
-			{
-				return;
-			}
-
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-			{
-				if (_hasPendingUpdate)
-				{
-					Update(isIntermediate: true);
-				}
-			});
-			_hasPendingUpdate = true;
-		}
-
-		private void Update(bool isIntermediate)
-		{
-			_hasPendingUpdate = false;
-
-			var oldHorizontalOffset = HorizontalOffset;
-			var oldVerticalOffset = VerticalOffset;
-
-			HorizontalOffset = _pendingHorizontalOffset;
-			VerticalOffset = _pendingVerticalOffset;
-
-			if (!isIntermediate && (oldHorizontalOffset != HorizontalOffset || oldVerticalOffset != VerticalOffset))
-			{
-				// Mirrors ScrollContentPresenter_Partial.cpp:871 (SetHorizontalOffsetPrivate /
-				// SetVerticalOffsetPrivate): discrete offset changes schedule an arrange so that
-				// AnchoringArrangeOverride re-selects CurrentAnchor against the new viewport.
-				// Intermediate ticks (DManip-driven inertia / drag) are skipped to match WinUI,
-				// which lets the compositor drive offsets during manipulation without re-running
-				// layout per frame.
-				InvalidateArrange();
-			}
-
-			// Not ideal, and doesn't match WinUI. This can miss raising some automation events.
-			if (AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged) &&
-				GetAutomationPeer() is ScrollViewerAutomationPeer peer)
-			{
-				peer.RaiseAutomationEvents(
-					ExtentWidth,
-					ExtentHeight,
-					ViewportWidth,
-					ViewportHeight,
-					MinHorizontalOffset,
-					MinVerticalOffset,
-					oldHorizontalOffset,
-					oldVerticalOffset);
-			}
-
-			UpdatePartial(isIntermediate);
-
-			ViewChanged?.Invoke(this, new ScrollViewerViewChangedEventArgs { IsIntermediate = isIntermediate });
-		}
-#endif
 
 		partial void UpdatePartial(bool isIntermediate);
 		#endregion
@@ -1663,7 +1580,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (verticalOffsetChanged || horizontalOffsetChanged || zoomFactorChanged)
 			{
-#if __SKIA__
 				// Batch the ViewChanged events that ChangeViewCore raises synchronously, i.e. zoom
 				// changes (OnPresenterZoomed) and, in Synchronous UpdatesMode, offset changes.
 				// In the default Deferred mode, OnPresenterScrolled only stores the pending offsets
@@ -1682,14 +1598,6 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					FlushViewChanged();
 				}
-#else
-				return ChangeViewCore(
-					horizontalOffset,
-					verticalOffset,
-					zoomFactor,
-					disableAnimation,
-					shouldSnap: true);
-#endif
 			}
 			else
 			{
