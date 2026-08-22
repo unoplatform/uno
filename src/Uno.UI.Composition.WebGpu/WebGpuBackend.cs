@@ -1134,6 +1134,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// Runs a frame: opens the shared encoder (if not already inside one), renders, then finishes+submits once.
 	// load=true preserves the target's existing colour (LoadOp.Load) so an overlay composites over the frame.
 	private static int _frameStatsCounter;
+	// RenderInto split: ops-list building (cmds walk, slab derives, stamps) vs pass encoding — accumulated
+	// per frame, reported in [webgpu-frame].
+	internal static long OpsBuildTicks, EncodeTicks;
 
 	private void RunFrame(List<WebGpuCommand> cmds, WColor? clear, bool load = false)
 	{
@@ -1155,7 +1158,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				{
 					long t2 = System.Diagnostics.Stopwatch.GetTimestamp();
 					double toMs = 1000.0 / System.Diagnostics.Stopwatch.Frequency;
-					System.Console.WriteLine($"[webgpu-frame] cmds={cmds.Count} renderInto={(t1 - t0) * toMs:F1}ms finishSubmit={(t2 - t1) * toMs:F1}ms");
+					System.Console.WriteLine($"[webgpu-frame] cmds={cmds.Count} renderInto={(t1 - t0) * toMs:F1}ms finishSubmit={(t2 - t1) * toMs:F1}ms opsBuild={OpsBuildTicks * toMs:F1}ms encode={EncodeTicks * toMs:F1}ms");
+					OpsBuildTicks = 0; EncodeTicks = 0;
 				}
 				// Pump the device non-blocking (wait=0) so the CPU can overlap the next frame with the GPU: pooled-buffer
 				// reuse is queue-ordered (wgpuQueueWriteBuffer runs after the prior frame's reads) and transient textures
@@ -1923,6 +1927,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 	}
 
+	// A reused span is only valid while its entry's memoized stamp matches THIS pass: another surface's
+	// dispatch (e.g. a screenshot render) restamps the shared entry in place for its own size/transform,
+	// and the reuse path skips the restamp-back.
+	private bool SnapStampFresh(WebGpuGeometryCache e, ReplayRefCmd rr)
+		=> !e.HasStamp
+			|| (e.StampXform == rr.Transform && ClipDataEquals(e.StampClip, rr.Clip)
+				&& (!e.TableFrame || (e.StampW == (int)_s.Width && e.StampH == (int)_s.Height)));
+
 	private static bool IsFiniteAabb(Vector4 aabb)
 		=> aabb.X > -1e8f || aabb.Y > -1e8f || aabb.Z < 1e8f || aabb.W < 1e8f;
 
@@ -2107,8 +2119,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	// Renders a command list into a target surface's MSAA pass (resolving to its single-sample view). Layers
 	// recurse into their own full-size surface then composite here; shadows/layers pre-render before the pass.
+	private long _renderIntoStart;
+
 	private void RenderInto(List<WebGpuCommand> cmds, WebGpuRenderSurface target, WColor? clear, bool load = false)
 	{
+		_renderIntoStart = System.Diagnostics.Stopwatch.GetTimestamp();
 
 		// Build GPU resources for every command up front (buffers/textures must be created outside the
 		// render pass), preserving draw order in a single op list so cross-type z-order is honoured.
@@ -2120,7 +2135,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// Per-pass transform table (path fills). Saved/restored around the recursive nested-layer RenderInto so each
 		// pass builds and uploads its own. Transient (immediate-draw) slots are collected here and freed at pass end.
 		var savedXforms = _xforms; var savedTransient = _xformTransient;
-		_xforms = RentXforms(); _xforms.Clear();
+		// Main pass: a PERSISTENT table so reused ops spans (which skip their per-frame WriteXform of an
+		// unchanged value) still upload correct entries. Nested passes keep the rented per-pass table.
+		var mainPass = ReferenceEquals(target, _s);
+		_xforms = mainPass ? (target.XformTable ??= new List<float>(64)) : RentXforms();
+		if (!mainPass) { _xforms.Clear(); }
 		_xformTransient = RentTransient(); _xformTransient.Clear();
 		// Recordings emitted so far in THIS pass. A recording replayed more than once in one frame (same command
 		// list at different transforms) can't share its single resident slab slice — see the frame-solid branch.
@@ -2128,9 +2147,74 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// Backdrops deferred to encode-time pass-segmenting (kind-6 op): each samples the framebuffer resolved SO FAR
 		// (content behind it) instead of re-rendering the whole command prefix here — O(n) vs the old O(n^2).
 		var backdrops = new List<BackdropCmd>();
+		// Ops-span reuse bookkeeping (main pass only): compare against last frame's snapshot, write this frame's.
+		var snapReusable = mainPass && target.SnapCmdCount == cmds.Count;
+		int statOpsReuse = 0;
+		var snapFirstDirty = int.MaxValue;
+		// Recordings replayed MORE THAN ONCE in a frame can't reuse spans: the duplicates flip-flop the shared
+		// cache entry's stamp/build memo, and each re-stamp defer-releases the bag the other duplicate's
+		// snapshotted ops still reference (a use-after-free one frame later).
+		HashSet<List<WebGpuCommand>> snapDup = null;
+		if (mainPass)
+		{
+			var seen = frameEmitted;   // empty here; reused as scratch, cleared below
+			for (int i = 0; i < cmds.Count; i++)
+			{
+				if (cmds[i] is ReplayRefCmd r && r.Commands is { } rc && !seen.Add(rc))
+				{
+					(snapDup ??= new(System.Collections.Generic.ReferenceEqualityComparer.Instance)).Add(rc);
+				}
+			}
+			seen.Clear();
+		}
+		if (mainPass)
+		{
+			if (target.SnapCmdsNext.Length < cmds.Count)
+			{
+				var cap = Math.Max(cmds.Count, target.SnapCmdsNext.Length * 2);
+				target.SnapCmdsNext = new ReplayRefCmd[cap];
+				target.SnapEntriesNext = new WebGpuGeometryCache[cap];
+				target.SnapSpanStartNext = new int[cap];
+				target.SnapSpanEndNext = new int[cap];
+			}
+			Array.Clear(target.SnapCmdsNext, 0, cmds.Count);
+			Array.Clear(target.SnapEntriesNext, 0, Math.Min(cmds.Count, target.SnapEntriesNext.Length));
+			for (int i = 0; i < cmds.Count; i++) { target.SnapSpanStartNext[i] = -1; }
+		}
 		for (int ci = 0; ci < cmds.Count; ci++)
 		{
 			var cmd = cmds[ci];
+			var opsAtCmd = ops.Count;
+			if (snapReusable && cmd is ReplayRefCmd curRef && target.SnapCmds[ci] is { } prevRef
+				&& ReferenceEquals(prevRef.Data, curRef.Data) && prevRef.Transform == curRef.Transform
+				&& ClipDataEquals(prevRef.Clip, curRef.Clip) && target.SnapSpanStart[ci] >= 0
+				&& curRef.Data.Compiled is { } liveEntry
+				&& ci < target.SnapEntries.Length && ReferenceEquals(target.SnapEntries[ci], liveEntry)
+				&& SnapStampFresh(liveEntry, curRef)
+				&& (snapDup is null || !snapDup.Contains(curRef.Commands)))
+			{
+				// Identical replay: copy the ops it produced last frame. Slab offsets are stable while the
+				// slices stay live (marked below); stamp bind groups survive via the in-place restamp.
+				var spanLen = target.SnapSpanEnd[ci] - target.SnapSpanStart[ci];
+				System.Runtime.InteropServices.CollectionsMarshal.SetCount(ops, opsAtCmd + spanLen);
+				new ReadOnlySpan<DrawOp>(target.SnapOps, target.SnapSpanStart[ci], spanLen)
+					.CopyTo(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(ops).Slice(opsAtCmd));
+				// Refresh the shared bind-group cache's LRU for every reused op — skipping MakeClipBg must not
+				// let a still-referenced cached bind group evict.
+				for (int k = target.SnapSpanStart[ci]; k < target.SnapSpanEnd[ci]; k++) { _d.TouchCachedBg(target.SnapOps[k].clipBg); }
+				frameEmitted.Add(curRef.Commands);
+				if (curRef.Data.Compiled is { TableFrame: true } liveFe)
+				{
+					_d.SolidTableSlab.MarkLive(liveFe.SlabId);
+					_d.RrectTableSlab.MarkLive(liveFe.SlabId);
+				}
+				target.SnapCmdsNext[ci] = curRef;
+				target.SnapEntriesNext[ci] = liveEntry;
+				target.SnapSpanStartNext[ci] = opsAtCmd;
+				target.SnapSpanEndNext[ci] = ops.Count;
+				statOpsReuse++;
+				continue;
+			}
 			switch (cmd)
 			{
 				case RectCommand rc0:
@@ -2496,9 +2580,44 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						break;
 					}
 			}
+			if (mainPass)
+			{
+				if (snapFirstDirty == int.MaxValue) { snapFirstDirty = opsAtCmd; }
+				target.SnapCmdsNext[ci] = cmd as ReplayRefCmd;
+				target.SnapEntriesNext[ci] = (cmd as ReplayRefCmd)?.Data.Compiled;
+				var spanOk = cmd is ReplayRefCmd snapRef
+					&& snapRef.Data.Compiled is not null
+					&& (snapDup is null || !snapDup.Contains(snapRef.Commands));
+				for (int k = opsAtCmd; spanOk && k < ops.Count; k++)
+				{
+					var o = ops[k];
+					if (o.kind is 0 or 5 && o.b0 == 0) { spanOk = false; }   // per-frame shared append buffer
+				}
+				target.SnapSpanStartNext[ci] = spanOk ? opsAtCmd : -1;
+				target.SnapSpanEndNext[ci] = ops.Count;
+			}
 		}
 
 		// Upload the whole pass's coalesceable solid + rrect geometry in ONE buffer each; b0==0 ops index them.
+		if (mainPass)
+		{
+			// Publish this frame's snapshot: ops copy (only from the first dispatched cmd on — the reused
+			// prefix is byte-identical to the stored snapshot) + swapped cmd/span buffers.
+			if (target.SnapOps.Length < ops.Count)
+			{
+				var grown = new DrawOp[Math.Max(ops.Count, target.SnapOps.Length * 2)];
+				Array.Copy(target.SnapOps, grown, target.SnapOps.Length);
+				target.SnapOps = grown;
+			}
+			var publishFrom = target.SnapCmdCount == cmds.Count ? Math.Min(snapFirstDirty, ops.Count) : 0;
+			for (int k = publishFrom; k < ops.Count; k++) { target.SnapOps[k] = ops[k]; }
+			target.SnapCmdCount = cmds.Count;
+			(target.SnapCmds, target.SnapCmdsNext) = (target.SnapCmdsNext, target.SnapCmds);
+			(target.SnapEntries, target.SnapEntriesNext) = (target.SnapEntriesNext, target.SnapEntries);
+			(target.SnapSpanStart, target.SnapSpanStartNext) = (target.SnapSpanStartNext, target.SnapSpanStart);
+			(target.SnapSpanEnd, target.SnapSpanEndNext) = (target.SnapSpanEndNext, target.SnapSpanEnd);
+		}
+
 		nint solidBuf = solid.Count > 0 ? (nint)MakeBuffer(solid) : IntPtr.Zero;
 		nint rrectBuf = rrect.Count > 0 ? (nint)MakeBuffer(rrect) : IntPtr.Zero;
 
@@ -2526,6 +2645,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			}
 		}
 
+		if (_emitStats) { OpsBuildTicks += System.Diagnostics.Stopwatch.GetTimestamp() - _renderIntoStart; }
 		// ---- render-bundle fast path (main surface only) ----
 		var bundleEligible = ReferenceEquals(target, _s) && backdrops.Count == 0;
 		var bundleVeto = "";
@@ -2628,6 +2748,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		};
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
+		var encodeStart = System.Diagnostics.Stopwatch.GetTimestamp();
 
 		// Track the last-applied scissor and skip redundant SetScissorRect calls: static chrome draws many ops under
 		// one clip, so this collapses a per-op call to one per distinct clip. Locals (not a field) keep it correct
@@ -2972,9 +3093,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		{
 			EncodeRange(0, ops.Count);
 		}
+		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} inert={statInert} folded={statFolded} bundle=r{statBundleReplay}+w{statBundleRec}{bundleVeto} clipChanges={statClipCh} fanOps={statFanOps} distinctFans={statFans?.Count ?? 0} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds}");
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} inert={statInert} folded={statFolded} bundle=r{statBundleReplay}+w{statBundleRec} opsReuse={statOpsReuse}{bundleVeto} clipChanges={statClipCh} fanOps={statFanOps} distinctFans={statFans?.Count ?? 0} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds}");
 			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0;
 		}
 
@@ -2989,7 +3111,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// Return this pass's transient (immediate-draw) transform slots to the free-list and recycle the table lists,
 		// then restore the enclosing pass's table (nested-layer render).
 		foreach (var s in _xformTransient) { _d.FreeXformSlot(s); }
-		_xforms.Clear(); _xformsPool.Push(_xforms); _xformTransient.Clear(); _xformTransientPool.Push(_xformTransient);
+		if (!mainPass) { _xforms.Clear(); _xformsPool.Push(_xforms); }
+		_xformTransient.Clear(); _xformTransientPool.Push(_xformTransient);
 		_xforms = savedXforms; _xformTransient = savedTransient;
 	}
 
