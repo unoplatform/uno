@@ -194,6 +194,17 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	private sealed class CachedBg { public nint Bgl; public float[] Sig; public IntPtr Buf; public IntPtr Bg; public int LastUsed; }
 	private readonly System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<CachedBg>> _bgCache = new();
 	private readonly System.Collections.Generic.List<int> _bgCacheEvict = new();
+	// Handle -> entry so reused ops spans (which skip MakeClipBg entirely) can refresh the LRU: without the
+	// touch, a span's cached bind group evicts after 240 frames while still referenced — a use-after-free.
+	private readonly System.Collections.Generic.Dictionary<nint, CachedBg> _bgByHandle = new();
+
+	internal void TouchCachedBg(nint bg)
+	{
+		if (_bgByHandle.TryGetValue(bg, out var e))
+		{
+			e.LastUsed = _bgFrameNo;
+		}
+	}
 
 	private static int SigHash(nint bgl, float[] sig)
 	{
@@ -222,7 +233,9 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	{
 		var h = SigHash(bgl, sig);
 		if (!_bgCache.TryGetValue(h, out var bucket)) { bucket = new(); _bgCache[h] = bucket; }
-		bucket.Add(new CachedBg { Bgl = bgl, Sig = sig, Buf = buf, Bg = bg, LastUsed = _bgFrameNo });
+		var entry = new CachedBg { Bgl = bgl, Sig = sig, Buf = buf, Bg = bg, LastUsed = _bgFrameNo };
+		bucket.Add(entry);
+		_bgByHandle[(nint)bg] = entry;
 	}
 
 	private void EvictStaleBindGroups()
@@ -238,6 +251,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 				{
 					wgpuBindGroupRelease(bucket[i].Bg);
 					if (bucket[i].Buf != IntPtr.Zero) { wgpuBufferRelease(bucket[i].Buf); }
+					_bgByHandle.Remove((nint)bucket[i].Bg);
 					bucket.RemoveAt(i);
 				}
 			}
@@ -1248,6 +1262,18 @@ internal sealed unsafe class WebGpuRenderSurface
 	public IntPtr DepthView;         // multisampled depth/stencil (clip mask + stencil-then-cover)
 									 // Render-bundle cache for this surface's main pass (see RenderInto): the present session is per-frame, so
 									 // the cache lives here; a resize allocates a new surface, which naturally resets it.
+									 // Per-command ops-span snapshot for identical-replay reuse (see RenderInto): a ReplayRefCmd equal to last
+									 // frame's at the same index (same Data/Transform/Clip) copies its previously built DrawOps instead of
+									 // re-dispatching (slab derives, stamp checks, table writes). Double-buffered so the compare reads last
+									 // frame's entries while this frame's are written.
+	public ReplayRefCmd[] SnapCmds = Array.Empty<ReplayRefCmd>(), SnapCmdsNext = Array.Empty<ReplayRefCmd>();
+	public WebGpuGeometryCache[] SnapEntries = Array.Empty<WebGpuGeometryCache>(), SnapEntriesNext = Array.Empty<WebGpuGeometryCache>();
+	public int[] SnapSpanStart = Array.Empty<int>(), SnapSpanStartNext = Array.Empty<int>();
+	public int[] SnapSpanEnd = Array.Empty<int>(), SnapSpanEndNext = Array.Empty<int>();
+	public int SnapCmdCount = -1;
+	public DrawOp[] SnapOps = Array.Empty<DrawOp>();
+	public List<float> XformTable;
+
 	public DrawOp[] BundleOps = Array.Empty<DrawOp>();
 	public int BundleOpsN = -1;
 	public IntPtr[] BundleChunks = Array.Empty<IntPtr>();
