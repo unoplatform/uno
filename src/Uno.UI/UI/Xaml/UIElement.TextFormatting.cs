@@ -219,8 +219,7 @@ public partial class UIElement : ITextFormattingOwner
 						var effectiveValue = childTF.GetFieldValue(propertyName);
 						if (!Equals(oldValue, effectiveValue))
 						{
-							var store = ((IDependencyObjectStoreProvider)childUIE).Store;
-							store.RaiseTextFormattingPropertyChanged(correspondingDP, oldValue, effectiveValue);
+							childUIE.RaiseTextFormattingPropertyChanged(correspondingDP, oldValue, effectiveValue);
 						}
 					}
 				}

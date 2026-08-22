@@ -3,7 +3,7 @@
 /// <summary>
 /// Interface implemented by types that participate in the TextFormatting
 /// inheritance system (UIElement and TextElement).
-/// Used by the DependencyObjectStore to call <see cref="EnsureTextFormatting"/>
+/// Used by the DependencyObject store to call <see cref="EnsureTextFormatting"/>
 /// when reading text properties at DefaultValue precedence.
 /// </summary>
 internal interface ITextFormattingOwner
