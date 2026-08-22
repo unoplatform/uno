@@ -86,6 +86,16 @@ on macOS with Skia rendering. To migrate:
 | `Xamarin.AndroidX.*` transitive deps removed (AppCompat, RecyclerView, Activity, Browser, SwipeRefreshLayout) | If *your own* code uses AndroidX, add explicit `PackageReference`s. |
 | `SkiaSharp.Views.Uno.WinUI` no longer referenced implicitly | The `Uno.Sdk` used to add it to every Uno Platform target, and to WebAssembly heads using the `lottie`, `svg`, `material`, `cupertino`, or `simpletheme` features. Nothing in Uno Platform needs it anymore — SVG draws through `Uno.WinUI.Graphics2DSK` and Lottie through `SkiaSharp.Skottie`. If *your own* code uses `SKXamlCanvas` or `SKSwapChainPanel`, switch to [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), which is hardware-accelerated and referenced implicitly; otherwise add an explicit `PackageReference`. |
 | Windows App SDK default moved from 1.7 to 2.3.1 | Windows heads now build against Windows App SDK 2.x, so packaged apps take a framework dependency on `Microsoft.WindowsAppRuntime.2` and end users need the matching [Windows App Runtime](https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads) — 2.3.1 or later from the **Stable release** section — installed. To stay on 1.x, set `<WinAppSdkVersion>` (and `<WinAppSdkBuildToolsVersion>`) explicitly in your Windows head. |
+| `Uno.UI.Toolkit.dll` renamed to `Uno.UI.Extras.dll` | The old name was routinely confused with the separate Uno Toolkit (`Uno.Toolkit.UI`). Update `using Uno.UI.Toolkit;` to `using Uno.UI.Extras;` and `xmlns:toolkit="using:Uno.UI.Toolkit"` to `using:Uno.UI.Extras`. Types keep their names. `Uno.Diagnostics.UI`, `Uno.UI.Markup`, `Uno.Helpers` and `Uno.UI.Maps` are unaffected — only the `Uno.UI.Toolkit*` namespaces moved. |
+
+> [!IMPORTANT]
+> This is a hard rename — there is no type-forwarder and no `xmlns` alias. `Uno.UI.Toolkit.dll`
+> and `Uno.UI.Extras.dll` are *different assembly identities*, so a library compiled against
+> Uno 6.x can no longer bind: its references into `Uno.UI.Toolkit` resolve to nothing and the
+> build fails with `CS0012`. Recompile every dependent library against 7.0 rather than mixing
+> majors.
+
+<!-- Separates the two alerts: one alert per blockquote, without an MD028 blank-line-only gap. -->
 
 > [!NOTE]
 > Referencing `Uno.WinUI.WebAssembly` (or the older `Uno.WinUI.Runtime.WebAssembly`)

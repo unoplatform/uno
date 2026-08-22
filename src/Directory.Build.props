@@ -88,11 +88,10 @@
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.netcoremobile.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Foundation.Reference.csproj</_AdjustedOutputProjects>
 
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Tests.csproj</_AdjustedOutputProjects>
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Skia.csproj</_AdjustedOutputProjects>
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Wasm.csproj</_AdjustedOutputProjects>
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.netcoremobile.csproj</_AdjustedOutputProjects>
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.Reference.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.WinRT.Skia.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.WinRT.Wasm.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.WinRT.netcoremobile.csproj</_AdjustedOutputProjects>
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.WinRT.Reference.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Tests.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.csproj</_AdjustedOutputProjects>

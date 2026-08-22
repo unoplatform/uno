@@ -34,7 +34,7 @@
       "Uno.UI.UnitTests\\Uno.UI.UnitTests.csproj",
       "Uno.UI.Extras\\Uno.UI.Extras.Skia.csproj",
       "Uno.UI\\Uno.UI.csproj",
-      "Uno.UWP\\Uno.Reference.csproj"
+      "Uno.WinRT\\Uno.WinRT.Reference.csproj"
     ]
   }
 }
