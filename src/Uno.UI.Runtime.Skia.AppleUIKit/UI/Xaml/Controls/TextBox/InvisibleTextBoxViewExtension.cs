@@ -227,6 +227,23 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 	}
 
+	// While a caret drag is running, UIKit's own selection updates are computed against the proxy's
+	// system-font layout, which bears no relation to the Skia-rendered text. The managed side owns
+	// the caret for the duration of the gesture.
+	internal bool IsCaretDragActive => _owner?.TextBox?.IsCaretDragActive == true;
+
+	internal bool ProcessCaretDragGesture(TextBox.CaretDragPhase phase, Windows.Foundation.Point cumulativeOffset)
+	{
+		// Re-resolved on every callback: EndEntry() clears _textBoxView without resigning first
+		// responder, so a discarded proxy can still receive the gesture.
+		if (_textBoxView?.Owner?.TextBox is not { } textBox || AppleUIKitImeTextBoxExtension.Instance.IsComposing)
+		{
+			return false;
+		}
+
+		return textBox.ProcessCaretDragGesture(phase, cumulativeOffset);
+	}
+
 	internal void ProcessNativeTextInput(string? text)
 	{
 		// During IME composition, text updates are managed by the shared
