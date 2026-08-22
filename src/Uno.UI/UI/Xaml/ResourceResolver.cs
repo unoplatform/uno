@@ -441,17 +441,24 @@ namespace Uno.UI
 		/// <param name="context">Optional parameter that provides parse-time context</param>
 		/// <param name="bindingPath">The binding path defined by the Setter target</param>
 		/// <param name="precedence">Value precedence</param>
+		/// <param name="setterOwner">The element owning the VisualStateGroups the setter belongs to.</param>
 		/// <returns>
 		/// True if the value was successfully applied and registered for theme updates, false if no theme resource was found or the target
 		/// property is not a <see cref="DependencyProperty"/>.
 		/// </returns>
-		internal static bool ApplyVisualStateSetter(SpecializedResourceDictionary.ResourceKey resourceKey, object context, BindingPath bindingPath, DependencyPropertyValuePrecedences precedence, ResourceUpdateReason updateReason)
+		internal static bool ApplyVisualStateSetter(SpecializedResourceDictionary.ResourceKey resourceKey, object context, BindingPath bindingPath, DependencyPropertyValuePrecedences precedence, ResourceUpdateReason updateReason, DependencyObject setterOwner = null)
 		{
-			// Resolve the setter's {ThemeResource} against the target element's effective theme
-			// (bindingPath.DataContext is the setter target), scoped onto the core
-			// requested-theme-for-subtree slot like WinUI's LookupThemeResource(theme, key); the
-			// resolution leaf reads the slot (EnsureActiveThemeDictionary, Resources.cpp:764-768).
-			var ownerTheme = ThemeResolution.ResolveOwnerTheme(bindingPath.DataContext as DependencyObject);
+			// MUX: a VSM setter's {ThemeResource} becomes a live binding on the CSetter itself
+			// (ThemeResource.cpp:189-198) and resolves under the SETTER's theme
+			// (SetThemeResourceBinding, Theming.cpp:367-379); the target only ever receives the
+			// already-resolved value (VisualStateSetterHelper.cpp:186). The setter inherits its theme
+			// from the element owning the VisualStateGroups, so resolve under that owner — never under
+			// the target, whose own RequestedTheme may be a boundary applied by this very state
+			// (ComboBoxTextBoxStyle/NumberBox set ContentElement.RequestedTheme=Light alongside
+			// ContentElement.Foreground, #24021).
+			var ownerTheme = setterOwner is not null
+				? ThemeResolution.ResolvePinnedOwnerTheme(setterOwner)
+				: ThemeResolution.ResolveOwnerTheme(bindingPath.DataContext as DependencyObject);
 			using var themeScope = Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ownerTheme);
 			if (TryVisualTreeRetrieval(resourceKey, context, out var value, out var providingDictionary)
 				&& bindingPath.DataContext != null)
@@ -470,7 +477,12 @@ namespace Uno.UI
 						// primitive instead of the store's full SetThemeResourceBinding sequence.
 						var themeRef = new ThemeResourceReference(
 							resourceKey, providingDictionary, value, isResolved: true, context,
-							updateReason, precedence, bindingPath);
+							updateReason, precedence, bindingPath)
+						{
+							// Pin the setter-side resolution owner so a later re-resolution keeps resolving
+							// under it rather than under the target's own RequestedTheme.
+							ResolutionOwner = setterOwner,
+						};
 						provider.SetThemeResource(property, themeRef);
 					}
 

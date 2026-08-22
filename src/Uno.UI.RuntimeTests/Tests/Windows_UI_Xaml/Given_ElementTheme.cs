@@ -4589,6 +4589,206 @@ public class Given_ElementTheme
 #endif
 
 	#endregion
+
+	#region VisualState setter {ThemeResource} resolves setter-side (issue #24021)
+
+#if HAS_UNO
+
+	// Coverage guard, NOT a negative control: this passes with and without the groups-owner fallback,
+	// because the keyframe value is already resolved on the parse-time path before lazy materialization
+	// re-establishes the chain theme. It locks in the observable contract — VisualStateGroups declared
+	// outside a ControlTemplate resolve under the element carrying the attached property, not the app
+	// base theme — so a future change to either path cannot silently regress it.
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_VisualStateGroups_Outside_Template_Materialize_Under_Groups_Owner_Theme()
+	{
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+		var root = (Border)XamlReader.Load(
+			"""
+			<Border xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					RequestedTheme="Light">
+				<VisualStateManager.VisualStateGroups>
+					<VisualStateGroup x:Name="G">
+						<VisualState x:Name="Normal" />
+						<VisualState x:Name="Applied">
+							<Storyboard>
+								<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Target" Storyboard.TargetProperty="Foreground">
+									<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextFillColorPrimaryBrush}" />
+								</ObjectAnimationUsingKeyFrames>
+							</Storyboard>
+						</VisualState>
+					</VisualStateGroup>
+				</VisualStateManager.VisualStateGroups>
+				<TextBlock x:Name="Target" Text="t" />
+			</Border>
+			""");
+
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(root);
+		await WindowHelper.WaitForIdle();
+
+		// Positive controls: the Light boundary applied, and the lazy chain really materialized.
+		Assert.AreEqual(ElementTheme.Light, root.ActualTheme, "RequestedTheme=Light never applied");
+
+		var group = VisualStateManager.GetVisualStateGroups(root).Single(g => g.Name == "G");
+		var state = group.States.Single(st => st.Name == "Applied");
+		Assert.IsNotNull(state.Owner, "VisualState.Owner must be set for the groups-owner fallback to work");
+
+		var storyboard = state.Storyboard;
+		Assert.IsNotNull(storyboard, "Reading state.Storyboard should materialize the lazy chain");
+
+		var keyFrame = ((Microsoft.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames)storyboard.Children.Single()).KeyFrames.Single();
+		Assert.IsNotNull(keyFrame.Value, "The keyframe should have resolved its {ThemeResource}");
+
+		// TextFillColorPrimaryBrush: Light #E4000000, Dark #FFFFFFFF.
+		Assert.AreEqual(
+			Windows.UI.Color.FromArgb(0xE4, 0x00, 0x00, 0x00),
+			((SolidColorBrush)keyFrame.Value).Color,
+			"The keyframe resolved against the app base theme instead of the groups owner's theme");
+	}
+
+	// Guard (not a negative control for the bail — the previous skipSetValue path already protected
+	// this element's own value): a themed boundary that carries its own Foreground keeps it. WinUI bails
+	// out of NotifyThemeChangedForInheritedProperties entirely there (framework.cpp:3423-3429 @
+	// fc2f82117). The bail's observable effect — not publishing a frozen brush to the subtree — is
+	// covered by the NumberBox test below via reference identity.
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24021")]
+	public async Task When_Themed_Boundary_Has_Own_Foreground_Freeze_Bails()
+	{
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+		var stateBrush = new SolidColorBrush(Colors.Magenta);
+		var boundary = new TextBlock
+		{
+			Text = "boundary",
+			RequestedTheme = ElementTheme.Light,
+			Foreground = stateBrush,
+		};
+
+		WindowHelper.WindowContent = boundary;
+		await WindowHelper.WaitForLoaded(boundary);
+		await WindowHelper.WaitForIdle();
+
+		// Positive control: the boundary actually applied, so the freeze path really ran.
+		Assert.AreEqual(ElementTheme.Light, boundary.ActualTheme, "RequestedTheme=Light never applied");
+
+		// Reference identity, immune to the brush-aliasing trap.
+		Assert.AreSame(stateBrush, boundary.Foreground,
+			"The theme boundary overwrote its own explicitly-set Foreground");
+	}
+
+	// End-to-end #24021: the text the user sees is the TextBox's display block, which inherits
+	// Foreground from ContentElement. The Focused state sets ContentElement.Foreground AND
+	// ContentElement.RequestedTheme=Light on the same element, so the freeze must bail.
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24021")]
+	public async Task When_NumberBox_Focused_In_Dark_Theme_DisplayBlock_Keeps_ContentElement_Foreground()
+	{
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+		var numberBox = new NumberBox { Width = 160, Value = 888 };
+		WindowHelper.WindowContent = numberBox;
+		await WindowHelper.WaitForLoaded(numberBox);
+		await WindowHelper.WaitForIdle();
+
+		var inputBox = numberBox.FindFirstDescendant<TextBox>("InputBox");
+		Assert.IsNotNull(inputBox, "InputBox should exist in the NumberBox template");
+
+		inputBox.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		var contentElement = inputBox.FindFirstDescendant<FrameworkElement>("ContentElement");
+		Assert.IsNotNull(contentElement, "ContentElement should exist in the TextBox template");
+
+		// Positive controls: the Focused state ran, and its boundary applied.
+		var borderElement = inputBox.FindFirstDescendant<Border>("BorderElement");
+		Assert.AreEqual(
+			Windows.UI.Color.FromArgb(0xB3, 0x1E, 0x1E, 0x1E),
+			((SolidColorBrush)borderElement.Background).Color,
+			"Focused state did not apply — BorderElement.Background is not TextControlBackgroundFocused (dark)");
+		Assert.AreEqual(ElementTheme.Light, contentElement.ActualTheme,
+			"The Focused state's RequestedTheme=Light boundary should still apply");
+
+		var displayBlock = inputBox.FindFirstDescendant<TextBlock>(tb => tb.Text == "888");
+		Assert.IsNotNull(displayBlock, "The text display block should exist in the TextBox visual tree");
+
+		Assert.AreSame(((Control)contentElement).Foreground, displayBlock.Foreground,
+			"The display block must inherit ContentElement.Foreground, not a frozen theme default");
+		Assert.AreEqual(Colors.White, ((SolidColorBrush)displayBlock.Foreground).Color,
+			"Focused NumberBox text should be the Dark TextControlForegroundFocused");
+	}
+	// The editable ComboBox's ComboBoxTextBoxStyle Focused state applies BOTH
+	// ContentElement.Foreground="{ThemeResource TextControlForegroundFocused}" and
+	// ContentElement.RequestedTheme="Light" onto the inner TextBox's ScrollViewer (verbatim from
+	// WinUI, themeresources_v2.xaml:13111-13116). WinUI resolves the setter's {ThemeResource} on the
+	// Setter DO — which lives in the template's VisualStateGroups, outside the target's subtree — so
+	// the sibling RequestedTheme=Light never re-scopes it (ThemeResource.cpp:194-203 ->
+	// Theming.cpp:415-424 -> VisualStateSetterHelper.cpp:186).
+	//
+	// Expected values are taken from a native WinUI oracle (WinAppSDK 2.1.3, Dark page, focused):
+	// ContentElement.ActualTheme=Light, ContentElement.Foreground=#FFFFFFFF, BorderElement
+	// .Background=#B31E1E1E.
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24021")]
+	public async Task When_Editable_ComboBox_Focused_In_Dark_Theme_Setter_Resolves_Outside_Boundary()
+	{
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+		var comboBox = new ComboBox { Width = 160, IsEditable = true };
+		WindowHelper.WindowContent = comboBox;
+		await WindowHelper.WaitForLoaded(comboBox);
+		await WindowHelper.WaitForIdle();
+
+		var editableText = comboBox.FindFirstDescendant<TextBox>("EditableText");
+		Assert.IsNotNull(editableText, "EditableText should exist in the ComboBox template");
+
+		editableText.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		var contentElement = editableText.FindFirstDescendant<FrameworkElement>("ContentElement");
+		Assert.IsNotNull(contentElement, "ContentElement should exist in the TextBox template");
+
+		// Positive control: prove the Focused state actually applied. Without this, a foreground
+		// assertion alone passes identically when the state never ran, because the Dark
+		// TextControlForeground/...PointerOver/...Focused keys all alias TextFillColorPrimaryBrush.
+		var borderElement = editableText.FindFirstDescendant<Border>("BorderElement");
+		Assert.IsNotNull(borderElement, "BorderElement should exist in the TextBox template");
+		Assert.AreEqual(
+			Windows.UI.Color.FromArgb(0xB3, 0x1E, 0x1E, 0x1E),
+			((SolidColorBrush)borderElement.Background).Color,
+			"Focused state did not apply — BorderElement.Background is not TextControlBackgroundFocused (dark)");
+
+		// The boundary itself must still apply, exactly as it does in WinUI.
+		Assert.AreEqual(ElementTheme.Light, contentElement.ActualTheme,
+			"The Focused state's RequestedTheme=Light boundary should still apply to ContentElement");
+
+		// ...but the sibling setter's {ThemeResource} must NOT have resolved under it.
+		var foreground = ((Control)contentElement).Foreground as SolidColorBrush;
+		Assert.IsNotNull(foreground, "ContentElement.Foreground should be a SolidColorBrush");
+		Assert.AreNotEqual(
+			Windows.UI.Color.FromArgb(0xE4, 0x00, 0x00, 0x00),
+			foreground.Color,
+			"ContentElement.Foreground resolved under the target's own Light boundary");
+		Assert.AreEqual(
+			Colors.White,
+			foreground.Color,
+			"ContentElement.Foreground should be the Dark TextControlForegroundFocused");
+	}
+#endif
+
+	#endregion
+
 }
 
 public partial class Issue475ThemedDO : DependencyObject

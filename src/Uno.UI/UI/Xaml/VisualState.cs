@@ -178,11 +178,22 @@ namespace Microsoft.UI.Xaml
 #endif
 				}
 
-				// Resolve all theme resources from storyboard children
-				// and setters values. This step is needed to ensure that
-				// Theme Resources are resolved using the proper visual tree
-				// parents, particularly when resources a locally overriden.
-				this.UpdateResourceBindings();
+				// Establish the per-object theme on the lazily-built VisualState chain (storyboard,
+				// animations, keyframes, setters); without it a keyframe keeps _theme=None and later
+				// re-resolves its {ThemeResource} against the unscoped app base theme.
+				// Read pinned-safe: while the owner is mid-walk its per-object theme is still the
+				// pre-switch one, persisted only after the subtree completes (Theming.cpp:153-156).
+				// Templated parent first, so the keyframes resolve under the same owner the state's
+				// Setters do (VisualStateManager.cs:234 passes the Control into VisualStateGroup.GoToState,
+				// which is what Setter.ApplyValue then receives). The groups owner is the fallback for
+				// groups declared outside a ControlTemplate (MUX: CVisualStateManager2.cpp:345-354, :464).
+				// TODO Uno: no WinUI counterpart for the notify itself — WinUI's fault-in only calls
+				// CreateInstance (OptimizedVisualStateManagerDataSource.cpp:92-129); the chain is themed
+				// when the VSM parents it (CVisualState::EnterImpl enters its storyboard,
+				// components/vsm/VisualState.cpp:67-76, plus CDependencyObject::EnterImpl, depends.cpp:1044-1069).
+				var groupsOwner = this.GetTemplatedParent() ?? Owner?.GetParent() as DependencyObject;
+				var ownerTheme = ThemeResolution.ResolvePinnedOwnerTheme(groupsOwner);
+				NotifyThemeChanged(ownerTheme, forceRefresh: true);
 			}
 		}
 

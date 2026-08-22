@@ -4,7 +4,7 @@
 //
 // MUX References:
 //   CDependencyObject::GetTheme            — CDependencyObject.h:1648 (field m_theme:5 at :1761)
-//   CDependencyObject::EnterImpl (theme)   — depends.cpp:1023-1048 (inherits from the (logical)
+//   CDependencyObject::EnterImpl (theme)   — depends.cpp:1044-1069 (inherits from the (logical)
 //                                            inheritance parent at tree Enter)
 //   GetInheritanceParentInternal(logical)  — framework.cpp:3097-3130
 //   CFrameworkElement::ActualTheme         — framework.cpp:3953-3978 (falls back to the app/OS
@@ -27,6 +27,27 @@ namespace Microsoft.UI.Xaml;
 /// </remarks>
 internal static class ThemeResolution
 {
+	/// <summary>
+	/// Returns the effective <see cref="Theme"/> of an object a {ThemeResource} is pinned to resolve
+	/// under (<see cref="Data.ThemeResourceReference.ResolutionOwner"/>), safe to call mid-walk.
+	/// </summary>
+	/// <remarks>
+	/// While that owner is itself processing a theme walk, its per-object theme is the PRE-switch one —
+	/// WinUI persists <c>m_theme</c> only once the whole subtree completes (Theming.cpp:153-156) — so the
+	/// in-flight walk theme is the current one. That case is the owner's own theme genuinely changing, and
+	/// the pinned value must follow it; when only the target is walking (a boundary the visual state just
+	/// applied to it) the owner is not walking and keeps its established theme, which is the whole point
+	/// of the pin.
+	/// </remarks>
+	internal static Theme ResolvePinnedOwnerTheme(DependencyObject? owner)
+	{
+		if (owner is { IsProcessingThemeWalk: true })
+		{
+			return owner.WalkTheme;
+		}
+
+		return ResolveOwnerTheme(owner);
+	}
 
 	/// <summary>
 	/// Returns the effective <see cref="Theme"/> for the given <paramref name="owner"/>: the owner's
