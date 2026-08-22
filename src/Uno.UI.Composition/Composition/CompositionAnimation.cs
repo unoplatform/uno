@@ -61,22 +61,23 @@ public partial class CompositionAnimation
 		set => _target = value ?? throw new ArgumentException();
 	}
 
-#if __SKIA__
-	// TODO: This should not be here as it is possible to re-use animations across
-	// CompositionObjects.
-	CompositionObject? _currentCompositionObject;
-#endif
+	// Targets this animation is currently started on; Stop() unwinds them in LIFO order.
+	// TODO Uno: sharing one keyframe animation across several live targets still throws in
+	// Compositor.RegisterAnimation, which keys running animations by instance rather than by target.
+	private readonly List<CompositionObject> _startedObjects = new();
 
 	// The object this animation was last started on; resolves 'this.Target' in expression keyframes.
 	internal CompositionObject? AnimationTargetObject { get; private set; }
 
+	// Number of targets this animation is currently started on. Start/Stop are balanced one-to-one
+	// per target, so this reaches zero only once every target has stopped.
+	internal int StartedObjectCount => _startedObjects.Count;
+
 	internal virtual object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
 		AnimationTargetObject = compositionObject;
-#if __SKIA__
-		_currentCompositionObject = compositionObject;
+		_startedObjects.Add(compositionObject);
 		Compositor.RegisterAnimation(this, compositionObject);
-#endif
 		return null;
 	}
 
@@ -84,12 +85,16 @@ public partial class CompositionAnimation
 
 	internal virtual void Stop()
 	{
-#if __SKIA__
-		if (_currentCompositionObject is not null)
+		if (_startedObjects.Count == 0)
 		{
-			Compositor.UnregisterAnimation(this, _currentCompositionObject);
+			return;
 		}
-#endif
+
+		// Stop() carries no target — CompositionObject.StopAnimation calls it without one — and
+		// Start/Stop are balanced one-to-one per target, so unwind the most recent registration.
+		var index = _startedObjects.Count - 1;
+		Compositor.UnregisterAnimation(this, _startedObjects[index]);
+		_startedObjects.RemoveAt(index);
 	}
 
 	internal void RaiseAnimationFrame() => AnimationFrame?.Invoke(this);

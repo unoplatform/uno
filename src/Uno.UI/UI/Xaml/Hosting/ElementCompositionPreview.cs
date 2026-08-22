@@ -46,7 +46,7 @@ public partial class ElementCompositionPreview
 	/// Sets a custom Microsoft.UI.Composition.Visual as the last child of the element's visual tree.
 	/// </summary>
 	/// <param name="element">The element to add the child Visual to.</param>
-	/// <param name="visual">The Visual to add to the element's visual tree.</param>
+	/// <param name="visual">The Visual to add to the element's visual tree, or <c>null</c> to remove the previously set child visual.</param>
 	public static void SetElementChildVisual(UIElement element, Visual? visual)
 	{
 #if __SKIA__
