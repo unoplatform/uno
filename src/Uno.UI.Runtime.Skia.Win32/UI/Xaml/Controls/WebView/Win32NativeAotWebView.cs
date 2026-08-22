@@ -24,7 +24,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
-internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsVirtualHostMapping, ISupportsWebResourceRequested
+internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsVirtualHostMapping, ISupportsWebResourceRequested, ISupportsUserAgent, ISupportsScriptEnabled, ISupportsZoomControl, ISupportsPostWebMessage, ISupportsDocumentCreatedScripts, ISupportsCookieManager, ISupportsPrint, ISupportsClose
 {
 	private readonly CoreWebView2 _coreWebView;
 	private readonly WebView2.ICoreWebView2_22 _nativeWebView;
@@ -42,52 +42,60 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 
 		ForwardBackgroundToPresenter();
 
-		var tcs = new TaskCompletionSource<(WebView2.ICoreWebView2Controller controller, WebView2.ICoreWebView2_22 webView)>();
-		NativeDispatcher.Main.EnqueueAsync(async () =>
+		var tcs = new TaskCompletionSource<(WebView2.ICoreWebView2Controller controller, WebView2.ICoreWebView2_22 webView)>(TaskCreationOptions.RunContinuationsAsynchronously);
+		NativeDispatcher.Main.EnqueueAsync(() =>
 		{
 			try
 			{
-				var userDataFolder = Path.Combine(ApplicationData.Current.LocalFolder.Path, "WebView2");
+				var customEnvironment = _coreWebView.CustomEnvironment;
+				var userDataFolder = !string.IsNullOrEmpty(customEnvironment?.RequestedUserDataFolder)
+					? customEnvironment!.RequestedUserDataFolder
+					: Path.Join(ApplicationData.Current.LocalFolder.Path, "WebView2");
+				var options = CreateEnvironmentOptions();
 
-				// These options must be applied at environment creation time; CoreWebView2EnvironmentOptions cannot be
-				// changed once the environment exists. They are surfaced through FeatureConfiguration.WebView2 because Uno
-				// owns this CreateAsync call (the app never sees the CoreWebView2Environment), so it's the only injection point.
-				var options = new WebView2.CoreWebView2EnvironmentOptions();
-				options.put_AllowSingleSignOnUsingOSPrimaryAccount(
-					FeatureConfiguration.WebView2.AllowSingleSignOnUsingOSPrimaryAccount ? BOOL.TRUE : BOOL.FALSE
-				).ThrowOnError();
-				var additionalBrowserArguments = FeatureConfiguration.WebView2.AdditionalBrowserArguments;
-				if (!string.IsNullOrEmpty(additionalBrowserArguments))
+				try
 				{
-					unsafe
+					CreateCoreWebView2Environment(customEnvironment?.BrowserExecutableFolder, userDataFolder, options, new WebView2.Utilities.CoreWebView2CreateCoreWebView2EnvironmentCompletedHandler((errorCode, environment) =>
 					{
-						fixed (char* p_args = additionalBrowserArguments)
+						options.Dispose();
+						if (errorCode.IsError)
 						{
-							options.put_AdditionalBrowserArguments(new PWSTR(p_args)).ThrowOnError();
-						}
-					}
-				}
-
-				CreateCoreWebView2Environment(userDataFolder, options, new WebView2.Utilities.CoreWebView2CreateCoreWebView2EnvironmentCompletedHandler((errorCode, environment) =>
-				{
-					if (errorCode.IsError)
-					{
-						tcs.TrySetException(errorCode.GetException() ?? new InvalidOperationException("Failed to create CoreWebView2 environment."));
-						return;
-					}
-
-					environment.CreateCoreWebView2Controller(new DirectN.HWND((IntPtr)Hwnd.Value), new WebView2.Utilities.CoreWebView2CreateCoreWebView2ControllerCompletedHandler((controllerError, controller) =>
-					{
-						if (controllerError.IsError)
-						{
-							tcs.TrySetException(controllerError.GetException() ?? new InvalidOperationException("Failed to create CoreWebView2 controller."));
+							tcs.TrySetException(errorCode.GetException() ?? new InvalidOperationException("Failed to create CoreWebView2 environment."));
 							return;
 						}
 
-						controller.get_CoreWebView2(out var coreWebView).ThrowOnError();
-						tcs.TrySetResult((controller, (WebView2.ICoreWebView2_22)coreWebView));
-					})).ThrowOnError();
-				}));
+						try
+						{
+							CreateController(environment, new WebView2.Utilities.CoreWebView2CreateCoreWebView2ControllerCompletedHandler((controllerError, controller) =>
+							{
+								if (controllerError.IsError)
+								{
+									tcs.TrySetException(controllerError.GetException() ?? new InvalidOperationException("Failed to create CoreWebView2 controller."));
+									return;
+								}
+
+								try
+								{
+									controller.get_CoreWebView2(out var coreWebView).ThrowOnError();
+									tcs.TrySetResult((controller, (WebView2.ICoreWebView2_22)coreWebView));
+								}
+								catch (Exception error)
+								{
+									tcs.TrySetException(error);
+								}
+							}));
+						}
+						catch (Exception error)
+						{
+							tcs.TrySetException(error);
+						}
+					}));
+				}
+				catch
+				{
+					options.Dispose();
+					throw;
+				}
 			}
 			catch (Exception e)
 			{
@@ -106,34 +114,34 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 		_controller.put_Bounds(new DirectN.RECT { left = 0, top = 0, right = 500, bottom = 500 }).ThrowOnError();
 
 		_nativeWebView.get_Settings(out var settings).ThrowOnError();
-		settings.put_IsScriptEnabled(BOOL.TRUE).ThrowOnError();
-		settings.put_IsWebMessageEnabled(BOOL.TRUE).ThrowOnError();
-		settings.put_AreDefaultScriptDialogsEnabled(BOOL.TRUE).ThrowOnError();
-		settings.put_AreDevToolsEnabled(FeatureConfiguration.WebView2.EnableDevTools ? BOOL.TRUE : BOOL.FALSE).ThrowOnError();
+		_settings = (WebView2.ICoreWebView2Settings2)settings;
+		_settings.put_IsScriptEnabled(BOOL.TRUE).ThrowOnError();
+		_settings.put_IsWebMessageEnabled(BOOL.TRUE).ThrowOnError();
+		_settings.put_AreDefaultScriptDialogsEnabled(BOOL.TRUE).ThrowOnError();
+		_settings.put_AreDevToolsEnabled(FeatureConfiguration.WebView2.EnableDevTools ? BOOL.TRUE : BOOL.FALSE).ThrowOnError();
 
 		var weakRef = new WeakReference<Win32NativeAotWebView>(this);
-		var eventToken = new WebView2.EventRegistrationToken();
 
 		_nativeWebView.add_NavigationCompleted(
 		new WebView2.Utilities.CoreWebView2NavigationCompletedEventHandler((_, args) =>
 		{
 			if (weakRef.TryGetTarget(out var target)) target.NativeWebView_NavigationCompleted(args);
 		}),
-		ref eventToken).ThrowOnError();
+		ref _navigationCompletedToken).ThrowOnError();
 
 		_nativeWebView.add_NewWindowRequested(
 		new WebView2.Utilities.CoreWebView2NewWindowRequestedEventHandler((_, args) =>
 		{
 			if (weakRef.TryGetTarget(out var target)) target.NativeWebView_NewWindowRequested(args);
 		}),
-		ref eventToken).ThrowOnError();
+		ref _newWindowRequestedToken).ThrowOnError();
 
 		_nativeWebView.add_SourceChanged(
 			new WebView2.Utilities.CoreWebView2SourceChangedEventHandler((_, args) =>
 			{
 				if (weakRef.TryGetTarget(out var target)) target.NativeWebView_SourceChanged(args);
 			}),
-			ref eventToken
+			ref _sourceChangedToken
 		).ThrowOnError();
 
 		_nativeWebView.add_WebMessageReceived(
@@ -141,7 +149,7 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 			{
 				if (weakRef.TryGetTarget(out var target)) target.NativeWebView_WebMessageReceived(args);
 			}),
-			ref eventToken
+			ref _webMessageReceivedToken
 		).ThrowOnError();
 
 		_nativeWebView.add_NavigationStarting(
@@ -149,7 +157,7 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 			{
 				if (weakRef.TryGetTarget(out var target)) target.NativeWebView_NavigationStarting(args);
 			}),
-			ref eventToken
+			ref _navigationStartingToken
 		).ThrowOnError();
 
 		_nativeWebView.add_HistoryChanged(
@@ -157,7 +165,7 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 			{
 				if (weakRef.TryGetTarget(out var target)) target.CoreWebView2_HistoryChanged();
 			}),
-			ref eventToken
+			ref _historyChangedToken
 		).ThrowOnError();
 
 		_nativeWebView.add_DocumentTitleChanged(
@@ -165,7 +173,7 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 			{
 				if (weakRef.TryGetTarget(out var target)) target.UpdateDocumentTitle();
 			}),
-			ref eventToken
+			ref _documentTitleChangedToken
 		).ThrowOnError();
 
 		_nativeWebView.add_WebResourceRequested(
@@ -173,9 +181,26 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 			{
 				if (weakRef.TryGetTarget(out var target)) target.NativeWebView2_WebResourceRequested(args);
 			}),
-			ref eventToken
+			ref _webResourceRequestedToken
 		).ThrowOnError();
 
+		_nativeWebView.add_ContentLoading(
+			new WebView2.Utilities.CoreWebView2ContentLoadingEventHandler((_, args) =>
+			{
+				if (weakRef.TryGetTarget(out var target)) target.NativeWebView_ContentLoading(args);
+			}),
+			ref _contentLoadingToken
+		).ThrowOnError();
+
+		_nativeWebView.add_DOMContentLoaded(
+			new WebView2.Utilities.CoreWebView2DOMContentLoadedEventHandler((_, args) =>
+			{
+				if (weakRef.TryGetTarget(out var target)) target.NativeWebView_DOMContentLoaded(args);
+			}),
+			ref _domContentLoadedToken
+		).ThrowOnError();
+
+		_eventsRegistered = true;
 		UpdateDocumentTitle();
 	}
 
@@ -194,7 +219,7 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 
 	protected override void OnWindowSizeChanged()
 	{
-		if (_controller is not null)
+		if (!_isClosed && _controller is not null)
 		{
 			PInvoke.GetClientRect(Hwnd, out var bounds);
 			_controller.put_Bounds(new DirectN.RECT { left = bounds.left, top = bounds.top, right = bounds.right, bottom = bounds.bottom }).ThrowOnError();
@@ -231,10 +256,28 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 		_coreWebView.RaiseWebMessageReceived(json.ToString()!);
 	}
 
+	private void NativeWebView_ContentLoading(WebView2.ICoreWebView2ContentLoadingEventArgs e)
+	{
+		BOOL isErrorPage = default;
+		ulong navigationId = default;
+		e.get_IsErrorPage(ref isErrorPage).ThrowOnError();
+		e.get_NavigationId(ref navigationId).ThrowOnError();
+		_coreWebView.RaiseContentLoading(new CoreWebView2ContentLoadingEventArgs(isErrorPage.Value != 0, navigationId));
+	}
+
+	private void NativeWebView_DOMContentLoaded(WebView2.ICoreWebView2DOMContentLoadedEventArgs e)
+	{
+		ulong navigationId = default;
+		e.get_NavigationId(ref navigationId).ThrowOnError();
+		_coreWebView.RaiseDOMContentLoaded(new CoreWebView2DOMContentLoadedEventArgs(navigationId));
+	}
+
 	private void NativeWebView_NavigationStarting(WebView2.ICoreWebView2NavigationStartingEventArgs e)
 	{
 		e.get_Uri(out var uriPwstr).ThrowOnError();
 		var uriString = uriPwstr.ToString();
+		ulong navigationId = default;
+		e.get_NavigationId(ref navigationId).ThrowOnError();
 
 		if (uriString is null)
 		{
@@ -244,11 +287,11 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 		bool cancel;
 		if (Uri.TryCreate(uriString, UriKind.RelativeOrAbsolute, out var uri))
 		{
-			_coreWebView.RaiseNavigationStarting(uri, out cancel);
+			_coreWebView.RaiseNavigationStarting(uri, out cancel, navigationId);
 		}
 		else
 		{
-			_coreWebView.RaiseNavigationStarting(uriString, out cancel);
+			_coreWebView.RaiseNavigationStarting(uriString, out cancel, navigationId);
 		}
 
 		BOOL canGoBack = default;
@@ -259,8 +302,6 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 
 		e.put_Cancel(cancel ? BOOL.TRUE : BOOL.FALSE).ThrowOnError();
 
-		ulong navigationId = default;
-		e.get_NavigationId(ref navigationId).ThrowOnError();
 		_navigationIdToUriMap[navigationId] = uriString;
 	}
 
@@ -296,11 +337,23 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 			{
 				_coreWebView.RaiseUnsupportedUriSchemeIdentified(uri, out _);
 			}
-			_coreWebView.RaiseNavigationCompleted(uri, isSuccess.Value != 0, httpStatusCode, (CoreWebView2WebErrorStatus)(int)webErrorStatus, shouldSetSource: false);
+			_coreWebView.RaiseNavigationCompleted(
+				uri,
+				isSuccess.Value != 0,
+				httpStatusCode,
+				(CoreWebView2WebErrorStatus)(int)webErrorStatus,
+				shouldSetSource: false,
+				navigationId: navigationId);
 		}
 		else
 		{
-			_coreWebView.RaiseNavigationCompleted(null, isSuccess.Value != 0, httpStatusCode, (CoreWebView2WebErrorStatus)(int)webErrorStatus, shouldSetSource: false);
+			_coreWebView.RaiseNavigationCompleted(
+				null,
+				isSuccess.Value != 0,
+				httpStatusCode,
+				(CoreWebView2WebErrorStatus)(int)webErrorStatus,
+				shouldSetSource: false,
+				navigationId: navigationId);
 		}
 	}
 
@@ -332,15 +385,26 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 
 	public override unsafe Task<string?> ExecuteScriptAsync(string script, CancellationToken token)
 	{
-		var tcs = new TaskCompletionSource<string?>();
-		fixed (char* p_script = script)
-			_nativeWebView.ExecuteScript(new PWSTR(p_script), new WebView2.Utilities.CoreWebView2ExecuteScriptCompletedHandler((errorCode, result) =>
-			{
-				if (errorCode.IsError)
-					tcs.TrySetException(errorCode.GetException() ?? new InvalidOperationException("ExecuteScript failed."));
-				else
-					tcs.TrySetResult(result.ToString());
-			})).ThrowOnError();
+		token.ThrowIfCancellationRequested();
+		var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
+		var registration = token.Register(() => tcs.TrySetCanceled(token));
+		try
+		{
+			fixed (char* p_script = script)
+				_nativeWebView.ExecuteScript(new PWSTR(p_script), new WebView2.Utilities.CoreWebView2ExecuteScriptCompletedHandler((errorCode, result) =>
+				{
+					registration.Dispose();
+					if (errorCode.IsError)
+						tcs.TrySetException(errorCode.GetException() ?? new InvalidOperationException("ExecuteScript failed."));
+					else
+						tcs.TrySetResult(result.ToString());
+				})).ThrowOnError();
+		}
+		catch
+		{
+			registration.Dispose();
+			throw;
+		}
 		return tcs.Task;
 	}
 
@@ -476,11 +540,12 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 			).ThrowOnError();
 	}
 
-	private static unsafe void CreateCoreWebView2Environment(string userDataFolder, WebView2.ICoreWebView2EnvironmentOptions options, WebView2.ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler handler)
+	private static unsafe void CreateCoreWebView2Environment(string? browserExecutableFolder, string userDataFolder, WebView2.ICoreWebView2EnvironmentOptions options, WebView2.ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler handler)
 	{
+		fixed (char* p_browserExecutableFolder = browserExecutableFolder)
 		fixed (char* p_userDataFolder = userDataFolder)
 			WebView2.Functions.CreateCoreWebView2EnvironmentWithOptions(
-				default,
+				new PWSTR(p_browserExecutableFolder),
 				new PWSTR(p_userDataFolder),
 				options,
 				handler

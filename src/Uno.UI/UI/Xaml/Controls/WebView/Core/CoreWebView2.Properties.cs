@@ -30,9 +30,9 @@ public partial class CoreWebView2
 	{
 		get
 		{
-			if (_nativeWebView is not ISupportsWebViewEnvironmentInfo)
+			if (CustomEnvironment is { } customEnvironment)
 			{
-				throw CapabilityUnavailable(CoreWebView2TypeName, nameof(Environment));
+				return customEnvironment;
 			}
 
 			return _environment ??= new CoreWebView2Environment(this);

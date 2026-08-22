@@ -43,7 +43,11 @@ public partial class WebView2
 	public Uri Source
 	{
 		get => (Uri)GetValue(SourceProperty);
-		set => SetValue(SourceProperty, value);
+		set
+		{
+			ThrowIfClosed();
+			SetValue(SourceProperty, value);
+		}
 	}
 
 	/// <summary>
@@ -56,11 +60,13 @@ public partial class WebView2
 				var webView = (WebView2)s;
 				if (!webView._sourceChangeFromCore)
 				{
+					webView.ThrowIfClosed();
 					var newUri = (Uri)e.NewValue;
 					if (newUri != null)
 					{
+						webView.EnsureCoreWebView2Implicitly();
 						var targetUrl = newUri.IsAbsoluteUri ? newUri.AbsoluteUri : newUri.OriginalString;
-						webView.CoreWebView2.Navigate(targetUrl);
+						webView.CoreWebView2OrThrow.Navigate(targetUrl);
 					}
 				}
 			}));
@@ -78,7 +84,7 @@ public partial class WebView2
 			typeof(WebView2),
 			new FrameworkPropertyMetadata(
 				true,
-				(s, e) => ((WebView2)s)?.CoreWebView2.OnScrollEnabledChanged((bool)e.NewValue)));
+				(s, e) => ((WebView2)s)?._coreWebView2?.OnScrollEnabledChanged((bool)e.NewValue)));
 
 #pragma warning disable 67
 	/// <summary>

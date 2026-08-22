@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
 using Uno.UI.NativeElementHosting;
@@ -20,6 +21,7 @@ internal abstract class Win32NativeWebViewBase : INativeWebView
 	private static readonly WNDCLASSEXW _windowClass;
 	private static WeakReference<Win32NativeWebViewBase>? _webViewForNextCreateWindow;
 	private static readonly Dictionary<HWND, WeakReference<Win32NativeWebViewBase>> _hwndToWebView = new();
+	private int _destroyWindowRequested;
 
 	protected ContentPresenter Presenter { get; }
 	protected HWND Hwnd { get; }
@@ -99,10 +101,18 @@ internal abstract class Win32NativeWebViewBase : INativeWebView
 		presenter.Content = new Win32NativeWindow(Hwnd);
 	}
 
-	~Win32NativeWebViewBase()
+	~Win32NativeWebViewBase() => DestroyWindow();
+
+	protected void DestroyWindow()
 	{
-		Presenter.DispatcherQueue.TryEnqueue(() =>
+		void DestroyWindowCore()
 		{
+			if (Interlocked.Exchange(ref _destroyWindowRequested, 1) != 0)
+			{
+				return;
+			}
+
+			Presenter.Content = null;
 			var success = PInvoke.DestroyWindow(Hwnd);
 			if (!success && this.Log().IsEnabled(LogLevel.Error))
 			{
@@ -113,7 +123,20 @@ internal abstract class Win32NativeWebViewBase : INativeWebView
 			{
 				_hwndToWebView.Remove(Hwnd);
 			}
-		});
+		}
+
+		if (Presenter.DispatcherQueue.HasThreadAccess)
+		{
+			DestroyWindowCore();
+		}
+		else
+		{
+			if (!Presenter.DispatcherQueue.TryEnqueue(DestroyWindowCore)
+				&& this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("Unable to schedule WebView window cleanup because the dispatcher is shutting down.");
+			}
+		}
 	}
 
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
