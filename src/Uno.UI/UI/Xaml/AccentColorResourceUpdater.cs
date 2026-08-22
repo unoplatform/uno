@@ -82,12 +82,7 @@ internal static class AccentColorResourceUpdater
 			return _accentDictionary;
 		}
 
-		var masterDictionary =
-#if __NETSTD_REFERENCE__
-			(ResourceDictionary?)null;
-#else
-			Uno.UI.GlobalStaticResources.MasterDictionary;
-#endif
+		var masterDictionary = Uno.UI.GlobalStaticResources.MasterDictionary;
 
 		if (masterDictionary is null)
 		{
