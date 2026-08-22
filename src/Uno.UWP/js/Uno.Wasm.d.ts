@@ -678,11 +678,12 @@ declare namespace Windows.UI.Core {
     }
 }
 interface Navigator {
-    setAppBadge(value: number): void;
-    clearAppBadge(): void;
+    setAppBadge?(value: number): void;
+    clearAppBadge?(): void;
 }
 declare namespace Windows.UI.Notifications {
     class BadgeUpdater {
+        static isSupported(): boolean;
         static setNumber(value: number): void;
         static clear(): void;
     }

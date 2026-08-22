@@ -17,6 +17,45 @@ internal static unsafe class TaskBarList
 	private static readonly object _lock = new();
 
 	/// <summary>
+	/// Sets the progress state on the taskbar button for the specified window.
+	/// </summary>
+	/// <param name="hwnd">Handle to the window.</param>
+	/// <param name="flags">The progress state flags.</param>
+	public static unsafe void SetProgressState(HWND hwnd, TBPFLAG flags)
+	{
+		if (!EnsureInitialized())
+		{
+			return;
+		}
+
+		var hr = _taskbarList->SetProgressState(hwnd, flags);
+		if (hr.Failed)
+		{
+			typeof(TaskBarList).LogDebug()?.Debug($"{nameof(ITaskbarList3.SetProgressState)} failed: {Win32Helper.GetErrorMessage((uint)hr.Value)}");
+		}
+	}
+
+	/// <summary>
+	/// Sets the progress value on the taskbar button for the specified window.
+	/// </summary>
+	/// <param name="hwnd">Handle to the window.</param>
+	/// <param name="completed">The current progress value.</param>
+	/// <param name="total">The total progress value.</param>
+	public static unsafe void SetProgressValue(HWND hwnd, ulong completed, ulong total)
+	{
+		if (!EnsureInitialized())
+		{
+			return;
+		}
+
+		var hr = _taskbarList->SetProgressValue(hwnd, completed, total);
+		if (hr.Failed)
+		{
+			typeof(TaskBarList).LogDebug()?.Debug($"{nameof(ITaskbarList3.SetProgressValue)} failed: {Win32Helper.GetErrorMessage((uint)hr.Value)}");
+		}
+	}
+
+	/// <summary>
 	/// Sets or clears an overlay icon on the taskbar button for the specified window.
 	/// When called with null icon, this forces the taskbar to refresh the window's icon.
 	/// </summary>
@@ -56,8 +95,6 @@ internal static unsafe class TaskBarList
 				return _taskbarList != null;
 			}
 
-			_initialized = true;
-
 			var taskbarListClsid = CLSID.TaskbarList;
 			var taskbarListIid = ITaskbarList3.IID_Guid;
 			ITaskbarList3* taskbarList;
@@ -84,6 +121,7 @@ internal static unsafe class TaskBarList
 			}
 
 			_taskbarList = taskbarList;
+			_initialized = true;
 			return true;
 		}
 	}
