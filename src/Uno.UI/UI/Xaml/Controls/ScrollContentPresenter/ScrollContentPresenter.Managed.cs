@@ -45,6 +45,12 @@ namespace Microsoft.UI.Xaml.Controls
 		private ScrollFlingSimulation _flingV;
 		private long _flingStartTimestamp;
 		private bool _isFlingRunning;
+
+		// The frame driver is resolved through the visual, which drops its CompositionTarget on unload.
+		// Unsubscribing has to go through the target we subscribed to, or the handler leaks and the
+		// compositor keeps a frame driver alive forever.
+		private Media.CompositionTarget? _flingTarget;
+		private Media.CompositionTarget? _wheelDecayTarget;
 #nullable restore
 
 		private bool _canHorizontallyScroll;
@@ -559,9 +565,15 @@ namespace Microsoft.UI.Xaml.Controls
 			_flingStartTimestamp = 0;
 			_flingH = ScrollFlingSimulation.Create(HorizontalOffset, -velocityXPerSecond);
 			_flingV = ScrollFlingSimulation.Create(VerticalOffset, -velocityYPerSecond);
-			_isFlingRunning = true;
+			if (FrameDriverTarget is not { } flingTarget)
+			{
+				return;
+			}
 
-			FrameDriverTarget!.FrameStarting += OnFlingFrame;
+			_isFlingRunning = true;
+			_flingTarget = flingTarget;
+
+			flingTarget.FrameStarting += OnFlingFrame;
 		}
 
 		private void StopFling()
@@ -571,8 +583,13 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			if (_flingTarget is { } flingTarget)
+			{
+				flingTarget.FrameStarting -= OnFlingFrame;
+				_flingTarget = null;
+			}
+
 			_isFlingRunning = false;
-			FrameDriverTarget!.FrameStarting -= OnFlingFrame;
 		}
 
 		/// <summary>The target whose tick drives this presenter's fling and wheel decay.</summary>
@@ -584,7 +601,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// One interval back, so this first frame advances by the same step the drag was producing
 				// when the finger left the glass.
-				_flingStartTimestamp = timestampInTicks - FrameDriverTarget!.FrameIntervalInTicks;
+				_flingStartTimestamp = timestampInTicks - (_flingTarget?.FrameIntervalInTicks ?? 0);
 			}
 
 			var elapsed = (timestampInTicks - _flingStartTimestamp) / (double)TimeSpan.TicksPerSecond;
@@ -632,10 +649,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (!_isWheelDecayRunning)
 			{
+				if (FrameDriverTarget is not { } wheelTarget)
+				{
+					return false;
+				}
+
 				_wheelDecayH.Start(HorizontalOffset, now);
 				_wheelDecayV.Start(VerticalOffset, now);
 				_isWheelDecayRunning = true;
-				FrameDriverTarget!.FrameStarting += OnWheelDecayFrame;
+				_wheelDecayTarget = wheelTarget;
+				wheelTarget.FrameStarting += OnWheelDecayFrame;
 			}
 
 			_wheelDecayH.AddImpulse(horizontalDistance);
@@ -653,10 +676,15 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			if (_wheelDecayTarget is { } wheelTarget)
+			{
+				wheelTarget.FrameStarting -= OnWheelDecayFrame;
+				_wheelDecayTarget = null;
+			}
+
 			_isWheelDecayRunning = false;
 			_wheelDecayH.Stop();
 			_wheelDecayV.Stop();
-			FrameDriverTarget!.FrameStarting -= OnWheelDecayFrame;
 		}
 
 		private void OnWheelDecayFrame(object? sender, long timestampInTicks)
