@@ -44,6 +44,25 @@ If your code references the generated bindable type by name directly, update tho
 
 This change was introduced in [Uno.Extensions PR #3055](https://github.com/unoplatform/uno.extensions/pull/3055).
 
+### Uno Themes 7.0 and Uno Toolkit 9.0
+
+The Uno Platform 6.6 service release moves the design system packages referenced implicitly by the Uno SDK up a major version: Uno Themes from 6.1 to 7.0, and Uno Toolkit from 8.4 to 9.0. Apps that initialize their theme with a single `<MaterialToolkitTheme />` (or `<MaterialTheme />` without the Toolkit), as the templates do, need no changes: every lightweight styling resource key is preserved and the default appearance is unchanged.
+
+The following changes require attention when upgrading:
+
+- The deprecated `MaterialToolkitResourcesV1` and `MaterialToolkitResourcesV2` dictionaries now fail at startup with `Cannot locate resource from 'ms-appx:///Uno.Toolkit.WinUI.Material/Generated/mergedpages.WinUI.v2.xaml'`. Replace them with `<MaterialToolkitTheme />`.
+- The generated dictionary URIs of `Uno.Toolkit.WinUI` and `Uno.Toolkit.WinUI.Material` no longer carry the `WinUI` suffix — `mergedpages.WinUI.v2.xaml` is now `mergedpages.v2.xaml`. This only affects code merging those dictionaries by URI.
+- `MaterialToolkitTheme` now derives from `MaterialTheme` and already initializes it, so remove any `<MaterialTheme />` declared alongside it to avoid initializing the theme twice.
+- `ColorOverrideSource` and `ColorOverrideDictionary` are obsolete, superseded by the `Colors` property — use `<ut:ThemeColors OverrideSource="ms-appx:///Styles/ColorPaletteOverride.xaml" />` for a file override, or `ThemeColors.OverrideDictionary` for an inline `ResourceDictionary` (`ut` being `using:Uno.Themes`). Both properties still work, with unchanged precedence.
+- Themes deriving from `BaseTheme` must replace the removed `GenerateSpecificResources()` override with the parameterless `AddThemeSpecificResources()` hook, adding their dictionaries through `AddThemeDictionary()`.
+- The legacy Material v1 `CommandBar` and `ToggleSwitch` styles lost their iOS and Android variants, and now render with the shared XAML styles on those platforms. The Material Design 3 styles used by default are unaffected.
+- The UWP-flavored `Uno.Toolkit.UI` and `Uno.Toolkit.UI.Material` packages stop at 8.4.2, and neither library ships `net9.0-maccatalyst` or `net9.0-macos` assets anymore.
+- Minimum dependencies are raised to `Uno.WinUI` 6.5 for the Toolkit and 6.4 for Themes, and Uno Toolkit 9.0 requires Uno Themes 7.0. Remove or update explicit pins of those packages.
+
+For the per-library details, see the [Uno Toolkit](xref:Toolkit.Migration) and [Uno Material](xref:Uno.Themes.Material.Migration) upgrade guides.
+
+These changes were introduced in [Uno Toolkit PR #1544](https://github.com/unoplatform/uno.toolkit.ui/pull/1544) and [Uno Themes PR #1609](https://github.com/unoplatform/Uno.Themes/pull/1609), [PR #1620](https://github.com/unoplatform/Uno.Themes/pull/1620), and [PR #1680](https://github.com/unoplatform/Uno.Themes/pull/1680).
+
 ## Uno Platform 6.5
 
 Uno Platform 6.5 does not contain breaking changes that require attention when upgrading
