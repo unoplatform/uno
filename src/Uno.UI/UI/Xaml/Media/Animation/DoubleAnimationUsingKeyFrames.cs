@@ -16,8 +16,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	public partial class DoubleAnimationUsingKeyFrames : Timeline, ITimeline, IKeyFramesProvider
 	{
 		private readonly Stopwatch _activeDuration = new Stopwatch();
-		private bool _wasBeginScheduled;
-		private bool _wasRequestedToStop;
 		private int _replayCount = 1;
 		private double? _startingValue;
 		private double _finalValue;
@@ -61,53 +59,32 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.Begin()
 		{
-			// It's important to keep this line here, and not
-			// inside the if (!_wasBeginScheduled)
-			// If Begin(), Stop(), Begin() are called successively in sequence,
-			// we want _wasRequestedToStop to be false.
-			_wasRequestedToStop = false;
-
-			if (!_wasBeginScheduled)
+			if (KeyFrames.Count < 1)
 			{
-				// We dispatch the begin so that we can use bindings on DoubleKeyFrame.Value from RelativeParent.
-				// This works because the template bindings are executed just after the constructor.
-				// WARNING: This does not allow us to bind DoubleKeyFrame.Value with ViewModel properties.
-
-				_wasBeginScheduled = true;
-
-#if !IS_UNIT_TESTS
-				_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-#endif
-				{
-					_wasBeginScheduled = false;
-
-					if (KeyFrames.Count < 1 || // nothing to do
-						_wasRequestedToStop // was requested to stop, between Begin() and dispatched here
-					)
-					{
-						return;
-					}
-
-					_activeDuration.Restart();
-					_replayCount = 1;
-
-					//Start the animation
-					Play();
-				}
-#if !IS_UNIT_TESTS
-				);
-#endif
+				// A key-frame-less animation has a zero duration, so it completes right away.
+				// Reporting completion is required for a parent Storyboard to decrement its
+				// running-children counter and raise Completed.
+				State = TimelineState.Stopped;
+				OnCompleted();
+				return;
 			}
+
+			_activeDuration.Restart();
+			_replayCount = 1;
+
+			Play();
 		}
 
 		void ITimeline.Pause()
 		{
-			if (State == TimelineState.Paused)
+			if (State is TimelineState.Paused or TimelineState.Stopped)
 			{
 				return;
 			}
 
-			_currentAnimator.Pause();
+			// The animators do not exist yet while the play is deferred to the next tick, nor when the
+			// animation is dependent and was never started. Resume() picks the play back up in that case.
+			_currentAnimator?.Pause();
 
 			State = TimelineState.Paused;
 		}
@@ -119,13 +96,27 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
-			_currentAnimator.Resume();
-
 			State = TimelineState.Active;
+
+			if (_currentAnimator is null)
+			{
+				// Paused before the deferred play created the animators: nothing has been played yet,
+				// so resuming means (re)starting the play. Play() is a no-op if one is already pending.
+				Play();
+				return;
+			}
+
+			_currentAnimator.Resume();
 		}
 
 		void ITimeline.Seek(TimeSpan offset)
 		{
+			if (_animators is null)
+			{
+				// Play is still deferred to the next tick: there is no animator to seek yet.
+				return;
+			}
+
 			var msOffset = (long)offset.TotalMilliseconds;
 			IValueAnimator targetAnimator = null;
 			foreach (var animator in _animators)
@@ -140,8 +131,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			if (targetAnimator != _currentAnimator)
 			{
-				_currentAnimator.Cancel();
+				_currentAnimator?.Cancel();
 				_currentAnimator = targetAnimator;
+			}
+
+			if (_currentAnimator is null)
+			{
+				return;
 			}
 
 			_currentAnimator.CurrentPlayTime = (long)offset.TotalMilliseconds; //Offset is CurrentPlayTime (starting point for animation)
@@ -167,19 +163,24 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		void ITimeline.SkipToFill()
 		{
+			CancelDeferredPlay();
 			if (_currentAnimator is { IsRunning: true })
 			{
 				_currentAnimator.Cancel();//Stop the animator if it is running
 				_startingValue = null;
 			}
 
-			SetValue(KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).LastOrDefault()?.Value);//Set property to its final value
+			// Read the final value directly from the last keyframe (not cached).
+			// This matches WinUI's CAnimation::UpdateAnimationUsingKeyFrames which reads
+			// keyframe values at tick time via pKeyFrame->GetValue().
+			SetValue(KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).LastOrDefault()?.Value);
 
 			OnEnd();
 		}
 
 		void ITimeline.Deactivate()
 		{
+			CancelDeferredPlay();
 			if (_currentAnimator is { IsRunning: true })
 			{
 				_currentAnimator.Cancel();//Stop the animator if it is running
@@ -187,29 +188,41 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 
 			State = TimelineState.Stopped;
-			_wasRequestedToStop = true;
 		}
 
 		void ITimeline.Stop()
 		{
+			CancelDeferredPlay();
 			_currentAnimator?.Cancel(); // stop could be called before the initialization
 			_startingValue = null;
 			ClearValue();
 
 			State = TimelineState.Stopped;
-			_wasRequestedToStop = true;
 		}
 
 		/// <summary>
-		/// Creates a new animator and animates the view
+		/// Starts the animation. On Skia, defers animator initialization to the first
+		/// rendering tick so keyframe binding values are read after layout (matching WinUI
+		/// where keyframe values are read at tick time, not at Begin time).
 		/// </summary>
 		private void Play()
+		{
+			PlayDeferred();
+		}
+
+		/// <summary>
+		/// Creates animators and starts the animation immediately.
+		/// </summary>
+		private void PlayImmediate()
 		{
 			_subscriptions.Clear(); // Dispose all current animators
 			InitializeAnimators(); // Create the animator
 
 			if (!EnableDependentAnimation && this.GetIsDependantAnimation())
-			{ // Don't start the animator its a dependent animation
+			{
+				// A dependent animation that was not opted in never runs, so it never reports completion
+				// either (pre-existing behavior on every platform). Do not add OnCompleted() here without
+				// checking the Storyboard running-children accounting in Storyboard.ChildCompleted.
 				return;
 			}
 
@@ -247,8 +260,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				{
 					_finalValue = toValue;
 				}
-				var animator = AnimatorFactory.Create(this, fromValue, toValue);
 				var duration = keyFrame.KeyTime.TimeSpan - previousKeyTime;
+				var animator = AnimatorFactory.Create(this, fromValue, toValue, duration);
 				animator.SetDuration((long)duration.TotalMilliseconds);
 				animator.SetEasingFunction(keyFrame.GetEasingFunction());
 				animator.DisposeWith(_subscriptions);
@@ -374,9 +387,71 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		private bool ReportEachFrame() => true;
 
+		// Tracks whether animator initialization has been deferred to the next dispatcher tick.
+		// This matches WinUI behavior where keyframe values are read at tick time (after layout),
+		// not at Begin() time. See CAnimation::UpdateAnimationUsingKeyFrames in animation.cpp.
+		private bool _deferredPlayPending;
+
+		// Invalidates callbacks already queued on the dispatcher: a Begin/Stop/Begin sequence within
+		// a single tick would otherwise let the stale callback run PlayImmediate() a second time.
+		private int _deferredPlayGeneration;
+
 		partial void OnFrame(IValueAnimator currentAnimator)
 		{
 			SetValue(currentAnimator.AnimatedValue);
+		}
+
+		/// <summary>
+		/// On Skia, defers animator initialization to the next dispatcher tick.
+		/// This ensures keyframe binding values (e.g., TemplateSettings.MinimalVerticalDelta)
+		/// are read after layout has completed, matching WinUI's tick-based value reading.
+		/// </summary>
+		private void PlayDeferred()
+		{
+			if (_deferredPlayPending)
+			{
+				return; // Already waiting for tick
+			}
+
+			_deferredPlayPending = true;
+
+			// Active has to be set now, not in PlayImmediate(): the parent Storyboard must see this child
+			// as running, and Pause() ignores a Stopped timeline, so a Begin(); Pause(); pair would
+			// otherwise silently start the animation anyway on the tick. Pause/Resume/Seek all tolerate
+			// the null animators of that window.
+			State = TimelineState.Active;
+
+			var generation = ++_deferredPlayGeneration;
+
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+			{
+				if (_deferredPlayGeneration != generation)
+				{
+					// A Stop/Deactivate/SkipToFill cycle invalidated this callback
+					return;
+				}
+
+				_deferredPlayPending = false;
+
+				if (State != TimelineState.Active)
+				{
+					// Paused before the tick: nothing has played yet, so leave the animators
+					// uninitialized. Resume() re-schedules the play.
+					return;
+				}
+
+				// Now initialize and start animators — keyframe bindings have settled after layout
+				PlayImmediate();
+			});
+		}
+
+		/// <summary>
+		/// Cancels a pending deferred play if one is scheduled.
+		/// </summary>
+		private void CancelDeferredPlay()
+		{
+			_deferredPlayPending = false;
+			_deferredPlayGeneration++;
 		}
 	}
 }
