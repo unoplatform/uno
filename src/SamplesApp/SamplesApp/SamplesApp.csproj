@@ -359,6 +359,35 @@
 		<NoSymbolStrip>false</NoSymbolStrip>
 	</PropertyGroup>
 
+	<!--
+	Xamarin.Shared.Sdk.Trimming.props:58 turns linking off for CoreCLR on the simulator, so nothing is
+	trimmed and crossgen2 AOT-compiles every method of every assembly - Microsoft.Graph, Roslyn,
+	BenchmarkDotNet and Silk.NET included. That is the single largest cost in this build. The SDK's own
+	fallback default at :74 is SdkOnly, i.e. device builds - what users actually ship - are trimmed; the
+	untrimmed simulator build is the outlier, and it was the only configuration CI exercised.
+
+	Measured locally, cleared bin/obj between runs, R2R enabled throughout:
+	    none (previous)  ILLink+R2R 2.9 min   .app 551 MB   .r2r 384.3 MB
+	    SdkOnly          ILLink+R2R 1.5 min   .app 274 MB   .r2r 163.2 MB
+	    Full             ILLink+R2R 1.4 min   .app 243 MB   .r2r 142.5 MB
+
+	Full rather than SdkOnly, to match what Android already does: the android-nativeaot-skia stage
+	publishes this same project with PublishAot=true, and NativeAOT requires whole-program trimming
+	via ILC - strictly more aggressive than Full. The reflective sample discovery and runtime-test
+	discovery here already survive that on Android, so trimming app assemblies on iOS is not new
+	ground. Full also keeps the two Skia heads' trimming behaviour consistent.
+
+	Release-only, so local Debug iteration and Hot Reload are unaffected - see UHR001 in
+	Uno.WinUI.DevServer.targets, which warns Hot Reload misbehaves when linking is enabled.
+
+	Trimming is a runtime risk rather than a build risk: sample discovery and the runtime-test harness
+	both resolve types reflectively, and this project suppresses the IL2xxx trim warnings
+	(_UnoTrimmingNoWarn above), so a clean build proves little. The iOS runtime tests are the real gate.
+	-->
+	<PropertyGroup Condition="'$(_IsUIKit)' == 'true' AND '$(Configuration)' == 'Release' AND '$(RuntimeIdentifier)' != '' AND $(RuntimeIdentifier.Contains('simulator'))">
+		<MtouchLink>Full</MtouchLink>
+	</PropertyGroup>
+
 	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.props" />
 	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.targets" />
 
