@@ -2172,7 +2172,7 @@ namespace Microsoft.UI.Xaml
 				}
 
 				// Generic callbacks
-				var instanceRef = _originalObjectRef ?? ThisWeakReference;
+				var instanceRef = SelfWeakReference;
 				var currentCallbacks = _genericCallbacks.Data;
 				for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
 				{
