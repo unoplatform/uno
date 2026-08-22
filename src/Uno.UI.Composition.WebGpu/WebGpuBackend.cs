@@ -2554,10 +2554,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				&& !(o.kind is 0 or 5 && o.b0 == 0)   // shared per-frame append buffers: handles churn every frame
 				&& ScissorWidenable(o.clip);
 		}
-		// Chunked bundle cache: fixed 128-op chunks compare independently against the snapshot, so an animated
+		// Chunked bundle cache: fixed-size op chunks compare independently against the snapshot, so an animated
 		// recording (or the FPS overlay) invalidates only its own chunk while the rest of the frame replays
-		// pre-recorded bundles. Index-based boundaries stay stable while the op COUNT is stable; a count or
-		// shared-buffer change re-snapshots everything (one inline frame).
+		// pre-recorded bundles (consecutive replays coalesce into one ExecuteBundles call). Index-based
+		// boundaries stay stable while the op COUNT is stable; a count or shared-buffer change re-snapshots.
 		const int BundleChunkSize = 32;
 		bool[] chunkReplay = null, chunkRecord = null;
 		if (bundleEligible)
