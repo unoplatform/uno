@@ -276,10 +276,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			dataPackage.SetText("a");
 			Clipboard.SetContent(dataPackage);
 
+			eventRaised = false;
 			textBox.PasteFromClipboard();
 
-			await WindowHelper.WaitForIdle();
-			Assert.IsTrue(eventRaised);
+			await WindowHelper.WaitFor(() => eventRaised);
 			Assert.IsTrue(popup.IsOpen);
 			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.UserInput, reason);
 		}
@@ -324,10 +324,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			Assert.IsFalse(popup.IsOpen);
 
+			eventRaised = false;
 			textBox.Undo();
-			await WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(eventRaised);
+			await WindowHelper.WaitFor(() => eventRaised);
 			Assert.IsTrue(popup.IsOpen);
 			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.UserInput, reason);
 
@@ -339,9 +339,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(popup.IsOpen);
 
 			textBox.Redo();
-			await WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(eventRaised);
+			await WindowHelper.WaitFor(() => eventRaised);
 			Assert.IsTrue(popup.IsOpen);
 			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.UserInput, reason);
 		}
@@ -360,9 +359,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				reason = e.Reason;
 				eventRaised = true;
 			};
-			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
 			SUT.Focus(FocusState.Programmatic);
-			textBox.Text = "stuff";
+			SUT.Text = "stuff";
 
 			await WindowHelper.WaitFor(() => eventRaised);
 			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.ProgrammaticChange, reason);
@@ -420,11 +418,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			suggestionsList.SelectedIndex = -1;
 			suggestionsList.SelectedIndex = 0; // selects "ab"
-			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => reasons.Count == expectations.Count);
 
 			expectations.Add(ProgrammaticChange);
 			SUT.Text = "other";
-			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => reasons.Count == expectations.Count);
 
 			expectations.Add(UserInput);
 			SUT.Focus(FocusState.Programmatic);
@@ -433,12 +431,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #else
 			textBox.ProcessTextInput("manual");
 #endif
-			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => reasons.Count == expectations.Count);
 
 			expectations.Add(SuggestionChosen);
 			suggestionsList.SelectedIndex = -1;
 			suggestionsList.SelectedIndex = 0; // selects "ab"
-			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => reasons.Count == expectations.Count);
 
 			expectations.Add(UserInput);
 			SUT.Focus(FocusState.Programmatic);
@@ -447,17 +445,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #else
 			textBox.ProcessTextInput("manual");
 #endif
-			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => reasons.Count == expectations.Count);
 
 			expectations.Add(ProgrammaticChange);
 			SUT.Focus(FocusState.Programmatic);
 			SUT.Text = "other";
-			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => reasons.Count == expectations.Count);
 
 			expectations.Add(SuggestionChosen);
 			suggestionsList.SelectedIndex = -1;
 			suggestionsList.SelectedIndex = 0; // selects "ab"
-			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => reasons.Count == expectations.Count);
 
 			// remove repeating UserInputs in a sequence as a result of typing individual characters. WinUI has a timer
 			// that will only fire an event with UserInput once it has waited a bit and found no new characters coming
@@ -649,7 +647,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				SUT.Focus(FocusState.Programmatic);
 				SUT.Text = "A";
-				await WindowHelper.WaitForIdle();
+				await WindowHelper.WaitFor(() => popup.IsOpen);
 				tb.Select(1, 0);
 				await WindowHelper.WaitForIdle();
 
@@ -765,7 +763,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				SUT.Focus(FocusState.Programmatic);
 				SUT.Text = "A";
-				await WindowHelper.WaitForIdle();
+				await WindowHelper.WaitFor(() => popup.IsOpen);
 				tb.Select(1, 0);
 				await WindowHelper.WaitForIdle();
 
@@ -860,7 +858,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				SUT.Focus(FocusState.Programmatic);
 				SUT.Text = "A";
-				await WindowHelper.WaitForIdle();
+				await WindowHelper.WaitFor(() => popup.IsOpen);
 				tb.Select(1, 0);
 				await WindowHelper.WaitForIdle();
 
@@ -945,7 +943,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				SUT.Focus(FocusState.Programmatic);
 				SUT.Text = "0";
-				await WindowHelper.WaitForIdle();
+				await WindowHelper.WaitFor(() => popup.IsOpen);
 				tb.Select(1, 0);
 				await WindowHelper.WaitForIdle();
 
@@ -1293,12 +1291,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var oldPopupRect = (popup.Child as FrameworkElement).GetAbsoluteBoundsRect();
 
 			textBox.ProcessTextInput("ab");
-			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => SUT.Items.Count == 2);
 
 			Assert.HasCount(1, VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot));
 			var newPopupRect = (popup.Child as FrameworkElement).GetAbsoluteBoundsRect();
 
-			oldPopupRect.Y.Should().BeLessThan(newPopupRect.Y);
+			oldPopupRect.Y.Should().BeLessThan(
+				newPopupRect.Y,
+				$"the popup should shrink upward after filtering; old bounds: {oldPopupRect}, new bounds: {newPopupRect}, list count: {SUT.Items.Count}");
 		}
 #endif
 
