@@ -80,7 +80,7 @@ internal class ProcessHelpers
 		catch (OperationCanceledException)
 		{
 #if HAS_UNO
-			typeof(ProcessHelpers).Log().Error(logPrefix + $" did not exit in time, killing it");
+			typeof(Given_HotReloadWorkspace).Log().Error(logPrefix + " wait was cancelled before the process exited, killing it");
 #endif
 			KillProcessTree(process);
 
@@ -105,14 +105,21 @@ internal class ProcessHelpers
 				// The app is started through "dotnet run", so killing the launcher alone would
 				// leave the app itself running.
 				process.Kill(entireProcessTree: true);
-				process.WaitForExit(10_000);
+
+				// Synchronous on purpose: this also runs from the synchronous [TestCleanup], and the next
+				// attempt must not start while the old app still holds its dev-server connection.
+				if (!process.WaitForExit(10_000))
+				{
+					typeof(Given_HotReloadWorkspace).Log().Error(
+						"A killed process tree was still alive after 10s; the next attempt may fight it for the dev-server port.");
+				}
 			}
 		}
 		catch (Exception e)
 		{
 			// The process may exit on its own between the check and the kill.
 #if HAS_UNO
-			typeof(ProcessHelpers).Log().Debug($"Failed to kill process ({e.Message})");
+			typeof(Given_HotReloadWorkspace).Log().Warn($"Failed to kill process ({e.Message})");
 #endif
 		}
 	}
@@ -155,13 +162,13 @@ internal class ProcessHelpers
 		// hookup the event handlers to capture the data that is received
 		process.OutputDataReceived += (sender, args) =>
 		{
-			var logMessage = $"[{DateTime.Now}] " + logPrefix + ": " + args.Data ?? "<Empty>";
+			var logMessage = $"[{DateTime.UtcNow:O}] {logPrefix}: {args.Data ?? "<Empty>"}";
 			output?.AppendLine(logMessage);
 			typeof(Given_HotReloadWorkspace).Log().Debug(logMessage);
 		};
 		process.ErrorDataReceived += (sender, args) =>
 		{
-			var logMessage = $"[{DateTime.Now}] " + logPrefix + ": " + args.Data ?? "<Empty>";
+			var logMessage = $"[{DateTime.UtcNow:O}] {logPrefix}: {args.Data ?? "<Empty>"}";
 			output?.AppendLine(logMessage);
 			typeof(Given_HotReloadWorkspace).Log().Error(logMessage);
 		};
