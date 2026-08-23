@@ -122,7 +122,18 @@ void uno_webview_register_message_handler(WKWebView *webview)
     NSLog(@"uno_webview_register_message_handler %p", webview);
 #endif
     __weak id weakSelf = webview;
+    // `addScriptMessageHandler:name:` raises on a name that is already taken, and the webview outlives
+    // every visual tree exit, so a re-entering element registers on the same WKWebView a second time.
+    [webview.configuration.userContentController removeScriptMessageHandlerForName:@"unoWebView"];
     [webview.configuration.userContentController addScriptMessageHandler:weakSelf name:@"unoWebView"];
+}
+
+void uno_webview_unregister_message_handler(WKWebView *webview)
+{
+#if DEBUG
+    NSLog(@"uno_webview_unregister_message_handler %p", webview);
+#endif
+    [webview.configuration.userContentController removeScriptMessageHandlerForName:@"unoWebView"];
 }
 
 const char* uno_webview_get_title(WKWebView *webview)

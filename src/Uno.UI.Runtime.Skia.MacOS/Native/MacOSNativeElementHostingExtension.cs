@@ -6,15 +6,15 @@ using Microsoft.UI.Xaml.Controls;
 
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSNativeElement : Microsoft.UI.Xaml.FrameworkElement
 {
-	public MacOSNativeElement()
-	{
-		Unloaded += (s, e) => DisposeNativePeer();
-	}
+	// The peer is tied to the managed wrapper, not to the visual tree: `Unloaded` also fires on a reparent,
+	// after which the framework re-enters the very same element through `AttachNativeElement`.
+	~MacOSNativeElement() => DisposeNativePeer();
 
 	public nint NativeHandle { get; internal set; }
 
@@ -44,7 +44,8 @@ internal class MacOSNativeElement : Microsoft.UI.Xaml.FrameworkElement
 
 		if (handle != 0)
 		{
-			NativeUno.uno_native_dispose(handle);
+			// AppKit is main-thread only and this runs on the finalizer thread.
+			MacOSDispatcher.DispatchNativeSingle(() => NativeUno.uno_native_dispose(handle), NativeDispatcherPriority.Normal);
 		}
 	}
 }
@@ -64,8 +65,8 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 
 	/// <summary>
 	/// Resolves <paramref name="content"/> to a native element that is still safe to hand to native code.
-	/// A disposed element keeps its managed wrapper alive but its NSView is gone, and the framework can
-	/// still re-enter it into the visual tree (a reparent raises Unloaded then Loaded).
+	/// A disposed element keeps its managed wrapper alive but its NSView is gone, so every operation has
+	/// to fail on its own rather than hand the stale handle back to ARC.
 	/// </summary>
 	private bool TryGetLiveElement(object content, string operation, out MacOSNativeElement element)
 	{
