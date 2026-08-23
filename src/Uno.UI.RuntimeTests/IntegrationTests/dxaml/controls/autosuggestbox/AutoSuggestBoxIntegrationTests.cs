@@ -625,7 +625,12 @@ public class AutoSuggestBoxIntegrationTests : BaseDxamlTestClass
 		{
 			// header content presenter has x:DeferLoadStrategy = "Lazy", therefore it does not exist unless Header property is set.
 			var headerContentPresenter = FindVisualChildByName<ContentPresenter>(autoSuggestBox, "HeaderContentPresenter");
+#if HAS_UNO
+			// Uno materializes deferred template elements, so verify the DataContext invariant directly.
+			VERIFY_IS_NULL(headerContentPresenter?.DataContext);
+#else
 			VERIFY_IS_NULL(headerContentPresenter);
+#endif
 		});
 	}
 
@@ -1004,7 +1009,7 @@ public class AutoSuggestBoxIntegrationTests : BaseDxamlTestClass
 		});
 
 		TestServices.InputHelper.ScrollMouseWheel(suggestions, alignment == VerticalAlignment.Top ? -100 : +100);
-		await TestServices.WindowHelper.WaitForIdle();
+		await Uno.UI.RuntimeTests.Helpers.UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 		TestServices.InputHelper.Tap(suggestions);
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -1573,7 +1578,8 @@ public class AutoSuggestBoxIntegrationTests : BaseDxamlTestClass
 			await Task.WhenAny(buttonGotFocusEvent.Task, Task.Delay(5000));
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(TestServices.WindowHelper.WindowContent.XamlRoot).Equals(button1));
+				var focusedElement = FocusManager.GetFocusedElement(TestServices.WindowHelper.WindowContent.XamlRoot);
+				VERIFY_IS_TRUE(focusedElement.Equals(button1), $"Unexpected focused element: {focusedElement}");
 			});
 		}
 	}
