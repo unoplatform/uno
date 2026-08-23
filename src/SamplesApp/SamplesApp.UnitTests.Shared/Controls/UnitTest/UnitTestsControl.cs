@@ -61,8 +61,13 @@ namespace Uno.UI.Samples.Tests
 		private static readonly TimeSpan? DefaultTestBodyTimeoutFallback = null;
 #else
 		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(60);
-		private static readonly TimeSpan? DefaultTestBodyTimeoutFallback = TimeSpan.FromMinutes(5);
+		// Must stay above the longest wait a test can legitimately perform, or the harness cuts off a healthy
+		// test and hides its own diagnostic: SynchronouslyTickUIThread alone waits five minutes per tick.
+		private static readonly TimeSpan? DefaultTestBodyTimeoutFallback = TimeSpan.FromMinutes(10);
 #endif
+
+		private const string DefaultTestBodyTimeoutVariable = "UNO_TEST_DEFAULT_TIMEOUT_SECONDS";
+		private const int MaxTestBodyTimeoutSeconds = 24 * 60 * 60;
 
 		private static readonly TimeSpan? DefaultTestBodyTimeout = GetDefaultTestBodyTimeout();
 
@@ -761,6 +766,12 @@ namespace Uno.UI.Samples.Tests
 
 				_ = ReportMessage($"Running tests ({testTypes.Count()} fixtures)...");
 
+				// Say the budget out loud once: a cut-off five minutes into a shard is otherwise
+				// unattributable, and there is no other way to tell an override from the default.
+				_log?.Info(DefaultTestBodyTimeout is { } defaultBudget
+					? $"Default test body budget: {defaultBudget} (override with {DefaultTestBodyTimeoutVariable})"
+					: $"Default test body budget: none ({DefaultTestBodyTimeoutVariable} opted out, or DEBUG build)");
+
 				foreach (var type in testTypes)
 				{
 					if (ct.IsCancellationRequested)
@@ -973,7 +984,7 @@ namespace Uno.UI.Samples.Tests
 											var initializeReturn = testClassInfo.Initialize?.Invoke(instance, Array.Empty<object>());
 											if (initializeReturn is Task initializeReturnTask)
 											{
-												await initializeReturnTask;
+												await AwaitWithBudget(initializeReturnTask, GetTestTimeout(test), $"[TestInitialize] of {test.Method.Name}");
 											}
 
 											returnValue = InvokeMethod(test.Method, instance, methodArguments);
@@ -1007,7 +1018,7 @@ namespace Uno.UI.Samples.Tests
 									var initializeReturn = testClassInfo.Initialize?.Invoke(instance, Array.Empty<object>());
 									if (initializeReturn is Task initializeReturnTask)
 									{
-										await initializeReturnTask;
+										await AwaitWithBudget(initializeReturnTask, GetTestTimeout(test), $"[TestInitialize] of {test.Method.Name}");
 									}
 
 									returnValue = InvokeMethod(test.Method, instance, methodArguments);
@@ -1016,32 +1027,7 @@ namespace Uno.UI.Samples.Tests
 
 								if (test.Method.ReturnType == typeof(Task))
 								{
-									var task = (Task)returnValue;
-									var timeout = GetTestTimeout(test);
-									if (timeout.HasValue)
-									{
-										// Cancel the delay as soon as the test finishes, otherwise every test
-										// leaves a pending timer alive for the whole timeout window.
-										using var timeoutCts = new CancellationTokenSource();
-										var timeoutTask = Task.Delay(timeout.Value, timeoutCts.Token);
-
-										var resultingTask = await Task.WhenAny(task, timeoutTask);
-										timeoutCts.Cancel();
-
-										if (resultingTask == timeoutTask)
-										{
-											throw new TestBodyTimeoutException(
-												$"Test execution timed out after {timeout.Value}");
-										}
-
-										// Rethrow exception if failed OR task cancelled if task **internally** raised
-										// a TaskCancelledException (we don't provide any cancellation token).
-										await resultingTask;
-									}
-									else
-									{
-										await task;
-									}
+									await AwaitWithBudget((Task)returnValue, GetTestTimeout(test), $"Test {test.Method.Name}");
 								}
 
 								var console = consoleRecorder?.GetContentAndReset();
@@ -1077,10 +1063,8 @@ namespace Uno.UI.Samples.Tests
 								}
 								else
 								{
-									// A test the harness had to cut off will not do better on a second run, and
-									// each attempt costs the shard the same wait again: three attempts of a stuck
-									// test still add up to most of the job budget. A TimeoutException a test raises
-									// from one of its own waits is an ordinary failure and stays retryable.
+									// A cut-off test costs the same wait on every attempt. A TimeoutException a test
+									// raises from one of its own waits is an ordinary failure and stays retryable.
 									if (e is not TestBodyTimeoutException && _currentRun.CurrentRepeatCount < config.Attempts - 1)
 									{
 										// Count only the first time we retry this test.
@@ -1353,7 +1337,7 @@ namespace Uno.UI.Samples.Tests
 					: DefaultTestBodyTimeout;
 
 		/// <summary>
-		/// Raised when the harness cuts off a test body that outlived its budget. Distinct from the
+		/// Raised when the harness cuts off work that outlived its budget. Distinct from the
 		/// <see cref="TimeoutException"/> a test raises from one of its own waits, so only the former
 		/// skips the retries.
 		/// </summary>
@@ -1365,27 +1349,78 @@ namespace Uno.UI.Samples.Tests
 		}
 
 		/// <summary>
+		/// Awaits <paramref name="task"/>, giving up on it once <paramref name="budget"/> elapses.
+		/// </summary>
+		/// <remarks>
+		/// The cut-off abandons the task, it does not cancel it — nothing here can stop a body that is not
+		/// cooperating. The run continues with that task still in flight, so it is named again if it ever
+		/// finishes; an unrelated test failing right after a cut-off is the expected shape of that damage.
+		/// </remarks>
+		private async Task AwaitWithBudget(Task task, TimeSpan? budget, string what)
+		{
+			if (budget is not { } timeout)
+			{
+				await task;
+				return;
+			}
+
+			// Cancelling the delay is what releases the timer: disposing the source alone would leave one
+			// armed per test for the whole window.
+			using var timeoutCts = new CancellationTokenSource();
+			var timeoutTask = Task.Delay(timeout, timeoutCts.Token);
+
+			var completed = await Task.WhenAny(task, timeoutTask);
+			timeoutCts.Cancel();
+
+			if (completed == timeoutTask)
+			{
+				_ = task.ContinueWith(
+					t => _log?.Info($"{what} completed after the harness cut it off ({t.Status}). Any failure reported between the cut-off and now may come from it."),
+					TaskScheduler.Default);
+
+				throw new TestBodyTimeoutException($"{what} timed out after {timeout}");
+			}
+
+			// Rethrow if faulted, or surface a cancellation the task raised internally.
+			await completed;
+		}
+
+		/// <summary>
 		/// Fallback timeout applied to every async test body that carries no <see cref="TimeoutAttribute"/>.
 		/// Without it a single hung test consumes the whole CI job budget and the run ends with no results
 		/// file at all, losing the outcome of every other test in the shard.
 		/// </summary>
+		/// <remarks>
+		/// Async work only. The harness can cut off an awaited <see cref="Task"/>; a synchronous body runs to
+		/// completion inside the invoke and cannot be interrupted portably. A wedged UI thread escapes it too,
+		/// because the timer itself needs the loop to run.
+		/// </remarks>
 		private static TimeSpan? GetDefaultTestBodyTimeout()
 		{
-			var configured = Environment.GetEnvironmentVariable("UNO_TEST_DEFAULT_TIMEOUT_SECONDS");
+			var configured = Environment.GetEnvironmentVariable(DefaultTestBodyTimeoutVariable);
 
-			if (configured is not null)
+			if (configured is null)
 			{
-				if (!int.TryParse(configured, NumberStyles.Integer, CultureInfo.InvariantCulture, out var seconds))
-				{
-					return DefaultTestBodyTimeoutFallback;
-				}
-
-				// An explicit non-positive value opts out entirely, which is the only way to get the
-				// pre-existing unbounded behaviour back when debugging a test under a breakpoint.
-				return seconds <= 0 ? null : TimeSpan.FromSeconds(seconds);
+				return DefaultTestBodyTimeoutFallback;
 			}
 
-			return DefaultTestBodyTimeoutFallback;
+			if (!int.TryParse(configured, NumberStyles.Integer, CultureInfo.InvariantCulture, out var seconds))
+			{
+				typeof(UnitTestsControl).Log().Warn(
+					$"Ignoring {DefaultTestBodyTimeoutVariable}='{configured}': expected a whole number of seconds.");
+
+				return DefaultTestBodyTimeoutFallback;
+			}
+
+			// A non-positive value opts out entirely. DEBUG builds are unbounded already; this is how a
+			// Release build gets the same behaviour back, e.g. when debugging a test under a breakpoint.
+			if (seconds <= 0)
+			{
+				return null;
+			}
+
+			// Task.Delay rejects anything past Timer.MaxSupportedTimeout, which would throw on every test.
+			return TimeSpan.FromSeconds(Math.Min(seconds, MaxTestBodyTimeoutSeconds));
 		}
 
 		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Appears to work on CI!")]

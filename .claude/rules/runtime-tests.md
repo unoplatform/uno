@@ -22,4 +22,6 @@ Build & run with the **`/runtime-tests`** skill. WinUI parity: `/winui-runtime-t
 - **Screenshots**: `var bmp = await UITestHelper.ScreenShot(el);` then `ImageAssert.HasColorAt(bmp, x, y, color, tolerance)` or `await ImageAssert.AreEqualAsync(a, b)`. A raw `RawBitmap` needs `await bmp.Populate()` before `GetPixel`. Use a small `tolerance` (1–5) for hardware rasterization variance. `[RequiresFullWindow]` for tests needing the real window size.
 - Don't reference Uno internals (`DirectUI`, `Uno.UI.Xaml.Input`) unguarded — gate with `#if HAS_UNO`. MSTest usings come from `GlobalUsings.cs`; don't re-import.
 
+- **Every async test body has a default time budget in Release builds** (10 minutes), so one hang can no longer take the whole CI job down with it and lose the shard's results. Raise it for a legitimately slow test with `[Timeout(<ms>)]`; the whole run can be re-budgeted with `UNO_TEST_DEFAULT_TIMEOUT_SECONDS` (non-positive opts out). DEBUG builds stay unbounded so a breakpoint doesn't trip it. Two limits worth knowing: a cut-off **abandons** the body rather than cancelling it, so a runaway test keeps touching the visual tree — reset shared state in `finally` as above; and only awaited work is bounded, so a synchronous body or a wedged UI thread still escapes it.
+
 Known flaky tests are tracked in GitHub issue #9080.
