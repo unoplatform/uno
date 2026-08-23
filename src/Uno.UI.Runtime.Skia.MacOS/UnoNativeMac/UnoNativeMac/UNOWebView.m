@@ -113,6 +113,7 @@ NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel)
     webview.cancelString = [NSString stringWithUTF8String:cancel];
 
     webview.originalSuperView = ((UNOWindow*)window).renderingView;
+    uno_native_track(webview);
     return webview;
 }
 
