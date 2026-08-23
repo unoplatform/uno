@@ -66,9 +66,9 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 	/// Resolves the native <c>WKWebView</c> handle, refusing to hand a disposed peer to native code.
 	/// </summary>
 	/// <remarks>
-	/// The peer is destroyed when the element leaves the visual tree, which zeroes
-	/// <see cref="MacOSNativeElement.NativeHandle"/>. Messaging the freed <c>WKWebView</c> would make ARC
-	/// retain deallocated memory and take down the whole process, so each operation has to fail on its own.
+	/// Releasing the peer zeroes <see cref="MacOSNativeElement.NativeHandle"/>. Messaging the freed
+	/// <c>WKWebView</c> would make ARC retain deallocated memory and take down the whole process, so each
+	/// operation has to fail on its own.
 	/// </remarks>
 	private bool TryGetHandle(string operation, out nint handle)
 	{
@@ -105,6 +105,12 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 		if (_registeredHandle != 0)
 		{
 			_webViews.Remove(_registeredHandle);
+
+			if (!Disposed)
+			{
+				NativeUno.uno_webview_unregister_message_handler(_registeredHandle);
+			}
+
 			_registeredHandle = 0;
 		}
 	}

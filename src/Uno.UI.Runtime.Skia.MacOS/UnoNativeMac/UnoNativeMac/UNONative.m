@@ -85,6 +85,8 @@ void uno_native_attach(NSView<UNONativeElement>* element)
         // note: it's too early to add a mask since the layer has not been set yet
         [elements addObject:element];
     }
+    // `elements` owns it again, so drop the reference `uno_native_detach` took to survive the round trip.
+    [transients removeObject:element];
     [element.originalSuperView addSubview:element];
 }
 
