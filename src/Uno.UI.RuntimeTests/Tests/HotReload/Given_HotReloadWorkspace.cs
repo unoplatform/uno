@@ -34,14 +34,16 @@ public partial class Given_HotReloadWorkspace
 	private static Process? _testAppProcess;
 
 	/// <summary>
-	/// Budget for a single run of the hot-reload app.
+	/// Budget for a single run of the hot-reload app. A healthy run takes about ninety seconds; a session
+	/// that breaks server-side leaves every remaining test in the app burning its own budget instead.
 	/// </summary>
-	/// <remarks>
-	/// A healthy run of the whole HRApp suite takes about ninety seconds. When a hot-reload session
-	/// breaks server-side, every remaining test in the app instead burns its own five-minute budget,
-	/// which turns this single test into a multi-hour one and used to consume the entire CI job.
-	/// </remarks>
 	private static readonly TimeSpan TestAppTimeout = TimeSpan.FromMinutes(6);
+
+	/// <summary>
+	/// Budget for building the app. This runs from <c>[TestInitialize]</c>, so a hang here is only bounded
+	/// by whatever the harness applies to initialize — never leave it unbounded.
+	/// </summary>
+	private static readonly TimeSpan BuildTimeout = TimeSpan.FromMinutes(10);
 
 	/// <remarks>
 	/// This test is running C# hot reload tests in a separate app, located 
@@ -65,9 +67,9 @@ public partial class Given_HotReloadWorkspace
 	// Hot reload tests are only available on Skia desktop targets
 	[Filters]
 	[TestMethod]
-	// Backstop for the whole test: TestAppTimeout bounds the app run itself, this also covers the
-	// build and the result parsing around it.
-	[Timeout(8 * 60 * 1000, CooperativeCancellation = false)]
+	// Raises the harness default for this test, which builds an app before it runs one. A cut-off here is
+	// the harness's, so it is reported once and not retried; TestAppTimeout below only reaps the app.
+	[Timeout(8 * 60 * 1000)]
 	public async Task When_HotReloadScenario(string filters)
 	{
 		// Remove this class and this method from the filters
@@ -82,10 +84,14 @@ public partial class Given_HotReloadWorkspace
 		}
 		catch (OperationCanceledException) when (cts.IsCancellationRequested)
 		{
-			throw new TimeoutException(
+			// Assert.Fail rather than TimeoutException: the harness retries a TimeoutException, and three
+			// attempts at a wedged session cost the shard the same wait over again.
+			Assert.Fail(
 				$"The hot reload test app did not complete within {TestAppTimeout} and was killed. " +
 				"This usually means a hot-reload never completed: look for an internal error in the " +
 				"dev-server output above.");
+
+			throw; // unreachable, Assert.Fail always throws
 		}
 
 		// Parse the nunit XML results file and extract all failed tests
@@ -146,8 +152,19 @@ public partial class Given_HotReloadWorkspace
 	[TestCleanup]
 	public void TestCleanupWrapper()
 	{
-		ProcessHelpers.KillProcessTree(_testAppProcess);
+		// StartProcess redirects both streams, so the Process owns OS pipe handles that only a Dispose
+		// releases before the finalizer runs.
+		var process = _testAppProcess;
 		_testAppProcess = null;
+
+		if (process is { HasExited: false })
+		{
+			typeof(Given_HotReloadWorkspace).Log().Warn(
+				"The hot reload app was still running at cleanup and had to be killed — the run above did not complete on its own.");
+		}
+
+		ProcessHelpers.KillProcessTree(process);
+		process?.Dispose();
 	}
 
 	public static async Task InitializeServer()
@@ -228,11 +245,24 @@ public partial class Given_HotReloadWorkspace
 			output: builder
 		);
 
-		await process.WaitForExitAsync();
-
-		if (process.ExitCode != 0)
+		try
 		{
-			throw new InvalidOperationException($"Failed to build app{Environment.NewLine}{builder}");
+			using var cts = new CancellationTokenSource(BuildTimeout);
+			await ProcessHelpers.WaitForExitAsync(process, "HRAppBuild", cts.Token);
+
+			if (process.ExitCode != 0)
+			{
+				throw new InvalidOperationException($"Failed to build app{Environment.NewLine}{builder}");
+			}
+		}
+		catch (OperationCanceledException)
+		{
+			throw new InvalidOperationException(
+				$"Building the hot reload app did not complete within {BuildTimeout}.{Environment.NewLine}{builder}");
+		}
+		finally
+		{
+			process.Dispose();
 		}
 	}
 
