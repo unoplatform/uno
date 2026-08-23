@@ -143,6 +143,8 @@ partial class AutoSuggestBox
 		// Configure TextBox part
 		if (m_tpTextBoxPart is not null)
 		{
+			ApplyTextBoxStyle();
+
 			void OnTextBoxTextChanged(object sender, TextChangedEventArgs args) => OnTextBoxTextChanged_Internal(sender, args);
 			m_tpTextBoxPart.TextChanged += OnTextBoxTextChanged;
 			m_textBoxTextChangedEventRevoker.Disposable = Disposable.Create(() =>
@@ -155,6 +157,7 @@ partial class AutoSuggestBox
 
 			// Initialize text box with current Text value
 			UpdateTextBoxText(Text, AutoSuggestionBoxTextChangeReason.ProgrammaticChange);
+			UpdateHeaderDataContext();
 
 			// TextBox Loaded event
 			void OnTextBoxLoaded(object sender, RoutedEventArgs args) => OnTextBoxLoaded_Internal(sender, args);
@@ -353,6 +356,7 @@ partial class AutoSuggestBox
 		// Re-establish the subscriptions dropped on Unloaded, so a control that is moved
 		// back into the tree keeps reacting to the SIP.
 		SetupInputPaneEvents();
+		UpdateHeaderDataContext();
 	}
 
 	/// <summary>
@@ -985,6 +989,10 @@ partial class AutoSuggestBox
 			if (wasHandledLocally)
 			{
 				e.Handled = true;
+			}
+			else if (key == VirtualKey.Tab)
+			{
+				e.Handled = false;
 			}
 		}
 	}
@@ -1677,6 +1685,10 @@ partial class AutoSuggestBox
 			{
 				referenceElement = rootScrollViewer;
 			}
+			else
+			{
+				referenceElement = XamlRoot?.Content as UIElement;
+			}
 
 			var point = new Point(0, 0);
 			if (referenceElement is not null)
@@ -2114,6 +2126,49 @@ partial class AutoSuggestBox
 			VirtualKey.GamepadRightThumbstickRight => true,
 			_ => false
 		};
+	}
+
+	private void ApplyTextBoxStyle()
+	{
+		if (m_tpTextBoxPart is not null && TextBoxStyle is { } textBoxStyle)
+		{
+			m_tpTextBoxPart.Style = textBoxStyle;
+
+			// Uno applies TemplateBinding values at local precedence. Reapply an explicitly
+			// supplied TextBoxStyle so its setters retain WinUI precedence over those bindings.
+			if (GetCurrentHighestValuePrecedence(TextBoxStyleProperty) < DependencyPropertyValuePrecedences.BuiltInStyle)
+			{
+				ApplyStyleSetters(textBoxStyle, m_tpTextBoxPart);
+			}
+		}
+	}
+
+	private static void ApplyStyleSetters(Style style, DependencyObject target)
+	{
+		if (style.BasedOn is { } basedOn)
+		{
+			ApplyStyleSetters(basedOn, target);
+		}
+
+		foreach (var setter in style.Setters)
+		{
+			setter.ApplyTo(target);
+		}
+	}
+
+	private void UpdateHeaderDataContext()
+	{
+		if (m_tpTextBoxPart?.GetTemplateChild("HeaderContentPresenter") is FrameworkElement headerPresenter)
+		{
+			if (Header is null)
+			{
+				headerPresenter.DataContext = null;
+			}
+			else
+			{
+				headerPresenter.ClearValue(DataContextProperty);
+			}
+		}
 	}
 
 	// C++: static void OnInkingFunctionButtonClicked(CDependencyObject* nativeAutoSuggestBox)

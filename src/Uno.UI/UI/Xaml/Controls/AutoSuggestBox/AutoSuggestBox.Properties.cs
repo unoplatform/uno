@@ -205,7 +205,9 @@ partial class AutoSuggestBox
 			nameof(Header),
 			typeof(object),
 			typeof(AutoSuggestBox),
-			new FrameworkPropertyMetadata(null));
+			new FrameworkPropertyMetadata(
+				null,
+				propertyChangedCallback: OnHeaderChanged));
 
 	/// <summary>
 	/// Identifies the IsSuggestionListOpen dependency property.
@@ -307,6 +309,14 @@ partial class AutoSuggestBox
 		m_spPropertyPathListener = null;
 	}
 
+	private static void OnHeaderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	{
+		if (d is AutoSuggestBox autoSuggestBox)
+		{
+			autoSuggestBox.UpdateHeaderDataContext();
+		}
+	}
+
 	private static void OnIsSuggestionListOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 	{
 		if (d is AutoSuggestBox autoSuggestBox)
@@ -370,6 +380,7 @@ partial class AutoSuggestBox
 #else
 	private static void OnTextPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) { }
 	private static void OnTextMemberPathChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) { }
+	private static void OnHeaderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) { }
 	private static void OnIsSuggestionListOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) { }
 	private static void OnQueryIconChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) { }
 	private static void OnDescriptionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) { }
