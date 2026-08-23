@@ -122,7 +122,10 @@ namespace MyControls.Test
 		public GeneratedFile(string path, string source)
 		{
 			Path = path;
-			Source = SourceText.From(source, Encoding.UTF8);
+			// Sha256, not SourceText.From's Sha1 default: Roslyn 5.x creates the project (and hence
+			// the actual generated documents) with SourceHashAlgorithms.Default = Sha256, and the
+			// testing harness compares the algorithm of expected vs actual documents.
+			Source = SourceText.From(source, Encoding.UTF8, SourceHashAlgorithm.Sha256);
 		}
 
 		public string Path { get; set; }
