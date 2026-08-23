@@ -509,6 +509,9 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_webview_register_message_handler(nint webview);
 
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_unregister_message_handler(nint webview);
+
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial string uno_webview_get_title(nint webview);
 
