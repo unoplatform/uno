@@ -1,4 +1,4 @@
-#if !NETFX_CORE
+﻿#if !NETFX_CORE
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -709,8 +709,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			Assert.IsNotNull(si);
 			Assert.AreEqual("Item 1", si.Content);
 			var cp = si.FindFirstChild<ContentPresenter>();
-			Assert.IsInstanceOfType(cp.ContentTemplateRoot, typeof(ImplicitTextBlock));
-			Assert.AreEqual("Item 1", (cp.ContentTemplateRoot as TextBlock).Text);
+			var cpRoot = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(cp, 0);
+			Assert.IsInstanceOfType(cpRoot, typeof(ImplicitTextBlock));
+			Assert.AreEqual("Item 1", (cpRoot as TextBlock).Text);
 		}
 
 		[TestMethod]

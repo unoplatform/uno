@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
@@ -785,14 +785,14 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	partial void UnregisterContentTemplateRoot();
 
-	internal View ContentTemplateRoot
+	private View ContentTemplateRoot
 	{
 		get
 		{
 			return _contentTemplateRoot;
 		}
 
-		private set
+		set
 		{
 			var previousValue = _contentTemplateRoot;
 
@@ -813,6 +813,23 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 				UpdateContentTransitions(null, this.ContentTransitions);
 			}
+
+			ReportContentTemplateRootToTemplatedParent();
+		}
+	}
+
+	/// <summary>
+	/// Surfaces the materialized root through <see cref="ContentControl.ContentTemplateRoot"/>, the WinUI
+	/// accessor for it. A template can host several presenters for the same templated parent (a dialog
+	/// title, a command bar); the one presenting the parent's own Content is identified by comparing the
+	/// Content dependency-property values, since ContentControl.Content's getter falls back to DataContext.
+	/// </summary>
+	private void ReportContentTemplateRootToTemplatedParent()
+	{
+		if (GetTemplatedParent() is ContentControl contentControl
+			&& Equals(contentControl.GetValue(ContentControl.ContentProperty), GetValue(ContentProperty)))
+		{
+			contentControl.ContentTemplateRoot = _contentTemplateRoot;
 		}
 	}
 
@@ -939,6 +956,13 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		// This needs to be cleared on recycle, to prevent
 		// SetUpdateTemplate from being skipped in OnLoaded.
 		_firstLoadResetDone = false;
+
+		// The templated parent must not keep pointing at a root that is going back to the pool.
+		if (GetTemplatedParent() is ContentControl contentControl
+			&& contentControl.ContentTemplateRoot == _contentTemplateRoot)
+		{
+			contentControl.ContentTemplateRoot = null;
+		}
 	}
 
 	protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -160,13 +160,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.IsNotNull(MaterializedRoot(SUT));
 		}
 
-		// Real Skia applies the default ContentControl ControlTemplate (a ContentPresenter),
-		// so the materialized ContentTemplate root lives on the inner ContentPresenter, not on
-		// ContentControl.ContentTemplateRoot (which stays null when a template is present).
-		private static object MaterializedRoot(ContentControl control) =>
-			(VisualTreeHelper.GetChildrenCount(control) > 0
-				? VisualTreeHelper.GetChild(control, 0) as ContentPresenter
-				: null)?.ContentTemplateRoot;
+		// The default ContentControl ControlTemplate hosts the content in a ContentPresenter, which
+		// reports the materialized ContentTemplate root back through ContentControl.ContentTemplateRoot.
+		private static object MaterializedRoot(ContentControl control) => control.ContentTemplateRoot;
 
 		[TestMethod]
 		public void When_RemoveTemplate_And_Timeout()

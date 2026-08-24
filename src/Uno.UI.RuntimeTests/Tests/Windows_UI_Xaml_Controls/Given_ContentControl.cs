@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -7,8 +7,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.Extensions;
+using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows_UI_Xaml_Controls;
 using static Private.Infrastructure.TestServices;
@@ -259,6 +261,70 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(HorizontalAlignment.Center, sut.HorizontalContentAlignment);
 			Assert.AreEqual(VerticalAlignment.Center, sut.VerticalContentAlignment);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_No_Template_Then_Content_Is_Hosted_By_ContentPresenter()
+		{
+			// A template-less ContentControl gets its default ControlTemplate, so Content is hosted by a
+			// ContentPresenter rather than parented directly (#2163, removal of the ContentPresenter bypass).
+			var content = new Border { Width = 50, Height = 50 };
+			var sut = new ContentControl { Content = content };
+
+			await UITestHelper.Load(sut);
+
+			var presenter = VisualTreeHelper.GetChild(sut, 0) as ContentPresenter;
+			Assert.IsNotNull(presenter, "ContentControl should host its content through a ContentPresenter.");
+			Assert.AreEqual(content, presenter.Content);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ContentTemplate_Then_ContentTemplateRoot_Is_Reported_By_Presenter()
+		{
+			// ContentTemplateRoot is WinUI API on ContentControl; the ContentPresenter of the applied
+			// template reports the root it materialized (#2163).
+			var sut = new ContentControl
+			{
+				Content = "Asd",
+				ContentTemplate = XamlHelper.LoadXaml<DataTemplate>("""
+					<DataTemplate>
+						<Border x:Name="TemplateRoot" Width="50" Height="50" />
+					</DataTemplate>
+				"""),
+			};
+
+			await UITestHelper.Load(sut);
+
+			var presenter = VisualTreeHelper.GetChild(sut, 0) as ContentPresenter;
+			Assert.IsNotNull(presenter);
+			Assert.AreEqual(VisualTreeHelper.GetChild(presenter, 0), sut.ContentTemplateRoot);
+			Assert.AreEqual("TemplateRoot", (sut.ContentTemplateRoot as FrameworkElement)?.Name);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ContentTemplate_Cleared_Then_ContentTemplateRoot_Is_Cleared()
+		{
+			// The presenter must not leave a stale root behind on its templated parent (#2163).
+			var sut = new ContentControl
+			{
+				Content = "Asd",
+				ContentTemplate = XamlHelper.LoadXaml<DataTemplate>("""
+					<DataTemplate>
+						<Border Width="50" Height="50" />
+					</DataTemplate>
+				"""),
+			};
+
+			await UITestHelper.Load(sut);
+			Assert.IsInstanceOfType(sut.ContentTemplateRoot, typeof(Border));
+
+			sut.ContentTemplate = null;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotInstanceOfType(sut.ContentTemplateRoot, typeof(Border));
 		}
 
 		private class SignInViewModel
