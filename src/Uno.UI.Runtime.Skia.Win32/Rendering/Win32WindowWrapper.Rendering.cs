@@ -25,9 +25,44 @@ internal partial class Win32WindowWrapper
 
 	private void ReinitializeRenderer()
 	{
+<<<<<<< HEAD
 		_renderer.Reinitialize();
 		_surface?.Dispose();
 		_surface = null;
+=======
+		var scale = (float)(RasterizationScale == 0 ? 1 : RasterizationScale);
+		return kind switch
+		{
+			GraphicsContextKind.OpenGL => Win32OpenGLGraphicsContext.TryCreate(_hwnd),
+			GraphicsContextKind.Vulkan => TryCreateVulkan(),
+			GraphicsContextKind.Software => new Win32SoftwareGraphicsContext(_hwnd),
+			GraphicsContextKind.WebGpu => global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateWin32(_hwnd, Win32Helper.GetModuleHInstance(), scale),
+			_ => null,
+		};
+	}
+
+	/// <summary>
+	/// Swallows a Vulkan creation failure so negotiation falls through to the next kind.
+	/// </summary>
+	private ISwapChain? TryCreateVulkan()
+	{
+		if (ShouldSuppressVulkanForBackdrop())
+		{
+			_vulkanSuppressedForBackdrop = true;
+			this.LogInfo()?.Info("Skipping Vulkan: a system backdrop is active, and Vulkan cannot present a translucent window on Win32.");
+			return null;
+		}
+
+		try
+		{
+			return new Win32VulkanGraphicsContext(_hwnd);
+		}
+		catch (Exception e)
+		{
+			this.LogInfo()?.Info($"Vulkan context creation failed ({e.Message}); falling through.");
+			return null;
+		}
+>>>>>>> 6808899 (fix(win32): Show system backdrops on the default renderer)
 	}
 
 	private void InitializeRenderThread()
