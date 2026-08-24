@@ -74,6 +74,8 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	public IntPtr EffectCombineBgl;
 	public IntPtr ColorFunc;            // single-input per-channel colour function (Contrast / GammaTransfer)
 	public IntPtr ColorFuncBgl;
+	public IntPtr EffectNoise;          // procedural WhiteNoise generator (no input)
+	public IntPtr EffectNoiseBgl;
 	public IntPtr DummyTex;                 // 1x1 placeholder for the clip coverage binding when no path clip
 	public WebGpuTexturePool Pool;                // transient offscreen pool (reused across frames)
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
@@ -811,6 +813,30 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
   return o;
 }";
 
+	// Procedural WhiteNoise generator (no input), matching SkiaEffectFuser's hash + bilinear noise. p.xy=frequency,
+	// p.zw=offset, sz.xy=surface size (pixels). coords = pixel position (uv*size).
+	private const string EffectNoiseWgsl = @"
+struct NU { p: vec4<f32>, sz: vec4<f32> };
+@group(0) @binding(0) var<uniform> u: NU;
+struct VO { @builtin(position) pos: vec4<f32>, @location(0) uv: vec2<f32> };
+@vertex fn vs(@builtin(vertex_index) vi: u32) -> VO {
+  var pts = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
+  let p = pts[vi];
+  var o: VO; o.pos = vec4<f32>(p, 0.0, 1.0); o.uv = vec2<f32>((p.x + 1.0) * 0.5, (1.0 - p.y) * 0.5); return o;
+}
+fn Hash(p: vec2<f32>) -> f32 { return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x)))); }
+@fragment fn fs(i: VO) -> @location(0) vec4<f32> {
+  let coords = i.uv * u.sz.xy;
+  let coord = coords * 0.81 * u.p.xy + u.p.zw;
+  let px00 = floor(coord - 0.5) + 0.5;
+  let px11 = px00 + 1.0;
+  let px10 = vec2<f32>(px11.x, px00.y);
+  let px01 = vec2<f32>(px00.x, px11.y);
+  let f = coord - px00;
+  let r = mix(mix(Hash(px00), Hash(px10), f.x), mix(Hash(px01), Hash(px11), f.x), f.y);
+  return vec4<f32>(r, r, r, 1.0);
+}";
+
 	private void CreateCompositePipelines()
 	{
 		var module = Module(CompositeWgsl);
@@ -838,6 +864,10 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 		var colorFuncModule = Module(ColorFuncWgsl);
 		ColorFunc = MakeComposite(colorFuncModule, vs, fs, &replace, &ds);
 		ColorFuncBgl = wgpuRenderPipelineGetBindGroupLayout(ColorFunc, 0);
+
+		var noiseModule = Module(EffectNoiseWgsl);
+		EffectNoise = MakeComposite(noiseModule, vs, fs, &replace, &ds);
+		EffectNoiseBgl = wgpuRenderPipelineGetBindGroupLayout(EffectNoise, 0);
 	}
 
 	private IntPtr MakeComposite(IntPtr module, WGPUStringView vs, WGPUStringView fs, WGPUBlendState* blend, WGPUDepthStencilState* ds)

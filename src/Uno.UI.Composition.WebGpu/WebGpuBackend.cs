@@ -1741,6 +1741,45 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 	}
 
+	// Procedural WhiteNoise generator into the target surface (no input). freq/offset are the effect params; the
+	// surface size feeds pixel coords so the noise field is stable regardless of the fullscreen triangle.
+	internal void NoiseInto(float fx, float fy, float ox, float oy, int w, int h)
+	{
+		lock (_d.RenderGate)
+		{
+			var owns = _frameEncoder == IntPtr.Zero;
+			if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); }
+			try
+			{
+				var ubuf = MakeUniform(32);
+				var uc = stackalloc float[8]; uc[0] = fx; uc[1] = fy; uc[2] = ox; uc[3] = oy; uc[4] = w; uc[5] = h;
+				wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)uc, 32);
+				var e = stackalloc WGPUBindGroupEntry[1];
+				e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = 32 };
+				var bgd = new WGPUBindGroupDescriptor { Layout = _d.EffectNoiseBgl, EntryCount = 1, Entries = e };
+				var bgh = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
+				var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _s.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? _s.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
+				var dsa = new WGPURenderPassDepthStencilAttachment { View = _s.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
+				var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
+				var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
+				wgpuRenderPassEncoderSetPipeline(pass, _d.EffectNoise);
+				wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bgh, 0, (uint*)null);
+				wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+				wgpuRenderPassEncoderEnd(pass);
+			}
+			finally
+			{
+				if (owns)
+				{
+					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
+					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+					_ = wgpuDevicePoll(_d.Dev, 0u, null);
+					_frameEncoder = IntPtr.Zero;
+				}
+			}
+		}
+	}
+
 	private void BlurPass(IntPtr src, IntPtr dst, Vector2 dir, Vector2 texel, bool downsample, Vector2 srcOrigin, Vector2 srcScale)
 	{
 		var bu = new float[12];
@@ -3546,6 +3585,17 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 		return new WebGpuTexture(_device, tex, view, w, h);
 	}
 
+	// Procedural WhiteNoise into a fresh offscreen texture.
+	private ITexture RunNoise(int w, int h, System.Numerics.Vector2 freq, System.Numerics.Vector2 offset)
+	{
+		var surface = new WebGpuRenderSurface(_device, w, h);
+		var present = new WebGpuPresentSession(_device, surface, this);
+		present.NoiseInto(freq.X, freq.Y, offset.X, offset.Y, w, h);
+		var (tex, view) = surface.DetachColor();
+		surface.Dispose();
+		return new WebGpuTexture(_device, tex, view, w, h);
+	}
+
 	// Single-input per-channel colour function (Contrast / GammaTransfer) into a fresh offscreen texture.
 	private ITexture RunColorFunc(WebGpuTexture src, float[] u20)
 	{
@@ -3615,6 +3665,11 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 				if (TryEvaluateTree(am.Source, bounds) is not WebGpuTexture src2) { return null; }
 				if (TryEvaluateTree(am.Mask, bounds) is not WebGpuTexture mask) { return null; }
 				return RunCombine(src2, mask, 0f, 0f, 0f, 0f, alphaMask: true);
+			}
+			case WhiteNoiseEffectNode n:
+			{
+				int w = Math.Max(1, (int)Math.Round(bounds.Width)), h = Math.Max(1, (int)Math.Round(bounds.Height));
+				return RunNoise(w, h, n.Frequency, n.Offset);
 			}
 			case ContrastEffectNode ct:
 			{
