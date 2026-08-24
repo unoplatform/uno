@@ -18,7 +18,5 @@ internal class UnoRootElementLogic
 	{
 		//Uno specific - flag as VisualTreeRoot for interop with existing logic
 		rootElement.IsVisualTreeRoot = true;
-
-		rootElement.SetValue(Panel.BackgroundProperty, new SolidColorBrush(ThemingHelper.GetRootVisualBackground()));
 	}
 }
