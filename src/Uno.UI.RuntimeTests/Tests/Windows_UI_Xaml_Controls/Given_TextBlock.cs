@@ -828,16 +828,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Unique per-invocation folder so the two DataRow variants never race on the same directory.
 			var folderName = $"MsAppDataFontTest_{Guid.NewGuid():N}";
 			var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
-			var fontsFolder = await localFolder.CreateFolderAsync(
-				folderName,
-				Windows.Storage.CreationCollisionOption.OpenIfExists);
-			await sourceFile.CopyAsync(fontsFolder, "Roboto-Regular.ttf", Windows.Storage.NameCollisionOption.ReplaceExisting);
+			Windows.Storage.StorageFolder fontsFolder = null;
 
 			try
 			{
+				fontsFolder = await localFolder.CreateFolderAsync(
+					folderName,
+					Windows.Storage.CreationCollisionOption.FailIfExists);
+				await sourceFile.CopyAsync(fontsFolder, "Roboto-Regular.ttf", Windows.Storage.NameCollisionOption.ReplaceExisting);
+
 				var SUT = new TextBlock { Text = "abcd" };
 				WindowHelper.WindowContent = SUT;
-				await WindowHelper.WaitForIdle();
+				await WindowHelper.WaitForLoaded(SUT);
 
 				var size = new Size(1000, 1000);
 				SUT.Measure(size);
@@ -864,14 +866,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			finally
 			{
-				try
+				WindowHelper.WindowContent = null;
+
+				if (fontsFolder is not null)
 				{
-					await fontsFolder.DeleteAsync(Windows.Storage.StorageDeleteOption.PermanentDelete);
-				}
-				catch (Exception ex)
-				{
-					// Cleanup is best-effort — surface the failure without failing the test.
-					Console.WriteLine($"Failed to delete '{folderName}': {ex}");
+					try
+					{
+						await fontsFolder.DeleteAsync(Windows.Storage.StorageDeleteOption.PermanentDelete);
+					}
+					catch (Exception ex)
+					{
+						// Cleanup is best-effort — a throw here would mask the real test failure.
+						Console.WriteLine($"Failed to delete '{folderName}': {ex}");
+					}
 				}
 			}
 		}
