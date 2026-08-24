@@ -263,6 +263,7 @@ jobs:
       ArtifactType: Container
 
   - task: PublishBuildArtifacts@1
+    displayName: Publish Failed Tests Results
     condition: always()
     retryCountOnTaskFailure: 3
     inputs:

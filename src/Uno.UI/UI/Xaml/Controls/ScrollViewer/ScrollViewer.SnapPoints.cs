@@ -48,10 +48,6 @@ namespace Microsoft.UI.Xaml.Controls
 					ref vOffset);
 				verticalOffset = vOffset;
 			}
-
-#if __SKIA__
-			(horizontalOffset, verticalOffset) = ClampOffsetsToFocusedTextBox(horizontalOffset, verticalOffset);
-#endif
 		}
 
 #if !__SKIA__
@@ -64,11 +60,6 @@ namespace Microsoft.UI.Xaml.Controls
 			// +5.999 --> +5.0
 			return (double)(long)pixelViewportDim;
 		}
-#endif
-
-		internal partial bool ShouldSnapToTouchTextBox();
-#if !__SKIA__
-		internal partial bool ShouldSnapToTouchTextBox() => false;
 #endif
 
 		private void AdjustOffsetWithMandatorySnapPoints(
