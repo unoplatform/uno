@@ -6998,6 +6998,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		// Skia-WASM: the TextBox grows but the outer ScrollViewer never scrolls further in time, see https://github.com/unoplatform/uno/issues/24157
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_OuterScrollViewer_BringIntoView_Scrolls_To_Caret()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
