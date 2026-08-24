@@ -19,7 +19,6 @@ using CommunityToolkit.Mvvm.SourceGenerators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Testing;
-using Uno.UI.SourceGenerators.MetadataUpdates;
 using Uno.UI.SourceGenerators.XamlGenerator;
 
 namespace Uno.UI.SourceGenerators.Tests.Verifiers
@@ -131,15 +130,18 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 				string? excludeXamlNamespaces = null;
 				if (ReferenceAssemblies.Packages.Any(p => p.Id.StartsWith("Microsoft.Android.Ref", StringComparison.OrdinalIgnoreCase)))
 				{
-					includeXamlNamespaces = "android,not_ios,not_wasm,not_skia,not_netstdref";
-					excludeXamlNamespaces = "ios,wasm,skia,not_android";
+					includeXamlNamespaces = "android,not_ios,not_tvos,not_desktop,not_wasm,not_winappsdk,not_win";
+					excludeXamlNamespaces = "not_android,ios,tvos,desktop,wasm,winappsdk,win";
 				}
-				else if (ReferenceAssemblies.Packages.Any(p =>
-					p.Id.StartsWith("Microsoft.iOS.Ref", StringComparison.OrdinalIgnoreCase) ||
-					p.Id.StartsWith("Microsoft.tvOS.Ref", StringComparison.OrdinalIgnoreCase)))
+				else if (ReferenceAssemblies.Packages.Any(p => p.Id.StartsWith("Microsoft.iOS.Ref", StringComparison.OrdinalIgnoreCase)))
 				{
-					includeXamlNamespaces = "ios,not_android,not_wasm,not_skia,not_netstdref";
-					excludeXamlNamespaces = "android,wasm,skia,not_ios";
+					includeXamlNamespaces = "not_android,ios,not_tvos,not_desktop,not_wasm,not_winappsdk,not_win";
+					excludeXamlNamespaces = "android,not_ios,tvos,desktop,wasm,winappsdk,win";
+				}
+				else if (ReferenceAssemblies.Packages.Any(p => p.Id.StartsWith("Microsoft.tvOS.Ref", StringComparison.OrdinalIgnoreCase)))
+				{
+					includeXamlNamespaces = "not_android,not_ios,tvos,not_desktop,not_wasm,not_winappsdk,not_win";
+					excludeXamlNamespaces = "android,ios,not_tvos,desktop,wasm,winappsdk,win";
 				}
 
 				var defaultConfig = new Dictionary<string, string>
@@ -214,8 +216,30 @@ build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 
 			protected override Project ApplyCompilationOptions(Project project)
 			{
+				// Tests using WithUnoPackage() pull a pre-7.0 Uno.WinUI package, which still ships
+				// Uno.UI.Toolkit.dll. Its types were renamed to Uno.UI.Extras, so the package copy no
+				// longer matches the local build and would resolve the old namespace instead. The local
+				// build is authoritative.
+				var supersededByLocalBuild = project.MetadataReferences
+					.Where(r => Path.GetFileName((r as PortableExecutableReference)?.FilePath ?? string.Empty) == "Uno.UI.Toolkit.dll")
+					.ToArray();
+
+				// The same package still ships Uno.dll.
+				// That used to be shadowed by the local build sharing its assembly identity; since the
+				// rename to Uno.WinRT the two are distinct, so every Windows.* type would be defined twice
+				// and GetTypeByMetadataName would return null. The local build is authoritative.
+				var supersededByLocalWinRT = project.MetadataReferences
+					.Where(r => Path.GetFileName((r as PortableExecutableReference)?.FilePath ?? string.Empty) == "Uno.dll")
+					.ToArray();
+
 				project = project
+					.WithMetadataReferences(project.MetadataReferences.Except(supersededByLocalBuild).Except(supersededByLocalWinRT))
 					.AddMetadataReferences(UnoAssemblyHelper.LoadAssemblies());
+
+				if (supersededByLocalBuild.Length > 0)
+				{
+					project = project.AddMetadataReferences(UnoAssemblyHelper.LoadExtrasAssemblies());
+				}
 
 				return base.ApplyCompilationOptions(project);
 			}

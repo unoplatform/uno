@@ -65,43 +65,11 @@ namespace Microsoft.UI.Xaml
 		private string _uid;
 
 		private Vector3 _translation = Vector3.Zero;
+		internal bool HasCompositionChildVisual { get; set; }
 
 		private InputCursor _protectedCursor;
 		private SerialDisposable _disposedEventDisposable = new();
 
-
-		/// <summary>
-		/// Gets the current theme value for this element.
-		/// </summary>
-		/// <remarks>Thin forwarder to <see cref="DependencyObjectStore"/>, where the per-object theme
-		/// lives for every DependencyObject (WinUI: CDependencyObject::GetTheme, CDependencyObject.h:1648).</remarks>
-		internal Theme GetTheme() => ((IDependencyObjectStoreProvider)this).Store.GetTheme();
-
-		/// <summary>
-		/// Sets the theme value for this element.
-		/// </summary>
-		internal void SetTheme(Theme theme) => ((IDependencyObjectStoreProvider)this).Store.SetTheme(theme);
-
-		/// <summary>
-		/// Gets whether this element is currently processing a theme walk.
-		/// </summary>
-		internal bool IsProcessingThemeWalk => ((IDependencyObjectStoreProvider)this).Store.IsProcessingThemeWalk;
-
-		/// <summary>
-		/// Sets whether this element is currently processing a theme walk.
-		/// </summary>
-		internal void SetIsProcessingThemeWalk(bool value) => ((IDependencyObjectStoreProvider)this).Store.SetIsProcessingThemeWalk(value);
-
-		/// <summary>
-		/// Notifies this element and its subtree that the theme has changed.
-		/// </summary>
-		/// <remarks>Thin forwarder — the walk is a CDependencyObject mechanism
-		/// (Theming.cpp:110-157) hosted on <see cref="DependencyObjectStore"/>. Element-level
-		/// theming is enhanced-lifecycle only; this is a no-op on native targets.</remarks>
-		internal void NotifyThemeChanged(Theme theme, bool forceRefresh = false)
-		{
-			((IDependencyObjectStoreProvider)this).Store.NotifyThemeChanged(theme, forceRefresh);
-		}
 
 		public Size DesiredSize => Visibility == Visibility.Visible && HasLayoutStorage ? m_desiredSize : default;
 
@@ -632,7 +600,7 @@ namespace Microsoft.UI.Xaml
 
 		private protected void UpdateLastUsedTheme()
 		{
-			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
+			((DependencyObject)this).SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
 
 #nullable enable
@@ -855,7 +823,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			// NOTE: DataContext propagation to ContextFlyout is handled automatically by the
-			// mentor mechanism in DependencyObjectStore.Binder.OnDependencyPropertyChanged.
+			// mentor mechanism in DependencyObject.Binder.OnDependencyPropertyChanged.
 			// ContextFlyoutProperty is marked with ValueDoesNotInheritDataContext, which triggers
 			// the mentor path: the flyout gets a weak reference to this UIElement as its mentor,
 			// and DataContext is propagated at Inheritance precedence. This matches WinUI's
@@ -1633,13 +1601,31 @@ namespace Microsoft.UI.Xaml
 					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
 #endif
 					_visual.Owner = new WeakReference(this);
+
+					// Suppress painting until the first arrange gives this element a layout slot; see
+					// Visual.IsArrangePending. Set directly rather than through Visibility/IsVisible, which
+					// would raise property-changed and accessibility callbacks while the element is still
+					// being constructed. Only FrameworkElements reach ArrangeVisual (UIElement.Arrange
+					// returns early otherwise), so anything else must never be suppressed.
+					_visual.IsArrangePending = _isFrameworkElement && !IsFirstArrangeDone;
 				}
 
 				return _visual;
 			}
 		}
 
-		private protected virtual ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateContainerVisual();
+		private protected virtual ContainerVisual CreateElementVisual()
+			=> ElementVisualCompositor.CreateContainerVisual();
+
+		internal void SetElementVisualCompositor(Compositor compositor)
+		{
+			if (_visual is not null)
+			{
+				throw new InvalidOperationException("The element visual has already been created.");
+			}
+
+			_elementVisualCompositor = compositor;
+		}
 
 		internal static Action<UIElement, UIElement, int?> ExternalOnChildAdded { get; set; }
 		internal static Action<UIElement, UIElement> ExternalOnChildRemoved { get; set; }
@@ -1695,6 +1681,14 @@ namespace Microsoft.UI.Xaml
 
 			// Reset to original (invalidated) state
 			child.ResetLayoutFlags();
+
+			// ResetLayoutFlags clears FirstArrangeDone, so the child has no layout slot under this parent
+			// until it is arranged again — re-suppress it, otherwise it would keep painting at its stale
+			// slot (or at the new parent's origin) in the meantime.
+			if (child._isFrameworkElement)
+			{
+				child.Visual.IsArrangePending = true;
+			}
 
 			if (IsMeasureDirtyPathDisabled)
 			{
@@ -1852,6 +1846,11 @@ namespace Microsoft.UI.Xaml
 		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
 			LayoutSlotWithMarginsAndAlignments = finalRect;
+
+			// This element now has a layout slot, so it may paint. Cleared before the no-change check
+			// below, which would otherwise leave a first arrange that happens to match the default rect
+			// permanently suppressed.
+			Visual.IsArrangePending = false;
 
 			var oldFinalRect = _lastFinalRect;
 			var oldClippedFrame = _lastClippedFrame;

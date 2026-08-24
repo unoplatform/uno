@@ -1324,7 +1324,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				foreach (var inline in _inlines)
 				{
-					((IDependencyObjectStoreProvider)inline).Store.UpdateResourceBindings(updateReason, resourceContextProvider: this);
+					((DependencyObject)inline).UpdateResourceBindings(updateReason, resourceContextProvider: this);
 				}
 			}
 		}
@@ -1426,7 +1426,12 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(SelectionFlyoutProperty, value);
 		}
 
-		internal TextBox? OwningTextBox { get; init; }
+		/// <summary>
+		/// The text-input engine this block renders for, when it is a control's display block rather than a
+		/// standalone <see cref="TextBlock"/>. Typed as the engine, not the control, so it is set for a
+		/// <see cref="PasswordBox"/> as well — the engine drives selection and caret for both.
+		/// </summary>
+		internal TextBoxCore? OwningTextBox { get; init; }
 
 		internal bool IsSpellCheckEnabled { get; set; }
 
@@ -1503,9 +1508,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private TextAlignment? GetAdjustedTextAlignment() =>
-			(OwningTextBox as IDependencyObjectStoreProvider)?.Store
-			.GetCurrentHighestValuePrecedence(TextBox.TextAlignmentProperty) is DependencyPropertyValuePrecedences
-				.DefaultValue
+			OwningTextBox is { IsTextAlignmentExplicitlySet: false }
 				? null
 				: TextAlignment;
 
@@ -1632,6 +1635,7 @@ namespace Microsoft.UI.Xaml.Controls
 				compositionRange = (owningTextBox.CompositionUnderlineStart, owningTextBox.CompositionUnderlineLength);
 			}
 			ParsedText.Draw(
+				this,
 				session,
 				_caretPaint is { } c ? (c.index, c.brush, CaretThickness) : null,
 				highligherters,

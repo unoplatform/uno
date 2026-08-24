@@ -94,7 +94,9 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static readonly LRUCache<int, SKTypeface?> _skFontManagerDefaultMatchCharacterCache = new(1000); // most languages need much less than 1000 unique Unicode codepoints
 	private static readonly Brush _blackBrush = new SolidColorBrush(Colors.Black);
 	private static readonly SKPaint _spareDrawPaint = new() { IsStroke = false, IsAntialias = true };
-	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true };
+	private static readonly SKPaint _spareBackplatePaint = new() { IsStroke = false, IsAntialias = true };
+	private static readonly SKPaint _spareSelectionPaint = new() { IsStroke = false, IsAntialias = true };
+	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
 	private static readonly SKPaint _spareCompositionUnderlinePaint = new() { Style = SKPaintStyle.Stroke, StrokeWidth = 1, IsAntialias = true };
 	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
 	private static readonly Dictionary<string, HashSet<IFontCacheUpdateListener>> _fontFamilyToListeners = new();
@@ -813,11 +815,61 @@ internal readonly partial struct UnicodeText : IParsedText
 		return shapingRuns;
 	}
 
-	public void Draw(in Visual.PaintingSession session,
+	// Wave metrics in units of fontSize / 12: half-period and half-height of the zigzag.
+	// Sized so the wave band fits within the font's descent for typical fonts.
+	private const float SpellCheckSquigglyStepScale = 3;
+	private const float SpellCheckSquigglyAmplitudeScale = 1;
+
+	/// <summary>
+	/// Builds a single continuous spell-check zigzag from <paramref name="left"/> to <paramref name="right"/>.
+	/// The wave phase is anchored at the left edge and the trailing partial half-wave is truncated by
+	/// interpolation instead of snapping back to the midline, so the wave stays regular no matter where it ends.
+	/// </summary>
+	private static SKPath BuildSpellCheckSquigglyPath(float midY, float left, float right, float scale)
+	{
+		var step = SpellCheckSquigglyStepScale * scale;
+		var amplitude = SpellCheckSquigglyAmplitudeScale * scale;
+
+		var path = new SKPathBuilder();
+		var x = left;
+		var lastY = midY;
+		path.MoveTo(x, lastY);
+		var up = true;
+		while (x + step < right)
+		{
+			x += step;
+			lastY = midY + (up ? -amplitude : amplitude);
+			path.LineTo(x, lastY);
+			up = !up;
+		}
+
+		if (x < right)
+		{
+			var targetY = midY + (up ? -amplitude : amplitude);
+			path.LineTo(right, lastY + (targetY - lastY) * ((right - x) / step));
+		}
+
+		return path.Detach();
+	}
+
+	public void Draw(UIElement owner, in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret, // null to skip drawing a caret
 		IEnumerable<TextHighlighter> highlighters,
 		(int startIndex, int length)? compositionRange)
 	{
+		var useHighContrastAdjustment = owner.UseHighContrastAdjustment();
+		var effectiveOpacity = useHighContrastAdjustment && session.Opacity > 0
+			? 1f
+			: session.Opacity;
+		var (highContrastForeground, highContrastBackground, highContrastSelectionForeground, highContrastSelectionBackground) =
+			useHighContrastAdjustment
+				? owner.GetHighContrastTextColors()
+				: default;
+		if (useHighContrastAdjustment)
+		{
+			_spareBackplatePaint.Color = ToSkColor(highContrastBackground, effectiveOpacity);
+		}
+
 		var highlighterSlicer = new RangeSlicer<(CompositionBrush? background, Brush foreground)>(0, _text.Length);
 		foreach (var highlighter in highlighters)
 		{
@@ -835,7 +887,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		Dictionary<SKColor, Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>> _colorToFontToGlyphs = new();
-		List<(SKPath path, float strokeThickness)> spellCheckUnderlines = new();
+		Dictionary<(int wordIndex, int lineIndex, float scale), (float left, float right, float y)> spellCheckUnderlines = new();
 		List<(float x1, float x2, float y, SKColor color)> compositionUnderlines = new();
 
 		SKRect? caretRect = default;
@@ -844,6 +896,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		var wordBoundariesIndex = 0;
 		var highlighterSlices = highlighterSlicer.GetSegments();
 		var highlighterIndex = 0;
+		SKRect? pendingHighContrastBackplate = null;
 		for (var clusterIndex = 0; clusterIndex < _clustersInLogicalOrder.Count; clusterIndex++)
 		{
 			var cluster = _clustersInLogicalOrder[clusterIndex];
@@ -873,10 +926,20 @@ internal readonly partial struct UnicodeText : IParsedText
 			var alignmentOffset = GetAlignmentOffsetForLine(line);
 			var positionAcc = new SKPoint(unalignedX + alignmentOffset, y + line.baselineOffset);
 			var fontDetails = cluster.Value.fontDetails;
+			var shouldRenderCluster = !cluster.Value.containsTab
+				&& (!cluster.Value.containsOnlyWhitespace || FeatureConfiguration.TextBlock.RenderWhiteSpace);
 
-			if (!cluster.Value.containsTab && (!cluster.Value.containsOnlyWhitespace || FeatureConfiguration.TextBlock.RenderWhiteSpace))
+			if (shouldRenderCluster)
 			{
-				var color = BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground, session.Opacity);
+				var color = useHighContrastAdjustment
+					? ToSkColor(
+						highlighter.Value.background is not null
+							? highContrastSelectionForeground
+							: highContrastForeground,
+						effectiveOpacity)
+					: BrushToColor(
+						highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground,
+						effectiveOpacity);
 				if (!_colorToFontToGlyphs.TryGetValue(color, out var fontToGlyphs))
 				{
 					_colorToFontToGlyphs[color] = fontToGlyphs = new Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>();
@@ -909,36 +972,66 @@ internal readonly partial struct UnicodeText : IParsedText
 				MathF.Floor(y),
 				MathF.Floor(unalignedX + alignmentOffset + cluster.Value.width) + 1,
 				MathF.Floor(y + line.lineHeight) + 1);
-			highlighter.Value.background?.Paint(session.Canvas, session.Opacity, backgroundRect);
+			if (useHighContrastAdjustment
+				&& shouldRenderCluster
+				&& highlighter.Value.background is null)
+			{
+				if (pendingHighContrastBackplate is { } pending
+					&& CanMergeHighContrastBackplates(pending, backgroundRect))
+				{
+					pendingHighContrastBackplate = new SKRect(
+						Math.Min(pending.Left, backgroundRect.Left),
+						pending.Top,
+						Math.Max(pending.Right, backgroundRect.Right),
+						pending.Bottom);
+				}
+				else
+				{
+					FlushHighContrastBackplate(session.Canvas, ref pendingHighContrastBackplate);
+					pendingHighContrastBackplate = backgroundRect;
+				}
+			}
+			else if (useHighContrastAdjustment)
+			{
+				FlushHighContrastBackplate(session.Canvas, ref pendingHighContrastBackplate);
+			}
+
+			if (highlighter.Value.background is { } selectionBackground)
+			{
+				if (useHighContrastAdjustment)
+				{
+					_spareSelectionPaint.Color = ToSkColor(highContrastSelectionBackground, effectiveOpacity);
+					session.Canvas.DrawRect(backgroundRect, _spareSelectionPaint);
+				}
+				else
+				{
+					selectionBackground.Paint(session.Canvas, effectiveOpacity, backgroundRect);
+				}
+			}
 
 			if (_corrections?[wordBoundariesIndex] is { } correction)
 			{
 				var correctionIndexBase = wordBoundariesIndex == 0 ? 0 : _wordBoundaries[wordBoundariesIndex - 1];
 				if (correctionIndexBase + correction.correctionStart <= cluster.Value.start && correctionIndexBase + correction.correctionEnd >= cluster.Value.end)
 				{
-					var fontSize = fontDetails.SKFontSize;
-					var scale = fontSize / 12.0f;
-					var step = 4 * scale;
-					var amplitude = 2 * scale;
-					var yOffset = 2 * scale;
-
-					var p = new SKPathBuilder();
-					var underlineY = y + line.baselineOffset + yOffset;
+					// Only widen this word's underline span here; one continuous squiggly per word is
+					// built and drawn after the cluster loop. Building a small zigzag per cluster
+					// restarts the wave phase and snaps back to the midline at every cluster boundary,
+					// which renders as an irregular scribble. A word wrapped across lines (or switching
+					// fonts via fallback) gets one wave per (line, font) span.
+					var scale = fontDetails.SKFontSize / 12.0f;
+					// The text visual clips at y + lineHeight, so the whole wave band (midline ± amplitude
+					// plus the stroke) must fit above the line bottom or its lower vertices get cut off and
+					// the wave renders as disconnected peaks. Place it just below the baseline and clamp.
+					var amplitude = SpellCheckSquigglyAmplitudeScale * scale;
+					var underlineY = y + line.baselineOffset + 2.5f * scale;
+					underlineY = Math.Min(underlineY, y + line.lineHeight - (amplitude + scale));
 					var underlineLeftX = unalignedX + alignmentOffset;
 					var underlineRightX = underlineLeftX + cluster.Value.width;
-					p.MoveTo(underlineLeftX, underlineY);
-					var x = underlineLeftX;
-					var up = true;
-					while (x + step < underlineRightX)
-					{
-						x += step;
-						var yWave = underlineY + (up ? -amplitude : amplitude);
-						p.LineTo(x, yWave);
-						up = !up;
-					}
-					p.LineTo(underlineRightX, underlineY);
-
-					spellCheckUnderlines.Add((p.Detach(), scale));
+					spellCheckUnderlines[(wordBoundariesIndex, lineIndex, scale)] =
+						spellCheckUnderlines.TryGetValue((wordBoundariesIndex, lineIndex, scale), out var span)
+							? (Math.Min(span.left, underlineLeftX), Math.Max(span.right, underlineRightX), underlineY)
+							: (underlineLeftX, underlineRightX, underlineY);
 				}
 			}
 
@@ -951,7 +1044,13 @@ internal readonly partial struct UnicodeText : IParsedText
 					var underlineY = y + line.baselineOffset + fontDetails.SKFontSize / 6.0f;
 					var underlineLeftX = unalignedX + alignmentOffset;
 					var underlineRightX = underlineLeftX + cluster.Value.width;
-					var foreColor = BrushToColor(_runBreaks[runBreakIndex].foreground, session.Opacity);
+					var foreColor = useHighContrastAdjustment
+						? ToSkColor(
+							highlighter.Value.background is not null
+								? highContrastSelectionForeground
+								: highContrastForeground,
+							effectiveOpacity)
+						: BrushToColor(_runBreaks[runBreakIndex].foreground, effectiveOpacity);
 					compositionUnderlines.Add((underlineLeftX, underlineRightX, underlineY, foreColor));
 				}
 			}
@@ -973,6 +1072,8 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
+		FlushHighContrastBackplate(session.Canvas, ref pendingHighContrastBackplate);
+
 		// This would probably be more efficient with SKCanvas::DrawGlyphs, but it isn't exposed in SkiaSharp
 		using var textBlobBuilder = new SKTextBlobBuilder();
 		foreach (var (color, fontToGlyphs) in _colorToFontToGlyphs)
@@ -985,9 +1086,11 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		foreach (var (path, strokeThickness) in spellCheckUnderlines)
+		foreach (var ((_, _, scale), (left, right, midY)) in spellCheckUnderlines)
 		{
-			_spareSpellCheckPaint.StrokeWidth = strokeThickness;
+			using var path = BuildSpellCheckSquigglyPath(midY, left, right, scale);
+			_spareSpellCheckPaint.Color = new SKColor(SKColors.Red.Red, SKColors.Red.Green, SKColors.Red.Blue, (byte)(255 * effectiveOpacity));
+			_spareSpellCheckPaint.StrokeWidth = scale;
 			session.Canvas.DrawPath(path, _spareSpellCheckPaint);
 		}
 
@@ -1008,7 +1111,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		if (caretRect is not null)
 		{
-			caret!.Value.brush.Paint(session.Canvas, session.Opacity, caretRect.Value);
+			caret!.Value.brush.Paint(session.Canvas, effectiveOpacity, caretRect.Value);
 		}
 	}
 
@@ -1056,6 +1159,28 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		return color;
+	}
+
+	private static SKColor ToSkColor(global::Windows.UI.Color color, float opacity) =>
+		new(
+			color.R,
+			color.G,
+			color.B,
+			(byte)(color.A * opacity));
+
+	private static bool CanMergeHighContrastBackplates(SKRect current, SKRect next) =>
+		Math.Abs(current.Top - next.Top) <= 1f
+		&& Math.Abs(current.Bottom - next.Bottom) <= 1f
+		&& next.Left <= current.Right + 1
+		&& next.Right >= current.Left - 1;
+
+	private static void FlushHighContrastBackplate(SKCanvas canvas, ref SKRect? pendingBackplate)
+	{
+		if (pendingBackplate is { } backplate)
+		{
+			canvas.DrawRect(backplate, _spareBackplatePaint);
+			pendingBackplate = null;
+		}
 	}
 
 

@@ -8,12 +8,6 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Lottie" ProjectSystem="true" />
 	</ItemGroup>
 
-	<!-- This file is only imported for Uno Platform targets (not WinAppSDK), where Skia is the
-	     only renderer, so SkiaSharp.Views is always included. -->
-	<ItemGroup>
-		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.Uno.WinUI" ProjectSystem="true"/>
-	</ItemGroup>
-
 	<ItemGroup Condition="$(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true'">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Svg" ProjectSystem="true" />
 	</ItemGroup>

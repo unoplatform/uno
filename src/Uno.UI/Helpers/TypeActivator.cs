@@ -11,7 +11,7 @@ namespace Uno.UI.Helpers;
 /// </summary>
 /// <remarks>
 /// Kept out of <see cref="TypeMappings"/> on purpose: that file is linked into
-/// <c>Uno.UI.Toolkit.Windows</c>, where <c>Uno.UI.DataBinding</c> does not exist.
+/// <c>Uno.UI.Extras.Windows</c>, where <c>Uno.UI.DataBinding</c> does not exist.
 /// </remarks>
 internal static class TypeActivator
 {
@@ -20,7 +20,9 @@ internal static class TypeActivator
 	{
 		var replacementType = type.GetReplacementType();
 
-		if (Uno.UI.DataBinding.BindingPropertyHelper.BindableMetadataProvider?.GetBindableTypeByType(replacementType)?.CreateInstance() is { } factory)
+		// Validated lookup: a full-name match from another AssemblyLoadContext would otherwise
+		// instantiate the other context's identically-named type.
+		if (Uno.UI.DataBinding.BindingPropertyHelper.GetValidatedBindableType(replacementType)?.CreateInstance() is { } factory)
 		{
 			return factory();
 		}

@@ -34,8 +34,6 @@
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Reference.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Skia.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Wasm.csproj",
-      "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.csproj",
-      "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.csproj",
       "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",
       "Uno.UI.RemoteControl.Messaging\\Uno.UI.RemoteControl.Messaging.csproj",
@@ -53,13 +51,13 @@
       "Uno.UI.Runtime.Skia.Win32\\Uno.UI.Runtime.Skia.Win32.csproj",
       "Uno.UI.Runtime.Skia.X11\\Uno.UI.Runtime.Skia.X11.csproj",
       "Uno.UI.Runtime.Skia\\Uno.UI.Runtime.Skia.csproj",
-      "Uno.UI.Toolkit\\Uno.UI.Toolkit.Skia.csproj",
+      "Uno.UI.Extras\\Uno.UI.Extras.Skia.csproj",
       "Uno.UI.XamlHost\\Uno.UI.XamlHost.csproj",
       "Uno.UI\\Uno.UI.csproj",
-      "Uno.UWP\\Uno.netcoremobile.csproj",
-      "Uno.UWP\\Uno.Reference.csproj",
-      "Uno.UWP\\Uno.Skia.csproj",
-      "Uno.UWP\\Uno.Wasm.csproj"
+      "Uno.WinRT\\Uno.WinRT.netcoremobile.csproj",
+      "Uno.WinRT\\Uno.WinRT.Reference.csproj",
+      "Uno.WinRT\\Uno.WinRT.Skia.csproj",
+      "Uno.WinRT\\Uno.WinRT.Wasm.csproj"
     ]
   }
 }

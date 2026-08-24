@@ -9,7 +9,7 @@ internal interface IInvisibleTextBoxView
 {
 	string? Text { get; }
 
-	bool IsCompatible(TextBox textBox);
+	bool IsCompatible(TextBoxCore core);
 
 	bool BecomeFirstResponder();
 

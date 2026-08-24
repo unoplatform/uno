@@ -446,12 +446,12 @@ Auto-detect and port these associated types from the same source directory:
 1. Check if the control has a XAML template/style in the WinUI source (typically in a `*_themeresources.xaml` or similar file in the control's source directory).
 2. Check if an equivalent style already exists in the Uno repo under `src/Uno.UI.FluentTheme/` (search for the control name in `.xaml` files).
 3. If the style does not exist or differs significantly:
-   - For **new controls**: Create the style in `Uno.UI.FluentTheme.v2` (search the repo for the exact directory structure used by similar controls).
+   - For **new controls**: Create the style under `src/Uno.UI.FluentTheme/Resources/` (search the repo for the exact `Priority*` folder used by similar controls). These files are merge inputs, not pages — they are batched into `themeresources.xaml` by `FluentMerge.targets`.
    - For **existing controls with updates**: Update the existing style file.
 
 ### Phase 6: Update Generated Files
 
-1. Find the Generated stub files for the ported types in `src/Uno.UI/Generated/` (and `src/Uno.UWP/Generated/` if applicable).
+1. Find the Generated stub files for the ported types in `src/Uno.UI/Generated/` (and `src/Uno.WinRT/Generated/` if applicable).
 2. For each newly implemented member:
    - Remove the member from the `[NotImplemented]` attribute's platform list, or remove the attribute entirely if all platforms are now implemented.
    - Adjust `#if` directives to reflect which platforms have the implementation.

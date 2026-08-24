@@ -7,6 +7,7 @@ namespace Microsoft.UI.Composition;
 public partial class ExpressionAnimation : CompositionAnimation
 {
 	private AnimationExpressionSyntax? _parsedExpression;
+	private string? _parsedExpressionText;
 	private string _expression = string.Empty;
 
 	internal ExpressionAnimation(Compositor compositor) : base(compositor)
@@ -39,8 +40,15 @@ public partial class ExpressionAnimation : CompositionAnimation
 			throw new InvalidOperationException("Property 'Expression' should not be empty when starting an ExpressionAnimation");
 		}
 
-		// TODO: Check what to do if this is a second Start call and we already have non-null _parsedExpression;
-		_parsedExpression = new ExpressionAnimationParser(Expression).Parse();
+		// Reuse the parse tree when Start runs again with an unchanged expression: re-parsing would
+		// re-register the reference-parameter contexts (Evaluate calls AddContext once per tree) and
+		// leak the previous registrations.
+		if (_parsedExpression is null || !string.Equals(_parsedExpressionText, Expression, StringComparison.Ordinal))
+		{
+			_parsedExpression?.Dispose();
+			_parsedExpression = new ExpressionAnimationParser(Expression).Parse();
+			_parsedExpressionText = Expression;
+		}
 
 		return _parsedExpression.Evaluate(this);
 	}
@@ -48,11 +56,26 @@ public partial class ExpressionAnimation : CompositionAnimation
 	internal override object? Evaluate()
 		=> _parsedExpression?.Evaluate(this);
 
+	// Snapshot the expression + reference parameters so each target this animation is started on
+	// evaluates independently, even if the source instance is later reconfigured for another target.
+	internal override CompositionAnimation CloneAnimation()
+	{
+		var clone = new ExpressionAnimation(Compositor) { Expression = Expression };
+		CopyParametersTo(clone);
+		return clone;
+	}
+
 	internal override void Stop()
 	{
 		base.Stop();
 
-		_parsedExpression?.Dispose();
-		_parsedExpression = null;
+		// Disposing the parse tree removes its reference-parameter contexts, so only tear it down
+		// once this instance is no longer started on any target.
+		if (StartedObjectCount == 0)
+		{
+			_parsedExpression?.Dispose();
+			_parsedExpression = null;
+			_parsedExpressionText = null;
+		}
 	}
 }

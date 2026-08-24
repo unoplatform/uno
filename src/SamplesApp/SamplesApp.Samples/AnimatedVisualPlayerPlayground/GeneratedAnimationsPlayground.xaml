@@ -1,0 +1,122 @@
+﻿<Page
+    x:Class="AnimatedVisualPlayerPlayground.GeneratedAnimationsPlayground"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid
+        Padding="16"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+        ColumnSpacing="24">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <!--  Stage  -->
+        <Border
+            Grid.Column="0"
+            MinWidth="240"
+            MinHeight="240"
+            Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+            CornerRadius="8">
+            <AnimatedVisualPlayer
+                x:Name="player"
+                Margin="12"
+                AutoPlay="True"
+                Stretch="Uniform" />
+        </Border>
+
+        <!--  Controls  -->
+        <StackPanel
+            Grid.Column="1"
+            Width="300"
+            Spacing="10">
+            <TextBlock
+                FontWeight="SemiBold"
+                Style="{StaticResource SubtitleTextBlockStyle}"
+                Text="Generated animations playground" />
+            <TextBlock
+                Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                Text="LottieGen (WinUIVersion 3.0) output rendered by AnimatedVisualPlayer via composition."
+                TextWrapping="Wrap" />
+
+            <TextBlock Margin="0,8,0,0" Text="Animation" />
+            <ComboBox x:Name="sourcePicker" HorizontalAlignment="Stretch" />
+
+            <TextBlock Margin="0,8,0,0" Text="Stretch" />
+            <ComboBox x:Name="stretchPicker" HorizontalAlignment="Stretch" />
+
+            <ToggleSwitch
+                x:Name="autoPlayToggle"
+                Header="AutoPlay"
+                IsOn="True" />
+
+            <TextBlock x:Name="playbackRateLabel" Text="Playback rate: 1.00" />
+            <Slider
+                x:Name="playbackRateSlider"
+                Maximum="3"
+                Minimum="-3"
+                StepFrequency="0.25"
+                Value="1" />
+
+            <Grid ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock x:Name="fromLabel" Text="From: 0.00" />
+                    <Slider
+                        x:Name="fromSlider"
+                        Maximum="1"
+                        Minimum="0"
+                        StepFrequency="0.01"
+                        Value="0" />
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <TextBlock x:Name="toLabel" Text="To: 1.00" />
+                    <Slider
+                        x:Name="toSlider"
+                        Maximum="1"
+                        Minimum="0"
+                        StepFrequency="0.01"
+                        Value="1" />
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Orientation="Horizontal" Spacing="6">
+                <Button x:Name="playButton" Content="Play" />
+                <Button x:Name="loopButton" Content="Loop" />
+                <Button x:Name="pauseButton" Content="Pause" />
+                <Button x:Name="resumeButton" Content="Resume" />
+                <Button x:Name="stopButton" Content="Stop" />
+            </StackPanel>
+
+            <TextBlock
+                x:Name="progressLabel"
+                Margin="0,8,0,0"
+                Text="Progress: 0.00" />
+            <Slider
+                x:Name="progressSlider"
+                Maximum="1"
+                Minimum="0"
+                StepFrequency="0.01"
+                Value="0" />
+
+            <Border
+                Margin="0,8,0,0"
+                Padding="10"
+                Background="{ThemeResource SystemControlBackgroundListLowBrush}"
+                CornerRadius="4">
+                <StackPanel Spacing="2">
+                    <TextBlock x:Name="loadedText" Text="IsAnimatedVisualLoaded: -" />
+                    <TextBlock x:Name="playingText" Text="IsPlaying: -" />
+                    <TextBlock x:Name="durationText" Text="Duration: -" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</Page>

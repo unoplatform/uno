@@ -58,8 +58,7 @@ The `net*-maccatalyst` target framework is no longer supported. The `Uno.Sdk` no
 produces a Mac Catalyst head: `maccatalyst` is not a recognized `TargetFramework`, the
 `Platforms/MacCatalyst/` folder is no longer picked up, and the `MacCatalystProjectFolder`
 property is gone. The `__MACCATALYST__` conditional symbol is never defined, and the
-`.iOS.cs`, `.UIKit.cs`, and `.Apple.cs` file suffixes now apply only to `net10.0-ios` and
-`net10.0-tvos`.
+`.iOS.cs` and `.UIKit.cs` file suffixes now apply only to `net10.0-ios` and `net10.0-tvos`.
 
 macOS remains a fully supported target through the **`net10.0-desktop`** head, which runs
 on macOS with Skia rendering. To migrate:
@@ -80,15 +79,118 @@ on macOS with Skia rendering. To migrate:
 | `Uno.WinUI.WebAssembly` package removed (and the older `Uno.WinUI.Runtime.WebAssembly`) | Use `Uno.WinUI.Runtime.Skia.WebAssembly.Browser`. The UI renders to a canvas; there is no DOM tree. With the `Uno.SDK`, the Skia browser head is referenced implicitly — there is nothing to add. |
 | `Uno.WinUI.Skia.X11`, `Uno.WinUI.Skia.MacOS`, and `Uno.WinUI.Skia.Linux.FrameBuffer` bootstrapper packages removed | These were empty meta-packages that only redirected to the real head. With the `Uno.SDK`, remove the reference — the matching `Uno.WinUI.Runtime.Skia.*` head is referenced implicitly for executable heads. For a hand-rolled (non-`Uno.SDK`) head, replace it with the corresponding `Uno.WinUI.Runtime.Skia.<variant>` package. |
 | `Uno.UI.BindingHelper.Android` assembly removed | Remove the reference; Skia-on-Android needs no Java/JNI binding. |
+| `Uno.UI.FluentTheme.v1` assembly removed | The Fluent Design **V1** styles were deleted several releases ago and the assembly has shipped empty since. `Uno.UI.FluentTheme` still ships and is what `XamlControlsResources` has always loaded, so there is nothing to change unless you referenced the V1 types directly — see *Fluent Design resource-version types* under **Public API removed**. |
+| `Uno.UI.FluentTheme.v2` assembly merged into `Uno.UI.FluentTheme` | With V1 gone there is a single set of Fluent styles, so the two assemblies were collapsed into one. All the styles ship in `Uno.UI.FluentTheme`; both assemblies come from the `Uno.WinUI` package, so no reference changes. Only a direct reference to the `Uno.UI.FluentTheme.v2` assembly, or to `XamlControlsResourcesV2`, needs updating. |
 | `Uno.UniversalImageLoader` no longer injected (Android) | Skia handles image loading internally. If you initialized it manually, remove the `ConfigureUniversalImageLoader();` call. |
 | `Uno.UI.Maps` AddIn removed | The native Google Maps control has no core Skia equivalent — use a third-party/Skia map or custom rendering. |
 | `Uno.WinUI` UI assemblies for `net*-android/ios/tvos` are now the Skia binaries | Same TFM string, but binary-incompatible with previously native-built consumers. Recompile all libraries against 7.0 and remove native bootstrap. |
 | `Xamarin.AndroidX.*` transitive deps removed (AppCompat, RecyclerView, Activity, Browser, SwipeRefreshLayout) | If *your own* code uses AndroidX, add explicit `PackageReference`s. |
+| `SkiaSharp.Views.Uno.WinUI` no longer referenced implicitly | The `Uno.Sdk` used to add it to every Uno Platform target, and to WebAssembly heads using the `lottie`, `svg`, `material`, `cupertino`, or `simpletheme` features. Nothing in Uno Platform needs it anymore — SVG draws through `Uno.WinUI.Graphics2DSK` and Lottie through `SkiaSharp.Skottie`. If *your own* code uses `SKXamlCanvas` or `SKSwapChainPanel`, switch to [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), which is hardware-accelerated and referenced implicitly; otherwise add an explicit `PackageReference`. |
+| Windows App SDK default moved from 1.7 to 2.3.1 | Windows heads now build against Windows App SDK 2.x, so packaged apps take a framework dependency on `Microsoft.WindowsAppRuntime.2` and end users need the matching [Windows App Runtime](https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads) — 2.3.1 or later from the **Stable release** section — installed. To stay on 1.x, set `<WinAppSdkVersion>` (and `<WinAppSdkBuildToolsVersion>`) explicitly in your Windows head. |
+| `Uno.UI.Toolkit.dll` renamed to `Uno.UI.Extras.dll` | The old name was routinely confused with the separate Uno Toolkit (`Uno.Toolkit.UI`). Update `using Uno.UI.Toolkit;` to `using Uno.UI.Extras;` and `xmlns:toolkit="using:Uno.UI.Toolkit"` to `using:Uno.UI.Extras`. Types keep their names. `Uno.Diagnostics.UI`, `Uno.UI.Markup`, `Uno.Helpers` and `Uno.UI.Maps` are unaffected — only the `Uno.UI.Toolkit*` namespaces moved. |
+
+> [!IMPORTANT]
+> This is a hard rename — there is no type-forwarder and no `xmlns` alias. `Uno.UI.Toolkit.dll`
+> and `Uno.UI.Extras.dll` are *different assembly identities*, so a library compiled against
+> Uno 6.x can no longer bind: its references into `Uno.UI.Toolkit` resolve to nothing and the
+> build fails with `CS0012`. Recompile every dependent library against 7.0 rather than mixing
+> majors.
+
+<!-- Separates the two alerts: one alert per blockquote, without an MD028 blank-line-only gap. -->
 
 > [!NOTE]
 > Referencing `Uno.WinUI.WebAssembly` (or the older `Uno.WinUI.Runtime.WebAssembly`)
 > alongside the Skia browser head raises the `UNOB0017` build diagnostic. Removing the
 > explicit reference resolves it.
+
+### `Uno.UI.Toolkit` is renamed to `Uno.UI.Extras`
+
+The `Uno.UI.Toolkit` assembly — which ships inside the `Uno.WinUI` package — was routinely
+mistaken for the separate [Uno Toolkit](xref:Toolkit.GettingStarted) product
+(`Uno.Toolkit.UI`); the two names are a word-order swap apart. It is now
+`Uno.UI.Extras`. Type names and behavior are unchanged, and there is **no** forwarding
+shim: the old namespaces stop resolving.
+
+| Before | After |
+|---|---|
+| `using Uno.UI.Toolkit;` | `using Uno.UI.Extras;` |
+| `using Uno.UI.Toolkit.Extensions;` | `using Uno.UI.Extras.Extensions;` |
+| `using Uno.UI.Toolkit.DevTools.Input;` (and `.DevTools.Xaml`) | `using Uno.UI.Extras.DevTools.Input;` |
+| `xmlns:toolkit="using:Uno.UI.Toolkit"` | `xmlns:extras="using:Uno.UI.Extras"` |
+
+The other namespaces carried by that assembly keep their names, so code using
+`DiagnosticsOverlay` (`Uno.Diagnostics.UI`), `FromJsonExtension` (`Uno.UI.Markup`) or
+`ColorExtensions` / `ImageHelper` (`Uno.Helpers`) needs no change.
+
+### Platform targeting in multi-targeted libraries
+
+A library that multi-targets `net10.0-ios`, `net10.0-android`, or `net10.0-tvos` alongside a plain `net10.0` now
+keeps its platform-specific asset on the matching application head. In 6.x those assets were replaced by the
+library's `netX.0` asset, so `#if __IOS__` and `#if __ANDROID__` blocks inside a library never ran and a `netX.0`
+target framework was mandatory. Both are no longer true: the `net10.0-ios` assembly is what an iOS head compiles
+against and deploys.
+
+Three related mechanisms now follow the target framework rather than an internal runtime identifier, for class
+libraries and application heads alike:
+
+| Mechanism | 6.x | 7.0 |
+|---|---|---|
+| `android:` / `ios:` / `wasm:` XAML prefixes | never applied — every target rendered with Skia, which won | apply on `net*-android` / `net*-ios` / `net*-browserwasm` |
+| `tvos:` and `desktop:` XAML prefixes | did not exist | apply on `net*-tvos` / `net*-desktop` |
+| `winappsdk:` XAML prefix | spelled `win:` | `net*-windows10.x`; `win:` kept as a synonym |
+| `*.skia.cs`, `*.crossruntime.cs` | compiled only for `net*-desktop` | compiled for every target framework except the WinAppSDK one |
+| `__DESKTOP__` | application heads only | any `net*-desktop` project |
+| `__WASM__` | application heads, and libraries referencing the WebAssembly runtime package | any `net*-browserwasm` project |
+
+What this means for an upgrade:
+
+- Re-test `#if`-guarded code and conditional XAML inside multi-targeted libraries. Code that was written under the
+  assumption that it was dead on mobile now executes. In particular `not_android:` and `not_ios:` no longer apply
+  on Android and iOS.
+- Rename a `*.skia.cs` file that was really desktop-only to `*.desktop.cs`. It now compiles on every Uno target.
+- Recompile every multi-targeted library against 7.0. Its `net*-ios`/`net*-android` assets are now deployed rather
+  than discarded, so a stale asset built against the 6.x binaries fails at run time instead of being silently
+  replaced. The build reports [UNOB0020](xref:Build.Solution.error-codes) when it can detect this.
+- Nothing to do if your libraries already ship a `netX.0` asset. It is still the asset used by the
+  `net10.0-desktop` and `net10.0-browserwasm` heads, and workarounds built for the 6.x behavior keep working.
+
+> [!NOTE]
+> `*.skia.cs` means "compiled by Uno Platform rather than by WinUI". It does not name a drawing backend: `Uno.UI`
+> is compiled once and resolves its backend at run time.
+
+#### Removed XAML prefixes
+
+Every conditional prefix is now named after a target framework, so the prefixes that named a renderer or a
+long-gone distinction are removed. Markup using them no longer resolves and must be rewritten:
+
+| Removed prefix | Replacement |
+|---|---|
+| `skia:`, `netstdref:` | `not_winappsdk:` |
+| `not_skia:`, `not_netstdref:` | `winappsdk:` |
+| `androidskia:`, `iosskia:`, `tvosskia:`, `wasmskia:` | `android:`, `ios:`, `tvos:`, `wasm:` |
+| `macos:` | `desktop:` |
+| `not_mux:` | drop the attribute — it dates from UWP support and never applied |
+| `xamarin:`, `legacy:` | drop the prefix |
+
+#### Removed file suffixes
+
+| Removed suffix | Replacement |
+|---|---|
+| `*.Apple.cs` | `*.UIKit.cs` — the rule was always identical |
+| `*.reference.cs` | delete the file, or fold it into `*.crossruntime.cs`. It was gated on a build flavor an application never selected, so it compiled nowhere |
+| `*.iOSmacOS.cs` | `*.iOS.cs`. It named the native macOS target, removed in 7.0 |
+
+#### Removed preprocessor symbols
+
+`HAS_UNO_SKIA_WIN32`, `HAS_UNO_SKIA_X11`, `HAS_UNO_SKIA_MACOS`, `HAS_UNO_SKIA_LINUX_FB`,
+`HAS_UNO_SKIA_ANDROID`, `HAS_UNO_SKIA_APPLE_UIKIT`, `HAS_UNO_SKIA_HEADLESS`,
+`HAS_UNO_SKIA_WEBASSEMBLY_BROWSER` and their `__UNO_SKIA_*__` counterparts are gone
+([#17684](https://github.com/unoplatform/uno/issues/17684)).
+
+They read as a compile-time host discriminator but could never be one: the SDK references every desktop host
+package together, so all of them were defined at once in a `netX.0-desktop` head. Use
+`OperatingSystem.IsWindows()` / `IsLinux()` / `IsMacOS()`, which is the only check that can be correct for a
+target framework that runs on all three. `HAS_UNO_SKIA` and `__UNO_SKIA__` are unaffected.
 
 ### Public API removed
 
@@ -115,8 +217,8 @@ on macOS with Skia rendering. To migrate:
   `MenuFlyoutItemExtensions.IsDestructive` (red "destructive" item text) and
   `MenuFlyoutExtensions.CancelTextIosOverride` (custom cancel-button caption). Remove the
   attributes; style the `MenuFlyoutItem` directly for a destructive look.
-  `UICommandExtensions.SetDestructive` / `UICommand.IsDestructive` are **not** removed —
-  those still drive the native iOS `MessageDialog`.
+  `UICommand.IsDestructive` is **not** removed — it still drives the native iOS
+  `MessageDialog` — but its `Uno.UI.Extras` wrapper is (see below); set the property directly.
 - **Native default styles:** the whole `Generic.Native.xaml` dictionary is gone, so the
   `NativeDefaultButton`, `NativeDefaultCheckBox`, `NativeDefaultCommandBar`,
   `NativeDefaultAppBarButton`, `NativeDefaultFrame`, `NativeDefaultPivot`,
@@ -136,6 +238,17 @@ on macOS with Skia rendering. To migrate:
   `Style.RegisterDefaultStyleForType(Type, IXamlResourceDictionaryProvider, bool)` also loses its
   `isNative` parameter; it is `[EditorBrowsable(Never)]` and normally only called from
   XAML-generated code, so rebuilding regenerates the correct call.
+- **`Uno.UI.Extras` members that only ever ran on native targets:**
+  `Uno.UI.ViewHelper` (the `Uno.UI.Extras` one, whose only member `Architecture` always
+  returned `null` — the unrelated `Uno.UI.ViewHelper` in `Uno.UI` stays) and
+  `UICommandExtensions.SetDestructive`. To flag a destructive `UICommand`, set
+  `UICommand.IsDestructive` directly from an iOS-targeted head.
+
+  ```diff
+  - uic.SetDestructive(true);
+  + uic.IsDestructive = true;
+  ```
+
 - **Composition:** `Uno.CompositionConfiguration.Options.UseCompositorThread` (the Android
   RenderNode compositor thread). Remove the flag; Skia composition needs no dedicated
   native render thread.
@@ -159,6 +272,30 @@ on macOS with Skia rendering. To migrate:
   from `System.Runtime.InteropServices.JavaScript` — the recommended, source-generated path
   (thread-safe, CSP-compliant, no `eval`). The string-based `WebAssemblyRuntime.InvokeJS(string)`
   is *not* removed, but it is a legacy eval-based API and is not recommended for new code.
+- **Fluent Design resource-version types:** `Microsoft.UI.Xaml.Controls.XamlControlsResourcesV1`,
+  `Microsoft.UI.Xaml.Controls.XamlControlsResourcesV2`, the `ControlsResourcesVersion` enum, and
+  the `ControlsResourcesVersion` member on **both** `XamlControlsResources` (a dependency property)
+  and `XamlControlsResourcesV2` (an inert `object` property that was never read). None of this
+  existed in Windows App SDK — `XamlControlsResources` is the only Fluent resources type there, and
+  it now matches. Use it everywhere:
+
+  ```diff
+  - <XamlControlsResourcesV2 />
+  + <XamlControlsResources />
+  ```
+
+  The V1 styles were deleted several releases ago and `XamlControlsResources` has loaded V2
+  regardless of the property ever since, so none of this changes visual behavior. Drop any
+  `ControlsResourcesVersion` assignment, in code or in XAML — on either type, a leftover attribute
+  now fails the XAML build:
+
+  ```diff
+  - <XamlControlsResources ControlsResourcesVersion="Version2" />
+  + <XamlControlsResources />
+  ```
+
+  The `Uno.UI.FluentTheme.v1` assembly is removed along with these types, and
+  `Uno.UI.FluentTheme.v2` is merged into `Uno.UI.FluentTheme` — see **Packages** above.
 
 ### `FeatureConfiguration` flags removed
 
@@ -249,9 +386,9 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
 
 - **`MediaPlayerPresenter`** now derives directly from **`FrameworkElement`** (matching
   WinUI) instead of `Border`, removing the extra `Border` level. The `Border`-only surface
-  it used to expose — `Child`, `BorderBrush`, `BorderThickness`, `CornerRadius`, `Padding`,
-  `BackgroundSizing`, `ChildTransitions` — is gone, and `is Border` is no longer `true` for
-  a presenter. The video surface is hosted internally, so playback and `Stretch` are
+  it used to expose — `Child`, `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`,
+  `Padding`, `BackgroundSizing`, `ChildTransitions` — is gone, and `is Border` is no longer
+  `true` for a presenter. The video surface is hosted internally, so playback and `Stretch` are
   unchanged. `MediaPlayerElement` sets its own `Background` (black) on the template root, so
   letterbox bars stay black.
 - **`ImageBrush`** now derives from a real **`TileBrush`** (`Brush → TileBrush →
@@ -269,6 +406,30 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
   `RepeatBehavior`, `FillBehavior`) are unchanged. Set only `TargetName` (as the built-in
   styles do); the fade always animates `Opacity` to its fixed target (1 for fade-in, 0 for
   fade-out).
+- **`PasswordBox`** now derives directly from **`Control`** (matching WinUI) instead of
+  `TextBox`, and `is TextBox` is no longer `true` for a password box. The `TextBox`-only
+  surface it used to inherit is gone — `Text`, `TextChanged`, `TextChanging`,
+  `BeforeTextChanging`, `SelectedText`, `SelectionStart`, `SelectionLength`, `IsReadOnly`,
+  `AcceptsReturn`, `TextWrapping`, `TextAlignment`, `IsSpellCheckEnabled`,
+  `CanUndo`/`CanRedo`, `Undo()`/`Redo()`,
+  `CopySelectionToClipboard()`/`CutSelectionToClipboard()`, and `ProofingMenuFlyout`. None of
+  these exists on WinUI's `PasswordBox`, so code written against WinUI is unaffected. Use
+  **`Password`** to read or write the value and **`PasswordChanged`** in place of
+  `TextChanged`; the password is no longer reachable as text. Everything WinUI does expose —
+  `PasswordChar`, `PasswordRevealMode`, `Header`, `HeaderTemplate`, `PlaceholderText`,
+  `Description`, `InputScope`, `SelectionHighlightColor`, `SelectionFlyout`,
+  `CanPasteClipboardContent`, `ContextMenuOpening`, `Paste`, `SelectAll()`,
+  `PasteFromClipboard()` — behaves as before; it is declared on `PasswordBox` itself now
+  rather than inherited. `MaxLength` now limits `Password` directly: it previously applied
+  only through the inherited `Text` mirror, so an over-long value assigned to `Password` was
+  accepted while the mirror rejected it.
+
+  **`BeforeTextChanging` has no replacement.** `PasswordChanging` remains unimplemented, and
+  its `PasswordBoxPasswordChangingEventArgs` carries no `Cancel` member, so it would not
+  substitute even once implemented — nothing can veto password input. Bound the length with
+  `MaxLength` and validate after the fact in `PasswordChanged`. Dropping the inherited
+  `IsSpellCheckEnabled` also stops a password box spell-checking its own masked text, which
+  removes the squiggly underline it used to draw.
 
 ### XAML changes
 
@@ -341,6 +502,19 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
     asset path and so carries the assembly prefix a library's own svg assets need; the `ms-resource`
     form resolves only against the application root.
 
+- **The Fluent theme-resources dictionary is now `themeresources.xaml`**, matching WinUI. Its
+  `ms-appx:` URI changes accordingly, so a dictionary that merged the old path by hand no longer
+  resolves. Merging `XamlControlsResources` — the supported way to load the Fluent styles — is
+  unaffected, since it resolves the URI internally:
+
+  ```diff
+  - <ResourceDictionary Source="ms-appx:///Microsoft.UI.Xaml/Themes/themeresources_v2.xaml" />
+  + <ResourceDictionary Source="ms-appx:///Microsoft.UI.Xaml/Themes/themeresources.xaml" />
+  ```
+
+  The `_v2` suffix was an Uno-only artifact of the Fluent V1/V2 split; with V1 removed there is one
+  theme-resources dictionary, under the name WinUI itself uses.
+
 ### Android head uses the host builder
 
 The Android head now builds its host through `UnoPlatformHostBuilder`, like every other target.
@@ -398,15 +572,18 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 2. Retarget any `net*-maccatalyst` head to `net10.0-desktop` and delete
    `Platforms/MacCatalyst/`.
 3. Recompile **every** Uno-dependent library against 7.0.
-4. Remove references to the deleted assemblies/types and to native element hosting.
-5. Delete native-only `FeatureConfiguration` calls.
-6. Replace the WASM DOM head with the Skia WebAssembly Browser head; remove any DOM/CSS
+4. Re-test `#if __IOS__` / `#if __ANDROID__` code and `ios:` / `android:` XAML inside multi-targeted libraries —
+   those assets are now deployed on mobile heads instead of being replaced by the `netX.0` asset.
+5. Remove references to the deleted assemblies/types and to native element hosting.
+6. Delete native-only `FeatureConfiguration` calls.
+7. Replace the WASM DOM head with the Skia WebAssembly Browser head; remove any DOM/CSS
    customization and `HtmlElement` usage.
-7. Remove manual `ConfigureUniversalImageLoader();` (Android) and other native bootstrap.
-8. Convert every `xmlns:…="clr-namespace:…"` declaration in your XAML to the `using:` form.
-9. Convert the Android `Application` class to override `CreateHost()` instead of passing an
+8. Remove manual `ConfigureUniversalImageLoader();` (Android) and other native bootstrap.
+9. Convert every `xmlns:…="clr-namespace:…"` declaration in your XAML to the `using:` form.
+10. Convert the Android `Application` class to override `CreateHost()` instead of passing an
    `AppBuilder` delegate to the base constructor.
-10. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+11. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to `Uno.UI.Extras`.
+12. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)

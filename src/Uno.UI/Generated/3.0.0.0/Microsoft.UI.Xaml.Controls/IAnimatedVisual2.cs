@@ -3,16 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IAnimatedVisual2 : global::Microsoft.UI.Xaml.Controls.IAnimatedVisual, global::System.IDisposable
 	{
-#if __SKIA__
-		void CreateAnimations();
-#endif
-#if __SKIA__
-		void DestroyAnimations();
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.IAnimatedVisual2.CreateAnimations()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.IAnimatedVisual2.DestroyAnimations()
 	}
 }

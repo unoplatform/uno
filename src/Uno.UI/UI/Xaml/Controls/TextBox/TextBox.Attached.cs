@@ -26,12 +26,12 @@ public class TextBoxExtensions
 
 	private static void OnInputReturnTypeChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 	{
-		var owner = dependencyObject as TextBox;
-		if (owner == null)
+		// Attached to any text-input control, so it resolves the engine rather than a concrete control type.
+		if (dependencyObject is not ITextBoxHost { Core: { } core })
 		{
 			return;
 		}
 
-		owner.OnInputReturnTypeChanged((InputReturnType)args.NewValue, initial: false);
+		core.OnInputReturnTypeChanged((InputReturnType)args.NewValue, initial: false);
 	}
 }

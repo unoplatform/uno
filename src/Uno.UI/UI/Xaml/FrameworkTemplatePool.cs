@@ -19,16 +19,10 @@ using Uno.UI.Dispatching;
 using Windows.Foundation.Metadata;
 using Windows.System;
 
-#if METRO
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
 using System.Text;
 using System.Runtime.CompilerServices;
-#endif
 
 
 namespace Microsoft.UI.Xaml
@@ -415,9 +409,9 @@ namespace Microsoft.UI.Xaml
 					_trace.WriteEventActivity(TraceProvider.RecycleTemplate, EventOpcode.Send, new[] { instance.GetType().ToString() });
 				}
 
-				if (instance is IDependencyObjectStoreProvider provider)
+				if (instance is DependencyObject provider)
 				{
-					provider.Store.Parent = null;
+					provider.Parent = null;
 				}
 				if (shouldCleanUpTemplateRoot)
 				{

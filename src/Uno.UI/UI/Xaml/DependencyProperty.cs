@@ -310,7 +310,7 @@ namespace Microsoft.UI.Xaml
 
 			var defaultValueForType = GetDefaultValue(null, forType);
 
-			if (!DependencyObjectStore.AreDifferent(_ownerTypeMetadata.DefaultValue, defaultValueForType))
+			if (!DependencyObject.AreDifferent(_ownerTypeMetadata.DefaultValue, defaultValueForType))
 			{
 				return _ownerTypeMetadata;
 			}

@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
-#elif XAMARIN || UNO_REFERENCE_API
+#elif __ANDROID__ || __APPLE_UIKIT__ || UNO_REFERENCE_API
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 #else
@@ -26,7 +26,7 @@ namespace Uno.UI.Samples.Controls
 	{
 		public SampleControl()
 		{
-#if !XAMARIN
+#if !__ANDROID__ && !__APPLE_UIKIT__
 			this.DefaultStyleKey = typeof(SampleControl);
 #endif
 		}
@@ -55,7 +55,7 @@ namespace Uno.UI.Samples.Controls
 			(dependencyObject as SampleControl).ContentTemplate = args.NewValue as DataTemplate;
 		}
 
-#if XAMARIN
+#if __ANDROID__ || __APPLE_UIKIT__
 		protected override void OnDataContextChanged()
 		{
 			base.OnDataContextChanged();

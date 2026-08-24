@@ -143,13 +143,21 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
 }
 
 ## Tests Per versions of uno
+
+# TODO Uno (7.0 dependents): drop this switch.
+# Uno.UI.HotDesign, and every Uno-family feature package below, are still compiled against the
+# pre-7.0 `Uno` assembly, which no longer exists after the Uno.WinRT rename. The jobs that run
+# this script are disabled in .azure-devops-tests-templates.yml for the same reason; both come
+# back together once 7.0 builds of those packages are published.
+$noPreRenamePackages = '-p:UnoDisableHotDesign=true'
+
 if ($IsWindows)
 {
-    $default = @('-v:m', '-p:EnableWindowsTargeting=true')
+    $default = @('-v:m', '-p:EnableWindowsTargeting=true', $noPreRenamePackages)
 }
 else
 {
-    $default = @('-v:m', '-p:AotAssemblies=false')
+    $default = @('-v:m', '-p:AotAssemblies=false', $noPreRenamePackages)
 }
 
 $debug = $default + '-p:Configuration=Debug'
@@ -157,7 +165,11 @@ $release = $default + '-p:Configuration=Release'
 
 & $env:BUILD_SOURCESDIRECTORY/build/test-scripts/update-uno-sdk-globaljson.ps1
 
-$sdkFeatures = $(If ($IsWindows) {"-p:UnoFeaturesOverride=Material%3BExtensions%3BToolkit%3BCSharpMarkup%3BSvg%3BMVUX"} Else { "-p:UnoFeaturesOverride=Material%3BToolkit" });
+# TODO Uno (7.0 dependents): restore the full feature set.
+# Material, Extensions, Toolkit, CSharpMarkup and MVUX all resolve to packages built against the
+# pre-7.0 `Uno` assembly; Svg is the only one of the set that comes from this repository. These
+# come back per-feature as each dependent ships a 7.0 build -- not necessarily all at once.
+$sdkFeatures = "-p:UnoFeaturesOverride=Svg";
 
 $projects =
 @(
@@ -173,7 +185,14 @@ $projects =
     # Android heads must build through `dotnet build`: the templates strip the android TFM
     # when MSBuildRuntimeType is 'Full'.
     @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net11.0-android"), @("macOS", "NetCore")),
-    @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net11.0-android", $sdkFeatures), @("macOS", "NetCore")),
+
+    # The android head with the SDK features is disabled until Toolkit/Extensions ship builds
+    # against Uno 7.0. Their current android assemblies were compiled when DependencyObject was
+    # an interface, so those types list it in their interface list while deriving from Object.
+    # Now that it is a class carrying a finalizer, ILLink maps DependencyObject.Finalize as a base
+    # of Object.Finalize, which already is its base - MarkBaseMethods then recurses until the
+    # stack overflows. Those types cannot work on 7.0 regardless; they need a rebuild.
+    # @(1, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net11.0-android", $sdkFeatures), @("macOS", "NetCore")),
 
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
     @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net11.0-windows10.0.19041"), @()),

@@ -10,8 +10,7 @@
 		<SingleProject>true</SingleProject>
 
 		<AssemblyName>SamplesApp</AssemblyName>
-		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
-		<DefineConstants Condition=" '$(UseMonoRuntime)' == 'false' ">$(DefineConstants);RUNTIME_CORECLR</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 
 		<ApplicationId Condition=" '$(ApplicationId)' != '' ">$(ApplicationId)</ApplicationId>
@@ -69,7 +68,6 @@
 	<Target Name="AdjustCalabash" BeforeTargets="BeforeBuild">
 		<!-- Needs to be run as a target, as RuntimeIdentifier is set after the csproj is parsed -->
 		<PropertyGroup Condition="!$(RuntimeIdentifier.Contains('arm64'))">
-			<DefineConstants>$(DefineConstants);HAS_TESTCLOUD_AGENT</DefineConstants>
 		</PropertyGroup>
 	</Target>
 
@@ -241,7 +239,7 @@
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.netcoremobile.csproj" />
-		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.netcoremobile.csproj" />
 		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Android\Uno.UI.Runtime.Skia.Android.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.AppleUIKit\Uno.UI.Runtime.Skia.AppleUIKit.csproj" Condition="'$(IsUIKit)'=='true'" />

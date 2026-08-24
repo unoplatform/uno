@@ -211,13 +211,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnPreviewKeyUp(Microsoft.UI.Xaml.Input.KeyRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnGotFocus(Microsoft.UI.Xaml.RoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnLostFocus(Microsoft.UI.Xaml.RoutedEventArgs)
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		protected virtual void OnCharacterReceived(global::Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs e)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Control", "OnCharacterReceived(CharacterReceivedRoutedEventArgs e)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnCharacterReceived(Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnDragEnter(Microsoft.UI.Xaml.DragEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnDragLeave(Microsoft.UI.Xaml.DragEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Control.OnDragOver(Microsoft.UI.Xaml.DragEventArgs)

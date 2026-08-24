@@ -273,6 +273,9 @@ doc/articles/studio/Hot Design/
 
 mergedstyles.xaml
 
+# Generated at build time by Uno.XamlMerge.Task (Uno.UI.FluentTheme/FluentMerge.targets)
+/src/Uno.UI.FluentTheme/themeresources.xaml
+
 !build/ci/publish
 /doc/articles/llms/llms-full.txt
 /src/Uno.UI.DevServer.Cli/Properties/launchSettings.json

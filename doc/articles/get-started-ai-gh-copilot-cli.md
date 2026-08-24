@@ -30,6 +30,19 @@ To get started with GitHub Copilot CLI:
 > [!IMPORTANT]
 > The uno-app MCP may fail to load unless Copilot is opened in a folder containing an Uno Platform app.
 
+## Setting up the Uno Platform Skills
+
+Uno Platform ships a catalog of agent skills — covering areas such as MVUX, navigation, Uno Toolkit controls, theming, and UI testing — bundled in the `uno-platform-studio` plugin. Once installed, Copilot CLI automatically selects the relevant skills as it works on your prompts.
+
+From a terminal, install the plugin:
+
+```text
+copilot plugin marketplace add unoplatform/studio
+copilot plugin install uno-platform-studio@uno-platform
+```
+
+For the full skill catalog, update instructions, and other installation options, see [Skills & Plugins](xref:Uno.PlatformStudio.Skills).
+
 ## Next Steps
 
 Now that you are set up, let's [create your first app](xref:Uno.GettingStarted.CreateAnApp.AI.CopilotCli).

@@ -58,11 +58,17 @@ public partial class Given_HotReloadWorkspace
 	public async Task When_HotReloadScenario(string filters)
 	{
 		// Remove this class and this method from the filters
-		filters = string.Join(";", (filters?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>()).ToImmutableArray().RemoveAll(x => x == nameof(Given_HotReloadWorkspace) || x == nameof(When_HotReloadScenario)));
+		filters = string.Join(";", (filters?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>()).ToImmutableArray().RemoveAll(IsOuterTestFilter));
 		var resultFile = await RunTestApp(filters, CancellationToken.None);
 
 		// Parse the nunit XML results file and extract all failed tests
 		var tests = NUnitXmlParser.GetTests(resultFile);
+
+		// An empty result set means the HRApp never ran anything, which would otherwise be reported
+		// as success because there are no failures to collect.
+		Assert.IsTrue(
+			tests.Length > 0,
+			$"The hot reload test app reported no test results at all (filters: '{filters}').");
 
 		StringBuilder sb = new();
 
@@ -81,6 +87,20 @@ public partial class Given_HotReloadWorkspace
 			Assert.Fail($"Tests failed:\n{resultMessage}");
 		}
 	}
+
+	/// <summary>
+	/// Identifies a filter entry that names the outer test rather than one of the HRApp's own tests.
+	/// </summary>
+	/// <remarks>
+	/// A CI retry rebuilds the filter from the published failed-tests list, which carries fully
+	/// qualified names. Matching only the bare identifiers let the outer name through to the HRApp,
+	/// which has no such test and consequently ran nothing.
+	/// </remarks>
+	private static bool IsOuterTestFilter(string filter)
+		=> filter == nameof(Given_HotReloadWorkspace)
+			|| filter == nameof(When_HotReloadScenario)
+			|| filter.EndsWith("." + nameof(Given_HotReloadWorkspace), StringComparison.Ordinal)
+			|| filter.EndsWith("." + nameof(When_HotReloadScenario), StringComparison.Ordinal);
 
 	[TestInitialize]
 	public async Task Initialize()

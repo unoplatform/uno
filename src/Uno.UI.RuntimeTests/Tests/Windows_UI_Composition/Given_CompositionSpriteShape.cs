@@ -260,6 +260,69 @@ public class Given_CompositionSpriteShape
 			tolerance: 1.0);
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Ellipse_Trim_Starts_At_Top()
+	{
+		// A CompositionEllipseGeometry trimmed to its first quarter [0, 0.25] must fill the
+		// top-right quadrant (12 o'clock clockwise to 3 o'clock), matching Windows.UI.Composition
+		// and the After Effects/Lottie convention. This is what LottieGen-generated progress arcs
+		// (e.g. the determinate ProgressRing) rely on to grow from the top. A 3 o'clock start
+		// (the old WPF-style ellipse origin) would instead fill the bottom-right quadrant.
+		// Reference the full ring's centre (rendered separately) rather than assuming how the
+		// child visual's coordinates map to screenshot pixels — the quadrant check must hold
+		// regardless of rasterization scale.
+		var fullBounds = await RenderTrimmedEllipseBounds(trimEnd: null);
+		var arcBounds = await RenderTrimmedEllipseBounds(trimEnd: 0.25f);
+
+		var ringCenterX = fullBounds.X + fullBounds.Width / 2;
+		var ringCenterY = fullBounds.Y + fullBounds.Height / 2;
+		var arcCenterX = arcBounds.X + arcBounds.Width / 2;
+		var arcCenterY = arcBounds.Y + arcBounds.Height / 2;
+
+		// Top-right quadrant relative to the ring centre. The vertical check is the discriminator —
+		// a 3 o'clock start would place the first quarter below the centre (bottom-right).
+		Assert.IsTrue(arcCenterX > ringCenterX, $"Arc should be right of the ring centre (arc={arcCenterX}, ring={ringCenterX}).");
+		Assert.IsTrue(arcCenterY < ringCenterY, $"Arc should be above the ring centre (arc={arcCenterY}, ring={ringCenterY}).");
+	}
+
+	private async Task<Rect> RenderTrimmedEllipseBounds(float? trimEnd)
+	{
+		var compositor = Compositor.GetSharedCompositor();
+		var ellipse = compositor.CreateEllipseGeometry();
+		ellipse.Center = new Vector2(50, 50);
+		ellipse.Radius = new Vector2(40, 40);
+		if (trimEnd is { } end)
+		{
+			ellipse.TrimStart = 0f;
+			ellipse.TrimEnd = end;
+		}
+
+		var shape = compositor.CreateSpriteShape(ellipse);
+		shape.StrokeThickness = 8f;
+		shape.StrokeBrush = compositor.CreateColorBrush(Microsoft.UI.Colors.Red);
+
+		var shapeVisual = compositor.CreateShapeVisual();
+		shapeVisual.Shapes.Add(shape);
+		shapeVisual.Size = new Vector2(100, 100);
+
+		var host = new Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+		};
+		ElementCompositionPreview.SetElementChildVisual(host, shapeVisual);
+
+		await UITestHelper.Load(host);
+		await UITestHelper.WaitForIdle();
+		var screenshot = await UITestHelper.ScreenShot(host);
+
+		var bounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 200);
+		Assert.IsFalse(bounds.IsEmpty, "Ellipse not rendered (no red pixels found).");
+		return bounds;
+	}
+
 	private async Task AssertStrokedLineThickness(Vector2 shapeScale, Vector3 containerScale, float strokeThickness, float expectedStrokePixels, double tolerance)
 	{
 		// Build a horizontal line geometry from (0, 50) to (100, 50) using Win2D/CanvasGeometry.
@@ -294,19 +357,47 @@ public class Given_CompositionSpriteShape
 		await UITestHelper.Load(host);
 		await UITestHelper.WaitForIdle();
 		var screenshot = await UITestHelper.ScreenShot(host);
+		var rasterizationScale = host.XamlRoot?.RasterizationScale ?? 1d;
 
-		// Get bounding box of the red pixels — for a horizontal line, .Height is the rasterized
-		// stroke thickness. Use a wide color tolerance (200) so antialiased fringe pixels (which
-		// shade from pure red toward white at the stroke edges) still register as "red" — without
-		// this, GetColorBounds reports only the densely-saturated centre and underestimates the
-		// geometric stroke width by ~20%.
-		var bounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 200);
-		Assert.IsFalse(bounds.IsEmpty, "Stroke not rendered (no red pixels found).");
+		// Measure the stroke thickness from the raw physical bitmap. ImageAssert.GetColorBounds samples
+		// the physical screenshot only at logical-grid positions (every RasterizationScale physical px)
+		// and reports maxY-minY; at high DPI (e.g. 2.5) that sparse sampling under-reports a correct
+		// ~2.5px stroke as ~1px. Native WinUI, rendered and measured the same way, fails the identical
+		// assertion — so this is a measurement artifact, not a rendering difference (Uno's stroke matches
+		// WinUI to within 0.01 logical px). Instead we integrate the red coverage down the band's centre
+		// column, which conserves the true geometric thickness regardless of antialiasing.
+		var pixels = screenshot.GetPixels(); // physical, un-multiplied BGRA
+		int pw = screenshot.Bitmap.PixelWidth, ph = screenshot.Bitmap.PixelHeight;
+
+		int minX = int.MaxValue, maxX = int.MinValue;
+		for (int y = 0; y < ph; y++)
+		{
+			for (int x = 0; x < pw; x++)
+			{
+				var off = (y * pw + x) * 4;
+				if (pixels[off + 2] > 120 && pixels[off + 1] < 120 && pixels[off + 0] < 120 && pixels[off + 3] > 120)
+				{
+					if (x < minX) { minX = x; }
+					if (x > maxX) { maxX = x; }
+				}
+			}
+		}
+		Assert.IsTrue(maxX >= minX, "Stroke not rendered (no red pixels found).");
+
+		// Red-over-white coverage integral (Σ (255-G)/255) down the band's centre column = geometric
+		// stroke thickness in physical px; divide by the rasterization scale to get logical px.
+		var centreX = (minX + maxX) / 2;
+		double coveragePhysical = 0;
+		for (int y = 0; y < ph; y++)
+		{
+			coveragePhysical += (255 - pixels[(y * pw + centreX) * 4 + 1]) / 255.0;
+		}
+		var strokePixels = coveragePhysical / rasterizationScale;
 
 		// Tolerance is supplied per-call: tighter for cases that must discriminate against the
 		// pre-fix value, looser for the no-scale baseline case.
-		Assert.AreEqual(expectedStrokePixels, bounds.Height, tolerance,
-			$"Stroke height mismatch. Expected ~{expectedStrokePixels}px (±{tolerance}), got {bounds.Height}px (bounds: {bounds}).");
+		Assert.AreEqual(expectedStrokePixels, strokePixels, tolerance,
+			$"Stroke height mismatch. Expected ~{expectedStrokePixels}px (±{tolerance}), got {strokePixels:F2}px (physical coverage: {coveragePhysical:F2}, scale: {rasterizationScale}).");
 	}
 
 	// Regression guard for damage-region rendering: the geometry a shape reports for the damage region

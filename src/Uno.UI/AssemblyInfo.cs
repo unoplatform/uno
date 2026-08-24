@@ -7,7 +7,7 @@ using Uno.UI.Graphics;
 
 [assembly: InternalsVisibleTo("Uno.UI.Foldable")]
 [assembly: InternalsVisibleTo("Uno.UI.UnitTests")]
-[assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
+[assembly: InternalsVisibleTo("Uno.UI.Extras")]
 [assembly: InternalsVisibleTo("Uno.UI.RemoteControl")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
@@ -21,8 +21,6 @@ using Uno.UI.Graphics;
 [assembly: InternalsVisibleTo("SamplesApp.Skia")]
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme")]
-[assembly: InternalsVisibleTo("Uno.UI.FluentTheme.v1")]
-[assembly: InternalsVisibleTo("Uno.UI.FluentTheme.v2")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.X11")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.WebView.Skia.X11")]

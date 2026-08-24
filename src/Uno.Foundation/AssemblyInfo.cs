@@ -3,7 +3,7 @@ using global::System.Runtime.CompilerServices;
 using global::System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("Uno.UI")]
-[assembly: InternalsVisibleTo("Uno")]
+[assembly: InternalsVisibleTo("Uno.WinRT")]
 [assembly: InternalsVisibleTo("Uno.UI.Wasm")]
 [assembly: InternalsVisibleTo("Uno.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.UnitTests")]
@@ -11,11 +11,9 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.Foundation.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.Wasm.Tests")]
 [assembly: InternalsVisibleTo("Uno.Foundation.Runtime.WebAssembly")]
-[assembly: InternalsVisibleTo("Uno.UI.Toolkit")]
+[assembly: InternalsVisibleTo("Uno.UI.Extras")]
 [assembly: InternalsVisibleTo("Uno.UI.RemoteControl")]
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme")]
-[assembly: InternalsVisibleTo("Uno.UI.FluentTheme.v1")]
-[assembly: InternalsVisibleTo("Uno.UI.FluentTheme.v2")]
 [assembly: InternalsVisibleTo("Uno.UI.Lottie")]
 [assembly: InternalsVisibleTo("Uno.UI.Svg")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Win32")]

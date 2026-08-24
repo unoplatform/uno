@@ -561,7 +561,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			allControlTypes = allControlTypes.Except(builtInControls);
 
-			var url = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.GetWinUIThemeResourceUrl(2));
+			var url = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.WinUIThemeResourceURL);
 
 			StringBuilder nonWinUI = new StringBuilder();
 			foreach (var controlInstance in allControlTypes.Select(t => Activator.CreateInstance(t) as Control))

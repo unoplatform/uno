@@ -54,6 +54,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private IntPtr _childrenPicture;
 	private int _framesSinceSubtreeNotChanged;
 
+	// Raised when this visual's own Clip/LayoutClip changes, and carried down the render walk so
+	// descendants report damage for the region the clip revealed or hid. Cleared once consumed by Render.
+	private bool _clipChangedSincePaint;
+
+	/// <summary>
+	/// ContainerVisual.LayoutClip is declared in a partial that isn't compiled for every target, so the
+	/// clip-change hook in Visual.OnPropertyChangedCore matches it by name.
+	/// </summary>
+	private const string LayoutClipPropertyName = "LayoutClip";
+
 	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty | VisualFlags.ChildrenSKPictureInvalid;
 
 	private const int SK_MaxS32FitsInFloat = 2147483520;
@@ -120,6 +130,57 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// only be true when we really have something to paint (and that painting needs to be updated).
 	/// </summary>
 	internal virtual bool CanPaint() => false;
+
+	/// <summary>
+	/// Set while the owning element has no layout slot, i.e. it has never been arranged (or was
+	/// re-parented and not arranged since). <see cref="ArrangeOffset"/>/<see cref="Size"/> are unset then,
+	/// and a visual's content is not bounded by its Size, so painting would draw at the parent's origin,
+	/// unclipped. WinUI never renders an element its parent didn't arrange. Defaults to
+	/// <see langword="false"/> so visuals created directly through the Composition API (which the layout
+	/// system never arranges) keep rendering.
+	/// </summary>
+	internal bool IsArrangePending
+	{
+		get => _isArrangePending;
+		set
+		{
+			if (_isArrangePending != value)
+			{
+				_isArrangePending = value;
+
+				// Mirrors the visibility transitions: the ancestors' cached children pictures must be
+				// rebuilt either way (to drop or to re-collect this subtree). Passing includeSelf would
+				// stop the walk immediately, since a suppressed visual's own ChildrenSKPictureInvalid is
+				// never cleared (Render returns before that).
+				InvalidateParentChildrenPicture(includeSelf: false);
+
+				if (CompositionTarget is { } target)
+				{
+					// Becoming suppressed leaves whatever was painted on screen, so damage it like
+					// OnIsVisibleChanged does. The reverse direction self-heals: the visual is walked again
+					// with no _lastRenderBounds, which reports it as moved.
+					if (value)
+					{
+						DamageLastRenderedRegion(target);
+					}
+
+					// This is not a composition property, so nothing requests a frame on our behalf. An
+					// arrange landing on the previous offset and size (a re-parented element re-added to the
+					// same slot) changes no property at all, so without this the damage above, or the newly
+					// unsuppressed subtree, would wait for an unrelated invalidation.
+					target.RequestNewFrame();
+				}
+			}
+		}
+	}
+
+	private bool _isArrangePending;
+
+	/// <summary>
+	/// Nothing this visual or its subtree paints may reach the frame. Kept in one place so the paint
+	/// walks below cannot drift apart on which suppression reasons they honor.
+	/// </summary>
+	private bool IsRenderSuppressed => Opacity == 0f || !IsVisible || IsArrangePending;
 
 	/// <summary>
 	/// When true, this visual guarantees that everything <em>it itself</em> paints stays inside
@@ -242,6 +303,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		InvalidateParentChildrenPicture(false);
 	}
 
+	internal void InvalidateSubtreePaint()
+	{
+		InvalidatePaint();
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			child.InvalidateSubtreePaint();
+		}
+	}
+
 	internal void InvalidateParentChildrenPicture(bool includeSelf)
 	{
 		var parent = includeSelf ? this : Parent;
@@ -326,7 +396,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
 	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride, SKPath? damage = null)
 	{
-		if (this is { Opacity: 0 } or { IsVisible: false })
+		if (IsRenderSuppressed)
 		{
 			return;
 		}
@@ -372,7 +442,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	private void Render(in PaintingSession parentSession, SKPath clipInRoot, bool applyChildOptimization = true)
+	private void Render(in PaintingSession parentSession, SKPath clipInRoot, bool applyChildOptimization = true, bool ancestorClipChanged = false)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -381,10 +451,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		global::System.Diagnostics.Debug.WriteLine($"{indent}{Comment} (Opacity:{parentSession.Opacity:F2}x{Opacity:F2} | IsVisible:{IsVisible})");
 #endif
 
-		if (this is { Opacity: 0 } or { IsVisible: false })
+		if (IsRenderSuppressed)
 		{
 			return;
 		}
+
+		// A clip change alters what this subtree contributes to the frame without touching any descendant's
+		// content or transform, so the signal has to reach them: it is raised where the clip is mutated and
+		// carried down this walk. Consumed here so it is reported exactly once.
+		var clipChanged = ancestorClipChanged || _clipChangedSincePaint;
+		_clipChangedSincePaint = false;
 
 		if ((_flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
 		{
@@ -438,9 +514,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			if (ShadowState is null || TryRenderAnalyticShadow(canvas, ShadowState))
 			{
-				PaintStep(this, session, ownClip);
+				PaintStep(this, session, ownClip, clipChanged);
 				PostPaintingClipStep(this, canvas);
-				RenderChildrenStep(this, session, childClip, applyChildOptimization);
+				RenderChildrenStep(this, session, childClip, applyChildOptimization, clipChanged);
 			}
 			else
 			{
@@ -451,9 +527,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				_factory.CreateInstance(this, recordingCanvas, ref rootTransform, session.Opacity, session.Damage, out var childSession);
 				using (childSession)
 				{
-					PaintStep(this, childSession, ownClip);
+					PaintStep(this, childSession, ownClip, clipChanged);
 					PostPaintingClipStep(this, recordingCanvas);
-					RenderChildrenStep(this, childSession, childClip, applyChildOptimization);
+					RenderChildrenStep(this, childSession, childClip, applyChildOptimization, clipChanged);
 				}
 
 				unsafe
@@ -468,7 +544,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 		}
 
-		static void PaintStep(Visual visual, in PaintingSession session, SKPath clip)
+		static void PaintStep(Visual visual, in PaintingSession session, SKPath clip, bool clipChanged)
 		{
 			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
 			// be specific to that visual and should not affect the rendering of any other visual.
@@ -479,7 +555,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				visual.InvalidateParentChildrenPicture(includeSelf: false);
 				// why bother with a recorder when it's going to get repainted next frame? just paint directly
-				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage, clip);
+				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage, clip, clipChanged);
 				visual._ownContentPath = visual.Paint(session);
 			}
 			else
@@ -499,7 +575,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					visual._picture = picture;
 				}
 
-				visual.ContributeDamageOnPaint(contentChanged, session.Damage, clip);
+				visual.ContributeDamageOnPaint(contentChanged, session.Damage, clip, clipChanged);
 				unsafe
 				{
 					UnoSkiaApi.sk_canvas_draw_picture(session.Canvas.Handle, visual._picture, null, IntPtr.Zero);
@@ -528,7 +604,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 #endif
 		}
 
-		static void RenderChildrenStep(Visual visual, PaintingSession session, SKPath childClip, bool applyChildOptimization)
+		static void RenderChildrenStep(Visual visual, PaintingSession session, SKPath childClip, bool applyChildOptimization, bool clipChanged)
 		{
 			if (visual._childrenPicture != IntPtr.Zero)
 			{
@@ -544,7 +620,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				foreach (var child in visual.GetChildrenInRenderOrder())
 				{
-					child.Render(in session, childClip, applyChildOptimization);
+					child.Render(in session, childClip, applyChildOptimization, clipChanged);
 				}
 			}
 			else
@@ -558,7 +634,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				{
 					foreach (var child in visual.GetChildrenInRenderOrder())
 					{
-						child.Render(in childSession, childClip, applyChildOptimization: false);
+						child.Render(in childSession, childClip, applyChildOptimization: false, ancestorClipChanged: clipChanged);
 					}
 				}
 
@@ -789,7 +865,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		ShadowPathAccumulator accumulator)
 	{
 		var scratch = _spareShadowContributions;
-		if (visual.Opacity == 0f || !visual.IsVisible)
+		if (visual.IsRenderSuppressed)
 		{
 			return true;
 		}
@@ -995,6 +1071,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		ref var rootTransform = ref parentSession.RootTransform;
 
 		var opacity = Opacity == 1.0f ? parentSession.Opacity : parentSession.Opacity * Opacity;
+
+		// MUX Reference hwwalk.cpp, ShouldOverrideRenderOpacity.
+		if (IsHighContrastOpacityOverrideActive && opacity > 0 && opacity < 1.0f)
+		{
+			opacity = 1.0f;
+		}
 
 		_factory.CreateInstance(this, canvas, ref rootTransform, opacity, parentSession.Damage, out session);
 

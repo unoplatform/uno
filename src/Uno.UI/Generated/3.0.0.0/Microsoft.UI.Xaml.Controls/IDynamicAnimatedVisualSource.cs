@@ -3,15 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IDynamicAnimatedVisualSource : global::Microsoft.UI.Xaml.Controls.IAnimatedVisualSource
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.IDynamicAnimatedVisualSource.AnimatedVisualInvalidated.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.IDynamicAnimatedVisualSource.AnimatedVisualInvalidated.remove
-#if __SKIA__
-		event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.IDynamicAnimatedVisualSource, object> AnimatedVisualInvalidated;
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.IDynamicAnimatedVisualSource.AnimatedVisualInvalidated
 	}
 }

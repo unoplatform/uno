@@ -170,7 +170,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var parentValue = precedence == DependencyPropertyValuePrecedences.Inheritance ?
 				baseValue :
-				((IDependencyObjectStoreProvider)this).Store.ReadInheritedValueOrDefaultValue(IsEnabledProperty);
+				((DependencyObject)this).ReadInheritedValueOrDefaultValue(IsEnabledProperty);
 
 			// If the parent is disabled, this control must be disabled as well
 			if (parentValue is false)
@@ -179,7 +179,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// otherwise use the more local value
-			var store = ((IDependencyObjectStoreProvider)this).Store;
+			var store = ((DependencyObject)this);
 
 			var (localValue, localPrecedence) = (store.GetAnimatedValue(IsEnabledProperty), DependencyPropertyValuePrecedences.Animations);
 			if (localValue == DependencyProperty.UnsetValue)
@@ -408,6 +408,11 @@ namespace Microsoft.UI.Xaml.Controls
 				KeyUp += OnKeyUpHandler;
 			}
 
+			if (HasFlag(implementedEvents, RoutedEventFlag.CharacterReceived))
+			{
+				CharacterReceived += OnCharacterReceivedHandler;
+			}
+
 			if (HasFlag(implementedEvents, RoutedEventFlag.GotFocus))
 			{
 				GotFocus += OnGotFocusHandler;
@@ -504,9 +509,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void CleanupView(View view)
 		{
-			if (view is IDependencyObjectStoreProvider provider)
+			if (view is DependencyObject provider)
 			{
-				provider.Store.Parent = null;
+				provider.Parent = null;
 			}
 		}
 
@@ -1025,6 +1030,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void OnKeyDown(KeyRoutedEventArgs e) { }
 		private protected virtual void OnPostKeyDown(KeyRoutedEventArgs e) { }
 		protected virtual void OnKeyUp(KeyRoutedEventArgs e) { }
+		protected virtual void OnCharacterReceived(CharacterReceivedRoutedEventArgs e) { }
 		protected virtual void OnGotFocus(RoutedEventArgs e) { }
 		protected virtual void OnLostFocus(RoutedEventArgs e) { }
 
@@ -1115,6 +1121,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static readonly KeyEventHandler OnKeyUpHandler =
 			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnKeyUp(args);
+
+		private static readonly TypedEventHandler<UIElement, CharacterReceivedRoutedEventArgs> OnCharacterReceivedHandler =
+			(UIElement sender, CharacterReceivedRoutedEventArgs args) => ((Control)sender).OnCharacterReceived(args);
 
 		private static readonly RoutedEventHandler OnGotFocusHandler =
 			(object sender, RoutedEventArgs args) => ((Control)sender).OnGotFocus(args);
@@ -1249,6 +1258,11 @@ namespace Microsoft.UI.Xaml.Controls
 			if (GetIsEventOverrideImplemented<KeyRoutedEventArgs>(OnKeyUp))
 			{
 				result |= RoutedEventFlag.KeyUp;
+			}
+
+			if (GetIsEventOverrideImplemented(OnCharacterReceived))
+			{
+				result |= RoutedEventFlag.CharacterReceived;
 			}
 
 			if (GetIsEventOverrideImplemented(OnLostFocus))

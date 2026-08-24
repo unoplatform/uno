@@ -97,7 +97,7 @@
 		<PRIResource Include="**\*.resw" />
 	</ItemGroup>
 	<ItemGroup>
-		<Page Include="..\SamplesApp\SamplesApp.Samples\Windows_UI_Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
+		<Page Include="..\SamplesApp\SamplesApp.Samples\Windows\UI\Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl.VS\AbsolutePathComparer.cs">
@@ -112,18 +112,21 @@
 		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourceConverters\iOSResourceConverter.cs">
 			<Link>Resources\iOSResourceConverter.cs</Link>
 		</Compile>
+		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourcesGenerator\ResourceQualifierPathResolver.cs">
+			<Link>Resources\ResourceQualifierPathResolver.cs</Link>
+		</Compile>
 	</ItemGroup>
 	<ItemGroup>
 		<!--
 			Explicit references to the Skia variants of UWP/Foundation/Composition/Dispatching.
-			Uno.UI.csproj transitively pulls Uno.Reference.csproj (UWP) which builds
+			Uno.UI.csproj transitively pulls Uno.WinRT.Reference.csproj which builds
 			Uno.UI.Dispatching from NativeDispatcher.reference.cs (a stub that throws
 			"Ref assembly" on every call). The Reference variants are correct for
 			ahead-of-time-resolved package consumers (the Skia runtime swaps them at
 			deploy time), but the unit-test runner is its own .exe and needs the real
 			Skia partials so HasThreadAccessOverride and DispatchOverride exist.
 		-->
-		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Skia.csproj" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
@@ -135,7 +138,7 @@
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibrary\Uno.UI.Tests.ViewLibrary.csproj" />
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibraryProps\Uno.UI.Tests.ViewLibraryProps.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
-		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.Extras\Uno.UI.Extras.Skia.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

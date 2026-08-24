@@ -2115,7 +2115,26 @@
 	</IgnoreSet>
 
 	<IgnoreSet baseVersion="6.6">
+	  <Assemblies>
+		  <!-- The whole assembly is renamed for 7.0, so every type in it reads as removed against the 6.6 baseline. -->
+		  <Member fullName="Uno.UI.Toolkit" reason="Assembly renamed Uno.UI.Toolkit -> Uno.UI.Extras (7.0 assembly renames)" />
+		  <Member fullName="Uno" reason="Assembly renamed Uno -> Uno.WinRT (7.0 assembly renames)" />
+		  <!-- Fluent V1 shipped an assembly whose style content had already been deleted: themeresources_v1.xaml was an empty ResourceDictionary and XamlControlsResources forced version 2 regardless (BC71, breaking changes for 7.0). -->
+		  <Member fullName="Uno.UI.FluentTheme.v1" reason="Removed the Uno.UI.FluentTheme.v1 assembly along with the Fluent V1 scaffolding (BC71, breaking changes for 7.0)" />
+		  <!-- With V1 gone the "v2" suffix had no meaning, so the assembly was merged into Uno.UI.FluentTheme (BC71, breaking changes for 7.0). -->
+		  <Member fullName="Uno.UI.FluentTheme.v2" reason="Merged the Uno.UI.FluentTheme.v2 assembly into Uno.UI.FluentTheme; the v2 suffix was an artifact of the removed Fluent V1/V2 split (BC71, breaking changes for 7.0)" />
+	  </Assemblies>
 	  <Types>
+		  <!-- Fluent V1 public surface, removed with the Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.XamlControlsResourcesV1" reason="Removed XamlControlsResourcesV1; it sourced an empty V1 dictionary and had no consumers (BC71, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FluentTheme.v1.GlobalStaticResources" reason="Generated with the removed Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FluentTheme.v1.Resource" reason="Generated with the removed Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0)" />
+		  <!-- Fluent V2 public surface, removed with the merge of Uno.UI.FluentTheme.v2 into Uno.UI.FluentTheme (BC71, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.XamlControlsResourcesV2" reason="Removed XamlControlsResourcesV2; WinAppSDK has no such type and with V1 gone it duplicated XamlControlsResources (BC71, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FluentTheme.v2.GlobalStaticResources" reason="Generated with the merged-away Uno.UI.FluentTheme.v2 assembly (BC71, breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.FluentTheme.v2.Resource" reason="Generated with the merged-away Uno.UI.FluentTheme.v2 assembly (BC71, breaking changes for 7.0)" />
+		  <!-- Uno-only resources-version selector with no WinUI counterpart; version 2 was already forced unconditionally (BC71, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion" reason="Removed the Uno-only ControlsResourcesVersion enum; WinAppSDK has no such type and only version 2 exists (BC71, breaking changes for 7.0)" />
 		  <!-- Legacy cross-target FeatureConfiguration holder class removed with its sole flag (#2053, breaking changes for 7.0). -->
 		  <Member fullName="Uno.UI.FeatureConfiguration/Binding" reason="Removed empty FeatureConfiguration.Binding holder after deleting IgnoreINPCSameReferences (#2053, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/Timeline" reason="Removed empty FeatureConfiguration.Timeline holder after deleting DefaultsStartingValueFromAnimatedValue (#2053, breaking changes for 7.0)" />
@@ -2304,36 +2323,40 @@
 		  <!-- Uno-only duplicate of System.Numerics.VectorExtensions; removed in favor of the WinAppSDK-ref counterpart. -->
 		  <Member fullName="Uno.Extensions.Vector2Extensions" reason="Removed redundant Uno.Extensions.Vector2Extensions (BC72, breaking changes for 7.0)" />
 
-		  <!-- Microsoft.UI.Input.PointerPoint family relocated from Uno.UI to Uno.UWP (BC41, breaking changes for 7.0); the types read as removed from their former assembly. -->
-		  <Member fullName="Microsoft.UI.Input.PointerPoint" reason="Relocated Microsoft.UI.Input.PointerPoint to Uno.UWP (BC41, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.UI.Input.PointerPointProperties" reason="Relocated Microsoft.UI.Input.PointerPointProperties to Uno.UWP (BC41, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.UI.Input.PointerUpdateKind" reason="Relocated Microsoft.UI.Input.PointerUpdateKind to Uno.UWP (BC41, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.UI.Input.IPointerPointTransform" reason="Relocated Microsoft.UI.Input.IPointerPointTransform to Uno.UWP (BC41, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.UI.Input.PointerDeviceType" reason="Relocated Microsoft.UI.Input.PointerDeviceType to Uno.UWP alongside PointerPoint (BC41, breaking changes for 7.0)" />
+		  <!-- DependencyObject as class (BC26): DependencyObjectStore folded into DependencyObject and IDependencyObjectStoreProvider removed. Both were Uno-only, not part of the WinUI surface. -->
+		  <Member fullName="^Microsoft\.UI\.Xaml\.DependencyObjectStore([/+].+)?$" reason="DependencyObject as class: store dissolved into DependencyObject" isRegex="true" />
+		  <Member fullName="Microsoft.UI.Xaml.IDependencyObjectStoreProvider" reason="DependencyObject as class: provider indirection removed" />
+
+		  <!-- Microsoft.UI.Input.PointerPoint family relocated from Uno.UI to Uno.WinRT (BC41, breaking changes for 7.0); the types read as removed from their former assembly. -->
+		  <Member fullName="Microsoft.UI.Input.PointerPoint" reason="Relocated Microsoft.UI.Input.PointerPoint to Uno.WinRT (BC41, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Input.PointerPointProperties" reason="Relocated Microsoft.UI.Input.PointerPointProperties to Uno.WinRT (BC41, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Input.PointerUpdateKind" reason="Relocated Microsoft.UI.Input.PointerUpdateKind to Uno.WinRT (BC41, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Input.IPointerPointTransform" reason="Relocated Microsoft.UI.Input.IPointerPointTransform to Uno.WinRT (BC41, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Input.PointerDeviceType" reason="Relocated Microsoft.UI.Input.PointerDeviceType to Uno.WinRT alongside PointerPoint (BC41, breaking changes for 7.0)" />
 
 		  <!-- Sync-generator assembly-home correction: these WinUI-parity types now generate into their WinAppSDK-correct assembly (Uno.WinRT) instead of Uno.WinUI. Relocation across assemblies is a binary break, intentional for 7.0 (#2065). -->
-		  <Member fullName="Microsoft.UI.System.ThemeSettings" reason="Relocated Microsoft.UI.System.ThemeSettings from Uno.UI to Uno.UWP to match WinAppSDK (Microsoft.InteractiveExperiences.Projection) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Graphics.DirectX.DirectXAlphaMode" reason="Relocated Microsoft.Graphics.DirectX.* from Uno.UI.Composition to Uno.UWP to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Graphics.DirectX.DirectXColorSpace" reason="Relocated Microsoft.Graphics.DirectX.* from Uno.UI.Composition to Uno.UWP to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Graphics.DirectX.DirectXPixelFormat" reason="Relocated Microsoft.Graphics.DirectX.* from Uno.UI.Composition to Uno.UWP to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Graphics.DirectX.DirectXPrimitiveTopology" reason="Relocated Microsoft.Graphics.DirectX.* from Uno.UI.Composition to Uno.UWP to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Graphics.Display.DisplayAdvancedColorInfo" reason="Relocated Microsoft.Graphics.Display.* from Uno.UI.Composition to Uno.UWP to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Graphics.Display.DisplayAdvancedColorKind" reason="Relocated Microsoft.Graphics.Display.* from Uno.UI.Composition to Uno.UWP to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Graphics.Display.DisplayHdrMetadataFormat" reason="Relocated Microsoft.Graphics.Display.* from Uno.UI.Composition to Uno.UWP to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Graphics.Display.DisplayInformation" reason="Relocated Microsoft.Graphics.Display.* from Uno.UI.Composition to Uno.UWP to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.UI.IClosableNotifier" reason="Relocated Microsoft.UI.IClosableNotifier from Uno.UI.Composition to Uno.UWP to match WinAppSDK Microsoft.UI root namespace (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.UI.ClosableNotifierHandler" reason="Relocated Microsoft.UI.ClosableNotifierHandler from Uno.UI.Composition to Uno.UWP to match WinAppSDK Microsoft.UI root namespace (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.IResourceContext" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.UWP to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.IResourceManager" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.UWP to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.UWP to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.MrtCoreContract" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.UWP to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.UWP to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceCandidateKind" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.UWP to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceContext" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.UWP to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceLoader" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.UWP to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceManager" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.UWP to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceMap" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.UWP to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
-		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.UWP to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.System.ThemeSettings" reason="Relocated Microsoft.UI.System.ThemeSettings from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.InteractiveExperiences.Projection) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Graphics.DirectX.DirectXAlphaMode" reason="Relocated Microsoft.Graphics.DirectX.* from Uno.UI.Composition to Uno.WinRT to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Graphics.DirectX.DirectXColorSpace" reason="Relocated Microsoft.Graphics.DirectX.* from Uno.UI.Composition to Uno.WinRT to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Graphics.DirectX.DirectXPixelFormat" reason="Relocated Microsoft.Graphics.DirectX.* from Uno.UI.Composition to Uno.WinRT to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Graphics.DirectX.DirectXPrimitiveTopology" reason="Relocated Microsoft.Graphics.DirectX.* from Uno.UI.Composition to Uno.WinRT to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Graphics.Display.DisplayAdvancedColorInfo" reason="Relocated Microsoft.Graphics.Display.* from Uno.UI.Composition to Uno.WinRT to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Graphics.Display.DisplayAdvancedColorKind" reason="Relocated Microsoft.Graphics.Display.* from Uno.UI.Composition to Uno.WinRT to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Graphics.Display.DisplayHdrMetadataFormat" reason="Relocated Microsoft.Graphics.Display.* from Uno.UI.Composition to Uno.WinRT to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Graphics.Display.DisplayInformation" reason="Relocated Microsoft.Graphics.Display.* from Uno.UI.Composition to Uno.WinRT to match WinAppSDK (Microsoft.Windows.SDK.NET) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.IClosableNotifier" reason="Relocated Microsoft.UI.IClosableNotifier from Uno.UI.Composition to Uno.WinRT to match WinAppSDK Microsoft.UI root namespace (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.ClosableNotifierHandler" reason="Relocated Microsoft.UI.ClosableNotifierHandler from Uno.UI.Composition to Uno.WinRT to match WinAppSDK Microsoft.UI root namespace (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.IResourceContext" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.IResourceManager" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.KnownResourceQualifierName" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.MrtCoreContract" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceCandidate" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceCandidateKind" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceContext" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceLoader" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceManager" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceMap" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs" reason="Relocated Microsoft.Windows.ApplicationModel.Resources.* (MRT-Core) from Uno.UI to Uno.WinRT to match WinAppSDK (Microsoft.Windows.ApplicationModel.Resources.Projection) (#2065, breaking changes for 7.0)" />
 
 		  <!-- Uno-only menu-plumbing interfaces reduced to internal; WinUI has no public counterparts. -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.IMenu" reason="Reduced Uno-only IMenu to internal (breaking changes for 7.0, uno#8339)" />
@@ -2350,6 +2373,17 @@
 		  <Member fullName="Uno.WinRTFeatureConfiguration/ApplicationLanguages" reason="Removed empty WinRTFeatureConfiguration.ApplicationLanguages holder after deleting UseLegacyPrimaryLanguageOverride (BC50, breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
+		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion Microsoft.UI.Xaml.Controls.ControlsResourcesVersion::Version1" reason="Removed with the ControlsResourcesVersion enum; V1 styles no longer exist (BC71, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion Microsoft.UI.Xaml.Controls.ControlsResourcesVersion::Version2" reason="Removed with the ControlsResourcesVersion enum; version 2 is the only behavior and needs no selector (BC71, breaking changes for 7.0)" />
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.ControlsResourcesVersion::value__" reason="Removed with the ControlsResourcesVersion enum (BC71, breaking changes for 7.0)" />
+		  <!-- ControlsResourcesVersionProperty is declared as a get-only property today, but the 6.6.x base may expose it as a DP field; cover both shapes (paired with the <Properties>/<Methods> entries). -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.XamlControlsResources::ControlsResourcesVersionProperty" reason="Removed the ControlsResourcesVersionProperty DP with its property (BC71, breaking changes for 7.0)" />
+		  <!-- Any remaining member of the deleted Uno.UI.FluentTheme.v1 assembly or of XamlControlsResourcesV1 (see the <Assemblies>/<Types> entries above). Regex because the generated GlobalStaticResources member set is not reproducible locally. -->
+		  <Member fullName=".+ Uno\.UI\.FluentTheme\.v1\..+" reason="Member of the removed Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.XamlControlsResourcesV1(::|\.).+" reason="Member of the removed XamlControlsResourcesV1 type (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Uno\.UI\.FluentTheme\.v2\..+" reason="Member of the merged-away Uno.UI.FluentTheme.v2 assembly (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.XamlControlsResourcesV2(::|\.).+" reason="Member of the removed XamlControlsResourcesV2 type (BC71, breaking changes for 7.0)" isRegex="true" />
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
 		  <!-- DependencyPropertyValuePrecedences enum cleanup: obsolete/misused members removed and style levels renamed to match WinUI's BaseValueSource (#16356, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyPropertyValuePrecedences Microsoft.UI.Xaml.DependencyPropertyValuePrecedences::TemplatedParent" reason="Removed unused TemplatedParent precedence (#16356, breaking changes for 7.0)" />
@@ -2412,6 +2446,9 @@
 
 		  <!-- END WinUI sync (Category D): enum constant removals -->
 
+		  <!-- DependencyObject as class (BC26): fields of the removed DependencyObjectStore (incl. its nested TraceProvider). -->
+		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+$" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
+
 		  <!-- Duration.TimeSpan public field removed; WinUI exposes TimeSpan as a get-only property (paired accessor is emitted by the property, not a field). -->
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Made Duration.TimeSpan read-only to match WinUI (breaking changes for 7.0, uno#8339)" />
 
@@ -2421,6 +2458,14 @@
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.NavigationViewItemBase::_fullyInitialized" reason="Reference flavor folded into Skia; field was compiled only under !UNO_HAS_ENHANCED_LIFECYCLE (breaking changes for 7.0, uno#8339)" />
 	  </Fields>
 	  <Properties>
+		  <!-- Fluent resources-version selector removed: only version 2 exists and WinAppSDK has no equivalent surface. Accessors paired in the <Methods> block below (BC71, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion Microsoft.UI.Xaml.Controls.XamlControlsResources::ControlsResourcesVersion()" reason="Removed the Uno-only XamlControlsResources.ControlsResourcesVersion property; version 2 was already forced unconditionally (BC71, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.XamlControlsResources::ControlsResourcesVersionProperty()" reason="Removed the ControlsResourcesVersionProperty DP with its property (BC71, breaking changes for 7.0)" />
+		  <Member fullName="System.Object Microsoft.UI.Xaml.Controls.XamlControlsResourcesV2::ControlsResourcesVersion()" reason="Removed the inert object-typed ControlsResourcesVersion stub on XamlControlsResourcesV2; it was never a DP and never read (BC71, breaking changes for 7.0)" />
+		  <Member fullName=".+ Uno\.UI\.FluentTheme\.v1\..+" reason="Member of the removed Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.XamlControlsResourcesV1(::|\.).+" reason="Member of the removed XamlControlsResourcesV1 type (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Uno\.UI\.FluentTheme\.v2\..+" reason="Member of the merged-away Uno.UI.FluentTheme.v2 assembly (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.XamlControlsResourcesV2(::|\.).+" reason="Member of the removed XamlControlsResourcesV2 type (BC71, breaking changes for 7.0)" isRegex="true" />
 		  <!-- StackLayout.DisableVirtualization is a plain CLR property in WinUI (backed by internal IsVirtualizationEnabledProperty); the DisableVirtualizationProperty DP is not part of the WinUI surface. -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualizationProperty()" reason="WinUI sync: DisableVirtualization is a plain property in WinUI; DisableVirtualizationProperty DP removed (backed by internal IsVirtualizationEnabledProperty)" />
 		  <!-- Native-only FeatureConfiguration knobs removed with the native renderers (#2052, breaking changes for 7.0). -->
@@ -2662,10 +2707,18 @@
 		  <!-- ColorKeyFrameCollection carried a binary-compat 'new'-shadow block (Size/Count/IsReadOnly/indexer) that its zero-shadow siblings Double/ObjectKeyFrameCollection never had; the get-only base DependencyObjectCollection<T> members show through with identical behavior. Accessor methods are paired in <Methods> below. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.Animation\.ColorKeyFrameCollection(::|\.)(Size|Count|IsReadOnly|Item)\(.*\)" reason="Removed ColorKeyFrameCollection binary-compat shadow members; provided by base DependencyObjectCollection&lt;T&gt; (BC67, breaking changes for 7.0)" isRegex="true" />
 
+		  <!-- DependencyObject as class (BC26): Uno-only members demoted to internal. Recorded explicitly rather than
+		       relying on the declaring-type wildcards above, so the demotion stays documented if those are tightened. -->
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.DependencyObject::IsStoreInitialized()" reason="DependencyObject as class: removed, was a constant with no consumer (BC26, breaking changes for 7.0)" />
+
+		  <!-- DependencyObject as class (BC26): properties of the removed DependencyObjectStore / IDependencyObjectStoreProvider. -->
+		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+$" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
+		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.IDependencyObjectStoreProvider(::|\.).+$" reason="DependencyObject as class: IDependencyObjectStoreProvider removed" isRegex="true" />
+
 		  <!-- WindowActivatedEventArgs.WindowActivationState retyped from the Uno-only Windows.UI.Core.CoreWindowActivationState to the WinUI Microsoft.UI.Xaml.WindowActivationState; the old-typed property reads as removed (getter accessor paired in <Methods> below). -->
 		  <Member fullName="Windows.UI.Core.CoreWindowActivationState Microsoft.UI.Xaml.WindowActivatedEventArgs::WindowActivationState()" reason="Retyped WindowActivationState to Microsoft.UI.Xaml.WindowActivationState (BC13, breaking changes for 7.0)" />
 
-		  <!-- MediaPlayerPresenter reparented from Border to FrameworkElement (WinUI parity); the Border-only Child/BorderBrush/BorderThickness/CornerRadius/Padding/BackgroundSizing/ChildTransitions surface (and DP fields) reads as removed. Background stays (Uno declares it on FrameworkElement). Accessor methods paired in <Methods> below. -->
+		  <!-- MediaPlayerPresenter reparented from Border to FrameworkElement (WinUI parity); the Border-only Child/BorderBrush/BorderThickness/CornerRadius/Padding/BackgroundSizing/ChildTransitions surface (and DP fields) reads as removed. Background goes with the old base too, but needs no entry here: it was declared on FrameworkElement, whose removal is ignored just below (BC38). Accessor methods paired in <Methods> below. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.MediaPlayerPresenter(::|\.)(Child|ChildProperty|BorderBrush|BorderBrushProperty|BorderThickness|BorderThicknessProperty|CornerRadius|CornerRadiusProperty|Padding|PaddingProperty|BackgroundSizing|BackgroundSizingProperty|ChildTransitions|ChildTransitionsProperty|BackgroundTransition|BackgroundTransitionProperty)\(\)" reason="Reparented MediaPlayerPresenter from Border to FrameworkElement for WinUI parity; Border-only members removed (breaking changes for 7.0, uno#8339)" isRegex="true" />
 		  <!-- FrameworkElement.Background removed: declared per-type to match WinUI (BC38, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.Media.Brush Microsoft.UI.Xaml.FrameworkElement::Background()" reason="WinUI sync (BC38): Background declared per-type, not on FrameworkElement" />
@@ -2695,6 +2748,39 @@
 
 	  </Properties>
 	  <Methods>
+		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion Microsoft.UI.Xaml.Controls.XamlControlsResources.get_ControlsResourcesVersion()" reason="Removed with the XamlControlsResources.ControlsResourcesVersion property (BC71, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.XamlControlsResources.set_ControlsResourcesVersion(Microsoft.UI.Xaml.Controls.ControlsResourcesVersion value)" reason="Removed with the XamlControlsResources.ControlsResourcesVersion property (BC71, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.XamlControlsResources.get_ControlsResourcesVersionProperty()" reason="Removed with the ControlsResourcesVersionProperty DP (BC71, breaking changes for 7.0)" />
+		  <Member fullName="System.Object Microsoft.UI.Xaml.Controls.XamlControlsResourcesV2.get_ControlsResourcesVersion()" reason="Removed with the inert XamlControlsResourcesV2.ControlsResourcesVersion stub (BC71, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.XamlControlsResourcesV2.set_ControlsResourcesVersion(System.Object value)" reason="Removed with the inert XamlControlsResourcesV2.ControlsResourcesVersion stub (BC71, breaking changes for 7.0)" />
+		  <!-- Any remaining member of the deleted Uno.UI.FluentTheme.v1 assembly (its generated GlobalStaticResources member set is not reproducible locally) or of XamlControlsResourcesV1. -->
+		  <Member fullName=".+ Uno\.UI\.FluentTheme\.v1\..+" reason="Member of the removed Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.XamlControlsResourcesV1(::|\.).+" reason="Member of the removed XamlControlsResourcesV1 type (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Uno\.UI\.FluentTheme\.v2\..+" reason="Member of the merged-away Uno.UI.FluentTheme.v2 assembly (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.XamlControlsResourcesV2(::|\.).+" reason="Member of the removed XamlControlsResourcesV2 type (BC71, breaking changes for 7.0)" isRegex="true" />
+		  <!-- Uno's legacy source-driven AnimatedVisualPlayer contract was removed in favor of WinUI's composition visual source contract. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Update(Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Load()" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Unload()" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Play(System.Double fromProgress, System.Double toProgress, System.Boolean looped)" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Stop()" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Pause()" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Resume()" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.SetProgress(System.Double progress)" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.IAnimatedVisualSource.Measure(Windows.Foundation.Size availableSize)" reason="Removed Uno-only IAnimatedVisualSource member to match WinUI (breaking changes for 7.0)" />
+
+		  <!-- Legacy source-driven Lottie methods were removed with the AnimatedVisualPlayer WinUI port. -->
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Play(System.Double fromProgress, System.Double toProgress, System.Boolean looped)" reason="Removed legacy source-driven Lottie playback API (breaking changes for 7.0)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Stop()" reason="Removed legacy source-driven Lottie playback API (breaking changes for 7.0)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Pause()" reason="Removed legacy source-driven Lottie playback API (breaking changes for 7.0)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Resume()" reason="Removed legacy source-driven Lottie playback API (breaking changes for 7.0)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.SetProgress(System.Double progress)" reason="Removed legacy source-driven Lottie playback API (breaking changes for 7.0)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Load()" reason="Removed legacy source-driven Lottie lifecycle API (breaking changes for 7.0)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Unload()" reason="Removed legacy source-driven Lottie lifecycle API (breaking changes for 7.0)" />
+		  <Member fullName="Windows.Foundation.Size CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Measure(Windows.Foundation.Size availableSize)" reason="Removed legacy source-driven Lottie measure API (breaking changes for 7.0)" />
+		  <Member fullName="System.Void CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase.Update(Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer player)" reason="Removed legacy source-driven Lottie update API (breaking changes for 7.0)" />
+
 		  <!-- Android head aligned on UnoPlatformHostBuilder (paired with the removed types above). -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.NativeApplication..ctor(Microsoft.UI.Xaml.NativeApplication/AppBuilder appBuilder, System.IntPtr javaReference, Android.Runtime.JniHandleOwnership transfer)" reason="Replaced by the (IntPtr, JniHandleOwnership) ctor plus a CreateHost() override (breaking changes for 7.0)" />
 		  <Member fullName="System.Void Uno.UI.Runtime.Skia.Android.AndroidHost..ctor(System.Func`1&lt;Microsoft.UI.Xaml.Application&gt; appBuilder)" reason="AndroidHost reduced to internal; use UseAndroid() on the host builder (breaking changes for 7.0)" />
@@ -2787,6 +2873,20 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewItem.set_MenuItems(System.Collections.Generic.IList`1&lt;System.Object&gt; value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.set_OpenPaneLength(System.Double value)" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs..ctor()" reason="Aligned to WinUI IDL (get-only / non-activatable)" />
+
+		  <!-- #8339 (sync-generator alignment): method/constructor parameter names aligned to the WinAppSDK/CsWinRT
+		       metadata for 7.0 (removed the SymbolMatchingHelpers.IgnoreParameterName workaround). Only public members
+		       appear in the diff; the internal PointInt32/RectInt32/SizeInt32 ctors are excluded. Source-only break
+		       (parameter names are not part of the binary signature); affects named-argument callers. -->
+		  <Member fullName="System.Void Windows.UI.Text.FontWeight..ctor(System.UInt16 weight)" reason="WinUI sync #8339: FontWeight ctor param weight-&gt;_Weight (matches WinAppSDK metadata)" />
+		  <Member fullName="System.Void Windows.Foundation.Rect..ctor(Windows.Foundation.Point point, Windows.Foundation.Size size)" reason="WinUI sync #8339: Rect(Point,Size) ctor param point-&gt;location (matches WinAppSDK metadata)" />
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Duration.Compare(Microsoft.UI.Xaml.Duration first, Microsoft.UI.Xaml.Duration second)" reason="WinUI sync #8339: Duration.Compare params first/second-&gt;t1/t2 (matches WinAppSDK metadata)" />
+		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStream(Windows.Storage.Streams.IRandomAccessStream windowsRuntimeStream)" reason="WinUI sync #8339: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
+		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStream(Windows.Storage.Streams.IRandomAccessStream windowsRuntimeStream, System.Int32 bufferSize)" reason="WinUI sync #8339: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
+		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStreamForRead(Windows.Storage.Streams.IInputStream windowsRuntimeStream)" reason="WinUI sync #8339: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
+		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStreamForRead(Windows.Storage.Streams.IInputStream windowsRuntimeStream, System.Int32 bufferSize)" reason="WinUI sync #8339: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
+		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStreamForWrite(Windows.Storage.Streams.IOutputStream windowsRuntimeStream)" reason="WinUI sync #8339: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
+		  <Member fullName="System.IO.Stream System.IO.WindowsRuntimeStreamExtensions.AsStreamForWrite(Windows.Storage.Streams.IOutputStream windowsRuntimeStream, System.Int32 bufferSize)" reason="WinUI sync #8339: windowsRuntimeStream-&gt;windowsruntimeStream (matches WinAppSDK metadata)" />
 		  <!-- ==== Relocated from the retired 6.5 set when the diff base advanced to 6.6.166: still breaking against 6.6.x (none of these removals shipped in a 6.6 stable). ==== -->
 		  <!-- BEGIN AutomationPeer API alignment -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.RaiseTextEditTextChangedEvent(Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType automationTextEditChangeType, System.Collections.Generic.IReadOnlyList`1&lt;System.String&gt; changedData)" reason="AP reorganization - API alignment" />
@@ -3197,6 +3297,20 @@
 
 		  <!-- No-op AdjustArrange(Size) (always returned its input) declared on the internal IFrameworkElement; publicly surfaced only as this implicit implementation on FrameworkElement. The lone caller in the legacy Layouter path is inlined. -->
 		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.FrameworkElement.AdjustArrange(Windows.Foundation.Size finalSize)" reason="Removed no-op AdjustArrange (BC70, breaking changes for 7.0)" />
+
+		  <!-- DependencyObject as class (BC26): Uno-only members demoted to internal. Recorded explicitly rather than
+		       relying on the declaring-type wildcards above, so the demotion stays documented if those are tightened.
+		       The two SetBinding overloads the XAML generator emits into consuming assemblies stay public. -->
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.DependencyObject.get_IsStoreInitialized()" reason="DependencyObject as class: removed, was a constant with no consumer (BC26, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBinding(System.Object target, System.String dependencyProperty, Microsoft.UI.Xaml.Data.BindingBase binding)" reason="DependencyObject as class: demoted to internal, not emitted by the XAML generator and no consumer (BC26, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SetBindingValue(System.Object value, System.String propertyName)" reason="DependencyObject as class: demoted to internal, Uno-only binder plumbing (BC26, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Data.BindingExpression Microsoft.UI.Xaml.DependencyObject.GetBindingExpression(Microsoft.UI.Xaml.DependencyProperty dependencyProperty)" reason="DependencyObject as class: demoted to internal, Uno-only and absent from WinUI (BC26, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.SuspendBindings()" reason="DependencyObject as class: demoted to internal, Uno-only binder plumbing (BC26, breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.DependencyObject.ResumeBindings()" reason="DependencyObject as class: demoted to internal, Uno-only binder plumbing (BC26, breaking changes for 7.0)" />
+
+		  <!-- DependencyObject as class (BC26): methods of the removed DependencyObjectStore / IDependencyObjectStoreProvider. -->
+		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+$" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
+		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.IDependencyObjectStoreProvider(::|\.).+$" reason="DependencyObject as class: IDependencyObjectStoreProvider removed" isRegex="true" />
 
 		  <!-- WindowActivatedEventArgs.WindowActivationState getter accessor retyped from the Uno-only Windows.UI.Core.CoreWindowActivationState to the WinUI Microsoft.UI.Xaml.WindowActivationState; the old-typed getter reads as removed (property paired in <Properties> above). -->
 		  <Member fullName="Windows.UI.Core.CoreWindowActivationState Microsoft.UI.Xaml.WindowActivatedEventArgs.get_WindowActivationState()" reason="Retyped WindowActivationState to Microsoft.UI.Xaml.WindowActivationState (BC13, breaking changes for 7.0)" />
