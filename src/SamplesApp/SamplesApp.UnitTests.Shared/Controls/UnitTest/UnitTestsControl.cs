@@ -753,7 +753,9 @@ namespace Uno.UI.Samples.Tests
 			// Resolved here rather than inside the probe: the monitor calls it from its own
 			// thread, and resolving the dispatcher touches the visual tree.
 			var dispatcher = TestServices.WindowHelper.RootElementDispatcher;
-			_stallMonitor = TestRunStallMonitor.TryStart(() => dispatcher.RunAsync(() => { }));
+			_stallMonitor = TestRunStallMonitor.TryStart(
+				() => dispatcher.RunAsync(() => { }),
+				async () => await dispatcher.RunIdleAsync(_ => { }));
 
 			try
 			{
