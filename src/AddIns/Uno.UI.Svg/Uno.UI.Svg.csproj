@@ -12,7 +12,7 @@
 		<AssemblyName>Uno.UI.Svg</AssemblyName>
 		<RootNamespace>Uno.UI.Svg</RootNamespace>
 
-		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeFlavor>Generic</UnoRuntimeFlavor>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
