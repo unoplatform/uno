@@ -20,6 +20,13 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 	private const string UnoUIAssemblyName = "Uno.UI";
 
 	/// <summary>
+	/// The value earlier releases stamped for the UI layer every drawn-by-Uno target framework shares. Uno
+	/// Platform 7.0 has a single UI runtime and stamps nothing, so this exists only to recognise assemblies
+	/// built for one of the native renderers, which stamped their platform here instead.
+	/// </summary>
+	private const string SharedUIRuntimeIdentifier = "skia";
+
+	/// <summary>
 	/// Maximum number of missing type names listed in a single UNOB0020 warning.
 	/// </summary>
 	private const int MaxReportedMissingTypes = 5;
@@ -32,12 +39,6 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 	public Microsoft.Build.Framework.ITaskItem[]? ResolvedCompileFileDefinitionsInput { get; set; }
 
 	public string NuGetPackageRoot { get; set; } = "";
-
-	public string UnoRuntimeIdentifier { get; set; } = "";
-
-	public string UnoUIRuntimeIdentifier { get; set; } = "";
-
-	public string UnoWinRTRuntimeIdentifier { get; set; } = "";
 
 	/// <summary>
 	/// The platform of the target framework being built, e.g. "android". Deliberately not the runtime identifiers:
@@ -53,17 +54,6 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 
 		try
 		{
-			if (UnoRuntimeIdentifier == "reference")
-			{
-				return true;
-			}
-
-			// The assemblies of a project are all compiled against a single UI runtime. Two-layer heads name it
-			// through UnoUIRuntimeIdentifier, single-layer heads through UnoRuntimeIdentifier.
-			var expectedUIRuntimeIdentifier = string.IsNullOrEmpty(UnoUIRuntimeIdentifier)
-				? UnoRuntimeIdentifier
-				: UnoUIRuntimeIdentifier;
-
 			var platformAssetValidator = CreatePlatformAssetValidator();
 
 			foreach (var assembly in RuntimeCopyLocalItemsInput ?? [])
@@ -99,13 +89,13 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 				}
 
 				if (GetAssemblyMetadata(originalAssembly, UnoUIRuntimeIdentifierKey) is { Length: > 0 } identifier
-					&& !expectedUIRuntimeIdentifier.Equals(identifier, StringComparison.OrdinalIgnoreCase))
+					&& !SharedUIRuntimeIdentifier.Equals(identifier, StringComparison.OrdinalIgnoreCase))
 				{
 					succeeded = false;
 
 					Log.LogError(
-						$"The assembly {assembly.ItemSpec} has a different UnoUIRuntimeIdentifier than the one used to build the project. " +
-						$"(Expected: {expectedUIRuntimeIdentifier}, Actual: {identifier})"
+						$"The assembly {assembly.ItemSpec} was built for the '{identifier}' UI runtime, which Uno Platform no longer provides. " +
+						"Update the package to a version built for this release."
 					);
 				}
 

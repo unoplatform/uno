@@ -102,7 +102,7 @@
 			Condition="'@(_UnoRuntimeEnabledPackage_Unresolved)'!='' AND '$(UnoDisableUNOB0023Validation)'!='true'" />
 	</Target>
 
-	<Target Name="_UnoValidateReferencesUnoRuntimeIdentifier" BeforeTargets="CoreCompile">
+	<Target Name="_UnoValidateRuntimeAssets" BeforeTargets="CoreCompile">
 		<PropertyGroup>
 			<!-- Normalized so a value other than 'true' cannot fail the task's boolean parameter conversion. -->
 			<_UnoDisableUNOB0020Validation>false</_UnoDisableUNOB0020Validation>
@@ -110,15 +110,33 @@
 		</PropertyGroup>
 
 		<RuntimeAssetsValidatorTask_v0
-			UnoUIRuntimeIdentifier="$(UnoUIRuntimeIdentifier.ToLowerInvariant())"
-			UnoRuntimeIdentifier="$(UnoRuntimeIdentifier.ToLowerInvariant())"
-			UnoWinRTRuntimeIdentifier="$(UnoWinRTRuntimeIdentifier.ToLowerInvariant())"
 			TargetPlatformIdentifier="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))"
 			NuGetPackageRoot="$(NuGetPackageRoot)"
 			ResolvedCompileFileDefinitionsInput="@(ResolvedCompileFileDefinitions)"
 			DisablePlatformAssetValidation="$(_UnoDisableUNOB0020Validation)"
 			RuntimeCopyLocalItemsInput="@(RuntimeCopyLocalItems)">
 		</RuntimeAssetsValidatorTask_v0>
+	</Target>
+
+	<!-- Kept so a project hooking Before/AfterTargets on the previous name still orders against the validation. -->
+	<Target Name="_UnoValidateReferencesUnoRuntimeIdentifier" DependsOnTargets="_UnoValidateRuntimeAssets" />
+
+	<Target Name="_UnoWarnObsoleteRuntimeIdentifiers" BeforeTargets="BeforeBuild">
+		<!--
+		Nothing reads these for a head any more. A cross-runtime library still names the uno-runtime folder it
+		packs into through UnoRuntimeIdentifier, so only a head is warned about that one.
+		-->
+		<Warning
+			Code="UNOB0024"
+			HelpLink="https://aka.platform.uno/UNOB0024"
+			Text="UnoUIRuntimeIdentifier and UnoWinRTRuntimeIdentifier no longer have any effect and can be removed. Runtime assets are selected from the target framework. See https://aka.platform.uno/UNOB0024"
+			Condition="('$(UnoUIRuntimeIdentifier)'!='' OR '$(UnoWinRTRuntimeIdentifier)'!='') AND '$(UnoDisableUNOB0024Validation)'!='true'" />
+
+		<Warning
+			Code="UNOB0024"
+			HelpLink="https://aka.platform.uno/UNOB0024"
+			Text="UnoRuntimeIdentifier no longer has any effect on an application head and can be removed. Runtime assets are selected from the target framework. See https://aka.platform.uno/UNOB0024"
+			Condition="'$(UnoRuntimeIdentifier)'!='' AND '$(IsUnoHead)'=='true' AND '$(UnoDisableUNOB0024Validation)'!='true'" />
 	</Target>
 
 	<!-- Force a rebuild on runtime files changes -->
