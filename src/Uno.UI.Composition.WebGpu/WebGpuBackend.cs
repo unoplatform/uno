@@ -1573,6 +1573,49 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private IntPtr BlurPyramid(IntPtr src, int w, int h, float sigmaX, float sigmaY)
 		=> BlurPyramidRegion(src, w, h, 0f, 0f, w, h, sigmaX, sigmaY);
 
+	// Standalone blur for the effect-graph evaluator's BlurEffectNode: blur `src` and draw it (upscaled from the
+	// pyramid) into this session's target surface _s. Mirrors RenderOffscreen's flow — own encoder + submit — so it
+	// runs during effect setup (RenderGate is reentrant); the pooled offscreen surface is detached by the factory.
+	internal void BlurInto(WebGpuTexture src, float sigmaX, float sigmaY)
+	{
+		lock (_d.RenderGate)
+		{
+			var owns = _frameEncoder == IntPtr.Zero;
+			if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); }
+			try
+			{
+				var blurView = BlurPyramid(src.View, src.PixelWidth, src.PixelHeight, sigmaX, sigmaY);
+				var idu = MakeUniform(96);
+				var idc = stackalloc float[24]; idc[1] = 1f;   // params.x=0 (no colour matrix), params.y=1 (opacity)
+				wgpuQueueWriteBuffer(_d.Q, idu, 0, (IntPtr)idc, 96);
+				var e = stackalloc WGPUBindGroupEntry[3];
+				e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blurView };
+				e[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+				e[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = idu, Offset = 0, Size = 96 };
+				var bgd = new WGPUBindGroupDescriptor { Layout = _d.CompositeBgl, EntryCount = 3, Entries = e };
+				var bg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
+				var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _s.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? _s.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
+				var dsa = new WGPURenderPassDepthStencilAttachment { View = _s.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
+				var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
+				var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
+				wgpuRenderPassEncoderSetPipeline(pass, _d.CompositeSrcOver);
+				wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bg, 0, (uint*)null);
+				wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+				wgpuRenderPassEncoderEnd(pass);
+			}
+			finally
+			{
+				if (owns)
+				{
+					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
+					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+					_ = wgpuDevicePoll(_d.Dev, 0u, null);
+					_frameEncoder = IntPtr.Zero;
+				}
+			}
+		}
+	}
+
 	private void BlurPass(IntPtr src, IntPtr dst, Vector2 dir, Vector2 texel, bool downsample, Vector2 srcOrigin, Vector2 srcScale)
 	{
 		var bu = new float[12];
@@ -3364,10 +3407,21 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 				var filter = CreateColorMatrixColorFilter(cm.Matrix);
 				return RenderOffscreen(w, h, s => s.DrawImage(src, 0, 0, ImageSampling.Linear, filter));
 			}
+			case BlurEffectNode b:
+			{
+				if (TryEvaluateTree(b.Source, bounds) is not WebGpuTexture src || b.Sigma <= 0f) { return TryEvaluateTree(b.Source, bounds); }
+				int w = src.PixelWidth, h = src.PixelHeight;
+				var surface = new WebGpuRenderSurface(_device, w, h);
+				var present = new WebGpuPresentSession(_device, surface, this);
+				present.BlurInto(src, b.Sigma, b.Sigma);
+				var (tex, view) = surface.DetachColor();
+				surface.Dispose();
+				return new WebGpuTexture(_device, tex, view, w, h);
+			}
 			case UnsupportedEffectNode u:
 				return u.Source is null ? null : TryEvaluateTree(u.Source, bounds);
 			default:
-				return null;   // SourceInput / Blur / Blend / Composite / … — later phases
+				return null;   // SourceInput / Blend / Composite / … — later phases
 		}
 	}
 
