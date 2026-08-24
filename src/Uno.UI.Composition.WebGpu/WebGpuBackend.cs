@@ -1616,6 +1616,49 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 	}
 
+	// Standalone two-texture blend for the effect-graph evaluator (BlendEffect/CompositeEffect): composites the
+	// foreground over the background with `shaderMode` (CompositeBlendWgsl id) into this session's target surface.
+	// Both inputs are already offscreen textures, so this is a plain fullscreen pass — no dst-copy.
+	internal void BlendInto(WebGpuTexture bg, WebGpuTexture fg, int shaderMode)
+	{
+		lock (_d.RenderGate)
+		{
+			var owns = _frameEncoder == IntPtr.Zero;
+			if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); }
+			try
+			{
+				var ubuf = MakeUniform(96);
+				var uc = stackalloc float[24]; uc[1] = 1f; uc[2] = shaderMode;   // params.x=0 (no matrix), y=1 (opacity), z=mode
+				wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)uc, 96);
+				var e = stackalloc WGPUBindGroupEntry[4];
+				e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = fg.View };   // src = foreground
+				e[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+				e[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 96 };
+				e[3] = new WGPUBindGroupEntry { Binding = 3, TextureView = bg.View };   // dst = background
+				var bgd = new WGPUBindGroupDescriptor { Layout = _d.CompositeBlendBgl, EntryCount = 4, Entries = e };
+				var bgh = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
+				var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _s.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? _s.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
+				var dsa = new WGPURenderPassDepthStencilAttachment { View = _s.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
+				var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
+				var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
+				wgpuRenderPassEncoderSetPipeline(pass, _d.CompositeBlend);
+				wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bgh, 0, (uint*)null);
+				wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+				wgpuRenderPassEncoderEnd(pass);
+			}
+			finally
+			{
+				if (owns)
+				{
+					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
+					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+					_ = wgpuDevicePoll(_d.Dev, 0u, null);
+					_frameEncoder = IntPtr.Zero;
+				}
+			}
+		}
+	}
+
 	private void BlurPass(IntPtr src, IntPtr dst, Vector2 dir, Vector2 texel, bool downsample, Vector2 srcOrigin, Vector2 srcScale)
 	{
 		var bu = new float[12];
@@ -3386,9 +3429,32 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 		_ => false,
 	};
 
-	// General evaluator for NON-backdrop trees (Phase 0: leaves + colour-matrix + Unsupported→source). Renders the
-	// tree to a texture using offscreen composition; returns null for any node not handled yet, so the caller keeps
-	// the existing acrylic/recipe path (additive — no regression). Extended per phase (blur, blend, …).
+	// BlendMode → CompositeBlendWgsl mode id (stable, independent of the enum's ordinals).
+	private static int BlendShaderId(BlendMode mode) => mode switch
+	{
+		BlendMode.SrcOver => 0, BlendMode.Src => 1, BlendMode.Plus => 2, BlendMode.Modulate => 3, BlendMode.Multiply => 4,
+		BlendMode.DstIn => 5, BlendMode.DstOut => 6, BlendMode.SrcIn => 7, BlendMode.DstOver => 8, BlendMode.SrcOut => 9,
+		BlendMode.SrcATop => 10, BlendMode.DstATop => 11, BlendMode.Xor => 12, BlendMode.Screen => 13, BlendMode.Darken => 14,
+		BlendMode.Lighten => 15, BlendMode.ColorBurn => 16, BlendMode.ColorDodge => 17, BlendMode.Overlay => 18,
+		BlendMode.SoftLight => 19, BlendMode.HardLight => 20, BlendMode.Difference => 21, BlendMode.Exclusion => 22,
+		BlendMode.Hue => 23, BlendMode.Saturation => 24, BlendMode.Color => 25, BlendMode.Luminosity => 26, _ => 0,
+	};
+
+	// Composites the foreground over the background with `shaderMode` into a fresh offscreen texture.
+	private ITexture RunBlend(WebGpuTexture bg, WebGpuTexture fg, int shaderMode)
+	{
+		int w = Math.Max(bg.PixelWidth, fg.PixelWidth), h = Math.Max(bg.PixelHeight, fg.PixelHeight);
+		var surface = new WebGpuRenderSurface(_device, w, h);
+		var present = new WebGpuPresentSession(_device, surface, this);
+		present.BlendInto(bg, fg, shaderMode);
+		var (tex, view) = surface.DetachColor();
+		surface.Dispose();
+		return new WebGpuTexture(_device, tex, view, w, h);
+	}
+
+	// General evaluator for NON-backdrop trees (leaves + colour-matrix + blur + blend/composite + Unsupported→source).
+	// Renders the tree to a texture using offscreen composition; returns null for any node not handled yet, so the
+	// caller keeps the existing acrylic/recipe path (additive — no regression). Extended per phase.
 	private ITexture TryEvaluateTree(EffectNode node, Rect bounds)
 	{
 		switch (node)
@@ -3406,6 +3472,25 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 				int w = src.PixelWidth, h = src.PixelHeight;
 				var filter = CreateColorMatrixColorFilter(cm.Matrix);
 				return RenderOffscreen(w, h, s => s.DrawImage(src, 0, 0, ImageSampling.Linear, filter));
+			}
+			case BlendEffectNode blend:
+			{
+				if (TryEvaluateTree(blend.Background, bounds) is not WebGpuTexture bg) { return null; }
+				if (TryEvaluateTree(blend.Foreground, bounds) is not WebGpuTexture fg) { return null; }
+				return RunBlend(bg, fg, BlendShaderId(blend.Mode));
+			}
+			case CompositeEffectNode comp:
+			{
+				if (comp.Sources.Count == 0) { return null; }
+				if (TryEvaluateTree(comp.Sources[0], bounds) is not WebGpuTexture acc) { return null; }
+				int id = BlendShaderId(comp.Mode);
+				for (int i = 1; i < comp.Sources.Count; i++)
+				{
+					if (TryEvaluateTree(comp.Sources[i], bounds) is not WebGpuTexture next) { return null; }
+					if (RunBlend(acc, next, id) is not WebGpuTexture folded) { return null; }
+					acc = folded;
+				}
+				return acc;
 			}
 			case BlurEffectNode b:
 			{
