@@ -70,6 +70,8 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	public IntPtr CompositeDstInBgl;    // DstIn's group(0) layout (auto-layouts aren't interchangeable)
 	public IntPtr CompositeBlend;       // two-texture blend: fg(0) over bg(3), full Porter-Duff + separable/non-separable
 	public IntPtr CompositeBlendBgl;    // group(0): fg tex, sampler, uniform (params.z = mode id), bg tex
+	public IntPtr EffectCombine;        // two-texture linear combine (CrossFade/ArithmeticComposite) + AlphaMask
+	public IntPtr EffectCombineBgl;
 	public IntPtr DummyTex;                 // 1x1 placeholder for the clip coverage binding when no path clip
 	public WebGpuTexturePool Pool;                // transient offscreen pool (reused across frames)
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
@@ -748,6 +750,28 @@ fn bnonsep(cb: vec3<f32>, cs: vec3<f32>, mode: i32) -> vec3<f32> {
   return vec4<f32>(co, sa + da * (1.0 - sa));
 }";
 
+	// Two-texture combine: out = k.x*A + k.y*B + k.z*(A*B) + k.w (premultiplied, clamped) — covers CrossFade
+	// (k=(1-w,w,0,0)) and ArithmeticComposite (A=fg,B=bg, k=(s1,s2,m,off)). flag.x>0.5 = AlphaMask: A masked by B's alpha.
+	private const string EffectCombineWgsl = @"
+struct KU { k: vec4<f32>, flag: vec4<f32> };
+@group(0) @binding(0) var a: texture_2d<f32>;
+@group(0) @binding(1) var smp: sampler;
+@group(0) @binding(2) var<uniform> u: KU;
+@group(0) @binding(3) var b: texture_2d<f32>;
+struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
+@vertex fn vs(@builtin(vertex_index) vi: u32) -> VO {
+  var pts = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
+  let p = pts[vi];
+  var o: VO; o.p = vec4<f32>(p, 0.0, 1.0); o.uv = vec2<f32>((p.x + 1.0) * 0.5, (1.0 - p.y) * 0.5); return o;
+}
+@fragment fn fs(i: VO) -> @location(0) vec4<f32> {
+  let ca = textureSampleLevel(a, smp, i.uv, 0.0);
+  let cb = textureSampleLevel(b, smp, i.uv, 0.0);
+  if (u.flag.x > 0.5) { return ca * cb.a; }
+  let o = u.k.x * ca + u.k.y * cb + u.k.z * (ca * cb) + vec4<f32>(u.k.w);
+  return clamp(o, vec4<f32>(0.0), vec4<f32>(1.0));
+}";
+
 	private void CreateCompositePipelines()
 	{
 		var module = Module(CompositeWgsl);
@@ -767,6 +791,10 @@ fn bnonsep(cb: vec3<f32>, cs: vec3<f32>, mode: i32) -> vec3<f32> {
 		var replace = new WGPUBlendState { Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.Zero, Operation = WGPUBlendOperation.Add }, Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.Zero, Operation = WGPUBlendOperation.Add } };
 		CompositeBlend = MakeComposite(blendModule, vs, fs, &replace, &ds);
 		CompositeBlendBgl = wgpuRenderPipelineGetBindGroupLayout(CompositeBlend, 0);
+
+		var combineModule = Module(EffectCombineWgsl);
+		EffectCombine = MakeComposite(combineModule, vs, fs, &replace, &ds);
+		EffectCombineBgl = wgpuRenderPipelineGetBindGroupLayout(EffectCombine, 0);
 	}
 
 	private IntPtr MakeComposite(IntPtr module, WGPUStringView vs, WGPUStringView fs, WGPUBlendState* blend, WGPUDepthStencilState* ds)

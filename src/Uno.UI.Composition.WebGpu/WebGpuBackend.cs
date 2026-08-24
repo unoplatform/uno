@@ -1659,6 +1659,48 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 	}
 
+	// Standalone two-texture combine: out = k0*A + k1*B + k2*(A*B) + k3 (premultiplied, clamped), or A masked by B's
+	// alpha when alphaMask. Covers CrossFade / ArithmeticComposite / AlphaMask. Fullscreen pass into the target surface.
+	internal void CombineInto(WebGpuTexture a, WebGpuTexture b, float k0, float k1, float k2, float k3, bool alphaMask)
+	{
+		lock (_d.RenderGate)
+		{
+			var owns = _frameEncoder == IntPtr.Zero;
+			if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); }
+			try
+			{
+				var ubuf = MakeUniform(32);
+				var uc = stackalloc float[8]; uc[0] = k0; uc[1] = k1; uc[2] = k2; uc[3] = k3; uc[4] = alphaMask ? 1f : 0f;
+				wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)uc, 32);
+				var e = stackalloc WGPUBindGroupEntry[4];
+				e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = a.View };
+				e[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+				e[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 32 };
+				e[3] = new WGPUBindGroupEntry { Binding = 3, TextureView = b.View };
+				var bgd = new WGPUBindGroupDescriptor { Layout = _d.EffectCombineBgl, EntryCount = 4, Entries = e };
+				var bgh = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
+				var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _s.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? _s.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
+				var dsa = new WGPURenderPassDepthStencilAttachment { View = _s.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
+				var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
+				var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
+				wgpuRenderPassEncoderSetPipeline(pass, _d.EffectCombine);
+				wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bgh, 0, (uint*)null);
+				wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+				wgpuRenderPassEncoderEnd(pass);
+			}
+			finally
+			{
+				if (owns)
+				{
+					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
+					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+					_ = wgpuDevicePoll(_d.Dev, 0u, null);
+					_frameEncoder = IntPtr.Zero;
+				}
+			}
+		}
+	}
+
 	private void BlurPass(IntPtr src, IntPtr dst, Vector2 dir, Vector2 texel, bool downsample, Vector2 srcOrigin, Vector2 srcScale)
 	{
 		var bu = new float[12];
@@ -3452,6 +3494,18 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 		return new WebGpuTexture(_device, tex, view, w, h);
 	}
 
+	// out = k0*A + k1*B + k2*(A*B) + k3 (or A masked by B's alpha) into a fresh offscreen texture.
+	private ITexture RunCombine(WebGpuTexture a, WebGpuTexture b, float k0, float k1, float k2, float k3, bool alphaMask)
+	{
+		int w = Math.Max(a.PixelWidth, b.PixelWidth), h = Math.Max(a.PixelHeight, b.PixelHeight);
+		var surface = new WebGpuRenderSurface(_device, w, h);
+		var present = new WebGpuPresentSession(_device, surface, this);
+		present.CombineInto(a, b, k0, k1, k2, k3, alphaMask);
+		var (tex, view) = surface.DetachColor();
+		surface.Dispose();
+		return new WebGpuTexture(_device, tex, view, w, h);
+	}
+
 	// General evaluator for NON-backdrop trees (leaves + colour-matrix + blur + blend/composite + Unsupported→source).
 	// Renders the tree to a texture using offscreen composition; returns null for any node not handled yet, so the
 	// caller keeps the existing acrylic/recipe path (additive — no regression). Extended per phase.
@@ -3491,6 +3545,24 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 					acc = folded;
 				}
 				return acc;
+			}
+			case CrossFadeEffectNode cf:
+			{
+				if (TryEvaluateTree(cf.SourceA, bounds) is not WebGpuTexture a) { return null; }
+				if (TryEvaluateTree(cf.SourceB, bounds) is not WebGpuTexture bb) { return null; }
+				return RunCombine(a, bb, 1f - cf.Weight, cf.Weight, 0f, 0f, alphaMask: false);
+			}
+			case ArithmeticCompositeEffectNode ar:
+			{
+				if (TryEvaluateTree(ar.Foreground, bounds) is not WebGpuTexture fg) { return null; }
+				if (TryEvaluateTree(ar.Background, bounds) is not WebGpuTexture bg) { return null; }
+				return RunCombine(fg, bg, ar.Source1, ar.Source2, ar.Multiply, ar.Offset, alphaMask: false);
+			}
+			case AlphaMaskEffectNode am:
+			{
+				if (TryEvaluateTree(am.Source, bounds) is not WebGpuTexture src2) { return null; }
+				if (TryEvaluateTree(am.Mask, bounds) is not WebGpuTexture mask) { return null; }
+				return RunCombine(src2, mask, 0f, 0f, 0f, 0f, alphaMask: true);
 			}
 			case BlurEffectNode b:
 			{
