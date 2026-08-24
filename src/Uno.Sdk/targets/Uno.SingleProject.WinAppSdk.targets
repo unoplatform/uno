@@ -32,6 +32,8 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(WindowsPackageType)' == 'MSIX'">
+		<!-- Public: lets an application separate MSIX from unpackaged at compile time. -->
+		<DefineConstants>$(DefineConstants);WINAPPSDK_PACKAGED</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -62,7 +62,15 @@ SamplesApp head (Xamarin Test Cloud is retired).
 the vendored tests are not resynced from upstream.
 
 **Uno-authored, never consumed** — `IS_CI_OR_DEBUG` (`src/Uno.CrossTargetting.targets`),
-`IS_UNO_UI_XamlHost_PROJECT`, `UNO_MIXIN_GENERATION`, `WINAPPSDK_PACKAGED`.
+`IS_UNO_UI_XamlHost_PROJECT`, `UNO_MIXIN_GENERATION`. All three are repository-internal, so a repository-wide
+search settles the question for them.
+
+> **Correction.** `WINAPPSDK_PACKAGED` was listed here and does not belong. It is defined in
+> `src/Uno.Sdk/targets/Uno.SingleProject.WinAppSdk.targets`, which ships to consumer applications, so "nothing in
+> this repository consumes it" says nothing about whether anything consumes it. An application separating MSIX
+> from unpackaged has no other compile-time way to ask that question, and dropping the symbol would send those
+> `#if` blocks to `#else` with no diagnostic — the failure mode is silent. For anything `Uno.Sdk` emits, the test
+> is whether the symbol is public surface, not whether the repository greps clean.
 
 **Harmless redundancy, listed for completeness** — `IS_MPE_X11` is defined but never branched on, because the
 file shared between the two media-player projects selects on `IS_MPE_WIN32` and lets `#else` cover X11. Correct
