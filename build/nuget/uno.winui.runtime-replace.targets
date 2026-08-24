@@ -85,6 +85,25 @@
 		<Error
 			Text="The package(s) [@(_UnoRuntimeEnabledPackage_EmptyPackageBasePath)] do not define the UnoRuntimeEnabledPackage.PackageBasePath metadata. Make sure to add one to specify the current location of the targets file."
 			Condition="'@(_UnoRuntimeEnabledPackage_EmptyPackageBasePath)'!=''" />
+
+		<!--
+		A runtime-enabled package that contributed nothing means its runtime assets were not found, and the
+		reference facade ships instead - a green build that throws NotImplemented at runtime. Both halves of
+		the replacement (the legacy glob above and the task) feed this check.
+		-->
+		<ItemGroup>
+			<_UnoRuntimeResolvedPackageId Include="@(RuntimeCopyLocalItemsMerged->'%(NuGetPackageId)')" />
+			<_UnoRuntimeResolvedPackageId Include="@(RuntimeCopyLocalItemsMerged2->'%(NuGetPackageId)')" />
+
+			<_UnoRuntimeEnabledPackage_Unresolved Include="@(UnoRuntimeEnabledPackage)" />
+			<_UnoRuntimeEnabledPackage_Unresolved Remove="@(_UnoRuntimeResolvedPackageId)" />
+		</ItemGroup>
+
+		<Error
+			Code="UNOB0023"
+			HelpLink="https://aka.platform.uno/UNOB0023"
+			Text="The runtime-enabled package(s) [@(_UnoRuntimeEnabledPackage_Unresolved)] did not provide any runtime assembly for this target framework. The application would run against the reference assemblies and fail at runtime. See https://aka.platform.uno/UNOB0023"
+			Condition="'@(_UnoRuntimeEnabledPackage_Unresolved)'!='' AND '$(UnoDisableUNOB0023Validation)'!='true'" />
 	</Target>
 
 	<Target Name="_UnoValidateReferencesUnoRuntimeIdentifier" BeforeTargets="CoreCompile">
