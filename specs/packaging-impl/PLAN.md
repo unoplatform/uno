@@ -50,12 +50,33 @@ several ad-hoc bench builds, each fixed then exposing the next:
 3. the deployed `Uno.dll` (WinRT bait-and-switch `uno-runtime/net10.0/skia` variant) turned out to be a **stale
    released 6.0.465 binary** sitting in the bin path at pack time — missing `BitmapEncoder.EnsureCodec` that the fresh
    `Uno.UI.WireDownwardHooks` calls → `MissingMethodException`.
-None of these are defects in the drawing-backend packaging or code; they are consequences of reproducing the CI
-multi-variant pack (consistent NBGV stamping across net10+net11+Reference/Skia/Wasm variants, runtime-replace folders,
-clean bins) by hand on net11-preview/WinAppSDK-limited benches. The real CI `BuildNuGetPackage` pipeline produces these
-correctly in one versioned pass. What IS proven externally stands: the produced packages restore + build in a fresh app
-(incl. the `;webgpu;` feature pulling the renderer), and WebGpu is selected at runtime via the host-builder option. The
-remaining end-to-end RUN should be validated from a real CI package build, not a hand-assembled feed.
+### Done the CI way → external RUN succeeds (net10 Linux/lavapipe)
+Redid the feed the way the real pipeline does it — the root of the earlier skew was that hand-packing skipped
+`PrepareNuGetPackage`'s per-dependency version XmlPokes. The nuspecs carry LITERAL placeholder dep versions
+(`Uno.WinRT`=`2.4.5`, `Uno.Foundation.Logging`=`0.0.0`, `Uno.Foundation`=`1.0.0`), which CI rewrites by dependency-ID
+to `NBGV_SemVer2`. Skipping that left `Uno.WinUI` depending on `Uno.WinRT >= 2.4.5`, so NuGet pulled a RELEASED 6.0.465
+`Uno.dll` from nuget.org (→ the `EnsureCodec` MissingMethod). Fix: one clean `-t:Rebuild` of the Skia closure at a single
+version + replicate the exact CI XmlPokes for every produced-package dependency ID before packing. All deployed
+assemblies then verified consistent (`7.0.0-dev.1+<commit>`).
+
+**Second real fix (committed `de54d8b42cc`): `WebGpuLoader` now probes `runtimes/<rid>/native`.** With the feed
+consistent, the external app booted but WebGpu was declined: `DllNotFoundException: Unable to load shared library
+'webgpu'` (captured via a first-chance handler — the host swallows it at Warn). The loader probed only the app base dir
++ assembly dir + bare names; that finds the native in a run-from-build/publish layout (flattened next to the app, as in
+SamplesApp) but NOT in a framework-dependent NuGet consumer, where NuGet keeps it in `runtimes/<rid>/native` and
+`NativeLibrary`'s bare-name search doesn't reach it. Added `runtimes/<RuntimeIdentifier>/native` to the loader's probe
+paths.
+
+**RESULT — full external end-to-end (net10.0-desktop, `Uno.Sdk.Private`, `UnoFeatures=skia;webgpu`, consuming ONLY the
+produced packages, native resolved from the package's `runtimes/linux-x64/native` with NO workaround):** restore ✓,
+build ✓, and at runtime `builder.GraphicsBackend(new WebGpuGraphicsProvider())` → `[webgpu] init device — msaa=4x` →
+`[webgpu] engine init` → `[webgpu] surface 1024x640 present=Fifo`, ran clean to timeout, no fallback. WebGpu is genuinely
+used at runtime by a fresh external app built against the produced NuGet packages.
+
+Bench caveat (unchanged, orthogonal): the net10+net11 multi-variant/WinAppSDK legs still can't build here (WinAppSDK
+1.0.0 markup compiler vs modern MSBuild); the Windows-asset packages were packed as net10 Skia slices for this Linux run.
+A real CI build produces the full multi-TFM/variant set — the packaging inputs (nuspecs, filters, pack wiring, the
+loader fix) are all in the tree and validated.
 
 ## RUNTIME PROOF: `;webgpu;` present + WebGpu impl set in host builder → WebGpu actually renders
 The SDK `;webgpu;` feature's only job is to make `Uno.UI.Composition.WebGpu` PRESENT (verified: the resolver injects
