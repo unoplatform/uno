@@ -56,7 +56,12 @@ offscreen textures, so it's a plain two-sampler pass). Add `ArithmeticComposite`
 **Phase 4 — procedural + lighting (lowest priority, rare).** `WhiteNoise` (hash/value-noise shader),
 `Lighting` (normal-from-alpha-gradient + distant/point/spot diffuse/specular shaders). Mirrors fuser cases 492–559.
 
-**Unsupported.** Once 0–4 land, `UnsupportedEffectNode` matches Skia: render `Source` unfiltered (never blank).
+**Unsupported (do in Phase 0).** `UnsupportedEffectNode` is emitted by the *parser* (`EffectGraphParser`) for D2D
+effects it can't map — a shared, backend-neutral concept, not a WebGPU gap. Skia renders its `Source` unfiltered
+(or nothing if source-less). WebGPU must match: `Evaluate(node.Source ?? blank)`. Trivial, so land it in Phase 0 —
+that alone removes the blank-render for the "genuinely unmappable" class. Phases 1–4 then cover the nodes the parser
+DOES produce and Skia DOES realize but WebGPU currently drops (Blur, Blend, Composite, Arithmetic, CrossFade,
+AlphaMask, Lighting, WhiteNoise) — that, not "everything but colour", is the actual WebGPU-specific gap.
 
 ## Validation
 - Per phase: render the same `IGraphicsEffect` graph on **Skia vs WebGPU** and diff pixels (Skia = golden). Harness:
