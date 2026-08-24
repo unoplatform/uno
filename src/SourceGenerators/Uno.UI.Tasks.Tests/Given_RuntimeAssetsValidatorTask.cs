@@ -24,9 +24,6 @@ public class Given_RuntimeAssetsValidatorTask
 		var task = new RuntimeAssetsValidatorTask_v0
 		{
 			BuildEngine = engine,
-			UnoRuntimeIdentifier = "",
-			UnoUIRuntimeIdentifier = "skia",
-			UnoWinRTRuntimeIdentifier = "",
 			TargetPlatformIdentifier = targetPlatformIdentifier,
 			NuGetPackageRoot = nuGetPackageRoot ?? fixture.NuGetPackageRoot,
 			DisablePlatformAssetValidation = disablePlatformAssetValidation,
@@ -136,26 +133,26 @@ public class Given_RuntimeAssetsValidatorTask
 	{
 		using var fixture = new PackageCacheFixture(nameof(When_Stamp_Follows_Other_AssemblyMetadata_Then_It_Is_Still_Read));
 
-		// The SDK emits IsTrimmable and RepositoryUrl ahead of Uno's own stamp.
+		// The SDK emits IsTrimmable and RepositoryUrl ahead of the stamp earlier releases wrote.
 		var asset = fixture.AddAssembly(
 			"Sample.Lib",
 			"1.0.0",
 			"net10.0-android35.0",
 			[PresentType],
-			[("IsTrimmable", "True"), ("RepositoryUrl", "https://example.invalid"), ("UnoUIRuntimeIdentifier", "Skia")]);
+			[("IsTrimmable", "True"), ("RepositoryUrl", "https://example.invalid"), ("UnoUIRuntimeIdentifier", "Android")]);
 
 		var (task, engine) = CreateTask(fixture, asset);
-		task.UnoUIRuntimeIdentifier = "somethingelse";
 
+		// An assembly built for the native Android renderer, which no longer exists.
 		task.Execute().Should().BeFalse();
 		engine.Errors.Should().ContainSingle();
-		engine.Errors[0].Message.Should().Contain("Skia");
+		engine.Errors[0].Message.Should().Contain("Android");
 	}
 
 	[TestMethod]
-	public void When_SingleLayer_Head_Then_A_Skia_Stamp_Matches()
+	public void When_Stamp_Names_The_Shared_UI_Runtime_Then_It_Matches()
 	{
-		using var fixture = new PackageCacheFixture(nameof(When_SingleLayer_Head_Then_A_Skia_Stamp_Matches));
+		using var fixture = new PackageCacheFixture(nameof(When_Stamp_Names_The_Shared_UI_Runtime_Then_It_Matches));
 
 		var asset = fixture.AddAssembly(
 			"Sample.Lib",
@@ -166,9 +163,19 @@ public class Given_RuntimeAssetsValidatorTask
 
 		var (task, engine) = CreateTask(fixture, asset);
 
-		// A desktop head names its UI runtime through UnoRuntimeIdentifier instead.
-		task.UnoUIRuntimeIdentifier = "";
-		task.UnoRuntimeIdentifier = "skia";
+		task.Execute().Should().BeTrue();
+		engine.Errors.Should().BeEmpty();
+	}
+
+	[TestMethod]
+	public void When_There_Is_No_Stamp_Then_It_Is_Accepted()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_There_Is_No_Stamp_Then_It_Is_Accepted));
+
+		// Uno Platform 7.0 stamps nothing, having a single UI runtime.
+		var asset = fixture.AddAssembly("Sample.Lib", "1.0.0", "net10.0-android35.0", [PresentType], []);
+
+		var (task, engine) = CreateTask(fixture, asset);
 
 		task.Execute().Should().BeTrue();
 		engine.Errors.Should().BeEmpty();
