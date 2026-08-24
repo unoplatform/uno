@@ -3,18 +3,16 @@
 
 	<!-- Target used to override the uno-runtime targets -->
 	<Target Name="ReplaceUnoRuntime"
-				Condition="
-					'$(UnoRuntimeIdentifier)' != '' 
-					OR ( 
-						'$(UnoWinRTRuntimeIdentifier)' != '' 
-						AND '$(UnoUIRuntimeIdentifier)' != ''
-					)"
+				Condition="'$(UnoHasRuntimeHost)' == 'true'"
 				BeforeTargets="_ComputeResolvedCopyLocalPublishAssets;ResolveLockFileCopyLocalFiles;ComputeFilesToPublish;GeneratePublishDependencyFile;ResolveLockFileReferences">
 
 		<PropertyGroup>
-			<!-- Compatibility with the single-layer runtime replace -->
+			<!--
+			The folder name a third-party cross-runtime library packs into, which the library names through
+			UnoRuntimeIdentifier. Not a drawing backend, and not derived from the target framework.
+			-->
 			<_LibraryUnoRuntimeIdentifier>$(UnoRuntimeIdentifier)</_LibraryUnoRuntimeIdentifier>
-			<_LibraryUnoRuntimeIdentifier Condition=" '$(_LibraryUnoRuntimeIdentifier)' == '' ">$(UnoUIRuntimeIdentifier)</_LibraryUnoRuntimeIdentifier>
+			<_LibraryUnoRuntimeIdentifier Condition=" '$(_LibraryUnoRuntimeIdentifier)' == '' ">skia</_LibraryUnoRuntimeIdentifier>
 		</PropertyGroup>
 
 		<ItemGroup>
@@ -52,9 +50,7 @@
 		-->
 		<RuntimeAssetsSelectorTask_v0
 			UnoRuntimeEnabledPackage="@(UnoRuntimeEnabledPackage)"
-			UnoRuntimeIdentifier="$(UnoRuntimeIdentifier.ToLowerInvariant())"
-			UnoWinRTRuntimeIdentifier="$(UnoWinRTRuntimeIdentifier.ToLowerInvariant())"
-			UnoUIRuntimeIdentifier="$(UnoUIRuntimeIdentifier.ToLowerInvariant())"
+			TargetPlatformIdentifier="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))"
 			ResolvedCompileFileDefinitionsInput="@(ResolvedCompileFileDefinitions)"
 			RuntimeCopyLocalItemsInput="@(RuntimeCopyLocalItems)"
 			TargetFrameworkVersion="$(TargetFrameworkVersion)">
@@ -126,7 +122,7 @@
 	</Target>
 
 	<!-- Force a rebuild on runtime files changes -->
-	<ItemGroup Condition="'$(UnoRuntimeIdentifier)'!='' OR '$(UnoUIRuntimeIdentifier)'!='' OR '$(UnoWinRTRuntimeIdentifier)'!=''">
+	<ItemGroup Condition="'$(UnoHasRuntimeHost)'=='true'">
 		<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)/../uno-runtime/*" />
 	</ItemGroup>
 
