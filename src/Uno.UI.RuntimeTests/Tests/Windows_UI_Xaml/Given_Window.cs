@@ -11,6 +11,7 @@ using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 #if !WINDOWS_UWP && !WINAPPSDK
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Islands;
 using Windows.ApplicationModel.Core;
 using Windows.UI;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
@@ -164,7 +165,6 @@ public class Given_Window
 
 		await TestServices.WindowHelper.WaitForLoaded(sut.Content as FrameworkElement);
 
-		// Verify that center of window is red
 		var rootElement = sut.Content.XamlRoot.VisualTree.RootElement;
 		Assert.IsInstanceOfType(rootElement, typeof(Panel));
 		var rootElementAsPanel = (Panel)rootElement;
@@ -173,6 +173,72 @@ public class Given_Window
 		var rootElementBackgroundAsSolidColorBrush = (SolidColorBrush)rootElementBackground;
 		Assert.AreEqual(expectedColor, rootElementBackgroundAsSolidColorBrush.Color);
 	}
+
+#if __SKIA__
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Transparent_Background_Then_Root_Keeps_Its_Brush()
+	{
+		AssertSupportsMultipleWindows();
+
+		var sut = await OpenSecondaryWindowAsync(new NoBackgroundWindow());
+
+		var root = (XamlIslandRoot)sut.Content.XamlRoot.VisualTree.RootElement;
+		var background = root.Background;
+
+		Assert.IsInstanceOfType(background, typeof(SolidColorBrush));
+		Assert.IsFalse(root.HasTransparentBackground);
+
+		root.SetHasTransparentBackground(true);
+
+		// Only the rendered primitive is suppressed - the property keeps its theme brush, so a
+		// later theme change still resolves against it.
+		Assert.IsTrue(root.HasTransparentBackground);
+		Assert.AreSame(background, root.Background);
+
+		root.SetHasTransparentBackground(false);
+
+		Assert.IsFalse(root.HasTransparentBackground);
+		Assert.AreSame(background, root.Background);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_SystemBackdrop_Set_Then_Content_Background_Is_Untouched()
+	{
+		AssertSupportsMultipleWindows();
+
+		var red = new SolidColorBrush(Colors.Red);
+		var content = new Grid { Background = red };
+		var sut = await OpenSecondaryWindowAsync(new Window { Content = content });
+
+		sut.SystemBackdrop = new MicaBackdrop();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// WinUI leaves app content alone when a backdrop is applied, so an opaque page keeps
+		// hiding the material rather than being rewritten to transparent.
+		Assert.AreSame(red, content.Background);
+
+		sut.SystemBackdrop = null;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreSame(red, content.Background);
+	}
+
+	private static async Task<TWindow> OpenSecondaryWindowAsync<TWindow>(TWindow window)
+		where TWindow : Window
+	{
+		var activated = false;
+		window.Activated += (s, e) => activated = true;
+		window.Activate();
+
+		await TestServices.WindowHelper.WaitFor(() => activated);
+		await TestServices.WindowHelper.WaitForLoaded(window.Content as FrameworkElement);
+
+		return window;
+	}
+#endif
+
 #endif
 
 	[TestMethod]
@@ -244,7 +310,6 @@ public class Given_Window
 		sut.Activate();
 		await TestServices.WindowHelper.WaitForLoaded(sut.Content as FrameworkElement);
 
-		// Verify that center of window is red
 		var initialScreenshot = await UITestHelper.ScreenShot(sut.Content as FrameworkElement);
 
 		var color = initialScreenshot.GetPixel(initialScreenshot.Width / 2, initialScreenshot.Height / 2);
