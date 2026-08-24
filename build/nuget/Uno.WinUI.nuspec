@@ -82,11 +82,6 @@
 				<reference file="Uno.UI.FluentTheme.dll" />
 			</group>
 
-			<!-- Windows -->
-			<group targetFramework="uap10.0.19041">
-				<reference file="Uno.UI.Extras.dll" />
-			</group>
-
 		</references>
 	</metadata>
 	<files>
@@ -189,20 +184,9 @@
 		<file src="uno.winui.cross-runtime.targets" target="buildTransitive" />
 		<file src="uno.winui.common.targets" target="buildTransitive" />
 		<file src="uno.winui.common.props" target="buildTransitive" />
-		<file src="uno.winui.single-project.targets" target="buildTransitive" />
 		<file src="uno.winui.runtime-replace.targets" target="buildTransitive" />
 		<file src="uno.winui.winappsdk.targets" target="buildTransitive" />
 		<file src="..\..\src\SourceGenerators\Uno.UI.Tasks\Content\**" target="buildTransitive" />
-
-		<!-- Force UAP to ignore netstandard 2.0 -->
-		<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.16299\uno.winui.targets" />
-		<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.16299" />
-
-		<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.17763\uno.winui.targets" />
-		<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.17763" />
-
-		<file src="uno.winui.win.targets" target="buildTransitive\uap10.0.19041\uno.winui.targets" />
-		<file src="uno.winui.runtime-replace.targets" target="buildTransitive\uap10.0.19041" />
 
 		<file src="..\..\src\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" target="buildTransitive" />
 
