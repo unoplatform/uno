@@ -213,17 +213,45 @@ To suppress it:
 </PropertyGroup>
 ```
 
-### UNOB0024: A runtime identifier property no longer has any effect
+### UNOB0024: A runtime identifier property no longer selects runtime assets
 
-`UnoRuntimeIdentifier`, `UnoUIRuntimeIdentifier` and `UnoWinRTRuntimeIdentifier` used to tell the build which runtime assets to deploy. As of Uno Platform 7.0 that is decided by the target framework, so setting them on an application head does nothing and the properties can be removed.
+`UnoRuntimeIdentifier`, `UnoUIRuntimeIdentifier` and `UnoWinRTRuntimeIdentifier` used to tell the build which runtime assets to deploy. As of Uno Platform 7.0 that is decided by the target framework, so setting them on an application head no longer selects anything and they can be removed.
 
-`UnoRuntimeIdentifier` keeps one meaning: a cross-runtime *library* uses it to name the `uno-runtime/<identifier>` folder its output is packed into. It is not reported for that use.
+`UnoRuntimeIdentifier` keeps one meaning: a cross-runtime *library* uses it to name the `uno-runtime/<identifier>` folder its output is packed into, and to opt that library into runtime replacement. It is not reported for that use.
 
 To suppress it:
 
 ```xml
 <PropertyGroup>
   <UnoDisableUNOB0024Validation>true</UnoDisableUNOB0024Validation>
+</PropertyGroup>
+```
+
+### UNOB0025: Runtime-enabled packages are referenced without a runtime host
+
+This application head references packages that ship their implementation under `uno-runtime/` — such as `Uno.WinRT` and `Uno.Foundation` — but no Uno Platform runtime host package was detected, so the reference assemblies would be deployed and every call into them would throw `NotImplementedException` at runtime.
+
+The usual cause is a version mismatch: a `Uno.WinUI.Runtime.Skia.*` package older than `Uno.WinUI` does not declare the runtime host. Align every `Uno.*` package version, then restore again.
+
+To suppress it:
+
+```xml
+<PropertyGroup>
+  <UnoDisableUNOB0025Validation>true</UnoDisableUNOB0025Validation>
+</PropertyGroup>
+```
+
+### UNOB0026: A referenced assembly was built for a UI runtime that no longer exists
+
+Uno Platform releases before 7.0 stamped the UI runtime an assembly was built for into its `UnoUIRuntimeIdentifier` assembly metadata. This diagnostic reports a referenced assembly whose stamp names one of the native renderers, which 7.0 removed — such an assembly cannot run against this release.
+
+Update the package to a version built for Uno Platform 7.0. Assemblies built by 7.0 carry no stamp, since there is a single UI runtime, and are always accepted.
+
+To suppress it:
+
+```xml
+<PropertyGroup>
+  <UnoDisableUNOB0026Validation>true</UnoDisableUNOB0026Validation>
 </PropertyGroup>
 ```
 
@@ -251,10 +279,11 @@ The method `InitializeComponent` should always be called in class constructor. A
 
 **An assembly required for a component is missing**
 
-Some components like `ProgressRing` and `MediaPlayerElement` requires you to reference a specific NuGet package for them to work correctly.
+Some components like `ProgressRing` require you to reference a specific NuGet package for them to work correctly.
 
 - For `ProgressRing`, it requires Lottie dependency. For more information about adding Lottie to your project, see [Lottie for Uno](xref:Uno.Features.Lottie).
-- For `MediaPlayerElement` on WebAssembly or Gtk, it requires `Uno.WinUI.MediaPlayer.WebAssembly` or `Uno.WinUI.MediaPlayer.Skia.Gtk` NuGet package. For more information, see [MediaPlayerElement](xref:Uno.Controls.MediaPlayerElement).
+
+Before Uno Platform 7.0 this diagnostic also reported a missing `MediaPlayerElement` package for the native WebAssembly and GTK targets. Both targets, and the packages it recommended, were removed in 7.0.
 
 ### UNO0008
 

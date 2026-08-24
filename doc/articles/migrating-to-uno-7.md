@@ -199,16 +199,23 @@ application head. They named which runtime assets to deploy at a time when sever
 single UI runtime, every value they could take is either a constant or the target platform spelled differently,
 and the target framework decides instead.
 
-Setting them on a head is reported as [UNOB0024](xref:Build.Solution.error-codes#unob0024-a-runtime-identifier-property-no-longer-has-any-effect)
+Setting them on a head is reported as [UNOB0024](xref:Build.Solution.error-codes#unob0024-a-runtime-identifier-property-no-longer-selects-runtime-assets)
 and can be removed. Almost no application sets them — they were set for you by the runtime packages.
 
-Two consequences are worth knowing about:
+Consequences worth knowing about:
 
 - Assemblies are no longer stamped with an `UnoUIRuntimeIdentifier` assembly metadata attribute. A library built
-  for one of the native renderers still carries its own stamp and is still rejected, with a clearer message.
+  for one of the native renderers still carries its own stamp and is still rejected, now as
+  [UNOB0026](xref:Build.Solution.error-codes#unob0026-a-referenced-assembly-was-built-for-a-ui-runtime-that-no-longer-exists).
 - A runtime-enabled package that provides no runtime assembly is now a build error,
   [UNOB0023](xref:Build.Solution.error-codes#unob0023-a-runtime-enabled-package-provided-no-runtime-assembly),
-  rather than a build message followed by a `NotImplementedException` when the application runs.
+  rather than a build message followed by a `NotImplementedException` when the application runs. A head that
+  references such packages without a runtime host at all is reported as
+  [UNOB0025](xref:Build.Solution.error-codes#unob0025-runtime-enabled-packages-are-referenced-without-a-runtime-host).
+- `UNO0007` no longer reports a missing `MediaPlayerElement` package: it only ever did so for the native
+  WebAssembly and GTK targets, which 7.0 removes. Its `ProgressRing` half is unchanged.
+- The `RuntimeAssetsSelectorTask_v0` MSBuild task no longer accepts the three identifier parameters. This
+  matters only if you invoked that task directly, which Uno Platform's own targets are the only known caller of.
 
 `UnoRuntimeIdentifier` keeps one meaning, for library authors only: it names the `uno-runtime/<identifier>`
 folder that a cross-runtime library packs its per-runtime output into. That authoring model is superseded by

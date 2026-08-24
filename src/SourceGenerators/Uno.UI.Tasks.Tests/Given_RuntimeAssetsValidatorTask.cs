@@ -168,6 +168,46 @@ public class Given_RuntimeAssetsValidatorTask
 	}
 
 	[TestMethod]
+	public void When_Stamp_Is_Hostile_Then_It_Is_Sanitized()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_Stamp_Is_Hostile_Then_It_Is_Sanitized));
+
+		// The stamp is a foreign assembly's string heap content; a newline would let it forge CI log commands.
+		var asset = fixture.AddAssembly(
+			"Sample.Lib",
+			"1.0.0",
+			"net10.0-android35.0",
+			[PresentType],
+			[("UnoUIRuntimeIdentifier", "android\n##vso[task.prependpath]C:\\evil")]);
+
+		var (task, engine) = CreateTask(fixture, asset);
+
+		task.Execute().Should().BeFalse();
+		engine.Errors.Should().ContainSingle();
+		engine.Errors[0].Message.Should().NotContain("\n");
+		engine.Errors[0].Code.Should().Be("UNOB0026");
+	}
+
+	[TestMethod]
+	public void When_UI_Runtime_Validation_Is_Disabled_Then_A_Foreign_Stamp_Is_Accepted()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_UI_Runtime_Validation_Is_Disabled_Then_A_Foreign_Stamp_Is_Accepted));
+
+		var asset = fixture.AddAssembly(
+			"Sample.Lib",
+			"1.0.0",
+			"net10.0-android35.0",
+			[PresentType],
+			[("UnoUIRuntimeIdentifier", "Android")]);
+
+		var (task, engine) = CreateTask(fixture, asset);
+		task.DisableUIRuntimeValidation = true;
+
+		task.Execute().Should().BeTrue();
+		engine.Errors.Should().BeEmpty();
+	}
+
+	[TestMethod]
 	public void When_There_Is_No_Stamp_Then_It_Is_Accepted()
 	{
 		using var fixture = new PackageCacheFixture(nameof(When_There_Is_No_Stamp_Then_It_Is_Accepted));

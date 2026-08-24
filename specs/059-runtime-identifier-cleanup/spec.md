@@ -89,6 +89,12 @@ Three verified silent failures gated this work, and were fixed before anything m
    the single-layer path hard-errored on an unrecognised value one branch above. Asymmetric by accident.
 2. A runtime-enabled package resolving **zero** assemblies was not an error → **UNOB0023**.
 3. An unsupported target platform is now an error rather than a no-op.
+4. The gate itself being wrongly false — the one failure `UnoHasRuntimeHost` *introduces* — cannot be
+   reported from inside the target it gates, so it is **UNOB0025**, raised outside it. A version-skewed
+   `Uno.WinUI.Runtime.Skia.*` is the shape that produces it.
+
+UNOB0023 is suppressed during design-time builds: `ReplaceUnoRuntime` runs before `ResolveLockFileReferences`,
+which the IDE evaluates mid-restore, where a partially restored package is expected rather than an error.
 
 Without these, a mistake anywhere in this change ships as a runtime `NotImplementedException` instead of a
 build failure. The selector tests also all passed an empty `UnoRuntimeEnabledPackage`, so every one of them
@@ -97,13 +103,22 @@ exercised the do-nothing path and would have stayed green through a change that 
 ## 5. Back-compat
 
 - **The `UnoUIRuntimeIdentifier` assembly stamp check survives**, comparing against the constant instead of a
-  property. It keeps rejecting an assembly built for one of the native renderers — those stamped their
-  platform there — and accepts an unstamped one, which is what 7.0 produces. The writer is removed with the
-  property that fed it: with a single UI runtime, a stamp recording it carries no information.
+  property, and is now **UNOB0026** with an opt-out. It keeps rejecting an assembly built for one of the
+  native renderers — those stamped their platform there — and accepts an unstamped one, which is what 7.0
+  produces. The writer is removed with the property that fed it: with a single UI runtime, a stamp recording
+  it carries no information. The stamp is a foreign assembly's string-heap content, so it is sanitised before
+  it reaches the log, the same way UNOB0020's type names already were.
 - **UNOB0024 warns rather than errors** on a head still setting one of the properties. No documentation ever
   described them, so who sets them is unknown, and silently dropping their effect is the outcome to prevent.
+  It is gated on `UnoHasRuntimeHost`, not `IsUnoHead` — the latter is set only by the Uno.Sdk, and a
+  hand-rolled head is exactly the shape likely to still carry these.
+- **A cross-runtime library keeps runtime replacement.** Such a library sets `UnoRuntimeIdentifier` without
+  referencing a runtime host, so `ReplaceUnoRuntime` is gated on either signal. Gating on the host alone would
+  have left the library's own output on the reference facades.
 - `_UnoValidateReferencesUnoRuntimeIdentifier` is renamed to `_UnoValidateRuntimeAssets`, with the old name
-  kept as an alias target so `Before/AfterTargets` hooks still order correctly.
+  kept as an alias target. The alias carries `BeforeTargets="CoreCompile"` of its own: MSBuild schedules a
+  consumer's `Before/AfterTargets` hook only when the anchor target actually executes, so an alias with only
+  `DependsOnTargets` would never fire one.
 - **The `MediaPlayerElement` half of UNO0007 is removed** — a consumer-visible diagnostic, called out rather
   than slipped in. Both of its branches were unreachable: one compared `UnoRuntimeIdentifier` against a value
   no shipped package has set since native WebAssembly was removed, the other looked for
