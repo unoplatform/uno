@@ -10,7 +10,7 @@
 
     <StackPanel Padding="16" Spacing="8">
         <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Window.SystemBackdrop" />
-        <TextBlock Text="Sets the system backdrop material on the current window. On macOS this uses NSVisualEffectView with the corresponding vibrancy material. On Windows 11 (22621+) this uses DwmSetWindowAttribute with DWMWA_SYSTEMBACKDROP_TYPE. The framework transparentizes the visual tree so the material shows through." TextWrapping="Wrap" />
+        <TextBlock Text="Sets the system backdrop material on the current window. On macOS this uses NSVisualEffectView with the corresponding vibrancy material. On Windows 11 (22621+) this uses DwmSetWindowAttribute with DWMWA_SYSTEMBACKDROP_TYPE. Setting a backdrop drops the window's own root background; your content keeps its own, so make the page transparent for the material to show." TextWrapping="Wrap" />
 
         <TextBlock FontWeight="SemiBold">
             <Run Text="IsSupported: " />
