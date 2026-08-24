@@ -497,9 +497,14 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			return;
 		}
 
-		// Tighten the scissor to the path bounds, and capture the flattened device-space fan for an exact
-		// per-fragment coverage mask (built at present time).
-		ClipRect(geometry.Bounds, operation, antialias);
+		// Capture the flattened device-space fan for an exact per-fragment coverage mask (built at present time).
+		// Tighten the scissor to the path bounds ONLY for Intersect (the path lies within its bounds). For
+		// Difference the visible region is OUTSIDE the path and extends past its bounds, so tightening to the
+		// bounds would wrongly clip everything beyond them — leave the scissor and let PathExclude do the exact cut.
+		if (operation != ClipOperation.Difference)
+		{
+			ClipRect(geometry.Bounds, operation, antialias);
+		}
 		_fan = new List<float>();
 		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
 		geometry.StreamFlattened(this);
