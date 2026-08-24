@@ -2,17 +2,21 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<!-- Target used to override the uno-runtime targets -->
+	<!--
+	UnoRuntimeIdentifier keeps the target running for a cross-runtime library, which sets it without
+	referencing a runtime host. Dropping it here would leave such a library's output on the reference facades.
+	-->
 	<Target Name="ReplaceUnoRuntime"
-				Condition="'$(UnoHasRuntimeHost)' == 'true'"
+				Condition="'$(UnoHasRuntimeHost)' == 'true' or '$(UnoRuntimeIdentifier)' != ''"
 				BeforeTargets="_ComputeResolvedCopyLocalPublishAssets;ResolveLockFileCopyLocalFiles;ComputeFilesToPublish;GeneratePublishDependencyFile;ResolveLockFileReferences">
 
 		<PropertyGroup>
 			<!--
-			The folder name a third-party cross-runtime library packs into, which the library names through
-			UnoRuntimeIdentifier. Not a drawing backend, and not derived from the target framework.
+			The legacy netstandard2.0 convention's folder, named by the library that packs into it. A head has
+			no say in it: every value a head could have set resolved to this one.
 			-->
 			<_LibraryUnoRuntimeIdentifier>$(UnoRuntimeIdentifier)</_LibraryUnoRuntimeIdentifier>
-			<_LibraryUnoRuntimeIdentifier Condition=" '$(_LibraryUnoRuntimeIdentifier)' == '' ">skia</_LibraryUnoRuntimeIdentifier>
+			<_LibraryUnoRuntimeIdentifier Condition=" '$(UnoHasRuntimeHost)' == 'true' or '$(_LibraryUnoRuntimeIdentifier)' == '' ">skia</_LibraryUnoRuntimeIdentifier>
 		</PropertyGroup>
 
 		<ItemGroup>
@@ -98,8 +102,8 @@
 		<Error
 			Code="UNOB0023"
 			HelpLink="https://aka.platform.uno/UNOB0023"
-			Text="The runtime-enabled package(s) [@(_UnoRuntimeEnabledPackage_Unresolved)] did not provide any runtime assembly for this target framework. The application would run against the reference assemblies and fail at runtime. See https://aka.platform.uno/UNOB0023"
-			Condition="'@(_UnoRuntimeEnabledPackage_Unresolved)'!='' AND '$(UnoDisableUNOB0023Validation)'!='true'" />
+			Text="The runtime-enabled package(s) [@(_UnoRuntimeEnabledPackage_Unresolved)] did not provide any runtime assembly for $(TargetFramework). The application would run against the reference assemblies and fail at runtime. Re-run with -v:n for the paths that were searched. See https://aka.platform.uno/UNOB0023"
+			Condition="'@(_UnoRuntimeEnabledPackage_Unresolved)'!='' AND '$(UnoDisableUNOB0023Validation)'!='true' AND '$(DesignTimeBuild)'!='true'" />
 	</Target>
 
 	<Target Name="_UnoValidateRuntimeAssets" BeforeTargets="CoreCompile">
@@ -107,6 +111,8 @@
 			<!-- Normalized so a value other than 'true' cannot fail the task's boolean parameter conversion. -->
 			<_UnoDisableUNOB0020Validation>false</_UnoDisableUNOB0020Validation>
 			<_UnoDisableUNOB0020Validation Condition="'$(UnoDisableUNOB0020Validation)'=='true'">true</_UnoDisableUNOB0020Validation>
+			<_UnoDisableUNOB0026Validation>false</_UnoDisableUNOB0026Validation>
+			<_UnoDisableUNOB0026Validation Condition="'$(UnoDisableUNOB0026Validation)'=='true'">true</_UnoDisableUNOB0026Validation>
 		</PropertyGroup>
 
 		<RuntimeAssetsValidatorTask_v0
@@ -114,17 +120,23 @@
 			NuGetPackageRoot="$(NuGetPackageRoot)"
 			ResolvedCompileFileDefinitionsInput="@(ResolvedCompileFileDefinitions)"
 			DisablePlatformAssetValidation="$(_UnoDisableUNOB0020Validation)"
+			DisableUIRuntimeValidation="$(_UnoDisableUNOB0026Validation)"
 			RuntimeCopyLocalItemsInput="@(RuntimeCopyLocalItems)">
 		</RuntimeAssetsValidatorTask_v0>
 	</Target>
 
-	<!-- Kept so a project hooking Before/AfterTargets on the previous name still orders against the validation. -->
-	<Target Name="_UnoValidateReferencesUnoRuntimeIdentifier" DependsOnTargets="_UnoValidateRuntimeAssets" />
+	<!--
+	Runs so that a project hooking Before/AfterTargets on the previous name still fires: MSBuild schedules
+	such a hook only when its anchor target actually executes.
+	-->
+	<Target Name="_UnoValidateReferencesUnoRuntimeIdentifier"
+			BeforeTargets="CoreCompile"
+			DependsOnTargets="_UnoValidateRuntimeAssets" />
 
 	<Target Name="_UnoWarnObsoleteRuntimeIdentifiers" BeforeTargets="BeforeBuild">
 		<!--
-		Nothing reads these for a head any more. A cross-runtime library still names the uno-runtime folder it
-		packs into through UnoRuntimeIdentifier, so only a head is warned about that one.
+		Gated on UnoHasRuntimeHost rather than IsUnoHead, which only the Uno.Sdk sets: a hand-rolled head is
+		exactly the shape likely to still carry these.
 		-->
 		<Warning
 			Code="UNOB0024"
@@ -135,8 +147,22 @@
 		<Warning
 			Code="UNOB0024"
 			HelpLink="https://aka.platform.uno/UNOB0024"
-			Text="UnoRuntimeIdentifier no longer has any effect on an application head and can be removed. Runtime assets are selected from the target framework. See https://aka.platform.uno/UNOB0024"
-			Condition="'$(UnoRuntimeIdentifier)'!='' AND '$(IsUnoHead)'=='true' AND '$(UnoDisableUNOB0024Validation)'!='true'" />
+			Text="UnoRuntimeIdentifier no longer selects runtime assets for an application head and can be removed. They are selected from the target framework. See https://aka.platform.uno/UNOB0024"
+			Condition="'$(UnoRuntimeIdentifier)'!='' AND '$(UnoHasRuntimeHost)'=='true' AND '$(UnoDisableUNOB0024Validation)'!='true'" />
+	</Target>
+
+	<!--
+	The one failure the runtime-host gate makes possible, and the only one ReplaceUnoRuntime cannot report:
+	packages that need replacement, on a head that never picked up a runtime host - a version-skewed
+	Uno.WinUI.Runtime.Skia.* is the usual cause. Left as a warning because OutputType is a weaker "is a head"
+	test than the Uno.Sdk's own.
+	-->
+	<Target Name="_UnoWarnMissingRuntimeHost" BeforeTargets="BeforeBuild">
+		<Warning
+			Code="UNOB0025"
+			HelpLink="https://aka.platform.uno/UNOB0025"
+			Text="This project references runtime-enabled package(s) [@(UnoRuntimeEnabledPackage)] but no Uno Platform runtime host, so the reference assemblies will be deployed and will fail at runtime. Check that the Uno.WinUI.Runtime.Skia.* package version matches Uno.WinUI. See https://aka.platform.uno/UNOB0025"
+			Condition="'@(UnoRuntimeEnabledPackage)'!='' AND '$(UnoHasRuntimeHost)'!='true' AND '$(UnoRuntimeIdentifier)'=='' AND ('$(OutputType)'=='Exe' OR '$(OutputType)'=='WinExe') AND '$(UnoDisableUNOB0025Validation)'!='true'" />
 	</Target>
 
 	<!-- Force a rebuild on runtime files changes -->

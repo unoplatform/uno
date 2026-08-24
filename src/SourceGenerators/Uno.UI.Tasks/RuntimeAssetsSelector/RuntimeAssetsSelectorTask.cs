@@ -33,6 +33,10 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		/// <summary>
 		/// The platform of the target framework being built, e.g. "android", or empty for a plain netX.0 head.
 		/// </summary>
+		/// <remarks>
+		/// Deliberately not [Required]: MSBuild treats an empty string as unsupplied, and empty is the real
+		/// value for a headless head on a plain netX.0 target framework.
+		/// </remarks>
 		public string TargetPlatformIdentifier { get; set; } = "";
 
 		/// <summary>
