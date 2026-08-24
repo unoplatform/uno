@@ -180,9 +180,9 @@ internal sealed class CommandListRecorder : ICommandRecorder
 		_depth++;
 	}
 
-	public void SaveLayer(BlendMode blendMode, bool antialias = false)
+	public void SaveLayerMask(bool antialias = false)
 	{
-		_commands.Add(ctx => ctx.Target.SaveLayer(blendMode, antialias));
+		_commands.Add(ctx => ctx.Target.SaveLayerMask(antialias));
 		Push();
 		_depth++;
 	}

@@ -128,8 +128,8 @@ internal class SkiaDrawingSession : IDrawingSession
 	public void SaveLayer(IColorFilter colorFilter, bool antialias)
 		=> _canvas.SaveLayer(LayerPaint(antialias, colorFilter, BlendMode.SrcOver));
 
-	public void SaveLayer(BlendMode blendMode, bool antialias)
-		=> _canvas.SaveLayer(LayerPaint(antialias, colorFilter: null, blendMode));
+	public void SaveLayerMask(bool antialias = false)
+		=> _canvas.SaveLayer(LayerPaint(antialias, colorFilter: null, BlendMode.DstIn));
 
 	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
 		=> _canvas.ClipRect(rect.ToSKRect(), ToSK(operation), antialias);
