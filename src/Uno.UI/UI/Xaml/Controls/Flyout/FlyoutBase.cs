@@ -73,6 +73,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private InputDeviceType m_inputDeviceTypeUsedToOpen;
 
+		/// <summary>
+		/// Whether touch was the input device that opened this flyout. Set before <see cref="Opening"/> fires.
+		/// </summary>
+		private protected bool WasOpenedByTouch => m_inputDeviceTypeUsedToOpen == InputDeviceType.Touch;
+
 		internal FlyoutPlacementMode EffectivePlacement => m_hasPlacementOverride ? m_placementOverride : Placement;
 
 		protected FlyoutBase()

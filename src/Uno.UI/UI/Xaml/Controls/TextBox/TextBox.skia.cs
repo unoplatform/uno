@@ -123,9 +123,11 @@ public partial class TextBox : ITextSelectionGripperHost
 	// OperatingSystem.IsAndroid()/IsIOS() are both false and the OS-derived default is Desktop.
 	internal TouchTextSelectionConvention TouchSelectionConvention { get; set; } = GetDefaultTouchTextSelectionConvention();
 
+	// A browser on a phone or tablet must follow that device's touch conventions too: on WebAssembly the
+	// OS APIs report "browser", so the host device comes from DeviceTargetHelper.BrowserHost.
 	private static TouchTextSelectionConvention GetDefaultTouchTextSelectionConvention()
-		=> OperatingSystem.IsAndroid() ? TouchTextSelectionConvention.Android
-			: Uno.UI.Helpers.DeviceTargetHelper.IsUIKit() ? TouchTextSelectionConvention.iOS
+		=> OperatingSystem.IsAndroid() || DeviceTargetHelper.BrowserHost is BrowserHostPlatform.Android ? TouchTextSelectionConvention.Android
+			: DeviceTargetHelper.IsUIKit() || DeviceTargetHelper.BrowserHost is BrowserHostPlatform.iOS ? TouchTextSelectionConvention.iOS
 			: TouchTextSelectionConvention.Desktop;
 
 	public static DependencyProperty CanUndoProperty { get; } = DependencyProperty.Register(
@@ -680,16 +682,20 @@ public partial class TextBox : ITextSelectionGripperHost
 	private PointerDeviceType _lastInputDeviceType;
 	private Point _lastPointerPosition;
 	private bool _isSelectionFlyoutUpdateQueued;
+	// Uno addition (not part of the WinUI port): lets the flyout re-open over a collapsed caret when the single
+	// insertion handle is tapped. See QueueGripperSelectionFlyout / OnGripperTapped.
+	private bool _allowEmptySelectionFlyout;
 
 	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5292-5302)
 	private bool HasSelectionFlyout() => SelectionFlyout is not null;
 
 	// Ported from: microsoft-ui-xaml2/src/dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp (lines 5349-5377)
 	// QueueUpdateSelectionFlyoutVisibility - queues async visibility update
-	private void QueueUpdateSelectionFlyoutVisibility(PointerDeviceType deviceType, Point position)
+	private void QueueUpdateSelectionFlyoutVisibility(PointerDeviceType deviceType, Point position, bool allowEmptySelection = false)
 	{
 		_lastInputDeviceType = deviceType;
 		_lastPointerPosition = position;
+		_allowEmptySelectionFlyout = allowEmptySelection;
 
 		// Line 5358-5360: Prevent duplicate queued updates
 		if (!_isSelectionFlyoutUpdateQueued)
@@ -725,8 +731,11 @@ public partial class TextBox : ITextSelectionGripperHost
 
 			case PointerDeviceType.Pen:
 			case PointerDeviceType.Touch:
-				// Line 5403-5411: Pen/Touch - show if selection exists
-				if (selectionLength > 0)
+				// Line 5403-5411: Pen/Touch - show if selection exists.
+				// Uno addition (beyond the WinUI port): also show over a collapsed caret when the single insertion
+				// handle was tapped, matching the native iOS/Android Paste/Select-all popup (gated to those
+				// conventions by the caller).
+				if (selectionLength > 0 || _allowEmptySelectionFlyout)
 				{
 					shouldShow = true;
 					showMode = FlyoutShowMode.Transient;
@@ -780,6 +789,7 @@ public partial class TextBox : ITextSelectionGripperHost
 
 		// Line 5450: Reset input device type after processing
 		_lastInputDeviceType = default;
+		_allowEmptySelectionFlyout = default;
 	}
 
 	#endregion
@@ -931,6 +941,40 @@ public partial class TextBox : ITextSelectionGripperHost
 				KeyDownBack(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 				break;
 		}
+	}
+
+	partial void OnCharacterReceivedPartial(CharacterReceivedRoutedEventArgs e)
+	{
+		// Characters produced by a key press are inserted by OnKeyDownSkia. Only characters
+		// that can't be delivered through a key press — composed on a key release, i.e.
+		// Windows Alt+numpad codes — arrive solely through this event.
+		if (!_isSkiaTextBox || e.Handled || e.OriginalSource != this || !e.KeyStatus.IsKeyReleased)
+		{
+			return;
+		}
+
+		if (IsReadOnly || HasPointerCapture || ShouldSwallowKeyDuringComposition || char.IsControl(e.Character))
+		{
+			return;
+		}
+
+		e.Handled = true;
+		TrySetCurrentlyTyping(true);
+
+		var (selectionStart, selectionLength) = _selection.selectionEndsAtTheStart
+			? (_selection.start + _selection.length, -_selection.length)
+			: (_selection.start, _selection.length);
+		var text = Text;
+		var start = Math.Min(selectionStart, selectionStart + selectionLength);
+		var end = Math.Max(selectionStart, selectionStart + selectionLength);
+		text = text[..start] + e.Character + text[end..];
+
+		_suppressCurrentlyTyping = true;
+		_clearHistoryOnTextChanged = false;
+		_pendingSelection = (start + 1, 0);
+		ProcessTextInput(text);
+		_clearHistoryOnTextChanged = true;
+		_suppressCurrentlyTyping = false;
 	}
 
 	private void OnKeyDownSkia(KeyRoutedEventArgs args)
@@ -1835,11 +1879,11 @@ public partial class TextBox : ITextSelectionGripperHost
 	}
 
 	// Which platform's native touch text-selection conventions the Skia TextBox follows.
-	// Defaults to the running OS; runtime tests override it to exercise the mobile behavior on
-	// Skia Desktop, where OperatingSystem.IsAndroid()/IsIOS() are both false.
+	// Defaults to the running device (on WebAssembly, the device hosting the browser); runtime tests override
+	// it to exercise the mobile behavior on Skia Desktop, where OperatingSystem.IsAndroid()/IsIOS() are both false.
 	internal enum TouchTextSelectionConvention
 	{
-		// Desktop convention (Windows, macOS and Linux): the OS-derived default for every non-mobile target.
+		// Desktop convention (Windows, macOS, Linux and desktop browsers).
 		Desktop,
 		Android,
 		iOS
@@ -1890,7 +1934,13 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	TextBlock ITextSelectionGripperHost.GripperTextSurface => TextBoxView.DisplayBlock;
 
-	Rect ITextSelectionGripperHost.GripperClipBounds => this.GetAbsoluteBoundsRect();
+	// Ancestor-clipped, not the raw bounds: a TextBox scrolled out of an enclosing ScrollViewer still has
+	// valid bounds, and the grippers live in an unclipped popup above the tree - so culling against the raw
+	// bounds leaves them painted over whatever the ScrollViewer scrolled them onto.
+	Rect ITextSelectionGripperHost.GripperClipBounds => this.GetGlobalBoundsWithOptions(
+		ignoreClipping: false,
+		ignoreClippingOnScrollContentPresenters: false,
+		useTargetInformation: false);
 
 	GripperMode ITextSelectionGripperHost.GripperMode => _caretMode switch
 	{
@@ -1923,10 +1973,15 @@ public partial class TextBox : ITextSelectionGripperHost
 		OnContextRequested(this, contextArgs);
 	}
 
-	void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args)
-		=> QueueUpdateSelectionFlyoutVisibility(args.Pointer.PointerDeviceType, args.GetCurrentPoint(this).Position);
+	void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args, bool allowEmptySelection)
+		=> QueueUpdateSelectionFlyoutVisibility(
+			args.Pointer.PointerDeviceType,
+			args.GetCurrentPoint(this).Position,
+			// The single insertion handle only exists under the mobile (iOS/Android) conventions; tapping it
+			// re-opens the flyout even over a collapsed caret. Desktop never gets the empty-selection flyout.
+			allowEmptySelection: allowEmptySelection && TouchSelectionConvention != TouchTextSelectionConvention.Desktop);
 
-	void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, PointerRoutedEventArgs args)
+	void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
 	{
 		// The insertion handle (EndOnly gripper) sits over the character it points at, so the second tap of
 		// a double-tap lands on the handle instead of the text. Fold it into the same multi-tap counter as
@@ -1936,15 +1991,18 @@ public partial class TextBox : ITextSelectionGripperHost
 			: 0;
 		_lastPointerDown = (press, repeatedPresses);
 
-		var displayBlockPoint = args.GetCurrentPoint(TextBoxView.DisplayBlock).Position;
+		// Act on the character the handle points at, not the finger's position on the thumb (which hangs below
+		// the caret line and would jump the caret to the end of the text).
 		if (TouchSelectionConvention != TouchTextSelectionConvention.Desktop && repeatedPresses >= 1)
 		{
-			TouchSelectWord(displayBlockPoint);
+			TouchSelectWordAt(anchorIndex);
 		}
-		else
+		else if (_caretMode != CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 		{
-			TouchTap(displayBlockPoint, true);
+			TouchTapAt(anchorIndex);
 		}
+		// Both thumbs showing: the tap grabbed a selection edge, so keep the selection (native iOS/Android)
+		// instead of collapsing it to a caret. The presenter re-shows the selection flyout on release.
 	}
 	#endregion
 

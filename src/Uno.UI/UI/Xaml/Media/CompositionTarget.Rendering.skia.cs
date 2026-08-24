@@ -68,6 +68,10 @@ public partial class CompositionTarget
 	// _frameGate, like the frame slot itself.
 	private readonly Stack<SKPath> _damageSnapshotPool = new();
 
+	// Returned as the native-element clip path when there's no recorded frame yet. The clip path is
+	// borrowed read-only by hosts (never mutated or disposed), so a single shared instance is safe.
+	private static readonly SKPath _emptyPath = new();
+
 	// only set on the UI thread and under _frameGate, only read under _frameGate
 	private (FramePicture picture, SKPath nativeElementClipPath, SKPath damage)? _lastRenderedFrame;
 	// only set and read under _xamlRootBoundsGate
@@ -213,6 +217,32 @@ public partial class CompositionTarget
 		_pendingDamage.Union(region);
 	}
 
+	private readonly SKPaint _damageOutsetPaint = new() { Style = SKPaintStyle.Stroke, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
+	private readonly SKPath _damageOutsetBand = new();
+	private readonly SKPath _outsetDamage = new();
+
+	// Rendering is antialiased: it writes device pixels whose centers lie outside the drawn geometry,
+	// while the non-AA damage clip only includes pixels whose centers lie inside the damage region.
+	// When a damage edge lands between device pixels (fractional rasterization scale), that AA fringe
+	// is written but never replayed and accumulates as stale artifacts. Outsetting the clip by one
+	// device pixel covers every pixel the damaged content may have touched; the replayed picture is
+	// the full frame, so over-covering is always correct.
+	private SKPath OutsetDamageForPresent(SKPath damage, float rasterizationScale)
+	{
+		if (damage.IsEmpty)
+		{
+			return damage;
+		}
+
+		// The stroke straddles the edge, so a width of 2 device pixels outsets the fill by 1.
+		_damageOutsetPaint.StrokeWidth = 2 / rasterizationScale;
+		_damageOutsetBand.Rewind();
+		_damageOutsetPaint.GetFillPath(damage, _damageOutsetBand);
+		_outsetDamage.Rewind();
+		damage.Op(_damageOutsetBand, SKPathOp.Union, _outsetDamage);
+		return _outsetDamage;
+	}
+
 	private static readonly SKPaint _damageOverlayFill = new() { Color = new SKColor(0xFF, 0x00, 0x00, 0x30), Style = SKPaintStyle.Fill };
 	private static readonly SKPaint _damageOverlayStroke = new() { Color = new SKColor(0xFF, 0x00, 0x00, 0xB0), Style = SKPaintStyle.Stroke, StrokeWidth = 1 };
 
@@ -246,7 +276,7 @@ public partial class CompositionTarget
 
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
 		{
-			return new SKPath();
+			return _emptyPath;
 		}
 		else
 		{
@@ -292,7 +322,7 @@ public partial class CompositionTarget
 
 			if (useDamageRegion && !overlayEnabled)
 			{
-				canvas.ClipPath(damage, antialias: false);
+				canvas.ClipPath(OutsetDamageForPresent(damage, rasterizationScale), antialias: false);
 			}
 
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();

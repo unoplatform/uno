@@ -30,7 +30,15 @@ public class Given_ClientHotReloadProcessor
 			: rid.StartsWith("tvos", StringComparison.OrdinalIgnoreCase) ? "tvos" // incl. tvossimulator
 			: rid.StartsWith("ios", StringComparison.OrdinalIgnoreCase) ? "ios" // incl. iossimulator
 			: rid.StartsWith("browser", StringComparison.OrdinalIgnoreCase) ? "browserwasm"
-			: "skia"; // win-*, linux-*, osx-*: the desktop family reports the `skia` pseudo-platform
+			// win-*, linux-*, osx-*, freebsd-*: the desktop family reports the `skia` pseudo-platform
+			: rid.StartsWith("win", StringComparison.OrdinalIgnoreCase)
+				|| rid.StartsWith("linux", StringComparison.OrdinalIgnoreCase)
+				|| rid.StartsWith("osx", StringComparison.OrdinalIgnoreCase)
+				|| rid.StartsWith("freebsd", StringComparison.OrdinalIgnoreCase) ? "skia"
+			// Anything else means the host never stamped a RID — RuntimeInformation then reports
+			// "unknown", which is no oracle at all. The CoreCLR-on-Android host does exactly that,
+			// and mapping it onto the desktop family made this test assert `skia` on Android.
+			: null;
 
 		var reported = ClientHotReloadProcessor.GetRuntimeTargetFramework(Microsoft.UI.Xaml.Application.Current.GetType().Assembly);
 
@@ -44,7 +52,17 @@ public class Given_ClientHotReloadProcessor
 		Assert.IsTrue(
 			Version.TryParse(frameworkVersion.Substring(3), out var version) && version.Major >= 9,
 			$"Unexpected framework version in '{reported}'.");
-		Assert.AreEqual(expectedPlatform, platform, $"Reported '{reported}' for runtime identifier '{rid}'.");
+
+		if (expectedPlatform is null)
+		{
+			Assert.IsFalse(
+				string.IsNullOrEmpty(platform),
+				$"Reported '{reported}' carries no platform (runtime identifier '{rid}' provides no cross-check).");
+		}
+		else
+		{
+			Assert.AreEqual(expectedPlatform, platform, $"Reported '{reported}' for runtime identifier '{rid}'.");
+		}
 	}
 }
 #endif

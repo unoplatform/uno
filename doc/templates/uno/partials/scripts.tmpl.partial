@@ -17,9 +17,14 @@ startOnLoad: false
 mermaid.init(undefined, ".lang-mermaid");
 </script>
 
-<!-- Algolia DocSearch -->
+<!-- Algolia DocSearch. The unit-tested result transforms in
+     service/docsearch-transform.js ship inside styles/docfx.js (loaded above),
+     which gulp builds by concatenating service/*.js. -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
 <script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
+<!-- Preact, used to build the DocSearch v3 resultsFooterComponent vnode
+     (v3 renders the footer as a Preact component; it has no v4 `html` helper). -->
+<script src="https://cdn.jsdelivr.net/npm/preact@10/dist/preact.umd.js"></script>
 <script>
     /**
      * Initialize Algolia DocSearch
@@ -48,7 +53,41 @@ mermaid.init(undefined, ".lang-mermaid");
                         appId: 'PHB9D8WS99',
                         indexName: 'platform',
                         apiKey: '7877394996f96cde1a9b795dce3f7787',
-                        placeholder: 'Search Docs...'
+                        placeholder: 'Search Docs...',
+                        maxResultsPerGroup: 20,
+                        // Interim display-layer transforms only. Real dedup, nav
+                        // exclusion and ranking are configured server-side in the
+                        // Algolia crawler/index config
+                        // (doc/algolia/docsearch-crawler-config.js). See
+                        // unoplatform/uno-private#2038. The logic lives in a
+                        // unit-tested module (service/docsearch-transform.js);
+                        // fall back to identity if it failed to load so search
+                        // never hard-breaks.
+                        transformItems: function (items) {
+                            return (window.unoDocSearch && window.unoDocSearch.transformItems)
+                                ? window.unoDocSearch.transformItems(items)
+                                : items;
+                        },
+                        // "See all results" footer, replacing the former custom
+                        // MutationObserver overlay. Links to the InstantSearch.js
+                        // results page (search.html). See uno-private#2038.
+                        // DocSearch v3 invokes this as a Preact component and
+                        // passes only { state } (no v4 `html` helper), so we
+                        // return a Preact vnode built with preact.h and fall back
+                        // to no footer if preact/query are unavailable.
+                        resultsFooterComponent: function (props) {
+                            var state = props && props.state;
+                            var query = (state && state.query) || '';
+                            var h = (typeof preact !== 'undefined') && preact.h;
+                            if (!h || !query) {
+                                return null;
+                            }
+                            var nbHits = state && state.context && state.context.nbHits;
+                            var label = nbHits ? ('See all ' + nbHits + ' results') : 'See all results';
+                            var searchUrl = '{{_rel}}search.html?q=' + encodeURIComponent(query);
+                            return h('div', { class: 'DocSearch-HitsFooter' },
+                                h('a', { class: 'uno-see-all-results', href: searchUrl }, label));
+                        }
                     });
                     console.log("DocSearch initialized.");
                     // Disconnect the observer after initialization

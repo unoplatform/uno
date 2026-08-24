@@ -1,0 +1,27 @@
+<Page
+    x:Class="SamplesApp.UITests.Windows_Security_Authentication_Web.AuthenticationBroker_Cancel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SamplesApp.UITests.Windows_Security_Authentication_Web"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <StackPanel Padding="12" Spacing="6">
+        <TextBlock TextWrapping="Wrap">
+            Tap Authenticate, then dismiss the web authentication sheet without signing in.
+            The result must be UserCancel, and the app must not crash.
+        </TextBlock>
+        <Button
+            x:Name="btnAuthenticate"
+            AutomationProperties.AutomationId="AuthenticateButton"
+            Click="Authenticate_Clicked">
+            Authenticate
+        </Button>
+        <TextBlock
+            x:Name="resultTxt"
+            AutomationProperties.AutomationId="AuthenticationResult"
+            TextWrapping="Wrap" />
+    </StackPanel>
+</Page>

@@ -1146,6 +1146,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		// Skia-WASM: a single click raises GotFocus three times for the same element, see https://github.com/unoplatform/uno/issues/24144
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Clicking_Outside_ContentElement_Should_Focus()
 		{
 			var tb1 = new TextBox() { Tag = "First" };
@@ -1159,47 +1161,67 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var list = new List<string>();
 
+			// Never cleared, so a failing assertion reports every notification that arrived, drained ones included.
+			var raw = new List<string>();
+
 			FocusManager.GotFocus += FocusManager_GotFocus;
 
-			var scp1 = GetSCP(tb1);
-			var scp2 = GetSCP(tb2);
+			try
+			{
+				var scp1 = GetSCP(tb1);
+				var scp2 = GetSCP(tb2);
 
-			var tb1Bounds = tb1.GetAbsoluteBounds();
-			var tb2Bounds = tb2.GetAbsoluteBounds();
-			var scp1Bounds = scp1.GetAbsoluteBounds();
-			var scp2Bounds = scp2.GetAbsoluteBounds();
+				var tb1Bounds = tb1.GetAbsoluteBounds();
+				var tb2Bounds = tb2.GetAbsoluteBounds();
+				var scp1Bounds = scp1.GetAbsoluteBounds();
+				var scp2Bounds = scp2.GetAbsoluteBounds();
 
-			Assert.IsLessThan(scp1Bounds.X, tb1Bounds.X);
-			Assert.IsLessThan(scp2Bounds.X, tb2Bounds.X);
+				Assert.IsLessThan(scp1Bounds.X, tb1Bounds.X);
+				Assert.IsLessThan(scp2Bounds.X, tb2Bounds.X);
 
-			var clickPosition1 = new Point((tb1Bounds.X + scp1Bounds.X) / 2, (tb1Bounds.Top + tb1Bounds.Bottom) / 2);
-			var clickPosition2 = new Point((tb2Bounds.X + scp2Bounds.X) / 2, (tb2Bounds.Top + tb2Bounds.Bottom) / 2);
+				var clickPosition1 = new Point((tb1Bounds.X + scp1Bounds.X) / 2, (tb1Bounds.Top + tb1Bounds.Bottom) / 2);
+				var clickPosition2 = new Point((tb2Bounds.X + scp2Bounds.X) / 2, (tb2Bounds.Top + tb2Bounds.Bottom) / 2);
 
-			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
-			using var mouse = injector.GetMouse();
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var mouse = injector.GetMouse();
 
-			mouse.MoveTo(clickPosition2);
-			Assert.IsEmpty(list);
-			mouse.Press(clickPosition2);
-			await WindowHelper.WaitForIdle();
-			mouse.Release();
-			await WindowHelper.WaitForIdle();
-			Assert.HasCount(1, list);
-			Assert.AreEqual("Second", list[0]);
+				mouse.MoveTo(clickPosition2);
+				Assert.IsEmpty(list, Notifications());
 
-			mouse.MoveTo(clickPosition1);
-			Assert.HasCount(1, list);
-			mouse.Press(clickPosition1);
-			await WindowHelper.WaitForIdle();
-			mouse.Release();
-			await WindowHelper.WaitForIdle();
-			Assert.HasCount(2, list);
-			Assert.AreEqual("First", list[1]);
+				// GotFocus is raised through the dispatcher, so notifications from an earlier test can still be
+				// queued at this point. Pump them out and drop them before counting the ones this test causes.
+				await WindowHelper.WaitForIdle();
+				list.Clear();
 
-			FocusManager.GotFocus -= FocusManager_GotFocus;
+				mouse.Press(clickPosition2);
+				await WindowHelper.WaitForIdle();
+				mouse.Release();
+				await WindowHelper.WaitForIdle();
+				Assert.HasCount(1, list, Notifications());
+				Assert.AreEqual("Second", list[0]);
+
+				mouse.MoveTo(clickPosition1);
+				Assert.HasCount(1, list, Notifications());
+				mouse.Press(clickPosition1);
+				await WindowHelper.WaitForIdle();
+				mouse.Release();
+				await WindowHelper.WaitForIdle();
+				Assert.HasCount(2, list, Notifications());
+				Assert.AreEqual("First", list[1]);
+			}
+			finally
+			{
+				FocusManager.GotFocus -= FocusManager_GotFocus;
+			}
+
+			string Notifications() => $"All GotFocus notifications: [{string.Join(", ", raw)}]";
 
 			void FocusManager_GotFocus(object sender, FocusManagerGotFocusEventArgs e)
-				=> list.Add((e.NewFocusedElement as TextBox)?.Tag?.ToString() ?? e.NewFocusedElement?.ToString() ?? "null");
+			{
+				var focused = (e.NewFocusedElement as TextBox)?.Tag?.ToString() ?? e.NewFocusedElement?.ToString() ?? "null";
+				list.Add(focused);
+				raw.Add(focused);
+			}
 
 			static FrameworkElement GetSCP(TextBox tb)
 			{

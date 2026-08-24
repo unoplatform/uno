@@ -57,6 +57,13 @@ An existing application needs additional changes to be debugged properly.
 3. Replace all instances of `MyExtensionsApp._1` with your application's name in `launch.json`.
 4. Inside this folder, create a file named `tasks.json` and copy the [contents of this file](https://github.com/unoplatform/uno.templates/blob/main/src/Uno.Templates/content/unoapp/.vscode/tasks.json).
 
+## Working with solution-less workspaces
+
+A `.sln`/`.slnx` file is not required to work in VS Code. When you open a folder that contains a project but no solution file, the Uno Platform extension (0.25.3 or later, together with the C# Dev Kit extension) discovers the projects in the workspace and lets you pick the active one from the status bar, just as it does for solutions.
+
+> [!NOTE]
+> Dev Server and Hot Reload tooling on solution-less workspaces requires the application to use **Uno.Sdk 6.6 or later**. Make sure the `global.json` file declaring the `Uno.Sdk` version is in the opened folder (or a parent directory). See [Solution-less projects](xref:Uno.Features.Uno.Sdk#solution-less-projects-and-slnx-solutions) for building from the command line.
+
 ## Advanced debugging
 
 You can find [advanced Code debugging topic here](xref:uno.vscode.mobile.advanced.debugging).
