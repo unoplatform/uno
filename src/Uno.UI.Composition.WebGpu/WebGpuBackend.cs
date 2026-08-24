@@ -3553,7 +3553,7 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 	// BlendMode → CompositeBlendWgsl mode id (stable, independent of the enum's ordinals).
 	private static int BlendShaderId(BlendMode mode) => mode switch
 	{
-		BlendMode.SrcOver => 0, BlendMode.Src => 1, BlendMode.Plus => 2, BlendMode.Modulate => 3, BlendMode.Multiply => 4,
+		BlendMode.SrcOver => 0, BlendMode.Src => 1, BlendMode.Plus => 2, BlendMode.Multiply => 4,
 		BlendMode.DstIn => 5, BlendMode.DstOut => 6, BlendMode.SrcIn => 7, BlendMode.DstOver => 8, BlendMode.SrcOut => 9,
 		BlendMode.SrcATop => 10, BlendMode.DstATop => 11, BlendMode.Xor => 12, BlendMode.Screen => 13, BlendMode.Darken => 14,
 		BlendMode.Lighten => 15, BlendMode.ColorBurn => 16, BlendMode.ColorDodge => 17, BlendMode.Overlay => 18,

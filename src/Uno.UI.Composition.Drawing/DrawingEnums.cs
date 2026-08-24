@@ -26,7 +26,6 @@ public enum BlendMode
 	SrcOver,
 	Src,
 	Plus,
-	Modulate,
 	Multiply,
 	DstIn,
 	DstOut,
