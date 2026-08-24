@@ -185,10 +185,23 @@ Host left with: `global.json` `allowPrerelease:true` (net11 SDK selection — un
 tvos + Android-API-37 installed; `E:\uno\_pkgout` holds the produced `Uno.UI.Composition.Skia` + Skia-slice `Uno.WinUI`
 nupkgs for reference.
 
-REMAINING (pack-machine / follow-up):
-- WebGPU package: nuspec + native wgpu provisioning (buildTransitive targets or pre-fetched runtimes/) + pack Exec.
-  Feature wiring is ready; the package artifact is the missing piece. wgpu-native.targets is written for the app
-  head and fetches per-platform natives at build — packaging it for distribution needs pack + multi-platform validation.
-- Final validation: CI-style `nuget pack`, then a fresh Uno app against the built packages, confirm it runs.
+DONE since:
+- WebGPU package: ✅ authored (`Uno.UI.Composition.WebGpu.Init` + `Uno.UI.Composition.WebGpu` nuspecs, native under
+  `runtimes/<rid>/native`), wired into filters + pack flow (`7e22564367a`). Loader fixed to find the packaged native
+  (`de54d8b42cc`).
+- Final validation: ✅ CI-style pack (NBGV-consistent + per-dependency XmlPokes) → fresh external `net10.0-desktop`
+  app (`UnoFeatures=skia;webgpu`) restores + builds + RUNS on WebGpu from the produced packages (net10/Linux/lavapipe).
+
+REMAINING (follow-up):
+- **Full multi-TFM/variant CI pack on a real CI toolchain** — the net10+net11 WinAppSDK/mobile legs can't build on
+  these benches (WinAppSDK 1.0.0 markup compiler vs modern MSBuild; net11 preview quirks). The Windows-asset packages
+  were packed as net10 Skia slices for the Linux run. The pack INPUTS (nuspecs, filters, pack Exec, XmlPokes, loader fix)
+  are all committed; a CI build produces the full set. Validate that build once (all TFMs/variants pack + a Windows/
+  WinAppSDK-head app), which also covers the win-x64/osx wgpu natives (only linux-x64 was exercised at runtime here).
+- **WebGpu nuspec native version is hardcoded** (`obj\wgpu-native\v29.0.1.1\...`) — brittle if `WgpuNativeVersion`
+  bumps; consider a pack-time property or a glob so the nuspec tracks `wgpu-native.targets`.
+- **On-device / other-RID runtime** (no hw here): Win32/Android Vulkan, macOS/iOS Metal, WASM WebGpu — user sign-off.
 - Open: global skia-imply makes WinAppSDK always pull SkiaSharp.Views.WinUI (decide whether to scope to Uno heads).
 - Migration guides (uno-6/uno-7) still mention SkiaRenderer; advice remains valid (kept for now).
+- api-diff CI gate (`build/PackageDiffIgnore.xml`) — the branch's public-surface removals (unrelated Skia-free work)
+  may need ignore entries; not touched (no-unrelated-changes constraint).
