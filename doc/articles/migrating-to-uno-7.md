@@ -1500,6 +1500,36 @@ Rename it to `UnoSplashScreenBackgroundColor`, and use `BackgroundColor` instead
 `UnoSplashScreen` items. WebAssembly apps that never set a splash color now get a loader that follows the
 browser theme instead of white. See [Splash screen](xref:Uno.Development.SplashScreen).
 
+### The `Uno.Sdk` is required for applications
+
+The legacy project format is removed. An Uno Platform **application** must now be a single
+`Sdk="Uno.Sdk"` project:
+
+```diff
+- <Project Sdk="Microsoft.NET.Sdk">
++ <Project Sdk="Uno.Sdk">
+```
+
+Concretely, the following are no longer supported:
+
+- Getting Uno Platform into an app head through a `PackageReference` to `Uno.WinUI` on a plain
+  `Microsoft.NET.Sdk` project. Application heads that do this now fail with
+  [UNOB0021](xref:Build.Solution.error-codes#unob0021-uno-platform-application-projects-must-use-the-unosdk).
+- The one-head-project-per-platform layout (`MyApp` shared library + `MyApp.Mobile`,
+  `MyApp.Wasm`, `MyApp.Skia.Gtk`, `MyApp.Skia.Linux.FrameBuffer`, `MyApp.Windows`, `MyApp.UWP`,
+  and `MyApp.Shared`/`.shproj` projects). One cross-targeted project replaces all of them.
+- The Uno Platform 5.1-and-earlier `SingleProject` property, superseded by `UnoSingleProject`
+  ([UNOB0022](xref:Build.Solution.error-codes#unob0022-the-singleproject-property-is-no-longer-supported)).
+- `uap10.0.*` (UWP) heads. The `Uno.WinUI` package no longer carries UWP build logic.
+
+Follow the [Migrating Projects to Single Project](xref:Uno.Development.MigratingToSingleProject)
+guide to convert an app. Once converted, the Uno Platform package versions are driven by the
+`Uno.Sdk` entry in `global.json` rather than by individual `PackageReference` versions.
+
+**Class libraries are not affected by this diagnostic.** A library may keep referencing the
+`Uno.WinUI` package from a `Microsoft.NET.Sdk` project, although `Sdk="Uno.Sdk"` is the
+recommended and templated form. Windows App SDK heads are likewise unaffected.
+
 ## Migration checklist
 
 1. Remove `<UnoFeatures>skiarenderer</UnoFeatures>` (now implicit) — and any native-only
@@ -1544,9 +1574,11 @@ browser theme instead of white. See [Splash screen](xref:Uno.Development.SplashS
    UNOB0024 points them out.
 20. Replace Uno-only implicit conversions (`Brush brush = Colors.Red`, `GridLength width = "Auto"`, …) and
    `Thickness.Empty` / `CornerRadius.None` with explicit constructors.
-21. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+21. Convert the application to a single `Sdk="Uno.Sdk"` project and delete the per-platform head
+    projects.
+22. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
-22. On iOS/tvOS, call `Uno.Storage.ApplicationDataMigrator.MigrateSettings()` at startup to
+23. On iOS/tvOS, call `Uno.Storage.ApplicationDataMigrator.MigrateSettings()` at startup to
    bring pre-7.0 application settings into the `UnoApplicationData` container, and update any
    native/interop code that read them from `NSUserDefaults.StandardUserDefaults`.
 
