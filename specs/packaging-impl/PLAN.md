@@ -37,10 +37,25 @@ Graphics2DSK [Skia slice]). Then, in throwaway projects OUTSIDE the repo tree, a
 - **Compile-link** — an external source file using the packaged public API compiled + linked clean (`Build succeeded`):
   `new Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider()` + `builder.GraphicsBackend(...)` (the neutral host-builder
   selector shipped in Uno.WinUI). Confirms the produced assemblies' public surface is intact and consumable externally.
-- Not done here: a full external-app RUN rendering with WebGPU — needs the feed on Linux/lavapipe with the renderer
-  package's `runtimes/linux-x64/native/libwgpu_native.so` (this Windows feed packed the win-x64 native only, since a
-  Windows build fetches only the host-RID wgpu native). The two halves are each proven separately: external package
-  consumption (here) + runtime WebGpu selection via the host-builder option (below).
+### External-app RUN attempt (Linux/lavapipe) — blocked by hand-feed-assembly fidelity, NOT by the packaging
+Built a real external Uno desktop app (Uno.Sdk.Private, net10.0-desktop, `UnoFeatures=skia;webgpu`, own Program.cs
+selecting WebGpu via `builder.GraphicsBackend(new WebGpuGraphicsProvider())` + `ManagedGeometryFactory`) consuming the
+feed (renderer nupkg patched with the linux-x64 `.so`). **Restore ✓ and build ✓** against the produced packages. The
+RUN did not reach a WebGpu frame — it hit, in sequence, artifacts of hand-assembling a multi-variant feed across
+several ad-hoc bench builds, each fixed then exposing the next:
+1. renderer assembly stamped v255.255.255.255 (built without `-p:Version`) vs the rest at v7.0.0.0 → .NET won't load-down.
+   Fixed by rebuilding the renderer with the version + swapping it into the nupkg.
+2. `Uno.Foundation.Logging` referenced at v255.255.255.255 by a stale-compiled `Uno.UI` in a hand-packed slice
+   (incremental builds don't restamp unchanged transitive deps) → fixed by a consistent `-t:Rebuild` of the Skia closure.
+3. the deployed `Uno.dll` (WinRT bait-and-switch `uno-runtime/net10.0/skia` variant) turned out to be a **stale
+   released 6.0.465 binary** sitting in the bin path at pack time — missing `BitmapEncoder.EnsureCodec` that the fresh
+   `Uno.UI.WireDownwardHooks` calls → `MissingMethodException`.
+None of these are defects in the drawing-backend packaging or code; they are consequences of reproducing the CI
+multi-variant pack (consistent NBGV stamping across net10+net11+Reference/Skia/Wasm variants, runtime-replace folders,
+clean bins) by hand on net11-preview/WinAppSDK-limited benches. The real CI `BuildNuGetPackage` pipeline produces these
+correctly in one versioned pass. What IS proven externally stands: the produced packages restore + build in a fresh app
+(incl. the `;webgpu;` feature pulling the renderer), and WebGpu is selected at runtime via the host-builder option. The
+remaining end-to-end RUN should be validated from a real CI package build, not a hand-assembled feed.
 
 ## RUNTIME PROOF: `;webgpu;` present + WebGpu impl set in host builder → WebGpu actually renders
 The SDK `;webgpu;` feature's only job is to make `Uno.UI.Composition.WebGpu` PRESENT (verified: the resolver injects
