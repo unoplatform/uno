@@ -15,6 +15,17 @@ public class Given_RuntimeEnabledPackage
 	private const string NeutralTargetFramework = "net10.0";
 	private const string AndroidTargetFramework = "net10.0-android30.0";
 
+	/// <summary>
+	/// The platform runtime identifier and the lib folder it must resolve to. The two agree only because the
+	/// identifier already is the target platform identifier, which is what lets the selection be driven by it.
+	/// </summary>
+	private static readonly (string RuntimeIdentifier, string TargetFramework)[] MobilePlatforms =
+	[
+		("android", "net10.0-android30.0"),
+		("ios", "net10.0-ios18.0"),
+		("tvos", "net10.0-tvos18.0"),
+	];
+
 	private static readonly string[] WinRTAssemblies = ["Uno.WinRT", "Uno.Foundation", "Uno.UI.Dispatching"];
 	private static readonly string[] OtherAssemblies = ["Contoso.CrossRuntime"];
 
@@ -22,13 +33,14 @@ public class Given_RuntimeEnabledPackage
 		PackageCacheFixture fixture,
 		string unoRuntimeIdentifier,
 		string unoUIRuntimeIdentifier,
-		string unoWinRTRuntimeIdentifier)
+		string unoWinRTRuntimeIdentifier,
+		string platformTargetFramework = AndroidTargetFramework)
 	{
 		var packageBasePath = fixture.AddRuntimeEnabledPackage(
 			"Uno.WinRT",
 			"1.0.0",
 			NeutralTargetFramework,
-			AndroidTargetFramework,
+			platformTargetFramework,
 			WinRTAssemblies,
 			OtherAssemblies,
 			["skia", "webassembly"]);
@@ -89,6 +101,49 @@ public class Given_RuntimeEnabledPackage
 		added.Should().Contain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/Contoso.CrossRuntime.dll", StringComparison.Ordinal));
 		added.Should().NotContain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/Uno.WinRT.dll", StringComparison.Ordinal));
 		added.Should().NotContain(path => path.Contains("/webassembly/", StringComparison.Ordinal));
+	}
+
+	[TestMethod]
+	[DynamicData(nameof(MobilePlatformData))]
+	public void When_MobileHead_Then_WinRT_Assemblies_Come_From_The_Platform_Implementation(string runtimeIdentifier, string platformTargetFramework)
+	{
+		using var fixture = new PackageCacheFixture($"{nameof(When_MobileHead_Then_WinRT_Assemblies_Come_From_The_Platform_Implementation)}_{runtimeIdentifier}");
+		var (task, _) = CreateTask(
+			fixture,
+			unoRuntimeIdentifier: "",
+			unoUIRuntimeIdentifier: "skia",
+			unoWinRTRuntimeIdentifier: runtimeIdentifier,
+			platformTargetFramework: platformTargetFramework);
+
+		task.Execute().Should().BeTrue();
+
+		var added = Paths(task.RuntimeCopyLocalItemsToAdd).ToList();
+
+		foreach (var winRTAssembly in WinRTAssemblies)
+		{
+			added.Should().Contain(
+				path => path.EndsWith($"lib/{platformTargetFramework}/{winRTAssembly}.dll", StringComparison.Ordinal),
+				$"{winRTAssembly} must resolve to the {runtimeIdentifier} implementation");
+		}
+
+		added.Should().Contain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/Contoso.CrossRuntime.dll", StringComparison.Ordinal));
+	}
+
+	public static IEnumerable<object[]> MobilePlatformData
+		=> MobilePlatforms.Select(platform => new object[] { platform.RuntimeIdentifier, platform.TargetFramework });
+
+	[TestMethod]
+	public void When_WebAssemblyHead_Then_Compile_References_Are_Not_Rewritten()
+	{
+		using var fixture = new PackageCacheFixture(nameof(When_WebAssemblyHead_Then_Compile_References_Are_Not_Rewritten));
+		var (task, _) = CreateTask(fixture, unoRuntimeIdentifier: "", unoUIRuntimeIdentifier: "skia", unoWinRTRuntimeIdentifier: "webassembly");
+
+		task.Execute().Should().BeTrue();
+
+		// The mobile heads swap compile references so a WinRT call binds the platform implementation; the browser
+		// head deliberately does not. This asymmetry is the only behaviour the two-layer split still carries.
+		task.ResolvedCompileFileDefinitionsToAdd.Should().BeEmpty();
+		task.ResolvedCompileFileDefinitionsToRemove.Should().BeEmpty();
 	}
 
 	[TestMethod]
