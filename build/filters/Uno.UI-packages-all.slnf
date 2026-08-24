@@ -31,6 +31,8 @@
       "Uno.UI.Composition\\Uno.UI.Composition.csproj",
       "Uno.UI.Composition.Managed\\Uno.UI.Composition.Managed.csproj",
       "Uno.UI.Composition.Skia\\Uno.UI.Composition.SkiaBackend.csproj",
+      "Uno.UI.Composition.WebGpu.Init\\Uno.UI.Composition.WebGpu.Init.csproj",
+      "Uno.UI.Composition.WebGpu\\Uno.UI.Composition.WebGpu.csproj",
       "Uno.UI.DevServer.Cli\\Uno.UI.DevServer.Cli.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.netcoremobile.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Reference.csproj",

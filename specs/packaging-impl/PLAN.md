@@ -3,6 +3,25 @@
 Core (done): Uno.UI.Composition.Drawing + .Managed added to Uno.WinUI.nuspec.
 Skia-imply flip (done): Uno.Features.targets force-implies `skia` (was `skiarenderer`).
 
+## DEFECT FOUND BY EXTERNAL-VALIDATION PREP (fixed): host packages depend on an unproduced Init package
+Inspecting the auto-packed `Uno.WinUI.Runtime.Skia.X11` nupkg (and by extension every desktop/mobile host package)
+showed a hard dependency on **`Uno.UI.Composition.WebGpu.Init 7.0.0-dev.1`** that was **never produced** — the
+`Uno.UI.Composition.WebGpu.Init` project has no nuspec, no `GeneratePackageOnBuild`, and wasn't in any package
+filter. Every host csproj `ProjectReference`s it as a plain reference (NOT `TreatAsPackageReference="false"`), so the
+SDK-style auto-pack emits it as a NuGet dependency. Result: **any external app pulling a desktop host package would
+fail `dotnet restore`** on the missing Init package — Skia apps included (the host assembly references the Init types).
+`CommonOverridePackageId=Uno.UI` on Init does NOT prevent this: that only feeds the `UnoNugetOverrideVersion` debug
+workflow (`CommonOverrideNuget` target), not pack-time dependency generation. The X11 host's full dep list confirmed
+Init is the ONLY unproduced dep (`Uno.UI` correctly resolves to `Uno.WinUI`; the rest are produced or external).
+
+FIX (this pass): author `Uno.UI.Composition.WebGpu.Init` + `Uno.UI.Composition.WebGpu` as real packages —
+- `build/nuget/Uno.UI.Composition.WebGpu.Init.nuspec` (lib net10/net11, dep Uno.WinUI; lightweight, no native).
+- `build/nuget/Uno.UI.Composition.WebGpu.nuspec` (renderer: lib net10/net11 + dep Uno.WinUI + WebGpu.Init +
+  `runtimes/linux-x64/native/libwgpu_native.so` and `runtimes/win-x64/native/wgpu_native.dll`, pinned wgpu v29.0.1.1).
+- Added both projects to `Uno.UI-packages-all.slnf` + `-skia.slnf`; both nuspecs to `build/Uno.UI.Build.csproj`
+  (`_NuspecFiles` + `nuget pack` Exec + a WebGpu.Init dep-version XmlPoke). The `;webgpu;` feature (already wired)
+  references the renderer package, which pulls Init transitively; host packages' existing Init dep now resolves.
+
 ## RUNTIME PROOF: `;webgpu;` present + WebGpu impl set in host builder → WebGpu actually renders
 The SDK `;webgpu;` feature's only job is to make `Uno.UI.Composition.WebGpu` PRESENT (verified: the resolver injects
 it, above). Whether WebGpu is *used* is decided at runtime by the app registering it in the host builder

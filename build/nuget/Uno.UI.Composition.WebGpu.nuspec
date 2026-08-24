@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata minClientVersion="5.0">
+		<id>Uno.UI.Composition.WebGpu</id>
+		<version>0.0.1</version>
+		<authors>Uno Platform</authors>
+		<icon>uno.png</icon>
+		<projectUrl>https://github.com/unoplatform/uno</projectUrl>
+		<license type="expression">Apache-2.0</license>
+		<description>The WebGPU drawing backend for Uno Platform (implements the neutral IRenderBackend seam over the managed geometry engine). Referenced by the 'WebGpu' UnoFeature; opt-in, carries the wgpu-native runtime.</description>
+		<copyright>Uno Platform</copyright>
+		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
+		<dependencies>
+			<group targetFramework="net10.0">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="Uno.UI.Composition.WebGpu.Init" version="to-be-set-by-ci" />
+			</group>
+			<group targetFramework="net11.0">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="Uno.UI.Composition.WebGpu.Init" version="to-be-set-by-ci" />
+			</group>
+		</dependencies>
+	</metadata>
+
+	<files>
+		<file src="..\..\src\Common\uno.png" target="/" />
+
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\bin\Release\net10.0\Uno.UI.Composition.WebGpu.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\bin\Release\net10.0\Uno.UI.Composition.WebGpu.pdb" target="lib\net10.0" />
+
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\bin\Release\net11.0\Uno.UI.Composition.WebGpu.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\bin\Release\net11.0\Uno.UI.Composition.WebGpu.pdb" target="lib\net11.0" />
+
+		<!-- wgpu-native runtime (pinned v29.0.1.1), fetched by wgpu-native.targets. The Init loader's
+		     DllImportResolver probes the app output dir, where NuGet lays down runtimes/<rid>/native. -->
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\lib\libwgpu_native.so" target="runtimes\linux-x64\native" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\lib\wgpu_native.dll" target="runtimes\win-x64\native" />
+	</files>
+
+</package>
