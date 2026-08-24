@@ -30,7 +30,28 @@ internal static class BorderHelper
 
 	public static void UpdateBackground(this IBorderInfoProvider @this)
 	{
+<<<<<<< HEAD:src/Uno.UI/UI/Xaml/BorderHelper.skia.cs
 		@this.BorderVisual.BackgroundBrush = @this.Background?.GetOrCreateCompositionBrush(@this.BorderVisual.Compositor);
+=======
+		if (@this is Uno.UI.Xaml.Islands.XamlIslandRoot { HasTransparentBackground: true })
+		{
+			// MUX BaseContentRenderer::PanelRenderContent skips the island root's background primitive
+			// while the island is transparent; the Background property keeps its theme brush.
+			@this.BorderVisual.BackgroundBrush = null;
+		}
+		else if (@this is Border { UseBackgroundOverride: true } && ThemingHelper.IsHighContrastActive)
+		{
+			var windowBrush = Uno.UI.ResourceResolver.ResolveTopLevelResource(
+				"SystemColorWindowColorBrush",
+				null) as Brush;
+			@this.BorderVisual.BackgroundBrush =
+				(windowBrush ?? @this.Background)?.GetOrCreateCompositionBrush(@this.BorderVisual.Compositor);
+		}
+		else
+		{
+			@this.BorderVisual.BackgroundBrush = @this.Background?.GetOrCreateCompositionBrush(@this.BorderVisual.Compositor);
+		}
+>>>>>>> c16a27f (feat(skia)!: Leave app backgrounds alone under a backdrop):src/Uno.UI/UI/Xaml/BorderHelper.cs
 	}
 
 	public static void UpdateBorderBrush(this IBorderInfoProvider @this)
