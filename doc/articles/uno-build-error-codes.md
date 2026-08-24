@@ -197,6 +197,33 @@ To suppress it:
 </PropertyGroup>
 ```
 
+### UNOB0021: Uno Platform application projects must use the Uno.Sdk
+
+Starting with Uno Platform 7.0, an application must be built with the [`Uno.Sdk`](xref:Uno.Features.Uno.Sdk). The legacy project format — a `Microsoft.NET.Sdk` project referencing the `Uno.WinUI` package, together with one head project per platform (`MyApp.Mobile`, `MyApp.Wasm`, `MyApp.Skia.Gtk`, `MyApp.Windows`, …) — is no longer supported.
+
+To fix this, migrate your application to the Uno.Sdk by following the [Migrating Projects to Single Project](xref:Uno.Development.MigratingToSingleProject) guide.
+
+This diagnostic is only raised for application projects (`Exe` and `WinExe`). Class libraries that reference the `Uno.WinUI` package directly are not affected, and neither are Windows App SDK heads.
+
+If your project is an executable that merely links `Uno.WinUI` as a library — a console harness or a benchmark runner, for instance — disable the check:
+
+```xml
+<PropertyGroup>
+  <UnoDisableUNOB0021Validation>true</UnoDisableUNOB0021Validation>
+</PropertyGroup>
+```
+
+### UNOB0022: The `SingleProject` property is no longer supported
+
+`SingleProject` was the Uno Platform 5.1-and-earlier spelling of `UnoSingleProject`. It no longer selects the single-project layout, so leaving it in place would silently build the project as if it were not a single project.
+
+Rename the property in your `.csproj`:
+
+```diff
+- <SingleProject>true</SingleProject>
++ <UnoSingleProject>true</UnoSingleProject>
+```
+
 ## Compiler Errors
 
 ### UNO0001
