@@ -3,6 +3,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -310,6 +311,10 @@ public sealed class WebGpuEffectFilter : IEffectFilter
 	public WColor Color;      // acrylic tint (composited SrcOver on top) / drop-shadow color
 	public WColor LumColor;   // acrylic luminosity color (SrcOver over the blurred backdrop == mix(blurred, lum.rgb, lum.a))
 	public float Noise;       // acrylic procedural-grain opacity (0 = none); baked into the backdrop composite
+	// General non-backdrop effect-graph evaluator result: the whole tree rendered to a texture (drawn as-is on
+	// Restore). When set, this filter is NOT the acrylic backdrop shape — DrawEffectBackdrop just draws it.
+	public ITexture EvaluatedTexture;
+	public Rect EvaluatedBounds;
 	public void Dispose() { }
 }
 
@@ -886,6 +891,13 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity)
 	{
 		if (filter is not WebGpuEffectFilter fx) { return; }
+		// General non-backdrop evaluator result: the whole tree was rendered to a texture — just draw it at the
+		// effect bounds (no backdrop capture).
+		if (fx.EvaluatedTexture is { } evaluated)
+		{
+			DrawImage(evaluated, (float)fx.EvaluatedBounds.Left, (float)fx.EvaluatedBounds.Top, ImageSampling.Linear, opacity);
+			return;
+		}
 		// Opaque acrylic OR a zero-blur acrylic: a fully-opaque tint completely covers the blurred backdrop, and a
 		// zero sigma makes the blur a no-op — either way skip the backdrop capture, full-window surface and gaussian
 		// blur entirely and just fill the effect region with the tint (the clip masks its rounded corners). Matches
@@ -3311,12 +3323,66 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 	public IColorFilter CreateColorMatrixColorFilter(float[] matrix) => new WebGpuColorFilter { Matrix = matrix };
 	public IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, WColor color) => new WebGpuEffectFilter { Dx = dx, Dy = dy, SigmaX = sigmaX, SigmaY = sigmaY, Color = color };
 
-	// Fuses the neutral EffectNode tree (Uno's parser output) into a backend filter. Only realizes the acrylic shape
+	// True if the tree reads the (deferred) backdrop — those still go through the acrylic path below / recipe.
+	private static bool ContainsBackdrop(EffectNode node) => node switch
+	{
+		SourceInput => true,
+		ColorMatrixEffectNode n => ContainsBackdrop(n.Source),
+		BlurEffectNode n => ContainsBackdrop(n.Source),
+		ModulateEffectNode n => ContainsBackdrop(n.Source),
+		LuminanceToAlphaEffectNode n => ContainsBackdrop(n.Source),
+		ContrastEffectNode n => ContainsBackdrop(n.Source),
+		LinearTransferEffectNode n => ContainsBackdrop(n.Source),
+		GammaTransferEffectNode n => ContainsBackdrop(n.Source),
+		BlendEffectNode n => ContainsBackdrop(n.Background) || ContainsBackdrop(n.Foreground),
+		CompositeEffectNode n => n.Sources.Any(ContainsBackdrop),
+		ArithmeticCompositeEffectNode n => ContainsBackdrop(n.Background) || ContainsBackdrop(n.Foreground),
+		CrossFadeEffectNode n => ContainsBackdrop(n.SourceA) || ContainsBackdrop(n.SourceB),
+		AlphaMaskEffectNode n => ContainsBackdrop(n.Source) || ContainsBackdrop(n.Mask),
+		UnsupportedEffectNode n => n.Source is not null && ContainsBackdrop(n.Source),
+		_ => false,
+	};
+
+	// General evaluator for NON-backdrop trees (Phase 0: leaves + colour-matrix + Unsupported→source). Renders the
+	// tree to a texture using offscreen composition; returns null for any node not handled yet, so the caller keeps
+	// the existing acrylic/recipe path (additive — no regression). Extended per phase (blur, blend, …).
+	private ITexture TryEvaluateTree(EffectNode node, Rect bounds)
+	{
+		switch (node)
+		{
+			case TextureInput t:
+				return t.Texture;
+			case ColorInput c:
+			{
+				int cw = Math.Max(1, (int)Math.Round(bounds.Width)), ch = Math.Max(1, (int)Math.Round(bounds.Height));
+				return RenderOffscreen(cw, ch, s => s.DrawRect(new Rect(0, 0, cw, ch), c.Color));
+			}
+			case ColorMatrixEffectNode cm:
+			{
+				if (TryEvaluateTree(cm.Source, bounds) is not { } src) { return null; }
+				int w = src.PixelWidth, h = src.PixelHeight;
+				var filter = CreateColorMatrixColorFilter(cm.Matrix);
+				return RenderOffscreen(w, h, s => s.DrawImage(src, 0, 0, ImageSampling.Linear, filter));
+			}
+			case UnsupportedEffectNode u:
+				return u.Source is null ? null : TryEvaluateTree(u.Source, bounds);
+			default:
+				return null;   // SourceInput / Blur / Blend / Composite / … — later phases
+		}
+	}
+
+	// Fuses the neutral EffectNode tree (Uno's parser output) into a backend filter. First tries the general
+	// non-backdrop evaluator (renders the whole tree to a texture); otherwise realizes the acrylic shape
 	// (a gaussian-blurred backdrop + tint/luminosity colours); any other tree returns null so CompositionEffectBrush
 	// falls back to the recipe path. Structure-matches the acrylic graph: the outer Blend's ColorInput foreground is
 	// the tint, the inner Blend's is the luminosity colour.
 	public IEffectFilter CreateEffectFilter(EffectNode tree, Rect bounds)
 	{
+		if (!ContainsBackdrop(tree) && TryEvaluateTree(tree, bounds) is { } evaluated)
+		{
+			return new WebGpuEffectFilter { EvaluatedTexture = evaluated, EvaluatedBounds = bounds };
+		}
+
 		float sigma = 0f;
 		WColor tint = default, lum = default;
 		bool sawColorSource = false;
