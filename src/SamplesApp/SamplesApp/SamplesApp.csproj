@@ -629,7 +629,20 @@
 		moved into the head; the previous mobile head never set it.
 		-->
 		<UnoXamlResourcesTrimming Condition="'$(_Platform)' == 'android'">false</UnoXamlResourcesTrimming>
+		<!--
+		iOS/tvOS turn it off for a different reason: they are the only targets whose runtime-test build
+		actually runs ILLink ("Optimizing assemblies for size"), and this property puts the whole of
+		BindableMetadataProvider's registration behind a __LinkerHints.Is_..._Available property that the
+		XAML trimming pass substitutes to false. Losing it makes BindingPropertyHelper.GetValidatedBindableType
+		return null, so Setter bindings resolve to their default and Frame.Navigate falls back from the
+		generated activator to Activator.CreateInstance. Desktop and wasm keep it because neither is trimmed
+		here. The samples only reach this at all because they moved into the head — the pre-consolidation
+		head never set it, and it was the SamplesApp.Skia library that did.
+		-->
+		<UnoXamlResourcesTrimming Condition="'$(_IsUIKit)' == 'true'">false</UnoXamlResourcesTrimming>
 		<UnoXamlResourcesUpriTrimming>true</UnoXamlResourcesUpriTrimming>
+		<!-- Same trimming integration, for the ms-appx resources; off on the trimmed targets for the same reason. -->
+		<UnoXamlResourcesUpriTrimming Condition="'$(_IsUIKit)' == 'true'">false</UnoXamlResourcesUpriTrimming>
 		<!-- Workaround for https://github.com/unoplatform/uno/discussions/5007 -->
 		<SynthesizeLinkMetadata>true</SynthesizeLinkMetadata>
 		<SkipIcuDataInitializerGenerator>true</SkipIcuDataInitializerGenerator>
