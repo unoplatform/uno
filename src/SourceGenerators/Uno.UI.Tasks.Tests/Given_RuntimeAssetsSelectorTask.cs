@@ -108,7 +108,9 @@ public class Given_RuntimeAssetsSelectorTask
 		task.Execute().Should().BeTrue();
 
 		SampleLibPaths(task.ResolvedCompileFileDefinitionsToRemove).Should().BeEmpty();
+		SampleLibPaths(task.ResolvedCompileFileDefinitionsToAdd).Should().BeEmpty();
 		SampleLibPaths(task.RuntimeCopyLocalItemsToRemove).Should().BeEmpty();
+		SampleLibPaths(task.RuntimeCopyLocalItemsToAdd).Should().BeEmpty();
 
 		// The runtime-enabled package still resolves, proving the loop ran.
 		(task.RuntimeCopyLocalItemsToAdd ?? []).Should().NotBeEmpty();
